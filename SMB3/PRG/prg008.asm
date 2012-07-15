@@ -6479,10 +6479,6 @@ PRG008_BDEB:
 	LDA #$00
 	STA Player_Slippery	 ; Player_Slippery = 0 (default ground not slippery)
 
-	LDA Level_TilesetIdx
-	CMP #11
-	BNE PRG008_BE31	 ; If not in an ice level, jump to PRG008_BE31
-
 	LDA <Player_InAir
 	BNE PRG008_BE31	 ; If Player is in air, jump to PRG008_BE31
 
@@ -6492,6 +6488,18 @@ PRG008_BDFD:
 	LDA Level_Tile_GndL,X
 	TAY		 ; Tile -> 'Y'
 
+; #DAHRKDDAIZ - Added checks for global ice blocks
+	CMP #$3E
+	BEQ PRG008_BE10;
+	CMP #$3F
+	BEQ PRG008_BE10;
+
+; #DAHRKDAIZ - Now do ice world specific
+
+	LDA Level_TilesetIdx
+	CMP #11
+	BNE PRG008_BE31	
+	TYA
 	SUB #TILE12_SNOWBLOCK_UL
 	CMP #$03
 	BLT PRG008_BE10	 ; If Player is on top of snow block, jump to PRG008_BE10	
