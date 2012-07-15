@@ -1101,7 +1101,6 @@ FIRE_BALL_COLL:
 	;CPY #$0b
 	;BNE PRG007_A566	 ; If this is not an Ice level, jump to PRG007_A566
 
-	STA $7A71 ; debug snap
 	CMP #TILE_GLOBAL_ICE 
 	BNE PRG007_A55D		; If the fireball did not hit a frozen muncher, jump to PRG007_A55D
 

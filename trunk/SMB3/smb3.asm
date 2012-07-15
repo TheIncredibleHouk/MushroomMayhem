@@ -2595,7 +2595,7 @@ CFIRE_LASER		= $15	; Laser fire
 
 	SObjBlooperKid_OutOfWater:.ds 8	; $7A68-$7A6F Blooper kid only; if set, Blooper Kid is trying to go out of water
 
-				.ds 2	; $7A70-$7A71 unused
+				.ds 2	; #DAHRKDAIZ $7A70-$7A71 USED for temprorary in variables
 
 	Object_SplashAlt:	.ds 1	; Used to alternate the "splash slots" 1 and 2 as objects hit the water
 
