@@ -638,6 +638,7 @@ PRG007_A30B:
 
 
 PlayerFireball_Pats:		.byte $65, $67, $65, $67
+PlayerIceball_Pats:			.byte $59, $5B, $59, $5B ; #DAHRKDAIZ - Iceball patterns
 PlayerFireball_FlipBits:	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP
 
 PlayerHammer_FlipBits:	.byte $00, SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, SPR_HFLIP
@@ -902,7 +903,16 @@ PRG007_A471:
 	TAX		 ; X = 0 to 3
 
 	; Set fireball pattern
+	; #DAHRKDAIZ checks ice mario fla and interjects a different pattern
+	LDA ICE_MARIO_FLAG
+	BEQ STANDARD_FIREBALL_PAT
+	LDA PlayerIceball_Pats,X
+	BNE STORE_STANDARD_TILE
+
+STANDARD_FIREBALL_PAT:
 	LDA PlayerFireball_Pats,X
+
+STORE_STANDARD_TILE:
 	STA Sprite_RAM+$01,Y
 
 	; Set fireball attributes
@@ -1119,7 +1129,7 @@ PRG007_A557:
 	RTS		 ; Return
 
 PRG007_A55D:
-	CMP #TILE_GLOBAL_FROZEN_COIN ; #DAHRKDAIZ - modified to reflect new frozen coin type
+	CMP #TILE_GLOBAL_FROZEN_COIN
 	BNE PRG007_A566	 ; If the fireball did not hit a frozen coin, jump to PRG007_A566
 
 	; Fireball hit a frozen coin!
@@ -1193,8 +1203,15 @@ PRG007_A59F:
 	RTS		 ; Return
 
 Fireball_ThawTile:
-	STA Level_ChgTileEvent	 ; Queue tile change event!
+	PHA
+	LDA ICE_MARIO_FLAG
+	BEQ NOT_ICEBALL 
+	PLA
+	RTS
 
+NOT_ICEBALL:
+	PLA
+	STA Level_ChgTileEvent	 ; Queue tile change event!
 	JSR BrickBust_MoveOver	 ; Open up a brick bust
 
 	; Brick bust "poof" style (over top of the changing tile)

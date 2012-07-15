@@ -1076,7 +1076,7 @@ PowerUp_Palettes:
 	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
 	.byte $00, $17, $36, $0F	; 5 - Tanooki Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
-	.byte $00, $30, $31, $0F	; 7 - #DAHRKDAIZ Ice Mario
+	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
 
 ;	LDY #$07	 ; Y = 7 (select statue palette)
 ;	LDA Player_Statue
@@ -1096,7 +1096,6 @@ PowerUp_Palettes:
 ; 
 
 Level_SetPlayerPUpPal:
-	STA DEBUG_SNAPPER;
 	LDY <Player_Suit
 	LDA ICE_MARIO_FLAG
 	BEQ NOT_ICE_MARIO_PALETTE
