@@ -58,7 +58,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjInit_Vine	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_DoNothing	; Object $20
-	.word ObjInit_DoNothing	; Object $21 - OBJ_POWERUP_MUSHCARD
+	.word ObjInit_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_FIRECARD
 	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -100,7 +100,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjNorm_Vine	; Object $1F - OBJ_GROWINGVINE
 	.word ObjNorm_DoNothing	; Object $20
-	.word ObjNorm_Card	; Object $21 - OBJ_POWERUP_MUSHCARD
+	.word ObjNorm_Card	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjNorm_Card	; Object $22 - OBJ_POWERUP_FIRECARD
 	.word ObjNorm_Card	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -143,7 +143,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjHit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjHit_DoNothing	; Object $20
-	.word ObjHit_Card	; Object $21 - OBJ_POWERUP_MUSHCARD
+	.word ObjHit_Card	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjHit_Card	; Object $22 - OBJ_POWERUP_FIRECARD
 	.word ObjHit_Card	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -185,9 +185,9 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1F - OBJ_GROWINGVINE
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $20
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_MUSHCARD
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_FIRECARD
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_STARCARD
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_FIRECARD
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_STARCARD
 
 
 	; Object group $00 (i.e. objects starting at ID $00) second set attribute bits
@@ -234,7 +234,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OA2_TDOGRP1	; Object $1F - OBJ_GROWINGVINE
 	.byte OA2_TDOGRP0	; Object $20
-	.byte OA2_TDOGRP1	; Object $21 - OBJ_POWERUP_MUSHCARD
+	.byte OA2_TDOGRP1	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA2_TDOGRP1	; Object $22 - OBJ_POWERUP_FIRECARD
 	.byte OA2_TDOGRP1	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -283,7 +283,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $1F - OBJ_GROWINGVINE
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $20
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $21 - OBJ_POWERUP_MUSHCARD
+	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_FIRECARD
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -325,7 +325,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OPTS_NOCHANGE	; Object $1F - OBJ_GROWINGVINE
 	.byte OPTS_SETPT5 | $0A	; Object $20
-	.byte OPTS_NOCHANGE	; Object $21 - OBJ_POWERUP_MUSHCARD
+	.byte OPTS_NOCHANGE	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OPTS_NOCHANGE	; Object $22 - OBJ_POWERUP_FIRECARD
 	.byte OPTS_NOCHANGE	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -367,7 +367,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte KILLACT_STANDARD	; Object $1F - OBJ_GROWINGVINE
 	.byte KILLACT_STANDARD	; Object $20
-	.byte KILLACT_STANDARD	; Object $21 - OBJ_POWERUP_MUSHCARD
+	.byte KILLACT_STANDARD	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte KILLACT_STANDARD	; Object $22 - OBJ_POWERUP_FIRECARD
 	.byte KILLACT_STANDARD	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -436,7 +436,7 @@ ObjP1A:	.byte $59, $5B
 ObjP1C:	.byte $75, $77
 ObjP1E:	.byte $5D, $5F
 ObjP1F:	.byte $7D, $7D
-ObjP21:	.byte $51, $51
+ObjP21:	.byte $69, $69
 ObjP22:	.byte $53, $53
 ObjP23:	.byte $55, $55
 ObjP08:	.byte $FB, $FB, $FB, $FB, $BB, $B9, $B9, $BB, $BF, $BD
@@ -2870,9 +2870,9 @@ PRG001_ADBB:
 ObjNorm_Card:
 	JSR Object_MoveAndReboundOffWall ; Move and rebound off walls (i.e. march, but this doesn't.)
 
-	LDA Level_NoStopCnt
-	ORA #$04
-	STA Objects_ColorCycle,X ; Cycle colors!!
+	;LDA Level_NoStopCnt
+	;ORA #$04
+	;STA Objects_ColorCycle,X ; Cycle colors!!
 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
@@ -2880,21 +2880,41 @@ ObjNorm_Card:
 
 
 ObjHit_Card:
-	; Card becomes dead/empty
+	LDA Level_ObjectID,X
+	CMP #OBJ_POWERUP_ICEFLOWER
+	BNE NOT_ICE_FLOWER
+	; #DAHRKDAIZ - the power up transformation should be similar to fire mario
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	LDA #$03
+	STA Player_QueueSuit
+	STA ICE_MARIO_FLAG
+	LDA #$1f
+	STA Player_StarOff
+
+NOT_ICE_FLOWER:
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X
+	RTS
 
-	; Calculate which card you get
-	LDA Level_ObjectID,X
-	SUB #(OBJ_POWERUP_MUSHCARD-1)
 
-	; Update the Player's card collection
-	JSR Player_GetCardAndUpdate
-
-	LDX <SlotIndexBackup	; Restore 'X' as object slot index
+	; #DAHRKDAIZ - Hacked to act as power ups instead of goal cards :D
+	; Card becomes dead/empty
+;	LDA #OBJSTATE_DEADEMPTY
+;	STA Objects_State,X
+;
+;	; Calculate which card you get
+;	LDA Level_ObjectID,X
+;	SUB #(OBJ_POWERUP_ICEFLOWER-1)
+;
+;	; Update the Player's card collection
+;	JSR Player_GetCardAndUpdate
+;
+;	LDX <SlotIndexBackup	; Restore 'X' as object slot index
 
 PRG001_ADE2:
-	RTS		 ; Return
+;	RTS		 ; Return
 
 
 	; This is a fairly general "march" function, but it is only 
