@@ -872,7 +872,7 @@ SndLev1_SuitLost2:
 	BNE PRG028_A529	 ; Jump (technically always) to PRG028_A529
 
 PRG028_A512:
-	CPY #SND_LEVELUNK
+	CPY #SND_SMALLJUMP
 	BNE PRG028_A51A	 ; If not unknown / lost sound, jump to PRG028_A51A
 
 	; Unknown / lost sound

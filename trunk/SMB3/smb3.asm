@@ -1366,7 +1366,7 @@ SND_LEVELBLIP	= $10 	; Text "type" sound / card select
 SND_LEVELPOWER	= $20 	; Power up
 SND_LEVEL1UP	= $40 	; 1-up
 SND_LEVELPOOF	= $80 	; Lost suit / wand shot
-SND_LEVELUNK	= $90	; Unknown / lost sound
+SND_SMALLJUMP	= $90	; Unknown / lost sound
 SND_LEVELSHOE	= $A0	; Lost Kuirbo's Shoe
 SND_LEVELTAILWAG= $B0	; Tail wag
 	Sound_QLevel1:		.ds 1

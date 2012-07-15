@@ -2579,7 +2579,18 @@ PRG008_AC30:
 PRG008_AC41:
 DIRECT_TO_JUMP:
 	; Play jump sound
+	; #DAHRKDAIZ modified to play the "small jump" from SMB1 for small Mario
+
+	STA DEBUG_SNAPPER
+	LDA <Player_Suit
+	BNE STORE_BIG_JUMP
+	LDA #SND_SMALLJUMP
+	BNE STORE_SMALL_JUMP
+
+STORE_BIG_JUMP:
 	LDA Sound_QPlayer
+
+STORE_SMALL_JUMP:
 	ORA #SND_PLAYERJUMP	 
 	STA Sound_QPlayer
 
