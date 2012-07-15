@@ -1070,32 +1070,39 @@ PRG008_A523:
 	; Palette colors per power up level -- first byte is never used!
 PowerUp_Palettes:
 	.byte $00, $16, $36, $0F	; 0 - Mario default palette
-	.byte $00, $2A, $36, $0F	; 1 - Luigi default palette
+	.byte $00, $16, $36, $0F	; 1 - #DAHRKDAIZ SUPER MARIO
 	.byte $00, $27, $36, $16	; 2 - Fire Flower
 	.byte $00, $00, $00, $00	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
 	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
 	.byte $00, $17, $36, $0F	; 5 - Tanooki Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
-	.byte $00, $00, $10, $0F	; 7 - Tanooki Statue
+	.byte $00, $30, $31, $0F	; 7 - #DAHRKDAIZ Ice Mario
+
+;	LDY #$07	 ; Y = 7 (select statue palette)
+;	LDA Player_Statue
+;	BNE PRG008_A55E	 ; If Player is statue, jump to PRG008_A55E
+;
+;	LDA <Player_Suit
+;	TAY		 ; Y = Player_Suit
+;	CMP #PLAYERSUIT_FIRE	 
+;	BGS PRG008_A55E	 ; If Player_Suit >= PLAYERSUIT_FIRE, jump to PRG008_A55E
+;
+;	CMP #PLAYERSUIT_RACCOON 
+;    BEQ PRG008_A55B	 ; If Player_Suit = PLAYERSUIT_RACCOON, jump to PRG008_A55B
+;
+; PRG008_A55B:
+; 	; If Player_Suit is 0 (small) or 1 (big), we load Y = Player_Current instead!
+; 	LDY Player_Current
+; 
 
 Level_SetPlayerPUpPal:
-	LDY #$07	 ; Y = 7 (select statue palette)
-	LDA Player_Statue
-	BNE PRG008_A55E	 ; If Player is statue, jump to PRG008_A55E
+	STA DEBUG_SNAPPER;
+	LDY <Player_Suit
+	LDA ICE_MARIO_FLAG
+	BEQ NOT_ICE_MARIO_PALETTE
+	LDY #$07
 
-	LDA <Player_Suit
-	TAY		 ; Y = Player_Suit
-	CMP #PLAYERSUIT_RACCOON 
-	BEQ PRG008_A55B	 ; If Player_Suit = PLAYERSUIT_RACCOON, jump to PRG008_A55B
-
-	CMP #PLAYERSUIT_FIRE	 
-	BGS PRG008_A55E	 ; If Player_Suit >= PLAYERSUIT_FIRE, jump to PRG008_A55E
-
-PRG008_A55B:
-	; If Player_Suit is 0 (small) or 1 (big), we load Y = Player_Current instead!
-	LDY Player_Current
-
-PRG008_A55E:
+NOT_ICE_MARIO_PALETTE:
 	LDX Graphics_BufCnt
 	TXA
 	ADD #$06

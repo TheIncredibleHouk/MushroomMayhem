@@ -2595,11 +2595,12 @@ CFIRE_LASER		= $15	; Laser fire
 
 	SObjBlooperKid_OutOfWater:.ds 8	; $7A68-$7A6F Blooper kid only; if set, Blooper Kid is trying to go out of water
 
-				.ds 2	; #DAHRKDAIZ $7A70-$7A71 USED for temprorary in variables
+				.ds 1	; #DAHRKDAIZ $7A70-$7A71 USED for temprorary in variables
+	DEBUG_SNAPPER: .ds 1 ; #DAHRKDAIZ - used to step debug breakpoints
 
 	Object_SplashAlt:	.ds 1	; Used to alternate the "splash slots" 1 and 2 as objects hit the water
-
-				.ds 109	; $7A73-$7ADF unused
+	ICE_MARIO_FLAG: .ds 1; #DAHRKDAIZ $7A73
+				.ds 108	; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
