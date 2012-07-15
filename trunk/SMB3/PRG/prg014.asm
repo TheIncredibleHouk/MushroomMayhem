@@ -1995,7 +1995,7 @@ PRG014_CEE9:
 ; Generates a Cheep-cheep style 'oo' bridge, with fence
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_Bridge:
-	.byte TILE1_LITTLEFENCE, TILE1_ABOVEFENCE, TILE1_CCBRIDGE, TILE1_BLOCK_SHUL ; <-- TILE1_BLOCK_SHUL is used as early terminator!
+	.byte TILE1_LITTLEFENCE, TILE_GLOBAL_FROZEN_COIN, TILE1_CCBRIDGE, TILE1_BLOCK_SHUL ; <-- TILE1_BLOCK_SHUL is used as early terminator!
 
 LoadLevel_CCBridge:
 	; Backup Map_Tile_AddrL/H into Temp_Var1/2

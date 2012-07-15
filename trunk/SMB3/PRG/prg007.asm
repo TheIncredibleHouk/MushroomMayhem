@@ -1119,7 +1119,7 @@ PRG007_A557:
 	RTS		 ; Return
 
 PRG007_A55D:
-	CMP #TILE12_FROZENCOIN
+	CMP #TILE_GLOBAL_FROZEN_COIN ; #DAHRKDAIZ - modified to reflect new frozen coin type
 	BNE PRG007_A566	 ; If the fireball did not hit a frozen coin, jump to PRG007_A566
 
 	; Fireball hit a frozen coin!

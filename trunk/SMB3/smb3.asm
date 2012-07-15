@@ -3647,6 +3647,7 @@ TILEA_NOTESTAR		= $31	; Note block with star
 TILEA_ICEBRICK		= $32	; Ice block
 
 TILEA_ICEBLOCK		= $32
+TILE_GLOBAL_FROZEN_COIN = $3E; #DAHRKDAIZ Added global frozen ice tile block - 7/15
 TILE_GLOBAL_ICE		= $3F ; #DAHRKDAIZ Added global ice tile block - 7/15
 
 TILEA_COIN		= $40	; Coin
@@ -3707,7 +3708,8 @@ TILE1_GOALEDGE		= $01	; > shape goal edge
 TILE1_SKYALT		= $02	; ?? Referenced, appears as sky?
 
 TILE1_LITTLEFENCE	= $04	; Little fence (runs atop the 'oo' type cheep-cheep bridge)
-TILE1_ABOVEFENCE	= $05	; Above little fence ?? (it appears empty)
+;TILE1_SILVERCOIN	= $05	; #DAHRKDAIZ - modified  to accurately reflect what this really is - coin that appear when P-Switch is hit
+TILE1_THAWEDCOIN	= $05	; #DAHRKDAIZ - modified  to accurately reflect what this really is - coin that appear when P-Switch is hit
 TILE1_LILBGCLOUD	= $06	; Little background cloud
 TILE1_WBLOCKLV		= $07	; White big block left vertical runner
 TILE1_WBLOCKRV		= $08	; White big block right vertical runner
