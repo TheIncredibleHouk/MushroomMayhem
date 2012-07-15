@@ -1714,7 +1714,6 @@ PRG008_A864:
 PRG008_A86C:
 
 	; VINE CLIMBING LOGIC
-
 	LDA Player_InWater
 	ORA Player_IsHolding
 	ORA Player_Kuribo
@@ -1744,9 +1743,18 @@ PRG008_A890:
 	JMP PRG008_A8F9	 ; Jump to PRG008_A8F9
 
 PRG008_A898:
+	; #DAHRKDAIZ check for jumping off climbables
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ DO_CLIMBING
+	LDA #$00
+	STA Player_IsClimbing
+	JSR DIRECT_TO_JUMP
+	RTS
+
+DO_CLIMBING:
 	LDA #$01
 	STA Player_IsClimbing	 ; Player_IsClimbing = 1 (Player is climbing)
-
 	; Kill Player velocities
 	LDA #$00
 	STA <Player_XVel
@@ -2569,7 +2577,7 @@ PRG008_AC30:
 	BNE PRG008_AC9E	 ; If Player is mid air, jump to PRG008_AC9E
 
 PRG008_AC41:
-
+DIRECT_TO_JUMP:
 	; Play jump sound
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERJUMP	 
