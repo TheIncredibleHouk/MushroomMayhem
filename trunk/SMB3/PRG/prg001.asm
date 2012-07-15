@@ -58,7 +58,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjInit_Vine	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_DoNothing	; Object $20
-	.word ObjInit_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjInit_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_FIRECARD
 	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_STARCARD
 
@@ -1013,7 +1013,7 @@ PRG001_A4C6:
 
 	; Power-up which may emerge from different types of bounce blocks
 Bouncer_PUp:	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN
-		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_1UP
+		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_1UP, OBJ_POWERUP_ICEFLOWER ; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
 Bounce_TileReplacements:	
 	.byte CHNGTILE_TOGNOTEBLOCK
@@ -2868,7 +2868,9 @@ PRG001_ADBB:
 
 
 ObjNorm_Card:
-	JSR Object_MoveAndReboundOffWall ; Move and rebound off walls (i.e. march, but this doesn't.)
+	; #behavie like fireflower
+	JMP  ObjNorm_FireFlower
+	;JSR Object_MoveAndReboundOffWall ; Move and rebound off walls (i.e. march, but this doesn't.)
 
 	;LDA Level_NoStopCnt
 	;ORA #$04

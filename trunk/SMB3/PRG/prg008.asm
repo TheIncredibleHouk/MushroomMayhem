@@ -5149,7 +5149,7 @@ LATP_JumpTable:
 	.word LATP_Leaf		; 2 = Mushroom/Leaf
 	.word LATP_Star		; 3 = Star
 	.word LATP_Coin		; 4 = Coin
-	.word LATP_CoinStar	; 5 = Coin/Star
+	.word LATP_IceFlower; 5 = Coin/Star
 	.word LATP_Brick	; 6 = Standard brick behavior
 	.word LATP_Vine		; 7 = Vine
 	.word LATP_10Coin	; 8 = 10 coin
@@ -5175,6 +5175,20 @@ LATP_Flower:
 PRG008_B7F9:
 	RTS		 ; Return
 
+; #DAHRKDAIZE ICE_FLOWER
+LATP_IceFlower:
+	LDA #$00
+	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
+
+	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+
+	LDA <Player_Suit
+	BEQ NO_ICE_SMALL	 ; If Player is small, jump to PRG008_B7F9
+
+	LDY #$08	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
+
+NO_ICE_SMALL:
+	RTS		 ; Return
 
 LATP_Leaf:
 	LDA #$00
@@ -5222,20 +5236,21 @@ LATP_Coin:
 PRG008_B82F:
 	RTS		 ; Return
 
-LATP_CoinStar:
-	LDA #$80
-	STA PUp_StarManFlash	 ; Get that Starman flash ready just in case...
-
-	LDY #$04	 	; Y = 4 (spawn a starman) (index into PRG001 Bouncer_PUp)
-
-	LDA Player_StarInv
-	BNE PRG008_B83F	 ; If Player if invincible, jump to PRG008_B83F!
-
-	; Otherwise, sorry, just a coin :(
-	JMP LATP_Coin
-
-PRG008_B83F:
-	RTS		 ; Return
+	; #DAHRKDAIZ unused now in favor for new power up
+;LATP_CoinStar:
+;	LDA #$80
+;	STA PUp_StarManFlash	 ; Get that Starman flash ready just in case...
+;
+;	LDY #$04	 	; Y = 4 (spawn a starman) (index into PRG001 Bouncer_PUp)
+;
+;	LDA Player_StarInv
+;	BNE PRG008_B83F	 ; If Player if invincible, jump to PRG008_B83F!
+;
+;	; Otherwise, sorry, just a coin :(
+;	JMP LATP_Coin
+;
+;PRG008_B83F:
+;	RTS		 ; Return
 
 LATP_Brick:
 	JSR LATP_GetCoinAboveBlock	; Get coin above block, if any
