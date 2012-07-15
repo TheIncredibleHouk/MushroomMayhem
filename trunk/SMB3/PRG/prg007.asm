@@ -1095,16 +1095,20 @@ FIRE_BALL_COLL:
 
 	; Tile is solid all around
 
-	LDY Level_TilesetIdx
-	CPY #$0b
+	; start #DAHRKDAIZ - Hack comments old ice block detection and uses a global ice block instead 7/15
+	
+	;LDY Level_TilesetIdx
+	;CPY #$0b
 	;BNE PRG007_A566	 ; If this is not an Ice level, jump to PRG007_A566
 
-	CMP #$67; #TILE12_FROZENMUNCHER
+	STA $7A71 ; debug snap
+	CMP #TILE_GLOBAL_ICE 
 	BNE PRG007_A55D		; If the fireball did not hit a frozen muncher, jump to PRG007_A55D
 
-	; Fireball hit a frozen muncher!
+	; #DAHRKDAIZ - fireball hit a global ice block
+	; end #DAHRKDAIZ - 7/15
 
-	LDA #CHNGTILE_FROZENMUNCHER
+	LDA #CHNGTILE_DELETETOBG		;
 	BNE PRG007_A563	 ; Jump (technically always) to PRG007_A563
 
 PRG007_A557:
@@ -1222,7 +1226,8 @@ Fireball_ThawTile:
 	; Set block change X Hi
 	LDA <Temp_Var7
 	STA Level_BlockChgXHi
-	JMP PlayerProj_ChangeToPoof	 ; Change the projectile itself into a poof
+
+	JMP PlayerProj_ChangeToPoof	 ; Change the projectile itself into a poof#$
 
 
 PRG007_A5DC:

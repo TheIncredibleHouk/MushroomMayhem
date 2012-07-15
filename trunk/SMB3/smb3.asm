@@ -3647,6 +3647,7 @@ TILEA_NOTESTAR		= $31	; Note block with star
 TILEA_ICEBRICK		= $32	; Ice block
 
 TILEA_ICEBLOCK		= $32
+TILE_GLOBAL_ICE		= $3F ; #DAHRKDAIZ Added global ice tile block - 7/15
 
 TILEA_COIN		= $40	; Coin
 TILEA_COINREMOVED	= $41	; Tile used after coin has been collected
