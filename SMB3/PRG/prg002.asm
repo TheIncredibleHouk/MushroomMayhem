@@ -1115,7 +1115,7 @@ PRG002_A5AE:
 	LDA #OBJSTATE_KICKED
 	STA Objects_State,X
 
-	; It's an Ice Blocj
+	; It's an Ice Block
 	LDA #OBJ_ICEBLOCK
 	STA Level_ObjectID,X
 

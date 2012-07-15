@@ -2680,9 +2680,8 @@ PRG000_CD77:
 
 	; Ice block only...
 
-	LDA #$02
-;	LSR A	
-	; STA Objects_ColorCycle,X	 ; Cycle colors
+	LDA #$00
+	STA Objects_ColorCycle,X	 ; Cycle colors
 	JMP Object_ShakeAndDrawMirrored	 ; Draw sprite and don't come back!
 
 PRG000_CD80:
@@ -3484,7 +3483,9 @@ PRG000_D101:
 	; Basically from here to the RTS, color cycle the ice block as it begins to "melt"
 	; at different rates depending on where the timer is exactly...
 PRG000_D10D:
-	;LDA #$02
+	; #DAHRKDAIZ - left this in to force the ice blocks to use palette #2 >_>
+	LDA #$02
+	STA Objects_ColorCycle,X
 ;	CMP #$60 
 ;	BGE PRG000_D11C	 ; If timer 3 ticks >= $60, jump to PRG000_D11C  
 ;
