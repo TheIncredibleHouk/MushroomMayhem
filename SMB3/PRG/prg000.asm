@@ -2677,8 +2677,8 @@ PRG000_CD77:
 
 	; Ice block only...
 
-	LDA <Counter_1
-	LSR A	
+	LDA #$02
+;	LSR A	
 	STA Objects_ColorCycle,X	 ; Cycle colors
 	JMP Object_ShakeAndDrawMirrored	 ; Draw sprite and don't come back!
 
@@ -3465,7 +3465,7 @@ PRG000_D101:
 
 	; Anything besides a Bob-omb...
 
-	CMP #OBJ_ICEBLOCK
+	CMP #OBJ_ICEBLOCK ;
 	BNE PRG000_D120	 ; If object is NOT an Ice Block, jump to PRG000_D120
 
 	; Object is an ice block...  
@@ -3481,24 +3481,25 @@ PRG000_D101:
 	; Basically from here to the RTS, color cycle the ice block as it begins to "melt"
 	; at different rates depending on where the timer is exactly...
 PRG000_D10D:
-	CMP #$60 
-	BGE PRG000_D11C	 ; If timer 3 ticks >= $60, jump to PRG000_D11C  
-
-	CMP #$30 
-	BGE PRG000_D11B	 ; If timer 3 ticks >= $30, jump to PRG000_D11B
-
-	CMP #$10 
-	BGE PRG000_D11A	 ; If timer 3 ticks >= $10, jump to PRG000_D11A
- 
-	LSR A
-
-PRG000_D11A:
-	LSR A
-
-PRG000_D11B:
-	LSR A
-
-PRG000_D11C:
+	LDA #$02
+;	CMP #$60 
+;	BGE PRG000_D11C	 ; If timer 3 ticks >= $60, jump to PRG000_D11C  
+;
+;	CMP #$30 
+;	BGE PRG000_D11B	 ; If timer 3 ticks >= $30, jump to PRG000_D11B
+;
+;	CMP #$10 
+;	BGE PRG000_D11A	 ; If timer 3 ticks >= $10, jump to PRG000_D11A
+; 
+;	LSR A
+;
+;PRG000_D11A:
+;	LSR A
+;
+;PRG000_D11B:
+;	LSR A
+;
+;PRG000_D11C:
 	STA Objects_ColorCycle,X	 ; Set color cycle value
  
 	RTS		 ; Return
