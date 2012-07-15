@@ -1176,7 +1176,7 @@ PRG014_CB15:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Blocks:
 	.byte TILEA_BRICK, TILEA_QBLOCKCOIN, TILEA_BRICKCOIN, TILEA_WOODBLOCK
-	.byte TILEA_GNOTE, TILEA_NOTE, TILEA_WOODBLOCKBOUNCE, TILEA_COIN
+	.byte TILEA_GNOTE, TILEA_NOTE, TILE_GLOBAL_ICE, TILEA_COIN ; #DAHRKDAIZ swapped TILEA_WOODBLOCKBOUNCE for TILE_GLOBAL_ICE - 7/15
 	.byte TILEA_ICEBRICK	; This one is accessed by LoadLevel_IceBricks
 
 LoadLevel_BlockRun:
