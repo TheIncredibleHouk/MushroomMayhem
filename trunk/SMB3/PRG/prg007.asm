@@ -1432,7 +1432,7 @@ PRG007_A6C9:
 
 
 PRG007_A6DD:
-
+	
 	; Enemy bounces upward a bit
 	LDA #-$34
 	STA Objects_YVel,Y
@@ -1449,6 +1449,8 @@ PRG007_A6EC:
 	TYA
 	TAX	; object index -> 'X'
 
+	LDA ICE_MARIO_FLAG
+	BNE ICE_BALL_SKIP1 ; #DAHRKDAIZ - Skip "defeating" the enemy
 	; 100 pts!
 	LDA #$05
 	JSR Score_PopUp
@@ -1461,6 +1463,16 @@ PRG007_A6EC:
 
 PRG007_A6FD:
 	RTS		 ; Return
+
+ICE_BALL_SKIP1:
+
+	LDA #$03	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
+	STA Objects_State,Y
+	LDA #OBJ_ICEBLOCK
+	STA Level_ObjectID,Y ; #DAHRKDAIZ Replace sprite with ice block
+	LDA #$80
+	STA Objects_Timer3,Y 
+	RTS
 
 PRG007_A6FE:
 	JMP PRG007_A637	 ; Jump to PRG007_A637

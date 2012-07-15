@@ -408,7 +408,7 @@ ObjP53:
 ObjP5C:
 	.byte $8F, $8F, $B5, $B5
 ObjP6B:
-	.byte $75, $75
+	.byte $61, $63
 ObjP68:
 	.byte $95, $97, $91, $93, $A1, $A1
 ObjP69:
