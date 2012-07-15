@@ -927,11 +927,11 @@ PRG007_A48C:
 
 	; Gameplay not halted...
 	LDA #$00
-	BCC STORE_PRJTILE	 ; If this is the hammer, jump to PRG007_A49A (PlayerProj_HitEnemies)
+	BCC STORE_PRJTILE	 ; start #DAHRKDAIZ - hacked to store current projectile for later
 	LDA #$01
 STORE_PRJTILE:
 	STA $7A70
-	JSR Fireball_DetectWorld	 ; Hit tests for fireball (bounce, poof, etc.)
+	JSR Fireball_DetectWorld	 ; end #DAHRKDAIZ Hit tests for projectiles (bounce, poof, etc.)
 
 PRG007_A49A:
 	JMP PlayerProj_HitEnemies	 ; Jump to PlayerProj_HitEnemies
@@ -1071,6 +1071,7 @@ PRG007_A52D:
 	PLA		 ; Restore adjusted tile
 	STA <Temp_Var1	 ; -> Temp_Var1
 
+	; start #DAHRKDAIZ - code used to handle hammer specific tile interaction
 	LDA $7A70
 	BEQ FIRE_BALL_COLL
 	LDA <Temp_Var1
@@ -1080,6 +1081,7 @@ PRG007_A52D:
 	JSR Hammer_BrickBust
 NOT_BRICK_HAMMER:
 	RTS
+	; end #DAHRKDAIZ
 
 FIRE_BALL_COLL:
 	LDA <Temp_Var1;
@@ -3217,7 +3219,7 @@ PUpCoin_Patterns:	.byte $49, $4F, $4D, $4F
 PUpCoin_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
 
 SObj_Laser:
-
+; start #DAHRKDAIZ - Subroutine commented out to make more space
 ;	; Load patterns for laser
 ;	LDA #$12
 ;	STA PatTable_BankSel+4
@@ -3310,7 +3312,7 @@ Laser_PrepSpritesAndHit:
 ;	STA Sprite_RAM+$02,Y
 ;
 ;	JMP SObj_PlayerCollide	 ; Do Player to laser collision and don't come back!
-;
+; end #DAHRKDAIZ - Subroutine commented out to make more space
 PRG007_B058:
 	RTS		 ; Return
 
@@ -5513,6 +5515,8 @@ PRG007_BB97:
 	.word CFire_Cannonball	; 12: Fires BIG cannonballs horizontally right
 	.word CFire_Cannonball	; 13: Launches fused Bob-ombs to the left
 	.word CFire_Cannonball	; 14: Launches fused Bob-ombs to the right
+
+; start #DAHRKDAIZ code commented out for more space 7/14
 ;	.word CFire_Laser	; 15: Laser fire
 ;
 ;CFire_Laser:
@@ -5569,6 +5573,7 @@ PRG007_BB97:
 ;	STA SpecialObj_YHi,Y
 ;
 ;	RTS		 ; Return
+; end #DAHRKDAIZ code commented out for more space 7/14
 
 CFire_Cannonball:
 
@@ -6273,7 +6278,7 @@ PRG007_BFDC:
 
 ; Rest of ROM bank was empty
 
-;;;;;;;; Routine used to bust a brick that a hammer is located on
+; #DAHRKDAIZ Routine used to bust a brick that a hammer is located on
 Hammer_BrickBust:
 	
 	; Crumbling sound

@@ -1720,7 +1720,7 @@ PRG005_A885:
 	STA SpecialObj_YHi,Y
 
 	; Piranha fireball
-	LDA #SOBJ_FIREBROFIREBALL ; hacked to produce fire brothers fireball
+	LDA #SOBJ_FIREBROFIREBALL ; #DAHRKDAIZ - hacked to produce fire brothers fireball 7/14
 	STA SpecialObj_ID,Y
 
 	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
