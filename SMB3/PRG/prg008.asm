@@ -2250,62 +2250,63 @@ Swim_Tanooki:
 	JSR Player_SwimAnim ; Do Player swim animations
 	RTS		 ; Return
 
+; #DAHRKDAIZ Commenting out Kuribo code
 Move_Kuribo:
-	JSR Player_GroundHControl ; Do Player left/right input control
-	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
-
-	LDA <Player_InAir
-	BNE PRG008_AAFF	 ; If Player is mid air, jump to PRG008_AAFF
-
-	STA Player_KuriboDir	 ; Clear Player_KuriboDir
-
-PRG008_AAFF:
-	LDA Player_KuriboDir
-	BNE PRG008_AB17	 ; If Kuribo's shoe is moving, jump to PRG008_AB17
-
-	LDA <Player_InAir
-	BNE PRG008_AB25	 ; If Player is mid air, jump to PRG008_AB25
-
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	STA Player_KuriboDir	 ; Store left/right pad input -> Player_KuriboDir
-	BEQ PRG008_AB25	 	; If Player is not pressing left or right, jump to PRG008_AB25
-	INC <Player_InAir	 ; Flag as in air (Kuribo's shoe bounces along)
-
-	LDY #-$20
-	STY <Player_YVel	 ; Player_YVel = -$20
-
-PRG008_AB17:
-	LDA <Pad_Input
-	BPL PRG008_AB25	 ; If Player is NOT pressing 'A', jump to PRG008_AB25
-
-	LDA #$00
-	STA Player_KuriboDir	 ; Player_KuriboDir = 0
-
-	LDY Player_RootJumpVel	 ; Get initial jump velocity
-	STY <Player_YVel	 ; Store into Y velocity
-
-PRG008_AB25:
-	LDY <Player_Suit
-	BEQ PRG008_AB2B	 ; If Player is small, jump to PRG008_AB2B
-
-	LDY #$01	 ; Otherwise, Y = 1
-
-PRG008_AB2B:
-
-	; Y = 0 if small, 1 otherwise
-
-	LDA Player_KuriboFrame,Y	; Get appropriate Kuribo's shoe frame
-	STA <Player_Frame		; Store as active Player frame
-
-	LDA <Counter_1
-	AND #$08	
-	BEQ PRG008_AB38	 	; Every 8 ticks, jump to PRG008_AB38
-
-	INC <Player_Frame	; Player_Frame++
-
-PRG008_AB38:
-	RTS		 ; Return
+;	JSR Player_GroundHControl ; Do Player left/right input control
+;	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
+;
+;	LDA <Player_InAir
+;	BNE PRG008_AAFF	 ; If Player is mid air, jump to PRG008_AAFF
+;
+;	STA Player_KuriboDir	 ; Clear Player_KuriboDir
+;
+;PRG008_AAFF:
+;	LDA Player_KuriboDir
+;	BNE PRG008_AB17	 ; If Kuribo's shoe is moving, jump to PRG008_AB17
+;
+;	LDA <Player_InAir
+;	BNE PRG008_AB25	 ; If Player is mid air, jump to PRG008_AB25
+;
+;	LDA <Pad_Holding
+;	AND #(PAD_LEFT | PAD_RIGHT)
+;	STA Player_KuriboDir	 ; Store left/right pad input -> Player_KuriboDir
+;	BEQ PRG008_AB25	 	; If Player is not pressing left or right, jump to PRG008_AB25
+;	INC <Player_InAir	 ; Flag as in air (Kuribo's shoe bounces along)
+;
+;	LDY #-$20
+;	STY <Player_YVel	 ; Player_YVel = -$20
+;
+;PRG008_AB17:
+;	LDA <Pad_Input
+;	BPL PRG008_AB25	 ; If Player is NOT pressing 'A', jump to PRG008_AB25
+;
+;	LDA #$00
+;	STA Player_KuriboDir	 ; Player_KuriboDir = 0
+;
+;	LDY Player_RootJumpVel	 ; Get initial jump velocity
+;	STY <Player_YVel	 ; Store into Y velocity
+;
+;PRG008_AB25:
+;	LDY <Player_Suit
+;	BEQ PRG008_AB2B	 ; If Player is small, jump to PRG008_AB2B
+;
+;	LDY #$01	 ; Otherwise, Y = 1
+;
+;PRG008_AB2B:
+;
+;	; Y = 0 if small, 1 otherwise
+;
+;	LDA Player_KuriboFrame,Y	; Get appropriate Kuribo's shoe frame
+;	STA <Player_Frame		; Store as active Player frame
+;
+;	LDA <Counter_1
+;	AND #$08	
+;	BEQ PRG008_AB38	 	; Every 8 ticks, jump to PRG008_AB38
+;
+;	INC <Player_Frame	; Player_Frame++
+;
+;PRG008_AB38:
+;	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_GroundHControl
@@ -4724,8 +4725,13 @@ PRG008_B604:
 
 	LDA Level_Tile_GndL,X
 	CMP #TILEA_COIN
-	BNE PRG008_B623	 ; If Player is not touching coin, jump to PRG008_B623
+; start #DAHRKDAIZ modifying to detec #$05 as another coin type
+	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
+	CMP #$05		 ; acts as a "blue" coin from frozen coins thawed
+	BNE PRG008_B623;
+; end #DAHRKDAIZ  7/15
 
+GOLD_COIN_TOUCH:
 	LDA #CHNGTILE_DELETECOIN
 	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
 	JSR Level_RecordBlockHit	 ; Record having grabbed this coin so it does not come back
