@@ -1,0 +1,44 @@
+Mario Adventure 3 Hacking Ideas
+--------------------------------------
+-Create a sprite that modifies the timer to a raw value, rather than 200, 300, 400, Unlimited
+
+-Experience points:
+	-Experience points will enable the player to access new power ups. ? blocks will check
+	exp level before generating power ups.
+	
+-Power Up List:
+	- Fire Flower
+	- Ice Flower
+	- Hammer suit
+	- Air Mushroom - Enables Mario the ability to land on clouds
+	
+-Complete status bar rewrite
+	-Render new palette
+	-Ender a new status bar, one side at a time alternating between ticks
+	
+	-Display
+		-Exp points
+		-Time
+
+-Strengthening enemies, as worlds progress, double the HP of enemies from fireballs 
+
+-All Complete
+	- Worlds become fully "complete" at the final level
+	
+-Per tile background priority, sprites go behind the background based on what tile they are on.
+
+-"Still" water (no animation) can be frozen by Ice Mario
+-Candles can be lit up (not sure of play mechanics this would add)
+-Change the "broken blocks" animation for ice blocks to use ice ball sprites
+-Change hammers to break a different kind of block (rocks?)
+-World types
+	-Mushroom Valley
+	-(Sea Name)  Keys
+	-Underground
+	-Forest
+	-Ice
+	-Lava
+	-
+	-Rainbow
+
+-Take out extra lives system

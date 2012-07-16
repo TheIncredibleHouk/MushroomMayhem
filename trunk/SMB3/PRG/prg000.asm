@@ -4464,7 +4464,7 @@ Object_DoHaltedAction:
 	.word Shoe_DrawGoomba			; 8: Bank2/Kuribo's Shoe ONLY
 	.word ObjHalt_DoNothing			; 9: Do nothing
 	.word Object_ShakeAndDrawMirrored	; 10: Draw mirrored sprite
-	.word EndLevelCard_Draw			; 11: Bank2/End Level Card ONLY
+;	.word EndLevelCard_Draw			; 11: Bank2/End Level Card ONLY
 	.word ObjHalt_DoNothing			; 12: Do nothing
 	.word Buster_DrawHoldingIceBrick	; 13: Bank2/Buster Beatle ONLY
 	.word Bank2_PiranhaSpikeHaltAction	; 14: Bank2/Piranha Spike Ball ONLY
