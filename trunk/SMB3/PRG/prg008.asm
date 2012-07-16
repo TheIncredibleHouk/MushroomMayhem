@@ -2581,7 +2581,6 @@ DIRECT_TO_JUMP:
 	; Play jump sound
 	; #DAHRKDAIZ modified to play the "small jump" from SMB1 for small Mario
 
-	STA DEBUG_SNAPPER
 	LDA <Player_Suit
 	BNE STORE_BIG_JUMP
 	LDA #SND_SMALLJUMP

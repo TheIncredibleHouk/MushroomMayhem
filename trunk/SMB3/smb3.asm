@@ -660,9 +660,9 @@ PAD_RIGHT	= $01
 	Map_StarsY:		.ds 8	; $A3-$AA During World Intro, Y position of each star
 	Map_StarsOutRad:	.ds 1	; During World Intro, stars take off radius (0 = smallest, increments for larger)
 
-				.ds 1	; $AC unused
-				.ds 1	; $AD unused
-				.ds 1	; $AE unused
+	Player_Pal_Backup: .ds 3	; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
+				;.ds 1	; $AD unused
+				;.ds 1	; $AE unused
 
 	Map_StarsXSteps:	.ds 1	; During World Intro, number of "steps" remaining in the X position adjustment
 	Map_StarsRadCnt:	.ds 1	; During World Intro, adds $70 per display frame and adds 1 to the radius when it overflows
