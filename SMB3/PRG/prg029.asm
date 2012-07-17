@@ -440,7 +440,6 @@ PRG029_CED7:
 	AND #$01
 	BEQ PRG029_CEEA		; Every other tick, jump to PRG029_CEEA
 
-	STA DEBUG_SNAPPER
 	DEC Player_StarInv	 ; Player_StarInv--
 
 

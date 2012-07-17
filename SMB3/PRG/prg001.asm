@@ -2889,9 +2889,8 @@ ObjHit_Card:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1
-	LDA #$03
+	LDA #$08
 	STA Player_QueueSuit
-	STA ICE_MARIO_FLAG
 	LDA #$1f
 	STA Player_StarOff
 

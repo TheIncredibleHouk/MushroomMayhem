@@ -820,6 +820,17 @@ PRG008_A3E7:
 PRG008_A3EC:
 	; Suit queue
 	AND #$0f
+	CMP #$08 
+	BCC Not_Special
+	SBC #$05
+	STA SPECIAL_SUIT_FLAG
+	BNE Is_Special
+
+Not_Special:
+	LDY #$00
+	STY SPECIAL_SUIT_FLAG
+
+Is_Special:
 	TAY	
 	DEY		 ; Y = Player_QueueSuit - 1
 	STY <Player_Suit ; Store into Player_Suit
@@ -1096,12 +1107,14 @@ PowerUp_Palettes:
 ; 
 
 Level_SetPlayerPUpPal:
-	LDY <Player_Suit
-	LDA ICE_MARIO_FLAG
-	BEQ NOT_ICE_MARIO_PALETTE
-	LDY #$07
+	LDA <Player_Suit
+	LDX SPECIAL_SUIT_FLAG
+	BEQ Not_Special_Suit_Pal
+	CLC
+	ADC #$05
 
-NOT_ICE_MARIO_PALETTE:
+Not_Special_Suit_Pal:
+	TAY
 	LDX Graphics_BufCnt
 	TXA
 	ADD #$06
