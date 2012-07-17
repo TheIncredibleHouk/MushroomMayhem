@@ -2729,7 +2729,7 @@ PRG010_CE78:
 	EOR #$01	 	
 	TAY		 	; Y = Player_Current ^ 1 (i.e. the OTHER Player)
 
-	LDA Player_Lives,Y
+	LDA #$00				; #DAHRKDAIZ hacked, no 2P mode
 	CMP #$ff	 
 	BEQ PRG010_CEBF	 	; If the other Player is dead, jump to PRG010_CEBF
 
