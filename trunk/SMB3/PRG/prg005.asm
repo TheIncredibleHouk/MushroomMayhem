@@ -1514,6 +1514,8 @@ Piranha_Emerge:
 	; Var5 = original Y 
 	; Var7 = original Y Hi
 
+	LDA #$00				; #DAHRKDAIZ Hack Piranha has mouth "open" to snap
+	STA Objects_Var3, X
 	LDA <Objects_Var5,X		; Original Y
 	SUB Objects_TargetingYVal,X	; subtract TargetingYVal
 	PHA				; Save it
@@ -1528,11 +1530,13 @@ Piranha_Emerge:
 	SBC <Objects_YHi,X
 	BCS PRG005_A824	 ; Basically if Piranha is at his Y and Y Hi highest point, jump to PRG004_B7F0
 
-	LDA #-$10	 ; A = -$10
+	LDA #-$30	 ; A = -$10 # DAHRKDAIZ - Piranha "snap" hack
 	BNE PRG005_A7DC	 ; Jump (technically always) to PRG005_A7DC
 
 Piranha_Retract:
 
+	LDA #$08			; #DAHRKDAIZ Hack Piranha has mouth "closed" to snap
+	STA Objects_Var3, X
 	LDA <Objects_Y,X
 	ADD #$01
 	PHA		 ; Save Y + 1
@@ -1595,6 +1599,8 @@ PRG005_A805:
 	JSR Piranha_SpitFire	 ; Spit fireball at Player
 
 PRG005_A808:
+	LDA #$08			; #DAHRKDAIZ Hack Piranha has mouth "closed" to snap
+	STA Objects_Var3, X
 	LDA Objects_Timer,X
 	BNE PRG005_A877	 ; If timer not expired, jump to PRG005_A877 (RTS)
 
