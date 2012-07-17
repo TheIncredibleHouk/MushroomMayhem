@@ -2174,39 +2174,25 @@ IntIRQ_Finish_NoDis:
 	RTI		 ; End of IRQ interrupt!
 
 
-Status_Bar_Pal_Swap: .byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+
 
 IntIRQ_Standard:	; $F8DB
 	STA MMC3_IRQENABLE ; Enable IRQ generation
 
-;	; Some kind of delay loop?
-;	LDX #$02	 ; X = 2
-;PRG031_F8E0:
-;	NOP		 ; ?
-;	DEX		 ; X--
-;	BNE PRG031_F8E0	 ; While X > 0, loop
+	; Some kind of delay loop?
+	LDX #$02	 ; X = 2
+PRG031_F8E0:
+	NOP		 ; ?
+	DEX		 ; X--
+	BNE PRG031_F8E0	 ; While X > 0, loop
 
 	; Unknown hardware thing?  Is this for synchronization?
-;	LDA #$00
-;	STA PPU_VRAM_ADDR
-;	LDX #$00
-;	STX PPU_VRAM_ADDR
-;	STX PPU_VRAM_ADDR
-;	STX PPU_VRAM_ADDR
-	; start #DAHRKDAIZ - Palette swap for status bar
-	LDA #$3f	 	; 
-	STA PPU_VRAM_ADDR	; Access PPU address #3Fxx
-	LDA #$00	 	; 
-	STA PPU_VRAM_ADDR	; Access PPU address #3F00 (palettes?)
-
-Replace_Stat_Pal:
-	LDX #$0F							
-	LDA Status_Bar_Pal_Swap, X	; Load pal from table
-	STA PPU_VRAM_ADDR			; write new pal entry
-	DEX
-	BPL Replace_Stat_Pal		; X > 0 ? keep looping
-; end #DAHRKDAIZ - Palette swap for status bar
-
+	LDA #$00
+	STA PPU_VRAM_ADDR
+	LDX #$00
+	STX PPU_VRAM_ADDR
+	STX PPU_VRAM_ADDR
+	STX PPU_VRAM_ADDR
 	STX PPU_CTL2	 ; Hide BG + Sprites
 	LDA PPU_STAT	 ; 
 
