@@ -1095,6 +1095,16 @@ NOT_BRICK_HAMMER:
 	; end #DAHRKDAIZ
 
 FIRE_BALL_COLL:
+
+	LDA SPECIAL_SUIT_FLAG
+	BEQ Normal_Fire_Mario
+	LDA <Temp_Var1;
+	CMP #$DC			; #DAHRKDAIZ still water
+	BNE Normal_Fire_Mario
+	LDA #CHNGTILE_TOICE
+	BNE PRG007_A563
+
+Normal_Fire_Mario:
 	LDA <Temp_Var1;
 	CMP Tile_AttrTable,Y
 	BLT PRG007_A557	 ; If this tile is not solid on top, jump to PRG007_A557
@@ -1104,19 +1114,13 @@ FIRE_BALL_COLL:
 	CMP Tile_AttrTable+4,Y
 	BLT PRG007_A59F	 ; If this tile is not solid on the sides/bottom, jump to PRG007_A59F
 
-	; Tile is solid all around
+	LDA SPECIAL_SUIT_FLAG
+	BNE PRG007_A566
 
-	; start #DAHRKDAIZ - Hack comments old ice block detection and uses a global ice block instead 7/15
-	
-	;LDY Level_TilesetIdx
-	;CPY #$0b
-	;BNE PRG007_A566	 ; If this is not an Ice level, jump to PRG007_A566
-
+	LDA <Temp_Var1;
 	CMP #TILE_GLOBAL_ICE 
 	BNE PRG007_A55D		; If the fireball did not hit a frozen muncher, jump to PRG007_A55D
 
-	; #DAHRKDAIZ - fireball hit a global ice block
-	; end #DAHRKDAIZ - 7/15
 
 	LDA #CHNGTILE_DELETETOBG		;
 	BNE PRG007_A563	 ; Jump (technically always) to PRG007_A563
@@ -1204,14 +1208,6 @@ PRG007_A59F:
 	RTS		 ; Return
 
 Fireball_ThawTile:
-	PHA
-	LDA SPECIAL_SUIT_FLAG
-	BEQ NOT_ICEBALL 
-	PLA
-	RTS
-
-NOT_ICEBALL:
-	PLA
 	STA Level_ChgTileEvent	 ; Queue tile change event!
 	JSR BrickBust_MoveOver	 ; Open up a brick bust
 
