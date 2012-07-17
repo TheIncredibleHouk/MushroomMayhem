@@ -2901,18 +2901,9 @@ NOT_ICE_FLOWER:
 
 
 	; #DAHRKDAIZ - Hacked to act as power ups instead of goal cards :D
-	; Card becomes dead/empty
-;	LDA #OBJSTATE_DEADEMPTY
-;	STA Objects_State,X
-;
-;	; Calculate which card you get
-;	LDA Level_ObjectID,X
-;	SUB #(OBJ_POWERUP_ICEFLOWER-1)
-;
-;	; Update the Player's card collection
-;	JSR Player_GetCardAndUpdate
-;
-;	LDX <SlotIndexBackup	; Restore 'X' as object slot index
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - Goal card sprites no longer work as goal cards
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 PRG001_ADE2:
 ;	RTS		 ; Return

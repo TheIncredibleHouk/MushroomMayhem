@@ -2265,6 +2265,10 @@ PRG007_AACF:
 
 	LDY <Temp_Var1	 ; Y = score value
 
+	CPY #$0D
+	BNE PRG007_AB02	 ; If this is not 1-up level score, jump to PRG007_AB02
+	LDY #$0C		; #DAHRKDAIZ max score out
+
 	; Add Score's value to Score_Earned
 	LDA Score_Earned
 	ADD ScoreAdd_L-1,Y	; -1 because a score value of zero is "empty"
@@ -2272,21 +2276,7 @@ PRG007_AACF:
 	LDA Score_Earned+1
 	ADC ScoreAdd_H-1,Y
 	STA Score_Earned+1
-
-	CPY #$0d
-	BNE PRG007_AB02	 ; If this is not 1-up level score, jump to PRG007_AB02
-
-	; Play 1-up sound!
-	LDA Sound_QLevel1
-	ORA #SND_LEVEL1UP
-	STA Sound_QLevel1
-
-	LDX Player_Current	 ; X = current Player
-
-	LDA Player_Lives,X
-	BMI PRG007_AB02	 	; If this Player is dead (and how could we be here, hmm?), jump to PRG007_AB02
-
-	INC Player_Lives,X	; Otherwise, give them the extra life!
+	; #DAHRKDAIZ - code removed that increases lives via score
 
 PRG007_AB02:
 	LDX <SlotIndexBackup	; X = score slot index
@@ -3249,100 +3239,10 @@ PUpCoin_Patterns:	.byte $49, $4F, $4D, $4F
 PUpCoin_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
 
 SObj_Laser:
-; start #DAHRKDAIZ - Subroutine commented out to make more space
-;	; Load patterns for laser
-;	LDA #$12
-;	STA PatTable_BankSel+4
-;
-;	JSR Laser_PrepSpritesAndHit	 ; Prepare the laser sprites and hurt Player
-;
-;	LDA <Player_HaltGame
-;	BNE PRG007_B01F	 ; If gameplay is halted, jump to PRG007_B01F (RTS)
-;
-;	; Y += 8
-;	LDA SpecialObj_YLo,X
-;	ADD #$08
-;	STA SpecialObj_YLo,X
-;
-;	; X += 8
-;	LDA SpecialObj_XLo,X
-;	SUB #$08
-;	STA SpecialObj_XLo,X
-;
-;	JSR SObj_CheckHitSolid
-;	BCC PRG007_B01F	 ; If laser didn't hit solid, jump to PRG007_B01F (RTS)
-;
-;	; Laser hit floor!
-;
-;	; Align Y
-;	LDA SpecialObj_YLo,X
-;	AND #$f0
-;	ADD #$05
-;	STA SpecialObj_YLo,X
-;
-;	; Align X
-;	LDA SpecialObj_XLo,X
-;	AND #$f0
-;	ADC #$0b
-;	STA SpecialObj_XLo,X
-;
-;	JSR SpecialObj_Remove	 ; Remove laser
-;
-;	; Generate puff via "brick bust" puff (atypical, but whatever)
-;	LDY #$01	 ; Y = 1
-;PRG007_B017:
-;	LDA BrickBust_En,Y
-;	BEQ PRG007_B020	 ; If this brick bust slot is free, jump to PRG007_B020
-;
-;	DEY		 ; Y--
-;	BPL PRG007_B017	 ; While Y >= 0, loop!
-;
-;PRG007_B01F:
-;	RTS		 ; Return
-;
-;
-;PRG007_B020:
-;
-;	; Enable this brick bust slot (poof style)
-;	LDA #$01
-;	STA BrickBust_En,Y
-;
-;	; Brick bust (poof) X
-;	LDA SpecialObj_XLo,X
-;	SUB #$08
-;	SUB <Horz_Scroll
-;	STA BrickBust_X,Y
-;
-;	; Brick bust (poof) Y
-;	LDA SpecialObj_YLo,X
-;	ADD #$04
-;	SBC Level_VertScroll
-;	STA BrickBust_YUpr,Y
-;
-;	; Poof counter
-;	LDA #$17
-;	STA BrickBust_HEn,Y
-;
-;	RTS		 ; Return
-
-
-Laser_PrepSpritesAndHit:
-;	JSR SObj_GetSprRAMOffChkVScreen	 
-;	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
-;
-;	; Set laser pattern
-;	LDA #$b7
-;	STA Sprite_RAM+$01,Y
-;
-;	; Use rotating color attributes
-;	LDA <Counter_1
-;	LSR A	
-;	LSR A	
-;	AND #$03
-;	STA Sprite_RAM+$02,Y
-;
-;	JMP SObj_PlayerCollide	 ; Do Player to laser collision and don't come back!
-; end #DAHRKDAIZ - Subroutine commented out to make more space
+	RTS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - LASER code removed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PRG007_B058:
 	RTS		 ; Return
 
@@ -5545,65 +5445,9 @@ PRG007_BB97:
 	.word CFire_Cannonball	; 12: Fires BIG cannonballs horizontally right
 	.word CFire_Cannonball	; 13: Launches fused Bob-ombs to the left
 	.word CFire_Cannonball	; 14: Launches fused Bob-ombs to the right
-
-; start #DAHRKDAIZ code commented out for more space 7/14
-;	.word CFire_Laser	; 15: Laser fire
-;
-;CFire_Laser:
-;	LDA CannonFire_X,X
-;	CMP <Horz_Scroll
-;	LDA CannonFire_XHi,X
-;	SBC <Horz_Scroll_Hi
-;	BNE PRG007_BBEB	 ; If the Cannon Fire laser is horizontally off-screen, jump to PRG007_BBEB (RTS)
-;
-;	LDA CannonFire_X,X
-;	SUB <Player_X
-;	CMP #$38
-;	BLT PRG007_BBEB	; If Player is too far left, jump to PRG007_BBEB (RTS)
-;	CMP #$4c
-;	BGE PRG007_BBEB	; If Player is too far right, jump to PRG007_BBEB (RTS)
-;
-;	LDY #$07	 ; Y = 7
-;PRG007_BBE3:
-;	LDA SpecialObj_ID,Y
-;	BEQ PRG007_BBEC	 ; If this special object slot is not in use, jump to PRG007_BBEC
-;
-;	DEY		 ; Y--
-;	BPL PRG007_BBE3	; While Y >= 0, loop!
-;
-;PRG007_BBEB:
-;	RTS		 ; Return
-;
-;PRG007_BBEC:
-;	LDA SndCur_Player
-;	ORA Sound_QPlayer
-;	AND #SND_PLAYERPIPE
-;	BNE PRG007_BBFB	 ; If the pipe/shrink sound is queued or currently playing, jump to PRG007_BBFB
-;
-;	; Otherwise play the "bump" sound (which played rapidly makes the laser sound)
-;	LDA #SND_PLAYERBUMP
-;	STA Sound_QPlayer
-;
-;PRG007_BBFB:
-;
-;	; This is a laser!
-;	LDA #SOBJ_LASER
-;	STA SpecialObj_ID,Y
-;
-;	; Set laser X
-;	LDA CannonFire_X,X
-;	SUB #$08
-;	STA SpecialObj_XLo,Y
-;
-;	; Set laser Y
-;	LDA CannonFire_Y,X
-;	ADD #$08
-;	STA SpecialObj_YLo,Y
-;	LDA CannonFire_YHi,X
-;	STA SpecialObj_YHi,Y
-;
-;	RTS		 ; Return
-; end #DAHRKDAIZ code commented out for more space 7/14
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - Laser code removed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 CFire_Cannonball:
 
