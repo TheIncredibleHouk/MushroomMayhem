@@ -905,7 +905,7 @@ PRG007_A471:
 
 	; Set fireball pattern
 	; #DAHRKDAIZ checks ice mario fla and interjects a different pattern
-	LDA ICE_MARIO_FLAG
+	LDA SPECIAL_SUIT_FLAG
 	BEQ STANDARD_FIREBALL_PAT
 	LDA PlayerIceball_Pats,X
 	BNE STORE_STANDARD_TILE
@@ -1205,7 +1205,7 @@ PRG007_A59F:
 
 Fireball_ThawTile:
 	PHA
-	LDA ICE_MARIO_FLAG
+	LDA SPECIAL_SUIT_FLAG
 	BEQ NOT_ICEBALL 
 	PLA
 	RTS
@@ -1450,7 +1450,7 @@ PRG007_A6EC:
 	TYA
 	TAX	; object index -> 'X'
 
-	LDA ICE_MARIO_FLAG
+	LDA SPECIAL_SUIT_FLAG
 	BNE ICE_BALL_SKIP1 ; #DAHRKDAIZ - Skip "defeating" the enemy
 	; 100 pts!
 	LDA #$05

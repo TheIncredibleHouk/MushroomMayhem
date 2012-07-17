@@ -1520,7 +1520,6 @@ Venus_Velocity_Table:
 	.byte -$10, $10
 
 Piranha_Velocity:
-	STA DEBUG_SNAPPER
 	STA DAIZ_TEMP1
 	STX DAIZ_TEMP2
 	LDA Objects_Var2,X

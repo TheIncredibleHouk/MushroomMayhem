@@ -2599,7 +2599,7 @@ CFIRE_LASER		= $15	; Laser fire
 	DEBUG_SNAPPER: .ds 1 ; #DAHRKDAIZ $7A71- used to step debug breakpoints
 
 	Object_SplashAlt:	.ds 1	; Used to alternate the "splash slots" 1 and 2 as objects hit the water
-	ICE_MARIO_FLAG:		.ds 1	; #DAHRKDAIZ $7A73
+	SPECIAL_SUIT_FLAG:		.ds 1	; #DAHRKDAIZ $7A73
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
 				.ds 106; $7A74-$7ADF unused
