@@ -50,7 +50,7 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_RedPiranhaFlip	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
 	.word ObjInit_DoNothing		; Object $A8 - OBJ_ARROWONE
 	.word ObjInit_DoNothing		; Object $A9 - OBJ_ARROWANY
-	.word ObjInit_AirshipProp	; Object $AA - OBJ_AIRSHIPPROP
+;	.word ObjInit_AirshipProp	; Object $AA - OBJ_AIRSHIPPROP
 	.word ObjInit_FireJetRight	; Object $AB (doesn't really work, and the "normal" routine is even weirder)
 	.word ObjInit_FireJetLeft	; Object $AC - OBJ_FIREJET_LEFT
 	.word ObjInit_RockyWrench	; Object $AD - OBJ_ROCKYWRENCH
@@ -92,7 +92,7 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_Piranha		; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
 	.word ObjNorm_ArrowPlatform	; Object $A8 - OBJ_ARROWONE
 	.word ObjNorm_ArrowPlatform	; Object $A9 - OBJ_ARROWANY
-	.word ObjNorm_AirshipPropellar	; Object $AA - OBJ_AIRSHIPPROP
+;	.word ObjNorm_AirshipPropellar	; Object $AA - OBJ_AIRSHIPPROP
 	.word FireJetLR_SpriteVisibleTest	; Object $AB (this call doesn't make any sense!!)
 	.word ObjNorm_FireJet		; Object $AC - OBJ_FIREJET_LEFT
 	.word ObjNorm_RockyWrench	; Object $AD - OBJ_ROCKYWRENCH
@@ -1509,13 +1509,41 @@ PRG005_A794:
 	.word Piranha_Attack
 	.word Piranha_Retract
 
+
+; #DAHRKDAIZ - hacked to have diferent velocities per plant
+; #DAHRKDAIZ #$00 = Up, #$01 = down
+
+Piranha_Velocity_Table:
+	.byte -$30, $10, -$10, $30
+
+Venus_Velocity_Table:
+	.byte -$10, $10
+
+Piranha_Velocity:
+	STA DEBUG_SNAPPER
+	STA DAIZ_TEMP1
+	STX DAIZ_TEMP2
+	LDA Objects_Var2,X
+	BMI Use_Venus_Table
+	ASL A
+	ADC DAIZ_TEMP1
+	TAX
+	LDA Piranha_Velocity_Table, X
+	BNE Plant_Vel_RTS
+
+Use_Venus_Table:
+	LDX DAIZ_TEMP1
+	LDA Venus_Velocity_Table, X
+
+Plant_Vel_RTS:
+	LDX DAIZ_TEMP2
+	RTS 
+
 Piranha_Emerge:
 
 	; Var5 = original Y 
 	; Var7 = original Y Hi
 
-	LDA #$00				; #DAHRKDAIZ Hack Piranha has mouth "open" to snap
-	STA Objects_Var3, X
 	LDA <Objects_Var5,X		; Original Y
 	SUB Objects_TargetingYVal,X	; subtract TargetingYVal
 	PHA				; Save it
@@ -1530,13 +1558,12 @@ Piranha_Emerge:
 	SBC <Objects_YHi,X
 	BCS PRG005_A824	 ; Basically if Piranha is at his Y and Y Hi highest point, jump to PRG004_B7F0
 
-	LDA #-$30	 ; A = -$10 # DAHRKDAIZ - Piranha "snap" hack
+	LDA #00	 ; A = -$10
+	JSR Piranha_Velocity
 	BNE PRG005_A7DC	 ; Jump (technically always) to PRG005_A7DC
 
 Piranha_Retract:
 
-	LDA #$08			; #DAHRKDAIZ Hack Piranha has mouth "closed" to snap
-	STA Objects_Var3, X
 	LDA <Objects_Y,X
 	ADD #$01
 	PHA		 ; Save Y + 1
@@ -1552,7 +1579,8 @@ Piranha_Retract:
 	SBC Objects_Var7,X
 	BCS PRG005_A824	 ; Basically if Piranha is at his Y and Y Hi origin, jump to PRG005_A824
 
-	LDA #$10	 ; A = $10
+	LDA #$01	 ; A = $10
+	JSR Piranha_Velocity
 
 PRG005_A7DC:
 	; Piranha is not fully extended/retracted...
@@ -1599,8 +1627,6 @@ PRG005_A805:
 	JSR Piranha_SpitFire	 ; Spit fireball at Player
 
 PRG005_A808:
-	LDA #$08			; #DAHRKDAIZ Hack Piranha has mouth "closed" to snap
-	STA Objects_Var3, X
 	LDA Objects_Timer,X
 	BNE PRG005_A877	 ; If timer not expired, jump to PRG005_A877 (RTS)
 
@@ -1778,95 +1804,95 @@ PRG005_A8D9:
 	LDX <SlotIndexBackup		 ; X = object slot index
 	RTS		 ; Return
 
-ObjInit_AirshipProp:
+;ObjInit_AirshipProp:
+;
+;	; Start at Y + 3
+;	LDA <Objects_Y,X
+;	ADD #$03
+;	STA <Objects_Y,X
+;
+;	RTS
 
-	; Start at Y + 3
-	LDA <Objects_Y,X
-	ADD #$03
-	STA <Objects_Y,X
+;Prop_UpperYOff:	.byte -$10,  $08
+;Prop_LowerYOff:	.byte  $00, -$08
 
-	RTS
-
-Prop_UpperYOff:	.byte -$10,  $08
-Prop_LowerYOff:	.byte  $00, -$08
-
-ObjNorm_AirshipPropellar:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-	JSR Object_AnySprOffscreen
-	BNE PRG005_A95B	 ; If any sprite is off-screen, jump to PRG005_A95B (RTS)
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	; Temp_Var1 = Sprite Y
-	LDA <Objects_SpriteY,X
-	STA <Temp_Var1	
-
-	LDY Object_SprRAM,X	 ; Y = Sprite RAM offset
-
-	; Set Sprite Xs
-	LDA <Objects_SpriteX,X
-	STA Sprite_RAM+$03,Y
-	STA Sprite_RAM+$07,Y
-
-	; Set upper sprite pattern
-	LDA #$a9
-	STA Sprite_RAM+$01,Y
-
-	; Set lower sprite pattern
-	LDA #$ab
-	STA Sprite_RAM+$05,Y
-
-	; Temp_Var3 = 2 (palette select 2)
-	LDA #SPR_PAL2
-	STA <Temp_Var3
-
-	LDX #$00	 ; X = 0
-
-	LDA Level_NoStopCnt
-	AND #$02
-	BEQ PRG005_A929	 ; 2 ticks on, 2 ticks off; jump to PRG005_A929
-
-	LDA #(SPR_VFLIP | SPR_PAL2)	 ; palette select 2, vertically flipped
-	STA <Temp_Var3	 ; -> Temp_Var3
-
-	INX		 ; X = 1
-
-PRG005_A929:
-	LDA Level_NoStopCnt
-	LSR A
-	LSR A
-	LSR A
-
-	; Set upper and lower sprite attributes
-	LDA <Temp_Var3
-	STA Sprite_RAM+$06,Y
-	STA Sprite_RAM+$02,Y
-
-	BCC PRG005_A947	 ; 8 ticks on, 8 ticks off; jump to PRG005_A947
-
-	; Set horizontal flip to upper sprite
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$02,Y
-
-	; Add 2 to upper sprite X
-	LDA Sprite_RAM+$03,Y
-	ADD #$02
-	STA Sprite_RAM+$03,Y
-
-PRG005_A947:
-	LDA <Temp_Var1		; Get Upper Sprite Y
-	ADD Prop_UpperYOff,X	; Add Y offset to upper sprite Y
-	STA Sprite_RAM+$00,Y	; Update Sprite Y
-
-	LDA <Temp_Var1		; Get Lower Sprite Y
-	ADD Prop_LowerYOff,X	; Add Y offset to lower sprite Y
-	STA Sprite_RAM+$04,Y	; Update Sprite Y
-
-	LDX <SlotIndexBackup	; X = object slot index
-
-PRG005_A95B:
-	RTS		 ; Return
+;ObjNorm_AirshipPropellar:
+;	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
+;
+;	JSR Object_AnySprOffscreen
+;	BNE PRG005_A95B	 ; If any sprite is off-screen, jump to PRG005_A95B (RTS)
+;
+;	JSR Object_CalcSpriteXY_NoHi
+;
+;	; Temp_Var1 = Sprite Y
+;	LDA <Objects_SpriteY,X
+;	STA <Temp_Var1	
+;
+;	LDY Object_SprRAM,X	 ; Y = Sprite RAM offset
+;
+;	; Set Sprite Xs
+;	LDA <Objects_SpriteX,X
+;	STA Sprite_RAM+$03,Y
+;	STA Sprite_RAM+$07,Y
+;
+;	; Set upper sprite pattern
+;	LDA #$a9
+;	STA Sprite_RAM+$01,Y
+;
+;	; Set lower sprite pattern
+;	LDA #$ab
+;	STA Sprite_RAM+$05,Y
+;
+;	; Temp_Var3 = 2 (palette select 2)
+;	LDA #SPR_PAL2
+;	STA <Temp_Var3
+;
+;	LDX #$00	 ; X = 0
+;
+;	LDA Level_NoStopCnt
+;	AND #$02
+;	BEQ PRG005_A929	 ; 2 ticks on, 2 ticks off; jump to PRG005_A929
+;
+;	LDA #(SPR_VFLIP | SPR_PAL2)	 ; palette select 2, vertically flipped
+;	STA <Temp_Var3	 ; -> Temp_Var3
+;
+;	INX		 ; X = 1
+;
+;PRG005_A929:
+;	LDA Level_NoStopCnt
+;	LSR A
+;	LSR A
+;	LSR A
+;
+;	; Set upper and lower sprite attributes
+;	LDA <Temp_Var3
+;	STA Sprite_RAM+$06,Y
+;	STA Sprite_RAM+$02,Y
+;
+;	BCC PRG005_A947	 ; 8 ticks on, 8 ticks off; jump to PRG005_A947
+;
+;	; Set horizontal flip to upper sprite
+;	ORA #SPR_HFLIP
+;	STA Sprite_RAM+$02,Y
+;
+;	; Add 2 to upper sprite X
+;	LDA Sprite_RAM+$03,Y
+;	ADD #$02
+;	STA Sprite_RAM+$03,Y
+;
+;PRG005_A947:
+;	LDA <Temp_Var1		; Get Upper Sprite Y
+;	ADD Prop_UpperYOff,X	; Add Y offset to upper sprite Y
+;	STA Sprite_RAM+$00,Y	; Update Sprite Y
+;
+;	LDA <Temp_Var1		; Get Lower Sprite Y
+;	ADD Prop_LowerYOff,X	; Add Y offset to lower sprite Y
+;	STA Sprite_RAM+$04,Y	; Update Sprite Y
+;
+;	LDX <SlotIndexBackup	; X = object slot index
+;
+;PRG005_A95B:
+;	RTS		 ; Return
 
 
 	; Returns carry set if not visible, carry clear if is visible

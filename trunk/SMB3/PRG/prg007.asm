@@ -941,7 +941,7 @@ PRG007_A48C:
 	BCC STORE_PRJTILE	 ; start #DAHRKDAIZ - hacked to store current projectile for later
 	LDA #$01
 STORE_PRJTILE:
-	STA $7A70
+	STA DAIZ_TEMP1
 	JSR Fireball_DetectWorld	 ; end #DAHRKDAIZ Hit tests for projectiles (bounce, poof, etc.)
 
 PRG007_A49A:
@@ -1083,7 +1083,7 @@ PRG007_A52D:
 	STA <Temp_Var1	 ; -> Temp_Var1
 
 	; start #DAHRKDAIZ - code used to handle hammer specific tile interaction
-	LDA $7A70
+	LDA DAIZ_TEMP1
 	BEQ FIRE_BALL_COLL
 	LDA <Temp_Var1
 	CMP #$67
