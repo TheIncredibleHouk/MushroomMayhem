@@ -712,54 +712,11 @@ Score_Get100PlusPts:
 ; X = index of on-screen object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Score_PopUp:
-; $C467
-; #DAHRKDAIZ - Score hacked to not display sprites. Has caused score values to be weird.
-	STA Score_Earned	
-	RTS 
-;	PHA		 	; Save input value
-;	STY <Temp_Var15	 	; Backup 'Y' -> Temp_Var15
-;
-;	JSR Score_FindFreeSlot	; Get free Scores_Value slot
-;	PLA		 	; Restore input value
-;	STA Scores_Value,Y	; Store input value
-;	
-;	LDA Objects_SpriteY,X
-;	SUB #16
-;	CMP #192
-;	BLT PRG000_C47D	 ; If (sprite's Y - 16) < 192, jump to PRG000_C47D
-;
-;	LDA #$05	 	 ; A = 5
-;
-;PRG000_C47D:
-;	STA Scores_Y,Y	 ; Set score Y
-;	RTS
-;	; Set score X to spawning object
-;	LDA Objects_SpriteX,X	
-;	STA Scores_X,Y	 
-;
-;	; Set score counter to $30
-;	LDA #$30
-;	STA Scores_Counter,Y
-;
-;	LDY <Temp_Var15	; Restore 'Y'
-;
-;	RTS		 ; Return
+	RTS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - Score sprites disabled
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-	; Find a free slot to display the score in
-;Score_FindFreeSlot:
-;	LDY #$04	 ; Y = 4
-;PRG000_C490:
-;	LDA Scores_Value,Y
-;	BEQ PRG000_C49A	 ; If Scores_Value[Y] = 0, jump to PRG000_C49A (RTS)
-;
-;	DEY		 ; Y--
-;	BPL PRG000_C490	 ; While Y >= 0, loop
-;
-;	LDY #$04	 ; Y = 4
-;
-;PRG000_C49A:
-;	RTS		 ; Return
 
 PRG000_C49B:
 
@@ -3486,25 +3443,9 @@ PRG000_D10D:
 	; #DAHRKDAIZ - left this in to force the ice blocks to use palette #2 >_>
 	LDA #$02
 	STA Objects_ColorCycle,X
-;	CMP #$60 
-;	BGE PRG000_D11C	 ; If timer 3 ticks >= $60, jump to PRG000_D11C  
-;
-;	CMP #$30 
-;	BGE PRG000_D11B	 ; If timer 3 ticks >= $30, jump to PRG000_D11B
-;
-;	CMP #$10 
-;	BGE PRG000_D11A	 ; If timer 3 ticks >= $10, jump to PRG000_D11A
-; 
-;	LSR A
-;
-;PRG000_D11A:
-;	LSR A
-;
-;PRG000_D11B:
-;	LSR A
-;
-;PRG000_D11C:
-	;STA Objects_ColorCycle,X	 ; Set color cycle value
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - Ice block flashing removed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
 	RTS		 ; Return
 

@@ -10,10 +10,9 @@ Mario Adventure 3 Hacking Ideas
 	- Fire Flower
 	- Ice Flower
 	- Hammer suit
-	- Air Mushroom - Enables Mario the ability to land on clouds
+	- Paratroopa Suit - Can turn into a shell and float temporarily
 	
 -Complete status bar rewrite
-	-Render new palette
 	-Ender a new status bar, one side at a time alternating between ticks
 	
 	-Display
@@ -22,13 +21,11 @@ Mario Adventure 3 Hacking Ideas
 
 -Strengthening enemies, as worlds progress, double the HP of enemies from fireballs 
 
--All Complete
-	- Worlds become fully "complete" at the final level
+-Traverse worlds through pipes, no levels are ever "completed"
 	
 -Per tile background priority, sprites go behind the background based on what tile they are on.
 
--"Still" water (no animation) can be frozen by Ice Mario
--Candles can be lit up (not sure of play mechanics this would add)
+-Frozen water can be thawed by Fire Mario
 -Change the "broken blocks" animation for ice blocks to use ice ball sprites
 -Change hammers to break a different kind of block (rocks?)
 -World types
@@ -42,3 +39,15 @@ Mario Adventure 3 Hacking Ideas
 	-Rainbow
 
 -Take out extra lives system
+
+-Paratroopa Mario
+	-Replace Tanooki suit
+	-Running + Down = Shell mode
+	-If standing still, no shell animation
+	-If moving in shell mode, shell animate
+	-If in shell mode, graphics switch to shell mode
+	-Shell mode, all movement is disable, detect letting go of down to deactivate shell mode
+	-Press and holding A will activate float mode
+	-Float timer
+	-Once float timer runs out, deactivate float mode
+	-Animate wings during float mode

@@ -1089,27 +1089,15 @@ PowerUp_Palettes:
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
 	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
 
-;	LDY #$07	 ; Y = 7 (select statue palette)
-;	LDA Player_Statue
-;	BNE PRG008_A55E	 ; If Player is statue, jump to PRG008_A55E
-;
-;	LDA <Player_Suit
-;	TAY		 ; Y = Player_Suit
-;	CMP #PLAYERSUIT_FIRE	 
-;	BGS PRG008_A55E	 ; If Player_Suit >= PLAYERSUIT_FIRE, jump to PRG008_A55E
-;
-;	CMP #PLAYERSUIT_RACCOON 
-;    BEQ PRG008_A55B	 ; If Player_Suit = PLAYERSUIT_RACCOON, jump to PRG008_A55B
-;
-; PRG008_A55B:
-; 	; If Player_Suit is 0 (small) or 1 (big), we load Y = Player_Current instead!
-; 	LDY Player_Current
-; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - Suit pallete code removed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; #DAHRKDAIZ if we're i special suit mode, we jump farther into the table.
 Level_SetPlayerPUpPal:
 	LDA <Player_Suit
 	LDX SPECIAL_SUIT_FLAG
-	BEQ Not_Special_Suit_Pal
+	BEQ Not_Special_Suit_Pal	
 	CLC
 	ADC #$05
 
@@ -2279,61 +2267,10 @@ Swim_Tanooki:
 
 ; #DAHRKDAIZ Commenting out Kuribo code
 Move_Kuribo:
-;	JSR Player_GroundHControl ; Do Player left/right input control
-;	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
-;
-;	LDA <Player_InAir
-;	BNE PRG008_AAFF	 ; If Player is mid air, jump to PRG008_AAFF
-;
-;	STA Player_KuriboDir	 ; Clear Player_KuriboDir
-;
-;PRG008_AAFF:
-;	LDA Player_KuriboDir
-;	BNE PRG008_AB17	 ; If Kuribo's shoe is moving, jump to PRG008_AB17
-;
-;	LDA <Player_InAir
-;	BNE PRG008_AB25	 ; If Player is mid air, jump to PRG008_AB25
-;
-;	LDA <Pad_Holding
-;	AND #(PAD_LEFT | PAD_RIGHT)
-;	STA Player_KuriboDir	 ; Store left/right pad input -> Player_KuriboDir
-;	BEQ PRG008_AB25	 	; If Player is not pressing left or right, jump to PRG008_AB25
-;	INC <Player_InAir	 ; Flag as in air (Kuribo's shoe bounces along)
-;
-;	LDY #-$20
-;	STY <Player_YVel	 ; Player_YVel = -$20
-;
-;PRG008_AB17:
-;	LDA <Pad_Input
-;	BPL PRG008_AB25	 ; If Player is NOT pressing 'A', jump to PRG008_AB25
-;
-;	LDA #$00
-;	STA Player_KuriboDir	 ; Player_KuriboDir = 0
-;
-;	LDY Player_RootJumpVel	 ; Get initial jump velocity
-;	STY <Player_YVel	 ; Store into Y velocity
-;
-;PRG008_AB25:
-;	LDY <Player_Suit
-;	BEQ PRG008_AB2B	 ; If Player is small, jump to PRG008_AB2B
-;
-;	LDY #$01	 ; Otherwise, Y = 1
-;
-;PRG008_AB2B:
-;
-;	; Y = 0 if small, 1 otherwise
-;
-;	LDA Player_KuriboFrame,Y	; Get appropriate Kuribo's shoe frame
-;	STA <Player_Frame		; Store as active Player frame
-;
-;	LDA <Counter_1
-;	AND #$08	
-;	BEQ PRG008_AB38	 	; Every 8 ticks, jump to PRG008_AB38
-;
-;	INC <Player_Frame	; Player_Frame++
-;
-;PRG008_AB38:
-;	RTS		 ; Return
+	RTS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - Kuribo shoe related code removed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_GroundHControl
@@ -4762,7 +4699,7 @@ PRG008_B604:
 
 	LDA Level_Tile_GndL,X
 	CMP #TILEA_COIN
-; start #DAHRKDAIZ modifying to detec #$05 as another coin type
+; start #DAHRKDAIZ modifying to detect #$05 as another coin type
 	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
 	CMP #$05		 ; acts as a "blue" coin from frozen coins thawed
 	BNE PRG008_B623;
@@ -5267,21 +5204,9 @@ LATP_Coin:
 PRG008_B82F:
 	RTS		 ; Return
 
-	; #DAHRKDAIZ unused now in favor for new power up
-;LATP_CoinStar:
-;	LDA #$80
-;	STA PUp_StarManFlash	 ; Get that Starman flash ready just in case...
-;
-;	LDY #$04	 	; Y = 4 (spawn a starman) (index into PRG001 Bouncer_PUp)
-;
-;	LDA Player_StarInv
-;	BNE PRG008_B83F	 ; If Player if invincible, jump to PRG008_B83F!
-;
-;	; Otherwise, sorry, just a coin :(
-;	JMP LATP_Coin
-;
-;PRG008_B83F:
-;	RTS		 ; Return
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; #DAHRKDAIZ - Code removed for Starman continuation block
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 LATP_Brick:
 	JSR LATP_GetCoinAboveBlock	; Get coin above block, if any
