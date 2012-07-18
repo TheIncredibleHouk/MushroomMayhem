@@ -2752,7 +2752,10 @@ CFIRE_LASER		= $15	; Laser fire
 	Level_AltLayout:	.ds 2	; $7DFE-$7DFF Pointer to level's "alternate" layout (when you go into bonus pipe, etc.)
 	Level_AltObjects:	.ds 2	; $7E00-$7E01 Pointer to level's "alternate" object set (when you go into bonus pipe, etc.)
 
-	Level_BlockGrabHitMem:	.ds 128	; $7E02-$7E81 Records coins and 1-ups grabbed, so they don't come back if you switch areas
+	Status_Bar_Top:		.ds 28 ;
+	Status_Bar_Bottom:	.ds 28	;
+	Status_Bar_Render_Toggle: ds 1;
+	Unused:	.ds 72	; $7E02-$7E81 Records coins and 1-ups grabbed, so they don't come back if you switch areas
 
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1

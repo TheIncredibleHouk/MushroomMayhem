@@ -1365,7 +1365,7 @@ PRG030_8964:
 	LDY #$7f	; Y = $7f
 	LDA #$00	; A = 0
 PRG030_8968:
-	STA Level_BlockGrabHitMem,Y
+	;STA Level_BlockGrabHitMem,Y
 	DEY		 ; Y--
 	BPL PRG030_8968	 ; While Y >= 0, loop!
 
@@ -4448,9 +4448,9 @@ PRG030_99DC:
 	AND #$07
 	TAX
 	LDY <Temp_Var13
-	LDA Level_BlockGrabHitMem,Y
+	LDA #$00 ;Level_BlockGrabHitMem,Y
 	ORA RecordBlockHitBits,X
-	STA Level_BlockGrabHitMem,Y
+	;STA Level_BlockGrabHitMem,Y
 
 	; Restore everything we saved
 	PLA
