@@ -4968,7 +4968,7 @@ PRG014_DFA1:
 	TAX		 	; X = A (0-3)
 
 	LDY <Temp_Var14			; Y = Temp_Var14 from above
-	LDA Level_BlockGrabHitMem,Y	; Pull data from Level_BlockGrabHitMem
+	LDA #$00				; #DAHRKDAIZ - don't keep track
 
 	; This sets the result of the check
 	AND LBGHM_BitMasks,X	; Check if appropriate bit is set (means this coin was grabbed or hidden block hit or whatever)

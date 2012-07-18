@@ -3613,92 +3613,63 @@ PRG026_B466:
 	; room for everything to be done to the status bar, and includes
 	; things like the video addresses and whatnot...
 PRG026_B47A:
-	LDA StatusBar_UpdTemplate,X	; Get next byte from StatusBar_UpdTemplate
-	STA Graphics_Buffer,Y		; Store it into the graphics buffer
+	; #DAHRKDAIZ new status bar rendiner
+	LDA Status_Bar_Render_Toggle
+	INC Status_Bar_Render_Toggle		; #DAHRKDAIZ Toggle between rendering top and bottom
+	AND #$01
+	BNE Do_Bottom
+
+	; #DAHRKDAIZ render top
+	LDX Graphics_BufCnt
+	LDA #$2B
+	STA Graphics_Buffer, X
+	LDA #$22
+	STA Graphics_Buffer + 1, X
+	LDA #$1C
+	STA Graphics_Buffer + 2, X
+	LDY #$00
+
+Status_Top_Loop:
+	LDA Status_Bar_Top,Y	; Get next byte from StatusBar_UpdTemplate
+	STA Graphics_Buffer + 3,X		; Store it into the graphics buffer
 	INY				; Y++
 	INX				; X++
-	CPX #$22	 	
-	BNE PRG026_B47A	 		; If X <> $22, loop!
-
-	; *** Power meter copy loop
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-	LDX #$00	 	; X = 0
-PRG026_B48B:
-	LDA StatusBar_PMT,X	 
-	STA Graphics_Buffer+3,Y	 
-	INY		 	; Y++
-	INX		 	; X++
-	CPX #$08	 	
-	BNE PRG026_B48B	 	; While X <> 8, loop!
-
-	; *** Coins copy
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-	LDA StatusBar_CoinH	 
-	STA Graphics_Buffer+13,Y
-	LDA StatusBar_CoinL	
-	STA Graphics_Buffer+14,Y
-
-	; *** Lives copy
-	LDY Graphics_BufCnt	 ; Y = Graphics_BufCnt
-	LDA StatusBar_LivesH	
-	STA Graphics_Buffer+18,Y
-	LDA StatusBar_LivesL	
-	STA Graphics_Buffer+19,Y
-
-	; *** Score copy loop
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-	LDX #$00	 	; X = 0
-PRG026_B4BA:
-	LDA StatusBar_Score,X
-	STA Graphics_Buffer+21,Y
-	INY		 ; Y++
-	INX		 ; X++
-	CPX #$06	 
-	BNE PRG026_B4BA	 ; If X <> 6, loop!
-
-	; *** Time copy loop
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-	LDX #$00	 	; X = 0
-PRG026_B4CB:
-	LDA StatusBar_Time,X	
-	STA Graphics_Buffer+30,Y
-	INY		 ; Y++
-	INX		 ; X++
-	CPX #$03	 
-	BNE PRG026_B4CB	 ; If X <> 3, loop!
-
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-
-	LDX #$27	 	; X = $27 (VRAM High address if vertical)
-
-	LDA Level_7Vertical	
-	BNE PRG026_B4EE	 	; If level is vertical, jump to PRG026_B4EE
-
-	LDA Level_Tileset
-
-	CMP #16	
-	BEQ PRG026_B4EC	 	; If Level_Tileset = 16 (Spade game), jump to PRG026_B4EC
-
-	CMP #17
-	BNE PRG026_B4F5	 	; If Level_Tileset = 17 (N-Spade game), jump to PRG026_B4F5
-
-PRG026_B4EC:
-	LDX #$23	; X = $23 (VRAM High address for Spade/N-Spade bonus games ONLY)
-PRG026_B4EE:
-
-	; VRAM High address
-	TXA
-	STA Graphics_Buffer,Y
-	STA Graphics_Buffer+15,Y
-
-PRG026_B4F5:
-	; Update graphics buffer count
+	CPY #$1C
+	BNE Status_Top_Loop	 		
+	LDA #$00
+	STA Graphics_Buffer + 3, X
 	LDA Graphics_BufCnt
-	ADD #$21	 
-	STA Graphics_BufCnt	 
+	CLC
+	ADC #$1F
+	STA Graphics_BufCnt
+	RTS
 
-	RTS		 ; Return
+	; #DAHRKDAIZ render bottom
+Do_Bottom:
+	
+	LDX Graphics_BufCnt
+	LDA #$2B
+	STA Graphics_Buffer, X
+	LDA #$42
+	STA Graphics_Buffer + 1, X
+	LDA #$1C
+	LDY #$00
+	STA Graphics_Buffer + 2, X
 
+Status_Bottom_Loop:
+	LDA Status_Bar_Bottom,Y	; Get next byte from StatusBar_UpdTemplate
+	STA Graphics_Buffer + 3,X		; Store it into the graphics buffer
+	INY				; Y++
+	INX				; X++
+	CPY #$1C
+	BNE Status_Bottom_Loop	 		
+	LDA #$00
+	STA Graphics_Buffer + 3, X
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$1F
+	STA Graphics_BufCnt
+	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_CopyObjectList
