@@ -1624,8 +1624,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 
 CHNGTILE_DELETECOIN	= $01
 CHNGTILE_DELETETOBG	= $02
-CHNGTILE_TOICE	= $03	; miscolored note block
-CHNGTILE_TOBOUNCEWOOD	= $04
+CHNGTILE_TOFRZWATER	= $03	; 
+CHGTILESTANDING_WATER	= $04
 CHNGTILE_TONOTEBLOCK	= $05
 CHNGTILE_COINHEAVEN	= $06
 CHNGTILE_TOBRICK	= $07
@@ -3703,6 +3703,7 @@ TILEA_PATH_625B2T_L	= $CF	; 62.5 degree path bottom-to-top, lower half (typical)
 
 TILEA_PSWITCH_PRESSED	= $D7	; Referenced pressed P-Switch
 TILEA_PSWITCH		= $F2	; P-Switch
+STANDING_WATER		= $DC	;
 FROZEN_WATER		= $FF	; Green note block (functions like standard white, just colored wrong)
 TILEA_BLOCKBUMP_CLEAR	= $F3	; Tile used when a "bump" block (e.g. ? blocks, note block, etc.) is hit
 

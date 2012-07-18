@@ -1030,11 +1030,11 @@ PRG007_A4F8
 	BEQ PRG007_A506	 ; If vertical high = 0, jump to PRG007_A506
 
 	CMP #$02
-	BGE PRG007_A557	 ; If vertical high >= 2 (way too low), jump to PRG007_A557
+	BGE PRG007_A557_JUMP_OFF	 ; If vertical high >= 2 (way too low), jump to PRG007_A557
 
 	LDA <Temp_Var3
 	CMP #$B0
-	BGE PRG007_A557	 ; If at or lower than $1B0 (too low), jump to PRG007_A557
+	BGE PRG007_A557_JUMP_OFF	 ; If at or lower than $1B0 (too low), jump to PRG007_A557
 
 PRG007_A506:
 	LDA <Temp_Var14	 ; Fireball detect X
@@ -1094,36 +1094,46 @@ NOT_BRICK_HAMMER:
 	RTS
 	; end #DAHRKDAIZ
 
+PRG007_A557_JUMP_OFF:		; #DAHRKDAIZ Added since jumps to PRG007_A557 were too far away,
+	LDA #$00				; this basically allows the code to jump to this point then to A557
+	BEQ PRG007_A557			
+
 FIRE_BALL_COLL:
-
-	LDA SPECIAL_SUIT_FLAG
-	BEQ Normal_Fire_Mario
+	STA DEBUG_SNAPPER
 	LDA <Temp_Var1;
-	CMP #$DC			; #DAHRKDAIZ still water
-	BNE Normal_Fire_Mario
-	LDA #CHNGTILE_TOICE
-	BNE PRG007_A563
+	STX DAIZ_TEMP1
+	STY DAIZ_TEMP2
+	LDY #$04
+	LDX SPECIAL_SUIT_FLAG
+	BEQ Tile_Test_Loop
+	LDX #$04
 
-Normal_Fire_Mario:
+Tile_Test_Loop:
+	CMP Projectile_Interact_Table, X
+	BEQ Change_Tile
+	INX
+	DEY
+	BNE Tile_Test_Loop
+	BEQ Bounce_Ball
+
+Change_Tile:
+	LDA Projectile_Interact_To_Table, X
+	LDY DAIZ_TEMP2
+	LDX DAIZ_TEMP1
+	BPL PRG007_A563
+
+Bounce_Ball:
+	LDY DAIZ_TEMP2
+	LDX DAIZ_TEMP1
 	LDA <Temp_Var1;
 	CMP Tile_AttrTable,Y
-	BLT PRG007_A557	 ; If this tile is not solid on top, jump to PRG007_A557
+	BLT PRG007_A557_JUMP_OFF	 ; If this tile is not solid on top, jump to PRG007_A557
 
 	; Tile is solid on top...
 
 	CMP Tile_AttrTable+4,Y
 	BLT PRG007_A59F	 ; If this tile is not solid on the sides/bottom, jump to PRG007_A59F
-
-	LDA SPECIAL_SUIT_FLAG
-	BNE PRG007_A566
-
-	LDA <Temp_Var1;
-	CMP #TILE_GLOBAL_ICE 
-	BNE PRG007_A55D		; If the fireball did not hit a frozen muncher, jump to PRG007_A55D
-
-
-	LDA #CHNGTILE_DELETETOBG		;
-	BNE PRG007_A563	 ; Jump (technically always) to PRG007_A563
+	JMP PRG007_A566
 
 PRG007_A557:
 
@@ -1132,14 +1142,6 @@ PRG007_A557:
 	STA Fireball_HitChkPass,X
 
 	RTS		 ; Return
-
-PRG007_A55D:
-	CMP #TILE_GLOBAL_FROZEN_COIN
-	BNE PRG007_A566	 ; If the fireball did not hit a frozen coin, jump to PRG007_A566
-
-	; Fireball hit a frozen coin!
-
-	LDA #CHNGTILE_FROZENCOIN
 
 PRG007_A563:
 	JSR Fireball_ThawTile	 ; Thaw the frozen tile!
@@ -6206,3 +6208,11 @@ Hammer_BrickBust:
 	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof
+
+
+	; #DAHRKDAIZ first four of each are fireball, the other is iceball
+Projectile_Interact_Table:
+	.byte TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, FROZEN_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER
+
+Projectile_Interact_To_Table:
+	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, CHGTILESTANDING_WATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER
