@@ -2001,6 +2001,7 @@ Swim_SmallBigLeaf:
 	RTS		 ; Return
 
 GndMov_Big:
+	JSR Increase_Air_Time
 	JSR Player_GroundHControl ; Do Player left/right input control
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
 	JSR Player_SoarJumpFallFrame ; Do Player soar/jump/fall frame
@@ -2728,6 +2729,7 @@ PRG008_AD2E:
 ; including the Frog Suit style (which is totally different)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_SwimV:
+	JSR Decrease_Air_Time
 	LDA <Pad_Input		 
 	BPL PRG008_AD4C	 ; If Player is NOT pressing 'A', jump to PRG008_AD4C
 
@@ -6944,3 +6946,23 @@ PRG008_BFF9:
 	RTS		 ; Return
 
 ; Rest of ROM bank was empty
+	
+Decrease_Air_Time:
+	; #DAHRKDAIZ - Hijacked for swim
+	LDA Counter_1
+	AND #$01
+	BNE Skip_Air_Decrease
+	DEC Air_Time
+
+Skip_Air_Decrease;
+	RTS
+	
+Increase_Air_Time:
+	; #DAHRKDAIZ - Hijacked for swim
+	LDA Counter_1
+	AND #$FF
+	BNE Skip_Air_Decrease
+	DEC Air_Time
+
+Skip_Air_Increase:
+	RTS	

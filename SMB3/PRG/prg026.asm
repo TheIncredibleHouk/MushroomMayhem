@@ -2687,6 +2687,299 @@ PRG026_AF87:
 PRG026_AF9C:
 	RTS		 ; Return
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; StatusBar_Fill_Time
+;
+; Fills the StatusBar_Time array with tiles representing
+; the current time remaining; also updates the clock
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+StatusBar_Fill_Time:
+	LDA Level_Tileset
+	BEQ Timer_NoChange	 ; If Level_Tileset = 0, jump to Timer_NoChange (no timer on map EVER)
+	CMP #15	 
+	BGE Timer_NoChange	 ; If Level_Tileset >= 15, jump to Timer_NoChange
+	LDA Level_TimerEn
+	AND #$7f	 	; Only checking the timer disable here
+	ORA Player_InPipe 	; ... or if Player is in pipe
+	BNE Timer_NoChange 	; If set, timer is disabled!  Jump to Timer_NoChange
+
+	DEC Level_TimerTick	; Level_TimerTick--
+	BPL Timer_NoChange	; If Level_TimerTick >= 0, jump to Timer_NoChange
+
+	; Reload Level_TimerTick
+	LDA #$28
+	STA Level_TimerTick	 ; Level_TimerTick = $28
+
+	DEC Level_TimerLSD	; Level_TimerLSD--
+	BPL PRG026_AFDC	 	; If it hasn't rolled over, jump to PRG026_AFDC
+
+	; LSD rolled over!
+	LDA #$09	 	
+	STA Level_TimerLSD	; Level_TimerLSD = 9
+	DEC Level_TimerMid	; Level_TimerMid--
+	BPL PRG026_AFDC	 	; If it hasn't rolled over, jump to PRG026_AFDC
+
+	; Mid rolled over!
+	STA Level_TimerMid	; Level_TimerMid = 9
+	DEC Level_TimerMSD	; Level_TimerMSD--
+	BPL PRG026_AFDC	 	; If it hasn't rolled over, jump to PRG026_AFDC
+
+	; At expiration of MSD, we're out of time!  Zero everybody!
+	LDA #$00	 	
+	STA Level_TimerMSD
+	STA Level_TimerMid
+	STA Level_TimerLSD
+
+PRG026_AFDC:
+	LDA Level_TimerMSD	
+	CMP #$01	 	
+	BNE Timer_NoChange	; If Level_TimerMSD <> 1, jump to Timer_NoChange
+
+	; MSD is 1...
+	LDA Level_TimerMid
+	ORA Level_TimerLSD
+	BNE Timer_NoChange	; If !(Level_TimerMid == 0 && Level_TimerLSD == 0), jump to Timer_NoChange
+
+	; Time is running out!
+	LDA #MUS1_TIMEWARNING	 
+	STA Sound_QMusic1	; Queue low-time warning music!
+Timer_NoChange:
+	; For all 3 digits of time, write their tiles...
+	LDX #$02	 	; X = 2
+PRG026_AFF2:
+	LDA Level_TimerMSD,X	; Get digit
+	ORA #$f0	 	; Offset as tile
+	STA StatusBar_Time,X	; Store it into StatusBar_Time
+	DEX		 	; X--
+	BPL PRG026_AFF2	 	; While X >= 0, loop!
+	RTS		 ; Return
+
+
+; FIXME: Anybody want to claim this?
+; Uses graphics buffer to push out the 3 digits of timer unlike the special buffers used by status bar
+; $AFFE 
+	LDX Graphics_BufCnt	; X = graphics buffer count
+
+	LDA #$2b	; VRAM High in non-vertical level
+
+	LDY Level_7Vertical
+	BEQ PRG026_B00A
+
+	LDA #$27	; VRAM High in vertical level
+
+PRG026_B00A:
+	; VRAM High address
+	STA Graphics_Buffer,X
+
+	; VRAM Low address
+	LDA #$51
+	STA Graphics_Buffer+1,X
+
+	; Run length of 3
+	LDA #$03
+	STA Graphics_Buffer+2,X
+
+	; 3 timer digits
+	LDA Level_TimerMSD
+	ORA #$f0
+	STA Graphics_Buffer+3,X
+	LDA Level_TimerMid
+	ORA #$f0
+	STA Graphics_Buffer+4,X
+	LDA Level_TimerLSD
+	ORA #$f0
+	STA Graphics_Buffer+5,X
+
+	; Terminator
+	LDA #$00
+	STA Graphics_Buffer+6,X
+
+	; Add to graphics buffer count
+	TXA
+	ADD #$06
+	STA Graphics_BufCnt
+
+	RTS		 ; Return
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; StatusBar_Fill_Coins
+;
+; Fills the StatusBar_CoinsL/H values with tiles representing
+; the current coins held by the player; also applies the
+; Coins_Earned value to the active total and issues 1-ups
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+StatusBar_Fill_Coins:
+;	LDA #Inventory_Coins-Inventory_Items	 	; A = $22 (offset to Mario's coins)
+;	LDX Player_Current	; X = Player_Current
+;	BEQ PRG026_B07D	 	; If Player_Current = 0 (Mario), jump to PRG026_B07D
+;	ADD #(Inventory_Coins2-Inventory_Items)-(Inventory_Coins-Inventory_Items) 	; Otherwise, A = $45 (offset to Luigi's coins)
+;PRG026_B07D:
+;	LDY #$00	 	; Y = 0 (for loop at PRG026_B09F)
+;	TAX		 	; X = $22 / $45
+;	LDA Inventory_Items,X	; Getting this player's coins, not items, but Nintendo used this offset, so...
+;	ADD Coins_Earned 	; Add in any coins earned
+;	STA Inventory_Items,X	; Store total
+;	CMP #100	 	
+;	BLT PRG026_B09F	 	; If coin total is < 100, jump to PRG026_B09F
+;
+;	SUB #100	 	; Take 100 away
+;	STA Inventory_Items,X	; Store new total
+;
+;	LDX Player_Current	; X = Player_Current
+;	INC Player_Lives,X	; Extra life!
+;
+;	LDA #SND_LEVEL1UP	 	
+;	STA Sound_QLevel1	; Play 1-up extra life sound
+;
+;	;LDA #MUS2A_WORLD8	 	
+;	;STA Sound_QMusic2	; Now it's Sonic 2 Beta!
+;
+;	; This continually subtracts 10 as long you have more than 10
+;	; coins, sort of a rudimentary modulus operation...
+;PRG026_B09F:
+;	CMP #10		
+;	BMI PRG026_B0AA	
+;	SUB #10	 	
+;	INY		; Y will be the most significant digit by virtue of loop counting
+;	JMP PRG026_B09F	
+;
+;PRG026_B0AA:
+;	LDX Graphics_BufCnt	; X = Graphics_BufCnt
+;	ADD #$f0	 	; With 'A' as the lower coin digit, this adds $F0 to it to make the respective 0-9 tile 
+;	STA StatusBar_CoinL	; Store into StatusBar_CoinL
+;	TYA		 	; A = Y (most significant digit)
+;	BNE PRG026_B0B8	 	; If it's anything but zero, jump to PRG026_B0B8
+;	LDA #Temp_Var15	 	; Otherwise, we're going to use a blank, instead of a leading zero
+;PRG026_B0B8:
+;	ADD #$f0	 	; Offset to proper MSD tile
+;	STA StatusBar_CoinH	; Store into StatusBar_CoinH
+;
+;	LDA #$00
+;	STA Coins_Earned ; Coins_Earned has been applied, remove
+;
+;	RTS		 ; Return
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	LDA Inventory_Coins+1	; Get least significant byte of score
+	ADD Coins_Earned	; Add in any earned points 
+	STA Inventory_Coins+1	; Store into least significant digit
+	STA <Temp_Var1		; Keep LSD in Temp_Var1	 
+
+	LDA Inventory_Coins	; Get next higher byte
+	ADC #$00 	; Add score and carry to of earned high byte to middle score byte
+	STA Inventory_Coins	; Store result
+	STA <Temp_Var2		; Keep middle digit in Temp_Var2
+
+	; This giant loop is how you use an 8-bit CPU to display
+	; 4* digits of coins from a 2-byte integer :)
+
+	LDY #$00	 ; Y = 0
+	LDX #$03	 ; X = 3	0-5, 6 digits
+PRG026_B19A2:
+	LDA <Temp_Var1	 ; Get LSD -> A
+
+	; I haven't taken time yet to discern this magic yet
+	SUB PRG026_B16C,X
+	STA <Temp_Var1	
+	LDA <Temp_Var2	
+	SBC PRG026_B166,X
+	STA <Temp_Var2	
+
+	BCC PRG026_B1B82	 	; If the subtraction didn't go negative, jump to PRG026_B1B8
+
+	INC Score_Temp	 ; Score_Temp++
+
+	JMP PRG026_B19A2	 ; Jump to PRG026_B19A
+
+PRG026_B1B82:
+	LDA <Temp_Var1
+
+	; I haven't taken time yet to discern this magic yet
+	ADD PRG026_B16C,X
+	STA <Temp_Var1	
+	LDA <Temp_Var2	
+	ADC PRG026_B166,X
+	STA <Temp_Var2	
+	LDA <Temp_Var3	
+	ADC PRG026_B160,X
+	STA <Temp_Var3	
+
+	LDA Score_Temp	 
+	ADD #$f0	 	; A = Score_Temp + $F0 (tile to display)
+	STA Status_Bar_Top + 9,Y	; Store it as next digit
+
+	LDA #$00	 	; A = 0
+	STA Score_Temp	 	; Score_Temp = 0
+
+	INY		 	; Y++
+	DEX		 	; X--
+	BPL PRG026_B19A2	 	; While digits remain, loop!
+
+	LDA Status_Bar_Top + 9	; First byte of status bar's score
+	CMP #$fa	 
+	BLT PRG026_B1FC2	 	; If tile is less than $FA (overflow occurred!), jump to PRG026_B1FC
+
+PRG026_B1FC2:
+	; Clear Score_Earned
+	LDA #$00	 
+	STA Coins_Earned	
+	RTS		 ; Return
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; StatusBar_Fill_World
+;
+; Simply puts the correct world number in the status bar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+StatusBar_Fill_World:
+	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
+	LDX World_Num	 	
+	INX		 	; X = World_Num+1
+	TXA		 	; A = X
+	ORA #$f0	 	; Mark it up as a tile
+	STA Graphics_Buffer+3,Y
+
+	; Terminate prior graphic data
+	LDA #$00
+	STA Graphics_Buffer+4,Y
+
+	LDX #$27	 	; X = $27 (VRAM High if vertical)
+	LDA Level_7Vertical	
+	BNE PRG026_B0EC	 	; If level is vertical, jump to PRG026_B0EC
+
+	LDX #$2b	 	; X = $2B (VRAM High if non-vertical)
+
+	LDA Level_Tileset
+	CMP #16	 
+	BEQ PRG026_B0EA	 	; If tileset = 16 (Spade game), jump to PRG026_B0EA
+
+	CMP #17	 
+	BNE PRG026_B0EC	 	; If tileset = 17 (N-Spade game), jump to PRG026_B0EC
+
+PRG026_B0EA:
+	LDX #$23		; X = $23 (VRAM High in Spade/N-Spade bonus games only)
+
+PRG026_B0EC:
+	TXA		 
+
+	; VRAM Address High
+	STA Graphics_Buffer,Y
+
+	; VRAM Address Low
+	LDA #$26
+	STA Graphics_Buffer+1,Y
+
+	; Run length of 1
+	LDA #$01
+	STA Graphics_Buffer+2,Y
+
+	; Update Graphics_BufCnt
+	LDA Graphics_BufCnt
+	ADD #$04	 
+	STA Graphics_BufCnt
+
+	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; StatusBar_Fill_MorL
@@ -2761,6 +3054,111 @@ PRG026_B156:
 	.byte $2B, $48, $06, $00, $00, $00, $00, $00, $00, $00 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; StatusBar_Fill_Score
+;
+; Fills the StatusBar_PMT array with tiles representing
+; the current score; also applies the
+; Score_Earned value to the active total
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+PRG026_B160:	.byte $00, $00, $00, $00, $00, $01
+PRG026_B166:	.byte $00, $00, $00, $03, $27, $86
+PRG026_B16C:	.byte $01, $0A, $64, $E8, $10, $A0
+PRG026_B172:	.byte $0F, $42, $3F 
+
+StatusBar_Fill_Score:
+	LDA Player_Score+2	; Get least significant byte of score
+	ADD Score_Earned	; Add in any earned points 
+	STA Player_Score+2	; Store into least significant digit
+	STA <Temp_Var1		; Keep LSD in Temp_Var1	 
+
+	LDA Player_Score+1	; Get next higher byte
+	ADC Score_Earned+1 	; Add score and carry to of earned high byte to middle score byte
+	STA Player_Score+1	; Store result
+	STA <Temp_Var2		; Keep middle digit in Temp_Var2
+
+	LDA Player_Score	; Get most significant byte of score
+	ADC #$00	 	; Add in any carry
+	STA Player_Score	; Store result
+	STA <Temp_Var3		; Keep MSD in Temp_Var3
+
+	; This giant loop is how you use an 8-bit CPU to display
+	; 6* digits of score from a 3-byte integer :)
+	; * - The rightmost/least significant 0 is a placeholder, and 
+	; will always be zero, thus score is always a multiple of 10
+	LDY #$00	 ; Y = 0
+	LDX #$05	 ; X = 5	0-5, 6 digits
+PRG026_B19A:
+	LDA <Temp_Var1	 ; Get LSD -> A
+
+	; I haven't taken time yet to discern this magic yet
+	SUB PRG026_B16C,X
+	STA <Temp_Var1	
+	LDA <Temp_Var2	
+	SBC PRG026_B166,X
+	STA <Temp_Var2	
+	LDA <Temp_Var3	
+	SBC PRG026_B160,X
+	STA <Temp_Var3	
+
+	BCC PRG026_B1B8	 	; If the subtraction didn't go negative, jump to PRG026_B1B8
+
+	INC Score_Temp	 ; Score_Temp++
+
+	JMP PRG026_B19A	 ; Jump to PRG026_B19A
+
+PRG026_B1B8:
+	LDA <Temp_Var1
+
+	; I haven't taken time yet to discern this magic yet
+	ADD PRG026_B16C,X
+	STA <Temp_Var1	
+	LDA <Temp_Var2	
+	ADC PRG026_B166,X
+	STA <Temp_Var2	
+	LDA <Temp_Var3	
+	ADC PRG026_B160,X
+	STA <Temp_Var3	
+
+	LDA Score_Temp	 
+	ADD #$f0	 	; A = Score_Temp + $F0 (tile to display)
+	STA StatusBar_Score,Y	; Store it as next digit
+
+	LDA #$00	 	; A = 0
+	STA Score_Temp	 	; Score_Temp = 0
+
+	INY		 	; Y++
+	DEX		 	; X--
+	BPL PRG026_B19A	 	; While digits remain, loop!
+
+	LDA StatusBar_Score	; First byte of status bar's score
+	CMP #$fa	 
+	BLT PRG026_B1FC	 	; If tile is less than $FA (overflow occurred!), jump to PRG026_B1FC
+
+	; Tile is greater than $FA...
+	LDX #$02	 	; X = 2
+PRG026_B1E9:
+	LDA PRG026_B172,X
+	STA Player_Score,X
+
+	DEX		 ; X--
+	BPL PRG026_B1E9	 ; While X >= 0, loop!
+
+	; All 9s across score when overflowed
+	LDX #$05	 ; X = 5
+	LDA #$f9	 ; A = $F9
+PRG026_B1F6:
+	STA StatusBar_Score,X	 
+	DEX		 ; X--
+	BPL PRG026_B1F6	 ; While X >= 0, loop 
+
+PRG026_B1FC:
+	; Clear Score_Earned
+	LDA #$00	 
+	STA Score_Earned	
+	STA Score_Earned+1	
+	RTS		 ; Return
+
 
 
 ; FIXME: Anybody want to claim this?
@@ -2830,6 +3228,44 @@ PRG026_B242:
 ; $B24A
 	.byte $2B, $28, $08, $EF, $EF, $EF, $EF, $EF, $EF, $3C, $3D, $00
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; StatusBar_Fill_PowerMT
+;
+; Fills the StatusBar_PMT array with tiles representing
+; the current "charge" of the power meter in the status bar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+StatusBar_Fill_PowerMT:
+	LDY #$00		; Y = 0
+	LDA #$01		; A = 1
+	STA <Temp_Var15		; <Temp_Var15 = 1
+
+	; This checks each bit of Player_Power to see if it's set or not,
+	; and produces the proper state of the '>' in the array StatusBar_PMT
+PRG026_B25C:
+	LDX #$E3		; X = $EF (dark '>')
+	LDA Player_Power	; Player's current "Power" charge (each "unit" of power sets one more bit in this field)
+	AND <Temp_Var15		; A = Player_Power & Temp_Var15
+	BEQ PRG026_B267	 	; If Player_Power bit not set, jump to PRG026_B267
+	LDX #$E4		; Otherwise, X = $EE (glowing '>')
+PRG026_B267:
+	TXA		 	; A = X ($EF dark or $EE glowing)
+	STA (Status_Bar_Top + 1),Y	; Store this tile into the buffer
+	INY		 	; Y++
+	ASL <Temp_Var15		; Shift up to next power bit
+	LDA <Temp_Var15		; A = Temp_Var15
+	CMP #$40	 	
+	BNE PRG026_B25C	 	; If Temp_Var15 <> $40, loop!
+
+	; Temp_Var15 is $40...
+	LDA Player_Power	; A = Player_Power
+	AND <Temp_Var15		; Checking bit 7 or 8...
+	BEQ PRG026_B292	 	; Not set, jump to PRG026_B289
+
+	; Player is at max power!  Set [P] flash state
+	DEC MaxPower_Tick	; PRG026_B289--
+
+PRG026_B292:
+	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ; Video_Misc_Updates
@@ -2904,8 +3340,7 @@ PRG026_B2C4:
 	ADC #$00	 
 	STA <Video_Upd_AddrH	; Entire video address value has 'Y' added to it
 	JMP Video_Misc_Updates	; Jump back to start to process next command or terminate!
-PRG026_B292:
-	RTS
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Scroll_Commit_Column
@@ -3147,12 +3582,11 @@ StatusBar_UpdTemplate:
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_UpdateValues:
-
-;	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
-;	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
-;	JSR StatusBar_Fill_Lives	; Fill in StatusBar_LivesL/H with tiles for lives held
-;	JSR StatusBar_Fill_Score 	; Fill in StatusBar_Score with tiles for score; also applies Score_Earned
-;	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
+	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
+	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
+	;JSR StatusBar_Fill_Lives	; Fill in StatusBar_LivesL/H with tiles for lives held
+	JSR StatusBar_Fill_Score 	; Fill in StatusBar_Score with tiles for score; also applies Score_Earned
+	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
 	LDX #$00	 	; X = 0
 	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
@@ -3187,7 +3621,6 @@ PRG026_B466:
 	; things like the video addresses and whatnot...
 PRG026_B47A:
 	; #DAHRKDAIZ new status bar rendiner
-	LDA $F000
 	LDA Status_Bar_Render_Toggle
 	INC Status_Bar_Render_Toggle		; #DAHRKDAIZ Toggle between rendering top and bottom
 	AND #$01
@@ -3281,37 +3714,4 @@ PRG026_B506:
 PRG026_B51F:
 	RTS		 ; Return
 
-;Status_Letters
-	S_A:	.byte $B0 ;
-	S_B:	.byte $B1 ;
-	S_C:	.byte $B2 ;
-	S_D:	.byte $B3 ;
-	S_E:	.byte $B4 ;
-	S_F:	.byte $B5 ;
-	S_G:	.byte $B6 ;
-	S_H:	.byte $B7 ;
-	S_I:	.byte $B8 ;
-	S_J:	.byte $B9 ;
-	S_K:	.byte $BA ;
-	S_L:	.byte $BB ;
-	S_M:	.byte $BC ;
-	S_N:	.byte $BD ;
-	S_O:	.byte $BE ;
-	S_P:	.byte $BF ;
-	S_Q:	.byte $C0 ;
-	S_R:	.byte $C1 ;
-	S_S:	.byte $C2 ;
-	S_T:	.byte $C3 ;
-	S_U:	.byte $C4 ;
-	S_V:	.byte $C5 ;
-	S_W:	.byte $C6 ;
-	S_X:	.byte $C7 ;
-	S_Y:	.byte $C8 ;
-	S_Z:	.byte $C9 ;
-
 ; Rest of ROM bank was empty...
-Do_Status_Bar_Update:
-	LDX #$00
-; Write EXP
-	LDA Status_Bar_Top	
-	RTS
