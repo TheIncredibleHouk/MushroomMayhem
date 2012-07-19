@@ -471,6 +471,7 @@ PRG030_8437:
 	; Clear $07FF - $0000, excluding $01xx
 	LDY #$07
 	JSR Clear_RAM_thru_ZeroPage
+	JSR Initialize_Status_Bar
 
 	; Reset_Latch = $5A (magic value that prevents reset vector from being run)
 	LDA #$5a
@@ -3696,8 +3697,21 @@ PRG030_96CB:
 	; Starting at the page provided in Y, this will clear everything
 	; (except the stack space) $YY00 to $0000
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Initial_Bar_Display:
+	.byte $FE, $E3, $E3, $E3, $E3, $E3, $E3, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $E0, $E1, $E1, $E1, $E1, $E2, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+
 Initialize_Status_Bar:
-	
+	LDX #$00
+
+Init_Bar_Loop:
+	STA $F000
+	LDA Initial_Bar_Display, X
+	STA Status_Bar_Top, X
+	INX
+	CPX #$38
+	BNE Init_Bar_Loop
 	RTS
 
 

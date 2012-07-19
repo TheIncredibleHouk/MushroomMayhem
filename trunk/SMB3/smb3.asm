@@ -2729,9 +2729,10 @@ CFIRE_LASER		= $15	; Laser fire
 	; C = Warp Whistle
 	; D = Music Box
 	Inventory_Items:	.ds 4*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
-	Inventory_Cards:	.ds 3	; $7D9C-$7D9E Mario, 3 cards
+	Inventory_Cards:	.ds 1	; $7D9C-$7D9E Mario, 3 cards
 	Inventory_Score:	.ds 3	; $7D9F-$7DA1 Mario, 3 byte score
-	Inventory_Coins:	.ds 1	; Mario's coins
+	Inventory_Coins:	.ds 2	; Mario's coins
+	Air_Time:			.ds 1	;
 
 	Inventory_Items2:	.ds 4*7	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
 	Inventory_Cards2:	.ds 3	; $7DBF-$7DC1 Luigi, 3 cards
