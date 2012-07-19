@@ -6950,7 +6950,7 @@ PRG008_BFF9:
 Decrease_Air_Time:
 	; #DAHRKDAIZ - Hijacked for swim
 	LDA Counter_1
-	AND #$01
+	AND #$08
 	BNE Skip_Air_Decrease
 	DEC Air_Time
 

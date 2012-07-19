@@ -3510,60 +3510,8 @@ Map_Calc_NT2Addr_By_XY:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Bonus_Prize1
-;
-; FOR UNUSED BONUS GAMES
-; This is the routine used to give a prize for a roll of "2" on the die
-; It's not completely clear what was intended, but that might be because
-; the memory it is manipulating used to be something else once...
-;
-; It uses Inventory_Cards as the base but the only use of "Bonus_Prize1"
-; is the lost bonus game die and it uses an input value of X = 3, which
-; ultimately means we edit the first byte of Inventory_Score instead.
-; But not in a "safe" way with carried arithmetic etc... which makes me
-; think that memory space was once home to some other idea...
-; And not that it'd make sense to "increment" your card storage either!!
+; #DAHRKDAIZ unused bonus game remvoed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Bonus_Prize1:
-
-	; Backup Y/X
-	TYA
-	PHA
-	TXA
-	PHA
-
-	; Temp_Var16 = 0 (offset to Mario's Inventory)
-	LDA #$00
-	STA <Temp_Var16
-
-	LDY Player_Current
-	CPY #$00
-	BEQ PRG030_962C	; If Player is Mario, jump to PRG030_962C
-
-PRG030_9622:
-	; Offset to Luigi's Inventory
-	LDA <Temp_Var16
-	ADD #(Inventory_Items2 - Inventory_Items)
-	STA <Temp_Var16
-
-	DEY		 ; Y will equal 1 here, so this just makes Y zero
-	BNE PRG030_9622	 ; Jump technically NEVER to PRG030_9622 (?!)
-
-PRG030_962C:
-	TXA		 ; Input value -> 'A'
-
-	ADD <Temp_Var16	 ; Add to offset value
-	TAX		 ; -> 'X'
-
-	INC Inventory_Cards,X	 ; The intention of this is unclear!
-
-	; Restore X/Y
-	PLA
-	TAX
-	PLA
-	TAY
-
-	RTS		 ; Return
 
 BoxOut_PutPatternInStrip:
 	JSR BoxOut_CalcOffsets	 ; Calculate offset to tile
@@ -3699,14 +3647,13 @@ PRG030_96CB:
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Initial_Bar_Display:
-	.byte $FE, $E3, $E3, $E3, $E3, $E3, $E3, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $E0, $E1, $E1, $E1, $E1, $E2, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	
 Initialize_Status_Bar:
 	LDX #$00
 
 Init_Bar_Loop:
-	STA $F000
 	LDA Initial_Bar_Display, X
 	STA Status_Bar_Top, X
 	INX

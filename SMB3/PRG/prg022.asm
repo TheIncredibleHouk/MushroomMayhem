@@ -1287,7 +1287,7 @@ PRG022_C8A0:
 	.word Bonus_Init	; 0: Draw the dialog box, initialize the greeting text, 
 	.word Bonus_DoHostText	; 1: Giving instructions for ALL UNUSED GAMES (then initializing the "prize"!)
 	.word Bonus_DieRotate	; 2: Rotating die logic; press 'A' and you may get a prize by the game type (or so it was intended)
-	.word Bonus_GetDiePrize	; 3: Get your die prize!  (If you "won") Includes the "coin confetti"
+	;.word Bonus_GetDiePrize	; 3: Get your die prize!  (If you "won") Includes the "coin confetti"
 	.word Bonus_Wait80	; 4: Waits $80 ticks
 	.word Bonus_DieFlyAway	; 5: Die "flies away"; go to state 6 if you won the Odd/Even game and to state 8 otherwise
 	.word Bonus_InitRound2	; 6: Initialize for Round 2
@@ -2201,32 +2201,6 @@ PRG022_CD50:
 	RTS		 ; Return
 
 
-Bonus_GetDiePrize:
-	LDA Bonus_DiePos
-	CMP #$02
-	BGE PRG022_CD6F		; If Bonus_DiePos >= 2 (Die face value of 3 or more, coin prizes), jump to PRG022_CD6F
-
-	CMP #$01
-	BNE PRG022_CD65	 ; If Die face value is NOT 2 (i.e. it is 1), jump to PRG022_CD65
-
-	; "If 2 appears, I'll give you a key"
-
-	; Ultimately it is unclear what this was INTENDED to do.  It modifies the first
-	; byte of the Player's "inventory" score (i.e. the backup used for Players
-	; switching turns), but not in a "safe" way that carries through the other bytes.
-	; That alone makes me believe that the memory in that area originally was for
-	; "something else"... what exactly I can't say!  I only know it presently makes
-	; no sense and is -- in a small way -- corrupting memory and nothing more...
-
-	; This will increment the byte at Inventory_Cards + 3, which is the Player's score; but that
-	; will be overwritten when the game exits with the "current" score)
-	; In any case, not a "key" :(
-	LDX #$03	 ; X = 3
-	JSR Bonus_Prize1 ; Get your prize?
-
-	INC Bonus_GameState	 ; Bonus_GameState = 4
-
-	RTS		 ; Return
 
 PRG022_CD65:
 

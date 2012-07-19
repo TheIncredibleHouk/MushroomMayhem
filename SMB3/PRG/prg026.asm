@@ -2801,6 +2801,46 @@ PRG026_B00A:
 
 	RTS		 ; Return
 
+StatusBar_Fill_Air_MT:
+	LDY #$00
+	LDA $F000
+	LDA Air_Time
+	AND #$18
+	BEQ Fill_Empty_Air_MT1
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	LDA #$E9
+
+Fill_Air_MT:
+	STA Status_Bar_Top + 9, Y
+	INY
+	DEX
+	BPL Fill_Air_MT
+	CPY #04
+	BEQ End_Fill_Air_MT
+	LDA Air_Time
+	AND #$07
+	BEQ Fill_Empty_Air_MT1
+	CLC
+	ADC #$E1
+	STA Status_Bar_Top + 9, Y
+	INY
+	CPY #$04
+	BEQ End_Fill_Air_MT
+
+Fill_Empty_Air_MT1:
+	LDA #$E1
+
+Fill_Empty_Air_MT:
+	STA Status_Bar_Top + 9, Y
+	INY
+	CPY #$04
+	BNE Fill_Empty_Air_MT
+
+End_Fill_Air_MT:
+	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; StatusBar_Fill_Coins
@@ -2810,57 +2850,16 @@ PRG026_B00A:
 ; Coins_Earned value to the active total and issues 1-ups
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Fill_Coins:
-;	LDA #Inventory_Coins-Inventory_Items	 	; A = $22 (offset to Mario's coins)
-;	LDX Player_Current	; X = Player_Current
-;	BEQ PRG026_B07D	 	; If Player_Current = 0 (Mario), jump to PRG026_B07D
-;	ADD #(Inventory_Coins2-Inventory_Items)-(Inventory_Coins-Inventory_Items) 	; Otherwise, A = $45 (offset to Luigi's coins)
-;PRG026_B07D:
-;	LDY #$00	 	; Y = 0 (for loop at PRG026_B09F)
-;	TAX		 	; X = $22 / $45
-;	LDA Inventory_Items,X	; Getting this player's coins, not items, but Nintendo used this offset, so...
-;	ADD Coins_Earned 	; Add in any coins earned
-;	STA Inventory_Items,X	; Store total
-;	CMP #100	 	
-;	BLT PRG026_B09F	 	; If coin total is < 100, jump to PRG026_B09F
-;
-;	SUB #100	 	; Take 100 away
-;	STA Inventory_Items,X	; Store new total
-;
-;	LDX Player_Current	; X = Player_Current
-;	INC Player_Lives,X	; Extra life!
-;
-;	LDA #SND_LEVEL1UP	 	
-;	STA Sound_QLevel1	; Play 1-up extra life sound
-;
-;	;LDA #MUS2A_WORLD8	 	
-;	;STA Sound_QMusic2	; Now it's Sonic 2 Beta!
-;
-;	; This continually subtracts 10 as long you have more than 10
-;	; coins, sort of a rudimentary modulus operation...
-;PRG026_B09F:
-;	CMP #10		
-;	BMI PRG026_B0AA	
-;	SUB #10	 	
-;	INY		; Y will be the most significant digit by virtue of loop counting
-;	JMP PRG026_B09F	
-;
-;PRG026_B0AA:
-;	LDX Graphics_BufCnt	; X = Graphics_BufCnt
-;	ADD #$f0	 	; With 'A' as the lower coin digit, this adds $F0 to it to make the respective 0-9 tile 
-;	STA StatusBar_CoinL	; Store into StatusBar_CoinL
-;	TYA		 	; A = Y (most significant digit)
-;	BNE PRG026_B0B8	 	; If it's anything but zero, jump to PRG026_B0B8
-;	LDA #Temp_Var15	 	; Otherwise, we're going to use a blank, instead of a leading zero
-;PRG026_B0B8:
-;	ADD #$f0	 	; Offset to proper MSD tile
-;	STA StatusBar_CoinH	; Store into StatusBar_CoinH
-;
-;	LDA #$00
-;	STA Coins_Earned ; Coins_Earned has been applied, remove
-;
-;	RTS		 ; Return
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; #DAHRKDAIZ rewritten to account for 2 byte coins, up to 9999 coins
+	LDA Inventory_Coins
+	CMP #$27					; Max coins at 9999
+	BNE Update_Coins			; #$270F
+	LDA Inventory_Coins + 1
+	CMP #$0F
+	BCS PRG026_B1FC2
+
+Update_Coins:
 	LDA Inventory_Coins+1	; Get least significant byte of score
 	ADD Coins_Earned	; Add in any earned points 
 	STA Inventory_Coins+1	; Store into least significant digit
@@ -2907,7 +2906,7 @@ PRG026_B1B82:
 
 	LDA Score_Temp	 
 	ADD #$f0	 	; A = Score_Temp + $F0 (tile to display)
-	STA Status_Bar_Top + 9,Y	; Store it as next digit
+	STA Status_Bar_Bottom + 9,Y	; Store it as next digit
 
 	LDA #$00	 	; A = 0
 	STA Score_Temp	 	; Score_Temp = 0
@@ -2916,7 +2915,7 @@ PRG026_B1B82:
 	DEX		 	; X--
 	BPL PRG026_B19A2	 	; While digits remain, loop!
 
-	LDA Status_Bar_Top + 9	; First byte of status bar's score
+	LDA Status_Bar_Bottom + 9	; First byte of status bar's score
 	CMP #$fa	 
 	BLT PRG026_B1FC2	 	; If tile is less than $FA (overflow occurred!), jump to PRG026_B1FC
 
@@ -3242,11 +3241,13 @@ StatusBar_Fill_PowerMT:
 	; This checks each bit of Player_Power to see if it's set or not,
 	; and produces the proper state of the '>' in the array StatusBar_PMT
 PRG026_B25C:
-	LDX #$E3		; X = $EF (dark '>')
+; #DAHRKDAIZ modified power meter to use different tile # for light and dark triangle
+; #DAHRKDAIZ removed the (P) flashing code
+	LDX #$D1		; X = $EF (dark '>')
 	LDA Player_Power	; Player's current "Power" charge (each "unit" of power sets one more bit in this field)
 	AND <Temp_Var15		; A = Player_Power & Temp_Var15
 	BEQ PRG026_B267	 	; If Player_Power bit not set, jump to PRG026_B267
-	LDX #$E4		; Otherwise, X = $EE (glowing '>')
+	LDX #$D2		; Otherwise, X = $EE (glowing '>')
 PRG026_B267:
 	TXA		 	; A = X ($EF dark or $EE glowing)
 	STA (Status_Bar_Top + 1),Y	; Store this tile into the buffer
@@ -3584,6 +3585,7 @@ StatusBar_UpdTemplate:
 StatusBar_UpdateValues:
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
 	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
+	JSR StatusBar_Fill_Air_MT	;
 	;JSR StatusBar_Fill_Lives	; Fill in StatusBar_LivesL/H with tiles for lives held
 	JSR StatusBar_Fill_Score 	; Fill in StatusBar_Score with tiles for score; also applies Score_Earned
 	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
