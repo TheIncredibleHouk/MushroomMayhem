@@ -2803,43 +2803,38 @@ PRG026_B00A:
 
 StatusBar_Fill_Air_MT:
 	LDY #$00
-	LDA $F000
 	LDA Air_Time
-	AND #$18
-	BEQ Fill_Empty_Air_MT1
-	LSR A
 	LSR A
 	LSR A
 	TAX
+	BEQ ***
+Full_Air_Loop:				; #DAHRKDAIZ fill parts that display as full 8 pixels
 	LDA #$E9
-
-Fill_Air_MT:
 	STA Status_Bar_Top + 9, Y
 	INY
 	DEX
-	BPL Fill_Air_MT
-	CPY #04
-	BEQ End_Fill_Air_MT
+	BPL Full_Air_Loop
+	
+	CPY #$04				; Did it fill all the way? we're done!
+	BEQ Fill_Air_MT_Done
+
+							; Not filled all the way, let's fill the partial bar
 	LDA Air_Time
-	AND #$07
-	BEQ Fill_Empty_Air_MT1
-	CLC
-	ADC #$E1
+	AND #07
+	ADC #$E1				; offset the tile number
 	STA Status_Bar_Top + 9, Y
 	INY
-	CPY #$04
-	BEQ End_Fill_Air_MT
 
-Fill_Empty_Air_MT1:
-	LDA #$E1
+	LDA #$EA
 
-Fill_Empty_Air_MT:
-	STA Status_Bar_Top + 9, Y
+Empty_Air_Loop:
+	CPY #$04				
+	BEQ Fill_Air_MT_Done		; Did it fill all the way? we're done!
+	STA Status_Bar_Top + 9, Y	; no? let's fill empty tiles
 	INY
-	CPY #$04
-	BNE Fill_Empty_Air_MT
-
-End_Fill_Air_MT:
+	BNE Empty_Air_Loop
+	
+Fill_Air_MT_Done: 
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

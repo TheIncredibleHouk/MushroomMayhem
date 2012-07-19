@@ -1356,7 +1356,24 @@ PRG008_A6D2:
 	STA <Pad_Holding
 	STA <Pad_Input	
 
-PRG008_A6DA:
+	; #DAHRKDAIZ - custom code created to decrease air meter while swimming
+	; if frog suit or top of water, increase air.
+PRG008_A6DA:				; Added code to increase/decrease the air time based on water
+	LDA FloatLevel_PlayerWaterStat		; if bit 7 is set, we're at the top of the water
+	AND #80				
+	BNE Inc_Air				; Top of water, let's breath!
+	LDA Player_InWater
+	BEQ Inc_Air
+	LDA <Player_Suit
+	CMP #$04
+	BEQ Inc_Air
+	JSR Decrease_Air_Time
+	JMP Normal_Code1:
+
+Inc_Air:
+	JSR Increase_Air_Time
+
+Normal_Code1:
 	LDA Player_Slide
 	BEQ PRG008_A6E5	 	; If Player is NOT sliding down slope, jump to PRG008_A6E5
 
@@ -2729,7 +2746,7 @@ PRG008_AD2E:
 ; including the Frog Suit style (which is totally different)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_SwimV:
-	JSR Decrease_Air_Time
+	
 	LDA <Pad_Input		 
 	BPL PRG008_AD4C	 ; If Player is NOT pressing 'A', jump to PRG008_AD4C
 
@@ -6952,17 +6969,23 @@ Decrease_Air_Time:
 	LDA Counter_1
 	AND #$08
 	BNE Skip_Air_Decrease
+	LDA Air_time			; No air, stop decreasing it!
+	BEQ Skip_Air_Decrease
 	DEC Air_Time
-
+	BNE Skip_Air_Decrease	; Air is 0, kill the player!
+	JSR Player_Die
 Skip_Air_Decrease;
 	RTS
 	
 Increase_Air_Time:
 	; #DAHRKDAIZ - Hijacked for swim
+	LDA Air_Time
+	CMP #$40				; Max air is #$40
+	BEQ Skip_Air_Increase	; If max, skip!
 	LDA Counter_1
-	AND #$FF
-	BNE Skip_Air_Decrease
-	DEC Air_Time
+	AND #$04				; Increase air a bit faster than decrease
+	BNE Skip_Air_Increase
+	INC Air_Time
 
 Skip_Air_Increase:
 	RTS	

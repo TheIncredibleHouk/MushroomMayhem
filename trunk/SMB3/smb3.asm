@@ -1839,7 +1839,8 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 
 				.ds 6	; $0613-$0618 unused
 
-	Bonus_CoinsYVel:	.ds 6	; $0619-$061E UNUSED Bonus game coins Y velocity
+	Player_TopOfWater   .ds 1	l #DAHRKDAIZ indicates player is at the top of water
+	Bonus_CoinsYVel:	.ds 5	; $0619-$061E UNUSED Bonus game coins Y velocity
 	Bonus_CoinsY:		.ds 6	; $061F-$0624 UNUSED Bonus game coins Y
 	Bonus_CoinsXVel:	.ds 6	; $0625-$062A UNUSED Bonus game coins X velocity
 	Bonus_CoinsX:		.ds 6	; $062B-$0630 UNUSED Bonus game coins X
