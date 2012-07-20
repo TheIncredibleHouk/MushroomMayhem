@@ -483,7 +483,9 @@ PRG008_A242:
 	; Set player power up based on current suit on map
 	LDX Player_Current
 	LDA World_Map_Power,X
-	STA <Player_Suit 	
+	STA <Player_Suit 
+	LDA #$40
+	STA Air_Time
 
 	; Set power up's correct palette
 	JSR Level_SetPlayerPUpPal
@@ -532,9 +534,6 @@ PRG008_A27A:
 	STY <Player_YHi
 	STA <Player_Y
 
-	; Level_UnusedFlag = 1 (unused; only set, never read!)
-	LDA #$01
-	STA Level_UnusedFlag
 
 	RTS		 ; Return
 
@@ -612,36 +611,9 @@ LevelInit_PipeExitLeft:
 	JMP PRG008_A324	 ; Jump to PRG008_A324
 
 LevelInit_Airship:
-	LDA #$01	 
-	STA Level_AirshipCtl	 ; Level_AirshipCtl = 1
-	STA Update_Request	 ; Update_Request = 1
 
-	LSR A		 	; Essentially, A = 0
-	STA <Vert_Scroll	; Vert_Scroll = 0
-	RTS			; Return
 
 LevelInit_Airship_Board:
-	LDA #$04
-	STA Level_AirshipCtl	; Level_AirshipCtl = 4
-
-	LDA #SPR_HFLIP
-	STA <Player_FlipBits	; Player face to the right
-	STA <Player_InAir	; Flag Player as "in air"
-
-	LDA #$90
-	STA <Player_YVel	; Player_YVel = $90	; Throw Player upward
-	STA <Player_X		; Player_X = $90
-
-	LDA <Vert_Scroll
-	ADD #$80
-	STA <Player_Y		; Player_Y = Vert_Scroll + $80
-
-	; Carry into Player_YHi if needed
-	LDA #$00	
-	ADC #$00	
-	STA <Player_YHi
-
-	RTS		 ; Return
 
 PRG008_A324:
 	; Set as appropriate from entry
@@ -792,18 +764,13 @@ PRG008_A3C9:
 ; needed to make a functional Player object!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Update:
+	JSR Do_Air_Timer
 	LDA Player_QueueSuit
 	BEQ PRG008_A3FA	 ; If we don't have a suit change queued, jump to PRG008_A3FA
 
 	CMP #$0f
 	BLS PRG008_A3EC	 ; If Player_QueueSuit < $0F (statue enable), jump to PRG008_A3EC
 
-	CMP #$80
-	BNE PRG008_A3DC	 ; If Player_QueueSuit <> $80 (Kuribo's shoe), jump to PRG008_A3DC
-
-	; Kuribo's shoe enable!
-	INC Player_Kuribo	; Set the Player_Kuribo flag
-	BNE PRG008_A3F2	 ; Jump (expectedly always) to PRG008_A3F2
 
 PRG008_A3DC:
 	CMP #$40
@@ -1334,6 +1301,8 @@ Player_ControlJmp:
 ; throwing of fireballs / hammers for some reason!)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Control:
+	LDA #$00
+	STA Top_Of_Water
 	LDA <Player_FlipBits
 	STA Player_FlipBits_OLD
 
@@ -1356,24 +1325,9 @@ PRG008_A6D2:
 	STA <Pad_Holding
 	STA <Pad_Input	
 
-	; #DAHRKDAIZ - custom code created to decrease air meter while swimming
-	; if frog suit or top of water, increase air.
-PRG008_A6DA:				; Added code to increase/decrease the air time based on water
-	LDA FloatLevel_PlayerWaterStat		; if bit 7 is set, we're at the top of the water
-	AND #80				
-	BNE Inc_Air				; Top of water, let's breath!
-	LDA Player_InWater
-	BEQ Inc_Air
-	LDA <Player_Suit
-	CMP #$04
-	BEQ Inc_Air
-	JSR Decrease_Air_Time
-	JMP Normal_Code1:
 
-Inc_Air:
-	JSR Increase_Air_Time
+PRG008_A6DA:
 
-Normal_Code1:
 	LDA Player_Slide
 	BEQ PRG008_A6E5	 	; If Player is NOT sliding down slope, jump to PRG008_A6E5
 
@@ -1628,6 +1582,8 @@ PRG008_A7F1:
 	AND #~PAD_UP
 	STA <Pad_Holding ; Strip out 'Up'
 
+	LDA #$01
+	STA Top_Of_Water
 	TYA		 ; A = original Pad_Holding
 	AND #(PAD_UP | PAD_A)
 	CMP #(PAD_UP | PAD_A)
@@ -6964,28 +6920,43 @@ PRG008_BFF9:
 
 ; Rest of ROM bank was empty
 	
+	; #DAHRKDAIZ - custom code created to decrease air meter while swimming
+	; if frog suit or top of water, increase air.
+Do_Air_Timer:				; Added code to increase/decrease the air time based on water
+	LDA Top_Of_Water
+	BNE Increase_Air_Time
+	LDA Air_Time
+	BEQ Skip_Air_Change
+	AND #$80				
+	BNE Increase_Air_Time				; Top of water, let's breath!
+	LDA Player_InWater
+	BEQ Increase_Air_Time
+	LDA <Player_Suit
+	CMP #$04
+	BEQ Increase_Air_Time
+	BNE Decrease_Air_Time
+
 Decrease_Air_Time:
 	; #DAHRKDAIZ - Hijacked for swim
 	LDA Counter_1
-	AND #$08
-	BNE Skip_Air_Decrease
-	LDA Air_time			; No air, stop decreasing it!
-	BEQ Skip_Air_Decrease
+	AND #$07
+	BNE Skip_Air_Change
+	LDA Air_Time			; No air, stop decreasing it!
+	BMI Skip_Air_Change
 	DEC Air_Time
-	BNE Skip_Air_Decrease	; Air is 0, kill the player!
-	JSR Player_Die
-Skip_Air_Decrease;
-	RTS
+	BNE Skip_Air_Change	; Air is 0, kill the player!
+	JMP Player_Die
+
 	
 Increase_Air_Time:
 	; #DAHRKDAIZ - Hijacked for swim
 	LDA Air_Time
 	CMP #$40				; Max air is #$40
-	BEQ Skip_Air_Increase	; If max, skip!
+	BEQ Skip_Air_Change	; If max, skip!
 	LDA Counter_1
-	AND #$04				; Increase air a bit faster than decrease
-	BNE Skip_Air_Increase
+	AND #$03				; Increase air a bit faster than decrease
+	BNE Skip_Air_Change
 	INC Air_Time
 
-Skip_Air_Increase:
+Skip_Air_Change:
 	RTS	
