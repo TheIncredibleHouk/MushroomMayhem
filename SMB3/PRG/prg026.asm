@@ -300,9 +300,8 @@ Flip_TopBarCards:
 Flip_MidTStatCards:	
 	vaddr $2B20
 
-	.byte $20, $FC, $90, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE	; |WORLD  >>>>>>[P] $  | |  | |  | |  | |
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
-	; Discrepency --------^  (Pattern is ... $F0, $F0 ... in PRG030 status bar graphics)
+	.byte $20, $FE, $90, $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E9, $E9, $E9, $E9	; [M/L]x  000000 c000| etc.
+	.byte $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
 
 	.byte $00
 
@@ -312,8 +311,8 @@ Flip_MidBStatCards:
 	vaddr $2B40
 
 	; Discrepency --------v  (Pattern is ... $FE, $FE ... in PRG030 status bar)  Unimportant; inserts <M> which is replaced anyway
-	.byte $20, $FC, $90, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE	; |WORLD  >>>>>>[P] $  | |  | |  | |  | |
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
+	.byte $20, $FE, $90, $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0	; [M/L]x  000000 c000| etc.
+	.byte $FE, $D3, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
 	; Discrepency --------^  (Pattern is ... $F0, $F0 ... in PRG030 status bar graphics)
 
 	.byte $00
@@ -2851,43 +2850,37 @@ Fill_Air_MT_Done:
 StatusBar_Fill_Coins:
 
 ; #DAHRKDAIZ rewritten to account for 2 byte coins, up to 9999 coins
-	LDA Inventory_Coins
-	CMP #$27					; Max coins at 9999
-	BNE Update_Coins			; #$270F
-	LDA Inventory_Coins + 1
-	CMP #$0F
-	BCS PRG026_B1FC2
 
-StatusBar_Fill_Score:
-	LDA Score_Earned
-	BEQ Done
-	LDX #$05
+StatusBar_Fill_Coin:
+	LDA Coins_Earned
+	BEQ Coin_Done
+	LDX #$03
 	CLC
 	LDY $F001
-Score_Loop:
-	ADC Player_Score, X
-	STA Player_Score, X
-	LDA Player_Score, X
+Coin_Loop:
+	ADC Inventory_Coins, X
+	STA Inventory_Coins, X
+	LDA Inventory_Coins, X
 	CMP #$0A
-	BCC No_Score
+	BCC No_Coin
 	SEC
 	SBC #$0A
-	STA Player_Score, X
+	STA Inventory_Coins, X
 	DEX
-	JMP Score_Loop
+	JMP Coin_Loop
 
-No_Score:
+No_Coin:
 	LDA #$00
-	STA Score_Earned
-	LDX #$05
+	STA Coins_Earned
+	LDX #$03
 
-Score_Loop2:
-	LDA Player_Score, X
+Coin_Loop2:
+	LDA Inventory_Coins, X
 	ORA #$F0
 	STA Status_Bar_Bottom + 9, X
 	DEX
-	BPL Score_Loop2
-Done:
+	BPL Coin_Loop2
+Coin_Done:
 	RTS		 ; Return
 
 
@@ -3032,10 +3025,10 @@ PRG026_B172:	.byte $0F, $42, $3F
 
 StatusBar_Fill_Score:
 	LDA Score_Earned
-	BEQ Done
+	BEQ Score_Done
 	LDX #$05
 	CLC
-	LDY $F001
+	
 Score_Loop:
 	ADC Player_Score, X
 	STA Player_Score, X
@@ -3059,7 +3052,7 @@ Score_Loop2:
 	STA Status_Bar_Bottom + 1, X
 	DEX
 	BPL Score_Loop2
-Done:
+Score_Done:
 	RTS		 ; Return
 
 

@@ -128,13 +128,13 @@ StatusBar	.macro
 
 	;TOP AREA FILLER
 	vaddr \1 + $20
-	.byte $20, $FE, $90, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE	; [M/L]x  000000 c000| etc.
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
+	.byte $20, $FE, $90, $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E9, $E9, $E9, $E9	; [M/L]x  000000 c000| etc.
+	.byte $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
 
 	;BOTTOM AREA FILLER
 	vaddr \1 + $40
-	.byte $20, $FE, $90, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE	; [M/L]x  000000 c000| etc.
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
+	.byte $20, $FE, $90, $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0	; [M/L]x  000000 c000| etc.
+	.byte $FE, $D3, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
 
 	; Sync next three with PRG026 Flip_BottomBarCards
 	vaddr \1 + $60
@@ -3648,7 +3648,7 @@ PRG030_96CB:
 
 Initial_Bar_Display:
 	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $D3, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 	
 Initialize_Status_Bar:
 	LDX #$00
