@@ -1500,8 +1500,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Map_Object_ActXH:	.ds 15	; $051E-$052C For map objects, their actual display X Hi byte (as it may modify, esp. with marchers)
 	Map_Object_Data:	.ds 15	; $052D-$053B For marching objects, 0/1 for their direction, could be anything though
 	Map_March_Count:	.ds 15	; $053C-$054A Simply counts and overflows, but used to determine position of marching map objects (PER ID, not object index ... Actually is seems they go back and forth on that??)
-
-				.ds 60	; $054B-$0586 unused
+						.ds 60	; $054B-$0586 unused
 
 	Map_Objects_Vis:	.ds 15	; $0587-$058E Set for map objects as visible, clear if it's not
 	Map_MarchInit:		.ds 1	; Set when marching data has been initialized (done once per marching cycle on the map)
@@ -1839,8 +1838,7 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 
 				.ds 6	; $0613-$0618 unused
 
-	Player_TopOfWater   .ds 1	l #DAHRKDAIZ indicates player is at the top of water
-	Bonus_CoinsYVel:	.ds 5	; $0619-$061E UNUSED Bonus game coins Y velocity
+	Bonus_CoinsYVel:	.ds 6	; $0619-$061E UNUSED Bonus game coins Y velocity
 	Bonus_CoinsY:		.ds 6	; $061F-$0624 UNUSED Bonus game coins Y
 	Bonus_CoinsXVel:	.ds 6	; $0625-$062A UNUSED Bonus game coins X velocity
 	Bonus_CoinsX:		.ds 6	; $062B-$0630 UNUSED Bonus game coins X
@@ -2014,7 +2012,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	Map_ReturnStatus:	.ds 1	; When 0, level panel is cleared; otherwise, Player is considered to have died (decrements life!)
 	MaxPower_Tick:		.ds 1	; When Player has maximum "power" charge, this counts for the flashing [P]
-	Player_Score:		.ds 3	; $0715 (H)-$0717 (L) treated as 3-byte integer, with least significant zero on display not part of this value 
+	OldPlayer_Score:		.ds 3	; $0715 (H)-$0717 (L) treated as 3-byte integer, with least significant zero on display not part of this value 
 
 				.ds 1	; $0718 unused
 
@@ -2730,12 +2728,13 @@ CFIRE_LASER		= $15	; Laser fire
 	; C = Warp Whistle
 	; D = Music Box
 	Inventory_Items:	.ds 4*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
-	Inventory_Cards:	.ds 1	; $7D9C-$7D9E Mario, 3 cards
-	Inventory_Score:	.ds 3	; $7D9F-$7DA1 Mario, 3 byte score
-	Inventory_Coins:	.ds 2	; Mario's coins
+	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
+	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
+	Inventory_Coins:	.ds 4	; Mario's coins
 	Air_Time:			.ds 1	;
 
-	Inventory_Items2:	.ds 4*7	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
+	Top_Of_Water:		.ds 1	;
+	Inventory_Items2:	.ds 27	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
 	Inventory_Cards2:	.ds 3	; $7DBF-$7DC1 Luigi, 3 cards
 	Inventory_Score2:	.ds 3	; $7DC2-$7DC4 Luigi, 3 byte score
 	Inventory_Coins2:	.ds 1	; Luigi's coins
@@ -2756,8 +2755,9 @@ CFIRE_LASER		= $15	; Laser fire
 
 	Status_Bar_Top:		.ds 28 ;
 	Status_Bar_Bottom:	.ds 28	;
-	Status_Bar_Render_Toggle: ds 1;
-	Unused:	.ds 72	; $7E02-$7E81 Records coins and 1-ups grabbed, so they don't come back if you switch areas
+	Status_Bar_Render_Toggle: .ds 1;
+	Player_Score:	.ds 6;
+	Unused:			.ds 66	; $7E02-$7E81 Records coins and 1-ups grabbed, so they don't come back if you switch areas
 
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1
