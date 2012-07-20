@@ -370,6 +370,10 @@ PF4D:	.byte $F1, $F1, $F1, $35, $37, $F1
 PF4E:	.byte $F1, $F1, $F1, $0F, $3F, $F1
 PF4F:	.byte $19, $1B, $F1, $1D, $21, $F1
 PF50:	.byte $19, $1B, $F1, $1D, $21, $23
+ShellAnim1:		.byte $F1, $F1, $F1, $35, $37, $F1
+ShellAnim2:		.byte $F1, $F1, $F1, $1D, $1F, $F1
+ShellAnim3:		.byte $F1, $F1, $F1, $39, $3B, $F1
+ShellAnim4:		.byte $F1, $F1, $F1, $3D, $3F, $F1
 
 	; Selects a VROM page offset per Player_Frame
 Player_FramePageOff:
@@ -520,6 +524,33 @@ PRG029_CF1E:
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
 
+	LDA Player_Shell			; If in shell, override the animation
+	BEQ Draw_Player_Sprites
+	LDA $F000
+	TXA
+	PHA							; Save X
+	LDA Counter_1
+	AND #$06
+	LSR A
+	TAX
+	LDA #-$06
+	
+Add_Six_Loop:
+	CLC	
+	ADC #$06
+	DEX
+	BPL Add_Six_Loop
+	STA DAIZ_TEMP1
+	LDA #LOW(ShellAnim1 - 5)
+	CLC	
+	ADC DAIZ_TEMP1
+	STA <Player_SprWorkL
+	LDA #HIGH(ShellAnim1)
+	STA <Player_SprWorkH
+	PLA
+	TAX
+	JMP PRG029_CF2F
+Draw_Player_Sprites:
 	; X = Player_Frame
 	LDA SPPF_Offsets,X	; Get offset value to sprite's pattern set
 	ASL A
