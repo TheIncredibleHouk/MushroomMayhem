@@ -40,7 +40,7 @@ Player_WalkFramesByPUp:
 	.byte PF_WALKBIG_BASE, PF_WALKBIG_BASE+1, PF_WALKBIG_BASE+2, PF_WALKBIG_BASE+1		; 2 - Fire
 	.byte PF_WALKSPECIAL_BASE, PF_WALKSPECIAL_BASE+1, PF_WALKSPECIAL_BASE+2, PF_WALKSPECIAL_BASE+1	; 3 - Leaf
 	.byte PF_WALKSPECIAL_BASE, PF_WALKSPECIAL_BASE+1, PF_WALKSPECIAL_BASE+2, PF_WALKSPECIAL_BASE+1	; 4 - Frog
-	.byte PF_WALKSPECIAL_BASE, PF_WALKSPECIAL_BASE+1, PF_WALKSPECIAL_BASE+2, PF_WALKSPECIAL_BASE+1	; 5 - Tanooki
+	.byte PF_WALKBIG_BASE, PF_WALKBIG_BASE+1, PF_WALKBIG_BASE+2, PF_WALKBIG_BASE+1		; 5 - Tanooki
 	.byte PF_WALKBIG_BASE, PF_WALKBIG_BASE+1, PF_WALKBIG_BASE+2, PF_WALKBIG_BASE+1		; 6 - Hammer
 
 	; Frames used during the "power up" sequence from small -> Big
@@ -131,7 +131,7 @@ Airship_JumpFrameByPup:
 	.byte PF_JUMPBIG		; Fire
 	.byte PF_JUMPRACCOON		; Leaf
 	.byte PF_WALKSPECIAL_BASE+2	; Frog
-	.byte PF_JUMPRACCOON		; Tanooki
+	.byte PF_JUMPBIG		; Tanooki
 	.byte PF_JUMPBIG		; Hammer
 
 Player_VibeDisableFrame:
@@ -140,7 +140,7 @@ Player_VibeDisableFrame:
 	.byte PF_WALKBIG_BASE+2		; Fire
 	.byte PF_WALKSPECIAL_BASE+2	; Leaf
 	.byte PF_WALKSPECIAL_BASE	; Frog
-	.byte PF_WALKSPECIAL_BASE+2	; Tanooki
+	.byte PF_WALKBIG_BASE+2	; Tanooki
 	.byte PF_WALKBIG_BASE+2		; Hammer
 
 	; Unused data?
@@ -777,7 +777,7 @@ PRG008_A3DC:
 	BEQ PRG008_A3E7	 ; If Player_QueueSuit = $40 (make a splash), jump to PRG008_A3E7
 
 	LDA #$c0
-	STA Player_Statue	; Player_Statue = $C0
+	STA Player_Shell	; Player_Shell = $C0
 	BNE PRG008_A3F2	 	; Jump (technically always) to PRG008_A3F2
 
 PRG008_A3E7:
@@ -1974,13 +1974,10 @@ Swim_SmallBigLeaf:
 	RTS		 ; Return
 
 GndMov_Big:
-	JSR Increase_Air_Time
 	JSR Player_GroundHControl ; Do Player left/right input control
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
 	JSR Player_SoarJumpFallFrame ; Do Player soar/jump/fall frame
 	RTS		 ; Return
-
-	RTS		 ; Return?
 
 GndMov_FireHammer:
 	JSR Player_GroundHControl ; Do Player left/right input control
@@ -2228,12 +2225,10 @@ GndMov_Tanooki:
 	JSR Player_TanookiStatue  ; Change into/maintain Tanooki statue (NOTE: Will not return here if statue!)
 	JSR Player_GroundHControl ; Do Player left/right input control
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
-	JSR Player_AnimTailWag ; Do Player's tail animations
-	JSR Player_TailAttackAnim ; Do Player's tail attack animations
+	JSR Player_SoarJumpFallFrame ; Do Player soar/jump/fall frame
 	RTS		 ; Return
 
-Swim_Tanooki:
-	JSR Player_TanookiStatue ; Change into/maintain Tanooki statue (NOTE: Will not return here if statue!)
+Swim_Tanooki:	
 	JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
 	JSR Player_SwimV ; Do Player up/down swimming action
 	JSR Player_SwimAnim ; Do Player swim animations
@@ -2257,6 +2252,11 @@ Player_UphillSpeedVals:
 	.byte $00, $16, $15, $14, $13, $12, $11, $10, $0F, $0E, $0D
 
 Player_GroundHControl:
+	LDA Player_Shell
+	BEQ Grnd_No_Shell
+	RTS
+
+Grnd_No_Shell:
 	LDA Player_UphillFlag
 	BEQ PRG008_AB56	 ; If Player is not going up hill, jump to PRG008_AB56
 
@@ -3264,88 +3264,99 @@ PRG008_AFAD:
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_TanookiStatue:
-	LDA <Pad_Holding		 
-	AND #PAD_DOWN
-	TAY
-	BEQ PRG008_AFE3	 ; If Player is NOT pressing down, jump to PRG008_AFE3
-
-	BIT <Pad_Input
-	BVC PRG008_AFE3	 ; If Player is NOT pressing 'B', jump to PRG008_AFE3
-
-	LDA Player_Statue
-	BNE PRG008_AFE3	 ; If Player is transformed into a statue, jump to PRG008_AFE3
-
-	JSR Sound_StatueSwitch	 ; Play statue transformation sound
-
-	LDA #$20
-	STA Player_QueueSuit	 ; Player_QueueSuit = $20
-
-	; Not really "suit lost", but same poof effect
-	LDA #$17
-	STA Player_SuitLost	 ; Player_SuitLost = $17
-	BNE PRG008_B010	 	; Jump (technically always), jump to PRG008_B010
-
-PRG008_AFCD:
-	LDA #PF_STATUE
-	STA <Player_Frame 	; Statue frame
-
+	LDA Player_XVel
+	BEQ Tanooki_RTS				; If XVel is not 0 and holding down, we're in shell mode
+	LDA <Pad_Holding
+	AND #(PAD_DOWN | PAD_LEFT | PAD_RIGHT)
+	CMP #PAD_DOWN
+	BEQ Tanooki_RTS
 	LDA #$00
-	STA <Player_XVel	; Halt horizontal movement
 
-	LDA <Player_InAir
-	BEQ PRG008_AFE0	 	; If Player is not mid air, jump to PRG008_AFE0
-
-	; Fall fast as statue
-	LDA <Player_YVel
-	ADD #$07
-	STA <Player_YVel
-
-PRG008_AFE0:
-
-	; Pull return address, i.e. don't do other things normal to Tanooki suit
-	PLA
-	PLA
-
-	RTS		 ; Return
-
-PRG008_AFE3:
-	LDA Player_Statue
-	BEQ PRG008_B010	 ; If Player is not a statue, jump to PRG008_B010 (RTS)
-
-	CMP #$01
-	BEQ PRG008_AFFB	 ; If Tanooki statue is about to run out, jump to PRG008_AFFB
-
-	CMP #$60
-	BNE PRG008_AFF5	 ; If Player_Statue <> $60, jump to PRG008_AFF5
-
-	; Player_FlashInv = $60 (flashing with remainder of statue)
-	LDA #$60
-	STA Player_FlashInv
-
-PRG008_AFF5:
-	DEC Player_Statue ; Player_Statue--
-
-	TYA
-	BNE PRG008_AFCD	 ; If Player is pressing DOWN, jump to PRG008_AFCD
-
-PRG008_AFFB:
-
-	; Clear Player_Statue / Player_FlashInv
-	LDA #$00
-	STA Player_Statue
-	STA Player_FlashInv
-
-	JSR Level_SetPlayerPUpPal	; Set power up's correct palette
-	JSR Sound_StatueSwitch	 	; Play statue change sound
-
-	; Poof like Player lost the suit
-	LDA #$17
-	STA Player_SuitLost
-
-	BNE PRG008_AFCD	 ; Jump (technically always) to PRG008_AFCD
-
-PRG008_B010:
-	RTS		 ; Return
+Tanooki_RTS:
+	STA Player_Shell
+	RTS
+;	LDA <Pad_Holding		 
+;	AND #PAD_DOWN
+;	TAY
+;	BEQ PRG008_AFE3	 ; If Player is NOT pressing down, jump to PRG008_AFE3
+;
+;	BIT <Pad_Input
+;	BVC PRG008_AFE3	 ; If Player is NOT pressing 'B', jump to PRG008_AFE3
+;
+;	LDA Player_Shell
+;	BNE PRG008_AFE3	 ; If Player is transformed into a statue, jump to PRG008_AFE3
+;
+;	;JSR Sound_StatueSwitch	 ; Play statue transformation sound
+;
+;	;LDA #$20
+;	;STA Player_QueueSuit	 ; Player_QueueSuit = $20
+;
+;	; Not really "suit lost", but same poof effect
+;	;LDA #$17
+;	;STA Player_SuitLost	 ; Player_SuitLost = $17
+;	;BNE PRG008_B010	 	; Jump (technically always), jump to PRG008_B010
+;
+;PRG008_AFCD:
+;	LDA #PF_STATUE
+;	STA <Player_Frame 	; Statue frame
+;
+;	LDA #$00
+;	STA <Player_XVel	; Halt horizontal movement
+;
+;	LDA <Player_InAir
+;	BEQ PRG008_AFE0	 	; If Player is not mid air, jump to PRG008_AFE0
+;
+;	; Fall fast as statue
+;	LDA <Player_YVel
+;	ADD #$07
+;	STA <Player_YVel
+;
+;PRG008_AFE0:
+;
+;	; Pull return address, i.e. don't do other things normal to Tanooki suit
+;	PLA
+;	PLA
+;
+;	RTS		 ; Return
+;
+;PRG008_AFE3:
+;	LDA Player_Shell
+;	BEQ PRG008_B010	 ; If Player is not a statue, jump to PRG008_B010 (RTS)
+;
+;	CMP #$01
+;	BEQ PRG008_AFFB	 ; If Tanooki statue is about to run out, jump to PRG008_AFFB
+;
+;	CMP #$60
+;	BNE PRG008_AFF5	 ; If Player_Shell <> $60, jump to PRG008_AFF5
+;
+;	; Player_FlashInv = $60 (flashing with remainder of statue)
+;	LDA #$60
+;	STA Player_FlashInv
+;
+;PRG008_AFF5:
+;	DEC Player_Shell ; Player_Shell--
+;
+;	TYA
+;	BNE PRG008_AFCD	 ; If Player is pressing DOWN, jump to PRG008_AFCD
+;
+;PRG008_AFFB:
+;
+;	; Clear Player_Shell / Player_FlashInv
+;	LDA #$00
+;	STA Player_Shell
+;	STA Player_FlashInv
+;
+;	JSR Level_SetPlayerPUpPal	; Set power up's correct palette
+;	JSR Sound_StatueSwitch	 	; Play statue change sound
+;
+;	; Poof like Player lost the suit
+;	LDA #$17
+;	STA Player_SuitLost
+;
+;	BNE PRG008_AFCD	 ; Jump (technically always) to PRG008_AFCD
+;
+;PRG008_B010:
+;	RTS		 ; Return
 
 
 Sound_StatueSwitch:
@@ -4503,6 +4514,24 @@ PRG008_B536:
 	TYA		
 	BNE PRG008_B53B	 ; If Y <> 0, jump to PRG008_B53B
 
+	
+	; Player hit wall; stop!
+	PHA
+	LDA $F001
+	LDA Player_Shell			; If in a shell we bounce in the opposite direction
+	BEQ Do_Wall_Stop
+	PLA
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+	LDA <Player_XVel
+	EOR #$FF
+	ADC #$01
+	BNE Normal_Wall_Stop
+
+Do_Wall_Stop:
+	PLA
+Normal_Wall_Stop:
 	STA <Player_XVel ; Otherwise, halt Player horizontally
 
 PRG008_B53B:
@@ -5706,7 +5735,6 @@ PRG008_BAB1:
 	TYA		 
 	BNE PRG008_BABC	 ; If Y <> 0, jump to PRG008_BAB1
 
-	; Player hit wall; stop!
 	STA <Player_XVel
 	STA Player_Slide
 	INC Player_WalkAnimTicks
@@ -6087,7 +6115,7 @@ PlantInfest_MiniPipes:	.byte TILE5_MINIPIPE_TOP2, TILE5_MINIPIPE_TOP1
 
 Player_DoSpecialTiles:
 
-	LDA Player_Statue
+	LDA Player_Shell
 	ORA Player_TailAttack
 	ORA Player_Flip	 
 	BNE PRG008_BCA7	 ; If Player is a Tanooki Statue, tail attacking, or invincibility flipping, jump to PRG008_BCA7
