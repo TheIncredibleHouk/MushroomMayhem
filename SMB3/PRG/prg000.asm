@@ -611,46 +611,7 @@ TimeBonus_Score:
 
 ; $C412 
 DoTimeBonus:
-	LDA SndCur_Music1	 
-	BNE PRG000_C446	 ; If any music playing, jump to PRG000_C446 (RTS)
 
-	LDY #$01	 ; Y = 1 (most significant or middle digit of time is non-zero)
-
-	LDA Level_TimerMSD
-	ORA Level_TimerMid
-	BNE PRG000_C422	 ; If most significant or middle digit of time is non-zero, jump to PRG000_C422
-
-	INY		 ; Y = 2 (most significant and middle digit of time are zero)
-
-PRG000_C422:
-	ORA Level_TimerLSD
-	BEQ PRG000_C446	 ; If all time digits are zero, jump to PRG000_C446 (RTS)
-
-	TYA		 ; A = Y
-	TAX		 ; X = A = 1 or 2
-
-	LDA (TimeBonus_Score - 1),X	 ; Get appropriate score bonus
-	STA Score_Earned	 	; Push into score buffer
- 
-PRG000_C42F:
-	DEC Level_TimerMSD,X	; Decrement off middle or least significant digit
-	BPL PRG000_C43C	 	; If digit is >= 0, jump to PRG000_C43C
-
-	LDA #$09	 
-	STA Level_TimerMSD,X	; Otherwise, reload it with 9
-
-	DEX		 ; X--
-	BPL PRG000_C42F	 ; While X >= 0, loop!
-
-PRG000_C43C:
-	LDX <SlotIndexBackup	 ; Restore 'X' as object slot index
-
-	; Play tick sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP	
-	STA Sound_QLevel1
-
-PRG000_C446:
 	RTS		 ; Return
 
 

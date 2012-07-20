@@ -2749,7 +2749,7 @@ Timer_NoChange:
 PRG026_AFF2:
 	LDA Level_TimerMSD,X	; Get digit
 	ORA #$f0	 	; Offset as tile
-	STA StatusBar_Time,X	; Store it into StatusBar_Time
+	STA Status_Bar_Bottom + 15,X	; Store it into StatusBar_Time
 	DEX		 	; X--
 	BPL PRG026_AFF2	 	; While X >= 0, loop!
 	RTS		 ; Return
@@ -2806,26 +2806,30 @@ StatusBar_Fill_Air_MT:
 	LDA Air_Time
 	LSR A
 	LSR A
+	LSR A
+	LSR A
 	TAX
-	BEQ ***
+	BEQ Paritial_Air
 Full_Air_Loop:				; #DAHRKDAIZ fill parts that display as full 8 pixels
 	LDA #$E9
 	STA Status_Bar_Top + 9, Y
 	INY
 	DEX
-	BPL Full_Air_Loop
+	BNE Full_Air_Loop
 	
 	CPY #$04				; Did it fill all the way? we're done!
 	BEQ Fill_Air_MT_Done
 
+Paritial_Air:
 							; Not filled all the way, let's fill the partial bar
 	LDA Air_Time
-	AND #07
+	AND #$0F
+	LSR A
 	ADC #$E1				; offset the tile number
 	STA Status_Bar_Top + 9, Y
 	INY
 
-	LDA #$EA
+	LDA #$E1
 
 Empty_Air_Loop:
 	CPY #$04				
@@ -2854,70 +2858,36 @@ StatusBar_Fill_Coins:
 	CMP #$0F
 	BCS PRG026_B1FC2
 
-Update_Coins:
-	LDA Inventory_Coins+1	; Get least significant byte of score
-	ADD Coins_Earned	; Add in any earned points 
-	STA Inventory_Coins+1	; Store into least significant digit
-	STA <Temp_Var1		; Keep LSD in Temp_Var1	 
+StatusBar_Fill_Score:
+	LDA Score_Earned
+	BEQ Done
+	LDX #$05
+	CLC
+	LDY $F001
+Score_Loop:
+	ADC Player_Score, X
+	STA Player_Score, X
+	LDA Player_Score, X
+	CMP #$0A
+	BCC No_Score
+	SEC
+	SBC #$0A
+	STA Player_Score, X
+	DEX
+	JMP Score_Loop
 
-	LDA Inventory_Coins	; Get next higher byte
-	ADC #$00 	; Add score and carry to of earned high byte to middle score byte
-	STA Inventory_Coins	; Store result
-	STA <Temp_Var2		; Keep middle digit in Temp_Var2
+No_Score:
+	LDA #$00
+	STA Score_Earned
+	LDX #$05
 
-	; This giant loop is how you use an 8-bit CPU to display
-	; 4* digits of coins from a 2-byte integer :)
-
-	LDY #$00	 ; Y = 0
-	LDX #$03	 ; X = 3	0-5, 6 digits
-PRG026_B19A2:
-	LDA <Temp_Var1	 ; Get LSD -> A
-
-	; I haven't taken time yet to discern this magic yet
-	SUB PRG026_B16C,X
-	STA <Temp_Var1	
-	LDA <Temp_Var2	
-	SBC PRG026_B166,X
-	STA <Temp_Var2	
-
-	BCC PRG026_B1B82	 	; If the subtraction didn't go negative, jump to PRG026_B1B8
-
-	INC Score_Temp	 ; Score_Temp++
-
-	JMP PRG026_B19A2	 ; Jump to PRG026_B19A
-
-PRG026_B1B82:
-	LDA <Temp_Var1
-
-	; I haven't taken time yet to discern this magic yet
-	ADD PRG026_B16C,X
-	STA <Temp_Var1	
-	LDA <Temp_Var2	
-	ADC PRG026_B166,X
-	STA <Temp_Var2	
-	LDA <Temp_Var3	
-	ADC PRG026_B160,X
-	STA <Temp_Var3	
-
-	LDA Score_Temp	 
-	ADD #$f0	 	; A = Score_Temp + $F0 (tile to display)
-	STA Status_Bar_Bottom + 9,Y	; Store it as next digit
-
-	LDA #$00	 	; A = 0
-	STA Score_Temp	 	; Score_Temp = 0
-
-	INY		 	; Y++
-	DEX		 	; X--
-	BPL PRG026_B19A2	 	; While digits remain, loop!
-
-	LDA Status_Bar_Bottom + 9	; First byte of status bar's score
-	CMP #$fa	 
-	BLT PRG026_B1FC2	 	; If tile is less than $FA (overflow occurred!), jump to PRG026_B1FC
-
-PRG026_B1FC2:
-	; Clear Score_Earned
-	LDA #$00	 
-	STA Coins_Earned	
+Score_Loop2:
+	LDA Player_Score, X
+	ORA #$F0
+	STA Status_Bar_Bottom + 9, X
+	DEX
+	BPL Score_Loop2
+Done:
 	RTS		 ; Return
 
 
@@ -3061,96 +3031,35 @@ PRG026_B16C:	.byte $01, $0A, $64, $E8, $10, $A0
 PRG026_B172:	.byte $0F, $42, $3F 
 
 StatusBar_Fill_Score:
-	LDA Player_Score+2	; Get least significant byte of score
-	ADD Score_Earned	; Add in any earned points 
-	STA Player_Score+2	; Store into least significant digit
-	STA <Temp_Var1		; Keep LSD in Temp_Var1	 
+	LDA Score_Earned
+	BEQ Done
+	LDX #$05
+	CLC
+	LDY $F001
+Score_Loop:
+	ADC Player_Score, X
+	STA Player_Score, X
+	LDA Player_Score, X
+	CMP #$0A
+	BCC No_Score
+	SEC
+	SBC #$0A
+	STA Player_Score, X
+	DEX
+	JMP Score_Loop
 
-	LDA Player_Score+1	; Get next higher byte
-	ADC Score_Earned+1 	; Add score and carry to of earned high byte to middle score byte
-	STA Player_Score+1	; Store result
-	STA <Temp_Var2		; Keep middle digit in Temp_Var2
+No_Score:
+	LDA #$00
+	STA Score_Earned
+	LDX #$05
 
-	LDA Player_Score	; Get most significant byte of score
-	ADC #$00	 	; Add in any carry
-	STA Player_Score	; Store result
-	STA <Temp_Var3		; Keep MSD in Temp_Var3
-
-	; This giant loop is how you use an 8-bit CPU to display
-	; 6* digits of score from a 3-byte integer :)
-	; * - The rightmost/least significant 0 is a placeholder, and 
-	; will always be zero, thus score is always a multiple of 10
-	LDY #$00	 ; Y = 0
-	LDX #$05	 ; X = 5	0-5, 6 digits
-PRG026_B19A:
-	LDA <Temp_Var1	 ; Get LSD -> A
-
-	; I haven't taken time yet to discern this magic yet
-	SUB PRG026_B16C,X
-	STA <Temp_Var1	
-	LDA <Temp_Var2	
-	SBC PRG026_B166,X
-	STA <Temp_Var2	
-	LDA <Temp_Var3	
-	SBC PRG026_B160,X
-	STA <Temp_Var3	
-
-	BCC PRG026_B1B8	 	; If the subtraction didn't go negative, jump to PRG026_B1B8
-
-	INC Score_Temp	 ; Score_Temp++
-
-	JMP PRG026_B19A	 ; Jump to PRG026_B19A
-
-PRG026_B1B8:
-	LDA <Temp_Var1
-
-	; I haven't taken time yet to discern this magic yet
-	ADD PRG026_B16C,X
-	STA <Temp_Var1	
-	LDA <Temp_Var2	
-	ADC PRG026_B166,X
-	STA <Temp_Var2	
-	LDA <Temp_Var3	
-	ADC PRG026_B160,X
-	STA <Temp_Var3	
-
-	LDA Score_Temp	 
-	ADD #$f0	 	; A = Score_Temp + $F0 (tile to display)
-	STA StatusBar_Score,Y	; Store it as next digit
-
-	LDA #$00	 	; A = 0
-	STA Score_Temp	 	; Score_Temp = 0
-
-	INY		 	; Y++
-	DEX		 	; X--
-	BPL PRG026_B19A	 	; While digits remain, loop!
-
-	LDA StatusBar_Score	; First byte of status bar's score
-	CMP #$fa	 
-	BLT PRG026_B1FC	 	; If tile is less than $FA (overflow occurred!), jump to PRG026_B1FC
-
-	; Tile is greater than $FA...
-	LDX #$02	 	; X = 2
-PRG026_B1E9:
-	LDA PRG026_B172,X
-	STA Player_Score,X
-
-	DEX		 ; X--
-	BPL PRG026_B1E9	 ; While X >= 0, loop!
-
-	; All 9s across score when overflowed
-	LDX #$05	 ; X = 5
-	LDA #$f9	 ; A = $F9
-PRG026_B1F6:
-	STA StatusBar_Score,X	 
-	DEX		 ; X--
-	BPL PRG026_B1F6	 ; While X >= 0, loop 
-
-PRG026_B1FC:
-	; Clear Score_Earned
-	LDA #$00	 
-	STA Score_Earned	
-	STA Score_Earned+1	
+Score_Loop2:
+	LDA Player_Score, X
+	ORA #$F0
+	STA Status_Bar_Bottom + 1, X
+	DEX
+	BPL Score_Loop2
+Done:
 	RTS		 ; Return
 
 
