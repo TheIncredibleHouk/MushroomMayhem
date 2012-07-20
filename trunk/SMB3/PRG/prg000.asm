@@ -3770,9 +3770,9 @@ PRG000_D267:
 
 	; Player is in water (can't stomp in water) OR attribute 3 bit 5 is set (can't stomp anyway)...
 
-	LDA Player_Kuribo
-	ORA Player_Shell
-	BNE PRG000_D272	 ; If in Kuribo's shoe or transformed into statue, ignore this and jump to PRG000_D272
+;	LDA Player_Kuribo
+;	ORA Player_Shell
+;	BNE PRG000_D272	 ; If in Kuribo's shoe or transformed into statue, ignore this and jump to PRG000_D272
 
 	JMP PRG000_D355	 ; Jump to PRG000_D355 (hurt Player!)
 
@@ -3787,8 +3787,9 @@ PRG000_D272:
 
 	; Attribute set 2 bit 2 NOT set... (object cares about being stomped)
 
-	LDA Player_Shell
-	ORA Player_Kuribo
+	LDA #$00
+;	LDA Player_Shell
+;	ORA Player_Kuribo
 	BEQ PRG000_D29B	 	; If Player is NOT a statue and NOT in a Kuribo's shoe, jump to PRG000_D29B
 
 	; Player is a statue or in a Kuribo's shoe...
@@ -3953,7 +3954,7 @@ Object_HoldKickOrHurtPlayer:
 	BNE PRG000_D355	 ; If object state is not Shelled, jump to PRG000_D355 (hurt Player!)
 
 	LDA Player_Kuribo
-	ORA Player_Shell
+;	ORA Player_Shell
 	BEQ PRG000_D343	 ; If Player is NOT in Kuribo's shoe and NOT in a statue, jump to PRG000_D343
 	JMP PRG000_D2A2	 ; Otherwise, jump to PRG000_D2A2
 
@@ -3979,7 +3980,7 @@ PRG000_D355:
 	; Player potentially gonna get hurt!
 
 	LDA Player_FlashInv	; If Player is flashing from getting hit recently...
-	ORA Player_Shell	; ... or Player is a statue ...
+;	ORA Player_Shell	; ... or Player is a statue ...
 	ORA Objects_Timer2,X	; ... or this object's timer2 is not expired ...
 	ORA Player_StarInv	; ... or Player is invincible by Star Man ...
 	BNE PRG000_D39F	 	; ... then jump to PRG000_D39F (RTS)
@@ -5276,6 +5277,7 @@ PRG000_D8EB:
 	STA Objects_PlayerHitStat,X
 
 	LDA Player_StarInv
+	ORA Player_Shell
 	BEQ PRG000_D922	 ; If Player is NOT invincible, jump to PRG000_D922
 
 	; Player is invincible...
@@ -5315,10 +5317,12 @@ PRG000_D920:
 PRG000_D922:
 
 	; For all objects where bit 7 is set in their attributes...
-
+	LDA Player_Shell
+	BNE Do_Hit_Stuff
 	LDA <Temp_Var16	 ; Returns 0 or 1, depending on original entry point
 	BNE PRG000_D929	 ; If it was 1 (do not respond to hit), jump to PRG000_D929
 
+Do_Hit_Stuff:
 	; Do hit routine
 	JSR Object_DoCollision ; Otherwise...
 
@@ -5527,7 +5531,7 @@ SMB3J_SuitLossFrame:	.byte $00, $00, $00, $00, $01, $02, $03
 Player_GetHurt:
 	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
-	ORA Player_Shell		; ... a statue ...
+;	ORA Player_Shell		; ... a statue ...
 	ORA Player_StarInv		; ... invincible by star ...
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGame		; ... gameplay halted ...
