@@ -160,6 +160,7 @@ LoadLevel_Generator_TS14:
 
 	JSR DynJump
 
+
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word LoadLevel_Slope45T2B		;  0 - Above ground (UG only) 45 degree slope top-to-bottom
 	.word LoadLevel_Slope45B2T		;  1 - Above ground (UG only) 45 degree slope bottom-to-top

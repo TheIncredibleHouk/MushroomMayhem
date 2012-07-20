@@ -526,7 +526,6 @@ PRG029_CF1E:
 
 	LDA Player_Shell			; If in shell, override the animation
 	BEQ Draw_Player_Sprites
-	LDA $F000
 	TXA
 	PHA							; Save X
 	LDA Counter_1
@@ -2609,14 +2608,15 @@ OneTile_ChangeToTile:
 
 	; Defines each of the four 8x8 patterns that make up the tile
 	; Too bad Nintendo couldn't keep things like this in one spot :)
+	; #DAHRKDAIZ Tile Replacments brick coin ice, etc
 OneTile_ChangeToPatterns:
 	.byte $05, $07, $06, $08	; $01 - CHNGTILE_DELETECOIN
-	.byte $05, $07, $06, $08	; $02 - CHNGTILE_DELETETOBG
-	.byte $F4, $F6, $FE, $FE	; $03 - CHNGTILE_TOFRZWATER
-	.byte $C7, $C7, $FE, $FE	; $04 - CHNGTILE_STANDINGWATER #DAHRKDAIZ
+	.byte $FF, $FF, $FF, $FF	; $02 - CHNGTILE_DELETETOBG
+	.byte $F4, $F6, $F8, $F8	; $03 - CHNGTILE_TOFRZWATER
+	.byte $87, $87, $F8, $F8	; $04 - CHNGTILE_STANDINGWATER #DAHRKDAIZ
 	.byte $B8, $BA, $B9, $BB	; $05 - CHNGTILE_TONOTEBLOCK
 	.byte $B8, $BA, $B9, $BB	; $06 - CHNGTILE_COINHEAVEN
-	.byte $B4, $B6, $B5, $B7	; $07 - CHNGTILE_TOBRICK
+	.byte $BC, $BE, $BD, $BF	; $07 - CHNGTILE_TOBRICK
 	.byte $D8, $DA, $D9, $DB	; $08 - CHNGTILE_TOMETALPLATE
 	.byte $FF, $FF, $E6, $E7	; $09 - CHNGTILE_PSWITCHSTOMP
 	.byte $60, $61, $6D, $6F	; $0A
@@ -3182,6 +3182,7 @@ Backup_Curr_Player_Pal:
 
 ; #DAHRKDAIZ - Restores the current player palette up after the rainbow cycle
 Restore_Curr_Player_Pal:
+	LDA $F000
 	LDA Player_Pal_Backup
 	STA (Palette_Buffer + $11)
 	LDA (Player_Pal_Backup + $01)

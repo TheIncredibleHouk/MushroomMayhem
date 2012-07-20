@@ -1564,7 +1564,7 @@ ObjHit_PUp1UpMush:
 	RTS		 ; Return
 
 Star_Palettes:
-	.byte SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL3
+	.byte SPR_PAL0, SPR_PAL1, SPR_PAL1, SPR_PAL3
 
 ObjInit_StarOrSuit:
 	JSR Mushroom_SetFall	 ; Figure the way that the star should fall
@@ -2093,8 +2093,8 @@ ObjHit_FireFlower:
 	JMP PRG001_A897	 ; Otherwise, jump to PRG001_A897
 
 PRG001_AA05:
-	CMP #$02
-	BEQ PRG001_AA13	 ; If Player is already Fire, jump to PRG001_AA13
+;	CMP #$02
+;	BEQ PRG001_AA13	 ; If Player is already Fire, jump to PRG001_AA13
 
 	; Uses the "invincibility wear-off" as the Power Up effect
 	LDA #$1f
