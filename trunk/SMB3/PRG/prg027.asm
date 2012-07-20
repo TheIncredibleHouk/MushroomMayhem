@@ -1030,7 +1030,7 @@ PlayerStand_Frame:
 	.byte PF_WALKBIG_BASE+2		; Fire
 	.byte PF_WALKSPECIAL_BASE+2	; Leaf
 	.byte PF_FROGHOP_BASE		; Frog
-	.byte PF_WALKSPECIAL_BASE+2	; Tanooki
+	.byte PF_WALKBIG_BASE+2		; Tanooki
 	.byte PF_WALKBIG_BASE+2		; Hammer
 
 TAndK_PlayerFallLandDraw:

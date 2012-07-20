@@ -2856,7 +2856,7 @@ StatusBar_Fill_Coin:
 	BEQ Coin_Done
 	LDX #$03
 	CLC
-	LDY $F001
+
 Coin_Loop:
 	ADC Inventory_Coins, X
 	STA Inventory_Coins, X

@@ -557,7 +557,7 @@ MuncherJelectroSet:
 	; Bit 1 (2) = NOT able to slide on slopes
 PowerUp_Ability:
 	;     Small, Big, Fire, Leaf, Frog, Tanooki, Hammer
-	.byte $00,   $00, $00,  $01,  $02,  $01,     $02
+	.byte $00,   $00, $00,  $01,  $02,  $00,     $00
 
 	; Velocities set to X/Y directly to Player for what might be a now-unused debug routine of sorts
 PRG000_C3E7:
@@ -3771,7 +3771,7 @@ PRG000_D267:
 	; Player is in water (can't stomp in water) OR attribute 3 bit 5 is set (can't stomp anyway)...
 
 	LDA Player_Kuribo
-	ORA Player_Statue
+	ORA Player_Shell
 	BNE PRG000_D272	 ; If in Kuribo's shoe or transformed into statue, ignore this and jump to PRG000_D272
 
 	JMP PRG000_D355	 ; Jump to PRG000_D355 (hurt Player!)
@@ -3787,7 +3787,7 @@ PRG000_D272:
 
 	; Attribute set 2 bit 2 NOT set... (object cares about being stomped)
 
-	LDA Player_Statue
+	LDA Player_Shell
 	ORA Player_Kuribo
 	BEQ PRG000_D29B	 	; If Player is NOT a statue and NOT in a Kuribo's shoe, jump to PRG000_D29B
 
@@ -3953,7 +3953,7 @@ Object_HoldKickOrHurtPlayer:
 	BNE PRG000_D355	 ; If object state is not Shelled, jump to PRG000_D355 (hurt Player!)
 
 	LDA Player_Kuribo
-	ORA Player_Statue
+	ORA Player_Shell
 	BEQ PRG000_D343	 ; If Player is NOT in Kuribo's shoe and NOT in a statue, jump to PRG000_D343
 	JMP PRG000_D2A2	 ; Otherwise, jump to PRG000_D2A2
 
@@ -3979,7 +3979,7 @@ PRG000_D355:
 	; Player potentially gonna get hurt!
 
 	LDA Player_FlashInv	; If Player is flashing from getting hit recently...
-	ORA Player_Statue	; ... or Player is a statue ...
+	ORA Player_Shell	; ... or Player is a statue ...
 	ORA Objects_Timer2,X	; ... or this object's timer2 is not expired ...
 	ORA Player_StarInv	; ... or Player is invincible by Star Man ...
 	BNE PRG000_D39F	 	; ... then jump to PRG000_D39F (RTS)
@@ -5527,7 +5527,7 @@ SMB3J_SuitLossFrame:	.byte $00, $00, $00, $00, $01, $02, $03
 Player_GetHurt:
 	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
-	ORA Player_Statue		; ... a statue ...
+	ORA Player_Shell		; ... a statue ...
 	ORA Player_StarInv		; ... invincible by star ...
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGame		; ... gameplay halted ...
@@ -5684,7 +5684,7 @@ Player_Die:
 	STA Player_FlashInv
 	STA Player_Kuribo
 	STA Player_StarInv
-	STA Player_Statue
+	STA Player_Shell
 	STA Level_PSwitchCnt
 
 	LDA #$01

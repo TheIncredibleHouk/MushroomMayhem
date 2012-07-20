@@ -2112,7 +2112,7 @@ PRG001_AA13:
 	; Set flower to dead/empty
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X
-	STA Player_Statue	 ; Also kill statue mode if you're in it!
+	STA Player_Shell	 ; Also kill statue mode if you're in it!
 
 	JMP PUp_GeneralCollect	 ; Jump to PUp_GeneralCollect
 
@@ -2575,7 +2575,7 @@ PRG001_AC40:
 PRG001_AC52:
 	; Disable statue
 	LDA #$00
-	STA Player_Statue
+	STA Player_Shell
 
 	JMP PUp_GeneralCollect	 ; Jump to PUp_GeneralCollect
 

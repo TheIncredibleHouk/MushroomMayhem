@@ -3472,7 +3472,7 @@ ObjHit_GoombaInShoe:
 
 	; Goomba not in shoe...
 
-	LDA Player_Statue
+	LDA Player_Shell
 	BNE PRG002_B118	 ; If Player is a statue, jump to PRG002_B118
 
 	; Shoe pickup sound!
