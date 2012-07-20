@@ -1052,7 +1052,7 @@ PowerUp_Palettes:
 	.byte $00, $27, $36, $16	; 2 - Fire Flower
 	.byte $00, $00, $00, $00	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
 	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
-	.byte $00, $17, $36, $0F	; 5 - Tanooki Suit
+	.byte $00, $19, $36, $0F	; 5 - Koopa Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
 	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
 
@@ -2222,7 +2222,7 @@ PRG008_AAD2:
 	RTS		 ; Return
 
 GndMov_Tanooki:
-	JSR Player_TanookiStatue  ; Change into/maintain Tanooki statue (NOTE: Will not return here if statue!)
+	JSR Player_Koopa_Shell  ; Change into/maintain Koopa shell mode
 	JSR Player_GroundHControl ; Do Player left/right input control
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
 	JSR Player_SoarJumpFallFrame ; Do Player soar/jump/fall frame
@@ -3260,11 +3260,11 @@ PRG008_AFAD:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_TanookiStatue
+; Player_Koopa_Shell
 ;
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_TanookiStatue:
+Player_Koopa_Shell:
 	LDA Player_XVel
 	BEQ Tanooki_RTS				; If XVel is not 0 and holding down, we're in shell mode
 	LDA <Pad_Holding
@@ -6409,6 +6409,7 @@ PRG008_BDFD:
 	BEQ PRG008_BE10;
 	CMP #$3F
 	BEQ PRG008_BE10;
+	CMP #$FF			; FRZNWATER ice slick
 
 ; #DAHRKDAIZ - Now do ice world specific
 

@@ -3762,11 +3762,11 @@ TILE1_OBLOCKUL		= $51	; Orange big block upper-left
 TILE1_OBLOCKTH		= $50	; Orange big block top horizontal runner
 TILE1_OBLOCKUR		= $52	; Orange big block upper-right
 
-TILE1_GROUNDTM		= $53	; Ground top middle
+TILE1_GROUNDTM		= $BE	; Ground top middle
 TILE1_GROUNDMM		= $54	; Ground middle-middle
-TILE1_GROUNDTL		= $55	; Ground top left
+TILE1_GROUNDTL		= $BD	; Ground top left
 TILE1_GROUNDML		= $56	; Ground middle-left
-TILE1_GROUNDTR		= $57	; Ground top right
+TILE1_GROUNDTR		= $BF	; Ground top right
 TILE1_GROUNDMR		= $58	; Ground middle-right
 
 TILE1_CANNONTOP1	= $76	; Upper top of cannon

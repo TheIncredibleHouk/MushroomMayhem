@@ -4683,9 +4683,9 @@ PRG005_B6F5:
 	LDY <Objects_XHi,X	; Get which "Big ? Block Area" we're in
 
 	; Set that bit in BigQBlock_GotIt so this block cannot ever be opened again...
-	LDA BigQBlock_GotIt
-	ORA BigQBlock_GotItBits,Y
-	STA BigQBlock_GotIt
+;	LDA BigQBlock_GotIt
+;	ORA BigQBlock_GotItBits,Y
+;	STA BigQBlock_GotIt
 
 PRG005_B70D:
 	RTS		 ; Return

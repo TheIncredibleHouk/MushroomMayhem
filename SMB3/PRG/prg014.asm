@@ -3013,12 +3013,13 @@ PRG014_D354:
 	LDA LL_RunGroundTop+2,X	 ; Get right edge
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
+Do_Ground_Run_Fix:	; #DAHRKDAIZ fixed the ground to obey full extension of Y parameter
 	; Restore Map_Tile_Addr from backup
 	LDA <Temp_Var1
 	STA <Map_Tile_AddrL
 	LDA <Temp_Var2	
 	STA <Map_Tile_AddrH
-
+	LDA $F000
 	; Go to next row by adding 16 and updating Map_Tile_AddrH if carried
 	LDA TileAddr_Off
 	ADD #16
@@ -3028,6 +3029,7 @@ PRG014_D354:
 	ADC #$00
 	STA <Map_Tile_AddrH
 	STA <Temp_Var2		 ; Update Map_Tile_AddrH backup
+
 
 	DEC <Temp_Var4		 ; Temp_Var4--
 	BMI PRG014_D398	 	 ; If Temp_Var4 < 0, jump to PRG014_D398 (RTS)
@@ -3054,7 +3056,7 @@ PRG014_D393:
 	; Right middle edge
 	LDA LL_RunGroundMid+2,X	 ; Get right edge
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
+	JMP Do_Ground_Run_Fix
 PRG014_D398:
 	RTS		 ; Return
 
