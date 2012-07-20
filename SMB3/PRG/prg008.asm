@@ -84,6 +84,9 @@ Player_DuckFrame:
 	; First value is for everything EXCEPT Raccoon power; value on right is for raccoon power
 	.byte PF_DUCK_NOTRACCOON,  PF_DUCK_RACCOON
 
+Player_Shell_Mode_Frames:
+	.byte $35, $3D, $31, $1D
+	
 	; The three sprite frames for when Player shoots a fireball/hammer
 Player_FireOnGround:	.byte PF_THROWONGROUND_BASE, PF_THROWONGROUND_BASE+3, PF_THROWONGROUND_BASE+2
 Player_FireInAir:	.byte PF_THROWINAIR_BASE, PF_THROWINAIR_BASE+1, PF_THROWINAIR_BASE+2
@@ -776,9 +779,6 @@ PRG008_A3DC:
 	CMP #$40
 	BEQ PRG008_A3E7	 ; If Player_QueueSuit = $40 (make a splash), jump to PRG008_A3E7
 
-	LDA #$c0
-	STA Player_Shell	; Player_Shell = $C0
-	BNE PRG008_A3F2	 	; Jump (technically always) to PRG008_A3F2
 
 PRG008_A3E7:
 	INC Player_InWater	; Set "in water" flag
@@ -2254,6 +2254,7 @@ Player_UphillSpeedVals:
 Player_GroundHControl:
 	LDA Player_Shell
 	BEQ Grnd_No_Shell
+	JSR Player_Shell_HitBlocks
 	RTS
 
 Grnd_No_Shell:
@@ -3275,88 +3276,7 @@ Player_TanookiStatue:
 Tanooki_RTS:
 	STA Player_Shell
 	RTS
-;	LDA <Pad_Holding		 
-;	AND #PAD_DOWN
-;	TAY
-;	BEQ PRG008_AFE3	 ; If Player is NOT pressing down, jump to PRG008_AFE3
-;
-;	BIT <Pad_Input
-;	BVC PRG008_AFE3	 ; If Player is NOT pressing 'B', jump to PRG008_AFE3
-;
-;	LDA Player_Shell
-;	BNE PRG008_AFE3	 ; If Player is transformed into a statue, jump to PRG008_AFE3
-;
-;	;JSR Sound_StatueSwitch	 ; Play statue transformation sound
-;
-;	;LDA #$20
-;	;STA Player_QueueSuit	 ; Player_QueueSuit = $20
-;
-;	; Not really "suit lost", but same poof effect
-;	;LDA #$17
-;	;STA Player_SuitLost	 ; Player_SuitLost = $17
-;	;BNE PRG008_B010	 	; Jump (technically always), jump to PRG008_B010
-;
-;PRG008_AFCD:
-;	LDA #PF_STATUE
-;	STA <Player_Frame 	; Statue frame
-;
-;	LDA #$00
-;	STA <Player_XVel	; Halt horizontal movement
-;
-;	LDA <Player_InAir
-;	BEQ PRG008_AFE0	 	; If Player is not mid air, jump to PRG008_AFE0
-;
-;	; Fall fast as statue
-;	LDA <Player_YVel
-;	ADD #$07
-;	STA <Player_YVel
-;
-;PRG008_AFE0:
-;
-;	; Pull return address, i.e. don't do other things normal to Tanooki suit
-;	PLA
-;	PLA
-;
-;	RTS		 ; Return
-;
-;PRG008_AFE3:
-;	LDA Player_Shell
-;	BEQ PRG008_B010	 ; If Player is not a statue, jump to PRG008_B010 (RTS)
-;
-;	CMP #$01
-;	BEQ PRG008_AFFB	 ; If Tanooki statue is about to run out, jump to PRG008_AFFB
-;
-;	CMP #$60
-;	BNE PRG008_AFF5	 ; If Player_Shell <> $60, jump to PRG008_AFF5
-;
-;	; Player_FlashInv = $60 (flashing with remainder of statue)
-;	LDA #$60
-;	STA Player_FlashInv
-;
-;PRG008_AFF5:
-;	DEC Player_Shell ; Player_Shell--
-;
-;	TYA
-;	BNE PRG008_AFCD	 ; If Player is pressing DOWN, jump to PRG008_AFCD
-;
-;PRG008_AFFB:
-;
-;	; Clear Player_Shell / Player_FlashInv
-;	LDA #$00
-;	STA Player_Shell
-;	STA Player_FlashInv
-;
-;	JSR Level_SetPlayerPUpPal	; Set power up's correct palette
-;	JSR Sound_StatueSwitch	 	; Play statue change sound
-;
-;	; Poof like Player lost the suit
-;	LDA #$17
-;	STA Player_SuitLost
-;
-;	BNE PRG008_AFCD	 ; Jump (technically always) to PRG008_AFCD
-;
-;PRG008_B010:
-;	RTS		 ; Return
+
 
 
 Sound_StatueSwitch:
@@ -4428,6 +4348,7 @@ PRG008_B4CA:
 	JSR Player_GetTileAndSlope	 ; Get tile
 	STA Level_Tile_GndL,X	 ; Store it
 
+	STA DAIZ_TEMP1
 	PHA		 ; Save tile
 
 	AND #%11000000	 ; Get quadrant
@@ -4515,15 +4436,21 @@ PRG008_B536:
 	BNE PRG008_B53B	 ; If Y <> 0, jump to PRG008_B53B
 
 	
+	;#DAHRKDAIZ modified solid wall detect to bounce shell mode
 	; Player hit wall; stop!
 	PHA
-	LDA $F001
+
+
+Not_Shell_Brick:
 	LDA Player_Shell			; If in a shell we bounce in the opposite direction
 	BEQ Do_Wall_Stop
 	PLA
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
+	LDA Player_FlipBits			; flip direction the player is facing
+	EOR #$40				
+	STA Player_FlipBits				
 	LDA <Player_XVel
 	EOR #$FF
 	ADC #$01
@@ -5420,17 +5347,20 @@ Player_TailAttack_Offsets: ; (Y and X)
 	.byte 28, -6	; Player not horizontally flipped
 	.byte 28, 21	; Player horizontally flipped
 
+Player_Shell_FlipFlip:
+	.byte $02, $00, $00
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_TailAttack_HitBlocks
 ;
 ; Short routine that handles the tail attack hitting blocks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_TailAttack_HitBlocks:
-        LDA Player_TailAttack
-        CMP #$09
-        BNE PRG008_B979        ; If Player_TailAttack <> 9, jump to PRG008_B979
+     LDA Player_TailAttack
+     CMP #$09
+     BNE PRG008_B979        ; If Player_TailAttack <> 9, jump to PRG008_B979
 
-        LDY #$00         ; Y = 0 (Player not flipped)
+Player_Shell_HitBlocks:
+    LDY #$00         ; Y = 0 (Player not flipped)
 
 	LDA <Player_FlipBits
 	BNE PRG008_B95F	 ; If Player is horizontally flipped, jump to PRG008_B95F
@@ -5438,6 +5368,12 @@ Player_TailAttack_HitBlocks:
 	LDY #$02	 ; Y = 2 (Player flipped)
 
 PRG008_B95F:
+	LDA Player_Shell		; in shell mode, we flip the flip bits so we break bricks
+	BEQ Normal_Tail_Flip			; while moving forward
+	LDA Player_Shell_FlipFlip, Y
+	TAY
+
+Normal_Tail_Flip:
 	LDA Player_TailAttack_Offsets,Y
 	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
 	LDA Player_TailAttack_Offsets+1,Y
@@ -6988,3 +6924,4 @@ Increase_Air_Time:
 
 Skip_Air_Change:
 	RTS	
+
