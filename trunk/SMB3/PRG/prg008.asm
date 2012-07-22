@@ -84,8 +84,8 @@ Player_DuckFrame:
 	; First value is for everything EXCEPT Raccoon power; value on right is for raccoon power
 	.byte PF_DUCK_NOTRACCOON,  PF_DUCK_RACCOON
 
-Player_Shell_Mode_Frames:
-	.byte $35, $3D, $31, $1D
+;Player_Shell_Mode_Frames:
+;	.byte $35, $3D, $31, $1D
 	
 	; The three sprite frames for when Player shoots a fireball/hammer
 Player_FireOnGround:	.byte PF_THROWONGROUND_BASE, PF_THROWONGROUND_BASE+3, PF_THROWONGROUND_BASE+2
@@ -826,10 +826,6 @@ PRG008_A3FA:
 	BNE PRG008_A472	 	; Jump (technically always) to PRG008_A472
 
 PRG008_A427:
-	LDA Debug_Flag
-	CMP #$80
-	BEQ PRG008_A45A	 ; If debug mode is enabled, jump to PRG008_A45A
-
 	LDA Level_TimerEn
 	AND #$7f
 	BNE PRG008_A472	 ; If the clock is disabled, jump to PRG008_A472
@@ -2470,12 +2466,16 @@ PRG008_AC30:
 	BNE PRG008_AC41
 
 	LDA Player_AllowAirJump
-	BNE PRG008_AC41	 ; If Player_AllowAirJump <> 0, jump to PRG008_AC41
+	BNE DIRECT_TO_JUMP	 ; If Player_AllowAirJump <> 0, jump to PRG008_AC41
 
 	LDA <Player_InAir
 	BNE PRG008_AC9E	 ; If Player is mid air, jump to PRG008_AC9E
+	BEQ DIRECT_TO_JUMP
 
 PRG008_AC41:
+	; #DAHRKDAIZ modified to push the player "off" the wall when doing a wall jump
+	JSR Do_Wall_Jump
+
 DIRECT_TO_JUMP:
 	; Play jump sound
 	; #DAHRKDAIZ modified to play the "small jump" from SMB1 for small Mario
@@ -2530,6 +2530,11 @@ PRG008_AC73:
 
 	LDA Player_RootJumpVel	 	; Get initial jump velocity
 	SUB Player_SpeedJumpInc,X	; Subtract a tiny bit of boost at certain X Velocity speed levels
+	LDY Wall_Jump_Enabled
+	BEQ Normal_Jump
+	LDA #$D0
+
+Normal_Jump:
 	STA <Player_YVel		; -> Y velocity
 
 	LDA #$01
@@ -2553,13 +2558,10 @@ PRG008_AC9E:
 	LDA <Player_InAir
 	BNE PRG008_ACB3		; If Player is mid air, jump to PRG008_ACB3
 
-	LDA SPECIAL_SUIT_FLAG
-	BNE No_Fly_2
 	LDY <Player_Suit		; #DAHRKDAIZ hacked, only Racoon Mario can fly
 	CPY #$02	
 	BEQ PRG008_AD1A	 	; If power up has flight ability, jump to PRG008_AD1A
 
-No_Fly_2:
 	LDA #$00
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = 0 :(
 	JMP PRG008_AD1A	 ; Jump to PRG008_AD1A
@@ -4355,14 +4357,12 @@ PRG008_B4F3:
 	JSR Level_CheckGndLR_TileGTAttr
 	BCC PRG008_B53B	 ; If not touching a solid tile, jump to PRG008_B53B
 
-	LDA Player_LowClearance	 
-	BNE PRG008_B53B	 ; If Player_LowClearance is set, jump to PRG008_B53B
-
 	INC Player_WalkAnimTicks	 ; Player_WalkAnimTicks++
 
 	LDY #$01	 ; Y = 1
 	LDX #$00	 ; X = 0
 
+	JSR Can_Wall_Jump
 	LDA <Player_X
 	AND #$0f	
 	CMP #$08	
@@ -4437,17 +4437,7 @@ Do_Wall_Stop:
 	PLA
 Normal_Wall_Stop:
 	STA <Player_XVel ; Otherwise, halt Player horizontally
-					; #DAHRKDAIZ try wall jump next, if Ninaj Mario, we can wall jump
-	LDA $F000
-	LDA <Player_InAir
-	BEQ PRG008_B53B			; can only wall jump if in the air and against  a wall
-	LDA SPECIAL_SUIT_FLAG
-	BEQ PRG008_B53B
-	LDA <Player_Suit
-	CMP #$03
-	BNE PRG008_B53B
-	STA Wall_Jump_Enabled
-	BNE PRG008_B53B
+
 
 PRG008_B53B:
 	LDA <Player_YVel
@@ -6917,3 +6907,37 @@ Increase_Air_Time:
 Skip_Air_Change:
 	RTS	
 
+Can_Wall_Jump:
+	LDA <Player_YVel
+	BMI No_Wall_Jump
+	LDA <Pad_Holding
+	AND #(PAD_LEFT | PAD_RIGHT)
+	BEQ No_Wall_Jump
+	LDA <Player_InAir
+	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
+	LDA SPECIAL_SUIT_FLAG
+	BEQ No_Wall_Jump
+	LDA <Player_Suit
+	CMP #$06
+	BNE No_Wall_Jump
+	STA Wall_Jump_Enabled
+	LDA <Player_YVel
+	CLC
+	SBC #$20			; slow down decent during wall jump mode
+	BMI No_Wall_Jump
+	STA <Player_YVel
+No_Wall_Jump:
+	RTS
+
+Do_Wall_Jump:
+	LDA <Player_FlipBits
+	BNE  Jump_Right
+	LDA #$20
+	BNE Do_Jump_Off
+
+Jump_Right:
+	LDA #$E0
+
+Do_Jump_Off:
+	STA <Player_XVel
+	RTS

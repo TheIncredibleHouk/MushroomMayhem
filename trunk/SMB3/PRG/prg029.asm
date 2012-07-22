@@ -406,6 +406,14 @@ RAINBOW_PAL_CYCLE:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
 	LDX <Player_Frame
+	LDA Wall_Jump_Enabled
+	BEQ Normal_Player_Frames
+	LDX #$30			; #DAHRKDAIZ if wall jump enabled, we override the frame
+	LDA <Player_FlipBits
+	EOR #$40
+	STA <Player_FlipBits
+
+Normal_Player_Frames:
 	LDA Player_FramePageOff,X
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
