@@ -2303,6 +2303,12 @@ PRG030_8E4F:
 	LDA PT2_Anim,X	
 	STA PatTable_BankSel+1 ; Set pattern for this tick
 	; #DAHRKDAIZ - hacked to produce sprite animations without needing to do funky flips
+
+	LDA <Counter_1
+	AND #$0C
+	LSR A	
+	LSR A		
+	TAX	
 	LDA SPR_Anim, X
 	STA PatTable_BankSel+3
 

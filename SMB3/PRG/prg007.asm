@@ -811,13 +811,13 @@ PRG007_A3EF:
 
 Check_Too_High:
 	LDA PlayerProj_YHi, X
-	BPL PRG007_A3EF
+	BPL PRG007_A3DB
 	LDA PlayerProj_Y, X			; If the project goes too high, delete it!
 	CMP #$F0
-	BCS PRG007_A3EF
+	BCS PRG007_A3DB
 	LDA #$00
 	STA PlayerProj_ID, X
-	RTS
+	BEQ PRG007_A3DB
 	
 PRG007_A3F0:
 	ADC #-$08	 ; X Relative - 8
@@ -868,8 +868,14 @@ Do_Spr_1:
 
 	; Temp_Var3 = initial sprite attribute by Player's travel direction
 	LDA PlayerProj_XVel,X
-	LSR A		; Sign bit shifted right
-	AND #SPR_HFLIP
+	BPL Hammer_Right
+	LDA #$40
+	BNE Hammer_Attr
+Hammer_Right:
+	LDA #$00
+
+Hammer_Attr:
+	
 	STA <Temp_Var3
 
 	LDA PlayerProj_ID,X
@@ -880,7 +886,8 @@ Do_Spr_1:
 
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_HAMMER
-	BNE PlayerProj_ChangeToPoof	 ; If Player is NOT wearing the Hammer Suit anymore (uh oh), jump to PlayerProj_ChangeToPoof
+	BEQ PRG007_A453	 
+	JMP PlayerProj_ChangeToPoof ; If Player is NOT wearing the Hammer Suit anymore (uh oh), jump to PlayerProj_ChangeToPoof
 
 PRG007_A453:
 	ADD <Temp_Var2		 ; Apply X offset
@@ -892,18 +899,30 @@ PRG007_A453:
 	LDA Sprite_RAM+$00,Y	 ; Add to Sprite Y
 	STA Sprite_RAM+$04,Y	 ; Update Sprite Y
 
-	; Hammer pattern
+	LDA SPECIAL_SUIT_FLAG
+	BEQ Use_Hammers
+	LDA #$4D
+	STA Sprite_RAM+$05,Y
+	LDA #$4F
+	STA Sprite_RAM+$01,Y
+	BNE Do_Sprite_Draw1
+
+Use_Hammers:
 	LDA #$6D
 	STA Sprite_RAM+$05,Y
 	LDA #$6F
 	STA Sprite_RAM+$01,Y
 
+Do_Sprite_Draw1:
 	LDA <Temp_Var3		; Get horizontal flip bit
 	BEQ Do_Hammer_Sprite
-	LDA #$6D			; switch sprite order!
+	LDA Sprite_RAM+$01,Y
+	STA DAIZ_TEMP2
+	LDA Sprite_RAM+$05,Y	; switch sprite order!
 	STA Sprite_RAM+$01,Y
-	LDA #$6F
+	LDA  DAIZ_TEMP2
 	STA Sprite_RAM+$05,Y
+
 	LDA <Temp_Var3
 
 Do_Hammer_Sprite:
@@ -6053,7 +6072,7 @@ Get_Proj_YVel:
 	AND #(PAD_UP)
 	BEQ No_YVel
 
-	LDA #-$04
+	LDA #-$03
 	BNE No_YVel
 Normal_Hammer_YVel:
 	LDA #-$03
