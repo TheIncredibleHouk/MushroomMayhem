@@ -3019,7 +3019,7 @@ Do_Ground_Run_Fix:	; #DAHRKDAIZ fixed the ground to obey full extension of Y par
 	STA <Map_Tile_AddrL
 	LDA <Temp_Var2	
 	STA <Map_Tile_AddrH
-	LDA $F000
+
 	; Go to next row by adding 16 and updating Map_Tile_AddrH if carried
 	LDA TileAddr_Off
 	ADD #16

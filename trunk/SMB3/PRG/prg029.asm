@@ -389,8 +389,10 @@ PRG029_CE88:
 
 	; Specified root VROM page for a given power up
 Player_PUpRootPage:
-	;     Small, Big, Fire, Leaf, Frog, Tanooki, Hammer
+	;     Small, Big, Fire, Leaf, Frog, Koopa,   Hammer
 	.byte $50,   $54, $54,  $00,  $50,  $40,     $44
+	;     xxxxxxxxxx  Ice   xxx    xxx   xxx   Ninja
+	.byte			  $54,  $00,   $00  , $00 ,  $28			
 
 RAINBOW_PAL_CYCLE:
 	.byte $01, $03, $05, $06, $07, $09, $0A, $0C ; #DAHRKDAIZ
@@ -408,6 +410,13 @@ Player_Draw:
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
 	LDY <Player_Suit
+	LDA SPECIAL_SUIT_FLAG
+	BEQ Normal_Gfx
+	TYA
+	ADC #$05
+	TAY
+
+Normal_Gfx:
 	LDA Player_PUpRootPage,Y ; Get VROM root page for this power up
 	ADD <Temp_Var1		 ; Add appropriate offset to the VROM base for the animation frame
 
@@ -3182,7 +3191,7 @@ Backup_Curr_Player_Pal:
 
 ; #DAHRKDAIZ - Restores the current player palette up after the rainbow cycle
 Restore_Curr_Player_Pal:
-	LDA $F000
+
 	LDA Player_Pal_Backup
 	STA (Palette_Buffer + $11)
 	LDA (Player_Pal_Backup + $01)
