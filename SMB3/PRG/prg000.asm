@@ -329,7 +329,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1F - OBJ_GROWINGVINE
 	.byte OAT_BOUNDBOX00	; Object $20
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $22 - OBJ_POWERUP_FIRECARD
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $23 - OBJ_POWERUP_STARCARD
 	.byte OAT_BOUNDBOX08 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $24 - OBJ_CLOUDPLATFORM_FAST
 	.byte OAT_BOUNDBOX00 | OAT_WEAPONIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $25
@@ -566,6 +566,7 @@ PRG000_C3E7:
 ; FIXME: Anybody want to claim this?
 ; Looks like maybe a leftover debug routine for some kind of "float around" mode maybe!!
 ; $C3EA 
+Boo_Move_Mode:
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT)
 	TAY		 ; Y = 1 or 2
@@ -3760,10 +3761,6 @@ PRG000_D267:
 
 	; Player is in water (can't stomp in water) OR attribute 3 bit 5 is set (can't stomp anyway)...
 
-;	LDA Player_Kuribo
-;	ORA Player_Shell
-;	BNE PRG000_D272	 ; If in Kuribo's shoe or transformed into statue, ignore this and jump to PRG000_D272
-
 	JMP PRG000_D355	 ; Jump to PRG000_D355 (hurt Player!)
 
 PRG000_D272:
@@ -3777,25 +3774,7 @@ PRG000_D272:
 
 	; Attribute set 2 bit 2 NOT set... (object cares about being stomped)
 
-	LDA #$00
-;	LDA Player_Shell
-;	ORA Player_Kuribo
-	BEQ PRG000_D29B	 	; If Player is NOT a statue and NOT in a Kuribo's shoe, jump to PRG000_D29B
-
-	; Player is a statue or in a Kuribo's shoe...
-
-	JSR PRG000_D2B4	 ; Handle stomp!
-
-	LDY ObjGroupRel_Idx	 ; Y = object group relative index
-	LDA ObjectGroup_Attributes3,Y	 ; Get attribute set 3
-	AND #OA3_SQUASH
-	BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
-
-	; When stomped by statue/Kuribo, if the enemy was going to get squashed anyway
-	; then go ahead into "shelled" state which redirects to "stomped" state.
-
-	LDA #OBJSTATE_SHELLED	 ; Otherwise, state is Shelled
-	BNE PRG000_D297	 ; Jump (technically always) to PRG000_D297
+	JMP PRG000_D29B	 	; If Player is NOT a statue and NOT in a Kuribo's shoe, jump to PRG000_D29B
 
 PRG000_D295:
 
@@ -5265,9 +5244,10 @@ PRG000_D8EB:
 	LDA <Temp_Var12	
 	ORA Objects_PlayerHitStat,X
 	STA Objects_PlayerHitStat,X
-
+	
 	LDA Player_StarInv
 	ORA Player_Shell
+	ORA Boo_Mode_KillTimer
 	BEQ PRG000_D922	 ; If Player is NOT invincible, jump to PRG000_D922
 
 	; Player is invincible...
@@ -5521,7 +5501,7 @@ SMB3J_SuitLossFrame:	.byte $00, $00, $00, $00, $01, $02, $03
 Player_GetHurt:
 	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
-;	ORA Player_Shell		; ... a statue ...
+	ORA 	Boo_Mode_Timer
 	ORA Player_StarInv		; ... invincible by star ...
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGame		; ... gameplay halted ...

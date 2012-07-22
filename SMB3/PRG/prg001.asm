@@ -59,7 +59,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Vine	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_DoNothing	; Object $20
 	.word ObjInit_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_FIRECARD
+	.word ObjInit_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_STARCARD
 
 
@@ -100,9 +100,9 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjNorm_Vine	; Object $1F - OBJ_GROWINGVINE
 	.word ObjNorm_DoNothing	; Object $20
-	.word ObjNorm_Card	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.word ObjNorm_Card	; Object $22 - OBJ_POWERUP_FIRECARD
-	.word ObjNorm_Card	; Object $23 - OBJ_POWERUP_STARCARD
+	.word ObjNorm_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjNorm_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.word ObjNorm_FireFlower	; Object $23 - OBJ_POWERUP_STARCARD
 
 
 	; Object group $00 (i.e. objects starting at ID $00) Collision routine jump table (if calling Object_HitTestRespond;
@@ -143,9 +143,9 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjHit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjHit_DoNothing	; Object $20
-	.word ObjHit_Card	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.word ObjHit_Card	; Object $22 - OBJ_POWERUP_FIRECARD
-	.word ObjHit_Card	; Object $23 - OBJ_POWERUP_STARCARD
+	.word ObjHit_IceFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjHit_Pumpkin	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.word ObjHit_IceFlower	; Object $23 - OBJ_POWERUP_STARCARD
 
 	
 	; Object group $00 (i.e. objects starting at ID $00) attribute bits set 1 (OA1_* flags valid here)
@@ -186,7 +186,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1F - OBJ_GROWINGVINE
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $20
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_FIRECARD
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_STARCARD
 
 
@@ -235,7 +235,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $1F - OBJ_GROWINGVINE
 	.byte OA2_TDOGRP0	; Object $20
 	.byte OA2_TDOGRP1	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte OA2_TDOGRP1	; Object $22 - OBJ_POWERUP_FIRECARD
+	.byte OA2_TDOGRP1	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA2_TDOGRP1	; Object $23 - OBJ_POWERUP_STARCARD
 
 
@@ -284,7 +284,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $1F - OBJ_GROWINGVINE
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $20
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_FIRECARD
+	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_STARCARD
 
 
@@ -326,7 +326,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $1F - OBJ_GROWINGVINE
 	.byte OPTS_SETPT5 | $0A	; Object $20
 	.byte OPTS_NOCHANGE	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte OPTS_NOCHANGE	; Object $22 - OBJ_POWERUP_FIRECARD
+	.byte OPTS_NOCHANGE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OPTS_NOCHANGE	; Object $23 - OBJ_POWERUP_STARCARD
 
 
@@ -368,7 +368,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $1F - OBJ_GROWINGVINE
 	.byte KILLACT_STANDARD	; Object $20
 	.byte KILLACT_STANDARD	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte KILLACT_STANDARD	; Object $22 - OBJ_POWERUP_FIRECARD
+	.byte KILLACT_STANDARD	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte KILLACT_STANDARD	; Object $23 - OBJ_POWERUP_STARCARD
 
 
@@ -2887,10 +2887,7 @@ ObjNorm_Card:
 	JMP Object_HitTestRespond	 ; Do hit test and respond
 
 
-ObjHit_Card:
-	LDA Level_ObjectID,X
-	CMP #OBJ_POWERUP_ICEFLOWER
-	BNE NOT_ICE_FLOWER
+ObjHit_IceFlower:
 	; #DAHRKDAIZ - the power up transformation should be similar to fire mario
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
@@ -2901,12 +2898,29 @@ ObjHit_Card:
 	STA Score_Earned
 	LDA #$1f
 	STA Player_StarOff
-
-NOT_ICE_FLOWER:
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X
 	RTS
 
+ObjHit_Pumpkin:
+	
+	; "Poof" sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
+
+	; "Poof" effect
+	LDA #$17
+	STA Player_SuitLost
+
+	; Change to Ninja
+	LDA #$0B
+	STA Player_QueueSuit
+
+	; Set to dead/empty
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State,X
+	RTS
 
 	; #DAHRKDAIZ - Hacked to act as power ups instead of goal cards :D
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
