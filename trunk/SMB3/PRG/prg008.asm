@@ -278,7 +278,7 @@ Player_DoGameplay:
 	LDA #60		; A = 60
 
 PRG008_A14C:
-	STA PatTable_BankSel+3	 ; Set VROM page (2/4 sprites)
+	;STA PatTable_BankSel+3	 ; Set VROM page (2/4 sprites)
 
 	; Set Level_TilesetIdx by the current Tileset
 	; Basically amounts to (Level_Tileset - 1)
@@ -2559,7 +2559,7 @@ PRG008_AC9E:
 	BNE PRG008_ACB3		; If Player is mid air, jump to PRG008_ACB3
 
 	LDY <Player_Suit		; #DAHRKDAIZ hacked, only Racoon Mario can fly
-	CPY #$02	
+	CPY #$03	
 	BEQ PRG008_AD1A	 	; If power up has flight ability, jump to PRG008_AD1A
 
 	LDA #$00
@@ -2606,7 +2606,7 @@ PRG008_ACD9:
 	LDA SPECIAL_SUIT_FLAG
 	BNE PRG008_ACEF
 	LDX <Player_Suit ; #DAHRKDAIZ hacked, only Racoon Mario can fly
-	CPX #$02			
+	CPX #$03			
 	BNE PRG008_ACEF	 	; If this power up does not have flight, jump to PRG008_ACEF
 
 	LDY <Temp_Var1		; Y = $80 if Player was pressing 'A' when this all began

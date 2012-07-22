@@ -1702,13 +1702,6 @@ PRG000_C918:
 ; FIXME: Anybody want to claim this?
 ; Appears to be a debug routine that would toggle the Player to be invincible by pressing SELECT
 ; $C91B
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ PRG000_C927	 ; If Player is NOT pressing SELECT, jump to PRG000_C927
-
-	; Toggle invincibility flag
-	EOR Player_DebugNoHitFlag
-	STA Player_DebugNoHitFlag
 
 PRG000_C927:
 	LDA Splash_DisTimer
@@ -1721,9 +1714,6 @@ PRG000_C92F:
 	CMP #PLAYERSUIT_HAMMER
 	BNE PRG000_C93A	 ; If Player suit is NOT hammer suit, jump to PRG000_C93A
 
-	; Otherwise...
-	LDA #$4f
-	STA PatTable_BankSel+5	 ; Sixth pattern table bank = $4F
 
 PRG000_C93A:
 	LDA <Player_IsDying

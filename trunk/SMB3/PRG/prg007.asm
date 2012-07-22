@@ -576,6 +576,12 @@ PRG007_A2BA:
 	; Set projectile X
 	LDA <Player_X
 	ADD #$04
+	LDY <Player_FlipBits		; If facing the other direction, projects offset by 4  on theF left instead
+	BNE No_Flip_X	 	
+
+	SBC #$08	 
+
+No_Flip_X:
 	STA PlayerProj_X,X
 
 	; Set projectile Y Hi
@@ -597,7 +603,8 @@ PRG007_A2E3:
 	; Set Player Projectile Y velocity
 	LDA #$03	 ; A = $03 (Fireballs are thrown down)
 	BCS PRG007_A2EC	 ; If Player is NOT wearing Hammer Suit, jump to PRG007_A2EC
-	LDA #-$03	 ; A = -$03 (Hammers are thrown up)
+	JSR Get_Proj_YVel	; #Get Y Vel based on special suit and pad input
+	
 PRG007_A2EC:
 	STA PlayerProj_YVel,X
 
@@ -609,17 +616,8 @@ PRG007_A2EC:
 	BCS PRG007_A304	 ; If Player is NOT wearing Hammer Suit, jump to PRG007_A304
 
 	; Calculate the hammer X velocity offset
-	LDA <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
-	ASL A			; ... so this makes a positive or negative sign
-	EOR <Player_XVel	; XOR in the Player's X velocity
-	BPL PRG007_A302	 	; If result is positive, jump to PRG007_A302
+	JSR Get_Proj_XVel	; #DAHRKDAIZ - new routine calculating the x velocity based on special suit
 
-	; Otherwise, set Temp_Var1 = Player_XVel
-	LDA <Player_XVel
-	STA <Temp_Var1
-
-PRG007_A302:
-	LDA #$10	 ; A = $10 (Hammer)
 
 PRG007_A304:
 	LDY <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
@@ -638,11 +636,12 @@ PRG007_A30B:
 	RTS		 ; Return
 
 
-PlayerFireball_Pats:		.byte $65, $67, $65, $67
-PlayerIceball_Pats:			.byte $59, $5B, $59, $5B ; #DAHRKDAIZ - Iceball patterns
-PlayerFireball_FlipBits:	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP
+	; #DAHRKDAIZ removed extra values for the sake of using animation trick
+PlayerFireball_Pats:		.byte $65
+PlayerIceball_Pats:			.byte $59 ; #DAHRKDAIZ - Iceball patterns
+PlayerFireball_FlipBits:	.byte SPR_PAL0
 
-PlayerHammer_FlipBits:	.byte $00, SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, SPR_HFLIP
+PlayerHammer_FlipBits:	.byte $00, $00, SPR_HFLIP, SPR_HFLIP
 PlayerHammer_YOff:	.byte $00 ; NOTE: Next three values overlap into following table)
 PlayerHammer_XOff:	.byte $06, $06, $00, $00
 
@@ -732,6 +731,7 @@ PRG007_A378:
 
 	; Hammer specific velocity code...
 
+	
 	LDA PlayerProj_XVel,X
 	ASL A
 	ASL A
@@ -760,6 +760,8 @@ PRG007_A3AC:
 	AND #$07
 	BNE PRG007_A3BD	 ; 1:8 ticks proceed, otherwise jump to PRG007_A3BD
 
+	LDA SPECIAL_SUIT_FLAG
+	BNE Check_Too_High
 	INC PlayerProj_YVel,X	 ; Increase Y velocity (gravity)
 
 PRG007_A3BD:
@@ -788,6 +790,8 @@ PRG007_A3DB:
 
 	; Fireball/Hammer common...
 
+	
+
 	; Temp_Var2 = scroll relative X
 	LDA PlayerProj_X,X
 	SUB <Horz_Scroll
@@ -805,6 +809,16 @@ PRG007_A3EA:
 PRG007_A3EF:
 	RTS		 ; Return
 
+Check_Too_High:
+	LDA PlayerProj_YHi, X
+	BPL PRG007_A3EF
+	LDA PlayerProj_Y, X			; If the project goes too high, delete it!
+	CMP #$F0
+	BCS PRG007_A3EF
+	LDA #$00
+	STA PlayerProj_ID, X
+	RTS
+	
 PRG007_A3F0:
 	ADC #-$08	 ; X Relative - 8
 	STA <Temp_Var14	 ; -> Temp_Var14
@@ -829,6 +843,11 @@ PRG007_A40E:
 	TXA
 	ASL A
 	ASL A		; A = Player Projectile slot index * 4
+	LDY <Player_Suit		; Hammer and Ninja use 2 sprites
+	CPY #$06
+	BNE Do_Spr_1
+	ASL A
+Do_Spr_1:
 	ADD Object_SprRAM+6	 ; Offset into high end Sprite RAM
 	TAY		 ; -> 'Y'
 
@@ -863,32 +882,32 @@ PRG007_A40E:
 	CMP #PLAYERSUIT_HAMMER
 	BNE PlayerProj_ChangeToPoof	 ; If Player is NOT wearing the Hammer Suit anymore (uh oh), jump to PlayerProj_ChangeToPoof
 
-	LDA PlayerProj_Cnt,X
-	LSR A
-	LSR A
-	AND #$03
-	TAX		 ; X = 0 to 3
-
-	LDA PlayerHammer_XOff,X	 ; Get X offset
-	BIT <Temp_Var3	 ; Check for horizontal flip
-	BVC PRG007_A453	 ; If no flip, jump to PRG007_A453
-
-	EOR #$06	 ; Otherwise, invert X offset
-
 PRG007_A453:
 	ADD <Temp_Var2		 ; Apply X offset
 	STA Sprite_RAM+$03,Y	 ; Set Hammer X
+	SEC
+	SBC #$08
+	STA Sprite_RAM+$07,Y
 
-	LDA PlayerHammer_YOff,X	 ; Get Y offset
-	ADD Sprite_RAM+$00,Y	 ; Add to Sprite Y
-	STA Sprite_RAM+$00,Y	 ; Update Sprite Y
+	LDA Sprite_RAM+$00,Y	 ; Add to Sprite Y
+	STA Sprite_RAM+$04,Y	 ; Update Sprite Y
 
 	; Hammer pattern
-	LDA #$d7
+	LDA #$6D
+	STA Sprite_RAM+$05,Y
+	LDA #$6F
 	STA Sprite_RAM+$01,Y
 
 	LDA <Temp_Var3		; Get horizontal flip bit
-	EOR PlayerHammer_FlipBits,X	 ; XOR in the hammer flip bits
+	BEQ Do_Hammer_Sprite
+	LDA #$6D			; switch sprite order!
+	STA Sprite_RAM+$01,Y
+	LDA #$6F
+	STA Sprite_RAM+$05,Y
+	LDA <Temp_Var3
+
+Do_Hammer_Sprite:
+	STA Sprite_RAM+$06,Y
 
 	SEC		 ; Set carry (hammer)
 	JMP PRG007_A485	 ; Jump to PRG007_A485
@@ -904,29 +923,29 @@ PRG007_A471:
 	TAX		 ; X = 0 to 3
 
 	; Set fireball pattern
-	; #DAHRKDAIZ checks ice mario fla and interjects a different pattern
+	; #DAHRKDAIZ checks ice mario flag and interjects a different pattern
 	LDA SPECIAL_SUIT_FLAG
 	BEQ STANDARD_FIREBALL_PAT
-	LDA PlayerIceball_Pats,X
+	LDA PlayerIceball_Pats
 	BNE STORE_STANDARD_TILE
 
 STANDARD_FIREBALL_PAT:
-	LDA PlayerFireball_Pats,X
+	LDA PlayerFireball_Pats
 
 STORE_STANDARD_TILE:
 	STA Sprite_RAM+$01,Y
 
 	; Set fireball attributes
 	LDA <Temp_Var3		 ; Get horizontal flip bit
-	EOR PlayerFireball_FlipBits,X	 ; XOR in the fireball flip bits
+	EOR PlayerFireball_FlipBits	 ; XOR in the fireball flip bits
 
 	CLC		 ; Clear carry (fireball)
 
 PRG007_A485:
-	LDX Player_Behind
-	BEQ PRG007_A48C	 ; If Player is not "behind the scenes", jump to PRG007_A48C
-
-	ORA #SPR_BEHINDBG	; Set priority
+	;LDX Player_Behind
+	;BEQ PRG007_A48C	 ; If Player is not "behind the scenes", jump to PRG007_A48C
+	;
+	;ORA #SPR_BEHINDBG	; Set priority
 
 PRG007_A48C:
 	STA Sprite_RAM+$02,Y	 ; Set Player Projectile attributes
@@ -1085,6 +1104,8 @@ PRG007_A52D:
 	; start #DAHRKDAIZ - code used to handle hammer specific tile interaction
 	LDA DAIZ_TEMP1
 	BEQ FIRE_BALL_COLL
+	LDA SPECIAL_SUIT_FLAG
+	BNE NOT_BRICK_HAMMER
 	LDA <Temp_Var1
 	CMP #$67
 	BNE NOT_BRICK_HAMMER
@@ -1448,9 +1469,13 @@ PRG007_A6EC:
 	TYA
 	TAX	; object index -> 'X'
 
+	LDA <Player_Suit
+	CMP #$02
+	BNE Kill_Enemy_Anyway	; Prevents Ninja Mario from turning enemies into ice
 	LDA SPECIAL_SUIT_FLAG
 	BNE ICE_BALL_SKIP1 ; #DAHRKDAIZ - Skip "defeating" the enemy
 	; 100 pts!
+Kill_Enemy_Anyway:
 	LDA #$05
 	JSR Score_PopUp
 
@@ -6020,3 +6045,47 @@ Projectile_Interact_Table:
 
 Projectile_Interact_To_Table:
 	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, CHGTILESTANDING_WATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER
+
+Get_Proj_YVel:
+	LDA SPECIAL_SUIT_FLAG
+	BEQ Normal_Hammer_YVel
+	LDA <Pad_Holding
+	AND #(PAD_UP)
+	BEQ No_YVel
+
+	LDA #-$04
+	BNE No_YVel
+Normal_Hammer_YVel:
+	LDA #-$03
+
+No_YVel:
+	RTS
+
+Get_Proj_XVel:
+	LDA SPECIAL_SUIT_FLAG
+	BEQ Normal_Hammer_XVel
+	LDA <Pad_Holding
+	AND #(PAD_UP | PAD_LEFT | PAD_RIGHT)
+	CMP #PAD_UP
+	BNE Ninaj_XVel
+	LDA #$00
+	BEQ No_XVel 
+Ninaj_XVel:
+	LDA #$30
+	BNE No_XVel
+	
+Normal_Hammer_XVel:
+	LDA <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
+	ASL A			; ... so this makes a positive or negative sign
+	EOR <Player_XVel	; XOR in the Player's X velocity
+	BPL PRG007_A302	 	; If result is positive, jump to PRG007_A302
+
+	; Otherwise, set Temp_Var1 = Player_XVel
+	LDA <Player_XVel
+	STA <Temp_Var1
+
+PRG007_A302:
+	LDA #$10	 ; A = $10 (Hammer)
+
+No_XVel:
+	RTS

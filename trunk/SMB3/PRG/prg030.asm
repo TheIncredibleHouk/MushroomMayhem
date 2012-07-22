@@ -418,6 +418,7 @@ PAGE_A000_ByTileset: ; $83E9
 
 	; The normal level VROM page cycle set
 PT2_Anim:	.byte $60, $62, $64, $66
+SPR_Anim:	.byte $04, $05, $06, $07
 
 PAUSE_Sprites:
 	.byte $58, $F1, $03, $60	; P
@@ -2301,6 +2302,9 @@ PRG030_8E4F:
 
 	LDA PT2_Anim,X	
 	STA PatTable_BankSel+1 ; Set pattern for this tick
+	; #DAHRKDAIZ - hacked to produce sprite animations without needing to do funky flips
+	LDA SPR_Anim, X
+	STA PatTable_BankSel+3
 
 PRG030_8E5D:
 	; End of animations...
