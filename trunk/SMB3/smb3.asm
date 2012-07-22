@@ -614,8 +614,8 @@ PAD_RIGHT	= $01
 	Map_UnusedPlayerVal:	.ds 2	; $7F-$80 (Mario/Luigi) Set for each Player to $20 when returning to map, but apparently unused otherwise!
 
 	Wall_Jump_Enabled:			.ds 1	; $81 #DAHRKDAIZ When 1, wall jumping is enabled
-				.ds 1	; $82 unused
-				.ds 1	; $83 unused
+	Boo_Mode_Timer:			.ds 1	; $82 #DAHRKDAIZ When > 0, boo mode enabled
+	Boo_Mode_KillTimer:				.ds 1	; $83 #DAHRKDAIZ slight "invincibility" mode when boo mode
 
 	Map_UnusedPlayerVal2:	.ds 2	; $84-$85 (Mario/Luigi) Apparently unused at all, but backed up and persisted on the world map
 
@@ -3296,7 +3296,7 @@ OBJ_BOUNCELEFTRIGHT	= $1B	; Left/right block bounce effect object
 OBJ_POWERUP_SUPERLEAF	= $1E	; Falling super leaf
 OBJ_GROWINGVINE		= $1F	; Growing vine
 OBJ_POWERUP_ICEFLOWER	= $21	; Free mushroom card ????
-OBJ_POWERUP_FIRECARD	= $22	; Free flower card ????
+OBJ_POWERUP_PUMPKIN	= $22	; Free flower card ????
 OBJ_POWERUP_STARCARD	= $23	; Free star card ????
 OBJ_CLOUDPLATFORM_FAST	= $24	; Fast cloud platform
 OBJ_PIPEWAYCONTROLLER	= $25	; "Pipe Way" Controller (World Map pipe-to-pipe location setter)

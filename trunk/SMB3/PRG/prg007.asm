@@ -475,6 +475,7 @@ Gameplay_UpdateAndDrawMisc:
 	JSR SpecialObjs_UpdateAndDraw	 ; Update and draw Special objects
 	JSR CannonFire_UpdateAndDraw	 ; Update and draw the Cannon Fires
 	JSR PlayerProjs_UpdateAndDraw	 ; Update and draw Player's weapon projectiles
+	JSR Do_Boo_Mode
 
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_HAMMER
@@ -6107,4 +6108,62 @@ PRG007_A302:
 	LDA #$10	 ; A = $10 (Hammer)
 
 No_XVel:
+	RTS
+
+Do_Boo_Mode:
+	LDA $F000
+	LDA SPECIAL_SUIT_FLAG
+	BEQ Boo_Do_Nothing
+	LDA <Player_Suit		
+	CMP #$05				; Not Boo mario, skip all together
+	BNE Boo_Do_Nothing
+	LDA Boo_Mode_KillTimer	; If "kill" timer mode, the slight point on which boo kills enemies when he transforms back to mario
+	BNE Dec_KillTimer		; skip to decreasing kill timer
+	LDA Boo_Mode_Timer		; If no boo mode timer going, skip all together
+	BEQ Try_Boo_Mode
+	CMP #$40
+	BCS Dec_Boo_Mode
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Kill_Boo_Mode
+
+Dec_Boo_Mode:
+	DEC Boo_Mode_Timer		; decrease boo timer
+	BNE Boo_Do_Nothing
+
+Kill_Boo_Mode:
+	LDA #$00
+	STA Boo_Mode_Timer
+	JSR Poof_Sound			; No more boo mode, poof out!
+	LDA #$20
+	STA Boo_Mode_KillTimer
+	RTS
+
+Dec_KillTimer:
+	DEC Boo_Mode_KillTimer
+	RTS
+
+Try_Boo_Mode:
+	LDA <Pad_Holding
+	AND #PAD_DOWN			; Down + B activates boo mode!
+	BEQ Boo_Do_Nothing
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Boo_Do_Nothing
+	LDA #60
+	STA Boo_Mode_Timer
+	JMP Poof_Sound
+
+Boo_Do_Nothing:
+	RTS
+
+Poof_Sound:
+		; "Poof" sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
+
+	; "Poof" effect
+	LDA #$17
+	STA Player_SuitLost
 	RTS
