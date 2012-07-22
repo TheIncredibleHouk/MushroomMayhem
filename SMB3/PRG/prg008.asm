@@ -129,13 +129,6 @@ Player_ClimbFrame:
 
 	; Airship jump frame used by power up
 Airship_JumpFrameByPup:
-	.byte PF_JUMPFALLSMALL		; Small
-	.byte PF_JUMPBIG		; Big
-	.byte PF_JUMPBIG		; Fire
-	.byte PF_JUMPRACCOON		; Leaf
-	.byte PF_WALKSPECIAL_BASE+2	; Frog
-	.byte PF_JUMPBIG		; Tanooki
-	.byte PF_JUMPBIG		; Hammer
 
 Player_VibeDisableFrame:
 	.byte PF_WALKSMALL_BASE		; Small
@@ -304,11 +297,6 @@ PRG008_A14C:
 
 	; The following is used to prevent the invincibility star 
 	; from being wasted on the airship's intro
-	LDA Level_Objects+1
-	CMP #OBJ_TOADANDKING
-	BEQ PRG008_A17B	 	; If the first object ID of this level is OBJ_TOADANDKING, then don't do invincibility yet (dodgy!)
-	CMP #OBJ_AIRSHIPANCHOR
-	BEQ PRG008_A17B	 	; If the first object ID of this level is OBJ_AIRSHIPANCHOR, then don't do invincibility yet (dodgy!)
 
 	DEC Map_Starman	 ; Map_Starman = 0 (or so it assumes)
 
@@ -370,13 +358,8 @@ PRG008_A1C1:
 	STA Score_Earned
 
 	INC Coins_Earned	 ; One more coin earned!
-	INC Coins_ThisLevel	 ; One more coin collected this level
 
 PRG008_A1D7:
-
-	; Clear Player_LowClearance
-	LDA #$00
-	STA Player_LowClearance
 
 	; Decrement several adjacent counters!
 	LDX #$07	 ; X = 7
@@ -1055,6 +1038,10 @@ PowerUp_Palettes:
 	.byte $00, $19, $36, $0F	; 5 - Koopa Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
 	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
+	.byte $00, $30, $31, $01	; 8 - Unused
+	.byte $00, $30, $31, $01	; 9 - Unused
+	.byte $00, $30, $36, $0F	; A - Unused
+	.byte $00, $30, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Suit pallete code removed
@@ -1466,26 +1453,8 @@ PRG008_A77E:
 	ORA Level_PipeMove
 	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
-	; Solid tile at Player's head; Player is stuck in a low clearance (or worse stuck in the wall!)
-
-	; A is logically zero here...
-
-	; Stop Player horizontally, disable controls
-	STA <Player_XVel
-	STA <Pad_Input
-
-	AND #~PAD_A
-	STA <Pad_Input	; ?? it's still zero?
-
-	; Player_LowClearance = 1 (Player is in a "low clearance" situation!)
-	LDA #$01
-	STA Player_LowClearance
-
-	; This makes the Player "slide" when he's in a space too narrow
-	ADD <Player_X
-	STA <Player_X	 ; Player_X += 1
-	BCC PRG008_A7AD	 ; If not carry, jump to PRG008_A7AD
-	INC <Player_XHi	 ; Otherwise, apply carry
+	;#DAHRKDAIZ modified to make low clearance situations = death >:D
+	JMP Player_Die
 
 PRG008_A7AD:
 
@@ -2483,6 +2452,8 @@ PRG008_AC22:
 	.byte $D0, $CE, $CC, $CA, $CA, $CA
 
 Player_JumpFlyFlutter:
+	LDA Wall_Jump_Enabled
+	BNE PRG008_AC30
 	LDA Player_AllowAirJump
 	BEQ PRG008_AC30	 ; If Player_AllowAirJump = 0, jump to PRG008_AC30
 
@@ -2494,6 +2465,9 @@ PRG008_AC30:
 	AND #PAD_A
 	STA <Temp_Var1	 ; Temp_Var1 = $80 if Player is pressing 'A', otherwise 0
 	BEQ PRG008_AC9E	 ; If Player is NOT pressing 'A', jump to PRG008_AC9E
+
+	LDA Wall_Jump_Enabled
+	BNE PRG008_AC41
 
 	LDA Player_AllowAirJump
 	BNE PRG008_AC41	 ; If Player_AllowAirJump <> 0, jump to PRG008_AC41
@@ -2579,11 +2553,13 @@ PRG008_AC9E:
 	LDA <Player_InAir
 	BNE PRG008_ACB3		; If Player is mid air, jump to PRG008_ACB3
 
-	LDY <Player_Suit
-	LDA PowerUp_Ability,Y	; Get "ability" flags for this power up
-	AND #$01
-	BNE PRG008_AD1A	 	; If power up has flight ability, jump to PRG008_AD1A
+	LDA SPECIAL_SUIT_FLAG
+	BNE No_Fly_2
+	LDY <Player_Suit		; #DAHRKDAIZ hacked, only Racoon Mario can fly
+	CPY #$02	
+	BEQ PRG008_AD1A	 	; If power up has flight ability, jump to PRG008_AD1A
 
+No_Fly_2:
 	LDA #$00
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = 0 :(
 	JMP PRG008_AD1A	 ; Jump to PRG008_AD1A
@@ -2625,11 +2601,11 @@ PRG008_ACD9:
 	LDA Player_Kuribo
 	BNE PRG008_ACEF	 ; If Player is wearing Kuribo's shoe, jump to PRG008_ACEF
 
-	LDX <Player_Suit
-
-	LDA PowerUp_Ability,X	; Get "ability" flags for this power up
-	AND #$01	 
-	BEQ PRG008_ACEF	 	; If this power up does not have flight, jump to PRG008_ACEF
+	LDA SPECIAL_SUIT_FLAG
+	BNE PRG008_ACEF
+	LDX <Player_Suit ; #DAHRKDAIZ hacked, only Racoon Mario can fly
+	CPX #$02			
+	BNE PRG008_ACEF	 	; If this power up does not have flight, jump to PRG008_ACEF
 
 	LDY <Temp_Var1		; Y = $80 if Player was pressing 'A' when this all began
 	BEQ PRG008_ACEF	 	; And if he wasn't, jump to PRG008_ACEF
@@ -4262,6 +4238,7 @@ PRG008_B46C:
 Player_DetectSolids:
 	LDA #$00
 	STA Player_HitCeiling ; Clear Player_HitCeiling
+	STA Wall_Jump_Enabled
 
 	LDA Level_PipeMove
 	BEQ PRG008_B47E	 ; If not going through a pipe, jump to PRG008_B47E
@@ -4460,6 +4437,17 @@ Do_Wall_Stop:
 	PLA
 Normal_Wall_Stop:
 	STA <Player_XVel ; Otherwise, halt Player horizontally
+					; #DAHRKDAIZ try wall jump next, if Ninaj Mario, we can wall jump
+	LDA $F000
+	LDA <Player_InAir
+	BEQ PRG008_B53B			; can only wall jump if in the air and against  a wall
+	LDA SPECIAL_SUIT_FLAG
+	BEQ PRG008_B53B
+	LDA <Player_Suit
+	CMP #$03
+	BNE PRG008_B53B
+	STA Wall_Jump_Enabled
+	BNE PRG008_B53B
 
 PRG008_B53B:
 	LDA <Player_YVel
@@ -5052,7 +5040,7 @@ LATP_JumpTable:
 	.word LATP_Brick	; 6 = Standard brick behavior
 	.word LATP_Vine		; 7 = Vine
 	.word LATP_10Coin	; 8 = 10 coin
-	.word LATP_1up		; 9 = 1-up
+	.word LATP_NinjaShroom		; 9 = 1-up
 	.word LATP_PSwitch	; A = P-Switch
 	.word LATP_BrickAltClear; B = Brick which clears to alternate tile when smashed
 
@@ -5218,14 +5206,17 @@ LATP_10Coin:
 
 	JMP LATP_Coin	; Jump to common coin routine...
 
-LATP_1up:
-	JSR Level_RecordBlockHit	 ; Record having grabbed this 1-up so it does not come back
-
+LATP_NinjaShroom:
+	
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
 
+	LDY #$05
+	LDA <Player_Suit
+	BEQ Do_Ninja_Shroom
 	LDY #$07	 ; Y = 7 (1-up) (index into PRG001 Bouncer_PUp)
 
+Do_Ninja_Shroom:
 	RTS		 ; Return
 
 LATP_PSwitch:

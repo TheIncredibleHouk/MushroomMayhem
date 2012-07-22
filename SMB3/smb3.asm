@@ -613,7 +613,7 @@ PAD_RIGHT	= $01
 
 	Map_UnusedPlayerVal:	.ds 2	; $7F-$80 (Mario/Luigi) Set for each Player to $20 when returning to map, but apparently unused otherwise!
 
-				.ds 1	; $81 unused
+	Wall_Jump_Enabled:			.ds 1	; $81 #DAHRKDAIZ When 1, wall jumping is enabled
 				.ds 1	; $82 unused
 				.ds 1	; $83 unused
 
@@ -3285,7 +3285,7 @@ OBJ_BOUNCEDOWNUP	= $06	; Down/up block bounce effect object
 OBJ_WARPHIDE		= $07	; Hidden object that jumps you to the secret warp whistle in 1-3
 OBJ_PSWITCHDOOR		= $08	; Door that appears under influence of P-Switch
 OBJ_AIRSHIPANCHOR	= $09	; Airship anchor
-OBJ_POWERUP_1UP		= $0B	; 1-Up Mushroom
+OBJ_POWERUP_NINJASHROOM		= $0B	; Ninja Mushroom
 OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tanooki, Frog, Hammer)
 OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
 OBJ_BOSS_KOOPALING	= $0E 	; Koopaling (as appropriate to current world)

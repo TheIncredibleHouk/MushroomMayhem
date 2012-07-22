@@ -36,7 +36,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjInit_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjInit_Obj0A	; Object $0A
-	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_1UP
+	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjInit_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
@@ -78,7 +78,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjNorm_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjNorm_Obj0A	; Object $0A
-	.word ObjNorm_PUp1UpMush; Object $0B - OBJ_POWERUP_1UP
+	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjNorm_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
@@ -121,7 +121,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjHit_DoNothing	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjHit_Obj0A	; Object $0A
-	.word ObjHit_PUp1UpMush	; Object $0B - OBJ_POWERUP_1UP
+	.word ObjHit_NinjaShroom	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjHit_StarOrSuit	; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjHit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjHit_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
@@ -163,7 +163,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_1UP
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $0E - OBJ_BOSS_KOOPALING
@@ -212,7 +212,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP0	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OA2_TDOGRP1	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA2_TDOGRP1	; Object $0A
-	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP_1UP
+	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA2_TDOGRP1	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA2_TDOGRP1	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA2_TDOGRP6	; Object $0E - OBJ_BOSS_KOOPALING
@@ -261,7 +261,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OA3_HALT_JUSTDRAW 	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP_1UP
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0E - OBJ_BOSS_KOOPALING
@@ -303,7 +303,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT6 | $13	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OPTS_SETPT6 | $37	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OPTS_SETPT5 | $48	; Object $0A
-	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_1UP
+	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OPTS_NOCHANGE	; Object $0E - OBJ_BOSS_KOOPALING
@@ -345,7 +345,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $08 - OBJ_PSWITCHDOOR
 	.byte KILLACT_STANDARD	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte KILLACT_STANDARD	; Object $0A
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP_1UP
+	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte KILLACT_NORMALANDKILLED	; Object $0E - OBJ_BOSS_KOOPALING
@@ -429,7 +429,7 @@ ObjP1B:	.byte $79, $7B, $79, $7B, $77, $77, $75, $75	; RAS: Not actually used, s
 ObjP09:	.byte $E1, $E5, $E1
 ObjP0A:	.byte $81, $83, $85, $87
 ObjP0C:	.byte $55, $55, $93, $93, $91, $91, $95, $95
-ObjP0B:	
+ObjP0B:	.byte $6B, $6B	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
 ObjP0D:	.byte $51, $51
 ObjP19:	.byte $53, $53
 ObjP1A:	.byte $59, $5B
@@ -1013,7 +1013,7 @@ PRG001_A4C6:
 
 	; Power-up which may emerge from different types of bounce blocks
 Bouncer_PUp:	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN
-		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_1UP, OBJ_POWERUP_ICEFLOWER ; #DAHRKDAIZ added OBJ_POWERUP_ICE
+		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER ; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
 Bounce_TileReplacements:	
 	.byte CHNGTILE_TOFRZWATER
@@ -1532,7 +1532,7 @@ PRG001_A77C:
 
 	RTS		 ; Return
 
-ObjNorm_PUp1UpMush:
+ObjNorm_PUpNinjaShroom:
 	JSR PowerUp_DoRaise	 ; Do power up raising out of box
 
 	LDA <Objects_DetStat,X
@@ -1551,11 +1551,20 @@ PRG001_A78E:
 	JMP PowerUp_DoHitTest	 		; Do hit test and don't come back!
 
 
-ObjHit_PUp1UpMush:
+ObjHit_NinjaShroom:
+	
+	; "Poof" sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
 
-	; "1-UP"
-	LDA #$0d	
-	JSR Score_PopUp	
+	; "Poof" effect
+	LDA #$17
+	STA Player_SuitLost
+
+	; Change to Ninja
+	LDA #$0C
+	STA Player_QueueSuit
 
 	; Set to dead/empty
 	LDA #OBJSTATE_DEADEMPTY
@@ -2551,11 +2560,6 @@ ObjHit_SuperLeaf:
 	JMP PRG001_A897	 ; Otherwise, jump to PRG001_A897
 
 PRG001_AC37:
-	CMP #$03
-	BNE PRG001_AC40	 ; If Player is not already Raccoon, jump to PRG001_AC40
-
-	JSR PowerUp_PlaySound	 ; Play Power Up sound
-	BNE PRG001_AC52	 ; Jump (technically always) to PRG001_AC52
 
 PRG001_AC40:
 
