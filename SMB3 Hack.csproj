@@ -35,7 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="SMB3\PRG\Common Routines.asm" />
     <None Include="SMB3\PRG\prg000.asm" />
     <None Include="SMB3\PRG\prg001.asm" />
     <None Include="SMB3\PRG\prg002.asm" />
@@ -72,9 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SMB3\PRG\objects\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
