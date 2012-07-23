@@ -566,26 +566,9 @@ PRG000_C3E7:
 ; FIXME: Anybody want to claim this?
 ; Looks like maybe a leftover debug routine for some kind of "float around" mode maybe!!
 ; $C3EA 
-Boo_Move_Mode:
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT)
 	TAY		 ; Y = 1 or 2
-
-	; Set Player X velocity directly??
-	LDA PRG000_C3E7,Y
-	STA <Player_XVel
-
-	LDA <Pad_Holding
-	LSR A
-	LSR A
-	AND #((PAD_UP | PAD_DOWN) >> 2)
-	TAY		 ; Y = 1 or 2
-
-	; Set Player Y velocity directly??
-	LDA PRG000_C3E7,Y
-	STA <Player_YVel
-
-	RTS		 ; Return
 
 	; Offsets into Sprite_RAM used by objects
 SprRamOffsets:
@@ -3761,6 +3744,10 @@ PRG000_D267:
 
 	; Player is in water (can't stomp in water) OR attribute 3 bit 5 is set (can't stomp anyway)...
 
+;	LDA Player_Kuribo
+;	ORA Player_Shell
+;	BNE PRG000_D272	 ; If in Kuribo's shoe or transformed into statue, ignore this and jump to PRG000_D272
+
 	JMP PRG000_D355	 ; Jump to PRG000_D355 (hurt Player!)
 
 PRG000_D272:
@@ -3774,7 +3761,25 @@ PRG000_D272:
 
 	; Attribute set 2 bit 2 NOT set... (object cares about being stomped)
 
-	JMP PRG000_D29B	 	; If Player is NOT a statue and NOT in a Kuribo's shoe, jump to PRG000_D29B
+	LDA #$00
+;	LDA Player_Shell
+;	ORA Player_Kuribo
+	BEQ PRG000_D29B	 	; If Player is NOT a statue and NOT in a Kuribo's shoe, jump to PRG000_D29B
+
+	; Player is a statue or in a Kuribo's shoe...
+
+	JSR PRG000_D2B4	 ; Handle stomp!
+
+	LDY ObjGroupRel_Idx	 ; Y = object group relative index
+	LDA ObjectGroup_Attributes3,Y	 ; Get attribute set 3
+	AND #OA3_SQUASH
+	BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
+
+	; When stomped by statue/Kuribo, if the enemy was going to get squashed anyway
+	; then go ahead into "shelled" state which redirects to "stomped" state.
+
+	LDA #OBJSTATE_SHELLED	 ; Otherwise, state is Shelled
+	BNE PRG000_D297	 ; Jump (technically always) to PRG000_D297
 
 PRG000_D295:
 
@@ -5244,7 +5249,7 @@ PRG000_D8EB:
 	LDA <Temp_Var12	
 	ORA Objects_PlayerHitStat,X
 	STA Objects_PlayerHitStat,X
-	
+
 	LDA Player_StarInv
 	ORA Player_Shell
 	ORA Boo_Mode_KillTimer
@@ -5501,7 +5506,7 @@ SMB3J_SuitLossFrame:	.byte $00, $00, $00, $00, $01, $02, $03
 Player_GetHurt:
 	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
-	ORA 	Boo_Mode_Timer
+	ORA Boo_Mode_Timer		; ... a statue ...
 	ORA Player_StarInv		; ... invincible by star ...
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGame		; ... gameplay halted ...
@@ -5659,6 +5664,8 @@ Player_Die:
 	STA Player_Kuribo
 	STA Player_StarInv
 	STA Player_Shell
+	STA Boo_Mode_Timer
+	STA Boo_Mode_KillTimer
 	STA Level_PSwitchCnt
 
 	LDA #$01
@@ -6880,3 +6887,82 @@ Video_3CMFlowBot
 	.byte VU_REPEAT | $08, $A9
 	.byte $00	; Terminator
 
+
+Can_Wall_Jump:
+	LDA <Player_YVel
+	BMI No_Wall_Jump
+	LDA <Pad_Holding
+	AND #(PAD_LEFT | PAD_RIGHT)
+	BEQ No_Wall_Jump
+	LDA <Player_InAir
+	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
+	LDA SPECIAL_SUIT_FLAG
+	BEQ No_Wall_Jump
+	LDA <Player_Suit
+	CMP #$06
+	BNE No_Wall_Jump
+	STA Wall_Jump_Enabled
+	LDA #$00
+	STA Player_Flip
+	LDA <Player_YVel
+	CLC
+	SBC #$20			; slow down decent during wall jump mode
+	BMI No_Wall_Jump
+	STA <Player_YVel
+No_Wall_Jump:
+	RTS
+
+Do_Wall_Jump:
+	LDA <Player_FlipBits
+	BNE  Jump_Right
+	LDA #$20
+	BNE Do_Jump_Off
+
+Jump_Right:
+	LDA #$E0
+
+Do_Jump_Off:
+	STA <Player_XVel
+	RTS
+
+Do_Exit_Map:
+	LDA #$01
+	STA DAIZ_TEMP1
+	LDA <Objects_Y,X	; Y = object's Y position
+	AND #$10
+	BEQ DontChangeWorld
+	JMP Change_World
+	RTS
+
+DontChangeWorld:
+	LDA <Objects_X,X
+	AND #$10
+	BNE Change_MapY
+	JMP Change_MapX
+	RTS
+
+Change_World:
+	LDA <Objects_Y,X
+	AND #$0F
+	STA World_Num	
+	RTS
+
+Change_MapX:
+	LDA <Objects_Y,X
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA Map_Entered_Y
+	RTS
+
+Change_MapY:
+	LDA <Objects_Y,X
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA Map_Entered_X
+	RTS

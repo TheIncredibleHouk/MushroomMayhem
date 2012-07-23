@@ -30,6 +30,8 @@ Level_TilesetIdx_ByTileset:
 	.byte $0D	; 14 Underground
 
 
+	; Unused space I guess!  Reserved for the non-gameplay tilesets perhaps?
+	.byte $FF, $FF, $FF, $FF
 
 	; Defines 4 frames of animation to use while Player walks
 Player_WalkFramesByPUp:
@@ -72,6 +74,10 @@ Player_SwimIdleFrames:
 Player_TailAttackFrames:
 	.byte PF_TAILATKGROUND_BASE, PF_TAILATKGROUND_BASE+1, PF_TAILATKGROUND_BASE, PF_TAILATKGROUND_BASE+2, PF_TAILATKGROUND_BASE	; On ground
 	.byte PF_TAILATKINAIR_BASE, PF_TAILATKINAIR_BASE-5, PF_TAILATKINAIR_BASE, PF_TAILATKINAIR_BASE-4, PF_TAILATKINAIR_BASE	; In air
+
+	; Frames for when Player is in Kuribo's shoe
+Player_KuriboFrame:
+	.byte PF_KURIBO_SMALL, PF_KURIBO_BIG	; First value is for small, the other for everything else
 
 	; Player duck frame
 Player_DuckFrame:
@@ -133,6 +139,9 @@ Player_VibeDisableFrame:
 	.byte PF_WALKBIG_BASE+2	; Tanooki
 	.byte PF_WALKBIG_BASE+2		; Hammer
 
+	; Unused data?
+	.byte $FE, $02, $05, $FB, $01
+	.byte $02, $03, $00
 
 	; When Player hits water, splash!
 Player_WaterSplash:
@@ -779,6 +788,9 @@ Is_Special:
 PRG008_A3F2:
 	LDA #$00
 	STA Player_QueueSuit	  ; Clear Player_QueueSuit
+	STA Player_Shell
+	STA Boo_Mode_Timer
+	STA Boo_Mode_KillTimer
 
 	JSR Level_SetPlayerPUpPal ; Set power up's correct palette
 
@@ -1020,7 +1032,7 @@ PowerUp_Palettes:
 	.byte $00, $16, $36, $0F	; 0 - Mario default palette
 	.byte $00, $16, $36, $0F	; 1 - #DAHRKDAIZ SUPER MARIO
 	.byte $00, $27, $36, $16	; 2 - Fire Flower
-	.byte $00, $00, $00, $00	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
+	.byte $00, $16, $36, $0F	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
 	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
 	.byte $00, $19, $36, $0F	; 5 - Koopa Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
@@ -1327,6 +1339,7 @@ PRG008_A6F2:
 
 	LDA Player_IsHolding
 	ORA Player_Slide
+	ORA Player_Kuribo
 	BNE PRG008_A70E	 	; If Player is holding something, sliding down a slope, or in a Kuribo's shoe, jump to PRG008_A70E 
 
 	LDA <Player_InAir
@@ -1646,6 +1659,7 @@ PRG008_A86C:
 	; VINE CLIMBING LOGIC
 	LDA Player_InWater
 	ORA Player_IsHolding
+	ORA Player_Kuribo
 	BNE PRG008_A890	 ; If Player is in water, holding something, or in Kuribo's shoe, jump to PRG008_A890
 
 	LDA <Temp_Var1
@@ -1758,11 +1772,11 @@ PRG008_A8DA:
 
 PRG008_A8EC:
 
-	; Apply Player's X and Y velocity 
+	; Apply Player's X and Y velocity for the vine climbing
 	JSR Player_ApplyXVelocity
 	JSR Player_ApplyYVelocity
 
-	JSR Boo_Move_Mode	 ; Animate climbing
+	JSR Player_DoClimbAnim	 ; Animate climbing
 	JSR Player_Draw29	 ; Draw Player
 	RTS		 ; Return
 
@@ -1834,6 +1848,14 @@ PRG008_A93D:
 PRG008_A940:
 	JSR Player_CommonGroundAnims	 ; Perform common ground animation routines
 
+	LDA Player_Kuribo
+	BEQ PRG008_A94C	 ; If Player is not wearing Kuribo's shoe, jump to PRG008_A94C
+
+	; If in Kuribo's shoe...
+
+	LDA #14		 ; A = 14 (Kuribo's shoe code pointer)
+	BNE PRG008_A956	 ; Jump (technically always) to PRG008_A956
+
 PRG008_A94C:
 	LDA <Player_Suit
 
@@ -1882,6 +1904,8 @@ PowerUpMovement_JumpTable:
 	.word Swim_Tanooki	; 5 - Tanooki
 	.word Swim_FireHammer	; 6 - Hammer
 
+	; Kuribo's shoe
+	.word Move_Kuribo
 
 GndMov_Small:
 	JSR Player_GroundHControl ; Do Player left/right input control
@@ -2179,6 +2203,9 @@ Swim_Tanooki:
 	JSR Player_SwimAnim ; Do Player swim animations
 	RTS		 ; Return
 
+; #DAHRKDAIZ Commenting out Kuribo code
+Move_Kuribo:
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Kuribo shoe related code removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2438,9 +2465,9 @@ PRG008_AC30:
 	AND #PAD_A
 	STA <Temp_Var1	 ; Temp_Var1 = $80 if Player is pressing 'A', otherwise 0
 	BNE Jump_Over_PRG008_AC9E
-	JMP PRG008_AC9E	 ; If Player is NOT pressing 'A', jump to PRG008_AC9E
+	JMP PRG008_AC9E	 ;
 
-Jump_Over_PRG008_AC9E
+Jump_Over_PRG008_AC9E:
 	LDA Wall_Jump_Enabled
 	BNE PRG008_AC41
 
@@ -2512,6 +2539,7 @@ PRG008_AC73:
 	LDY Wall_Jump_Enabled
 	BEQ Normal_Jump
 	LDA #$D0
+
 	STA Player_Flip
 Normal_Jump:
 	STA <Player_YVel		; -> Y velocity
@@ -2571,16 +2599,17 @@ PRG008_ACC8:
 PRG008_ACCD:
 	TYA	
 	ADD <Player_YVel
+	LDX Boo_Mode_Timer
+	BNE Skip_YVel
 	STA <Player_YVel ; Player_YVel += Y
 
+Skip_YVel:
 	LDA <Player_WagCount
 	BEQ PRG008_ACD9	 ; If Player_WagCount = 0, jump to PRG008_ACD9
 
 	DEC <Player_WagCount ; Otherwise, $F0--
 
 PRG008_ACD9:
-	LDA Player_Kuribo
-	BNE PRG008_ACEF	 ; If Player is wearing Kuribo's shoe, jump to PRG008_ACEF
 
 	LDA SPECIAL_SUIT_FLAG
 	BNE PRG008_ACEF
@@ -2895,39 +2924,10 @@ PRG008_AE24:
 	STY <Player_FlipBits	; Set appropriate flip
 
 PRG008_AE26:
-	LDA Debug_Flag
-	CMP #$80
-	BNE PRG008_AE58	 ; If we're not in debug mode, jump to PRG008_AE58
 
-	; DEBUG SUIT/POWER-UP SWITCH AND KURIBO TOGGLE
-
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ PRG008_AE58	 ; If Player is NOT pressing select, jump to PRG008_AE58
-
-	LDA <Pad_Holding
-	AND #(PAD_A | PAD_B)
-	BNE PRG008_AE50	 ; If Player is holding A or B, jump to PRG008_AE50
-
-
-	; In short, cycle through power-up 0-6 (all power ups)
-	LDA <Player_Suit
-	ADD #$01
-	STA Player_QueueSuit
-	CMP #(PLAYERSUIT_LAST+1)	; +1 because it's by Player_QueueSuit
-	BLS PRG008_AE47			; If not the last suit, jump to PRG008_AE47
-	LDA #$00
-PRG008_AE47:
-	STA Player_QueueSuit
-	INC Player_QueueSuit
-	JMP PRG008_AE58	 ; Jump to PRG008_AE58
 
 PRG008_AE50:
 
-	; Kuribo's shoe toggle!
-	LDA Player_Kuribo
-	EOR #$01
-	STA Player_Kuribo
 
 PRG008_AE58:
 	LDA <Player_Suit
@@ -3222,20 +3222,29 @@ PRG008_AFAD:
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Koopa_Shell:
-	LDA SPECIAL_SUIT_FLAG
+	LDA <Player_InAir
+	BNE RTSShell
+	LDA <Player_Suit
+	CMP #$05
 	BNE NoShellRTS
+	LDA SPECIAL_SUIT_FLAG
+	BNE Kill_Shell
 	LDA Player_XVel
-	BEQ Tanooki_RTS				; If XVel is not 0 and holding down, we're in shell mode
+	BEQ NoShellRTS				; If XVel is not 0 and holding down, we're in shell mode
 	LDA <Pad_Holding
 	AND #(PAD_DOWN | PAD_LEFT | PAD_RIGHT)
 	CMP #PAD_DOWN
-	BEQ Tanooki_RTS
+	BEQ NoShellRTS
+
+Kill_Shell:
 	LDA #$00
 
-Tanooki_RTS:
-	STA Player_Shell
 NoShellRTS:
+	STA Player_Shell
+RTSShell:
 	RTS
+
+
 
 Sound_StatueSwitch:
 	LDA Sound_QLevel1
@@ -4733,7 +4742,7 @@ LATR_Woodblocks:.byte $50, $50, $50, $50
 LATR_QBlocks:	.byte $20, $20, $20, $20, $20, $20, $20, $30, $20, $20, $20, $20, $20, $60, $20, $20, $20
 LATR_InvisCoin:	.byte $20, $20, $10
 LATR_InvisNote:	.byte $40
-
+LATR_PWrksJct:	.byte $70	; UNUSED breakable pipeworks junction tile!
 
 
 	; This defines a "range" passed the base tile defined in Level_ActionTiles
@@ -4759,7 +4768,7 @@ Level_ActionTiles_OffFix:
 	.byte LATR_Off(LATR_QBlocks), LATR_Off(LATR_InvisCoin), LATR_Off(LATR_InvisNote)
 
 	; And in the desert only... (UNUSED, would be a breakable tile in a pipeworks structure!)
-
+	.byte LATR_Off(LATR_PWrksJct)
 
 
 	; This defines the base tile index for "action tiles", tiles which, when the
@@ -5012,7 +5021,7 @@ LATP_JumpTable:
 	.word LATP_IceFlower; 5 = Coin/Star
 	.word LATP_Brick	; 6 = Standard brick behavior
 	.word LATP_Vine		; 7 = Vine
-	.word LATP_10Coin	; 8 = 10 coin
+	.word LATP_Pumpkin	; 8 = 10 coin
 	.word LATP_NinjaShroom		; 9 = 1-up
 	.word LATP_PSwitch	; A = P-Switch
 	.word LATP_BrickAltClear; B = Brick which clears to alternate tile when smashed
@@ -5048,6 +5057,21 @@ LATP_IceFlower:
 	LDY #$08	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
 
 NO_ICE_SMALL:
+	RTS		 ; Return
+
+;;;;;;;;;;;;
+LATP_Pumpkin:
+	LDA #$00
+	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
+
+	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+
+	LDA <Player_Suit
+	BEQ NO_PUMPKIN	 ; If Player is small, jump to PRG008_B7F9
+
+	LDY #$09	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
+
+NO_PUMPKIN:
 	RTS		 ; Return
 
 LATP_Leaf:
@@ -5165,19 +5189,6 @@ LATP_Vine:
 
 	LDY #$06	 ; Y = 6 (vine) (index into PRG001 Bouncer_PUp)
 	RTS		 ; Return
-
-LATP_10Coin:
-	LDA <Temp_Var16
-	ORA <Temp_Var15
-	STA B10Coin_ID	 ; X & Y are merged into a sort of unique ID for this block
-
-	LDA #$09
-	STA B10Coin_Count ; Set coin counter to 9
-
-	LDA #200
-	STA B10Coin_Timer ; B10Coin_Timer = 200
-
-	JMP LATP_Coin	; Jump to common coin routine...
 
 LATP_NinjaShroom:
 	
@@ -6626,28 +6637,25 @@ PipeEntryPrepare:
 	ORA #SND_PLAYERPIPE
 	STA Sound_QPlayer
 
-	; If Y = 3, A = 4
-	LDA #$04
-	CPY #$03
-	BEQ PRG008_BF49
+	LDA $F000
+	LDA #$00
+	STA DAIZ_TEMP1
+	; #DAHRKDAIZ hacked so object $25 indicates we should exit to map
+	STX DAIZ_TEMP2
+	LDX #$06				; Check for the level exit object, if it exists, exit level
+Level_Exit_Loop:
+	LDA Level_ObjectID, X
+	CMP #$25
+	BNE Not_Exit_Object
+	JSR Do_Exit_Map
 
-	; If Y = 2, A = 5
-	LDA #$05
-	CPY #$02
-	BEQ PRG008_BF49
+Not_Exit_Object:
+	DEX
+	BNE Level_Exit_Loop
 
-	; If Y = 0, A = 2
-	LDA #$02
-	CPY #$00
-	BEQ PRG008_BF49
-
-	; Use A = 1 unless Level_PipeNotExit is set, in which case use A = 3
-	LDA #$01	; A = 1 (pipe will exit level)
-	LDY Level_PipeNotExit
-	BNE PRG008_BF47		; If pipes in this level do NOT exit to map, jump to PRG008_BF47
-
-	LDY LevelJctBQ_Flag
-	BEQ PRG008_BF49	 ; If NOT in the Big Question Block area, jump to PRG008_BF49
+	LDX DAIZ_TEMP2
+	LDA DAIZ_TEMP1	; A = 1 (pipe will exit level)
+	BNE PRG008_BF49		; If pipes in this level do NOT exit to map, jump to PRG008_BF47
 
 PRG008_BF47:
 	LDA #$03	 ; A = 3 (regular pipe mechanics)
@@ -6812,7 +6820,6 @@ PRG008_BFD3:
 	STA Player_XVelFrac,X
 
 	; Apply velocity to X if there's carry
-Do_XDirect:
 	LDA <Player_X,X
 	ADC <Temp_Var11
 	STA <Player_X,X
@@ -6832,7 +6839,6 @@ Do_XDirect:
 ; faster than the cap value (FALLRATE_MAX)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_ApplyYVelocity:
-
 	LDA <Player_YVel
 	BMI PRG008_BFF9	 ; If Player_YVel < 0, jump to PRG008_BFF9
 
@@ -6891,40 +6897,3 @@ Increase_Air_Time:
 
 Skip_Air_Change:
 	RTS	
-
-Can_Wall_Jump:
-	LDA <Player_YVel
-	BMI No_Wall_Jump
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BEQ No_Wall_Jump
-	LDA <Player_InAir
-	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
-	LDA SPECIAL_SUIT_FLAG
-	BEQ No_Wall_Jump
-	LDA <Player_Suit
-	CMP #$06
-	BNE No_Wall_Jump
-	STA Wall_Jump_Enabled
-	LDA #$00
-	STA Player_Flip
-	LDA <Player_YVel
-	CLC
-	SBC #$20			; slow down decent during wall jump mode
-	BMI No_Wall_Jump
-	STA <Player_YVel
-No_Wall_Jump:
-	RTS
-
-Do_Wall_Jump:
-	LDA <Player_FlipBits
-	BNE  Jump_Right
-	LDA #$20
-	BNE Do_Jump_Off
-
-Jump_Right:
-	LDA #$E0
-
-Do_Jump_Off:
-	STA <Player_XVel
-	RTS

@@ -102,7 +102,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $20
 	.word ObjNorm_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjNorm_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjNorm_FireFlower	; Object $23 - OBJ_POWERUP_STARCARD
+	.word ObjNorm_Card	; Object $23 - OBJ_POWERUP_STARCARD
 
 
 	; Object group $00 (i.e. objects starting at ID $00) Collision routine jump table (if calling Object_HitTestRespond;
@@ -186,7 +186,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1F - OBJ_GROWINGVINE
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $20
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_STARCARD
 
 
@@ -437,7 +437,7 @@ ObjP1C:	.byte $75, $77
 ObjP1E:	.byte $5D, $5F
 ObjP1F:	.byte $7D, $7D
 ObjP21:	.byte $69, $69
-ObjP22:	.byte $53, $53
+ObjP22:	.byte $5B, $5B ; #DAHRKDAIZ - PUMPKIN
 ObjP23:	.byte $55, $55
 ObjP08:	.byte $FB, $FB, $FB, $FB, $BB, $B9, $B9, $BB, $BF, $BD
 
@@ -1013,7 +1013,7 @@ PRG001_A4C6:
 
 	; Power-up which may emerge from different types of bounce blocks
 Bouncer_PUp:	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN
-		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER ; #DAHRKDAIZ added OBJ_POWERUP_ICE
+		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN ; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
 Bounce_TileReplacements:	
 	.byte CHNGTILE_TOFRZWATER
@@ -1022,7 +1022,7 @@ Bounce_TileReplacements:
 	.byte CHNGTILE_TOBRICK
 	.byte CHNGTILE_TONOTEBLOCK
 	.byte CHGTILESTANDING_WATER
-	.byte CHNGTILE_TOBRICKCOIN
+	.byte CHNGTILE_TOMETALPLATE
 	.byte CHNGTILE_PIPEJCT
 
 	; Power-up X or Y velocity upon emerging from the bounce block
@@ -1603,8 +1603,8 @@ PRG001_A7BF:
 	TAY
 
 	; Set a start palette
-	LDA Star_Palettes,Y
-	STA Objects_SprAttr,X
+	;LDA Star_Palettes,Y
+	;STA Objects_SprAttr,X
 
 	RTS		 ; Return
 
@@ -2888,7 +2888,6 @@ ObjNorm_Card:
 
 
 ObjHit_IceFlower:
-	; #DAHRKDAIZ - the power up transformation should be similar to fire mario
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1
@@ -2918,14 +2917,9 @@ ObjHit_Pumpkin:
 	STA Player_QueueSuit
 
 	; Set to dead/empty
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
-	RTS
-
-	; #DAHRKDAIZ - Hacked to act as power ups instead of goal cards :D
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Goal card sprites no longer work as goal cards
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 	LDA #OBJSTATE_DEADEMPTY
+ 	STA Objects_State,X
+ 	RTS
 
 PRG001_ADE2:
 ;	RTS		 ; Return

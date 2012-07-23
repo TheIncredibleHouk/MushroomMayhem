@@ -1613,7 +1613,6 @@ Level_JctInit:
 
 
 LevelJct_BigQuestionBlock:
-
 	; LevelJctBQ_Flag: When you enter a Big Question block area,
 	;  sets it; when you leave, clears it!
 	LDA LevelJctBQ_Flag

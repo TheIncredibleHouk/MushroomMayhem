@@ -1388,82 +1388,27 @@ PipewayCtlr_MapScrlXHi:
 	.byte $00	; 23
 
 ObjNorm_PipewayCtlr:
-	JSR PipewyCtl_SetCarryByPPos	 ; Carry = 1 if Player is on lower part of level OR if Player is on right half of screen
-
-	LDA #$00
-	ROR A
-	STA <Temp_Var1	 ; Temp_Var1 = $00 or $80 based on above
-
-	LDY <Objects_Y,X	; Y = object's Y position	
-
-	LDX Player_Current ; X = Current Player
-
-	LDA PipewayCtlr_MapXHi,Y	; Get appropriate Map X Hi value
-
-	BIT <Temp_Var1
-	BMI PRG002_A712	 ; If Temp_Var1 = $80, jump to PRG002_A712
-
-	; Otherwise, shift retrieved value down by 4 bits (get secondary value)
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-
-PRG002_A712:
-	AND #%00001111	; Keep only one of the values
-
-	STA Map_Entered_XHi,X	 ; Set as Map X High
-
-	; Set Map X
-	LDA PipewayCtlr_MapX,Y
-	JSR PipewyCtl_GetUpperValue
-	STA Map_Entered_X,X
-
-	; Set Map Y
-	LDA PipewayCtlr_MapY,Y
-	JSR PipewyCtl_GetUpperValue
-	STA Map_Entered_Y,X
-
-	LDA PipewayCtlr_MapScrlXHi,Y
-	JSR PipewyCtl_GetUpperValue
-	TAY		 ; -> 'Y'
-
-	; Set X Offset as appropriate by coordinate (i.e. map at left alignment or halfway-center alignment)
-	AND #$80
-	STA Map_Prev_XOff,X
-
-	; Basically takes a 3-bit value packed in the upper nibble
-	; and moves it to the bottom; the lower nibble is zeroed
-	; out thanks to PipewyCtl_GetUpperValue so it has no effect.
-	TYA	;   xwyz 0000
-	ASL A	; x wyz0 0000
-	ASL A	; w yz00 0000
-	ROL A	; y z000 000w
-	ROL A	; z 0000 00wy 
-	ROL A	; 0 0000 0wyz
-	STA Map_Prev_XHi,X	 ; Store as Map X Hi
-
-	LDX <SlotIndexBackup		 ; X = object slot index
+	
 	RTS		 ; Return
 
-
-PipewyCtl_SetCarryByPPos:
-	LDY <Objects_YHi,X	 
-	BNE PRG002_A749	 ; If Player is on lower part of level, jump to PRG002_A749
-
-	; Player is on upper part of level...
-
-	LDA <Player_SpriteX
-	ASL A		 ; Set carry by Player's sprite X bit 7 (i.e. Player on right half of screen sets carry = 1)
-	RTS		 ; Return
-
-PRG002_A749:
-
-	; Player is on lower part of level...
-
-	LDA <Player_YHi	
-	LSR A		 ; Set carry = 1
-	RTS		 ; Return
+; #TOREMOVE
+;PipewyCtl_SetCarryByPPos:
+;	LDY <Objects_YHi,X	 
+;	BNE PRG002_A749	 ; If Player is on lower part of level, jump to PRG002_A749
+;
+;	; Player is on upper part of level...
+;
+;	LDA <Player_SpriteX
+;	ASL A		 ; Set carry by Player's sprite X bit 7 (i.e. Player on right half of screen sets carry = 1)
+;	RTS		 ; Return
+;
+;PRG002_A749:
+;
+;	; Player is on lower part of level...
+;
+;	LDA <Player_YHi	
+;	LSR A		 ; Set carry = 1
+;	RTS		 ; Return
 
 
 PipewyCtl_GetUpperValue:
@@ -5339,4 +5284,3 @@ PRG002_BFD4:
 	.byte $FC, $A9, $00, $22, $0B, $01, $A9, $22, $14, $01, $A9, $22, $29, $04, $A9, $FC
 	.byte $FC, $A9, $22, $33, $04, $A9, $FC, $FC, $A9, $22, $4A, $04, $A9, $A9, $FC, $A9
 	.byte $22, $52, $04, $A9, $FC, $A9, $A9, $22, $6C, $48, $A9, $00
-
