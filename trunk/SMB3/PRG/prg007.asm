@@ -476,7 +476,6 @@ Gameplay_UpdateAndDrawMisc:
 	JSR CannonFire_UpdateAndDraw	 ; Update and draw the Cannon Fires
 	JSR PlayerProjs_UpdateAndDraw	 ; Update and draw Player's weapon projectiles
 	JSR Do_Boo_Mode
-
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_HAMMER
 	BEQ PRG007_A251	 ; If Player is wearing a Hammer Suit, jump to PRG007_A251
@@ -6111,7 +6110,6 @@ No_XVel:
 	RTS
 
 Do_Boo_Mode:
-	LDA $F000
 	LDA SPECIAL_SUIT_FLAG
 	BEQ Boo_Do_Nothing
 	LDA <Player_Suit		
@@ -6121,7 +6119,8 @@ Do_Boo_Mode:
 	BNE Dec_KillTimer		; skip to decreasing kill timer
 	LDA Boo_Mode_Timer		; If no boo mode timer going, skip all together
 	BEQ Try_Boo_Mode
-	CMP #$40
+	STA <Player_InAir
+	CMP #$28
 	BCS Dec_Boo_Mode
 	LDA <Pad_Holding
 	AND #PAD_B
@@ -6135,7 +6134,7 @@ Kill_Boo_Mode:
 	LDA #$00
 	STA Boo_Mode_Timer
 	JSR Poof_Sound			; No more boo mode, poof out!
-	LDA #$20
+	LDA #$1C
 	STA Boo_Mode_KillTimer
 	RTS
 
@@ -6150,8 +6149,9 @@ Try_Boo_Mode:
 	LDA <Pad_Input
 	AND #PAD_B
 	BEQ Boo_Do_Nothing
-	LDA #60
+	LDA #48
 	STA Boo_Mode_Timer
+	STA <Player_InAir
 	JMP Poof_Sound
 
 Boo_Do_Nothing:
@@ -6166,4 +6166,4 @@ Poof_Sound:
 	; "Poof" effect
 	LDA #$17
 	STA Player_SuitLost
-	RTS
+ 	RTS

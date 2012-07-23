@@ -392,8 +392,8 @@ PRG029_CE88:
 Player_PUpRootPage:
 	;     Small, Big, Fire, Leaf, Frog, Koopa,   Hammer
 	.byte $50,   $54, $54,  $00,  $50,  $40,     $44
-	;     xxxxxxxxxx  Ice   xxx    xxx   Boo   Ninja
-	.byte			  $54,  $00,   $00 , $24 ,  $28			
+	;     xxxxxxxxxx  Ice   xxx    xxx   xxx   Ninja
+	.byte			  $54,  $00,   $00 , $24 ,  $28				
 
 RAINBOW_PAL_CYCLE:
 	.byte $01, $03, $05, $06, $07, $09, $0A, $0C ; #DAHRKDAIZ
@@ -413,8 +413,8 @@ Player_Draw:
 	LDA <Player_FlipBits
 	EOR #$40
 	STA <Player_FlipBits
-
 Try_Boo_Frames:
+
 	LDA Boo_Mode_Timer
 	BEQ Normal_Player_Frames
 	LDX #$08
@@ -427,6 +427,7 @@ Normal_Player_Frames:
 	LDA SPECIAL_SUIT_FLAG
 	BEQ Normal_Gfx
 	TYA
+	CLC
 	ADC #$05
 	TAY
 
@@ -584,8 +585,6 @@ Try_Boo_Animation:
 	STA <Player_SprWorkL
 	LDA #HIGH(BooAnim)
 	STA <Player_SprWorkH
-	LDA #$00
-	STA Player_SprOff
 	LDY #$00
 	JMP PRG029_CF2F
 
@@ -1644,6 +1643,22 @@ PRG029_D468:
 
 PRG029_D47E:	; Jump point for horizontal pipe-walking
 
+	LDY Player_Kuribo
+	BEQ PRG029_D491	 ; If Player is NOT wearing Kuribo's shoe, jump to PRG029_D491
+
+	; Wearing Kuribo's shoe (NOTE: This CAN'T happen because the 
+	; shoe was forcefully removed before we got here; dead code?)
+
+	AND #$01
+
+	LDY <Player_Suit
+	BEQ PRG029_D48B	 ; If Player_Suit = 0 (small), jump to PRG029_D48B
+
+	LDY #$01	 ; Y = 1 (small / big same)
+
+PRG029_D48B:
+	ADD Player_KuriboFrame,Y
+	BNE PRG029_D49B	 ; If result is not zero, jump to PRG029_D49B
 
 PRG029_D491:
 	LDA <Player_Suit
@@ -2634,7 +2649,7 @@ OneTile_ChangeToTile:
 	; Too bad Nintendo couldn't keep things like this in one spot :)
 	; #DAHRKDAIZ Tile Replacments brick coin ice, etc
 OneTile_ChangeToPatterns:
-	.byte $05, $07, $06, $08	; $01 - CHNGTILE_DELETECOIN
+	.byte $FF, $FF, $FF, $FF	; $01 - CHNGTILE_DELETECOIN
 	.byte $FF, $FF, $FF, $FF	; $02 - CHNGTILE_DELETETOBG
 	.byte $F4, $F6, $F8, $F8	; $03 - CHNGTILE_TOFRZWATER
 	.byte $87, $87, $F8, $F8	; $04 - CHNGTILE_STANDINGWATER #DAHRKDAIZ

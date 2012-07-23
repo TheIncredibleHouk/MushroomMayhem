@@ -614,8 +614,8 @@ PAD_RIGHT	= $01
 	Map_UnusedPlayerVal:	.ds 2	; $7F-$80 (Mario/Luigi) Set for each Player to $20 when returning to map, but apparently unused otherwise!
 
 	Wall_Jump_Enabled:			.ds 1	; $81 #DAHRKDAIZ When 1, wall jumping is enabled
-	Boo_Mode_Timer:			.ds 1	; $82 #DAHRKDAIZ When > 0, boo mode enabled
-	Boo_Mode_KillTimer:				.ds 1	; $83 #DAHRKDAIZ slight "invincibility" mode when boo mode
+				.ds 1	; $82 unused
+				.ds 1	; $83 unused
 
 	Map_UnusedPlayerVal2:	.ds 2	; $84-$85 (Mario/Luigi) Apparently unused at all, but backed up and persisted on the world map
 
@@ -2741,8 +2741,9 @@ CFIRE_LASER		= $15	; Laser fire
 	Map_Unused7DC6:		.ds 5	; $7DC6-$7DCA? Indexed by Map_Unused738, value used in dead routine in PRG011 @ $A2AF
 
 	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)
-
-				.ds 9	; $7DCC-$7DD4 unused
+	Boo_Mode_Timer:			.ds 1
+	Boo_Mode_KillTimer:		.ds 1
+				.ds 7	; $7DCC-$7DD4 unused
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
 
