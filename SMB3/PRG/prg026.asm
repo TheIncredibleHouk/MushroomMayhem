@@ -2853,36 +2853,69 @@ StatusBar_Fill_Coins:
 StatusBar_Fill_Coin:
 	LDA Coins_Earned
 	BEQ Coin_Done
-	LDX #$03
-	CLC
+	LDA #LOW(Inventory_Coins)
+	STA <Temp_Var1
+	LDA #HIGH(Inventory_Coins)
+	STA <Temp_Var2
+	LDY #$03					; Add coins to inventory coins first
+	JSR Add_Coins	
+	LDA #LOW(Total_Coins_Collected)
+	STA <Temp_Var1
+	LDA #HIGH(Total_Coins_Collected)
+	STA <Temp_Var2
+	LDY #$05					; Add coins to total coins next
+	JSR Add_Coins
 
-Coin_Loop:
-	ADC Inventory_Coins, X
-	STA Inventory_Coins, X
-	LDA Inventory_Coins, X
-	CMP #$0A
-	BCC No_Coin
-	SEC
-	SBC #$0A
-	STA Inventory_Coins, X
-	DEX
-	JMP Coin_Loop
 
 No_Coin:
 	LDA #$00
 	STA Coins_Earned
-	LDX #$03
 
+	LDA Status_Bar_Mode				; Status_Bar_Mode 0 = Draw current coins
+	BNE DrawCurrentCoins			; Status_Bar_Mode 1 = Draw total coins
+	JSR DrawTotalCoins
+	RTS
+
+Coin_Done:
+	RTS		 ; Return
+
+Add_Coins:
+	LDA Coins_Earned
+	CLC						; Adds coins to ram pointed to by tempvar1
+Coin_Loop:
+	ADC [Temp_Var1], Y
+	STA [Temp_Var1], Y
+	LDA [Temp_Var1], Y
+	CMP #$0A
+	BCC No_More
+	SEC
+	SBC #$0A
+	STA [Temp_Var1], Y
+	DEX
+	JMP Coin_Loop
+
+No_More:
+	RTS
+
+DrawCurrentCoins:
+	LDX #$03
 Coin_Loop2:
 	LDA Inventory_Coins, X
 	ORA #$F0
 	STA Status_Bar_Bottom + 9, X
 	DEX
 	BPL Coin_Loop2
-Coin_Done:
-	RTS		 ; Return
+	RTS
 
-
+DrawTotalCoins:
+	LDX #$06
+Coin_Loop3:
+	LDA Inventory_Coins, X
+	ORA #$F0
+	STA Status_Bar_Bottom + 1, X
+	DEX
+	BPL Coin_Loop3
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; StatusBar_Fill_World
 ;

@@ -2754,11 +2754,19 @@ CFIRE_LASER		= $15	; Laser fire
 	Level_AltLayout:	.ds 2	; $7DFE-$7DFF Pointer to level's "alternate" layout (when you go into bonus pipe, etc.)
 	Level_AltObjects:	.ds 2	; $7E00-$7E01 Pointer to level's "alternate" object set (when you go into bonus pipe, etc.)
 
+	; #DAHRKDAIZ RAM
 	Status_Bar_Top:		.ds 28 ;
 	Status_Bar_Bottom:	.ds 28	;
 	Status_Bar_Render_Toggle: .ds 1;
 	Player_Score:	.ds 6;
-	Unused:			.ds 66	; $7E02-$7E81 Records coins and 1-ups grabbed, so they don't come back if you switch areas
+	Status_Bar_Mode:	.ds 1	; Indicates what status bar information should be displayed
+								; 0 = P-Bar, Air, Exp, Coins, Timer
+								; 1 = overall time, enemies killed, coins collected, odometer
+	Total_Coins_Collected:	.ds 7; over all coins collected
+	Odometer:				.ds 7; over all distance traveled
+	Enemies_Defeated:		.ds 7; over all number of enemies defeated
+	Game_Timer:				.ds 6; over all time spent in the game
+	Unused:			.ds 38	; 
 
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1
