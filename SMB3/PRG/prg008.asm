@@ -6637,7 +6637,6 @@ PipeEntryPrepare:
 	ORA #SND_PLAYERPIPE
 	STA Sound_QPlayer
 
-	LDA $F000
 	LDA #$00
 	STA DAIZ_TEMP1
 	; #DAHRKDAIZ hacked so object $25 indicates we should exit to map

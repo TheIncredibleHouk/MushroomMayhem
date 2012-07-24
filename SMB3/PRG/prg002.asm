@@ -1388,8 +1388,7 @@ PipewayCtlr_MapScrlXHi:
 	.byte $00	; 23
 
 ObjNorm_PipewayCtlr:
-	
-	RTS		 ; Return
+	JMP Object_DeleteOffScreen
 
 ; #TOREMOVE
 ;PipewyCtl_SetCarryByPPos:

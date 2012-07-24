@@ -2156,9 +2156,9 @@ PRG010_CB6B:
 	.byte $00	; Terminator
 PRG010_CB6B_End
 
-Border_TopCorners:	.byte $80, $81, $FF	; Upper left corner, upper right corner, and a black one more to the right
-Border_VertEdges:	.byte $CC, $CC, $FF	; Border left, border right, and a black one more to the right
-Border_BottomCorners:	.byte $82, $83, $FF	; Lower left corner, lower right corner, and a black one more to the right
+Border_TopCorners:	.byte $A2, $A3, $FF	; Upper left corner, upper right corner, and a black one more to the right
+Border_VertEdges:	.byte $B4, $B4, $FF	; Border left, border right, and a black one more to the right
+Border_BottomCorners:	.byte $B2, $B3, $FF	; Lower left corner, lower right corner, and a black one more to the right
 
 VBorder_Offset:
 	.byte $01, $1E, $1F
@@ -2653,9 +2653,7 @@ PRG010_CE0D:
 	; A traversable path was found... since we're currently standing on an enterable, 
 	; non-bypassable level panel, you must be wearing a Judgem's cloud to proceed...
 
-	LDA Map_Power_Disp
-	CMP #$07	 
-	BEQ PRG010_CE39	 	; If Player is wearing Judgem's cloud, jump to PRG010_CE39
+	JMP PRG010_CE39	 	; If Player is wearing Judgem's cloud, jump to PRG010_CE39
 
 	; Otherwise, undo the move; you're not allowed to take the path until you complete that level!
 	LDX Player_Current
@@ -3340,16 +3338,16 @@ Map_Object_Valid_Tiles:	.word Map_Object_Valid_Left, Map_Object_Valid_Right, Map
 
 	; Safe to expand this, but make sure you update all four!!
 Map_Object_Valid_Left:	
-	.byte TILE_HORZPATH,    TILE_DRAWBRIDGEH, TILE_BRIDGE,      TILE_HORZPATHW, TILE_HORZPATHWLL
+	.byte TILE_HORZPATH,    TILE_PIPE, TILE_BRIDGE,      TILE_HORZPATHW, TILE_HORZPATHWLL
 	.byte TILE_HORZPATHWLR, TILE_HORZPATHSKY, TILE_HORZPATHWLB, TILE_HANDTRAP
 Map_Object_Valid_Right:
-	.byte TILE_HORZPATH,    TILE_DRAWBRIDGEH, TILE_BRIDGE,      TILE_HORZPATHW, TILE_HORZPATHWLL
+	.byte TILE_HORZPATH,    TILE_PIPE, TILE_BRIDGE,      TILE_HORZPATHW, TILE_HORZPATHWLL
 	.byte TILE_HORZPATHWLR, TILE_HORZPATHSKY, TILE_HORZPATHWLB, TILE_HANDTRAP
 Map_Object_Valid_Down:	
-	.byte TILE_VERTPATH,    TILE_VERTPATH,    TILE_VERTPATH,    TILE_DRAWBRIDGEV, TILE_VERTPATHWLU
+	.byte TILE_VERTPATH,    TILE_PIPE,    TILE_VERTPATH,    TILE_DRAWBRIDGEV, TILE_VERTPATHWLU
 	.byte TILE_VERTPATHWLL, TILE_VERTPATHW,   TILE_VERTPATHSKY, TILE_VERTPATHWLB
 Map_Object_Valid_Up:
-	.byte TILE_VERTPATH,    TILE_VERTPATH,    TILE_VERTPATH,    TILE_DRAWBRIDGEV, TILE_VERTPATHWLU
+	.byte TILE_VERTPATH,    TILE_PIPE,    TILE_VERTPATH,    TILE_DRAWBRIDGEV, TILE_VERTPATHWLU
 	.byte TILE_VERTPATHWLL, TILE_VERTPATHW,   TILE_VERTPATHSKY, TILE_VERTPATHWLB
 
 	; This makes it safe to expand the above
@@ -3553,7 +3551,7 @@ PRG010_D336:
 PRG010_D347:
 	; Valid tile move!
 	; Note: 32 is used here, it's also relied on in the logic further down (see a bit below PRG010_CEF4)
-	LDA #32		 		; A = 32 (value to be stored into World_Map_Move, i.e. units to move, two tiles [16 * 2])
+	LDA #$10		 		; A = 32 (value to be stored into World_Map_Move, i.e. units to move, two tiles [16 * 2])
 
 PRG010_D349:
 	LDX Player_Current
