@@ -1071,7 +1071,7 @@ Inv_UseItem_MusicBox:
 	JSR Inv_UseItem_ShiftOver	 ; Shift over all items over top of the Music Box
 	JMP Inventory_ForceFlip	 ; Force inventory to flip and don't come back! 
 
-RockBreak_Replace:	.byte TILE_HORZPATH, TILE_VERTPATH	; The path replacement tiles (NOTE: see also PRG012 Map_RemoveTo_Tiles)
+RockBreak_Replace:	.byte $BF, $BF	; The path replacement tiles (NOTE: see also PRG012 Map_RemoveTo_Tiles)
 
 RockBreak_TileFix:
 	; These specify the tiles that replace the tiles of the rock.
