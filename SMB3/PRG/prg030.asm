@@ -472,7 +472,6 @@ PRG030_8437:
 	; Clear $07FF - $0000, excluding $01xx
 	LDY #$07
 	JSR Clear_RAM_thru_ZeroPage
-	JSR Initialize_Status_Bar
 
 	; Reset_Latch = $5A (magic value that prevents reset vector from being run)
 	LDA #$5a
@@ -492,7 +491,8 @@ PRG030_845A:
 	JSR Sprite_RAM_Clear	 
 	JSR Scroll_PPU_Reset	 
 	JSR Reset_PPU_Clear_Nametables
-
+	LDA #$01
+	STA Last_Status_Bar_Mode
 	; Load title screen graphics
 	LDA #$78
 	STA PatTable_BankSel
@@ -3655,22 +3655,6 @@ PRG030_96CB:
 	; Starting at the page provided in Y, this will clear everything
 	; (except the stack space) $YY00 to $0000
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-Initial_Bar_Display:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $D3, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	
-Initialize_Status_Bar:
-	LDX #$00
-
-Init_Bar_Loop:
-	LDA Initial_Bar_Display, X
-	STA Status_Bar_Top, X
-	INX
-	CPX #$38
-	BNE Init_Bar_Loop
-	RTS
-
 
 Clear_RAM_thru_ZeroPage:
 	STY <Temp_Var2	 ; Save Y in <Temp_Var2

@@ -2745,11 +2745,15 @@ Timer_NoChange:
 	; For all 3 digits of time, write their tiles...
 	LDX #$02	 	; X = 2
 PRG026_AFF2:
+	LDA Status_Bar_Mode
+	BNE No_Time
 	LDA Level_TimerMSD,X	; Get digit
 	ORA #$f0	 	; Offset as tile
 	STA Status_Bar_Bottom + 15,X	; Store it into StatusBar_Time
 	DEX		 	; X--
 	BPL PRG026_AFF2	 	; While X >= 0, loop!
+
+No_Time:
 	RTS		 ; Return
 
 
@@ -2800,6 +2804,8 @@ PRG026_B00A:
 	RTS		 ; Return
 
 StatusBar_Fill_Air_MT:
+	LDA Status_Bar_Mode
+	BNE Fill_Air_MT_Done
 	LDY #$00
 	LDA Air_Time
 	LSR A
@@ -2863,7 +2869,7 @@ StatusBar_Fill_Coin:
 	STA <Temp_Var1
 	LDA #HIGH(Total_Coins_Collected)
 	STA <Temp_Var2
-	LDY #$05					; Add coins to total coins next
+	LDY #$06					; Add coins to total coins next
 	JSR Add_Coins
 
 
@@ -2872,9 +2878,8 @@ No_Coin:
 	STA Coins_Earned
 
 	LDA Status_Bar_Mode				; Status_Bar_Mode 0 = Draw current coins
-	BNE DrawCurrentCoins			; Status_Bar_Mode 1 = Draw total coins
-	JSR DrawTotalCoins
-	RTS
+	BNE DrawTotalCoins			; Status_Bar_Mode 1 = Draw total coins
+	JMP DrawCurrentCoins
 
 Coin_Done:
 	RTS		 ; Return
@@ -2891,7 +2896,7 @@ Coin_Loop:
 	SEC
 	SBC #$0A
 	STA [Temp_Var1], Y
-	DEX
+	DEY
 	JMP Coin_Loop
 
 No_More:
@@ -2899,10 +2904,11 @@ No_More:
 
 DrawCurrentCoins:
 	LDX #$03
+
 Coin_Loop2:
 	LDA Inventory_Coins, X
 	ORA #$F0
-	STA Status_Bar_Bottom + 9, X
+	STA Status_Bar_Bottom+ 9, X
 	DEX
 	BPL Coin_Loop2
 	RTS
@@ -2910,9 +2916,9 @@ Coin_Loop2:
 DrawTotalCoins:
 	LDX #$06
 Coin_Loop3:
-	LDA Inventory_Coins, X
+	LDA Total_Coins_Collected, X
 	ORA #$F0
-	STA Status_Bar_Bottom + 1, X
+	STA Status_Bar_Top + 1, X
 	DEX
 	BPL Coin_Loop3
 	RTS
@@ -3076,6 +3082,10 @@ Score_Loop:
 No_Score:
 	LDA #$00
 	STA Score_Earned
+
+	LDA Status_Bar_Mode
+	BNE Score_Done
+Score_Update:
 	LDX #$05
 
 Score_Loop2:
@@ -3084,6 +3094,7 @@ Score_Loop2:
 	STA Status_Bar_Bottom + 1, X
 	DEX
 	BPL Score_Loop2
+
 Score_Done:
 	RTS		 ; Return
 
@@ -3163,20 +3174,20 @@ PRG026_B242:
 ; the current "charge" of the power meter in the status bar
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Fill_PowerMT:
+	LDA Status_Bar_Mode
+	BNE PRG026_B292
 	LDY #$00		; Y = 0
 	LDA #$01		; A = 1
 	STA <Temp_Var15		; <Temp_Var15 = 1
 
-	; This checks each bit of Player_Power to see if it's set or not,
-	; and produces the proper state of the '>' in the array StatusBar_PMT
 PRG026_B25C:
-; #DAHRKDAIZ modified power meter to use different tile # for light and dark triangle
-; #DAHRKDAIZ removed the (P) flashing code
 	LDX #$D1		; X = $EF (dark '>')
 	LDA Player_Power	; Player's current "Power" charge (each "unit" of power sets one more bit in this field)
 	AND <Temp_Var15		; A = Player_Power & Temp_Var15
 	BEQ PRG026_B267	 	; If Player_Power bit not set, jump to PRG026_B267
 	LDX #$D2		; Otherwise, X = $EE (glowing '>')
+
+
 PRG026_B267:
 	TXA		 	; A = X ($EF dark or $EE glowing)
 	STA (Status_Bar_Top + 1),Y	; Store this tile into the buffer
@@ -3512,10 +3523,12 @@ StatusBar_UpdTemplate:
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_UpdateValues:
+	JSR Check_Status_Bar_Switch
+	JSR Do_Odometer
+	JSR Initialize_Status_Bar
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
 	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
 	JSR StatusBar_Fill_Air_MT	;
-	;JSR StatusBar_Fill_Lives	; Fill in StatusBar_LivesL/H with tiles for lives held
 	JSR StatusBar_Fill_Score 	; Fill in StatusBar_Score with tiles for score; also applies Score_Earned
 	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
@@ -3646,3 +3659,101 @@ PRG026_B51F:
 	RTS		 ; Return
 
 ; Rest of ROM bank was empty...
+Initial_Bar_Display1:
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $D3, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+
+Initial_Bar_Display2:
+	.byte $D0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	
+Initialize_Status_Bar:
+	LDA Status_Bar_Mode
+	CMP Last_Status_Bar_Mode
+	BEQ No_Init
+	STA Last_Status_Bar_Mode
+	LDY #$00
+	LDA Status_Bar_Mode
+	BNE Init_Bar_2
+	LDA #LOW(Initial_Bar_Display1)
+	STA <Temp_Var1
+	LDA #HIGH(Initial_Bar_Display1)
+	STA <Temp_Var2
+	BNE Init_Bar_Loop
+
+Init_Bar_2:
+	JSR DrawTotalCoins
+	LDA #LOW(Initial_Bar_Display2)
+	STA <Temp_Var1
+	LDA #HIGH(Initial_Bar_Display2)
+	STA <Temp_Var2
+
+Init_Bar_Loop:
+	LDA [Temp_Var1], Y
+	STA Status_Bar_Top, Y
+	INY
+	CPY #$38
+	BNE Init_Bar_Loop
+
+	LDA Status_Bar_Mode
+	BNE Draw_Update2
+	JSR DrawCurrentCoins
+	JSR Score_Update
+	RTS
+
+Draw_Update2:
+	JSR DrawTotalCoins
+	JSR Update_Odometer
+No_Init:
+	RTS
+
+Check_Status_Bar_Switch:
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ No_Switch
+	LDA Status_Bar_Mode
+	EOR #$FF
+	STA Status_Bar_Mode
+
+No_Switch:
+	RTS
+
+Do_Odometer:
+	LDA Odometer_Increase
+	CMP #$80
+	BCC No_Odometer
+	SBC #$80
+	STA Odometer_Increase
+	LDY #$06
+	CLC
+	LDA #$01
+	STA Score_Earned
+	 
+Increase_Odometer:
+	ADC Odometer, Y
+	STA Odometer, Y
+	LDA Odometer, Y
+	CMP #$0A
+	BCC Next_Odometer
+	SEC
+	SBC #$0A
+	STA Odometer, Y
+	DEY
+	BPL Increase_Odometer
+
+Next_Odometer:
+	LDA Status_Bar_Mode
+	BEQ No_Odometer
+
+Update_Odometer:
+	LDY #$06
+	
+Odometer_Loop:
+	LDA Odometer, Y
+	ORA #$F0
+	STA Status_Bar_Bottom + 1,Y
+	DEY
+	BPL Odometer_Loop
+
+No_Odometer:
+	RTS

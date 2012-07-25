@@ -3284,7 +3284,6 @@ PRG031_FF80:
 	; Clear $07FF - $0000, excluding $01xx
 	LDY #$07		 
 	JSR Clear_RAM_thru_ZeroPage
-
 	LDA #25
 	STA PAGE_C000	 
 	LDA #24

@@ -586,6 +586,7 @@ No_Flip_X:
 
 	; Set projectile Y Hi
 	LDA <Player_Y
+	ADC #$08
 	STA PlayerProj_Y,X
 	LDA <Player_YHi
 	STA PlayerProj_YHi,X

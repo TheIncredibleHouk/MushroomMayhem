@@ -3211,6 +3211,7 @@ Rainbow_Palette_Cycle:
 
 ; #DAHRKDAIZ - Backs the current player palette up during the rainbow cycle
 Backup_Curr_Player_Pal:
+	
 	LDA (Palette_Buffer + $11)
 	STA Player_Pal_Backup
 	LDA (Palette_Buffer + $12)
@@ -3221,7 +3222,6 @@ Backup_Curr_Player_Pal:
 
 ; #DAHRKDAIZ - Restores the current player palette up after the rainbow cycle
 Restore_Curr_Player_Pal:
-
 	LDA Player_Pal_Backup
 	STA (Palette_Buffer + $11)
 	LDA (Player_Pal_Backup + $01)
