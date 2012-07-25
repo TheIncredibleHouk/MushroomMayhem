@@ -660,9 +660,7 @@ PAD_RIGHT	= $01
 	Map_StarsY:		.ds 8	; $A3-$AA During World Intro, Y position of each star
 	Map_StarsOutRad:	.ds 1	; During World Intro, stars take off radius (0 = smallest, increments for larger)
 
-	Player_Pal_Backup: .ds 3	; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
-				;.ds 1	; $AD unused
-				;.ds 1	; $AE unused
+						 .ds 3	;
 
 	Map_StarsXSteps:	.ds 1	; During World Intro, number of "steps" remaining in the X position adjustment
 	Map_StarsRadCnt:	.ds 1	; During World Intro, adds $70 per display frame and adds 1 to the radius when it overflows
@@ -2759,6 +2757,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Status_Bar_Bottom:	.ds 28	;
 	Status_Bar_Render_Toggle: .ds 1;
 	Player_Score:	.ds 6;
+	Player_Pal_Backup:  .ds 3; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
 	Status_Bar_Mode:	.ds 1	; Indicates what status bar information should be displayed
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
@@ -2766,7 +2765,10 @@ CFIRE_LASER		= $15	; Laser fire
 	Odometer:				.ds 7; over all distance traveled
 	Enemies_Defeated:		.ds 7; over all number of enemies defeated
 	Game_Timer:				.ds 6; over all time spent in the game
-	Unused:			.ds 38	; 
+	Last_Status_Bar_Mode:	.ds 1;
+	Odometer_Increase:		.ds 1;
+	Previous_X:				.ds 1;
+	Unused:			.ds 32	; 
 
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1
@@ -3668,7 +3670,7 @@ TILE_GLOBAL_FROZEN_COIN = $3E; #DAHRKDAIZ Added global frozen ice tile block - 7
 TILE_GLOBAL_ICE		= $3F ; #DAHRKDAIZ Added global ice tile block - 7/15
 
 TILEA_COIN		= $40	; Coin
-TILEA_COINREMOVED	= $41	; Tile used after coin has been collected
+TILEA_COINREMOVED	= $80	; Tile used after coin has been collected
 TILEA_DOOR1		= $42	; Doorway 1, typically black in appearance (apparently wired to only work in fortresses)
 TILEA_DOOR2		= $43	; Doorway 2, typically red in appearance
 TILEA_INVISCOIN		= $44	; Invisible coin block

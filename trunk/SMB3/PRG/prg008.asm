@@ -6820,14 +6820,30 @@ PRG008_BFD3:
 
 	; Apply velocity to X if there's carry
 	LDA <Player_X,X
+	STA Previous_X
 	ADC <Temp_Var11
 	STA <Player_X,X
-
+	
+	
 	; Apply velocity to XHi if there's carry
 	LDA <Player_XHi,X
 	ADC <Temp_Var13	
 	STA <Player_XHi,X
 
+	CPX #$00
+	BNE No_Odo_Increase
+	LDA Previous_X
+	SEC
+	SBC Player_X
+	BPL Dont_Flip
+	EOR #$FF
+	CLC
+	ADC #$01
+Dont_Flip:
+	CLC
+	ADC Odometer_Increase
+	STA Odometer_Increase
+No_Odo_Increase:
 	RTS		 ; Return
 
 
