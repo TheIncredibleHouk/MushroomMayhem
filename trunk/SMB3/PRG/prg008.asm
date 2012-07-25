@@ -1454,7 +1454,7 @@ PRG008_A77E:
 	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
 	;#DAHRKDAIZ modified to make low clearance situations = death >:D
-	JMP Player_Die
+	JSR Player_GetHurt
 
 PRG008_A7AD:
 

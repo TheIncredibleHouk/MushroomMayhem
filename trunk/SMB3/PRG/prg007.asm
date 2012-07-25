@@ -575,11 +575,11 @@ PRG007_A2BA:
 
 	; Set projectile X
 	LDA <Player_X
-	ADD #$04
+	ADD #$08
 	LDY <Player_FlipBits		; If facing the other direction, projects offset by 4  on theF left instead
 	BNE No_Flip_X	 	
 
-	SBC #$08	 
+	SBC #$0C	 
 
 No_Flip_X:
 	STA PlayerProj_X,X
@@ -6070,11 +6070,18 @@ Get_Proj_YVel:
 	LDA SPECIAL_SUIT_FLAG
 	BEQ Normal_Hammer_YVel
 	LDA <Pad_Holding
+	AND #(PAD_DOWN)
+	BNE Throw_Down
+	LDA <Pad_Holding
 	AND #(PAD_UP)
 	BEQ No_YVel
 
 	LDA #-$03
 	BNE No_YVel
+Throw_Down:
+	LDA #$03
+	BNE No_YVel
+
 Normal_Hammer_YVel:
 	LDA #-$03
 
@@ -6145,7 +6152,7 @@ Dec_KillTimer:
 
 Try_Boo_Mode:
 	LDA <Pad_Holding
-	AND #PAD_DOWN			; Down + B activates boo mode!
+	AND #PAD_UP			; Down + B activates boo mode!
 	BEQ Boo_Do_Nothing
 	LDA <Pad_Input
 	AND #PAD_B
