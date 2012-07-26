@@ -3229,7 +3229,7 @@ LoadLevel_Corner:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Shared in Hills and Underground styles
 	; Column order is Above Ground (UG only), Underground/Hills normal, Underwater
-LL_SlopeMidGround:	.byte TILE14_ABOVE_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND		; Middle ground
+LL_SlopeMidGround:	.byte TILE14_ABOVE_MIDGROUND, TILE3_MIDGROUND, $F9		; Middle ground
 LL_45SlopesT2B:		.byte TILE14_ABOVE_SLOPE45T2B, TILE3_SLOPE45T2B,  TILE3_WSLOPE45T2B	; 45 degree ground slopes top-to-bottom
 LL_45SlopesB2T:		.byte TILE14_ABOVE_SLOPE45B2T, TILE3_SLOPE45B2T,  TILE3_WSLOPE45B2T	; 45 degree ground slopes bottom-to-top
 LL_45SlopesT2BCeiling:	.byte $FF, TILE14_SLOPE45T2B_CEIL, TILE14_WSLOPE45T2B_CEIL		; 45 degree ceiling slopes top-to-bottom (not avail Above Ground)
@@ -4048,14 +4048,16 @@ LoadLevel_VertGroundR:
 ; applied with middle ground beneath it, or it's all just 
 ; middle ground (depending on index supplied)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;#DAHRKDAIZ HACKED TO FORCE HILLS TO DRAW "WRAPPED" HILLS OBJECTS
+
 	; Shared in Hills and Underground styles
 	; Column order is Above Ground (UG only), Underground/Hills normal, Underwater
 LL_DecoGroundTop:
-	.byte TILE14_ABOVE_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND		; All midground
+	.byte TILE14_ABOVE_MIDGROUND, TILE3_MIDGROUND, $F9		; All midground
 	.byte TILE14_ABOVE_HORZGROUND, TILE3_HORZGROUND, TILE3_WHORZGROUND	; Topped by horizontal ground
 
 LL_DecoGroundMid:
-	.byte TILE14_ABOVE_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND		; All midground
+	.byte TILE14_ABOVE_MIDGROUND, TILE3_MIDGROUND, $F9		; All midground
 	.byte TILE14_ABOVE_MIDGROUND, TILE3_MIDGROUND, TILE3_WMIDGROUND		; Topped by horizontal ground
 
 LoadLevel_DecoGround:

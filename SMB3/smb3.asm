@@ -2463,7 +2463,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Level_Jct_VSHi:		.ds 1	; Level junction vertical scroll high value
 	Level_Jct_VS:		.ds 1	; Level junction vertical scroll value
 
-				.ds 2	; $7990-7991 unused
+	HBros_Coins:			.ds 2	; #DAHRKDAIZ keeps track of hammer bros coins collected
 
 	Map_Unused7992:			; Value used in some dead code in PRG011; cleared elsewhere (NOT SURE if maybe it sometimes meant Bonus_DiePos?)
 	Bonus_DiePos:		.ds 1	; UNUSED Die in the lost bonus games, counts 0-5
@@ -2867,10 +2867,11 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	; 11: Ladder and [?] blocks
 	Map_2PVsGame:		.ds 1
 
-				.ds 8	; $7F25-$7F2C unused
+						.ds 8	; 
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
-	THouse_OpenByID:	.ds 16	; $7F2E-$7F3D UNUSED would keep track of chests opened for a given Toad House ID (THouse_ID)
+	HBros_Coins_Collected: .ds 16;  1 bit flags for coins collected. Each coin's Hi X/Y indicates where it was collected
+	;THouse_OpenByID:	.ds 16	; $7F2E-$7F3D UNUSED would keep track of chests opened for a given Toad House ID (THouse_ID)
 	StatusBar_PMT:		.ds 8	; $7F3E-$7F45, tiles that currently make up the power meter >>>>>>[P]
 	StatusBar_CoinH:	.ds 1	; Status bar tile for coin MSD
 	StatusBar_CoinL:	.ds 1	; Status bar tile for coin LSD
@@ -3347,7 +3348,7 @@ OBJ_PIRANHASPIKEBALL	= $46	; Tall plant carrying spike ball
 OBJ_GIANTBLOCKCTL	= $47	; Enables Giant World blocks to function
 OBJ_TINYCHEEPCHEEP	= $48	; Tiny cheep cheep
 OBJ_FLOATINGBGCLOUD	= $49	; Floating background cloud
-OBJ_BOOMBOOMQBALL	= $4A 	; Boom Boom (?) end-level ball
+OBJ_HAMMERBROSCOIN	= $4A 	; Boom Boom (?) end-level ball
 OBJ_BOOMBOOMJUMP	= $4B	; Jumping Boom-Boom (can actually hit ? blocks!)
 OBJ_BOOMBOOMFLY		= $4C	; Flying Boom-boom
 OBJ_CHAINCHOMPFREE	= $4F	; Jumping chain chomp head after he breaks free

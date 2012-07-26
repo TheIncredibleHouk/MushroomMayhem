@@ -353,9 +353,6 @@ PRG008_A1C1:
 	BNE PRG008_A1D7	 ; If Level_ChgTileEvent <> CHNGTILE_DELETECOIN, jump to PRG008_A1D7
 
 	; Otherwise... Score_Earned += 5(0) points
-	LDA Score_Earned
-	ADD #$05
-	STA Score_Earned
 
 	INC Coins_Earned	 ; One more coin earned!
 
@@ -5169,9 +5166,6 @@ PRG008_B84E:
 
 	LDA #-6	 
 	STA BrickBust_YVel	 ; Y velocity = -6
-
-	LDA #$01	
-	STA Score_Earned	 ; 10 points!
 
 	LDY #CHNGTILE_DELETETOBG
 	STY <Temp_Var12		 ; Temp_Var12 = CHNGTILE_DELETETOBG

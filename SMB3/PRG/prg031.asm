@@ -3375,4 +3375,3 @@ Vector_Table:
 	.word IntNMI   	; $FFFA - NMI Interrupt (VBlank)
 	.word IntReset	; $FFFC - Reset Interrupt (boot up)
 	.word IntIRQ	; $FFFE - IRQ Interrupt (scanline from MMC3)
-
