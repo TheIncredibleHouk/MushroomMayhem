@@ -2113,8 +2113,7 @@ PRG001_AA05:
 	LDA #$03
 	STA Player_QueueSuit
 
-	LDA #$0A
-	STA Score_Earned
+
 PRG001_AA13:
 	JSR PowerUp_PlaySound	 ; Play Power Up sound
 
@@ -2893,8 +2892,6 @@ ObjHit_IceFlower:
 	STA Sound_QLevel1
 	LDA #$08
 	STA Player_QueueSuit
-	LDA #$0A
-	STA Score_Earned
 	LDA #$1f
 	STA Player_StarOff
 	LDA #OBJSTATE_DEADEMPTY

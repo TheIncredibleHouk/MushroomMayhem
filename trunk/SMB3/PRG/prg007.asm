@@ -575,13 +575,6 @@ PRG007_A2BA:
 
 	; Set projectile X
 	LDA <Player_X
-	ADD #$08
-	LDY <Player_FlipBits		; If facing the other direction, projects offset by 4  on theF left instead
-	BNE No_Flip_X	 	
-
-	SBC #$0C	 
-
-No_Flip_X:
 	STA PlayerProj_X,X
 
 	; Set projectile Y Hi
@@ -589,6 +582,7 @@ No_Flip_X:
 	ADC #$08
 	STA PlayerProj_Y,X
 	LDA <Player_YHi
+	ADC #$00
 	STA PlayerProj_YHi,X
 
 	LDA #$01	 ; A = 1
@@ -2649,8 +2643,8 @@ PRG007_ADA7:
 ; Draws and updates the coins which have popped out of blocks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-CoinPUp_Patterns:	.byte $49, $4F, $4D, $4F
-CoinPUp_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
+CoinPUp_Patterns:	.byte $49, $49, $49, $49
+CoinPUp_Attributes:	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3, SPR_PAL3
 
 CoinPUps_DrawAndUpdate:
 	LDX #$03	 ; X = 3 (all "power up" coin slots)
@@ -6049,9 +6043,6 @@ Hammer_BrickBust:
 
 	LDA #-6	 
 	STA BrickBust_YVel	 ; Y velocity = -6
-
-	LDA #$01	
-	STA Score_Earned	 ; 10 points!
 
 	LDY #CHNGTILE_DELETETOBG
 	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG

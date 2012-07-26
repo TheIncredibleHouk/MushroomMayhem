@@ -1999,9 +1999,6 @@ PRG022_CC4C:
 	; If "2" appears, I'll give you a key
 	; Otherwise, I'll give you coins.
 
-	INX		 ; X++ (because "pos 0" --> Face value 1, etc.)
-	STX Score_Earned ; -> Score_Earned
-
 PRG022_CC57:
 	INC Bonus_GameState	; Bonus_GameState = 3
 

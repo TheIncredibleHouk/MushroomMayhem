@@ -3525,6 +3525,7 @@ StatusBar_UpdTemplate:
 StatusBar_UpdateValues:
 	JSR Check_Status_Bar_Switch
 	JSR Do_Odometer
+	JSR Draw_HBros_Coin
 	JSR Initialize_Status_Bar
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
 	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
@@ -3660,7 +3661,7 @@ PRG026_B51F:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $B7, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $D3, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 Initial_Bar_Display2:
@@ -3756,4 +3757,22 @@ Odometer_Loop:
 	BPL Odometer_Loop
 
 No_Odometer:
+	RTS
+
+Draw_HBros_Coin:
+	LDA Status_Bar_Mode
+	BNE No_HBros_Update
+	LDA HBros_Coins
+	AND #$0F
+	ORA #$F0
+	STA Status_Bar_Top + 17
+	LDA HBros_Coins
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA #$F0
+	STA Status_Bar_Top + 16
+No_HBros_Update:
 	RTS

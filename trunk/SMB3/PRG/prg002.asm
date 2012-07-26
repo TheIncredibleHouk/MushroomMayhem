@@ -1388,6 +1388,8 @@ PipewayCtlr_MapScrlXHi:
 	.byte $00	; 23
 
 ObjNorm_PipewayCtlr:
+	LDA #$00
+	STA Objects_UseShortHTest,X
 	JMP Object_DeleteOffScreen
 
 ; #TOREMOVE

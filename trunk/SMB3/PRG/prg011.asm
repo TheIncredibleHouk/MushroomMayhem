@@ -3482,7 +3482,7 @@ Map_Object_March_PickTravel:
 	; The other two are the animation...
 
 MapObject_Pat1:
-	.byte $00, $49, $29	; 01=HELP
+	.byte $00, $29, $29	; 01=HELP
 	.byte $00, $C9, $D9	; 02=Airship
 	.byte $ED, $C5, $D5	; 03=Hammer Bro
 	.byte $ED, $C5, $D5	; 04=Boomerang Bro
@@ -3500,7 +3500,7 @@ MapObject_Pat1:
 	.byte $00, $71, $75	; 10=Canoe
 
 MapObject_Pat2:
-	.byte $00, $49, $2B	; 01=HELP
+	.byte $00, $2B, $2B	; 01=HELP
 	.byte $00, $CB, $DB	; 02=Airship
 	.byte $EF, $C7, $D7	; 03=Hammer Bro
 	.byte $EF, $C7, $D7	; 04=Boomerang Bro
@@ -3706,7 +3706,7 @@ PRG011_B5C9:
 	CMP #MAPOBJ_HELP
 	BNE PRG011_B5FA	 ; If this NOT the HELP bubble, jump to PRG011_B5FA
 
-	LDX #%00110000	 ; X = $30 (masking value against Counter_1 for animation)
+	LDX #$FF	 ; X = $30 (masking value against Counter_1 for animation)
 	JMP PRG011_B60A	 ; Jump to PRG011_B60A
 
 PRG011_B5FA:

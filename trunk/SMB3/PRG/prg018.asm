@@ -1711,7 +1711,6 @@ PRG018_AB30:
 
 PRG018_AB38:
 	LDY THouse_ID			; Y = this Toad House's ID
-	LDA THouse_OpenByID,Y		; Get chest opened bits
 	AND THouse_ChestOpenBit,X	; Check if this chest should already be open
 	BEQ PRG018_AB4F	 		; If chest is not opened already, jump to PRG018_AB4F (RTS)
 
@@ -1765,9 +1764,6 @@ PRG018_AB5C:
 
 PRG018_AB64:
 	LDY THouse_ID			; Y = this Toad House's ID
-	LDA THouse_OpenByID,Y		; Get chest opened bits
-	AND THouse_ChestOpenBit,X	; Check if this chest should already be open
-	BEQ PRG018_AB76	 		; If chest is not opened already, jump to PRG018_AB76 (RTS)
 
 	LDY TileAddr_Off	 ; Y = TileAddr_Off
 	LDA #TILE7_MINICHEST_OPEN	; Mini chest OPENED ?!
