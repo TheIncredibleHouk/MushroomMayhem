@@ -1488,10 +1488,10 @@ PRG007_A6EC:
 	BNE Kill_Enemy_Anyway	; Prevents Ninja Mario from turning enemies into ice
 	LDA SPECIAL_SUIT_FLAG
 	BNE ICE_BALL_SKIP1 ; #DAHRKDAIZ - Skip "defeating" the enemy
-	; 100 pts!
+	
 Kill_Enemy_Anyway:
-	LDA #$05
-	JSR Score_PopUp
+	LDA #$01
+	STA Score_Earned
 
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 

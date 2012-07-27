@@ -352,8 +352,6 @@ PRG008_A1C1:
 	CMP #CHNGTILE_DELETECOIN
 	BNE PRG008_A1D7	 ; If Level_ChgTileEvent <> CHNGTILE_DELETECOIN, jump to PRG008_A1D7
 
-	; Otherwise... Score_Earned += 5(0) points
-
 	INC Coins_Earned	 ; One more coin earned!
 
 PRG008_A1D7:

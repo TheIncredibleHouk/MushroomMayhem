@@ -1894,9 +1894,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 				.ds 1	; $069B unused
 
 	Score_Earned:		.ds 2	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Score
-	Score_Temp:		.ds 1	; Temp used when figuring out to display a 3-byte integer worth of score
-
-				.ds 5	; $069F-$06A3 unused
+						.ds 6	;
 
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
 	Player_ISHolding_OLD:	.ds 1	; Holds onto whether Player WAS holding onto something (so we can be sure to clear Player_IsHolding)
@@ -2768,7 +2766,8 @@ CFIRE_LASER		= $15	; Laser fire
 	Last_Status_Bar_Mode:	.ds 1;
 	Odometer_Increase:		.ds 1;
 	Previous_X:				.ds 1;
-	Unused:			.ds 32	; 
+	Game_Timer_Tick:		.ds 1;
+	Unused:			.ds 31	; 
 
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1

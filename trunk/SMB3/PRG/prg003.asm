@@ -2737,10 +2737,10 @@ PRG003_AE50:
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
 
-	; Get 1000, 2000, or 4000 points
+	; 10 EXP for boom boom
 	LDA <Objects_Var5,X
-	ADD #$07
-	JSR Score_PopUp
+	ADD #$0A
+	STA Score_Earned
 
 	; Player Y Vel = -$30 (bounce off)
 	LDA #-$30
