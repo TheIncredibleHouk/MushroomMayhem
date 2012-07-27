@@ -424,11 +424,11 @@ ObjP33:
 ObjP39:
 	.byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
 ObjP34:
-	.byte $B9, $BB, $BD, $BF
+	.byte $A1, $A3, $A5, $A7 ; #DAHRKDAIZ - Toad looks like Hammer Bros.
 ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
 ObjP2D:
-	.byte $81, $83, $85, $8D, $A1, $8B, $81, $83, $85, $87, $89, $8B, $81, $83, $85, $87, $89, $91, $81, $83, $85, $8D, $A1, $8B, $81, $83, $85, $8D, $A1, $91, $71, $A3, $A5, $71, $71, $71, $71, $99, $9B, $71, $71, $71
+	.byte $81, $83, $85, $8D, $A1, $8B, $81, $83, $85, $87, $89, $8B, $81, $83, $85, $87, $89, $A4, $81, $83, $85, $8D, $A1, $8B, $81, $83, $85, $8D, $A1, $A4, $71, $A3, $A5, $71, $71, $71, $71, $99, $9B, $71, $71, $71
 ObjP24:
 ObjP2C:
 	.byte $81, $83, $83, $83, $85, $87
@@ -860,7 +860,7 @@ GiantBlockCtl_Draw:
 
 	LDA #$02
 	STA <Temp_Var5	 ; Temp_Var5 = 2
-PRG002_A491:
+PRG002_A4A4:
 	; Store Sprite Y
 	LDA <Temp_Var3
 	STA Sprite_RAM+$00,Y
@@ -890,7 +890,7 @@ PRG002_A491:
 	INX		 ; X++ (next pattern/attribute)
 
 	DEC <Temp_Var5	 ; Temp_Var5--
-	BNE PRG002_A491	 ; While Temp_Var5 > 0, loop!
+	BNE PRG002_A4A4	 ; While Temp_Var5 > 0, loop!
 
 PRG002_A4B7:
 	RTS		 ; Return
@@ -1749,7 +1749,7 @@ ObjNorm_Boo:
 	STA <Objects_XVel,X
 	STA <Objects_YVel,X
 
-	BEQ PRG002_A916	 ; Jump (technically always) to PRG002_A916
+	BEQ PRG002_AA46	 ; Jump (technically always) to PRG002_AA46
 
 PRG002_A8DE:
 	JSR Level_ObjCalcXDiffs
@@ -1773,24 +1773,24 @@ PRG002_A8EE:
 
 	LDA <Temp_Var15
 	SUB #$04
-	BMI PRG002_A901
+	BMI PRG002_A841
 
 	INY		 ; Y = 1 (Player is higher, move up!)
 
-PRG002_A901:
+PRG002_A841:
 	LDA <Objects_YVel,X
 	CMP Boo_VelLimit,Y
-	BEQ PRG002_A90E	 ; If Boo is at his acceleration limit, jump to PRG002_A90E
+	BEQ PRG002_A84E	 ; If Boo is at his acceleration limit, jump to PRG002_A84E
 
 	ADD Boo_VelAccel,Y	 ; Boo accelerates!
 	STA <Objects_YVel,X	 ; Update Boo's Y velocity
 
-PRG002_A90E:
+PRG002_A84E:
 	JSR Object_ApplyXVel	 ; Apply X velocity
 	JSR Object_ApplyYVel	 ; Apply Y Velocity
 	LDA #$01	 ; A = 1 (frame 1, chase!)
 
-PRG002_A916:
+PRG002_AA46:
 	STA Objects_Frame,X	 ; Update Boo's frame
 
 	JSR Object_HitTestRespond	; Do collision test with Player and respond
@@ -3308,11 +3308,11 @@ PRG002_B076:
 	LDY #$10	 ; Y = $10 (hop to right)
 
 	ASL A
-	BMI PRG002_B090	 ; If horizontally flipped, jump to PRG002_B090
+	BMI PRG002_B084	 ; If horizontally flipped, jump to PRG002_B084
 
 	LDY #-$10	 ; Y = -$10 (hop to left)
 
-PRG002_B090:
+PRG002_B084:
 	STY <Objects_XVel,X	 ; Set proper X velocity
 
 	; Hop!
@@ -3683,6 +3683,10 @@ ObjNorm_Toad:
 	STA Objects_FlipBits,X
 
 	; Do Toad's dialog message
+	LDA #$5E
+	STA PatTable_BankSel+1
+	LDA #$5C
+	STA PatTable_BankSel+4
 	JSR Toad_Speak
 
 	LDA Player_HaltTick
@@ -3727,9 +3731,9 @@ Toad_Speak:
 	.word Toad_DoToadText
 	.word PRG002_B4B1	; Does nothing
 
-TDiagBox_R1:	.byte $94, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $96
-TDiagBox_R2:	.byte $92, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $93
-TDiagBox_R3:	.byte $95, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $97
+TDiagBox_R1:	.byte $83, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $85
+TDiagBox_R2:	.byte $93, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $95
+TDiagBox_R3:	.byte $A3, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A5
 
 TDiagBox_RowOffs:
 	.byte (TDiagBox_R1 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
@@ -3972,7 +3976,7 @@ ToadItem_PatternLeft:
 	.byte $83	; Tanooki Suit
 	.byte $8B	; Hammer Suit
 	.byte $B5	; Judgems
-	.byte $91	; P-Wing
+	.byte $A4	; P-Wing
 	.byte $A9	; Star
 	.byte $95	; Anchor
 	.byte $99	; Hammer
@@ -4760,7 +4764,7 @@ PRG002_B8A0:
 	JSR Object_HitTestRespond	 ; Do collision test with Player and respond
 
 	LDA Objects_Frame,X
-	BPL PRG002_B900	 ; If frame = 0, jump to PRG002_B900
+	BPL PRG002_B840	 ; If frame = 0, jump to PRG002_B840
 
 	LDA <Objects_SpriteY,X
 	CMP #154
@@ -4821,7 +4825,7 @@ PRG002_B8E4:
 	; Gaping mouth
 	INC Objects_Frame,X
 
-PRG002_B900:
+PRG002_B840:
 
 	; Big Bertha's gravity, Y Vel += 2
 	INC <Objects_YVel,X
@@ -4836,7 +4840,7 @@ PRG002_B900:
 	BGE PRG002_B978	 ; If frame >= 5, jump to PRG002_B978
 
 	CPY #$04
-	BLT PRG002_B919	 ; If frame < 4, jump to PRG002_B919
+	BLT PRG002_BA49	 ; If frame < 4, jump to PRG002_BA49
 
 	CMP #148
 	BLT PRG002_B896	 ; If SpriteY < 148, jump to PRG002_B896 (RTS)
@@ -4844,7 +4848,7 @@ PRG002_B900:
 	LDA #$05
 	BNE PRG002_B993	 ; Jump (technically always) to PRG002_B993 (sets Objects_Frame)
 
-PRG002_B919:
+PRG002_BA49:
 	LDA <Counter_1
 	AND #$07
 	BNE PRG002_B925	 ; Only 1:8 ticks we don't jump to PRG002_B925

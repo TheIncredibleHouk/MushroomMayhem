@@ -435,7 +435,7 @@ ObjP19:	.byte $53, $53
 ObjP1A:	.byte $59, $5B
 ObjP1C:	.byte $75, $77
 ObjP1E:	.byte $5D, $5F
-ObjP1F:	.byte $7D, $7D
+ObjP1F:	.byte $67, $67	; #DAHRKDAIZ - VINE
 ObjP21:	.byte $69, $69
 ObjP22:	.byte $5B, $5B ; #DAHRKDAIZ - PUMPKIN
 ObjP23:	.byte $55, $55
@@ -2727,15 +2727,13 @@ PRG001_ACD1:
 	STA Graphics_Buffer+7,Y
 
 	; Vine left 8x8 tiles
-	LDA #$c4
+	LDA #$F5
 	STA Graphics_Buffer+3,Y
-	LDA #$c4
 	STA Graphics_Buffer+4,Y
 
 	; Vine right 8x8 tiles
-	LDA #$c6
+	LDA #$F7
 	STA Graphics_Buffer+8,Y
-	LDA #$c6
 	STA Graphics_Buffer+9,Y
 
 	LDA #$00

@@ -278,7 +278,7 @@ ObjectGroup02_Attributes3:
 ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $1A	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.byte OPTS_SETPT5 | $36	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OPTS_SETPT5 | $13	; Object $4A - OBJ_HAMMERBROSCOIN
+	.byte OPTS_NOCHANGE	; Object $4A - OBJ_HAMMERBROSCOIN
 	.byte OPTS_SETPT6 | $33	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OPTS_SETPT6 | $33	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OPTS_NOCHANGE	; Object $4D
