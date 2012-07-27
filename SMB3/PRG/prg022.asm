@@ -3792,10 +3792,6 @@ NSpade_DoGame:
 	; You got a coin
 	INC Coins_Earned
 
-	; 100 points per coin
-	LDA #10
-	STA Score_Earned
-
 	DEC Card_CoinsToGive	 ; Card_CoinsToGive--
 
 PRG022_D792:

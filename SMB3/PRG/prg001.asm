@@ -1797,8 +1797,6 @@ PRG001_A8AB:
 
 PUp_GeneralCollect:
 	; Get 1000 pts
-	LDA #$09
-	JSR Score_PopUp
 
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X	 ; Set power-up to dead/empty

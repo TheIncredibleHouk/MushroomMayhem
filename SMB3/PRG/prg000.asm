@@ -642,8 +642,8 @@ Score_Get100PlusPtsY:
 
 	; Get at least 100 pts based on value in 'A'
 Score_Get100PlusPts:
-	ADD #$05	; Base at 100 points
-	JSR Score_PopUp
+	ADD #$01	; Base at 100 points
+	STA Score_Earned
 	LDX <SlotIndexBackup	 ; X = object slot index
 	RTS		 ; Return
 
@@ -2807,9 +2807,9 @@ PRG000_CE94:
 
 	; KICK OBJECT INTO WALL LOGIC
 
-	; Flat 100 points
-	LDA #$05
-	JSR Score_PopUp
+	; 1 EXP
+	LDA #$01
+	STA Score_Earned
 
 	; Object state is Killed
 	LDA #OBJSTATE_KILLED
@@ -3394,9 +3394,9 @@ PRG000_D120:
 
 	; Held object impacted...
  
-	; Get 100 points
-	LDA #$05 
-	JSR Score_PopUp
+	; 1 EXP for enemy defeated
+	LDA #$01
+	STA Score_Earned
 
 	; Set object state to Killed
 	LDA #OBJSTATE_KILLED
@@ -3781,6 +3781,8 @@ PRG000_D295:
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
 
+	LDA #$01
+	STA Score_Earned
 	RTS		 ; Return
 
 
@@ -5268,8 +5270,8 @@ PRG000_D8EB:
 	STA Sound_QPlayer
 
 	; 100 points pop up
-	LDA #$05
-	JSR Score_PopUp
+	LDA #$01
+	STA Score_Earned
 
 	JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
 
@@ -5498,7 +5500,7 @@ SMB3J_SuitLossFrame:	.byte $00, $00, $00, $00, $01, $02, $03
 Player_GetHurt:
 	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
-	ORA Boo_Mode_Timer		; ... a statue ...
+	ORA Boo_Mode_Timer		; ... or boo mode ...
 	ORA Player_StarInv		; ... invincible by star ...
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGame		; ... gameplay halted ...

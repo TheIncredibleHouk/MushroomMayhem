@@ -3077,7 +3077,7 @@ Score_Loop:
 	SBC #$0A
 	STA Player_Score, X
 	DEX
-	JMP Score_Loop
+	BPL Score_Loop
 
 No_Score:
 	LDA #$00
@@ -3525,6 +3525,8 @@ StatusBar_UpdTemplate:
 StatusBar_UpdateValues:
 	JSR Check_Status_Bar_Switch
 	JSR Do_Odometer
+	JSR Increase_Game_Timer
+	JSR Draw_Game_Timer
 	JSR Draw_HBros_Coin
 	JSR Initialize_Status_Bar
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
@@ -3775,4 +3777,43 @@ Draw_HBros_Coin:
 	ORA #$F0
 	STA Status_Bar_Top + 16
 No_HBros_Update:
+	RTS
+
+Increase_Game_Timer:
+	LDX #05
+
+;
+Game_Timer_Loop:
+	INC Game_Timer_Tick
+	CMP #$3C
+	BCC No_More_Loop
+	INC Game_Timer,X
+	LDA Game_Timer,X
+	CMP #$0A
+	BCC No_More_Loop
+	LDA #$00
+	STA Game_Timer,X
+	DEX
+	BPL Game_Timer_Loop
+
+No_More_Loop:
+	RTS
+
+Draw_Game_Timer:
+	LDA Status_Bar_Mode
+	BEQ DontDraw_Game_Timer
+	LDA Game_Timer
+	STA Status_Bar_Top + 11
+	LDA Game_Timer + 1
+	STA Status_Bar_Top + 12
+	LDA Game_Timer + 2
+	STA Status_Bar_Top + 14
+	LDA Game_Timer + 3
+	STA Status_Bar_Top + 15
+	LDA Game_Timer + 4
+	STA Status_Bar_Top + 16
+	LDA Game_Timer + 5
+	STA Status_Bar_Top + 17
+
+DontDraw_Game_Timer:
 	RTS
