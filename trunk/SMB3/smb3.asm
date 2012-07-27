@@ -3623,18 +3623,19 @@ TILE_MARIOCOMP_G	= $80	; Mario Completed, green color
 TILE_LUIGICOMP_G	= $81	; Luigi Completed, green color
 TILE_WATER_INVT		= $82	; Water meeting at inverted 'T' shape
 TILE_RIVERVERT		= $9D	; Vertical river segment (gets bridged)
-TILE_VERTPATHWLU	= $AA	; Standard vertical path over water, land on upper
-TILE_VERTPATHWLL	= $AB	; Standard vertical path over water, land on lower
+; #DAHRKDAIZ valid movable tiles
+TILE_VERTPATHWLU	= $00	; Standard vertical path over water, land on upper
+TILE_VERTPATHWLL	= $00	; Standard vertical path over water, land on lower
 TILE_HORZPATHW		= $BF	; Standard horizontal path over water
 TILE_VERTPATHW		= $BF	; Standard vertical path over water
-TILE_DRAWBRIDGEV	= $B1	; World 3 Draw Bridge (Vertical)
-TILE_DRAWBRIDGEH	= $B2	; World 3 Draw Bridge (Horizontal)
-TILE_BRIDGE		= $B3	; Bridge
+TILE_DRAWBRIDGEV	= $00	; World 3 Draw Bridge (Vertical)
+TILE_DRAWBRIDGEH	= $00	; World 3 Draw Bridge (Horizontal)
+TILE_BRIDGE		= $00	; Bridge
 TILE_DANCINGBUSH	= $B4	; Dancing Bush
-TILE_HORZPATHWLL	= $B7	; Standard horizontal path over water, land on left end
-TILE_HORZPATHWLR	= $B8	; Standard horizontal path over water, land on right end
-TILE_HORZPATHWLB	= $B9	; Standard horizontal path over water, land on both ends
-TILE_VERTPATHWLB	= $BA	; Standard vertical path over water, land on both ends
+TILE_HORZPATHWLL	= $00	; Standard horizontal path over water, land on left end
+TILE_HORZPATHWLR	= $00	; Standard horizontal path over water, land on right end
+TILE_HORZPATHWLB	= $00	; Standard horizontal path over water, land on both ends
+TILE_VERTPATHWLB	= $00	; Standard vertical path over water, land on both ends
 TILE_DANCINGPALM	= $BB	; Dancing Palm Tree (World 2)
 TILE_PIPE		= $BC	; Pipe
 TILE_DANCINGFLOWER	= $BD	; Dancing Flower
@@ -3721,7 +3722,7 @@ TILEA_PATH_625B2T_L	= $CF	; 62.5 degree path bottom-to-top, lower half (typical)
 TILEA_PSWITCH_PRESSED	= $D7	; Referenced pressed P-Switch
 TILEA_PSWITCH		= $F2	; P-Switch
 STANDING_WATER		= $DC	;
-FROZEN_WATER		= $FF	; Green note block (functions like standard white, just colored wrong)
+FROZEN_WATER		= $EF	; Green note block (functions like standard white, just colored wrong)
 TILEA_BLOCKBUMP_CLEAR	= $F3	; Tile used when a "bump" block (e.g. ? blocks, note block, etc.) is hit
 
 ; Tileset 1 (Plains style)

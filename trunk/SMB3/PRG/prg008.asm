@@ -1656,7 +1656,8 @@ PRG008_A86C:
 	; VINE CLIMBING LOGIC
 	LDA Player_InWater
 	ORA Player_IsHolding
-	ORA Player_Kuribo
+	ORA Boo_Mode_Timer
+	ORA Player_Shell
 	BNE PRG008_A890	 ; If Player is in water, holding something, or in Kuribo's shoe, jump to PRG008_A890
 
 	LDA <Temp_Var1

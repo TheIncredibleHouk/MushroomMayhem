@@ -2306,43 +2306,7 @@ PRG011_AD30:
 ;	map objects there; the code doesn't actually care about the world number!
 
 MapBonusChk_CoinShip:
-	LDA Map_CoinShip	 
-	BNE PRG011_AD5F	 ; If you already got the Coin Ship, jump to PRG011_AD30 (RTS)
-
-	LDA StatusBar_CoinH
-	CMP StatusBar_CoinL
-	BNE PRG011_AD5F	 ; If the two digits of your coins are not the same, jump to PRG011_AD5F (RTS)
-
-	CMP StatusBar_Score+5
-	BNE PRG011_AD5F	 ; If the tens digit of your score is not the same as the equal coins, jump to PRG011_AD5F (RTS) 
-
-	LDY #$00	 ; Y = 0
-PRG011_AD45:
-	LDA Map_Objects_IDs,Y
-	CMP #MAPOBJ_HAMMERBRO
-	BEQ PRG011_AD52	 ; If this is a hammer brother, jump to PRG011_AD52
-
-	INY		 ; Y++
-	CPY #MAPOBJ_TOTAL
-	BNE PRG011_AD45	 ; If index <> passed the last map object, loop!
-
-	RTS		 ; Return
-
-PRG011_AD52:
-
-	; Change the Hammer Bro to the Coin Ship
-	LDA #MAPOBJ_COINSHIP
-	STA Map_Objects_IDs,Y
-
-	INC Map_CoinShip	 ; Set Map_CoinShip (you got the Coin Ship, there won't be any more!)
-
-	; Bonus appearance sound!
-	LDA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-
-PRG011_AD5F:
-	RTS		 ; Return
-
+	RTS
 
 	; This will always appear at the same location!!
 MAPOBJ_UNK0C_Y:	.byte $60
