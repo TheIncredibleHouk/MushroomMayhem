@@ -167,7 +167,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $31 - OBJ_BOOSTRETCH
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $33 - OBJ_NIPPER
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $34 - OBJ_TOAD
+	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $34 - OBJ_TOAD
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $35 - OBJ_TOADHOUSEITEM
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $36 - OBJ_WOODENPLATFORM
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $37 - OBJ_OSCILLATING_HS
@@ -424,7 +424,7 @@ ObjP33:
 ObjP39:
 	.byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
 ObjP34:
-	.byte $A1, $A3, $A5, $A7 ; #DAHRKDAIZ - Toad looks like Hammer Bros.
+	.byte $71, $71, $71, $71 ; #DAHRKDAIZ - Toad looks like Hammer Bros.
 ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
 ObjP2D:
@@ -3683,40 +3683,17 @@ ObjNorm_Toad:
 	STA Objects_FlipBits,X
 
 	; Do Toad's dialog message
-	LDA #$5E
-	STA PatTable_BankSel+1
 	LDA #$5C
-	STA PatTable_BankSel+4
+	STA PatTable_BankSel+1
+	LDA #$5D
+	STA PatTable_BankSel+5
 	JSR Toad_Speak
 
 	LDA Player_HaltTick
 	ORA InvFlip_Counter
 	BNE PRG002_B261	 ; If Player is still halted or inventory is open, jump to PRG002_B261
 
-	LDA <Pad_Input
-	AND #$10
-	BEQ PRG002_B261	 ; If Player is NOT pressing START, jump to PRG002_B261
-
-	; Flip open inventory
-	LDA #$01
-	STA Inventory_Open
-
-	; Start on first inventory item
-	LSR A	; A = 0
-	STA InvStart_Item
-
 PRG002_B261:
-	LDA InvFlip_Counter
-	CMP #$04
-	BNE PRG002_B272	 ; If Inventory is fully open, jump to PRG002_B272
-
-	LDA <Pad_Input
-	AND #%11110011
-	BEQ PRG002_B272	 ; If Player is not pressing anything (besides up/down), jump to PRG002_B272
-
-	; Force like Player pressed 'B' (close inventory)
-	LDA #$40
-	STA <Pad_Input
 
 PRG002_B272:
 	JMP Object_Draw16x32Sprite	 ; Draw Toad's sprite and don't come back!
@@ -3729,11 +3706,13 @@ Toad_Speak:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word Toad_DrawDiagBox
 	.word Toad_DoToadText
-	.word PRG002_B4B1	; Does nothing
+	.word Enough_HBros_Coins	; Does nothing
+	.word Deduct_Coins
+	.word End_Level
 
-TDiagBox_R1:	.byte $83, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $84, $85
-TDiagBox_R2:	.byte $93, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $95
-TDiagBox_R3:	.byte $A3, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A4, $A5
+TDiagBox_R1:	.byte $E8, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $EA
+TDiagBox_R2:	.byte $F8, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $FA
+TDiagBox_R3:	.byte $DC, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DE
 
 TDiagBox_RowOffs:
 	.byte (TDiagBox_R1 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
@@ -3818,25 +3797,18 @@ PRG002_B2E3:
 PRG002_B325:
 	RTS		 ; Return
 
+HammerCoinsRequired:
+	.byte $03, $00, $00, $00, $00, $00, $00, $00, $00
 	; English: "Pick a box." / "Its contents" / "will help you" / "on your way"
 ToadMsg_Standard:
 	;            P    i    c    k         a         b    o    x    .
-	.byte $FE, $BF, $D8, $D2, $DA, $FE, $D0, $FE, $D1, $DE, $88, $E9, $FE, $FE, $FE
-
-	;            I    t    s         c    o    n    t    e    n    t    s
-	.byte $FE, $B8, $CD, $CC, $FE, $D2, $DE, $DD, $CD, $D4, $DD, $CD, $CC, $FE, $FE
-
-	;            w    i    l    l         h    e    l    p         y    o    u
-	.byte $FE, $81, $D8, $DB, $DB, $FE, $D7, $D4, $DB, $DF, $FE, $8C, $DE, $CE, $FE
-
-	;            o    n         y    o    u    r         w    a    y    .
-	.byte $FE, $DE, $DD, $FE, $8C, $DE, $CE, $CB, $FE, $81, $D0, $8C, $E9, $FE, $FE
-
-	;
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
-	;
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	;      XXXXXXXXXXXXXXX
+	.byte "IN ORDER TO    "
+	.byte "PASS, YOU NEED "
+	.byte "TO PAY THE TOLL"
+	.byte "OF () HAMMER   "
+	.byte "BROTHER COINS. "
+	.byte "               "
 
 	; English: "One toot on" / "this whistle" / "will send you" / "to a far away" / "land!"
 ToadMsg_WarpWhistle:
@@ -3888,7 +3860,10 @@ ToadMsg_High:	.byte HIGH(ToadMsg_WarpWhistle), HIGH(ToadMsg_Standard), HIGH(Toad
 
 Toad_DoToadText:
 	LDA Objects_Timer,X
-	BNE PRG002_B4B1	 ; If timer not expired, jump to PRG002_B4B1
+	BEQ DoNextLetter
+	JMP PRG002_B4B1	 ; If timer not expired, jump to PRG002_B4B1
+
+DoNextLetter:
 
 	; Store address of text -> Temp_Var1/2
 	LDA Objects_Var1,X
@@ -3904,7 +3879,7 @@ PRG002_B451:
 	LDY #$00	 	; Y = 0
 	LDA [Temp_Var1],Y	; Get character here
 	TAY		 	; -> 'Y'
-	CPY #$FE
+	CPY #$20
 	BEQ PRG002_B468	 	; If this is a "space", jump to PRG002_B468
 
 	; Play "blip" sound every other letter
@@ -3919,6 +3894,31 @@ PRG002_B451:
 
 PRG002_B468:
 	TYA
+	CMP #$28
+	BEQ DoFirstDigit
+	CMP #$29
+	BNE Draw_Letter
+	LDY World_Num
+	LDA HammerCoinsRequired, Y
+	AND #$0F
+	CLC
+	ADC #$2F
+	JMP Draw_Letter
+
+DoFirstDigit:
+	LDY World_Num
+	LDA HammerCoinsRequired, Y
+	AND #$F0
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	CLC
+	ADC #$2F
+
+Draw_Letter:
+	CLC
+	ADC #$81
 
 	LDY Graphics_BufCnt	 ; Y = graphics buffer counter
 	STA Graphics_Buffer+3,Y	 ; Store into buffer
@@ -3954,6 +3954,8 @@ PRG002_B4A1:
 	BNE PRG002_B4AC	 ; If we haven't reached the last character, jump to PRG002_B4AC
 
 	INC <Objects_Var4,X	 ; Objects_Var4 = 2 (next dialog state)
+	LDA #$08
+	STA Pay_Toll_Timer
 
 	LDA #$00
 	STA ToadTalk_CPos
@@ -5289,3 +5291,117 @@ PRG002_BFD4:
 	.byte $FC, $A9, $00, $22, $0B, $01, $A9, $22, $14, $01, $A9, $22, $29, $04, $A9, $FC
 	.byte $FC, $A9, $22, $33, $04, $A9, $FC, $FC, $A9, $22, $4A, $04, $A9, $A9, $FC, $A9
 	.byte $22, $52, $04, $A9, $FC, $A9, $A9, $22, $6C, $48, $A9, $00
+
+Enough_HBros_Coins:
+	LDA Pay_Toll_Timer
+	BNE Skip_Pay_Toll_Timer
+	LDY World_Num
+	LDA HBros_Coins + 1
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA HBros_Coins
+	CMP HammerCoinsRequired, Y
+	BCS Pay_Toll
+	LDA Sound_QMap		; Not enough coins
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+	LDA #$40
+	STA End_Level_Timer	; end level
+	LDA #$00
+	STA TollPaid		; toll not paid
+	INC <Objects_Var4,X
+	INC <Objects_Var4,X
+	RTS
+
+Skip_Pay_Toll_Timer:
+	DEC Pay_Toll_Timer
+	RTS
+
+Pay_Toll:
+	LDA HammerCoinsRequired, Y
+	AND #$0F
+	STA DAIZ_TEMP1
+	LDA HammerCoinsRequired, Y
+	AND #$F0
+	ASL A
+	ASL A
+	ASL A					; get coins needed to deduct
+	ASL A
+	TAY
+Multiply_10_Loop:
+	DEY
+	BMI Store_Coins_Deduct
+	CLC
+	LDA DAIZ_TEMP1
+	ADC #$0A
+	STA DAIZ_TEMP1
+	JMP Multiply_10_Loop
+
+Store_Coins_Deduct:
+	LDA DAIZ_TEMP1
+	STA Coins_To_Deduct
+	LDA #$10
+	STA Deduct_Coin_Timer
+	INC <Objects_Var4,X
+	RTS
+
+Deduct_Coins:
+	DEC Deduct_Coin_Timer
+	BNE Deduct_CoinsRTS
+	JSR Decrease_HBros_Coins
+	DEC Coins_To_Deduct
+	BEQ Deduct_Coins_Done
+	LDA #$10
+	STA Deduct_Coin_Timer
+
+Deduct_CoinsRTS:
+	RTS
+
+Deduct_Coins_Done:
+	LDA #$20
+	STA End_Level_Timer
+	STA TollPaid
+	INC <Objects_Var4,X
+	RTS
+
+End_Level:
+	DEC End_Level_Timer
+	LDA End_Level_Timer
+	BNE End_LevelRTS
+	
+	LDA #$01
+	STA Level_ExitToMap
+	LDA $F000
+	LDA TollPaid		; if TollPaid = 1, complete this sprite
+	BEQ Return_Map
+	LDA #$00			; if toll not paid, return to last spot
+	BEQ Store_Return_Status
+
+Return_Map:
+	LDA #$01
+
+Store_Return_Status:
+	STA Map_ReturnStatus
+
+End_LevelRTS:
+	RTS
+
+Decrease_HBros_Coins:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	DEC HBros_Coins
+	LDA HBros_Coins
+	CMP #$FF
+	BNE No_HBros_Dec
+	LDA #$09
+	STA HBros_Coins
+	LDA HBros_Coins + 1
+	SEC
+	SBC #$10
+	STA HBros_Coins + 1
+
+No_HBros_Dec:
+	RTS

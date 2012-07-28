@@ -1433,7 +1433,8 @@ PlayerProj_HitObject:
 PRG007_A6BD:
 
 	; Hammer hit...
-
+	LDA Invincible_Enemies
+	BNE PRG007_A6FD
 	LDA <Temp_Var1	; Object's attributes
 	BMI PRG007_A6FD	 ; If OAT_HITNOTKILL is set, jump to PRG007_A6FD (RTS)
 	BPL PRG007_A6C9	 ; Otherwise, jump to PRG007_A6C9
@@ -1442,6 +1443,8 @@ PRG007_A6C3:
 
 	; Fireball only...
 
+	LDA Invincible_Enemies
+	BNE PRG007_A6FE
 	LDA <Temp_Var1
 	AND #OAT_FIREIMMUNITY
 	BNE PRG007_A6FE	 ; If object is immune to fire, jump to PRG007_A6FE

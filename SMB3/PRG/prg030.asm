@@ -3976,8 +3976,9 @@ PRG030_980D:
 
 	; Bit 7 of byte 6 sets Level_PipeNotExit
 	LDA [Level_LayPtr_AddrL],Y
-	AND #$80	 
-	STA Level_PipeNotExit
+	AND #$80
+	EOR #$80
+	STA Invincible_Enemies
 
 	; Bits 5-6 set Level_FreeVertScroll
 	LDA [Level_LayPtr_AddrL],Y
