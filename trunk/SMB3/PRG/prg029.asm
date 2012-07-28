@@ -406,6 +406,11 @@ RAINBOW_PAL_CYCLE:
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
+	LDA Invincible_Enemies
+	BEQ No_Invincible_Enemies
+	JSR Rainbow_Palette_Cycle_Sprites
+
+No_Invincible_Enemies:
 	LDX <Player_Frame
 	LDA Wall_Jump_Enabled
 	BEQ Try_Boo_Frames
@@ -3207,6 +3212,27 @@ Rainbow_Palette_Cycle:
 	STA (Palette_Buffer + $11)
 	ADC #$20
 	STA (Palette_Buffer + $12)
+	RTS
+
+Rainbow_Palette_Cycle_Sprites:
+	LDA Counter_1;
+	LSR A
+	LSR A
+	AND #$07
+	TAX
+	CLC
+	LDA RAINBOW_PAL_CYCLE, X
+	STA (Palette_Buffer + $15)
+	STA (Palette_Buffer + $19)
+	STA (Palette_Buffer + $1D)
+	ADC #$10
+	STA (Palette_Buffer + $17)
+	STA (Palette_Buffer + $1B)
+	STA (Palette_Buffer + $1F)
+	ADC #$20
+	STA (Palette_Buffer + $16)
+	STA (Palette_Buffer + $1A)
+	STA (Palette_Buffer + $1E)
 	RTS
 
 ; #DAHRKDAIZ - Backs the current player palette up during the rainbow cycle

@@ -2748,7 +2748,7 @@ PRG026_AFF2:
 	LDA Status_Bar_Mode
 	BNE No_Time
 	LDA Level_TimerMSD,X	; Get digit
-	ORA #$f0	 	; Offset as tile
+	ORA #$30	 	; Offset as tile
 	STA Status_Bar_Bottom + 15,X	; Store it into StatusBar_Time
 	DEX		 	; X--
 	BPL PRG026_AFF2	 	; While X >= 0, loop!
@@ -2783,13 +2783,13 @@ PRG026_B00A:
 
 	; 3 timer digits
 	LDA Level_TimerMSD
-	ORA #$f0
+	ORA #$30
 	STA Graphics_Buffer+3,X
 	LDA Level_TimerMid
-	ORA #$f0
+	ORA #$30
 	STA Graphics_Buffer+4,X
 	LDA Level_TimerLSD
-	ORA #$f0
+	ORA #$30
 	STA Graphics_Buffer+5,X
 
 	; Terminator
@@ -2907,7 +2907,7 @@ DrawCurrentCoins:
 
 Coin_Loop2:
 	LDA Inventory_Coins, X
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Bottom+ 9, X
 	DEX
 	BPL Coin_Loop2
@@ -2917,7 +2917,7 @@ DrawTotalCoins:
 	LDX #$06
 Coin_Loop3:
 	LDA Total_Coins_Collected, X
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 1, X
 	DEX
 	BPL Coin_Loop3
@@ -2928,52 +2928,6 @@ Coin_Loop3:
 ; Simply puts the correct world number in the status bar
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Fill_World:
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-	LDX World_Num	 	
-	INX		 	; X = World_Num+1
-	TXA		 	; A = X
-	ORA #$f0	 	; Mark it up as a tile
-	STA Graphics_Buffer+3,Y
-
-	; Terminate prior graphic data
-	LDA #$00
-	STA Graphics_Buffer+4,Y
-
-	LDX #$27	 	; X = $27 (VRAM High if vertical)
-	LDA Level_7Vertical	
-	BNE PRG026_B0EC	 	; If level is vertical, jump to PRG026_B0EC
-
-	LDX #$2b	 	; X = $2B (VRAM High if non-vertical)
-
-	LDA Level_Tileset
-	CMP #16	 
-	BEQ PRG026_B0EA	 	; If tileset = 16 (Spade game), jump to PRG026_B0EA
-
-	CMP #17	 
-	BNE PRG026_B0EC	 	; If tileset = 17 (N-Spade game), jump to PRG026_B0EC
-
-PRG026_B0EA:
-	LDX #$23		; X = $23 (VRAM High in Spade/N-Spade bonus games only)
-
-PRG026_B0EC:
-	TXA		 
-
-	; VRAM Address High
-	STA Graphics_Buffer,Y
-
-	; VRAM Address Low
-	LDA #$26
-	STA Graphics_Buffer+1,Y
-
-	; Run length of 1
-	LDA #$01
-	STA Graphics_Buffer+2,Y
-
-	; Update Graphics_BufCnt
-	LDA Graphics_BufCnt
-	ADD #$04	 
-	STA Graphics_BufCnt
-
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3090,7 +3044,7 @@ Score_Update:
 
 Score_Loop2:
 	LDA Player_Score, X
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Bottom + 1, X
 	DEX
 	BPL Score_Loop2
@@ -3664,12 +3618,12 @@ PRG026_B51F:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $B7, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $D3, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $49, $D0, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $D0, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 Initial_Bar_Display2:
-	.byte $D0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D3, $F0, $F0, $D4, $F0, $F0, $D4, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $30, $30, $30, $30, $30, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 	
 Initialize_Status_Bar:
 	LDA Status_Bar_Mode
@@ -3752,7 +3706,7 @@ Update_Odometer:
 	
 Odometer_Loop:
 	LDA Odometer, Y
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Bottom + 1,Y
 	DEY
 	BPL Odometer_Loop
@@ -3765,7 +3719,7 @@ Draw_HBros_Coin:
 	BNE No_HBros_Update
 	LDA HBros_Coins
 	AND #$0F
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 17
 	LDA HBros_Coins
 	AND #$F0
@@ -3773,14 +3727,13 @@ Draw_HBros_Coin:
 	LSR A
 	LSR A
 	LSR A
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 16
 No_HBros_Update:
 	RTS
 
 Time_Digit_Limits: .byte $09, $0A, $06, $0A, $06, $0A
 Increase_Game_Timer:
-	LDA $F000
 	INC Game_Timer_Tick
 	LDA Game_Timer_Tick
 	CMP #$3C
@@ -3808,22 +3761,22 @@ Draw_Game_Timer:
 	LDA Status_Bar_Mode
 	BEQ DontDraw_Game_Timer
 	LDA Game_Timer + 5
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 17
 	LDA Game_Timer + 4
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 16
 	LDA Game_Timer + 3
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 14
 	LDA Game_Timer + 2
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 13
 	LDA Game_Timer + 1
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 11
 	LDA Game_Timer
-	ORA #$F0
+	ORA #$30
 	STA Status_Bar_Top + 10
 
 DontDraw_Game_Timer:

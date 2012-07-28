@@ -3723,6 +3723,7 @@ PRG000_D253:
 	STA Objects_PlayerHitStat,X
 
 	LDA Player_InWater
+	ORA Invincible_Enemies
 	BNE PRG000_D267	 ; If Player is in water, jump to PRG000_D267
 
 	LDY ObjGroupRel_Idx	 ; Y = group relative index
@@ -3733,10 +3734,6 @@ PRG000_D253:
 PRG000_D267:
 
 	; Player is in water (can't stomp in water) OR attribute 3 bit 5 is set (can't stomp anyway)...
-
-;	LDA Player_Kuribo
-;	ORA Player_Shell
-;	BNE PRG000_D272	 ; If in Kuribo's shoe or transformed into statue, ignore this and jump to PRG000_D272
 
 	JMP PRG000_D355	 ; Jump to PRG000_D355 (hurt Player!)
 
@@ -3752,8 +3749,6 @@ PRG000_D272:
 	; Attribute set 2 bit 2 NOT set... (object cares about being stomped)
 
 	LDA #$00
-;	LDA Player_Shell
-;	ORA Player_Kuribo
 	BEQ PRG000_D29B	 	; If Player is NOT a statue and NOT in a Kuribo's shoe, jump to PRG000_D29B
 
 	; Player is a statue or in a Kuribo's shoe...
@@ -5244,6 +5239,9 @@ PRG000_D8EB:
 	ORA Objects_PlayerHitStat,X
 	STA Objects_PlayerHitStat,X
 
+	LDA Invincible_Enemies
+	BNE PRG000_D922
+
 	LDA Player_StarInv
 	ORA Player_Shell
 	ORA Boo_Mode_KillTimer
@@ -5786,6 +5784,7 @@ PRG000_DB17:	.byte $10, -$10
 
 
 Object_RespondToTailAttack:
+
 	LDA Player_TailAttack
 	BEQ PRG000_DB16	 ; If Player is not tail attacking, jump to PRG000_DB16 (RTS)
 
@@ -5838,6 +5837,8 @@ Player_TailAttackDo:
 
 	LDY ObjGroupRel_Idx	 ; Y = object's group-relative index
 
+	LDA Invincible_Enemies
+	BNE PRG000_DB16
 	LDA ObjectGroup_Attributes3,Y
 	AND #OA3_TAILATKIMMUNE
 	BNE PRG000_DB16	 ; If OA3_TAILATKIMMUNE is SET (Object cannot be tail-attacked), jump to PRG000_DB16 (RTS)

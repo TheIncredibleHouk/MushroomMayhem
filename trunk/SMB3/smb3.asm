@@ -613,7 +613,7 @@ PAD_RIGHT	= $01
 
 	Map_UnusedPlayerVal:	.ds 2	; $7F-$80 (Mario/Luigi) Set for each Player to $20 when returning to map, but apparently unused otherwise!
 
-	Wall_Jump_Enabled:			.ds 1	; $81 #DAHRKDAIZ When 1, wall jumping is enabled
+				.ds 1	; $81 
 				.ds 1	; $82 unused
 				.ds 1	; $83 unused
 
@@ -2472,7 +2472,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 
 	Player_NoSlopeStick:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
 
-				.ds 105	; $7997-$79FF unused
+	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
+				.ds 104	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -2597,7 +2598,13 @@ CFIRE_LASER		= $15	; Laser fire
 	SPECIAL_SUIT_FLAG:		.ds 1	; #DAHRKDAIZ $7A73
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
-				.ds 106; $7A74-$7ADF unused
+	Invincible_Enemies: .ds	1	; Indicates the enemies are invincible
+	Pay_Toll_Timer:		.ds 1	;
+	Deduct_Coin_Timer:	.ds 1	;
+	End_Level_Timer:	.ds 1	;
+	Coins_To_Deduct:	.ds 1	;
+	TollPaid:			.ds 1	;
+				.ds 100; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
@@ -3788,7 +3795,7 @@ TILE1_CANNONMID		= $78	; Mid part to ground
 TILE1_SANDTOP		= $7A	; Solid sand ground, top
 TILE1_SANDMID		= $7B	; Solid sand ground, middle
 
-TILE1_SKY		= $80	; Official sky tile
+TILE1_SKY		= $00	; Official sky tile
 
 TILE1_VINE		= $85	; Vine
 TILE1_LITTLE_BUSH	= $86	; The little green bush

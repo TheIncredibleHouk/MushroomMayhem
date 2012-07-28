@@ -6148,7 +6148,7 @@ Increase_HBros_Coins:
 	AND #$F0
 	CLC
 	ADC #$10
-	STA HBros_Coins
+	STA HBros_Coins + 1
 
 No_HBros_Inc:
 	RTS
