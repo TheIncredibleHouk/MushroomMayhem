@@ -1806,7 +1806,6 @@ PRG003_A911:
 	; the Y's postion hi end will be where in the HBros_Coins_Collected of 16 bytes we index into
 	; the X's position hi end will be what bit is set
 	; once a bit is set, the coin will not reproduce
-	LDA $F000
 	JSR Increase_HBros_Coins
 	JSR Get_HBros_Coin_Bit
 	ORA HBros_Coins_Collected, Y

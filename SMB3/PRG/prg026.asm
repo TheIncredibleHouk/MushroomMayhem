@@ -3525,6 +3525,7 @@ StatusBar_UpdTemplate:
 StatusBar_UpdateValues:
 	JSR Check_Status_Bar_Switch
 	JSR Do_Odometer
+
 	JSR Increase_Game_Timer
 	JSR Draw_Game_Timer
 	JSR Draw_HBros_Coin
@@ -3667,8 +3668,8 @@ Initial_Bar_Display1:
 	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D0, $F0, $F0, $F0, $F0, $FE, $D3, $D0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 Initial_Bar_Display2:
-	.byte $D0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $D0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $D3, $F0, $F0, $D4, $F0, $F0, $D4, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 	
 Initialize_Status_Bar:
 	LDA Status_Bar_Mode
@@ -3729,8 +3730,6 @@ Do_Odometer:
 	STA Odometer_Increase
 	LDY #$06
 	CLC
-	LDA #$01
-	STA Score_Earned
 	 
 Increase_Odometer:
 	ADC Odometer, Y
@@ -3779,17 +3778,19 @@ Draw_HBros_Coin:
 No_HBros_Update:
 	RTS
 
+Time_Digit_Limits: .byte $09, $0A, $06, $0A, $06, $0A
 Increase_Game_Timer:
-	LDX #05
-
-;
-Game_Timer_Loop:
+	LDA $F000
 	INC Game_Timer_Tick
+	LDA Game_Timer_Tick
 	CMP #$3C
-	BCC No_More_Loop
+	BCC Game_Timer_RTS
+
+	LDX #$05
+Game_Timer_Loop:
 	INC Game_Timer,X
 	LDA Game_Timer,X
-	CMP #$0A
+	CMP Time_Digit_Limits, X
 	BCC No_More_Loop
 	LDA #$00
 	STA Game_Timer,X
@@ -3797,23 +3798,33 @@ Game_Timer_Loop:
 	BPL Game_Timer_Loop
 
 No_More_Loop:
+	LDA #$00
+	STA Game_Timer_Tick
+
+Game_Timer_RTS:
 	RTS
 
 Draw_Game_Timer:
 	LDA Status_Bar_Mode
 	BEQ DontDraw_Game_Timer
-	LDA Game_Timer
-	STA Status_Bar_Top + 11
-	LDA Game_Timer + 1
-	STA Status_Bar_Top + 12
-	LDA Game_Timer + 2
-	STA Status_Bar_Top + 14
-	LDA Game_Timer + 3
-	STA Status_Bar_Top + 15
-	LDA Game_Timer + 4
-	STA Status_Bar_Top + 16
 	LDA Game_Timer + 5
+	ORA #$F0
 	STA Status_Bar_Top + 17
+	LDA Game_Timer + 4
+	ORA #$F0
+	STA Status_Bar_Top + 16
+	LDA Game_Timer + 3
+	ORA #$F0
+	STA Status_Bar_Top + 14
+	LDA Game_Timer + 2
+	ORA #$F0
+	STA Status_Bar_Top + 13
+	LDA Game_Timer + 1
+	ORA #$F0
+	STA Status_Bar_Top + 11
+	LDA Game_Timer
+	ORA #$F0
+	STA Status_Bar_Top + 10
 
 DontDraw_Game_Timer:
 	RTS
