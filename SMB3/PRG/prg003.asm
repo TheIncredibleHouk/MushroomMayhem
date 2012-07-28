@@ -6143,12 +6143,12 @@ Increase_HBros_Coins:
 	LDA HBros_Coins
 	AND #$0F
 	CMP #$0A
-	BNE No_HBros_Inc
+	BCC No_HBros_Inc
 	LDA HBros_Coins
 	AND #$F0
 	CLC
 	ADC #$10
-	STA HBros_Coins + 1
+	STA HBros_Coins
 
 No_HBros_Inc:
 	RTS
