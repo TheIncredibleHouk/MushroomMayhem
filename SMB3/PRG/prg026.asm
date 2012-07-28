@@ -3680,21 +3680,19 @@ Do_Odometer:
 	LDA Odometer_Increase
 	CMP #$80
 	BCC No_Odometer
+	STA $7FFF
 	SBC #$80
 	STA Odometer_Increase
-	LDY #$06
-	CLC
+	LDX #$06
 	 
 Increase_Odometer:
-	ADC Odometer, Y
-	STA Odometer, Y
-	LDA Odometer, Y
+	INC Odometer, X
+	LDA Odometer, X
 	CMP #$0A
 	BCC Next_Odometer
-	SEC
-	SBC #$0A
-	STA Odometer, Y
-	DEY
+	LDA #$00
+	STA Odometer, X
+	DEX
 	BPL Increase_Odometer
 
 Next_Odometer:
