@@ -5394,14 +5394,13 @@ Decrease_HBros_Coins:
 	STA Sound_QLevel1
 	DEC HBros_Coins
 	LDA HBros_Coins
-	CMP #$FF
-	BNE No_HBros_Dec
-	LDA #$09
+	AND #$0F
+	CMP #$0A
+	BCC No_HBros_Dec
+	LDA HBros_Coins
+	AND #$F0
+	ORA #$09
 	STA HBros_Coins
-	LDA HBros_Coins + 1
-	SEC
-	SBC #$10
-	STA HBros_Coins + 1
 
 No_HBros_Dec:
 	RTS

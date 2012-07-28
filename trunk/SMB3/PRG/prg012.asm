@@ -638,8 +638,8 @@ PRG012_B1DC:
 	STA <Level_LayPtr_AddrH		 
 	STA Level_LayPtrOrig_AddrH	 
 
-	LDA <Map_EnterViaID
-	BNE Map_DoEnterViaID	 ; If Map_EnterViaID <> 0, jump to Map_DoEnterViaID
+	;LDA <Map_EnterViaID
+	;BNE Map_DoEnterViaID	 ; If Map_EnterViaID <> 0, jump to Map_DoEnterViaID
 
 	LDA Level_Tileset
 	CMP #15	 
@@ -650,74 +650,6 @@ PRG012_B1DC:
 PRG012_B1FB:
 	LDA #$03	 
 	STA World_EnterState
-	RTS		 ; Return
-
-
-Map_DoEnterViaID:
-	; Most "entry" on the world map uses your map position to pick out a 
-	; pointer to a level.  Simple stuff.
-
-	; But certain things like the airship, coin ship, white toad house, etc. 
-	; must "override" the map placement to go to something specific; that's 
-	; where Map_EnterViaID comes in; if set to a value, it jumps to a 
-	; PARTICULAR place regardless of map placement.
-
-	; Not all map objects go anywhere special though...
-
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word MO_Unused		; 0: (Not used, normal panel entry)
-	.word MO_Unused		; 1: HELP (can't be "entered")
-	.word MO_Airship	; 2: Airship
-	.word MO_Unused		; 3: Hammer Bro battle
-	.word MO_Unused		; 4: Boomerang Bro battle
-	.word MO_Unused		; 5: Heavy Bro battle
-	.word MO_Unused		; 6: Fire Bro battle
-	.word MO_Unused		; 7: World 7 Plant
-	.word MO_Unused		; 8: Unknown marching glitch object
-	.word MO_NSpade		; 9: N-Spade game
-	.word MO_Shop		; 10: Anchor/P-Wing house
-	.word MO_CoinShip	; 11: Coin ship
-	.word MO_UnusedMapObj	; 12: Unknown white colorization of World 8 Airship
-	.word MO_Unused		; 13: World 8 Battleship
-	.word MO_Unused		; 14: World 8 Tank
-	.word MO_Unused		; 15: World 8 Airship
-	.word MO_Unused		; 16: Canoe (can't be "entered")
-
-
-; FIXME: Anybody want to claim this?
-; This is a perfect clone of Map_GetTile from PRG010, but not used here...
-; $B226 
-	LDX Player_Current
-	LDA <World_Map_XHi,X
-	ASL A		 
-	TAY		 
-
-	; Store starting offset for this map screen into Map_Tile_AddrL/H
-	LDA Tile_Mem_Addr,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1,Y
-	STA <Map_Tile_AddrH
-
-	INC <Map_Tile_AddrH	; Effectively adds $100 to the address (maps get loaded at screen base + $110)
-
-	LDA <World_Map_X,X
-	LSR A		 
-	LSR A		 
-	LSR A		 
-	LSR A		 
-	STA <Temp_Var1		; Temp_Var1 = World_Map_X / 16 (the current column of the current screen)
-
-	LDA <World_Map_Y,X
-	SUB #16
-	AND #$f0
-	ORA <Temp_Var1		; Temp_Var1 now holds the X column in the lower 4-bits and the Y row in the upper 4-bits
-
-	TAY		 	; Store this offset value into 'Y'
-
-	LDA [Map_Tile_AddrL],Y
-	STA <World_Map_Tile	
 	RTS		 ; Return
 
 KingsRoomLayout_ByWorld:

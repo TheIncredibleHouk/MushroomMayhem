@@ -3855,11 +3855,13 @@ PRG011_B6A1:
 
 	LDA #$00
 	STA Map_Player_SkidBack,X
+
+	LDA #$03
 	STA World_EnterState
 
 	; Store the object ID -> Map_EnterViaID
-	LDA Map_Objects_IDs,Y
-	STA <Map_EnterViaID
+	;LDA Map_Objects_IDs,Y
+	;STA <Map_EnterViaID
 
 	; If this is a N-Spade or White Toad house, jump to PRG011_B6E2
 	CMP #MAPOBJ_NSPADE
