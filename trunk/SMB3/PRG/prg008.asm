@@ -6904,4 +6904,12 @@ Increase_Air_Time:
 	INC Air_Time
 
 Skip_Air_Change:
+	LDA Air_Time
+	BEQ Air_RTS
+	CMP #$10
+	BCS Air_RTS
+	LDA Sound_QLevel1
+	ORA #SND_LEVELTAILWAG
+	STA Sound_QLevel1
+Air_RTS:
 	RTS	

@@ -539,8 +539,9 @@ PRG030_84A0:
 
 	JSR Map_Init	 ; Initialize map variables (page 11)
 
-	LDA #$00
+	LDA #$01
 	STA Map_Operation	; Map_Operation = 0 ("World X" intro)
+	LDA #$00
 	STA BigQBlock_GotIt	; Clear the opened Big ? Block variable
 	STA Map_Airship_Dest	; Map_Airship_Dest = 0
 	STA Map_Got13Warp	; Clear the "Got 1-3 Warp Whistle" flag

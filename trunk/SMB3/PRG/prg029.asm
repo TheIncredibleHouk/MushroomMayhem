@@ -3152,53 +3152,6 @@ PRG029_DFA4:
 	.byte $3C, $0F, $36, $07	; 8
 	.byte $3C, $0F, $36, $0F	; 12
 
-; FIXME: Anybody want to claim this??
-; Appears to be coin palette cycling routine
-; $DFB4 
-;	LDA <Counter_1
-;	AND #$07
-;	BNE PRG029_DFEB	 ; 1:8 ticks continue, otherwise jump to PRG029_DFEB (RTS)
-;
-;	LDA <Counter_1
-;	AND #$18
-;	LSR A
-;	TAX		 ; X = 0, 4, 8, 12
-;
-;	; Copies current coin palette into buffer
-;	LDY Graphics_BufCnt
-;
-;	LDA #$3f
-;	STA Graphics_Buffer,Y
-;
-;	LDA #$04
-;	STA Graphics_Buffer+$01,Y
-;	STA Graphics_Buffer+$02,Y
-;
-;PRG029_DFD0:
-;	LDA PRG029_DFA4,X
-;	STA Graphics_Buffer+$03,Y
-;
-;	INY		 ; Y++
-;	INX		 ; X++
-;
-;	TXA		 
-;	AND #$03	 ; X = 0 to 3
-;	BNE PRG029_DFD0	 ; While X <> 0, loop!
-;
-;	; Terminator
-;	LDA #$00
-;	STA Graphics_Buffer+$03,Y
-;
-;	; Graphics_BufCnt += 7
-;	LDA Graphics_BufCnt
-;	ADD #$07
-;	STA Graphics_BufCnt
-;
-;PRG029_DFEB:
-;	RTS		 ; Return
-
-; Rest of ROM bank was empty
-
 Rainbow_Palette_Cycle:
 	LDA Counter_1;
 	LSR A

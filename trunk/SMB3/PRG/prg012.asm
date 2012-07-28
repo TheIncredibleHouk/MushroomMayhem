@@ -103,10 +103,10 @@ Tile_Attributes_TS0:
 	; has a value less than [retrieved from below]; you can't possibly enter it!"
 
 	; NOTE: The pool and star are both "enterable"...
-	.byte TILE_PANEL1, TILE_FORT, TILE_POOL, TILE_WORLD5STAR
+	.byte TILE_PANEL1, TILE_FORT, $FF, $FF; TILE_POOL, TILE_WORLD5STAR
 
 	; These values (equivalent to above) also pulled in via Level_Tileset_LUT??
-	.byte TILE_PANEL1, TILE_FORT, TILE_POOL, TILE_WORLD5STAR
+	.byte TILE_PANEL1, TILE_FORT, $FF, $FF; TILE_POOL, TILE_WORLD5STAR
 
 	.byte $20, $0E, $A4, $4C, $B7, $97
 

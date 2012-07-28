@@ -3798,7 +3798,7 @@ PRG002_B325:
 	RTS		 ; Return
 
 HammerCoinsRequired:
-	.byte $03, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $01, $00, $00, $00, $00, $00, $00, $00, $00
 	; English: "Pick a box." / "Its contents" / "will help you" / "on your way"
 ToadMsg_Standard:
 	;            P    i    c    k         a         b    o    x    .
