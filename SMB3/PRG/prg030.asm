@@ -418,6 +418,7 @@ PAGE_A000_ByTileset: ; $83E9
 
 	; The normal level VROM page cycle set
 PT2_Anim:	.byte $60, $62, $64, $66
+PSwitch_Anim: .byte $68, $6A, $7C, $7E
 SPR_Anim:	.byte $04, $05, $06, $07
 
 PAUSE_Sprites:
@@ -2253,13 +2254,7 @@ PRG030_8E1D:
 
 PRG030_8E24:
 	; NOT TOAD HOUSE
-
-	LDA Level_PSwitchCnt
-	BEQ PRG030_8E31	 	; If P-Switch is not active, jump to PRG030_8E31
-
-	; Otherwise force pattern override to $3E
-	LDA #$3e
-	STA PatTable_BankSel+1
+	JMP PRG030_8E31
 
 PRG030_8E2E:
 	JMP PRG030_8E5D	 ; Jump to PRG030_8E5D (skip main anim code)
@@ -2301,10 +2296,13 @@ PRG030_8E4F:
 	LSR A		
 	TAX	        ; 0-3, changing every 8 ticks
 
-	LDA PT2_Anim,X	
-	STA PatTable_BankSel+1 ; Set pattern for this tick
-	; #DAHRKDAIZ - hacked to produce sprite animations without needing to do funky flips
+	LDA PT2_Anim,X
+	LDY Level_PSwitchCnt
+	BEQ Normal_Anim
+	LDA PSwitch_Anim,X
 
+Normal_Anim:
+	STA PatTable_BankSel+1 ; Set pattern for this tick
 	LDA <Counter_1
 	AND #$0C
 	LSR A	
@@ -2341,29 +2339,6 @@ PRG030_8E79:
 	BEQ PRG030_8EAD	 	; If not paused, jump to PRG030_8EAD
 
 	; When game is paused...
-
-	; Wow, what the heck did they remove here??
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
 
 	LDA #$32
 	STA PatTable_BankSel+5	; Set patterns needed for P A U S E sprites
@@ -2468,7 +2443,7 @@ PRG030_8EE7:
 	STY PAGE_A000
 	JSR PRGROM_Change_A000
 
-	JSR Scores_GiveAndDraw	 ; Give point awards and draw score sprites
+	JSR Do_Weather	 ; Give point awards and draw score sprites
 
 
 	; Color rotation effects, lava, donut lifts, arrow platforms,

@@ -5372,8 +5372,7 @@ End_Level:
 	BNE End_LevelRTS
 	
 	LDA #$01
-	STA Level_ExitToMap
-	LDA $F000
+	STA Level_ExitToMap	
 	LDA TollPaid		; if TollPaid = 1, complete this sprite
 	BEQ Return_Map
 	LDA #$00			; if toll not paid, return to last spot

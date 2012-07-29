@@ -2236,7 +2236,7 @@ PRG020_AE2F:
 ; Builds a specific cannon on a platform
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_CannonPlatform:	
-	.byte TILE9_CANNONBLOCK, TILEA_WOODBLOCK, TILE9_CANNONBLOCK
+	.byte TILE9_CANNONBLOCK, HOLLOW_BLOCK, TILE9_CANNONBLOCK
 LL_CannonPlatform_End
 
 LoadLevel_CannonPlatform:

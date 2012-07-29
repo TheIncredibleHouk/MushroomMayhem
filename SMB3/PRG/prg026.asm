@@ -3480,7 +3480,6 @@ StatusBar_UpdateValues:
 	JSR Check_Status_Bar_Switch
 	JSR Do_Odometer
 
-	JSR Increase_Game_Timer
 	JSR Draw_Game_Timer
 	JSR Draw_HBros_Coin
 	JSR Initialize_Status_Bar
@@ -3624,7 +3623,47 @@ Initial_Bar_Display1:
 Initial_Bar_Display2:
 	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 	.byte $FE, $30, $30, $30, $30, $30, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	
+World_Names:
+	.byte " MUSHROOM EVERGLADES"
+
+Draw_World_Name:
+	LDY World_Num
+	LDA #$00
+
+WorldNameLoop:
+	DEY
+	BMI DoNameDraw
+	CLC
+	ADC #$14
+	BNE WorldNameLoop
+	LDX #$00
+
+DoNameDraw:
+	TAY
+	DEY
+
+DrawNameTop:
+	LDA World_Names, Y
+	CLC
+	ADC #$01
+	STA Status_Bar_Top + 18, X
+	INY
+	INX
+	CPX #$0A
+	BNE DrawNameTop
+	LDX #$00
+DrawNameBottom:
+	LDA World_Names, Y
+	CLC
+	ADC #$01
+	STA Status_Bar_Bottom + 18, X
+	INY
+	INX
+	CPX #$0A
+	BNE DrawNameBottom
+	RTS
+
+
 Initialize_Status_Bar:
 	LDA Status_Bar_Mode
 	CMP Last_Status_Bar_Mode
@@ -3662,6 +3701,7 @@ Init_Bar_Loop:
 Draw_Update2:
 	JSR DrawTotalCoins
 	JSR Update_Odometer
+	JSR Draw_World_Name
 No_Init:
 	RTS
 
@@ -3730,30 +3770,6 @@ Draw_HBros_Coin:
 No_HBros_Update:
 	RTS
 
-Time_Digit_Limits: .byte $09, $0A, $06, $0A, $06, $0A
-Increase_Game_Timer:
-	INC Game_Timer_Tick
-	LDA Game_Timer_Tick
-	CMP #$3C
-	BCC Game_Timer_RTS
-
-	LDX #$05
-Game_Timer_Loop:
-	INC Game_Timer,X
-	LDA Game_Timer,X
-	CMP Time_Digit_Limits, X
-	BCC No_More_Loop
-	LDA #$00
-	STA Game_Timer,X
-	DEX
-	BPL Game_Timer_Loop
-
-No_More_Loop:
-	LDA #$00
-	STA Game_Timer_Tick
-
-Game_Timer_RTS:
-	RTS
 
 Draw_Game_Timer:
 	LDA Status_Bar_Mode

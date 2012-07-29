@@ -56,14 +56,14 @@ DMC02_End
 
 	;
 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
 
 Music_PlayDMC:
 	LDA DMC_Queue	 ; Get value queued for DMC
@@ -1962,10 +1962,10 @@ SpriteMTCHR_1C00:	.byte $4b
 ; Set of pages "normal" IRQ sets (for status bar I presume)
 StatusBarCHR_0000:	.byte $5c	; Standard status bar part 1 ($5C and $5D are loaded)
 StatusBarCHR_0800:	.byte $5e	; Standard status bar part 2 ($5E and $5F are loaded)
-SpriteHideCHR_1000:	.byte $7e	; ALL BLANK TILES
-SpriteHideCHR_1400:	.byte $7e	; ALL BLANK TILES
-SpriteHideCHR_1800:	.byte $7e	; ALL BLANK TILES
-SpriteHideCHR_1C00:	.byte $7e	; ALL BLANK TILES
+SpriteHideCHR_1000:	.byte $77	; ALL BLANK TILES
+SpriteHideCHR_1400:	.byte $77	; ALL BLANK TILES
+SpriteHideCHR_1800:	.byte $77	; ALL BLANK TILES
+SpriteHideCHR_1C00:	.byte $77	; ALL BLANK TILES
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3040,6 +3040,130 @@ PRG031_FE76:
 
 PRG031_FE98:
 	RTS		 ; Return
+
+Time_Digit_Limits: .byte $09, $0A, $06, $0A, $06, $0A
+
+Increase_Game_Timer:
+	INC Game_Timer_Tick
+	LDA Game_Timer_Tick
+	CMP #$3C
+	BCC Game_Timer_RTS
+
+	LDX #$05
+Game_Timer_Loop:
+	INC Game_Timer,X
+	LDA Game_Timer,X
+	CMP Time_Digit_Limits, X
+	BCC No_More_Loop
+	LDA #$00
+	STA Game_Timer,X
+	DEX
+	BPL Game_Timer_Loop
+
+No_More_Loop:
+	LDA #$00
+	STA Game_Timer_Tick
+
+Game_Timer_RTS:
+	RTS
+
+Do_Weather:
+	LDA Weather
+	BEQ WeatherRTS
+	CMP #$01
+	BEQ Do_Rain
+
+WeatherRTS:
+	RTS
+
+Do_Rain:
+	LDA Weather_Initialized
+	BNE Weather_Good
+	JMP Initialize_Weather
+
+Weather_Good:
+	LDX #$03
+
+Rain_Loop:
+	LDA Weather_X, X
+	CLC
+	ADC Rain_XVel, X
+	STA Weather_X, X
+	
+	LDA Weather_Y, X
+	CLC
+	ADC Rain_YVel, X
+	STA Weather_Y, X
+	CMP #$C0
+	BCC No_Randomize
+	JSR Randomize_Weather
+
+No_Randomize:
+	DEX
+	BPL Rain_Loop
+
+	;LDA <Counter_1
+	;AND #$01
+	;BEQ Do_RainRTS2
+
+Do_RainRTS:
+	LDX #$03
+
+Next_Rain:
+	JSR Object_GetRandNearUnusedSpr
+	BEQ Done_Rain
+	LDA #$71
+	STA Sprite_RAM + 1, Y
+	LDA #$02
+	STA Sprite_RAM + 2, Y
+	LDA Weather_X, X
+	STA Sprite_RAM + 3, Y
+	
+	LDA Weather_Y, X
+	STA Sprite_RAM, Y
+	DEX
+	BPL Next_Rain
+
+Done_Rain:
+	RTS
+
+;Do_RainRTS2:
+;	LDX #$03
+;
+;Next_Rain2:
+;	JSR Object_GetRandNearUnusedSpr
+;	BEQ Done_Rain
+;	LDA #$71
+;	STA Sprite_RAM + 1, Y
+;	LDA #$02
+;	STA Sprite_RAM + 2, Y
+;	LDA Weather_X, X
+;	EOR #$80
+;	STA Sprite_RAM + 3, Y
+;	LDA Weather_Y, X
+;	EOR #$80
+;	STA Sprite_RAM, Y
+;	DEX
+;	BPL Next_Rain2
+;	RTS
+
+Rain_XVel: .byte $FC, $FA, $FC, $F8
+Rain_YVel: .byte $04, $06, $04, $08
+
+Initialize_Weather:
+	LDX #$03
+Next_Weather:
+	JSR Randomize_Weather
+	DEX
+	BPL Next_Weather
+	LDA #$01
+	STA Weather_Initialized
+	RTS
+
+Randomize_Weather:
+	LDA RandomN,X
+	STA Weather_X, X
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; DynJump
 ;

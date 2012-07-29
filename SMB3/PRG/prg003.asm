@@ -1886,6 +1886,14 @@ ObjInit_BoomBoom:
 	STA Objects_Frame,X
 
 ObjInit_FloatingBGCloud:
+	LDA $F001
+	LDA Objects_Y,X
+	AND #$10
+	BNE Weather_Gen_RTS
+	LDA #$01
+	STA Weather
+ 
+Weather_Gen_RTS:
 	RTS		 ; Return
 
 BoomBoom_TowardsPlayerXVel:	.byte $10, -$10

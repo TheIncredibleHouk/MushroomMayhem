@@ -2473,7 +2473,11 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Player_NoSlopeStick:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
 
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
-				.ds 104	; $7997-$79FF unused UNUSED HERE
+	Weather:				.ds 1	;
+	Weather_Initialized:		.ds 1	;
+	Weather_X:				.ds 4	;
+	Weather_Y:				.ds 4	;
+				.ds 94	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -3705,12 +3709,12 @@ TILEA_BRICK1UP		= $6E	; Brick with 1-up
 TILEA_BRICKVINE		= $6F	; Brick with vine
 TILEA_BRICKPSWITCH	= $70	; Brick with P Switch
 TILEA_HNOTE		= $71	; Coin Heaven launcher note block
-TILEA_WOODBLOCKBOUNCE	= $72	; Wood block which bounces (no contents)
-TILEA_WOODBLOCKFLOWER	= $73	; Wood block which bounces and contains fire flower
-TILEA_WOODBLOCKLEAF	= $74	; Wood block which bounces and contains leaf
-TILEA_WOODBLOCKSTAR	= $75	; Wood block which bounces and contains star
+HOLLOW_BLOCKBOUNCE	= $72	; Wood block which bounces (no contents)
+HOLLOW_BLOCKFLOWER	= $73	; Wood block which bounces and contains fire flower
+HOLLOW_BLOCKLEAF	= $74	; Wood block which bounces and contains leaf
+HOLLOW_BLOCKSTAR	= $75	; Wood block which bounces and contains star
 
-TILEA_WOODBLOCK		= $79	; Standard solid wood block
+HOLLOW_BLOCK		= $03	; Standard solid wood block
 
 TILEA_GNOTE		= $BC	; Green note block (functions like standard white, just colored wrong)
 
