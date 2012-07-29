@@ -746,6 +746,7 @@ PRG008_A3C9:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Update:
 	JSR Do_Air_Timer
+	JSR Increase_Game_Timer
 	LDA Player_QueueSuit
 	BEQ PRG008_A3FA	 ; If we don't have a suit change queued, jump to PRG008_A3FA
 
@@ -4771,10 +4772,10 @@ Level_ActionTiles_OffFix:
 	; Player hits them right, causes something to happen...
 Level_ActionTiles:
 	; Tiles activated anytime
-	.byte TILEA_GNOTE, TILEA_HNOTE, TILEA_NOTE, TILEA_WOODBLOCKBOUNCE
+	.byte TILEA_GNOTE, TILEA_HNOTE, TILEA_NOTE, HOLLOW_BLOCKBOUNCE
 
 	; Tiles activated only when Player is moving upward
-	.byte TILEA_QBLOCKFLOWER, TILEA_INVISCOIN, TILEA_NOTEINVIS
+	.byte TILEA_QBLOCKFLOWER, TILEA_INVISCOIN, TILEA_INVISCOIN
 
 	; And in the desert only... (UNUSED, would be a breakable tile in a pipeworks structure!)
 	.byte TILE9_PIPEWORKS_JCT

@@ -1501,9 +1501,9 @@ PRG000_C834:
 	; Parallel arrays which for a given tile in the accumulator,
 	; if it matches one of the ones in PrePSwitchTile is replaced
 	; with the attribute and tile from the other arrays...
-PrePSwitchTile:		.byte $40, $67, $66, $05
-PostPSwitchTile:	.byte $67, $40, $40, $40
-PostPSwitchAttr:	.byte $03, $00, $00, $00
+PrePSwitchTile:		.byte $40, $67, $66, $05, $03 ; include thawed coins and [||] blocks
+PostPSwitchTile:	.byte $67, $40, $40, $67, $79
+PostPSwitchAttr:	.byte $03, $00, $00, $00, $00
 
 PSwitch_SubstTileAndAttr:
 	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt

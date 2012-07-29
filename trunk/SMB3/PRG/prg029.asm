@@ -2662,7 +2662,7 @@ OneTile_ChangeToPatterns:
 	.byte $B8, $BA, $B9, $BB	; $06 - CHNGTILE_COINHEAVEN
 	.byte $BC, $BE, $BD, $BF	; $07 - CHNGTILE_TOBRICK
 	.byte $D8, $DA, $D9, $DB	; $08 - CHNGTILE_TOMETALPLATE
-	.byte $FF, $FF, $E6, $E7	; $09 - CHNGTILE_PSWITCHSTOMP
+	.byte $FF, $FF, $8D, $8F	; $09 - CHNGTILE_PSWITCHSTOMP
 	.byte $60, $61, $6D, $6F	; $0A
 	.byte $B4, $B6, $B5, $B7	; $0B - CHNGTILE_TOBRICKCOIN
 	.byte $52, $50, $62, $60	; $0C - CHNGTILE_DELETETOBGALT
@@ -2671,7 +2671,7 @@ OneTile_ChangeToPatterns:
 	.byte $5C, $5E, $5D, $5F	; $0F - CHNGTILE_DELETEDONUT
 	.byte $92, $CA, $93, $CB	; $10 - CHNGTILE_FROZENMUNCHER
 	.byte $DC, $DE, $DD, $DF	; $11 - CHNGTILE_FROZENCOIN
-	.byte $E0, $E2, $E1, $E3	; $12 - CHNGTILE_PSWITCHAPPEAR
+	.byte $90, $92, $91, $93	; $12 - CHNGTILE_PSWITCHAPPEAR
 
 
 TileChng_OneTile:

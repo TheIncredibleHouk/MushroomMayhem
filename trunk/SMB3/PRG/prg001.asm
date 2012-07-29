@@ -1247,13 +1247,13 @@ BounceBlock_SprOff:
 
 	; Tile for block bounce sprite (if same, mirrors)
 BounceBlock_Tile:
-	.byte $79, $7B	; 0 (possibly unused / Note Block)
-	.byte $79, $7B	; 1 (coin heaven Note Block)
+	.byte $79, $79	; 0 (possibly unused / Note Block)
+	.byte $79, $79	; 1 (coin heaven Note Block)
 	.byte $77, $77	; 2 ("Metal plate" post-? block hit)
-	.byte $75, $75	; 3 (used for empty brick)
-	.byte $79, $7B	; 4 (typical Note Block)
+	.byte $77, $77	; 3 (used for empty brick)
+	.byte $79, $79	; 4 (typical Note Block)
 	.byte $7F, $7F	; 5 (wood)
-	.byte $75, $75	; 6 (used for brick with coins)
+	.byte $77, $77	; 6 (used for brick with coins)
 	.byte $7B, $7B	; 7 (UNUSED, would be for desert's breakable pipeworks tile!)
 
 BounceBlock_Update:
