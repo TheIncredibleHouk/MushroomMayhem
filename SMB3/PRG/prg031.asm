@@ -3082,14 +3082,13 @@ Do_Rain:
 	JMP Initialize_Weather
 
 Weather_Good:
-	LDX #$03
+	LDX #$07
 
 Rain_Loop:
 	LDA Weather_X, X
 	CLC
 	ADC Rain_XVel, X
 	STA Weather_X, X
-	
 	LDA Weather_Y, X
 	CLC
 	ADC Rain_YVel, X
@@ -3101,12 +3100,18 @@ Rain_Loop:
 No_Randomize:
 	DEX
 	BPL Rain_Loop
-
-	;LDA <Counter_1
-	;AND #$01
-	;BEQ Do_RainRTS2
-
+	LDA #$03
+	STA DAIZ_TEMP1
+	LDA <Counter_1
+	AND #$01
+	BEQ Do_RainRTS
+	LDX #07
+	LDA #$20
+	STA DAIZ_TEMP2
+	BNE Next_Rain
 Do_RainRTS:
+	LDA #$00
+	STA DAIZ_TEMP2
 	LDX #$03
 
 Next_Rain:
@@ -3115,6 +3120,7 @@ Next_Rain:
 	LDA #$71
 	STA Sprite_RAM + 1, Y
 	LDA #$02
+	ORA DAIZ_TEMP2
 	STA Sprite_RAM + 2, Y
 	LDA Weather_X, X
 	STA Sprite_RAM + 3, Y
@@ -3122,36 +3128,18 @@ Next_Rain:
 	LDA Weather_Y, X
 	STA Sprite_RAM, Y
 	DEX
+	DEC DAIZ_TEMP1
 	BPL Next_Rain
 
 Done_Rain:
 	RTS
 
-;Do_RainRTS2:
-;	LDX #$03
-;
-;Next_Rain2:
-;	JSR Object_GetRandNearUnusedSpr
-;	BEQ Done_Rain
-;	LDA #$71
-;	STA Sprite_RAM + 1, Y
-;	LDA #$02
-;	STA Sprite_RAM + 2, Y
-;	LDA Weather_X, X
-;	EOR #$80
-;	STA Sprite_RAM + 3, Y
-;	LDA Weather_Y, X
-;	EOR #$80
-;	STA Sprite_RAM, Y
-;	DEX
-;	BPL Next_Rain2
-;	RTS
-
-Rain_XVel: .byte $FC, $FA, $FC, $F8
-Rain_YVel: .byte $04, $06, $04, $08
+Rain_Priority:
+Rain_XVel: .byte $FC, $FA, $FC, $F8, $FB, $FD, $FB, $FC
+Rain_YVel: .byte $04, $06, $04, $08, $05, $03, $05, $04
 
 Initialize_Weather:
-	LDX #$03
+	LDX #$07
 Next_Weather:
 	JSR Randomize_Weather
 	DEX
@@ -3163,6 +3151,8 @@ Next_Weather:
 Randomize_Weather:
 	LDA RandomN,X
 	STA Weather_X, X
+	LDA #$00
+	STA Weather_Y, X
 	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; DynJump

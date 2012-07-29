@@ -2475,9 +2475,9 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Weather:				.ds 1	;
 	Weather_Initialized:		.ds 1	;
-	Weather_X:				.ds 4	;
-	Weather_Y:				.ds 4	;
-				.ds 94	; $7997-$79FF unused UNUSED HERE
+	Weather_X:				.ds 8	;
+	Weather_Y:				.ds 8	;
+				.ds 86	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
