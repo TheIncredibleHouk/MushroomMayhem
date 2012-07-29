@@ -2560,14 +2560,6 @@ MapMove_DeltaDiff = MapMove_DeltaYC - MapMove_DeltaY	; For clarity
 PRG010_CDA7:
 	.byte $06, $05, $0A, $09, $09, $0A, $05, $06
 
-	; Enterable special tiles (Note the couple of oddities here...)
-	; NOTE: Due to a bug in the code, several bytes after this table are also considered
-	; as "enterable" tiles (clear down thru Map_PostJC_PUpPP2 as of a matter of fact!)
-Map_EnterSpecialTiles:
-	.byte TILE_TOADHOUSE, TILE_SPADEBONUS, TILE_PIPE, TILE_ALTTOADHOUSE
-	.byte TILE_CASTLEBOTTOM, TILE_SPIRAL, TILE_ALTSPIRAL, TILE_PATHANDNUB
-	.byte TILE_DANCINGFLOWER, TILE_HANDTRAP, TILE_BOWSERCASTLELL
-
 	; Color table for setting the 2nd entry power up color on the map used for clearing Judgem's cloud!
 	; NOTE: This is a patch table, you'll want it to agree with PRG027's "InitPals_Per_MapPUp"
 Map_PostJC_PUpPP1:	.byte $16, $16, $27, $16, $2A, $17, $30
@@ -2605,22 +2597,10 @@ PRG010_CDDC:
 PRG010_CDEC:
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 
-	AND #$c0	 	; Only keeping the upper 2 bits of it
-	CLC		 
-	ROL A		 
-	ROL A		 
-	ROL A		 
-	TAY		 	; Y = upper 2 bits of map tile shifted down; the "tile quadrant"
-
-	; In short, what this checks is, for a given "quadrant" of the tile you're standing on
-	; ($00, $40, $80, $C0), it turns this into an index (>> 6) and looks up a value
-	; in "Tile_AttrTable+4" to determine the minimum value for what you're standing on
-	; to be "enterable" as a level panel; if you fail this test, the tile can't
-	; possibly be enterable (so goes the idea...)
-
+	; #DAHRKDAIZ  modified to check a raw table for enterable tiles.
 	LDA <World_Map_Tile
-	CMP Tile_AttrTable+4,Y
-	BLT PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
+	JSR Tile_Enterable
+	BNE PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
 
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)
@@ -2768,14 +2748,8 @@ PRG010_CEBF:
 	AND #PAD_A	
 	BEQ PRG010_CEE1	 	; If Player is not pressing 'A', jump to PRG010_CEE1
 
-	LDA <World_Map_Tile
-	LDY #$1a	; Y = $1A (BUG!  Map_EnterSpecialTiles is much smaller than this, should be $0A!  Causes some bytes used for palette data to be considered!)
 PRG010_CEC9:
-	CMP Map_EnterSpecialTiles,Y
-	BEQ PRG010_CEA7	 	; If this is one of the special enterable tiles, jump to PRG010_CEA7 (enter level!)
-	DEY		 	; Y--
-	BPL PRG010_CEC9	 	; If Y >= 0, jump to PRG010_CEC9
-
+	
 	; Not a special tile...
 	LDA <World_Map_Tile
 	AND #$c0	 	; Only keeping the upper 2 bits of it
@@ -2787,8 +2761,8 @@ PRG010_CEC9:
 
 	; What makes other tiles (e.g. standard panels) work...
 	LDA <World_Map_Tile
-	CMP Tile_AttrTable+4,Y
-	BGE PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
+	JSR Tile_Enterable
+	BEQ PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
 
 PRG010_CEE1:		
 	JMP WorldMap_UpdateAndDraw	; Jump to WorldMap_UpdateAndDraw
@@ -3377,9 +3351,6 @@ Map_CheckDoMove:
 	LDA <Pad_Holding
 	STA <Temp_Var4		; Temp_Var4 = Pad_Holding
 
-	LDA Map_InCanoe_Flag
-	BNE PRG010_D296	 	; If Player is in canoe, jump to PRG010_D296
-
 	LDX Player_Current
 	LDA Map_MoveRepeat,X
 	BEQ PRG010_D296		; If Player's "move repeat" value is at zero, jump to PRG010_D296
@@ -3431,122 +3402,16 @@ PRG010_D2AD:
 	JSR MapTile_Get_By_Offset	; Get tile Player is going to move over (adjacent tile in travel direction)
 
 	; Search to see if this is a valid to move over given the Player's direction et al.
-	LDY #(Map_Object_Valid_Tiles2Check-1)
+	
 PRG010_D2C1:
-	CMP [Temp_Var1],Y	
+	JSR Tile_Traversable
 	BEQ PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
-	DEY		 	; Y--
-	BPL PRG010_D2C1	 	; While Y >= 0, loop!
-
-	; Player is not on any of the valid tiles...
-
-	LDY Map_InCanoe_Flag
-	BEQ PRG010_D2E1	 	; If Player is NOT in a canoe, jump to PRG010_D2E1
-
-	CMP #TILE_DOCK	 
-	BNE PRG010_D2D8	 	; If Player is not docking, jump to PRG010_D2D8
-
-	LDA #$00
-	STA Map_InCanoe_Flag	; Map_InCanoe_Flag = 0
-	BEQ PRG010_D332	 	; Jump (technically always) to PRG010_D332
-
-PRG010_D2D8:
-	; Canoe range checks!
-
-	CMP #TILE_WATER_INVT
-	BLT PRG010_D310	 	; If tile is less than the inverted-T water tile, jump to PRG010_D310
-
-	CMP #TILE_VERTPATHWLU
-	BLT PRG010_D332		; If tile is less than the overwater path tile, jump to PRG010_D332
-
-	; Tile index larger than TILE_VERTPATHWLU / $AA can never be moved over in the canoe
-
 	RTS		 ; Return
-
-PRG010_D2E1:
-	; On a dock, not in a canoe!  But let's see if there's one to hop into...
-
-	LDY World_Map_Tile
-	CPY #TILE_DOCK	
-	BNE PRG010_D310	 	; If Player is not standing on a dock tile, jump to PRG010_D310
-
-	LDY <Temp_Var3		; Y = Temp_Var3; 0-3 (right, left, down, up respectively)
-
-	LDX Player_Current
-	LDA <World_Map_Y,X
-	ADD Map_CanoeCheckYOff,Y
-	STA <Temp_Var1		; Temp_Var1 = Player's Y on map plus an appropriate offset to search for canoe
-
-	LDA <World_Map_X,X
-	ADD Map_CanoeCheckXOff,Y
-	STA <Temp_Var2		; Temp_Var2 is like Temp_Var1, for X
-
-	LDA <World_Map_XHi,X	
-	ADC Map_CanoeCheckXHiOff,Y
-	STA <Temp_Var3		; Temp_Var3 is like Temp_Var2, for X Hi
-
-	LDX #(MAPOBJ_TOTAL-1) 	; X = (MAPOBJ_TOTAL-1) (search all map objects)
-PRG010_D306:
-	LDY Map_Objects_IDs,X	
-	CPY #MAPOBJ_CANOE
-	BEQ PRG010_D31D	 	; If this is a canoe, jump to PRG010_D31D
-	DEX		 	; X--
-	BNE PRG010_D306	 	; If X > 0, loop! (NOTE: Does not check map object index 0 as a canoe
-
-PRG010_D310:
-	LDA Pad_Input
-	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)
-	BEQ PRG010_D31C	 	; If Player is not pressing left/right/down/up, jump to PRG010_D31C (RTS)
-
-	LDA #SND_PLAYERBUMP	 
-	STA Sound_QPlayer	; Play "bump" sound (there's no canoe here or tile can't possibly be moved over [< TILE_WATER_INVT/$82])
-
-PRG010_D31C:
-	RTS		 	; Return!
-
-PRG010_D31D:
-	; There's a canoe here...!
-
-	; Temp_Var1-3 configure a detection position precisely one tile away
-	; from the Player in whatever direction is appropriate; the canoe
-	; must match this coordinate precisely.
-
-	; NOTE: Currently the detection loop, as it stands, works for ONE CANOE 
-	; PER MAP ONLY!!  (Because as soon as it finds one, it jumps down here,
-	; and there's no mechanism to return to the loop!)
-
-	; If the canoe isn't positioned right for any of the calculated coordinates,
-	; we fail this test (and make the "bump" sound if needed)
-
-	LDY Map_Object_ActY,X
-	CPY <Temp_Var1	
-	BNE PRG010_D310	
-
-	LDY Map_Object_ActX,X	
-	CPY <Temp_Var2	
-	BNE PRG010_D310	 
-
-	LDY Map_Object_ActXH,X
-	CPY <Temp_Var3	
-	BNE PRG010_D310	 
-
-PRG010_D332:
-	LDA #16		 ; A = 16 (canoe movement amount)
-	BNE PRG010_D349	 ; Jump (technically always) to PRG010_D349
 
 PRG010_D336:
 	; Player has a tile he can travel over ... (non-canoe)
 
 	LDX #SND_MAPPATHMOVE		; X = SND_MAPPATHMOVE
-
-	; Drawbridge check!
-	LDY <Temp_Var3			; Y = Temp_Var3; 0-3 (right, left, down, up respectively)
-	CMP Map_DrawBridgeCheck,Y	
-	BNE PRG010_D347	 		; If Player is not crossing a draw bridge tile, jump to PRG010_D347
-
-	LDA World3_Bridge
-	CMP Map_DrawBridgeCheckV,Y
-	BNE PRG010_D359	 		; If the bridge is up, jump to PRG010_D359
 
 PRG010_D347:
 	; Valid tile move!
@@ -4048,3 +3913,38 @@ DMC08_End
 
 ; Rest of ROM bank was empty
 
+Traversable_Tiles:	.byte $BF, $FF, $FF, $FF, $FF, $FF, $FF
+Enterable_Tiles:	.byte $BC, $50, $FF, $FF, $FF, $FF, $FF, $FF
+
+Tile_Enterable:
+	LDX #$07
+
+Cmp_Enterable:
+	CMP Enterable_Tiles, X
+	BEQ Is_Enterable 
+	DEX
+	BPL Cmp_Enterable
+	LDA #$01
+	RTS
+
+Is_Enterable:
+	LDA #$00
+	RTS
+
+Tile_Traversable:
+	STX DAIZ_TEMP1
+	LDX #$0F
+
+Cmp_Traversable:
+	CMP Traversable_Tiles, X
+	BEQ Is_Traversable
+	DEX
+	BPL Cmp_Traversable
+	LDX DAIZ_TEMP1
+	LDA #$01
+	RTS
+
+Is_Traversable:
+	LDX DAIZ_TEMP1
+	LDA #$00
+	RTS

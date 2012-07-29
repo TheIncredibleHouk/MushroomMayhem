@@ -6771,7 +6771,13 @@ Player_ApplyVelocity:
 	CPX #$00	 
 	BNE PRG008_BFBE	 	; If we're not doing the X velocity, jump to PRG008_BFBE
 
-	; X Velocity only:
+	; X Velocity only
+	LDY Wind
+	BEQ No_Weather_Vel
+	SEC
+	SBC Wind
+
+No_Weather_Vel:
 	ADD Player_XVelAdj	; Add Player_XVelAdj
 
 PRG008_BFBE:

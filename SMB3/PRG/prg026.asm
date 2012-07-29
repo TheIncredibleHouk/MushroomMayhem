@@ -3720,7 +3720,6 @@ Do_Odometer:
 	LDA Odometer_Increase
 	CMP #$80
 	BCC No_Odometer
-	STA $7FFF
 	SBC #$80
 	STA Odometer_Increase
 	LDX #$06
