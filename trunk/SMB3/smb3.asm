@@ -2477,7 +2477,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Weather_Initialized:		.ds 1	;
 	Weather_X:				.ds 8	;
 	Weather_Y:				.ds 8	;
-				.ds 86	; $7997-$79FF unused UNUSED HERE
+	Wind:					.ds 1	;
+				.ds 85	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 

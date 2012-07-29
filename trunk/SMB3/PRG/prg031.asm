@@ -3068,6 +3068,7 @@ Game_Timer_RTS:
 	RTS
 
 Do_Weather:
+	
 	LDA Weather
 	BEQ WeatherRTS
 	CMP #$01
@@ -3078,11 +3079,12 @@ WeatherRTS:
 
 Do_Rain:
 	LDA Weather_Initialized
-	BNE Weather_Good
+	BNE Rain_Good
 	JMP Initialize_Weather
 
-Weather_Good:
+Rain_Good:
 	LDX #$07
+	LDY #$00
 
 Rain_Loop:
 	LDA Weather_X, X
@@ -3134,12 +3136,12 @@ Next_Rain:
 Done_Rain:
 	RTS
 
-Rain_Priority:
 Rain_XVel: .byte $FC, $FA, $FC, $F8, $FB, $FD, $FB, $FC
 Rain_YVel: .byte $04, $06, $04, $08, $05, $03, $05, $04
 
 Initialize_Weather:
 	LDX #$07
+
 Next_Weather:
 	JSR Randomize_Weather
 	DEX
@@ -3151,6 +3153,7 @@ Next_Weather:
 Randomize_Weather:
 	LDA RandomN,X
 	STA Weather_X, X
+	LDA RandomN + 1, X
 	LDA #$00
 	STA Weather_Y, X
 	RTS

@@ -277,7 +277,7 @@ ObjectGroup02_Attributes3:
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $1A	; Object $48 - OBJ_TINYCHEEPCHEEP
-	.byte OPTS_SETPT5 | $36	; Object $49 - OBJ_FLOATINGBGCLOUD
+	.byte OPTS_NOCHANGE	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OPTS_NOCHANGE	; Object $4A - OBJ_HAMMERBROSCOIN
 	.byte OPTS_SETPT6 | $33	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OPTS_SETPT6 | $33	; Object $4C - OBJ_BOOMBOOMFLY
@@ -1817,7 +1817,7 @@ PRG003_A92D:
 	JSR Object_ShakeAndDraw	 ; Draw it
 
 Object_DoMoveBounceConveyor:
-	JSR Object_Move	 ; Do standard movements
+	;JSR Object_Move	 ; Do standard movements
 
 	LDA <Objects_DetStat,X
 	AND #$04
@@ -1886,14 +1886,20 @@ ObjInit_BoomBoom:
 	STA Objects_Frame,X
 
 ObjInit_FloatingBGCloud:
-	LDA $F001
 	LDA Objects_Y,X
-	AND #$10
-	BNE Weather_Gen_RTS
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA Wind
 	LDA #$01
 	STA Weather
- 
-Weather_Gen_RTS:
+	RTS
+
+Snow_Weather:
+	LDA #$02
+	STA Weather
 	RTS		 ; Return
 
 BoomBoom_TowardsPlayerXVel:	.byte $10, -$10
