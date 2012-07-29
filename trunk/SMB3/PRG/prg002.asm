@@ -3640,11 +3640,14 @@ ObjInit_Toad:
 	LDY <Objects_YHi,X
 	BEQ PRG002_B21A	 ; If Toad is high up, jump to PRG002_B21A
 
-	; If you came via a Map Entry override, we assume it's a white toad house!
-	LDA Map_EnterViaID
-	BEQ PRG002_B21A		; If not an override, jump to PRG002_B21A
-
-	INY		 ; Otherwise, Y = 1 
+	; If you came via a Map Entry override, we assume it's a white toad house
+	LDA Objects_X,X		 ; Otherwise, Y = 1 
+	AND #$70
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
 
 PRG002_B21A:
 	STY <Objects_Var5,X	 ; -> Objects_Var5 (which message Toad gives)
@@ -3678,7 +3681,6 @@ PRG002_B23D:
 
 ObjNorm_Toad:
 
-	; Always turn to face Player
 	JSR Object_CalcCoarseXDiff
 	STA Objects_FlipBits,X
 
@@ -3706,6 +3708,8 @@ Toad_Speak:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word Toad_DrawDiagBox
 	.word Toad_DoToadText
+	.word Decide_What_Next
+	.word Toad_Do_Nothing
 	.word Enough_HBros_Coins	; Does nothing
 	.word Deduct_Coins
 	.word End_Level
@@ -3799,7 +3803,7 @@ PRG002_B325:
 
 HammerCoinsRequired:
 	.byte $01, $00, $00, $00, $00, $00, $00, $00, $00
-	; English: "Pick a box." / "Its contents" / "will help you" / "on your way"
+
 ToadMsg_Standard:
 	;            P    i    c    k         a         b    o    x    .
 	;      XXXXXXXXXXXXXXX
@@ -5402,4 +5406,17 @@ Decrease_HBros_Coins:
 	STA HBros_Coins
 
 No_HBros_Dec:
+	RTS
+
+Next_Toad_Routine: .byte  $05, $04
+
+Toad_Do_Nothing:
+	RTS
+
+Decide_What_Next:
+	LDA $F000
+	LDA Objects_Var5, X
+	TAY
+	LDA Next_Toad_Routine, Y
+	STA Objects_Var4, X
 	RTS
