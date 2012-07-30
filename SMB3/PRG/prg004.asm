@@ -868,7 +868,8 @@ ObjInit_HammerBro:
 	CMP #$07
 	BNE PRG004_A48F	 ; If we're not getting a treasure box (i.e. a Hammer Bro battle), jump to PRG004_A48F (RTS)
 
-	LDY Map_EnterViaID	; Y = Map_EnterViaID
+	LDY #$00
+	;LDY Map_EnterViaID	; Y = Map_EnterViaID
 
 	LDA BattleEnemy_ByEnterID,Y
 	CMP #OBJ_HAMMERBRO

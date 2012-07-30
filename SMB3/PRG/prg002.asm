@@ -3637,10 +3637,6 @@ PRG002_B20F:
 	RTS		 ; Return
 
 ObjInit_Toad:
-	LDY <Objects_YHi,X
-	BEQ PRG002_B21A	 ; If Toad is high up, jump to PRG002_B21A
-
-	; If you came via a Map Entry override, we assume it's a white toad house
 	LDA Objects_X,X		 ; Otherwise, Y = 1 
 	AND #$70
 	LSR A
@@ -3706,13 +3702,14 @@ Toad_Speak:
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word Toad_DrawDiagBox
-	.word Toad_DoToadText
-	.word Decide_What_Next
-	.word Toad_Do_Nothing
-	.word Enough_HBros_Coins	; Does nothing
-	.word Deduct_Coins
-	.word End_Level
+	.word Toad_DrawDiagBox		; 0
+	.word Toad_DoToadText		; 1
+	.word Decide_What_Next		; 2
+	.word Enough_HBros_Coins	; 3
+	.word Deduct_Coins			; 4
+	.word End_Level				; 5
+	.word Do_Shop_Controls		; 6
+	.word Toad_Do_Nothing		; 7
 
 TDiagBox_R1:	.byte $E8, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $EA
 TDiagBox_R2:	.byte $F8, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $FA
@@ -3815,24 +3812,13 @@ ToadMsg_Standard:
 	.byte "               "
 
 	; English: "One toot on" / "this whistle" / "will send you" / "to a far away" / "land!"
-ToadMsg_WarpWhistle:
-	;       O    n    e         t    o    o    t         o    n
-	.byte $BE, $DD, $D4, $FE, $CD, $DE, $DE, $CD, $FE, $DE, $DD, $FE, $FE, $FE, $FE
-
-	;       t    h    i    s         w    h    i    s    t    l    e
-	.byte $CD, $D7, $D8, $CC, $FE, $81, $D7, $D8, $CC, $CD, $DB, $D4, $FE, $FE, $FE
-
-	;       w    i    l    l         s    e    n    d         y    o    u
-	.byte $81, $D8, $DB, $DB, $FE, $CC, $D4, $DD, $D3, $FE, $8C, $DE, $CE, $FE, $FE
-
-	;       t    o         a         f    a    r         a    w    a    y
-	.byte $CD, $DE, $FE, $D0, $FE, $D5, $D0, $CB, $E5, $D0, $81, $D0, $8C, $FE, $FE
-
-	;       l    a    n    d    !
-	.byte $DB, $D0, $DD, $D3, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
-	;
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+ToadMsg_Shop:
+	.byte "WELCOME TO THE "
+	.byte "SHOP. USE LEFT "
+	.byte "AND RIGHT TO   "
+	.byte "BROWSE, A TO   "
+	.byte "BUY, B TO LEAVE"
+	.byte "THE SHOP.      "
 
 	; English: "Hello! You" / "found my shop" / "of strange and" / "wonderful" / "things!"
 ToadMsg_AnchorPWing:
@@ -3858,8 +3844,8 @@ ToadMsg_AnchorPWing:
 	; Warp Whistle
 	; Standard
 	; Anchor/P-Wing
-ToadMsg_Low:	.byte LOW(ToadMsg_WarpWhistle), LOW(ToadMsg_Standard), LOW(ToadMsg_AnchorPWing)
-ToadMsg_High:	.byte HIGH(ToadMsg_WarpWhistle), HIGH(ToadMsg_Standard), HIGH(ToadMsg_AnchorPWing)
+ToadMsg_Low:	.byte LOW(ToadMsg_Standard), LOW(ToadMsg_Shop), LOW(ToadMsg_AnchorPWing)
+ToadMsg_High:	.byte HIGH(ToadMsg_Standard), HIGH(ToadMsg_Shop), HIGH(ToadMsg_AnchorPWing)
 
 
 Toad_DoToadText:
@@ -5408,15 +5394,283 @@ Decrease_HBros_Coins:
 No_HBros_Dec:
 	RTS
 
-Next_Toad_Routine: .byte  $05, $04
+Next_Toad_Routine: .byte  $03, $06
 
 Toad_Do_Nothing:
 	RTS
 
 Decide_What_Next:
-	LDA $F000
 	LDA Objects_Var5, X
 	TAY
 	LDA Next_Toad_Routine, Y
 	STA Objects_Var4, X
+	RTS
+
+Do_Shop_Controls:
+	LDA #$08
+	STA Player_HaltTick
+	LDA #$5E
+	STA PatTable_BankSel
+	LDA Shop_Mode_Initialized
+	BEQ Initialize_Shop_Mode
+	LDA <Pad_Input
+	AND #PAD_LEFT
+	BEQ Try_Shop_Right
+	JSR Move_Items_Left
+	JMP Shop_RTS
+
+Try_Shop_Right:
+	LDA <Pad_Input
+	AND #PAD_RIGHT
+	BEQ Shop_RTS
+	JSR Move_Items_Right
+	JMP Shop_RTS
+
+Shop_RTS:
+	JSR Draw_Current_Items
+	RTS
+Item_Frame_Top:		.byte $E8, $E9, $E9, $EA
+Item_Frame_Bottom:	.byte $DC, $DD, $DD, $DE
+
+Initialize_Shop_Mode:
+	LDA $F000
+	LDA #$00 
+	STA Item_Shop_Window + 1
+	LDA #$01
+	STA Item_Shop_Window + 2
+	LDA #$07
+	STA Item_Shop_Window
+	STA Shop_Mode_Initialized
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$2E
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$04
+	STA Graphics_Buffer, Y
+	INY
+	LDX #$00
+
+Top_Frame_Loop:
+	LDA Item_Frame_Top, X
+	STA Graphics_Buffer, Y
+	INY
+	INX
+	CPX #$04
+	BNE Top_Frame_Loop
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$8E
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$04
+	STA Graphics_Buffer, Y
+	INY
+	LDX #$00
+
+Bottom_Frame_Loop:
+	LDA Item_Frame_Bottom, X
+	STA Graphics_Buffer, Y
+	INY
+	INX
+	CPX #$04
+	BNE Bottom_Frame_Loop
+	LDA #$00
+	STA Graphics_Buffer, Y
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$0E
+	STA Graphics_BufCnt
+	RTS
+
+Move_Items_Left:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	INC Item_Shop_Window
+	INC Item_Shop_Window + 1
+	INC Item_Shop_Window + 2
+	LDX #$02
+
+Check_OverFlow_Item:
+	LDA Item_Shop_Window, X
+	CMP #$08
+	BNE Next_Item_Please
+	LDA #$00
+	STA Item_Shop_Window, X
+Next_Item_Please:
+	DEX
+	BPL Check_OverFlow_Item
+	RTS
+
+Move_Items_Right:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	DEC Item_Shop_Window
+	DEC Item_Shop_Window + 1
+	DEC Item_Shop_Window + 2
+	LDX #$02
+
+Check_UnderFlow_Item:
+	LDA Item_Shop_Window, X
+	CMP #$FF
+	BNE Next_Item_Please2
+	LDA #$07
+	STA Item_Shop_Window, X
+
+Next_Item_Please2:
+	DEX
+	BPL Check_UnderFlow_Item
+	RTS
+
+Item_Tiles:
+	.byte $30, $31, $40, $41
+	.byte $32, $33, $42, $43
+	.byte $34, $35, $44, $45
+	.byte $36, $37, $46, $47
+	.byte $38, $39, $48, $49
+	.byte $3A, $3B, $4A, $4B
+	.byte $3C, $3D, $4C, $4D
+	.byte $3E, $3F, $4E, $4F
+
+Item_Prices:
+	.byte $7F, $01, $00, $00
+	.byte $7F, $03, $00, $00
+	.byte $7F, $03, $00, $00
+	.byte $7F, $03, $00, $00
+	.byte $7F, $04, $00, $00
+	.byte $7F, $06, $00, $00
+	.byte $7F, $06, $00, $00
+	.byte $7F, $09, $00, $00
+	.byte $01, $00, $00, $00
+
+Draw_Current_Items:
+	LDA #$00
+	STA DAIZ_TEMP1
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$4C
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$08
+	STA Graphics_Buffer, Y
+	INY
+
+Draw_Item_Window_Top:
+	LDX DAIZ_TEMP1
+	LDA Item_Shop_Window, X
+	ASL A
+	ASL A
+	TAX
+	LDA Item_Tiles, X
+	STA Graphics_Buffer, Y
+	INY
+	LDA Item_Tiles + 1, X
+	STA Graphics_Buffer, Y
+	INY
+	INY
+	INC DAIZ_TEMP1
+	LDA DAIZ_TEMP1
+	CMP #$03
+	BNE Draw_Item_Window_Top
+	LDY Graphics_BufCnt
+	LDA #$F8
+	STA Graphics_Buffer + 5, Y
+	LDA #$FA
+	STA Graphics_Buffer + 8, Y
+
+	LDA #$00
+	STA DAIZ_TEMP1
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$0B
+	STA Graphics_BufCnt
+	TAY
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$6C
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$08
+	STA Graphics_Buffer, Y
+	INY
+
+Draw_Item_Window_Bottom:
+	LDX DAIZ_TEMP1
+	LDA Item_Shop_Window, X
+	ASL A
+	ASL A
+	TAX
+	INX
+	INX
+	LDA Item_Tiles, X
+	STA Graphics_Buffer, Y
+	INY
+	LDA Item_Tiles + 1, X
+	STA Graphics_Buffer, Y
+	INY
+	INY
+	INC DAIZ_TEMP1
+	LDA DAIZ_TEMP1
+	CMP #$03
+	BNE Draw_Item_Window_Bottom
+	LDY Graphics_BufCnt
+	LDA #$F8
+	STA Graphics_Buffer + 5, Y
+	LDA #$FA
+	STA Graphics_Buffer + 8, Y
+	LDA #$00
+	STA Graphics_Buffer + 11, Y
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$0B
+	STA Graphics_BufCnt
+
+	LDA Item_Shop_Window + 1
+	ASL A
+	ASL A
+	TAX
+	LDA #$00
+	STA DAIZ_TEMP1
+
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$AE
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$04
+	STA Graphics_Buffer, Y
+	INY
+
+Next_Price_Digit:
+	LDA Item_Prices, X
+	CMP #$7F
+	BEQ Skip_Digit
+	CLC
+	ADC #$A2
+
+Skip_Digit:
+	STA Graphics_Buffer, Y
+	INY
+	INX
+	INC DAIZ_TEMP1
+	LDA DAIZ_TEMP1
+	CMP #$04
+	BNE Next_Price_Digit
+	LDA #$00
+	STA Graphics_Buffer, Y
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$08
+	STA Graphics_BufCnt
+	LDA $F000
 	RTS
