@@ -5160,10 +5160,10 @@ PRG003_BAB0:
 	RTS		 ; Return
 
 FireChompTail_Patterns:
-	.byte $65, $67, $65, $67
+	.byte $65, $65, $65, $65
 
 FireChompTail_Attributes:
-	.byte SPR_PAL1, SPR_PAL1, SPR_HFLIP | SPR_VFLIP | SPR_PAL1, SPR_HFLIP | SPR_VFLIP | SPR_PAL1
+	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1
 
 
 	; For objects which have "tails", like the Fire Snake, Blooper w/ kids, etc.

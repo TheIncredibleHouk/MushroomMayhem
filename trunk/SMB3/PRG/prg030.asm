@@ -1253,6 +1253,11 @@ PRG030_88C8:
 	STA <Scroll_ColumnL
 	STA <Scroll_LastDir
 
+	;# DAHRKDAIZ RESET STUFF ON LEVELS
+	STA Weather
+	STA Wind
+	STA Weather_Initialized
+	STA Shop_Mode_Initialized
 	STA Coins_ThisLevel	 ; Clear "coins earned this level" counter
 	STA Map_BonusCoinsReqd	 ; Clear the "coins required for bonus"
 	STA Map_BonusType	 ; Clear the "bonus type"

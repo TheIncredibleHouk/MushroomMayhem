@@ -4819,8 +4819,8 @@ PRG007_B9D8:
 PRG007_B9ED:
 	JMP PRG007_B92A	 ; Jump to PRG007_B92A (uses more Boomerang behavior)
 
-Fireball_Patterns:	.byte $65, $67, $65, $67
-Fireball_Attributes:	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP
+Fireball_Patterns:	.byte $65, $65, $65, $65
+Fireball_Attributes:	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1
 
 SObj_Fireball:
 	LDA <Player_HaltGame

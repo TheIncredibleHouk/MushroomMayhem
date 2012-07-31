@@ -5407,6 +5407,7 @@ Decide_What_Next:
 	RTS
 
 Do_Shop_Controls:
+	STX DAIZ_TEMP1
 	LDA #$08
 	STA Player_HaltTick
 	LDA #$5E
@@ -5417,23 +5418,38 @@ Do_Shop_Controls:
 	AND #PAD_LEFT
 	BEQ Try_Shop_Right
 	JSR Move_Items_Left
+	JSR Draw_Current_Items
 	JMP Shop_RTS
 
 Try_Shop_Right:
 	LDA <Pad_Input
 	AND #PAD_RIGHT
-	BEQ Shop_RTS
+	BEQ Try_Leave_Shop
 	JSR Move_Items_Right
+	JSR Draw_Current_Items
 	JMP Shop_RTS
 
+Try_Leave_Shop:
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Try_Buy_Item
+	INC Level_ExitToMap
+	JMP Shop_RTS
+
+Try_Buy_Item:
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ Shop_RTS
+	LDA $F000
+	JSR Buy_Item
 Shop_RTS:
-	JSR Draw_Current_Items
+	LDX DAIZ_TEMP1
 	RTS
+
 Item_Frame_Top:		.byte $E8, $E9, $E9, $EA
 Item_Frame_Bottom:	.byte $DC, $DD, $DD, $DE
 
 Initialize_Shop_Mode:
-	LDA $F000
 	LDA #$00 
 	STA Item_Shop_Window + 1
 	LDA #$01
@@ -5484,6 +5500,7 @@ Bottom_Frame_Loop:
 	CLC
 	ADC #$0E
 	STA Graphics_BufCnt
+	JSR Draw_Current_Items
 	RTS
 
 Move_Items_Left:
@@ -5538,14 +5555,14 @@ Item_Tiles:
 	.byte $3E, $3F, $4E, $4F
 
 Item_Prices:
-	.byte $7F, $01, $00, $00
-	.byte $7F, $03, $00, $00
-	.byte $7F, $03, $00, $00
-	.byte $7F, $03, $00, $00
-	.byte $7F, $04, $00, $00
-	.byte $7F, $06, $00, $00
-	.byte $7F, $06, $00, $00
-	.byte $7F, $09, $00, $00
+	.byte $00, $01, $00, $00
+	.byte $00, $03, $00, $00
+	.byte $00, $03, $00, $00
+	.byte $00, $03, $00, $00
+	.byte $00, $04, $00, $00
+	.byte $00, $06, $00, $00
+	.byte $00, $06, $00, $00
+	.byte $00, $09, $00, $00
 	.byte $01, $00, $00, $00
 
 Draw_Current_Items:
@@ -5672,5 +5689,82 @@ Skip_Digit:
 	CLC
 	ADC #$08
 	STA Graphics_BufCnt
-	LDA $F000
+	RTS
+
+Buy_Item:
+	JSR Clear_Subtraction
+	LDA Item_Shop_Window + 1
+	ASL A
+	ASL A
+	TAX
+	INX
+	INX
+	INX
+	LDY #$07
+
+Store_Next_Price:
+	LDA Item_Prices, X
+	STA Subtraction_Value, Y
+	DEX
+	DEY
+	CPY #$03
+	BNE Store_Next_Price
+	LDX #$03
+
+Store_Next_Coin:
+	LDA Inventory_Coins, X
+	STA Subtraction_From + 4, Y
+	DEX
+	DEY
+	BPL Store_Next_Coin
+	JSR Subtract_Values
+	LDA Subtraction_From + 3
+	BEQ Take_Item
+	LDA Sound_QMap		; Not enough coins
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+	RTS
+
+Take_Item:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	STA Force_Coin_Update
+	LDX #$03
+
+Store_New_Coin:
+	LDA Subtraction_From + 4, X
+	STA Inventory_Coins, X
+	DEX
+	BPL Store_New_Coin
+	RTS
+
+Clear_Subtraction:
+	LDX #$07
+	LDA #$00
+
+Next_Clear_Sub:
+	STA Subtraction_From, X
+	STA Subtraction_Value, X
+	DEX
+	BPL Next_Clear_Sub
+	RTS
+
+Subtract_Values:
+	LDX #$07
+	SEC 
+
+Subtraction_Loop:
+	LDA Subtraction_From, X
+	SBC Subtraction_Value, X
+	STA Subtraction_From, X
+	BPL Next_Value
+	CLC
+	ADC #$0A
+	STA Subtraction_From, X
+	DEC (Subtraction_From - 1), X
+
+Next_Value:
+	DEX
+	BPL Subtraction_Loop
 	RTS

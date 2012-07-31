@@ -3153,7 +3153,7 @@ PRG029_DFA4:
 	.byte $3C, $0F, $36, $0F	; 12
 
 Rainbow_Palette_Cycle:
-	LDA Counter_1;
+	LDA <Counter_1;
 	LSR A
 	LSR A
 	AND #$07

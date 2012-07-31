@@ -1643,7 +1643,7 @@ Map_CompleteTile:
 	; This just forces "poof" completion on the following tiles (in quadrant zero, since all other
 	; quadrants always "poof" except fortress tiles)
 Map_ForcePoofTiles:
-	.byte TILE_TOADHOUSE, TILE_SPADEBONUS, TILE_HANDTRAP, TILE_DANCINGFLOWER, TILE_ALTTOADHOUSE
+	.byte $FF, TILE_SPADEBONUS, TILE_HANDTRAP, TILE_DANCINGFLOWER, TILE_ALTTOADHOUSE
 Map_ForcePoofTiles_End
 
 Map_PanelCompletePats:
