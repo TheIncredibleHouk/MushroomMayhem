@@ -2474,7 +2474,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Weather:				.ds 1	;
-	Weather_Initialized:		.ds 1	;
+	Weather_Initialized:	.ds 1	;
 	Weather_X:				.ds 8	;
 	Weather_Y:				.ds 8	;
 	Wind:					.ds 1	;
@@ -2611,7 +2611,10 @@ CFIRE_LASER		= $15	; Laser fire
 	End_Level_Timer:	.ds 1	;
 	Coins_To_Deduct:	.ds 1	;
 	TollPaid:			.ds 1	;
-				.ds 100; $7A74-$7ADF unused
+	Subtraction_From:	.ds 8	;
+	Subtraction_Value:	.ds 8	;
+	Force_Coin_Update:	.ds 1	;
+				.ds 83; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
@@ -2753,7 +2756,9 @@ CFIRE_LASER		= $15	; Laser fire
 	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)
 	Boo_Mode_Timer:			.ds 1
 	Boo_Mode_KillTimer:		.ds 1
-				.ds 7	; $7DCC-$7DD4 unused
+	Byte_To_Number:			.ds 3
+	Number_Result:			.ds 1
+				.ds 3	; $7DCC-$7DD4 unused
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
 

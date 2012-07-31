@@ -2858,7 +2858,12 @@ StatusBar_Fill_Coins:
 
 StatusBar_Fill_Coin:
 	LDA Coins_Earned
+	BNE Do_Coin_Add
+	LDA Force_Coin_Update
 	BEQ Coin_Done
+	BNE No_Coin
+
+Do_Coin_Add:
 	LDA #LOW(Inventory_Coins)
 	STA <Temp_Var1
 	LDA #HIGH(Inventory_Coins)
@@ -2875,8 +2880,8 @@ StatusBar_Fill_Coin:
 
 No_Coin:
 	LDA #$00
+	STA Force_Coin_Update
 	STA Coins_Earned
-
 	LDA Status_Bar_Mode				; Status_Bar_Mode 0 = Draw current coins
 	BNE DrawTotalCoins			; Status_Bar_Mode 1 = Draw total coins
 	JMP DrawCurrentCoins
