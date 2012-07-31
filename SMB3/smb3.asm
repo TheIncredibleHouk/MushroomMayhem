@@ -1036,7 +1036,7 @@ SPR_VFLIP	= %10000000
 	; 7 = Random Basic Item
 	THouse_Treasure:	.ds 1
 
-	Coins_Earned:		.ds 1	; A "buffer" of coins earned to be added to your total, actual coinage stored in Inventory_Coins[2]
+	Coins_Earned:		.ds 1	; A "buffer" of coins earned to be added to your total, actual coinage stored in Player_Coins[2]
 	Map_Powerup_Poof:	.ds 1	; Counter that handles the "poof" effect when a powerup is used on the map (requires Inventory to be open, and forces it to close afterward)
 
 	; Level_FreeVertScroll
@@ -2743,14 +2743,14 @@ CFIRE_LASER		= $15	; Laser fire
 	Inventory_Items:	.ds 4*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
-	Inventory_Coins:	.ds 4	; Mario's coins
+	Player_Coins:	.ds 4	; Mario's coins
 	Air_Time:			.ds 1	;
 
 	Top_Of_Water:		.ds 1	;
 	Inventory_Items2:	.ds 27	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
 	Inventory_Cards2:	.ds 3	; $7DBF-$7DC1 Luigi, 3 cards
 	Inventory_Score2:	.ds 3	; $7DC2-$7DC4 Luigi, 3 byte score
-	Inventory_Coins2:	.ds 1	; Luigi's coins
+	Player_Coins2:	.ds 1	; Luigi's coins
 	Map_Unused7DC6:		.ds 5	; $7DC6-$7DCA? Indexed by Map_Unused738, value used in dead routine in PRG011 @ $A2AF
 
 	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)

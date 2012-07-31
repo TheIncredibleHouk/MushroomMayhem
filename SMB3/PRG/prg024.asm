@@ -2531,44 +2531,12 @@ PRG024_AD69:
 	STA World_Num	 	; Transfer the selected world to the game's world variable
 
 	; Fills entire inventory of Mario and Luigi with P-Wings first
-	LDX #$1b
-	LDA #$08	 
+	 
 PRG024_AD7F:
-	STA Inventory_Items,X	
-	STA Inventory_Items2,X	
-	DEX		 ; X--
-	BPL PRG024_AD7F	 ; While X >= 0, loop...
 
-	; Fill beginning of inventory with one of everything
-	LDX #$0d 
-
-	; Give second warp whistle
-	LDA #$0c
-	STA Inventory_Items,X
-	STA Inventory_Items2,X
 PRG024_AD92:
-	TXA
-	STA Inventory_Items-1,X
-	STA Inventory_Items2-1,X
-	DEX		 ; X--
-	BNE PRG024_AD92	 ; While X <> 0, loop!  (Don't want 0 because of the "-1" indexing)
 
 PRG024_AD9C:
-
-	; Draw the world select cursor
-	LDA World_Num_Debug
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	ADD #$30	 
-	STA Sprite_RAM+$50
-	LDA #$6f	 
-	STA Sprite_RAM+$51
-	LDA #$00	 
-	STA Sprite_RAM+$52
-	LDA #$20	 
-	STA Sprite_RAM+$53
 
 	RTS		 ; Return
 
@@ -5736,33 +5704,6 @@ PRG024_BCD4:
 	LDA <Temp_Var2
 	CMP #$5f
 	BNE PRG024_BCD4	 ; While Temp_Var2 <> $5F, loop
-
-
-	; P-Wings for everybody!
-	LDX #$01	 ; X = 1
-	LDY #(Inventory_Cards - Inventory_Items - 1)
-PRG024_BCE7:
-
-	LDA #(Inventory_Cards - Inventory_Items - 1)
-	STA <Temp_Var1
-
-	LDA #$08	 ; A = 8 (P-Wing)
-PRG024_BCED:
-	STA Inventory_Items,Y	 ; Here's another P-Wing
-
-	DEY		 ; Y--
-
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BPL PRG024_BCED	 ; While Temp_Var1 >= 0, loop
-
-	DEX		 ; X--
-	BMI PRG024_BD01	 ; If X < 0, jump to PRG024_BD01
-
-	LDA #(Inventory_Cards - Inventory_Items - 1)
-	ADD #(Inventory_Items2 - Inventory_Items)
-
-	TAY		 ; Reset 'Y'
-	JMP PRG024_BCE7	 ; Loop
 
 PRG024_BD01:
 
