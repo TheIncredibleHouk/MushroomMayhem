@@ -619,27 +619,6 @@ PRG030_84D7:
 	; Changes pages at A000 and C000 based on value Level_Tileset (0)
 	JSR SetPages_ByTileset	 ;	A000 = Page 11, C000 = Page 10
 
-	LDX Player_Current	; X = Player_Current
-	LDA #(Inventory_Score - Inventory_Items)	; Base offset to score from Inventory_Items
-	CPX #$00	 	; 
-	BEQ PRG030_853F	 	; If X = 0 (Player is Mario), jump to PRG030_853F
-	ADD #(Inventory_Score2 - Inventory_Score)	 ; Otherwise, add $23
-
-PRG030_853F:
-	TAY		 ; Y = $1F (Mario) or $42 (Luigi)
-
-	; Copies the 3 byte score of this Player to the status bar
-	; loading area to display their score...
-	LDX #$00	 ; X = 0
-PRG030_8542:
-	LDA Inventory_Items,Y	; Starts at $1F or $42, score offset
-	STA Player_Score,X	; Store into buffer area..
-	INY		 	; Y++
-	INX		 	; X++
-	CPX #$03	 
-	BNE PRG030_8542	 ; While X <> 3, loop
-
-
 	; Init Player's on map
 	LDX Total_Players
 	DEX		 ; X = Total_Players-1
@@ -2704,26 +2683,6 @@ PRG030_9062:
 
 	DEX		 ; X--
 	BPL PRG030_9062	 ; While X >= 0, loop
-
-	LDX Player_Current	 ; X = current Player index
-
-	LDA #(Inventory_Score - Inventory_Items)	; Mario's score
-
-	CPX #$00
-	BEQ PRG030_907D	 ; If Player is Mario, jump to PRG030_907D
-	ADD #(Inventory_Score2 - Inventory_Score)	; offset to Luigi's score
-PRG030_907D:
-	TAY		 ; Y = offset to score
-
-	LDX #$00	 ; X = 0
-PRG030_9080:
-	LDA Player_Score,X
-	STA Inventory_Items,Y
-	INY		 ; Y++ (next byte of Inventory score)
-	INX		 ; X++ (next byte of Player's score)
-	CPX #$03
-	BNE PRG030_9080	 ; If X <> 3, jump to PRG030_9080
-
 	; Stop any music
 	LDA #MUS1_STOPMUSIC
 	STA Sound_QMusic1
@@ -2744,30 +2703,6 @@ PRG030_9097:
 
 
 	; Need to transfer Player's "gameplay score" to their "inventory" score storage...
-
-	LDX Player_Current	; X = Player_Current
-
-	LDA #(Inventory_Score - Inventory_Items)	; Offset to Mario's Score
-
-	CPX #$00
-	BEQ PRG030_90AD	 ; If Player is Mario, jump to PRG030_90AD
-
-	ADD #(Inventory_Items2 - Inventory_Items)	; Offset to Luigi's Score
-
-PRG030_90AD:
-	TAY		 ; -> 'Y'
-
-	LDX #$00	 ; X = 0
-
-PRG030_90B0:
-	LDA Player_Score,X	 ; Get this byte of score
-	STA Inventory_Items,Y	 ; Transfer into Mario/Luigi's specific score storage
-
-	INY		 ; Y++ (next score storage byte)
-	INX		 ; X++ (next gameplay score byte)
-
-	CPX #$03
-	BNE PRG030_90B0	 ; While X <> 3, loop!
 
 	LDA Map_MusicBox_Cnt
 	BEQ PRG030_90C4	 ; If Map_MusicBox_Cnt = 0, jump to PRG030_90C4
@@ -3150,15 +3085,15 @@ PRG030_92B6:
 	STA Map_GameOver_CursorY
 	STA BigQBlock_GotIt	; Didn't get any Big ? Blocks
 
-	LDY #(Inventory_Coins - Inventory_Cards)	; Y = offset to Mario's coins
+	LDY #(Player_Coins - Inventory_Cards)	; Y = offset to Mario's coins
 
 	CPX #$00
 	BEQ PRG030_92FE	 ; If Player is Mario, jump to PRG030_92FE
 
-	LDY #(Inventory_Coins2 - Inventory_Cards)	; Y = offset to Luigi's coins
+	LDY #(Player_Coins2 - Inventory_Cards)	; Y = offset to Luigi's coins
 
 PRG030_92FE:
-	LDA #(Inventory_Coins - Inventory_Cards)
+	LDA #(Player_Coins - Inventory_Cards)
 	STA <Temp_Var1		 ; Temp_Var1 = total bytes to clear
 
 	LDA #$00	 ; A = 0

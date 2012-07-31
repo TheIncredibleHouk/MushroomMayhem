@@ -226,33 +226,7 @@ Map_Airship_Pick_Travel:
 
 
 	; Offset to Player-specific inventory items
-Inventory_OffsetByPlayer:	.byte (Inventory_Items - Inventory_Items), (Inventory_Items2 - Inventory_Items)
 
-
-	; FIXME: Anyone want to claim this?
-	; What it appears to do is examine the inventory item of the current Player in the slot
-	; determined by unused variable Map_Unused738.  If that inventory slot contains a mushroom, 
-	; it jumps to a state table (otherwise does nothing but regular map stuff.)  What state gets
-	; called depends on what inventory slot was checked; in this case it roughly split calls the
-	; regular map update or part of the world starry entrance (?), and in only once case calls 
-	; the warp whistle effect.  Given these strange properties, it was probably just some kind
-	; of debug routine to test map features.
-; $A2AF
-	LDX Player_Current	 ; X = Player_Current
-
-	; Temp_Var1 = offset to Player's inventory
-	LDA Inventory_OffsetByPlayer,X
-	STA <Temp_Var1
-
-	LDA Map_Unused738	; Get Map_Unused738
-	ADD <Temp_Var1	; Add offset to inventory ?
-	TAX		; -> 'X'
-
-	LDA Inventory_Items,X
-	CMP #$01
-	BEQ PRG011_A2C8	 ; If inventory item = 1 (Mushroom??), jump to PRG011_A2C8
-
-	JMP WorldMap_UpdateAndDraw	 ; Update and draw world map and don't come back
 
 PRG011_A2C8:
 	LDX Map_Unused738	 ; X = Map_Unused738

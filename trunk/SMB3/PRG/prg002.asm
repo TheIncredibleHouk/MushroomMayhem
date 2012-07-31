@@ -3891,8 +3891,7 @@ PRG002_B468:
 	LDY World_Num
 	LDA HammerCoinsRequired, Y
 	AND #$0F
-	CLC
-	ADC #$2F
+	ORA #$30
 	JMP Draw_Letter
 
 DoFirstDigit:
@@ -3903,12 +3902,11 @@ DoFirstDigit:
 	ASL A
 	ASL A
 	ASL A
-	CLC
-	ADC #$2F
+	ORA #$30
 
 Draw_Letter:
 	CLC
-	ADC #$81
+	ADC #$80
 
 	LDY Graphics_BufCnt	 ; Y = graphics buffer counter
 	STA Graphics_Buffer+3,Y	 ; Store into buffer
@@ -4008,163 +4006,6 @@ ToadItem_AttrRight:
 	.byte $03	; Music Box
 
 ObjNorm_ToadHouseItem:
-	LDA <Objects_Var4,X
-	ORA InvFlip_Counter
-	BNE PRG002_B523	 ; If Var4 <> 0 OR Inventory is open, jump to PRG002_B523
-
-	; Var4 = 0, or inventor not open
-
-	; Set "starting" inventory item in open inventory
-	LDA Objects_Var2,X
-	STA InvStart_Item
-
-	; Begin opening inventory
-	LDA #$01
-	STA Inventory_Open
-	STA InvFlip_Counter
-	LSR A
-	STA InvFlip_Frame
-
-	; HACKish: Setting inventory flip "High" address
-	LDA #$2b
-	STA InvFlip_VAddrHi
-
-	LDY Objects_Frame,X	 ; Y = object frame (item you're getting)
-
-	LDA ToadItem_PalPerItem,Y
-
-	LDY Graphics_BufCnt
-	STA Graphics_Buffer+3,Y	 ; Store color change into buffer
-
-	; Store color change into palette
-	STA Pal_Data+$1E	
-	STA Palette_Buffer+$1E	
-
-	; Store palette address into buffer
-	LDA #$3f
-	STA Graphics_Buffer,Y
-	LDA #$1e
-	STA Graphics_Buffer+1,Y
-
-	; Run length of 1
-	LDA #$01
-	STA Graphics_Buffer+2,Y
-
-	; Terminator
-	LSR A
-	STA Graphics_Buffer+4,Y
-
-	; Y += 4 (4 new bytes in buffer)
-	INY
-	INY
-	INY
-	INY
-	STY Graphics_BufCnt	 ; Set corrected buffer count
-
-PRG002_B523:
-	LDA #$00
-	STA <Objects_Var4,X	 ; Var4 = 0
-	STA <Pad_Input		 ; Ignore Player input
-
-	LDA Objects_Timer,X
-	BNE PRG002_B534	 ; If timer not expired, jump to PRG002_B534
-
-	; Timer expired!  Returning to map
-
-	STA Map_ReturnStatus	 ; Clear level
-	INC Level_ExitToMap	 ; Exit to map
-
-PRG002_B534:
-	LDA InvFlip_Counter
-	CMP #$04
-	BNE PRG002_B5A9	 ; If inventory is not fully open, jump to PRG002_B5A9 (RTS)
-
-	LDA <Objects_Y,X
-	CMP #200
-	BEQ PRG002_B56A	 ; If item's Y = 200, jump to PRG002_B56A
-
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-
-	; "Gravity" of item
-	INC <Objects_YVel,X
-	INC <Objects_YVel,X
-
-	LDY #$00	 ; Y = 0
-
-	LDA <Objects_Y,X
-	CMP #200
-	BLT PRG002_B572	 ; If item's Y < 200, jump to PRG002_B572
-
-	; Prevent object from falling lower than 200
-	LDA #200
-	STA <Objects_Y,X
-
-	LDY Objects_Var1,X	; Y = Inventory_Items offset
-
-	; Store object into Player's inventory
-	LDA Objects_Frame,X
-	STA Inventory_Items,Y
-
-	; Force redraw of Inventory items
-	LDA #$03
-	STA InvFlip_Counter
-	LDA #$0c
-	STA InvFlip_Frame
-
-PRG002_B56A:
-	LDA <Counter_1
-	AND #%0011000
-	BEQ PRG002_B5A9	 ; Flashing display; jump on and off to PRG002_B5A9
-
-	LDY #$18	 ; Y = $18
-
-PRG002_B572:
-
-	; Display cycle...
-
-	; Set Sprite Y of both halves
-	LDA <Objects_Y,X
-	STA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$04,Y
-
-	LDA Objects_Frame,X
-	TAX		 ; Frame -> 'X' 
-
-	; Due to logic about the item ('0' meant Player didn't open box yet back in PRG029), the frame is off-by-one
-
-	; Store left pattern
-	LDA ToadItem_PatternLeft-1,X	 
-	STA Sprite_RAM+$01,Y	 
-
-	; Store right pattern
-	LDA ToadItem_PatternRight-1,X
-	STA Sprite_RAM+$05,Y	
-
-	; Palette select 3 for left half
-	LDA #SPR_PAL3
-	STA Sprite_RAM+$02,Y
-
-	; Whatever appropriate attribute for right half
-	LDA ToadItem_AttrRight-1,X
-	STA Sprite_RAM+$06,Y
-
-	LDX <SlotIndexBackup	 ; X = object slot index
-
-	; Store item sprite Xs
-	LDA <Objects_X,X
-	STA Sprite_RAM+$03,Y	; Left half
-	ADD #$08		; +8
-	STA Sprite_RAM+$07,Y	; Right half
-
-	; Y -= 8
-	TYA
-	SUB #$08
-	TAY
-
-	BPL PRG002_B572	 ; While Y >= 0, loop
-
-PRG002_B5A9:
 	RTS		 ; Return
 
 LogPlat_Draw:
@@ -5266,10 +5107,6 @@ PlayerPushWithPlatform_XVel:	.byte $04, -$04
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;	; Returns 'Y' as offset to Mario's or Luigi's inventory memory
 Player_GetInventoryOffset:
-	LDY Player_Current
-	BEQ PRG002_BE4B	
-	LDY #(Inventory_Items2 - Inventory_Items)
-PRG002_BE4B:
 	RTS		 ; Return
 
 	; Draws the card backs, though the backs are almost immediately
@@ -5712,7 +5549,7 @@ Store_Next_Price:
 	LDX #$03
 
 Store_Next_Coin:
-	LDA Inventory_Coins, X
+	LDA Player_Coins, X
 	STA Subtraction_From + 4, Y
 	DEX
 	DEY
@@ -5720,12 +5557,29 @@ Store_Next_Coin:
 	JSR Subtract_Values
 	LDA Subtraction_From + 3
 	BEQ Take_Item
+
+Cannot_Take_Item:
 	LDA Sound_QMap		; Not enough coins
 	ORA #SND_MAPDENY
 	STA Sound_QMap
 	RTS
 
 Take_Item:
+	LDX #$00
+
+Find_Slot:
+	LDA Inventory_Items, X
+	BEQ Slot_Found
+	INX
+	CPX #$1C
+	BNE Find_Slot
+	BEQ Cannot_Take_Item
+
+Slot_Found:
+	LDY Item_Shop_Window + 1
+	INY
+	TYA
+	STA Inventory_Items, X
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
@@ -5734,7 +5588,7 @@ Take_Item:
 
 Store_New_Coin:
 	LDA Subtraction_From + 4, X
-	STA Inventory_Coins, X
+	STA Player_Coins, X
 	DEX
 	BPL Store_New_Coin
 	RTS

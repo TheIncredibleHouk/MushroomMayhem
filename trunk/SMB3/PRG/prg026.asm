@@ -84,10 +84,6 @@ PRG026_A0A6:
 
 	; Inventory is open...
 	LDA InvStart_Item	; A = InvStart_Item
-	LDX Player_Current	; X = Player_Current
-	BEQ PRG026_A0C3	 	; If Player_Current = 0 (Mario), jump to PRG026_A0C3
-
-	ADD #(Inventory_Items2 - Inventory_Items)	 ; Offset for Luigi's items
 
 PRG026_A0C3:
 	TAX		 	; X = A (InvStart_Item + offset)
@@ -138,41 +134,7 @@ PRG026_A10F:
 
 	; Palette changes for opening the Inventory
 	; This is data in the style of the Video_Upd_Table; see "Video_Upd_Table" in PRG030 for format.
-Inv_OpenPal_Changes:
-	vaddr $3F00			; Palette
-	.byte $04, $0F, $0F, $30, $3C	; Palette set
-	.byte $00			; Terminator
-
 Inventory_DoFlipPalChange:
-	LDX Graphics_BufCnt	; X = Graphics_BufCnt
-	LDY #$00	 	; Y = 0
-
-	; Copy in the palette changes
-PRG026_A11D:
-	LDA Inv_OpenPal_Changes,Y	; Get next byte
-	STA Graphics_Buffer,X	; Store into the buffer
-	INX		 	; X++
-	INY		 	; Y++
-	CPY #$08	 
-	BNE PRG026_A11D	 	; While Y < 8, loop!
-
-	LDY #$3c	 	; Y = $3C (Closed cyan color)
-	LDX Graphics_BufCnt	; X = Graphics_BufCnt
-	LDA Inventory_Open	; A = Inventory_Open
-	BEQ PRG026_A135	 	; If Inventory_Open = 0, jump to PRG026_A135
-
-	; Inventory_Open...
-	LDY #$36	 	; Y = $36 (Inventory_Open salmon color)
-
-PRG026_A135:
-	TYA		 	; A = Y
-	STA Graphics_Buffer+6,X	; Store the color into the graphics buffer
-	STA Palette_Buffer+3 	; And also the CURRENT palette buffer
-	STA Pal_Data+3	 	; And also the MASTER palette buffer
-
-	LDA Graphics_BufCnt
-	ADD #$07		
-	STA Graphics_BufCnt	; Pal_Data += 7
 
 	INC InvFlip_Counter	; InvFlip_Counter = 3
 	RTS		 	; Return...
@@ -185,10 +147,10 @@ Flip_TopBarInv:
 	.byte $02, $FC, $80
 
 	vaddr $2B02
-	.byte VU_REPEAT | $1C, $A1
+	.byte VU_REPEAT | $1C, $81
 
 	vaddr $2B1E
-	.byte $02, $A2, $FC
+	.byte $02, $82, $FC
 
 	.byte $00
 
@@ -198,14 +160,15 @@ Flip_MidTItems:
 	vaddr $2B20
 
 	;                 |    W    O   R   LD   [x]
-	.byte  32, $FC, $A6, $70, $71, $72, $73, $FE, $FE, $FE
+	.byte  32, $FC, $90, $FE
+	.byte  "ITEMS "
 
 	; Top of items start rendering here (replaced at runtime)
 	;      Item 1         Item 2         Item 3         Item 4         Item 5         Item 6         Item 7
 	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 	;       |
-	.byte $A7, $FC
+	.byte $92, $FC
 
 	.byte $00
 
@@ -214,26 +177,26 @@ Flip_MidBItems:
 	vaddr $2B40
 
 	;                 |    < M >     x  [ Lives]
-	.byte  32, $FC, $A6, $74, $75, $FB, $FE, $F3, $FE, $FE
+	.byte  32, $FC, $90, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 	; Bottom of items start rendering here (replaced at runtime)
 	;      Item 1         Item 2         Item 3         Item 4         Item 5         Item 6         Item 7
 	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 	;       |
-	.byte $A7, $FC
+	.byte $92, $FC
 
 	.byte $00
 
 Flip_BottomBarInv:	
 	vaddr $2B60
-	.byte   2, $FC, $A8
+	.byte   2, $FC, $A0
 	
 	vaddr $2B62
-	.byte VU_REPEAT | 28, $A4
+	.byte VU_REPEAT | 28, $A1
 
 	vaddr $2B7E
-	.byte 2, $A5, $FC
+	.byte 2, $A2, $FC
 
 	.byte $00
 
@@ -386,29 +349,27 @@ InvFlip_TileLayout_Sel:
 	.word InvCard_Tile_Layout	; When inventory closing, render cards
 	.word InvItem_Tile_Layout	; When inventory opening, render items
 
+InvCard_Tile_Layout:	
+	RTS
+
 InvItem_Tile_Layout:
 	; Item tiles layout when closing/unselected
 	; NOTE: See also InvItem_Hilite_Layout
 	.byte $FE, $FE, $FE, $FE	; Empty
-	.byte $20, $21, $30, $31	; Super Mushroom
-	.byte $22, $23, $32, $33	; Fire Flower
-	.byte $0E, $0F, $1E, $1F	; Leaf
-	.byte $0A, $0B, $1A, $1B	; Frog Suit
-	.byte $00, $01, $10, $11	; Tanooki Suit
-	.byte $28, $29, $38, $39	; Hammer Suit
-	.byte $08, $09, $18, $19	; Judgems Cloud
-	.byte $2A, $2B, $3A, $3B	; P-Wing
-	.byte $24, $25, $34, $35	; Starman
-	.byte $02, $03, $12, $13	; Anchor
-	.byte $06, $07, $16, $17	; Hammer
-	.byte $04, $05, $14, $15	; Warp Whistle
-	.byte $0C, $0D, $1C, $1D	; Music Box
-
-InvCard_Tile_Layout:
-	.byte $FE, $FE, $FE, $FE	; No card
-	.byte $E0, $E1, $E2, $E3	; Mushroom
-	.byte $E4, $E6, $E7, $E8	; Flower
-	.byte $AC, $AD, $AE, $AF	; Star
+	.byte $B0, $B1, $C0, $C1	; Super Mushroom
+	.byte $B2, $B3, $C2, $C3	; Fire Flower
+	.byte $B4, $B5, $C4, $C5	; Ice Flower
+	.byte $B6, $B7, $C6, $C7	; Super Leaf
+	.byte $B8, $B9, $C8, $C9	; Frog Suit
+	.byte $BA, $BB, $CA, $CB	; Koopa Shell
+	.byte $BC, $BD, $CC, $CD	; Boo Pumpkin
+	.byte $BE, $BF, $CE, $CF	; Hammer Suit
+	.byte $DC, $DD, $EC, $EE	; Ninja Shroom
+	.byte $DE, $DF, $EE, $EF	; StarMan
+	.byte $06, $07, $16, $17	; Equipable StarMan
+	.byte $84, $85, $94, $95	; Shield
+	.byte $0C, $0D, $1C, $1D	; Stop Clock
+	.byte $0C, $0D, $1C, $1D	; Pow Block
 
 
 Inventory_DoFlipVideoUpd:
@@ -485,21 +446,8 @@ Inventory_DrawItemsOrCards:
 	LDA Inventory_Open
 	BNE PRG026_A344		; If Inventory_Open <> 0, jump to PRG026_A344
 
-
-	; Inventory is closing!  Set up for cards
-	LDA #(Inventory_Cards - Inventory_Items)	; Mario's cards
-	LDX Player_Current	; X = Player_Current
-	BEQ PRG026_A336	 	; If Player_Current = 0 (Mario), jump to PRG026_A336
-	LDA #(Inventory_Cards2 - Inventory_Items)	; Luigi's cards
-
 PRG026_A336:
-	STA <Temp_Var14		; Store this into Temp_Var14 (offset to first pattern in card layout)
 
-	LDA <Temp_Var13		; A = 12 bytes into the graphics buffer we just did
-	ADD #$0d	 	
-	STA <Temp_Var13		; Temp_Var13 += $D
-
-	LDA #$02	 	; A = 2
 	JMP PRG026_A355	 	; Jump to PRG026_A355...
 
 PRG026_A344:
@@ -611,34 +559,6 @@ PRG026_A3CC:
 	RTS		 ; Return
 
 InvFlipFrame_DrawMLLivesScore:
-
-	LDX <Temp_Var9		 ; X = Temp_Var9
-
-	LDA StatusBar_LivesH
-	STA Graphics_Buffer+8,X
-	LDA StatusBar_LivesL
-	STA Graphics_Buffer+9,X
-
-	LDA InvFlip_Frame
-	AND #$08
-	BNE PRG026_A3FB	 ; If we're doing the opening, jump to PRG026_A3FB (RTS)
-
-	;JSR StatusBar_Fill_Score ; Put score in status bar
-
-	; Patch in all of the digits of score
-	LDX <Temp_Var9	 ; X = Temp_Var9
-	LDY #$00	 ; Y = 0
-PRG026_A3EF:
-	LDA StatusBar_Score,Y
-	STA Graphics_Buffer+11,X
-
-	INX		 ; X++ (next graphics buffer byte)
-	INY		 ; Y++ (next digit of score)
-
-	CPY #$06
-	BNE PRG026_A3EF	 ; While 'Y' <> $06, loop
-
-PRG026_A3FB:
 	RTS		 ; Return
 
 ; These tables really define a lot of behavior for the inventory item menu
@@ -834,9 +754,6 @@ InvItem_SetColor:
 	LDA InvItem_Pal,X	; Get the color that will be used for this item
 	STA Palette_Buffer+30	; Store it into the palette buffer
  
-	LDA #$36
-	STA Palette_Buffer+3	; Ensure status bar color in there!
-
 	LDA #$06		
 	STA <Graphics_Queue	; Update the palette when capable
 
@@ -2864,9 +2781,9 @@ StatusBar_Fill_Coin:
 	BNE No_Coin
 
 Do_Coin_Add:
-	LDA #LOW(Inventory_Coins)
+	LDA #LOW(Player_Coins)
 	STA <Temp_Var1
-	LDA #HIGH(Inventory_Coins)
+	LDA #HIGH(Player_Coins)
 	STA <Temp_Var2
 	LDY #$03					; Add coins to inventory coins first
 	JSR Add_Coins	
@@ -2911,7 +2828,7 @@ DrawCurrentCoins:
 	LDX #$03
 
 Coin_Loop2:
-	LDA Inventory_Coins, X
+	LDA Player_Coins, X
 	ORA #$30
 	STA Status_Bar_Bottom+ 9, X
 	DEX
@@ -3622,8 +3539,8 @@ PRG026_B51F:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $49, $D0, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $D0, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $48, $D0, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 Initial_Bar_Display2:
 	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
@@ -3649,8 +3566,6 @@ DoNameDraw:
 
 DrawNameTop:
 	LDA World_Names, Y
-	CLC
-	ADC #$01
 	STA Status_Bar_Top + 18, X
 	INY
 	INX
@@ -3659,8 +3574,6 @@ DrawNameTop:
 	LDX #$00
 DrawNameBottom:
 	LDA World_Names, Y
-	CLC
-	ADC #$01
 	STA Status_Bar_Bottom + 18, X
 	INY
 	INX
