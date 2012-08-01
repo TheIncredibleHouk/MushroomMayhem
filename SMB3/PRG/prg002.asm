@@ -3687,14 +3687,9 @@ ObjNorm_Toad:
 	STA PatTable_BankSel+5
 	JSR Toad_Speak
 
-	LDA Player_HaltTick
-	ORA InvFlip_Counter
-	BNE PRG002_B261	 ; If Player is still halted or inventory is open, jump to PRG002_B261
-
-PRG002_B261:
-
-PRG002_B272:
-	JMP Object_Draw16x32Sprite	 ; Draw Toad's sprite and don't come back!
+	LDA #$01
+	STA Player_HaltTick
+	RTS
 
 
 Toad_Speak:
@@ -5249,6 +5244,8 @@ Do_Shop_Controls:
 	STA Player_HaltTick
 	LDA #$5E
 	STA PatTable_BankSel
+	LDA #$DB
+	STA PatTable_BankSel + 5
 	LDA Shop_Mode_Initialized
 	BEQ Initialize_Shop_Mode
 	LDA <Pad_Input
@@ -5277,9 +5274,9 @@ Try_Buy_Item:
 	LDA <Pad_Input
 	AND #PAD_A
 	BEQ Shop_RTS
-	LDA $F000
 	JSR Buy_Item
 Shop_RTS:
+	JSR Draw_Item_Sprite
 	LDX DAIZ_TEMP1
 	RTS
 
@@ -5291,7 +5288,7 @@ Initialize_Shop_Mode:
 	STA Item_Shop_Window + 1
 	LDA #$01
 	STA Item_Shop_Window + 2
-	LDA #$07
+	LDA #(Max_Item_Count - 1)
 	STA Item_Shop_Window
 	STA Shop_Mode_Initialized
 	LDY Graphics_BufCnt
@@ -5351,7 +5348,7 @@ Move_Items_Left:
 
 Check_OverFlow_Item:
 	LDA Item_Shop_Window, X
-	CMP #$08
+	CMP #Max_Item_Count
 	BNE Next_Item_Please
 	LDA #$00
 	STA Item_Shop_Window, X
@@ -5373,7 +5370,7 @@ Check_UnderFlow_Item:
 	LDA Item_Shop_Window, X
 	CMP #$FF
 	BNE Next_Item_Please2
-	LDA #$07
+	LDA #(Max_Item_Count - 1)
 	STA Item_Shop_Window, X
 
 Next_Item_Please2:
@@ -5390,15 +5387,28 @@ Item_Tiles:
 	.byte $3A, $3B, $4A, $4B
 	.byte $3C, $3D, $4C, $4D
 	.byte $3E, $3F, $4E, $4F
+	.byte $5C, $5D, $6C, $6D
+	.byte $5E, $5F, $6E, $6F
+	.byte $04, $05, $14, $15
+	.byte $06, $07, $16, $17
+	.byte $08, $09, $18, $19
+	.byte $0A, $0B, $1A, $1B
+	.byte $0E, $0F, $1E, $1F
 
 Item_Prices:
-	.byte $00, $01, $00, $00
-	.byte $00, $03, $00, $00
-	.byte $00, $03, $00, $00
-	.byte $00, $03, $00, $00
-	.byte $00, $04, $00, $00
-	.byte $00, $06, $00, $00
-	.byte $00, $06, $00, $00
+	.byte $00, $02, $00, $00
+	.byte $00, $05, $00, $00
+	.byte $00, $05, $00, $00
+	.byte $00, $05, $00, $00
+	.byte $00, $09, $00, $00
+	.byte $01, $04, $00, $00
+	.byte $01, $04, $00, $00
+	.byte $02, $01, $00, $00
+	.byte $02, $02, $00, $00
+	.byte $00, $05, $00, $00
+	.byte $00, $09, $00, $00
+	.byte $02, $00, $00, $00
+	.byte $01, $00, $00, $00
 	.byte $00, $09, $00, $00
 	.byte $01, $00, $00, $00
 
@@ -5621,4 +5631,63 @@ Subtraction_Loop:
 Next_Value:
 	DEX
 	BPL Subtraction_Loop
+	RTS
+
+Item_Sprites:
+	.byte $C1, $C1
+	.byte $C3, $C3
+	.byte $C5, $C5
+	.byte $C7, $C9
+	.byte $CB, $CB
+	.byte $CD, $CD
+	.byte $CF, $CF
+	.byte $D1, $D1
+	.byte $D3, $D3
+	.byte $D5, $D5
+	.byte $D7, $D5
+	.byte $D9, $DB
+	.byte $DD, $DF
+	.byte $E1, $E3
+	.byte $E5, $E7
+
+Item_Pal:
+	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
+	.byte SPR_PAL2, SPR_PAL2 | SPR_HFLIP
+	.byte SPR_PAL2, SPR_PAL2  | SPR_HFLIP
+	.byte SPR_PAL1, SPR_PAL1
+	.byte SPR_PAL2, SPR_PAL2 | SPR_HFLIP
+	.byte SPR_PAL2, SPR_PAL2 | SPR_HFLIP
+	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP
+	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP
+	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
+	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
+	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
+	.byte SPR_PAL1, SPR_PAL1
+	.byte SPR_PAL3, SPR_PAL3
+	.byte SPR_PAL1, SPR_PAL1
+	.byte SPR_PAL1, SPR_PAL1
+
+Draw_Item_Sprite:
+	LDA Item_Shop_Window + 1 
+	ASL A
+	TAX
+	JSR Object_GetRandNearUnusedSpr
+	LDA #$90
+	STA Sprite_RAM, Y
+	LDA #$78
+	STA Sprite_RAM + 3, Y
+	LDA Item_Sprites, X
+	STA Sprite_RAM + 1, Y
+	LDA Item_Pal, X
+	STA Sprite_RAM + 2, Y
+	INX
+	JSR Object_GetRandNearUnusedSpr
+	LDA #$90
+	STA Sprite_RAM, Y
+	LDA #$80
+	STA Sprite_RAM + 3, Y
+	LDA Item_Sprites, X
+	STA Sprite_RAM + 1, Y
+	LDA Item_Pal, X
+	STA Sprite_RAM + 2, Y
 	RTS

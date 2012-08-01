@@ -352,24 +352,27 @@ InvFlip_TileLayout_Sel:
 InvCard_Tile_Layout:	
 	RTS
 
+	;# INVENTORY ITEM CODE
+
 InvItem_Tile_Layout:
 	; Item tiles layout when closing/unselected
 	; NOTE: See also InvItem_Hilite_Layout
 	.byte $FE, $FE, $FE, $FE	; Empty
-	.byte $B0, $B1, $C0, $C1	; Super Mushroom
-	.byte $B2, $B3, $C2, $C3	; Fire Flower
-	.byte $B4, $B5, $C4, $C5	; Ice Flower
-	.byte $B6, $B7, $C6, $C7	; Super Leaf
-	.byte $B8, $B9, $C8, $C9	; Frog Suit
-	.byte $BA, $BB, $CA, $CB	; Koopa Shell
-	.byte $BC, $BD, $CC, $CD	; Boo Pumpkin
-	.byte $BE, $BF, $CE, $CF	; Hammer Suit
-	.byte $DC, $DD, $EC, $EE	; Ninja Shroom
-	.byte $DE, $DF, $EE, $EF	; StarMan
-	.byte $06, $07, $16, $17	; Equipable StarMan
-	.byte $84, $85, $94, $95	; Shield
-	.byte $0C, $0D, $1C, $1D	; Stop Clock
-	.byte $0C, $0D, $1C, $1D	; Pow Block
+	.byte $B0, $B1, $C0, $C1
+	.byte $B2, $B3, $C2, $C3
+	.byte $B4, $B5, $C4, $C5
+	.byte $B6, $B7, $C6, $C7
+	.byte $B8, $B9, $C8, $C9
+	.byte $BA, $BB, $CA, $CB
+	.byte $BC, $BD, $CC, $CD
+	.byte $BE, $BF, $CE, $CF
+	.byte $DC, $DD, $EC, $ED
+	.byte $DE, $DF, $EE, $EF
+	.byte $84, $85, $94, $95
+	.byte $86, $87, $96, $97
+	.byte $88, $89, $98, $99
+	.byte $8A, $8B, $9A, $9B
+	.byte $8E, $8F, $9E, $9F
 
 
 Inventory_DoFlipVideoUpd:
@@ -742,7 +745,22 @@ PRG026_A511:
 InvItem_Pal:
 	; Per-Item LUT
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
-	.byte $16, $16, $2A, $2A, $2A, $17, $27, $16, $27, $16, $07, $17, $27, $27
+	.byte $FF, $0F, $30, $16
+	.byte $FF, $0F, $30, $16
+	.byte $FF, $0F, $30, $1A
+	.byte $FF, $0F, $30, $1A
+	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $30, $1A
+	.byte $FF, $0F, $30, $1A
+	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $30, $16
+	.byte $FF, $0F, $30, $16
+	.byte $FF, $0F, $30, $16
+	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $30, $16
 
 InvItem_SetColor:
 	; Inventory is open ... assign proper color for item that is highlighted
@@ -750,10 +768,16 @@ InvItem_SetColor:
 	CPX #$07	 	
 	BEQ PRG026_A539	 	; If Level_Tileset = 7 (Toad House), jump to PRG026_A539 (RTS)
 
+	ASL A
+	ASL A
 	TAX		 	; A = Current inventory item selected
-	LDA InvItem_Pal,X	; Get the color that will be used for this item
+	LDA InvItem_Pal + 1,X	; Get the color that will be used for this item
+	STA Palette_Buffer+29	; Store it into the palette buffer
+	LDA InvItem_Pal + 2,X	; Get the color that will be used for this item
 	STA Palette_Buffer+30	; Store it into the palette buffer
- 
+	LDA InvItem_Pal + 3,X	; Get the color that will be used for this item
+	STA Palette_Buffer+31	; Store it into the palette buffer 
+
 	LDA #$06		
 	STA <Graphics_Queue	; Update the palette when capable
 
@@ -761,6 +785,7 @@ PRG026_A539:
 	RTS		 ; Return
 
 
+; #ITEM USE JUMP TABLE
 Inv_UseItem:
 	LDA Inventory_Items,Y		; Get which item to use
 	JSR DynJump	 		; Dynamic jump based on item used
@@ -1255,20 +1280,22 @@ InvItem_Hilite_Layout:
 	; NOTE: See also InvItem_Tile_Layout
 	; NOTE: If both tile values are equal, the right
 	;        half is horizontally flipped
-	.byte $01, $01		; Empty
-	.byte $85, $85		; Super Mushroom
-	.byte $87, $87		; Fire Flower
-	.byte $9D, $9F		; Leaf
-	.byte $81, $81		; Frog Suit
-	.byte $83, $83		; Tanooki Suit
-	.byte $8B, $8B		; Hammer Suit
-	.byte $B5, $B7		; Judgems Cloud
-	.byte $91, $93		; P-Wing
-	.byte $A9, $A9		; Starman
-	.byte $95, $97		; Anchor
-	.byte $99, $9B		; Hammer
-	.byte $A1, $A3		; Warp Whistle
-	.byte $89, $8D		; Music Box
+	.byte $FF, $FF		; Empty
+	.byte $C1, $C1
+	.byte $C3, $C3
+	.byte $C5, $C5
+	.byte $C7, $C9
+	.byte $CB, $CB
+	.byte $CD, $CD
+	.byte $CF, $CF
+	.byte $D1, $D1
+	.byte $D3, $D3
+	.byte $D5, $D5
+	.byte $D7, $D5
+	.byte $D9, $DB
+	.byte $DD, $DF
+	.byte $E1, $E3
+	.byte $E5, $E7
 
 Inv_Display_Hilite:
 	; Displays the hilited item
