@@ -1263,17 +1263,6 @@ PRG008_A6A9:
 Player_ControlJmp:
 	JMP Player_Control	 ; Jump to Player_Control
 
-; FIXME: Anybody want to claim this?
-; $A6AD
-	.byte $35, $35, $03
-
-; FIXME: Anybody want to claim this?
-; $A6B0 
-	ORA <Temp_Var4
-	JSR Player_ApplyXVelocity
-	JSR Player_ApplyYVelocity
-	JMP Player_Draw29
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_Control
 ;
@@ -2199,6 +2188,7 @@ Swim_Tanooki:
 	BEQ Dont_Kill_Shell
 	LDA #$00
 	STA Player_Shell
+
 Dont_Kill_Shell:
 	JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
 	JSR Player_SwimV ; Do Player up/down swimming action
@@ -4879,6 +4869,13 @@ PRG008_B722:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
+	LDA Player_FlipBits			; flip direction the player is facing
+	EOR #$40				
+	STA Player_FlipBits				
+	LDA <Player_XVel
+	EOR #$FF
+	ADC #$01
+	STA <Player_XVel
 
 	LDA #CHNGTILE_DELETETOBG
 	STA <Temp_Var12	 ; Temp_Var12 = CHNGTILE_DELETETOBG
@@ -5321,6 +5318,10 @@ Player_TailAttack_Offsets: ; (Y and X)
 	.byte 28, -6	; Player not horizontally flipped
 	.byte 28, 21	; Player horizontally flipped
 
+Player_ShellAttack_Offsets:
+	.byte 28, 0	; Player not horizontally flipped
+	.byte 28, 15; Player horizontally flipped
+
 Player_Shell_FlipFlip:
 	.byte $02, $00, $00
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5346,6 +5347,11 @@ PRG008_B95F:
 	BEQ Normal_Tail_Flip			; while moving forward
 	LDA Player_Shell_FlipFlip, Y
 	TAY
+	LDA Player_ShellAttack_Offsets,Y
+	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
+	LDA Player_ShellAttack_Offsets+1,Y
+	STA <Temp_Var11	 ; Temp_Var11 (X offset)
+	JMP Do_Tile_Attack
 
 Normal_Tail_Flip:
 	LDA Player_TailAttack_Offsets,Y
@@ -5353,6 +5359,7 @@ Normal_Tail_Flip:
 	LDA Player_TailAttack_Offsets+1,Y
 	STA <Temp_Var11	 ; Temp_Var11 (X offset)
 
+Do_Tile_Attack:
 	JSR Player_GetTileAndSlope	 ; Get tile near tail
 
 	LDX #$04	 
@@ -5599,9 +5606,6 @@ PRG008_BA77:
 	JSR Level_CheckGndLR_TileGTAttr
 	BCC PRG008_BABC	 ; If not touching a solid tile, jump to PRG008_BABC
 
-	LDA Player_LowClearance
-	BNE PRG008_BABC	 ; If Player_LowClearance is set, jump to PRG008_BABC
-
 	LDX #$00	 ; X = 0
 	LDY #$01	 ; Y = 0
 	LDA <Player_X	
@@ -5789,10 +5793,6 @@ PRG008_BB52:
 	LDY Level_Tile_Slope+1
 	CPY #$03
 	BNE PRG008_BB5F	 ; If Level_Tile_Slope+1 <> 3 (solid square tile), jump to PRG008_BB5F
-
-	LDY Player_LowClearance
-	BNE PRG008_BB68	 ; If Player_LowClearance is set, jump to PRG008_BB68 (RTS)
-
 PRG008_BB5F:
 	ADD <Player_Y	 
 	STA <Player_Y	 ; Add to Player_Y
