@@ -2195,6 +2195,11 @@ GndMov_Tanooki:
 	RTS		 ; Return
 
 Swim_Tanooki:	
+	LDA Player_InWater
+	BEQ Dont_Kill_Shell
+	LDA #$00
+	STA Player_Shell
+Dont_Kill_Shell:
 	JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
 	JSR Player_SwimV ; Do Player up/down swimming action
 	JSR Player_SwimAnim ; Do Player swim animations
