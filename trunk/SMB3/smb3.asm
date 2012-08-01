@@ -2740,6 +2740,7 @@ CFIRE_LASER		= $15	; Laser fire
 	; B = Hammer
 	; C = Warp Whistle
 	; D = Music Box
+	
 	Inventory_Items:	.ds 4*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
@@ -2788,6 +2789,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Game_Timer_Tick:		.ds 1;
 	Unused:			.ds 31	; 
 
+Max_Item_Count = 15
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1
 CARD_STAR	= 2

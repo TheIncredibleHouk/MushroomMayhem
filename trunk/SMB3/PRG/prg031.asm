@@ -1956,8 +1956,8 @@ StatusBarMTCHR_0000:	.byte $5c	; Standard status bar part 1 ($5C and $5D are loa
 StatusBarMTCHR_0800:	.byte $5e	; Standard status bar part 2 ($5E and $5F are loaded)
 SpriteMTCHR_1000:	.byte $48
 SpriteMTCHR_1400:	.byte $49
-SpriteMTCHR_1800:	.byte $05	; Power-up and Toad sprites here
-SpriteMTCHR_1C00:	.byte $4b
+SpriteMTCHR_1800:	.byte $5B	; Power-up and Toad sprites here
+SpriteMTCHR_1C00:	.byte $5B
 
 ; Set of pages "normal" IRQ sets (for status bar I presume)
 StatusBarCHR_0000:	.byte $5c	; Standard status bar part 1 ($5C and $5D are loaded)
