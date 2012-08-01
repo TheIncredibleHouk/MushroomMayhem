@@ -742,24 +742,25 @@ PRG026_A50E:
 PRG026_A511:
 	JMP Inv_Display_Hilite	 ; Highlight item and don't come back!
 
-InvItem_Pal:
+;#INVENTORY ITEM PALETTE
+InvItem_Pal: 
 	; Per-Item LUT
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $1A
-	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $36, $27
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $1A
-	.byte $FF, $0F, $36, $17
-	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $36, $27
+	.byte $FF, $0F, $36, $27
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $16
-	.byte $FF, $0F, $36, $17
-	.byte $FF, $0F, $36, $17
-	.byte $FF, $0F, $36, $17
+	.byte $FF, $0F, $36, $27
+	.byte $FF, $0F, $36, $27
+	.byte $FF, $0F, $36, $27
 	.byte $FF, $0F, $30, $16
 
 InvItem_SetColor:
@@ -772,11 +773,11 @@ InvItem_SetColor:
 	ASL A
 	TAX		 	; A = Current inventory item selected
 	LDA InvItem_Pal + 1,X	; Get the color that will be used for this item
-	STA Palette_Buffer+29	; Store it into the palette buffer
+	STA Palette_Buffer+$15	; Store it into the palette buffer
 	LDA InvItem_Pal + 2,X	; Get the color that will be used for this item
-	STA Palette_Buffer+30	; Store it into the palette buffer
+	STA Palette_Buffer+$16	; Store it into the palette buffer
 	LDA InvItem_Pal + 3,X	; Get the color that will be used for this item
-	STA Palette_Buffer+31	; Store it into the palette buffer 
+	STA Palette_Buffer+$17	; Store it into the palette buffer 
 
 	LDA #$06		
 	STA <Graphics_Queue	; Update the palette when capable
@@ -1274,7 +1275,7 @@ PRG026_A7EA:
 
 PRG026_A84B:
 	RTS		 ; Return
-
+; #INVENTORY SPRITES
 InvItem_Hilite_Layout:
 	; Item sprite tiles layout when highlighted
 	; NOTE: See also InvItem_Tile_Layout
@@ -1326,7 +1327,7 @@ PRG026_A88E:
 	LDX Inventory_Items,Y	; X = currently highlighted item
 
 	; Use palette 3 for both
-	LDA #$03
+	LDA #$01
 	STA Sprite_RAM+$02
 	STA Sprite_RAM+$06
 
