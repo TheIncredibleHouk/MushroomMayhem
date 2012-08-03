@@ -3119,7 +3119,7 @@ Do_RainRTS:
 Next_Rain:
 	JSR Object_GetRandNearUnusedSpr
 	BEQ Done_Rain
-	LDA #$71
+	LDA #$7B
 	STA Sprite_RAM + 1, Y
 	LDA #$02
 	ORA DAIZ_TEMP2

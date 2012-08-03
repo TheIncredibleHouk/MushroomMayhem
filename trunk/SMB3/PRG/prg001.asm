@@ -60,7 +60,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $20
 	.word ObjInit_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjInit_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_STARCARD
+	.word ObjInit_SuperLeaf	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) State 2 jump table
@@ -102,7 +102,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $20
 	.word ObjNorm_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjNorm_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjNorm_Card	; Object $23 - OBJ_POWERUP_STARCARD
+	.word ObjNorm_SuperLeaf	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) Collision routine jump table (if calling Object_HitTestRespond;
@@ -145,7 +145,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $20
 	.word ObjHit_IceFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjHit_Pumpkin	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjHit_IceFlower	; Object $23 - OBJ_POWERUP_STARCARD
+	.word ObjHit_FoxLeaf    ; Object $23 - OBJ_POWERUP_FOXLEAF
 
 	
 	; Object group $00 (i.e. objects starting at ID $00) attribute bits set 1 (OA1_* flags valid here)
@@ -187,7 +187,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $20
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_STARCARD
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) second set attribute bits
@@ -236,7 +236,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP0	; Object $20
 	.byte OA2_TDOGRP1	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA2_TDOGRP1	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OA2_TDOGRP1	; Object $23 - OBJ_POWERUP_STARCARD
+	.byte OA2_TDOGRP1	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) third set attribute bits
@@ -285,7 +285,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $20
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_STARCARD
+	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) Pattern Table Select
@@ -327,7 +327,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT5 | $0A	; Object $20
 	.byte OPTS_NOCHANGE	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OPTS_NOCHANGE	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OPTS_NOCHANGE	; Object $23 - OBJ_POWERUP_STARCARD
+	.byte OPTS_NOCHANGE	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) "Kill Action"
@@ -369,7 +369,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $20
 	.byte KILLACT_STANDARD	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte KILLACT_STANDARD	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte KILLACT_STANDARD	; Object $23 - OBJ_POWERUP_STARCARD
+	.byte KILLACT_STANDARD	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) pattern index starts
@@ -438,7 +438,7 @@ ObjP1E:	.byte $5D, $5F
 ObjP1F:	.byte $67, $67	; #DAHRKDAIZ - VINE
 ObjP21:	.byte $69, $69
 ObjP22:	.byte $5B, $5B ; #DAHRKDAIZ - PUMPKIN
-ObjP23:	.byte $55, $55
+ObjP23:	.byte $5D, $5F	; #DAHRKDAIZ - GOLD LEAF
 ObjP08:	.byte $FB, $FB, $FB, $FB, $BB, $B9, $B9, $BB, $BF, $BD
 
 SpinyCheep_XVel:
@@ -1013,7 +1013,7 @@ PRG001_A4C6:
 
 	; Power-up which may emerge from different types of bounce blocks
 Bouncer_PUp:	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN
-		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN ; #DAHRKDAIZ added OBJ_POWERUP_ICE
+		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF ; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
 Bounce_TileReplacements:	
 	.byte CHNGTILE_TOFRZWATER
@@ -1573,7 +1573,7 @@ ObjHit_NinjaShroom:
 	RTS		 ; Return
 
 Star_Palettes:
-	.byte SPR_PAL0, SPR_PAL1, SPR_PAL1, SPR_PAL3
+	.byte SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL3
 
 ObjInit_StarOrSuit:
 	JSR Mushroom_SetFall	 ; Figure the way that the star should fall
@@ -2258,7 +2258,7 @@ PRG001_AAB1:
 	JMP PRG001_AAFE	 ; Jump to PRG001_AAFE
 
 PRG001_AAC5:
-	CMP #$0a
+	CMP #$0A
 	BNE PRG001_AAFE	 ; If block bump pos <> 10, jump to PRG001_AAFE
 
 	; Block bump pos = 10...
@@ -2914,12 +2914,30 @@ ObjHit_Pumpkin:
  	STA Objects_State,X
  	RTS
 
-PRG001_ADE2:
-;	RTS		 ; Return
+ObjHit_FoxLeaf:
+	
+	; "Poof" sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
 
+	; "Poof" effect
+	LDA #$17
+	STA Player_SuitLost
+
+	; Change to Fire Fox Mario
+	LDA #$09
+	STA Player_QueueSuit
+
+	; Set to dead/empty
+ 	LDA #OBJSTATE_DEADEMPTY
+ 	STA Objects_State,X
+ 	RTS
 
 	; This is a fairly general "march" function, but it is only 
 	; applied to one object here, the unused collectable card...
+
+PRG001_ADE2:
 Object_MoveAndReboundOffWall:
 	JSR Object_Move	 ; Do general movement code
 

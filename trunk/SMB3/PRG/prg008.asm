@@ -1033,7 +1033,7 @@ PowerUp_Palettes:
 	.byte $00, $19, $36, $0F	; 5 - Koopa Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
 	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
-	.byte $00, $30, $31, $01	; 8 - Unused
+	.byte $00, $27, $36, $06	; 8 - #DAHRKDAIZ Fire Fox Mario
 	.byte $00, $30, $31, $01	; 9 - Unused
 	.byte $00, $06, $30, $0F	; A - #DAHRKDAIZ Boo Mario
 	.byte $00, $3D, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
@@ -4702,7 +4702,7 @@ LATP_GNote:	.byte $00
 LATP_HNote:	.byte $00
 LATP_Notes:	.byte $00, $01, $02, $03
 LATP_Woodblocks:.byte $00, $01, $02, $03
-LATP_QBlocks:	.byte $01, $02, $03, $04, $05, $04, $00, $06, $01, $02, $03, $04, $05, $08, $09, $07, $0A
+LATP_QBlocks:	.byte $01, $02, $03, $04, $05, $04, $08, $06, $01, $0A, $03, $04, $05, $08, $09, $07, $0B
 LATP_InvisCoin:	.byte $04, $09, $00
 LATP_InvisNote:	.byte $00
 LATP_PWrksJct:	.byte $0B	; UNUSED breakable pipeworks junction tile!
@@ -4869,13 +4869,7 @@ PRG008_B722:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
-	LDA Player_FlipBits			; flip direction the player is facing
-	EOR #$40				
-	STA Player_FlipBits				
-	LDA <Player_XVel
-	EOR #$FF
-	ADC #$01
-	STA <Player_XVel
+	STA Do_Shell_Bump
 
 	LDA #CHNGTILE_DELETETOBG
 	STA <Temp_Var12	 ; Temp_Var12 = CHNGTILE_DELETETOBG
@@ -5022,8 +5016,8 @@ LATP_JumpTable:
 	.word LATP_Vine		; 7 = Vine
 	.word LATP_Pumpkin	; 8 = 10 coin
 	.word LATP_NinjaShroom		; 9 = 1-up
-	.word LATP_PSwitch	; A = P-Switch
-	.word LATP_BrickAltClear; B = Brick which clears to alternate tile when smashed
+	.word LATP_FoxLeaf	; A = Fox Leaf
+	.word LATP_PSwitch	; B = P-Switch
 
 LATP_None:
 	LDY #1		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
@@ -5199,6 +5193,20 @@ LATP_NinjaShroom:
 Do_Ninja_Shroom:
 	RTS		 ; Return
 
+LATP_FoxLeaf:
+	LDA #$00
+	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
+
+	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+
+	LDA <Player_Suit
+	BEQ No_FoxLeaf	 ; If Player is small, jump to PRG008_B807
+
+	LDY #$0A	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)
+
+No_FoxLeaf:
+	RTS
+
 LATP_PSwitch:
 	LDY #$05	 ; Y = 5
 
@@ -5256,16 +5264,6 @@ PRG008_B8FD:
 	STA Level_ChgTileEvent	 ; Queue P-Switch appear!
 
 	LDY #$01	 ; Y = 1 (index into PRG001 Bouncer_PUp, i.e. nothing)
-	RTS		 ; Return
-
-LATP_BrickAltClear:
-	JSR LATP_Brick	 ; Act like a brick!  ('A' = 0 when small)
-	BEQ PRG008_B916	 ; If Player is small, then do nothing...
-
-	LDA #CHNGTILE_DELETETOBGALT
-	STA <Temp_Var12	 ; Temp_Var12 = 12
-
-PRG008_B916:
 	RTS		 ; Return
 
 LATP_CoinCommon:
@@ -5365,7 +5363,22 @@ Do_Tile_Attack:
 	LDX #$04	 
 	STA Level_Tile_GndL,X	 ; Store into tail's special slot
 	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
+	LDA <Player_Suit
+	CMP #$05
+	BNe Skip_Shell_Bump
+	LDA Do_Shell_Bump
+	BEQ Skip_Shell_Bump
+	LDA #$00
+	STA Do_Shell_Bump
+	LDA Player_FlipBits			; flip direction the player is facing
+	EOR #$40				
+	STA Player_FlipBits				
+	LDA <Player_XVel
+	EOR #$FF
+	ADC #$01
+	STA <Player_XVel
 
+Skip_Shell_Bump:
 	LDA #$01
 	STA Player_BounceDir	 ; Player_BounceDir = 1 (bounced sideways)
 
@@ -6319,48 +6332,6 @@ PRG008_BDB4:
 	LDA Level_Tileset
 	CMP #$05	 
 	BNE PRG008_BDEB	 ; If not in a pipe world plant infestation, jump to PRG008_BDEB
-
-	; ALTERNATING PIRANHA HURT LOGIC IN INFESTATION LEVELS
-
-	LDY #$00	 ; Y = 0 (first alternation piranha tile)
-
-	LDA PatTable_BankSel+1
-	CMP #$60	 
-	BEQ PRG008_BDC9	 ; If current pattern table is $60, jump to PRG008_BDC9
-
-	INY		 ; Y = 1 (second alternation piranha tile)
-	CMP #$3e	 
-	BNE PRG008_BDEB	 ; If current pattern table is NOT $3E, jump to PRG008_BDEB
-
-PRG008_BDC9:
-	LDX #$02	 ; X = 2
-
-PRG008_BDCB:
-	LDA Level_Tile_Head,X	; Get tile
-	PHA		 ; Save tile 
-
-	SUB PlantInfest_PiranhaTiles,Y
-	CMP #$01	 
-	PLA		 ; Restore tile
-	BLT PRG008_BDE3	 ; If you just hit the piranha that's fully extended, you get hurt!
-
-	CMP PlantInfest_MiniPipes,Y
-	BEQ PRG008_BDE3	 ; If you even just touched his base pipe, you get hurt!
-
-	DEX		 ; X--
-	BPL PRG008_BDCB	 ; While X >= 0, loop!
-
-	JMP PRG008_BDEB	 ; Jump to PRG008_BDEB
-
-PRG008_BDE3:
-
-	; Gonna get hurt!
-
-	; RAS: Interesting ... this never happens of course...
-	LDA Player_Kuribo
-	BNE PRG008_BDEB	 ; If Player is wearing Kuribo's shoe, jump to PRG008_BDEB
-
-	JSR Player_GetHurt	 ; Get hurt!
 
 PRG008_BDEB:
 

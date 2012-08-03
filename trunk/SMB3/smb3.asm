@@ -2480,7 +2480,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Wind:					.ds 1	;
 	Item_Shop_Window:		.ds 3	;
 	Shop_Mode_Initialized:	.ds 1	;
-				.ds 81	; $7997-$79FF unused UNUSED HERE
+	Do_Shell_Bump:			.ds 1	;
+				.ds 80	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -3329,7 +3330,7 @@ OBJ_POWERUP_SUPERLEAF	= $1E	; Falling super leaf
 OBJ_GROWINGVINE		= $1F	; Growing vine
 OBJ_POWERUP_ICEFLOWER	= $21	; Free mushroom card ????
 OBJ_POWERUP_PUMPKIN	= $22	; Free flower card ????
-OBJ_POWERUP_STARCARD	= $23	; Free star card ????
+OBJ_POWERUP_FOXLEAF	= $23	; Free star card ????
 OBJ_CLOUDPLATFORM_FAST	= $24	; Fast cloud platform
 OBJ_PIPEWAYCONTROLLER	= $25	; "Pipe Way" Controller (World Map pipe-to-pipe location setter)
 OBJ_WOODENPLAT_RIDER	= $26	; Log that rides you to the right after stepping on it
