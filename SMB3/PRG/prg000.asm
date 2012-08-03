@@ -6803,7 +6803,7 @@ Can_Wall_Jump:
 	BEQ No_Wall_Jump
 	LDA <Player_InAir
 	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BEQ No_Wall_Jump
 	LDA <Player_Suit
 	CMP #$06

@@ -2162,7 +2162,7 @@ MapBonusChk_NSpade:
 
 	LDX Player_Current	 ; X = Player_Current
 
-	LDA Player_Score
+	LDA Player_Experience
 	CMP Map_NSpade_NextScore
 	BLT PRG011_ACF0	 ; If Score high digit < Map_NSpade_NextScore, jump to PRG011_ACF0 (RTS)
 	BEQ PRG011_AC97	 ; If Score high digit = Map_NSpade_NextScore, jump to PRG011_AC97
@@ -2170,7 +2170,7 @@ MapBonusChk_NSpade:
 	JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
 
 PRG011_AC97:
-	LDA Player_Score+1
+	LDA Player_Experience+1
 	CMP Map_NSpade_NextScore+1
 	BLT PRG011_ACF0	 ; If Score middle digit < Map_NSpade_NextScore+1, jump to PRG011_ACF0 (RTS)
 	BEQ PRG011_ACA4	 ; If Score middle digit = Map_NSpade_NextScore+1, jump to PRG011_ACA4
@@ -2178,7 +2178,7 @@ PRG011_AC97:
 	JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
 
 PRG011_ACA4:
-	LDA Player_Score+2
+	LDA Player_Experience+2
 	CMP Map_NSpade_NextScore+2
 	BLT PRG011_ACF0	 ; If Score low digit < Map_NSpade_NextScore+2, jump to PRG011_ACF0 (RTS)
 

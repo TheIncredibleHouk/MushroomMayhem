@@ -429,7 +429,7 @@ Normal_Player_Frames:
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
 	LDY <Player_Suit
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BEQ Normal_Gfx
 	TYA
 	CLC

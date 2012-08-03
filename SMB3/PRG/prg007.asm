@@ -755,7 +755,7 @@ PRG007_A3AC:
 	AND #$07
 	BNE PRG007_A3BD	 ; 1:8 ticks proceed, otherwise jump to PRG007_A3BD
 
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BNE Check_Too_High
 	INC PlayerProj_YVel,X	 ; Increase Y velocity (gravity)
 
@@ -894,7 +894,7 @@ PRG007_A453:
 	LDA Sprite_RAM+$00,Y	 ; Add to Sprite Y
 	STA Sprite_RAM+$04,Y	 ; Update Sprite Y
 
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BEQ Use_Hammers
 	LDA #$4D
 	STA Sprite_RAM+$05,Y
@@ -938,7 +938,7 @@ PRG007_A471:
 
 	; Set fireball pattern
 	; #DAHRKDAIZ checks ice mario flag and interjects a different pattern
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BEQ STANDARD_FIREBALL_PAT
 	LDA PlayerIceball_Pats
 	BNE STORE_STANDARD_TILE
@@ -1118,7 +1118,7 @@ PRG007_A52D:
 	; start #DAHRKDAIZ - code used to handle hammer specific tile interaction
 	LDA DAIZ_TEMP1
 	BEQ FIRE_BALL_COLL
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BNE NOT_BRICK_HAMMER
 	LDA <Temp_Var1
 	CMP #$67
@@ -1139,7 +1139,7 @@ FIRE_BALL_COLL:
 	STX DAIZ_TEMP1
 	STY DAIZ_TEMP2
 	LDY #$04
-	LDX SPECIAL_SUIT_FLAG
+	LDX Special_Suit_Flag
 	BEQ Tile_Test_Loop
 	LDX #$04
 
@@ -1489,7 +1489,7 @@ PRG007_A6EC:
 	LDA <Player_Suit
 	CMP #$02
 	BNE Kill_Enemy_Anyway	; Prevents Ninja Mario from turning enemies into ice
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BNE ICE_BALL_SKIP1 ; #DAHRKDAIZ - Skip "defeating" the enemy
 	
 Kill_Enemy_Anyway:
@@ -5973,7 +5973,7 @@ Projectile_Interact_To_Table:
 	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, CHGTILESTANDING_WATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER
 
 Get_Proj_YVel:
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BEQ Normal_Hammer_YVel
 	LDA <Pad_Holding
 	AND #(PAD_DOWN)
@@ -5995,7 +5995,7 @@ No_YVel:
 	RTS
 
 Get_Proj_XVel:
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BEQ Normal_Hammer_XVel
 	LDA <Pad_Holding
 	AND #(PAD_UP | PAD_LEFT | PAD_RIGHT)
@@ -6024,7 +6024,7 @@ No_XVel:
 	RTS
 
 Do_Boo_Mode:
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BEQ Boo_Do_Nothing
 	LDA <Player_Suit		
 	CMP #$05				; Not Boo mario, skip all together
