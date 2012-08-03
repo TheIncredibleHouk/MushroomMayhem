@@ -2972,14 +2972,14 @@ StatusBar_Fill_Score:
 	CLC
 	
 Score_Loop:
-	ADC Player_Score, X
-	STA Player_Score, X
-	LDA Player_Score, X
+	ADC Player_Experience, X
+	STA Player_Experience, X
+	LDA Player_Experience, X
 	CMP #$0A
 	BCC No_Score
 	SEC
 	SBC #$0A
-	STA Player_Score, X
+	STA Player_Experience, X
 	DEX
 	BPL Score_Loop
 
@@ -2993,7 +2993,7 @@ Score_Update:
 	LDX #$05
 
 Score_Loop2:
-	LDA Player_Score, X
+	LDA Player_Experience, X
 	ORA #$30
 	STA Status_Bar_Bottom + 1, X
 	DEX

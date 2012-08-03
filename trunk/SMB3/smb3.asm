@@ -1893,7 +1893,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 				.ds 1	; $069B unused
 
-	Score_Earned:		.ds 2	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Score
+	Score_Earned:		.ds 2	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
 						.ds 6	;
 
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
@@ -2008,7 +2008,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	Map_ReturnStatus:	.ds 1	; When 0, level panel is cleared; otherwise, Player is considered to have died (decrements life!)
 	MaxPower_Tick:		.ds 1	; When Player has maximum "power" charge, this counts for the flashing [P]
-	OldPlayer_Score:		.ds 3	; $0715 (H)-$0717 (L) treated as 3-byte integer, with least significant zero on display not part of this value 
+	OldPlayer_Experience:		.ds 3	; $0715 (H)-$0717 (L) treated as 3-byte integer, with least significant zero on display not part of this value 
 
 				.ds 1	; $0718 unused
 
@@ -2473,15 +2473,16 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Player_NoSlopeStick:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
 
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
-	Weather:				.ds 1	;
-	Weather_Initialized:	.ds 1	;
-	Weather_X:				.ds 8	;
-	Weather_Y:				.ds 8	;
-	Wind:					.ds 1	;
-	Item_Shop_Window:		.ds 3	;
-	Shop_Mode_Initialized:	.ds 1	;
-	Do_Shell_Bump:			.ds 1	;
-				.ds 80	; $7997-$79FF unused UNUSED HERE
+	Weather:				.ds 1	; Indicates whether there is weather active for this stage (see bgcloud sprite)
+	Weather_Initialized:	.ds 1	; Indicates if the weather has initialized yet (1 - Initialized)
+	Weather_X:				.ds 8	; X position of rain drops
+	Weather_Y:				.ds 8	; Y position of rain drops
+	Wind:					.ds 1	; Wind factor (affects player!)
+	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
+	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
+	Do_Shell_Bump:			.ds 1	; Indicates whether there is a reverse in direction that needs to be done due to a Koopa shell mode activating a block
+	Burning_Mode:			.ds 1	; Indicates we are in Burning mode
+				.ds 79	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -2603,18 +2604,27 @@ CFIRE_LASER		= $15	; Laser fire
 	DEBUG_SNAPPER: .ds 1 ; #DAHRKDAIZ $7A71- used to step debug breakpoints
 
 	Object_SplashAlt:	.ds 1	; Used to alternate the "splash slots" 1 and 2 as objects hit the water
-	SPECIAL_SUIT_FLAG:		.ds 1	; #DAHRKDAIZ $7A73
+	Special_Suit_Flag:		.ds 1	; Special suit flag is used to indicate when we have a non-standard suit
+									; Ice, Fire Fox, Boo and Ninja Mario all piggy back off existing code
+									; and uses this flag to indicate different ways to execute (ice balls vs fire balls for example).
+									; Here's a quick table of abilities:
+									; Player_Suit		With Flag
+									; Fire				Ice
+									; Raccoon			Fire Fox
+									; Frog				Frog
+									; Koopa/Tanooki		Boo
+									; Hammer/Sledge		Ninja
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
 	Invincible_Enemies: .ds	1	; Indicates the enemies are invincible
-	Pay_Toll_Timer:		.ds 1	;
-	Deduct_Coin_Timer:	.ds 1	;
-	End_Level_Timer:	.ds 1	;
-	Coins_To_Deduct:	.ds 1	;
-	TollPaid:			.ds 1	;
-	Subtraction_From:	.ds 8	;
-	Subtraction_Value:	.ds 8	;
-	Force_Coin_Update:	.ds 1	;
+	Pay_Toll_Timer:		.ds 1	; Used timer for paying tolls on Hammer Bros on map
+	Deduct_Coin_Timer:	.ds 1	; Used timer for deducting necessary coins on Hammer Bros. Map
+	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
+	Coins_To_Deduct:	.ds 1	; Indicates the number of coins to deduct during toll payments
+	TollPaid:			.ds 1	; Indicates whether the toll was paid (1 was paid, 0 was not paid)
+	Subtraction_From:	.ds 8	; Used in doing decimal byte-wise subtraction, this is the A part of A - B
+	Subtraction_Value:	.ds 8	; Used in doign decimal byte-wise subtraction, this is the B part of A - B
+	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 				.ds 83; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
@@ -2749,17 +2759,18 @@ CFIRE_LASER		= $15	; Laser fire
 	Air_Time:			.ds 1	;
 
 	Top_Of_Water:		.ds 1	;
-	Inventory_Items2:	.ds 27	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
-	Inventory_Cards2:	.ds 3	; $7DBF-$7DC1 Luigi, 3 cards
-	Inventory_Score2:	.ds 3	; $7DC2-$7DC4 Luigi, 3 byte score
+	Unused2:				.ds 34	;
+
+	; #DAHRKDAIZ these are unused, but the labels ramin to one byte to allow the assembler to corrrectly calculate some offsets in the game
+	Inventory_Items2:	.ds 1	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
+	Inventory_Cards2:	.ds 1	; $7DBF-$7DC1 Luigi, 3 cards
+	Inventory_Score2:	.ds 1	; $7DC2-$7DC4 Luigi, 3 byte score
 	Player_Coins2:	.ds 1	; Luigi's coins
 	Map_Unused7DC6:		.ds 5	; $7DC6-$7DCA? Indexed by Map_Unused738, value used in dead routine in PRG011 @ $A2AF
 
 	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)
-	Boo_Mode_Timer:			.ds 1
-	Boo_Mode_KillTimer:		.ds 1
-	Byte_To_Number:			.ds 3
-	Number_Result:			.ds 1
+	Boo_Mode_Timer:			.ds 1	; Indicates how long we are in boo mode
+	Boo_Mode_KillTimer:		.ds 1	; This timer is for the period coming out of boo mode, when not 0, Mario is invincible
 				.ds 3	; $7DCC-$7DD4 unused
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
@@ -2772,11 +2783,11 @@ CFIRE_LASER		= $15	; Laser fire
 	Level_AltObjects:	.ds 2	; $7E00-$7E01 Pointer to level's "alternate" object set (when you go into bonus pipe, etc.)
 
 	; #DAHRKDAIZ RAM
-	Status_Bar_Top:		.ds 28 ;
-	Status_Bar_Bottom:	.ds 28	;
-	Status_Bar_Render_Toggle: .ds 1;
-	Player_Score:	.ds 6;
-	Player_Pal_Backup:  .ds 3; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
+	Status_Bar_Top:		.ds 28		; Tiles to display at the top of the status bar
+	Status_Bar_Bottom:	.ds 28		; Tiles to display at the bottom of the status bar
+	Status_Bar_Render_Toggle: .ds 1	; Indicates if we're toggling the status mode
+	Player_Experience:	.ds 6		; Experience points that increase by defeating enemies
+	Player_Pal_Backup:  .ds 3	; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
 	Status_Bar_Mode:	.ds 1	; Indicates what status bar information should be displayed
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
@@ -2784,10 +2795,10 @@ CFIRE_LASER		= $15	; Laser fire
 	Odometer:				.ds 7; over all distance traveled
 	Enemies_Defeated:		.ds 7; over all number of enemies defeated
 	Game_Timer:				.ds 6; over all time spent in the game
-	Last_Status_Bar_Mode:	.ds 1;
-	Odometer_Increase:		.ds 1;
-	Previous_X:				.ds 1;
-	Game_Timer_Tick:		.ds 1;
+	Last_Status_Bar_Mode:	.ds 1; Indicates what the last status bar mode was before the toggle
+	Odometer_Increase:		.ds 1; Indicates we need to increase the odometer
+	Previous_X:				.ds 1; Keeps track of the the Previous x position
+	Game_Timer_Tick:		.ds 1; Indicates the game timer needs to increase by 1 second
 	Unused:			.ds 31	; 
 
 Max_Item_Count = 15

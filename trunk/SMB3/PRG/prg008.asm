@@ -540,8 +540,6 @@ Level_InitAction_JumpTable:
 	.word LevelInit_PipeExitBottom	; 3 - Start by exiting bottom of pipe
 	.word LevelInit_PipeExitRight	; 4 - Start by exiting right of pipe
 	.word LevelInit_PipeExitLeft	; 5 - Start by exiting left of pipe
-	.word LevelInit_Airship		; 6 - Airship intro run & jump init
-	.word LevelInit_Airship_Board	; 7 - Boarding the Airship
 
 Level_InitAction_Do:
 	LDA Level_InitAction
@@ -561,13 +559,7 @@ Level_InitAction_Do:
 
 
 LevelInit_StartSliding:
-	LDY <Player_Suit
-	LDA PowerUp_Ability,Y
-	AND #$02
-	BNE LevelInit_DoNothing	; If this powerup is not able to slide on slopes, jump to LevelInit_DoNothing
-
-	INC Player_Slide	 ; Otherwise, begin sliding...
-
+	; #DAHRKDAIZ Start Sliding code removed.
 LevelInit_DoNothing:
 	RTS		 ; Return
 
@@ -769,12 +761,12 @@ PRG008_A3EC:
 	CMP #$08 
 	BCC Not_Special
 	SBC #$05
-	STA SPECIAL_SUIT_FLAG
+	STA Special_Suit_Flag
 	BNE Is_Special
 
 Not_Special:
 	LDY #$00
-	STY SPECIAL_SUIT_FLAG
+	STY Special_Suit_Flag
 
 Is_Special:
 	TAY	
@@ -1030,7 +1022,7 @@ PowerUp_Palettes:
 	.byte $00, $27, $36, $16	; 2 - Fire Flower
 	.byte $00, $16, $36, $0F	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
 	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
-	.byte $00, $19, $36, $0F	; 5 - Koopa Suit
+	.byte $00, $19, $36, $0F	; 5 - #DAHRKDAIZ Koopa Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
 	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
 	.byte $00, $27, $36, $06	; 8 - #DAHRKDAIZ Fire Fox Mario
@@ -1045,7 +1037,7 @@ PowerUp_Palettes:
 ; #DAHRKDAIZ if we're i special suit mode, we jump farther into the table.
 Level_SetPlayerPUpPal:
 	LDA <Player_Suit
-	LDX SPECIAL_SUIT_FLAG
+	LDX Special_Suit_Flag
 	BEQ Not_Special_Suit_Pal	
 	CLC
 	ADC #$05
@@ -1099,7 +1091,7 @@ Player_XAccelMain:
 	; F = "Friction" (stopping rate), "N = "Normal" accel, S = "Skid" accel, X = unused
 	; Without B button	With B button
 	;      F   N   S   X     F   N   S   X
-	.byte -1,  0,  2,  0, 	-1,  0,  2,  0	; Small
+	.byte -1,  0,  2,  0, 	-1,  0,  2,  0	; Normal
 	.byte -1,  0,  2,  0, 	-1,  0,  2,  0	; Big
 	.byte -1,  0,  2,  0, 	-1,  0,  2,  0	; Fire
 	.byte -1,  0,  2,  0, 	-1,  0,  2,  0	; Leaf
@@ -1389,35 +1381,36 @@ PRG008_A743:
 	LDA Level_Tile_GndL	 ; Get left ground tilee
 	STA <Temp_Var2		 ; -> Temp_Var2
 
-	LDA Player_Behind	
-	STA Player_Behind_En	; Default enable with being behind the scenes
-	BEQ PRG008_A77E	 	; If Player is not behind the scenes, jump to PRG008_A77E
-
-	LDA <Counter_1
-	LSR A	
-	BCC PRG008_A766	 	; Every other tick, jump to PRG008_A766
-
-	DEC Player_Behind	; Player_Behind--
-
-PRG008_A766:
-	LDY #$00	 ; Y = 0 (disable "behind the scenes")
-
-	; If tile behind Player's head is $41 or TILE1_SKY, jump to PRG008_A77B
-	LDA <Temp_Var1
-	CMP #$41
-	BEQ PRG008_A77B
-	CMP #TILE1_SKY
-	BEQ PRG008_A77B
-
-	INY		 	; Y = 1 (enable "behind the scenes")
-
-	LDA Player_Behind
-	BNE PRG008_A77B	 	; If Player is behind the scenes, jump to PRG008_A77B
-
-	STY Player_Behind	; Set Player as behind the scenes
-
-PRG008_A77B:
-	STY Player_Behind_En	; Store whether Player is actually behind scenery
+; #DAHRKDAIZ Behind the scene code removed, unused
+;	LDA Player_Behind	
+;	STA Player_Behind_En	; Default enable with being behind the scenes
+;	BEQ PRG008_A77E	 	; If Player is not behind the scenes, jump to PRG008_A77E
+;
+;	LDA <Counter_1
+;	LSR A	
+;	BCC PRG008_A766	 	; Every other tick, jump to PRG008_A766
+;
+;	DEC Player_Behind	; Player_Behind--
+;
+;PRG008_A766:
+;	LDY #$00	 ; Y = 0 (disable "behind the scenes")
+;
+;	; If tile behind Player's head is $41 or TILE1_SKY, jump to PRG008_A77B
+;	LDA <Temp_Var1
+;	CMP #$41
+;	BEQ PRG008_A77B
+;	CMP #TILE1_SKY
+;	BEQ PRG008_A77B
+;
+;	INY		 	; Y = 1 (enable "behind the scenes")
+;
+;	LDA Player_Behind
+;	BNE PRG008_A77B	 	; If Player is behind the scenes, jump to PRG008_A77B
+;
+;	STY Player_Behind	; Set Player as behind the scenes
+;
+;PRG008_A77B:
+;	STY Player_Behind_En	; Store whether Player is actually behind scenery
 
 PRG008_A77E:
 	LDA <Temp_Var1
@@ -1834,13 +1827,14 @@ PRG008_A93D:
 PRG008_A940:
 	JSR Player_CommonGroundAnims	 ; Perform common ground animation routines
 
-	LDA Player_Kuribo
-	BEQ PRG008_A94C	 ; If Player is not wearing Kuribo's shoe, jump to PRG008_A94C
-
-	; If in Kuribo's shoe...
-
-	LDA #14		 ; A = 14 (Kuribo's shoe code pointer)
-	BNE PRG008_A956	 ; Jump (technically always) to PRG008_A956
+; #DAHRKDAIZ Kuribo shoe code removed
+;	LDA Player_Kuribo
+;	BEQ PRG008_A94C	 ; If Player is not wearing Kuribo's shoe, jump to PRG008_A94C
+;
+;	; If in Kuribo's shoe...
+;
+;	LDA #14		 ; A = 14 (Kuribo's shoe code pointer)
+;	BNE PRG008_A956	 ; Jump (technically always) to PRG008_A956
 
 PRG008_A94C:
 	LDA <Player_Suit
@@ -2603,7 +2597,7 @@ Skip_YVel:
 
 PRG008_ACD9:
 
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BNE PRG008_ACEF
 	LDX <Player_Suit ; #DAHRKDAIZ hacked, only Racoon Mario can fly
 	CPX #$03			
@@ -3219,7 +3213,7 @@ Player_Koopa_Shell:
 	LDA <Player_Suit
 	CMP #$05
 	BNE NoShellRTS
-	LDA SPECIAL_SUIT_FLAG
+	LDA Special_Suit_Flag
 	BNE Kill_Shell
 	LDA Player_XVel
 	BEQ NoShellRTS				; If XVel is not 0 and holding down, we're in shell mode
@@ -3277,6 +3271,8 @@ PRG008_B035:
 ; Also plays the "wag" sound as appropriate
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_AnimTailWag:
+	LDA Special_Suit_Flag		; Doesn't apply to  fire fox
+	BNE PRG008_B09F
 	LDA Player_SandSink
 	LSR A
 	BCS PRG008_B09F	 ; If bit 0 of Player_SandSink is set, jump to PRG008_B09F (RTS)
