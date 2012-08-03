@@ -393,7 +393,7 @@ Player_PUpRootPage:
 	;     Small, Big, Fire, Leaf, Frog, Koopa,   Hammer
 	.byte $50,   $54, $54,  $00,  $50,  $40,     $44
 	;     xxxxxxxxxx  Ice   xxx    xxx   xxx   Ninja
-	.byte			  $54,  $00,   $00 , $24 ,  $28				
+	.byte			  $54,  $2C,   $00 , $24 ,  $28				
 
 RAINBOW_PAL_CYCLE:
 	.byte $01, $03, $05, $06, $07, $09, $0A, $0C ; #DAHRKDAIZ
