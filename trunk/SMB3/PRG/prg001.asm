@@ -2572,6 +2572,8 @@ PRG001_AC40:
 	; Change to Raccoon
 	LDA #$04
 	STA Player_QueueSuit
+	LDA #$00
+	STA Special_Suit_Flag
 
 PRG001_AC52:
 	; Disable statue

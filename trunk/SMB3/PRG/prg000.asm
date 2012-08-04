@@ -635,16 +635,7 @@ PRG000_C454:
 	; Goes into Score_Get100PlusPts, but object index is stored in 'Y'
 	; NOTE: Overwrites 'X' anyway, so be careful!
 Score_Get100PlusPtsY:
-	PHA		 ; Save 'A'
-	TYA
-	TAX		 ; 'X' = 'Y'
-	PLA		 ; Restore 'A'
-
-	; Get at least 100 pts based on value in 'A'
 Score_Get100PlusPts:
-	ADD #$01	; Base at 100 points
-	STA Score_Earned
-	LDX <SlotIndexBackup	 ; X = object slot index
 	RTS		 ; Return
 
 
