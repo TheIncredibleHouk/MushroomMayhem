@@ -3271,8 +3271,6 @@ PRG008_B035:
 ; Also plays the "wag" sound as appropriate
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_AnimTailWag:
-	LDA Special_Suit_Flag		; Doesn't apply to  fire fox
-	BNE PRG008_B09F
 	LDA Player_SandSink
 	LSR A
 	BCS PRG008_B09F	 ; If bit 0 of Player_SandSink is set, jump to PRG008_B09F (RTS)
@@ -3286,6 +3284,8 @@ Player_AnimTailWag:
 	LDA Player_IsDucking
 	BNE PRG008_B082	 ; If Player is ducking, jump to PRG008_B082
 
+	LDA Special_Suit_Flag		; Doesn't apply to  fire fox
+	BNE PRG008_B062
 	LDA <Pad_Input
 	BPL PRG008_B062	 ; If Player is NOT pressing A, jump to PRG008_B062
 

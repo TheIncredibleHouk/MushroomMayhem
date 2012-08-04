@@ -504,6 +504,7 @@ PRG029_CF07:
 	PHA
 	CLC
 	; #DAHRKDAIZ this function tests for both the invincibility and "color cycling"
+
 	LDA Player_StarOff
 	CMP #$02		
 	BCS DO_RBOW_CYCLE		; at #$02 we just reset the palette
@@ -525,13 +526,6 @@ RESTORE_A:
 	PLA
 	TAX
 	
-;	; These shifts are used to produce the "slower" color cycle
-;	; when the star invincibility is wearing off...
-;	LSR A
-;	LSR A
-;
-
-;	AND #$03	 ; Cap it 0-3 in any case (select one of the four sprite palettes, basically)
 
 PRG029_CF0B:
 	LDA #$00		; #DAHRKDAIZ disables palette cycling
@@ -552,6 +546,23 @@ PRG029_CF1E:
 	STA <Player_SprWorkL
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
+
+	STX DAIZ_TEMP1
+	LDA $F000
+	LDA Special_Suit_Flag		; if in burning mode, cycle palettes
+	BEQ Restore_X
+	LDA Player_FlyTime			; using fly time as the same as burning mode time
+	BEQ Restore_X
+	CMP #$01
+	BNE Flame_Cycle
+	JSR End_Flame_Pal
+	JMP Restore_X
+
+Flame_Cycle:
+	JSR Flame_Pal_Cycle
+
+Restore_X:
+	LDX DAIZ_TEMP1
 
 	LDA Player_Shell			; If in shell, override the animation
 	BEQ Try_Boo_Animation
@@ -3212,3 +3223,48 @@ Restore_Curr_Player_Pal:
 	STA (Player_Pal_Backup + $01)
 	STA (Player_Pal_Backup + $01)
 	RTS
+
+Flame_Pal:
+	.byte $17, $16, $06, $FF 
+	.byte $27, $26, $16, $FF 
+	.byte $37, $36, $26, $FF 
+	.byte $30, $30, $36, $FF 
+	.byte $37, $36, $26, $FF 
+	.byte $27, $26, $16, $FF 
+	.byte $27, $36, $06, $FF 
+
+Flame_Pal_Cycle:
+	LDA <Counter_1
+	AND #$01
+	BEQ Flame_PalRTS
+	LDA Burning_Mode_Pal_Counter
+	ASL A
+	ASL A
+	TAX
+	LDY #$00
+
+Load_Flame_Pal:
+	LDA Flame_Pal, X
+	STA (Palette_Buffer + $11), Y
+	INX
+	INY
+	CPY #$03
+	BNE Load_Flame_Pal
+	LDA Burning_Mode_Pal_Counter
+	CMP #$05
+	BNE Next_Flame_Pal
+	LDA #$00
+	STA Burning_Mode_Pal_Counter
+	RTS
+
+Next_Flame_Pal:
+	INC Burning_Mode_Pal_Counter
+
+Flame_PalRTS:
+	RTS
+
+End_Flame_Pal:
+	LDY #$00
+	STY Burning_Mode_Pal_Counter
+	LDX #$18
+	JMP Load_Flame_Pal

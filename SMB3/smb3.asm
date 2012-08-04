@@ -2482,7 +2482,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
 	Do_Shell_Bump:			.ds 1	; Indicates whether there is a reverse in direction that needs to be done due to a Koopa shell mode activating a block
 	Burning_Mode:			.ds 1	; Indicates we are in Burning mode
-				.ds 79	; $7997-$79FF unused UNUSED HERE
+	Burning_Mode_Pal_Counter: .ds 1	;
+				.ds 78	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
