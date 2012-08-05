@@ -928,6 +928,7 @@ PRG008_A4BE:
 ; and plays the annoying "ringing" noise :)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_PowerUpdate:
+	LDA $F000
 	LDY Player_FlyTime	 
 	BEQ PRG008_A4E4	 ; If Player is not flying (or at least high-speed jumping), jump to PRG008_A4E4
 
@@ -2582,7 +2583,7 @@ PRG008_AC9E:
 	CPY #$03	
 	BEQ PRG008_AD1A	 	; If power up has flight ability, jump to PRG008_AD1A
 
-	LDA #$00A
+	LDA #$00
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = 0 :(
 	JMP PRG008_AD1A	 ; Jump to PRG008_AD1A
 
@@ -4577,40 +4578,6 @@ Level_DoCommonSpecialTiles:
 	LDA #TILEA_ICEBLOCK
 	CMP Level_Tile_GndL,X
 	BNE PRG008_B604	 ; If Player is not touching an ice block, jump to PRG008_B604
- 
-	; Player is touching an ice block...
-	BIT <Pad_Input
-	BVC PRG008_B604	 ; If Player is not pushing 'B', jump to PRG008_B604
-
-	CPX #$03
-	BEQ PRG008_B604	 ; If tile at head, jump to PRG008_B604
-
-	LDA Level_ChgTileEvent
-	BNE PRG008_B604	 ; If Level_ChgTileEvent <> 0 (tile change already queued), jump to PRG008_B604
-
-	TXA
-	PHA		 ; Save 'X' (current tile index) 
-
-	JSR Level_IceBlock_GrabNew ; Grab a new ice block object!  (If there's room)
-
-	; Of note, if there was no room for an Ice Block, X = $FF (-1) right now
-	TXA		 ; Transfer new object index 'X' -> 'A'
-	ASL A		 ; Shift left 1 (setting carry if there was no room for Ice Block)
-
-	PLA		 ; Restore current tile index -> 'A'
-	TAX		 ; X = A
-
-	BCS PRG008_B604	 ; If we didn't have room for an ice block, jump to PRG008_B604
-
-	; Otherwise...
-
-	LDA #$00
-	STA Player_TailAttack	 ; Disable any tail attacking
-
-	LDA #CHNGTILE_DELETETOBG
-	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
-
-	JMP PRG008_B652	 ; Jump to PRG008_B652
 
 PRG008_B604:
 
@@ -4618,16 +4585,15 @@ PRG008_B604:
 
 	LDA Level_Tile_GndL,X
 	CMP #TILEA_COIN
-; start #DAHRKDAIZ modifying to detect #$05 as another coin type
+
+	; start #DAHRKDAIZ modifying to detect #$05 as another coin type
 	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
 	CMP #$05		 ; acts as a "blue" coin from frozen coins thawed
 	BNE PRG008_B623;
-; end #DAHRKDAIZ  7/15
 
 GOLD_COIN_TOUCH:
 	LDA #CHNGTILE_DELETECOIN
 	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
-	JSR Level_RecordBlockHit	 ; Record having grabbed this coin so it does not come back
 
 	; Play coin collected sound!
 	LDA Sound_QLevel1
@@ -4677,41 +4643,55 @@ PRG008_B623:
 	JMP PRG008_B652	 ; Jump to PRG008_B652
 
 PRG008_B64F:
+	STX DAIZ_TEMP1
+	STA DAIZ_TEMP2
+	CMP #$67
+	BEQ Break_Block
+	CMP #$CC
+	BNE Try_Frozen_Tiles
+
+Break_Block:
+	LDA Fox_FireBall
+	BEQ Do_Bumps_Instead
+	LDA DAIZ_TEMP2
+	CMP #$67
+	BEQ Do_Break
+	CMP #$CC
+	BNE Try_Frozen_Tiles
+
+Do_Break:
+	INC Ignore_Vel_Stop
+	LDA #CHNGTILE_DELETETOBG
+	JSR Level_QueueChangeBlock
+	JSR LATP_Brick
+	JMP PRG008_B652
+
+Try_Frozen_Tiles:
+	LDX Fox_FireBall
+	BEQ Do_Bumps_Instead
+	LDX #$02 
+
+Touching_Ice:
+	CMP FireBall_ChangeBlocks, X
+	BEQ Thaw_Ice
+	DEX
+	BPL Touching_Ice
+	JMP Do_Bumps_Instead
+
+Thaw_Ice:
+	LDA FireBall_ChangeBlocksTo, X
+	LDX DAIZ_TEMP1
+	INC Ignore_Vel_Stop
+	JSR Level_QueueChangeBlock
+	JMP PRG008_B652
+
+Do_Bumps_Instead:
+	LDX DAIZ_TEMP1
 	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
 
 PRG008_B652:
 	PLA		 
 	TAY		 ; Restore offset into TileAttrAndQuad_OffsSloped -> 'Y'
-
-	RTS		 ; Return
-
-
-	; This routine "grabs a new ice block" object and puts 
-	; it in the Player's hands, if there's room for it!
-Level_IceBlock_GrabNew:
-	LDX #4 	; X = 4 (considering first 5 object slots)
-PRG008_B657:
-	LDA Objects_State,X
-	BEQ PRG008_B660	 ; If this object slot is "dead/empty", jump to PRG008_B660
-
-	DEX		 ; X--
-	BPL PRG008_B657	 ; While X >= 0, loop!
-
-	; If you get here, there was no room for a new ice block :(
-
-	RTS		 ; Return
-
-PRG008_B660:
-	JSR Level_PrepareNewObject ; Prepare new Ice Block object!
-
-	LDA #$04	 
-	STA Objects_State,X	; Set "held by Player" state (implies position of object)
-
-	LDA #OBJ_ICEBLOCK
-	STA Level_ObjectID,X	; Set object ID (ice block)
-
-	LDA #$80	 
-	STA Objects_Timer3,X	; Set object long timer (ticks until ice block evaporates in Player's hands)
 
 	RTS		 ; Return
 
@@ -6922,3 +6902,9 @@ Skip_Air_Change:
 	STA Sound_QLevel1
 Air_RTS:
 	RTS	
+
+FireBall_ChangeBlocks:
+	.byte  TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER
+
+FireBall_ChangeBlocksTo:
+	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER

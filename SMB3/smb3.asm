@@ -2484,7 +2484,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Fox_FireBall:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
 	Burning_Time:			.ds 1	;
-				.ds 77	; $7997-$79FF unused UNUSED HERE
+	Ignore_Vel_Stop:		.ds	1	;
+				.ds 76	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 

@@ -2775,9 +2775,6 @@ PRG030_910C:
 	LDA Map_PlayerLost2PVs
 	BNE PRG030_9128	 ; If Map_PlayerLost2PVs is set, jump to PRG030_9128
 
-	DEC Player_Lives,X	; One less life for the Player...
-	BMI PRG030_9133	 	; If fell below zero, GAMEOVER!; jump to PRG030_9133
-
 PRG030_9128:
 
 	; Stop any music
@@ -2786,25 +2783,6 @@ PRG030_9128:
 
 	STY Map_Operation	 ; Map_Operation = 2
 	JMP PRG030_84D7	 	; Jump to PRG030_84D7
-
-PRG030_9133:
-
-	; GAME OVER!!
-
-	; Set Player as twirling (in case they Continue...)
-	LDA #$01	 
-	STA World_Map_Twirl,X
-
-	; Init map vars
-	LDA #$00
-	STA Level_Tileset
-	STA <Map_EnterLevelFX
-	STA <Map_WarpWind_FX
-	STA Map_Intro_Tick
-
-	; Map_GameOver_CursorY = $60
-	LDA #$60
-	STA Map_GameOver_CursorY
 
 PRG030_9149:
 	JSR Sprite_RAM_Clear	 
@@ -4250,91 +4228,6 @@ PRG030_999A:
 	INX		 
 	DEY		 
 	BNE PRG030_999A	 
-
-	RTS		 ; Return
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Level_RecordBlockHit
-;
-; Called after a coin is collected or a hidden 1-Up is found.
-; This records those events so if the level is swapped with its
-; alternate, these things do not retun.  Next best thing to
-; actually having enough memory to hold both levels together...
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-RecordBlockHitBits:
-	.byte $80, $40, $20, $10, $08, $04, $02, $01
-
-Level_RecordBlockHit:
-
-	; Currently Temp_Var13-16 are defined as follows:
-	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
-	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
-	; ... of Player detection coordinates
-
-	TYA
-	PHA		 ; Save 'Y'
-
-	TXA
-	PHA		 ; Save 'X'
-
-	LDA <Temp_Var16
-	PHA		 ; Save Temp_Var16
-
-	LDA <Temp_Var13
-	PHA		 ; Save Temp_Var13
-
-	; This converts Temp_Var15/Temp_Var16 into a tile row stored in Temp_Var16
-	; Essentially a 16-bit right shift 4 bits
-	LDA <Temp_Var16
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var16
-	LDA <Temp_Var15
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ORA <Temp_Var16
-	STA <Temp_Var16
-
-	; This turns Temp_Var13 into an index into Level_BlockGrabHitMem
-	LDA <Temp_Var16
-	AND #%11111000
-	LSR A
-	LSR A
-	ORA <Temp_Var13
-	STA <Temp_Var13
-
-	LDA Level_JctFlag
-	BEQ PRG030_99DC	 ; If we're not junctioning, jump to PRG030_99DC
-
-	; If junctioning, Temp_Var13 += $40
-	LDA <Temp_Var13
-	ADD #$40
-	STA <Temp_Var13
-
-PRG030_99DC:
-	LDA <Temp_Var16
-	AND #$07
-	TAX
-	LDY <Temp_Var13
-	LDA #$00 ;Level_BlockGrabHitMem,Y
-	ORA RecordBlockHitBits,X
-	;STA Level_BlockGrabHitMem,Y
-
-	; Restore everything we saved
-	PLA
-	STA <Temp_Var13
-	PLA
-	STA <Temp_Var16
-	PLA
-	TAX
-	PLA
-	TAY
 
 	RTS		 ; Return
 

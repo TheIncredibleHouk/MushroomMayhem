@@ -376,11 +376,11 @@ ShellAnim3:		.byte $F1, $F1, $F1, $39, $3B, $F1
 ShellAnim4:		.byte $F1, $F1, $F1, $3D, $3F, $F1
 BooAnim:		.byte $F1, $F1, $F1, $1D, $1F, $F1
 FireballAnimR:	.byte $01, $03, $05, $21, $23, $25
-FireballAnimD:	.byte $15, $17, $19, $35, $37, $39
+FireballAnimD:	.byte $31, $33, $19, $35, $37, $39
 FireballAnimL:	.byte $01, $03, $05, $21, $23, $25
 FireballAnimU:	.byte $1B, $1D, $1F, $3B, $3D, $3F
 FireballAnimR2:	.byte $07, $09, $0B, $27, $29, $2B
-FireballAnimD2:	.byte $15, $17, $19, $35, $37, $39
+FireballAnimD2:	.byte $31, $33, $19, $35, $37, $39
 FireballAnimL2:	.byte $07, $09, $0B, $27, $29, $2B
 FireballAnimU2:	.byte $1B, $1D, $1F, $3B, $3D, $3F
 
@@ -3239,11 +3239,15 @@ Burn_Mode_Velocities:
 	.byte $00, $D0	; 4 up 
 
 Burn_Mode_Velocity:
+	LDA Ignore_Vel_Stop
+	BNE Set_Burn_Velocity
 	LDA <Player_XVel		; if we no velocity (we hit solid tile)
 	ORA <Player_YVel		; then kill burning mode (fireball)
 	BEQ Kill_Burn_Mode
 
 Set_Burn_Velocity:
+	LDA #$00
+	STA Ignore_Vel_Stop
 	LDA Burning_Time
 	BEQ Kill_Burn_NoFX		; check our burning mode time
 	LDA Fox_FireBall		; if we still have some, keep moving!
