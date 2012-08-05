@@ -628,6 +628,15 @@ Add_Six:
 	LDA <Counter_1
 	AND #$02
 	BEQ Dont_Toggle_Fire
+	LDA Fox_FireBall
+	AND #$01
+	BNE Toggle_Horiz
+	LDA <Player_FlipBits
+	EOR #SPR_HFLIP
+	STA <Player_FlipBits
+	JMP Dont_Toggle_Fire
+
+Toggle_Horiz:
 	LDA DAIZ_TEMP1
 	CLC
 	ADC #$18
@@ -762,7 +771,8 @@ PRG029_CF88:
 
 
 	LDA Player_Flip
-	BEQ PRG029_D010	; If Player is not somersaulting, jump to PRG029_D010
+	ORA Fox_FireBall
+	BEQ PRG029_D010	; If Player is not somersaulting, or in fireball mode jump to PRG029_D010
 
 	; Otherwise all of the sprites are pushed to the right by 8
 
@@ -783,52 +793,6 @@ PRG029_CF88:
 
 
 PRG029_D010:
-	LDA Player_Kuribo
-	BEQ PRG029_D050	 ; If Player is not in a Kuribo's shoe, jump to PRG029_D050
-
-	; In short, if Player is small, use Temp_Var1 = 6, otherwise Temp_Var1 = 0 (sprite vertical offset in shoe)
-	LDY #$00
-	LDA <Player_Suit
-	BNE PRG029_D01D
-	LDY #$06
-PRG029_D01D:
-	STY <Temp_Var1
-
-	LDA <Player_InAir
-	BEQ PRG029_D036	 ; If Player is not mid-air, jump to PRG029_D036
-
-	LDA <Player_YVel
-	BPL PRG029_D029	 ; If Player is falling, jump to PRG029_D029
-
-	EOR #$ff	 ; Otherwise negate it (sort of)
-
-PRG029_D029:
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	SUB #$03	; The "whole" part of the Y Velocity, minus 3
-
-	EOR #$ff	 ; Negate that (sort of)
-	BPL PRG029_D036	 ; If the result is positive, jump to PRG029_D036
-
-	LDA #$00	 ; Otherwise if it slipped below zero, just use zero
-
-PRG029_D036:
-	ADD <Temp_Var1	 ; Add that to the initial offset
-	ADD <Player_SpriteY	 ; And add in the Player's sprite Y position
-
-	; Store that as the new Y position on the "first row" sprites
-	STA Sprite_RAM+$0C,X
-	STA Sprite_RAM+$10,X
-	STA Sprite_RAM+$14,X
-
-	; The "second row" sprites (the shoe part in this case) use a different palette
-	LDA Sprite_RAM+$02,X
-	ORA #$02
-	STA Sprite_RAM+$02,X
-	STA Sprite_RAM+$06,X
-
 PRG029_D050:
 	LDA <Player_Frame
 	CMP #PF_KICK_BIG 
@@ -3188,21 +3152,24 @@ Restore_Curr_Player_Pal:
 	RTS
 
 Try_Burning_Mode:
-	LDA Fox_FireBall
+	LDA Fox_FireBall			; we're already in fireball mode, let's continue doing velocity checks
 	BEQ Try_FireBall
+	LDA Player_InWater			; if we're a fireball and hit water, kill it		
+	ORA Player_SandSink
+	BNE Cant_Burning_Mode
 	JMP Burn_Mode_Velocity
 
-Try_FireBall:
+Try_FireBall:					; not a fireball, so let's try it!
 	LDA Player_Power
 	CMP #$7F
-	BNE Try_Burning_ModeRTS
-	LDA Player_InWater
-	ORA Player_SandSink
-	BNE Cant_Burning_Mode		; can't go into burning mode in sand or water
-	LDA <Pad_Holding
-	AND #PAD_B					
 	BNE Try_Burning_ModeRTS		
-	LDA <Pad_Holding			; This finds the direction to send based on input
+	LDA Player_InWater			
+	ORA Player_SandSink
+	BNE Try_Burning_ModeRTS		; can't go into burning mode in sand or water
+	LDA <Pad_Holding
+	AND #PAD_B					; P-Meter's full, have we let go of B yet?
+	BNE Try_Burning_ModeRTS		
+	LDA <Pad_Holding			; we have! This finds the direction to send based on input
 	AND #(PAD_RIGHT | PAD_UP | PAD_DOWN | PAD_LEFT)
 	BNE	Find_Direction
 	LDA Player_FlipBits			; No input on controller, direction of fireball
@@ -3223,6 +3190,7 @@ Find_Direction:
 	BEQ Try_Up
 	LDA #$02
 	BNE Store_Direction
+
 Try_Up:
 	LDA <Pad_Holding
 	AND #PAD_UP
@@ -3237,32 +3205,31 @@ Try_Right:
 	LDA #$03
 	BNE Store_Direction
 
-Do_Left:
+Do_Left:				; not holding up, down, or right, default to left
 	LDA #$01
+
 Store_Direction:
 	STA Fox_FireBall
 	LDA #$40
 	STA Burning_Time
-	LDA #$10					
-	STA Player_SuitLost
+	LDA #$10				; poof effect, we're now in the air	
+	STA Player_SuitLost		
 	STA Player_InAir
-	LDA Sound_QLevel2
+	LDA Sound_QLevel2		; flame sound effect
 	ORA #SND_LEVELFLAME
 	STA Sound_QLevel2
-	JMP Set_Burn_Velocity
+	JMP Set_Burn_Velocity	; set initial velocity
 
 Cant_Burning_Mode:
 	LDA Fox_FireBall
-	BEQ Try_Burning_ModeRTS
-	LDA #$00
+	BEQ Try_Burning_ModeRTS	;  seems redundant, but if we're not in a fireball, no need to ge rid of it
+	LDA #$00				
 	STA Fox_FireBall
 	LDA #$10					
 	STA Player_SuitLost
 
 Try_Burning_ModeRTS:
 	RTS
-
-Burn_Mode_Directions:
 
 Burn_Mode_Velocities:
 	.byte $FF, $FF	; unused
@@ -3272,14 +3239,14 @@ Burn_Mode_Velocities:
 	.byte $00, $D0	; 4 up 
 
 Burn_Mode_Velocity:
-	LDA <Player_XVel
-	ORA <Player_YVel
+	LDA <Player_XVel		; if we no velocity (we hit solid tile)
+	ORA <Player_YVel		; then kill burning mode (fireball)
 	BEQ Kill_Burn_Mode
 
 Set_Burn_Velocity:
 	LDA Burning_Time
-	BEQ Kill_Burn_NoFX
-	LDA Fox_FireBall
+	BEQ Kill_Burn_NoFX		; check our burning mode time
+	LDA Fox_FireBall		; if we still have some, keep moving!
 	ASL A
 	TAX
 	LDA Burn_Mode_Velocities, X
@@ -3293,7 +3260,7 @@ BounceBack:
 	.byte $00, $20, $00, $E0, $00
 
 Kill_Burn_Mode:
-	LDA #$10
+	LDA #$10			; if we reach here, we hit a wall, shake the ground!
 	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
 
 	; Wham! sound effect
@@ -3301,11 +3268,11 @@ Kill_Burn_Mode:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 	LDX Fox_FireBall
-	LDA BounceBack, X
+	LDA BounceBack, X	; if we're hitting a wall, we have some recoil
 	STA <Player_XVel
 
 Kill_Burn_NoFX:
-	LDA #$00
+	LDA #$00			; kills burn mode completely
 	STA Fox_FireBall
 	STA Player_Power
 	LDA #$10					
