@@ -1313,6 +1313,14 @@ PRG008_A6DA:
 	STA <Pad_Input		; Otherwise, disable 'B' button
 
 PRG008_A6E5:
+	LDA Fox_FireBall		; if in fireball mode, disable, all but select and start
+	BEQ Normal_008_1
+
+	LDA <Pad_Input		
+	AND #(PAD_START | PAD_SELECT)
+	STA <Pad_Input
+
+Normal_008_1:
 	LDA Level_Objects+1
 	CMP #OBJ_TOADANDKING
 	BNE PRG008_A6F2	 	; If first object is not "Toad and the King" (i.e. we're in the end of world castle), jump to PRG008_A6F2
