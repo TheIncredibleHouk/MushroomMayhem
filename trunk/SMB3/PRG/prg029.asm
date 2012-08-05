@@ -375,6 +375,14 @@ ShellAnim2:		.byte $F1, $F1, $F1, $1D, $1F, $F1
 ShellAnim3:		.byte $F1, $F1, $F1, $39, $3B, $F1
 ShellAnim4:		.byte $F1, $F1, $F1, $3D, $3F, $F1
 BooAnim:		.byte $F1, $F1, $F1, $1D, $1F, $F1
+FireballAnimR:	.byte $01, $03, $05, $21, $23, $25
+FireballAnimD:	.byte $15, $17, $19, $35, $37, $39
+FireballAnimL:	.byte $01, $03, $05, $21, $23, $25
+FireballAnimU:	.byte $1B, $1D, $1F, $3B, $3D, $3F
+FireballAnimR2:	.byte $07, $09, $0B, $27, $29, $2B
+FireballAnimD2:	.byte $15, $17, $19, $35, $37, $39
+FireballAnimL2:	.byte $07, $09, $0B, $27, $29, $2B
+FireballAnimU2:	.byte $1B, $1D, $1F, $3B, $3D, $3F
 
 	; Selects a VROM page offset per Player_Frame
 Player_FramePageOff:
@@ -405,7 +413,15 @@ RAINBOW_PAL_CYCLE:
 ; scrolled, the Player's animation frame, invincibility status,
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_Draw:
+Player_Draw
+	LDA Special_Suit_Flag
+	BEQ No_Burning_Mode
+	LDA Player_Suit
+	CMP #$03
+	BNE No_Burning_Mode
+	JSR Try_Burning_Mode
+
+No_Burning_Mode:
 	LDA Invincible_Enemies
 	BEQ No_Invincible_Enemies
 	JSR Rainbow_Palette_Cycle_Sprites
@@ -418,14 +434,23 @@ No_Invincible_Enemies:
 	LDA <Player_FlipBits
 	EOR #$40
 	STA <Player_FlipBits
-Try_Boo_Frames:
 
+Try_Boo_Frames:
 	LDA Boo_Mode_Timer
+	BEQ Try_Fireball_Frames
+	LDX #$00
 	BEQ Normal_Player_Frames
-	LDX #$08
+
+Try_Fireball_Frames:
+	LDA Fox_FireBall
+	BEQ Normal_Player_Frames
+	LDA #$01
+	BNE Override_Page_Offset
 
 Normal_Player_Frames:
 	LDA Player_FramePageOff,X
+
+Override_Page_Offset:
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
 	LDY <Player_Suit
@@ -547,23 +572,6 @@ PRG029_CF1E:
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
 
-	STX DAIZ_TEMP1
-	LDA $F000
-	LDA Special_Suit_Flag		; if in burning mode, cycle palettes
-	BEQ Restore_X
-	LDA Player_FlyTime			; using fly time as the same as burning mode time
-	BEQ Restore_X
-	CMP #$01
-	BNE Flame_Cycle
-	JSR End_Flame_Pal
-	JMP Restore_X
-
-Flame_Cycle:
-	JSR Flame_Pal_Cycle
-
-Restore_X:
-	LDX DAIZ_TEMP1
-
 	LDA Player_Shell			; If in shell, override the animation
 	BEQ Try_Boo_Animation
 	TXA
@@ -592,16 +600,41 @@ Add_Six_Loop:
 
 Try_Boo_Animation:
 	LDA Boo_Mode_Timer
-	BEQ Draw_Player_Sprites
-	LDA <Player_Suit
-	CMP #$05
-	BNE Draw_Player_Sprites
+	BEQ Try_Fireball_Animation
 
 	LDA #LOW(BooAnim)
 	STA <Player_SprWorkL
 	LDA #HIGH(BooAnim)
 	STA <Player_SprWorkH
 	LDY #$00
+	JMP PRG029_CF2F
+
+Try_Fireball_Animation:
+	LDA Fox_FireBall			; If in shell, override the animation
+	BEQ Draw_Player_Sprites
+	LDA #LOW(FireballAnimR)
+	STA <Player_SprWorkL
+	LDA #HIGH(FireballAnimR)
+	STA <Player_SprWorkH
+	LDY Fox_FireBall
+	LDA #$FA
+
+Add_Six:
+	CLC
+	ADC #$06
+	DEY
+	BNE Add_Six
+	STA DAIZ_TEMP1
+	LDA <Counter_1
+	AND #$02
+	BEQ Dont_Toggle_Fire
+	LDA DAIZ_TEMP1
+	CLC
+	ADC #$18
+	STA DAIZ_TEMP1
+
+Dont_Toggle_Fire:
+	LDY DAIZ_TEMP1
 	JMP PRG029_CF2F
 
 Draw_Player_Sprites:
@@ -2433,76 +2466,6 @@ PRG029_D7FC:
 
 	RTS		 ; Return
 
-	;; BEGIN HUGE UNUSED SPACE
-
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D80A - $D819
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D81A - $D829
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D82A - $D839
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D83A - $D849
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D84A - $D859
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D85A - $D869
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D86A - $D879
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D87A - $D889
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D88A - $D899
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D89A - $D8A9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8AA - $D8B9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8BA - $D8C9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8CA - $D8D9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8DA - $D8E9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8EA - $D8F9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8FA - $D909
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D90A - $D919
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D91A - $D929
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D92A - $D939
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D93A - $D949
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D94A - $D959
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D95A - $D969
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D96A - $D979
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D97A - $D989
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D98A - $D999
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D99A - $D9A9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9AA - $D9B9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9BA - $D9C9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9CA - $D9D9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9DA - $D9E9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9EA - $D9F9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9FA - $DA09
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA0A - $DA19
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA1A - $DA29
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA2A - $DA39
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA3A - $DA49
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA4A - $DA59
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA5A - $DA69
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA6A - $DA79
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA7A - $DA89
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA8A - $DA99
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA9A - $DAA9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DAAA - $DAB9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DABA - $DAC9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DACA - $DAD9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DADA - $DAE9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DAEA - $DAF9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DAFA - $DB09
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB0A - $DB19
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB1A - $DB29
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB2A - $DB39
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB3A - $DB49
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB4A - $DB59
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB5A - $DB69
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB6A - $DB79
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB7A - $DB89
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB8A - $DB99
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DB9A - $DBA9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DBAA - $DBB9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DBBA - $DBC9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DBCA - $DBD9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DBDA - $DBE9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DBEA - $DBF9
-	.byte $FF, $FF, $FF, $FF, $FF, $FF  ; $DBFA - $DBFF
-
-	;; END HUGE UNUSED SPACE
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; BlockChange_Do
 ;
@@ -3224,47 +3187,127 @@ Restore_Curr_Player_Pal:
 	STA (Player_Pal_Backup + $01)
 	RTS
 
-Flame_Pal:
-	.byte $17, $16, $06, $FF 
-	.byte $27, $26, $16, $FF 
-	.byte $37, $36, $26, $FF 
-	.byte $30, $30, $36, $FF 
-	.byte $37, $36, $26, $FF 
-	.byte $27, $26, $16, $FF 
-	.byte $27, $36, $06, $FF 
+Try_Burning_Mode:
+	LDA Fox_FireBall
+	BEQ Try_FireBall
+	JMP Burn_Mode_Velocity
 
-Flame_Pal_Cycle:
-	LDA <Counter_1
-	AND #$01
-	BEQ Flame_PalRTS
-	LDA Burning_Mode_Pal_Counter
-	ASL A
+Try_FireBall:
+	LDA Player_Power
+	CMP #$7F
+	BNE Try_Burning_ModeRTS
+	LDA Player_InWater
+	ORA Player_SandSink
+	BNE Cant_Burning_Mode		; can't go into burning mode in sand or water
+	LDA <Pad_Holding
+	AND #PAD_B					
+	BNE Try_Burning_ModeRTS		
+	LDA <Pad_Holding			; This finds the direction to send based on input
+	AND #(PAD_RIGHT | PAD_UP | PAD_DOWN | PAD_LEFT)
+	BNE	Find_Direction
+	LDA Player_FlipBits			; No input on controller, direction of fireball
+	AND #$40					; based on direction player is facing
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	INX
+	TXA
+	JMP Store_Direction
+
+Find_Direction:
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ Try_Up
+	LDA #$02
+	BNE Store_Direction
+Try_Up:
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ Try_Right
+	LDA #$04
+	BNE Store_Direction
+
+Try_Right:
+	LDA <Pad_Holding
+	AND #PAD_RIGHT
+	BEQ Do_Left
+	LDA #$03
+	BNE Store_Direction
+
+Do_Left:
+	LDA #$01
+Store_Direction:
+	STA Fox_FireBall
+	LDA #$40
+	STA Burning_Time
+	LDA #$10					
+	STA Player_SuitLost
+	STA Player_InAir
+	LDA Sound_QLevel2
+	ORA #SND_LEVELFLAME
+	STA Sound_QLevel2
+	JMP Set_Burn_Velocity
+
+Cant_Burning_Mode:
+	LDA Fox_FireBall
+	BEQ Try_Burning_ModeRTS
+	LDA #$00
+	STA Fox_FireBall
+	LDA #$10					
+	STA Player_SuitLost
+
+Try_Burning_ModeRTS:
+	RTS
+
+Burn_Mode_Directions:
+
+Burn_Mode_Velocities:
+	.byte $FF, $FF	; unused
+	.byte $D0, $00	; 1 left
+	.byte $00, $30	; 2 down 		
+	.byte $30, $00	; 3 right
+	.byte $00, $D0	; 4 up 
+
+Burn_Mode_Velocity:
+	LDA <Player_XVel
+	ORA <Player_YVel
+	BEQ Kill_Burn_Mode
+
+Set_Burn_Velocity:
+	LDA Burning_Time
+	BEQ Kill_Burn_NoFX
+	LDA Fox_FireBall
 	ASL A
 	TAX
-	LDY #$00
-
-Load_Flame_Pal:
-	LDA Flame_Pal, X
-	STA (Palette_Buffer + $11), Y
+	LDA Burn_Mode_Velocities, X
+	STA <Player_XVel
 	INX
-	INY
-	CPY #$03
-	BNE Load_Flame_Pal
-	LDA Burning_Mode_Pal_Counter
-	CMP #$05
-	BNE Next_Flame_Pal
+	LDA Burn_Mode_Velocities, X
+	STA <Player_YVel
+	RTS
+
+BounceBack:
+	.byte $00, $20, $00, $E0, $00
+
+Kill_Burn_Mode:
+	LDA #$10
+	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
+
+	; Wham! sound effect
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	LDX Fox_FireBall
+	LDA BounceBack, X
+	STA <Player_XVel
+
+Kill_Burn_NoFX:
 	LDA #$00
-	STA Burning_Mode_Pal_Counter
+	STA Fox_FireBall
+	STA Player_Power
+	LDA #$10					
+	STA Player_SuitLost
 	RTS
-
-Next_Flame_Pal:
-	INC Burning_Mode_Pal_Counter
-
-Flame_PalRTS:
-	RTS
-
-End_Flame_Pal:
-	LDY #$00
-	STY Burning_Mode_Pal_Counter
-	LDX #$18
-	JMP Load_Flame_Pal

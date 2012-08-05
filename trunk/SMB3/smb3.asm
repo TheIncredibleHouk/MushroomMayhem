@@ -2481,9 +2481,10 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
 	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
 	Do_Shell_Bump:			.ds 1	; Indicates whether there is a reverse in direction that needs to be done due to a Koopa shell mode activating a block
-	Burning_Mode:			.ds 1	; Indicates we are in Burning mode
-	Burning_Mode_Pal_Counter: .ds 1	;
-				.ds 78	; $7997-$79FF unused UNUSED HERE
+	Fox_FireBall:			.ds 1	; Indicates we are in Burning mode
+	Burning_Mode:			.ds 1	;
+	Burning_Time:			.ds 1	;
+				.ds 77	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -3822,7 +3823,7 @@ TILE1_CANNONMID		= $78	; Mid part to ground
 TILE1_SANDTOP		= $7A	; Solid sand ground, top
 TILE1_SANDMID		= $7B	; Solid sand ground, middle
 
-TILE1_SKY		= $00	; Official sky tile
+TILE1_SKY		= $80	; Official sky tile
 
 TILE1_VINE		= $85	; Vine
 TILE1_LITTLE_BUSH	= $86	; The little green bush

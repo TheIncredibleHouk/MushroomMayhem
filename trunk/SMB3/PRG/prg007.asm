@@ -476,6 +476,7 @@ Gameplay_UpdateAndDrawMisc:
 	JSR CannonFire_UpdateAndDraw	 ; Update and draw the Cannon Fires
 	JSR PlayerProjs_UpdateAndDraw	 ; Update and draw Player's weapon projectiles
 	JSR Do_Boo_Mode
+	JSR Do_Burn_Mode
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_HAMMER
 	BEQ PRG007_A251	 ; If Player is wearing a Hammer Suit, jump to PRG007_A251
@@ -6081,3 +6082,11 @@ Poof_Sound:
 	LDA #$17
 	STA Player_SuitLost
  	RTS
+
+Do_Burn_Mode:
+	LDA  Burning_Time
+	BEQ Do_Burn_ModeRTS
+	DEC Burning_Time
+
+Do_Burn_ModeRTS:
+	RTS
