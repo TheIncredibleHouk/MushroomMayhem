@@ -779,6 +779,7 @@ PRG008_A3F2:
 	STA Player_Shell
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
+	STA Fox_FireBall
 
 	JSR Level_SetPlayerPUpPal ; Set power up's correct palette
 
@@ -957,6 +958,18 @@ Sound_FullPowerRing:
 
 
 PRG008_A4E4:
+	LDA Player_Suit
+	CMP #$03
+	BNE Normal_PMeter
+	LDA Special_Suit_Flag
+	BEQ Normal_PMeter
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Normal_PMeter
+	LDA #$01
+	STA Player_RunFlag
+
+Normal_PMeter:
 	LDA Player_Power
 	CMP #$7f
 	BNE PRG008_A4F8	 ; If Player_Power <> $7F (max power), jump to PRG008_A4F8
@@ -1098,6 +1111,7 @@ Player_XAccelMain:
 	.byte -1,  2,  2,  0, 	-1,  2,  2,  0	; Frog
 	.byte -1,  0,  2,  0, 	-1,  0,  2,  0	; Tanooki
 	.byte -1,  0,  2,  0, 	-1,  0,  2,  0	; Hammer
+
 
 Player_XAccelMain_UW:
 	; If on the ground	If swimming above the ground
@@ -1638,6 +1652,7 @@ PRG008_A86C:
 	LDA Player_InWater
 	ORA Player_IsHolding
 	ORA Boo_Mode_Timer
+	ORA Fox_FireBall
 	ORA Player_Shell
 	BNE PRG008_A890	 ; If Player is in water, holding something, or in Kuribo's shoe, jump to PRG008_A890
 
@@ -2208,6 +2223,7 @@ Player_UphillSpeedVals:
 
 Player_GroundHControl:
 	LDA Player_Shell
+	ORA Fox_FireBall
 	BEQ Grnd_No_Shell
 	JSR Player_Shell_HitBlocks
 	RTS
@@ -2545,6 +2561,9 @@ Normal_Jump:
 	BNE PRG008_AC9E	 	; If Player still has flight time left, jump to PRG008_AC9E
 
 	LDA #$80
+	LDX Special_Suit_Flag
+	BNE PRG008_AC9E
+
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = $80
 
 PRG008_AC9E:
@@ -2555,7 +2574,7 @@ PRG008_AC9E:
 	CPY #$03	
 	BEQ PRG008_AD1A	 	; If power up has flight ability, jump to PRG008_AD1A
 
-	LDA #$00
+	LDA #$00A
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = 0 :(
 	JMP PRG008_AD1A	 ; Jump to PRG008_AD1A
 
@@ -2586,6 +2605,8 @@ PRG008_ACCD:
 	TYA	
 	ADD <Player_YVel
 	LDX Boo_Mode_Timer
+	BNE Skip_YVel
+	LDX Fox_FireBall
 	BNE Skip_YVel
 	STA <Player_YVel ; Player_YVel += Y
 
@@ -4415,6 +4436,7 @@ Not_Shell_Brick:
 
 Do_Wall_Stop:
 	PLA
+
 Normal_Wall_Stop:
 	STA <Player_XVel ; Otherwise, halt Player horizontally
 

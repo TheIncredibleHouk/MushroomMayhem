@@ -3895,6 +3895,7 @@ PRG005_B2F4:
 	LDA #$00	  
 	STA <Player_YVel
 	STA <Player_InAir
+
 	JSR PRG005_B3B1
 
 	LDA #$10

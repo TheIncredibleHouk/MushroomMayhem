@@ -5167,10 +5167,10 @@ PRG000_D862:
 
 PRG000_D8A9:
 	LDA <Temp_Var14
-	BNE PRG000_D920	 ; If Temp_Var14 is not zero, there's a difference in the "High" component of the Player/Object, so no intersect!  Jump to PRG000_D920
+	BNE PRG000_D8CF2	 ; If Temp_Var14 is not zero, there's a difference in the "High" component of the Player/Object, so no intersect!  Jump to PRG000_D920
 
 	LDA <Temp_Var15
-	BMI PRG000_D920	 ; If Temp_Var15 is negative, no intersect, jump to PRG000_D920
+	BMI PRG000_D8CF3	 ; If Temp_Var15 is negative, no intersect, jump to PRG000_D920
 
 PRG000_D8B1:
 
@@ -5200,9 +5200,11 @@ PRG000_D8B1:
 
 PRG000_D8CF:
 	LDA <Temp_Var14
+PRG000_D8CF2:
 	BNE PRG000_D920	 ; If Temp_Var14 is not zero, there's a difference in the "High" component of the Player/Object, so no intersect!  Jump to PRG000_D920
 
 	LDA <Temp_Var15
+PRG000_D8CF3:
 	BMI PRG000_D920	 ; If Temp_Var15 is negative, no intersect, jump to PRG000_D920
 
 	; Temp_Var12 holds specific info:
@@ -5236,6 +5238,7 @@ PRG000_D8EB:
 	LDA Player_StarInv
 	ORA Player_Shell
 	ORA Boo_Mode_KillTimer
+	ORA Fox_FireBall
 	BEQ PRG000_D922	 ; If Player is NOT invincible, jump to PRG000_D922
 
 	; Player is invincible...
@@ -5494,6 +5497,7 @@ Player_GetHurt:
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGame		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
+	ORA Fox_FireBall		;
 	ORA Player_DebugNoHitFlag	; ... debug invincibility flag is set (unused) ...
 	BNE PRG000_D9B7	 ; ... then jump to PRG000_D9B7 (RTS)
 
@@ -5647,6 +5651,7 @@ Player_Die:
 	STA Player_Kuribo
 	STA Player_StarInv
 	STA Player_Shell
+	STA Fox_FireBall
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Level_PSwitchCnt
