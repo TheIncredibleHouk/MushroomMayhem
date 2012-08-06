@@ -110,16 +110,18 @@ PRG007_A070:
 	CMP #TILE2_LAVATOP
 	BNE PRG007_A082	 ; If this is not (possibly) a lava tile, jump to PRG007_A082
 
-	LDY Level_Tileset
-	CPY #11
-	BEQ PRG007_A07F	 ; If this is tileset 11 (Giant World; Interesting!  Green bubbly death here), jump to PRG007_A07F
-
-	CPY #2
-	BNE PRG007_A082	 ; If this is NOT tileset 2 (Fortress style), jump to PRG007_A082
+	STA DAIZ_TEMP1
+	LDA Special_Suit_Flag		; Fire fox mario can swim in lava!
+	BEQ PRG007_A07F
+	LDA Player_Suit
+	CMP #$03
+	BEQ Swim_Lava
 
 PRG007_A07F:
 	JMP PRG007_A183	 ; Jump to PRG007_A183 (Player dies!)
 
+Swim_Lava:
+	LDA DAIZ_TEMP1
 PRG007_A082:
 	CMP #TILE2_DONUTLIFT
 	BNE PRG007_A0DD	 ; If this is not (possibly) a Donut Lift, jump to PRG007_A0DD (RTS)

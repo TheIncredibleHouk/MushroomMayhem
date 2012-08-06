@@ -457,6 +457,16 @@ Level_Initialize:
 PRG008_A242:
 	STA Level_ChangeReset ; Set Level_ChangeReset = 0 (trigger scene-change reset)
 
+	LDA #$00
+	STA ESwitch
+	LDA Level_Tileset
+	CMP #$02
+	BNE No_ESwitch
+	LDA #$01
+	STA ESwitch
+
+No_ESwitch:
+
 	LDA #$28
 	STA Player_SprOff ; Player sprite rooted at offset $28
 
@@ -928,7 +938,6 @@ PRG008_A4BE:
 ; and plays the annoying "ringing" noise :)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_PowerUpdate:
-	LDA $F000
 	LDY Player_FlyTime	 
 	BEQ PRG008_A4E4	 ; If Player is not flying (or at least high-speed jumping), jump to PRG008_A4E4
 
@@ -1166,9 +1175,9 @@ Player_RootJumpVel:	.byte PLAYER_JUMP
 	; for the negative Y velocity, it's "more negative")
 Player_SpeedJumpInc:	.byte $00, $02, $04, $08
 
-; FIXME: Anybody want to claim this?
-	.byte $00, $03, $06, $08, $08, $08, $08, $06, $03, $00, $04, $08, $12, $16, $16, $12
-	.byte $08, $04
+;; FIXME: Anybody want to claim this?
+;	.byte $00, $03, $06, $08, $08, $08, $08, $06, $03, $00, $04, $08, $12, $16, $16, $12
+;	.byte $08, $04
 
 	; This sets the sprite's H/V flip bits for the somersault
 Player_SomersaultFlipBits:
@@ -4608,14 +4617,12 @@ GOLD_COIN_TOUCH:
 PRG008_B623:
 
 	; Player not touching coin...
+	CPX #$02
+	BGS PRG008_B64F
 
+	JSR Try_ESwitch
 	CMP #TILEA_PSWITCH
 	BNE PRG008_B64F	 ; If Player is not touching P-Switch, jump to PRG008_B64F
-
-	; Player touching P-Switch...
-
-	CPX #$02
-	BGS PRG008_B64F	 ; If it is being detected by Player's head, then jump to PRG008_B64F (don't hit with head!)
 
 	LDA #CHNGTILE_PSWITCHSTOMP	; P-Switch hit tile change
 
@@ -6404,61 +6411,6 @@ PRG008_BE2E:
 	BPL PRG008_BDFD	 ; While X >= 0, loop!
 
 PRG008_BE31:
-	LDA Level_TilesetIdx
-	CMP #$00
-	BNE PRG008_BE76	 ; If Player is NOT in a Plains style level, jump to PRG008_BE76
-
-	LDY #$01	 ; Y = 1
-
-PRG008_BE3A:
-	LDA Level_Tile_GndL,Y
-
-	SUB #TILE1_WBLOCKTH
-	CMP #$03
-	BLT PRG008_BE4E	 ; If Player is on a big white block, jump to PRG008_BE4E
-
-	DEY		 ; Y--
-	BPL PRG008_BE3A	 ; While Y >= 0, loop!
-
-	; Not on a white block...
-
-PRG008_BE47:
-	LDA #$00	 
-	STA Player_WhiteBlkCnt	 ; Reset white block counter if not on a white block!
-	BEQ PRG008_BE76	 ; Jump (technically always) to PRG008_BE76
-
-PRG008_BE4E:
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ PRG008_BE47	 ; If Player is NOT pressing down, jump to PRG008_BE47
-
-	INC Player_WhiteBlkCnt	 ; Player_WhiteBlkCnt++
-
-	LDA Player_WhiteBlkCnt
-	CMP #$F0	 
-	BNE PRG008_BE76	 ; If Player_WhiteBlkCnt <> $F0, jump to PRG008_BE76
-
-	; Count max reached!  Fall into background...
-
-	LDA #$F0	 ; Superfluous!
-	STA Player_Behind	 ; Set Player as behind the scene...
-
-	; To make Player fall, do everything in our power to make sure
-	; the Player doesn't get a chance to jump or anything else :)
-	LDA #$00
-	STA <Player_YVel	 ; Halt Player vertically 
-
-	LDA <Player_Y
-	ADD #$06
-	STA <Player_Y		; Force Player down by 6 pixels (fall)
-
-	INC <Player_InAir	 ; Set Player as in air
-
-	; Don't register 'A' button
-	LDA <Pad_Input
-	AND #~PAD_A
-	STA <Pad_Input
-
 PRG008_BE76:
 	LDA Level_TilesetIdx
 	CMP #$02	 
@@ -6908,3 +6860,34 @@ FireBall_ChangeBlocks:
 
 FireBall_ChangeBlocksTo:
 	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER
+
+PTableChange:
+	.byte $10, $68, $6A
+
+Try_ESwitch:
+	STX DAIZ_TEMP1
+	LDX ESwitch
+	BEQ Cant_ESwitch
+	LDX #$03
+
+Find_ESwitch:
+	STA $7FFF
+	CMP ESwitches, X
+	BEQ Change_ESwitch
+	DEX
+	BNE Find_ESwitch
+	BEQ Cant_ESwitch
+
+Change_ESwitch:
+	STX ESwitch
+	DEX
+	LDA PTableChange, X
+	STA PatTable_BankSel
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	LDA #$00
+
+Cant_ESwitch:
+	LDX DAIZ_TEMP1
+	RTS

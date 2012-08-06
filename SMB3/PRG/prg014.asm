@@ -1917,7 +1917,7 @@ PRG014_CE70:
 	JMP PRG014_CEA3	 		; Jump to PRG014_CEA3
 
 PRG014_CE9F:
-	LDA #TILE2_BGBRICK_TOPSHADOW	; Rest of bricks get shadow BGBRICK under it...
+	LDA #ESWITCH_BLOCK1	; Rest of bricks get shadow BGBRICK under it...
 	STA [Map_Tile_AddrL],Y	 	; Store into tile mem
 
 PRG014_CEA3:

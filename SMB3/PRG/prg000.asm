@@ -455,12 +455,12 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX14 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $9D - OBJ_FIREJET_UPWARD
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $9E - OBJ_PODOBOO
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $9F - OBJ_PARABEETLE
-	.byte OAT_BOUNDBOX02	; Object $A0 - OBJ_GREENPIRANHA
-	.byte OAT_BOUNDBOX02	; Object $A1 - OBJ_GREENPIRANHA_FLIPPED
+	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY		; Object $A0 - OBJ_DRYPIRANHA
+	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY		; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
 	.byte OAT_BOUNDBOX10	; Object $A2 - OBJ_REDPIRANHA
 	.byte OAT_BOUNDBOX10	; Object $A3 - OBJ_REDPIRANHA_FLIPPED
-	.byte OAT_BOUNDBOX02	; Object $A4 - OBJ_GREENPIRANHA_FIRE
-	.byte OAT_BOUNDBOX02	; Object $A5 - OBJ_GREENPIRANHA_FIREC
+	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY		; Object $A4 - OBJ_DRYPIRANHA_FIRE
+	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY		; Object $A5 - OBJ_DRYPIRANHA_FIREC
 	.byte OAT_BOUNDBOX10	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OAT_BOUNDBOX10	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
 	.byte OAT_BOUNDBOX11 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $A8 - OBJ_UPARROW
@@ -1470,7 +1470,7 @@ PRG000_C7FA:
 
 PRG000_C82A:
 	LDA [Temp_Var1],Y	; Get tile
- 
+	
 	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
 
 	JMP PRG000_C834	 ; Jump to PRG000_C834
@@ -1497,6 +1497,7 @@ PostPSwitchTile:	.byte $67, $40, $40, $67, $79
 PostPSwitchAttr:	.byte $03, $00, $00, $00, $00
 
 PSwitch_SubstTileAndAttr:
+	JSR CheckESwitch
 	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
 	BEQ PRG000_C85B	 	; If P-Switch not active, jump to PRG000_C85B (RTS)
 
@@ -6388,83 +6389,83 @@ Object_AnySprOffscreen:
 	RTS		 ; Return
 
 
-; FIXME: Anybody want to claim this?
-; Appears it would return a free object slot
-; $DD5B 
-	LDY #$04	; Y = 4
-PRG000_DD5D:
-	LDA Objects_State,Y
-	BEQ PRG000_DD65	 ; If this object slot is dead/empty, jump to PRG000_DD65
-
-	DEY		 ; Y--
-	BPL PRG000_DD5D	 ; While Y >= 0, loop
-
-PRG000_DD65:
-	RTS		 ; Return
-
-
-; FIXME: Anybody want to claim this?
-; Appears to apply offsets to Player X/Y (Temp_Var11/Temp_Var10) and get a tile there
-; $DD66 
-
-	; Temp_Var13 = Player_YHi
-	LDA <Player_YHi
-	STA <Temp_Var13
-
-	; Temp_Var14 = Temp_Var10 (? input var?) + Player_Y
-	LDA <Temp_Var10
-	ADD <Player_Y
-	STA <Temp_Var14
-
-	BCC PRG000_DD75	 ; If no carry, jump to PRG000_DD75
-
-	INC <Temp_Var13		 ; Apply carry
-
-PRG000_DD75:
-	LDA <Temp_Var13
-	BNE PRG000_DD84	 ; If Temp_Var13 <> 0 (Player is on lower screen), jump to PRG000_DD84
-
-	; Temp_Var14 -= 16
-	LDA <Temp_Var14
-	SUB #16
-	STA <Temp_Var14
-	BCS PRG000_DD84	 ; If carry set, jump to PRG000_DD84
-
-	DEC <Temp_Var13		 ; Apply carry
-
-PRG000_DD84:
-
-	; Temp_Var15 = Player_XHi
-	LDA <Player_XHi
-	STA <Temp_Var15
-
-	LDA <Temp_Var11
-	BPL PRG000_DD8E	 ; If Temp_Var11 (? input var?) >= 0, jump to PRG000_DD8E
-
-	DEC <Temp_Var15		 ; Otherwise, Temp_Var15--
-
-PRG000_DD8E:
-
-	; Temp_Var16 = Player_X + Temp_Var11 (? input var)
-	LDA <Player_X
-	ADD <Temp_Var11
-	STA <Temp_Var16
-	BCC PRG000_DD99	 ; If no carry, jump to PRG000_DD99
-
-	INC <Temp_Var15		 ; Apply carry
-
-PRG000_DD99:
-	; Backup X/Y
-	STY <Temp_Var10
-	STX <Temp_Var11
-
-	JSR Player_GetTileAndSlope_Normal
-
-	; Restore X/Y
-	LDY <Temp_Var10
-	LDX <Temp_Var11
-	RTS		 ; Return
-
+;; FIXME: Anybody want to claim this?
+;; Appears it would return a free object slot
+;; $DD5B 
+;	LDY #$04	; Y = 4
+;PRG000_DD5D:
+;	LDA Objects_State,Y
+;	BEQ PRG000_DD65	 ; If this object slot is dead/empty, jump to PRG000_DD65
+;
+;	DEY		 ; Y--
+;	BPL PRG000_DD5D	 ; While Y >= 0, loop
+;
+;PRG000_DD65:
+;	RTS		 ; Return
+;
+;
+;; FIXME: Anybody want to claim this?
+;; Appears to apply offsets to Player X/Y (Temp_Var11/Temp_Var10) and get a tile there
+;; $DD66 
+;
+;	; Temp_Var13 = Player_YHi
+;	LDA <Player_YHi
+;	STA <Temp_Var13
+;
+;	; Temp_Var14 = Temp_Var10 (? input var?) + Player_Y
+;	LDA <Temp_Var10
+;	ADD <Player_Y
+;	STA <Temp_Var14
+;
+;	BCC PRG000_DD75	 ; If no carry, jump to PRG000_DD75
+;
+;	INC <Temp_Var13		 ; Apply carry
+;
+;PRG000_DD75:
+;	LDA <Temp_Var13
+;	BNE PRG000_DD84	 ; If Temp_Var13 <> 0 (Player is on lower screen), jump to PRG000_DD84
+;
+;	; Temp_Var14 -= 16
+;	LDA <Temp_Var14
+;	SUB #16
+;	STA <Temp_Var14
+;	BCS PRG000_DD84	 ; If carry set, jump to PRG000_DD84
+;
+;	DEC <Temp_Var13		 ; Apply carry
+;
+;PRG000_DD84:
+;
+;	; Temp_Var15 = Player_XHi
+;	LDA <Player_XHi
+;	STA <Temp_Var15
+;
+;	LDA <Temp_Var11
+;	BPL PRG000_DD8E	 ; If Temp_Var11 (? input var?) >= 0, jump to PRG000_DD8E
+;
+;	DEC <Temp_Var15		 ; Otherwise, Temp_Var15--
+;
+;PRG000_DD8E:
+;
+;	; Temp_Var16 = Player_X + Temp_Var11 (? input var)
+;	LDA <Player_X
+;	ADD <Temp_Var11
+;	STA <Temp_Var16
+;	BCC PRG000_DD99	 ; If no carry, jump to PRG000_DD99
+;
+;	INC <Temp_Var15		 ; Apply carry
+;
+;PRG000_DD99:
+;	; Backup X/Y
+;	STY <Temp_Var10
+;	STX <Temp_Var11
+;
+;	JSR Player_GetTileAndSlope_Normal
+;
+;	; Restore X/Y
+;	LDY <Temp_Var10
+;	LDX <Temp_Var11
+;	RTS		 ; Return
+;
 
 
 	; Initializes a "block bump" effect, if one of the 2 slots is open...
@@ -6868,4 +6869,33 @@ Change_MapY:
 	ASL A
 	ASL A
 	STA Map_Entered_X
+	RTS
+
+ESwitchTiles:
+	.byte $FF, ESWITCH_BLOCK1, ESWITCH_BLOCK2, ESWITCH_BLOCK3
+
+ESwitches:
+	.byte $FF, ESWITCH1, ESWITCH2, ESWITCH3
+
+CheckESwitch:
+	STX DAIZ_TEMP2
+	LDX ESwitch
+	BEQ No_Replace
+	CMP ESwitches, X
+	BEQ Do_Replace2
+	CMP ESwitchTiles,X
+	BNE No_Replace
+
+Do_Replace:
+	LDA #$FD
+	LDX DAIZ_TEMP2
+	RTS 
+
+Do_Replace2
+	LDA #$00
+	LDX DAIZ_TEMP2
+	RTS
+
+No_Replace:
+	LDX DAIZ_TEMP2
 	RTS
