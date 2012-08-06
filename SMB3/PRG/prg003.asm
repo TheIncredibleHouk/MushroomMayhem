@@ -2753,11 +2753,6 @@ PRG003_AE50:
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
 
-	; 10 EXP for boom boom
-	LDA <Objects_Var5,X
-	ADD #$0A
-	STA Score_Earned
-
 	; Player Y Vel = -$30 (bounce off)
 	LDA #-$30
 	STA <Player_YVel
@@ -2803,8 +2798,12 @@ PRG003_AE95:
 	STA Objects_FlipBits,X	; Update flip bits
 
 	; Boom Boom becomes the "(?)" ball
-	LDA #OBJ_HAMMERBROSCOIN
+	LDA #$0A
+	STA Score_Earned
+	LDA #$00
 	STA Level_ObjectID,X
+	LDA #$FF
+	STA Level_PSwitchCnt
 
 	LDA #$01
 	STA BrickBust_En	 ; Enable brick bust slot 1

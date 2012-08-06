@@ -3713,8 +3713,8 @@ TILE_GLOBAL_ICE		= $3F ; #DAHRKDAIZ Added global ice tile block - 7/15
 
 TILEA_COIN		= $40	; Coin
 TILEA_COINREMOVED	= $80	; Tile used after coin has been collected
-TILEA_DOOR1		= $42	; Doorway 1, typically black in appearance (apparently wired to only work in fortresses)
-TILEA_DOOR2		= $43	; Doorway 2, typically red in appearance
+TILEA_DOORTOP		= $42	; Doorway 1, typically black in appearance (apparently wired to only work in fortresses)
+TILEA_DOORBOTTOM		= $43	; Doorway 2, typically red in appearance
 TILEA_INVISCOIN		= $44	; Invisible coin block
 TILEA_INVIS1UP		= $45	; Invisible 1-up
 TILEA_NOTECOINHEAVEN	= $46	; Placeholder for invisible note block that takes you to coin heaven
