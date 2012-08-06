@@ -421,6 +421,10 @@ PT2_Anim:	.byte $80, $82, $84, $86
 PSwitch_Anim: .byte $88, $8A, $8C, $8E
 SPR_Anim:	.byte $04, $05, $06, $07
 
+
+ESwitchTableChange1:
+	.byte $10, $68, $6A
+
 PAUSE_Sprites:
 	.byte $58, $F1, $03, $60	; P
 	.byte $58, $F5, $03, $70	; A
@@ -1398,16 +1402,23 @@ PRG030_89AB:
 	JSR Sprite_RAM_Clear	 		; Clear the sprites
 
 	; Select the first bank of BG VROM as specified by Level_BG_Page1_2
+	LDX ESwitch
+	BEQ Normal_Gfx2
+	LDA ESwitchTableChange1, X
+	BNE Skip_Normal_Gfx2
+
+Normal_Gfx2:
 	LDY Level_BG_Page1_2
 	LDA Level_BG_Pages1,Y
 	STA PatTable_BankSel
 
-	LDA Level_BG_Pages2,Y
+Skip_Normal_Gfx2:
+	LDA #$80
 
 	LDX Level_PSwitchCnt
 	BEQ PRG030_89C4	 	; If P-Switch not active, jump to PRG030_89C4
 
-	LDA #$3e	 	; Otherwise, force override to page $3E
+	LDA #$88	 	; Otherwise, force override to page $3E
 
 PRG030_89C4:
 	STA PatTable_BankSel+1	 ; Select second bank of BG VROM
@@ -3697,27 +3708,27 @@ Level_BG_Pages1:
 
 Level_BG_Pages2:
 	.byte $00	;  0 Not Used
-	.byte $60	;  1 Plains
-	.byte $60	;  2 Fortress
-	.byte $60	;  3 Hills / Underground
-	.byte $60	;  4 High-Up
-	.byte $3E	;  5 Plant Infestation
-	.byte $60	;  6 Underwater
-	.byte $5E	;  7 Toad House
-	.byte $60	;  8 Pipe Maze
-	.byte $60	;  9 Desert
-	.byte $6A	; 10 Airship
-	.byte $60	; 11 Giant world
-	.byte $60	; 12 Ice
-	.byte $60	; 13 Sky
-	.byte $60	; 14 Not Used (Same as Hills / Underground)
-	.byte $5E	; 15 Bonus Room
-	.byte $2E	; 16 Spade (Roulette)
-	.byte $5E	; 17 N-Spade (Card)
-	.byte $60	; 18 2P Vs
-	.byte $60	; 19 Hills / Underground alternate
-	.byte $60	; 20 3-7 only
-	.byte $70	; 21 World 8 War Vehicle
+	.byte $80	;  1 Plains
+	.byte $80	;  2 Fortress
+	.byte $80	;  3 Hills / Underground
+	.byte $80	;  4 High-Up
+	.byte $80	;  5 Plant Infestation
+	.byte $80	;  6 Underwater
+	.byte $80	;  7 Toad House
+	.byte $80	;  8 Pipe Maze
+	.byte $80	;  9 Desert
+	.byte $80	; 10 Airship
+	.byte $80	; 11 Giant world
+	.byte $80	; 12 Ice
+	.byte $80	; 13 Sky
+	.byte $80	; 14 Not Used (Same as Hills / Underground)
+	.byte $80	; 15 Bonus Room
+	.byte $80	; 16 Spade (Roulette)
+	.byte $80	; 17 N-Spade (Card)
+	.byte $80	; 18 2P Vs
+	.byte $80	; 19 Hills / Underground alternate
+	.byte $80	; 20 3-7 only
+	.byte $80	; 21 World 8 War Vehicle
 	.byte $60	; 22 Throne Room
 
 
@@ -5367,11 +5378,6 @@ PRG030_9F0D:
 	LDA <Level_Tile	; A = Level_Tile (the tile retrieved)
 	RTS		 ; Return
 
-	; Probably unused space
-	.byte $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff
-	.byte $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff
-	.byte $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff
-
 
 PRG030_SUB_9F40:
 	LDA #$00
@@ -5397,10 +5403,6 @@ PRG030_9F52:
 	STA MMC3_IRQDISABLE
 	STA MMC3_IRQENABLE
 	RTS		 ; Return
-
-	; Probably unused space
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 IntIRQ_32PixelPartition_Part5:
 
@@ -5448,4 +5450,3 @@ PRG030_9FAF:
 	JMP IntIRQ_32PixelPartition_Part3
 
 ; NOTE: The remaining ROM space was all blank ($FF)
-

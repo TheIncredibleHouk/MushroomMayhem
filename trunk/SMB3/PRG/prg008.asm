@@ -6871,7 +6871,6 @@ Try_ESwitch:
 	LDX #$03
 
 Find_ESwitch:
-	STA $7FFF
 	CMP ESwitches, X
 	BEQ Change_ESwitch
 	DEX
