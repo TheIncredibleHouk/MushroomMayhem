@@ -120,7 +120,7 @@ PRG021_A40A:
 PRG021_A418:
 	LDA #TILE2_BGBRICK_NOSHADOW
 	JSR Tile_Mem_ClearB
-	LDA #TILE2_BGBRICK_TOPSHADOW
+	LDA #ESWITCH_BLOCK1
 	JSR Tile_Mem_ClearA
 	CPY #$20
 	BNE PRG021_A418
@@ -205,7 +205,7 @@ LoadLevel_Generator_TS2:
 	.word LoadLevel_WindowTall		;  6 - Run of "tall" windows (gapped by 3 tiles)
 	.word LoadLevel_WindowVeryShort		;  7 - Run of "very short" windows (gapped by 3 tiles)
 	.word LoadLevel_HangingGlobes		;  8 - Run of hanging globes
-	.word LoadLevel_GhostBlockUNSURE	;  9 - Rectangle of ??? TILE2_UNSURE
+	.word LoadLevel_GhostBlockUNSURE	;  9 - Rectangle of ??? ESWITCH_BLOCK3
 	.word LoadLevel_GhostBlock		; 10 - Ghost block of variable length
 	.word LoadLevel_SpikeUp			; 11 - Run of upward pointing spikes
 	.word LoadLevel_SpikeDown		; 12 - Run of downward pointing spikes
@@ -322,7 +322,7 @@ LeveLoad_FixedSizeGen_TS2:
 ; Puts down 1-16 of a shadowed background brick
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_ShadowBrick:
-	.byte TILE2_BGBRICK_TOPSHADOW, TILE2_BGBRICK_TOPDSHADOW
+	.byte ESWITCH_BLOCK1, ESWITCH_BLOCK2
 
 LoadLevel_ShadowBGBrick:
 	LDA LL_ShapeDef
@@ -552,13 +552,13 @@ PRG021_A632:
 ; Puts down a 1-16 width something (tile is yet unknown to me??)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_GhostBlockUNSURE:
-	LDX #$00	 ; X = 0 (use TILE2_UNSURE)
+	LDX #$00	 ; X = 0 (use ESWITCH_BLOCK3)
 	BEQ PRG021_A64C	 ; Jump to PRG021_A64C
 
 LL_GhostBlock:
-	.byte TILE2_UNSURE, TILE2_GHOSTL
-	.byte TILE2_UNSURE, TILE2_GHOSTM
-	.byte TILE2_UNSURE, TILE2_GHOSTR
+	.byte ESWITCH_BLOCK3, TILE2_GHOSTL
+	.byte ESWITCH_BLOCK3, TILE2_GHOSTM
+	.byte ESWITCH_BLOCK3, TILE2_GHOSTR
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LoadLevel_GhostBlock
@@ -859,7 +859,7 @@ PRG021_A783:
 	BNE PRG021_A783
 
 PRG021_A78C:
-	LDA #TILE2_BGBRICK_TOPDSHADOW
+	LDA #ESWITCH_BLOCK2
 	JSR Tile_Mem_ClearA
 	CPY #$20
 	BNE PRG021_A78C	 ; $A793 
@@ -880,7 +880,7 @@ PRG021_A795:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_RotoDisc:
 	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDA #TILE2_ROTODISCBLOCK ; Roto disc's block
+	LDA #ESWITCH1 ; Roto disc's block
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 	RTS		 ; Return
 
@@ -892,7 +892,7 @@ LoadLevel_RotoDisc:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Candle:
 	LDY TileAddr_Off	; Y = TileAddr_Off
-	LDA #TILE2_CANDLE	; Hot foot's candle
+	LDA #ESWITCH3	; Hot foot's candle
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 	RTS		 ; Return
 
@@ -903,18 +903,7 @@ LoadLevel_Candle:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_BowserStatue:
 	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDA #TILE2_BOWSERSTATUEU ; Bowser statue upper tile
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	; Go to next row by adding 16
-	TYA
-	ADD #$10
-	TAY	
-	LDA <Map_Tile_AddrH
-	ADC #$00	 
-	STA <Map_Tile_AddrH
-
-	LDA #TILE2_BOWSERSTATUEL ; Bowser status lower tile
+	LDA #ESWITCH2 ; Bowser statue upper tile
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 	RTS		 ; Return
 

@@ -1884,8 +1884,10 @@ ObjInit_BoomBoom:
 	; Boom Boom starts on frame 7
 	LDA #$07
 	STA Objects_Frame,X
+	RTS
 
 ObjInit_FloatingBGCloud:
+	LDA $F000
 	LDA Objects_Y,X
 	AND #$F0
 	LSR A
@@ -1969,7 +1971,7 @@ PRG003_AA3B:
 
 PRG003_AA5D:
 	LDA <Player_HaltGame
-	BNE ObjInit_FloatingBGCloud	; If gameplay halted, jump to ObjInit_FloatingBGCloud (RTS)
+	BNE BoomBoomRTS	; 
 
 	LDA <Objects_Var5,X
 	CMP #$05
@@ -2015,6 +2017,7 @@ PRG003_AA8D:
 	TYA
 	STA Objects_Frame,X
 
+BoomBoomRTS:
 	RTS		 ; Return
 
 PRG003_AA92:

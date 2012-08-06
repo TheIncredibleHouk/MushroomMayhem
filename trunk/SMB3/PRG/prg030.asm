@@ -417,8 +417,8 @@ PAGE_A000_ByTileset: ; $83E9
 	.byte 11, 15, 21, 16, 17, 19, 18, 18, 18, 20, 23, 19, 17, 19, 13, 26, 26, 26, 9
 
 	; The normal level VROM page cycle set
-PT2_Anim:	.byte $60, $62, $64, $66
-PSwitch_Anim: .byte $68, $6A, $7C, $7E
+PT2_Anim:	.byte $80, $82, $84, $86
+PSwitch_Anim: .byte $88, $8A, $8C, $8E
 SPR_Anim:	.byte $04, $05, $06, $07
 
 PAUSE_Sprites:

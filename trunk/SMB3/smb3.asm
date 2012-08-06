@@ -1,5 +1,5 @@
 	.inesprg 16  ; 16x 16KB PRG code (32 banks of 8KB)
-	.ineschr 16  ; 16x  8KB CHR data (128 banks of 1KB)
+	.ineschr 32  ; 16x  8KB CHR data (128 banks of 1KB)
 	.inesmap 4   ; mapper 4 = MMC3, 8KB PRG, 1/2KB CHR bank swapping
 	.inesmir 0   ; background mirroring
 
@@ -2485,7 +2485,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Burning_Mode:			.ds 1	;
 	Burning_Time:			.ds 1	;
 	Ignore_Vel_Stop:		.ds	1	;
-				.ds 76	; $7997-$79FF unused UNUSED HERE
+	ESwitch:			.ds 1	; For e-switch levels
+				.ds 75	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -3435,7 +3436,7 @@ OBJ_BIGGOOMBA		= $7C	; Big Goomba
 OBJ_BIGGREENPIRANHA	= $7D	; Big Green Piranha
 OBJ_BIGGREENHOPPER	= $7E	; Big, bouncing turtle
 OBJ_BIGREDPIRANHA	= $7F	; Big Red Pirahana
-OBJ_FLYINGGREENPARATROOPA=$80	; Flying left/right green winged turtle
+OBJ_FLYINGGREENPARATROOPA= $80	; Flying left/right green winged turtle
 OBJ_HAMMERBRO		= $81	; Classic Hammer Brother
 OBJ_BOOMERANGBRO	= $82	; Boomerang Brother
 OBJ_LAKITU		= $83	; Lakitu throwing red spiny eggs
@@ -3465,12 +3466,16 @@ OBJ_BIGQBLOCK_HAMMER	= $9A	; Big ? block (hammer suit)
 OBJ_FIREJET_UPWARD	= $9D	; upward fire jet
 OBJ_PODOBOO		= $9E	; Podoboo
 OBJ_PARABEETLE		= $9F	; Parabeetle
-OBJ_GREENPIRANHA	= $A0	; short pipe muncher
-OBJ_GREENPIRANHA_FLIPPED= $A1	; upside down short pipe muncher
+OBJ_GREENPIRANHA = $00
+OBJ_DRYPIRANHA	= $A0	; short pipe muncher
+OBJ_GREENPIRANHA_FLIPPED = $00
+OBJ_DRYPIRANHA_FLIPPED= $A1	; upside down short pipe muncher
 OBJ_REDPIRANHA		= $A2	; tall pipe muncher
 OBJ_REDPIRANHA_FLIPPED	= $A3	; upside down tall pipe muncher
-OBJ_GREENPIRANHA_FIRE	= $A4	; short green fire plant
-OBJ_GREENPIRANHA_FIREC	= $A5	; short, upside down, green fire plant
+OBJ_GREENPIRANHA_FIRE	 = $00
+OBJ_DRYPIRANHA_FIRE	= $A4	; short green fire plant
+OBJ_GREENPIRANHA_FIREC = $00
+OBJ_DRYPIRANHA_FIREC	= $A5	; short, upside down, green fire plant
 OBJ_VENUSFIRETRAP	= $A6	; Tall red fire plant
 OBJ_VENUSFIRETRAP_CEIL	= $A7	; upside down tall fire plant
 OBJ_ARROWONE		= $A8	; One direction arrow platform in motion
@@ -3922,9 +3927,9 @@ TILE1_WGROUNDMR		= $F9	; Underwater ground middle-right
 ; Tileset 2 (Fortress style)
 TILE2_BLACK		= $02	; Solid black background
 
-TILE2_WINDOWTOP		= $06	; Top of window
-TILE2_WINDOWMID		= $07	; Middle of window
-TILE2_WINDOWBOT		= $08	; Bottom of window
+TILE2_WINDOWTOP		= $C6	; Top of window
+TILE2_WINDOWMID		= $C7	; Middle of window
+TILE2_WINDOWBOT		= $C8	; Bottom of window
 
 ; NOTE: The path (for a moving platform to follow) is typically a
 ; different value for every Level_Tileset EXCEPT 2)
@@ -3951,7 +3956,7 @@ TILE2_CONVEYORL		= $34	; Conveyor left
 
 TILE2_CONVEYORR		= $35	; Conveyor right
 
-TILE2_UNSURE		= $5A	; Not sure??  Complements TILE2_GHOST*
+ESWITCH_BLOCK3		= $C1	; Not sure??  Complements TILE2_GHOST*
 TILE2_DONUTLIFT		= $5B	; Donut lift
 
 TILE2_PILLAR_T		= $81	; Background pillar top
@@ -3970,26 +3975,26 @@ TILE2_HANGGLOBE_GLOBE	= $8A	; Hanging globe thing
 TILE2_BGBRICK_SHADOW2	= $8B	; Background brickwork pattern, shadowed (same as $8F?)
 TILE2_BGBRICK_NOSHADOW	= $8C	; Background brickwork pattern, non-shadowed
 TILE2_BGBRICK_LSHADOW	= $8D	; Background brickwork pattern, shadowed on left
-TILE2_BGBRICK_TOPSHADOW	= $8E	; Background brickwork pattern, shadowed on top
+ESWITCH_BLOCK1			= $41	; Background brickwork pattern, shadowed on top
 TILE2_BGBRICK_SHADOW	= $8F	; Background brickwork pattern, shadowed
 
 TILE2_BGBRICK_UNDBRICK	= $90	; Background brickwork pattern, under the TILE2_SOLIDBRICK
 TILE2_BGBRICK_LDSHADOW	= $91	; Background brickwork pattern, dark shadowed left
 TILE2_BGBRICK_ULDSHADOW	= $92	; Background brickwork pattern, dark shadowed upper-left
-TILE2_BGBRICK_TOPDSHADOW= $93	; Background brickwork pattern, dark shadowed on top
+ESWITCH_BLOCK2			= $81	; Background brickwork pattern, dark shadowed on top
 
-TILE2_LAVATOP		= $94	; Top lava tile
-TILE2_LAVABOTTOM	= $95	; Bottom lava tile
+TILE2_LAVATOP		= $DF	; Top lava tile
+TILE2_LAVABOTTOM	= $DE	; Bottom lava tile
 
 TILE2_ENDDOOR_UL	= $97	; The final door to the princess, upper left
 TILE2_ENDDOOR_UR	= $98	; The final door to the princess, upper right
 TILE2_ENDDOOR_LL	= $99	; The final door to the princess, lower left
 TILE2_ENDDOOR_LR	= $9A	; The final door to the princess, lower right
 
-TILE2_CANDLE		= $9B	; Candle (for Hot Foot)
+ESWITCH3			= $FF	; Candle (for Hot Foot)
 TILE2_SOLIDBRICK	= $9C	; Solid Bowser's Castle style brick
 TILE2_DARKREDDIAMOND	= $9D	; Dark red diamond block
-TILE2_ROTODISCBLOCK	= $9E	; Roto disc block
+ESWITCH1			= $7F	; Roto disc block
 
 TILE2_SHADOW		= $A2	; Black
 
@@ -3998,7 +4003,7 @@ TILE2_SPIKEDOWN		= $E3	; Spikes pointing downward
 TILE2_DIAMONDBRIGHT	= $E4	; Bright color diamond block
 TILE2_DIAMONDDARK	= $E5	; Dark color diamond block
 
-TILE2_BOWSERSTATUEU	= $E8	; Bowser statue upper
+ESWITCH2			= $BF	; Bowser statue upper
 TILE2_BOWSERSTATUEL	= $E9	; Bowser statue lower
 
 TILE2_SOLIDBLACK	= $F4	; Black tile which is solid

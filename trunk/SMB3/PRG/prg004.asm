@@ -41,7 +41,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GiantTroop	; Object $7A - OBJ_BIGGREENTROOPA
 	.word ObjInit_GiantTroop	; Object $7B - OBJ_BIGREDTROOPA
 	.word ObjInit_GiantTroop	; Object $7C - OBJ_BIGGOOMBA
-	.word ObjInit_GiantGreenPiranha	; Object $7D - OBJ_BIGGREENPIRANHA
+	.word ObjInit_GiantDRYPIRANHA	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjInit_GiantTroop	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
 	.word ObjInit_Set3DoNothing	; Object $80 - OBJ_FLYINGGREENPARATROOPA
@@ -4830,7 +4830,7 @@ PRG004_B73E:
 
 	RTS		 ; Return
 
-ObjInit_GiantGreenPiranha:
+ObjInit_GiantDRYPIRANHA:
 	LDA #4		; A = 4
 	BNE PRG004_B75A	; Jump (technically always) to PRG004_B75A
 
