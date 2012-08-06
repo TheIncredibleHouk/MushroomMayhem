@@ -372,7 +372,7 @@ PRG008_A1E6:
 	LDA Level_PSwitchCnt
 	BEQ PRG008_A20C	 ; If Level_PSwitchCnt = 0 (P-Switch not active), jump to PRG008_A20C
 	CMP #$FF
-	BMI PRG008_A20C
+	BEQ PRG008_A20C
 	CMP #$01
 	BNE PRG008_A203	 ; If Level_PSwitchCnt <> 1, jump to PRG008_A203
 
