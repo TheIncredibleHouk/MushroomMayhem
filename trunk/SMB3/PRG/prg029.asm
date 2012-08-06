@@ -2690,7 +2690,7 @@ TileChng_DoorAppear:
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
 	; Set upper tile of door
-	LDA #TILEA_DOOR1
+	LDA #TILEA_DOORTOP
 	STA [Map_Tile_AddrL],Y
 
 	; +16 (next row of tiles)
@@ -2705,7 +2705,7 @@ TileChng_DoorAppear:
 PRG029_DD77:
 
 	; Set lower tile of door
-	LDA #TILEA_DOOR1
+	LDA #TILEA_DOORTOP
 	STA [Map_Tile_AddrL],Y
 
 	LDY #$00	 ; Y = 0

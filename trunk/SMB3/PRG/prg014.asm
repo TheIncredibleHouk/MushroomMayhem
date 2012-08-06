@@ -383,11 +383,11 @@ PRG014_C5FB:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LoadLevel_Door1
 ;
-; Puts 2 TILEA_DOOR1 tiles, stacked vertically
+; Puts 2 TILEA_DOORTOP tiles, stacked vertically
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Door1:
 	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDA #TILEA_DOOR1	 
+	LDA #TILEA_DOORTOP	 
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
 	; Move to next row by adding 16 to tile offset
@@ -398,7 +398,7 @@ LoadLevel_Door1:
 	ADC #$00	 
 	STA <Map_Tile_AddrH
 
-	LDA #TILEA_DOOR1	 
+	LDA #TILEA_DOORBOTTOM
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 	RTS		 ; Return
 
@@ -406,11 +406,11 @@ LoadLevel_Door1:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LoadLevel_Door2
 ;
-; Puts 2 TILEA_DOOR2 tiles, stacked vertically
+; Puts 2 TILEA_DOORBOTTOM tiles, stacked vertically
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Door2:
 	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDA #TILEA_DOOR2	 
+	LDA #TILEA_DOORTOP
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
 	; Move to next row by adding 16 to tile offset
@@ -421,7 +421,7 @@ LoadLevel_Door2:
 	ADC #$00	 
 	STA <Map_Tile_AddrH
 
-	LDA #TILEA_DOOR2	 
+	LDA #TILEA_DOORBOTTOM
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 	RTS		 ; Return
 	
