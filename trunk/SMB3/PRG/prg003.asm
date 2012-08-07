@@ -3462,356 +3462,347 @@ PRG003_B1D7:
 
 	RTS		 ; Return
 
-ObjInit_BigBerthaBirther:
-	INC Objects_InWater,X	 ; Flag as in water
-
-	; Objects_Var10 = X
-	LDA <Objects_X,X
-	STA Objects_Var10,X
-
-	; Objects_Var11 = X Hi
-	LDA <Objects_XHi,X
-	STA Objects_Var11,X
-
-PRG003_B1F6:
-	RTS		 ; Return
-
-BigBerthaLCC_XVelAccel:		.byte $01, -$01
-BigBerthaLCC_XVelLimit:		.byte $18, -$18
-BigBerthaLCC_XVelLowLimit:	.byte $08, -$08
-
-ObjNorm_BigBerthaBirther:
-	JSR Object_CheckIfNormalState
-	BEQ PRG003_B205	 ; If Big Bertha's in normal state, jump to PRG003_B205
-
-	JMP BigBerthaLCC_Draw	 ; Jump to BigBerthaLCC_Draw
-
-PRG003_B205:
-	JSR Object_SetHFlipByXVel 	; Set horizontal flip by travel direction
-	JSR BigBerthaLCC_Draw	 	; Draw Big Bertha
-	JSR Object_DeleteOffScreen_N2	; If Big Bertha falls off-screen, delete it!
-
-	LDA <Player_HaltGame
-	BNE PRG003_B1F6	 ; If gameplay is halted, jump to PRG003_B1F6 (RTS)
-
-	INC <Objects_Var5,X	 ; Var5++
-
-	JSR Player_HitEnemy	 ; Player to Bertha collision
-	JSR Object_ApplyXVel	 ; Apply X Velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
-
-	LDY #$02	 ; Y = $02
-
-	LDA <Counter_1
-	AND #$40
-	BEQ PRG003_B227	 ; 64 ticks on, 64 ticks off; jump to PRG003_B227
-
-	LDY #-$02	 ; Y = -$02
-
-PRG003_B227:
-	STY <Objects_YVel,X	 ; Y Velocity = $02 or -$02
-
-	LDA Objects_Timer,X
-	BEQ PRG003_B250	 ; If timer expired, jump to PRG003_B250
-
-	CMP #$01
-	BNE PRG003_B23A	 ; If timer <> 1, jump to PRG003_B23A
-
-	JSR Object_AnySprOffscreen
-	BNE PRG003_B23F	 ; If any part of Big Bertha has fallen off-screen, jump to PRG003_B23F
-
-	JSR BigBertha_SpitOutCheepCheep	 ; Big Bertha spits out the little Cheep Cheep
-
-PRG003_B23A:
-
-	; Big Bertha frame 1
-	LDA #$01
-	STA Objects_Frame,X
-
-PRG003_B23F:
-	LDA <Objects_XVel,X
-	BEQ PRG003_B24B	 ; If Big Bertha is not moving, jump to PRG003_B24B
-
-	BPL PRG003_B249	 ; If Big Bertha is moving to the right, jump to PRG003_B249
-
-	; Double increment because it hits the decrement, basically a single increment
-	INC <Objects_XVel,X	; Moving left, slow down
-	INC <Objects_XVel,X
-
-PRG003_B249:
-	DEC <Objects_XVel,X	; Moving right, slow down
-
-PRG003_B24B:
-	RTS		 ; Return
-
-BigBertha_XMove:	.byte -$10, $10
-BigBertha_XHiMove:	.byte $FF, $00
-
-PRG003_B250:
-	LDA <Objects_Var5,X
-	LSR A
-	BCC PRG003_B2A4	 ; If Var5 is even, jump to PRG003_B2A4
-
-	LDA Objects_Var7,X
-	AND #$01
-	TAY		 ; Y = 0 or 1
-
-	; Objects_Var10 is Big Bertha's original X
-	LDA Objects_Var10,X
-	ADD BigBertha_XMove,Y
-	STA <Temp_Var2	
-
-	; Objects_Var11 is Big Bertha's original X Hi
-	LDA Objects_Var11,X
-	ADC BigBertha_XHiMove,Y
-	STA <Temp_Var1	
-
-	LDY #$00	 ; Y = 0
-
-	LDA <Objects_X,X
-	CMP <Temp_Var2	
-
-	LDA <Objects_XHi,X
-	SBC <Temp_Var1	
-	BLT PRG003_B279	 ; If Big Bertha is to the left of origin, jump to PRG003_B279
-
-	INY		 ; Y = 1
-
-PRG003_B279:
-	LDA <Objects_XVel,X
-	CMP BigBerthaLCC_XVelLimit,Y
-	BEQ PRG003_B28B	 ; If Big Bertha is at X velocity limit, jump to PRG003_B28B
-
-	ADD BigBerthaLCC_XVelAccel,Y
-	STA <Objects_XVel,X	 ; Update X velocity
-
-	BNE PRG003_B28B	 ; If X velocity is not at zero, jump to PRG003_B28B
-
-	INC Objects_Var7,X	 ; Otherwise, Var7++
-
-PRG003_B28B:
-	CMP BigBerthaLCC_XVelLowLimit,Y
-	BNE PRG003_B2A4	 ; If Big Bertha is at low limit, jump to PRG003_B2A4
-
-	LDA Objects_Timer3,X
-	BNE PRG003_B2A4	 ; If timer 3 not expired, jump to PRG003_B2A4
-
-	LDA RandomN,X
-	BPL PRG003_B2A4	 ; Random 50/50, jump to PRG003_B2A4
-
-	; Set timer to $26
-	LDA #$26
-	STA Objects_Timer,X
-
-	; Set timer to $80
-	LDA #$80
-	STA Objects_Timer3,X
-
-PRG003_B2A4:
-	RTS		 ; Return
-
-BigBertha_HVisByFlip:	.byte $20, $80
-BigBertha_SpriteXOff:	.byte $10, $00
-
-BigBerthaLCC_Draw:
-
-	; Save Big Bertha's X/Hi
-	LDA <Objects_X,X
-	PHA
-	LDA <Objects_XHi,X
-	PHA
-
-	LDA Objects_SprHVis,X
-	STA Temp_VarNP0	 ; Store horizontal visibility bits -> Temp_VarNP0
-
-	LDA Objects_FlipBits,X
-	ASL A
-	BEQ PRG003_B2CB	 ; If Big Bertha is NOT horizontally flipped, jump to PRG003_B2CB
-
-	ASL Objects_SprHVis,X
-
-	; Move over 8 pixels
-	LDA <Objects_X,X
-	ADD #$08
-	STA <Objects_X,X
-	LDA <Objects_XHi,X
-	ADC #$00
-	STA <Objects_XHi,X
-
-PRG003_B2CB:
-	JSR Object_Draw16x32Sprite	 ; Draw part of Big Bertha
-
-	; Restore Big Bertha's X/Hi
-	PLA
-	STA <Objects_XHi,X
-	PLA
-	STA <Objects_X,X
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	LDY #$00	 ; Y = 0
-
-	LDA Objects_FlipBits,X
-	ASL A
-	BEQ PRG003_B2E0	 ; If Big Bertha is NOT horizontally flipped, jump to PRG003_B2E0
-
-	INY		 ; Y = 1
-
-PRG003_B2E0:
-	LDA Temp_VarNP0
-	AND BigBertha_HVisByFlip,Y
-	BNE PRG003_B341	 ; If check sprite for Big Bertha is off-screen, jump to PRG003_B341 (RTS)
-
-	; Calculate Sprite X with appropriate offset
-	LDA <Objects_SpriteX,X
-	ADD BigBertha_SpriteXOff,Y
-	STA <Temp_Var2	
-
-	LDY Object_SprRAM,X	 ; Y = Sprite_RAM offset
-
-	; Store sprite Xs
-	LDA <Temp_Var2
-	STA Sprite_RAM+$13,Y
-	STA Sprite_RAM+$17,Y
-
-	; Temp_Var1 = Sprite vertical visibility bits
-	LDA Objects_SprVVis,X
-	STA <Temp_Var1	
-
-	LDA <Objects_SpriteY,X	
-	LSR <Temp_Var1
-	BCS PRG003_B309	 ; If this sprite is vertically off-screen, jump to PRG003_B309
-
-	STA Sprite_RAM+$10,Y	 ; Otherwise, store Sprite Y
-
-PRG003_B309:
-	LSR <Temp_Var1
-	BCS PRG003_B312	 ; If this sprite is vertically off-screen, jump to PRG003_B312
-
-	ADC #16
-	STA Sprite_RAM+$14,Y	 ; Otherwise, store Sprite Y
-
-PRG003_B312:
-	; Copy attributes across
-	LDA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$12,Y
-	STA Sprite_RAM+$16,Y
-
-	; Store pattern
-	LDA #$85
-	STA Sprite_RAM+$11,Y
-
-	LDA <Objects_Var5,X
-	LSR A
-	LSR A
-	LSR A
-
-	; Select appropriate pattern by animation frame
-	LDA #$8b
-	BCS PRG003_B32B	
-	LDA #$91
-PRG003_B32B:
-	; Store pattern
-	STA Sprite_RAM+$15,Y
-
-	LDA Objects_FlipBits,X
-	BPL PRG003_B341	 ; If Big Bertha is not vertically flipped, jump to PRG003_B341
-
-	; Otherwise swap Sprite Ys
-	LDA Sprite_RAM+$10,Y
-	PHA
-	LDA Sprite_RAM+$14,Y
-	STA Sprite_RAM+$10,Y
-	PLA
-	STA Sprite_RAM+$14,Y
-
-PRG003_B341:
-	RTS		 ; Return
-
-TinyCheep_XVel:	.byte -$28, $28
-TinyCheep_XOff:	.byte $00, $08
-TinyCheep_Flip:	.byte $00, SPR_HFLIP
-
-
-BigBertha_SpitOutCheepCheep:
-	LDY #$04	 ; Y = 4
-PRG003_B34A:
-	LDA Objects_State,Y
-	BEQ PRG003_B353	 ; If this object slot is dead/empty, jump to PRG003_B353
-
-	DEY		 ; Y--
-	BPL PRG003_B34A	 ; While Y >= 0, loop!
-
-	RTS		 ; Return
-
-PRG003_B353:
-	TYA		 
-	TAX		 ; X = open object slot index
-
-	JSR Level_PrepareNewObject
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	; Set to normal state
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State,Y
-
-	; This is the tiny Cheep Cheep that comes out of Big Bertha
-	LDA #OBJ_TINYCHEEPCHEEP
-	STA Level_ObjectID,Y
-
-	; Cheep Cheep emerges at +14
-	LDA <Objects_Y,X
-	ADC #14
-	STA Objects_Y,Y
-	LDA <Objects_YHi,X
-	ADC #$00
-	STA Objects_YHi,Y
-
-	; Temp_Var1 = 0
-	LDA #$00
-	STA <Temp_Var1
-
-	LDA Objects_FlipBits,X
-	BEQ PRG003_B37D	 ; If Big Bertha is not flipped, jump to PRG003_B37D
-
-	INC <Temp_Var1	 ; Otherwise, Temp_Var1 = 1
-
-PRG003_B37D:
-	LDA <Objects_X,X
-	LDX <Temp_Var1		 ; X = 0 or 1
-	ADC TinyCheep_XOff,X
-	STA Objects_X,Y	 ; Set Tiny Cheep Cheep's X
-
-	; Set tiny Cheep Cheep's X velocity
-	LDA TinyCheep_XVel,X
-	STA Objects_XVel,Y
-
-	; Set tiny Cheep Cheep's flip
-	LDA TinyCheep_Flip,X
-	STA Objects_FlipBits,Y
-
-	LDX <SlotIndexBackup	 ; X = object slot index
-
-	; Set tiny Cheep Cheep's X Hi
-	LDA <Objects_XHi,X
-	ADC #$00
-	STA Objects_XHi,Y
-
-	; Set tiny Cheep Cheep palette select 1 and flag as under water
-	LDA #SPR_PAL1
-	STA Objects_SprAttr,Y
-	STA Objects_InWater,Y
-
-	; Tiny Cheep Cheep's Var1 holds Big Bertha's object index
-	TXA
-	STA Objects_Var1,Y
-
-	; Timer set to $30
-	LDA #$30
-	STA Objects_Timer,Y
-
-	RTS		 ; Return
+;ObjInit_BigBerthaBirther:
+;
+;PRG003_B1F6:
+;	RTS		 ; Return
+;
+;BigBerthaLCC_XVelAccel:		.byte $01, -$01
+;BigBerthaLCC_XVelLimit:		.byte $18, -$18
+;BigBerthaLCC_XVelLowLimit:	.byte $08, -$08
+;
+;ObjNorm_BigBerthaBirther:
+;	JSR Object_CheckIfNormalState
+;	BEQ PRG003_B205	 ; If Big Bertha's in normal state, jump to PRG003_B205
+;
+;	JMP BigBerthaLCC_Draw	 ; Jump to BigBerthaLCC_Draw
+;
+;PRG003_B205:
+;	JSR Object_SetHFlipByXVel 	; Set horizontal flip by travel direction
+;	JSR BigBerthaLCC_Draw	 	; Draw Big Bertha
+;	JSR Object_DeleteOffScreen_N2	; If Big Bertha falls off-screen, delete it!
+;
+;	LDA <Player_HaltGame
+;	BNE PRG003_B1F6	 ; If gameplay is halted, jump to PRG003_B1F6 (RTS)
+;
+;	INC <Objects_Var5,X	 ; Var5++
+;
+;	JSR Player_HitEnemy	 ; Player to Bertha collision
+;	JSR Object_ApplyXVel	 ; Apply X Velocity
+;	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+;
+;	LDY #$02	 ; Y = $02
+;
+;	LDA <Counter_1
+;	AND #$40
+;	BEQ PRG003_B227	 ; 64 ticks on, 64 ticks off; jump to PRG003_B227
+;
+;	LDY #-$02	 ; Y = -$02
+;
+;PRG003_B227:
+;	STY <Objects_YVel,X	 ; Y Velocity = $02 or -$02
+;
+;	LDA Objects_Timer,X
+;	BEQ PRG003_B250	 ; If timer expired, jump to PRG003_B250
+;
+;	CMP #$01
+;	BNE PRG003_B23A	 ; If timer <> 1, jump to PRG003_B23A
+;
+;	JSR Object_AnySprOffscreen
+;	BNE PRG003_B23F	 ; If any part of Big Bertha has fallen off-screen, jump to PRG003_B23F
+;
+;	JSR BigBertha_SpitOutCheepCheep	 ; Big Bertha spits out the little Cheep Cheep
+;
+;PRG003_B23A:
+;
+;	; Big Bertha frame 1
+;	LDA #$01
+;	STA Objects_Frame,X
+;
+;PRG003_B23F:
+;	LDA <Objects_XVel,X
+;	BEQ PRG003_B24B	 ; If Big Bertha is not moving, jump to PRG003_B24B
+;
+;	BPL PRG003_B249	 ; If Big Bertha is moving to the right, jump to PRG003_B249
+;
+;	; Double increment because it hits the decrement, basically a single increment
+;	INC <Objects_XVel,X	; Moving left, slow down
+;	INC <Objects_XVel,X
+;
+;PRG003_B249:
+;	DEC <Objects_XVel,X	; Moving right, slow down
+;
+;PRG003_B24B:
+;	RTS		 ; Return
+;
+;BigBertha_XMove:	.byte -$10, $10
+;BigBertha_XHiMove:	.byte $FF, $00
+;
+;PRG003_B250:
+;	LDA <Objects_Var5,X
+;	LSR A
+;	BCC PRG003_B2A4	 ; If Var5 is even, jump to PRG003_B2A4
+;
+;	LDA Objects_Var7,X
+;	AND #$01
+;	TAY		 ; Y = 0 or 1
+;
+;	; Objects_Var10 is Big Bertha's original X
+;	LDA Objects_Var10,X
+;	ADD BigBertha_XMove,Y
+;	STA <Temp_Var2	
+;
+;	; Objects_Var11 is Big Bertha's original X Hi
+;	LDA Objects_Var11,X
+;	ADC BigBertha_XHiMove,Y
+;	STA <Temp_Var1	
+;
+;	LDY #$00	 ; Y = 0
+;
+;	LDA <Objects_X,X
+;	CMP <Temp_Var2	
+;
+;	LDA <Objects_XHi,X
+;	SBC <Temp_Var1	
+;	BLT PRG003_B279	 ; If Big Bertha is to the left of origin, jump to PRG003_B279
+;
+;	INY		 ; Y = 1
+;
+;PRG003_B279:
+;	LDA <Objects_XVel,X
+;	CMP BigBerthaLCC_XVelLimit,Y
+;	BEQ PRG003_B28B	 ; If Big Bertha is at X velocity limit, jump to PRG003_B28B
+;
+;	ADD BigBerthaLCC_XVelAccel,Y
+;	STA <Objects_XVel,X	 ; Update X velocity
+;
+;	BNE PRG003_B28B	 ; If X velocity is not at zero, jump to PRG003_B28B
+;
+;	INC Objects_Var7,X	 ; Otherwise, Var7++
+;
+;PRG003_B28B:
+;	CMP BigBerthaLCC_XVelLowLimit,Y
+;	BNE PRG003_B2A4	 ; If Big Bertha is at low limit, jump to PRG003_B2A4
+;
+;	LDA Objects_Timer3,X
+;	BNE PRG003_B2A4	 ; If timer 3 not expired, jump to PRG003_B2A4
+;
+;	LDA RandomN,X
+;	BPL PRG003_B2A4	 ; Random 50/50, jump to PRG003_B2A4
+;
+;	; Set timer to $26
+;	LDA #$26
+;	STA Objects_Timer,X
+;
+;	; Set timer to $80
+;	LDA #$80
+;	STA Objects_Timer3,X
+;
+;PRG003_B2A4:
+;	RTS		 ; Return
+;
+;BigBertha_HVisByFlip:	.byte $20, $80
+;BigBertha_SpriteXOff:	.byte $10, $00
+;
+;BigBerthaLCC_Draw:
+;
+;	; Save Big Bertha's X/Hi
+;	LDA <Objects_X,X
+;	PHA
+;	LDA <Objects_XHi,X
+;	PHA
+;
+;	LDA Objects_SprHVis,X
+;	STA Temp_VarNP0	 ; Store horizontal visibility bits -> Temp_VarNP0
+;
+;	LDA Objects_FlipBits,X
+;	ASL A
+;	BEQ PRG003_B2CB	 ; If Big Bertha is NOT horizontally flipped, jump to PRG003_B2CB
+;
+;	ASL Objects_SprHVis,X
+;
+;	; Move over 8 pixels
+;	LDA <Objects_X,X
+;	ADD #$08
+;	STA <Objects_X,X
+;	LDA <Objects_XHi,X
+;	ADC #$00
+;	STA <Objects_XHi,X
+;
+;PRG003_B2CB:
+;	JSR Object_Draw16x32Sprite	 ; Draw part of Big Bertha
+;
+;	; Restore Big Bertha's X/Hi
+;	PLA
+;	STA <Objects_XHi,X
+;	PLA
+;	STA <Objects_X,X
+;
+;	JSR Object_CalcSpriteXY_NoHi
+;
+;	LDY #$00	 ; Y = 0
+;
+;	LDA Objects_FlipBits,X
+;	ASL A
+;	BEQ PRG003_B2E0	 ; If Big Bertha is NOT horizontally flipped, jump to PRG003_B2E0
+;
+;	INY		 ; Y = 1
+;
+;PRG003_B2E0:
+;	LDA Temp_VarNP0
+;	AND BigBertha_HVisByFlip,Y
+;	BNE PRG003_B341	 ; If check sprite for Big Bertha is off-screen, jump to PRG003_B341 (RTS)
+;
+;	; Calculate Sprite X with appropriate offset
+;	LDA <Objects_SpriteX,X
+;	ADD BigBertha_SpriteXOff,Y
+;	STA <Temp_Var2	
+;
+;	LDY Object_SprRAM,X	 ; Y = Sprite_RAM offset
+;
+;	; Store sprite Xs
+;	LDA <Temp_Var2
+;	STA Sprite_RAM+$13,Y
+;	STA Sprite_RAM+$17,Y
+;
+;	; Temp_Var1 = Sprite vertical visibility bits
+;	LDA Objects_SprVVis,X
+;	STA <Temp_Var1	
+;
+;	LDA <Objects_SpriteY,X	
+;	LSR <Temp_Var1
+;	BCS PRG003_B309	 ; If this sprite is vertically off-screen, jump to PRG003_B309
+;
+;	STA Sprite_RAM+$10,Y	 ; Otherwise, store Sprite Y
+;
+;PRG003_B309:
+;	LSR <Temp_Var1
+;	BCS PRG003_B312	 ; If this sprite is vertically off-screen, jump to PRG003_B312
+;
+;	ADC #16
+;	STA Sprite_RAM+$14,Y	 ; Otherwise, store Sprite Y
+;
+;PRG003_B312:
+;	; Copy attributes across
+;	LDA Sprite_RAM+$02,Y
+;	STA Sprite_RAM+$12,Y
+;	STA Sprite_RAM+$16,Y
+;
+;	; Store pattern
+;	LDA #$85
+;	STA Sprite_RAM+$11,Y
+;
+;	LDA <Objects_Var5,X
+;	LSR A
+;	LSR A
+;	LSR A
+;
+;	; Select appropriate pattern by animation frame
+;	LDA #$8b
+;	BCS PRG003_B32B	
+;	LDA #$91
+;PRG003_B32B:
+;	; Store pattern
+;	STA Sprite_RAM+$15,Y
+;
+;	LDA Objects_FlipBits,X
+;	BPL PRG003_B341	 ; If Big Bertha is not vertically flipped, jump to PRG003_B341
+;
+;	; Otherwise swap Sprite Ys
+;	LDA Sprite_RAM+$10,Y
+;	PHA
+;	LDA Sprite_RAM+$14,Y
+;	STA Sprite_RAM+$10,Y
+;	PLA
+;	STA Sprite_RAM+$14,Y
+;
+;PRG003_B341:
+;	RTS		 ; Return
+;
+;TinyCheep_XVel:	.byte -$28, $28
+;TinyCheep_XOff:	.byte $00, $08
+;TinyCheep_Flip:	.byte $00, SPR_HFLIP
+;
+;
+;BigBertha_SpitOutCheepCheep:
+;	LDY #$04	 ; Y = 4
+;PRG003_B34A:
+;	LDA Objects_State,Y
+;	BEQ PRG003_B353	 ; If this object slot is dead/empty, jump to PRG003_B353
+;
+;	DEY		 ; Y--
+;	BPL PRG003_B34A	 ; While Y >= 0, loop!
+;
+;	RTS		 ; Return
+;
+;PRG003_B353:
+;	TYA		 
+;	TAX		 ; X = open object slot index
+;
+;	JSR Level_PrepareNewObject
+;
+;	LDX <SlotIndexBackup		 ; X = object slot index
+;
+;	; Set to normal state
+;	LDA #OBJSTATE_NORMAL
+;	STA Objects_State,Y
+;
+;	; This is the tiny Cheep Cheep that comes out of Big Bertha
+;	LDA #OBJ_TINYCHEEPCHEEP
+;	STA Level_ObjectID,Y
+;
+;	; Cheep Cheep emerges at +14
+;	LDA <Objects_Y,X
+;	ADC #14
+;	STA Objects_Y,Y
+;	LDA <Objects_YHi,X
+;	ADC #$00
+;	STA Objects_YHi,Y
+;
+;	; Temp_Var1 = 0
+;	LDA #$00
+;	STA <Temp_Var1
+;
+;	LDA Objects_FlipBits,X
+;	BEQ PRG003_B37D	 ; If Big Bertha is not flipped, jump to PRG003_B37D
+;
+;	INC <Temp_Var1	 ; Otherwise, Temp_Var1 = 1
+;
+;PRG003_B37D:
+;	LDA <Objects_X,X
+;	LDX <Temp_Var1		 ; X = 0 or 1
+;	ADC TinyCheep_XOff,X
+;	STA Objects_X,Y	 ; Set Tiny Cheep Cheep's X
+;
+;	; Set tiny Cheep Cheep's X velocity
+;	LDA TinyCheep_XVel,X
+;	STA Objects_XVel,Y
+;
+;	; Set tiny Cheep Cheep's flip
+;	LDA TinyCheep_Flip,X
+;	STA Objects_FlipBits,Y
+;
+;	LDX <SlotIndexBackup	 ; X = object slot index
+;
+;	; Set tiny Cheep Cheep's X Hi
+;	LDA <Objects_XHi,X
+;	ADC #$00
+;	STA Objects_XHi,Y
+;
+;	; Set tiny Cheep Cheep palette select 1 and flag as under water
+;	LDA #SPR_PAL1
+;	STA Objects_SprAttr,Y
+;	STA Objects_InWater,Y
+;
+;	; Tiny Cheep Cheep's Var1 holds Big Bertha's object index
+;	TXA
+;	STA Objects_Var1,Y
+;
+;	; Timer set to $30
+;	LDA #$30
+;	STA Objects_Timer,Y
+;
+;	RTS		 ; Return
 
 ObjNorm_TinyCheepCheep:
 	RTS

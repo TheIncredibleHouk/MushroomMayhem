@@ -3952,54 +3952,6 @@ PRG002_B4AC:
 PRG002_B4B1:
 	RTS		 ; Return
 
-	; Pattern for left half of sprite for Toad House item
-ToadItem_PatternLeft:
-	.byte $85	; Mushroom
-	.byte $87	; Fire flower
-	.byte $9D	; Leaf
-	.byte $81	; Frog Suit
-	.byte $83	; Tanooki Suit
-	.byte $8B	; Hammer Suit
-	.byte $B5	; Judgems
-	.byte $A4	; P-Wing
-	.byte $A9	; Star
-	.byte $95	; Anchor
-	.byte $99	; Hammer
-	.byte $A1	; Whistle
-	.byte $89	; Music box
-
-	; Pattern for right half of sprite for Toad House item
-ToadItem_PatternRight:
-	.byte $85	; Mushroom
-	.byte $87	; Fire flower
-	.byte $9F	; Leaf
-	.byte $81	; Frog Suit
-	.byte $83	; Tanooki Suit
-	.byte $8B	; Hammer Suit
-	.byte $B7	; Judgems
-	.byte $93	; P-Wing
-	.byte $A9	; Star
-	.byte $97	; Anchor
-	.byte $9B	; Hammer
-	.byte $A3	; Whistle 
-	.byte $8D	; Music box
-
-	; Attributes applied to right sprite of item
-ToadItem_AttrRight:
-	.byte $43	; Mushroom
-	.byte $43	; Fire flower
-	.byte $03	; Leaf
-	.byte $43	; Frog Suit
-	.byte $43	; Tanooki Suit
-	.byte $43	; Hammer Suit
-	.byte $03	; Judgems
-	.byte $03	; P-Wing
-	.byte $43	; Star
-	.byte $03	; Anchor
-	.byte $03	; Hammer
-	.byte $03	; Whistle
-	.byte $03	; Music Box
-
 ObjNorm_ToadHouseItem:
 	RTS		 ; Return
 

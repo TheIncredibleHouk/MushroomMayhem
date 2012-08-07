@@ -3239,7 +3239,7 @@ PRG031_FEC3:
 	EOR Controller1,Y	; 
 	AND <Temp_Var3	 	; 
 	STA Controller1Press,Y	; Figures which buttons have only been PRESSED this frame as opposed to those which are being held down
-	STA <Pad_Input	 	; 
+	STA <Pad_Input	 	; #VIRUS
 	PLA		 	; Restore A
 	STA Controller1,Y	; 
 	STA <Pad_Holding	 ; 
