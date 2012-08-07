@@ -51,7 +51,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.word ObjInit_DoNothing	; Object $1A
+	.word ObjInit_DoNothing	; Object $1Athat is a l
 	.word ObjInit_BounceLR	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_Obj1C	; Object $1C
 	.word ObjInit_DoNothing	; Object $1D

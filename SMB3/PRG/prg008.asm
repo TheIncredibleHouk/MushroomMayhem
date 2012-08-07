@@ -1332,6 +1332,7 @@ PRG008_A6E5:
 	STA <Pad_Input
 
 Normal_008_1:
+
 	LDA Level_Objects+1
 	CMP #OBJ_TOADANDKING
 	BNE PRG008_A6F2	 	; If first object is not "Toad and the King" (i.e. we're in the end of world castle), jump to PRG008_A6F2
