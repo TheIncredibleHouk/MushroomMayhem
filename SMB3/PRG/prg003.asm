@@ -1884,10 +1884,10 @@ ObjInit_BoomBoom:
 	; Boom Boom starts on frame 7
 	LDA #$07
 	STA Objects_Frame,X
+
 	RTS
 
 ObjInit_FloatingBGCloud:
-	LDA $F000
 	LDA Objects_Y,X
 	AND #$F0
 	LSR A
@@ -2079,6 +2079,17 @@ PRG003_AAD3:
 	INC Objects_Var3,X	 ; Var3++
 
 PRG003_AAD9:
+	LDA <Objects_Var5,X
+	BEQ NoBBTimer
+	CMP #$05
+	BEQ NoBBTimer
+	LDA BoomBoomMiscTimer
+	BEQ NoBBTimer
+	DEC BoomBoomMiscTimer
+	BNE NoBBTimer
+	JSR DoBoomBoomWorldJMP
+
+NoBBTimer:
 	LDA <Objects_Var5,X	; Var5 is internal state for Boom Boom
 	JSR DynJump
 
@@ -2105,6 +2116,8 @@ BoomBoom_Init:
 	LDA #$00
 	STA <Horz_Scroll
 
+	LDA #$01
+	STA BoomBoomMiscTimer
 	; Halt Player horizontally
 	LDY #$00
 	STY <Player_XVel
@@ -2112,9 +2125,9 @@ BoomBoom_Init:
 	LDA <Player_InAir
 	BNE PRG003_AB1E		; If Player is not on ground, jump to PRG003_AB1E (RTS)
 
+
 	STA Level_PSwitchCnt	 ; Cancel any active P-Switch
 
-	; Play boss music
 	LDA Sound_QMusic2
 	ORA #MUS2B_BOSS
 	STA Sound_QMusic2
@@ -2127,7 +2140,7 @@ BoomBoom_Init:
 	STA Level_FreeVertScroll
 
 	; Var5 = 2
-	STA <Objects_Var5,X
+	INC <Objects_Var5,X
 
 
 BoomBoom_ResetVar6:
@@ -2339,7 +2352,7 @@ PRG003_AC00:
 	BNE PRG003_AC11	 ; If Var7 <> 0, jump to PRG003_AC11
 
 	; Boom Boom's jump!
-	LDA #-$60
+	LDA #-$70
 	STA <Objects_YVel,X
 
 	JSR BoomBoom_SetXVelTowardsPlayer	 ; Jump towards Player
@@ -2735,6 +2748,8 @@ PRG003_AE17:
 BoomBoom_HitTest:
 	JSR Object_HandleBumpUnderneath	 ; Hm, Boom Boom handles getting bumped underneath?
 
+	LDA Invincible_Enemies
+	BNE BBRTS1					; invincible, can't hurt boom boom!
 	LDA Objects_PlayerHitStat,X
 	BEQ PRG003_AE87	 ; If Player is not hitting Boom Boom at all, jump to PRG003_AE87 (RTS)
 
@@ -2757,6 +2772,7 @@ PRG003_AE50:
 	LDA #-$30
 	STA <Player_YVel
 
+
 	LDA <Objects_Var5,X
 	INC <Objects_Var5,X	; Var5++ (Next internal state)
 	CMP #$04	 
@@ -2775,6 +2791,7 @@ PRG003_AE50:
 	LDA #$30
 	STA Objects_Timer2,X
 
+BBRTS1:
 	RTS		 ; Return
 
 PRG003_AE82:
@@ -3796,112 +3813,8 @@ PRG003_B37D:
 
 	RTS		 ; Return
 
-TinyCheepCheep_XVelLimit:	.byte $08, -$08
-PRG003_B3B0:	.byte $FF, $01
-
 ObjNorm_TinyCheepCheep:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-
-	; Toggle frame by counter
-	LDA Level_NoStopCnt
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-	LDA <Player_HaltGame
-	BNE PRG003_B439	 ; If gameplay is halted, jump to PRG003_B439
-
-	LDY #$02	 ; Y = $02
-
-	LDA <Counter_1
-	AND #$10
-	BEQ PRG003_B3CD	 ; Every 1:16 ticks, jump to PRG003_B3CD
-
-	LDY #-$02	 ; Y = -$02
-
-PRG003_B3CD:
-	STY <Objects_YVel,X	 ; Set Y velocity
-
-	LDY #$00	 ; Y = 0 (moving to the right)
-
-	LDA <Objects_XVel,X
-	BPL PRG003_B3D6	 ; If moving to the right, jump to PRG003_B3D6
-
-	INY		 ; Y = 1 (moving to the left)
-
-PRG003_B3D6:
-	CMP TinyCheepCheep_XVelLimit,Y 
-	BEQ PRG003_B3E1	 ; If hit the limit, jump to PRG003_B3E1
-
-	ADD PRG003_B3B0,Y	 ; Accelerate
-	STA <Objects_XVel,X	 ; Update X Vel
-
-PRG003_B3E1:
-	JSR Object_ApplyXVel	 	; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
-	JSR Player_HitEnemy		; Player interaction with enemy
-
-	LDA Objects_Timer,X
-	BNE PRG003_B439	 ; If timer not expired, jump to PRG003_B439
-
-	; Timer expired...
-
-	LDY Objects_Var1,X	 ; Y = Var1 (parent Big Birtha Birther)
-
-	LDA Objects_State,Y
-	CMP #OBJSTATE_NORMAL
-	BNE PRG003_B42E	 ; If Big Birtha Birther's state is not Normal, jump to PRG003_B42E
- 
-	LDA Level_ObjectID,Y	
-	CMP #OBJ_BIGBERTHABIRTHER
-	BNE PRG003_B42E	 ; If this is no longer a Big Bertha Birther, jump to PRG003_B42E
-
-	LDA <Objects_X,X
-	SBC Objects_X,Y
-	STA <Temp_Var1		 ; Temp_Var1 = difference between the little Cheep's position and Big Bertha
-
-	ADC #$20
-	CMP #$48
-	BGE PRG003_B439	 ; If too far right, jump to PRG003_B439
-
-	LDA <Temp_Var1
-	ADC #$08
-	CMP #$18
-	BGE PRG003_B41E	 ; If too far left, jump to PRG003_B41E
-
-	JSR Object_SetDeadEmpty	 ; Eradicate the Cheep Cheep
-	STA Objects_Frame,Y	 ; Clear the frame (?)
-
-	JMP PRG003_B439	 ; Jump to PRG003_B439
-
-PRG003_B41E:
-	LDA #$08	 ; A = $08
-
-	LDY <Temp_Var1	 ; Y = Temp_Var1
-	BMI PRG003_B426	 ; If Temp_Var1 (difference) is negative, jump to PRG003_B426
-
-	LDA #-$08	 ; A = -$08
-
-PRG003_B426:
-	ADD <Objects_XVel,X	 ; Add to X velocity
-	STA <Objects_XVel,X	 ; Update X Velocity
-
-	JMP PRG003_B439	 ; Jump to PRG003_B439
-
-PRG003_B42E:
-	LDA #$08	 ; A = $08
-
-	LDY Objects_FlipBits,X
-	BNE PRG003_B437	 ; If not horizontally flipped, jump to PRG003_B437
-
-	LDA #-$08	 ; A = -$08
-
-PRG003_B437:
-	STA <Objects_XVel,X	 ; Update X Velocity
-
-PRG003_B439:
-	JMP Object_ShakeAndDraw	; Draw object and don't come back!
+	RTS
 
 CheepCheepHopper_InitXVel:	.byte $0C, -$0C
 
@@ -6196,3 +6109,52 @@ HBros_Bit_Loop:
 Get_HBros_Coin_Bit_RTS:
 	LDX DAIZ_TEMP1
 	RTS
+
+Do_Boom_Boom_Invincibility:
+	INC Invincible_Enemies
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	LDA #$40
+	STA BoomBoomMiscTimer
+	RTS
+
+Kill_Invincibility:
+	TXA
+	PHA
+	LDA #$00
+	STA Invincible_Enemies
+	LDX #$15
+
+Restore_Enemy_Pal:
+	LDA Pal_Data, X
+	STA Palette_Buffer, X
+	INX
+	CPX #$20
+	BNE Restore_Enemy_Pal
+	PLA
+	TAX
+	RTS
+
+DoBoomBoomWorldJMP:
+	LDA World_Num
+	JSR DynJump
+
+	.word World1BB
+
+World1BB:
+	LDA Invincible_Enemies
+	BNE World1BB2
+	INC Invincible_Enemies
+	LDA $F000
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	LDA #$FF
+	STA BoomBoomMiscTimer
+	RTS
+	 
+World1BB2:
+	LDA #$50
+	STA BoomBoomMiscTimer
+	JMP Kill_Invincibility
