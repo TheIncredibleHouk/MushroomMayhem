@@ -387,7 +387,7 @@ PRG014_C5FB:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Door1:
 	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDA #TILEA_DOORTOP	 
+	LDA #(TILEA_DOORTOP	+ $40)
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
 	; Move to next row by adding 16 to tile offset
@@ -398,7 +398,7 @@ LoadLevel_Door1:
 	ADC #$00	 
 	STA <Map_Tile_AddrH
 
-	LDA #TILEA_DOORBOTTOM
+	LDA #(TILEA_DOORBOTTOM	+ $40)
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 	RTS		 ; Return
 

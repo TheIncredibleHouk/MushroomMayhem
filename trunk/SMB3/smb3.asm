@@ -2485,8 +2485,9 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Burning_Mode:			.ds 1	;
 	Burning_Time:			.ds 1	;
 	Ignore_Vel_Stop:		.ds	1	;
-	ESwitch:			.ds 1	; For e-switch levels
-				.ds 75	; $7997-$79FF unused UNUSED HERE
+	ESwitch:				.ds 1	; For e-switch levels
+	BoomBoomMiscTimer:		.ds 1	;
+				.ds 74	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -4029,9 +4030,9 @@ TILE3_ALTDIAMOND	= $48	; Alternate diamond type block, not apparently used (a bl
 TILE3_QUICKSAND_TOP	= $49	; Quicksand top
 TILE3_QUICKSAND_MID	= $4A	; Quicksand middle
 
-TILE3_BGBUSH_L		= $81	; Background bush left
-TILE3_BGBUSH_M		= $82	; Background bush middle
-TILE3_BGBUSH_R		= $83	; Background bush right
+TILE3_BGBUSH_L		= $84	; Background bush left
+TILE3_BGBUSH_M		= $85	; Background bush middle
+TILE3_BGBUSH_R		= $86	; Background bush right
 TILE3_UNDERGROUND	= $86	; Underground speckled
 TILE3_TUNNEL		= $87	; "Tunnel" under grassy ground
 TILE3_SLOPE45B2T	= $99	; 45 degree slope, bottom-to-top
