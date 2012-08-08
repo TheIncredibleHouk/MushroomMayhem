@@ -2635,7 +2635,8 @@ CFIRE_LASER		= $15	; Laser fire
 	World_Locks2:		.ds 1	;
 	World_Challenges1:	.ds 1	;
 	World_Challenges2:	.ds	1	;
-						.ds 78; $7A74-$7ADF unused
+	Old_World_Map_Tile:	.ds	1	;
+						.ds 77; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)

@@ -5656,7 +5656,7 @@ Player_Die:
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Level_PSwitchCnt
-
+	
 	LDA #$01
 	STA Player_QueueSuit	 ; Queue change to "small"
 
