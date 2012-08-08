@@ -51,7 +51,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_RotoDiscDualCW	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.word ObjInit_BlooperWithKids	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.word ObjInit_Blooper		; Object $62 - OBJ_BLOOPER
-	.word ObjInit_BigBerthaBirther	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.word ObjInit_DoNothing	; Object $63 - OBJ_BIGBERTHABIRTHER
 	.word ObjInit_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjInit_WaterCurrent	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjInit_WaterCurrent	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -93,7 +93,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_RotoDiscDual	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.word ObjNorm_Blooper		; Object $61 - OBJ_BLOOPERWITHKIDS
 	.word ObjNorm_Blooper		; Object $62 - OBJ_BLOOPER
-	.word ObjNorm_BigBerthaBirther	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.word ObjNorm_DoNothing	; Object $63 - OBJ_BIGBERTHABIRTHER
 	.word ObjNorm_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjNorm_WaterCurrent	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjNorm_WaterCurrent	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -6137,7 +6137,6 @@ World1BB:
 	LDA Invincible_Enemies
 	BNE World1BB2
 	INC Invincible_Enemies
-	LDA $F000
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1

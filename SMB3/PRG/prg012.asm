@@ -211,6 +211,8 @@ PRG012_A498:
 	LDA [Temp_Var1],Y	; Get byte from tile layout
 	CMP #$ff	 
 	BEQ PRG012_A4C1	 	; If it's $FF (terminator), jump to PRG012_A4C1
+	STA $7fFF
+	JSR Check_For_Complete_Tiles
 	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
 	INY		 	; Y++
 
@@ -1015,3 +1017,17 @@ Map_LevelLayouts:
 
 
 ; Rest of ROM bank was empty
+Check_For_Complete_Tiles:
+	RTS
+	STA DAIZ_TEMP1
+	CMP #$44
+	BNE Restore_Tile
+	JSR Get_Bit_By_World
+	AND World_Locks1
+	BEQ Restore_Tile
+	LDA #$BF
+	RTS
+
+Restore_Tile:
+	LDA DAIZ_TEMP1
+	RTS

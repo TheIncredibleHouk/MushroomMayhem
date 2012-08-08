@@ -2823,51 +2823,7 @@ PRG001_AD7E:
 
 
 ObjNorm_PDoor:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-
-	LDA Level_PSwitchCnt
-	BEQ PRG001_AD7E	 ; If P-Switch is not active, jump to PRG001_AD7E (RTS)
-
-	LDA <Player_HaltGame
-	BNE PRG001_ADBB	 ; If gameplay is halted, jump to PRG001_ADBB
-
-	LDA <Player_InAir
-	BNE PRG001_ADBB	 ; If Player is mid air, jump to PRG001_ADBB
-
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ PRG001_ADBB	 ; If Player is NOT pressing up, jump to PRG001_ADBB
-
-	; If Player is NOT within range of the door X-wise, jump to PRG001_ADBB
-	JSR Object_CalcCoarseXDiff	 
-	LDA <Temp_Var15	
-	ADD #$02	
-	CMP #$04	
-	BGE PRG001_ADBB
-
-	; If Player is NOT within range of the door Y-wise, jump to PRG001_ADBB
-	JSR Object_CalcCoarseYDiff
-	INC <Temp_Var15		
-	BNE PRG001_ADBB	 
-
-	LDY #$01	 ; Y = 1
-
-	LDA Level_PipeNotExit
-	BEQ PRG001_ADB1	 ; If this level has pipes exit to map, jump to PRG001_ADB1
-
-	LDY #$03	 ; Y = 3
-
-PRG001_ADB1:
-	STY Level_JctCtl ; Set appropriate junction type
-
-	; Set map return status?
-	LDA #$00
-	STA Map_ReturnStatus
-
-	STA <Player_XVel ; Halt Player horizontally
-
-PRG001_ADBB:
-	JMP Object_Draw16x32Sprite	 ; Draw the door and don't come back
+	RTS
 
 
 ObjNorm_Card:
