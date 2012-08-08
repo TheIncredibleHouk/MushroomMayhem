@@ -2631,7 +2631,11 @@ CFIRE_LASER		= $15	; Laser fire
 	Subtraction_Value:	.ds 8	; Used in doign decimal byte-wise subtraction, this is the B part of A - B
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Virus:				.ds 1	;
-						.ds 82; $7A74-$7ADF unused
+	World_Locks1:		.ds 1	;
+	World_Locks2:		.ds 1	;
+	World_Challenges1:	.ds 1	;
+	World_Challenges2:	.ds	1	;
+						.ds 78; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)

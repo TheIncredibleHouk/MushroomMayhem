@@ -1636,17 +1636,13 @@ PRG008_A83F:
 	LDA <Player_InAir
 	BNE PRG008_A86C	 ; If Player is mid air, jump to PRG008_A86C
 
-	; If Level_PipeNotExit is set, we use Level_JctCtl = 3 (the general junction)
-	; Otherwise, a value of 1 is used which flags that pipe should exit to map
-
-	LDY #$01	; Y = 1
-
-	LDA Level_PipeNotExit
-	BEQ PRG008_A852	 ; If pipe should exit to map, jump to PRG008_A852
-
-	LDY #$03	 ; Otherwise, Y = 3
+	JSR Check_For_Level_Exit
+	LDA DAIZ_TEMP1
+	BEQ PRG008_A852
+	STA Level_ExitToMap	
 
 PRG008_A852:
+	LDY #$01	; Y = 1
 	STY Level_JctCtl ; Set appropriate value to Level_JctCtl
 
 	LDY #0
@@ -6567,22 +6563,7 @@ PipeEntryPrepare:
 	ORA #SND_PLAYERPIPE
 	STA Sound_QPlayer
 
-	LDA #$00
-	STA DAIZ_TEMP1
-	; #DAHRKDAIZ hacked so object $25 indicates we should exit to map
-	STX DAIZ_TEMP2
-	LDX #$06				; Check for the level exit object, if it exists, exit level
-Level_Exit_Loop:
-	LDA Level_ObjectID, X
-	CMP #$25
-	BNE Not_Exit_Object
-	JSR Do_Exit_Map
-
-Not_Exit_Object:
-	DEX
-	BNE Level_Exit_Loop
-
-	LDX DAIZ_TEMP2
+	JSR Check_For_Level_Exit
 	LDA DAIZ_TEMP1	; A = 1 (pipe will exit level)
 	BNE PRG008_BF49		; If pipes in this level do NOT exit to map, jump to PRG008_BF47
 
@@ -6891,4 +6872,23 @@ Change_ESwitch:
 
 Cant_ESwitch:
 	LDX DAIZ_TEMP1
+	RTS
+
+Check_For_Level_Exit:
+	LDA #$00
+	STA DAIZ_TEMP1
+	; #DAHRKDAIZ hacked so object $25 indicates we should exit to map
+	STX DAIZ_TEMP2
+	LDX #$06				; Check for the level exit object, if it exists, exit level
+Level_Exit_Loop:
+	LDA Level_ObjectID, X
+	CMP #$25
+	BNE Not_Exit_Object
+	JSR Do_Exit_Map
+
+Not_Exit_Object:
+	DEX
+	BNE Level_Exit_Loop
+
+	LDX DAIZ_TEMP2
 	RTS
