@@ -1610,12 +1610,14 @@ Map_ClearLevelFXPatterns:
 
 	; Indexed by Player and tile quadrant (except the last three which are hardcoded specific)
 Map_CompleteTile:
-	.byte $BF
+	.byte $BF, $BF, $BF, $BF
+	.byte $BF, $BF, $BF, $BF
+	.byte $BF, $BF, $BF
 
 	; This just forces "poof" completion on the following tiles (in quadrant zero, since all other
 	; quadrants always "poof" except fortress tiles)
 Map_ForcePoofTiles:
-	.byte $44
+	.byte $44, $44, $44, $44, $44
 Map_ForcePoofTiles_End
 
 Map_PanelCompletePats:
@@ -1710,6 +1712,17 @@ PRG011_AA39:
 
 	; All non-quadrant 0 tiles use the "poof" to clear
 
+	LDA <World_Map_Tile
+	CMP #TILE_FORT
+	BEQ PRG011_AA4C	 ; If the completed tile is a Mini-Fortress, jump to PRG011_AA4C
+
+	CMP #TILE_LARGEFORT
+	BEQ PRG011_AA4C	 ; If the completed tile is a Large Fortress (Unused!!), jump to PRG011_AA4C
+
+	CMP #TILE_ALTFORT
+	BEQ PRG011_AA4C	 ; If the completed tile is a Mini-Fortress (alternate color), jump to PRG011_AA4C
+
+	; If not a fortress...
 
 	; Play the "poof" sound
 	LDA #SND_LEVELPOOF
@@ -1778,9 +1791,34 @@ PRG011_AA58:
 PRG011_AA8C:
 	PLA		 ; Restore tile value
 
+	CMP #TILE_FORT
+	BEQ PRG011_AA95	 ; If this was a Mini-Fortress, jump to PRG011_AA95
+
+	CMP #TILE_LARGEFORT
+	BNE PRG011_AA9C	 ; If this was NOT a Large Fortress (Unused!!), jump to PRG011_AA9C
+
+PRG011_AA95:
+
+	; Crumble sound
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	LDX #$08	 ; X = 8
+
 PRG011_AA9C:
+	CMP #TILE_ALTFORT
+	BNE PRG011_AAA7	 ; If this was a Mini-Fortress (Alternate color), jump to PRG011_AAA7
+
+	; Crumble sound
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	LDX #$09	 ; X = 9
+
 PRG011_AAA7:
-	LDA #$BF	; Get appropriate "complete" tile for this level
+	LDA [Map_Tile_AddrL],Y	; Set it in memory
+	STA Old_World_Map_Tile
+	LDA Map_CompleteTile,X	; Get appropriate "complete" tile for this level
 	STA [Map_Tile_AddrL],Y	; Set it in memory
 	STA <World_Map_Tile	; ... as well as the tile detected
 
@@ -2081,7 +2119,32 @@ Map_WhiteObjects:
 Map_WhiteObjects_End
 
 MO_CheckForBonus:
-	RTS
+
+	; Temp_Var16 is our loop counter
+	LDA #(Map_WhiteObjects_End - Map_WhiteObjects - 1)
+	STA <Temp_Var16
+
+PRG011_AC57:
+	LDY <Temp_Var16	 	; Y = Temp_Var16
+	LDX #(MAPOBJ_TOTAL-1)	; X = (MAPOBJ_TOTAL-1)
+
+	LDA Map_WhiteObjects,Y
+PRG011_AC5E:
+	CMP Map_Objects_IDs,X
+	BEQ PRG011_AC69	 ; If this is the "white" bonus object we're looking for, jump to PRG011_AC69 (we already have one, can't have more)
+
+	DEX		 ; X-- (previous "white" bonus object to consider)
+	BPL PRG011_AC5E	 ; While X >= 0, loop!
+
+	JSR MO_CheckForBonusRules	; Since we don't have one of these, check the rules to see if we've earned one!
+
+PRG011_AC69:
+	DEC <Temp_Var16	 ; Temp_Var16--
+	BPL PRG011_AC57	 ; While Temp_Var16 >= 0, loop!
+
+	INC Map_Operation	 ; Map_Operation++
+	JMP WorldMap_UpdateAndDraw	 ; Update and draw map, and don't come back!
+
 MO_CheckForBonusRules:
 	LDA <Temp_Var16
 	JSR DynJump
@@ -4458,7 +4521,7 @@ Map_CompleteBit:
 	.byte $80, $40, $20, $10, $08, $04, $02, $01
 
 Map_MarkLevelComplete:
-	LDA World_Map_Tile 	 ; X = Player_Current
+	LDA Old_World_Map_Tile 	 ; X = Player_Current
 	CMP #$44
 	BNE Map_LevelCompleteRTS
 	JSR Get_Bit_By_World
@@ -4467,7 +4530,7 @@ Map_MarkLevelComplete:
 	RTS
 
 Map_LevelCompleteRTS:
-	RTS		 ; Return
+	RTS
 
 Map_Object_CheckVisibility:
 	; For a given object, check if it's visible on the map.  This value is
@@ -4817,6 +4880,7 @@ Rainbow_Palette_Cycle_Sprites2:
 	STA (Palette_Buffer + $1A)
 	;STA (Palette_Buffer + $1E)
 	RTS
+
 
 Get_Bit_By_World:
 	LDX World_Num

@@ -128,34 +128,6 @@ Map_Tile_ColorSets:
 Map_Object_ColorSets:
 	.byte $08, $08, $08, $08, $08, $08, $08, $09, $08
 
-Map_Complete_Bits:
-	; Quick LUT to get the bit for this completion row
-	.byte $80, $40, $20, $10, $08, $04, $02, $01
-
-Map_Removable_Tiles:
-	.byte TILE_ROCKBREAKH, TILE_ROCKBREAKV, TILE_LOCKVERT, TILE_FORT, TILE_ALTFORT, TILE_ALTLOCK, TILE_LOCKHORZ, TILE_RIVERVERT
-MRT_END	; marker to calculate size -- allows user expansion of Map_Removable_Tiles
-
-Map_RemoveTo_Tiles:
-	; These specify tiles that coorespond to the tile placed when the above is removed
-	; (NOTE: First two are for rock; see also PRG026 RockBreak_Replace)
-	; NOTE: Must have as many elements as Map_Removable_Tiles!
-	.byte TILE_HORZPATH, TILE_VERTPATH, TILE_VERTPATH, TILE_FORTRUBBLE, TILE_ALTRUBBLE, TILE_HORZPATHSKY, TILE_HORZPATH, TILE_BRIDGE
-
-Map_Completable_Tiles:
-	; These tiles are simply marked with the M/L
-	; NOTE: The Dancing Flower is a "completable tile"...
-	.byte TILE_TOADHOUSE, TILE_SPADEBONUS, TILE_HANDTRAP, TILE_DANCINGFLOWER, TILE_ALTTOADHOUSE
-MCT_END	; marker to calculate size -- allows user expansion of Map_Completable_Tiles
-
-Map_CompleteByML_Tiles:
-	.byte TILE_MARIOCOMP_P, TILE_LUIGICOMP_P, TILE_MARIOCOMP_O, TILE_LUIGICOMP_O
-	.byte TILE_MARIOCOMP_G, TILE_LUIGICOMP_G, TILE_MARIOCOMP_R, TILE_LUIGICOMP_R
-
-Map_Bottom_Tiles:
-	; This defines which tile covers the bottom horizontal border, per world
-	.byte TILE_BORDER1, TILE_BORDER1, TILE_BORDER1, TILE_BORDER1, TILE_BORDER2
-	.byte TILE_BORDER1, TILE_BORDER1, TILE_BORDER3, TILE_BORDER1
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Map_Reload_with_Completions
@@ -205,14 +177,36 @@ PRG012_A462:
 	; This loop loads the layout data into the Tile_Mem
 	; Note that it COULD terminate early via an $FF
 	; at any time, but this is never used...
+	LDA #$01
+	LDX World_Num
+
+Shift_World_Bit:
+	DEX
+	BMI Set_World_Bit
+	ASL A
+	BNE Shift_World_Bit
+
+Set_World_Bit:
+	STA DAIZ_TEMP1
+
 PRG012_A496:
 	LDY #$00	 	; Y = 0
 PRG012_A498:
 	LDA [Temp_Var1],Y	; Get byte from tile layout
 	CMP #$ff	 
 	BEQ PRG012_A4C1	 	; If it's $FF (terminator), jump to PRG012_A4C1
-	STA $7fFF
-	JSR Check_For_Complete_Tiles
+	STA DAIZ_TEMP2
+	CMP #$44
+	BNE Store_Tile
+	LDA DAIZ_TEMP1
+	AND World_Locks1
+	BEQ Store_Tile
+	LDA #$BF
+	STA DAIZ_TEMP2
+	BNE Store_Tile
+
+Store_Tile:
+	LDA DAIZ_TEMP2
 	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
 	INY		 	; Y++
 
@@ -248,7 +242,7 @@ PRG012_A4C1:
 	; This places the tiles along the bottom (lower horizontal border)
 	LDY #$e0	 	; Offset to the bottom row
 	LDX World_Num	 	; Current world
-	LDA Map_Bottom_Tiles,X	; Get the appropriate tile for the bottom row
+	LDA #TILE_BORDER1	; Get the appropriate tile for the bottom row
 PRG012_A4C9:
 	JSR Tile_Mem_ClearB	; Place the tiles
 	INY		 	; Y++
@@ -262,167 +256,10 @@ PRG012_A4C9:
 	LDA Map_Object_ColorSets,Y
 	STA PalSel_Obj_Colors	 	; Store which colors to use on map objects
 
-	LDY #$00	
-	STY <Temp_Var1	; Temp_Var1 = $00 (current completion column we're checking)
-PRG012_A4E5:
-	LDA #$80	
-	STA <Temp_Var2	; Temp_Var2 = $80 (current completion bit/row we're checking)
-
-PRG012_A4E9:
-	LDY <Temp_Var1		; Get current offset
-	LDA Map_Completions,Y	; Get this "Map Completion" value
-	AND <Temp_Var2	 	; Check current completion bit
-	BNE PRG012_A4F5	 	; If this row has a completion on this bit, jump to PRG012_A4F5
-	JMP PRG012_A585	 	; Otherwise, jump to PRG012_A585
-
-PRG012_A4F5:
-	; Row completion on specified bit
-	TYA		 ; A = Y (offset into Map_Completions, i.e. the current column of map data we're on)
-
-	; Note: Loop goes through both Players sets of completion bits, but
-	; this AND will basically cause 2 passes across the map...
-	AND #$30	 ; Determine which screen we're on (every $10 is another screen of map data, $00, $10, $20, $30)
-
-	; Provide X as an index into the Tile_Mem_Addr table
-	LSR A
-	LSR A
-	LSR A
-	TAX
-
-	; This pulls the correct starting address for this map "screen"
-	LDA Tile_Mem_Addr,X
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1,X
-	STA <Map_Tile_AddrH
-	INC <Map_Tile_AddrH	; Because map is always one the "lower" screen (as far as tile memory goes)
-
-	; The following loop determines what "index" cooresponds to this completion bit
-	; that we're working with (only one!)
-	LDX #$07		; X = 7
-PRG012_A50A:
-	LDA <Temp_Var2		; Current complete bit
-	CMP Map_Complete_Bits,X	
-	BEQ PRG012_A514	 	; If bitvalue matched, jump out of loop
-	DEX		 	; X--
-	BNE PRG012_A50A	 	; If X > 0, loop!
-
-PRG012_A514:
-	; X is now a value from 0 to 7
-
-	TXA
-	ASL A
-	ASL A
-	ASL A
-	ASL A		 ; A = X * 16
-	ADD #$10	 ; A += 16  (Thus: 16, 32, 48, 64, 80, 96, 112, 144; each row is another 16 bytes!)
-	STA <Temp_Var3	 ; Store result into Temp_Var3
-
-	TYA		 ; A = Y (the current "column" of completion we're working on)
-	AND #$0f	 ; Make it relative within this screen only (0-15)
-	ORA <Temp_Var3	 ; Merge with previous result; now its a direct offset within this screen to this row/col
-	TAY		 ; Y now holds the aforementioned offset
-
-PRG012_A524:
-	LDA [Map_Tile_AddrL],Y	 ; Get this tile
-
-	STY <Temp_Var5	 ; Y -> Temp_Var5
-	STA <World_Map_Tile	 ; -> World_Map_Tile
-
-	; Get tile quadrant -> 'X'
-	AND #$c0
-	CLC		 
-	ROL A		 
-	ROL A		 
-	ROL A		 
-	TAX
-
-	; Check if this tile is one of the completable event tiles
-	; $50 = Toad house  $E8 = Spade panel  $E6 = Hand trap (works anywhere!)  $BD = Enterable flower??  $E0 = Red Toad House
-	LDY #(MCT_END-Map_Completable_Tiles-1)	 	; Y = 4 
-	LDA <World_Map_Tile	; A = tile
-PRG012_A535:
-	CMP Map_Completable_Tiles,Y	
-	BEQ PRG012_A570	 ; If tile match, jump to PRG012_A570
-	DEY		 ; Y--
-	BPL PRG012_A535	 ; While Y >= 0, loop!
-
-	; Tile didn't match, loop finished...
-	CMP #TILE_FORT 
-	BEQ PRG012_A54A	 ; If tile is Mini-Fortress, jump to PRG012_A54A
-	CMP #TILE_ALTFORT
-	BEQ PRG012_A54A	 ; If tile is Reddish Mini-Fortress, jump to PRG012_A54A
-
-	; RAS: Irregular that they didn't use Tile_AttrTable here...
-	CMP Tile_Attributes_TS0,X
-	BGE PRG012_A570	; If this tile is a completable tile (as determined by quadrant and range), jump to PRG012_A570
-
-PRG012_A54A:
-	; Mini-fortresses or others here
-	LDX #(MRT_END-Map_Removable_Tiles-1)	; X = 7
-PRG031_A54C:
-	CMP Map_Removable_Tiles,X	; Check this tile
-	BEQ PRG031_A556	 		; If it matches this index, jump to PRG031_A556
-	DEX		 		; X--
-	BPL PRG031_A54C	 		; While X >=0, loop!
-	BMI PRG012_A55C	 		; If matched nothing, jump to PRG012_A55C
-
-PRG031_A556:
-	LDA Map_RemoveTo_Tiles,X	; Get the replacement tile
-	JMP PRG031_A581			; Jump to PRG031_A581
-
-PRG012_A55C:
-	LDA <Temp_Var2
-	CMP #$01
-	BNE PRG012_A585	 ; If Temp_Var2 (current completion bit) <> 1, jump to PRG012_A585
-
-	; Completion bit 1 appears one row lower than the other adjacent bits
-
-	LDY <Temp_Var5
-	CPY #$90
-	BGE PRG012_A585	 ; If Temp_Var5 (offset to tile) >= $90, jump to PRG012_A585
-
-	; Y += 16 (next tile row)
-	TYA
-	ADD #16
-	TAY
-
-	JMP PRG012_A524	 ; Jump to PRG012_A524
-
-PRG012_A570:
-	; Just about any "flippable" tile goes here, produces M/L
-	TXA
-	ASL A
-	STA <Temp_Var4	 ; Temp_Var4 = X (tile quadrant) << 1
-
-	LDA <Temp_Var1
-	AND #$40
-	BEQ PRG012_A57C	 ; If this is completion bit 6, jump to PRG012_A57C
-
-	INC <Temp_Var4		 ; Otherwise, Temp_Var4++
-PRG012_A57C:
-	LDX <Temp_Var4		 ; X = (tile quadrant * 2) + 0/1
-
-	LDA Map_CompleteByML_Tiles,X	; Get proper completion tile
-
-PRG031_A581:
-	LDY <Temp_Var5		 ; Y = Temp_Var5 (offset to tile)
-	STA [Map_Tile_AddrL],Y	 ; Set proper completion tile!
-
-PRG012_A585:
-	LSR <Temp_Var2	 ; Temp_Var2 >>= 1
-	BEQ PRG012_A58C	 ; If we've finished all row completion bits, jump to PRG012_A58C
-	JMP PRG012_A4E9	 ; Jump to PRG012_A4E9
-
-PRG012_A58C:
-	INC <Temp_Var1	 ; Temp_Var1++
-	LDA <Temp_Var1	 
-	CMP #$80	 
-	BEQ PRG012_A597	 ; If Temp_Var1 = 80 (completed through all column bytes), jump to PRG012_A597 (RTS)
-	JMP PRG012_A4E5	 ; Otherwise, jump back around again...
-
-PRG012_A597:
 	RTS		 ; Return
 
+			; I placed this here to insure maps don't move. Critical #DAHRKDAIZ
+	.org $A598
 Map_Tile_Layouts:
 	; This points to the layout data for each world's map tile layout
 	.word W1_Map_Layout, W2_Map_Layout, W3_Map_Layout, W4_Map_Layout, W5_Map_Layout
@@ -954,6 +791,7 @@ PRG012_B384:
 	; offset value for the following table based on the "XHi" position the
 	; Player was on the map.  Obviously for many worlds there is no valid
 	; offset value on some of the higher map screens...
+
 Map_ByXHi_InitIndex:
 	.word W1_InitIndex, W2_InitIndex, W3_InitIndex, W4_InitIndex, W5_InitIndex, W6_InitIndex, W7_InitIndex, W8_InitIndex, W9_InitIndex
 
@@ -1017,17 +855,3 @@ Map_LevelLayouts:
 
 
 ; Rest of ROM bank was empty
-Check_For_Complete_Tiles:
-	RTS
-	STA DAIZ_TEMP1
-	CMP #$44
-	BNE Restore_Tile
-	JSR Get_Bit_By_World
-	AND World_Locks1
-	BEQ Restore_Tile
-	LDA #$BF
-	RTS
-
-Restore_Tile:
-	LDA DAIZ_TEMP1
-	RTS

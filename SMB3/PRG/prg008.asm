@@ -458,8 +458,6 @@ Level_Initialize:
 PRG008_A242:
 	STA Level_ChangeReset ; Set Level_ChangeReset = 0 (trigger scene-change reset)
 
-	LDA #$00
-	STA ESwitch
 	LDA Level_Tileset
 	CMP #$02
 	BNE No_ESwitch
@@ -467,7 +465,6 @@ PRG008_A242:
 	STA ESwitch
 
 No_ESwitch:
-
 	LDA #$28
 	STA Player_SprOff ; Player sprite rooted at offset $28
 
