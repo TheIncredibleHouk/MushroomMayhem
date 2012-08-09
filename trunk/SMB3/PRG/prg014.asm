@@ -864,7 +864,7 @@ PRG014_C853:
 ; The end goal!  Takes up a little more than one screen...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PRG014_C860:
-	.byte TILE1_GOALEDGE, TILE1_GOALBLACK
+	.byte TILEA_CHERRY, TILE1_GOALBLACK
 
 LoadLevel_EndGoal:
 	; Backup Map_Tile_Addr into Tem_Var1/2
