@@ -1177,7 +1177,7 @@ PRG014_CB15:
 LoadLevel_Blocks:
 	.byte TILEA_BRICK, TILEA_QBLOCKCOIN, TILEA_BRICKCOIN, HOLLOW_BLOCK
 	.byte FROZEN_WATER, TILEA_NOTE, TILE_GLOBAL_ICE, TILEA_COIN ; #DAHRKDAIZ swapped HOLLOW_BLOCKBOUNCE for TILE_GLOBAL_ICE - 7/15
-	.byte TILEA_ICEBRICK	; This one is accessed by LoadLevel_IceBricks
+	.byte TILEA_CHERRY	; This one is accessed by LoadLevel_IceBricks
 
 LoadLevel_BlockRun:
 	LDA LL_ShapeDef
