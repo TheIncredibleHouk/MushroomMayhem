@@ -4579,10 +4579,23 @@ Level_DoCommonSpecialTiles:
 	LDY Player_Kuribo
 	BNE PRG008_B604	 ; If Player is in Kuribo's shoe, jump to PRG008_B604
 
-	LDA #TILEA_ICEBLOCK
+	LDA #TILEA_CHERRY
 	CMP Level_Tile_GndL,X
 	BNE PRG008_B604	 ; If Player is not touching an ice block, jump to PRG008_B604
 
+	LDA #CHNGTILE_DELETECOIN
+	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
+
+	; Play coin collected sound!
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+
+	LDA #$00
+	STA Level_Tile_GndR	; Clear this tile detect (probably to prevent "double collecting" a coin the Player is straddling)
+
+	INC Score_Earned
+	JMP PRG008_B652
 PRG008_B604:
 
 	; Not an ice block or if it was, Player was not interested in it...
