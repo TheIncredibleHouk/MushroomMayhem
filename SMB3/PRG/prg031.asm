@@ -3266,6 +3266,18 @@ PRG031_FEC3:
 	STA <Pad_Input
 
 PRG031_FF11:
+	LDA ChallengeMode
+	CMP #$01
+	BNE ChallengeRTS
+	LDA <Pad_Input
+	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
+	ORA #(PAD_RIGHT)
+	STA <Pad_Input
+	LDA <Pad_Holding
+	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
+	ORA #(PAD_RIGHT)
+	STA <Pad_Holding
+ChallengeRTS:
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

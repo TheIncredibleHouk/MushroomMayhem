@@ -3704,7 +3704,7 @@ Toad_Speak:
 	.word Deduct_Coins			; 4
 	.word End_Level				; 5
 	.word Do_Shop_Controls		; 6
-	.word Toad_Do_Nothing		; 7
+	.word Challenge_Toad		; 7
 
 TDiagBox_R1:	.byte $E8, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $EA
 TDiagBox_R2:	.byte $F8, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $FA
@@ -3816,31 +3816,20 @@ ToadMsg_Shop:
 	.byte "THE SHOP.      "
 
 	; English: "Hello! You" / "found my shop" / "of strange and" / "wonderful" / "things!"
-ToadMsg_AnchorPWing:
-	;            H    e    l    l    o    !         Y    o    u
-	.byte $FE, $B7, $D4, $DB, $DB, $DE, $EA, $FE, $C8, $DE, $CE, $FE, $FE, $FE, $FE
-
-	;            f    o    u    n    d         m    y         s    h    o    p
-	.byte $FE, $D5, $DE, $CE, $DD, $D3, $FE, $DC, $8C, $FE, $CC, $D7, $DE, $DF, $FE
-
-	;            o    f         s    t    r    a    n    g    e         a    n    d
-	.byte $FE, $DE, $D5, $FE, $CC, $CD, $CB, $D0, $DD, $D6, $D4, $FE, $D0, $DD, $D3
-
-	;            w    o    n    d    e    r    f    u    l
-	.byte $FE, $81, $DE, $DD, $D3, $D4, $CB, $D5, $CE, $DB, $FE, $FE, $FE, $FE, $FE
-
-	;            t    h    i    n    g    s    !
-	.byte $FE, $CD, $D7, $D8, $DD, $D6, $CC, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
-	;
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+ChallengeMessage:
+	.byte "CAN YOU HANDLE "
+	.byte "THE CHALLENGE? "
+	.byte "COMPLETE THIS  "
+	.byte "LEVEL FOR GREAT"
+	.byte "REWARDS.       "
+	.byte "               "
 
 	; Pointer table to Toad's three messages
 	; Warp Whistle
 	; Standard
 	; Anchor/P-Wing
-ToadMsg_Low:	.byte LOW(ToadMsg_Standard), LOW(ToadMsg_Shop), LOW(ToadMsg_AnchorPWing)
-ToadMsg_High:	.byte HIGH(ToadMsg_Standard), HIGH(ToadMsg_Shop), HIGH(ToadMsg_AnchorPWing)
+ToadMsg_Low:	.byte LOW(ToadMsg_Standard), LOW(ToadMsg_Shop), LOW(ChallengeMessage)
+ToadMsg_High:	.byte HIGH(ToadMsg_Standard), HIGH(ToadMsg_Shop), HIGH(ChallengeMessage)
 
 
 Toad_DoToadText:
@@ -5178,7 +5167,7 @@ Decrease_HBros_Coins:
 No_HBros_Dec:
 	RTS
 
-Next_Toad_Routine: .byte  $03, $06
+Next_Toad_Routine: .byte  $03, $06, $07
 
 Toad_Do_Nothing:
 	RTS
@@ -5642,4 +5631,9 @@ Draw_Item_Sprite:
 	STA Sprite_RAM + 1, Y
 	LDA Item_Pal, X
 	STA Sprite_RAM + 2, Y
+	RTS
+
+Challenge_Toad:
+	LDA #$01
+	STA Level_JctCtl
 	RTS

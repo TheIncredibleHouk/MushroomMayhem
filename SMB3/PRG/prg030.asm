@@ -2466,6 +2466,9 @@ PRG030_8F31:
 	; Transfer Player's current power up to the World Map counterpart
 	LDA <Player_Suit
 	STA World_Map_Power,X
+	LDA #$00
+	STA ESwitch
+	STA ChallengeMode
 
 	; Level_GetWandState = 0
 	LDA #$00

@@ -2408,7 +2408,6 @@ PRG024_ACBA:
 Title_PrepForWorldMap:
 	LDA #$00
 	STA World_Map_Power	 ; Mario starts as small on world map
-	STA World_Map_Power+1	 ; Luigi starts as small on world map
 	INC Total_Players	 ; Total_Players should be 1/2, not 0/1
 	INC <Title_State	 ; Next title state...
 	RTS		 ; Return

@@ -1023,7 +1023,7 @@ PRG019_A8A0:
 ; Tileset 13 only
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_CloudGoal:
-	.byte TILE13_DBLCLOUD_UM, TILE13_THICKCLOUD_LM, TILE13_GOALBLACK, TILE13_GOALEDGE, TILE13_GOALBLACKCLOUD, TILE13_GOALEDGECLOUD
+	.byte TILE13_DBLCLOUD_UM, TILE13_THICKCLOUD_LM, TILE13_GOALBLACK, TILE13_CHERRY, TILE13_GOALBLACKCLOUD, TILE13_CHERRYCLOUD
 
 LoadLevel_CloudGoal:
 	JSR LL19_GetLayoutByte_AndBackup	; Get byte from layout -> Temp_Var3, and backup Map_Tile_AddrL/H into Temp_Var1/2

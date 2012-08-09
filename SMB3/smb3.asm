@@ -2487,7 +2487,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Ignore_Vel_Stop:		.ds	1	;
 	ESwitch:				.ds 1	; For e-switch levels
 	BoomBoomMiscTimer:		.ds 1	;
-				.ds 74	; $7997-$79FF unused UNUSED HERE
+	ChallengeMode:			.ds 1	;
+				.ds 73	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -3774,7 +3775,7 @@ TILEA_BLOCKBUMP_CLEAR	= $F3	; Tile used when a "bump" block (e.g. ? blocks, note
 
 ; Tileset 1 (Plains style)
 TILE1_GOALBLACK		= $00	; Black background of goal area
-TILE1_GOALEDGE		= $01	; > shape goal edge
+TILEA_CHERRY		= $01	; > shape goal edge
 TILE1_SKYALT		= $02	; ?? Referenced, appears as sky?
 
 TILE1_LITTLEFENCE	= $04	; Little fence (runs atop the 'oo' type cheep-cheep bridge)
@@ -4535,7 +4536,7 @@ TILE12_SNOWGREEN_UR	= $90	; Frosty green platform, upper right
 
 ; Tileset 13 (Sky areas, inc. coin heaven)
 TILE13_GOALBLACK	= $00	; Goal darkness
-TILE13_GOALEDGE		= $01	; Goal edge
+TILE13_CHERRY		= $01	; Goal edge
 TILE13_STARS1		= $07	; Stars!  (Lost level)
 TILE13_STARS2		= $08	; Stars!  (Lost level)
 TILE13_STARS3		= $09	; Stars!  (Lost level)
@@ -4546,7 +4547,7 @@ TILE13_DBLCLOUD_BL	= $0D	; Double cloud bottom left
 TILE13_DBLCLOUD_UL	= $0E	; Double cloud upper left
 TILE13_DBLCLOUD_UR	= $0F	; Double cloud upper right
 TILE13_GOALBLACKCLOUD	= $10	; Goal darkness on top of cloud
-TILE13_GOALEDGECLOUD	= $11	; Goal edge on top of cloud
+TILE13_CHERRYCLOUD	= $11	; Goal edge on top of cloud
 TILE13_DBLCLOUD_LM	= $21	; Double cloud lower middle
 TILE13_DBLCLOUD_MM	= $22	; Double cloud middle middle
 TILE13_DBLCLOUD_LR	= $23	; Double cloud lower right
