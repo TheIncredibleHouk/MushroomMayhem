@@ -2816,7 +2816,7 @@ PRG003_AE95:
 
 	; Boom Boom becomes the "(?)" ball
 	LDA #$0A
-	STA Score_Earned
+	STA Experience_Earned
 	LDA #$00
 	STA Level_ObjectID,X
 	LDA #$FF

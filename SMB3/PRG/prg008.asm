@@ -355,7 +355,13 @@ PRG008_A1C1:
 	INC Coins_Earned	 ; One more coin earned!
 
 PRG008_A1D7:
+	CMP #CHNGTILE_DELETECHERRY
+	BNE Normal_Tile
+	INC Experience_Earned
+	LDA #CHNGTILE_DELETETOBG
+	STA Level_ChgTileEvent
 
+Normal_Tile:
 	; Decrement several adjacent counters!
 	LDX #$07	 ; X = 7
 
@@ -4576,25 +4582,19 @@ Level_DoCommonSpecialTiles:
 	TYA		 ; A = Y (offset into TileAttrAndQuad_OffsSloped)
 	PHA		 ; Save it
 
-	LDY Player_Kuribo
-	BNE PRG008_B604	 ; If Player is in Kuribo's shoe, jump to PRG008_B604
-
 	LDA #TILEA_CHERRY
 	CMP Level_Tile_GndL,X
 	BNE PRG008_B604	 ; If Player is not touching an ice block, jump to PRG008_B604
 
-	LDA #CHNGTILE_DELETECOIN
+	LDA #CHNGTILE_DELETECHERRY
 	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
 
 	; Play coin collected sound!
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
-
-	LDA #$00
-	STA Level_Tile_GndR	; Clear this tile detect (probably to prevent "double collecting" a coin the Player is straddling)
-
-	INC Score_Earned
+	
+	STA Level_Tile_GndR
 	JMP PRG008_B652
 PRG008_B604:
 
@@ -4603,7 +4603,6 @@ PRG008_B604:
 	LDA Level_Tile_GndL,X
 	CMP #TILEA_COIN
 
-	; start #DAHRKDAIZ modifying to detect #$05 as another coin type
 	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
 	CMP #$05		 ; acts as a "blue" coin from frozen coins thawed
 	BNE PRG008_B623;
@@ -4617,6 +4616,7 @@ GOLD_COIN_TOUCH:
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
 
+	
 	LDA #$00
 	STA Level_Tile_GndR	; Clear this tile detect (probably to prevent "double collecting" a coin the Player is straddling)
 
