@@ -2954,52 +2954,58 @@ PRG026_B156:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_Fill_Score
+; StatusBar_Fill_Exp
 ;
 ; Fills the StatusBar_PMT array with tiles representing
 ; the current score; also applies the
-; Score_Earned value to the active total
+; Experience_Earned value to the active total
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-PRG026_B160:	.byte $00, $00, $00, $00, $00, $01
-PRG026_B166:	.byte $00, $00, $00, $03, $27, $86
-PRG026_B16C:	.byte $01, $0A, $64, $E8, $10, $A0
-PRG026_B172:	.byte $0F, $42, $3F 
 
-StatusBar_Fill_Score:
-	LDA Score_Earned
-	BEQ Score_Done
+StatusBar_Fill_Exp:
+	LDA Experience_Earned
+	BEQ Exp_Done
+	JSR Clear_Calc
 	LDX #$05
-	CLC
-	
-Score_Loop:
-	ADC Player_Experience, X
-	STA Player_Experience, X
+
+Fill_Exp:
 	LDA Player_Experience, X
+	STA (Calc_From + 2), X
+	DEX
+	BPL Fill_Exp
+	LDA Experience_Earned
+	STA Calc_Value + 7
+	JSR Add_Values
+	LDA Calc_From + 2
 	CMP #$0A
-	BCC No_Score
-	SEC
-	SBC #$0A
+	BNE Exp_Loop
+	LDX #$05
+	LDA #$09
+
+Max_Exp:
+	STA Player_Experience,X
+	DEX
+	BPL Max_Exp
+
+Exp_Loop:
+
+	LDX #$05
+Exp_Loop2:
+	LDA (Calc_From + 2), X
 	STA Player_Experience, X
 	DEX
-	BPL Score_Loop
+	BPL Exp_Loop2
 
-No_Score:
-	LDA #$00
-	STA Score_Earned
-
-	LDA Status_Bar_Mode
-	BNE Score_Done
-Score_Update:
+Exp_Update:
 	LDX #$05
 
-Score_Loop2:
-	LDA Player_Experience, X
+Exp_Loop3:
+	STA Player_Experience, X
 	ORA #$30
 	STA Status_Bar_Bottom + 1, X
 	DEX
-	BPL Score_Loop2
+	BPL Exp_Loop3
 
-Score_Done:
+Exp_Done:
 	RTS		 ; Return
 
 
@@ -3436,7 +3442,7 @@ StatusBar_UpdateValues:
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
 	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
 	JSR StatusBar_Fill_Air_MT	;
-	JSR StatusBar_Fill_Score 	; Fill in StatusBar_Score with tiles for score; also applies Score_Earned
+	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Experience_Earned
 	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
 	LDX #$00	 	; X = 0
@@ -3641,7 +3647,7 @@ Init_Bar_Loop:
 	LDA Status_Bar_Mode
 	BNE Draw_Update2
 	JSR DrawCurrentCoins
-	JSR Score_Update
+	JSR Exp_Update
 	RTS
 
 Draw_Update2:

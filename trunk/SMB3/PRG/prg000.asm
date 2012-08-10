@@ -2801,7 +2801,7 @@ PRG000_CE94:
 
 	; 1 EXP
 	LDA #$01
-	STA Score_Earned
+	STA Experience_Earned
 
 	; Object state is Killed
 	LDA #OBJSTATE_KILLED
@@ -3388,7 +3388,7 @@ PRG000_D120:
  
 	; 1 EXP for enemy defeated
 	LDA #$01
-	STA Score_Earned
+	STA Experience_Earned
 
 	; Set object state to Killed
 	LDA #OBJSTATE_KILLED
@@ -3769,7 +3769,7 @@ PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
 
 	LDA #$01
-	STA Score_Earned
+	STA Experience_Earned
 	RTS		 ; Return
 
 
@@ -5264,7 +5264,7 @@ PRG000_D8EB:
 
 	; 100 points pop up
 	LDA #$01
-	STA Score_Earned
+	STA Experience_Earned
 
 	JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
 
@@ -6898,4 +6898,54 @@ Do_Replace2
 
 No_Replace:
 	LDX DAIZ_TEMP2
+	RTS
+
+Clear_Calc:
+	LDX #$07
+	LDA #$00
+
+Next_Clear_Calc:
+	STA Calc_From, X
+	STA Calc_Value, X
+	DEX
+	BPL Next_Clear_Calc
+	RTS
+
+Add_Values:
+	LDX #$07
+	CLC 
+
+Addition_Loop:
+	LDA Calc_From, X
+	ADC Calc_Value, X
+	STA Calc_From, X
+	CMP #$0A
+	BCC Next_Value2
+	CLC
+	SBC #$0A
+	STA Calc_From, X
+	INC (Calc_From - 1), X
+
+Next_Value2:
+	DEX
+	BPL Addition_Loop
+	RTS
+
+Subtract_Values:
+	LDX #$07
+	SEC 
+
+Subtraction_Loop:
+	LDA Calc_From, X
+	SBC Calc_Value, X
+	STA Calc_From, X
+	BPL Next_Value
+	CLC
+	ADC #$0A
+	STA Calc_From, X
+	DEC (Calc_From - 1), X
+
+Next_Value:
+	DEX
+	BPL Subtraction_Loop
 	RTS

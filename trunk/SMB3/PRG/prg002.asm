@@ -5480,7 +5480,7 @@ Skip_Digit:
 	RTS
 
 Buy_Item:
-	JSR Clear_Subtraction
+	JSR Clear_Calc
 	LDA Item_Shop_Window + 1
 	ASL A
 	ASL A
@@ -5492,7 +5492,7 @@ Buy_Item:
 
 Store_Next_Price:
 	LDA Item_Prices, X
-	STA Subtraction_Value, Y
+	STA Calc_Value, Y
 	DEX
 	DEY
 	CPY #$03
@@ -5501,12 +5501,12 @@ Store_Next_Price:
 
 Store_Next_Coin:
 	LDA Player_Coins, X
-	STA Subtraction_From + 4, Y
+	STA Calc_From + 4, Y
 	DEX
 	DEY
 	BPL Store_Next_Coin
 	JSR Subtract_Values
-	LDA Subtraction_From + 3
+	LDA Calc_From + 3
 	BEQ Take_Item
 
 Cannot_Take_Item:
@@ -5538,40 +5538,10 @@ Slot_Found:
 	LDX #$03
 
 Store_New_Coin:
-	LDA Subtraction_From + 4, X
+	LDA Calc_From + 4, X
 	STA Player_Coins, X
 	DEX
 	BPL Store_New_Coin
-	RTS
-
-Clear_Subtraction:
-	LDX #$07
-	LDA #$00
-
-Next_Clear_Sub:
-	STA Subtraction_From, X
-	STA Subtraction_Value, X
-	DEX
-	BPL Next_Clear_Sub
-	RTS
-
-Subtract_Values:
-	LDX #$07
-	SEC 
-
-Subtraction_Loop:
-	LDA Subtraction_From, X
-	SBC Subtraction_Value, X
-	STA Subtraction_From, X
-	BPL Next_Value
-	CLC
-	ADC #$0A
-	STA Subtraction_From, X
-	DEC (Subtraction_From - 1), X
-
-Next_Value:
-	DEX
-	BPL Subtraction_Loop
 	RTS
 
 Item_Sprites:

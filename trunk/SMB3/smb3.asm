@@ -1624,6 +1624,7 @@ CHNGTILE_DELETETOBG	= $02
 CHNGTILE_TOFRZWATER	= $03	; 
 CHGTILESTANDING_WATER	= $04
 CHNGTILE_TONOTEBLOCK	= $05
+CHNGTILE_DELETECHERRY	= $06
 CHNGTILE_COINHEAVEN	= $06
 CHNGTILE_TOBRICK	= $07
 CHNGTILE_TOMETALPLATE	= $08	; i.e. "plate" that appears after ? block is hit
@@ -1893,8 +1894,8 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 				.ds 1	; $069B unused
 
-	Score_Earned:		.ds 2	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
-						.ds 6	;
+	Experience_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
+						.ds 7	;
 
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
 	Player_ISHolding_OLD:	.ds 1	; Holds onto whether Player WAS holding onto something (so we can be sure to clear Player_IsHolding)
@@ -2628,8 +2629,8 @@ CFIRE_LASER		= $15	; Laser fire
 	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
 	Coins_To_Deduct:	.ds 1	; Indicates the number of coins to deduct during toll payments
 	TollPaid:			.ds 1	; Indicates whether the toll was paid (1 was paid, 0 was not paid)
-	Subtraction_From:	.ds 8	; Used in doing decimal byte-wise subtraction, this is the A part of A - B
-	Subtraction_Value:	.ds 8	; Used in doign decimal byte-wise subtraction, this is the B part of A - B
+	Calc_From:			.ds 8	; Used in doing decimal byte-wise subtraction, this is the A part of A - B
+	Calc_Value:			.ds 8	; Used in doign decimal byte-wise subtraction, this is the B part of A - B
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Virus:				.ds 1	;
 	World_Locks1:		.ds 1	;
