@@ -1874,7 +1874,7 @@ PRG001_A8F7:
 	STA Sprite_RAM+4,Y
 
 	; Masking tile
-	LDA #$77
+	LDA #$67
 	STA Sprite_RAM+1,Y
 	STA Sprite_RAM+5,Y
 

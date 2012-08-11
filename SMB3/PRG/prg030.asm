@@ -129,7 +129,7 @@ StatusBar	.macro
 	;TOP AREA FILLER
 	vaddr \1 + $20
 	.byte $20, $FE, $90, $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E9, $E9, $E9, $E9	; [M/L]x  000000 c000| etc.
-	.byte $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
+	.byte $EA, $FE, $48, $D0, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $92, $FC
 
 	;BOTTOM AREA FILLER
 	vaddr \1 + $40
@@ -2300,7 +2300,6 @@ PRG030_8E4F:
 
 Normal_Anim:
 	STA PatTable_BankSel+1 ; Set pattern for this tick
-	LDA $F000		
 	LDY #$0B
 	LDA (Level_ObjectID + 5)
 

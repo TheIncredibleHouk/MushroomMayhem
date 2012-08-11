@@ -943,7 +943,7 @@ PRG029_D10E:
 	; it once in a while)
 
 	; Uses pattern $77 ("metal block" from used up [?], should be completely opaque)
-	LDA #$77
+	LDA #$67
 	STA Sprite_RAM+$01
 	STA Sprite_RAM+$05
 	STA Sprite_RAM+$09
