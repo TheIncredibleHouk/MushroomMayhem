@@ -357,7 +357,7 @@ PRG008_A1C1:
 PRG008_A1D7:
 	CMP #CHNGTILE_DELETECHERRY
 	BNE Normal_Tile
-	INC Experience_Earned
+	INC Exp_Earned
 	LDA #CHNGTILE_DELETETOBG
 	STA Level_ChgTileEvent
 

@@ -2801,7 +2801,7 @@ PRG000_CE94:
 
 	; 1 EXP
 	LDA #$01
-	STA Experience_Earned
+	STA Exp_Earned
 
 	; Object state is Killed
 	LDA #OBJSTATE_KILLED
@@ -3388,7 +3388,7 @@ PRG000_D120:
  
 	; 1 EXP for enemy defeated
 	LDA #$01
-	STA Experience_Earned
+	STA Exp_Earned
 
 	; Set object state to Killed
 	LDA #OBJSTATE_KILLED
@@ -3769,7 +3769,7 @@ PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
 
 	LDA #$01
-	STA Experience_Earned
+	STA Exp_Earned
 	RTS		 ; Return
 
 
@@ -5264,7 +5264,7 @@ PRG000_D8EB:
 
 	; 100 points pop up
 	LDA #$01
-	STA Experience_Earned
+	STA Exp_Earned
 
 	JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
 
@@ -6900,6 +6900,7 @@ No_Replace:
 	LDX DAIZ_TEMP2
 	RTS
 
+; #DAHRKDAIZ This routine clears the Calc_From and Calc_Value bytes to prepare multibyte addition
 Clear_Calc:
 	LDX #$07
 	LDA #$00
@@ -6911,17 +6912,20 @@ Next_Clear_Calc:
 	BPL Next_Clear_Calc
 	RTS
 
+; #DAHRKDAIZ for multibyte addition and sobtraction, use Calc_From for the original value and Calc_Value for the amount
+; you are adding. For example, if adding coins, set current coin value to Calc_From and the amount adding to Calc_Value
+; The result will be stored in Calc_From.
 Add_Values:
 	LDX #$07
-	CLC 
 
 Addition_Loop:
+	CLC 
 	LDA Calc_From, X
 	ADC Calc_Value, X
 	STA Calc_From, X
 	CMP #$0A
 	BCC Next_Value2
-	CLC
+	SEC
 	SBC #$0A
 	STA Calc_From, X
 	INC (Calc_From - 1), X

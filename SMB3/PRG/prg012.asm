@@ -196,16 +196,7 @@ PRG012_A498:
 	CMP #$ff	 
 	BEQ PRG012_A4C1	 	; If it's $FF (terminator), jump to PRG012_A4C1
 	STA DAIZ_TEMP2
-	CMP #$44
-	BNE Store_Tile
-	LDA DAIZ_TEMP1
-	AND World_Locks1
-	BEQ Store_Tile
-	LDA #$BF
-	STA DAIZ_TEMP2
-	BNE Store_Tile
-
-Store_Tile:
+	JSR Try_Replace_Tile
 	LDA DAIZ_TEMP2
 	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
 	INY		 	; Y++
@@ -257,6 +248,30 @@ PRG012_A4C9:
 	STA PalSel_Obj_Colors	 	; Store which colors to use on map objects
 
 	RTS		 ; Return
+
+Map_ForcePoofTiles2:
+	.byte $44, $42, $FF, $FF, $FF, $FF, $FF, $FF
+
+Try_Replace_Tile:
+	STA $7fff
+	LDX #$07
+
+Replace_Loop:
+	CMP Map_ForcePoofTiles2, X
+	BEQ Replace_Tile
+	DEX 
+	BPL Replace_Loop
+	BMI Try_Replace_TileRTS
+
+Replace_Tile:
+	LDA World_Complete_Tiles,X
+	AND DAIZ_TEMP1
+	BEQ Try_Replace_TileRTS
+	LDA #$BF
+	STA DAIZ_TEMP2
+
+Try_Replace_TileRTS:
+	RTS
 
 			; I placed this here to insure maps don't move. Critical #DAHRKDAIZ
 	.org $A598

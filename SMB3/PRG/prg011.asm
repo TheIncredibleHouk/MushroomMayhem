@@ -1609,16 +1609,11 @@ Map_ClearLevelFXPatterns:
 	.byte $B5, $B5	; 8
 
 	; Indexed by Player and tile quadrant (except the last three which are hardcoded specific)
-Map_CompleteTile:
-	.byte $BF, $BF, $BF, $BF
-	.byte $BF, $BF, $BF, $BF
-	.byte $BF, $BF, $BF
 
 	; This just forces "poof" completion on the following tiles (in quadrant zero, since all other
 	; quadrants always "poof" except fortress tiles)
 Map_ForcePoofTiles:
-	.byte $44, $44, $44, $44, $44
-Map_ForcePoofTiles_End
+	.byte $44, $42, $FF, $FF, $FF, $FF, $FF, $FF
 
 Map_PanelCompletePats:
 	.byte $88, $89, $8A, $8B	; Mario Complete panel patterns
@@ -1659,7 +1654,7 @@ PRG011_A9FE:
 	ROL A		 
 	TAY		 	; Y = upper 2 bits of map tile shifted down; the "tile quadrant"
 
-	LDX #(Map_ForcePoofTiles_End - Map_ForcePoofTiles - 1)
+	LDX #07
 	LDA <World_Map_Tile
 PRG011_AA0C:
 	CMP Map_ForcePoofTiles,X
@@ -1818,7 +1813,7 @@ PRG011_AA9C:
 PRG011_AAA7:
 	LDA [Map_Tile_AddrL],Y	; Set it in memory
 	STA Old_World_Map_Tile
-	LDA Map_CompleteTile,X	; Get appropriate "complete" tile for this level
+	LDA #$BF
 	STA [Map_Tile_AddrL],Y	; Set it in memory
 	STA <World_Map_Tile	; ... as well as the tile detected
 
@@ -2136,7 +2131,6 @@ PRG011_AC5E:
 	DEX		 ; X-- (previous "white" bonus object to consider)
 	BPL PRG011_AC5E	 ; While X >= 0, loop!
 
-	JSR MO_CheckForBonusRules	; Since we don't have one of these, check the rules to see if we've earned one!
 
 PRG011_AC69:
 	DEC <Temp_Var16	 ; Temp_Var16--
@@ -2158,6 +2152,7 @@ MO_CheckForBonusRules:
 
 ; N-Spade will appear on the map every 80,000 points you earn
 MapBonusChk_NSpade:
+	RTS
 	LDA World_Num
 	CMP #$07
 	BEQ PRG011_ACF0	 ; If World_Num = 7 (World 8), jump to PRG011_ACF0 (RTS)
@@ -4521,15 +4516,23 @@ Map_CompleteBit:
 	.byte $80, $40, $20, $10, $08, $04, $02, $01
 
 Map_MarkLevelComplete:
+	LDA $F000
+	LDX #$07
 	LDA Old_World_Map_Tile 	 ; X = Player_Current
-	CMP #$44
-	BNE Map_LevelCompleteRTS
-	JSR Get_Bit_By_World
-	ORA World_Locks1
-	STA World_Locks1
+
+Find_Tile_Loop:
+	CMP Map_ForcePoofTiles, X
+	BEQ Set_Level_Bit
+	DEX
+	BPL Find_Tile_Loop
 	RTS
 
-Map_LevelCompleteRTS:
+Set_Level_Bit:
+	STX DAIZ_TEMP2
+	JSR Get_Bit_By_World
+	LDX DAIZ_TEMP2
+	ORA World_Complete_Tiles,X
+	STA World_Complete_Tiles,X
 	RTS
 
 Map_Object_CheckVisibility:

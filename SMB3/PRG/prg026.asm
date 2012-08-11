@@ -2803,54 +2803,65 @@ StatusBar_Fill_Coins:
 
 StatusBar_Fill_Coin:
 	LDA Coins_Earned
-	BNE Do_Coin_Add
-	LDA Force_Coin_Update
-	BEQ Coin_Done
-	BNE No_Coin
-
-Do_Coin_Add:
-	LDA #LOW(Player_Coins)
-	STA <Temp_Var1
-	LDA #HIGH(Player_Coins)
-	STA <Temp_Var2
-	LDY #$03					; Add coins to inventory coins first
-	JSR Add_Coins	
-	LDA #LOW(Total_Coins_Collected)
-	STA <Temp_Var1
-	LDA #HIGH(Total_Coins_Collected)
-	STA <Temp_Var2
-	LDY #$06					; Add coins to total coins next
-	JSR Add_Coins
-
-
-No_Coin:
-	LDA #$00
-	STA Force_Coin_Update
-	STA Coins_Earned
-	LDA Status_Bar_Mode				; Status_Bar_Mode 0 = Draw current coins
-	BNE DrawTotalCoins			; Status_Bar_Mode 1 = Draw total coins
-	JMP DrawCurrentCoins
-
-Coin_Done:
-	RTS		 ; Return
-
-Add_Coins:
-	LDA Coins_Earned
-	CLC						; Adds coins to ram pointed to by tempvar1
-Coin_Loop:
-	ADC [Temp_Var1], Y
-	STA [Temp_Var1], Y
-	LDA [Temp_Var1], Y
-	CMP #$0A
-	BCC No_More
-	SEC
-	SBC #$0A
-	STA [Temp_Var1], Y
-	DEY
-	JMP Coin_Loop
-
-No_More:
+	BNE UpdateCoins
 	RTS
+
+UpdateCoins:
+
+	JSR Clear_Calc
+	LDX #$03
+
+Fill_Coins:
+	LDA Player_Coins, X
+	STA (Calc_From + 4), X
+	DEX
+	BPL Fill_Coins
+	LDA Coins_Earned
+	STA Calc_Value + 7
+	JSR Add_Values
+	LDA Calc_From + 3
+	BEQ Coins_Loop 
+	LDX #$03
+	LDA #$09
+
+Max_Coins:
+	STA Player_Coins,X
+	DEX
+	BPL Max_Coins
+	BMI Do_Game_Coins
+Coins_Loop:
+	LDX #$03
+
+Coins_Loop2:
+	LDA (Calc_From + 4), X
+	STA Player_Coins, X
+	DEX
+	BPL Coins_Loop2
+
+Do_Game_Coins:
+	LDX #$06
+
+FillGame_Coins:
+	LDA Game_Coins, X
+	STA (Calc_From + 1), X
+	DEX
+	BPL FillGame_Coins
+	LDA Coins_Earned
+	STA Calc_Value + 7
+	JSR Add_Values
+	LDX #$06
+
+GameCoins_Loop2:
+	LDA (Calc_From + 1), X
+	STA Game_Coins, X
+	DEX
+	BPL GameCoins_Loop2
+
+	LDA #$00
+	STA Coins_Earned
+	LDA Status_Bar_Mode
+	BEQ DrawCurrentCoins
+	BNE DrawTotalCoins	
 
 DrawCurrentCoins:
 	LDX #$03
@@ -2866,7 +2877,7 @@ Coin_Loop2:
 DrawTotalCoins:
 	LDX #$06
 Coin_Loop3:
-	LDA Total_Coins_Collected, X
+	LDA Game_Coins, X
 	ORA #$30
 	STA Status_Bar_Top + 1, X
 	DEX
@@ -2958,11 +2969,11 @@ PRG026_B156:
 ;
 ; Fills the StatusBar_PMT array with tiles representing
 ; the current score; also applies the
-; Experience_Earned value to the active total
+; Exp_Earned value to the active total
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 StatusBar_Fill_Exp:
-	LDA Experience_Earned
+	LDA Exp_Earned
 	BEQ Exp_Done
 	JSR Clear_Calc
 	LDX #$05
@@ -2972,12 +2983,11 @@ Fill_Exp:
 	STA (Calc_From + 2), X
 	DEX
 	BPL Fill_Exp
-	LDA Experience_Earned
+	LDA Exp_Earned
 	STA Calc_Value + 7
 	JSR Add_Values
-	LDA Calc_From + 2
-	CMP #$0A
-	BNE Exp_Loop
+	LDA Calc_From + 1
+	BEQ Exp_Loop
 	LDX #$05
 	LDA #$09
 
@@ -2985,25 +2995,33 @@ Max_Exp:
 	STA Player_Experience,X
 	DEX
 	BPL Max_Exp
+	BMI Try_Update
 
 Exp_Loop:
-
 	LDX #$05
+
 Exp_Loop2:
 	LDA (Calc_From + 2), X
 	STA Player_Experience, X
 	DEX
 	BPL Exp_Loop2
 
+Try_Update:
+	LDA Status_Bar_Mode
+	BNE Exp_Done
+
 Exp_Update:
 	LDX #$05
 
 Exp_Loop3:
-	STA Player_Experience, X
+	LDA Player_Experience, X
 	ORA #$30
 	STA Status_Bar_Bottom + 1, X
 	DEX
 	BPL Exp_Loop3
+
+	LDA #$00
+	STA Exp_Earned
 
 Exp_Done:
 	RTS		 ; Return
@@ -3442,7 +3460,7 @@ StatusBar_UpdateValues:
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
 	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
 	JSR StatusBar_Fill_Air_MT	;
-	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Experience_Earned
+	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Exp_Earned
 	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
 	LDX #$00	 	; X = 0
