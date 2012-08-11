@@ -3680,10 +3680,11 @@ ObjNorm_Toad:
 	JSR Object_CalcCoarseXDiff
 	STA Objects_FlipBits,X
 
+	LDA $F000
 	; Do Toad's dialog message
 	LDA #$5C
 	STA PatTable_BankSel+1
-	LDA #$5D
+	LDA #$5b
 	STA PatTable_BankSel+5
 	JSR Toad_Speak
 
@@ -5185,7 +5186,7 @@ Do_Shop_Controls:
 	STA Player_HaltTick
 	LDA #$5E
 	STA PatTable_BankSel
-	LDA #$DB
+	LDA #$5B
 	STA PatTable_BankSel + 5
 	LDA Shop_Mode_Initialized
 	BEQ Initialize_Shop_Mode

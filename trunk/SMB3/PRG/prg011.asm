@@ -4516,7 +4516,7 @@ Map_CompleteBit:
 	.byte $80, $40, $20, $10, $08, $04, $02, $01
 
 Map_MarkLevelComplete:
-	LDA $F000
+
 	LDX #$07
 	LDA Old_World_Map_Tile 	 ; X = Player_Current
 

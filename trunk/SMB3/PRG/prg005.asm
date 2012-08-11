@@ -1471,7 +1471,7 @@ PRG005_A760:
 PRG005_A773:
 	
 	; Mask sprite pattern
-	LDA #$77
+	LDA #$67
 	STA Sprite_RAM-$07,Y
 	STA Sprite_RAM-$03,Y
 
