@@ -2635,7 +2635,8 @@ CFIRE_LASER		= $15	; Laser fire
 	Virus:				.ds 1	;
 	World_Complete_Tiles: .ds 8	;
 	Old_World_Map_Tile:	.ds	1	;
-						.ds 73; $7A74-$7ADF unused
+	Player_Ability:		.ds 1	;
+						.ds 72; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)

@@ -419,8 +419,10 @@ PAGE_A000_ByTileset: ; $83E9
 	; The normal level VROM page cycle set
 PT2_Anim:	.byte $80, $82, $84, $86
 PSwitch_Anim: .byte $88, $8A, $8C, $8E
-SPR_Anim:	.byte $04, $05, $06, $07
-
+SPR_Anim:
+	.byte $90, $91, $92, $93
+SPR_PowerUps:
+	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, $FF, $FF, $FF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE
 
 ESwitchTableChange1:
 	.byte $10, $68, $6A
@@ -2298,12 +2300,27 @@ PRG030_8E4F:
 
 Normal_Anim:
 	STA PatTable_BankSel+1 ; Set pattern for this tick
-	LDA <Counter_1
-	AND #$0C
-	LSR A	
-	LSR A		
-	TAX	
-	LDA SPR_Anim, X
+	LDA $F000		
+	LDY #$0B
+	LDA (Level_ObjectID + 5)
+
+Find_PUp:
+	CMP SPR_PowerUps, Y
+	BEQ PUp_Found
+	DEY
+	BPL Find_PUp
+	INY
+
+PUp_Found:
+	CPY #$00
+	BNE Not_SpecialPUp
+
+Not_SpecialPUp:	
+	TYA
+	ASL A
+	ASL A
+	CLC
+	ADC SPR_Anim, X
 	STA PatTable_BankSel+3
 
 PRG030_8E5D:
