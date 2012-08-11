@@ -1894,7 +1894,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 				.ds 1	; $069B unused
 
-	Experience_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
+	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
 						.ds 7	;
 
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
@@ -2633,12 +2633,9 @@ CFIRE_LASER		= $15	; Laser fire
 	Calc_Value:			.ds 8	; Used in doign decimal byte-wise subtraction, this is the B part of A - B
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Virus:				.ds 1	;
-	World_Locks1:		.ds 1	;
-	World_Locks2:		.ds 1	;
-	World_Challenges1:	.ds 1	;
-	World_Challenges2:	.ds	1	;
+	World_Complete_Tiles: .ds 8	;
 	Old_World_Map_Tile:	.ds	1	;
-						.ds 77; $7A74-$7ADF unused
+						.ds 73; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
@@ -2804,7 +2801,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Status_Bar_Mode:	.ds 1	; Indicates what status bar information should be displayed
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
-	Total_Coins_Collected:	.ds 7; over all coins collected
+	Game_Coins:	.ds 7; over all coins collected
 	Odometer:				.ds 7; over all distance traveled
 	Enemies_Defeated:		.ds 7; over all number of enemies defeated
 	Game_Timer:				.ds 6; over all time spent in the game

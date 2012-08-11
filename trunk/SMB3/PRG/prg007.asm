@@ -1497,7 +1497,7 @@ PRG007_A6EC:
 	
 Kill_Enemy_Anyway:
 	LDA #$01
-	STA Experience_Earned
+	STA Exp_Earned
 
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 

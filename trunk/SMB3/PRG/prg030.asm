@@ -2034,7 +2034,7 @@ BonusGame_Loop:
 
 PRG030_8D23:
 	JSR BonusGame_Do	 ; Run the Bonus Game
-	;JSR StatusBar_Fill_Score ; Update score
+	;JSR StatusBar_Fill_Exp ; Update score
 
 	LDA <Level_ExitToMap
 	BEQ BonusGame_Loop	 ; If Level_ExitToMap = 0, loop!!
