@@ -5530,24 +5530,15 @@ PRG000_D9F7:
 	LDY <Player_Suit	; Y = Player's power up
 	LDA SMB3J_SuitLossFrame,Y	 ; Get correct "loss" frame
 	STA <Temp_Var1		 ; -> Temp_Var1
-	JSR Player_LoseKuribo	 ; Suit pops off
 
-	; Switch back to just Big
 	LDA #$01
 	STA Player_QueueSuit
-
-	; You no longer have the Kuribo's Shoe
-	LDA #$00
-	STA Player_Kuribo
 
 	BEQ PRG000_DA6D	 ; Jump (technically always) to PRG000_DA6D
 
 	;;;;;;;;;;;;;; End SMB3-J Only Code ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 PRG000_DA15:
-	LDA Player_Kuribo
-	BNE PRG000_DA32	 ; If Player is in Kuribo's shoe, jump to PRG000_DA32
-
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
@@ -5561,26 +5552,15 @@ PRG000_DA15:
 	ORA #SND_LEVELPOOF
 	STA Sound_QLevel1
 
-	LDA #$02	; Return to Big (RAS: Would be small in Japanese version!!)
-	JMP PRG000_DA44	 ; Jump to PRG000_DA44
+	LDA Player_Ability
+	CMP #$01
+	BNE Not_Small
+	; Switch back to just Big
+	LDA #$02
+	BNE PRG000_DA44
 
-PRG000_DA32:
-
-	; Play "shoe lost" sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELSHOE
-	STA Sound_QLevel1
-
-	; RAS: This lost its meaning, but it marks you to lose the Kuribo's
-	; shoe specifically; see above for lost/dead SMB3-J code where
-	; alternate Temp_Var1 values would be used...
-	; (The other index values display as garbage now instead of the suit, 
-	; see details at PRG007 LostShoe_Pattern)
-	LDA #$00
-	STA <Temp_Var1	 ; Temp_Var1 = 0
-
-	JSR Player_LoseKuribo	 ; Setup effect of Kuribo's shoe "flying off"
-	JMP PRG000_DA47	 ; Jump to PRG000_DA47
+Not_Small:
+	LDA #$01
 
 PRG000_DA44:
 	STA Player_QueueSuit	 ; Queue power-up change
@@ -5679,57 +5659,6 @@ PRG000_DAAE:
 
 	RTS		 ; Return
 
-	; Set display effect for Player losing Kuribo's shoe
-	; RAS: This also USED to setup for losing other power-ups in
-	; the Japanese version, but that is removed and broken in US.
-	; See notes at PRG007 "LostShoe_Pattern" for details...
-Player_LoseKuribo:
-	LDY #$05	 ; Y = 5
-
-PRG000_DAB7:
-	LDA SpecialObj_ID,Y
-	BEQ PRG000_DAC0	 ; If this slot is open, jump to PRG000_DAC0
-
-	DEY		 ; Y--
-	BPL PRG000_DAB7	 ; While Y >= 0, loop!
-
-	RTS		 ; Return
-
-PRG000_DAC0:
-	LDA #SOBJ_KURIBOSHOE	 
-	STA SpecialObj_ID,Y	 ; Lost Kuribo's shoe!
-
-	; Set object at Player
-	LDA <Player_Y
-	STA SpecialObj_YLo,Y
-
-	LDA <Player_YHi	
-	STA SpecialObj_YHi,Y
-
-	LDA <Player_X	
-	STA SpecialObj_XLo,Y
-
-	LDA #-$30
-	STA SpecialObj_YVel,Y	 ; Y velocity = -$30
-
-	; Decide proper X velocity based on Player's facing direction
-	LDA #$00	 
-	CMP <Player_FlipBits
-
-	LDA #16
-	BGE PRG000_DAE3
-
-	LDA #-16
-
-PRG000_DAE3:
-	STA SpecialObj_XVel,Y	 ; Set appropriate X velocity
-
-	; RAS: This is always zero in SMB3-US, but would have 
-	; been set to other values in the Japanese original
-	LDA <Temp_Var1
-	STA SpecialObj_Data,Y	
-
-	RTS		 ; Return
 
 	; X velocities as appropriate based on which direction 
 	; Player was when he killed the enemy

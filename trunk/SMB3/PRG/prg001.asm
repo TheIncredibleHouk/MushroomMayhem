@@ -428,17 +428,17 @@ ObjP06:
 ObjP1B:	.byte $79, $7B, $79, $7B, $77, $77, $75, $75	; RAS: Not actually used, see BounceBlock_Tile
 ObjP09:	.byte $E1, $E5, $E1
 ObjP0A:	.byte $81, $83, $85, $87
-ObjP0C:	.byte $55, $55, $93, $93, $91, $91, $95, $95
-ObjP0B:	.byte $6B, $6B	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
-ObjP0D:	.byte $51, $51
-ObjP19:	.byte $53, $53
+ObjP0C:	.byte $51, $53, $51, $53, $51, $53, $51, $53
+ObjP0B:	.byte $51, $53	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
+ObjP0D:	.byte $51, $53
+ObjP19:	.byte $51, $53
 ObjP1A:	.byte $59, $5B
 ObjP1C:	.byte $75, $77
-ObjP1E:	.byte $5D, $5F
-ObjP1F:	.byte $67, $67	; #DAHRKDAIZ - VINE
-ObjP21:	.byte $69, $69
-ObjP22:	.byte $5B, $5B ; #DAHRKDAIZ - PUMPKIN
-ObjP23:	.byte $5D, $5F	; #DAHRKDAIZ - GOLD LEAF
+ObjP1E:	.byte $51, $53
+ObjP1F:	.byte $51, $53	; #DAHRKDAIZ - VINE
+ObjP21:	.byte $51, $53
+ObjP22:	.byte $51, $53 ; #DAHRKDAIZ - PUMPKIN
+ObjP23:	.byte $51, $53	; #DAHRKDAIZ - GOLD LEAF
 ObjP08:	.byte $FB, $FB, $FB, $FB, $BB, $B9, $B9, $BB, $BF, $BD
 
 SpinyCheep_XVel:
@@ -1249,12 +1249,11 @@ BounceBlock_SprOff:
 BounceBlock_Tile:
 	.byte $79, $79	; 0 (possibly unused / Note Block)
 	.byte $79, $79	; 1 (coin heaven Note Block)
-	.byte $77, $77	; 2 ("Metal plate" post-? block hit)
-	.byte $77, $77	; 3 (used for empty brick)
-	.byte $79, $79	; 4 (typical Note Block)
+	.byte $6B, $6B	; 2 ("Metal plate" post-? block hit)
+	.byte $67, $69	; 3 (used for empty brick)
+	.byte $77, $79	; 4 (typical Note Block)
 	.byte $7F, $7F	; 5 (wood)
-	.byte $77, $77	; 6 (used for brick with coins)
-	.byte $7B, $7B	; 7 (UNUSED, would be for desert's breakable pipeworks tile!)
+	.byte $67, $69	; 6 (used for brick with coins)
 
 BounceBlock_Update:
 	LDA Objects_Var1,X	; Player_Bounce
@@ -2727,12 +2726,12 @@ PRG001_ACD1:
 	STA Graphics_Buffer+7,Y
 
 	; Vine left 8x8 tiles
-	LDA #$F5
+	LDA #$FA
 	STA Graphics_Buffer+3,Y
 	STA Graphics_Buffer+4,Y
 
 	; Vine right 8x8 tiles
-	LDA #$F7
+	LDA #$FB
 	STA Graphics_Buffer+8,Y
 	STA Graphics_Buffer+9,Y
 
