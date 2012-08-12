@@ -429,7 +429,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01	; Object $83 - OBJ_LAKITU
 	.byte OAT_BOUNDBOX01	; Object $84 - OBJ_SPINYEGG
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_SPINYEGGDUD
-	.byte OAT_BOUNDBOX13	; Object $86 - OBJ_HEAVYBRO
+	.byte OAT_BOUNDBOX02	; Object $86 - OBJ_ICEBRO
 	.byte OAT_BOUNDBOX02	; Object $87 - OBJ_FIREBRO
 	.byte OAT_BOUNDBOX01	; Object $88 - OBJ_ORANGECHEEP
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $89 - OBJ_CHAINCHOMP
@@ -5504,45 +5504,17 @@ Player_GetHurt:
 
 	JMP PRG000_DA15	 ; Jump to PRG000_DA15 (skips lost/dead Japanese version code)
 
-	;;;;;;;;;;;;;; Begin SMB3-J Only Code ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	; RAS: Lost/Dead Code -- This was the Japanese version suit loss code
-	; For detail why it was removed, see PRG007 LostShoe_Pattern
 ; $D9EC
-	LDA Player_Kuribo
-	BNE PRG000_D9F7	 ; If Player is in Kuribo's Shoe, jump to PRG000_D9F7
-
-	; Player is NOT in Kuribo's Shoe...
-
-	LDA <Player_Suit
-	CMP #PLAYERSUIT_SUPERSUITBEGIN
-	BLS PRG000_DA4E	 ; If Player is not in one of the Super Suits, jump to PRG000_DA4E
-
-PRG000_D9F7:
-
-	; Player was in a Kuribo's Shoe or one of the Super Suits
-
-	; Play "shoe lost" sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELSHOE
-	STA Sound_QLevel1
-
-	LDY <Player_Suit	; Y = Player's power up
-	LDA SMB3J_SuitLossFrame,Y	 ; Get correct "loss" frame
-	STA <Temp_Var1		 ; -> Temp_Var1
-
-	LDA #$01
-	STA Player_QueueSuit
-
-	BEQ PRG000_DA6D	 ; Jump (technically always) to PRG000_DA6D
-
-	;;;;;;;;;;;;;; End SMB3-J Only Code ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 PRG000_DA15:
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
 
+	LDA Player_Ability
+	CMP #$01
+	BNE PRG000_DA4E
 	; Higher level power-up suits...
 	LDA #$17
 	STA Player_SuitLost	 ; Player_SuitLost = $17
@@ -5552,22 +5524,13 @@ PRG000_DA15:
 	ORA #SND_LEVELPOOF
 	STA Sound_QLevel1
 
-	LDA Player_Ability
-	CMP #$01
-	BNE Not_Small
-	; Switch back to just Big
 	LDA #$02
-	BNE PRG000_DA44
-
-Not_Small:
-	LDA #$01
 
 PRG000_DA44:
 	STA Player_QueueSuit	 ; Queue power-up change
 
 PRG000_DA47:
 	LDA #$00	 
-	STA Player_Kuribo	 ; Player no longer has Kuribo's shoe (if he even did a moment ago)
 	BEQ PRG000_DA6D	 ; Jump (technically always) to PRG000_DA6D
 
 PRG000_DA4E:
@@ -5619,6 +5582,7 @@ PRG000_DA7A:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Die:
 	; Queue death song
+
 	LDA Sound_QMusic1
 	ORA #MUS1_PLAYERDEATH
 	STA Sound_QMusic1
@@ -5636,6 +5600,8 @@ Player_Die:
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Level_PSwitchCnt
+	STA Frozen_Frame
+	STA Frozen_State
 	
 	LDA #$01
 	STA Player_QueueSuit	 ; Queue change to "small"

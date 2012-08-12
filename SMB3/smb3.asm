@@ -2489,7 +2489,9 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	ESwitch:				.ds 1	; For e-switch levels
 	BoomBoomMiscTimer:		.ds 1	;
 	ChallengeMode:			.ds 1	;
-				.ds 73	; $7997-$79FF unused UNUSED HERE
+	Frozen_State:			.ds 1	;
+	Frozen_Frame:			.ds	1
+				.ds 71	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -3000,7 +3002,7 @@ SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
 SOBJ_FIRECHOMPFIRE	= $12 	; Fire Chomp's fire
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_BLOOPERKID		= $14 	; Blooper kid
-SOBJ_LASER		= $15 	; Laser
+SOBJ_ICEBALL		= $15 	; Laser
 SOBJ_POOF		= $16 	; Poof
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
@@ -3449,6 +3451,7 @@ OBJ_BOOMERANGBRO	= $82	; Boomerang Brother
 OBJ_LAKITU		= $83	; Lakitu throwing red spiny eggs
 OBJ_SPINYEGG		= $84	; Working red spiny egg
 OBJ_SPINYEGGDUD		= $85	; Rolling "dud" spiny egg
+OBJ_ICEBRO		= $86	; Heavy brother
 OBJ_HEAVYBRO		= $86	; Heavy brother
 OBJ_FIREBRO		= $87	; Fire Brother
 OBJ_ORANGECHEEP		= $88	; "Lost" orange cheep cheep

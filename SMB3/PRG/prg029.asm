@@ -413,7 +413,7 @@ RAINBOW_PAL_CYCLE:
 ; scrolled, the Player's animation frame, invincibility status,
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_Draw
+Player_Draw:
 	LDA Special_Suit_Flag
 	BEQ No_Burning_Mode
 	LDA Player_Suit
@@ -427,7 +427,17 @@ No_Burning_Mode:
 	JSR Rainbow_Palette_Cycle_Sprites
 
 No_Invincible_Enemies:
+	LDA Player_Grow
+	BNE Not_Frozen
+	LDA Frozen_State
+	BEQ Not_Frozen
+	LDX Frozen_Frame
+	JMP Do_Frame
+
+Not_Frozen:
 	LDX <Player_Frame
+
+Do_Frame:
 	LDA Wall_Jump_Enabled
 	BEQ Try_Boo_Frames
 	LDX #$30			; #DAHRKDAIZ if wall jump enabled, we override the frame
@@ -1189,7 +1199,15 @@ PRG029_D238:
 
 	LDA Player_GrowFrames,X	 ; Get this grow frame
 	STA <Player_Frame	 ; Set as current frame
-
+	LDA <Player_Suit
+	BNE Big_Frame
+	LDA #$3E
+	STA Frozen_Frame
+	BNE Do_Draw_Plyer
+Big_Frame:
+	LDA #$0E
+	STA Frozen_Frame
+Do_Draw_Plyer:
 	JSR Player_Draw		 ; Draw Player
 
 	; Changes the Sprite 1/4 VROM bank as appropriate
@@ -1203,7 +1221,7 @@ PRG029_D250:
 	STA PatTable_BankSel+2
 
 	DEC Player_Grow	 ; Player_Grow--
-
+	
 	RTS		 ; Return
 
 PRG029_D257:

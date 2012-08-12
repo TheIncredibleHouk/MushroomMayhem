@@ -3068,94 +3068,118 @@ Game_Timer_RTS:
 	RTS
 
 Do_Weather:
-	
 	LDA Weather
 	BEQ WeatherRTS
 	CMP #$01
-	BEQ Do_Rain
+	BNE Do_Snow
+	LDA #LOW(Rain_XVel)
+	STA <Temp_Var1
+	LDA #HIGH(Rain_XVel)
+	STA <Temp_Var2
+	LDA #LOW(Rain_YVel)
+	STA <Temp_Var3
+	LDA #HIGH(Rain_YVel)
+	STA <Temp_Var4
+	LDA #$7B
+	STA DAIZ_TEMP3
+	JMP Draw_Weather
+
+Do_Snow:
+	LDA <Counter_1
+	AND #$01
+	BEQ No_Snow_Update
+	LDA #LOW(Snow_XVel)
+	STA <Temp_Var1
+	LDA #HIGH(Snow_XVel)
+	STA <Temp_Var2
+	LDA #LOW(Snow_YVel)
+	STA <Temp_Var3
+	LDA #HIGH(Snow_YVel)
+	STA <Temp_Var4
+	LDA #$75
+	STA DAIZ_TEMP3
+	JMP Draw_Weather
+
+No_Snow_Update:
+	JMP Draw_Weather_Sprite
 
 WeatherRTS:
 	RTS
 
-Do_Rain:
+Draw_Weather:
 	LDA Weather_Initialized
-	BNE Rain_Good
+	BNE Weather_Good
 	JMP Initialize_Weather
 
-Rain_Good:
-	LDX #$07
-	LDY #$00
+Weather_Good:
+	LDA $F000
+	LDX #$00
+	LDY #$07
 
-Rain_Loop:
-	LDA Weather_X, X
+Weather_Loop:
+	LDA Weather_X, Y
 	CLC
-	ADC Rain_XVel, X
-	STA Weather_X, X
-	LDA Weather_Y, X
+	ADC [Temp_Var1], Y
+	STA Weather_X, Y
+	LDA Weather_Y, Y
 	CLC
-	ADC Rain_YVel, X
-	STA Weather_Y, X
+	ADC [Temp_Var3], Y
+	STA Weather_Y, Y
 	CMP #$C0
-	BCC No_Randomize
+	BNE No_Randomize
+
 	JSR Randomize_Weather
-
 No_Randomize:
-	DEX
-	BPL Rain_Loop
-	LDA #$03
-	STA DAIZ_TEMP1
-	LDA <Counter_1
-	AND #$01
-	BEQ Do_RainRTS
-	LDX #07
-	LDA #$20
-	STA DAIZ_TEMP2
-	BNE Next_Rain
-Do_RainRTS:
-	LDA #$00
-	STA DAIZ_TEMP2
-	LDX #$03
+	DEY
+	BPL Weather_Loop
 
-Next_Rain:
-	JSR Object_GetRandNearUnusedSpr
-	BEQ Done_Rain
-	LDA #$7B
+Draw_Weather_Sprite:
+	LDX #$05
+	LDY #$10
+
+Weather_Loop2:
+	LDA DAIZ_TEMP3
 	STA Sprite_RAM + 1, Y
 	LDA #$02
-	ORA DAIZ_TEMP2
 	STA Sprite_RAM + 2, Y
 	LDA Weather_X, X
 	STA Sprite_RAM + 3, Y
-	
 	LDA Weather_Y, X
 	STA Sprite_RAM, Y
+	INY
+	INY
+	INY
+	INY
 	DEX
-	DEC DAIZ_TEMP1
-	BPL Next_Rain
+	BPL Weather_Loop2
 
-Done_Rain:
+Done_Weather:
 	RTS
 
-Rain_XVel: .byte $FC, $FA, $FC, $F8, $FB, $FD, $FB, $FC
-Rain_YVel: .byte $04, $06, $04, $08, $05, $03, $05, $04
+Rain_XVel: .byte $FC, $FA, $FC, $F8, $FB, $FD
+Rain_YVel: .byte $04, $06, $04, $08, $05, $03
+
+Snow_XVel: .byte $FF, $FF, $FF, $FE, $FE, $FF
+Snow_YVel: .byte $01, $01, $01, $02, $02, $01
 
 Initialize_Weather:
-	LDX #$07
+	LDY #$07
 
 Next_Weather:
 	JSR Randomize_Weather
-	DEX
+	DEY
 	BPL Next_Weather
 	LDA #$01
 	STA Weather_Initialized
 	RTS
 
 Randomize_Weather:
-	LDA RandomN,X
-	STA Weather_X, X
-	LDA RandomN + 1, X
-	LDA #$00
-	STA Weather_Y, X
+	LDA RandomN,Y
+	STA Weather_X, Y
+	LDA RandomN + 4,Y
+	ORA #$C0
+	AND #$FE
+	STA Weather_Y, Y
 	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; DynJump
@@ -3277,9 +3301,47 @@ PRG031_FF11:
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	ORA #(PAD_RIGHT)
 	STA <Pad_Holding
-ChallengeRTS:
-	RTS		 ; Return
 
+ChallengeRTS:
+	LDA Frozen_State
+	BEQ FrozenRTS
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ Kill_Ctrls
+	DEC Frozen_State
+	BEQ Unfreeze
+	LDA Player_InAir
+	BNE Kill_Ctrls
+	LDA #$F0
+	STA Player_InAir
+	STA <Player_YVel
+	BNE Kill_Ctrls
+
+Unfreeze:
+	CLC
+	LDA <Player_Suit
+	ADC #$01
+	LDX Special_Suit_Flag
+	BEQ Revert_Frz
+	CLC
+	ADC #$05
+
+Revert_Frz:
+	STA Player_QueueSuit
+	LDA #$00
+	STA Frozen_Frame
+	LDA #$17
+	STA Player_SuitLost
+	RTS
+
+Kill_Ctrls:
+	LDA #$00
+	STA <Pad_Input
+	STA <Pad_Holding
+
+FrozenRTS:
+	RTS		 ; Return
+	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Read_Joypad
 ;
@@ -3320,29 +3382,6 @@ Read_Joypad_Loop:
 
 	RTS		 ; Return
 
-	; Most likely filler / reserved space here
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
-	.byte $ff
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; IntReset

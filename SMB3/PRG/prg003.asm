@@ -1895,7 +1895,12 @@ ObjInit_FloatingBGCloud:
 	LSR A
 	LSR A
 	STA Wind
-	LDA #$01
+	LDA Objects_X,X
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
 	STA Weather
 	RTS
 
@@ -6082,7 +6087,7 @@ Get_HBros_Coin_Bit:
 	LSR A
 	LSR A
 	TAY
-	LDA Objects_Y,X
+	LDA Objects_X,X
 	AND #$70
 	LSR A
 	LSR A

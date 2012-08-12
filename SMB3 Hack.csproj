@@ -71,7 +71,6 @@
     <None Include="SMB3\smb3.asm" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="SMB3\PRG\NewFolder1\" />
     <Folder Include="SMB3\PRG\objects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2759,6 +2759,8 @@ SObj_CheckHitSolid:
 	LDA SpecialObj_ID,X
 	CMP #SOBJ_FIREBROFIREBALL
 	BEQ PRG007_AEB3	 ; If this a Fire Bro's fireball (the only one that bounces on the floor), jump to PRG007_AEB3
+	CMP #SOBJ_ICEBALL
+	BEQ PRG007_AEB3	 
 
 	SEC		 ; Set carry
 
@@ -2995,14 +2997,12 @@ PRG007_AF9E:
 	.word SObj_Fireball	; 12: Fire Chomp's fire
 	.word SObj_CoinOrDebris	; 13: Brick debris (e.g. from Piledriver Microgoomba)
 	.word SObj_BlooperKid	; 14: Blooper kid
-	.word SObj_Laser	; 15: Laser
+	.word SObj_Fireball	; 15: Laser
 	.word SObj_Poof		; 16: Poof
 
 PUpCoin_Patterns:	.byte $49, $4F, $4D, $4F
 PUpCoin_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
 
-SObj_Laser:
-	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - LASER code removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4316,7 +4316,7 @@ PRG007_B710:
 
 PRG007_B729:
 	LDA Level_ObjectID,Y
-	CMP #OBJ_HEAVYBRO
+	CMP #OBJ_ICEBRO
 	BNE PRG007_B737	 ; If this not a Heavy Bro, jump to PRG007_B737
 
 	; Otherwise, Temp_Var1 += 4
@@ -4479,7 +4479,6 @@ PRG007_B805:
 	ORA <Player_HaltGame	; ... if gameplay is halted ...
 	ORA Player_IsDying	; ... Player is dying ...
 	ORA Player_OffScreen	; ... Player is off-screen ...
-	ORA Player_Behind_En	; ... Player is legitimately hidden behind the scenes ...
 	ORA <Temp_Var14		; ... or special object is not vertically on-screen ...
 	BNE PRG007_B843	 	; ... jump to Player_Behind_En (RTS)
 
@@ -4496,6 +4495,27 @@ PRG007_B826:
 
 
 PRG007_B827:
+	CMP #SOBJ_ICEBALL
+	BNE Try_Wand
+	LDA #$08
+	STA Frozen_State
+	LDA Frozen_Frame
+	BNE Keep_Going
+	LDA Player_Frame
+	STA Frozen_Frame
+
+Keep_Going:
+	LDA SpecialObj_XVel,X
+	STA <Player_XVel
+	LDA #$31
+	STA Palette_Buffer+$11
+	LDA #$30
+	STA Palette_Buffer+$12
+	LDA #$02
+	STA Palette_Buffer+$13
+	JMP SpecialObj_Remove
+
+Try_Wand:
 	CMP #$10
 	BNE PRG007_B836	 ; If this is not the recovered wand, jump to PRG007_B836
 
@@ -4825,6 +4845,9 @@ PRG007_B9ED:
 Fireball_Patterns:	.byte $65, $65, $65, $65
 Fireball_Attributes:	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1
 
+Iceball_Patterns:	.byte $59, $59, $59, $59
+Iceball_Attributes:	.byte SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2
+
 SObj_Fireball:
 	LDA <Player_HaltGame
 	BNE PRG007_BA33	 ; If gameplay halted, jump to PRG007_BA33
@@ -4856,7 +4879,11 @@ SObj_Fireball:
 PRG007_BA1A:
 	LDA SpecialObj_ID,X
 	CMP #SOBJ_FIREBROFIREBALL
-	BNE PRG007_BA24	 ; If this is not Fire Bro's fireball, jump to PRG007_BA24
+	BEQ Do_Gravity	 ; If this is not Fire Bro's fireball, jump to PRG007_BA24
+	CMP #SOBJ_ICEBALL
+	BNE PRG007_BA24
+
+Do_Gravity:
 
 	JSR SObj_CheckHitSolid	 ; Bounce fireball off surfaces
 
@@ -4904,10 +4931,21 @@ PRG007_BA55:
 	AND #SPR_HFLIP	 ; Flip based on X velocity
 	PHA		 ; Save flip
 
+	LDA #$00
+	STA DAIZ_TEMP1
+	LDA SpecialObj_ID,X
+	CMP #SOBJ_ICEBALL
+	BNE Do_FB_Pattern
+	LDA #$08
+	STA DAIZ_TEMP1
+
+Do_FB_Pattern:
 	LDA SpecialObj_Var1,X
 	LSR A
 	LSR A
 	AND #$03
+	CLC
+	ADC DAIZ_TEMP1
 	TAX		 ; X = 0 to 3
 
 	; Set fireball pattern
