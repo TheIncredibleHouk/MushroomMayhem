@@ -795,6 +795,9 @@ PRG008_A3F2:
 	STA Boo_Mode_KillTimer
 	STA Fox_FireBall
 
+
+	LDA Frozen_State
+	BNE PRG008_A3FA
 	JSR Level_SetPlayerPUpPal ; Set power up's correct palette
 
 PRG008_A3FA:

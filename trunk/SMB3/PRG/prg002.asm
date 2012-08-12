@@ -3679,8 +3679,7 @@ ObjNorm_Toad:
 
 	JSR Object_CalcCoarseXDiff
 	STA Objects_FlipBits,X
-
-	LDA $F000
+ 
 	; Do Toad's dialog message
 	LDA #$5C
 	STA PatTable_BankSel+1

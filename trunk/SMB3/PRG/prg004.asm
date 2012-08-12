@@ -50,7 +50,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjInit_Set3DoNothing	; Object $84 - OBJ_SPINYEGG
 	.word ObjInit_Set3DoNothing	; Object $85 - OBJ_SPINYEGGDUD
-	.word ObjInit_HeavyBro		; Object $86 - OBJ_HEAVYBRO
+	.word ObjInit_FireBro		; Object $86 - OBJ_ICEBRO
 	.word ObjInit_FireBro		; Object $87 - OBJ_FIREBRO
 	.word ObjInit_OrangeCheep	; Object $88 - OBJ_ORANGECHEEP
 	.word ObjInit_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
@@ -92,7 +92,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjNorm_SpinyEgg		; Object $84 - OBJ_SPINYEGG
 	.word ObjNorm_SpinyEggDud	; Object $85 - OBJ_SPINYEGGDUD
-	.word ObjNorm_HeavyBro		; Object $86 - OBJ_HEAVYBRO
+	.word ObjNorm_FireBro		; Object $86 - OBJ_ICEBRO
 	.word ObjNorm_FireBro		; Object $87 - OBJ_FIREBRO
 	.word ObjNorm_OrangeCheep	; Object $88 - OBJ_ORANGECHEEP
 	.word ObjNorm_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
@@ -135,7 +135,7 @@ ObjectGroup03_CollideJumpTable:
 	.word OCSPECIAL_HIGHSCORE			; Object $83 - OBJ_LAKITU
 	.word $0000					; Object $84 - OBJ_SPINYEGG
 	.word $0000					; Object $85 - OBJ_SPINYEGGDUD
-	.word OCSPECIAL_HIGHSCORE			; Object $86 - OBJ_HEAVYBRO
+	.word OCSPECIAL_HIGHSCORE			; Object $86 - OBJ_ICEBRO
 	.word OCSPECIAL_HIGHSCORE			; Object $87 - OBJ_FIREBRO
 	.word $0000					; Object $88 - OBJ_ORANGECHEEP
 	.word $0000					; Object $89 - OBJ_CHAINCHOMP
@@ -177,7 +177,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $83 - OBJ_LAKITU
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $84 - OBJ_SPINYEGG
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $85 - OBJ_SPINYEGGDUD
-	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $86 - OBJ_HEAVYBRO
+	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $86 - OBJ_ICEBRO
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $87 - OBJ_FIREBRO
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $88 - OBJ_ORANGECHEEP
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $89 - OBJ_CHAINCHOMP
@@ -218,7 +218,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $83 - OBJ_LAKITU
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $84 - OBJ_SPINYEGG
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $85 - OBJ_SPINYEGGDUD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $86 - OBJ_HEAVYBRO
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $86 - OBJ_ICEBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $87 - OBJ_FIREBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $88 - OBJ_ORANGECHEEP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $89 - OBJ_CHAINCHOMP
@@ -260,7 +260,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY 					; Object $83 - OBJ_LAKITU
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $84 - OBJ_SPINYEGG
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $85 - OBJ_SPINYEGGDUD
-	.byte OA3_HALT_NORMALONLY 					; Object $86 - OBJ_HEAVYBRO
+	.byte OA3_HALT_NORMALONLY 					; Object $86 - OBJ_ICEBRO
 	.byte OA3_HALT_NORMALONLY 					; Object $87 - OBJ_FIREBRO
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $88 - OBJ_ORANGECHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $89 - OBJ_CHAINCHOMP
@@ -302,7 +302,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $0B	; Object $83 - OBJ_LAKITU
 	.byte OPTS_SETPT5 | $0B	; Object $84 - OBJ_SPINYEGG
 	.byte OPTS_SETPT5 | $0B	; Object $85 - OBJ_SPINYEGGDUD
-	.byte OPTS_SETPT5 | $4E	; Object $86 - OBJ_HEAVYBRO
+	.byte OPTS_SETPT5 | $4E	; Object $86 - OBJ_ICEBRO
 	.byte OPTS_SETPT5 | $4E	; Object $87 - OBJ_FIREBRO
 	.byte OPTS_SETPT6 | $4F	; Object $88 - OBJ_ORANGECHEEP
 	.byte OPTS_SETPT5 | $0A	; Object $89 - OBJ_CHAINCHOMP
@@ -344,7 +344,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_NORMALSTATE	; Object $83 - OBJ_LAKITU
 	.byte KILLACT_JUSTDRAW16X16	; Object $84 - OBJ_SPINYEGG
 	.byte KILLACT_NORMALANDKILLED	; Object $85 - OBJ_SPINYEGGDUD
-	.byte KILLACT_NORMALANDKILLED	; Object $86 - OBJ_HEAVYBRO
+	.byte KILLACT_NORMALANDKILLED	; Object $86 - OBJ_ICEBRO
 	.byte KILLACT_JUSTDRAW16X32	; Object $87 - OBJ_FIREBRO
 	.byte KILLACT_JUSTDRAW16X16	; Object $88 - OBJ_ORANGECHEEP
 	.byte KILLACT_JUSTDRAW16X16	; Object $89 - OBJ_CHAINCHOMP
@@ -439,7 +439,7 @@ ObjP85:
 ObjP83:
 	.byte $9F, $9F, $9F, $9F, $9F, $9F, $01, $01, $9D, $9D, $9F, $9F
 ObjP86:
-	.byte $91, $9D, $A9, $AB, $91, $9D, $97, $99, $91, $93, $A9, $AB, $91, $93, $97, $99
+	.byte $81, $83, $A5, $A7, $81, $83, $B5, $B7, $85, $87, $BB, $A7
 ObjP87:
 	.byte $81, $83, $A5, $A7, $81, $83, $B5, $B7, $85, $87, $BB, $A7
 ObjP81:
@@ -854,7 +854,7 @@ BattleEnemy_ByEnterID:
 	.byte $00		; 2: Airship (not our concern here)
 	.byte OBJ_HAMMERBRO	; 3: Hammer Bro battle
 	.byte OBJ_BOOMERANGBRO	; 4: Boomerang Bro battle
-	.byte OBJ_HEAVYBRO	; 5: Heavy Bro battle
+	.byte OBJ_ICEBRO	; 5: Heavy Bro battle
 	.byte OBJ_FIREBRO	; 6: Fire Bro battle
 	.byte $00		; 7: World 7 Plant (not our concern here)
 	.byte $00		; 8: Unknown marching glitch object (interesting!)
@@ -2056,8 +2056,16 @@ FireBro_SpitFire:
 	LDY <Temp_Var1		; Y = special object slot
 	STA SpecialObj_XVel,Y
 
+	LDA Level_ObjectID,X
+	CMP #OBJ_ICEBRO
+	BNE Fire_Bros_FBall
+	LDA #SOBJ_ICEBALL
+	BNE Store_SObject
+
 	; Fire bro bouncing fireball
+Fire_Bros_FBall:
 	LDA #SOBJ_FIREBROFIREBALL
+Store_SObject:
 	STA SpecialObj_ID,Y
 
 	; Data = 0
@@ -2066,395 +2074,395 @@ FireBro_SpitFire:
 
 	RTS		 ; Return
 
-ObjInit_HeavyBro:
-	INC Objects_IsGiant,X	 ; Flag as giant
-	RTS		 ; Return
-
-
-HeavyBro_FacePlayerFlip:	.byte SPR_HFLIP, $00
-
-ObjNorm_HeavyBro:
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BEQ PRG004_AA12	 ; If Heavy Bro's state is Normal, jump to PRG004_AA12
-
-	JMP HeavyBro_Draw	 ; Draw Heavy Bro and don't come back!
-
-PRG004_AA12:
-	LDA Objects_Timer2,X
-	BEQ PRG004_AA2F	 ; If timer2 is expired, jump to PRG004_AA2F
-
-	; Timer2 not expired...
-
-	LDA <Player_InAir
-	BNE PRG004_AA2F	 ; If Player is in the air, jump to PRG004_AA2F
-
-	; Heavy Bro STOMP
-
-	INC <Player_InAir ; Flag Player as in the air ...
-
-	; "Vibrationally disable" Player
-	LDA #$20
-	STA Player_VibeDisable
-
-	; Bounce Player a little
-	LDA #-$10
-	STA <Player_YVel
-
-	DEC <Player_Y	 ; Player_Y--
-
-	LDY <Player_Y	; Y = Player_Y
-	INY		; Reset the Y back to where it was
-	BNE PRG004_AA2F	; If the Player's Y low was not zero, we have nothing to worry about; jump to PRG004_AA2F
-
-	DEC <Player_YHi	 ; Otherwise, we essentially have a carry (but DEC doesn't set carry)
-
-PRG004_AA2F:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-	JSR Level_ObjCalcXDiffs
-
-	; Flip Heavy Bro towards Player
-	LDA HeavyBro_FacePlayerFlip,Y
-	STA Objects_FlipBits,X
-
-	TXA
-	ASL A
-	ASL A
-	ASL A	; This just applies a little effect from the object's index to keep things interesting
-	ADC Level_NoStopCnt
-	AND #$3f
-	ORA Objects_Timer,X
-	BNE PRG004_AA51	 ; Basically every 64 ticks or an expired timer proceed; otherwise, jump to PRG004_AA51
-
-	; Reset timer to $10
-	LDA #$10
-	STA Objects_Timer,X
-
-	JSR HammerBro_ThrowHammer	 ; Throw hammer!
-
-PRG004_AA51:
-	LDY #$00	 ; Y = 0
-
-	LDA Objects_Var3,X
-	AND #$10
-	BEQ PRG004_AA5B	 ; Every 16 ticks of Var3 proceed, otherwise jump to PRG004_AA5B
-
-	INY		 ; Y = 1
-
-PRG004_AA5B:
-	LDA Objects_Timer,X
-	BEQ PRG004_AA62	 ; If timer expired, jump to PRG004_AA62
-
-	; Otherwise, Y = 2 or 3 (arm up for hammer toss, although the draw routine doesn't actually use this, it checks timer instead)
-	INY
-	INY
-
-PRG004_AA62:
-	TYA
-	STA Objects_Frame,X	 ; Set frame appropriately
-
-	JSR HeavyBro_Draw	 ; Draw the Heavy Bro
-
-	LDA <Player_HaltGame
-	BNE PRG004_AABE	 ; If gameplay is halted, jump to PRG004_AABE
-
-	LDA <Objects_Var5,X
-	BEQ PRG004_AABF	 ; If Var5 = 0, jump to PRG004_AABF
-
-	JSR Object_ApplyXVel	 	; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
-	JSR Object_WorldDetectN1	 ; Detect against world
-	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
-
-	LDA <Objects_YVel,X
-	BMI PRG004_AA87	 ; If Heavy Bro is moving upward, jump to PRG004_AA87
-
-	CMP #$70
-	BGE PRG004_AA9B	 ; If Heavy Bro is falling >= $70, jump to PRG004_AA9B
-	BLT PRG004_AA8C	 ; Otherwise, jump to PRG004_AA8C
-
-PRG004_AA87:
-	NEG	; Get absolute value of Y velocity
-
-PRG004_AA8C:
-	LSR A
-	LSR A		 ; Divide by 4
-
-	LDY <Objects_YVel,X
-	BPL PRG004_AA94	 ; If Heavy Bro is not moving downward, jump to PRG004_AA94
-
-	LSR A
-	LSR A		 ; Divide by 4
-
-PRG004_AA94:
-	ADD #$01
-	ADC <Objects_YVel,X	; Add a fraction of the absolute value of the Y velocity
-	STA <Objects_YVel,X	; Set new Y velocity
-
-PRG004_AA9B:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG004_AABE	 ; If Heavy Bro has not hit ground, jump to PRG004_AABE (RTS)
-
-	; Var5 = 0
-	LDA #$00
-	STA <Objects_Var5,X
-
-	; Vibrate level!
-	LDA #$0c
-	STA Level_Vibration
-
-	; Ba-boom! sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	JSR Object_HitGround	 ; Align to floor
-
-	LDA <Player_InAir
-	BNE PRG004_AABE	 ; If Player is in air, jump to PRG004_AABE (RTS)
-
-	; Timer2 = $40
-	LDA #$40
-	STA Objects_Timer2,X
-
-PRG004_AABE:
-	RTS		 ; Return
-
-
-PRG004_AABF:
-	LDA Objects_Var1,X
-	BEQ PRG004_AAC7	 ; If Var1 = 0, jump to PRG004_AAC7
-
-	DEC Objects_Var1,X	 ; Otherwise, Var1--
-
-PRG004_AAC7:
-	TXA
-	ASL A
-	ASL A
-	ASL A
-	ASL A	; This just applies a little effect from the object's index to keep things interesting
-	ADC Level_NoStopCnt
-	AND #$7f
-	BNE PRG004_AAE5	 ; Basically, proceed every 127 ticks, otherwise jump to PRG004_AAE5
-
-	LDA RandomN,X
-	AND #$03
-	BEQ PRG004_AAE5	 ; 1:4 Chance we jump to PRG004_AAE5
-
-	INC <Objects_Var5,X	 ; Var5++
-
-	; Jump!!
-	LDA #-$58
-	STA <Objects_YVel,X
-
-	; Stop horizontal movement
-	LDA #$00
-	STA <Objects_XVel,X
+ObjInit_IceBro:
 
 	RTS		 ; Return
-
-PRG004_AAE5:
-	LDA <Objects_Var4,X
-	AND #$03	 ; Var4 masked 0-3, internal state
-
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word HeavyBro_WalkLeft
-	.word HeavyBro_WaitState
-	.word HeavyBro_WalkRight
-	.word HeavyBro_WaitState
-
-HeavyBro_WalkLeft:
-	LDA Objects_Var1,X	 
-	BNE PRG004_AB00		; If Var1 <> 0, jump to PRG004_AB00
-
-	INC <Objects_Var4,X	 ; Var4++ (next internal state)
-
-	; Var1 = $20
-	LDA #$20
-	STA Objects_Var1,X
-
-PRG004_AB00:
-
-	; X Velocity = -$04 (walk left)
-	LDA #-$04
-	STA <Objects_XVel,X
-
-	JMP PRG004_AB29	 ; Jump to PRG004_AB29
-
-HeavyBro_WaitState:
-	LDA Objects_Var1,X	 
-	BNE PRG004_AB13	 ; If Var1 <> 0, jump to PRG004_AB13
-
-	INC <Objects_Var4,X	 ; Var4++ (next internal state)
-
-	; Var1 = $40
-	LDA #$40
-	STA Objects_Var1,X
-
-PRG004_AB13:
-	JSR Object_WorldDetectN1	 ; Detect against world
-	JMP Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath and don't come back!
-
-HeavyBro_WalkRight:
-	LDA Objects_Var1,X	 
-	BNE PRG004_AB25	 ; If Var1 <> 0, jump to PRG004_AB25
-
-	INC <Objects_Var4,X	 ; Var4++ (next internal state)
-
-	; Var1 = $20
-	LDA #$20
-	STA Objects_Var1,X
-
-PRG004_AB25:
-	; X Velocity = $04 (walk right)
-	LDA #$04
-	STA <Objects_XVel,X
-
-PRG004_AB29:
-	JSR Object_Move	 ; Do standard movements
-	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
-
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG004_AB3B	 ; If Heavy Bro has not hit ground, jump to PRG004_AB3B (RTS)
-
-	INC Objects_Var3,X	 ; Var3++
-
-	JSR Object_HitGround	 ; Align to ground
-
-PRG004_AB3B:
-	RTS		 ; Return
-
+;
+;
+;HeavyBro_FacePlayerFlip:	.byte SPR_HFLIP, $00
+;
+;ObjNorm_HeavyBro:
+;	LDA Objects_State,X
+;	CMP #OBJSTATE_NORMAL
+;	BEQ PRG004_AA12	 ; If Heavy Bro's state is Normal, jump to PRG004_AA12
+;
+;	JMP HeavyBro_Draw	 ; Draw Heavy Bro and don't come back!
+;
+;PRG004_AA12:
+;	LDA Objects_Timer2,X
+;	BEQ PRG004_AA2F	 ; If timer2 is expired, jump to PRG004_AA2F
+;
+;	; Timer2 not expired...
+;
+;	LDA <Player_InAir
+;	BNE PRG004_AA2F	 ; If Player is in the air, jump to PRG004_AA2F
+;
+;	; Heavy Bro STOMP
+;
+;	INC <Player_InAir ; Flag Player as in the air ...
+;
+;	; "Vibrationally disable" Player
+;	LDA #$20
+;	STA Player_VibeDisable
+;
+;	; Bounce Player a little
+;	LDA #-$10
+;	STA <Player_YVel
+;
+;	DEC <Player_Y	 ; Player_Y--
+;
+;	LDY <Player_Y	; Y = Player_Y
+;	INY		; Reset the Y back to where it was
+;	BNE PRG004_AA2F	; If the Player's Y low was not zero, we have nothing to worry about; jump to PRG004_AA2F
+;
+;	DEC <Player_YHi	 ; Otherwise, we essentially have a carry (but DEC doesn't set carry)
+;
+;PRG004_AA2F:
+;	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
+;
+;	JSR Level_ObjCalcXDiffs
+;
+;	; Flip Heavy Bro towards Player
+;	LDA HeavyBro_FacePlayerFlip,Y
+;	STA Objects_FlipBits,X
+;
+;	TXA
+;	ASL A
+;	ASL A
+;	ASL A	; This just applies a little effect from the object's index to keep things interesting
+;	ADC Level_NoStopCnt
+;	AND #$3f
+;	ORA Objects_Timer,X
+;	BNE PRG004_AA51	 ; Basically every 64 ticks or an expired timer proceed; otherwise, jump to PRG004_AA51
+;
+;	; Reset timer to $10
+;	LDA #$10
+;	STA Objects_Timer,X
+;
+;	JSR HammerBro_ThrowHammer	 ; Throw hammer!
+;
+;PRG004_AA51:
+;	LDY #$00	 ; Y = 0
+;
+;	LDA Objects_Var3,X
+;	AND #$10
+;	BEQ PRG004_AA5B	 ; Every 16 ticks of Var3 proceed, otherwise jump to PRG004_AA5B
+;
+;	INY		 ; Y = 1
+;
+;PRG004_AA5B:
+;	LDA Objects_Timer,X
+;	BEQ PRG004_AA62	 ; If timer expired, jump to PRG004_AA62
+;
+;	; Otherwise, Y = 2 or 3 (arm up for hammer toss, although the draw routine doesn't actually use this, it checks timer instead)
+;	INY
+;	INY
+;
+;PRG004_AA62:
+;	TYA
+;	STA Objects_Frame,X	 ; Set frame appropriately
+;
+;	JSR HeavyBro_Draw	 ; Draw the Heavy Bro
+;
+;	LDA <Player_HaltGame
+;	BNE PRG004_AABE	 ; If gameplay is halted, jump to PRG004_AABE
+;
+;	LDA <Objects_Var5,X
+;	BEQ PRG004_AABF	 ; If Var5 = 0, jump to PRG004_AABF
+;
+;	JSR Object_ApplyXVel	 	; Apply X velocity
+;	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+;	JSR Object_WorldDetectN1	 ; Detect against world
+;	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
+;
+;	LDA <Objects_YVel,X
+;	BMI PRG004_AA87	 ; If Heavy Bro is moving upward, jump to PRG004_AA87
+;
+;	CMP #$70
+;	BGE PRG004_AA9B	 ; If Heavy Bro is falling >= $70, jump to PRG004_AA9B
+;	BLT PRG004_AA8C	 ; Otherwise, jump to PRG004_AA8C
+;
+;PRG004_AA87:
+;	NEG	; Get absolute value of Y velocity
+;
+;PRG004_AA8C:
+;	LSR A
+;	LSR A		 ; Divide by 4
+;
+;	LDY <Objects_YVel,X
+;	BPL PRG004_AA94	 ; If Heavy Bro is not moving downward, jump to PRG004_AA94
+;
+;	LSR A
+;	LSR A		 ; Divide by 4
+;
+;PRG004_AA94:
+;	ADD #$01
+;	ADC <Objects_YVel,X	; Add a fraction of the absolute value of the Y velocity
+;	STA <Objects_YVel,X	; Set new Y velocity
+;
+;PRG004_AA9B:
+;	LDA <Objects_DetStat,X
+;	AND #$04
+;	BEQ PRG004_AABE	 ; If Heavy Bro has not hit ground, jump to PRG004_AABE (RTS)
+;
+;	; Var5 = 0
+;	LDA #$00
+;	STA <Objects_Var5,X
+;
+;	; Vibrate level!
+;	LDA #$0c
+;	STA Level_Vibration
+;
+;	; Ba-boom! sound
+;	LDA Sound_QLevel1
+;	ORA #SND_LEVELBABOOM
+;	STA Sound_QLevel1
+;
+;	JSR Object_HitGround	 ; Align to floor
+;
+;	LDA <Player_InAir
+;	BNE PRG004_AABE	 ; If Player is in air, jump to PRG004_AABE (RTS)
+;
+;	; Timer2 = $40
+;	LDA #$40
+;	STA Objects_Timer2,X
+;
+;PRG004_AABE:
+;	RTS		 ; Return
+;
+;
+;PRG004_AABF:
+;	LDA Objects_Var1,X
+;	BEQ PRG004_AAC7	 ; If Var1 = 0, jump to PRG004_AAC7
+;
+;	DEC Objects_Var1,X	 ; Otherwise, Var1--
+;
+;PRG004_AAC7:
+;	TXA
+;	ASL A
+;	ASL A
+;	ASL A
+;	ASL A	; This just applies a little effect from the object's index to keep things interesting
+;	ADC Level_NoStopCnt
+;	AND #$7f
+;	BNE PRG004_AAE5	 ; Basically, proceed every 127 ticks, otherwise jump to PRG004_AAE5
+;
+;	LDA RandomN,X
+;	AND #$03
+;	BEQ PRG004_AAE5	 ; 1:4 Chance we jump to PRG004_AAE5
+;
+;	INC <Objects_Var5,X	 ; Var5++
+;
+;	; Jump!!
+;	LDA #-$58
+;	STA <Objects_YVel,X
+;
+;	; Stop horizontal movement
+;	LDA #$00
+;	STA <Objects_XVel,X
+;
+;	RTS		 ; Return
+;
+;PRG004_AAE5:
+;	LDA <Objects_Var4,X
+;	AND #$03	 ; Var4 masked 0-3, internal state
+;
+;	JSR DynJump
+;
+;	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+;	.word HeavyBro_WalkLeft
+;	.word HeavyBro_WaitState
+;	.word HeavyBro_WalkRight
+;	.word HeavyBro_WaitState
+;
+;HeavyBro_WalkLeft:
+;	LDA Objects_Var1,X	 
+;	BNE PRG004_AB00		; If Var1 <> 0, jump to PRG004_AB00
+;
+;	INC <Objects_Var4,X	 ; Var4++ (next internal state)
+;
+;	; Var1 = $20
+;	LDA #$20
+;	STA Objects_Var1,X
+;
+;PRG004_AB00:
+;
+;	; X Velocity = -$04 (walk left)
+;	LDA #-$04
+;	STA <Objects_XVel,X
+;
+;	JMP PRG004_AB29	 ; Jump to PRG004_AB29
+;
+;HeavyBro_WaitState:
+;	LDA Objects_Var1,X	 
+;	BNE PRG004_AB13	 ; If Var1 <> 0, jump to PRG004_AB13
+;
+;	INC <Objects_Var4,X	 ; Var4++ (next internal state)
+;
+;	; Var1 = $40
+;	LDA #$40
+;	STA Objects_Var1,X
+;
+;PRG004_AB13:
+;	JSR Object_WorldDetectN1	 ; Detect against world
+;	JMP Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath and don't come back!
+;
+;HeavyBro_WalkRight:
+;	LDA Objects_Var1,X	 
+;	BNE PRG004_AB25	 ; If Var1 <> 0, jump to PRG004_AB25
+;
+;	INC <Objects_Var4,X	 ; Var4++ (next internal state)
+;
+;	; Var1 = $20
+;	LDA #$20
+;	STA Objects_Var1,X
+;
+;PRG004_AB25:
+;	; X Velocity = $04 (walk right)
+;	LDA #$04
+;	STA <Objects_XVel,X
+;
+;PRG004_AB29:
+;	JSR Object_Move	 ; Do standard movements
+;	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
+;
+;	LDA <Objects_DetStat,X
+;	AND #$04
+;	BEQ PRG004_AB3B	 ; If Heavy Bro has not hit ground, jump to PRG004_AB3B (RTS)
+;
+;	INC Objects_Var3,X	 ; Var3++
+;
+;	JSR Object_HitGround	 ; Align to ground
+;
+;PRG004_AB3B:
+;	RTS		 ; Return
+;
 Giant_HVisBit:	.byte $20, $80	; Not horizontally flipped, horizontally flipped
 Giant_HXOff:	.byte $10, $00	; Not horizontally flipped, horizontally flipped
 
-
-HeavyBro_Draw:
-
-	; Save Heavy Bro's X/Hi
-	LDA <Objects_X,X
-	PHA
-	LDA <Objects_XHi,X
-	PHA
-
-	LDA Objects_SprHVis,X
-	STA Temp_VarNP0	
-
-	LDA Objects_FlipBits,X
-	AND #SPR_HFLIP
-	BEQ PRG004_AB63	 ; If Heavy Bro is not horizontally flipped, jump to PRG004_AB63
-
-	ASL Objects_SprHVis,X
-
-	; X += 8
-	LDA <Objects_X,X
-	ADD #$08
-	STA <Objects_X,X
-	LDA <Objects_XHi,X
-	ADC #$00
-	STA <Objects_XHi,X
-
-PRG004_AB63:
-	JSR Object_Draw16x32Sprite	 ; Draw most of Heavy Bro
-
-	; Restore X/Hi
-	PLA
-	STA <Objects_XHi,X
-	PLA
-	STA <Objects_X,X
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	LDY #$00	 ; Y = 0
-
-	LDA Objects_FlipBits,X	
-	AND #SPR_HFLIP
-	BEQ PRG004_AB79	 ; If Heavy Bro is not horizontally flipped, jump to PRG004_AB79
-
-	INY		 ; Y = 1
-
-PRG004_AB79:
-	LDA Temp_VarNP0
-	AND Giant_HVisBit,Y
-	BNE PRG004_ABE3	 ; If this sprite isn't visible, jump to PRG004_ABE3 (RTS)
-
-	; Temp_Var2 = Sprite X
-	LDA <Objects_SpriteX,X
-	ADD Giant_HXOff,Y
-	STA <Temp_Var2
-
-	LDY Object_SprRAM,X	 ; Y = Sprite_RAM offset
-
-	; Set Sprite Xs
-	LDA <Temp_Var2
-	STA Sprite_RAM+$13,Y
-	STA Sprite_RAM+$17,Y
-
-	; Vertical visibility bits -> Temp_Var1
-	LDA Objects_SprVVis,X
-	STA <Temp_Var1
-
-	LDA <Objects_SpriteY,X
-	LSR <Temp_Var1
-	BCS PRG004_ABA2	 ; If this sprite is vertically off-screen, jump to PRG004_ABA2
-
-	STA Sprite_RAM+$10,Y	 ; Otherwise, set Sprite Y
-
-PRG004_ABA2:
-	LSR <Temp_Var1
-	BCS PRG004_ABAC	 ; If this sprite is vertically off-screen, jump to PRG004_ABAC
-
-	ADD #16		; +16 for lower sprite
-	STA Sprite_RAM+$14,Y	 ; Set lower sprite Y
-
-PRG004_ABAC:
-
-	; Copy attributes
-	LDA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$12,Y
-	STA Sprite_RAM+$16,Y
-
-	LDA #$00
-	CMP Objects_Timer,X
-
-	LDA #$9f	; A = $9F
-
-	BGE PRG004_ABC0	 ; If timer is not expired, jump to PRG004_ABC0
-
-	LDA #$95	; A = $95
-
-PRG004_ABC0:
-	STA Sprite_RAM+$11,Y	 ; Set appropriate upper sprite pattern
-
-	LDA Objects_Frame,X
-	LSR A	
-
-	LDA #$9b	 ; A = $9B
-
-	BCS PRG004_ABCD	 ; If frame 1, jump to PRG004_ABCD
-
-	LDA #$ad	 ; A = $AD
-
-PRG004_ABCD:
-	STA Sprite_RAM+$15,Y	 ; Set appropriate lower sprite pattern
-
-	LDA Objects_FlipBits,X
-	BPL PRG004_ABE3	 ; If Heavy Bro isn't vertically flipped, jump to PRG004_ABE3
-
-	; Otherwise, swap upper and lower sprites
-	LDA Sprite_RAM+$10,Y
-	PHA
-	LDA Sprite_RAM+$14,Y
-	STA Sprite_RAM+$10,Y
-	PLA
-	STA Sprite_RAM+$14,Y
-
-PRG004_ABE3:
-	RTS		 ; Return
+;
+;HeavyBro_Draw:
+;
+;	; Save Heavy Bro's X/Hi
+;	LDA <Objects_X,X
+;	PHA
+;	LDA <Objects_XHi,X
+;	PHA
+;
+;	LDA Objects_SprHVis,X
+;	STA Temp_VarNP0	
+;
+;	LDA Objects_FlipBits,X
+;	AND #SPR_HFLIP
+;	BEQ PRG004_AB63	 ; If Heavy Bro is not horizontally flipped, jump to PRG004_AB63
+;
+;	ASL Objects_SprHVis,X
+;
+;	; X += 8
+;	LDA <Objects_X,X
+;	ADD #$08
+;	STA <Objects_X,X
+;	LDA <Objects_XHi,X
+;	ADC #$00
+;	STA <Objects_XHi,X
+;
+;PRG004_AB63:
+;	JSR Object_Draw16x32Sprite	 ; Draw most of Heavy Bro
+;
+;	; Restore X/Hi
+;	PLA
+;	STA <Objects_XHi,X
+;	PLA
+;	STA <Objects_X,X
+;
+;	JSR Object_CalcSpriteXY_NoHi
+;
+;	LDY #$00	 ; Y = 0
+;
+;	LDA Objects_FlipBits,X	
+;	AND #SPR_HFLIP
+;	BEQ PRG004_AB79	 ; If Heavy Bro is not horizontally flipped, jump to PRG004_AB79
+;
+;	INY		 ; Y = 1
+;
+;PRG004_AB79:
+;	LDA Temp_VarNP0
+;	AND Giant_HVisBit,Y
+;	BNE PRG004_ABE3	 ; If this sprite isn't visible, jump to PRG004_ABE3 (RTS)
+;
+;	; Temp_Var2 = Sprite X
+;	LDA <Objects_SpriteX,X
+;	ADD Giant_HXOff,Y
+;	STA <Temp_Var2
+;
+;	LDY Object_SprRAM,X	 ; Y = Sprite_RAM offset
+;
+;	; Set Sprite Xs
+;	LDA <Temp_Var2
+;	STA Sprite_RAM+$13,Y
+;	STA Sprite_RAM+$17,Y
+;
+;	; Vertical visibility bits -> Temp_Var1
+;	LDA Objects_SprVVis,X
+;	STA <Temp_Var1
+;
+;	LDA <Objects_SpriteY,X
+;	LSR <Temp_Var1
+;	BCS PRG004_ABA2	 ; If this sprite is vertically off-screen, jump to PRG004_ABA2
+;
+;	STA Sprite_RAM+$10,Y	 ; Otherwise, set Sprite Y
+;
+;PRG004_ABA2:
+;	LSR <Temp_Var1
+;	BCS PRG004_ABAC	 ; If this sprite is vertically off-screen, jump to PRG004_ABAC
+;
+;	ADD #16		; +16 for lower sprite
+;	STA Sprite_RAM+$14,Y	 ; Set lower sprite Y
+;
+;PRG004_ABAC:
+;
+;	; Copy attributes
+;	LDA Sprite_RAM+$02,Y
+;	STA Sprite_RAM+$12,Y
+;	STA Sprite_RAM+$16,Y
+;
+;	LDA #$00
+;	CMP Objects_Timer,X
+;
+;	LDA #$9f	; A = $9F
+;
+;	BGE PRG004_ABC0	 ; If timer is not expired, jump to PRG004_ABC0
+;
+;	LDA #$95	; A = $95
+;
+;PRG004_ABC0:
+;	STA Sprite_RAM+$11,Y	 ; Set appropriate upper sprite pattern
+;
+;	LDA Objects_Frame,X
+;	LSR A	
+;
+;	LDA #$9b	 ; A = $9B
+;
+;	BCS PRG004_ABCD	 ; If frame 1, jump to PRG004_ABCD
+;
+;	LDA #$ad	 ; A = $AD
+;
+;PRG004_ABCD:
+;	STA Sprite_RAM+$15,Y	 ; Set appropriate lower sprite pattern
+;
+;	LDA Objects_FlipBits,X
+;	BPL PRG004_ABE3	 ; If Heavy Bro isn't vertically flipped, jump to PRG004_ABE3
+;
+;	; Otherwise, swap upper and lower sprites
+;	LDA Sprite_RAM+$10,Y
+;	PHA
+;	LDA Sprite_RAM+$14,Y
+;	STA Sprite_RAM+$10,Y
+;	PLA
+;	STA Sprite_RAM+$14,Y
+;
+;PRG004_ABE3:
+;	RTS		 ; Return
 
 SpinyEggDud_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
 
