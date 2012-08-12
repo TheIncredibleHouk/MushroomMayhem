@@ -1894,8 +1894,8 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 				.ds 1	; $069B unused
 
-	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
-						.ds 7	;
+	Exp_Earned:		.ds 3	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
+						.ds 5	;
 
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
 	Player_ISHolding_OLD:	.ds 1	; Holds onto whether Player WAS holding onto something (so we can be sure to clear Player_IsHolding)
@@ -2638,7 +2638,8 @@ CFIRE_LASER		= $15	; Laser fire
 	World_Complete_Tiles: .ds 8	;
 	Old_World_Map_Tile:	.ds	1	;
 	Player_Ability:		.ds 1	;
-						.ds 72; $7A74-$7ADF unused
+	Player_Level:		.ds 1	;
+						.ds 71; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
@@ -3342,6 +3343,7 @@ OBJ_BOUNCEDOWNUP	= $06	; Down/up block bounce effect object
 OBJ_WARPHIDE		= $07	; Hidden object that jumps you to the secret warp whistle in 1-3
 OBJ_PSWITCHDOOR		= $08	; Door that appears under influence of P-Switch
 OBJ_AIRSHIPANCHOR	= $09	; Airship anchor
+OBJ_BULLY			= $0A	;
 OBJ_POWERUP_NINJASHROOM		= $0B	; Ninja Mushroom
 OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tanooki, Frog, Hammer)
 OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
@@ -4040,7 +4042,7 @@ TILE3_QUICKSAND_TOP	= $49	; Quicksand top
 TILE3_QUICKSAND_MID	= $4A	; Quicksand middle
 
 TILE3_BGBUSH_L		= $84	; Background bush left
-TILE3_BGBUSH_M		= $85	; Background bush middle
+TILE3_BGBUSH_M		= $87	; Background bush middle
 TILE3_BGBUSH_R		= $86	; Background bush right
 TILE3_UNDERGROUND	= $86	; Underground speckled
 TILE3_TUNNEL		= $87	; "Tunnel" under grassy ground

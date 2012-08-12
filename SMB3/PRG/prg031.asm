@@ -3112,7 +3112,6 @@ Draw_Weather:
 	JMP Initialize_Weather
 
 Weather_Good:
-	LDA $F000
 	LDX #$00
 	LDY #$07
 

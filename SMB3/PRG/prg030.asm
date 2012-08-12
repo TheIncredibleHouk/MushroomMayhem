@@ -3711,44 +3711,44 @@ Level_BG_Pages1:
 	.byte $5C	;  7 Toad House
 	.byte $58	;  8 Pipe Maze
 	.byte $30	;  9 Desert
-	.byte $34	; 10 Airship
-	.byte $6E	; 11 Giant world
-	.byte $18	; 12 Ice
-	.byte $38	; 13 Sky
-	.byte $1C	; 14 Not Used (Same as Hills / Underground)
-	.byte $24	; 15 Bonus Room
-	.byte $2C	; 16 Spade (Roulette)
-	.byte $5C	; 17 N-Spade (Card)
-	.byte $58	; 18 2P Vs
-	.byte $6C	; 19 Hills / Underground alternate
-	.byte $68	; 20 3-7 only
-	.byte $34	; 21 World 8 War Vehicle
-	.byte $28	; 22 Throne Room
+	.byte $34	;  A Airship
+	.byte $6E	;  B Giant world
+	.byte $18	;  C Ice
+	.byte $38	;  D Sky
+	.byte $1C	;  E Not Used (Same as Hills / Underground)
+	.byte $24	;  F Bonus Room
+	.byte $2C	; 10 Spade (Roulette)
+	.byte $5C	; 11 N-Spade (Card)
+	.byte $58	; 12 2P Vs
+	.byte $6C	; 13 Hills / Underground alternate
+	.byte $68	; 14 3-7 only
+	.byte $34	; 15 World 8 War Vehicle
+	.byte $28	; 16 Throne Room
 
 Level_BG_Pages2:
-	.byte $00	;  0 Not Used
-	.byte $80	;  1 Plains
-	.byte $80	;  2 Fortress
-	.byte $80	;  3 Hills / Underground
-	.byte $80	;  4 High-Up
-	.byte $80	;  5 Plant Infestation
-	.byte $80	;  6 Underwater
-	.byte $80	;  7 Toad House
-	.byte $80	;  8 Pipe Maze
-	.byte $80	;  9 Desert
-	.byte $80	; 10 Airship
-	.byte $80	; 11 Giant world
-	.byte $80	; 12 Ice
-	.byte $80	; 13 Sky
-	.byte $80	; 14 Not Used (Same as Hills / Underground)
-	.byte $80	; 15 Bonus Room
-	.byte $80	; 16 Spade (Roulette)
-	.byte $80	; 17 N-Spade (Card)
-	.byte $80	; 18 2P Vs
-	.byte $80	; 19 Hills / Underground alternate
-	.byte $80	; 20 3-7 only
-	.byte $80	; 21 World 8 War Vehicle
-	.byte $60	; 22 Throne Room
+	.byte $00	; 17 Not Used
+	.byte $80	; 18 Plains
+	.byte $80	; 19 Fortress
+	.byte $80	; 1A Hills / Underground
+	.byte $80	; 1B High-Up
+	.byte $80	; 1C Plant Infestation
+	.byte $80	; 1D Underwater
+	.byte $80	; 1E Toad House
+	.byte $6E	; 1F Pipe Maze
+	.byte $80	;  Desert
+	.byte $80	;  Airship
+	.byte $80	;  Giant world
+	.byte $80	;  Ice
+	.byte $80	;  Sky
+	.byte $80	;  Not Used (Same as Hills / Underground)
+	.byte $80	;  Bonus Room
+	.byte $80	;  Spade (Roulette)
+	.byte $80	;  N-Spade (Card)
+	.byte $80	;  2P Vs
+	.byte $80	;  Hills / Underground alternate
+	.byte $80	;  3-7 only
+	.byte $80	;  World 8 War Vehicle
+	.byte $70	;  Throne Room
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

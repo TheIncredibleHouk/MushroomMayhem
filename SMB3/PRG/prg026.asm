@@ -2964,16 +2964,24 @@ PRG026_B156:
 	.byte $2B, $48, $06, $00, $00, $00, $00, $00, $00, $00 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_Fill_Exp
-;
-; Fills the StatusBar_PMT array with tiles representing
-; the current score; also applies the
-; Exp_Earned value to the active total
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Exp_Levels:
+	.byte $00, $00, $00, $00, $00, $00, $07, $04 ; level 1
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 2
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 3
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 4
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 5
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 6
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 7
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 8
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 9
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 10
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 11
+	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 12
 
 StatusBar_Fill_Exp:
-	LDA Exp_Earned
+	LDA (Exp_Earned + 2)
+	ORA (Exp_Earned + 1)
+	ORA Exp_Earned
 	BEQ Exp_Done
 	JSR Clear_Calc
 	LDX #$05
@@ -2983,8 +2991,13 @@ Fill_Exp:
 	STA (Calc_From + 2), X
 	DEX
 	BPL Fill_Exp
-	LDA Exp_Earned
-	STA Calc_Value + 7
+	LDX #$02
+
+Fill_Exp_Earned:
+	LDA Exp_Earned, X
+	STA Calc_Value + 5, X
+	DEX
+	BPL Fill_Exp_Earned
 	JSR Add_Values
 	LDA Calc_From + 1
 	BEQ Exp_Loop
@@ -3022,12 +3035,45 @@ Exp_Loop3:
 
 	LDA #$00
 	STA Exp_Earned
-
+	STA Exp_Earned + 1
+	STA Exp_Earned + 2
+	JSR Check_Exp_Level
 Exp_Done:
 	RTS		 ; Return
 
 
+Check_Exp_Level:
+	JSR Clear_Calc
+	LDA Player_Level
+	ASL A
+	ASL A
+	ASL A
+	TAX
+	LDY #$05
+Store_Ex2:
+	LDA Player_Experience, Y
+	STA (Calc_From + 2), Y
+	DEY
+	BPL Store_Ex2
+	LDY #$00
 
+Store_Exp_Check:
+	LDA Exp_Levels, X
+	STA Calc_Value, Y
+	INX
+	INY
+	CPY #$08
+	BNE Store_Exp_Check
+	JSR Subtract_Values
+	LDA $F000
+	LDA Calc_From
+	BMI No_New_Ability
+	LDA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+	INC Player_Level
+
+No_New_Ability:
+	RTS
 ; FIXME: Anybody want to claim this?
 ; Uses graphics buffer to push out the score unlike the special buffers used by status bar
 ; $B205
@@ -3591,8 +3637,8 @@ PRG026_B51F:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $48, $D0, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $48, $D0, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
+	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
 
 Initial_Bar_Display2:
 	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE

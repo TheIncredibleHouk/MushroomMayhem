@@ -1496,8 +1496,7 @@ PRG007_A6EC:
 	BNE ICE_BALL_SKIP1 ; #DAHRKDAIZ - Skip "defeating" the enemy
 	
 Kill_Enemy_Anyway:
-	LDA #$01
-	STA Exp_Earned
+	INC (Exp_Earned + 2)
 
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 
