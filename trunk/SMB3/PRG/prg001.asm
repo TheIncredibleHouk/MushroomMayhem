@@ -162,7 +162,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $07 - OBJ_WARPHIDE
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $09 - OBJ_AIRSHIPANCHOR
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A- OBJ_BULLY
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -302,7 +302,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_WARPHIDE
 	.byte OPTS_SETPT6 | $13	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OPTS_SETPT6 | $37	; Object $09 - OBJ_AIRSHIPANCHOR
-	.byte OPTS_SETPT5 | $48	; Object $0A
+	.byte OPTS_SETPT5 | $0F	; Object $0A
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -1430,105 +1430,120 @@ PRG001_A702:
 	RTS		 ; Return
 
 ObjInit_Obj0A:
+	LDA #$40
+	STA Objects_Var1, X	; Var1 = march timer
 	LDA #$00
-	STA Objects_FlipBits,X	 ; Clear LR flag
+	STA Objects_Var2, X	; Var2 = about to charge timer
+	STA Objects_Var3, X ; Var3 = charging timer
 	RTS		 ; Return
 
+Bully_XVel: .byte $08, $F8
+Bully_XVelCharge: .byte $20, $E0
+Bully_Flip_Bits: .byte SPR_HFLIP, $00
 
 ObjNorm_Obj0A:
-	JSR Object_HitTestRespond	 ; Handle collision routine
-	JSR Object_InteractWithWorld	 ; Move, detect, interact with blocks of world
+	JSR Object_InteractWithWorld	 ; Handle collision routine
+	JSR Object_HitTestRespond	 ; Move, detect, interact with blocks of world
+	JSR Level_ObjCalcXDiffs
 
-	; Halt object horizontal movement
+	LDA Objects_Var3, X
+	BNE Dont_Bully_Flip
+	LDA Bully_Flip_Bits, Y
+	STA Objects_FlipBits,X
+
+Dont_Bully_Flip:
+	LDA Objects_Var1, X
+	BEQ BullyNot_March
+	LDA Bully_XVel, Y
+	STA Objects_XVel, X
+	DEC Objects_Var1, X
+	BNE DontChargeYet
+	LDA #$30
+	STA Objects_Var2, X
+DontChargeYet:
+	JMP Bully_JustDraw
+
+BullyNot_March:
+	LDA Objects_Var2, X
+	BEQ Bully_DoCharge
 	LDA #$00
-	STA <Objects_XVel,X
+	STA Objects_XVel, X
+	DEC Objects_Var2, X
+	BNE Dont_Bully_Yet
+	LDA #$60
+	STA Objects_Var3, X
+	LDA Bully_XVelCharge, Y
+	STA Objects_XVel, X
 
+Dont_Bully_Yet:
+	JMP Bully_Draw_Fast
+
+Bully_DoCharge:
+	DEC Objects_Var3, X
+	BNE Bully_Draw_Fast
+	JSR ObjInit_Obj0A		; Reset bully parameters
+	JMP Bully_JustDraw
+
+Bully_Draw_Fast:
+	LDA <Counter_1
+	AND #$04
+	LSR A	
+	LSR A	
+	JMP Do_Bully_Draw
+	
+Bully_JustDraw:
 	LDA <Counter_1
 	AND #$08
 	LSR A	
 	LSR A	
 	LSR A	
-	STA Objects_Frame,X	 ; Alternate between frame 0 and 1 every 8 ticks
 
+Do_Bully_Draw:
+	STA Objects_Frame,X	 ; Alternate between frame 0 and 1 every 8 ticks
 	JSR Object_ShakeAndDraw	; Draw object and "shake awake" 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
+
 	RTS		 ; Return
 
 ObjHit_Obj0A:
-	LDA <Player_YVel
-	BMI PRG001_A746	 ; If Player Y Velocity is negative (moving upward), jump to PRG001_A746
 
-	LDA <Objects_SpriteY,X	
-	SUB <Player_SpriteY	
-	CMP #$16
-	BLS PRG001_A746	 ; If Object is less than 16 pixels above Player, jump to PRG001_A746
+	LDA Player_StarInv
+	ORA Player_Shell
+	ORA Boo_Mode_KillTimer
+	ORA Fox_FireBall
+	BEQ Do_Knock_Back	 ; If Player is NOT invincible, jump to PRG000_D922
 
-	; Mark Player as not mid air
-	LDA #$00
-	STA <Player_InAir
+	LDA #OBJSTATE_KILLED
+	STA Objects_State,X	 ; Set object state to Killed
 
-	LDY <Objects_YHi,X	; Y = object's Y Hi
+	LDA #-$38	
+	STA <Objects_YVel,X	 ; Set Y Velocity to -$38
 
-	; Subtract 25 from Object's Y
-	LDA <Objects_Y,X 
-	SUB #25	 
-	BCS PRG001_A73F
-	DEY		 ; Apply carry, if needed
-PRG001_A73F:
-	STA <Player_Y	 ; Player Y = Object's Y - 25
-	STY <Player_YHi	 ; Set Player Y Hi appropriately
-	JMP PRG001_A77C	 ; Jump to PRG001_A77C
+	; "Kick" sound
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
 
-PRG001_A746:
-	LDA <Player_YVel
-	BPL PRG001_A757	 ; If Player is not moving upward, jump to PRG001_A757
+	; 100 points pop up
+	INC (Exp_Earned + 2)
+	RTS 
 
-	LDA <Objects_SpriteY,X
-	SUB <Player_SpriteY	
-	CMP #-$6
-	BGS PRG001_A757	 
+Do_Knock_Back:
+	LDA <Objects_XVel, X
+	BPL Do_Knock
+	JSR Negate
+	ASL A
+	JSR Negate
 
-	LDA #$01	 
-	STA <Player_YVel	 ; Set Player's Y velocity to slow decent
-
-PRG001_A757:
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BNE PRG001_A761	 ; If Player is pressing left or right, jump to PRG001_A761
-
-	; Otherwise, halt Player movement
-	LDA #$00
+Do_Knock:
+	ASL A
 	STA <Player_XVel
-
-PRG001_A761:
-	LDA <Player_SpriteX
-	CMP <Objects_SpriteX,X
-
-	LDA <Player_XVel ; A = Player's X Velocity
-
-	BGE PRG001_A76C	 ; If Player's sprite X >= object's sprite X, jump to PRG001_A76C
-	JSR Negate	 ; Otherwise, invert the X Velocity
-PRG001_A76C:
-	BPL PRG001_A77C	 ; If the velocity is not negative, jump to PRG001_A77C
-
-	LDY #-$03	 ; Y = -3
-
-	; Set Object's X velocity to Player's X velocity
-	LDA <Player_XVel
-	STA <Objects_XVel,X
-
-	BMI PRG001_A77A	 ; If velocity is negative, jump to PRG001_A77A
-	BEQ PRG001_A77A	 ; If velocity is zero, jump to PRG001_A77A
-
-	LDY #$03	 ; Y = 3
-
-PRG001_A77A:
-	STY <Player_XVel ; Set Player X Velocity appropriately
-
-PRG001_A77C:
-	RTS		 ; Return
-
-
+	LDA #$E8
+	STA <Player_YVel
+	STA Player_InAir
+	LDA Sound_QPlayer 
+	ORA #SND_PLAYERBUMP 
+	STA Sound_QPlayer
 	RTS		 ; Return
 
 ObjNorm_PUpNinjaShroom:

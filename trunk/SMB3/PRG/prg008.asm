@@ -357,7 +357,7 @@ PRG008_A1C1:
 PRG008_A1D7:
 	CMP #CHNGTILE_DELETECHERRY
 	BNE Normal_Tile
-	INC Exp_Earned
+	INC (Exp_Earned + 2)
 	LDA #CHNGTILE_DELETETOBG
 	STA Level_ChgTileEvent
 
@@ -6353,10 +6353,6 @@ PRG008_BDB1:
 	BPL PRG008_BD98	 ; While X >= 0, loop!
 
 PRG008_BDB4:
-	LDA Level_Tileset
-	CMP #$05	 
-	BNE PRG008_BDEB	 ; If not in a pipe world plant infestation, jump to PRG008_BDEB
-
 PRG008_BDEB:
 
 	; SLIPPERY, ICY GROUND LOGIC

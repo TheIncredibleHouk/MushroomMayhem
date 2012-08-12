@@ -2800,8 +2800,7 @@ PRG000_CE94:
 	; KICK OBJECT INTO WALL LOGIC
 
 	; 1 EXP
-	LDA #$01
-	STA Exp_Earned
+	INC (Exp_Earned + 2)
 
 	; Object state is Killed
 	LDA #OBJSTATE_KILLED
@@ -3387,8 +3386,7 @@ PRG000_D120:
 	; Held object impacted...
  
 	; 1 EXP for enemy defeated
-	LDA #$01
-	STA Exp_Earned
+	INC (Exp_Earned + 2)
 
 	; Set object state to Killed
 	LDA #OBJSTATE_KILLED
@@ -3768,8 +3766,7 @@ PRG000_D295:
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
 
-	LDA #$01
-	STA Exp_Earned
+	INC (Exp_Earned + 2)
 	RTS		 ; Return
 
 
@@ -5263,8 +5260,7 @@ PRG000_D8EB:
 	STA Sound_QPlayer
 
 	; 100 points pop up
-	LDA #$01
-	STA Exp_Earned
+	INC (Exp_Earned + 2)
 
 	JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
 
@@ -6839,6 +6835,8 @@ Subtraction_Loop:
 	SBC Calc_Value, X
 	STA Calc_From, X
 	BPL Next_Value
+	CPX #$00
+	BEQ Subtract_RTS
 	CLC
 	ADC #$0A
 	STA Calc_From, X
@@ -6847,4 +6845,5 @@ Subtraction_Loop:
 Next_Value:
 	DEX
 	BPL Subtraction_Loop
+Subtract_RTS:
 	RTS

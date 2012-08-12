@@ -2820,7 +2820,7 @@ PRG003_AE95:
 	STA Objects_FlipBits,X	; Update flip bits
 
 	; Boom Boom becomes the "(?)" ball
-	LDA #$0A
+	LDA #$01
 	STA Exp_Earned
 	LDA #$00
 	STA Level_ObjectID,X
