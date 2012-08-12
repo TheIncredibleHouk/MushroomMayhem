@@ -2180,11 +2180,7 @@ Rocky_KillOrStandOn:
 	CMP #$06
 	BEQ PRG005_AAE8	 ; If Var5 = 6, jump to PRG005_AAE8 (RTS)
 
-	; Bumps up the kill Tally so Rocky's base score is 200 pts IF he gets bumped from underneath
-	; But that never happens??
-	INC Kill_Tally
 	JSR Object_HandleBumpUnderneath
-	DEC Kill_Tally
 
 	LDA Objects_PlayerHitStat,X
 	BEQ PRG005_AAE8	; If Player has not collided with Rocky, jump to PRG005_AAE8
@@ -2232,10 +2228,7 @@ PRG005_AACA:
 	ORA #SND_PLAYERKICK
 	STA Sound_QPlayer
 
-	; Score for the kill!
-	LDA Kill_Tally
-	INC Kill_Tally
-	JSR Score_Get100PlusPts
+	JSR Exp_Inc
 
 PRG005_AAE8:
 	RTS		 ; Return
@@ -3543,13 +3536,8 @@ PRG005_B105:
 	; I'm not sure the reason for the modification of "Kill_Tally" here...
 	; Maybe at one time this was just another stompable enemy?
 
-	; This pattern of INC then DEC is used e.g. for Rocky Wrench to make his baseline score 200 pts
-
-	INC Kill_Tally	 ; Kill_Tally++ (??)
-
 	JSR Player_HitEnemy	 ; Do Player to Parabeetle hit detection
 
-	DEC Kill_Tally	 ; Kill_Tally-- (??)
 
 	LDA Objects_PlayerHitStat,X
 	BEQ PRG005_B1A8	 ; If no collision, jump to PRG005_B1A8
@@ -6212,9 +6200,6 @@ PRG005_BE41:
 	CPY #$05
 	BGE PRG005_BE4B	 ; If Y >= 5, jump to PRG005_BE4B
 
-	; Clear the scores
-	STA Scores_Value,Y
-	STA Scores_Counter,Y
 
 PRG005_BE4B:
 	CPY #$03

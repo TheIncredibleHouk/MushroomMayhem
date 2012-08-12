@@ -5468,4 +5468,59 @@ PRG030_9FAF:
 
 	JMP IntIRQ_32PixelPartition_Part3
 
-; NOTE: The remaining ROM space was all blank ($FF)
+;; #DAHRKDAIZ This routine clears the Calc_From and Calc_Value bytes to prepare multibyte addition
+Clear_Calc:
+	LDX #$07
+	LDA #$00
+
+Next_Clear_Calc:
+	STA Calc_From, X
+	STA Calc_Value, X
+	DEX
+	BPL Next_Clear_Calc
+	RTS
+
+; #DAHRKDAIZ for multibyte addition and sobtraction, use Calc_From for the original value and Calc_Value for the amount
+; you are adding. For example, if adding coins, set current coin value to Calc_From and the amount adding to Calc_Value
+; The result will be stored in Calc_From.
+Add_Values:
+	LDX #$07
+
+Addition_Loop:
+	CLC 
+	LDA Calc_From, X
+	ADC Calc_Value, X
+	STA Calc_From, X
+	CMP #$0A
+	BCC Next_Value2
+	SEC
+	SBC #$0A
+	STA Calc_From, X
+	INC (Calc_From - 1), X
+
+Next_Value2:
+	DEX
+	BPL Addition_Loop
+	RTS
+
+Subtract_Values:
+	LDX #$07
+	SEC 
+
+Subtraction_Loop:
+	LDA Calc_From, X
+	SBC Calc_Value, X
+	STA Calc_From, X
+	BPL Next_Value
+	CPX #$00
+	BEQ Subtract_RTS
+	CLC
+	ADC #$0A
+	STA Calc_From, X
+	DEC (Calc_From - 1), X
+
+Next_Value:
+	DEX
+	BPL Subtraction_Loop
+Subtract_RTS:
+	RTS

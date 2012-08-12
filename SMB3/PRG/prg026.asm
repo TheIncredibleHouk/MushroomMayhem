@@ -3065,7 +3065,6 @@ Store_Exp_Check:
 	CPY #$08
 	BNE Store_Exp_Check
 	JSR Subtract_Values
-	LDA $F000
 	LDA Calc_From
 	BMI No_New_Ability
 	LDA #SND_MAPBONUSAPPEAR
