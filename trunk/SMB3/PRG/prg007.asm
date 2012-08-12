@@ -2651,14 +2651,6 @@ PRG007_AE02:
 	RTS		 ; Return
 
 PRG007_AE28:
-;	JSR Score_FindFreeSlot
-
-	; Get 100 pts
-	LDA #$85
-	STA Scores_Value,Y
-
-	LDA #$30
-	STA Scores_Counter,Y
 
 	LDA CoinPUp_Y,X
 	CMP #192
@@ -2667,12 +2659,7 @@ PRG007_AE28:
 	LDA #$05	 ; Otherwise use top of screen
 
 PRG007_AE3E:
-	STA Scores_Y,Y	 ; -> Scores_Y
 
-	; Center score above coin
-	LDA CoinPUp_X,X
-	SUB #$04
-	STA Scores_X,Y
 
 PRG007_AE4A:
 
@@ -3222,9 +3209,7 @@ PRG007_B169:
 	JSR SpecialObj_Remove	 ; Remove it
 	INC Coins_Earned	 ; You get a coin
 
-	;JSR Score_FindFreeSlot
-	LDA #$89	; Get 1000 pts; $80 just mixes up what sprite it uses
-	JMP PRG007_B44B	 ; Jump to PRG007_B44B
+
 
 PRG007_B17E:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
@@ -3734,36 +3719,35 @@ PRG007_B445:
 
 
 PRG007_B446:
-	;JSR Score_FindFreeSlot
-
-	; Set base score and add Kill_Tally
-	LDA #$85		; Base 100 points; $80 just mixes up what sprite it uses
-
-PRG007_B44B:
-	ADD Kill_Tally
-	STA Scores_Value,Y
-
-	INC Kill_Tally	 ; Kill_Tally++
-
-	; Set the score counter
-	LDA #$30
-	STA Scores_Counter,Y
-
-	LDA SpecialObj_YLo,X
-	SUB Level_VertScroll
-	SBC #$06
-	CMP #192
-	BLT PRG007_B469	 ; If score Y < 192, jump to PRG007_B469
-
-	LDA #$05	 ; Otherwise, use Y = 5
-
-PRG007_B469:
-	STA Scores_Y,Y	 ; Set score Y
-
-	; Set score X
-	LDA SpecialObj_XLo,X
-	SUB <Horz_Scroll
-	STA Scores_X,Y
+	RTS
+;	;JSR Score_FindFreeSlot
+;
+;	; Set base score and add Kill_Tally
+;	LDA #$85		; Base 100 points; $80 just mixes up what sprite it uses
+;
+;PRG007_B44B:
+;
+;	STA Scores_Value,Y
+;
+;	; Set the score counter
+;	LDA #$30
+;	STA Scores_Counter,Y
+;
+;	LDA SpecialObj_YLo,X
+;	SUB Level_VertScroll
+;	SBC #$06
+;	CMP #192
+;	BLT PRG007_B469	 ; If score Y < 192, jump to PRG007_B469
+;
+;	LDA #$05	 ; Otherwise, use Y = 5
+;
+;PRG007_B469:
+;	STA Scores_Y,Y	 ; Set score Y
+;
+;	; Set score X
+;	LDA SpecialObj_XLo,X
+;	SUB <Horz_Scroll
+;	STA Scores_X,Y
 
 	RTS		 ; Return
 

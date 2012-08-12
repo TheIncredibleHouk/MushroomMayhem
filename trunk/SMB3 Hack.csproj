@@ -70,9 +70,7 @@
     <None Include="SMB3\PRG\prg031.asm" />
     <None Include="SMB3\smb3.asm" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SMB3\PRG\objects\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>C:\Users\Daiz\Desktop\ROM Hacking\SMB3 ASM\bin\build-SMB3.bat</PreBuildEvent>

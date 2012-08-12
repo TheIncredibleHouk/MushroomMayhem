@@ -583,20 +583,6 @@ SprRamOffsets:
 	.byte $40, $E8, $58, $D0, $70, $B8, $88, $A0, $40, $E8, $58, $D0, $70, $B8, $88
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; DoTimeBonus
-;
-; Converts your time remaining to score bonus, but only if there
-; is no BGM playing!  Also resets 'X' to object slot index.
-; "BEQ" branches after this function if the clock is at 000.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-TimeBonus_Score:
-	.byte 50, 5	; 500 and 50
-
-; $C412 
-DoTimeBonus:
-
-	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -632,26 +618,23 @@ PRG000_C454:
 	RTS		 ; Return
 
 
-	; Goes into Score_Get100PlusPts, but object index is stored in 'Y'
+	; Goes into Exp_Inc, but object index is stored in 'Y'
 	; NOTE: Overwrites 'X' anyway, so be careful!
-Score_Get100PlusPtsY:
-Score_Get100PlusPts:
+Exp_Inc_Lots:
+	INC Kill_Tally
+	INC Kill_Tally
+
+Exp_Inc:
+	INC Kill_Tally
+	LDA Kill_Tally
+	CMP #$09
+	BEQ DontAddTally
+	CLC
+	ADC (Exp_Earned + 2)
+DontAddTally:
+	STA (Exp_Earned + 2)
 	RTS		 ; Return
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Score_PopUp
-;
-; Pops up a score value (e.g. from a killed enemy)
-;
-; A = score value
-; X = index of on-screen object
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Score_PopUp:
-	RTS
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Score sprites disabled
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 PRG000_C49B:
@@ -2501,7 +2484,7 @@ PRG000_CD17:
 	; Another kicked object on the way... (slam and kill eachother)
 
 	LDA Objects_KillTally,Y
- 	JSR Score_Get100PlusPts	 ; Get the total score this OTHER kicked shell object earned
+ 	JSR Exp_Inc	 ; Get the total score this OTHER kicked shell object earned
 	JSR ObjectKill_SetShellKillVars	 ; Kill our kicked object and set ShellKill variables
 
 	; Set X Velocity of our kicked object in the direction of the impacted object
@@ -2521,7 +2504,7 @@ PRG000_CD36:
 	LDX <SlotIndexBackup		 ; X = object slot index (our kicked object)
 	LDA Objects_KillTally,X	
 	INC Objects_KillTally,X		; Increase our kicked object's kill tally...
-	JSR Score_Get100PlusPtsY	; Get points by the kill tally!  (Incidentally, Score_Get100PlusPts would work too)
+	JSR Exp_Inc_Lots	; Get points by the kill tally!  (Incidentally, Exp_Inc would work too)
 
 PRG000_CD46:
 	JSR Object_DeleteOffScreen	 ; Delete the kicked shell object if it goes off-screen
@@ -2588,7 +2571,7 @@ ObjectKill_SetShellKillVars:
 	STA ShellKillFlash_X
 	LDA #$0a	 
 	STA ShellKillFlash_Cnt
-
+	JSR Exp_Inc
 	RTS		 ; Return
 	
 	; Kicked shell object animation frames and flips
@@ -3005,8 +2988,7 @@ PRG000_CF49:
 	STA Objects_YVel,Y
 
 	; Get 100 pts for the hit!
-	LDA #$00
-	JSR Score_Get100PlusPts
+	JSR Exp_Inc
 
 	; Object will not collide again for 16 ticks (dampener I guess)
 	LDA #16
@@ -3494,8 +3476,7 @@ Object_HandleBumpUnderneath:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X 
 
-	LDA #$00 
-	JMP Score_Get100PlusPts ; Jump to Score_Get100PlusPts and don't come back! 
+	JMP Exp_Inc ; Jump to Exp_Inc and don't come back! 
 
 PRG000_D19E:
 	LDA ObjGroupRel_Idx 
@@ -3515,8 +3496,8 @@ PRG000_D19E:
 	STA Level_ObjectID,X
 
 	; Get 100 pts
-	LDA #$00 
-	JSR Score_Get100PlusPts 
+
+	JSR Exp_Inc 
 
 PRG000_D1B7:
 	JMP Object_SetShellState	 ; Jump to Object_SetShellState ("dies" into shelled state) 
@@ -3766,6 +3747,7 @@ PRG000_D295:
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
 
+	LDA $F000
 	INC (Exp_Earned + 2)
 	RTS		 ; Return
 
@@ -3782,9 +3764,7 @@ PRG000_D2A2:
 
 	; Enemy is in a shell...
 
-	LDA Kill_Tally	 
-	INC Kill_Tally	 ; Use Kill_Tally +1
-	JSR Score_Get100PlusPts	 ; Get points for the kick
+	JSR Exp_Inc	 ; Get points for the kick
 	JSR Player_KickObject	 ; Player kicks the enemy!
 
 	; Clear Player kick
@@ -3818,25 +3798,9 @@ PRG000_D2B4:
 	PHA		 ; Save this
 
 	TAY		 ; -> 'Y'
-	LDA ObjectGroup_CollideJumpTable+1,Y	 ; Get the CollideJumpTable upper byte
-
-	AND #%11110100
-	CMP #%00000100
-	BNE PRG000_D2E1	 ; If the upper byte is not ($04xx - $07xx), jump to PRG000_D2E1
-
-	; SPECIAL JUMP TABLE VALUE ($04xx - $07xx): High scoring
-
-	; In this case, Kill_Tally will be boosted by 4 (+1) instead of just +1
-	LDA Kill_Tally
-	ADD #$04	
-	BNE PRG000_D2E4	
-
-PRG000_D2E1:
-	LDA Kill_Tally	 ; Otherwise, just get Kill_Tally
 
 PRG000_D2E4:
-	INC Kill_Tally	 ; Kill_Tally++
-	JSR Score_Get100PlusPts	 ; Get proper score award
+	JSR Exp_Inc	 ; Get proper score award
 
 	PLA		 ; Restore index into CollideJumpTable
 	TAY		 ; -> 'Y'
@@ -5787,7 +5751,7 @@ Enemy_Kill:
 	BNE PRG000_DBB2	 	; If Player is sliding, jump to PRG000_DBB2
 
 	LDA Kill_Tally	 	; Get current kill tally
-	JSR Score_Get100PlusPts	; Get appropriate score based on kill tally
+	JSR Exp_Inc	; Get appropriate score based on kill tally
 
 PRG000_DBB2:
 	LDA #$06	 ; A = 6 (object state 6, killed)
@@ -6789,61 +6753,4 @@ Do_Replace2
 
 No_Replace:
 	LDX DAIZ_TEMP2
-	RTS
-
-; #DAHRKDAIZ This routine clears the Calc_From and Calc_Value bytes to prepare multibyte addition
-Clear_Calc:
-	LDX #$07
-	LDA #$00
-
-Next_Clear_Calc:
-	STA Calc_From, X
-	STA Calc_Value, X
-	DEX
-	BPL Next_Clear_Calc
-	RTS
-
-; #DAHRKDAIZ for multibyte addition and sobtraction, use Calc_From for the original value and Calc_Value for the amount
-; you are adding. For example, if adding coins, set current coin value to Calc_From and the amount adding to Calc_Value
-; The result will be stored in Calc_From.
-Add_Values:
-	LDX #$07
-
-Addition_Loop:
-	CLC 
-	LDA Calc_From, X
-	ADC Calc_Value, X
-	STA Calc_From, X
-	CMP #$0A
-	BCC Next_Value2
-	SEC
-	SBC #$0A
-	STA Calc_From, X
-	INC (Calc_From - 1), X
-
-Next_Value2:
-	DEX
-	BPL Addition_Loop
-	RTS
-
-Subtract_Values:
-	LDX #$07
-	SEC 
-
-Subtraction_Loop:
-	LDA Calc_From, X
-	SBC Calc_Value, X
-	STA Calc_From, X
-	BPL Next_Value
-	CPX #$00
-	BEQ Subtract_RTS
-	CLC
-	ADC #$0A
-	STA Calc_From, X
-	DEC (Calc_From - 1), X
-
-Next_Value:
-	DEX
-	BPL Subtraction_Loop
-Subtract_RTS:
 	RTS

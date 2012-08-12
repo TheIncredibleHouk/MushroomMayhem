@@ -1582,9 +1582,8 @@ BobOmb_Kill:
 	STA <Objects_YVel,X
 
 PRG003_A7FE:
-	LDA Kill_Tally
-	INC Kill_Tally
-	JSR Score_Get100PlusPts	 ; Get score according to Kill Tally
+
+	JSR Exp_Inc	 ; Get score according to Kill Tally
 
 	; "Kick" noise
 	LDA Sound_QPlayer
@@ -1727,7 +1726,7 @@ PRG003_A89D:
 	LDA Objects_Var3,X
 	INC Objects_Var3,X
 
-	JSR Score_Get100PlusPtsY	 ; Get score for that
+	JSR Exp_Inc_Lots	 ; Get score for that
 
 PRG003_A8D2:
 	RTS		 ; Return
@@ -1782,7 +1781,6 @@ PRG003_A8FF:
 
 	STA Player_VibeDisable	 ; Clear Player vibrationally disabled flag
 
-	JSR DoTimeBonus	 ; Convert remaining time into score
 	BNE PRG003_A910	 ; If not done converting, jump to PRG003_A910 (RTS)
 
 	; Set timer to $40

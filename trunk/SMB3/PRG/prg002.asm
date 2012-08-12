@@ -4294,10 +4294,7 @@ ObjHit_DryBones:
 	ORA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
 
-	; Tally kill
-	LDA Kill_Tally
-	JSR Score_Get100PlusPts
-	INC Kill_Tally
+	JSR Exp_Inc
 
 PRG002_B77D:
 	RTS		 ; Return
