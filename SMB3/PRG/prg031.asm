@@ -3479,7 +3479,6 @@ PT2_Full_CHRROM_Loop:
 
 	RTS		 ; Return
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; PRGROM_Change_Both2
 ;
