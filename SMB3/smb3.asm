@@ -2639,7 +2639,8 @@ CFIRE_LASER		= $15	; Laser fire
 	Old_World_Map_Tile:	.ds	1	;
 	Player_Ability:		.ds 1	;
 	Player_Level:		.ds 1	;
-						.ds 71; $7A74-$7ADF unused
+	Tile_Anim_Enabled:  .ds 1	;
+						.ds 70; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)

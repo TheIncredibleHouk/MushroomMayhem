@@ -2293,6 +2293,8 @@ PRG030_8E4F:
 	LSR A		
 	TAX	        ; 0-3, changing every 8 ticks
 
+	LDA Tile_Anim_Enabled
+	BEQ Skip_Tile_Anim
 	LDA PT2_Anim,X
 	LDY Level_PSwitchCnt
 	BEQ Normal_Anim
@@ -2300,6 +2302,8 @@ PRG030_8E4F:
 
 Normal_Anim:
 	STA PatTable_BankSel+1 ; Set pattern for this tick
+
+Skip_Tile_Anim:
 	LDY #$0B
 	LDA (Level_ObjectID + 5)
 
@@ -2485,6 +2489,8 @@ PRG030_8F31:
 	LDA #$00
 	STA ESwitch
 	STA ChallengeMode
+	LDA #$40
+	STA Air_Time
 
 	; Level_GetWandState = 0
 	LDA #$00

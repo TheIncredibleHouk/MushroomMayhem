@@ -2804,6 +2804,8 @@ StatusBar_Fill_Coins:
 StatusBar_Fill_Coin:
 	LDA Coins_Earned
 	BNE UpdateCoins
+	LDA Force_Coin_Update
+	BNE Update_Draw_Coin
 	RTS
 
 UpdateCoins:
@@ -2856,9 +2858,10 @@ GameCoins_Loop2:
 	STA Game_Coins, X
 	DEX
 	BPL GameCoins_Loop2
-
 	LDA #$00
 	STA Coins_Earned
+
+Update_Draw_Coin:
 	LDA Status_Bar_Mode
 	BEQ DrawCurrentCoins
 	BNE DrawTotalCoins	
