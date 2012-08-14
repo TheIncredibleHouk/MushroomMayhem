@@ -2399,6 +2399,10 @@ PRG024_ACA5:
 	LDA #$00
 	STA World_Num
 
+	LDA #$40
+	STA Air_Time
+	STA Tile_Anim_Enabled
+
 	; Debug_Flag = 0 (no debug mode)
 	STA Debug_Flag
 

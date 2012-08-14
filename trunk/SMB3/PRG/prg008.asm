@@ -481,6 +481,7 @@ No_ESwitch:
 	STA <Player_Suit 
 	LDA #$40
 	STA Air_Time
+	STA Tile_Anim_Enabled
 
 	; Set power up's correct palette
 	JSR Level_SetPlayerPUpPal
@@ -6697,6 +6698,8 @@ Player_ApplyVelocity:
 	CPX #$00	 
 	BNE PRG008_BFBE	 	; If we're not doing the X velocity, jump to PRG008_BFBE
 
+	LDY Player_InWater
+	BNE No_Weather_Vel
 	; X Velocity only
 	LDY Wind
 	BEQ No_Weather_Vel

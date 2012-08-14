@@ -3689,6 +3689,12 @@ PRG000_D22E:
 
 PRG000_D253:
 
+	LDA Level_ObjectID, X
+	CMP #OBJ_ICEBLOCK
+	BNE Not_Ice_Block
+	JMP Object_HoldKickOrHurtPlayer
+
+Not_Ice_Block:
 	; Player hit from top bit
 	LDA #$01
 	STA Objects_PlayerHitStat,X
@@ -3747,7 +3753,6 @@ PRG000_D295:
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
 
-	LDA $F000
 	INC (Exp_Earned + 2)
 	RTS		 ; Return
 
@@ -3862,6 +3867,9 @@ Object_SetShellState:
 
 
 Object_HoldKickOrHurtPlayer:
+	LDA Level_ObjectID, X
+	CMP #OBJ_ICEBLOCK
+	BEQ PRG000_D34F
 
 	LDA Objects_State,X
 	CMP #OBJSTATE_SHELLED
@@ -3869,7 +3877,8 @@ Object_HoldKickOrHurtPlayer:
 
 	LDA Player_Kuribo
 ;	ORA Player_Shell
-	BEQ PRG000_D343	 ; If Player is NOT in Kuribo's shoe and NOT in a statue, jump to PRG000_D343
+	BEQ PRG000_D343	 ; If Player is NOT in Kuribo's shoe and NOT in a statue, jump to PRG000_D343\
+
 	JMP PRG000_D2A2	 ; Otherwise, jump to PRG000_D2A2
 
 PRG000_D343:
@@ -3894,7 +3903,6 @@ PRG000_D355:
 	; Player potentially gonna get hurt!
 
 	LDA Player_FlashInv	; If Player is flashing from getting hit recently...
-;	ORA Player_Shell	; ... or Player is a statue ...
 	ORA Objects_Timer2,X	; ... or this object's timer2 is not expired ...
 	ORA Player_StarInv	; ... or Player is invincible by Star Man ...
 	BNE PRG000_D39F	 	; ... then jump to PRG000_D39F (RTS)

@@ -138,7 +138,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DoNothing		; Object $3E - OBJ_WOODENPLATFORMFLOAT
 	.word ObjHit_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjHit_DoNothing		; Object $40 - OBJ_BUSTERBEATLE
-;	.word ObjHit_EndLevelCard	; Object $41 - OBJ_ENDLEVELCARD
+	.word ObjHit_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
 	.word Player_GetHurt		; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
 	.word Player_GetHurt		; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
 	.word ObjHit_DoNothing		; Object $44 - OBJ_WOODENPLATUNSTABLE
@@ -3689,6 +3689,8 @@ ObjNorm_Toad:
 
 	LDA #$01
 	STA Player_HaltTick
+	LDA #$00
+	STA Tile_Anim_Enabled
 	RTS
 
 

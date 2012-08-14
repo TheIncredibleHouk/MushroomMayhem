@@ -2101,40 +2101,26 @@ PRG001_A9F6:
 
 ObjHit_FireFlower:
 	LDA <Player_Suit
-	BNE PRG001_AA05	 ; If Player is not small, jump to PRG001_AA05
+	BNE Not_Fire_Small
+	JMP ObjHit_PUpMush
 
-	; Player is small...
+Not_Fire_Small:
+	CMP #$02
+	BNE Not_Fire
+	LDA Special_Suit_Flag
+	BEQ Already_Fire
 
-	; NOTE: The "flashing" Fire Flower is never used (but can be found in the
-	; "lost" Big Question Block test level, and it grants you fire power 
-	; regardless of whether you're small or not!!)
-	LDY PUp_StarManFlash
-	BNE PRG001_AA05	 ; If fire flower came from Big (?) block, jump to PRG001_AA05
-
-	JMP PRG001_A897	 ; Otherwise, jump to PRG001_A897
-
-PRG001_AA05:
-;	CMP #$02
-;	BEQ PRG001_AA13	 ; If Player is already Fire, jump to PRG001_AA13
-
-	; Uses the "invincibility wear-off" as the Power Up effect
+Not_Fire:
+	LDA #$03
+	STA Player_QueueSuit
 	LDA #$1f
 	STA Player_StarOff
 
-	; And ultimately comes out fire!
-	LDA #$03
-	STA Player_QueueSuit
-
-
-PRG001_AA13:
-	JSR PowerUp_PlaySound	 ; Play Power Up sound
-
-	; Set flower to dead/empty
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
-	STA Player_Shell	 ; Also kill statue mode if you're in it!
-
-	JMP PUp_GeneralCollect	 ; Jump to PUp_GeneralCollect
+Already_Fire:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	JMP PUp_GeneralCollect
 
 
 ObjNorm_Obj1A:
@@ -2559,43 +2545,33 @@ PRG001_AC22:
 
 ObjHit_SuperLeaf:
 	LDA <Player_Suit
-	BNE PRG001_AC37	 ; If Player is not small, jump to PRG001_AC37
+	BNE Not_Leaf_Small
+	JMP ObjHit_PUpMush
 
-	; NOTE: The "flashing" Super Leaf is never used (but can be found in the
-	; "lost" Big Question Block test level, and it grants you Raccoon 
-	; regardless of whether you're small or not!!)
-	; BUG to jump to PRG001_AC37, the compare will be invalid!!
-	LDA PUp_StarManFlash
-	BNE PRG001_AC37	 ; If leaf did not come from big (?) block, jump to PRG001_AC37 
+Not_Leaf_Small:
+	CMP #$03
+	BNE Not_Leaf
+	LDA Special_Suit_Flag
+	BEQ Already_Leaf
 
-	JMP PRG001_A897	 ; Otherwise, jump to PRG001_A897
-
-PRG001_AC37:
-
-PRG001_AC40:
-
-	; "Poof" sound
+Not_Leaf:
+	LDA #$04
+	STA Player_QueueSuit
+	LDA #$17
+	STA Player_SuitLost
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOOF
 	STA Sound_QLevel1
+	BNE Leaf_Skip
 
-	; "Poof" effect
-	LDA #$17
-	STA Player_SuitLost
+Already_Leaf:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
 
-	; Change to Raccoon
-	LDA #$04
-	STA Player_QueueSuit
-	LDA #$00
-	STA Special_Suit_Flag
-
-PRG001_AC52:
-	; Disable statue
-	LDA #$00
-	STA Player_Shell
-
-	JMP PUp_GeneralCollect	 ; Jump to PUp_GeneralCollect
-
+Leaf_Skip:
+	JMP PUp_GeneralCollect
+	
 ObjInit_Vine:
 	LDA #SPR_BEHINDBG
 	STA Objects_FlipBits,X
@@ -2839,32 +2815,28 @@ PRG001_AD7E:
 ObjNorm_PDoor:
 	RTS
 
-
-ObjNorm_Card:
-	; #behavie like fireflower
-	JMP  ObjNorm_FireFlower
-	;JSR Object_MoveAndReboundOffWall ; Move and rebound off walls (i.e. march, but this doesn't.)
-
-	;LDA Level_NoStopCnt
-	;ORA #$04
-	;STA Objects_ColorCycle,X ; Cycle colors!!
-
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-	JMP Object_HitTestRespond	 ; Do hit test and respond
-
-
 ObjHit_IceFlower:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
+	LDA <Player_Suit
+	BNE Not_Ice_Small
+	JMP ObjHit_PUpMush
+
+Not_Ice_Small:
+	CMP #$02
+	BNE Not_Ice
+	LDA Special_Suit_Flag
+	BNE Already_Ice
+Not_Ice:
+	
 	LDA #$08
 	STA Player_QueueSuit
 	LDA #$1f
 	STA Player_StarOff
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
-	RTS
+
+Already_Ice:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	JMP PUp_GeneralCollect
 
 ObjHit_Pumpkin:
 	
@@ -2887,24 +2859,33 @@ ObjHit_Pumpkin:
  	RTS
 
 ObjHit_FoxLeaf:
-	
-	; "Poof" sound
+	LDA <Player_Suit
+	BNE Not_Fox_Small
+	JMP ObjHit_PUpMush
+
+Not_Fox_Small:
+	CMP #$03
+	BNE Not_Fox
+	LDA Special_Suit_Flag
+	BNE Already_Fox
+
+Not_Fox:
+	LDA #$09
+	STA Player_QueueSuit
+	LDA #$17
+	STA Player_SuitLost
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOOF
 	STA Sound_QLevel1
+	BNE Fox_Skip
 
-	; "Poof" effect
-	LDA #$17
-	STA Player_SuitLost
+Already_Fox:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
 
-	; Change to Fire Fox Mario
-	LDA #$09
-	STA Player_QueueSuit
-
-	; Set to dead/empty
- 	LDA #OBJSTATE_DEADEMPTY
- 	STA Objects_State,X
- 	RTS
+Fox_Skip:
+	JMP PUp_GeneralCollect
 
 	; This is a fairly general "march" function, but it is only 
 	; applied to one object here, the unused collectable card...
