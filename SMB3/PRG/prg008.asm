@@ -29,10 +29,6 @@ Level_TilesetIdx_ByTileset:
 	.byte $0C	; 13 Sky level
 	.byte $0D	; 14 Underground
 
-
-	; Unused space I guess!  Reserved for the non-gameplay tilesets perhaps?
-	.byte $FF, $FF, $FF, $FF
-
 	; Defines 4 frames of animation to use while Player walks
 Player_WalkFramesByPUp:
 	.byte PF_WALKSMALL_BASE, PF_WALKSMALL_BASE+1, PF_WALKSMALL_BASE, PF_WALKSMALL_BASE+1	; 0 - Small
@@ -4727,7 +4723,7 @@ LATP_GNote:	.byte $00
 LATP_HNote:	.byte $00
 LATP_Notes:	.byte $00, $01, $02, $03
 LATP_Woodblocks:.byte $00, $01, $02, $03
-LATP_QBlocks:	.byte $01, $02, $03, $04, $05, $04, $08, $06, $01, $0A, $03, $04, $05, $08, $09, $07, $0B
+LATP_QBlocks:	.byte $01, $02, $03, $04, $05, $04, $08, $06, $0C, $0A, $0D, $00, $0E, $08, $09, $07, $0B
 LATP_InvisCoin:	.byte $04, $09, $00
 LATP_InvisNote:	.byte $00
 LATP_PWrksJct:	.byte $0B	; UNUSED breakable pipeworks junction tile!
@@ -4756,7 +4752,7 @@ LATR_GNote:	.byte $00
 LATR_HNote:	.byte $10
 LATR_Notes:	.byte $40, $40, $40, $40
 LATR_Woodblocks:.byte $50, $50, $50, $50
-LATR_QBlocks:	.byte $20, $20, $20, $20, $20, $20, $20, $30, $20, $20, $20, $20, $20, $60, $20, $20, $20
+LATR_QBlocks:	.byte $20, $20, $20, $20, $20, $20, $20, $30, $20, $20, $20, $20, $20, $20, $20, $20, $20
 LATR_InvisCoin:	.byte $20, $20, $10
 LATR_InvisNote:	.byte $40
 LATR_PWrksJct:	.byte $70	; UNUSED breakable pipeworks junction tile!
@@ -5043,6 +5039,10 @@ LATP_JumpTable:
 	.word LATP_NinjaShroom		; 9 = 1-up
 	.word LATP_FoxLeaf	; A = Fox Leaf
 	.word LATP_PSwitch	; B = P-Switch
+	.word LATP_Frog     ;
+	.word LATP_Koopa	;
+	.word LATP_Sledge   ;
+
 
 LATP_None:
 	LDY #1		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
@@ -5230,6 +5230,46 @@ LATP_FoxLeaf:
 	LDY #$0A	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)
 
 No_FoxLeaf:
+	RTS
+
+LATP_Frog:
+	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+
+	LDA <Player_Suit
+	BEQ No_Frog	 ; If Player is small, jump to PRG008_B807
+
+	LDA #$01
+	STA PUp_StarManFlash
+	LDY #$04
+
+No_Frog:
+	RTS
+
+LATP_Koopa:
+	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+
+	LDA <Player_Suit
+	BEQ No_Koopa	 ; If Player is small, jump to PRG008_B807
+
+	LDA #$02
+	STA PUp_StarManFlash
+	LDY #$04
+
+No_Koopa:
+	RTS
+
+
+LATP_Sledge:
+	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+
+	LDA <Player_Suit
+	BEQ No_Sledge	 ; If Player is small, jump to PRG008_B807
+
+	LDA #$03
+	STA PUp_StarManFlash
+	LDY #$04
+
+No_Sledge:
 	RTS
 
 LATP_PSwitch:
@@ -6855,52 +6895,3 @@ FireBall_ChangeBlocks:
 
 FireBall_ChangeBlocksTo:
 	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER
-
-PTableChange:
-	.byte $10, $68, $6A
-
-Try_ESwitch:
-	STX DAIZ_TEMP1
-	LDX ESwitch
-	BEQ Cant_ESwitch
-	LDX #$03
-
-Find_ESwitch:
-	CMP ESwitches, X
-	BEQ Change_ESwitch
-	DEX
-	BNE Find_ESwitch
-	BEQ Cant_ESwitch
-
-Change_ESwitch:
-	STX ESwitch
-	DEX
-	LDA PTableChange, X
-	STA PatTable_BankSel
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-	LDA #$00
-
-Cant_ESwitch:
-	LDX DAIZ_TEMP1
-	RTS
-
-Check_For_Level_Exit:
-	LDA #$00
-	STA DAIZ_TEMP1
-	; #DAHRKDAIZ hacked so object $25 indicates we should exit to map
-	STX DAIZ_TEMP2
-	LDX #$06				; Check for the level exit object, if it exists, exit level
-Level_Exit_Loop:
-	LDA Level_ObjectID, X
-	CMP #$25
-	BNE Not_Exit_Object
-	JSR Do_Exit_Map
-
-Not_Exit_Object:
-	DEX
-	BNE Level_Exit_Loop
-
-	LDX DAIZ_TEMP2
-	RTS

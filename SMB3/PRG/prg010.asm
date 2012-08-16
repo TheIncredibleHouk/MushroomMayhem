@@ -638,55 +638,6 @@ PRG010_C322:
 ; it directly sets the graphics buffer, not inserts.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Map_ConfigWorldIntro:
-
-	; High byte
-	LDA #$29	 	
-	STA Graphics_Buffer
-
-	; Low byte: Calculate the proper offset address based on the horizontal scroll
-	LDA <Horz_Scroll
-	LSR A		 
-	LSR A		 
-	LSR A		 ; A = Horz_Scroll >> 3
-	CLC		 
-	EOR #$52
-	STA Graphics_Buffer+1
-
-	; Run length of 1
-	LDA #$01
-	STA Graphics_Buffer+2
-
-	LDY World_Num	 	; Y = World_Num
-	INY		 	; Worlds start at 0, so Y++
-	TYA		 	; A = World_Num + 1
-	ORA #$f0	 	; Offset to correct tile
-	STA Graphics_Buffer+3	; Store the tile into the buffer
-
-	; High byte
-	LDA #$29	 	
-	STA Graphics_Buffer+4	
-
-	; Low byte: Calculate the proper offset address based on the horizontal scroll
-	LDA <Horz_Scroll	
-	LSR A		
-	LSR A		
-	LSR A		 ; A = Horz_Scroll >> 3
-	EOR #$b4
-	STA Graphics_Buffer+5
-
-	; Run length of 2
-	LDA #$02
-	STA Graphics_Buffer+6
-
-	; Takes the lives from the status bar!
-	LDA StatusBar_LivesH
-	STA Graphics_Buffer+7
-	LDA StatusBar_LivesL
-	STA Graphics_Buffer+8
-
-	LDA #$00	
-	STA Graphics_Buffer+9	 ; Terminator
-
 	RTS		 ; Return
 
 	; Cover map screen with black
@@ -3913,8 +3864,8 @@ DMC08_End
 
 ; Rest of ROM bank was empty
 
-Traversable_Tiles:	.byte $BF, $FD, $F6, $FE, $FC, $FA, $FF
-Enterable_Tiles:	.byte $BC, $50, $42, $43, $F7, $FF, $FF, $FF
+Traversable_Tiles:	.byte $BF, $FD, $F6, $FE, $FC, $FA, $9F, $80, $E0, $FF, $FF, $FF, $FF, $FF, $FF
+Enterable_Tiles:	.byte $BC, $50, $42, $43, $F7, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 Tile_Enterable:
 	LDX #$07
@@ -3937,6 +3888,8 @@ Tile_Traversable:
 
 Cmp_Traversable:
 	CMP Traversable_Tiles, X
+	BEQ Is_Traversable
+	CMP Enterable_Tiles, X
 	BEQ Is_Traversable
 	DEX
 	BPL Cmp_Traversable

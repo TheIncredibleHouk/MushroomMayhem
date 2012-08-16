@@ -544,21 +544,6 @@ InvFlipFrame_UpdateStatusBar:
 	.word InvFlipFrame_DoNothing		; 7
 
 InvFlipFrame_DrawWorldCoins:
-	;JSR StatusBar_Fill_World ; Put world number in status bar
-
-	LDA InvFlip_Frame
-	AND #$08
-	BNE PRG026_A3CC	 ; If we're doing the opening, jump to PRG026_A3CC
-
-
-	LDX <Temp_Var9		 ; X = Temp_Var9
-
-	LDA StatusBar_CoinH
-	STA Graphics_Buffer+$15,X
-	LDA StatusBar_CoinL
-	STA Graphics_Buffer+$16,X
-
-PRG026_A3CC:
 	RTS		 ; Return
 
 InvFlipFrame_DrawMLLivesScore:
@@ -2968,9 +2953,9 @@ PRG026_B156:
 
 
 Exp_Levels:
-	.byte $00, $00, $00, $00, $00, $00, $07, $04 ; level 1
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 2
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 3
+	.byte $00, $00, $00, $00, $00, $00, $00, $05 ; level 1
+	.byte $00, $00, $00, $00, $00, $00, $00, $07 ; level 2
+	.byte $00, $00, $00, $00, $00, $00, $00, $09 ; level 3
 	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 4
 	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 5
 	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 6
@@ -3024,7 +3009,7 @@ Exp_Loop2:
 
 Try_Update:
 	LDA Status_Bar_Mode
-	BNE Exp_Done
+	BNE Dont_Draw_Exp
 
 Exp_Update:
 	LDX #$05
@@ -3036,6 +3021,7 @@ Exp_Loop3:
 	DEX
 	BPL Exp_Loop3
 
+Dont_Draw_Exp:
 	LDA #$00
 	STA Exp_Earned
 	STA Exp_Earned + 1
@@ -3053,6 +3039,7 @@ Check_Exp_Level:
 	ASL A
 	TAX
 	LDY #$05
+
 Store_Ex2:
 	LDA Player_Experience, Y
 	STA (Calc_From + 2), Y
@@ -3076,69 +3063,20 @@ Store_Exp_Check:
 
 No_New_Ability:
 	RTS
-; FIXME: Anybody want to claim this?
-; Uses graphics buffer to push out the score unlike the special buffers used by status bar
-; $B205
-	LDX Graphics_BufCnt	 ; X = graphics buffer count
 
-	LDY #$00	 ; Y = 0
-PRG026_B20A:
-	LDA PRG026_B156,Y
-	STA Graphics_Buffer,X
+;Ability_Tiles:
+	;.byte 
 
-	INX		 ; X++
-	INY		 ; Y++
+StatusBar_Ability_Level:
+	LDA Status_Bar_Mode
+	CMP #$00
+	BNE Dont_Draw_Ability_Level
+	LDA Player_Level
+	ORA #$30
+	STA (Status_Bar_Top + 20)
 
-	CPY #$0a
-	BNE PRG026_B20A	 ; While Y <> $0A, loop
-
-	LDX Graphics_BufCnt	 ; X = graphics buffer count
-
-	; Put score in buffer
-	LDY #$00	 ; Y = 0
-PRG026_B21B:
-	LDA StatusBar_Score,Y
-	STA Graphics_Buffer+3,X
-
-	INX		 ; X++
-	INY		 ; Y++
-
-	CPY #$06
-	BNE PRG026_B21B	 ; While Y <> $06, loop
-
-	LDY Graphics_BufCnt	; Y = graphics buffer count
-
-	LDX #$27	 ; X = $27 (VRAM High address if vertical)
-
-	LDA Level_7Vertical
-	BNE PRG026_B23E	 ; If level is vertical, jump to PRG026_B23E
-
-	LDA Level_Tileset
-
-	CMP #16
-	BEQ PRG026_B23C	 ; If Level_Tileset = 16 (Spade game), jump to PRG026_B23C
-
-	CMP #17
-	BNE PRG026_B242	 ; If Level_Tileset <> 17 (N-Spade game), jump to PRG026_B242
-
-PRG026_B23C:
-	LDX #$23	; X = $23 (VRAM High address for Spade/N-Spade bonus games ONLY)
-
-PRG026_B23E:
-
-	; Set VRAM high address
-	TXA
-	STA Graphics_Buffer,Y
-
-PRG026_B242:
-
-	; Update graphics buffer count
-	TYA
-	ADD #$09
-	STA Graphics_BufCnt
-
-	RTS		 ; Return
-
+Dont_Draw_Ability_Level:
+	RTS	
 ; FIXME: Anybody want to claim this?
 ; $B24A
 	.byte $2B, $28, $08, $EF, $EF, $EF, $EF, $EF, $EF, $3C, $3D, $00
@@ -3509,6 +3447,7 @@ StatusBar_UpdateValues:
 	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
 	JSR StatusBar_Fill_Air_MT	;
 	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Exp_Earned
+	JSR StatusBar_Ability_Level
 	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
 	LDX #$00	 	; X = 0

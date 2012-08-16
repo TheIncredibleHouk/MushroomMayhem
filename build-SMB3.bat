@@ -2,5 +2,5 @@
 cd SMB3
 ..\nesasm.exe smb3.asm
 cd ..
-RomMerger "SMB3\smb3.nes" "MarioAdventure3.nes" "Graphics.nes"
+RomMerger "SMB3\smb3.nes" "MarioAdventure3.nes"
 pause
