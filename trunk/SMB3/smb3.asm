@@ -2749,6 +2749,7 @@ CFIRE_LASER		= $15	; Laser fire
 ; INVALID
 ; $01
 ; --------- BOT OF MAP
+	; #FREERAM
 	Map_Completions:	.ds 16*4*2	; $7D00-$7D3F (Mario), $7D40-$7D7F (Luigi) Allows a MAX of 4 map screens (64 columns total each player, 16 columns per map screen)
 
 	; Inventory_Items: 
@@ -2918,13 +2919,9 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
 	HBros_Coins_Collected: .ds 16;  1 bit flags for coins collected. Each coin's Hi X/Y indicates where it was collected
-	;THouse_OpenByID:	.ds 16	; $7F2E-$7F3D UNUSED would keep track of chests opened for a given Toad House ID (THouse_ID)
 	StatusBar_PMT:		.ds 8	; $7F3E-$7F45, tiles that currently make up the power meter >>>>>>[P]
-	StatusBar_CoinH:	.ds 1	; Status bar tile for coin MSD
-	StatusBar_CoinL:	.ds 1	; Status bar tile for coin LSD
-	StatusBar_LivesH:	.ds 1	; Status bar tile for lives MSD
-	StatusBar_LivesL:	.ds 1	; Status bar tile for lives LSD
-	StatusBar_Score:	.ds 6	; $7F4A-$7F4F Status bar tiles for score
+	; #FREERAM
+	Unused3:	.ds 10	; $7F4A-$7F4F Status bar tiles for score
 	StatusBar_Time:		.ds 3	; $7F50-$7F52 Status bar tiles for time remaining
 	Map_MusicBox_Cnt:	.ds 1	; Number of turns remaining until hammer brothers wake up (>= 1 and they're be asleep on the map)
 
@@ -3829,10 +3826,13 @@ TILE1_OBLOCKTH		= $50	; Orange big block top horizontal runner
 TILE1_OBLOCKUR		= $52	; Orange big block upper-right
 
 TILE1_GROUNDTM		= $BE	; Ground top middle
+TILE1_GROUNDMM2		= $53	; Ground middle-middle
 TILE1_GROUNDMM		= $54	; Ground middle-middle
 TILE1_GROUNDTL		= $BD	; Ground top left
+TILE1_GROUNDML2		= $55	; Ground middle-left
 TILE1_GROUNDML		= $56	; Ground middle-left
 TILE1_GROUNDTR		= $BF	; Ground top right
+TILE1_GROUNDMR2		= $57
 TILE1_GROUNDMR		= $58	; Ground middle-right
 
 TILE1_CANNONTOP1	= $76	; Upper top of cannon

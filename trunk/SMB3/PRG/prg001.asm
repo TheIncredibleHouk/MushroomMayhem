@@ -1012,8 +1012,12 @@ PRG001_A4C6:
 	JMP BounceBlock_Update	 ; Jump to BounceBlock_Update
 
 	; Power-up which may emerge from different types of bounce blocks
-Bouncer_PUp:	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN
-		.byte OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF ; #DAHRKDAIZ added OBJ_POWERUP_ICE
+
+Bouncer_PUp:
+	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN; #DAHRKDAIZ added OBJ_POWERUP_ICE
+
+Bouncer_PopSuit:
+	
 
 Bounce_TileReplacements:	
 	.byte CHNGTILE_TOFRZWATER
@@ -1036,7 +1040,6 @@ ObjNorm_BounceDU:
 	; Block bump complete
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X	; Set state to dead/empty
-
 	LDA Objects_Var1,X
 	LSR A
 	LSR A
@@ -1124,7 +1127,6 @@ PRG001_A56F:
 	BEQ PRG001_A5BB	 ; If value is zero (no power up), jump to PRG001_A5BB
 
 	STA <Temp_Var1	 ; Store value -> Temp_Var1
-
 	LDY #$05	 ; Y = 5 (power-up always in slot 5)
 
 	; Set the ID
@@ -1587,7 +1589,7 @@ ObjHit_NinjaShroom:
 	RTS		 ; Return
 
 Star_Palettes:
-	.byte SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL3
+	.byte SPR_PAL0, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 ObjInit_StarOrSuit:
 	JSR Mushroom_SetFall	 ; Figure the way that the star should fall
@@ -1615,11 +1617,12 @@ PRG001_A7BF:
 	AND #$03	 
 	STA Objects_Frame,X
 	TAY
+	BEQ Star_RTS
 
 	; Set a start palette
-	;LDA Star_Palettes,Y
-	;STA Objects_SprAttr,X
-
+	LDA Star_Palettes,Y
+	STA Objects_SprAttr,X
+Star_RTS:
 	RTS		 ; Return
 
 
@@ -1651,7 +1654,7 @@ PRG001_A7F1:
 
 	; Different "frames" of the "Starman" power up include the super
 	; suits; Tanooki, Frog, and Hammer, in order
-PUp_StarOrSuitFrames:	.byte $00, $05, $04, $06	; Star, Tanooki, Frog, Hammer
+PUp_StarOrSuitFrames:	.byte $00, $51, $51, $51	; Star, Tanooki, Frog, Hammer
 
 ObjHit_StarOrSuit:
 	LDA Objects_Frame,X
@@ -1677,12 +1680,16 @@ PRG001_A818:
 
 	; This is one of the Super Suits (Tanooki, Frog, Hammer), not a Starman
 
-	TAY		 ; Frame -> 'Y' (index)
+	LDA PUp_StarManFlash
+	CLC
+	ADC #$03	 ; Frame -> 'Y' (index)
 
-	LDA PUp_StarOrSuitFrames,Y	 ; Get what kind of super suit this is
 	CMP <Player_Suit
+	BNE Not_Already_Suit
+	LDY Special_Suit_Flag
 	BEQ PRG001_A834	 ; If this is already the suit that the Player is wearing, jump to PRG001_A834
 
+Not_Already_Suit:
 	TAY		 ; Suit -> 'Y'
 	INY		 ; Y++ (valid Player_QueueSuit value)
 	STY Player_QueueSuit	 ; Queue changing to this suit!
@@ -4292,195 +4299,24 @@ PRG001_B525:
 
 
 	; Initialized semi-random position of clouds shown after airship vanishes
-KDefeat_CloudXs:	.byte $30, $18, $C0, $58, $80, $98, $18, $70
-KDefeat_CloudYs:	.byte $10, $48, $68, $70, $98, $00, $30, $58
+KDefeat_CloudXs:	
+KDefeat_CloudYs:	
 	
 	; Positions the post-airship-vanishing clouds semi-randomly
 KDefeat_PositionClouds:
-	LDA <Counter_1
-	AND #$03	
-	TAY		 ; Y = 0 to 3
-
-	; NOTE: Clouds use object coordinate memory, but are not really objects 
-	; themselves, using custom sprite render routines and all...
-	; So the ID is not set here because it's irrelevant!
-
-	LDX #$04	 ; X = 4
-
-PRG001_B53D:
-	LDA #$01
-	STA <Objects_YHi,X
-
-	LDA KDefeat_CloudYs,Y
-	STA <Objects_Y,X
-
-	LDA KDefeat_CloudXs,Y
-	STA <Objects_X,X
-
-	LDA #$ff
-	STA <Objects_YVel,X
-
-	INY		 ; Y++
-	DEX		 ; X--
-
-	BPL PRG001_B53D	 ; While X >= 0, loop!
-
-	LDX <SlotIndexBackup	; X = restored object index (what for?)
 
 	RTS		 ; Return
 
-PRG001_B556:	.byte -$40, -$2B, -$37, -$2D, -$21
+PRG001_B556:	
 
 KDefeat_MoveClouds:
-
-	; Set pattern select 5 to table $36
-	LDA #$36
-	STA PatTable_BankSel+5
-
-	LDA <Counter_1
-	ASL A	
-	ROL A	
-	ROL A	
-	ROL A
-	AND #$03	 ; Cap 0 - 3
-	STA <Temp_Var1	 ; Temp_Var1 = 0 to 3
-
-	LDA Objects_Timer,X
-	STA <Temp_Var2	 ; Temp_Var2 = timer 2
-
-	LDX #$04	 ; X = 4
-PRG001_B571:
-	STX <Temp_Var3	 ; Backup 'X' into Temp_Var3
-
-	JSR KDefeat_DrawClouds	; Draw clouds while Mario falls from airship
-	JSR Object_ApplyYVel	 ; Apply Y velocity
-
-	LDX <Temp_Var3	 ; Restore 'X' from Temp_Var3
-
-	LDA PRG001_B556,X  
-
-	LDY <Temp_Var2
-	BNE PRG001_B584	 ; If Temp_Var2 (timer 2 value) <> 0, jump to PRG001_B584
-
-	; Timer 2 expired
-
-	; Essentially perform an ASR, if one existed, assuming negative value
-	SEC
-	ROR A
-
-PRG001_B584:
-	CMP <Objects_YVel,X
-	BGE PRG001_B58C	 ; If cloud hasn't reached its "terminal velocity" yet, jump to PRG001_B58C
-
-	LDA <Objects_YVel,X
-	SBC #$00	 ; Subtracts the carry
-
-PRG001_B58C:
-	STA <Objects_YVel,X	; Update Y Vel
-
-	LDA <Objects_YHi,X
-	BPL PRG001_B5A1	 	; If object's Y Hi is >= 0, jump to PRG001_B5A1
-
-	; If you get here, cloud has vanished, need to make a new one...
-
-	LDY <Temp_Var1		 ; Y = Temp_Var1 (0 to 3 based on counter)
-
-	; Get initial cloud Y position
-	LDA KDefeat_CloudXs,Y
-	STA <Objects_X,X
-
-	; Y Hi = 0
-	LDA #$00
-	STA <Objects_YHi,X
-
-	; Cloud Y = $C8
-	LDA #$c8
-	STA <Objects_Y,X
-
-PRG001_B5A1:
-	INC <Temp_Var1		 ; Temp_Var1++
-
-	DEX		 ; X--
-	BPL PRG001_B571	 ; While X >= 0, loop!
-
-	LDX <SlotIndexBackup	; X = restore object slot index
-
 	RTS		 ; Return
 
 	; Widths of the different clouds
 KDefeat_CloudWidths:
-	.byte $03, $02, $02, $03, $03
 
 	; Clouds are drawn manually, not actual objects of their own free will!
 KDefeat_DrawClouds:
-	LDA <Objects_YHi,X
-	BNE PRG001_B5F5	 ; If object Y Hi <> 0, jump to PRG001_B5F5 (RTS)
-
-	LDY Object_SprRAM,X	 ; Y = sprite RAM offset for this object
-
-	; Temp_Var15 = object's X
-	LDA <Objects_X,X
-	STA <Temp_Var15	
-
-	; Temp_Var16 = object's Y
-	LDA <Objects_Y,X
-	STA <Temp_Var16	
-
-	; Get cloud width
-	LDA KDefeat_CloudWidths,X
-	TAX		 ; -> 'X'
-
-PRG001_B5C1:
-	; Store object's Y into sprite RAM
-	LDA <Temp_Var16
-	STA Sprite_RAM,Y
-
-	; Set pattern $F9
-	LDA #$f9
-	STA Sprite_RAM+1,Y
-
-	; Set attribute (palette 1)
-	LDA #SPR_PAL1
-	STA Sprite_RAM+2,Y
-
-	; Set object's X into sprite RAM
-	LDA <Temp_Var15	
-	STA Sprite_RAM+3,Y
-
-	; X += 8
-	ADD #$08
-	STA <Temp_Var15
-
-	INY
-	INY
-	INY
-	INY		 ; Y += 4 (next sprite)
-	DEX		 ; X--
-	BPL PRG001_B5C1	 ; While X >= 0, loop!
-
-	; Do left edge of cloud...
-
-	; Change pattern to $F7
-	LDA #$f7
-	STA Sprite_RAM-3,Y
-
-	; Horizontally flip with palette 1
-	LDA #(SPR_HFLIP | SPR_PAL1)
-	STA Sprite_RAM-2,Y
-
-	; There's no point to this; this restores the loop counter we
-	; came from, but it gets restored manually when we get back
-	; due to corruption to the 'X' register after this return...
-	LDX <Temp_Var3		 ; X = Temp_Var3
-
-	; Do right edge of cloud...
-
-	LDY Object_SprRAM,X	 ; Y = this object's sprite RAM position
-
-	LDA #$f7
-	STA Sprite_RAM+1,Y	 ; Change pattern to edge of cloud
-
-PRG001_B5F5:
 	RTS		 ; Return
 
 	; Different impact counts for the heavy Koopalings Roy and Ludwig, sets Level_Vibration

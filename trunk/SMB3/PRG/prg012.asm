@@ -253,7 +253,6 @@ Map_ForcePoofTiles2:
 	.byte $44, $42, $FF, $FF, $FF, $FF, $FF, $FF
 
 Try_Replace_Tile:
-	STA $7fff
 	LDX #$07
 
 Replace_Loop:

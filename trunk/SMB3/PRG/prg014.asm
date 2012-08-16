@@ -225,22 +225,6 @@ LeveLoad_FixedSizeGen_TS18:
 	.word LoadLevel_VsStatusBar	;  3 - Tiles that make up the status bar
 
 Vs_Battlefields:
-	.word Vs_BattlefieldTypical	;  0: Spiny Only
-	.word Vs_BattlefieldTypical	;  1: Fighter Fly Only
-	.word Vs_BattlefieldTypical	;  2: Spiny and Fighter Fly
-	.word Vs_BattlefieldTypical	;  3: Static coins
-	.word Vs_BattlefieldTypical	;  4: Spiny and Sidestepper
-	.word Vs_BattlefieldTypical	;  5: Fighter Fly and Sidestepper
-	.word Vs_BattlefieldTypical	;  6: Sidestepper Only
-	.word Vs_BattlefieldFountain	;  7: Coin Fountain
-	.word Vs_BattlefieldTypical	;  8: Spiny Only
-	.word Vs_BattlefieldTypical	;  9: Fighter Fly Only 
-	.word Vs_BattlefieldTypical	; 10: Sidestepper Only
-	.word Vs_BattlefieldLadders	; 11: Ladder and [?] blocks
-
-
-	; Broken into another file for ease of integration in NoDice editor
-	.include "PRG/levels/2PVs.asm"
 
 
 LoadLevel_VsBrickTiles:
@@ -1234,28 +1218,31 @@ LoadLevel_IceBricks:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	; Each bush design is as wide as LL_Bush_Width defines it to be!
+FlowerTiles:
+	.byte $02, $41, $C1, $03, $42, $C6, $42, $C1
+
 LL_Bush1:
-	.byte TILE1_SKY,      TILE1_BUSH_UL,  TILE1_BUSH_UR,  TILE1_SKY,      TILE1_SKY
-	.byte TILE1_BUSH_UL,  TILE1_BUSH_FUR, TILE1_BUSH_BR,  TILE1_BUSH_UL,  TILE1_BUSH_UR
-	.byte TILE1_BUSH_BL,  TILE1_BUSH_FUL, TILE1_BUSH_FBL, TILE1_BUSH_MID, TILE1_BUSH_BR
-	.byte TILE1_BUSH_BL,  TILE1_BUSH_MID, TILE1_BUSH_BR	, TILE1_BUSH_BL	, TILE1_BUSH_BR
+	.byte $80, $80, $80, $80, $80
+	.byte $80, $80, $00, $80, $80
+	.byte $80, $81, $82, $83, $80
+	.byte $80, $81, $82, $83, $80
 	.byte $FF	; Terminator
 
 LL_Bush2:
-	.byte TILE1_SKY,      TILE1_BUSH_UL,  TILE1_BUSH_UR,  TILE1_SKY
-	.byte TILE1_SKY,      TILE1_BUSH_BL,  TILE1_BUSH_FUL, TILE1_BUSH_UR
-	.byte TILE1_BUSH_UL,  TILE1_BUSH_FUR, TILE1_BUSH_MID, TILE1_BUSH_BR
+	.byte $80, $80, $80, $80
+	.byte $80, $00, $80, $80
+	.byte $81, $82, $83, $80
 	.byte $FF	; Terminator
 
 LL_Bush3:
-	.byte TILE1_SKY,      TILE1_SKY,      TILE1_BUSH_UL,  TILE1_BUSH_UR,  TILE1_SKY,      TILE1_SKY
-	.byte TILE1_SKY,      TILE1_SKY,      TILE1_BUSH_BL,  TILE1_BUSH_FUL, TILE1_BUSH_UR,  TILE1_SKY
-	.byte TILE1_SKY,      TILE1_SKY,      TILE1_BUSH_BL,  TILE1_BUSH_MID, TILE1_BUSH_BR,  TILE1_SKY
-	.byte TILE1_SKY,      TILE1_BUSH_UL,  TILE1_BUSH_FUR, TILE1_BUSH_MID, TILE1_BUSH_BR,  TILE1_SKY
-	.byte TILE1_BUSH_UL,  TILE1_BUSH_FUR, TILE1_BUSH_BR, TILE1_BUSH_MID, TILE1_BUSH_BR,  TILE1_SKY
-	.byte TILE1_BUSH_BL,  TILE1_BUSH_BR	, TILE1_BUSH_BR, TILE1_BUSH_MID, TILE1_BUSH_BR,  TILE1_SKY
-	.byte TILE1_BUSH_BL,  TILE1_BUSH_BR	, TILE1_BUSH_BR, TILE1_BUSH_MID, TILE1_BUSH_FUL, TILE1_BUSH_UR
-	.byte TILE1_BUSH_BL,  TILE1_BUSH_BR	, TILE1_BUSH_BR, TILE1_BUSH_MID, TILE1_BUSH_MID, TILE1_BUSH_BR
+	.byte $80, $80, $80, $80, $80, $80
+	.byte $80, $80, $80, $80, $80, $80
+	.byte $80, $80, $80, $80, $80, $80
+	.byte $80, $80, $80, $80, $80, $80
+	.byte $80, $80, $80, $80, $80, $80
+	.byte $80, $80, $80, $80, $00, $80
+	.byte $80, $00, $80, $81, $82, $83
+	.byte $81, $82, $83, $81, $82, $83
 	.byte $FF	; Terminator
 
 
@@ -1279,7 +1266,7 @@ LoadLevel_BigSizeBush:
 	LDY #2		 		; Bush width index
 
 PRG014_CBB9:
-
+	
 	; Backup Map_Tile_AddrL/H into Temp_Var1/2
 	LDA <Map_Tile_AddrL
 	STA <Temp_Var1	
@@ -1302,40 +1289,18 @@ PRG014_CBCD:
 
 	STA <Temp_Var4		; Temp_Var4 = bush tile
 
-	; If this tile belongs in the front of another bush, jump to PRG014_CC00 (place the bush tile)
-	CMP #TILE1_BUSH_FUL
-	BEQ PRG014_CC00
-	CMP #TILE1_BUSH_FUR	 
-	BEQ PRG014_CC00	
-
-
-	LDA [Map_Tile_AddrL],Y	; Get the tile here
-
-	; If tile < TILE1_BUSH_UL or tile >= TILE1_BUSH_SBR (out of bush range), jump to PRG014_CC00 (place the bush tile)
-	CMP #TILE1_BUSH_UL	
-	BLT PRG014_CC00
-	CMP #TILE1_BUSH_SBR	
-	BGE PRG014_CC00	
-
-	; Tile we grabbed is in bush range...
-
-	CMP <Temp_Var4	
-	BEQ PRG014_CC04		; If the tile we grabbed is the same as the tile we were going to place, jump to PRG014_CC04 (don't place the bush tile)
-
-	LDA <Temp_Var4		; Get tile we were going to place
-	CMP #TILE1_BUSH_BL
-	BGE PRG014_CBFC	 	; If tile is >= TILE1_BUSH_BL (i.e. not top of a bush), jump to PRG014_CBFC (change to generic middle-of-bush tile)
-
-	; Otherwise, Temp_Var4 += 2 (changes bush tops to "front" tops, or changes "front" tops to the lower part?)
-	LDA <Temp_Var4	
-	ADD #$02	
-	STA <Temp_Var4	
-
-	JMP PRG014_CC00	 	; Jump to PRG014_CC00 (place the bush tile)
-
-PRG014_CBFC:
-	LDA #TILE1_BUSH_MID
-	STA <Temp_Var4		 ; Temp_Var4 = TILE1_BUSH_MID
+	CMP #$00
+	BNE PRG014_CC00
+	STX DAIZ_TEMP1
+	LDA Map_Tile_AddrL
+	ADC (Map_Tile_AddrL + 1)
+	TYA
+	ADC DAIZ_TEMP2
+	AND #$07
+	TAX
+	LDA FlowerTiles, X
+	STA <Temp_Var4
+	LDX DAIZ_TEMP1
 
 PRG014_CC00:
 	LDA <Temp_Var4		 
@@ -2937,12 +2902,13 @@ PRG014_D2CC:
 	; Ground top left/middle/right or underwater ground left/middle/right
 LL_RunGroundTop:	
 	.byte TILE1_GROUNDTL,  TILE1_GROUNDTM,  TILE1_GROUNDTR
-	.byte TILE1_WGROUNDTL, TILE1_WGROUNDTM, TILE1_WGROUNDTR
 
 	; Ground middle left/middle/right or underwater ground middle left/middle/right
-LL_RunGroundMid:
+LL_RunGroundTop2:
 	.byte TILE1_GROUNDML,  TILE1_GROUNDMM,  TILE1_GROUNDMR
-	.byte TILE1_WGROUNDML, TILE1_WGROUNDMM, TILE1_WGROUNDMR
+
+LL_RunGroundMid:
+	.byte TILE1_GROUNDML2,  TILE1_GROUNDMM2,  TILE1_GROUNDMR2
 
 LL_RunGround_Offset:
 	.byte 0, 3	; Solid ground, solid underwater ground
@@ -2995,7 +2961,7 @@ LoadLevel_GroundRun:
 	JSR LoadLevel_NextColumn ; Go to next column
 
 	DEC <Temp_Var5		 ; Temp_Var5-- (width decrement)
-	BEQ PRG014_D354	 	 ; If Temp_Var5 = 0, jump to PRG014_D354
+	BEQ PRG014_D3542	 	 ; If Temp_Var5 = 0, jump to PRG014_D354
 
 	; Middle ground
 PRG014_D348:
@@ -3007,10 +2973,56 @@ PRG014_D348:
 	DEC <Temp_Var5		 ; Temp_Var5--
 	BNE PRG014_D348	 	 ; While Temp_Var5 <> 0, loop!
 
-PRG014_D354:
-
+PRG014_D3542:
 	; Right edge of ground
 	LDA LL_RunGroundTop+2,X	 ; Get right edge
+	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
+
+	LDA <Temp_Var1
+	STA <Map_Tile_AddrL
+	LDA <Temp_Var2	
+	STA <Map_Tile_AddrH
+
+	; Go to next row by adding 16 and updating Map_Tile_AddrH if carried
+	LDA TileAddr_Off
+	ADD #16
+	STA TileAddr_Off
+	TAY
+	LDA <Map_Tile_AddrH
+	ADC #$00
+	STA <Map_Tile_AddrH
+	STA <Temp_Var2		 ; Update Map_Tile_AddrH backup
+
+
+	DEC <Temp_Var4		 ; Temp_Var4--
+	BMI PRG014_D398	 	 ; If Temp_Var4 < 0, jump to PRG014_D398 (RTS)
+
+	LDA <Temp_Var3
+	STA <Temp_Var5		 ; Temp_Var5 = Temp_Var3 (restore original width)
+
+	; Left edge of ground
+	LDA LL_RunGroundTop2,X	; Get next ground tile
+	STA [Map_Tile_AddrL],Y	; Store into tile mem
+
+	JSR LoadLevel_NextColumn ; Go to next column
+
+	DEC <Temp_Var5		 ; Temp_Var5-- (width decrement)
+	BEQ Ground_TopR2	 	 ; If Temp_Var5 = 0, jump to PRG014_D354
+
+
+	; Middle ground
+PRG014_D3482:
+	LDA LL_RunGroundTop2+1,X	 ; Get middle of ground
+	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
+
+	JSR LoadLevel_NextColumn ; Go to next column
+
+	DEC <Temp_Var5		 ; Temp_Var5--
+	BNE PRG014_D3482	 	 ; While Temp_Var5 <> 0, loop!
+
+Ground_TopR2:
+	; Right edge of ground
+	LDA LL_RunGroundTop2+2,X	 ; Get right edge
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
 Do_Ground_Run_Fix:	; #DAHRKDAIZ fixed the ground to obey full extension of Y parameter

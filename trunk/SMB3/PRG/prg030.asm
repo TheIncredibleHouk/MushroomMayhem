@@ -421,6 +421,10 @@ PT2_Anim:	.byte $80, $82, $84, $86
 PSwitch_Anim: .byte $88, $8A, $8C, $8E
 SPR_Anim:
 	.byte $90, $91, $92, $93
+
+Suit_Anim:
+	.byte $03, $04, $05
+
 SPR_PowerUps:
 	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, $FF, $FF, $FF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE
 
@@ -2315,10 +2319,16 @@ Find_PUp:
 	INY
 
 PUp_Found:
-	CPY #$00
-	BNE Not_SpecialPUp
+	LDA PUp_StarManFlash
+	BEQ Not_Suit
+	BMI Not_Suit
+	STA $7FFF
+	TAY
+	DEY
+	LDA Suit_Anim, Y
+	TAY
 
-Not_SpecialPUp:	
+Not_Suit:
 	TYA
 	ASL A
 	ASL A
@@ -5529,4 +5539,54 @@ Next_Value:
 	DEX
 	BPL Subtraction_Loop
 Subtract_RTS:
+	RTS
+
+
+PTableChange:
+	.byte $10, $68, $6A
+
+Try_ESwitch:
+	STX DAIZ_TEMP1
+	LDX ESwitch
+	BEQ Cant_ESwitch
+	LDX #$03
+
+Find_ESwitch:
+	CMP ESwitches, X
+	BEQ Change_ESwitch
+	DEX
+	BNE Find_ESwitch
+	BEQ Cant_ESwitch
+
+Change_ESwitch:
+	STX ESwitch
+	DEX
+	LDA PTableChange, X
+	STA PatTable_BankSel
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	LDA #$00
+
+Cant_ESwitch:
+	LDX DAIZ_TEMP1
+	RTS
+
+Check_For_Level_Exit:
+	LDA #$00
+	STA DAIZ_TEMP1
+	; #DAHRKDAIZ hacked so object $25 indicates we should exit to map
+	STX DAIZ_TEMP2
+	LDX #$06				; Check for the level exit object, if it exists, exit level
+Level_Exit_Loop:
+	LDA Level_ObjectID, X
+	CMP #$25
+	BNE Not_Exit_Object
+	JSR Do_Exit_Map
+
+Not_Exit_Object:
+	DEX
+	BNE Level_Exit_Loop
+
+	LDX DAIZ_TEMP2
 	RTS
