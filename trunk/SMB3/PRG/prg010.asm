@@ -1494,10 +1494,6 @@ PRG010_C7BA:
 FortressFX_VAddrH:	.byte $29, $2A, $2A, $29, $29, $29, $29, $29, $29, $28, $29, $29, $29, $29, $29, $29, $29
 FortressFX_VAddrL:	.byte $48, $50, $12, $4C, $06, $96, $86, $8E, $9A, $92, $8A, $1A, $CE, $10, $52, $98, $CA
 
-	; Indexed by value from FortressFX_Wx
-	; Stores the column index for Map_Completions followed by which
-	; bit of Map_Completions is to be set to "clear" whatever lock
-	; is now busted or bridge constructed...
 FortressFX_MapCompIdx:
 	.byte $04, $10	; 0
 	.byte $08, $01	; 1
@@ -1720,20 +1716,11 @@ PRG010_C8CD:
 	LDA FortressFX_MapCompIdx,Y
 	STA <Temp_Var12
 
-	LDY <Temp_Var11
-	LDA Map_Completions,Y
-	AND <Temp_Var12	
-	BNE PRG010_C9C9	 ; If this lock is already busted / bridge already built, jump to PRG010_C9C9
+	JMP PRG010_C9C9	 ; If this lock is already busted / bridge already built, jump to PRG010_C9C9
 
 	; Mark lock busted / bridge built (Mario)
-	LDA Map_Completions,Y
-	ORA <Temp_Var12	
-	STA Map_Completions,Y
 
 	; Mark lock busted / bridge built (Luigi)
-	LDA Map_Completions+$40,Y
-	ORA <Temp_Var12	
-	STA Map_Completions+$40,Y
 
 	LDX Map_DoFortressFX
 	LDA FortressFX_MapLocation,X

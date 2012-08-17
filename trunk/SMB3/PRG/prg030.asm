@@ -568,13 +568,6 @@ PRG030_84A0:
 	; Stop Update_Select activity temporarily while we initialize
 	INC UpdSel_Disable
 
-	; The following clears Map_Completions (stores completed levels on the map)
-	LDY #$7f	 ; Y = $7F
-	LDA #$00	 ; A = $00
-PRG030_84D1:
-	STA Map_Completions,Y
-	DEY		 ; Y--
-	BPL PRG030_84D1	 ; While Y >= 0, loop!
 
 PRG030_84D7:
 	JSR Sprite_RAM_Clear	 
@@ -3144,10 +3137,6 @@ PRG030_9318:
 	EOR #$40
 	TAX
 
-	; Clear this Player's map completions
-	LDA Map_Completions,X
-	AND Map_Completions,Y
-	STA Map_Completions,Y
 
 	DEY		 ; Y--
 	DEC <Temp_Var1	 ; Temp_Var1--

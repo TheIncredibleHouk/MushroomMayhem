@@ -1059,9 +1059,6 @@ PRG026_A6D2:
 	TYA		 ; A = offset to map completion byte for this Player
 	EOR #$40	 ; Flip to the OTHER Player
 	TAY	
-	LDA Map_Completions,Y
-	ORA Map_Completion_Bit,X
-	STA Map_Completions,Y
 
 	; Take the Map poof coordinates and calculate what address in
 	; Nametable 2 we need to modify to remove the rock...
@@ -1398,9 +1395,6 @@ PRG026_A8E2:
 
 PRG026_A8FF:
 	LDX <Temp_Var5		; X = row on which the rock existed
-	LDA Map_Completions,Y	; Get current "completion" byte for this spot
-	ORA Map_Completion_Bit,X; Set appropriate "completion" bit for this row
-	STA Map_Completions,Y	; Store it back
 	RTS		 	; Return!
 
 	; Per-world Big [?] block areas

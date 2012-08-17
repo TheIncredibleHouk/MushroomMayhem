@@ -2730,7 +2730,7 @@ CFIRE_LASER		= $15	; Laser fire
 
 	Player_DebugNoHitFlag:	.ds 1	; UNUSED: (Old debug routine) When set, disables getting hurt (would be toggled by pressing SELECT; see PRG000 $C91B)
 
-; Map_Completions:
+
 ; Stores "rows" of completed levels or other map alterations (e.g. rock break,
 ; mini-fortress lock removal, etc.) for a given column, from the leftmost.
 ; Rows 1-7 use decending bits from $80, and row 9 uses bit $01.  This makes row 8
@@ -2746,9 +2746,6 @@ CFIRE_LASER		= $15	; Laser fire
 ; INVALID
 ; $01
 ; --------- BOT OF MAP
-	; #FREERAM
-	Map_Completions:	.ds 16*4*2	; $7D00-$7D3F (Mario), $7D40-$7D7F (Luigi) Allows a MAX of 4 map screens (64 columns total each player, 16 columns per map screen)
-
 	; Inventory_Items: 
 	; 0 = Empty
 	; 1 = Mushroom
@@ -2768,7 +2765,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Inventory_Items:	.ds 4*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
-	Player_Coins:	.ds 4	; Mario's coins
+	Player_Coins:		.ds 4	; Mario's coins
 	Air_Time:			.ds 1	;
 
 	Top_Of_Water:		.ds 1	;
@@ -2802,7 +2799,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Status_Bar_Mode:	.ds 1	; Indicates what status bar information should be displayed
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
-	Game_Coins:	.ds 7; over all coins collected
+	Game_Coins:				.ds 7; over all coins collected
 	Odometer:				.ds 7; over all distance traveled
 	Enemies_Defeated:		.ds 7; over all number of enemies defeated
 	Game_Timer:				.ds 6; over all time spent in the game
@@ -3012,7 +3009,7 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
-						.ds 322;
+						.ds 450;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
 .Bound_8000:	BoundCheck .Bound_8000, $8000, MMC3 SRAM
