@@ -3248,6 +3248,8 @@ PRG008_AFAD:
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Koopa_Shell:
+	LDA Player_Slide
+	BNE RTSShell
 	LDA <Player_InAir
 	BNE RTSShell
 	LDA <Player_Suit
@@ -3258,9 +3260,8 @@ Player_Koopa_Shell:
 	LDA Player_XVel
 	BEQ NoShellRTS				; If XVel is not 0 and holding down, we're in shell mode
 	LDA <Pad_Holding
-	AND #(PAD_DOWN | PAD_LEFT | PAD_RIGHT)
-	CMP #PAD_DOWN
-	BEQ NoShellRTS
+	AND #(PAD_DOWN)
+	BNE NoShellRTS
 
 Kill_Shell:
 	LDA #$00
@@ -3269,15 +3270,6 @@ NoShellRTS:
 	STA Player_Shell
 RTSShell:
 	RTS
-
-
-
-Sound_StatueSwitch:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
-	RTS		 ; Return
-
 
 	; Player's climb "animation", which is really just flipping the sprite
 Player_DoClimbAnim:
@@ -5972,7 +5964,7 @@ PRG008_BBBF:
 	AND #$02	 
 	BNE PRG008_BC0D	 ; If the Player's suit CANNOT slide on slopes, jump to PRG008_BC0D
 
-	LDA Player_Kuribo
+	LDA Player_Shell
 	BNE PRG008_BC0D	 ; If Player is wearing Kuribo's shoe, jump to PRG008_BC0D
 
 	LDA <Pad_Holding

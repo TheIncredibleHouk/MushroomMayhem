@@ -4043,8 +4043,8 @@ TILE3_QUICKSAND_TOP	= $49	; Quicksand top
 TILE3_QUICKSAND_MID	= $4A	; Quicksand middle
 
 TILE3_BGBUSH_L		= $84	; Background bush left
-TILE3_BGBUSH_M		= $87	; Background bush middle
-TILE3_BGBUSH_R		= $86	; Background bush right
+TILE3_BGBUSH_M		= $86	; Background bush middle
+TILE3_BGBUSH_R		= $87	; Background bush right
 TILE3_UNDERGROUND	= $86	; Underground speckled
 TILE3_TUNNEL		= $87	; "Tunnel" under grassy ground
 TILE3_SLOPE45B2T	= $99	; 45 degree slope, bottom-to-top
