@@ -691,7 +691,7 @@ World_BGM_Arrival:
 ; lively and interesting...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Map_DoMap:
-	JSR World5_Sky_AddCloudDeco	; Add world 5's cloud decoration
+	JSR Try_Ability_Change
 
 	LDA Map_Operation
 	CMP #$0d	 
@@ -3900,4 +3900,19 @@ Cmp_Traversable:
 Is_Traversable:
 	LDX DAIZ_TEMP1
 	LDA #$00
+	RTS
+
+Try_Ability_Change:
+	LDA <Pad_Input
+	AND #PAD_START
+	BEQ Ability_RTS
+	INC Player_Ability
+	LDA Player_Ability
+	CMP Player_Level
+	BCC Change_Ability
+	LDA #$01
+Change_Ability:
+	STA Player_Ability
+
+Ability_RTS:
 	RTS

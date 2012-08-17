@@ -2491,7 +2491,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	ChallengeMode:			.ds 1	;
 	Frozen_State:			.ds 1	;
 	Frozen_Frame:			.ds	1
-				.ds 71	; $7997-$79FF unused UNUSED HERE
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -2640,7 +2639,6 @@ CFIRE_LASER		= $15	; Laser fire
 	Player_Ability:		.ds 1	;
 	Player_Level:		.ds 1	;
 	Tile_Anim_Enabled:  .ds 1	;
-						.ds 70; $7A74-$7ADF unused
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
@@ -2672,8 +2670,7 @@ CFIRE_LASER		= $15	; Laser fire
 ; The first byte copied in has no apparent purpose
 ; The rest is a repeating series of 3 bytes -- ID, Column, Row (C/R of tile grid, multiply by 16 for pixel location), $FF for terminator
 	Level_Objects:		.ds 48*3	; $7B40-$7BCF
-
-				.ds 80	; $7BD0-$7C1F unused
+	
 
 ; For certain objects that require a buffer of X or Y values; only a couple are available.
 ; Each contains 32 bytes, intended for enemies that have "tails"; Buffer_Occupied determines
@@ -2775,7 +2772,6 @@ CFIRE_LASER		= $15	; Laser fire
 	Air_Time:			.ds 1	;
 
 	Top_Of_Water:		.ds 1	;
-	Unused2:				.ds 34	;
 
 	; #DAHRKDAIZ these are unused, but the labels ramin to one byte to allow the assembler to corrrectly calculate some offsets in the game
 	Inventory_Items2:	.ds 1	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
@@ -2787,7 +2783,6 @@ CFIRE_LASER		= $15	; Laser fire
 	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)
 	Boo_Mode_Timer:			.ds 1	; Indicates how long we are in boo mode
 	Boo_Mode_KillTimer:		.ds 1	; This timer is for the period coming out of boo mode, when not 0, Mario is invincible
-				.ds 3	; $7DCC-$7DD4 unused
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
 
@@ -2815,7 +2810,6 @@ CFIRE_LASER		= $15	; Laser fire
 	Odometer_Increase:		.ds 1; Indicates we need to increase the odometer
 	Previous_X:				.ds 1; Keeps track of the the Previous x position
 	Game_Timer_Tick:		.ds 1; Indicates the game timer needs to increase by 1 second
-	Unused:			.ds 31	; 
 
 Max_Item_Count = 15
 CARD_MUSHROOM	= 0
@@ -2852,8 +2846,6 @@ CARD_WILD	= 8	; UNUSED Wild card (can match any other!)
 
 	Level_UnusedSlopesTS5:	.ds 1	; UNUSED; If set to 2, forces slopes to be enabled for Level_Tileset = 5 (plant infestation)
 	PlantInfest_ACnt_Max:	.ds 1	; Always set to $1A in plant infestation levels, sets max value for animation counter
-
-				.ds 24	; $7E9E-$7EB5 unused
 
 	LevelJctBQ_Flag:	.ds 1	; Set to '1' while in a Big Question block area, locks horizontal scrolling
 	Level_JctBackupTileset:	.ds 1	; Level Junction tileset backup
@@ -2920,8 +2912,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
 	HBros_Coins_Collected: .ds 16;  1 bit flags for coins collected. Each coin's Hi X/Y indicates where it was collected
 	StatusBar_PMT:		.ds 8	; $7F3E-$7F45, tiles that currently make up the power meter >>>>>>[P]
-	; #FREERAM
-	Unused3:	.ds 10	; $7F4A-$7F4F Status bar tiles for score
 	StatusBar_Time:		.ds 3	; $7F50-$7F52 Status bar tiles for time remaining
 	Map_MusicBox_Cnt:	.ds 1	; Number of turns remaining until hammer brothers wake up (>= 1 and they're be asleep on the map)
 
@@ -3021,6 +3011,9 @@ SOBJ_POOF		= $16 	; Poof
 	Roulette_Lives:			; Number of lives you are rewarded from winning the Roulette (NOTE: Shared with first byte of Objects_IsGiant)
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
+	;#FREERAM
+						.ds 322;
+	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
 .Bound_8000:	BoundCheck .Bound_8000, $8000, MMC3 SRAM
 

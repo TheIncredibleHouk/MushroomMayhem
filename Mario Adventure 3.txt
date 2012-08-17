@@ -1,57 +1,38 @@
 Mario Adventure 3 Hacking Ideas
 --------------------------------------
 --- BUGS ---
-- Odd behavior when hitting blocks diagonally
-
-
--Experience points:
-	-Experience points will enable the player to access new power ups. ? blocks will check
-	exp level before generating power ups.
-	
-
-
--Strengthening enemies, as worlds progress, double the HP of enemies from fireballs 
 
 -Change hammers to break a different kind of block (rocks?)
 -World types
-	-Mushroom Everglades
-	-Fire/Ice
-	-Raccoon
-	-Frog
-	-Koopa
-	-Boo
-	-Sledge
-	-Ninja
-	-Rainbow
+	1 - Mushroom Everglades
+	2 - Ice/Forest
+	3 - Underground/Mining
+	4 - Water/Sewers
+	5 - Sky/Shrine
+	6 - 
+	7 -
+	8 - Bowser's Castle
+	9 - Minus World
+
+New Enemy types:
+---------------------------------
+Fluffen - a cottonball that flies around and attaches to Mario's face. While attached, Mario's air meter will deplete. to remove, press left and right repeatedly.
+
+Viral Goomba - releases colored virus that cause various effects.
+
+Koobob-omb - A timer is set for the Koopa to explode, regardless of shell time.
 
 
-- 7 Keys
 
-- Alternate status bar
-	-Enemies defeated
+Enemy introductions by theme
+------------------------------
+2 - Bullies, Ice Bros, Puffen 
+3 - 
 
--Special level types
-	-Collect items
-
--Events
-	- Double strength enemies
-	- Quadruble strength enemies
-
-
--Experience Powers
-	-Item storage
-
-	
-
-Special Level Types
--------------------------
-- Mini Dares
-- Collect all the items
-
-Enemies
--------------------------
--Charging Boo
-	-He will charge after Mario at higher speeds when he turns his back, when Mario looks at him, Boo will continue to go in the same 	direction he was going until Mario turns his back, in which Boo will turn around.
-
--Lakitu Types
-	- Base Lakitu's thrown based on initial X position (1 of 16 types)
+Abilities
+-----------
+1: SMB3 US Damage
+2: Item Storage
+3: Jump Higher
+4: Power Upgrade
+5: Spike Safe + Enemy Boots + sure Footing
