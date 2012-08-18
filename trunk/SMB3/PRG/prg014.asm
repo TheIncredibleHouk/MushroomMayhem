@@ -3992,8 +3992,8 @@ PRG014_D7CC:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Shared in Hills and Underground styles
 	; Column order is Above Ground (UG only), Underground/Hills normal, Underwater
-LL_VertGroundL:	.byte TILE14_ABOVE_VERTGROUNDL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL
-LL_VertGroundR:	.byte TILE14_ABOVE_VERTGROUNDR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR
+LL_VertGroundL:	.byte TILE14_ABOVE_VERTGROUNDL, TILE3_VERTGROUNDL, $FB
+LL_VertGroundR:	.byte TILE14_ABOVE_VERTGROUNDR, TILE3_VERTGROUNDR, $FA
 
 LoadLevel_VertGroundL:
 	LDA LL_ShapeDef

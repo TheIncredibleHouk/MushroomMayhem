@@ -2315,7 +2315,6 @@ PUp_Found:
 	LDA PUp_StarManFlash
 	BEQ Not_Suit
 	BMI Not_Suit
-	STA $7FFF
 	TAY
 	DEY
 	LDA Suit_Anim, Y

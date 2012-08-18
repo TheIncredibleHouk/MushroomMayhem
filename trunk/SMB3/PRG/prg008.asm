@@ -6093,6 +6093,9 @@ ConveyorSlide:	.byte 16, -16
 PlantInfest_PiranhaTiles: .byte TILE5_MUNCHER_2, TILE5_MUNCHER_1
 PlantInfest_MiniPipes:	.byte TILE5_MINIPIPE_TOP2, TILE5_MINIPIPE_TOP1
 
+Slick_Blocks: 
+	.byte $3E, $3F, $EF
+
 Player_DoSpecialTiles:
 
 	LDA Player_Shell
@@ -6400,50 +6403,18 @@ PRG008_BDEB:
 
 PRG008_BDFD:
 	LDA Level_Tile_GndL,X
-	TAY		 ; Tile -> 'Y'
+	LDY #$02
 
-; #DAHRKDDAIZ - Added checks for global ice blocks
-	CMP #$3E
-	BEQ PRG008_BE10;
-	CMP #$3F
-	BEQ PRG008_BE10;
-	CMP #$FF			; FRZNWATER ice slick
+Try_Slick_Blocks:
+	CMP Slick_Blocks, Y
+	BEQ Set_Slick
+	DEY
+	BPL Try_Slick_Blocks
+	BMI PRG008_BE2E
 
-; #DAHRKDAIZ - Now do ice world specific
-
-	LDA Level_TilesetIdx
-	CMP #11
-	BNE PRG008_BE31	
-	TYA
-	SUB #TILE12_SNOWBLOCK_UL
-	CMP #$03
-	BLT PRG008_BE10	 ; If Player is on top of snow block, jump to PRG008_BE10	
-
-	TYA		 ; Restore tile -> 'A'
-	SUB #TILE12_GROUND_L
-	CMP #$03
-	BGE PRG008_BE16	 ; If Player is not on bottom ground, jump to PRG008_BE16
-
-PRG008_BE10:
-	INC Player_Slippery	 ; Player_Slippery = 1 (bottom ground is a little slippery!)
-	JMP PRG008_BE31	 	; Jump to PRG008_BE31
-
-PRG008_BE16:
-	TYA		 ; Restore tile -> 'A'
-	SUB #TILE12_LARGEICEBLOCK_UL
-	CMP #$05
-	BLT PRG008_BE26	 ; If Player is touching any of the small or large ice blocks, jump to PRG008_BE26
-
-	CPY #TILE12_FROZENCOIN	
-	BEQ PRG008_BE26	 ; If Player is touching frozen coin blocks, jump to PRG008_BE26
-
-	CPY #TILE12_FROZENMUNCHER
-	BNE PRG008_BE2E	 ; If Player is NOT touching frozen muncher blocks, jump to PRG008_BE2E
-
-PRG008_BE26:
+Set_Slick:
 	LDA #$02	 
 	STA Player_Slippery	 ; Player_Slippery = 2 (ground is REALLY slippery!)
-
 	JMP PRG008_BE31	 ; Jump to PRG008_BE31
 
 PRG008_BE2E:

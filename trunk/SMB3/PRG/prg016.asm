@@ -240,7 +240,7 @@ LoadLevel_Generator_TS3:
 	.word LoadLevel_CloudRun3		; 74 - Run of the clouds (alt tiles)
 	.word LoadLevel_Tunnel			; 75 - Add a run of "tunnel" tiles
 	.word LoadLevel_Tunnel			; 76 - DOES NOTHING, see LoadLevel_Tunnel
-	.word LoadLevel_CloudRun		; 77 - Run of the clouds
+	.word LoadLevel_CloudRun3		; 77 - Run of the clouds
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
