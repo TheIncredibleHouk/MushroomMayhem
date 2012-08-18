@@ -3009,7 +3009,8 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
-						.ds 450;
+	Current_Save_Slot:	.ds 1	; Current slot we are saving to
+						.ds 449;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
 .Bound_8000:	BoundCheck .Bound_8000, $8000, MMC3 SRAM
