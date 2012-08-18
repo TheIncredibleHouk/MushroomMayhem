@@ -3870,6 +3870,8 @@ Is_Enterable:
 	RTS
 
 Tile_Traversable:
+	LDA #$00
+	RTS
 	STX DAIZ_TEMP1
 	LDX #$0F
 

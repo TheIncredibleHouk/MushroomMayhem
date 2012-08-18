@@ -2609,7 +2609,6 @@ CFIRE_LASER		= $15	; Laser fire
 	SObjBlooperKid_OutOfWater:.ds 8	; $7A68-$7A6F Blooper kid only; if set, Blooper Kid is trying to go out of water
 
 	DAIZ_TEMP1:		.ds 1	; #DAHRKDAIZ $7A70 USED for temprorary in variables
-	DEBUG_SNAPPER: .ds 1 ; #DAHRKDAIZ $7A71- used to step debug breakpoints
 
 	Object_SplashAlt:	.ds 1	; Used to alternate the "splash slots" 1 and 2 as objects hit the water
 	Special_Suit_Flag:		.ds 1	; Special suit flag is used to indicate when we have a non-standard suit
@@ -3011,6 +3010,7 @@ SOBJ_POOF		= $16 	; Poof
 	;#FREERAM
 	Current_Save_Slot:	.ds 1	; Current slot we are saving to
 						.ds 449;
+	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
 .Bound_8000:	BoundCheck .Bound_8000, $8000, MMC3 SRAM
@@ -4019,14 +4019,14 @@ TILE3_UNK3		= $89	; Background referenced, but unknown; possibly belongs to anot
 TILE3_UNK		= $C0	; Background referenced, but unknown; possibly belongs to another tileset?
 
 
-TILE3_SKY		= $02	; Sky
+TILE3_SKY		= $80	; Sky
 
-TILE3_CLOUD_UL		= $06	; Cloud upper left
-TILE3_CLOUD_UM		= $07	; Cloud upper middle
-TILE3_CLOUD_UR		= $08	; Cloud upper right
-TILE3_CLOUD_LL		= $09	; Cloud lower left
-TILE3_CLOUD_LM		= $0A	; Cloud lower middle
-TILE3_CLOUD_LR		= $0B	; Cloud lower right
+TILE3_CLOUD_UL		= $07	; Cloud upper left
+TILE3_CLOUD_UM		= $08	; Cloud upper middle
+TILE3_CLOUD_UR		= $09	; Cloud upper right
+TILE3_CLOUD_LL		= $80	; Cloud lower left
+TILE3_CLOUD_LM		= $43	; Cloud lower middle
+TILE3_CLOUD_LR		= $80	; Cloud lower right
 TILE3_LILCLOUD		= $0C	; Little BG cloud
 
 TILE3_ALTDIAMOND	= $48	; Alternate diamond type block, not apparently used (a blue version at $F0 is, but not this one!)
