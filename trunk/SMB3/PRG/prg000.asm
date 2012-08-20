@@ -531,9 +531,7 @@ ConveyorEnable:
 
 	; Index by Level_TilesetIdx
 	; Sets the tile which is a pain in the ass (typically muncher, sometimes jelectro)
-	; Although TILEA_MUNCHER is always considered anyway for Kuribo's shoe... 
-	; (see after PRG008_BD96) which is probably a bug/mistake!  (Although to their
-	; credit, you can never normally have Kuribo's shoe in a Jelectro level)
+
 MuncherJelectroSet:
 	.byte TILEA_MUNCHER	;  0 Plains style
 	.byte TILEA_MUNCHER	;  1 Mini Fortress style
@@ -621,9 +619,6 @@ PRG000_C454:
 	; Goes into Exp_Inc, but object index is stored in 'Y'
 	; NOTE: Overwrites 'X' anyway, so be careful!
 Exp_Inc_Lots:
-	INC Kill_Tally
-	INC Kill_Tally
-
 Exp_Inc:
 	INC Kill_Tally
 	LDA Kill_Tally
@@ -631,55 +626,9 @@ Exp_Inc:
 	BEQ DontAddTally
 	CLC
 	ADC (Exp_Earned + 2)
+
 DontAddTally:
 	STA (Exp_Earned + 2)
-	RTS		 ; Return
-
-
-
-PRG000_C49B:
-
-	; Common init point for "power up" coins (coins that emerge from bricks and blocks)
-
-	; Temp_Var1 = Y Lo
-	; Temp_Var2 = X lo
-
-	LDY #$03	 ; Y = 3
-
-PRG000_C49D:
-	LDA CoinPUp_State,Y
-	BEQ PRG000_C4A7	 ; If this coin slot state = 0, it's free, go use it!
-	DEY		 ; Y--
-	BPL PRG000_C49D	 ; While Y >= 0, loop!
-
-	; If all else fails, just overwrite the oldest slot!
-	LDY #$03	 ; Y = 3
-
-PRG000_C4A7:
-
-	; Play coin sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELCOIN
-	STA Sound_QLevel1
-
-	LDA #$01
-	STA CoinPUp_State,Y	; Set coin state to 1
-
-	LDA <Temp_Var1		; Get input Y
-	SUB Level_VertScroll	; Make relative to vertical scroll
-	SBC #24	 		; Subtract 24
-	STA CoinPUp_Y,Y	 	; Store as coin's Y
-
-	LDA <Temp_Var2		; Get input X
-	SUB <Horz_Scroll	; Make relative to horizontal scroll
-	STA CoinPUp_X,Y	 	; Store as coin's X
-
-	LDA #-5	 
-	STA CoinPUp_YVel,Y	; Set Y Vel = -5
-
-	LDA #$01	 
-	STA CoinPUp_Counter,Y	; Set counter to 1
-
 	RTS		 ; Return
 
 
@@ -2557,6 +2506,20 @@ PRG000_CD80:
 
 ObjectKill_SetShellKillVars:
 	; Set object state to Killed
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It3
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It3:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
@@ -2786,6 +2749,21 @@ PRG000_CE94:
 	INC (Exp_Earned + 2)
 
 	; Object state is Killed
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It4
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It4:
+
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
@@ -2972,6 +2950,20 @@ PRG000_CF49:
 	STA Sound_QPlayer
 
 	; Object which was held is dead!
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It5
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It5:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
@@ -3371,6 +3363,20 @@ PRG000_D120:
 	INC (Exp_Earned + 2)
 
 	; Set object state to Killed
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It6
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It6:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
  
@@ -3473,6 +3479,20 @@ Object_HandleBumpUnderneath:
 
 	; Object killed, get 100 pts
 
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It7
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It7:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X 
 
@@ -3558,6 +3578,20 @@ PRG000_D1DB:
 	STA <Objects_YVel,X	 ; Object Y Vel = -$2D to -$4C
 
 	; Set object state to Killed
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It8
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It8:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
@@ -3703,6 +3737,9 @@ Not_Ice_Block:
 	ORA Invincible_Enemies
 	BNE PRG000_D267	 ; If Player is in water, jump to PRG000_D267
 
+	LDA Player_Ability
+	CMP #$08
+	BEQ PRG000_D272
 	LDY ObjGroupRel_Idx	 ; Y = group relative index
 	LDA ObjectGroup_Attributes3,Y	 ; Get object's attribute 3 setting
 	AND #OA3_NOTSTOMPABLE	 
@@ -3715,8 +3752,6 @@ PRG000_D267:
 	JMP PRG000_D355	 ; Jump to PRG000_D355 (hurt Player!)
 
 PRG000_D272:
-
-	; Enemy got stomped!
 
 	LDY ObjGroupRel_Idx	 ; Y = group relative index
 	LDA ObjectGroup_Attributes2,Y	 ; Get object attribute set 2
@@ -3737,23 +3772,19 @@ PRG000_D272:
 	AND #OA3_SQUASH
 	BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
 
-	; When stomped by statue/Kuribo, if the enemy was going to get squashed anyway
-	; then go ahead into "shelled" state which redirects to "stomped" state.
 
 	LDA #OBJSTATE_SHELLED	 ; Otherwise, state is Shelled
 	BNE PRG000_D297	 ; Jump (technically always) to PRG000_D297
 
 PRG000_D295:
 
-	; When stomped by statue/Kuribo, if the enemy was going to actually going to
-	; become shelled, kill it instead...
 
 	LDA #OBJSTATE_KILLED	 ; State is Killed
 
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
-
 	INC (Exp_Earned + 2)
+
 	RTS		 ; Return
 
 
@@ -3772,6 +3803,20 @@ PRG000_D2A2:
 	JSR Exp_Inc	 ; Get points for the kick
 	JSR Player_KickObject	 ; Player kicks the enemy!
 
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It1
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+
+Dont_Coin_It1:
 	; Clear Player kick
 	LDA #$00
 	STA Player_Kick
@@ -3806,7 +3851,19 @@ PRG000_D2B4:
 
 PRG000_D2E4:
 	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It2
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
 
+Dont_Coin_It2:
 	PLA		 ; Restore index into CollideJumpTable
 	TAY		 ; -> 'Y'
 
@@ -3875,11 +3932,6 @@ Object_HoldKickOrHurtPlayer:
 	CMP #OBJSTATE_SHELLED
 	BNE PRG000_D355	 ; If object state is not Shelled, jump to PRG000_D355 (hurt Player!)
 
-	LDA Player_Kuribo
-;	ORA Player_Shell
-	BEQ PRG000_D343	 ; If Player is NOT in Kuribo's shoe and NOT in a statue, jump to PRG000_D343\
-
-	JMP PRG000_D2A2	 ; Otherwise, jump to PRG000_D2A2
 
 PRG000_D343:
 	LDA Player_ISHolding_OLD
@@ -5220,6 +5272,21 @@ PRG000_D8EB:
 
 	; For all objects where bit 7 is not set in their attributes...
 
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It9
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It9:
+
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X	 ; Set object state to Killed
 
@@ -5511,12 +5578,6 @@ PRG000_DA4E:
 	LDA #$02
 	STA Player_QueueSuit	 ; Return to Big
 
-	; RAS: NOTE: Deprecated logic!  We won't get here in SMB3-US at this
-	; high of a power level anymore...
-	LDA <Player_Suit
-	CMP #PLAYERSUIT_SUPERSUITBEGIN
-	BGS PRG000_DA6D	 ; If Player's current power-up is a Super Suit, jump to PRG000_DA6D
-
 	; Play shrinking sound!!
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERPIPE
@@ -5561,7 +5622,6 @@ Player_Die:
 	STA <Obj01_Flag	
 	STA Player_Flip	
 	STA Player_FlashInv
-	STA Player_Kuribo
 	STA Player_StarInv
 	STA Player_Shell
 	STA Fox_FireBall
@@ -6663,10 +6723,8 @@ Can_Wall_Jump:
 	BEQ No_Wall_Jump
 	LDA <Player_InAir
 	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
-	LDA Special_Suit_Flag
-	BEQ No_Wall_Jump
-	LDA <Player_Suit
-	CMP #$06
+	JSR Get_Normalized_Suit
+	CMP #$0B
 	BNE No_Wall_Jump
 	STA Wall_Jump_Enabled
 	LDA #$00

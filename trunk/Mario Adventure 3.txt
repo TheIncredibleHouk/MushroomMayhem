@@ -36,3 +36,7 @@ Abilities
 3: Jump Higher
 4: Power Upgrade
 5: Spike Safe + Enemy Boots + sure Footing
+6: Short P-Meter
+7: 
+8: 
+9: 

@@ -110,11 +110,8 @@ PRG007_A070:
 	CMP #TILE2_LAVATOP
 	BNE PRG007_A082	 ; If this is not (possibly) a lava tile, jump to PRG007_A082
 
-	STA DAIZ_TEMP1
-	LDA Special_Suit_Flag		; Fire fox mario can swim in lava!
-	BEQ PRG007_A07F
-	LDA Player_Suit
-	CMP #$03
+	JSR Get_Normalized_Suit
+	CMP #$08
 	BEQ Swim_Lava
 
 PRG007_A07F:
@@ -1489,18 +1486,31 @@ PRG007_A6EC:
 	TYA
 	TAX	; object index -> 'X'
 
-	LDA <Player_Suit
-	CMP #$02
-	BNE Kill_Enemy_Anyway	; Prevents Ninja Mario from turning enemies into ice
-	LDA Special_Suit_Flag
-	BNE ICE_BALL_SKIP1 ; #DAHRKDAIZ - Skip "defeating" the enemy
+	JSR Get_Normalized_Suit
+	CMP #$07
+	BEQ ICE_BALL_SKIP1
 	
 Kill_Enemy_Anyway:
 	INC (Exp_Earned + 2)
 
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 
-	; But the enemy is killed...
+	STY DAIZ_TEMP1
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It11
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, Y
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, Y
+	STA <Temp_Var2
+	JSR Produce_Coin
+	LDY DAIZ_TEMP1
+
+Dont_Coin_It11:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,Y
 
@@ -6048,10 +6058,8 @@ No_XVel:
 	RTS
 
 Do_Boo_Mode:
-	LDA Special_Suit_Flag
-	BEQ Boo_Do_Nothing
-	LDA <Player_Suit		
-	CMP #$05				; Not Boo mario, skip all together
+	JSR Get_Normalized_Suit
+	CMP #$0A
 	BNE Boo_Do_Nothing
 	LDA Boo_Mode_KillTimer	; If "kill" timer mode, the slight point on which boo kills enemies when he transforms back to mario
 	BNE Dec_KillTimer		; skip to decreasing kill timer

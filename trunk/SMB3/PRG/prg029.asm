@@ -1228,17 +1228,6 @@ PRG029_D257:
 	LDA Player_EndLevel
 	BEQ PRG029_D279	 ; If we're not doing the end of level run, jump to PRG029_D279
 
-	LDA Player_Kuribo
-	BEQ PRG029_D26B	; If Player was not in a Kuribo's shoe, jump to PRG029_D26B
-
-	; If Player was in Kuribo's shoe at the end goal, "poof" it away!
-
-	LDA #$00
-	STA Player_Kuribo
-
-	LDA #$18
-	STA Player_SuitLost	 ; Player_SuitLost = $18
-
 PRG029_D26B:
 	LDA <Player_InAir
 	BNE PRG029_D279		; If Player is mid-air, jump to PRG029_D279
@@ -1673,23 +1662,6 @@ PRG029_D468:
 
 
 PRG029_D47E:	; Jump point for horizontal pipe-walking
-
-	LDY Player_Kuribo
-	BEQ PRG029_D491	 ; If Player is NOT wearing Kuribo's shoe, jump to PRG029_D491
-
-	; Wearing Kuribo's shoe (NOTE: This CAN'T happen because the 
-	; shoe was forcefully removed before we got here; dead code?)
-
-	AND #$01
-
-	LDY <Player_Suit
-	BEQ PRG029_D48B	 ; If Player_Suit = 0 (small), jump to PRG029_D48B
-
-	LDY #$01	 ; Y = 1 (small / big same)
-
-PRG029_D48B:
-	ADD Player_KuriboFrame,Y
-	BNE PRG029_D49B	 ; If result is not zero, jump to PRG029_D49B
 
 PRG029_D491:
 	LDA <Player_Suit

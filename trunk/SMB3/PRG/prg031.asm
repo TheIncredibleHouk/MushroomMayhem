@@ -3317,15 +3317,9 @@ ChallengeRTS:
 	BNE Kill_Ctrls
 
 Unfreeze:
+	JSR Get_Normalized_Suit
 	CLC
-	LDA <Player_Suit
 	ADC #$01
-	LDX Special_Suit_Flag
-	BEQ Revert_Frz
-	CLC
-	ADC #$05
-
-Revert_Frz:
 	STA Player_QueueSuit
 	LDA #$00
 	STA Frozen_Frame

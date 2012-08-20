@@ -243,7 +243,7 @@ ObjectGroup00_Attributes2:
 
 	; Attribute bits for objects:
 	;	Bits 0-3: Determines what to do when gameplay halted (see Object_DoHaltedAction, most common is 5 / 0101)
-	;	Bit 4: If set, enemy goes to "squashed" (state 7) after being stomped, otherwise it goes to "shelled" (state 3); in the case of being stomped by Kuribo's shoe or the Tanooki statue, squashed enemies still get sqashed, and otherwise they get "killed" (6)
+	
 	;	Bit 5: Object is NOT stompable (e.g. a spikey enemy, HURTS PLAYER, not same as attr 2 bit 2 which is just indifferent)
 	;	Bit 6: The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
 	;	Bit 7: If set, object cannot be tail attacked
@@ -1016,9 +1016,6 @@ PRG001_A4C6:
 Bouncer_PUp:
 	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
-Bouncer_PopSuit:
-	
-
 Bounce_TileReplacements:	
 	.byte CHNGTILE_TOFRZWATER
 	.byte CHNGTILE_COINHEAVEN
@@ -1568,30 +1565,31 @@ PRG001_A78E:
 
 
 ObjHit_NinjaShroom:
-	
-	; "Poof" sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
+	JSR Try_PUp_Reserve
+	JSR Get_Normalized_Suit
+	CMP #$0B
+	BNE Do_Ninja_Power
+	JMP PUp_GeneralCollect
 
-	; "Poof" effect
-	LDA #$17
-	STA Player_SuitLost
+Do_Ninja_Power:
 
-	; Change to Ninja
 	LDA #$0C
-	STA Player_QueueSuit
+	JMP Do_PUp_Poof_Collect
 
-	; Set to dead/empty
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
-
-	RTS		 ; Return
 
 Star_Palettes:
 	.byte SPR_PAL0, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 ObjInit_StarOrSuit:
+	LDA From_Reserve
+	BEQ Do_Star_Init
+	LDA #$00
+	STA From_Reserve
+	LDA #$A0
+	STA Objects_YVel + 5
+	BNE Do_Star_Init2
+
+Do_Star_Init:
 	JSR Mushroom_SetFall	 ; Figure the way that the star should fall
 
 	LDA #$10	
@@ -1613,6 +1611,7 @@ PRG001_A7BF:
 
 	JSR PowerUp_BounceXVel	 ; Bounce off wall
 
+Do_Star_Init2:
 	LDA PUp_StarManFlash
 	AND #$03	 
 	STA Objects_Frame,X
@@ -1678,42 +1677,34 @@ PRG001_A810:
 
 PRG001_A818:
 
-	; This is one of the Super Suits (Tanooki, Frog, Hammer), not a Starman
-
 	LDA PUp_StarManFlash
 	CLC
 	ADC #$03	 ; Frame -> 'Y' (index)
+	STA DAIZ_TEMP1
+	JSR Try_PUp_Reserve
+	JSR Get_Normalized_Suit
+	CMP DAIZ_TEMP1
+	BNE Do_Suit_Power
+	JMP PUp_GeneralCollect
 
-	CMP <Player_Suit
-	BNE Not_Already_Suit
-	LDY Special_Suit_Flag
-	BEQ PRG001_A834	 ; If this is already the suit that the Player is wearing, jump to PRG001_A834
-
-Not_Already_Suit:
+Do_Suit_Power:
+	LDA DAIZ_TEMP1
 	TAY		 ; Suit -> 'Y'
 	INY		 ; Y++ (valid Player_QueueSuit value)
-	STY Player_QueueSuit	 ; Queue changing to this suit!
-
-PRG001_A825:
-	; "Poof" into new suit
-	LDA #$17	 
-	STA Player_SuitLost
-
-	; Play suit power-up sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
-
-	BNE PRG001_A837	 ; Jump (technically always) to PRG001_A837
-
-PRG001_A834:
-	JSR PowerUp_PlaySound	 ; Play Power Up sound
-
-PRG001_A837:
-	JMP PUp_GeneralCollect	 ; Jump to PUp_GeneralCollect
+	TYA
+	JMP Do_PUp_Poof_Collect
 
 
 ObjInit_PUpMush:
+	LDA From_Reserve
+	BEQ Do_Shroom_Init
+	LDA #$00
+	STA From_Reserve
+	LDA #$A0
+	STA Objects_YVel + 5
+	RTS
+
+Do_Shroom_Init:
 	JSR Mushroom_SetFall	 ; Figure the way that the mushroom should fall
 
 	LDA #$10	
@@ -1796,19 +1787,19 @@ ObjHit_PUpMush:
 	STA <Temp_Var1
 
 PRG001_A897:
-	JSR PowerUp_PlaySound	 ; Play Power Up sound
-
 	LDA <Player_Suit
-	BNE PUp_GeneralCollect	; If Player is not small, jump to PUp_GeneralCollect
+	BEQ Do_Grow
+	LDA Player_Ability
+	CMP #$07
+	BNE Just_Collect
+	LDA #$01
+	STA PowerUp_Reserve
+Just_Collect:
+	JMP PUp_GeneralCollect	; If Player is not small, jump to PUp_GeneralCollect
 
-	; Queue change to Super
+Do_Grow:
 	LDA #$02
 	STA Player_QueueSuit
-
-	LDA Player_Kuribo
-	BEQ PRG001_A8AB	 ; If Player is NOT in a Kuribo's shoe, jump to PRG001_A8AB
-
-	JMP PRG001_A825	 ; Jump to PRG001_A825
 
 PRG001_A8AB:
 
@@ -1817,10 +1808,9 @@ PRG001_A8AB:
 	STA Player_Grow
 
 PUp_GeneralCollect:
-	; Get 1000 pts
-
+	JSR PowerUp_PlaySound	 ; Play Power Up sound
 	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X	 ; Set power-up to dead/empty
+	STA Objects_State + 5	 ; Set power-up to dead/empty
 
 	RTS		 ; Return
 
@@ -2052,6 +2042,15 @@ PRG001_A9B7:
 	RTS		 ; Return
 
 ObjInit_FireFlower:
+	LDA From_Reserve
+	BEQ Do_Fire_Init
+	LDA #$00
+	STA From_Reserve
+	LDA #$A0
+	STA Objects_YVel + 5
+	RTS
+
+Do_Fire_Init:
 	LDA #$10
 	STA Objects_Timer2,X	 ; Fire flower's timer 2 = $10
 
@@ -2107,27 +2106,14 @@ PRG001_A9F6:
 
 
 ObjHit_FireFlower:
-	LDA <Player_Suit
-	BNE Not_Fire_Small
-	JMP ObjHit_PUpMush
-
-Not_Fire_Small:
+	JSR Try_PUp_Reserve
+	JSR Get_Normalized_Suit
 	CMP #$02
-	BNE Not_Fire
-	LDA Special_Suit_Flag
-	BEQ Already_Fire
-
-Not_Fire:
-	LDA #$03
-	STA Player_QueueSuit
-	LDA #$1f
-	STA Player_StarOff
-
-Already_Fire:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
+	BNE Do_Fire_Power
 	JMP PUp_GeneralCollect
+Do_Fire_Power:
+	LDA #$03
+	JMP Do_PUp_Pallete_Collect
 
 
 ObjNorm_Obj1A:
@@ -2433,6 +2419,17 @@ Leaf_YVels:	.byte $04, $E0, $E0, $E0
 Leaf_TimerVals:	.byte $08, $FF, $FF, $FF
 
 ObjInit_SuperLeaf:
+	LDA From_Reserve
+	BEQ Do_Leaf_Init
+	LDA #$00
+	STA From_Reserve
+	LDA #$A0
+	STA Objects_YVel + 5
+	LDA #$14
+	STA Objects_Timer + 5
+	RTS
+
+Do_Leaf_Init:
 	LDA #$00
 	STA <Objects_XVel,X	 ; Halt X velocity
 	STA Objects_Var2,X	 ; Var2 = 0
@@ -2551,33 +2548,15 @@ PRG001_AC22:
 
 
 ObjHit_SuperLeaf:
-	LDA <Player_Suit
-	BNE Not_Leaf_Small
-	JMP ObjHit_PUpMush
-
-Not_Leaf_Small:
+	JSR Try_PUp_Reserve
+	JSR Get_Normalized_Suit
 	CMP #$03
-	BNE Not_Leaf
-	LDA Special_Suit_Flag
-	BEQ Already_Leaf
-
-Not_Leaf:
-	LDA #$04
-	STA Player_QueueSuit
-	LDA #$17
-	STA Player_SuitLost
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
-	BNE Leaf_Skip
-
-Already_Leaf:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
-
-Leaf_Skip:
+	BNE Do_Leaf_Power
 	JMP PUp_GeneralCollect
+
+Do_Leaf_Power:
+	LDA #$04
+	JMP Do_PUp_Poof_Collect
 	
 ObjInit_Vine:
 	LDA #SPR_BEHINDBG
@@ -2823,76 +2802,38 @@ ObjNorm_PDoor:
 	RTS
 
 ObjHit_IceFlower:
-	LDA <Player_Suit
-	BNE Not_Ice_Small
-	JMP ObjHit_PUpMush
-
-Not_Ice_Small:
-	CMP #$02
-	BNE Not_Ice
-	LDA Special_Suit_Flag
-	BNE Already_Ice
-Not_Ice:
-	
-	LDA #$08
-	STA Player_QueueSuit
-	LDA #$1f
-	STA Player_StarOff
-
-Already_Ice:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
+	JSR Try_PUp_Reserve
+	JSR Get_Normalized_Suit
+	CMP #$07 
+	BNE Do_Ice_Power
 	JMP PUp_GeneralCollect
+
+Do_Ice_Power:
+
+	LDA #$08
+	JMP Do_PUp_Pallete_Collect
 
 ObjHit_Pumpkin:
-	
-	; "Poof" sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
+	JSR Try_PUp_Reserve
+	JSR Get_Normalized_Suit
+	CMP #$0A
+	BNE Do_Boo_Power
+	JMP PUp_GeneralCollect
 
-	; "Poof" effect
-	LDA #$17
-	STA Player_SuitLost
-
-	; Change to Ninja
+Do_Boo_Power:
 	LDA #$0B
-	STA Player_QueueSuit
-
-	; Set to dead/empty
- 	LDA #OBJSTATE_DEADEMPTY
- 	STA Objects_State,X
- 	RTS
+	JMP Do_PUp_Poof_Collect
 
 ObjHit_FoxLeaf:
-	LDA <Player_Suit
-	BNE Not_Fox_Small
-	JMP ObjHit_PUpMush
-
-Not_Fox_Small:
-	CMP #$03
-	BNE Not_Fox
-	LDA Special_Suit_Flag
-	BNE Already_Fox
-
-Not_Fox:
-	LDA #$09
-	STA Player_QueueSuit
-	LDA #$17
-	STA Player_SuitLost
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
-	BNE Fox_Skip
-
-Already_Fox:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
-
-Fox_Skip:
+	JSR Try_PUp_Reserve
+	JSR Get_Normalized_Suit
+	CMP #$08
+	BNE Do_Fox_Power
 	JMP PUp_GeneralCollect
+
+Do_Fox_Power:
+	LDA #$09
+	JMP Do_PUp_Poof_Collect
 
 	; This is a fairly general "march" function, but it is only 
 	; applied to one object here, the unused collectable card...
@@ -6145,3 +6086,33 @@ PRG001_BF9B:
 
 ; Rest of ROM bank was empty
 
+Try_PUp_Reserve:
+	LDA Player_Ability
+	CMP #$07
+	BNE Cant_Reserve
+	JSR Get_Normalized_Suit
+	STA PowerUp_Reserve
+Cant_Reserve:
+	RTS
+
+Do_PUp_Poof_Collect:
+	STA Player_QueueSuit
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
+	LDA #$17
+	STA Player_SuitLost
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State + 5
+	RTS
+
+Do_PUp_Pallete_Collect:
+	STA Player_QueueSuit
+	LDA #$1f
+	STA Player_StarOff
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State + 5
+	RTS
