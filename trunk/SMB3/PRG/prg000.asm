@@ -6714,42 +6714,6 @@ Video_3CMFlowBot
 	.byte VU_REPEAT | $08, $A9
 	.byte $00	; Terminator
 
-
-Can_Wall_Jump:
-	LDA <Player_YVel
-	BMI No_Wall_Jump
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BEQ No_Wall_Jump
-	LDA <Player_InAir
-	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
-	JSR Get_Normalized_Suit
-	CMP #$0B
-	BNE No_Wall_Jump
-	STA Wall_Jump_Enabled
-	LDA #$00
-	STA Player_Flip
-	LDA <Player_YVel
-	CLC
-	SBC #$20			; slow down decent during wall jump mode
-	BMI No_Wall_Jump
-	STA <Player_YVel
-No_Wall_Jump:
-	RTS
-
-Do_Wall_Jump:
-	LDA <Player_FlipBits
-	BNE  Jump_Right
-	LDA #$20
-	BNE Do_Jump_Off
-
-Jump_Right:
-	LDA #$E0
-
-Do_Jump_Off:
-	STA <Player_XVel
-	RTS
-
 Do_Exit_Map:
 	LDA #$01
 	STA DAIZ_TEMP1

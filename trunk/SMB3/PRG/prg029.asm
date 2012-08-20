@@ -431,11 +431,16 @@ No_Invincible_Enemies:
 	BNE Not_Frozen
 	LDA Frozen_State
 	BEQ Not_Frozen
+
 	LDX Frozen_Frame
 	JMP Do_Frame
 
 Not_Frozen:
 	LDX <Player_Frame
+
+	LDA Player_Shell
+	BEQ Do_Frame
+	LDX #$0E
 
 Do_Frame:
 	LDA Wall_Jump_Enabled
@@ -582,6 +587,7 @@ PRG029_CF1E:
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
 
+	LDA Debug_Snap
 	LDA Player_Shell			; If in shell, override the animation
 	BEQ Try_Boo_Animation
 	TXA

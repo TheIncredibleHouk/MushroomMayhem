@@ -3269,26 +3269,16 @@ PRG031_FEC3:
 	DEY		 ; Y-- 
 	BPL PRG031_FEC0	 ; If Y hasn't gone negative (it should just now be 0), Read other joypad
 
-	; Done reading joypads
-	LDY Player_Current	 
-	BEQ PRG031_FF11	 ; If Player_Curren = 0 (Mario), jump to PRG031_FF11
-
-	LDA <Controller1
-	AND #$30
-	STA <Temp_Var1
-	LDA <Controller2
-	AND #$cf
-	ORA <Temp_Var1
-	STA <Pad_Holding
-	LDA <Controller1Press
-	AND #$30
-	STA <Temp_Var1
-	LDA <Controller2Press
-	AND #$cf
-	ORA <Temp_Var1
+	LDA Player_Shell
+	BEQ NoShellControl
+	LDA <Pad_Input
+	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Input
+	LDA <Pad_Holding
+	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
+	STA <Pad_Holding
 
-PRG031_FF11:
+NoShellControl:
 	LDA ChallengeMode
 	CMP #$01
 	BNE ChallengeRTS
