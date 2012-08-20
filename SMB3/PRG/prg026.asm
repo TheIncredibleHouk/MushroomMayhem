@@ -2947,18 +2947,15 @@ PRG026_B156:
 
 
 Exp_Levels:
-	.byte $00, $00, $00, $00, $00, $00, $00, $05 ; level 1
-	.byte $00, $00, $00, $00, $00, $00, $00, $07 ; level 2
-	.byte $00, $00, $00, $00, $00, $00, $00, $09 ; level 3
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 4
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 5
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 6
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 7
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 8
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 9
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 10
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 11
-	.byte $00, $00, $09, $00, $00, $01, $00, $00 ; level 12
+	.byte $00, $00, $00, $00, $00, $00, $00, $01 ; level 1
+	.byte $00, $00, $00, $00, $00, $00, $00, $02 ; level 2
+	.byte $00, $00, $00, $00, $00, $00, $00, $03 ; level 3
+	.byte $00, $00, $00, $00, $00, $00, $00, $04 ; level 4
+	.byte $00, $00, $00, $00, $00, $00, $00, $05 ; level 5
+	.byte $00, $00, $00, $00, $00, $00, $00, $06 ; level 6
+	.byte $00, $00, $00, $00, $00, $00, $00, $07 ; level 7
+	.byte $00, $00, $00, $00, $00, $00, $00, $08 ; level 8
+	.byte $00, $00, $00, $00, $00, $00, $00, $09 ; level 9
 
 StatusBar_Fill_Exp:
 	LDA (Exp_Earned + 2)
@@ -3026,6 +3023,9 @@ Exp_Done:
 
 
 Check_Exp_Level:
+	LDA Player_Level
+	CMP #$09
+	BEQ No_New_Ability
 	JSR Clear_Calc
 	LDA Player_Level
 	ASL A
@@ -3058,22 +3058,71 @@ Store_Exp_Check:
 No_New_Ability:
 	RTS
 
-;Ability_Tiles:
-	;.byte 
+Ability_Tiles1:
+	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F, $6C, $6D
+
+Ability_Tiles2:
+	.byte $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F, $7C, $7D
 
 StatusBar_Ability_Level:
 	LDA Status_Bar_Mode
 	CMP #$00
-	BNE Dont_Draw_Ability_Level
+	BNE Dont_Draw_Current_Ability
 	LDA Player_Level
 	ORA #$30
 	STA (Status_Bar_Top + 20)
+	LDA Status_Bar_Mode
+	CMP #$00
+	BNE Dont_Draw_Current_Ability
+	LDA Player_Ability
+	BEQ Dont_Draw_Current_Ability
+	SEC
+	SBC #$01
+	ASL A
+	TAX
+	LDA Ability_Tiles1, X
+	STA (Status_Bar_Top + 26)
+	LDA (Ability_Tiles1 + 1), X
+	STA (Status_Bar_Top + 27)
+	LDA Ability_Tiles2, X
+	STA (Status_Bar_Bottom + 26)
+	LDA (Ability_Tiles2 + 1), X
+	STA (Status_Bar_Bottom + 27)
 
-Dont_Draw_Ability_Level:
+Dont_Draw_Current_Ability:
 	RTS	
+
+PUp_Reserve_Tiles1:
+	.byte $FE, $FE, $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $00, $00, $00, $00, $00, $00
+
+PUp_Reserve_Tiles2:
+	.byte $FE, $FE, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $00, $00, $00, $00, $00, $00
+
+Status_Bar_Draw_Item_Reserve:
+	LDA Status_Bar_Mode
+	CMP #$00
+	BNE Item_ReserveRTS
+	LDA PowerUp_Reserve
+	LDX Player_Ability
+	CPX #$07
+	BEQ Draw_ItemReserve
+	LDA #$00
+
+Draw_ItemReserve:
+	ASL A
+	TAX
+	LDA PUp_Reserve_Tiles1, X
+	STA (Status_Bar_Top + 23)
+	LDA (PUp_Reserve_Tiles1 + 1), X
+	STA (Status_Bar_Top + 24)
+	LDA PUp_Reserve_Tiles2, X
+	STA (Status_Bar_Bottom + 23)
+	LDA (PUp_Reserve_Tiles2 + 1), X
+	STA (Status_Bar_Bottom + 24)
+
+Item_ReserveRTS:
+	RTS
 ; FIXME: Anybody want to claim this?
-; $B24A
-	.byte $2B, $28, $08, $EF, $EF, $EF, $EF, $EF, $EF, $3C, $3D, $00
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; StatusBar_Fill_PowerMT
@@ -3431,9 +3480,7 @@ StatusBar_UpdTemplate:
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_UpdateValues:
-	JSR Check_Status_Bar_Switch
 	JSR Do_Odometer
-
 	JSR Draw_Game_Timer
 	JSR Draw_HBros_Coin
 	JSR Initialize_Status_Bar
@@ -3442,6 +3489,7 @@ StatusBar_UpdateValues:
 	JSR StatusBar_Fill_Air_MT	;
 	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Exp_Earned
 	JSR StatusBar_Ability_Level
+	JSR Status_Bar_Draw_Item_Reserve
 	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
 	LDX #$00	 	; X = 0
@@ -3580,7 +3628,7 @@ Initial_Bar_Display2:
 	.byte $FE, $30, $30, $30, $30, $30, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 World_Names:
 	.byte " MUSHROOM EVERGLADES"
-	.byte " FROZEN       FOREST"
+	.byte " FROZEN    FOREST   "
 
 Draw_World_Name:
 	LDY World_Num
@@ -3655,17 +3703,6 @@ Draw_Update2:
 	JSR Update_Odometer
 	JSR Draw_World_Name
 No_Init:
-	RTS
-
-Check_Status_Bar_Switch:
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ No_Switch
-	LDA Status_Bar_Mode
-	EOR #$FF
-	STA Status_Bar_Mode
-
-No_Switch:
 	RTS
 
 Do_Odometer:

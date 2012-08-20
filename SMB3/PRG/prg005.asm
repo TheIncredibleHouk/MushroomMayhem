@@ -206,7 +206,7 @@ ObjectGroup04_Attributes2:
 	.byte OA2_TDOGRP0	; Object $9B
 	.byte OA2_TDOGRP0	; Object $9C
 	.byte OA2_TDOGRP0	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OA2_TDOGRP0	; Object $9E - OBJ_PODOBOO
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $9E - OBJ_PODOBOO
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $9F - OBJ_PARABEETLE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A0 - OBJ_DRYPIRANHA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
@@ -2161,7 +2161,20 @@ Rocky_Killed:
 	LDA Objects_Timer,X	  
 	BNE PRG005_AA96	 ; If timer not expired, jump to PRG005_AA96
 
-	; Set Rocky state to Killed
+	JSR Exp_Inc	 ; Get proper score award
+	LDA Player_Ability
+	CMP #$09
+	BNE Dont_Coin_It10
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Dont_Coin_It10:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 

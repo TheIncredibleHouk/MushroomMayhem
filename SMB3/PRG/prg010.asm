@@ -3892,15 +3892,20 @@ Is_Traversable:
 	RTS
 
 Try_Ability_Change:
+	LDA Player_Level
+	BEQ Ability_RTS
 	LDA <Pad_Input
 	AND #PAD_START
 	BEQ Ability_RTS
-	INC Player_Ability
 	LDA Player_Ability
 	CMP Player_Level
-	BCC Change_Ability
+	BCS Reset_Ability
+	INC Player_Ability
+	LDA Player_Ability
+	STA Player_Ability
+	RTS
+Reset_Ability:
 	LDA #$01
-Change_Ability:
 	STA Player_Ability
 
 Ability_RTS:

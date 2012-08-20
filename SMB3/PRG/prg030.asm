@@ -2301,32 +2301,7 @@ Normal_Anim:
 	STA PatTable_BankSel+1 ; Set pattern for this tick
 
 Skip_Tile_Anim:
-	LDY #$0B
-	LDA (Level_ObjectID + 5)
-
-Find_PUp:
-	CMP SPR_PowerUps, Y
-	BEQ PUp_Found
-	DEY
-	BPL Find_PUp
-	INY
-
-PUp_Found:
-	LDA PUp_StarManFlash
-	BEQ Not_Suit
-	BMI Not_Suit
-	TAY
-	DEY
-	LDA Suit_Anim, Y
-	TAY
-
-Not_Suit:
-	TYA
-	ASL A
-	ASL A
-	CLC
-	ADC SPR_Anim, X
-	STA PatTable_BankSel+3
+	JSR Do_Spr_Anim
 
 PRG030_8E5D:
 	; End of animations...
@@ -2356,7 +2331,14 @@ PRG030_8E79:
 	BEQ PRG030_8EAD	 	; If not paused, jump to PRG030_8EAD
 
 	; When game is paused...
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ No_Switch
+	LDA Status_Bar_Mode
+	EOR #$FF
+	STA Status_Bar_Mode
 
+No_Switch:
 	LDA #$32
 	STA PatTable_BankSel+5	; Set patterns needed for P A U S E sprites
 
@@ -5578,3 +5560,129 @@ Not_Exit_Object:
 
 	LDX DAIZ_TEMP2
 	RTS
+
+Get_Normalized_Suit:
+	LDA Player_Suit
+	LDX Special_Suit_Flag
+	BEQ Normalized_Suit_RTS
+	CLC
+	ADC #$05
+Normalized_Suit_RTS:
+	RTS
+
+Reserve_Sprites:
+	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_NINJASHROOM
+
+Reserve_Flash:
+	.byte $00, $00, $00, $01, $02, $03, $00, $00, $00, $00, $00
+
+Try_Item_Reserve_Release:
+	LDA Player_Ability
+	CMP #$07
+	BNE No_Release
+	LDA PowerUp_Reserve
+	BEQ No_Release
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ No_Release
+	LDX PowerUp_Reserve
+	DEX
+	LDA #OBJSTATE_INIT
+	STA Objects_State + 5
+	LDA Reserve_Sprites, X
+	STA Level_ObjectID + 5
+	LDA Reserve_Flash, X
+	STA PUp_StarManFlash
+	LDA <Player_X
+	STA Objects_X + 5
+	LDA <Player_XHi
+	STA Objects_XHi + 5
+	LDA <Player_Y
+	STA Objects_Y + 5
+	LDA <Player_YHi
+	STA Objects_YHi + 5
+	LDA Objects_Y + 5
+	SEC
+	SBC #$08
+	STA Objects_Y + 5
+	BCS No_PUp_Dec
+	DEC Objects_YHi + 5
+
+No_PUp_Dec:
+	LDA #$01
+	STA From_Reserve
+	LDA #$00
+	STA PowerUp_Reserve
+	STA Objects_XVel + 5
+	JMP Do_Spr_Anim
+No_Release:
+	RTS
+
+Do_Spr_Anim:
+	LDY #$0B
+	LDA (Level_ObjectID + 5)
+
+Find_PUp:
+	CMP SPR_PowerUps, Y
+	BEQ PUp_Found
+	DEY
+	BPL Find_PUp
+	INY
+
+PUp_Found:
+	LDA PUp_StarManFlash
+	BEQ Not_Suit
+	BMI Not_Suit
+	TAY
+	DEY
+	LDA Suit_Anim, Y
+	TAY
+
+Not_Suit:
+	TYA
+	ASL A
+	ASL A
+	CLC
+	ADC SPR_Anim, X
+	STA PatTable_BankSel+3
+	RTS
+
+Produce_Coin:
+
+	LDY #$03	 ; Y = 3
+
+Produce_Coin_Loop:
+	LDA CoinPUp_State,Y
+	BEQ PRG000_C4A7	 ; If this coin slot state = 0, it's free, go use it!
+	DEY		 ; Y--
+	BPL Produce_Coin_Loop	 ; While Y >= 0, loop!
+
+	; If all else fails, just overwrite the oldest slot!
+	LDY #$03	 ; Y = 3
+
+PRG000_C4A7:
+
+	; Play coin sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+
+	LDA #$01
+	STA CoinPUp_State,Y	; Set coin state to 1
+
+	LDA <Temp_Var1		; Get input Y
+	SUB Level_VertScroll	; Make relative to vertical scroll
+	SBC #24	 		; Subtract 24
+	STA CoinPUp_Y,Y	 	; Store as coin's Y
+
+	LDA <Temp_Var2		; Get input X
+	SUB <Horz_Scroll	; Make relative to horizontal scroll
+	STA CoinPUp_X,Y	 	; Store as coin's X
+
+	LDA #-5	 
+	STA CoinPUp_YVel,Y	; Set Y Vel = -5
+
+	LDA #$01	 
+	STA CoinPUp_Counter,Y	; Set counter to 1
+
+	RTS		 ; Return

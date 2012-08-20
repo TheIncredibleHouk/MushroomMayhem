@@ -750,6 +750,7 @@ PRG008_A3C9:
 Player_Update:
 	JSR Do_Air_Timer
 	JSR Increase_Game_Timer
+	JSR Try_Item_Reserve_Release
 	LDA Player_QueueSuit
 	BEQ PRG008_A3FA	 ; If we don't have a suit change queued, jump to PRG008_A3FA
 
@@ -791,7 +792,6 @@ PRG008_A3F2:
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Fox_FireBall
-
 
 	LDA Frozen_State
 	BNE PRG008_A3FA
@@ -972,11 +972,9 @@ Sound_FullPowerRing:
 
 
 PRG008_A4E4:
-	LDA Player_Suit
-	CMP #$03
+	JSR Get_Normalized_Suit
+	CMP #$08
 	BNE Normal_PMeter
-	LDA Special_Suit_Flag
-	BEQ Normal_PMeter
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Normal_PMeter
@@ -1019,6 +1017,10 @@ PRG008_A50C:
 	BEQ PRG008_A51A	 ; If Player is not running, jump to PRG008_A51A
 
 	LDY #$08	 ; Otherwise, Y = $8
+	LDA Player_Ability
+	CMP #06
+	BNE PRG008_A51A
+	LDY #$02
 
 PRG008_A51A:
 	STY Player_PMeterCnt	 ; Set Player_PMeterCnt
@@ -1063,13 +1065,7 @@ PowerUp_Palettes:
 
 ; #DAHRKDAIZ if we're i special suit mode, we jump farther into the table.
 Level_SetPlayerPUpPal:
-	LDA <Player_Suit
-	LDX Special_Suit_Flag
-	BEQ Not_Special_Suit_Pal	
-	CLC
-	ADC #$05
-
-Not_Special_Suit_Pal:
+	JSR Get_Normalized_Suit
 	TAY
 	LDX Graphics_BufCnt
 	TXA
@@ -1673,7 +1669,7 @@ PRG008_A86C:
 	ORA Boo_Mode_Timer
 	ORA Fox_FireBall
 	ORA Player_Shell
-	BNE PRG008_A890	 ; If Player is in water, holding something, or in Kuribo's shoe, jump to PRG008_A890
+	BNE PRG008_A890	 ; If Player is in water, holding something, or in 
 
 	LDA <Temp_Var1
 	CMP #TILE1_VINE
@@ -1861,15 +1857,6 @@ PRG008_A93D:
 PRG008_A940:
 	JSR Player_CommonGroundAnims	 ; Perform common ground animation routines
 
-; #DAHRKDAIZ Kuribo shoe code removed
-;	LDA Player_Kuribo
-;	BEQ PRG008_A94C	 ; If Player is not wearing Kuribo's shoe, jump to PRG008_A94C
-;
-;	; If in Kuribo's shoe...
-;
-;	LDA #14		 ; A = 14 (Kuribo's shoe code pointer)
-;	BNE PRG008_A956	 ; Jump (technically always) to PRG008_A956
-
 PRG008_A94C:
 	LDA <Player_Suit
 
@@ -1881,12 +1868,6 @@ PRG008_A94C:
 PRG008_A956:
 	ASL A		 ; 2-byte pointer
 	TAY		 ; -> Y
-
-	; MOVEMENT LOGIC PER POWER-UP / SUIT
-
-	; NOTE: If you were ever one to play around with the "Judgem's Suit"
-	; glitch power-up, and wondered why he swam in the air and Kuribo'ed
-	; in the water, here's the answer!
 
 
 	; Get proper movement code address for power-up 
@@ -2496,8 +2477,8 @@ Jump_Over_PRG008_AC9E:
 	BNE DIRECT_TO_JUMP	 ; If Player_AllowAirJump <> 0, jump to PRG008_AC41
 
 	LDA <Player_InAir
-	BNE PRG008_AC9E	 ; If Player is mid air, jump to PRG008_AC9E
 	BEQ DIRECT_TO_JUMP
+	JMP PRG008_AC9E	 ; If Player is mid air, jump to PRG008_AC9E
 
 PRG008_AC41:
 	; #DAHRKDAIZ modified to push the player "off" the wall when doing a wall jump
@@ -2529,10 +2510,12 @@ STORE_SMALL_JUMP:
 	LDA Player_IsHolding
 	BNE PRG008_AC6C	 ; If Player is holding something, jump to PRG008_AC6C
 
-	LDA <Player_Suit
-	BEQ PRG008_AC6C	 ; If Player is small, jump to PRG008_AC6C
-	CMP #PLAYERSUIT_FROG
-	BEQ PRG008_AC6C	 ; If Player is wearing frog suit, jump to PRG008_AC6C
+	JSR Get_Normalized_Suit
+	BEQ PRG008_AC6C
+	CMP #$03
+	BEQ PRG008_AC6C
+	CMP #$08
+	BEQ PRG008_AC6C
 
 	; Otherwise, mark as mid air AND backflipping
 	STA Player_Flip
@@ -2547,6 +2530,7 @@ PRG008_AC6C:
 	LDA <Player_XVel
 	BPL PRG008_AC73
 	JSR Negate
+
 PRG008_AC73:
 
 	LSR A
@@ -2562,7 +2546,19 @@ PRG008_AC73:
 	LDA #$D0
 
 	STA Player_Flip
+
 Normal_Jump:
+	STA DAIZ_TEMP1
+	LDA Player_Ability
+	CMP #$05
+	BNE Jump_Normal
+	LDA DAIZ_TEMP1
+	SEC
+	SBC #$06
+	STA DAIZ_TEMP1
+
+Jump_Normal:
+	LDA DAIZ_TEMP1
 	STA <Player_YVel		; -> Y velocity
 
 	LDA #$01
@@ -2580,9 +2576,6 @@ Normal_Jump:
 	BNE PRG008_AC9E	 	; If Player still has flight time left, jump to PRG008_AC9E
 
 	LDA #$80
-	LDX Special_Suit_Flag
-	BNE PRG008_AC9E
-
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = $80
 
 PRG008_AC9E:
@@ -2637,10 +2630,8 @@ Skip_YVel:
 
 PRG008_ACD9:
 
-	LDA Special_Suit_Flag
-	BNE PRG008_ACEF
-	LDX <Player_Suit ; #DAHRKDAIZ hacked, only Racoon Mario can fly
-	CPX #$03			
+	JSR Get_Normalized_Suit			
+	CMP #$03
 	BNE PRG008_ACEF	 	; If this power up does not have flight, jump to PRG008_ACEF
 
 	LDY <Temp_Var1		; Y = $80 if Player was pressing 'A' when this all began
@@ -2873,8 +2864,6 @@ PRG008_ADD2:
 
 	RTS		 ; Return
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_CommonGroundAnims
 ;
@@ -3064,7 +3053,6 @@ PRG008_AECA:
 	BNE PRG008_AEF0	 ; If Player already has flight time, jump to PRG008_AEF0
 
 	LDA Player_IsDucking
-	ORA Player_Kuribo
 	ORA Player_IsClimbing
 	ORA Player_Slide
 	BNE PRG008_AEF0	 ; If Player is ducking, in a Kuribo's shoe, climbing a vine, or sliding, jump to PRG008_AEF0!!
@@ -3252,10 +3240,8 @@ Player_Koopa_Shell:
 	BNE RTSShell
 	LDA <Player_InAir
 	BNE RTSShell
-	LDA <Player_Suit
+	JSR Get_Normalized_Suit
 	CMP #$05
-	BNE NoShellRTS
-	LDA Special_Suit_Flag
 	BNE Kill_Shell
 	LDA Player_XVel
 	BEQ NoShellRTS				; If XVel is not 0 and holding down, we're in shell mode
@@ -5043,15 +5029,8 @@ LATP_None:
 LATP_Flower:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ PRG008_B7F9	 ; If Player is small, jump to PRG008_B7F9
-
-	LDY #$02	 ; Y = 2 (spawn a fire flower) (index into PRG001 Bouncer_PUp)
-
-PRG008_B7F9:
+	LDY #$02	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+	JSR Do_PUp_Proper
 	RTS		 ; Return
 
 ; #DAHRKDAIZE ICE_FLOWER
@@ -5059,43 +5038,24 @@ LATP_IceFlower:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
 
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ NO_ICE_SMALL	 ; If Player is small, jump to PRG008_B7F9
-
 	LDY #$08	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
-
-NO_ICE_SMALL:
+	JSR Do_PUp_Proper
 	RTS		 ; Return
 
 ;;;;;;;;;;;;
 LATP_Pumpkin:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ NO_PUMPKIN	 ; If Player is small, jump to PRG008_B7F9
-
 	LDY #$09	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
-
-NO_PUMPKIN:
+	JSR Do_PUp_Proper
 	RTS		 ; Return
 
 LATP_Leaf:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
 
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ PRG008_B807	 ; If Player is small, jump to PRG008_B807
-
 	LDY #$03	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)
-
-PRG008_B807:
+	JSR Do_PUp_Proper
 	RTS		 ; Return
 
 LATP_Star:
@@ -5202,66 +5162,51 @@ LATP_NinjaShroom:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
 
-	LDY #$05
-	LDA <Player_Suit
-	BEQ Do_Ninja_Shroom
 	LDY #$07	 ; Y = 7 (1-up) (index into PRG001 Bouncer_PUp)
-
-Do_Ninja_Shroom:
+	JSR Do_PUp_Proper
 	RTS		 ; Return
 
 LATP_FoxLeaf:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
 
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ No_FoxLeaf	 ; If Player is small, jump to PRG008_B807
-
 	LDY #$0A	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)
-
-No_FoxLeaf:
-	RTS
+	JSR Do_PUp_Proper
+	RTS		 ; Return
 
 LATP_Frog:
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ No_Frog	 ; If Player is small, jump to PRG008_B807
-
+	LDY #$04
+	JSR Do_PUp_Proper
+	CPY #$04
+	BNE Frog_RTS
 	LDA #$01
 	STA PUp_StarManFlash
-	LDY #$04
 
-No_Frog:
-	RTS
+Frog_RTS:
+	RTS		 ; Return
+
 
 LATP_Koopa:
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ No_Koopa	 ; If Player is small, jump to PRG008_B807
-
+	LDY #$04
+	JSR Do_PUp_Proper
+	CPY #$04
+	BNE Koopa_RTS
 	LDA #$02
 	STA PUp_StarManFlash
-	LDY #$04
 
-No_Koopa:
+Koopa_RTS:
 	RTS
 
 
 LATP_Sledge:
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-
-	LDA <Player_Suit
-	BEQ No_Sledge	 ; If Player is small, jump to PRG008_B807
-
+	LDY #$04
+	JSR Do_PUp_Proper
+	CPY #$04
+	BNE Sledge_RTS
 	LDA #$03
 	STA PUp_StarManFlash
-	LDY #$04
 
-No_Sledge:
+Sledge_RTS:
 	RTS
 
 LATP_PSwitch:
@@ -5336,8 +5281,7 @@ LATP_CoinCommon:
 	ORA #$04
 	STA <Temp_Var2
 
-	JMP PRG000_C49B	 ; Jump to PRG000_C49B (common "power up" coin entry)
-
+	JMP Produce_Coin	 ; Jump to Produce_Coin (common "power up" coin entry)
 
 	; Special routine which gets a coin above a ? block, if one is present!
 LATP_GetCoinAboveBlock:
@@ -5965,7 +5909,7 @@ PRG008_BBBF:
 	BNE PRG008_BC0D	 ; If the Player's suit CANNOT slide on slopes, jump to PRG008_BC0D
 
 	LDA Player_Shell
-	BNE PRG008_BC0D	 ; If Player is wearing Kuribo's shoe, jump to PRG008_BC0D
+	BNE PRG008_BC0D	 ; If Player is wearing 
 
 	LDA <Pad_Holding
 	AND #(PAD_DOWN | PAD_LEFT | PAD_RIGHT)	; checking down/left/right
@@ -6352,8 +6296,9 @@ PRG008_BD89:
 
 	; It's a spike tile...
 
-	LDA Player_Kuribo
-	BEQ PRG008_BD93	 ; If Player is NOT in a Kuribo's shoe, jump to PRG008_BD93
+	LDA Player_Ability
+	CMP #$08
+	BEQ PRG008_BD93	 ; If Player is NOT in a 
 
 	LDA Player_HitCeiling
 	BEQ PRG008_BD96	 ; If Player has not just hit head off ceiling, jump to PRG008_BD96
@@ -6373,10 +6318,10 @@ PRG008_BD98:
 	CMP #TILEA_MUNCHER	; Assuming muncher tile!  Should be MuncherJelectroSet,Y?
 	BNE PRG008_BDB1	 ; If Player is NOT touching a muncher, jump to PRG008_BDB1
 
-	; Kuribo-on-muncher handling
 PRG008_BDA4:
-	LDA Player_Kuribo
-	BEQ PRG008_BDAE	 ; If Player does NOT have Kuribo's shoe, jump to PRG008_BDAE (get hurt!)
+	LDA Player_Ability
+	CMP #$08
+	BEQ PRG008_BDAE	 ; 
 
 	LDA Player_HitCeiling
 	BEQ PRG008_BDB4	 ; If Player has not just hit off ceiling, jump to PRG008_BDB4
@@ -6413,6 +6358,9 @@ Try_Slick_Blocks:
 	BMI PRG008_BE2E
 
 Set_Slick:
+	LDA Player_Ability
+	CMP #$04
+	BEQ PRG008_BE2E
 	LDA #$02	 
 	STA Player_Slippery	 ; Player_Slippery = 2 (ground is REALLY slippery!)
 	JMP PRG008_BE31	 ; Jump to PRG008_BE31
@@ -6548,11 +6496,6 @@ PipeMove_SetPlayerFrame:
 	LDY #$02	 ; Otherwise, Y = 2
 
 PRG008_BF0A:
-	LDA Player_Kuribo
-	BEQ PRG008_BF10	 ; If not wearing Kuribo's shoe, jump to PRG008_BF10
-
-	INY		 ; Otherwise Y++
-
 PRG008_BF10:
 	LDA PipeMove_Frame,Y ; Get appropriate pipe traversal frame
 	STA <Player_Frame	  ; Store as Player frame
@@ -6821,9 +6764,17 @@ Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 	BNE Decrease_Air_Time
 
 Decrease_Air_Time:
-	; #DAHRKDAIZ - Hijacked for swim
+	LDA #$07
+	STA  DAIZ_TEMP1
+	LDA Player_Ability
+	CMP #$02
+	BNE Do_Air_Dec
+	LDA #$0F
+	STA  DAIZ_TEMP1
+
+Do_Air_Dec:
 	LDA Counter_1
-	AND #$07
+	AND DAIZ_TEMP1
 	BNE Skip_Air_Change
 	LDA Air_Time			; No air, stop decreasing it!
 	BMI Skip_Air_Change
@@ -6858,3 +6809,13 @@ FireBall_ChangeBlocks:
 
 FireBall_ChangeBlocksTo:
 	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER
+
+Do_PUp_Proper:
+	LDA Player_Ability
+	CMP #$03
+	BEQ PUp_RTS
+	LDA <Player_Suit
+	BNE PUp_RTS
+	LDY #$05
+PUp_RTS:
+	RTS

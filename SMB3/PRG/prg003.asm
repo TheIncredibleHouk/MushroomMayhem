@@ -1416,10 +1416,6 @@ PRG003_A739:
 	LDA Objects_PlayerHitStat,X
 	BEQ PRG003_A75E	 ; If Player didn't touch Bob-omb, jump to PRG003_A75E (RTS)
 
-	LDA Player_Kuribo
-	BEQ PRG003_A74B	 ; If Player is not in Kuribo's shoe, jump to PRG003_A74B
-
-	JMP BobOmb_Kill	 ; Jump to BobOmb_Kill
 
 PRG003_A74B:
 	INC <Objects_Var5,X
@@ -1557,9 +1553,6 @@ PRG003_A7DC:
 
 	LDA Objects_Timer2,X
 	BNE PRG003_A7F0	 ; If timer2 has not expired, jump to PRG003_A7F0 (RTS)
-
-	LDA Player_Kuribo
-	BNE BobOmb_Kill	 ; If Player is in Kuribo's shoe, kill Bob-omb, jump to BobOmb_Kill
 
 	; Otherwise, set Bob-omb's state to 4 (Held, doesn't really make sense)
 	LDA #OBJSTATE_HELD

@@ -694,9 +694,9 @@ GBCtl_CoinBlock:
 	ORA #$0e
 	STA <Temp_Var2		; Temp_Var2 = Object's X aligned evenly in column
 
-	JSR PRG000_C49B	 ; Init for emerging coin
+	JSR Produce_Coin	 ; Init for emerging coin
 
-	JMP PRG002_A420	 ; Jump to PRG000_C49B
+	JMP PRG002_A420	 ; Jump to Produce_Coin
 
 GBCtl_LeafBlock:
 	LDA <Player_X
@@ -3425,10 +3425,6 @@ ObjHit_GoombaInShoe:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
-
-	; Queue Kuribo's shoe!
-	LDA #$80
-	STA Player_QueueSuit
 
 	; Set shoe state to 0 (dead/empty)
 	ASL A
