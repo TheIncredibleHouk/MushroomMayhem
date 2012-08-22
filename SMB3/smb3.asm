@@ -3011,7 +3011,12 @@ SOBJ_POOF		= $16 	; Poof
 	Current_Save_Slot:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
 	From_Reserve:		.ds 1
-						.ds 447;
+	DayNight:			.ds 1
+	DayNightTransition:	.ds 1
+	DayNightMicroTicker: .ds 1
+	DayNightTicker:		.ds 1
+	MasterPal_Data:		.ds 16
+						.ds 427;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

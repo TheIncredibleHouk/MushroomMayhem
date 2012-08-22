@@ -3480,8 +3480,18 @@ StatusBar_UpdTemplate:
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_UpdateValues:
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ No_Switch
+	LDA Status_Bar_Mode
+	EOR #$FF
+	STA Status_Bar_Mode
+
+No_Switch:
 	JSR Do_Odometer
+	JSR Draw_DayNightMeter
 	JSR Draw_Game_Timer
+	JSR Draw_DayNightMeter
 	JSR Draw_HBros_Coin
 	JSR Initialize_Status_Bar
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
@@ -3782,4 +3792,21 @@ Draw_Game_Timer:
 	STA Status_Bar_Top + 10
 
 DontDraw_Game_Timer:
+	RTS
+DayNightTiles:
+	.byte $60, $74, $61, $74, $62, $74, $63, $74, $64, $65, $66, $67, $70, $71, $72, $73, $74, $60, $74, $61, $74, $62, $74, $63
+
+Draw_DayNightMeter:
+	LDA Status_Bar_Mode
+	CMP #$00
+	BNE NoDayNightMeter
+	LDA DayNightTicker
+	ASL A
+	TAX
+	LDA DayNightTiles, X
+	STA Status_Bar_Bottom + 19
+	LDA DayNightTiles + 1,X
+	STA Status_Bar_Bottom + 20
+
+NoDayNightMeter: 
 	RTS

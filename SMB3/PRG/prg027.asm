@@ -1808,11 +1808,36 @@ PRG027_B86D:
 PRG027_B877:
 	LDA [Temp_Var1],Y	; Get byte of palette data
 	STA Pal_Data,X	 	; Store it into Pal_Data
+	STA MasterPal_Data, X
 	INY		 	; Y++
 	INX		 	; X++
 	CPX #16			
 	BNE PRG027_B877	 	; While X <> 16, loop!
 
+	LDA Pal_Data
+	CMP #$0F			; if we're already dark, no day/night applied (inside)
+	BEQ No_Darken
+	LDA DayNight
+	BEQ No_Darken
+	LDA Debug_Snap
+	LDX #$0F
+
+Darken_Pal:
+	LDA Pal_Data, X
+	SEC
+	SBC #$10
+	BMI Skip_Darken
+	STA Pal_Data, X
+
+Skip_Darken:
+	DEX
+	BPL Darken_Pal
+
+	LDA #$0F
+	STA Pal_Data
+
+No_Darken:
+	LDX #$10
 	LDA PalSel_Obj_Colors
 	ASL A		 
 	ASL A		 

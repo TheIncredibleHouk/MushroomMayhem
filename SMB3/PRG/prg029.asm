@@ -587,7 +587,6 @@ PRG029_CF1E:
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
 
-	LDA Debug_Snap
 	LDA Player_Shell			; If in shell, override the animation
 	BEQ Try_Boo_Animation
 	TXA
