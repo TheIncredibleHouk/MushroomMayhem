@@ -2331,14 +2331,6 @@ PRG030_8E79:
 	BEQ PRG030_8EAD	 	; If not paused, jump to PRG030_8EAD
 
 	; When game is paused...
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ No_Switch
-	LDA Status_Bar_Mode
-	EOR #$FF
-	STA Status_Bar_Mode
-
-No_Switch:
 	LDA #$32
 	STA PatTable_BankSel+5	; Set patterns needed for P A U S E sprites
 
@@ -5720,4 +5712,17 @@ Jump_Right:
 
 Do_Jump_Off:
 	STA <Player_XVel
+	RTS
+
+Transition_Palette:
+
+Transition_Night:
+	LDA DayNightTransition
+	BEQ
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+
 	RTS

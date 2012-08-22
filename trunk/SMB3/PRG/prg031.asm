@@ -3049,6 +3049,24 @@ Increase_Game_Timer:
 	CMP #$3C
 	BCC Game_Timer_RTS
 
+	INC DayNightMicroTicker
+	LDA DayNightMicroTicker
+	CMP #$1E
+	BNE DoGameTimer
+	LDA #$00
+	STA DayNightMicroTicker
+	INC DayNightTicker
+	LDA DayNightTicker
+	CMP #$0C
+	BNE DoGameTimer
+	LDA #$00
+	STA DayNightTicker
+	LDA DayNight
+	EOR #$FF
+	STA DayNight
+	LDA 
+
+DoGameTimer:
 	LDX #$05
 Game_Timer_Loop:
 	INC Game_Timer,X
