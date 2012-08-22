@@ -5714,15 +5714,74 @@ Do_Jump_Off:
 	STA <Player_XVel
 	RTS
 
-Transition_Palette:
-
-Transition_Night:
-	LDA DayNightTransition
+DoNightTransition:
+	LDA NightTransition
 	BEQ
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA DAIZ_TEMP1
+	LDA #$40
+	SEC
+	SBC DAIZ_TEMP1
+	STA DAIZ_TEMP1
+	LDA MasterPal_Data
+	SEC
+	SBC DAIZ_TEMP1
+	BPL
+	LDA #$0F
+	STA Pal_Data
+	STA Palette_Buffer
+	RTS
 
+FinalNightTransition:
+	LDX #$0f
+
+NextColorNight:
+	LDA MasterPal_Data
+	SEC
+	SBC #$10
+	BPL
+	LDA #$0F
+	STA Pal_Data
+	STA Palette_Buffer
+	DEX
+	BPL NextColorNight
+	RTS
+	
+DoNightTransition:
+	LDA DayTransition
+	BEQ
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA DAIZ_TEMP1
+	LDA #$40
+	SEC
+	SBC DAIZ_TEMP1
+	STA DAIZ_TEMP1
+	LDA MasterPal_Data
+	SEC
+	SBC DAIZ_TEMP1
+	BPL
+	LDA #$0F
+	STA Pal_Data
+	STA Palette_Buffer
+	RTS
+
+FinalNightTransition:
+	LDX #$0f
+
+NextColorNight:
+	LDA MasterPal_Data
+	SEC
+	SBC #$10
+	BPL
+	LDA #$0F
+	STA Pal_Data
+	STA Palette_Buffer
+	DEX
+	BPL NextColorNight
 	RTS
