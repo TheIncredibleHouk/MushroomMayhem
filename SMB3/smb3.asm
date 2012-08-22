@@ -3011,12 +3011,13 @@ SOBJ_POOF		= $16 	; Poof
 	Current_Save_Slot:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
 	From_Reserve:		.ds 1
-	DayNight:			.ds 1
-	DayNightTransition:	.ds 1
-	DayNightMicroTicker: .ds 1
-	DayNightTicker:		.ds 1
-	MasterPal_Data:		.ds 16
-						.ds 427;
+	DayNight:			.ds 1	; signifies if it's day or night
+	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
+	DayNightTicker:		.ds 1	;
+	NightTransition:	.ds 1	; when not 0, we're transitioning into night
+	DayTransition:		.ds 1	; when not 0, we're transitioning into day
+	MasterPal_Data:		.ds 16	; keeps track of the unmodified, original palette
+						.ds 426;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
