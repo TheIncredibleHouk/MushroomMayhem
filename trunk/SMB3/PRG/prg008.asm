@@ -340,7 +340,12 @@ PRG008_A17F:
 	STA Player_HaltGame	; ... means he's halting the gameplay for now
 
 	BNE PRG008_A1C1	 	; And if that's the case, jump to PRG008_A1C1
-
+	
+	JSR Do_Air_Timer
+	JSR Increase_Game_Timer
+	JSR Try_Item_Reserve_Release
+	JSR DoNightTransition
+	JSR DoDayTransition
 	INC Level_NoStopCnt	; As long as none of the above is happening, continue the "no stop" counter...
 
 PRG008_A1C1:
@@ -748,9 +753,6 @@ PRG008_A3C9:
 ; needed to make a functional Player object!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Update:
-	JSR Do_Air_Timer
-	JSR Increase_Game_Timer
-	JSR Try_Item_Reserve_Release
 	LDA Player_QueueSuit
 	BEQ PRG008_A3FA	 ; If we don't have a suit change queued, jump to PRG008_A3FA
 
