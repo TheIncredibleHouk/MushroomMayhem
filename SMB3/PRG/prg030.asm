@@ -5715,8 +5715,14 @@ Do_Jump_Off:
 	RTS
 
 DoNightTransition:
+	LDA <Counter_1
+	AND #$03
+	BNE NightTransRTS
 	LDA NightTransition
-	BEQ
+	BEQ NightTransRTS
+	STA Debug_Snap
+	CMP #$01
+	BEQ FinalNightTransition
 	ASL A
 	ASL A
 	ASL A
@@ -5729,59 +5735,81 @@ DoNightTransition:
 	LDA MasterPal_Data
 	SEC
 	SBC DAIZ_TEMP1
-	BPL
+	BPL DontMaxNightColor
 	LDA #$0F
-	STA Pal_Data
-	STA Palette_Buffer
+
+DontMaxNightColor:
+	STA Pal_Data + $10
+	STA Palette_Buffer  + $10
+	DEC NightTransition
+
+NightTransRTS:
 	RTS
 
 FinalNightTransition:
-	LDX #$0f
+	LDX #$0F
 
 NextColorNight:
-	LDA MasterPal_Data
+	LDA MasterPal_Data, X
 	SEC
 	SBC #$10
-	BPL
+	BPL DontMaxColor2
 	LDA #$0F
-	STA Pal_Data
-	STA Palette_Buffer
+DontMaxColor2:
+	STA Pal_Data, X
+	STA Palette_Buffer, X
 	DEX
 	BPL NextColorNight
+	LDA #$0F
+	STA Pal_Data + $10
+	STA Palette_Buffer + $10
+	DEC NightTransition
 	RTS
-	
-DoNightTransition:
+;;
+DoDayTransition:
+
+	LDA <Counter_1
+	AND #$03
+	BNE DayTransRTS
 	LDA DayTransition
-	BEQ
+	BEQ DayTransRTS
+	CMP #$01
+	BEQ FinalDayTransition
 	ASL A
 	ASL A
 	ASL A
 	ASL A
-	STA DAIZ_TEMP1
-	LDA #$40
-	SEC
-	SBC DAIZ_TEMP1
 	STA DAIZ_TEMP1
 	LDA MasterPal_Data
 	SEC
 	SBC DAIZ_TEMP1
-	BPL
+	BPL DontMaxDayColor
 	LDA #$0F
+
+DontMaxDayColor:
+	CMP MasterPal_Data
+	BCS SkipMasterRestore
+	LDA MasterPal_Data
+
+SkipMasterRestore:
 	STA Pal_Data
 	STA Palette_Buffer
+	DEC DayTransition
+
+DayTransRTS:
 	RTS
 
-FinalNightTransition:
-	LDX #$0f
+FinalDayTransition:
+	LDX #$0F
 
-NextColorNight:
-	LDA MasterPal_Data
-	SEC
-	SBC #$10
-	BPL
-	LDA #$0F
+NextColorDay:
+	LDA MasterPal_Data, X
 	STA Pal_Data
 	STA Palette_Buffer
 	DEX
-	BPL NextColorNight
+	BPL NextColorDay
+	LDA MasterPal_Data
+	STA Pal_Data + $10
+	STA Palette_Buffer + $10
+	DEC DayTransition
 	RTS

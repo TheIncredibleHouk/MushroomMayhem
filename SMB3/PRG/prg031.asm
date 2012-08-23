@@ -3064,7 +3064,14 @@ Increase_Game_Timer:
 	LDA DayNight
 	EOR #$FF
 	STA DayNight
-	LDA 
+	BNE DoNightTrans
+	LDA #$03
+	STA DayTransition
+	JMP DoGameTimer
+
+DoNightTrans:
+	LDA #$03
+	STA NightTransition
 
 DoGameTimer:
 	LDX #$05

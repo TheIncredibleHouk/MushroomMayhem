@@ -1819,7 +1819,6 @@ PRG027_B877:
 	BEQ No_Darken
 	LDA DayNight
 	BEQ No_Darken
-	LDA Debug_Snap
 	LDX #$0F
 
 Darken_Pal:
