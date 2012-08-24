@@ -1430,6 +1430,7 @@ PostPSwitchAttr:	.byte $03, $00, $00, $00, $00, $00, $00
 
 PSwitch_SubstTileAndAttr:
 	JSR CheckESwitch
+	JSR CheckDayNight
 	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
 	BEQ PRG000_C85B	 	; If P-Switch not active, jump to PRG000_C85B (RTS)
 
@@ -6784,3 +6785,30 @@ Do_Replace2
 No_Replace:
 	LDX DAIZ_TEMP2
 	RTS
+
+CheckDayNight:
+	CMP #MOON_BLOCK
+	BEQ TestMoonBlock
+	CMP #SUN_BLOCK
+	BEQ TestSunBlock
+	RTS
+TestMoonBlock:
+	LDA DayNight
+	BNE NotDay
+	LDA #$00
+	RTS
+
+NotDay:
+	LDA #MOON_BLOCK
+	RTS
+
+TestSunBlock:
+	LDA DayNight
+	BEQ NotNight
+	LDA #$80
+	RTS
+
+NotNight:
+	LDA #SUN_BLOCK
+	RTS
+

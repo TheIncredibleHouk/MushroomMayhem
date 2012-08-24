@@ -3757,7 +3757,7 @@ HOLLOW_BLOCK		= $03	; Standard solid wood block
 
 TILEA_GNOTE		= $BC	; Green note block (functions like standard white, just colored wrong)
 
-TILEA_PSWITCH_BLANK	= $C1	; Blank tile used to hide a P-Switch after it has been used on level reload
+TILEA_PSWITCH_BLANK	= $80	; Blank tile used to hide a P-Switch after it has been used on level reload
 
 TILEA_PATH_HORZ		= $C8	; Horizontal path (typical)
 TILEA_PATH_VERT		= $C9	; Vertical path (typical)
@@ -3771,7 +3771,9 @@ TILEA_PATH_625B2T_L	= $CF	; 62.5 degree path bottom-to-top, lower half (typical)
 TILEA_PSWITCH_PRESSED	= $D7	; Referenced pressed P-Switch
 TILEA_PSWITCH		= $F2	; P-Switch
 STANDING_WATER		= $DC	;
-FROZEN_WATER		= $EF	; Green note block (functions like standard white, just colored wrong)
+FROZEN_WATER		= $F4	;
+MOON_BLOCK			= $3D	;
+SUN_BLOCK			= $3C	;Green note block (functions like standard white, just colored wrong)
 TILEA_BLOCKBUMP_CLEAR	= $F3	; Tile used when a "bump" block (e.g. ? blocks, note block, etc.) is hit
 
 ; Tileset 1 (Plains style)

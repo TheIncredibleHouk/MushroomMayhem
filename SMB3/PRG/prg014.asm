@@ -1159,8 +1159,8 @@ PRG014_CB15:
 ; Puts down 1-16 of one of the blocks from LoadLevel_Blocks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Blocks:
-	.byte TILEA_BRICK, TILEA_QBLOCKCOIN, TILEA_BRICKCOIN, HOLLOW_BLOCK
-	.byte FROZEN_WATER, TILEA_NOTE, TILE_GLOBAL_ICE, TILEA_COIN ; #DAHRKDAIZ swapped HOLLOW_BLOCKBOUNCE for TILE_GLOBAL_ICE - 7/15
+	.byte TILEA_BRICK, TILEA_QBLOCKCOIN, SUN_BLOCK, HOLLOW_BLOCK
+	.byte MOON_BLOCK, TILEA_NOTE, TILE_GLOBAL_ICE, TILEA_COIN ; #DAHRKDAIZ swapped HOLLOW_BLOCKBOUNCE for TILE_GLOBAL_ICE - 7/15
 	.byte TILEA_CHERRY	; This one is accessed by LoadLevel_IceBricks
 
 LoadLevel_BlockRun:
@@ -1219,7 +1219,7 @@ LoadLevel_IceBricks:
 
 	; Each bush design is as wide as LL_Bush_Width defines it to be!
 FlowerTiles:
-	.byte $02, $41, $C1, $03, $42, $C6, $42, $C1
+	.byte $02, $41, $C1, $06, $42, $C6, $42, $C1
 
 LL_Bush1:
 	.byte $80, $80, $80, $80, $80
