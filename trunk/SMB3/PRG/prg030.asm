@@ -417,8 +417,8 @@ PAGE_A000_ByTileset: ; $83E9
 	.byte 11, 15, 21, 16, 17, 19, 18, 18, 18, 20, 23, 19, 17, 19, 13, 26, 26, 26, 9
 
 	; The normal level VROM page cycle set
-PT2_Anim:	.byte $80, $82, $84, $86
-PSwitch_Anim: .byte $88, $8A, $8C, $8E
+PT2_Anim:	.byte $80, $82, $84, $86, $C0, $C2, $C4, $C6
+PSwitch_Anim: .byte $88, $8A, $8C, $8E, $C8, $CA, $CC, $CE
 SPR_Anim:
 	.byte $90, $91, $92, $93
 
@@ -2289,7 +2289,15 @@ PRG030_8E4F:
 	LSR A	
 	LSR A		
 	TAX	        ; 0-3, changing every 8 ticks
-
+	STX DAIZ_TEMP1
+	LDA DayNight
+	BEQ SkipDNChange
+	TXA
+	CLC
+	ADC #$04
+	TAX
+	
+ SkipDNChange:
 	LDA Tile_Anim_Enabled
 	BEQ Skip_Tile_Anim
 	LDA PT2_Anim,X
@@ -5611,6 +5619,7 @@ No_Release:
 	RTS
 
 Do_Spr_Anim:
+	LDX DAIZ_TEMP1
 	LDY #$0B
 	LDA (Level_ObjectID + 5)
 
@@ -5720,7 +5729,10 @@ DoNightTransition:
 	BNE NightTransRTS
 	LDA NightTransition
 	BEQ NightTransRTS
-	STA Debug_Snap
+	LDA MasterPal_Data
+	CMP #$0F
+	BEQ SkipNightTransition
+	LDA NightTransition
 	CMP #$01
 	BEQ FinalNightTransition
 	ASL A
@@ -5741,6 +5753,8 @@ DoNightTransition:
 DontMaxNightColor:
 	STA Pal_Data + $10
 	STA Palette_Buffer  + $10
+
+SkipNightTransition:
 	DEC NightTransition
 
 NightTransRTS:
@@ -5755,6 +5769,7 @@ NextColorNight:
 	SBC #$10
 	BPL DontMaxColor2
 	LDA #$0F
+
 DontMaxColor2:
 	STA Pal_Data, X
 	STA Palette_Buffer, X
@@ -5767,18 +5782,26 @@ DontMaxColor2:
 	RTS
 ;;
 DoDayTransition:
-
+	LDA MasterPal_Data
+	CMP #$0F
+	BEQ DayTransRTS
 	LDA <Counter_1
 	AND #$03
 	BNE DayTransRTS
 	LDA DayTransition
 	BEQ DayTransRTS
+	LDA MasterPal_Data
+	CMP #$0F
+	BEQ SkyDayTransition
+	LDA DayTransition
 	CMP #$01
 	BEQ FinalDayTransition
 	ASL A
 	ASL A
 	ASL A
 	ASL A
+	SEC
+	SBC #$10
 	STA DAIZ_TEMP1
 	LDA MasterPal_Data
 	SEC
@@ -5788,12 +5811,14 @@ DoDayTransition:
 
 DontMaxDayColor:
 	CMP MasterPal_Data
-	BCS SkipMasterRestore
+	BCC SkipMasterRestore
 	LDA MasterPal_Data
 
 SkipMasterRestore:
-	STA Pal_Data
-	STA Palette_Buffer
+	STA Pal_Data + $10
+	STA Palette_Buffer + $10
+
+SkyDayTransition:
 	DEC DayTransition
 
 DayTransRTS:
@@ -5804,8 +5829,8 @@ FinalDayTransition:
 
 NextColorDay:
 	LDA MasterPal_Data, X
-	STA Pal_Data
-	STA Palette_Buffer
+	STA Pal_Data, X
+	STA Palette_Buffer, X
 	DEX
 	BPL NextColorDay
 	LDA MasterPal_Data
