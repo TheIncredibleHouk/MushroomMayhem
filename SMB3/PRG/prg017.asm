@@ -92,7 +92,7 @@ Tile_Layout_TS4_TS12:
 	.byte $C3, $08, $E3, $08, $F3, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
 
 Tile_Attributes_TS4_TS12:
-	.byte $1F, $4A, $8A, $F0, $2E, $4A, $8D, $F0 
+	.byte $1F, $4A, $8A, $F0, $2E, $4D, $8D, $F0 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS4_TS12
@@ -431,7 +431,7 @@ LoadLevel_LittleBushRun17:
 	LDY TileAddr_Off
 
 PRG017_A5B8:
-	LDA #TILE4_LITTLEBUSH
+	LDA #$88
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 	JSR LoadLevel_NextColumn ; Next column
 	DEX		 	; X-- (Width decrement)
@@ -874,10 +874,9 @@ PRG017_A776:
 
 	; Jump to next row by adding 16 to offset
 	LDA <Temp_Var3	
-	CLC
 	ADD #16
 	STA <Temp_Var3
-	BNE DontIncVar2
+	BCC DontIncVar2
 	INC <Temp_Var2
 DontIncVar2:
 	INX
