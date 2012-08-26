@@ -4522,7 +4522,7 @@ TILE12_SNOWBLOCK_UL	= $39	; Snow platform, upper left
 TILE12_SNOWBLOCK_UM	= $3A	; Snow platform, upper middle
 TILE12_SNOWBLOCK_UR	= $3B	; Snow platform, upper right
 
-TILE12_SNOWY_M		= $25	; Middle of large snowy platform
+TILE12_SNOWY_M		= $3A	; Middle of large snowy platform
 
 TILE12_LARGEICEBLOCK_UL	= $35	; Large 2x2 ice block, upper left
 TILE12_LARGEICEBLOCK_UR	= $36	; Large 2x2 ice block, upper right
