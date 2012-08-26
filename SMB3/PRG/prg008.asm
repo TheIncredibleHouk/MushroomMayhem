@@ -6040,7 +6040,7 @@ PlantInfest_PiranhaTiles: .byte TILE5_MUNCHER_2, TILE5_MUNCHER_1
 PlantInfest_MiniPipes:	.byte TILE5_MINIPIPE_TOP2, TILE5_MINIPIPE_TOP1
 
 Slick_Blocks: 
-	.byte $3E, $3F, $EF
+	.byte $3E, $3F, $EF, $35, $36
 
 Player_DoSpecialTiles:
 
@@ -6350,7 +6350,7 @@ PRG008_BDEB:
 
 PRG008_BDFD:
 	LDA Level_Tile_GndL,X
-	LDY #$02
+	LDY #$04
 
 Try_Slick_Blocks:
 	CMP Slick_Blocks, Y
