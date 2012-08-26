@@ -3638,7 +3638,7 @@ Initial_Bar_Display2:
 	.byte $FE, $30, $30, $30, $30, $30, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 World_Names:
 	.byte " MUSHROOM EVERGLADES"
-	.byte " FROZEN    FOREST   "
+	.byte "  FROZEN    FOREST  "
 
 Draw_World_Name:
 	LDY World_Num

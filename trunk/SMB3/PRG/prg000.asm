@@ -125,7 +125,7 @@ Level_MinTileUWByQuad:
 	; Listing by valid Level_Tileset values for consistency...
 	.byte $FF, $FF, $FF, $DA	;  1 Plains style
 	.byte $FF, $FF, $FF, $DA	;  2 Mini Fortress style
-	.byte $FF, $FF, $FF, $C1	;  3 Hills style
+	.byte $FF, $FF, $FF, $DA	;  3 Hills style
 	.byte $FF, $FF, $FF, $DA	;  4 High-Up style
 	.byte $FF, $FF, $FF, $DA	;  5 pipe world plant infestation
 	.byte $02, $3F, $8A, $C0	;  6 water world
@@ -136,7 +136,7 @@ Level_MinTileUWByQuad:
 	.byte $FF, $FF, $FF, $DA	; 11 Giant World
 	.byte $FF, $FF, $FF, $DA	; 12 Ice level
 	.byte $FF, $FF, $FF, $DA	; 13 Sky level
-	.byte $FF, $FF, $FF, $C1	; 14 Underground
+	.byte $FF, $FF, $FF, $DA	; 14 Underground
 
 	
 ToadItem_PalPerItem:

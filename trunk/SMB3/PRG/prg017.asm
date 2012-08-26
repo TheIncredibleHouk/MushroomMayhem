@@ -495,20 +495,22 @@ PRG017_A5EE:
 ; until the left side no longer touches sky (ideally ground)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_BigBlock_Left:
-	.byte TILE4_GREENBLOCK_UL, TILE4_GREENBLOCK_LL
-	.byte TILE12_SNOWBLOCK_UL, TILE12_SNOWBLOCK_LL
+	.byte TILE4_GREENBLOCK_UL, TILE4_GREENBLOCK_LL, TILE4_GREENBLOCK_LL
+	.byte TILE12_SNOWBLOCK_UL, TILE12_SNOWBLOCK_ML, TILE12_SNOWBLOCK_LL
 
 LL_BigBlock_Middle:
-	.byte TILE4_GREENBLOCK_UM, TILE4_GREENBLOCK_LM
-	.byte TILE12_SNOWBLOCK_UM, TILE12_SNOWBLOCK_LM
+	.byte TILE4_GREENBLOCK_UM, TILE4_GREENBLOCK_LM, TILE4_GREENBLOCK_LM
+	.byte TILE12_SNOWBLOCK_UM, TILE12_SNOWBLOCK_MM, TILE12_SNOWBLOCK_LM
 
 LL_BigBlock_Right:
-	.byte TILE4_GREENBLOCK_UR, TILE4_GREENBLOCK_LR
-	.byte TILE12_SNOWBLOCK_UR, TILE12_SNOWBLOCK_LR
+	.byte TILE4_GREENBLOCK_UR, TILE4_GREENBLOCK_LR, TILE4_GREENBLOCK_LR
+	.byte TILE12_SNOWBLOCK_UR, TILE12_SNOWBLOCK_MR, TILE12_SNOWBLOCK_LR
 
 
 LoadLevel_LargeGreenOrSnow:
 	; Backup Map_Tile_AddrL/H into Temp_Var1/2
+	LDA #$00
+	STA DAIZ_TEMP1
 	LDA <Map_Tile_AddrL
 	STA <Temp_Var1
 	LDA <Map_Tile_AddrH
@@ -521,7 +523,7 @@ LoadLevel_LargeGreenOrSnow:
 	CMP #$60	 
 	BEQ PRG017_A61B	 ; Depending on entry, jump to PRG017_A61B
 
-	LDX #$02	 ; X = 2 (snow block)
+	LDX #$03	 ; X = 2 (snow block)
 
 PRG017_A61B:
 	LDA LL_ShapeDef
@@ -556,9 +558,13 @@ PRG017_A638:
 
 	JSR LL17_ReturnTileAndNextRow	 ; Return to beginning, then go to next row
 
-	TXA
-	ORA #$01	 
-	TAX		 ; X |= 1 (all subsequent passes generate the "lower" tiles)
+	LDA DAIZ_TEMP1
+	CMP #$02
+	BEQ Keep_Drawing
+	INX
+	INC DAIZ_TEMP1
+
+Keep_Drawing:
 	JMP PRG017_A61B	 ; Jump to PRG017_A61B
 
 
@@ -625,7 +631,7 @@ PRG017_A67A:
 ; Only for Tileset 12, not 4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_IceBlocks:
-	.byte TILE12_ICEBLOCK, TILE12_FROZENMUNCHER, TILE12_FROZENCOIN
+	.byte $34, TILE12_FROZENMUNCHER, TILE12_FROZENCOIN
 
 LoadLevel_IceBlocks:
 	LDA LL_ShapeDef
@@ -711,44 +717,44 @@ LL_Cloud17:
 	.byte TILE12_CLOUD_UL, TILE12_CLOUD_LL, TILE12_CLOUD_UM, TILE12_CLOUD_LM, TILE12_CLOUD_UR, TILE12_CLOUD_LR
 
 LoadLevel_CloudRun17:
-	; Backup Map_Tile_AddrL/H into Temp_Var1/2
-	LDA <Map_Tile_AddrL
-	STA <Temp_Var1
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var2
-
-	LDA LL_ShapeDef
-	AND #$0f
-	STA <Temp_Var3		 ; Temp_Var3 = lower 4 bits of LL_ShapeDef (width of cloud)
-
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDX #$00		 ; X = 0
-
-PRG017_A706:
-	LDA <Temp_Var3
-	STA <Temp_Var4		 ; Temp_Var4 = Temp_Var3
-
-	LDA LL_Cloud17,X	 ; Get left edge tile
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-	JMP PRG017_A717	 	 ; Jump to PRG017_A717
-
-PRG017_A712:
-	LDA LL_Cloud17+2,X	 ; Get middle tile
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-PRG017_A717:
-	JSR LoadLevel_NextColumn ; Next column
-	DEC <Temp_Var4		 ; Temp_Var4-- (width decrement)
-	BNE PRG017_A712	 	 ; While Temp_Var4 > 0, loop!
-
-	LDA LL_Cloud17+4,X	 ; Get right edge tile
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	JSR LL17_ReturnTileAndNextRow	 ; Return to beginning, then go to next row
-	INX		 	; X++
-	CPX #$02	 
-	BNE PRG017_A706	 	; If X <> 2, loop!
-
+;	; Backup Map_Tile_AddrL/H into Temp_Var1/2
+;	LDA <Map_Tile_AddrL
+;	STA <Temp_Var1
+;	LDA <Map_Tile_AddrH
+;	STA <Temp_Var2
+;
+;	LDA LL_ShapeDef
+;	AND #$0f
+;	STA <Temp_Var3		 ; Temp_Var3 = lower 4 bits of LL_ShapeDef (width of cloud)
+;
+;	LDY TileAddr_Off	 ; Y = TileAddr_Off
+;	LDX #$00		 ; X = 0
+;
+;PRG017_A706:
+;	LDA <Temp_Var3
+;	STA <Temp_Var4		 ; Temp_Var4 = Temp_Var3
+;
+;	LDA LL_Cloud17,X	 ; Get left edge tile
+;	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
+;	JMP PRG017_A717	 	 ; Jump to PRG017_A717
+;
+;PRG017_A712:
+;	LDA LL_Cloud17+2,X	 ; Get middle tile
+;	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
+;
+;PRG017_A717:
+;	JSR LoadLevel_NextColumn ; Next column
+;	DEC <Temp_Var4		 ; Temp_Var4-- (width decrement)
+;	BNE PRG017_A712	 	 ; While Temp_Var4 > 0, loop!
+;
+;	LDA LL_Cloud17+4,X	 ; Get right edge tile
+;	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
+;
+;	JSR LL17_ReturnTileAndNextRow	 ; Return to beginning, then go to next row
+;	INX		 	; X++
+;	CPX #$02	 
+;	BNE PRG017_A706	 	; If X <> 2, loop!
+;
 	RTS		 ; Return
 
 
@@ -836,26 +842,48 @@ PRG017_A772:
 ; Generates a fat trunk from starting point down until it hits
 ; non-sky tiles.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Large_Tree:
+	.byte $81, $82
+	.byte $83, $84
+	.byte $86, $87
+	.byte $41, $42
+
 LoadLevel_FatTrunk:
 	LDY TileAddr_Off	 ; Y = TileAddr_Off
+	LDX #$00
+	LDA Map_Tile_AddrL
+	STA <Temp_Var1
+	LDA Map_Tile_AddrH
+	STA <Temp_Var2
+	STY <Temp_Var3
 
 PRG017_A776:
-	LDA [Map_Tile_AddrL],Y	 ; Get tile here
-	CMP #TILE4_SKY	
-	BNE PRG017_A78E	 	; If tile is not sky, jump to PRG017_A78E (RTS)
+	LDA <Temp_Var1
+	STA Map_Tile_AddrL
+	LDA <Temp_Var2
+	STA Map_Tile_AddrH
+	LDY <Temp_Var3
 
-	LDA #TILE4_FATTRUNK	; Fat trunk tile
+	LDA Large_Tree, X
+	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
+
+	INX
+	JSR LoadLevel_NextColumn
+	LDA Large_Tree, X
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
 	; Jump to next row by adding 16 to offset
-	TYA	
+	LDA <Temp_Var3	
+	CLC
 	ADD #16
-	TAY	
-	LDA <Map_Tile_AddrH
-	ADC #$00	 
-	STA <Map_Tile_AddrH
-
-	JMP PRG017_A776	 	; Jump to PRG017_A776
+	STA <Temp_Var3
+	BNE DontIncVar2
+	INC <Temp_Var2
+DontIncVar2:
+	INX
+	CPX #$08
+	BEQ	PRG017_A78E
+	BNE PRG017_A776
 
 PRG017_A78E:
 	RTS		 ; Return
@@ -867,15 +895,15 @@ PRG017_A78E:
 ; Add 1-256 munchers!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Muncher17:
-	JSR LoadLevel_GetLayoutByte	; Get another byte from the layout data -> 'X'
-	LDY TileAddr_Off	 	; Y = TileAddr_Off
-PRG017_A795:
-	LDA #TILE4_MUNCHER	 	; Muncher
-	STA [Map_Tile_AddrL],Y	 	; Store into tile mem
-	JSR LoadLevel_NextColumn	; Next column
-	DEX		 ; X--
-	CPX #$ff	
-	BNE PRG017_A795	 ; While X > 0, loop!
+;	JSR LoadLevel_GetLayoutByte	; Get another byte from the layout data -> 'X'
+;	LDY TileAddr_Off	 	; Y = TileAddr_Off
+;PRG017_A795:
+;	LDA #TILE4_MUNCHER	 	; Muncher
+;	STA [Map_Tile_AddrL],Y	 	; Store into tile mem
+;	JSR LoadLevel_NextColumn	; Next column
+;	DEX		 ; X--
+;	CPX #$ff	
+;	BNE PRG017_A795	 ; While X > 0, loop!
 
 	RTS		 ; Return
 

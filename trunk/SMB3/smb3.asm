@@ -4510,20 +4510,24 @@ TILE12_CLOUD_LL		= $0B	; Cloud lower left
 TILE12_CLOUD_LM		= $0C	; Cloud lower middle
 TILE12_CLOUD_LR		= $0D	; Cloud lower right
 
-TILE12_SNOWBLOCK_LL	= $0E	; Snow platform, lower left
-TILE12_SNOWBLOCK_LM	= $0F	; Snow platform, lower middle
-TILE12_SNOWBLOCK_LR	= $10	; Snow platform, lower right
+TILE12_SNOWBLOCK_LL	= $7C	; Snow platform, lower left
+TILE12_SNOWBLOCK_LM	= $7D	; Snow platform, lower middle
+TILE12_SNOWBLOCK_LR	= $7E	; Snow platform, lower right
 
-TILE12_SNOWBLOCK_UL	= $22	; Snow platform, upper left
-TILE12_SNOWBLOCK_UM	= $23	; Snow platform, upper middle
-TILE12_SNOWBLOCK_UR	= $24	; Snow platform, upper right
+TILE12_SNOWBLOCK_ML	= $79	; Snow platform, middle left
+TILE12_SNOWBLOCK_MM	= $7A	; Snow platform, middle middle
+TILE12_SNOWBLOCK_MR	= $7B	; Snow platform, middle right
+
+TILE12_SNOWBLOCK_UL	= $39	; Snow platform, upper left
+TILE12_SNOWBLOCK_UM	= $3A	; Snow platform, upper middle
+TILE12_SNOWBLOCK_UR	= $3B	; Snow platform, upper right
 
 TILE12_SNOWY_M		= $25	; Middle of large snowy platform
 
-TILE12_LARGEICEBLOCK_UL	= $36	; Large 2x2 ice block, upper left
-TILE12_LARGEICEBLOCK_UR	= $37	; Large 2x2 ice block, upper right
-TILE12_LARGEICEBLOCK_LL	= $38	; Large 2x2 ice block, lower left
-TILE12_LARGEICEBLOCK_LR	= $39	; Large 2x2 ice block, lower right
+TILE12_LARGEICEBLOCK_UL	= $35	; Large 2x2 ice block, upper left
+TILE12_LARGEICEBLOCK_UR	= $36	; Large 2x2 ice block, upper right
+TILE12_LARGEICEBLOCK_LL	= $37	; Large 2x2 ice block, lower left
+TILE12_LARGEICEBLOCK_LR	= $38	; Large 2x2 ice block, lower right
 
 TILE12_ICEBLOCK		= $3A	; Ice block
 
