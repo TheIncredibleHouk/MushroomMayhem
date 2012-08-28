@@ -350,14 +350,19 @@ PRG008_A17F:
 
 PRG008_A1C1:
 	LDA Level_ChgTileEvent
+	CMP #CHNGTILE_DELETEWATERCOIN
+	BEQ IncCoin
+
 	CMP #CHNGTILE_DELETECOIN
 	BNE PRG008_A1D7	 ; If Level_ChgTileEvent <> CHNGTILE_DELETECOIN, jump to PRG008_A1D7
 
+IncCoin:
 	INC Coins_Earned	 ; One more coin earned!
 
 PRG008_A1D7:
 	CMP #CHNGTILE_DELETECHERRY
 	BNE Normal_Tile
+
 	INC (Exp_Earned + 2)
 	LDA #CHNGTILE_DELETETOBG
 	STA Level_ChgTileEvent
