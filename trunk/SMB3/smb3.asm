@@ -1630,8 +1630,8 @@ CHNGTILE_TOBRICK	= $07
 CHNGTILE_TOMETALPLATE	= $08	; i.e. "plate" that appears after ? block is hit
 CHNGTILE_PSWITCHSTOMP	= $09
 CHNGTILE_TOBRICKCOIN	= $0B	; brick containing coin
-CHNGTILE_DELETETOBGALT	= $0C
-CHNGTILE_PIPEJCT	= $0E	; UNUSED replaces the unused TILE9_PIPEWORKS_JCT tile!
+CHNGTILE_DELETETOWATER	= $0C
+CHNGTILE_DELETEWATERCOIN	= $0E	; UNUSED replaces the unused TILE9_PIPEWORKS_JCT tile!
 CHNGTILE_DELETEDONUT	= $0F
 CHNGTILE_FROZENMUNCHER	= $10
 CHNGTILE_FROZENCOIN	= $11
@@ -3917,7 +3917,7 @@ TILE1_WATERBUMPS2	= $D9	; Water ... not sure how to describe it
 TILE1_WATERBUMPSSH	= $D9	; Water ... not sure how to describe it, shaded
 TILE1_WATERWAVEL	= $DB	; Water waving to the left
 TILE1_WATERWAVE		= $DC	; Water waving but with no apparent current
-TILE1_WATERWAVER	= $DD	; Water waving to the right
+TILE1_WATERFROZEN	= $EF	; Water waving to the right
 
 TILE1_WATER		= $DE	; Water
 
