@@ -2557,7 +2557,7 @@ PRG029_DC82:
 	.word TileChng_OneTile		; $09 - CHNGTILE_PSWITCHSTOMP
 	.word TileChng_OneTile		; $0A (Change to Fortress light cable??)
 	.word TileChng_OneTile		; $0B - CHNGTILE_TOBRICKCOIN
-	.word TileChng_OneTile		; $0C - CHNGTILE_DELETETOWATER (not sure about this one)
+	.word TileChng_OneTile		; $0C - CHNGTILE_DELETEWATERCOIN (not sure about this one)
 	.word TileChng_OneTile		; $0D - not different from $02??
 	.word TileChng_OneTile		; $0E (Spikes??)
 	.word TileChng_OneTile		; $0F - CHNGTILE_DELETEDONUT
@@ -2580,7 +2580,7 @@ PRG029_DC82:
 OneTile_ChangeToTile:
 	.byte TILEA_COINREMOVED, TILE1_SKY, FROZEN_WATER, STANDING_WATER
 	.byte TILEA_NOTE, TILEA_HNOTE, TILEA_BRICK, TILEA_BLOCKEMPTY
-	.byte TILEA_PSWITCH_PRESSED, TILE2_HANGGLOBE_CABLE, TILEA_BRICKCOIN, $DE
+	.byte TILEA_PSWITCH_PRESSED, TILE2_HANGGLOBE_CABLE, TILEA_BRICKCOIN, TILE1_WATER
 	.byte TILE1_SKY, TILE2_SPIKEUP, TILE2_DONUTLIFT, TILE4_MUNCHER, TILE1_THAWEDCOIN, TILEA_PSWITCH
 
 	; Defines each of the four 8x8 patterns that make up the tile
@@ -2590,7 +2590,7 @@ OneTile_ChangeToPatterns:
 	.byte $FF, $FF, $FF, $FF	; $01 - CHNGTILE_DELETECOIN
 	.byte $FF, $FF, $FF, $FF	; $02 - CHNGTILE_DELETETOBG
 	.byte $EA, $EB, $EF, $EF	; $03 - CHNGTILE_TOFRZWATER
-	.byte $87, $87, $EF, $EF	; $04 - CHNGTILE_STANDINGWATER #DAHRKDAIZ
+	.byte $FD, $FD, $EF, $EF	; $04 - CHNGTILE_STANDINGWATER #DAHRKDAIZ
 	.byte $AC, $AD, $BC, $BD	; $05 - CHNGTILE_TONOTEBLOCK
 	.byte $B8, $BA, $B9, $BB	; $06 - CHNGTILE_COINHEAVEN
 	.byte $AE, $AF, $BE, $BF	; $07 - CHNGTILE_TOBRICK
@@ -2598,7 +2598,7 @@ OneTile_ChangeToPatterns:
 	.byte $FF, $FF, $96, $97	; $09 - CHNGTILE_PSWITCHSTOMP
 	.byte $60, $61, $6D, $6F	; $0A
 	.byte $CC, $CD, $DC, $DD	; $0B - CHNGTILE_TOBRICKCOIN
-	.byte $EF, $EF, $EF, $EF	; $0C - CHNGTILE_DELETETOWATER
+	.byte $EF, $EF, $EF, $EF	; $0C - CHNGTILE_DELETEWATERCOINRY
 	.byte $05, $07, $06, $08	; $0D
 	.byte $18, $1A, $19, $1B	; $0E
 	.byte $5C, $5E, $5D, $5F	; $0F - CHNGTILE_DELETEDONUT

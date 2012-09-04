@@ -309,7 +309,9 @@ W9_Map_Layout:	.include "PRG/maps/World9L"
 ; Level_LayPtr_AddrL/H and Level_LayPtrOrig_AddrL/H (tile layout pointer)
 ; Level_Tileset
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; DO MAP POINTERS
 Map_PrepareLevel:
+	RTS
 	LDX Player_Current	; X = Player_Current
 	LDA Player_FallToKing,X	; A = Player_FallToKing
 	BEQ PRG012_B10A	 	; If Player_FallToKing = 0 (not falling into king's room), jump to PRG012_B10A

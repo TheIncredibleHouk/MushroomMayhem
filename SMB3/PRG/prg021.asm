@@ -90,9 +90,6 @@ Tile_Layout_TS2:
 	.byte $3F, $39, $30, $3F, $33, $3E, $06, $E7, $CF, $CF, $CF, $FE, $FE, $FE, $FE, $FE ; Tiles $D0 - $DF
 	.byte $AB, $AB, $4A, $4B, $03, $43, $53, $36, $33, $37, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
 	.byte $53, $08, $E3, $08, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
-
-Tile_Attributes_TS2:
-	.byte $11, $5A, $9B, $E2, $11, $5A, $9B, $E2
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS2

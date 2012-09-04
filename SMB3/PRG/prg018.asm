@@ -91,9 +91,6 @@ Tile_Layout_TS6_TS7_TS8:
 	.byte $AB, $AB, $77, $0B, $FE, $FE, $6B, $36, $36, $5B, $36, $5B, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
 	.byte $13, $08, $E3, $08, $97, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
 
-Tile_Attributes_TS6_TS7_TS8:
-	.byte $0A, $4C, $91, $E2, $0A, $4C, $91, $E2
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS6
 ;

@@ -1763,26 +1763,31 @@ InitPals_Per_MapPUp:
 ; Luigi (see Map_PlayerPalFix and BonusGame_PlayerPal)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Setup_PalData:
-	LDA Level_Tileset
-	ASL A
-	TAY		 ; Y = Level_Tileset << 1 (index into Palette_By_Tileset)
-
-	; Point to the palette associated with this tileset!
-	LDA Palette_By_Tileset,Y
-	STA <Temp_Var1	
-	LDA Palette_By_Tileset+1,Y
-	STA <Temp_Var2	
-
-	LDY <Pal_Force_Set12	; Palette override
-	BEQ PRG027_B86D	 	; If Pal_Force_Set12 = 0, jump to PRG027_B86D
-
-	; If Pal_Force_Set12 <> 0...
-	; Point to the palette associated with this override!
-	LDA Palette_By_Tileset,Y
-	STA <Temp_Var1		
-	LDA Palette_By_Tileset+1,Y
-	STA <Temp_Var2		
-
+	
+	LDA PAGE_C000
+	STA DAIZ_TEMP1
+	LDA #$13
+	STA PAGE_C000
+	JSR PRGROM_Change_C000
+	LDA #$00
+	STA <Temp_Var2
+	LDA PaletteIndex
+	STA <Temp_Var1
+	CLC
+	ROL <Temp_Var1
+	ROL <Temp_Var2
+	ROL <Temp_Var1
+	ROL <Temp_Var2
+	ROL <Temp_Var1
+	ROL <Temp_Var2
+	ROL <Temp_Var1
+	ROL <Temp_Var2
+	ROL <Temp_Var1
+	ROL <Temp_Var2
+	LDA <Temp_Var2
+	CLC
+	ADC #$C0
+	STA <Temp_Var2
 	; Copy 32 bytes of data into Pal_Data
 	LDY #31	 ; Y = 31 (32 bytes total, a whole bg/sprite palette set)
 PRG027_B85E:
@@ -1927,6 +1932,10 @@ PRG027_B8D9:
 	STA Pal_Data+17	 	; Store it!
 
 PRG027_B8F9:
+	; restores the C000 bank
+	LDA DAIZ_TEMP1
+	STA PAGE_C000
+	JSR PRGROM_Change_C000
 	RTS		 ; Return
 
 

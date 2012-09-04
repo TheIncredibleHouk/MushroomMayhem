@@ -1,4 +1,4 @@
-	.inesprg 16  ; 16x 16KB PRG code (32 banks of 8KB)
+	.inesprg 32  ; 16x 16KB PRG code (32 banks of 8KB)
 	.ineschr 32  ; 16x  8KB CHR data (128 banks of 1KB)
 	.inesmap 4   ; mapper 4 = MMC3, 8KB PRG, 1/2KB CHR bank swapping
 	.inesmir 0   ; background mirroring
@@ -1630,8 +1630,8 @@ CHNGTILE_TOBRICK	= $07
 CHNGTILE_TOMETALPLATE	= $08	; i.e. "plate" that appears after ? block is hit
 CHNGTILE_PSWITCHSTOMP	= $09
 CHNGTILE_TOBRICKCOIN	= $0B	; brick containing coin
-CHNGTILE_DELETETOWATER	= $0C
-CHNGTILE_DELETEWATERCOIN	= $0E	; UNUSED replaces the unused TILE9_PIPEWORKS_JCT tile!
+CHNGTILE_DELETEWATERCOIN	= $0C
+CHNGTILE_PIPEJCT	= $0E	; UNUSED replaces the unused TILE9_PIPEWORKS_JCT tile!
 CHNGTILE_DELETEDONUT	= $0F
 CHNGTILE_FROZENMUNCHER	= $10
 CHNGTILE_FROZENCOIN	= $11
@@ -3017,7 +3017,11 @@ SOBJ_POOF		= $16 	; Poof
 	NightTransition:	.ds 1	; when not 0, we're transitioning into night
 	DayTransition:		.ds 1	; when not 0, we're transitioning into day
 	MasterPal_Data:		.ds 16	; keeps track of the unmodified, original palette
-						.ds 426;
+	LevelLoadPointer:	.ds 1	;
+	PaletteIndex:		.ds 1	;
+	WeatherDirection:	.ds 1	; 0 = left, 1 = right
+	Pointers:			.ds 30	;
+						.ds 393 ;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3482,9 +3486,9 @@ OBJ_DRYPIRANHA_FLIPPED= $A1	; upside down short pipe muncher
 OBJ_REDPIRANHA		= $A2	; tall pipe muncher
 OBJ_REDPIRANHA_FLIPPED	= $A3	; upside down tall pipe muncher
 OBJ_GREENPIRANHA_FIRE	 = $00
-OBJ_DRYPIRANHA_FIRE	= $A4	; short green fire plant
+OBJ_PIRANHA_ICE	= $A4	; short green fire plant
 OBJ_GREENPIRANHA_FIREC = $00
-OBJ_DRYPIRANHA_FIREC	= $A5	; short, upside down, green fire plant
+OBJ_PIRANHA_ICEC	= $A5	; short, upside down, green fire plant
 OBJ_VENUSFIRETRAP	= $A6	; Tall red fire plant
 OBJ_VENUSFIRETRAP_CEIL	= $A7	; upside down tall fire plant
 OBJ_ARROWONE		= $A8	; One direction arrow platform in motion
@@ -3771,7 +3775,7 @@ TILEA_PATH_625B2T_L	= $CF	; 62.5 degree path bottom-to-top, lower half (typical)
 TILEA_PSWITCH_PRESSED	= $D7	; Referenced pressed P-Switch
 TILEA_PSWITCH		= $F2	; P-Switch
 STANDING_WATER		= $DC	;
-FROZEN_WATER		= $F4	;
+FROZEN_WATER		= $EF	;
 MOON_BLOCK			= $3D	;
 SUN_BLOCK			= $3C	;Green note block (functions like standard white, just colored wrong)
 TILEA_BLOCKBUMP_CLEAR	= $F3	; Tile used when a "bump" block (e.g. ? blocks, note block, etc.) is hit
@@ -3840,8 +3844,9 @@ TILE1_CANNONTOP1	= $76	; Upper top of cannon
 TILE1_CANNONTOP2	= $77	; Lower top of cannon
 TILE1_CANNONMID		= $78	; Mid part to ground
 
-TILE1_SANDTOP		= $7A	; Solid sand ground, top
-TILE1_SANDMID		= $7B	; Solid sand ground, middle
+WATER_COIN			= $DF
+TILE1_SANDTOP		= $DF	; Solid sand ground, top
+TILE1_SANDMID		= $DF	; Solid sand ground, middle
 
 TILE1_SKY		= $80	; Official sky tile
 
@@ -3917,7 +3922,6 @@ TILE1_WATERBUMPS2	= $D9	; Water ... not sure how to describe it
 TILE1_WATERBUMPSSH	= $D9	; Water ... not sure how to describe it, shaded
 TILE1_WATERWAVEL	= $DB	; Water waving to the left
 TILE1_WATERWAVE		= $DC	; Water waving but with no apparent current
-TILE1_WATERFROZEN	= $EF	; Water waving to the right
 
 TILE1_WATER		= $DE	; Water
 
@@ -3997,7 +4001,7 @@ TILE2_BGBRICK_LDSHADOW	= $91	; Background brickwork pattern, dark shadowed left
 TILE2_BGBRICK_ULDSHADOW	= $92	; Background brickwork pattern, dark shadowed upper-left
 ESWITCH_BLOCK2			= $81	; Background brickwork pattern, dark shadowed on top
 
-TILE2_LAVATOP		= $DF	; Top lava tile
+TILE2_LAVATOP		= $DB	; Top lava tile
 TILE2_LAVABOTTOM	= $DE	; Bottom lava tile
 
 TILE2_ENDDOOR_UL	= $97	; The final door to the princess, upper left
@@ -5034,4 +5038,3 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr125.pcx"
 	.incchr "CHR/chr126.pcx"
 	.incchr "CHR/chr127.pcx"
-

@@ -2043,7 +2043,7 @@ PRG014_CF46:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; This array specifies the block which will appear on top
 LL_TopBlock:
-	.byte TILE1_WFALLTOP,     TILE1_WATERWAVEL, TILE1_WATERWAVE, TILE1_WATERFROZEN
+	.byte TILE1_WFALLTOP,     TILE1_WATERWAVEL, TILE1_WATERWAVE, FROZEN_WATER
 	.byte TILE1_WATERBUMPS1,  TILE1_DIAMOND,    TILE1_SANDTOP,   TILE1_VINE
 
 	; This array specifies what blocks will follow
