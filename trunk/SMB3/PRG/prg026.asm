@@ -31,6 +31,7 @@
 ; "poof" effect that occurs when a power-up is used or a
 ; special item takes effect (e.g. hammer breaking lock)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 Map_DoInventory_And_PoofFX:
 	LDA Map_Powerup_Poof
 	BEQ PRG026_A078	 ; If Map_Powerup_Poof = 0 (no powerup being applied), jump to PRG026_A078
@@ -1433,7 +1434,7 @@ PRG026_A936:
 	; Stop Update_Select activity temporarily
 	INC UpdSel_Disable
 
-	JSR Level_JctCtl_Do	 ; Do what's appropriate for the Level Junction!
+	JSR LevelJct_General	 ; Do what's appropriate for the Level Junction!
 
 	LDA <Horz_Scroll
 	STA Level_Jct_HS	 ; Level_Jct_HS = Horz_Scroll
@@ -1493,328 +1494,117 @@ PRG026_A995:
 	JMP PRG030_897B	 ; Jump to PRG026_897B (continue preparation of display!)
 
 
-Level_JctCtl_Do:
-	LDA Level_JctCtl
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word $0000			; 0 - Not used (Level_JctCtl = 0 does not call here)
-	.word Level_JctInit		; 1 - Initialize junction
-	.word LevelJct_BigQuestionBlock	; 2 - Big Question Block bonus area (they're special for some reason!)
-	.word LevelJct_General		; 3 - General purpose
-	.word LevelJct_GenericExit	; 4 - Generic level exit (comes up from pipe)
-	.word LevelJct_SpecialToadHouse	; 5 - Special Toad House (used for the 1-3 warp whistle)
-
 Level_JctInit:
-	; Grab level header's "alternate layout" pointer and put into Level_LayPtr/H_AddrL/H
-	LDA Level_AltLayout
-	STA <Level_LayPtr_AddrL
-	STA Level_LayPtrOrig_AddrL
+	;;; find proper pointer now
+	LDA <Player_X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Player_XHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+	STA <Temp_Var2
+	LDA <Player_Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Player_YHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+	STA <Temp_Var3
+	LDA #$04
 
-	LDA Level_AltLayout+1
-	STA <Level_LayPtr_AddrH
-	STA Level_LayPtrOrig_AddrH
+	STA <Temp_Var1
+	LDX #$1E
 
-	; Grab level header's "alternate objects" pointer and put into Level_ObjPtrL/H_AddrL/H
-	LDA Level_AltObjects
-	STA <Level_ObjPtr_AddrL
-	STA Level_ObjPtrOrig_AddrL
+FindPointerLoop:
+	DEX
+	DEX
+	DEX
+	DEX
+	DEX
+	DEX
+	LDA Pointers + 1, X
+	SEC
+	SBC <Temp_Var2
+	CMP #$02
+	BCS NextPointer
+	LDA Pointers + 2, X
+	SEC
+	SBC <Temp_Var3
+	CMP #$02
+	BCS NextPointer
+	RTS		 ; Return
 
-	LDA Level_AltObjects+1
-	STA <Level_ObjPtr_AddrH
-	STA Level_ObjPtrOrig_AddrH
+NextPointer:
+	DEC <Temp_Var1
+	BPL FindPointerLoop
+	RTS
 
-	; Set the alternate tileset
-	LDA Level_AltTileset
-	STA Level_Tileset	; Level_Tileset = Level_AltTileset
+LevelJct_General:
+	JSR Level_JctInit	 ; Initialize level junction
+	
+	LDA <Temp_Var1
+	BPL UsePointer
+	RTS		; No pointer found, abort abort!
 
-	; Toggle Level_JctFlag
+UsePointer:
+	LDA Pointers, X
+	STA LevelLoadPointer
+	
+	LDA Pointers + 5, X
+	AND #$80	; does this pointer exit the level?
+	BEQ LevelJction
+	RTS
+
+LevelJction:
+	LDA Pointers + 3, X
+	AND #$0F
+	STA <Player_XHi
+	LDA Pointers + 4, X
+	AND #$F0
+	ORA #$08
+	STA <Player_X
+	STA <Horz_Scroll
+	LDA Pointers + 4, X
+	AND #$0F
+	STA <Player_YHi
+	STA <Horz_Scroll_Hi
+	LDA Pointers + 4, X
+	AND #$F0
+	STA <Player_Y
+
+	LDA Pointers + 5, X
+	AND #$0F
+	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
+	
+	CMP #$03
+	BLT PRG026_AB0E	 ; If Level_PipeExitDir < 3, jump to PRG026_AABD
+	
+	; Otherwise, don't center Player (better for starting on block)
+	LDA <Player_X
+	AND #$f0
+	STA <Player_X
+	
+	LDA #$00
+	STA Level_7Vertical
+		; Toggle Level_JctFlag
 	LDA Level_JctFlag
 	EOR #$01
 	STA Level_JctFlag
 
-	RTS		 ; Return
-
-
-LevelJct_BigQuestionBlock:
-	; LevelJctBQ_Flag: When you enter a Big Question block area,
-	;  sets it; when you leave, clears it!
-	LDA LevelJctBQ_Flag
-	EOR #$01
-	STA LevelJctBQ_Flag
-
-	BEQ PRG026_AA5A	 ; If we're leaving, time to restore from backups
-
-	; Backup Level_Tileset
-	LDA Level_Tileset
-	STA Level_JctBackupTileset ; Level_JctBackupTileset = Level_Tileset
-
-	; Load tileset by world (always 14 Underground?)
-	LDY World_Num	 
-	LDA LevelJctBQ_Tileset,Y
-	STA Level_Tileset
-
-	; Turn world index into 2-byte index
-	TYA
-	ASL A
-	TAY
-
-	; Big Question block layout
-	LDA LevelJctBQ_Layout,Y
-	STA <Level_LayPtr_AddrL
-	LDA LevelJctBQ_Layout+1,Y
-	STA <Level_LayPtr_AddrH
-
-	; Big Question block objects
-	LDA LevelJctBQ_Objects,Y
-	STA <Level_ObjPtr_AddrL
-	LDA LevelJctBQ_Objects+1,Y
-	STA <Level_ObjPtr_AddrH
-
-	LDX <Player_XHi	 	; X = Player_XHi
-	LDA Level_JctXLHStart,X	; Get value from Level_JctXLHStart based on Player's X Hi
-
-	; A = X start position in the format of high byte in lower 4 bits 
-	; and low in the upper 4 bits
-
-	PHA		 	; Save it
-
-	; Cap XHi 0-15 and match the scroll position
-	AND #$0f
-	STA <Player_XHi
-	STA <Horz_Scroll_Hi
-
-	PLA		 ; Restore UserData2 value
-
-	AND #$f0	 ; Get the X low start component
-	ORA #$08	 ; Center it up (better for coming out of pipe)
-	STA <Player_X	 ; Store it into Player_X
-
-	LDA Level_JctYLHStart,X
-
-	; A = a few things:
-	;	Bits 0 - 3: Go into Level_PipeExitDir
-	;	Bits 4 - 6: Starting position index
-	;	Bits     7: Set for vertical level (and also sets Level_7VertCopy)
-
-	PHA		 ; Push Level_JctYLHStart
-	PHA		 ; Push Level_JctYLHStart
-
-	AND #$0f	 ; Lower 4 bits of Level_JctYLHStart
-	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
-
-	CMP #$03
-	BLT PRG026_AA30	 ; If Level_PipeExitDir < 3, jump to PRG026_AA30
-
-	; Otherwise, don't center Player (better for starting on block)
-	LDA <Player_X
-	AND #$f0
-	STA <Player_X
-
-PRG026_AA30:
-	PLA		 ; Restore Level_JctYLHStart
-	AND #$80
-	STA Level_7VertCopy
-	STA Level_7Vertical	 ; Set vertical mode
-
-	PLA		 ; Restore Level_JctYLHStart
-
-	; Get start index 0 - 7
-	AND #%01110000
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	TAY
-	LDA LevelJct_YLHStarts,Y	 ; Get appropriate Y start info
-
-	; 'A' is similar format byte to the X start; 
-	; Y is defined as "high" part in the lower 4 bits and
-	; the "low" part is the upper 4 bits
-
-	PHA		 ; Push 'A'
-
-	AND #$0f	
-	STA <Player_YHi	 ; Lower 4 bits are the "High" byte
-
-	PLA		 ; Restore 'A'
-	AND #$f0	
-	STA <Player_Y	 ; Upper 4 bits are the "low" byte
-
-	LDA LevelJct_VertStarts,Y	 ; Get appropriate vertical start position
-	STA <Vert_Scroll		 ; Store into Vert_Scroll
-
-	LDA #$00
-	STA <Horz_Scroll ; Horz_Scroll = 0
-
-	JMP PRG026_AB0E	 ; Jump to PRG026_AB0E
-
-PRG026_AA5A:
-	; Restore from all backups
-
-	LDA Level_JctBackupTileset
-	STA Level_Tileset
-
-	LDA Level_LayPtrOrig_AddrL
-	STA <Level_LayPtr_AddrL
-
-	LDA Level_LayPtrOrig_AddrH
-	STA <Level_LayPtr_AddrH
-
-	LDA Level_ObjPtrOrig_AddrL
-	STA <Level_ObjPtr_AddrL
-
-	LDA Level_ObjPtrOrig_AddrH
-	STA <Level_ObjPtr_AddrH
-
-	JMP PRG026_AA8A	 	; Jump to PRG026_AA8A (perform switch)
-
-	; For Level Junction start position:	
-	; Defines start positions in the format of the lower 4 bits 
-	; being the "high" part, and upper 4 bits are the low part
-LevelJct_YLHStarts:	.byte $00, $40, $70, $B0, $F0, $41, $71, $81
-
-	; These define the Vert_Scroll init value
-LevelJct_VertStarts:	.byte $00, $00, $30, $70, $B0, $EF, $EF, $EF
-
-
-LevelJct_General:
-	JSR Level_JctInit	 ; Initialize level junction
-
-PRG026_AA8A:
-	; Actual switch code:
-
-	LDX <Player_XHi		 ; X = Player_XHi
-
-	LDA Level_7Vertical
-	BEQ PRG026_AA9A	 	; If level is not vertical, jump to PRG026_AA9A
-
-	LDY <Player_YHi	; Y = Player_YHi
-	LDA <Player_Y	; A = Player_Y
-	JSR LevelJct_GetVScreenH	 ; Possibly advances 'Y'
-	TYA		
-	TAX		 ; X = Y
-
-PRG026_AA9A:
-
-	; Get Level_JctXLHStart, based on Player's X Hi or a possibly modded
-	; Player's Y Hi in Vertical levels, essentially determining 
-	; where to go based on the Player's "progress" through an area...
-	LDA Level_JctXLHStart,X	
-
-	; A = X start position in the format of high byte in lower 4 bits 
-	; and low in the upper 4 bits
- 
-	PHA		 ; Save read byte
-	AND #$0f	 ; Get the "X Hi" part of it
-	STA <Player_XHi	 ; Store it!
-
-	PLA		 ; Restore read byte
-	AND #$f0	 ; Get the X low part
-	ORA #$08	 ; Center it
-	STA <Player_X	 ; Store it!
-
-	LDA Level_JctYLHStart,X	
-
-	; A = a few things:
-	;	Bits 0 - 3: Go into Level_PipeExitDir
-	;	Bits 4 - 6: 0 to 7, selects start position from LevelJct_YLHStarts and sets proper vertical with LevelJct_VertStarts
-	;	Bits     7: Set for vertical level (and also sets Level_7VertCopy)
-
-
-	PHA		 ; Push Level_JctYLHStart
-	PHA		 ; Push Level_JctYLHStart
-
-	AND #$0f	 ; Lower 4 bits of Level_JctYLHStart
-	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
-
-	CMP #$03
-	BLT PRG026_AABD	 ; If Level_PipeExitDir < 3, jump to PRG026_AABD
-
-	; Otherwise, don't center Player (better for starting on block)
-	LDA <Player_X
-	AND #$f0
-	STA <Player_X
-
-PRG026_AABD:
-	PLA		 ; Restore Level_JctYLHStart
-	AND #$80
-	STA Level_7VertCopy
-	STA Level_7Vertical	 ; Set vertical mode
-
-	PLA		 ; Restore Level_JctYLHStart
-
-	; Get start index 0 - 7
-	AND #%01110000
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	TAY
-	LDA LevelJct_YLHStarts,Y	 ; Get appropriate Y start info
-
-	; 'A' is similar format byte to the X start; 
-	; Y is defined as "high" part in the lower 4 bits and
-	; the "low" part is the upper 4 bits
-
-	PHA		 ; Push 'A'
-
-	AND #$0f	
-	STA <Player_YHi	 ; Lower 4 bits are the "High" byte
-
-	PLA		 ; Restore 'A'
-	AND #$f0	
-	STA <Player_Y	 ; Upper 4 bits are the "low" byte
-
-	LDA LevelJct_VertStarts,Y	 ; Get appropriate vertical start position
-	STA <Vert_Scroll		 ; Store into Vert_Scroll
-
-	LDA #$00
-	STA <Horz_Scroll 	; Horz_Scroll = 0
-	STA <Horz_Scroll_Hi	; Horz_Scroll_Hi = 0
-	STA <Vert_Scroll_Hi	; Vert_Scroll_Hi = 0
-
-	LDA Level_7VertCopy
-	BNE PRG026_AB0E	 	; If switching to vertical, jump to PRG026_AB0E
-
-	; Non-vertical level...
-
-	; As long as the Player's X is >= $80, we can subtract $80 from
-	; it to properly center the horizontal scroll on the Player!
-	; Obviously if Player_XHi > 0, then we can do that REGARDLESS
-	; of the Player X low position because we have space to the left
-
-	LDA <Player_XHi
-	STA <Horz_Scroll_Hi	 ; Horz_Scroll_Hi = Horz_Scroll_Hi
-	BNE PRG026_AAF9	 	; Jump if Player_XHi <> 0 to PRG026_AAF9
-
-	; If Player X Hi is zero, we may not have enough room to center
-	; left of the Player, so let's check...
-	LDA <Player_X
-	CMP #$80	
-	BLT PRG026_AB06	 ; If Player_X < $80, jump to PRG026_AB06
-
-PRG026_AAF9:
-
-	; Enough room to center horizontally left of the Player!
-	LDA <Player_X
-	SUB #$80
-	STA <Horz_Scroll
-
-	; Carried into Horz_Scroll_Hi if need be
-	LDA <Horz_Scroll_Hi
-	SBC #$00
-	STA <Horz_Scroll_Hi
-
-PRG026_AB06:
-	LDA <Player_YHi
-	BEQ PRG026_AB0E	; If Player_YHi = 0, jump to PRG026_AB0E
-
-	; Otherwise, Player needs screen scrolled as low as it can go
-	LDA #$ef	 
-	STA <Vert_Scroll ; Vert_Scroll = $EF
-
 PRG026_AB0E:
+	
 	; Common (regular and vertical level) continue point...
 
 	LDA <Horz_Scroll
@@ -1824,92 +1614,6 @@ PRG026_AB0E:
 	JMP Scroll_Update_Ranges ; Set scrolling appropriately!
 
 	; For levels which employ the "generic exit" pipe at the end
-	; Only World 4 has a special one though...
-LevelJctGE_Layout:	.word W503_EndL, W503_EndL, W503_EndL, GenericW4L, W503_EndL, W503_EndL, W503_EndL, W503_EndL
-LevelJctGE_Objects:	.word W503_EndO, W503_EndO, W503_EndO, W503_EndO, W503_EndO, W503_EndO, W503_EndO, W503_EndO
-LevelJctGE_Tileset:	.byte 1, 1, 1, 1, 1, 1, 1, 1	; All use "Plains" style
-
-LevelJct_GenericExit:
-	; Load tileset by world (always Plains style)
-	LDY World_Num
-	LDA LevelJctGE_Tileset,Y
-	STA Level_Tileset
-
-	; Turn world index into 2-byte index
-	TYA
-	ASL A
-	TAY
-
-	; Generic Exit block layout
-	LDA LevelJctGE_Layout,Y
-	STA <Level_LayPtr_AddrL
-	LDA LevelJctGE_Layout+1,Y
-	STA <Level_LayPtr_AddrH
-
-	; Generic Exit objects
-	LDA LevelJctGE_Objects,Y
-	STA <Level_ObjPtr_AddrL
-	LDA LevelJctGE_Objects+1,Y
-	STA <Level_ObjPtr_AddrH
-
-	; Generic exit uses a predictable start position
-	LDA #$00
-	STA <Player_XHi
-	STA <Horz_Scroll
-	STA <Vert_Scroll_Hi
-	STA <Horz_Scroll_Hi
-
-	; ... and is never vertical
-	STA Level_7Vertical	; Level_7Vertical = 0
-
-	; And several other constants:
-	LDA #$ef
-	STA <Vert_Scroll ; Level_7Vertical = $EF
-
-	LDA #$28
-	STA <Player_X	 ; Player_X = $28
-
-	LDA #$01
-	STA <Player_YHi	 ; Player_YHi = 1
-
-	STA Level_PipeExitDir	 ; Level_PipeExitDir = 1
-
-	LDA #$80
-	STA <Player_Y	 ; Player_Y = $80
-
-	JMP PRG026_AB0E	 ; Jump to PRG026_AB0E
-
-
-LevelJct_SpecialToadHouse:
-	; NOTE: This does NOT set the layout / object pointers!!
-	; These MUST be set prior to using this Level Junction!
-
-	; (FIXME: Is this done by the hidden object of 1-3?)
-
-	; The special warp whistle Toad House uses a predictable start position
-	LDA #$00
-	STA <Horz_Scroll
-	STA <Horz_Scroll_Hi
-	STA <Vert_Scroll_Hi
-	STA <Player_XHi
-
-	; ... and is never vertical
-	STA Level_7Vertical	; Level_7Vertical = 0
-
-	; And several other constants:
-	LDA #32
-	STA <Player_X	 ; Player_X = 32
-
-	LDA #$01
-	STA <Player_YHi	 ; Player_YHi = 1
-
-	LDA #64
-	STA <Player_Y	 ; Player_Y = 64
-
-	LDA #$07
-	STA Level_Tileset	 ; Level_Tileset = 7 (Toad House)
-
-	JMP PRG026_AB0E	 ; Jump to PRG026_AB0E
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Palette_PrepareFadeIn
@@ -3598,35 +3302,35 @@ Status_Bottom_Loop:
 ; Copies the level's object list in from ROM to RAM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LevelLoad_CopyObjectList:
-	LDY #$00	 ; Y = 0
-
-	LDA [Level_ObjPtr_AddrL],Y	; Get first byte from object layout data
-	STA Level_Objects,Y	 	; Copy to beginning of Level_Objects array
-
-PRG026_B506:
-
-	; Next byte is ID of object (or $FF to terminate the list)
-	INY
-	LDA [Level_ObjPtr_AddrL],Y
-	STA Level_Objects,Y
-
-	CMP #$ff	 
-	BEQ PRG026_B51F	 	; If terminator hit, jump to PRG026_B51F (RTS)
-
-	; Copy in start column of object
-	INY		 
-	LDA [Level_ObjPtr_AddrL],Y
-	STA Level_Objects,Y
-
-	; Copy in start row of object
-	INY
-	LDA [Level_ObjPtr_AddrL],Y
-	STA Level_Objects,Y
-
-	JMP PRG026_B506		; Loop!
-
-PRG026_B51F:
-	RTS		 ; Return
+;	LDY #$00	 ; Y = 0
+;
+;	LDA [Level_ObjPtr_AddrL],Y	; Get first byte from object layout data
+;	STA Level_Objects,Y	 	; Copy to beginning of Level_Objects array
+;
+;PRG026_B506:
+;
+;	; Next byte is ID of object (or $FF to terminate the list)
+;	INY
+;	LDA [Level_ObjPtr_AddrL],Y
+;	STA Level_Objects,Y
+;
+;	CMP #$ff	 
+;	BEQ PRG026_B51F	 	; If terminator hit, jump to PRG026_B51F (RTS)
+;
+;	; Copy in start column of object
+;	INY		 
+;	LDA [Level_ObjPtr_AddrL],Y
+;	STA Level_Objects,Y
+;
+;	; Copy in start row of object
+;	INY
+;	LDA [Level_ObjPtr_AddrL],Y
+;	STA Level_Objects,Y
+;
+;	JMP PRG026_B506		; Loop!
+;
+;PRG026_B51F:
+;	RTS		 ; Return
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:

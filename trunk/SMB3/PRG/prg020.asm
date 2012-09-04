@@ -91,9 +91,6 @@ Tile_Layout_TS9:
 	.byte $AB, $AB, $1B, $6A, $61, $58, $9F, $65, $FF, $FF, $FF, $FF, $FF, $A7, $EF, $E5 ; Tiles $E0 - $EF
 	.byte $56, $08, $E3, $08, $56, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
 
-Tile_Attributes_TS9:
-	.byte $2C, $55, $98, $E2, $2E, $55, $AD, $E2
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS9

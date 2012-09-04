@@ -351,18 +351,16 @@ PRG008_A17F:
 PRG008_A1C1:
 	LDA Level_ChgTileEvent
 	CMP #CHNGTILE_DELETEWATERCOIN
-	BEQ IncCoin
+	BEQ IncCoin 
 
 	CMP #CHNGTILE_DELETECOIN
 	BNE PRG008_A1D7	 ; If Level_ChgTileEvent <> CHNGTILE_DELETECOIN, jump to PRG008_A1D7
-
 IncCoin:
 	INC Coins_Earned	 ; One more coin earned!
 
 PRG008_A1D7:
 	CMP #CHNGTILE_DELETECHERRY
 	BNE Normal_Tile
-
 	INC (Exp_Earned + 2)
 	LDA #CHNGTILE_DELETETOBG
 	STA Level_ChgTileEvent
@@ -3527,10 +3525,6 @@ Player_DoScrolling:
 	JMP PRG008_B2AB	 ; Otherwise, jump to PRG008_B2AB
 
 PRG008_B127:
-	LDA LevelJctBQ_Flag
-	BEQ PRG008_B12F	 ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
-
-	JMP PRG008_B1CE	 ; Otherwise, jump to PRG008_B1CE
 
 PRG008_B12F:
 	LDY Level_AScrlConfig
@@ -4586,6 +4580,12 @@ PRG008_B604:
 	; Not an ice block or if it was, Player was not interested in it...
 
 	LDA Level_Tile_GndL,X
+	CMP #WATER_COIN
+	BNE NotWaterCoin
+	LDA #CHNGTILE_DELETEWATERCOIN
+	BNE WaterCoinTouch
+
+NotWaterCoin:
 	CMP #TILEA_COIN
 
 	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
@@ -4594,6 +4594,8 @@ PRG008_B604:
 
 GOLD_COIN_TOUCH:
 	LDA #CHNGTILE_DELETECOIN
+
+WaterCoinTouch:
 	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
 
 	; Play coin collected sound!

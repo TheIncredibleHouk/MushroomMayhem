@@ -12,7 +12,6 @@
 ; Distribution package date: Sun Jun 10 18:21:30 UTC 2012
 ;---------------------------------------------------------------------------
 	; STANDARD HORIZONTAL SCREEN
-
 Tile_Mem_Addr:	
 	; This breaks up the overall "tile" layout memory into screen-based chunks
 	; With a screen width of 256 pixels, that makes 16 blocks across every "screen",
@@ -1221,9 +1220,6 @@ PRG030_88AD:
 	LDA #$00
 	STA PPU_CTL2
 
-	LDA #$04	
-	STA Level_TimerMSD	; Level_TimerMSD = 4
-
 PRG030_88C8:
 	; Clearing scroll variables
 	LDA #$00
@@ -1235,9 +1231,7 @@ PRG030_88C8:
 	STA <Scroll_ColumnL
 	STA <Scroll_LastDir
 
-	;# DAHRKDAIZ RESET STUFF ON LEVELS
-	STA Weather
-	STA Wind
+	;# DAHRKDAIZ RESET STUFFS ON LEVELS
 	STA Weather_Initialized
 	STA Shop_Mode_Initialized
 	STA Coins_ThisLevel	 ; Clear "coins earned this level" counter
@@ -1256,41 +1250,6 @@ PRG030_88E9:
 	DEY		 	; Y--
 	BNE PRG030_88E9	 	; While Y <> 0, loop!
 
-	STA [Temp_Var1],Y	; And address $00 is cleared too (though this is technically unnecessary)
-
-	LDA <Map_Enter2PFlag
-	BEQ PRG030_891A	 	; If not entering 2P Vs mode, jump to PRG030_891A
-
-	; 2P Vs mode begin!
-
-	; Level_Tileset = 18 (2P Vs)
-	LDA #18
-	STA Level_Tileset
-
-	JSR SetPages_ByTileset
-
-	INC Map_2PVsGame	; Map_2PVsGame++ (play next game style)
-
-	LDA Map_2PVsGame
-	CMP #12
-	BNE PRG030_890B	 ; If Map_2PVsGame <> 12 (overflow), jump to PRG030_890B
-
-	; Otherwise, restart count
-	LDA #$00
-	STA Map_2PVsGame
-
-PRG030_890B:
-	ASL A	; Multiply game style by 2
-	TAX	; -> 'X'
-
-	; Load address to battlefield level data
-	LDA Vs_Battlefields,X
-	STA <Level_LayPtr_AddrL
-	LDA Vs_Battlefields+1,X
-	STA <Level_LayPtr_AddrH
-
-	JMP PRG030_892A	 ; Jump to PRG030_892A
-
 PRG030_891A:
 
 	; Non-2P Mode begin!
@@ -1308,55 +1267,6 @@ PRG030_891A:
 	; Level_Tileset
 	JSR Map_PrepareLevel	 
 
-PRG030_892A:
-	LDA World_Num
-	CMP #$08	
-	BNE PRG030_893F	 ; If World_Num <> 8 (World 9), jump to PRG030_893F
-
-	; Warp zone special
-	LDA #MUS1_STOPMUSIC	 
-	STA Sound_QMusic1	; Stop BGM
-
-	; The destination world is fed back out through Map_Warp_PrevWorld
-	LDA Map_Warp_PrevWorld
-	STA World_Num	 	; World_Num = Map_Warp_PrevWorld
-	JMP PRG030_84A0	 	; Jump to PRG030_84A0 (initialize the world map!)
-
-PRG030_893F:
-	LDY Level_Tileset	; Y = Level_Tileset
-	LDA ClearPattern_ByTileset,Y
-	STA ClearPattern	 	; ClearPattern = ClearPattern_ByTileset[Y]
-
-	CPY #$07	 
-	BNE PRG030_8964	 	; If Level_Tileset <> 7 (Toad House), jump to PRG030_8964
-
-	; Toad House object pointer override!
-
-	; The object set pointer has different meaning for a Toad House!
-	LDA <Level_ObjPtr_AddrL
-	STA THouse_ID		; Toad House ID; not used, would have tracked boxes already opened (multiple visits perhaps??)
-	LDA <Level_ObjPtr_AddrH
-	STA THouse_Treasure	 
-
-	; Force object set at TOADO (Toad and the message object)
-	LDA #LOW(TOADO)
-	STA <Level_ObjPtr_AddrL
-	STA Level_ObjPtrOrig_AddrL	
-	LDA #HIGH(TOADO)
-	STA <Level_ObjPtr_AddrH
-	STA Level_ObjPtrOrig_AddrH	
-
-PRG030_8964:
-
-	; Clears $7F bytes starting at Level_BlockGrabHitMem ($7E02)
-	; Clear Level_BlockGrabHitMem (collected coins and 1-ups memory)
-	LDY #$7f	; Y = $7f
-	LDA #$00	; A = 0
-PRG030_8968:
-	;STA Level_BlockGrabHitMem,Y
-	DEY		 ; Y--
-	BPL PRG030_8968	 ; While Y >= 0, loop!
-
 	; Clears $80 bytes starting at Player_XHi ($75, gameplay context)
 	LDY #$80	 ; Y = $80
 	LDA #$00	 ; A = 0
@@ -1372,24 +1282,8 @@ PRG030_897B:
 	LDA #$00	
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 
-	; If Level_Tileset = 16 (Spade game sliding cards) or 17 (N-Spade), jump to PRG030_89AB
-	LDA Level_Tileset
-	CMP #16
-	BEQ PRG030_89AB
-	CMP #17
-	BEQ PRG030_89AB	
-
-	; Inline clone of "SetPages_ByTileset"
-	; Change A000 and C000 pages by Level_Tileset
-	LDY Level_Tileset
-	LDA PAGE_C000_ByTileset,Y
-	STA PAGE_C000	 
-	LDA PAGE_A000_ByTileset,Y
-	STA PAGE_A000	 
-	JSR PRGROM_Change_Both2
-
-	JSR LevelLoad_ByTileset			; Load the level layout data!
-	JSR Sprite_RAM_Clear			; Clear the sprites
+	JSR LevelLoad			; Load the level layout data!
+	
 	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 
 	; Scroll_Cols2Upd = 32 (full dirty scroll update sweep)
@@ -1398,237 +1292,7 @@ PRG030_897B:
 
 PRG030_89AB:
 	JSR Reset_PPU_Clear_Nametables2		; Blank display, clear nametables
-	JSR Sprite_RAM_Clear	 		; Clear the sprites
 
-	; Select the first bank of BG VROM as specified by Level_BG_Page1_2
-	LDX ESwitch
-	BEQ Normal_Gfx2
-	LDA ESwitchTableChange1, X
-	BNE Skip_Normal_Gfx2
-
-Normal_Gfx2:
-	LDY Level_BG_Page1_2
-	LDA Level_BG_Pages1,Y
-	STA PatTable_BankSel
-
-Skip_Normal_Gfx2:
-	LDA #$80
-
-	LDX Level_PSwitchCnt
-	BEQ PRG030_89C4	 	; If P-Switch not active, jump to PRG030_89C4
-
-	LDA #$88	 	; Otherwise, force override to page $3E
-
-PRG030_89C4:
-	STA PatTable_BankSel+1	 ; Select second bank of BG VROM
-
-	LDA Level_Tileset	
-	CMP #16
-	BEQ PRG030_89D1	 	; If Level_Tileset = 16 (Spade game sliders), jump to PRG030_89D1
-
-	JMP PRG030_8A4E	 	; Otherwise, jump to PRG030_8A4E
-
-PRG030_89D1:
-	; Spade game sliders (Roulette Game)
-
-	; Set pattern banks on sprite side... only really need the border sprites??
-	LDY #$20
-	STY PatTable_BankSel+2
-	INY
-	STY PatTable_BankSel+3
-	INY
-	STY PatTable_BankSel+4
-	INY
-	STY PatTable_BankSel+5
-
-	; Horizontal mirroring
-	LDA #$00
-	STA MMC3_MIRROR
-
-	JSR Roulette_DrawShapes	 	; Draw in the Roulette Shapes
-	JSR Roulette_DrawBorderSprites	; Draw the sprite borders
-
-	; Render Roulette borders and set attributes
-	LDA #$07
-	JSR Video_Do_Update
-
-	; Status bar suitable for the horizontal mirroring mode
-	LDA #$05
-	JSR Video_Do_Update
-
-	; Switch to page 26 @ A000
-	LDA #MMC3_8K_TO_PRG_A000
-	STA MMC3_COMMAND
-	LDA #26		
-	STA MMC3_PAGE	 
-
-	;JSR StatusBar_Update_Cards	 ; Update status bar cards
-	;JSR StatusBar_UpdateValues	 ; Update other status bar stuff
-	;JSR StatusBar_Fill_MorL	 	 ; Patch in correct M or L on status bar
-	;JSR StatusBar_Fill_World	 ; Fill in correct world number
-
-	; Push through what's in graphics buffer
-	LDA #$00
-	JSR Video_Do_Update
-
-	; Update_Select = $C0
-	LDA #$c0
-	STA Update_Select
-
-	; Set scrolling to absolute top
-	LDA #$00
-	STA <Vert_Scroll
-
-	; Resume Update_Select activity
-	STA UpdSel_Disable
-
-	; Set page @ A000 to 27
-	LDA #27
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	JSR Setup_PalData	 ; Setup palette data
-
-	; Set page @ A000 to 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	JSR Palette_FadeIn	 ; Fade in palette
-
-	; Enable the Roulette slider raster effect
-	LDA #UPDATERASTER_SPADEGAME
-	STA Update_Request
-
-	; We actually get hung up here until afer the end of the Roulette
-	; game when it has completely faded out due to Update_Request = UPDATERASTER_SPADEGAME
-	JSR GraphicsBuf_Prep_And_WaitVSync
-
-	; Update_Select = $C0
-	LDA #$c0
-	STA Update_Select
-
-	; Vertical mirroring
-	LDA #$01
-	STA MMC3_MIRROR
-
-	; Stop music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
-
-	; Returning to map
-	JMP PRG030_8FA1	 ; Jump to PRG030_8FA1
-
-PRG030_8A4E:
-	; Not spade game sliders
-
-	CMP #17
-	BEQ PRG030_8A55	 ; If Level_Tileset = 17 (N-Spade game), jump to PRG030_8A55
-	JMP PRG030_8AE0	 ; Otherwise, jump to PRG030_8AE0
-
-PRG030_8A55:
-	; N-Spade Game
-
-	; Load graphics for N-Spade
-	LDY #$28
-	STY PatTable_BankSel+2
-	INY
-	STY PatTable_BankSel+3
-	INY
-	INY
-	STY PatTable_BankSel+5
-	LDA #$5a
-	STA PatTable_BankSel+4
-
-	; Card_Index = $0E (this assignment isn't really used for anything)
-	LDA #$0E
-	STA Card_Index
-
-	; Temp_Var1 = $20 (VRAM High Address for Clear_Nametable_Short)
-	LDA #$20
-	STA <Temp_Var1
-	JSR Clear_Nametable_Short
-
-	; Generate the candystripe background of the N-Spade game
-	LDA #$0d
-	JSR Video_Do_Update
-
-PRG030_8A79:
-	JSR Card_InitGame	 ; Do this stage of initialization
-
-	LDA <Graphics_Queue
-	JSR Video_Do_Update	 ; Push graphics update
-
-	LDA Card_InitState
-	CMP #$03
-	BNE PRG030_8A79		; While Card_InitState <> 3, loop!
-
-	; Status bar suitable for the card game
-	LDA #$05
-	JSR Video_Do_Update
-
-	;JSR StatusBar_Update_Cards	 ; Update status bar cards
-	;JSR StatusBar_UpdateValues	 ; Update other status bar stuff
-	;JSR StatusBar_Fill_MorL	 	 ; Patch in correct M or L on status bar
-	;JSR StatusBar_Fill_World	 ; Fill in correct world number
-
-	; Push through what's in graphics buffer
-	LDA #$00
-	JSR Video_Do_Update
-
-	; Update_Select = $C0
-	LDA #$c0
-	STA Update_Select
-
-	; Set scrolling to absolute top
-	LDA #$00
-	STA <Vert_Scroll
-
-	; Resume Update_Select activity
-	STA UpdSel_Disable
-
-	; Set page @ A000 to 27
-	LDA #27
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	JSR Setup_PalData	 ; Setup palette data
-
-	; Set bank at A000 to page 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	JSR Palette_FadeIn	 ; Fade in palette
-
-PRG030_8AC0:
-	JSR GraphicsBuf_Prep_And_WaitVSync	; VSync
-
-	JSR NSpade_DoGame	 ; Run N-Spade game
-
-	JSR StatusBar_UpdateValues	 ; Update status bar
-
-	LDA <Level_ExitToMap
-	BEQ PRG030_8AC0	 ; If we're not exiting to map, loop N-Spade game
-
-	; Stop music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
-
-	; Set bank at A000 to page 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	JSR Palette_FadeOut	 		; Fade out
-
-	JMP PRG030_8FA1	 ; Jump to PRG030_8FA1
-
-PRG030_8AE0:
-	CMP #18
-	BNE PRG030_8AE7	 ; If Level_Tileset <> 18 (2P Vs), jump to PRG030_8AE7
-
-	;JMP Do_2PVsChallenge	 ; Jump Do_2PVsChallenge
 
 PRG030_8AE7:
 	; Normal gameplay...
@@ -1645,16 +1309,6 @@ PRG030_8AE7:
 	LDX #$c0	 ; X = $C0 (Normal style updating)
 
 	LDY Level_7Vertical
-	BEQ PRG030_8B03	 	; If level is NOT a vertical one, jump to PRG030_8B03
-
-	; Level is vertical!
-
-	; Horizontal mirroring
-	LDA #$00
-	STA MMC3_MIRROR
-
-	LDA #$01	 ; A = 1
-	LDX #$80	 ; X = $80 (Vertical style updating)
 
 PRG030_8B03:
 	STX Update_Select	; Set Update_Select
@@ -1666,19 +1320,10 @@ PRG030_8B03:
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
-	;JSR StatusBar_Update_Cards	 ; Update status bar cards
-	;JSR StatusBar_UpdateValues	 ; Update other status bar stuff
-	;JSR StatusBar_Fill_MorL	 	 ; Patch in correct M or L on status bar
-	;JSR StatusBar_Fill_World	 ; Fill in correct world number
-
 	LDA #$00		 ; A = 0 (Graphics buffer push)
 	JSR Video_Do_Update	 ; Push through what's in graphics buffer
 
 	JSR Scroll_Dirty_Update	 ; Entering level, do dirty update
-
-	LDA Level_Tileset
-	CMP #15
-	BEQ PRG030_8B6D	 ; If Level_Tileset = 15 (Bonus game intro), jump to PRG030_8B6D
 
 	; Changes pages at A000 and C000 to 26 and 6, respectively
 	LDA #6
@@ -1686,8 +1331,6 @@ PRG030_8B03:
 	LDA #26
 	STA PAGE_A000
 	JSR PRGROM_Change_Both2
-
-	JSR LevelLoad_CopyObjectList	 ; Copy in level objects!
 
 	LDX Player_Current
 	LDA Player_FallToKing,X
@@ -3213,50 +2856,19 @@ PRG030_94EE:
 	; (mainly A000)
 	JMP SetPages_ByTileset
 
-	; Select the attribute table (which loads 8 bytes into Tile_AttrTable)
-TileAttribute_ByTileset:
-	.word Tile_Attributes_TS0		; 0 - Map
-	.word Tile_Attributes_TS1		; 1 - Plains [15]
-	.word Tile_Attributes_TS2		; 2 - Mini fortress style [21]
-	.word Tile_Attributes_TS3		; 3 - Hills style [16]
-	.word Tile_Attributes_TS4_TS12		; 4 - High-Up style [17]
-	.word Tile_Attributes_TS5_TS11_TS13	; 5 - pipe world plant infestation [19]
-	.word Tile_Attributes_TS6_TS7_TS8	; 6 - Water world [18]
-	.word Tile_Attributes_TS6_TS7_TS8	; 7 - Toad house [18]
-	.word Tile_Attributes_TS6_TS7_TS8	; 8 - Vertical pipe maze [18]
-	.word Tile_Attributes_TS9		; 9 - desert level [20]
-	.word Tile_Attributes_TS10		; 10 - airship [23]
-	.word Tile_Attributes_TS5_TS11_TS13	; 11 - Giant World [19]
-	.word Tile_Attributes_TS4_TS12		; 12 - ice level [17]
-	.word Tile_Attributes_TS5_TS11_TS13	; 13 - coin heaven / sky level [19]
-	.word Tile_Attributes_TS14		; 14 - underground [13]
-	.word Tile_Attributes_TS15_TS16_TS17	; 15 - bonus game intro [22]
-	.word Tile_Attributes_TS15_TS16_TS17	; 16 - spade game sliders [22]
-	.word Tile_Attributes_TS15_TS16_TS17	; 17 - N-spade [22]
-	.word Tile_Attributes_TS18		; 18 - 2P Vs [14]
-
-	; NOT USED Tile Attribute values (not valid either; incomplete set!)
-Tile_Attributes_TS15_TS16_TS17:
-	; Unused space
-	.byte $FF, $FF, $FF, $FF
-
-
 Fill_Tile_AttrTable_ByTileset:
 	LDA Level_Tileset
-	ASL A		 
+	ASL A
+	ASL A
+	ASL A	 
 	TAY		 	; Y = Level_Tileset << 1
 
-	; Index into TileAttribute_ByTileset and store address to [Temp_Var2][Temp_Var1]
-	LDA TileAttribute_ByTileset,Y
-	STA <Temp_Var1		
-	LDA TileAttribute_ByTileset+1,Y
-	STA <Temp_Var2		
-
-	LDY #$07		; Y = 7
+	LDX #$07		; Y = 7
 PRG030_952C:
-	LDA [Temp_Var1],Y	
+	LDA TileSolidity,Y	
 	STA Tile_AttrTable,Y	
-	DEY			; Y--
+	INY
+	DEX			; Y--
 	BPL PRG030_952C	 	; While Y >= 0, loop!
 
 	RTS			; Return
@@ -3684,57 +3296,57 @@ Tile_Mem_ClearB:	; $9734
 	RTS		 ; Return
 
 
-	; Array of bank selections by Level_BG_Page1_2 
-	; What LEVEL4_BGBANK_INDEX references
-Level_BG_Pages1:
-	.byte $00	;  0 Not Used
-	.byte $08	;  1 Plains
-	.byte $10	;  2 Fortress
-	.byte $1C	;  3 Hills / Underground
-	.byte $0C	;  4 High-Up
-	.byte $58	;  5 Plant Infestation
-	.byte $58	;  6 Underwater
-	.byte $5C	;  7 Toad House
-	.byte $58	;  8 Pipe Maze
-	.byte $30	;  9 Desert
-	.byte $34	;  A Airship
-	.byte $6E	;  B Giant world
-	.byte $18	;  C Ice
-	.byte $38	;  D Sky
-	.byte $1C	;  E Not Used (Same as Hills / Underground)
-	.byte $24	;  F Bonus Room
-	.byte $2C	; 10 Spade (Roulette)
-	.byte $5C	; 11 N-Spade (Card)
-	.byte $58	; 12 2P Vs
-	.byte $6C	; 13 Hills / Underground alternate
-	.byte $68	; 14 3-7 only
-	.byte $34	; 15 World 8 War Vehicle
-	.byte $28	; 16 Throne Room
-
-Level_BG_Pages2:
-	.byte $00	; 17 Not Used
-	.byte $80	; 18 Plains
-	.byte $80	; 19 Fortress
-	.byte $80	; 1A Hills / Underground
-	.byte $80	; 1B High-Up
-	.byte $80	; 1C Plant Infestation
-	.byte $80	; 1D Underwater
-	.byte $80	; 1E Toad House
-	.byte $6E	; 1F Pipe Maze
-	.byte $80	;  Desert
-	.byte $80	;  Airship
-	.byte $80	;  Giant world
-	.byte $80	;  Ice
-	.byte $80	;  Sky
-	.byte $80	;  Not Used (Same as Hills / Underground)
-	.byte $80	;  Bonus Room
-	.byte $80	;  Spade (Roulette)
-	.byte $80	;  N-Spade (Card)
-	.byte $80	;  2P Vs
-	.byte $80	;  Hills / Underground alternate
-	.byte $80	;  3-7 only
-	.byte $80	;  World 8 War Vehicle
-	.byte $70	;  Throne Room
+;	; Array of bank selections by Level_BG_Page1_2 
+;	; What LEVEL4_BGBANK_INDEX references
+;Level_BG_Pages1:
+;	.byte $00	;  0 Not Used
+;	.byte $08	;  1 Plains
+;	.byte $10	;  2 Fortress
+;	.byte $1C	;  3 Hills / Underground
+;	.byte $0C	;  4 High-Up
+;	.byte $58	;  5 Plant Infestation
+;	.byte $58	;  6 Underwater
+;	.byte $5C	;  7 Toad House
+;	.byte $58	;  8 Pipe Maze
+;	.byte $30	;  9 Desert
+;	.byte $34	;  A Airship
+;	.byte $6E	;  B Giant world
+;	.byte $18	;  C Ice
+;	.byte $38	;  D Sky
+;	.byte $1C	;  E Not Used (Same as Hills / Underground)
+;	.byte $24	;  F Bonus Room
+;	.byte $2C	; 10 Spade (Roulette)
+;	.byte $5C	; 11 N-Spade (Card)
+;	.byte $58	; 12 2P Vs
+;	.byte $6C	; 13 Hills / Underground alternate
+;	.byte $68	; 14 3-7 only
+;	.byte $34	; 15 World 8 War Vehicle
+;	.byte $28	; 16 Throne Room
+;
+;Level_BG_Pages2:
+;	.byte $00	; 17 Not Used
+;	.byte $80	; 18 Plains
+;	.byte $80	; 19 Fortress
+;	.byte $80	; 1A Hills / Underground
+;	.byte $80	; 1B High-Up
+;	.byte $80	; 1C Plant Infestation
+;	.byte $80	; 1D Underwater
+;	.byte $80	; 1E Toad House
+;	.byte $6E	; 1F Pipe Maze
+;	.byte $80	;  Desert
+;	.byte $80	;  Airship
+;	.byte $80	;  Giant world
+;	.byte $80	;  Ice
+;	.byte $80	;  Sky
+;	.byte $80	;  Not Used (Same as Hills / Underground)
+;	.byte $80	;  Bonus Room
+;	.byte $80	;  Spade (Roulette)
+;	.byte $80	;  N-Spade (Card)
+;	.byte $80	;  2P Vs
+;	.byte $80	;  Hills / Underground alternate
+;	.byte $80	;  3-7 only
+;	.byte $80	;  World 8 War Vehicle
+;	.byte $70	;  Throne Room
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3750,370 +3362,646 @@ Level_BG_Pages2:
 ;
 ; Best to follow through to figure out the format to each "style"...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; There are 8 defined vertical start positions
+;	; There are 8 defined vertical start positions
+;
+;	; Defines Player's Y "high" start
+;GamePlay_YHiStart:	.byte $01, $00, $00, $01, $00, $00, $00, $01
+;
+;	; Defines Player's Y start
+;GamePlay_YStart:	.byte $70, $40, $00, $40, $70, $B0, $F0, $80
+;
+;	; Defines screen vertical position starts
+;	; NOTE: If the "box out" effect were to be used, needs to sync with BoxOut_ByVStart
+;GamePlay_VStart:	.byte $EF, $00, $00, $EF, $30, $70, $B0, $EF
+;
+;	; Available MSD time start values
+;GamePlay_TimeStart:	.byte 3, 4, 2, 0
+;
+;	; Available BGMs for levels (16 possible with stock code, only 11 defined here)
+;GamePlay_BGM:
+;	.byte MUS2B_OVERWORLD	; 0
+;	.byte MUS2B_UNDERGROUND	; 1
+;	.byte MUS2B_UNDERWATER	; 2
+;	.byte MUS2B_FORTRESS	; 3
+;	.byte MUS2B_BOSS	; 4
+;	.byte MUS2B_AIRSHIP	; 5
+;	.byte MUS2B_BATTLE	; 6
+;	.byte MUS2B_TOADHOUSE	; 7
+;	.byte MUS2B_ATHLETIC	; 8
+;	.byte MUS2A_THRONEROOM	; 9
+;	.byte MUS2A_SKY		; 10
+;
 
-	; Defines Player's Y "high" start
-GamePlay_YHiStart:	.byte $01, $00, $00, $01, $00, $00, $00, $01
-
-	; Defines Player's Y start
-GamePlay_YStart:	.byte $70, $40, $00, $40, $70, $B0, $F0, $80
-
-	; Defines screen vertical position starts
-	; NOTE: If the "box out" effect were to be used, needs to sync with BoxOut_ByVStart
-GamePlay_VStart:	.byte $EF, $00, $00, $EF, $30, $70, $B0, $EF
-
-	; Available MSD time start values
-GamePlay_TimeStart:	.byte 3, 4, 2, 0
-
-	; Available BGMs for levels (16 possible with stock code, only 11 defined here)
-GamePlay_BGM:
-	.byte MUS2B_OVERWORLD	; 0
-	.byte MUS2B_UNDERGROUND	; 1
-	.byte MUS2B_UNDERWATER	; 2
-	.byte MUS2B_FORTRESS	; 3
-	.byte MUS2B_BOSS	; 4
-	.byte MUS2B_AIRSHIP	; 5
-	.byte MUS2B_BATTLE	; 6
-	.byte MUS2B_TOADHOUSE	; 7
-	.byte MUS2B_ATHLETIC	; 8
-	.byte MUS2A_THRONEROOM	; 9
-	.byte MUS2A_SKY		; 10
-
+LevelPointerOffsets:
+	.byte $A0, $A1, $A2, $A3
 
 LevelLoad:	; $97B7
-
 	; Clear loading variables
 	LDA #$00
-	STA TileAddr_Off
-	STA LevLoad_Unused4
-	STA LevLoad_Unused3
-	STA LevLoad_Unused1
-	STA LevLoad_Unused2
+	STA <Vert_Scroll
+	STA Level_Jct_VS
+	LDA #$12
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 
-	LDY #$04	 ; Y = 4 (in case we're skipping first 4 bytes of header)
-
-	; If we're using a "junction" device (door/pipe/etc.), we don't want to (incorrectly) set the "alternates"...
-	LDA Level_JctCtl	 
-	CMP #$80	 
-	BEQ PRG030_980D	 ; If Level_JctCtl = $80, jump to PRG030_980D (use current Level_AltLayout/Level_AltObjects values)
-
-	LDY #$00	 ; Y = 0
-
-	; Get bytes 0-3 of layout data; pointers Level_AltLayout and Level_AltObjects
-
-	LDA [Level_LayPtr_AddrL],Y
-	STA Level_AltLayout
+	; the LevelLoadPointer is the level number that points to a table of levels that we can load
+	; the table format is
+	; BBBB BBBB = Bank
+	; LLLL LLLL = low address
+	; HHHH HHHH = high address
+	; TTTT TTTT = tile set
+	
+	LDA LevelLoadPointer
+	AND #$C0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	LDA LevelPointerOffsets, X
+	STA <Temp_Var2
+	LDA LevelLoadPointer
+	AND #$3F
+	ASL A
+	ASL A
+	TAY
+	LDA [Temp_Var1],Y
+	STA <Temp_Var3	; bank
 	INY
-	LDA [Level_LayPtr_AddrL],Y
-	STA Level_AltLayout+1
-	INY		 
+	LDA [Temp_Var1],Y
+	STA <Temp_Var14  ; lo address
+	INY
+	LDA [Temp_Var1],Y
+	STA <Temp_Var15  ; hi address
+	INY
+	LDA [Temp_Var1],Y
+	STA Level_Tileset
+	STA Level_TilesetIdx
+	DEC Level_TilesetIdx
 
-	LDA [Level_LayPtr_AddrL],Y
-	STA Level_AltObjects
-	INY		
-	LDA [Level_LayPtr_AddrL],Y
-	STA Level_AltObjects+1
-	INY		
+	; now we swap banks and start loading level headers
+	LDX <Temp_Var3
+	STX PAGE_A000
+	JSR PRGROM_Change_A000
 
-	LDA Level_JctCtl	
-	BNE PRG030_980D	 ; If Level_JctCtl <> 0, jump to PRG030_980D (skip setting vertical start position)
+	INX
+	STX PAGE_C000
+	JSR PRGROM_Change_C000
+	
+	LDY #$00
+	LDA [Temp_Var14],Y
 
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%11100000
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	TAX		 	; X = upper 3 bits, shifted down, from byte 4 (0-7)
+	;NextLevelByte
+	; draw clear tile
+ClearLevelMem:
+	JSR Tile_Mem_ClearA
+	JSR Tile_Mem_ClearB
+	CPY #$00
+	BNE ClearLevelMem
 
-	; Set up the vertical starting position!
-	LDA GamePlay_YHiStart,X
-	STA <Player_YHi		; Player_YHi = GamePlay_YHiStart[X]
+	INY
+	; now load bg gfx, for eswitch levels (dungeon)
+	; we use the tables, otherwise we use 
+	LDX ESwitch
+	BEQ Normal_Gfx2
+	LDA ESwitchTableChange1, X
+	BNE Skip_Normal_Gfx2
 
-	LDA GamePlay_YStart,X
-	STA <Player_Y		; Player_Y = GamePlay_YStart[X]
+Normal_Gfx2:
+	LDA [Temp_Var14],Y
 
-	LDA #$00	 
-	STA <Player_XHi		; Player_XHi = 0
+Skip_Normal_Gfx2:
+	STA PatTable_BankSel
+	LDA #$80
 
-	; Set the starting vertical position
-	LDA GamePlay_VStart,X
-	STA <Vert_Scroll	; Vert_Scroll = GamePlay_VStart[X]
+	LDX Level_PSwitchCnt
+	BEQ NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
 
-PRG030_980D:
+	LDA #$88	 	; Otherwise, force override to page $3E
 
-	; Set the width of the level (in screens) from byte 4
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%00001111
-	STA <Level_Width
-	STA Level_SizeOrig	 
+NormAnimBank:
+	STA PatTable_BankSel+1	 ; Select second bank of BG VROM
+	INY
 
-	;;;;;;;;;;;;;;;
-	INY		 
+	; now we load palette index, we load palette later...
+	LDA [Temp_Var14],Y
+	STA PaletteIndex
 
-	; First 3 bits of byte 5 determine the palette select for tiles
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%00000111
-	STA PalSel_Tile_Colors
-
-	; Next 2 bits select an object palette, root value 8
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%00011000
-	LSR A		
-	LSR A		
-	LSR A		
-	ORA #%00001000		; forces minimum value of 8
-	STA PalSel_Obj_Colors
-
-	; Next 2 bits sets Level_SelXStart (sets Player_X after level starts)
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%01100000
-	LSR A		
-	LSR A		
-	LSR A		
-	LSR A		
-	LSR A		
-	STA Level_SelXStart	 
-
-	; Finally, bit 7 sets Level_UnusedFlag (unused; only set, never read)
-	LDA [Level_LayPtr_AddrL],Y
-	AND #$80	
-	STA Level_UnusedFlag 
-
-	;;;;;;;;;;;;;;;
-	INY		 
-
-	; Bit 7 of byte 6 sets Level_PipeNotExit
-	LDA [Level_LayPtr_AddrL],Y
-	AND #$80
-	EOR #$80
-	STA Invincible_Enemies
-
-	; Bits 5-6 set Level_FreeVertScroll
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%01100000
+	; next we load level action
+	INY
+	LDA Level_JctCtl	 
+	BNE Skip_Level_InitAction
+	LDA [Temp_Var14],Y
+	AND #$F0
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	LSR A
-	STA Level_FreeVertScroll
-
-	CMP #$02
-	BNE PRG030_9864	 ; If Level_FreeVertScroll <> 2 (arbitrary scroll lock), jump to PRG030_9864
-
-	; Otherwise for a level started with the arbitrary lock, it picks Vert_Scroll = 0 (highest point)
-	; if Vert_Scroll is less than $B0, otherwise it picks $EF (lowest point)
-	; NOTE however that these two points are not required during normal gameplay; you can arbitrarily
-	; lock to ANY Vert_Scroll value and it will work just fine!
-
-	LDX #$00		; X = 0
-
-	LDA <Vert_Scroll
-	CMP #$b0
-	BLT PRG030_985F	 	; If Vert_Scroll < $B0, jump to PRG030_985F
-
-	LDX #$ef	 	; Otherwise, X = $EF
-
-PRG030_985F:
-	STX <Vert_Scroll	; Vert_Scroll = X
-	STX Level_Jct_VS	; Level_Jct_VS = Vert_Scroll
-
-PRG030_9864:
-
-	; Bit 4 sets whether this level is a vertical one
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%00010000
-	STA Level_7Vertical
-	BEQ PRG030_9893	 	; If not vertical, jump to PRG030_9893
-
-	LDX Level_JctCtl
-	BNE PRG030_987C	 	; If Level_JctCtl <> 0, jump to PRG030_987C
-
-	; Start at bottom of vertical level
-	LDA Level_SizeOrig
-	STA <Vert_Scroll_Hi
-	STA <Player_YHi		; Player's Y High is the same!
-	JMP PRG030_9893	
-
-
-PRG030_987C:
-	LDA #$00	
-	STA Level_SizeOrig	; ?? Why?
-
-	LDA <Player_YHi	
-	BEQ PRG030_988E	 	; If the Player Y high is zero, jump to PRG030_988E
-
-	LDA <Level_Width
-	STA <Vert_Scroll_Hi
-	STA <Player_YHi	
-	STA Level_SizeOrig
-
-PRG030_988E:
-	LDA <Vert_Scroll_Hi
-	STA Level_Jct_VSHi	 ; Level_Jct_VSHi = Vert_Scroll_Hi
-
-	; End of Vertical alternative
-
-PRG030_9893:
-
-	; Bits 0-3 set Level_AltTileset
-	LDA [Level_LayPtr_AddrL],Y
-	AND #$0f	
-	STA Level_AltTileset
-
-	;;;;;;;;;;;;;;;
-	INY		; Y++	
-
-	; Bits 5-7 of byte 7 set Level_InitAction (sets an action to begin level, see Level_InitAction_JumpTable)
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%11100000	 
-	LSR A		 
-	LSR A		 
-	LSR A		 
-	LSR A		 
-	LSR A		 
 	STA Level_InitAction
 
-	; Bits 0-4 set Level_BG_Page1_2 (an index to which pages of BG graphics should be loaded)
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%00011111	 
-	STA Level_BG_Page1_2
+Skip_Level_InitAction:
+	; Load level size/width
+	LDA [Temp_Var14],Y
+	AND #$0F
+	
+	STA <Level_Width
+	STA Level_SizeOrig
+	INY
 
-	;;;;;;;;;;;;;;;
-	INY		 ; Y++
+	LDA Level_JctCtl	 
+	BEQ Not_Lvl_Jct
+	INY
+	JMP Skip_Level_Position
 
-	LDA Level_JctCtl
-	BNE PRG030_98C8	 ; If using a junction device, don't set the time; jump to PRG030_98C8
+Not_Lvl_Jct:
+	LDA Debug_Snap
+	; load X/Y starting position
+	LDA [Temp_Var14], Y	
+	AND #$0F
+	STA <Player_XHi
+	LDA [Temp_Var14], Y
+	AND #$F0
+	STA <Player_X
+	INY
+	LDA [Temp_Var14], Y
+	AND #$0F
+	STA <Player_YHi
+	LDA [Temp_Var14], Y
+	AND #$F0
+	STA <Player_Y
+	LDA [Temp_Var14], Y
+	CMP #$04
+	BCS LowerLimit
+	LDA #$00
+	BEQ Store_Vert_Scroll
 
-	; Bits 6-7 of byte 8 select a time setting (0=300, 1=400, 2=200, 3=000 [unlimited])
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%11000000	
-	CLC		
-	ROL A		
-	ROL A		
-	ROL A		
-	TAX		
-	LDA GamePlay_TimeStart,X
-	STA Level_TimerMSD
-	BNE PRG030_98C8	 	; If not using the 000 time, jump to PRG030_98C8
+LowerLimit:
+	CMP #$13
+	BCC DynaVScroll
+	LDA #$EF
+	BNE Store_Vert_Scroll
 
-	INC Level_TimerEn	; Otherwise Level_TimerEn = 1 (disable the clock, hence unlimited time)
+DynaVScroll:
+	LDA [Temp_Var14], Y
+	SEC
+	SBC #$04
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
 
-PRG030_98C8:
+Store_Vert_Scroll:
+	STA <Vert_Scroll
 
-	; Bits 0-3 select a BGM
-	LDA [Level_LayPtr_AddrL],Y
-	AND #%00001111
-	TAX
-	LDA GamePlay_BGM,X	; A = target music
+Skip_Level_Position:
+	INY
+	LDA [Temp_Var14], Y
 	LDX SndCur_Music2	; X = currently playing music
 
 	CPX #MUS2B_PSWITCH
-	BEQ PRG030_98DE		; If playing the P-Tab music, don't queue this song right now
+	BEQ Skip_Set_Music		; If playing the P-Tab music, don't queue this song right now
 	CPX #MUS2A_INVINCIBILITY		
-	BEQ PRG030_98DE		; If playing the Invincibility music, don't queue this song right now
+	BEQ Skip_Set_Music		; If playing the Invincibility music, don't queue this song right now
 
 	; Queue this music to play
 	STA Level_MusicQueue
 
-PRG030_98DE:
-	; Set this as the music to "restore" to when P-Tab / Invincibility ends
+Skip_Set_Music:
 	STA Level_MusicQueueRestore
+	INY
+	LDA [Temp_Var14],Y
+	LDX Level_JctCtl
+	BMI Skip_Time_Set
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA Level_TimerMSD
+	LDA [Temp_Var14],Y
+	AND #$0F
+	STA Level_TimerMid
+	
+Skip_Time_Set:
+	INY
 
-	; Level_LayPtr_AddrL/H += 9 (i.e. move pointer to after the header)
-	LDA <Level_LayPtr_AddrL
-	ADD #$09
-	STA <Level_LayPtr_AddrL
-	LDA <Level_LayPtr_AddrH
-	ADC #$00
-	STA <Level_LayPtr_AddrH
+	; set scroll type
+	LDA [Temp_Var14],Y
+	AND #$03
+	STA Level_FreeVertScroll
+	LDA [Temp_Var14],Y
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var6	; temporarily store pointer count
+	INY
 
-PRG030_98EE:
-	LDY #$00	 		; Y = 0 (beginning of post-header)
+	; set invincible enemies
+	LDA [Temp_Var14],Y
+	AND #$80
+	STA Invincible_Enemies
+	;set weather type
+	LDA [Temp_Var14],Y
+	AND #$60
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA Weather
+	LDA [Temp_Var14], Y
+	AND #$10
+	STA WeatherDirection
+	LDA [Temp_Var14], Y
+	AND #$0F
+	ASL A
+	STA Wind
+	INY
 
-	LDA [Level_LayPtr_AddrL],Y	; Get next byte
-	CMP #$ff	 		
-	BEQ PRG030_9934	 		; If $FF, jump to PRG030_9934 (RTS)
+	; now load pointers
+	JSR ClearPointers
+	LDX #$00
+	LDA <Temp_Var6
+	BEQ Pointers_Done
 
-	; Otherwise...
-	STA <Temp_Var15			; Store byte into Temp_Var15
+Pointer_LoadLoop:
+	LDA #$05		; pointers are 6 bytes long
+	STA <Temp_Var7
 
-	INY		 		; Y++
-	LDA [Level_LayPtr_AddrL],Y	; Get next byte
-	STA <Temp_Var16		 	; Store into Temp_Var16
+LoadPointer:
+	LDA [Temp_Var14],Y
+	STA Pointers, X
+	INY
+	INX
+	DEC <Temp_Var7
+	BPL LoadPointer
+	DEC <Temp_Var6
+	BNE Pointer_LoadLoop
 
-	INY				; Y++
-	LDA [Level_LayPtr_AddrL],Y	; Get next byte
-	STA LL_ShapeDef	 		; Store into LL_ShapeDef
+Pointers_Done:
+	TYA
+	CLC
+	ADC <Temp_Var14
+	STA <Temp_Var14
+	BCC NoCarryInc
+	INC <Temp_Var15
 
-	INY		 		; Y++
-	TYA		 		; A = Y
+NoCarryInc:
+	LDA #$00
+	STA <Temp_Var8
+	LDA #$60
+	STA <Temp_Var9
+	LDY #$00
 
-	; Add current offset into Level_LayPtr_AddrL/H, moving it ahead
-	ADD <Level_LayPtr_AddrL
-	STA <Level_LayPtr_AddrL
-	LDA <Level_LayPtr_AddrH
-	ADC #$00	 
-	STA <Level_LayPtr_AddrH
+NextDecompressionCommand:
+	LDA [Temp_Var14], Y
+	CMP #$FF
+	BNE GetDecompressionCommand
+	JSR LoadSprites
+	RTS ; we're done!
 
-	LDA <Temp_Var15		 	; Retrieve first byte we read
-	AND #$e0	 
-	CMP #$e0	 
-	BNE PRG030_991E	 		; If its upper 3 bits are not all set, jump to PRG030_991E
+GetDecompressionCommand:
+	AND #$C0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	
+	JSR DecompressCommand
+	JMP NextDecompressionCommand
 
-	; *****************
-	; Upper 3 bits of Temp_Var15 are ALL set... i.e. Temp_Var15 = 111x xxxx
-	; *****************
+DecompressCommand:
+	JSR DynJump
+	.word RepeatTile
+	.word SkipTiles
+	.word RepeatPattern
+	.word WriteRaw
 
-	JSR LoadLevel_StoreJctStart 	; Temp_Var16 and LL_ShapeDef define junction start positions
-	JMP PRG030_98EE	 		; Loop around
+RepeatTile:
+	LDY #$00
+	LDA [Temp_Var14], Y
+	AND #$3F
+	STA <Temp_Var10
+	JSR NextLevelByte
+	LDA [Temp_Var14], Y
 
-PRG030_991E:
+RepeatTileLoop:
+	STA [Temp_Var8],Y
+	JSR NextTileByte
+	DEC <Temp_Var10
+	BPL RepeatTileLoop
+	JSR NextLevelByte
+	RTS
 
-	; *****************
-	; Upper 3 bits of Temp_Var15 are NOT ALL set... i.e. Temp_Var15 DOES *NOT follow* the mask 111x xxxx
-	; *****************
+SkipTiles:
+	LDY #$00
+	LDA [Temp_Var14], Y
+	AND #$3F
+	TAX
+	INX
+	TXA
+	CLC
+	ADC <Temp_Var8
+	STA <Temp_Var8
+	BCC SkipIncVar9Skip
+	INC <Temp_Var9
+SkipIncVar9Skip:
+	JSR NextLevelByte
+	RTS
 
-	; Temp_Var15 and Temp_Var16 are the input parameters to LoadLevel_Set_TileMemAddr,
-	; which set, most importantly, "Map_Tile_Addr" to some root screen address, and
-	; set "TileAddr_Off" as an offset value within that screen.
+RepeatPattern:
+	LDY #$00
+	LDA [Temp_Var14], Y
+	AND #$3F			; pattern repeat count
+	STA <Temp_Var11
+	JSR NextLevelByte
+	LDA [Temp_Var14], Y
+	STA <Temp_Var12		; pattern length
+	LDX #$00
 
-	; "Map_Tile_Addr" is formed Tile_Mem_Addr[ (Temp_Var16 & $F0) >> 3 ]
-	;	- The upper 4 bits of Temp_Var16 select the starting screen
-	;
-	; "TileAddr_Off" is formed (Temp_Var15 << 4) | (Temp_Var16 & $f)
-	;	- The lower 4 bits of Temp_Var15, and lower 4 bits of Temp_Var16
-	JSR LoadLevel_Set_TileMemAddr
+LoadPattern:
+	JSR NextLevelByte
+	LDA [Temp_Var14], Y
+	STA Level_Objects, X		; load pattern, reusing LevelObjects area for this
+	INX
+	CPX <Temp_Var12
+	BNE LoadPattern
 
-	LDA LL_ShapeDef
-	AND #$f0
-	BEQ PRG030_992E	 	; If upper 4 bits of LL_ShapeDef are all zero, jump to PRG030_992E
+	; now we have the pattern, time to write it out!
+RepeatPatternToLevel:
+	LDX #$00
 
-	; *****************
-	; Upper 4 bits of LL_ShapeDef are NOT ALL clear... i.e. LL_ShapeDef DOES *NOT follow* the mask 0000 xxxx
-	; *****************
+DrawPattern:
+	LDA Level_Objects, X
+	STA [Temp_Var8], Y
+	JSR NextTileByte
+	INX
+	CPX <Temp_Var12
+	BNE DrawPattern
+	DEC <Temp_Var11
+	BNE RepeatPatternToLevel
+	JSR NextLevelByte
+	RTS
 
-	; Otherwise, we handle this as a construction command, and so turn
-	; to the "generators" which define what the bytes mean...
-	JSR LeveLoad_Generators	
+WriteRaw:
+	LDY #$00
+	LDA [Temp_Var14], Y
+	AND #$3F
+	STA <Temp_Var11
 
-	JMP PRG030_9931	 	; (Essentially) loop around (pointless jump, heh)
+WriteRawLoop:
+	JSR NextLevelByte
+	LDA [Temp_Var14], Y
+	STA [Temp_Var8], Y
+	JSR NextTileByte
+	DEC <Temp_Var11
+	BNE WriteRawLoop
+	JSR NextLevelByte
+	RTS
 
-PRG030_992E:
-	; *****************
-	; Upper 4 bits of LL_ShapeDef are ALL NOT set... i.e. LL_ShapeDef = 0000 xxxx
-	; *****************
+LoadSprites:
+	JSR Sprite_RAM_Clear			; Clear the sprites
+	LDA #$01
+	STA Level_Objects
+	LDX #$01
 
-	; This is a fixed-size construction type
-	JSR LeveLoad_FixedSizeGens
+LoadSpriteLoop:
+	JSR NextLevelByte
+	LDA [Temp_Var14], Y
+	STA Level_Objects, X
+	CMP #$FF
+	BEQ LoadSpritesDone
+	INX
+	BCC LoadSpriteLoop
 
-PRG030_9931:
-	JMP PRG030_98EE	 	; Loop around...
+LoadSpritesDone:
+	RTS
 
-PRG030_9934:
-	RTS		 ; Return
+;;; now time to do the level loading!!!
+;;;;;;;;;;;;;;;;;
+;	; Bits 5-6 set Level_FreeVertScroll
+;	LDA [Level_LayPtr_AddrL],Y
+;	AND #%01100000
+;	LSR A
+;	LSR A
+;	LSR A
+;	LSR A
+;	LSR A
+;	STA Level_FreeVertScroll
+;
+;	CMP #$02
+;	BNE PRG030_9864	 ; If Level_FreeVertScroll <> 2 (arbitrary scroll lock), jump to PRG030_9864
+;
+;	; Otherwise for a level started with the arbitrary lock, it picks Vert_Scroll = 0 (highest point)
+;	; if Vert_Scroll is less than $B0, otherwise it picks $EF (lowest point)
+;	; NOTE however that these two points are not required during normal gameplay; you can arbitrarily
+;	; lock to ANY Vert_Scroll value and it will work just fine!
+;
+;	LDX #$00		; X = 0
+;
+;	LDA <Vert_Scroll
+;	CMP #$b0
+;	BLT PRG030_985F	 	; If Vert_Scroll < $B0, jump to PRG030_985F
+;
+;	LDX #$ef	 	; Otherwise, X = $EF
+;
+;PRG030_985F:
+;	STX <Vert_Scroll	; Vert_Scroll = X
+;	STX Level_Jct_VS	; Level_Jct_VS = Vert_Scroll
+;
+;PRG030_9864:
+;
+;	; Bit 4 sets whether this level is a vertical one
+;	LDA [Level_LayPtr_AddrL],Y
+;	AND #%00010000
+;	STA Level_7Vertical
+;	BEQ PRG030_9893	 	; If not vertical, jump to PRG030_9893
+;
+;	LDX Level_JctCtl
+;	BNE PRG030_987C	 	; If Level_JctCtl <> 0, jump to PRG030_987C
+;
+;	; Start at bottom of vertical level
+;	LDA Level_SizeOrig
+;	STA <Vert_Scroll_Hi
+;	STA <Player_YHi		; Player's Y High is the same!
+;	JMP PRG030_9893	
+;
+;
+;PRG030_987C:
+;	LDA #$00	
+;	STA Level_SizeOrig	; ?? Why?
+;
+;	LDA <Player_YHi	
+;	BEQ PRG030_988E	 	; If the Player Y high is zero, jump to PRG030_988E
+;
+;	LDA <Level_Width
+;	STA <Vert_Scroll_Hi
+;	STA <Player_YHi	
+;	STA Level_SizeOrig
+;
+;PRG030_988E:
+;	LDA <Vert_Scroll_Hi
+;	STA Level_Jct_VSHi	 ; Level_Jct_VSHi = Vert_Scroll_Hi
+;
+;	; End of Vertical alternative
+;
+;PRG030_9893:
+;
+;	; Bits 0-3 set Level_AltTileset
+;	LDA [Level_LayPtr_AddrL],Y
+;	AND #$0f	
+;	STA Level_AltTileset
+;
+;	;;;;;;;;;;;;;;;
+;	INY		; Y++	
+;
+;	; Bits 5-7 of byte 7 set Level_InitAction (sets an action to begin level, see Level_InitAction_JumpTable)
+;	LDA [Level_LayPtr_AddrL],Y
+;	AND #%11100000	 
+;	LSR A		 
+;	LSR A		 
+;	LSR A		 
+;	LSR A		 
+;	LSR A		 
+;	STA Level_InitAction
+;
+;	; Bits 0-4 set Level_BG_Page1_2 (an index to which pages of BG graphics should be loaded)
+;	LDA [Level_LayPtr_AddrL],Y
+;	AND #%00011111	 
+;	STA Level_BG_Page1_2
+;
+;	;;;;;;;;;;;;;;;
+;	INY		 ; Y++
+;
+;	LDA Level_JctCtl
+;	BNE PRG030_98C8	 ; If using a junction device, don't set the time; jump to PRG030_98C8
+;
+;	; Bits 6-7 of byte 8 select a time setting (0=300, 1=400, 2=200, 3=000 [unlimited])
+;	LDA [Level_LayPtr_AddrL],Y
+;	AND #%11000000	
+;	CLC		
+;	ROL A		
+;	ROL A		
+;	ROL A		
+;	TAX		
+;	LDA GamePlay_TimeStart,X
+;	STA Level_TimerMSD
+;	BNE PRG030_98C8	 	; If not using the 000 time, jump to PRG030_98C8
+;
+;	INC Level_TimerEn	; Otherwise Level_TimerEn = 1 (disable the clock, hence unlimited time)
+;
+;PRG030_98C8:
+;
+;	; Bits 0-3 select a BGM
+;	LDA [Level_LayPtr_AddrL],Y
+;	AND #%00001111
+;	TAX
+;	LDA GamePlay_BGM,X	; A = target music
+;	
+;
+;PRG030_98DE:
+;	; Set this as the music to "restore" to when P-Tab / Invincibility ends
+;	STA Level_MusicQueueRestore
+;
+;	; Level_LayPtr_AddrL/H += 9 (i.e. move pointer to after the header)
+;	LDA <Level_LayPtr_AddrL
+;	ADD #$09
+;	STA <Level_LayPtr_AddrL
+;	LDA <Level_LayPtr_AddrH
+;	ADC #$00
+;	STA <Level_LayPtr_AddrH
+;
+;PRG030_98EE:
+;	LDY #$00	 		; Y = 0 (beginning of post-header)
+;
+;	LDA [Level_LayPtr_AddrL],Y	; Get next byte
+;	CMP #$ff	 		
+;	BEQ PRG030_9934	 		; If $FF, jump to PRG030_9934 (RTS)
+;
+;	; Otherwise...
+;	STA <Temp_Var15			; Store byte into Temp_Var15
+;
+;	INY		 		; Y++
+;	LDA [Level_LayPtr_AddrL],Y	; Get next byte
+;	STA <Temp_Var16		 	; Store into Temp_Var16
+;
+;	INY				; Y++
+;	LDA [Level_LayPtr_AddrL],Y	; Get next byte
+;	STA LL_ShapeDef	 		; Store into LL_ShapeDef
+;
+;	INY		 		; Y++
+;	TYA		 		; A = Y
+;
+;	; Add current offset into Level_LayPtr_AddrL/H, moving it ahead
+;	ADD <Level_LayPtr_AddrL
+;	STA <Level_LayPtr_AddrL
+;	LDA <Level_LayPtr_AddrH
+;	ADC #$00	 
+;	STA <Level_LayPtr_AddrH
+;
+;	LDA <Temp_Var15		 	; Retrieve first byte we read
+;	AND #$e0	 
+;	CMP #$e0	 
+;	BNE PRG030_991E	 		; If its upper 3 bits are not all set, jump to PRG030_991E
+;
+;	; *****************
+;	; Upper 3 bits of Temp_Var15 are ALL set... i.e. Temp_Var15 = 111x xxxx
+;	; *****************
+;
+;	JSR LoadLevel_StoreJctStart 	; Temp_Var16 and LL_ShapeDef define junction start positions
+;	JMP PRG030_98EE	 		; Loop around
+;
+;PRG030_991E:
+;
+;	; *****************
+;	; Upper 3 bits of Temp_Var15 are NOT ALL set... i.e. Temp_Var15 DOES *NOT follow* the mask 111x xxxx
+;	; *****************
+;
+;	; Temp_Var15 and Temp_Var16 are the input parameters to LoadLevel_Set_TileMemAddr,
+;	; which set, most importantly, "Map_Tile_Addr" to some root screen address, and
+;	; set "TileAddr_Off" as an offset value within that screen.
+;
+;	; "Map_Tile_Addr" is formed Tile_Mem_Addr[ (Temp_Var16 & $F0) >> 3 ]
+;	;	- The upper 4 bits of Temp_Var16 select the starting screen
+;	;
+;	; "TileAddr_Off" is formed (Temp_Var15 << 4) | (Temp_Var16 & $f)
+;	;	- The lower 4 bits of Temp_Var15, and lower 4 bits of Temp_Var16
+;	JSR LoadLevel_Set_TileMemAddr
+;
+;	LDA LL_ShapeDef
+;	AND #$f0
+;	BEQ PRG030_992E	 	; If upper 4 bits of LL_ShapeDef are all zero, jump to PRG030_992E
+;
+;	; *****************
+;	; Upper 4 bits of LL_ShapeDef are NOT ALL clear... i.e. LL_ShapeDef DOES *NOT follow* the mask 0000 xxxx
+;	; *****************
+;
+;	; Otherwise, we handle this as a construction command, and so turn
+;	; to the "generators" which define what the bytes mean...
+;	JSR LeveLoad_Generators	
+;
+;	JMP PRG030_9931	 	; (Essentially) loop around (pointless jump, heh)
+;
+;PRG030_992E:
+;	; *****************
+;	; Upper 4 bits of LL_ShapeDef are ALL NOT set... i.e. LL_ShapeDef = 0000 xxxx
+;	; *****************
+;
+;	; This is a fixed-size construction type
+;	JSR LeveLoad_FixedSizeGens
+;
+;PRG030_9931:
+;	JMP PRG030_98EE	 	; Loop around...
+
+;PRG030_9934:
+;	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4250,54 +4138,44 @@ PRG030_999A:
 TileLayout_ByTileset:
 	; Defines the 8x8 blocks to build a particular 16x16 "tile"
 
-	.word Tile_Layout_TS0		; 0 - Map
-	.word Tile_Layout_TS1		; 1 - Plains [15]
-	.word Tile_Layout_TS2		; 2 - Mini fortress style [21]
-	.word Tile_Layout_TS3		; 3 - Hills style [16]
-	.word Tile_Layout_TS4_TS12	; 4 - High-Up style [17]
-	.word Tile_Layout_TS5_TS11_TS13	; 5 - pipe world plant infestation [19]
-	.word Tile_Layout_TS6_TS7_TS8	; 6 - Water world [18]
-	.word Tile_Layout_TS6_TS7_TS8	; 7 - Toad house [18]
-	.word Tile_Layout_TS6_TS7_TS8	; 8 - Vertical pipe maze [18]
-	.word Tile_Layout_TS9		; 9 - desert level [20]
-	.word Tile_Layout_TS10		; 10 - airship [23]
-	.word Tile_Layout_TS5_TS11_TS13	; 11 - Giant World [19]
-	.word Tile_Layout_TS4_TS12	; 12 - ice level [17]
-	.word Tile_Layout_TS5_TS11_TS13	; 13 - coin heaven / sky level [19]
-	.word Tile_Layout_TS14		; 14 - underground [13]
-	.word Tile_Layout_TS15_TS16_TS17; 15 - bonus game intro [22]
-	.word Tile_Layout_TS15_TS16_TS17; 16 - spade game sliders [22]
-	.word Tile_Layout_TS15_TS16_TS17; 17 - N-spade [22]
-	.word Tile_Layout_TS18		; 18 - 2P Vs [14]
-
+	.word $A000
+	.word $A400
+	.word $A800
+	.word $AC00
+	.word $B000
+	.word $B400
+	.word $B800
+	.word $BC00
+	.word $A000
+	.word $A400
+	.word $A800
+	.word $AC00
+	.word $B000
+	.word $B400
+	.word $B800
+	.word $BC00
+	.word $A000
+	.word $A400
+	.word $A800
+		  
 LevelLoad_ByTileset:
-	LDA Level_Tileset
-	JSR DynJump
+	RTS
 
-	; Page numbers are determined by PAGE_A000_ByTileset and PAGE_C000_ByTileset, indexed by Level_Tileset
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word LT0			; 0 - Map [11] (not used, enters in the middle of WWFX_WarpIslandInit, and not in a logical place)
-	.word LevelLoad_TS1		; 1 - Plains [15]
-	.word LevelLoad_TS2		; 2 - Mini fortress style [21]
-	.word LevelLoad_TS3		; 3 - Hills style [16]
-	.word LevelLoad_TS4_TS12	; 4 - High-Up style [17]
-	.word LevelLoad_TS5		; 5 - pipe world plant infestation [19]
-	.word LevelLoad_TS6		; 6 - Water world [18]
-	.word LevelLoad_TS7		; 7 - Toad house [18]
-	.word LevelLoad_TS8		; 8 - Vertical pipe maze [18]
-	.word LevelLoad_TS9		; 9 - desert level [20]
-	.word LevelLoad_TS10		; 10 - airship [23]
-	.word LevelLoad_TS5		; 11 - Giant World [19]
-	.word LevelLoad_TS4_TS12	; 12 - ice level [17]
-	.word LevelLoad_TS13		; 13 - coin heaven / sky level [19]
-	.word LevelLoad_TS14		; 14 - underground [13]
-
-	.word LevelLoad_TS15_TS16_TS17	; 15 - bonus game intro [22]
-	.word LevelLoad_TS15_TS16_TS17	; 16 - spade game sliders [22]
-	.word LevelLoad_TS15_TS16_TS17	; 17 - N-spade [22]
-	.word LevelLoad_TS18		; 18 - 2P Vs [14]
-
+TileSolidity:
+	.byte $25, $50, $A0, $E2, $2D, $53, $AD, $F0
+	.byte $11, $5A, $9B, $E2, $11, $5A, $9B, $E2
+	.byte $25, $5F, $99, $E2, $2E, $5F, $A6, $F0 
+	.byte $1F, $4A, $8A, $EF, $2E, $4D, $8D, $EF
+	.byte $1F, $47, $96, $E2, $2E, $47, $96, $EE
+	.byte $0A, $4C, $91, $E2, $0A, $4C, $91, $E2
+	.byte $0A, $4C, $91, $E2, $0A, $4C, $91, $E2
+	.byte $0A, $4C, $91, $E2, $0A, $4C, $91, $E2
+	.byte $2C, $55, $98, $E2, $2E, $55, $AD, $E2
+	.byte $24, $5C, $9C, $E2, $24, $5F, $A6, $E2
+	.byte $1F, $47, $96, $E2, $2E, $47, $96, $EE
+	.byte $1F, $4A, $8A, $EF, $2E, $4D, $8D, $EF
+	.byte $1F, $47, $96, $E2, $2E, $47, $96, $EE
+	.byte $25, $5F, $99, $E2, $2E, $5F, $A6, $F0
 
 ; RegEx S&R:
 ; LDA LL_ShapeDef.*\n.*AND #\$0f.*\n.*STA <Temp_Var(.)		 ; .*
@@ -4319,54 +4197,10 @@ LevelLoad_ByTileset:
 ;; Restore Map_Tile_Addr from backup\n\tLDA <Temp_Var1\n\tSTA <Map_Tile_AddrL\n\tLDA <Temp_Var2\n\tSTA <Map_Tile_AddrH
 
 LeveLoad_Generators:
-	LDA Level_Tileset
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word LT0B				; 0 - Map [11] (not used, enters in the middle of nowhere, in a not logical place)
-	.word LoadLevel_Generator_TS1		; 1 - Plains [15]
-	.word LoadLevel_Generator_TS2		; 2 - Mini fortress style [21]
-	.word LoadLevel_Generator_TS3		; 3 - Hills style [16]
-	.word LoadLevel_Generator_TS4_TS12	; 4 - High-Up style [17]
-	.word LoadLevel_Generator_TS051113	; 5 - pipe world plant infestation [19]
-	.word LoadLevel_Generator_TS678		; 6 - Water world [18]
-	.word LoadLevel_Generator_TS678		; 7 - Toad house [18]
-	.word LoadLevel_Generator_TS678		; 8 - Vertical pipe maze [18]
-	.word LoadLevel_Generator_TS9		; 9 - desert level
-	.word LoadLevel_Generator_TS10		; 10 - airship
-	.word LoadLevel_Generator_TS051113	; 11 - Giant World
-	.word LoadLevel_Generator_TS4_TS12	; 12 - ice level [17]
-	.word LoadLevel_Generator_TS051113	; 13 - coin heaven / sky level [19]
-	.word LoadLevel_Generator_TS14		; 14 - underground [13]
-	.word LoadLevel_Generator_TS151617	; 15 - bonus game intro
-	.word LoadLevel_Generator_TS151617	; 16 - spade game sliders
-	.word LoadLevel_Generator_TS151617	; 17 - N-spade
-	.word LoadLevel_Generator_TS18		; 18 - 2P Vs
+	RTS
 
 LeveLoad_FixedSizeGens:
-	LDA Level_Tileset
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word LT0B				; 0 - Map [11] (not used, enters in the middle of nowhere, in a not logical place)
-	.word LeveLoad_FixedSizeGen_TS1		; 1 - Plains
-	.word LeveLoad_FixedSizeGen_TS2		; 2 - Mini fortress style
-	.word LeveLoad_FixedSizeGen_TS3		; 3 - Hills style [16]
-	.word LeveLoad_FixedSizeGen_TS4_TS12	; 4 - High-Up style [17]
-	.word LeveLoad_FixedSizeGen_TS051113	; 5 - pipe world plant infestation [19]
-	.word LeveLoad_FixedSizeGen_TS678	; 6 - Water world
-	.word LeveLoad_FixedSizeGen_TS678	; 7 - Toad house
-	.word LeveLoad_FixedSizeGen_TS678	; 8 - Vertical pipe maze
-	.word LeveLoad_FixedSizeGen_TS9		; 9 - desert level
-	.word LeveLoad_FixedSizeGen_TS10	; 10 - airship
-	.word LeveLoad_FixedSizeGen_TS051113	; 11 - Giant World [19]
-	.word LeveLoad_FixedSizeGen_TS4_TS12	; 12 - ice level [17]
-	.word LeveLoad_FixedSizeGen_TS051113	; 13 - coin heaven / sky level [19]
-	.word LeveLoad_FixedSizeGen_TS14	; 14 - underground [13]
-	.word LeveLoad_FixedSizeGen_TS151617	; 15 - bonus game intro
-	.word LeveLoad_FixedSizeGen_TS151617	; 16 - spade game sliders
-	.word LeveLoad_FixedSizeGen_TS151617	; 17 - N-spade
-	.word LeveLoad_FixedSizeGen_TS18	; 18 - 2P Vs
+	RTS
 
 PRG030_9AA1:
 	.byte $01, $FF
@@ -4380,21 +4214,21 @@ PRG030_9AA5:
 
 TileLayoutPage_ByTileset:
 	; A000 page selected per-Level_Tileset...
-	.byte BANK(Tile_Layout_TS0)		; 0 - Map [11]
-	.byte BANK(Tile_Layout_TS1)		; 1 - Plains [15]
-	.byte BANK(Tile_Layout_TS2)		; 2 - Mini fortress style [21]
-	.byte BANK(Tile_Layout_TS3)		; 3 - Hills style [16]
-	.byte BANK(Tile_Layout_TS4_TS12)	; 4 - High-Up style [17]
-	.byte BANK(Tile_Layout_TS5_TS11_TS13)	; 5 - pipe world plant infestation [19]
-	.byte BANK(Tile_Layout_TS6_TS7_TS8)	; 6 - Water world [18]
-	.byte BANK(Tile_Layout_TS6_TS7_TS8)	; 7 - Toad house [18]
-	.byte BANK(Tile_Layout_TS6_TS7_TS8)	; 8 - Vertical pipe maze [18]
-	.byte BANK(Tile_Layout_TS9)		; 9 - desert level [20]
-	.byte BANK(Tile_Layout_TS10)		; 10 - airship [23]
-	.byte BANK(Tile_Layout_TS5_TS11_TS13)	; 11 - Giant World [19]
-	.byte BANK(Tile_Layout_TS4_TS12)	; 12 - ice level [17]
-	.byte BANK(Tile_Layout_TS5_TS11_TS13)	; 13 - coin heaven / sky level [19]
-	.byte BANK(Tile_Layout_TS14)		; 14 - underground [13]
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
 
 	; THESE VALUES ARE WRONG!  Appears that they were not maintained?
 	; It doesn't matter because these specialized cases go where they need to anyway!
@@ -5543,22 +5377,6 @@ Cant_ESwitch:
 	RTS
 
 Check_For_Level_Exit:
-	LDA #$00
-	STA DAIZ_TEMP1
-	; #DAHRKDAIZ hacked so object $25 indicates we should exit to map
-	STX DAIZ_TEMP2
-	LDX #$06				; Check for the level exit object, if it exists, exit level
-Level_Exit_Loop:
-	LDA Level_ObjectID, X
-	CMP #$25
-	BNE Not_Exit_Object
-	JSR Do_Exit_Map
-
-Not_Exit_Object:
-	DEX
-	BNE Level_Exit_Loop
-
-	LDX DAIZ_TEMP2
 	RTS
 
 Get_Normalized_Suit:
@@ -5837,4 +5655,29 @@ NextColorDay:
 	STA Pal_Data + $10
 	STA Palette_Buffer + $10
 	DEC DayTransition
+	RTS
+
+NextLevelByte:
+	INC <Temp_Var14
+	BNE DontIncVar5
+	INC <Temp_Var15
+DontIncVar5:
+	RTS
+
+NextTileByte:
+	INC <Temp_Var8
+	BNE DontIncVar9
+	INC <Temp_Var9
+
+DontIncVar9:
+	RTS
+
+ClearPointers:
+	LDX #$18
+	LDA #$00
+
+ClearPointerLoop:
+	STA Pointers, X
+	DEX
+	BPL ClearPointerLoop
 	RTS

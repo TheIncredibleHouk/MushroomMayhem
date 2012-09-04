@@ -91,9 +91,6 @@ Tile_Layout_TS5_TS11_TS13:
 	.byte $AB, $AB, $61, $62, $63, $65, $66, $67, $08, $08, $08, $FD, $FD, $FD, $08, $FF ; Tiles $E0 - $EF
 	.byte $5D, $08, $E3, $08, $19, $1B, $39, $3B, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
 
-Tile_Attributes_TS5_TS11_TS13:
-	.byte $1F, $47, $96, $E2, $2E, $47, $96, $EE
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS5

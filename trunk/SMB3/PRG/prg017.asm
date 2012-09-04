@@ -91,9 +91,6 @@ Tile_Layout_TS4_TS12:
 	.byte $AB, $AB, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
 	.byte $C3, $08, $E3, $08, $F3, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
 
-Tile_Attributes_TS4_TS12:
-	.byte $1F, $4A, $8A, $EF, $2E, $4D, $8D, $EF 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS4_TS12
 ;

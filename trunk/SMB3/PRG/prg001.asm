@@ -1024,7 +1024,7 @@ Bounce_TileReplacements:
 	.byte CHNGTILE_TONOTEBLOCK
 	.byte CHGTILESTANDING_WATER
 	.byte CHNGTILE_TOMETALPLATE
-	.byte CHNGTILE_DELETEWATERCOIN
+	.byte CHNGTILE_PIPEJCT
 
 	; Power-up X or Y velocity upon emerging from the bounce block
 Bouncer_PUpVel:	.byte $00, -$40, -$40, -$30, -$20, -$10, $00, $10, $20, $30, $40
