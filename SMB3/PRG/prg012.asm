@@ -136,141 +136,10 @@ Map_Object_ColorSets:
 ; data and sets level panels which have been previously completed
 ; to their proper state (e.g. M/L for level panels, crumbled fort)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Map_Reload_with_Completions:
-	; Clears all map tiles to $02 (all black tiles)
-	JSR Tile_Mem_Clear
 
-	; Fill 16x tile $4E every $1B0 (upper horizontal border)
-	LDX #$30	 ; X = $30
-PRG012_A462:
-	TXA		 
-	TAY		 
-	LDA #$02	 
-	JSR Tile_Mem_ClearB
-	TYA		 
-	ADD #$10	 
-	TAY		 
-	LDA #$4e	 
-	JSR Tile_Mem_ClearB
-	INX		 ; X++
-	CPX #$40	 
-	BNE PRG012_A462	 ; While X <> $40, loop!
-
-	; After these two, Map_Tile_Addr = Tile_Mem_Addr + $110
-	LDA Tile_Mem_Addr
-	ADD #$10	 
-	STA <Map_Tile_AddrL
-
-	LDA Tile_Mem_Addr+1
-	ADC #$01	 
-	STA <Map_Tile_AddrH
-
-	; Temp_Var1/2 will form an address pointing at the beginning of this world's map tile layout...
-	LDA World_Num
-	ASL A
-	TAY		 ; Y = World_Num << 1 (index into Map_Tile_Layouts)
-	LDA Map_Tile_Layouts,Y	
-	STA <Temp_Var1		
-	LDA Map_Tile_Layouts+1,Y
-	STA <Temp_Var2		
-
-	; This loop loads the layout data into the Tile_Mem
-	; Note that it COULD terminate early via an $FF
-	; at any time, but this is never used...
-	LDA #$01
-	LDX World_Num
-
-Shift_World_Bit:
-	DEX
-	BMI Set_World_Bit
-	ASL A
-	BNE Shift_World_Bit
-
-Set_World_Bit:
-	STA DAIZ_TEMP1
-
-PRG012_A496:
-	LDY #$00	 	; Y = 0
-PRG012_A498:
-	LDA [Temp_Var1],Y	; Get byte from tile layout
-	CMP #$ff	 
-	BEQ PRG012_A4C1	 	; If it's $FF (terminator), jump to PRG012_A4C1
-	STA DAIZ_TEMP2
-	JSR Try_Replace_Tile
-	LDA DAIZ_TEMP2
-	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
-	INY		 	; Y++
-
-	; 144 supports a 16x9 map screen (the left and right columns
-	; each contain a normally invisible-until-scrolled tile)
-	CPY #144	 	
-	BNE PRG012_A498	 	; If Y <> 144, loop!
-
-	; This does a 16-bit addition of 144 to the
-	; address stored at [Temp_Var2][Temp_Var1]
-	TYA
-	ADD <Temp_Var1	
-	STA <Temp_Var1	
-	LDA <Temp_Var2	
-	ADC #$00	
-	STA <Temp_Var2
-
-	; The tile layout for the map actually has a lot of
-	; unused vertical space (used for level layout) so
-	; this needs to add a significant amount more ($1b0)
-	; to the Map_Tile_Addr
-	LDA <Map_Tile_AddrL
-	ADD #$b0	
-	STA <Map_Tile_AddrL
-	LDA <Map_Tile_AddrH
-	ADC #$01
-	STA <Map_Tile_AddrH
-	JMP PRG012_A496	 	; Do next 144 bytes...
-
-PRG012_A4C1:
-	; Layout is loaded!
-
-	; This places the tiles along the bottom (lower horizontal border)
-	LDY #$e0	 	; Offset to the bottom row
-	LDX World_Num	 	; Current world
-	LDA #TILE_BORDER1	; Get the appropriate tile for the bottom row
-PRG012_A4C9:
-	JSR Tile_Mem_ClearB	; Place the tiles
-	INY		 	; Y++
-	CPY #$f0	 
-	BNE PRG012_A4C9	 	; While Y <> $F0, jump to PRG012_A4C9
-
-	LDA World_Num
-	TAY		
-	LDA Map_Tile_ColorSets,Y
-	STA PalSel_Tile_Colors	 	; Store which colors to use on map tiles
-	LDA Map_Object_ColorSets,Y
-	STA PalSel_Obj_Colors	 	; Store which colors to use on map objects
-
-	RTS		 ; Return
 
 Map_ForcePoofTiles2:
 	.byte $44, $42, $FF, $FF, $FF, $FF, $FF, $FF
-
-Try_Replace_Tile:
-	LDX #$07
-
-Replace_Loop:
-	CMP Map_ForcePoofTiles2, X
-	BEQ Replace_Tile
-	DEX 
-	BPL Replace_Loop
-	BMI Try_Replace_TileRTS
-
-Replace_Tile:
-	LDA World_Complete_Tiles,X
-	AND DAIZ_TEMP1
-	BEQ Try_Replace_TileRTS
-	LDA #$BF
-	STA DAIZ_TEMP2
-
-Try_Replace_TileRTS:
-	RTS
 
 			; I placed this here to insure maps don't move. Critical #DAHRKDAIZ
 	.org $A598
@@ -311,200 +180,41 @@ W9_Map_Layout:	.include "PRG/maps/World9L"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; DO MAP POINTERS
 Map_PrepareLevel:
+	LDA World_Map_X
+	ORA World_Map_XHi
+	STA DAIZ_TEMP1
+	LDA World_Map_Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA DAIZ_TEMP2
+	LDX #$00
+
+NextPointerSearch:
+	LDA DAIZ_TEMP1
+	CMP MapPointers+1, X
+	BNE PointerNotFound
+	LDA DAIZ_TEMP2
+	CMP MapPointers+2,X
+	BEQ PointerFound
+	ORA #$80
+	CMP MapPointers+2,X
+	BNE PointerNotFound
+
+PointerFound:
+	LDA MapPointers, X
+	STA LevelLoadPointer
+	LDA MapPointers+2,X
+	AND #$80
+	STA UseAltEntrance
 	RTS
-	LDX Player_Current	; X = Player_Current
-	LDA Player_FallToKing,X	; A = Player_FallToKing
-	BEQ PRG012_B10A	 	; If Player_FallToKing = 0 (not falling into king's room), jump to PRG012_B10A
-	JMP PRG012_B262	 	; Otherwise, jump to PRG012_B262
 
-PRG012_B10A:
-	LDA World_Num	 
-	ASL A		 
-	TAY		 	; Y = World_Num << 1 (2 bytes per world)
-
-	; Temp_Var2/1 form an address to Map_ByRowType
-	LDA Map_ByRowType,Y	 
-	STA <Temp_Var1		 
-	LDA Map_ByRowType+1,Y	 
-	STA <Temp_Var2		 
-
-	; Temp_Var4/3 form an address to Map_ByScrCol
-	LDA Map_ByScrCol,Y	 
-	STA <Temp_Var3		 
-	LDA Map_ByScrCol+1,Y	 
-	STA <Temp_Var4		 
-
-	; Temp_Var6/5 form an address to Map_ObjSets
-	LDA Map_ObjSets,Y	 
-	STA <Temp_Var5		 
-	LDA Map_ObjSets+1,Y	 
-	STA <Temp_Var6		 
-
-	; Temp_Var8/7 form an address to Map_LevelLayouts
-	LDA Map_LevelLayouts,Y	 
-	STA <Temp_Var7		 
-	LDA Map_LevelLayouts+1,Y	 
-	STA <Temp_Var8		 
-
-	; Temp_Var10/9 form an address to Map_ByXHi_InitIndex
-	LDA Map_ByXHi_InitIndex,Y	 
-	STA <Temp_Var9		 
-	LDA Map_ByXHi_InitIndex+1,Y	 
-	STA <Temp_Var10		 
-
-
-	LDX Player_Current
-	LDY <World_Map_XHi,X
-	LDA [Temp_Var9],Y	; get initial index based on the current "screen" of the map the Player was on
-	TAY		 	; Y = the aforementioned index
-
-	LDA #$00
-	STA <Temp_Var15		; Temp_Var15 = 0 (will be a page change value)
-
-	; Now we search, beginning from the specified index, and try to match the row the Player
-	; is on with the upper 4 bits of the value we get from the next table
-	; The index remains in the 'Y' register at completion
-	LDX Player_Current
-PRG012_B150:
-	LDA [Temp_Var1],Y	
-	AND #$f0	 	; Specifically only consider the "row" this specifies
-	CMP <World_Map_Y,X	; Compare to the Player's Y position on the map
-	BEQ PRG012_B162	 	; If this byte matches your Y position on the map, jump to PRG012_B162
-	INY		 	; Y++
-	BNE PRG012_B150	 	; While Y <> 0, loop!
-
-	; Didn't find any matching position!  
-	INC <Temp_Var2		; Move to the next address page
-	INC <Temp_Var15		; Temp_Var15++ (to acknowledge the page change for the next part)
-	JMP PRG012_B150	 	; Try again...
-
-PRG012_B162:
-
-	; Add the page change (if any) to Temp_Var4 (applies same page change here)
-	LDA <Temp_Var4
-	ADD <Temp_Var15
-	STA <Temp_Var4
-
-	LDA #$00
-	STA <Temp_Var15		; Temp_Var15 = 0
-
-	; Temp_Var9 will now be a value where the current "column" on the map is 
-	; in the lower 4 bits and the current "screen" (XHi) is in the upper bits.
-	LDA <World_Map_X,X
-	LSR A		 
-	LSR A		 
-	LSR A		 
-	LSR A		 
-	STA <Temp_Var9		
-	LDA <World_Map_XHi,X
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	ORA <Temp_Var9
-
-	; 'Y' was set by the last loop...
-PRG012_B17D:
-	CMP [Temp_Var3],Y	; See if this position matches
-	BEQ PRG012_B18B	 	; If this matches, jump to PRG012_B18B
-	INY			; Y++
-	BNE PRG012_B17D	 	; While Y <> 0, loop!
-
-	; Didn't find any matching position!  
-	INC <Temp_Var4		; Move to the next address page
-	INC <Temp_Var15		; Temp_Var15++ (to acknowledge the page change for the next part)
-	JMP PRG012_B17D	 	; Try again...
-
-PRG012_B18B:
-
-	; Add the page change (if any) to Temp_Var2 (applies same page change here)
-	LDA <Temp_Var2	
-	ADD <Temp_Var15	
-	STA <Temp_Var2	
-
-	LDA World_Num
-	CMP #$08	
-	BNE PRG012_B1A1	 	; If World_Num <> 8 (World 9), jump to PRG012_B1A1
-
-	; World 9 bypass
-	LDA [Temp_Var1],Y	; Just goes to get the original value "type" ID, which in this case is world to enter
-	AND #$0f
-
-	; Destination world is fed back out through Map_Warp_PrevWorld
-	STA Map_Warp_PrevWorld
-	RTS		 ; Return
-
-PRG012_B1A1:
-	LDA [Temp_Var1],Y	
-	AND #$0f	 	; Get "type" bits 
-	STA Level_Tileset	; Store into Level_Tileset
-
-	; Add the page change (if any) to Temp_Var6 (applies same page change here)
-	LDA <Temp_Var6
-	ADD <Temp_Var15
-	STA <Temp_Var6
-
-	TYA		 
-	TAX		 ; X = Y (our sought after offset)
-	ASL A		 
-	TAY		 ; Y <<= 1
-	BCC PRG012_B1BB	 ; Somewhat excessive skip to not add carry if we don't need to :P
-
-	; Apply carry to Temp_Var6
-	LDA <Temp_Var6
-	ADC #$00	
-	STA <Temp_Var6	
-
-PRG012_B1BB:
-
-	; Store address of object set into Level_ObjPtr_AddrL/H and Level_ObjPtrOrig_AddrL/H
-	LDA [Temp_Var5],Y	 
-	STA <Level_ObjPtr_AddrL
-	STA Level_ObjPtrOrig_AddrL	 
-	INY		 
-	LDA [Temp_Var5],Y	 
-	STA <Level_ObjPtr_AddrH		 
-	STA Level_ObjPtrOrig_AddrH	 
-
-	; Add the page change (if any) to Temp_Var6 (applies same page change here)
-	LDA <Temp_Var8	
-	ADD <Temp_Var15	
-	STA <Temp_Var8	
-
-	TXA
-	ASL A		 
-	TAY		 ; Y = X (the backed up index) << 1
-	BCC PRG012_B1DC	 ; Somewhat excessive skip to not add carry if we don't need to :P
-
-	; Apply carry to Temp_Var8
-	LDA <Temp_Var8
-	ADC #$00	
-	STA <Temp_Var8	
-
-PRG012_B1DC:
-	STY <Temp_Var16	 ; Keep index in Temp_Var16
-
-	; Store address of object set into Level_LayPtr_AddrL/H and Level_LayPtrOrig_AddrL/H
-	LDA [Temp_Var7],Y	 
-	STA <Level_LayPtr_AddrL		 
-	STA Level_LayPtrOrig_AddrL	 
-	INY		 
-	LDA [Temp_Var7],Y	 
-	STA <Level_LayPtr_AddrH		 
-	STA Level_LayPtrOrig_AddrH	 
-
-	;LDA <Map_EnterViaID
-	;BNE Map_DoEnterViaID	 ; If Map_EnterViaID <> 0, jump to Map_DoEnterViaID
-
-	LDA Level_Tileset
-	CMP #15	 
-	BNE PRG012_B1FB	 ; If Level_Tileset <> 15 (Bonus Game intro), jump to PRG012_B1FB
-
-	JMP PRG012_B384	 ; Otherwise, jump to PRG012_B384
-
-PRG012_B1FB:
-	LDA #$03	 
-	STA World_EnterState
+PointerNotFound:
+	INX
+	INX
+	INX
+	JMP NextPointerSearch
 	RTS		 ; Return
 
 KingsRoomLayout_ByWorld:
@@ -598,9 +308,6 @@ MO_Unused:
 	; fail to be set to 3, which causes no discernable 
 	; effect in SMB3-US, but probably would break the 
 	; world entry "outro" in the original SMB3-J
-
-	LDA #$70
-	STA Level_MusicQueue
 
 	RTS		 ; Return
 

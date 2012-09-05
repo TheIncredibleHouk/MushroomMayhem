@@ -2197,6 +2197,10 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 .Bound_0800:	BoundCheck .Bound_0800, $0800, $07xx RAM
 
 
+	.data
+	.org $7000
+
+MapPointers:	.ds 256
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $68xx SRAM for 2P Vs ONLY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3021,7 +3025,9 @@ SOBJ_POOF		= $16 	; Poof
 	PaletteIndex:		.ds 1	;
 	WeatherDirection:	.ds 1	; 0 = left, 1 = right
 	Pointers:			.ds 30	;
-						.ds 393 ;
+	UseAltEntrance:		.ds 1
+	WorldWidth:			.ds 1
+						.ds 391 ;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

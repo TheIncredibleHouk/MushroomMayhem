@@ -494,9 +494,8 @@ No_ESwitch:
 	STA <Player_FlipBits	 ; Player_FlipBits = $40 (face right)
 
 	; Set Player_X based on Level_SelXStart
-	LDY Level_SelXStart
-	LDA Level_XStarts,Y
-	STA <Player_X
+
+	LDA <Player_X
 	STA <Player_XStart	; Also set Player_XStart
 
 	JSR Level_InitAction_Do	; Do whatever action this level wants at the start, if any
@@ -6528,8 +6527,7 @@ PipeEntryPrepare:
 	ORA #SND_PLAYERPIPE
 	STA Sound_QPlayer
 
-	JSR Check_For_Level_Exit
-	LDA DAIZ_TEMP1	; A = 1 (pipe will exit level)
+	LDA Level_ExitToMap	; A = 1 (pipe will exit level)
 	BNE PRG008_BF49		; If pipes in this level do NOT exit to map, jump to PRG008_BF47
 
 PRG008_BF47:

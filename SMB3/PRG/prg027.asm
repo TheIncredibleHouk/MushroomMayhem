@@ -1763,10 +1763,9 @@ InitPals_Per_MapPUp:
 ; Luigi (see Map_PlayerPalFix and BonusGame_PlayerPal)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Setup_PalData:
-	
 	LDA PAGE_C000
 	STA DAIZ_TEMP1
-	LDA #$13
+	LDA #$15
 	STA PAGE_C000
 	JSR PRGROM_Change_C000
 	LDA #$00
@@ -1790,34 +1789,19 @@ Setup_PalData:
 	STA <Temp_Var2
 	; Copy 32 bytes of data into Pal_Data
 	LDY #31	 ; Y = 31 (32 bytes total, a whole bg/sprite palette set)
+	LDX #$0F
+
 PRG027_B85E:
 	LDA [Temp_Var1],Y
 	STA Pal_Data,Y	
+	CPY #$10
+	BCS SkipMasterBackup
+	STA MasterPal_Data, X
+	DEX
+
+SkipMasterBackup:
 	DEY		 ; Y--
 	BPL PRG027_B85E	 ; While Y >= 0, loop
-
-	LDA #$00	 
-	STA <Pal_Force_Set12 ; Pal_Force_Set12 = 0
-	JMP PRG027_B8F9	 ; Jump to PRG027_B8F9 (RTS)
-
-PRG027_B86D:
-	LDA PalSel_Tile_Colors	 ; A = PalSel_Tile_Colors
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	TAY			; Y = PalSel_Tile_Colors << 4; basically, offset by an entire 16 bytes (entire bg palette size) based on PalSel_Tile_Colors
-	LDX #$00	 	; X = 0
-
-	; Loop to copy the 16 BG colors to Pal_Data
-PRG027_B877:
-	LDA [Temp_Var1],Y	; Get byte of palette data
-	STA Pal_Data,X	 	; Store it into Pal_Data
-	STA MasterPal_Data, X
-	INY		 	; Y++
-	INX		 	; X++
-	CPX #16			
-	BNE PRG027_B877	 	; While X <> 16, loop!
 
 	LDA Pal_Data
 	CMP #$0F			; if we're already dark, no day/night applied (inside)
@@ -1841,23 +1825,6 @@ Skip_Darken:
 	STA Pal_Data
 
 No_Darken:
-	LDX #$10
-	LDA PalSel_Obj_Colors
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	TAY			; Y = PalSel_Obj_Colors << 4; basically, offset by an entire 16 bytes (entire sprite palette size) based on PalSel_Tile_Colors
-
-	; Loop to copy the 16 sprite colors to Pal_Data
-PRG027_B88A:
-	LDA [Temp_Var1],Y	; Get byte of palette data
-	STA Pal_Data,X	 	; Store it into Pal_Data
-	INY		 	; Y++
-	INX		 	; X++
-	CPX #32		 
-	BNE PRG027_B88A	 	; While X <> 32, loop!
-
 	; Technically all transparent colors are duplicates, but this basically
 	; ensures that they're all equivalent in the palette RAM copy...
 	LDA Pal_Data
