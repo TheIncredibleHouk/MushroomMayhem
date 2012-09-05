@@ -1487,8 +1487,8 @@ PRG026_A989:
 
 	; The Big Question Block bonus area locks horizontal scrolling,
 	; but everyone else is free to set it correctly!
-	LDA Level_Jct_HS
-	STA <Horz_Scroll	 ; Horz_Scroll = Level_Jct_HS
+	;LDA Level_Jct_HS
+	;STA <Horz_Scroll	 ; Horz_Scroll = Level_Jct_HS
 
 PRG026_A995:
 	JMP PRG030_897B	 ; Jump to PRG026_897B (continue preparation of display!)
@@ -1565,21 +1565,36 @@ UsePointer:
 	LDA Pointers + 5, X
 	AND #$80	; does this pointer exit the level?
 	BEQ LevelJction
+	LDA Pointers + 3, X
+	AND #$0F
+	STA Map_Entered_XHi
+	LDA Pointers + 3, X
+	STA Map_Entered_X
+	LDA Pointers + 4, X
+	AND #$F0
+	LDA Pointers, X
+	STA World_Num
+	INC Level_ExitToMap
+	LDA #$00
+	STA Level_PipeMove
+	STA Map_ReturnStatus
+	STA Level_JctCtl
+	LDA Level_JctFlag
+	EOR #$01
+	STA Level_JctFlag
 	RTS
 
 LevelJction:
 	LDA Pointers + 3, X
 	AND #$0F
 	STA <Player_XHi
-	LDA Pointers + 4, X
+	LDA Pointers + 3, X
 	AND #$F0
 	ORA #$08
 	STA <Player_X
-	STA <Horz_Scroll
 	LDA Pointers + 4, X
 	AND #$0F
 	STA <Player_YHi
-	STA <Horz_Scroll_Hi
 	LDA Pointers + 4, X
 	AND #$F0
 	STA <Player_Y

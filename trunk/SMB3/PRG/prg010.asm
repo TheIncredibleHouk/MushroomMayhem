@@ -699,30 +699,6 @@ Map_DoMap:
 
 	; Map is operating normally
 	LDX World_Num	 	; X = World_Num
-	LDY World_BGM_Arrival,X	; Y = World_BGM_Arrival[X]
-
-	CPX #$04	 
-	BNE PRG010_C3E3	 	; If X <> 4 (not on World 5), jump to PRG010_C3E3
-
-	LDX Player_Current	; X = Player_Current
-	LDA <World_Map_XHi,X	
-	BEQ PRG010_C3E3	 	; If not on the high part of World 5, jump to PRG010_C3E3
-
-	LDY #MUS2A_SKY	 	; High part of World 5 uses alternate song
-	JMP PRG010_C3EA	 	; Jump to PRG010_C3EA
-
-PRG010_C3E3:
-	LDA Map_MusicBox_Cnt	
-	BEQ PRG010_C3EA	 	; If Map_MusicBox_Cnt = 0 (music box not active), jump to PRG010_C3EA
-
-	LDY #MUS2A_MUSICBOX	 ; Otherwise, Y = $C (music box song)
-
-PRG010_C3EA:
-	LDA SndCur_Music2
-	BNE PRG010_C3F2	 	; If SndCur_Music2 <> 0 (a song from set 2 is playing), jump to PRG010_C3F2
-
-	; Otherwise, queue the requested song!
-	STY Sound_QMusic2	
 
 PRG010_C3F2:
 	LDX Player_Current	; X = Player_Current
@@ -878,11 +854,12 @@ World5_Sky_CloudDeco:
 World5_Sky_CloudDeco_End
 
 World5_Sky_AddCloudDeco:
+	RTS
 	; All this does is on World 5, Sky part ONLY, add a cloud
 	; Maybe there was to be intention of other map graphic decorations?
 
 	LDA World_Num	 ; A = World_Num
-	CMP #4
+	CMP #$ff
 	BNE PRG010_C4F9	 ; If World_Num <> 4 (World 5), jump to PRG010_C4F9 (RTS)
 
 	; World 5 only!
@@ -1880,7 +1857,7 @@ PRG010_CA35:
 	BNE PRG010_CA77	 ; If Player's turn does not end (e.g. used a pipeway, Toad House, etc.), jump to PRG010_CA77
 
 	LDA World_Num
-	CMP #$02
+	CMP #$FF
 	BNE PRG010_CA60	 ; If World_Num <> 2 (World 3), jump to PRG010_CA60
 
 	; On World 3, toggle the bridge state
@@ -2759,17 +2736,6 @@ WorldMap_UpdateAndDraw:
 	STA <Temp_Var3		; Stored into Temp_Var3
 	JMP Map_DrawPlayer	; Draw Player sprite on map
 
-World_Map_Max_PanR:
-	; Per-world defintion of the maximum scroll column allowed on the map
-	; $10 defines one screen.  Worlds which have multiple screens but do
-	; not pan between them (World 5 & 8) have $00, but this not what actually
-	; restricts movement (though in a cleaner implementation probably should
-	; have been.)  Instead, you'll find specific lock-out code a bit after
-	; the Map_Check_PanR label... also of note, there's no entry for World 9
-	; (Warp Zone) which will incorrectly pan if the Player ever could scoot
-	; that far over (not that there's anything to scroll TO of course)
-	.byte $10, $20, $30, $30, $00, $30, $20, $00
-
 	; NOTE: Should be safe to expand these to include new map powers,
 	; BUT make sure to add elements to all of Map_Power_TilesF1/2 and
 	; Map_Power_AttribF1/2 together or else funny visuals will occur...
@@ -3006,18 +2972,17 @@ Map_Check_PanR:
 	; NOTE: This block disables panning on World 5 and 8.  Change this
 	; to make them pan like normal maps!! *****
 	LDA World_Num
-	CMP #7			
+	CMP #$ff			
 	BEQ Map_No_Pan	 	; If World_Num = 7 (World 8), jump to Map_No_Pan
-	CMP #4	 		
+	CMP #$ff	 		
 	BEQ Map_No_Pan	 	; If World_Num = 4 (World 5), jump to Map_No_Pan
 
 	LDA Sprite_RAM+$87
 	CMP #208
 	BLT Map_Check_PanL 	; If Player's sprite's X coord is less than 208, jump to Map_Check_PanL
 
-	LDY World_Num	 	; Y = World_Num
 	LDA <Scroll_ColumnR	; A = Current right-hand column
-	CMP World_Map_Max_PanR,Y
+	CMP WorldWidth
 	BEQ Map_No_Pan	 	; If map scrolling has already reached the right-side limit, jump to Map_No_Pan
 
 	LDX #$00	 	; X = 0

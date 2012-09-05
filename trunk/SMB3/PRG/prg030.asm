@@ -607,8 +607,8 @@ PRG030_84D7:
 	; Load world map graphics
 	LDA #$14
 	STA PatTable_BankSel
-	LDA #$16
-	STA PatTable_BankSel+1
+	;LDA #$16
+	;STA PatTable_BankSel+1
 	LDX #$20
 	STX PatTable_BankSel+2
 	INX
@@ -1346,16 +1346,16 @@ PRG030_8B03:
 
 PRG030_8B51:
 	; Level junction override!  Copy in junction variables as appropriate
-	LDA Level_Jct_HS
-	STA <Horz_Scroll
-	LDA Level_Jct_HSHi
-	STA <Horz_Scroll_Hi
-
-	LDA Level_Jct_VS
-	STA <Vert_Scroll
-
-	LDA Level_Jct_VSHi
-	STA <Vert_Scroll_Hi
+	;LDA Level_Jct_HS
+	;STA <Horz_Scroll
+	;LDA Level_Jct_HSHi
+	;STA <Horz_Scroll_Hi
+	;
+	;LDA Level_Jct_VS
+	;STA <Vert_Scroll
+	;
+	;LDA Level_Jct_VSHi
+	;STA <Vert_Scroll_Hi
 
 	; Junction complete (and inventory is NOT open)
 	LDA #$00	 
@@ -3109,9 +3109,6 @@ PRG030_966C:
 ; where the screen has currently scrolled to...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Scroll_Update_Ranges: 
-	LDY Level_7Vertical
-	BNE PRG030_96A5	 	; If Level_7Vertical, jump to PRG030_96A5
-
 	; Non-vertical map
 	; Expected that 'A' is currently set to the "Hi byte" of the X Scroll coordinate
 
@@ -3131,45 +3128,10 @@ PRG030_9695:
 
 	LDA <Scroll_Temp	; A = result from loop...
 	STA <Scroll_ColumnL	; Store as the current "left side" column
-	ADD #16	
+	ADD #16
 	STA <Scroll_ColumnR	; Scroll_ColumnR = Scroll_ColumnL + 16 (always -- 256/16 = 16 columns spanning the screen)
 	RTS			; Return!
-
-PRG030_96A5:
-	; Vertical level
-
-	LDA <Scroll_Temp
-	BEQ PRG030_96B7	 	; If Scroll_Temp = 0, jump to PRG030_96B7
-
-	SUB #16			
-	STA <Scroll_Temp	; Scroll_Temp -= 16
-
-	CMP #$f0	 
-	BLT PRG030_96B7	 ; If Scroll_Temp < $F0 (would only happen if it was previously $00-$0F), jump to PRG030_96B7
-
-	SUB #17
-	STA <Scroll_Temp	; Scroll_Temp -= 17
-
-PRG030_96B7:
-	LDA <Scroll_Temp	
-	STA <Scroll_VOffsetT	; Scroll_VOffsetT = Scroll_Temp
-
-	; Calculate bottom tile row offset
-
-	ADD #$e0	 	; A = Scroll_Temp + $E0
-	BCC PRG030_96C2	 	; If no carry occurred, jump to PRG030_96C2
-
-	ADC #$10	 	; A = Scroll_Temp + $F0
-
-PRG030_96C2:
-	CMP #$f0	 	
-	BLT PRG030_96CB	 	; If A < $F0, jump to PRG030_96CB
-	AND #$0f	 	; A &= $F
-	ADD #$01	 	; A += 1
-
-PRG030_96CB:
-	STA <Scroll_VOffsetB	; Update Scroll_VOffsetB
-	RTS		 	; Return!
+	 	; Return!
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Clear_RAM_thru_ZeroPage
@@ -3397,6 +3359,7 @@ LevelPointerOffsets:
 
 LevelLoad:	; $97B7
 	; Clear loading variables
+	
 	LDA #$00
 	STA <Vert_Scroll
 	STA Level_Jct_VS
@@ -3513,16 +3476,24 @@ Skip_Level_InitAction:
 	LDA Level_JctCtl	 
 	BEQ Not_Lvl_Jct
 	INY
+	INY
+	INY
 	JMP Skip_Level_Position
 
 Not_Lvl_Jct:
-	LDA Debug_Snap
+	LDA UseAltEntrance
+	BEQ UseNormEntrance
+	INY
+	INY
+
+UseNormEntrance:
 	; load X/Y starting position
 	LDA [Temp_Var14], Y	
 	AND #$0F
 	STA <Player_XHi
 	LDA [Temp_Var14], Y
 	AND #$F0
+	ORA #$08
 	STA <Player_X
 	INY
 	LDA [Temp_Var14], Y
@@ -3531,30 +3502,10 @@ Not_Lvl_Jct:
 	LDA [Temp_Var14], Y
 	AND #$F0
 	STA <Player_Y
-	LDA [Temp_Var14], Y
-	CMP #$04
-	BCS LowerLimit
-	LDA #$00
-	BEQ Store_Vert_Scroll
-
-LowerLimit:
-	CMP #$13
-	BCC DynaVScroll
-	LDA #$EF
-	BNE Store_Vert_Scroll
-
-DynaVScroll:
-	LDA [Temp_Var14], Y
-	SEC
-	SBC #$04
-	AND #$0F
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-
-Store_Vert_Scroll:
-	STA <Vert_Scroll
+	LDA UseAltEntrance
+	BNE Skip_Level_Position
+	INY
+	INY
 
 Skip_Level_Position:
 	INY
@@ -3663,6 +3614,7 @@ NextDecompressionCommand:
 	CMP #$FF
 	BNE GetDecompressionCommand
 	JSR LoadSprites
+	JSR SetProperScroll
 	RTS ; we're done!
 
 GetDecompressionCommand:
@@ -5680,4 +5632,310 @@ ClearPointerLoop:
 	STA Pointers, X
 	DEX
 	BPL ClearPointerLoop
+	RTS
+
+SetProperScroll:
+	LDA <Player_Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA DAIZ_TEMP1
+	LDA <Player_YHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA DAIZ_TEMP1
+	CMP #$04
+	BCS LowerLimit
+	LDA #$00
+	BEQ Store_Vert_Scroll
+
+LowerLimit:
+	CMP #$13
+	BCC DynaVScroll
+	LDA #$EF
+	BNE Store_Vert_Scroll
+
+DynaVScroll:
+	SEC
+	SBC #$04
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+
+Store_Vert_Scroll:
+	STA <Vert_Scroll
+	LDA <Player_X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA DAIZ_TEMP1
+	LDA <Player_XHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA DAIZ_TEMP1
+	STA DAIZ_TEMP1
+	LDA <Level_Width
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA #$08
+	STA DAIZ_TEMP2
+	LDA DAIZ_TEMP1
+	SEC 
+	SBC #$08
+	BCS TryHScrollUpperLimit
+	LDA #$00
+	STA <Horz_Scroll
+	STA <Horz_Scroll_Hi
+	JMP Update_Columns
+
+TryHScrollUpperLimit:
+	LDA DAIZ_TEMP2 
+	SEC
+	SBC DAIZ_TEMP1
+	BPL DynHScroll
+	LDA <Level_Width
+	STA <Horz_Scroll_Hi
+	LDA #$00
+	STA <Horz_Scroll
+	JMP Update_Columns
+
+DynHScroll:
+	LDA DAIZ_TEMP1
+	SEC
+	SBC #$08
+	STA DAIZ_TEMP1
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA #$08
+	STA <Horz_Scroll
+	LDA DAIZ_TEMP1
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Horz_Scroll_Hi
+
+Update_Columns:
+	LDA #$01
+	STA Scroll_LastDir
+	LDA <Horz_Scroll
+	STA <Scroll_Temp	; Scroll_Temp = Horz_Scroll
+	LDA Level_JctCtl
+	LDX <Horz_Scroll_Hi	; A = Horz_Scroll_Hi
+	INX
+	TXA
+	JSR Scroll_Update_Ranges
+	RTS
+
+Map_Reload_with_Completions:
+	; Clears all map tiles to $02 (all black tiles)
+	JSR Tile_Mem_Clear
+
+	; Fill 16x tile $4E every $1B0 (upper horizontal border)
+	LDX #$30	 ; X = $30
+PRG012_A462:
+	TXA		 
+	TAY		 
+	LDA #$02	 
+	JSR Tile_Mem_ClearB
+	TYA		 
+	ADD #$10	 
+	TAY		 
+	LDA #$4e	 
+	JSR Tile_Mem_ClearB
+	INX		 ; X++
+	CPX #$40
+	BNE PRG012_A462	 ; While X <> $40, loop!
+
+	; After these two, Map_Tile_Addr = Tile_Mem_Addr + $110
+	LDA Tile_Mem_Addr
+	ADD #$10	 
+	STA <Map_Tile_AddrL
+
+	LDA Tile_Mem_Addr+1
+	ADC #$01	 
+	STA <Map_Tile_AddrH
+
+	LDY #$e0	 	; Offset to the bottom row
+	LDA #TILE_BORDER1	; Get the appropriate tile for the bottom row
+
+PRG012_A4C9:
+	JSR Tile_Mem_ClearB	; Place the tiles
+	INY		 	; Y++
+	CPY #$f0	 
+	BNE PRG012_A4C9	 	; While Y <> $F0, jump to PRG012_A4C9
+
+	; Temp_Var1/2 will form an address pointing at the beginning of this world's map tile layout...
+	LDA PAGE_A000
+	STA DAIZ_TEMP2
+	LDA PAGE_C000	
+	STA DAIZ_TEMP3
+	LDA #$11
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	LDA World_Num
+	ASL A
+	ASL A
+	TAX
+	LDA $A000, X
+	STA PAGE_A000
+	STA PAGE_C000
+	INC PAGE_C000
+	INX
+	LDA $A000, X
+	STA <Temp_Var1
+	INX
+	LDA $A000, X
+	STA <Temp_Var2
+	LDY #$00
+	JSR PRGROM_Change_A000
+	JSR PRGROM_Change_C000
+	LDA [Temp_Var1], Y
+	STA PatTable_BankSel + 1
+	INY
+	LDA [Temp_Var1], Y
+	STA PaletteIndex
+	INY
+	LDA [Temp_Var1], Y
+	STA Sound_QMusic2
+	INY
+	LDA [Temp_Var1], Y
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA WorldWidth
+	INY
+	LDA [Temp_Var1], Y
+	STA <Temp_Var15
+	STA <Temp_Var14
+	LDA #$05
+	CLC
+	ADC <Temp_Var1
+	STA <Temp_Var1
+	BCC NoIncVar2Map
+	INC <Temp_Var2
+
+NoIncVar2Map:
+
+	LDA #$00
+	LDX #$00
+
+Clear_MapPointers:
+	STA MapPointers-1, X
+	DEX
+	BNE Clear_MapPointers
+	LDY #$00
+	LDX #$00
+	
+CopyMapPointers:
+	LDA [Temp_Var1], Y
+	STA MapPointers, X
+	INX
+	JSR Next_World_Byte
+	LDA [Temp_Var1], Y
+	STA MapPointers, X
+	INX
+	JSR Next_World_Byte
+	LDA [Temp_Var1], Y
+	STA MapPointers, X
+	INX
+	JSR Next_World_Byte
+	DEC <Temp_Var15
+	BNE CopyMapPointers
+
+PRG012_A496:
+	LDY #$00	 	; Y = 0
+
+PRG012_A498:
+	LDA [Temp_Var1],Y	; Get byte from tile layout
+	CMP #$ff	 
+	BEQ PRG012_A4C1	 	; If it's $FF (terminator), jump to PRG012_A4C1
+	STA DAIZ_TEMP2
+	JSR Try_Replace_Tile
+	LDA DAIZ_TEMP2
+	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
+	INY		 	; Y++
+
+	; 144 supports a 16x9 map screen (the left and right columns
+	; each contain a normally invisible-until-scrolled tile)
+	CPY #144	 	
+	BNE PRG012_A498	 	; If Y <> 144, loop!
+
+	; This does a 16-bit addition of 144 to the
+	; address stored at [Temp_Var2][Temp_Var1]
+	TYA
+	ADD <Temp_Var1	
+	STA <Temp_Var1	
+	LDA <Temp_Var2	
+	ADC #$00	
+	STA <Temp_Var2
+
+	; The tile layout for the map actually has a lot of
+	; unused vertical space (used for level layout) so
+	; this needs to add a significant amount more ($1b0)
+	; to the Map_Tile_Addr
+	LDA <Map_Tile_AddrL
+	ADD #$b0	
+	STA <Map_Tile_AddrL
+	LDA <Map_Tile_AddrH
+	ADC #$01
+	STA <Map_Tile_AddrH
+	JMP PRG012_A496	 	; Do next 144 bytes...
+
+PRG012_A4C1:
+	; Layout is loaded!
+
+	; This places the tiles along the bottom (lower horizontal border)
+
+	LDA DAIZ_TEMP2
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	LDA DAIZ_TEMP3
+	STA PAGE_C000
+	JSR PRGROM_Change_C000
+	RTS		 ; Return
+
+
+Next_World_Byte:
+	INC <Temp_Var1
+	BNE DontIncWorldVar2
+	INC <Temp_Var2
+
+DontIncWorldVar2:
+	RTS
+
+
+Try_Replace_Tile:
+	LDX #$07
+
+Replace_Loop:
+	CMP Map_ForcePoofTiles2, X
+	BEQ Replace_Tile
+	DEX 
+	BPL Replace_Loop
+	BMI Try_Replace_TileRTS
+
+Replace_Tile:
+	LDA World_Complete_Tiles,X
+	AND DAIZ_TEMP1
+	BEQ Try_Replace_TileRTS
+	LDA #$BF
+	STA DAIZ_TEMP2
+
+Try_Replace_TileRTS:
 	RTS
