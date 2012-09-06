@@ -1451,6 +1451,7 @@ Level_PipeEnter:
 
 	; Init...
 
+	JSR Do_Pointer_Effect
 	LDA Level_PipeMove
 	AND #%00011100	 ; Examine just bits 2-4 (determines what the pipe will do)
 	CMP #%00010100	 
@@ -3276,4 +3277,125 @@ Kill_Burn_NoFX:
 	STA Player_Power
 	LDA #$10					
 	STA Player_SuitLost
+	RTS
+
+
+Find_Applicable_Pointer:
+	;;; find proper pointer now
+	LDA <Player_X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Player_XHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+	STA <Temp_Var2
+	LDA <Player_Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Player_YHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+	STA <Temp_Var3
+	LDA #$04
+
+	STA <Temp_Var1
+	LDX #$1E
+
+FindPointerLoop:
+	DEX
+	DEX
+	DEX
+	DEX
+	DEX
+	DEX
+	LDA Pointers + 1, X
+	SEC
+	SBC <Temp_Var2
+	CMP #$02
+	BCS NextPointer
+	LDA Pointers + 2, X
+	SEC
+	SBC <Temp_Var3
+	CMP #$02
+	BCS NextPointer
+	RTS		 ; Return
+
+NextPointer:
+	DEC <Temp_Var1
+	BPL FindPointerLoop
+	RTS
+
+Do_Pointer_Effect:
+	JSR Find_Applicable_Pointer	 ; Initialize level junction
+	
+	LDA <Temp_Var1
+	BPL UsePointer
+	RTS		; No pointer found, abort abort!
+
+UsePointer:
+	LDA Debug_Snap
+	LDA Pointers + 5, X
+	AND #$80	; does this pointer exit the level?
+	BEQ LevelJction
+	LDA Pointers + 3, X
+	AND #$0F
+	STA Map_Entered_XHi
+	LDA Pointers + 3, X
+	AND #$F0
+	STA Map_Entered_X
+	LDA Pointers + 4, X
+	AND #$F0
+	STA Map_Entered_Y
+	LDA Pointers, X
+	STA World_Num
+	INC Level_ExitToMap
+	LDA #$00
+	STA Level_PipeMove
+	STA Map_ReturnStatus
+	STA Level_JctCtl
+	LDA #$04
+	STA Level_PipeMove
+	RTS
+
+LevelJction:
+	LDA Pointers, X
+	STA LevelLoadPointer
+	LDA Pointers + 3, X
+	AND #$0F
+	STA <Player_XHi
+	LDA Pointers + 3, X
+	AND #$F0
+	ORA #$08
+	STA <Player_X
+	LDA Pointers + 4, X
+	AND #$0F
+	STA <Player_YHi
+	LDA Pointers + 4, X
+	AND #$F0
+	STA <Player_Y
+
+	LDA Pointers + 5, X
+	AND #$0F
+	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
+	
+	CMP #$03
+	BLT Skip_Line_Up	 ; If Level_PipeExitDir < 3, jump to PRG026_AABD
+	
+	; Otherwise, don't center Player (better for starting on block)
+	LDA <Player_X
+	AND #$f0
+	STA <Player_X
+Skip_Line_Up:
 	RTS
