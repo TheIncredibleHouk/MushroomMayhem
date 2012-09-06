@@ -3,9 +3,10 @@
   <pointers>
     <pointer levelguid="584cea14-bc42-4cce-b370-b1104f9d77e7" x="2" y="18" altentrance="false" />
     <pointer levelguid="584cea14-bc42-4cce-b370-b1104f9d77e7" x="4" y="17" altentrance="true" />
+    <pointer levelguid="9a16820b-5e98-45e1-93ee-b4adf70dd400" x="3" y="25" altentrance="false" />
   </pointers>
   <spritedata>
     <sprite x="14" y="21" value="13" item="0" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Selection" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </world>

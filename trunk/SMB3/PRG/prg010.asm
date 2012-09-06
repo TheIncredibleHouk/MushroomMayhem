@@ -2239,7 +2239,7 @@ Map_PanRight:
 	; Switch to page 12 @ A000 (for map tile 8x8 layout data)
 	LDA #MMC3_8K_TO_PRG_A000
 	STA MMC3_COMMAND
-	LDA #12
+	LDA #$0F
 	STA MMC3_PAGE
 
 	LDY <Map_ScrollOddEven		 ; Y = Map_ScrollOddEven
