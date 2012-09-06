@@ -3374,22 +3374,21 @@ LevelLoad:	; $97B7
 	; HHHH HHHH = high address
 	; TTTT TTTT = tile set
 	
+
 	LDA LevelLoadPointer
-	AND #$C0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX
-	LDA LevelPointerOffsets, X
+	STA <Temp_Var1
+	LDA #$00
 	STA <Temp_Var2
-	LDA LevelLoadPointer
-	AND #$3F
-	ASL A
-	ASL A
-	TAY
+	CLC
+	ROL <Temp_Var1 
+	ROL <Temp_Var2
+	ROL <Temp_Var1 
+	ROL <Temp_Var2
+	LDA #$A0
+	CLC
+	ADC <Temp_Var2
+	STA <Temp_Var2
+	LDY #$00
 	LDA [Temp_Var1],Y
 	STA <Temp_Var3	; bank
 	INY
