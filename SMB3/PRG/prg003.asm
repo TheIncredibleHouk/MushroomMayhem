@@ -1879,27 +1879,7 @@ ObjInit_BoomBoom:
 	RTS
 
 ObjInit_FloatingBGCloud:
-	LDA Objects_Y,X
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA Wind
-	LDA Objects_X,X
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA Weather
 	RTS
-
-Snow_Weather:
-	LDA #$02
-	STA Weather
-	RTS		 ; Return
-
 BoomBoom_TowardsPlayerXVel:	.byte $10, -$10
 
 BoomBoom_FinalAttackXVel:

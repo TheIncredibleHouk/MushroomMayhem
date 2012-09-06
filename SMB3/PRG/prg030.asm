@@ -1232,7 +1232,6 @@ PRG030_88C8:
 	STA <Scroll_LastDir
 
 	;# DAHRKDAIZ RESET STUFFS ON LEVELS
-	STA Weather_Initialized
 	STA Shop_Mode_Initialized
 	STA Coins_ThisLevel	 ; Clear "coins earned this level" counter
 	STA Map_BonusCoinsReqd	 ; Clear the "coins required for bonus"
@@ -3552,6 +3551,7 @@ Skip_Time_Set:
 	INY
 
 	; set invincible enemies
+	LDA Debug_Snap
 	LDA [Temp_Var14],Y
 	AND #$80
 	STA Invincible_Enemies
@@ -3565,12 +3565,18 @@ Skip_Time_Set:
 	LSR A
 	STA Weather
 	LDA [Temp_Var14], Y
-	AND #$10
-	STA WeatherDirection
-	LDA [Temp_Var14], Y
 	AND #$0F
 	ASL A
 	STA Wind
+	LDA [Temp_Var14], Y
+	AND #$10
+	STA WindDirection
+	BEQ DontReverseWind
+	LDA Wind
+	EOR #$FF
+	STA Wind
+	INC Wind
+DontReverseWind:
 	INY
 
 	; now load pointers

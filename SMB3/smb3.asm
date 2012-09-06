@@ -3023,7 +3023,7 @@ SOBJ_POOF		= $16 	; Poof
 	MasterPal_Data:		.ds 16	; keeps track of the unmodified, original palette
 	LevelLoadPointer:	.ds 1	;
 	PaletteIndex:		.ds 1	;
-	WeatherDirection:	.ds 1	; 0 = left, 1 = right
+	WindDirection:	.ds 1	; 0 = left, 1 = right
 	Pointers:			.ds 30	;
 	UseAltEntrance:		.ds 1
 	WorldWidth:			.ds 1
