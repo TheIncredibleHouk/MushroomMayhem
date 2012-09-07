@@ -28,6 +28,6 @@
     <level name="1-1 Bonus" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="d0000b92-e0a2-42fb-87f2-7bd3404c9e3a" leveltype="1" lastcompressionsize="0" lastmodified="2012-09-06T15:26:53.087011-04:00" layout="Horizontal" />
     <level name="1-Dungeon" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="9a16820b-5e98-45e1-93ee-b4adf70dd400" leveltype="2" lastcompressionsize="0" lastmodified="2012-09-06T15:54:17.443011-04:00" layout="Horizontal" />
     <level name="1-2" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="4d81a790-9241-414f-b2a8-1f4d52ea31cf" leveltype="3" lastcompressionsize="0" lastmodified="2012-09-06T21:00:47.756-04:00" layout="Horizontal" />
-    <level name="1-3" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="94804689-7378-4508-a717-3c25252bf776" leveltype="1" lastcompressionsize="0" lastmodified="2012-09-06T21:56:16.687-04:00" layout="Horizontal" />
+    <level name="1-3" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="94804689-7378-4508-a717-3c25252bf776" leveltype="1" lastcompressionsize="0" lastmodified="2012-09-06T22:00:58.928-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
