@@ -8,6 +8,8 @@
     <pointer levelguid="4d81a790-9241-414f-b2a8-1f4d52ea31cf" x="8" y="18" altentrance="true" />
     <pointer levelguid="94804689-7378-4508-a717-3c25252bf776" x="10" y="20" altentrance="true" />
     <pointer levelguid="94804689-7378-4508-a717-3c25252bf776" x="8" y="21" altentrance="false" />
+    <pointer levelguid="ef163693-bd7c-48f5-8ce0-6283823eb2ee" x="13" y="17" altentrance="false" />
+    <pointer levelguid="ef163693-bd7c-48f5-8ce0-6283823eb2ee" x="12" y="21" altentrance="true" />
   </pointers>
   <spritedata>
     <sprite x="14" y="21" value="13" item="0" />

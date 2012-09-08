@@ -3524,6 +3524,10 @@ Player_DoScrolling:
 	JMP PRG008_B2AB	 ; Otherwise, jump to PRG008_B2AB
 
 PRG008_B127:
+	LDA LevelJctBQ_Flag
+	BEQ PRG008_B12F	 ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
+
+	JMP PRG008_B1CE	 ; Otherwise, jump to PRG008_B1CE
 
 PRG008_B12F:
 	LDY Level_AScrlConfig
@@ -4794,10 +4798,10 @@ Level_ActionTiles:
 	; Player is not moving upward!
 Level_ActionTiles_HitEnable:
 	; Tiles activated anytime
-	.byte %1111, %1111, %0011, %1100
+	.byte %1111, %0000, %0011, %1100
 
 	; Tiles activated only when Player is moving upward
-	.byte %0010, %0010, %0010
+	.byte %0010, %0000, %0000
 
 	; And in the desert only... (UNUSED, would be a breakable tile in a pipeworks structure!)
 	.byte %0010
@@ -6654,6 +6658,8 @@ Player_ApplyVelocity:
 	LDY Player_InWater
 	BNE No_Weather_Vel
 	; X Velocity only
+	LDY Level_PipeMove
+	BNE No_Weather_Vel
 	LDY Wind
 	BEQ No_Weather_Vel
 	SEC

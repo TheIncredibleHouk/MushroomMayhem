@@ -428,7 +428,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX02	; Object $82 - OBJ_BOOMERANGBRO
 	.byte OAT_BOUNDBOX01	; Object $83 - OBJ_LAKITU
 	.byte OAT_BOUNDBOX01	; Object $84 - OBJ_SPINYEGG
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_SPINYEGGDUD
+	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_BLUESPINY
 	.byte OAT_BOUNDBOX02	; Object $86 - OBJ_ICEBRO
 	.byte OAT_BOUNDBOX02	; Object $87 - OBJ_FIREBRO
 	.byte OAT_BOUNDBOX01	; Object $88 - OBJ_ORANGECHEEP
@@ -1424,9 +1424,9 @@ PRG000_C834:
 	; Parallel arrays which for a given tile in the accumulator,
 	; if it matches one of the ones in PrePSwitchTile is replaced
 	; with the attribute and tile from the other arrays...
-PrePSwitchTile:		.byte $40, $67, $66, $05, $03, $82, $83 ; include thawed coins and [||] blocks
-PostPSwitchTile:	.byte $67, $40, $40, $67, $79, $42, $43
-PostPSwitchAttr:	.byte $03, $00, $00, $00, $00, $00, $00
+PrePSwitchTile:		.byte $40, $67, $66, $05, $03, $82, $83, $3B ; include thawed coins and [||] blocks
+PostPSwitchTile:	.byte $67, $40, $40, $67, $FF, $42, $43, $00
+PostPSwitchAttr:	.byte $03, $00, $00, $00, $00, $00, $00, $00
 
 PSwitch_SubstTileAndAttr:
 	JSR CheckESwitch
@@ -2126,11 +2126,11 @@ PRG000_CB8E:
 
 	JSR Object_SetShakeAwakeTimer	 ; Set the "shake awake" timers
 
+
 	CPY #OBJ_BUZZYBEATLE
 	BNE PRG000_CBB4	 ; If object is NOT a Buzzy Beatle, jump to PRG000_CBB4
 
 	; Buzzy Beatle
-
 	LDY Objects_FlipBits,X
 	BMI PRG000_CBB3	 ; If Buzzy is vertically flipped, jump to PRG000_CBB3 (RTS)
 
@@ -2151,6 +2151,9 @@ PRG000_CBB4:
 
 	CPY #OBJ_SPINY
 	BEQ PRG000_CBB3	 ; If Object is a Spiny, jump to PRG000_CBB3
+
+	CPY #OBJ_BLUESPINY
+	BEQ PRG000_CBB3	 
 
 	; "Shake awake" speed
 
@@ -2467,9 +2470,13 @@ PRG000_CD46:
 
 	; NOTE: I really, really wish Nintendo used a consistent check here!
 	; Other code checks Objects_IsGiant before taking this route...
+	CMP #OBJ_BLUESPINY
+	BEQ NotGiant
+
 	CMP #OBJ_BIGGREENTROOPA
 	BGE PRG000_CD80	 ; If the object ID >= OBJ_BIGGREENTROOPA (why not use Objects_IsGiant?!), jump to PRG000_CD80
 
+NotGiant:
 	LDA Level_NoStopCnt
 	LSR A	
 	AND #$03

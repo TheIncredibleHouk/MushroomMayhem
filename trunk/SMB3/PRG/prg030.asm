@@ -2862,13 +2862,14 @@ Fill_Tile_AttrTable_ByTileset:
 	ASL A	 
 	TAY		 	; Y = Level_Tileset << 1
 
-	LDX #$07		; Y = 7
+	LDX #$00		; Y = 7
 PRG030_952C:
 	LDA TileSolidity,Y	
-	STA Tile_AttrTable,Y	
+	STA Tile_AttrTable,X
 	INY
-	DEX			; Y--
-	BPL PRG030_952C	 	; While Y >= 0, loop!
+	INX			; Y--
+	CPX #$08
+	BNE PRG030_952C	 	; While Y >= 0, loop!
 
 	RTS			; Return
 
@@ -3323,35 +3324,6 @@ Tile_Mem_ClearB:	; $9734
 ;
 ; Best to follow through to figure out the format to each "style"...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;	; There are 8 defined vertical start positions
-;
-;	; Defines Player's Y "high" start
-;GamePlay_YHiStart:	.byte $01, $00, $00, $01, $00, $00, $00, $01
-;
-;	; Defines Player's Y start
-;GamePlay_YStart:	.byte $70, $40, $00, $40, $70, $B0, $F0, $80
-;
-;	; Defines screen vertical position starts
-;	; NOTE: If the "box out" effect were to be used, needs to sync with BoxOut_ByVStart
-;GamePlay_VStart:	.byte $EF, $00, $00, $EF, $30, $70, $B0, $EF
-;
-;	; Available MSD time start values
-;GamePlay_TimeStart:	.byte 3, 4, 2, 0
-;
-;	; Available BGMs for levels (16 possible with stock code, only 11 defined here)
-;GamePlay_BGM:
-;	.byte MUS2B_OVERWORLD	; 0
-;	.byte MUS2B_UNDERGROUND	; 1
-;	.byte MUS2B_UNDERWATER	; 2
-;	.byte MUS2B_FORTRESS	; 3
-;	.byte MUS2B_BOSS	; 4
-;	.byte MUS2B_AIRSHIP	; 5
-;	.byte MUS2B_BATTLE	; 6
-;	.byte MUS2B_TOADHOUSE	; 7
-;	.byte MUS2B_ATHLETIC	; 8
-;	.byte MUS2A_THRONEROOM	; 9
-;	.byte MUS2A_SKY		; 10
-;
 
 LevelPointerOffsets:
 	.byte $A0, $A1, $A2, $A3
@@ -3491,7 +3463,12 @@ UseNormEntrance:
 	STA <Player_XHi
 	LDA [Temp_Var14], Y
 	AND #$F0
+	LDX Level_InitAction
+	CPX #$03
+	BCS DontOffsetX
 	ORA #$08
+
+DontOffsetX:
 	STA <Player_X
 	INY
 	LDA [Temp_Var14], Y
@@ -3551,7 +3528,6 @@ Skip_Time_Set:
 	INY
 
 	; set invincible enemies
-	LDA Debug_Snap
 	LDA [Temp_Var14],Y
 	AND #$80
 	STA Invincible_Enemies
@@ -4119,9 +4095,11 @@ LevelLoad_ByTileset:
 	RTS
 
 TileSolidity:
-	.byte $25, $50, $A0, $E2, $2D, $53, $AD, $F0
-	.byte $11, $5A, $9B, $E2, $11, $5A, $9B, $E2
-	.byte $25, $5F, $99, $E2, $2E, $5F, $A6, $F0 
+	; Solid top				 ; solid left, right and bottom
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $25, $50, $A0, $E2, $28, $53, $A3, $E5
+	.byte $20, $5A, $9B, $E2, $20, $5A, $9B, $E2
+	.byte $25, $5F, $99, $E2, $2E, $5F, $A6, $F0
 	.byte $1F, $4A, $8A, $EF, $2E, $4D, $8D, $EF
 	.byte $1F, $47, $96, $E2, $2E, $47, $96, $EE
 	.byte $0A, $4C, $91, $E2, $0A, $4C, $91, $E2

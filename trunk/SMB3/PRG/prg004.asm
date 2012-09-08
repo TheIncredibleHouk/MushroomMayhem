@@ -49,7 +49,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_BoomerangBro	; Object $82 - OBJ_BOOMERANGBRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjInit_Set3DoNothing	; Object $84 - OBJ_SPINYEGG
-	.word ObjInit_Set3DoNothing	; Object $85 - OBJ_SPINYEGGDUD
+	.word ObjInit_GroundTroop	; Object $85 - OBJ_BLUESPINY
 	.word ObjInit_FireBro		; Object $86 - OBJ_ICEBRO
 	.word ObjInit_FireBro		; Object $87 - OBJ_FIREBRO
 	.word ObjInit_OrangeCheep	; Object $88 - OBJ_ORANGECHEEP
@@ -91,7 +91,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_BoomerangBro	; Object $82 - OBJ_BOOMERANGBRO
 	.word ObjNorm_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjNorm_SpinyEgg		; Object $84 - OBJ_SPINYEGG
-	.word ObjNorm_SpinyEggDud	; Object $85 - OBJ_SPINYEGGDUD
+	.word ObjNorm_GroundTroop	; Object $85 - OBJ_BLUESPINY
 	.word ObjNorm_FireBro		; Object $86 - OBJ_ICEBRO
 	.word ObjNorm_FireBro		; Object $87 - OBJ_FIREBRO
 	.word ObjNorm_OrangeCheep	; Object $88 - OBJ_ORANGECHEEP
@@ -134,7 +134,7 @@ ObjectGroup03_CollideJumpTable:
 	.word OCSPECIAL_HIGHSCORE			; Object $82 - OBJ_BOOMERANGBRO
 	.word OCSPECIAL_HIGHSCORE			; Object $83 - OBJ_LAKITU
 	.word $0000					; Object $84 - OBJ_SPINYEGG
-	.word $0000					; Object $85 - OBJ_SPINYEGGDUD
+	.word $0000					; Object $85 - OBJ_BLUESPINY
 	.word OCSPECIAL_HIGHSCORE			; Object $86 - OBJ_ICEBRO
 	.word OCSPECIAL_HIGHSCORE			; Object $87 - OBJ_FIREBRO
 	.word $0000					; Object $88 - OBJ_ORANGECHEEP
@@ -176,7 +176,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $82 - OBJ_BOOMERANGBRO
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $83 - OBJ_LAKITU
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $84 - OBJ_SPINYEGG
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $85 - OBJ_SPINYEGGDUD
+	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $85 - OBJ_BLUESPINY
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $86 - OBJ_ICEBRO
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $87 - OBJ_FIREBRO
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $88 - OBJ_ORANGECHEEP
@@ -217,7 +217,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $82 - OBJ_BOOMERANGBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $83 - OBJ_LAKITU
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $84 - OBJ_SPINYEGG
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $85 - OBJ_SPINYEGGDUD
+	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $85 - OBJ_BLUESPINY
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $86 - OBJ_ICEBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $87 - OBJ_FIREBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $88 - OBJ_ORANGECHEEP
@@ -259,7 +259,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY 					; Object $82 - OBJ_BOOMERANGBRO
 	.byte OA3_HALT_NORMALONLY 					; Object $83 - OBJ_LAKITU
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $84 - OBJ_SPINYEGG
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $85 - OBJ_SPINYEGGDUD
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_DIESHELLED 			; Object $85 - OBJ_BLUESPINY
 	.byte OA3_HALT_NORMALONLY 					; Object $86 - OBJ_ICEBRO
 	.byte OA3_HALT_NORMALONLY 					; Object $87 - OBJ_FIREBRO
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $88 - OBJ_ORANGECHEEP
@@ -301,7 +301,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $4E	; Object $82 - OBJ_BOOMERANGBRO
 	.byte OPTS_SETPT5 | $0B	; Object $83 - OBJ_LAKITU
 	.byte OPTS_SETPT5 | $0B	; Object $84 - OBJ_SPINYEGG
-	.byte OPTS_SETPT5 | $0B	; Object $85 - OBJ_SPINYEGGDUD
+	.byte OPTS_SETPT5 | $0B	; Object $85 - OBJ_BLUESPINY
 	.byte OPTS_SETPT5 | $4E	; Object $86 - OBJ_ICEBRO
 	.byte OPTS_SETPT5 | $4E	; Object $87 - OBJ_FIREBRO
 	.byte OPTS_SETPT6 | $4F	; Object $88 - OBJ_ORANGECHEEP
@@ -343,7 +343,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAW16X32	; Object $82 - OBJ_BOOMERANGBRO
 	.byte KILLACT_NORMALSTATE	; Object $83 - OBJ_LAKITU
 	.byte KILLACT_JUSTDRAW16X16	; Object $84 - OBJ_SPINYEGG
-	.byte KILLACT_NORMALANDKILLED	; Object $85 - OBJ_SPINYEGGDUD
+	.byte KILLACT_JUSTDRAWMIRROR	; Object $85 - OBJ_BLUESPINY
 	.byte KILLACT_JUSTDRAW16X32	; Object $86 - OBJ_ICEBRO
 	.byte KILLACT_JUSTDRAW16X32	; Object $87 - OBJ_FIREBRO
 	.byte KILLACT_JUSTDRAW16X16	; Object $88 - OBJ_ORANGECHEEP
@@ -435,7 +435,8 @@ ObjP88:
 ObjP84:
 	.byte $99, $99, $BB, $BB, $81, $83
 ObjP85:
-	.byte $99, $99, $BB, $BB, $99, $99
+	.byte $81, $83, $85, $87, $89, $89, $89, $89, $89, $89, $8F, $8F, $8B, $8D
+
 ObjP83:
 	.byte $9F, $9F, $9F, $9F, $9F, $9F, $01, $01, $9D, $9D, $9F, $9F
 ObjP86:
@@ -2972,7 +2973,7 @@ PRG004_AE35:
 	LDA #$02
 	STA Objects_SprAttr,Y
 
-	LDA #OBJ_SPINYEGGDUD
+	LDA #OBJ_SPINY
 
 PRG004_AE58:
 	STA Level_ObjectID,Y	 ; Set appropriate drop object
@@ -3835,6 +3836,7 @@ PRG004_B275:
 
 	JSR Object_FlipFace	 ; Turn around
 
+RedTroopaMovement:
 PRG004_B283:
 
 	; Logic that keeps a red troopa from marching himself right off an edge
@@ -4007,7 +4009,28 @@ GroundTroop_XVel:
 
 	.byte $F0, $10, $F4, $0C, $F7, $09
 
+Troopers:
+	.byte OBJ_BLUESPINY, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+
+FastMovers:
+	.byte OBJ_BLUESPINY, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+
 ObjNorm_GroundTroop:
+	LDY #$07
+FindTroopers:
+	LDA Level_ObjectID, X
+	CMP Troopers, Y
+	BEQ EnableTrooping
+	DEY 
+	BPL FindTroopers
+	LDA #$00
+	BEQ DisableTrooping
+
+EnableTrooping:
+	LDA #$01
+
+DisableTrooping:
+	STA <Temp_Var15
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 	LDA <Player_HaltGame
@@ -4062,6 +4085,7 @@ PRG004_B384:
 
 	JSR GroundTroop_Draw	 ; Draw the enemy
 	JMP Player_HitEnemy	 ; Do Player to enemy collision and don't come back!
+
 
 PRG004_B3A5:
 	JSR GroundTroop_Draw	 ; Draw the enemy
@@ -4155,6 +4179,10 @@ PRG004_B405:
 	JSR Object_FlipFace	 ; Turn around
 
 PRG004_B40E:
+	LDA <Temp_Var15
+	BEQ DoMarch
+	JSR RedTroopaMovement
+DoMarch:
 	JMP PRG004_AF1A	 ; (Indirectly) Handle getting bumped underneath
 
 	RTS		 ; Return
@@ -4285,6 +4313,9 @@ Troopa_FootByEvenOddFrame:
 
 GroundTroop_Draw:
 	LDA Level_ObjectID,X
+	CMP #OBJ_BLUESPINY
+	BEQ PRG004_B4B6
+
 	CMP #OBJ_BUZZYBEATLE
 	BLT Troopa_Draw	 ; If this is one of the regular troopas or paratroopas, jump to Troopa_Draw
 

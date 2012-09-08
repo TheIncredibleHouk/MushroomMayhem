@@ -3342,6 +3342,8 @@ Do_Pointer_Effect:
 	
 	LDA <Temp_Var1
 	BPL UsePointer
+	LDA #$14
+	STA Level_PipeMove
 	RTS		; No pointer found, abort abort!
 
 UsePointer:
