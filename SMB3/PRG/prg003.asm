@@ -6050,31 +6050,26 @@ No_HBros_Inc:
 	RTS
 
 Get_HBros_Coin_Bit:
-	STX DAIZ_TEMP1
-	LDA Objects_Y,X
-	AND #$F0
-	LSR A
+	LDA LevelNumber
+	AND #$07
+	TAY
+	LDA #$01
+
+ShiftLevelBit:
+	CPY #$00
+	BEQ HaveBit
+	ASL A
+	DEY
+	BNE ShiftLevelBit
+
+HaveBit:
+	STA DAIZ_TEMP1
+	LDA LevelNumber
 	LSR A
 	LSR A
 	LSR A
 	TAY
-	LDA Objects_X,X
-	AND #$70
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX
-	LDA #$01
-
-HBros_Bit_Loop:
-	DEX
-	BMI Get_HBros_Coin_Bit_RTS
-	ASL A
-	BNE HBros_Bit_Loop
-
-Get_HBros_Coin_Bit_RTS:
-	LDX DAIZ_TEMP1
+	LDA DAIZ_TEMP1
 	RTS
 
 Do_Boom_Boom_Invincibility:

@@ -205,6 +205,7 @@ NextPointerSearch:
 PointerFound:
 	LDA MapPointers, X
 	STA LevelLoadPointer
+	STA LevelNumber
 	LDA MapPointers+2,X
 	AND #$80
 	STA UseAltEntrance

@@ -91,10 +91,6 @@ Tile_Layout_TS1:
 	.byte $AB, $AB, $17, $19, $59, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
 	.byte $65, $08, $E3, $08, $61, $63, $61, $63, $0C, $0D, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
 
-Tile_Attributes_TS1:
-	
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS1
 ;

@@ -2910,7 +2910,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 						.ds 8	; 
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
-	HBros_Coins_Collected: .ds 16;  1 bit flags for coins collected. Each coin's Hi X/Y indicates where it was collected
 	StatusBar_PMT:		.ds 8	; $7F3E-$7F45, tiles that currently make up the power meter >>>>>>[P]
 	StatusBar_Time:		.ds 3	; $7F50-$7F52 Status bar tiles for time remaining
 	Map_MusicBox_Cnt:	.ds 1	; Number of turns remaining until hammer brothers wake up (>= 1 and they're be asleep on the map)
@@ -3022,12 +3021,14 @@ SOBJ_POOF		= $16 	; Poof
 	DayTransition:		.ds 1	; when not 0, we're transitioning into day
 	MasterPal_Data:		.ds 16	; keeps track of the unmodified, original palette
 	LevelLoadPointer:	.ds 1	;
+	LevelNumber:		.ds 1	;
 	PaletteIndex:		.ds 1	;
 	WindDirection:	.ds 1	; 0 = left, 1 = right
 	Pointers:			.ds 30	;
 	UseAltEntrance:		.ds 1
 	WorldWidth:			.ds 1
-						.ds 391 ;
+	HBros_Coins_Collected:  .ds 32 ;
+						.ds 374;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3459,7 +3460,7 @@ OBJ_HAMMERBRO		= $81	; Classic Hammer Brother
 OBJ_BOOMERANGBRO	= $82	; Boomerang Brother
 OBJ_LAKITU		= $83	; Lakitu throwing red spiny eggs
 OBJ_SPINYEGG		= $84	; Working red spiny egg
-OBJ_SPINYEGGDUD		= $85	; Rolling "dud" spiny egg
+OBJ_BLUESPINY		= $85	; Rolling "dud" spiny egg
 OBJ_ICEBRO		= $86	; Heavy brother
 OBJ_HEAVYBRO		= $86	; Heavy brother
 OBJ_FIREBRO		= $87	; Fire Brother

@@ -2726,6 +2726,30 @@ Draw_ItemReserve:
 
 Item_ReserveRTS:
 	RTS
+
+Get_HBros_Coin_Bit2:
+	LDA LevelNumber
+	AND #$07
+	TAY
+	LDA #$01
+
+ShiftLevelBit2:
+	CPY #$00
+	BEQ HaveBit2
+	ASL A
+	DEY
+	BNE ShiftLevelBit2
+
+HaveBit2:
+	STA DAIZ_TEMP1
+	LDA LevelNumber
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA DAIZ_TEMP1
+	RTS
+
 ; FIXME: Anybody want to claim this?
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3355,6 +3379,7 @@ No_Odometer:
 	RTS
 
 Draw_HBros_Coin:
+	LDA Debug_Snap
 	LDA Status_Bar_Mode
 	BNE No_HBros_Update
 	LDA HBros_Coins
@@ -3369,6 +3394,15 @@ Draw_HBros_Coin:
 	LSR A
 	ORA #$30
 	STA Status_Bar_Top + 16
+	JSR Get_HBros_Coin_Bit2
+	AND HBros_Coins_Collected, Y
+	BNE CoinCollected
+	LDA #$FE
+	BNE DrawCoinNotCollected
+CoinCollected:
+	LDA #$D0
+DrawCoinNotCollected:
+	STA Status_Bar_Top + 15
 No_HBros_Update:
 	RTS
 
