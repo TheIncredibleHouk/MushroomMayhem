@@ -96,66 +96,14 @@ PRG011_A1C8:
 	.byte $00, $00, $00, $00, $00, $00, $00, $00
 
 Map_Init:
-	JSR Map_Airship_Pick_Travel	; Based on world number and a bit of random, selects which set of destinations the airship will use (referred to as A, B, or C)
 	LDX World_Num	 		; X = World_Num
 
-	; Unknown lookup val stored to an unused variable
-	LDA Map_Unused7EEA_Vals,X	; LUT based on world number for?
-	STA Map_Unused7EEA		; Stored into Map_Unused7EEA
+	; Unknown lookup val stored to an unused variabl
 
 	; X = World_Num << 1
 	TXA
 	ASL A
 	TAX
-
-	; Set address of object Y list for this world
-	LDA Map_List_Object_Ys,X
-	STA <Temp_Var11	
-	LDA Map_List_Object_Ys+1,X
-	STA <Temp_Var12	
-
-	; Set address of object X (hi byte) list for this world
-	LDA Map_List_Object_XHis,X
-	STA <Temp_Var13	
-	LDA Map_List_Object_XHis+1,X
-	STA <Temp_Var14	
-
-	; Set address of object X (lo byte) list for this world
-	LDA Map_List_Object_XLos,X
-	STA <Temp_Var15	
-	LDA Map_List_Object_XLos+1,X
-	STA <Temp_Var16	
-
-	; Set address of object ID list for this world
-	LDA Map_List_Object_IDs,X
-	STA <Temp_Var9
-	LDA Map_List_Object_IDs+1,X
-	STA <Temp_Var10
-
-	; Set address of object item list for this world
-	LDA Map_List_Object_Items,X
-	STA <Temp_Var7
-	LDA Map_List_Object_Items+1,X
-	STA <Temp_Var8
-
-	; Loop MAPOBJ_TOTALINIT times for all defined map objects
-	LDY #MAPOBJ_TOTALINIT
-PRG011_A21B:
-
-	; Copy in the data relevant to this map object
-	LDA [Temp_Var11],Y
-	STA Map_Objects_Y,Y	; Y
-	LDA [Temp_Var13],Y
-	STA Map_Objects_XHi,Y	; XHi
-	LDA [Temp_Var15],Y	
-	STA Map_Objects_XLo,Y	; XLo
-	LDA [Temp_Var9],Y	
-	STA Map_Objects_IDs,Y	; ID
-	LDA [Temp_Var7],Y	
-	STA Map_Objects_Itm,Y	; Item
-
-	DEY		 ; Y--
-	BPL PRG011_A21B	 ; While Y >= 0, go around again...
 
 	LDY World_Num	 	; Y = World_Num
 	LDX Total_Players	; X = Total players (1 for 1P, 2 for 2P)

@@ -3464,7 +3464,7 @@ UseNormEntrance:
 	LDA [Temp_Var14], Y
 	AND #$F0
 	LDX Level_InitAction
-	CPX #$03
+	CPX #$04
 	BCS DontOffsetX
 	ORA #$08
 
@@ -5922,3 +5922,7 @@ Replace_Tile:
 
 Try_Replace_TileRTS:
 	RTS
+
+
+Test:
+	.byte $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75

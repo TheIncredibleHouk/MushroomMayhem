@@ -2637,7 +2637,6 @@ CFIRE_LASER		= $15	; Laser fire
 	Calc_Value:			.ds 8	; Used in doign decimal byte-wise subtraction, this is the B part of A - B
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Virus:				.ds 1	;
-	World_Complete_Tiles: .ds 8	;
 	Old_World_Map_Tile:	.ds	1	;
 	Player_Ability:		.ds 1	;
 	Player_Level:		.ds 1	;
@@ -3028,7 +3027,8 @@ SOBJ_POOF		= $16 	; Poof
 	UseAltEntrance:		.ds 1
 	WorldWidth:			.ds 1
 	HBros_Coins_Collected:  .ds 32 ;
-						.ds 374;
+	World_Complete_Tiles: .ds 16	;
+						.ds 366;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -4000,7 +4000,7 @@ TILE2_HANGGLOBE_GLOBE	= $8A	; Hanging globe thing
 TILE2_BGBRICK_SHADOW2	= $8B	; Background brickwork pattern, shadowed (same as $8F?)
 TILE2_BGBRICK_NOSHADOW	= $8C	; Background brickwork pattern, non-shadowed
 TILE2_BGBRICK_LSHADOW	= $8D	; Background brickwork pattern, shadowed on left
-ESWITCH_BLOCK1			= $41	; Background brickwork pattern, shadowed on top
+ESWITCH_BLOCK1			= $42	; Background brickwork pattern, shadowed on top
 TILE2_BGBRICK_SHADOW	= $8F	; Background brickwork pattern, shadowed
 
 TILE2_BGBRICK_UNDBRICK	= $90	; Background brickwork pattern, under the TILE2_SOLIDBRICK
@@ -4019,7 +4019,7 @@ TILE2_ENDDOOR_LR	= $9A	; The final door to the princess, lower right
 ESWITCH3			= $FF	; Candle (for Hot Foot)
 TILE2_SOLIDBRICK	= $9C	; Solid Bowser's Castle style brick
 TILE2_DARKREDDIAMOND	= $9D	; Dark red diamond block
-ESWITCH1			= $7F	; Roto disc block
+ESWITCH1			= $7D	; Roto disc block
 
 TILE2_SHADOW		= $A2	; Black
 
