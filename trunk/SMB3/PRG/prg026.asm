@@ -3379,7 +3379,6 @@ No_Odometer:
 	RTS
 
 Draw_HBros_Coin:
-	LDA Debug_Snap
 	LDA Status_Bar_Mode
 	BNE No_HBros_Update
 	LDA HBros_Coins
