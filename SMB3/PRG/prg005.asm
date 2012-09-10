@@ -4028,12 +4028,6 @@ PRG005_B38B:
 	STA <Temp_Var1
 	ASL <Temp_Var1
 	ROR A
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
 	ADD <Player_XVel
 	ADD <Objects_XVel,X
 	STA <Player_XVel

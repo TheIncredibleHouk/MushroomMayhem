@@ -1293,6 +1293,8 @@ PRG007_A5DC:
 	STA <Temp_Var5
 
 	LDY <Temp_Var2	 ; Y = tile quadrant
+	CPY #$01
+	BEQ PRG007_A637
 	TYA
 	ASL A
 	TAX		 ; X = tile quadrant * 2 (2 byte index into Level_SlopeSetByQuad)

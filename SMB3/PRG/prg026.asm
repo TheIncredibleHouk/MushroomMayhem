@@ -3258,7 +3258,7 @@ LevelLoad_CopyObjectList:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $48, $D0, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $48, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
 	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
 
 Initial_Bar_Display2:
@@ -3401,7 +3401,7 @@ Draw_HBros_Coin:
 CoinCollected:
 	LDA #$D0
 DrawCoinNotCollected:
-	STA Status_Bar_Top + 15
+	STA Status_Bar_Top + 14
 No_HBros_Update:
 	RTS
 

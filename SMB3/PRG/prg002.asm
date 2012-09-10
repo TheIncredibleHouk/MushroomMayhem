@@ -5601,4 +5601,34 @@ Draw_Item_Sprite:
 Challenge_Toad:
 	LDA #$01
 	STA Level_JctCtl
+	LDX #$00				; use first pointer as transition
+	LDA Pointers, X
+	STA LevelLoadPointer
+	LDA Pointers + 3, X
+	AND #$0F
+	STA <Player_XHi
+	LDA Pointers + 3, X
+	AND #$F0
+	ORA #$08
+	STA <Player_X
+	LDA Pointers + 4, X
+	AND #$0F
+	STA <Player_YHi
+	LDA Pointers + 4, X
+	AND #$F0
+	STA <Player_Y
+
+	LDA Pointers + 5, X
+	AND #$0F
+	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
+	
+	CMP #$03
+	BLT Skip_Line_Up2	 ; If Level_PipeExitDir < 3, jump to PRG026_AABD
+	
+	; Otherwise, don't center Player (better for starting on block)
+	LDA <Player_X
+	AND #$f0
+	STA <Player_X
+
+Skip_Line_Up2:
 	RTS

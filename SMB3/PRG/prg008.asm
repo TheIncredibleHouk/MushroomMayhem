@@ -1615,15 +1615,9 @@ PRG008_A827:
 	AND #%01111111	 
 	STA <Player_FlipBits	 ; Clear vertical flip on sprite
 
-	LDY Level_TilesetIdx	 ; Y = Level_TilesetIdx
-
 	LDA #TILEA_DOORBOTTOM
 	SUB <Temp_Var1	
 	BEQ PRG008_A83F	 ; If tile is DOOR2's tile, jump to PRG008_A83F
-
-	; Only fortresses can use DOOR1
-	CPY #$01
-	BNE PRG008_A86C	 ; If Level_TilesetIdx <> 1 (fortress style), jump to PRG008_A86C
 
 	CMP #$01
 	BNE PRG008_A86C	 ; If tile is not DOOR1, jump to PRG008_A86C
@@ -1639,12 +1633,8 @@ PRG008_A83F:
 	LDA <Player_InAir
 	BNE PRG008_A86C	 ; If Player is mid air, jump to PRG008_A86C
 
-	JSR Check_For_Level_Exit
-	LDA DAIZ_TEMP1
-	BEQ PRG008_A852
-	STA Level_ExitToMap	
-
 PRG008_A852:
+	JSR Find_Applicable_Pointer
 	LDY #$01	; Y = 1
 	STY Level_JctCtl ; Set appropriate value to Level_JctCtl
 
@@ -4361,10 +4351,11 @@ PRG008_B4F3:
 
 	INC Player_WalkAnimTicks	 ; Player_WalkAnimTicks++
 
+	JSR Can_Wall_Jump
+	JSR Shell_Bounce
 	LDY #$01	 ; Y = 1
 	LDX #$00	 ; X = 0
 
-	JSR Can_Wall_Jump
 	LDA <Player_X
 	AND #$0f	
 	CMP #$08	
@@ -4417,28 +4408,7 @@ PRG008_B536:
 	
 	;#DAHRKDAIZ modified solid wall detect to bounce shell mode
 	; Player hit wall; stop!
-	PHA
 
-
-Not_Shell_Brick:
-	LDA Player_Shell			; If in a shell we bounce in the opposite direction
-	BEQ Do_Wall_Stop
-	PLA
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERBUMP
-	STA Sound_QPlayer
-	LDA Player_FlipBits			; flip direction the player is facing
-	EOR #$40				
-	STA Player_FlipBits				
-	LDA <Player_XVel
-	EOR #$FF
-	ADC #$01
-	BNE Normal_Wall_Stop
-
-Do_Wall_Stop:
-	PLA
-
-Normal_Wall_Stop:
 	STA <Player_XVel ; Otherwise, halt Player horizontally
 
 
@@ -5632,6 +5602,8 @@ PRG008_BA77:
 	JSR Level_CheckGndLR_TileGTAttr
 	BCC PRG008_BABC	 ; If not touching a solid tile, jump to PRG008_BABC
 
+	JSR Can_Wall_Jump
+	JSR Shell_Bounce
 	LDX #$00	 ; X = 0
 	LDY #$01	 ; Y = 0
 	LDA <Player_X	
@@ -6831,4 +6803,24 @@ Do_PUp_Proper:
 	BNE PUp_RTS
 	LDY #$05
 PUp_RTS:
+	RTS
+
+	PHA
+
+
+Shell_Bounce:
+	LDA Player_Shell			; If in a shell we bounce in the opposite direction
+	BEQ Shell_BounceRTS
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+	LDA Player_FlipBits			; flip direction the player is facing
+	EOR #$40				
+	STA Player_FlipBits				
+	LDA <Player_XVel
+	EOR #$FF
+	ADC #$01
+	STA <Player_XVel
+
+Shell_BounceRTS:
 	RTS

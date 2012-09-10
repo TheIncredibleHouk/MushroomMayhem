@@ -61,7 +61,7 @@ Tile_Mem_AddrVH:
 ; Remember that the left edge is typically clipped, so nothing is visible there...
 Video_Upd_Table: ; $803E
 	.word Graphics_Buffer	; $00 - Graphics buffer for dynamically generated content
-	.word Video_DoStatusBarV; $01 - status bar (vertical level)
+	.word Video_DoStatusBar ; $01 - status bar (vertical level)
 	.word Video_DoStatusBar	; $02 - status bar (typical)
 	.word $A000		; $03 - ???
 	.word $A06F		; $04 - ???
@@ -158,8 +158,6 @@ StatusBar	.macro
 	.endm
 
 	; Typical status bar (vertical level)
-Video_DoStatusBarV:
-	StatusBar $2700
 
 	; Typical status bar (non-vertical level)
 Video_DoStatusBar:
@@ -1280,10 +1278,15 @@ PRG030_897B:
 
 	LDA #$00	
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
+	STA ChallengeMode
 
 	JSR LevelLoad			; Load the level layout data!
 	
 	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
+	LDA #$00
+	
+	LDA #$01
+	STA Tile_Anim_Enabled
 
 	; Scroll_Cols2Upd = 32 (full dirty scroll update sweep)
 	LDA #32
@@ -1436,15 +1439,6 @@ PRG030_8B9A:
 
 	LDA Level_7Vertical
 	BEQ PRG030_8BD5	 	; If not a vertical level, jump to PRG030_8BD5
-
-	; Set address as appropriate for vertical
-	LDY Level_SizeOrig
-	LDA Tile_Mem_AddrVL,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_AddrVH,Y
-	STA <Map_Tile_AddrH
-
-	JMP PRG030_8BDF	; Jump to PRG030_8BDF
 
 PRG030_8BD5: 
 
@@ -1610,8 +1604,6 @@ PRG030_8CB8:
 	LDX #$c0	 	; X = $C0 (Normal style updating)
 	LDA Level_7Vertical	
 	BEQ PRG030_8CD1	 	; If not a vertical level, jump to PRG030_8CD1
-
-	LDX #$80	 ; X = $80 (Vertical style updating)
 
 PRG030_8CD1:
 	STX Update_Select	 ; Set Update_Select as appropriate
@@ -2010,18 +2002,6 @@ PRG030_8EAD:
 
 	LDY <Scroll_LastDir	; Y = Scroll_LastDir
 
-	LDA Level_7Vertical
-	BEQ PRG030_8EC3	 	; If level is NOT vertical, jump to PRG030_8EC3
-
-	; Forms a value of current "scroll row" in upper 4 bits
-	; and "current screen" in lower 4 bits -> Scroll_Temp
-	LDA <Vert_Scroll
-	AND #$f0	 
-	ORA <Vert_Scroll_Hi
-	STA <Scroll_Temp
-
-	JMP PRG030_8EC9	 	; Jump to PRG030_8EC9
-
 PRG030_8EC3:
 	LDA <Horz_Scroll
 	STA <Scroll_Temp	; Scroll_Temp = Horz_Scroll
@@ -2117,6 +2097,7 @@ PRG030_8F31:
 	STA ChallengeMode
 	LDA #$40
 	STA Air_Time
+	STA Tile_Anim_Enabled
 
 	; Level_GetWandState = 0
 	LDA #$00
@@ -3049,19 +3030,6 @@ BoxOut_PutPatternInStrip:
 	JSR BoxOut_CalcOffsets	 ; Calculate offset to tile
 	JSR BoxOut_CalcWhich8x8	 ; Calculate which 8x8 pattern of the tile layout we're going to use
 
-	LDA Level_7Vertical
-	BEQ PRG030_9654	 	; If level is not vertical, jump to PRG030_9654
-
-	LDY Level_SizeOrig
-
-	; Correct base address for vertical levels
-	LDA Tile_Mem_AddrVL,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_AddrVH,Y
-	STA <Map_Tile_AddrH
-
-	JMP PRG030_965E	 	; Jump to PRG030_965E
-
 PRG030_9654:
 	; Correct base address for non-vertical levels
 	LDA Tile_Mem_Addr
@@ -3989,23 +3957,6 @@ LoadLevel_Set_TileMemAddr:
 	TAX		 ; X = (Temp_Var16 & $F0) >> 3 (value in upper 4 bits times 2, 2 byte index for Tile_Mem_Addr)
 
 	; X = 7654 0 <-- '0' is a one-up shift, not bit 0 of Temp_Var16
-
-	LDA Level_7Vertical
-	BEQ PRG030_9963	 ; If not a vertical level, jump to PRG030_9963
-
-	; Vertical level
-
-	TXA
-	LSR A
-	TAX		; X >>= 1 (single byte index, since the Tile_Mem_AddrV lookup is split into two tables)
-
-	; Load the target address into Map_Tile_AddrH/L
-	LDA Tile_Mem_AddrVL,X
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_AddrVH,X
-	STA <Map_Tile_AddrH
-
-	JMP PRG030_997F	 ; Jump to PRG030_997F
 
 PRG030_9963:
 
@@ -5460,6 +5411,7 @@ Can_Wall_Jump:
 	SBC #$20			; slow down decent during wall jump mode
 	BMI No_Wall_Jump
 	STA <Player_YVel
+
 No_Wall_Jump:
 	RTS
 
@@ -5685,32 +5637,35 @@ TryHScrollUpperLimit:
 	LDA DAIZ_TEMP2 
 	SEC
 	SBC DAIZ_TEMP1
-	BPL DynHScroll
+	BCS DynHScroll
 	LDA <Level_Width
 	STA <Horz_Scroll_Hi
 	LDA #$00
 	STA <Horz_Scroll
 	JMP Update_Columns
 
-DynHScroll:
-	LDA DAIZ_TEMP1
+DynHScroll:	
+	LDA DAIZ_TEMP1 
 	SEC
 	SBC #$08
 	STA DAIZ_TEMP1
-	AND #$0F
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ORA #$08
-	STA <Horz_Scroll
-	LDA DAIZ_TEMP1
 	AND #$F0
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA <Horz_Scroll_Hi
+	LDA DAIZ_TEMP1
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA <Horz_Scroll
+	LDA <Player_X
+	AND #$0F
+	ORA <Horz_Scroll
+	STA <Horz_Scroll
 
 Update_Columns:
 	LDA #$01
@@ -5923,6 +5878,123 @@ Replace_Tile:
 Try_Replace_TileRTS:
 	RTS
 
+Find_Applicable_Pointer:
+	;;; find proper pointer now
+	LDA <Player_X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Player_XHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+	STA <Temp_Var2
+	LDA <Player_Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Player_YHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+	STA <Temp_Var3
+	LDA #$09
 
-Test:
-	.byte $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75, $75
+	STA <Temp_Var1
+	LDX #$3C
+
+FindPointerLoop:
+	DEX
+	DEX
+	DEX
+	DEX
+	DEX
+	DEX
+	LDA Pointers + 1, X
+	SEC
+	SBC <Temp_Var2
+	CMP #$02
+	BCS NextPointer
+	LDA Pointers + 2, X
+	SEC
+	SBC <Temp_Var3
+	CMP #$02
+	BCS NextPointer
+	RTS		 ; Return
+
+NextPointer:
+	DEC <Temp_Var1
+	BPL FindPointerLoop
+	RTS
+
+Do_Pointer_Effect:
+	JSR Find_Applicable_Pointer	 ; Initialize level junction
+	
+	LDA <Temp_Var1
+	BPL UsePointer
+	LDA #$14
+	STA Level_PipeMove
+	RTS		; No pointer found, abort abort!
+
+UsePointer:
+	LDA Pointers + 5, X
+	AND #$80	; does this pointer exit the level?
+	BEQ LevelJction
+	LDA Pointers + 3, X
+	AND #$0F
+	STA Map_Entered_XHi
+	LDA Pointers + 3, X
+	AND #$F0
+	STA Map_Entered_X
+	LDA Pointers + 4, X
+	AND #$F0
+	STA Map_Entered_Y
+	LDA Pointers, X
+	STA World_Num
+	INC Level_ExitToMap
+	LDA #$00
+	STA Level_PipeMove
+	STA Map_ReturnStatus
+	STA Level_JctCtl
+	LDA #$04
+	STA Level_PipeMove
+	RTS
+
+LevelJction:
+	LDA Pointers, X
+	STA LevelLoadPointer
+	LDA Pointers + 3, X
+	AND #$0F
+	STA <Player_XHi
+	LDA Pointers + 3, X
+	AND #$F0
+	ORA #$08
+	STA <Player_X
+	LDA Pointers + 4, X
+	AND #$0F
+	STA <Player_YHi
+	LDA Pointers + 4, X
+	AND #$F0
+	STA <Player_Y
+
+	LDA Pointers + 5, X
+	AND #$0F
+	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
+	
+	CMP #$03
+	BLT Skip_Line_Up	 ; If Level_PipeExitDir < 3, jump to PRG026_AABD
+	
+	; Otherwise, don't center Player (better for starting on block)
+	LDA <Player_X
+	AND #$f0
+	STA <Player_X
+Skip_Line_Up:
+	RTS
