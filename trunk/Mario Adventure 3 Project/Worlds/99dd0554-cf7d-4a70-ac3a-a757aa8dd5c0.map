@@ -13,6 +13,9 @@
     <pointer levelguid="669afcee-7095-4081-b613-0b91be6138f9" x="14" y="21" altentrance="false" />
     <pointer levelguid="26d1fdf2-aac6-4fb1-8c51-0ac3b400e7ca" x="15" y="17" altentrance="false" />
     <pointer levelguid="823d03d2-1c0e-4a22-a4b1-7406bcac43ea" x="10" y="25" altentrance="false" />
+    <pointer levelguid="0d1afc51-68eb-4c06-8ffb-a3cc14a22f6e" x="5" y="22" altentrance="true" />
+    <pointer levelguid="0d1afc51-68eb-4c06-8ffb-a3cc14a22f6e" x="2" y="24" altentrance="false" />
+    <pointer levelguid="1c765600-70a1-4036-ace5-d08aca16eac5" x="5" y="25" altentrance="false" />
   </pointers>
   <spritedata>
     <sprite x="14" y="21" value="13" item="0" />
