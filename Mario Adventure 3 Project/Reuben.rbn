@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project name="Reuben" guid="92cc06b5-b089-42f3-b92f-79a078a2a7ed" romfile="C:\Users\Daiz\Desktop\ROM Hacking\Mario Adventure 3\MarioAdventure3.nes">
+<project name="Reuben" guid="92cc06b5-b089-42f3-b92f-79a078a2a7ed">
   <paletteinfo>
     <palette background="00" data="0F,0F,30,3D,0F,37,17,0A,0F,11,2A,0A,0F,30,05,0A,0F,00,00,00,0F,17,36,0F,0F,17,36,0F,0F,30,31,0F" name="Map" guid="c6560d1b-5f71-4e4a-8856-8845797a63e9" />
     <palette background="11" data="11,0F,30,15,11,0D,37,27,11,0D,3A,1A,11,0D,30,21,11,00,00,00,11,0F,30,16,11,0F,30,2A,11,0F,36,27" name="Plains" guid="ceee7668-a8e4-44c0-8676-a3d11168456f" />
@@ -20,7 +20,7 @@
     <palette background="0C" data="0C,0F,37,07,0C,0D,38,18,0C,0D,1A,0B,0C,0D,3B,12,0C,00,00,00,0C,0F,30,16,0C,0F,30,11,0C,0F,36,27" name="Plains Rain" guid="c7c3b08e-8f1a-42e9-9986-d34994fe35b6" />
     <palette background="11" data="11,0F,30,10,11,0D,38,18,11,0D,2A,1A,11,0D,3B,12,11,00,00,00,11,0F,30,16,11,0F,30,11,11,0F,36,27" name="Shop" guid="5543b5ff-dd04-4843-ab7a-27a495d345d6" />
     <palette background="0F" data="0F,0F,30,06,0F,0D,37,27,0F,0D,3A,1A,0F,0D,20,10,0F,00,00,00,0F,0F,30,16,0F,0F,30,2A,0F,0F,36,27" name="Challenge Intro" guid="a10a5ad7-138b-4df5-9ec2-ae226827ab89" />
-    <palette background="10" data="10,0F,30,3C,10,0D,30,21,10,0D,3B,1B,10,0D,30,23,10,00,00,00,10,0F,30,16,10,0F,30,21,10,0F,36,27" name="Plains Cold" guid="21ee6bde-bb06-4df4-8235-03d13a4faaad" />
+    <palette background="10" data="10,0F,30,3C,10,0D,30,21,10,0D,3B,1B,10,0D,30,32,10,00,00,00,10,0F,30,16,10,0F,30,21,10,0F,36,27" name="Plains Cold" guid="21ee6bde-bb06-4df4-8235-03d13a4faaad" />
   </paletteinfo>
   <blocklayouts>
     <layout name="Plains" order="8,9,10,137,138,139,196,197,198,199,200,2,4,6,7,-1,136,73,-1,-1,-1,-1,-1,-1,-1,129,130,65,66,71,72,-1,183,184,185,247,248,249,173,174,-1,-1,-1,131,132,134,135,-1,83,84,85,250,251,252,177,178,189,182,-1,192,193,194,195,-1,86,87,88,253,254,255,179,180,190,181,-1,-1,-1,-1,-1,-1,5,64,223,1,50,51,118,119,240,244,-1,-1,-1,-1,-1,-1,60,61,62,63,52,53,120,121,245,246,-1,-1,-1,-1,-1,-1,96,97,98,100,105,104,106,109,108,110,111,112,46,99,103,242,80,81,82,37,38,39,160,161,162,226,227,228,-1,-1,-1,-1,77,78,79,11,12,13,140,141,142,201,202,203,-1,-1,-1,-1,74,75,76,14,15,16,143,144,145,204,205,206,-1,-1,-1,-1,17,18,146,147,67,68,208,209,220,239,222,-1,-1,-1,-1,-1,19,20,148,149,69,70,210,211,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,241" />
@@ -42,6 +42,6 @@
     <level name="1-Challenge" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="15ffc254-3d86-4e74-84eb-96ed98328eef" leveltype="1" lastcompressionsize="0" lastmodified="2012-09-09T10:50:37.804-04:00" layout="Horizontal" />
     <level name="1-Challenge Finish" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="b04f8897-7ca4-4386-9f87-d8969b62bfeb" leveltype="1" lastcompressionsize="0" lastmodified="2012-09-09T00:05:30.887-04:00" layout="Horizontal" />
     <level name="1-5" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="0d1afc51-68eb-4c06-8ffb-a3cc14a22f6e" leveltype="3" lastcompressionsize="0" lastmodified="2012-09-10T07:13:24.606-04:00" layout="Horizontal" />
-    <level name="World 1 to 2 A" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="1c765600-70a1-4036-ace5-d08aca16eac5" leveltype="1" lastcompressionsize="0" lastmodified="2012-09-09T23:01:01.076-04:00" layout="Horizontal" />
+    <level name="World 1 to 2 A" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="1c765600-70a1-4036-ace5-d08aca16eac5" leveltype="1" lastcompressionsize="0" lastmodified="2012-09-10T13:32:19.7429288-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
