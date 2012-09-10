@@ -46,7 +46,9 @@ Level_SlopeQuad00:
 Level_SlopeQuad40:
 	; Tile $5F+
 	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
-	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
+	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
+	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
+	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
 
 Level_SlopeQuad80:
 	; Tile $99+
@@ -1202,6 +1204,7 @@ PRG000_C736:
 	STA Object_AttrFeet ; Store quadrant value
 	TAY		 ; -> 'Y'
 
+
 	LDA ObjTile_DetXLo
 	STA <Temp_Var16	 ; Temp_Var16 = ObjTile_DetXLo
 
@@ -1425,8 +1428,8 @@ PRG000_C834:
 	; if it matches one of the ones in PrePSwitchTile is replaced
 	; with the attribute and tile from the other arrays...
 PrePSwitchTile:		.byte $40, $67, $66, $05, $41, $82, $83, $7F ; include thawed coins and [||] blocks
-PostPSwitchTile:	.byte $67, $40, $40, $67, $FF, $42, $43, $00
-PostPSwitchAttr:	.byte $03, $00, $00, $00, $00, $00, $00, $00
+PostPSwitchTile:	.byte $67, $40, $40, $67, $7F, $42, $43, $80
+PostPSwitchAttr:	.byte $03, $00, $03, $03, $03, $00, $00, $00
 
 PSwitch_SubstTileAndAttr:
 	JSR CheckESwitch
