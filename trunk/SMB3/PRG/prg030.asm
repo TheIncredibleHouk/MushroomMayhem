@@ -5948,6 +5948,8 @@ UsePointer:
 	LDA Pointers + 5, X
 	AND #$80	; does this pointer exit the level?
 	BEQ LevelJction
+	LDA Pointers, X
+	STA World_Num
 	LDA Pointers + 3, X
 	AND #$0F
 	STA Map_Entered_XHi
