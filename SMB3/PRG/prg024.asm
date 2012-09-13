@@ -2403,8 +2403,16 @@ PRG024_ACA5:
 	STA Air_Time
 	STA Tile_Anim_Enabled
 
-	; Debug_Flag = 0 (no debug mode)
-	STA Debug_Flag
+	LDX #$00
+	LDY #$01
+
+FillItemsLoop:
+	TYA
+	STA Inventory_Items, X
+	INX
+	INY
+	CPX #$20
+	BNE FillItemsLoop
 
 PRG024_ACBA:
 	RTS		 ; Return
