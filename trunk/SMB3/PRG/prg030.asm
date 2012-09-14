@@ -5323,6 +5323,7 @@ No_Release:
 	RTS
 
 Do_Spr_Anim:
+	LDX Debug_Snap
 	LDX DAIZ_TEMP1
 	LDY #$0B
 	LDA (Level_ObjectID + 5)
