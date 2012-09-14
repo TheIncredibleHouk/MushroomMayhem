@@ -1864,9 +1864,7 @@ PRG001_A8D5:
 PRG001_A8F7:
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
 
-	LDA PUp_StarManFlash
-	ASL A
-	ORA Level_PipeMove
+	LDA Level_PipeMove
 	BNE PRG001_A937	 ; If starman flashing or Player in pipe, jump to PRG001_A937 (no masking sprite)
 
 	LDY #$00	 ; Y = 0
@@ -2561,6 +2559,8 @@ Do_Leaf_Power:
 ObjInit_Vine:
 	LDA #SPR_BEHINDBG
 	STA Objects_FlipBits,X
+	LDA #$00
+	STA PUp_StarManFlash
 	RTS		 ; Return
 
 	; Stores the high byte of the VRAM address
