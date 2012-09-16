@@ -162,7 +162,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $75 - OBJ_BOSSATTACK
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
+	.byte OA1_PAL1  | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7A - OBJ_BIGGREENTROOPA
@@ -4016,6 +4016,7 @@ FastMovers:
 	.byte OBJ_BLUESPINY, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 ObjNorm_GroundTroop:
+	STY DAIZ_TEMP1
 	LDY #$07
 FindTroopers:
 	LDA Level_ObjectID, X
@@ -4031,6 +4032,7 @@ EnableTrooping:
 
 DisableTrooping:
 	STA <Temp_Var15
+	LDY DAIZ_TEMP1
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 	LDA <Player_HaltGame

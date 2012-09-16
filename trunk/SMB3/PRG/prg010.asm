@@ -2749,26 +2749,30 @@ Map_Power_Pats_F1:
 	; NOTE: $27 is actually a magic value hard-wired to remove the
 	; upper sprites!  (The tiles appear as a black box otherwise)
 	; See code following label PRG010_D045 for this hardcode...
-	.byte $27, $27, $2D, $2F	; Small
-	.byte $B1, $B1, $B3, $B7	; Super Mushroom
-	.byte $B1, $B1, $B3, $B7	; Fire Flower
-	.byte $B9, $B9, $B3, $B7	; Leaf
-	.byte $AF, $AF, $D1, $D1	; Frog Suit
-	.byte $AD, $AD, $C1, $C1	; Tanooki Suit
-	.byte $AB, $AB, $CD, $CF	; Hammer Suit
-	.byte $27, $27, $9F, $9F	; Judgems Cloud
-	.byte $B9, $B9, $8D, $8F	; P-Wing
+	.byte $11, $11, $2D, $2F	; Small
+	.byte $81, $83, $A1, $A3	; Super Mushroom
+	.byte $81, $83, $A1, $A3	;
+	.byte $81, $83, $A1, $A3	;
+	.byte $85, $87, $A5, $A7	; Fire Flower
+	.byte $89, $8B, $A9, $AB	; Fire Flower
+	.byte $8D, $8D, $AD, $AD	; Leaf
+	.byte $91, $93, $B1, $B3	; Frog Suit
+	.byte $95, $97, $B5, $B7	; Tanooki Suit
+	.byte $99, $9B, $B9, $BB	; Hammer Suit
+	.byte $9D, $9F, $BD, $BF	; Judgems Cloud
 
 Map_Power_Pats_F2:
-	.byte $27, $27, $2F, $2D	; Small
-	.byte $B1, $B1, $B7, $B3	; Super Mushroom
-	.byte $B1, $B1, $B7, $B3	; Fire Flower
-	.byte $B9, $B9, $B7, $B3	; Leaf
-	.byte $BF, $BF, $D3, $D3	; Frog Suit
-	.byte $BD, $BD, $C3, $C3	; Tanooki Suit
-	.byte $AB, $AB, $CF, $CD	; Hammer Suit
-	.byte $27, $27, $9F, $9F	; Judgems Cloud
-	.byte $B9, $B9, $A7, $A9	; P-Wing
+	.byte $11, $11, $2F, $2D	; Small
+	.byte $83, $81, $A3, $A1	; Super Mushroom
+	.byte $83, $81, $A3, $A1	; Fire Flower
+	.byte $83, $81, $A3, $A1	; Fire Flower
+	.byte $87, $85, $A7, $A5	; Leaf
+	.byte $8B, $89, $AB, $A9	; Frog Suit
+	.byte $8F, $8F, $AF, $AF	; Tanooki Suit
+	.byte $93, $91, $B3, $B1	; Hammer Suit
+	.byte $97, $95, $B7, $B5	; Judgems Cloud
+	.byte $9B, $99, $BB, $B9	; P-Wing
+	.byte $9F, $9D, $BF, $BD
 
 Map_Power_Attrib_F1:
 	; This table defines attributes to be applied per power-up
@@ -2776,27 +2780,32 @@ Map_Power_Attrib_F1:
 	; to apply horizontal flips here and there...
 	; Byte order is upper left, upper right, lower left, lower right
 	; Note that Small Mario / Judgems do not have a visible "upper"
-	.byte $00, $40, $00, $00	; Small
-	.byte $00, $40, $00, $00	; Super Mushroom
-	.byte $00, $40, $00, $00	; Fire Flower
-	.byte $00, $40, $00, $00	; Leaf
-	.byte $00, $40, $00, $40	; Frog Suit
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Super Mushroom
+	.byte $00, $00, $00, $00	; Fire Flower
+	.byte $00, $00, $00, $00	; Leaf
+	.byte $00, $00, $00, $00	; Frog Suit
+	.byte $00, $00, $00, $00	; Frog Suit
 	.byte $00, $40, $00, $40	; Tanooki Suit
-	.byte $00, $40, $00, $00	; Hammer Suit
-	.byte $00, $40, $00, $40	; Judgems Cloud
-	.byte $00, $40, $00, $00	; P-Wing
+	.byte $00, $00, $00, $00	; Hammer Suit
+	.byte $00, $00, $00, $00	; Judgems Cloud
+	.byte $00, $00, $00, $00	; P-Wing
+	.byte $00, $00, $00, $00	; P-Wing
+
 
 Map_Power_Attrib_F2:
 	; Frame 2; see Map_Power_Attrib_F1
-	.byte $00, $40, $40, $40	; Small
-	.byte $00, $40, $40, $40	; Super Mushroom
-	.byte $00, $40, $40, $40	; Fire Flower
-	.byte $00, $40, $40, $40	; Leaf
-	.byte $00, $40, $00, $40	; Frog Suit
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Super Mushroom
+	.byte $40, $40, $40, $40	; Fire Flower
+	.byte $40, $40, $40, $40	; Leaf
+	.byte $40, $40, $40, $40	; Frog Suit
+	.byte $40, $40, $40, $40	; Frog Suit
 	.byte $00, $40, $00, $40	; Tanooki Suit
-	.byte $00, $40, $40, $40	; Hammer Suit
-	.byte $00, $40, $00, $40	; Judgems Cloud
-	.byte $00, $40, $00, $00	; P-Wing
+	.byte $40, $40, $40, $40	; Hammer Suit
+	.byte $40, $40, $40, $40	; Judgems Cloud
+	.byte $40, $40, $40, $40	; P-Wing
+	.byte $40, $40, $40, $40	; P-Wing
 
 Map_Marker_MorL:
 	.byte $63, $4F		; The (M), (L) small markers
@@ -3817,7 +3826,7 @@ DMC08_End
 ; Rest of ROM bank was empty
 
 Traversable_Tiles:	.byte $BF, $FD, $F6, $FE, $FC, $FA, $9F, $80, $E0, $FF, $FF, $FF, $FF, $FF, $FF
-Enterable_Tiles:	.byte $BC, $50, $42, $43, $F8, $F7, $9D, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+Enterable_Tiles:	.byte $BC, $50, $42, $43, $8F, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 Tile_Enterable:
 	LDX #$07

@@ -6,9 +6,11 @@
     <pointer levelguid="ab5558c6-3ad6-4d87-8c75-29b33f387085" x="9" y="24" altentrance="false" />
     <pointer levelguid="ab5558c6-3ad6-4d87-8c75-29b33f387085" x="7" y="22" altentrance="true" />
     <pointer levelguid="43795f55-9af9-4cec-aac4-3398a370feba" x="2" y="18" altentrance="false" />
+    <pointer levelguid="b3d3f373-2b4f-4ec7-a0b5-ec8f2d099431" x="8" y="19" altentrance="false" />
+    <pointer levelguid="b3d3f373-2b4f-4ec7-a0b5-ec8f2d099431" x="11" y="22" altentrance="true" />
   </pointers>
   <spritedata>
     <sprite x="22" y="22" value="13" item="0" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </world>

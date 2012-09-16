@@ -361,19 +361,23 @@ InvItem_Tile_Layout:
 	.byte $FE, $FE, $FE, $FE	; Empty
 	.byte $B0, $B1, $C0, $C1
 	.byte $B2, $B3, $C2, $C3
+	.byte $BC, $BD, $CC, $CD
 	.byte $B4, $B5, $C4, $C5
+	.byte $BE, $BF, $CE, $CF
 	.byte $B6, $B7, $C6, $C7
 	.byte $B8, $B9, $C8, $C9
-	.byte $BA, $BB, $CA, $CB
-	.byte $BC, $BD, $CC, $CD
-	.byte $BE, $BF, $CE, $CF
 	.byte $DC, $DD, $EC, $ED
+	.byte $BA, $BB, $CA, $CB
 	.byte $DE, $DF, $EE, $EF
 	.byte $84, $85, $94, $95
 	.byte $86, $87, $96, $97
 	.byte $88, $89, $98, $99
 	.byte $8A, $8B, $9A, $9B
 	.byte $8E, $8F, $9E, $9F
+	.byte $A4, $A5, $A6, $A7
+	.byte $A8, $A9, $AA, $AB
+	; Shield
+	.byte $00, $01, $10, $33
 
 
 Inventory_DoFlipVideoUpd:
@@ -736,18 +740,22 @@ InvItem_Pal:
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $1A
-	.byte $FF, $0F, $36, $27
+	.byte $FF, $0F, $36, $06
+	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $36, $27
-	.byte $FF, $0F, $36, $27
+	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $16
+	.byte $FF, $0F, $30, $11
+	.byte $FF, $0F, $30, $28
+	.byte $FF, $0F, $36, $17
 	.byte $FF, $0F, $30, $16
-	.byte $FF, $0F, $36, $27
-	.byte $FF, $0F, $36, $27
-	.byte $FF, $0F, $36, $27
+	.byte $FF, $0F, $30, $31
 	.byte $FF, $0F, $30, $16
+	; Shield
+	.byte $FF, $0F, $36, $27
 
 InvItem_SetColor:
 	; Inventory is open ... assign proper color for item that is highlighted
@@ -779,39 +787,36 @@ Inv_UseItem:
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	; Inventory per-item jump table!
-	.word PRG026_A4A6		; Empty slot (shouldn't ever happen, but it will just RTS)
-	.word Inv_UseItem_Powerup	; Super Mushroom
-	.word Inv_UseItem_Powerup	; Fire Flower
-	.word Inv_UseItem_Powerup	; Leaf
-	.word Inv_UseItem_Powerup	; Frog Suit
-	.word Inv_UseItem_Powerup	; Tanooki Suit
+	.word PRG026_A4A6			; Small
+	.word Inv_UseItem_Powerup	; Big
+	.word Inv_UseItem_Powerup	; Fire
+	.word Inv_UseItem_Powerup	; Ice
+	.word Inv_UseItem_Powerup	; Raccoon
+	.word Inv_UseItem_Powerup	; Fox
+	.word Inv_UseItem_Powerup	; Frog
+	.word Inv_UseItem_Powerup	; Koopa
+	.word Inv_UseItem_Powerup	; Boo
 	.word Inv_UseItem_Powerup	; Hammer Suit
-	.word Inv_UseItem_Powerup	; Judgems Cloud
-	.word Inv_UseItem_Powerup	; P-Wing
-	.word Inv_UseItem_Starman	; Starman
-	.word Inv_UseItem_Anchor	; Anchor
-	.word Inv_UseItem_Hammer	; Hammer
-	.word Inv_UseItem_WarpWhistle	; Warp Whistle
-	.word Inv_UseItem_MusicBox	; Music Box
-
+	.word Inv_UseItem_Powerup	; Ninja
+	
 InvItem_PerPowerUp_L1Sound:
 	; Sound to play for each Power Up item when used...
-	.byte $00		; Empty slot (shouldn't ever happen)
-	.byte SND_LEVELPOWER	; Super Mushroom
-	.byte SND_LEVELPOWER	; Fire Flower
-	.byte SND_LEVELPOOF	; Leaf
-	.byte SND_LEVELPOWER	; Frog Suit
-	.byte SND_LEVELPOOF	; Tanooki Suit
-	.byte SND_LEVELPOWER	; Hammer Suit
-	.byte SND_LEVELPOWER	; Judgems Cloud
-	.byte SND_LEVELPOWER	; P-Wing
+	.byte $00				; Small
+	.byte SND_LEVELPOWER	; Big
+	.byte SND_LEVELPOWER	; Fire
+	.byte SND_LEVELPOWER	; Ice
+	.byte SND_LEVELPOOF		; Raccoon
+	.byte SND_LEVELPOOF		; Fox
+	.byte SND_LEVELPOOF		; Frog
+	.byte SND_LEVELPOOF		; Koopa
+	.byte SND_LEVELPOOF		; Boo
+	.byte SND_LEVELPOOF		; Hammer Suit
+	.byte SND_LEVELPOOF		; Ninja
 
 InvItem_PerPowerUp_Disp:
 	; Powerup to display on map per powerup used
 	;      ES   SM   FF   L    FS   TS   HS   JC   PW 
-	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08
-
-	.byte $FF
+	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B
 
 	; These define the colors set per use of a power-up item.  Note that only the first three
 	; bytes are actually used.  "Power-up zero" (which I guess would be small Mario) is 
@@ -819,54 +824,29 @@ InvItem_PerPowerUp_Disp:
 	; See also PRG027 InitPals_Per_MapPUp
 InvItem_PerPowerUp_Palette:
 	; Mario
-	.byte $16, $36, $0F, $FF	; "Empty Slot" (shouldn't ever be used)
-	.byte $16, $36, $0F, $FF	; Super Mushroom 
-	.byte $27, $36, $16, $FF	; Fire Flower
-	.byte $16, $36, $0F, $FF	; Leaf
-	.byte $2A, $36, $0F, $FF	; Frog Suit
-	.byte $17, $36, $0F, $FF	; Tanooki Suit
-	.byte $30, $36, $0F, $FF	; Hammer Suit
-	.byte $30, $36, $0F, $FF	; Judgems Cloud
-	.byte $16, $36, $0F, $FF	; P-Wing
-
-InvItem_PerPowerUp_Palette2:
-	; Luigi
-	.byte $1A, $36, $0F, $FF	; "Empty Slot" (shouldn't ever be used)
-	.byte $1A, $36, $0F, $FF	; Super Mushroom
-	.byte $27, $36, $16, $FF	; Fire Flower
-	.byte $1A, $36, $0F, $FF	; Leaf
-	.byte $2A, $36, $0F, $FF	; Frog Suit
-	.byte $17, $36, $0F, $FF	; Tanooki Suit
-	.byte $30, $36, $0F, $FF	; Hammer Suit
-	.byte $30, $36, $0F, $FF	; Judgems Cloud
-	.byte $1A, $36, $0F		; P-Wing (note lack of 4th byte)
-
+	.byte $16, $36, $0F, $FF	; Small
+	.byte $16, $36, $0F, $FF	; Big
+	.byte $30, $36, $06, $FF	; Fire
+	.byte $30, $31, $01, $FF	; Ice
+	.byte $16, $36, $0F, $FF	; Raccoon
+	.byte $27, $36, $06, $FF	; Fox
+	.byte $2A, $36, $0F, $FF	; Frog
+	.byte $19, $36, $0F, $FF	; Koopa
+	.byte $06, $30, $0F, $FF	; Boo
+	.byte $30, $27, $0F, $FF	; Hammer Suit
+	.byte $30, $27, $0F, $FF	; Ninja
 
 Inv_UseItem_Powerup:
 	LDA InvHilite_Item
 	ADD InvStart_Item
 	TAY		 	; Y = InvHilite_Item + InvStart_Item (currently highlighted item)
 
-	LDA Player_Current	
-	BEQ PRG026_A5C8	 	; If Player_Current = 0 (Mario), jump to PRG026_A5C8
-	TYA		 
-	ADD #(Inventory_Items2 - Inventory_Items)	 ; Offset to Luigi's items
-	TAY		 	; Y, offset to Luigi
-
-PRG026_A5C8:
 	LDX Inventory_Items,Y	; Get the item (should be a POWER-UP item, Super Mushroom to P-Wing only)
 	TXA		 	
 	ASL A		 
 	ASL A		 
 	TAY		 	; Y = X << 2
-
-	LDA Player_Current
-	BEQ PRG026_A5D9	 	; If Player_Current = 0 (Mario), jump to PRG026_A5D9
-	TYA		 
-	ADD #(InvItem_PerPowerUp_Palette2-InvItem_PerPowerUp_Palette)	 	; Offset for Luigi
-	TAY		 
-
-PRG026_A5D9:
+	 
 	; Load the colors for this power-up into the palette buffer
 	LDA InvItem_PerPowerUp_Palette,Y
 	STA Palette_Buffer+17
@@ -884,18 +864,8 @@ PRG026_A5D9:
 	STA Sound_QLevel1
 
 	LDA InvItem_PerPowerUp_Disp,X	; Store proper power-up to display -> A
-	LDX Player_Current	 	; X = Player_Current
 	STA Map_Power_Disp	 	; Power-up to display -> Map_Power_Disp
-
-	CMP #$07
-	BEQ PRG026_A60B	 		; If Map_Power_Disp = $07 (Judgem's Cloud), jump to PRG026_A60B (does NOT update Player's map power!)
-
-	CMP #$08	 
-	BNE PRG026_A608	 		; If Map_Power_Disp <> $08 (P-Wing), jump to PRG026_A608
-	LDA #$03	 		; For P-Wing, "Map Power Up" is set as Leaf
-
-PRG026_A608:
-	STA World_Map_Power,X	 	; Update appropriate player's "Map Power Up"
+	STA World_Map_Power	 	; Update appropriate player's "Map Power Up"
 
 PRG026_A60B:
 	LDA #$14	 
@@ -1269,17 +1239,21 @@ InvItem_Hilite_Layout:
 	.byte $C3, $C3
 	.byte $C5, $C5
 	.byte $C7, $C9
+	.byte $EB, $ED
 	.byte $CB, $CB
 	.byte $CD, $CD
 	.byte $CF, $CF
 	.byte $D1, $D1
 	.byte $D3, $D3
-	.byte $D5, $D5
-	.byte $D7, $D5
-	.byte $D9, $DB
+	.byte $D5, $D7
+	.byte $EF, $F1
+	.byte $F3, $F3
 	.byte $DD, $DF
 	.byte $E1, $E3
-	.byte $E5, $E7
+	.byte $E7, $E9
+	.byte $E5, $E5
+	; Shield
+	.byte $D9, $DB
 
 Inv_Display_Hilite:
 	; Displays the hilited item
