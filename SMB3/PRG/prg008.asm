@@ -450,6 +450,9 @@ PChg_C000_To_0:
 	STA PAGE_C000
 	JMP PRGROM_Change_C000
 
+
+MapPowersToSuit:
+	.byte $01, $02, $03, $08, $04, $09, $05, $06, $0B, $07, $0C
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_Initialize
 ; 
@@ -480,9 +483,10 @@ No_ESwitch:
 
 
 	; Set player power up based on current suit on map
-	LDX Player_Current
-	LDA World_Map_Power,X
-	STA <Player_Suit 
+	LDA Debug_Snap
+	LDX World_Map_Power
+	LDA MapPowersToSuit,X
+	STA Player_QueueSuit 
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled
@@ -1052,7 +1056,7 @@ PRG008_A523:
 PowerUp_Palettes:
 	.byte $00, $16, $36, $0F	; 0 - Mario default palette
 	.byte $00, $16, $36, $0F	; 1 - #DAHRKDAIZ SUPER MARIO
-	.byte $00, $27, $36, $16	; 2 - Fire Flower
+	.byte $00, $30, $36, $06	; 2 - Fire Flower
 	.byte $00, $16, $36, $0F	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
 	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
 	.byte $00, $19, $36, $0F	; 5 - #DAHRKDAIZ Koopa Suit
@@ -1061,7 +1065,7 @@ PowerUp_Palettes:
 	.byte $00, $27, $36, $06	; 8 - #DAHRKDAIZ Fire Fox Mario
 	.byte $00, $30, $31, $01	; 9 - Unused
 	.byte $00, $06, $30, $0F	; A - #DAHRKDAIZ Boo Mario
-	.byte $00, $3D, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
+	.byte $00, $36, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Suit pallete code removed

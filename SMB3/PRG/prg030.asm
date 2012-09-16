@@ -5323,7 +5323,6 @@ No_Release:
 	RTS
 
 Do_Spr_Anim:
-	LDX Debug_Snap
 	LDX DAIZ_TEMP1
 	LDY #$0B
 	LDA (Level_ObjectID + 5)
@@ -5927,7 +5926,7 @@ FindPointerLoop:
 	LDA Pointers + 2, X
 	SEC
 	SBC <Temp_Var3
-	CMP #$02
+	CMP #$03
 	BCS NextPointer
 	RTS		 ; Return
 
