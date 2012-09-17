@@ -10,6 +10,7 @@
     <pointer levelguid="b3d3f373-2b4f-4ec7-a0b5-ec8f2d099431" x="11" y="22" altentrance="true" />
     <pointer levelguid="b3ac0db8-2d32-45c8-befc-8eab64c56382" x="13" y="24" altentrance="false" />
     <pointer levelguid="26d1fdf2-aac6-4fb1-8c51-0ac3b400e7ca" x="9" y="17" altentrance="false" />
+    <pointer levelguid="b3ac0db8-2d32-45c8-befc-8eab64c56382" x="15" y="24" altentrance="true" />
   </pointers>
   <spritedata>
     <sprite x="22" y="22" value="13" item="0" />
