@@ -2411,7 +2411,7 @@ FillItemsLoop:
 	STA Inventory_Items, X
 	INX
 	INY
-	CPX #$20
+	CPX #28
 	BNE FillItemsLoop
 
 PRG024_ACBA:
