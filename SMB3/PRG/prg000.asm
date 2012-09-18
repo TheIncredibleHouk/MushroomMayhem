@@ -546,7 +546,7 @@ MuncherJelectroSet:
 	.byte TILEA_MUNCHER	;  8 desert levels
 	.byte TILEA_MUNCHER	;  9 Airship
 	.byte TILEA_MUNCHER	; 10 Giant World
-	.byte TILE4_JELECTRO	; 11 Ice level
+	.byte $3B	; 11 Ice level
 	.byte TILEA_MUNCHER	; 12 Sky level
 	.byte TILEA_MUNCHER	; 13 Underground
 
