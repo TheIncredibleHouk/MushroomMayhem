@@ -540,13 +540,13 @@ MuncherJelectroSet:
 	.byte TILEA_MUNCHER	;  2 Hills style
 	.byte TILEA_MUNCHER	;  3 High-Up style
 	.byte TILEA_MUNCHER	;  4 pipe world plant infestation
-	.byte TILE4_JELECTRO	;  5 water world
+	.byte TILEA_MUNCHER	;  5 water world
 	.byte TILEA_MUNCHER	;  6 Toad House
 	.byte TILEA_MUNCHER	;  7 Vertical pipe maze
 	.byte TILEA_MUNCHER	;  8 desert levels
 	.byte TILEA_MUNCHER	;  9 Airship
 	.byte TILEA_MUNCHER	; 10 Giant World
-	.byte $3B	; 11 Ice level
+	.byte TILEA_MUNCHER	; 11 Ice level
 	.byte TILEA_MUNCHER	; 12 Sky level
 	.byte TILEA_MUNCHER	; 13 Underground
 

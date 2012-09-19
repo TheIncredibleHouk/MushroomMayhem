@@ -482,8 +482,7 @@ No_ESwitch:
 	STA Player_SprOff ; Player sprite rooted at offset $28
 
 
-	; Set player power up based on current suit on map
-	LDA Debug_Snap
+	; Set player power up based on current suit on 
 	LDX World_Map_Power
 	LDA MapPowersToSuit,X
 	STA Player_QueueSuit 
@@ -1679,6 +1678,9 @@ PRG008_A86C:
 	LDA <Pad_Holding
 	AND #(PAD_UP | PAD_DOWN)
 	BEQ PRG008_A890	 ; If Player is not pressing up or down, jump to PRG008_A890
+
+	LDY <Player_YVel
+	BMI PRG008_A890
 
 	LDY <Player_InAir
 	BNE PRG008_A898	 ; If Player is in the air, jump to PRG008_A898
@@ -4687,7 +4689,7 @@ LATP_GNote:	.byte $00
 LATP_HNote:	.byte $00
 LATP_Notes:	.byte $00, $01, $02, $03
 LATP_Woodblocks:.byte $00, $01, $02, $03
-LATP_QBlocks:	.byte $01, $02, $03, $04, $05, $04, $08, $06, $0C, $0A, $0D, $00, $0E, $08, $09, $07, $0B
+LATP_QBlocks:	.byte $01, $02, $03, $04, $05, $04, $08, $06, $0C, $0A, $0D, $04, $0E, $08, $09, $07, $0B
 LATP_InvisCoin:	.byte $04, $09, $00
 LATP_InvisNote:	.byte $00
 LATP_PWrksJct:	.byte $0B	; UNUSED breakable pipeworks junction tile!
@@ -5054,6 +5056,7 @@ LATP_Star:
 
 LATP_Coin:
 	JSR LATP_CoinCommon	 ; Do common "power up" coin routine
+	JSR LATP_CoinCommon
 
 	LDY #$01	 ; Y = 1 (spawn a coin) (index into PRG001 Bouncer_PUp, i.e. nothing)
 
@@ -6298,6 +6301,7 @@ PRG008_BD96:
 	LDX #$03	 ; X = 3
 
 PRG008_BD98:
+	LDA Debug_Snap
 	LDA Level_Tile_GndL,X
 	CMP MuncherJelectroSet,Y
 	BEQ PRG008_BDA4		; If Player is touching muncher/jelectro (whichever is appropriate), jump to PRG008_BDA4
@@ -6310,9 +6314,6 @@ PRG008_BDA4:
 	LDA Player_Ability
 	CMP #$08
 	BEQ PRG008_BDAE	 ; 
-
-	LDA Player_HitCeiling
-	BEQ PRG008_BDB4	 ; If Player has not just hit off ceiling, jump to PRG008_BDB4
 
 PRG008_BDAE:
 	JMP Player_GetHurt	 ; Get hurt!

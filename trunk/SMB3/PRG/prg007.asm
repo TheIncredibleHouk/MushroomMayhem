@@ -4494,6 +4494,8 @@ PRG007_B827:
 	BNE Try_Wand
 	LDA #$08
 	STA Frozen_State
+	LDA #$00
+	STA Player_IsClimbing
 	LDA Frozen_Frame
 	BNE Keep_Going
 	LDA Player_Frame
