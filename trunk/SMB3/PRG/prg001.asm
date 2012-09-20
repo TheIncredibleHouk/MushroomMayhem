@@ -1507,7 +1507,6 @@ Do_Bully_Draw:
 ObjHit_Obj0A:
 
 	LDA Player_StarInv
-	ORA Player_Shell
 	ORA Boo_Mode_KillTimer
 	ORA Fox_FireBall
 	BEQ Do_Knock_Back	 ; If Player is NOT invincible, jump to PRG000_D922
