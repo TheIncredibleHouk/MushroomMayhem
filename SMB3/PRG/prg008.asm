@@ -1468,7 +1468,6 @@ PRG008_A77E:
 	LDA <Player_InAir
 	ORA Player_InWater
 	ORA Level_PipeMove
-	ORA Boo_Mode_Timer
 	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
 	;#DAHRKDAIZ modified to make low clearance situations = death >:D
@@ -3188,6 +3187,9 @@ PRG008_AF69:
 	LDY #$04	 ; Y = 4 (base index all suits that can slide on slopes)
 
 	TAX		 ; Power up -> 'X'
+
+	LDA Player_Shell
+	BNE PRG008_AF85
 
 	LDA PowerUp_Ability,X
 	AND #$01	 
@@ -5900,7 +5902,7 @@ PRG008_BBBF:
 	BNE PRG008_BC0D	 ; If the Player's suit CANNOT slide on slopes, jump to PRG008_BC0D
 
 	LDA Player_Shell
-	BNE PRG008_BC0D	 ; If Player is wearing 
+	BNE PRG008_BC14	 ; If Player is wearing 
 
 	LDA <Pad_Holding
 	AND #(PAD_DOWN | PAD_LEFT | PAD_RIGHT)	; checking down/left/right
@@ -6301,7 +6303,6 @@ PRG008_BD96:
 	LDX #$03	 ; X = 3
 
 PRG008_BD98:
-	LDA Debug_Snap
 	LDA Level_Tile_GndL,X
 	CMP MuncherJelectroSet,Y
 	BEQ PRG008_BDA4		; If Player is touching muncher/jelectro (whichever is appropriate), jump to PRG008_BDA4
