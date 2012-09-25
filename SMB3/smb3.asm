@@ -2485,7 +2485,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Wind:					.ds 1	; Wind factor (affects player!)
 	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
 	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
-	Do_Shell_Bump:			.ds 1	; Indicates whether there is a reverse in direction that needs to be done due to a Koopa shell mode activating a block
+	Do_Shell_Bump:			.ds 1;
 	Fox_FireBall:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
 	Burning_Time:			.ds 1	;
