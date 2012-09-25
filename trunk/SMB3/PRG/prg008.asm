@@ -900,8 +900,8 @@ PRG008_A472:
 	JSR Player_PowerUpdate	 	; Update "Power Meter"
 	JSR Player_DoScrolling	 	; Scroll relative to Player against active rules
 	JSR AScrlURDiag_HandleWrap 	; Handle the diagonal autoscroller wrapping
-	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
+	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
 	JSR Player_DoSpecialTiles	; Handle unique-to-style tiles!
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
@@ -4858,7 +4858,6 @@ PRG008_B722:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
-	STA Do_Shell_Bump
 
 	LDA #CHNGTILE_DELETETOBG
 	STA <Temp_Var12	 ; Temp_Var12 = CHNGTILE_DELETETOBG
@@ -5355,20 +5354,6 @@ Do_Tile_Attack:
 	LDX #$04	 
 	STA Level_Tile_GndL,X	 ; Store into tail's special slot
 	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
-	LDA <Player_Suit
-	CMP #$05
-	BNe Skip_Shell_Bump
-	LDA Do_Shell_Bump
-	BEQ Skip_Shell_Bump
-	LDA #$00
-	STA Do_Shell_Bump
-	LDA Player_FlipBits			; flip direction the player is facing
-	EOR #$40				
-	STA Player_FlipBits				
-	LDA <Player_XVel
-	EOR #$FF
-	ADC #$01
-	STA <Player_XVel
 
 Skip_Shell_Bump:
 	LDA #$01
@@ -6815,6 +6800,13 @@ PUp_RTS:
 
 
 Shell_Bounce:
+	LDA Debug_Snap
+	LDA Level_Tile_GndR
+	CMP #$67
+	BEQ Shell_BounceRTS
+	LDA Level_Tile_GndL
+	CMP #$67
+	BEQ Shell_BounceRTS
 	LDA Player_Shell			; If in a shell we bounce in the opposite direction
 	BEQ Shell_BounceRTS
 	LDA Sound_QPlayer
