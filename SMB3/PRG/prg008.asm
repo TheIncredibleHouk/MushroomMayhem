@@ -6800,7 +6800,6 @@ PUp_RTS:
 
 
 Shell_Bounce:
-	LDA Debug_Snap
 	LDA Level_Tile_GndR
 	CMP #$67
 	BEQ Shell_BounceRTS
