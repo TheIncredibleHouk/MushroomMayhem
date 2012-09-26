@@ -3314,6 +3314,7 @@ LevelLoad:	; $97B7
 	; TTTT TTTT = tile set
 	
 
+	LDA Debug_Snap
 	LDA LevelLoadPointer
 	STA <Temp_Var1
 	LDA #$00

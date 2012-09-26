@@ -11,13 +11,14 @@
     <pointer levelguid="b3ac0db8-2d32-45c8-befc-8eab64c56382" x="13" y="24" altentrance="false" />
     <pointer levelguid="26d1fdf2-aac6-4fb1-8c51-0ac3b400e7ca" x="9" y="17" altentrance="false" />
     <pointer levelguid="b3ac0db8-2d32-45c8-befc-8eab64c56382" x="15" y="24" altentrance="true" />
-    <pointer levelguid="0c59d5fb-f321-4354-9d41-f174e856ad8f" x="19" y="20" altentrance="false" />
-    <pointer levelguid="00000000-0000-0000-0000-000000000000" x="20" y="24" altentrance="false" />
+    <pointer levelguid="8d44fa2f-5266-4c88-b660-48102bf1a635" x="19" y="20" altentrance="false" />
+    <pointer levelguid="8d44fa2f-5266-4c88-b660-48102bf1a635" x="20" y="24" altentrance="false" />
     <pointer levelguid="336e28fd-3036-4a80-a5d9-4687d4b48b05" x="11" y="19" altentrance="false" />
     <pointer levelguid="b9dc2cda-239f-4db0-9e4b-42d5af39e6a5" x="25" y="19" altentrance="false" />
+    <pointer levelguid="8d44fa2f-5266-4c88-b660-48102bf1a635" x="21" y="19" altentrance="true" />
   </pointers>
   <spritedata>
     <sprite x="22" y="22" value="13" item="0" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </world>
