@@ -6102,11 +6102,12 @@ DoBoomBoomWorldJMP:
 	LDA World_Num
 	JSR DynJump
 
-	.word World1BB
+	.word InvincBB
+	.word InvincBB
 
-World1BB:
+InvincBB:
 	LDA Invincible_Enemies
-	BNE World1BB2
+	BNE InvincBB2
 	INC Invincible_Enemies
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
@@ -6115,7 +6116,7 @@ World1BB:
 	STA BoomBoomMiscTimer
 	RTS
 	 
-World1BB2:
+InvincBB2:
 	LDA #$50
 	STA BoomBoomMiscTimer
 	JMP Kill_Invincibility

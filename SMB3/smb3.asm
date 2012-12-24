@@ -3977,9 +3977,9 @@ TILE2_CHECKERBOARDLL	= $16	; Checkerboard floor pattern, lower left
 TILE2_CHECKERBOARDLR	= $17	; Checkerboard floor pattern, lower right
 
 
-TILE2_CONVEYORL		= $34	; Conveyor left
+TILE2_CONVEYORL		= $39	; Conveyor left
 
-TILE2_CONVEYORR		= $35	; Conveyor right
+TILE2_CONVEYORR		= $3A	; Conveyor right
 
 ESWITCH_BLOCK3		= $C1	; Not sure??  Complements TILE2_GHOST*
 TILE2_DONUTLIFT		= $5B	; Donut lift
