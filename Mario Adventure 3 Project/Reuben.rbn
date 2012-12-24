@@ -13,7 +13,7 @@
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,27,17,37,0F,31,21,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Desert" guid="cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385" />
     <palette background="00" data="3C,0F,30,3C,3C,0F,36,27,3C,0F,30,10,3C,0F,27,17,3C,00,00,00,3C,0F,30,16,3C,0F,30,21,3C,0F,36,27" name="Airship" guid="4dd54dba-3c74-49c9-aded-05e0ea1e006c" />
     <palette background="00" data="3B,0F,30,3C,3B,0F,36,27,3B,0F,2A,1A,3B,0F,31,21,3B,00,00,00,3B,0F,30,16,3B,0F,30,2A,3B,0F,36,27" name="Giant" guid="d97a4897-b537-4ba5-92c9-5b479de01bc8" />
-    <palette background="21" data="21,0F,30,31,21,0F,38,18,21,0F,30,1A,21,0F,20,10,21,00,00,00,21,0F,30,16,21,0F,30,21,21,0F,36,27" name="Ice" guid="0b4bb2af-f89c-413c-a911-683e36d52e47" />
+    <palette background="21" data="21,0F,30,31,21,0F,38,18,21,0F,30,1A,21,0F,20,21,21,00,00,00,21,0F,30,16,21,0F,30,21,21,0F,36,27" name="Ice" guid="0b4bb2af-f89c-413c-a911-683e36d52e47" />
     <palette background="00" data="30,0F,30,3C,30,0F,36,27,30,0F,2A,1A,30,0F,12,21,30,00,00,00,30,0F,30,16,30,0F,30,2A,30,0F,36,27" name="Cloudy" guid="71eea64a-4106-44df-be63-4f50214169ad" />
     <palette background="00" data="0F,0F,30,3C,0F,06,36,27,0F,1C,2C,2A,0F,1C,31,21,0F,00,00,00,0F,1C,30,16,0F,1C,30,2A,0F,1C,36,27" name="Underground" guid="2859f352-57a0-40f4-8c28-59a3a106333d" />
     <palette background="12" data="12,0F,30,13,12,0D,20,10,12,0D,27,17,12,0D,30,2A,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Plains Autumn" guid="9b3e52c3-66c9-4363-842b-72e95e15de4a" />
@@ -54,8 +54,8 @@
     <level name="1-2 Bonus" worldguid="99dd0554-cf7d-4a70-ac3a-a757aa8dd5c0" levelguid="7ef8c3ad-686c-432b-82bd-296d3b5a4e72" leveltype="1" lastcompressionsize="0" lastmodified="2012-10-04T18:19:12.6446-04:00" layout="Horizontal" />
     <level name="M-1" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="0aae3f8e-c265-49d5-a0be-05df67ce0854" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-22T19:54:09.239-05:00" layout="Horizontal" />
     <level name="M-2" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="00b1bf94-db56-45ad-bbc0-d2d39486bffb" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-23T13:58:27.131-05:00" layout="Horizontal" />
-    <level name="M-3" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="1b6f519c-e994-48c4-9aee-baae9c65e2b3" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-24T06:28:51.967-05:00" layout="Horizontal" />
+    <level name="M-3" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="1b6f519c-e994-48c4-9aee-baae9c65e2b3" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-24T12:07:47.2420938-05:00" layout="Horizontal" />
     <level name="M-4" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="97c9b483-9055-4875-89f7-9d61124f1fb3" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-24T05:35:53.878-05:00" layout="Horizontal" />
-    <level name="F-1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="3a5ddb7e-0a93-47fa-ab5a-37482ad141fd" leveltype="12" lastcompressionsize="0" lastmodified="2012-12-24T07:30:46.513-05:00" layout="Horizontal" />
+    <level name="F-1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="3a5ddb7e-0a93-47fa-ab5a-37482ad141fd" leveltype="12" lastcompressionsize="0" lastmodified="2012-12-24T13:20:54.1440938-05:00" layout="Horizontal" />
   </levelinfo>
 </project>
