@@ -3469,7 +3469,7 @@ Skip_Set_Music:
 	INY
 	LDA [Temp_Var14],Y
 	LDX Level_JctCtl
-	BMI Skip_Time_Set
+	BNE Skip_Time_Set
 	AND #$F0
 	LSR A
 	LSR A
@@ -6000,4 +6000,10 @@ LevelJction:
 	AND #$f0
 	STA <Player_X
 Skip_Line_Up:
+	RTS
+
+ActivatedTiles:
+	.byte $61, $64
+CheckActivatedTiles:
+	
 	RTS
