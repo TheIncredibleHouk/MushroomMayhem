@@ -1,42 +1,26 @@
-Mario Adventure 3 Hacking Ideas
---------------------------------------
---- BUGS ---
+Ice Flower -> Mushroom Everglades
+Turtle Suit -> Frozen Forest
+Raccoon Leaf -> ?
+Frog Suit -> ?
+Ninja Shroom -> ?
+Fire Fox Leaf -> ?
+Sledge Suit -> ?
+Fire Flower -> ?
 
--Change hammers to break a different kind of block (rocks?)
--World types
-	1 - Mushroom Everglades
-	2 - Ice/Forest
-	3 - Underground/Mining
-	4 - Water/Sewers
-	5 - Sky/Shrine
-	6 - 
-	7 -
-	8 - Bowser's Castle
-	9 - Minus World
-
-New Enemy types:
----------------------------------
-Fluffen - a cottonball that flies around and attaches to Mario's face. While attached, Mario's air meter will deplete. to remove, press left and right repeatedly.
-
-Viral Goomba - releases colored virus that cause various effects.
-
-Koobob-omb - A timer is set for the Koopa to explode, regardless of shell time.
+GAME LOOP:
+Unlock area that leads to 8 Hammer Bros. Guards. Use stars to open up access to an area that leads to unlocking
+a new power up. Once a power up is unlock, the Hammer Bros. area closes and must be unlocked again by entering a
+world and defeating the boss inside. Once the boss is defeated, the lock to the Hammer Bros. area is unlocked to
+reenter the area.
 
 
-
-Enemy introductions by theme
-------------------------------
-2 - Bullies, Ice Bros, Puffen 
-3 - 
-
-Abilities
------------
-1: SMB3 US Damage
-2: Item Storage
-3: Jump Higher
-4: Power Upgrade
-5: Spike Safe + Enemy Boots + sure Footing
-6: Short P-Meter
-7: 
-8: 
-9: 
+World "0" -> 5/7
+World "1" -> 7/11
+World "2" -> 7/11
+World "3" -> 7/11
+world "4" -> 7/11
+World "5" -> 7/11
+World "6" -> 7/11
+World "7" -> 7/11
+World "8" -> 7/11
+World "9" -> 0/5
