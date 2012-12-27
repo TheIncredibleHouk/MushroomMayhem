@@ -6003,7 +6003,35 @@ Skip_Line_Up:
 	RTS
 
 ActivatedTiles:
-	.byte $61, $64
+	.byte $61, $64, $00, $00, $00, $00, $00, $00
 CheckActivatedTiles:
-	
+	STY Temp_Var12
+	STA Temp_Var13
+	LDY #$07
+
+FindActivatedTile:
+	CMP ActivatedTiles, Y
+	BEQ SeeIfTileActivated
+	DEY
+	BPL FindActivatedTile
+	BMI RestoreAAct
+
+SeeIfTileActivated:
+	LDA #$80
+
+ShiftActBit:
+	DEY
+	BEQ DoneShiftActBit
+	ASL
+	BNE ShiftActBit
+
+DoneShiftActBit:
+	AND Blocks_Activated
+	BEQ
+
+	RTS
+RestoreAAct:
+	LDA Temp_Var13
+RestoreYAct:
+	LDY Temp_Var12
 	RTS

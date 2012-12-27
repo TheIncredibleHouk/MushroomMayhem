@@ -3028,7 +3028,8 @@ SOBJ_POOF		= $16 	; Poof
 	WorldWidth:			.ds 1
 	HBros_Coins_Collected:  .ds 32 ;
 	World_Complete_Tiles: .ds 16	;
-						.ds 336;
+	Blocks_Activated:	.ds 1;
+						.ds 335;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
