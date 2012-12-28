@@ -6022,14 +6022,15 @@ SeeIfTileActivated:
 ShiftActBit:
 	DEY
 	BEQ DoneShiftActBit
-	ASL
+	ASL A
 	BNE ShiftActBit
 
 DoneShiftActBit:
 	AND Blocks_Activated
-	BEQ
+	BEQ RestoreAAct
+	LDA #$60
+	BNE RestoreYAct
 
-	RTS
 RestoreAAct:
 	LDA Temp_Var13
 RestoreYAct:
