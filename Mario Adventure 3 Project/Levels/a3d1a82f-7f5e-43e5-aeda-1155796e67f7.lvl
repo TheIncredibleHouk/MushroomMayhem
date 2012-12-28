@@ -26,5 +26,5 @@
     <sprite x="169" y="19" value="56" item="0" />
     <sprite x="180" y="19" value="56" item="0" />
   </spritedata>
-  <settings showgrid="true" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
