@@ -3826,7 +3826,7 @@ DMC08_End
 ; Rest of ROM bank was empty
 
 Traversable_Tiles:	.byte $BF, $FD, $F6, $FE, $FC, $FA, $9F, $80, $E0, $FF, $FF, $FF, $FF, $FF, $FF
-Enterable_Tiles:	.byte $BC, $50, $42, $43, $8F, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+Enterable_Tiles:	.byte $BC, $50, $42, $43, $8F, $FC, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 Tile_Enterable:
 	LDX #$07
