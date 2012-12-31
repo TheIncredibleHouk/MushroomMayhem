@@ -3314,7 +3314,6 @@ LevelLoad:	; $97B7
 	; TTTT TTTT = tile set
 	
 
-	LDA Debug_Snap
 	LDA LevelLoadPointer
 	STA <Temp_Var1
 	LDA #$00
@@ -3595,6 +3594,7 @@ RepeatTile:
 	LDA [Temp_Var14], Y
 
 RepeatTileLoop:
+	JSR CheckActivatedTiles
 	STA [Temp_Var8],Y
 	JSR NextTileByte
 	DEC <Temp_Var10
@@ -3642,6 +3642,7 @@ RepeatPatternToLevel:
 
 DrawPattern:
 	LDA Level_Objects, X
+	JSR CheckActivatedTiles
 	STA [Temp_Var8], Y
 	JSR NextTileByte
 	INX
@@ -3661,6 +3662,7 @@ WriteRaw:
 WriteRawLoop:
 	JSR NextLevelByte
 	LDA [Temp_Var14], Y
+	JSR CheckActivatedTiles
 	STA [Temp_Var8], Y
 	JSR NextTileByte
 	DEC <Temp_Var11
@@ -6003,10 +6005,12 @@ Skip_Line_Up:
 	RTS
 
 ActivatedTiles:
-	.byte $61, $64, $00, $00, $00, $00, $00, $00
-CheckActivatedTiles:
-	STY Temp_Var12
-	STA Temp_Var13
+	.byte $60, $61, $64, $68, $69, $6A, $6C, $6E
+
+CheckActivatedTiles:			; This routine checks for tile activated (power ups)
+	
+	STY DAIZ_TEMP2
+	STA DAIZ_TEMP3
 	LDY #$07
 
 FindActivatedTile:
@@ -6017,22 +6021,23 @@ FindActivatedTile:
 	BMI RestoreAAct
 
 SeeIfTileActivated:
+	STA Debug_Snap
 	LDA #$80
 
 ShiftActBit:
 	DEY
-	BEQ DoneShiftActBit
+	BMI DoneShiftActBit
 	ASL A
 	BNE ShiftActBit
 
 DoneShiftActBit:
 	AND Blocks_Activated
-	BEQ RestoreAAct
-	LDA #$60
+	BNE RestoreAAct
+	LDA #$65
 	BNE RestoreYAct
 
 RestoreAAct:
-	LDA Temp_Var13
+	LDA DAIZ_TEMP3
 RestoreYAct:
-	LDY Temp_Var12
+	LDY DAIZ_TEMP2
 	RTS

@@ -3,7 +3,7 @@
   <pointers>
     <pointer levelguid="ac400361-d7c3-47dc-91e8-903aca32063a" exittype="0" xexit="65" yexit="8" xenter="1" yenter="22" exitslevel="false" world="0" />
     <pointer levelguid="d50ec532-174b-46f2-a506-b7c664a1bec7" exittype="0" xexit="43" yexit="20" xenter="13" yenter="22" exitslevel="false" world="0" />
-    <pointer levelguid="00000000-0000-0000-0000-000000000000" exittype="0" xexit="0" yexit="0" xenter="7" yenter="16" exitslevel="true" world="0" />
+    <pointer levelguid="00000000-0000-0000-0000-000000000000" exittype="0" xexit="1" yexit="4" xenter="7" yenter="15" exitslevel="true" world="0" />
   </pointers>
   <spritedata />
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
