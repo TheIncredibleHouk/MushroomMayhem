@@ -1926,7 +1926,7 @@ PRG029_D59B:
 	STA <Temp_Var11	 ; Temp_Var11 = 8
 
 	JSR Player_GetTileAndSlope	; Get tile
-	SUB #TILE1_PIPETB4_L	 	
+	SUB #$AD	 	
 	CMP #$02	 
 	BLT PRG029_D5C3	 	; If tile is one of the transit pipe top/bottom tiles, jump to PRG029_D5C3 (RTS)
 

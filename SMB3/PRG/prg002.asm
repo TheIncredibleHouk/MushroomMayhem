@@ -3795,16 +3795,15 @@ HammerCoinsRequired:
 	.byte $01, $00, $00, $00, $00, $00, $00, $00, $00
 
 ToadMsg_Standard:
-	;            P    i    c    k         a         b    o    x    .
-	;      XXXXXXXXXXXXXXX
+
 	.byte "IN ORDER TO    "
 	.byte "PASS, YOU NEED "
-	.byte "TO PAY THE TOLL"
-	.byte "OF () HAMMER   "
-	.byte "BROTHER COINS. "
+	.byte "TO COLLECT ()  "
+	.byte "STARS.         "
+	.byte "               "
 	.byte "               "
 
-	; English: "One toot on" / "this whistle" / "will send you" / "to a far away" / "land!"
+	
 ToadMsg_Shop:
 	.byte "WELCOME TO THE "
 	.byte "SHOP. USE LEFT "
@@ -3813,7 +3812,7 @@ ToadMsg_Shop:
 	.byte "BUY, B TO LEAVE"
 	.byte "THE SHOP.      "
 
-	; English: "Hello! You" / "found my shop" / "of strange and" / "wonderful" / "things!"
+	
 ChallengeMessage:
 	.byte "CAN YOU HANDLE "
 	.byte "THE CHALLENGE? "
@@ -3870,14 +3869,14 @@ PRG002_B468:
 	BEQ DoFirstDigit
 	CMP #$29
 	BNE Draw_Letter
-	LDY World_Num
+	LDY StarLevel
 	LDA HammerCoinsRequired, Y
 	AND #$0F
 	ORA #$30
 	JMP Draw_Letter
 
 DoFirstDigit:
-	LDY World_Num
+	LDY StarLevel
 	LDA HammerCoinsRequired, Y
 	AND #$F0
 	ASL A
@@ -5045,10 +5044,6 @@ Player_GetInventoryOffset:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Start goal card routine removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-PRG002_BFD4:
-	.byte $FC, $A9, $00, $22, $0B, $01, $A9, $22, $14, $01, $A9, $22, $29, $04, $A9, $FC
-	.byte $FC, $A9, $22, $33, $04, $A9, $FC, $FC, $A9, $22, $4A, $04, $A9, $A9, $FC, $A9
-	.byte $22, $52, $04, $A9, $FC, $A9, $A9, $22, $6C, $48, $A9, $00
 
 Enough_HBros_Coins:
 	LDA Pay_Toll_Timer
