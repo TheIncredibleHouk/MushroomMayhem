@@ -3523,6 +3523,17 @@ Skip_Time_Set:
 DontReverseWind:
 	INY
 
+	; load misc data
+	LDA [Temp_Var14], Y
+	STA MiscValue1
+	INY
+	LDA [Temp_Var14], Y
+	STA MiscValue2
+	INY
+	LDA [Temp_Var14], Y
+	STA MiscValue3
+	INY
+
 	; now load pointers
 	JSR ClearPointers
 	LDX #$00

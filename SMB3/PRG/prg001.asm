@@ -439,7 +439,7 @@ ObjP1F:	.byte $51, $53	; #DAHRKDAIZ - VINE
 ObjP21:	.byte $51, $53
 ObjP22:	.byte $51, $53 ; #DAHRKDAIZ - PUMPKIN
 ObjP23:	.byte $51, $53	; #DAHRKDAIZ - GOLD LEAF
-ObjP08:	.byte $FB, $FB, $FB, $FB, $BB, $B9, $B9, $BB, $BF, $BD
+ObjP08:	.byte $BB, $BB, $BB, $FB, $BB, $B9, $B9, $BB, $BF, $BD
 
 SpinyCheep_XVel:
 	.byte 8, -8
@@ -2875,7 +2875,9 @@ Koopaling_Palettes:
 	.byte $0F, $18, $30, $1C	; World 7
 
 ObjInit_Koopaling:
-	LDA World_Num
+	LDA MiscValue1
+	AND #$0F
+	STA KoopaKidType
 	ASL A		
 	ASL A		 ; A = World_Num * 4
 	PHA		 ; Save it
@@ -2988,7 +2990,7 @@ Koopaling_JumpYVels:
 
 
 ObjNorm_Koopaling:
-	LDY World_Num	 ; Y = current world number
+	LDY KoopaKidType
 
 	; Use the right graphics for the Koopaling	
 	LDA KoopalingPatSet4,Y
@@ -3062,7 +3064,7 @@ PRG001_AF2A:
 	RTS		 ; Return
 
 Koopaling_Normal:
-	LDA World_Num
+	LDA KoopaKidType
 	CMP #$05
 	BNE PRG001_AF35	 ; If World_Num <> 5 (World 6, Lemmy), jump to PRG001_AF35
 	JMP PRG001_B671	 ; Jump to PRG001_B671
@@ -3157,7 +3159,7 @@ PRG001_AF90:
 	LDA #$03
 	STA Objects_Frame,X	; Koopaling frame 3 (wand fire!)
 
-	LDA World_Num
+	LDA KoopaKidType
 	CMP #$02
 	BNE PRG001_AFA8	 ; If World_Num <> 2 (World 3, Wendy), jump to PRG001_AFA8
 
@@ -3205,7 +3207,7 @@ PRG001_AFC5:
 	; and making the overall height a bit variable
 	LDY <Objects_Var4,X	 ; Get Koopaling's current hit count
 	LDA Koopaling_JumpYVelsBase,Y
-	ADD World_Num
+	ADD KoopaKidType
 	TAY		; -> 'Y'
 
 	; This determines the chance that they will actually jump
@@ -3224,7 +3226,7 @@ PRG001_AFE6:
 
 	; If Koopaling is not jumping...
 
-	LDA World_Num
+	LDA KoopaKidType
 	CMP #$02	
 	BNE PRG001_AFF9	 ; If World_Num <> 2 (World 3, Wendy), jump to PRG001_AFF9
 
@@ -3257,7 +3259,7 @@ PRG001_B000:
 
 	LDA #$10	 ; A = $10
 
-	LDY World_Num
+	LDY KoopaKidType
 	CPY #$02	
 	BEQ PRG001_B01C	 ; If World_Num = 2 (World 3, Wendy), jump to PRG001_B01C
 
@@ -3587,7 +3589,7 @@ PRG001_B160:
 	ORA #SND_PLAYERSWIM	
 	STA Sound_QPlayer
 
-	LDA World_Num
+	LDA KoopaKidType
 	CMP #$05
 	BNE PRG001_B17B	 ; If World_Num = 5 (World 6, Lemmy), jump to PRG001_B17B
 
@@ -3870,7 +3872,7 @@ PRG001_B35C:
 	LDA #$00	 	; Otherwise, A = 0
 
 PRG001_B362:
-	LDY World_Num	 	; Y = World number
+	LDY KoopaKidType	 	; Y = World number
 	ADC Koopaling_PatLookup,Y	; Get index into the Koopaling pattern table (divided by 6)
 
 PRG001_B368:
@@ -3967,7 +3969,7 @@ Draw_KoopalingWand:
 	CMP #$04
 	BGE PRG001_B3D0	 ; If frame >= 4, jump to PRG001_B3D0 (RTS)
 
-	LDY World_Num	 ; Y = World number
+	LDY KoopaKidType	 ; Y = World number
 
 	LDA Objects_Frame,X	; Get current frame
 	ADD Koopaling_OffYOff,Y	; Add respective base index
@@ -4274,7 +4276,7 @@ Koopaling_DetectWorld:
 	JSR Object_ApplyYVel_NoLimit
 	JSR Object_WorldDetectN1
 
-	LDA World_Num
+	LDA KoopaKidType
 	CMP #$04	
 	BEQ PRG001_B617	 ; If World = 4 (World 5, Roy), jump to PRG001_B617
 
