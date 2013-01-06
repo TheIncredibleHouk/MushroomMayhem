@@ -574,9 +574,12 @@ PRG029_CF0B:
 	LDA Level_PipeMove
 	LDA Player_Behind
 	ORA Player_SandSink
+	ORA Player_Behind_En
 	BEQ PRG029_CF1E	 ; If Player is behind the scenes, jump to PRG029_CF1E
 
 	; Set priority over background (normal most game sprite behavior)
+	LDA #$00
+	STA Player_Behind_En
 	LDA #$20
 	ORA <Temp_Var1
 	STA <Temp_Var1

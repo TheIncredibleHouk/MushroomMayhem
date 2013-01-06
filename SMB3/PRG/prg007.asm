@@ -1595,14 +1595,16 @@ PRG007_A719:
 	STA Sprite_RAM+$01,Y
 	STA Sprite_RAM+$05,Y
 
-	LDA #SPR_PAL1
-
-	LDX Player_Behind
+	LDA Player_Behind
+	ORA Player_Behind_En
 	BEQ PRG007_A75F	 ; If Player is not behind the scenes, jump to PRG007_A75F
 
-	ORA #SPR_BEHINDBG
+	LDA #$00
+	STA Player_Behind_En
+	LDA #SPR_BEHINDBG
 
 PRG007_A75F:
+	ORA #SPR_PAL1
 	STA Sprite_RAM+$02,Y	; Set left sprite attributes
 	ORA #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAM+$06,Y	 ; Set right sprite attributes

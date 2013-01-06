@@ -4642,7 +4642,6 @@ PRG002_B925:
 
 	LDA Player_StarInv
 	ORA <Player_IsDying
-	ORA Player_Behind_En
 	BNE PRG002_B95C	 ; If Player is invincible by Starman, dying, or "behind the scenes", jump to PRG002_B95C
 
 	; Player gets eaten!

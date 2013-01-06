@@ -1404,6 +1404,8 @@ PRG000_C7FA:
 	TAY		 	; -> 'Y'
 
 PRG000_C82A:
+	LDA #$01
+	STA PriorityCheckType
 	LDA [Temp_Var1],Y	; Get tile
 	
 	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
@@ -1432,6 +1434,7 @@ PostPSwitchTile:	.byte $67, $40, $40, $67, $7F, $42, $43, $80
 PostPSwitchAttr:	.byte $03, $00, $03, $03, $03, $00, $00, $00
 
 PSwitch_SubstTileAndAttr:
+	JSR CheckSpriteOnFG
 	JSR CheckESwitch
 	JSR CheckDayNight
 	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
@@ -5129,7 +5132,6 @@ PRG000_D83D:
 
 	LDA <Player_IsDying	; If Player is dying...
 	ORA Player_OffScreen	; ... off-screen ...
-	ORA Player_Behind_En	; ... or behind the scenes ...
 	BNE PRG000_D82B	 	; ... jump to PRG000_D82B (RTS)
 
 	JSR Object_CalcBoundBox	; Calculate object's bounding box
@@ -6179,25 +6181,6 @@ Object_ApplyYVel_NoLimit:
 ; $DCE4
 Object_ApplyXVel:
 	JSR Object_AddVelFrac
-
-	LDY Level_7Vertical
-	BEQ PRG000_DCFA	 ; If Level is NOT vertical, jump to PRG000_DCFA
-
-	; Non-vertical levels...
-
-	PHA		 ; Save rollover value
-
-	LDY ObjGroupRel_Idx	; Get object's relative index
-	LDA ObjectGroup_Attributes2,Y	 ; Get object's 2nd attribute
-	AND #OA2_USE16BITX	 	 
-	BNE PRG000_DCF9	 	; If OA2_USE16BITX is set, jump to PRG000_DCF9
-
-	STA <Objects_XHi,X	; Otherwise, Object's X Hi is zeroed
-
-PRG000_DCF9:
-	PLA		 ; Restore rollover value
-
-PRG000_DCFA:
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6823,3 +6806,38 @@ NotNight:
 	LDA #SUN_BLOCK
 	RTS
 
+CheckSpriteOnFG:
+	STA Debug_Snap
+	STA DAIZ_TEMP1
+	STX DAIZ_TEMP2
+	LDX #$0F
+
+CheckFGTiles:
+	CMP ForegroundTiles, X
+	BEQ SetSpriteBehind
+	DEX 
+	BPL CheckFGTiles
+	LDA #$00
+	BEQ SetBGPriority
+
+SetSpriteBehind:
+	LDA #$20
+
+SetBGPriority:
+	STA DAIZ_TEMP3
+	LDA PriorityCheckType
+	BNE SetPriorityForObjects
+	LDA DAIZ_TEMP3
+	ORA Player_Behind_En
+	STA Player_Behind_En
+	LDA DAIZ_TEMP1
+	LDX DAIZ_TEMP2
+	RTS
+
+SetPriorityForObjects:
+	LDA DAIZ_TEMP3
+	LDX DAIZ_TEMP2
+	ORA Objects_SprAttr,X
+	STA Objects_SprAttr,X
+	LDA DAIZ_TEMP1
+	RTS
