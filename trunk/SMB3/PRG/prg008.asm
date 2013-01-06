@@ -4181,6 +4181,8 @@ PRG008_B42E:
 	LDY Level_PipeMove	; Y = Level_PipeMove (movement command in $8x form)
 	BNE PRG008_B43F	 	; If Level_PipeMove <> 0, jump to PRG008_B43F
 
+	LDY #$00
+	STY PriorityCheckType
 	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
 
 PRG008_B43F:
@@ -4218,6 +4220,8 @@ PRG008_B458:
 	LDY Level_PipeMove	 ; Y = Level_PipeMove
 	BNE PRG008_B46C	 	; If Level_PipeMove <> 0, jump to PRG008_B46C
 
+	LDY #$00
+	STY PriorityCheckType
 	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
 
 PRG008_B46C:

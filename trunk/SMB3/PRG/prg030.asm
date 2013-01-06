@@ -1412,183 +1412,6 @@ PRG030_8B9A:
 	; US VERSION DOES THIS:
 	JMP PRG030_8CB8	 ; Jump to PRG030_8CB8 (skipping code related to the "Boxing out" effect, removed in US version)
 
-	; Leftover optional code, see below
-	LDA #$00
-	STA <Map_EnterLevelFX		 ; Map_EnterLevelFX = 0
-
-	; ORIGINAL VERSION DID THIS (addresses relate to original code!):
-;	LDA Level_Tileset
-;	CMP #15
-;	BEQ PRG030_8BC2	 ; If Level_Tileset = 15 (bonus game intro), jump to PRG030_8BC2
-;
-;	LDA Map_UNK713
-;	BEQ PRG030_8BC5	 ; If Map_UNK713 = 0, jump to PRG030_8BC5
-;
-;PRG030_8BC2:
-;	JMP PRG030_8CC9	 ; Jump to PRG030_8CC9
-;
-;PRG030_8BC5:
-;	LDA #$00
-;	STA <Map_EnterLevelFX		 ; Map_EnterLevelFX = 0
-;PRG030_8CC9:
-
-	JSR Map_Clear_EntTranMem	 ; Clear entrance transition memory
-
-	LDA #$ff
-	STA Map_EntTran_Temp	 ; Map_EntTran_Temp = $ff
-
-	LDA Level_7Vertical
-	BEQ PRG030_8BD5	 	; If not a vertical level, jump to PRG030_8BD5
-
-PRG030_8BD5: 
-
-	; First screen is always where non-vertical maps start
-	LDA Tile_Mem_Addr
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1
-	STA <Map_Tile_AddrH
-
-PRG030_8BDF:
-	LDA #$00	
-	STA Map_EntTran_VLHalf	 ; Map_EntTran_VLHalf = 0
-
-	LDA <Vert_Scroll
-	BEQ PRG030_8BF4	 	; If Vert_Scroll = 0, jump to PRG030_8BF4
-
-	; Otherwise, offset initial address by $F0 (15 rows) and
-	; flag we're performing this on the lower vertical
-	LDA <Map_Tile_AddrL
-	ADD #$f0	 
-	STA <Map_Tile_AddrL	; Map_Tile_AddrL += $F0
-
-	LDA #$01
-	STA Map_EntTran_VLHalf	 ; Map_EntTran_VLHalf = 1
-
-PRG030_8BF4:
-	LDY #$04	; Y = 4 (search begin)
-
-PRG030_8BF6:
-	LDA <Vert_Scroll
-	CMP BoxOut_ByVStart,Y
-	BEQ PRG030_8C00
-	DEY		 ; Y--
-	BPL PRG030_8BF6	 ; While Y >= 0, loop
-
-PRG030_8C00:
-	STY Map_EntTran_InitValIdx ; Store initial value index
-
-	LDA BoxOut_InitVAddrH,Y	 ; Get initial high part of VRAM address
-	STA Map_EntTran_BVAddrH
-	STA Map_EntTran_BVAddrH+1
-	STA Map_EntTran_BVAddrH+2
-	STA Map_EntTran_BVAddrH+3
-
-	; Copy in the four low bytes
-	LDA BoxOut_InitVAddrL0,Y
-	STA Map_EntTran_BVAddrL	
-
-	LDA BoxOut_InitVAddrL2,Y
-	STA Map_EntTran_BVAddrL+2
-
-	LDA BoxOut_InitVAddrL1,Y
-	STA Map_EntTran_BVAddrL+1
-
-	LDA BoxOut_InitVAddrL3,Y
-	STA Map_EntTran_BVAddrL+3
-
-	LDA #$00
-	STA Map_EntTran_BorderLoop	 ; Map_EntTran_BorderLoop = 0
-
-	LDA #$04
-	STA Map_EntTran_TBCnt	 ; Map_EntTran_TBCnt = 4
-
-	LDY #$01	
-	STY Map_EntTran_LRCnt	 ; Map_EntTran_LRCnt= 1
-
-	LDA #$00	 
-	STA Update_Select	; Insist (again!) that Update_Select = 0
-
-PRG030_8C3E:
-	JSR GraphicsBuf_Prep_And_WaitVSync	; VSync
-
-	; Set page @ A000 as appropriate by Level_Tileset
-	LDY Level_Tileset
-	LDA PAGE_A000_ByTileset,Y
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	LDX Map_EntTran_BorderLoop	 ; X = current border index (0-3: Top 0, bottom 1, right 2, left 3)
-
-	LDA Map_EntTran_BVAddrH,X	 ; Get high byte of VRAM addres
-	STA Map_EntTran_VAddrH	 	; Store it
-
-	LDA Map_EntTran_BVAddrL,X	 ; Get low byte of VRAM address
-	STA Map_EntTran_VAddrL	 	; Store it
-
-	LDA Map_EntTran_BorderLoop	 ; A = current border index (0-3: Top 0, bottom 1, right 2, left 3)
-	AND #$02
-	BNE PRG030_8C74	 		; If not updating top/bottom, jump to PRG030_8C74
-
-	; top/bottom update...
-	LDX Map_EntTran_TBCnt
-
-	LDA #$01
-	STA Map_EntTran_VRAMGap	 ; Map_EntTran_VRAMGap = 1
-
-	LDA Map_EntTran_VAddrL
-	AND #$01
-	BEQ PRG030_8C8C	 ; If on even address, jump to PRG030_8C8C
-	BNE PRG030_8C83	 ; If on odd address, jump to PRG030_8C83
-
-PRG030_8C74:
-
-	; left/right update...
-	LDX Map_EntTran_LRCnt
-
-	LDA #32
-	STA Map_EntTran_VRAMGap	 ; PRG030_8C8C = 32
-
-	LDA Map_EntTran_VAddrL
-	AND #$20
-	BEQ PRG030_8C8C	 ; If on 32 byte aligned address, jump to PRG030_8C8C
-
-PRG030_8C83:
-	JSR BoxOut_PutPatternInStrip	 ; Put an 8x8 pattern into the strip
-	JSR BoxOut_SetThisBorderVRAM	 ; Set the VRAM offset for this border
-	DEX		 		; X-- (counter decrement)
-	BMI PRG030_8CAA	 		; If X < 0, jump to PRG030_8CAA
-
-PRG030_8C8C:
-	JSR BoxOut_PutPatternInStrip	 ; Put an 8x8 pattern into the strip
-	DEX		 		; X-- (counter decrement)
-	BMI PRG030_8CAA	 		; If X < 0, jump to PRG030_8CAA
-
-	INC <Temp_Var14		 ; Temp_Var14++ (tile pattern layout high, jump to next pattern)
-
-	LDA Map_EntTran_VRAMGap
-	AND #$01	
-	BEQ PRG030_8C9D	 	; If Map_EntTran_VRAMGap & 1 jump to PRG030_8C9D
-
-	INC <Temp_Var14		 ; Temp_Var14++ (tile pattern layout high, jump to next pattern)
-
-PRG030_8C9D:
-	LDA [Temp_Var13],Y	 ; Get 8x8 pattern
-	STA <Scroll_ColorStrip,X	 ; Store into strip
-
-	JSR BoxOut_SetThisBorderVRAM	; Set border VRAM
-	JSR BoxOut_SetThisBorderVRAM	; Called twice??
-	DEX		 ; X--
-	BPL PRG030_8C8C	 ; While X >= 0, loop!
-
-PRG030_8CAA:
-	LDA #$02
-	STA <Map_EnterLevelFX	 ; Map_EnterLevelFX = 2 (begin the proper box out effect!)
-
-	LDA Map_EntTran_Cnt
-	CMP #$34	 
-	BEQ PRG030_8CB8	 ; If Map_EntTran_Cnt = $34, jump to PRG030_8CB8
-	JMP PRG030_8C3E	 ; Otherwise, loop!
-
 PRG030_8CB8:
 	; End of box-out effect (removed in US version)
 
@@ -2852,6 +2675,23 @@ PRG030_952C:
 	CPX #$08
 	BNE PRG030_952C	 	; While Y >= 0, loop!
 
+	LDY Level_Tileset
+	DEY
+	TYA
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	TAY
+
+	LDX #$00
+PRG030_952C2:
+	LDA TileForeground,Y	
+	STA ForegroundTiles,X
+	INY
+	INX			; Y--
+	CPX #$10
+	BNE PRG030_952C2	 	; While Y >= 0, loop!
 	RTS			; Return
 
 	; This LUTs are for the unused-in-US-release "Box out" effect when a level starts
@@ -4077,6 +3917,22 @@ TileSolidity:
 	.byte $1F, $47, $96, $E2, $2E, $47, $96, $EE
 	.byte $25, $5F, $99, $E2, $2E, $5F, $A6, $F0
 
+TileForeground:
+	.byte $E1, $DC, $DE, $81, $82, $06, $07, $C2, $C3, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 ; RegEx S&R:
 ; LDA LL_ShapeDef.*\n.*AND #\$0f.*\n.*STA <Temp_Var(.)		 ; .*
 ; LDA LL_ShapeDef\n\tAND #$0f\n\tSTA <Temp_Var\1		 ; Temp_Var\1 = lower 4 bits of LL_ShapeDef
@@ -6032,7 +5888,6 @@ FindActivatedTile:
 	BMI RestoreAAct
 
 SeeIfTileActivated:
-	STA Debug_Snap
 	LDA #$80
 
 ShiftActBit:

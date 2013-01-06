@@ -2838,6 +2838,8 @@ Do_Fox_Power:
 	; applied to one object here, the unused collectable card...
 
 PRG001_ADE2:
+	RTS
+
 Object_MoveAndReboundOffWall:
 	JSR Object_Move	 ; Do general movement code
 
