@@ -5278,8 +5278,10 @@ PRG004_B938:
 
 	LDA Objects_SprVVis,X
 	LSR A
-	BCS PRG004_B9BA	 	; If this sprite is vertically off-screen, jump to PRG004_B9BA (RTS)
+	BCC SkipPRG004_B9BA	 	; If this sprite is vertically off-screen, jump to PRG004_B9BA (RTS)
+	RTS
 
+SkipPRG004_B9BA
 	; Temp_Var3 = horizontal visibility bits
 	LDA Objects_SprHVis,X
 	STA <Temp_Var3
@@ -5334,6 +5336,11 @@ PRG004_B96D:
 	LDA Objects_FlipBits,X
 	STA <Temp_Var1
 	ORA Objects_SprAttr,X	 ; OR in the sprite attributes
+	STA DAIZ_TEMP1
+	LDA Objects_SprAttr,X
+	AND #$DF
+	STA Objects_SprAttr, X
+	LDA DAIZ_TEMP1
 
 	ASL <Temp_Var9
 	BCC PRG004_B986	 ; If Temp_Var9 was assigned to $00 at start, we jump to PRG004_B986

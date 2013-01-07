@@ -6807,7 +6807,6 @@ NotNight:
 	RTS
 
 CheckSpriteOnFG:
-	STA Debug_Snap
 	STA DAIZ_TEMP1
 	STX DAIZ_TEMP2
 	LDX #$0F
@@ -6835,6 +6834,7 @@ SetBGPriority:
 	RTS
 
 SetPriorityForObjects:
+	LDA Debug_Snap
 	LDA DAIZ_TEMP3
 	LDX DAIZ_TEMP2
 	ORA Objects_SprAttr,X
