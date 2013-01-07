@@ -1396,6 +1396,7 @@ PRG001_A6A3:
 	; Set attribute of anchor top
 	LDA Objects_SprAttr,X
 	STA Sprite_RAM+14,Y
+	STA Objects_SprAttr,X 
 
 	LDY #$60	 ; Y = $60
 PRG001_A6DF:
@@ -1413,6 +1414,8 @@ PRG001_A6DF:
 	; Set attribute
 	LDA Objects_SprAttr,X
 	STA Sprite_RAM+2,Y
+	AND #$DF
+	STA  Objects_SprAttr,X
 
 	; Set sprite X
 	LDA <Temp_Var2	
