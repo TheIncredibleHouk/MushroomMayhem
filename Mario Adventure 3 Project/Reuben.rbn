@@ -3,7 +3,7 @@
   <paletteinfo>
     <palette background="00" data="0F,0F,30,1A,0F,37,28,1A,0F,01,3B,1A,0F,20,05,1A,0F,00,00,00,0F,17,36,0F,0F,17,36,0F,0F,30,31,0F" name="Mushroom Glades" guid="c6560d1b-5f71-4e4a-8856-8845797a63e9" />
     <palette background="11" data="11,0F,30,15,11,0D,37,27,11,0D,3A,1A,11,0D,30,21,11,00,00,00,11,0F,30,16,11,0F,30,2A,11,0F,36,27" name="Plains" guid="ceee7668-a8e4-44c0-8676-a3d11168456f" />
-    <palette background="0F" data="0F,0F,30,04,0F,0C,30,1C,0F,00,30,10,0F,07,27,17,0F,00,00,00,0F,06,30,16,0F,0F,30,10,0F,07,36,27" name="Fortress" guid="4a0438e0-7d45-4d3b-9fe4-cde7822e0100" />
+    <palette background="0F" data="0F,0F,30,04,0F,1F,30,1C,0F,0B,30,1B,0F,07,27,17,0F,00,00,00,0F,06,30,16,0F,0F,30,10,0F,07,36,27" name="Fortress" guid="4a0438e0-7d45-4d3b-9fe4-cde7822e0100" />
     <palette background="12" data="12,0F,30,10,12,0F,36,27,12,0F,2B,1B,12,0F,31,21,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Hilly" guid="698c2fa8-01f2-4a5f-a7a2-0144c11ecbdb" />
     <palette background="00" data="3C,0F,30,3C,3C,0F,36,27,3C,0F,2A,1A,3C,0F,30,21,3C,00,00,00,3C,0F,30,16,3C,0F,30,2A,3C,0F,36,27" name="Sky" guid="be476f89-09db-4479-8bcc-56e76d462aeb" />
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,2A,1A,37,0F,30,12,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Piranha Plant" guid="f0df204b-4537-4562-a5ca-2b9d3a76fb83" />
@@ -51,6 +51,7 @@
     <level name="A-5" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="6786df97-be7f-4fc1-9bc9-3229d1f054ea" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-31T07:03:00.0908-05:00" layout="Horizontal" />
     <level name="A-6" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="e76b1002-3b17-4b57-8735-8f21cb78a50a" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-30T17:31:45.2831-05:00" layout="Horizontal" />
     <level name="A-7" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="58285b90-467b-4c6c-98a5-48bc9e9f7322" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-01T07:16:15.1539-05:00" layout="Horizontal" />
-    <level name="BOSS - 1" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="18380daa-97db-4f4c-8a27-f8b4a54995c8" leveltype="2" lastcompressionsize="0" lastmodified="2013-01-07T12:35:01.5403241-05:00" layout="Horizontal" />
+    <level name="BOSS - 1" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="18380daa-97db-4f4c-8a27-f8b4a54995c8" leveltype="2" lastcompressionsize="0" lastmodified="2013-01-08T07:12:01.398-05:00" layout="Horizontal" />
+    <level name="BOSS - 1A" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="c52aee5b-5a3c-4425-85ac-7b3f849555c4" leveltype="2" lastcompressionsize="0" lastmodified="2013-01-08T06:58:03.188-05:00" layout="Horizontal" />
   </levelinfo>
 </project>

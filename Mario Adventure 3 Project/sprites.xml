@@ -54,17 +54,17 @@
     <sprite x="0" y="0" value="C0" palette="2" horizontalflip="false" verticalflip="false" table="F" />
     <sprite x="8" y="0" value="C2" palette="2" horizontalflip="false" verticalflip="false" table="F" />
   </spritedefinition>
-  <spritedefinition id="0B" width="01" height="01" name="1-Up" group="1" class="Global">
-    <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="04" />
-    <sprite x="8" y="0" value="10" palette="2" horizontalflip="true" verticalflip="false" table="04" />
+  <spritedefinition id="0B" width="01" height="01" name="Ninja Shroom" group="1" class="Global">
+    <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="10" palette="2" horizontalflip="true" verticalflip="false" table="B0" />
   </spritedefinition>
   <spritedefinition id="0C" width="01" height="01" name="Starman" group="1" class="Global">
-    <sprite x="0" y="0" value="14" palette="1" horizontalflip="false" verticalflip="false" table="04" />
-    <sprite x="8" y="0" value="14" palette="1" horizontalflip="true" verticalflip="false" table="04" />
+    <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="B8" />
+    <sprite x="8" y="0" value="10" palette="1" horizontalflip="true" verticalflip="false" table="B8" />
   </spritedefinition>
   <spritedefinition id="0D" width="01" height="01" name="Super Mushroom" group="1" class="Global">
-    <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="04" />
-    <sprite x="8" y="0" value="10" palette="1" horizontalflip="true" verticalflip="false" table="04" />
+    <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="90" />
+    <sprite x="8" y="0" value="10" palette="1" horizontalflip="true" verticalflip="false" table="90" />
   </spritedefinition>
   <spritedefinition id="0E" width="02" height="02" name="Koopa Kid" group="3" class="Koopa Kid">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="48" />
@@ -140,8 +140,8 @@
     <sprite x="24" y="32" value="14" palette="2" horizontalflip="false" verticalflip="false" table="3A" />
   </spritedefinition>
   <spritedefinition id="19" width="01" height="01" name="Fire Flower" group="1" class="Global">
-    <sprite x="0" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="04" />
-    <sprite x="8" y="0" value="12" palette="2" horizontalflip="true" verticalflip="false" table="04" />
+    <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="94" />
+    <sprite x="8" y="0" value="10" palette="2" horizontalflip="true" verticalflip="false" table="94" />
   </spritedefinition>
   <spritedefinition id="1A" width="01" height="01" name="Weird" group="1" class="Error">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
@@ -164,12 +164,12 @@
     <sprite x="8" y="0" value="80" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
   </spritedefinition>
   <spritedefinition id="1E" width="01" height="01" name="Super Leaf" group="1" class="Global">
-    <sprite x="0" y="0" value="1C" palette="1" horizontalflip="false" verticalflip="false" table="04" />
-    <sprite x="8" y="0" value="1E" palette="1" horizontalflip="false" verticalflip="false" table="04" />
+    <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="98" />
+    <sprite x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="98" />
   </spritedefinition>
-  <spritedefinition id="1F" width="01" height="01" name="Super vine" group="1" class="Global">
-    <sprite x="0" y="0" value="3C" palette="2" horizontalflip="false" verticalflip="false" table="04" />
-    <sprite x="8" y="0" value="3C" palette="2" horizontalflip="true" verticalflip="false" table="04" />
+  <spritedefinition id="1F" width="01" height="01" name="Super Vine" group="1" class="Global">
+    <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="BC" />
+    <sprite x="8" y="0" value="12" palette="2" horizontalflip="true" verticalflip="false" table="BC" />
   </spritedefinition>
   <spritedefinition id="20" width="01" height="01" name="Unused" group="1" class="Error">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
@@ -177,17 +177,17 @@
     <sprite x="0" y="0" value="80" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="0" value="80" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="21" width="01" height="01" name="Mushroom Goal Card" group="2" class="Battle Mode">
-    <sprite x="0" y="0" value="26" palette="3" horizontalflip="false" verticalflip="false" table="07" />
-    <sprite x="8" y="0" value="26" palette="3" horizontalflip="true" verticalflip="false" table="07" />
+  <spritedefinition id="21" width="01" height="01" name="Ice Flower" group="1" class="Global">
+    <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="A8" />
+    <sprite x="8" y="0" value="12" palette="2" horizontalflip="true" verticalflip="false" table="A8" />
   </spritedefinition>
-  <spritedefinition id="22" width="01" height="01" name="Flower Goal Card" group="2" class="Battle Mode">
-    <sprite x="0" y="0" value="28" palette="3" horizontalflip="false" verticalflip="false" table="07" />
-    <sprite x="8" y="0" value="28" palette="3" horizontalflip="true" verticalflip="false" table="07" />
+  <spritedefinition id="22" width="01" height="01" name="Pumpkin" group="1" class="Global">
+    <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="AC" />
+    <sprite x="8" y="0" value="12" palette="3" horizontalflip="true" verticalflip="false" table="AC" />
   </spritedefinition>
-  <spritedefinition id="23" width="01" height="01" name="Star Goal Card" group="2" class="Battle Mode">
-    <sprite x="0" y="0" value="2A" palette="3" horizontalflip="false" verticalflip="false" table="07" />
-    <sprite x="8" y="0" value="2A" palette="3" horizontalflip="true" verticalflip="false" table="07" />
+  <spritedefinition id="23" width="01" height="01" name="Fox Leaf" group="1" class="Global">
+    <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
+    <sprite x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
   </spritedefinition>
   <spritedefinition id="24" width="03" height="01" name="Fast Moving Cloud, Left" group="2" class="Sky/Fire Snake">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
@@ -284,8 +284,8 @@
     <sprite x="40" y="0" value="90" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
   <spritedefinition id="2F" width="01" height="01" name="Boo" group="2" class="Fortress">
-    <sprite x="0" y="0" value="14" palette="1" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="8" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="0" y="0" value="38" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="8" y="0" value="3E" palette="1" horizontalflip="false" verticalflip="false" table="12" />
   </spritedefinition>
   <spritedefinition id="30" width="01" height="01" name="Shy Hot Foot" group="2" class="Fortress">
     <sprite x="4" y="0" value="00" palette="1" horizontalflip="false" verticalflip="false" table="12" />
@@ -1147,17 +1147,17 @@
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
   </spritedefinition>
-  <spritedefinition id="A0" width="02" height="02" name="Green Piranha Plant" group="3" class="Common">
-    <sprite x="8" y="0" value="20" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite x="16" y="0" value="20" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
-    <sprite x="8" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite x="16" y="16" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+  <spritedefinition id="A0" width="02" height="02" name="Dry Piranha Plant" group="3" class="Dry Bones">
+    <sprite x="8" y="0" value="20" palette="2" horizontalflip="false" verticalflip="false" table="13" />
+    <sprite x="16" y="0" value="20" palette="2" horizontalflip="true" verticalflip="false" table="13" />
+    <sprite x="8" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="13" />
+    <sprite x="16" y="16" value="22" palette="2" horizontalflip="true" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="A1" width="02" height="02" name="Upside Down Green Piranha" group="3" class="Common">
-    <sprite x="8" y="16" value="20" palette="2" horizontalflip="false" verticalflip="true" table="4F" />
-    <sprite x="16" y="16" value="20" palette="2" horizontalflip="true" verticalflip="true" table="4F" />
-    <sprite x="8" y="0" value="22" palette="2" horizontalflip="false" verticalflip="true" table="4F" />
-    <sprite x="16" y="0" value="22" palette="2" horizontalflip="true" verticalflip="true" table="4F" />
+  <spritedefinition id="A1" width="02" height="02" name="Upside Down Dry Piranha" group="3" class="Dry Bones">
+    <sprite x="8" y="16" value="20" palette="2" horizontalflip="false" verticalflip="true" table="13" />
+    <sprite x="16" y="16" value="20" palette="2" horizontalflip="true" verticalflip="true" table="13" />
+    <sprite x="8" y="0" value="22" palette="2" horizontalflip="false" verticalflip="true" table="13" />
+    <sprite x="16" y="0" value="22" palette="2" horizontalflip="true" verticalflip="true" table="13" />
   </spritedefinition>
   <spritedefinition id="A2" width="02" height="02" name="Red Piranha Plant" group="3" class="Common">
     <sprite x="8" y="0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="4F" />

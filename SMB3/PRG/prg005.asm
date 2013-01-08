@@ -441,11 +441,6 @@ ObjPAA:
 
 ObjInit_Podoboo:
 
-	; Start at X + 8
-	LDA <Objects_X,X
-	ADD #$08
-	STA <Objects_X,X
-
 	; Var5 = Original Y
 	LDA <Objects_Y,X
 	STA <Objects_Var5,X
