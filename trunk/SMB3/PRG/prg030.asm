@@ -1665,39 +1665,6 @@ PRG030_8DEF:
 	STA Level_MusicQueue	 ; Queue is emptied
 
 PRG030_8DF4:
-	LDA Level_TimerEn
-	BMI PRG030_8E2E	 	; If bit 7 is set (animations disabled), jump to PRG030_8E2E
-
-	LDY Level_Tileset
-	CPY #$05	 
-	BNE PRG030_8E1D	 	; If Level_Tileset <> 5 (pipe world plant infestation), jump to PRG030_8E1D
-
-
-	; PLANT INFESTATION ALTERNATE ANIMATION
-
-	; Specific animation style for the pirhana plant world thing in World 7
-	LDA <Counter_1
-	AND #$07
-	BNE PRG030_8E2E 	; Only update every 8 ticks (otherwise, nothing)
-
-	INC <PlantInfest_ACnt	; PlantInfest_ACnt++
-
-	LDA <PlantInfest_ACnt
-	CMP PlantInfest_ACnt_Max
-	BNE PRG030_8E13	 	; If PlantInfest_ACnt <> PlantInfest_ACnt_Max, jump to PRG030_8E13
-
-	LDA #$00	 
-	STA <PlantInfest_ACnt	; PlantInfest_ACnt = 0
-
-PRG030_8E13:
-
-	; Set proper VROM for this animation count of the plant infestation animation
-	TAY		; Y = PlantInfest_ACnt
-	LDA PlantInfest_PatTablePerACnt,Y
-	STA PatTable_BankSel+1
-
-	JMP PRG030_8E5D	 ; Jump to PlantInfest_ACnt
-
 PRG030_8E1D:
 	CPY #$07
 	BNE PRG030_8E24	 ; If Level_Tileset <> 7 (Toad House), jump to PRG030_8E24
@@ -3919,7 +3886,7 @@ TileSolidity:
 
 TileForeground:
 	.byte $E1, $DC, $DE, $81, $82, $06, $07, $C2, $C3, $00, $00, $00, $00, $00, $00, $00
-	.byte $47, $48, $49, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $47, $48, $49, $DB, $DE, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00

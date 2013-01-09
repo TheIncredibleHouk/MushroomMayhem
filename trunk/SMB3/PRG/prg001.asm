@@ -439,7 +439,7 @@ ObjP1F:	.byte $51, $53	; #DAHRKDAIZ - VINE
 ObjP21:	.byte $51, $53
 ObjP22:	.byte $51, $53 ; #DAHRKDAIZ - PUMPKIN
 ObjP23:	.byte $51, $53	; #DAHRKDAIZ - GOLD LEAF
-ObjP08:	.byte $BB, $BB, $BB, $FB, $BB, $B9, $B9, $BB, $BF, $BD
+ObjP08:	.byte $BB, $BB, $FB, $F9, $FB, $F9, $FF, $FD, $DA, $DA
 
 SpinyCheep_XVel:
 	.byte 8, -8
@@ -2993,16 +2993,18 @@ Koopaling_JumpYVels:
 	.byte -$30, -$30, -$10, -$30, -$50,  $00, -$50, -$40, -$38, -$20, -$40, -$60,  $00, -$60, -$50, -$50
 	.byte -$50, -$50, -$70,  $00, -$70
 
+Koopaling_Projectiles:
+	.byte SOBJ_ICEBALL, SOBJ_HAMMER, SOBJ_FIREBROFIREBALL, $00, $00, $00, $00, $00
 
 ObjNorm_Koopaling:
 	LDY KoopaKidType
 
 	; Use the right graphics for the Koopaling	
 	LDA KoopalingPatSet4,Y
-	STA PatTable_BankSel+4
-
-	LDA KoopalingPatSet5,Y
 	STA PatTable_BankSel+5
+
+	;LDA KoopalingPatSet5,Y
+	;STA PatTable_BankSel+5
 
 	; Behavior based on Level_GetWandState...
 	LDA Level_GetWandState
@@ -3041,9 +3043,6 @@ PRG001_AF02:
 	STA Objects_Timer2,X	 ; timer 2 |= 4
 
 	; Unused comparison and jump!  (Goes nowhere)
-	CMP #$08
-	BNE PRG001_AF0B
- PRG001_AF0B:
 
 	LDA Objects_SprVVis,X
 	CMP #$03
@@ -3309,9 +3308,13 @@ PRG001_B02E:
 	; Find an empty special object slot -> 'Y' OR if none available, do not return here!
 	JSR SpecialObj_FindEmptyAbort
 
+	STX DAIZ_TEMP1
+	LDX KoopaKidType
+
 	; Special object: Koopaling wand blast!
-	LDA #SOBJ_WANDBLAST
+	LDA Koopaling_Projectiles, X
 	STA SpecialObj_ID,Y
+	LDX DAIZ_TEMP1
 
 	; Set wand blast X
 	LDA <Objects_X,X
@@ -3672,6 +3675,8 @@ PRG001_B1A8:
 	LDA #$a0
 	STA Objects_Timer2,X	 ; Set timer 2 to $A0
 
+	LDA 
+
 	; Do not return to caller!!
 	PLA
 	PLA
@@ -3679,6 +3684,11 @@ PRG001_B1A8:
 PRG001_B1C9:
 	RTS		 ; Return
 
+Koopaling_PowerUp:
+	.byte #OBJ_POWERUP_NINJASHROOM, #OBJ_POWERUP_FIREFLOWER, #OBJ_POWERUP_SUPERLEAF, #OBJ_POWERUP_ICEFLOWER, #OBJ_POWERUP_FOXLEAF, #OBJ_POWERUP_STARMAN, #OBJ_POWERUP_STARMAN, #OBJ_POWERUP_STARMAN
+Koopaling_StarFlash:
+	.byte
+	RTS
 
 	; End and start frames of animation loop for Koopaling
 Koopaling_FrameLoopEnd:
@@ -3714,20 +3724,20 @@ KPATS .func ((\1 - KPatTable) / 6)
 	; Each Koopaling uses six 8x16 sprite chunks arranged 3x2
 
 	; Koopaling neutral frames
-	.byte $B9, $71, $B9, $A1, $A3, $A5	; 4: Spinning shell 1
-	.byte $BB, $71, $BB, $AD, $AF, $B1	; 5: Spinning shell 2
-	.byte $BD, $71, $BD, $A1, $A3, $A5	; 6: Spinning shell 3
-	.byte $B9, $71, $B9, $A7, $A9, $AB	; 7: Spinning shell 4
-	.byte $BB, $71, $BB, $B3, $B5, $B7	; 8: Spinning shell 5
-	.byte $BD, $71, $BD, $A7, $A9, $AB	; 9: Spinning shell 6
-	.byte $8D, $8F, $71, $91, $93, $71	; 10: Exiting shell 1
-	.byte $85, $87, $71, $89, $8B, $71	; 11: Exiting shell 2
-	.byte $81, $81, $71, $83, $83, $71	; 12: Exiting shell 3
-	.byte $71, $85, $87, $71, $89, $8B	; 13: Exiting shell 4
-	.byte $71, $8D, $8F, $71, $91, $93	; 14: Exiting shell 5
-	.byte $71, $95, $97, $71, $99, $9B	; 15: Exiting shell 6
-	.byte $9D, $9D, $71, $9F, $9F, $71	; 16: Exiting shell 7
-	.byte $95, $97, $71, $99, $9B, $71	; 17: Exiting shell 8
+	.byte $B9, $31, $B9, $A1, $A3, $A5	; 4: Spinning shell 1
+	.byte $BB, $31, $BB, $AD, $AF, $B1	; 5: Spinning shell 2
+	.byte $BD, $31, $BD, $A1, $A3, $A5	; 6: Spinning shell 3
+	.byte $B9, $31, $B9, $A7, $A9, $AB	; 7: Spinning shell 4
+	.byte $BB, $31, $BB, $B3, $B5, $B7	; 8: Spinning shell 5
+	.byte $BD, $31, $BD, $A7, $A9, $AB	; 9: Spinning shell 6
+	.byte $8D, $8F, $31, $91, $93, $31	; 10: Exiting shell 1
+	.byte $85, $87, $31, $89, $8B, $31	; 11: Exiting shell 2
+	.byte $81, $81, $31, $83, $83, $31	; 12: Exiting shell 3
+	.byte $31, $85, $87, $31, $89, $8B	; 13: Exiting shell 4
+	.byte $31, $8D, $8F, $31, $91, $93	; 14: Exiting shell 5
+	.byte $31, $95, $97, $31, $99, $9B	; 15: Exiting shell 6
+	.byte $9D, $9D, $31, $9F, $9F, $31	; 16: Exiting shell 7
+	.byte $95, $97, $31, $99, $9B, $31	; 17: Exiting shell 8
 
 	; Larry
 KoopalingPats_Larry:
@@ -3853,7 +3863,7 @@ PRG001_B336:
 
 	; Force pattern table bank 4 to $4B
 	LDY #$4b
-	STY PatTable_BankSel+4
+	STY PatTable_BankSel+5
 
 	CMP #$0a
 	BLT PRG001_B368	 	; If object's frame < 10, jump to PRG001_B368
@@ -4109,10 +4119,13 @@ PRG001_B472:
 	STA Sprite_RAM+11,Y
 
 	LDA KPatTable,X
+	ADD #$40
 	STA Sprite_RAM+1,Y
 	LDA KPatTable+1,X
+	ADD #$40
 	STA Sprite_RAM+5,Y
 	LDA KPatTable+2,X
+	ADD #$40
 	STA Sprite_RAM+9,Y
 
 	LDA <Temp_Var3
