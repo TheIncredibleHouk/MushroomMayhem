@@ -6834,7 +6834,6 @@ SetBGPriority:
 	RTS
 
 SetPriorityForObjects:
-	LDA Debug_Snap
 	LDA DAIZ_TEMP3
 	LDX DAIZ_TEMP2
 	ORA Objects_SprAttr,X
