@@ -95,7 +95,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_WoodenPlatFloat	; Object $3E - OBJ_WOODENPLATFORMFLOAT
 	.word ObjNorm_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjNorm_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
-	;.word ObjNorm_EndLevelCard	; Object $41 - OBJ_ENDLEVELCARD
+	.word ObjNorm_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
 	.word ObjNorm_CheepCheepP2P	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
 	.word ObjNorm_CheepCheepP2P2	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
 	.word ObjNorm_PathFollowPlat	; Object $44 - OBJ_WOODENPLATUNSTABLE
@@ -1433,7 +1433,7 @@ ObjInit_CheepCheepP2P2:
 ObjInit_CheepCheepP2P:
 
 	; Timer = $40
-	LDA #$40
+	LDA #$20
 	STA Objects_Timer,X
 
 	; Set attribute $20 (sprite priority)
@@ -1443,7 +1443,7 @@ ObjInit_CheepCheepP2P:
 	RTS		 ; Return
 
 CheepP2P_XVel:	.byte -$10, -$10, $10, $10, -$10, $10
-CheepP2P_YVel:	.byte -$36, -$36, -$47, -$47, -$3F, -$3F
+CheepP2P_YVel:	.byte -$36, -$36, -$47, -$47, -$4F, -$4F
 
 PRG002_A772:	.byte $20, $20, -$20, -$20, $00, $00
 	
@@ -1512,16 +1512,6 @@ PRG002_A793:
 
 	LDY <Objects_YVel,X
 	BMI PRG002_A7D4	 ; If Cheep Cheep is moving upward, jump to PRG002_A7D4
-
-	; Align to tile X
-	LDA <Objects_X,X
-	AND #$f0
-	STA <Objects_X,X
-
-	; Align to tile Y
-	LDA <Objects_Y,X
-	AND #$f0
-	STA <Objects_Y,X
 
 	JSR ObjInit_CheepCheepP2P	 ; Re-initialize!
 
