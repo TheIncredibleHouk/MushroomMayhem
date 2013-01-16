@@ -2593,7 +2593,7 @@ OneTile_ChangeToTile:
 OneTile_ChangeToPatterns:
 	.byte $FF, $FF, $FF, $FF	; $01 - CHNGTILE_DELETECOIN
 	.byte $FF, $FF, $FF, $FF	; $02 - CHNGTILE_DELETETOBG
-	.byte $EA, $EB, $EF, $EF	; $03 - CHNGTILE_TOFRZWATER
+	.byte $EA, $EB, $FC, $FC	; $03 - CHNGTILE_TOFRZWATER
 	.byte $FD, $FD, $EF, $EF	; $04 - CHNGTILE_STANDINGWATER #DAHRKDAIZ
 	.byte $AC, $AD, $BC, $BD	; $05 - CHNGTILE_TONOTEBLOCK
 	.byte $B8, $BA, $B9, $BB	; $06 - CHNGTILE_COINHEAVEN

@@ -2627,6 +2627,7 @@ CFIRE_LASER		= $15	; Laser fire
 									; Hammer/Sledge		Ninja
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
+	DAIZ_TEMP4:			.ds 1	;
 	Invincible_Enemies: .ds	1	; Indicates the enemies are invincible
 	Pay_Toll_Timer:		.ds 1	; Used timer for paying tolls on Hammer Bros on map
 	Deduct_Coin_Timer:	.ds 1	; Used timer for deducting necessary coins on Hammer Bros. Map
@@ -2648,7 +2649,7 @@ CFIRE_LASER		= $15	; Laser fire
 
 	Sound_Octave:		.ds 1	; Used for calculating octave
 
-				.ds 12	; $7AE4-$7AEF unused
+				.ds 11	; $7AE4-$7AEF unused
 
 	Music_Sq1Bend:		.ds 1	; Alters PAPU_FT1 for bend effects
 
@@ -3383,7 +3384,7 @@ OBJ_PATOOIE		= $2A	; Patooie
 OBJ_GOOMBAINSHOE	= $2B	; Goomba in Kuribo's Shoe (yes, I know Kuribo = Goomba, quiet)
 OBJ_CLOUDPLATFORM	= $2C	; Cloud platform
 OBJ_BIGBERTHA		= $2D	; Big Bertha that eats you
-OBJ_INVISIBLELIFT	= $2E	; Invisible (until touched) lift that goes up to fixed position of Y/Hi = 64
+OBJ_PIRATEBOO	= $2E	; Invisible (until touched) lift that goes up to fixed position of Y/Hi = 64
 OBJ_BOO			= $2F	; Boo Diddly
 OBJ_HOTFOOT_SHY		= $30	; Hot Foot (returns to flame if looked at)
 OBJ_BOOSTRETCH		= $31	; "Stretch" Boo, upright
@@ -3470,9 +3471,8 @@ OBJ_LAKITU		= $83	; Lakitu throwing red spiny eggs
 OBJ_SPINYEGG		= $84	; Working red spiny egg
 OBJ_BLUESPINY		= $85	; Rolling "dud" spiny egg
 OBJ_ICEBRO		= $86	; Heavy brother
-OBJ_HEAVYBRO		= $86	; Heavy brother
 OBJ_FIREBRO		= $87	; Fire Brother
-OBJ_ORANGECHEEP		= $88	; "Lost" orange cheep cheep
+OBJ_PIRATEBRO		= $88	; "Lost" orange cheep cheep
 OBJ_CHAINCHOMP		= $89	; Chain chomp
 OBJ_THWOMP		= $8A	; Standard Thwomp
 OBJ_THWOMPLEFTSLIDE	= $8B	; Left sliding Thwomp
@@ -3557,6 +3557,11 @@ OBJ_AUTOSCROLL		= $D3	; Activates auto scrolling for e.g. World 1-4, World 8 Tan
 OBJ_BONUSCONTROLLER	= $D4	; Handles the judgement of whether you get a White Toad House / Coin Ship
 OBJ_TOADANDKING		= $D5	; Toad and the king from the end of the world
 OBJ_TREASURESET		= $D6	; Sets the treasure box item (Level_TreasureItem) based on what row this object is placed at
+
+
+OBJ_ORANGECHEEP		= $FF	;
+OBJ_HEAVYBRO		= $FF	;
+OBJ_INVISIBLELIFT   = $FF	;
 
 ; Miscellaneous Player frames
 PF_KICK_SMALL		= $42	; Foot out kick when small

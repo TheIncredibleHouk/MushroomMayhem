@@ -34,7 +34,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DoNothing		; Object $2B - OBJ_GOOMBAINSHOE
 	.word ObjInit_CloudPlatform	; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjInit_ChasingFish	; Object $2D - OBJ_BIGBERTHA
-	.word ObjInit_InvisibleLift	; Object $2E - OBJ_INVISIBLELIFT
+	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
 	.word ObjInit_DoNothing		; Object $2F - OBJ_BOO
 	.word ObjInit_HotFootShy	; Object $30 - OBJ_HOTFOOT_SHY
 	.word ObjInit_Stretch		; Object $31 - OBJ_BOOSTRETCH
@@ -76,7 +76,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_GoombaInShoe	; Object $2B - OBJ_GOOMBAINSHOE
 	.word ObjNorm_CloudPlat		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjNorm_BigBertha		; Object $2D - OBJ_BIGBERTHA
-	.word ObjNorm_InvisibleLift	; Object $2E - OBJ_INVISIBLELIFT
+	.word ObjNorm_Boo	; Object $2E - OBJ_PIRATEBOO
 	.word ObjNorm_Boo		; Object $2F - OBJ_BOO
 	.word ObjNorm_HotfootShy	; Object $30 - OBJ_HOTFOOT_SHY
 	.word ObjNorm_Stretch		; Object $31 - OBJ_BOOSTRETCH
@@ -119,7 +119,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_GoombaInShoe	; Object $2B - OBJ_GOOMBAINSHOE
 	.word ObjHit_CloudPlat		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjHit_DoNothing		; Object $2D - OBJ_BIGBERTHA
-	.word ObjHit_DoNothing		; Object $2E - OBJ_INVISIBLELIFT
+	.word Player_Take_Coins		; Object $2E - OBJ_PIRATEBOO
 	.word Player_GetHurt		; Object $2F - OBJ_BOO
 	.word Player_GetHurt		; Object $30 - OBJ_HOTFOOT_SHY
 	.word Player_GetHurt		; Object $31 - OBJ_BOOSTRETCH
@@ -161,7 +161,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2B - OBJ_GOOMBAINSHOE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $2D - OBJ_BIGBERTHA
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $2E - OBJ_INVISIBLELIFT
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2E - OBJ_PIRATEBOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2F - OBJ_BOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $30 - OBJ_HOTFOOT_SHY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $31 - OBJ_BOOSTRETCH
@@ -209,7 +209,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $2B - OBJ_GOOMBAINSHOE
 	.byte OA2_TDOGRP2	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA2_TDOGRP0	; Object $2D - OBJ_BIGBERTHA
-	.byte OA2_TDOGRP2	; Object $2E - OBJ_INVISIBLELIFT
+	.byte OA2_TDOGRP1	; Object $2E - OBJ_PIRATEBOO
 	.byte OA2_TDOGRP1	; Object $2F - OBJ_BOO
 	.byte OA2_TDOGRP0	; Object $30 - OBJ_HOTFOOT_SHY
 	.byte OA2_TDOGRP1	; Object $31 - OBJ_BOOSTRETCH
@@ -229,8 +229,8 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP1	; Object $3F - OBJ_DRYBONES
 	.byte OA2_NOSHELLORSQUASH | OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA2_TDOGRP0	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
 	.byte OA2_TDOGRP9	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA2_TDOGRP0	; Object $45 - OBJ_HOTFOOT
 	.byte OA2_TDOGRP2	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -251,7 +251,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_KURIBOSPECIAL 	; Object $2B - OBJ_GOOMBAINSHOE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA3_HALT_NORMALONLY 	; Object $2D - OBJ_BIGBERTHA
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_INVISIBLELIFT
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2F - OBJ_BOO
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $30 - OBJ_HOTFOOT_SHY
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $31 - OBJ_BOOSTRETCH
@@ -293,7 +293,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT5 | $0B	; Object $2B - OBJ_GOOMBAINSHOE
 	.byte OPTS_SETPT5 | $0E	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OPTS_SETPT5 | $1A	; Object $2D - OBJ_BIGBERTHA
-	.byte OPTS_SETPT6 | $13	; Object $2E - OBJ_INVISIBLELIFT
+	.byte OPTS_SETPT5 | $4E	; Object $2E - OBJ_PIRATEBOO
 	.byte OPTS_SETPT5 | $12	; Object $2F - OBJ_BOO
 	.byte OPTS_SETPT5 | $12	; Object $30 - OBJ_HOTFOOT_SHY
 	.byte OPTS_SETPT5 | $12	; Object $31 - OBJ_BOOSTRETCH
@@ -335,7 +335,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $2B - OBJ_GOOMBAINSHOE
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte KILLACT_NORMALSTATE	; Object $2D - OBJ_BIGBERTHA
-	.byte KILLACT_STANDARD	; Object $2E - OBJ_INVISIBLELIFT
+	.byte KILLACT_STANDARD	; Object $2E - OBJ_PIRATEBOO
 	.byte KILLACT_STANDARD	; Object $2F - OBJ_BOO
 	.byte KILLACT_POOFDEATH	; Object $30 - OBJ_HOTFOOT_SHY
 	.byte KILLACT_POOFDEATH	; Object $31 - OBJ_BOOSTRETCH
@@ -450,7 +450,7 @@ ObjP43:
 ObjP3A:
 	.byte $71, $E1, $E3, $E1, $E3, $71
 ObjP2E:
-	.byte $E1, $E3, $E1, $E3
+	.byte $71, $71, $A9, $AB
 ObjP41:
 	.byte $51, $51, $53, $53, $55, $55, $F7, $F7, $F9, $F9, $FB, $FB, $E3, $E3, $E5, $E5, $F5, $F5, $FD, $FD, $FD, $FD, $FD, $FD, $E3, $E3, $E5, $E5, $F5, $F5, $D1, $D3, $D5, $D7
 ObjP40:
@@ -1431,7 +1431,10 @@ ObjInit_CheepCheepP2P2:
 	STA <Objects_Var4,X	 ; Var4 = 4
 
 ObjInit_CheepCheepP2P:
+	LDA #$01
+	STA Objects_InWater,X
 
+Restart_CheepCheepP2P2:
 	; Timer = $40
 	LDA #$20
 	STA Objects_Timer,X
@@ -1442,7 +1445,7 @@ ObjInit_CheepCheepP2P:
 
 	RTS		 ; Return
 
-CheepP2P_XVel:	.byte -$10, -$10, $10, $10, -$10, $10
+CheepP2P_XVel:	.byte -$10, -$10, $10, $10, $10, -$10
 CheepP2P_YVel:	.byte -$36, -$36, -$47, -$47, -$4F, -$4F
 
 PRG002_A772:	.byte $20, $20, -$20, -$20, $00, $00
@@ -1454,7 +1457,7 @@ ObjNorm_CheepCheepP2P:
 	; Timer not expired...
 
 	LSR A
-	BNE PRG002_A7E0	 ; If timer > 1, jump to PRG002_A7E0
+	BNE PRG002_A7932	 ; If timer > 1, jump to PRG002_A7E0
 
 	; Timer = 1...
 
@@ -1465,9 +1468,20 @@ ObjNorm_CheepCheepP2P:
 	LDY #$03	 	; Otherwise, Y = 3
 PRG002_A787:
 	STY <Objects_Var4,X	; Update Var4
+	
+	; if cheep cheep is not in water
+	CLC
+	LDA Objects_InWater,X
+	BNE CCInWater
+	SEC 
 
-	; Set Cheep Cheep's Y Velocity
+CCInWater:
+; Set Cheep Cheep's Y Velocity
 	LDA CheepP2P_YVel,Y
+	BCC NormCCVelY
+; cheep cheep is not in water, dampen it's jump
+	ADC #$1F
+NormCCVelY:
 	STA <Objects_YVel,X
 
 	; Set Cheep Cheep's X velocity
@@ -1477,6 +1491,8 @@ PRG002_A787:
 PRG002_A793:
 	JSR Object_ApplyXVel	 ; Apply X velocity
 	JSR Object_ApplyYVel	 ; Apply Y Velocity
+
+PRG002_A7932:
 	JSR Player_HitEnemy	 ; Standard Enemy Collision routine
 
 	LDY <Objects_YVel,X	; Y = Cheep Cheep's Y velocity
@@ -1493,6 +1509,34 @@ PRG002_A793:
 	PLA		 ; Restore velocity
 	STA <Objects_YVel,X	 ; Set it (ignore the water velocity)
 
+; this detects a solid tile. If the fish is on a solid tile the cheep cheep is considered "beached"
+	JSR Object_WorldDetectN1
+	LDA <Objects_DetStat,X 
+	PHA
+	AND #$04 
+	BEQ NotBeached
+	LDA #$D8
+	STA <Objects_YVel,X
+
+; if it hits a wall it reverses direction
+NotBeached:
+	PLA
+	PHA
+	AND #$03
+	BEQ  NotHittingWall
+	LDA <Objects_XVel,X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVel,X
+
+NotHittingWall:
+	PLA
+	AND #$08
+	BEQ NotHittingCeiling
+	LDA #$00
+	STA <Objects_YVel, X
+
+NotHittingCeiling:
 	; NOTE: This only works on a limited range of velocities (not a problem here)
 	; but it should have been a right shift for a more general implementation.
 	LDA <Objects_XVel,X
@@ -1510,10 +1554,10 @@ PRG002_A793:
 
 	; Limit value hit...
 
-	LDY <Objects_YVel,X
-	BMI PRG002_A7D4	 ; If Cheep Cheep is moving upward, jump to PRG002_A7D4
+	LDA Objects_InWater, X
+	BEQ PRG002_A7D4	 ; If Cheep Cheep is not water, jump to PRG002_A7D4
 
-	JSR ObjInit_CheepCheepP2P	 ; Re-initialize!
+	JSR Restart_CheepCheepP2P2	 ; Re-initialize!
 
 	LDA #$00	 ; Reset Var5
 
@@ -1546,7 +1590,7 @@ ObjNorm_CheepCheepP2P2:
 	LDA <Objects_Var4,X
 	EOR #$01	 ; Invert Var4
 	TAY		 ; -> Y
-	BPL PRG002_A787	 ; Jump (technically always) to PRG002_A787
+	JMP PRG002_A787	 ; Jump (technically always) to PRG002_A787
 
 	; Different "entropy" values by the object's slot -- keeps things random looking
 Entropy_BySlot:	.byte $13, $D7, $F9, $36, $7F
@@ -1731,6 +1775,9 @@ Boo_VelAccel:	.byte $01, -$01
 Boo_VelLimit:	.byte $10, -$10
 
 ObjNorm_Boo:
+	LDA Level_ObjectID, X
+	CMP #OBJ_PIRATEBOO		; it's pirate boo, chase Mario ALWAYS!
+	BEQ PRG002_A8DE
 	JSR Boo_CheckPlayerSight
 	BCS PRG002_A8DE	 ; If carry set, it's time to start chasing Player!  Jump to PRG002_A8DE
 
@@ -5615,4 +5662,39 @@ Challenge_Toad:
 	STA <Player_X
 
 Skip_Line_Up2:
+	RTS
+
+Player_Take_Coins:
+	STX DAIZ_TEMP1
+	LDA <Counter_1
+	AND #$03
+	BNE No_More_Coins
+	STA Debug_Snap
+	JSR Clear_Calc
+	LDX #$03
+
+Store_Next_Coin1:
+	LDA Player_Coins, X
+	STA Calc_From + 4, X
+	DEX
+	BPL Store_Next_Coin1
+	LDA #$01
+	STA Calc_Value + 7
+	JSR Subtract_Values
+	LDA Calc_From
+	BMI No_More_Coins
+	LDX #$03
+
+Taking_Coins:
+	LDA Calc_From + 4, X
+	STA Player_Coins, X
+	DEX
+	BPL Taking_Coins
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	STA Force_Coin_Update
+
+No_More_Coins:
+	LDX DAIZ_TEMP1
 	RTS

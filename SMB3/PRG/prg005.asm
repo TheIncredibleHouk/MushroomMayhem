@@ -5353,7 +5353,7 @@ PRG005_B9E6:
 
 	INC Objects_InWater,X	 ; Set object as in water
 
-	LDA #OBJ_ORANGECHEEP	 ; A = OBJ_ORANGECHEEP
+	LDA #$00   ; #OBJ_PIRATEBRO	 ; A = OBJ_PIRATEBRO
 	BNE PRG005_BA2D	 ; Jump (technically always) to PRG005_BA2D
 
 PRG005_BA2B:

@@ -1101,6 +1101,8 @@ PRG007_A506:
 	TAY
 
 PRG007_A52D:
+	LDA #$80
+	STA PriorityCheckType
 	LDA [Temp_Var1],Y	 ; Get the tile at the Player Projectile 
 	JSR PSwitch_SubstTileAndAttr	 ; Handle P-Switch changed tiles
 	PHA		 ; Save adjusted tile
@@ -3630,7 +3632,7 @@ Cannonball_YDiffLimit:	.byte 16, 32
 SObj_Cannonball:
 
 	; Load cannonball graphics
-	LDA #$36
+	LDA #$3C
 	STA PatTable_BankSel+4
 
 	LDA <Player_HaltGame
@@ -3658,9 +3660,9 @@ PRG007_B3C2:
 	STA Sprite_RAM+$06,Y
 
 	; Set left and right cannonball patterns
-	LDA #$af
+	LDA #$8B
 	STA Sprite_RAM+$05,Y
-	LDA #$ad
+	LDA #$89
 	STA Sprite_RAM+$01,Y
 
 	LDA SpecialObj_Data,X
@@ -5251,7 +5253,7 @@ PRG007_BB97:
 CFire_Cannonball:
 
 	; Load cannonball graphics
-	LDA #$36
+	LDA #$4e
 	STA PatTable_BankSel+4
 
 	LDA CannonFire_Timer,X
