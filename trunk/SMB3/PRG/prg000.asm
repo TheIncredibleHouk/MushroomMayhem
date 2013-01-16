@@ -343,8 +343,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2B - OBJ_GOOMBAINSHOE
 	.byte OAT_BOUNDBOX08 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OAT_BOUNDBOX07	; Object $2D - OBJ_BIGBERTHA
-	.byte OAT_BOUNDBOX11 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $2E - OBJ_INVISIBLELIFT
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2F - OBJ_BOO
+	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_FIREIMMUNITY	; Object $2E - OBJ_PIRATEBOO
+	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_FIREIMMUNITY	; Object $2F - OBJ_BOO
 	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY	; Object $30 - OBJ_HOTFOOT_SHY
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $31 - OBJ_BOOSTRETCH
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $32 - OBJ_BOOSTRETCH_FLIP
@@ -433,7 +433,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_BLUESPINY
 	.byte OAT_BOUNDBOX02	; Object $86 - OBJ_ICEBRO
 	.byte OAT_BOUNDBOX02	; Object $87 - OBJ_FIREBRO
-	.byte OAT_BOUNDBOX01	; Object $88 - OBJ_ORANGECHEEP
+	.byte OAT_BOUNDBOX02	; Object $88 - OBJ_PIRATEBRO
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $89 - OBJ_CHAINCHOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8A - OBJ_THWOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8B - OBJ_THWOMPLEFTSLIDE
@@ -1308,11 +1308,6 @@ PRG000_C797:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $C7A9
 Object_DetectTile:
-	LDA Level_7Vertical	 
-	BEQ PRG000_C7B1	 ; If level is NOT vertical, jump to PRG000_C7B1
-
-	JMP PRG000_C85C	 ; Jump to PRG000_C85C
-
 PRG000_C7B1:
 	LDA Player_PartDetEn
 	BEQ PRG000_C7D9	 ; If Player_PartDetEn is not set, jump to PRG000_C7D9
@@ -1431,7 +1426,6 @@ PRG000_C834:
 	; with the attribute and tile from the other arrays...
 PrePSwitchTile:		.byte $40, $67, $66, $05, $41, $82, $83, $7F ; include thawed coins and [||] blocks
 PostPSwitchTile:	.byte $67, $40, $40, $67, $7F, $42, $43, $80
-PostPSwitchAttr:	.byte $03, $00, $03, $03, $03, $00, $00, $00
 
 PSwitch_SubstTileAndAttr:
 	JSR CheckSpriteOnFG
@@ -1445,9 +1439,6 @@ PRG000_C84A:
 	CMP PrePSwitchTile,Y
 	BNE PRG000_C858	 	; If this is not a match, jump to PRG000_C858
 
-	LDA PostPSwitchAttr,Y	; Get replacement attribute
-	STA <Player_Slopes	; Store into Player_Slopes
-
 	LDA PostPSwitchTile,Y	; Get replacement tile
 	RTS		 ; Return
 
@@ -1460,43 +1451,6 @@ PRG000_C85B:
 
 
 PRG000_C85C:
-
-	; Vertical level object detect tile
-
-	LDA <Objects_Y,X
-	ADD Object_TileDetectOffsets,Y	; Adding tile detection Y offset to Object's Y
-	AND #$f0		; Align to grid
-	STA ObjTile_DetYLo 	; -> ObjTile_DetYLo (low)
-	STA <Temp_Var3		 ; -> Temp_Var3
-
-	LDA <Objects_YHi,X
-	ADC #$00	 	; Apply carry
-	STA ObjTile_DetYHi 	; -> ObjTile_DetYHi (high)
-
-	CMP #$10
-	BGE PRG000_C832	 ; If object is detecting way too low (out of range), jump to PRG000_C832 (no tile detected)
-
-	ADC #$60		; +$60
-	STA <Temp_Var2		 ; -> Temp_Var2
-
-	; ObjTile_DetXHi = Objects_XHi (should be zero)
-	LDA <Objects_XHi,X
-	STA ObjTile_DetXHi
-
-	LDA <Objects_X,X
-	ADD Object_TileDetectOffsets+1,Y	; Adding tile detection X offset to Object's X
-	STA ObjTile_DetXLo 	; -> ObjTile_DetXLo (low)
-
-	; Calculate tile offset within screen
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	ORA <Temp_Var3
-	STA <Temp_Var1	 ; -> Temp_Var1 
-
-	LDY #$00	 ; Y = 0 (additional offset not used)
-
 	JMP PRG000_C82A	 ; Jump to PRG000_C82A
 
 ; FIXME: Anybody want to claim this?
@@ -6807,7 +6761,7 @@ NotNight:
 	RTS
 
 CheckSpriteOnFG:
-	STA DAIZ_TEMP1
+	STA DAIZ_TEMP4
 	STX DAIZ_TEMP2
 	LDX #$0F
 
@@ -6825,11 +6779,12 @@ SetSpriteBehind:
 SetBGPriority:
 	STA DAIZ_TEMP3
 	LDA PriorityCheckType
+	BMI SetPriorityForProjectiles
 	BNE SetPriorityForObjects
 	LDA DAIZ_TEMP3
 	ORA Player_Behind_En
 	STA Player_Behind_En
-	LDA DAIZ_TEMP1
+	LDA DAIZ_TEMP4
 	LDX DAIZ_TEMP2
 	RTS
 
@@ -6838,5 +6793,10 @@ SetPriorityForObjects:
 	LDX DAIZ_TEMP2
 	ORA Objects_SprAttr,X
 	STA Objects_SprAttr,X
-	LDA DAIZ_TEMP1
+	LDA DAIZ_TEMP4
+	RTS
+
+SetPriorityForProjectiles:
+	LDA DAIZ_TEMP4
+	LDX DAIZ_TEMP2
 	RTS
