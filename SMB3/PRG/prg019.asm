@@ -784,7 +784,7 @@ PRG019_A78C:
 PRG019_A798:
 	PHA		 ; Save value
 
-	JSR LoadLevel_Set_TileMemAddr	 ; Set tile address?
+	;JSR LoadLevel_Set_TileMemAddr	 ; Set tile address?
 
 	PLA		 ; Restore random 0-2 value
 	TAX		; -> 'X'

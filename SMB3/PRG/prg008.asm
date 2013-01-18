@@ -267,17 +267,6 @@ PRG008_A118:
 Player_DoGameplay:
 	LDA #$04	; A = 4
 
-	LDY Level_TilesetIdx	 ; Y = Level_TilesetIdx
-	CPY #10
-	BNE PRG008_A14C	 ; If Level_TilesetIdx <> 10 (Giant World), jump to PRG008_A14C
-
-	LDA #60		; A = 60
-
-PRG008_A14C:
-	;STA PatTable_BankSel+3	 ; Set VROM page (2/4 sprites)
-
-	; Set Level_TilesetIdx by the current Tileset
-	; Basically amounts to (Level_Tileset - 1)
 	LDY Level_Tileset
 	LDA Level_TilesetIdx_ByTileset,Y
 	STA Level_TilesetIdx
@@ -324,10 +313,10 @@ PRG008_A17F:
 	BPL PRG008_A17F
 
 	; Makes for "wobbly" raising of the airship at least..
-	LDA Counter_Wiggly
-	AND #$F0
-	SUB #$90
-	STA Counter_Wiggly
+	;LDA Counter_Wiggly
+	;AND #$F0
+	;SUB #$90
+	;STA Counter_Wiggly
 
 	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 
@@ -1497,10 +1486,11 @@ PRG008_A7AD:
 PRG008_A7BE:
 
 	; NOT underwater!
-
 	LDA Player_InWater
 	BEQ PRG008_A827	 ; If Player was not previously in water, jump to PRG008_A827
 
+	LDA #$02
+	STA Air_Change
 	LDA <Player_InAir
 	BNE PRG008_A7CB	 ; If Player is mid air, jump to PRG008_A7CB
 
@@ -1570,6 +1560,7 @@ PRG008_A7F1:
 
 	LDA #$01
 	STA Top_Of_Water
+	STA Air_Change
 	TYA		 ; A = original Pad_Holding
 	AND #(PAD_UP | PAD_A)
 	CMP #(PAD_UP | PAD_A)
@@ -1591,7 +1582,8 @@ PRG008_A80B:
 PRG008_A812:
 
 	; Solid floor tile at head last check
-
+	LDA #$FF
+	STA Air_Change
 	LDY <Temp_Var15
 	CPY Player_InWater
 	BEQ PRG008_A827	   ; If Player_InWater = Temp_Var15 (underwater flag = underwater status), jump to PRG008_A827
@@ -1603,6 +1595,9 @@ PRG008_A819:
 	TYA
 	ORA Player_InWater
 	STY Player_InWater	; Merge water flag status
+	EOR #$FF
+	ADD #$01
+	STA Air_Change
 	CMP #$02	 
 	BEQ PRG008_A827	 	; If it equals 2, jump to PRG008_A827
 
@@ -2397,7 +2392,7 @@ PRG008_ABEB:
 
 PRG008_ABF5: 
 	LDA <Temp_Var1
-	ADD Counter_Wiggly	; actual value not used, looking for a semi-random carry
+	ADD RandomN	; actual value not used, looking for a semi-random carry
 
 	LDA <Player_XVel
 	ADC <Temp_Var2
@@ -4082,9 +4077,6 @@ Player_GetTileAndSlope:
 	LDA #$00
 	STA Temp_VarNP0 ; Temp_VarNP0 = 0
 
-	LDA Level_7Vertical
-	BNE PRG008_B442	 ; If level is vertical, jump to PRG008_B442
-
 	LDA Player_PartDetEn
 	BEQ PRG008_B3F7	 ; If Player_PartDetEn is not set, jump to PRG008_B3F7
 
@@ -4181,8 +4173,12 @@ PRG008_B42E:
 	LDY Level_PipeMove	; Y = Level_PipeMove (movement command in $8x form)
 	BNE PRG008_B43F	 	; If Level_PipeMove <> 0, jump to PRG008_B43F
 
-	LDY #$00
-	STY PriorityCheckType
+	PHA
+	JSR CheckSpriteOnFG
+	ORA Player_Behind_En
+	STA Player_Behind_En
+	PLA
+
 	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
 
 PRG008_B43F:
@@ -4220,8 +4216,12 @@ PRG008_B458:
 	LDY Level_PipeMove	 ; Y = Level_PipeMove
 	BNE PRG008_B46C	 	; If Level_PipeMove <> 0, jump to PRG008_B46C
 
-	LDY #$00
-	STY PriorityCheckType
+	PHA
+	JSR CheckSpriteOnFG
+	ORA Player_Behind_En
+	STA Player_Behind_En
+	PLA
+
 	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
 
 PRG008_B46C:
@@ -6730,59 +6730,91 @@ PRG008_BFF9:
 	; #DAHRKDAIZ - custom code created to decrease air meter while swimming
 	; if frog suit or top of water, increase air.
 Do_Air_Timer:				; Added code to increase/decrease the air time based on water
-	LDA Top_Of_Water
-	BNE Increase_Air_Time
+	LDA Air_Change
+	BNE CheckAirChange
+	RTS
+
+CheckAirChange:
 	LDA Air_Time
-	BEQ Skip_Air_Change
-	AND #$80				
-	BNE Increase_Air_Time				; Top of water, let's breath!
-	LDA Player_InWater
-	BEQ Increase_Air_Time
-	LDA <Player_Suit
-	CMP #$04
-	BEQ Increase_Air_Time
-	BNE Decrease_Air_Time
-
-Decrease_Air_Time:
-	LDA #$07
-	STA  DAIZ_TEMP1
-	LDA Player_Ability
-	CMP #$02
-	BNE Do_Air_Dec
-	LDA #$0F
-	STA  DAIZ_TEMP1
-
-Do_Air_Dec:
-	LDA Counter_1
-	AND DAIZ_TEMP1
-	BNE Skip_Air_Change
-	LDA Air_Time			; No air, stop decreasing it!
-	BMI Skip_Air_Change
-	DEC Air_Time
-	BNE Skip_Air_Change	; Air is 0, kill the player!
+	BNE Change_Air
 	JMP Player_Die
 
-	
-Increase_Air_Time:
-	; #DAHRKDAIZ - Hijacked for swim
-	LDA Air_Time
-	CMP #$40				; Max air is #$40
-	BEQ Skip_Air_Change	; If max, skip!
-	LDA Counter_1
-	AND #$03				; Increase air a bit faster than decrease
-	BNE Skip_Air_Change
-	INC Air_Time
+Change_Air:
+	ADD Air_Change
+	CMP #$41
+	BLS NotMaxAir
+	LDA #$00
+	STA Air_Change
+	RTS
 
-Skip_Air_Change:
-	LDA Air_Time
-	BEQ Air_RTS
+NotMaxAir:
+	STA TempA
+	LDA <Counter_1
+	AND #$07
+	BNE NoChange
+	LDA TempA
+	STA Air_Time
 	CMP #$10
-	BCS Air_RTS
+	BGE NoChange
 	LDA Sound_QLevel1
 	ORA #SND_LEVELTAILWAG
 	STA Sound_QLevel1
-Air_RTS:
-	RTS	
+
+NoChange:
+	RTS
+;	LDA Top_Of_Water
+;	BNE Increase_Air_Time
+;	LDA Air_Time
+;	BEQ Skip_Air_Change
+;	AND #$80				
+;	BNE Increase_Air_Time				; Top of water, let's breath!
+;	LDA Player_InWater
+;	BEQ Increase_Air_Time
+;	LDA <Player_Suit
+;	CMP #$04
+;	BEQ Increase_Air_Time
+;	BNE Decrease_Air_Time
+;
+;Decrease_Air_Time:
+;	LDA #$07
+;	STA  DAIZ_TEMP1
+;	LDA Player_Ability
+;	CMP #$02
+;	BNE Do_Air_Dec
+;	LDA #$0F
+;	STA  DAIZ_TEMP1
+;
+;Do_Air_Dec:
+;	LDA Counter_1
+;	AND DAIZ_TEMP1
+;	BNE Skip_Air_Change
+;	LDA Air_Time			; No air, stop decreasing it!
+;	BMI Skip_Air_Change
+;	DEC Air_Time
+;	BNE Skip_Air_Change	; Air is 0, kill the player!
+;	JMP Player_Die
+;
+;	
+;Increase_Air_Time:
+;	; #DAHRKDAIZ - Hijacked for swim
+;	LDA Air_Time
+;	CMP #$40				; Max air is #$40
+;	BEQ Skip_Air_Change	; If max, skip!
+;	LDA Counter_1
+;	AND #$03				; Increase air a bit faster than decrease
+;	BNE Skip_Air_Change
+;	INC Air_Time
+;
+;Skip_Air_Change:
+;	LDA Air_Time
+;	BEQ Air_RTS
+;	CMP #$10
+;	BCS Air_RTS
+;	LDA Sound_QLevel1
+;	ORA #SND_LEVELTAILWAG
+;	STA Sound_QLevel1
+;Air_RTS:
+;	RTS	
 
 FireBall_ChangeBlocks:
 	.byte  TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, $3B

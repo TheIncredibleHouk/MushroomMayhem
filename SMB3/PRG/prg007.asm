@@ -1101,9 +1101,10 @@ PRG007_A506:
 	TAY
 
 PRG007_A52D:
-	LDA #$80
-	STA PriorityCheckType
+	;STX TempX
+	;JSR CheckSpriteOnFG
 	LDA [Temp_Var1],Y	 ; Get the tile at the Player Projectile 
+
 	JSR PSwitch_SubstTileAndAttr	 ; Handle P-Switch changed tiles
 	PHA		 ; Save adjusted tile
 
