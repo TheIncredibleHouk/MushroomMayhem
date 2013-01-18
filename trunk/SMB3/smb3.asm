@@ -2770,6 +2770,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
 	Player_Coins:		.ds 4	; Mario's coins
 	Air_Time:			.ds 1	;
+	Air_Change:			.ds 1	;
 
 	Top_Of_Water:		.ds 1	;
 
@@ -2786,7 +2787,7 @@ CFIRE_LASER		= $15	; Laser fire
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
 
-				.ds 8	; $7DD6-$7DDD unused
+				.ds 7	; $7DD6-$7DDD unused
 
 	Pal_Data:		.ds 32	; $7DDE-$7DFD Holds an entire bg/sprite palette (this is the MASTER palette, what fades target, and others may source for "original" colors!)
 
@@ -3035,9 +3036,31 @@ SOBJ_POOF		= $16 	; Poof
 	MiscValue2:			.ds 1
 	MiscValue3:			.ds 1
 	KoopaKidType:		.ds 1
-	ForegroundTiles:	.ds 16
 	PriorityCheckType:	.ds 1
-						.ds 313;
+	TempX:				.ds 1
+	TempY:				.ds 1
+	TempA:				.ds 1
+	; Tile Property Flags
+	; TSWH FIQU
+	; T - Top Solid
+	; S - Solid all the way around
+	; W - Water
+	; H - Harmful
+	; F - Foreground
+	; I - Ice (slick)
+	; Q - Quick Sand
+	; U = Unused
+
+TILE_SOLID_TOP		= %10000000
+TILE_SOLID_ALL		= %01000000
+TILE_WATER			= %00100000
+TILE_HARMFUL		= %00010000
+TILE_FOREGROUND		= %00001000
+TILE_SLICK			= %00000100
+TILE_QUICK_SAND		= %00000010
+	TileProperties:		.ds 256
+	SlopedTiles:		.ds 16;
+						.ds 54;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

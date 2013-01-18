@@ -6252,6 +6252,7 @@ PRG005_BE90:
 	STA Player_PartDetEn
 	STA Level_ObjIdxStartByScreen
 	STA Player_InWater
+	STA Air_Change
 	STA Player_UphillFlag
 	STA AScrlURDiag_WrapState_Copy
 	STA AScrlURDiag_WrapState

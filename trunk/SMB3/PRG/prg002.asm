@@ -1501,12 +1501,7 @@ PRG002_A7932:
 	INY
 	INY
 
-	TYA		 
-	PHA		 ; Save velocity
-
-	JSR Object_GetAttrAndMoveTiles	 ; Most importantly checking for water
-
-	PLA		 ; Restore velocity
+	TYA		 		 ; Restore velocity
 	STA <Objects_YVel,X	 ; Set it (ignore the water velocity)
 
 ; this detects a solid tile. If the fish is on a solid tile the cheep cheep is considered "beached"
@@ -5669,7 +5664,6 @@ Player_Take_Coins:
 	LDA <Counter_1
 	AND #$03
 	BNE No_More_Coins
-	STA Debug_Snap
 	JSR Clear_Calc
 	LDX #$03
 

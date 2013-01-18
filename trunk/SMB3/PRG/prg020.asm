@@ -1420,7 +1420,7 @@ PRG020_AA22:
 	DEX		 ; X-- (row decrement)
 	BPL PRG020_AA1E	 ; While X >= 0, loop
 
-	JSR LoadLevel_Set_TileMemAddr	; Reset TileMemAddr
+	;JSR LoadLevel_Set_TileMemAddr	; Reset TileMemAddr
 
 	; Backup Map_Tile_AddrL/H into Temp_Var1/2
 	LDA <Map_Tile_AddrL

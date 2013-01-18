@@ -2739,7 +2739,7 @@ PRG014_D24B:
 
 PRG014_D257:
 	PHA		 ; Save 'A' (Random value of 0-2)
-	JSR LoadLevel_Set_TileMemAddr	 ; Set tile address
+	;JSR LoadLevel_Set_TileMemAddr	 ; Set tile address
 	PLA		 ; Restore 'A'
 
 	TAX		 ; Get random 0-2 value

@@ -1666,44 +1666,7 @@ PRG030_8DEF:
 
 PRG030_8DF4:
 PRG030_8E1D:
-	CPY #$07
-	BNE PRG030_8E24	 ; If Level_Tileset <> 7 (Toad House), jump to PRG030_8E24
-	JMP PRG030_8EAD	 ; Toad House's also do not use the standard animations
-
-PRG030_8E24:
-	; NOT TOAD HOUSE
-	JMP PRG030_8E31
-
-PRG030_8E2E:
-	JMP PRG030_8E5D	 ; Jump to PRG030_8E5D (skip main anim code)
-
 PRG030_8E31:
-	CPY #10
-	BNE PRG030_8E4F	 ; If Level_Tileset <> 10 (Airship), jump to PRG030_8E4F
-
-	; AIRSHIP ONLY
-
-	LDY PatTable_BankSel+1
-	CPY #$6a	
-	BEQ PRG030_8E5D	 ; If the current animation active pattern table is $6A (Airship standard), jump to PRG030_8E5D (do nothing)
-
-	; Otherwise...
-	LDA <Counter_1
-	AND #$03	
-	BNE PRG030_8E5D	 ; Only update every 4 ticks (otherwise nothing, jump to PRG030_8E5D)
-
-	INY
-	INY		; +2 pattern tables
-
-	CPY #$76	 
-	BNE PRG030_8E4A	 ; If we're at $76, jump to PRG030_8E4A
-
-	LDY #$70	 ; Otherwise, use $70
-
-PRG030_8E4A:
-	STY PatTable_BankSel+1 ; Update active pattern table
-	BNE PRG030_8E5D	 ; Jump (technically always) to PRG030_8E5D
-
 PRG030_8E4F:
 	; REGULAR LEVEL ANIMATIONS
 
@@ -2642,23 +2605,6 @@ PRG030_952C:
 	CPX #$08
 	BNE PRG030_952C	 	; While Y >= 0, loop!
 
-	LDY Level_Tileset
-	DEY
-	TYA
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	TAY
-
-	LDX #$00
-PRG030_952C2:
-	LDA TileForeground,Y	
-	STA ForegroundTiles,X
-	INY
-	INX			; Y--
-	CPX #$10
-	BNE PRG030_952C2	 	; While Y >= 0, loop!
 	RTS			; Return
 
 	; This LUTs are for the unused-in-US-release "Box out" effect when a level starts
@@ -3148,7 +3094,9 @@ LevelLoad:	; $97B7
 	STA Level_Tileset
 	STA Level_TilesetIdx
 	DEC Level_TilesetIdx
-
+	STA TempY
+	JSR LoadTileProperties
+	LDA TempY
 	; now we swap banks and start loading level headers
 	LDX <Temp_Var3
 	STX PAGE_A000
@@ -3506,6 +3454,23 @@ LoadSpriteLoop:
 LoadSpritesDone:
 	RTS
 
+LoadTileProperties:
+	LDA #$00
+	STA <Temp_Var16
+	LDA Level_TilesetIdx
+	ADD #$A0
+	STA <Temp_Var15
+	LDA #$13			; switch to the tile properties table
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	LDY #$00
+
+CopyTileProps:
+	LDA [Temp_Var15], Y
+	STA TileProperties, Y
+	DEY
+	BNE CopyTileProps
+	RTS
 ;;; now time to do the level loading!!!
 ;;;;;;;;;;;;;;;;;
 ;	; Bits 5-6 set Level_FreeVertScroll
@@ -3751,68 +3716,68 @@ LoadSpritesDone:
 ;
 ; * TileAddr_Off = BA98 3210 -OR- (Temp_Var15 << 4) | (Temp_Var16 & $f)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoadLevel_Set_TileMemAddr:
-	; Upper 3 bits of first byte were all set...
-
-
-	LDA <Temp_Var15	 ; Get that first byte
-	ASL A		
-	ASL A		
-	ASL A		
-	ASL A		
-	STA <Temp_Var7	 ; Temp_Var7 = Temp_Var15 << 4 (take lower 4 bits and multiply by 16)
-
-	LDA <Temp_Var16	 ; Second byte
-	AND #$0f	 ; Lower 4 bits
-	ORA <Temp_Var7	 ; Applied to Temp_Var7
-	STA TileAddr_Off	 ; Stored into TileAddr_Off
-
-	; TileAddr_Off = BA98 3210 -OR- (first byte << 4) | (second byte & $f)
-
-
-	LDA <Temp_Var16	 ; Second byte
-	AND #$f0	 ; Upper 4 bits
-	LSR A		 
-	LSR A		 
-	LSR A		 
-	TAX		 ; X = (Temp_Var16 & $F0) >> 3 (value in upper 4 bits times 2, 2 byte index for Tile_Mem_Addr)
-
-	; X = 7654 0 <-- '0' is a one-up shift, not bit 0 of Temp_Var16
-
-PRG030_9963:
-
-	; Non-vertical level
-
-	CPX #$1e
-	BNE PRG030_9969	 ; If X <> $1E (the max value), jump to PRG030_9969
-
-	; Otherwise, X -= 2
-	DEX
-	DEX
-
-PRG030_9969:
-
-	; Load the target address into Map_Tile_AddrH/L
-	LDA Tile_Mem_Addr,X
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1,X
-	STA <Map_Tile_AddrH
-
-	STA <Temp_Var5	
-	INC <Temp_Var5		; Temp_Var5 = Map_Tile_AddrH + 1
-
-	LDA <Temp_Var15	
-	AND #$10	
-	BEQ PRG030_997F		; If bit 4 of the first byte is not set, jump to PRG030_997F
-
-	; Otherwise, Map_Tile_AddrH++
-	INC <Map_Tile_AddrH
-
-PRG030_997F:
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var6		; Temp_Var6 = Map_Tile_AddrH
-
-	RTS		 ; Return
+;LoadLevel_Set_TileMemAddr:
+;	; Upper 3 bits of first byte were all set...
+;
+;
+;	LDA <Temp_Var15	 ; Get that first byte
+;	ASL A		
+;	ASL A		
+;	ASL A		
+;	ASL A		
+;	STA <Temp_Var7	 ; Temp_Var7 = Temp_Var15 << 4 (take lower 4 bits and multiply by 16)
+;
+;	LDA <Temp_Var16	 ; Second byte
+;	AND #$0f	 ; Lower 4 bits
+;	ORA <Temp_Var7	 ; Applied to Temp_Var7
+;	STA TileAddr_Off	 ; Stored into TileAddr_Off
+;
+;	; TileAddr_Off = BA98 3210 -OR- (first byte << 4) | (second byte & $f)
+;
+;
+;	LDA <Temp_Var16	 ; Second byte
+;	AND #$f0	 ; Upper 4 bits
+;	LSR A		 
+;	LSR A		 
+;	LSR A		 
+;	TAX		 ; X = (Temp_Var16 & $F0) >> 3 (value in upper 4 bits times 2, 2 byte index for Tile_Mem_Addr)
+;
+;	; X = 7654 0 <-- '0' is a one-up shift, not bit 0 of Temp_Var16
+;
+;PRG030_9963:
+;
+;	; Non-vertical level
+;
+;	CPX #$1e
+;	BNE PRG030_9969	 ; If X <> $1E (the max value), jump to PRG030_9969
+;
+;	; Otherwise, X -= 2
+;	DEX
+;	DEX
+;
+;PRG030_9969:
+;
+;	; Load the target address into Map_Tile_AddrH/L
+;	LDA Tile_Mem_Addr,X
+;	STA <Map_Tile_AddrL
+;	LDA Tile_Mem_Addr+1,X
+;	STA <Map_Tile_AddrH
+;
+;	STA <Temp_Var5	
+;	INC <Temp_Var5		; Temp_Var5 = Map_Tile_AddrH + 1
+;
+;	LDA <Temp_Var15	
+;	AND #$10	
+;	BEQ PRG030_997F		; If bit 4 of the first byte is not set, jump to PRG030_997F
+;
+;	; Otherwise, Map_Tile_AddrH++
+;	INC <Map_Tile_AddrH
+;
+;PRG030_997F:
+;	LDA <Map_Tile_AddrH
+;	STA <Temp_Var6		; Temp_Var6 = Map_Tile_AddrH
+;
+;	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Randomize
@@ -3884,22 +3849,6 @@ TileSolidity:
 	.byte $1F, $47, $96, $E2, $2E, $47, $96, $EE
 	.byte $25, $5F, $99, $E2, $2E, $5F, $A6, $F0
 
-TileForeground:
-	.byte $E1, $DC, $DE, $81, $82, $06, $07, $C2, $C3, $00, $00, $00, $00, $00, $00, $00
-	.byte $47, $48, $49, $DB, $DE, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $81, $9C, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 ; RegEx S&R:
 ; LDA LL_ShapeDef.*\n.*AND #\$0f.*\n.*STA <Temp_Var(.)		 ; .*
 ; LDA LL_ShapeDef\n\tAND #$0f\n\tSTA <Temp_Var\1		 ; Temp_Var\1 = lower 4 bits of LL_ShapeDef

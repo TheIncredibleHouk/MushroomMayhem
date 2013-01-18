@@ -775,13 +775,14 @@ PRG000_C559:
 
 	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_TileFeet/Quad and Object_TileWall/Quad
 
+	STA Debug_Snap
 	PLA		 ; Restore input value
 	STA <Temp_Var1	 ; Store into Temp_Var1
 
-	LDY Object_AttrWall	; Y = detected quadrant of potential wall tile
-	LDA Object_TileWall	; A = detected tile index
-	CMP Tile_AttrTable+4,Y
-	BLT PRG000_C584	 	; If the tile's index < the beginning wall/ceiling solid tile for this quad, jump to PRG000_C584
+	LDY Object_TileWall	; A = detected tile index
+	LDA TileProperties, Y
+	AND TILE_SOLID_ALL
+	BNE PRG000_C584	 	; If the tile's index < the beginning wall/ceiling solid tile for this quad, jump to PRG000_C584
 
 	; Object is touching solid wall tile
 
@@ -798,7 +799,6 @@ PRG000_C580:
 	STA <Objects_DetStat,X	 ; Update Objects_DetStat
 
 PRG000_C584:
-	LDY Object_AttrFeet	 ; Y = detected quadrant of tile
 
 	LDA <Objects_YVel,X
 	BPL PRG000_C5A9	 	; If object's Y velocity >= 0 (still or moving downward), jump to PRG000_C5A9
@@ -819,9 +819,10 @@ PRG000_C59A:
 
 	; Non-slope detection
 
-	LDA Object_TileFeet
-	CMP Tile_AttrTable+4,Y
-	BLT PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
+	LDY Object_TileFeet
+	LDA TileProperties, Y
+	AND TILE_SOLID_ALL
+	BEQ PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
 
 PRG000_C5A2:
 	; Flag ceiling impact
@@ -836,9 +837,10 @@ PRG000_C5A9:
 
 	; Object moving downwards (floor detection)
 
-	LDA Object_TileFeet
-	CMP Tile_AttrTable,Y
-	BGE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
+	LDY Object_TileFeet
+	LDA TileProperties, Y
+	AND TILE_SOLID_ALL | TILE_SOLID_ALL
+	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
 	JMP PRG000_C65D	 ; Otherwise, jump to PRG000_C65D
 
 PRG000_C5B4:
@@ -1068,87 +1070,9 @@ PRG000_C69C:
 ; current state of movement.  Handles entering/leaving water.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_GetAttrAndMoveTiles:
-	LDY #(OTDO_Water - Object_TileDetectOffsets)	; Special offsets used for checking for water tiles
 	JSR Object_DetectTile	; Get tile here
+	JSR Object_Check_Water
 
-	ASL A
-	ROL A
-	ROL A		 ; Upper 2 bits shift right 6, effectively
-	AND #%00000011	 ; Keep these bits, i.e. "tile quadrant"
-	STA <Temp_Var1	 ; -> Temp_Var1
-	TAY		 ; -> 'Y'
-
-	LDA <Level_Tile
-	CMP Tile_AttrTable,Y
-	BGE PRG000_C6FD	 ; If this tile >= this attribute tile, jump to PRG000_C6FD (may be solid)
-
-	LDX #$00	 ; X = 0 (object is NOT underwater)
-
-	; If this tile is TILEA_PSWITCH_PRESSED, TILE1_WFALLTOP, or PRG000_C6D0, jump to PRG000_C6D0
-	; Object's apparently aren't in-water in a waterfall?
-	CMP #TILEA_PSWITCH_PRESSED
-	BEQ PRG000_C6D0
-	CMP #TILE1_WFALLTOP
-	BEQ PRG000_C6D0
-	CMP #TILE1_WFALLMID
-	BEQ PRG000_C6D0
-
-	LDA Level_TilesetIdx
-	ASL A	
-	ASL A		 ; Offset to beginning of underwater-by-quad table
-	ADD <Temp_Var1	 ; Add quadrant offset
-	TAY		 ; -> 'Y' 
-	LDA Level_MinTileUWByQuad,Y	; Get the starting underwater tile
-	CMP <Level_Tile	
-	BGE PRG000_C6D0	 ; If starting underwater tile is >= the detected tile, jump to PRG000_C6D0
-
-	INX		 ; X = 1 (object is underwater)
-
-PRG000_C6D0:
-	TXA		 ; X -> A
-
-	LDX <SlotIndexBackup	; Restore 'X' as object slot index
-
-	CMP Objects_InWater,X	
-	BEQ PRG000_C6FA	 	; If object is either still in water / out of water (hasn't changed), jump to PRG000_C6FA
-
-	PHA		 	; Save underwater flag
-
-	LDA <Level_Tile		 ; A = tile index
-	LDY <Temp_Var1		 ; Y = tile quadrant
-	CMP Tile_AttrTable,Y
-
-	PLA		 	; Restore underwater flag
-
-	BGE PRG000_C6FA	 	; If tile index >= the attribute tile, solid tile, jump to PRG000_C6FA
-
-	PHA		 	; Save underwater flag
-
-	LDA Objects_LastTile,X
-	PHA		 	; Save Objects_LastTile
-
-	ASL A		 
-	ROL A		 
-	ROL A		 ; Upper 2 bits shift right 6, effectively
-	AND #%00000011	 ; Keep these bits, i.e. "tile quadrant"
-	TAY		 ; Y = quadrant of last detected tile
-
-	PLA		 ; Restore the last detected tile
-
-	CMP Tile_AttrTable,Y
-
-	PLA		 ; Restore the underwater flag
-
-	BGE PRG000_C6FA	 ; If last detected tile >= the starting underwater tile, jump to PRG000_C6FA
-
-	PHA		 ; Save underwater flag
-
-	JSR Object_WaterSplash	 ; Hit water; splash!
-
-	PLA		 ; Restore underwater flag
-
-PRG000_C6FA:
-	STA Objects_InWater,X	 ; Set object's in-water flag
 
 PRG000_C6FD:
 	LDA <Level_Tile
@@ -1197,11 +1121,11 @@ PRG000_C72E:
 PRG000_C736:
 	PLA		 ; Restore tile
 
-	ASL A
-	ROL A
-	ROL A		 ; Upper 2 bits shift right 6, effectively
-	AND #%00000011	 ; Keep these bits, i.e. "tile quadrant"
-	STA Object_AttrFeet ; Store quadrant value
+	;ASL A
+	;ROL A
+	;ROL A		 ; Upper 2 bits shift right 6, effectively
+	;AND #%00000011	 ; Keep these bits, i.e. "tile quadrant"
+	;STA Object_AttrFeet ; Store quadrant value
 	TAY		 ; -> 'Y'
 
 
@@ -1399,10 +1323,13 @@ PRG000_C7FA:
 	TAY		 	; -> 'Y'
 
 PRG000_C82A:
-	LDA #$01
-	STA PriorityCheckType
 	LDA [Temp_Var1],Y	; Get tile
-	
+	PHA
+	JSR CheckSpriteOnFG
+	ORA Objects_SprAttr,X
+	STA Objects_SprAttr,X
+	PLA
+
 	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
 
 	JMP PRG000_C834	 ; Jump to PRG000_C834
@@ -1428,13 +1355,10 @@ PrePSwitchTile:		.byte $40, $67, $66, $05, $41, $82, $83, $7F ; include thawed c
 PostPSwitchTile:	.byte $67, $40, $40, $67, $7F, $42, $43, $80
 
 PSwitch_SubstTileAndAttr:
-	JSR CheckSpriteOnFG
-	JSR CheckESwitch
-	JSR CheckDayNight
 	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
 	BEQ PRG000_C85B	 	; If P-Switch not active, jump to PRG000_C85B (RTS)
 
-	LDY #(PostPSwitchTile - PrePSwitchTile - 1)
+	LDY #$07
 PRG000_C84A:
 	CMP PrePSwitchTile,Y
 	BNE PRG000_C858	 	; If this is not a match, jump to PRG000_C858
@@ -1574,14 +1498,9 @@ PRG000_C918:
 
 PRG000_C927:
 	LDA Splash_DisTimer
-	BEQ PRG000_C92F	 ; If Splash_DisTimer > 0, jump to PRG000_C92F
+	BEQ PRG000_C93A	 ; If Splash_DisTimer > 0, jump to PRG000_C92F
 
 	DEC Splash_DisTimer	 ; Splash_DisTimer--
-
-PRG000_C92F:
-	LDA <Player_Suit
-	CMP #PLAYERSUIT_HAMMER
-	BNE PRG000_C93A	 ; If Player suit is NOT hammer suit, jump to PRG000_C93A
 
 
 PRG000_C93A:
@@ -1621,7 +1540,7 @@ PRG000_C948:
 	STA Counter_7to0 ; Otherwise, reset Counter_7to0 to 7
 
 PRG000_C973:
-	LDX #$07	 
+	LDX #$07
 
 PRG000_C975:
 	STX <SlotIndexBackup	 ; Backup current object index -> SlotIndexBackup
@@ -1700,16 +1619,6 @@ PRG000_C9B6:
 PRG000_C9D2:
 	DEX		 ; X--
 	BPL PRG000_C975	 ; While X >= 0, loop!
-
-	LDA Cine_ToadKing
-	BEQ PRG000_C9E5	 ; If Toad & King Cinematic is NOT going on, jump to PRG000_C9E5
-
-	; Set page @ A000 to 24
-	LDA #24
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	JSR Cinematic_ToadAndKing	; Do the Toad & King Cinematic logic
 
 PRG000_C9E5:
 	LDA Player_Flip
@@ -1825,9 +1734,6 @@ PRG000_CA5C:
 	TAY		; Object group-relative index -> 'Y'
 		 
 	JSR PRGROM_Change_A000	 ; Set page @ A000 to appropriate object page...
-
-	LDA Objects_DisPatChng,X
-	BNE PRG000_CA81	 ; If pattern bank enforcement is disabled, jump to PRG000_CA81
 
 	; Object's can request a particular pattern set to be available to them.
 	; They may set either the fifth or sixth bank of CHRROM, which is specified
@@ -6712,27 +6618,20 @@ ESwitches:
 	.byte $FF, ESWITCH1, ESWITCH2, ESWITCH3
 
 CheckESwitch:
-	STX DAIZ_TEMP2
-	LDX ESwitch
+	LDY ESwitch
 	BEQ No_Replace
-	CMP ESwitches, X
-	BEQ Do_Replace2
-	CMP ESwitchTiles,X
+	CMP ESwitches, Y
+	BNE TryReplace
+	LDA #$00
+	RTS
+
+TryReplace:
+	CMP ESwitchTiles,Y
 	BNE No_Replace
 
-Do_Replace:
 	LDA #$FD
-	LDX DAIZ_TEMP2
-	RTS 
-
-Do_Replace2
-	LDA #$00
-	LDX DAIZ_TEMP2
-	RTS
-
 No_Replace:
-	LDX DAIZ_TEMP2
-	RTS
+	RTS 
 
 CheckDayNight:
 	CMP #MOON_BLOCK
@@ -6740,6 +6639,7 @@ CheckDayNight:
 	CMP #SUN_BLOCK
 	BEQ TestSunBlock
 	RTS
+
 TestMoonBlock:
 	LDA DayNight
 	BNE NotDay
@@ -6761,42 +6661,31 @@ NotNight:
 	RTS
 
 CheckSpriteOnFG:
-	STA DAIZ_TEMP4
-	STX DAIZ_TEMP2
-	LDX #$0F
-
-CheckFGTiles:
-	CMP ForegroundTiles, X
-	BEQ SetSpriteBehind
-	DEX 
-	BPL CheckFGTiles
-	LDA #$00
+	TAY
+	LDA TileProperties, Y
+	AND TILE_FOREGROUND
 	BEQ SetBGPriority
-
-SetSpriteBehind:
 	LDA #$20
 
 SetBGPriority:
-	STA DAIZ_TEMP3
-	LDA PriorityCheckType
-	BMI SetPriorityForProjectiles
-	BNE SetPriorityForObjects
-	LDA DAIZ_TEMP3
-	ORA Player_Behind_En
-	STA Player_Behind_En
-	LDA DAIZ_TEMP4
-	LDX DAIZ_TEMP2
 	RTS
 
-SetPriorityForObjects:
-	LDA DAIZ_TEMP3
-	LDX DAIZ_TEMP2
-	ORA Objects_SprAttr,X
-	STA Objects_SprAttr,X
-	LDA DAIZ_TEMP4
-	RTS
+	; This routine is a much more simplified version of the water check. It basically checks the tile based on
+	; the water flag for the tile rather than all these range comparisons
+Object_Check_Water:
+	AND TILE_WATER
+	BEQ Not_Water
+	LDA #$01
 
-SetPriorityForProjectiles:
-	LDA DAIZ_TEMP4
-	LDX DAIZ_TEMP2
+Not_Water:
+	STA TempA
+	CMP Objects_InWater,X	
+	BEQ PRG000_C6FA	 	; If object is either still in water / out of water (hasn't changed), jump to PRG000_C6FA
+
+	JSR Object_WaterSplash	 ; Hit water; splash!
+
+	LDA TempA		 ; Restore underwater flag
+
+PRG000_C6FA:
+	STA Objects_InWater,X	 ; Set object's in-water flag
 	RTS
