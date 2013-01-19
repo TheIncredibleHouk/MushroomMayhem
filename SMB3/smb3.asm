@@ -3041,23 +3041,49 @@ SOBJ_POOF		= $16 	; Poof
 	TempY:				.ds 1
 	TempA:				.ds 1
 	; Tile Property Flags
-	; TSWH FIQU
+	; TSWF XXXX
 	; T - Top Solid
 	; S - Solid all the way around
 	; W - Water
-	; H - Harmful
 	; F - Foreground
-	; I - Ice (slick)
-	; Q - Quick Sand
-	; U = Unused
+	; XXX - represents "special" types, affects mostly the player
+	; 00 - none
+	; 01 - harmful
+	; 02 - slick
+	; 03 - conveyor left
+	; 04 - conveyor right
+	; 05 - conveyor up
+	; 06 - conveyor down
+	; 07 - unstable platform
+	; 
+	; 0B - slope 30 left
+	; 0C - slope 30 right
+	; 0D - slope 60 left
+	; 0E - slope 60 right
+	; 0F - slope filler
 
 TILE_SOLID_TOP		= %10000000
 TILE_SOLID_ALL		= %01000000
 TILE_WATER			= %00100000
-TILE_HARMFUL		= %00010000
-TILE_FOREGROUND		= %00001000
-TILE_SLICK			= %00000100
-TILE_QUICK_SAND		= %00000010
+TILE_FOREGROUND		= %00010000
+TILE_HARMFUL		= $01
+TILE_SLICK			= $02
+TILE_CONVEYOR_LEFT	= $03
+TILE_CONVEYOR_RIGHT	= $04
+TILE_CONVEYOR_UP	= $05
+TILE_CONVEYOR_DOWN	= $06
+TILE_UNSTABLE		= $07
+TILE_SLOWMOVING		= $08
+
+TILE_BOTTOMLEFT_30	= $09
+TILE_TOPLEFT_30		= $0A
+TILE_BOTTOMRIGHT_30	= $0B
+TILE_TOPRIGHT_30	= $0C
+TILE_LEFT45			= $0D
+TILE_RIGHT45		= $0E
+TILE_SLOPE_FILLER	= $0F
+
+
 	TileProperties:		.ds 256
 	SlopedTiles:		.ds 16;
 						.ds 54;
