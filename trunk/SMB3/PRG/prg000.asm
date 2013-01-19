@@ -775,14 +775,14 @@ PRG000_C559:
 
 	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_TileFeet/Quad and Object_TileWall/Quad
 
-	STA Debug_Snap
 	PLA		 ; Restore input value
 	STA <Temp_Var1	 ; Store into Temp_Var1
 
+	LDA Debug_Snap
 	LDY Object_TileWall	; A = detected tile index
 	LDA TileProperties, Y
-	AND TILE_SOLID_ALL
-	BNE PRG000_C584	 	; If the tile's index < the beginning wall/ceiling solid tile for this quad, jump to PRG000_C584
+	AND #TILE_SOLID_ALL
+	BEQ PRG000_C584	 	; If the tile's index < the beginning wall/ceiling solid tile for this quad, jump to PRG000_C584
 
 	; Object is touching solid wall tile
 
@@ -818,10 +818,9 @@ PRG000_C584:
 PRG000_C59A:
 
 	; Non-slope detection
-
 	LDY Object_TileFeet
 	LDA TileProperties, Y
-	AND TILE_SOLID_ALL
+	AND #TILE_SOLID_ALL
 	BEQ PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
 
 PRG000_C5A2:
@@ -836,10 +835,9 @@ PRG000_C5A8:
 PRG000_C5A9:
 
 	; Object moving downwards (floor detection)
-
 	LDY Object_TileFeet
 	LDA TileProperties, Y
-	AND TILE_SOLID_ALL | TILE_SOLID_ALL
+	AND #(TILE_SOLID_ALL | TILE_SOLID_TOP)
 	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
 	JMP PRG000_C65D	 ; Otherwise, jump to PRG000_C65D
 
@@ -1233,6 +1231,7 @@ PRG000_C797:
 ; $C7A9
 Object_DetectTile:
 PRG000_C7B1:
+	;STA Debug_Snap
 	LDA Player_PartDetEn
 	BEQ PRG000_C7D9	 ; If Player_PartDetEn is not set, jump to PRG000_C7D9
 
@@ -6663,7 +6662,7 @@ NotNight:
 CheckSpriteOnFG:
 	TAY
 	LDA TileProperties, Y
-	AND TILE_FOREGROUND
+	AND #TILE_FOREGROUND
 	BEQ SetBGPriority
 	LDA #$20
 
@@ -6673,7 +6672,9 @@ SetBGPriority:
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
 	; the water flag for the tile rather than all these range comparisons
 Object_Check_Water:
-	AND TILE_WATER
+	TAY
+	LDA TileProperties, Y
+	AND #TILE_WATER
 	BEQ Not_Water
 	LDA #$01
 

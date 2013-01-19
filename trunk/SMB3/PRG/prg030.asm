@@ -3094,9 +3094,9 @@ LevelLoad:	; $97B7
 	STA Level_Tileset
 	STA Level_TilesetIdx
 	DEC Level_TilesetIdx
-	STA TempY
+	STY TempY
 	JSR LoadTileProperties
-	LDA TempY
+	LDY TempY
 	; now we swap banks and start loading level headers
 	LDX <Temp_Var3
 	STX PAGE_A000
@@ -3455,18 +3455,19 @@ LoadSpritesDone:
 	RTS
 
 LoadTileProperties:
+	
 	LDA #$00
-	STA <Temp_Var16
+	STA <Temp_Var7
 	LDA Level_TilesetIdx
 	ADD #$A0
-	STA <Temp_Var15
-	LDA #$13			; switch to the tile properties table
+	STA <Temp_Var8
+	LDA #$16			; switch to the tile properties table
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	LDY #$00
 
 CopyTileProps:
-	LDA [Temp_Var15], Y
+	LDA [Temp_Var7], Y
 	STA TileProperties, Y
 	DEY
 	BNE CopyTileProps
