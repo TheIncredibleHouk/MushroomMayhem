@@ -4262,6 +4262,8 @@ PRG008_B55B:
 
 	LDA #$01
 	STA Player_InAir
+	LDA #$00
+	STA Player_OnSlope
 PRG008_B5B1:
 	RTS
 
@@ -5316,14 +5318,16 @@ PRG008_BB7D:
 	AND #$0F		; Get Player's horizontal position within tile
 	ADD TempA
 	TAY
-	LDA Slope_LUT,Y
-	ADD #$10
-	STA TempA
 	LDA <Player_Y
 	AND #$0F
-	ADD #$10
-	CMP TempA
-	BCS PRG008_BB7E	 ; If 'A' (relative vertical position on tile) > (height at this point on slope), jump to PRG008_BB1A (RTS)
+	STA TempA
+	LDA #$10
+	SUB TempA
+	AND #$0F
+	CMP Slope_LUT,Y
+	BLS PRG008_BB7E	 ; If 'A' (relative vertical position on tile) > (height at this point on slope), jump to PRG008_BB1A (RTS)
+	LDA Player_OnSlope
+	BLS PRG008_BB7E
 	RTS
 
 PRG008_BB7E:
@@ -5335,6 +5339,7 @@ PRG008_BB7E:
 	; Ground slope impact
 
 	LDA <Player_Y
+	ADD #$0F
 	AND #$F0
 	SUB Slope_LUT,Y
 	STA <Player_Y	 ; Set Player's position on slope!
@@ -5452,7 +5457,7 @@ Player_GetTileSlope:
 	; 'X' defines which tile index to do
 	; 'Y' defines an X and Y offset index for the TileAttrAndQuad_OffsSloped table
 
-	LDA #$11
+	LDA #$1F
 	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
 	LDA #$08
 	STA <Temp_Var11	 ; Temp_Var11 (X offset)

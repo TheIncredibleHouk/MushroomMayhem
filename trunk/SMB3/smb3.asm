@@ -2473,7 +2473,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 
 	Map_Unused7995:		.ds 1	; Unused; cleared but never used otherwise
 
-	Player_NoSlopeStick:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
+	Player_OnSlope:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
 
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Weather:				.ds 1	; Indicates whether there is weather active for this stage (see bgcloud sprite)
