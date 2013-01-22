@@ -25,41 +25,6 @@
 	;	5) If tile is in range, it is subtracted, so using the Hills example:
 	;	   Tile $25 -- first table, index 0.  Tile $26 -- first table, index 1.
 	;	   Tile $5F -- second table, index 0.  Etc...
-Level_SlopeSetByQuad:
-	.word Level_SlopeQuad00	; Tile quad $00
-	.word Level_SlopeQuad40	; Tile quad $40
-	.word Level_SlopeQuad80	; Tile quad $80
-	.word Level_SlopeQuadC0	; Tile quad $C0
-
-	; These tables are rooted by the base value for each tile quad by the only two
-	; tilesets to support slopes, 3 (Hills) and 14 (Underground)
-	; For reference, that attribute set is: $25, $5F, $99, $E2
-	;
-	; The value in the next four LUTs reference a "slope shape" as defined in the
-	; Slope_LUT table that follows...
-
-Level_SlopeQuad00:
-	; Tile $25+
-	.byte $01, $07, $02, $0C, $0D, $0E, $0F, $07, $03, $03, $03, $03, $03, $03, $07, $04
-	.byte $07, $04, $04, $03, $03, $03, $03, $03, $07, $04, $07, $04, $04, $04, $04, $04
-
-Level_SlopeQuad40:
-	; Tile $5F+
-	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
-	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
-	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
-	.byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
-
-Level_SlopeQuad80:
-	; Tile $99+
-	.byte $01, $07, $02, $0C, $0D, $0E, $0F, $05, $06, $11, $12, $13, $14, $08, $07, $04
-	.byte $07, $04, $04, $08, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03
-	.byte $03, $03, $03, $03, $03, $03, $08
-
-Level_SlopeQuadC0:
-	; Tile $E2+
-	.byte $01, $07, $02, $0C, $0D, $0E, $0F, $05, $06, $11, $12, $13, $14, $07, $03, $03
-	.byte $03, $03, $08, $07, $04, $07, $04, $04, $08, $08, $04
 
 Slope_LUT:
 	; Lower 4 bits are the ground slope height
@@ -67,44 +32,23 @@ Slope_LUT:
 
 	; 16 entries for each pixel across the 16x16 tile
 	; <---                                --- X ---                                  -->
-	.byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10	; $00 (used as "no slope", i.e. BG tile)
-	.byte $0F, $0E, $0D, $0C, $0B, $0A, $09, $08, $07, $06, $05, $04, $03, $02, $01, $00	; $01
-	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F	; $02
-	.byte $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0	; $03 (all solid square tiles)
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00	; $04 (wall, see PRG008_B9F4)
-	.byte $00, $10, $20, $30, $40, $50, $60, $70, $80, $90, $A0, $B0, $C0, $D0, $E0, $F0	; $05
-	.byte $F0, $E0, $D0, $C0, $B0, $A0, $90, $80, $70, $60, $50, $40, $30, $20, $10, $00	; $06
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00	; $07 (unsloped ground, see PRG008_B9F4)
-	.byte $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0	; $08 (unsloped ceiling, see PRG008_B9F4)
-	.byte $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0	; $09
-	.byte $02, $02, $02, $02, $03, $03, $03, $03, $04, $04, $04, $04, $03, $03, $03, $02	; $0A
-	.byte $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0	; $0B
-	.byte $0F, $0E, $0E, $0D, $0D, $0D, $0C, $0C, $0B, $0B, $0A, $0A, $09, $09, $08, $08	; $0C
+	.byte $00, $00, $01, $01, $02, $02, $03, $03, $04, $04, $05, $05, $06, $06, $07, $07
+	.byte $08, $08, $09, $09, $0A, $0A, $0B, $0B, $0C, $0C, $0D, $0D, $0D, $0E, $0E, $0F	
+	.byte $0F, $0E, $0E, $0D, $0D, $0D, $0C, $0C, $0B, $0B, $0A, $0A, $09, $09, $08, $08	
 	.byte $07, $06, $06, $05, $05, $05, $04, $04, $03, $03, $02, $02, $01, $01, $00, $00	; $0D
-	.byte $00, $00, $01, $01, $02, $02, $03, $03, $04, $04, $05, $05, $05, $06, $06, $07	; $0E
-	.byte $08, $08, $09, $09, $0A, $0A, $0B, $0B, $0C, $0C, $0D, $0D, $0D, $0E, $0E, $0F	; $0F
-	.byte $0E, $0D, $0B, $0A, $09, $09, $08, $08, $08, $08, $08, $09, $09, $0A, $0B, $0D	; $10
-	.byte $00, $00, $10, $10, $20, $20, $30, $30, $40, $40, $50, $50, $50, $60, $60, $70	; $11
-	.byte $80, $80, $90, $90, $A0, $A0, $B0, $B0, $C0, $C0, $D0, $D0, $D0, $E0, $E0, $F0	; $12
-	.byte $F0, $E0, $E0, $D0, $D0, $D0, $C0, $C0, $B0, $B0, $A0, $A0, $90, $90, $80, $80	; $13
-	.byte $70, $60, $60, $50, $50, $50, $40, $40, $30, $30, $20, $20, $10, $10, $00, $00	; $14
+	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F	; $02
+	.byte $0F, $0E, $0D, $0C, $0B, $0A, $09, $08, $07, $06, $05, $04, $03, $02, $01, $00	; $01
+	.byte $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
 
 	; Effect on Player's velocity per slope "shape" index (Slope_LUT above)
 Slope_PlayerVel_Effect:
-	.byte $00, -$03,  $03,  $00,  $00,  $00,  $00,  $00	; $00-$07
-	.byte $00,  $00,  $00,  $00, -$02, -$02,  $02,  $02	; $08-$0F
-	.byte $00,  $00,  $00,  $00,  $00			; $10-$14
+	.byte $00, -$02, -$02,  $02,  $02,  $03, -$03
 
 	; Effect on Object's velocity per slope "shape" index (Slope_LUT above)
 	; NOTE: Incomplete -- probably avoids concering with certain ceiling slopes 
 Slope_ObjectVel_Effect:
 	; $80 disables response to this slope
-	.byte $00, -$02,  $02,  $00,  $00,  $80,  $80,  $00	; $00-$07
-	.byte $00,  $80,  $00,  $80, -$01, -$01,  $01,  $01	; $08-$0F
-	; Incomplete, missing $10-$14
-	; RAS: Slopes $10-$14 are ceiling slopes, which enemies have pretty much
-	; no proper involvement with in native SMB3.  Also due to a "lazy" calculation
-	; found after the label PRG000_C5EC, these would be inaccessible anyway!
+	.byte $00, -$02, -$02,  $02,  $02,  $03, -$03
 
 
 	; Default address for Level_GndLUT_L/H in a non-slope level; note that this
@@ -122,23 +66,6 @@ Slope_LUT_Addr:	.word Slope_LUT
 	; classified as "underwater" (Minimum Tile Under Water By Quad)
 	; A value of $FF is used to indicate that no tile in that quadrant
 	; is underwater (and for the first three quads is unreachable!)
-Level_MinTileUWByQuad:
-	; 4 values per Level_TilesetIdx, which is basically (Level_Tileset - 1)
-	; Listing by valid Level_Tileset values for consistency...
-	.byte $FF, $FF, $FF, $DA	;  1 Plains style
-	.byte $FF, $FF, $FF, $DA	;  2 Mini Fortress style
-	.byte $FF, $FF, $FF, $DA	;  3 Hills style
-	.byte $FF, $FF, $FF, $DA	;  4 High-Up style
-	.byte $FF, $FF, $FF, $DA	;  5 pipe world plant infestation
-	.byte $02, $3F, $8A, $C0	;  6 water world
-	.byte $FF, $FF, $FF, $DA	;  7 Toad House
-	.byte $FF, $FF, $8A, $DA	;  8 Vertical pipe maze
-	.byte $FF, $FF, $FF, $DA	;  9 desert levels
-	.byte $FF, $FF, $FF, $DA	; 10 Airship
-	.byte $FF, $FF, $FF, $DA	; 11 Giant World
-	.byte $FF, $FF, $FF, $DA	; 12 Ice level
-	.byte $FF, $FF, $FF, $DA	; 13 Sky level
-	.byte $FF, $FF, $FF, $DA	; 14 Underground
 
 	
 ToadItem_PalPerItem:
@@ -497,64 +424,7 @@ Object_AttrFlags:
 
 	; Index by Level_TilesetIdx
 	; Enables spike tiles where available (this tile and tile before it)
-SpikesEnable:
-	.byte $FF	;  0 Plains style
-	.byte TILE2_SPIKEDOWN	;  1 Mini Fortress style
-	.byte $FF	;  2 Hills style
-	.byte $FF	;  3 High-Up style
-	.byte $FF	;  4 pipe world plant infestation
-	.byte $FF	;  5 water world
-	.byte $FF	;  6 Toad House
-	.byte TILE8_SPIKE_UP	;  7 Vertical pipe maze
-	.byte TILE9_SPIKEUP	;  8 desert levels
-	.byte $FF	;  9 Airship
-	.byte $FF	; 10 Giant World
-	.byte $FF	; 11 Ice level
-	.byte $FF	; 12 Sky level
-	.byte $FF	; 13 Underground
 
-	; Index by Level_TilesetIdx
-	; Enables conveyor tiles where available (this tile and tile before it)
-ConveyorEnable:
-	.byte $00	;  0 Plains style
-	.byte TILE2_CONVEYORR	;  1 Mini Fortress style
-	.byte $00	;  2 Hills style
-	.byte TILE2_CONVEYORR	;  3 High-Up style
-	.byte TILE2_CONVEYORR	;  4 pipe world plant infestation
-	.byte $00	;  5 water world
-	.byte $00	;  6 Toad House
-	.byte $00	;  7 Vertical pipe maze
-	.byte $00	;  8 desert levels
-	.byte $00	;  9 Airship
-	.byte $00	; 10 Giant World
-	.byte $00	; 11 Ice level
-	.byte $00	; 12 Sky level
-	.byte $00	; 13 Underground
-
-	; Index by Level_TilesetIdx
-	; Sets the tile which is a pain in the ass (typically muncher, sometimes jelectro)
-
-MuncherJelectroSet:
-	.byte TILEA_MUNCHER	;  0 Plains style
-	.byte TILEA_MUNCHER	;  1 Mini Fortress style
-	.byte TILEA_MUNCHER	;  2 Hills style
-	.byte TILEA_MUNCHER	;  3 High-Up style
-	.byte TILEA_MUNCHER	;  4 pipe world plant infestation
-	.byte TILEA_MUNCHER	;  5 water world
-	.byte TILEA_MUNCHER	;  6 Toad House
-	.byte TILEA_MUNCHER	;  7 Vertical pipe maze
-	.byte TILEA_MUNCHER	;  8 desert levels
-	.byte TILEA_MUNCHER	;  9 Airship
-	.byte TILEA_MUNCHER	; 10 Giant World
-	.byte TILEA_MUNCHER	; 11 Ice level
-	.byte TILEA_MUNCHER	; 12 Sky level
-	.byte TILEA_MUNCHER	; 13 Underground
-
-
-	; This table grants a couple (dis)abilities to certain
-	; power-ups; specifically:
-	; Bit 0 (1) = Able to fly and flutter (Raccoon tail wagging)
-	; Bit 1 (2) = NOT able to slide on slopes
 PowerUp_Ability:
 	;     Small, Big, Fire, Leaf, Frog, Tanooki, Hammer
 	.byte $00,   $00, $00,  $01,  $02,  $00,     $00
@@ -644,13 +514,17 @@ Object_HandleConveyorCarry:
 	AND #$03
 	BNE PRG000_C4F5	 ; If object has hit a wall, jump to PRG000_C4F5 (RTS)
 
-	LDA Object_TileFeet2
-	SUB #TILE2_CONVEYORL
-	CMP #$02
-	BGE PRG000_C4F5	 ; If object is not standing on a conveyor belt, jump to PRG000_C4F5 (RTS)
+	LDY Object_TileFeet2
+	LDA TileProperties, Y
+	LDY #$01
+	AND #$0F
+	CMP #TILE_CONVEYOR_RIGHT
+	BEQ Do_Conveyor
+	DEY
+	CMP #TILE_CONVEYOR_LEFT
+	BNE PRG000_C4F5
 
-	TAY		 ; Conveyor tile relative index -> 'Y'
-
+Do_Conveyor:
 	LDA <Objects_X,X
 	ADC Conveyor_CarryX,Y
 	STA <Objects_X,X
@@ -669,13 +543,17 @@ Object_HandleConveyorBounceVel:
 	LDA Level_PSwitchCnt
 	BNE PRG000_C4F5	 ; If P-Switch is active, jump to PRG000_C4F5
 
-	LDA Object_TileFeet2
-	SUB #TILE2_CONVEYORL
-	CMP #$02
-	BGE PRG000_C4F5	 ; If object is not standing on a conveyor belt, jump to PRG000_C4F5 (RTS)
- 
-	TAY		 ; Conveyor tile relative index -> 'Y'
+	LDY Object_TileFeet2
+	LDA TileProperties, Y
+	LDY #$01
+	AND #$0F
+	CMP #TILE_CONVEYOR_RIGHT
+	BEQ Do_Conveyor2
+	DEY
+	CMP #TILE_CONVEYOR_LEFT
+	BNE PRG000_C4F5	 ; If object is not standing on a conveyor belt, jump to PRG000_C4F5 (RTS)
 
+Do_Conveyor2:
 	LDA Conveyor_CarryX,Y
 
 	LDY #-$01	 ; Y = -$01
@@ -778,7 +656,6 @@ PRG000_C559:
 	PLA		 ; Restore input value
 	STA <Temp_Var1	 ; Store into Temp_Var1
 
-	LDA Debug_Snap
 	LDY Object_TileWall	; A = detected tile index
 	LDA TileProperties, Y
 	AND #TILE_SOLID_ALL
@@ -805,23 +682,24 @@ PRG000_C584:
 
 	; Object moving upwards... (ceiling detection)
 
-	LDA Level_SlopeEn
-	BEQ PRG000_C59A	 	; If slopes are not enabled here, jump to PRG000_C59A
+	;LDA Level_SlopeEn
+	;BEQ PRG000_C59A	 	; If slopes are not enabled here, jump to PRG000_C59A
 
 	; Slope detection (not specific)
 	
-	LDA Object_TileFeet
-	CMP Tile_AttrTable,Y
-	BLT PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
-	BGE PRG000_C5A2	 ; Otherwise, jump to PRG000_C5A2
-
-PRG000_C59A:
-
-	; Non-slope detection
 	LDY Object_TileFeet
-	LDA TileProperties, Y
+	LDA TileProperties,Y
 	AND #TILE_SOLID_ALL
 	BEQ PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
+	BNE PRG000_C5A2	 ; Otherwise, jump to PRG000_C5A2
+
+;PRG000_C59A:
+
+	;; Non-slope detection
+	;LDY Object_TileFeet
+	;LDA TileProperties, Y
+	;AND #(TILE_SOLID_ALL | TILE_SOLID_TOP)
+	;BEQ PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
 
 PRG000_C5A2:
 	; Flag ceiling impact
@@ -838,40 +716,10 @@ PRG000_C5A9:
 	LDY Object_TileFeet
 	LDA TileProperties, Y
 	AND #(TILE_SOLID_ALL | TILE_SOLID_TOP)
-	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
+	BNE PRG000_C5B4	 
 	JMP PRG000_C65D	 ; Otherwise, jump to PRG000_C65D
 
-PRG000_C5B4:
-	LDY Level_SlopeEn
-	BNE PRG000_C5BC	 ; If slopes are enabled, jump to PRG000_C5BC
-	JMP PRG000_C649	 ; Jump to PRG000_C649
-
-PRG000_C5BC:
-
-	; Slopes...
-
-	; Any of the following tiles, jump to PRG000_C67F
-	CMP #TILE3_VERTGROUNDL
-	BEQ PRG000_C5D0	
-
-	CMP #TILE3_VERTGROUNDR
-	BEQ PRG000_C5D0
-
-	CMP #TILE14_ABOVE_MIDGROUND
-	BEQ PRG000_C5D0
-
-	CMP #TILE3_MIDGROUND
-	BEQ PRG000_C5D0
-
-	CMP #TILE3_WMIDGROUND
-	BNE PRG000_C5D3	
-
-PRG000_C5D0:
-	JMP PRG000_C67F	 ; Jump to PRG000_C67F
-
-PRG000_C5D3:
-
-	; Slopes enabled, not touching one of the flat solids
+PRG000_C5B4:	
 
 	LDA <Objects_Y,X
 	AND #$0f
@@ -882,9 +730,7 @@ PRG000_C5D3:
 	STA <Temp_Var16	; Temp_Var16 = object's tile-relative horizontal position
 
 	LDY Level_Tile_Slope	 ; Y = object's detected slope
-	LDA Slope_ObjectVel_Effect,Y	 ; Get value by slope
-	CMP #$80
-	BNE PRG000_C5EC	 ; If value <> $80, jump to PRG000_C5EC
+	BNE PRG000_C5EC
 	JMP PRG000_C65D	 ; Otherwise, jump to PRG000_C65D
 
 PRG000_C5EC:
@@ -895,6 +741,7 @@ PRG000_C5EC:
 	; The most significant bit will be lost due to the 8-bit register!
 	; But those are ceiling slopes which enemies generally don't care about
 	; (Not even the upside-down Buzzy / Spiny enemies have proper ceiling slope coding!!)
+	INY
 	TYA		 
 	ASL A
 	ASL A
@@ -1001,24 +848,16 @@ PRG000_C65C:
 
 
 PRG000_C65D:
-	LDA Level_SlopeEn
-	BEQ PRG000_C67E	 ; If slopes are not enabled in this level, jump to PRG000_C67E
-
 	; This is a correction applied for when an enemy steps over the edge of a slope:
 	;   ___
 	;  /   \  <-- like when he walks across the top, down the side
 	; Helps keep the enemy following the curve downward, especially enemies like red
 	; shell koopa troopas that otherwise turn away at an edge...
 
-	LDY #$00	 ; Y = 0
-
 	LDA Objects_Slope,X
 	BEQ PRG000_C67E	 ; If slope value = 0, jump to PRG000_C67E
-	BPL PRG000_C66C	 ; If slope is positive, jump to PRG000_C66C
 
-	DEY		 ; Otherwise, Y = $FF
-
-PRG000_C66C:
+	LDA #$FF
 	ADD <Objects_Y,X
 	STA <Objects_Y,X ; Update Y
 
@@ -1097,64 +936,17 @@ PRG000_C713:
 	STA Object_TileFeet2
 	STA Object_TileFeet
 
-	PHA		 ; Save tile
-
-	LDA Level_TilesetIdx
-	CMP #$02
-	BNE PRG000_C736	 ; If Level_TilesetIdx <> 2 (not a Hills style level), jump to PRG000_C736
-
-	; If enemy is touching quicksand, jump to PRG000_C72E; otherwise, jump to PRG000_C736
-	LDA <Level_Tile
-	CMP #TILE3_QUICKSAND_TOP
-	BEQ PRG000_C72E
-	CMP #TILE3_QUICKSAND_MID
-	BNE PRG000_C736
-
-PRG000_C72E:
-	INC Objects_QSandCtr,X	; Increment the quicksand counter
-
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X	; killed by quicksand
-
-PRG000_C736:
-	PLA		 ; Restore tile
-
-	;ASL A
-	;ROL A
-	;ROL A		 ; Upper 2 bits shift right 6, effectively
-	;AND #%00000011	 ; Keep these bits, i.e. "tile quadrant"
-	;STA Object_AttrFeet ; Store quadrant value
-	TAY		 ; -> 'Y'
-
-
 	LDA ObjTile_DetXLo
 	STA <Temp_Var16	 ; Temp_Var16 = ObjTile_DetXLo
 
-	LDA Level_SlopeEn
-	BEQ PRG000_C76C	 ; If slopes are not enabled here, jump to PRG000_C76C
+	LDY <Level_Tile
+	LDA TileProperties, Y
+	AND #$0F
+	SUB #TILE_BOTTOMLEFT_30
+	BMI PRG000_C76C	 ; If detected tile < starting slope tiles, jump to PRG000_C76C
 
 	LDA <Level_Tile
-	CMP Tile_AttrTable,Y
-	BLT PRG000_C76C	 ; If detected tile < starting solidity tile, jump to PRG000_C76C
-
-	PHA		 ; Save tile
-
-	TYA		 ; Quadrant value -> 'A'
-	ASL A		 ; Shifted left 1 (2 byte index)
-	TAX		 ; -> 'X'
-
-	; Temp_Var3/4 point to array of slope values for this quadrant
-	LDA Level_SlopeSetByQuad,X
-	STA <Temp_Var3
-	LDA Level_SlopeSetByQuad+1,X
-	STA <Temp_Var4
-
-	PLA		 ; Restore tile
-
-	SUB Tile_AttrTable,Y	; Subtract the root tile value
-	TAY		 	; -> 'Y'
-	LDA [Temp_Var3],Y	; Get slope value
-	STA Level_Tile_Slope	; -> Level_Tile_Slope
+	STA  Level_Tile_Slope	; -> Level_Tile_Slope
 
 	LDX <SlotIndexBackup	; Restore X as object slot index
 
@@ -1162,17 +954,19 @@ PRG000_C76C:
 	LDA #$00
 	STA Object_TileWall2	 ; Object_TileWall2 = 0
 
-	PLA		 ; Restore Object_TileDetectOffsets index
-
-	CMP #(OTDO_G1R1 - Object_TileDetectOffsets)
-	BNE PRG000_C78C	 ; If not using Group 1 Row 1, jump to PRG000_C78C
-
-	LDY Level_SlopeEn
-	BEQ PRG000_C78C	 ; If slopes are not enabled, jump to PRG000_C78C
+	;PLA		 ; Restore Object_TileDetectOffsets index
+	;
+	;TAY
+	;LDA TileProperties,Y
+	;AND #TILE_SOLID_ALL
+	;BNE PRG000_C78C	 ; If not using Group 1 Row 1, jump to PRG000_C78C
+	;
+	;LDY Level_SlopeEn
+	;BEQ PRG000_C78C	 ; If slopes are not enabled, jump to PRG000_C78C
 
 	;;;;;;;;;;;;;;;;;; ONLY HAPPENS WITH GROUP 1 ROW 1 AND SLOPES ENABLED
 
-	PHA		 ; Save Object_TileDetectOffsets index
+	;PHA		 ; Save Object_TileDetectOffsets index
 
 	LDA Temp_VarNP0	 ; Retrieve object's in-air status
 	AND #$04	 ; Bit 2 is set to indicate object is "on solid ground"
@@ -1231,7 +1025,6 @@ PRG000_C797:
 ; $C7A9
 Object_DetectTile:
 PRG000_C7B1:
-	;STA Debug_Snap
 	LDA Player_PartDetEn
 	BEQ PRG000_C7D9	 ; If Player_PartDetEn is not set, jump to PRG000_C7D9
 

@@ -1617,7 +1617,6 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Level_TilesetIdx:	.ds 1	; Holds Level_Tileset as an "index" value instead, relative to levels (i.e. Level_Tileset - 1)
 	Level_ChangeReset:	.ds 1	; When set to zero, a mass reset is performed (used when changing "scenes" in a single level)
 	Level_UnusedFlag:	.ds 1	; Unused; only set in a couple places, but never read back!
-	Level_SlopeEn:		.ds 1	; If set, enables slope tiles (otherwise they're considered flat top-only solids)
 
 CHNGTILE_DELETECOIN	= $01
 CHNGTILE_DELETETOBG	= $02
@@ -1701,7 +1700,7 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Counter_ByPlayerSpd:	.ds 1	; A counter which increments faster as the Player goes faster
 
 	Level_HAutoScroll:	.ds 1	; When set to 1, "auto horizontal scroll" is active (this can be toggled mid-level)
-	B10Coin_Count:		.ds 1	; Decrements until -1, you continue to get a coin until it does so
+	Player_HeavyGravity:.ds 1	; Decrements until -1, you continue to get a coin until it does so
 	B10Coin_ID:		.ds 1	; Forms a sort of unique ID so game knows if you've switched blocks
 
 	Player_OffScreen:	.ds 1	; Set when Player is completely off screen
@@ -1820,7 +1819,6 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	Level_Tile_InFL:	.ds 1	; Tile "in front" of Player ("lower", at feet)
 	Level_Tile_InFU:	.ds 1	; Tile "in front" of Player ("upper", at face)
 	Level_Tile_Whack:	.ds 1	; Tile last hit by tail attack or shell
-	Level_Tile_Quad:	.ds 4	; $0608-$060B Quadrant of tile for each of the positions above
 
 				.ds 1	; $060C unused
 
@@ -2843,7 +2841,6 @@ CARD_WILD	= 8	; UNUSED Wild card (can match any other!)
 	; The first half is solid at the ground (i.e. Player can stand on it)
 	; The second half is solid at the head and walls (i.e. Player bumps head on it, typically "full solidity" when combined above)
 	; Interestingly, the Sonic the Hedgehog games implemented this same solidity pattern...
-	Tile_AttrTable:		.ds 8	; $7E94-$7E9B
 
 	Level_UnusedSlopesTS5:	.ds 1	; UNUSED; If set to 2, forces slopes to be enabled for Level_Tileset = 5 (plant infestation)
 	PlantInfest_ACnt_Max:	.ds 1	; Always set to $1A in plant infestation levels, sets max value for animation counter
@@ -3047,34 +3044,20 @@ SOBJ_POOF		= $16 	; Poof
 	; W - Water
 	; F - Foreground
 	; XXX - represents "special" types, affects mostly the player
-	; 00 - none
-	; 01 - harmful
-	; 02 - slick
-	; 03 - conveyor left
-	; 04 - conveyor right
-	; 05 - conveyor up
-	; 06 - conveyor down
-	; 07 - unstable platform
-	; 
-	; 0B - slope 30 left
-	; 0C - slope 30 right
-	; 0D - slope 60 left
-	; 0E - slope 60 right
-	; 0F - slope filler
+	; some combination that produce a certain effect
 
-TILE_SOLID_TOP		= %10000000
-TILE_SOLID_ALL		= %01000000
-TILE_WATER			= %00100000
-TILE_FOREGROUND		= %00010000
-TILE_HARMFUL		= $01
-TILE_SLICK			= $02
-TILE_CONVEYOR_LEFT	= $03
-TILE_CONVEYOR_RIGHT	= $04
-TILE_CONVEYOR_UP	= $05
-TILE_CONVEYOR_DOWN	= $06
-TILE_UNSTABLE		= $07
-TILE_SLOWMOVING		= $08
-
+TILE_SOLID_TOP		= %10000000	;
+TILE_SOLID_ALL		= %01000000 ;
+TILE_WATER			= %00100000 ;
+TILE_FOREGROUND		= %00010000 ;
+TILE_HARMFUL		= $01       ; Done
+TILE_SLICK			= $02		; Done
+TILE_CONVEYOR_LEFT	= $03		; Done
+TILE_CONVEYOR_RIGHT	= $04		; Done
+TILE_ENTERABLE_PIPE	= $05		; Done
+TILE_UNSTABLE		= $06		; Done
+TILE_HIGH_GRAVITY	= $07		;
+TILE_CLIMBABLE		= $08
 TILE_BOTTOMLEFT_30	= $09
 TILE_TOPLEFT_30		= $0A
 TILE_BOTTOMRIGHT_30	= $0B
@@ -3082,11 +3065,9 @@ TILE_TOPRIGHT_30	= $0C
 TILE_LEFT45			= $0D
 TILE_RIGHT45		= $0E
 TILE_SLOPE_FILLER	= $0F
-
-
 	TileProperties:		.ds 256
 	SlopedTiles:		.ds 16;
-						.ds 54;
+						.ds 62;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

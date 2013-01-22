@@ -1808,7 +1808,6 @@ PRG003_A92D:
 	JSR Object_ShakeAndDraw	 ; Draw it
 
 Object_DoMoveBounceConveyor:
-	;JSR Object_Move	 ; Do standard movements
 
 	LDA <Objects_DetStat,X
 	AND #$04

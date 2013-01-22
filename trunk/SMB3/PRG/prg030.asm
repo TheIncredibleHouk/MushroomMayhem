@@ -693,7 +693,6 @@ PRG030_85A5:
 	JSR PRGROM_Change_A000
 
 	JSR Map_Reload_with_Completions	 	; Load map and set already completed levels
-	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 
 	LDA Inventory_Open	
 	BNE PRG012_85CE		; If Inventory is open, jump to PRG012_85CE
@@ -1282,7 +1281,6 @@ PRG030_897B:
 
 	JSR LevelLoad			; Load the level layout data!
 	
-	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 	LDA #$00
 	
 	LDA #$01
@@ -2590,22 +2588,6 @@ PRG030_94EE:
 	JMP SetPages_ByTileset
 
 Fill_Tile_AttrTable_ByTileset:
-	LDA Level_Tileset
-	ASL A
-	ASL A
-	ASL A	 
-	TAY		 	; Y = Level_Tileset << 1
-
-	LDX #$00		; Y = 7
-PRG030_952C:
-	LDA TileSolidity,Y	
-	STA Tile_AttrTable,X
-	INY
-	INX			; Y--
-	CPX #$08
-	BNE PRG030_952C	 	; While Y >= 0, loop!
-
-	RTS			; Return
 
 	; This LUTs are for the unused-in-US-release "Box out" effect when a level starts
 	
@@ -4840,13 +4822,6 @@ PRG030_9EC3:
 	LDA [Map_Tile_AddrL],Y	; Get tile here
 	STA <Level_Tile	; Store into Level_Tile
 
-	LDY Level_Tileset
-	CPY #3
-	BEQ PRG030_9EDB	 ; If Level_Tileset = 3 (Hills style), jump to PRG030_9EDB
-
-	CPY #14
-	BNE PRG030_9F0D	 ; If Level_Tileset <> 14 (Underground), jump to PRG030_9F0D
-
 PRG030_9EDB:
 	; NOTE: Temp_Var1 = 0 and is used directly; at one time there was probably some kind
 	; of loop here that would have implicated Player_Slopes+1 and Player_Slopes+2
@@ -4857,33 +4832,19 @@ PRG030_9EDB:
 	LDA [Map_Tile_AddrL],Y	 ; Get tile here
 	STA <Temp_Var2		 ; Store into Temp_Var2
 
-	AND #$c0
-	CLC
-	ROL A
-	ROL A
-	ROL A
-	TAY		; Y = tile quadrant (0 to 3)
-
-	LDA <Temp_Var2		 ; Re-get tile
-	CMP Tile_AttrTable,Y
-	BLT PRG030_9F0D	 	; If it's less than the tile specified in Tile_AttrTable[Y], jump to PRG030_9F0D
-
-	TYA
-	ASL A
-	TAX		 ; X = Y (tile quadrant) << 1 (two byte index)
-
 	; Temp_Var3/4 are loaded with address inside PRG000_C000
-	LDA Level_SlopeSetByQuad,X
-	STA <Temp_Var3
-	LDA Level_SlopeSetByQuad+1,X
-	STA <Temp_Var4
-
 	LDX <Temp_Var1	 	; X = Temp_Var1 (always 0)
-	LDA <Temp_Var2	 	; A = Temp_Var2 (the retrieved tile)
-	SUB Tile_AttrTable,Y	; Subtract the root tile value
-	TAY		 	; Y = result
+	LDY <Temp_Var2	 	; A = Temp_Var2 (the retrieved tile)
+	LDA TileProperties, Y
+	SUB #TILE_BOTTOMLEFT_30
+	BMI PRG030_9F0B
+	ADD #$01
+	BNE PRG030_9F0C
 
-	LDA [Temp_Var3],Y		; Get value 
+PRG030_9F0B:
+	LDA #$00
+
+PRG030_9F0C:
 	STA <Player_Slopes,X	; Store into Player_Slopes
 
 PRG030_9F0D:

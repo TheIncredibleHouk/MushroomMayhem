@@ -722,21 +722,6 @@ PRG009_BDDB:
 	LDA [Temp_Var1],Y	; Get tile
 	STA <Temp_Var1		; -> Temp_Var1
 
-	LDY Level_TilesetIdx		; Y = level tileset index
-	LDA MuncherJelectroSet,Y	; Get Muncher/Jelectro tile
-	CMP <Temp_Var1
-	BEQ PRG009_BE28	 	; If this is the Muncher/Jelectro, jump to PRG009_BE28
-
-	LDA SpikesEnable,Y
-	CMP #$ff
-	BEQ PRG009_BE2B	 	; If there's no spikes here, jump to PRG009_BE2B
-
-	SUB <Temp_Var1
-	CMP #$02
-	BGE PRG009_BE2B	 	; If this is not the spike tile, jump to PRG009_BE2B
-
-PRG009_BE28:
-	JSR Player_GetHurt	; Player touched hurtful tile!
 
 PRG009_BE2B: 
 
