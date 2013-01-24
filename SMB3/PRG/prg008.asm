@@ -5314,7 +5314,7 @@ PRG008_BB7D:
 	ASL A
 	STA TempA
 	LDA <Player_X
-	ADD #$0B
+	ADD #$08
 	AND #$0F		; Get Player's horizontal position within tile
 	ADD TempA
 	TAY
@@ -5327,7 +5327,7 @@ PRG008_BB7D:
 	CMP Slope_LUT,Y
 	BLS PRG008_BB7E	 ; If 'A' (relative vertical position on tile) > (height at this point on slope), jump to PRG008_BB1A (RTS)
 	LDA Player_OnSlope
-	BLS PRG008_BB7E
+	BNE PRG008_BB7E
 	RTS
 
 PRG008_BB7E:
@@ -5335,6 +5335,8 @@ PRG008_BB7E:
 	STA <Player_InAir ; Player is no longer mid air!
 	STA <Player_YVel  ; Player hit solid!
 	STA Kill_Tally	  ; Reset Kill_Tally
+	LDA #$01
+	STA Player_OnSlope
 
 	; Ground slope impact
 
