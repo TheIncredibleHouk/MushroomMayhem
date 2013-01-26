@@ -5290,16 +5290,26 @@ Slope_CorrectL:	.byte -1, 16
 PRG008_BB1A:
 	RTS
 
-	; brand new slope
+UpHillFlag:
+	.byte $01, $00
+	.byte $01, $00
+	.byte $00, $01
+	.byte $00, $01
+	.byte $01, $00
+	.byte $00, $01
+	.byte $00, $00
+	; brand new slope handling
 Player_SlopeNew:
 	
 	LDA <Player_YVel
 	BMI PRG008_BB7C
 
 PRG008_BB7B:
+	LDA #$00
+	STA Player_UphillFlag
 	JSR Player_GetTileSlope
-	STA Debug_Snap
 	TAY
+	STY TempY
 	LDA TileProperties, Y
 	AND #$0F
 	SUB #(TILE_BOTTOMLEFT_30)
@@ -5351,16 +5361,20 @@ PRG008_BB7E:
 	DEC <Player_YHi	 ; Otherwise, apply carry
 
 PRG008_BB9A:
-	TXA		 ; Effect on velocity -> 'A'
-	BEQ PRG008_BBA1	 ; If none, jump to PRG008_BBA1
-
-	; Otherwise...
-	EOR <Player_XVel 
-	AND #$80	 ; Sort of aboslute
-
-PRG008_BBA1:
+	STA Debug_Snap
+	LDA <Player_X
+	CLC
+	AND #$80
+	ROL A
+	ROL A
+	STA TempA
+	TYA
+	ADD TempY
+	TAY
+	LDA UpHillFlag, Y
 	STA Player_UphillFlag ; Set whether player is marching uphill!
 
+	LDX #$00
 	LDA Player_InWater
 	BEQ PRG008_BBB0	 ; If Player is NOT underwater, jump to PRG008_BBB0
 
@@ -5451,7 +5465,7 @@ PRG008_BC14:
 	RTS		 ; Return
 
 	; Offset into TileAttrAndQuad_OffsSloped for checking at Player's feet or head
-Slope_ChkFeetOrHead:	.byte $00, $02	; Left value is small/ducking, right value is otherwise
+Slope_CheckX: .byte $08, $04
 
 	; hi jacked
 Player_GetTileSlope:
@@ -5461,7 +5475,14 @@ Player_GetTileSlope:
 
 	LDA #$1F
 	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
-	LDA #$08
+
+	CLC
+	LDA <Player_X
+	AND #$80
+	ROL A
+	ROL A
+	TAX
+	LDA Slope_CheckX, X
 	STA <Temp_Var11	 ; Temp_Var11 (X offset)
 
 	LDX #$00
