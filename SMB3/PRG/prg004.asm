@@ -2488,8 +2488,8 @@ PRG004_AD74:
 PRG004_AD8D:
 	LDA #$7f	 ; A = $7F
 
-	;LDY Level_SlopeEn
-	;BNE PRG004_AD96	 ; If this is a sloped level, jump to PRG004_AD96
+	LDY Level_SlopeEn
+	BNE PRG004_AD96	 ; If this is a sloped level, jump to PRG004_AD96
 
 	LDA #$3f	 ; A = $3F
 
@@ -2636,8 +2636,8 @@ PRG004_AE35:
 	LDA #SPR_PAL1
 	STA Objects_SprAttr,Y
 
-;	LDA #$00
-;	CMP Level_SlopeEn
+	LDA #$00
+	CMP Level_SlopeEn
 
 	; Non-sloped level uses Spiny Egg instead
 	LDA #OBJ_SPINYEGG

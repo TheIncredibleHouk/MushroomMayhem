@@ -3329,8 +3329,6 @@ ChallengeRTS:
 	LDA #$F0
 	STA Player_InAir
 	STA <Player_YVel
-	LDA #$00
-	STA Player_OnSlope
 	BNE Kill_Ctrls
 
 Unfreeze:

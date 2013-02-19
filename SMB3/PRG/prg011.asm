@@ -1612,7 +1612,9 @@ PRG011_AA0C:
 	BPL PRG011_AA0C	 ; While X >= 0, loop
 
 	; This tile is not in the Map_ForcePoofTiles set...
-	JMP PRG011_AA26	 ; If this tile is not possibly an "enterable" tile, jump to PRG011_AA26
+
+	CMP Tile_AttrTable+4,Y
+	BLT PRG011_AA26	 ; If this tile is not possibly an "enterable" tile, jump to PRG011_AA26
 
 	; This is one of the Map_ForcePoofTiles tiles, or at least a (potentially) enterable one
 
@@ -3306,7 +3308,8 @@ PRG011_B415:
 
 	PLA		 ; Restore tile
 
-	JMP PRG011_B435	 ; If this tile is not enterable, jump to PRG011_B435 (safe landing)
+	CMP Tile_AttrTable+4,Y
+	BLT PRG011_B435	 ; If this tile is not enterable, jump to PRG011_B435 (safe landing)
 
 PRG011_B42A:
 

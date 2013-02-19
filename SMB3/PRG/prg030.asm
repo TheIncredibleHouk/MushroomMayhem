@@ -693,6 +693,7 @@ PRG030_85A5:
 	JSR PRGROM_Change_A000
 
 	JSR Map_Reload_with_Completions	 	; Load map and set already completed levels
+	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 
 	LDA Inventory_Open	
 	BNE PRG012_85CE		; If Inventory is open, jump to PRG012_85CE
@@ -1281,6 +1282,7 @@ PRG030_897B:
 
 	JSR LevelLoad			; Load the level layout data!
 	
+	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 	LDA #$00
 	
 	LDA #$01
@@ -2588,6 +2590,22 @@ PRG030_94EE:
 	JMP SetPages_ByTileset
 
 Fill_Tile_AttrTable_ByTileset:
+	LDA Level_Tileset
+	ASL A
+	ASL A
+	ASL A	 
+	TAY		 	; Y = Level_Tileset << 1
+
+	LDX #$00		; Y = 7
+PRG030_952C:
+	LDA TileSolidity,Y	
+	STA Tile_AttrTable,X
+	INY
+	INX			; Y--
+	CPX #$08
+	BNE PRG030_952C	 	; While Y >= 0, loop!
+
+	RTS			; Return
 
 	; This LUTs are for the unused-in-US-release "Box out" effect when a level starts
 	
@@ -4831,20 +4849,8 @@ PRG030_9EDB:
 	LDY <Temp_Var12		 ; Y = current offset in Tile Mem
 	LDA [Map_Tile_AddrL],Y	 ; Get tile here
 	STA <Temp_Var2		 ; Store into Temp_Var2
-
-	; Temp_Var3/4 are loaded with address inside PRG000_C000
-	LDX <Temp_Var1	 	; X = Temp_Var1 (always 0)
-	LDY <Temp_Var2	 	; A = Temp_Var2 (the retrieved tile)
-	LDA TileProperties, Y
-	SUB #TILE_BOTTOMLEFT_30
-	BMI PRG030_9F0B
-	ADD #$01
-	BNE PRG030_9F0C
-
-PRG030_9F0B:
-	LDA #$00
-
-PRG030_9F0C:
+	BPL PRG030_9F0D
+	AND #$0F
 	STA <Player_Slopes,X	; Store into Player_Slopes
 
 PRG030_9F0D:

@@ -3214,8 +3214,6 @@ Store_Direction:
 	LDA #$10				; poof effect, we're now in the air	
 	STA Player_SuitLost		
 	STA Player_InAir
-	LDA #$00
-	STA Player_OnSlope
 	LDA Sound_QLevel2		; flame sound effect
 	ORA #SND_LEVELFLAME
 	STA Sound_QLevel2

@@ -39,6 +39,11 @@ Player_DoLavaDonutArrowBounce:
 	LDA <Player_IsDying		  
 	BNE PRG007_A06F	 ; If Player is dying, jump to PRG007_A06F (RTS)
 
+	LDA Level_7Vertical
+	BEQ PRG007_A027	 ; If this is NOT a vertically-oriented level, jump to PRG007_A027
+
+	JMP PRG007_A0DE	 ; Otherwise, jump to PRG007_A0DE
+
 PRG007_A027:
 
 	; Not vertically oriented level...
@@ -102,24 +107,36 @@ PRG007_A06F:
 
 
 PRG007_A070:
-	STA DAIZ_TEMP1
-	TAY
-	LDA TileProperties,Y
-	STA TempA
-	CMP #(TILE_WATER | TILE_HARMFUL)
+	CMP #TILE2_LAVATOP
 	BNE PRG007_A082	 ; If this is not (possibly) a lava tile, jump to PRG007_A082
 
 	JSR Get_Normalized_Suit
 	CMP #$08
-	BEQ PRG007_A0DD
+	BEQ Swim_Lava
 
 PRG007_A07F:
 	JMP PRG007_A183	 ; Jump to PRG007_A183 (Player dies!)
 
+Swim_Lava:
+	LDA DAIZ_TEMP1
 PRG007_A082:
-	AND #$0F
-	CMP #(TILE_UNSTABLE)
+	CMP #TILE2_DONUTLIFT
 	BNE PRG007_A0DD	 ; If this is not (possibly) a Donut Lift, jump to PRG007_A0DD (RTS)
+
+PRG007_A086:
+	; If this is tileset 4, 8, 12, or 2 (all valid for Donut Lift), jump to PRG007_A099, otherwise jump to PRG007_A06F (RTS)
+	LDY Level_Tileset
+	CPY #4
+	BEQ PRG007_A099
+
+	CPY #8
+	BEQ PRG007_A099
+
+	CPY #12
+	BEQ PRG007_A099
+
+	CPY #2
+	BNE PRG007_A06F
 
 PRG007_A099:
 	LDA Level_ChgTileEvent
@@ -166,6 +183,142 @@ PRG007_A099:
 	STA Level_BlockChgXHi
 
 PRG007_A0DD:
+	RTS		 ; Return
+
+PRG007_A0DE:
+
+	; Vertically oriented level...
+
+	LDA <Player_Y	; Get Player Y
+	ADD #33		; +33
+	AND #$f0	; Aligned to tile grid
+	STA <Temp_Var1	; -> Temp_Var1
+	STA <Temp_Var5	; -> Temp_Var5
+
+	LDA <Player_YHi
+	BMI PRG007_A0DD	 ; If Player is up off the top of the level, jump to PRG007_A0DD (RTS)
+
+	ADC #$00	; Apply carry
+	STA <Temp_Var3	; -> Temp_Var3
+
+	; High byte of Tile_Mem -> Temp_Var2
+	ORA #HIGH(Tile_Mem)
+	STA <Temp_Var2
+
+	LDA <Player_X	; Get Player X
+	ADD #$08	; +8
+	AND #$f0	; Aligned to tile grid
+	STA <Temp_Var4	; -> Temp_Var4
+
+	; Construct tile offset
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA <Temp_Var1
+	STA <Temp_Var1
+
+	; Temp_Var6 = 0 (would be "X Hi", which is always zero in vertical level)
+	LDY #$00
+	STY <Temp_Var6
+
+	LDA [Temp_Var1],Y	 ; Get tile here
+
+	CMP #TILE2_DONUTLIFT
+	BNE PRG007_A113	 ; If this is not donut lift tile, jump to PRG007_A113
+
+	JMP PRG007_A086	 ; Otherwise, jump to PRG007_A086
+
+PRG007_A113:
+	LDY <Player_InAir
+	BNE PRG007_A0DD	 ; If Player is mid-air, jump to PRG007_A0DD (RTS)
+
+	LDY ArrowPlat_IsActive
+	BNE PRG007_A0DD	 ; If an arrow platform is already active, jump to PRG007_A0DD (RTS)
+
+	; If not standing on some kind of arrow platform tile, jump to PRG007_A0DD (RTS)
+	CMP #TILE8_ARROWLIFT_UPL
+	BLT PRG007_A0DD
+	CMP #(TILE8_ARROWLIFT_RANDOMR+1)
+	BGE PRG007_A0DD
+
+	SUB #TILE8_ARROWLIFT_UPL
+	TAY		 ; Y = relative index of tile for arrow platform
+
+	; Temp_Var3 = $FF
+	LDA #$ff
+	STA <Temp_Var3
+
+	LDX #$04	 ; X = 4
+PRG007_A12E:
+	LDA Objects_State,X
+	BEQ PRG007_A144	 ; If this object slot is dead/empty, jump to PRG007_A144
+
+	; If this object slot is not some type of arrow platform, jump to PRG007_A146
+	LDA Level_ObjectID,X
+	CMP #OBJ_ARROWONE
+	BLT PRG007_A146
+	CMP #(OBJ_ARROWANY+1)
+	BGE PRG007_A146
+
+	; There's another arrow platform already active in this slot...
+
+	JSR Object_SetDeadEmpty	; Set this slot as dead/empty
+	JMP PRG007_A144	 	; Jump to PRG007_A144
+
+	; ^ I think the above is partially a mistake; they probably wanted to jump to something
+	; that would set 'X' and exit the loop.  This logic works as-is, but it requires another
+	; frame before the arrow lift will actually come into existence... unless another dead/
+	; empty object appears forward of this position...
+
+PRG007_A144:
+	STX <Temp_Var3		; Temp_Var3 = index we just searched
+
+PRG007_A146:
+	DEX		 ; X--
+	BPL PRG007_A12E	 ; While X >= 0, loop!
+
+	LDX <Temp_Var3	 ; X = free object slot!
+	BMI PRG007_A182	 ; If no free object slot was found, jump to PRG007_A182
+
+	; Set this to "Normal!"
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State,X
+
+	; Create the correct arrow platform by the tile
+	LDA ArrowPlat_ByTile,Y
+	STA Level_ObjectID,X
+
+	; Set the direction value by tile
+	LDA ArrowPlat_DirByTile,Y
+	STA <Objects_Var4,X
+
+	; Arrow platform Y
+	LDA <Temp_Var1
+	AND #$f0
+	SUB #$01
+	STA <Objects_Y,X
+	LDA <Temp_Var2
+	SBC #$00
+	AND #$0f
+	STA <Objects_YHi,X
+
+	; Arrow platform X
+	LDA <Temp_Var1
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ADD ArrowPlat_XOff,Y
+	STA <Objects_X,X
+	LDA #$00
+	STA <Objects_XHi,X
+
+	; Arrow platform's Var5 (lifespan counter) = $FF
+	LDA #$ff
+	STA <Objects_Var5,X
+
+PRG007_A182:
 	RTS		 ; Return
 
 PRG007_A183:
@@ -1008,16 +1161,17 @@ Change_Tile:
 	BPL PRG007_A563
 
 Bounce_Ball:
+	LDY DAIZ_TEMP2
 	LDX DAIZ_TEMP1
-	LDY <Temp_Var1;
-	AND #(TILE_SOLID_ALL | TILE_SOLID_TOP)
-	BEQ PRG007_A557_JUMP_OFF	 ; If this tile is not solid on top, jump to PRG007_A557
+	LDA <Temp_Var1;
+	CMP Tile_AttrTable,Y
+	BLT PRG007_A557_JUMP_OFF	 ; If this tile is not solid on top, jump to PRG007_A557
 
 	; Tile is solid on top...
 
-	AND #(TILE_SOLID_ALL)
-	BEQ PRG007_A59F	 ; If this tile is not solid on the sides/bottom, jump to PRG007_A59F
-	JMP PRG007_A5DC
+	CMP Tile_AttrTable+4,Y
+	BLT PRG007_A59F	 ; If this tile is not solid on the sides/bottom, jump to PRG007_A59F
+	JMP PRG007_A566
 
 PRG007_A557:
 
@@ -1032,6 +1186,17 @@ PRG007_A563:
 
 PRG007_A566:
 	LDA <Temp_Var1
+
+	LDY Level_SlopeEn
+	BEQ PRG007_A579	 ; If this level is NOT sloped, jump to PRG007_A579
+
+	; If this is a slope level and fireball hit level ground, jump to PRG007_A594
+	CMP #TILE14_ABOVE_MIDGROUND
+	BEQ PRG007_A594
+	CMP #TILE3_MIDGROUND
+	BEQ PRG007_A594
+	CMP #TILE3_WMIDGROUND
+	BEQ PRG007_A594
 
 PRG007_A579:
 	INC Fireball_HitChkPass,X	; Fireball_HitChkPass++
@@ -1067,6 +1232,14 @@ PRG007_A596:
 	RTS		 ; Return
 
 PRG007_A59F:
+
+	; Tile not solid on sides/bottom...
+
+	LDA Level_SlopeEn
+	BNE PRG007_A5DC		; If this is a sloped level, jump to PRG007_A5DC
+
+	; Not a sloped level...
+
 	LDA <Temp_Var6	; Relative Y of fireball
 	AND #$0f	; Within tile
 	CMP #$05	
@@ -1122,15 +1295,31 @@ PRG007_A5DC:
 	AND #$0f
 	STA <Temp_Var5
 
+	LDY <Temp_Var2	 ; Y = tile quadrant
+	CPY #$01
+	BEQ PRG007_A637
+	TYA
+	ASL A
+	TAX		 ; X = tile quadrant * 2 (2 byte index into Level_SlopeSetByQuad)
+
+	; Temp_Var3/4 pointer into appropriate Level_SlopeSetByQuad
+	LDA Level_SlopeSetByQuad,X
+	STA <Temp_Var3
+	LDA Level_SlopeSetByQuad+1,X
+	STA <Temp_Var4
 
 	LDX <SlotIndexBackup	 ; X = Player Projectile index
 
-	LDY <Temp_Var1
-	AND #$0F
-	SUB TILE_BOTTOMLEFT_30
+	LDA <Temp_Var1
+	SUB Tile_AttrTable,Y
 	TAY		 ; Y = tile made relative to solid set
 
+	LDA [Temp_Var3],Y
+	TAY		 ; Y = slope offset for this tile
+
 	LDA Slope_ObjectVel_Effect,Y
+	CMP #$80
+	BEQ PRG007_A637	 ; If this tile has no effect, jump to PRG007_A637 ("Poof" away, fireball..)
 
 	STA <Temp_Var7	 ; Effect value -> Temp_Var7
 
@@ -1461,26 +1650,28 @@ PRG007_A783:
 	LDY <Player_HaltGame
 	BNE PRG007_A7F0	 ; If gameplay halted, jump to PRG007_A7F0 (RTS)
 
-	LDA Player_HeavyGravity
-	BEQ PRG007_A7F0
-	LDA <Player_YVel
-	CMP #$3c
-	BGS PRG007_A7A1	 ; If Player's Y velocity >= $3C, jump to PRG007_A7A2
-
-	INC <Player_YVel ; Player_YVel++
-
-	LDA <Counter_1
-	LSR A	
-	BCC PRG007_A7A1	 ; Every other tick, jump to PRG007_A7A2
-
-	INC <Player_YVel ; Player_YVel++
-
-PRG007_A7A1:
 	LDA Player_InWater
 	BEQ PRG007_A7F0	 ; If Player is not underwater, jump to PRG007_A7F0 (RTS)
 
 	; Otherwise, clear kill tally (Being underwater also resets your chain stomping)
 	STY Kill_Tally
+
+	CMP #$01
+	BEQ PRG007_A7F1	 ; If Player_InWater = 1 (water, not waterfall), jump to PRG007_A7F1
+
+	; Player's in a waterfall!
+
+	LDA <Player_YVel
+	CMP #$3c
+	BGS PRG007_A7A2	 ; If Player's Y velocity >= $3C, jump to PRG007_A7A2
+
+	INC <Player_YVel ; Player_YVel++
+
+	LDA <Counter_1
+	LSR A	
+	BCC PRG007_A7A2	 ; Every other tick, jump to PRG007_A7A2
+
+	INC <Player_YVel ; Player_YVel++
 
 PRG007_A7A2:
 	JSR Object_GetRandNearUnusedSpr
@@ -1669,8 +1860,7 @@ Bubble_UpdateAndDraw:
 	LDA <Player_HaltGame		 
 	BEQ PRG007_A87F	 ; If gameplay is not halted, juimp to PRG007_A89A
 
-PRG007_A87E:
-	RTS
+	JMP PRG007_A89A	 ; Otherwise, jump to PRG007_A89A
 
 PRG007_A87F:
 	INC Bubble_Cnt,X ; Bubble counter increment
@@ -1681,21 +1871,86 @@ PRG007_A87F:
 	STA Bubble_Cnt,X
 
 	AND #%00110000
-	BEQ PRG007_A87E	 ; Periodically jump to PRG007_A89A
+	BEQ PRG007_A89A	 ; Periodically jump to PRG007_A89A
 
 	DEC Bubble_Y,X	 ; Bubble Y --
 
 	LDY Bubble_Y,X
 	INY	
-	BNE PRG007_A87E	 ; If no carry, jump to PRG007_A89A
+	BNE PRG007_A89A	 ; If no carry, jump to PRG007_A89A
 	DEC Bubble_YHi,X ; Apply carry
+
+PRG007_A89A:
+	LDA Level_7Vertical
+	BEQ PRG007_A8BF	 ; If this level is not vertical, jump to PRG007_A8F0
+
+	; Vertical level...
+
+	LDA Bubble_Y,X
+	ADD #10		; Bubble Y + 10
+	AND #$f0
+	STA <Temp_Var3	; Temp_Var3 = bubble row (offset into tile memory)
+
+	LDA Bubble_YHi,X
+	ADC #HIGH(Tile_Mem)
+	STA <Temp_Var2	; Temp_Var2 = bubble high offset into tile memory
+
+	; Create row/column offset into tile memory for current screen of bubble -> Temp_var1
+	LDA Bubble_X,X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA <Temp_Var3
+	STA <Temp_Var1
+
+	LDY #$00	 ; Y = 0 (not using the offset like non-vertical does)
+	BEQ PRG007_A8F0	 ; Jump (technically always) to PRG007_A8F0
+
+PRG007_A8BF:
+	LDA Bubble_Y,X
+	ADD #10		 ; Bubble Y + 10
+	AND #$f0
+	STA <Temp_Var3	 ; Temp_Var3 = bubble row (offset into tile memory)
+
+	LDA Bubble_YHi,X
+	ADC #$00	 ; Apply carry
+	PHA		 ; Save it
+
+	; Temp_Var5 = bubble X
+	LDA Bubble_X,X
+	STA <Temp_Var5
+
+	LDA Bubble_XHi,X
+	ASL A		 ; 2 bytes per screen
+	TAY		 ; Y = offset into Tile_Mem_Addr
+
+	LDA Tile_Mem_Addr,Y
+	STA <Temp_Var1	 ; Temp_Var1 = low byte of this screen's tile memory address
+
+	PLA		 ; Restore Bubble's Y Hi
+	AND #$01	 ; Only 0/1 valid for non-vertical
+	ADD Tile_Mem_Addr+1,Y	 ; Add to high byte of address
+	STA <Temp_Var2	 ; -> Temp_Var2
+
+	; Create row/column offset -> Temp_Var3
+	LDA <Temp_Var5
+	LSR A	
+	LSR A	
+	LSR A	
+	LSR A	
+	ORA <Temp_Var3
+
+	TAY		 ; Y = this offset
 
 PRG007_A8F0:
 	LDA [Temp_Var1],Y ; Get the tile the bubble detects
+
+	STA <Temp_Var2	 ; -> Temp_Var2
 	TAY
 	LDA TileProperties, Y
-	AND #(TILE_WATER)
-	BNE Bubble_Draw	 ; If this is the top or middle of a waterfall, jump to PRG007_A91E
+	AND #TILE_WATER
+	BNE Bubble_Draw	 ; If this tile is still considered underwater, jump to Bubble_Draw 
 
 PRG007_A91E:
 
@@ -2458,11 +2713,14 @@ SObj_CheckHitSolid:
 	STA <Temp_Var1	 ; -> Temp_Var1
 	TAY
 	LDA TileProperties,Y
-	AND #(TILE_SOLID_ALL | TILE_SOLID_TOP)
+	STA CurrentTileProperty
+	AND #TILE_SOLID_ALL
 	BEQ PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
 
-	AND #TILE_SOLID_ALL
-	BEQ PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
+
+	LDA CurrentTileProperty
+	AND #TILE_ALTERNATIVE
+	BNE PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
 
 	; Tile is solid all around
 
@@ -2529,16 +2787,9 @@ PRG007_AEE0:
 	BNE PRG007_AEFC	 ; If this is not a Blooper Kid, jump to PRG007_AEFC
 
 	; Blooper kid only...
-
-	LDA Level_TilesetIdx
-	ASL A
-	ASL A	; TilesetIdx * 4
-	ADD <Temp_Var2	; Add the quadrant
-	TAY	; Y = offset into Level_MinTileUWByQuad
-
-	;LDA Level_MinTileUWByQuad,Y
-	CMP <Temp_Var1
-	BLT PRG007_AEFB	 ; If this tile is not considered underwater, jump to PRG007_AEFB (RTS)
+	LDA CurrentTileProperty
+	AND #TILE_WATER
+	BEQ PRG007_AEFB	 ; If this tile is not considered underwater, jump to PRG007_AEFB (RTS)
 
 	DEC SObjBlooperKid_OutOfWater,X	 ; Otherwise, SObjBlooperKid_OutOfWater = 0 (Blooper Kid is still in water!)
 
@@ -2560,15 +2811,6 @@ PRG007_AF02:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
-
-	; Something removed here...
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
 
 	JMP PRG007_B84C	 ; Jump to PRG007_B84C ("Poof" away the fireball)
 
