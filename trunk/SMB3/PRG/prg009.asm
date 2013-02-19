@@ -722,7 +722,6 @@ PRG009_BDDB:
 	LDA [Temp_Var1],Y	; Get tile
 	STA <Temp_Var1		; -> Temp_Var1
 
-
 PRG009_BE2B: 
 
 	; Auto scroll effects enabled, but no horizontal auto scroll

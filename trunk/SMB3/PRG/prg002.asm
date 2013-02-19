@@ -2370,6 +2370,8 @@ PRG002_AB5E:
 
 	; Player collided with floater
 
+	ROL Player_NoSlopeStick	 	; Set Player_NoSlopeStick
+
 	LDA <Player_YVel
 	BEQ PRG002_AB86	 	; If Player is not moving vertically, jump to PRG002_AB86
 
