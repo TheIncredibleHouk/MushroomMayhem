@@ -4801,8 +4801,6 @@ Player_GetTileAndSlope_Normal:	; $9E9D
 	; Clear slope array
 	LDA #$00	
 	STA <Player_Slopes
-	STA <Player_Slopes+1	; Not used; see below with Temp_Var1 assignment
-	STA <Player_Slopes+2	; Not used; see below with Temp_Var1 assignment
 
 	LDA <Temp_Var16
 	LSR A
