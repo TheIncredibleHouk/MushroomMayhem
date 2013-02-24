@@ -1820,9 +1820,8 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	Level_Tile_InFL:	.ds 1	; Tile "in front" of Player ("lower", at feet)
 	Level_Tile_InFU:	.ds 1	; Tile "in front" of Player ("upper", at face)
 	Level_Tile_Whack:	.ds 1	; Tile last hit by tail attack or shell
-	Level_Tile_Quad:	.ds 4	; $0608-$060B Quadrant of tile for each of the positions above
 
-				.ds 1	; $060C unused
+				.ds 5	; $060C unused
 
 	; Level_Tile_Slope: Slope of tile for each of the positions above (first byte also used by objects)
 	; 0: Slope shape at feet

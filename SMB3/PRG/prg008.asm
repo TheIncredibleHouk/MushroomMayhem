@@ -1259,9 +1259,6 @@ PRG008_A71C:
 	LDA #$00
 	STA Player_IsDucking	; Player_IsDucking = 0
 
-	LDA Level_SlopeEn
-	BEQ PRG008_A72B	 	; If slopes are not enabled, jump to PRG008_A72B
-
 	LDA Player_SlideRate 
 	BNE PRG008_A736	 	; If Player has a slide magnitude, jump to PRG008_A736
 
@@ -4716,12 +4713,6 @@ PRG008_B747:
 
 PRG008_B74A:
 	LDY #$00	 ; Y = 0 (bounce down)
-	LDA Level_SlopeEn
-	BEQ PRG008_B756	 ; If not a sloping level, jump to PRG008_B756
-
-	TXA		 
-	BEQ PRG008_B75B	 ; If tile detect index = 0, jump to PRG008_B75B (keeps Y = 0)
-	BNE PRG008_B75A	 ; Otherwise, jump to PRG008_B75A (sets Y = 1)
 
 PRG008_B756:
 	LDA <Player_YVel
@@ -5283,14 +5274,13 @@ Slope_CorrectH:	.byte $FF, $00	; sign extension of next two values
 Slope_CorrectL:	.byte -1, 16
 
 Player_DetectSlopes:	; <-- go back up from here
-	RTS
-        LDY #(TileAttrAndQuad_OffsSloped_Sm - TileAttrAndQuad_OffsSloped) + 6         ; Y = $16 (Player small or ducking)
+    LDY #(TileAttrAndQuad_OffsSloped_Sm - TileAttrAndQuad_OffsSloped) + 6         ; Y = $16 (Player small or ducking)
 
-        LDA Player_IsDucking 
-        BNE PRG008_B9E5  ; If Player is ducking, jump to PRG008_B9E5
+    LDA Player_IsDucking 
+    BNE PRG008_B9E5  ; If Player is ducking, jump to PRG008_B9E5
 
-        LDA <Player_Suit
-        BEQ PRG008_B9E5  ; If Player is small, jump to PRG008_B9E5
+    LDA <Player_Suit
+    BEQ PRG008_B9E5  ; If Player is small, jump to PRG008_B9E5
  
 	LDY #$06	 ; Y = $06 (Player not small, not ducking; 6 because of 3 * 2 = 6, based on X = 3 down below)
 
@@ -5312,7 +5302,6 @@ PRG008_B9F2:
 	; Makes tile detection just a little fuzzier for sake of the Player
 PRG008_B9F4:
 	JSR Player_GetTileSlopeAndQuad	 ; Get quadrant and tile attribute info
-	JSR Level_DoCommonSpecialTiles	 ; Handle any common special tiles
 
 	DEY
 	DEY		 ; Y -= 2
@@ -5794,12 +5783,6 @@ Player_GetTileSlopeAndQuad:
 	JSR Player_GetTileAndSlope ; Get tile
 	STA Level_Tile_GndL,X	 ; Store into appropriate location
 
-	AND #$c0	 ; Get quadrant of tile
-	ASL A
-	ROL A
-	ROL A		 ; A = 0-3, based on quadrant
-	STA Level_Tile_Quad,X	; Store quadrant
-
 	LDA <Player_Slopes	 ; Get slope
 	STA Level_Tile_Slope,X	 ; Store slope
 	RTS		 ; Return
@@ -5941,7 +5924,6 @@ PRG008_BD75:
 PRG008_BD96:
 	LDA #$00
 	STA Player_Slippery	 ; Player_Slippery = 0 (default ground not slippery)
-	STA Debug_Snap
 	LDX #$04	 ; X = 3
 
 PRG008_BD98:
