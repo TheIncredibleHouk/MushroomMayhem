@@ -1063,18 +1063,6 @@ PRG000_C713:
 	CMP #$02
 	BNE PRG000_C736	 ; If Level_TilesetIdx <> 2 (not a Hills style level), jump to PRG000_C736
 
-	; If enemy is touching quicksand, jump to PRG000_C72E; otherwise, jump to PRG000_C736
-	LDA <Level_Tile
-	CMP #TILE3_QUICKSAND_TOP
-	BEQ PRG000_C72E
-	CMP #TILE3_QUICKSAND_MID
-	BNE PRG000_C736
-
-PRG000_C72E:
-	INC Objects_QSandCtr,X	; Increment the quicksand counter
-
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X	; killed by quicksand
 
 PRG000_C736:
 	PLA		 ; Restore tile
