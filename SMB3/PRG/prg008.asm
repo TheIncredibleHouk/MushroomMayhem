@@ -4030,11 +4030,11 @@ PRG008_B42E:
 	LDY Level_PipeMove	; Y = Level_PipeMove (movement command in $8x form)
 	BNE PRG008_B43F	 	; If Level_PipeMove <> 0, jump to PRG008_B43F
 
-	PHA
-	JSR CheckSpriteOnFG
-	ORA Player_Behind_En
-	STA Player_Behind_En
-	PLA
+	;PHA
+	;JSR CheckSpriteOnFG
+	;ORA Player_Behind_En
+	;STA Player_Behind_En
+	;PLA
 
 	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
 
@@ -5296,15 +5296,12 @@ PRG008_B9E5:
 	TAY		 ; Y += 8	 
 
 PRG008_B9F2:
-	LDX #$03	 ; X = 3 (reason for +6 init to 'Y')
+	LDX #$01	 ; X = 3 (reason for +6 init to 'Y')
 
 	; This loop handles detecting tiles at or near a detection point
 	; Makes tile detection just a little fuzzier for sake of the Player
 PRG008_B9F4:
 	JSR Player_GetTileSlopeAndQuad	 ; Get quadrant and tile attribute info
-
-	DEY
-	DEY		 ; Y -= 2
 
 	DEX		 ; X--
 	BPL PRG008_B9F4	 ; While X >= 0, loop!
@@ -5314,7 +5311,10 @@ PRG008_B9F4:
 	LDY #$00	 ; Y = 0 
 
 	LDA Level_Tile_Slope,X	 ; Get this slope "shape"
+	BNE PRG008_BA1A
+	RTS
 
+PRG008_BA1A:
 	CMP #$04
 	BEQ PRG008_BA58	 ; If slope "shape" = 4 (wall), jump to PRG008_BA58
 
@@ -5419,58 +5419,6 @@ PRG008_BA77:
 	; Note: Jump here for something not an unsloped floor or wall
 	; Generally all paths drop you here...
 
-	LDY #$02	 ; Y = 2 (checking "in front" tiles, lower and upper)
-	JSR Level_CheckGndLR_TileGTAttr
-	BCC PRG008_BABC	 ; If not touching a solid tile, jump to PRG008_BABC
-
-	JSR Can_Wall_Jump
-	JSR Shell_Bounce
-	LDX #$00	 ; X = 0
-	LDY #$01	 ; Y = 0
-	LDA <Player_X	
-	AND #$0f	 
-	CMP #$08
-	BGS PRG008_BA92	 ; If Player is more than halfway across the tile, jump to PRG008_BA92
-
-	; Otherwise...
-	INX		 ; X = 1
-	LDY #-1		 ; Y = -1
-
-PRG008_BA92:
-	LDA PRG008_B3B0,X ; Get appropriate offset
-	ADD <Player_X	 ; Add Player_X
-	AND #$0f	 ; Make tile relative
-	BEQ PRG008_BABC	 ; If result = 0, jump to PRG008_BABC
-
-	TYA
-	BPL PRG008_BAA1	 ; If Y is not -1, jump to PRG008_BAA1
-
-	DEC <Player_XHi	 ; Otherwise, Player_XHi--
-
-PRG008_BAA1:
-	ADD <Player_X	 ; Add Player_X to offset
-	STA <Player_X	 ; Update Player_X
-
-	BCC PRG008_BAAA	 ; If no carry, jump to PRG008_BAAA
-
-	INC <Player_XHi	 ; Otherwise, apply carry
-
-PRG008_BAAA:
-	INY		 ; Y++ (0 or 1, depending)
-
-	LDA <Player_XVel
-	BPL PRG008_BAB1	 ; If Player is moving rightward, jump to PRG008_BAB1
-
-	DEY		 
-	DEY		 ; Y -= 2 (guarantees 'Y' is not zero)
-
-PRG008_BAB1:
-	TYA		 
-	BNE PRG008_BABC	 ; If Y <> 0, jump to PRG008_BAB1
-
-	STA <Player_XVel
-	STA Player_Slide
-	INC Player_WalkAnimTicks
 
 PRG008_BABC:
 	LDX #$00	 ; X = 0

@@ -4847,9 +4847,11 @@ PRG030_9EDB:
 	LDY <Temp_Var12		 ; Y = current offset in Tile Mem
 	LDA [Map_Tile_AddrL],Y	 ; Get tile here
 	STA <Temp_Var2		 ; Store into Temp_Var2
+	TAY
+	LDA TileProperties,Y
 	BPL PRG030_9F0D
 	AND #$0F
-	STA <Player_Slopes,X	; Store into Player_Slopes
+	STA <Player_Slopes	; Store into Player_Slopes
 
 PRG030_9F0D:
 	LDA <Level_Tile	; A = Level_Tile (the tile retrieved)
