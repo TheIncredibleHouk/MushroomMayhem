@@ -1949,7 +1949,10 @@ PRG007_A8F0:
 	STA <Temp_Var2	 ; -> Temp_Var2
 	TAY
 	LDA TileProperties, Y
-	AND #TILE_WATER
+	AND #TILE_PROP_ITEM
+	CMP #TILE_PROP_ITEM
+	BNE PRG007_A91E
+	AND #TILE_PROP_WATER
 	BNE Bubble_Draw	 ; If this tile is still considered underwater, jump to Bubble_Draw 
 
 PRG007_A91E:
@@ -2714,12 +2717,12 @@ SObj_CheckHitSolid:
 	TAY
 	LDA TileProperties,Y
 	STA CurrentTileProperty
-	AND #TILE_SOLID_ALL
+	AND #TILE_PROP_SOLID_TOP
 	BEQ PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
 
 
 	LDA CurrentTileProperty
-	AND #TILE_ALTERNATIVE
+	AND #TILE_PROP_SOLID_BOTTOM
 	BNE PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
 
 	; Tile is solid all around
@@ -2788,7 +2791,10 @@ PRG007_AEE0:
 
 	; Blooper kid only...
 	LDA CurrentTileProperty
-	AND #TILE_WATER
+	AND #TILE_PROP_ITEM
+	CMP #TILE_PROP_ITEM
+	BEQ PRG007_AEFB
+	AND #TILE_PROP_WATER
 	BEQ PRG007_AEFB	 ; If this tile is not considered underwater, jump to PRG007_AEFB (RTS)
 
 	DEC SObjBlooperKid_OutOfWater,X	 ; Otherwise, SObjBlooperKid_OutOfWater = 0 (Blooper Kid is still in water!)
