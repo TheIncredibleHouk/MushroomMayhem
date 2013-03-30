@@ -2907,7 +2907,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	; 11: Ladder and [?] blocks
 	Map_2PVsGame:		.ds 1
 
-						.ds 8	; 
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
 	StatusBar_PMT:		.ds 8	; $7F3E-$7F45, tiles that currently make up the power meter >>>>>>[P]
@@ -2994,13 +2993,9 @@ SOBJ_ICEBALL		= $15 	; Laser
 SOBJ_POOF		= $16 	; Poof
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
-				.ds 2	; $7FCE-$7FCF unused
-
 	Objects_Var3:		.ds 5	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
 
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
-
-				.ds 2	; $7FDD-$7FDE unused
 
 	Objects_LastTile:	.ds 8	; $7FDF-$7FE6 Last tile this object detected
 
@@ -3048,24 +3043,49 @@ SOBJ_POOF		= $16 	; Poof
 	; XXX - represents "special" types, affects mostly the player
 	; some combination that produce a certain effect
 
-TILE_ALTERNATIVE	= %10000000 ;
-TILE_SOLID_TOP		= %11000000	;
-TILE_SOLID_ALL		= %01000000 ;
-TILE_WATER			= %00100000 ;
-TILE_FOREGROUND		= %00010000 ;
-TILE_HARMFUL		= $01       ; Done
-TILE_SLICK			= $02		; Done
-TILE_CONVEYOR_LEFT	= $03		; Done
-TILE_CONVEYOR_RIGHT	= $04		; Done
-TILE_UNSTABLE		= $05		; Done
-TILE_VPIPE_LEFT		= $06		; Done
-TILE_VPIPE_RIGHT	= $07		; Done
-TILE_HIGH_GRAVITY	= $08		;
-TILE_CLIMBABLE		= $09
-	TileProperties:		.ds 256;
-	CurrentTileProperty:.ds 1;
-	Player_HeavyGravity:.ds 1;
-						.ds 68;
+TILE_PROP_FOREGROUND	= $10 ;
+TILE_PROP_WATER			= $20 ;
+TILE_PROP_SOLID_TOP		= $40 ;
+TILE_PROP_SOLID_BOTTOM	= $80 ;
+TILE_PROP_SOLID_ALL		= $C0 ;
+TILE_PROP_ITEM			= $F0 ;
+TILE_PROP_HARMFUL		= $01 ; 
+TILE_PROP_SLICK			= $02 ; 
+TILE_PROP_MOVE_LEFT		= $03 ; 
+TILE_PROP_MOVE_RIGHT	= $04 ; 
+TILE_PROP_MOVE_UP		= $05 ; 
+TILE_PROP_MOVE_DOWN		= $06 ; 
+TILE_PROP_UNSTABLE		= $07 ; 
+TILE_PROP_VPIPE_LEFT	= $08 ;
+TILE_PROP_VPIPE_RIGHT	= $09 ;
+TILE_PROP_HPIPE_BOTTOM	= $0A ;
+TILE_PROP_CLIMBABLE		= $0B ;
+TILE_PROP_COIN			= $0C ;
+TILE_PROP_DOOR			= $0D ;
+TILE_PROP_PSWITCH		= $0E ;
+TILE_SPECIAL_COIN		= $00 ;
+TILE_SPECIAL_FIREFLOWER = $01 ;
+TILE_SEPCIAL_SUPERLEAF	= $02 ;
+TILE_SEPCIAL_ICEFLOWER	= $03 ;
+TILE_SEPCIAL_FROG		= $04 ;
+TILE_SPECIAL_FIREFOX	= $05 ;
+TILE_SPECIAL_KOOPA		= $06 ;
+TILE_SPECIAL_BOO		= $07 ;
+TILE_SPECIAL_SLEDGE		= $08 ;
+TILE_SPECIAL_NINJA		= $09 ;
+TILE_SPECIAL_STAR		= $0A ;
+TILE_SPECIAL_VINE		= $0B ;
+TILE_SPECIAL_PSWITCH	= $0C ;
+TILE_SPECIAL_BRICK		= $0D ;
+TILE_SPECIAL_NOTE		= $0E 
+	TileProperties:		 .ds 256;
+	CurrentTileProperty: .ds 1;
+	Player_VertVelMod: .ds 1;
+	FireBallTransitions: .ds 8;
+	IceBallTransitions:  .ds 8;
+	HammerTransitions:	.ds 8;
+	PSwitchTransitions: .ds 16;
+						.ds 40;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3824,8 +3844,6 @@ TILEA_PSWITCH_PRESSED	= $D7	; Referenced pressed P-Switch
 TILEA_PSWITCH		= $F2	; P-Switch
 STANDING_WATER		= $DC	;
 FROZEN_WATER		= $EF	;
-MOON_BLOCK			= $3D	;
-SUN_BLOCK			= $3C	;Green note block (functions like standard white, just colored wrong)
 TILEA_BLOCKBUMP_CLEAR	= $F3	; Tile used when a "bump" block (e.g. ? blocks, note block, etc.) is hit
 
 ; Tileset 1 (Plains style)

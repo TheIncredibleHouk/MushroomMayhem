@@ -4799,8 +4799,6 @@ Player_GetTileAndSlope_Normal:	; $9E9D
 	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
 
 	; Clear slope array
-	LDA #$00	
-	STA <Player_Slopes
 
 	LDA <Temp_Var16
 	LSR A
@@ -4837,24 +4835,6 @@ PRG030_9EC3:
 	TAY		 	; Y = current offset
 	LDA [Map_Tile_AddrL],Y	; Get tile here
 	STA <Level_Tile	; Store into Level_Tile
-
-PRG030_9EDB:
-	; NOTE: Temp_Var1 = 0 and is used directly; at one time there was probably some kind
-	; of loop here that would have implicated Player_Slopes+1 and Player_Slopes+2
-	LDA #$00
-	STA <Temp_Var1		 ; Temp_Var1 = 0
-
-	LDY <Temp_Var12		 ; Y = current offset in Tile Mem
-	LDA [Map_Tile_AddrL],Y	 ; Get tile here
-	STA <Temp_Var2		 ; Store into Temp_Var2
-	TAY
-	LDA TileProperties,Y
-	BPL PRG030_9F0D
-	AND #$0F
-	STA <Player_Slopes	; Store into Player_Slopes
-
-PRG030_9F0D:
-	LDA <Level_Tile	; A = Level_Tile (the tile retrieved)
 	RTS		 ; Return
 
 

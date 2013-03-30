@@ -741,8 +741,9 @@ PRG000_C559:
 
 	LDY Object_TileWall	; A = detected tile index
 	LDA TileProperties, Y
-	AND #TILE_SOLID_ALL
-	BEQ PRG000_C584	 	; If the tile's index < the beginning wall/ceiling solid tile for this quad, jump to PRG000_C584
+	AND #TILE_PROP_SOLID_ALL
+	CMP #TILE_PROP_SOLID_ALL
+	BEQ PRG000_C584	 	
 
 	; Object is touching solid wall tile
 
@@ -780,8 +781,8 @@ PRG000_C59A:
 	; Non-slope detection
 	LDY Object_TileFeet
 	LDA TileProperties, Y
-	AND #TILE_SOLID_ALL
-	BEQ PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
+	AND #TILE_PROP_SOLID_BOTTOM
+	BEQ PRG000_C5A8	 
 
 PRG000_C5A2:
 	; Flag ceiling impact
@@ -797,146 +798,11 @@ PRG000_C5A9:
 	; Object moving downwards (floor detection)
 	LDY Object_TileFeet
 	LDA TileProperties, Y
-	AND #(TILE_SOLID_ALL | TILE_SOLID_TOP)
+	AND #TILE_PROP_SOLID_TOP
 	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
 	JMP PRG000_C65D	 ; Otherwise, jump to PRG000_C65D
 
 PRG000_C5B4:
-	LDY Level_SlopeEn
-	BNE PRG000_C5BC	 ; If slopes are enabled, jump to PRG000_C5BC
-	JMP PRG000_C649	 ; Jump to PRG000_C649
-
-PRG000_C5BC:
-
-	; Slopes...
-
-	; Any of the following tiles, jump to PRG000_C67F
-	CMP #TILE3_VERTGROUNDL
-	BEQ PRG000_C5D0	
-
-	CMP #TILE3_VERTGROUNDR
-	BEQ PRG000_C5D0
-
-	CMP #TILE14_ABOVE_MIDGROUND
-	BEQ PRG000_C5D0
-
-	CMP #TILE3_MIDGROUND
-	BEQ PRG000_C5D0
-
-	CMP #TILE3_WMIDGROUND
-	BNE PRG000_C5D3	
-
-PRG000_C5D0:
-	JMP PRG000_C67F	 ; Jump to PRG000_C67F
-
-PRG000_C5D3:
-
-	; Slopes enabled, not touching one of the flat solids
-
-	LDA <Objects_Y,X
-	AND #$0f
-	STA <Temp_Var1	; Temp_Var1 = object's tile-relative vertical position
-
-	LDA <Temp_Var16	; Temp_Var16 right now is ObjTile_DetXLo
-	AND #$0f
-	STA <Temp_Var16	; Temp_Var16 = object's tile-relative horizontal position
-
-	LDY Level_Tile_Slope	 ; Y = object's detected slope
-	LDA Slope_ObjectVel_Effect,Y	 ; Get value by slope
-	CMP #$80
-	BNE PRG000_C5EC	 ; If value <> $80, jump to PRG000_C5EC
-	JMP PRG000_C65D	 ; Otherwise, jump to PRG000_C65D
-
-PRG000_C5EC:
-	; Slope response
-
-	; Calculate the offset into Slope_LUT
-	; NOTE: This fails to accomodate slope shape index values of $10+...
-	; The most significant bit will be lost due to the 8-bit register!
-	; But those are ceiling slopes which enemies generally don't care about
-	; (Not even the upside-down Buzzy / Spiny enemies have proper ceiling slope coding!!)
-	TYA		 
-	ASL A
-	ASL A
-	ASL A
-	ASL A		 ; A = slope value << 4 (16 bytes per slope "shape" index)
-	ADD <Temp_Var16	 ; Add the tile-relative horizontal position (offset to pixel specific height on this slope)
-	TAY		 ; -> 'Y'
-
-	LDA Slope_LUT,Y
-	AND #$0f	
-	STA <Temp_Var2	 ; Lower 4 bits of slope (the "floor" slope height) -> Temp_Var2
-
-	LDA <Temp_Var1	
-	CMP #12
-	BGE PRG000_C606	 ; If object's tile-relative Y position >= 12, jump to PRG000_C606
-
-
-	CMP <Temp_Var2
-	BLT PRG000_C65D	 ; If object's tile-relative Y position < calculated slope height, jump to PRG000_C65D
-
-PRG000_C606:
-	LDA <Temp_Var2		
-	STA Object_SlopeHeight	 ; Store Object_SlopeHeight
-
-	; Set "hit ground" flag
-	LDA <Objects_DetStat,X
-	ORA #$04
-	STA <Objects_DetStat,X
-
-	LDY Level_Tile_Slope	 ; Y = object's detected slope
-
-	LDA <Objects_XVel,X
-	LSR A
-	LSR A
-	LSR A
-	LSR A		; A = "whole" part of Object's X Velocity
-	BNE PRG000_C61E	 ; If not zero, jump to PRG000_C61E
-
-	LDA #$01	 ; Otherwise, use A = 1
-
-PRG000_C61E:
-	CMP #$08	 
-	BLT PRG000_C624	 ; If object's X velocity < 8, jump to PRG000_C624
-
-	ORA #$f0	 ; Sign extend
-
-PRG000_C624:
-	LDX Slope_ObjectVel_Effect,Y ; X = value from Slope_ObjectVel_Effect
-	CPX #$00	
-	BNE PRG000_C62E	 ; If value <> 0, jump to PRG000_C62E
-
-	; Otherwise...
-	LDX #$00	 ; X = 0
-	TXA		 ; A = 0
-
-PRG000_C62E:
-	CPX #$00	 
-	BPL PRG000_C635	 ; If X is not negative, jump to PRG000_C635
-
-	JSR Negate	 ; Otherwise, negate (absolute value)
-
-PRG000_C635:
-	STX <Temp_Var1	 ; -> Temp_Var1
-
-	LDX <SlotIndexBackup	 ; X = object slot index
-	STA Objects_Slope,X	 ; Absolute value slope
-
-	LDA <Temp_Var1		 ; A = value from Slope_ObjectVel_Effect
-
-	LDY <Objects_XVel,X
-	BPL PRG000_C645	 ; If X Velocity >= 0, jump to PRG000_C645
-
-	; X velocity < 0 ...
-	JSR Negate	 ; Negate value
-
-PRG000_C645:
-	STA LRBounce_Vel ; Store the "power" of the left/right bouncer
-
-	RTS		 ; Return
-
-
-PRG000_C649:
 	LDA Player_PartDetEn
 	BNE PRG000_C656	 ; If Player_PartDetEn is set (the object hit the visual ground), jump to PRG000_C656
 
@@ -6579,37 +6445,13 @@ TryReplace:
 No_Replace:
 	RTS 
 
-CheckDayNight:
-	CMP #MOON_BLOCK
-	BEQ TestMoonBlock
-	CMP #SUN_BLOCK
-	BEQ TestSunBlock
-	RTS
-
-TestMoonBlock:
-	LDA DayNight
-	BNE NotDay
-	LDA #$00
-	RTS
-
-NotDay:
-	LDA #MOON_BLOCK
-	RTS
-
-TestSunBlock:
-	LDA DayNight
-	BEQ NotNight
-	LDA #$80
-	RTS
-
-NotNight:
-	LDA #SUN_BLOCK
-	RTS
-
 CheckSpriteOnFG:
 	TAY
 	LDA TileProperties, Y
-	AND #TILE_FOREGROUND
+	AND #TILE_PROP_ITEM
+	CMP #TILE_PROP_ITEM
+	BEQ SetBGPriority
+	AND #TILE_PROP_FOREGROUND
 	BEQ SetBGPriority
 	LDA #$20
 
@@ -6621,7 +6463,10 @@ SetBGPriority:
 Object_Check_Water:
 	TAY
 	LDA TileProperties, Y
-	AND #TILE_WATER
+	AND #TILE_PROP_ITEM
+	CMP #TILE_PROP_ITEM
+	BEQ Not_Water
+	AND #TILE_PROP_WATER
 	BEQ Not_Water
 	LDA #$01
 

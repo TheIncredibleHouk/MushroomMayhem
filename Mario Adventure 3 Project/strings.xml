@@ -259,9 +259,9 @@
     <block value="FF"></block>
   </set>
   <set leveltype="01">
-    <block value="00"></block>
-    <block value="01">Cherry</block>
-    <block value="02">Left Side Flower 1</block>
+    <block value="00">Coin</block>
+    <block value="01">Coin</block>
+    <block value="02">Cherry</block>
     <block value="03">Right Side Flower 2</block>
     <block value="04">Left Side Flower 2</block>
     <block value="05">Right Side Flower 2</block>
@@ -324,8 +324,8 @@
     <block value="3E">Frozen Coin</block>
     <block value="3F">Universal Ice Block</block>
     <block value="40">Coin</block>
-    <block value="41">Hollow Unless P-Switch Active</block>
-    <block value="42">Left Side Flower 1</block>
+    <block value="41">Coin</block>
+    <block value="42">Cherry</block>
     <block value="43">Right Side Flower 2</block>
     <block value="44">Left Side Flower 2</block>
     <block value="45">Right Side Flower 2</block>
@@ -387,9 +387,9 @@
     <block value="7D">Platform Bottom Right</block>
     <block value="7E"></block>
     <block value="7F">Solid Unless P-Switch Active</block>
-    <block value="80">Universal Background</block>
-    <block value="81">Flower Stem Left</block>
-    <block value="82">Flower Stem Right</block>
+    <block value="80">Background</block>
+    <block value="81">Coin</block>
+    <block value="82">Cherry</block>
     <block value="83">Left Side Flower 1</block>
     <block value="84">Right Side Flower 2</block>
     <block value="85">Vine</block>
@@ -451,9 +451,9 @@
     <block value="BD"></block>
     <block value="BE"></block>
     <block value="BF"></block>
-    <block value="C0">Left Side Flower 1</block>
-    <block value="C1">Right Side Flower 2</block>
-    <block value="C2">Left Side Flower 2</block>
+    <block value="C0">Coin</block>
+    <block value="C1">Coin</block>
+    <block value="C2">Cherry</block>
     <block value="C3">Right Side Flower 2</block>
     <block value="C4">Mushroom Top Left</block>
     <block value="C5">Mushroom Top Right</block>
@@ -645,7 +645,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -903,7 +903,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -1161,7 +1161,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -1419,7 +1419,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -1677,7 +1677,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -1935,7 +1935,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -2193,7 +2193,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -2451,7 +2451,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -2709,7 +2709,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -2967,7 +2967,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -3225,7 +3225,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -3483,7 +3483,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
@@ -3741,7 +3741,7 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F"></block>
-    <block value="80">Universal Background</block>
+    <block value="80">Background</block>
     <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>

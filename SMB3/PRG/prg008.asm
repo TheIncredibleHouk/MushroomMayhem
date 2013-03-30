@@ -836,7 +836,6 @@ PRG008_A472:
 	JSR AScrlURDiag_HandleWrap 	; Handle the diagonal autoscroller wrapping
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
-	JSR Player_DetectSlopes		;
 	JSR Player_DoSpecialTiles	; Handle unique-to-style tiles!
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
@@ -1147,27 +1146,18 @@ FloatLevel_StatCheck:
 ; otherwise tested if the tile is in the "solid floor" region!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_CheckIfTileUnderwater:
-	LDA #$00
-	STA TempA
 	LDA <Temp_Var1,X
 	TAY
 	LDA TileProperties, Y
-	AND #(TILE_WATER)
+	CMP #TILE_PROP_ITEM
+	BGE PRG008_A6A8
+	AND #TILE_PROP_WATER
 	BEQ PRG008_A6A8
-	INC TempA
+	LDY #$01
+	RTS
 
 PRG008_A6A8:
-	LDA <Temp_Var1,X
-	TAY
-	LDA TileProperties, Y
-	AND #$0F
-	CMP #TILE_HIGH_GRAVITY
-	PHP
-	PLA
-	AND #02
-	STA Player_HeavyGravity
-
-	LDY TempA
+	LDY #$00
 	RTS
 
 Player_ControlJmp:
@@ -1448,9 +1438,8 @@ PRG008_A819:
 	STA Player_InWater	; Merge water flag status
 	BEQ PRG008_A825
 
-	LDA Player_HeavyGravity
+	LDA Player_VertVelMod
 	BNE PRG008_A825
-	LDA #$00
 	STA <Player_XVel
 
 PRG008_A825:
@@ -1518,9 +1507,10 @@ PRG008_A86C:
 
 	LDY <Temp_Var1
 	LDA TileProperties, Y
-	BMI PRG008_A890
+	CMP #TILE_SPECIAL_COIN
+	BGE PRG008_A890
 	AND #$0F
-	CMP #TILE_CLIMBABLE
+	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG008_A890	 ; If tile is not the vine, jump to PRG008_A890
 
 	LDA Player_IsClimbing
@@ -3988,9 +3978,6 @@ PRG008_B406:
 	BLT PRG008_B419	 ; If Temp_Var14 < $B0, jump to PRG008_B419
 
 PRG008_B414:
-	LDA #$00
-	STA <Player_Slopes	 ; Player_Slopes = 0 
-
 	RTS		 ; Return
 
 
@@ -4279,13 +4266,13 @@ PRG008_B55B:
 	LDA Level_Tile_GndR	 ; Get right tile
 	TAX
 	LDA TileProperties, X
-	AND #TILE_SOLID_ALL
+	AND #TILE_PROP_SOLID_ALL
 	BNE PRG008_B57E	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
 
 	LDA Level_Tile_GndL	 ; Get left tile
 	TAX
 	LDA TileProperties, X
-	AND #TILE_SOLID_ALL	
+	AND #TILE_PROP_SOLID_ALL	
 	BNE PRG008_B57E	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
 
 
@@ -4351,15 +4338,15 @@ Level_CheckGndLR_TileGTAttr:
 	LDA Level_Tile_GndR,Y		; Check the tile here
 	TAX
 	LDA TileProperties, X
-	AND #TILE_SOLID_TOP
-	CMP #TILE_SOLID_ALL
+	AND #TILE_PROP_SOLID_ALL
+	CMP #TILE_PROP_SOLID_ALL
 	BEQ PRG008_B5D1			; If the tile is >= the attr value, jump to PRG008_B5D0 (NOTE: Carry set when true)
 
 	LDA Level_Tile_GndL,Y		; Check the tile here
 	TAX
 	LDA TileProperties, X
-	AND #TILE_SOLID_TOP
-	CMP #TILE_SOLID_ALL
+	AND #TILE_PROP_SOLID_ALL
+	CMP #TILE_PROP_SOLID_ALL
 	BEQ PRG008_B5D1
 
 	CLC
@@ -5273,450 +5260,6 @@ PRG008_B9D3:
 Slope_CorrectH:	.byte $FF, $00	; sign extension of next two values 
 Slope_CorrectL:	.byte -1, 16
 
-Player_DetectSlopes:	; <-- go back up from here
-    LDY #(TileAttrAndQuad_OffsSloped_Sm - TileAttrAndQuad_OffsSloped) + 6         ; Y = $16 (Player small or ducking)
-
-    LDA Player_IsDucking 
-    BNE PRG008_B9E5  ; If Player is ducking, jump to PRG008_B9E5
-
-    LDA <Player_Suit
-    BEQ PRG008_B9E5  ; If Player is small, jump to PRG008_B9E5
- 
-	LDY #$06	 ; Y = $06 (Player not small, not ducking; 6 because of 3 * 2 = 6, based on X = 3 down below)
-
-PRG008_B9E5:
-	LDA <Player_X
-	AND #$0f	 ; offset within tile column
-	CMP #$08	 
-	BPL PRG008_B9F2	 ; If Player is >= halfway across current tile, jump to PRG008_B9F2
-
-	; Player is on left half of tile
-	TYA		 
-	ADD #$08
-	TAY		 ; Y += 8	 
-
-PRG008_B9F2:
-	LDX #$01	 ; X = 3 (reason for +6 init to 'Y')
-
-	; This loop handles detecting tiles at or near a detection point
-	; Makes tile detection just a little fuzzier for sake of the Player
-PRG008_B9F4:
-	JSR Player_GetTileSlopeAndQuad	 ; Get quadrant and tile attribute info
-
-	DEX		 ; X--
-	BPL PRG008_B9F4	 ; While X >= 0, loop!
-
-	LDX #$00	 ; X = 0 (slope at feet)
-
-	LDY #$00	 ; Y = 0 
-
-	LDA Level_Tile_Slope,X	 ; Get this slope "shape"
-	BNE PRG008_BA1A
-	RTS
-
-PRG008_BA1A:
-	CMP #$04
-	BEQ PRG008_BA58	 ; If slope "shape" = 4 (wall), jump to PRG008_BA58
-
-	CMP #$08
-	BEQ PRG008_BA58  ; If slope "shape" = 8 (unsloped ceiling), jump to PRG008_BA58
-
-	LDY <Player_InAir
-	BNE PRG008_BA1B	 ; If Player is mid air, jump to PRG008_BA1B
-
-	LDY Player_NoSlopeStick
-	BNE PRG008_BA1B	 ; If Player_NoSlopeStick is set (don't stick to slopes), jump to PRG008_BA1B
-
-	CMP #$00
-	BEQ PRG008_BA4F	 ; If slope "shape" = 0 (BG tile), jump to PRG008_BA58
-
-PRG008_BA1B:
-	LDY #$00
-	STY Player_NoSlopeStick ; Clear Player_NoSlopeStick
-
-	INX	; X = 1 (slope at head)
-	LDA Level_Tile_Slope,X	 ; Get this slope "shape"
-
-	CMP #$07
-	BEQ PRG008_BA2C	 ; If slope "shape" = 7 (unsloped ground, not square tiles), jump to PRG008_BA2C
-
-	CMP #$04	 
-	BNE PRG008_BA77	 ; If slope "shape" <> 4 (wall), jump to PRG008_BA77
-
-PRG008_BA2C:
-	; Note: Jump here for slope "shape" of 7 (unsloped ground) or 4 (wall)
-	; Use for Player rubbing against sloped ceiling, specifically for the
-	; "solid square" type of tiles listed above, "push" the Player completely
-	; beneath the block so that he (crudely) tracks the ceiling slope
-
-	; XX/
-	; X/   <-- Where 'X' is e.g. a type 4 slope, Player is pushed to its
-	; /        bottom, keep him at the ceiling and not creeping into it
-
-	LDX <Player_Suit
-	BEQ PRG008_BA38	 ; If Player is small, jump to PRG008_BA38
-
-	LDX #$01	 ; X = 1
-
-	LDA Player_IsDucking
-	BEQ PRG008_BA38	 ; If Player is NOT ducking, jump to PRG008_BA38
-
-	DEX		 ; Otherwise, X = 0
-
-PRG008_BA38:
-	LDA <Player_Y
-	ADD PlayerY_HeightOff,X ; Add appropriate offset to where the top of the Player's "head" should be
-	JSR Negate	 ; Negate this value
-	AND #$0f	 ; But keep only lower 4 bits (essentially, we calculated 15 - offset)
-	ADD <Player_Y	 ; Add this with Player_Y
-	BCC PRG008_BA4A	 ; If no carry, jump to PRG008_BA4A
-
-	INC <Player_YHi	 ; Otherwise, apply carry
-
-PRG008_BA4A:
-	STA <Player_Y	 ; Update Player_Y
-	JMP PRG008_BA69	 ; Jump to PRG008_BA69
-
-PRG008_BA4F:
-
-	; Note Y = 0 here
-
-	LDA <Player_Y
-	AND #$0f	 ; Tile row offset of Player Y
-	CMP #10
-	BLS PRG008_BA77	 ; If Player's row offset is less than 10, jump to PRG008_BA77
-
-	INY		 ; Otherwise, Y = 1
-
-PRG008_BA58:
-	; Note: Direct jump on slope shapes 0 (BG tile), 4 (wall), and 8 (unsloped ceiling)
-	; Used for corrections while Player runs along a slope
-
-	LDA <Player_Y
-	AND #$F0	 	; Tile grid aligned Y
-	ADD Slope_CorrectL,Y	; Add appropriate offset based on Player's relative vertical position within tile
-	STA <Player_Y		; Update Player Y
-
-	; Apply carry as needed
-	LDA <Player_YHi
-	ADC Slope_CorrectH,Y
-	STA <Player_YHi	
-
-PRG008_BA69:
-	; Get proper base offset into TileAttrAndQuad_OffsSloped for checking at Player's feet or head
-	LDA Slope_ChkFeetOrHead,X	 ; X = 0 for floor, 1 for ceiling
-
-	LDY <Player_Suit
-	BEQ PRG008_BA73	 ; If Player is small, jump to PRG008_BA73
-
-	ADD #(TileAttrAndQuad_OffsSloped_Sm - TileAttrAndQuad_OffsSloped)	; Otherwise, add 16 to height at this point on slope (NOTE: Ducking included!)
-
-PRG008_BA73:
-	TAY		 ; Y = A
-	JSR Player_GetTileSlopeAndQuad	 ; Get quadrant and tile attribute info
-
-PRG008_BA77:
-	; Note: Jump here for something not an unsloped floor or wall
-	; Generally all paths drop you here...
-
-
-PRG008_BABC:
-	LDX #$00	 ; X = 0
-	LDY Level_Tile_Slope	 ; Y = Level_Tile_Slope (slope "shape" index at feet)
-	LDA Slope_IsNotFloorShape,Y
-	BEQ PRG008_BAC7	 ; If 0 (this is a floor slope tile), jump to PRG008_BAC7
-
-	; We hit a ceiling type tile; set X = 1, so to check ceiling tiles
-	INX	; X = 1
-
-PRG008_BAC7:
-	LDA <Player_X		 
-	ADD TileAttrAndQuad_OffsSloped+1
-	AND #$0f	 
-	STA <Temp_Var1		 ; Temp_Var1 = (Player_X + [TileAttrAndQuad_OffsSloped+1]) & $0F (offset locked across tile)
-
-	LDA Level_Tile_Slope,X
-	TAY		; Y = slope
-
-	; Tile "shape" index values $1x will add 1 to Level_GndLUT_Addr+1
-	; Because of 16 entries per tile in Slope_LUT
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	ADD <Level_GndLUT_Addr+1
-	STA <Level_GndLUT_Addr+1
-
-	; Lower 4 bits of "shape" index value shifted up (so $0-$F * $10)
-	; Because of 16 entries per tile in Slope_LUT
-	TYA
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ORA <Temp_Var1	; Apply existing offset across tile
-	STA <Temp_Var1	; -> Temp_Var1 (now offset into Slope_LUT for specific height of slope)
-
-	LDA Slope_PlayerVel_Effect,Y
-	STA <Temp_Var16	 ; Temp_Var16 = effect on velocity by this slope
-
-	LDY <Temp_Var1	 ; Y = Temp_Var1 (calculated height from slope)
-	TXA		 ; A = 0 (floor slope tile) or 1 (non-floor slope tile)
-	BNE PRG008_BAF4	 ; If non-floor slope, jump to PRG008_BAF4
-	JMP PRG008_BB69	 ; Otherwise, jump to PRG008_BB69
-
-PRG008_BAF4:
-
-	; Non-floor slope...
-
-	LDA Level_Tile_Slope+1	; Assumed since X = 1 anyway
-	CMP #$00
-	BNE PRG008_BB1B	 ; If slope tile at head <> 0 (BG tile), jump to PRG008_BB1B
-
-	; Slope tile at head is a BG tile...
-
-	LDA <Player_InAir
-	BNE PRG008_BB1A	 ; If Player is mid air, jump to PRG008_BB1A (RTS)
-
-	; This has to do with Player walking off an edge (e.g. cliff-like) on a sloped level
-	; The tile being stepped off from does not necessarily need to be a slope-related tile.
-
-	LDX #4		; X = 4
-	LDY #(TileAttrAndQuad_OffsSlopeEdge - TileAttrAndQuad_OffsSloped)
-	LDA <Player_X	
-	AND #$0f	
-	CMP #$08	
-	BGS PRG008_BB0D	 ; If Player is more than halfway across current tile, jump to PRG008_BB0D
-
-	; Otherwise, Y += 2
-	INY
-	INY
-
-PRG008_BB0D:
-	JSR Player_GetTileSlopeAndQuad	 ; Get tile slope and quadrants
-	CMP #$03	 
-	BEQ PRG008_BB1A	 ; If slope = 3, jump to PRG008_BB1A (RTS)
-
-	LDA #$00
-	STA <Player_YVel	 ; Player_YVel = 0 (stop vertical movement)
-
-	INC <Player_InAir	 ; Set Player in mid air!
-
-PRG008_BB1A:
-	RTS		 ; Return
-
-PRG008_BB1B:
-
-	; Player head ceiling tile check, not BG tile
-
-	LDX <Player_Suit
-	BEQ PRG008_BB27	 ; If Player is small, jump to PRG008_BB27
-
-	LDX #$01	 ; X = 1
-
-	LDA Player_IsDucking
-	BEQ PRG008_BB27	 ; If Player is NOT ducking, jump to PRG008_BB27
-
-	DEX		 ; X = 0 (they could've just put the duck check before X = 1, right?)
-
-PRG008_BB27:
-	LDA <Player_Y		 ; Get Player Y
-	ADD PlayerY_HeightOff,X	 ; Add appropriate offset based on ducking or not
-	AND #$0f	 	; Make Y relative to current tile
-	STA <Temp_Var1		 ; -> Temp_Var1
-
-	; Ceiling slope impact
-
-	; The upper 4 bits hold the ceiling slope height value, so need to shift right by 4
-	LDA [Level_GndLUT_Addr],Y
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var2		 ; Temp_Var2 = ceiling slope height
-
-	SUB <Temp_Var1
-	BMI PRG008_BB68	 ; If Temp_Var1 (relative vertical position on tile) > Temp_Var2 (height at this point on slope), jump to PRG008_BB68 (RTS)
-
-	INC Player_HitCeiling	 ; Flag Player as having hit head off this sloped ceiling
-
-	PHA		 ; Save difference
-
-	LDA <Player_YVel
-	BPL PRG008_BB52	 ; If Player_YVel >= 0 (Player moving downward), jump to PRG008_BB52
-
-	LDA Level_AScrlVVel	 ; Get autoscroll vertical velocity
-	JSR Negate	 ; Negate it
-	BPL PRG008_BB50	 ; If positive, jump to PRG008_BB50
-
-	LDA #$00	 ; Otherwise, just set to zero
-
-PRG008_BB50:
-	STA <Player_YVel ; Store as Player's Y velocity
-
-PRG008_BB52:
-	PLA		 ; Restore difference
-
-	LDY Level_Tile_Slope+1
-	CPY #$03
-	BNE PRG008_BB5F	 ; If Level_Tile_Slope+1 <> 3 (solid square tile), jump to PRG008_BB5F
-PRG008_BB5F:
-	ADD <Player_Y	 
-	STA <Player_Y	 ; Add to Player_Y
-
-	BCC PRG008_BB68	 ; If no carry, jump to PRG008_BB68 (RTS)
-
-	INC <Player_YHi	 ; Otherwise, apply carry!
-
-PRG008_BB68:
-	RTS		 ; Return
-
-PRG008_BB69:
-
-	; Player feet floor tile check
-
-	LDX <Temp_Var16	 ; X = Temp_Var16 (effect on velocity by this slope)
-
-	LDA <Player_InAir
-	BEQ PRG008_BB7E	 ; If Player is NOT mid air, jump to PRG008_BB7E
-
-	; Player is mid air...
-
-	LDA <Player_YVel
-	CMP #-$1c
-	BLS PRG008_BB1A	 ; If Player Y velocity < -$1C, jump to PRG008_BB1A (RTS)
-
-	; Get difference between Player and ground slope height
-
-	LDA <Player_Y	
-	AND #$0f		; Get Player's vertical position within tile
-	SUB [Level_GndLUT_Addr],Y	 ; NOTE: This makes an assumption that the would-be ceiling component is always zero!!
-	BMI PRG008_BB1A	 ; If 'A' (relative vertical position on tile) > (height at this point on slope), jump to PRG008_BB1A (RTS)
-
-PRG008_BB7E:
-	LDA #$00
-	STA <Player_InAir ; Player is no longer mid air!
-	STA <Player_YVel  ; Player hit solid!
-	STA Kill_Tally	  ; Reset Kill_Tally
-
-	; Ground slope impact
-
-	LDA [Level_GndLUT_Addr],Y
-	AND #$0f		; Lower 4 bits hold ground slope height
-	STA <Temp_Var1	 ; Temp_Var1 = fractional slope value
-
-	LDA <Player_Y
-	AND #$F0
-	ADD <Temp_Var1	; Slope height adjustment
-	STA <Player_Y	 ; Set Player's position on slope!
-
-	BCC PRG008_BB9A	 ; If no carry, jump to PRG008_BB9A
-
-	INC <Player_YHi	 ; Otherwise, apply carry
-
-PRG008_BB9A:
-	TXA		 ; Effect on velocity -> 'A'
-	BEQ PRG008_BBA1	 ; If none, jump to PRG008_BBA1
-
-	; Otherwise...
-	EOR <Player_XVel 
-	AND #$80	 ; Sort of aboslute
-
-PRG008_BBA1:
-	STA Player_UphillFlag ; Set whether player is marching uphill!
-
-	LDA Player_InWater
-	BEQ PRG008_BBB0	 ; If Player is NOT underwater, jump to PRG008_BBB0
-
-	LDA #$00
-	STA Player_Slide ; Otherwise, stop sliding!
-
-	BEQ PRG008_BC0D	 ; Jump (technically always) to PRG008_BC0D
-
-PRG008_BBB0:
-	TXA		 ; Effect on velocity -> 'A'
-
-	LDY Player_Slide 
-	BEQ PRG008_BBBF	 ; If Player is NOT sliding, jump to PRG008_BBBF
-
-	; Get absolute value of slide
-	BPL PRG008_BBBB	 
-	JSR Negate 
-PRG008_BBBB:
-
-	CMP #$00
-	BLS PRG008_BBFD	 ; If slide < 0, jump to PRG008_BBFD (should never happen because of absolute value??)
-
-PRG008_BBBF:
-	LDA Player_Slide
-	BNE PRG008_BBE0	 ; If Player is sliding, jump to PRG008_BBE0
-
-	; Check ability to slide
-
-	TXA		 ; Effect on velocity -> 'A'
-	BEQ PRG008_BC0D	 ; If no effect (flat ground), jump to PRG008_BC0D
-
-	LDY <Player_Suit
-	LDA PowerUp_Ability,Y
-	AND #$02	 
-	BNE PRG008_BC0D	 ; If the Player's suit CANNOT slide on slopes, jump to PRG008_BC0D
-
-	LDA Player_Shell
-	BNE PRG008_BC14	 ; If Player is wearing 
-
-	LDA <Pad_Holding
-	AND #(PAD_DOWN | PAD_LEFT | PAD_RIGHT)	; checking down/left/right
-	CMP #PAD_DOWN	; but we only want down
-	BNE PRG008_BC0D	 ; If NOT only pressing ONLY down, jump to PRG008_BC0D
-
-	JSR PRG008_AEB6	 ; Set sliding frame
-
-PRG008_BBE0:
-	TXA		 ; Effect on velocity -> 'A'
-	ADD Player_Slide
-	STA Player_Slide ; Apply effect to Player_Slide
-
-	; Absolute value of Player_Slide
-	BPL PRG008_BBED	
-	JSR Negate	
-PRG008_BBED:
-
-	CMP #$40
-	BLS PRG008_BBFD	 ; If magnitude of Player_Slide < $40, jump to PRG008_BBFD
-
-	; Player is sliding too fast!! 
-	; If Player_Slide is negative, stop it at -$40, otherwise stop it at $40
-	LDY #$40
-	LDA Player_Slide
-	BPL PRG008_BBFA
-	LDY #-$40	
-PRG008_BBFA:
-	STY Player_Slide
-
-PRG008_BBFD:
-	DEC Player_Slide ; Player_Slide--
-	BPL PRG008_BC08	 ; If Player_Slide >= 0, jump to PRG008_BC08
-
-	; Amounts to a single increment (against the above decrement) for negative Player_Slide
-	INC Player_Slide
-	INC Player_Slide
-
-PRG008_BC08:
-	LDA Player_Slide
-	STA <Player_XVel ; Player_XVel = Player_Slide
-
-PRG008_BC0D:
-	LDA <Player_XVel
-	BEQ PRG008_BC14	 ; If Player_XVel = 0 (came to a stop), jump to PRG008_BC14 (RTS)
-
-	STX Player_SlideRate	 ; Otherwise, update Player_SlideRate with velocity effect value
-
-PRG008_BC14:
-	RTS		 ; Return
-
-	; Offset into TileAttrAndQuad_OffsSloped for checking at Player's feet or head
-Slope_ChkFeetOrHead:	.byte $00, $02	; Left value is small/ducking, right value is otherwise
-
 	; Fills in the Level_Tile_Quad[rant] and Level_Tile_Slope values
 Player_GetTileSlopeAndQuad:
 
@@ -5731,8 +5274,6 @@ Player_GetTileSlopeAndQuad:
 	JSR Player_GetTileAndSlope ; Get tile
 	STA Level_Tile_GndL,X	 ; Store into appropriate location
 
-	LDA <Player_Slopes	 ; Get slope
-	STA Level_Tile_Slope,X	 ; Store slope
 	RTS		 ; Return
 
 
