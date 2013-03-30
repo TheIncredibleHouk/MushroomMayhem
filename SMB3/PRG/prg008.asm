@@ -1436,14 +1436,6 @@ PRG008_A819:
 
 	TYA
 	STA Player_InWater	; Merge water flag status
-	BEQ PRG008_A825
-
-	LDA Player_VertVelMod
-	BNE PRG008_A825
-	STA <Player_XVel
-
-PRG008_A825:
-		
 	JSR Player_WaterSplash	 ; Hit water; splash!
 
 PRG008_A827:
@@ -1507,7 +1499,7 @@ PRG008_A86C:
 
 	LDY <Temp_Var1
 	LDA TileProperties, Y
-	CMP #TILE_SPECIAL_COIN
+	CMP #TILE_ITEM_COIN
 	BGE PRG008_A890
 	AND #$0F
 	CMP #TILE_PROP_CLIMBABLE
@@ -5315,18 +5307,14 @@ Pipe_PadDirForEnter:
 
 
 	; The sliding values applied when Player is touching a conveyor
-ConveyorSlide:	.byte 16, -16
+MoveTileHorz:	.byte -8, 8, 0, 0
+MoveTileVert:	.byte 0, 0, -8, 8
 
 	.byte $01, $0F
 
 	; To check for damage caused by the fully extended piranha
 	; Note that they technically count touching their base pipes
 	; as a damage too!  Careful about that, eh?
-PlantInfest_PiranhaTiles: .byte TILE5_MUNCHER_2, TILE5_MUNCHER_1
-PlantInfest_MiniPipes:	.byte TILE5_MINIPIPE_TOP2, TILE5_MINIPIPE_TOP1
-
-Slick_Blocks: 
-	.byte $3E, $3F, $EF, $34, $35
 
 Player_DoSpecialTiles:
 
@@ -5334,63 +5322,161 @@ Player_DoSpecialTiles:
 	ORA Player_TailAttack
 	ORA Player_Flip	 
 	BNE PRG008_BCA7	 ; If Player is a Tanooki Statue, tail attacking, or invincibility flipping, jump to PRG008_BCA7
-
+	; Copy in the mask of allowable pipe tiles -> Temp_Var16
+	
 	LDA <Player_InAir
-	BEQ PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
+	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
 
-	LDX #$01
-
-PRG008_BCA9:
-	LDA Level_Tile_GndL, X
-	TAY
+	LDY Level_Tile_InFL	 ; Get tile near head...
 	LDA TileProperties, Y
-	BMI PRG008_BCA92
+	CMP #TILE_ITEM_COIN
+	BLT PRG008_BC79
+	JMP PRG008_BD4B
+
+PRG008_BC79:
 	AND #$0F
-	LDY #$01
-	CMP #(TILE_VPIPE_LEFT)
-	BEQ PRG008_BC92
+	CMP TILE_PROP_HPIPE_BOTTOM
+	BEQ PRG008_BC7A
+	JMP PRG008_BD4B
 
-PRG008_BCA92:
-	DEX
-	BPL PRG008_BCA9
-	BMI PRG008_BCA7
-
-PRG008_BCAA:
-	LDX #$01
-
-PRG008_BCAC:
-	LDA Level_Tile_GndL, X
-	TAY
-	LDA TileProperties, Y
-	AND #$0F
-	LDY #$00
-	CMP #(TILE_VPIPE_LEFT)
-	BEQ PRG008_BC92
-	DEX
-	BPL PRG008_BCAC
-	BMI PRG008_BCA7
+PRG008_BC7A:
+	LDX #$00
+	LDA <Player_X
+	AND #$0f	
+	CMP #$08	
+	BLS PRG008_BC92	 ; If Player is on left half of tile, jump to PRG008_BC92
+ 
+	INX		 ; X = 1
 
 PRG008_BC92:
 	LDA <Pad_Holding
-	AND Pipe_PadDirForEnter,Y
-	BEQ PRG008_BCA7	 ; If Player is NOT pressing correct direction to enter pipe, jump to PRG008_BCAA
+	AND Pipe_PadDirForEnter,X
+	BEQ PRG008_BCAA	 ; If Player is NOT pressing correct direction to enter pipe, jump to PRG008_BCAA
+
+	; Correct direction to enter pipe...
+
+	TYA
+	BNE PRG008_BCA4	 ; If pipe type (Y) is not 0, jump to PRG008_BCA4
+
+	LDY #$01	 ; Y = 1 
+
+	LDA LevelJctBQ_Flag	
+	BEQ PRG008_BCA4	 ; If not currently junctioning, jump to PRG008_BCA4
+
+	DEY		 ; Y = 0 
 
 PRG008_BCA4:
 	JSR PipeEntryPrepare	 ; Prepare pipe entry
 
 PRG008_BCA7:
-	LDA Level_PSwitchCnt
-	BNE PRG008_BD73	 ; If P-Switch is active, jump to PRG008_BD73
+	JMP PRG008_BD4B	 ; Jump to PRG008_BD4B
 
+PRG008_BCAA:
+	LDX #$02	 ; X = 2
+	LDA Level_Tile_GndL	 
 
-	; CONVEYOR BELT LOGIC!
+	LDY <Player_InAir
+	BEQ PRG008_BCC4	 ; If Player is NOT mid air, jump to PRG008_BCC4
 
+	LDY Player_HitCeiling
+	BEQ PRG008_BCA7	 ; If Player has not just hit off a ceiling, jump to PRG008_BCA7
+
+	LDY Player_IsDucking
+	BEQ PRG008_BCC4	 ; If Player is NOT ducking, jump to PRG008_BCC0
+
+	JMP PRG008_BD4B	 ; Otherwise, jump to PRG008_BD4B
+
+	INX		 ; X = 3
+
+	LDA Level_Tile_GndR	 
+
+PRG008_BCC4:
+	TAY
+	LDA TileProperties, Y
+	STA <Temp_Var1		 ; Store tile -> Temp_Var1
+	STX <Temp_Var3		 ; Store pipe mode -> Temp_Var3
+
+	SEC
+	SBC TILE_PROP_VPIPE_LEFT
+	CMP #$02
+	BGE PRG008_BD4B
+
+PRG008_BCD6:
+	TAY		 ; Tile index result -> 'A'
+	STY <Temp_Var1	 ; Store pipe type -> Temp_Var1
+
+	AND #$01	 ; Determine left vs right tile (odd/bit 0 indicates right tile)
+	ASL A
+	ASL A
+	ASL A
+	ASL A		 ; Multiply 0/1 by 16
+	STA <Temp_Var2	 ; Temp_Var2 = 0 or 16
+
+	LDA <Pad_Holding
+	AND Pipe_PadDirForEnter,X
+	BEQ PRG008_BD4B	 ; If Player is NOT pressing the correct direction to enter pipe, jump to PRG008_BD4B
+
+	LDA Level_PipeMove
+	BNE PRG008_BD4B	 ; If Player is already in pipe, jump to PRG008_BD4B
+
+	LDY #$00	 ; Y = 0 (Player is mid-air or level is sloped)
+
+	LDA <Player_InAir
+	BNE PRG008_BD1F	 ; If Player is mid air or this is a sloping level, jump to PRG008_BD1F
+
+	INY		 ; Y = 1 (Player is NOT small)
+	LDA <Player_Suit
+	BNE PRG008_BD1F	 ; If Player is NOT small, jump to PRG008_BD1F
+
+	INY		 ; Y = 2 (Player is small)
+
+PRG008_BD1F:
+	LDA <Player_X	
+	AND #$0f	
+	PHA		 ; Save Player's relative X across tile
+
+	ADD PRG008_BC43,Y ; Add appropriate offset
+	AND #$10	 ; Check if on "odd" tile (only true on Player_X 16, 48, 80, etc.) AKA right tile
+	BNE PRG008_BD30	 ; If so, jump to PRG008_BD30
+
+	PLA		 ; Restore Player's relative X across tile
+	ORA #$F0	 ; Make negative, sort of
+	PHA		 ; Save it again
+
+PRG008_BD30:
+	PLA		 ; Restore Player's relative X across tile
+	ADD <Temp_Var2	 ; 0 or 16, left or right tile
+	SUB #3	 
+	CMP #10
+	BGE PRG008_BD4B	 ; If Player_X >= 10 after subtracting 3 (??), jump to PRG008_BD4B
+
+	LDA <Temp_Var1	 ; Get pipe type
+	LSR A		 
+	TAY		 
+	JSR PipeEntryPrepare	 ; Prepare entry into pipe!
+	JSR PipeMove_SetPlayerFrame	 ; Update Player frame!
+	JSR Player_Draw29	 ; Draw Player
+
+	; Do not return to caller!!
+	PLA		 
+	PLA
+
+	RTS		 ; Return
+
+PRG008_BD4B:
 	LDX #$05	 ; X = 1 (check one tile by foot, then check the other!)
 
 PRG008_BD59:
 	LDA Level_Tile_GndL,X
 	TAY
 	LDA TileProperties, Y
+	CMP #TILE_ITEM_COIN
+	BGE PRG008_BD70
+	AND #$0F
+	SEC
+	SBC TILE_PROP_MOVE_DOWN
+	CMP #$04
+	BGE PRG008_BD70
 	AND #$0F
 	LDY #$00
 	CMP #TILE_CONVEYOR_RIGHT
