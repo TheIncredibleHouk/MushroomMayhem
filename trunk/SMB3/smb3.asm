@@ -3063,29 +3063,28 @@ TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
 TILE_PROP_PSWITCH		= $0E ;
-TILE_SPECIAL_COIN		= $00 ;
-TILE_SPECIAL_FIREFLOWER = $01 ;
+TILE_ITEM_COIN		= $00 ;
+TILE_ITEM_FIREFLOWER = $01 ;
 TILE_SEPCIAL_SUPERLEAF	= $02 ;
 TILE_SEPCIAL_ICEFLOWER	= $03 ;
 TILE_SEPCIAL_FROG		= $04 ;
-TILE_SPECIAL_FIREFOX	= $05 ;
-TILE_SPECIAL_KOOPA		= $06 ;
-TILE_SPECIAL_BOO		= $07 ;
-TILE_SPECIAL_SLEDGE		= $08 ;
-TILE_SPECIAL_NINJA		= $09 ;
-TILE_SPECIAL_STAR		= $0A ;
-TILE_SPECIAL_VINE		= $0B ;
-TILE_SPECIAL_PSWITCH	= $0C ;
-TILE_SPECIAL_BRICK		= $0D ;
-TILE_SPECIAL_NOTE		= $0E 
+TILE_ITEM_FIREFOX	= $05 ;
+TILE_ITEM_KOOPA		= $06 ;
+TILE_ITEM_BOO		= $07 ;
+TILE_ITEM_SLEDGE		= $08 ;
+TILE_ITEM_NINJA		= $09 ;
+TILE_ITEM_STAR		= $0A ;
+TILE_ITEM_VINE		= $0B ;
+TILE_ITEM_PSWITCH	= $0C ;
+TILE_ITEM_BRICK		= $0D ;
+TILE_ITEM_NOTE		= $0E 
 	TileProperties:		 .ds 256;
 	CurrentTileProperty: .ds 1;
-	Player_VertVelMod: .ds 1;
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
 	HammerTransitions:	.ds 8;
 	PSwitchTransitions: .ds 16;
-						.ds 40;
+						.ds 41;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
