@@ -338,23 +338,6 @@ PRG008_A17F:
 	INC Level_NoStopCnt	; As long as none of the above is happening, continue the "no stop" counter...
 
 PRG008_A1C1:
-	LDA Level_ChgTileEvent
-	CMP #CHNGTILE_DELETEWATERCOIN
-	BEQ IncCoin 
-
-	CMP #CHNGTILE_DELETECOIN
-	BNE PRG008_A1D7	 ; If Level_ChgTileEvent <> CHNGTILE_DELETECOIN, jump to PRG008_A1D7
-IncCoin:
-	INC Coins_Earned	 ; One more coin earned!
-
-PRG008_A1D7:
-	CMP #CHNGTILE_DELETECHERRY
-	BNE Normal_Tile
-	INC (Exp_Earned + 2)
-	LDA #CHNGTILE_DELETETOBG
-	STA Level_ChgTileEvent
-
-Normal_Tile:
 	; Decrement several adjacent counters!
 	LDX #$07	 ; X = 7
 
@@ -1146,18 +1129,27 @@ FloatLevel_StatCheck:
 ; otherwise tested if the tile is in the "solid floor" region!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_CheckIfTileUnderwater:
-	LDA <Temp_Var1,X
-	TAY
-	LDA TileProperties, Y
+	LDX #$04
+
+PRG008_A6A7:
+	CPX #02
+	BEQ PRG008_A6A8
+	CPX #01
+	BEQ PRG008_A6A8
+	LDA Level_Tile_Prop_Head, X
 	CMP #TILE_PROP_ITEM
 	BGE PRG008_A6A8
 	AND #TILE_PROP_WATER
 	BEQ PRG008_A6A8
 	LDY #$01
+	SEC
 	RTS
 
 PRG008_A6A8:
+	DEX
+	BPL PRG008_A6A7
 	LDY #$00
+	CLC
 	RTS
 
 Player_ControlJmp:
@@ -1280,28 +1272,9 @@ PRG008_A743:
 
 	JSR Player_GetTileAndSlope ; Get tile above Player
 
-	STA Level_Tile_Head	 ; -> Level_Tile_Head
-	STA <Temp_Var1		 ; -> Temp_Var1
-
-	LDA Level_Tile_GndL	 ; Get left ground tilee
-	STA <Temp_Var2		 ; -> Temp_Var2
-
 PRG008_A77E:
-	LDA <Temp_Var1
-	AND #$c0
-	ASL A
-	ROL A
-	ROL A
-	TAY		 ; Y = uppermost 2 bits down by 6 (thus 0-3, depending on which "quadrant" of tiles we're on, $00, $40, $80, $C0)
-
-	; Checks for solid tile at Player's head
-	LDA <Temp_Var1	 
-	CMP Tile_AttrTable+4,Y	; Wall/ceiling-solid tile quadrant limits begin at Tile_AttrTable+4
-	BLT PRG008_A7AD	 ; If tile index is less than value in Tile_AttrTable (not solid for wall/ceiling), jump to PRG008_A7AD
-
-	LDA <Player_InAir
-	ORA Player_InWater
-	ORA Level_PipeMove
+	AND #TILE_PROP_SOLID_ALL
+	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
 	;#DAHRKDAIZ modified to make low clearance situations = death >:D
@@ -1311,11 +1284,6 @@ PRG008_A7AD:
 
 	; This will be used in Level_CheckIfTileUnderwater 
 	; as bits 2-3 of an index into Level_MinTileUWByQuad
-	LDA Level_TilesetIdx
-	ASL A
-	ASL A
-	STA <Temp_Var3	 ; Temp_Var3 = Level_TilesetIdx << 2
-
 	LDY <Temp_Var1
 	LDA TileProperties,Y
 	STA CurrentTileProperty
@@ -4009,49 +3977,6 @@ PRG008_B42E:
 	LDY Level_PipeMove	; Y = Level_PipeMove (movement command in $8x form)
 	BNE PRG008_B43F	 	; If Level_PipeMove <> 0, jump to PRG008_B43F
 
-	;PHA
-	;JSR CheckSpriteOnFG
-	;ORA Player_Behind_En
-	;STA Player_Behind_En
-	;PLA
-
-	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
-
-PRG008_B43F:
-	LDY <Temp_Var10	 ; Y = Player_YVel
-	RTS		 ; Return
-
-PRG008_B442:
-	LDA <Player_YHi
-	STA <Temp_Var13	 ; Temp_Var13 = Player_YHi
-
-	LDA <Temp_Var10
-	ADD <Player_Y
-	STA <Temp_Var14	 ; Temp_Var14 = Temp_Var10 + Player_Y
-	BCC PRG008_B451	 ; If there's no carry, jump to PRG008_B451
-
-	INC <Temp_Var13	 ; Otherwise, apply the carry
-
-PRG008_B451:
-	LDA <Temp_Var13	
-	BPL PRG008_B458	 ; If Temp_Var13 (the "High" part) >= 0, jump to PRG008_B458
-
-	; Otherwise...
-	LDA #$00	 ; A = 0
-	RTS		 ; Return
-
-PRG008_B458:
-	LDA <Player_X
-	ADD <Temp_Var11
-	STA <Temp_Var16	 ; Temp_Var16 = Player_X + Temp_Var11
-
-	STY <Temp_Var10	 ; Temp_Var10 = Y
-
-	JSR Player_GetTileV	 ; Get tile, set Level_Tile
-
-	LDY Level_PipeMove	 ; Y = Level_PipeMove
-	BNE PRG008_B46C	 	; If Level_PipeMove <> 0, jump to PRG008_B46C
-
 	PHA
 	JSR CheckSpriteOnFG
 	ORA Player_Behind_En
@@ -4060,14 +3985,12 @@ PRG008_B458:
 
 	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
 
-PRG008_B46C:
-	LDY #$00
-	STY <Temp_Var15	 ; Temp_Var15 = 0
-
-	LDY <Temp_Var10	 ; Y = Temp_Var10
+PRG008_B43F:
+	LDY <Temp_Var10	 ; Y = Player_YVel
 	RTS		 ; Return
 
-
+TileSolidOffset:
+	.byte $00, $0E
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_DetectSolids
 ;
@@ -4094,10 +4017,6 @@ PRG008_B47E:
 
 	LDA Slope_LUT_Addr+1
 	STA <Level_GndLUT_Addr+1
-
-PRG008_B4A2:
-PRG008_B4A5:
-	; Slopes not enabled...
 
 	LDY #(TileAttrAndQuad_OffsFlat_Sm - TileAttrAndQuad_OffsFlat) + 6	; 6 = 3 * 2 (the offset we start on below) and work backwards from
 
@@ -4142,9 +4061,8 @@ PRG008_B4CA:
 	STA <Temp_Var11	 ; Temp_Var11 (X offset)
 
 	JSR Player_GetTileAndSlope	 ; Get tile
-	STA Level_Tile_GndL,X	 ; Store it
-
-	JSR Level_DoCommonSpecialTiles	 ; Handle tile apporiately
+	JSR Level_DoCommonSpecialTiles
+	STA Level_Tile_Prop_GndL,X	 ; Store it
 
 	PLA		 
 	TAY		 ; Restore 'Y' index
@@ -4159,12 +4077,16 @@ PRG008_B4CA:
 PRG008_B4F3:
 	; Wall hit detection
 
-	LDY #$02
-	JSR Level_CheckGndLR_TileGTAttr
-	BCC PRG008_B53B	 ; If not touching a solid tile, jump to PRG008_B53B
+	LDA Level_Tile_Prop_InFL
+	AND #TILE_PROP_SOLID_ALL
+	CMP #TILE_PROP_SOLID_ALL
+	BEQ PRG008_B53A
+	LDA Level_Tile_Prop_InFR
+	AND #TILE_PROP_SOLID_ALL
+	CMP #TILE_PROP_SOLID_ALL
+	BNE PRG008_B53B	 ; If not touching a solid tile, jump to PRG008_B53B
 
-	INC Player_WalkAnimTicks	 ; Player_WalkAnimTicks++
-
+PRG008_B53A:
 	JSR Can_Wall_Jump
 	JSR Shell_Bounce
 	LDY #$01	 ; Y = 1
@@ -4225,7 +4147,6 @@ PRG008_B536:
 
 	STA <Player_XVel ; Otherwise, halt Player horizontally
 
-
 PRG008_B53B:
 	LDA <Player_YVel
 	BPL PRG008_B55B	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
@@ -4233,513 +4154,348 @@ PRG008_B53B:
 	LDA <Player_InAir
 	BEQ PRG008_B55B	 ; If Player is NOT mid air, jump to PRG008_B55B
 
-	LDY #$00	 ; Y = 0
+	LDA Level_Tile_Prop_GndL
+	AND #TILE_PROP_SOLID_BOTTOM
+	BNE PRG008_B558	 ; If not touching a solid tile, jump to PRG008_B55A
 
-	JSR Level_CheckGndLR_TileGTAttr
-	BCC PRG008_B55A	 ; If not touching a solid tile, jump to PRG008_B55A
+	LDA Level_Tile_Prop_GndR
+	AND #TILE_PROP_SOLID_BOTTOM
+	BEQ PRG008_B55B
 
-	INY		 ; Y = 1
-	STY Player_HitCeiling	 ; Flag Player as having just hit head off ceiling
-
-	LDA Level_AScrlVVel	; Get autoscroll vertical velocity
-	JSR Negate	 ; Negate it
-	BPL PRG008_B558	 ; If positive, jump to PRG008_B558
-
-	; Otherwise, just use 1
-	LDA #$01	
-
-PRG008_B558:
+PRG008_B558
+	LDA #$01
+	STA Player_HitCeiling	 ; Flag Player as having just hit head off ceiling
 	STA <Player_YVel ; Update Player_YVel
-
-PRG008_B55A:
 	RTS		 ; Return
 
 PRG008_B55B:
-	LDA Level_Tile_GndR	 ; Get right tile
-	TAX
-	LDA TileProperties, X
-	AND #TILE_PROP_SOLID_ALL
-	BNE PRG008_B57E	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
+	LDA <Player_YVel
+	BMI PRG008_B57F
+	LDA Level_Tile_Prop_GndR	 ; Get right tile
+	AND #TILE_PROP_SOLID_TOP
+	BNE PRG008_B580	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
 
-	LDA Level_Tile_GndL	 ; Get left tile
-	TAX
-	LDA TileProperties, X
-	AND #TILE_PROP_SOLID_ALL	
-	BNE PRG008_B57E	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
-
-
-	LDA <Player_InAir
-	BNE PRG008_B5BB	 ; If Player is mid air, jump to PRG008_B5BB
-
-	; Otherwise...
-
-	STA <Player_YVel ; Halt Player vertically
-
-	LDA #$01
-	STA <Player_InAir ; Mark Player as mid air
-
-	JMP PRG008_B5BB	 ; Jump to PRG008_B5BB
+	LDA Level_Tile_Prop_GndL	 ; Get left tile
+	AND #TILE_PROP_SOLID_TOP	
+	BNE PRG008_B580	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
 
 PRG008_B57E:
-	LDA Temp_VarNP0
-	BEQ PRG008_B59C		; If did not use "high" Y last call to Player_GetTileAndAttr, jump to PRG008_B59C
+	LDA <Player_InAir
+	BNE PRG008_B57F
+	LDA #$01
+	STA <Player_YVel 
+	STA <Player_InAir
 
-	LDA <Player_Y		; Get Player Y
-	SUB Level_VertScroll	; Make scroll relative
-	AND #$F0	 	; Nearest 16
-	ADD #$01	 	; +1
-	ADD Level_VertScroll	; Make un-relative
-	STA <Player_Y		; Set Player_Y!
+PRG008_B57F:
+	RTS
 
-	LDA #$00
-	ADC #$00
-	STA <Player_YHi		; Apply carry if needed
-	BPL PRG008_B5B2	 	; If carry >= 0, jump to PRG008_B5B2
-
-PRG008_B59C:
+PRG008_B580:
 	LDA <Player_Y
-	AND #$0f	; Relative to tile vertical position
+	SEC
+	AND #$0F
 	CMP #$06
-	BGE PRG008_B5BB	 ; If Player's vertical tile position >= 6, jump to PRG008_B5BB
-
+	BGE PRG008_B581
 	LDA <Player_Y
-	AND #$0f	 ; Relative to tile vertical position
-	BEQ PRG008_B5B2	 ; If zero, jump to PRG008_B5B2
-
-	CMP #$01	 
-	BEQ PRG008_B5B0	 ; If 1, jump to PRG008_B5B0
-
-	DEC <Player_Y	 ; Player_Y--
-
-PRG008_B5B0:
-	DEC <Player_Y	 ; Player_Y--
-
-PRG008_B5B2:
+	AND #$F0
+	STA <Player_Y
 	LDA #$00	 
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVel  ; Halt Player vertically
 	STA Kill_Tally	  ; Reset Kill_Tally
 
-PRG008_B5BB:
+PRG008_B581:
 	RTS		 ; Return
-
-
-	; This checks if the given tile is greater-than-or-equal-to
-	; the related "AttrTable" slot and, if so, returns 'carry set'
-Level_CheckGndLR_TileGTAttr:
-	LDA Level_Tile_GndR,Y		; Check the tile here
-	TAX
-	LDA TileProperties, X
-	AND #TILE_PROP_SOLID_ALL
-	CMP #TILE_PROP_SOLID_ALL
-	BEQ PRG008_B5D1			; If the tile is >= the attr value, jump to PRG008_B5D0 (NOTE: Carry set when true)
-
-	LDA Level_Tile_GndL,Y		; Check the tile here
-	TAX
-	LDA TileProperties, X
-	AND #TILE_PROP_SOLID_ALL
-	CMP #TILE_PROP_SOLID_ALL
-	BEQ PRG008_B5D1
-
-	CLC
-	RTS
-
-PRG008_B5D1:
-	SEC
-	RTS		 ; Return
-
 
 	; Handle all common special tiles (ice blocks, P-Switches, bump blocks, etc.)
 	; Does not include things like instant-kill lava tiles...
 Level_DoCommonSpecialTiles:
-	TYA		 ; A = Y (offset into TileAttrAndQuad_OffsSloped)
-	PHA		 ; Save it
+	STA Debug_Snap
+	STA TempA
+	STY TempY
+	CMP #TILE_ITEM_COIN
+	BCC PRG008_B582
+	RTS
 
-	LDA #TILEA_CHERRY
-	CMP Level_Tile_GndL,X
-	BNE PRG008_B604	 ; If Player is not touching an ice block, jump to PRG008_B604
+PRG008_B582:
+	AND #$0F
+	CMP #TILE_PROP_COIN
+	BNE PRG008_B583
 
-	LDA #CHNGTILE_DELETECHERRY
-	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
+	LDA <Level_Tile
+	AND #$C0
+	STA <Level_Tile
+	JSR Level_QueueChangeBlock
 
-	; Play coin collected sound!
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP
-	STA Sound_QLevel1
-	
-	STA Level_Tile_GndR
-	JMP PRG008_B652
-PRG008_B604:
-
-	; Not an ice block or if it was, Player was not interested in it...
-
-	LDA Level_Tile_GndL,X
-	CMP #WATER_COIN
-	BNE NotWaterCoin
-	LDA #CHNGTILE_DELETEWATERCOIN
-	BNE WaterCoinTouch
-
-NotWaterCoin:
-	CMP #TILEA_COIN
-
-	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
-	CMP #$05		 ; acts as a "blue" coin from frozen coins thawed
-	BNE PRG008_B623;
-
-GOLD_COIN_TOUCH:
-	LDA #CHNGTILE_DELETECOIN
-
-WaterCoinTouch:
-	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
-
-	; Play coin collected sound!
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
 
-	
-	LDA #$00
-	STA Level_Tile_GndR	; Clear this tile detect (probably to prevent "double collecting" a coin the Player is straddling)
+	INC Coins_Earned
+	LDY <Level_Tile
+	LDA TileProperties, Y
+	LDY TempY
+	RTS
 
-	JMP PRG008_B652	 ; Jump to PRG008_B652
+PRG008_B583:
+	CMP #TILE_PROP_CHERRY
+	BNE PRG008_B584
 
-PRG008_B623:
-
-	; Player not touching coin...
-	CPX #$02
-	BGS PRG008_B64F
-
-	JSR Try_ESwitch
-	CMP #TILEA_PSWITCH
-	BNE PRG008_B64F	 ; If Player is not touching P-Switch, jump to PRG008_B64F
-
-	LDA #CHNGTILE_PSWITCHSTOMP	; P-Switch hit tile change
-
-	CMP Level_ChgTileEvent
-	BEQ PRG008_B64F	 ; If we've already got a tile change in the queue, jump to PRG008_B64F
-
-	; Queue tile change 9!
+	LDA <Level_Tile
+	AND #$C0
+	STA <Level_Tile
 	JSR Level_QueueChangeBlock
 
-	LDA #$10
-	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
-
-	; Wham! sound effect
 	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
+	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
 
-	LDA #$80	 
-	STA Level_PSwitchCnt	 ; Level_PSwitchCnt = $80 (duration of switch)
-
-	; Play P-Switch song
-	LDA #MUS2B_PSWITCH
-	STA Sound_QMusic2
-
-	JMP PRG008_B652	 ; Jump to PRG008_B652
-
-PRG008_B64F:
-	STX DAIZ_TEMP1
-	STA DAIZ_TEMP2
-	CMP #$67
-	BEQ Break_Block
-	CMP #$CC
-	BNE Try_Frozen_Tiles
-
-Break_Block:
-	LDA Fox_FireBall
-	BEQ Do_Bumps_Instead
-	LDA DAIZ_TEMP2
-	CMP #$67
-	BEQ Do_Break
-	CMP #$CC
-	BNE Try_Frozen_Tiles
-
-Do_Break:
-	INC Ignore_Vel_Stop
-	LDA #CHNGTILE_DELETETOBG
-	JSR Level_QueueChangeBlock
-	JSR LATP_Brick
-	JMP PRG008_B652
-
-Try_Frozen_Tiles:
-	LDX Fox_FireBall
-	BEQ Do_Bumps_Instead
-	LDX #$02 
-
-Touching_Ice:
-	CMP FireBall_ChangeBlocks, X
-	BEQ Thaw_Ice
-	DEX
-	BPL Touching_Ice
-	JMP Do_Bumps_Instead
-
-Thaw_Ice:
-	LDA FireBall_ChangeBlocksTo, X
-	LDX DAIZ_TEMP1
-	INC Ignore_Vel_Stop
-	JSR Level_QueueChangeBlock
-	JMP PRG008_B652
-
-Do_Bumps_Instead:
-	LDX DAIZ_TEMP1
-	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
-
-PRG008_B652:
-	PLA		 
-	TAY		 ; Restore offset into TileAttrAndQuad_OffsSloped -> 'Y'
-
-	RTS		 ; Return
-
-
-	; After a block is hit, it does the little bounce thing, and then 
-	; a power up MAY come from it!  This defines which power-up will
-	; appear, if any:
-	; 0 = None, 1 = Mushroom/Flower, 2 = Mushroom/Leaf, 3 = Star, 4 = Coin, 5 = Coin/Star
-	; 6 = brick behavior (i.e. bump/smash), 7 = Vine, 8 = 10 coin,  = 1-up, A = P-Switch
-	; LATP = Level_ActionTiles powerup
-	; Note that this array should match elements with the LATR_'s below!
-LATP_PowerUps:
-LATP_GNote:	.byte $00
-LATP_HNote:	.byte $00
-LATP_Notes:	.byte $00, $01, $02, $03
-LATP_Woodblocks:.byte $00, $01, $02, $03
-LATP_QBlocks:	.byte $01, $02, $03, $04, $05, $04, $08, $06, $0C, $0A, $0D, $04, $0E, $08, $09, $07, $0B
-LATP_InvisCoin:	.byte $04, $09, $00
-LATP_InvisNote:	.byte $00
-LATP_PWrksJct:	.byte $0B	; UNUSED breakable pipeworks junction tile!
-LATP_End
-
-
-	; After a block is hit, it does the little bounce thing, and then 
-	; "restores" the tile which was previously there; this defines what
-	; tile that is exactly...
-	;
-	; NOTE: This does not fix the attribute colors (immediately), so
-	; you shouldn't mix and match differently palettized blocks!
-	;
-	; $10 - Coin Heaven note block
-	; $20 - "Metal plate" post-? block hit
-	; $30 - Empty brick
-	; $40 - Generic note block
-	; $50 - Wood block
-	; $60 - Brick (with coins)
-	; $70 - ??
-
-	; LATR = Level_ActionTiles restore
-	; Note that this array should match elements with the LATP_'s above!
-LATR_BlockResult:
-LATR_GNote:	.byte $00
-LATR_HNote:	.byte $10
-LATR_Notes:	.byte $40, $40, $40, $40
-LATR_Woodblocks:.byte $50, $50, $50, $50
-LATR_QBlocks:	.byte $20, $20, $20, $20, $20, $20, $20, $30, $20, $20, $20, $20, $20, $20, $20, $20, $20
-LATR_InvisCoin:	.byte $20, $20, $10
-LATR_InvisNote:	.byte $40
-LATR_PWrksJct:	.byte $70	; UNUSED breakable pipeworks junction tile!
-
-
-	; This defines a "range" passed the base tile defined in Level_ActionTiles
-	; where a related effect takes place; so see Level_ActionTiles for the bases!
-Level_ActionTiles_Range:
-	; Tiles activated anytime
-	.byte (LATP_HNote - LATP_GNote), (LATP_Notes - LATP_HNote), (LATP_Woodblocks - LATP_Notes), (LATP_QBlocks - LATP_Woodblocks)
-
-	; Tiles activated only when Player is moving upward
-	.byte (LATP_InvisCoin - LATP_QBlocks), (LATP_InvisNote - LATP_InvisCoin), (LATP_PWrksJct - LATP_InvisNote)
-
-	; And in the desert only... (UNUSED, would be a breakable tile in a pipeworks structure!)
-	.byte (LATP_End - LATP_PWrksJct)
-
-
-	; Offset fix applied to the selected "action tile" set
-LATR_Off .func (\1 - LATR_GNote)
-Level_ActionTiles_OffFix:
-	; Tiles activated anytime
-	.byte LATR_Off(LATR_GNote), LATR_Off(LATR_HNote), LATR_Off(LATR_Notes), LATR_Off(LATR_Woodblocks)
-
-	; Tiles activated only when Player is moving upward
-	.byte LATR_Off(LATR_QBlocks), LATR_Off(LATR_InvisCoin), LATR_Off(LATR_InvisNote)
-
-	; And in the desert only... (UNUSED, would be a breakable tile in a pipeworks structure!)
-	.byte LATR_Off(LATR_PWrksJct)
-
-
-	; This defines the base tile index for "action tiles", tiles which, when the
-	; Player hits them right, causes something to happen...
-Level_ActionTiles:
-	; Tiles activated anytime
-	.byte TILEA_GNOTE, TILEA_HNOTE, TILEA_NOTE, HOLLOW_BLOCKBOUNCE
-
-	; Tiles activated only when Player is moving upward
-	.byte TILEA_QBLOCKFLOWER, TILEA_INVISCOIN, TILEA_INVISCOIN
-
-	; And in the desert only... (UNUSED, would be a breakable tile in a pipeworks structure!)
-	.byte TILE9_PIPEWORKS_JCT
-
-	; Hit Enable bits specify whether blocks can be hit horizontally
-	; vertically, or both!  While they can be somewhat refined to only
-	; act on a particular detection "half", the typical use is:
-	;	%0011 - Enable hitting from top and bottom
-	;	%1100 - Enable hitting from left and right
-	;	%1111 - Enable hitting in all directions
-	; Note that certain tiles are just not checked by behavior noted
-	; in the comments, e.g. to enable hitting ? blocks from the top,
-	; the code must be reworked to not disable checking them if the 
-	; Player is not moving upward!
-Level_ActionTiles_HitEnable:
-	; Tiles activated anytime
-	.byte %1111, %0000, %0011, %1100
-
-	; Tiles activated only when Player is moving upward
-	.byte %0010, %0000, %0000
-
-	; And in the desert only... (UNUSED, would be a breakable tile in a pipeworks structure!)
-	.byte %0010
-
-
-	; Bit set based on which index of the tile detection we're on;
-	; matches up to the type of hit which will occur on the block!
-Level_ActionTiles_TIHitBit:
-	.byte %0001, %0010, %0100, %1000, %1111
-
-
-	; Logic to handle "bump blocks", e.g. ? blocks, note blocks, etc.
-Level_DoBumpBlocks:
-	TYA		 
-	PHA		 ; Save offset into TileAttrAndQuad_OffsSloped
-
-	LDY #$03	 ; Y = 3 (by default, only consider first 4 tiles of Level_ActionTiles)
-
-	CPX #$04
-	BEQ PRG008_B6E4	 ; If tile index = 4, jump to PRG008_B6E4
-
-	LDA <Player_YVel
-	BPL PRG008_B6EF	 ; If Player is moving downward, jump to PRG008_B6EF
-
-PRG008_B6E4:
-	INY
-	INY
-	INY		 ; Y += 3 (consider next 3 tiles for moving upward)
-
-	LDA Level_TilesetIdx
-	CMP #$08	 
-	BNE PRG008_B6EF	 ; If Level_TilesetIdx <> 8 (desert levels), jump to PRG008_B6EF
-	INY		 ; Otherwise, Y += 1 (and in the desert only, the UNUSED breakable pipeworks tile)
-
-PRG008_B6EF:
-	LDA Level_Tile_GndL,X	 ; Get tile index
-	SUB Level_ActionTiles,Y
-	CMP Level_ActionTiles_Range,Y
-	BCC PRG008_B701	 ; If the tile is in range, jump to PRG008_B701!
-
-PRG008_B6FB:
-	DEY		 ; Y--
-	BPL PRG008_B6EF	 ; While Y >= 0, loop!
-	JMP PRG008_B78B	 ; Otherwise, jump to PRG008_B78B
-
-PRG008_B701:
-	ADD Level_ActionTiles_OffFix,Y	 ; Add an offset fix to this tile
-	STA <Temp_Var6		 ; -> Temp_Var6
-
-	LDA Level_ActionTiles_TIHitBit,X	 ; Get bitfield value appropriate for this tile detect index
-	AND Level_ActionTiles_HitEnable,Y	 ; Mask to check if this block should respond
-	BEQ PRG008_B6FB	 ; If block does not respond to this hit, jump to PRG008_B6FB
-
-	; Block's getting hit...!
-
-	; Splash_DisTimer = $10 (disables water splahes briefly, probably to make sure it doesn't effect the bounce block sprites?)
-	LDA #$10
-	STA Splash_DisTimer
-
-	LDY <Temp_Var6	 	; Y = Tile detected relative index with offset fix
-	LDA LATP_PowerUps,Y	; Get appropriate power-up for this block
-	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
-	TYA		 ; Power up result (if any) is in 'Y'!
-	BNE PRG008_B722	 ; If there's a powerup to spawn, jump to PRG008_B722
-
-	JMP PRG008_B78B	 ; Otherwise, jump to PRG008_B78B
-
-PRG008_B722:
-	BMI PRG008_B74A	 ; If Y = $80, a brick was busted!  Jump to PRG008_B74A
-
-	LDY <Temp_Var6	 ; Y = Tile detected relative index with offset fix
-	ORA LATR_BlockResult,Y	 ; Get block which should result
-	STA Player_Bounce	 ; Indicate to Player he should bounce
-
-	; Play bump sound
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERBUMP
-	STA Sound_QPlayer
-
-	LDA #CHNGTILE_DELETETOBG
-	STA <Temp_Var12	 ; Temp_Var12 = CHNGTILE_DELETETOBG
-
-	CPX #$02
-	BLS PRG008_B74A	 ; If tile detected index < 2, jump to PRG008_B74A
-
-	LDY #$02	 ; Y = 2 (bounce left)
-
-	LDA <Player_X
-	AND #$0f	 ; Tile relative X
-	CMP #$08
-	BLS PRG008_B747	 ; If Player was on the left half of the block, jump to PRG008_B747
-
-	INY		 ; Otherwise Y = 3 (bounce right)
-
-PRG008_B747:
-	JMP PRG008_B75B	 ; Jump to PRG008_B75B
-
-PRG008_B74A:
-	LDY #$00	 ; Y = 0 (bounce down)
-
-PRG008_B756:
-	LDA <Player_YVel
-	BPL PRG008_B75B	 ; If Player not moving upward, jump to PRG008_B75B (keeps Y = 0)
-
-PRG008_B75A:
-	INY		 ; Y = 1 (bounce up)
-
-PRG008_B75B:
-
-	STY Player_BounceDir	 ; Set Player bounce direction
-
-	LDY #$06	; Y = 6
-
-	LDA Objects_State,Y
-	BEQ PRG008_B766	 ; If this object is dead/empty, jump to PRG008_B766
-	INY		 ; Y++
-
-PRG008_B766:
-
-	; Align Y lo to tile grid
-	LDA <Temp_Var14
-	AND #$F0
-	STA <Temp_Var14
-	STA Objects_Y,Y	 ; Store into object slot
-
-	LDA <Temp_Var13
-	STA Objects_YHi,Y ; Store Y Hi into object slot
-
-	LDA <Temp_Var15	
-	STA Objects_XHi,Y ; Store X Hi into object slot
-
-	LDA <Temp_Var16
-	STA Objects_X,Y	 ; Store X Lo into object slot
-
-	JSR BlockBump_Init	; Init the block bump effect!
-
-	LDA Player_BounceDir
-	BEQ PRG008_B78B	 ; If Player_BounceDir = 0 (bounce up), jump to PRG008_B78B
-
-	LDA #TILEA_BLOCKBUMP_CLEAR
-	JSR Level_ChangeTile_ByTempVars	 ; Change tile (in grid memory, not immediate display)
-
-PRG008_B78B:
-	PLA		 ; Restore offset into TileAttrAndQuad_OffsSloped
-	TAY		 ; -> 'Y'
-
-	RTS		 ; Return
+	INC Exp_Earned + 2
+	LDY <Level_Tile
+	LDA TileProperties, Y
+	LDY TempY
+	RTS
+
+PRG008_B584:
+	LDA TempA
+	RTS
+;	TYA		 ; A = Y (offset into TileAttrAndQuad_OffsSloped)
+;	PHA		 ; Save it
+;
+;	;LDA #TILEA_CHERRY
+;	CMP Level_Tile_Prop_GndL,X
+;	BNE PRG008_B604	 ; If Player is not touching an ice block, jump to PRG008_B604
+;
+;	LDA #CHNGTILE_DELETECHERRY
+;	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
+;
+;	; Play coin collected sound!
+;	LDA Sound_QLevel1
+;	ORA #SND_LEVELBLIP
+;	STA Sound_QLevel1
+;	JMP PRG008_B652
+;PRG008_B604:
+;
+;	; Not an ice block or if it was, Player was not interested in it...
+;
+;	LDA Level_Tile_Prop_GndL,X
+;	CMP #WATER_COIN
+;	BNE NotWaterCoin
+;	LDA #CHNGTILE_DELETEWATERCOIN
+;	BNE WaterCoinTouch
+;
+;NotWaterCoin:
+;	CMP #TILEA_COIN
+;
+;	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
+;	CMP #$05		 ; acts as a "blue" coin from frozen coins thawed
+;	BNE PRG008_B623;
+;
+;GOLD_COIN_TOUCH:
+;	LDA #CHNGTILE_DELETECOIN
+;
+;WaterCoinTouch:
+;	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
+;
+;	; Play coin collected sound!
+;	LDA Sound_QLevel1
+;	ORA #SND_LEVELCOIN
+;	STA Sound_QLevel1
+;
+;	
+;	LDA Level_Tile_Prop_GndR
+;	AND #$F0
+;	STA Level_Tile_Prop_GndR	; Clear this tile detect (probably to prevent "double collecting" a coin the Player is straddling)
+;
+;	JMP PRG008_B652	 ; Jump to PRG008_B652
+;
+;PRG008_B623:
+;
+;	; Player not touching coin...
+;	CPX #$02
+;	BGS PRG008_B64F
+;
+;	JSR Try_ESwitch
+;	CMP #TILEA_PSWITCH
+;	BNE PRG008_B64F	 ; If Player is not touching P-Switch, jump to PRG008_B64F
+;
+;	LDA #CHNGTILE_PSWITCHSTOMP	; P-Switch hit tile change
+;
+;	CMP Level_ChgTileEvent
+;	BEQ PRG008_B64F	 ; If we've already got a tile change in the queue, jump to PRG008_B64F
+;
+;	; Queue tile change 9!
+;	JSR Level_QueueChangeBlock
+;
+;	LDA #$10
+;	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
+;
+;	; Wham! sound effect
+;	LDA Sound_QLevel1
+;	ORA #SND_LEVELBABOOM
+;	STA Sound_QLevel1
+;
+;	LDA #$80	 
+;	STA Level_PSwitchCnt	 ; Level_PSwitchCnt = $80 (duration of switch)
+;
+;	; Play P-Switch song
+;	LDA #MUS2B_PSWITCH
+;	STA Sound_QMusic2
+;
+;	JMP PRG008_B652	 ; Jump to PRG008_B652
+;
+;PRG008_B64F:
+;	STX DAIZ_TEMP1
+;	STA DAIZ_TEMP2
+;	CMP #$67
+;	BEQ Break_Block
+;	CMP #$CC
+;	BNE Try_Frozen_Tiles
+;
+;Break_Block:
+;	LDA Fox_FireBall
+;	BEQ Do_Bumps_Instead
+;	LDA DAIZ_TEMP2
+;	CMP #$67
+;	BEQ Do_Break
+;	CMP #$CC
+;	BNE Try_Frozen_Tiles
+;
+;Do_Break:
+;	INC Ignore_Vel_Stop
+;	LDA #CHNGTILE_DELETETOBG
+;	JSR Level_QueueChangeBlock
+;	JSR LATP_Brick
+;	JMP PRG008_B652
+;
+;Try_Frozen_Tiles:
+;	LDX Fox_FireBall
+;	BEQ Do_Bumps_Instead
+;	LDX #$02 
+;
+;Touching_Ice:
+;	CMP FireBall_ChangeBlocks, X
+;	BEQ Thaw_Ice
+;	DEX
+;	BPL Touching_Ice
+;	JMP Do_Bumps_Instead
+;
+;Thaw_Ice:
+;	LDA FireBall_ChangeBlocksTo, X
+;	LDX DAIZ_TEMP1
+;	INC Ignore_Vel_Stop
+;	JSR Level_QueueChangeBlock
+;	JMP PRG008_B652
+;
+;Do_Bumps_Instead:
+;	LDX DAIZ_TEMP1
+;	LDA Level_Tile_Prop_GndL,X
+;	STA Debug_Snap
+;	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
+;
+;PRG008_B652:
+;	PLA		 
+;	TAY		 ; Restore offset into TileAttrAndQuad_OffsSloped -> 'Y'
+;
+;	RTS		 ; Return
+;
+;Level_DoBumpBlocks:
+;	STA Debug_Snap
+;	PHA
+;	CMP #TILE_ITEM_COIN
+;	BCC PRG008_B78B
+;	AND #$0F
+;	TAY
+;	LDA #$10
+;	STA Splash_DisTimer
+;	TYA
+;	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
+;	TYA		 ; Power up result (if any) is in 'Y'!
+;	BNE PRG008_B722	 ; If there's a powerup to spawn, jump to PRG008_B722
+;
+;	JMP PRG008_B78B	 ; Otherwise, jump to PRG008_B78B
+;
+;PRG008_B722:
+;	BMI PRG008_B74A	 ; If Y = $80, a brick was busted!  Jump to PRG008_B74A
+;
+;	LDA <Temp_Var1	 ; Y = Tile detected relative index with offset fix
+;	CMP #TILE_ITEM_NOTE
+;	BNE PRG008_B723
+;	STA Player_Bounce	 ; Indicate to Player he should bounce
+;
+;PRG008_B723:
+;	; Play bump sound
+;	LDA Sound_QPlayer
+;	ORA #SND_PLAYERBUMP
+;	STA Sound_QPlayer
+;
+;	LDA #CHNGTILE_DELETETOBG
+;	STA <Temp_Var12	 ; Temp_Var12 = CHNGTILE_DELETETOBG
+;
+;	CPX #$02
+;	BLS PRG008_B74A	 ; If tile detected index < 2, jump to PRG008_B74A
+;
+;	LDY #$02	 ; Y = 2 (bounce left)
+;
+;	LDA <Player_X
+;	AND #$0f	 ; Tile relative X
+;	CMP #$08
+;	BLS PRG008_B747	 ; If Player was on the left half of the block, jump to PRG008_B747
+;
+;	INY		 ; Otherwise Y = 3 (bounce right)
+;
+;PRG008_B747:
+;	JMP PRG008_B75B	 ; Jump to PRG008_B75B
+;
+;PRG008_B74A:
+;	LDY #$00	 ; Y = 0 (bounce down)
+;
+;PRG008_B756:
+;	LDA <Player_YVel
+;	BPL PRG008_B75B	 ; If Player not moving upward, jump to PRG008_B75B (keeps Y = 0)
+;
+;PRG008_B75A:
+;	INY		 ; Y = 1 (bounce up)
+;
+;PRG008_B75B:
+;
+;	STY Player_BounceDir	 ; Set Player bounce direction
+;
+;	LDY #$06	; Y = 6
+;
+;	LDA Objects_State,Y
+;	BEQ PRG008_B766	 ; If this object is dead/empty, jump to PRG008_B766
+;	INY		 ; Y++
+;
+;PRG008_B766:
+;
+;	; Align Y lo to tile grid
+;	LDA <Temp_Var14
+;	AND #$F0
+;	STA <Temp_Var14
+;	STA Objects_Y,Y	 ; Store into object slot
+;
+;	LDA <Temp_Var13
+;	STA Objects_YHi,Y ; Store Y Hi into object slot
+;
+;	LDA <Temp_Var15	
+;	STA Objects_XHi,Y ; Store X Hi into object slot
+;
+;	LDA <Temp_Var16
+;	STA Objects_X,Y	 ; Store X Lo into object slot
+;
+;	JSR BlockBump_Init	; Init the block bump effect!
+;
+;	LDA Player_BounceDir
+;	BEQ PRG008_B78B	 ; If Player_BounceDir = 0 (bounce up), jump to PRG008_B78B
+;
+;	LDA #TILEA_BLOCKBUMP_CLEAR
+;	JSR Level_ChangeTile_ByTempVars	 ; Change tile (in grid memory, not immediate display)
+;
+;PRG008_B78B:
+;	PLA		 ; Restore offset into TileAttrAndQuad_OffsSloped
+;	TAY		 ; -> 'Y'
+;
+;	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5159,8 +4915,8 @@ Do_Tile_Attack:
 	JSR Player_GetTileAndSlope	 ; Get tile near tail
 
 	LDX #$04	 
-	STA Level_Tile_GndL,X	 ; Store into tail's special slot
-	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
+	STA Level_Tile_Prop_GndL,X	 ; Store into tail's special slot
+	;JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
 
 Skip_Shell_Bump:
 	LDA #$01
@@ -5180,12 +4936,12 @@ PRG008_B979:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_BumpOffBlocks:
 	LDX #$04	 ; X = 4 
-	STA Level_Tile_GndL,X	 ; Essentially store into Level_Tile_Whack
+	STA Level_Tile_Prop_GndL,X	 ; Essentially store into Level_Tile_Whack
  
 	LDA Player_Bounce 
 	BNE PRG008_B9D3	 ; If Player is bouncing, jump to PRG008_B9D3 
  
-	JSR Level_DoBumpBlocks	 ; Have kicked object hit bumpable blocks
+	;JSR Level_DoBumpBlocks	 ; Have kicked object hit bumpable blocks
 
 	LDA Player_Bounce 
 	BEQ PRG008_B994	 ; If block is NOT a bouncing type, jump to PRG008_B994  
@@ -5264,7 +5020,7 @@ Player_GetTileSlopeAndQuad:
 	STA <Temp_Var11	 ; Temp_Var11 (X offset)
 
 	JSR Player_GetTileAndSlope ; Get tile
-	STA Level_Tile_GndL,X	 ; Store into appropriate location
+	STA Level_Tile_Prop_GndL,X	 ; Store into appropriate location
 
 	RTS		 ; Return
 
@@ -5317,7 +5073,7 @@ MoveTileVert:	.byte 0, 0, -8, 8
 	; as a damage too!  Careful about that, eh?
 
 Player_DoSpecialTiles:
-
+	RTS
 	LDA Player_Shell
 	ORA Player_TailAttack
 	ORA Player_Flip	 
@@ -5327,8 +5083,7 @@ Player_DoSpecialTiles:
 	LDA <Player_InAir
 	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
 
-	LDY Level_Tile_InFL	 ; Get tile near head...
-	LDA TileProperties, Y
+	LDA Level_Tile_Prop_InFL	 ; Get tile near head...
 	CMP #TILE_ITEM_COIN
 	BLT PRG008_BC79
 	JMP PRG008_BD4B
@@ -5373,7 +5128,7 @@ PRG008_BCA7:
 
 PRG008_BCAA:
 	LDX #$02	 ; X = 2
-	LDA Level_Tile_GndL	 
+	LDA Level_Tile_Prop_GndL	 
 
 	LDY <Player_InAir
 	BEQ PRG008_BCC4	 ; If Player is NOT mid air, jump to PRG008_BCC4
@@ -5388,16 +5143,14 @@ PRG008_BCAA:
 
 	INX		 ; X = 3
 
-	LDA Level_Tile_GndR	 
+	LDA Level_Tile_Prop_GndR	 
 
 PRG008_BCC4:
-	TAY
-	LDA TileProperties, Y
 	STA <Temp_Var1		 ; Store tile -> Temp_Var1
 	STX <Temp_Var3		 ; Store pipe mode -> Temp_Var3
 
 	SEC
-	SBC TILE_PROP_VPIPE_LEFT
+	SBC #TILE_PROP_VPIPE_LEFT
 	CMP #$02
 	BGE PRG008_BD4B
 
@@ -5467,9 +5220,7 @@ PRG008_BD4B:
 	LDX #$05	 ; X = 1 (check one tile by foot, then check the other!)
 
 PRG008_BD59:
-	LDA Level_Tile_GndL,X
-	TAY
-	LDA TileProperties, Y
+	LDA Level_Tile_Prop_GndL,X
 	CMP #TILE_ITEM_COIN
 	BGE PRG008_BD70
 	AND #$0F
@@ -5477,17 +5228,18 @@ PRG008_BD59:
 	SBC TILE_PROP_MOVE_DOWN
 	CMP #$04
 	BGE PRG008_BD70
-	AND #$0F
-	LDY #$00
-	CMP #TILE_CONVEYOR_RIGHT
-	BEQ Do_Player_Conveyor
-	INY
-	CMP #TILE_CONVEYOR_LEFT
-	BNE PRG008_BD70
+	TAX
+	LDA MoveTileHorz, X
+	BEQ PRG008_BD6F
+	STA <Player_XVel
+	JMP PRG008_BD73
 
-Do_Player_Conveyor:
-	LDA ConveyorSlide,Y	; Get appropriate conveyor slide amount
-	STA Player_SlideRate	; Set slide factor for conveyor
+PRG008_BD6F:
+	LDA MoveTileVert, X
+	BEQ PRG008_BD70
+	STA <Player_YVel
+
+
 	JMP PRG008_BD73		; Jump to PRG008_BD73
 
 PRG008_BD70:
@@ -5502,13 +5254,11 @@ PRG008_BD96:
 	LDX #$04	 ; X = 3
 
 PRG008_BD98:
-	LDA Level_Tile_Head,X
-	TAY
-	LDA TileProperties,Y
-	BMI PRG008_BE2E
+	LDA Level_Tile_Prop_Head,X
+	CMP #TILE_ITEM_COIN
+	BGE PRG008_BDB1
 	AND #$0F
-	STA TempA
-	CMP #(TILE_HARMFUL)
+	CMP #TILE_PROP_HARMFUL
 	BNE PRG008_BDB1	
  
 PRG008_BDA4:
@@ -5526,8 +5276,7 @@ PRG008_BDB1:
 	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
 
 PRG008_BDFD:
-	LDA TempA
-	CMP #(TILE_SLICK)
+	CMP #TILE_PROP_SLICK
 	BNE PRG008_BE2E
 
 	LDA Player_Ability
@@ -5837,59 +5586,6 @@ NotMaxAir:
 
 NoChange:
 	RTS
-;	LDA Top_Of_Water
-;	BNE Increase_Air_Time
-;	LDA Air_Time
-;	BEQ Skip_Air_Change
-;	AND #$80				
-;	BNE Increase_Air_Time				; Top of water, let's breath!
-;	LDA Player_InWater
-;	BEQ Increase_Air_Time
-;	LDA <Player_Suit
-;	CMP #$04
-;	BEQ Increase_Air_Time
-;	BNE Decrease_Air_Time
-;
-;Decrease_Air_Time:
-;	LDA #$07
-;	STA  DAIZ_TEMP1
-;	LDA Player_Ability
-;	CMP #$02
-;	BNE Do_Air_Dec
-;	LDA #$0F
-;	STA  DAIZ_TEMP1
-;
-;Do_Air_Dec:
-;	LDA Counter_1
-;	AND DAIZ_TEMP1
-;	BNE Skip_Air_Change
-;	LDA Air_Time			; No air, stop decreasing it!
-;	BMI Skip_Air_Change
-;	DEC Air_Time
-;	BNE Skip_Air_Change	; Air is 0, kill the player!
-;	JMP Player_Die
-;
-;	
-;Increase_Air_Time:
-;	; #DAHRKDAIZ - Hijacked for swim
-;	LDA Air_Time
-;	CMP #$40				; Max air is #$40
-;	BEQ Skip_Air_Change	; If max, skip!
-;	LDA Counter_1
-;	AND #$03				; Increase air a bit faster than decrease
-;	BNE Skip_Air_Change
-;	INC Air_Time
-;
-;Skip_Air_Change:
-;	LDA Air_Time
-;	BEQ Air_RTS
-;	CMP #$10
-;	BCS Air_RTS
-;	LDA Sound_QLevel1
-;	ORA #SND_LEVELTAILWAG
-;	STA Sound_QLevel1
-;Air_RTS:
-;	RTS	
 
 FireBall_ChangeBlocks:
 	.byte  TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, $3B
@@ -5911,12 +5607,6 @@ PUp_RTS:
 
 
 Shell_Bounce:
-	LDA Level_Tile_GndR
-	CMP #$67
-	BEQ Shell_BounceRTS
-	LDA Level_Tile_GndL
-	CMP #$67
-	BEQ Shell_BounceRTS
 	LDA Player_Shell			; If in a shell we bounce in the opposite direction
 	BEQ Shell_BounceRTS
 	LDA Sound_QPlayer

@@ -1159,9 +1159,9 @@ PRG014_CB15:
 ; Puts down 1-16 of one of the blocks from LoadLevel_Blocks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Blocks:
-	.byte TILEA_BRICK, TILEA_QBLOCKCOIN, SUN_BLOCK, HOLLOW_BLOCK
-	.byte MOON_BLOCK, TILEA_NOTE, TILE_GLOBAL_ICE, TILEA_COIN ; #DAHRKDAIZ swapped HOLLOW_BLOCKBOUNCE for TILE_GLOBAL_ICE - 7/15
-	.byte TILEA_CHERRY	; This one is accessed by LoadLevel_IceBricks
+	;.byte TILEA_BRICK, TILEA_QBLOCKCOIN, SUN_BLOCK, HOLLOW_BLOCK
+	;.byte MOON_BLOCK, TILEA_NOTE, TILE_GLOBAL_ICE, TILEA_COIN ; #DAHRKDAIZ swapped HOLLOW_BLOCKBOUNCE for TILE_GLOBAL_ICE - 7/15
+	;.byte TILEA_CHERRY	; This one is accessed by LoadLevel_IceBricks
 
 LoadLevel_BlockRun:
 	LDA LL_ShapeDef

@@ -1233,13 +1233,6 @@ PRG007_A596:
 
 PRG007_A59F:
 
-	; Tile not solid on sides/bottom...
-
-	LDA Level_SlopeEn
-	BNE PRG007_A5DC		; If this is a sloped level, jump to PRG007_A5DC
-
-	; Not a sloped level...
-
 	LDA <Temp_Var6	; Relative Y of fireball
 	AND #$0f	; Within tile
 	CMP #$05	
@@ -1281,79 +1274,6 @@ Fireball_ThawTile:
 	STA Level_BlockChgXHi
 
 	JMP PlayerProj_ChangeToPoof	 ; Change the projectile itself into a poof#$
-
-
-PRG007_A5DC:
-
-	; Temp_Var6 will remain as "Y offset within tile"
-	LDA <Temp_Var6
-	AND #$0f
-	STA <Temp_Var6
-
-	; Temp_Var5 will remain as "X offset within tile"
-	LDA <Temp_Var5
-	AND #$0f
-	STA <Temp_Var5
-
-	LDY <Temp_Var2	 ; Y = tile quadrant
-	CPY #$01
-	BEQ PRG007_A637
-	TYA
-	ASL A
-	TAX		 ; X = tile quadrant * 2 (2 byte index into Level_SlopeSetByQuad)
-
-	; Temp_Var3/4 pointer into appropriate Level_SlopeSetByQuad
-	LDA Level_SlopeSetByQuad,X
-	STA <Temp_Var3
-	LDA Level_SlopeSetByQuad+1,X
-	STA <Temp_Var4
-
-	LDX <SlotIndexBackup	 ; X = Player Projectile index
-
-	LDA <Temp_Var1
-	SUB Tile_AttrTable,Y
-	TAY		 ; Y = tile made relative to solid set
-
-	LDA [Temp_Var3],Y
-	TAY		 ; Y = slope offset for this tile
-
-	LDA Slope_ObjectVel_Effect,Y
-	CMP #$80
-	BEQ PRG007_A637	 ; If this tile has no effect, jump to PRG007_A637 ("Poof" away, fireball..)
-
-	STA <Temp_Var7	 ; Effect value -> Temp_Var7
-
-	TYA
-	ASL A
-	ASL A
-	ASL A
-	ASL A		; Multiply relative tile index by 16 (because 16 slope values exist across each 16x16 tile)
-	ADD <Temp_Var5	; Add specific offset across tile
-	TAY		; -> 'Y'
-
-	; Lower 4 bits of Slope_LUT (the "sloped floor height" component) -> Temp_Var2
-	LDA Slope_LUT,Y
-	AND #$0f
-	STA <Temp_Var2
-
-	LDA <Temp_Var6
-	CMP #12
-	BGE PRG007_A626	 ; If fireball is deeper than 12 pixels into the tile, jump to PRG007_A626
-
-	CMP <Temp_Var2
-	BLT PRG007_A645	 ; If fireball is higher than the slope height, jump to PRG007_A645 (RTS)
-
-PRG007_A626:
-	LDA <Temp_Var7
-	BEQ PRG007_A642	 ; If effect value = 0, jump to PRG007_A642
-
-	LDY #-$05	 ; Y = -$05 (high bounce velocity)
-	EOR PlayerProj_XVel,X
-	BMI PRG007_A633
-	LDY #-$02	 ; Y = -$02 (low bounce velocity)
-PRG007_A633:
-	TYA
-	JMP PRG007_A596	 ; Jump to PRG007_A596
 
 PRG007_A637:
 
@@ -1945,10 +1865,7 @@ PRG007_A8BF:
 
 PRG007_A8F0:
 	LDA [Temp_Var1],Y ; Get the tile the bubble detects
-
 	STA <Temp_Var2	 ; -> Temp_Var2
-	TAY
-	LDA TileProperties, Y
 	AND #TILE_PROP_ITEM
 	CMP #TILE_PROP_ITEM
 	BNE PRG007_A91E
@@ -2714,8 +2631,6 @@ SObj_CheckHitSolid:
 
 	LDA [Temp_Var1],Y ; Get the tile here
 	STA <Temp_Var1	 ; -> Temp_Var1
-	TAY
-	LDA TileProperties,Y
 	STA CurrentTileProperty
 	AND #TILE_PROP_SOLID_TOP
 	BEQ PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
@@ -5586,7 +5501,7 @@ PRG007_BE1C:
 	CMP #$1d
 	BNE PRG007_BE43	 ; If timer <> $1D, jump to PRG007_BE43
 
-	LDA #CHNGTILE_4WAYCANNON
+	;LDA #CHNGTILE_4WAYCANNON
 	STA Level_ChgTileEvent
 
 	; Set coordinates of change
@@ -5956,7 +5871,7 @@ Hammer_BrickBust:
 	LDA #-6	 
 	STA BrickBust_YVel	 ; Y velocity = -6
 
-	LDY #CHNGTILE_DELETETOBG
+	LDY #$80
 	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof
@@ -5964,10 +5879,10 @@ Hammer_BrickBust:
 
 	; #DAHRKDAIZ first four of each are fireball, the other is iceball
 Projectile_Interact_Table:
-	.byte TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, FROZEN_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER
+	;.byte TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, FROZEN_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER
 
 Projectile_Interact_To_Table:
-	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, CHGTILESTANDING_WATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER
+	;.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, CHGTILESTANDING_WATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER
 
 Get_Proj_YVel:
 	LDA Special_Suit_Flag

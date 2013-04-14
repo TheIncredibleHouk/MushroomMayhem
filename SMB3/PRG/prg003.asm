@@ -1277,7 +1277,7 @@ PRG003_A691:
 
 DonutLift_ChangeBlock:
 	; Queue tile change event
-	LDA #CHNGTILE_DELETEDONUT
+	LDA #$80
 	STA Level_ChgTileEvent
 
 	; Block change to occur at Y+1

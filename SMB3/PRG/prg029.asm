@@ -1018,7 +1018,7 @@ ToadHouse_Box_X:	.byte $40, $70, $A0
 	; (Already checked for him pressing 'B'!)
 ToadHouse_ChestPressB:
 	LDA #TILE7_CHEST_LR
-	SUB Level_Tile_Head
+	;SUB Level_Tile_Head
 	CMP #$04
 	BGE PRG029_D1B7	 ; If Player is NOT touching one of the treasure boxes, jump to PRG029_D1B7
 
@@ -2435,43 +2435,8 @@ PRG029_D7FC:
 ; Performs a Block Change command, if one is needed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BlockChange_Do:
-	LDA Level_7Vertical	 
-	BEQ PRG029_DC36	 ; If level is not vertical, jump to PRG029_DC36
-
-	; Vertical level only...
-
-	; Fix Block Change Y coordinates for vertical world
-	LDA Level_BlockChgYLo
-	LDY Level_BlockChgYHi
-	JSR LevelJct_GetVScreenH
-	STA Level_BlockChgYLo
-	STY Level_BlockChgYHi
-
-	; Get tile here
-	LDA Tile_Mem_AddrVL,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_AddrVH,Y
-	STA <Map_Tile_AddrH
-
-	; Temp_Var6 = block change screen Y aligned to grid
-	LDA Level_BlockChgYLo
-	AND #$f0
-	STA <Temp_Var6
-
-	; Build row/column offset value -> Temp_Var5
-	LDA Level_BlockChgXLo
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var6
-	STA <Temp_Var5
-
-	; Temp_Var7 = 0
-	LDA #$00
-	STA <Temp_Var7
-
-	BEQ PRG029_DC7C	 ; Jump (technically always) to PRG029_DC7C
+	LDA Level_ChgTileEvent	 
+	BEQ PRG029_DC7D	
 
 PRG029_DC36:
 
@@ -2538,103 +2503,87 @@ PRG029_DC70:
 
 PRG029_DC7C:
 	LDA Level_ChgTileEvent
-	BNE PRG029_DC82	 ; If Level_ChgTileEvent <> 0, jump to PRG029_DC82
+	BNE TileChng_OneTile	 ; If Level_ChgTileEvent <> 0, jump to PRG029_DC82
 
 	; Otherwise, do nothing... seems like they should've checked for
 	; this BEFORE bothering with all those calculations!  :)
 
+PRG029_DC7D:
 	RTS		 ; Return
 
-PRG029_DC82:
-	JSR DynJump
+Map16_ByTileSet:
+	; A000 page selected per-Level_Tileset...
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $0F
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word TileChng_DoNothing	; $00 - NOT USED (Level_ChgTileEvent = 0 not valid)
-	.word TileChng_OneTile		; $01 - CHNGTILE_DELETECOIN
-	.word TileChng_OneTile		; $02 - CHNGTILE_DELETETOBG
-	.word TileChng_OneTile		; $03 - CHNGTILE_TOFRZWATER
-	.word TileChng_OneTile		; $04 - CHNGTILE_STANDINGWATER
-	.word TileChng_OneTile		; $05 - CHNGTILE_TONOTEBLOCK
-	.word TileChng_OneTile		; $06 - CHNGTILE_COINHEAVEN
-	.word TileChng_OneTile		; $07 - CHNGTILE_TOBRICK
-	.word TileChng_OneTile		; $08 - CHNGTILE_TOMETALPLATE
-	.word TileChng_OneTile		; $09 - CHNGTILE_PSWITCHSTOMP
-	.word TileChng_OneTile		; $0A (Change to Fortress light cable??)
-	.word TileChng_OneTile		; $0B - CHNGTILE_TOBRICKCOIN
-	.word TileChng_OneTile		; $0C - CHNGTILE_DELETEWATERCOIN (not sure about this one)
-	.word TileChng_OneTile		; $0D - not different from $02??
-	.word TileChng_OneTile		; $0E (Spikes??)
-	.word TileChng_OneTile		; $0F - CHNGTILE_DELETEDONUT
-	.word TileChng_OneTile		; $10 - CHNGTILE_FROZENMUNCHER
-	.word TileChng_OneTile		; $11 - CHNGTILE_FROZENCOIN
-	.word TileChng_OneTile		; $12 - CHNGTILE_PSWITCHAPPEAR
-	.word TileChng_DoorAppear	; $13 - CHNGTILE_DOORAPPEAR
-	.word TileChng_ToadBoxOpen	; $14 - CHNGTILE_TOADBOXOPEN
-	.word ChngTile_32x32		; $15 - CHNGTILE_4WAYCANNON
-	.word ChngTile_32x32		; $16 - GiantBlock_BrickBust
-	.word ChngTile_32x32		; $17 - GiantBlock_BlockHit
-	.word ChngTile_32x32		; $18 - GiantBlock_BrickRestore
+Map16_OffsetByTileset:
+	; Defines the 8x8 blocks to build a particular 16x16 "tile"
 
-
-	; Tile to "change to"; just for updating the level grid
-	; NOTES: 
-	; TILE2_HANGGLOBE_CABLE -- only tile that made visual sense as a standalone ??
-	; TILE9_PIPEWORKS_CRACK -- not sure about this one
-	; TILE2_SPIKEUP -- only tile that made visual sense as a standalone ??
-OneTile_ChangeToTile:
-	.byte TILEA_COINREMOVED, TILE1_SKY, FROZEN_WATER, STANDING_WATER
-	.byte TILEA_NOTE, TILEA_HNOTE, TILEA_BRICK, TILEA_BLOCKEMPTY
-	.byte TILEA_PSWITCH_PRESSED, TILE2_HANGGLOBE_CABLE, TILEA_BRICKCOIN, TILE1_WATER
-	.byte TILE1_SKY, TILE2_SPIKEUP, TILE2_DONUTLIFT, TILE4_MUNCHER, TILE1_THAWEDCOIN, TILEA_PSWITCH
-
-	; Defines each of the four 8x8 patterns that make up the tile
-	; Too bad Nintendo couldn't keep things like this in one spot :)
-	; #DAHRKDAIZ Tile Replacments brick coin ice, etc
-OneTile_ChangeToPatterns:
-	.byte $FF, $FF, $FF, $FF	; $01 - CHNGTILE_DELETECOIN
-	.byte $FF, $FF, $FF, $FF	; $02 - CHNGTILE_DELETETOBG
-	.byte $EA, $EB, $FC, $FC	; $03 - CHNGTILE_TOFRZWATER
-	.byte $FD, $FD, $EF, $EF	; $04 - CHNGTILE_STANDINGWATER #DAHRKDAIZ
-	.byte $AC, $AD, $BC, $BD	; $05 - CHNGTILE_TONOTEBLOCK
-	.byte $B8, $BA, $B9, $BB	; $06 - CHNGTILE_COINHEAVEN
-	.byte $AE, $AF, $BE, $BF	; $07 - CHNGTILE_TOBRICK
-	.byte $CC, $CD, $DC, $DD	; $08 - CHNGTILE_TOMETALPLATE
-	.byte $FF, $FF, $96, $97	; $09 - CHNGTILE_PSWITCHSTOMP
-	.byte $60, $61, $6D, $6F	; $0A
-	.byte $CC, $CD, $DC, $DD	; $0B - CHNGTILE_TOBRICKCOIN
-	.byte $EF, $EF, $EF, $EF	; $0C - CHNGTILE_DELETEWATERCOINRY
-	.byte $05, $07, $06, $08	; $0D
-	.byte $18, $1A, $19, $1B	; $0E
-	.byte $5C, $5E, $5D, $5F	; $0F - CHNGTILE_DELETEDONUT
-	.byte $92, $CA, $93, $CB	; $10 - CHNGTILE_FROZENMUNCHER
-	.byte $CE, $CF, $DE, $DF	; $11 - CHNGTILE_FROZENCOIN
-	.byte $88, $89, $98, $99	; $12 - CHNGTILE_PSWITCHAPPEAR
-
+	.word $A000
+	.word $A400
+	.word $A800
+	.word $AC00
+	.word $B000
+	.word $B400
+	.word $B800
+	.word $BC00
+	.word $A000
+	.word $A400
+	.word $A800
+	.word $AC00
+	.word $B000
+	.word $B400
+	.word $B800
+	.word $BC00
+	.word $A000
+	.word $A400
+	.word $A800
 
 TileChng_OneTile:
-	LDX Level_ChgTileEvent
-	DEX		 ; X = Level_ChgTileEvent - 1 (because zero is no-action)
-
+	LDA PAGE_A000	; save previous state
+	PHA				
+	LDY Level_Tileset
+	LDA TileLayoutPage_ByTileset,Y	
+	STA PAGE_A000	 
+	JSR PRGROM_Change_A000
+	LDA Level_Tileset
+	STA <Temp_Var15
+	ASL <Temp_Var15
+	LDY <Temp_Var15
+	LDA Map16_OffsetByTileset, Y
+	STA <Temp_Var15
+	INY
+	LDA Map16_OffsetByTileset, Y
+	STA <Temp_Var14
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
 	; Change the tile to the proper target tile
-	LDA OneTile_ChangeToTile,X
+	LDA Level_ChgTileValue
 	STA [Map_Tile_AddrL],Y
-
-	; X *= 4 (index into OneTile_ChangeToPatterns)
-	TXA
-	ASL A
-	ASL A
-	TAX
-
-	LDY #$00	 ; Y = 0
+	
+	LDX #$00	 ; Y = 0
+	TAY
 PRG029_DD22:
-	LDA OneTile_ChangeToPatterns,X	 ; Get pattern
-	STA TileChng_Pats,Y	 ; Copy into TileChng_Pats
+	LDA [Temp_Var14],Y	 ; Get pattern
+	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
 
-	INX		 ; X++ (next pattern)
-	INY		 ; Y++ (count of patterns)
-	CPY #$04
+	INC Temp_Var14
+
+	INX		 ; Y++ (count of patterns)
+	CPX #$04
 	BNE PRG029_DD22	 ; While Y < 4, loop!
 
 	LDA <Temp_Var6	 ; Get tile Y (aligned to grid, so bits 0-3 are zero)
@@ -2670,7 +2619,9 @@ PRG029_DD41:
 	LDA #$00
 	STA Level_ChgTileEvent
 
-TileChng_DoNothing:
+	PLA
+	STA PAGE_A000	 
+	JSR PRGROM_Change_A000
 	RTS		 ; Return
 
 TileChng_DoorBufCmds:
