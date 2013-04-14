@@ -844,7 +844,8 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 
 	Level_TileOff:		.ds 1	; Tile mem offset
 	Level_Tile:		.ds 1	; Temporary holding point for a detected tile index
-	Player_Slopes:		.ds 3	; for sloped levels only (3 bytes allocated, but only one actually used)
+	Tile_Value:		.ds 1
+	Player_Slopes:		.ds 2	; for sloped levels only (3 bytes allocated, but only one actually used)
 				; *NOTE: Code at PRG030_9EDB clears Player_Slopes+1 and Player_Slopes+2, but these are never used!
 
 				.ds 1	; $E9 unused
@@ -1619,36 +1620,11 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Level_UnusedFlag:	.ds 1	; Unused; only set in a couple places, but never read back!
 	Level_SlopeEn:		.ds 1	; If set, enables slope tiles (otherwise they're considered flat top-only solids)
 
-CHNGTILE_DELETECOIN	= $01
-CHNGTILE_DELETETOBG	= $02
-CHNGTILE_TOFRZWATER	= $03	; 
-CHGTILESTANDING_WATER	= $04
-CHNGTILE_TONOTEBLOCK	= $05
-CHNGTILE_DELETECHERRY	= $06
-CHNGTILE_COINHEAVEN	= $06
-CHNGTILE_TOBRICK	= $07
-CHNGTILE_TOMETALPLATE	= $08	; i.e. "plate" that appears after ? block is hit
-CHNGTILE_PSWITCHSTOMP	= $09
-CHNGTILE_TOBRICKCOIN	= $0B	; brick containing coin
-CHNGTILE_DELETEWATERCOIN	= $0C
-CHNGTILE_PIPEJCT	= $0E	; UNUSED replaces the unused TILE9_PIPEWORKS_JCT tile!
-CHNGTILE_DELETEDONUT	= $0F
-CHNGTILE_FROZENMUNCHER	= $10
-CHNGTILE_FROZENCOIN	= $11
-CHNGTILE_PSWITCHAPPEAR	= $12
-CHNGTILE_DOORAPPEAR	= $13
-CHNGTILE_TOADBOXOPEN	= $14
-CHNGTILE_4WAYCANNON	= $15
-CHNGTILE_GIANTBRICKBUST	= $16	; Giant World brick bust
-CHNGTILE_GIANTBLOCKHIT	= $17	; Giant World [?] block hit to metal
-CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant brick)
 	Level_ChgTileEvent:	.ds 1	; When non-zero, queues a "change tile" event
-
+	Level_ChgTileValue:	.ds 1	;
 	Level_NoStopCnt:	.ds 1	; A counter which continuously increments unless something is "stopping" the action
 	Level_Event:		.ds 1	; Check "LevelEvent_Do" for values; 0 means nothing
 	Level_PSwitchCnt:	.ds 1	; When non-zero, P-Switch is active (init @ $80); counts down to zero and restarts music
-
-				.ds 1	; $0568 unused
 
 	Player_SlideRate:	.ds 1	; While Player is sliding, this is added to X Velocity (does not persist, however)
 
@@ -1814,11 +1790,11 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 
 				.ds 2	; $0600-$0601 unused
 
-	Level_Tile_Head:	.ds 1	; Tile at Player's head 
-	Level_Tile_GndL:	.ds 1	; Tile at Player's feet left
-	Level_Tile_GndR:	.ds 1	; Tile at Player's feet right
-	Level_Tile_InFL:	.ds 1	; Tile "in front" of Player ("lower", at feet)
-	Level_Tile_InFU:	.ds 1	; Tile "in front" of Player ("upper", at face)
+	Level_Tile_Prop_Head:	.ds 1	; Tile at Player's head 
+	Level_Tile_Prop_GndL:	.ds 1	; Tile at Player's feet left
+	Level_Tile_Prop_GndR:	.ds 1	; Tile at Player's feet right
+	Level_Tile_Prop_InFL:	.ds 1	; Tile "in front" of Player ("lower", at feet)
+	Level_Tile_Prop_InFR:	.ds 1	; Tile "in front" of Player ("upper", at face)
 	Level_Tile_Whack:	.ds 1	; Tile last hit by tail attack or shell
 
 				.ds 5	; $060C unused
@@ -3063,21 +3039,22 @@ TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
 TILE_PROP_PSWITCH		= $0E ;
-TILE_ITEM_COIN		= $00 ;
-TILE_ITEM_FIREFLOWER = $01 ;
-TILE_SEPCIAL_SUPERLEAF	= $02 ;
-TILE_SEPCIAL_ICEFLOWER	= $03 ;
-TILE_SEPCIAL_FROG		= $04 ;
-TILE_ITEM_FIREFOX	= $05 ;
-TILE_ITEM_KOOPA		= $06 ;
-TILE_ITEM_BOO		= $07 ;
-TILE_ITEM_SLEDGE		= $08 ;
-TILE_ITEM_NINJA		= $09 ;
-TILE_ITEM_STAR		= $0A ;
-TILE_ITEM_VINE		= $0B ;
-TILE_ITEM_PSWITCH	= $0C ;
-TILE_ITEM_BRICK		= $0D ;
-TILE_ITEM_NOTE		= $0E 
+TILE_PROP_CHERRY		= $0F ;
+TILE_ITEM_COIN		= $F0 ;
+TILE_ITEM_FIREFLOWER = $F1 ;
+TILE_SEPCIAL_SUPERLEAF	= $F2 ;
+TILE_SEPCIAL_ICEFLOWER	= $F3 ;
+TILE_SEPCIAL_FROG		= $F4 ;
+TILE_ITEM_FIREFOX	= $F5 ;
+TILE_ITEM_KOOPA		= $F6 ;
+TILE_ITEM_BOO		= $F7 ;
+TILE_ITEM_SLEDGE		= $F8 ;
+TILE_ITEM_NINJA		= $F9 ;
+TILE_ITEM_STAR		= $FA ;
+TILE_ITEM_VINE		= $FB ;
+TILE_ITEM_PSWITCH	= $FC ;
+TILE_ITEM_BRICK		= $FD ;
+TILE_ITEM_NOTE		= $FE 
 	TileProperties:		 .ds 256;
 	CurrentTileProperty: .ds 1;
 	FireBallTransitions: .ds 8;

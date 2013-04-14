@@ -456,8 +456,8 @@ ObjP41:
 ObjP40:
 	.byte $B1, $B3, $B5, $B7, $B9, $BB, $75, $75
 
-GiantBlockCtl_BlkBump:	.byte CHNGTILE_GIANTBRICKFIX, CHNGTILE_GIANTBLOCKHIT, CHNGTILE_GIANTBLOCKHIT, CHNGTILE_GIANTBRICKBUST
-GiantBlockCtl_BlockStarts:	.byte TILE11_BRICK_UL, TILE11_QBLOCKC_UL, TILE11_QBLOCKP_UL
+GiantBlockCtl_BlkBump:	.byte $00 ;CHNGTILE_GIANTBRICKFIX, CHNGTILE_GIANTBLOCKHIT, CHNGTILE_GIANTBLOCKHIT, CHNGTILE_GIANTBRICKBUST
+GiantBlockCtl_BlockStarts:	.byte $00 ;TILE11_BRICK_UL, TILE11_QBLOCKC_UL, TILE11_QBLOCKP_UL
 GiantBlockCtl_Frames:	.byte $00, $08, $08
 
 	.byte $00
@@ -466,85 +466,6 @@ PRG002_A27B:
 	.byte $00, $00, $50, $40, $30, $20, $00, $E0, $D0, $C0, $B0
 
 ObjNorm_GiantBlockCtl:
-	LDA Objects_Timer,X
-	BNE PRG002_A2CD	 ; If timer not expired, jump to PRG002_A2CD
-
-	LDA Objects_Var2,X
-	PHA		 ; Save Var2
-
-	; Clear Var2
-	LDA #$00
-	STA Objects_Var2,X
-
-	PLA
-	STA <Temp_Var11	 ; Restore Var2 -> Temp_Var11
-	BNE PRG002_A2A1	 ; If non-zero, jump to PRG002_A2A1
-
-	LDA Player_HitCeiling
-	BEQ PRG002_A2CC	 ; If Player did not just hit off ceiling, jump to PRG002_A2CC
-
-	LDA Level_Tile_GndR
-
-PRG002_A2A1:
-	STA <Temp_Var1	 ; Var2 or Player detected tile -> Temp_Var1
-
-	LDY #$02	 ; Y = 2
-PRG002_A2A5:
-
-	; Determine what kind of giant block was just hit
-	LDA <Temp_Var1
-	SUB GiantBlockCtl_BlockStarts,Y
-
-	CMP #$04	 
-	BGE PRG002_A2C9	 ; If result >= 4 (out of range block type), jump to PRG002_A2C9
-
-	; result < 4 ...
-
-	; Set frame by index
-	LDA GiantBlockCtl_Frames,Y
-	STA Objects_Frame,X
-
-	TYA		; Y = frame
-
-	BNE PRG002_A2C2	 ; If frame = 0, jump to PRG002_A2C2
-
-	LDA <Temp_Var11
-	BNE PRG002_A2C0	 ; If Temp_Var11 (previous Var2) <> 0, jump to PRG002_A2C0
-
-	LDA <Player_Suit
-	BEQ PRG002_A2C2	 ; If Player is small, jump to PRG002_A2C2
-
-PRG002_A2C0:
-	LDY #$03	 ; Y = 3
-
-PRG002_A2C2:
-	TYA		 ; A = frame or 3
-	STA Objects_Var1,X	 ; -> Var1
-
-	JMP PRG002_A325	 ; Jump to PRG002_A325
-
-PRG002_A2C9:
-	DEY		; Y--
-	BPL PRG002_A2A5	; While Y >= 0, loop!
-
-PRG002_A2CC:
-	RTS		 ; Return
-
-PRG002_A2CD:
-
-	; Timer not expired...
-
-	CMP #$01
-	BNE PRG002_A2DB	 ; If timer is at 1, jump to PRG002_A2DB
-
-	; Timer not expired, > 1
-
-	LDY Objects_Var1,X	 ; Y = Var1
-
-	; Triggers a block bump removal
-	LDA GiantBlockCtl_BlkBump,Y
-	STA Level_BlkBump+2
-
 	RTS		 ; Return
 
 PRG002_A2DB:
@@ -669,7 +590,7 @@ PRG002_A35E:
 	LDA <Objects_Y,X
 	STA Level_BlkBump_YLo+2
 
-	LDA #CHNGTILE_GIANTBRICKBUST
+	;LDA #CHNGTILE_GIANTBRICKBUST
 	STA Level_BlkBump+2
 
 	LDA Objects_Var1,X
@@ -970,7 +891,7 @@ PRG002_A508:
 	STY <Objects_Var5,X	 ; Update Var5
 
 	; Change tile event (to background) by ice brick
-	LDA #CHNGTILE_DELETETOBG
+	;LDA #CHNGTILE_DELETETOBG
 	STA Level_ChgTileEvent
 
 	; Set all of the block change coordinates to remove the ice brick

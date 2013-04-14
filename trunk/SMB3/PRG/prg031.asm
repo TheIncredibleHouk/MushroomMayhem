@@ -2209,11 +2209,6 @@ PRG031_F8E0:
 	LDA Level_Tileset
 	CMP #$00	 ; 
 	BEQ PRG031_F955	 ; If A = 0 (On world map), go to PRG031_F955
-	CMP #$07	 ; 
-	BEQ PRG031_F955	 ; If A = 7 (Toad house), go to PRG031_F955 
-	; But not N-Spade?
-
-	; Load status bar graphics and hide any sprites from appearing over the status bar
 
 	; Load two parts of Status Bar
 	LDA #MMC3_2K_TO_PPU_0000

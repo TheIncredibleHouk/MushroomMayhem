@@ -669,13 +669,13 @@ PRG001_A309:
 PRG001_A320:
 	RTS		 ; Return
 
-ObjInit_Obj02:
+ObjInit_Obj02
 	LDA #$00	 
 	STA Player_Bounce	 ; Kill Player bounce
 
-	LDA Level_Tile_GndL
-	EOR Level_Tile_GndR
-	BEQ PRG001_A334	 	; If both tiles at Player's feet are the same, jump to PRG001_A334
+	;LDA Level_Tile_GndL
+	;EOR Level_Tile_GndR
+	;BEQ PRG001_A334	 	; If both tiles at Player's feet are the same, jump to PRG001_A334
 
 	; Otherwise, this object's toast
 	LDA #OBJSTATE_DEADEMPTY	 
@@ -1016,16 +1016,6 @@ PRG001_A4C6:
 Bouncer_PUp:
 	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
-Bounce_TileReplacements:	
-	.byte CHNGTILE_TOFRZWATER
-	.byte CHNGTILE_COINHEAVEN
-	.byte CHNGTILE_TOMETALPLATE
-	.byte CHNGTILE_TOBRICK
-	.byte CHNGTILE_TONOTEBLOCK
-	.byte CHGTILESTANDING_WATER
-	.byte CHNGTILE_TOMETALPLATE
-	.byte CHNGTILE_PIPEJCT
-
 	; Power-up X or Y velocity upon emerging from the bounce block
 Bouncer_PUpVel:	.byte $00, -$40, -$40, -$30, -$20, -$10, $00, $10, $20, $30, $40
 
@@ -1044,15 +1034,8 @@ ObjNorm_BounceDU:
 	LSR A
 	TAY		 ; Var1 >> 4 -> 'Y'
 
-	LDA Bounce_TileReplacements,Y
-	CMP #$07	 
-	BNE PRG001_A527	 ; If value <> 7, jump to PRG001_A527
-
-	LDY Level_PSwitchCnt
-	BEQ PRG001_A527	 ; If P-Switch not active, jump to PRG001_A527
-
-	LDA #CHNGTILE_FROZENCOIN	 ; Otherwise, A = CHNGTILE_FROZENCOIN (same as "frozen coin" thawing, replace coin)
-
+	LDA Level_ChgTileValue
+	
 PRG001_A527:
 	STA <Temp_Var12  ; -> Temp_Var12
 
@@ -2192,7 +2175,7 @@ ObjNorm_BounceLR:
 	LSR A
 	TAY		 ; Y = var >> 4
 
-	LDA Bounce_TileReplacements,Y
+	LDA Level_ChgTileValue
 	STA <Temp_Var12
 
 	; Temp_Var15 = Bouncer X Hi
@@ -5525,7 +5508,7 @@ PRG001_BC32:
 	STA Bowser_Tiles,Y	; Clear this tile
 
 	; Queue a block change to erase to background!
-	LDA #CHNGTILE_DELETETOBG
+	LDA #$80
 	STA Level_ChgTileEvent
 
 	; Aligned Bowser impact Y
