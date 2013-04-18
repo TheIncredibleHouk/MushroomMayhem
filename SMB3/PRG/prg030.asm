@@ -2590,21 +2590,6 @@ PRG030_94EE:
 	JMP SetPages_ByTileset
 
 Fill_Tile_AttrTable_ByTileset:
-	LDA Level_Tileset
-	ASL A
-	ASL A
-	ASL A	 
-	TAY		 	; Y = Level_Tileset << 1
-
-	LDX #$00		; Y = 7
-PRG030_952C:
-	LDA TileSolidity,Y	
-	STA Tile_AttrTable,X
-	INY
-	INX			; Y--
-	CPX #$08
-	BNE PRG030_952C	 	; While Y >= 0, loop!
-
 	RTS			; Return
 
 	; This LUTs are for the unused-in-US-release "Box out" effect when a level starts

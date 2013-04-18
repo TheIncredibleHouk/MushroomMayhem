@@ -1271,9 +1271,11 @@ PRG008_A743:
 	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
 
 	JSR Player_GetTileAndSlope ; Get tile above Player
+	STA Level_Tile_Prop_Head
 
 PRG008_A77E:
-	AND #TILE_PROP_SOLID_ALL
+
+	AND #$0F
 	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
@@ -1284,9 +1286,6 @@ PRG008_A7AD:
 
 	; This will be used in Level_CheckIfTileUnderwater 
 	; as bits 2-3 of an index into Level_MinTileUWByQuad
-	LDY <Temp_Var1
-	LDA TileProperties,Y
-	STA CurrentTileProperty
 	JSR Level_CheckIfTileUnderwater
 
 	; 'Y' is the result of Level_CheckIfTileUnderwater:
@@ -1327,7 +1326,6 @@ PRG008_A7D1:
 	ROR A		 ; The important concept here is to save the previous carry flag
 	STA <Temp_Var16	 ; Temp_Var16 (most importantly) contains the previous carry flag in bit 7
 
-	LDX #$01	 ; Checks Temp_Var2 for tile and $80 override bit in UNK_584
 	JSR Level_CheckIfTileUnderwater
 
 	BCS PRG008_A7DE	 ; If tile was in the floor solid region, jump to PRG008_A7DE
@@ -1465,8 +1463,7 @@ PRG008_A86C:
 	ORA Player_Shell
 	BNE PRG008_A890	 ; If Player is in water, holding something, or in 
 
-	LDY <Temp_Var1
-	LDA TileProperties, Y
+	LDA Level_Tile_Prop_Head
 	CMP #TILE_ITEM_COIN
 	BGE PRG008_A890
 	AND #$0F
@@ -1541,7 +1538,10 @@ PRG008_A8B7:
 
 	JSR Player_GetTileAndSlope	; Get tile
 
-	CMP #TILE1_VINE
+	CMP #TILE_ITEM_COIN
+	BGE PRG008_A8CA
+	AND #$0F
+	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG008_A8CA	 ; If tile is NOT another vine, jump to PRG008_A8CA
 
 	LDY #-$10
@@ -3820,42 +3820,6 @@ TileAttrAndQuad_OffsFlat_Sm:
 	.byte $14, $02	; In-front upper
 
 
-
-	; Offsets used for tile detection in sloped levels
-TileAttrAndQuad_OffsSloped:
-	; Offsets pushed into Player_GetTileAndSlope
-	;    Yoff Xoff
-
-	; Not small or ducking - Left half
-	.byte $20, $08	; feet
-	.byte $05, $08	; head
-	.byte $18, $03	; in-front lower
-	.byte $0C, $03	; in-front upper
-
-	; Not small or ducking - Right half
-	.byte $20, $08	; feet
-	.byte $05, $08	; head
-	.byte $18, $0D	; in-front lower
-	.byte $0C, $0D	; in-front upper
-
-TileAttrAndQuad_OffsSloped_Sm:
-	; Small or ducking - Left half
-	.byte $20, $08	; feet
-	.byte $12, $08	; head
-	.byte $18, $03	; in-front lower
-	.byte $17, $03	; in-front upper
-
-	; Small or ducking - Right half
-	.byte $20, $08	; feet
-	.byte $12, $08	; head
-	.byte $18, $0D	; in-front lower
-	.byte $17, $0D	; in-front upper
-
-	; Explicitly for walking off an edge in a sloped area
-TileAttrAndQuad_OffsSlopeEdge:
-	.byte $20, $04	; Right half
-	.byte $20, $0B	; Left half
-
 PlayerY_HeightOff:	.byte $12, $05	; Left value is Player_Y offset for small/ducking, right for otherwise
 PRG008_B3AC:	
 	.byte $02, $0E	; Left/Right half, not small
@@ -4010,14 +3974,7 @@ Player_DetectSolids:
 No_Detection:
 	RTS		 ; Return
 
-
 PRG008_B47E:
-	LDA Slope_LUT_Addr
-	STA <Level_GndLUT_Addr
-
-	LDA Slope_LUT_Addr+1
-	STA <Level_GndLUT_Addr+1
-
 	LDY #(TileAttrAndQuad_OffsFlat_Sm - TileAttrAndQuad_OffsFlat) + 6	; 6 = 3 * 2 (the offset we start on below) and work backwards from
 
 	LDA <Player_Suit
@@ -4209,7 +4166,6 @@ PRG008_B581:
 	; Handle all common special tiles (ice blocks, P-Switches, bump blocks, etc.)
 	; Does not include things like instant-kill lava tiles...
 Level_DoCommonSpecialTiles:
-	STA Debug_Snap
 	STA TempA
 	STY TempY
 	CMP #TILE_ITEM_COIN
@@ -4221,9 +4177,9 @@ PRG008_B582:
 	CMP #TILE_PROP_COIN
 	BNE PRG008_B583
 
-	LDA <Level_Tile
-	AND #$C0
-	STA <Level_Tile
+	LDA #$80
+	LDY <Temp_Var12		 
+	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
 
 	LDA Sound_QLevel1
@@ -4231,8 +4187,9 @@ PRG008_B582:
 	STA Sound_QLevel1
 
 	INC Coins_Earned
-	LDY <Level_Tile
-	LDA TileProperties, Y
+	STA Debug_Snap
+
+	LDA #$00
 	LDY TempY
 	RTS
 
@@ -4240,9 +4197,9 @@ PRG008_B583:
 	CMP #TILE_PROP_CHERRY
 	BNE PRG008_B584
 
-	LDA <Level_Tile
-	AND #$C0
-	STA <Level_Tile
+	LDA #$80
+	LDY <Temp_Var12		 
+	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
 
 	LDA Sound_QLevel1
@@ -4250,8 +4207,7 @@ PRG008_B583:
 	STA Sound_QLevel1
 
 	INC Exp_Earned + 2
-	LDY <Level_Tile
-	LDA TileProperties, Y
+	LDA #$00
 	LDY TempY
 	RTS
 
@@ -4389,7 +4345,6 @@ PRG008_B584:
 ;Do_Bumps_Instead:
 ;	LDX DAIZ_TEMP1
 ;	LDA Level_Tile_Prop_GndL,X
-;	STA Debug_Snap
 ;	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
 ;
 ;PRG008_B652:
@@ -4399,7 +4354,6 @@ PRG008_B584:
 ;	RTS		 ; Return
 ;
 ;Level_DoBumpBlocks:
-;	STA Debug_Snap
 ;	PHA
 ;	CMP #TILE_ITEM_COIN
 ;	BCC PRG008_B78B
@@ -4693,7 +4647,7 @@ PRG008_B84E:
 	LDA #-6	 
 	STA BrickBust_YVel	 ; Y velocity = -6
 
-	LDY #CHNGTILE_DELETETOBG
+	LDY #$80
 	STY <Temp_Var12		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	LDY #$80	 	; Y = $80
@@ -4815,7 +4769,7 @@ PRG008_B8FD:
 	LDA <Temp_Var15		 ; Get X Hi
 	STA Level_BlockChgXHi	 ; Store block change X high coord
 
-	LDA #CHNGTILE_PSWITCHAPPEAR	 
+	LDA #$C0	 
 	STA Level_ChgTileEvent	 ; Queue P-Switch appear!
 
 	LDY #$01	 ; Y = 1 (index into PRG001 Bouncer_PUp, i.e. nothing)
@@ -4853,7 +4807,7 @@ LATP_GetCoinAboveBlock:
 	; Tile above was a coin...
 	; The following will collect the coin along with the ? block hit!
 
-	LDA #CHNGTILE_DELETETOBG
+	LDA #$80
 	JSR Level_QueueChangeBlock	; Delete to background
 
 	PLA		 
@@ -5001,29 +4955,6 @@ PRG008_B9AF:
 PRG008_B9D3:
 	RTS		 ; Return
 
-	; "Slope correction" values; as Player transitions from one slope tile to the next,
-	; slight Player_Y correction is needed to keep him on track.  The left value pairs
-	; are for when moving up a slope, the right pair is for when moving down a slope.
-	; Thus -1 to bump up to then next tile going up, or +16 to bump down when going down
-Slope_CorrectH:	.byte $FF, $00	; sign extension of next two values 
-Slope_CorrectL:	.byte -1, 16
-
-	; Fills in the Level_Tile_Quad[rant] and Level_Tile_Slope values
-Player_GetTileSlopeAndQuad:
-
-	; 'X' defines which tile index to do
-	; 'Y' defines an X and Y offset index for the TileAttrAndQuad_OffsSloped table
-
-	LDA TileAttrAndQuad_OffsSloped,Y
-	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
-	LDA TileAttrAndQuad_OffsSloped+1,Y
-	STA <Temp_Var11	 ; Temp_Var11 (X offset)
-
-	JSR Player_GetTileAndSlope ; Get tile
-	STA Level_Tile_Prop_GndL,X	 ; Store into appropriate location
-
-	RTS		 ; Return
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_DoSpecialTiles
@@ -5033,26 +4964,6 @@ Player_GetTileSlopeAndQuad:
 ; quicksand, toad house treasure chests... 
 ; Good place to put custom-by-Tileset tiles!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; This table enables certain pipe tiles by tileset 
-	; (since some have more pipe tile types than others)
-	; bit 6 enables TILE8_PIPEH3_B (not enterable)
-	; bit 7 enables TILE3_PIPETB5_L/R (takes Player to common exit area)
-PipeTile_EnableByTileset:
-	; Indexed by Level_TilesetIdx
-	.byte %00000000	;  0 Plains style
-	.byte %00000000	;  1 Mini Fortress style
-	.byte %10000000	;  2 Hills style
-	.byte %00000000	;  3 High-Up style
-	.byte %00000000	;  4 pipe world plant infestation
-	.byte %00000000	;  5 water world
-	.byte %00000000	;  6 Toad House
-	.byte %11000000	;  7 Vertical pipe maze
-	.byte %01000000	;  8 desert levels
-	.byte %00000000	;  9 Airship
-	.byte %11000000	; 10 Giant World
-	.byte %00000000	; 11 Ice level
-	.byte %11000000	; 12 Sky level
-	.byte %10000000	; 13 Underground
 
 PRG008_BC43:
 	.byte $08, $04, $04	; Offset applied to Player_X when: in air or level is sloped, Player is NOT small, Player is small
@@ -5063,23 +4974,19 @@ Pipe_PadDirForEnter:
 
 
 	; The sliding values applied when Player is touching a conveyor
-MoveTileHorz:	.byte -8, 8, 0, 0
-MoveTileVert:	.byte 0, 0, -8, 8
-
-	.byte $01, $0F
-
-	; To check for damage caused by the fully extended piranha
-	; Note that they technically count touching their base pipes
-	; as a damage too!  Careful about that, eh?
+MoveTileVert:	.byte -1, 1, 0, 0
+MoveTileHorz:	.byte 0, 0, 1, -1
 
 Player_DoSpecialTiles:
-	RTS
 	LDA Player_Shell
 	ORA Player_TailAttack
 	ORA Player_Flip	 
 	BNE PRG008_BCA7	 ; If Player is a Tanooki Statue, tail attacking, or invincibility flipping, jump to PRG008_BCA7
 	; Copy in the mask of allowable pipe tiles -> Temp_Var16
 	
+	LDA #$00
+	LDA #$00
+	STA Player_Slippery	 ; Player_Slippery = 0 (default ground not slippery)
 	LDA <Player_InAir
 	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
 
@@ -5090,9 +4997,9 @@ Player_DoSpecialTiles:
 
 PRG008_BC79:
 	AND #$0F
-	CMP TILE_PROP_HPIPE_BOTTOM
+	CMP #TILE_PROP_HPIPE_BOTTOM
 	BEQ PRG008_BC7A
-	JMP PRG008_BD4B
+	JMP PRG008_BCAA
 
 PRG008_BC7A:
 	LDX #$00
@@ -5137,20 +5044,24 @@ PRG008_BCAA:
 	BEQ PRG008_BCA7	 ; If Player has not just hit off a ceiling, jump to PRG008_BCA7
 
 	LDY Player_IsDucking
-	BEQ PRG008_BCC4	 ; If Player is NOT ducking, jump to PRG008_BCC0
+	BEQ PRG008_BCC0	 ; If Player is NOT ducking, jump to PRG008_BCC0
 
 	JMP PRG008_BD4B	 ; Otherwise, jump to PRG008_BD4B
 
+PRG008_BCC0:
 	INX		 ; X = 3
 
-	LDA Level_Tile_Prop_GndR	 
+	LDA Level_Tile_Prop_GndR
 
 PRG008_BCC4:
-	STA <Temp_Var1		 ; Store tile -> Temp_Var1
 	STX <Temp_Var3		 ; Store pipe mode -> Temp_Var3
-
+	CMP #TILE_ITEM_COIN
+	BGE PRG008_BD4B
+	AND #$0F
+	STA <Temp_Var1
+	LDA #TILE_PROP_VPIPE_RIGHT
 	SEC
-	SBC #TILE_PROP_VPIPE_LEFT
+	SBC <Temp_Var1
 	CMP #$02
 	BGE PRG008_BD4B
 
@@ -5217,47 +5128,32 @@ PRG008_BD30:
 	RTS		 ; Return
 
 PRG008_BD4B:
-	LDX #$05	 ; X = 1 (check one tile by foot, then check the other!)
+	LDX #$04	 ; X = 1 (check one tile by foot, then check the other!)	
 
 PRG008_BD59:
-	LDA Level_Tile_Prop_GndL,X
-	CMP #TILE_ITEM_COIN
-	BGE PRG008_BD70
-	AND #$0F
-	SEC
-	SBC TILE_PROP_MOVE_DOWN
-	CMP #$04
-	BGE PRG008_BD70
-	TAX
-	LDA MoveTileHorz, X
-	BEQ PRG008_BD6F
-	STA <Player_XVel
-	JMP PRG008_BD73
-
-PRG008_BD6F:
-	LDA MoveTileVert, X
-	BEQ PRG008_BD70
-	STA <Player_YVel
-
-
-	JMP PRG008_BD73		; Jump to PRG008_BD73
-
-PRG008_BD70:
-	DEX		 ; X--
-	BPL PRG008_BD59	 ; While X >= 0, loop!
-
-PRG008_BD73:
-PRG008_BD75:	
-PRG008_BD96:
-	LDA #$00
-	STA Player_Slippery	 ; Player_Slippery = 0 (default ground not slippery)
-	LDX #$04	 ; X = 3
-
-PRG008_BD98:
+	STX <Temp_Var2
 	LDA Level_Tile_Prop_Head,X
 	CMP #TILE_ITEM_COIN
-	BGE PRG008_BDB1
+	BGE PRG008_BE2E
 	AND #$0F
+	STA <Temp_Var1
+	LDA #TILE_PROP_MOVE_DOWN
+	SEC
+	SBC <Temp_Var1
+	CMP #$04
+	BGE PRG008_BD73
+	TAX
+	LDA <Player_XVel
+	SUB MoveTileHorz, X
+	STA <Player_XVel
+	LDA <Player_YVel
+	SUB MoveTileVert, X
+	STA <Player_YVel
+
+	JMP PRG008_BE2F		; Jump to PRG008_BD73
+
+PRG008_BD73:
+	LDA <Temp_Var1
 	CMP #TILE_PROP_HARMFUL
 	BNE PRG008_BDB1	
  
@@ -5271,14 +5167,12 @@ PRG008_BDAE:
 
 PRG008_BDB1:
 	; SLIPPERY, ICY GROUND LOGIC
-
 	LDA <Player_InAir
 	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
 
-PRG008_BDFD:
+	LDA <Temp_Var1
 	CMP #TILE_PROP_SLICK
 	BNE PRG008_BE2E
-
 	LDA Player_Ability
 	CMP #$04
 	BEQ PRG008_BE2E
@@ -5286,8 +5180,11 @@ PRG008_BDFD:
 	STA Player_Slippery	 ; Player_Slippery = 2 (ground is REALLY slippery!)
 
 PRG008_BE2E:
+	LDX <Temp_Var2
 	DEX		 ; X--
-	BPL PRG008_BD98	 ; While X >= 0, loop!
+	BPL PRG008_BD59	 ; While X >= 0, loop!
+
+PRG008_BE2F:
 	RTS		 ; Return
 
 
@@ -5588,10 +5485,10 @@ NoChange:
 	RTS
 
 FireBall_ChangeBlocks:
-	.byte  TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, $3B
+	.byte $00; TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, $3B
 
 FireBall_ChangeBlocksTo:
-	.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, $80
+	.byte $00;CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, $80
 
 Do_PUp_Proper:
 	LDA Player_Ability

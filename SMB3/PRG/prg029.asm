@@ -1051,7 +1051,7 @@ PRG029_D17F:
 	LDA ToadHouse_Box_X,Y	 ; Get proper X for the selected box
 	STA Level_BlockChgXLo	 ; Store as low X of tile change
 
-	LDA #CHNGTILE_TOADBOXOPEN
+	;LDA #CHNGTILE_TOADBOXOPEN
 	STA Level_SkipStatusBarUpd	; Set Level_SkipStatusBarUpd (skip status bar for a frame, priority update!)
 	STA Level_ChgTileEvent	 	; Toad House tile change event!
 
@@ -1929,10 +1929,15 @@ PRG029_D59B:
 	STA <Temp_Var11	 ; Temp_Var11 = 8
 
 	JSR Player_GetTileAndSlope	; Get tile
-	SUB #$AD	 	
-	CMP #$02	 
-	BLT PRG029_D5C3	 	; If tile is one of the transit pipe top/bottom tiles, jump to PRG029_D5C3 (RTS)
+	CMP #TILE_ITEM_COIN
+	BGE PRG029_D5B7
+	AND #$0F
+	CMP #TILE_PROP_VPIPE_LEFT
+	BEQ PRG029_D5C3
+	CMP #TILE_PROP_VPIPE_RIGHT
+	BEQ PRG029_D5C3	 	; If tile is one of the transit pipe top/bottom tiles, jump to PRG029_D5C3 (RTS)
 
+PRG029_D5B7:
 	LDA #16	 	; A = 16
  
 	CPX #$00	 
@@ -2571,7 +2576,7 @@ TileChng_OneTile:
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
 	; Change the tile to the proper target tile
-	LDA Level_ChgTileValue
+	LDA Level_ChgTileEvent
 	STA [Map_Tile_AddrL],Y
 	
 	LDX #$00	 ; Y = 0
@@ -2871,7 +2876,7 @@ ChngTile_32x32:
 	LDX #$00	; X = 0
 
 	LDA Level_ChgTileEvent
-	CMP #CHNGTILE_4WAYCANNON
+	;CMP #CHNGTILE_4WAYCANNON
 	BNE PRG029_DEF3	 ; If this is not the 4-way cannon change, jump to PRG029_DEF3
 
 	; 4-way cannon change only...
@@ -2886,7 +2891,7 @@ ChngTile_32x32:
 PRG029_DEF3:
 
 	; Not the 4-way cannon...
-	SUB #CHNGTILE_GIANTBRICKBUST	; Make relative
+	;SUB #CHNGTILE_GIANTBRICKBUST	; Make relative
 	TAX		 ; -> 'X'
 	INX		 ; X++
 
