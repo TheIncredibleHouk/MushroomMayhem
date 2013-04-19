@@ -325,7 +325,7 @@
     <block value="3F">Universal Ice Block</block>
     <block value="40">Coin</block>
     <block value="41">Coin</block>
-    <block value="42">Cherry</block>
+    <block value="42">Coin</block>
     <block value="43">Right Side Flower 2</block>
     <block value="44">Left Side Flower 2</block>
     <block value="45">Right Side Flower 2</block>
@@ -452,8 +452,8 @@
     <block value="BE"></block>
     <block value="BF"></block>
     <block value="C0">Coin</block>
-    <block value="C1">Coin</block>
-    <block value="C2">Cherry</block>
+    <block value="C1">Water Fill</block>
+    <block value="C2">Water Coin</block>
     <block value="C3">Right Side Flower 2</block>
     <block value="C4">Mushroom Top Left</block>
     <block value="C5">Mushroom Top Right</block>

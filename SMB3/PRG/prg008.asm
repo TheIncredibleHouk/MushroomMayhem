@@ -4177,8 +4177,11 @@ PRG008_B582:
 	CMP #TILE_PROP_COIN
 	BNE PRG008_B583
 
-	LDA #$80
+	STA Debug_Snap
 	LDY <Temp_Var12		 
+	LDA [Map_Tile_AddrL],Y	; prevent double collecting
+	AND #$C0
+	ORA #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
 
@@ -4187,7 +4190,6 @@ PRG008_B582:
 	STA Sound_QLevel1
 
 	INC Coins_Earned
-	STA Debug_Snap
 
 	LDA #$00
 	LDY TempY
@@ -4197,8 +4199,10 @@ PRG008_B583:
 	CMP #TILE_PROP_CHERRY
 	BNE PRG008_B584
 
-	LDA #$80
 	LDY <Temp_Var12		 
+	LDA [Map_Tile_AddrL],Y	; prevent double collecting
+	AND #$C0
+	ORA #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
 
@@ -4212,6 +4216,8 @@ PRG008_B583:
 	RTS
 
 PRG008_B584:
+	LDA Level_Tile_Prop_GndL
+	
 	LDA TempA
 	RTS
 ;	TYA		 ; A = Y (offset into TileAttrAndQuad_OffsSloped)
