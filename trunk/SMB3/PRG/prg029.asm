@@ -2557,6 +2557,8 @@ Map16_OffsetByTileset:
 	.word $A400
 	.word $A800
 
+Map16Offsets:
+	
 TileChng_OneTile:
 	LDA PAGE_A000	; save previous state
 	PHA				
@@ -2565,14 +2567,14 @@ TileChng_OneTile:
 	STA PAGE_A000	 
 	JSR PRGROM_Change_A000
 	LDA Level_Tileset
-	STA <Temp_Var15
-	ASL <Temp_Var15
-	LDY <Temp_Var15
-	LDA Map16_OffsetByTileset, Y
-	STA <Temp_Var15
-	INY
+	STA <Temp_Var14
+	ASL <Temp_Var14
+	LDY <Temp_Var14
 	LDA Map16_OffsetByTileset, Y
 	STA <Temp_Var14
+	INY
+	LDA Map16_OffsetByTileset, Y
+	STA <Temp_Var15
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
 	; Change the tile to the proper target tile
@@ -2585,7 +2587,7 @@ PRG029_DD22:
 	LDA [Temp_Var14],Y	 ; Get pattern
 	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
 
-	INC Temp_Var14
+	INC Temp_Var15
 
 	INX		 ; Y++ (count of patterns)
 	CPX #$04
