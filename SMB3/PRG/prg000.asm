@@ -935,26 +935,24 @@ PRG000_C834:
 ;
 ; P-Switch substitution function for tiles which it effects
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; Parallel arrays which for a given tile in the accumulator,
-	; if it matches one of the ones in PrePSwitchTile is replaced
-	; with the attribute and tile from the other arrays...
-PrePSwitchTile:		.byte $40, $67, $66, $05, $41, $82, $83, $7F ; include thawed coins and [||] blocks
-PostPSwitchTile:	.byte $67, $40, $40, $67, $7F, $42, $43, $80
 
 PSwitch_SubstTileAndAttr:
 	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
 	BEQ PRG000_C85B	 	; If P-Switch not active, jump to PRG000_C85B (RTS)
 
-	LDY #$07
+	LDY #$0E
 PRG000_C84A:
-	CMP PrePSwitchTile,Y
+
+	CMP PSwitchTransitions,Y
 	BNE PRG000_C858	 	; If this is not a match, jump to PRG000_C858
 
-	LDA PostPSwitchTile,Y	; Get replacement tile
+	INY
+	LDA PSwitchTransitions,Y	; Get replacement tile
 	RTS		 ; Return
 
 PRG000_C858:
 	DEY		 ; Y--
+	DEY
 	BPL PRG000_C84A	 ; While Y >= 0, loop!
 
 PRG000_C85B:
@@ -4986,7 +4984,7 @@ SMB3J_SuitLossFrame:	.byte $00, $00, $00, $00, $01, $02, $03
 
 ; $D9D3
 Player_GetHurt:
-
+	
 	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
 	ORA Boo_Mode_Timer		; ... or boo mode ...
@@ -5456,25 +5454,7 @@ PRG000_DC5C:
 Level_ChangeTile_ByTempVars:
 
 	PHA		 ; Save 'A'
-	LDA Level_7Vertical
-	BEQ PRG000_DC7B	 ; If level is NOT vertical, jump to PRG000_DC7B
-
-	LDY <Temp_Var13
-	LDA <Temp_Var14
-	JSR LevelJct_GetVScreenH	; Adjust coordinates for vertical
-
-	PHA		 ; Save 'A' (Y Lo)
-
-	; Set tile grid modify address
-	LDA Tile_Mem_AddrVL,Y
-	STA <Temp_Var1	
-	LDA Tile_Mem_AddrVH,Y
-	STA <Temp_Var2	
-
-	PLA		 ; Restore 'A' (Y Lo)
-
-	JMP PRG000_DC91	 ; Jump to PRG000_DC91
-
+	
 PRG000_DC7B:
 	LDA <Temp_Var15
 	ASL A		

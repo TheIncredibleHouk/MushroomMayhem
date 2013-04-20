@@ -2588,10 +2588,27 @@ PRG029_DD22:
 	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
 
 	INC Temp_Var15
+	INC Temp_Var15
 
 	INX		 ; Y++ (count of patterns)
-	CPX #$04
-	BNE PRG029_DD22	 ; While Y < 4, loop!
+	
+	LDA [Temp_Var14],Y	 ; Get pattern
+	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
+
+	DEC Temp_Var15
+
+	INX		 ; Y++ (count of patterns)
+
+	LDA [Temp_Var14],Y	 ; Get pattern
+	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
+
+	INC Temp_Var15
+	INC Temp_Var15
+
+	INX		 ; Y++ (count of patterns)
+
+	LDA [Temp_Var14],Y	 ; Get pattern
+	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
 
 	LDA <Temp_Var6	 ; Get tile Y (aligned to grid, so bits 0-3 are zero)
 	ASL A		 ; Bit 7 -> carry
