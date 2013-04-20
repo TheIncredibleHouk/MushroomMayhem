@@ -371,26 +371,6 @@ Map_Y_Starts:
 	.byte $40, $A0, $A0, $40, $80, $60, $30, $50
 
 	; A clear pattern set by Level_Tileset (for use with Clear_Nametable_Short)
-ClearPattern_ByTileset:
-	.byte $FF	; 0 - Map
-	.byte $FC	; 1 - Plains
-	.byte $FF	; 2 - Mini fortress style
-	.byte $FC	; 3 - Hills style
-	.byte $FC	; 4 - High-Up style
-	.byte $FC	; 5 - pipe world plant infestation
-	.byte $FC	; 6 - Water world
-	.byte $FF	; 7 - Toad house
-	.byte $FF	; 8 - Vertical pipe maze
-	.byte $FC	; 9 - desert level
-	.byte $FC	; 10 - airship
-	.byte $FC	; 11 - Giant World
-	.byte $FC	; 12 - ice level
-	.byte $FC	; 13 - coin heaven / sky level
-	.byte $FC	; 14 - underground
-	.byte $FF	; 15 - bonus game intro
-	.byte $FF	; 16 - spade game sliders
-	.byte $FF	; 17 - N-spade
-	.byte $FC	; 18 - 2P Vs
 
 
 	.byte $AB, $83, $C6, $83, $CD, $83
@@ -1677,14 +1657,7 @@ PRG030_8E4F:
 	LSR A		
 	TAX	        ; 0-3, changing every 8 ticks
 	STX DAIZ_TEMP1
-	LDA DayNight
-	BEQ SkipDNChange
-	TXA
-	CLC
-	ADC #$04
-	TAX
-	
- SkipDNChange:
+
 	LDA Tile_Anim_Enabled
 	BEQ Skip_Tile_Anim
 	LDA PT2_Anim,X
@@ -3081,6 +3054,7 @@ LevelLoad:	; $97B7
 	DEC Level_TilesetIdx
 	STY TempY
 	JSR LoadTileProperties
+	JSR LoadTransitions
 	LDY TempY
 	; now we swap banks and start loading level headers
 	LDX <Temp_Var3
@@ -3443,7 +3417,7 @@ LoadTileProperties:
 	
 	LDA #$00
 	STA <Temp_Var7
-	LDA Level_TilesetIdx
+	LDA Level_Tileset
 	ADD #$A0
 	STA <Temp_Var8
 	LDA #$16			; switch to the tile properties table
@@ -3456,6 +3430,65 @@ CopyTileProps:
 	STA TileProperties, Y
 	DEY
 	BNE CopyTileProps
+	RTS
+
+LoadTransitions:
+	LDA #$00
+	STA <Temp_Var7 
+	LDA Level_Tileset
+	ADD #$A0
+	STA <Temp_Var8
+	LDA #$17
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	
+	LDY #$00
+CopyFire:
+	LDA [Temp_Var7], Y
+	STA FireBallTransitions, Y
+	INY
+	CPY #$08
+	BNE CopyFire
+
+	LDA <Temp_Var7
+	ADD #$08
+	STA <Temp_Var7
+
+	LDY #$00
+
+CopyIce:
+	LDA [Temp_Var7], Y
+	STA IceBallTransitions, Y
+	INY
+	CPY #$08
+	BNE CopyIce
+
+	LDA <Temp_Var7
+	ADD #$08
+	STA <Temp_Var7
+
+	LDY #$00
+
+CopyHammer:
+	LDA [Temp_Var7], Y
+	STA HammerTransitions, Y
+	INY
+	CPY #$08
+	BNE CopyHammer
+
+	LDA <Temp_Var7
+	ADD #$08
+	STA <Temp_Var7
+
+	LDY #$00
+
+CopyPSwitch:
+	LDA [Temp_Var7], Y
+	STA PSwitchTransitions, Y
+	INY
+	CPY #10
+	BNE CopyPSwitch
+
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4485,6 +4518,7 @@ PRG030_9EC3:
 
 	TAY		 	; Y = current offset
 	LDA [Map_Tile_AddrL],Y	; Get tile here
+	JSR PSwitch_SubstTileAndAttr
 	STA <Level_Tile
 	TAY
 	LDA TileProperties, Y

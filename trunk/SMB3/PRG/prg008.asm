@@ -3947,8 +3947,6 @@ PRG008_B42E:
 	STA Player_Behind_En
 	PLA
 
-	JSR PSwitch_SubstTileAndAttr	 ; Otherwise, substitute tile if effected by P-Switch
-
 PRG008_B43F:
 	LDY <Temp_Var10	 ; Y = Player_YVel
 	RTS		 ; Return
@@ -4170,14 +4168,15 @@ Level_DoCommonSpecialTiles:
 	STY TempY
 	CMP #TILE_ITEM_COIN
 	BCC PRG008_B582
-	RTS
+	JMP PRG008_B586
 
 PRG008_B582:
+	LDY Level_ChgTileEvent
+	BNE PRG008_B585
 	AND #$0F
 	CMP #TILE_PROP_COIN
 	BNE PRG008_B583
 
-	STA Debug_Snap
 	LDY <Temp_Var12		 
 	LDA [Map_Tile_AddrL],Y	; prevent double collecting
 	AND #$C0
@@ -4216,246 +4215,122 @@ PRG008_B583:
 	RTS
 
 PRG008_B584:
-	LDA Level_Tile_Prop_GndL
-	
+	CPX  #$02
+	BCS PRG008_B585
+	CMP #TILE_PROP_PSWITCH
+	BNE PRG008_B585
+
+	LDY <Temp_Var12		 
+	LDA [Map_Tile_AddrL],Y	
+	AND #$C0
+	ORA #$02
+	STA [Map_Tile_AddrL],Y	
+	JSR Level_QueueChangeBlock
+	LDA #$10
+	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
+
+	; Wham! sound effect
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$80	 
+	STA Level_PSwitchCnt	 ; Level_PSwitchCnt = $80 (duration of switch)
+
+	; Play P-Switch song
+	LDA #MUS2B_PSWITCH
+	STA Sound_QMusic2
+
+PRG008_B585:
 	LDA TempA
 	RTS
-;	TYA		 ; A = Y (offset into TileAttrAndQuad_OffsSloped)
-;	PHA		 ; Save it
-;
-;	;LDA #TILEA_CHERRY
-;	CMP Level_Tile_Prop_GndL,X
-;	BNE PRG008_B604	 ; If Player is not touching an ice block, jump to PRG008_B604
-;
-;	LDA #CHNGTILE_DELETECHERRY
-;	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
-;
-;	; Play coin collected sound!
-;	LDA Sound_QLevel1
-;	ORA #SND_LEVELBLIP
-;	STA Sound_QLevel1
-;	JMP PRG008_B652
-;PRG008_B604:
-;
-;	; Not an ice block or if it was, Player was not interested in it...
-;
-;	LDA Level_Tile_Prop_GndL,X
-;	CMP #WATER_COIN
-;	BNE NotWaterCoin
-;	LDA #CHNGTILE_DELETEWATERCOIN
-;	BNE WaterCoinTouch
-;
-;NotWaterCoin:
-;	CMP #TILEA_COIN
-;
-;	BEQ GOLD_COIN_TOUCH	 ; If Player is not touching coin, jump to PRG008_B623
-;	CMP #$05		 ; acts as a "blue" coin from frozen coins thawed
-;	BNE PRG008_B623;
-;
-;GOLD_COIN_TOUCH:
-;	LDA #CHNGTILE_DELETECOIN
-;
-;WaterCoinTouch:
-;	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
-;
-;	; Play coin collected sound!
-;	LDA Sound_QLevel1
-;	ORA #SND_LEVELCOIN
-;	STA Sound_QLevel1
-;
-;	
-;	LDA Level_Tile_Prop_GndR
-;	AND #$F0
-;	STA Level_Tile_Prop_GndR	; Clear this tile detect (probably to prevent "double collecting" a coin the Player is straddling)
-;
-;	JMP PRG008_B652	 ; Jump to PRG008_B652
-;
-;PRG008_B623:
-;
-;	; Player not touching coin...
-;	CPX #$02
-;	BGS PRG008_B64F
-;
-;	JSR Try_ESwitch
-;	CMP #TILEA_PSWITCH
-;	BNE PRG008_B64F	 ; If Player is not touching P-Switch, jump to PRG008_B64F
-;
-;	LDA #CHNGTILE_PSWITCHSTOMP	; P-Switch hit tile change
-;
-;	CMP Level_ChgTileEvent
-;	BEQ PRG008_B64F	 ; If we've already got a tile change in the queue, jump to PRG008_B64F
-;
-;	; Queue tile change 9!
-;	JSR Level_QueueChangeBlock
-;
-;	LDA #$10
-;	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
-;
-;	; Wham! sound effect
-;	LDA Sound_QLevel1
-;	ORA #SND_LEVELBABOOM
-;	STA Sound_QLevel1
-;
-;	LDA #$80	 
-;	STA Level_PSwitchCnt	 ; Level_PSwitchCnt = $80 (duration of switch)
-;
-;	; Play P-Switch song
-;	LDA #MUS2B_PSWITCH
-;	STA Sound_QMusic2
-;
-;	JMP PRG008_B652	 ; Jump to PRG008_B652
-;
-;PRG008_B64F:
-;	STX DAIZ_TEMP1
-;	STA DAIZ_TEMP2
-;	CMP #$67
-;	BEQ Break_Block
-;	CMP #$CC
-;	BNE Try_Frozen_Tiles
-;
-;Break_Block:
-;	LDA Fox_FireBall
-;	BEQ Do_Bumps_Instead
-;	LDA DAIZ_TEMP2
-;	CMP #$67
-;	BEQ Do_Break
-;	CMP #$CC
-;	BNE Try_Frozen_Tiles
-;
-;Do_Break:
-;	INC Ignore_Vel_Stop
-;	LDA #CHNGTILE_DELETETOBG
-;	JSR Level_QueueChangeBlock
-;	JSR LATP_Brick
-;	JMP PRG008_B652
-;
-;Try_Frozen_Tiles:
-;	LDX Fox_FireBall
-;	BEQ Do_Bumps_Instead
-;	LDX #$02 
-;
-;Touching_Ice:
-;	CMP FireBall_ChangeBlocks, X
-;	BEQ Thaw_Ice
-;	DEX
-;	BPL Touching_Ice
-;	JMP Do_Bumps_Instead
-;
-;Thaw_Ice:
-;	LDA FireBall_ChangeBlocksTo, X
-;	LDX DAIZ_TEMP1
-;	INC Ignore_Vel_Stop
-;	JSR Level_QueueChangeBlock
-;	JMP PRG008_B652
-;
-;Do_Bumps_Instead:
-;	LDX DAIZ_TEMP1
-;	LDA Level_Tile_Prop_GndL,X
-;	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
-;
-;PRG008_B652:
-;	PLA		 
-;	TAY		 ; Restore offset into TileAttrAndQuad_OffsSloped -> 'Y'
-;
-;	RTS		 ; Return
-;
-;Level_DoBumpBlocks:
-;	PHA
-;	CMP #TILE_ITEM_COIN
-;	BCC PRG008_B78B
-;	AND #$0F
-;	TAY
-;	LDA #$10
-;	STA Splash_DisTimer
-;	TYA
-;	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
-;	TYA		 ; Power up result (if any) is in 'Y'!
-;	BNE PRG008_B722	 ; If there's a powerup to spawn, jump to PRG008_B722
-;
-;	JMP PRG008_B78B	 ; Otherwise, jump to PRG008_B78B
-;
-;PRG008_B722:
-;	BMI PRG008_B74A	 ; If Y = $80, a brick was busted!  Jump to PRG008_B74A
-;
-;	LDA <Temp_Var1	 ; Y = Tile detected relative index with offset fix
-;	CMP #TILE_ITEM_NOTE
-;	BNE PRG008_B723
-;	STA Player_Bounce	 ; Indicate to Player he should bounce
-;
-;PRG008_B723:
-;	; Play bump sound
-;	LDA Sound_QPlayer
-;	ORA #SND_PLAYERBUMP
-;	STA Sound_QPlayer
-;
-;	LDA #CHNGTILE_DELETETOBG
-;	STA <Temp_Var12	 ; Temp_Var12 = CHNGTILE_DELETETOBG
-;
-;	CPX #$02
-;	BLS PRG008_B74A	 ; If tile detected index < 2, jump to PRG008_B74A
-;
-;	LDY #$02	 ; Y = 2 (bounce left)
-;
-;	LDA <Player_X
-;	AND #$0f	 ; Tile relative X
-;	CMP #$08
-;	BLS PRG008_B747	 ; If Player was on the left half of the block, jump to PRG008_B747
-;
-;	INY		 ; Otherwise Y = 3 (bounce right)
-;
-;PRG008_B747:
-;	JMP PRG008_B75B	 ; Jump to PRG008_B75B
-;
-;PRG008_B74A:
-;	LDY #$00	 ; Y = 0 (bounce down)
-;
-;PRG008_B756:
-;	LDA <Player_YVel
-;	BPL PRG008_B75B	 ; If Player not moving upward, jump to PRG008_B75B (keeps Y = 0)
-;
-;PRG008_B75A:
-;	INY		 ; Y = 1 (bounce up)
-;
-;PRG008_B75B:
-;
-;	STY Player_BounceDir	 ; Set Player bounce direction
-;
-;	LDY #$06	; Y = 6
-;
-;	LDA Objects_State,Y
-;	BEQ PRG008_B766	 ; If this object is dead/empty, jump to PRG008_B766
-;	INY		 ; Y++
-;
-;PRG008_B766:
-;
-;	; Align Y lo to tile grid
-;	LDA <Temp_Var14
-;	AND #$F0
-;	STA <Temp_Var14
-;	STA Objects_Y,Y	 ; Store into object slot
-;
-;	LDA <Temp_Var13
-;	STA Objects_YHi,Y ; Store Y Hi into object slot
-;
-;	LDA <Temp_Var15	
-;	STA Objects_XHi,Y ; Store X Hi into object slot
-;
-;	LDA <Temp_Var16
-;	STA Objects_X,Y	 ; Store X Lo into object slot
-;
-;	JSR BlockBump_Init	; Init the block bump effect!
-;
-;	LDA Player_BounceDir
-;	BEQ PRG008_B78B	 ; If Player_BounceDir = 0 (bounce up), jump to PRG008_B78B
-;
-;	LDA #TILEA_BLOCKBUMP_CLEAR
-;	JSR Level_ChangeTile_ByTempVars	 ; Change tile (in grid memory, not immediate display)
-;
-;PRG008_B78B:
-;	PLA		 ; Restore offset into TileAttrAndQuad_OffsSloped
-;	TAY		 ; -> 'Y'
-;
-;	RTS		 ; Return
+
+PRG008_B586:
+	LDY <Player_YVel
+	BMI PRG008_B587
+	RTS
+
+PRG008_B587:	
+	CPX  #$02
+	BCS PRG008_B588
+	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
+
+PRG008_B588:
+	LDA TempA
+	RTS
+
+Level_DoBumpBlocks:
+	AND #$0F
+	TAY
+	LDA #$10
+	STA Splash_DisTimer
+	TYA
+	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
+	TYA		 ; Power up result (if any) is in 'Y'!
+	PHA
+	BNE PRG008_B722	 ; If there's a powerup to spawn, jump to PRG008_B722
+
+	JMP PRG008_B78B	 ; Otherwise, jump to PRG008_B78B
+
+PRG008_B722:
+	;BMI PRG008_B74A	 ; If Y = $80, a brick was busted!  Jump to PRG008_B74A
+
+	;LDA <Temp_Var1	 ; Y = Tile detected relative index with offset fix
+	;CMP #TILE_ITEM_NOTE
+	;BNE PRG008_B723
+	;STA Player_Bounce	 ; Indicate to Player he should bounce
+	
+PRG008_B723:
+	; Play bump sound
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+
+	LDY <Temp_Var12
+	AND #$C0
+	ORA #$01
+	STA [Map_Tile_AddrL],Y	; prevent double collecting
+	JSR Level_QueueChangeBlock
+	AND #$C0
+	ORA #$3F
+	
+	JSR Level_ChangeTile_ByTempVars	 ; Change tile (in grid memory, not immediate display)
+	
+PRG008_B75B:
+	LDY #$06	; Y = 6
+
+	LDA Objects_State,Y
+	BEQ PRG008_B766	 ; If this object is dead/empty, jump to PRG008_B766
+	INY		 ; Y++
+
+PRG008_B766:
+	
+	; Align Y lo to tile grid
+	LDA <Temp_Var14
+	AND #$F0
+	STA <Temp_Var14
+	STA Objects_Y,Y	 ; Store into object slot
+
+	LDA <Temp_Var13
+	STA Objects_YHi,Y ; Store Y Hi into object slot
+
+	LDA <Temp_Var15	
+	STA Objects_XHi,Y ; Store X Hi into object slot
+
+	LDA <Temp_Var16
+	STA Objects_X,Y	 ; Store X Lo into object slot
+
+	JSR BlockBump_Init	; Init the block bump effect!
+	
+	LDA #$10
+	STA <Player_YVel
+
+
+PRG008_B78B:
+	PLA		 ; Restore offset into TileAttrAndQuad_OffsSloped
+	TAY		 ; -> 'Y'
+
+	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4517,23 +4392,23 @@ PRG008_B7BA:
 	JMP [Temp_Var1]	 ; Handle special block!
 
 LATP_JumpTable:
-	.word LATP_None		; 0 = None
-	.word LATP_Flower	; 1 = Mushroom/Flower
+	.word LATP_Coin	; 1 = Mushroom/Flower
+	.word LATP_Flower		; 4 = Coin
 	.word LATP_Leaf		; 2 = Mushroom/Leaf
-	.word LATP_Star		; 3 = Star
-	.word LATP_Coin		; 4 = Coin
 	.word LATP_IceFlower; 5 = Coin/Star
-	.word LATP_Brick	; 6 = Standard brick behavior
-	.word LATP_Vine		; 7 = Vine
-	.word LATP_Pumpkin	; 8 = 10 coin
-	.word LATP_NinjaShroom		; 9 = 1-up
-	.word LATP_FoxLeaf	; A = Fox Leaf
-	.word LATP_PSwitch	; B = P-Switch
 	.word LATP_Frog     ;
+	.word LATP_FoxLeaf	; A = Fox Leaf
 	.word LATP_Koopa	;
+	.word LATP_Pumpkin	; 8 = 10 coin
 	.word LATP_Sledge   ;
-
-
+	.word LATP_NinjaShroom		; 9 = 1-up
+	.word LATP_Star		; 3 = Star
+	.word LATP_Vine		; 7 = Vine
+	.word LATP_PSwitch	; B = P-Switch
+	.word LATP_Brick	; 6 = Standard brick behavior
+	.word LATP_None
+	.word LATP_None
+	
 LATP_None:
 	LDY #1		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
 	RTS		 ; Return
@@ -4580,7 +4455,7 @@ LATP_Star:
 
 LATP_Coin:
 	JSR LATP_CoinCommon	 ; Do common "power up" coin routine
-	JSR LATP_CoinCommon
+	;JSR LATP_CoinCommon
 
 	LDY #$01	 ; Y = 1 (spawn a coin) (index into PRG001 Bouncer_PUp, i.e. nothing)
 
@@ -4807,13 +4682,22 @@ LATP_GetCoinAboveBlock:
 	JSR Player_GetTileAndSlope_Normal	 ; Get a tile here
 	LDX <Temp_Var5	 ; Restore X into Temp_Var5
 
-	CMP #TILEA_COIN
+	TAY
+	LDA TileProperties, Y
+	CMP #TILE_ITEM_COIN
+	BCS PRG008_B948
+	AND #$0F
+	CMP #TILE_PROP_COIN
 	BNE PRG008_B948	 ; If tile above is not a coin, jump to PRG008_B948
 
 	; Tile above was a coin...
 	; The following will collect the coin along with the ? block hit!
-
-	LDA #$80
+	LDY <Temp_Var12		 ; ... and copied into Temp_Var12
+	LDA [Map_Tile_AddrL],Y
+	AND #$C0
+	ORA #$02
+	STA [Map_Tile_AddrL],Y
+	
 	JSR Level_QueueChangeBlock	; Delete to background
 
 	PLA		 
@@ -4876,7 +4760,7 @@ Do_Tile_Attack:
 
 	LDX #$04	 
 	STA Level_Tile_Prop_GndL,X	 ; Store into tail's special slot
-	;JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
+	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
 
 Skip_Shell_Bump:
 	LDA #$01
