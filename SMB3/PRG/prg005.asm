@@ -4548,19 +4548,11 @@ PRG005_B80D:
 
 	; Found a free slot (6 or 7)
 
-	LDY #OBJ_BOUNCEDOWNUP	 ; Y = OBJ_BOUNCEDOWNUP (up/down bounce effect block)
-
-	LDA Player_BounceDir
-	AND #$7f
-	CMP #$02
-	BLS PRG005_B81A	 ; If Player is bouncing down/up, jump to PRG005_B81A
-
-	LDY #OBJ_BOUNCELEFTRIGHT ; Y = OBJ_BOUNCELEFTRIGHT (left/right bounce effect block)
+	LDA #OBJ_BOUNCEDOWNUP	 ; Y = OBJ_BOUNCEDOWNUP (up/down bounce effect block)
 
 PRG005_B81A:
 
 	; Store appropriate object ID
-	TYA
 	STA Level_ObjectID,X
 
 	; Set object state to 1
@@ -4570,11 +4562,6 @@ PRG005_B81A:
 	JMP PRG005_B831	 ; Jump to PRG005_B831 (RTS)
 
 PRG005_B826:
-	LDA Level_7Vertical
-	BEQ PRG005_B82E	 ; If level is NOT vertical, jump to PRG005_B82E
-
-	JMP Level_ObjectsSpawnByScrollV	 ; Spawn objects as screen scrolls
-
 PRG005_B82E:
 	JMP Level_ObjectsSpawnByScroll	 ; Spawn objects as screen scrolls
 

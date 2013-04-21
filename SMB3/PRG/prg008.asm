@@ -4267,8 +4267,7 @@ Level_DoBumpBlocks:
 	TYA
 	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
 	TYA		 ; Power up result (if any) is in 'Y'!
-	PHA
-	BNE PRG008_B722	 ; If there's a powerup to spawn, jump to PRG008_B722
+	BNE PRG008_B723	 ; If there's a powerup to spawn, jump to PRG008_B722
 
 	JMP PRG008_B78B	 ; Otherwise, jump to PRG008_B78B
 
@@ -4282,19 +4281,24 @@ PRG008_B722:
 	
 PRG008_B723:
 	; Play bump sound
+	PHA
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
 
 	LDY <Temp_Var12
+	LDA <Level_Tile
 	AND #$C0
 	ORA #$01
-	STA [Map_Tile_AddrL],Y	; prevent double collecting
+	STA <Temp_Var12
 	JSR Level_QueueChangeBlock
-	AND #$C0
-	ORA #$3F
-	
-	JSR Level_ChangeTile_ByTempVars	 ; Change tile (in grid memory, not immediate display)
+
+
+	PLA
+	ORA #$20
+	STA Player_Bounce
+	LDA #$01
+	STA Player_BounceDir
 	
 PRG008_B75B:
 	LDY #$06	; Y = 6
@@ -4320,16 +4324,11 @@ PRG008_B766:
 	LDA <Temp_Var16
 	STA Objects_X,Y	 ; Store X Lo into object slot
 
+	
 	JSR BlockBump_Init	; Init the block bump effect!
 	
-	LDA #$10
-	STA <Player_YVel
-
 
 PRG008_B78B:
-	PLA		 ; Restore offset into TileAttrAndQuad_OffsSloped
-	TAY		 ; -> 'Y'
-
 	RTS		 ; Return
 
 
@@ -5389,9 +5388,6 @@ Do_PUp_Proper:
 	LDY #$05
 PUp_RTS:
 	RTS
-
-	PHA
-
 
 Shell_Bounce:
 	LDA Player_Shell			; If in a shell we bounce in the opposite direction
