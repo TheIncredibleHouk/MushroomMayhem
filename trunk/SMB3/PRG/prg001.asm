@@ -973,21 +973,10 @@ PRG001_A4A1:
 	
 
 ObjInit_BounceDU: 
-	LDA Player_BounceDir
+	LDA Level_BlkFinish
 	STA Objects_Var2,X	 ; Store Player's bounce into var 2
-	BEQ PRG001_A4BF	 ; If bounce direction is down, jump to PRG001_A4BF
-
-	LDA Player_BounceObj
-	BNE PRG001_A4C6	 ; If this is actually an object that bounced, jump to PRG001_A4C6
-
-	LDA #$20	 
-	STA <Player_YVel ; PRG001_A4C6 = $20 (bounce down)
-
-PRG001_A4BF:
-	STX <Player_InAir ; Mark Player as mid-air
-
 	LDA #$00
-	STA Player_Flip	 ; Cancel invincibility somersault
+	STA Level_BlkFinish
 
 PRG001_A4C6:
 	LDA Player_Bounce
@@ -1034,7 +1023,7 @@ ObjNorm_BounceDU:
 	LSR A
 	TAY		 ; Var1 >> 4 -> 'Y'
 
-	LDA Level_ChgTileValue
+	LDA Objects_Var2,X
 	
 PRG001_A527:
 	STA <Temp_Var12  ; -> Temp_Var12
@@ -1103,14 +1092,11 @@ PRG001_A56F:
 	AND #$0f
 	TAY		 ; Y = 0 to 15, based on var 1
 
+	STA Debug_Snap
 	LDA Bouncer_PUp,Y
 	BEQ PRG001_A5BB	 ; If value is zero (no power up), jump to PRG001_A5BB
 
-	STA <Temp_Var1	 ; Store value -> Temp_Var1
 	LDY #$05	 ; Y = 5 (power-up always in slot 5)
-
-	; Set the ID
-	LDA <Temp_Var1
 	STA Level_ObjectID,Y
 
 	; Set X
@@ -1172,9 +1158,7 @@ PRG001_A5BB:
 	LDA Objects_Var2,X
 	BEQ PRG001_A5D5	 ; If Var2 = 0, jump to PRG001_A5D5
 
-	; Erase the tile behind the bump
-	LDA #TILEA_BLOCKBUMP_CLEAR
-	JSR Level_ChangeTile_ByTempVars
+
 
 PRG001_A5D5:
 	JSR Object_ApplyYVel	 ; Apply Y velocity

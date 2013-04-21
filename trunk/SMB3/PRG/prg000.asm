@@ -5826,6 +5826,9 @@ BlockBump_Init:
 PRG000_DDB2:
 	LDA <Temp_Var12	
 	STA Level_BlkBump,Y	 ; Store tile-behind effect
+	AND #$C0
+	ORA #$3F
+	STA Level_BlkFinish
 
 	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
 	; Temp_Var15 / Temp_Var16 -- X Hi and Lo

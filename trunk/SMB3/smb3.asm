@@ -1575,8 +1575,9 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Level_BlkBump_XLo:	.ds 3	; $0534-$0536 Block bump slot X Lo
 	Level_BlkBump_YHi:	.ds 3	; $0537-$0539 Block bump slot Y Hi
 	Level_BlkBump_YLo:	.ds 3	; $053A-$053C Block bump slot Y Lo
+	Level_BlkFinish:	.ds 1
 
-				.ds 5	; $053D-$0541 unused
+				.ds 4	; $053D-$0541 unused
 
 	; The alternate vertical scrolls are used so that raster effects can be properly implemented!
 	Level_VertScrollH:	.ds 1	; Alternate VertScroll_Hi used by engine, adjusted before being sent to Vert_Scroll_Hi
