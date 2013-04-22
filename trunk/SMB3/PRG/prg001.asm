@@ -1092,7 +1092,6 @@ PRG001_A56F:
 	AND #$0f
 	TAY		 ; Y = 0 to 15, based on var 1
 
-	STA Debug_Snap
 	LDA Bouncer_PUp,Y
 	BEQ PRG001_A5BB	 ; If value is zero (no power up), jump to PRG001_A5BB
 
