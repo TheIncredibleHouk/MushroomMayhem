@@ -4265,6 +4265,7 @@ PRG008_B588:
 	RTS
 
 Level_DoBumpBlocks:
+	STX TempX
 	AND #$0F
 	STA DAIZ_TEMP4
 	TAY
@@ -4282,10 +4283,15 @@ PRG008_B723:
 	ORA #$20
 	STA Player_Bounce
 	LDY #$00
-	STA Debug_Snap
+	LDA <Player_YVel
+	BMI PRG008_B723_2
 	LDA TempA
 	CMP #TILE_ITEM_NOTE
 	BEQ PRG008_B724
+
+PRG008_B723_2:
+	LDA #$00
+	STA TempA
 	INY
 
 PRG008_B724:
@@ -4328,6 +4334,7 @@ PRG008_B766:
 	
 	JSR BlockBump_Init	; Init the block bump effect!
 
+	STX TempX
 	LDA DAIZ_TEMP4
 	SUB #$0D
 	BMI PRG008_B78B
@@ -4336,9 +4343,14 @@ PRG008_B766:
 	STA Level_BlkFinish
 	LDA NoPUpTypes, X
 	STA Player_Bounce
+	LDX TempX
+	CPX #$01
+	BNE PRG008_B78B
+	LDA #$00
+	RTS
 	
 PRG008_B78B:
-	LDA #$F0
+	LDA TempA
 	RTS		 ; Return
 
 PRG008_B78C:
@@ -4347,7 +4359,7 @@ PRG008_B78C:
 	ORA #$01
 	STA <Temp_Var12
 	JSR Level_QueueChangeBlock
-	LDA #$F0
+	LDA TempA
 	RTS
 
 NoPUpTypes:

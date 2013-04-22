@@ -2970,7 +2970,7 @@ SOBJ_ICEBALL		= $15 	; Laser
 SOBJ_POOF		= $16 	; Poof
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
-	Objects_Var3:		.ds 5	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
+	Objects_Var3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
 
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
 
@@ -3062,7 +3062,7 @@ TILE_ITEM_NOTE		= $FE
 	IceBallTransitions:  .ds 8;
 	HammerTransitions:	.ds 8;
 	PSwitchTransitions: .ds 16;
-						.ds 41;
+						.ds 38;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

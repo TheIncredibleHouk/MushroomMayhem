@@ -975,6 +975,8 @@ PRG001_A4A1:
 ObjInit_BounceDU: 
 	LDA Level_BlkFinish
 	STA Objects_Var2,X	 ; Store Player's bounce into var 2
+	LDA Player_BounceDir
+	STA Objects_Var3,X
 	LDA #$00
 	STA Level_BlkFinish
 
@@ -1024,7 +1026,7 @@ ObjNorm_BounceDU:
 	TAY		 ; Var1 >> 4 -> 'Y'
 
 	LDA Objects_Var2,X
-	
+
 PRG001_A527:
 	STA <Temp_Var12  ; -> Temp_Var12
 
@@ -1047,7 +1049,7 @@ PRG001_A527:
 
 	JSR BlockBump_Init
 
-	LDA Objects_Var2,X
+	LDA Objects_Var3,X
 	BNE PRG001_A56E	 ; If Var 2 <> 0, jump to PRG001_A56E (RTS)
 
 	LDA #-$38
@@ -1167,7 +1169,7 @@ PRG001_A5D5:
 
 	LDA Bouncer_PUpVel,Y
 
-	LDY Objects_Var2,X	 ; Y = var2
+	LDY Objects_Var3,X	 ; Y = var2
 	BEQ PRG001_A5EE	 ; If Var2 = 0, jump to PRG001_A5EE
 
 	JSR Negate	 ; Negate retrieved Y Velocity
