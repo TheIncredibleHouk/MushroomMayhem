@@ -5836,7 +5836,6 @@ PRG000_DDB2:
 	LDA <Temp_Var15	
 	STA Level_BlkBump_XHi,Y
 
-
 	LDA <Temp_Var16
 	STA Level_BlkBump_XLo,Y
 

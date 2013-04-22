@@ -4008,6 +4008,8 @@ PRG008_B4BD:
 PRG008_B4CA:
 	TYA		 ; Offset -> 'A'
 	PHA		 ; Save offset
+	TXA
+	PHA
 
 	; Get X/Y offset for use in detection routine
 	LDA TileAttrAndQuad_OffsFlat,Y
@@ -4019,6 +4021,8 @@ PRG008_B4CA:
 	JSR Level_DoCommonSpecialTiles
 	STA Level_Tile_Prop_GndL,X	 ; Store it
 
+	PLA
+	TAX
 	PLA		 
 	TAY		 ; Restore 'Y' index
 	DEY
@@ -4248,10 +4252,11 @@ PRG008_B585:
 PRG008_B586:
 	LDY <Player_YVel
 	BMI PRG008_B587
-	RTS
+	CMP #TILE_ITEM_NOTE
+	BNE PRG008_B588
 
 PRG008_B587:	
-	CPX  #$02
+	CPX  #$01
 	BCS PRG008_B588
 	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
 
@@ -4261,27 +4266,30 @@ PRG008_B588:
 
 Level_DoBumpBlocks:
 	AND #$0F
+	STA DAIZ_TEMP4
 	TAY
 	LDA #$10
 	STA Splash_DisTimer
 	TYA
 	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
 	TYA		 ; Power up result (if any) is in 'Y'!
-	BNE PRG008_B723	 ; If there's a powerup to spawn, jump to PRG008_B722
+	BMI PRG008_B78C
 
-	JMP PRG008_B78B	 ; Otherwise, jump to PRG008_B78B
-
-PRG008_B722:
-	;BMI PRG008_B74A	 ; If Y = $80, a brick was busted!  Jump to PRG008_B74A
-
-	;LDA <Temp_Var1	 ; Y = Tile detected relative index with offset fix
-	;CMP #TILE_ITEM_NOTE
-	;BNE PRG008_B723
-	;STA Player_Bounce	 ; Indicate to Player he should bounce
-	
 PRG008_B723:
 	; Play bump sound
-	PHA
+
+	TYA
+	ORA #$20
+	STA Player_Bounce
+	LDY #$00
+	STA Debug_Snap
+	LDA TempA
+	CMP #TILE_ITEM_NOTE
+	BEQ PRG008_B724
+	INY
+
+PRG008_B724:
+	STY Player_BounceDir
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
@@ -4290,15 +4298,9 @@ PRG008_B723:
 	LDA <Level_Tile
 	AND #$C0
 	ORA #$01
+	STA [Map_Tile_AddrL],Y	
 	STA <Temp_Var12
 	JSR Level_QueueChangeBlock
-
-
-	PLA
-	ORA #$20
-	STA Player_Bounce
-	LDA #$01
-	STA Player_BounceDir
 	
 PRG008_B75B:
 	LDY #$06	; Y = 6
@@ -4308,7 +4310,6 @@ PRG008_B75B:
 	INY		 ; Y++
 
 PRG008_B766:
-	
 	; Align Y lo to tile grid
 	LDA <Temp_Var14
 	AND #$F0
@@ -4326,12 +4327,31 @@ PRG008_B766:
 
 	
 	JSR BlockBump_Init	; Init the block bump effect!
-	
 
+	LDA DAIZ_TEMP4
+	SUB #$0D
+	BMI PRG008_B78B
+	TAX
+	LDA <Level_Tile
+	STA Level_BlkFinish
+	LDA NoPUpTypes, X
+	STA Player_Bounce
+	
 PRG008_B78B:
+	LDA #$F0
 	RTS		 ; Return
 
+PRG008_B78C:
+	LDA <Level_Tile
+	AND #$C0
+	ORA #$01
+	STA <Temp_Var12
+	JSR Level_QueueChangeBlock
+	LDA #$F0
+	RTS
 
+NoPUpTypes:
+	.byte $31, $41, $21
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LATP_HandleSpecialBounceTiles
 ;
@@ -4401,7 +4421,7 @@ LATP_JumpTable:
 	.word LATP_Pumpkin	; 8 = 10 coin
 	.word LATP_Sledge   ;
 	.word LATP_NinjaShroom		; 9 = 1-up
-	.word LATP_Star		; 3 = Star
+	.word LATP_Star		; 3 = Star-
 	.word LATP_Vine		; 7 = Vine
 	.word LATP_PSwitch	; B = P-Switch
 	.word LATP_Brick	; 6 = Standard brick behavior
@@ -4409,7 +4429,7 @@ LATP_JumpTable:
 	.word LATP_None
 	
 LATP_None:
-	LDY #1		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
+	LDY #$01		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
 	RTS		 ; Return
 
 LATP_Flower:
@@ -4482,7 +4502,11 @@ PRG008_B82F:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 LATP_Brick:
+	LDA <Level_Tile
+	PHA
 	JSR LATP_GetCoinAboveBlock	; Get coin above block, if any
+	PLA
+	STA <Level_Tile
 
 	CPX #$04
 	BEQ PRG008_B84E	 ; If on tile check index 4 (tail attack's tile), jump to PRG008_B84E (bust brick!)
@@ -5175,7 +5199,7 @@ PRG008_BF7E:
 ;
 ; Register 'A' as input sets Level_ChgTileEvent
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Level_QueueChangeBlock: 
+Level_QueueChangeBlock:
 	STA Level_ChgTileEvent	 ; Store type of block change!
 
 	; Store change Y Hi and Lo
