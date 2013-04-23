@@ -1129,28 +1129,41 @@ FloatLevel_StatCheck:
 ; otherwise tested if the tile is in the "solid floor" region!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_CheckIfTileUnderwater:
-	LDX #$04
+	; X = 0 or 1
 
-PRG008_A6A7:
-	CPX #02
-	BEQ PRG008_A6A8
-	CPX #01
-	BEQ PRG008_A6A8
-	LDA Level_Tile_Prop_Head, X
-	CMP #TILE_PROP_ITEM
-	BGE PRG008_A6A8
-	AND #TILE_PROP_WATER
-	BEQ PRG008_A6A8
 	LDY #$01
-	SEC
-	RTS
+	STY <Temp_Var15	 ; Temp_Var15 = 1 (Indicates underwater)
+
+	; UNDERWATER OVERRIDE (for "floating" levels that have fixed water at the bottom)
+	LDA FloatLevel_PlayerWaterStat
+	AND FloatLevel_StatCheck,X
+	BNE PRG008_A6A8	 ; If bit is set, jump to PRG008_A6A8
+
+	STA Debug_Snap
+	LDA <Temp_Var1,X
+	AND #$F0
+	CMP #$C0
+	BCS PRG008_A6A9	 ; If tile is solid floor, jump to PRG008_A6A9 (RTS)
+
+PRG008_A68D:
+
+	LDY #$00	 ; Y = 0 (Not under water)
+
+	AND #TILE_PROP_WATER
+	BEQ PRG008_A6A6	 ; If the starting underwater tile is greater than the detected tile, jump to PRG008_A6A6
+
+	; Otherwise...
+
+	INY		 ; Y = 1 (Underwater)
+
+PRG008_A6A6:
+	STY <Temp_Var15	 ; Store Y -> Temp_Var15 (0, 1, or 2)
 
 PRG008_A6A8:
-	DEX
-	BPL PRG008_A6A7
-	LDY #$00
-	CLC
-	RTS
+	CLC		 ; Clear carry (tile was not in the solid floor region)
+
+PRG008_A6A9:
+	RTS		 ; Return
 
 Player_ControlJmp:
 	JMP Player_Control	 ; Jump to Player_Control
@@ -1271,7 +1284,13 @@ PRG008_A743:
 	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
 
 	JSR Player_GetTileAndSlope ; Get tile above Player
-	STA Level_Tile_Prop_Head
+	TAY
+	LDA TileProperties, Y
+	STA Level_Tile_Prop_Head	 ; -> Level_Tile_Head
+	STA <Temp_Var1		 ; -> Temp_Var1
+
+	LDA Level_Tile_Prop_GndL	 ; Get left ground tilee
+	STA <Temp_Var2		 ; -> Temp_Var2
 
 PRG008_A77E:
 
@@ -1286,7 +1305,12 @@ PRG008_A7AD:
 
 	; This will be used in Level_CheckIfTileUnderwater 
 	; as bits 2-3 of an index into Level_MinTileUWByQuad
+	LDX #$00	; Checks Temp_Var1 for tile and $40 override bit in UNK_584
 	JSR Level_CheckIfTileUnderwater
+
+	; Carry is set by Level_CheckIfTileUnderwater if tile was in the
+	; "solid floor" region regardless of being "underwater"
+	BCS PRG008_A7BE	 ; If carry set (tile was in solid region), jump to PRG008_A7BE
 
 	; 'Y' is the result of Level_CheckIfTileUnderwater:
 	; 0 = Not under water, 1 = Underwater, 2 = Waterfall
@@ -1326,6 +1350,7 @@ PRG008_A7D1:
 	ROR A		 ; The important concept here is to save the previous carry flag
 	STA <Temp_Var16	 ; Temp_Var16 (most importantly) contains the previous carry flag in bit 7
 
+	LDX #$01	 ; Checks Temp_Var2 for tile and $80 override bit in UNK_584
 	JSR Level_CheckIfTileUnderwater
 
 	BCS PRG008_A7DE	 ; If tile was in the floor solid region, jump to PRG008_A7DE

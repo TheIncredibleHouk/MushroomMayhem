@@ -1095,7 +1095,6 @@ PRG007_A557_JUMP_OFF:		; #DAHRKDAIZ Added since jumps to PRG007_A557 were too fa
 
 FIRE_BALL_COLL:
 	
-	STA Debug_Snap
 	LDA <Temp_Var1;
 	STX TempX
 	LDX #$00
