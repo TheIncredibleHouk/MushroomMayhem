@@ -3469,19 +3469,6 @@ CopyIce:
 
 	LDY #$00
 
-CopyHammer:
-	LDA [Temp_Var7], Y
-	STA HammerTransitions, Y
-	INY
-	CPY #$08
-	BNE CopyHammer
-
-	LDA <Temp_Var7
-	ADD #$08
-	STA <Temp_Var7
-
-	LDY #$00
-
 CopyPSwitch:
 	LDA [Temp_Var7], Y
 	STA PSwitchTransitions, Y

@@ -328,7 +328,7 @@
     <block value="42">P-Switch Stomped</block>
     <block value="43">Coin</block>
     <block value="44">Brick Block</block>
-    <block value="45"></block>
+    <block value="45">Frozen Coin</block>
     <block value="46"></block>
     <block value="47"></block>
     <block value="48"></block>
@@ -451,11 +451,11 @@
     <block value="BD"></block>
     <block value="BE"></block>
     <block value="BF"></block>
-    <block value="C0">Coin</block>
+    <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
     <block value="C3">Brick Block</block>
-    <block value="C4"></block>
+    <block value="C4">Ice Block</block>
     <block value="C5"></block>
     <block value="C6"></block>
     <block value="C7"></block>
