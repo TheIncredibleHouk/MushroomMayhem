@@ -990,42 +990,6 @@ PRG007_A4A2:
 	RTS		 ; Return
 
 Fireball_DetectWorld:
-	LDA Level_7Vertical
-	BEQ PRG007_A4CF	 ; If this is not a vertically oriented level, jump to PRG007_A4CF
-
-	; Vertical level...
-
-	LDA <Temp_Var13		; Detect Y of fireball
-	ADD Level_VertScroll	; Apply vertical scroll
-	STA <Temp_Var6		; -> Temp_Var6
-
-	AND #$f0		; Aligned to grid row
-	STA <Temp_Var3		; -> Temp_Var3
-
-	; Temp_Var2 = high byte of tile memory
-	LDA Level_VertScrollH	; Current vertical scroll high
-	ADC #HIGH(Tile_Mem)	; Add the upper byte of the Tile_Mem address
-	STA <Temp_Var2		; -> Temp_Var2
-
-	; Temp_Var14 = fireball X + 4
-	LDA PlayerProj_X,X
-	ADC #$04
-	STA <Temp_Var14
-
-	; Temp_Var1 = Row/Column offset value
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var3
-	STA <Temp_Var1
-
-	LDY #$00	 ; Y = 0 (don't need additional offset)
-	JMP PRG007_A52D	 ; Jump to PRG007_A52D
-
-PRG007_A4CF:
-
-	; Non-vertical level...
 
 	LDA Player_PartDetEn
 	BEQ PRG007_A4E7	 ; If Player_PartDetEn is not enabled, jump to PRG007_A4E7
@@ -1101,22 +1065,13 @@ PRG007_A506:
 	TAY
 
 PRG007_A52D:
-	;STX TempX
-	;JSR CheckSpriteOnFG
 	LDA [Temp_Var1],Y	 ; Get the tile at the Player Projectile 
 
 	JSR PSwitch_SubstTileAndAttr	 ; Handle P-Switch changed tiles
-	PHA		 ; Save adjusted tile
-
-	ASL A
-	ROL A
-	ROL A
-	AND #$03
-	TAY		 ; Y = quadrant of tile
-	STY <Temp_Var2	 ; -> Temp_Var2
-
-	PLA		 ; Restore adjusted tile
-	STA <Temp_Var1	 ; -> Temp_Var1
+	STA TempA
+	TAY
+	LDA TileProperties, Y
+	STA <Temp_Var1
 
 	; start #DAHRKDAIZ - code used to handle hammer specific tile interaction
 	LDA DAIZ_TEMP1
@@ -1124,10 +1079,12 @@ PRG007_A52D:
 	LDA Special_Suit_Flag
 	BNE NOT_BRICK_HAMMER
 	LDA <Temp_Var1
-	CMP #$67
+	CMP #TILE_ITEM_BRICK
 	BNE NOT_BRICK_HAMMER
-	LDA #$80
+	AND #$C0
+	ORA #$01
 	JSR Hammer_BrickBust
+
 NOT_BRICK_HAMMER:
 	RTS
 	; end #DAHRKDAIZ
@@ -1138,39 +1095,44 @@ PRG007_A557_JUMP_OFF:		; #DAHRKDAIZ Added since jumps to PRG007_A557 were too fa
 
 FIRE_BALL_COLL:
 	
+	STA Debug_Snap
 	LDA <Temp_Var1;
-	STX DAIZ_TEMP1
-	STY DAIZ_TEMP2
-	LDY #$04
-	LDX Special_Suit_Flag
+	STX TempX
+	LDX #$00
+	LDY Special_Suit_Flag
 	BEQ Tile_Test_Loop
-	LDX #$04
+	LDX #$08
 
 Tile_Test_Loop:
-	CMP Projectile_Interact_Table, X
+	LDY #$03
+	LDA TempA
+
+Tile_Test_Loop2: 
+	CMP FireBallTransitions, X
 	BEQ Change_Tile
 	INX
+	INX
 	DEY
-	BNE Tile_Test_Loop
-	BEQ Bounce_Ball
+	BPL Tile_Test_Loop2
+	BMI Bounce_Ball
 
 Change_Tile:
-	LDA Projectile_Interact_To_Table, X
-	LDY DAIZ_TEMP2
-	LDX DAIZ_TEMP1
+	INX
+	LDA FireBallTransitions, X
+	LDX TempX
 	BPL PRG007_A563
 
 Bounce_Ball:
-	LDY DAIZ_TEMP2
-	LDX DAIZ_TEMP1
-	LDA <Temp_Var1;
-	CMP Tile_AttrTable,Y
-	BLT PRG007_A557_JUMP_OFF	 ; If this tile is not solid on top, jump to PRG007_A557
+	LDX TempX
+	LDA <Temp_Var1
+	AND #TILE_PROP_SOLID_TOP
+	BEQ PRG007_A557	 ; If this tile is not solid on top, jump to PRG007_A557
 
 	; Tile is solid on top...
 
-	CMP Tile_AttrTable+4,Y
-	BLT PRG007_A59F	 ; If this tile is not solid on the sides/bottom, jump to PRG007_A59F
+	LDA <Temp_Var1
+	AND #TILE_PROP_SOLID_ALL
+	BEQ PRG007_A59F	 ; If this tile is not solid on the sides/bottom, jump to PRG007_A59F
 	JMP PRG007_A566
 
 PRG007_A557:
@@ -1186,17 +1148,6 @@ PRG007_A563:
 
 PRG007_A566:
 	LDA <Temp_Var1
-
-	LDY Level_SlopeEn
-	BEQ PRG007_A579	 ; If this level is NOT sloped, jump to PRG007_A579
-
-	; If this is a slope level and fireball hit level ground, jump to PRG007_A594
-	CMP #TILE14_ABOVE_MIDGROUND
-	BEQ PRG007_A594
-	CMP #TILE3_MIDGROUND
-	BEQ PRG007_A594
-	CMP #TILE3_WMIDGROUND
-	BEQ PRG007_A594
 
 PRG007_A579:
 	INC Fireball_HitChkPass,X	; Fireball_HitChkPass++
@@ -5875,14 +5826,6 @@ Hammer_BrickBust:
 	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof
-
-
-	; #DAHRKDAIZ first four of each are fireball, the other is iceball
-Projectile_Interact_Table:
-	;.byte TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, FROZEN_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER, STANDING_WATER
-
-Projectile_Interact_To_Table:
-	;.byte CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, CHGTILESTANDING_WATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER, CHNGTILE_TOFRZWATER
 
 Get_Proj_YVel:
 	LDA Special_Suit_Flag

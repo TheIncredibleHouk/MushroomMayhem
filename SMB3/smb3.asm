@@ -2678,7 +2678,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Objects_Var14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 
 ; Player's hammer/fireball
-	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = hammer, 3+ = Fireball impact "Poof")
+	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
 	PlayerProj_Y:		.ds 2	; $7CE3-$7CE4 Player projectile Y
 	PlayerProj_X:		.ds 2	; $7CE5-$7CE6 Player projectile X
 	PlayerProj_YVel:	.ds 2	; $7CE7-$7CE8 Player projectile Y Velocity (NOTE: Integer, not 4.4FP)
@@ -3060,9 +3060,8 @@ TILE_ITEM_NOTE		= $FE
 	CurrentTileProperty: .ds 1;
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
-	HammerTransitions:	.ds 8;
 	PSwitchTransitions: .ds 16;
-						.ds 38;
+						.ds 46;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
