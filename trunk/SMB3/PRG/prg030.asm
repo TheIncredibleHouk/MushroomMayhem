@@ -3450,30 +3450,18 @@ CopyFire:
 	CPY #$08
 	BNE CopyFire
 
-	LDA <Temp_Var7
-	ADD #$08
-	STA <Temp_Var7
-
-	LDY #$00
-
 CopyIce:
 	LDA [Temp_Var7], Y
 	STA IceBallTransitions, Y
 	INY
-	CPY #$08
+	CPY #$10
 	BNE CopyIce
-
-	LDA <Temp_Var7
-	ADD #$08
-	STA <Temp_Var7
-
-	LDY #$00
 
 CopyPSwitch:
 	LDA [Temp_Var7], Y
 	STA PSwitchTransitions, Y
 	INY
-	CPY #10
+	CPY #$20
 	BNE CopyPSwitch
 
 	LDX #$00

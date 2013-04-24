@@ -2603,6 +2603,7 @@ PRG001_ACA9:
 	TAY		 ; -> 'Y'
 
 	; Change tile to vine tile
+	
 	LDA VineGrowthTile
 	STA [Temp_Var1],Y
 
