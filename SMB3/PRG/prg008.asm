@@ -1284,8 +1284,6 @@ PRG008_A743:
 	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
 
 	JSR Player_GetTileAndSlope ; Get tile above Player
-	TAY
-	LDA TileProperties, Y
 	STA Level_Tile_Prop_Head	 ; -> Level_Tile_Head
 	STA <Temp_Var1		 ; -> Temp_Var1
 
