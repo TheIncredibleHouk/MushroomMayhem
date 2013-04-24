@@ -3476,6 +3476,30 @@ CopyPSwitch:
 	CPY #10
 	BNE CopyPSwitch
 
+	LDX #$00
+	LDA [Temp_Var7], Y
+	STA VineGrowthTile
+	INY
+
+CopyVineTiles:
+	LDA [Temp_Var7], Y
+	STA VineTiles, X
+	INY
+	INX
+	CPX #$04
+	BNE CopyVineTiles
+
+	LDX #$00
+	LDA [Temp_Var7], Y
+	STA PSwitchActivateTile
+
+CopyPSwitchTiles:
+	LDA [Temp_Var7], Y
+	STA PSwitchTiles, X
+	INY
+	INX
+	CPX #$04
+	BNE CopyPSwitchTiles
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

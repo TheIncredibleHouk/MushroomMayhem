@@ -1819,11 +1819,14 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	Bonus_CoinsX:		.ds 6	; $062B-$0630 UNUSED Bonus game coins X
 	Bonus_CoinsYVelFrac:	.ds 6	; $0631-$0636 UNUSED Bonus game coins Y velocity fractional accumulator
 
-				.ds 6	; $0637-$063C unused
+				.ds 4	; $0637-$063C unused
 
 	Bonus_CoinsXVelFrac:	.ds 6	; $063D-$0642 UNUSED Bonus game coins X velocity fractional accumulator
 
-				.ds 8	; $0643-$064A unused
+	VineGrowthTile:		.ds 1
+	VineTiles:			.ds 4
+	PSwitchActivateTile:.ds 1
+	PSwitchTiles:		.ds 4
 
 	Object_TileFeet:	.ds 1	; Object tile detected at "feet" of object
 	Object_TileWall:	.ds 1	; Object tile detected in front of object, i.e. a wall

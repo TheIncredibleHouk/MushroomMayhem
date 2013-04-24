@@ -2550,19 +2550,8 @@ ObjNorm_Vine:
 	JSR Object_WorldDetectN1 ; Detect against world
 
 	LDA Object_TileFeet
-	PHA		 ; Save tile detected by vine
-
-	; Calculate tile "quadrant"
-	ASL A
-	ROL A
-	ROL A
-	AND #$03
-	TAY		 ; -> 'Y'
-
-	PLA		 ; Restore tile detected by vine
-
-	CMP Tile_AttrTable,Y
-	BLT PRG001_AC86	 ; If vine is not within the solid tiles, jump to PRG001_AC86
+	AND #$C0
+	BEQ PRG001_AC86	 ; If vine is not within the solid tiles, jump to PRG001_AC86
 
 PRG001_AC80:
 
@@ -2614,7 +2603,7 @@ PRG001_ACA9:
 	TAY		 ; -> 'Y'
 
 	; Change tile to vine tile
-	LDA #TILE1_VINE
+	LDA VineGrowthTile
 	STA [Temp_Var1],Y
 
 	LDA Objects_SprHVis,X
@@ -2673,13 +2662,15 @@ PRG001_ACD1:
 	STA Graphics_Buffer+7,Y
 
 	; Vine left 8x8 tiles
-	LDA #$FA
+	LDA VineTiles
 	STA Graphics_Buffer+3,Y
+	LDA VineTiles + 2
 	STA Graphics_Buffer+4,Y
 
 	; Vine right 8x8 tiles
-	LDA #$FB
+	LDA VineTiles + 1
 	STA Graphics_Buffer+8,Y
+	LDA VineTiles + 3
 	STA Graphics_Buffer+9,Y
 
 	LDA #$00
