@@ -1139,7 +1139,6 @@ Level_CheckIfTileUnderwater:
 	AND FloatLevel_StatCheck,X
 	BNE PRG008_A6A8	 ; If bit is set, jump to PRG008_A6A8
 
-	STA Debug_Snap
 	LDA <Temp_Var1,X
 	AND #$F0
 	CMP #$C0
@@ -4329,7 +4328,7 @@ PRG008_B724:
 	ORA #$01
 	STA [Map_Tile_AddrL],Y	
 	STA <Temp_Var12
-	JSR Level_QueueChangeBlock
+	;JSR Level_QueueChangeBlock
 	
 PRG008_B75B:
 	LDY #$06	; Y = 6
@@ -4708,7 +4707,8 @@ PRG008_B8FD:
 	LDA <Temp_Var15		 ; Get X Hi
 	STA Level_BlockChgXHi	 ; Store block change X high coord
 
-	LDA #$C0	 
+	STA Debug_Snap
+	LDA PSwitchActivateTile	 
 	STA Level_ChgTileEvent	 ; Queue P-Switch appear!
 
 	LDY #$01	 ; Y = 1 (index into PRG001 Bouncer_PUp, i.e. nothing)
