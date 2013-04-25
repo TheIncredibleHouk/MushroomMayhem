@@ -592,7 +592,7 @@ PRG000_C559:
 
 	LDA Object_TileWall	; A = detected tile index
 	AND #TILE_PROP_SOLID_ALL
-	BNE PRG000_C584	 	
+	BEQ PRG000_C584	 	
 
 	; Object is touching solid wall tile
 
@@ -615,15 +615,6 @@ PRG000_C584:
 
 	; Object moving upwards... (ceiling detection)
 
-	LDA Level_SlopeEn
-	BEQ PRG000_C59A	 	; If slopes are not enabled here, jump to PRG000_C59A
-
-	; Slope detection (not specific)
-	
-	LDA Object_TileFeet
-	CMP Tile_AttrTable,Y
-	BLT PRG000_C5A8	 ; If tile is not within range of tiles solid at ceiling, jump to PRG000_C5A8 (RTS)
-	BGE PRG000_C5A2	 ; Otherwise, jump to PRG000_C5A2
 
 PRG000_C59A:
 
@@ -741,6 +732,7 @@ PRG000_C69C:
 ; current state of movement.  Handles entering/leaving water.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_GetAttrAndMoveTiles:
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile	; Get tile here
 	JSR Object_Check_Water
 
@@ -767,10 +759,9 @@ PRG000_C713:
 	JSR Object_DetectTile	 ; Get tile
  
 	; Store into tile index holders
-	STA Object_TileFeet2
 	STA Object_TileFeet
-
-	STA Object_AttrFeet ; Store quadrant value
+	LDA Object_LevelTile
+	STA Object_TileFeet2
 
 
 	LDA ObjTile_DetXLo
@@ -801,7 +792,6 @@ PRG000_C797:
 	; Store into tile index holders
 	STA Object_TileWall2
 	STA Object_TileWall
-	STA Object_AttrWall ; Store quadrant value
 
 	RTS		 ; Return
 
@@ -910,7 +900,7 @@ PRG000_C7FA:
 PRG000_C82A:
 	LDA [Temp_Var1],Y	; Get tile
 	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
-	STA Level_Tile
+	STA Object_LevelTile
 	TAY
 	LDA TileProperties, Y
 	PHA
@@ -923,9 +913,9 @@ PRG000_C82A:
 
 PRG000_C832:
 	LDA #$00	; No tile detected
+	STA <Level_Tile	; Store tile index detected
 
 PRG000_C834:
-	STA <Level_Tile	; Store tile index detected
 
 	RTS		 ; Return
 
@@ -2911,13 +2901,14 @@ Object_HandleBumpUnderneath:
 	JSR Object_AnySprOffscreen
 	BNE PRG000_D1C4	 ; If any sprite is off-screen, jump to PRG000_D1C4 (RTS)
  
+	STA Debug_Snap
 	LDA Object_TileFeet2 
-	CMP #TILEA_BLOCKBUMP_CLEAR 
+	AND #$3F
 	BNE Player_HitEnemy	 ; If object did not detect a block bump clear tile, jump to Player_HitEnemy 
 
 	; Object detected a block bump tile (object got bumped)
 
-	; Set Y Vel to -$30 (bounce dead) 
+	; Set Y Vel to -$30 (bounce dead)
 	LDA #-$30 
 	STA <Objects_YVel,X
  
@@ -6219,14 +6210,17 @@ NoBGPriority:
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
 	; the water flag for the tile rather than all these range comparisons
 Object_Check_Water:
+	STY TempY
+	LDY #$00
 	AND #TILE_PROP_ITEM
 	CMP #TILE_PROP_ITEM
 	BEQ Not_Water
 	AND #TILE_PROP_WATER
 	BEQ Not_Water
-	LDA #$01
+	INY
 
 Not_Water:
+	TYA
 	STA TempA
 	CMP Objects_InWater,X	
 	BEQ PRG000_C6FA	 	; If object is either still in water / out of water (hasn't changed), jump to PRG000_C6FA
@@ -6236,5 +6230,10 @@ Not_Water:
 	LDA TempA		 ; Restore underwater flag
 
 PRG000_C6FA:
+	CMP #$01
+	BNE PRG000_C6FB
+
+PRG000_C6FB:
 	STA Objects_InWater,X	 ; Set object's in-water flag
+	LDY TempY
 	RTS

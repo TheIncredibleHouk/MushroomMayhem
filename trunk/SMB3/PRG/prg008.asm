@@ -4325,7 +4325,7 @@ PRG008_B724:
 	LDY <Temp_Var12
 	LDA <Level_Tile
 	AND #$C0
-	ORA #$01
+	ORA #$00
 	STA [Map_Tile_AddrL],Y	
 	STA <Temp_Var12
 	;JSR Level_QueueChangeBlock
@@ -4378,7 +4378,7 @@ PRG008_B78B:
 PRG008_B78C:
 	LDA <Level_Tile
 	AND #$C0
-	ORA #$01
+	ORA #$00
 	STA <Temp_Var12
 	JSR Level_QueueChangeBlock
 	LDA TempA
@@ -4707,7 +4707,6 @@ PRG008_B8FD:
 	LDA <Temp_Var15		 ; Get X Hi
 	STA Level_BlockChgXHi	 ; Store block change X high coord
 
-	STA Debug_Snap
 	LDA PSwitchActivateTile	 
 	STA Level_ChgTileEvent	 ; Queue P-Switch appear!
 
@@ -4815,15 +4814,14 @@ Normal_Tail_Flip:
 
 Do_Tile_Attack:
 	JSR Player_GetTileAndSlope	 ; Get tile near tail
-
+	
+	CMP #TILE_ITEM_COIN
+	BCC PRG008_B979
 	LDX #$04	 
 	STA Level_Tile_Prop_GndL,X	 ; Store into tail's special slot
 	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
 
 Skip_Shell_Bump:
-	LDA #$01
-	STA Player_BounceDir	 ; Player_BounceDir = 1 (bounced sideways)
-
 PRG008_B979:
 	RTS		 ; Return
 
@@ -4837,13 +4835,15 @@ PRG008_B979:
 ; A = input detected tile by kicked shelled object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_BumpOffBlocks:
-	LDX #$04	 ; X = 4 
-	STA Level_Tile_Prop_GndL,X	 ; Essentially store into Level_Tile_Whack
+	CMP #TILE_ITEM_COIN
+	BCC PRG008_B9D3
+	STA TempA
  
 	LDA Player_Bounce 
 	BNE PRG008_B9D3	 ; If Player is bouncing, jump to PRG008_B9D3 
  
-	;JSR Level_DoBumpBlocks	 ; Have kicked object hit bumpable blocks
+	LDA TempA
+	JSR Level_DoBumpBlocks	 ; Have kicked object hit bumpable blocks
 
 	LDA Player_Bounce 
 	BEQ PRG008_B994	 ; If block is NOT a bouncing type, jump to PRG008_B994  
