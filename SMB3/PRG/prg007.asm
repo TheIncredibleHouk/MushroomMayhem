@@ -1082,7 +1082,6 @@ PRG007_A52D:
 	CMP #TILE_ITEM_BRICK
 	BNE NOT_BRICK_HAMMER
 	AND #$C0
-	ORA #$01
 	JSR Hammer_BrickBust
 
 NOT_BRICK_HAMMER:
@@ -2580,15 +2579,16 @@ SObj_CheckHitSolid:
 	TAY
 
 	LDA [Temp_Var1],Y ; Get the tile here
-	STA <Temp_Var1	 ; -> Temp_Var1
+	TAY
+	LDA TileProperties, Y
 	STA CurrentTileProperty
 	AND #TILE_PROP_SOLID_TOP
 	BEQ PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
 
 
 	LDA CurrentTileProperty
-	AND #TILE_PROP_SOLID_BOTTOM
-	BNE PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
+	AND #TILE_PROP_SOLID_ALL
+	BEQ PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
 
 	; Tile is solid all around
 
