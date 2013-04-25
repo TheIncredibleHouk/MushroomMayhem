@@ -39,6 +39,7 @@
     <world name="No World" ordinal="25" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" lastmodified="2012-08-30T08:56:17.95-04:00" lastcompressedsize="0" isnoworld="true" />
   </worldinfo>
   <levelinfo>
-    <level name="test" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="0e58db73-5ce8-4ded-9fec-dcec05388285" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-24T22:09:11.2279091-04:00" layout="Horizontal" />
+    <level name="" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="0e58db73-5ce8-4ded-9fec-dcec05388285" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-24T22:09:11.2279091-04:00" layout="Horizontal" />
+    <level name="1-1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="b3c6ac79-3ec8-43ff-b510-b058ca7bd011" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-25T17:16:58.738041-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
