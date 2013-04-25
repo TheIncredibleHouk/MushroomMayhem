@@ -39,29 +39,6 @@
     <world name="No World" ordinal="25" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" lastmodified="2012-08-30T08:56:17.95-04:00" lastcompressedsize="0" isnoworld="true" />
   </worldinfo>
   <levelinfo>
-    <level name="ME A-1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="0aae3f8e-c265-49d5-a0be-05df67ce0854" leveltype="1" lastcompressionsize="0" lastmodified="2013-03-29T22:15:20.5638-04:00" layout="Horizontal" />
-    <level name="ME A-2" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="00b1bf94-db56-45ad-bbc0-d2d39486bffb" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-30T05:09:05.9445-05:00" layout="Horizontal" />
-    <level name="ME B-1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="1b6f519c-e994-48c4-9aee-baae9c65e2b3" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-24T07:28:45.0599-05:00" layout="Horizontal" />
-    <level name="ME B-2" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="97c9b483-9055-4875-89f7-9d61124f1fb3" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-09T11:30:35.9893085-05:00" layout="Horizontal" />
-    <level name="FF A-1" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="3a5ddb7e-0a93-47fa-ab5a-37482ad141fd" leveltype="12" lastcompressionsize="0" lastmodified="2013-01-09T11:08:06.6913922-05:00" layout="Horizontal" />
-    <level name="FF A-2" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="d6c997e0-2a88-4d37-b9cf-35a7b593b545" leveltype="12" lastcompressionsize="0" lastmodified="2012-12-25T06:27:17.6104-05:00" layout="Horizontal" />
-    <level name="Z-1" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="ac400361-d7c3-47dc-91e8-903aca32063a" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-29T19:48:25.9435-05:00" layout="Horizontal" />
-    <level name="Z-2" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="d50ec532-174b-46f2-a506-b7c664a1bec7" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-07T07:06:49.933-05:00" layout="Horizontal" />
-    <level name="Z-3" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="e281f59c-1b3c-4202-9b2c-a338ae7b881c" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-30T08:14:42.679-05:00" layout="Horizontal" />
-    <level name="A-1" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="a3d1a82f-7f5e-43e5-aeda-1155796e67f7" leveltype="1" lastcompressionsize="0" lastmodified="2013-03-29T05:50:38.3646-04:00" layout="Horizontal" />
-    <level name="A-2" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="26962087-20cd-4623-9efc-17d0ae93aad0" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-30T15:57:43.5451-05:00" layout="Horizontal" />
-    <level name="A-3" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="b8b5217e-39e1-455b-aeb7-ee22e2e7f7f3" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-30T15:58:01.0771-05:00" layout="Horizontal" />
-    <level name="A-4" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="622e37a8-9f56-4abe-8ed6-053a49128b1b" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-30T15:58:38.7701-05:00" layout="Horizontal" />
-    <level name="A-5" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="6786df97-be7f-4fc1-9bc9-3229d1f054ea" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-31T07:03:00.0908-05:00" layout="Horizontal" />
-    <level name="A-6" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="e76b1002-3b17-4b57-8735-8f21cb78a50a" leveltype="1" lastcompressionsize="0" lastmodified="2012-12-30T17:31:45.2831-05:00" layout="Horizontal" />
-    <level name="A-7" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="58285b90-467b-4c6c-98a5-48bc9e9f7322" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-01T07:16:15.1539-05:00" layout="Horizontal" />
-    <level name="BOSS - 1" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="18380daa-97db-4f4c-8a27-f8b4a54995c8" leveltype="2" lastcompressionsize="0" lastmodified="2013-01-18T14:36:07.0761-05:00" layout="Horizontal" />
-    <level name="BOSS - 1A" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="c52aee5b-5a3c-4425-85ac-7b3f849555c4" leveltype="2" lastcompressionsize="0" lastmodified="2013-01-08T19:49:51.296-05:00" layout="Horizontal" />
-    <level name="BOSS - 2A" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="e1a02fd0-2ccc-414b-907f-84f2c276c393" leveltype="2" lastcompressionsize="0" lastmodified="2013-01-09T11:19:36.1273289-05:00" layout="Horizontal" />
-    <level name="ME C-1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="a5d67b93-d0a3-468e-b493-690b3ec4fe38" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-12T11:32:11.2734-05:00" layout="Horizontal" />
-    <level name="ME C-2" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="54b6a19e-88dc-45da-8478-465876b2d7d9" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-13T05:27:07.9697-05:00" layout="Horizontal" />
-    <level name="RS A-1" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="27516c50-450e-40c9-80ed-4bf562ea6a6b" leveltype="10" lastcompressionsize="0" lastmodified="2013-01-14T17:57:24.0396-05:00" layout="Horizontal" />
-    <level name="ME D-1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="a03bb3e6-3d9f-41bb-ac25-4b6c4d2fb698" leveltype="1" lastcompressionsize="0" lastmodified="2013-01-18T21:29:53.316-05:00" layout="Horizontal" />
-    <level name="test" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="0e58db73-5ce8-4ded-9fec-dcec05388285" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-23T21:38:49.3672874-04:00" layout="Horizontal" />
+    <level name="test" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="0e58db73-5ce8-4ded-9fec-dcec05388285" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-24T22:09:11.2279091-04:00" layout="Horizontal" />
   </levelinfo>
 </project>

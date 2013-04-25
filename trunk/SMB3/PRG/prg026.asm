@@ -3243,6 +3243,7 @@ World_Names:
 	.byte "PIRANHA       FOREST"
 
 Draw_World_Name:
+	RTS
 	LDY World_Num
 	LDA #$00
 
@@ -3345,7 +3346,7 @@ Update_Odometer:
 Odometer_Loop:
 	LDA Odometer, Y
 	ORA #$30
-	STA Status_Bar_Bottom + 1,Y
+	STA Status_Bar_Top + 13,Y
 	DEY
 	BPL Odometer_Loop
 

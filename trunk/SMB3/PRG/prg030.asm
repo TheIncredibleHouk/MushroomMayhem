@@ -3319,7 +3319,6 @@ RepeatTile:
 	LDA [Temp_Var14], Y
 
 RepeatTileLoop:
-	JSR CheckActivatedTiles
 	STA [Temp_Var8],Y
 	JSR NextTileByte
 	DEC <Temp_Var10
@@ -3367,7 +3366,6 @@ RepeatPatternToLevel:
 
 DrawPattern:
 	LDA Level_Objects, X
-	JSR CheckActivatedTiles
 	STA [Temp_Var8], Y
 	JSR NextTileByte
 	INX
@@ -3387,7 +3385,6 @@ WriteRaw:
 WriteRawLoop:
 	JSR NextLevelByte
 	LDA [Temp_Var14], Y
-	JSR CheckActivatedTiles
 	STA [Temp_Var8], Y
 	JSR NextTileByte
 	DEC <Temp_Var11
@@ -5421,39 +5418,5 @@ LevelJction:
 Skip_Line_Up:
 	RTS
 
-ActivatedTiles:
-	.byte $60, $61, $64, $68, $69, $6A, $6C, $6E
-
 CheckActivatedTiles:			; This routine checks for tile activated (power ups)
-	RTS
-	STY DAIZ_TEMP2
-	STA DAIZ_TEMP3
-	LDY #$07
-
-FindActivatedTile:
-	CMP ActivatedTiles, Y
-	BEQ SeeIfTileActivated
-	DEY
-	BPL FindActivatedTile
-	BMI RestoreAAct
-
-SeeIfTileActivated:
-	LDA #$80
-
-ShiftActBit:
-	DEY
-	BMI DoneShiftActBit
-	ASL A
-	BNE ShiftActBit
-
-DoneShiftActBit:
-	AND Blocks_Activated
-	BNE RestoreAAct
-	LDA #$65
-	BNE RestoreYAct
-
-RestoreAAct:
-	LDA DAIZ_TEMP3
-RestoreYAct:
-	LDY DAIZ_TEMP2
 	RTS

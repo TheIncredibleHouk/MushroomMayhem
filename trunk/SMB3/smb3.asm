@@ -2999,7 +2999,6 @@ SOBJ_POOF		= $16 	; Poof
 	WorldWidth:			.ds 1
 	HBros_Coins_Collected:  .ds 32 ;
 	World_Complete_Tiles: .ds 16	;
-	Blocks_Activated:	.ds 1;
 	StarLevel:			.ds 1
 	MiscValue1:			.ds 1
 	MiscValue2:			.ds 1
@@ -3059,7 +3058,8 @@ TILE_ITEM_NOTE		= $FE
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
-						.ds 46;
+	LevelName:			.ds 22
+						.ds 25;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
