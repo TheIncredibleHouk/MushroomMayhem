@@ -512,7 +512,7 @@
     <block value="FA"></block>
     <block value="FB"></block>
     <block value="FC"></block>
-    <block value="FD"></block>
+    <block value="FD">Ice Block</block>
     <block value="FE">P-Switch</block>
     <block value="FF"></block>
   </set>
