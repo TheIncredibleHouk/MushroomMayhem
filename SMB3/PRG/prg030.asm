@@ -3246,7 +3246,16 @@ DontReverseWind:
 	INY
 	LDA [Temp_Var14], Y
 	STA MiscValue3
+	INY 
+
+	LDX #$00
+LoadName:
+	LDA [Temp_Var14], Y
+	STA LevelName, X
 	INY
+	INX
+	CPX #$22
+	BNE LoadName
 
 	; now load pointers
 	JSR ClearPointers
@@ -3440,12 +3449,12 @@ LoadTransitions:
 	JSR PRGROM_Change_A000
 	
 	LDY #$00
-CopyFire:
+CopyAll:
 	LDA [Temp_Var7], Y
 	STA FireBallTransitions, Y
 	INY
-	CPY #$08
-	BNE CopyFire
+	CPY #$20
+	BNE CopyAll
 
 CopyIce:
 	LDA [Temp_Var7], Y
@@ -5418,5 +5427,40 @@ LevelJction:
 Skip_Line_Up:
 	RTS
 
-CheckActivatedTiles:			; This routine checks for tile activated (power ups)
+
+PSwitch_SubstTileAndAttr:
+	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
+	BEQ PRG000_C85B	 	; If P-Switch not active, jump to PRG000_C85B (RTS)
+
+	STA Debug_Snap
+	LDY #$0E
+PRG000_C84A:
+
+	CMP PSwitchTransitions,Y
+	BNE PRG000_C858	 	; If this is not a match, jump to PRG000_C858
+
+	INY
+	LDA PSwitchTransitions,Y	; Get replacement tile
+	RTS		 ; Return
+
+PRG000_C858:
+	DEY		 ; Y--
+	DEY
+	BPL PRG000_C84A	 ; While Y >= 0, loop!
+
+PRG000_C85B:
+	RTS		 ; Return
+
+CheckSpriteOnFG:
+	CMP #TILE_PROP_ITEM
+	BCS NoBGPriority
+	AND #TILE_PROP_FOREGROUND
+	BEQ SetBGPriority
+	LDA #$20
+
+SetBGPriority:
+	RTS
+
+NoBGPriority:
+	LDA #$00
 	RTS

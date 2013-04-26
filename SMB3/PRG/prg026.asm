@@ -3236,44 +3236,19 @@ Initial_Bar_Display1:
 	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
 
 Initial_Bar_Display2:
-	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-	.byte $FE, $30, $30, $30, $30, $30, $30, $30, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-World_Names:
-	.byte "CHEEPCHEEPEVERGLADES"
-	.byte "PIRANHA       FOREST"
+	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $20, $20, $20, $20, $20, $F0, $F0, $F0, $F0, $F0, $F0, $F0
+	.byte $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20
 
 Draw_World_Name:
-	RTS
-	LDY World_Num
-	LDA #$00
 
-WorldNameLoop:
-	DEY
-	BMI DoNameDraw
-	CLC
-	ADC #$14
-	BNE WorldNameLoop
 	LDX #$00
 
-DoNameDraw:
-	TAY
-	DEY
-
-DrawNameTop:
-	LDA World_Names, Y
-	STA Status_Bar_Top + 18, X
-	INY
+DrawName:
+	LDA LevelName, X
+	STA Status_Bar_Bottom, X
 	INX
-	CPX #$0A
-	BNE DrawNameTop
-	LDX #$00
-DrawNameBottom:
-	LDA World_Names, Y
-	STA Status_Bar_Bottom + 18, X
-	INY
-	INX
-	CPX #$0A
-	BNE DrawNameBottom
+	CPX #$22
+	BNE DrawName
 	RTS
 
 
@@ -3346,7 +3321,7 @@ Update_Odometer:
 Odometer_Loop:
 	LDA Odometer, Y
 	ORA #$30
-	STA Status_Bar_Top + 13,Y
+	STA Status_Bar_Top + 21,Y
 	DEY
 	BPL Odometer_Loop
 

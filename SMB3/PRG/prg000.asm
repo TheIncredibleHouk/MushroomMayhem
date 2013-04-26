@@ -920,38 +920,6 @@ PRG000_C834:
 	RTS		 ; Return
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; PSwitch_SubstTileAndAttr
-;
-; P-Switch substitution function for tiles which it effects
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-PSwitch_SubstTileAndAttr:
-	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
-	BEQ PRG000_C85B	 	; If P-Switch not active, jump to PRG000_C85B (RTS)
-
-	LDY #$0E
-PRG000_C84A:
-
-	CMP PSwitchTransitions,Y
-	BNE PRG000_C858	 	; If this is not a match, jump to PRG000_C858
-
-	INY
-	LDA PSwitchTransitions,Y	; Get replacement tile
-	RTS		 ; Return
-
-PRG000_C858:
-	DEY		 ; Y--
-	DEY
-	BPL PRG000_C84A	 ; While Y >= 0, loop!
-
-PRG000_C85B:
-	RTS		 ; Return
-
-
-PRG000_C85C:
-	JMP PRG000_C82A	 ; Jump to PRG000_C82A
-
 ; FIXME: Anybody want to claim this?
 ; $C893
 	.byte $FC, $04, $01, $02
@@ -2901,7 +2869,6 @@ Object_HandleBumpUnderneath:
 	JSR Object_AnySprOffscreen
 	BNE PRG000_D1C4	 ; If any sprite is off-screen, jump to PRG000_D1C4 (RTS)
  
-	STA Debug_Snap
 	LDA Object_TileFeet2 
 	AND #$3F
 	BNE Player_HitEnemy	 ; If object did not detect a block bump clear tile, jump to Player_HitEnemy 
@@ -6191,20 +6158,6 @@ TryReplace:
 
 	LDA #$FD
 No_Replace:
-	RTS 
-
-CheckSpriteOnFG:
-	CMP #TILE_PROP_ITEM
-	BCS NoBGPriority
-	AND #TILE_PROP_FOREGROUND
-	BEQ SetBGPriority
-	LDA #$20
-
-SetBGPriority:
-	RTS
-
-NoBGPriority:
-	LDA #$00
 	RTS
 
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
