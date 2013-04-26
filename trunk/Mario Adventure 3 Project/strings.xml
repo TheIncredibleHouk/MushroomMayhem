@@ -259,8 +259,8 @@
     <block value="FF"></block>
   </set>
   <set leveltype="01">
-    <block value="00">Coin</block>
-    <block value="01">Coin</block>
+    <block value="00">Cleared Block</block>
+    <block value="01">Cleared Coin</block>
     <block value="02">P-Switch Stomped</block>
     <block value="03">Coin</block>
     <block value="04">Cherry</block>
@@ -323,8 +323,8 @@
     <block value="3D"></block>
     <block value="3E"></block>
     <block value="3F"></block>
-    <block value="40">Coin</block>
-    <block value="41">Background</block>
+    <block value="40">Cleared Block</block>
+    <block value="41">Cleared Coin</block>
     <block value="42">P-Switch Stomped</block>
     <block value="43">Coin</block>
     <block value="44">Frozen Coin</block>
@@ -387,8 +387,8 @@
     <block value="7D"></block>
     <block value="7E"></block>
     <block value="7F">Empty ? Block</block>
-    <block value="80">Background</block>
-    <block value="81">Background</block>
+    <block value="80">Cleared Block</block>
+    <block value="81">Cleared Coin</block>
     <block value="82">P-Switch Stomped</block>
     <block value="83">Coin</block>
     <block value="84">Grass</block>
@@ -442,7 +442,7 @@
     <block value="B4"></block>
     <block value="B5"></block>
     <block value="B6"></block>
-    <block value="B7"></block>
+    <block value="B7">Enterable Horizontal Pipe</block>
     <block value="B8">Pipe Top Enterable</block>
     <block value="B9">Pipe Top Enterable</block>
     <block value="BA"></block>
@@ -451,7 +451,7 @@
     <block value="BD"></block>
     <block value="BE"></block>
     <block value="BF"></block>
-    <block value="C0">Background</block>
+    <block value="C0">Cleared Block</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
     <block value="C3">Coin</block>
