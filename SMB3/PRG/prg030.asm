@@ -394,8 +394,9 @@ PAGE_A000_ByTileset: ; $83E9
 	.byte 11, 15, 21, 16, 17, 19, 18, 18, 18, 20, 23, 19, 17, 19, 13, 26, 26, 26, 9
 
 	; The normal level VROM page cycle set
-PT2_Anim:	.byte $80, $82, $84, $86, $C0, $C2, $C4, $C6
-PSwitch_Anim: .byte $88, $8A, $8C, $8E, $C8, $CA, $CC, $CE
+PT2_Anim:	.byte $80, $82, $84, $86
+PSwitch_Anim: .byte $88, $8A, $8C, $8E
+
 SPR_Anim:
 	.byte $90, $91, $92, $93
 
@@ -1658,14 +1659,19 @@ PRG030_8E4F:
 	TAX	        ; 0-3, changing every 8 ticks
 	STX DAIZ_TEMP1
 
-	LDA Tile_Anim_Enabled
+	LDY Tile_Anim_Enabled
 	BEQ Skip_Tile_Anim
+
+	ADD TileAnimSet
+	TAX
+
 	LDA PT2_Anim,X
 	LDY Level_PSwitchCnt
 	BEQ Normal_Anim
 	LDA PSwitch_Anim,X
 
 Normal_Anim:
+	
 	STA PatTable_BankSel+1 ; Set pattern for this tick
 
 Skip_Tile_Anim:
@@ -3455,20 +3461,6 @@ CopyAll:
 	INY
 	CPY #$20
 	BNE CopyAll
-
-CopyIce:
-	LDA [Temp_Var7], Y
-	STA IceBallTransitions, Y
-	INY
-	CPY #$10
-	BNE CopyIce
-
-CopyPSwitch:
-	LDA [Temp_Var7], Y
-	STA PSwitchTransitions, Y
-	INY
-	CPY #$20
-	BNE CopyPSwitch
 
 	LDX #$00
 	LDA [Temp_Var7], Y
@@ -5432,7 +5424,6 @@ PSwitch_SubstTileAndAttr:
 	LDY Level_PSwitchCnt	; Y = Level_PSwitchCnt
 	BEQ PRG000_C85B	 	; If P-Switch not active, jump to PRG000_C85B (RTS)
 
-	STA Debug_Snap
 	LDY #$0E
 PRG000_C84A:
 

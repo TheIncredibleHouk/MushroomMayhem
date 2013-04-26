@@ -1435,11 +1435,12 @@ PRG008_A827:
 	AND #%01111111	 
 	STA <Player_FlipBits	 ; Clear vertical flip on sprite
 
-	LDA #TILEA_DOORBOTTOM
-	SUB <Temp_Var1	
-	BEQ PRG008_A83F	 ; If tile is DOOR2's tile, jump to PRG008_A83F
+	LDA <Temp_Var1	
+	CMP #TILE_ITEM_COIN
+	BCS PRG008_A86C	 ; If tile is DOOR2's tile, jump to PRG008_A83F
 
-	CMP #$01
+	AND #$0F
+	CMP #TILE_PROP_DOOR
 	BNE PRG008_A86C	 ; If tile is not DOOR1, jump to PRG008_A86C
 
 PRG008_A83F:
