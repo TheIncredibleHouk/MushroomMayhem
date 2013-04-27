@@ -899,8 +899,8 @@ PRG000_C7FA:
 
 PRG000_C82A:
 	LDA [Temp_Var1],Y	; Get tile
-	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
 	STA Object_LevelTile
+	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
 	TAY
 	LDA TileProperties, Y
 	PHA
@@ -1788,6 +1788,8 @@ PRG000_CCAE:
 	STA <Temp_Var16	 
 
 	; Handle object bouncing off blocks
+	LDA Object_LevelTile
+	STA <Level_Tile
 	LDA Object_TileWall2
 	JSR Object_BumpOffBlocks 
 
