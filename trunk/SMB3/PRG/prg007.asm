@@ -1100,7 +1100,6 @@ FIRE_BALL_COLL:
 	LDY Special_Suit_Flag
 	BEQ Tile_Test_Loop
 
-	STA Debug_Snap
 	LDX #$08
 
 Tile_Test_Loop:

@@ -4366,58 +4366,6 @@ VScroll_TileQuads2Attrs:
 	RTS		 ; Return
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_GetTileV
-;
-; Gets tile in vertical level
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_GetTileV:	; $9E3C 
-
-	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
-	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
-
-	LDA <Temp_Var13	 ; A = Temp_Var13 (Y Hi)
-	PHA		 ; Save it
-	TAY		 ; Y = Y Hi
-
-	LDA <Temp_Var14	 ; A = Temp_Var14 (Y Lo)
-	PHA		 ; Save it
-
-	JSR LevelJct_GetVScreenH
-
-	STA <Temp_Var14	 ; Adjusted Y for vertical -> Temp_Var14
-
-	; Select root offset into tile memory
-	LDA Tile_Mem_AddrVL,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_AddrVH,Y
-	STA <Map_Tile_AddrH
-
-	; Combine positions into Temp_Var15 to form tile mem offset
-	LDA <Temp_Var14
-	AND #$f0
-	STA <Temp_Var15
-
-	LDA <Temp_Var16
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var15
-
-	TAY		 ; Offset -> 'Y'
-
-	PLA		 ; Restore original value for Temp_Var14
-	STA <Temp_Var14	 ; Store it
-
-	PLA		 ; Restore original value for Temp_Var13
-	STA <Temp_Var13	 ; Store it
-
-	LDA [Map_Tile_AddrL],Y	 ; Get tile
-	STA <Level_Tile	 ; Store into Level_Tile
-
-	RTS		 ; Return
-
 
 	; This is basically a lookup for any given "Player Y Hi" shifted up 4 bits
 PRG030_9E6C:
@@ -4515,8 +4463,8 @@ PRG030_9EC3:
 
 	TAY		 	; Y = current offset
 	LDA [Map_Tile_AddrL],Y	; Get tile here
-	JSR PSwitch_SubstTileAndAttr
 	STA <Level_Tile
+	JSR PSwitch_SubstTileAndAttr
 	TAY
 	LDA TileProperties, Y
 	RTS		 ; Return

@@ -1455,7 +1455,7 @@ PRG008_A83F:
 	BNE PRG008_A86C	 ; If Player is mid air, jump to PRG008_A86C
 
 PRG008_A852:
-	JSR Find_Applicable_Pointer
+	JSR Do_Pointer_Effect
 	LDY #$01	; Y = 1
 	STY Level_JctCtl ; Set appropriate value to Level_JctCtl
 
@@ -3925,6 +3925,7 @@ PRG008_B406:
 	BLT PRG008_B419	 ; If Temp_Var14 < $B0, jump to PRG008_B419
 
 PRG008_B414:
+	LDA #$00
 	RTS		 ; Return
 
 
@@ -4322,14 +4323,11 @@ PRG008_B724:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
-
-	LDY <Temp_Var12
+	
 	LDA <Level_Tile
 	AND #$C0
-	ORA #$00
-	STA [Map_Tile_AddrL],Y	
 	STA <Temp_Var12
-	;JSR Level_QueueChangeBlock
+
 	
 PRG008_B75B:
 	LDY #$06	; Y = 6
@@ -4379,8 +4377,7 @@ PRG008_B78B:
 PRG008_B78C:
 	LDA <Level_Tile
 	AND #$C0
-	ORA #$00
-	STA <Temp_Var12
+	ORA #$01
 	JSR Level_QueueChangeBlock
 	LDA TempA
 	RTS
@@ -4924,16 +4921,16 @@ Pipe_PadDirForEnter:
 
 	; The sliding values applied when Player is touching a conveyor
 MoveTileVert:	.byte -1, 1, 0, 0
-MoveTileHorz:	.byte 0, 0, 1, -1
+MoveTileHorz:	.byte 0, 0, -1, 1
 
 Player_DoSpecialTiles:
+	
 	LDA Player_Shell
 	ORA Player_TailAttack
 	ORA Player_Flip	 
 	BNE PRG008_BCA7	 ; If Player is a Tanooki Statue, tail attacking, or invincibility flipping, jump to PRG008_BCA7
 	; Copy in the mask of allowable pipe tiles -> Temp_Var16
 	
-	LDA #$00
 	LDA #$00
 	STA Player_Slippery	 ; Player_Slippery = 0 (default ground not slippery)
 	LDA <Player_InAir
@@ -5092,6 +5089,12 @@ PRG008_BD59:
 	CMP #$04
 	BGE PRG008_BD73
 	TAX
+	LDA Player_InWater
+	BEQ PRG008_BD72
+	LDA <Counter_1
+	AND #$03
+	BNE PRG008_BE2E
+PRG008_BD72:
 	LDA <Player_XVel
 	SUB MoveTileHorz, X
 	STA <Player_XVel
