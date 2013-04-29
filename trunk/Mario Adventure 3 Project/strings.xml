@@ -279,7 +279,7 @@
     <block value="11"></block>
     <block value="12"></block>
     <block value="13"></block>
-    <block value="14"></block>
+    <block value="14">Grass</block>
     <block value="15"></block>
     <block value="16"></block>
     <block value="17"></block>
@@ -327,13 +327,13 @@
     <block value="41">Cleared Coin</block>
     <block value="42">P-Switch Stomped</block>
     <block value="43">Coin</block>
-    <block value="44"></block>
+    <block value="44">Grass</block>
     <block value="45"></block>
     <block value="46"></block>
     <block value="47"></block>
-    <block value="48"></block>
-    <block value="49"></block>
-    <block value="4A"></block>
+    <block value="48">Platform Top</block>
+    <block value="49">Platform Top</block>
+    <block value="4A">Platform Top</block>
     <block value="4B"></block>
     <block value="4C"></block>
     <block value="4D"></block>
@@ -347,9 +347,9 @@
     <block value="55"></block>
     <block value="56"></block>
     <block value="57"></block>
-    <block value="58"></block>
-    <block value="59"></block>
-    <block value="5A"></block>
+    <block value="58">Platform Filler Left</block>
+    <block value="59">Platform Filler</block>
+    <block value="5A">Platform Filler Right</block>
     <block value="5B"></block>
     <block value="5C"></block>
     <block value="5D"></block>
@@ -363,12 +363,12 @@
     <block value="65"></block>
     <block value="66"></block>
     <block value="67"></block>
-    <block value="68"></block>
-    <block value="69"></block>
-    <block value="6A"></block>
+    <block value="68">Platform Bottom Left</block>
+    <block value="69">Platform Bottom Middle</block>
+    <block value="6A">Platform Bottom Right</block>
     <block value="6B"></block>
-    <block value="6C"></block>
-    <block value="6D"></block>
+    <block value="6C">Koopa Shell</block>
+    <block value="6D">Starman</block>
     <block value="6E">Brick</block>
     <block value="6F">PSwitch Block</block>
     <block value="70"></block>
@@ -446,11 +446,11 @@
     <block value="B8">Pipe Top Enterable</block>
     <block value="B9">Pipe Top Enterable</block>
     <block value="BA"></block>
-    <block value="BB"></block>
+    <block value="BB">Koopa Shell</block>
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1"></block>
     <block value="C2">P-Switch Stomped</block>
@@ -458,7 +458,7 @@
     <block value="C4">Waterfall FG</block>
     <block value="C5"></block>
     <block value="C6"></block>
-    <block value="C7"></block>
+    <block value="C7">Grass</block>
     <block value="C8">Platform Top</block>
     <block value="C9">Platform Top</block>
     <block value="CA">Platform Top</block>
@@ -466,10 +466,10 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
-    <block value="D2"></block>
+    <block value="D2">P-Switch Stomped</block>
     <block value="D3">Frozen Coin</block>
     <block value="D4"></block>
     <block value="D5"></block>
@@ -513,7 +513,7 @@
     <block value="FB"></block>
     <block value="FC"></block>
     <block value="FD">Ice Block</block>
-    <block value="FE">P-Switch</block>
+    <block value="FE"></block>
     <block value="FF">Empty ? Block</block>
   </set>
   <set leveltype="02">
@@ -708,7 +708,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -724,7 +724,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -966,7 +966,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -982,7 +982,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -1224,7 +1224,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -1240,7 +1240,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -1482,7 +1482,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -1498,7 +1498,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -1740,7 +1740,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -1756,7 +1756,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -1998,7 +1998,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -2014,7 +2014,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -2256,7 +2256,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -2272,7 +2272,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -2514,7 +2514,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -2530,7 +2530,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -2772,7 +2772,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -2788,7 +2788,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -3030,7 +3030,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -3046,7 +3046,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -3288,7 +3288,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -3304,7 +3304,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -3546,7 +3546,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -3562,7 +3562,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -3804,7 +3804,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -3820,7 +3820,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -4062,7 +4062,7 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF"></block>
+    <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
     <block value="C1">Water Fill</block>
     <block value="C2">P-Switch Stomped</block>
@@ -4078,7 +4078,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF"></block>
+    <block value="CF">P-Switch</block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>

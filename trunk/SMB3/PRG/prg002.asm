@@ -1352,8 +1352,9 @@ ObjInit_CheepCheepP2P2:
 	STA <Objects_Var4,X	 ; Var4 = 4
 
 ObjInit_CheepCheepP2P:
-	LDA #$01
+	LDA #$00
 	STA Objects_InWater,X
+	RTS
 
 Restart_CheepCheepP2P2:
 	; Timer = $40
@@ -1433,6 +1434,10 @@ PRG002_A7932:
 	BEQ NotBeached
 	LDA #$D8
 	STA <Objects_YVel,X
+	LDA <Objects_XVel,X
+	BNE NotBeached
+	LDA #$-10
+	STA <Objects_XVel,X
 
 ; if it hits a wall it reverses direction
 NotBeached:

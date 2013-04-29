@@ -1176,6 +1176,7 @@ Player_ControlJmp:
 ; throwing of fireballs / hammers for some reason!)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Control:
+	JSR VScreenTransitions
 	LDA #$00
 	STA Top_Of_Water
 	LDA <Player_FlipBits
@@ -3523,8 +3524,8 @@ PRG008_B208:
 	LDA Level_FreeVertScroll
 	BEQ PRG008_B214	 ; If Level_FreeVertScroll = 0 (not freely scrolling), jump to PRG008_B214
 
-	CMP #$01
-	BEQ PRG008_B258	 ; If Level_FreeVertScroll = 1 (freely scrolling), jump to PRG008_B258
+	AND #$01
+	BNE PRG008_B258	 ; If Level_FreeVertScroll = 1 (freely scrolling), jump to PRG008_B258
 
 	; Otherwise, arbitrarily locked (whatever Vert_Scroll is)...
 	JMP PRG008_B2A0	 ; Jump to PRG008_B2A0
@@ -5467,4 +5468,63 @@ Shell_Bounce:
 	STA <Player_XVel
 
 Shell_BounceRTS:
+	RTS
+
+VScreenTransitions:
+	LDA Level_FreeVertScroll
+	CMP #$03
+	BEQ CheckPlayer_Y
+	RTS
+
+CheckPlayer_Y:
+	JSR CheckPlayer_YLow
+	JSR CheckPlayer_YHi
+	RTS
+		
+CheckPlayer_YHi:
+	LDA <Player_XHi
+	CMP <Level_Width
+	BEQ NotYHi
+	LDA <Player_YHi
+	BNE NotYHi
+	LDA <Player_Y
+	CMP #$08
+	BCS NotYHi
+
+	LDX <Player_XHi
+	INX
+	STX <Player_XHi
+	LDA #$A0
+	STA <Player_Y
+	LDA #$01
+	STA <Player_YHi
+	INC Level_JctCtl
+	PLA
+	PLA
+
+NotYHi:
+	RTS
+
+CheckPlayer_YLow:
+	LDA <Player_XHi
+	BEQ NotYLo
+	LDA <Player_YHi
+	BEQ NotYLo
+	STA Debug_Snap
+	LDA <Player_Y
+	CMP #$A8
+	BCC NotYLo
+
+	LDX <Player_XHi
+	DEX
+	STX <Player_XHi
+	LDA #$10
+	STA <Player_Y
+	LDA #$00
+	STA <Player_YHi
+	INC Level_JctCtl
+	PLA
+	PLA
+
+NotYLo:
 	RTS
