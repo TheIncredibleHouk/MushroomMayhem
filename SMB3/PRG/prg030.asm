@@ -3071,6 +3071,10 @@ LevelLoad:	; $97B7
 	STX PAGE_C000
 	JSR PRGROM_Change_C000
 	
+	LDA LevelJctBQ_Flag
+	BEQ NotJctBQ
+
+NotJctBQ:
 	LDY #$00
 	LDA [Temp_Var14],Y
 
@@ -3206,6 +3210,13 @@ Skip_Time_Set:
 	LDA [Temp_Var14],Y
 	AND #$03
 	STA Level_FreeVertScroll
+	LDX #$00
+	CMP #$03
+	BNE HorzNotLocked
+	INX
+
+HorzNotLocked:
+	STX LevelJctBQ_Flag
 	LDA [Temp_Var14],Y
 	AND #$F0
 	LSR A
@@ -5032,6 +5043,12 @@ DynHScroll:
 	AND #$0F
 	ORA <Horz_Scroll
 	STA <Horz_Scroll
+	LDA LevelJctBQ_Flag
+	BEQ Update_Columns
+	LDA #$00
+	STA <Horz_Scroll
+	LDA <Player_XHi
+	STA <Horz_Scroll_Hi
 
 Update_Columns:
 	LDA #$01
@@ -5325,8 +5342,6 @@ UsePointer:
 	LDA Pointers + 4, X
 	AND #$F0
 	STA Map_Entered_Y
-	LDA Pointers, X
-	STA World_Num
 	INC Level_ExitToMap
 	LDA #$00
 	STA Level_PipeMove
