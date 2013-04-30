@@ -3073,6 +3073,7 @@ LevelLoad:	; $97B7
 	
 	LDA LevelJctBQ_Flag
 	BEQ NotJctBQ
+	JMP Skip_Level_Loading
 
 NotJctBQ:
 	LDY #$00
@@ -3313,7 +3314,10 @@ NextDecompressionCommand:
 	LDA [Temp_Var14], Y
 	CMP #$FF
 	BNE GetDecompressionCommand
+
 	JSR LoadSprites
+
+Skip_Level_Loading:
 	JSR SetProperScroll
 	RTS ; we're done!
 

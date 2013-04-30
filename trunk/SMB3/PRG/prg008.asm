@@ -1177,7 +1177,8 @@ Player_ControlJmp:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Control:
 	JSR VScreenTransitions
-	LDA #$00
+	LDA #$02
+	STA Air_Change
 	STA Top_Of_Water
 	LDA <Player_FlipBits
 	STA Player_FlipBits_OLD
@@ -1321,8 +1322,6 @@ PRG008_A7BE:
 	LDA Player_InWater
 	BEQ PRG008_A827	 ; If Player was not previously in water, jump to PRG008_A827
 
-	LDA #$02
-	STA Air_Change
 	LDA <Player_InAir
 	BNE PRG008_A7CB	 ; If Player is mid air, jump to PRG008_A7CB
 
@@ -1488,8 +1487,6 @@ PRG008_A86C:
 	BNE PRG008_A890	 ; If Player is in water, holding something, or in 
 
 	LDA Level_Tile_Prop_Head
-	CMP #TILE_ITEM_COIN
-	BGE PRG008_A890
 	AND #$0F
 	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG008_A890	 ; If tile is not the vine, jump to PRG008_A890
@@ -1511,6 +1508,12 @@ PRG008_A86C:
 	BNE PRG008_A898	 ; If Player is pressing up, jump to PRG008_A898
 
 PRG008_A890:
+	CMP #TILE_PROP_DEPLETE_AIR
+	BNE PRG008_A891
+	LDA #$FF
+	STA Air_Change
+
+PRG008_A891:
 	LDA #$00
 	STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
 
@@ -3342,10 +3345,15 @@ PRG008_B11E:
 ; Effects) as appropriate for Player's position
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoScrolling:
+	LDA Level_JctCtl
+	BNE PRG008_B126
 	LDA Level_7Vertical
 	BEQ PRG008_B127	 ; If Level is not vertical, jump to PRG008_B127
 
 	JMP PRG008_B2AB	 ; Otherwise, jump to PRG008_B2AB
+
+PRG008_B126:
+	RTS
 
 PRG008_B127:
 	LDA LevelJctBQ_Flag
@@ -3692,8 +3700,10 @@ PRG008_B2AB:
 
 	LDA <Player_YHi
 	SBC Level_VertScrollH
-	BNE PRG008_B345	 ; If Player_YHi <> Level_VertScrollH, jump to PRG008_B345 (RTS)
+	BEQ PRG008_B2D7	 ; If Player_YHi <> Level_VertScrollH, jump to PRG008_B345 (RTS)
+	RTS
 
+PRG008_B2D7:
 	TYA		 ; A = Player_Y - Level_VertScroll
 	SUB #$30
 	BCS PRG008_B2F9	 ; If no borrow occurred, jump to PRG008_B2F9
@@ -3775,9 +3785,6 @@ PRG008_B329:
 	STA Level_ScrollDiffV	 ; Level_VertScrollH = 0
 
 PRG008_B338:
-	LDA Level_VertScroll
-	LDY Level_VertScrollH
-
 	JSR LevelJct_GetVScreenH
 
 	STA <Vert_Scroll
@@ -4201,7 +4208,9 @@ Level_DoCommonSpecialTiles:
 
 PRG008_B582:
 	LDY Level_ChgTileEvent
-	BNE PRG008_B585
+	BNE PRG008_B584
+	CMP #TILE_PROP_SOLID_TOP
+	BCS PRG008_B585
 	AND #$0F
 	CMP #TILE_PROP_COIN
 	BNE PRG008_B583
@@ -4241,13 +4250,16 @@ PRG008_B583:
 	INC Exp_Earned + 2
 	LDA #$00
 	LDY TempY
-	RTS
 
 PRG008_B584:
+	RTS
+
+PRG008_B585:
+	AND #$0F
 	CPX  #$02
-	BCS PRG008_B585
+	BCS PRG008_B585_2
 	CMP #TILE_PROP_PSWITCH
-	BNE PRG008_B585
+	BNE PRG008_B585_2
 
 	LDY <Temp_Var12		 
 	LDA [Map_Tile_AddrL],Y	
@@ -4270,7 +4282,7 @@ PRG008_B584:
 	LDA #MUS2B_PSWITCH
 	STA Sound_QMusic2
 
-PRG008_B585:
+PRG008_B585_2:
 	LDA TempA
 	RTS
 
@@ -5090,12 +5102,9 @@ PRG008_BD59:
 	CMP #$04
 	BGE PRG008_BD73
 	TAX
-	LDA Player_InWater
-	BEQ PRG008_BD72
 	LDA <Counter_1
 	AND #$03
 	BNE PRG008_BE2E
-PRG008_BD72:
 	LDA <Player_XVel
 	SUB MoveTileHorz, X
 	STA <Player_XVel
@@ -5124,6 +5133,8 @@ PRG008_BDB1:
 	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
 
 	LDA <Temp_Var1
+	CMP #TILE_PROP_SOLID_TOP
+	BCC PRG008_BE2E
 	CMP #TILE_PROP_SLICK
 	BNE PRG008_BE2E
 	LDA Player_Ability
@@ -5417,8 +5428,8 @@ Change_Air:
 	ADD Air_Change
 	CMP #$41
 	BLS NotMaxAir
-	LDA #$00
-	STA Air_Change
+	AND #$40
+	STA Air_Time
 	RTS
 
 NotMaxAir:
@@ -5488,13 +5499,13 @@ CheckPlayer_YHi:
 	LDA <Player_YHi
 	BNE NotYHi
 	LDA <Player_Y
-	CMP #$08
+	CMP #04
 	BCS NotYHi
 
 	LDX <Player_XHi
 	INX
 	STX <Player_XHi
-	LDA #$A0
+	LDA #$A1
 	STA <Player_Y
 	LDA #$01
 	STA <Player_YHi
@@ -5510,7 +5521,6 @@ CheckPlayer_YLow:
 	BEQ NotYLo
 	LDA <Player_YHi
 	BEQ NotYLo
-	STA Debug_Snap
 	LDA <Player_Y
 	CMP #$A8
 	BCC NotYLo
@@ -5518,7 +5528,7 @@ CheckPlayer_YLow:
 	LDX <Player_XHi
 	DEX
 	STX <Player_XHi
-	LDA #$10
+	LDA #$05
 	STA <Player_Y
 	LDA #$00
 	STA <Player_YHi

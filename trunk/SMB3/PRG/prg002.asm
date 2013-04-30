@@ -2243,78 +2243,50 @@ ObjInit_FloatWoodenPlat:
 PRG002_AB35:
 	RTS		 ; Return
 
-Float_YVelAdj:	.byte $02, $06, $0A
-Float_YAccel:	.byte $02, -$01, -$04
 
 ObjNorm_WoodenPlatFloat:
-	JSR Fish_FixedYIfAppro	 	; Fixes 'Y' coordinate for platform that floats in fixed water
 	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
 
 	LDA <Player_HaltGame
 	BNE PRG002_AB35	 ; If gameplay is halted, jump to PRG002_AB35 (RTS)
 
-	LDY <Objects_Var4,X	 ; Y = Var4
-
-	STA <Objects_Var4,X	 ; Clear Var4
-
-	LDA Float_YVelAdj,Y
-
-	LDY #$00	 ; Y = 0
-
-	SUB <Objects_Var5,X
-	BPL PRG002_AB5E	 
-
-	INY		 ; Y = 1
-
-	CMP #-$02	 
-	BGE PRG002_AB5E	 
-
-	LDA <Objects_YVel,X
-	BMI PRG002_AB5E	 ; If platform is floating upward, jump to PRG002_AB5E
-
-	INY		 ; Y = 2
-
 PRG002_AB5E:
-	; Y acceleration of floating platform
-	LDA <Objects_YVel,X
-	ADD Float_YAccel,Y
-	STA <Objects_YVel,X
+	LDA Objects_Var1, X
+	BNE Float_Do_Fall
 
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
+	STA Debug_Snap
+	LDA #$00
+	STA Objects_Var2, X
 
-	; 
-	LDA <Objects_Var5,X
-	ADD Object_VelCarry
-	STA <Objects_Var5,X
+	JSR Object_Move	 ; Apply Y Velocity
+	LDA <Objects_DetStat, X
 
-	; Clear Object_VelCarry
+	AND #$04
+	ORA Objects_InWater, X
+	BEQ Float_Do_Fall
+	LDA <Objects_Y, X
+	AND #$F0
+	STA <Objects_Y, X
+	LDA #$00
+	STA <Objects_YVel, X
+
+Try_Float:	
+	LDA Objects_InWater, X
+	BEQ Float_Do_Fall
+	LDA <Objects_Y, X
+	ADD #$0C
+	STA <Objects_Y, X
+	INC Objects_Var1, X
+
+Float_Do_Fall:
 	LDA #$00
 	STA Object_VelCarry
-
 	JSR PlayerPlatform_Collide	; Do Player-platform collision
 	BCC PRG002_AB8F	 		; If Player did not collide with Platform, jump to PRG002_AB8F
 
 	; Player collided with floater
 
 	ROL Player_NoSlopeStick	 	; Set Player_NoSlopeStick
-
-	LDA <Player_YVel
-	BEQ PRG002_AB86	 	; If Player is not moving vertically, jump to PRG002_AB86
-
-	LSR A
-	LSR A
-	STA <Objects_YVel,X	 ; Set floater's Y Velocity to Player's Y velocity / 4
-
-PRG002_AB86:
-	LDY <Player_Suit
-	BEQ PRG002_AB8C	 ; If Player is small, jump to PRG002_AB8C
-
-	LDY #$01	 ; Y = 1
-
-PRG002_AB8C:
-	INY		 ; Y = 1 (if small) or 2 (otherwise)
-
-	STY <Objects_Var4,X	 ; Var4 = 1 or 2
 
 PRG002_AB8F:
 	RTS		 ; Return
