@@ -122,10 +122,10 @@ OTDO_G1R1:	.byte $10, $08	; At feet
 
 	; Group 9
 	;       Y    X
-	.byte $04, $14	; At feet
-	.byte $04, $1C	; At head
-	.byte $0C, $14	; Wall to left
-	.byte $0C, $1C	; Wall to right
+	.byte $10, $18	; At feet
+	.byte $00, $03	; At head
+	.byte $0A, $01	; Wall to left
+	.byte $0A, $07	; Wall to right
 
 	; Group 10
 	;       Y    X
@@ -531,10 +531,6 @@ Object_HitGround:
 	JMP PRG000_C53D	 ; Jump to PRG000_C53D
 
 PRG000_C533:
-	LDA <Objects_Y,X
-	AND #$f0
-	ADD Object_SlopeHeight
-	STA <Objects_Y,X	 ; Align to tile and apply slope
 
 PRG000_C53D:
 	LDA #$00
@@ -582,7 +578,6 @@ PRG000_C559:
 
 	LDA #$00
 	STA <Objects_DetStat,X	; Clear Object's detection status
-	STA Object_SlopeHeight	; Clear Object's slope height
 	STA LRBounce_Vel	; Clear left/right bounce power
 
 	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_TileFeet/Quad and Object_TileWall/Quad

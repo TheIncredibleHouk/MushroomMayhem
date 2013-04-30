@@ -553,11 +553,6 @@ PRG004_A2E6:
 	AND #$04
 	BEQ PRG004_A33E	 ; If boss attack has NOT hit floor, jump to PRG004_A33E
 
-	; Applies a Y offset
-	LDA Objects_TargetingYVal,X
-	AND #$0f
-	STA Object_SlopeHeight
-
 	JSR Object_HitGround	 ; Align to ground + offset
 
 	INC <Objects_Var4,X	 ; Var4++
