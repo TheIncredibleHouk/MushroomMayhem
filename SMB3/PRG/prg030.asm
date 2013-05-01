@@ -5183,6 +5183,13 @@ CopyMapPointers:
 	DEC <Temp_Var15
 	BNE CopyMapPointers
 
+	LDA PAGE_A000
+	PHA
+	JSR LoadTileProperties
+	PLA
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+
 PRG012_A496:
 	LDY #$00	 	; Y = 0
 
@@ -5191,8 +5198,10 @@ PRG012_A498:
 	CMP #$ff	 
 	BEQ PRG012_A4C1	 	; If it's $FF (terminator), jump to PRG012_A4C1
 	STA DAIZ_TEMP2
+	STY TempY
 	JSR Try_Replace_Tile
 	LDA DAIZ_TEMP2
+	LDY TempY
 	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
 	INY		 	; Y++
 
@@ -5246,23 +5255,40 @@ DontIncWorldVar2:
 
 
 Try_Replace_Tile:
-	LDX #$07
-
-Replace_Loop:
-	CMP Map_ForcePoofTiles2, X
-	BEQ Replace_Tile
-	DEX 
-	BPL Replace_Loop
-	BMI Try_Replace_TileRTS
-
-Replace_Tile:
-	LDA World_Complete_Tiles,X
-	AND DAIZ_TEMP1
+	JSR MapGetTileBit
+	AND World_Complete_Tiles,X
 	BEQ Try_Replace_TileRTS
-	LDA #$BF
+	LDA TempA
+	AND #$C0
 	STA DAIZ_TEMP2
 
 Try_Replace_TileRTS:
+	RTS
+
+MapGetTileBit:
+	STA TempA
+	LDA World_Num
+	ASL A
+	TAX
+	LDA TempA
+	AND #08
+	BEQ LowerHalfTiles
+	INX
+
+LowerHalfTiles:
+	LDA TempA
+	AND #$07
+	TAY
+	LDA #$01
+	CPY #$00
+	BEQ FindTileBitRTS
+
+FindTileBit:
+	ASL A
+	DEY
+	BNE FindTileBit
+
+FindTileBitRTS:
 	RTS
 
 Find_Applicable_Pointer:

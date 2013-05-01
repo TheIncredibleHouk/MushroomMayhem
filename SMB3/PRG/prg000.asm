@@ -66,15 +66,16 @@ Object_TileDetectOffsets:
 	; In a sloped level using this group, alternate offsets (below
 	; Group 12) are used for left/right wall detection!
 	;	        Y    X
-OTDO_G1R1:	.byte $10, $08	; At feet
-		.byte $00, $08	; At head
-		.byte $09, $00	; Wall to left
-		.byte $09, $0F	; Wall to right
+OTDO_G1R1:
+	.byte $10, $03	; At feet
+	.byte $00, $0	;8 At head
+	.byte $09, $00	; Wall to left
+	.byte $09, $0F	; Wall to right
 
 	; Group 2
 	;       Y    X
 	.byte $20, $08	; At feet
-	.byte $0C, $08	; At head
+	.byte $00, $08	; At head
 	.byte $15, $00	; Wall to left
 	.byte $15, $0F	; Wall to right
 
@@ -321,7 +322,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX02	; Object $88 - OBJ_PIRATEBRO
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $89 - OBJ_CHAINCHOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8A - OBJ_THWOMP
-	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8B - OBJ_THWOMPLEFTSLIDE
+	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -531,6 +532,9 @@ Object_HitGround:
 	JMP PRG000_C53D	 ; Jump to PRG000_C53D
 
 PRG000_C533:
+	LDA <Objects_Y,X
+	AND #$f0
+	STA <Objects_Y,X	 ; Align to tile and apply slope
 
 PRG000_C53D:
 	LDA #$00
@@ -538,7 +542,15 @@ PRG000_C53D:
 
 	RTS		 ; Return
 
+Object_HitCeiling:
+	LDA <Objects_Y,X
+	AND #$f0
+	ORA #$0F
+	STA <Objects_Y,X	 ; Align to tile and apply slope
 
+	LDA #$00
+	STA <Objects_YVel,X	
+	RTS
 	; The only difference amongst the Object_WorldDetect[x] entries
 	; are the input value, which specifies the limit that an object
 	; should acknowledge a floor tile.  E.g., Object_WorldDetect4

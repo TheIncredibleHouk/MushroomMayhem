@@ -4477,8 +4477,7 @@ Find_Tile_Loop:
 
 Set_Level_Bit:
 	STX DAIZ_TEMP2
-	JSR Get_Bit_By_World
-	LDX DAIZ_TEMP2
+	JSR MapGetTileBit
 	ORA World_Complete_Tiles,X
 	STA World_Complete_Tiles,X
 	RTS
@@ -4830,18 +4829,4 @@ Rainbow_Palette_Cycle_Sprites2:
 	;STA (Palette_Buffer + $16)
 	STA (Palette_Buffer + $1A)
 	;STA (Palette_Buffer + $1E)
-	RTS
-
-
-Get_Bit_By_World:
-	LDX World_Num
-	LDA #$01
-
-GBBW_Loop:
-	DEX
-	BMI GBBW_RTS
-	ASL A
-	JMP GBBW_Loop
-
-GBBW_RTS:
 	RTS

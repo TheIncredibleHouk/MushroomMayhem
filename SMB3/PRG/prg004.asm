@@ -55,8 +55,8 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_FireBro	; Object $88 - OBJ_PIRATEBRO
 	.word ObjInit_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
 	.word ObjInit_Thwomp		; Object $8A - OBJ_THWOMP
-	.word ObjInit_ThwompLRSlide	; Object $8B - OBJ_THWOMPLEFTSLIDE
-	.word ObjInit_ThwompLRSlide	; Object $8C - OBJ_THWOMPRIGHTSLIDE
+	.word ObjInit_HyperThwomp	; Object $8B - OBJ_HYPERTHWOMP
+	.word ObjInit_HyperThwomp	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.word ObjInit_ThwompUDSlide	; Object $8D - OBJ_THWOMPUPDOWN
 	.word ObjInit_ThwompUDSlide	; Object $8E - OBJ_THWOMPDIAGONALUL
 	.word ObjInit_ThwompUDSlide	; Object $8F - OBJ_THWOMPDIAGONALDL
@@ -97,8 +97,8 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_FireBro	; Object $88 - OBJ_PIRATEBRO
 	.word ObjNorm_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
 	.word ObjNorm_Thwomp		; Object $8A - OBJ_THWOMP
-	.word ObjNorm_ThwompLRSlide	; Object $8B - OBJ_THWOMPLEFTSLIDE
-	.word ObjNorm_ThwompLRSlide	; Object $8C - OBJ_THWOMPRIGHTSLIDE
+	.word ObjNorm_HyperThwomp	; Object $8B - OBJ_HYPERTHWOMP
+	.word ObjNorm_HyperThwomp	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.word ObjNorm_ThwompVertical	; Object $8D - OBJ_THWOMPUPDOWN
 	.word ObjNorm_ThwompVertical	; Object $8E - OBJ_THWOMPDIAGONALUL
 	.word ObjNorm_ThwompVertical	; Object $8F - OBJ_THWOMPDIAGONALDL
@@ -140,7 +140,7 @@ ObjectGroup03_CollideJumpTable:
 	.word OCSPECIAL_HIGHSCORE					; Object $88 - OBJ_PIRATEBRO
 	.word $0000					; Object $89 - OBJ_CHAINCHOMP
 	.word $0000					; Object $8A - OBJ_THWOMP
-	.word $0000					; Object $8B - OBJ_THWOMPLEFTSLIDE
+	.word $0000					; Object $8B - OBJ_HYPERTHWOMP
 	.word $0000					; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.word $0000					; Object $8D - OBJ_THWOMPUPDOWN
 	.word $0000					; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -182,7 +182,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $88 - OBJ_PIRATEBRO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $89 - OBJ_CHAINCHOMP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8A - OBJ_THWOMP
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8B - OBJ_THWOMPLEFTSLIDE
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -223,7 +223,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $88 - OBJ_PIRATEBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $89 - OBJ_CHAINCHOMP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8A - OBJ_THWOMP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8B - OBJ_THWOMPLEFTSLIDE
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -265,7 +265,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY 			; Object $88 - OBJ_PIRATEBRO
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $89 - OBJ_CHAINCHOMP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8A - OBJ_THWOMP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8B - OBJ_THWOMPLEFTSLIDE
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8B - OBJ_HYPERTHWOMP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8D - OBJ_THWOMPUPDOWN
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8E - OBJ_THWOMPDIAGONALUL
@@ -307,7 +307,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $4E	; Object $88 - OBJ_PIRATEBRO
 	.byte OPTS_SETPT5 | $0A	; Object $89 - OBJ_CHAINCHOMP
 	.byte OPTS_SETPT5 | $12	; Object $8A - OBJ_THWOMP
-	.byte OPTS_SETPT5 | $12	; Object $8B - OBJ_THWOMPLEFTSLIDE
+	.byte OPTS_SETPT5 | $12	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OPTS_SETPT5 | $12	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OPTS_SETPT5 | $12	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OPTS_SETPT5 | $12	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -349,7 +349,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAW16X32	; Object $88 - OBJ_PIRATEBRO
 	.byte KILLACT_JUSTDRAW16X16	; Object $89 - OBJ_CHAINCHOMP
 	.byte KILLACT_NORMALANDKILLED	; Object $8A - OBJ_THWOMP
-	.byte KILLACT_NORMALANDKILLED	; Object $8B - OBJ_THWOMPLEFTSLIDE
+	.byte KILLACT_NORMALANDKILLED	; Object $8B - OBJ_HYPERTHWOMP
 	.byte KILLACT_NORMALANDKILLED	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte KILLACT_NORMALANDKILLED	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte KILLACT_NORMALANDKILLED	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -1456,16 +1456,16 @@ PRG004_A737:
 PRG004_A740:
 	RTS		 ; Return
 
-ObjInit_ThwompLRSlide:
+ObjInit_HyperThwomp:
 	JSR Thwomp_Center	 ; Center the X of the Thwomp
+	JSR Thwomp_Center	 ; Center the X of the Thwomp
+	LDA #$00
+	STA <Objects_Var5,X
+	RTS
 
-	; Var4 = origin X
-	STA <Objects_Var4,X
-
-	RTS		 ; Return
-
-ObjNorm_ThwompLRSlide:
+ObjNorm_HyperThwomp:
 	JSR Thwomp_Draw	 ; Draw Thwomp
+	JSR Object_AnySprOffscreen
 
 	LDA <Player_HaltGame
 	BNE PRG004_A78B	 ; If gameplay is halted, jump to PRG004_A78B (RTS)
@@ -1473,108 +1473,54 @@ ObjNorm_ThwompLRSlide:
 	JSR Object_DeleteOffScreen_N2	 ; Delete if falls off-screen
 	JSR Player_HitEnemy	 ; Do Player to Thwomp collision detection
 
-	LDA <Objects_Var5,X	 ; Var5 is internal state
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word ThwompLR_WaitForPlayer
-	.word ThwompLR_Slide
-	.word ThwompLR_Return
-
-
-ThwompLR_WaitForPlayer:
-	JSR Object_AnySprOffscreen
-	BNE PRG004_A78B	 ; If any sprite is off-screen, jump to PRG004_A78B (RTS)
-
-	JSR Level_ObjCalcXDiffs	
-
-	LDA <Temp_Var16
-	ADD #$70
-	CMP #$e8
-	BGE PRG004_A78B	 ; If Player is too far from Thwomp, jump to PRG004_A78B (RTS)
-
-	LDA Level_ObjectID,X
-	SUB #OBJ_THWOMPLEFTSLIDE
-	STA <Temp_Var1		 ; Temp_Var1 = 0 if left sliding Thwomp, or 1 if right sliding Thwomp
-
-	CPY <Temp_Var1	
-	BEQ PRG004_A78B	 ; If Player is not on correct side of Thwomp, jump to PRG004_A78B (RTS)
-
-	; Set Var7 for slide direction
-	TYA
-	STA Objects_Var7,X
-
-	INC <Objects_Var5,X	 ; Var5++ (next internal state)
-
-	; Stop Thwomp's horizontal movement
-	LDA #$00
-	STA <Objects_XVel,X
-
-	; Set timer to $3B
-	LDA #$3b
-	STA Objects_Timer,X
+	
+	STA Debug_Snap
+	LDA <Objects_Var5, X
+	BNE ObjThwomp_FallToCeiling
+	JSR Thwomp_FallToGround
 
 PRG004_A78B:
 	RTS		 ; Return
 
-ThwompLR_XVelAccel:	.byte  $02, -$02
-ThwompLR_XVelLimit:	.byte  $20, -$20
-ThwompLR_ReturnXVel:	.byte -$08,  $08
-	
+ObjThwomp_FallToCeiling:
+	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+ 
+	LDA <Objects_YVel,X
+	BEQ FallAnyways
+	CMP #$90
+	BCC NoDecVel	 ; If Thwomp is falling >= $70, jump to PRG004_A6B4
 
-ThwompLR_Slide:
-	LDA Objects_Timer,X
-	BNE PRG004_A79E	 ; If timer not expired, jump to PRG004_A79E
+FallAnyways:
+	; Thwomp fall Y Vel += 4
+	SBC #$04
+	STA <Objects_YVel,X
 
-	INC <Objects_Var5,X	 ; Var5++ (next internal state)
+NoDecVel:
+	JSR Object_WorldDetectN1 ; Detect against world
 
-	; Timer set to $40
+	LDA <Objects_DetStat,X
+	AND #$08
+	BEQ EndQuickRise	 ; If Thwomp did not hit ground, jump to PRG004_A6D4 (RTS)
+
+	JSR Object_HitCeiling	 ; Align to floor
+
+	; Shake floor!
+	LDA #$18
+	STA Level_Vibration
+
+	; Ba-bam! sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	; Set timer to $40
 	LDA #$40
 	STA Objects_Timer,X
 
-PRG004_A79E:
-	JSR Object_ApplyXVel	 ; Apply X Velocity
+	DEC <Objects_Var5,X	 ; Var5++ (next internal state)
 
-	LDY Objects_Var7,X	 ; Y = Var7 (slide direction)
-
-	LDA <Objects_XVel,X
-	CMP ThwompLR_XVelLimit,Y
-	BEQ PRG004_A7B1	 	; If Thwomp's X velocity is at its limit, jump to PRG004_A7B1
-
-	; Accelerate!
-	ADD ThwompLR_XVelAccel,Y
-	STA <Objects_XVel,X
-
-PRG004_A7B1:
+EndQuickRise:
 	RTS		 ; Return
-
-
-ThwompLR_Return:
-	LDA Objects_Timer,X	 
-	BNE PRG004_A7CD	 ; If timer is not expired, jump to PRG004_A7CD (RTS)
-
-	LDA <Objects_X,X
-	CMP <Objects_Var4,X
-	BNE PRG004_A7C2	 ; If Thwomp is not back to his origin X, jump to PRG004_A7C2
-
-	; Var5 = 0 (return to original internal state)
-	LDA #$00
-	STA <Objects_Var5,X
-
-	RTS		 ; Return
-
-PRG004_A7C2:
-	LDY Objects_Var7,X	 ; Y = Var7 (slide direction)
-
-	; Set Thwomp's return X velocity
-	LDA ThwompLR_ReturnXVel,Y
-	STA <Objects_XVel,X
-
-	JSR Object_ApplyXVel	 ; Apply X Velocity
-
-PRG004_A7CD:
-	RTS		 ; Return
-
 	; Values for OBJ_THWOMPUPDOWN, OBJ_THWOMPDIAGONALUL, OBJ_THWOMPDIAGONALDL, respectively
 SlideThwomp_InitXVel:	.byte $00, $10, $10
 SlideThwomp_InitYVel:	.byte $10, $10, $F0

@@ -114,7 +114,7 @@ Tile_Mem_Clear:	; A40E
 	; The following loop clears all of the tile memory space to $02 (an all-black tile)
 	LDY #$00	
 PRG012_A410:
-	LDA #$02	
+	LDA #$00	
 	JSR Tile_Mem_ClearB
 	JSR Tile_Mem_ClearA
 	CPY #$f0	 
@@ -136,10 +136,6 @@ Map_Object_ColorSets:
 ; data and sets level panels which have been previously completed
 ; to their proper state (e.g. M/L for level panels, crumbled fort)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-Map_ForcePoofTiles2:
-	.byte $44, $42, $FF, $FF, $FF, $FF, $FF, $FF
 
 			; I placed this here to insure maps don't move. Critical #DAHRKDAIZ
 	.org $A598

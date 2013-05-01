@@ -713,8 +713,7 @@ PAD_RIGHT	= $01
 				.ds 10	; $DB-$E4 unused
 
 	World_Map_Tile:		.ds 1	; Current tile index Mario is standing on
-
-				.ds 1	; $E6 unused
+	World_Map_Prop:		.ds 1
 				.ds 1	; $E7 unused
 				.ds 1	; $E8 unused
 
@@ -1629,7 +1628,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 
 	Player_SlideRate:	.ds 1	; While Player is sliding, this is added to X Velocity (does not persist, however)
 
-				.ds 1	; $056A unused
+					.ds 1	; $056A unused
 
 	Player_IsClimbing:	.ds 1	; Set when Player is climing vine
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
@@ -3009,6 +3008,11 @@ SOBJ_POOF		= $16 	; Poof
 	TempX:				.ds 1
 	TempY:				.ds 1
 	TempA:				.ds 1
+
+	; Tile map property flags
+MAP_PROP_ENTERABLE:		= %00000001
+MAP_PROP_TRAVERSABLE:	= %00000010
+MAP_PROP_COMPLETABLE:	= %00000100
 	; Tile Property Flags
 	; TSWF XXXX
 	; T - Top Solid
@@ -3035,7 +3039,7 @@ TILE_PROP_MOVE_DOWN		= $06 ;
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
-TILE_PROP_CHERRY		= $0F ;
+TILE_PROP_CHERRY		= $0E ;
 
 ; solid properties
 ;TILE_PROP_HARMFUL		= $01 ; 
@@ -3510,7 +3514,8 @@ OBJ_FIREBRO		= $87	; Fire Brother
 OBJ_PIRATEBRO		= $88	; "Lost" orange cheep cheep
 OBJ_CHAINCHOMP		= $89	; Chain chomp
 OBJ_THWOMP		= $8A	; Standard Thwomp
-OBJ_THWOMPLEFTSLIDE	= $8B	; Left sliding Thwomp
+OBJ_THWOMPLEFTSLIDE = $00;
+OBJ_HYPERTHWOMP	= $8B	; Left sliding Thwomp
 OBJ_THWOMPRIGHTSLIDE	= $8C	; Right sliding Thwomp
 OBJ_THWOMPUPDOWN	= $8D	; Up-down sliding Thwomp
 OBJ_THWOMPDIAGONALUL	= $8E	; Diagonal up-left Thwomp
