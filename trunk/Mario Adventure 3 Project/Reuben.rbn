@@ -13,7 +13,7 @@
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,27,17,37,0F,31,21,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Desert" guid="cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385" />
     <palette background="22" data="22,0F,30,10,22,0F,30,14,22,0F,38,18,22,0F,2C,1C,22,00,00,00,22,0F,30,14,22,0F,30,1A,22,0F,37,18" name="Airship" guid="4dd54dba-3c74-49c9-aded-05e0ea1e006c" />
     <palette background="00" data="3B,0F,30,3C,3B,0F,36,27,3B,0F,2A,1A,3B,0F,31,21,3B,00,00,00,3B,0F,30,16,3B,0F,30,2A,3B,0F,36,27" name="Giant" guid="d97a4897-b537-4ba5-92c9-5b479de01bc8" />
-    <palette background="21" data="21,0F,30,31,21,0F,38,18,21,0F,30,1A,21,0F,20,21,21,00,00,00,21,0F,30,16,21,0F,30,21,21,0F,36,27" name="Ice" guid="0b4bb2af-f89c-413c-a911-683e36d52e47" />
+    <palette background="21" data="21,0F,30,31,21,0F,38,18,21,0F,30,1B,21,0F,31,11,21,00,00,00,21,0F,30,16,21,0F,30,21,21,0F,36,27" name="Ice" guid="0b4bb2af-f89c-413c-a911-683e36d52e47" />
     <palette background="00" data="30,0F,30,3C,30,0F,36,27,30,0F,2A,1A,30,0F,12,21,30,00,00,00,30,0F,30,16,30,0F,30,2A,30,0F,36,27" name="Cloudy" guid="71eea64a-4106-44df-be63-4f50214169ad" />
     <palette background="00" data="0F,0F,30,05,0F,08,38,18,0F,0B,30,1B,0F,01,31,11,0F,00,00,00,0F,07,30,16,0F,0B,30,2A,0F,08,36,27" name="Underground" guid="2859f352-57a0-40f4-8c28-59a3a106333d" />
     <palette background="12" data="12,0F,30,13,12,0D,20,10,12,0D,27,17,12,0D,30,2A,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Plains Autumn" guid="9b3e52c3-66c9-4363-842b-72e95e15de4a" />
@@ -45,5 +45,6 @@
     <level name="Cold, hard, cash." worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="756ccf0f-b003-4c7f-8975-637991a7c326" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-28T18:33:52.4729215-04:00" layout="Horizontal" />
     <level name="Fly with Air Raccoon" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="e96e7d58-5b21-47b3-9d71-2e0cd473786d" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-29T21:34:01.3262358-04:00" layout="Horizontal" />
     <level name="Hammer time!" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="11705e2e-bf8d-4e08-8873-5a0bcd2caa68" leveltype="2" lastcompressionsize="0" lastmodified="2013-04-30T21:36:19.0579109-04:00" layout="Horizontal" />
+    <level name="Mild winter" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="76a75f19-0eb9-45c1-8b94-3f72327e072b" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-01T16:56:05.9889489-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
