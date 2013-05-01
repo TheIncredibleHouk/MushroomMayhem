@@ -518,8 +518,9 @@ PRG005_A283:
 
 	JSR Object_WorldDetectN1	 ; Detect against world
 
-	LDA Object_TileFeet2
-	CMP #TILE2_LAVATOP
+	LDA Object_TileFeet
+	AND #$E0
+	CMP #TILE_PROP_WATER
 	BNE PRG005_A2C9	 	; If Podoboo has not hit the lava, jump to PRG005_A2C9
 
 	LDA <Objects_Y,X

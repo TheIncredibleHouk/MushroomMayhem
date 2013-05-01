@@ -2254,7 +2254,6 @@ PRG002_AB5E:
 	LDA Objects_Var1, X
 	BNE Float_Do_Fall
 
-	STA Debug_Snap
 	LDA #$00
 	STA Objects_Var2, X
 

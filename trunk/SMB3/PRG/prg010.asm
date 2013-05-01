@@ -2513,9 +2513,9 @@ PRG010_CDEC:
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 
 	; #DAHRKDAIZ  modified to check a raw table for enterable tiles.
-	LDA <World_Map_Tile
-	JSR Tile_Enterable
-	BNE PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
+	LDA <World_Map_Prop
+	AND MAP_PROP_ENTERABLE
+	BEQ PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
 
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)
@@ -2664,20 +2664,11 @@ PRG010_CEBF:
 	BEQ PRG010_CEE1	 	; If Player is not pressing 'A', jump to PRG010_CEE1
 
 PRG010_CEC9:
-	
-	; Not a special tile...
-	LDA <World_Map_Tile
-	AND #$c0	 	; Only keeping the upper 2 bits of it
-	CLC		 
-	ROL A		 
-	ROL A		 
-	ROL A		 
-	TAY		 	; Y = map tile >> 6 (basically)
 
 	; What makes other tiles (e.g. standard panels) work...
-	LDA <World_Map_Tile
-	JSR Tile_Enterable
-	BEQ PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
+	LDA <World_Map_Prop
+	AND #MAP_PROP_ENTERABLE
+	BNE PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
 
 PRG010_CEE1:		
 	JMP WorldMap_UpdateAndDraw	; Jump to WorldMap_UpdateAndDraw
@@ -3183,8 +3174,11 @@ Map_GetTile:
 
 	TAY		 	; Store this offset value into 'Y'
 
-	LDA [Map_Tile_AddrL],Y
+	LDA [Map_Tile_AddrL], Y
 	STA <World_Map_Tile	
+	TAY
+	LDA TileProperties, Y
+	STA <World_Map_Prop
 	RTS		 ; Return
 
 
@@ -3316,8 +3310,9 @@ PRG010_D2AD:
 	; Search to see if this is a valid to move over given the Player's direction et al.
 	
 PRG010_D2C1:
-	JSR Tile_Traversable
-	BEQ PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
+	LDA <World_Map_Prop
+	AND #MAP_PROP_TRAVERSABLE
+	BNE PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
 	RTS		 ; Return
 
 PRG010_D336:
@@ -3824,46 +3819,6 @@ DMC08:
 DMC08_End
 
 ; Rest of ROM bank was empty
-
-Traversable_Tiles:	.byte $BF, $FD, $F6, $FE, $FC, $FA, $9F, $80, $E0, $FF, $FF, $FF, $FF, $FF, $FF
-Enterable_Tiles:	.byte $BC, $50, $42, $43, $8F, $FC, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-
-Tile_Enterable:
-	LDX #$07
-
-Cmp_Enterable:
-	CMP Enterable_Tiles, X
-	BEQ Is_Enterable 
-	DEX
-	BPL Cmp_Enterable
-	LDA #$01
-	RTS
-
-Is_Enterable:
-	LDA #$00
-	RTS
-
-Tile_Traversable:
-	LDA #$00
-	RTS
-	STX DAIZ_TEMP1
-	LDX #$0F
-
-Cmp_Traversable:
-	CMP Traversable_Tiles, X
-	BEQ Is_Traversable
-	CMP Enterable_Tiles, X
-	BEQ Is_Traversable
-	DEX
-	BPL Cmp_Traversable
-	LDX DAIZ_TEMP1
-	LDA #$01
-	RTS
-
-Is_Traversable:
-	LDX DAIZ_TEMP1
-	LDA #$00
-	RTS
 
 Try_Ability_Change:
 	LDA Player_Level
