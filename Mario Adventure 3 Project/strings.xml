@@ -581,7 +581,7 @@
     <block value="3D"></block>
     <block value="3E"></block>
     <block value="3F">Empty ? Block</block>
-    <block value="40"></block>
+    <block value="40">Background</block>
     <block value="41">Cleared Coin</block>
     <block value="42">P-Switch Stomped</block>
     <block value="43"></block>
@@ -3187,7 +3187,7 @@
     <block value="57"></block>
     <block value="58"></block>
     <block value="59"></block>
-    <block value="5A"></block>
+    <block value="5A">Ice Covered Spikes</block>
     <block value="5B"></block>
     <block value="5C"></block>
     <block value="5D"></block>
@@ -3203,7 +3203,7 @@
     <block value="67"></block>
     <block value="68"></block>
     <block value="69"></block>
-    <block value="6A"></block>
+    <block value="6A">Spikey Ground</block>
     <block value="6B"></block>
     <block value="6C"></block>
     <block value="6D"></block>
