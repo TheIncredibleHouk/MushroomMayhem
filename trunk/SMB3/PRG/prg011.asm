@@ -4727,81 +4727,19 @@ PRG011_BC00:
 ; that occur on the world maps.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Map_AnimSpeeds:
-	; These define the ticks to wait for each frame of the
-	; map animation per world.  Interestingly, this allows
-	; for different pauses on each frame, but it appears 
-	; that this functionality was left unused,
-	.byte $11, $11, $11, $11	; World 1
-	.byte $1F, $1F, $1F, $1F	; World 2
-	.byte $17, $17, $17, $17	; World 3
-	.byte $17, $17, $17, $17	; World 4
-	.byte $00, $00, $00, $00	; World 5
-	.byte $0B, $0B, $0B, $0B	; World 6
-	.byte $1D, $1D, $1D, $1D	; World 7
-	.byte $0F, $0F, $0F, $0F	; World 8
-	.byte $14, $14, $14, $14	; World 9 (Warp Zone)
-
 Map_AnimCHRROM:
 	; This sets the CHRROM page in use per animation frame (common to all worlds)
-	.byte $14, $70, $72, $74
+	.byte $70, $72, $74, $76
 
 Map_DoAnimations:	; $BC29
-	LDX World_Num	; X = World_Num
-	CPX #4	 	
-	BNE PRG011_BC34	; If not on World 5, jump to PRG011_BC34
-
-	; World 5...
-	LDY #$00		; Otherwise, Y = 0
-	BPL Map_NoAnimUpdate	; (technically always) jump to Map_NoAnimUpdate (World 5 does not animate)
-
-PRG011_BC34:
-	; Any world but 5 goes here...
-	CPX #7		
-	BNE PRG011_BC46	 	; If World is NOT 8, jump to PRG011_BC46
-
-	; World 8
-	LDY Player_Current	; Y = Player_Current
-	LDA World_Map_XHi,Y	; Get player's hi byte coordinate (what "level" of world 8 we're on...)
-	CMP #$03
-	BNE PRG011_BC46		; If NOT on the final screen of World 8 (Bowser's castle), jump to PRG011_BC46
-
-	; World 8 Final screen
-	LDY #$00	 	; Otherwise, Y = 0
-	BEQ Map_NoAnimUpdate	; (technically always) jump to Map_NoAnimUpdate (final screen doesn't animate)
-
-PRG011_BC46:
-	LDY World_Map_AnimF	; Get current world map animation frame
-	DEC World_Map_AnimT	; World_Map_AnimT--
-	BPL Map_NoAnimUpdate 	; If ticks remain, jump to Map_NoAnimUpdate
-
-	INY		 ; Y++ (next frame)
-	TYA		 ; A = frame
-	CPX #2
-	BNE PRG011_BC5D	 ; If world is NOT 3, jump to PRG011_BC5D
-
-	; World 3 limits animation to one of two frames, since part
-	; of that animation includes the draw bridges.
-	AND #$01	 	; Only allowing one frame through (0 and 1)
-	LDY World3_Bridge	; Get the bridge state
-	BEQ PRG011_BC5D	 	; If World3_Bridge = 0 (bridges are down), jump to PRG011_BC5D
-	ORA #$02	 	; Otherwise, jump the animation higher (between 0 and 3)
-
-PRG011_BC5D:
-	AND #$03	 	; Cap animation to 0-3
-	STA World_Map_AnimF	; Store the updated frame
-
-	; Reset the animation clock
+	STA Debug_Snap
+	STA Debug_Snap
+	LDA <Counter_1
+	AND #$18
+	LSR A
+	LSR A
+	LSR A
 	TAY
-	TXA
-	ASL A
-	ASL A
-	ORA World_Map_AnimF
-	TAX		 
-	LDA Map_AnimSpeeds,X	 ; X = World_Num * 4 + World_Map_AnimF (get tick for frame 0-3 in this world)
-	STA World_Map_AnimT	 ; Store this new tick
-
-Map_NoAnimUpdate:
 	LDA Map_AnimCHRROM,Y	; Get the correct CHRROM page
 	STA PatTable_BankSel	  	; Put it to use
 	RTS		  ; Return!

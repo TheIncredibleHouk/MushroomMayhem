@@ -2514,7 +2514,7 @@ PRG010_CDEC:
 
 	; #DAHRKDAIZ  modified to check a raw table for enterable tiles.
 	LDA <World_Map_Prop
-	AND MAP_PROP_ENTERABLE
+	LDA #MAP_PROP_ENTERABLE
 	BEQ PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
 
 	LDA <Pad_Holding
@@ -2667,7 +2667,7 @@ PRG010_CEC9:
 
 	; What makes other tiles (e.g. standard panels) work...
 	LDA <World_Map_Prop
-	AND #MAP_PROP_ENTERABLE
+	LDA #MAP_PROP_ENTERABLE
 	BNE PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
 
 PRG010_CEE1:		
@@ -3311,7 +3311,7 @@ PRG010_D2AD:
 	
 PRG010_D2C1:
 	LDA <World_Map_Prop
-	AND #MAP_PROP_TRAVERSABLE
+	LDA #MAP_PROP_TRAVERSABLE
 	BNE PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
 	RTS		 ; Return
 

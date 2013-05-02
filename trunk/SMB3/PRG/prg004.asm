@@ -1474,7 +1474,6 @@ ObjNorm_HyperThwomp:
 	JSR Player_HitEnemy	 ; Do Player to Thwomp collision detection
 
 	
-	STA Debug_Snap
 	LDA <Objects_Var5, X
 	BNE ObjThwomp_FallToCeiling
 	JSR Thwomp_FallToGround
