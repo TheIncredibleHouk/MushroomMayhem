@@ -5067,6 +5067,7 @@ Update_Columns:
 	RTS
 
 Map_Reload_with_Completions:
+	STA Debug_Snap
 	; Clears all map tiles to $02 (all black tiles)
 	JSR Tile_Mem_Clear
 
