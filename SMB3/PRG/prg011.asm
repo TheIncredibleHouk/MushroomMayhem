@@ -4732,8 +4732,6 @@ Map_AnimCHRROM:
 	.byte $70, $72, $74, $76
 
 Map_DoAnimations:	; $BC29
-	STA Debug_Snap
-	STA Debug_Snap
 	LDA <Counter_1
 	AND #$18
 	LSR A
