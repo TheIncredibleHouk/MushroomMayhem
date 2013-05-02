@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project name="Reuben" guid="92cc06b5-b089-42f3-b92f-79a078a2a7ed" romfile="F:\ROM Hacking\Mario Adventure 3\MarioAdventure3.nes">
+<project name="Reuben" guid="92cc06b5-b089-42f3-b92f-79a078a2a7ed" romfile="C:\Users\thouk\Desktop\Personal\smb3project\Mario Adventure 3 Project\MarioAdventure3.nes">
   <paletteinfo>
     <palette background="00" data="0F,0F,30,1A,0F,37,28,1A,0F,01,3B,1A,0F,20,05,1A,0F,00,00,00,0F,17,36,0F,0F,17,36,0F,0F,30,31,0F" name="Mushroom Glades" guid="c6560d1b-5f71-4e4a-8856-8845797a63e9" />
     <palette background="11" data="11,0F,30,05,11,0D,37,27,11,0D,3A,1A,11,0D,30,21,11,00,00,00,11,0F,30,16,11,0F,30,2A,11,0F,36,27" name="Plains" guid="ceee7668-a8e4-44c0-8676-a3d11168456f" />
@@ -13,7 +13,7 @@
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,27,17,37,0F,31,21,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Desert" guid="cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385" />
     <palette background="22" data="22,0F,30,10,22,0F,30,14,22,0F,38,18,22,0F,2C,1C,22,00,00,00,22,0F,30,14,22,0F,30,1A,22,0F,37,18" name="Airship" guid="4dd54dba-3c74-49c9-aded-05e0ea1e006c" />
     <palette background="00" data="3B,0F,30,3C,3B,0F,36,27,3B,0F,2A,1A,3B,0F,31,21,3B,00,00,00,3B,0F,30,16,3B,0F,30,2A,3B,0F,36,27" name="Giant" guid="d97a4897-b537-4ba5-92c9-5b479de01bc8" />
-    <palette background="21" data="21,0F,30,31,21,0F,38,18,21,0F,30,1A,21,0F,20,21,21,00,00,00,21,0F,30,16,21,0F,30,21,21,0F,36,27" name="Ice" guid="0b4bb2af-f89c-413c-a911-683e36d52e47" />
+    <palette background="21" data="21,0F,30,31,21,0F,38,18,21,0F,30,1A,21,0F,30,1C,21,00,00,00,21,0F,30,16,21,0F,30,21,21,0F,36,27" name="Ice" guid="0b4bb2af-f89c-413c-a911-683e36d52e47" />
     <palette background="00" data="30,0F,30,3C,30,0F,36,27,30,0F,2A,1A,30,0F,12,21,30,00,00,00,30,0F,30,16,30,0F,30,2A,30,0F,36,27" name="Cloudy" guid="71eea64a-4106-44df-be63-4f50214169ad" />
     <palette background="00" data="0F,0F,30,05,0F,08,38,18,0F,0B,30,1B,0F,01,31,11,0F,00,00,00,0F,07,30,16,0F,0B,30,2A,0F,08,36,27" name="Underground" guid="2859f352-57a0-40f4-8c28-59a3a106333d" />
     <palette background="12" data="12,0F,30,13,12,0D,20,10,12,0D,27,17,12,0D,30,2A,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Plains Autumn" guid="9b3e52c3-66c9-4363-842b-72e95e15de4a" />
@@ -26,18 +26,19 @@
     <palette background="30" data="30,0F,30,10,30,0D,20,10,30,0D,20,10,30,0D,20,10,30,00,00,00,30,0F,20,10,30,0F,20,10,30,0F,20,10" name="Zero" guid="a4cab6c3-8e9d-4f4b-8a95-95431d27d166" />
     <palette background="00" data="0F,0F,30,04,0F,1F,30,1C,0F,0B,30,1B,0F,01,30,31,0F,00,00,00,0F,06,30,16,0F,0F,30,10,0F,01,30,21" name="Fortress Water" guid="be23a896-cf98-40ea-b632-c1f32f106a77" />
     <palette background="0C" data="0C,0F,30,18,0C,0D,20,00,0C,0D,3B,1B,0C,0D,30,1C,0C,00,00,00,0C,0F,20,06,0C,0F,30,2B,0C,0F,36,27" name="Plains 2" guid="94fedb0d-96ba-4ca7-b225-07d8b22cfbdf" />
+    <palette background="0F" data="0F,0F,30,18,0F,02,30,11,0F,0F,30,1A,0F,0F,30,2D,0F,00,00,00,0F,0F,30,16,0F,0F,30,21,0F,02,30,31" name="Ice Cave" guid="d40ba990-7346-49f9-bd57-1f9b45533c17" />
   </paletteinfo>
   <blocklayouts />
   <worldinfo>
     <world name="World 0" ordinal="0" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" lastmodified="2013-05-01T21:17:42.1318237-04:00" lastcompressedsize="0" isnoworld="false" />
-    <world name="Cheep Cheep Everglades" ordinal="1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" lastmodified="2013-05-02T07:03:40.0727429-04:00" lastcompressedsize="0" isnoworld="false" />
+    <world name="Cheep Cheep Everglades" ordinal="1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" lastmodified="2013-05-02T10:26:22.6132421-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Piranha Forest" ordinal="2" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" lastmodified="0001-01-01T00:00:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Bob-omb Quarry" ordinal="3" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" lastmodified="0001-01-01T00:00:00" lastcompressedsize="0" isnoworld="false" />
-    <world name="Blooper Sea" ordinal="4" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" lastmodified="0001-01-01T00:00:00" lastcompressedsize="0" isnoworld="false" />
+    <world name="Blooper Bay" ordinal="4" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" lastmodified="0001-01-01T00:00:00" lastcompressedsize="0" isnoworld="false" />
     <world name="No World" ordinal="25" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" lastmodified="2012-08-30T08:56:17.95-04:00" lastcompressedsize="0" isnoworld="true" />
   </worldinfo>
   <levelinfo>
-    <level name="Just the basics." worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="b3c6ac79-3ec8-43ff-b510-b058ca7bd011" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-01T20:11:27.6694975-04:00" layout="Horizontal" />
+    <level name="Just the basics." worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="b3c6ac79-3ec8-43ff-b510-b058ca7bd011" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-02T12:07:42.3572421-04:00" layout="Horizontal" />
     <level name="Just the basics." worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="9ee758fa-a47d-4768-9291-018ab629e54d" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-27T07:44:39.6114144-04:00" layout="Horizontal" />
     <level name="A bit over grown." worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="1079adc5-8f63-46ab-9e53-d10e6eb10723" leveltype="14" lastcompressionsize="0" lastmodified="2013-04-28T08:13:24.0975803-04:00" layout="Horizontal" />
     <level name="A bit over grown." worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="747d617e-59bb-40d5-a9fc-f558dc5fadd8" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-27T15:16:33.831259-04:00" layout="Horizontal" />
@@ -45,7 +46,8 @@
     <level name="Cold, hard, cash." worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="756ccf0f-b003-4c7f-8975-637991a7c326" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-28T18:33:52.4729215-04:00" layout="Horizontal" />
     <level name="Fly with Air Raccoon" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="e96e7d58-5b21-47b3-9d71-2e0cd473786d" leveltype="1" lastcompressionsize="0" lastmodified="2013-04-29T21:34:01.3262358-04:00" layout="Horizontal" />
     <level name="Hammer time!" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="11705e2e-bf8d-4e08-8873-5a0bcd2caa68" leveltype="2" lastcompressionsize="0" lastmodified="2013-04-30T21:38:28.0952914-04:00" layout="Horizontal" />
-    <level name="Hammer time!" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="76a75f19-0eb9-45c1-8b94-3f72327e072b" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-01T18:13:49.2367782-04:00" layout="Horizontal" />
-    <level name="Warp Zone" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="b9a58592-6618-4b28-b410-2653d8711130" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-01T21:18:26.1383408-04:00" layout="Horizontal" />
+    <level name="Hammer time!" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="76a75f19-0eb9-45c1-8b94-3f72327e072b" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-02T14:13:17.0565886-04:00" layout="Horizontal" />
+    <level name="Warp Zone" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="b9a58592-6618-4b28-b410-2653d8711130" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-02T09:57:52.5962421-04:00" layout="Horizontal" />
+    <level name="Unknown" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="96c012f4-46a6-4090-a837-41455948ce4b" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-02T15:54:19.7207944-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
