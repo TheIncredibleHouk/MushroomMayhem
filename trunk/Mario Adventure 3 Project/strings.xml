@@ -3248,8 +3248,8 @@
     <block value="94"></block>
     <block value="95"></block>
     <block value="96"></block>
-    <block value="97"></block>
-    <block value="98"></block>
+    <block value="97">Pipe Top</block>
+    <block value="98">Pipe Top</block>
     <block value="99"></block>
     <block value="9A"></block>
     <block value="9B"></block>
@@ -3264,8 +3264,8 @@
     <block value="A4"></block>
     <block value="A5"></block>
     <block value="A6"></block>
-    <block value="A7"></block>
-    <block value="A8"></block>
+    <block value="A7">Pipe Filler</block>
+    <block value="A8">Pipe Filler</block>
     <block value="A9"></block>
     <block value="AA"></block>
     <block value="AB"></block>
@@ -3280,8 +3280,8 @@
     <block value="B4"></block>
     <block value="B5"></block>
     <block value="B6"></block>
-    <block value="B7"></block>
-    <block value="B8"></block>
+    <block value="B7">Pipe Top</block>
+    <block value="B8">Pipe Top</block>
     <block value="B9"></block>
     <block value="BA"></block>
     <block value="BB"></block>
