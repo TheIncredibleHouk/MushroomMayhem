@@ -816,10 +816,10 @@ PRG008_A472:
 	JSR Player_ControlJmp	 	; Controllable actions
 	JSR Player_PowerUpdate	 	; Update "Power Meter"
 	JSR Player_DoScrolling	 	; Scroll relative to Player against active rules
-	JSR AScrlURDiag_HandleWrap 	; Handle the diagonal autoscroller wrapping
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
 	JSR Player_DoSpecialTiles	; Handle unique-to-style tiles!
+	JSR CheckSpinners
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
 	JSR Player_Draw29	 	; ... and if you get through all that, draw the Player!!
@@ -4286,13 +4286,9 @@ PRG008_B585_2:
 	LDA TempA
 	RTS
 
-PRG008_B586:
+PRG008_B586
 	LDY <Player_YVel
-	BMI PRG008_B587
-	CMP #TILE_ITEM_NOTE
-	BNE PRG008_B588
-
-PRG008_B587:	
+	BPL PRG008_B588
 	CPX  #$01
 	BCS PRG008_B588
 	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
@@ -4319,12 +4315,7 @@ PRG008_B723:
 	TYA
 	ORA #$20
 	STA Player_Bounce
-	LDY #$00
-	LDA <Player_YVel
-	BMI PRG008_B723_2
-	LDA TempA
-	CMP #TILE_ITEM_NOTE
-	BEQ PRG008_B724
+	LDY #$01
 
 PRG008_B723_2:
 	LDA #$00
@@ -4470,7 +4461,7 @@ LATP_JumpTable:
 	.word LATP_Vine		; 7 = Vine
 	.word LATP_PSwitch	; B = P-Switch
 	.word LATP_Brick	; 6 = Standard brick behavior
-	.word LATP_None
+	.word LATP_Spinner
 	.word LATP_None
 	
 LATP_None:
@@ -4545,6 +4536,44 @@ PRG008_B82F:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Code removed for Starman continuation block
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+LATP_Spinner:
+
+	LDA Level_ChgTileEvent
+	BNE NoSpinner
+	STX TempX
+	LDX #$09
+
+FindFreeSpinner:
+	LDA SpinnerBlockTimers, X
+	BEQ DoSpinner
+	DEX
+	BPL FindFreeSpinner
+	LDX TempX
+
+NoSpinner:
+	RTS
+
+DoSpinner:
+	LDA <Level_Tile
+	STA SpinnerBlocksReplace, X
+	EOR #$01
+	STA <Level_Tile
+	LDA #$FF
+	STA SpinnerBlockTimers, X
+	LDA <Temp_Var14
+	STA SpinnerBlocksY,X	 ; Store into object slot
+
+	LDA <Temp_Var13
+	STA SpinnerBlocksYHi,X ; Store Y Hi into object slot
+
+	LDA <Temp_Var15	
+	STA SpinnerBlocksXHi,X ; Store X Hi into object slot
+
+	LDA <Temp_Var16
+	STA SpinnerBlocksX,X ; Store X Hi into object slot
+	LDX TempX
+	LDY #$01
+	RTS
 
 LATP_Brick:
 	LDA <Level_Tile
@@ -5538,3 +5567,40 @@ CheckPlayer_YLow:
 
 NotYLo:
 	RTS
+
+CheckSpinners:
+	LDX #$09
+
+CheckCurrentSpinners
+	LDA SpinnerBlockTimers, X
+	BEQ NextSpinner
+
+	DEC SpinnerBlockTimers, X
+	BNE NextSpinner
+
+	LDA Level_ChgTileEvent
+	BNE SkipSpinner
+
+	LDA SpinnerBlocksX, X
+	STA Temp_Var16
+
+	LDA SpinnerBlocksXHi, X
+	STA <Temp_Var15
+	 
+	LDA SpinnerBlocksY, X
+	STA <Temp_Var14
+
+	LDA SpinnerBlocksYHi, X
+	STA <Temp_Var13
+
+	LDA SpinnerBlocksReplace, X
+	JSR Level_QueueChangeBlock
+
+NextSpinner:
+	DEX
+	BNE CheckCurrentSpinners
+	RTS
+
+SkipSpinner:
+	INC SpinnerBlockTimers, X
+	JMP NextSpinner
