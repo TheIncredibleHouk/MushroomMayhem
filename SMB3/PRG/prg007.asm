@@ -5266,7 +5266,8 @@ PRG007_BD09:
 	JMP CannonFire_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
 
 
-Goomba_InitFlipBits:	.byte SPR_HFLIP, $00
+Goomb_XVelocity:	.byte $10, $-10
+Goomb_YVelocity:	.byte $-20, $20
 
 CFire_GoombaPipe:
 	LDA CannonFire_Timer,X
@@ -5300,29 +5301,26 @@ CFire_GoombaPipe:
 
 	LDA CannonFire_ID,Y
 
-	LDY #$00	 ; Y = 0 (right output Goomba pipe)
-
-	CMP #CFIRE_GOOMBAPIPE_L
+	LDY #$00
+	CMP #CFIRE_GOOMBAPIPE_DOWN
 	BNE PRG007_BD49	 ; If this is not a left output Goomba pipe, jump to CFIRE_GOOMBAPIPE
 
 	INY		 ; Y = 1 (left output Goomba pipe)
 
 PRG007_BD49:
-	CPY <Temp_Var2
-	BNE PRG007_BD7B	 ; If Player is on the wrong side of the Goomba pipe, jump to PRG007_BD7B
+	; set the motion of the goomba as it "pops" out of the pipe
+	LDA Goomb_YVelocity, Y
+	STA <Objects_YVel, X
 
-	; Set Goomba's initial flip bits
-	LDA Goomba_InitFlipBits,Y
-	STA Objects_FlipBits,X
+	LDY <Temp_Var2
+	LDA Goomb_XVelocity, Y
+	STA <Objects_XVel, X
 
 	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
-
 	; Set Goomba's Y
 	LDA CannonFire_Y,Y
-	SUB #$03
 	STA <Objects_Y,X
 	LDA CannonFire_YHi,Y
-	SBC #$00
 	STA <Objects_YHi,X
 
 	; It's a Goomba
@@ -5334,8 +5332,8 @@ PRG007_BD49:
 	STA Objects_SprAttr,X
 
 	; Set Goomba's Var1 = $28
-	LDA #$28
-	STA Objects_Var1,X
+	;LDA #$28
+	;STA Objects_Var1,X
 
 	LDA #$ff
 	STA Objects_SprHVis,X
@@ -5345,14 +5343,6 @@ PRG007_BD78:
 
 PRG007_BD7A:
 	RTS		 ; Return
-
-PRG007_BD7B:
-
-	; Player's on the wrong side of the goomba pipe; kill goomba! :(
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
-
-	BEQ PRG007_BD78	 ; Jump (technically always) to PRG007_BD78
 
 PRG007_BD82:
 	.byte $00, $08, $10, $18, $20, $28, $30, $38
