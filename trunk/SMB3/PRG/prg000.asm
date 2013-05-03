@@ -1303,7 +1303,6 @@ PRG000_CA7F:
 	LDX <SlotIndexBackup		 ; Restore X as the object slot index
 
 PRG000_CA81:
-	JSR AScrlURDiag_CheckWrapping	; Handle diagonal autoscroll's scroll wrappping
 	JSR Object_DetermineVertVis	; Set flags based on which sprites of this object are vertically visible
 	JSR Object_DetermineHorzVis	; Set flags based on which sprites of this object are horizontally visible
 
@@ -5818,103 +5817,6 @@ PRG000_DDCB:
 	; This sets up the "pop out" item you get when you open a treasure box
 ToadHouse_GiveItem:
 
-	RTS		 ; Return
-
-
-AScrlURDiag_HandleWrap:
-	LDA AScrlURDiag_WrapState
-	STA AScrlURDiag_WrapState_Copy	 ; AScrlURDiag_WrapState_Copy = AScrlURDiag_WrapState
-	JSR AScrlURDiag_NoWrapAbort	; Will not return here if AScrlURDiag_WrapState_Copy not set or gameplay halted!
-
-	LDY #$00	 ; Y = 0
- 
-	LDA Level_AScrlVVelCarry
-	LSR A		
-	BCC PRG000_DE53	 ; If Level_AScrlVVelCarry = 0, jump to PRG000_DE53
-
-	INY		 ; Y = 1
-	DEC Level_ScrollDiffH	 ; Level_ScrollDiffH--
-
-PRG000_DE53:
-	LDA Level_ScrollDiffH
-	STA AScrlURDiag_OffsetX	 ; AScrlURDiag_OffsetX = Level_ScrollDiffH
-
-	STY Level_ScrollDiffH	; Level_ScrollDiffH = 0 or 1
-
-	ADD <Player_X
-	STA <Player_X	 ; Player_X += Level_ScrollDiffH
-	BCC PRG000_DE65	 ; If no carry, jump to PRG000_DE65
-
-	INC <Player_XHi	 ; Otherwise, apply carry
-
-PRG000_DE65:
-	LDY #$00	 ; Y = 0
-
-	LDA Level_AScrlVVelCarry
-	LSR A		
-	BCC PRG000_DE71	 ; If no autoscroll vertical velocity carry, jump to PRG000_DE71
-
-	DEY		 ; Y = -1
-	INC Level_ScrollDiffV
-
-PRG000_DE71:
-	LDA Level_ScrollDiffV
-	STA AScrlURDiag_OffsetY	 ; AScrlURDiag_OffsetY = Level_ScrollDiffV
-
-	STY Level_ScrollDiffV	 ; Level_ScrollDiffV = 0 or -1
-
-	LDY <Player_InAir
-	BEQ PRG000_DE89	 ; If Player is not mid air, jump to PRG000_DE89
-
-	LDY #$00	 ; Y = 0
-
-	ADD Level_ScrollDiffV	 ; Level_ScrollDiffV is 0 or -1 right now
-	CMP #$ff
-	BNE PRG000_DE89
-	DEY		 ; Y = -1 
-
-PRG000_DE89:
-	ADD <Player_Y
-	STA <Player_Y
-	TYA		
-	ADC <Player_YHi	
-	STA <Player_YHi	
-
-	RTS		 ; Return
-
-AScrlURDiag_CheckWrapping:
-	JSR AScrlURDiag_NoWrapAbort	 ; Will not return here if AScrlURDiag_WrapState_Copy is not set or gameplay halted!
-
-	LDA <Objects_X,X
-	ADD AScrlURDiag_OffsetX	
-	STA <Objects_X,X
-	BCC PRG000_DEA3	 ; If no carry, jump to PRG000_DEA3
-	INC <Objects_XHi,X	 ; Otherwise, apply carry
-PRG000_DEA3:
-
-	LDA <Objects_Y,X
-	ADD AScrlURDiag_OffsetY	
-	STA <Objects_Y,X
-	BCC PRG000_DEAF	 ; If no carry, jump to PRG000_DEAF
-	INC <Objects_YHi,X	 ; Otherwise, apply carry 
-
-PRG000_DEAF:
-	RTS		 ; Return
-
-
-AScrlURDiag_NoWrapAbort:
-	LDA AScrlURDiag_WrapState_Copy
-	BEQ PRG000_DEB9	 ; If diagonal autoscroller is not wrapping, jump to PRG000_DEB9
-
-	LDA <Player_HaltGame
-	BEQ PRG000_DEBB	 ; If gameplay is not halted, jump to PRG000_DEBB (RTS)
-
-PRG000_DEB9:
-	; If NOT AScrlURDiag_WrapState_Copy or if gameplay is halted, do not return to caller!!
-	PLA
-	PLA		 ; Pull return address
-
-PRG000_DEBB:
 	RTS		 ; Return
 
 

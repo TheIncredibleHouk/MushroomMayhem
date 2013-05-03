@@ -1203,7 +1203,7 @@ BounceBlock_Pal:
 	.byte SPR_PAL2	; 1 (coin heaven Note Block)
 	.byte SPR_PAL3	; 2 ("Metal plate" post-? block hit)
 	.byte SPR_PAL3	; 3 (used for empty brick)
-	.byte SPR_PAL1	; 4 (typical Note Block)
+	.byte SPR_PAL3	; 4 (typical Note Block)
 	.byte SPR_PAL3	; 5 (wood)
 	.byte SPR_PAL3	; 6 (used for brick with coins)
 	.byte SPR_PAL1	; 7 (UNUSED, would be for desert's breakable pipeworks tile!)

@@ -1281,6 +1281,12 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Objects_Var7:		.ds 8	; $0421-$0428 General object variable 7
 
 	; $0429-$04CF unused in this context (excluding $0461 and $0462, see "$04xx RAM SOUND/MUSIC ENGINE")
+	SpinnerBlockTimers:	.ds 10;
+	SpinnerBlocksX:		.ds 10;
+	SpinnerBlocksXHi:	.ds 10;
+	SpinnerBlocksY:		.ds 10;
+	SpinnerBlocksYHi:	.ds 10;
+	SpinnerBlocksReplace:.ds 10;
 
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
@@ -1289,14 +1295,6 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $04xx RAM SOUND/MUSIC ENGINE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	.org $0461
-
-; $0461-$0462 are reserved for use by the sound/music engine
-; These ought to be moved into the greater range to spare this area...
-; $04EB and $04EC are unused, good place for these vars!!
-
-Level_MusicQueue:		.ds 1	; Requests a song from Set 2A/B (used to allow delayed start)
-Level_MusicQueueRestore:	.ds 1	; What to "restore" the BGM to when it changes (e.g. Starman, P-Switch, etc.)
 
 	.org $04D0
 
@@ -1332,8 +1330,8 @@ Level_MusicQueueRestore:	.ds 1	; What to "restore" the BGM to when it changes (e
 	SFX_Counter3:		.ds 1	; Generic purpose SFX counter
 	SFX_Counter4:		.ds 1	; Generic purpose SFX counter
 
-				.ds 1	; $04EB unused
-				.ds 1	; $04EC unused
+	Level_MusicQueue:	.ds 1	; $04EB 
+	Level_MusicQueueRestore:	.ds 1	; $04EC 
 
 	Sound_IsPaused:		.ds 1	; When set, sound processing is PAUSED
 
@@ -3069,7 +3067,7 @@ TILE_ITEM_STAR		= $FA ;
 TILE_ITEM_VINE		= $FB ;
 TILE_ITEM_PSWITCH	= $FC ;
 TILE_ITEM_BRICK		= $FD ;
-TILE_ITEM_NOTE		= $FE 
+TILE_ITEM_SPINNER	= $FE 
 	TileProperties:		 .ds 256;
 	CurrentTileProperty: .ds 1;
 	FireBallTransitions: .ds 8;
