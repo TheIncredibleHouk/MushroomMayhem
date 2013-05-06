@@ -3627,7 +3627,7 @@ Toad_Speak:
 	.word Toad_DrawDiagBox		; 0
 	.word Toad_DoToadText		; 1
 	.word Decide_What_Next		; 2
-	.word Enough_HBros_Coins	; 3
+	.word Enough_Magic_Stars	; 3
 	.word Deduct_Coins			; 4
 	.word End_Level				; 5
 	.word Do_Shop_Controls		; 6
@@ -4973,16 +4973,16 @@ Player_GetInventoryOffset:
 ; #DAHRKDAIZ - Start goal card routine removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Enough_HBros_Coins:
+Enough_Magic_Stars:
 	LDA Pay_Toll_Timer
 	BNE Skip_Pay_Toll_Timer
 	LDY World_Num
-	LDA HBros_Coins + 1
+	LDA Magic_Stars + 1
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	ORA HBros_Coins
+	ORA Magic_Stars
 	CMP HammerCoinsRequired, Y
 	BCS Pay_Toll
 	LDA Sound_QMap		; Not enough coins
@@ -5031,7 +5031,7 @@ Store_Coins_Deduct:
 Deduct_Coins:
 	DEC Deduct_Coin_Timer
 	BNE Deduct_CoinsRTS
-	JSR Decrease_HBros_Coins
+	JSR Decrease_Magic_Stars
 	DEC Coins_To_Deduct
 	BEQ Deduct_Coins_Done
 	LDA #$10
@@ -5068,19 +5068,19 @@ Store_Return_Status:
 End_LevelRTS:
 	RTS
 
-Decrease_HBros_Coins:
+Decrease_Magic_Stars:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
-	DEC HBros_Coins
-	LDA HBros_Coins
+	DEC Magic_Stars
+	LDA Magic_Stars
 	AND #$0F
 	CMP #$0A
 	BCC No_HBros_Dec
-	LDA HBros_Coins
+	LDA Magic_Stars
 	AND #$F0
 	ORA #$09
-	STA HBros_Coins
+	STA Magic_Stars
 
 No_HBros_Dec:
 	RTS

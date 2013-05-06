@@ -330,6 +330,7 @@ PRG008_A17F:
 
 	BNE PRG008_A1C1	 	; And if that's the case, jump to PRG008_A1C1
 	
+	JSR CheckForLevelEnding
 	JSR Do_Air_Timer
 	JSR Increase_Game_Timer
 	JSR Try_Item_Reserve_Release
@@ -716,6 +717,8 @@ PRG008_A3F2:
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Fox_FireBall
+	LDA #$FF
+	STA CompleteLevelTimer
 
 	LDA Frozen_State
 	BNE PRG008_A3FA
@@ -4263,8 +4266,7 @@ PRG008_B585:
 
 	LDY <Temp_Var12		 
 	LDA [Map_Tile_AddrL],Y	
-	AND #$C0
-	ORA #$02
+	EOR #$01
 	STA [Map_Tile_AddrL],Y	
 	JSR Level_QueueChangeBlock
 	LDA #$10
@@ -4302,6 +4304,8 @@ Level_DoBumpBlocks:
 	AND #$0F
 	STA DAIZ_TEMP4
 	TAY
+	LDA #$00
+	STA ObjectBump
 	LDA #$10
 	STA Splash_DisTimer
 	TYA
@@ -4882,8 +4886,13 @@ Object_BumpOffBlocks:
 	LDA Player_Bounce 
 	BNE PRG008_B9D3	 ; If Player is bouncing, jump to PRG008_B9D3 
  
+	TXA
+	PHA
 	LDA TempA
+	LDX #$04
 	JSR Level_DoBumpBlocks	 ; Have kicked object hit bumpable blocks
+	PLA
+	TAX
 
 	LDA Player_Bounce 
 	BEQ PRG008_B994	 ; If block is NOT a bouncing type, jump to PRG008_B994  
@@ -5121,6 +5130,7 @@ PRG008_BD4B:
 PRG008_BD59:
 	STX <Temp_Var2
 	LDA Level_Tile_Prop_Head,X
+	STA <Temp_Var3
 	CMP #TILE_ITEM_COIN
 	BGE PRG008_BE2E
 	AND #$0F
@@ -5161,9 +5171,10 @@ PRG008_BDB1:
 	LDA <Player_InAir
 	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
 
-	LDA <Temp_Var1
+	LDA <Temp_Var3
 	CMP #TILE_PROP_SOLID_TOP
 	BCC PRG008_BE2E
+	AND #$0F
 	CMP #TILE_PROP_SLICK
 	BNE PRG008_BE2E
 	LDA Player_Ability
@@ -5604,3 +5615,55 @@ NextSpinner:
 SkipSpinner:
 	INC SpinnerBlockTimers, X
 	JMP NextSpinner
+
+CheckForLevelEnding:
+	LDA CompleteLevelTimer
+	BPL DoCountDown
+	CMP #$80
+	BEQ StartCountDown
+	RTS
+
+StartCountDown:
+	LDA <Player_InAir
+	BNE NoCountDown
+	JSR DestroyAllEnemies
+	LDA #$00
+	STA <Player_XVel
+	LDA #MUS1_BOSSVICTORY
+	STA Sound_QMusic1
+	DEC CompleteLevelTimer
+	RTS
+
+DoCountDown:
+	LDA #$FF
+	STA Player_HaltTick
+	LDA <Counter_1
+	AND #$01
+	BNE NoCountDown
+	DEC CompleteLevelTimer
+	BMI EndLevel
+
+NoCountDown:
+	RTS
+
+EndLevel:
+	LDA #$00
+	STA Map_ReturnStatus
+	LDA #$01
+	STA Level_ExitToMap
+	RTS
+
+DestroyAllEnemies:
+	LDX #$04
+
+KeepDestroying:
+	LDA Level_ObjectID,X
+	BEQ SkipDestroy
+	LDA #OBJSTATE_POOFDEATH
+	STA Objects_State,X
+	LDA #$1f
+	STA Objects_Timer,X
+SkipDestroy:
+	DEX
+	BPL KeepDestroying
+	RTS

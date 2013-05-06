@@ -26,7 +26,7 @@
 ObjectGroup02_InitJumpTable:
 	.word ObjInit_TinyCheepCheep	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.word ObjInit_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.word ObjInit_BoomBoomQBall	; Object $4A - OBJ_HAMMERBROSCOIN
+	.word ObjInit_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_BoomBoom		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjInit_BoomBoom		; Object $4C - OBJ_BOOMBOOMFLY
 	.word ObjInit_DoNothing		; Object $4D
@@ -68,7 +68,7 @@ ObjectGroup02_InitJumpTable:
 ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_TinyCheepCheep	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.word ObjNorm_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.word ObjNorm_BoomBoomQBall	; Object $4A - OBJ_HAMMERBROSCOIN
+	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjNorm_BoomBoom		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjNorm_BoomBoom		; Object $4C - OBJ_BOOMBOOMFLY
 	.word ObjNorm_DoNothing		; Object $4D
@@ -111,7 +111,7 @@ ObjectGroup02_NormalJumpTable:
 ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.word ObjHit_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.word ObjHit_DoNothing	; Object $4A - OBJ_HAMMERBROSCOIN
+	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
 	.word ObjHit_DoNothing	; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjHit_DoNothing	; Object $4C - OBJ_BOOMBOOMFLY
 	.word ObjHit_DoNothing	; Object $4D
@@ -153,7 +153,7 @@ ObjectGroup02_CollideJumpTable:
 ObjectGroup02_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4A - OBJ_HAMMERBROSCOIN
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4A - OBJ_MAGICSTAR
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $4D
@@ -194,18 +194,18 @@ ObjectGroup02_Attributes:
 ObjectGroup02_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.byte OA2_TDOGRP0	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4A - OBJ_HAMMERBROSCOIN
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4A - OBJ_MAGICSTAR
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP2	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP2	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OA2_TDOGRP0	; Object $4D
 	.byte OA2_TDOGRP0	; Object $4E
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OA2_TDOGRP1	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $52 - OBJ_TREASUREBOX
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $55 - OBJ_BOBOMB
+	.byte  OA2_TDOGRP1	; Object $55 - OBJ_BOBOMB
 	.byte OA2_TDOGRP0	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OA2_TDOGRP0	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $58 - OBJ_FIRECHOMP
@@ -236,7 +236,7 @@ ObjectGroup02_Attributes2:
 ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4A - OBJ_HAMMERBROSCOIN
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4A - OBJ_MAGICSTAR
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $4D
@@ -278,13 +278,13 @@ ObjectGroup02_Attributes3:
 ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $1A	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.byte OPTS_NOCHANGE	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OPTS_NOCHANGE	; Object $4A - OBJ_HAMMERBROSCOIN
+	.byte OPTS_NOCHANGE	; Object $4A - OBJ_MAGICSTAR
 	.byte OPTS_SETPT6 | $33	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OPTS_SETPT6 | $33	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OPTS_NOCHANGE	; Object $4D
 	.byte OPTS_NOCHANGE	; Object $4E
 	.byte OPTS_SETPT5 | $0A	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OPTS_SETPT5 | $36	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OPTS_SETPT5 | $0B	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OPTS_SETPT5 | $12	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OPTS_SETPT5 | $05	; Object $52 - OBJ_TREASUREBOX
 	.byte OPTS_SETPT5 | $12	; Object $53 - OBJ_PODOBOOCEILING
@@ -323,7 +323,7 @@ ObjectGroup02_PatTableSel:
 ObjectGroup02_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.byte KILLACT_STANDARD	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte KILLACT_STANDARD	; Object $4A - OBJ_HAMMERBROSCOIN
+	.byte KILLACT_STANDARD	; Object $4A - OBJ_MAGICSTAR
 	.byte KILLACT_NORMALANDKILLED	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte KILLACT_NORMALANDKILLED	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte KILLACT_STANDARD	; Object $4D
@@ -415,12 +415,13 @@ ObjP69:
 	.byte $81, $83, $85, $87, $89, $89
 ObjP54:
 	.byte $91, $93, $91, $93
+
+ObjP50:
 ObjP55:
 	.byte $B1, $B3, $B5, $B7, $A7, $B9, $A7, $B9
-ObjP50:
-	.byte $9D, $BF, $BB, $BD, $BB, $BD, $BB, $BD
+
 ObjP4A:
-	.byte $7D, $7F
+	.byte $7F, $7F
 ObjP48:
 	.byte $93, $95, $93, $97, $93, $97
 ObjP4B:
@@ -505,8 +506,6 @@ PRG003_A2DA:
 PRG003_A2DB:
 	LDA <Objects_Var4,X
 	BNE PRG003_A300	 ; If Var4 is non-zero (box is now the rising power up), jump to PRG003_A300
-
-	JSR Object_DoMoveBounceConveyor	 ; Treasure box will bounce when it falls or even get carried by conveyors
 
 	JSR Object_HitTest	 ; Check if Player has touched the box yet
 	BCC PRG003_A2F8	 	; If Player has not yet touched box, jump to PRG003_A2F8
@@ -1391,10 +1390,10 @@ PRG003_A712:
 	LDA Objects_Var7,X
 	BEQ PRG003_A730	 ; If Var7 = 0 (not ready to explode), jump to PRG003_A730
 
-	INC Objects_Var3,X	 ; Var3++
-	LDA Objects_Var3,X
-	AND #$3f	 
-	BNE PRG003_A730	 ; Every 1:64 ticks proceed, otherwise jump to PRG003_A730
+	;INC Objects_Var3,X	 ; Var3++
+	;LDA Objects_Var3,X
+	;AND #$3f	 
+	;BNE PRG003_A730	 ; Every 1:64 ticks proceed, otherwise jump to PRG003_A730
 
 	JSR Level_ObjCalcXDiffs
 
@@ -1596,6 +1595,7 @@ BobOmb_DoExplosion:
 	INC <Objects_Var4,X	 ; Otherwise, Var4++
 
 PRG003_A82E:
+	STA Debug_Snap
 	LDA Objects_Timer,X
 	BNE PRG003_A836	 ; If timer has not expired, jump to PRG003_A836
 
@@ -1722,7 +1722,125 @@ PRG003_A89D:
 	JSR Exp_Inc_Lots	 ; Get score for that
 
 PRG003_A8D2:
-	RTS		 ; Return
+
+BobOmb_CheckExplodables:
+	LDA Objects_Timer,X
+	CMP #$20
+	BCC NoMoreExplodables
+	CMP #$24
+	BCC DoNotOffset
+	JSR BackUpPosition
+	JSR OffsetPosition
+
+DoNotOffset:
+	LDA Objects_Timer,X
+	AND #$03
+	TAX
+	LDA ExplodeOffsets, X
+	TAY
+	LDX <SlotIndexBackup
+	JSR CheckBreakables
+	JSR RestorePosition
+
+NoMoreExplodables:
+	RTS
+
+ExplodeOffsets:
+	.byte $6E, $70, $72, $74
+
+BackUpPosition:
+	LDA Objects_X, X
+	STA BackUpX
+	LDA Objects_XHi, X
+	STA BackUpXHi
+	RTS
+
+OffsetPosition:
+	LDA Objects_X, X
+	SUB #$04
+	STA Objects_X, X
+	LDA Objects_XHi, X
+	SBC #$00
+	STA Objects_XHi, X
+	RTS
+
+RestorePosition:
+	LDX SlotIndexBackup
+	LDA BackUpX
+	STA Objects_X, X
+	LDA BackUpXHi
+	STA Objects_XHi, X
+	RTS
+
+CheckBreakables:
+	JSR Object_DetectTile
+	JSR CheckExplodableTile
+	BNE No_Exploads
+	JSR ExplodeBreakBlocks
+
+No_Exploads:
+	RTS
+
+CheckExplodableTile:
+	CMP #TILE_PROP_SOLID_TOP
+	BCC NotBreakable
+	AND #$0F
+	CMP #$0D
+	BEQ ExplodeBreakBlocks
+
+
+NotBreakable:
+	RTS
+
+ExplodeBreakBlocks:
+	LDA #$90
+	STA Level_ChgTileEvent
+
+	LDA ObjTile_DetYLo
+	AND #$F0
+	STA Level_BlockChgYLo
+	LDA ObjTile_DetYHi
+	STA Level_BlockChgYHi
+	
+	LDA ObjTile_DetXLo
+	AND #$F0
+	STA Level_BlockChgXLo
+	LDA ObjTile_DetXHi
+	STA Level_BlockChgXHi
+
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
+
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En
+
+	; Brick bust upper Y
+	LDA Level_BlockChgYLo
+	CLC
+	SBC Level_VertScroll
+	STA BrickBust_YUpr
+
+	; Brick bust lower Y
+	ADD #$08
+	STA BrickBust_YLwr
+
+	; Brick bust X
+	LDA Level_BlockChgXLo
+	SUB <Horz_Scroll	
+	STA BrickBust_X
+
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA BrickBust_XDist
+	STA BrickBust_HEn
+
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel
+	RTS
 
 	; Calculates an upper left X/Y offset
 BobOmb_CalcULOffXY:
@@ -1743,112 +1861,35 @@ BobOmb_CalcULOffXY:
 
 	RTS		 ; Return
 
-ObjNorm_BoomBoomQBall:
-	
-	LDY Objects_Timer,X	; Y = timer
-	BEQ PRG003_A8FF	 	; If timer expired, jump to PRG003_A8FF
-
-	; This timer is active after time has been converted to score,
-	; in that momentary pause after that before exiting
-
-	STY Player_VibeDisable	; Cause Player to be vibrationally disabled
-	DEY		 ; Y--
-	BNE PRG003_A8FE	 ; If timer > 1, jump to PRG003_A8FE (RTS)
-
-	; Y = 0 at this point...
-
-	STY Map_ReturnStatus	 ; Map_ReturnStatus = 0 (clear level)
-
-	; Set the lock busting / bridge building effect for this ball
-	LDA <Objects_Var4,X
-	STA Map_DoFortressFX
-
-	INC Level_ExitToMap	 ; Flag to exit to map
-
-PRG003_A8FE:
-	RTS		 ; Return
-
-PRG003_A8FF:
-	LDA <Objects_Var5,X
-	BEQ PRG003_A911	 ; If Var5 = 0, jump to PRG003_A911
-
-	STA Player_VibeDisable	 ; Clear Player vibrationally disabled flag
-
-	BNE PRG003_A910	 ; If not done converting, jump to PRG003_A910 (RTS)
-
-	; Set timer to $40
-	LDA #$40
-	STA Objects_Timer,X
-
-PRG003_A910:
-	RTS		 ; Return
-
-PRG003_A911:
-	LDA <Player_HaltGame
-	BNE PRG003_A92D	 ; If gameplay is halted, jump to PRG003_A92D
-
-	LDA <Objects_YVel,X
-	BMI PRG003_A92D	 ; If ball moving upwards, jump to PRG003_A92D
-
+ObjNorm_MagicStar:
+	LDA DayNight	
+	BEQ PRG003_A92D ; magic stars only appear at night
+	JSR Object_ShakeAndDrawMirrored
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
 
 	; #DAHRKDAIZ this little diddy will set a bit basted on the X/Y  position of the coin when it's collected
-	; the Y's postion hi end will be where in the HBros_Coins_Collected of 16 bytes we index into
+	; the Y's postion hi end will be where in the Magic_Stars_Collected of 16 bytes we index into
 	; the X's position hi end will be what bit is set
 	; once a bit is set, the coin will not reproduce
-	JSR Increase_HBros_Coins
-	JSR Get_HBros_Coin_Bit
-	ORA HBros_Coins_Collected, Y
-	STA HBros_Coins_Collected, Y
+	JSR Increase_Magic_Stars
+	JSR GetLevelBit
+	ORA Magic_Stars_Collected, Y
+	STA Magic_Stars_Collected, Y
 	JSR Object_Delete
+PRG003_A92D:
 	RTS
 
-PRG003_A92D:
-	JSR Object_ShakeAndDraw	 ; Draw it
+ObjInit_MagicStar:
 
-Object_DoMoveBounceConveyor:
-	;JSR Object_Move	 ; Do standard movements
+	JSR GetLevelBit
+	AND Magic_Stars_Collected, Y
+	BEQ Dont_Kill_Star
 
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ ObjInit_BoomBoomQBall ; If ball hasn't hit ground, jump to ObjInit_BoomBoomQBall (RTS)
-	 
-	LDA Level_ObjectID,X
-	CMP #OBJ_HAMMERBROSCOIN
-	BNE PRG003_A946	 ; If this isn't a Boom Boom ball, jump to PRG003_A946
-
-	LDA <Objects_Y,X
-	CMP #$70
-	BLT ObjInit_BoomBoomQBall ; If ball is higher than $70, jump to ObjInit_BoomBoomQBall
-
-PRG003_A946:
-	JSR Object_HandleConveyorCarry	 ; Carry ball along conveyor
-
-	LDA <Objects_YVel,X
-	PHA		 ; Save Y velocity
-
-	JSR Object_HitGround	 ; Align to floor
-
-	PLA		 ; Restore Y velocity
-	LSR A
-	LSR A		 ; Current Y velocity / 4
-
-	JSR Negate	 ; Bounce at a quarter of impact
-
-	CMP #$fe	 
-	BCS ObjInit_BoomBoomQBall	; If the bounce is really small, jump to ObjInit_BoomBoomQBall (RTS)
-
-	STA <Objects_YVel,X	 ; Update Y velocity for a bounce
-
-ObjInit_BoomBoomQBall:
-	
-	JSR Get_HBros_Coin_Bit
-	AND HBros_Coins_Collected, Y
-	BEQ Dont_Kill_Coin
+Kill_Star:
 	JSR Object_Delete
 
-Dont_Kill_Coin:
+Dont_Kill_Star:
 	RTS		 ; Return
 
 
@@ -6030,46 +6071,24 @@ PRG003_BFAE:
 
 ; Rest of ROM bank was empty
 
-Increase_HBros_Coins:
+Increase_Magic_Stars:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
-	INC HBros_Coins
-	LDA HBros_Coins
+	INC Magic_Stars
+	LDA Magic_Stars
 	AND #$0F
 	CMP #$0A
 	BCC No_HBros_Inc
-	LDA HBros_Coins
+	LDA Magic_Stars
 	AND #$F0
 	CLC
 	ADC #$10
-	STA HBros_Coins
+	STA Magic_Stars
 
 No_HBros_Inc:
 	RTS
 
-Get_HBros_Coin_Bit:
-	LDA LevelNumber
-	AND #$07
-	TAY
-	LDA #$01
-
-ShiftLevelBit:
-	CPY #$00
-	BEQ HaveBit
-	ASL A
-	DEY
-	BNE ShiftLevelBit
-
-HaveBit:
-	STA DAIZ_TEMP1
-	LDA LevelNumber
-	LSR A
-	LSR A
-	LSR A
-	TAY
-	LDA DAIZ_TEMP1
-	RTS
 
 Do_Boom_Boom_Invincibility:
 	INC Invincible_Enemies
@@ -6119,3 +6138,4 @@ InvincBB2:
 	LDA #$50
 	STA BoomBoomMiscTimer
 	JMP Kill_Invincibility
+

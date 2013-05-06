@@ -32,7 +32,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Obj04	; Object $04
 	.word ObjInit_Obj05	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
-	.word ObjInit_WarpHide	; Object $07 - OBJ_WARPHIDE
+	.word ObjInit_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjInit_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjInit_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjInit_Obj0A	; Object $0A

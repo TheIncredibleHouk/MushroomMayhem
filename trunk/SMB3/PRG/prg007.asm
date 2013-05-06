@@ -1077,14 +1077,17 @@ PRG007_A52D:
 	LDA DAIZ_TEMP1
 	BEQ FIRE_BALL_COLL
 	LDA Special_Suit_Flag
-	BNE NOT_BRICK_HAMMER
+	BNE No_Block_Bust
 	LDA <Temp_Var1
-	CMP #TILE_ITEM_BRICK
-	BNE NOT_BRICK_HAMMER
+	CMP #TILE_PROP_SOLID_TOP
+	BCC No_Block_Bust
+	AND #$0F
+	CMP #$0D
+	BNE No_Block_Bust
 	AND #$C0
 	JSR Hammer_BrickBust
 
-NOT_BRICK_HAMMER:
+No_Block_Bust:
 	RTS
 	; end #DAHRKDAIZ
 
@@ -5075,8 +5078,8 @@ PRG007_BB97:
 CFire_Cannonball:
 
 	; Load cannonball graphics
-	LDA #$4e
-	STA PatTable_BankSel+4
+	;LDA #$4e
+	;STA PatTable_BankSel+4
 
 	LDA CannonFire_Timer,X
 	BNE PRG007_BC5B	 ; If timer not expired, jump to PRG007_BC5B (RTS)
@@ -5201,6 +5204,9 @@ PRG007_BCB4:
 	LDA #OBJ_BOBOMBEXPLODE
 	STA Level_ObjectID,X
 
+	LDA #$10
+	STA Objects_Var1, X
+
 	; Bobomb's Timer3 = $80
 	LDA #$80
 	STA Objects_Timer3,X
@@ -5212,29 +5218,23 @@ PRG007_BCB4:
 
 	; Set Bob-omb's Y
 	LDA CannonFire_Y,Y
-	SUB #$08
 	STA <Objects_Y,X
 	LDA CannonFire_YHi,Y
-	SBC #$00
 	STA <Objects_YHi,X
-
-	; Set Bob-omb's Y velocity
-	LDA #-$30
-	STA <Objects_YVel,X
 
 	LDA <Temp_Var1
 	CMP #CFIRE_RBOBOMBS
 
-	LDA #$10	 ; A = $10
+	LDA #-$10	 ; A = $10
 	LDY #$0b	 ; Y = $0B
 	BCS PRG007_BCE9	 ; If this is a right-shot Bob-omb, jump to PRG007_BCE9
 
 	DEY		 ; Y = $0A
-	LDA #-$10	 ; A = -$10
+	LDA #$10	 ; A = -$10
 
 PRG007_BCE9:
 	STY <Temp_Var1	 ; Temp_Var1 = $0A or $0B
-	STA <Objects_XVel,X	 ; Set Bob-omb's X velocity (-$10 or $10)
+	STA <Objects_YVel,X	 ; Set Bob-omb's X velocity (-$10 or $10)
 
 	ASL A		 ; Shift sign bit into carry
 
@@ -5249,6 +5249,7 @@ PRG007_BCE9:
 	BCC PRG007_BCFC	 ; If this is a right-shot Bob-omb, jump to PRG007_BCFC
 	LDA #-$08	 ; A = -$08
 	DEC <Temp_Var2	 ; Temp_Var2 = $FF (16-bit sign extension)
+
 PRG007_BCFC:
 	ADD CannonFire_X,Y
 	STA <Objects_X,X
@@ -5263,11 +5264,11 @@ PRG007_BD09:
 	STA Objects_SprAttr,X
 
 	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
-	JMP CannonFire_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
+	RTS
 
-
-Goomb_XVelocity:	.byte $10, $-10
-Goomb_YVelocity:	.byte $-20, $20
+BobOmbXVelocity:	.byte $10, $F0
+Goomb_XVelocity:	.byte SPR_HFLIP, $00, SPR_HFLIP
+Goomb_YVelocity:	.byte $E0, $00
 
 CFire_GoombaPipe:
 	LDA CannonFire_Timer,X
@@ -5290,6 +5291,7 @@ CFire_GoombaPipe:
 
 	; Set Goomba X
 	LDA CannonFire_X,Y
+	ORA #$08
 	STA <Objects_X,X
 	LDA CannonFire_XHi,Y
 	STA <Objects_XHi,X
@@ -5314,7 +5316,7 @@ PRG007_BD49:
 
 	LDY <Temp_Var2
 	LDA Goomb_XVelocity, Y
-	STA <Objects_XVel, X
+	STA Objects_FlipBits, X
 
 	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
 	; Set Goomba's Y
@@ -5327,13 +5329,12 @@ PRG007_BD49:
 	LDA #OBJ_GOOMBA
 	STA Level_ObjectID,X
 
+	LDA #$10
+	STA Objects_Var1, X
+
 	; Set Goomba's color
 	LDA #SPR_PAL3
 	STA Objects_SprAttr,X
-
-	; Set Goomba's Var1 = $28
-	;LDA #$28
-	;STA Objects_Var1,X
 
 	LDA #$ff
 	STA Objects_SprHVis,X
