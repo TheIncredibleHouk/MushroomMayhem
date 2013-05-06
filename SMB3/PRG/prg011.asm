@@ -1560,8 +1560,6 @@ Map_ClearLevelFXPatterns:
 
 	; This just forces "poof" completion on the following tiles (in quadrant zero, since all other
 	; quadrants always "poof" except fortress tiles)
-Map_ForcePoofTiles:
-	.byte $44, $42, $FF, $FF, $FF, $FF, $FF, $FF
 
 Map_PanelCompletePats:
 	.byte $88, $89, $8A, $8B	; Mario Complete panel patterns
@@ -1576,47 +1574,16 @@ Map_NoLoseTurnTiles_End
 
 MO_DoLevelClear:
 
-	; Check if this one of the tiles that does not cause a Player to lose their turn
 	JSR Map_GetTile	 	; Get current tile Player is standing on
+	CMP #$20
+	BCC DoNotClear
+	CMP #$30
+	BCS PRG011_AA19
 
-	LDX #(Map_NoLoseTurnTiles_End - Map_NoLoseTurnTiles - 1)
-PRG011_A9F0:
-	CMP Map_NoLoseTurnTiles,X
-	BEQ PRG011_A9FB	 ; If this tile matches one of the "don't lose a turn" tiles, jump to PRG011_A9FB
-
-	DEX		 ; X--
-	BPL PRG011_A9F0	 ; While X >= 0, loop
-
-	JMP PRG011_A9FE	 ; Jump to PRG011_A9FE
-
-PRG011_A9FB:
-	INC Map_NoLoseTurn	 ; Set Map_NoLoseTurn
-
-PRG011_A9FE:
-	JSR Map_GetTile	 	; Get current tile Player is standing on
-
-	AND #$c0	 	; Only keeping the upper 2 bits of it
-	CLC		 
-	ROL A		 
-	ROL A		 
-	ROL A		 
-	TAY		 	; Y = upper 2 bits of map tile shifted down; the "tile quadrant"
-
-	LDX #07
-	LDA <World_Map_Tile
-PRG011_AA0C:
-	CMP Map_ForcePoofTiles,X
-	BEQ PRG011_AA19	 ; If this tile matches, jump to PRG011_AA19
-
-	DEX		 ; X--
-	BPL PRG011_AA0C	 ; While X >= 0, loop
-
-	; This tile is not in the Map_ForcePoofTiles set...
-
-	CMP Tile_AttrTable+4,Y
-	BLT PRG011_AA26	 ; If this tile is not possibly an "enterable" tile, jump to PRG011_AA26
-
-	; This is one of the Map_ForcePoofTiles tiles, or at least a (potentially) enterable one
+DoNotClear:
+	LDA #$0D
+	STA Map_Operation
+	RTS
 
 PRG011_AA19:
 	LDA <Map_ClearLevelFXCnt
@@ -1633,39 +1600,7 @@ PRG011_AA26:
 	JMP PRG011_AB61	 ; Jump to PRG011_AB61
 
 PRG011_AA29:
-
-	; Map poof is not in use...
-
-	CPY #$00
-	BNE PRG011_AA39	 ; If tile is NOT quadrant 0 ($00-$3F), jump to PRG011_AA39
-
-	; Quadrant 0 tiles only...
-
-	; Map_ClearLevelFXCnt = 7 (begin panel flipover effect)
-	LDA #$07
-	STA <Map_ClearLevelFXCnt
-
-	; Play "flip over" sound
-	LDA #SND_MAPINVENTORYFLIP
-	STA Sound_QMap
-
-	JMP PRG011_AA23	 ; Jump to PRG011_AA23 (PRG011_AB1B)
-
 PRG011_AA39:
-
-	; All non-quadrant 0 tiles use the "poof" to clear
-
-	LDA <World_Map_Tile
-	CMP #TILE_FORT
-	BEQ PRG011_AA4C	 ; If the completed tile is a Mini-Fortress, jump to PRG011_AA4C
-
-	CMP #TILE_LARGEFORT
-	BEQ PRG011_AA4C	 ; If the completed tile is a Large Fortress (Unused!!), jump to PRG011_AA4C
-
-	CMP #TILE_ALTFORT
-	BEQ PRG011_AA4C	 ; If the completed tile is a Mini-Fortress (alternate color), jump to PRG011_AA4C
-
-	; If not a fortress...
 
 	; Play the "poof" sound
 	LDA #SND_LEVELPOOF
@@ -1714,55 +1649,11 @@ PRG011_AA58:
 	LSR A
 	ORA <World_Map_Y,X
 	TAY		 ; -> 'Y'
-
-	LDA [Map_Tile_AddrL],Y	 ; Get the tile here
-	PHA		 ; Save tile value
-
-	AND #%11000000
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX		 ; X = tile quadrant * 2 (0, 2, 4, 6)
-
-	LDA Player_Current
-	BEQ PRG011_AA8C	 ; If Player is Mario, jump to PRG011_AA8C
-
-	INX		 ; Otherwise, X++
-
-PRG011_AA8C:
-	PLA		 ; Restore tile value
-
-	CMP #TILE_FORT
-	BEQ PRG011_AA95	 ; If this was a Mini-Fortress, jump to PRG011_AA95
-
-	CMP #TILE_LARGEFORT
-	BNE PRG011_AA9C	 ; If this was NOT a Large Fortress (Unused!!), jump to PRG011_AA9C
-
-PRG011_AA95:
-
-	; Crumble sound
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	LDX #$08	 ; X = 8
-
-PRG011_AA9C:
-	CMP #TILE_ALTFORT
-	BNE PRG011_AAA7	 ; If this was a Mini-Fortress (Alternate color), jump to PRG011_AAA7
-
-	; Crumble sound
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	LDX #$09	 ; X = 9
-
-PRG011_AAA7:
-	LDA [Map_Tile_AddrL],Y	; Set it in memory
+	
+	LDA [Map_Tile_AddrL], Y
 	STA Old_World_Map_Tile
-	LDA #$BF
-	STA [Map_Tile_AddrL],Y	; Set it in memory
+	LDA #$3F
+	STA [Map_Tile_AddrL],Y	 ; Get the tile here
 	STA <World_Map_Tile	; ... as well as the tile detected
 
 	JSR Map_MarkLevelComplete	 ; Mark this level as complete!
@@ -1794,29 +1685,18 @@ PRG011_AAA7:
 
 	LDY #$08	 ; Y = 8 (Fortress Rubble)
 
-	; If we're doing Fortress rubble, jump to PRG011_AAEF
-	LDA <World_Map_Tile
-	CMP #TILE_FORTRUBBLE
-	BEQ PRG011_AAEF
-	CMP #TILE_ALTRUBBLE
-	BEQ PRG011_AAEF
-
-	LDY #$00	 	; Y = 0 (Mario Complete)
-	LDX Player_Current	; X = Player_Current
-	BEQ PRG011_AAEF	 	; If Player is Mario, jump to PRG011_AAEF
-	LDY #$04	 	; Otherwise, Y = 4 (Luigi Complete)
 
 PRG011_AAEF:
 	LDX Graphics_BufCnt	 ; X = Graphics_BufCnt
 
 	; Add in the four replacement patterns to cover over the completed level
-	LDA #$CE
+	LDA #$EE
 	STA Graphics_Buffer+$03,X
-	LDA #$DE
+	LDA #$EE
 	STA Graphics_Buffer+$08,X
-	LDA #$CF
+	LDA #$EE
 	STA Graphics_Buffer+$04,X
-	LDA #$DF
+	LDA #$EE
 	STA Graphics_Buffer+$09,X
 
 	; Terminator
@@ -4464,19 +4344,8 @@ Map_CompleteBit:
 	.byte $80, $40, $20, $10, $08, $04, $02, $01
 
 Map_MarkLevelComplete:
-
-	LDX #$07
 	LDA Old_World_Map_Tile 	 ; X = Player_Current
-
-Find_Tile_Loop:
-	CMP Map_ForcePoofTiles, X
-	BEQ Set_Level_Bit
-	DEX
-	BPL Find_Tile_Loop
-	RTS
-
-Set_Level_Bit:
-	STX DAIZ_TEMP2
+	AND #$0F
 	JSR MapGetTileBit
 	ORA World_Complete_Tiles,X
 	STA World_Complete_Tiles,X

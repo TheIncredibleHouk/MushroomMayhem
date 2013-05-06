@@ -34,7 +34,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GroundTroop	; Object $73 - OBJ_PARAGOOMBA
 	.word ObjInit_GroundTroop	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.word ObjInit_BossAttack	; Object $75 - OBJ_BOSSATTACK
-	.word ObjInit_Set3DoNothing	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.word ObjInit_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjInit_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_Set3DoNothing	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_Set3DoNothing	; Object $79 - OBJ_BULLETBILLHOMING
@@ -76,7 +76,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_ParaGoomba	; Object $73 - OBJ_PARAGOOMBA
 	.word ObjNorm_ParaGoombaBomber	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.word ObjNorm_BossAttack	; Object $75 - OBJ_BOSSATTACK
-	.word ObjNorm_JumpingCheepCheep	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.word ObjNorm_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjNorm_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjNorm_BulletBill	; Object $79 - OBJ_BULLETBILLHOMING
@@ -119,7 +119,7 @@ ObjectGroup03_CollideJumpTable:
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $75 - OBJ_BOSSATTACK (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
-	.word $0000					; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
 	.word $0000					; Object $78 - OBJ_BULLETBILL
 	.word $0000					; Object $79 - OBJ_BULLETBILLHOMING
@@ -161,7 +161,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $73 - OBJ_PARAGOOMBA
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $75 - OBJ_BOSSATTACK
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA1_PAL1  | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
@@ -202,7 +202,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_TDOGRP1			; Object $73 - OBJ_PARAGOOMBA
 	.byte OA2_TDOGRP1			; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $75 - OBJ_BOSSATTACK
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $77 - OBJ_GREENCHEEP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $78 - OBJ_BULLETBILL
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $79 - OBJ_BULLETBILLHOMING
@@ -244,7 +244,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $73 - OBJ_PARAGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE			; Object $75 - OBJ_BOSSATTACK
-	.byte OA3_HALT_NORMALONLY 					; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.byte OA3_HALT_NORMALONLY 					; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
 	.byte OA3_HALT_NORMALONLY 					; Object $78 - OBJ_BULLETBILL
 	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
@@ -286,7 +286,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT6 | $4F	; Object $73 - OBJ_PARAGOOMBA
 	.byte OPTS_SETPT6 | $4F	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.byte OPTS_NOCHANGE	; Object $75 - OBJ_BOSSATTACK
-	.byte OPTS_SETPT6 | $4F	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.byte OPTS_NOCHANGE; Object $76 - OBJ_POISONMUSHROOM
 	.byte OPTS_NOCHANGE	; Object $77 - OBJ_GREENCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $78 - OBJ_BULLETBILL
 	.byte OPTS_SETPT6 | $4F	; Object $79 - OBJ_BULLETBILLHOMING
@@ -328,7 +328,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $73 - OBJ_PARAGOOMBA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.byte KILLACT_JUSTDRAW16X16	; Object $75 - OBJ_BOSSATTACK
-	.byte KILLACT_JUSTDRAW16X16	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
+	.byte KILLACT_POOFDEATH	; Object $76 - OBJ_POISONMUSHROOM
 	.byte KILLACT_NORMALANDKILLED	; Object $77 - OBJ_GREENCHEEP
 	.byte KILLACT_DRAWMOVENOHALT	; Object $78 - OBJ_BULLETBILL
 	.byte KILLACT_DRAWMOVENOHALT	; Object $79 - OBJ_BULLETBILLHOMING
@@ -429,6 +429,7 @@ ObjP78:
 ObjP79:
 	.byte $DD, $DF, $DD, $DF, $DD, $DF, $DD, $DD, $7F, $7F
 ObjP76:
+	.byte $79, $7D, $79, $7D, $79, $7D
 ObjP77:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF, $AD, $AF, $B9, $BB, $B9, $BB
 ObjP84:
@@ -3696,11 +3697,12 @@ PRG004_B384:
 
 	DEC Objects_Var1,X	 ; Var1--
 
-	JSR Object_ApplyXVel	 ; Apply X velocity
+	JSR Object_ApplyYVel	 ; Apply X velocity
 
 	INC <Objects_Var5,X	 ; Var5++
 
 	JSR GroundTroop_Draw	 ; Draw the enemy
+	JSR Object_Move
 	JMP Player_HitEnemy	 ; Do Player to enemy collision and don't come back!
 
 

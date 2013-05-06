@@ -674,7 +674,6 @@ PRG030_85A5:
 	JSR PRGROM_Change_A000
 
 	JSR Map_Reload_with_Completions	 	; Load map and set already completed levels
-	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 
 	LDA Inventory_Open	
 	BNE PRG012_85CE		; If Inventory is open, jump to PRG012_85CE
@@ -1262,6 +1261,7 @@ PRG030_897B:
 	STA ChallengeMode
 
 	JSR LevelLoad			; Load the level layout data!
+	JSR ClearBlockedAreas
 	
 	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 	LDA #$00
@@ -3225,6 +3225,9 @@ HorzNotLocked:
 	LSR A
 	LSR A
 	STA <Temp_Var6	; temporarily store pointer count
+	LDA [Temp_Var14], Y
+	AND #$08
+	STA BlockedLevel
 	INY
 
 	; set invincible enemies
@@ -5067,7 +5070,7 @@ Update_Columns:
 	RTS
 
 Map_Reload_with_Completions:
-	STA Debug_Snap
+
 	; Clears all map tiles to $02 (all black tiles)
 	JSR Tile_Mem_Clear
 
@@ -5256,41 +5259,19 @@ DontIncWorldVar2:
 
 
 Try_Replace_Tile:
+	CMP #$20
+	BCC Try_Replace_TileRTS
+	CMP #$30
+	BCS Try_Replace_TileRTS
 	JSR MapGetTileBit
 	AND World_Complete_Tiles,X
 	BEQ Try_Replace_TileRTS
-	LDA TempA
-	AND #$C0
+	LDA #$BF
 	STA DAIZ_TEMP2
 
 Try_Replace_TileRTS:
 	RTS
 
-MapGetTileBit:
-	STA TempA
-	LDA World_Num
-	ASL A
-	TAX
-	LDA TempA
-	AND #08
-	BEQ LowerHalfTiles
-	INX
-
-LowerHalfTiles:
-	LDA TempA
-	AND #$07
-	TAY
-	LDA #$01
-	CPY #$00
-	BEQ FindTileBitRTS
-
-FindTileBit:
-	ASL A
-	DEY
-	BNE FindTileBit
-
-FindTileBitRTS:
-	RTS
 
 Find_Applicable_Pointer:
 	;;; find proper pointer now
@@ -5448,4 +5429,89 @@ SetBGPriority:
 
 NoBGPriority:
 	LDA #$00
+	RTS
+
+DoLevelEnding:
+	
+	RTS
+
+GetLevelBit:
+	LDA LevelNumber
+	AND #$07
+	TAY
+	LDA #$01
+
+ShiftLevelBit:
+	CPY #$00
+	BEQ HaveBit
+	ASL A
+	DEY
+	BNE ShiftLevelBit
+
+HaveBit:
+	STA DAIZ_TEMP1
+	LDA LevelNumber
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA DAIZ_TEMP1
+	RTS
+
+MapGetTileBit:
+	STA TempA
+	LDA World_Num
+	ASL A
+	TAX
+	LDA TempA
+	AND #08
+	BEQ LowerHalfTiles
+	INX
+
+LowerHalfTiles:
+	LDA TempA
+	AND #$07
+	TAY
+	LDA #$01
+	CPY #$00
+	BEQ FindTileBitRTS
+
+FindTileBit:
+	ASL A
+	DEY
+	BNE FindTileBit
+
+FindTileBitRTS:
+	RTS
+
+
+ClearBlockedAreas:
+	LDA BlockedLevel
+	BNE RemoveBlocksByRow
+	RTS
+
+RemoveBlocksByRow:
+	LDA World_Num
+	ASL A
+	TAX
+	LDY #$00
+	LDA World_Complete_Tiles, X
+	STA TempA
+
+IsBitSet:
+	LDA TempA
+	CLC
+	ROR A
+	STA TempA
+	BCC NextCol
+	LDA #$90
+	STA $61F0, Y
+	STA $6200, Y
+	STA $6210, Y
+	STA $6220, Y
+
+NextCol:
+	INY
+	CPY #$08
+	BNE IsBitSet
 	RTS

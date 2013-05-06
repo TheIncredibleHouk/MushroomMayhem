@@ -5572,7 +5572,7 @@ LevelEvent_CheepCheep:
 	AND #$1f	 ; Cap 0 - 31
 	BNE PRG005_BD53	 ; If not zero, jump to PRG005_BD53 (RTS)
 
-	LDA #OBJ_JUMPINGCHEEPCHEEP
+	LDA #OBJ_POISONMUSHROOM
 	JSR Level_CountNotDeadObjs
 	CPY #$03
 	BGE PRG005_BD53	 ; If there are already at least 3 Jumping Cheep Cheeps, jump to PRG005_BD53 (RT)S
@@ -5580,7 +5580,7 @@ LevelEvent_CheepCheep:
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
 	; Set the Cheep Cheep's object ID
-	LDA #OBJ_JUMPINGCHEEPCHEEP
+	LDA #OBJ_POISONMUSHROOM
 	STA Level_ObjectID,X
 
 	; Set Cheep Cheep's Y at bottom of screen

@@ -1287,6 +1287,13 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	SpinnerBlocksY:		.ds 10;
 	SpinnerBlocksYHi:	.ds 10;
 	SpinnerBlocksReplace:.ds 10;
+	ObjectBump:			.ds 1
+	BlockedLevel:		.ds 1
+	CompleteLevelTimer:	.ds 1
+	BackUpX:			.ds 1
+	BackUpXHi:			.ds 1
+	BackUpY:			.ds 1
+	BackUpYHi:			.ds 1
 
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
@@ -2437,7 +2444,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Level_Jct_VSHi:		.ds 1	; Level junction vertical scroll high value
 	Level_Jct_VS:		.ds 1	; Level junction vertical scroll value
 
-	HBros_Coins:			.ds 2	; #DAHRKDAIZ keeps track of hammer bros coins collected
+	Magic_Stars:			.ds 2	; #DAHRKDAIZ keeps track of hammer bros coins collected
 
 	Map_Unused7992:			; Value used in some dead code in PRG011; cleared elsewhere (NOT SURE if maybe it sometimes meant Bonus_DiePos?)
 	Bonus_DiePos:		.ds 1	; UNUSED Die in the lost bonus games, counts 0-5
@@ -2995,7 +3002,7 @@ SOBJ_POOF		= $16 	; Poof
 	Pointers:			.ds 60	;
 	UseAltEntrance:		.ds 1
 	WorldWidth:			.ds 1
-	HBros_Coins_Collected:  .ds 32 ;
+	Magic_Stars_Collected:  .ds 32 ;
 	World_Complete_Tiles: .ds 16	;
 	StarLevel:			.ds 1
 	MiscValue1:			.ds 1
@@ -3050,6 +3057,7 @@ TILE_PROP_UNSTABLE		= $07 ;
 TILE_PROP_VPIPE_LEFT	= $08 ;
 TILE_PROP_VPIPE_RIGHT	= $09 ;
 TILE_PROP_HPIPE_BOTTOM	= $0A ;
+TILE_PROP_STONE			= $0D ;
 TILE_PROP_PSWITCH		= $0E ;
 
 
@@ -3449,7 +3457,7 @@ OBJ_PIRANHASPIKEBALL	= $46	; Tall plant carrying spike ball
 OBJ_GIANTBLOCKCTL	= $47	; Enables Giant World blocks to function
 OBJ_TINYCHEEPCHEEP	= $48	; Tiny cheep cheep
 OBJ_FLOATINGBGCLOUD	= $49	; Floating background cloud
-OBJ_HAMMERBROSCOIN	= $4A 	; Boom Boom (?) end-level ball
+OBJ_MAGICSTAR	= $4A 	; Boom Boom (?) end-level ball
 OBJ_BOOMBOOMJUMP	= $4B	; Jumping Boom-Boom (can actually hit ? blocks!)
 OBJ_BOOMBOOMFLY		= $4C	; Flying Boom-boom
 OBJ_CHAINCHOMPFREE	= $4F	; Jumping chain chomp head after he breaks free
@@ -3475,7 +3483,7 @@ OBJ_BLOOPER		= $62	; Blooper
 OBJ_BIGBERTHABIRTHER	= $63	; Big Bertha with spit-out child
 OBJ_CHEEPCHEEPHOPPER	= $64	; Cheep Cheep water hopper
 OBJ_WATERCURRENTUPWARD	= $65	; upward current
-OBJ_WATERCURRENTDOWNARD	= $66	; Downward current
+OBJ_WATERCURRENTDOWNARD = $66 ;
 OBJ_LAVALOTUS		= $67 	; Underwater lava plant
 OBJ_TWIRLINGBUZZY	= $68	; Twirling, upside down buzzy beatle
 OBJ_TWIRLINGSPINY	= $69	; Twirling, upside down spiny
@@ -3491,7 +3499,8 @@ OBJ_GOOMBA		= $72	; Regular goomba
 OBJ_PARAGOOMBA		= $73	; Hopping red flying goomba
 OBJ_PARAGOOMBAWITHMICROS= $74	; Micro goomba dropping flying goomba
 OBJ_BOSSATTACK		= $75	; Lemmy's ball, Wendy's ring, Bowser's fireball, depends
-OBJ_JUMPINGCHEEPCHEEP	= $76	; Jumping Cheep Cheep
+OBJ_POISONMUSHROOM	= $76	; Jumping Cheep Cheep
+OBJ_JUMPINGCHEEPCHEEP = $00 ;
 OBJ_GREENCHEEP		= $77	; Green Cheep Cheep
 OBJ_BULLETBILL		= $78	; Regular Bullet bill
 OBJ_BULLETBILLHOMING	= $79	; Homing Bullet Bill
@@ -3571,6 +3580,8 @@ OBJ_CFIRE_MISSILEBILL	= $BC + CFIRE_MISSILEBILL - 1	; Missile Bill (homing BUlle
 OBJ_CFIRE_ROCKYWRENCH	= $BC + CFIRE_ROCKYWRENCH - 1	; Creates Rocky Wrench (um why?)
 OBJ_CFIRE_4WAY		= $BC + CFIRE_4WAY - 1		; 4-way cannon
 OBJ_CFIRE_GOOMBAPIPE_DOWN	= $BC + CFIRE_GOOMBAPIPE_DOWN - 1	; Goomba pipe (left output)
+OBJ_CFIRE_GOOMBAPIPE_R = $00 ;
+OBJ_CFIRE_GOOMBAPIPE_L = $00 ;
 OBJ_CFIRE_GOOMBAPIPE_UP	= $BC + CFIRE_GOOMBAPIPE_UP - 1	; Goomba pipe (right output)
 OBJ_CFIRE_HLCANNON	= $BC + CFIRE_HLCANNON - 1	; Fires cannonballs horizontally left
 OBJ_CFIRE_HLBIGCANNON	= $BC + CFIRE_HLBIGCANNON - 1	; Fires BIG cannonballs horizontally left
