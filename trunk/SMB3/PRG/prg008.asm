@@ -4255,6 +4255,7 @@ PRG008_B583:
 	LDY TempY
 
 PRG008_B584:
+	LDA TempA
 	RTS
 
 PRG008_B585:
@@ -4289,6 +4290,8 @@ PRG008_B585_2:
 	RTS
 
 PRG008_B586
+	LDY Fox_FireBall
+	BNE DoSpinnerBusts
 	LDY <Player_YVel
 	BPL PRG008_B588
 	CPX  #$01
@@ -4297,6 +4300,23 @@ PRG008_B586
 
 PRG008_B588:
 	LDA TempA
+	RTS
+
+DoSpinnerBusts:
+	CMP #TILE_ITEM_SPINNER
+	BNE SpinnerBustRts
+	LDA Level_ChgTileEvent
+	BNE NoSpinnerKeepGoing
+	STX TempX
+	LDX #$05
+	LDA #TILE_ITEM_BRICK
+	JSR Level_DoBumpBlocks
+	LDX TempX
+
+NoSpinnerKeepGoing:
+	LDA #$00
+
+SpinnerBustRts
 	RTS
 
 Level_DoBumpBlocks:
@@ -4358,6 +4378,7 @@ PRG008_B766:
 	STA Objects_XHi,Y ; Store X Hi into object slot
 
 	LDA <Temp_Var16
+	AND #$F0
 	STA Objects_X,Y	 ; Store X Lo into object slot
 
 	
@@ -5159,12 +5180,23 @@ PRG008_BD73:
 	BNE PRG008_BDB1	
  
 PRG008_BDA4:
+	LDA <Temp_Var3
+	CMP #TILE_PROP_SOLID_TOP
+	BCC PRG008_BDAF
 	LDA Player_Ability
 	CMP #$08
 	BEQ PRG008_BDAE	 ; 
 
 PRG008_BDAE:
 	JMP Player_GetHurt	 ; Get hurt!
+
+PRG008_BDAF:
+	STA Debug_Snap
+	AND #TILE_PROP_WATER
+	BEQ PRG008_BDAE
+	JSR Get_Normalized_Suit
+	CMP #$08
+	BNE PRG008_BDAE
 
 PRG008_BDB1:
 	; SLIPPERY, ICY GROUND LOGIC
@@ -5663,6 +5695,7 @@ KeepDestroying:
 	STA Objects_State,X
 	LDA #$1f
 	STA Objects_Timer,X
+
 SkipDestroy:
 	DEX
 	BPL KeepDestroying

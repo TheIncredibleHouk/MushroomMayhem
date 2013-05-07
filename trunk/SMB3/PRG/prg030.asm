@@ -1262,10 +1262,15 @@ PRG030_897B:
 
 	JSR LevelLoad			; Load the level layout data!
 	JSR ClearBlockedAreas
-	
 	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
 	LDA #$00
-	
+	LDX #$09
+
+CancelSpinners:
+	STA SpinnerBlockTimers, X
+	DEX
+	BPL CancelSpinners
+
 	LDA #$01
 	STA Tile_Anim_Enabled
 

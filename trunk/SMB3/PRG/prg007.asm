@@ -1066,8 +1066,8 @@ PRG007_A506:
 
 PRG007_A52D:
 	LDA [Temp_Var1],Y	 ; Get the tile at the Player Projectile 
+	JSR PSwitch_SubstTileAndAttr
 
-	JSR PSwitch_SubstTileAndAttr	 ; Handle P-Switch changed tiles
 	STA TempA
 	TAY
 	LDA TileProperties, Y
@@ -1101,30 +1101,16 @@ FIRE_BALL_COLL:
 	STX TempX
 	LDX #$00
 	LDY Special_Suit_Flag
-	BEQ Tile_Test_Loop
+	BEQ InteractionTest
 
 	LDX #$08
 
-Tile_Test_Loop:
-	LDY #$03
+InteractionTest:
 	LDA TempA
+	JSR ProjectileInteractions
+	CMP #$00
+	BNE PRG007_A57A
 
-Tile_Test_Loop2: 
-	CMP FireBallTransitions, X
-	BEQ Change_Tile
-	INX
-	INX
-	DEY
-	BPL Tile_Test_Loop2
-	BMI Bounce_Ball
-
-Change_Tile:
-	INX
-	LDA FireBallTransitions, X
-	LDX TempX
-	BPL PRG007_A563
-
-Bounce_Ball:
 	LDX TempX
 	LDA <Temp_Var1
 	AND #TILE_PROP_SOLID_TOP
@@ -1145,9 +1131,6 @@ PRG007_A557:
 
 	RTS		 ; Return
 
-PRG007_A563:
-	JSR Fireball_ThawTile	 ; Thaw the frozen tile!
-
 PRG007_A566:
 	LDA <Temp_Var1
 
@@ -1160,6 +1143,7 @@ PRG007_A579:
 
 	; Fireball has been through hit check too many times, it's obviously done
 
+PRG007_A57A:
 	JMP PRG007_A637	 ; Jump to PRG007_A637 ("Poof" away, fireball..)
 
 PRG007_A586:
@@ -1203,6 +1187,7 @@ Fireball_ThawTile:
 
 	; Set block change Y 
 	LDA <Temp_Var3
+	AND #$F0
 	STA Level_BlockChgYLo
 
 	; Set poof Y
@@ -2562,6 +2547,7 @@ SObj_CheckHitSolid:
 	ADC #$00	 ; Apply carry
 	ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
 	TAY		 ; -> 'Y'
+	STA <Temp_Var7
 
 	; Low byte of Tile_Mem_Addr -> Temp_Var1
 	LDA Tile_Mem_Addr,Y
@@ -2583,9 +2569,12 @@ SObj_CheckHitSolid:
 	TAY
 
 	LDA [Temp_Var1],Y ; Get the tile here
+	JSR PSwitch_SubstTileAndAttr
+	STA TempA
 	TAY
 	LDA TileProperties, Y
 	STA CurrentTileProperty
+
 	AND #TILE_PROP_SOLID_TOP
 	BEQ PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
 
@@ -2595,18 +2584,47 @@ SObj_CheckHitSolid:
 	BEQ PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
 
 	; Tile is solid all around
+	LDA SpecialObj_YLo, X
+	ADD #12
+	STA <Temp_Var3
 
+	LDA SpecialObj_YHi, X
+	STA <Temp_Var4
+
+	LDA SpecialObj_XLo, X
+	ADD #$04
+	SUB <Horz_Scroll	; -
+	ADD <Horz_Scroll	; + ??
+	STA <Temp_Var5
+
+	LDA <Horz_Scroll_Hi
+	ADC #$00	 ; Apply carry
+	;ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
+	STA <Temp_Var7
+
+	STX TempX
 	LDA SpecialObj_ID,X
+	LDX #$00
 	CMP #SOBJ_FIREBROFIREBALL
 	BEQ PRG007_AEB3	 ; If this a Fire Bro's fireball (the only one that bounces on the floor), jump to PRG007_AEB3
 	CMP #SOBJ_ICEBALL
-	BEQ PRG007_AEB3	 
+	BEQ PRG007_AEB2
 
 	SEC		 ; Set carry
 
 	RTS		 ; Return
 
+PRG007_AEB2:
+	LDX #$08
+
 PRG007_AEB3:
+	LDA TempA
+	JSR ProjectileInteractions
+	LDX TempX
+	CMP #$00
+	BNE PRG007_AF03
+
+	
 	INC SpecialObj_Data,X	 ; SpecialObj_Data++
 
 	LDA SpecialObj_Data,X
@@ -2620,6 +2638,7 @@ PRG007_AEC0:
 	DEC SpecialObj_YLo,X
 	DEC SpecialObj_YLo,X
 	DEC SpecialObj_YLo,X
+
 
 PRG007_AEC9:
 	; Bounce fireball!
@@ -2687,6 +2706,7 @@ PRG007_AF02:
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
 
+PRG007_AF03:
 	JMP PRG007_B84C	 ; Jump to PRG007_B84C ("Poof" away the fireball)
 
 
@@ -5932,4 +5952,31 @@ Do_Burn_Mode:
 	DEC Burning_Time
 
 Do_Burn_ModeRTS:
+	RTS
+
+ProjectileInteractions:
+	LDY #$03
+
+FindInteractions:
+	CMP FireBallTransitions, X
+	BEQ Change_Tile
+	INX
+	INX
+	DEY
+	BPL FindInteractions
+	BMI Bounce_Ball
+
+Change_Tile:
+	INX
+	LDA FireBallTransitions, X
+	LDX TempX
+	BPL ProjChangeTile
+
+Bounce_Ball:
+	LDA #$00
+	RTS
+
+ProjChangeTile:
+	JSR Fireball_ThawTile	 ; Thaw the frozen tile!
+	LDA #$01
 	RTS

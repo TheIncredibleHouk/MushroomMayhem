@@ -1390,10 +1390,10 @@ PRG003_A712:
 	LDA Objects_Var7,X
 	BEQ PRG003_A730	 ; If Var7 = 0 (not ready to explode), jump to PRG003_A730
 
-	;INC Objects_Var3,X	 ; Var3++
-	;LDA Objects_Var3,X
-	;AND #$3f	 
-	;BNE PRG003_A730	 ; Every 1:64 ticks proceed, otherwise jump to PRG003_A730
+	INC Objects_Var3,X	 ; Var3++
+	LDA Objects_Var3,X
+	AND #$3f	 
+	BNE PRG003_A730	 ; Every 1:64 ticks proceed, otherwise jump to PRG003_A730
 
 	JSR Level_ObjCalcXDiffs
 
@@ -1575,8 +1575,6 @@ BobOmb_Kill:
 
 PRG003_A7FE:
 
-	JSR Exp_Inc	 ; Get score according to Kill Tally
-
 	; "Kick" noise
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERKICK
@@ -1595,7 +1593,6 @@ BobOmb_DoExplosion:
 	INC <Objects_Var4,X	 ; Otherwise, Var4++
 
 PRG003_A82E:
-	STA Debug_Snap
 	LDA Objects_Timer,X
 	BNE PRG003_A836	 ; If timer has not expired, jump to PRG003_A836
 
@@ -2141,7 +2138,6 @@ BoomBoom_Init:
 
 	LDA <Player_InAir
 	BNE PRG003_AB1E		; If Player is not on ground, jump to PRG003_AB1E (RTS)
-
 
 	STA Level_PSwitchCnt	 ; Cancel any active P-Switch
 
@@ -2836,8 +2832,6 @@ PRG003_AE95:
 	STA Exp_Earned
 	LDA #$00
 	STA Level_ObjectID,X
-	LDA #$FF
-	STA Level_PSwitchCnt
 
 	LDA #$01
 	STA BrickBust_En	 ; Enable brick bust slot 1
