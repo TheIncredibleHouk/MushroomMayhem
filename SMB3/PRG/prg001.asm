@@ -1412,8 +1412,8 @@ Bully_XVelCharge: .byte $20, $E0
 Bully_Flip_Bits: .byte SPR_HFLIP, $00
 
 ObjNorm_Obj0A:
-	JSR Object_InteractWithWorld	 ; Handle collision routine
-	JSR Object_HitTestRespond	 ; Move, detect, interact with blocks of world
+	JSR Object_Move	 ; Move object
+	JSR Object_HitTest	 ; hit test
 	JSR Level_ObjCalcXDiffs
 
 	LDA Objects_Var3, X
@@ -1430,6 +1430,7 @@ Dont_Bully_Flip:
 	BNE DontChargeYet
 	LDA #$30
 	STA Objects_Var2, X
+
 DontChargeYet:
 	JMP Bully_JustDraw
 

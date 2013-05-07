@@ -2015,6 +2015,7 @@ FireBro_SpitFire:
 	; Fire bro bouncing fireball
 Fire_Bros_FBall:
 	LDA #SOBJ_FIREBROFIREBALL
+
 Store_SObject:
 	STA SpecialObj_ID,Y
 

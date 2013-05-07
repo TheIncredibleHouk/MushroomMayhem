@@ -1294,6 +1294,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	BackUpXHi:			.ds 1
 	BackUpY:			.ds 1
 	BackUpYHi:			.ds 1
+	PSwitchTileBackups: .ds 8
 
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
