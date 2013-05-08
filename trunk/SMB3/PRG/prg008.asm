@@ -188,7 +188,7 @@ PRG008_A0E7:
 	LDA <Player_Y
 	ADD <Temp_Var1	; Y offset
 	AND #$F0	; align to grid
-	ADD #$02	; +2
+	ADD #$08	; +2
 
 PRG008_A0F1:
 	STA Splash_Y	 ; 147 or above formula -> Splash_Y 
@@ -5191,7 +5191,6 @@ PRG008_BDAE:
 	JMP Player_GetHurt	 ; Get hurt!
 
 PRG008_BDAF:
-	STA Debug_Snap
 	AND #TILE_PROP_WATER
 	BEQ PRG008_BDAE
 	JSR Get_Normalized_Suit

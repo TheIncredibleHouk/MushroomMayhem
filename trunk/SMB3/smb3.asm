@@ -3018,7 +3018,6 @@ SOBJ_POOF		= $16 	; Poof
 	; Tile map property flags
 MAP_PROP_ENTERABLE:		= %00000001
 MAP_PROP_TRAVERSABLE:	= %00000010
-MAP_PROP_COMPLETABLE:	= %00000100
 	; Tile Property Flags
 	; TSWF XXXX
 	; T - Top Solid

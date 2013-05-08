@@ -115,12 +115,12 @@ PRG011_A23E:
 	; Y is World_Num
 
 	; Set starting Y position
-	LDA Map_Y_Starts,Y
+	LDA #$60
 	STA Map_Entered_Y,X
 	STA Map_Previous_Y,X
 
 	; Set starting X position (forced to $20!)
-	LDA #$20	 
+	LDA #$50
 	STA Map_Entered_X,X
 	STA Map_Previous_X,X
 

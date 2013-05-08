@@ -4862,7 +4862,7 @@ NextColorNight:
 	SEC
 	SBC #$10
 	BPL DontMaxColor2
-	LDA #$0F
+	LDA MasterPal_Data, X
 
 DontMaxColor2:
 	STA Pal_Data, X
