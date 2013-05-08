@@ -1405,27 +1405,21 @@ ObjInit_Obj0A:
 	LDA #$00
 	STA Objects_Var2, X	; Var2 = about to charge timer
 	STA Objects_Var3, X ; Var3 = charging timer
+	JSR Level_ObjCalcXDiffs
+	LDA Bully_XVel, Y
+	STA Objects_XVel, X
 	RTS		 ; Return
 
 Bully_XVel: .byte $08, $F8
 Bully_XVelCharge: .byte $20, $E0
-Bully_Flip_Bits: .byte SPR_HFLIP, $00
 
 ObjNorm_Obj0A:
-	JSR Object_Move	 ; Move object
-	JSR Object_HitTest	 ; hit test
+	JSR Object_MoveAndReboundOffWall	 ; Move, detect, interact with blocks of world
 	JSR Level_ObjCalcXDiffs
 
-	LDA Objects_Var3, X
-	BNE Dont_Bully_Flip
-	LDA Bully_Flip_Bits, Y
-	STA Objects_FlipBits,X
-
-Dont_Bully_Flip:
 	LDA Objects_Var1, X
 	BEQ BullyNot_March
-	LDA Bully_XVel, Y
-	STA Objects_XVel, X
+
 	DEC Objects_Var1, X
 	BNE DontChargeYet
 	LDA #$30
@@ -1471,13 +1465,24 @@ Bully_JustDraw:
 
 Do_Bully_Draw:
 	STA Objects_Frame,X	 ; Alternate between frame 0 and 1 every 8 ticks
+	LDY #$00
+	LDA Objects_XVel, X
+	BMI BullyFlip
+	LDY #SPR_HFLIP
+
+BullyFlip:
+	TYA
+	STA Objects_FlipBits,X
+
 	JSR Object_ShakeAndDraw	; Draw object and "shake awake" 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
+	STA Debug_Snap
+	JSR Object_HitTestRespond	 ; hit test
 
 	RTS		 ; Return
 
 ObjHit_Obj0A:
-
+	STA Debug_Snap
 	LDA Player_StarInv
 	ORA Boo_Mode_KillTimer
 	ORA Fox_FireBall
@@ -1508,12 +1513,13 @@ Do_Knock_Back:
 Do_Knock:
 	ASL A
 	STA <Player_XVel
-	LDA #$E8
+	LDA #$C8
 	STA <Player_YVel
 	STA Player_InAir
 	LDA Sound_QPlayer 
 	ORA #SND_PLAYERBUMP 
 	STA Sound_QPlayer
+	;JSR ObjInit_Obj0A
 	RTS		 ; Return
 
 ObjNorm_PUpNinjaShroom:

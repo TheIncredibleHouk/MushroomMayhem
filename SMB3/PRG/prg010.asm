@@ -2512,9 +2512,8 @@ PRG010_CDDC:
 PRG010_CDEC:
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 
-	; #DAHRKDAIZ  modified to check a raw table for enterable tiles.
 	LDA <World_Map_Prop
-	LDA #MAP_PROP_ENTERABLE
+	AND #MAP_PROP_ENTERABLE
 	BEQ PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
 
 	LDA <Pad_Holding
@@ -2667,8 +2666,8 @@ PRG010_CEC9:
 
 	; What makes other tiles (e.g. standard panels) work...
 	LDA <World_Map_Prop
-	LDA #MAP_PROP_ENTERABLE
-	BNE PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
+	AND #MAP_PROP_ENTERABLE
+	BEQ PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
 
 PRG010_CEE1:		
 	JMP WorldMap_UpdateAndDraw	; Jump to WorldMap_UpdateAndDraw
@@ -3292,26 +3291,13 @@ PRG010_D2A7
 	INY		 	; Y++
 	BNE PRG010_D2A7	 	; Loop (shouldn't be more than 3 times)
 
-PRG010_D2AD:
-	TYA		 	; A = 0-3
-	STA <Temp_Var3		; Temp_Var3 = 0-3 (right, left, down, up respectively)
-	ASL A		 	
-
-	TAX		 	; X = A << 1 (indexing Map_Object_Valid_Tiles)
-
-	; [Temp_Var2][Temp_Var1] become an address into Map_Object_Valid_Tiles
-	LDA Map_Object_Valid_Tiles,X
-	STA <Temp_Var1		 
-	LDA Map_Object_Valid_Tiles+1,X
-	STA <Temp_Var2		 
-
+PRG010_D2AD:	 	 
 	JSR MapTile_Get_By_Offset	; Get tile Player is going to move over (adjacent tile in travel direction)
-
 	; Search to see if this is a valid to move over given the Player's direction et al.
 	
 PRG010_D2C1:
 	LDA <World_Map_Prop
-	LDA #MAP_PROP_TRAVERSABLE
+	AND #(MAP_PROP_TRAVERSABLE | MAP_PROP_ENTERABLE)
 	BNE PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
 	RTS		 ; Return
 
@@ -3357,11 +3343,12 @@ PRG010_D359:
 ; 2 = Below
 ; 3 = Above
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Search_YOff:	.byte -16, -16, 0, -32
-Search_XHiOff:	.byte   0,  -1, 0,   0
-Search_XOff:	.byte  16, -16, 0,   0
+Search_YOff:	.byte  -16, -16, 0,  -32
+Search_XHiOff:	.byte  0,  -1,  0, 0
+Search_XOff:	.byte  16, -16, 0, 0
 
 MapTile_Get_By_Offset:	; $D369
+	
 	; Y is a value from 0-3 specifying a "search direction"
 	LDX Player_Current	; X = Player_Current
 
@@ -3398,6 +3385,10 @@ MapTile_Get_By_Offset:	; $D369
 	ORA <Temp_Var16
 	TAY		 	; Y = (Temp_Var15 & 0xF0) | Temp_Var15 (offset to specific tile Player is at)
 	LDA [Map_Tile_AddrL],Y	; Get this tile
+	STA <World_Map_Tile
+	TAY
+	LDA TileProperties, Y
+	STA <World_Map_Prop
 	RTS		 	; Return!
  
 	; Offsets around Player for darkness effect
