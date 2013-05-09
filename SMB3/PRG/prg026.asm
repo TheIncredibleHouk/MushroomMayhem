@@ -2557,6 +2557,7 @@ Fill_Exp_Earned:
 	BPL Fill_Exp_Earned
 	JSR Add_Values
 	LDA Calc_From + 1
+	STA Debug_Snap
 	BEQ Exp_Loop
 	LDX #$05
 	LDA #$09
@@ -2602,7 +2603,7 @@ Exp_Done:
 
 Check_Exp_Level:
 	LDA Player_Level
-	CMP #$09
+	LDA #$00
 	BEQ No_New_Ability
 	JSR Clear_Calc
 	LDA Player_Level
@@ -3224,7 +3225,7 @@ DrawName:
 	LDA LevelName, X
 	STA Status_Bar_Bottom, X
 	INX
-	CPX #$22
+	CPX #28
 	BNE DrawName
 	RTS
 

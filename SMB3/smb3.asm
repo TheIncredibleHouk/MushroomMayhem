@@ -2791,7 +2791,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Previous_X:				.ds 1; Keeps track of the the Previous x position
 	Game_Timer_Tick:		.ds 1; Indicates the game timer needs to increase by 1 second
 
-Max_Item_Count = 15
+Max_Item_Count = 4
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1
 CARD_STAR	= 2

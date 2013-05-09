@@ -637,26 +637,25 @@ ObjInit_PodobooCeiling:
 	STA <Objects_Var5,X
 	LDA <Objects_YHi,X
 	STA <Objects_Var4,X
+	LDA <Objects_X, X
+	ADD #$08
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	ADC #$00
+	STA <Objects_XHi, X
 
+ResetPipePodobo:
+	LDA <Objects_Var5, X
+	STA <Objects_Y, X
+	LDA <Objects_Var4, X
+	STA <Objects_YHi, X
+	LDA #$20
+	STA <Objects_YVel, X
+	LDA #01
+	STA Objects_Var1,X
 	RTS		 ; Return
 
 ObjNorm_PodobooCeiling:
-	LDA Objects_Timer,X
-	BEQ PRG003_A387	 ; If timer expired, jump to PRG003_A387
-
-	STA Objects_SprHVis,X	 ; Set horizontal off-scren bits (a stupid way of preventing drawing?)
-
-	LSR A
-	BNE PRG003_A386	 ; If timer > 1, jump to PRG003_A386 (RTS)
-
-	; Propel downwards
-	LDA #$58
-	STA <Objects_YVel,X
-
-PRG003_A386:
-	RTS		 ; Return
-
-PRG003_A387:
 	LDA <Player_HaltGame
 	BNE PRG003_A3D5	 ; If gameplay halted, jump to PRG003_A3D5
 
@@ -666,6 +665,7 @@ PRG003_A387:
 	LDA <Objects_YVel,X
 	EOR #SPR_VFLIP
 	AND #SPR_VFLIP
+	ORA #$20
 	STA Objects_FlipBits,X
 
 	LDA <Counter_1
@@ -681,36 +681,19 @@ PRG003_A387:
 	STA Objects_Frame,X	; Zero the frame
 
 PRG003_A3AA:
-	LDA <Objects_YVel,X
-	BPL PRG003_A3C2	 ; If Podoboo is moving downward, jump to PRG003_A3C2
-
-	LDA <Objects_Y,X
-	CMP <Objects_Var5,X
-
-	LDA <Objects_YHi,X
-	SBC <Objects_Var4,X
-	BCS PRG003_A3C2	 ; If Podoboo has not returned to origin, jump to PRG003_A3C2
-
-	; Podoboo went back to where he came from; reload timer with random value $40-$7F
-	LDA RandomN,X
-	AND #$3f
-	ORA #$40
-	STA Objects_Timer,X
-
-PRG003_A3C2:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
-
-	LDA <Objects_YVel,X
-	BPL PRG003_A3CD	 ; If Podoboo is moving downward, jump to PRG003_A3CD
-
-	CMP #-$6F
-	BLT PRG003_A3D2	 ; If Podoboo is not moving upward faster than -$6F, jump to PRG003_A3D2
-
-PRG003_A3CD:
-	SUB #$02		; Accelerate Podoboo
-	STA <Objects_YVel,X	; Update Y velocity
+	LDA <Objects_Y, X
+	AND #$0F
+	BNE PRG003_A3D2
+	JSR Object_WorldDetect4
+	LDA Object_TileFeet
+	AND #TILE_PROP_SOLID_TOP
+	BEQ PRG003_A3D2
+	DEC Objects_Var1, X
+	BPL PRG003_A3D2
+	JSR ResetPipePodobo
 
 PRG003_A3D2:
+	JSR Object_ApplyYVel
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
 
 PRG003_A3D5:
@@ -2877,6 +2860,9 @@ PRG003_AE95:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
+
+	LDA #$FF
+	STA Level_PSwitchCnt
 
 	JSR SetRotatingColor	 ; Litle light show
 

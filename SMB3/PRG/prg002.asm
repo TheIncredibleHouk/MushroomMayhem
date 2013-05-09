@@ -5108,17 +5108,17 @@ Do_Shop_Controls:
 	LDA Shop_Mode_Initialized
 	BEQ Initialize_Shop_Mode
 	LDA <Pad_Input
-	AND #PAD_LEFT
-	BEQ Try_Shop_Right
-	JSR Move_Items_Left
+	AND #PAD_RIGHT
+	BEQ Try_Shop_Left
+	JSR Move_Items_Right
 	JSR Draw_Current_Items
 	JMP Shop_RTS
 
-Try_Shop_Right:
+Try_Shop_Left:
 	LDA <Pad_Input
-	AND #PAD_RIGHT
+	AND #PAD_LEFT
 	BEQ Try_Leave_Shop
-	JSR Move_Items_Right
+	JSR Move_Items_Left
 	JSR Draw_Current_Items
 	JMP Shop_RTS
 
@@ -5196,7 +5196,7 @@ Bottom_Frame_Loop:
 	JSR Draw_Current_Items
 	RTS
 
-Move_Items_Left:
+Move_Items_Right:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
@@ -5216,7 +5216,7 @@ Next_Item_Please:
 	BPL Check_OverFlow_Item
 	RTS
 
-Move_Items_Right:
+Move_Items_Left:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
@@ -5240,14 +5240,14 @@ Next_Item_Please2:
 Item_Tiles:
 	.byte $30, $31, $40, $41
 	.byte $32, $33, $42, $43
+	.byte $3C, $3D, $4C, $4D
 	.byte $34, $35, $44, $45
 	.byte $36, $37, $46, $47
 	.byte $38, $39, $48, $49
-	.byte $3A, $3B, $4A, $4B
-	.byte $3C, $3D, $4C, $4D
-	.byte $3E, $3F, $4E, $4F
 	.byte $5C, $5D, $6C, $6D
+	.byte $3A, $3B, $4A, $4B
 	.byte $5E, $5F, $6E, $6F
+	.byte $3E, $3F, $4E, $4F
 	.byte $04, $05, $14, $15
 	.byte $06, $07, $16, $17
 	.byte $08, $09, $18, $19
