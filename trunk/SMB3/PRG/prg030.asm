@@ -5364,8 +5364,6 @@ UsePointer:
 	STA Level_PipeMove
 	STA Map_ReturnStatus
 	STA Level_JctCtl
-	LDA #$04
-	STA Level_PipeMove
 	RTS
 
 LevelJction:

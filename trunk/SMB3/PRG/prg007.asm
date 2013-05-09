@@ -5228,7 +5228,7 @@ PRG007_BCB4:
 	STA Objects_Var1, X
 
 	; Bobomb's Timer3 = $80
-	LDA #$80
+	LDA #$C0
 	STA Objects_Timer3,X
 
 	INC Objects_Var7,X	 ; Bob-omb's Var7++
@@ -5265,12 +5265,9 @@ PRG007_BCE9:
 	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
 
 	; Set Bob-omb's X
-	LDA #$08	 ; A = $08
-	BCC PRG007_BCFC	 ; If this is a right-shot Bob-omb, jump to PRG007_BCFC
-	LDA #-$08	 ; A = -$08
-	DEC <Temp_Var2	 ; Temp_Var2 = $FF (16-bit sign extension)
-
+	
 PRG007_BCFC:
+	LDA #$08	 ; A = $08
 	ADD CannonFire_X,Y
 	STA <Objects_X,X
 	LDA CannonFire_XHi,Y

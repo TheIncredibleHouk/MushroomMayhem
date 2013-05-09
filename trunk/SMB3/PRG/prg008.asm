@@ -1449,7 +1449,6 @@ PRG008_A827:
 PRG008_A83F:
 
 	; DOOR LOGIC
-
 	LDA <Pad_Input
 	AND #PAD_UP
 	BEQ PRG008_A86C	 ; If Player is not pressing up in front of a door, jump to PRG008_A86C
@@ -1458,8 +1457,15 @@ PRG008_A83F:
 	BNE PRG008_A86C	 ; If Player is mid air, jump to PRG008_A86C
 
 PRG008_A852:
+	
+	LDA <Player_X
+	ADD #$0C
+	STA <Player_X
+	LDA <Player_XHi
+	ADC #$00
+	STA <Player_XHi
 	JSR Do_Pointer_Effect
-	LDY #$01	; Y = 1
+	LDY #$02	; Y = 1
 	STY Level_JctCtl ; Set appropriate value to Level_JctCtl
 
 	LDY #0
@@ -5576,8 +5582,13 @@ CheckPlayer_YHi:
 	LDX <Player_XHi
 	INX
 	STX <Player_XHi
-	LDA #$A1
-	STA <Player_Y
+	LDX #$A1
+	LDA <Player_Suit
+	BNE NotSmallMario
+	LDX #$98
+
+NotSmallMario:
+	STX <Player_Y
 	LDA #$01
 	STA <Player_YHi
 	INC Level_JctCtl

@@ -2408,7 +2408,7 @@ PRG024_ACA5:
 
 FillItemsLoop:
 	TYA
-	STA Inventory_Items, X
+	;STA Inventory_Items, X
 	INX
 	INY
 	CPX #28

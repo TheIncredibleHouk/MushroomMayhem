@@ -35,7 +35,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjInit_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjInit_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
-	.word ObjInit_Obj0A	; Object $0A
+	.word ObjInit_Bully	; Object $0A
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -77,7 +77,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_WarpHide	; Object $07 - OBJ_WARPHIDE
 	.word ObjNorm_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjNorm_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
-	.word ObjNorm_Obj0A	; Object $0A
+	.word ObjNorm_Bully	; Object $0A OBJ_BULLY
 	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -120,7 +120,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjHit_DoNothing	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjHit_DoNothing	; Object $09 - OBJ_AIRSHIPANCHOR
-	.word ObjHit_Obj0A	; Object $0A
+	.word ObjHit_Bully	; Object $0A
 	.word ObjHit_NinjaShroom	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjHit_StarOrSuit	; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjHit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -302,7 +302,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_WARPHIDE
 	.byte OPTS_SETPT6 | $13	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OPTS_SETPT6 | $37	; Object $09 - OBJ_AIRSHIPANCHOR
-	.byte OPTS_SETPT5 | $0F	; Object $0A
+	.byte OPTS_SETPT5 | $0B	; Object $0A - OBJ_BULLY
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -427,7 +427,7 @@ ObjP05:	.byte $A5, $A7, $A1, $A3, $A1, $A3
 ObjP06:	
 ObjP1B:	.byte $79, $7B, $79, $7B, $77, $77, $75, $75	; RAS: Not actually used, see BounceBlock_Tile
 ObjP09:	.byte $E1, $E5, $E1
-ObjP0A:	.byte $81, $83, $85, $87
+ObjP0A:	.byte $A9, $AB, $BD, $BF
 ObjP0C:	.byte $51, $53, $51, $53, $51, $53, $51, $53
 ObjP0B:	.byte $51, $53	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
 ObjP0D:	.byte $51, $53
@@ -1218,7 +1218,7 @@ BounceBlock_Tile:
 	.byte $79, $79	; 1 (coin heaven Note Block)
 	.byte $6B, $6B	; 2 ("Metal plate" post-? block hit)
 	.byte $67, $69	; 3 (used for empty brick)
-	.byte $77, $79	; 4 (typical Note Block)
+	.byte $77, $77	; 4 (typical Note Block)
 	.byte $7F, $7F	; 5 (wood)
 	.byte $67, $69	; 6 (used for brick with coins)
 
@@ -1399,7 +1399,7 @@ PRG001_A6DF:
 PRG001_A702:
 	RTS		 ; Return
 
-ObjInit_Obj0A:
+ObjInit_Bully:
 	LDA #$40
 	STA Objects_Var1, X	; Var1 = march timer
 	LDA #$00
@@ -1413,7 +1413,7 @@ ObjInit_Obj0A:
 Bully_XVel: .byte $08, $F8
 Bully_XVelCharge: .byte $20, $E0
 
-ObjNorm_Obj0A:
+ObjNorm_Bully:
 	JSR Object_MoveAndReboundOffWall	 ; Move, detect, interact with blocks of world
 	JSR Level_ObjCalcXDiffs
 
@@ -1446,7 +1446,7 @@ Dont_Bully_Yet:
 Bully_DoCharge:
 	DEC Objects_Var3, X
 	BNE Bully_Draw_Fast
-	JSR ObjInit_Obj0A		; Reset bully parameters
+	JSR ObjInit_Bully		; Reset bully parameters
 	JMP Bully_JustDraw
 
 Bully_Draw_Fast:
@@ -1476,13 +1476,11 @@ BullyFlip:
 
 	JSR Object_ShakeAndDraw	; Draw object and "shake awake" 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-	STA Debug_Snap
 	JSR Object_HitTestRespond	 ; hit test
 
 	RTS		 ; Return
 
-ObjHit_Obj0A:
-	STA Debug_Snap
+ObjHit_Bully:
 	LDA Player_StarInv
 	ORA Boo_Mode_KillTimer
 	ORA Fox_FireBall
