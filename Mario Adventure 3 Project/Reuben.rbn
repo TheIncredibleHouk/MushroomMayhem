@@ -11,7 +11,7 @@
     <palette background="00" data="0F,0F,30,3C,0F,3C,30,3B,0F,27,30,17,0F,12,31,21,0F,00,00,00,0F,0F,30,16,0F,0F,30,2A,0F,0F,30,27" name="Mushroom" guid="8944a8b7-cefd-4bb4-ba68-e41d09d22d49" />
     <palette background="00" data="0F,0F,30,3C,0F,0F,36,27,0F,0B,3B,1B,0F,0F,0C,0F,0F,00,00,00,0F,0C,30,16,0F,0C,30,2A,0F,0C,36,27" name="Pipe" guid="28405934-7822-4343-8c74-cbd42ec57f8e" />
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,27,17,37,0F,31,21,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Desert" guid="cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385" />
-    <palette background="22" data="22,0F,30,10,22,0F,30,14,22,0F,38,18,22,0F,2C,1C,22,00,00,00,22,0F,30,14,22,0F,30,1A,22,0F,37,18" name="Airship" guid="4dd54dba-3c74-49c9-aded-05e0ea1e006c" />
+    <palette background="22" data="22,0F,30,10,22,0F,30,06,22,0F,38,18,22,0F,3C,1C,22,00,00,00,22,0F,30,14,22,0F,30,1A,22,0F,37,18" name="Airship" guid="4dd54dba-3c74-49c9-aded-05e0ea1e006c" />
     <palette background="00" data="3B,0F,30,3C,3B,0F,36,27,3B,0F,2A,1A,3B,0F,31,21,3B,00,00,00,3B,0F,30,16,3B,0F,30,2A,3B,0F,36,27" name="Giant" guid="d97a4897-b537-4ba5-92c9-5b479de01bc8" />
     <palette background="21" data="21,0F,30,31,21,0F,38,18,21,0F,30,1A,21,0F,30,05,21,00,00,00,21,0F,30,16,21,0F,30,21,21,0F,36,27" name="Ice" guid="0b4bb2af-f89c-413c-a911-683e36d52e47" />
     <palette background="00" data="30,0F,30,3C,30,0F,36,27,30,0F,2A,1A,30,0F,12,21,30,00,00,00,30,0F,30,16,30,0F,30,2A,30,0F,36,27" name="Cloudy" guid="71eea64a-4106-44df-be63-4f50214169ad" />
@@ -69,5 +69,6 @@
     <level name="Lava Core" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="4fe75123-e06f-4d1e-aa0a-dddc96c15ede" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-09T06:51:12.1507774-04:00" layout="Horizontal" />
     <level name="Item Shop" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="8a66389f-d9dc-4b77-9d8b-72258faa0c19" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-07T21:10:00.9734629-04:00" layout="Horizontal" />
     <level name="Evening Pass" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="f9c213cf-c364-412f-a000-c79a2128de83" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-08T20:59:55.1946116-04:00" layout="Horizontal" />
+    <level name="Out to Sea" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="e689be33-9b16-4612-8b5e-7b8c96d9f89a" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-09T15:23:28.1893424-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
