@@ -2736,7 +2736,7 @@ ObjNorm_WarpHide:
 
 	; To be awarded with warp whistle
 	LDA #$01
-	STA THouse_Treasure
+	STA Coins_Earned_Buffer
 
 	; Stop Player
 	LSR A	
