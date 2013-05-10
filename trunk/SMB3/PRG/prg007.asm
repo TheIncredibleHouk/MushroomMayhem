@@ -3475,11 +3475,6 @@ Cannonball_YOffset:	.byte 16, $00
 Cannonball_YDiffLimit:	.byte 16, 32
 
 SObj_Cannonball:
-
-	; Load cannonball graphics
-	LDA #$3C
-	STA PatTable_BankSel+4
-
 	LDA <Player_HaltGame
 	BNE PRG007_B3C2	 ; If gameplay halted, jump to PRG007_B3C2
 
@@ -4468,10 +4463,6 @@ Boomerang_Patterns:
 
 SObj_Boomerang:
 
-	; Load Boomerang's graphics
-	LDA #$4e
-	STA PatTable_BankSel+4
-
 	LDA <Player_HaltGame
 	BEQ PRG007_B8B7	 ; If gameplay is not halted, jump to PRG007_B8B7
 
@@ -5097,10 +5088,6 @@ PRG007_BB97:
 
 CFire_Cannonball:
 
-	; Load cannonball graphics
-	;LDA #$4e
-	;STA PatTable_BankSel+4
-
 	LDA CannonFire_Timer,X
 	BNE PRG007_BC5B	 ; If timer not expired, jump to PRG007_BC5B (RTS)
 
@@ -5417,10 +5404,6 @@ Bill_CPYOff:	.byte $00, $00		; Bullet/Missile Bill
 
 
 CFire_4Way:
-
-	; Load graphics for 4-Way cannon
-	LDA #$36
-	STA PatTable_BankSel+4
 
 	LDA CannonFire_Timer2,X
 	BNE PRG007_BE1C	 ; If timer2 has not expired, jump to PRG007_BE1C (RTS)

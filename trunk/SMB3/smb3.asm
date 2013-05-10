@@ -1034,7 +1034,7 @@ SPR_VFLIP	= %10000000
 	; 5 = Hammer
 	; 6 = Random Super Suit
 	; 7 = Random Basic Item
-	THouse_Treasure:	.ds 1
+	Coins_Earned_Buffer:	.ds 1
 
 	Coins_Earned:		.ds 1	; A "buffer" of coins earned to be added to your total, actual coinage stored in Player_Coins[2]
 	Map_Powerup_Poof:	.ds 1	; Counter that handles the "poof" effect when a powerup is used on the map (requires Inventory to be open, and forces it to close afterward)
@@ -1797,13 +1797,14 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 				.ds 2	; $0600-$0601 unused
 
 	Level_Tile_Prop_Head:	.ds 1	; Tile at Player's head 
+	Level_Tile_Prop_Body:	.ds 1
 	Level_Tile_Prop_GndL:	.ds 1	; Tile at Player's feet left
 	Level_Tile_Prop_GndR:	.ds 1	; Tile at Player's feet right
 	Level_Tile_Prop_InFL:	.ds 1	; Tile "in front" of Player ("lower", at feet)
 	Level_Tile_Prop_InFR:	.ds 1	; Tile "in front" of Player ("upper", at face)
 	Level_Tile_Whack:	.ds 1	; Tile last hit by tail attack or shell
 
-				.ds 5	; $060C unused
+				.ds 4	; $060C unused
 
 	; Level_Tile_Slope: Slope of tile for each of the positions above (first byte also used by objects)
 	; 0: Slope shape at feet
@@ -3040,7 +3041,8 @@ TILE_PROP_DEPLETE_AIR	= $02 ;
 TILE_PROP_MOVE_LEFT		= $03 ; 
 TILE_PROP_MOVE_RIGHT	= $04 ; 
 TILE_PROP_MOVE_UP		= $05 ; 
-TILE_PROP_MOVE_DOWN		= $06 ; 
+TILE_PROP_MOVE_DOWN		= $06 ;
+TILE_PROP_TREASURE		= $07 ; 
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;

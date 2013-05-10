@@ -1055,10 +1055,10 @@ PRG029_D17F:
 	STA Level_SkipStatusBarUpd	; Set Level_SkipStatusBarUpd (skip status bar for a frame, priority update!)
 	STA Level_ChgTileEvent	 	; Toad House tile change event!
 
-	; THouse_Treasure = 7 is standard random basic item (mushroom, flower, leaf)
+	; Coins_Earned_Buffer = 7 is standard random basic item (mushroom, flower, leaf)
 
-	LDX THouse_Treasure
-	DEX		 ; X = THouse_Treasure - 1
+	LDX Coins_Earned_Buffer
+	DEX		 ; X = Coins_Earned_Buffer - 1
 	CPX #$05	 
 	BLS PRG029_D1B1	 ; If X < 5, jump to PRG029_D1B1
 

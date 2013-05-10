@@ -2644,7 +2644,7 @@
     <block value="3C">Background</block>
     <block value="3D">Background</block>
     <block value="3E">Background</block>
-    <block value="3F">Background</block>
+    <block value="3F">Empty ? Block</block>
     <block value="40">Background</block>
     <block value="41">Cleared Coin</block>
     <block value="42">P-Switch Stomped</block>

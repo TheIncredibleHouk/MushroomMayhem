@@ -331,6 +331,7 @@ PRG008_A17F:
 	BNE PRG008_A1C1	 	; And if that's the case, jump to PRG008_A1C1
 	
 	JSR CheckForLevelEnding
+	JSR CoinsEarnedBuffer
 	JSR Do_Air_Timer
 	JSR Increase_Game_Timer
 	JSR Try_Item_Reserve_Release
@@ -1287,16 +1288,16 @@ PRG008_A743:
 	LDA #$08
 	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
 
+	LDA Level_Tile_Prop_GndL	 ; Get left ground tilee
+	STA <Temp_Var2		 ; -> Temp_Var2
+
 	JSR Player_GetTileAndSlope ; Get tile above Player
 	STA Level_Tile_Prop_Head	 ; -> Level_Tile_Head
 	STA <Temp_Var1		 ; -> Temp_Var1
 
-	LDA Level_Tile_Prop_GndL	 ; Get left ground tilee
-	STA <Temp_Var2		 ; -> Temp_Var2
-
 PRG008_A77E:
-
-	AND #$0F
+	LDA Level_Tile_Prop_Head
+	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
@@ -1468,9 +1469,6 @@ PRG008_A852:
 	LDY #$02	; Y = 1
 	STY Level_JctCtl ; Set appropriate value to Level_JctCtl
 
-	LDY #0
-	STY Map_ReturnStatus	 ; Map_ReturnStatus = 0
-
 	STY <Player_XVel	 ; Player_XVel = 0
 
 	LDA <Player_X
@@ -1517,6 +1515,7 @@ PRG008_A86C:
 	BNE PRG008_A898	 ; If Player is pressing up, jump to PRG008_A898
 
 PRG008_A890:
+	
 	CMP #TILE_PROP_DEPLETE_AIR
 	BNE PRG008_A891
 	LDA #$FF
@@ -1526,6 +1525,26 @@ PRG008_A891:
 	LDA #$00
 	STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
 
+	LDA #$10
+	STA <Temp_Var10
+	LDA #$08
+	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
+	JSR Player_GetTileAndSlope
+	STA Level_Tile_Prop_Body
+	AND #$0F
+	CMP #TILE_PROP_TREASURE
+	BNE PRG008_A897
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ PRG008_A897
+	JSR LATP_CoinCommon
+	LDA #$09
+	STA Coins_Earned_Buffer
+	LDA <Level_Tile
+	EOR #$01
+	JSR Level_QueueChangeBlock
+
+PRG008_A897:
 	JMP PRG008_A8F9	 ; Jump to PRG008_A8F9
 
 PRG008_A898:
@@ -4541,7 +4560,6 @@ LATP_Star:
 
 LATP_Coin:
 	JSR LATP_CoinCommon	 ; Do common "power up" coin routine
-	;JSR LATP_CoinCommon
 
 	LDY #$01	 ; Y = 1 (spawn a coin) (index into PRG001 Bouncer_PUp, i.e. nothing)
 
@@ -5709,4 +5727,19 @@ KeepDestroying:
 SkipDestroy:
 	DEX
 	BPL KeepDestroying
+	RTS
+
+CoinsEarnedBuffer:
+	LDA Coins_Earned_Buffer
+	BEQ CoinsEarnedBufferRTS
+	LDA <Counter_1
+	AND #$01
+	BNE CoinsEarnedBufferRTS
+	DEC Coins_Earned_Buffer
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	INC Coins_Earned
+
+CoinsEarnedBufferRTS:
 	RTS
