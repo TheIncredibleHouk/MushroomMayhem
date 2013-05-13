@@ -394,8 +394,8 @@ PAGE_A000_ByTileset: ; $83E9
 	.byte 11, 15, 21, 16, 17, 19, 18, 18, 18, 20, 23, 19, 17, 19, 13, 26, 26, 26, 9
 
 	; The normal level VROM page cycle set
-PT2_Anim:	.byte $80, $82, $84, $86
-PSwitch_Anim: .byte $88, $8A, $8C, $8E
+PT2_Anim:	.byte $80, $82, $84, $86, $88, $8A, $8C, $8E
+PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
 
 SPR_Anim:
 	.byte $90, $91, $92, $93
@@ -1657,18 +1657,15 @@ PRG030_8E4F:
 	; REGULAR LEVEL ANIMATIONS
 
 	LDA <Counter_1
-	AND #$18
-	LSR A	
+	AND #$1C
 	LSR A	
 	LSR A		
 	TAX	        ; 0-3, changing every 8 ticks
-	STX DAIZ_TEMP1
+	LSR A
+	STA DAIZ_TEMP1
 
 	LDY Tile_Anim_Enabled
 	BEQ Skip_Tile_Anim
-
-	ADD TileAnimSet
-	TAX
 
 	LDA PT2_Anim,X
 	LDY Level_PSwitchCnt
@@ -5336,8 +5333,12 @@ NextPointer:
 	RTS
 
 Do_Pointer_Effect:
-	JSR Find_Applicable_Pointer	 ; Initialize level junction
 	
+	JSR Find_Applicable_Pointer	 ; Initialize level junction
+
+	LDA #$00
+	STA LevelJctBQ_Flag
+
 	LDA <Temp_Var1
 	BPL UsePointer
 	LDA #$14
@@ -5517,4 +5518,23 @@ NextCol:
 	INY
 	CPY #$08
 	BNE IsBitSet
+	RTS
+
+SetPlayerFrozen:
+	LDA #$08
+	STA Frozen_State
+	LDA #$00
+	STA Player_IsClimbing
+	LDA Frozen_Frame
+	BNE Keep_Going
+	LDA Player_Frame
+	STA Frozen_Frame
+
+Keep_Going:
+	LDA #$31
+	STA Palette_Buffer+$11
+	LDA #$30
+	STA Palette_Buffer+$12
+	LDA #$02
+	STA Palette_Buffer+$13
 	RTS

@@ -718,6 +718,7 @@ PRG008_A3F2:
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Fox_FireBall
+	STA Poison_Mode
 	LDA #$FF
 	STA CompleteLevelTimer
 
@@ -978,7 +979,7 @@ PowerUp_Palettes:
 	.byte $00, $16, $36, $0F	; 1 - #DAHRKDAIZ SUPER MARIO
 	.byte $00, $30, $36, $06	; 2 - Fire Flower
 	.byte $00, $16, $36, $0F	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
-	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
+	.byte $00, $28, $36, $0F	; 4 - Frog Suit
 	.byte $00, $19, $36, $0F	; 5 - #DAHRKDAIZ Koopa Suit
 	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
 	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
@@ -1182,7 +1183,6 @@ Player_ControlJmp:
 Player_Control:
 	JSR VScreenTransitions
 	LDA #$02
-	STA Air_Change
 	STA Top_Of_Water
 	LDA <Player_FlipBits
 	STA Player_FlipBits_OLD
@@ -1395,7 +1395,13 @@ PRG008_A7F1:
 
 	LDA #$01
 	STA Top_Of_Water
+	LDA <Player_Suit
+	CMP #$04
+	BEQ NoAirInc
+	LDA #$01
 	STA Air_Change
+
+NoAirInc:
 	TYA		 ; A = original Pad_Holding
 	AND #(PAD_UP | PAD_A)
 	CMP #(PAD_UP | PAD_A)
@@ -1404,6 +1410,8 @@ PRG008_A7F1:
 	; Player wants to exit water!
 	LDA #-$34
 	STA <Player_YVel ; Player_YVel = -$34 (exit velocity from water)
+	LDA #$02
+	STA Air_Change
 
 PRG008_A80B:
 
@@ -1417,8 +1425,13 @@ PRG008_A80B:
 PRG008_A812:
 
 	; Solid floor tile at head last check
+	LDA <Player_Suit
+	CMP #$04
+	BEQ NoAirDec
 	LDA #$FF
 	STA Air_Change
+
+NoAirDec:
 	LDY <Temp_Var15
 	CPY Player_InWater
 	BEQ PRG008_A827	   ; If Player_InWater = Temp_Var15 (underwater flag = underwater status), jump to PRG008_A827
@@ -4245,8 +4258,7 @@ PRG008_B582:
 
 	LDY <Temp_Var12		 
 	LDA [Map_Tile_AddrL],Y	; prevent double collecting
-	AND #$C0
-	ORA #$01
+	EOR #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
 
@@ -4266,8 +4278,7 @@ PRG008_B583:
 
 	LDY <Temp_Var12		 
 	LDA [Map_Tile_AddrL],Y	; prevent double collecting
-	AND #$C0
-	ORA #$01
+	EOR #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
 
@@ -4413,6 +4424,8 @@ PRG008_B766:
 	LDA DAIZ_TEMP4
 	SUB #$0D
 	BMI PRG008_B78B
+	CMP #$02
+	BCS PRG008_B78B
 	TAX
 	LDA <Level_Tile
 	STA Level_BlkFinish
@@ -4437,7 +4450,7 @@ PRG008_B78C:
 	RTS
 
 NoPUpTypes:
-	.byte $31, $41, $21
+	.byte $31, $41, $2B
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LATP_HandleSpecialBounceTiles
 ;
@@ -4493,7 +4506,6 @@ PRG008_B7BA:
 	STA <Temp_Var1	
 	LDA LATP_JumpTable+1,Y
 	STA <Temp_Var2	
-
 	JMP [Temp_Var1]	 ; Handle special block!
 
 LATP_JumpTable:
@@ -4512,7 +4524,7 @@ LATP_JumpTable:
 	.word LATP_PSwitch	; B = P-Switch
 	.word LATP_Brick	; 6 = Standard brick behavior
 	.word LATP_Spinner
-	.word LATP_None
+	.word LATP_PoisonShroom
 	
 LATP_None:
 	LDY #$01		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
@@ -4700,6 +4712,15 @@ LATP_NinjaShroom:
 	JSR Do_PUp_Proper
 	RTS		 ; Return
 
+LATP_PoisonShroom:
+	
+	LDA #$00
+	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
+
+	LDY #$0B	 ; Y = 7 (1-up) (index into PRG001 Bouncer_PUp)
+	JSR Do_PUp_Proper
+	RTS		 ; Return
+
 LATP_FoxLeaf:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
@@ -4840,8 +4861,7 @@ LATP_GetCoinAboveBlock:
 	; The following will collect the coin along with the ? block hit!
 	LDY <Temp_Var12		 ; ... and copied into Temp_Var12
 	LDA [Map_Tile_AddrL],Y
-	AND #$C0
-	ORA #$02
+	EOR #$01
 	STA [Map_Tile_AddrL],Y
 	
 	JSR Level_QueueChangeBlock	; Delete to background
@@ -5516,11 +5536,13 @@ Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 
 CheckAirChange:
 	LDA Air_Time
-	BNE Change_Air
+	BPL Change_Air
+Air_Kill:
 	JMP Player_Die
 
 Change_Air:
 	ADD Air_Change
+	BMI Air_Kill
 	CMP #$41
 	BLS NotMaxAir
 	AND #$40

@@ -145,7 +145,6 @@ PRG011_A23E:
 	STX Map_2PVsGame ; Map_2PVsGame = $FF (since game increments at start, this will play game style 0)
 
 	; Clear the following
-	STA Map_Unused7995	; Cleared here, but never used
 	STA Map_WhiteHouse
 	STA Map_CoinShip
 
@@ -180,7 +179,7 @@ PRG011_A2C8:
 	LDX Map_Unused738	 ; X = Map_Unused738
 
 	; Seems Map_Unused7DC6 was pretty interesting once?
-	LDA Map_Unused7DC6,X
+	;LDA Map_Unused7DC6,X
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -3754,7 +3753,7 @@ PRG011_B70E:	.byte 16, -16, 0, 0
 PRG011_B74A:
 	LDX Map_Unused738		; X =  Map_Unused738
 
-	LDA Map_Unused7DC6,X
+	;LDA Map_Unused7DC6,X
 	CMP #$09
 	BLT MapStarsIntro_DoStarFX	; If Map_Unused7DC6[X] < 9, jump to MapStarsIntro_DoStarFX
 
@@ -3986,7 +3985,7 @@ PRG011_B874:
 	; FIXME: CHECKME: Might be some dead code here
 	LDX Map_Unused738	 ; X = Map_Unused738
 
-	LDA Map_Unused7DC6,X
+	;LDA Map_Unused7DC6,X
 	CMP #$09
 	BLT PRG011_B8A5	 ; If Map_Unused7DC6[X] FIXME < 9, jump to PRG011_B8A5
 

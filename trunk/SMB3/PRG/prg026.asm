@@ -2557,7 +2557,6 @@ Fill_Exp_Earned:
 	BPL Fill_Exp_Earned
 	JSR Add_Values
 	LDA Calc_From + 1
-	STA Debug_Snap
 	BEQ Exp_Loop
 	LDX #$05
 	LDA #$09

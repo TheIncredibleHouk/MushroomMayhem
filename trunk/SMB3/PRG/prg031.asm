@@ -1632,6 +1632,7 @@ PRG031_F567:
 	JSR PRGROM_Change_Both
 
 	INC <Counter_1	 ; Simply increments every frame, used for timing
+	DEC <Counter_2
 
 	; Not sure what this is for
 	LDA PAGE_CMD
@@ -3338,8 +3339,10 @@ Unfreeze:
 	RTS
 
 Kill_Ctrls:
-	LDA #$00
+	LDA <Pad_Input
+	AND #(PAD_A | PAD_START | PAD_SELECT)
 	STA <Pad_Input
+	LDA #$00
 	STA <Pad_Holding
 
 FrozenRTS:
