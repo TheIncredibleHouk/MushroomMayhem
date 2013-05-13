@@ -2431,7 +2431,6 @@ Map_StateNothing:
 
 	LDA #$00
 	STA Map_Unused72C
-	STA Map_Unused7995
 	STA Player_FallToKing,X
 	STA Bonus_UnusedFlag	; ?
 
@@ -2453,7 +2452,6 @@ Map_StateNothing:
 
 	LDA #$00
 	STA Map_Unused72C
-	STA Map_Unused7995
 	STA Player_FallToKing,X
 
 	INC World_EnterState	 ; World_EnterState++
@@ -3298,6 +3296,7 @@ PRG010_D2AD:
 PRG010_D2C1:
 	LDA <World_Map_Prop
 	AND #(MAP_PROP_TRAVERSABLE | MAP_PROP_ENTERABLE)
+	LDA #$01
 	BNE PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
 	RTS		 ; Return
 

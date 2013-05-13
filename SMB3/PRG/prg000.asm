@@ -290,7 +290,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX13	; Object $63 - OBJ_BIGBERTHABIRTHER
 	.byte OAT_BOUNDBOX01	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OAT_BOUNDBOX00 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $65 - OBJ_WATERCURRENTUPWARD
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $66 - OBJ_WATERCURRENTDOWNARD
+	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $66 - OBJ_WATERCURRENTUPWARD
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $67 - OBJ_LAVALOTUS
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OAT_BOUNDBOX01	; Object $69 - OBJ_TWIRLINGSPINY
@@ -310,7 +310,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01	; Object $77 - OBJ_GREENCHEEP
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $78 - OBJ_BULLETBILL
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7A - OBJ_BIGGREENTROOPA
+	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $7A - OBJ_PURPLETROOPA
 	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7B - OBJ_BIGREDTROOPA
 	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7C - OBJ_BIGGOOMBA
 	.byte OAT_BOUNDBOX13	; Object $7D - OBJ_BIGGREENPIRANHA
@@ -604,7 +604,8 @@ PRG000_C559:
 
 	LDA Object_TileWall	; A = detected tile index
 	AND #TILE_PROP_SOLID_ALL
-	BEQ PRG000_C584	 	
+	CMP #TILE_PROP_SOLID_ALL
+	BNE PRG000_C584	 	
 
 	; Object is touching solid wall tile
 
@@ -1575,6 +1576,9 @@ PRG000_CBB4:
 	CPY #OBJ_BLUESPINY
 	BEQ PRG000_CBB3	 
 
+	CPY #OBJ_PURPLETROOPA
+	BEQ RotatePaletteInstead
+
 	; "Shake awake" speed
 
 	LDA Objects_Timer3,X
@@ -1656,6 +1660,53 @@ PRG000_CBF8:
 PRG000_CC23:
 	RTS		 ; Return
 
+RotatePaletteInstead:
+	LDX <SlotIndexBackup 
+	LDA Objects_SprAttr,X
+	AND #$FC
+	STA TempA
+	LDA Objects_Timer3, X
+	CMP #$01
+	BEQ KoopaExpload
+	CMP #$60
+	BCS DontSetColors
+	CMP #$40
+	BCS RotateColors1
+	CMP #$20
+	BCS RotateColors2
+	LDA <Counter_1
+	AND #$06
+	LSR A
+	JMP SetColors
+
+RotateColors1:
+	LDA <Counter_1
+	AND #$18
+	LSR A
+	LSR A
+	LSR A
+	JMP SetColors
+
+RotateColors2:
+	LDA <Counter_1
+	AND #$0C
+	LSR A
+	LSR A
+	JMP SetColors
+
+SetColors:
+	ORA TempA
+	STA Objects_SprAttr,X
+
+DontSetColors:
+	RTS
+
+KoopaExpload:
+	LDA #OBJ_BOBOMBEXPLODE
+	STA Level_ObjectID, X
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State,X
+	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_BumpOffOthers
@@ -1729,7 +1780,17 @@ ObjState_Kicked:
 PRG000_CC75:
 	JSR Object_Move	 ; Perform standard object movements
 	JSR Object_DetermineHorzVis	 ; Determine horizontally visible sprites
- 
+
+	LDA Objects_InWater, X
+	BEQ PRG000_CC74
+	LDA Level_ObjectID, X
+	CMP #OBJ_ICEBLOCK
+	BNE PRG000_CC74
+	LDA #$00
+	STA Objects_YVel, X
+	STA Objects_XVel, X
+
+PRG000_CC74:
 	LDA <Objects_DetStat,X 
 	AND #$04 
 	BEQ PRG000_CC94	 ; If object has hit ground, jump to PRG000_CC94
@@ -1849,6 +1910,7 @@ PRG000_CCF7:
 	LDA #$10	 ; A = $10
 	BCC PRG000_CD17 
 	LDA #-$10	 ; A = -$10
+
 PRG000_CD17: 
 	STA Objects_XVel,Y
  
@@ -1895,7 +1957,7 @@ PRG000_CD46:
 	CMP #OBJ_BLUESPINY
 	BEQ NotGiant
 
-	CMP #OBJ_BIGGREENTROOPA
+	CMP #OBJ_BIGGOOMBA
 	BGE PRG000_CD80	 ; If the object ID >= OBJ_BIGGREENTROOPA (why not use Objects_IsGiant?!), jump to PRG000_CD80
 
 NotGiant:
@@ -1913,6 +1975,11 @@ NotGiant:
 	LDA ObjShell_AnimFrame,Y
 	STA Objects_Frame,X
 
+	LDA Level_ObjectID, X
+	CMP #OBJ_PURPLETROOPA
+	BEQ PRG000_CD75
+
+PRG000_CD73:
 	TYA
 	AND #$01
 	BNE PRG000_CD74	 ; Every other tick, jump to PRG000_CD74
@@ -1921,6 +1988,10 @@ NotGiant:
 
 PRG000_CD74:
 	JMP Object_ShakeAndDraw	 ; Update sprite data, draw sprite, and don't come back
+
+PRG000_CD75:
+	JSR RotatePaletteInstead
+	JMP PRG000_CD73
 
 PRG000_CD77:
 
@@ -2726,8 +2797,11 @@ Object_ShellDoWakeUp:
 	LDA Level_ObjectID,X	  
 	CMP #OBJ_BOBOMBEXPLODE 
 	BEQ PRG000_D0EC 
+	;CMP #OBJ_PURPLETROOPA
+	;BEQ PRG000_D0EC 
 	CMP #OBJ_BOBOMB 
 	BNE PRG000_D101
+
 
 PRG000_D0EC: 
 
@@ -2771,8 +2845,8 @@ PRG000_D101:
 	; at different rates depending on where the timer is exactly...
 PRG000_D10D:
 	; #DAHRKDAIZ - left this in to force the ice blocks to use palette #2 >_>
-	LDA #$02
-	STA Objects_ColorCycle,X
+	LDA #$FF
+	STA Objects_Timer3,X
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Ice block flashing removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3166,10 +3240,28 @@ PRG000_D253:
 	LDA Level_ObjectID, X
 	CMP #OBJ_ICEBLOCK
 	BNE Not_Ice_Block
+	; Player hit from top bit
+	; Enemy is in a shell...
+	LDA Objects_Y, X
+	AND #$0F
+	ADD #$04
+	STA TempA
+	LDA <Player_Y
+	AND #$F0
+	ORA TempA
+	STA <Player_Y
+	LDA #$00
+	STA <Player_YVel
+	STA <Player_InAir
+	LDA #$00
+	STA Player_NoSlopeStick
+	RTS
+
+PRG000_D266:
 	JMP Object_HoldKickOrHurtPlayer
 
 Not_Ice_Block:
-	; Player hit from top bit
+
 	LDA #$01
 	STA Objects_PlayerHitStat,X
 
@@ -3237,8 +3329,6 @@ PRG000_D29B:
 	BNE PRG000_D2B4	 ; If object state is not shelled, jump to PRG000_D2B4 (typical stomp)
 
 PRG000_D2A2:
-
-	; Enemy is in a shell...
 
 	JSR Exp_Inc	 ; Get points for the kick
 	JSR Player_KickObject	 ; Player kicks the enemy!
@@ -3355,6 +3445,10 @@ Object_SetShellState:
 	; Set Objects_State to Shelled
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
+	
+	LDA Level_ObjectID, X
+	CMP #OBJ_PURPLETROOPA
+	BEQ FuseTroopa
 
 	; Set timer 3 = $FF (wake up timer)
 	LDA #$ff
@@ -3362,6 +3456,10 @@ Object_SetShellState:
 
 	RTS		 ; Return
 
+FuseTroopa:
+	LDA #$80
+	STA Objects_Timer3, X
+	RTS
 
 Object_HoldKickOrHurtPlayer:
 	LDA Level_ObjectID, X
@@ -3383,10 +3481,17 @@ PRG000_D343:
 
 PRG000_D34F:
 
+	LDA <Player_YVel
+	BPL PRG000_D350
+	LDA Objects_YVel
+	BEQ PRG000_D351
+
+PRG000_D350:
 	; Keep held object in state 4 (Held)
 	LDA #OBJSTATE_HELD
 	STA Objects_State,X
 
+PRG000_D351:
 	RTS		 ; Return
 
 

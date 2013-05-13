@@ -38,7 +38,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_Set3DoNothing	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_Set3DoNothing	; Object $79 - OBJ_BULLETBILLHOMING
-	.word ObjInit_GiantTroop	; Object $7A - OBJ_BIGGREENTROOPA
+	.word ObjInit_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjInit_GiantTroop	; Object $7B - OBJ_BIGREDTROOPA
 	.word ObjInit_GiantTroop	; Object $7C - OBJ_BIGGOOMBA
 	.word ObjInit_GiantDRYPIRANHA	; Object $7D - OBJ_BIGGREENPIRANHA
@@ -80,7 +80,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjNorm_BulletBill	; Object $79 - OBJ_BULLETBILLHOMING
-	.word ObjNorm_GroundTroop	; Object $7A - OBJ_BIGGREENTROOPA
+	.word ObjNorm_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjNorm_RedTroopa		; Object $7B - OBJ_BIGREDTROOPA
 	.word ObjNorm_GroundTroop	; Object $7C - OBJ_BIGGOOMBA
 	.word ObjNorm_BigPiranha	; Object $7D - OBJ_BIGGREENPIRANHA
@@ -123,11 +123,11 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
 	.word $0000					; Object $78 - OBJ_BULLETBILL
 	.word $0000					; Object $79 - OBJ_BULLETBILLHOMING
-	.word $0000					; Object $7A - OBJ_BIGGREENTROOPA
+	.word $0000					; Object $7A - OBJ_PURPLETROOPA
 	.word $0000					; Object $7B - OBJ_BIGREDTROOPA
 	.word $0000					; Object $7C - OBJ_BIGGOOMBA
 	.word $0000					; Object $7D - OBJ_BIGGREENPIRANHA
-	.word OCSPECIAL_KILLCHANGETO | OBJ_BIGGREENTROOPA	; Object $7E - OBJ_BIGGREENHOPPER
+	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $7E - OBJ_BIGGREENHOPPER
 	.word $0000					; Object $7F - OBJ_BIGREDPIRANHA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GREENTROOPA	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word OCSPECIAL_HIGHSCORE			; Object $81 - OBJ_HAMMERBRO
@@ -165,7 +165,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1  | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7A - OBJ_BIGGREENTROOPA
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $7A - OBJ_PURPLETROOPA
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7B - OBJ_BIGREDTROOPA
 	.byte OA1_PAL3 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7C - OBJ_BIGGOOMBA
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7D - OBJ_BIGGREENPIRANHA
@@ -206,7 +206,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $77 - OBJ_GREENCHEEP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $78 - OBJ_BULLETBILL
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7A - OBJ_BIGGREENTROOPA
+	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $7A - OBJ_PURPLETROOPA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7B - OBJ_BIGREDTROOPA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7C - OBJ_BIGGOOMBA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7D - OBJ_BIGGREENPIRANHA
@@ -248,7 +248,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
 	.byte OA3_HALT_NORMALONLY 					; Object $78 - OBJ_BULLETBILL
 	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7A - OBJ_BIGGREENTROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7A - OBJ_PURPLETROOPA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7B - OBJ_BIGREDTROOPA
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $7C - OBJ_BIGGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH | OA3_NOTSTOMPABLE 	; Object $7D - OBJ_BIGGREENPIRANHA
@@ -290,7 +290,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $77 - OBJ_GREENCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $78 - OBJ_BULLETBILL
 	.byte OPTS_SETPT6 | $4F	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OPTS_SETPT5 | $3D	; Object $7A - OBJ_BIGGREENTROOPA
+	.byte OPTS_SETPT6 | $4F	; Object $7A - OBJ_PURPLETROOPA
 	.byte OPTS_SETPT5 | $3D	; Object $7B - OBJ_BIGREDTROOPA
 	.byte OPTS_SETPT5 | $3D	; Object $7C - OBJ_BIGGOOMBA
 	.byte OPTS_SETPT5 | $3D	; Object $7D - OBJ_BIGGREENPIRANHA
@@ -332,7 +332,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_NORMALANDKILLED	; Object $77 - OBJ_GREENCHEEP
 	.byte KILLACT_DRAWMOVENOHALT	; Object $78 - OBJ_BULLETBILL
 	.byte KILLACT_DRAWMOVENOHALT	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte KILLACT_GIANTKILLED	; Object $7A - OBJ_BIGGREENTROOPA
+	.byte KILLACT_JUSTDRAWMIRROR	; Object $7A - OBJ_PURPLETROOPA
 	.byte KILLACT_GIANTKILLED	; Object $7B - OBJ_BIGREDTROOPA
 	.byte KILLACT_GIANTKILLED	; Object $7C - OBJ_BIGGOOMBA
 	.byte KILLACT_POOFDEATH		; Object $7D - OBJ_BIGGREENPIRANHA
@@ -381,7 +381,7 @@ ObjectGroup03_PatternStarts:
 	; for each "frame" value, it moves up two bytes to the next pair.
 
 	; NOTE: SPECIAL EXCEPTION: If an object has Objects_IsGiant set
-	; OR has its ID >= OBJ_BIGGREENTROOPA, there is an assumption
+	; OR has its ID >= OBJ_PURPLETROOPA, there is an assumption
 	; that the initial bytes at ObjectGroup03_PatternSets form a
 	; valid JMP $xxxx instruction to go to an alternate giant shell
 	; drawing routine (since otherwise default code is used)
@@ -405,7 +405,6 @@ ObjP8F:
 ObjP7D:
 ObjP7F:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF
-ObjP7A:
 ObjP7B:
 ObjP7E:
 	.byte $8D, $8F, $93, $95, $99, $8F, $9B, $9D, $B1, $B3, $B5, $B7
@@ -416,6 +415,7 @@ ObjP6D:
 ObjP6E:
 ObjP6F:
 ObjP80:
+ObjP7A:
 	.byte $CB, $C5, $C3, $C5, $FD, $FD, $FD, $FD, $FD, $FD, $D1, $D1, $D3, $D5
 ObjP70:
 	.byte $95, $97, $91, $93, $9B, $9B, $9B, $9B, $A1, $A1, $9B, $9B, $A3, $A5
@@ -3627,7 +3627,7 @@ GroundTroop_XVel:
 	.byte $F0, $10, $F4, $0C, $F7, $09
 
 Troopers:
-	.byte OBJ_BLUESPINY, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte OBJ_BLUESPINY, OBJ_PURPLETROOPA, $FF, $FF, $FF, $FF, $FF, $FF
 
 FastMovers:
 	.byte OBJ_BLUESPINY, $FF, $FF, $FF, $FF, $FF, $FF, $FF
@@ -3936,10 +3936,13 @@ GroundTroop_Draw:
 	CMP #OBJ_BLUESPINY
 	BEQ PRG004_B4B6
 
+	CMP #OBJ_PURPLETROOPA
+	BEQ Troopa_Draw
+
 	CMP #OBJ_BUZZYBEATLE
 	BLT Troopa_Draw	 ; If this is one of the regular troopas or paratroopas, jump to Troopa_Draw
 
-	CMP #OBJ_BIGGREENTROOPA
+	CMP #OBJ_PURPLETROOPA + 1
 	BLT PRG004_B4B6	 ; If this is not one of the giant troopas, jump to PRG004_B4B6
 
 	JMP ObjectGroup03_PatternSets	 ; Jump indirectly to GiantEnemy_Draw
@@ -4003,8 +4006,6 @@ Troopa_Draw:
 
 	JSR GroundTroop_DrawOffsetInY	 ; Draw with specified offset
 
-	NOP		 ; ? Removed something
-
 	; Temp_Var2 = FlipBits
 	LDA Objects_FlipBits,X
 	STA <Temp_Var2
@@ -4054,6 +4055,9 @@ PRG004_B520:
 	TAY
 
 	LDA Level_ObjectID,X
+	CMP #OBJ_PURPLETROOPA
+	BEQ PRG004_B55D
+
 	CMP #OBJ_PARATROOPAGREENHOP
 	BLT PRG004_B55D	 ; If this is not a paratroopa, jump to PRG004_B55D
 

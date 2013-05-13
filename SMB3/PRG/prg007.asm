@@ -4335,24 +4335,9 @@ PRG007_B826:
 PRG007_B827:
 	CMP #SOBJ_ICEBALL
 	BNE Try_Wand
-	LDA #$08
-	STA Frozen_State
-	LDA #$00
-	STA Player_IsClimbing
-	LDA Frozen_Frame
-	BNE Keep_Going
-	LDA Player_Frame
-	STA Frozen_Frame
-
-Keep_Going:
+	JSR SetPlayerFrozen
 	LDA SpecialObj_XVel,X
 	STA <Player_XVel
-	LDA #$31
-	STA Palette_Buffer+$11
-	LDA #$30
-	STA Palette_Buffer+$12
-	LDA #$02
-	STA Palette_Buffer+$13
 	JMP SpecialObj_Remove
 
 Try_Wand:
@@ -5813,7 +5798,7 @@ Hammer_BrickBust:
 	LDA #-6	 
 	STA BrickBust_YVel	 ; Y velocity = -6
 
-	LDY #$80
+	LDY #$90
 	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof

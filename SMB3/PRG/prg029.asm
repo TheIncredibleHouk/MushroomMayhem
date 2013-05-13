@@ -414,14 +414,18 @@ RAINBOW_PAL_CYCLE:
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
-	LDA Special_Suit_Flag
-	BEQ No_Burning_Mode
-	LDA Player_Suit
-	CMP #$03
+	JSR Get_Normalized_Suit
+	CMP #$08
 	BNE No_Burning_Mode
 	JSR Try_Burning_Mode
+	JMP No_Poison_Mode
 
 No_Burning_Mode:
+	CMP #$04
+	BNE No_Poison_Mode
+	JSR Try_Poison_Mode
+
+No_Poison_Mode:
 	LDA Invincible_Enemies
 	BEQ No_Invincible_Enemies
 	JSR Rainbow_Palette_Cycle_Sprites
@@ -3255,4 +3259,35 @@ Kill_Burn_NoFX:
 	STA Player_Power
 	LDA #$10					
 	STA Player_SuitLost
+	RTS
+
+Try_Poison_Mode:
+	LDA Poison_Mode
+	BNE Continue_Poison_Mode
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ Cant_Poison_Mode
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Cant_Poison_Mode
+	INC Poison_Mode
+	LDA #$FC
+	STA Air_Change
+	STA Player_StarInv
+
+Cant_Poison_Mode:
+	RTS
+
+Continue_Poison_Mode:	
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Stop_Poison_Mode
+	RTS
+
+Stop_Poison_Mode:
+	LDA #$01
+	STA Air_Change
+	STA Player_StarInv
+	LDA #$00
+	STA Poison_Mode
 	RTS

@@ -357,8 +357,6 @@ MMC3_IRQENABLE	= $E001 ; Enables IRQ generation
 
 	VBlank_Tick:		.ds 1	; can be used for timing, or knowing when an NMI just fired off
 
-				.ds 1	; $11 unused
-
 	Horz_Scroll_Hi:		.ds 1	; Provides a "High" byte for horizontally scrolling, or could be phrased as "current screen"
 	PPU_CTL1_Mod:		; NOT DURING GAMEPLAY, this is used as an additional modifier to PPU_CTL1
 	Vert_Scroll_Hi:		.ds 1	; Provides a "High" byte for vertically scrolling (only used during vertical levels!)
@@ -366,6 +364,7 @@ MMC3_IRQENABLE	= $E001 ; Enables IRQ generation
 	Level_ExitToMap:	.ds 1	; When non-zero, kicks back to map (OR to event when Player_FallToKing or Player_RescuePrincess is nonzero!)
 
 	Counter_1:		.ds 1	; This value simply increments every frame, used for timing various things
+	Counter_2:		.ds 1
 
 	PPU_CTL2_Copy:		.ds 1	; Essentially a copy of PPU_CTL2, which updates it as well, though the sprite/BG visibility setting is usually (always?) forced on
 
@@ -1295,6 +1294,8 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	BackUpY:			.ds 1
 	BackUpYHi:			.ds 1
 	PSwitchTileBackups: .ds 8
+	PBarHitTestX:		.ds 5
+	PBarHitTestY:		.ds 5
 
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
@@ -2453,7 +2454,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 
 	Map_Previous_Dir:	.ds 2	; $7993-$7994 (Mario/Luigi) Backup movement dir (remember which way Player moved last) (8=Up, 4=Down, 2=Left, 1=Right)
 
-	Map_Unused7995:		.ds 1	; Unused; cleared but never used otherwise
+	Poison_Mode:		.ds 1	; Unused; cleared but never used otherwise
 
 	Player_NoSlopeStick:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
 
@@ -2759,15 +2760,13 @@ CFIRE_LASER		= $15	; Laser fire
 	Inventory_Cards2:	.ds 1	; $7DBF-$7DC1 Luigi, 3 cards
 	Inventory_Score2:	.ds 1	; $7DC2-$7DC4 Luigi, 3 byte score
 	Player_Coins2:	.ds 1	; Luigi's coins
-	Map_Unused7DC6:		.ds 5	; $7DC6-$7DCA? Indexed by Map_Unused738, value used in dead routine in PRG011 @ $A2AF
 
 	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)
 	Boo_Mode_Timer:			.ds 1	; Indicates how long we are in boo mode
 	Boo_Mode_KillTimer:		.ds 1	; This timer is for the period coming out of boo mode, when not 0, Mario is invincible
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
-
-				.ds 7	; $7DD6-$7DDD unused
+				.ds 12	; $7DD6-$7DDD unused
 
 	Pal_Data:		.ds 32	; $7DDE-$7DFD Holds an entire bg/sprite palette (this is the MASTER palette, what fades target, and others may source for "original" colors!)
 
@@ -3043,6 +3042,7 @@ TILE_PROP_MOVE_RIGHT	= $04 ;
 TILE_PROP_MOVE_UP		= $05 ; 
 TILE_PROP_MOVE_DOWN		= $06 ;
 TILE_PROP_TREASURE		= $07 ; 
+TILE_PROP_SINK			= $07 ; 
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
@@ -3489,7 +3489,7 @@ OBJ_WATERCURRENTDOWNARD = $66 ;
 OBJ_LAVALOTUS		= $67 	; Underwater lava plant
 OBJ_TWIRLINGBUZZY	= $68	; Twirling, upside down buzzy beatle
 OBJ_TWIRLINGSPINY	= $69	; Twirling, upside down spiny
-OBJ_BLOOPERCHILDSHOOT	= $6A	; Blooper (shoots off children)
+OBJ_BLOOPERCHILDSHOOT	= $6A	; Blooper (shoots off children
 OBJ_PILEDRIVER		= $6B	; Pile driver micro goomba
 OBJ_GREENTROOPA		= $6C	; green koopa troopa
 OBJ_REDTROOPA		= $6D	; red koopa troopa
@@ -3506,7 +3506,8 @@ OBJ_JUMPINGCHEEPCHEEP = $00 ;
 OBJ_GREENCHEEP		= $77	; Green Cheep Cheep
 OBJ_BULLETBILL		= $78	; Regular Bullet bill
 OBJ_BULLETBILLHOMING	= $79	; Homing Bullet Bill
-OBJ_BIGGREENTROOPA	= $7A	; Big Green Turtle
+OBJ_PURPLETROOPA		= $7A	;
+OBJ_BIGGREENTROOPA	= $00	; Big Green Turtle
 OBJ_BIGREDTROOPA	= $7B	; Big Red Turtle
 OBJ_BIGGOOMBA		= $7C	; Big Goomba
 OBJ_BIGGREENPIRANHA	= $7D	; Big Green Piranha

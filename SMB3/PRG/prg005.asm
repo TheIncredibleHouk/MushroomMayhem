@@ -24,10 +24,10 @@
 
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_InitJumpTable:
-	.word ObjInit_RotatePlatform	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjInit_RotatePlatform	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.word ObjInit_RotatePlatform	; Object $92 - OBJ_TWIRLINGPLATCW
-	.word ObjInit_RotatePlatformPer	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.word ObjInit_FireBarCW	; Object $90 - OBJ_TILTINGPLATFORM
+	.word ObjInit_FireBarCCW	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.word ObjInit_IceBarCW	; Object $92 - OBJ_TWIRLINGPLATCW
+	.word ObjInit_IceBarCCW	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjInit_BigQBlock		; Object $94 - OBJ_BIGQBLOCK_3UP
 	.word ObjInit_BigQBlock		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.word ObjInit_BigQBlock		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -66,10 +66,10 @@ ObjectGroup04_InitJumpTable:
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_NormalJumpTable:
-	.word ObjNorm_TiltingPlatform	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjNorm_TwirlingPlatCWNS	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.word ObjNorm_TwirlingPlatCW	; Object $92 - OBJ_TWIRLINGPLATCW
-	.word ObjNorm_TwirlingPlatCW	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.word ObjNorm_ProjectileBarCW	; Object $90 - OBJ_TILTINGPLATFORM
+	.word ObjNorm_ProjectileBarCW	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.word ObjNorm_ProjectileBarCW	; Object $92 - OBJ_TWIRLINGPLATCW
+	.word ObjNorm_ProjectileBarCW	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjNorm_BigQBlock		; Object $94 - OBJ_BIGQBLOCK_3UP
 	.word ObjNorm_BigQBlock		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.word ObjNorm_BigQBlock		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -3320,804 +3320,246 @@ PRG005_B1B2:
 PRG005_B1B4:
 	RTS
 
-ObjInit_RotatePlatformPer:
-	LDA #$02
-	STA Objects_FlipBits,X
-
-ObjInit_RotatePlatform:
+ObjInit_FireBarCW:
+	LDA Objects_X, X
+	ADD #$04
+	STA Objects_X, X
 	LDA #$00
-	STA <Objects_VarBSS,X
-	STA <Objects_Var5,X
-	STA Objects_Var7,X
-
-	; Set at Y - 12
-	LDA <Objects_Y,X
-	SUB #12
-	STA <Objects_Y,X
-	LDA <Objects_YHi,X
-	SBC #$00
-	STA <Objects_YHi,X
-
+	STA Objects_Var1, X
+	STA Objects_Var2, X
 	RTS		 ; Return
 
-
-ObjNorm_TwirlingPlatCWNS:
-	; NOTE: I admit, I'm just not interested enough in how these gadgets work to bother
-	; working out their rather complex algorithm.  I'll leave this as an exercise for
-	; one of the more rabid types out there... just making it relocatable like everything
-	; else, but if you wanted to actually know what it does, you're out of luck today...
-
-	; Var5 = $30
-	LDA #$30
-	STA <Objects_Var5,X
-
-PRG005_B1D5:
-	JSR Platform_SplitVar5
-	JSR PRG005_B40A	
-	JSR PRG005_SUB_B4BB
-
-	JMP PRG005_B270	 ; Jump to PRG005_B270
-
-PRG005_B1E1:	.byte $20, $50, $20, $50
-PRG005_B1E5:	.byte $F8, $08, $08, $F8
-PRG005_B1E9:	.byte $00, $40, $00, $C0
-
-ObjNorm_TwirlingPlatCW:
-	; NOTE: I admit, I'm just not interested enough in how these gadgets work to bother
-	; working out their rather complex algorithm.  I'll leave this as an exercise for
-	; one of the more rabid types out there... just making it relocatable like everything
-	; else, but if you wanted to actually know what it does, you're out of luck today...
-
-	JSR PRG005_B1D5
-
-	LDA <Player_HaltGame
-	BNE PRG005_B21A	 ; If gameplay halted, jump to PRG005_B21A (RTS)
-
-	LDA <Objects_Var4,X
-	AND #$01
-	ORA Objects_FlipBits,X
-	TAY
-
-	LDA Objects_Timer,X
-	BNE PRG005_B209		; If timer not expired, jump to PRG005_B209
-
-	LDA PRG005_B1E1,Y
-	STA Objects_Timer,X
-
-	INC <Objects_Var4,X
-
-PRG005_B209:
-	AND #$00		; ... interesting ...
-	BNE PRG005_B21A		; This jump will never be taken..
-
-	LDA <Objects_Var5,X
-	CMP PRG005_B1E9,Y
-	BEQ PRG005_B21A	 
-
-	ADD PRG005_B1E5,Y
-	STA <Objects_Var5,X
-
-PRG005_B21A:
+ObjInit_IceBarCW:
+	LDA Objects_X, X
+	ADD #$04
+	STA Objects_X, X
+	LDA #$01
+	STA Objects_Var1, X
+	LDA #$00
+	STA Objects_Var2, X
 	RTS		 ; Return
 
-PRG005_B21B:	.byte $18, $18, $17, $17, $16, $15, $14, $13, $11, $0F, $0D, $0B, $09, $07, $05, $02, $00
-PRG005_B22C:	.byte $00, $01, $01, $02, $FF, $FF, $FE, $00, $FF, $FF, $FE, $01, $01, $02
-
-TiltPlat_XVelAccel:	.byte $01, -$01
-TiltPlat_XVelLimit:	.byte $10, -$10
-
-
-ObjNorm_TiltingPlatform:
-	; NOTE: I admit, I'm just not interested enough in how these gadgets work to bother
-	; working out their rather complex algorithm.  I'll leave this as an exercise for
-	; one of the more rabid types out there... just making it relocatable like everything
-	; else, but if you wanted to actually know what it does, you're out of luck today...
-
-	LDA Objects_Timer,X
-	BNE PRG005_B266	 ; If timer not expired, jump to PRG005_B266
-
-	LDA <Counter_1
-	AND #$01
-	BNE PRG005_B266	 ; Every other tick, jump to PRG005_B266
-
-	LDY Objects_Var7,X	 ; Y = Var7
-
-	; Accelerate!
-	LDA <Objects_XVel,X
-	ADD TiltPlat_XVelAccel,Y
-	STA <Objects_XVel,X
-
-	CMP TiltPlat_XVelLimit,Y
-	BNE PRG005_B266		; If tilting platform has not reached velocity limit, jump to PRG005_B266
-
-	; Invert Var7
-	LDA Objects_Var7,X
-	EOR #$01
-	STA Objects_Var7,X
-
-	; Set timer to $A0
-	LDA #$a0
-	STA Objects_Timer,X
-
-PRG005_B266:
-
-	; XVel = 0
+ObjInit_FireBarCCW:
+	LDA Objects_X, X
+	ADD #$04
+	STA Objects_X, X
 	LDA #$00
-	STA <Objects_XVel,X
+	STA Objects_Var1, X
+	LDA #$01
+	STA Objects_Var2, X
+	RTS		 ; Return
 
-	JSR PRG005_SUB_B3CF
-	JSR PRG005_SUB_B4BB
+ObjInit_IceBarCCW:
+	LDA Objects_X, X
+	ADD #$04
+	STA Objects_X, X
+	LDA #$01
+	STA Objects_Var1, X
+	STA Objects_Var2, X
+	RTS		 ; Return
 
-PRG005_B270:
-	JSR Object_DeleteOffScreen_N2	; Delete object if it falls off screen
+BarTiles:
+	.byte $65, $59
 
-	LDA Player_OffScreen
-	BNE PRG005_B2C5
+BarPalette:
+	.byte $01, $02
 
-	LDA Level_ObjectID,X
-	SUB #$90
-	STA <Temp_Var15
-	LDY #$06
+RadialTable:
+	.byte 08, 16, 24, 32
+	.byte 08, 15, 23, 31
+	.byte 07, 14, 22, 29
+	.byte 07, 13, 20, 26
+	.byte 05, 11, 17, 23
+	.byte 04, 07, 13, 17
+	.byte 03, 06, 09, 12
+	.byte 01, 03, 04, 06
 
-PRG005_B282:
-	STY <Temp_Var1		  
-	CPY #$06
-	BNE PRG005_B28D
+RadialTableY:
+	.byte 00, 00, 00, 00
+	.byte -01, -03, -04, -06
+	.byte -03, -06, -09, -12
+	.byte -04, -07, -13, -17
+	.byte -05, -11, -17, -23
+	.byte -07, -13, -20, -26
+	.byte -07, -14, -22, -29
+	.byte -08, -15, -23, -31
+	.byte -08, -16, -24, -32
+	.byte -08, -15, -23, -31
+	.byte -07, -14, -22, -29
+	.byte -07, -13, -20, -26
+	.byte -05, -11, -17, -23
+	.byte -04, -07, -13, -17
+	.byte -03, -06, -09, -12
+	.byte -01, -03, -04, -06
+	.byte 00, 00, 00, 00
+	.byte 01, 03, 04, 06
+	.byte 03, 06, 09, 12
+	.byte 04, 07, 13, 17
+	.byte 05, 11, 17, 23
+	.byte 07, 13, 20, 26
+	.byte 07, 14, 22, 29
+	.byte 08, 15, 23, 31
+	.byte 08, 16, 24, 32
+	.byte 08, 15, 23, 31
+	.byte 07, 14, 22, 29
+	.byte 07, 13, 20, 26
+	.byte 05, 11, 17, 23
+	.byte 04, 07, 13, 17
+	.byte 03, 06, 09, 12
+	.byte 01, 03, 04, 06
 
-	LDA <Temp_Var7
-	JMP PRG005_B294
-
-
-PRG005_B28D:
-	TYA		  
-	ASL A
-	ASL A
-	ADD Object_SprRAM,X
-
-PRG005_B294:
-	STA <Temp_Var16		  
-	LDA <Player_Y
-	SUB Level_VertScroll
-	ADD #$18
-	LDY <Player_YVel
-	BPL PRG005_B2A6
-
-	SUB #$10
-
-PRG005_B2A6:
-	LDY <Temp_Var16		  
-	SUB Sprite_RAM+$00,Y
-	CMP #$09
-	BCS PRG005_B2C0
-
-	LDA <Player_X
-	SUB <Horz_Scroll
-	ADD #$08
-	SUB Sprite_RAM+$03,Y
-	CMP #$09
-	BCC PRG005_B2C6
-
-
-PRG005_B2C0:
-	LDY <Temp_Var1		  
-	DEY
-	BPL PRG005_B282
-
-PRG005_B2C5:
+ObjNorm_ProjectileBarCW:
+	LDY #$08
+	JSR Object_DetermineVertVis
+	LDY #$08
+	JSR Object_DetermineHorzVis
+	LDA Objects_SprVVis, X
+	ORA Objects_SprHVis, X
+	BEQ DrawPBar
 	RTS
 
-PRG005_B2C6:
-	LDA <Player_IsDying		  
-	BNE PRG005_B2C5
-
-	LDA Sprite_RAM+$00,Y
-	CMP #$f8
-	BEQ PRG005_B2C0
-
-	LDA <Temp_Var15
-	BEQ PRG005_B33E
-
-	LDA <Objects_Var5,X
-	BNE PRG005_B303
-
-	LDA <Player_YVel
-	BPL PRG005_B2E2
-
-	LDA #$00
-	STA <Player_YVel
-	RTS
-
-PRG005_B2E2:
-	LDA <Pad_Holding		  
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BNE PRG005_B2F4
-
-	LDA <Player_XVel
-	BEQ PRG005_B2F4
-
-	BPL PRG005_B2F2
-
-	INC <Player_XVel
-	INC <Player_XVel
-
-PRG005_B2F2:
-	DEC <Player_XVel		  
-
-PRG005_B2F4:
-	LDA #$00	  
-	STA <Player_YVel
-	STA <Player_InAir
-
-	JSR PRG005_B3B1
-
-	LDA #$10
-	STA Player_AllowAirJump
-	RTS
-
-PRG005_B303:
-	LDA <Objects_Var5,X	  
-	LDY <Temp_Var1
-	CPY #$04
-	BCC PRG005_B30D
-
-	EOR #$80
-
-PRG005_B30D:
-	ASL A		  
-	BCS PRG005_B331
-
-	LDA <Temp_Var6
-	ASL A
-	ASL A
-	ASL A
-	STA <Player_YVel
-	LDA <Temp_Var5
-	EOR #$ff
-
-PRG005_B31B:
-	ASL A		  
-	ASL A
-	ASL A
-	BPL PRG005_B328
-
-	CMP #$c0
-	BCS PRG005_B32E
-
-	LDA #$c0
-	BNE PRG005_B32E
-
-
-PRG005_B328:
-	CMP #$40	  
-	BCC PRG005_B32E
-
-	LDA #$40
-
-PRG005_B32E:
-	STA <Player_XVel		  
-	RTS
-
-PRG005_B331:
-	LDA <Temp_Var5		  
-	JSR PRG005_B31B
-
-	LDA <Temp_Var6
-	ASL A
-	ASL A
-	ASL A
-	STA <Player_YVel
-	RTS
-
-PRG005_B33E:
-	LDY <Temp_Var1		  
-	LDA <Objects_VarBSS,X
-	CMP #$10
-	BCC PRG005_B34F
-
-	CMP #$30
-	BCS PRG005_B34F
-
-	TYA
-	ADD #$07
-	TAY
-
-PRG005_B34F:
-	LDA <Player_YVel		  
-	BMI PRG005_B359
-
-	LDA <Counter_1
-	AND #$03
-	BNE PRG005_B369
-
-
-PRG005_B359:
-	LDA PRG005_B22C,Y	  
-	LDY <Player_YVel
-	BPL PRG005_B364
-
-	JSR Negate
-	ASL A
-
-PRG005_B364:
-	ADD <Objects_Var5,X
-	STA <Objects_Var5,X
-
-PRG005_B369:
-	LDA <Temp_Var5		  
-	EOR <Temp_Var6
-	BPL PRG005_B375
-
-	LDA <Temp_Var5
-	BPL PRG005_B379
-
-	BMI PRG005_B37C
-
-
-PRG005_B375:
-	LDA <Temp_Var5		  
-	BPL PRG005_B37C
-
-
-PRG005_B379:
-	JSR Negate	  
-
-PRG005_B37C:
-	LDY <Player_YVel		  
-	BPL PRG005_B38B
-
-	JSR Negate
-	ASL A
-	STA <Player_XVel
-	LDA #$00
-	STA <Player_YVel
-	RTS
-
-PRG005_B38B:
-	LDY #$20	  
-	STA <Temp_Var1
-	ASL <Temp_Var1
-	ROR A
-	ADD <Player_XVel
-	ADD <Objects_XVel,X
-	STA <Player_XVel
-	BPL PRG005_B3A7
-
-	JSR Negate
-	LDY #$e0
-
-PRG005_B3A7:
-	CMP #$20	  
-	BCC PRG005_B3AD
-
-	STY <Player_XVel
-
-PRG005_B3AD:
-	LDA #$10	  
-	STA <Player_YVel
-
-PRG005_B3B1:
-	LDY <Temp_Var16		  
-	LDA <Player_Y
-	PHA
-	LDA Sprite_RAM+$00,Y
-	ADD Level_VertScroll
-	SUB #$18
-	STA <Player_Y
-	PLA
-	CMP <Player_Y
-	BCS PRG005_B3C9
-
-	DEC <Player_YHi
-
-PRG005_B3C9:
-	LDA #$08	  
-	STA Player_AllowAirJump
-	RTS
-
-
-PRG005_SUB_B3CF:
-	JSR Platform_SplitVar5	 
-
-	LDA <Objects_VarBSS,X	 ; A value 0-63
-
-	ADD #$07	; Add 7
-	AND #$3f	; Cap 0-63 again
-
-	LDY <Objects_Var5,X	 ; Y = Var5
-	BMI PRG005_B3EC	 ; If Var5 is negative, jump to PRG005_B3EC
-
-	CMP #$10
-	BLT PRG005_B3F8	 ; If Var5 < $10, jump to PRG005_B3F8
-
-	CMP #$18
-	BGE PRG005_B3EC	 ; If Var5 >= $18, jump to PRG005_B3EC
-
-	; VarBSS = 8
-	LDA #$08
-	STA <Objects_VarBSS,X
-
-	JMP PRG005_B3F4	 ; Jump to PRG005_B3F8
-
-PRG005_B3EC:
-	AND #$20
-	BEQ PRG005_B3F8	
-
-	; VarBSS = $38
-	LDA #$38
-	STA <Objects_VarBSS,X
-
-PRG005_B3F4:
-
-	; Var5 = 0
-	LDA #$00
-	STA <Objects_Var5,X
-
-PRG005_B3F8:
-	LDA <Counter_1
-	AND #$07
-	BNE PRG005_B40A	 ; 1:8 ticks we proceed, otherwise jump to PRG005_B40A
-
-	LDA <Objects_Var5,X
-	BEQ PRG005_B40A	 ; If Var5 = 0, jump to PRG005_B40A
-	BMI PRG005_B408	 ; If Var5 < 0, jump to PRG005_B408
-
-	DEC <Objects_Var5,X	 ; Var5--
-	BPL PRG005_B40A	 ; Jump to PRG005_B40A
-
-PRG005_B408:
-	INC <Objects_Var5,X	 ; Var5++
-
-PRG005_B40A:
-	LDA <Objects_VarBSS,X
-	AND #$0f
-	TAY		 ; Y = 0 to 15
-
-	LDA PRG005_B21B,Y
-	STA <Temp_Var10	 ; Temp_Var10 = PRG005_B21B[Y]
-
-	TYA		 ; Y = 0 to 15 again
-
-	EOR #$ff
-	AND #$0f
-	ADD #$01
-	TAY
-
-	LDA PRG005_B21B,Y
-	STA <Temp_Var9	 ; Temp_Var9 = PRG005_B21B[Y]
-
-	LDA <Objects_VarBSS,X
-	AND #$10
-	BEQ PRG005_B432
-
-	LDA <Temp_Var9
-	PHA
-	LDA <Temp_Var10
-	STA <Temp_Var9
-	PLA
-	STA <Temp_Var10
-
-PRG005_B432:
-	LDA <Temp_Var10		  
-	CMP #$03
-	BCS PRG005_B444
-
-	LSR A
-	STA <Temp_Var2
-	STA <Temp_Var6
-	LDA #$00
-	STA <Temp_Var4
-	JMP PRG005_B460
-
-PRG005_B444:
-	LDY #$ff
-
-	SEC
-PRG005_B447:
-	SBC #$03
-	INY
-	BCS PRG005_B447
-
-	ADC #$03
-	STA <Temp_Var4
-	STY <Temp_Var2
-	STY <Temp_Var4
-	STY <Temp_Var6
-	TAY
-	BEQ PRG005_B460
-
-	INC <Temp_Var2
-	DEY
-	BEQ PRG005_B460
-
-	INC <Temp_Var6
-
-PRG005_B460:
-	LDA <Temp_Var9		  
-	CMP #$03
-	BCS PRG005_B472
-
-	LSR A
-	STA <Temp_Var1
-	STA <Temp_Var5
-	LDA #$00
-	STA <Temp_Var3
-	JMP PRG005_B48C
-
-PRG005_B472:
-	LDY #$ff	  
-
-	SEC
-PRG005_B475:
-	SBC #$03	  
-	INY
-	BCS PRG005_B475
-
-	ADC #$03
-	STY <Temp_Var1
-	STY <Temp_Var3
-	STY <Temp_Var5
-	TAY
-	BEQ PRG005_B48C
-
-	INC <Temp_Var1
-	DEY
-	BEQ PRG005_B48C
-
-	INC <Temp_Var5
-
-PRG005_B48C:
-	LDA <Objects_VarBSS,X	  
-	AND #$30
-	BEQ PRG005_B4B4
-
-	CMP #$10
-	BEQ PRG005_B49D
-
-	CMP #$30
-	BEQ PRG005_B4B7
-
-	JSR PRG005_B4B7
-
-PRG005_B49D:
-	LDX #$01	  
-
-PRG005_B49F:
-	LDA <Temp_Var1,X
-	JSR Negate
-	STA <Temp_Var1,X
-	LDA <Temp_Var3,X
-	JSR Negate
-	STA <Temp_Var3,X
-	LDA <Temp_Var5,X
-	JSR Negate
-	STA <Temp_Var5,X
-
-PRG005_B4B4:
-	LDX <SlotIndexBackup		  
-	RTS
-
-
-
-PRG005_B4B7:
-	LDX #$00	 ; X = 0
-	BEQ PRG005_B49F	 ; Jump (technically always) to PRG005_B49F
-
-PRG005_SUB_B4BB:
-	JSR Object_GetRandNearUnusedSpr
-	JSR PRG005_SUB_B596
-
-	; Draws any of the tilting/rotating platforms
-
-	LDY Object_SprRAM,X
-	LDA <Temp_Var14
-	STA Sprite_RAM+$00,Y
-	ADD <Temp_Var1
-	STA Sprite_RAM+$04,Y
-	ADD <Temp_Var3
-	STA Sprite_RAM+$08,Y
-	ADD <Temp_Var5
-	STA Sprite_RAM+$0C,Y
-	LDA <Temp_Var14
-	SUB <Temp_Var1
-	STA Sprite_RAM+$10,Y
-	SUB <Temp_Var3
-	STA Sprite_RAM+$14,Y
-	SUB <Temp_Var5
-	LDY <Temp_Var7
-	STA Sprite_RAM+$00,Y
-	LDY Object_SprRAM,X
-	LDA <Temp_Var15
-	STA Sprite_RAM+$03,Y
-	ADD <Temp_Var2
-	STA Sprite_RAM+$07,Y
-	ADD <Temp_Var4
-	STA Sprite_RAM+$0B,Y
-	ADD <Temp_Var6
-	STA Sprite_RAM+$0F,Y
-	LDA <Temp_Var15
-	SUB <Temp_Var2
-	STA Sprite_RAM+$13,Y
-	SUB <Temp_Var4
-	STA Sprite_RAM+$17,Y
-	SUB <Temp_Var6
-	LDY <Temp_Var7
-	STA Sprite_RAM+$03,Y
-	LDY Object_SprRAM,X
-	LDX #$06
-
-PRG005_B526:
-	CPX #$00	  
-	BNE PRG005_B52C
-
-	LDY <Temp_Var7
-
-PRG005_B52C:
-	LDA Sprite_RAM+$00,Y	  
-	CMP #$c2
-	BCS PRG005_B53A
-
-	LDA <Temp_Var13
-	AND PRG005_B58F,X
-	BEQ PRG005_B541
-
-
-PRG005_B53A:
-	LDA #$f8	  
-	STA Sprite_RAM+$00,Y
-	BNE PRG005_B551
-
-
-PRG005_B541:
-	LDA #$01	  
-	CPX #$06
-	BNE PRG005_B549
-
-	LDA #$02
-
-PRG005_B549:
-	STA Sprite_RAM+$02,Y	  
-	LDA #$ed
-	STA Sprite_RAM+$01,Y
-
-PRG005_B551:
-	INY		  
-	INY
-	INY
-	INY
-	DEX
-	BPL PRG005_B526
-
+DrawPBar:
+	LDA Objects_X, X
+	STA DAIZ_TEMP1
+	STA PBarHitTestX
+	LDA Objects_Y, X
+	STA DAIZ_TEMP2
+	STA PBarHitTestY
+	JSR Object_CalcSpriteXY_NoHi
+	LDY Object_SprRAM, X
+	LDA Objects_Var1, X
+	TAX
+	LDA BarTiles, X
+	STA Sprite_RAM + 1, Y
+	STA Sprite_RAM + 5, Y
+	STA Sprite_RAM + 9, Y
+	STA Sprite_RAM + 13, Y
+	STA Sprite_RAM + 17, Y
+	LDA BarPalette, X
+	STA Sprite_RAM + 2, Y
+	STA Sprite_RAM + 6, Y
+	STA Sprite_RAM + 10, Y
+	STA Sprite_RAM + 14, Y
+	STA Sprite_RAM + 18, Y
 	LDX <SlotIndexBackup
-	RTS
-
-
-	; The lower nibble of Var5 is shifted left 4 bits, Temp_Var1 is added, and this is returned as Temp_Var1
-	; The upper nibble of Var5 is arithmetically shifted right 4 bits and added to VarBSS which is capped to 0-63
-Platform_SplitVar5:
-	LDA <Player_HaltGame
-	BNE PRG005_B581	 ; If gameplay is halted, jump to PRG005_B581
-
-	LDA Objects_Var5,X
-	PHA		 ; Save Var5
-
+	LDA Objects_Var2, X
+	TAX
+	LDA <Counter_1, X
+	AND #$3E
 	ASL A
-	ASL A
-	ASL A
-	ASL A			; Var5 * 16
-	ADD Objects_Var1,X	; + Var1
-	STA Objects_Var1,X 	; -> Temp_Var1
+	STA TempX
+	LDX <SlotIndexBackup
 
-	PLA		 ; Restore Var5
-
-	PHP		 ; Save process status
-
-	LSR A
-	LSR A
-	LSR A
-	LSR A		; Var5 / 16
-
-	; Essentially the following makes it an arithmetic shift
-	CMP #$08
-	BLT PRG005_B57A	 ; If result < 8, jump to PRG005_B57A
-
-	ORA #$f0	 ; Otherwise, make negative 
-PRG005_B57A:
-	PLP		 ; Restore process status
-
-	; Add VarBSS and cap result to 0-63
-	ADC <Objects_VarBSS,X
-	AND #$3f
-	STA <Objects_VarBSS,X
-
-PRG005_B581:
-	RTS		 ; Return
-
-PRG005_B582:
-	.byte $05, $03, $01, $01, $03, $05
-
-PRG005_B588:	.byte $80, $40, $20, $10, $08, $04, $02
-PRG005_B58F:	.byte $80, $40, $20, $02, $04, $08, $10
-
-PRG005_SUB_B596:
+DrawProjectileBar:
+	LDA <Objects_SpriteX, X
+	STA Sprite_RAM + 3, Y
+	STA TempA
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAM , Y
+	LDA #$03
+	STA TempY
+	
+SetXOffset:
+	LDX TempX
+	LDA RadialTable, X
+	BPL DoXOffsetAdd
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var1
+	LDA DAIZ_TEMP1
+	SUB <Temp_Var1
+	LDX TempY
+	STA PBarHitTestX + 1, X
+	LDA TempA
+	SUB <Temp_Var1
+	BCS StoreXOffset
 	LDA #$00
-	STA <Temp_Var13
-	STA <Temp_Var11
-	LDA <Temp_Var2
-	ADD <Temp_Var4
-	ADD <Temp_Var6
-	STA <Temp_Var12
+	BEQ StoreXOffset
+
+DoXOffsetAdd:
 	PHA
-	LDA <Objects_X,X
-	SUB <Temp_Var12
-	STA <Temp_Var12
+	ADD DAIZ_TEMP1
+	LDX TempY
+	STA PBarHitTestX + 1, X
 	PLA
-	BPL PRG005_B5B3
+	ADD TempA
+	BCC StoreXOffset
+	LDA #$00
 
-	DEC <Temp_Var11
-
-PRG005_B5B3:
-	LDA <Objects_XHi,X	  
-	SBC <Temp_Var11
-	STA <Temp_Var11
-	LDY #$00
-
-PRG005_B5BB:
-	LDA <Temp_Var12		  
-	CMP <Horz_Scroll
-	LDA <Temp_Var11
-	SBC <Horz_Scroll_Hi
-	BEQ PRG005_B5CC
-
-	LDA PRG005_B588,Y
-	ORA <Temp_Var13
-	STA <Temp_Var13
-
-PRG005_B5CC:
-	STX <Temp_Var15		  
-	LDX PRG005_B582,Y
-	LDA <Temp_Var1,X
-	PHA
-	ADD <Temp_Var12
-	STA <Temp_Var12
-	LDX <Temp_Var15
-	STY <Temp_Var16
-	LDY #$00
-	PLA
-	BPL PRG005_B5E3
-
-	DEY
-
-PRG005_B5E3:
-	TYA		  
-	ADC <Temp_Var11
-	STA <Temp_Var11
-	LDY <Temp_Var16
+StoreXOffset:
+	STA Sprite_RAM +  7, Y
+	INC TempX
 	INY
-	CPY #$07
-	BNE PRG005_B5BB
+	INY
+	INY
+	INY
+	DEC TempY
+	BPL SetXOffset
 
-	LDA <Objects_X,X
-	SUB <Horz_Scroll
-	STA <Temp_Var15
-	LDA <Objects_Y,X
-	SUB Level_VertScroll
-	STA <Temp_Var14
-	LDA <Objects_YHi,X
-	ADC #$00
-	CMP #$01
-	BNE PRG005_B60C
+	LDA TempX
+	SUB #$04
+	STA TempX
+	
+	LDX <SlotIndexBackup
+	LDA <Objects_SpriteY, X
+	LDY Object_SprRAM, X
+	STA Sprite_RAM , Y
+	STA TempA
+	LDA #$03
+	STA TempY
+	
+SetYOffset:
+	LDX TempX
+	LDA RadialTableY, X
+	BPL DoYOffsetAdd
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var1
+	LDA DAIZ_TEMP2
+	SUB <Temp_Var1
+	LDX TempY
+	STA PBarHitTestY + 1, X
+	LDA TempA
+	SUB <Temp_Var1
+	BCS StoreYOffset
+	LDA #$F8
+	BEQ StoreYOffset
 
-	LDA <Temp_Var14
-	CMP #$e0
-	BCC PRG005_B610
+DoYOffsetAdd:
+	PHA
+	ADD DAIZ_TEMP2
+	LDX TempY
+	STA PBarHitTestY + 1, X
+	PLA
+	ADD TempA
+	BCC StoreYOffset
+	LDA #$F8
 
+StoreYOffset:
+	STA Sprite_RAM +  4, Y
+	INC TempX
+	INY
+	INY
+	INY
+	INY
+	DEC TempY 
+	BPL SetYOffset
 
-PRG005_B60C:
-	LDA #$ff	  
-	STA <Temp_Var13
+	LDA TempX
+	SUB #$04
+	STA TempX
+	LDX #$04
 
-PRG005_B610:
+CheckColide:
+	JSR ProjectileBarCollide
+	DEX
+	BPL CheckColide
+	LDX SlotIndexBackup
 	RTS
+		
+ObjNorm_ProjectileBarCCW:
+
+	RTS		 ; Return
 
 
 	; Bit set per Big ? Block within the world; they can only be opened once!!
@@ -6120,3 +5562,78 @@ PRG005_BFA7:
 
 ; Rest of ROM bank was empty...
 
+PObjYOff_PlayerSize:	.byte 18, 10	; Small vs not small
+PObj_VLimit:	.byte $10, $16
+
+ProjectileBarCollide:
+
+	; Player to Special Object collision logic...
+	TXA		 ; object slot index -> 'A'
+	ADD <Counter_1	 ; Keep it interesting
+	LSR A
+	BCC P_PRG007_B826	 ; Every other tick, jump to PRG007_B826 (RTS)
+
+	LDY #$00	 ; Y = 0 (small/ducking)
+
+	LDA <Player_Suit
+	BEQ P_PRG007_B7E4	 ; If Player is small, jump to PRG007_B7E4
+
+	LDA Player_IsDucking
+	BNE P_PRG007_B7E4	 ; If Player is ducking, jump to PRG007_B7E4
+
+	INY		 ; Y = 1 (otherwise)
+
+P_PRG007_B7E4:
+	LDA PBarHitTestY,X		; Special object Y
+	ADD #$08			; +8
+	SUB <Player_Y			; Subtract Player Y
+	SUB PObjYOff_PlayerSize,Y	; Subtract Player height offset
+	CMP PObj_VLimit,Y
+	BGE P_PRG007_B826	 	; If result >= SObj_VLimit, jump to PRG007_B843 (RTS)
+
+	LDA PBarHitTestX,X		; Special object X
+	ADD #$06			; +6
+	SUB <Player_X			; Subtract Player X
+	SBC #$00			; Carry?
+	CMP #16
+	BGE P_PRG007_B826	 	; If result >= 16, jump to PRG007_B843 (RTS)
+
+P_PRG007_B805:
+	LDA Player_FlashInv	; If Player is flashing from being hit ...
+	ORA <Player_HaltGame	; ... if gameplay is halted ...
+	ORA Player_IsDying	; ... Player is dying ...
+	BEQ P_PRG007_B827	 	; ... jump to Player_Behind_En (RTS)
+
+P_PRG007_B826:
+	RTS		 ; Return
+
+XKnockBacks: .byte $20, $E0, $E0, $20
+YKnockBacks: .byte $E0, $20, $20, $E0
+
+P_PRG007_B827:
+	LDX <SlotIndexBackup
+	LDA Objects_Var1, X
+	BEQ P_PRG007_B828
+	JSR Level_ObjCalcYDiffs
+	TYA
+	ASL A
+	ADD Objects_Var2, X
+	TAY
+	LDA XKnockBacks, Y
+	STA <Player_XVel
+	JSR Level_ObjCalcXDiffs
+	TYA
+	ASL A
+	ADD Objects_Var2, X
+	TAY
+	LDA YKnockBacks, Y
+	STA <Player_YVel 
+	STA <Player_InAir
+	JSR SetPlayerFrozen
+	LDX <SlotIndexBackup
+	PLA
+	PLA
+	RTS
+
+P_PRG007_B828:
+	JMP Player_GetHurt	 ; Hurt Player and don't come back!
