@@ -1133,8 +1133,6 @@ PRG003_A5F8:
 	RTS		 ; Return
 
 	; Unused data I think?  Possibly was for the twirling shell
-PRG003_A5F9:
-	.byte $00, $40, $00, $00, $40, $40, $00, $40
 
 TwirlShell_Draw:
 	JSR Object_SetHFlipByXVel ; Set horizontal flip by travel direction
@@ -1293,7 +1291,6 @@ ObjInit_BobOmb:
 	RTS		 ; Return
 
 ObjInit_BobOmbExplode:
-	STA Debug_Snap
 	LDA #$0B
 	STA PatTable_BankSel+4
 	JSR Level_ObjCalcXDiffs
@@ -6104,22 +6101,6 @@ DoBoomBoomWorldJMP:
 
 	.word InvincBB
 	.word InvincBB
-
-InvincBB:
-	LDA Invincible_Enemies
-	BNE InvincBB2
-	INC Invincible_Enemies
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
-	LDA #$FF
-	STA BoomBoomMiscTimer
-	RTS
-	 
-InvincBB2:
-	LDA #$50
-	STA BoomBoomMiscTimer
-	JMP Kill_Invincibility
 
 InvincBB:
 	LDA Invincible_Enemies

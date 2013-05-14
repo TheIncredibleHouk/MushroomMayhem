@@ -750,7 +750,7 @@ Object_GetAttrAndMoveTiles:
 	JSR Object_Check_Water
 
 
-PRG000_C6FD:
+Object_GetAttrAndMoveTiles_NoWater:
 	LDA <Level_Tile
 	STA Objects_LastTile,X	 ; Set last tile this object detected
 
@@ -1419,7 +1419,16 @@ PRG000_CB10:
  
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
 	JSR Object_Move	 		; Perform standard object movements
- 
+	JSR TestShellBumpBlocks
+
+	LDA <Objects_DetStat,X
+	AND #$08
+	BEQ DontBumpBlocks
+
+	STA Debug_Snap
+	
+
+DontBumpBlocks:
 	LDA <Objects_DetStat,X 
 	AND #$04 
 	BEQ PRG000_CB45	 ; If object hit floor, jump to PRG000_CB45 
@@ -1780,7 +1789,15 @@ ObjState_Kicked:
 PRG000_CC75:
 	JSR Object_Move	 ; Perform standard object movements
 	JSR Object_DetermineHorzVis	 ; Determine horizontally visible sprites
+	JSR TestShellBumpBlocks
 
+	LDA <Objects_DetStat, X
+	AND #$08
+	BEQ PRG000_CC73
+	LDA #$01
+	STA <Objects_YVel, X
+
+PRG000_CC73:
 	LDA Objects_InWater, X
 	BEQ PRG000_CC74
 	LDA Level_ObjectID, X
@@ -2069,11 +2086,6 @@ BrickBust_MoveOver:
 	RTS		 ; Return
 
 
-; FIXME: Anybody want to claim this?
-; Appears to override what goes in to Object_BumpBlocks
-; $CDCF 
-	LDA Object_TileWall2
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_BumpBlocks
 ;
@@ -2095,18 +2107,21 @@ Object_BumpBlocks:
 	JSR PRGROM_Change_A000
 
 	; Transfer tile detection 
-
-	LDA ObjTile_DetYHi
-	STA <Temp_Var13	
-
-	LDA ObjTile_DetYLo
+	LDA <Objects_Y, X
+	SUB #$04
 	STA <Temp_Var14	
 
-	LDA ObjTile_DetXHi
-	STA <Temp_Var15	
+	LDA <Objects_YHi, X
+	SBC #$00
+	STA <Temp_Var13	
 
-	LDA ObjTile_DetXLo
+	LDA <Objects_X, X
+	ADD #$04
 	STA <Temp_Var16	
+
+	LDA <Objects_XHi, X
+	ADC #$00
+	STA <Temp_Var15	
 
 	; Send detected tile over to check if object has hit any blocks
 	; that respond to being hit with head
@@ -2220,7 +2235,7 @@ PRG000_CE79:
 
 	LDA Objects_State,X
 	CMP #OBJSTATE_HELD
-	BNE PRG000_CEBE	 ; If object's state is not Held, jump to PRG000_CEBE
+	BNE PRG000_CEB4	 ; If object's state is not Held, jump to PRG000_CEBE
 
 	; This object is being held by Player...
 
@@ -2242,7 +2257,7 @@ PRG000_CE94:
 
 	LDA <Objects_DetStat,X
 	AND #$03	
-	BEQ PRG000_CEB4	 ; If object has not hit a wall, jump to PRG000_CEB4
+	BEQ PRG000_CEC6	 ; If object has not hit a wall, jump to PRG000_CEB4
 
 	; KICK OBJECT INTO WALL LOGIC
 
@@ -2281,38 +2296,57 @@ Dont_Coin_It4:
 PRG000_CEB4:
 
 	; Object kicked not against wall...
-
-	LDY #0	 	; Y = 0
-
-	LDA <Player_FlipBits
-	BEQ PRG000_CEBB	; If Player has not turned around, jump to PRG000_CEBB
-
-	INY		; Y = 1
+	JSR Level_ObjCalcXDiffs
+	LDY #$28	 	; Y = 0
+	LDA <Temp_Var16
+	BMI PRG000_CEBB
+	LDY #$E8
 
 PRG000_CEBB:
-	JMP PRG000_CEC6	; Jump to PRG000_CEC6
+	TYA
+	;PHA
+	JMP PRG000_CED9	; Jump to PRG000_CEC6
 
 PRG000_CEBE:
-
-	; Object kicked, was not held
-
-	; Make sure Player is facing object he's kicking
-	JSR Level_ObjCalcXDiffs
-	LDA PlayerKickFlipBits,Y
-	STA <Player_FlipBits
-
 PRG000_CEC6:
-	LDA ObjectKickXVelMoving,Y	 ; Get appropriate base X velocity for kick
-	STA <Objects_XVel,X	 	; -> Object's X velocity
+	LDA <Player_XVel
+	BNE PRG000_CED9
+	LDY <Player_FlipBits
+	BEQ PRG000_CED8
 
-	EOR <Player_XVel
-	BMI PRG000_CEDC	 ; If the object's X velocity is the opposite sign of the Player's, jump to PRG000_CEDC
+PRG000_CEC7:
+	LDA #$10
+	BNE PRG000_CED9
 
-	LDA <Player_XVel 	; Get the Player's X velocity
-	STA <Temp_Var1		; -> Temp_Var1 (yyyy xxxx)
-	ASL <Temp_Var1		; Shift 1 bit left (bit 7 into carry) (y yyyx xxx0)
-	ROR A			; A is now arithmatically shifted to the right (yyyyy xxx) (signed division by 2)
-	ADD ObjectKickXVelMoving,Y	 ; Add base "moving" X velocity of object
+PRG000_CED8:
+	LDA #$F0
+
+PRG000_CED9:
+	PHA
+	BPL PRG000_CEDA
+	EOR #$FF
+
+PRG000_CEDA:
+	SUB #$01
+
+PRG000_CEDA_2:
+	AND #$30
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA KickedXVel, Y
+	TAY
+	PLA
+	BPL PRG000_CEDB
+	TYA
+	EOR #$FF
+	ADD #$01
+	TAY
+
+PRG000_CEDB:
+	TYA
 	STA <Objects_XVel,X	 ; Set as object's X velocity
 
 PRG000_CEDC:
@@ -2328,10 +2362,26 @@ PRG000_CEDC:
 PRG000_CEE8:
 
 	; Set object's Y velocity to zero
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ PRG000_CEEE
+	LDA <Player_XVel
+	BNE PRG000_CEED
 	LDA #$00
+	STA <Objects_XVel, X
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State,X
+
+PRG000_CEED:
+	LDA #$B0
+	
+PRG000_CEEE:
 	STA <Objects_YVel,X
 
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
+
+KickedXVel:
+	.byte $10, $30, $40, $50
 
 PRG000_CEEF:
 
@@ -6221,3 +6271,42 @@ PRG000_C6FB:
 	STA Objects_InWater,X	 ; Set object's in-water flag
 	LDY TempY
 	RTS
+
+TestShellBumpBlocks
+	LDA <Objects_YVel, X
+	BPL NoBumps
+	LDA Object_TileFeet
+	CMP #TILE_ITEM_COIN
+	BCC CheckOtherTile
+	JSR Object_BumpBlocks	 ; Boom Boom can hit blocks!
+	LDA #$01
+	STA <Objects_YVel, X
+
+NoBumps:
+	RTS
+
+CheckOtherTile:
+	LDA <Objects_X, X
+	PHA
+	ADD #$08
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	PHA
+	ADC #$00
+	STA <Objects_XHi, X
+	JSR Object_GetAttrAndMoveTiles_NoWater
+	LDA Object_TileFeet
+	CMP #TILE_ITEM_COIN
+	BCC NoBumpTiles
+	JSR Object_BumpBlocks
+	LDA #$01
+	STA <Objects_YVel, X
+
+NoBumpTiles:
+	PLA
+	STA <Objects_XHi, X
+	PLA
+	STA <Objects_X, X
+	RTS
+
+	
