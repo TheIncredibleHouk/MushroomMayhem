@@ -99,8 +99,8 @@ PRG007_A027:
 	BNE PRG007_A070	 ; If this is not a bumped block tile, jump to PRG007_A070
 
 	; Otherwise, bounce Player!
-	LDA #-$30
-	STA <Player_YVel
+	;LDA #-$30
+	;STA <Player_YVel
 
 PRG007_A06F:
 	RTS		 ; Return

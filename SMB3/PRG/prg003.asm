@@ -1435,7 +1435,6 @@ BobOmb_FlashToExplode:
 PRG003_A770:
 	TYA
 	STA Objects_Frame,X
-
 	LDA Objects_Timer,X
 	BNE PRG003_A798	 ; If timer not expired, jump to PRG003_A798
 
