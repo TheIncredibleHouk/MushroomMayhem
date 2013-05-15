@@ -68,12 +68,13 @@
     <level name="Cold as ice" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="e6303808-fc9b-498d-a07d-e72277f64eaf" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-08T06:14:46.0339414-04:00" layout="Horizontal" />
     <level name="Fire and Ice" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="4164d41a-7cc0-4058-9a15-399f238b6710" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-10T11:38:46.4810263-04:00" layout="Horizontal" />
     <level name="Lava Core" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="43d110f2-6669-474f-b0db-78091e9db2e2" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-11T21:33:31.5950086-04:00" layout="Horizontal" />
-    <level name="Lava Core" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="4fe75123-e06f-4d1e-aa0a-dddc96c15ede" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-14T21:03:42.8880924-04:00" layout="Horizontal" />
+    <level name="Lava Core" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="4fe75123-e06f-4d1e-aa0a-dddc96c15ede" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-15T09:01:36.4220289-04:00" layout="Horizontal" />
     <level name="Item Shop" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="8a66389f-d9dc-4b77-9d8b-72258faa0c19" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-07T21:10:00.9734629-04:00" layout="Horizontal" />
     <level name="Evening Pass" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="f9c213cf-c364-412f-a000-c79a2128de83" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-08T20:59:55.1946116-04:00" layout="Horizontal" />
     <level name="Out to Sea" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="e689be33-9b16-4612-8b5e-7b8c96d9f89a" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-14T20:17:37.9819488-04:00" layout="Horizontal" />
-    <level name="Treasure Island" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="1865027f-7185-42ad-9e7e-c8be2de520a8" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-11T21:34:33.6945605-04:00" layout="Horizontal" />
+    <level name="Treasure Island" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="1865027f-7185-42ad-9e7e-c8be2de520a8" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-14T11:36:16.2114162-04:00" layout="Horizontal" />
     <level name="Frozen Fortress" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="f80b1660-749d-448e-b1c9-ee12e3732563" leveltype="2" lastcompressionsize="0" lastmodified="2013-05-13T06:50:07.6359502-04:00" layout="Horizontal" />
     <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="d51c828d-e91f-4f14-87cc-681630d7eb5e" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-14T18:48:19.4284571-04:00" layout="Horizontal" />
+    <level name="Waterfall" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="35714e6e-9deb-4096-806a-1710cffec00b" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-15T15:48:01.2487163-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
