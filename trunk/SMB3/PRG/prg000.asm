@@ -1423,10 +1423,7 @@ PRG000_CB10:
 
 	LDA <Objects_DetStat,X
 	AND #$08
-	BEQ DontBumpBlocks
-
-	STA Debug_Snap
-	
+	BEQ DontBumpBlocks	
 
 DontBumpBlocks:
 	LDA <Objects_DetStat,X 
@@ -2847,11 +2844,8 @@ Object_ShellDoWakeUp:
 	LDA Level_ObjectID,X	  
 	CMP #OBJ_BOBOMBEXPLODE 
 	BEQ PRG000_D0EC 
-	;CMP #OBJ_PURPLETROOPA
-	;BEQ PRG000_D0EC 
 	CMP #OBJ_BOBOMB 
 	BNE PRG000_D101
-
 
 PRG000_D0EC: 
 
@@ -2897,6 +2891,7 @@ PRG000_D10D:
 	; #DAHRKDAIZ - left this in to force the ice blocks to use palette #2 >_>
 	LDA #$FF
 	STA Objects_Timer3,X
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Ice block flashing removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3356,6 +3351,7 @@ PRG000_D272:
 
 
 	LDA #OBJSTATE_SHELLED	 ; Otherwise, state is Shelled
+	STA Debug_Snap
 	BNE PRG000_D297	 ; Jump (technically always) to PRG000_D297
 
 PRG000_D295:
@@ -5120,7 +5116,7 @@ SMB3J_SuitLossFrame:	.byte $00, $00, $00, $00, $01, $02, $03
 
 ; $D9D3
 Player_GetHurt:
-	
+
 	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
 	ORA Boo_Mode_Timer		; ... or boo mode ...
