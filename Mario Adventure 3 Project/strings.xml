@@ -358,7 +358,7 @@
     <block value="60">Coin Block</block>
     <block value="61">Leaf Block</block>
     <block value="62">Fire Flower Block</block>
-    <block value="63"></block>
+    <block value="63">Fire Flower Block</block>
     <block value="64"></block>
     <block value="65"></block>
     <block value="66"></block>
@@ -499,7 +499,7 @@
     <block value="ED"></block>
     <block value="EE"></block>
     <block value="EF"></block>
-    <block value="F0"></block>
+    <block value="F0">Waterfall FG</block>
     <block value="F1"></block>
     <block value="F2"></block>
     <block value="F3"></block>
