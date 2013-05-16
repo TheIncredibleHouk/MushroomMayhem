@@ -11,10 +11,9 @@
     <sprite x="20" y="18" value="109" item="0" />
     <sprite x="24" y="6" value="109" item="0" />
     <sprite x="39" y="20" value="118" item="0" />
-    <sprite x="102" y="10" value="80" item="0" />
-    <sprite x="100" y="13" value="206" item="0" />
+    <sprite x="114" y="12" value="80" item="0" />
+    <sprite x="125" y="17" value="206" item="0" />
     <sprite x="21" y="7" value="111" item="0" />
-    <sprite x="120" y="10" value="207" item="0" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="true" showstart="true" zoom="false" drawmode="Pencil" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
