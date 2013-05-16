@@ -1786,7 +1786,7 @@ ObjState_Kicked:
 PRG000_CC75:
 	JSR Object_Move	 ; Perform standard object movements
 	JSR Object_DetermineHorzVis	 ; Determine horizontally visible sprites
-	JSR TestShellBumpBlocks
+	;JSR TestShellBumpBlocks
 
 	LDA <Objects_DetStat, X
 	AND #$08
@@ -3351,7 +3351,6 @@ PRG000_D272:
 
 
 	LDA #OBJSTATE_SHELLED	 ; Otherwise, state is Shelled
-	STA Debug_Snap
 	BNE PRG000_D297	 ; Jump (technically always) to PRG000_D297
 
 PRG000_D295:
@@ -3492,19 +3491,24 @@ Object_SetShellState:
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
 	
+	PHP
 	LDA Level_ObjectID, X
 	CMP #OBJ_PURPLETROOPA
 	BEQ FuseTroopa
 
+	CMP #OBJ_BOBOMBEXPLODE
+	BEQ FuseTroopa
 	; Set timer 3 = $FF (wake up timer)
 	LDA #$ff
 	STA Objects_Timer3,X
 
+	PLP
 	RTS		 ; Return
 
 FuseTroopa:
 	LDA #$80
 	STA Objects_Timer3, X
+	PLP
 	RTS
 
 Object_HoldKickOrHurtPlayer:
