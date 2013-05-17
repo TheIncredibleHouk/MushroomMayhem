@@ -79,6 +79,6 @@
     <level name="Waterfall" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="35714e6e-9deb-4096-806a-1710cffec00b" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-15T15:48:01.2487163-04:00" layout="Horizontal" />
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2be9bb2b-a31d-4539-8db7-2fc5cba532b2" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T19:52:29.6177467-04:00" layout="Horizontal" />
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2406b09e-bded-4639-ac7c-03e7386c2daf" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T18:32:19.4296197-04:00" layout="Horizontal" />
-    <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="9a6c42b5-88d8-4d06-8493-b643bb923546" leveltype="6" lastcompressionsize="0" lastmodified="2013-05-17T06:41:59.1254177-04:00" layout="Horizontal" />
+    <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="9a6c42b5-88d8-4d06-8493-b643bb923546" leveltype="6" lastcompressionsize="0" lastmodified="2013-05-17T12:02:25.5869938-04:00" layout="Horizontal" />
   </levelinfo>
 </project>

@@ -1550,9 +1550,9 @@
   </set>
   <set leveltype="06">
     <block value="00">Cleared Coin</block>
-    <block value="01">Cleared Coin</block>
-    <block value="02">Background</block>
-    <block value="03">Background</block>
+    <block value="01">Background</block>
+    <block value="02">Cleared Coin</block>
+    <block value="03">Cleared Coin</block>
     <block value="04">Background</block>
     <block value="05">Background</block>
     <block value="06">Background</block>
