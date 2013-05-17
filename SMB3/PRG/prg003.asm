@@ -51,7 +51,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_RotoDiscDualCW	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.word ObjInit_BlooperWithKids	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.word ObjInit_Blooper		; Object $62 - OBJ_BLOOPER
-	.word ObjInit_DoNothing	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.word ObjInit_FloatMine	; Object $63 - OBJ_FLOATMINE
 	.word ObjInit_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjInit_WaterCurrent	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjInit_WaterCurrent	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -93,7 +93,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_RotoDiscDual	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.word ObjNorm_Blooper		; Object $61 - OBJ_BLOOPERWITHKIDS
 	.word ObjNorm_Blooper		; Object $62 - OBJ_BLOOPER
-	.word ObjNorm_DoNothing	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.word ObjNorm_FloatMine	; Object $63 - OBJ_FLOATMINE
 	.word ObjNorm_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjNorm_WaterCurrent	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjNorm_WaterCurrent	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -136,7 +136,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.word ObjHit_DoNothing	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.word ObjHit_DoNothing	; Object $62 - OBJ_BLOOPER
-	.word ObjHit_DoNothing	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.word ObjHit_DoNothing	; Object $63 - OBJ_FLOATMINE
 	.word ObjHit_DoNothing	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjHit_DoNothing	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjHit_DoNothing	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -178,7 +178,7 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $62 - OBJ_BLOOPER
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $63 - OBJ_FLOATMINE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -219,7 +219,7 @@ ObjectGroup02_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $62 - OBJ_BLOOPER
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $63 - OBJ_FLOATMINE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA2_TDOGRP0	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA2_TDOGRP0	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -261,7 +261,7 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $62 - OBJ_BLOOPER
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $63 - OBJ_FLOATMINE
 	.byte OA3_HALT_NORMALONLY 	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -303,7 +303,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $12	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OPTS_SETPT5 | $1A	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte OPTS_SETPT5 | $1A	; Object $62 - OBJ_BLOOPER
-	.byte OPTS_SETPT5 | $1A	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.byte OPTS_SETPT5 | $1A	; Object $63 - OBJ_FLOATMINE
 	.byte OPTS_SETPT6 | $4F	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OPTS_NOCHANGE	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OPTS_NOCHANGE	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -348,7 +348,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_STANDARD	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte KILLACT_NORMALSTATE	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $62 - OBJ_BLOOPER
-	.byte KILLACT_NORMALANDKILLED	; Object $63 - OBJ_BIGBERTHABIRTHER
+	.byte KILLACT_NORMALANDKILLED	; Object $63 - OBJ_FLOATMINE
 	.byte KILLACT_JUSTDRAW16X16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte KILLACT_STANDARD	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte KILLACT_STANDARD	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -448,7 +448,7 @@ ObjP62:
 ObjP6A:
 	.byte $B1, $B1, $B3, $B3, $B1, $B1
 ObjP63:
-	.byte $81, $83, $8D, $A1, $81, $83, $87, $89, $81, $83, $87, $89
+	.byte $81, $83, $A1, $A3
 ObjP64:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF
 
@@ -3454,9 +3454,120 @@ PRG003_B1D7:
 	; Bubble's Y velocity = $7F
 	LDA #$7f
 	STA SpecialObj_YVel,Y
-
 	RTS		 ; Return
 
+ObjInit_FloatMine:
+	LDA <Objects_X, X
+	ADD #$05
+	STA <Objects_X, X
+	RTs
+
+ObjNorm_FloatMine:
+	JSR Object_DeleteOffScreen_N2
+	JSR Object_Draw16x32Sprite
+	JSR Object_ApplyYVel_NoLimit
+
+	LDA <SlotIndexBackup
+	LDA Objects_SprHVis, X
+	AND #$20
+	BNE NoMineDraw
+	LDA Objects_SprVVis, X
+	BNE NoMineDraw
+	
+	LDY Object_SprRAM, X
+
+	LDA #$85
+	STA Sprite_RAM + 17, Y
+	LDA #$A5
+	STA Sprite_RAM + 21, Y
+
+	LDA Objects_SpriteY, X
+	STA Sprite_RAM + 16, Y
+	ADD #$10
+	STA Sprite_RAM + 20, Y
+
+	LDA Objects_SpriteX, X
+	ADD #$10
+	STA Sprite_RAM + 19, Y
+	STA Sprite_RAM + 23, Y
+
+	LDA Sprite_RAM + 2, Y
+	STA Sprite_RAM + 18, Y
+	STA Sprite_RAM + 22, Y
+
+	JSR MineDetectExplode
+
+	LDA Objects_Var1, X
+	CMP #$01
+	BEQ FloatMineUp
+	CMP #$02
+	BEQ FloatMineDown
+	LDA <Temp_Var16
+	CMP #$35
+	BCC FreeMine
+	CMP #$D0
+	BCC NoMineDraw
+
+FreeMine:
+	INC Objects_Var1, X
+	DEC <Objects_YVel, X
+
+NoMineDraw:
+	RTS
+
+FloatMineUp:
+FloatMineDown:
+	LDA <Counter_1
+	AND #$01
+	BNE NoMineDraw
+	LDA <Objects_YVel, X
+	CMP #$E0
+	BCS AccelMineUp
+	LDA #$E0
+	BNE SetYMineUpVel
+
+AccelMineUp:
+	SUB #$01
+
+SetYMineUpVel:
+	STA <Objects_YVel, X
+	JSR Object_ApplyYVel_NoLimit
+	JSR Object_WorldDetect4
+	LDA Objects_DetStat, X
+	BNE MineDoExplode
+
+	RTS
+
+
+MineDetectExplode:
+	JSR Level_ObjCalcYDiffs
+	LDA <Temp_Var16
+	STA <Temp_Var15
+
+	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var15
+	CMP #$25
+	BCC DetectXDiff
+	CMP #$F0
+	BCC NoMineExplode
+
+DetectXDiff:
+	LDA <Temp_Var16
+	CMP #$25
+	BCC MineDoExplode
+	CMP #$F0
+	BCC NoMineExplode
+
+MineDoExplode:
+	LDA #OBJ_BOBOMBEXPLODE
+	STA Level_ObjectID, X
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State,X
+	PLA
+	PLA
+
+NoMineExplode:
+	RTS
 ;ObjInit_BigBerthaBirther:
 ;
 ;PRG003_B1F6:
@@ -3470,7 +3581,7 @@ PRG003_B1D7:
 ;	JSR Object_CheckIfNormalState
 ;	BEQ PRG003_B205	 ; If Big Bertha's in normal state, jump to PRG003_B205
 ;
-;	JMP BigBerthaLCC_Draw	 ; Jump to BigBerthaLCC_Draw
+;	JMP 	 ; Jump to BigBerthaLCC_Draw
 ;
 ;PRG003_B205:
 ;	JSR Object_SetHFlipByXVel 	; Set horizontal flip by travel direction

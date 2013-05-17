@@ -5034,11 +5034,6 @@ Pipe_PadDirForEnter:
 	.byte PAD_RIGHT, PAD_LEFT	; What to press to enter a horizontal pipe; pad right and left, respectively
 	.byte PAD_DOWN, PAD_UP		; What to press to enter a vertical pipe; pad down and up, respectively
 
-
-	; The sliding values applied when Player is touching a conveyor
-MoveTileVert:	.byte -1, 1, 0, 0
-MoveTileHorz:	.byte 0, 0, -1, 1
-
 Player_DoSpecialTiles:
 	
 	LDA Player_Shell
@@ -5207,15 +5202,11 @@ PRG008_BD59:
 	BGE PRG008_BD73
 	TAX
 	LDA <Counter_1
-	AND #$03
+	AND #$01
 	BNE PRG008_BE2E
-	LDA <Player_XVel
-	SUB MoveTileHorz, X
-	STA <Player_XVel
-	LDA <Player_YVel
-	SUB MoveTileVert, X
-	STA <Player_YVel
 
+PushFull:
+	JSR ApplyTileMove
 	JMP PRG008_BE2F		; Jump to PRG008_BD73
 
 PRG008_BD73:
@@ -5265,8 +5256,34 @@ PRG008_BE2E:
 
 PRG008_BE2F:
 	RTS		 ; Return
+MoveTileVert:	.byte 1, -1, 0, 0
+MoveTileHorz:	.byte 0, 0, 1, -1
 
+ApplyTileMove:
+	STA Debug_Snap
+	LDY #$01
+	LDA MoveTileHorz, X
+	BPL NoXNeg
+	LDY #$FF
 
+NoXNeg:
+	ADD <Player_X
+	STA <Player_X
+	BCS MoveTileDone
+	TYA
+	ADD <Player_XHi
+	STA <Player_XHi
+	RTS
+
+	LDA <Player_Y
+	ADD MoveTileVert, X
+	STA <Player_Y
+	LDA <Player_YHi
+	ADC #$00
+	STA <Player_YHi
+
+MoveTileDone:
+	RTS
 
 PipeMove_SetPlayerFrame:
 	LDY <Player_Suit
