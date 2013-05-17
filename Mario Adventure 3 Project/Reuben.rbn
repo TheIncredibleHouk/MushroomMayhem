@@ -7,7 +7,7 @@
     <palette background="12" data="12,0F,30,10,12,0F,36,27,12,0F,2B,1B,12,0F,31,21,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Hilly" guid="698c2fa8-01f2-4a5f-a7a2-0144c11ecbdb" />
     <palette background="00" data="3C,0F,30,3C,3C,0F,36,27,3C,0F,2A,1A,3C,0F,30,21,3C,00,00,00,3C,0F,30,16,3C,0F,30,2A,3C,0F,36,27" name="Sky" guid="be476f89-09db-4479-8bcc-56e76d462aeb" />
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,2A,1A,37,0F,30,12,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Piranha Plant" guid="f0df204b-4537-4562-a5ca-2b9d3a76fb83" />
-    <palette background="02" data="02,0F,30,05,02,0F,37,17,02,0F,3B,1B,02,0F,35,04,02,00,00,00,02,0F,30,34,02,0F,30,2A,02,0F,30,27" name="Water" guid="f29e848d-6a32-4400-9416-55397fdc1150" />
+    <palette background="02" data="02,0F,30,10,02,0F,37,17,02,0F,3B,1B,02,0F,35,14,02,00,00,00,02,0F,30,10,02,0F,30,2A,02,0F,30,27" name="Water" guid="f29e848d-6a32-4400-9416-55397fdc1150" />
     <palette background="00" data="0F,0F,30,3C,0F,3C,30,3B,0F,27,30,17,0F,12,31,21,0F,00,00,00,0F,0F,30,16,0F,0F,30,2A,0F,0F,30,27" name="Mushroom" guid="8944a8b7-cefd-4bb4-ba68-e41d09d22d49" />
     <palette background="00" data="0F,0F,30,3C,0F,0F,36,27,0F,0B,3B,1B,0F,0F,0C,0F,0F,00,00,00,0F,0C,30,16,0F,0C,30,2A,0F,0C,36,27" name="Pipe" guid="28405934-7822-4343-8c74-cbd42ec57f8e" />
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,27,17,37,0F,31,21,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Desert" guid="cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385" />
@@ -40,7 +40,7 @@
   <blocklayouts />
   <worldinfo>
     <world name="World 0" ordinal="0" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" lastmodified="2013-05-07T19:53:21.6443963-04:00" lastcompressedsize="0" isnoworld="false" />
-    <world name="Cheep Cheep Everglades" ordinal="1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" lastmodified="2013-05-10T14:38:22.1818165-04:00" lastcompressedsize="0" isnoworld="false" />
+    <world name="Cheep Cheep Everglades" ordinal="1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" lastmodified="2013-05-17T06:56:39.7717878-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Piranha Forest" ordinal="2" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" lastmodified="2013-05-14T18:48:19.4344574-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Bob-omb Quarry" ordinal="3" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" lastmodified="2013-05-06T20:10:25.952465-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Blooper Bay" ordinal="4" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" lastmodified="2013-05-15T21:12:58.8199613-04:00" lastcompressedsize="0" isnoworld="false" />
@@ -51,7 +51,7 @@
     <level name="Just the basics" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="b3c6ac79-3ec8-43ff-b510-b058ca7bd011" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-11T14:52:52.6590601-04:00" layout="Horizontal" />
     <level name="Watch Your Fire" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="c30506a9-f2af-4f15-967f-61188b93e80f" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-08T06:13:38.768094-04:00" layout="Horizontal" />
     <level name="Just the basics" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="9ee758fa-a47d-4768-9291-018ab629e54d" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-09T05:59:20.9928294-04:00" layout="Horizontal" />
-    <level name="A bit over grown" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="1079adc5-8f63-46ab-9e53-d10e6eb10723" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-11T14:53:54.6096035-04:00" layout="Horizontal" />
+    <level name="A bit over grown" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="1079adc5-8f63-46ab-9e53-d10e6eb10723" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-17T06:57:31.4827455-04:00" layout="Horizontal" />
     <level name="A bit over grown" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="747d617e-59bb-40d5-a9fc-f558dc5fadd8" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-08T06:11:28.0866194-04:00" layout="Horizontal" />
     <level name="A fish out of water" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="ae704d35-4b12-49d3-b370-56c5554cf3f3" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-11T17:38:42.684169-04:00" layout="Horizontal" />
     <level name="Evening Pass" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="98deb9ac-e3af-4c79-a567-91526b702672" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-08T20:59:55.1996119-04:00" layout="Horizontal" />
@@ -61,7 +61,7 @@
     <level name="Hammer time!" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="11705e2e-bf8d-4e08-8873-5a0bcd2caa68" leveltype="2" lastcompressionsize="0" lastmodified="2013-05-12T21:08:39.4624608-04:00" layout="Horizontal" />
     <level name="Warp Zone" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="b9a58592-6618-4b28-b410-2653d8711130" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-10T05:46:35.8535367-04:00" layout="Horizontal" />
     <level name="Watch your fire" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="96c012f4-46a6-4090-a837-41455948ce4b" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-09T06:52:33.1914127-04:00" layout="Horizontal" />
-    <level name="Tunnel Down" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="e4bda44e-b8c5-41e8-9a63-48698630f802" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-15T18:20:12.208025-04:00" layout="Horizontal" />
+    <level name="Tunnel Down" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="e4bda44e-b8c5-41e8-9a63-48698630f802" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-16T18:58:02.781637-04:00" layout="Horizontal" />
     <level name="Blizzard" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="8997fbb7-40f8-40c0-8a34-7f5c976f5d74" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-11T21:19:49.4329836-04:00" layout="Horizontal" />
     <level name="Blocked Path" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="32d82215-0450-40db-b301-694b84550740" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-11T14:58:05.891976-04:00" layout="Horizontal" />
     <level name="Blocked Path" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="a4940cd6-40dd-4277-9c73-8e3b5049ef3f" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-08T19:46:19.1930308-04:00" layout="Horizontal" />
@@ -69,16 +69,16 @@
     <level name="Cold as ice" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="e6303808-fc9b-498d-a07d-e72277f64eaf" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-08T06:14:46.0339414-04:00" layout="Horizontal" />
     <level name="Fire and Ice" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="4164d41a-7cc0-4058-9a15-399f238b6710" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-10T11:38:46.4810263-04:00" layout="Horizontal" />
     <level name="Lava Core" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="43d110f2-6669-474f-b0db-78091e9db2e2" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-11T21:33:31.5950086-04:00" layout="Horizontal" />
-    <level name="Lava Core" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="4fe75123-e06f-4d1e-aa0a-dddc96c15ede" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-15T09:01:36.4220289-04:00" layout="Horizontal" />
+    <level name="Lava Core" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="4fe75123-e06f-4d1e-aa0a-dddc96c15ede" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-16T18:55:37.2703143-04:00" layout="Horizontal" />
     <level name="Item Shop" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="8a66389f-d9dc-4b77-9d8b-72258faa0c19" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-07T21:10:00.9734629-04:00" layout="Horizontal" />
     <level name="Evening Pass" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="f9c213cf-c364-412f-a000-c79a2128de83" leveltype="12" lastcompressionsize="0" lastmodified="2013-05-08T20:59:55.1946116-04:00" layout="Horizontal" />
     <level name="Out to Sea" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="e689be33-9b16-4612-8b5e-7b8c96d9f89a" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-14T20:17:37.9819488-04:00" layout="Horizontal" />
     <level name="Treasure Island" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="1865027f-7185-42ad-9e7e-c8be2de520a8" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T19:52:29.6297474-04:00" layout="Horizontal" />
     <level name="Frozen Fortress" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" levelguid="f80b1660-749d-448e-b1c9-ee12e3732563" leveltype="2" lastcompressionsize="0" lastmodified="2013-05-13T06:50:07.6359502-04:00" layout="Horizontal" />
-    <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="d51c828d-e91f-4f14-87cc-681630d7eb5e" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T21:24:19.6189007-04:00" layout="Horizontal" />
+    <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="d51c828d-e91f-4f14-87cc-681630d7eb5e" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-16T22:02:14.1617398-04:00" layout="Horizontal" />
     <level name="Waterfall" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" levelguid="35714e6e-9deb-4096-806a-1710cffec00b" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-15T15:48:01.2487163-04:00" layout="Horizontal" />
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2be9bb2b-a31d-4539-8db7-2fc5cba532b2" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T19:52:29.6177467-04:00" layout="Horizontal" />
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2406b09e-bded-4639-ac7c-03e7386c2daf" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T18:32:19.4296197-04:00" layout="Horizontal" />
-    <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="9a6c42b5-88d8-4d06-8493-b643bb923546" leveltype="6" lastcompressionsize="0" lastmodified="2013-05-15T22:00:28.5319555-04:00" layout="Horizontal" />
+    <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="9a6c42b5-88d8-4d06-8493-b643bb923546" leveltype="6" lastcompressionsize="0" lastmodified="2013-05-17T06:41:59.1254177-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
