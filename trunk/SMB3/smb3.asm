@@ -1296,7 +1296,11 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	PSwitchTileBackups: .ds 8
 	PBarHitTestX:		.ds 5
 	PBarHitTestY:		.ds 5
-
+	Weather_XPos:		.ds 8;
+	Weather_XVel:		.ds 8;
+	Weather_YPos:		.ds 8;
+	Weather_YVel:		.ds 8;
+	Weather_Pattern:	.ds 8
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
 
@@ -2459,10 +2463,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Player_NoSlopeStick:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
 
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
-	Weather:				.ds 1	; Indicates whether there is weather active for this stage (see bgcloud sprite)
-	Weather_Initialized:	.ds 1	; Indicates if the weather has initialized yet (1 - Initialized)
-	Weather_X:				.ds 8	; X position of rain drops
-	Weather_Y:				.ds 8	; Y position of rain drops
 	Wind:					.ds 1	; Wind factor (affects player!)
 	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
 	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
@@ -2476,6 +2476,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	ChallengeMode:			.ds 1	;
 	Frozen_State:			.ds 1	;
 	Frozen_Frame:			.ds	1
+	Unused:					.ds 2
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -2999,7 +3000,6 @@ SOBJ_POOF		= $16 	; Poof
 	LevelLoadPointer:	.ds 1	;
 	LevelNumber:		.ds 1	;
 	PaletteIndex:		.ds 1	;
-	WindDirection:	.ds 1	; 0 = left, 1 = right
 	Pointers:			.ds 60	;
 	UseAltEntrance:		.ds 1
 	WorldWidth:			.ds 1
@@ -3084,7 +3084,7 @@ TILE_ITEM_SPINNER	= $FE
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
 	LevelName:			.ds 22
-						.ds 25;
+						.ds 42;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

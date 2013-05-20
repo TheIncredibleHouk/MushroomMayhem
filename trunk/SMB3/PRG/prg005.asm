@@ -5080,59 +5080,37 @@ SpikeCheepX:	.byte 0, 255
 SpikeCheepXVel:	.byte 8, -16
 
 LevelEvent_SpikeCheep:
-
+	LDA <Player_HaltGame
+	BNE PRG005_BDB0
 	INC LevelEvent_Cnt	 ; LevelEvent_Cnt++
-
 	LDA LevelEvent_Cnt
-	CMP #$aa
-	BNE PRG005_BDB0	 ; If LevelEvent_Cnt <> $AA, jump to PRG005_BDB0 (RTS)
-
+	CMP #$60
+	BNE PRG005_BDB0
 	LDA #$00
-	STA LevelEvent_Cnt	 ; Reset LevelEvent_Cnt
-
+	STA LevelEvent_Cnt
+	
 	LDX #$02	 ; X = 2 (only spawning Spike Cheeps in slots 0 - 2)
 	JSR Level_SpawnObjSetMax	 ; Spawn new object (Note: If no slots free, does not return)
 
 	; Set Spike Cheep's object ID
-	LDA #OBJ_GREENCHEEP
+	LDA #OBJ_FLOATMINE
 	STA Level_ObjectID,X
+	LDA #$01
+	STA Objects_SprAttr, X
 
-	LDA RandomN,X	 ; Get a random number
-	AND #$01	 ; Random 0 or 1
-	TAY		 ; -> 'Y'
-
-	; Set Spike Cheep's X
-	LDA <Horz_Scroll
-	ADD SpikeCheepX,Y	; Start on left or right of screen
-	STA <Objects_X,X
-	LDA <Horz_Scroll_Hi
-	ADC #$00
-	STA <Objects_XHi,X
-
-	LDA SpikeCheepXVel,Y	 ; Get matching X velocity
-
-	LDY Level_AScrlConfig
-	BEQ PRG005_BD91	 ; If auto scroll is not in effect , jump to PRG005_BD91
-
-	ADD Level_AScrlHVel	 ; Otherwise, apply auto scroll's horizontal delta to Spike Cheep's X velocity
-
-PRG005_BD91:
-	STA <Objects_XVel,X	 ; Set X velocity
-
-	; Set Spike Cheep's Y
-	LDA RandomN,X	 ; Get random number
-	AND #$f0	 ; Keep aligned to 16 pixels
-	ADC #$20	 ; + 32
-	AND #$7f	 ; Cap 0 - $7F
-	ADC Level_VertScroll
-	STA <Objects_Y,X	
-	LDA Level_VertScrollH
-	ADC #$00
-	STA <Objects_YHi,X
-
+	LDA <Player_XHi
+	STA Objects_XHi, X
 	LDA #$01
 	STA Objects_Var1,X	; var 1 = 1
 	STA Objects_InWater,X	; Object is in water
+	LDA #$B0
+	STA Objects_Y, X
+	LDA #$01
+	STA Objects_YHi, X
+
+	LDA RandomN
+	ADC <Player_X
+	STA Objects_X, X
 
 PRG005_BDB0:
 	RTS		 ; Return
