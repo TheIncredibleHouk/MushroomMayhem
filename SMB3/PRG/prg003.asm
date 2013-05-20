@@ -219,7 +219,7 @@ ObjectGroup02_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $62 - OBJ_BLOOPER
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $63 - OBJ_FLOATMINE
+	.byte OA2_NOSHELLORSQUASH | OA3_TAILATKIMMUNE | OA2_TDOGRP1	; Object $63 - OBJ_FLOATMINE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA2_TDOGRP0	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA2_TDOGRP0	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -3460,10 +3460,12 @@ ObjInit_FloatMine:
 	LDA <Objects_X, X
 	ADD #$05
 	STA <Objects_X, X
+	LDA #$01
+	STA Objects_InWater, X
 	RTs
 
 ObjNorm_FloatMine:
-	JSR Object_DeleteOffScreen_N2
+	JSR Object_DeleteOffScreen
 	JSR Object_Draw16x32Sprite
 	JSR Object_ApplyYVel_NoLimit
 
@@ -3517,13 +3519,14 @@ NoMineDraw:
 
 FloatMineUp:
 FloatMineDown:
+	
 	LDA <Counter_1
-	AND #$01
+	AND #$03
 	BNE NoMineDraw
 	LDA <Objects_YVel, X
-	CMP #$E0
+	CMP #$E8
 	BCS AccelMineUp
-	LDA #$E0
+	LDA #$E8
 	BNE SetYMineUpVel
 
 AccelMineUp:

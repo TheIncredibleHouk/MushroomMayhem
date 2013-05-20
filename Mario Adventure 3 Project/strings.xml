@@ -1680,8 +1680,8 @@
     <block value="80">Background</block>
     <block value="81">Cleared Coin</block>
     <block value="82">Background</block>
-    <block value="83">Background</block>
-    <block value="84">Background</block>
+    <block value="83">Cleared Coin</block>
+    <block value="84">Cleared Coin</block>
     <block value="85">Background</block>
     <block value="86">Background</block>
     <block value="87">Background</block>
@@ -1760,7 +1760,7 @@
     <block value="D0">Background</block>
     <block value="D1">Background</block>
     <block value="D2">Background</block>
-    <block value="D3">Background</block>
+    <block value="D3">Water Fill</block>
     <block value="D4">Background</block>
     <block value="D5">Background</block>
     <block value="D6">Background</block>

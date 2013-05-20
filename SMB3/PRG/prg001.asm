@@ -40,8 +40,8 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjInit_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
-	.word ObjInit_DoNothing	; Object $0F
-	.word ObjInit_DoNothing	; Object $10
+	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
+	.word ObjInit_Snow	; Object $10 - OBJ_SNOW
 	.word ObjInit_DoNothing	; Object $11
 	.word ObjInit_DoNothing	; Object $12
 	.word ObjInit_DoNothing	; Object $13
@@ -74,7 +74,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Obj04	; Object $04
 	.word ObjNorm_Obj05	; Object $05
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
-	.word ObjNorm_WarpHide	; Object $07 - OBJ_WARPHIDE
+	.word ObjNorm_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjNorm_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjNorm_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjNorm_Bully	; Object $0A OBJ_BULLY
@@ -82,8 +82,8 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjNorm_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
-	.word ObjNorm_DoNothing	; Object $0F
-	.word ObjNorm_DoNothing	; Object $10
+	.word ObjNorm_Weather	; Object $0F
+	.word ObjNorm_Weather	; Object $10
 	.word ObjNorm_DoNothing	; Object $11
 	.word ObjNorm_DoNothing	; Object $12
 	.word ObjNorm_DoNothing	; Object $13
@@ -536,139 +536,9 @@ PRG001_A277:
 	RTS		 ; Return
 
 ObjInit_Obj01:
-	LDA #$00	 
-	STA Objects_FlipBits,X	 ; Clear flip bits
-	STA Objects_Var1,X	 ; Clear var 1
-	RTS		 ; Return
-
 
 ObjNorm_Obj01:
-	LDA Objects_Var1,X
-	BNE PRG001_A28F	 ; If var 1 <> 0, jump to PRG001_A28F 
-
-	JSR Object_HitTestRespond ; If Player has collided with this object, do Collide routine!
-	JMP PRG001_A292	 ; Jump to PRG001_A292
-
-PRG001_A28F:
-	JSR ObjHit_Obj01	 ; Do "Hit" routine
-
-PRG001_A292:
-	JSR Object_InteractWithWorld	 ; Move, detect, interact with blocks of world
-
-	LDA #$00
-	STA <Objects_XVel,X	 ; Halt X velocity
-	STA Objects_Frame,X	 ; Clear Objects_Frame
-
-	LDA <Obj01_Flag
-	BEQ PRG001_A2B0	 ; If Obj01_Flag = 0, jump to PRG001_A2B0
-
-	LDA <Objects_X,X
-	AND #$0f	
-	BEQ PRG001_A2B0	 ; If object is right on left edge of tile, jump to PRG001_A2B0
-
-	LDY #$0f	 ; Y = $F (X velocity)
-
-	LDA <Player_XVel
-	BPL PRG001_A2AE	 ; If object's X Velocity >= 0 (still or moving rightward), jump to PRG001_A2AE
-
-	LDY #-$0f	 ; Y = -$F (X velocity)
-
-PRG001_A2AE:
-	STY <Objects_XVel,X ; Set X velocity appropriately 
-
-PRG001_A2B0:
-	JSR Object_ShakeAndDraw		; Draw object and "shake awake" 
-	JMP Object_DeleteOffScreen	 ; Delete object if it falls off screen and don't come back
-
-
-PRG001_A2B6:
-	.byte $04, $01, $00, $00, $00, $00
-
 ObjHit_Obj01:
-	LDA <Player_InAir		 
-	BEQ PRG001_A2CB	 ; If Player is NOT mid air, jump to PRG001_A2CB
-
-	LDA <Player_YVel
-	BMI PRG001_A2D5	 ; If Player's Y velocity < 0 (moving upward), jump to PRG001_A2D5
-
-	LDA #$00
-	STA <Player_YVel ; Otherwise, halt Player
-
-	JMP PRG001_A2D5	 ; Jump to PRG001_A2D5
-
-PRG001_A2CB:
-	LDA <Obj01_Flag
-	BNE PRG001_A320	 ; If Obj01_Flag <> 0, jump to PRG001_A320 (RTS)
-
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BNE PRG001_A2EB	 ; If Player is pressing left or right, jump to PRG001_A2EB
-
-PRG001_A2D5:
-	LDA Objects_Var1,X
-	CMP #$18	 
-	BGS PRG001_A2DE	 ; If var 1 > $18, jump to PRG001_A2DE
-
-	LDA #$0a	 ; Otherwise, A = 10
-
-PRG001_A2DE:
-	PHA		 ; Save var 1
-
-	LDA <Player_SpriteX
-	CMP <Objects_SpriteX,X
-
-	PLA		 ; Restore var 1
-
-	BGE PRG001_A2E9	 ; If Player's sprite X >= Object's sprite X, jump to PRG001_A2E9
-
-	JSR Negate	 ; Negate Player's sprite X
-
-PRG001_A2E9:
-	STA <Obj01_Flag	 ; Store this into Obj01_Flag
-
-PRG001_A2EB:
-	LDA <Obj01_Flag	 
-	BEQ PRG001_A2F7	 ; If Obj01_Flag = 0, jump to PRG001_A2F7
-
-	LDA #$00	 
-	STA Objects_Var1,X	 ; Var 1 = 0
-
-	JMP PRG001_A320	 ; Jump to PRG001_A320 (RTS)
-
-PRG001_A2F7:
-	LDA Objects_Var1,X
-	LSR A
-	LSR A
-	LSR A
-	LSR A		; Shift var 1 to the right by 4 (upper 4 bits)
-	TAY		 ; -> Y
-
-	LDA PRG001_A2B6,Y ; Get value
-
-	LDY <Player_XVel
-	BPL PRG001_A309	  ; If Player's X velocity >= 0, jump to PRG001_A309
-
-	JSR Negate	 ; Otherwise, negate the value
-
-PRG001_A309:
-	STA <Player_XVel 	; Store as Player's X Velocity
- 	STA <Objects_XVel,X	; Set Object's X velocity to the same
-
-	INC Objects_Var1,X	; var 1 ++
-
-	LDA Objects_Var1,X
-	CMP #$40
-	BLS PRG001_A320	 ; If var 1 < $40, jump to PRG001_A320 (RTS)
-
-	DEC Objects_Var1,X	; var 1 --
-
-	LDA #$00	
-	STA <Player_XVel	 ; Halt Player
-	STA <Objects_XVel,X	 ; Object stops too
-
-PRG001_A320:
-	RTS		 ; Return
-
 ObjInit_Obj02
 	LDA #$00	 
 	STA Player_Bounce	 ; Kill Player bounce
@@ -2118,34 +1988,34 @@ PRG001_AA41:
 	.byte $1C, $0E, $1C, $14, $18, $0A, $18, $17
 
 ObjInit_BounceLR:
-	LDA Player_BounceDir
-	STA Objects_Var2,X	 ; Store Player's bounce into var 2
-
-	LDY #-$10	 ; Y = -$10 (bounce left)
-
-	CMP #$02	 
-	BEQ PRG001_AA57	 ; If bouncing to the left, jump to PRG001_AA57
-
-	LDY #$10	 ; Otherwise, Y = $10 (bounce right)
-
-PRG001_AA57:
-	STY <Player_XVel 	; Store appropriate X velocity
-
-	LDA Player_Bounce
-	STA Objects_Var1,X	; Store Player_Bounce -> var1
-
-	LDA #$00
-	STA Objects_SprVVis,X	 ; Clear flags 2
-	STA Objects_SprHVis,X	 ; Clear flags 1
-	STA Player_Bounce	 ; Clear Player_Bounce
-	STA Objects_FlipBits,X	 ; Force left/right flag to zero
-
-	LDA #10
-	STA Level_BlkBump_Pos-6,X ; Block bump position = 10
-
-	JSR BounceBlock_Update	 ; Do block bounce update
-
-	RTS		 ; Return
+;	LDA Player_BounceDir
+;	STA Objects_Var2,X	 ; Store Player's bounce into var 2
+;
+;	LDY #-$10	 ; Y = -$10 (bounce left)
+;
+;	CMP #$02	 
+;	BEQ PRG001_AA57	 ; If bouncing to the left, jump to PRG001_AA57
+;
+;	LDY #$10	 ; Otherwise, Y = $10 (bounce right)
+;
+;PRG001_AA57:
+;	STY <Player_XVel 	; Store appropriate X velocity
+;
+;	LDA Player_Bounce
+;	STA Objects_Var1,X	; Store Player_Bounce -> var1
+;
+;	LDA #$00
+;	STA Objects_SprVVis,X	 ; Clear flags 2
+;	STA Objects_SprHVis,X	 ; Clear flags 1
+;	STA Player_Bounce	 ; Clear Player_Bounce
+;	STA Objects_FlipBits,X	 ; Force left/right flag to zero
+;
+;	LDA #10
+;	STA Level_BlkBump_Pos-6,X ; Block bump position = 10
+;
+;	JSR BounceBlock_Update	 ; Do block bounce update
+;
+;	RTS		 ; Return
 
 
 ObjNorm_BounceLR:
@@ -2708,60 +2578,6 @@ ObjInit_WarpHide:
 	STA Objects_State,X
 
 PRG001_AD37:
-	RTS		 ; Return
-
-
-ObjNorm_WarpHide:
-	LDA <Player_HaltGame
-	BNE PRG001_AD7E	 ; If gameplay is halted, jump to PRG001_AD7E (RTS)
-
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-
-	LDA Player_Behind
-	BEQ PRG001_AD7E	 ; If Player is behind the scenes, jump to PRG001_AD7E (RTS)
-
-	; Trigger when close enough X
-	JSR Object_CalcCoarseXDiff
-	LDA <Temp_Var15	
-	ADD #$04	
-	CMP #$08	
-	BGE PRG001_AD7E	
-
-	; Trigger when close enough Y
-	JSR Object_CalcCoarseYDiff
-	LDA <Temp_Var15	
-	ADD #$08	
-	CMP #$10	
-	BCS PRG001_AD7E	
-
-	; To be awarded with warp whistle
-	LDA #$01
-	STA Coins_Earned_Buffer
-
-	; Stop Player
-	LSR A	
-	STA <Player_XVel
-	STA <Player_YVel
-
-	; Special Toad House object layout
-	LDA #LOW(TOAD_SpecO)
-	STA <Level_ObjPtr_AddrL
-	LDA #HIGH(TOAD_SpecO)
-	STA <Level_ObjPtr_AddrH
-
-	; Special Toad House level layout
-	LDA #LOW(TOAD_SpecL)
-	STA <Level_LayPtr_AddrL
-	LDA #HIGH(TOAD_SpecL)
-	STA <Level_LayPtr_AddrH
-
-	; Jump to special Toad House
-	LDA #$05
-	STA Level_JctCtl
-
-	STA Map_Got13Warp	 ; Flag Player already got the 1-3 warp whistle
-
-PRG001_AD7E:
 	RTS		 ; Return
 
 
@@ -6099,3 +5915,147 @@ Do_PUp_Pallete_Collect:
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State + 5
 	RTS
+	
+
+ObjInit_Snow:
+	LDA #$01
+	STA Objects_Var1, X
+
+
+ObjInit_Rain:
+	LDY #$05
+
+KeepRandomizing:
+	LDA Objects_Y, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA TempA
+	LDA Objects_X, X
+	AND #$10
+	BNE DontReverseWind
+	LDA TempA
+	EOR #$FF
+	ADD #$01
+	STA TempA
+	
+DontReverseWind:
+	LDA TempA
+	STA Wind
+	JSR Randomize_Weather
+	LDA RandomN
+	STA Weather_YPos, Y
+	DEY
+	BPL KeepRandomizing
+	RTS
+
+ObjNorm_Weather:
+	LDA Object_SprRAM, X
+	STA TempX
+	LDY #$05
+
+DoNextParticle:
+	JSR MoveSingleParticle
+	LDX TempX
+	JSR DrawSingleParticle
+	LDA TempX
+	ADD #$04
+	STA TempX
+	DEY
+	BPL DoNextParticle
+	LDX <SlotIndexBackup
+	RTS
+
+MoveSingleParticle:
+	LDA Weather_YPos, Y
+	ADD Weather_YVel, Y
+	CMP #$D0
+	BCS Randomize_Weather
+
+SetPosition:
+	STA Weather_YPos, Y
+	LDA Weather_XPos, Y
+	ADD Weather_XVel, Y
+	STA Weather_XPos, Y
+	RTS
+
+Randomize_Weather:
+	STY TempY
+	JSR Randomize
+	LDY TempY
+	LDX <SlotIndexBackup
+	LDA RandomN
+	STA Weather_XPos, Y
+	LDA #$00
+	STA Weather_YPos, Y
+	LDA RandomN + 1
+	AND #$07
+	LDY Objects_Var1, X
+	BEQ RainVel1
+	ORA #$08
+
+RainVel1:
+	TAY
+	LDA Rain_XVel, Y
+	LDY TempY
+	STA Weather_XVel, Y
+	LDA RandomN + 2
+	AND #$07
+	LDY Objects_Var1, X
+	BEQ RainVel2
+	ORA #$08
+
+RainVel2:
+	TAY
+	LDA Rain_YVel, Y
+	LDY TempY
+	STA Weather_YVel, Y
+	LDA Objects_X, X
+	AND #$10
+	BNE DoNotReverse
+
+	LDA Weather_XVel, Y
+	EOR #$FF
+	ADD #$01
+	STA Weather_XVel, Y
+
+DoNotReverse: 
+	LDA RandomN + 3
+	AND #$01
+	LDY Objects_Var1, X
+	BEQ RainPattern
+	ORA #$02
+
+RainPattern:
+	TAY
+	LDA Weather_Patterns, Y
+	LDY TempY
+	STA Weather_Pattern, Y
+	RTS
+
+DrawSingleParticle:
+	LDA Weather_YPos, Y
+	STA Sprite_RAM, X
+	LDA Weather_XPos, Y
+	STA Sprite_RAM + 3, X
+	LDA Weather_Pattern, Y
+	STA Sprite_RAM + 1, X
+	LDA #$02
+	STA TempA
+	LDA Weather_XVel, Y
+	BMI DontFlipParticle
+	LDA #SPR_HFLIP
+	ORA TempA
+	STA TempA
+
+DontFlipParticle:
+	LDA TempA
+	STA Sprite_RAM + 2, X
+	RTS
+	
+Weather_Patterns: .byte $7B, $7B, $75, $55
+Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
+Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
+Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
+Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02

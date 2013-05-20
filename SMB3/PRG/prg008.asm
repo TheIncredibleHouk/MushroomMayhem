@@ -1301,6 +1301,10 @@ PRG008_A77E:
 	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
+	LDA <Player_Y
+	AND #$0F
+	BNE PRG008_A7AD
+	
 	;#DAHRKDAIZ modified to make low clearance situations = death >:D
 	JSR Player_GetHurt
 
@@ -1410,8 +1414,6 @@ NoAirInc:
 	; Player wants to exit water!
 	LDA #-$34
 	STA <Player_YVel ; Player_YVel = -$34 (exit velocity from water)
-	LDA #$02
-	STA Air_Change
 
 PRG008_A80B:
 
@@ -1425,13 +1427,7 @@ PRG008_A80B:
 PRG008_A812:
 
 	; Solid floor tile at head last check
-	LDA <Player_Suit
-	CMP #$04
-	BEQ NoAirDec
-	LDA #$FF
-	STA Air_Change
 
-NoAirDec:
 	LDY <Temp_Var15
 	CPY Player_InWater
 	BEQ PRG008_A827	   ; If Player_InWater = Temp_Var15 (underwater flag = underwater status), jump to PRG008_A827
@@ -1442,6 +1438,15 @@ PRG008_A819:
 	TYA
 	STA Player_InWater	; Merge water flag status
 	JSR Player_WaterSplash	 ; Hit water; splash!
+	
+	LDY #$02
+	LDA Player_InWater
+	BEQ NoAirDec
+	LDY #$FF
+
+NoAirDec:
+	TYA
+	STA Air_Change
 
 PRG008_A827:
 
@@ -4257,7 +4262,8 @@ PRG008_B582:
 	BNE PRG008_B583
 
 	LDY <Temp_Var12		 
-	LDA [Map_Tile_AddrL],Y	; prevent double collecting
+	STA Debug_Snap
+	LDA <Level_Tile	; prevent double collecting
 	EOR #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
@@ -4277,7 +4283,7 @@ PRG008_B583:
 	BNE PRG008_B584
 
 	LDY <Temp_Var12		 
-	LDA [Map_Tile_AddrL],Y	; prevent double collecting
+	LDA <Level_Tile	; prevent double collecting
 	EOR #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	JSR Level_QueueChangeBlock
@@ -5256,31 +5262,29 @@ PRG008_BE2E:
 
 PRG008_BE2F:
 	RTS		 ; Return
-MoveTileVert:	.byte 1, -1, 0, 0
-MoveTileHorz:	.byte 0, 0, 1, -1
+MoveTileVert:	.byte $10, $F0, 0, 0
+MoveTileHorz:	.byte 0, 0, $10, $F0
 
 ApplyTileMove:
-	STA Debug_Snap
-	LDY #$01
 	LDA MoveTileHorz, X
-	BPL NoXNeg
-	LDY #$FF
-
-NoXNeg:
-	ADD <Player_X
-	STA <Player_X
-	BCS MoveTileDone
-	TYA
-	ADD <Player_XHi
-	STA <Player_XHi
+	BEQ TryVertMove
+	LDY <Player_XVel
+	STY TempY
+	STA <Player_XVel
+	JSR Player_ApplyXVelocity
+	LDA TempY
+	STA <Player_XVel
 	RTS
-
-	LDA <Player_Y
-	ADD MoveTileVert, X
-	STA <Player_Y
-	LDA <Player_YHi
-	ADC #$00
-	STA <Player_YHi
+	
+TryVertMove:
+	LDA MoveTileVert, X
+	BEQ MoveTileDone
+	LDY <Player_YVel
+	STY TempY
+	STA <Player_YVel
+	JSR Player_ApplyYVelocity
+	LDA TempY
+	STA <Player_YVel
 
 MoveTileDone:
 	RTS
@@ -5446,8 +5450,7 @@ Player_ApplyVelocity:
 	BNE No_Weather_Vel
 	LDY Wind
 	BEQ No_Weather_Vel
-	SEC
-	SBC Wind
+	ADD Wind
 
 No_Weather_Vel:
 	ADD Player_XVelAdj	; Add Player_XVelAdj

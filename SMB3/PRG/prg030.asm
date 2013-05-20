@@ -1798,8 +1798,6 @@ PRG030_8EE7:
 	STY PAGE_A000
 	JSR PRGROM_Change_A000
 
-	JSR Do_Weather	 ; Give point awards and draw score sprites
-
 
 	; Color rotation effects, lava, donut lifts, arrow platforms,
 	; brick busts, water/waterfall visual effects, bubbles, splashes,
@@ -3238,26 +3236,26 @@ HorzNotLocked:
 	STA Invincible_Enemies
 	;set weather type
 	LDA [Temp_Var14],Y
-	AND #$60
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA Weather
-	LDA [Temp_Var14], Y
-	AND #$0F
-	ASL A
-	STA Wind
-	LDA [Temp_Var14], Y
-	AND #$10
-	STA WindDirection
-	BEQ DontReverseWind
-	LDA Wind
-	EOR #$FF
-	STA Wind
-	INC Wind
-DontReverseWind:
+	;AND #$60
+	;LSR A
+	;LSR A
+	;LSR A
+	;LSR A
+	;LSR A
+	;STA Weather
+	;LDA [Temp_Var14], Y
+	;AND #$0F
+	;ASL A
+	;STA Wind
+	;LDA [Temp_Var14], Y
+	;AND #$10
+	;STA WindDirection
+	;BEQ DontReverseWind
+	;LDA Wind
+	;EOR #$FF
+	;STA Wind
+	;INC Wind
+;DontReverseWind:
 	INY
 
 	; load misc data
@@ -4483,8 +4481,8 @@ PRG030_9EC3:
 
 	TAY		 	; Y = current offset
 	LDA [Map_Tile_AddrL],Y	; Get tile here
-	STA <Level_Tile
 	JSR PSwitch_SubstTileAndAttr
+	STA <Level_Tile
 	TAY
 	LDA TileProperties, Y
 	RTS		 ; Return
