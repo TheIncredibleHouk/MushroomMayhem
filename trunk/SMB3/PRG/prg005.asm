@@ -5300,6 +5300,7 @@ PRG005_BE67:
 	STA LevelEvent_Cnt
 	STA Splash_DisTimer
 	STA Level_ScrollDiffH
+	STA Wind
 	STA Level_ScrollDiffV
 
 	; Clear Level_ObjectsSpawned (nothing spawned)
