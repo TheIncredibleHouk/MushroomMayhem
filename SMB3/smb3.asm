@@ -2476,7 +2476,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	ChallengeMode:			.ds 1	;
 	Frozen_State:			.ds 1	;
 	Frozen_Frame:			.ds	1
-	Unused:					.ds 2
+	PaletteEffect:			.ds 1
+	EffectCounter:			.ds 1
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 

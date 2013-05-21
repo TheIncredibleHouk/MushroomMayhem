@@ -337,6 +337,7 @@ PRG008_A17F:
 	JSR Try_Item_Reserve_Release
 	JSR DoNightTransition
 	JSR DoDayTransition
+	JSR DoPaletteEffect
 	INC Level_NoStopCnt	; As long as none of the above is happening, continue the "no stop" counter...
 
 PRG008_A1C1:
@@ -1427,7 +1428,14 @@ PRG008_A80B:
 PRG008_A812:
 
 	; Solid floor tile at head last check
+	LDY #$02
+	LDA Player_InWater
+	BEQ NoAirDec
+	LDY #$FF
 
+NoAirDec:
+	TYA
+	STA Air_Change
 	LDY <Temp_Var15
 	CPY Player_InWater
 	BEQ PRG008_A827	   ; If Player_InWater = Temp_Var15 (underwater flag = underwater status), jump to PRG008_A827
@@ -1438,15 +1446,6 @@ PRG008_A819:
 	TYA
 	STA Player_InWater	; Merge water flag status
 	JSR Player_WaterSplash	 ; Hit water; splash!
-	
-	LDY #$02
-	LDA Player_InWater
-	BEQ NoAirDec
-	LDY #$FF
-
-NoAirDec:
-	TYA
-	STA Air_Change
 
 PRG008_A827:
 
@@ -1533,7 +1532,7 @@ PRG008_A86C:
 	BNE PRG008_A898	 ; If Player is pressing up, jump to PRG008_A898
 
 PRG008_A890:
-	
+	LDA Level_Tile_Prop_Head
 	CMP #TILE_PROP_DEPLETE_AIR
 	BNE PRG008_A891
 	LDA #$FF
@@ -4262,7 +4261,6 @@ PRG008_B582:
 	BNE PRG008_B583
 
 	LDY <Temp_Var12		 
-	STA Debug_Snap
 	LDA <Level_Tile	; prevent double collecting
 	EOR #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
@@ -4332,8 +4330,12 @@ PRG008_B585_2:
 	RTS
 
 PRG008_B586
+	CPX #$04
+	BCC NoFireFoxBusts
 	LDY Fox_FireBall
 	BNE DoSpinnerBusts
+
+NoFireFoxBusts:
 	LDY <Player_YVel
 	BPL PRG008_B588
 	CPX  #$01
@@ -4350,7 +4352,6 @@ DoSpinnerBusts:
 	LDA Level_ChgTileEvent
 	BNE NoSpinnerKeepGoing
 	STX TempX
-	LDX #$05
 	LDA #TILE_ITEM_BRICK
 	JSR Level_DoBumpBlocks
 	LDX TempX
@@ -4365,7 +4366,14 @@ Level_DoBumpBlocks:
 	STX TempX
 	AND #$0F
 	STA DAIZ_TEMP4
-	TAY
+	TAY 
+	BEQ DoBumps
+	CMP #$0C
+	BCS DoBumps
+	LDA Objects_State + 5
+	BEQ DoBumps
+	RTS
+DoBumps:
 	LDA #$00
 	STA ObjectBump
 	LDA #$10
@@ -4384,7 +4392,7 @@ PRG008_B723:
 	LDY #$01
 
 PRG008_B723_2:
-	LDA #$00
+	LDA #$C0
 	STA TempA
 	INY
 
@@ -4452,7 +4460,7 @@ PRG008_B78C:
 	AND #$C0
 	ORA #$01
 	JSR Level_QueueChangeBlock
-	LDA TempA
+	LDA #$00
 	RTS
 
 NoPUpTypes:
@@ -5784,4 +5792,39 @@ CoinsEarnedBuffer:
 	INC Coins_Earned
 
 CoinsEarnedBufferRTS:
+	RTS
+
+DoPaletteEffect:
+	STA Debug_Snap
+	LDA PaletteEffect
+	JSR DynJump
+
+	.word NoEffect
+	.word RainbowWithMovement
+
+NoEffect:
+	RTS
+
+RainbowEffectColors:
+	.byte $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C
+
+RainbowWithMovement:
+	LDA <Counter_1
+	AND #$03
+	AND #$1C
+	LSR A
+	LSR A
+	;CMP #$0D
+	;BCC DontClearCounter
+	;LDA #$00
+	;STA EffectCounter
+	TAX
+DontClearCounter:
+	LDX EffectCounter
+	LDA RainbowEffectColors, X
+	STA Palette_Buffer + 15
+	ADD #$10
+	STA Palette_Buffer + 13
+
+NoEffectChange:
 	RTS

@@ -3148,7 +3148,7 @@ Try_FireBall:					; not a fireball, so let's try it!
 	AND #PAD_B					; P-Meter's full, have we let go of B yet?
 	BNE Try_Burning_ModeRTS		
 	LDA <Pad_Holding			; we have! This finds the direction to send based on input
-	AND #(PAD_RIGHT | PAD_UP | PAD_DOWN | PAD_LEFT)
+	AND #(PAD_RIGHT | PAD_LEFT)
 	BNE	Find_Direction
 	LDA Player_FlipBits			; No input on controller, direction of fireball
 	AND #$40					; based on direction player is facing
@@ -3211,10 +3211,10 @@ Try_Burning_ModeRTS:
 
 Burn_Mode_Velocities:
 	.byte $FF, $FF	; unused
-	.byte $D0, $00	; 1 left
-	.byte $00, $30	; 2 down 		
-	.byte $30, $00	; 3 right
-	.byte $00, $D0	; 4 up 
+	.byte $D8, $00	; 1 left
+	.byte $00, $28	; 2 down 		
+	.byte $28, $00	; 3 right
+	.byte $00, $D8	; 4 up 
 
 Burn_Mode_Velocity:
 	LDA Ignore_Vel_Stop

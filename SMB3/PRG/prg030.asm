@@ -3236,13 +3236,12 @@ HorzNotLocked:
 	STA Invincible_Enemies
 	;set weather type
 	LDA [Temp_Var14],Y
-	;AND #$60
-	;LSR A
-	;LSR A
-	;LSR A
-	;LSR A
-	;LSR A
-	;STA Weather
+	AND #$30
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA PaletteEffect
 	;LDA [Temp_Var14], Y
 	;AND #$0F
 	;ASL A
