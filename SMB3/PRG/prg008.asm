@@ -5806,24 +5806,29 @@ NoEffect:
 	RTS
 
 RainbowEffectColors:
-	.byte $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C
+	.byte $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $31, $32
 
 RainbowWithMovement:
 	LDA <Counter_1
-	AND #$03
-	AND #$1C
-	LSR A
-	LSR A
-	;CMP #$0D
-	;BCC DontClearCounter
-	;LDA #$00
-	;STA EffectCounter
-	TAX
+	AND #$07
+	BNE NoEffectChange
+	INC EffectCounter
+	LDA EffectCounter
+	CMP #$0C
+	BNE DontClearCounter
+	LDA #$00
+	STA EffectCounter
+
 DontClearCounter:
 	LDX EffectCounter
 	LDA RainbowEffectColors, X
+	STA Palette_Buffer + 14
+	LDA RainbowEffectColors, X
+	SUB #$10
 	STA Palette_Buffer + 15
-	ADD #$10
+	INX
+	LDA RainbowEffectColors, X
+	SUB #$30
 	STA Palette_Buffer + 13
 
 NoEffectChange:
