@@ -81,10 +81,10 @@ OTDO_G1R1:
 
 	; Group 3
 	;       Y    X
-	.byte $00, $00	; At feet
-	.byte $00, $00	; At head
-	.byte $00, $00	; Wall to left
-	.byte $00, $00	; Wall to right
+	.byte $10, $08	; At feet
+	.byte $00, $08	; At head
+	.byte $08, $00	; Wall to left
+	.byte $08, $10	; Wall to right
 
 	; Group 4
 	;       Y    X
@@ -230,8 +230,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX08 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $27 - OBJ_OSCILLATING_H
 	.byte OAT_BOUNDBOX08 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $28 - OBJ_OSCILLATING_V
 	.byte OAT_BOUNDBOX01	; Object $29 - OBJ_SPIKE
-	.byte OAT_BOUNDBOX02	; Object $2A - OBJ_PATOOIE
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2B - OBJ_GOOMBAINSHOE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2A - OBJ_SPARKRIGHT
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2B - OBJ_SPARKLEFT
 	.byte OAT_BOUNDBOX08 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OAT_BOUNDBOX07	; Object $2D - OBJ_BIGBERTHA
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_FIREIMMUNITY	; Object $2E - OBJ_PIRATEBOO
@@ -3935,7 +3935,7 @@ Object_DoHaltedAction:
 	.word ObjHalt_DoNothingNotNormal	; 5: If object is in "normal" state, do its normal routine, otherwise do nothing (COMMON)
 	.word Object_DrawWide			; 6: Draw wide sprite
 	.word ObjHalt_DoNothing			; 7: Do nothing
-	.word Shoe_DrawGoomba			; 8: Bank2/Kuribo's Shoe ONLY
+	.word ObjHalt_DoNothing			; 8: Bank2/Kuribo's Shoe ONLY
 	.word ObjHalt_DoNothing			; 9: Do nothing
 	.word Object_ShakeAndDrawMirrored	; 10: Draw mirrored sprite
 ;	.word EndLevelCard_Draw			; 11: Bank2/End Level Card ONLY

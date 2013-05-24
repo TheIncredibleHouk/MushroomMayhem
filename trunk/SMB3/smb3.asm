@@ -833,6 +833,10 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	;	$04-hit ground
 	;	$08-hit ceiling
 	;	$80-object touching "32 pixel partition" floor (if active)
+HIT_DET_RIGHT =		1
+HIT_DET_LEFT =		2
+HIT_DET_GRND =		4
+HIT_DET_CEIL =		8
 	Objects_DetStat:	.ds 8	; $D9-$E0  on screen
 
 	Player_SprWorkL:	.ds 1	; Sprite work address low
@@ -3428,8 +3432,10 @@ OBJ_WOODENPLAT_RIDER	= $26	; Log that rides you to the right after stepping on i
 OBJ_OSCILLATING_H	= $27	; Horizontal oscillating log platform
 OBJ_OSCILLATING_V	= $28	; Vertical Oscillating log platform
 OBJ_SPIKE		= $29	; Spike (the spike ball barfer)
-OBJ_PATOOIE		= $2A	; Patooie
-OBJ_GOOMBAINSHOE	= $2B	; Goomba in Kuribo's Shoe (yes, I know Kuribo = Goomba, quiet)
+OBJ_PATOOIE			= $00
+OBJ_SPARKRIGHT		= $2A	; Patooie
+OBJ_GOOMBAINSHOE	= $00 ;
+OBJ_SPARKLEFT	= $2B	; Goomba in Kuribo's Shoe (yes, I know Kuribo = Goomba, quiet)
 OBJ_CLOUDPLATFORM	= $2C	; Cloud platform
 OBJ_BIGBERTHA		= $2D	; Big Bertha that eats you
 OBJ_PIRATEBOO	= $2E	; Invisible (until touched) lift that goes up to fixed position of Y/Hi = 64

@@ -7,8 +7,8 @@
     <sprite x="16" y="16" value="20" palette="3" horizontalflip="true" verticalflip="false" table="37" />
   </spritedefinition>
   <spritedefinition id="0A" width="01" height="01" name="Bully" class="2" group="Spiny/Buzzy Beetle/Bob-omb">
-    <sprite x="0" y="0" value="C0" palette="2" horizontalflip="false" verticalflip="false" table="F" />
-    <sprite x="8" y="0" value="C2" palette="2" horizontalflip="false" verticalflip="false" table="F" />
+    <sprite x="0" y="0" value="3C" palette="2" horizontalflip="false" verticalflip="false" table="F" />
+    <sprite x="8" y="0" value="3E" palette="2" horizontalflip="false" verticalflip="false" table="F" />
   </spritedefinition>
   <spritedefinition id="0B" width="01" height="01" name="Ninja Shroom" class="1" group="Global">
     <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="B0" />
@@ -129,22 +129,20 @@
     <sprite x="16" y="-112" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="24" y="-112" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="29" width="01" height="01" name="Spike" class="2" group="Spike/Nipper">
+  <spritedefinition id="29" width="01" height="01" name="Spike" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="02" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
   </spritedefinition>
-  <spritedefinition id="2A" width="01" height="02" name="Walking Ptooie" class="2" group="Spike/Nipper">
-    <sprite x="0" y="4" value="E0" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite x="8" y="4" value="E0" palette="1" horizontalflip="true" verticalflip="false" table="4F" />
-    <sprite x="0" y="20" value="3C" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
-    <sprite x="8" y="20" value="3E" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
+  <spritedefinition id="2A" width="01" height="01" name="Spark Clockwise" class="2" group="Spike/Nipper/Spark">
+    <sprite x="0" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite x="8" y="0" value="3C" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
+    <sprite x="16" y="0" value="8C" palette="1" horizontalflip="true" verticalflip="false" table="-1" />
   </spritedefinition>
-  <!--<spritedefinition id="2B" width="01" height="01" name="Kuribo's Goomba" class="2" group="Spiny/Buzzy Beetle/Bob-omb">
-    <sprite x="0" y="-4" value="18" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite x="8" y="-4" value="1A" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
-    <sprite x="0" y="0" value="28" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite x="8" y="0" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
-  </spritedefinition>-->
+  <spritedefinition id="2B" width="01" height="01" name="Spark Counter Clockwise" class="2" group="Spike/Nipper/Spark">
+    <sprite x="0" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite x="8" y="0" value="3C" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
+    <sprite x="-8" y="0" value="8c" palette="1" horizontalflip="false" verticalflip="false" table="-1" />
+  </spritedefinition>
   <spritedefinition id="2C" width="03" height="01" name="Slow Moving Cloud, Left" class="2" group="Sky/Fire Snake">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="02" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
@@ -184,7 +182,7 @@
     <sprite x="0" y="0" value="2C" palette="1" horizontalflip="false" verticalflip="true" table="12" />
     <sprite x="8" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="true" table="12" />
   </spritedefinition>
-  <spritedefinition id="33" width="01" height="01" name="Nipper Plant" class="2" group="Spike/Nipper">
+  <spritedefinition id="33" width="01" height="01" name="Nipper Plant" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="24" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="26" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
   </spritedefinition>
@@ -225,7 +223,7 @@
     <sprite x="16" y="-80" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="24" y="-80" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="39" width="01" height="01" name="Walking Nipper Plant" class="2" group="Spike/Nipper">
+  <spritedefinition id="39" width="01" height="01" name="Walking Nipper Plant" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="24" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="26" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="0" y="-16" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
@@ -253,7 +251,7 @@
     <sprite x="40" y="0" value="1E" palette="3" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="16" y="16" value="96" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="3D" width="01" height="01" name="Fire Spitting Nipper Plant" class="2" group="Spike/Nipper">
+  <spritedefinition id="3D" width="01" height="01" name="Fire Spitting Nipper Plant" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="28" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="0" y="-12" value="24" palette="1" horizontalflip="false" verticalflip="false" table="04" />
@@ -273,7 +271,7 @@
     <sprite x="0" y="16" value="04" palette="2" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="16" value="06" palette="2" horizontalflip="false" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="40" width="01" height="01" name="Buster Beetle" class="2" group="Spike/Nipper">
+  <spritedefinition id="40" width="01" height="01" name="Buster Beetle" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
   </spritedefinition>
@@ -308,7 +306,7 @@
   <spritedefinition id="45" width="01" height="01" name="Shy Hot Foot" class="2" group="Fortress">
     <sprite x="4" y="0" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="12" />
   </spritedefinition>
-  <spritedefinition id="46" width="01" height="02" name="Pipe Ptooie" class="2" group="Spike/Nipper">
+  <spritedefinition id="46" width="01" height="02" name="Pipe Ptooie" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite x="8" y="0" value="20" palette="1" horizontalflip="true" verticalflip="false" table="4F" />
     <sprite x="0" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
@@ -341,7 +339,7 @@
     <sprite x="16" y="16" value="06" palette="3" horizontalflip="true" verticalflip="false" table="4D" />
     <sprite x="24" y="8" value="02" palette="3" horizontalflip="true" verticalflip="false" table="4D" />
   </spritedefinition>
-  <spritedefinition id="4F" width="01" height="01" name="Loose Chain Chomp" class="2" group="Spike/Nipper">
+  <spritedefinition id="4F" width="01" height="01" name="Loose Chain Chomp" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="16" y="0" value="1A" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
@@ -765,7 +763,7 @@
     <sprite x="0" y="24" value="24" palette="1" horizontalflip="false" verticalflip="false" table="4E" />
     <sprite x="8" y="24" value="26" palette="1" horizontalflip="false" verticalflip="false" table="4E" />
   </spritedefinition>
-  <spritedefinition id="89" width="04" height="01" name="Chain Chomp" class="2" group="Spike/Nipper">
+  <spritedefinition id="89" width="04" height="01" name="Chain Chomp" class="2" group="Spike/Nipper/Spark">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="16" y="0" value="1A" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
