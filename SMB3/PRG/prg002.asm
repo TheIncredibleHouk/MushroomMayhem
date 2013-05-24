@@ -30,8 +30,8 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_WoodenPlat	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjInit_WoodenPlat	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjInit_TowardsPlayer	; Object $29 - OBJ_SPIKE
-	.word ObjInit_Patooie		; Object $2A - OBJ_PATOOIE
-	.word ObjInit_DoNothing		; Object $2B - OBJ_GOOMBAINSHOE
+	.word ObjInit_SparkRight		; Object $2A - OBJ_SPARKRIGHT
+	.word ObjInit_SparkLeft		; Object $2B - OBJ_SPARKLEFT
 	.word ObjInit_CloudPlatform	; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjInit_ChasingFish	; Object $2D - OBJ_BIGBERTHA
 	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
@@ -72,8 +72,8 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_OscillatingH	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjNorm_OscillatingV	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjNorm_Spike		; Object $29 - OBJ_SPIKE
-	.word ObjNorm_Patooie		; Object $2A - OBJ_PATOOIE
-	.word ObjNorm_GoombaInShoe	; Object $2B - OBJ_GOOMBAINSHOE
+	.word ObjNorm_Spark		; Object $2A - OBJ_SPARKRIGHT
+	.word ObjNorm_Spark	; Object $2B - OBJ_SPARKLEFT
 	.word ObjNorm_CloudPlat		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjNorm_BigBertha		; Object $2D - OBJ_BIGBERTHA
 	.word ObjNorm_Boo	; Object $2E - OBJ_PIRATEBOO
@@ -115,8 +115,8 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DoNothing		; Object $27 - OBJ_OSCILLATING_H
 	.word ObjHit_DoNothing		; Object $28 - OBJ_OSCILLATING_V
 	.word ObjHit_DoNothing		; Object $29 - OBJ_SPIKE
-	.word Player_GetHurt		; Object $2A - OBJ_PATOOIE
-	.word ObjHit_GoombaInShoe	; Object $2B - OBJ_GOOMBAINSHOE
+	.word Player_GetHurt		; Object $2A - OBJ_SPARKRIGHT
+	.word Player_GetHurt	; Object $2B - OBJ_SPARKLEFT
 	.word ObjHit_CloudPlat		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjHit_DoNothing		; Object $2D - OBJ_BIGBERTHA
 	.word Player_Take_Coins		; Object $2E - OBJ_PIRATEBOO
@@ -157,8 +157,8 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $28 - OBJ_OSCILLATING_V
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $29 - OBJ_SPIKE
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $2A - OBJ_PATOOIE
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2B - OBJ_GOOMBAINSHOE
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2A - OBJ_SPARKRIGHT
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2B - OBJ_SPARKLEFT
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $2D - OBJ_BIGBERTHA
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2E - OBJ_PIRATEBOO
@@ -204,9 +204,9 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP2	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA2_TDOGRP2	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA2_TDOGRP2	; Object $28 - OBJ_OSCILLATING_V
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $29 - OBJ_SPIKE
-	.byte OA2_TDOGRP2	; Object $2A - OBJ_PATOOIE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $2B - OBJ_GOOMBAINSHOE
+	.byte OA2_TDOGRP1	; Object $29 - OBJ_SPIKE
+	.byte OA2_TDOGRP3	; Object $2A - OBJ_SPARKRIGHT
+	.byte OA2_TDOGRP3	; Object $2B - OBJ_SPARKLEFT
 	.byte OA2_TDOGRP2	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA2_TDOGRP0	; Object $2D - OBJ_BIGBERTHA
 	.byte OA2_TDOGRP1	; Object $2E - OBJ_PIRATEBOO
@@ -247,8 +247,8 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $28 - OBJ_OSCILLATING_V
 	.byte OA3_HALT_SPIKESPECIAL 	; Object $29 - OBJ_SPIKE
-	.byte OA3_HALT_PIRANHASPECIAL 	; Object $2A - OBJ_PATOOIE
-	.byte OA3_HALT_KURIBOSPECIAL 	; Object $2B - OBJ_GOOMBAINSHOE
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE 	; Object $2A - OBJ_SPARKRIGHT
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_SPARKLEFT
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA3_HALT_NORMALONLY 	; Object $2D - OBJ_BIGBERTHA
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
@@ -289,8 +289,8 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OPTS_NOCHANGE	; Object $28 - OBJ_OSCILLATING_V
 	.byte OPTS_SETPT5 | $0A	; Object $29 - OBJ_SPIKE
-	.byte OPTS_SETPT5 | $0A	; Object $2A - OBJ_PATOOIE
-	.byte OPTS_SETPT5 | $0B	; Object $2B - OBJ_GOOMBAINSHOE
+	.byte OPTS_SETPT5 | $0A	; Object $2A - OBJ_SPARKRIGHT
+	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_SPARKLEFT
 	.byte OPTS_SETPT5 | $0E	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OPTS_SETPT5 | $1A	; Object $2D - OBJ_BIGBERTHA
 	.byte OPTS_SETPT5 | $4E	; Object $2E - OBJ_PIRATEBOO
@@ -331,8 +331,8 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $27 - OBJ_OSCILLATING_H
 	.byte KILLACT_STANDARD	; Object $28 - OBJ_OSCILLATING_V
 	.byte KILLACT_STANDARD	; Object $29 - OBJ_SPIKE
-	.byte KILLACT_NORMALANDKILLED	; Object $2A - OBJ_PATOOIE
-	.byte KILLACT_STANDARD	; Object $2B - OBJ_GOOMBAINSHOE
+	.byte KILLACT_NORMALANDKILLED	; Object $2A - OBJ_SPARKRIGHT
+	.byte KILLACT_STANDARD	; Object $2B - OBJ_SPARKLEFT
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte KILLACT_NORMALSTATE	; Object $2D - OBJ_BIGBERTHA
 	.byte KILLACT_STANDARD	; Object $2E - OBJ_PIRATEBOO
@@ -418,8 +418,6 @@ ObjP3C:
 ObjP3E:
 ObjP44:
 	.byte $5B, $5D, $5D, $5D, $5D, $5F
-ObjP2B:
-	.byte $A9, $AB, $A9, $AD
 ObjP33:
 ObjP39:
 	.byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
@@ -439,8 +437,9 @@ ObjP3F:
 SpikeBall_Patterns:
 	.byte $95, $95, $D9, $DB
 ObjP29:
-	.byte $81, $83, $85, $87, $89, $8B, $8D, $8F, $97, $99
 ObjP2A:
+ObjP2B:
+	.byte $BD, $BD, $BF, $BF
 ObjP46:
 	.byte $E5, $E5, $E1, $E1, $E1, $E1, $BD, $BF, $E3, $E3
 ObjP3B:
@@ -2793,6 +2792,105 @@ PRG002_AE3A:
 
 	RTS		 ; Return
 
+ObjInit_SparkRight:
+	LDA #$00
+	STA Objects_Var1, X
+	STA Objects_Var2, X
+	RTS
+
+ObjInit_SparkLeft:
+	LDA #$01
+	STA Objects_Var1, X
+	LDA #$00
+	STA Objects_Var2, X
+	RTS
+
+; this basically detects certain corners based on current movement direction
+SparkDetects:
+	.byte (HIT_DET_RIGHT | HIT_DET_GRND), (HIT_DET_LEFT | HIT_DET_GRND), (HIT_DET_CEIL | HIT_DET_LEFT), (HIT_DET_RIGHT | HIT_DET_CEIL)
+	.byte (HIT_DET_LEFT | HIT_DET_GRND), (HIT_DET_RIGHT | HIT_DET_GRND), (HIT_DET_CEIL | HIT_DET_RIGHT), (HIT_DET_LEFT | HIT_DET_CEIL)
+
+SparkYVel:
+	.byte $10, $10, $F0, $F0
+	.byte $10, $10, $F0, $F0
+
+SparkXVeL:
+	.byte $10, $F0, $F0, $10
+	.byte $F0, $10, $10, $F0
+
+ObjNorm_Spark:
+	STA Debug_Snap
+	LDA <Counter_1
+	AND #$04
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+	JSR Object_ShakeAndDrawMirrored
+	LDA Objects_Var1, X
+	ASL A
+	ASL A
+	ORA Objects_Var2, X
+	TAY
+	LDA SparkXVeL, Y
+	STA <Objects_XVel, X
+	LDA SparkYVel, Y
+	STA <Objects_YVel, X
+	TYA
+	AND #$01			; only odd numbered states move vertically, even move horzontally
+	BNE NoSparkXVel
+	LDA <Objects_Y, X
+	AND #$0F
+	BNE ApplySparkX
+	JSR Object_ApplyYVel_NoLimit
+
+ApplySparkX:
+	JSR Object_ApplyXVel
+	LDA <Objects_X, X
+	AND #$0F
+	BNE KeepGoing
+	JMP SparkHitDetection
+
+NoSparkXVel:
+	STA Debug_Snap
+	LDA <Objects_X, X
+	AND #$0F
+	BNE ApplySparkY
+	JSR Object_ApplyXVel
+
+ApplySparkY:
+	JSR Object_ApplyYVel_NoLimit
+	LDA <Objects_Y, X
+	AND #$0F
+	BNE KeepGoing
+
+SparkHitDetection:
+	JSR Object_WorldDetect4
+	LDA Objects_Var1, X		; var1 = 0 -> clockwise movement, var1 = 1 -> counter clockwise
+	ASL A
+	ASL A
+	ORA Objects_Var2, X
+	TAY
+	LDA <Objects_DetStat, X
+	AND SparkDetects, Y  
+	BNE WallCeilGrndDet
+	LDA Objects_Var2, X	; neither corner was detected (no ground or wall) so we need to wrap around the tile
+	ADD #$01
+	AND #$03
+	STA Objects_Var2, X
+	RTS
+
+WallCeilGrndDet:
+	CMP SparkDetects, Y
+	BNE KeepGoing
+	LDA Objects_Var2, X		; both corners were detected, we need to crawl against the tile
+	SUB #$01
+	AND #$03
+	STA Objects_Var2, X
+
+KeepGoing:						; if we only detected one ground or wall we keep going in the same direction
+	JMP Object_HitTestRespond
+
+
 ObjNorm_PiranhaSpikeBall:
 
 	; Mostly reuses Patooie's code
@@ -2848,7 +2946,7 @@ PRG002_AE51:
 	TAX	; X = value 0 to 31
 
 	; Set the Patooie ball Y velocity
-	LDA Patooie_BallYDelta,X
+	;LDA Patooie_BallYDelta,X
 	JSR Negate
 	ASL A	
 	ASL A	
@@ -2858,14 +2956,6 @@ PRG002_AE51:
 
 	LDX <SlotIndexBackup		 ; X = object slot index
 	JMP PRG002_AF30	 ; Jump to PRG002_AF30
-
-Patooie_BallYDelta:
-	.byte $00, -$01, -$02, -$03, -$03, -$03, -$02, -$01, $00,  $01, $02, $03, $03, $03, $02, $01
-	.byte $00, -$01, -$01, -$01,  $00,  $01,  $01,  $01
-
-	; Jiggles the spike ball a bit
-Patooie_BallXJiggle:
-	.byte $00, -$01, $00, $01
 
 
 ObjNorm_Patooie:
@@ -2965,7 +3055,7 @@ PRG002_AF1D:
 
 	; Adjusts height of spike ball
 	LDA <Objects_Var5,X
-	ADD Patooie_BallYDelta,Y
+	;ADD Patooie_BallYDelta,Y
 	STA <Objects_Var5,X
 
 	JSR Object_HitTestRespond	 ; Do collision test with Player and respond
@@ -3074,7 +3164,7 @@ PRG002_AF96:
 
 	; Cause the spike ball to jiggle slightly (Temp_Var2 is X)
 	LDA <Temp_Var2
-	ADD Patooie_BallXJiggle,X
+	;ADD Patooie_BallXJiggle,X
 	STA <Temp_Var2
 
 	; Jump Sprite_RAM offset ahead 16 (four sprites, get passed Patooie/Piranha)
@@ -3143,7 +3233,7 @@ PRG002_B00E:
 	JSR Object_CalcSpriteXY_NoHi	 ; Calculate the true sprite positions
 
 PRG002_B01A:
-	JMP PRG002_B196		; Jump to PRG002_B196 (set pattern bank $4F)
+	;JMP PRG002_B196		; Jump to PRG002_B196 (set pattern bank $4F)
 
 	; Get the correct starting sprite tile based on whether this is
 	; a true Patooie or just the piranha pretending to be one
@@ -3153,7 +3243,7 @@ PatooiePiranha_StartTileX:
 	LDA Level_ObjectID,X	 ; Get object ID
 
 	LDX #(ObjP2A - ObjectGroup01_PatternSets + $06)	 ; If Patooie
-	CMP #OBJ_PATOOIE
+	CMP #OBJ_SPARKRIGHT
 	BEQ PRG002_B02A	 ; If this is Patooie, jump to PRG002_B02A (RTS)
 	LDX #(ObjP46 - ObjectGroup01_PatternSets + $08)	 ; If the piranha with spike ball
 PRG002_B02A:
@@ -3162,300 +3252,6 @@ PRG002_B02A:
 
 ObjNorm_GoombaInShoe:
 
-	; Force sixth bank select $4F
-	LDA #$4f
-	STA PatTable_BankSel+5
-
-	JSR Enemy_CollideWithWorld	 ; Collide with world
-
-	; Set Object frame (crank turning)
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	LSR A	
-	AND #$01
-	STA Objects_Frame,X
-
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-	JSR Shoe_DrawGoomba	 ; Draw the Goomba within the shoe
-
-	; Backup Player's invincibility into Shoe's Var1
-	LDA Player_StarInv
-	STA Objects_Var1,X
-
-	; Clear Player's invincibility
-	LDA #$00
-	STA Player_StarInv
-
-	JSR Object_HitTestRespond ; Do hit test and response without concerning Player's Star Man invincibility
-
-	; Restore Player's invincibility
-	LDA Objects_Var1,X
-	STA Player_StarInv
-
-	LDA Object_TileFeet2
-	CMP #TILEA_BLOCKBUMP_CLEAR
-	BNE PRG002_B06A	 ; If shoe has not been bumped underneath, jump to PRG002_B06A
-
-	LDA <Objects_Var4,X
-	BNE PRG002_B066	 ; If Var4 <> 0, jump to PRG002_B066
-
-	; Otherwise, Var5 = $0E
-	LDA #$0e
-	STA <Objects_Var5,X
-
-PRG002_B066:
-	; Bounce
-	LDA #-$38
-	STA <Objects_YVel,X
-
-PRG002_B06A:
-	LDA <Objects_Var4,X
-	BEQ PRG002_B076	 ; If Var4 <> 0, jump to PRG002_B076
-
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG002_B0B4	 ; If Shoe has not touched ground, jump to PRG002_B0B4 (RTS)
-	BNE PRG002_B0B0	 ; Otherwise, stop horizontal movement
-
-PRG002_B076:
-	LDY <Objects_Var5,X
-	BEQ PRG002_B0A6	 ; If Var5 <> 0, jump to PRG002_B0A6
-
-	LDA <Counter_1
-	AND #$03
-	BNE PRG002_B0B4	 ; 1:4 chance we won't jump to PRG002_B0B4
-
-	DEY		 ; (Var5) Y-- 
-	BNE PRG002_B098	 ; If Var5 did not decrement to zero, jump to PRG002_B098
-
-	; Flip to face Player
-	JSR Object_CalcCoarseXDiff
-	STA Objects_FlipBits,X
-
-	LDY #$10	 ; Y = $10 (hop to right)
-
-	ASL A
-	BMI PRG002_B084	 ; If horizontally flipped, jump to PRG002_B084
-
-	LDY #-$10	 ; Y = -$10 (hop to left)
-
-PRG002_B084:
-	STY <Objects_XVel,X	 ; Set proper X velocity
-
-	; Hop!
-	LDA #-$50
-	STA <Objects_YVel,X
-	BNE PRG002_B0A1	 ; Jump (technically always) to PRG002_B0A1
-
-PRG002_B098:
-	CPY #$0b
-	BNE PRG002_B0A3	 ; If Var5 <> $0B, jump to PRG002_B0A3
-
-	JSR Shoe_EjectGoomba	 ; Eject the occupant of the Shoe
-	INC <Objects_Var4,X	 ; Var4++
-
-PRG002_B0A1:
-	LDY #$00	 ; Y = 0 (reset Var5)
-
-PRG002_B0A3:
-	STY <Objects_Var5,X	 ; Update Var5
-
-	RTS		 ; Return
-
-PRG002_B0A6:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG002_B0B4	 ; If Shoe hasn't hit ground, jump to PRG002_B0B4 (RTS)
-
-	; Var5 = $0B
-	LDA #$0b
-	STA <Objects_Var5,X
-
-PRG002_B0B0: 
-
-	; Stop horizontal movement
-	LDA #$00
-	STA <Objects_XVel,X
-
-PRG002_B0B4:
-	RTS		 ; Return
-
-
-Shoe_EjectGoomba:
-	LDX #$04	 
-PRG002_B0B7:
-	LDA Objects_State,X
-	BEQ PRG002_B0C1	 ; If this object slot is dead/empty, jump to PRG002_B0C1
-	DEX		 ; X--
-	BPL PRG002_B0B7	 ; While X >= 0, loop!
-
-	BMI PRG002_B0FB	 ; If no object slots are available, jump to PRG002_B0FB
-
-PRG002_B0C1:
-	JSR Level_PrepareNewObject	 ; Prepare new object (the Goomba which is knocked out)
-
-	; Start Goomba off in "Killed" state
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X
-
-	; It's a Goomba
-	LDA #OBJ_GOOMBA
-	STA Level_ObjectID,X
-
-	; Palette select 3
-	LDA #SPR_PAL3
-	STA Objects_SprAttr,X
-
-	LDY <SlotIndexBackup	 ; Y = dead Goomba's object slot index
-
-	; Set equal to Shoe's X
-	LDA Objects_X,Y
-	STA <Objects_X,X
-
-	; Set Goomba's X Hi to Shoe's X Hi
-	LDA Objects_XHi,Y
-	STA <Objects_XHi,X
-
-	; Set Goomba's Y 16 pixels higher than shoe
-	LDA Objects_Y,Y
-	SUB #16
-	STA <Objects_Y,X
-	LDA Objects_YHi,Y
-	SBC #$00
-	STA <Objects_YHi,X
-
-	; If negative X velocity, flip Goomba
-	LDA Objects_XVel,Y
-	LSR A	
-	AND #SPR_HFLIP
-	STA Objects_FlipBits,X
-
-	; Goomba bump Y velocity
-	LDA #-$30
-	STA <Objects_YVel,X
-
-PRG002_B0FB:
-	LDX <SlotIndexBackup		 ; X = object slot index
-	RTS		 ; Return
-
-
-ObjHit_GoombaInShoe:
-	LDA <Objects_Var4,X
-	BEQ PRG002_B119	 ; If Var4 = 0, jump to PRG002_B119
-
-	; Goomba not in shoe...
-
-	LDA Player_Shell
-	BNE PRG002_B118	 ; If Player is a statue, jump to PRG002_B118
-
-	; Shoe pickup sound!
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERSWIM
-	STA Sound_QPlayer
-
-	; Set shoe state to 0 (dead/empty)
-	ASL A
-	STA Objects_State,X
-
-PRG002_B118:
-	RTS		 ; Return
-
-PRG002_B119:
-
-	; Goomba's still in there...
-
-	LDA Objects_Var1,X
-	BNE PRG002_B126	 ; If Var1 <> 0, jump to PRG002_B126
-
-	LDA <Temp_Var12
-	LSR A
-	BCS PRG002_B126	 ; If hit by Player jumping on top, jump to PRG002_B126
-
-	JMP Player_GetHurt ; Hurt Player and don't come back!
-
-PRG002_B126:
-	JMP PRG000_D2B4	 ; Jump to PRG000_D2B4 (hijacks the kill routine)
-
-	; The Y offset for the Goomba riding in the shoe
-Shoe_GoombaYOff:
-	.byte $00, -$02, -$04, -$06, -$08, -$08, -$08, -$08, -$08, -$06, -$04, -$02, $F4, -$08, -$04
-	
-Shoe_DrawGoomba:
-	JSR Object_ShakeAndCalcSprite
-	LDA <Temp_Var3		 
-	BPL PRG002_B14E	 ; If object is not vertically flipped, jump to PRG002_B14E
-
-	LDX <SlotIndexBackup	 ; X = object slot index
-
-	LDA <Objects_Var5,X
-	TAX		 ; X = Var5
-
-	LDA <Temp_Var1
-	ADD Shoe_GoombaYOff,X	
-	STA <Temp_Var1	
-
-	LDX <Temp_Var6		 ; X = starting sprite tile
-
-PRG002_B14E:
-	JSR Object_Draw16x16Sprite	 ; Draw the shoe
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	LDA <Objects_SpriteY,X	; Get sprite Y for object
-
-	BIT <Temp_Var3
-	BMI PRG002_B15F	 ; If shoe is vertically flipped, jump to PRG002_B15F
-
-	; Shoe is not vertically flipped...
-
-	; Add offset for Goomba inside shoe
-	LDY <Objects_Var5,X
-	ADD Shoe_GoombaYOff,Y
-
-PRG002_B15F:
-	STA <Temp_Var1	 ; -> Temp_Var1
-
-	BIT <Temp_Var3
-	BVS PRG002_B16C	 ; If shoe is horizontally flipped, jump to PRG002_B16C
-
-	; If not horizontally flipped, +1 to X
-	LDA <Temp_Var2
-	ADD #$01
-	STA <Temp_Var2
-
-PRG002_B16C:
-	LDA #SPR_PAL3
-	STA <Temp_Var4	 ; Set Goomba attributes to just palette select 3
-	LDX #$70	 ; X = $70 (Goomba's starting pattern)
-
-	LDA <Temp_Var7
-	ADD #$08
-	TAY		 ; Y = Sprite_RAM offset +8 (passed the shoe, for the Goomba)
-
-	JSR Object_Draw16x16Sprite	 ; Draw Goomba
-
-	; Mirror Goomba's halves
-	LDA Sprite_RAM+$02,Y
-	AND #~SPR_HFLIP
-	STA Sprite_RAM+$02,Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$06,Y
-	STA Sprite_RAM+$06,Y	 ; Whoops?
-
-	; Goomba X - 1
-	LDA Sprite_RAM+$07,Y
-	SUB #$01
-	STA Sprite_RAM+$07,Y
-
-	LDX <SlotIndexBackup	 ; X = object slot index
-
-
-PRG002_B196:
-	; Set pattern sixth bank to $4F
-	LDA #$4f	  
-	STA PatTable_BankSel+5
 	RTS		 ; Return
 
 ObjInit_NipperHopping:

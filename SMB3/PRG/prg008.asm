@@ -5795,7 +5795,6 @@ CoinsEarnedBufferRTS:
 	RTS
 
 DoPaletteEffect:
-	STA Debug_Snap
 	LDA PaletteEffect
 	JSR DynJump
 
