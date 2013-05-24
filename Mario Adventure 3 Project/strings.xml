@@ -905,7 +905,7 @@
     <block value="7F">Empty ? Block</block>
     <block value="80">Background</block>
     <block value="81">Cleared Coin</block>
-    <block value="82">P-Switch Stomped</block>
+    <block value="82">Cleared Coin</block>
     <block value="83">P-Switch Stomped</block>
     <block value="84">P-Switch Stomped</block>
     <block value="85">P-Switch Stomped</block>

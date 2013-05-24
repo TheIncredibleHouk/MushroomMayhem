@@ -37,7 +37,7 @@
     <palette background="00" data="0F,0F,30,1A,0F,0F,30,18,0F,11,20,31,0F,07,27,17,0F,00,00,00,0F,07,30,16,0F,0F,30,21,0F,02,30,31" name="Ice Fortress" guid="212e8375-7a01-4327-87d2-7aee5f7bcf6d" />
     <palette background="11" data="11,0D,30,28,11,0D,20,10,11,0D,36,06,11,0D,31,12,11,00,00,00,11,0D,30,16,11,0D,20,1A,11,0D,20,38" name="Mangrove" guid="1da259b6-d2ff-44e9-b6d3-91ad25ce6a48" />
     <palette background="00" data="21,0F,30,28,21,0F,37,18,21,0F,3A,1A,21,0F,30,11,21,00,00,00,21,0F,30,14,21,0F,30,1A,21,0F,30,28" name="Blue Waters" guid="3e939a4c-1d49-479c-96e9-23dcab565d89" />
-    <palette background="0F" data="0F,0F,30,21,0F,08,30,28,0F,0A,30,2A,0F,03,30,23,0F,00,00,00,0F,07,30,16,0F,0B,30,2A,0F,08,36,27" name="Chasm" guid="f1ae3729-c623-4110-9527-687f564b2e12" />
+    <palette background="0F" data="0F,0F,30,21,0F,08,30,28,0F,0B,30,1A,0F,07,30,16,0F,00,00,00,0F,07,30,16,0F,0B,30,2A,0F,08,36,27" name="Chasm" guid="f1ae3729-c623-4110-9527-687f564b2e12" />
   </paletteinfo>
   <blocklayouts />
   <worldinfo>
@@ -82,6 +82,7 @@
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2be9bb2b-a31d-4539-8db7-2fc5cba532b2" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-19T21:10:14.1258775-04:00" layout="Horizontal" />
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2406b09e-bded-4639-ac7c-03e7386c2daf" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T18:32:19.4296197-04:00" layout="Horizontal" />
     <level name="Curse of the Lagoon" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="9a6c42b5-88d8-4d06-8493-b643bb923546" leveltype="6" lastcompressionsize="0" lastmodified="2013-05-19T18:38:23.68379-04:00" layout="Horizontal" />
-    <level name="Great Chasm" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="73be4ac1-4c4c-49cb-a07d-c64d2fdebde9" leveltype="3" lastcompressionsize="0" lastmodified="2013-05-24T07:11:58.7871129-04:00" layout="Horizontal" />
+    <level name="A Nice Fit" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="73be4ac1-4c4c-49cb-a07d-c64d2fdebde9" leveltype="3" lastcompressionsize="0" lastmodified="2013-05-24T16:00:50.4742282-04:00" layout="Horizontal" />
+    <level name="test" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="6e88cbce-c7f0-4d8a-ad22-63e311d5060a" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-24T15:43:38.9200831-04:00" layout="Horizontal" />
   </levelinfo>
 </project>
