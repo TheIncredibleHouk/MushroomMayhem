@@ -247,8 +247,8 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $28 - OBJ_OSCILLATING_V
 	.byte OA3_HALT_SPIKESPECIAL 	; Object $29 - OBJ_SPIKE
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE 	; Object $2A - OBJ_SPARKRIGHT
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_SPARKLEFT
+	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2A - OBJ_SPARKRIGHT
+	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_SPARKLEFT
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA3_HALT_NORMALONLY 	; Object $2D - OBJ_BIGBERTHA
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
@@ -331,7 +331,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $27 - OBJ_OSCILLATING_H
 	.byte KILLACT_STANDARD	; Object $28 - OBJ_OSCILLATING_V
 	.byte KILLACT_STANDARD	; Object $29 - OBJ_SPIKE
-	.byte KILLACT_NORMALANDKILLED	; Object $2A - OBJ_SPARKRIGHT
+	.byte KILLACT_STANDARD	; Object $2A - OBJ_SPARKRIGHT
 	.byte KILLACT_STANDARD	; Object $2B - OBJ_SPARKLEFT
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte KILLACT_NORMALSTATE	; Object $2D - OBJ_BIGBERTHA
@@ -848,6 +848,7 @@ ObjInit_BusterBeatle:
 
 
 ObjNorm_BusterBeatle:
+
 	JSR Object_Move	 ; Do standard object movements
 	JSR Object_HandleBumpUnderneath	 ; Get killed if hit underneath by block
 	JSR Object_HitFloorAlign	 ; If Buster hits floor, align him
@@ -863,7 +864,7 @@ ObjNorm_BusterBeatle:
 	JSR Object_AnySprOffscreen
 	BNE PRG002_A532	 ; If any of Buster's sprite are off-screen, jump to PRG002_A532
 
-	LDY #$01	; Y = 1 (Buster's got brick!)
+	LDY #$02	; Y = 1 (Buster's got brick!)
 
 	LDA Object_TileWall
 	AND #$F0
@@ -2890,7 +2891,6 @@ KeepGoing:						; if we only detected one ground or wall we keep going in the sa
 ObjNorm_PiranhaSpikeBall:
 
 	; Mostly reuses Patooie's code
-
 	LDA Objects_State,X
 	CMP #OBJSTATE_KILLED
 	BEQ PRG002_AE47	 ; If piranha is dead, jump to PRG002_AE47
