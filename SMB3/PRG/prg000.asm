@@ -1096,10 +1096,11 @@ PRG000_C948:
 	STA Counter_7to0 ; Otherwise, reset Counter_7to0 to 7
 
 PRG000_C973:
-	LDX #$07
+	LDA #$07
+	STA <SlotIndexBackup
 
 PRG000_C975:
-	STX <SlotIndexBackup	 ; Backup current object index -> SlotIndexBackup
+	LDX <SlotIndexBackup	 ; Backup current object index -> SlotIndexBackup
 
 	LDA <Player_HaltGame
 	BNE PRG000_C9B6	 ; If gameplay is halted, jump to PRG000_C9B6
@@ -1173,7 +1174,7 @@ PRG000_C9B6:
 	STA Objects_SpawnIdx,X
 
 PRG000_C9D2:
-	DEX		 ; X--
+	DEC <SlotIndexBackup
 	BPL PRG000_C975	 ; While X >= 0, loop!
 
 PRG000_C9E5:
@@ -1778,7 +1779,6 @@ PRG000_CC6B:
 ObjKickXvel:	.byte $18, -$18
 
 ObjState_Kicked:
-	
 	LDA <Player_HaltGame 
 	BEQ PRG000_CC75	 ; If gameplay is NOT halted, jump to PRG000_CC75
  
@@ -3186,6 +3186,7 @@ PRG000_D205:
 	LDA <Objects_YVel,X
 	CMP #$0a	 
 	BLS PRG000_D212	 ; If Object's Y velocity < $0A, jump to PRG000_D212
+
 PRG000_D20F:
 	JMP Object_HoldKickOrHurtPlayer	 ; Otherwise, jump to Object_HoldKickOrHurtPlayer
 
@@ -3297,9 +3298,6 @@ PRG000_D253:
 	LDA #$00
 	STA Player_NoSlopeStick
 	RTS
-
-PRG000_D266:
-	JMP Object_HoldKickOrHurtPlayer
 
 Not_Ice_Block:
 
@@ -3916,6 +3914,7 @@ Object_DoHaltedAction:
 
 	LDY ObjGroupRel_Idx	 ; Y = group relative index 
 
+	STA Debug_Snap
 	LDA ObjectGroup_Attributes3,Y	; Get attribute set 3 bits
 	AND #OA3_HALT_MASK 		; Keep only the lowest 4
 	JSR DynJump	 
@@ -3934,7 +3933,7 @@ Object_DoHaltedAction:
 	.word ObjHalt_DoNothing			; 8: Bank2/Kuribo's Shoe ONLY
 	.word ObjHalt_DoNothing			; 9: Do nothing
 	.word Object_ShakeAndDrawMirrored	; 10: Draw mirrored sprite
-;	.word EndLevelCard_Draw			; 11: Bank2/End Level Card ONLY
+	.word ObjHalt_DoNothing			; 11: Bank2/End Level Card ONLY
 	.word ObjHalt_DoNothing			; 12: Do nothing
 	.word Buster_DrawHoldingIceBrick	; 13: Bank2/Buster Beatle ONLY
 	.word Bank2_PiranhaSpikeHaltAction	; 14: Bank2/Piranha Spike Ball ONLY
@@ -4278,7 +4277,6 @@ Object_Draw16x16Sprite:
 ; Temp_Var6 = Object's starting tiles index (and -> 'X')
 ; Temp_Var7 = Object's Sprite_RAM offset (and -> 'Y')
 ; Temp_Var8 = Objects_SprHVis
-	STA Debug_Snap
 	LDA <Temp_Var5	; Check sprite vertical visibility
 	LSR A		; Shift right (checking lowest bit)
 	BCS PRG000_D6C6	; If this bit is set, this sprite piece is invisible, jump to PRG000_D6C6 (RTS)
