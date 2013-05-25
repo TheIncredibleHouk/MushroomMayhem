@@ -3118,7 +3118,7 @@ NormAnimBank:
 	; next we load level action
 	INY
 	LDA Level_JctCtl	 
-	BNE Skip_Level_InitAction
+	BNE Set_Level_Exit_Action
 	LDA [Temp_Var14],Y
 	AND #$F0
 	LSR A
@@ -3126,8 +3126,30 @@ NormAnimBank:
 	LSR A
 	LSR A
 	STA Level_InitAction
+	JMP Level_Exit_Set
 
-Skip_Level_InitAction:
+Set_Level_Exit_Action:
+	LDA Player_XExit
+	AND #$F0
+	LDX Level_JctCtl
+	CPX #$01
+	BEQ NoXOffset
+	ORA #$08
+
+NoXOffset:
+	STA <Player_X
+	LDA Player_XExit
+	AND #$0F
+	STA <Player_XHi
+
+	LDA Player_YExit
+	AND #$F0
+	STA <Player_Y
+	LDA Player_YExit
+	AND #$0F
+	STA Player_YHi
+
+Level_Exit_Set:
 	; Load level size/width
 	LDA [Temp_Var14],Y
 	AND #$0F
@@ -5312,14 +5334,12 @@ FindPointerLoop:
 	DEX
 	DEX
 	DEX
-	LDA Pointers + 1, X
-	SEC
-	SBC <Temp_Var2
+	LDA <Temp_Var2
+	SUB Pointers + 1, X
 	CMP #$02
 	BCS NextPointer
-	LDA Pointers + 2, X
-	SEC
-	SBC <Temp_Var3
+	LDA <Temp_Var3
+	SUB Pointers + 2, X
 	CMP #$03
 	BCS NextPointer
 	RTS		 ; Return
@@ -5330,7 +5350,6 @@ NextPointer:
 	RTS
 
 Do_Pointer_Effect:
-	
 	JSR Find_Applicable_Pointer	 ; Initialize level junction
 
 	LDA #$00
@@ -5368,18 +5387,9 @@ LevelJction:
 	LDA Pointers, X
 	STA LevelLoadPointer
 	LDA Pointers + 3, X
-	AND #$0F
-	STA <Player_XHi
-	LDA Pointers + 3, X
-	AND #$F0
-	ORA #$08
-	STA <Player_X
+	STA Player_XExit
 	LDA Pointers + 4, X
-	AND #$0F
-	STA <Player_YHi
-	LDA Pointers + 4, X
-	AND #$F0
-	STA <Player_Y
+	STA Player_YExit
 
 	LDA Pointers + 5, X
 	AND #$0F

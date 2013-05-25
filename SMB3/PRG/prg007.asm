@@ -1386,8 +1386,10 @@ ICE_BALL_SKIP1:
 	STA Objects_State,Y
 	LDA #OBJ_ICEBLOCK
 	STA Level_ObjectID,Y ; #DAHRKDAIZ Replace sprite with ice block
-	LDA #$80
-	STA Objects_Timer3,Y 
+	LDA #$01
+	STA Objects_SprAttr,X
+	LDA #$00
+	STA Objects_Frame, X
 	RTS
 
 PRG007_A6FE:
