@@ -860,37 +860,25 @@ ObjNorm_BusterBeatle:
 	AND #$04
 	BEQ PRG002_A532	 ; If Buster has not hit floor, jump to PRG002_A532
 
-	LDA <Objects_SpriteX,X
-	CMP #$04
-	BLT PRG002_A532	 ; If Buster is near left edge of screen, jump to PRG002_A532
-
-	CMP #232
-	BCS PRG002_A532	 ; If Buster is near right edge of screen, jump to PRG002_A532
-
 	JSR Object_AnySprOffscreen
 	BNE PRG002_A532	 ; If any of Buster's sprite are off-screen, jump to PRG002_A532
 
 	LDY #$01	; Y = 1 (Buster's got brick!)
 
-	LDA Object_TileWall2
-
-	CMP #TILEA_ICEBRICK
-	BEQ PRG002_A508	 ; If Buster's touching an ice brick, jump to PRG002_A508
-
-	; ?? This might be lost functionality?
-	; Tile $F4 is Jelectro in most sets... Buster will pick up and toss this
-	; tile like an Ice Brick, but it's ... never an Ice Brick.  
-	; Maybe he'd toss Jelectros at you??
-	CMP #$f4
+	LDA Object_TileWall
+	AND #$F0
+	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG002_A532
+	LDA Object_TileWall
+	AND #$0F
+	CMP #TILE_PROP_STONE
+	BNE PRG002_A532	 ; If Buster's touching an ice brick, jump to PRG002_A508
 
-	INY		 ; Y = 2
 
-PRG002_A508:
 	STY <Objects_Var5,X	 ; Update Var5
 
 	; Change tile event (to background) by ice brick
-	;LDA #CHNGTILE_DELETETOBG
+	LDA #01
 	STA Level_ChgTileEvent
 
 	; Set all of the block change coordinates to remove the ice brick
@@ -1036,11 +1024,14 @@ PRG002_A5AE:
 	STA Objects_State,X
 
 	; It's an Ice Block
-	LDA #OBJ_ICEBLOCK
+	LDA #OBJ_STONEBLOCK
 	STA Level_ObjectID,X
 
+	LDA #$01
+	STA Objects_SprAttr, X
+
 	; Set Frame = 2
-	LDA #$02
+	LDA #$00
 	STA Objects_Frame,X
 
 	; Set expiration timer
@@ -1142,27 +1133,26 @@ PRG002_A663:
 	ADD <Temp_Var2	; Apply X offset
 	STA <Temp_Var2	; Update Sprte X
 
-	LDA Level_NoStopCnt
-	AND #$03	; Palette select 0-3
-	STA <Temp_Var4	; Custom color cycling on the ice brick he's holding
-
 	PLA		 ; Restore Var5
-	TAY		 ; -> 'Y'
-
-	LDX #$BE	 ; X = $BE (Ice Brick tile)
 
 	LDA <Temp_Var7
 	ADD #$08	
 	TAY		 ; Y = Sprite_RAM + 8
-
-	JSR Object_Draw16x16Sprite
-
-	; Draw Ice Brick
-	LDA Sprite_RAM+$02,Y
-	AND #~SPR_HFLIP
-	STA Sprite_RAM+$02,Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$06,Y
+	
+	LDA <Temp_Var1
+	STA Sprite_RAM , Y
+	STA Sprite_RAM + 4, Y
+	LDA <Temp_Var2
+	STA Sprite_RAM + 3, Y
+	ADC #$08
+	STA Sprite_RAM + 7, Y
+	LDA #$01
+	STA Sprite_RAM + 2, Y
+	STA Sprite_RAM + 6, Y
+	LDA #$97
+	STA Sprite_RAM + 1, Y
+	LDA #$99
+	STA Sprite_RAM + 5, Y
 
 	LDX <SlotIndexBackup		 ; X = object slot index
 
@@ -2819,13 +2809,13 @@ SparkXVeL:
 	.byte $F0, $10, $10, $F0
 
 ObjNorm_Spark:
-	STA Debug_Snap
 	LDA <Counter_1
 	AND #$04
 	LSR A
 	LSR A
 	STA Objects_Frame, X
 	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DeleteOffScreen
 	LDA Objects_Var1, X
 	ASL A
 	ASL A
@@ -2847,11 +2837,13 @@ ApplySparkX:
 	JSR Object_ApplyXVel
 	LDA <Objects_X, X
 	AND #$0F
+	CMP #$0F
+	BEQ SparkHitDetection
+	CMP #$01
+	BEQ SparkHitDetection
 	BNE KeepGoing
-	JMP SparkHitDetection
 
 NoSparkXVel:
-	STA Debug_Snap
 	LDA <Objects_X, X
 	AND #$0F
 	BNE ApplySparkY
@@ -2861,6 +2853,10 @@ ApplySparkY:
 	JSR Object_ApplyYVel_NoLimit
 	LDA <Objects_Y, X
 	AND #$0F
+	CMP #$0F
+	BEQ SparkHitDetection
+	CMP #$01
+	BEQ SparkHitDetection
 	BNE KeepGoing
 
 SparkHitDetection:

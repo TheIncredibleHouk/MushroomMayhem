@@ -1456,7 +1456,7 @@ PRG008_A827:
 	AND #%01111111	 
 	STA <Player_FlipBits	 ; Clear vertical flip on sprite
 
-	LDA <Temp_Var1	
+	LDA Level_Tile_Prop_Head	
 	CMP #TILE_ITEM_COIN
 	BCS PRG008_A86C	 ; If tile is DOOR2's tile, jump to PRG008_A83F
 
@@ -1475,30 +1475,22 @@ PRG008_A83F:
 	BNE PRG008_A86C	 ; If Player is mid air, jump to PRG008_A86C
 
 PRG008_A852:
-	
+
 	LDA <Player_X
-	ADD #$0C
+	ADD #$08
 	STA <Player_X
 	LDA <Player_XHi
 	ADC #$00
 	STA <Player_XHi
-	JSR Do_Pointer_Effect
-	LDY #$02	; Y = 1
-	STY Level_JctCtl ; Set appropriate value to Level_JctCtl
-
-	STY <Player_XVel	 ; Player_XVel = 0
-
 	LDA <Player_X
-	AND #$08
-	BEQ PRG008_A864	 ; If Player is NOT halfway across door, jump to PRG008_A864
-
-	LDY #16		 ; Otherwise, Y = 16
-
-PRG008_A864:
-	TYA	
-	ADD <Player_X	 ; Add offset to Player_X if needed
 	AND #$F0	 ; Lock to nearest column (place directly in doorway)
 	STA <Player_X	 ; Update Player_X
+	LDA #$00
+	STA <Player_XVel
+	JSR Do_Pointer_Effect
+	INC Level_JctCtl ; Set appropriate value to Level_JctCtl
+	LDA #$00
+	STA Level_PipeMove
 
 PRG008_A86C:
 

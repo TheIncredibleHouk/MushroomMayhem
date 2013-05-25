@@ -281,7 +281,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5B - OBJ_ROTODISCCCLOCKWISE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $5C - OBJ_ICEBLOCK
-	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5D - OBJ_TORNADO
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $5D - OBJ_STONEBLOCK
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $60 - OBJ_ROTODISCDUALCCLOCK
@@ -1421,10 +1421,6 @@ PRG000_CB10:
 	JSR Object_Move	 		; Perform standard object movements
 	JSR TestShellBumpBlocks
 
-	LDA <Objects_DetStat,X
-	AND #$08
-	BEQ DontBumpBlocks	
-
 DontBumpBlocks:
 	LDA <Objects_DetStat,X 
 	AND #$04 
@@ -1478,6 +1474,8 @@ PRG000_CB45:
 	STA <Objects_YVel,X 
 
 PRG000_CB4F:
+	LDA <Objects_XVel, X
+	BEQ PRG000_CB58
 	LDA <Objects_DetStat,X 
 	AND #$03 
 	BEQ PRG000_CB58	 ; If object has NOT hit wall, jump to PRG000_CB58 
@@ -1548,6 +1546,8 @@ PRG000_CB8E:
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
 
 	LDY Level_ObjectID,X
+	CPY #OBJ_STONEBLOCK
+	BEQ PRG000_CBB3
 	CPY #OBJ_ICEBLOCK
 	BEQ PRG000_CBB3	 ; If object is an Iceblock, jump to PRG000_CBB3 (RTS)
 
@@ -1778,6 +1778,7 @@ PRG000_CC6B:
 ObjKickXvel:	.byte $18, -$18
 
 ObjState_Kicked:
+	
 	LDA <Player_HaltGame 
 	BEQ PRG000_CC75	 ; If gameplay is NOT halted, jump to PRG000_CC75
  
@@ -1894,6 +1895,7 @@ PRG000_CCE2:
 	STA Sound_QPlayer
  
 	LDA Level_ObjectID,X 
+	AND #$FE
 	CMP #OBJ_ICEBLOCK 
 	BNE PRG000_CCF4	 ; If this object is NOT an Ice Block, jump to PRG000_CCF4
  
@@ -1961,6 +1963,7 @@ PRG000_CD46:
 	JSR Object_DeleteOffScreen	 ; Delete the kicked shell object if it goes off-screen
 
 	LDA Level_ObjectID,X
+	AND #$FE
 	CMP #OBJ_ICEBLOCK
 	BEQ PRG000_CD77	 ; If the kicked object is an ice block, jump to PRG000_CD77
 
@@ -2010,10 +2013,18 @@ PRG000_CD75:
 PRG000_CD77:
 
 	; Ice block only...
+	LDA Level_ObjectID, X
+	CMP #OBJ_ICEBLOCK
+	BNE PRG000_CD7F
 
-	LDA #$00
-	STA Objects_ColorCycle,X	 ; Cycle colors
+	LDA #$01
+	STA Objects_ColorCycle,X
 	JMP Object_ShakeAndDrawMirrored	 ; Draw sprite and don't come back!
+
+PRG000_CD7F:
+	LDA #$15
+	STA ObjGroupRel_Idx
+	JMP Object_ShakeAndDraw
 
 PRG000_CD80:
 	JMP ObjectGroup_PatternSets	 ; Jump to ObjectGroup_PatternSets (giant object special shelled draw routine)
@@ -2237,6 +2248,7 @@ PRG000_CE79:
 	; This object is being held by Player...
 
 	LDA Level_ObjectID,X
+	AND #$FE
 	CMP #OBJ_ICEBLOCK
 	BEQ PRG000_CEB4	 ; If this is an ice block, jump to PRG000_CEB4
 
@@ -2872,30 +2884,14 @@ PRG000_D101:
 
 	; Anything besides a Bob-omb...
 
+	AND #$FE
 	CMP #OBJ_ICEBLOCK ;
 	BNE PRG000_D120	 ; If object is NOT an Ice Block, jump to PRG000_D120
 
 	; Object is an ice block...  
-
-	LDA Objects_Timer3,X 
-	BNE PRG000_D10D	 ; If timer 3 is not expired, jump to PRG000_D10D 
-
-	; Timer 3 expired... 
-
-	JMP Object_PoofDie	 ; Jump to Object_PoofDie (Set state to 8 ["Poof" Dying] and set timer) 
-
-
-	; Basically from here to the RTS, color cycle the ice block as it begins to "melt"
-	; at different rates depending on where the timer is exactly...
-PRG000_D10D:
-	; #DAHRKDAIZ - left this in to force the ice blocks to use palette #2 >_>
-	LDA #$FF
-	STA Objects_Timer3,X
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Ice block flashing removed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- 
+	LDA #$01
+	STA Objects_ColorCycle,X
+	STA Objects_SprAttr,X
 	RTS		 ; Return
 
 
@@ -4282,7 +4278,7 @@ Object_Draw16x16Sprite:
 ; Temp_Var6 = Object's starting tiles index (and -> 'X')
 ; Temp_Var7 = Object's Sprite_RAM offset (and -> 'Y')
 ; Temp_Var8 = Objects_SprHVis
-
+	STA Debug_Snap
 	LDA <Temp_Var5	; Check sprite vertical visibility
 	LSR A		; Shift right (checking lowest bit)
 	BCS PRG000_D6C6	; If this bit is set, this sprite piece is invisible, jump to PRG000_D6C6 (RTS)
@@ -6272,7 +6268,7 @@ PRG000_C6FB:
 	LDY TempY
 	RTS
 
-TestShellBumpBlocks
+TestShellBumpBlocks:
 	LDA <Objects_YVel, X
 	BPL NoBumps
 	LDA Object_TileFeet

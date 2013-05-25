@@ -1643,14 +1643,13 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 
 	Player_SlideRate:	.ds 1	; While Player is sliding, this is added to X Velocity (does not persist, however)
 
-					.ds 1	; $056A unused
-
 	Player_IsClimbing:	.ds 1	; Set when Player is climing vine
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
 	Player_HitCeiling:	.ds 1	; Flag set when Player has just hit head off ceiling
 	Player_FlyTime:		.ds 1	; When > 0, Player can fly (for power ups that do so); decrements (unless $FF) to 0
 	Player_IsDucking:	.ds 1	; Set when Player is ducking down
-	Player_WhiteBlkCnt:	.ds 1	; White block counter; counts up while Player is standing on white block and holding down
+	Player_XExit:	.ds 1	; White block counter; counts up while Player is standing on white block and holding down
+	Player_YExit:	.ds 1
 
 	; Level_PipeMove is set to various values that dictate 
 	; how Player is moving within a pipe
@@ -3483,7 +3482,8 @@ OBJ_FIRESNAKE		= $59	; Fire snake
 OBJ_ROTODISCCLOCKWISE	= $5A	; Standard Rotodisc clockwise
 OBJ_ROTODISCCCLOCKWISE	= $5B	; Standard Rotodisc counter-clockwise
 OBJ_ICEBLOCK		= $5C	; Iceblock as held by Mario or Buster Beatle
-OBJ_TORNADO		= $5D	; Tornado
+OBJ_TORNADO		= $00	; Tornado
+OBJ_STONEBLOCK		= $5D	;
 OBJ_ROTODISCDUALOPPOSE	= $5E	; Dual Rotodisc, opposites, horizontal meeting
 OBJ_ROTODISCDUALOPPOSE2	= $5F 	; Dual Rotodisc, opposites, vertical meeting
 OBJ_ROTODISCDUALCCLOCK	= $60	; Dual Rotodisc, sync, counter-clockwise
