@@ -4625,7 +4625,7 @@ Bowser_WaitForPlayer:
 	LDA #MUS2B_BOWSER
 	STA Sound_QMusic2
 
-	INC LevelJctBQ_Flag	 ; LevelJctBQ_Flag = 1 (set like in a Big Question block area, i.e. no horizontal scrolling)
+	INC LevelVertJct	 ; LevelVertJct = 1 (set like in a Big Question block area, i.e. no horizontal scrolling)
 
 	; Lock vertical scroll
 	LDA #$02

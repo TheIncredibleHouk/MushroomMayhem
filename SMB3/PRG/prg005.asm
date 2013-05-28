@@ -4146,10 +4146,11 @@ PRG005_B8CB:
 	JMP PRG005_B8BE	 	; Jump to PRG005_B8BE (mark self as spawned so it never re-triggers)
 
 PRG005_B8DB:
-	CMP #OBJ_CHEEPCHEEPBEGIN
-	BLT PRG005_B909	 ; If object ID < OBJ_CHEEPCHEEPBEGIN, jump to PRG005_B909
 
-	; All object IDs higher than OBJ_CHEEPCHEEPBEGIN are handled specially:
+	CMP #OBJ_8WAYBULLETBILLS
+	BLT PRG005_B909	 ; If object ID < OBJ_8WAYBULLETBILLS, jump to PRG005_B909
+
+	; All object IDs higher than OBJ_8WAYBULLETBILLS are handled specially:
 
 	CMP #OBJ_SPAWN3GREENTROOPAS
 	BNE PRG005_B8E9	 ; If object ID <> OBJ_SPAWN3GREENTROOPAS, jump to PRG005_B8E9
@@ -4184,7 +4185,7 @@ PRG005_B8F3:
 PRG005_B902:
 
 	; Trigger Level_Event
-	SUB #(OBJ_CHEEPCHEEPBEGIN-1)	; Base at 1
+	SUB #(OBJ_8WAYBULLETBILLS-1)	; Base at 1
 	STA Level_Event	 		; Set Level_Event
 
 	RTS		 ; Return
@@ -4588,7 +4589,6 @@ LOSBSV_LookAhead:	.byte -32, 32
 LOSBSV_LookAheadHi:	.byte $FF, $01	; sign extensions
 
 Level_ObjectsSpawnByScrollV:
-
 	LDY <Scroll_LastDir
 
 	LDA Level_VertScroll
@@ -4670,19 +4670,20 @@ PRG005_BB30:
 	; BUG!! This appears to be done wrong!  They really meant
 	; Level_Objects-2 (i.e. the Object ID); incidentally, this
 	; still works because you would never find an object at
-	; column $B4 (OBJ_CHEEPCHEEPBEGIN), but you can't access
+	; column $B4 (OBJ_8WAYBULLETBILLS), but you can't access
 	; and Level_Events this way (not that they were ever used	
 	; in a vertical area!)  Sort of a half-schroedinbug.
 	; And who knows why there's a double load; probably a very
 	; old copy and paste error, eh? :)
+	
 	LDA Level_Objects-1,Y
 	LDA Level_Objects-1,Y
-	CMP #OBJ_CHEEPCHEEPBEGIN
+	CMP #OBJ_8WAYBULLETBILLS
 	BLT PRG005_BB5F	
 
 	; This is never used, but actually cheep cheep swarms in a
 	; vertical pipe maze is really kinda cool!
-	SBC #(OBJ_CHEEPCHEEPBEGIN-1)
+	SBC #(OBJ_8WAYBULLETBILLS-1)
 	STA Level_Event	 ; Store into Level_Event
 	RTS		 ; Return
 
@@ -4753,7 +4754,7 @@ LevelEvent_Do:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!! 
 
 	.word LevelEvent_DoNothing	; 0 - Do nothing (not used!)
-	.word LevelEvent_CheepCheep	; 1 - Cheep Cheep attack
+	.word LevelEvent_8WayBulletBills	; 1 - Cheep Cheep attack
 	.word LevelEvent_SpikeCheep	; 2 - Spike Cheeps float by
 	.word LevelEvent_LakituFlee	; 3 - Clears Lakitu_Active which causes an active Lakitu to flee / be removed
 	.word LevelEvent_Parabeetles	; 4 - Green and red parabeetles flyby!
@@ -5001,75 +5002,79 @@ PRG005_BCF4:
 
 	; Random X Offsets employed by the jumping 
 	; Cheep Cheeps; may negate sign!
-CheepCheep_RandomXs:
-	.byte $10, $18, $20, $28
+BB8WayXVels:
+	.byte -$16, -$20, -$16, $00, $22, $20, $22, $00
 
-	; Random X Velocities employed by the jumping 
-	; Cheep Cheeps; may negate sign!
-CheepCheep_RandomXVels:
-	.byte $18, $1A, $1C, $1E
+BB8WayYVels:
+	.byte -$16, $00, $16, $20, $16, $00, -$16, -$20
 
-LevelEvent_CheepCheep:	
+BB8WayXOffset:
+	.byte $F8, $F8, $F8, $80, $00, $00, $00, $80
+
+BB8WayYOffset:
+	.byte $C0, $60, $00, $00, $00, $60, $C0, $C0
+
+BB8WayFrame:
+	.byte $04, $00, $01, $03, $01, $00, $04, $05
+
+BB8WayAttr:
+	.byte $00, $00, $00, $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP, $00
+
+LevelEvent_8WayBulletBills:	
 	LDA Level_NoStopCnt
-	AND #$1f	 ; Cap 0 - 31
+	AND #$3f	 ; Cap 0 - 31
 	BNE PRG005_BD53	 ; If not zero, jump to PRG005_BD53 (RTS)
-
-	LDA #OBJ_POISONMUSHROOM
-	JSR Level_CountNotDeadObjs
-	CPY #$03
-	BGE PRG005_BD53	 ; If there are already at least 3 Jumping Cheep Cheeps, jump to PRG005_BD53 (RT)S
 
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
 	; Set the Cheep Cheep's object ID
-	LDA #OBJ_POISONMUSHROOM
+	LDA #OBJ_BULLETBILL
 	STA Level_ObjectID,X
+
+	LDA RandomN
+	AND #$07
+	TAY
 
 	; Set Cheep Cheep's Y at bottom of screen
 	LDA Level_VertScroll
-	ADD #$c0
+	ADD BB8WayYOffset, Y
 	STA <Objects_Y,X
 
 	LDA <Vert_Scroll_Hi
 	ADC #$00
 	STA <Objects_YHi,X
 
-	LDA RandomN,X	 ; Get random number
-
-	PHP		 ; Save process status
-	PHP		 ; Save process status
-
-	AND #$03	 ; Cap 0 - 3
-	TAY		 ; -> 'Y'
-	LDA CheepCheep_RandomXs,Y	 ; Get one of the random X offset
-	PLP		 ; Restore process status
-	BPL PRG005_BD33	 ; If random number was positive, jump to PRG005_BD33
-
-	EOR #$ff	 ; Otherwise, negate (sort of)
-
-PRG005_BD33:
-	ADD <Horz_Scroll 	; Horz_Scroll + X offset
+	
+	LDA <Horz_Scroll 	; Horz_Scroll + X offset
+	ADD BB8WayXOffset, Y
 	STA <Objects_X,X	; Store as object's X
 
 	; Apply carry as needed
 	LDA <Horz_Scroll_Hi
 	ADC #$00
 	STA <Objects_XHi,X
-
-	LDA RandomN+2,X	 ; Get another random number
-	AND #$03	 ; Cap 0 - 3
-	TAY		 ; -> 'Y'
-	LDA CheepCheep_RandomXVels,Y	 ; Get one of the random X velocities
-	PLP		 ; Restore process status
-	BPL PRG005_BD4D	 ; If original random number was positive, jump to PRG005_BD4D
-
-	JSR Negate	 ; Otherwise, negate it!
-
-PRG005_BD4D:
+	
+	LDA BB8WayXVels, Y
 	STA <Objects_XVel,X	 ; Set X velocity
 
-	LDA #-$48
+	LDA BB8WayYVels, Y
 	STA <Objects_YVel,X	 ; Set Y velocity = -$48
+
+	LDA BB8WayFrame, Y
+	STA Objects_Frame, X
+
+	LDA BB8WayAttr, Y
+	STA Objects_FlipBits,X
+
+	LDA #$02
+	STA Objects_SprAttr,X
+
+	LDA #$4C
+	STA PatTable_BankSel+4
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
 
 PRG005_BD53:
 	RTS		 ; Return

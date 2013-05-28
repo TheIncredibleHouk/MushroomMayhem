@@ -1247,7 +1247,7 @@ PRG030_891A:
 	; Clears $80 bytes starting at Player_XHi ($75, gameplay context)
 	LDY #$80	 ; Y = $80
 	LDA #$00	 ; A = 0
-	STA LevelJctBQ_Flag	 ; LevelJctBQ_Flag = 0 
+	STA LevelVertJct	 ; LevelVertJct = 0 
 PRG030_8975: 
 	STA Player_XHi,Y
 	DEY		 ; Y--
@@ -3071,7 +3071,7 @@ LevelLoad:	; $97B7
 	STX PAGE_C000
 	JSR PRGROM_Change_C000
 	
-	LDA LevelJctBQ_Flag
+	LDA LevelVertJct
 	BEQ NotJctBQ
 	JMP Skip_Level_Loading
 
@@ -3239,7 +3239,7 @@ Skip_Time_Set:
 	INX
 
 HorzNotLocked:
-	STX LevelJctBQ_Flag
+	STX LevelVertJct
 	LDA [Temp_Var14],Y
 	AND #$F0
 	LSR A
@@ -3291,7 +3291,11 @@ HorzNotLocked:
 	INY 
 
 	LDX #$00
+	STY TempY
+
 LoadName:
+	LDA Level_JctCtl
+	BNE SkipNameLoad
 	LDA [Temp_Var14], Y
 	STA LevelName, X
 	INY
@@ -3299,6 +3303,10 @@ LoadName:
 	CPX #$22
 	BNE LoadName
 
+SkipNameLoad:
+	LDA TempY
+	ADD #$22
+	TAY
 	; now load pointers
 	JSR ClearPointers
 	LDX #$00
@@ -4808,7 +4816,14 @@ Can_Wall_Jump:
 	JSR Get_Normalized_Suit
 	CMP #$0B
 	BNE No_Wall_Jump
-	STA Wall_Jump_Enabled
+	LDX #$01
+	LDA <Player_FlipBits
+	BNE Set_Wall_Jump
+	DEX
+	DEX
+
+Set_Wall_Jump:
+	STX Wall_Jump_Enabled
 	LDA #$00
 	STA Player_Flip
 	LDA <Player_YVel
@@ -4821,8 +4836,8 @@ No_Wall_Jump:
 	RTS
 
 Do_Wall_Jump:
-	LDA <Player_FlipBits
-	BNE  Jump_Right
+	LDA Wall_Jump_Enabled
+	BPL  Jump_Right
 	LDA #$20
 	BNE Do_Jump_Off
 
@@ -4965,7 +4980,7 @@ DontIncVar9:
 	RTS
 
 ClearPointers:
-	LDX #$18
+	LDX #$5F
 	LDA #$00
 
 ClearPointerLoop:
@@ -5071,7 +5086,7 @@ DynHScroll:
 	AND #$0F
 	ORA <Horz_Scroll
 	STA <Horz_Scroll
-	LDA LevelJctBQ_Flag
+	LDA LevelVertJct
 	BEQ Update_Columns
 	LDA #$00
 	STA <Horz_Scroll
@@ -5295,6 +5310,7 @@ Try_Replace_TileRTS:
 
 
 Find_Applicable_Pointer:
+
 	;;; find proper pointer now
 	LDA <Player_X
 	LSR A
@@ -5338,8 +5354,8 @@ FindPointerLoop:
 	SUB Pointers + 1, X
 	CMP #$02
 	BCS NextPointer
-	LDA <Temp_Var3
-	SUB Pointers + 2, X
+	LDA Pointers + 2, X
+	SUB <Temp_Var3
 	CMP #$03
 	BCS NextPointer
 	RTS		 ; Return
@@ -5353,7 +5369,7 @@ Do_Pointer_Effect:
 	JSR Find_Applicable_Pointer	 ; Initialize level junction
 
 	LDA #$00
-	STA LevelJctBQ_Flag
+	STA LevelVertJct
 
 	LDA <Temp_Var1
 	BPL UsePointer

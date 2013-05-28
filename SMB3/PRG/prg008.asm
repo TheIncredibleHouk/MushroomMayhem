@@ -1329,8 +1329,10 @@ PRG008_A7BE:
 
 	; NOT underwater!
 	LDA Player_InWater
-	BEQ PRG008_A827	 ; If Player was not previously in water, jump to PRG008_A827
+	BNE PRG008_A7BF
+	JMP PRG008_A827	 ; If Player was not previously in water, jump to PRG008_A827
 
+PRG008_A7BF:
 	LDA <Player_InAir
 	BNE PRG008_A7CB	 ; If Player is mid air, jump to PRG008_A7CB
 
@@ -1431,11 +1433,16 @@ PRG008_A812:
 	LDY #$02
 	LDA Player_InWater
 	BEQ NoAirDec
+	LDA <Player_Suit
+	CMP #$04
+	BEQ NoAirChange
 	LDY #$FF
 
 NoAirDec:
 	TYA
 	STA Air_Change
+
+NoAirChange:
 	LDY <Temp_Var15
 	CPY Player_InWater
 	BEQ PRG008_A827	   ; If Player_InWater = Temp_Var15 (underwater flag = underwater status), jump to PRG008_A827
@@ -3393,7 +3400,7 @@ PRG008_B126:
 	RTS
 
 PRG008_B127:
-	LDA LevelJctBQ_Flag
+	LDA LevelVertJct
 	BEQ PRG008_B12F	 ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
 
 	JMP PRG008_B1CE	 ; Otherwise, jump to PRG008_B1CE
@@ -5085,7 +5092,7 @@ PRG008_BC92:
 
 	LDY #$01	 ; Y = 1 
 
-	LDA LevelJctBQ_Flag	
+	LDA LevelVertJct	
 	BEQ PRG008_BCA4	 ; If not currently junctioning, jump to PRG008_BCA4
 
 	DEY		 ; Y = 0 
@@ -5557,6 +5564,7 @@ Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 CheckAirChange:
 	LDA Air_Time
 	BPL Change_Air
+
 Air_Kill:
 	JMP Player_Die
 
@@ -5769,6 +5777,8 @@ KeepDestroying:
 SkipDestroy:
 	DEX
 	BPL KeepDestroying
+	LDA #$00
+	STA Level_Event
 	RTS
 
 CoinsEarnedBuffer:

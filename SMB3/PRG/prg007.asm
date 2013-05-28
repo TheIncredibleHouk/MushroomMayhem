@@ -36,6 +36,7 @@ ArrowPlat_XOff:
 	.byte 0, -16, 0, -16, 0, -16, 0, 0, -16
 
 Player_DoLavaDonutArrowBounce:
+	RTS
 	LDA <Player_IsDying		  
 	BNE PRG007_A06F	 ; If Player is dying, jump to PRG007_A06F (RTS)
 
@@ -121,7 +122,7 @@ Swim_Lava:
 	LDA DAIZ_TEMP1
 PRG007_A082:
 	CMP #TILE2_DONUTLIFT
-	BNE PRG007_A0DD	 ; If this is not (possibly) a Donut Lift, jump to PRG007_A0DD (RTS)
+	JMP PRG007_A0DD	 ; If this is not (possibly) a Donut Lift, jump to PRG007_A0DD (RTS)
 
 PRG007_A086:
 	; If this is tileset 4, 8, 12, or 2 (all valid for Donut Lift), jump to PRG007_A099, otherwise jump to PRG007_A06F (RTS)
@@ -5494,10 +5495,12 @@ PRG007_BE69:
 
 	; Set cannonball Y velocity
 	LDA FourWay_CannonballYVel,X
+	ASL A
 	STA SpecialObj_YVel,Y
 
 	; Set cannonball X velocity
 	LDA FourWay_CannonballXVel,X
+	ASL A
 	STA SpecialObj_XVel,Y
 
 	; Temp_Var3 = 0 (16-bit sign extension)
@@ -5639,9 +5642,7 @@ CFire_BulletBill:
 	BNE PRG007_BF28		; If Cannon Fire has fallen off screen horizontally, jump to PRG007_BF28 (RTS)
 
 	; Reset Cannon Fire timer to $80-$9F, random
-	LDA RandomN,X
-	AND #$1f
-	ORA #$80
+	LDA #$40
 	STA CannonFire_Timer,X
 
 	LDA CannonFire_X,X
