@@ -163,8 +163,8 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $75 - OBJ_BOSSATTACK
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA1_PAL1  | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
-	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
-	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
+	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $7A - OBJ_PURPLETROOPA
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7B - OBJ_BIGREDTROOPA
 	.byte OA1_PAL3 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7C - OBJ_BIGGOOMBA
@@ -330,8 +330,8 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $75 - OBJ_BOSSATTACK
 	.byte KILLACT_POOFDEATH	; Object $76 - OBJ_POISONMUSHROOM
 	.byte KILLACT_NORMALANDKILLED	; Object $77 - OBJ_GREENCHEEP
-	.byte KILLACT_DRAWMOVENOHALT	; Object $78 - OBJ_BULLETBILL
-	.byte KILLACT_DRAWMOVENOHALT	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte KILLACT_JUSTDRAW16X16	; Object $78 - OBJ_BULLETBILL
+	.byte KILLACT_JUSTDRAW16X16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $7A - OBJ_PURPLETROOPA
 	.byte KILLACT_GIANTKILLED	; Object $7B - OBJ_BIGREDTROOPA
 	.byte KILLACT_GIANTKILLED	; Object $7C - OBJ_BIGGOOMBA
@@ -427,7 +427,7 @@ ObjP74:
 	.byte $D9, $DB, $DB, $D9, $D9, $DB, $EB, $EB
 ObjP78:
 ObjP79:
-	.byte $DD, $DF, $DD, $DF, $DD, $DF, $DD, $DD, $7F, $7F
+	.byte $DD, $DF, $B1, $B3, $DD, $DF, $BD, $BF, $B5, $B7, $B9, $BB
 ObjP76:
 	.byte $79, $7D, $79, $7D, $79, $7D
 ObjP77:
@@ -1810,7 +1810,7 @@ PRG004_A8DD:
 	LDA Level_ObjectID, X
 	CMP #OBJ_PIRATEBRO
 	BNE SpitFireIce
-	JSR PirateBro_SpitCanon
+	JSR PirateBro_SpitCannon
 	JMP PRG004_A913
 
 SpitFireIce:
@@ -2034,7 +2034,7 @@ Pirate_CannonX:
 Pirate_CannonxPos:
 	.byte $00, -$08
 
-PirateBro_SpitCanon:
+PirateBro_SpitCannon:
 	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back
 
 	; Fireball sound!
@@ -3208,6 +3208,7 @@ ObjNorm_BulletBill:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Player_HitEnemy	 	; Player to Bullet Bill collision
 	JSR Object_ApplyXVel	 	; Apply X velocity
+	JSR Object_ApplyYVel_NoLimit
 
 	LDA Level_ObjectID,X
 	CMP #OBJ_BULLETBILLHOMING
@@ -3293,18 +3294,12 @@ PRG004_B1C2:
 
 	DEC <Objects_Var5,X	 ; Var5--
 
-	; Frame = 3
-	LDA #$03
-	STA Objects_Frame,X
-
 	JSR GroundTroop_DrawMirrored	 ; Draw mirrored??
 	JMP PRG004_B21A	 ; Jump to PRG004_B21A
 
 PRG004_B1D3:
 
 	; Frame = 0
-	LDA #$00
-	STA Objects_Frame,X
 
 	LDA Object_SprRAM,X
 	PHA		 ; Save Sprite_RAM offset
@@ -3341,8 +3336,6 @@ PRG004_B1D3:
 	STA Objects_FlipBits,X
 
 	; Frame = 4
-	LDA #$04
-	STA Objects_Frame,X
 
 	JSR Object_DetermineHorzVis	 ; Determine horizontal visibility
 

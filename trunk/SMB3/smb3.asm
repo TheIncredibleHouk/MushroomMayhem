@@ -971,7 +971,8 @@ SPR_VFLIP	= %10000000
 	Map_StarsDeltaX:	.ds 1	; Delta the stars move in X to reach the Player (always positive, code figures direction)
 	Map_StarsDeltaY:	.ds 1	; Delta the stars move in Y to reach the Player (always positive, code figures direction)
 
-				.ds 16	; $03CB-$03DA unused
+	BankedCoins:		.ds 7;
+						.ds 9	; $03CB-$03DA unused
 
 	Map_Stars_PRelX:	.ds 1	; During world intro, screen relative position of Player X
 	Map_Stars_PRelY:	.ds 1	; During world intro, screen relative position of Player Y
@@ -1300,11 +1301,11 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	PSwitchTileBackups: .ds 8
 	PBarHitTestX:		.ds 5
 	PBarHitTestY:		.ds 5
-	Weather_XPos:		.ds 8;
-	Weather_XVel:		.ds 8;
-	Weather_YPos:		.ds 8;
-	Weather_YVel:		.ds 8;
-	Weather_Pattern:	.ds 8
+	Weather_XPos:		.ds 6;
+	Weather_XVel:		.ds 6;
+	Weather_YPos:		.ds 6;
+	Weather_YVel:		.ds 6;
+	Weather_Pattern:	.ds 6;
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
 
@@ -2832,7 +2833,7 @@ CARD_WILD	= 8	; UNUSED Wild card (can match any other!)
 	Level_UnusedSlopesTS5:	.ds 1	; UNUSED; If set to 2, forces slopes to be enabled for Level_Tileset = 5 (plant infestation)
 	PlantInfest_ACnt_Max:	.ds 1	; Always set to $1A in plant infestation levels, sets max value for animation counter
 
-	LevelJctBQ_Flag:	.ds 1	; Set to '1' while in a Big Question block area, locks horizontal scrolling
+	LevelVertJct:	.ds 1	; Set to '1' while in a Big Question block area, locks horizontal scrolling
 	Level_JctBackupTileset:	.ds 1	; Level Junction tileset backup
 	Level_AltTileset:	.ds 1	; Level's "alternate" tileset (when you go into bonus pipe, etc.)
 
@@ -3576,7 +3577,8 @@ OBJ_FIREJET_RIGHT	= $B1	; right fire jet
 OBJ_FIREJET_UPSIDEDOWN	= $B2	; upside down fire jet
 
 ; NOTE: Starting here, all object IDs are now handled specially (see PRG005_B8DB or just before PRG005_BB5F)
-OBJ_CHEEPCHEEPBEGIN	= $B4	; (Level_Event = 1) Begins swarm of cheep cheeps
+OBJ_CHEEPCHEEPBEGIN	= $00;
+OBJ_8WAYBULLETBILLS = $B4	; (Level_Event = 1) Begins swarm of cheep cheeps
 OBJ_GREENCHEEPBEGIN	= $B5	; (Level_Event = 2) Begins Spike Cheeps floating by
 OBJ_LAKITUFLEE		= $B6	; (Level_Event = 3) Causes active Lakitu to flee
 OBJ_PARABEETLESBEGIN	= $B7	; (Level_Event = 4) Begins Green and red parabeetles flyby

@@ -2131,7 +2131,7 @@ BoomBoom_Init:
 	STA Sound_QMusic2
 
 	; Lock horizontal scrolling
-	INC LevelJctBQ_Flag
+	INC LevelVertJct
 
 	; Lock vertical scrolling
 	LDA #$02

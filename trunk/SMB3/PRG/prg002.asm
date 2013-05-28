@@ -1028,7 +1028,7 @@ PRG002_A5AE:
 	LDA #OBJ_STONEBLOCK
 	STA Level_ObjectID,X
 
-	LDA #$01
+	LDA #$02
 	STA Objects_SprAttr, X
 
 	; Set Frame = 2
@@ -1147,7 +1147,7 @@ PRG002_A663:
 	STA Sprite_RAM + 3, Y
 	ADC #$08
 	STA Sprite_RAM + 7, Y
-	LDA #$01
+	LDA #$02
 	STA Sprite_RAM + 2, Y
 	STA Sprite_RAM + 6, Y
 	LDA #$97
@@ -3423,7 +3423,7 @@ Toad_Speak:
 	.word Deduct_Coins			; 4
 	.word End_Level				; 5
 	.word Do_Shop_Controls		; 6
-	.word Challenge_Toad		; 7
+	.word Bank_Toad		; 7
 
 TDiagBox_R1:	.byte $E8, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $EA
 TDiagBox_R2:	.byte $F8, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $FA
@@ -3535,12 +3535,12 @@ ToadMsg_Shop:
 
 	
 ChallengeMessage:
-	.byte "CAN YOU HANDLE "
-	.byte "THE CHALLENGE? "
-	.byte "COMPLETE THIS  "
-	.byte "LEVEL FOR GREAT"
-	.byte "REWARDS.       "
-	.byte "               "
+	.byte "WELCOME TO THE "
+	.byte "BANK! USE UP   "
+	.byte "AND DOWN TO SET"
+	.byte "AMOUNT, B TO   "
+	.byte "WITHDRAW AND A "
+	.byte "TO DEPOSIT.    "
 
 	; Pointer table to Toad's three messages
 	; Warp Whistle
@@ -5313,40 +5313,72 @@ Draw_Item_Sprite:
 	STA Sprite_RAM + 2, Y
 	RTS
 
-Challenge_Toad:
-	LDA #$01
-	STA Level_JctCtl
-	LDX #$00				; use first pointer as transition
-	LDA Pointers, X
-	STA LevelLoadPointer
-	LDA Pointers + 3, X
-	AND #$0F
-	STA <Player_XHi
-	LDA Pointers + 3, X
-	AND #$F0
-	ORA #$08
-	STA <Player_X
-	LDA Pointers + 4, X
-	AND #$0F
-	STA <Player_YHi
-	LDA Pointers + 4, X
-	AND #$F0
-	STA <Player_Y
-
-	LDA Pointers + 5, X
-	AND #$0F
-	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
-	
-	CMP #$03
-	BLT Skip_Line_Up2	 ; If Level_PipeExitDir < 3, jump to PRG026_AABD
-	
-	; Otherwise, don't center Player (better for starting on block)
-	LDA <Player_X
-	AND #$f0
-	STA <Player_X
-
-Skip_Line_Up2:
+Bank_Toad:
+	LDA #$02
+	STA Player_HaltTick
+	LDA Shop_Mode_Initialized
+	BNE Bank_Done
+	JSR Bank_Init
 	RTS
+Bank_Done:
+	JSR Update_DepositWithdraw
+	RTS
+
+WithdrawDepositFrames:
+	.byte $2A, $0D, $06, $00, $01, $01, $01, $01, $02
+	.byte $2A, $2D, $06, $10, $7E, $7E, $7E, $7E, $12
+	.byte $2A, $4D, $06, $20, $21, $21, $21, $21, $22
+	.byte $2A, $6C, $08, $00, $01, $01, $01, $01, $01, $01, $02
+	.byte $2A, $8C, $08, $10, $7E, $7E, $7E, $7E, $7E, $7E, $12
+	.byte $2A, $AC, $08, $20, $21, $21, $21, $21, $21, $21, $22, $00
+
+Bank_Init:
+	JSR Draw_BankFrames
+	LDA #$01
+	STA Shop_Mode_Initialized
+	RTS
+
+Draw_BankFrames:
+	LDY Graphics_BufCnt
+	LDX #$00
+
+DoDrawBF:
+	LDA WithdrawDepositFrames, X
+	STA Graphics_Buffer, Y
+	INY
+	INX
+	CPX #$3C
+	BNE DoDrawBF
+	STY Graphics_BufCnt
+	RTS
+
+Update_DepositWithdraw: ; - reusing spinner area for this part
+	STA Debug_Snap
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	LDA #$2E
+	STA Graphics_Buffer + 1, Y
+	LDA #$04
+	STA Graphics_Buffer + 2, Y
+	LDA #$00
+	STA Graphics_Buffer + 7, Y
+
+	LDX #$00
+
+DrawDWAmount:
+	LDA SpinnerBlocksX, X
+	ADD #$B0
+	STA Graphics_Buffer + 3, Y
+	INY
+	INX
+	CPX #$04
+	BNE DrawDWAmount
+	TYA
+	ADC #$03
+	STA Graphics_BufCnt
+	RTS
+
 
 Player_Take_Coins:
 	STX DAIZ_TEMP1

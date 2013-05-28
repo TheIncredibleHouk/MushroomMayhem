@@ -3914,7 +3914,6 @@ Object_DoHaltedAction:
 
 	LDY ObjGroupRel_Idx	 ; Y = group relative index 
 
-	STA Debug_Snap
 	LDA ObjectGroup_Attributes3,Y	; Get attribute set 3 bits
 	AND #OA3_HALT_MASK 		; Keep only the lowest 4
 	JSR DynJump	 
@@ -5200,7 +5199,6 @@ PRG000_DA7A:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Die:
 	; Queue death song
-
 	LDA Sound_QMusic1
 	ORA #MUS1_PLAYERDEATH
 	STA Sound_QMusic1
