@@ -45,7 +45,7 @@
   <worldinfo>
     <world name="World 0" ordinal="0" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" lastmodified="2013-05-07T19:53:21.6443963-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Cheep Cheep Everglades" ordinal="1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" lastmodified="2013-05-28T12:26:48.7432596-04:00" lastcompressedsize="0" isnoworld="false" />
-    <world name="Piranha Forest" ordinal="2" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" lastmodified="2013-05-28T14:05:52.3112596-04:00" lastcompressedsize="0" isnoworld="false" />
+    <world name="Piranha Forest" ordinal="2" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" lastmodified="2013-05-29T11:47:55.0275566-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Bob-omb Quarry" ordinal="3" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" lastmodified="2013-05-21T07:05:05.2200662-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Blooper Bay" ordinal="4" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" lastmodified="2013-05-26T09:00:22.2876865-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="No World" ordinal="25" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" lastmodified="2012-08-30T08:56:17.95-04:00" lastcompressedsize="0" isnoworld="true" />
@@ -84,9 +84,12 @@
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2be9bb2b-a31d-4539-8db7-2fc5cba532b2" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-19T21:10:14.1258775-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Imported Level" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="2406b09e-bded-4639-ac7c-03e7386c2daf" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-15T18:32:19.4296197-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Curse of the Lagoon - Main" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="9a6c42b5-88d8-4d06-8493-b643bb923546" leveltype="6" lastcompressionsize="0" lastmodified="2013-05-19T18:38:23.68379-04:00" layout="Horizontal" bonusfor="d51c828d-e91f-4f14-87cc-681630d7eb5e" />
-    <level name="Jump Off" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="73be4ac1-4c4c-49cb-a07d-c64d2fdebde9" leveltype="3" lastcompressionsize="0" lastmodified="2013-05-25T21:20:15.1820175-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Quartz Quarry" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="73be4ac1-4c4c-49cb-a07d-c64d2fdebde9" leveltype="3" lastcompressionsize="0" lastmodified="2013-05-29T12:16:59.2675708-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Fire!" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="8159147e-1a3d-48ee-9c49-d38fb646197c" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-27T17:23:26.3459132-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Fire! - Second" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="96a4c326-112e-4788-bb32-689aaa9fbaa9" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-27T16:00:23.1308896-04:00" layout="Horizontal" bonusfor="8159147e-1a3d-48ee-9c49-d38fb646197c" />
     <level name="Bank" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="08f74454-c450-4ab5-b327-3ce7ec550592" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-28T07:05:47.800083-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Mineral Maze" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="b850791b-98ef-4501-83cc-949daa3c6b89" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-29T16:45:25.7705708-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Mineral Maze 2" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="71c2eb8b-9066-4966-9023-8bb368dd8c87" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-29T13:25:25.3935708-04:00" layout="Horizontal" bonusfor="b850791b-98ef-4501-83cc-949daa3c6b89" />
+    <level name="Mineral Maze 3" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="e3ecbbcc-c8f7-4bc0-a40c-e0be8a28ee28" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-29T14:44:44.9095708-04:00" layout="Horizontal" bonusfor="71c2eb8b-9066-4966-9023-8bb368dd8c87" />
   </levelinfo>
 </project>
