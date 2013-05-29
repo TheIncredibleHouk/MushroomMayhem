@@ -1268,6 +1268,7 @@ PRG030_897B:
 
 CancelSpinners:
 	STA SpinnerBlockTimers, X
+	STA SpinnerBlocksX, X
 	DEX
 	BPL CancelSpinners
 

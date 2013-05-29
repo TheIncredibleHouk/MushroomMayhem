@@ -67,7 +67,7 @@ ObjectGroup01_InitJumpTable:
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_CloudPlat		; Object $24 - OBJ_CLOUDPLATFORM_FAST
-	.word ObjNorm_PipewayCtlr	; Object $25 - OBJ_PIPEWAYCONTROLLER
+	.word ObjNorm_DoNothing	; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjNorm_WoodenPlatRider	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjNorm_OscillatingH	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjNorm_OscillatingV	; Object $28 - OBJ_OSCILLATING_V
@@ -1161,181 +1161,9 @@ PRG002_A68B:
 	RTS		 ; Return
 
 ObjInit_PipewayCtlr:
-	; Changes Objects_Y into a grid row position (including the high) rather than a pixel position
-	; Used as index (see ObjNorm_PipewayCtlr)
-	LSR <Objects_YHi,X
-	LDA <Objects_Y,X
-	ROR A	; Carries in the high bit, first division
-	LSR A
-	LSR A
-	LSR A	; Completes divide-by-16 (makes grid row position)
-	STA <Objects_Y,X
-
-	; Flag we were just in a Pipeway
-	INC Map_WasInPipeway
-
+	
 	RTS		 ; Return
 
-	; Sets the "Map_Entered_XHi" value based on whether you're coming or going
-	; That means the Player's X Hi position on the map (not screen scroll position!)
-	; Almost the same as PipewayCtlr_MapScrlXHi without the centering bit.
-PipewayCtlr_MapXHi:
-	.byte $10	; 0
-	.byte $00	; 1
-	.byte $00	; 2
-	.byte $11	; 3
-	.byte $00	; 4
-	.byte $00	; 5
-	.byte $00	; 6
-	.byte $01	; 7
-	.byte $01	; 8
-	.byte $01	; 9
-	.byte $11	; 10
-	.byte $11	; 11
-	.byte $01	; 12
-	.byte $12	; 13
-	.byte $23	; 14
-	.byte $01	; 15
-	.byte $12	; 16
-	.byte $22	; 17
-	.byte $00	; 18
-	.byte $01	; 19
-	.byte $12	; 20
-	.byte $01	; 21
-	.byte $01	; 22
-	.byte $00	; 23
-
-
-	; This contains two values for Map X (*16) whether you're coming or going.
-	; That means the Player's X Lo position on the map (not screen scroll position!)
-	; The upper nibble ("left") cooresponds to the pipe on the left side
-	; The lower nibble ("right") cooresponds to the pipe on the right side
-PipewayCtlr_MapX:
-	.byte $8C	; 0
-	.byte $8E	; 1
-	.byte $4E	; 2
-	.byte $06	; 3
-	.byte $43	; 4
-	.byte $6D	; 5
-	.byte $59	; 6
-	.byte $50	; 7
-	.byte $81	; 8
-	.byte $B6	; 9
-	.byte $2D	; 10
-	.byte $3A	; 11
-	.byte $8C	; 12
-	.byte $22	; 13
-	.byte $62	; 14
-	.byte $6A	; 15
-	.byte $8C	; 16
-	.byte $4C	; 17
-	.byte $4A	; 18
-	.byte $A6	; 19
-	.byte $4D	; 20
-	.byte $4A	; 21
-	.byte $22	; 22
-	.byte $46	; 23
-
-	; This contains two values for Map Y (*16) whether you're coming or going.
-	; That means the Player's Y position on the map
-	; The upper nibble ("left") cooresponds to the pipe on the left side
-	; The lower nibble ("right") cooresponds to the pipe on the right side
-PipewayCtlr_MapY:
-	.byte $44	; 0
-	.byte $86	; 1
-	.byte $84	; 2
-	.byte $62	; 3
-	.byte $57	; 4
-	.byte $53	; 5
-	.byte $73	; 6
-	.byte $99	; 7
-	.byte $95	; 8
-	.byte $57	; 9
-	.byte $74	; 10
-	.byte $53	; 11
-	.byte $37	; 12
-	.byte $55	; 13
-	.byte $57	; 14
-	.byte $53	; 15
-	.byte $57	; 16
-	.byte $99	; 17
-	.byte $A8	; 18
-	.byte $A6	; 19
-	.byte $68	; 20
-	.byte $48	; 21
-	.byte $84	; 22
-	.byte $44	; 23
-
-	; This is for the horizontal scroll position of the map.
-	; The lower bits of each nibble specify the hard screen position 
-	; (i.e. scroll X Hi) and if the highest bit is set means to use
-	; the center $80 position instead of the $00 position.
-	; The upper nibble ("left") cooresponds to the pipe on the left side
-	; The lower nibble ("right") cooresponds to the pipe on the right side
-PipewayCtlr_MapScrlXHi:
-	.byte $10	; 0
-	.byte $08	; 1
-	.byte $08	; 2
-	.byte $81	; 3
-	.byte $00	; 4
-	.byte $08	; 5
-	.byte $00	; 6
-	.byte $08	; 7
-	.byte $08	; 8
-	.byte $01	; 9
-	.byte $81	; 10
-	.byte $81	; 11
-	.byte $01	; 12
-	.byte $12	; 13
-	.byte $23	; 14
-	.byte $01	; 15
-	.byte $12	; 16
-	.byte $22	; 17
-	.byte $00	; 18
-	.byte $01	; 19
-	.byte $12	; 20
-	.byte $01	; 21
-	.byte $08	; 22
-	.byte $00	; 23
-
-ObjNorm_PipewayCtlr:
-	LDA #$00
-	STA Objects_UseShortHTest,X
-	JMP Object_DeleteOffScreen
-
-; #TOREMOVE
-;PipewyCtl_SetCarryByPPos:
-;	LDY <Objects_YHi,X	 
-;	BNE PRG002_A749	 ; If Player is on lower part of level, jump to PRG002_A749
-;
-;	; Player is on upper part of level...
-;
-;	LDA <Player_SpriteX
-;	ASL A		 ; Set carry by Player's sprite X bit 7 (i.e. Player on right half of screen sets carry = 1)
-;	RTS		 ; Return
-;
-;PRG002_A749:
-;
-;	; Player is on lower part of level...
-;
-;	LDA <Player_YHi	
-;	LSR A		 ; Set carry = 1
-;	RTS		 ; Return
-
-
-PipewyCtl_GetUpperValue:
-	BIT <Temp_Var1
-	BPL PRG002_A755	 ; If , jump to PRG002_A755
-
-	; Shift value into upper 4 bits
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-
-PRG002_A755:
-	AND #%11110000	; Keep only upper 4 bits
-	RTS		 ; Return
 
 ObjInit_CheepCheepP2P2:
 	LDA #$04
@@ -3535,12 +3363,12 @@ ToadMsg_Shop:
 
 	
 ChallengeMessage:
-	.byte "WELCOME TO THE "
-	.byte "BANK! USE UP   "
-	.byte "AND DOWN TO SET"
-	.byte "AMOUNT, B TO   "
-	.byte "WITHDRAW AND A "
-	.byte "TO DEPOSIT.    "
+	.byte "USE UP AND DOWN"
+	.byte "TO SET AMOUNT. "
+	.byte "LEFT AND RIGHT "
+	.byte "TO SET ACTION. "
+	.byte "A TO ACCEPT.   "
+	.byte "B TO LEAVE.    "
 
 	; Pointer table to Toad's three messages
 	; Warp Whistle
@@ -5317,25 +5145,30 @@ Bank_Toad:
 	LDA #$02
 	STA Player_HaltTick
 	LDA Shop_Mode_Initialized
-	BNE Bank_Done
-	JSR Bank_Init
-	RTS
-Bank_Done:
-	JSR Update_DepositWithdraw
-	RTS
+	JSR DynJump
+	
+	.word Bank_Init1
+	.word Bank_Init2
+	.word Do_Bank
 
 WithdrawDepositFrames:
-	.byte $2A, $0D, $06, $00, $01, $01, $01, $01, $02
-	.byte $2A, $2D, $06, $10, $7E, $7E, $7E, $7E, $12
-	.byte $2A, $4D, $06, $20, $21, $21, $21, $21, $22
-	.byte $2A, $6C, $08, $00, $01, $01, $01, $01, $01, $01, $02
-	.byte $2A, $8C, $08, $10, $7E, $7E, $7E, $7E, $7E, $7E, $12
-	.byte $2A, $AC, $08, $20, $21, $21, $21, $21, $21, $21, $22, $00
+	.byte $2E, $6A, $0E, $00, $01, $01, $01, $01, $02, $00, $01, $01, $01, $01, $01, $01, $02
+	.byte $2E, $8A, $0E, $10, $7E, $7E, $7E, $7E, $12, $10, $7E, $7E, $7E, $7E, $7E, $7E, $12
+	.byte $2E, $AA, $0E, $20, $21, $21, $21, $21, $22, $20, $21, $21, $21, $21, $21, $21, $22
 
-Bank_Init:
+ActionFrames:
+	.byte $2E, $0A, $0E, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $02
+	.byte $2E, $2A, $0E, $10, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $12
+	.byte $2E, $4A, $0E, $20, $21, $21, $21, $21, $21, $21, $21, $21, $21, $21, $21, $21, $22
+
+Bank_Init1:
 	JSR Draw_BankFrames
-	LDA #$01
-	STA Shop_Mode_Initialized
+	INC Shop_Mode_Initialized
+	RTS
+
+Bank_Init2:
+	JSR Draw_ActionFrames
+	INC Shop_Mode_Initialized
 	RTS
 
 Draw_BankFrames:
@@ -5347,17 +5180,186 @@ DoDrawBF:
 	STA Graphics_Buffer, Y
 	INY
 	INX
-	CPX #$3C
+	CPX #$33
 	BNE DoDrawBF
+	INY
 	STY Graphics_BufCnt
 	RTS
 
-Update_DepositWithdraw: ; - reusing spinner area for this part
+Draw_ActionFrames:
+	LDY Graphics_BufCnt
+	LDX #$00
+
+DoDrawAct:
+	LDA ActionFrames, X
+	STA Graphics_Buffer, Y
+	INY
+	INX
+	CPX #$33
+	BNE DoDrawAct
+	INY
+	STY Graphics_BufCnt
+	RTS
+
+Do_Bank:
+	JSR Clear_Calc
+	LDA <Pad_Input
+	AND #(PAD_UP | PAD_DOWN)
+	BNE Do_Small_Change
+	LDA <Pad_Holding
+	AND #(PAD_UP | PAD_DOWN)
+	BEQ Update_Action
+	INC SpinnerBlocksX + 5
+	LDX SpinnerBlocksX + 5
+	CPX #$07
+	BNE Done_Bank
+
+Do_Small_Change:
+	LDX #$01
+	STX SpinnerBlocksX + 5
+	STX Calc_Value + 6
+	AND #PAD_UP
+	BEQ Decrease_By_Ten
+	JSR Add_To_DW
+	JMP Update_Bank
+
+Decrease_By_Ten:
+	JSR Sub_From_DW
+
+Update_Bank:
+	JSR Update_DepositWithdraw
+	JMP Done_Bank
+
+Update_Action:
+	LDA <Pad_Input
+	AND #(PAD_LEFT | PAD_RIGHT)
+	BEQ Update_Bank
+	INC SpinnerBlocksX + 6
+	JSR Draw_Action
+
+Done_Bank:
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Try_Bank_Action
+	INC Level_ExitToMap
+
+Try_Bank_Action:
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ Bank_RTS
 	STA Debug_Snap
+	JSR Do_Action
+
+Bank_RTS
+	RTS
+
+Action_Tiles:
+	.byte "DEPOSIT "
+	.byte "WITHDRAW"
+
+Draw_Action:
 	LDY Graphics_BufCnt
 	LDA #$2A
 	STA Graphics_Buffer, Y
-	LDA #$2E
+	LDA #$2C
+	STA Graphics_Buffer + 1, Y
+	LDA #$08
+	STA Graphics_Buffer + 2, Y
+	LDA SpinnerBlocksX + 6
+	AND #$01
+	ASL A
+	ASL A
+	ASL A
+	TAX
+	LDA #$07
+	STA <Temp_Var1
+
+DrawAction:
+	LDA Action_Tiles, X
+	ADD #$80
+	STA Graphics_Buffer + 3, Y
+	INY
+	INX
+	DEC <Temp_Var1
+	BPL DrawAction
+	TYA
+	ADD #$03
+	TAY
+	STY Graphics_BufCnt
+	LDA #$00
+	STA Graphics_Buffer, Y
+	RTS
+
+Set_DW_Amount:
+	LDX #$00
+
+CopyDWAmount:
+	LDA SpinnerBlocksX, X
+	STA Calc_From + 4, X
+	INX
+	CPX #$04
+	BNE CopyDWAmount
+	RTS
+
+Set_New_DW_Amount:
+	LDX #$00
+
+CopyNewDWAmount:
+	LDA Calc_From + 4, X
+	STA SpinnerBlocksX, X
+	INX
+	CPX #$04
+	BNE CopyNewDWAmount
+	RTS
+
+Add_To_DW:
+	LDX #$02
+
+TestMaxDWMax:
+	
+	LDA SpinnerBlocksX, X
+	CMP #$09
+	BCC Do_DW_Add
+	DEX
+	BPL TestMaxDWMax
+	RTS
+
+Do_DW_Add:
+	JSR Set_DW_Amount
+	JSR Add_Values
+	JSR Set_New_DW_Amount
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	RTS
+
+Sub_From_DW:
+	LDX #$02
+	LDA #$00
+
+TestMaxDWMin:
+	ADD SpinnerBlocksX, X
+	DEX
+	BPL TestMaxDWMin
+	CMP #$00
+	BNE Do_DW_Sub
+	RTS
+
+Do_DW_Sub:
+	JSR Set_DW_Amount
+	JSR Subtract_Values
+	JSR Set_New_DW_Amount
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	RTS
+
+Update_DepositWithdraw: ; - reusing spinner area for this part
+
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	LDA #$8B
 	STA Graphics_Buffer + 1, Y
 	LDA #$04
 	STA Graphics_Buffer + 2, Y
@@ -5375,8 +5377,112 @@ DrawDWAmount:
 	CPX #$04
 	BNE DrawDWAmount
 	TYA
-	ADC #$03
-	STA Graphics_BufCnt
+	ADD #$03
+	TAY
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	LDA #$91
+	STA Graphics_Buffer + 1, Y
+	LDA #$06
+	STA Graphics_Buffer + 2, Y
+	
+	LDX #$00
+	
+
+DrawBankAmount:
+	LDA BankCoins, X
+	ADD #$B0
+	STA Graphics_Buffer + 3, Y
+	INY
+	INX
+	CPX #$06
+	BNE DrawBankAmount
+	TYA
+	ADD #$03
+	TAY
+	LDA #$00
+	STA Graphics_Buffer, Y
+	STY Graphics_BufCnt
+	RTS
+
+Do_Action:
+	LDA SpinnerBlocksX + 6
+	BNE Do_Withdraw_Instead
+	JSR Set_Player_Coins_From
+	JSR Subtract_Values
+	LDA Calc_From
+	CMP #$0F
+	BCS Cannot_Do_Action
+	JSR Backup_From_Value
+	JSR Set_Bank_Coins_From
+	JSR Subtract_Values
+	LDA Calc_From
+	CMP #$0F
+	BCS Cannot_Do_Action
+	JSR Set_New_Bank_Value
+	JSR Set_New_Player_Coins
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	RTS
+
+Do_Withdraw_Instead:
+	RTS
+Cannot_Do_Action:
+	LDA Sound_QMap		; Not enough coins
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+	RTS
+
+Set_Player_Coins_From:
+	LDX #$03
+
+SPCF:
+	LDA Player_Coins, X
+	STA Calc_From + 2, X
+	DEX
+	BPL SPCF
+	RTS
+
+Set_Bank_Coins_From:
+	LDX #$00
+
+SBCF:
+	LDA BankCoins, X
+	STA Calc_From + 2, X
+	INX
+	CPX #$06
+	BNE SBCF
+	RTS
+
+Backup_From_Value:
+	LDX #$03
+
+BFV:
+	LDA Calc_From + 4, X
+	STA SpinnerBlocksY, X
+	DEX
+	BPL BFV
+	RTS
+
+Set_New_Bank_Value:
+	LDX #$05
+
+SNBV:
+	LDA Calc_From + 2, X
+	STA BankCoins, X
+	DEX
+	BPL SNBV
+	RTS
+
+Set_New_Player_Coins:
+	LDX #$03
+
+SNPC:
+	LDA SpinnerBlocksY, X
+	STA Player_Coins, X
+	DEX
+	BPL SNPC
 	RTS
 
 
