@@ -10,5 +10,5 @@
     <pointer levelguid="f9c213cf-c364-412f-a000-c79a2128de83" x="5" y="22" altentrance="false" />
   </pointers>
   <spritedata />
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Selection" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
 </world>

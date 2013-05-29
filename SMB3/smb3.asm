@@ -971,7 +971,7 @@ SPR_VFLIP	= %10000000
 	Map_StarsDeltaX:	.ds 1	; Delta the stars move in X to reach the Player (always positive, code figures direction)
 	Map_StarsDeltaY:	.ds 1	; Delta the stars move in Y to reach the Player (always positive, code figures direction)
 
-	BankedCoins:		.ds 7;
+	BankCoins:			.ds 7;
 						.ds 9	; $03CB-$03DA unused
 
 	Map_Stars_PRelX:	.ds 1	; During world intro, screen relative position of Player X
