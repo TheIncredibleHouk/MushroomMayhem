@@ -5158,7 +5158,7 @@ WithdrawDepositFrames:
 
 ActionFrames:
 	.byte $2E, $0A, $0E, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $02
-	.byte $2E, $2A, $0E, $10, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $12
+	.byte $2E, $2A, $0E, $10, $7E, $C4, $C5, $D0, $CF, $D3, $C9, $D4, $7E, $7E, $7E, $7E, $12
 	.byte $2E, $4A, $0E, $20, $21, $21, $21, $21, $21, $21, $21, $21, $21, $21, $21, $21, $22
 
 Bank_Init1:
@@ -5247,7 +5247,6 @@ Try_Bank_Action:
 	LDA <Pad_Input
 	AND #PAD_A
 	BEQ Bank_RTS
-	STA Debug_Snap
 	JSR Do_Action
 
 Bank_RTS
@@ -5407,27 +5406,47 @@ DrawBankAmount:
 
 Do_Action:
 	LDA SpinnerBlocksX + 6
+	AND #$01
 	BNE Do_Withdraw_Instead
 	JSR Set_Player_Coins_From
+	JSR Set_DW_Coins_Value
 	JSR Subtract_Values
 	LDA Calc_From
-	CMP #$0F
-	BCS Cannot_Do_Action
+	BMI Cannot_Do_Action
 	JSR Backup_From_Value
 	JSR Set_Bank_Coins_From
-	JSR Subtract_Values
-	LDA Calc_From
-	CMP #$0F
+	JSR Add_Values
+	LDA Calc_From + 1
+	CMP #$01
 	BCS Cannot_Do_Action
 	JSR Set_New_Bank_Value
 	JSR Set_New_Player_Coins
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
+	STA Force_Coin_Update
 	RTS
 
 Do_Withdraw_Instead:
+	JSR Set_Player_Coins_From
+	JSR Set_DW_Coins_Value
+	JSR Add_Values
+	LDA Calc_From + 3
+	CMP #$01
+	BCS Cannot_Do_Action
+	JSR Backup_From_Value
+	JSR Set_Bank_Coins_From
+	JSR Subtract_Values
+	LDA Calc_From
+	BMI Cannot_Do_Action
+	JSR Set_New_Bank_Value
+	JSR Set_New_Player_Coins
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	STA Force_Coin_Update
 	RTS
+
 Cannot_Do_Action:
 	LDA Sound_QMap		; Not enough coins
 	ORA #SND_MAPDENY
@@ -5439,7 +5458,7 @@ Set_Player_Coins_From:
 
 SPCF:
 	LDA Player_Coins, X
-	STA Calc_From + 2, X
+	STA Calc_From + 4, X
 	DEX
 	BPL SPCF
 	RTS
@@ -5453,6 +5472,16 @@ SBCF:
 	INX
 	CPX #$06
 	BNE SBCF
+	RTS
+
+Set_DW_Coins_Value:
+	LDX #$03
+
+SDWCV:
+	LDA SpinnerBlocksX, X
+	STA Calc_Value + 4, X
+	DEX
+	BPL SDWCV
 	RTS
 
 Backup_From_Value:

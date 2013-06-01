@@ -3289,6 +3289,7 @@ Increase_Odometer:
 	BPL Increase_Odometer
 
 Next_Odometer:
+	JSR DoBankInterest
 	LDA Status_Bar_Mode
 	BEQ No_Odometer
 
@@ -3374,4 +3375,37 @@ Draw_DayNightMeter:
 	STA Status_Bar_Bottom + 20
 
 NoDayNightMeter: 
+	RTS
+
+DoBankInterest:
+	STX TempX
+	JSR Clear_Calc
+	LDX #$05
+
+CopyBC:
+	LDA BankCoins, X
+	STA Calc_From + 2,X
+	DEX
+	BPL CopyBC
+	LDX #$03
+
+CopyPC100:
+	LDA BankCoins, X
+	STA Calc_Value + 4, X
+	DEX
+	BPL CopyPC100
+	JSR Add_Values
+	LDA Calc_From + 1
+	CMP #$01
+	BCS NoInterest
+	LDX #$05
+
+CopyCF:
+	LDA Calc_From + 2, X
+	STA BankCoins, X
+	DEX
+	BPL CopyCF
+	LDX TempX
+
+NoInterest:
 	RTS

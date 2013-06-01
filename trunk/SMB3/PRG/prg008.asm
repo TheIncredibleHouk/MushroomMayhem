@@ -5525,6 +5525,7 @@ Dont_Flip:
 	CLC
 	ADC Odometer_Increase
 	STA Odometer_Increase
+
 No_Odo_Increase:
 	RTS		 ; Return
 
