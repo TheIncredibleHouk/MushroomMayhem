@@ -3284,14 +3284,13 @@ PRG000_D253:
 	BNE Not_Ice_Block
 	; Player hit from top bit
 	; Enemy is in a shell...
+
 	LDA Objects_Y, X
-	AND #$0F
-	ADD #$04
-	STA TempA
-	LDA <Player_Y
-	AND #$F0
-	ORA TempA
+	SUB #$1C
 	STA <Player_Y
+	LDA <Objects_YHi
+	SBC #$00
+	STA <Player_YHi
 	LDA #$00
 	STA <Player_YVel
 	STA <Player_InAir

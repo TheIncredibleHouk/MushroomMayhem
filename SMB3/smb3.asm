@@ -970,9 +970,7 @@ SPR_VFLIP	= %10000000
 	World_Num_Debug:	.ds 1	; When debug mode is activated (KKKZSPIU), this is the world you select to start on
 	Map_StarsDeltaX:	.ds 1	; Delta the stars move in X to reach the Player (always positive, code figures direction)
 	Map_StarsDeltaY:	.ds 1	; Delta the stars move in Y to reach the Player (always positive, code figures direction)
-
-	BankCoins:			.ds 7;
-						.ds 9	; $03CB-$03DA unused
+						.ds 16	; $03CB-$03DA unused
 
 	Map_Stars_PRelX:	.ds 1	; During world intro, screen relative position of Player X
 	Map_Stars_PRelY:	.ds 1	; During world intro, screen relative position of Player Y
@@ -1306,6 +1304,8 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Weather_YPos:		.ds 6;
 	Weather_YVel:		.ds 6;
 	Weather_Pattern:	.ds 6;
+	AnimOffset:			.ds 1;
+
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
 
@@ -3088,8 +3088,9 @@ TILE_ITEM_SPINNER	= $FE
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
-	LevelName:			.ds 22
-						.ds 42;
+	LevelName:			.ds 28
+	BankCoins:			.ds 6 ;
+						.ds 30;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

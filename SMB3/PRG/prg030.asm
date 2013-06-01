@@ -395,6 +395,7 @@ PAGE_A000_ByTileset: ; $83E9
 
 	; The normal level VROM page cycle set
 PT2_Anim:	.byte $80, $82, $84, $86, $88, $8A, $8C, $8E
+PT2_Anim2:	.byte $D0, $D2, $D4, $D6, $D8, $DA, $DC, $DE
 PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
 
 SPR_Anim:
@@ -1662,12 +1663,15 @@ PRG030_8E4F:
 	LSR A	
 	LSR A		
 	TAX	        ; 0-3, changing every 8 ticks
-	LSR A
+	LSR A 
 	STA DAIZ_TEMP1
 
 	LDY Tile_Anim_Enabled
 	BEQ Skip_Tile_Anim
 
+	TXA
+	ADD AnimOffset
+	TAX 
 	LDA PT2_Anim,X
 	LDY Level_PSwitchCnt
 	BEQ Normal_Anim
@@ -3101,15 +3105,7 @@ Normal_Gfx2:
 
 Skip_Normal_Gfx2:
 	STA PatTable_BankSel
-	LDA #$80
 
-	LDX Level_PSwitchCnt
-	BEQ NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
-
-	LDA #$88	 	; Otherwise, force override to page $3E
-
-NormAnimBank:
-	STA PatTable_BankSel+1	 ; Select second bank of BG VROM
 	INY
 
 	; now we load palette index, we load palette later...
@@ -3121,7 +3117,7 @@ NormAnimBank:
 	LDA Level_JctCtl	 
 	BNE Set_Level_Exit_Action
 	LDA [Temp_Var14],Y
-	AND #$F0
+	AND #$70
 	LSR A
 	LSR A
 	LSR A
@@ -3132,9 +3128,10 @@ NormAnimBank:
 Set_Level_Exit_Action:
 	LDA Player_XExit
 	AND #$F0
-	LDX Level_JctCtl
-	CPX #$01
+	LDX Level_PipeExitDir
 	BEQ NoXOffset
+	CPX #$03
+	BCS NoXOffset
 	ORA #$08
 
 NoXOffset:
@@ -3152,6 +3149,24 @@ NoXOffset:
 
 Level_Exit_Set:
 	; Load level size/width
+	LDX #$80
+	LDA [Temp_Var14], Y
+	AND #$80
+	BEQ NotAnimBank2
+	LDA #$08
+	LDX #$D0
+
+NotAnimBank2:
+	STA AnimOffset
+	LDA Level_PSwitchCnt
+	BEQ NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
+
+	LDX #$88	 	; Otherwise, force override to page $3E
+
+NormAnimBank:
+	TXA
+	STA PatTable_BankSel+1	 ; Select second bank of BG VROM
+
 	LDA [Temp_Var14],Y
 	AND #$0F
 	
@@ -3301,7 +3316,7 @@ LoadName:
 	STA LevelName, X
 	INY
 	INX
-	CPX #$22
+	CPX #28
 	BNE LoadName
 
 SkipNameLoad:
