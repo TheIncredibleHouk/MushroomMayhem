@@ -76,7 +76,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_ParaGoomba	; Object $73 - OBJ_PARAGOOMBA
 	.word ObjNorm_ParaGoombaBomber	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
 	.word ObjNorm_BossAttack	; Object $75 - OBJ_BOSSATTACK
-	.word ObjNorm_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
+	.word ObjNorm_PoisonMushroom	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjNorm_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjNorm_BulletBill	; Object $79 - OBJ_BULLETBILLHOMING
@@ -429,7 +429,7 @@ ObjP78:
 ObjP79:
 	.byte $DD, $DF, $B1, $B3, $DD, $DF, $BD, $BF, $B5, $B7, $B9, $BB
 ObjP76:
-	.byte $79, $7D, $79, $7D, $79, $7D
+	.byte $79, $79, $79, $79, $79, $79
 ObjP77:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF, $AD, $AF, $B9, $BB, $B9, $BB
 ObjP84:
@@ -3622,12 +3622,14 @@ GroundTroop_XVel:
 Troopers:
 	.byte OBJ_BLUESPINY, OBJ_PURPLETROOPA, $FF, $FF, $FF, $FF, $FF, $FF
 
-FastMovers:
-	.byte OBJ_BLUESPINY, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ObjNorm_PoisonMushroom:
+	JSR ObjNorm_GroundTroop
+	JMP Object_ShakeAndDrawMirrored
 
 ObjNorm_GroundTroop:
 	STY DAIZ_TEMP1
 	LDY #$07
+
 FindTroopers:
 	LDA Level_ObjectID, X
 	CMP Troopers, Y

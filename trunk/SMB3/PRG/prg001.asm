@@ -42,7 +42,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
 	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
 	.word ObjInit_Snow	; Object $10 - OBJ_SNOW
-	.word ObjInit_DoNothing	; Object $11
+	.word ObjInit_Key	; Object $11
 	.word ObjInit_DoNothing	; Object $12
 	.word ObjInit_DoNothing	; Object $13
 	.word ObjInit_DoNothing	; Object $14
@@ -51,7 +51,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.word ObjInit_DoNothing	; Object $1Athat is a l
+	.word ObjInit_DoNothing	; Object $1A that is a l
 	.word ObjInit_BounceLR	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_Obj1C	; Object $1C
 	.word ObjInit_DoNothing	; Object $1D
@@ -84,7 +84,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
 	.word ObjNorm_Weather	; Object $0F
 	.word ObjNorm_Weather	; Object $10
-	.word ObjNorm_DoNothing	; Object $11
+	.word ObjNorm_Key	; Object $11
 	.word ObjNorm_DoNothing	; Object $12
 	.word ObjNorm_DoNothing	; Object $13
 	.word ObjNorm_DoNothing	; Object $14
@@ -167,9 +167,9 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $0E - OBJ_BOSS_KOOPALING
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $0F
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0F - 
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $10
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $11
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $11 OBJ_KEY
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $12
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $13
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $14
@@ -216,9 +216,9 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA2_TDOGRP1	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA2_TDOGRP6	; Object $0E - OBJ_BOSS_KOOPALING
-	.byte OA2_TDOGRP0	; Object $0F
+	.byte OA2_TDOGRP1	; Object $0F
 	.byte OA2_TDOGRP0	; Object $10
-	.byte OA2_TDOGRP0	; Object $11
+	.byte OA2_TDOGRP1	; Object $11
 	.byte OA2_TDOGRP0	; Object $12
 	.byte OA2_TDOGRP0	; Object $13
 	.byte OA2_TDOGRP0	; Object $14
@@ -265,9 +265,9 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0E - OBJ_BOSS_KOOPALING
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $0F
+	.byte OA3_TAILATKIMMUNE 	; Object $0F
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $10
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $11
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $11
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $12
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $13
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $14
@@ -410,7 +410,7 @@ ObjP07:
 ObjP0E:
 ObjP0F:
 ObjP10:
-ObjP11:
+ObjP11: .byte $69, $7D, $69, $7D, $69, $7D
 ObjP12:
 ObjP13:
 ObjP14:
@@ -440,6 +440,18 @@ ObjP21:	.byte $51, $53
 ObjP22:	.byte $51, $53 ; #DAHRKDAIZ - PUMPKIN
 ObjP23:	.byte $51, $53	; #DAHRKDAIZ - GOLD LEAF
 ObjP08:	.byte $BB, $BB, $FB, $F9, $FB, $F9, $FF, $FD, $DA, $DA
+
+
+ObjInit_Key:
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State,X
+	LDA #$E0
+	STA Objects_YVel + 5
+	RTS
+
+ObjNorm_Key:
+	
+	RTS
 
 SpinyCheep_XVel:
 	.byte 8, -8
@@ -1087,7 +1099,7 @@ BounceBlock_Tile:
 	.byte $79, $79	; 0 (possibly unused / Note Block)
 	.byte $79, $79	; 1 (coin heaven Note Block)
 	.byte $6B, $6B	; 2 ("Metal plate" post-? block hit)
-	.byte $67, $69	; 3 (used for empty brick)
+	.byte $67, $67	; 3 (used for empty brick)
 	.byte $77, $77	; 4 (typical Note Block)
 	.byte $7F, $7F	; 5 (wood)
 	.byte $67, $69	; 6 (used for brick with coins)

@@ -1846,7 +1846,8 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	Object_TileFeet:	.ds 1	; Object tile detected at "feet" of object
 	Object_TileWall:	.ds 1	; Object tile detected in front of object, i.e. a wall
 	Object_LevelTile:	.ds 1
-				.ds 3	; $0650 unused
+	Object_TileBody:	.ds 1
+				.ds 2	; $0650 unused
 
 	Objects_SprHVis:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
 	Objects_SpawnIdx:	.ds 8	; $0659-$0660 Holds the index into level data that this object was spawned from
@@ -3023,6 +3024,7 @@ SOBJ_POOF		= $16 	; Poof
 	; Tile map property flags
 MAP_PROP_ENTERABLE:		= %00000001
 MAP_PROP_TRAVERSABLE:	= %00000010
+MAP_PROP_COMPLETABLE:	= %00000100
 	; Tile Property Flags
 	; TSWF XXXX
 	; T - Top Solid
@@ -3047,7 +3049,7 @@ TILE_PROP_MOVE_RIGHT	= $04 ;
 TILE_PROP_MOVE_UP		= $05 ; 
 TILE_PROP_MOVE_DOWN		= $06 ;
 TILE_PROP_TREASURE		= $07 ; 
-TILE_PROP_SINK			= $07 ; 
+TILE_PROP_LOCK			= $08 ; 
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
@@ -3418,6 +3420,7 @@ OBJ_POWERUP_NINJASHROOM		= $0B	; Ninja Mushroom
 OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tanooki, Frog, Hammer)
 OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
 OBJ_BOSS_KOOPALING	= $0E 	; Koopaling (as appropriate to current world)
+OBJ_KEY				= $11	;
 OBJ_SPINYCHEEP		= $17	; Spiny cheep
 OBJ_BOSS_BOWSER		= $18 	; King Bowser
 OBJ_POWERUP_FIREFLOWER	= $19	; Fire flower
