@@ -1574,10 +1574,10 @@ Map_NoLoseTurnTiles_End
 MO_DoLevelClear:
 
 	JSR Map_GetTile	 	; Get current tile Player is standing on
-	CMP #$20
-	BCC DoNotClear
-	CMP #$30
-	BCS PRG011_AA19
+	TAY
+	LDA TileProperties, Y
+	AND #MAP_PROP_COMPLETABLE
+	BNE PRG011_AA19
 
 DoNotClear:
 	LDA #$0D

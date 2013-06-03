@@ -205,7 +205,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX09 | OAT_HITNOTKILL	; Object $0E - OBJ_BOSS_KOOPALING
 	.byte OAT_BOUNDBOX00	; Object $0F
 	.byte OAT_BOUNDBOX00	; Object $10
-	.byte OAT_BOUNDBOX00	; Object $11
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $11
 	.byte OAT_BOUNDBOX00	; Object $12
 	.byte OAT_BOUNDBOX00	; Object $13
 	.byte OAT_BOUNDBOX00	; Object $14
@@ -746,7 +746,7 @@ PRG000_C69C:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_GetAttrAndMoveTiles:
 	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile	; Get tile here
+	JSR Object_DetectTile	; Get tile here	
 	JSR Object_Check_Water
 
 
@@ -1417,7 +1417,12 @@ PRG000_CB10:
 
 	LDA <Player_HaltGame	 
 	BNE PRG000_CB5B	 ; If gameplay is halted, jump to PRG000_CB5B
- 
+	LDA Level_ObjectID, X
+	CMP #OBJ_KEY
+	BNE PRG000_CB11
+	JSR CheckKeyAgainstLock
+
+PRG000_CB11:
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
 	JSR Object_Move	 		; Perform standard object movements
 	JSR TestShellBumpBlocks
@@ -1532,21 +1537,20 @@ PRG000_CB7B:
 	CMP #OBJ_BOBOMBEXPLODE
 	BEQ PRG000_CB86		; If this is a Bob-omb exploding, jump to PRG000_CB86
 
+	CMP #OBJ_KEY
+	BEQ PRG000_CB86
+
 	CMP #OBJ_BOBOMB
 	BNE PRG000_CB8E		; If this is not a Bob-omb of any sort, jump to PRG000_CB8E
 
 PRG000_CB86:
 
 	; Have object flip same way as Player
-	LDA <Player_FlipBits
-	STA Objects_FlipBits,X
-
 	JMP Object_ShakeAndDraw	 ; Draw object and never come back!
 
 PRG000_CB8E:
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-
-	LDY Level_ObjectID,X
+	BEQ PRG000_CBB3
 	CPY #OBJ_STONEBLOCK
 	BEQ PRG000_CBB3
 	CPY #OBJ_ICEBLOCK
@@ -2164,12 +2168,20 @@ ObjectHoldXHiOff:	.byte $00,  $FF, $00,  $FF, $00, $00,  $FF, $00,  $FF, $00, $0
 ObjectToObject_HitXVel:	.byte -$08, $08
 
 ObjState_Held:
+	LDA <Player_FlipBits
+	STA Objects_FlipBits,X
 	LDA <Player_IsDying 
 	BEQ PRG000_CE28	 ; If Player is NOT dying, jump to PRG000_CE28
  
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98 (just draw held object) 
 
 PRG000_CE28:
+	LDA Level_ObjectID, X
+	CMP #OBJ_KEY
+	BNE PRG000_CE29
+	JSR CheckKeyAgainstLock
+
+PRG000_CE29:
 	JSR Object_ShellDoWakeUp ; Wake up while Player is holding object... 
 	BIT <Pad_Holding 
 	BVC Player_KickObject	 ; If Player is NOT holding B button, jump to Player_KickObject  
@@ -2269,7 +2281,9 @@ PRG000_CE94:
 	BEQ PRG000_CEC6	 ; If object has not hit a wall, jump to PRG000_CEB4
 
 	; KICK OBJECT INTO WALL LOGIC
-
+	LDA Level_ObjectID, X
+	CMP #OBJ_KEY
+	BEQ PRG000_CEC6
 	; 1 EXP
 	INC (Exp_Earned + 2)
 
@@ -2365,6 +2379,7 @@ PRG000_CEDC:
 	BEQ PRG000_CEE8
 
 	; Set object state to 5 (Kicked)
+	
 	LDA #OBJSTATE_KICKED
 	STA Objects_State,X
 
@@ -2387,6 +2402,13 @@ PRG000_CEED:
 PRG000_CEEE:
 	STA <Objects_YVel,X
 
+	LDA Level_ObjectID,X
+	CMP #OBJ_KEY
+	BNE PRG000_CEEE_2
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State,X
+
+PRG000_CEEE_2:
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
 KickedXVel:
@@ -2497,6 +2519,9 @@ PRG000_CF49:
 
 	JSR Object_WorldDetectN1	; Detect against world
 	JSR Object_CalcSpriteXY_NoHi	; Calculate low parts of sprite X/Y (never off-screen when held by Player!)
+	LDA Level_ObjectID, X
+	CMP #OBJ_KEY
+	BEQ PRG000_CF98
 	JSR ObjectToObject_HitTest	; Test if this object has collided with another object
 	BCC PRG000_CF98		 ; If this object did not collide with any other objects, jump to PRG000_CF98
 
@@ -2854,6 +2879,8 @@ Object_ShellDoWakeUp:
 
 	; If object is a Bob-omb, jump to PRG000_D0EC, otherwise jump to PRG000_D101
 	LDA Level_ObjectID,X	  
+	CMP #OBJ_KEY
+	BEQ PRG000_D100
 	CMP #OBJ_BOBOMBEXPLODE 
 	BEQ PRG000_D0EC 
 	CMP #OBJ_BOBOMB 
@@ -3288,7 +3315,7 @@ PRG000_D253:
 	LDA Objects_Y, X
 	SUB #$1C
 	STA <Player_Y
-	LDA <Objects_YHi
+	LDA <Objects_YHi, X
 	SBC #$00
 	STA <Player_YHi
 	LDA #$00
@@ -6300,4 +6327,49 @@ NoBumpTiles:
 	STA <Objects_X, X
 	RTS
 
+CheckKeyAgainstLock:
+	STY TempY
+	STA Debug_Snap
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile	; Get tile here	
+	CMP #TILE_ITEM_COIN
+	BCS RemainLocked
+	AND #$0F
+	CMP #TILE_PROP_LOCK
+	BNE RemainLocked
+	LDA Level_ChgTileEvent
+	BNE RemainLocked
+	LDA Object_LevelTile
+	EOR #$01
+	STA Level_ChgTileEvent
 	
+	; Store change Y Hi and Lo
+	LDA ObjTile_DetYHi
+	STA Level_BlockChgYHi
+	STA Objects_YHi, X
+	LDA ObjTile_DetYLo
+	AND #$F0		; Align to nearest grid coordinate
+	STA Level_BlockChgYLo
+	STA Objects_Y, X
+	
+	; Store change X Hi and Lo
+	LDA ObjTile_DetXHi
+	STA Level_BlockChgXHi
+	STA Objects_XHi, X
+	LDA ObjTile_DetXLo
+	AND #$F0	 	; Align to nearest grid coordinate
+	STA Level_BlockChgXLo
+	STA Objects_X, X
+
+	LDA #OBJSTATE_POOFDEATH
+	LDX <SlotIndexBackup
+	STA Objects_State, X
+
+	LDA #$20
+	STA Objects_Timer,X
+	PLA
+	PLA
+
+RemainLocked:
+	LDY TempY
+	RTS

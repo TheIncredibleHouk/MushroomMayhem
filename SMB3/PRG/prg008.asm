@@ -1463,7 +1463,7 @@ PRG008_A827:
 	AND #%01111111	 
 	STA <Player_FlipBits	 ; Clear vertical flip on sprite
 
-	LDA Level_Tile_Prop_Head	
+	LDA Level_Tile_Prop_Body	
 	CMP #TILE_ITEM_COIN
 	BCS PRG008_A86C	 ; If tile is DOOR2's tile, jump to PRG008_A83F
 
@@ -4372,6 +4372,7 @@ Level_DoBumpBlocks:
 	LDA Objects_State + 5
 	BEQ DoBumps
 	RTS
+
 DoBumps:
 	LDA #$00
 	STA ObjectBump
@@ -4537,7 +4538,7 @@ LATP_JumpTable:
 	.word LATP_PSwitch	; B = P-Switch
 	.word LATP_Brick	; 6 = Standard brick behavior
 	.word LATP_Spinner
-	.word LATP_PoisonShroom
+	.word LATP_Key
 	
 LATP_None:
 	LDY #$01		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
@@ -4725,13 +4726,28 @@ LATP_NinjaShroom:
 	JSR Do_PUp_Proper
 	RTS		 ; Return
 
-LATP_PoisonShroom:
-	
-	LDA #$00
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
+LATP_Key:
 
-	LDY #$0B	 ; Y = 7 (1-up) (index into PRG001 Bouncer_PUp)
-	JSR Do_PUp_Proper
+	LDA #OBJSTATE_INIT
+	STA Objects_State + 5
+	LDA #OBJ_KEY
+	STA Level_ObjectID + 5
+	LDA <Temp_Var14
+	AND #$F0
+	SUB #$11
+	STA Objects_Y + 5
+	LDA <Temp_Var13
+	SBC #$00
+	STA Objects_YHi + 5
+
+	LDA <Temp_Var16
+	AND #$F0
+	STA Objects_X + 5
+	LDA <Temp_Var15
+	STA Objects_XHi + 5
+
+	LDY #$00
+KeyRTS:
 	RTS		 ; Return
 
 LATP_FoxLeaf:
