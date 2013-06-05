@@ -7,8 +7,8 @@
     <sprite x="16" y="16" value="20" palette="3" horizontalflip="true" verticalflip="false" table="37" />
   </spritedefinition>
   <spritedefinition id="0A" width="01" height="01" name="Bully" class="2" group="Spiny/Buzzy Beetle/Bob-omb">
-    <sprite x="0" y="0" value="3C" palette="2" horizontalflip="false" verticalflip="false" table="F" />
-    <sprite x="8" y="0" value="3E" palette="2" horizontalflip="false" verticalflip="false" table="F" />
+    <sprite x="0" y="0" value="28" palette="2" horizontalflip="false" verticalflip="false" table="B" />
+    <sprite x="8" y="0" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="B" />
   </spritedefinition>
   <spritedefinition id="0B" width="01" height="01" name="Ninja Shroom" class="1" group="Global">
     <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="B0" />
@@ -41,6 +41,14 @@
   <spritedefinition id="11" width="01" height="01" name="Key" class="1" group="Global">
     <sprite x="0" y="0" value="28" palette="3" horizontalflip="false" verticalflip="false" table="94" />
     <sprite x="8" y="0" value="3C" palette="3" horizontalflip="false" verticalflip="false" table="94" />
+  </spritedefinition>
+  <spritedefinition id="12" width="01" height="01" name="Red Spring" class="2" group="Spike/Nipper/Spark">
+    <sprite x="0" y="0" value="00" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite x="8" y="0" value="00" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
+  </spritedefinition>
+  <spritedefinition id="13" width="01" height="01" name="Green Spring" class="2" group="Spike/Nipper/Spark">
+    <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite x="8" y="0" value="00" palette="2" horizontalflip="true" verticalflip="false" table="0A" />
   </spritedefinition>
   <spritedefinition id="17" width="01" height="01" name="Spiny Cheep" class="2" group="Sea Enemies">
     <sprite x="0" y="0" value="26" palette="2" horizontalflip="false" verticalflip="false" table="1A" />
@@ -724,13 +732,13 @@
     <sprite x="8" y="4" value="22" palette="1" horizontalflip="true" verticalflip="false" table="4E" />
     <sprite x="16" y="4" value="20" palette="1" horizontalflip="true" verticalflip="false" table="4E" />
   </spritedefinition>
-  <spritedefinition id="82" width="01" height="02" name="Boomerang Bros." class="2" group="Hammer Bros.">
-    <sprite x="0" y="8" value="3C" palette="2" horizontalflip="false" verticalflip="false" table="4E" />
-    <sprite x="8" y="8" value="3E" palette="2" horizontalflip="false" verticalflip="false" table="4E" />
-    <sprite x="0" y="24" value="34" palette="2" horizontalflip="false" verticalflip="false" table="4E" />
-    <sprite x="8" y="24" value="36" palette="2" horizontalflip="false" verticalflip="false" table="4E" />
-    <sprite x="10" y="4" value="08" palette="1" horizontalflip="false" verticalflip="false" table="4E" />
-    <sprite x="18" y="4" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="4E" />
+  <spritedefinition id="82" width="01" height="02" name="Ninja Bros." class="2" group="Hammer Bros.">
+    <sprite x="0" y="8" value="14" palette="3" horizontalflip="false" verticalflip="false" table="4E" />
+    <sprite x="8" y="8" value="16" palette="3" horizontalflip="false" verticalflip="false" table="4E" />
+    <sprite x="0" y="24" value="20" palette="3" horizontalflip="false" verticalflip="false" table="4E" />
+    <sprite x="8" y="24" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4E" />
+    <sprite x="10" y="4" value="0C" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="18" y="4" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
   </spritedefinition>
   <spritedefinition id="83" width="01" height="02" name="Lakitu" class="2" group="Spiny/Buzzy Beetle/Bob-omb">
     <sprite x="0" y="0" value="1C" palette="3" horizontalflip="false" verticalflip="false" table="0B" />

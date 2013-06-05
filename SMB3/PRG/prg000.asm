@@ -206,8 +206,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00	; Object $0F
 	.byte OAT_BOUNDBOX00	; Object $10
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $11
-	.byte OAT_BOUNDBOX00	; Object $12
-	.byte OAT_BOUNDBOX00	; Object $13
+	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $12
+	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $13
 	.byte OAT_BOUNDBOX00	; Object $14
 	.byte OAT_BOUNDBOX00	; Object $15
 	.byte OAT_BOUNDBOX00	; Object $16
@@ -263,8 +263,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01	; Object $48 - OBJ_TINYCHEEPCHEEP
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $4A - OBJ_MAGICSTAR
-	.byte OAT_BOUNDBOX13	; Object $4B - OBJ_BOOMBOOMJUMP
-	.byte OAT_BOUNDBOX13	; Object $4C - OBJ_BOOMBOOMFLY
+	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $4B - OBJ_BOOMBOOMJUMP
+	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OAT_BOUNDBOX00	; Object $4D
 	.byte OAT_BOUNDBOX00	; Object $4E
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -318,7 +318,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX13	; Object $7F - OBJ_BIGREDPIRANHA
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OAT_BOUNDBOX02	; Object $81 - OBJ_HAMMERBRO
-	.byte OAT_BOUNDBOX02	; Object $82 - OBJ_BOOMERANGBRO
+	.byte OAT_BOUNDBOX02	; Object $82 - OBJ_NINJABRO
 	.byte OAT_BOUNDBOX01	; Object $83 - OBJ_LAKITU
 	.byte OAT_BOUNDBOX01	; Object $84 - OBJ_SPINYEGG
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_BLUESPINY
@@ -1549,17 +1549,22 @@ PRG000_CB86:
 	JMP Object_ShakeAndDraw	 ; Draw object and never come back!
 
 PRG000_CB8E:
+	STA TempA
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
+
+	LDA TempA
+	CMP #OBJ_KEY
 	BEQ PRG000_CBB3
-	CPY #OBJ_STONEBLOCK
+	CMP #OBJ_STONEBLOCK
 	BEQ PRG000_CBB3
-	CPY #OBJ_ICEBLOCK
+	CMP #OBJ_ICEBLOCK
 	BEQ PRG000_CBB3	 ; If object is an Iceblock, jump to PRG000_CBB3 (RTS)
 
 	JSR Object_SetShakeAwakeTimer	 ; Set the "shake awake" timers
 
+	LDA TempA
 
-	CPY #OBJ_BUZZYBEATLE
+	CMP #OBJ_BUZZYBEATLE
 	BNE PRG000_CBB4	 ; If object is NOT a Buzzy Beatle, jump to PRG000_CBB4
 
 	; Buzzy Beatle
@@ -6329,7 +6334,6 @@ NoBumpTiles:
 
 CheckKeyAgainstLock:
 	STY TempY
-	STA Debug_Snap
 	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile	; Get tile here	
 	CMP #TILE_ITEM_COIN

@@ -1185,6 +1185,7 @@ Player_Control:
 	JSR VScreenTransitions
 	LDA #$02
 	STA Top_Of_Water
+	STA Air_Change
 	LDA <Player_FlipBits
 	STA Player_FlipBits_OLD
 
@@ -1428,21 +1429,6 @@ PRG008_A80B:
 	BEQ PRG008_A819	   ; Jump (technically always) to PRG008_A819
 
 PRG008_A812:
-
-	; Solid floor tile at head last check
-	LDY #$02
-	LDA Player_InWater
-	BEQ NoAirDec
-	LDA <Player_Suit
-	CMP #$04
-	BEQ NoAirChange
-	LDY #$FF
-
-NoAirDec:
-	TYA
-	STA Air_Change
-
-NoAirChange:
 	LDY <Temp_Var15
 	CPY Player_InWater
 	BEQ PRG008_A827	   ; If Player_InWater = Temp_Var15 (underwater flag = underwater status), jump to PRG008_A827
@@ -1532,12 +1518,25 @@ PRG008_A86C:
 
 PRG008_A890:
 	LDA Level_Tile_Prop_Head
+	CMP #TILE_ITEM_COIN
+	BCS PRG008_A891
+	LDY <Player_Suit
+	CPY #$04
+	BEQ TryAirDepleteProp
+	AND #TILE_PROP_WATER
+	BNE Deplete_Air
+TryAirDepleteProp:
+	LDA Level_Tile_Prop_Head
+	AND #$0F
 	CMP #TILE_PROP_DEPLETE_AIR
 	BNE PRG008_A891
+
+Deplete_Air:
 	LDA #$FF
 	STA Air_Change
 
 PRG008_A891:
+	
 	LDA #$00
 	STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
 
@@ -5679,6 +5678,17 @@ NotSmallMario:
 	INC Level_JctCtl
 	PLA
 	PLA
+
+	LDX #$07
+	LDA #$00
+ClearSprite:
+	LDY Objects_State, X
+	CPY #OBJSTATE_HELD
+	BEQ NextSprite
+	STA Objects_State, X
+NextSprite:
+	DEX
+	BPL ClearSprite
 
 NotYHi:
 	RTS

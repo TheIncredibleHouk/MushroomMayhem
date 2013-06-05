@@ -1917,14 +1917,6 @@ ObjNorm_BoomBoom:
 	; Boom Boom's graphics
 	LDA #$4d
 	STA PatTable_BankSel+4
-
-	LDA Level_TilesetIdx
-	CMP #11
-	BNE PRG003_AA25	 ; If Level_TilesetIdx <> 11 (ice level), jump to PRG003_AA25
-
-	STA Objects_Var2,X	 ; Var2 = 11
-
-PRG003_AA25:
 	LDA Objects_HitCount,X
 	CMP #$20
 	BNE PRG003_AA3B	 ; If HitCount <> $20, jump to PRG003_AA3B
@@ -2078,14 +2070,7 @@ PRG003_AAD3:
 	INC Objects_Var3,X	 ; Var3++
 
 PRG003_AAD9:
-	LDA <Objects_Var5,X
-	BEQ NoBBTimer
-	CMP #$05
-	BEQ NoBBTimer
-	LDA BoomBoomMiscTimer
-	BEQ NoBBTimer
-	DEC BoomBoomMiscTimer
-	BNE NoBBTimer
+	
 	JSR DoBoomBoomWorldJMP
 
 NoBBTimer:
@@ -2813,10 +2798,12 @@ PRG003_AE95:
 	STA Objects_FlipBits,X	; Update flip bits
 
 	; Boom Boom becomes the "(?)" ball
-	LDA #$01
+	LDA #$09
 	STA Exp_Earned
-	LDA #$00
+	LDA #OBJ_KEY
 	STA Level_ObjectID,X
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
 
 	LDA #$01
 	STA BrickBust_En	 ; Enable brick bust slot 1
@@ -2862,9 +2849,6 @@ PRG003_AE95:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
-
-	LDA #$FF
-	STA Level_PSwitchCnt
 
 	JSR SetRotatingColor	 ; Litle light show
 
