@@ -275,8 +275,8 @@ ObjectGroup04_Attributes3:
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup04_PatTableSel:
-	.byte OPTS_SETPT6 | $4F	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OPTS_SETPT6 | $4F	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.byte OPTS_NOCHANGE	; Object $90 - OBJ_TILTINGPLATFORM
+	.byte OPTS_NOCHANGE	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte OPTS_SETPT6 | $4F	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte OPTS_SETPT6 | $4F	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OPTS_SETPT5 | $4C	; Object $94 - OBJ_BIGQBLOCK_3UP

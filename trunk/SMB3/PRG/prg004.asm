@@ -46,7 +46,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
 	.word ObjInit_Set3DoNothing	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
-	.word ObjInit_BoomerangBro	; Object $82 - OBJ_BOOMERANGBRO
+	.word ObjInit_BoomerangBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjInit_Set3DoNothing	; Object $84 - OBJ_SPINYEGG
 	.word ObjInit_GroundTroop	; Object $85 - OBJ_BLUESPINY
@@ -88,7 +88,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
 	.word ObjNorm_FlyingGreenPara	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjNorm_HammerBro		; Object $81 - OBJ_HAMMERBRO
-	.word ObjNorm_BoomerangBro	; Object $82 - OBJ_BOOMERANGBRO
+	.word ObjNorm_BoomerangBro	; Object $82 - OBJ_NINJABRO
 	.word ObjNorm_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjNorm_SpinyEgg		; Object $84 - OBJ_SPINYEGG
 	.word ObjNorm_GroundTroop	; Object $85 - OBJ_BLUESPINY
@@ -131,7 +131,7 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $7F - OBJ_BIGREDPIRANHA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GREENTROOPA	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word OCSPECIAL_HIGHSCORE			; Object $81 - OBJ_HAMMERBRO
-	.word OCSPECIAL_HIGHSCORE			; Object $82 - OBJ_BOOMERANGBRO
+	.word OCSPECIAL_HIGHSCORE			; Object $82 - OBJ_NINJABRO
 	.word OCSPECIAL_HIGHSCORE			; Object $83 - OBJ_LAKITU
 	.word $0000					; Object $84 - OBJ_SPINYEGG
 	.word $0000					; Object $85 - OBJ_BLUESPINY
@@ -173,7 +173,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7F - OBJ_BIGREDPIRANHA
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA1_PAL3 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $81 - OBJ_HAMMERBRO
-	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $82 - OBJ_BOOMERANGBRO
+	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $82 - OBJ_NINJABRO
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $83 - OBJ_LAKITU
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $84 - OBJ_SPINYEGG
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $85 - OBJ_BLUESPINY
@@ -214,7 +214,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7F - OBJ_BIGREDPIRANHA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $81 - OBJ_HAMMERBRO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $82 - OBJ_BOOMERANGBRO
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $82 - OBJ_NINJABRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $83 - OBJ_LAKITU
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $84 - OBJ_SPINYEGG
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $85 - OBJ_BLUESPINY
@@ -256,7 +256,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7F - OBJ_BIGREDPIRANHA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA3_HALT_NORMALONLY 					; Object $81 - OBJ_HAMMERBRO
-	.byte OA3_HALT_NORMALONLY 					; Object $82 - OBJ_BOOMERANGBRO
+	.byte OA3_HALT_NORMALONLY 					; Object $82 - OBJ_NINJABRO
 	.byte OA3_HALT_NORMALONLY 					; Object $83 - OBJ_LAKITU
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $84 - OBJ_SPINYEGG
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_DIESHELLED 			; Object $85 - OBJ_BLUESPINY
@@ -298,7 +298,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $3D	; Object $7F - OBJ_BIGREDPIRANHA
 	.byte OPTS_SETPT6 | $4F	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OPTS_SETPT5 | $4E	; Object $81 - OBJ_HAMMERBRO
-	.byte OPTS_SETPT5 | $4E	; Object $82 - OBJ_BOOMERANGBRO
+	.byte OPTS_SETPT5 | $4E	; Object $82 - OBJ_NINJABRO
 	.byte OPTS_SETPT5 | $0B	; Object $83 - OBJ_LAKITU
 	.byte OPTS_SETPT5 | $0B	; Object $84 - OBJ_SPINYEGG
 	.byte OPTS_SETPT5 | $0B	; Object $85 - OBJ_BLUESPINY
@@ -340,7 +340,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_POOFDEATH		; Object $7F - OBJ_BIGREDPIRANHA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte KILLACT_JUSTDRAW16X32	; Object $81 - OBJ_HAMMERBRO
-	.byte KILLACT_JUSTDRAW16X32	; Object $82 - OBJ_BOOMERANGBRO
+	.byte KILLACT_JUSTDRAW16X32	; Object $82 - OBJ_NINJABRO
 	.byte KILLACT_NORMALSTATE	; Object $83 - OBJ_LAKITU
 	.byte KILLACT_JUSTDRAW16X16	; Object $84 - OBJ_SPINYEGG
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $85 - OBJ_BLUESPINY
@@ -446,9 +446,12 @@ ObjP86:
 ObjP87:
 	.byte $81, $83, $A5, $A7, $81, $83, $B5, $B7, $85, $87, $BB, $A7
 ObjP81:
-ObjP82:
 	.byte $B1, $B3, $B5, $B7, $B1, $B3, $A5, $A7, $BD, $BF, $B5, $B7, $BD, $BF, $A5, $A7
-	.byte $A1, $A3, $AF, $B9, $89, $8B, $8D, $8F
+	.byte $AD, $AF, $AD, $BF
+
+ObjP82:
+	.byte $95, $97, $B9, $BB, $95, $97, $A1, $A3, $99, $9B, $B9, $BB, $99, $9B, $A1, $A3
+	.byte $00, $00, $00, $00, $9D, $9F, $9D, $9F
 
 BossAttack_XVelTowardsPlayer:
 	.byte $10, -$10
@@ -851,7 +854,7 @@ BattleEnemy_ByEnterID:
 	.byte $00		; 1: HELP (can't be "entered")
 	.byte $00		; 2: Airship (not our concern here)
 	.byte OBJ_HAMMERBRO	; 3: Hammer Bro battle
-	.byte OBJ_BOOMERANGBRO	; 4: Boomerang Bro battle
+	.byte OBJ_NINJABRO	; 4: Boomerang Bro battle
 	.byte OBJ_ICEBRO	; 5: Heavy Bro battle
 	.byte OBJ_FIREBRO	; 6: Fire Bro battle
 	.byte $00		; 7: World 7 Plant (not our concern here)

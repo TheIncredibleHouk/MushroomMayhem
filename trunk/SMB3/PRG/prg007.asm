@@ -4267,9 +4267,9 @@ PRG007_B7B5:
 	TAX
 
 	; Set boomerang sprites patterns
-	LDA Boomerang_Patterns,X
+	LDA Boomerang_Patterns
 	STA Sprite_RAM+$01,Y
-	LDA Boomerang_Patterns+2,X
+	LDA Boomerang_Patterns+1
 	STA Sprite_RAM+$05,Y
 
 PRG007_B7C5:
@@ -4443,10 +4443,10 @@ Boomerang_XVelLimit:	.byte $20, $E0
 Boomerang_YVelAccel:	.byte $01, -$01
 Boomerang_YVelLimit:	.byte $12, -$12
 
-Boomerang_Attributes:	.byte SPR_HFLIP | SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, $00, $00
+Boomerang_Attributes:	.byte $00, $00, $00, $00
 
 Boomerang_Patterns:
-	.byte $8B, $8F, $89, $8D, $8B, $8F
+	.byte $4F, $4D
 
 
 SObj_Boomerang:
@@ -4558,7 +4558,7 @@ PRG007_B92A:
 	BNE PRG007_B979	 ; If thrower's state <> Normal, jump to PRG007_B979 (RTS)
 
 	LDA Level_ObjectID,Y
-	CMP #OBJ_BOOMERANGBRO
+	CMP #OBJ_NINJABRO
 	BNE PRG007_B979	; If thrower's slot is not a boomerang brother (Anymore), jump to PRG007_B979 (RTS)
 
 	; This is for the Boomerang brother to "catch"

@@ -26,11 +26,11 @@
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $00
-	.word ObjInit_Obj01	; Object $01
-	.word ObjInit_Obj02	; Object $02
+	.word ObjInit_DoNothing	; Object $01
+	.word ObjInit_DoNothing	; Object $02
 	.word ObjInit_DoNothing	; Object $03
-	.word ObjInit_Obj04	; Object $04
-	.word ObjInit_Obj05	; Object $05
+	.word ObjInit_DoNothing	; Object $04
+	.word ObjInit_DoNothing	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjInit_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjInit_PDoor	; Object $08 - OBJ_PSWITCHDOOR
@@ -43,8 +43,8 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
 	.word ObjInit_Snow	; Object $10 - OBJ_SNOW
 	.word ObjInit_Key	; Object $11
-	.word ObjInit_DoNothing	; Object $12
-	.word ObjInit_DoNothing	; Object $13
+	.word ObjInit_RedSpring	; Object $12
+	.word ObjInit_GreenSpring	; Object $13
 	.word ObjInit_DoNothing	; Object $14
 	.word ObjInit_DoNothing	; Object $15
 	.word ObjInit_DoNothing	; Object $16
@@ -68,11 +68,11 @@ ObjectGroup00_InitJumpTable:
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $00
-	.word ObjNorm_Obj01	; Object $01
-	.word ObjNorm_Obj02	; Object $02
+	.word ObjNorm_DoNothing	; Object $01
+	.word ObjNorm_DoNothing	; Object $02
 	.word ObjNorm_DoNothing	; Object $03
-	.word ObjNorm_Obj04	; Object $04
-	.word ObjNorm_Obj05	; Object $05
+	.word ObjNorm_DoNothing	; Object $04
+	.word ObjNorm_DoNothing	; Object $05
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjNorm_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjNorm_PDoor	; Object $08 - OBJ_PSWITCHDOOR
@@ -85,8 +85,8 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Weather	; Object $0F
 	.word ObjNorm_Weather	; Object $10
 	.word ObjNorm_Key	; Object $11
-	.word ObjNorm_DoNothing	; Object $12
-	.word ObjNorm_DoNothing	; Object $13
+	.word ObjNorm_Spring	; Object $12
+	.word ObjNorm_Spring	; Object $13
 	.word ObjNorm_DoNothing	; Object $14
 	.word ObjNorm_DoNothing	; Object $15
 	.word ObjNorm_DoNothing	; Object $16
@@ -111,11 +111,11 @@ ObjectGroup00_NormalJumpTable:
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $00
-	.word ObjHit_Obj01	; Object $01
+	.word ObjHit_DoNothing	; Object $01
 	.word ObjHit_DoNothing	; Object $02
 	.word ObjHit_DoNothing	; Object $03
-	.word ObjHit_Obj04	; Object $04
-	.word ObjHit_Obj05	; Object $05
+	.word ObjHit_DoNothing	; Object $04
+	.word ObjHit_DoNothing	; Object $05
 	.word ObjHit_DoNothing	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjHit_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjHit_DoNothing	; Object $08 - OBJ_PSWITCHDOOR
@@ -170,8 +170,8 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0F - 
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $10
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $11 OBJ_KEY
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $12
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $13
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $12 OBJ_REDPRING
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $13 OBJ_GREENSPRING
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $14
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $15
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $16
@@ -219,8 +219,8 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $0F
 	.byte OA2_TDOGRP0	; Object $10
 	.byte OA2_TDOGRP1	; Object $11
-	.byte OA2_TDOGRP0	; Object $12
-	.byte OA2_TDOGRP0	; Object $13
+	.byte OA2_TDOGRP1	; Object $12
+	.byte OA2_TDOGRP1	; Object $13
 	.byte OA2_TDOGRP0	; Object $14
 	.byte OA2_TDOGRP0	; Object $15
 	.byte OA2_TDOGRP5	; Object $16
@@ -268,8 +268,8 @@ ObjectGroup00_Attributes3:
 	.byte OA3_TAILATKIMMUNE 	; Object $0F
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $10
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $11
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $12
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $13
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $14
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $15
 	.byte OA3_HALT_DONOTHING4 	; Object $16
@@ -310,8 +310,8 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $0F
 	.byte OPTS_NOCHANGE	; Object $10
 	.byte OPTS_NOCHANGE	; Object $11
-	.byte OPTS_NOCHANGE	; Object $12
-	.byte OPTS_NOCHANGE	; Object $13
+	.byte OPTS_SETPT5 | $0A	; Object $12
+	.byte OPTS_SETPT5 | $0A	; Object $13
 	.byte OPTS_NOCHANGE	; Object $14
 	.byte OPTS_NOCHANGE	; Object $15
 	.byte OPTS_SETPT5 | $48	; Object $16
@@ -410,9 +410,11 @@ ObjP07:
 ObjP0E:
 ObjP0F:
 ObjP10:
-ObjP11: .byte $69, $7D, $69, $7D, $69, $7D
+ObjP11:
+	.byte $69, $7D, $69, $7D, $69, $7D
 ObjP12:
 ObjP13:
+	.byte $81, $81, $83, $83, $85, $85
 ObjP14:
 ObjP15:
 ObjP16:
@@ -441,6 +443,91 @@ ObjP22:	.byte $51, $53 ; #DAHRKDAIZ - PUMPKIN
 ObjP23:	.byte $51, $53	; #DAHRKDAIZ - GOLD LEAF
 ObjP08:	.byte $BB, $BB, $FB, $F9, $FB, $F9, $FF, $FD, $DA, $DA
 
+ObjInit_GreenSpring:
+	LDA #$01
+	STA Objects_Var1, X
+	LDA #$00
+	STA Objects_Var2, X
+	RTS
+
+ObjInit_RedSpring:
+	LDA #$00
+	STA Objects_Var1, X
+	LDA #$00
+	STA Objects_Var2, X
+	RTS
+
+Spring_Jump_Height:
+	.byte $C0, $B0
+
+Spring_Frames:
+	.byte $00, $01, $02, $01
+
+Spring_Player_YOffsets:
+	.byte $20, $1C, $17, $1C
+
+ObjNorm_Spring:
+	JSR Object_DeleteOffScreen
+	LDY Objects_Var2, X
+	LDA Spring_Frames, Y
+	STA Objects_Frame, X
+	JSR Object_ShakeAndDrawMirrored
+	JSR Object_Move
+	LDA <Objects_DetStat,X
+	AND #$04
+	BEQ DontMoveSpring
+	JSR Object_HitGround
+
+DontMoveSpring:
+	LDA Objects_Var2, X
+	BNE SpringAnim
+
+	LDA <Player_YVel
+	BEQ Spring_RTS
+	BMI Spring_RTS
+
+	JSR Object_HitTest
+	BCC Spring_RTS
+	LDA #$02
+	STA Objects_Timer, X
+	LDA #$03
+	STA Objects_Var2, X
+	LDA #$00
+	STA Objects_Var3, X
+	BEQ SpringAnim
+
+Spring_RTS:
+	RTS
+
+SpringAnim:
+	LDY Objects_Var2, X
+	LDA Objects_Y, X
+	SUB Spring_Player_YOffsets, Y
+	STA <Player_Y
+	LDA <Objects_YHi, X
+	SBC #$00
+	STA <Player_YHi
+	LDA #$00
+	STA <Player_YVel
+	STA <Player_InAir
+	STA Player_NoSlopeStick
+
+	LDA Objects_Timer, X
+	BNE SpringAnimRTS
+	LDA #$02
+	STA Objects_Timer, X
+	DEC Objects_Var2, X
+	BNE SpringAnimRTS
+	LDY Objects_Var1, X
+	LDA Spring_Jump_Height, Y
+	STA <Player_YVel
+	STA <Player_InAir
+	STA Player_NoSlopeStick
+	LDA #$E0
+	STA <Objects_YVel, X
+
+SpringAnimRTS:
+	RTS
 
 ObjInit_Key:
 	LDA #OBJSTATE_SHELLED
@@ -545,314 +632,7 @@ PRG001_A277:
 	JMP Object_ShakeAndDraw	 ; Draw object and don't return
 
 
-	RTS		 ; Return
-
-ObjInit_Obj01:
-
-ObjNorm_Obj01:
-ObjHit_Obj01:
-ObjInit_Obj02
-	LDA #$00	 
-	STA Player_Bounce	 ; Kill Player bounce
-
-	;LDA Level_Tile_GndL
-	;EOR Level_Tile_GndR
-	;BEQ PRG001_A334	 	; If both tiles at Player's feet are the same, jump to PRG001_A334
-
-	; Otherwise, this object's toast
-	LDA #OBJSTATE_DEADEMPTY	 
-	STA Objects_State,X	; Mark dead/empty
-
-	RTS		 ; Return
-
-PRG001_A334:
-
-	; Set object vertical position to match Player's Y/Hi + 32, aligned to tile grid
-	LDA <Player_YHi
-	STA <Objects_YHi,X
-	LDA <Player_Y
-	ADD #32		
-	AND #$f0	 ; Align to grid
-	STA <Objects_Y,X
-
-	BCC PRG001_A345	 ; If no carry, jump to PRG001_A345
-
-	INC <Objects_YHi,X	 ; Otherwise, apply carry
-
-PRG001_A345:
-
-	; Match Player's X
-	LDA <Player_X
-	STA <Objects_X,X
-	LDA <Player_XHi	
-	STA <Objects_XHi,X
-
-	LDA #11
-	STA Objects_Timer,X	 ; Set Timer to 11
-	STA <Player_InAir	 ; Mark Player as mid-air
-
-	LDA #$00
-	STA Objects_FlipBits,X	 ; Clear left/right flag
-	STA <Player_YVel	 ; Halt Player vertical movement
-
-	LDA #$b0
-	STA Objects_Var1,X	 ; Set var1 to $b0
-
-	RTS		 ; Return
-
-PRG001_A361:
-	.byte $00, $00, $01, $01, $02, $02, $02, $01, $01, $01, $00
-
-ObjNorm_Obj02:
-
-	; Set Player as mid-air
-	LDA #$01
-	STA <Player_InAir
-
-	LDY Objects_Timer,X
-	BNE PRG001_A383	 ; If timer is not expired, jump to PRG001_A383
-
-	; Set object to dead/empty state
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
-
-	; Copy var 1 into Player's Y Velocity and micro goomba flag
-	LDA Objects_Var1,X
-	STA <Player_YVel
-	STA Player_mGoomba
-
-	RTS		 ; Return
-
-PRG001_A383:
-	LDY Objects_Timer,X
-	
-	; Set frame based on timer
-	LDA PRG001_A361,Y
-	STA Objects_Frame,X
-
-	; Set Player Y Velocity by table by timer
-	LDA Bouncer_PUpVel,Y
-	STA <Player_YVel
-
-	LDA Objects_Timer,X
-	CMP #$07
-	BGS PRG001_A3A3		; If timer > 7, jump to PRG001_A3A3
-
-	LDA <Pad_Input
-	AND #PAD_A
-	BEQ PRG001_A3A3	 	; If Player is NOT pressing 'A', jump to PRG001_A3A3
-
-	; Var 1 = $88
-	LDA #$88	
-	STA Objects_Var1,X
-
-PRG001_A3A3:
-	JMP Object_ShakeAndDraw	; Jump to Object_ShakeAndDraw
-
-
-	; Same as ObjInit_Obj05 ??
-ObjInit_Obj04:
-	LDA #SPR_HFLIP
-	STA Objects_FlipBits,X	 ; Force left/right flag to SPR_HFLIP (Player is to right of object)
-
-	LDY #$08	 ; Y = 8
-
-	LDA <Scroll_LastDir
-	BNE PRG001_A3B6	 ; If screen last moved left/down, jump to PRG001_A3B6
-
-	STA Objects_FlipBits,X	 ; Force left/right flag to $00 (Player is to the left of object)
-	LDY #-8	 	; Y = -8
-
-PRG001_A3B6:
-	STY <Objects_XVel,X	 ; Set object X velocity to 8 or -8 as appropriate
-	RTS		 ; Return
-
-
-ObjNorm_Obj04:
-	JSR Object_HitTestRespond	; Handle object collision
-	JSR Object_InteractWithWorld	; Move, detect, interact with blocks of world
-	JSR Object_ToggleFrameBySpd	; Toggle frame 0 or 1 by object's speed
-
-	INC Objects_Timer,X	 	; Timer++
-
-	JSR Object_Draw16x32Sprite	; Draw sprite
-
-	JMP Object_DeleteOffScreen	; Delete object if it falls off screen and don't come back
-
-
-ObjHit_Obj04:
-
-	; Set Object's Y velocity to Player's Y velocity
-	LDA <Player_YVel	
-	STA <Objects_YVel,X	
-
-	; Set Object's X velocity to Player's X velocity
-	LDA <Player_XVel
-	STA <Objects_XVel,X
-
-	LDA Player_FlipBits_OLD	
-	CMP <Player_FlipBits	
-	BEQ PRG001_A3DD	 	; If Player hasn't turned around, jump to PRG001_A3DD (RTS)
-
-	INC Objects_Timer,X	; Otherwise, increment timer
-
-PRG001_A3DD:
-	RTS		 ; Return
-
-	; Same as ObjInit_Obj04 ??
-ObjInit_Obj05:
-	LDA #SPR_HFLIP
-	STA Objects_FlipBits,X	 ; Force left/right flag to SPR_HFLIP (Player is to right of object)
-
-	LDY #$08	 ; Y = 8
-
-	LDA <Scroll_LastDir
-	BNE PRG001_A3EE	 ; If screen last moved left/down, jump to PRG001_A3B6
-
-	STA Objects_FlipBits,X	 ; Force left/right flag to $00 (Player is to the left of object)
-	LDY #-8	 	; Y = -8
-
-PRG001_A3EE:
-	STY <Objects_XVel,X	 ; Set object X velocity to 8 or -8 as appropriate
-	RTS		 ; Return
-
-
-ObjNorm_Obj05:
-	LDA Objects_Timer,X
-	BNE PRG001_A412	 ; If timer not expired, jump to PRG001_A412
-
-	LDA <Objects_DetStat,X	
-	AND #$04	 
-	BEQ PRG001_A455	 ; If object has not hit ground, jump to PRG001_A455
-
-	LDA RandomN,X
-	AND #$3f	
-	BNE PRG001_A455	 ; Only 1:40 chance we don't jump to PRG001_A455
-
-	LDA RandomN,X
-	AND #$80	
-	ASL A		
-	ROL A		
-	STA Objects_Var1,X	; Object Var 1 = random 0 or 1
-
-	; Set timer to $90
-	LDA #$90
-	STA Objects_Timer,X
-
-PRG001_A412:
-	LDA Objects_Timer,X
-	CMP #$01	 
-	BNE PRG001_A446	 ; If timer <> 1, jump to 
-
-	LDA Objects_Var1,X
-	BEQ PRG001_A42E	 ; If Var 1 = 0, jump to PRG001_A42E
-
-	JSR Object_CalcCoarseXDiff
-	EOR Objects_FlipBits,X
-	AND #SPR_HFLIP
-	BEQ PRG001_A455	 ; If Player face direction versus object face direction are opposite, jump to PRG001_A455
-
-	JSR Object_AboutFace	 ; Turn around
-	JMP PRG001_A455	 ; Jump to PRG001_A455
-
-PRG001_A42E:
-	LDA <Objects_YHi,X
-	CMP <Player_YHi	
-	BLS PRG001_A455	 ; If Objects's Y Hi is less than player's Y Hi, jump to PRG001_A455
-	BNE PRG001_A43C	 ; If they're otherwise unequal, jump to PRG001_A43C
-
-	; Player Y Hi and object's Y Hi are the ssame...
-
-	LDA <Objects_Y,X
-	CMP <Player_Y	
-	BLT PRG001_A43F	 ; If Object's Y < Player_Y, jump to PRG001_A43F
-
-PRG001_A43C:
-	INC Objects_Timer,X	 ; Increment timer
-
-PRG001_A43F:
-	; Object "jumps"
-	LDA #-$20
-	STA <Objects_YVel,X
-
-	JMP PRG001_A455	 ; Jump to PRG001_A455
-
-PRG001_A446:
-	LDA #$01	; A = 1
-
-	LDY Objects_Var1,X
-
-	BNE PRG001_A44F	 ; If object variable 1 <> 0, jump to PRG001_A44F
-
-	LDA #$02	; A = 2
-
-PRG001_A44F:
-	STA Objects_Frame,X	; Set frame to 1 or 2
-	JMP PRG001_A458	 ; Jump to PRG001_A458
-
-PRG001_A455:
-	JSR Object_InteractWithWorld	 ; Move, detect, interact with blocks of world
-
-PRG001_A458:
-	JSR Object_ToggleFrameBySpd	; Toggles between frame 0 and 1 based on speed
-	JSR Object_HitTestRespond	; Handle hit response
-	JSR Object_ShakeAndDraw		; Draw object and "shake awake" 
-	JMP Object_DeleteOffScreen	; Delete object if it falls off screen and don't come back
-
-ObjHit_Obj05:
-	LDA Objects_Timer2,X
-	BNE PRG001_A48F	 ; If timer 2 has not expired, jump to PRG001_A48F
-
-	LDA <Player_YHi
-	STA <Temp_Var1		 ; Temp_Var1 = Player Y Hi
-
-	LDA <Objects_Y,X	
-	SUB <Player_Y		
-	STA <Temp_Var2		 ; Temp_Var2 = difference between Object's Y and Player's Y
-
-	BCS PRG001_A478	 	; If no carry, jump to PRG001_A478
-
-	INC <Temp_Var1		 ; Otherwise, apply carry
-
-PRG001_A478:
-	LDA <Temp_Var1	
-	CMP <Objects_YHi,X
-	BNE PRG001_A49E	 ; If the "Y Hi" values are different, jump to PRG001_A49E
-
-	LDA <Temp_Var2	
-	SUB #$09	
-	BMI PRG001_A49E	 ; If (Temp_Var2 - 9) < 0, jump to PRG001_A49E
-
-	; Reset timer
-	LDA #$00	 
-	STA Objects_Timer,X
-
-	; Set timer 2 to $80
-	LDA #$80	
-	STA Objects_Timer2,X
-
-PRG001_A48F:
-	LDA #-$40
-	STA <Player_YVel ; Bounce Player
-
-	; Bounce Player in direction he's facing
-	LDY #$10
-	LDA <Player_XVel
-	BPL PRG001_A49B	
-
-	LDY #-$10	
-
-PRG001_A49B:
-	STY <Player_XVel
-
-	RTS		 ; Return
-
-PRG001_A49E:
-	JMP Player_GetHurt	 ; Hurt Player and never return
-
-PRG001_A4A1:
-	.byte $4C, $EF, $DB, $08, $20, $10, $20, $05, $20, $0C, $20, $03, $04
-	
+	RTS		 ; Return	
 
 ObjInit_BounceDU: 
 	LDA Level_BlkFinish

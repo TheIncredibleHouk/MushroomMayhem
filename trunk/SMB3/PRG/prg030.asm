@@ -1663,7 +1663,7 @@ PRG030_8E4F:
 	LSR A	
 	LSR A		
 	TAX	        ; 0-3, changing every 8 ticks
-	LSR A 
+	AND #$03
 	STA DAIZ_TEMP1
 
 	LDY Tile_Anim_Enabled
@@ -3126,6 +3126,7 @@ Skip_Normal_Gfx2:
 	JMP Level_Exit_Set
 
 Set_Level_Exit_Action:
+	STA Debug_Snap
 	LDA Player_XExit
 	AND #$F0
 	LDX Level_PipeExitDir
