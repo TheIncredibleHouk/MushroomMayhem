@@ -5,7 +5,7 @@
     <palette background="11" data="11,0F,30,05,11,0D,37,27,11,0D,3A,1A,11,0D,30,21,11,00,00,00,11,0F,30,16,11,0F,30,2A,11,0F,36,27" name="Plains" guid="ceee7668-a8e4-44c0-8676-a3d11168456f" />
     <palette background="0F" data="0F,0F,30,14,0F,0F,2C,0C,0F,00,20,10,0F,07,27,17,0F,00,00,00,0F,07,30,16,0F,0F,30,10,0F,07,36,27" name="Fortress" guid="4a0438e0-7d45-4d3b-9fe4-cde7822e0100" />
     <palette background="12" data="12,0F,30,10,12,0F,36,27,12,0F,2B,1B,12,0F,31,21,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Hilly" guid="698c2fa8-01f2-4a5f-a7a2-0144c11ecbdb" />
-    <palette background="00" data="3C,0F,30,3C,3C,0F,36,27,3C,0F,2A,1A,3C,0F,30,21,3C,00,00,00,3C,0F,30,16,3C,0F,30,2A,3C,0F,36,27" name="Sky" guid="be476f89-09db-4479-8bcc-56e76d462aeb" />
+    <palette background="12" data="12,0F,30,15,12,0F,38,18,12,0F,39,19,12,0F,20,00,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Park" guid="be476f89-09db-4479-8bcc-56e76d462aeb" />
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,2A,1A,37,0F,30,12,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Piranha Plant" guid="f0df204b-4537-4562-a5ca-2b9d3a76fb83" />
     <palette background="02" data="02,0F,30,1A,02,0F,37,17,02,0F,30,10,02,0F,30,24,02,00,00,00,02,0F,30,16,02,0F,30,1A,02,0F,30,27" name="Water" guid="f29e848d-6a32-4400-9416-55397fdc1150" />
     <palette background="00" data="0F,0F,30,3C,0F,3C,30,3B,0F,27,30,17,0F,12,31,21,0F,00,00,00,0F,0F,30,16,0F,0F,30,2A,0F,0F,30,27" name="Mushroom" guid="8944a8b7-cefd-4bb4-ba68-e41d09d22d49" />
@@ -93,6 +93,6 @@
     <level name="Mineral Maze" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="b850791b-98ef-4501-83cc-949daa3c6b89" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-30T17:52:39.5985855-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Mineral Maze 2" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="71c2eb8b-9066-4966-9023-8bb368dd8c87" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-29T13:25:25.3935708-04:00" layout="Horizontal" bonusfor="b850791b-98ef-4501-83cc-949daa3c6b89" />
     <level name="Mineral Maze 3" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="e3ecbbcc-c8f7-4bc0-a40c-e0be8a28ee28" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-29T14:44:44.9095708-04:00" layout="Horizontal" bonusfor="71c2eb8b-9066-4966-9023-8bb368dd8c87" />
-    <level name="Ninja" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="414325d6-c054-4925-a441-58fa9cd8003e" leveltype="4" lastcompressionsize="0" lastmodified="2013-06-04T17:39:52.9186019-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Ninja" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="414325d6-c054-4925-a441-58fa9cd8003e" leveltype="4" lastcompressionsize="0" lastmodified="2013-06-07T15:33:04.0991439-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
   </levelinfo>
 </project>
