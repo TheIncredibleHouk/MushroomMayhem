@@ -3126,7 +3126,6 @@ Skip_Normal_Gfx2:
 	JMP Level_Exit_Set
 
 Set_Level_Exit_Action:
-	STA Debug_Snap
 	LDA Player_XExit
 	AND #$F0
 	LDX Level_PipeExitDir
