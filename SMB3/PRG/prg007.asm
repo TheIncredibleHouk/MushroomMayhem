@@ -2807,9 +2807,6 @@ PRG007_AF57:
 	CMP #SOBJ_BRICKDEBRIS
 	BEQ PRG007_AF97
 
-	CMP #SOBJ_SPIKEBALL
-	BEQ PRG007_AF97
-
 	CMP #SOBJ_HAMMER
 	BNE SpecialObj_RemoveInd
 
@@ -2833,7 +2830,7 @@ PRG007_AF9E:
 	.word SObj_Fireball	; 04: Nipper fireball
 	.word SObj_Fireball	; 05: Piranha fireball
 	.word SObj_Microgoomba	; 06: Micro goombas
-	.word SObj_Spikeball	; 07: Spike/Patooie's spike ball
+	.word SOBJ_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word SObj_WandBlast	; 08: Koopaling wand blast
 	.word SObj_KuriboShoe	; 09: Lost Kuribo shoe
 	.word SObj_Wrench	; 0A: Rocky's Wrench
@@ -3813,42 +3810,30 @@ SObj_Draw16x16:
 	RTS		 ; Return
 
 
-SObj_Spikeball:
+SOBJ_NinjaStar:
 	LDA <Player_HaltGame
 	BNE PRG007_B588	 ; If gameplay is halted, jump to PRG007_B588
 
-	LDA SpecialObj_Data,X
-	BEQ PRG007_B585	 ; If SpecialObj_Data = 0 (no gravity version, specifically Spike's spike ball), jump to PRG007_B585
-
-	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
-	JMP PRG007_B588	 ; Jump to PRG007_B588
-
 PRG007_B585:
 	JSR SObj_AddXVelFrac	 ; Apply X velocity only
+	JSR SObj_AddYVelFrac
 
 PRG007_B588:
 	JSR SObj_GetSprRAMOffChkVScreen
 
 	; Spike ball pattern
-	LDA #$95
+	LDA #$4D
 	STA Sprite_RAM+$01,Y
+	LDA #$4F
 	STA Sprite_RAM+$05,Y
 
 	JSR SObj_Draw16x16	 ; Draw spike ball
 
 	; Set spike ball left attributes
-	LDA Level_NoStopCnt
-	LSR A
-	LSR A
-	LSR A
-	ROR A
-	AND #SPR_VFLIP	; Toggles which side is going to be vertically flipped
-	ORA #SPR_PAL2
+	LDA #SPR_PAL3
 	STA Sprite_RAM+$02,Y
-
-	; Set opposite flips on right sprite
-	EOR #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAM+$06,Y
+
 
 	LDA SpecialObj_Data,X
 	BNE PRG007_B5B1	 ; If SpecialObj_Data <> 0 (Gravity version, specifically Patooie's spike ball), jump to PRG007_B5B1 (RTS)
@@ -4267,9 +4252,9 @@ PRG007_B7B5:
 	TAX
 
 	; Set boomerang sprites patterns
-	LDA Boomerang_Patterns
+	LDA Boomerang_Patterns,X
 	STA Sprite_RAM+$01,Y
-	LDA Boomerang_Patterns+1
+	LDA Boomerang_Patterns+2,X
 	STA Sprite_RAM+$05,Y
 
 PRG007_B7C5:
@@ -4443,10 +4428,10 @@ Boomerang_XVelLimit:	.byte $20, $E0
 Boomerang_YVelAccel:	.byte $01, -$01
 Boomerang_YVelLimit:	.byte $12, -$12
 
-Boomerang_Attributes:	.byte $00, $00, $00, $00
+Boomerang_Attributes:	.byte SPR_HFLIP | SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, $00, $00
 
 Boomerang_Patterns:
-	.byte $4F, $4D
+	.byte $8B, $8F, $89, $8D, $8B, $8F
 
 
 SObj_Boomerang:
@@ -4558,7 +4543,7 @@ PRG007_B92A:
 	BNE PRG007_B979	 ; If thrower's state <> Normal, jump to PRG007_B979 (RTS)
 
 	LDA Level_ObjectID,Y
-	CMP #OBJ_NINJABRO
+	CMP #OBJ_BOOMERANGBRO
 	BNE PRG007_B979	; If thrower's slot is not a boomerang brother (Anymore), jump to PRG007_B979 (RTS)
 
 	; This is for the Boomerang brother to "catch"

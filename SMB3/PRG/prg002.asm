@@ -2549,7 +2549,7 @@ Spike_TossSpikeBall:
 	STA <Objects_Var5,X	 ; Objects_Var5 = 0 (because we wouldn't be here otherwise)
 
 	; Spike's spike ball
-	LDA #SOBJ_SPIKEBALL	 
+	LDA #SOBJ_NINJASTAR	 
 	STA SpecialObj_ID,Y
 
 	; Set Spike's ball X
@@ -2741,7 +2741,7 @@ PRG002_AE51:
 	JSR SpecialObj_FindEmptyAbort	 ; Find an empty special object slot if on-screen (or don't come back!)
 
 	; Patooie's Spike ball
-	LDA #SOBJ_SPIKEBALL
+	LDA #SOBJ_NINJASTAR
 	STA SpecialObj_ID,Y
 
 	; Set Spike ball X

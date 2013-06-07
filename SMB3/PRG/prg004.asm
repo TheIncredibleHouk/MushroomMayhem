@@ -929,7 +929,36 @@ PRG004_A4B2:
 	STA Objects_FlipBits,X
 
 PRG004_A4C1:
+	LDA Objects_YVel, X
+	BNE PRG004_A4C3
+	JSR Level_ObjCalcYDiffs
+	CPY #$01
+	BCC PRG004_A4C4
+	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var16
+	CMP #$10
+	BCC PRG004_A4C2
+	CMP #$F0
+	BCC PRG004_A4C3
+	LDA #$30
+	STA Objects_XVel, X
+	LDA #$F0
+	STA Objects_YVel, X
+	RTS
 
+PRG004_A4C2:
+	LDA #$D0
+	STA Objects_XVel, X
+	LDA #$F0
+	STA Objects_YVel, X
+	RTS
+
+PRG004_A4C3:
+	LDA <Objects_YVel, X
+	BEQ PRG004_A4C4
+	RTS
+
+PRG004_A4C4:
 	LDA <Objects_Var5,X
 	AND #$03	; 0-3 based on Var5 for internal state
 
@@ -980,7 +1009,7 @@ PRG004_A4E7:
 	BPL PRG004_A4FA	 ; 50/50 chance to jump to PRG004_A4FA
 
 	; Little jump
-	LDA #-$30
+	LDA #-$50
 	STA <Objects_YVel,X
 
 PRG004_A4FA:
@@ -996,13 +1025,10 @@ PRG004_A4FA:
 PRG004_A506:
 	LDA Objects_Var6,X
 	INC Objects_Var6,X	; Var6++
-	AND #$bf
-	CMP #$1f
-	BNE PRG004_A51A	 ; Periodically jump to PRG004_A51A (RTS)
 
+	LDA Objects_Timer, X
+	BNE PRG004_A51A
 	; Reload timer with $0F
-	LDA #$0f
-	STA Objects_Timer,X
 
 	JSR BoomerangBro_ThrowBoomerang	 ; Throw a boomerang
 
@@ -1218,47 +1244,56 @@ PRG004_A61B:
 
 Boomerang_XVel:	.byte $20, -$20
 Boomerang_ArrayValLoad:	.byte $01, $00
-	
+
+NinjaStarVel: .byte $00, $08, $10, $18, $20, $28, $30, $38, $40, $C0, $C8, $D0, $D8, $E0, $E8, $F0, $F8
+
 BoomerangBro_ThrowBoomerang:
+
 	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back!
+
+	LDA #SOBJ_NINJASTAR
+	STA SpecialObj_ID,Y
 
 	; Set Boomerang at Boomerang Bro's position
 	LDA <Objects_X,X
 	STA SpecialObj_XLo,Y
 	LDA <Objects_Y,X
+	ADD #$08
 	STA SpecialObj_YLo,Y
 	LDA <Objects_YHi,X
+	ADC #$00
 	STA SpecialObj_YHi,Y
 
-	STY <Temp_Var1		 ; Store special object index -> Temp_Var1
+	STY TempY
+	LDX <SlotIndexBackup
 
 	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var16
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA NinjaStarVel, Y
+	LDY TempY
+	STA SpecialObj_XVel, Y
 
-	LDA Boomerang_XVel,Y
-	PHA		 ; Save X Velocity value
+	JSR Level_ObjCalcYDiffs
+	LDA <Temp_Var16
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA NinjaStarVel, Y
+	LDY TempY
+	STA SpecialObj_YVel, Y
 
-	LDA Boomerang_ArrayValLoad,Y
-
-	LDY <Temp_Var1	 ; Y = special object slot index
-
-	STA SpecialObj_Var2,Y	 ; Store -> SpecialObj_Var2
-
-	PLA		 ; Restore X velocity
-	STA SpecialObj_XVel,Y	 ; Store into Boomerang
-
-	; Set Boomerang Y Velocity
-	LDA #-$16
-	STA SpecialObj_YVel,Y
-
-	; SpecialObj_Var3 = 0
-	LDA #$00
-	STA SpecialObj_Var3,Y
-
-	; SpecialObj_Timer = $40
-	LDA #$40
-	STA SpecialObj_Timer,Y
-
-	LDA #SOBJ_BOOMERANG	 ; Boomerang
+	LDA #$3f
+	STA Objects_Timer,X
+	RTS		 ; Return
 
 PRG004_A658:
 	STA SpecialObj_ID,Y	 ; Set Special Object ID
@@ -1277,7 +1312,6 @@ PRG004_A658:
 	STA SpecialObj_Var1,Y
 
 	RTS		 ; Return
-
 ObjInit_Thwomp:
 
 	; Var4 = origin Y
