@@ -310,8 +310,8 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $0F
 	.byte OPTS_NOCHANGE	; Object $10
 	.byte OPTS_NOCHANGE	; Object $11
-	.byte OPTS_SETPT5 | $0A	; Object $12
-	.byte OPTS_SETPT5 | $0A	; Object $13
+	.byte OPTS_NOCHANGE	; Object $12
+	.byte OPTS_NOCHANGE	; Object $13
 	.byte OPTS_NOCHANGE	; Object $14
 	.byte OPTS_NOCHANGE	; Object $15
 	.byte OPTS_SETPT5 | $48	; Object $16
@@ -414,7 +414,7 @@ ObjP11:
 	.byte $69, $7D, $69, $7D, $69, $7D
 ObjP12:
 ObjP13:
-	.byte $81, $81, $83, $83, $85, $85
+	.byte $D7, $D7, $ED, $ED, $FF, $FF
 ObjP14:
 ObjP15:
 ObjP16:

@@ -1033,8 +1033,8 @@
     <block value="FF">Empty ? Block</block>
   </set>
   <set leveltype="04">
-    <block value="00">Background</block>
-    <block value="01">Cleared Coin</block>
+    <block value="00">P-Switch Stomped</block>
+    <block value="01">P-Switch Stomped</block>
     <block value="02">P-Switch Stomped</block>
     <block value="03">P-Switch Stomped</block>
     <block value="04">P-Switch Stomped</block>
