@@ -7,7 +7,7 @@
     <palette background="12" data="12,0F,30,10,12,0F,36,27,12,0F,2B,1B,12,0F,31,21,12,00,00,00,12,0F,30,16,12,0F,30,2A,12,0F,36,27" name="Hilly" guid="698c2fa8-01f2-4a5f-a7a2-0144c11ecbdb" />
     <palette background="31" data="31,0F,30,05,31,0F,37,18,31,0F,39,19,31,0F,30,00,31,00,00,00,31,0F,30,16,31,0F,30,2A,31,0F,36,28" name="Park" guid="be476f89-09db-4479-8bcc-56e76d462aeb" />
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,2A,1A,37,0F,30,12,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Piranha Plant" guid="f0df204b-4537-4562-a5ca-2b9d3a76fb83" />
-    <palette background="02" data="02,0F,30,1A,02,0F,37,17,02,0F,30,10,02,0F,30,24,02,00,00,00,02,0F,30,16,02,0F,30,1A,02,0F,30,27" name="Water" guid="f29e848d-6a32-4400-9416-55397fdc1150" />
+    <palette background="02" data="02,0F,30,1A,02,0F,37,28,02,0F,30,10,02,0F,30,24,02,00,00,00,02,0F,30,16,02,0F,30,1A,02,0F,30,27" name="Water" guid="f29e848d-6a32-4400-9416-55397fdc1150" />
     <palette background="00" data="0F,0F,30,3C,0F,3C,30,3B,0F,27,30,17,0F,12,31,21,0F,00,00,00,0F,0F,30,16,0F,0F,30,2A,0F,0F,30,27" name="Mushroom" guid="8944a8b7-cefd-4bb4-ba68-e41d09d22d49" />
     <palette background="00" data="0F,0F,30,3C,0F,0F,36,27,0F,0B,3B,1B,0F,0F,0C,0F,0F,00,00,00,0F,0C,30,16,0F,0C,30,2A,0F,0C,36,27" name="Pipe" guid="28405934-7822-4343-8c74-cbd42ec57f8e" />
     <palette background="00" data="37,0F,30,3C,37,0F,36,27,37,0F,27,17,37,0F,31,21,37,00,00,00,37,0F,30,16,37,0F,30,2A,37,0F,36,27" name="Desert" guid="cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385" />
@@ -42,6 +42,7 @@
     <palette background="0B" data="0B,0F,30,1B,0B,0D,3B,1B,0B,0D,3B,1B,0B,0D,3B,1B,0B,00,00,00,0B,0F,30,16,0B,0F,30,2A,0B,0F,36,1B" name="Bank" guid="f85c4fce-2d30-4c8c-8513-6f974b8243a4" />
     <palette background="00" data="0F,0F,30,05,0F,08,38,18,0F,0B,30,1B,0F,2D,30,10,0F,00,00,00,0F,07,30,16,0F,0B,30,2A,0F,08,36,27" name="Underround 2" guid="207ccd86-2824-49d6-a06c-2987a6ee930d" />
     <palette background="00" data="3B,0F,30,05,3B,0F,37,18,3B,0F,39,19,3B,0F,20,00,3B,00,00,00,3B,0F,30,16,3B,0F,30,2A,3B,0F,36,27" name="Tower Inside" guid="31e10d1f-12f2-43cd-a2b3-525c80844fb7" />
+    <palette background="0C" data="0C,0F,30,10,0C,0F,10,18,0C,0F,1A,0B,0C,0F,10,1C,0C,00,00,00,0C,0F,30,16,0C,0F,30,1C,0C,0F,30,27" name="Hurricane" guid="e6685e2f-647e-43ea-bf44-90d711dbeb27" />
   </paletteinfo>
   <blocklayouts />
   <worldinfo>
@@ -49,7 +50,7 @@
     <world name="Cheep Cheep Everglades" ordinal="1" worldguid="735d9378-c4b7-44a0-9790-45d87c6f8190" lastmodified="2013-06-04T12:24:39.5928215-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Piranha Forest" ordinal="2" worldguid="5f27c217-b4d8-4e8d-8196-1710ddeda0d7" lastmodified="2013-06-04T12:24:39.6028221-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Bob-omb Quarry" ordinal="3" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" lastmodified="2013-05-30T17:52:39.5925852-04:00" lastcompressedsize="0" isnoworld="false" />
-    <world name="Blooper Bay" ordinal="4" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" lastmodified="2013-05-26T09:00:22.2876865-04:00" lastcompressedsize="0" isnoworld="false" />
+    <world name="Blooper Bay" ordinal="4" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" lastmodified="2013-06-14T21:34:05.1523561-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="Sky Castle" ordinal="5" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" lastmodified="2013-06-10T05:46:05.9828253-04:00" lastcompressedsize="0" isnoworld="false" />
     <world name="No World" ordinal="25" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" lastmodified="2012-08-30T08:56:17.95-04:00" lastcompressedsize="0" isnoworld="true" />
   </worldinfo>
@@ -91,10 +92,11 @@
     <level name="Fire!" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="8159147e-1a3d-48ee-9c49-d38fb646197c" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-27T17:23:26.3459132-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Fire! - Second" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="96a4c326-112e-4788-bb32-689aaa9fbaa9" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-27T16:00:23.1308896-04:00" layout="Horizontal" bonusfor="8159147e-1a3d-48ee-9c49-d38fb646197c" />
     <level name="Bank" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="08f74454-c450-4ab5-b327-3ce7ec550592" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-28T07:05:47.800083-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
-    <level name="Mineral Maze" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="b850791b-98ef-4501-83cc-949daa3c6b89" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-30T17:52:39.5985855-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Mineral Maze" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="b850791b-98ef-4501-83cc-949daa3c6b89" leveltype="14" lastcompressionsize="0" lastmodified="2013-06-16T21:07:17.1517378-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Mineral Maze 2" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="71c2eb8b-9066-4966-9023-8bb368dd8c87" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-29T13:25:25.3935708-04:00" layout="Horizontal" bonusfor="b850791b-98ef-4501-83cc-949daa3c6b89" />
     <level name="Mineral Maze 3" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="e3ecbbcc-c8f7-4bc0-a40c-e0be8a28ee28" leveltype="14" lastcompressionsize="0" lastmodified="2013-05-29T14:44:44.9095708-04:00" layout="Horizontal" bonusfor="71c2eb8b-9066-4966-9023-8bb368dd8c87" />
-    <level name="Tower Test" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="414325d6-c054-4925-a441-58fa9cd8003e" leveltype="4" lastcompressionsize="0" lastmodified="2013-06-12T11:02:38.332855-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
-    <level name="Tower Test 2" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="f4d60706-5389-47fa-a893-6369acf1588a" leveltype="4" lastcompressionsize="0" lastmodified="2013-06-12T11:02:38.3298547-04:00" layout="Horizontal" bonusfor="414325d6-c054-4925-a441-58fa9cd8003e" />
+    <level name="Partially Cloudy" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="414325d6-c054-4925-a441-58fa9cd8003e" leveltype="4" lastcompressionsize="0" lastmodified="2013-06-15T07:09:04.1863474-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Partially Cloudy 2" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="f4d60706-5389-47fa-a893-6369acf1588a" leveltype="4" lastcompressionsize="0" lastmodified="2013-06-15T07:01:51.7006106-04:00" layout="Horizontal" bonusfor="414325d6-c054-4925-a441-58fa9cd8003e" />
+    <level name="Hurricane" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="1b3cc22e-13ca-49d4-ad16-4dae21839e4b" leveltype="6" lastcompressionsize="0" lastmodified="2013-06-17T07:35:33.4938452-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
   </levelinfo>
 </project>

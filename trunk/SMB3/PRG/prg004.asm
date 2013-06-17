@@ -940,14 +940,14 @@ PRG004_A4C1:
 	BCC PRG004_A4C2
 	CMP #$F0
 	BCC PRG004_A4C3
-	LDA #$30
+	LDA #$C0
 	STA Objects_XVel, X
 	LDA #$F0
 	STA Objects_YVel, X
 	RTS
 
 PRG004_A4C2:
-	LDA #$D0
+	LDA #$40
 	STA Objects_XVel, X
 	LDA #$F0
 	STA Objects_YVel, X
