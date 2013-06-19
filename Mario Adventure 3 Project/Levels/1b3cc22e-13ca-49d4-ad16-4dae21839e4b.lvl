@@ -7,11 +7,12 @@
     <sprite x="103" y="13" value="40" item="0" />
     <sprite x="112" y="13" value="56" item="0" />
     <sprite x="122" y="9" value="39" item="0" />
-    <sprite x="233" y="8" value="55" item="0" />
     <sprite x="227" y="8" value="56" item="0" />
-    <sprite x="220" y="3" value="55" item="0" />
-    <sprite x="223" y="4" value="54" item="0" />
     <sprite x="203" y="5" value="118" item="0" />
+    <sprite x="221" y="6" value="56" item="0" />
+    <sprite x="214" y="8" value="56" item="0" />
+    <sprite x="208" y="5" value="56" item="0" />
+    <sprite x="232" y="9" value="56" item="0" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
+  <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
 </level>
