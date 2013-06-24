@@ -2248,6 +2248,14 @@ PRG000_CE54:
 	STA <Objects_XVel,X	 ; Set this as Bob-omb's X Velocity
 
 PRG000_CE76:
+	STA Debug_Snap
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ PRG000_CE77
+	LDA #$C0
+	STA <Objects_YVel,X
+
+PRG000_CE77:
 	JMP Object_ShakeAndDraw	 ; Draw Bob-omb and don't come back!
 
 PRG000_CE79:
@@ -2337,17 +2345,27 @@ PRG000_CEBB:
 
 PRG000_CEBE:
 PRG000_CEC6:
+	LDA <Pad_Holding
+	AND #(PAD_UP)
+	BNE PRG000_CEC6_2
+	
+	LDA #$30
+	BNE PRG000_CEC6_3
+
+PRG000_CEC6_2:
 	LDA <Player_XVel
 	BNE PRG000_CED9
+
+PRG000_CEC6_3:
 	LDY <Player_FlipBits
 	BEQ PRG000_CED8
 
 PRG000_CEC7:
-	LDA #$10
+	LDA #$30
 	BNE PRG000_CED9
 
 PRG000_CED8:
-	LDA #$F0
+	LDA #$D0
 
 PRG000_CED9:
 	PHA
@@ -2417,7 +2435,7 @@ PRG000_CEEE_2:
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
 KickedXVel:
-	.byte $10, $30, $40, $50
+	.byte $08, $20, $38, $50
 
 PRG000_CEEF:
 
