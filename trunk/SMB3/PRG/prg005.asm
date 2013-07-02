@@ -4024,6 +4024,9 @@ PRG005_B831:
 	; and -$20 (32 pixels to the left)
 LOSBS_LookAhead:	.byte 16, -32
 LOSBS_LookAheadHi:	.byte $01, $FF	; sign extensions
+HARD_FLAG	= $20
+DAY_FLAG		= $40
+NIGHT_FLAG		= $60
 
 Level_ObjectsSpawnByScroll:
 	LDY <Scroll_LastDir	 
@@ -4078,6 +4081,31 @@ PRG005_B872:
 	RTS		 ; Return
 
 PRG005_B873:
+	LDA Level_Objects + 1, Y
+	AND #$60
+	BEQ PRG005_B877
+
+	CMP #HARD_FLAG
+	BNE PRG005_B875
+
+	LDA Hard_Mode
+	BNE PRG005_B877
+	RTS
+
+PRG005_B875:
+	CMP #DAY_FLAG
+	BNE PRG005_B876
+	LDA DayNight
+	BEQ PRG005_B877
+	RTS
+
+PRG005_B876:
+	STA Debug_Snap
+	LDA DayNight
+	BEQ PRG005_B872
+
+
+PRG005_B877:
 	LDA Level_Objects-1,Y	 ; Get object ID (we're aligned by column, hence -1)
 	CMP #$ff	 
 	BEQ PRG005_B872	 ; If this is the terminator, jump to PRG005_B872 (RTS)
@@ -4111,7 +4139,6 @@ PRG005_B89C:
 	BNE PRG005_B8B3	 	; If object ID <> OBJ_BONUSCONTROLLER, jump to PRG005_B8B3
 
 	LDA Level_Objects+1,Y	 ; Get object row
-	STA ChallengeMode
 	BPL PRG005_B8BE	 ; Jump (technically always) to PRG005_B8BE (mark self as spawned so it never re-triggers)
 
 PRG005_B8B3:
@@ -4223,7 +4250,7 @@ PRG005_B91E:
 
 	; Upper 4 bits shifted right (high Y)
 	LDA Level_Objects,Y	 ; Get object row
-	AND #$f0	 
+	AND #$10	 
 	LSR A		 
 	LSR A		 
 	LSR A		 
@@ -4350,7 +4377,7 @@ Spawn3TroopsOrCheeps:
 
 	; Upper 4 bits shifted right -> Temp_Var9 (high Y)
 	LDA Level_Objects+1,Y	; Get object row
-	AND #$f0
+	AND #$10
  	LSR A
 	LSR A
 	LSR A
@@ -4519,7 +4546,7 @@ PRG005_BA54:
 PRG005_BA9A:
 	; Upper 4 bits shifted right -> CannonFire_YHi (high Y)
 	LDA Level_Objects+1,Y	 ; Get object row
-	AND #$f0	 
+	AND #$10	 
 	LSR A		 
 	LSR A		 
 	LSR A		 
