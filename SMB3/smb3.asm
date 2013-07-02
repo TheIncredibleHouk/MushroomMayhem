@@ -3020,6 +3020,7 @@ SOBJ_POOF		= $16 	; Poof
 	TempX:				.ds 1
 	TempY:				.ds 1
 	TempA:				.ds 1
+	Hard_Mode:			.ds 1;
 
 	; Tile map property flags
 MAP_PROP_ENTERABLE:		= %00000001
@@ -3030,7 +3031,7 @@ MAP_PROP_COMPLETABLE:	= %00000100
 	; T - Top Solid
 	; S - Solid all the way around
 	; W - Water
-	; F - Foreground
+	; F - Foreground 
 	; XXX - represents "special" types, affects mostly the player
 	; some combination that produce a certain effect
 
@@ -3092,7 +3093,7 @@ TILE_ITEM_SPINNER	= $FE
 	PSwitchTransitions: .ds 16;
 	LevelName:			.ds 28
 	BankCoins:			.ds 6 ;
-						.ds 30;
+						.ds 29;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

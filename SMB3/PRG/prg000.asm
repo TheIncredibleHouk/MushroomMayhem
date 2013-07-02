@@ -2248,7 +2248,6 @@ PRG000_CE54:
 	STA <Objects_XVel,X	 ; Set this as Bob-omb's X Velocity
 
 PRG000_CE76:
-	STA Debug_Snap
 	LDA <Pad_Holding
 	AND #PAD_UP
 	BEQ PRG000_CE77

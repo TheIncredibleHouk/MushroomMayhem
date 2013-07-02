@@ -637,7 +637,6 @@ PlayerFireball_Pats:		.byte $65
 PlayerIceball_Pats:			.byte $59 ; #DAHRKDAIZ - Iceball patterns
 PlayerFireball_FlipBits:	.byte SPR_PAL0
 
-PlayerHammer_FlipBits:	.byte $00, $00, SPR_HFLIP, SPR_HFLIP
 PlayerHammer_YOff:	.byte $00 ; NOTE: Next three values overlap into following table)
 PlayerHammer_XOff:	.byte $06, $06, $00, $00
 
@@ -4377,11 +4376,10 @@ PRG007_B84C:
 
 	RTS		 ; Return
 
-Hammer_Attributes:	.byte $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP | SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, SPR_VFLIP, SPR_VFLIP, $00
+Hammer_Attributes:	.byte $00
 
 Hammer_Patterns:
-	.byte $A1, $A3, $B9, $B9, $A3, $A1
-	.byte $AF, $AF, $A1, $A3, $B9, $B9
+	.byte $6D, $6F
 
 Hammer_Draw:
 	LDA SpecialObj_Var1,X
@@ -4392,7 +4390,7 @@ Hammer_Draw:
 
 	; Set upper and lower sprite attributes
 	LDA <Temp_Var1
-	EOR Hammer_Attributes,X
+	EOR Hammer_Attributes
 	ORA #SPR_PAL1
 	STA Sprite_RAM+$02,Y
 	STA Sprite_RAM+$06,Y
@@ -4414,11 +4412,11 @@ PRG007_B888:
 	TAX
 
 	; Set upper sprite pattern
-	LDA Hammer_Patterns,X
+	LDA Hammer_Patterns
 	STA Sprite_RAM+$01,Y
 
 	; Set bottom sprite pattern
-	LDA Hammer_Patterns+4,X
+	LDA Hammer_Patterns + 1
 	STA Sprite_RAM+$05,Y
 
 	RTS		 ; Return
