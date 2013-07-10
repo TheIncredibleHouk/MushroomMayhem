@@ -4,7 +4,7 @@
     <pointer levelguid="9ee758fa-a47d-4768-9291-018ab629e54d" exittype="1" xexit="29" yexit="22" xenter="102" yenter="19" exitslevel="false" world="0" />
   </pointers>
   <spritedata>
-    <sprite x="21" y="25" value="114" item="0" visibility="0" />
+    <sprite x="18" y="25" value="114" item="0" visibility="0" />
     <sprite x="38" y="24" value="108" item="0" visibility="2" />
     <sprite x="78" y="22" value="109" item="0" visibility="0" />
     <sprite x="90" y="22" value="114" item="0" visibility="3" />

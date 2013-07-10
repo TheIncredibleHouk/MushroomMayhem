@@ -3457,7 +3457,6 @@ ObjNorm_FloatMine:
 	JSR Object_Draw16x32Sprite
 	JSR Object_ApplyYVel_NoLimit
 
-	LDA <SlotIndexBackup
 	LDA Objects_SprHVis, X
 	AND #$20
 	BNE NoMineDraw
