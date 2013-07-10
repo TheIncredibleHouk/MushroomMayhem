@@ -35,17 +35,17 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $07 - OBJ_WARPHIDE
 	.word ObjInit_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjInit_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
-	.word ObjInit_Bully	; Object $0A
+	.word ObjInit_Bully	; Object $0A - OBJ_BULLY
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjInit_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
 	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
 	.word ObjInit_Snow	; Object $10 - OBJ_SNOW
-	.word ObjInit_Key	; Object $11
-	.word ObjInit_RedSpring	; Object $12
-	.word ObjInit_GreenSpring	; Object $13
-	.word ObjInit_DoNothing	; Object $14
+	.word ObjInit_Key	; Object $11 OBJ_KEY
+	.word ObjInit_RedSpring	; Object $12 OBJ_SPRING
+	.word ObjInit_GreenSpring	; Object $13 OBJ_SPRING
+	.word ObjInit_DoNothing	; Object $14 OBJ_GIANTCHOMP
 	.word ObjInit_DoNothing	; Object $15
 	.word ObjInit_DoNothing	; Object $16
 	.word ObjInit_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
@@ -87,7 +87,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Key	; Object $11
 	.word ObjNorm_Spring	; Object $12
 	.word ObjNorm_Spring	; Object $13
-	.word ObjNorm_DoNothing	; Object $14
+	.word ObjNorm_DoNothing	; Object $14 OBJ_GIANTCHOMP
 	.word ObjNorm_DoNothing	; Object $15
 	.word ObjNorm_DoNothing	; Object $16
 	.word ObjNorm_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
@@ -130,7 +130,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $11
 	.word ObjHit_DoNothing	; Object $12
 	.word ObjHit_DoNothing	; Object $13
-	.word ObjHit_DoNothing	; Object $14
+	.word ObjHit_DoNothing	; Object $14 OBJ_GIANTCHOMP
 	.word ObjHit_DoNothing	; Object $15
 	.word ObjHit_DoNothing	; Object $16
 	.word ObjHit_DoNothing	; Object $17 - OBJ_SPINYCHEEP
@@ -172,7 +172,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $11 OBJ_KEY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $12 OBJ_REDPRING
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $13 OBJ_GREENSPRING
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $14
+	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $14 OBJ_GIANTCHOMP
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $15
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $16
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $17 - OBJ_SPINYCHEEP
@@ -270,7 +270,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_DIESHELLED 	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $14
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE  	; Object $14
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $15
 	.byte OA3_HALT_DONOTHING4 	; Object $16
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $17 - OBJ_SPINYCHEEP
@@ -312,7 +312,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $11
 	.byte OPTS_NOCHANGE	; Object $12
 	.byte OPTS_NOCHANGE	; Object $13
-	.byte OPTS_NOCHANGE	; Object $14
+	.byte OPTS_SETPT5 | $0E	; Object $14
 	.byte OPTS_NOCHANGE	; Object $15
 	.byte OPTS_SETPT5 | $48	; Object $16
 	.byte OPTS_SETPT5 | $1A	; Object $17 - OBJ_SPINYCHEEP
@@ -5851,3 +5851,49 @@ Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
+
+ObjInit_GiantChomp:
+	INC Objects_IsGiant,X
+	RTS
+
+ObjNorm_GiantChomp:
+	LDA <Counter_1
+	AND #$04
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+	RTS
+
+GiantChompFrames:
+	.byte $81, $83, $85, $87, $91, $93, $95, $97
+	.byte $89, $8B, $8D, $8F, $99, $9B, $9D, $9F
+
+DrawGiantChomp:
+	JSR Object_CalcSpriteXY_NoHi
+	LDA Objects_Frame, X
+	LDY Object_SprRAM,X
+	ASL A
+	ASL A
+	ASL A
+	TAX
+	LDA GiantChompFrames, X
+	STA Sprite_RAM + 1,Y
+	LDA GiantChompFrames + 1, X
+	STA Sprite_RAM + 5,Y
+	LDA GiantChompFrames+2, X
+	STA Sprite_RAM + 9,Y
+	LDA GiantChompFrames+3, X
+	STA Sprite_RAM + 13,Y
+	LDA GiantChompFrames+4, X
+	STA Sprite_RAM + 17,Y
+	LDA GiantChompFrames+5, X
+	STA Sprite_RAM + 21,Y
+	LDX <SlotIndexBackup
+	LDA <Objects_SpriteY,X
+	STA Sprite_RAM ,Y
+	STA Sprite_RAM+4,Y
+	STA Sprite_RAM+8,Y
+	ADD #$10
+	STA Sprite_RAM+12,Y
+	STA Sprite_RAM+16,Y
+	STA Sprite_RAM+20,Y
