@@ -87,7 +87,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Key	; Object $11
 	.word ObjNorm_Spring	; Object $12
 	.word ObjNorm_Spring	; Object $13
-	.word ObjNorm_DoNothing	; Object $14 OBJ_GIANTCHOMP
+	.word ObjNorm_GiantChomp	; Object $14 OBJ_GIANTCHOMP
 	.word ObjNorm_DoNothing	; Object $15
 	.word ObjNorm_DoNothing	; Object $16
 	.word ObjNorm_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
@@ -5852,48 +5852,70 @@ Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
 
-ObjInit_GiantChomp:
-	INC Objects_IsGiant,X
-	RTS
-
 ObjNorm_GiantChomp:
 	LDA <Counter_1
-	AND #$04
+	AND #$08
+	LSR A
 	LSR A
 	LSR A
 	STA Objects_Frame, X
+	JSR DrawGiantChomp
 	RTS
 
 GiantChompFrames:
-	.byte $81, $83, $85, $87, $91, $93, $95, $97
-	.byte $89, $8B, $8D, $8F, $99, $9B, $9D, $9F
+	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
+	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
 
 DrawGiantChomp:
+	STA Debug_Snap
 	JSR Object_CalcSpriteXY_NoHi
+
+	LDA Object_SprRAM,X
+	STA <Temp_Var1
+
+	DEX
+	DEX
+	DEX
+	LDA Object_SprRAM, X 
+	STA <Temp_Var2
+	INX
+	INX
+	INX
+
 	LDA Objects_Frame, X
-	LDY Object_SprRAM,X
 	ASL A
 	ASL A
 	ASL A
-	TAX
-	LDA GiantChompFrames, X
-	STA Sprite_RAM + 1,Y
-	LDA GiantChompFrames + 1, X
-	STA Sprite_RAM + 5,Y
-	LDA GiantChompFrames+2, X
-	STA Sprite_RAM + 9,Y
-	LDA GiantChompFrames+3, X
-	STA Sprite_RAM + 13,Y
-	LDA GiantChompFrames+4, X
-	STA Sprite_RAM + 17,Y
-	LDA GiantChompFrames+5, X
-	STA Sprite_RAM + 21,Y
-	LDX <SlotIndexBackup
+	STA <Temp_Var3
+
+	LDA <Objects_SpriteX,X
+	STA <Temp_Var4
 	LDA <Objects_SpriteY,X
-	STA Sprite_RAM ,Y
-	STA Sprite_RAM+4,Y
-	STA Sprite_RAM+8,Y
-	ADD #$10
-	STA Sprite_RAM+12,Y
-	STA Sprite_RAM+16,Y
-	STA Sprite_RAM+20,Y
+	STA <Temp_Var5
+
+	LDA Objects_SprVVis,X
+	AND #$08
+	BNE SkipRow1
+	
+
+SkipRow1:
+	
+	LDA Objects_SprVVis,X
+	AND #$04
+	BNE SkipRow2
+
+SkipRow2:
+	RTS
+
+DrawGaintChompPart:
+	LDY <Temp_Var1
+	LDA <Temp_Var5
+	STA Sprite_RAM, Y
+	LDX <Temp_Var3
+	LDA GiantChompFrames, X
+	STA Sprite_RAM + 1, Y
+	LDA #$02
+	STA Sprite_RAM + 2, Y
+	LDA <Temp_Var4
+	STA Sprite_RAM + 3, Y 
+	RTS
