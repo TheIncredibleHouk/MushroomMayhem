@@ -45,7 +45,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Key	; Object $11 OBJ_KEY
 	.word ObjInit_RedSpring	; Object $12 OBJ_SPRING
 	.word ObjInit_GreenSpring	; Object $13 OBJ_SPRING
-	.word ObjInit_DoNothing	; Object $14 OBJ_GIANTCHOMP
+	.word ObjInit_GiantChomp	; Object $14 OBJ_GIANTCHOMP
 	.word ObjInit_DoNothing	; Object $15
 	.word ObjInit_DoNothing	; Object $16
 	.word ObjInit_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
@@ -5851,71 +5851,150 @@ Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
+ObjInit_GiantChomp:
+	LDA #$01
+	STA Objects_Var1, X
+	RTS
 
 ObjNorm_GiantChomp:
-	LDA <Counter_1
-	AND #$08
-	LSR A
-	LSR A
-	LSR A
-	STA Objects_Frame, X
+	LDA <Player_HaltGame
+	BNE DoneGC
+
+	LDA Objects_Var1, X
+	BEQ DoGCRoutine
+	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var16
+	ORA #$80
+	EOR #$80
+	CMP #$40
+	BCS DoneGC
+	LDA #$00
+	STA Objects_Var1, X
+
+DoGCRoutine:
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcSpriteXY_NoHi
+	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	AND #TILE_PROP_SOLID_TOP
+	BEQ TryEatRightBlock
+	JSR ChompEatBlock
+	JMP ChompDoneEating
+
+TryEatRightBlock:
+	LDY #(SuperGiantOffsets2  - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	AND #TILE_PROP_SOLID_TOP
+	BEQ ChompDoneEating
+	JSR ChompEatBlock
+
+ChompDoneEating:
 	JSR DrawGiantChomp
+
+DoneGC:
 	RTS
 
 GiantChompFrames:
 	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
 	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
 
-DrawGiantChomp:
-	STA Debug_Snap
-	JSR Object_CalcSpriteXY_NoHi
+GiantChompXFrame:
+	.byte $00, $08, $10, $18, $00, $08, $10, $18
 
-	LDA Object_SprRAM,X
+GiantChompYFrame:
+	.byte $00, $00, $00, $00, $10, $10, $10, $10
+
+VisMask:
+	.byte $81, $41, $21, $11, $82, $42, $22, $12
+
+SprRAMOffset:
+	.byte $00, $04, $08, $0C, $10, $14, $80, $80
+
+DrawGiantChomp:
+	LDA <Counter_1
+	AND #$08
+	STA <Temp_Var6
+
+	LDA Objects_SprHVis, X
+	AND #$F0
+	ORA Objects_SprVVis, X
 	STA <Temp_Var1
 
-	DEX
-	DEX
-	DEX
-	LDA Object_SprRAM, X 
+	LDA #$00
 	STA <Temp_Var2
-	INX
-	INX
-	INX
-
-	LDA Objects_Frame, X
-	ASL A
-	ASL A
-	ASL A
-	STA <Temp_Var3
-
-	LDA <Objects_SpriteX,X
-	STA <Temp_Var4
-	LDA <Objects_SpriteY,X
-	STA <Temp_Var5
-
-	LDA Objects_SprVVis,X
-	AND #$08
-	BNE SkipRow1
 	
+DrawNextGC:
+	JSR DrawGCSprite
+	INC <Temp_Var6
+	INC <Temp_Var2
+	LDA <Temp_Var2
+	CMP #$08
+	BNE DrawNextGC
 
-SkipRow1:
-	
-	LDA Objects_SprVVis,X
-	AND #$04
-	BNE SkipRow2
 
-SkipRow2:
 	RTS
 
-DrawGaintChompPart:
-	LDY <Temp_Var1
+DrawGCSprite:
+	LDX <Temp_Var6
+	LDA GiantChompFrames, X
+	STA <Temp_Var3
+	
+
+	LDX <Temp_Var2
+	LDY <SlotIndexBackup
+
+	LDA GiantChompXFrame, X
+	ADD Objects_SpriteX,Y
+	STA <Temp_Var4
+
+	LDA GiantChompYFrame, X
+	ADD Objects_SpriteY,Y
+	STA <Temp_Var5
+
+
+	LDA VisMask, X
+	AND <Temp_Var1
+	BNE DontDrawGC
+
+	
+	LDA SprRAMOffset, X
+	BMI GetExtendedSprite
+	
+	ADD Object_SprRAM, Y
+	TAY
+	JMP LetsDrawGC
+
+GetExtendedSprite:
+	JSR Object_GetRandNearUnusedSpr
+	
+LetsDrawGC:
+	LDX <SlotIndexBackup
 	LDA <Temp_Var5
 	STA Sprite_RAM, Y
-	LDX <Temp_Var3
-	LDA GiantChompFrames, X
+	LDA <Temp_Var3
 	STA Sprite_RAM + 1, Y
 	LDA #$02
 	STA Sprite_RAM + 2, Y
 	LDA <Temp_Var4
-	STA Sprite_RAM + 3, Y 
+	STA Sprite_RAM + 3, Y
+	
+DontDrawGC:
+	RTS
+	
+ChompEatBlock:
+	LDA #$81
+	STA Level_ChgTileEvent
+	LDA ObjTile_DetYLo
+	AND #$F0
+	STA Level_BlockChgYLo
+	LDA ObjTile_DetYHi
+	STA Level_BlockChgYHi
+	
+	LDA ObjTile_DetXLo
+	AND #$F0
+	STA Level_BlockChgXLo
+	LDA ObjTile_DetXHi
+	STA Level_BlockChgXHi
+	JSR PRG001_BC6D
 	RTS
