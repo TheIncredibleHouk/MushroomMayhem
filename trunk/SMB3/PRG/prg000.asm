@@ -137,15 +137,17 @@ OTDO_G1R1:
 
 	; Group 11
 	;       Y    X
-	.byte $30, $08	; At feet
-	.byte $00, $08	; At head
+SuperGiantOffsets1:
+	.byte $20, $08	; At feet
+	.byte $20, $08	; At head
 	.byte $10, $01	; Wall to left
 	.byte $10, $0E	; Wall to right
 
 	; Group 12
 	;       Y    X
-	.byte $30, $08	; At feet
-	.byte $00, $08	; At head
+SuperGiantOffsets2:
+	.byte $20, $18	; At feet
+	.byte $20, $18	; At head
 	.byte $23, $01	; Wall to left
 	.byte $23, $0E	; Wall to right
 
@@ -208,7 +210,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $11
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $12
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $13
-	.byte OAT_BOUNDBOX00	; Object $14
+	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY	; Object $14
 	.byte OAT_BOUNDBOX00	; Object $15
 	.byte OAT_BOUNDBOX00	; Object $16
 	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_SPINYCHEEP

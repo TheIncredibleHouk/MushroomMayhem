@@ -283,7 +283,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT6 | $33	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OPTS_NOCHANGE	; Object $4D
 	.byte OPTS_NOCHANGE	; Object $4E
-	.byte OPTS_SETPT5 | $0A	; Object $4F - OBJ_CHAINCHOMPFREE
+	.byte OPTS_SETPT5 | $0E	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OPTS_NOCHANGE	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OPTS_SETPT5 | $12	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OPTS_SETPT5 | $05	; Object $52 - OBJ_TREASUREBOX
