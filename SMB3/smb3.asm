@@ -3300,6 +3300,7 @@ OA1_WIDTH24		= %00100000	; Object is 24 pixels wide
 OA1_WIDTH32		= %00110000	; Object is 32 pixels wide
 OA1_WIDTH40		= %01000000	; Object is 40 pixels wide
 OA1_WIDTH48		= %01010000	; Object is 48 pixels wide
+OA1_WIDTH64		= %01100000	; Object is 64 pixels wide
 OA1_WIDTHMASK		= %01110000	; Not intended for use in attribute table, readability/traceability only
 
 

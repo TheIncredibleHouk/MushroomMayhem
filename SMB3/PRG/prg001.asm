@@ -172,7 +172,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $11 OBJ_KEY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $12 OBJ_REDPRING
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $13 OBJ_GREENSPRING
-	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $14 OBJ_GIANTCHOMP
+	.byte OA1_PAL0 | OA1_HEIGHT64 | OA1_WIDTH64	; Object $14 OBJ_GIANTCHOMP
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $15
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $16
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $17 - OBJ_SPINYCHEEP
@@ -5852,28 +5852,22 @@ Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
 ObjInit_GiantChomp:
-	LDA #$01
+	LDA #$00
 	STA Objects_Var1, X
 	RTS
 
 ObjNorm_GiantChomp:
 	LDA <Player_HaltGame
-	BNE DoneGC
+	BNE ChompDoneEating
 
-	LDA Objects_Var1, X
-	BEQ DoGCRoutine
-	JSR Level_ObjCalcXDiffs
-	LDA <Temp_Var16
-	ORA #$80
-	EOR #$80
-	CMP #$40
-	BCS DoneGC
-	LDA #$00
-	STA Objects_Var1, X
-
-DoGCRoutine:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
+	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var16
+	CMP #$10
+	BCS DoGCRoutine
+
+DoGCRoutine:
 	JSR Object_CalcSpriteXY_NoHi
 	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)
 	JSR Object_DetectTile
@@ -5974,7 +5968,7 @@ LetsDrawGC:
 	STA Sprite_RAM, Y
 	LDA <Temp_Var3
 	STA Sprite_RAM + 1, Y
-	LDA #$02
+	LDA #$22
 	STA Sprite_RAM + 2, Y
 	LDA <Temp_Var4
 	STA Sprite_RAM + 3, Y
@@ -5983,6 +5977,8 @@ DontDrawGC:
 	RTS
 	
 ChompEatBlock:
+	LDA #$00
+	STA Objects_YVel, X
 	LDA #$81
 	STA Level_ChgTileEvent
 	LDA ObjTile_DetYLo
