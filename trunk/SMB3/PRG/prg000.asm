@@ -138,16 +138,16 @@ OTDO_G1R1:
 	; Group 11
 	;       Y    X
 SuperGiantOffsets1:
-	.byte $20, $08	; At feet
-	.byte $20, $08	; At head
+	.byte $18, $08	; At feet
+	.byte $18, $08	; At head
 	.byte $10, $01	; Wall to left
 	.byte $10, $0E	; Wall to right
 
 	; Group 12
 	;       Y    X
 SuperGiantOffsets2:
-	.byte $20, $18	; At feet
-	.byte $20, $18	; At head
+	.byte $18, $18	; At feet
+	.byte $18, $18	; At head
 	.byte $23, $01	; Wall to left
 	.byte $23, $0E	; Wall to right
 
@@ -4569,6 +4569,7 @@ Object_Widths:
 	.byte 24	; 3
 	.byte 32	; 4
 	.byte 40	; 5
+	.byte 56	; 6
 
 	; Respective bit to set per width checked
 Object_WidthFlags:
@@ -4578,6 +4579,7 @@ Object_WidthFlags:
 	.byte %00010000	; 3
 	.byte %00001000	; 4
 	.byte %00000100	; 5
+	.byte %00000010	; 5
 
 ; $D79E
 Object_DetermineHorzVis:

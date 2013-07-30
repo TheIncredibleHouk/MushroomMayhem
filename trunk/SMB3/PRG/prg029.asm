@@ -2511,8 +2511,7 @@ PRG029_DC70:
 	STA <Temp_Var7
 
 PRG029_DC7C:
-	LDA Level_ChgTileEvent
-	BNE TileChng_OneTile	 ; If Level_ChgTileEvent <> 0, jump to PRG029_DC82
+	JMP TileChng_OneTile	 ; If Level_ChgTileEvent <> 0, jump to PRG029_DC82
 
 	; Otherwise, do nothing... seems like they should've checked for
 	; this BEFORE bothering with all those calculations!  :)
