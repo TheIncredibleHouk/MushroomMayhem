@@ -5851,6 +5851,7 @@ Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
+
 ObjInit_GiantChomp:
 	LDA #$00
 	STA Objects_Var1, X
@@ -5866,6 +5867,7 @@ ObjNorm_GiantChomp:
 	LDA <Temp_Var16
 	CMP #$10
 	BCS DoGCRoutine
+
 
 DoGCRoutine:
 	JSR Object_CalcSpriteXY_NoHi
