@@ -5,20 +5,20 @@
     <pointer levelguid="f4d60706-5389-47fa-a893-6369acf1588a" exittype="0" xexit="70" yexit="7" xenter="77" yenter="6" exitslevel="false" world="0" />
   </pointers>
   <spritedata>
-    <sprite x="37" y="16" value="110" item="0" />
-    <sprite x="53" y="13" value="111" item="0" />
-    <sprite x="66" y="15" value="111" item="0" />
-    <sprite x="9" y="22" value="115" item="0" />
-    <sprite x="18" y="22" value="115" item="0" />
-    <sprite x="71" y="14" value="18" item="0" />
-    <sprite x="80" y="6" value="124" item="0" />
-    <sprite x="75" y="4" value="128" item="0" />
-    <sprite x="63" y="20" value="18" item="0" />
-    <sprite x="121" y="15" value="130" item="0" />
-    <sprite x="130" y="11" value="128" item="0" />
-    <sprite x="118" y="3" value="128" item="0" />
-    <sprite x="153" y="2" value="111" item="0" />
-    <sprite x="156" y="16" value="118" item="0" />
+    <sprite x="37" y="16" value="110" item="0" visibility="0" />
+    <sprite x="53" y="13" value="111" item="0" visibility="0" />
+    <sprite x="66" y="15" value="111" item="0" visibility="0" />
+    <sprite x="9" y="22" value="115" item="0" visibility="0" />
+    <sprite x="18" y="22" value="115" item="0" visibility="0" />
+    <sprite x="71" y="14" value="18" item="0" visibility="0" />
+    <sprite x="80" y="6" value="124" item="0" visibility="0" />
+    <sprite x="75" y="4" value="128" item="0" visibility="0" />
+    <sprite x="63" y="20" value="18" item="0" visibility="0" />
+    <sprite x="121" y="15" value="130" item="0" visibility="0" />
+    <sprite x="130" y="11" value="128" item="0" visibility="0" />
+    <sprite x="118" y="3" value="128" item="0" visibility="0" />
+    <sprite x="153" y="2" value="111" item="0" visibility="0" />
+    <sprite x="156" y="16" value="118" item="0" visibility="0" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="true" showstart="true" zoom="false" drawmode="Selection" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
