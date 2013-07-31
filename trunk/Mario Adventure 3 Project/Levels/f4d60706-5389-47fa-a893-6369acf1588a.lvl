@@ -6,11 +6,11 @@
     <pointer levelguid="414325d6-c054-4925-a441-58fa9cd8003e" exittype="1" xexit="101" yexit="16" xenter="1" yenter="11" exitslevel="false" world="0" />
   </pointers>
   <spritedata>
-    <sprite x="39" y="7" value="111" item="0" />
-    <sprite x="19" y="1" value="74" item="0" />
-    <sprite x="19" y="7" value="18" item="0" />
-    <sprite x="24" y="8" value="128" item="0" />
-    <sprite x="6" y="11" value="115" item="0" />
+    <sprite x="39" y="7" value="111" item="0" visibility="0" />
+    <sprite x="19" y="1" value="74" item="0" visibility="0" />
+    <sprite x="19" y="7" value="18" item="0" visibility="0" />
+    <sprite x="24" y="8" value="128" item="0" visibility="0" />
+    <sprite x="6" y="11" value="115" item="0" visibility="0" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
