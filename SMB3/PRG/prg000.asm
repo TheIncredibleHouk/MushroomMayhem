@@ -749,11 +749,20 @@ PRG000_C69C:
 Object_GetAttrAndMoveTiles:
 	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile	; Get tile here	
+	STA Objects_LastProp, X
 	JSR Object_Check_Water
 
+	LDA ObjTile_DetXLo
+	STA Objects_LastTileX
+	LDA ObjTile_DetXHi
+	STA Objects_LastTileXHi
+	LDA ObjTile_DetYLo
+	STA Objects_LastTileY
+	LDA ObjTile_DetYHi
+	STA Objects_LastTileYHi
 
 Object_GetAttrAndMoveTiles_NoWater:
-	LDA <Level_Tile
+	LDA Object_LevelTile
 	STA Objects_LastTile,X	 ; Set last tile this object detected
 
 	LDY ObjGroupRel_Idx	 ; Y = object's group-relative index
@@ -923,8 +932,7 @@ PRG000_C82A:
 	ORA Objects_SprAttr,X
 	STA Objects_SprAttr,X
 	PLA
-
-	JMP PRG000_C834	 ; Jump to PRG000_C834
+	RTS	 ; Jump to PRG000_C834
 
 PRG000_C832:
 	LDA #$00	; No tile detected
@@ -6354,37 +6362,22 @@ NoBumpTiles:
 	RTS
 
 CheckKeyAgainstLock:
-	STY TempY
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile	; Get tile here	
+	LDA Objects_LastProp,X
 	CMP #TILE_ITEM_COIN
 	BCS RemainLocked
+
 	AND #$0F
 	CMP #TILE_PROP_LOCK
 	BNE RemainLocked
+
 	LDA Level_ChgTileEvent
 	BNE RemainLocked
+
 	LDA Object_LevelTile
 	EOR #$01
 	STA Level_ChgTileEvent
 	
-	; Store change Y Hi and Lo
-	LDA ObjTile_DetYHi
-	STA Level_BlockChgYHi
-	STA Objects_YHi, X
-	LDA ObjTile_DetYLo
-	AND #$F0		; Align to nearest grid coordinate
-	STA Level_BlockChgYLo
-	STA Objects_Y, X
-	
-	; Store change X Hi and Lo
-	LDA ObjTile_DetXHi
-	STA Level_BlockChgXHi
-	STA Objects_XHi, X
-	LDA ObjTile_DetXLo
-	AND #$F0	 	; Align to nearest grid coordinate
-	STA Level_BlockChgXLo
-	STA Objects_X, X
+	JSR SetObjectTileCoordAlignObj
 
 	LDA #OBJSTATE_POOFDEATH
 	LDX <SlotIndexBackup
@@ -6396,5 +6389,34 @@ CheckKeyAgainstLock:
 	PLA
 
 RemainLocked:
-	LDY TempY
+	RTS
+
+SetObjectTileCoordAlignObj:
+	SEC
+	BCS SOTC
+
+SetObjectTileCoord:
+	CLC
+
+SOTC:
+	LDA Objects_LastTileYHi,X
+	STA Level_BlockChgYHi
+
+	LDA Objects_LastTileY,X
+	AND #$f0
+	STA Level_BlockChgYLo
+	BCC SOTC2
+	STA <Objects_Y,X
+
+SOTC2:
+	LDA Objects_LastTileXHi,X
+	STA Level_BlockChgXHi
+
+	LDA Objects_LastTileX,X
+	AND #$f0
+	STA Level_BlockChgXLo
+	BCC SOTC3
+	STA <Objects_X,X
+
+SOTC3:
 	RTS

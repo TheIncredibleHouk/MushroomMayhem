@@ -50,7 +50,7 @@
     <sprite x="0" y="0" value="16" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite x="8" y="0" value="16" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
   </spritedefinition>
-  <spritedefinition id="14" width="02" height="02" name="Giant Chomp" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="14" width="02" height="02" name="Giant Chomp" class="2" group="Chomps">
     <sprite x="0" y="0" value="08" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="0A" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="16" y="0" value="0C" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
@@ -109,7 +109,7 @@
     <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
     <sprite x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
   </spritedefinition>
-  <spritedefinition id="24" width="03" height="01" name="Fast Moving Cloud, Left" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="24" width="03" height="01" name="Fast Moving Cloud, Left" class="2" group="Chomps">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="02" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="16" y="0" value="02" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
@@ -165,7 +165,7 @@
     <sprite x="8" y="0" value="3C" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
     <sprite x="-8" y="0" value="8c" palette="1" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="2C" width="03" height="01" name="Slow Moving Cloud, Left" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="2C" width="03" height="01" name="Slow Moving Cloud, Left" class="2" group="Chomps">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="02" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="16" y="0" value="02" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
@@ -361,7 +361,7 @@
     <sprite x="16" y="16" value="06" palette="3" horizontalflip="true" verticalflip="false" table="4D" />
     <sprite x="24" y="8" value="02" palette="3" horizontalflip="true" verticalflip="false" table="4D" />
   </spritedefinition>
-  <spritedefinition id="4F" width="01" height="01" name="Loose Chain Chomp" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="4F" width="01" height="01" name="Loose Chain Chomp" class="2" group="Chomps">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="16" y="0" value="1A" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
@@ -413,18 +413,17 @@
     <sprite x="8" y="8" value="08" palette="1" horizontalflip="true" verticalflip="false" table="5A" />
     <sprite x="0" y="8" value="04" palette="2" horizontalflip="true" verticalflip="false" table="5A" />
   </spritedefinition>
-  <spritedefinition id="58" width="01" height="01" name="Fire Chomp" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="58" width="01" height="01" name="Fire Chomp" class="2" group="Chomps">
     <sprite x="0" y="0" value="14" palette="1" horizontalflip="false" verticalflip="false" table="E" />
     <sprite x="8" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="E" />
     <sprite x="16" y="0" value="24" palette="1" horizontalflip="false" verticalflip="false" table="4" />
     <sprite x="24" y="0" value="26" palette="1" horizontalflip="false" verticalflip="false" table="4" />
   </spritedefinition>
-  <spritedefinition id="59" width="01" height="01" name="Fire Snake" class="2" group="Sky/Fire Snake">
-    <sprite x="4" y="-8" value="08" palette="1" horizontalflip="false" verticalflip="false" table="E" />
-    <sprite x="4" y="-16" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="E" />
-    <sprite x="4" y="-24" value="0A" palette="1" horizontalflip="true" verticalflip="false" table="E" />
-    <sprite x="0" y="0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="E" />
-    <sprite x="8" y="0" value="22" palette="1" horizontalflip="false" verticalflip="false" table="E" />
+  <spritedefinition id="59" width="01" height="01" name="Fire Snake" class="2" group="Spike/Nipper/Spark">
+    <sprite x="4" y="-16" value="08" palette="1" horizontalflip="false" verticalflip="false" table="A" />
+    <sprite x="4" y="-32" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="A" />
+    <sprite x="0" y="0" value="00" palette="1" horizontalflip="false" verticalflip="false" table="A" />
+    <sprite x="8" y="0" value="02" palette="1" horizontalflip="false" verticalflip="false" table="A" />
   </spritedefinition>
   <spritedefinition id="5A" width="01" height="01" name="Roto Disc (Clockwise)" class="2" group="Fortress">
     <sprite x="0" y="0" value="18" palette="3" horizontalflip="false" verticalflip="false" table="12" />
@@ -785,7 +784,7 @@
     <sprite x="0" y="24" value="24" palette="1" horizontalflip="false" verticalflip="false" table="4E" />
     <sprite x="8" y="24" value="26" palette="1" horizontalflip="false" verticalflip="false" table="4E" />
   </spritedefinition>
-  <spritedefinition id="89" width="04" height="01" name="Chain Chomp" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="89" width="04" height="01" name="Chain Chomp" class="2" group="Chomps">
     <sprite x="56" y="0" value="10" palette="1" horizontalflip="true" verticalflip="false" table="0E" />
     <sprite x="48" y="0" value="12" palette="1" horizontalflip="true" verticalflip="false" table="0E" />
     <sprite x="4" y="0" value="1A" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
@@ -893,7 +892,7 @@
     <sprite x="0" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="12" />
     <sprite x="8" y="0" value="34" palette="1" horizontalflip="true" verticalflip="false" table="12" />
   </spritedefinition>
-  <spritedefinition id="9F" width="01" height="01" name="Para Beetle" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="9F" width="01" height="01" name="Para Beetle" class="2" group="Chomps">
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
   </spritedefinition>
@@ -1047,7 +1046,7 @@
     <sprite x="0" y="0" value="C8" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="0" value="CA" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="B7" width="01" height="01" name="Para Beetle Generator" class="2" group="Sky/Fire Snake">
+  <spritedefinition id="B7" width="01" height="01" name="Para Beetle Generator" class="2" group="Chomps">
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="0" y="16" value="A8" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
