@@ -5024,21 +5024,5 @@ PRG014_DFCC:
 ; Temp_Var16 and LL_ShapeDef become bytes that fill in Level_JctYLHStart 
 ; and Level_JctXLHStart arrays, based on lower 4-bits of Temp_Var15
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoadLevel_StoreJctStart:
-	; Temp_Var15, Temp_Var16, and LL_ShapeDef are 3 input bytes from the loader routine
-
-	; Lower 4 bits of Temp_Var15 define the index into Level_JctY/XLHStart
-	LDA <Temp_Var15
-	AND #$0f	
-	TAY		; Y = Temp_Var15 & $f
-
-	LDA <Temp_Var16	
-	STA Level_JctYLHStart,Y		; Temp_Var16 is stored at Level_JctYLHStart[Y]
-
-	LDA LL_ShapeDef	 
-	STA Level_JctXLHStart,Y		; LL_ShapeDef is stored at Level_JctXLHStart[Y]
-
-	RTS		 ; Return
-
 ; Rest of ROM bank was empty...
 

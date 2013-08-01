@@ -1846,7 +1846,7 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	Object_TileFeet:	.ds 1	; Object tile detected at "feet" of object
 	Object_TileWall:	.ds 1	; Object tile detected in front of object, i.e. a wall
 	Object_LevelTile:	.ds 1
-	Object_TileBody:	.ds 1
+	Object_TileProp:	.ds 1
 				.ds 2	; $0650 unused
 
 	Objects_SprHVis:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
@@ -2908,8 +2908,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	;	Bits 0 - 3: Go into Level_PipeExitDir
 	;	Bits 4 - 6: 0 to 7, selects start position from LevelJct_YLHStarts and sets proper vertical with LevelJct_VertStarts
 	;	Bit      7: If set, entering in vertical mode (for "dirty" refresh purposes)
-	Level_JctYLHStart:	.ds 16	; $7F54-$7F63 Array of Y / YHi starts
-	Level_JctXLHStart:	.ds 16	; $7F64-$7F73 Array of X / XHi starts
 
 	Object_TileFeet2:	.ds 1	; ? Difference against Object_TileFeet?
 	Object_TileWall2:	.ds 1	; ? Difference against Object_TileWall?
@@ -2986,6 +2984,11 @@ SOBJ_POOF		= $16 	; Poof
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
 
 	Objects_LastTile:	.ds 8	; $7FDF-$7FE6 Last tile this object detected
+	Objects_LastProp:	.ds 8
+	Objects_LastTileX:  .ds 1
+	Objects_LastTileXHi:  .ds 1
+	Objects_LastTileY:  .ds 1
+	Objects_LastTileYHi:  .ds 1
 
 	Objects_SprAttr:	.ds 8	; $7FE7-$7FEE Object sprite attributes (only uses bit 6 for H-Flip and bits 0-1 for palette)
 	Objects_UseShortHTest:	.ds 8	; $7FEF-$7FF6 If set, object will use a short horizontal test to determine if it is off-screen
@@ -3051,6 +3054,7 @@ TILE_PROP_MOVE_UP		= $05 ;
 TILE_PROP_MOVE_DOWN		= $06 ;
 TILE_PROP_TREASURE		= $07 ; 
 TILE_PROP_LOCK			= $08 ; 
+TILE_PROP_ENEMY			= $09
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
@@ -3093,7 +3097,7 @@ TILE_ITEM_SPINNER	= $FE
 	PSwitchTransitions: .ds 16;
 	LevelName:			.ds 28
 	BankCoins:			.ds 6 ;
-						.ds 29;
+						.ds 49;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

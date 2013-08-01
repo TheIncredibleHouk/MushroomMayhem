@@ -293,7 +293,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $5A	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OPTS_SETPT5 | $5A	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte OPTS_SETPT5 | $0E	; Object $58 - OBJ_FIRECHOMP
-	.byte OPTS_SETPT5 | $0E	; Object $59 - OBJ_FIRESNAKE
+	.byte OPTS_SETPT5 | $0A	; Object $59 - OBJ_FIRESNAKE
 	.byte OPTS_SETPT5 | $12	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte OPTS_SETPT5 | $12	; Object $5B - OBJ_ROTODISCCCLOCKWISE
 	.byte OPTS_NOCHANGE	; Object $5C - OBJ_ICEBLOCK
@@ -438,7 +438,7 @@ ObjP67:
 ObjP58:
 	.byte $AF, $AF, $99, $9B, $95, $97
 ObjP59:
-	.byte $A1, $A3, $A5, $A7, $A5, $A7
+	.byte $81, $83, $85, $87, $85, $87
 ObjP51:
 ObjP5A:
 ObjP5B:
@@ -5723,7 +5723,7 @@ PRG003_BD92:
 
 PRG003_BD95:
 	LDA Objects_Timer,X
-	BNE PRG003_BDE6	 ; If timer not expired, jump to PRG003_BDE6
+	BNE PRG003_BDE6_Divert	 ; If timer not expired, jump to PRG003_BDE6
 
 	JSR Object_ApplyXVel	 ; Apply X velocity
 	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
@@ -5742,7 +5742,26 @@ PRG003_BDAA:
 	AND #$04
 	BEQ PRG003_BDE6	 ; If Fire Snake has not touched ground, jump to PRG003_BDE6
 
+	LDA Level_ChgTileEvent
+	BNE DontTurnToFire
+
+	LDA Objects_LastProp, X
+	CMP #TILE_PROP_SOLID_TOP
+	BCS DontTurnToFire
+
+	AND #$0F
+	CMP #TILE_PROP_ENEMY
+	BNE DontTurnToFire
+
+	LDA Objects_LastTile, X
+	EOR #$01
+	STA Level_ChgTileEvent 
+
+	
+
+DontTurnToFire:
 	LDA Objects_Timer3,X
+PRG003_BDE6_Divert:
 	BNE PRG003_BDE6	; If timer 3 is not expired, jump to PRG003_BDE6
 
 	; timer = $15
