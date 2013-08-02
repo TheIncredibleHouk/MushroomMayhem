@@ -3363,6 +3363,8 @@ OA3_HALT_BUSTERSPECIAL	= %00001101	; 13: Bank2/Buster Beatle ONLY
 OA3_HALT_PIRANHASPECIAL	= %00001110	; 14: Bank2/Piranha Spike Ball ONLY
 OA3_HALT_MASK		= %00001111	; Not intended for use in attribute table, readability/traceability only
 
+OA3_NINJAHAMMER_IMMUNE = %00010000 ; Immune to hammers/stars
+
 OA3_SQUASH		= %00010000	; Enemy should "squash" (state 7) not "shell" (state 3), or "killed" (state 6) in case of statue/Kuribo's shoe stomp; requires OA2_NOTSHELLED to be NOT SET
 OA3_NOTSTOMPABLE	= %00100000	; If the Player tries to stomp this enemy, he will be HURT!  (E.g. Spikey enemy)
 OA3_DIESHELLED		= %01000000	; The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
@@ -3391,7 +3393,7 @@ OAT_BOUNDBOX15		= %00001111
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
 OAT_BOUNCEOFFOTHERS	= %00010000	; Turn away from other enemies if their paths collide
-OAT_WEAPONIMMUNITY	= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
+OAT_ICEIMMUNITY	= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
 OAT_FIREIMMUNITY	= %01000000	; Object is immune to Player's fireballs
 OAT_HITNOTKILL		= %10000000	; Object will run collision routine instead of standard "Kick"-sound/100 points/OBJSTATE_KILLED [i.e. object not killed by being rammed with held object]
 

@@ -1246,8 +1246,8 @@ PRG007_A648:
 	LDA Object_AttrFlags,X	
 	STA <Temp_Var1		; Object attribute flags -> Temp_Var1
 
-	AND #OAT_WEAPONIMMUNITY
-	BNE PRG007_A667	 ; If object is immune to Player weapons, jump to PRG007_A667
+	;AND #OAT_ICEIMMUNITY
+	;BNE PRG007_A667	 ; If object is immune to Player weapons, jump to PRG007_A667
 
 	JSR PlayerProj_HitObject	 ; See if Player Project hit an object and respond!
 
@@ -1284,8 +1284,10 @@ PlayerProj_HitObject:
 	LDX <Temp_Var2		; X = bounding box index
 	CMP Projectile_BBoxX,X
 	LDX <SlotIndexBackup	; X = Player Projectile slot index
-	BGE PRG007_A6FD	 	; If projectile is out of range horizontally, jump to PRG007_A6FD (RTS)
+	BCC PRG007_A6BC	 	; If projectile is out of range horizontally, jump to PRG007_A6FD (RTS)
+	RTS
 
+PRG007_A6BC:
 	LDA PlayerProj_ID,X
 	CMP #$02
 	BEQ PRG007_A6BD	 ; If this is a hammer, jump to PRG007_A6BD
@@ -1304,13 +1306,23 @@ PRG007_A6BD:
 
 PRG007_A6C3:
 
-	; Fireball only...
+	; Fireball/iceball only...
 
 	LDA Invincible_Enemies
-	BNE PRG007_A6FE
+	BNE PRG007_A6C8
+
+	LDA #OAT_FIREIMMUNITY
+	STA <Temp_Var5
+	LDA Special_Suit_Flag
+	BEQ PRG007_A6C7
+	LSR <Temp_Var5
+
+PRG007_A6C7:
 	LDA <Temp_Var1
-	AND #OAT_FIREIMMUNITY
-	BNE PRG007_A6FE	 ; If object is immune to fire, jump to PRG007_A6FE
+	AND <Temp_Var5
+
+PRG007_A6C8:
+	BNE PRG007_A6FE	 ; If object is immune to fire/ice, jump to PRG007_A6FE
 
 PRG007_A6C9:
 
@@ -1343,6 +1355,7 @@ PRG007_A6DD:
 	LDA #$0C
 	BCC PRG007_A6EC	 ; If Player's X Velocity is negative, jump to PRG007_A6EC
 	LDA #-$0C
+
 PRG007_A6EC:
 	STA Objects_XVel,Y
 
