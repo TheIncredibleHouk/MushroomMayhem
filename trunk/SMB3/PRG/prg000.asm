@@ -753,11 +753,16 @@ Object_GetAttrAndMoveTiles:
 	JSR Object_Check_Water
 
 	LDA ObjTile_DetXLo
+	AND #$F0
 	STA Objects_LastTileX
+
 	LDA ObjTile_DetXHi
 	STA Objects_LastTileXHi
+
 	LDA ObjTile_DetYLo
+	AND #$F0
 	STA Objects_LastTileY
+
 	LDA ObjTile_DetYHi
 	STA Objects_LastTileYHi
 
@@ -1427,17 +1432,19 @@ PRG000_CB10:
 
 	LDA <Player_HaltGame	 
 	BNE PRG000_CB5B	 ; If gameplay is halted, jump to PRG000_CB5B
-	LDA Level_ObjectID, X
-	CMP #OBJ_KEY
-	BNE PRG000_CB11
-	JSR CheckKeyAgainstLock
-
-PRG000_CB11:
+	
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
 	JSR Object_Move	 		; Perform standard object movements
 	JSR TestShellBumpBlocks
 
 DontBumpBlocks:
+	LDA Level_ObjectID, X
+	CMP #OBJ_KEY
+	BNE PRG000_CB11
+
+	JSR CheckKeyAgainstLock
+
+PRG000_CB11:
 	LDA <Objects_DetStat,X 
 	AND #$04 
 	BEQ PRG000_CB45	 ; If object hit floor, jump to PRG000_CB45 
@@ -2194,6 +2201,7 @@ PRG000_CE28:
 	LDA Level_ObjectID, X
 	CMP #OBJ_KEY
 	BNE PRG000_CE29
+	JSR Object_GetAttrAndMoveTiles
 	JSR CheckKeyAgainstLock
 
 PRG000_CE29:
@@ -6399,24 +6407,67 @@ SetObjectTileCoord:
 	CLC
 
 SOTC:
-	LDA Objects_LastTileYHi,X
+	LDX <SlotIndexBackup
+	LDA Objects_LastTileYHi
 	STA Level_BlockChgYHi
-
-	LDA Objects_LastTileY,X
-	AND #$f0
-	STA Level_BlockChgYLo
 	BCC SOTC2
-	STA <Objects_Y,X
+	STA <Objects_YHi,X
 
 SOTC2:
-	LDA Objects_LastTileXHi,X
-	STA Level_BlockChgXHi
-
-	LDA Objects_LastTileX,X
+	LDA Objects_LastTileY
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Level_BlockChgYLo
 	BCC SOTC3
-	STA <Objects_X,X
+	STA <Objects_Y,X
 
 SOTC3:
+	LDA Objects_LastTileXHi
+	STA Level_BlockChgXHi
+	BCC SOTC4
+	STA <Objects_XHi,X
+
+SOTC4:
+	LDA Objects_LastTileX
+	AND #$f0
+	STA Level_BlockChgXLo
+	BCC SOTC5
+	STA <Objects_X,X
+
+SOTC5:
+	RTS
+
+DrawEnemyTempBlock:
+	STA TempA
+	STX TempX
+	LDX #$09
+
+FindFreeSpinnerE:
+	LDA SpinnerBlockTimers, X
+	BEQ DoSpinnerE
+	DEX
+	BPL FindFreeSpinnerE
+	LDX TempX
+	LDA #$00
+	RTS
+
+DoSpinnerE:
+	LDA TempA
+	STA SpinnerBlocksReplace, X
+	LDA #$FF
+	STA SpinnerBlockTimers, X
+
+	LDA Objects_LastTileY
+	STA SpinnerBlocksY,X	 ; Store into object slot
+
+	LDA Objects_LastTileYHi
+	STA SpinnerBlocksYHi,X ; Store Y Hi into object slot
+
+	LDA Objects_LastTileXHi
+	STA SpinnerBlocksXHi,X ; Store X Hi into object slot
+
+	LDA Objects_LastTileX
+	STA SpinnerBlocksX,X ; Store X Hi into object slot
+
+	LDX TempX
+	LDA TempY
 	RTS

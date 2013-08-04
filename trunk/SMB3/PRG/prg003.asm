@@ -5753,14 +5753,20 @@ PRG003_BDAA:
 	CMP #TILE_PROP_ENEMY
 	BNE DontTurnToFire
 
+	LDA Level_ChgTileEvent
+	BNE DontTurnToFire
+
+	JSR SetObjectTileCoord
 	LDA Objects_LastTile, X
+	JSR DrawEnemyTempBlock
+	BEQ DontTurnToFire
+
 	EOR #$01
 	STA Level_ChgTileEvent 
 
-	
-
 DontTurnToFire:
 	LDA Objects_Timer3,X
+
 PRG003_BDE6_Divert:
 	BNE PRG003_BDE6	; If timer 3 is not expired, jump to PRG003_BDE6
 

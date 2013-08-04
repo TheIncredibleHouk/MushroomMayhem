@@ -2584,8 +2584,25 @@ TileChng_OneTile:
 	LDA Level_ChgTileEvent
 	STA [Map_Tile_AddrL],Y
 	
+	STA Debug_Snap
+	LDA Level_BlockChgXLo
+	SUB <Horz_Scroll
+	STA TileCheckX
+	
+	LDA Level_BlockChgXHi
+	SBC <Horz_Scroll_Hi
+	STA TileCheckXHi
+	BPL PRG029_DD21
+
+PRG029_DD20:
+	JMP EndDynaTileDraw
+
+PRG029_DD21:
+	LDA TileCheckXHi
+	BNE PRG029_DD20
+
 	LDX #$00	 ; Y = 0
-	TAY
+	LDY Level_ChgTileEvent
 PRG029_DD22:
 	LDA [Temp_Var14],Y	 ; Get pattern
 	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
@@ -2646,6 +2663,7 @@ PRG029_DD41:
 	LDA #$00
 	STA Level_ChgTileEvent
 
+EndDynaTileDraw:
 	PLA
 	STA PAGE_A000	 
 	JSR PRGROM_Change_A000
