@@ -3097,7 +3097,9 @@ TILE_ITEM_SPINNER	= $FE
 	PSwitchTransitions: .ds 16;
 	LevelName:			.ds 28
 	BankCoins:			.ds 6 ;
-						.ds 49;
+	TileCheckX:			.ds 1
+	TileCheckXHi:		.ds 1
+						.ds 47;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3393,7 +3395,7 @@ OAT_BOUNDBOX15		= %00001111
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
 OAT_BOUNCEOFFOTHERS	= %00010000	; Turn away from other enemies if their paths collide
-OAT_ICEIMMUNITY	= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
+OAT_ICEIMMUNITY		= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
 OAT_FIREIMMUNITY	= %01000000	; Object is immune to Player's fireballs
 OAT_HITNOTKILL		= %10000000	; Object will run collision routine instead of standard "Kick"-sound/100 points/OBJSTATE_KILLED [i.e. object not killed by being rammed with held object]
 
