@@ -99,6 +99,6 @@
     <level name="Hurricane" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="1b3cc22e-13ca-49d4-ad16-4dae21839e4b" leveltype="6" lastcompressionsize="0" lastmodified="2013-06-18T20:18:02.4793349-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Chomp Chowdown" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="c80f96d0-3db4-4e70-8fe5-be374df60f67" leveltype="4" lastcompressionsize="0" lastmodified="2013-07-30T15:31:32.562569-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Mineral Maze" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="817b3270-68fa-4d89-91eb-519c4de5cd8b" leveltype="14" lastcompressionsize="0" lastmodified="2013-07-04T11:48:50.2566457-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
-    <level name="Firey Fiesta" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="d28d09cf-d6c1-44bd-9550-76bfa71cd1ac" leveltype="3" lastcompressionsize="0" lastmodified="2013-08-05T16:55:46.5180227-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Firey Fiesta" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="d28d09cf-d6c1-44bd-9550-76bfa71cd1ac" leveltype="3" lastcompressionsize="0" lastmodified="2013-08-06T07:08:54.7534925-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
   </levelinfo>
 </project>
