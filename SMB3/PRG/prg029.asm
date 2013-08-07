@@ -2584,7 +2584,6 @@ TileChng_OneTile:
 	LDA Level_ChgTileEvent
 	STA [Map_Tile_AddrL],Y
 	
-	STA Debug_Snap
 	LDA Level_BlockChgXLo
 	SUB <Horz_Scroll
 	STA TileCheckX
@@ -2659,11 +2658,9 @@ PRG029_DD41:
 	ORA <Temp_Var2	
 	STA TileChng_VRAM_L	 ; Store the low byte of the tile change base address
 
-	; Level_ChgTileEvent = 0 (we handled it)
+EndDynaTileDraw:
 	LDA #$00
 	STA Level_ChgTileEvent
-
-EndDynaTileDraw:
 	PLA
 	STA PAGE_A000	 
 	JSR PRGROM_Change_A000

@@ -3782,8 +3782,8 @@ PRG000_D3EF:
 	PLP		 	; Restore CPU state
 
 	SBC <Objects_XHi,X	 
-	STA <Temp_Var1		 ; Temp_Var1 is X Hi difference
-
+	STA <Temp_Var1		 ; Temp_Var1 is X Hi difference               
+      
 	LDY <Temp_Var2		 ; Y = Temp_Var2
 	BEQ PRG000_D42E	 	; If zero, jump to PRG000_D42E
 
