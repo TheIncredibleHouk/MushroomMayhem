@@ -6324,10 +6324,6 @@ Not_Water:
 	LDA TempA		 ; Restore underwater flag
 
 PRG000_C6FA:
-	CMP #$01
-	BNE PRG000_C6FB
-
-PRG000_C6FB:
 	STA Objects_InWater,X	 ; Set object's in-water flag
 	LDY TempY
 	RTS

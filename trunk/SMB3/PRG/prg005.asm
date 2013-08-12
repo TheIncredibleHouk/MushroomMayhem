@@ -289,7 +289,7 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $9B
 	.byte OPTS_NOCHANGE	; Object $9C
 	.byte OPTS_SETPT6 | $37	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OPTS_SETPT5 | $12	; Object $9E - OBJ_PODOBOO
+	.byte OPTS_NOCHANGE	; Object $9E - OBJ_PODOBOO
 	.byte OPTS_SETPT5 | $0E	; Object $9F - OBJ_PARABEETLE
 	.byte OPTS_SETPT6 | $13	; Object $A0 - OBJ_DRYPIRANHA
 	.byte OPTS_SETPT6 | $13	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
@@ -407,7 +407,7 @@ ObjPA8:
 ObjPA9:
 ObjPAC:
 ObjPB1:
-	.byte $8D, $8D, $8F, $8F, $B5, $B5
+	.byte $8D, $8D, $8F, $8F, $95, $95
 ObjPB3:
 	.byte $BD, $BD, $BB, $BB, $BD, $BD, $99, $99
 ObjPB0:
@@ -5128,13 +5128,14 @@ LevelEvent_SpikeCheep:
 	STA Level_ObjectID,X
 	LDA #$01
 	STA Objects_SprAttr, X
+	STA Objects_Var1, X
 
 	LDA <Player_XHi
 	STA Objects_XHi, X
 	LDA #$01
 	STA Objects_Var1,X	; var 1 = 1
 	STA Objects_InWater,X	; Object is in water
-	LDA #$B0
+	LDA #$A8
 	STA Objects_Y, X
 	LDA #$01
 	STA Objects_YHi, X
