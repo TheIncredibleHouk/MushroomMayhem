@@ -136,7 +136,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.word ObjHit_DoNothing	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.word ObjHit_DoNothing	; Object $62 - OBJ_BLOOPER
-	.word ObjHit_DoNothing	; Object $63 - OBJ_FLOATMINE
+	.word MineDoExplode	; Object $63 - OBJ_FLOATMINE
 	.word ObjHit_DoNothing	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjHit_DoNothing	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjHit_DoNothing	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -287,7 +287,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OPTS_SETPT5 | $12	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OPTS_SETPT5 | $05	; Object $52 - OBJ_TREASUREBOX
-	.byte OPTS_SETPT5 | $12	; Object $53 - OBJ_PODOBOOCEILING
+	.byte OPTS_NOCHANGE	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OPTS_SETPT5 | $0E	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte OPTS_SETPT5 | $0B	; Object $55 - OBJ_BOBOMB
 	.byte OPTS_SETPT5 | $5A	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -648,6 +648,8 @@ ObjInit_PodobooCeiling:
 	STA <Objects_XHi, X
 
 ResetPipePodobo:
+	LDA #$20
+	STA Objects_Timer, X
 	LDA <Objects_Var5, X
 	STA <Objects_Y, X
 	LDA <Objects_Var4, X
@@ -662,6 +664,8 @@ ObjNorm_PodobooCeiling:
 	LDA <Player_HaltGame
 	BNE PRG003_A3D5	 ; If gameplay halted, jump to PRG003_A3D5
 
+	LDA Objects_Timer, X
+	BNE ObjInit_PileDriver
 	JSR Player_HitEnemy	 ; Handle Player collision with Podoboo
 
 	; Flip vertically based on velocity
@@ -3444,19 +3448,76 @@ PRG003_B1D7:
 	STA SpecialObj_YVel,Y
 	RTS		 ; Return
 
+MineTrigger: .byte $20 , $18
+
 ObjInit_FloatMine:
 	LDA <Objects_X, X
 	ADD #$05
 	STA <Objects_X, X
 	LDA #$01
 	STA Objects_InWater, X
+	LDA #$00
+	STA Objects_Var1, X
 	RTs
 
 ObjNorm_FloatMine:
-	JSR Object_DeleteOffScreen
-	JSR Object_Draw16x32Sprite
-	JSR Object_ApplyYVel_NoLimit
+	STA Debug_Snap
+	LDA <Player_HaltGame
+	BEQ DoMine
+	JMP Mine_JustDraw
 
+DoMine:
+	JSR Object_HitTestRespond
+	JSR Object_DeleteOffScreen
+	JSR Object_GetAttrAndMoveTiles
+	
+	LDA Objects_Var1, X
+	BEQ CanFreeMine
+
+	JSR Object_ApplyYVel_NoLimit
+	LDA Objects_Var1, X
+	BEQ MineWaterSolid
+
+	LDA <Counter_1
+	AND #$03
+	BNE MineWaterSolid
+
+	LDA Objects_InWater, X
+	BEQ MineWaterSolid
+
+	LDA <Objects_YVel, X
+	CMP #$E8
+	BCS AccelMineUp
+	LDA #$E8
+	BNE SetYMineUpVel
+
+AccelMineUp:
+	SUB #$01
+
+SetYMineUpVel:
+	STA <Objects_YVel, X
+	JMP MineWaterSolid
+	
+CanFreeMine:
+	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var16
+	BPL WillFreeMine
+	JSR Negate
+
+WillFreeMine:
+	CMP MineTrigger, Y
+	BCS Mine_JustDraw
+	INC Objects_Var1, X
+
+
+MineWaterSolid:
+	LDA Object_TileFeet
+	AND #TILE_PROP_SOLID_ALL
+	BEQ Mine_JustDraw
+	JMP MineDoExplode
+
+Mine_JustDraw:
+	JSR Object_Draw16x32Sprite
 	LDA Objects_SprHVis, X
 	AND #$20
 	BNE NoMineDraw
@@ -3484,80 +3545,17 @@ ObjNorm_FloatMine:
 	STA Sprite_RAM + 18, Y
 	STA Sprite_RAM + 22, Y
 
-	JSR MineDetectExplode
-
-	LDA Objects_Var1, X
-	CMP #$01
-	BEQ FloatMineUp
-	CMP #$02
-	BEQ FloatMineDown
-	LDA <Temp_Var16
-	CMP #$35
-	BCC FreeMine
-	CMP #$D0
-	BCC NoMineDraw
-
-FreeMine:
-	INC Objects_Var1, X
-	DEC <Objects_YVel, X
-
 NoMineDraw:
 	RTS
 
-FloatMineUp:
-FloatMineDown:
-	
-	LDA <Counter_1
-	AND #$03
-	BNE NoMineDraw
-	LDA <Objects_YVel, X
-	CMP #$E8
-	BCS AccelMineUp
-	LDA #$E8
-	BNE SetYMineUpVel
-
-AccelMineUp:
-	SUB #$01
-
-SetYMineUpVel:
-	STA <Objects_YVel, X
-	JSR Object_ApplyYVel_NoLimit
-	JSR Object_WorldDetect4
-	LDA Objects_DetStat, X
-	BNE MineDoExplode
-
-	RTS
-
-
-MineDetectExplode:
-	JSR Level_ObjCalcYDiffs
-	LDA <Temp_Var16
-	STA <Temp_Var15
-
-	JSR Level_ObjCalcXDiffs
-	LDA <Temp_Var15
-	CMP #$25
-	BCC DetectXDiff
-	CMP #$F0
-	BCC NoMineExplode
-
-DetectXDiff:
-	LDA <Temp_Var16
-	CMP #$25
-	BCC MineDoExplode
-	CMP #$F0
-	BCC NoMineExplode
 
 MineDoExplode:
 	LDA #OBJ_BOBOMBEXPLODE
 	STA Level_ObjectID, X
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
-	PLA
-	PLA
-
-NoMineExplode:
 	RTS
+
 ;ObjInit_BigBerthaBirther:
 ;
 ;PRG003_B1F6:

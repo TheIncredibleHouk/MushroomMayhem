@@ -4250,7 +4250,6 @@ Level_DoCommonSpecialTiles:
 	JMP PRG008_B586
 
 PRG008_B582:
-	STY Debug_Snap
 	LDY Level_ChgTileEvent
 	BNE PRG008_B584
 	CMP #TILE_PROP_SOLID_TOP
