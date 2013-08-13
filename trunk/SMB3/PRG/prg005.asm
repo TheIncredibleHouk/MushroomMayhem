@@ -5134,7 +5134,6 @@ LevelEvent_SpikeCheep:
 	STA Objects_XHi, X
 	LDA #$01
 	STA Objects_Var1,X	; var 1 = 1
-	STA Objects_InWater,X	; Object is in water
 	LDA #$A8
 	STA Objects_Y, X
 	LDA #$01
