@@ -1775,12 +1775,13 @@ CheckExplodableTile:
 	CMP #$0D
 	BEQ ExplodeBreakBlocks
 
-
 NotBreakable:
 	RTS
 
 ExplodeBreakBlocks:
-	LDA #$90
+	LDA Object_LevelTile
+	AND #$C0
+	ORA #$01
 	STA Level_ChgTileEvent
 
 	LDA ObjTile_DetYLo
@@ -3461,7 +3462,6 @@ ObjInit_FloatMine:
 	RTs
 
 ObjNorm_FloatMine:
-	STA Debug_Snap
 	LDA <Player_HaltGame
 	BEQ DoMine
 	JMP Mine_JustDraw
@@ -3474,6 +3474,9 @@ DoMine:
 	LDA Objects_Var1, X
 	BEQ CanFreeMine
 
+	LDA Objects_InWater, X
+	BEQ MineWaterSolid
+
 	JSR Object_ApplyYVel_NoLimit
 	LDA Objects_Var1, X
 	BEQ MineWaterSolid
@@ -3481,9 +3484,6 @@ DoMine:
 	LDA <Counter_1
 	AND #$03
 	BNE MineWaterSolid
-
-	LDA Objects_InWater, X
-	BEQ MineWaterSolid
 
 	LDA <Objects_YVel, X
 	CMP #$E8

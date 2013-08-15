@@ -1603,13 +1603,13 @@ PRG000_CBB4:
 
 	; NOT a Buzzy Beatle
 
-	CPY #OBJ_SPINY
+	CMP #OBJ_SPINY
 	BEQ PRG000_CBB3	 ; If Object is a Spiny, jump to PRG000_CBB3
 
-	CPY #OBJ_BLUESPINY
+	CMP #OBJ_BLUESPINY
 	BEQ PRG000_CBB3	 
 
-	CPY #OBJ_PURPLETROOPA
+	CMP #OBJ_PURPLETROOPA
 	BEQ RotatePaletteInstead
 
 	; "Shake awake" speed
