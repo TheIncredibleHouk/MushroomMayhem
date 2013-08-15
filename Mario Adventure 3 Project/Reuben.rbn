@@ -102,6 +102,6 @@
     <level name="Mineral Maze" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="817b3270-68fa-4d89-91eb-519c4de5cd8b" leveltype="14" lastcompressionsize="0" lastmodified="2013-07-04T11:48:50.2566457-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Firey Fiesta" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="d28d09cf-d6c1-44bd-9550-76bfa71cd1ac" leveltype="3" lastcompressionsize="0" lastmodified="2013-08-08T21:31:15.7005001-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Bomb Bay" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="f4252d0d-b970-4e1d-bb6f-cf59d2bb1c5d" leveltype="6" lastcompressionsize="0" lastmodified="2013-08-14T22:28:27.536924-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
-    <level name="Bomb Bay2" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="3f2bcb2e-ad43-4ecd-a94c-3685a77158cc" leveltype="6" lastcompressionsize="0" lastmodified="2013-08-15T11:23:53.2858951-04:00" layout="Horizontal" bonusfor="f4252d0d-b970-4e1d-bb6f-cf59d2bb1c5d" />
+    <level name="Bomb Bay2" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="3f2bcb2e-ad43-4ecd-a94c-3685a77158cc" leveltype="6" lastcompressionsize="0" lastmodified="2013-08-15T13:45:44.1080333-04:00" layout="Horizontal" bonusfor="f4252d0d-b970-4e1d-bb6f-cf59d2bb1c5d" />
   </levelinfo>
 </project>
