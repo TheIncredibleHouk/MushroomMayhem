@@ -235,16 +235,6 @@ AutoScroll_Horizontal:
 	LDX #$00	; X = 0 
 	JSR AutoScroll_ApplyHVel	 ; Apply auto scroll horizontal velocity
 
-	LDA Level_AScrlLimitSel
-	CMP #$11
-	BNE PRG009_BBC5	 ; If Level_AScrlLimitSel <> $11 (Coin Ship), jump to PRG009_BBC5
-
-	PHA		 ; Save Level_AScrlLimitSel 
-
-	JSR CoinShip_CoinGlow	 ; Do the glowing coin effect on the Coin Ship
-
-	PLA		 ; Restore Level_AScrlLimitSel
-
 PRG009_BBC5:
 	CMP #$0e	 
 	BNE PRG009_BBCC	 ; If Level_AScrlLimitSel <> $0E (World 8 Battleship), jump to PRG009_BBCC

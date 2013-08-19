@@ -45,7 +45,7 @@
     <palette background="0C" data="0C,0F,30,10,0C,0F,10,18,0C,0F,1A,0B,0C,0F,10,1C,0C,00,00,00,0C,0F,30,16,0C,0F,30,1C,0C,0F,30,27" name="Hurricane" guid="e6685e2f-647e-43ea-bf44-90d711dbeb27" />
     <palette background="21" data="21,0F,30,15,21,0F,37,18,21,0F,37,17,21,0F,30,1C,21,00,00,00,21,0F,30,16,21,0F,30,2A,21,0F,36,28" name="Autumn" guid="9ed6f55f-2add-4fb0-9e01-5b17baf5f21c" />
     <palette background="00" data="0F,0F,30,21,0F,08,30,28,0F,00,30,10,0F,06,30,27,0F,00,00,00,0F,0F,30,16,0F,0D,30,21,0F,08,36,27" name="Firey Chasm" guid="a32e3d4d-c8d2-4024-bbc1-0cc574e344da" />
-    <palette background="21" data="21,0D,30,10,21,0D,37,28,21,0D,3A,1A,21,0D,30,11,21,00,00,00,21,0D,30,04,21,0D,20,1A,21,0D,37,28" name="Blue Seas" guid="9c880daf-6544-4f15-a5af-9ae7937c360b" />
+    <palette background="21" data="21,0D,30,10,21,0D,30,28,21,0D,30,1A,21,0D,30,11,21,00,00,00,21,0D,30,04,21,0D,20,1A,21,0D,37,28" name="Blue Seas" guid="9c880daf-6544-4f15-a5af-9ae7937c360b" />
   </paletteinfo>
   <blocklayouts />
   <worldinfo>
@@ -93,7 +93,7 @@
     <level name="Curse of the Lagoon - Main" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="9a6c42b5-88d8-4d06-8493-b643bb923546" leveltype="6" lastcompressionsize="0" lastmodified="2013-08-08T21:31:15.7155009-04:00" layout="Horizontal" bonusfor="d51c828d-e91f-4f14-87cc-681630d7eb5e" />
     <level name="Quartz Quarry" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="73be4ac1-4c4c-49cb-a07d-c64d2fdebde9" leveltype="3" lastcompressionsize="0" lastmodified="2013-05-29T12:16:59.2675708-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Fire!" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="8159147e-1a3d-48ee-9c49-d38fb646197c" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-27T17:23:26.3459132-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
-    <level name="Fire! - Second" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="96a4c326-112e-4788-bb32-689aaa9fbaa9" leveltype="10" lastcompressionsize="0" lastmodified="2013-05-27T16:00:23.1308896-04:00" layout="Horizontal" bonusfor="8159147e-1a3d-48ee-9c49-d38fb646197c" />
+    <level name="Fire! - Second" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="96a4c326-112e-4788-bb32-689aaa9fbaa9" leveltype="10" lastcompressionsize="0" lastmodified="2013-08-15T20:54:21.1536172-04:00" layout="Horizontal" bonusfor="8159147e-1a3d-48ee-9c49-d38fb646197c" />
     <level name="Bank" worldguid="f2059af1-7348-4f6f-9324-0f681041f856" levelguid="08f74454-c450-4ab5-b327-3ce7ec550592" leveltype="1" lastcompressionsize="0" lastmodified="2013-05-28T07:05:47.800083-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Partially Cloudy" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="414325d6-c054-4925-a441-58fa9cd8003e" leveltype="4" lastcompressionsize="0" lastmodified="2013-07-30T15:31:32.560569-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Partially Cloudy 2" worldguid="c05cc28a-7180-4d48-b775-c96253edda5c" levelguid="f4d60706-5389-47fa-a893-6369acf1588a" leveltype="4" lastcompressionsize="0" lastmodified="2013-07-30T11:31:36.6372061-04:00" layout="Horizontal" bonusfor="414325d6-c054-4925-a441-58fa9cd8003e" />
@@ -102,6 +102,6 @@
     <level name="Mineral Maze" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="817b3270-68fa-4d89-91eb-519c4de5cd8b" leveltype="14" lastcompressionsize="0" lastmodified="2013-07-04T11:48:50.2566457-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Firey Fiesta" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="d28d09cf-d6c1-44bd-9550-76bfa71cd1ac" leveltype="3" lastcompressionsize="0" lastmodified="2013-08-08T21:31:15.7005001-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Bomb Bay" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="f4252d0d-b970-4e1d-bb6f-cf59d2bb1c5d" leveltype="6" lastcompressionsize="0" lastmodified="2013-08-14T22:28:27.536924-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
-    <level name="Bomb Bay2" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="3f2bcb2e-ad43-4ecd-a94c-3685a77158cc" leveltype="6" lastcompressionsize="0" lastmodified="2013-08-15T13:45:44.1080333-04:00" layout="Horizontal" bonusfor="f4252d0d-b970-4e1d-bb6f-cf59d2bb1c5d" />
+    <level name="Bomb Bay2" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="3f2bcb2e-ad43-4ecd-a94c-3685a77158cc" leveltype="6" lastcompressionsize="0" lastmodified="2013-08-15T20:54:21.1476169-04:00" layout="Horizontal" bonusfor="f4252d0d-b970-4e1d-bb6f-cf59d2bb1c5d" />
   </levelinfo>
 </project>
