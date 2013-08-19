@@ -1166,9 +1166,6 @@ ObjInit_PipewayCtlr:
 
 
 ObjInit_CheepCheepP2P2:
-	LDA #$04
-	STA <Objects_Var4,X	 ; Var4 = 4
-
 ObjInit_CheepCheepP2P:
 	LDA #$00
 	STA Objects_InWater,X
