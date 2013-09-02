@@ -104,7 +104,7 @@ AScroll_MoveEndLoopSelect:
 	; Bits 2-3: (0 to 3) Acceleration selection (from AScroll_VelAccel) for horizontal auto scroll velocity
 	; Bits 4-7: -> Level_AScrlLoopSel
 AScroll_Movement:
-ASM_World_36_14:	.byte $04, $10, $00
+ASM_World_36_14:	.byte $04, $1F, $1F, $00
 ASM_W3_Airship:		.byte $04, $00, $01, $00, $02, $00, $01, $00, $02, $00, $01, $00, $00, $02, $00, $01, $00
 ASM_World_62:		.byte $70
 ASM_W5_Airship:		.byte $04, $00, $01, $00, $02, $00, $01, $00, $01, $00, $02, $00, $01, $00, $02, $00, $01, $00
