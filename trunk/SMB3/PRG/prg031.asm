@@ -1642,7 +1642,7 @@ PRG031_F567:
 	PLA
 	STA <Temp_Var3
 	PLA
-	STA <Temp_Var2
+			STA <Temp_Var2
 	PLA
 	STA <Temp_Var1
 
@@ -3086,6 +3086,25 @@ No_More_Loop:
 	STA Game_Timer_Tick
 
 Game_Timer_RTS:
+	RTS
+
+
+DestroyAllEnemies:
+	LDX #$04
+
+KeepDestroying:
+	LDA Level_ObjectID,X
+	BEQ SkipDestroy
+	LDA #OBJSTATE_POOFDEATH
+	STA Objects_State,X
+	LDA #$1f
+	STA Objects_Timer,X
+
+SkipDestroy:
+	DEX
+	BPL KeepDestroying
+	LDA #$00
+	STA Level_Event
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
