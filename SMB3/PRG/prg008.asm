@@ -4224,6 +4224,7 @@ PRG008_B57F:
 	RTS
 
 PRG008_B580:
+	STA Debug_Snap
 	LDA <Player_Y
 	SEC
 	AND #$0F
@@ -5788,24 +5789,6 @@ EndLevel:
 	STA Map_ReturnStatus
 	LDA #$01
 	STA Level_ExitToMap
-	RTS
-
-DestroyAllEnemies:
-	LDX #$04
-
-KeepDestroying:
-	LDA Level_ObjectID,X
-	BEQ SkipDestroy
-	LDA #OBJSTATE_POOFDEATH
-	STA Objects_State,X
-	LDA #$1f
-	STA Objects_Timer,X
-
-SkipDestroy:
-	DEX
-	BPL KeepDestroying
-	LDA #$00
-	STA Level_Event
 	RTS
 
 CoinsEarnedBuffer:
