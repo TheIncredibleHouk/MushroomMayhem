@@ -653,7 +653,7 @@ PRG000_C5A9:
 	LDA Object_TileFeet
 	AND #TILE_PROP_SOLID_TOP
 	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
-	JMP PRG000_C65D	 ; Otherwise, jump to PRG000_C65D
+	JMP PRG000_C65C	 ; Otherwise, jump to PRG000_C65D
 
 PRG000_C5B4:
 	LDA Player_PartDetEn
@@ -676,42 +676,6 @@ PRG000_C656:
 	STA <Objects_DetStat,X
 
 PRG000_C65C:
-	RTS		 ; Return
-
-
-PRG000_C65D:
-	LDA Level_SlopeEn
-	BEQ PRG000_C67E	 ; If slopes are not enabled in this level, jump to PRG000_C67E
-
-	; This is a correction applied for when an enemy steps over the edge of a slope:
-	;   ___
-	;  /   \  <-- like when he walks across the top, down the side
-	; Helps keep the enemy following the curve downward, especially enemies like red
-	; shell koopa troopas that otherwise turn away at an edge...
-
-	LDY #$00	 ; Y = 0
-
-	LDA Objects_Slope,X
-	BEQ PRG000_C67E	 ; If slope value = 0, jump to PRG000_C67E
-	BPL PRG000_C66C	 ; If slope is positive, jump to PRG000_C66C
-
-	DEY		 ; Otherwise, Y = $FF
-
-PRG000_C66C:
-	ADD <Objects_Y,X
-	STA <Objects_Y,X ; Update Y
-
-	TYA		 ; A = $00/$FF, sign extension
-
-	ADC <Objects_YHi,X
-	STA <Objects_YHi,X ; Apply to Y Hi
-
-	LDA #$00	 
-	STA Objects_Slope,X ; Clear slope value
-
-	JMP Object_WorldDetectN1	 ; Jump to Object_WorldDetectN1
-
-PRG000_C67E:
 	RTS		 ; Return
 
 PRG000_C67F:

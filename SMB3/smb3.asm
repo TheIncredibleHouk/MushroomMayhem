@@ -1549,7 +1549,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	.org $0500	; $0500-$05FF is available for this context-dependent situation
 
-				.ds 16	; $0500-$050F unused
+				.ds 15	; $0500-$050F unused
+	EnemiesKilled:		.ds 1
 
 	; Event_Countdown is context dependent; without context, does nothing
 	; * When you come out of a pipe, this counter decrements until the pipe should be finished

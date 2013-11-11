@@ -296,7 +296,7 @@
     <block value="22"></block>
     <block value="23"></block>
     <block value="24"></block>
-    <block value="25"></block>
+    <block value="25">Waterfall FG</block>
     <block value="26"></block>
     <block value="27"></block>
     <block value="28"></block>
@@ -352,7 +352,7 @@
     <block value="5A">Platform Filler Right</block>
     <block value="5B"></block>
     <block value="5C">Koopa Shell</block>
-    <block value="5D"></block>
+    <block value="5D">Koopa Shell</block>
     <block value="5E"></block>
     <block value="5F"></block>
     <block value="60">Coin Block</block>
