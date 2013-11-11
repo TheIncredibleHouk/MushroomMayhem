@@ -55,7 +55,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjInit_DoNothing		; Object $41 - OBJ_ENDLEVELCARD
 	.word ObjInit_CheepCheepP2P	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.word ObjInit_CheepCheepP2P2	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_FallingPlatform	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjInit_HotFoot		; Object $45 - OBJ_HOTFOOT
 	.word ObjInit_PiranhaSpikeBall	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -97,7 +97,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjNorm_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
 	.word ObjNorm_CheepCheepP2P	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.word ObjNorm_CheepCheepP2P2	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.word ObjNorm_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjNorm_PathFollowPlat	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjNorm_Hotfoot		; Object $45 - OBJ_HOTFOOT
 	.word ObjNorm_PiranhaSpikeBall	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -140,7 +140,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DoNothing		; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjHit_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
 	.word Player_GetHurt		; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.word Player_GetHurt		; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.word Player_GetHurt		; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjHit_DoNothing		; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word Player_GetHurt		; Object $45 - OBJ_HOTFOOT
 	.word Player_GetHurt		; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -182,7 +182,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $41 - OBJ_ENDLEVELCARD
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $45 - OBJ_HOTFOOT
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -230,7 +230,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA2_TDOGRP0	; Object $41 - OBJ_ENDLEVELCARD
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA2_TDOGRP9	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA2_TDOGRP0	; Object $45 - OBJ_HOTFOOT
 	.byte OA2_TDOGRP2	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -272,7 +272,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_BUSTERSPECIAL 	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA3_HALT_ENDCARDSPECIAL | OA3_TAILATKIMMUNE	; Object $41 - OBJ_ENDLEVELCARD
 	.byte OA3_HALT_JUSTDRAW 	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.byte OA3_HALT_JUSTDRAW 	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.byte OA3_HALT_JUSTDRAW 	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $45 - OBJ_HOTFOOT
 	.byte OA3_HALT_PIRANHASPECIAL 	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -314,7 +314,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT5 | $0A	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OPTS_NOCHANGE	; Object $41 - OBJ_ENDLEVELCARD
 	.byte OPTS_SETPT6 | $4F	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.byte OPTS_SETPT6 | $4F	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.byte OPTS_SETPT6 | $4F	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OPTS_NOCHANGE ; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OPTS_SETPT5 | $12	; Object $45 - OBJ_HOTFOOT
 	.byte OPTS_SETPT5 | $0A	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -356,7 +356,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $40 - OBJ_BUSTERBEATLE
 	.byte KILLACT_STANDARD	; Object $41 - OBJ_ENDLEVELCARD
 	.byte KILLACT_STANDARD	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
-	.byte KILLACT_STANDARD	; Object $43 - OBJ_CHEEPCHEEPPOOL2POOL2
+	.byte KILLACT_STANDARD	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte KILLACT_POOFDEATH	; Object $45 - OBJ_HOTFOOT
 	.byte KILLACT_NORMALSTATE	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -1165,7 +1165,7 @@ ObjInit_PipewayCtlr:
 	RTS		 ; Return
 
 
-ObjInit_CheepCheepP2P2:
+ObjInit_BeachedCheep:
 ObjInit_CheepCheepP2P:
 	LDA #$00
 	STA Objects_InWater,X
@@ -1312,7 +1312,7 @@ PRG002_A7E0:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 	JMP Object_ShakeAndDraw	 ; Draw Cheep Cheep and don't come back!
 
-ObjNorm_CheepCheepP2P2:
+ObjNorm_BeachedCheep:
 
 	; Alternate pool-to-pool Cheep Cheep is pretty much the same,
 	; and reuses most of the code, just inverts the movements...

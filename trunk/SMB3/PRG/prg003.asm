@@ -1891,6 +1891,7 @@ ObjInit_Boss:
 	LDA World_Num
 	JSR DynJump
 
+	.word World0BossInit
 	.word World1BossInit
 	.word World2BossInit
 	.word World3BossInit
@@ -1898,6 +1899,7 @@ ObjInit_Boss:
 	.word World5BossInit
 	.word World6BossInit
 
+World0BossInit
 World1BossInit:
 World2BossInit:
 World3BossInit:
@@ -1911,6 +1913,7 @@ ObjNorm_Boss:
 	LDA World_Num
 	JSR DynJump
 
+	.word World0BossNorm
 	.word World1BossNorm
 	.word World2BossNorm
 	.word World3BossNorm
@@ -1918,6 +1921,7 @@ ObjNorm_Boss:
 	.word World5BossNorm
 	.word World6BossNorm	
 
+World0BossNorm:
 World1BossNorm:
 	RTS
 
