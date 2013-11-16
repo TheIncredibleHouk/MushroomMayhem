@@ -5033,14 +5033,23 @@ CannonFire_DrawAndUpdate:
 	LDA CannonFire_Timer,X
 	BEQ PRG007_BB8F	 ; If CannonFire_Timer = 0, jump to CannonFire_Timer
 	DEC CannonFire_Timer,X	 ; CannonFire_Timer--
+	BNE PRG007_BB8F
+
+	LDA MiscValue1
+	AND #$80
+	BEQ PRG007_BB8F
+	LDA TrapSet
+	BNE PRG007_BB8F
+	INC CannonFire_Timer,X
+
 PRG007_BB8F:
 
 	; Update CannonFire_Timer2
 	LDA CannonFire_Timer2,X
 	BEQ PRG007_BB97
 	DEC CannonFire_Timer2,X
-PRG007_BB97:
 
+PRG007_BB97:
 	PLA		 ; Restore ID
 	JSR DynJump
 
@@ -5625,27 +5634,23 @@ CFire_BulletBill:
 	LDA CannonFire_Timer,X
 	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
 
-	LDA CannonFire_Y,X
-	CMP Level_VertScroll
-	LDA CannonFire_YHi,X
-	SBC Level_VertScrollH
-	BNE PRG007_BF28		; If Cannon Fire has fallen off screen vertically, jump to PRG007_BF28 (RTS)
-
-	LDA CannonFire_X,X
-	CMP <Horz_Scroll
-	LDA CannonFire_XHi,X
-	SBC <Horz_Scroll_Hi
-	BNE PRG007_BF28		; If Cannon Fire has fallen off screen horizontally, jump to PRG007_BF28 (RTS)
+	;LDA CannonFire_Y,X
+	;CMP Level_VertScroll
+	;LDA CannonFire_YHi,X
+	;SBC Level_VertScrollH
+	;BNE PRG007_BF28		; If Cannon Fire has fallen off screen vertically, jump to PRG007_BF28 (RTS)
+	;
+	;LDA CannonFire_X,X
+	;CMP <Horz_Scroll
+	;LDA CannonFire_XHi,X
+	;SBC <Horz_Scroll_Hi
+	;BNE PRG007_BF28		; If Cannon Fire has fallen off screen horizontally, jump to PRG007_BF28 (RTS)
 
 	; Reset Cannon Fire timer to $80-$9F, random
-	LDA #$40
+	LDA RandomN, X
+	ORA #$90
+	EOR #$80
 	STA CannonFire_Timer,X
-
-	LDA CannonFire_X,X
-	SUB <Horz_Scroll
-	ADD #16
-	CMP #32
-	BLT PRG007_BF28		; If Cannon Fire X + 16 is less than 32 pixels from screen edge, jump to PRG007_BF28 (RTS)
 
 	LDA <Player_X
 	SBC CannonFire_X,X
@@ -5724,6 +5729,7 @@ PRG007_BF80:
 	; Provides a newly prepared object or does not return to caller!
 PrepareNewObjectOrAbort:
 	LDX #$04	  ; X = 4
+
 PRG007_BFCF:
 	LDA Objects_State,X
 	BEQ PRG007_BFDC	 ; If this object state = 0 (Dead/Empty), jump to PRG007_BFDC

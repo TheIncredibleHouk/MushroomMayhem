@@ -29,7 +29,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_Boss		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjInit_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
-	.word ObjInit_DoNothing		; Object $4D
+	.word ObjInit_DoNothing	; Object $4D
 	.word ObjInit_DoNothing		; Object $4E
 	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjInit_BobOmbExplode	; Object $50 - OBJ_BOBOMBEXPLODE
@@ -71,7 +71,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjNorm_Boss		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjNorm_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
-	.word ObjNorm_DoNothing		; Object $4D
+	.word ObjNorm_Explosion	; Object $4D
 	.word ObjNorm_DoNothing		; Object $4E
 	.word ObjNorm_ChainChompFree	; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjNorm_BobOmb		; Object $50 - OBJ_BOBOMBEXPLODE
@@ -1283,6 +1283,13 @@ DonutLift_ChangeBlock:
 
 	RTS		 ; Return
 
+ObjNorm_Explosion:
+	LDA TrapSet
+	BEQ NoExplosionYet
+	JMP MineDoExplode
+
+NoExplosionYet:
+	RTS
 	; Bob-omb's starting X velocity depending on where Player is
 BobOmb_StartXVel:	.byte $08, -$08
 
@@ -1498,6 +1505,7 @@ PRG003_A79F:
 	; Get absolute value of X velocity
 	BPL PRG003_A7B0
 	JSR Negate
+
 PRG003_A7B0:
 	LSR A		 ; Divide by 2
 	PLP		 ; Restore CPU state
@@ -1930,6 +1938,9 @@ World3BossNorm:
 World4BossNorm:
 World5BossNorm:
 World6BossNorm:
+	RTS
+
+ObjInit_Explosion:
 	RTS
 
 Star_Vel:

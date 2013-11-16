@@ -5,10 +5,12 @@
     <pointer levelguid="11705e2e-bf8d-4e08-8873-5a0bcd2caa68" x="20" y="19" altentrance="false" />
     <pointer levelguid="b3c6ac79-3ec8-43ff-b510-b058ca7bd011" x="8" y="19" altentrance="false" />
     <pointer levelguid="b3c6ac79-3ec8-43ff-b510-b058ca7bd011" x="6" y="21" altentrance="true" />
+    <pointer levelguid="f0a489a9-7d86-4eaa-8b6b-25d37638e662" x="2" y="23" altentrance="false" />
+    <pointer levelguid="045ecbcf-d7df-4b4a-9ba2-8edf8fb7699c" x="11" y="21" altentrance="false" />
   </pointers>
   <spritedata>
     <sprite x="24" y="20" value="13" item="0" visibility="0" />
     <sprite x="24" y="22" value="13" item="0" visibility="0" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </world>
