@@ -1185,7 +1185,7 @@ Player_Control:
 	JSR VScreenTransitions
 	LDA #$02
 	STA Top_Of_Water
-	STA Air_Change
+	;STA Air_Change
 	LDA <Player_FlipBits
 	STA Player_FlipBits_OLD
 
@@ -1439,6 +1439,11 @@ PRG008_A819:
 	TYA
 	STA Player_InWater	; Merge water flag status
 	JSR Player_WaterSplash	 ; Hit water; splash!
+	LDA <Player_Suit
+	CMP #$04
+	BEQ PRG008_A827
+	LDA #$01
+	STA Air_Change
 
 PRG008_A827:
 
@@ -4224,7 +4229,6 @@ PRG008_B57F:
 	RTS
 
 PRG008_B580:
-	STA Debug_Snap
 	LDA <Player_Y
 	SEC
 	AND #$0F
@@ -4294,6 +4298,17 @@ PRG008_B583:
 	LDY TempY
 
 PRG008_B584:
+	CMP #TILE_PROP_TRAP
+	BNE NoTrapSet
+	LDA #$01
+	BNE SetTrapVal
+
+NoTrapSet:
+	LDA #$00
+
+SetTrapVal:
+	STA TrapSet
+
 	LDA TempA
 	RTS
 
@@ -5076,10 +5091,11 @@ Player_DoSpecialTiles:
 	LDA <Player_InAir
 	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
 
+	STA Debug_Snap
 	LDA Level_Tile_Prop_InFL	 ; Get tile near head...
-	CMP #TILE_ITEM_COIN
-	BLT PRG008_BC79
-	JMP PRG008_BD4B
+	CMP #TILE_PROP_SOLID_TOP
+	BGE PRG008_BC79
+	JMP PRG008_BCAA
 
 PRG008_BC79:
 	AND #$0F
@@ -5285,28 +5301,20 @@ PRG008_BE2E:
 
 PRG008_BE2F:
 	RTS		 ; Return
-MoveTileVert:	.byte $10, $F0, 0, 0
+MoveTileVert:	.byte $01, $FD, 0, 0
 MoveTileHorz:	.byte 0, 0, $10, $F0
 
 ApplyTileMove:
 	LDA MoveTileHorz, X
 	BEQ TryVertMove
-	LDY <Player_XVel
-	STY TempY
-	STA <Player_XVel
-	JSR Player_ApplyXVelocity
-	LDA TempY
+	ADD <Player_XVel
 	STA <Player_XVel
 	RTS
 	
 TryVertMove:
 	LDA MoveTileVert, X
 	BEQ MoveTileDone
-	LDY <Player_YVel
-	STY TempY
-	STA <Player_YVel
-	JSR Player_ApplyYVelocity
-	LDA TempY
+	ADD <Player_YVel
 	STA <Player_YVel
 
 MoveTileDone:

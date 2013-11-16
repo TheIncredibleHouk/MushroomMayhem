@@ -1305,6 +1305,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Weather_YVel:		.ds 6;
 	Weather_Pattern:	.ds 6;
 	AnimOffset:			.ds 1;
+	TrapSet:			.ds 1;
 
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
@@ -3055,7 +3056,8 @@ TILE_PROP_MOVE_UP		= $05 ;
 TILE_PROP_MOVE_DOWN		= $06 ;
 TILE_PROP_TREASURE		= $07 ; 
 TILE_PROP_LOCK			= $08 ; 
-TILE_PROP_ENEMY			= $09
+TILE_PROP_ENEMY			= $09 ;
+TILE_PROP_TRAP			= $0A ;
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
@@ -3476,7 +3478,8 @@ OBJ_DRYBONES		= $3F	; Dry Bones
 OBJ_BUSTERBEATLE	= $40	; Buster Beatle
 OBJ_ENDLEVELCARD	= $41	; End-of-level card
 OBJ_CHEEPCHEEPPOOL2POOL	= $42	; Pool-to-pool-to-pool hopping cheep cheep
-OBJ_CHEEPCHEEPPOOL2POOL2= $43	; Pool-to-pool hopping cheep cheep
+OBJ_CHEEPCHEEPPOOL2POOL2 = $43 ;
+OBJ_BEACHEDCHEEP= $43	; Pool-to-pool hopping cheep cheep
 OBJ_WOODENPLATUNSTABLE	= $44	; Fall-after-touch log platform
 OBJ_HOTFOOT		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)
 OBJ_PIRANHASPIKEBALL	= $46	; Tall plant carrying spike ball
@@ -3486,6 +3489,7 @@ OBJ_FLOATINGBGCLOUD	= $49	; Floating background cloud
 OBJ_MAGICSTAR	= $4A 	; Boom Boom (?) end-level ball
 OBJ_BOOMBOOMJUMP	= $4B	; Jumping Boom-Boom (can actually hit ? blocks!)
 OBJ_BOOMBOOMFLY		= $4C	; Flying Boom-boom
+OBJ_EXPLOSION		= $4D	;
 OBJ_CHAINCHOMPFREE	= $4F	; Jumping chain chomp head after he breaks free
 OBJ_BOBOMBEXPLODE	= $50	; Ready-to-explode Bob-Omb
 OBJ_ROTODISCDUAL	= $51	; Dual Rotodisc, sync, clockwise
