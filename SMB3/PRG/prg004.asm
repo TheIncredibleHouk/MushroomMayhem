@@ -2608,7 +2608,7 @@ PRG004_AE35:
 	LDX <SlotIndexBackup		 ; X = object slot index
 
 	; Set object immediately to "Normal" state
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_INIT
 	STA Objects_State,Y
 
 	; Set palette select 1
@@ -2619,8 +2619,10 @@ PRG004_AE35:
 	CMP Level_SlopeEn
 
 	; Non-sloped level uses Spiny Egg instead
-	LDA #OBJ_SPINYEGG
+	LDA MiscValue1
+	BNE PRG004_AE58
 
+	LDA #OBJ_SPINYEGG
 	BGE PRG004_AE58	 ; If Level_SlopeEn >= 0 (i.e. a level with slopes), jump to PRG004_AE58
 
 	; Sloped level uses Green "Dud" Egg
@@ -2634,10 +2636,10 @@ PRG004_AE58:
 
 	; Object appears at Lakitu Y - 12
 	LDA <Objects_Y,X
-	SBC #12
+	ADD #10
 	STA Objects_Y,Y
 	LDA <Objects_YHi,X
-	SBC #$00
+	ADD #$00
 	STA Objects_YHi,Y
 
 	; Object appears same as Lakitu X

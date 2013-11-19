@@ -3479,6 +3479,7 @@ OBJ_BUSTERBEATLE	= $40	; Buster Beatle
 OBJ_ENDLEVELCARD	= $41	; End-of-level card
 OBJ_CHEEPCHEEPPOOL2POOL	= $42	; Pool-to-pool-to-pool hopping cheep cheep
 OBJ_CHEEPCHEEPPOOL2POOL2 = $43 ;
+OBJ_ANTIGRAVITYCHEEP = $42 ;
 OBJ_BEACHEDCHEEP= $43	; Pool-to-pool hopping cheep cheep
 OBJ_WOODENPLATUNSTABLE	= $44	; Fall-after-touch log platform
 OBJ_HOTFOOT		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)

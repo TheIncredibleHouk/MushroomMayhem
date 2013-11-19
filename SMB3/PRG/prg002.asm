@@ -54,7 +54,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_TowardsPlayer	; Object $3F - OBJ_DRYBONES
 	.word ObjInit_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjInit_DoNothing		; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjInit_CheepCheepP2P	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.word ObjInit_CheepCheepP2P	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_FallingPlatform	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjInit_HotFoot		; Object $45 - OBJ_HOTFOOT
@@ -96,7 +96,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjNorm_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjNorm_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjNorm_CheepCheepP2P	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.word ObjNorm_CheepCheepP2P	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.word ObjNorm_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjNorm_PathFollowPlat	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjNorm_Hotfoot		; Object $45 - OBJ_HOTFOOT
@@ -139,7 +139,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjHit_DoNothing		; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjHit_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
-	.word Player_GetHurt		; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.word Player_GetHurt		; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.word Player_GetHurt		; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjHit_DoNothing		; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word Player_GetHurt		; Object $45 - OBJ_HOTFOOT
@@ -181,7 +181,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3F - OBJ_DRYBONES
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $45 - OBJ_HOTFOOT
@@ -229,7 +229,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP1	; Object $3F - OBJ_DRYBONES
 	.byte OA2_NOSHELLORSQUASH | OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA2_TDOGRP0	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA2_TDOGRP9	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA2_TDOGRP0	; Object $45 - OBJ_HOTFOOT
@@ -271,7 +271,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $3F - OBJ_DRYBONES
 	.byte OA3_HALT_BUSTERSPECIAL 	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA3_HALT_ENDCARDSPECIAL | OA3_TAILATKIMMUNE	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA3_HALT_JUSTDRAW 	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.byte OA3_HALT_JUSTDRAW 	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.byte OA3_HALT_JUSTDRAW 	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $45 - OBJ_HOTFOOT
@@ -313,7 +313,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT6 | $13	; Object $3F - OBJ_DRYBONES
 	.byte OPTS_SETPT5 | $0A	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OPTS_NOCHANGE	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OPTS_SETPT6 | $4F	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.byte OPTS_SETPT6 | $4F	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OPTS_NOCHANGE ; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OPTS_SETPT5 | $12	; Object $45 - OBJ_HOTFOOT
@@ -355,7 +355,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_NORMALANDKILLED	; Object $3F - OBJ_DRYBONES
 	.byte KILLACT_STANDARD	; Object $40 - OBJ_BUSTERBEATLE
 	.byte KILLACT_STANDARD	; Object $41 - OBJ_ENDLEVELCARD
-	.byte KILLACT_STANDARD	; Object $42 - OBJ_CHEEPCHEEPPOOL2POOL
+	.byte KILLACT_STANDARD	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.byte KILLACT_STANDARD	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte KILLACT_POOFDEATH	; Object $45 - OBJ_HOTFOOT
@@ -1169,6 +1169,9 @@ ObjInit_BeachedCheep:
 ObjInit_CheepCheepP2P:
 	LDA #$00
 	STA Objects_InWater,X
+	LDA #$04
+	STA <Objects_Var4,X	 ; Var4 = 4
+
 	RTS
 
 Restart_CheepCheepP2P2:
@@ -1218,6 +1221,7 @@ CCInWater:
 	BCC NormCCVelY
 ; cheep cheep is not in water, dampen it's jump
 	ADC #$1F
+
 NormCCVelY:
 	STA <Objects_YVel,X
 
@@ -3024,10 +3028,10 @@ PRG002_AF96:
 	LDA Level_ObjectID,X
 	PHA		 ; Save piranha/Patooie iID
 
-	; Temporarily switch and masquerade as a OBJ_CHEEPCHEEPPOOL2POOL
+	; Temporarily switch and masquerade as a OBJ_ANTIGRAVITYCHEEP
 	; NOTE: This really just needs to be a 16x16 sized object so we
 	; can "cheat" and use Object_HitTest on a "special object"
-	LDA #OBJ_CHEEPCHEEPPOOL2POOL
+	LDA #OBJ_ANTIGRAVITYCHEEP
 	STA Level_ObjectID,X
 
 	JSR Object_HitTest

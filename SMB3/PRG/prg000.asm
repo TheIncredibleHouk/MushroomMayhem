@@ -1777,7 +1777,7 @@ ObjState_Kicked:
 PRG000_CC75:
 	JSR Object_Move	 ; Perform standard object movements
 	JSR Object_DetermineHorzVis	 ; Determine horizontally visible sprites
-	;JSR TestShellBumpBlocks
+	JSR TestShellBumpBlocks
 
 	LDA <Objects_DetStat, X
 	AND #$08
@@ -1802,11 +1802,6 @@ PRG000_CC74:
  
 	LDA <Objects_XVel,X 
 	BNE PRG000_CC8D	 ; If object is moving horizontally, jump to PRG000_CC8D
- 
-	; Object not moving horizontally...
-	JSR Level_ObjCalcXDiffs 
-	LDA ObjKickXvel,Y 
-	STA <Objects_XVel,X	 ; Set X velocity based on which side of Player the object is on 
 
 PRG000_CC8D:
 	JSR Object_HitGround	; Align to floor
@@ -1896,7 +1891,8 @@ PRG000_CCF4:
 
 PRG000_CCF7: 
 	JSR Object_HandleBumpUnderneath	 ; Handle the kicked shelled object getting hit from underneath
- 
+
+PRG000_CCF8:
 	TXA 
 	ADD <Counter_1 
 	LSR A 
@@ -3038,6 +3034,10 @@ Object_HandleBumpUnderneath:
 	JSR Object_AnySprOffscreen
 	BNE PRG000_D1C4	 ; If any sprite is off-screen, jump to PRG000_D1C4 (RTS)
  
+	LDA Level_ObjectID,X 
+	CMP #OBJ_ICEBLOCK
+	BEQ Player_HitEnemy
+
 	LDA Object_TileFeet2 
 	AND #$3F
 	BNE Player_HitEnemy	 ; If object did not detect a block bump clear tile, jump to Player_HitEnemy 
