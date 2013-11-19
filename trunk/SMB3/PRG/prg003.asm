@@ -44,7 +44,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_FireSnake		; Object $59 - OBJ_FIRESNAKE
 	.word ObjInit_RotoDiscDualCW	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.word ObjInit_RotoDiscDualCCW	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.word ObjInit_DoNothing		; Object $5C - OBJ_ICEBLOCK
+	.word ObjInit_IceBlock		; Object $5C - OBJ_ICEBLOCK
 	.word ObjInit_DoNothing		; Object $5D - OBJ_STONEBLOCK
 	.word ObjInit_RotoDiscDualCW	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.word ObjInit_RotoDiscDualCW	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
@@ -239,7 +239,7 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4A - OBJ_MAGICSTAR
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4C - OBJ_BOOMBOOMFLY
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $4D
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $4D
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $4E
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OA3_HALT_NORMALONLY 	; Object $50 - OBJ_BOBOMBEXPLODE
@@ -455,6 +455,18 @@ ObjP63:
 ObjP64:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF
 
+ObjInit_IceBlock:
+	LDA #$ff
+	STA Objects_Timer3,X
+
+	LDA #OBJSTATE_KICKED	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
+	STA Objects_State,X
+	LDA #$01
+	STA Objects_SprAttr,X
+	LDA #$02
+	STA Objects_Frame, X
+	LDA <Objects_Y,X
+	RTS
 
 ObjNorm_IceBlock:
 
@@ -1284,6 +1296,7 @@ DonutLift_ChangeBlock:
 	RTS		 ; Return
 
 ObjNorm_Explosion:
+	JSR Object_DeleteOffScreen
 	LDA TrapSet
 	BEQ NoExplosionYet
 	JMP MineDoExplode

@@ -1076,6 +1076,7 @@ Bully_XVel: .byte $08, $F8
 Bully_XVelCharge: .byte $20, $E0
 
 ObjNorm_Bully:
+	
 	JSR Object_MoveAndReboundOffWall	 ; Move, detect, interact with blocks of world
 	JSR Level_ObjCalcXDiffs
 

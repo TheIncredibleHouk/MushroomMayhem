@@ -5091,7 +5091,6 @@ Player_DoSpecialTiles:
 	LDA <Player_InAir
 	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
 
-	STA Debug_Snap
 	LDA Level_Tile_Prop_InFL	 ; Get tile near head...
 	CMP #TILE_PROP_SOLID_TOP
 	BGE PRG008_BC79

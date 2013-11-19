@@ -1395,7 +1395,7 @@ PRG007_A6FD:
 
 ICE_BALL_SKIP1:
 
-	LDA #$03	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
+	LDA #$01	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
 	STA Objects_State,Y
 	LDA #OBJ_ICEBLOCK
 	STA Level_ObjectID,Y ; #DAHRKDAIZ Replace sprite with ice block
@@ -5634,23 +5634,30 @@ CFire_BulletBill:
 	LDA CannonFire_Timer,X
 	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
 
-	;LDA CannonFire_Y,X
-	;CMP Level_VertScroll
-	;LDA CannonFire_YHi,X
-	;SBC Level_VertScrollH
-	;BNE PRG007_BF28		; If Cannon Fire has fallen off screen vertically, jump to PRG007_BF28 (RTS)
-	;
-	;LDA CannonFire_X,X
-	;CMP <Horz_Scroll
-	;LDA CannonFire_XHi,X
-	;SBC <Horz_Scroll_Hi
-	;BNE PRG007_BF28		; If Cannon Fire has fallen off screen horizontally, jump to PRG007_BF28 (RTS)
+	LDA CannonFire_Y,X
+	CMP Level_VertScroll
+	LDA CannonFire_YHi,X
+	SBC Level_VertScrollH
+	BNE PRG007_BF28		; If Cannon Fire has fallen off screen vertically, jump to PRG007_BF28 (RTS)
+
+	LDA CannonFire_X,X
+	CMP <Horz_Scroll
+	LDA CannonFire_XHi,X
+	SBC <Horz_Scroll_Hi
+	BNE PRG007_BF28		; If Cannon Fire has fallen off screen horizontally, jump to PRG007_BF28 (RTS)
 
 	; Reset Cannon Fire timer to $80-$9F, random
-	LDA RandomN, X
-	ORA #$90
-	EOR #$80
+	LDA RandomN,X
+	AND #$1f
+	ORA #$80
+	LSR A
 	STA CannonFire_Timer,X
+
+	LDA CannonFire_X,X
+	SUB <Horz_Scroll
+	ADD #16
+	CMP #32
+	BLT PRG007_BF28		; If Cannon Fire X + 16 is less than 32 pixels from screen edge, jump to PRG007_BF28 (RTS)
 
 	LDA <Player_X
 	SBC CannonFire_X,X
