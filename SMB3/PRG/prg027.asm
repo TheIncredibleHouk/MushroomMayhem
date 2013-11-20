@@ -1903,6 +1903,14 @@ PRG027_B8F9:
 	LDA DAIZ_TEMP1
 	STA PAGE_C000
 	JSR PRGROM_Change_C000
+	LDX #$01
+	LDA MasterPal_Data
+	CMP #$0F
+	BNE SetDNActive
+	DEX
+
+SetDNActive:
+	STX DayNightActive
 	RTS		 ; Return
 
 

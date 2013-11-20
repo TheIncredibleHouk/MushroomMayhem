@@ -1306,6 +1306,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Weather_Pattern:	.ds 6;
 	AnimOffset:			.ds 1;
 	TrapSet:			.ds 1;
+	DayNightActive:		.ds 1;
 
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
@@ -3566,7 +3567,8 @@ OBJ_TILTINGPLATFORM	= $90	; Tilting platform
 OBJ_TWIRLINGPLATCWNS	= $91	; Twirling platform, clockwise, non-stop
 OBJ_TWIRLINGPLATCW	= $92	; Twirling platform, clockwise
 OBJ_TWIRLINGPERIODIC	= $93	; Twirling platform, periodic
-OBJ_BIGQBLOCK_3UP	= $94	; Big ? block (3 1-ups)
+OBJ_BIGQBLOCK_3UP	= $00 ; 
+OBJ_DIMMER	= $94	; Big ? block (3 1-ups)
 OBJ_BIGQBLOCK_MUSHROOM	= $95	; Big ? block (biggie)
 OBJ_BIGQBLOCK_FIREFLOWER= $96	; Big ? block (-flashing??- fireflower)
 OBJ_BIGQBLOCK_SUPERLEAF	= $97	; Big ? block (-green??- leaf)

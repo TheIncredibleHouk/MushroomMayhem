@@ -4870,8 +4870,7 @@ DoNightTransition:
 	BNE NightTransRTS
 	LDA NightTransition
 	BEQ NightTransRTS
-	LDA MasterPal_Data
-	CMP #$0F
+	LDA DayNightActive
 	BEQ SkipNightTransition
 	LDA NightTransition
 	CMP #$01

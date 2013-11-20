@@ -28,13 +28,13 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_FireBarCCW	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.word ObjInit_IceBarCW	; Object $92 - OBJ_TWIRLINGPLATCW
 	.word ObjInit_IceBarCCW	; Object $93 - OBJ_TWIRLINGPERIODIC
-	.word ObjInit_BigQBlock		; Object $94 - OBJ_BIGQBLOCK_3UP
-	.word ObjInit_BigQBlock		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
-	.word ObjInit_BigQBlock		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
-	.word ObjInit_BigQBlock		; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
-	.word ObjInit_BigQBlock		; Object $98 - OBJ_BIGQBLOCK_TANOOKI
-	.word ObjInit_BigQBlock		; Object $99 - OBJ_BIGQBLOCK_FROG
-	.word ObjInit_BigQBlock		; Object $9A - OBJ_BIGQBLOCK_HAMMER
+	.word ObjInit_Dimmer		; Object $94 - OBJ_DIMMER
+	.word ObjInit_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
+	.word ObjInit_DoNothing		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
+	.word ObjInit_DoNothing		; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
+	.word ObjInit_DoNothing		; Object $98 - OBJ_BIGQBLOCK_TANOOKI
+	.word ObjInit_DoNothing		; Object $99 - OBJ_BIGQBLOCK_FROG
+	.word ObjInit_DoNothing		; Object $9A - OBJ_BIGQBLOCK_HAMMER
 	.word ObjInit_DoNothing		; Object $9B
 	.word ObjInit_DoNothing		; Object $9C
 	.word ObjInit_FireJetUpward	; Object $9D - OBJ_FIREJET_UPWARD
@@ -70,13 +70,13 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_ProjectileBarCW	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.word ObjNorm_ProjectileBarCW	; Object $92 - OBJ_TWIRLINGPLATCW
 	.word ObjNorm_ProjectileBarCW	; Object $93 - OBJ_TWIRLINGPERIODIC
-	.word ObjNorm_BigQBlock		; Object $94 - OBJ_BIGQBLOCK_3UP
-	.word ObjNorm_BigQBlock		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
-	.word ObjNorm_BigQBlock		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
-	.word ObjNorm_BigQBlock		; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
-	.word ObjNorm_BigQBlock		; Object $98 - OBJ_BIGQBLOCK_TANOOKI
-	.word ObjNorm_BigQBlock		; Object $99 - OBJ_BIGQBLOCK_FROG
-	.word ObjNorm_BigQBlock		; Object $9A - OBJ_BIGQBLOCK_HAMMER
+	.word ObjNorm_Dimmer		; Object $94 - OBJ_DIMMER
+	.word ObjNorm_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
+	.word ObjNorm_DoNothing		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
+	.word ObjNorm_DoNothing		; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
+	.word ObjNorm_DoNothing		; Object $98 - OBJ_BIGQBLOCK_TANOOKI
+	.word ObjNorm_DoNothing		; Object $99 - OBJ_BIGQBLOCK_FROG
+	.word ObjNorm_DoNothing		; Object $9A - OBJ_BIGQBLOCK_HAMMER
 	.word ObjNorm_DoNothing		; Object $9B
 	.word ObjNorm_DoNothing		; Object $9C
 	.word ObjNorm_FireJet		; Object $9D - OBJ_FIREJET_UPWARD
@@ -3563,394 +3563,87 @@ ObjNorm_ProjectileBarCCW:
 
 
 	; Bit set per Big ? Block within the world; they can only be opened once!!
-BigQBlock_GotItBits:
-	.byte $80, $40, $20, $10, $08, $04, $02, $01
 
-ObjInit_BigQBlock:
-
-	; Start just one pixel higher...
-	LDA <Objects_Y,X
-	BNE PRG005_B61F
-	DEC <Objects_YHi,X
-PRG005_B61F:
-	DEC <Objects_Y,X
-
-	LDY <Objects_XHi,X	; Depending on where it is positioned
-
-	LDA BigQBlock_GotIt
-	AND BigQBlock_GotItBits,Y
-	BEQ PRG005_B62E		; If you didn't open this Big ? Block yet, jump to PRG005_B62E (RTS)
-
-	INC Objects_Frame,X	 ; Otherwise, set it as already collected
-
-PRG005_B62E:
+ObjInit_Dimmer:
+	LDA #$00
+	STA DayNightActive
+	LDA #$04
+	STA Objects_Var1, X
 	RTS		 ; Return
 
-
-	; Set Y velocity based on value of Objects_Timer
-	; This is how it "bounces upward" when hit...
-BigQBlock_YVelByTimer:
-	.byte $00, $40, $30, $20, $10, $00, -$10, -$20, -$30, -$40
-
-ObjNorm_BigQBlock: 
-	JSR Object_DeleteOffScreen	; Delete block if it falls off-screen
-
-	JSR BigQBlock_Draw	; Draw the Big ? Block
-
-	LDA <Player_HaltGame
-	BNE PRG005_B62E	 ; If gameplay is halted, jump to PRG005_B62E (RTS)
-
-	LDA <Objects_Var5,X
-	BEQ PRG005_B65B	 ; If Var5 = 0 (no more power ups to emerge, mainly for 3-up), jump to PRG005_B65B
-
-	LDA Objects_Timer2,X
-	BNE PRG005_B65B	 ; If timer2 not expired, jump to PRG005_B65B
-
-	LDY #$04	 ; Y = 4
-PRG005_B64E:
-	LDA Objects_State,Y
-	BEQ PRG005_B656	 ; If this object slot is dead/empty, jump to PRG005_B656
-
-	DEY		 ; Y--
-	BNE PRG005_B64E	 ; While Y >= 0, loop!
-
-PRG005_B656:
-	JSR BigQBlock_EmergePowerup	 ; Power up emerges!
-	DEC <Objects_Var5,X	 ; Var5-- (one less power-up to emerge)
-
-PRG005_B65B:
-	LDY Objects_Timer,X
-
-	; Set proper Y velocity based on value of timer
-	LDA BigQBlock_YVelByTimer,Y
-	STA <Objects_YVel,X
-
-	JSR Object_ApplyYVel	 ; Apply Y velocity
-	JSR Object_HitTest	 ; Test if Player is colliding with Big ? Block
-	BCC PRG005_B6CF	 	; If not, jump to PRG005_B6CF (RTS)
-
-	LDA <Player_SpriteY
-	ADD #24
-	CMP <Objects_SpriteY,X
-	BGE PRG005_B69A	 ; If Player's sprite Y + 24 is beneath top of Big ? Block, jump to PRG005_B69A
-
-	; Not below the Big ? Block...
-
-	LDA <Player_YVel
-	BMI PRG005_B699	 ; If Player is moving upward (away from top of block), jump to PRG005_B699 (RTS)
-
-	; Set Player on top of the Big ? Block
-	LDA <Objects_Y,X
-	SUB #31
-	STA <Player_Y
-	LDA <Objects_YHi,X
-	SBC #$00
-	STA <Player_YHi
-
-	; Mark Player as not in air
-	LDY #$00
-	STY <Player_InAir
-
-	LDA Object_VelCarry
-	BPL PRG005_B68F	 ; If carry is positive, jump to PRG005_B68F
-
-	DEY		 ; Y = -1
-
-PRG005_B68F:
-
-	; Apply the X velocity carry
-	ADD <Player_X
-	STA <Player_X
-	TYA
-	ADC <Player_XHi
-	STA <Player_XHi
-
-PRG005_B699:
-	RTS		 ; Return
-
-PRG005_B69A:
-	LDA #-24
-
-	; If Player is small or ducking, jump to PRG005_B6A5, otherwise jump to PRG005_B6A7
-	LDY <Player_Suit
-	BEQ PRG005_B6A5
-	LDY Player_IsDucking
-	BEQ PRG005_B6A7
-
-PRG005_B6A5:
-	LDA #-8		; For small or ducking only
-
-PRG005_B6A7:
-	ADD <Player_SpriteY
-	CMP <Objects_SpriteY,X
-	BLT PRG005_B6BA	 ; If Player's head is above Big ? Block, jump to PRG005_B6BA
-
-	LDA <Player_YVel
-	BPL PRG005_B6B9	 ; If Player is not moving upward, jump to PRG005_B6B9
-
-	; Bounce off Big ? Block
-	LDA #$10
-	STA <Player_YVel
-
-	JSR BigQBlock_Open	 ; Open the Big ? Block...
-
-PRG005_B6B9:
-	RTS		 ; Return
-
-
-PRG005_B6BA:
-
-	; NOTE: Arrow platform uses this code too
-
-	JSR Level_ObjCalcXDiffs
-	INY	; Makes this value agree with Player pressing left/right on pad
-
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	STA <Temp_Var1	 ; Temp_Var1 = non-zero if Player is pressing left or right
-
-	LDA #$00	; Halt Player if he presses direction "into" the Big ? Block
-
-	CPY <Temp_Var1
-	BNE PRG005_B6CD	 ; If Player is doing that, jump to PRG005_B6CD
-
-	LDA BigQBlock_PlayerPushXVel-1,Y	 ; Get direction of Player away from block
-
-PRG005_B6CD:
-	STA <Player_XVel	 ; Set Player's velocity appropriately
-
-PRG005_B6CF:
-	RTS		 ; Return
-
-BigQBlock_PlayerPushXVel:	.byte $04, -$04
-
-BigQBlock_Item:
-	.byte OBJ_POWERUP_NINJASHROOM		; OBJ_BIGQBLOCK_3UP
-	.byte OBJ_POWERUP_MUSHROOM	; OBJ_BIGQBLOCK_MUSHROOM (not used!!)
-	.byte OBJ_POWERUP_FIREFLOWER	; OBJ_BIGQBLOCK_FIREFLOWER (not used!!)
-	.byte OBJ_POWERUP_SUPERLEAF	; OBJ_BIGQBLOCK_SUPERLEAF (not used!!)
-	.byte OBJ_POWERUP_STARMAN	; OBJ_BIGQBLOCK_TANOOKI (frame change to Starman makes it a Tanooki suit)
-	.byte OBJ_POWERUP_STARMAN	; OBJ_BIGQBLOCK_FROG (frame change to Starman makes it a Frog suit)
-	.byte OBJ_POWERUP_STARMAN	; OBJ_BIGQBLOCK_HAMMER (frame change to Starman makes it a Hammer suit)
-
-BigQBlock_StarManFlash:
-	.byte $01	; OBJ_BIGQBLOCK_3UP
-	.byte $01	; OBJ_BIGQBLOCK_MUSHROOM (not used!!)
-	.byte $80	; OBJ_BIGQBLOCK_FIREFLOWER (not used!!)
-	.byte $01	; OBJ_BIGQBLOCK_SUPERLEAF (not used!!)
-	.byte $01	; OBJ_BIGQBLOCK_TANOOKI
-	.byte $02	; OBJ_BIGQBLOCK_FROG
-	.byte $03	; OBJ_BIGQBLOCK_HAMMER
-
-BigQBlock_Open:
-	LDA Objects_Frame,X	 
-	BNE PRG005_B70D	 ; If this Big ? Block is already opened, jump to PRG005_B70D
-
-	LDY #$05	 ; Y = 5
-	JSR BigQBlock_EmergePowerup	 ; Emerge power up
-
-	LDA Level_ObjectID,X
-	CMP #OBJ_BIGQBLOCK_3UP
-	BNE PRG005_B6F5	 ; If this is NOT a 3-Up Big ? Block, jump to PRG005_B6F5
- 
-	; Var5 = 2 (2 more 1-ups to emerge after this one)
-	LDA #$02
-	STA <Objects_Var5,X
-
-PRG005_B6F5:
-
-	; Shake effect!
-	LDA #$40
-	STA Level_Vibration
-
-	; Set timer to $0A
-	LDA #$0a
-	STA Objects_Timer,X
-
-	INC Objects_Frame,X	 ; Set to "opened" frame
-
-	LDY <Objects_XHi,X	; Get which "Big ? Block Area" we're in
-
-	; Set that bit in BigQBlock_GotIt so this block cannot ever be opened again...
-;	LDA BigQBlock_GotIt
-;	ORA BigQBlock_GotItBits,Y
-;	STA BigQBlock_GotIt
-
-PRG005_B70D:
-	RTS		 ; Return
-
-BigQBlock_EmergePowerup:
-
-	; Set to initializing state
-	LDA #OBJSTATE_INIT
-	STA Objects_State,Y
-
-	; Appear at +8 from Big ? Block
-	LDA <Objects_X,X
-	ADD #$08
-	STA Objects_X,Y
-	LDA <Objects_XHi,X
-	ADC #$00
-	STA Objects_XHi,Y
-
-	; Same Y
-	LDA <Objects_Y,X
-	STA Objects_Y,Y
-	LDA <Objects_YHi,X
-	STA Objects_YHi,Y
-
-	LDA Level_ObjectID,X
-	TAX
-
-	; Set item ID that should emerge from Big ? Block
-	LDA BigQBlock_Item-OBJ_BIGQBLOCK_3UP,X
-	STA Level_ObjectID,Y
-
-	; Set proper flag for emerging item (mainly sets correct for super suits)
-	LDA BigQBlock_StarManFlash-OBJ_BIGQBLOCK_3UP,X
-	STA PUp_StarManFlash
-
-	; So powerup knows which way to emerge
-	LDA #$01
-	STA Player_BounceDir
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	; Set timer to $50 (masks powerup)
-	LDA #$50
-	STA Objects_Timer2,X
-
-	RTS		 ; Return
-
-	; Patterns of the Big ? Block
-	; These are interlaced between the "unopened" and "opened" block
-BigQBlock_UpperPats:	.byte $87, $9B, $85, $99, $83, $99, $81, $97
-BigQBlock_LowerPats:	.byte $8F, $8F, $8D, $9D, $8B, $9D, $89, $89
-
-BigQBlock_Draw:
-	JSR Object_ShakeAndCalcSprite	 
-	STY <Temp_Var14		 ; Sprite RAM offset -> Temp_Var14
-
-	LDA <Temp_Var8
-	STA <Temp_Var15		; Horizontal visibility -> Temp_Var15
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	LDA Objects_Frame,X
-	LDX #$06	 ; X = 6
-	CMP #$00
-	BEQ PRG005_B76E	 ; If Frame = 0 (Not opened), jump to PRG005_B76E
- 
-	INX		 ; X = 7
-
-PRG005_B76E:
-	ASL <Temp_Var15
-	BCS PRG005_B788	 ; If this sprite is horizontally off-screen, jump to PRG005_B788
-
-	LDA <Temp_Var5
-	STA <Temp_Var16		; Vertical visibility -> Temp_Var16
-
-	LDA <Temp_Var1
-	LSR <Temp_Var16
-	BCS PRG005_B77F	 ; If this sprite is vertically off-screen, jump to PRG005_B77F
-
-	STA Sprite_RAM+$00,Y	 ; Set upper sprite Y
-
-PRG005_B77F:
-	LSR <Temp_Var16
-	BCS PRG005_B788	 ; If this sprite is vertically off-screen, jump to PRG005_B788
-
-	ADC #16		; +16 for lower sprite
-	STA Sprite_RAM+$04,Y	 ; Set lower sprite Y
-
-PRG005_B788:
-
-	; Set pattern of upper sprite
-	LDA BigQBlock_UpperPats,X
-	STA Sprite_RAM+$01,Y
-
-	; Set pattern of lower sprite
-	LDA BigQBlock_LowerPats,X
-	STA Sprite_RAM+$05,Y
-
-	; Palette select 3
-	LDA #SPR_PAL3
-	STA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$06,Y
-
-	; Sprite X
-	LDA <Temp_Var2	
-	STA Sprite_RAM+$03,Y
-	STA Sprite_RAM+$07,Y
-
-	ADD #$08	
-	STA <Temp_Var2	; +8 to next sprite to the right
-
-	; Sprite Offset += 8 (next two sprites)
-	TYA
-	ADD #$08
-	TAY
-
-	; X -= 2 (next appropriate pattern)
-	DEX
-	DEX
-	BMI PRG005_B7BC	 ; If this was the last cycle, jump to PRG005_B7BC
-
-	CPX #$02
-	BGE PRG005_B76E	 ; If this wasn't the second-to-last, jump to PRG005_B76E
-
-	JSR Object_GetRandNearUnusedSpr	 ; Mixes up the sprite index a little
-	JMP PRG005_B76E	 ; Loop!
-
-PRG005_B7BC:
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	LDA Objects_Timer2,X
-	BEQ PRG005_B7E5	 ; If timer2 expired, jump to PRG005_B7E5
-
-	LDY <Temp_Var14	 ; Y = Temp_Var14 (Sprite RAM offset)
-	LDX #$00	 ; X = 0
-
-
-	; This loop duplicates sprites to effectively mask the power up emerging
-	; (and possibly disrupt any other sprite in its scanline)
-
-PRG005_B7C7:
-
-	LDA Sprite_RAM+$08,Y
-	STA Sprite_RAM+$00,X
-
-	INY		 ; Y++
-	INX		 ; X++
-
-	CPX #$08
-	BGE PRG005_B7DD	 ; If 'X' >= 8, jump to PRG005_B7DD
-
-	CPX #$04
-	BNE PRG005_B7C7	 ; If 'X' <> 4, jump to PRG005_B7C7
-
-	; Y += 4 (next sprite)
-	INY
-	INY
-	INY
-	INY
-
-	BNE PRG005_B7C7	 ; Jump (technically always) to PRG005_B7C7
-
-PRG005_B7DD:
-	; Clear these sprites
-	LDA #$f8
-	STA Sprite_RAM-$04,Y
-	STA Sprite_RAM-$14,Y
-
-PRG005_B7E5:
-	LDX <SlotIndexBackup		 ; X = object slot index
-	RTS		 ; Return
-
-
-	; FIXME: Anyone want to claim this??
-PRG005_B7E8:
-	.byte $1C, $FF, $1C, $FA, $1C, $10, $1C, $15
+ObjNorm_Dimmer:
+	LDA <Counter_1
+	AND #$03
+	BNE FadeDone
+	LDY #$09
+
+DimmerFindBlocks:
+	LDA SpinnerBlockTimers, Y
+	BNE Dimmer_FadeIn
+	DEY
+	BPL DimmerFindBlocks
+	JMP Dimmer_FadeOut
+
+FadeDone:
+	RTS
+
+Dimmer_FadeOut:
+	STA Debug_Snap
+	LDA Objects_Var1, X
+	BEQ FadeDone
+	LDY #$0F
+
+Dimmer_FadeOut2:
+	LDA Palette_Buffer,Y	; Get this color
+	SUB #$10	 	; Subtract 16 from it
+	BPL Dimmer_FadeOut3	 	; If we didn't go below zero, jump to PRG026_AC55
+
+	LDA #$0f	 	; Otherwise, set it to safe minimum
+
+Dimmer_FadeOut3:
+	STA Palette_Buffer,Y	; Update palette color
+	DEY		 	; Y--
+	BPL Dimmer_FadeOut2	 	; While Y >= 0, loop!
+
+	STA Palette_Buffer + 16
+	STA Palette_Buffer + 20
+	STA Palette_Buffer + 24
+	STA Palette_Buffer + 28
+	; Commit palette fade
+	LDA #$06
+	STA <Graphics_Queue
+	DEC Objects_Var1, X
+	RTS
+
+Dimmer_FadeIn:
+	LDA Objects_Var1, X
+	CMP #$04
+	BEQ FadeDone
+	LDY #$0F
+
+Dimmer_FadeIn2:
+	LDA Palette_Buffer,Y	; Get this color
+	ADD #$10		 	; Add 16 to it
+	CMP MasterPal_Data, Y
+	BCC Dimmer_FadeIn3
+
+	LDA MasterPal_Data, Y	 	; Otherwise, set it to safe max
+
+Dimmer_FadeIn3:
+	STA Palette_Buffer,Y	; Update palette color
+	DEY		 	; Y--
+	BPL Dimmer_FadeIn2	 	; While Y >= 0, loop!
+
+	STA Palette_Buffer + 16
+	STA Palette_Buffer + 20
+	STA Palette_Buffer + 24
+	STA Palette_Buffer + 28
+
+	; Commit palette fade
+	LDA #$06
+	STA <Graphics_Queue
+	INC Objects_Var1, X
+	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_SpawnObjsAndBounce
