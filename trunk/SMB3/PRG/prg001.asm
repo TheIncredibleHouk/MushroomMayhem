@@ -2355,11 +2355,8 @@ PRG001_AD23:
 
 	; Basically this bumps the object up by 1 pixel...
 ObjInit_PDoor:
-	LDA <Objects_Y,X
-	BNE PRG001_AD2A	 	; If object's Y <> 0, jump to PRG001_AD2A
-	DEC <Objects_YHi,X	 ; Otherwise, decrement Y Hi (carry for next op)
-PRG001_AD2A:
-	DEC <Objects_Y,X	 ; Decrement object's Y
+	LDA #$00
+	STA DayNightActive
  	RTS		 ; Return
 
 ObjInit_WarpHide:
