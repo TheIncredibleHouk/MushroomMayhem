@@ -1211,6 +1211,11 @@ Fireball_ThawTile:
 	LDA <Temp_Var7
 	STA Level_BlockChgXHi
 
+	LDA ProjectileToSpinners
+	BEQ SkipSpinnerChange
+	JSR DrawProjectileTempBlock
+
+SkipSpinnerChange:
 	JMP PlayerProj_ChangeToPoof	 ; Change the projectile itself into a poof#$
 
 PRG007_A637:
@@ -5200,9 +5205,13 @@ PRG007_BCB4:
 
 	JSR PrepareNewObjectOrAbort
 
+	STA Debug_Snap
 	; It's a Bob-omb!!
 	LDA #OBJ_BOBOMBEXPLODE
 	STA Level_ObjectID,X
+
+	LDA #$0B
+	STA PatTable_BankSel+4
 
 	LDA #$10
 	STA Objects_Var1, X
@@ -5956,4 +5965,40 @@ Bounce_Ball:
 ProjChangeTile:
 	JSR Fireball_ThawTile	 ; Thaw the frozen tile!
 	LDA #$01
+	RTS
+
+DrawProjectileTempBlock:
+	STX TempX
+	LDX #$09
+
+FindFreeSpinnerP:
+	LDA SpinnerBlockTimers, X
+	BEQ DoSpinnerP
+	DEX
+	BPL FindFreeSpinnerP
+	LDX TempX
+	LDA #$00
+	RTS
+
+DoSpinnerP:
+	LDA Level_ChgTileEvent
+	EOR #$01
+	STA SpinnerBlocksReplace, X
+	LDA #$FF
+	STA SpinnerBlockTimers, X
+
+	LDA  <Temp_Var3
+	STA SpinnerBlocksY,X	 ; Store into object slot
+
+	LDA <Temp_Var4
+	STA SpinnerBlocksYHi,X ; Store Y Hi into object slot
+
+	LDA <Temp_Var7
+	STA SpinnerBlocksXHi,X ; Store X Hi into object slot
+
+	LDA <Temp_Var5
+	STA SpinnerBlocksX,X ; Store X Hi into object slot
+
+	LDX TempX
+	LDA TempY
 	RTS

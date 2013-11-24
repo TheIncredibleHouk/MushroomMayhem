@@ -1477,8 +1477,8 @@
     <block value="B7"></block>
     <block value="B8"></block>
     <block value="B9"></block>
-    <block value="BA"></block>
-    <block value="BB"></block>
+    <block value="BA">P-Switch Stomped</block>
+    <block value="BB">P-Switch Stomped</block>
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
@@ -1503,7 +1503,7 @@
     <block value="D1">P-Switch Stomped</block>
     <block value="D2">P-Switch Stomped</block>
     <block value="D3">P-Switch Stomped</block>
-    <block value="D4"></block>
+    <block value="D4">P-Switch Stomped</block>
     <block value="D5"></block>
     <block value="D6"></block>
     <block value="D7"></block>
@@ -1520,9 +1520,9 @@
     <block value="E2">P-Switch Stomped</block>
     <block value="E3">P-Switch Stomped</block>
     <block value="E4"></block>
-    <block value="E5"></block>
-    <block value="E6"></block>
-    <block value="E7"></block>
+    <block value="E5">P-Switch Stomped</block>
+    <block value="E6">P-Switch Stomped</block>
+    <block value="E7">P-Switch Stomped</block>
     <block value="E8"></block>
     <block value="E9"></block>
     <block value="EA"></block>
@@ -1536,9 +1536,9 @@
     <block value="F2">P-Switch Stomped</block>
     <block value="F3">P-Switch Stomped</block>
     <block value="F4"></block>
-    <block value="F5"></block>
-    <block value="F6"></block>
-    <block value="F7"></block>
+    <block value="F5">P-Switch Stomped</block>
+    <block value="F6">P-Switch Stomped</block>
+    <block value="F7">P-Switch Stomped</block>
     <block value="F8"></block>
     <block value="F9"></block>
     <block value="FA"></block>
@@ -3351,7 +3351,7 @@
     <block value="FB"></block>
     <block value="FC"></block>
     <block value="FD"></block>
-    <block value="FE">P-Switch</block>
+    <block value="FE"></block>
     <block value="FF">Empty ? Block</block>
   </set>
   <set leveltype="0D">

@@ -2649,7 +2649,7 @@ PRG004_AE58:
 	STA Objects_XHi,Y
 
 	; Set object Y velocity at -$30
-	LDA #-$30
+	LDA #$20
 	STA Objects_YVel,Y
 
 	LDA Level_ScrollDiffH

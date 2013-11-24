@@ -279,7 +279,7 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte OPTS_SETPT6 | $4F	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte OPTS_SETPT6 | $4F	; Object $93 - OBJ_TWIRLINGPERIODIC
-	.byte OPTS_SETPT5 | $4C	; Object $94 - OBJ_BIGQBLOCK_3UP
+	.byte OPTS_NOCHANGE ; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OPTS_SETPT5 | $4C	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte OPTS_SETPT5 | $4C	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
 	.byte OPTS_SETPT5 | $4C	; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
@@ -3567,14 +3567,14 @@ ObjNorm_ProjectileBarCCW:
 ObjInit_Dimmer:
 	LDA #$00
 	STA DayNightActive
-	LDA #$04
+	LDA #$00
 	STA Objects_Var1, X
 	RTS		 ; Return
 
 ObjNorm_Dimmer:
 	LDA <Counter_1
 	AND #$03
-	BNE FadeDone
+	BNE FadeOutDone
 	LDY #$09
 
 DimmerFindBlocks:
@@ -3584,65 +3584,54 @@ DimmerFindBlocks:
 	BPL DimmerFindBlocks
 	JMP Dimmer_FadeOut
 
-FadeDone:
-	RTS
-
 Dimmer_FadeOut:
-	STA Debug_Snap
 	LDA Objects_Var1, X
-	BEQ FadeDone
-	LDY #$0F
+	CMP #$04
+	BEQ FadeOutDone
+	INC Objects_Var1, X
 
-Dimmer_FadeOut2:
-	LDA Palette_Buffer,Y	; Get this color
-	SUB #$10	 	; Subtract 16 from it
-	BPL Dimmer_FadeOut3	 	; If we didn't go below zero, jump to PRG026_AC55
-
-	LDA #$0f	 	; Otherwise, set it to safe minimum
-
-Dimmer_FadeOut3:
-	STA Palette_Buffer,Y	; Update palette color
-	DEY		 	; Y--
-	BPL Dimmer_FadeOut2	 	; While Y >= 0, loop!
-
-	STA Palette_Buffer + 16
-	STA Palette_Buffer + 20
-	STA Palette_Buffer + 24
-	STA Palette_Buffer + 28
-	; Commit palette fade
-	LDA #$06
-	STA <Graphics_Queue
-	DEC Objects_Var1, X
+	JMP Dimmer_Fade
+FadeOutDone:
 	RTS
 
 Dimmer_FadeIn:
 	LDA Objects_Var1, X
-	CMP #$04
-	BEQ FadeDone
+	BEQ FadeInDone
+	DEC Objects_Var1, X
+	JMP Dimmer_Fade
+
+FadeInDone:
+	RTS
+
+Dimmer_Fade:
+	LDA Objects_Var1, X
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA TempA
 	LDY #$0F
 
-Dimmer_FadeIn2:
-	LDA Palette_Buffer,Y	; Get this color
-	ADD #$10		 	; Add 16 to it
-	CMP MasterPal_Data, Y
-	BCC Dimmer_FadeIn3
+Dimmer_Fade2:
+	LDA MasterPal_Data,Y	; Get this color
+	SUB TempA	 	; Subtract 16 from it
+	BPL Dimmer_Fade3	 	; If we didn't go below zero, jump to PRG026_AC55
 
-	LDA MasterPal_Data, Y	 	; Otherwise, set it to safe max
+	LDA #$0f	 	; Otherwise, set it to safe minimum
 
-Dimmer_FadeIn3:
+Dimmer_Fade3:
 	STA Palette_Buffer,Y	; Update palette color
 	DEY		 	; Y--
-	BPL Dimmer_FadeIn2	 	; While Y >= 0, loop!
+	BPL Dimmer_Fade2	 	; While Y >= 0, loop!
 
 	STA Palette_Buffer + 16
 	STA Palette_Buffer + 20
 	STA Palette_Buffer + 24
 	STA Palette_Buffer + 28
-
 	; Commit palette fade
 	LDA #$06
 	STA <Graphics_Queue
-	INC Objects_Var1, X
+	
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
