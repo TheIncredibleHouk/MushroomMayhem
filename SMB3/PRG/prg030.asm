@@ -397,6 +397,7 @@ PAGE_A000_ByTileset: ; $83E9
 PT2_Anim:	.byte $80, $82, $84, $86, $88, $8A, $8C, $8E
 PT2_Anim2:	.byte $D0, $D2, $D4, $D6, $D8, $DA, $DC, $DE
 PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
+PSwitch_Anim2: .byte $E0, $E2, $E4, $E6, $E8, $EA, $EC, $EE
 
 SPR_Anim:
 	.byte $90, $91, $92, $93
@@ -3272,6 +3273,11 @@ HorzNotLocked:
 	LDA [Temp_Var14],Y
 	AND #$80
 	STA Invincible_Enemies
+	
+	LDA [Temp_Var14],Y
+	AND #$40
+	STA ProjectileToSpinners
+
 	;set weather type
 	LDA [Temp_Var14],Y
 	AND #$30
@@ -3280,18 +3286,7 @@ HorzNotLocked:
 	LSR A
 	LSR A
 	STA PaletteEffect
-	;LDA [Temp_Var14], Y
-	;AND #$0F
-	;ASL A
-	;STA Wind
-	;LDA [Temp_Var14], Y
-	;AND #$10
-	;STA WindDirection
-	;BEQ DontReverseWind
-	;LDA Wind
-	;EOR #$FF
-	;STA Wind
-	;INC Wind
+
 ;DontReverseWind:
 	INY
 

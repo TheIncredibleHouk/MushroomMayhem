@@ -2620,6 +2620,7 @@ CFIRE_LASER		= $15	; Laser fire
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
 	DAIZ_TEMP4:			.ds 1	;
 	Invincible_Enemies: .ds	1	; Indicates the enemies are invincible
+	ProjectileToSpinners: ds 1	;
 	Pay_Toll_Timer:		.ds 1	; Used timer for paying tolls on Hammer Bros on map
 	Deduct_Coin_Timer:	.ds 1	; Used timer for deducting necessary coins on Hammer Bros. Map
 	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
@@ -2644,7 +2645,7 @@ CFIRE_LASER		= $15	; Laser fire
 
 	Music_Sq1Bend:		.ds 1	; Alters PAPU_FT1 for bend effects
 
-				.ds 3	; $7AF1-$7AF3 unused
+				.ds 2	; $7AF1-$7AF3 unused
 
 	Music_Sq2Bend:		.ds 1	; Alters PAPU_FT2 for bend effects
 
@@ -3063,6 +3064,7 @@ TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
 TILE_PROP_CHERRY		= $0E ;
+TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 ; solid properties
 ;TILE_PROP_HARMFUL		= $01 ; 
