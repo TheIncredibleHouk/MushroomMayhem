@@ -1260,7 +1260,7 @@ PRG030_897B:
 
 	LDA #$00	
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
-	STA ChallengeMode
+	STA LeftRightInfection
 
 	JSR LevelLoad			; Load the level layout data!
 	JSR ClearBlockedAreas
@@ -1832,7 +1832,7 @@ PRG030_8F31:
 	STA World_Map_Power,X
 	LDA #$00
 	STA ESwitch
-	STA ChallengeMode
+	STA LeftRightInfection
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled

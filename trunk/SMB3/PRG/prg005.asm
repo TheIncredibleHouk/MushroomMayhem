@@ -40,17 +40,17 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_FireJetUpward	; Object $9D - OBJ_FIREJET_UPWARD
 	.word ObjInit_Podoboo		; Object $9E - OBJ_PODOBOO
 	.word ObjInit_ParaBeetle	; Object $9F - OBJ_PARABEETLE
-	.word ObjInit_DRYPIRANHA	; Object $A0 - OBJ_DRYPIRANHA
-	.word ObjInit_DRYPIRANHAFlip	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
+	.word ObjInit_DryPiranha	; Object $A0 - OBJ_DRYPIRANHA
+	.word ObjInit_DryPiranhaFlip	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
 	.word ObjInit_RedPiranha	; Object $A2 - OBJ_REDPIRANHA
 	.word ObjInit_RedPiranhaFlip	; Object $A3 - OBJ_REDPIRANHA_FLIPPED
-	.word ObjInit_DRYPIRANHA	; Object $A4 - OBJ_PIRANHA_ICE
-	.word ObjInit_DRYPIRANHAFlip	; Object $A5 - OBJ_PIRANHA_ICEC
+	.word ObjInit_DryPiranha	; Object $A4 - OBJ_PIRANHA_ICE
+	.word ObjInit_DryPiranhaFlip	; Object $A5 - OBJ_PIRANHA_ICEC
 	.word ObjInit_RedPiranha	; Object $A6 - OBJ_VENUSFIRETRAP
 	.word ObjInit_RedPiranhaFlip	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjInit_DoNothing		; Object $A8 - OBJ_ARROWONE
-	.word ObjInit_DoNothing		; Object $A9 - OBJ_ARROWANY
-;	.word ObjInit_AirshipProp	; Object $AA - OBJ_AIRSHIPPROP
+	.word ObjInit_RedPiranha		; Object $A8 - OBJ_ACIDTRAP
+	.word ObjInit_RedPiranhaFlip		; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.word ObjInit_DoNothing		; Object $AA - OBJ_AIRSHIPPROP
 	.word ObjInit_FireJetRight	; Object $AB (doesn't really work, and the "normal" routine is even weirder)
 	.word ObjInit_FireJetLeft	; Object $AC - OBJ_FIREJET_LEFT
 	.word ObjInit_RockyWrench	; Object $AD - OBJ_ROCKYWRENCH
@@ -82,17 +82,17 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_FireJet		; Object $9D - OBJ_FIREJET_UPWARD
 	.word ObjNorm_Podoboo		; Object $9E - OBJ_PODOBOO
 	.word ObjNorm_ParaBeetle	; Object $9F - OBJ_PARABEETLE
-	.word ObjNorm_Piranha		; Object $A0 - OBJ_DRYPIRANHA
-	.word ObjNorm_Piranha		; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
+	.word ObjNorm_DryPiranha		; Object $A0 - OBJ_DRYPIRANHA
+	.word ObjNorm_DryPiranha		; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
 	.word ObjNorm_Piranha		; Object $A2 - OBJ_REDPIRANHA
 	.word ObjNorm_Piranha		; Object $A3 - OBJ_REDPIRANHA_FLIPPED
 	.word ObjNorm_Piranha		; Object $A4 - OBJ_PIRANHA_ICE
 	.word ObjNorm_Piranha		; Object $A5 - OBJ_PIRANHA_ICEC
 	.word ObjNorm_Piranha		; Object $A6 - OBJ_VENUSFIRETRAP
 	.word ObjNorm_Piranha		; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjNorm_ArrowPlatform	; Object $A8 - OBJ_ARROWONE
-	.word ObjNorm_ArrowPlatform	; Object $A9 - OBJ_ARROWANY
-;	.word ObjNorm_AirshipPropellar	; Object $AA - OBJ_AIRSHIPPROP
+	.word ObjNorm_Piranha	; Object $A8 - OBJ_ACIDTRAP
+	.word ObjNorm_Piranha	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.word ObjNorm_DoNothing	; Object $AA - OBJ_AIRSHIPPROP
 	.word FireJetLR_SpriteVisibleTest	; Object $AB (this call doesn't make any sense!!)
 	.word ObjNorm_FireJet		; Object $AC - OBJ_FIREJET_LEFT
 	.word ObjNorm_RockyWrench	; Object $AD - OBJ_ROCKYWRENCH
@@ -125,7 +125,7 @@ ObjectGroup04_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $9D - OBJ_FIREJET_UPWARD
 	.word ObjHit_DoNothing	; Object $9E - OBJ_PODOBOO
 	.word ObjHit_DoNothing	; Object $9F - OBJ_PARABEETLE
-	.word ObjHit_DoNothing	; Object $A0 - OBJ_DRYPIRANHA
+	.word Player_GetHurt	; Object $A0 - OBJ_DRYPIRANHA
 	.word ObjHit_DoNothing	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
 	.word ObjHit_DoNothing	; Object $A2 - OBJ_REDPIRANHA
 	.word ObjHit_DoNothing	; Object $A3 - OBJ_REDPIRANHA_FLIPPED
@@ -133,8 +133,8 @@ ObjectGroup04_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $A5 - OBJ_PIRANHA_ICEC
 	.word ObjHit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
 	.word ObjHit_DoNothing	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjHit_DoNothing	; Object $A8 - OBJ_ARROWONE
-	.word ObjHit_DoNothing	; Object $A9 - OBJ_ARROWANY
+	.word ObjHit_DoNothing	; Object $A8 - OBJ_ACIDTRAP
+	.word ObjHit_DoNothing	; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.word ObjHit_DoNothing	; Object $AA - OBJ_AIRSHIPPROP
 	.word ObjHit_DoNothing	; Object $AB
 	.word ObjHit_DoNothing	; Object $AC - OBJ_FIREJET_LEFT
@@ -175,8 +175,8 @@ ObjectGroup04_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A5 - OBJ_PIRANHA_ICEC
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $A8 - OBJ_ARROWONE
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $A9 - OBJ_ARROWANY
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A8 - OBJ_ACIDTRAP
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $AA - OBJ_AIRSHIPPROP
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $AB
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $AC - OBJ_FIREJET_LEFT
@@ -216,8 +216,8 @@ ObjectGroup04_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A5 - OBJ_PIRANHA_ICEC
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OA2_TDOGRP0	; Object $A8 - OBJ_ARROWONE
-	.byte OA2_TDOGRP0	; Object $A9 - OBJ_ARROWANY
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A8 - OBJ_ACIDTRAP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.byte OA2_TDOGRP0	; Object $AA - OBJ_AIRSHIPPROP
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $AB
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $AC - OBJ_FIREJET_LEFT
@@ -257,8 +257,8 @@ ObjectGroup04_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $A5 - OBJ_PIRANHA_ICEC
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $A8 - OBJ_ARROWONE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $A9 - OBJ_ARROWANY
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE	; Object $A8 - OBJ_ACIDTRAP
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE	; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $AA - OBJ_AIRSHIPPROP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $AB
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $AC - OBJ_FIREJET_LEFT
@@ -291,16 +291,16 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_SETPT6 | $37	; Object $9D - OBJ_FIREJET_UPWARD
 	.byte OPTS_NOCHANGE	; Object $9E - OBJ_PODOBOO
 	.byte OPTS_SETPT5 | $0E	; Object $9F - OBJ_PARABEETLE
-	.byte OPTS_SETPT6 | $13	; Object $A0 - OBJ_DRYPIRANHA
-	.byte OPTS_SETPT6 | $13	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
+	.byte OPTS_SETPT5 | $13	; Object $A0 - OBJ_DRYPIRANHA
+	.byte OPTS_SETPT5 | $13	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
 	.byte OPTS_SETPT6 | $4F	; Object $A2 - OBJ_REDPIRANHA
 	.byte OPTS_SETPT6 | $4F	; Object $A3 - OBJ_REDPIRANHA_FLIPPED
 	.byte OPTS_SETPT6 | $4F	; Object $A4 - OBJ_PIRANHA_ICE
 	.byte OPTS_SETPT6 | $4F	; Object $A5 - OBJ_PIRANHA_ICEC
 	.byte OPTS_SETPT6 | $4F	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OPTS_SETPT6 | $4F	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OPTS_SETPT5 | $5A	; Object $A8 - OBJ_ARROWONE
-	.byte OPTS_SETPT5 | $5A	; Object $A9 - OBJ_ARROWANY
+	.byte OPTS_SETPT6 | $4F	; Object $A8 - OBJ_ACIDTRAP
+	.byte OPTS_SETPT6 | $4F	; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.byte OPTS_SETPT5 | $36	; Object $AA - OBJ_AIRSHIPPROP
 	.byte OPTS_SETPT5 | $36	; Object $AB
 	.byte OPTS_SETPT6 | $37	; Object $AC - OBJ_FIREJET_LEFT
@@ -341,8 +341,8 @@ ObjectGroup04_KillAction:
 	.byte KILLACT_POOFDEATH	; Object $A5 - OBJ_PIRANHA_ICEC
 	.byte KILLACT_POOFDEATH	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte KILLACT_POOFDEATH	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte KILLACT_STANDARD	; Object $A8 - OBJ_ARROWONE
-	.byte KILLACT_STANDARD	; Object $A9 - OBJ_ARROWANY
+	.byte KILLACT_POOFDEATH	; Object $A8 - OBJ_ACIDTRAP
+	.byte KILLACT_POOFDEATH	; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.byte KILLACT_STANDARD	; Object $AA - OBJ_AIRSHIPPROP
 	.byte KILLACT_STANDARD	; Object $AB
 	.byte KILLACT_STANDARD	; Object $AC - OBJ_FIREJET_LEFT
@@ -403,8 +403,6 @@ ObjP9A:
 ObjP9B:
 ObjP9C:
 ObjP9E:
-ObjPA8:
-ObjPA9:
 ObjPAC:
 ObjPB1:
 	.byte $8D, $8D, $8F, $8F, $95, $95
@@ -415,7 +413,10 @@ ObjPB0:
 ObjP9D:
 ObjPB2:
 	.byte $DD, $71, $DF, $71, $D9, $71, $DB, $71, $CD, $D3, $CF, $D5, $71, $71, $71, $71, $CB, $D1
+
 ObjPA0:
+	.byte $A1, $A1, $A3, $A3, $A5, $A7, $A9, $AB
+
 ObjPA1:
 ObjPA2:
 ObjPA3:
@@ -424,6 +425,8 @@ ObjPA4:
 ObjPA5:
 ObjPA6:
 ObjPA7:
+ObjPA8:
+ObjPA9:
 	.byte $F1, $F3, $E3, $E3, $F5, $F7, $E3, $E3, $F1, $F3, $71, $71, $F5, $F7, $71, $71
 ObjP9F:
 	.byte $B1, $B3, $B5, $B7, $B1, $B3
@@ -1215,7 +1218,7 @@ ObjInit_RedPiranhaFlip:
 	LDA #16		; Start at Y + 16
 	BNE PRG005_A628	 ; Jump (technically always) to PRG005_A628
 
-ObjInit_DRYPIRANHAFlip:
+ObjInit_DryPiranhaFlip:
 	LDY #$19	 ; Y = $19
 
 	; X += 8
@@ -1231,12 +1234,13 @@ PRG005_A628:
 
 	BNE PRG005_A63A	 ; Jump (technically always) to PRG005_A63A
 
+ObjInit_DryPiranha:
+	LDA #$00
+	STA Objects_Var2, X	
+	STA Objects_Var6, X	
+
 ObjInit_RedPiranha:
 	LDY #33	; Y = 33	
-	BNE PRG005_A63A	; Jump (technically always) to PRG005_A63A
-
-ObjInit_DRYPIRANHA:
-	LDY #25	; Y = 25
 
 PRG005_A63A:
 	; Var5 = original Y
@@ -1261,6 +1265,126 @@ PRG005_A63A:
 
 	RTS		 ; Return
 
+DryPiranhaXSpeeds:
+	.byte $10, $F0
+
+ObjNorm_DryPiranha:
+	LDA <Player_HaltGame
+	BEQ ObjNorm_DryPiranha1
+	JMP DryPiranhaDraw
+
+ObjNorm_DryPiranha1:
+	JSR Object_DeleteOffScreen
+	LDA Objects_Var6, X
+	JSR DynJump
+
+	.word DryPiranhaWait
+	.word DryPiranhaAttack
+	.word DryPiranhaBounce
+
+DryPiranhaWait:
+	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var16
+	BPL DryPiranhaWait1
+	JSR Negate
+
+DryPiranhaWait1:
+	CMP #$28
+	BCS DryPiranhaWaitRTS
+
+	LDA #$B0
+	STA Objects_YVel, X
+	INC Objects_Var6, X
+	LDA #$04
+	STA Objects_Var3, X
+
+DryPiranhaWaitRTS:
+	RTS
+
+DryPiranhaAttack:
+
+	JSR Object_Move
+
+	LDA Objects_Var3, X
+	BEQ DryPiranhaAttack0
+	DEC Objects_Var3, X
+	JMP DryPiranhaDraw
+
+DryPiranhaAttack0:
+	JSR Object_WorldDetect4
+
+	LDA <Objects_DetStat,X 
+	AND #$0C 
+	BEQ DryPiranhaAttack2
+
+	LDA Objects_YVel, X
+	BMI DryPiranhaAttack1
+
+	JSR Object_HitGround
+	INC Objects_Var6, X
+	JSR Level_ObjCalcXDiffs
+	LDA DryPiranhaXSpeeds, Y
+	STA Objects_XVel, X
+	LDA #$02
+	STA Objects_Var2, X
+	JMP DryPiranhaDraw
+
+DryPiranhaAttack1:
+	LDA #$01
+	STA Objects_YVel, X
+
+DryPiranhaAttack2:
+	JMP DryPiranhaDraw
+
+
+DryPiranhaBounce:
+	JSR Object_WorldDetect4
+
+	LDA <Objects_DetStat,X 
+	AND #$0C 
+	BEQ DryPiranhaBounce3
+
+	LDA Objects_YVel, X
+	BMI DryPiranhaBounce1
+
+	LDA #$C0
+	BNE DryPiranhaBounce2
+
+DryPiranhaBounce1
+	LDA #$01
+
+DryPiranhaBounce2:
+	STA Objects_YVel,X
+
+DryPiranhaBounce3:
+	LDA <Objects_DetStat, X
+	AND #$03
+	BEQ DryPiranhaBounce4
+
+	LDA <Objects_XVel,X
+	JSR Negate
+	STA <Objects_XVel, X
+
+DryPiranhaBounce4:
+	LDA <Objects_XVel,X
+	ASL A
+	AND #SPR_HFLIP
+	EOR #SPR_HFLIP
+	STA Objects_FlipBits,X
+	JSR Object_Move
+
+DryPiranhaDraw:
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	ORA Objects_Var2, X
+	STA Objects_Frame, X
+	JSR Object_ShakeAndDrawMirrored
+	JMP Object_HitTestRespond
+	
+
 Piranha_Style:
 
 	; Bit 0: Set for "ceiling" (vertically flipped) version of Piranha
@@ -1272,6 +1396,8 @@ Piranha_Style:
 	.byte $01	; OBJ_REDPIRANHA_FLIPPED
 	.byte $80	; OBJ_PIRANHA_ICE
 	.byte $81	; OBJ_PIRANHA_ICEC
+	.byte $80	; OBJ_VENUSFIRETRAP
+	.byte $81	; OBJ_VENUSFIRETRAP_CEIL
 	.byte $80	; OBJ_VENUSFIRETRAP
 	.byte $81	; OBJ_VENUSFIRETRAP_CEIL
 
@@ -1403,7 +1529,7 @@ PRG005_A712:
 	LDA #(SPR_HFLIP | SPR_PAL2)	; Horizontal flip and Palette select 2
 	STA Sprite_RAM+$0E,Y
 
-	BNE PRG005_A738	 ; Jump (technically always) to PRG005_A738
+	BNE DrawMaskingSprite	 ; Jump (technically always) to DrawMaskingSprite
 
 PRG005_A71E:
 	LDX <Temp_Var1		; X = Temp_Var1
@@ -1421,7 +1547,7 @@ PRG005_A72E:
 	LDA #(SPR_HFLIP | SPR_VFLIP | SPR_PAL2)	; Horizontal and vertical flip and palette select 2
 	STA Sprite_RAM+$06,Y
 
-PRG005_A738:
+DrawMaskingSprite:
 	LDX <SlotIndexBackup		 ; X = object slot index
 
 
@@ -1741,9 +1867,17 @@ PRG005_A885:
 	; Piranha fireball
 	LDA Level_ObjectID, X
 	AND #$FE
+	CMP #OBJ_ACIDTRAP
+	BEQ Throw_Acid
+
 	CMP #OBJ_PIRANHA_ICE
 	BNE Throw_PFireball
+
 	LDA #SOBJ_ICEBALL
+	BNE STA_Proj
+
+Throw_Acid:
+	LDA #SOBJ_ACID
 	BNE STA_Proj
 
 Throw_PFireball:
