@@ -680,6 +680,7 @@ PRG008_A3C9:
 Player_Update:
 	LDA Player_QueueSuit
 	BEQ PRG008_A3FA	 ; If we don't have a suit change queued, jump to PRG008_A3FA
+	BMI PRG008_A3F2
 
 	CMP #$0f
 	BLS PRG008_A3EC	 ; If Player_QueueSuit < $0F (statue enable), jump to PRG008_A3EC
@@ -988,6 +989,7 @@ PowerUp_Palettes:
 	.byte $00, $30, $31, $01	; 9 - Unused
 	.byte $00, $06, $30, $0F	; A - #DAHRKDAIZ Boo Mario
 	.byte $00, $36, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
+	.byte $00, $0B, $2B, $0F	; infected
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Suit pallete code removed
@@ -995,7 +997,15 @@ PowerUp_Palettes:
 
 ; #DAHRKDAIZ if we're i special suit mode, we jump farther into the table.
 Level_SetPlayerPUpPal:
+	LDA LeftRightInfection
+	BEQ Normal_Palette
+	LDA #$0C
+	BNE Skipped_Palette
+
+Normal_Palette:
 	JSR Get_Normalized_Suit
+
+Skipped_Palette:
 	TAY
 	LDX Graphics_BufCnt
 	TXA

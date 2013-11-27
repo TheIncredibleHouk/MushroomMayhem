@@ -26,7 +26,7 @@
 	; the Player stepped on.  Note the zero near the end; if you look at tileset #8
 	; the donut lift appears right between what would be the multidirectional lift.
 ArrowPlat_ByTile:
-	.byte OBJ_ARROWONE, OBJ_ARROWONE, OBJ_ARROWONE, OBJ_ARROWONE, OBJ_ARROWONE, OBJ_ARROWONE, OBJ_ARROWANY, $00, OBJ_ARROWANY
+	.byte OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP_CEIL, $00, OBJ_ACIDTRAP_CEIL
 
 	; Sets the direction value as used by the arrow platform
 ArrowPlat_DirByTile:
@@ -253,24 +253,7 @@ PRG007_A113:
 	LDX #$04	 ; X = 4
 PRG007_A12E:
 	LDA Objects_State,X
-	BEQ PRG007_A144	 ; If this object slot is dead/empty, jump to PRG007_A144
-
-	; If this object slot is not some type of arrow platform, jump to PRG007_A146
-	LDA Level_ObjectID,X
-	CMP #OBJ_ARROWONE
-	BLT PRG007_A146
-	CMP #(OBJ_ARROWANY+1)
-	BGE PRG007_A146
-
-	; There's another arrow platform already active in this slot...
-
-	JSR Object_SetDeadEmpty	; Set this slot as dead/empty
-	JMP PRG007_A144	 	; Jump to PRG007_A144
-
-	; ^ I think the above is partially a mistake; they probably wanted to jump to something
-	; that would set 'X' and exit the loop.  This logic works as-is, but it requires another
-	; frame before the arrow lift will actually come into existence... unless another dead/
-	; empty object appears forward of this position...
+	BNE PRG007_A146	 ; If this object slot is dead/empty, jump to PRG007_A144
 
 PRG007_A144:
 	STX <Temp_Var3		; Temp_Var3 = index we just searched
@@ -2591,6 +2574,7 @@ SObj_CheckHitSolid:
 	LDA [Temp_Var1],Y ; Get the tile here
 	JSR PSwitch_SubstTileAndAttr
 	STA TempA
+	STA CurrentTile
 	TAY
 	LDA TileProperties, Y
 	STA CurrentTileProperty
@@ -2843,7 +2827,7 @@ PRG007_AF9E:
 	.word SObj_DoNothing	; 00: EMPTY / NOT USED (should never get here anyway)
 	.word SObj_Hammer	; 01: Hammer Bro hammer
 	.word SObj_Boomerang	; 02: Boomerangs
-	.word SObj_UNKNOWN	; 03: 
+	.word SObj_Acid	; 03: 
 	.word SObj_Fireball	; 04: Nipper fireball
 	.word SObj_Fireball	; 05: Piranha fireball
 	.word SObj_Microgoomba	; 06: Micro goombas
@@ -4154,6 +4138,9 @@ PRG007_B710:
 	CMP #SOBJ_HAMMER
 	BEQ PRG007_B729	 ; If this is a hammer, jump to PRG007_B729
 
+	CMP #SOBJ_ACID
+	BEQ PRG007_B729
+
 	; Otherwise, Temp_Var1 += 2
 	INC <Temp_Var1
 	INC <Temp_Var1
@@ -4225,6 +4212,8 @@ PRG007_B779:
 	LDY SpecialObj_ID,X
 	CPY #SOBJ_HAMMER
 	BEQ PRG007_B787	 ; If this is a hammer, jump to PRG007_B787
+	CPY #SOBJ_ACID
+	BEQ PRG007_B787
 
 	EOR #$80	 ; Invert sign on X velocity
 
@@ -4233,12 +4222,21 @@ PRG007_B787:
 	AND #SPR_HFLIP	 ; Horizontal flip bit
 	STA <Temp_Var1	 ; -> Temp_Var1
 
+	CPY #SOBJ_ACID
+	BEQ PRG007_B797
+
 	CPY #SOBJ_HAMMER
 	BNE PRG007_B798	 ; If this is not a hammer, jump to PRG007_B798
 
 	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
 
 	JSR Hammer_Draw	 ; Draw hammer
+	JMP PRG007_B7C5	 ; Jump to PRG007_B7C5
+
+PRG007_B797:
+	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
+
+	JSR Acid_Draw	 ; Draw hammer
 	JMP PRG007_B7C5	 ; Jump to PRG007_B7C5
 
 PRG007_B798:
@@ -4394,47 +4392,33 @@ PRG007_B84C:
 
 	RTS		 ; Return
 
-Hammer_Attributes:	.byte $00
-
-Hammer_Patterns:
-	.byte $6D, $6F
 
 Hammer_Draw:
-	LDA SpecialObj_Var1,X
-	AND #%00011100
-	LSR A
-	LSR A
-	TAX		 ; X = 0 to 7 (hammer's current frame)
-
 	; Set upper and lower sprite attributes
-	LDA <Temp_Var1
-	EOR Hammer_Attributes
-	ORA #SPR_PAL1
+	LDA #SPR_PAL1
 	STA Sprite_RAM+$02,Y
 	STA Sprite_RAM+$06,Y
 
-	LDA <Temp_Var1
-	BEQ PRG007_B888	 ; If no flip, jump to PRG007_B888
-
-	; Otherwise, X += 4 (4 "frames" ahead on the hammer for the flip)
-	INX
-	INX
-	INX
-	INX
-
-PRG007_B888:
-
-	; Cap X 0 to 7
-	TXA
-	AND #$07
-	TAX
-
 	; Set upper sprite pattern
-	LDA Hammer_Patterns
+	LDA #$6D
 	STA Sprite_RAM+$01,Y
 
 	; Set bottom sprite pattern
-	LDA Hammer_Patterns + 1
+	LDA #$6F
+	STA Sprite_RAM+$05,Y
+
+	RTS		 ; Return
+
+Acid_Draw:
+	; Set upper and lower sprite attributes
+	LDA #SPR_PAL1
+	STA Sprite_RAM+$02,Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
+	STA Sprite_RAM+$06,Y
+
+	; Set upper sprite pattern
+	LDA #$71
+	STA Sprite_RAM+$01,Y
 	STA Sprite_RAM+$05,Y
 
 	RTS		 ; Return
@@ -4582,96 +4566,48 @@ PRG007_B92A:
 
 PRG007_B979:
 	RTS		 ; Return
-
-SObj_UNKNOWN_XAccel:	.byte $01, -$01
-SObj_UNKNOWN_XLimit:	.byte $20, $E0
-SObj_UNKNOWN_YAccel:	.byte $04, -$01
-SObj_UNKNOWN_YLimit:	.byte $0F, -$12
 	
-SObj_UNKNOWN:
-	LDA <Player_HaltGame
-	BEQ PRG007_B989	 ; If gameplay not halted, jump to PRG007_B989
+SObj_Acid:
+	JSR SObj_Hammer
 
-	JMP PRG007_B773	 ; Otherwise, jump to PRG007_B773 (Hammer/Boomerang draw routines??)
+	STA Debug_Snap
+	JSR SObj_CheckHitSolid
+	BCC SObj_Acid2
 
-PRG007_B989:
-	LDA SpecialObj_Data,X
-	AND #$0f
-	BEQ PRG007_B993	 ; 1:16 ticks jump to PRG007_B993
+	LDX <SlotIndexBackup
+	LDA CurrentTileProperty
+	CMP #TILE_ITEM_COIN
+	BCS SObj_Acid1
 
-	JMP PRG007_B6F2	 ; Jump to PRG007_B6F2
+	AND #$0F
+	CMP #TILE_PROP_ACID_MELT
+	BNE SObj_Acid1
 
-PRG007_B993:
-	DEC SpecialObj_Var1,X	 ; Var1--
+	LDA CurrentTile
+	EOR #$01
 
-	LDY SpecialObj_Timer,X
-	BEQ PRG007_B9A1	 ; If timer not expired, jump to PRG007_B9A1
+	JSR Fireball_ThawTile
 
-	DEY		 ; Y--
+SObj_Acid1:
+	
+	JMP PRG007_B84C
 
-	BNE PRG007_B9C4	 ; If timer still has at least 1 tick left, jump to PRG007_B9C4
+SObj_Acid2:
+	RTS
 
-	INC SpecialObj_Var3,X	 ; SpecialObj_Var3++
+SObj_AcidPool:
+	JSR SObj_PlayerCollide
+	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
+	BEQ SObj_AcidPool1
+	
 
-PRG007_B9A1:
-	LDA <Counter_1
-	AND #$00	; ??
-	BNE PRG007_B9C4	 ; Jump technically NEVER to PRG007_B9C4
 
-	LDA SpecialObj_Var2,X
-	AND #$01
-	TAY		 ; Y = 0 or 1
 
-	; Accelerate X
-	LDA SpecialObj_XVel,X
-	ADD SObj_UNKNOWN_XAccel,Y
-	STA SpecialObj_XVel,X
+SObj_AcidPool1:
+	RTS
 
-	CMP SObj_UNKNOWN_XLimit,Y
-	BNE PRG007_B9C4	 ; If it hasn't hit its X velocity limit, jump to PRG007_B9C4
-
-	; Timer = $50
-	LDA #$50
-	STA SpecialObj_Timer,X
-
-	INC SpecialObj_Var2,X	 ; Var2++
-
-PRG007_B9C4:
-	LDA <Counter_1
-	AND #$03
-	BNE PRG007_B9ED	 ; 1:4 ticks proceed, otherwise jump to PRG007_B9ED
-
-	LDA SpecialObj_Var3,X
-	BEQ PRG007_B9ED	 ; If SpecialObj_Var3 = 0, jump to PRG007_B9ED
-
-	CMP #$03
-	BLT PRG007_B9D8	 ; If SpecialObj_Var3 < 3, jump to PRG007_B9D8
-
-	LDY SpecialObj_YVel,X
-	BEQ PRG007_B9ED	 ; If it is not moving vertically, jump to PRG007_B9ED
-
-PRG007_B9D8:
-	AND #$01
-	TAY		 ; Y = 0 or 1
-
-	; Accelerate Y
-	LDA SpecialObj_YVel,X
-	ADD SObj_UNKNOWN_YAccel,Y
-	STA SpecialObj_YVel,X
-
-	CMP SObj_UNKNOWN_YLimit,Y
-	BNE PRG007_B9ED	 ; If it hasn't hit its Y velocity limit, jump to PRG007_B9ED
-
-	INC SpecialObj_Var3,X	 ; SpecialObj_Var3++
-
-PRG007_B9ED:
-	JMP PRG007_B92A	 ; Jump to PRG007_B92A (uses more Boomerang behavior)
-
-Fireball_Patterns:	.byte $65, $65, $65, $65
-Fireball_Attributes:	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1
-
-Iceball_Patterns:	.byte $59, $59, $59, $59
-Iceball_Attributes:	.byte SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2
+Fireball_Patterns:	.byte $65, $59
+Fireball_Attributes:	.byte SPR_PAL1, SPR_PAL2
 
 SObj_Fireball:
 	LDA <Player_HaltGame
@@ -4761,18 +4697,11 @@ PRG007_BA55:
 	LDA SpecialObj_ID,X
 	CMP #SOBJ_ICEBALL
 	BNE Do_FB_Pattern
-	LDA #$08
-	STA DAIZ_TEMP1
+	INC DAIZ_TEMP1
 
 Do_FB_Pattern:
-	LDA SpecialObj_Var1,X
-	LSR A
-	LSR A
-	AND #$03
-	CLC
-	ADC DAIZ_TEMP1
-	TAX		 ; X = 0 to 3
-
+	
+	LDX DAIZ_TEMP1
 	; Set fireball pattern
 	LDA Fireball_Patterns,X
 	STA Sprite_RAM+$01,Y
@@ -5205,7 +5134,6 @@ PRG007_BCB4:
 
 	JSR PrepareNewObjectOrAbort
 
-	STA Debug_Snap
 	; It's a Bob-omb!!
 	LDA #OBJ_BOBOMBEXPLODE
 	STA Level_ObjectID,X

@@ -2051,8 +2051,6 @@ PRG031_F7F8:
 
 	CMP #$00	 ; 
 	BEQ PRG031_F871	 ; If tileset = 0 (World map), go to PRG031_F871
-	CMP #$07	 ; 
-	BEQ PRG031_F871	 ; If tileset = 7 (Toad house), go to PRG031_F871
 	CMP #17
 	BEQ PRG031_F871	 ; If tileset = 17 (N-Spade), go to PRG031_F871
 
@@ -3197,25 +3195,12 @@ PRG031_FEC3:
 	BPL PRG031_FEC0	 ; If Y hasn't gone negative (it should just now be 0), Read other joypad
 
 	LDA Player_Shell
-	BEQ NoShellControl
+	BEQ ChallengeRTS
 	LDA <Pad_Input
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Input
 	LDA <Pad_Holding
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
-	STA <Pad_Holding
-
-NoShellControl:
-	LDA ChallengeMode
-	CMP #$01
-	BNE ChallengeRTS
-	LDA <Pad_Input
-	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
-	ORA #(PAD_RIGHT)
-	STA <Pad_Input
-	LDA <Pad_Holding
-	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
-	ORA #(PAD_RIGHT)
 	STA <Pad_Holding
 
 ChallengeRTS:
@@ -3252,6 +3237,34 @@ Kill_Ctrls:
 	STA <Pad_Holding
 
 FrozenRTS:
+	LDA LeftRightInfection
+	BEQ InfectionRTS
+	DEC LeftRightInfection
+	BNE InfectionSwap
+	LDA #$17
+	STA Player_SuitLost
+	JSR Get_Normalized_Suit
+	ADD #$01
+	STA Player_QueueSuit
+
+InfectionSwap:
+
+	LDA <Pad_Input
+	AND #(PAD_LEFT | PAD_RIGHT)
+	BEQ InfectionSwap2
+	LDA <Pad_Input
+	EOR #(PAD_LEFT | PAD_RIGHT)
+	STA <Pad_Input
+
+InfectionSwap2:
+	LDA <Pad_Holding
+	AND #(PAD_LEFT | PAD_RIGHT)
+	BEQ InfectionRTS
+	LDA <Pad_Holding
+	EOR #(PAD_LEFT | PAD_RIGHT)
+	STA <Pad_Holding
+
+InfectionRTS:
 	RTS		 ; Return
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

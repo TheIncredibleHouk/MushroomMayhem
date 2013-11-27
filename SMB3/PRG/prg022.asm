@@ -3602,7 +3602,7 @@ Card_InitDeck:
 	LDY #(Card_InitialSet_End - Card_InitialSet - 1)
 PRG022_D659:
 	LDA Card_InitialSet,Y	 ; Get initial card
-	STA Card_ActiveSet,Y	 ; Store into card memory
+	;STA Card_ActiveSet,Y	 ; Store into card memory
 
 	DEY		 ; Y--
 	BPL PRG022_D659	; While Y >= 0, loop!
@@ -3625,7 +3625,7 @@ Card_RenderDeck:
 	LDY Card_Index
 	STY <Temp_Var11	
 
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	AND #$80
 	BNE PRG022_D683	 ; If card value bit 7 is set (card is already flipped over), jump to PRG022_D683
 
@@ -3820,7 +3820,7 @@ Card_SelectCard:
 Card_BeginFlip:
 	LDY Card_Index	 ; Y = Card_Index
 
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	AND #$80
 	BNE PRG022_D7D8	 ; If this card is already flipped, jump to PRG022_D7D8
 
@@ -3899,9 +3899,9 @@ Card_HandleMatch:
 	LDY Card_Index	 ; Y = Card_Index
 
 	; Mark second card as flipped
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	ORA #$80
-	STA Card_ActiveSet,Y
+	;STA Card_ActiveSet,Y
 
 	; Card_GameState = 0 (Return to card selection)
 	LDA #$00
@@ -3955,16 +3955,16 @@ Card_HandleMismatch:
 	LDY Card_Index	 ; Y = Card_Index
 
 	; Clear the card flipped flag on the second card
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	AND #$7f
-	STA Card_ActiveSet,Y
+	;STA Card_ActiveSet,Y
 
 	LDY Card_FirstIndex	 ; Y = Card_FirstIndex
 
 	; Clear the card flipped flag on the first card
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	AND #$7f
-	STA Card_ActiveSet,Y
+	;STA Card_ActiveSet,Y
 
 	; Mismatch sound
 	LDA #SND_MAPDENY
@@ -4086,22 +4086,22 @@ PRG022_D8E2:
 PRG022_D8E8:
 
 	; Temp_Var12 = 15th card
-	LDA Card_ActiveSet+14
+	;LDA Card_ActiveSet+14
 	STA <Temp_Var12	
 
 	LDX #$0D	 ; X = $0D
 PRG022_D8EF:
 
 	; Copy card into adjacent slot
-	LDA Card_ActiveSet,X
-	STA Card_ActiveSet+1,X
+	;LDA Card_ActiveSet,X
+	;STA Card_ActiveSet+1,X
 
 	DEX		 ; X--
 	BPL PRG022_D8EF	; While X >= 0, loop!
 
 	; Set the original 15th card as the first card
 	LDA <Temp_Var12	
-	STA Card_ActiveSet
+	;STA Card_ActiveSet
 
 	DEY		 ; Y--
 	BPL PRG022_D8E8	 ; While Y >= 0, loop!
@@ -4109,20 +4109,20 @@ PRG022_D8EF:
 	LDX #$00	 ; X = 0 (this routine will only be run once, even though they structured a loop)
 PRG022_D902:
 	; First card -> Temp_Var12
-	LDA Card_ActiveSet,X
+	;LDA Card_ActiveSet,X
 	STA <Temp_Var12	
 
 	; Sixth card -> first
-	LDA Card_ActiveSet+5,X
-	STA Card_ActiveSet,X
+	;LDA Card_ActiveSet+5,X
+	;STA Card_ActiveSet,X
 
 	; Eleventh card -> sixth
-	LDA Card_ActiveSet+10,X
-	STA Card_ActiveSet+5,X	
+	;LDA Card_ActiveSet+10,X
+	;STA Card_ActiveSet+5,X	
 
 	; Former first card -> Eleventh
 	LDA <Temp_Var12	
-	STA Card_ActiveSet+10,X
+	;STA Card_ActiveSet+10,X
 
 	; X -= 2
 	DEX
@@ -4185,7 +4185,7 @@ PRG022_D93E:
 	LDY <Temp_Var11	 ; Y = Temp_Var11 (current card)
 
 	; Get the card face sans "already flipped" bit -> Temp_Var12
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	AND #$7f
 	STA <Temp_Var12
 
@@ -4374,7 +4374,7 @@ PRG022_DA0C:
 	LDX Card_Index	 	; X = Card_Index
 
 	; Card face -> Temp_Var12
-	LDA Card_ActiveSet,X
+	;LDA Card_ActiveSet,X
 	STA <Temp_Var12	
 
 	ASL A
@@ -4537,14 +4537,14 @@ Card_CheckForMatch:
 
 	LDY Card_Index	 ; Y = Card_Index
 
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	CMP Card_MatchCard
 	BEQ PRG022_DB98	 ; If you picked the same card, jump to PRG022_DB98
 
 	; Mismatched cards
 
 	; UNUSED Wild card!
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	CMP #CARD_WILD
 	BNE PRG022_DB5D	 ; If this is not CARD_WILD, jump to PRG022_DB5D
 
@@ -4562,13 +4562,13 @@ PRG022_DB5D:
 
 	; Wild card!
 
-	LDA Card_ActiveSet,Y	; Get card face
+	;LDA Card_ActiveSet,Y	; Get card face
 	ORA #$80		; Mark card as flipped
 
 	LDY Card_FirstIndex	; Y = Card_FirstIndex (the first card that was flipped over)
 
 PRG022_DB6C:
-	STA Card_ActiveSet,Y	; Mark first card as flipped
+	;STA Card_ActiveSet,Y	; Mark first card as flipped
 	JMP PRG022_DB98	 	; Jump to PRG022_DB98
 
 PRG022_DB72:
@@ -4593,13 +4593,13 @@ PRG022_DB7E:
 	STY Card_FirstIndex
 
 	; Record the first card face
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	STA Card_MatchCard
 
 	; Mark card as flipped
-	LDA Card_ActiveSet,Y
+	;LDA Card_ActiveSet,Y
 	ORA #$80
-	STA Card_ActiveSet,Y
+	;STA Card_ActiveSet,Y
 
 	; Card_GameState = 0; Return to selection mode
 	LDA #$00
@@ -4913,7 +4913,7 @@ Card_MFSToInventory:	.byte $01, $02, $09	; Mushroom, Flower, Star card inventory
 Card_MatchPairReward:
 	LDY Card_Index		; Y = Card_Index
 
-	LDA Card_ActiveSet,Y	; Get the second card
+	;LDA Card_ActiveSet,Y	; Get the second card
 	AND #$0f		; Mainly to mask the bit 7 "flipped" marker
 	STA <Temp_Var13		; -> Temp_Var13
 

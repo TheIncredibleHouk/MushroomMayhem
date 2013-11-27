@@ -306,7 +306,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $71 - OBJ_SPINY
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $72 - OBJ_GOOMBA
 	.byte OAT_BOUNDBOX01	; Object $73 - OBJ_PARAGOOMBA
-	.byte OAT_BOUNDBOX01	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
+	.byte OAT_BOUNDBOX01	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $75 - OBJ_BOSSATTACK
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OAT_BOUNDBOX01	; Object $77 - OBJ_GREENCHEEP
@@ -2787,10 +2787,14 @@ PRG000_D07E:
 	STA Objects_Frame,X
 
 	LDA Level_ObjectID,X
+	CMP #OBJ_ZOMBIEGOOMBA
+	BEQ PRG000_D08C
 	CMP #OBJ_GOOMBA
 	BNE PRG000_D08D	 ; If object is not a goomba, jump to PRG000_D08D (ObjectGroup_PatternSets, i.e. the "giant" enemy alternative)
 
 	JMP Object_ShakeAndDrawMirrored	 ; Draw goomba as mirrored sprite and don't come back
+
+PRG000_D08C:
 
 PRG000_D08D:
 	JMP ObjectGroup_PatternSets	 ; Do the giant enemy draw routine and don't come back

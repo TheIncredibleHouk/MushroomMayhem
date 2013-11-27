@@ -2481,7 +2481,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Ignore_Vel_Stop:		.ds	1	;
 	ESwitch:				.ds 1	; For e-switch levels
 	BoomBoomMiscTimer:		.ds 1	;
-	ChallengeMode:			.ds 1	;
+	LeftRightInfection:			.ds 1	;
 	Frozen_State:			.ds 1	;
 	Frozen_Frame:			.ds	1
 	PaletteEffect:			.ds 1
@@ -2810,7 +2810,6 @@ CARD_1UP	= 3
 CARD_10COIN	= 4
 CARD_20COIN	= 5
 CARD_WILD	= 8	; UNUSED Wild card (can match any other!)
-	Card_ActiveSet:		.ds 18	; $7E82-$7E93 Active set of N-Spade game cards
 
 	; Tile_AttrTable:
 	; On the world map, it's always the following:
@@ -2950,7 +2949,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	BrickBust_HEn:		.ds 3	; $7FAC-$7FAE Bits to hide chunks (Bit 0 = Right, 1 = Left, 2 = Lower, 3 = Upper) OR poof counter
 
 	TileAnimSet:		.ds 1
-				.ds 2	; $7FAF-$7FB1 unused
 
 	CoinPUp_State:		.ds 4	; $7FB2-$7FB5 State of up to 4 "Power Up" coins (i.e. coins that come out of ? blocks and bricks)
 	CoinPUp_Y:		.ds 4	; $7FB6-$7FB9 Y of "Power Up" coins
@@ -2961,7 +2959,7 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	; Special Object IDs:
 SOBJ_HAMMER		= $01	; Hammer Bro hammer
 SOBJ_BOOMERANG		= $02	; Boomerangs
-SOBJ_UNKNOWN		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
+SOBJ_ACID		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
 SOBJ_NIPPERFIREBALL	= $04 	; Nipper fireball (falls)
 SOBJ_PIRANHAFIREBALL	= $05	; Piranha fireball
 SOBJ_MICROGOOMBA	= $06 	; Micro goombas
@@ -3077,8 +3075,10 @@ TILE_PROP_UNSTABLE		= $07 ;
 TILE_PROP_VPIPE_LEFT	= $08 ;
 TILE_PROP_VPIPE_RIGHT	= $09 ;
 TILE_PROP_HPIPE_BOTTOM	= $0A ;
+TILE_PROP_ACID_MELT		= $0C ;
 TILE_PROP_STONE			= $0D ;
 TILE_PROP_PSWITCH		= $0E ;
+TILE_PROP_ESWITCH		= $0F ;
 
 
 TILE_ITEM_COIN		= $F0 ;
@@ -3098,6 +3098,7 @@ TILE_ITEM_BRICK		= $FD ;
 TILE_ITEM_SPINNER	= $FE 
 	TileProperties:		 .ds 256;
 	CurrentTileProperty: .ds 1;
+	CurrentTile:		 .ds 1;
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
@@ -3105,7 +3106,7 @@ TILE_ITEM_SPINNER	= $FE
 	BankCoins:			.ds 6 ;
 	TileCheckX:			.ds 1
 	TileCheckXHi:		.ds 1
-						.ds 47;
+						.ds 66;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3533,7 +3534,8 @@ OBJ_BUZZYBEATLE		= $70	; Buzzy beatle
 OBJ_SPINY		= $71	; Spiny
 OBJ_GOOMBA		= $72	; Regular goomba
 OBJ_PARAGOOMBA		= $73	; Hopping red flying goomba
-OBJ_PARAGOOMBAWITHMICROS= $74	; Micro goomba dropping flying goomba
+OBJ_PARAGOOMBAWITHMICROS = $00 ;
+OBJ_ZOMBIEGOOMBA= $74	; Micro goomba dropping flying goomba
 OBJ_BOSSATTACK		= $75	; Lemmy's ball, Wendy's ring, Bowser's fireball, depends
 OBJ_POISONMUSHROOM	= $76	; Jumping Cheep Cheep
 OBJ_JUMPINGCHEEPCHEEP = $00 ;
@@ -3592,8 +3594,10 @@ OBJ_GREENPIRANHA_FIREC = $00
 OBJ_PIRANHA_ICEC	= $A5	; short, upside down, green fire plant
 OBJ_VENUSFIRETRAP	= $A6	; Tall red fire plant
 OBJ_VENUSFIRETRAP_CEIL	= $A7	; upside down tall fire plant
-OBJ_ARROWONE		= $A8	; One direction arrow platform in motion
-OBJ_ARROWANY		= $A9	; Changeable direction arrow platform in motion
+OBJ_ARROWONE		= $00
+OBJ_ACIDTRAP		= $A8	; One direction arrow platform in motion
+OBJ_ARROWANY		= $00
+OBJ_ACIDTRAP_CEIL		= $A9	; Changeable direction arrow platform in motion
 OBJ_AIRSHIPPROP		= $AA	; Airship Propellar
 OBJ_FIREJET_LEFT	= $AC	; Left fire jet
 OBJ_ROCKYWRENCH		= $AD	; Rocky wrench (red)
