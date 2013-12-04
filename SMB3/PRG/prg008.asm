@@ -903,16 +903,6 @@ Sound_FullPowerRing:
 
 
 PRG008_A4E4:
-	JSR Get_Normalized_Suit
-	CMP #$08
-	BNE Normal_PMeter
-	LDA <Pad_Holding
-	AND #PAD_B
-	BEQ Normal_PMeter
-	LDA #$01
-	STA Player_RunFlag
-
-Normal_PMeter:
 	LDA Player_Power
 	CMP #$7f
 	BNE PRG008_A4F8	 ; If Player_Power <> $7F (max power), jump to PRG008_A4F8
@@ -1167,8 +1157,18 @@ PRG008_A68D:
 	AND #TILE_PROP_WATER
 	BEQ PRG008_A6A6	 ; If the starting underwater tile is greater than the detected tile, jump to PRG008_A6A6
 
+	LDA LeftRightInfection
+	BEQ PRG008_A6A5
+	LDA #$17
+	STA Player_SuitLost
+	JSR Get_Normalized_Suit
+	ADD #$01
+	STA Player_QueueSuit
+	LDA #$00
+	STA LeftRightInfection
 	; Otherwise...
 
+PRG008_A6A5:
 	INY		 ; Y = 1 (Underwater)
 
 PRG008_A6A6:
@@ -1233,8 +1233,12 @@ PRG008_A6E5:
 	BEQ Normal_008_1
 
 	LDA <Pad_Input		
-	AND #(PAD_START | PAD_SELECT)
+	AND #(PAD_START | PAD_SELECT | PAD_B)
 	STA <Pad_Input
+
+	LDA <Pad_Holding
+	AND #(PAD_START | PAD_SELECT | PAD_B)
+	STA <Pad_Holding
 
 Normal_008_1:
 PRG008_A6F2:
@@ -3156,7 +3160,7 @@ Player_DoClimbAnim:
 	STA <Player_Frame	 ; Store into Player_Frame
 
 	LDA <Pad_Holding
-	AND #(PAD_UP | PAD_DOWN)
+	AND #(PAD_UP | PAD_DOWN | PAD_LEFT | PAD_RIGHT)
 	BEQ PRG008_B035	 ; If Player is NOT pressing UP or DOWN, jump to PRG008_B035
 
 	; Every 8 ticks, flip Player horizontally
@@ -3324,6 +3328,12 @@ Player_TailAttackAnim:
 
 	LDA #$12
 	STA Player_TailAttack	 ; Player_TailAttack = $12
+	LDA <Player_FlipBits
+	ROL A
+	ROL A
+	ROL A
+	AND #$01
+	STA Player_Direction
 
 	; Plays the tail wag sound
 	LDA Sound_QLevel1
@@ -4326,6 +4336,19 @@ NoTrapSet:
 SetTrapVal:
 	STA TrapSet
 
+PRG008_B585_3:
+
+	CPX #$02
+	BCS PRG008_B585_4
+	LDA <Level_Tile
+	AND #$3F
+	BNE PRG008_B585_4
+	LDA #$01
+	STA <Player_InAir
+	LDA #$B0
+	STA <Player_YVel
+
+PRG008_B585_4:
 	LDA TempA
 	RTS
 
@@ -4334,10 +4357,10 @@ PRG008_B585:
 	CPX  #$02
 	BCS PRG008_B585_2
 	CMP #TILE_PROP_PSWITCH
-	BNE PRG008_B585_2
+	BNE PRG008_B585_3
 
 	LDY <Temp_Var12		 
-	LDA [Map_Tile_AddrL],Y	
+	LDA <Level_Tile
 	EOR #$01
 	STA [Map_Tile_AddrL],Y	
 	JSR Level_QueueChangeBlock
@@ -4360,8 +4383,9 @@ PRG008_B585_2:
 	LDA TempA
 	RTS
 
+
 PRG008_B586
-	CPX #$04
+	CPX #$02
 	BCC NoFireFoxBusts
 	LDY Fox_FireBall
 	BNE DoSpinnerBusts
@@ -4378,12 +4402,8 @@ PRG008_B588:
 	RTS
 
 DoSpinnerBusts:
-	CMP #TILE_ITEM_SPINNER
-	BNE SpinnerBustRts
-	LDA Level_ChgTileEvent
-	BNE NoSpinnerKeepGoing
-	STX TempX
-	LDA #TILE_ITEM_BRICK
+	CMP #TILE_ITEM_COIN
+	BCC SpinnerBustRts
 	JSR Level_DoBumpBlocks
 	LDX TempX
 
@@ -4644,7 +4664,9 @@ PRG008_B82F:
 ; #DAHRKDAIZ - Code removed for Starman continuation block
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LATP_Spinner:
-
+	
+	LDA Fox_FireBall
+	BNE LATP_Brick
 	LDA Level_ChgTileEvent
 	BNE NoSpinner
 	STX TempX
@@ -5262,9 +5284,6 @@ PRG008_BD59:
 	CMP #$04
 	BGE PRG008_BD73
 	TAX
-	LDA <Counter_1
-	AND #$01
-	BNE PRG008_BE2E
 
 PushFull:
 	JSR ApplyTileMove
@@ -5317,19 +5336,67 @@ PRG008_BE2E:
 
 PRG008_BE2F:
 	RTS		 ; Return
-MoveTileVert:	.byte $01, $FD, 0, 0
-MoveTileHorz:	.byte 0, 0, $10, $F0
+MoveTileHorz:		.byte 0, 0, $01, $FF
+MoveTileVert:		.byte $01, $FD, 0, 0
+MoveTileVertUp:		.byte $01, $FF, 0, 0
+MoveTileVertDown:	.byte $03, $FC, 0, 0
+
 
 ApplyTileMove:
 	LDA MoveTileHorz, X
 	BEQ TryVertMove
-	ADD <Player_XVel
-	STA <Player_XVel
+	BMI ApplyTileXMove
+	ADD <Player_X
+	STA <Player_X
+	LDA <Player_XHi
+	ADC #$00
+	STA <Player_XHi
+	RTS
+
+ApplyTileXMove:
+	JSR Negate
+	STA TempA
+	LDA <Player_X
+	SUB TempA
+	STA <Player_X
+	LDA <Player_XHi
+	SBC #$00
+	STA <Player_XHi
 	RTS
 	
 TryVertMove:
-	LDA MoveTileVert, X
+	LDA <Counter_1
+	AND #$01
 	BEQ MoveTileDone
+
+	LDA Player_InWater
+	BNE TryVertMove3
+
+	CPX #$01
+	BNE TryVertMove1
+
+TryVertMove1:
+	LDA <Player_YVel
+	BMI TryVertMove2
+	TXA
+	ADD #$08
+	TAX
+	BNE TryVertMove3
+
+TryVertMove2:
+	TXA
+	ADD #$04
+	TAX
+
+	LDA <Player_InAir
+	BNE TryVertMove3
+	LDA #$D0
+	BNE TryVertMove4
+
+TryVertMove3:
+	LDA MoveTileVert, X
+
+TryVertMove4:
 	ADD <Player_YVel
 	STA <Player_YVel
 
@@ -5683,9 +5750,9 @@ CheckPlayer_YHi:
 	CMP <Level_Width
 	BEQ NotYHi
 	LDA <Player_YHi
-	BNE NotYHi
+	BPL NotYHi
 	LDA <Player_Y
-	CMP #04
+	CMP #$F4
 	BCS NotYHi
 
 	LDX <Player_XHi
@@ -5722,7 +5789,8 @@ CheckPlayer_YLow:
 	LDA <Player_XHi
 	BEQ NotYLo
 	LDA <Player_YHi
-	BEQ NotYLo
+	CMP #$01
+	BNE NotYLo
 	LDA <Player_Y
 	CMP #$A8
 	BCC NotYLo
@@ -5730,9 +5798,8 @@ CheckPlayer_YLow:
 	LDX <Player_XHi
 	DEX
 	STX <Player_XHi
-	LDA #$05
-	STA <Player_Y
 	LDA #$00
+	STA <Player_Y
 	STA <Player_YHi
 	INC Level_JctCtl
 	PLA

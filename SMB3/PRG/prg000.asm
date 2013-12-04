@@ -197,7 +197,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX02	; Object $04
 	.byte OAT_BOUNDBOX01	; Object $05
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $07 - OBJ_WARPHIDE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $07 - OBJ_BRICK
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0A
@@ -272,7 +272,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $52 - OBJ_TREASUREBOX
+	.byte OAT_BOUNDBOX01	; Object $52 - OBJ_SPINTULA
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OAT_BOUNDBOX12 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $54
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $55 - OBJ_BOBOMB
@@ -354,12 +354,12 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY		; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
 	.byte OAT_BOUNDBOX10	; Object $A2 - OBJ_REDPIRANHA
 	.byte OAT_BOUNDBOX10	; Object $A3 - OBJ_REDPIRANHA_FLIPPED
-	.byte OAT_BOUNDBOX02		; Object $A4 - OBJ_PIRANHA_ICE
-	.byte OAT_BOUNDBOX02		; Object $A5 - OBJ_PIRANHA_ICEC
+	.byte OAT_BOUNDBOX10		; Object $A4 - OBJ_PIRANHA_ICE
+	.byte OAT_BOUNDBOX10		; Object $A5 - OBJ_PIRANHA_ICEC
 	.byte OAT_BOUNDBOX10	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OAT_BOUNDBOX10	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OAT_BOUNDBOX11 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $A8 - OBJ_UPARROW
-	.byte OAT_BOUNDBOX11 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $A9 - OBJ_MANYARROW
+	.byte OAT_BOUNDBOX10	; Object $A8 - OBJ_UPARROW
+	.byte OAT_BOUNDBOX10	; Object $A9 - OBJ_MANYARROW
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $AA - OBJ_AIRSHIPPROP
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $AB
 	.byte OAT_BOUNDBOX15 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $AC - OBJ_FIREJET_LEFT
@@ -1293,7 +1293,6 @@ PRG000_CA81:
 	JSR Object_DetermineHorzVis	; Set flags based on which sprites of this object are horizontally visible
 
 	LDA Objects_State,X	 ; Get object state...
-
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -1946,8 +1945,12 @@ PRG000_CD36:
 	JSR Exp_Inc_Lots	; Get points by the kill tally!  (Incidentally, Exp_Inc would work too)
 
 PRG000_CD46:
+	LDA Level_ObjectID,X
+	CMP #OBJ_KEY
+	BEQ PRG000_CD47
 	JSR Object_DeleteOffScreen	 ; Delete the kicked shell object if it goes off-screen
 
+PRG000_CD47:
 	LDA Level_ObjectID,X
 	AND #$FE
 	CMP #OBJ_ICEBLOCK
@@ -2005,7 +2008,11 @@ PRG000_CD77:
 
 	LDA #$01
 	STA Objects_ColorCycle,X
-	JMP Object_ShakeAndDrawMirrored	 ; Draw sprite and don't come back!
+	JSR Object_ShakeAndDrawMirrored	 ; Draw sprite and don't come back!
+	LDA Sprite_RAM+$06,Y
+	ORA #SPR_VFLIP
+	STA Sprite_RAM+$06,Y
+	RTS
 
 PRG000_CD7F:
 	LDA #$15
@@ -3137,8 +3144,6 @@ PRG000_D1C5:
 
 	; Timer 2 has expired...
 
-	LDA Player_Slide
-	BNE PRG000_D1DB	 ; If Player is sliding, jump to PRG000_D1DB
 
 	; Player is not sliding...
 
@@ -3146,57 +3151,6 @@ PRG000_D1C5:
 	LDA ObjectGroup_Attributes2,Y	 ; Get attributes set 2
 	AND #OA2_GNDPLAYERMOD
 	BEQ PRG000_D218	 ; If OA2_GNDPLAYERMOD not set, jump to PRG000_D218
-	BNE PRG000_D205	 ; Otherwise, jump to PRG000_D205
-
-PRG000_D1DB:
-
-	; Player is sliding...
-
-	JSR PRG000_D218	 ; Also include code like attribute set 2 bit 1 is set
-
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BEQ PRG000_D204	 ; If object state is Normal, jump to PRG000_D204 (RTS)
-
-	STA <Temp_Var4	 ; Otherwise, store current state into Temp_Var4
-
-	JSR Enemy_Kill	 ; Kill enemy
-
-	LDA RandomN,X
-	AND #$1f	 ; Cap 0-31
-	ADC #-$4C	 
-	STA <Objects_YVel,X	 ; Object Y Vel = -$2D to -$4C
-
-	; Set object state to Killed
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
-	CMP #$09
-	BNE Dont_Coin_It8
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
-
-Dont_Coin_It8:
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X
-
-	LDA <Player_XVel	; Get Player X velocity
-	STA <Temp_Var1		; -> Temp_Var1 (yyyy xxxx)
-	ASL <Temp_Var1		; Shift 1 bit left (bit 7 into carry) (y yyyx xxx0)
-	ROR A			; A is now arithmatically shifted to the right (yyyyy xxx) (signed division by 2)
-	ADD <Objects_XVel,X	; Add the existing velocity to this (so object velocity is influenced by half Player velocity)
-	STA <Objects_XVel,X	; -> Object's X velocity
-
-PRG000_D204:
-	RTS		 ; Return
-
-
-PRG000_D205:
 
 	; Object attribute set 2 bit 1 is set...
 
@@ -3868,7 +3822,7 @@ PRG000_D497:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D499
 Level_PrepareNewObject:
-
+	
 	; Clear various object variables
 	LDA #$00
 	STA Objects_Var1,X
@@ -3893,6 +3847,7 @@ Level_PrepareNewObject:
 	STA Objects_InWater,X
 
 PRG000_D4C8:
+	STA Objects_IsGiant,X
 	CPX #$05
 	BGE PRG000_D506	 ; If using slot index >= 5, jump to PRG000_D506 (skip variables available only to slots 0 to 4)
 
@@ -3908,7 +3863,6 @@ PRG000_D4C8:
 	STA Objects_Var6,X	 
 	STA Objects_TargetingXVal,X
 	STA Objects_TargetingYVal,X
-	STA Objects_IsGiant,X
 	STA Objects_UseShortHTest,X
 	STA Objects_HitCount,X
 	STA Objects_DisPatChng,X
@@ -5824,6 +5778,57 @@ PRG000_DD19:
 
 	RTS		 ; Return
 
+
+Level_ObjCalcXBlockDiffs:
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	PHA
+	LDA <Objects_X,X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var15
+	LDA <Objects_XHi, X
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var15
+	STA <Temp_Var15
+	LDA <Player_X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var16
+	LDA <Player_XHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var16
+	STA <Temp_Var16
+	CMP <Temp_Var15
+	BCS ToTheRight
+
+	PLA
+	INC <Temp_Var16
+	LDA <Temp_Var15
+	SUB <Temp_Var16
+	LDY #$00
+	RTS
+
+ToTheRight:
+	PLA
+	ADD <Temp_Var15
+	STA <Temp_Var15
+	LDA <Temp_Var16
+	SUB <Temp_Var15
+	LDY #$01
+	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_ObjCalcXDiffs

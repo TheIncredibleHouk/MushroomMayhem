@@ -3239,13 +3239,6 @@ Kill_Ctrls:
 FrozenRTS:
 	LDA LeftRightInfection
 	BEQ InfectionRTS
-	DEC LeftRightInfection
-	BNE InfectionSwap
-	LDA #$17
-	STA Player_SuitLost
-	JSR Get_Normalized_Suit
-	ADD #$01
-	STA Player_QueueSuit
 
 InfectionSwap:
 

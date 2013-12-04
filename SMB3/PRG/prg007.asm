@@ -459,7 +459,6 @@ Gameplay_UpdateAndDrawMisc:
 	JSR CannonFire_UpdateAndDraw	 ; Update and draw the Cannon Fires
 	JSR PlayerProjs_UpdateAndDraw	 ; Update and draw Player's weapon projectiles
 	JSR Do_Boo_Mode
-	JSR Do_Burn_Mode
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_HAMMER
 	BEQ PRG007_A251	 ; If Player is wearing a Hammer Suit, jump to PRG007_A251
@@ -616,9 +615,7 @@ PRG007_A30B:
 
 
 	; #DAHRKDAIZ removed extra values for the sake of using animation trick
-PlayerFireball_Pats:		.byte $65
-PlayerIceball_Pats:			.byte $59 ; #DAHRKDAIZ - Iceball patterns
-PlayerFireball_FlipBits:	.byte SPR_PAL0
+PlayerFireball_Pats:		.byte $65, $59
 
 PlayerHammer_YOff:	.byte $00 ; NOTE: Next three values overlap into following table)
 PlayerHammer_XOff:	.byte $06, $06, $00, $00
@@ -881,83 +878,48 @@ PRG007_A453:
 	BEQ Use_Hammers
 	LDA #$4D
 	STA Sprite_RAM+$05,Y
-	LDA #$4F
+	LDA #$4D
 	STA Sprite_RAM+$01,Y
-	BNE Do_Sprite_Draw1
+	LDA #SPR_PAL3
+	STA Sprite_RAM+$06,Y
+	ORA #(SPR_VFLIP | SPR_HFLIP)
+	STA Sprite_RAM+$02,Y
+	SEC
+	JMP PRG007_A49A
 
 Use_Hammers:
 	LDA #$6D
 	STA Sprite_RAM+$05,Y
 	LDA #$6F
 	STA Sprite_RAM+$01,Y
-
-Do_Sprite_Draw1:
-	LDA <Temp_Var3		; Get horizontal flip bit
-	BEQ Do_Hammer_Sprite
-	LDA Sprite_RAM+$01,Y
-	STA DAIZ_TEMP2
-	LDA Sprite_RAM+$05,Y	; switch sprite order!
-	STA Sprite_RAM+$01,Y
-	LDA  DAIZ_TEMP2
-	STA Sprite_RAM+$05,Y
-
-	LDA <Temp_Var3
-
-Do_Hammer_Sprite:
+	LDA #SPR_PAL3
+	STA Sprite_RAM+$02,Y
 	STA Sprite_RAM+$06,Y
 
 	SEC		 ; Set carry (hammer)
-	JMP PRG007_A485	 ; Jump to PRG007_A485
+	JMP PRG007_A48C	 ; Jump to PRG007_A485
 
 PRG007_A471:
-
-	; Fireball only...
-
-	LDA Level_NoStopCnt
-	LSR A
-	LSR A
-	AND #$03
-	TAX		 ; X = 0 to 3
-
 	; Set fireball pattern
 	; #DAHRKDAIZ checks ice mario flag and interjects a different pattern
+	LDX #$00
 	LDA Special_Suit_Flag
-	BEQ STANDARD_FIREBALL_PAT
-	LDA PlayerIceball_Pats
-	BNE STORE_STANDARD_TILE
+	BEQ PRG007_A472
+	INX
 
-STANDARD_FIREBALL_PAT:
-	LDA PlayerFireball_Pats
-
-STORE_STANDARD_TILE:
+PRG007_A472:
+	LDA PlayerFireball_Pats, X
 	STA Sprite_RAM+$01,Y
-
-	; Set fireball attributes
-	LDA <Temp_Var3		 ; Get horizontal flip bit
-	EOR PlayerFireball_FlipBits	 ; XOR in the fireball flip bits
-
-	CLC		 ; Clear carry (fireball)
+	LDA #SPR_PAL0
+	STA Sprite_RAM+$02,Y
 
 PRG007_A485:
-	;LDX Player_Behind
-	;BEQ PRG007_A48C	 ; If Player is not "behind the scenes", jump to PRG007_A48C
-	;
-	;ORA #SPR_BEHINDBG	; Set priority
-
 PRG007_A48C:
-	STA Sprite_RAM+$02,Y	 ; Set Player Projectile attributes
-
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 
 	LDA <Player_HaltGame
 	BNE PRG007_A4A2	 ; If gameplay is halted, jump to PRG007_A4A2
 
-	; Gameplay not halted...
-	LDA #$00
-	BCC STORE_PRJTILE	 ; start #DAHRKDAIZ - hacked to store current projectile for later
-	LDA #$01
-STORE_PRJTILE:
-	STA DAIZ_TEMP1
 	JSR Fireball_DetectWorld	 ; end #DAHRKDAIZ Hit tests for projectiles (bounce, poof, etc.)
 
 PRG007_A49A:
@@ -974,25 +936,6 @@ PRG007_A4A2:
 
 Fireball_DetectWorld:
 
-	LDA Player_PartDetEn
-	BEQ PRG007_A4E7	 ; If Player_PartDetEn is not enabled, jump to PRG007_A4E7
-
-	; When fireball Y >= 160, force detection of bottom two rows of tiles
-
-	LDA <Temp_Var13	 ; Detect Y of fireball
-	CMP #160
-	BLT PRG007_A4E9	 ; If < 160, jump to PRG007_A4E9
-
-	SBC #16		 ; Detect Y - 16
-	STA <Temp_Var6	 ; -> Temp_Var6
-
-	AND #$f0	 ; Aligned to grid row
-	STA <Temp_Var3	 ; -> Temp_Var3
-
-	LDA #$01	 ; A = 1 (force bottom tiles)
-	JMP PRG007_A4F8	 ; Jump to PRG007_A4F8
-
-PRG007_A4E7:
 	LDA <Temp_Var13	 ; Detect Y of fireball
 
 PRG007_A4E9:
@@ -1057,17 +1000,19 @@ PRG007_A52D:
 	STA <Temp_Var1
 
 	; start #DAHRKDAIZ - code used to handle hammer specific tile interaction
-	LDA DAIZ_TEMP1
+	LDA <Player_Suit
+	CMP #$02
 	BEQ FIRE_BALL_COLL
 	LDA Special_Suit_Flag
 	BNE No_Block_Bust
 	LDA <Temp_Var1
-	CMP #TILE_PROP_SOLID_TOP
-	BCC No_Block_Bust
+	CMP #TILE_ITEM_BRICK
+	BEQ Do_Brick_Bust
 	AND #$0F
 	CMP #$0D
 	BNE No_Block_Bust
-	AND #$C0
+Do_Brick_Bust:
+
 	JSR Hammer_BrickBust
 
 No_Block_Bust:
@@ -2830,7 +2775,7 @@ PRG007_AF9E:
 	.word SObj_Acid	; 03: 
 	.word SObj_Fireball	; 04: Nipper fireball
 	.word SObj_Fireball	; 05: Piranha fireball
-	.word SObj_Microgoomba	; 06: Micro goombas
+	.word SObj_AcidPool	; 06: Micro goombas
 	.word SOBJ_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word SObj_WandBlast	; 08: Koopaling wand blast
 	.word SObj_KuriboShoe	; 09: Lost Kuribo shoe
@@ -3009,22 +2954,21 @@ PRG007_B11F:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
 
 	; Brick debris chunk pattern
+	LDA SpecialObj_Var2,X
+	BEQ UseBrickPattern
+
+	LDA #$59
+	STA Sprite_RAM+$01,Y
+	LDA #SPR_PAL1
+	BNE KeepDrawingDebris
+
+UseBrickPattern:
 	LDA #$4b
 	STA Sprite_RAM+$01,Y
-
-	; Temp_Var1 = SPR_PAL3
 	LDA #SPR_PAL3
 	STA <Temp_Var1
 
-	LDA SpecialObj_Timer,X
-	BEQ PRG007_B144	 ; If timer expired, jump to PRG007_B144
-
-	; Rotating colors for Ice Brick debris
-	LSR A
-	AND #$03
-	STA <Temp_Var1
-
-PRG007_B144:
+	; Temp_Var1 = SPR_PAL3
 
 	; Rotating effect
 	LDA Level_NoStopCnt
@@ -3036,8 +2980,9 @@ PRG007_B144:
 
 	; Set attributes
 	ORA <Temp_Var1		 ; OR'd with palette
-	STA Sprite_RAM+$02,Y
 
+KeepDrawingDebris:
+	STA Sprite_RAM+$02,Y
 	RTS		 ; Return
 
 PRG007_B153:
@@ -3844,224 +3789,6 @@ PRG007_B588:
 PRG007_B5B1:
 	RTS		 ; Return
 
-Microgoomba_XAccel:	.byte $01, -$01
-Microgoomba_XLimit:	.byte $10, -$10
-
-Microgoomba_SprRAMAlt:	.byte $00, $04, $08, $0C, $10, $14, $18, $1C, $20, $24
-
-SObj_Microgoomba:
-
-	; Load Microgoomba's graphics
-	LDA #$4f
-	STA PatTable_BankSel+5
-
-	LDA <Player_HaltGame
-	BEQ PRG007_B5CC	 ; If gameplay is not halted, jump to PRG007_B5CC
-
-	JMP Microgoomba_Draw	 ; Draw Microgoomba and don't come back!
-
-PRG007_B5CC:
-	LDA SpecialObj_Data,X
-	BNE PRG007_B5D4	 ; If SpecialObj_Data <> 0, jump to PRG007_B5D4
-
-	JMP PRG007_B660	 ; Otherwise, jump to PRG007_B660
-
-PRG007_B5D4:
-	BPL PRG007_B5DC	 ; If SpecialObj_Data > 0, jump to PRG007_B5DC
-
-	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
-	JMP Microgoomba_Draw	 ; Draw Microgoomba and don't come back
-
-PRG007_B5DC:
-	LDY Player_StarInv
-	BNE PRG007_B601		; If Player is invincible by Star Man, jump to PRG007_B601
-
-	LDY Player_InWater
-	BNE PRG007_B601	 ; If Player is in water, jump to PRG007_B601
-
-	INC Player_UphillSpeedIdx	 ; Player_UphillSpeedIdx = 1 (Microgoomba stuck to Player)
-
-	CMP #$05
-	BGE PRG007_B5F6	 ; If Microgoomba is already at his maximum stickiness, jump to PRG007_B5F6
-
-	; Player is trying to shake him...
-
-	LDA <Counter_1
-	AND #$0f
-	BNE PRG007_B5F6	 ; 1:16 ticks proceed, otherwise, jump to PRG007_B5F6
-
-	INC SpecialObj_Data,X	 ; SpecialObj_Data++ (Increase "stickiness", up to 5)
-
-PRG007_B5F6:
-	LDA <Pad_Input
-	AND #$ff	 ; This probably was intended to be a specific button rather than "everything"
-	BEQ PRG007_B617	 ; If Player is not pressing anything, jump to PRG007_B617
-
-	DEC SpecialObj_Data,X	 ; SpecialObj_Data--
-	BNE PRG007_B617	 	; If SpecialObj_Data > 0, jump to PRG007_B617
-
-PRG007_B601:
-
-	; Otherwise, SpecialObj_Data = $FF (Microgoomba's "death" value)
-	LDA #$ff
-	STA SpecialObj_Data,X
-
-	; Microgoomba flops off
-	LDA #-$20
-	STA SpecialObj_YVel,X
-
-	LDA #$08	 ; A = $08
-
-	LDY RandomN,X
-	BPL PRG007_B614	 ; 50/50 chance we jump to PRG007_B614
-
-	LDA #-$08	 ; A = -$08
-
-PRG007_B614:
-	STA SpecialObj_XVel,X	 ; Random X velocity
-
-PRG007_B617:
-	INC SpecialObj_Var1,X	 ; SpecialObj_Var1++
-
-	; Set Microgoomba's Y...
-	LDA SpecialObj_Var1,X
-	LSR A
-	LSR A
-	AND #%00011111
-	CMP #%00010000
-	AND #%00001111
-	BCC PRG007_B62B	 ; 16 ticks on, 16 ticks off; jump to PRG007_B62B
-
-	EOR #%00001111
-	ADC #$00
-
-PRG007_B62B:
-	CLC		 ; Clear carry
-
-	LDY Player_IsDucking
-	BNE PRG007_B635	 ; If Player is ducking, jump to PRG007_B635
-
-	LDY <Player_Suit
-	BNE PRG007_B639	 ; If Player is small, jump to PRG007_B639
-
-PRG007_B635:
-	LSR A
-	ADD #$08
-
-PRG007_B639:
-	ADC <Player_Y
-	STA SpecialObj_YLo,X
-	LDA <Player_YHi
-	ADC #$00
-	STA SpecialObj_YHi,X
-
-
-	; Set Microgoomba's X...
-	LDA SpecialObj_Var1,X
-	AND #%00011111
-	CMP #%00010000
-	AND #%00001111
-	BLT PRG007_B654	 ; 16 ticks on, 16 ticks off; jump to PRG007_B62B
-
-	EOR #%00001111
-	ADC #$00
-
-PRG007_B654:
-	SUB #$03
-	ADD <Player_X
-	STA SpecialObj_XLo,X
-
-	JMP Microgoomba_Draw	 ; Draw Microgoomba and don't come back
-
-PRG007_B660:
-
-	; SpecialObj_Data = 0...
-
-	JSR SObj_AddXVelFrac	 ; Apply X Velocity
-	JSR SObj_AddYVelFrac	 ; Apply Y Velocity
-
-	LDA SpecialObj_YVel,X
-	CMP #$10
-	BGS PRG007_B670	 ; If Microgoomba's Y velocity >= 16, jump to PRG007_B670
-
-	INC SpecialObj_YVel,X	 ; Otherwise, Y Vel++
-
-PRG007_B670:
-	LDA <Counter_1
-	AND #$00
-	BNE Microgoomba_Draw	 ; Technically NEVER jump to Microgoomba_Draw (??)
-
-	LDA SpecialObj_Var1,X
-	AND #$01
-	TAY		 ; Y = 0 or 1
-
-	; Accelerate Microgoomba
-	LDA SpecialObj_XVel,X
-	ADD Microgoomba_XAccel,Y
-	STA SpecialObj_XVel,X
-
-	CMP Microgoomba_XLimit,Y
-	BNE Microgoomba_Draw	 ; If Microgoomba hasn't his X velocity limit, jump to Microgoomba_Draw
-
-	INC SpecialObj_Var1,X	 ; Otherwise, SpecialObj_Var1++ (switch direction)
-
-Microgoomba_Draw:
-	JSR SObj_GetSprRAMOffChkVScreen
-	BNE PRG007_B6CE	 ; If Microgoomba is not on this vertical screen, jump to PRG007_B6CE (RTS)
-
-	LDA SpecialObj_Data,X
-	BEQ PRG007_B6A9
-	BMI PRG007_B6A9	 ; If SpecialObj_Data <= 0, jump to PRG007_B6A9
-
-	TXA
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	EOR SpecialObj_Var1,X
-	AND #%00010000
-	BEQ PRG007_B6A9	 ; Every 2 direction changes, jump to PRG007_B6A9
-
-	; Use alternate Sprite RAM offset periodically
-	LDY Microgoomba_SprRAMAlt,X	 ; Y = Microgoomba sprite RAM offset
-
-PRG007_B6A9:
-	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
-
-	; Microgoomba pattern
-	LDA #$ff
-	STA Sprite_RAM+$01,Y
-
-	LDX #SPR_PAL3
-
-	LDA Level_NoStopCnt
-	AND #$08
-	BEQ PRG007_B6BC	 ; 8 ticks on, 8 ticks off; jump to PRG007_B6BC
-
-	LDX #(SPR_PAL3 | SPR_HFLIP)
-
-PRG007_B6BC:
-
-	; Store selected attributes
-	TXA
-	STA Sprite_RAM+$02,Y
-
-	LDX <SlotIndexBackup	 ; X = special object slot
-
-	LDA SpecialObj_Data,X
-	BEQ PRG007_B6CF	 ; If SpecialObj_Data = 0, jump to PRG007_B6CF (Player to Microgoomba collision)
-	BPL PRG007_B6CE	 ; If SpecialObj_Data > 0 (Microgoomba still alive), jump to PRG007_B6CE (RTS)
-
-	; Microgoomba is dead; vertically flip
-	LDA #(SPR_PAL3 | SPR_VFLIP)
-	STA Sprite_RAM+$02,Y
-
-PRG007_B6CE:
-	RTS		 ; Return
-
-PRG007_B6CF:
-	JMP SObj_PlayerCollide	 ; Handle Player to Microgoomba collision and don't come back!
-
 	; The hammer starting X is offset
 Hammer_XOff:
 	;  Not-HF HF  (HF = Horizontally flipped)
@@ -4282,7 +4009,6 @@ PRG007_B7C5:
 	BNE PRG007_B826	 ; If lower 4 bits are not zero, jump to PRG007_B826 (RTS)
 
 SObj_PlayerCollide:
-
 	; Player to Special Object collision logic...
 
 	TXA		 ; object slot index -> 'A'
@@ -4322,20 +4048,14 @@ PRG007_B805:
 	ORA Player_OffScreen	; ... Player is off-screen ...
 	ORA <Temp_Var14		; ... or special object is not vertically on-screen ...
 	BNE PRG007_B843	 	; ... jump to Player_Behind_En (RTS)
-
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_MICROGOOMBA
-	BNE PRG007_B827	 ; If this is not a microgoomba, jump to PRG007_B827
-
-	; Microgooma sets to 5
-	LDA #$05
-	STA SpecialObj_Data,X
+	BEQ PRG007_B827
 
 PRG007_B826:
 	RTS		 ; Return
 
 
-PRG007_B827:
+PRG007_B827:	
+	LDA SpecialObj_ID, X
 	CMP #SOBJ_ICEBALL
 	BNE Try_Wand
 	JSR SetPlayerFrozen
@@ -4417,7 +4137,7 @@ Acid_Draw:
 	STA Sprite_RAM+$06,Y
 
 	; Set upper sprite pattern
-	LDA #$71
+	LDA #$4F
 	STA Sprite_RAM+$01,Y
 	STA Sprite_RAM+$05,Y
 
@@ -4570,7 +4290,6 @@ PRG007_B979:
 SObj_Acid:
 	JSR SObj_Hammer
 
-	STA Debug_Snap
 	JSR SObj_CheckHitSolid
 	BCC SObj_Acid2
 
@@ -4587,23 +4306,57 @@ SObj_Acid:
 	EOR #$01
 
 	JSR Fireball_ThawTile
+	JMP PRG007_B84C
 
 SObj_Acid1:
-	
-	JMP PRG007_B84C
+	LDX <SlotIndexBackup
+	LDA #$06
+	STA SpecialObj_ID, X
+	LDA SpecialObj_YLo, X
+	AND #$F0
+	ORA #$08
+	STA SpecialObj_YLo, X
+	LDA #$80
+	STA SpecialObj_Var1, X
 
 SObj_Acid2:
 	RTS
 
 SObj_AcidPool:
+	LDA <Player_HaltGame
+	BNE SObj_AcidPool1
+
+	DEC SpecialObj_Var1, X
+	BEQ SObj_AcidPool3
+
 	JSR SObj_PlayerCollide
-	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
-	BEQ SObj_AcidPool1
-	
-
-
 
 SObj_AcidPool1:
+	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
+	JSR SObj_SetSpriteXYRelative
+	LDA Sprite_RAM,Y
+	STA Sprite_RAM + $04, Y
+	LDA Sprite_RAM + $03, Y
+	ADD #$08
+	STA Sprite_RAM + $07, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAM+$02,Y
+	STA Sprite_RAM+$06,Y
+
+	LDA #$63
+	STA Sprite_RAM+$01,Y
+	STA Sprite_RAM+$05,Y
+
+
+SObj_AcidPool2:
+	RTS
+
+SObj_AcidPool3:
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, X
+	LDA #$1f
+	STA SpecialObj_Data,X
 	RTS
 
 Fireball_Patterns:	.byte $65, $59
@@ -4622,7 +4375,7 @@ SObj_Fireball:
 	CMP #SOBJ_PIRANHAFIREBALL
 	BEQ PRG007_BA2D	 ; If this is a piranha's fireball, jump to PRG007_BA2D
 
-	CMP #SOBJ_FIRECHOMPFIRE
+	CMP #SOBJ_PYRANTULAFIRE
 	BEQ PRG007_BA2D	 ; If this is a Fire Chomp's fireball, jump to PRG007_BA2D
 
 	; Not a piranha's or Fire Chomp's fireball
@@ -4665,7 +4418,7 @@ PRG007_BA33:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
 
 	LDA SpecialObj_ID,X
-	CMP #SOBJ_FIRECHOMPFIRE
+	CMP #SOBJ_PYRANTULAFIRE
 	BNE PRG007_BA55	 ; If this is not a Fire Chomp's fireball, jump to PRG007_BA55
 
 	; Fire Chomp's fireball only...
@@ -4674,11 +4427,11 @@ PRG007_BA33:
 	LSR A
 	LSR A
 
-	LDA #$89	 ; A = $89 (first fireball pattern)
+	LDA #$B3	 ; A = $89 (first fireball pattern)
 
 	BCC PRG007_BA4D	 ; 4 ticks on, 4 ticks off; jump to PRG007_BA4D
 
-	LDA #$8b	 ; A = $8B (second fireball pattern)
+	LDA #$B5	 ; A = $8B (second fireball pattern)
 
 PRG007_BA4D:
 	STA Sprite_RAM+$01,Y	 ; Set fireball pattern
@@ -5860,13 +5613,6 @@ Poof_Sound:
 	STA Player_SuitLost
  	RTS
 
-Do_Burn_Mode:
-	LDA  Burning_Time
-	BEQ Do_Burn_ModeRTS
-	DEC Burning_Time
-
-Do_Burn_ModeRTS:
-	RTS
 
 ProjectileInteractions:
 	LDY #$03

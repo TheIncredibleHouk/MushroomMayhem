@@ -991,7 +991,7 @@ SPR_VFLIP	= %10000000
 
 	Level_JctFlag:		.ds 1	; Toggles when you junction
 
-				.ds 1	; $03E0 unused
+	Level_Redraw:		.ds 1
 
 	Map_DrawPanState:	.ds 1	; Map draw/pan state
 	ObjGroupRel_Idx:	.ds 1	; Holds relative index of object within its group (see PRG000_CA51)
@@ -1566,7 +1566,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_FireCount:		; Player shoots fireball/hammer, sets sprite frame (shared with Player_FrogHopCnt)
 	Player_FrogHopCnt:	.ds 1	; Counter used for frog hopping along the ground (shared with Player_FireCount)
 
-				.ds 1	; $0514 unused
+					.ds 1	; $0514 unused
 
 	Player_PMeterCnt:	.ds 1	; Tick counter used to count when to increase/decrease Power Meter
 	B10Coin_Timer:		.ds 1	; Decrements until zero, which is how much time you have to get the max coins from a 10 coin block
@@ -2089,7 +2089,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	Objects_ColorCycle:	.ds 8	; $0768-$076F Cycles colors of object and decrements to zero (e.g. "Melting" ice block, starman, etc.)
 
 	; Objects_Var6: Special hardcoded behavior for the following objects ONLY:
-	; OBJ_FIRECHOMP, OBJ_CHAINCHOMPFREE, OBJ_BLOOPERCHILDSHOOT, 
+	; OBJ_PYRANTULA, OBJ_CHAINCHOMPFREE, OBJ_BLOOPERCHILDSHOOT, 
 	; OBJ_BLOOPERWITHKIDS, or OBJ_FIRESNAKE
 	; ... as the X/Y buffer slot they occupy (see Object_Delete)
 	Objects_Var6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
@@ -2477,7 +2477,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Do_Shell_Bump:			.ds 1;
 	Fox_FireBall:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
-	Burning_Time:			.ds 1	;
+	Player_Direction:			.ds 1	;
 	Ignore_Vel_Stop:		.ds	1	;
 	ESwitch:				.ds 1	; For e-switch levels
 	BoomBoomMiscTimer:		.ds 1	;
@@ -2974,7 +2974,7 @@ SOBJ_BUBBLE		= $0E 	; Bubble
 SOBJ_LAVALOTUSFIRE	= $0F	; Lava Lotus fire
 SOBJ_RECOVEREDWAND	= $10 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
-SOBJ_FIRECHOMPFIRE	= $12 	; Fire Chomp's fire
+SOBJ_PYRANTULAFIRE	= $12 	; Fire Chomp's fire
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_BLOOPERKID		= $14 	; Blooper kid
 SOBJ_ICEBALL		= $15 	; Laser
@@ -3429,7 +3429,8 @@ KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
 ; Object IDs
 
 OBJ_BOUNCEDOWNUP	= $06	; Down/up block bounce effect object
-OBJ_WARPHIDE		= $07	; Hidden object that jumps you to the secret warp whistle in 1-3
+OBJ_BRICK		= $07	; Hidden object that jumps you to the secret warp whistle in 1-3
+OBJ_WARPHIDE		= $00
 OBJ_PSWITCHDOOR		= $08	; Door that appears under influence of P-Switch
 OBJ_AIRSHIPANCHOR	= $09	; Airship anchor
 OBJ_BULLY			= $0A	;
@@ -3498,13 +3499,15 @@ OBJ_EXPLOSION		= $4D	;
 OBJ_CHAINCHOMPFREE	= $4F	; Jumping chain chomp head after he breaks free
 OBJ_BOBOMBEXPLODE	= $50	; Ready-to-explode Bob-Omb
 OBJ_ROTODISCDUAL	= $51	; Dual Rotodisc, sync, clockwise
-OBJ_TREASUREBOX		= $52	; Treasure box
+OBJ_TREASUREBOX		= $00	;
+OBJ_SPINTULA		= $52	; Treasure box
 OBJ_PODOBOOCEILING	= $53	; Podoboo from ceiling
 OBJ_DONUTLIFTSHAKEFALL	= $54	; Donut lift shake and fall object
 OBJ_BOBOMB		= $55	; Bob-Omb
 OBJ_PIRANHASIDEWAYSLEFT	= $56	; Sideways left-facing red piranha
 OBJ_PIRANHASIDEWAYSRIGHT= $57 	; Sideways right-facing red piranha
-OBJ_FIRECHOMP		= $58	; Fire chomp
+OBJ_FIRECHOMP		= $00	;
+OBJ_PYRANTULA		= $58	; Fire chomp
 OBJ_FIRESNAKE		= $59	; Fire snake
 OBJ_ROTODISCCLOCKWISE	= $5A	; Standard Rotodisc clockwise
 OBJ_ROTODISCCCLOCKWISE	= $5B	; Standard Rotodisc counter-clockwise
