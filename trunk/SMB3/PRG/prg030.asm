@@ -3079,9 +3079,12 @@ LevelLoad:	; $97B7
 	
 	LDA LevelVertJct
 	BEQ NotJctBQ
+SkipLevelLoad:
 	JMP Skip_Level_Loading
 
 NotJctBQ:
+	LDA Level_Redraw
+	BEQ SkipMemClear
 	LDY #$00
 	LDA [Temp_Var14],Y
 
@@ -3093,7 +3096,8 @@ ClearLevelMem:
 	CPY #$00
 	BNE ClearLevelMem
 
-	INY
+SkipMemClear:
+	LDY #$01
 	; now load bg gfx, for eswitch levels (dungeon)
 	; we use the tables, otherwise we use 
 	LDX ESwitch
@@ -3339,6 +3343,8 @@ LoadPointer:
 	BNE Pointer_LoadLoop
 
 Pointers_Done:
+	LDA Level_Redraw
+	BEQ Skip_Level_Loading
 	TYA
 	CLC
 	ADC <Temp_Var14
@@ -3361,6 +3367,7 @@ NextDecompressionCommand:
 	JSR LoadSprites
 
 Skip_Level_Loading:
+	JSR Sprite_RAM_Clear
 	JSR SetProperScroll
 	RTS ; we're done!
 
@@ -3466,7 +3473,6 @@ WriteRawLoop:
 	RTS
 
 LoadSprites:
-	JSR Sprite_RAM_Clear			; Clear the sprites
 	LDA #$01
 	STA Level_Objects
 	LDX #$01
@@ -5417,6 +5423,9 @@ LevelJction:
 	LDA Pointers + 4, X
 	STA Player_YExit
 
+	LDA Pointers + 5, X
+	AND #$40
+	STA Level_Redraw
 	LDA Pointers + 5, X
 	AND #$0F
 	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir

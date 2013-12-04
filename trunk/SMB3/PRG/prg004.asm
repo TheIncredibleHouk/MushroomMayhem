@@ -447,7 +447,7 @@ ObjP88:
 
 ObjP86:
 ObjP87:
-	.byte $81, $83, $A5, $A7, $81, $83, $B5, $B7, $85, $87, $BB, $A7
+	.byte $81, $83, $A5, $A7, $81, $83, $B5, $B7, $85, $87, $A5, $A7
 ObjP81:
 	.byte $B1, $B3, $B5, $B7, $B1, $B3, $A5, $A7, $BD, $BF, $B5, $B7, $BD, $BF, $A5, $A7
 	.byte $AD, $AF, $AD, $BF
@@ -2860,14 +2860,15 @@ Paragoomba_XVelAccel:	.byte $01, -$01
 Paragoomba_XVelLimit:	.byte $14, $EC
 
 ObjInit_ZombieGoomba:
-	LDA #$04
+	LDA #$01
 	STA Objects_HitCount, X
 	LDA #$00
 	STA Objects_Var1, X
 	JMP ObjInit_GroundTroop
 	
 
-ZombieSpeed:	.byte $10, $f0
+ZombieSpeed:	.byte $01, $FF
+ZombieMaxSpeed:	.byte $20, $E0
 
 ObjNorm_ZombieGoomba:
 	JSR Object_DeleteOffScreen	; Delete if off-screen
@@ -2886,16 +2887,27 @@ ObjNorm_ZombieGoomba:
 	LDA #$80
 	STA Player_QueueSuit
 
-DontPoofInfect:
-	LDA #$FF
+	LDA #$01
 	STA LeftRightInfection
+	LDA #$71
+	STA Player_FlashInv
+	BNE Zombie_NoInfection
+
+DontPoofInfect:
+	JSR Player_GetHurt
+	
 
 Zombie_NoInfection:
 	JSR Level_ObjCalcXDiffs
 
+	LDA ZombieMaxSpeed,Y
+	CMP Objects_XVel, X
+	BEQ ZombieSameSpeed
 	LDA ZombieSpeed, Y
+	ADD Objects_XVel, X
 	STA Objects_XVel, X
 	
+ZombieSameSpeed:
 	JSR Object_WorldDetect4
 
 	LDA Objects_DetStat, X
@@ -2915,6 +2927,15 @@ Zombie_NoInfection:
 Zombie_Move:
 	JSR Object_Move
 
+	LDA Objects_InWater,X
+	BEQ Zombie_Move1
+	LDA #OBJSTATE_POOFDEATH
+	STA Objects_State, X
+	LDA #$1f
+	STA Objects_Timer,X
+	RTS
+
+Zombie_Move1:
 	LDA Objects_DetStat, X
 	AND #$04
 	BEQ ZombieDone

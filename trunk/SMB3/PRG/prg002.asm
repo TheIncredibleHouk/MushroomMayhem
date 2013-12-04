@@ -401,7 +401,7 @@ ObjP25:
 ObjP2F:
 ObjP35:
 ObjP47:
-	.byte $95, $97, $B9, $BF
+	.byte $91, $93, $B9, $BF
 ObjP30:
 ObjP45:
 	.byte $85, $87, $89, $8B, $81, $83

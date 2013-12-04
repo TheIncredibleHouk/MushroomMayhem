@@ -32,7 +32,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $04
 	.word ObjInit_DoNothing	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
-	.word ObjInit_DoNothing	; Object $07 - OBJ_WARPHIDE
+	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
 	.word ObjInit_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjInit_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjInit_Bully	; Object $0A - OBJ_BULLY
@@ -74,7 +74,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $04
 	.word ObjNorm_DoNothing	; Object $05
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
-	.word ObjNorm_DoNothing	; Object $07 - OBJ_WARPHIDE
+	.word ObjNorm_Brick	; Object $07 - OBJ_BRICK
 	.word ObjNorm_PDoor	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjNorm_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjNorm_Bully	; Object $0A OBJ_BULLY
@@ -117,7 +117,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $04
 	.word ObjHit_DoNothing	; Object $05
 	.word ObjHit_DoNothing	; Object $06 - OBJ_BOUNCEDOWNUP
-	.word ObjHit_DoNothing	; Object $07 - OBJ_WARPHIDE
+	.word Player_GetHurt	; Object $07 - OBJ_BRICK
 	.word ObjHit_DoNothing	; Object $08 - OBJ_PSWITCHDOOR
 	.word ObjHit_DoNothing	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjHit_Bully	; Object $0A
@@ -159,7 +159,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $04
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $05
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $07 - OBJ_WARPHIDE
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $07 - OBJ_BRICK
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A- OBJ_BULLY
@@ -208,7 +208,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP2	; Object $04
 	.byte OA2_TDOGRP1	; Object $05
 	.byte OA2_TDOGRP1	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OA2_TDOGRP0	; Object $07 - OBJ_WARPHIDE
+	.byte OA2_TDOGRP1	; Object $07 - OBJ_BRICK
 	.byte OA2_TDOGRP0	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OA2_TDOGRP1	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA2_TDOGRP1	; Object $0A
@@ -257,7 +257,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAWTALL 	; Object $04
 	.byte OA3_HALT_JUSTDRAW 	; Object $05
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_WARPHIDE
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OA3_HALT_JUSTDRAW 	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
@@ -266,7 +266,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0E - OBJ_BOSS_KOOPALING
 	.byte OA3_TAILATKIMMUNE 	; Object $0F
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $10
+	.byte OA3_HALT_NORMALONLY 	; Object $10
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_DIESHELLED 	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
@@ -299,7 +299,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT5 | $48	; Object $04
 	.byte OPTS_SETPT5 | $48	; Object $05
 	.byte OPTS_NOCHANGE	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OPTS_NOCHANGE	; Object $07 - OBJ_WARPHIDE
+	.byte OPTS_NOCHANGE	; Object $07 - OBJ_BRICK
 	.byte OPTS_SETPT6 | $13	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OPTS_SETPT6 | $37	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OPTS_SETPT5 | $0B	; Object $0A - OBJ_BULLY
@@ -341,7 +341,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $04
 	.byte KILLACT_STANDARD	; Object $05
 	.byte KILLACT_STANDARD	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte KILLACT_STANDARD	; Object $07 - OBJ_WARPHIDE
+	.byte KILLACT_STANDARD	; Object $07 - OBJ_BRICK
 	.byte KILLACT_STANDARD	; Object $08 - OBJ_PSWITCHDOOR
 	.byte KILLACT_STANDARD	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte KILLACT_STANDARD	; Object $0A
@@ -407,6 +407,8 @@ ObjectGroup00_PatternSets:
 ObjP00:
 ObjP03:
 ObjP07:
+	.byte $67, $67
+
 ObjP0E:
 ObjP0F:
 ObjP10:
@@ -533,7 +535,7 @@ ObjInit_Key:
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
 	LDA #$E0
-	STA Objects_YVel + 5
+	STA Objects_YVel, X
 	RTS
 
 ObjNorm_Key:
@@ -5993,4 +5995,26 @@ ChompEatBlock:
 	LDA ObjTile_DetXHi
 	STA Level_BlockChgXHi
 	JSR PRG001_BC6D
+	RTS
+
+ObjInit_Brick:
+	RTS
+
+ObjNorm_Brick:
+	LDA <Player_HaltGame
+	BNE ObjNorm_BrickDraw
+
+	JSR Object_Move
+	JSR Object_HitTestRespond
+	JSR Object_WorldDetect4
+
+	LDA <Objects_DetStat,X
+	BEQ ObjNorm_BrickDraw
+
+	LDA #OBJ_STONEBLOCK
+	STA Level_ObjectID, X
+	RTS
+
+ObjNorm_BrickDraw:
+	JSR Object_ShakeAndDrawMirrored
 	RTS
