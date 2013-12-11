@@ -1245,9 +1245,6 @@ PRG004_A5F6:
 PRG004_A61B:
 	RTS		 ; Return
 
-Boomerang_XVel:	.byte $20, -$20
-Boomerang_ArrayValLoad:	.byte $01, $00
-
 NinjaStarVel: .byte $00, $08, $10, $18, $20, $28, $30, $38, $40, $C0, $C8, $D0, $D8, $E0, $E8, $F0, $F8
 
 BoomerangBro_ThrowBoomerang:

@@ -3700,8 +3700,6 @@ ObjNorm_ProjectileBarCCW:
 
 ObjInit_Dimmer:
 	LDA #$00
-	STA DayNightActive
-	LDA #$00
 	STA Objects_Var1, X
 	RTS		 ; Return
 

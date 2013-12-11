@@ -26,7 +26,7 @@
 ObjectGroup01_InitJumpTable:
 	.word ObjInit_CloudPlatFast	; Object $24 - OBJ_CLOUDPLATFORM_FAST
 	.word ObjInit_PipewayCtlr	; Object $25 - OBJ_PIPEWAYCONTROLLER
-	.word ObjInit_WoodenPlat	; Object $26 - OBJ_WOODENPLAT_RIDER
+	.word ObjInit_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjInit_WoodenPlat	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjInit_WoodenPlat	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjInit_TowardsPlayer	; Object $29 - OBJ_SPIKE
@@ -54,7 +54,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_TowardsPlayer	; Object $3F - OBJ_DRYBONES
 	.word ObjInit_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjInit_DoNothing		; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjInit_CheepCheepP2P	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.word ObjInit_BeachedCheep	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_FallingPlatform	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjInit_HotFoot		; Object $45 - OBJ_HOTFOOT
@@ -68,7 +68,7 @@ ObjectGroup01_InitJumpTable:
 ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_CloudPlat		; Object $24 - OBJ_CLOUDPLATFORM_FAST
 	.word ObjNorm_DoNothing	; Object $25 - OBJ_PIPEWAYCONTROLLER
-	.word ObjNorm_WoodenPlatRider	; Object $26 - OBJ_WOODENPLAT_RIDER
+	.word ObjNorm_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjNorm_OscillatingH	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjNorm_OscillatingV	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjNorm_Spike		; Object $29 - OBJ_SPIKE
@@ -96,7 +96,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjNorm_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjNorm_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjNorm_CheepCheepP2P	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.word ObjNorm_BeachedCheep	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.word ObjNorm_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjNorm_PathFollowPlat	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjNorm_Hotfoot		; Object $45 - OBJ_HOTFOOT
@@ -1166,171 +1166,76 @@ ObjInit_PipewayCtlr:
 
 
 ObjInit_BeachedCheep:
-ObjInit_CheepCheepP2P:
+	JSR Object_WorldDetect4
+	LDA Objects_InWater, X
+	BEQ ObjInit_BeachedCheep1
+
+BeachedCheepReset:
 	LDA #$00
-	STA Objects_InWater,X
-	LDA #$04
-	STA <Objects_Var4,X	 ; Var4 = 4
-
-	RTS
-
-Restart_CheepCheepP2P2:
-	; Timer = $40
+	STA Objects_Var1, X
 	LDA #$20
 	STA Objects_Timer,X
-
-	; Set attribute $20 (sprite priority)
-	LSR A
-	STA Objects_FlipBits,X
-
 	RTS		 ; Return
 
-CheepP2P_XVel:	.byte -$10, -$10, $10, $10, $10, -$10
-CheepP2P_YVel:	.byte -$36, -$36, -$47, -$47, -$4F, -$4F
+ObjInit_BeachedCheep1:
+	INC Objects_Var1, X
+	JSR Level_ObjCalcXDiffs
+	LDA BeachedCheep_XVel, Y
+	STA <Objects_XVel, X
+	LDA BeachedCheep_Flip, Y
+	STA Objects_FlipBits, X
+	RTS
 
 PRG002_A772:	.byte $20, $20, -$20, -$20, $00, $00
 	
-ObjNorm_CheepCheepP2P:
-	LDA Objects_Timer,X
-	BEQ PRG002_A793	 ; If timer expired, jump to PRG002_A793
-
-	; Timer not expired...
-
-	LSR A
-	BNE PRG002_A7932	 ; If timer > 1, jump to PRG002_A7E0
-
-	; Timer = 1...
-
-	; Loop Var4 3-0
-	LDY <Objects_Var4,X	; Y = Var4
-	DEY		 	; Y--
-	BPL PRG002_A787	 	; If Y >= 0, jump to PRG002_A787
-	LDY #$03	 	; Otherwise, Y = 3
-PRG002_A787:
-	STY <Objects_Var4,X	; Update Var4
-	
-	; if cheep cheep is not in water
-	CLC
-	LDA Objects_InWater,X
-	BNE CCInWater
-	SEC 
-
-CCInWater:
-; Set Cheep Cheep's Y Velocity
-	LDA CheepP2P_YVel,Y
-	BCC NormCCVelY
-; cheep cheep is not in water, dampen it's jump
-	ADC #$1F
-
-NormCCVelY:
-	STA <Objects_YVel,X
-
-	; Set Cheep Cheep's X velocity
-	LDA CheepP2P_XVel,Y
-	STA <Objects_XVel,X
-
-PRG002_A793:
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-
-PRG002_A7932:
-	JSR Player_HitEnemy	 ; Standard Enemy Collision routine
-
-	LDY <Objects_YVel,X	; Y = Cheep Cheep's Y velocity
-
-	; Y += 2 (gravity)
-	INY
-	INY
-
-	TYA		 		 ; Restore velocity
-	STA <Objects_YVel,X	 ; Set it (ignore the water velocity)
-
-; this detects a solid tile. If the fish is on a solid tile the cheep cheep is considered "beached"
-	JSR Object_WorldDetectN1
-	LDA <Objects_DetStat,X 
-	PHA
-	AND #$04 
-	BEQ NotBeached
-	LDA #$D8
-	STA <Objects_YVel,X
-	LDA <Objects_XVel,X
-	BNE NotBeached
-	LDA #$-10
-	STA <Objects_XVel,X
-
-; if it hits a wall it reverses direction
-NotBeached:
-	PLA
-	PHA
-	AND #$03
-	BEQ  NotHittingWall
-	LDA <Objects_XVel,X
-	EOR #$FF
-	ADD #$01
-	STA <Objects_XVel,X
-
-NotHittingWall:
-	PLA
-	AND #$08
-	BEQ NotHittingCeiling
-	LDA #$00
-	STA <Objects_YVel, X
-
-NotHittingCeiling:
-	; NOTE: This only works on a limited range of velocities (not a problem here)
-	; but it should have been a right shift for a more general implementation.
-	LDA <Objects_XVel,X
-	ASL A
-	AND #SPR_HFLIP
-	EOR #SPR_HFLIP
-	STA Objects_FlipBits,X	 ; Set facing by velocity
-
-	LDY <Objects_Var4,X	 ; Y = Var4
-
-	LDA <Objects_Var5,X
-	ADD Object_VelCarry
-	CMP PRG002_A772,Y
-	BLS PRG002_A7D4	 ; If Var5 < limit value, jump to PRG002_A7D4
-
-	; Limit value hit...
-
-	LDA Objects_InWater, X
-	BEQ PRG002_A7D4	 ; If Cheep Cheep is not water, jump to PRG002_A7D4
-
-	JSR Restart_CheepCheepP2P2	 ; Re-initialize!
-
-	LDA #$00	 ; Reset Var5
-
-PRG002_A7D4:
-	STA <Objects_Var5,X	 ; Update Var5
-
-	; Toggle Cheep Cheep's frame
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	LSR A	
-	AND #$01
-	STA Objects_Frame,X
-
-PRG002_A7E0:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-	JMP Object_ShakeAndDraw	 ; Draw Cheep Cheep and don't come back!
+BeachedCheep_XVel: .byte $10, $F0
+BeachedCheep_Flip: .byte SPR_HFLIP, 00
 
 ObjNorm_BeachedCheep:
-
-	; Alternate pool-to-pool Cheep Cheep is pretty much the same,
-	; and reuses most of the code, just inverts the movements...
-
+	LDA <Player_HaltGame
+	BNE PRG002_A7E1
 	LDA Objects_Timer,X
-	BEQ PRG002_A793	 ; If timer not expired, jump to PRG002_A793
+	BNE PRG002_A7E0	 ; If timer expired, jump to PRG002_A793
 
+	LDA Objects_Var1, X
+	BNE ObjNorm_BeachedCheep1
+	INC Objects_Var1, X
+	LDA #$A0
+	STA <Objects_YVel, X
+	JSR Level_ObjCalcXDiffs
+	LDA BeachedCheep_XVel, Y
+	STA <Objects_XVel, X
+	LDA BeachedCheep_Flip, Y
+	STA Objects_FlipBits, X
+
+ObjNorm_BeachedCheep1:
+	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
+	JSR Object_InteractWithWorld
+	JSR Player_HitEnemy
+
+	LDA Objects_DetStat, X
+	AND #$04
+	BEQ ObjNorm_BeachedCheep2
+	
+	LDA #$D0
+	STA <Objects_YVel, X
+
+ObjNorm_BeachedCheep2:
+	LDA Objects_YVel, X
+	BMI PRG002_A7E0
+	LDA Objects_InWater, X
+	BEQ PRG002_A7E0
+	JSR BeachedCheepReset
+
+PRG002_A7E0:
+	LDA <Counter_1
 	LSR A
-	BNE PRG002_A7E0	 ; If timer > 1, jump to PRG002_A7E0
-
-	LDA <Objects_Var4,X
-	EOR #$01	 ; Invert Var4
-	TAY		 ; -> Y
-	JMP PRG002_A787	 ; Jump (technically always) to PRG002_A787
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+PRG002_A7E1:
+	JMP Object_ShakeAndDraw	 ; Draw Cheep Cheep and don't come back!
 
 	; Different "entropy" values by the object's slot -- keeps things random looking
 Entropy_BySlot:	.byte $13, $D7, $F9, $36, $7F
@@ -1910,42 +1815,92 @@ PRG002_AA7B:
 PRG002_AA85:
 	RTS		 ; Return
 
-ObjNorm_WoodenPlatRider:
+ObjInit_WoodenPlatFallGen:
+	LDA #$FC
+	STA Objects_YVel, X
+	LDA Objects_SprAttr,X
+	ORA #SPR_BEHINDBG
+	STA Objects_SprAttr,X
 
-	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
+ObjInit_WoodenPlatFallGen1:
+	LDA <Objects_Y, X
+	STA Objects_Var1, X
+	LDA <Objects_YHi, X
+	STA Objects_Var2, X
+	RTS
+
+Reset_WoodenPlatFallGen:
+	LDA #$60
+	STA Objects_Timer, X
+	LDA Objects_Var1, X
+	STA <Objects_Y, X
+	LDA Objects_Var2, X
+	STA <Objects_YHi, X
+	LDA #00
+	STA Objects_Var3, X
+	RTS
+
+ObjNorm_WoodenPlatFallGen:
+
+	LDA Objects_Timer, X
+	BNE ObjNorm_WoodenPlatFallGenRTS
+
+	JSR DeleteIfOffAndDrawWide
 
 	LDA <Player_HaltGame
-	BNE PRG002_AAA6	 ; If gameplay is halted, jump to PRG002_AAA6 (RTS)
+	BNE ObjNorm_WoodenPlatFallGenRTS	 ; If gameplay is halted, jump to PRG002_AAA6 (RTS)
 
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR PlayerPlatform_Collide	 ; Collide and ride
+	LDA Objects_Y, X
+	AND #$0F
+	CMP #$0D
+	BNE ObjNorm_WoodenPlatFallApplyY
 
-	LDA <Objects_XVel,X
-	BNE PRG002_AA9A	 ; If platform is moving horizontally, jump to PRG002_AA9A
+	LDA Objects_Var3, X
+	CMP #$07
+	BEQ CreatePlatForm
+	INC Objects_Var3, X
+	BNE ObjNorm_WoodenPlatFallApplyY
 
-	; Platform not moving horizontally...
-	BCS PRG002_AAA4	 ; If carry-collision occurred with platform, jump to PRG002_AAA4
+CreatePlatForm:
+	JSR FindEmptyEnemySlot
+	CPX #$FF
+	BEQ ObjNorm_WoodenPlatFallGenRTS
 
+	LDY <SlotIndexBackup
+	LDA #OBJ_WOODENPLATUNSTABLE
+	STA Level_ObjectID,X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State,X
+
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA Objects_X,Y
+	STA <Objects_X,X
+	LDA Objects_XHi,Y
+	STA <Objects_XHi,X
+	LDA Objects_Y,Y
+	STA <Objects_Y,X
+	LDA Objects_YHi,Y
+	STA <Objects_YHi,X
+	INC Objects_Var4,X
+	LDA #SPR_PAL3
+	STA Objects_SprAttr,X
+	LDX <SlotIndexBackup
+	JMP Reset_WoodenPlatFallGen
+	
+ObjNorm_WoodenPlatFallApplyY:
+	LDA #$FC
+	STA Objects_YVel, X
+	JSR Object_ApplyYVel	 ; Apply X velocity
+
+ObjNorm_WoodenPlatFallGenRTS:
 	RTS		 ; Return
 
-
-PRG002_AA9A:
-
-	; Platform rider picks up speed until X Vel = $10
-
-	CMP #$10
-	BEQ PRG002_AAA6	 ; If Platform's X velocity = $10, jump to PRG002_AAA6 (RTS)
-
-	LDA Level_NoStopCnt
-	LSR A	
-	BCS PRG002_AAA6	 ; Every other tick, jump to PRG002_AAA6 (RTS)
-
-PRG002_AAA4:
-	INC <Objects_XVel,X	 ; Increase platform's speed to the right
 
 PRG002_AAA6:
-	RTS		 ; Return
-
+	RTS
 
 Enemy_CollideWithWorld:
 	JSR Object_Move	 ; Do standard object movements
@@ -2138,13 +2093,6 @@ ObjInit_WoodenFallingPlat:
 ObjInit_FallingPlatform:
 
 	; Center the platform
-	LDA <Objects_X,X
-	ORA #$08
-	STA <Objects_X,X
-
-	LDA <Objects_Y,X
-	ORA #$06
-	STA <Objects_Y,X
 
 PRG002_ABB9:
 	RTS		 ; Return
@@ -2204,147 +2152,16 @@ ObjNorm_PathFollowPlat:
 	LDA <Objects_Var4,X
 	BEQ PRG002_AC29	 ; If Var4 = 0, jump to PRG002_AC29
 
-	LSR A
-	BEQ PRG002_AC2C	 ; If Var4 < 2, jump to PRG002_AC2C
-
-	; Var4 >= 2...
-
-	INC <Objects_YVel,X	 ; Increase platform's fall rate
+PRG002_ACAB:
+	LDA #$10
+	STA Objects_YVel,X
+	JSR Object_ApplyYVel	 ; Apply Y Velocity
 
 PRG002_AC29:
-	JMP PRG002_ACAB	 ; Jump to PRG002_ACAB
-
-PRG002_AC2C:
-
-	; Var4 = 1...
-
-	LDA <Objects_YVel,X
-	BEQ PRG002_AC3A	 ; If platform is not vertically moving, jump to PRG002_AC3A
-
-	; Platform is vertically moving...
-
-	LDA <Objects_Y,X
-	AND #$0f	; Consider platform vertical relative to current grid row only
-	CMP #$06
-	BNE PRG002_ACAB	 ; If platform is NOT about halfway down this grid row, jump to PRG002_ACAB
-	BEQ PRG002_AC42	 ; Otherwise, jump to PRG002_AC42
-
-PRG002_AC3A:
-
-	; Platform is about halfway down current grid row
-
-	LDA <Objects_X,X
-	AND #$0f	 ; Consider platform horizontal relative to current grid column only
-	CMP #$08	 
-	BNE PRG002_ACAB	 ; If platform is NOT about halfway across current grid row, jump to PRG002_ACAB
-
-PRG002_AC42:
-
-	; Platform is about centered
-
-	; Going to detect the four tiles this Platform may be touching	
-
-	LDA #$03
-	STA <Temp_Var13		 ; Update Temp_Var13
-
-	LDY ObjGroupRel_Idx	 ; Y = Object's group relative index
-	LDA ObjectGroup01_Attributes2,Y	 ; Get attributes set 2
-	AND #OA2_TDOGRPMASK		; Mask out the root tile detection group offset
-	LSR A		 	; Correct the index
-	TAY		 	; -> 'Y'
-PRG002_AC50:
-	STY <Temp_Var14		 ; Update Temp_Var14
-
-	JSR Object_DetectTile	 ; Detect tile platform is seeing
-
-	LDY <Temp_Var13		 ; Y = Temp_Var13
-	STA Temp_Var9,Y	 ; Store detected tile -> Temp_Var[9...12]
-
-	LDY <Temp_Var14		; Y = Temp_Var14
-
-	; Y += 2 (next DetectTile offset pair)
-	INY
-	INY
-
-	DEC <Temp_Var13		 ; Temp_Var13--
-	BPL PRG002_AC50	 	; While Temp_Var13 >= 0, loop!
-
-	; Temp_Var13 = 12
-	LDA #(WoodenPlat_ScanIndices_End - WoodenPlat_ScanIndices - 1)
-	STA <Temp_Var13
-
-	; Temp_Var14 = Var5 (travel direction, offset of 0 or 8)
-	LDA <Objects_Var5,X
-	STA <Temp_Var14
-
-PRG002_AC6A:
-	LDY <Temp_Var13		; Y = Temp_Var13
-
-	LDA WoodenPlat_ScanIndices,Y
-	ADD <Temp_Var14		; Travel direction offset
-	AND #$0f		; Mod 16
-	TAY			; -> 'Y' 
-
-	LDX WoodenPlat_NextTileIdx,Y	 ; X = which of the four tiles that should be checked next
-
-	LDA <Temp_Var9,X	 ; Get this tile
-	CMP WoodenPlat_PathTiles,Y	 
-	BEQ PRG002_AC9C	 	; If it's one of the path tiles (Typical set), jump to PRG002_AC9C
-
-	CMP WoodenPlat_PathTilesAlt,Y
-	BEQ PRG002_AC9C	 	; If it's one of the path tiles (Fortress set), jump to PRG002_AC9C
-
-	CPY <Temp_Var14	
-	BNE PRG002_AC92	 ; If Temp_Var14 <> 0, jump to PRG002_AC92 (stop platform)
-
-	CMP #TILE4_PLATFORMPULLER
-	BNE PRG002_AC92	 ; If tile is NOT the "Platform Puller" twirly thing, jump to PRG002_AC92 (stop platform)
-
-	; Temp_Var14 = 0 and platform hit a path ending "platform puller" twirly thing
-
-	; Change direction!
-	TYA
-	EOR #$08
-	TAY	
-
-	BPL PRG002_AC9C	 ; Jump (technically always) to PRG002_AC9C
-
-PRG002_AC92:
-	DEC <Temp_Var13	 ; Temp_Var13--
-	BPL PRG002_AC6A	 ; While Temp_Var13 >= 0, loop!
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	INC <Objects_Var4,X	 ; Objects_Var4 = 1 (platform stop)
-
-	LDY #16	; Y = 16 (uses stop velocities)
-
-PRG002_AC9C:
-
-	; Hit a path tile...
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	TYA
-	STA <Objects_Var5,X	 ; Store the directional offset (0 or 8)
-
-	; Set Platform X Velocity appropriate for path tile
-	LDA WoodenPlat_XVel,Y
-	STA <Objects_XVel,X
-
-	; Set Platform Y Velocity appropriate for path tile
-	LDA WoodenPlat_YVel,Y
-	STA <Objects_YVel,X
-
-PRG002_ACAB:
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-	JSR Object_ApplyXVel	 ; Apply X velocity
 	JSR PlayerPlatform_Collide	 ; Do Player-to-platform collision
 	BCC PRG002_ACBC	 ; If Player did not collide with platform, jump to PRG002_ACBC (RTS)
 
-	; Mark Player standing on platform
-	LDA <Objects_Var4,X
-	ORA #$01
+	LDA #$01
 	STA <Objects_Var4,X
 
 PRG002_ACBC:
@@ -4488,6 +4305,8 @@ PlayerPlatform_Collide:
 	LDA <Player_YVel
 	BMI PRG002_BABD	 ; If Player is moving upward, jump to PRG002_BABD
 
+	LDA #$00
+	STA Object_VelCarry
 	JSR Player_StandOnPlatform	 ; Stand on platform
 	SEC		 ; Set carry (collided)
 
@@ -4518,8 +4337,8 @@ PRG002_BACB:
 	BPL PRG002_BADA	 ; If Player is falling, jump to PRG002_BADA
 
 	; Player hits head off platform
-	LDA #$10
-	STA <Player_YVel
+	;LDA #$10
+	;STA <Player_YVel
 
 PRG002_BADA:
 	CLC		 ; Clear carry (no collision)
@@ -4549,8 +4368,8 @@ PRG002_BAEE:
 PRG002_BAEF:
 
 	; Halt Player's movement
-	LDA #$00
-	STA <Player_XVel
+	;LDA #$00
+	;STA <Player_XVel
 
 	RTS		 ; Return
 
@@ -4573,8 +4392,8 @@ PRG002_BAF4:
 	BNE PRG002_BAEF	 ; If Player is pressing against it, jump to PRG002_BAEF (halt Player's movement)
 
 	; Player pushing with platform
-	LDA PlayerPushWithPlatform_XVel-1,Y
-	STA <Player_XVel
+	;LDA PlayerPushWithPlatform_XVel-1,Y
+	;STA <Player_XVel
 
 	RTS		 ; Return
 

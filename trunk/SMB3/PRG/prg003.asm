@@ -24,7 +24,7 @@
 
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup02_InitJumpTable:
-	.word ObjInit_TinyCheepCheep	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.word ObjInit_Ninji	; Object $48 - OBJ_NINJI
 	.word ObjInit_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjInit_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_Boss		; Object $4B - OBJ_BOOMBOOMJUMP
@@ -59,14 +59,14 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_Twirling		; Object $68 - OBJ_TWIRLINGBUZZY
 	.word ObjInit_Twirling		; Object $69 - OBJ_TWIRLINGSPINY
 	.word ObjInit_BlooperWithKids	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.word ObjInit_ShyGuy	; Object $6B - OBJ_PILEDRIVER
+	.word ObjInit_ShyGuy	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) State 2 jump table
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup02_NormalJumpTable:
-	.word ObjNorm_TinyCheepCheep	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.word ObjNorm_Ninji	; Object $48 - OBJ_NINJI
 	.word ObjNorm_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjNorm_Boss		; Object $4B - OBJ_BOOMBOOMJUMP
@@ -101,7 +101,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_TwirlingShell	; Object $68 - OBJ_TWIRLINGBUZZY
 	.word ObjNorm_TwirlingShell	; Object $69 - OBJ_TWIRLINGSPINY
 	.word ObjNorm_Blooper		; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.word ObjNorm_ShyGuy	; Object $6B - OBJ_PILEDRIVER
+	.word ObjNorm_ShyGuy	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) Collision routine jump table (if calling Object_HitTestRespond;
@@ -109,7 +109,7 @@ ObjectGroup02_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup02_CollideJumpTable:
-	.word ObjHit_DoNothing	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.word ObjHit_DoNothing	; Object $48 - OBJ_NINJI
 	.word ObjHit_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
 	.word ObjHit_DoNothing	; Object $4B - OBJ_BOOMBOOMJUMP
@@ -144,14 +144,14 @@ ObjectGroup02_CollideJumpTable:
 	.word OCSPECIAL_KILLCHANGETO | OBJ_BUZZYBEATLE	; Object $68 - OBJ_TWIRLINGBUZZY
 	.word OCSPECIAL_KILLCHANGETO | OBJ_SPINY	; Object $69 - OBJ_TWIRLINGSPINY
 	.word ObjHit_DoNothing	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.word ObjHit_DoNothing	; Object $6B - OBJ_PILEDRIVER
+	.word ObjHit_DoNothing	; Object $6B - OBJ_SHYGUY
 
 	
 	; Object group $02 (i.e. objects starting at ID $48) attribute bits set 1 (OA1_* flags valid here)
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup02_Attributes:
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $48 - OBJ_NINJI
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4A - OBJ_MAGICSTAR
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $4B - OBJ_BOOMBOOMJUMP
@@ -186,13 +186,13 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $6B - OBJ_PILEDRIVER
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $6B - OBJ_SHYGUY
 
 	; Object group $02 (i.e. objects starting at ID $48) second set attribute bits
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup02_Attributes2:
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $48 - OBJ_NINJI
 	.byte OA2_TDOGRP0	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4A - OBJ_MAGICSTAR
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP2	; Object $4B - OBJ_BOOMBOOMJUMP
@@ -227,14 +227,14 @@ ObjectGroup02_Attributes2:
 	.byte OA2_TDOGRP1	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA2_TDOGRP1	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6B - OBJ_PILEDRIVER
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) third set attribute bits
 
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup02_Attributes3:
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.byte OA3_HALT_NORMALONLY  	; Object $48 - OBJ_NINJI
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4A - OBJ_MAGICSTAR
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4B - OBJ_BOOMBOOMJUMP
@@ -269,14 +269,14 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.byte OA3_HALT_NORMALONLY 	; Object $6B - OBJ_PILEDRIVER
+	.byte OA3_HALT_NORMALONLY 	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) Pattern Table Select
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup02_PatTableSel:
-	.byte OPTS_SETPT5 | $1A	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.byte OPTS_SETPT5 | $0F	; Object $48 - OBJ_NINJI
 	.byte OPTS_NOCHANGE	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OPTS_NOCHANGE	; Object $4A - OBJ_MAGICSTAR
 	.byte OPTS_SETPT6 | $33	; Object $4B - OBJ_BOOMBOOMJUMP
@@ -311,7 +311,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $0B	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OPTS_SETPT5 | $0B	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OPTS_SETPT5 | $1A	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.byte OPTS_SETPT5 | $0F	; Object $6B - OBJ_PILEDRIVER
+	.byte OPTS_SETPT5 | $0F	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) "Kill Action"
@@ -321,7 +321,7 @@ ObjectGroup02_PatTableSel:
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup02_KillAction:
-	.byte KILLACT_JUSTDRAW16X16	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.byte KILLACT_JUSTDRAW16X16	; Object $48 - OBJ_NINJI
 	.byte KILLACT_STANDARD	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte KILLACT_STANDARD	; Object $4A - OBJ_MAGICSTAR
 	.byte KILLACT_NORMALANDKILLED	; Object $4B - OBJ_BOOMBOOMJUMP
@@ -356,7 +356,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte KILLACT_NORMALSTATE	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.byte KILLACT_JUSTDRAW16X16	; Object $6B - OBJ_PILEDRIVER
+	.byte KILLACT_JUSTDRAW16X16	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) pattern index starts
@@ -422,7 +422,8 @@ ObjP55:
 ObjP4A:
 	.byte $7F, $7F
 ObjP48:
-	.byte $93, $95, $93, $97, $93, $97
+	.byte $A1, $A3, $A5, $A7, $A5, $A7
+
 ObjP4B:
 ObjP4C:
 	.byte $C1, $C1, $CF, $CD, $C1, $C1, $C5, $C7, $C1, $C1, $CF, $CD, $C1, $C1, $C5, $C7, $C1, $C1, $CF, $CD, $C1, $C1, $C5, $C7, $D3, $D3, $ED, $ED, $D9, $D9, $DD, $DD, $71, $71, $E7, $E9, $71, $71, $E9, $E7, $C1, $C1, $C7, $C7, $C1, $C1, $C5, $C5, $81, $81, $85, $87, $81, $81, $8D, $8F, $89, $89, $91, $93, $81, $81, $87, $85, $81, $81, $8F, $8D, $89, $89, $93, $91, $71, $71, $AD, $99, $71, $71, $9D, $9F, $A1, $A1, $A5, $A5, $A7, $A7, $AB, $AB
@@ -699,6 +700,8 @@ PRG003_A3D2:
 PRG003_A3D5:
 	JMP Object_ShakeAndDrawMirrored	 ; Draw Podoboo and don't come back!
 
+BrickBustPowerUp: .byte OBJ_COIN, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_STARMAN, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE, $00, $00, $00, OBJ_KEY
+Brick_StarManFlash: .byte $00, $00, $00, $00, $01, $00, $02, $00, $03, $00, $00, $00, $00, $00, $00, $00
 ShyGuyDirection: .byte $08, $F8
 ShyGuyFlip: .byte SPR_HFLIP, $00
 
@@ -715,29 +718,20 @@ ObjNorm_ShyGuy:
 	BNE ShyGuyDraw
 
 	JSR Object_DeleteOffScreen
-	JSR Object_Move
-	JSR Object_WorldDetect4
+	JSR Player_HitEnemy
+	JSR Object_InteractWithWorld
+	JSR Object_HandleBumpUnderneath
+	JSR SetSpriteFG
+	LDA Objects_DetStat,X 
+	AND #$04
+	BEQ ObjNorm_ShyGuy1
+	LDA Objects_PrevDetStat,X 
+	AND #$04
+	BNE ObjNorm_ShyGuy1
 
-	LDA <Objects_DetStat, X
-	AND #$03
-	BEQ  ObjNorm_ShyGuy1
-	JSR Object_AboutFace
+	JSR ObjInit_ShyGuy
 
 ObjNorm_ShyGuy1:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ ObjNorm_ShyGuy2
-	JSR Object_HitGround
-
-ObjNorm_ShyGuy2:
-	LDA <Objects_DetStat, X
-	AND #$08
-	BEQ ObjNorm_ShyGuy3
-
-	LDA #$00
-	STA <Objects_YVel, X
-
-ObjNorm_ShyGuy3:
 	LDA Objects_Var1,X
 	JSR DynJump
 
@@ -823,8 +817,8 @@ ShyGuyLookForBrick:
 	STA <Objects_YHi, X
 	LDY #$00
 	JSR Object_DetectTile
-	CMP #TILE_ITEM_BRICK
-	BEQ ShyGuyBrickFound
+	CMP #TILE_ITEM_COIN
+	BCS ShyGuyBrickFound
 	DEC <Temp_Var16
 	BPL ShyGuyLookForBrick
 	JSR ShyGuyRestore
@@ -853,7 +847,6 @@ ShyGuyGetBrick:
 	LDA <Objects_DetStat, X
 	AND #$04
 	BEQ ShyGuyGetBrick2
-	JSR ObjInit_ShyGuy
 	LDY #$00
 	LDA Objects_Var2,X
 	BEQ ShyGuyGetBrick0
@@ -870,8 +863,14 @@ ShyGuyGetBrick2:
 	LDA Level_ChgTileEvent
 	BNE ShyGuyGetBrick1
 	LDA Object_TileFeet
-	CMP #TILE_ITEM_BRICK
-	BNE ShyGuyGetBrick1
+	CMP #TILE_ITEM_COIN
+	BCC ShyGuyGetBrick1
+	AND #$0F
+	TAY
+	LDA BrickBustPowerUp, Y
+	STA Objects_Var5, X
+	LDA Brick_StarManFlash, Y
+	STA Objects_Var7, X
 	INC Objects_Var2, X
 
 	LDA Object_TileFeet2
@@ -891,20 +890,16 @@ ShyGuyGetBrick2:
 
 ShyGuyThrowDistance: .byte $40, $B0
 ShyGuyCarryBrick:
-	STA Debug_Snap
 	LDA #$10
 	JSR Level_ObjCalcXBlockDiffs
-	CMP #$06
+	CMP #$04
 	BCS ShyGuyCarryBrick2
-	LDX #$04	 ; X = 4
-
-FindEmptyForBrick:
-	LDA Objects_State,X
-	BEQ FoundEmptyForBrick	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
-
-	DEX		 ; X--
-	BPL FindEmptyForBrick	 ; While X >= 0, loop!
-	BMI ShyGuyCarryBrick2	 ; Otherwise, jump to PRG002_A5F8
+	JSR Level_ObjCalcYBlockDiffs
+	CMP #$02
+	BCS ShyGuyCarryBrick2
+	JSR FindEmptyEnemySlot
+	CPX #$FF
+	BEQ ShyGuyCarryBrick2
 
 FoundEmptyForBrick:
 	LDA #OBJ_BRICK
@@ -916,6 +911,11 @@ FoundEmptyForBrick:
 	LDY <SlotIndexBackup
 	LDA Objects_X,Y
 	STA <Objects_X,X
+
+	LDA Objects_Var5, Y
+	STA Objects_Var5, X
+	LDA Objects_Var7, Y
+	STA Objects_Var7, X
 
 	; Set X Hi
 	LDA Objects_XHi,Y
@@ -930,15 +930,16 @@ FoundEmptyForBrick:
 	STA <Objects_YHi,X
 
 	LDA Objects_XVel, Y
-	LDY #$30	 ; Y = $30
+	LDY #$20	 ; Y = $30
 	ROL A
 	BCC ThrowBrick	 ; If Buster's turned around, jump to PRG002_A5F2
-	LDY #-$30	 ; Otherwise, Y = -$30
+	LDY #-$20	 ; Otherwise, Y = -$30
+
 ThrowBrick:
 	STY <Objects_XVel,X
 
 	; Set Y velocity
-	LDA #-$30
+	LDA #-$20
 	STA <Objects_YVel,X
 	LDA #$03
 	STA Objects_SprAttr, X
@@ -989,6 +990,37 @@ PRG003_A4DD:
 	STA TempA
 
 PRG003_A4E9:
+	LDA Objects_State + 5
+	BNE PRG003_A4E92
+
+	LDA Objects_Var5, X
+	BEQ PRG003_A4E92
+
+	STA Level_ObjectID + 5
+	LDA Objects_Var7, X
+	STA PUp_StarManFlash
+	LDA #OBJSTATE_INIT
+	STA Objects_State + 5
+	LDA #$C0
+	STA <Objects_YVel + 5
+	LDY #$10
+	LDA <Objects_XVel, X
+	BPL PRG003_A4E91
+	LDY #$F0
+
+PRG003_A4E91:
+	TYA
+	STA <Objects_XVel + 5
+	LDA <Objects_X, X
+	STA <Objects_X + 5
+	LDA <Objects_Y, X
+	STA <Objects_Y  + 5
+	LDA <Objects_XHi, X
+	STA <Objects_XHi + 5
+	LDA <Objects_YHi, X
+	STA <Objects_YHi  + 5
+
+PRG003_A4E92:
 	JSR Object_SetDeadEmpty	; Destroy the Ice Block
 
 	; Break apart into the four brick bust pieces
@@ -2689,349 +2721,157 @@ MineDoExplode:
 	STA Objects_State,X
 	RTS
 
-;ObjInit_BigBerthaBirther:
-;
-;PRG003_B1F6:
-;	RTS		 ; Return
-;
-;BigBerthaLCC_XVelAccel:		.byte $01, -$01
-;BigBerthaLCC_XVelLimit:		.byte $18, -$18
-;BigBerthaLCC_XVelLowLimit:	.byte $08, -$08
-;
-;ObjNorm_BigBerthaBirther:
-;	JSR Object_CheckIfNormalState
-;	BEQ PRG003_B205	 ; If Big Bertha's in normal state, jump to PRG003_B205
-;
-;	JMP 	 ; Jump to BigBerthaLCC_Draw
-;
-;PRG003_B205:
-;	JSR Object_SetHFlipByXVel 	; Set horizontal flip by travel direction
-;	JSR BigBerthaLCC_Draw	 	; Draw Big Bertha
-;	JSR Object_DeleteOffScreen_N2	; If Big Bertha falls off-screen, delete it!
-;
-;	LDA <Player_HaltGame
-;	BNE PRG003_B1F6	 ; If gameplay is halted, jump to PRG003_B1F6 (RTS)
-;
-;	INC <Objects_Var5,X	 ; Var5++
-;
-;	JSR Player_HitEnemy	 ; Player to Bertha collision
-;	JSR Object_ApplyXVel	 ; Apply X Velocity
-;	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
-;
-;	LDY #$02	 ; Y = $02
-;
-;	LDA <Counter_1
-;	AND #$40
-;	BEQ PRG003_B227	 ; 64 ticks on, 64 ticks off; jump to PRG003_B227
-;
-;	LDY #-$02	 ; Y = -$02
-;
-;PRG003_B227:
-;	STY <Objects_YVel,X	 ; Y Velocity = $02 or -$02
-;
-;	LDA Objects_Timer,X
-;	BEQ PRG003_B250	 ; If timer expired, jump to PRG003_B250
-;
-;	CMP #$01
-;	BNE PRG003_B23A	 ; If timer <> 1, jump to PRG003_B23A
-;
-;	JSR Object_AnySprOffscreen
-;	BNE PRG003_B23F	 ; If any part of Big Bertha has fallen off-screen, jump to PRG003_B23F
-;
-;	JSR BigBertha_SpitOutCheepCheep	 ; Big Bertha spits out the little Cheep Cheep
-;
-;PRG003_B23A:
-;
-;	; Big Bertha frame 1
-;	LDA #$01
-;	STA Objects_Frame,X
-;
-;PRG003_B23F:
-;	LDA <Objects_XVel,X
-;	BEQ PRG003_B24B	 ; If Big Bertha is not moving, jump to PRG003_B24B
-;
-;	BPL PRG003_B249	 ; If Big Bertha is moving to the right, jump to PRG003_B249
-;
-;	; Double increment because it hits the decrement, basically a single increment
-;	INC <Objects_XVel,X	; Moving left, slow down
-;	INC <Objects_XVel,X
-;
-;PRG003_B249:
-;	DEC <Objects_XVel,X	; Moving right, slow down
-;
-;PRG003_B24B:
-;	RTS		 ; Return
-;
-;BigBertha_XMove:	.byte -$10, $10
-;BigBertha_XHiMove:	.byte $FF, $00
-;
-;PRG003_B250:
-;	LDA <Objects_Var5,X
-;	LSR A
-;	BCC PRG003_B2A4	 ; If Var5 is even, jump to PRG003_B2A4
-;
-;	LDA Objects_Var7,X
-;	AND #$01
-;	TAY		 ; Y = 0 or 1
-;
-;	; Objects_Var10 is Big Bertha's original X
-;	LDA Objects_Var10,X
-;	ADD BigBertha_XMove,Y
-;	STA <Temp_Var2	
-;
-;	; Objects_Var11 is Big Bertha's original X Hi
-;	LDA Objects_Var11,X
-;	ADC BigBertha_XHiMove,Y
-;	STA <Temp_Var1	
-;
-;	LDY #$00	 ; Y = 0
-;
-;	LDA <Objects_X,X
-;	CMP <Temp_Var2	
-;
-;	LDA <Objects_XHi,X
-;	SBC <Temp_Var1	
-;	BLT PRG003_B279	 ; If Big Bertha is to the left of origin, jump to PRG003_B279
-;
-;	INY		 ; Y = 1
-;
-;PRG003_B279:
-;	LDA <Objects_XVel,X
-;	CMP BigBerthaLCC_XVelLimit,Y
-;	BEQ PRG003_B28B	 ; If Big Bertha is at X velocity limit, jump to PRG003_B28B
-;
-;	ADD BigBerthaLCC_XVelAccel,Y
-;	STA <Objects_XVel,X	 ; Update X velocity
-;
-;	BNE PRG003_B28B	 ; If X velocity is not at zero, jump to PRG003_B28B
-;
-;	INC Objects_Var7,X	 ; Otherwise, Var7++
-;
-;PRG003_B28B:
-;	CMP BigBerthaLCC_XVelLowLimit,Y
-;	BNE PRG003_B2A4	 ; If Big Bertha is at low limit, jump to PRG003_B2A4
-;
-;	LDA Objects_Timer3,X
-;	BNE PRG003_B2A4	 ; If timer 3 not expired, jump to PRG003_B2A4
-;
-;	LDA RandomN,X
-;	BPL PRG003_B2A4	 ; Random 50/50, jump to PRG003_B2A4
-;
-;	; Set timer to $26
-;	LDA #$26
-;	STA Objects_Timer,X
-;
-;	; Set timer to $80
-;	LDA #$80
-;	STA Objects_Timer3,X
-;
-;PRG003_B2A4:
-;	RTS		 ; Return
-;
-;BigBertha_HVisByFlip:	.byte $20, $80
-;BigBertha_SpriteXOff:	.byte $10, $00
-;
-;BigBerthaLCC_Draw:
-;
-;	; Save Big Bertha's X/Hi
-;	LDA <Objects_X,X
-;	PHA
-;	LDA <Objects_XHi,X
-;	PHA
-;
-;	LDA Objects_SprHVis,X
-;	STA Temp_VarNP0	 ; Store horizontal visibility bits -> Temp_VarNP0
-;
-;	LDA Objects_FlipBits,X
-;	ASL A
-;	BEQ PRG003_B2CB	 ; If Big Bertha is NOT horizontally flipped, jump to PRG003_B2CB
-;
-;	ASL Objects_SprHVis,X
-;
-;	; Move over 8 pixels
-;	LDA <Objects_X,X
-;	ADD #$08
-;	STA <Objects_X,X
-;	LDA <Objects_XHi,X
-;	ADC #$00
-;	STA <Objects_XHi,X
-;
-;PRG003_B2CB:
-;	JSR Object_Draw16x32Sprite	 ; Draw part of Big Bertha
-;
-;	; Restore Big Bertha's X/Hi
-;	PLA
-;	STA <Objects_XHi,X
-;	PLA
-;	STA <Objects_X,X
-;
-;	JSR Object_CalcSpriteXY_NoHi
-;
-;	LDY #$00	 ; Y = 0
-;
-;	LDA Objects_FlipBits,X
-;	ASL A
-;	BEQ PRG003_B2E0	 ; If Big Bertha is NOT horizontally flipped, jump to PRG003_B2E0
-;
-;	INY		 ; Y = 1
-;
-;PRG003_B2E0:
-;	LDA Temp_VarNP0
-;	AND BigBertha_HVisByFlip,Y
-;	BNE PRG003_B341	 ; If check sprite for Big Bertha is off-screen, jump to PRG003_B341 (RTS)
-;
-;	; Calculate Sprite X with appropriate offset
-;	LDA <Objects_SpriteX,X
-;	ADD BigBertha_SpriteXOff,Y
-;	STA <Temp_Var2	
-;
-;	LDY Object_SprRAM,X	 ; Y = Sprite_RAM offset
-;
-;	; Store sprite Xs
-;	LDA <Temp_Var2
-;	STA Sprite_RAM+$13,Y
-;	STA Sprite_RAM+$17,Y
-;
-;	; Temp_Var1 = Sprite vertical visibility bits
-;	LDA Objects_SprVVis,X
-;	STA <Temp_Var1	
-;
-;	LDA <Objects_SpriteY,X	
-;	LSR <Temp_Var1
-;	BCS PRG003_B309	 ; If this sprite is vertically off-screen, jump to PRG003_B309
-;
-;	STA Sprite_RAM+$10,Y	 ; Otherwise, store Sprite Y
-;
-;PRG003_B309:
-;	LSR <Temp_Var1
-;	BCS PRG003_B312	 ; If this sprite is vertically off-screen, jump to PRG003_B312
-;
-;	ADC #16
-;	STA Sprite_RAM+$14,Y	 ; Otherwise, store Sprite Y
-;
-;PRG003_B312:
-;	; Copy attributes across
-;	LDA Sprite_RAM+$02,Y
-;	STA Sprite_RAM+$12,Y
-;	STA Sprite_RAM+$16,Y
-;
-;	; Store pattern
-;	LDA #$85
-;	STA Sprite_RAM+$11,Y
-;
-;	LDA <Objects_Var5,X
-;	LSR A
-;	LSR A
-;	LSR A
-;
-;	; Select appropriate pattern by animation frame
-;	LDA #$8b
-;	BCS PRG003_B32B	
-;	LDA #$91
-;PRG003_B32B:
-;	; Store pattern
-;	STA Sprite_RAM+$15,Y
-;
-;	LDA Objects_FlipBits,X
-;	BPL PRG003_B341	 ; If Big Bertha is not vertically flipped, jump to PRG003_B341
-;
-;	; Otherwise swap Sprite Ys
-;	LDA Sprite_RAM+$10,Y
-;	PHA
-;	LDA Sprite_RAM+$14,Y
-;	STA Sprite_RAM+$10,Y
-;	PLA
-;	STA Sprite_RAM+$14,Y
-;
-;PRG003_B341:
-;	RTS		 ; Return
-;
-;TinyCheep_XVel:	.byte -$28, $28
-;TinyCheep_XOff:	.byte $00, $08
-;TinyCheep_Flip:	.byte $00, SPR_HFLIP
-;
-;
-;BigBertha_SpitOutCheepCheep:
-;	LDY #$04	 ; Y = 4
-;PRG003_B34A:
-;	LDA Objects_State,Y
-;	BEQ PRG003_B353	 ; If this object slot is dead/empty, jump to PRG003_B353
-;
-;	DEY		 ; Y--
-;	BPL PRG003_B34A	 ; While Y >= 0, loop!
-;
-;	RTS		 ; Return
-;
-;PRG003_B353:
-;	TYA		 
-;	TAX		 ; X = open object slot index
-;
-;	JSR Level_PrepareNewObject
-;
-;	LDX <SlotIndexBackup		 ; X = object slot index
-;
-;	; Set to normal state
-;	LDA #OBJSTATE_NORMAL
-;	STA Objects_State,Y
-;
-;	; This is the tiny Cheep Cheep that comes out of Big Bertha
-;	LDA #OBJ_TINYCHEEPCHEEP
-;	STA Level_ObjectID,Y
-;
-;	; Cheep Cheep emerges at +14
-;	LDA <Objects_Y,X
-;	ADC #14
-;	STA Objects_Y,Y
-;	LDA <Objects_YHi,X
-;	ADC #$00
-;	STA Objects_YHi,Y
-;
-;	; Temp_Var1 = 0
-;	LDA #$00
-;	STA <Temp_Var1
-;
-;	LDA Objects_FlipBits,X
-;	BEQ PRG003_B37D	 ; If Big Bertha is not flipped, jump to PRG003_B37D
-;
-;	INC <Temp_Var1	 ; Otherwise, Temp_Var1 = 1
-;
-;PRG003_B37D:
-;	LDA <Objects_X,X
-;	LDX <Temp_Var1		 ; X = 0 or 1
-;	ADC TinyCheep_XOff,X
-;	STA Objects_X,Y	 ; Set Tiny Cheep Cheep's X
-;
-;	; Set tiny Cheep Cheep's X velocity
-;	LDA TinyCheep_XVel,X
-;	STA Objects_XVel,Y
-;
-;	; Set tiny Cheep Cheep's flip
-;	LDA TinyCheep_Flip,X
-;	STA Objects_FlipBits,Y
-;
-;	LDX <SlotIndexBackup	 ; X = object slot index
-;
-;	; Set tiny Cheep Cheep's X Hi
-;	LDA <Objects_XHi,X
-;	ADC #$00
-;	STA Objects_XHi,Y
-;
-;	; Set tiny Cheep Cheep palette select 1 and flag as under water
-;	LDA #SPR_PAL1
-;	STA Objects_SprAttr,Y
-;	STA Objects_InWater,Y
-;
-;	; Tiny Cheep Cheep's Var1 holds Big Bertha's object index
-;	TXA
-;	STA Objects_Var1,Y
-;
-;	; Timer set to $30
-;	LDA #$30
-;	STA Objects_Timer,Y
-;
-;	RTS		 ; Return
+ObjInit_Ninji:
+	LDA #$20
+	STA Objects_Timer, X
+	RTS
 
-ObjNorm_TinyCheepCheep:
+Ninji_Facing: .byte SPR_HFLIP, $00
+
+ObjNorm_Ninji:
+	LDA <Player_HaltGame
+	BNE ObjNorm_NinjiDraw
+
+	JSR Object_DeleteOffScreen 	
+	JSR Player_HitEnemy
+	JSR ObjNorm_NinjiDraw
+	JSR Object_InteractWithWorld	 	; Move, detect, interact with blocks of world
+	JSR Object_HandleBumpUnderneath
+
+	JSR Level_ObjCalcXDiffs
+
+	LDA Ninji_Facing, Y
+	STA Objects_FlipBits, X
+
+	LDA Objects_Var1, X
+	JSR DynJump
+
+	.word Ninji_Idle
+	.word Ninji_Jump
+	.word Ninji_Hover
+	.word Ninji_ThrowStar
+	.word Ninji_Fall
+
+ObjNorm_NinjiDraw:
+	JSR Object_ShakeAndDraw
+	LDA Objects_Var1, X
+	CMP #02
+	BNE NinjiDrawStar2
+
+NinjiDrawStar:
+	LDY Object_SprRAM, X
+	LDA #$B9
+	STA Sprite_RAM + 9, Y
+	STA Sprite_RAM + 13, Y
+	
+	LDA #SPR_PAL3
+	STA Sprite_RAM + 10, Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
+	STA Sprite_RAM + 14, Y
+	 
+	LDA Sprite_RAM + 3, Y
+	STA Sprite_RAM + 11, Y
+	LDA Sprite_RAM + 7, Y
+	STA Sprite_RAM + 15, Y
+	
+	LDA Sprite_RAM , Y
+	SUB #$10
+	STA Sprite_RAM + 8, Y
+	STA Sprite_RAM + 12, Y
+NinjiDrawStar2:
+	RTS
+
+NinjiStarXVel: .byte $20, $E0
+NinjiStarYVel: .byte $60, $58, $50, $48, $40, $38, $30, $28, $20, $10
+
+Ninji_Jumps: .byte $B0, $BC, $C8, $D4
+Ninji_Idle:
+	LDA Objects_Timer, X
+	BNE Ninji_IdleRTS
+	INC Objects_Var1, X
+	LDA RandomN
+	AND #$03
+	TAY
+	LDA Ninji_Jumps, Y
+	STA Objects_YVel, X
+	INC Objects_Frame, X
+
+Ninji_IdleRTS:
+	RTS
+
+Ninji_Jump:
+	LDA Objects_YVel, X
+	BMI Ninji_Jump1
+	INC Objects_Var1, X
+	LDA #$08
+	STA Objects_Timer, X
+
+Ninji_Jump1:
+	RTS
+
+Ninji_Hover:
+	LDA #$FF
+	STA Objects_YVel, X
+	LDA Objects_Timer, X
+	BNE Ninji_Hover1
+	INC Objects_Var1, X
+
+Ninji_Hover1:
+	RTS
+
+Ninji_ThrowStar:
+	LDA #$00
+	STA Objects_Frame, X
+
+	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back!
+
+	LDA #SOBJ_NINJASTAR
+	STA SpecialObj_ID,Y
+
+	; Set Boomerang at Boomerang Bro's position
+	LDA <Objects_X,X
+	STA SpecialObj_XLo,Y
+	LDA <Objects_Y,X
+	SUB #$10
+	STA SpecialObj_YLo,Y
+	LDA <Objects_YHi,X
+	SBC #$00
+	STA SpecialObj_YHi,Y
+
+	STY TempY
+	LDA Objects_Y,X
+	SUB #$10
+	STA Objects_Y, X
+	LDA Objects_YHi, X
+	SBC #$00
+	STA Objects_YHi, X
+	JSR Object_CalcHomingVels
+	LDA Objects_TargetingYVal, X
+	ASL A
+	STA SpecialObj_YVel, Y
+	LDA Objects_TargetingXVal, X
+	ASL A
+	STA SpecialObj_XVel, Y
+	LDA Objects_Y,X
+	ADD #$10
+	STA Objects_Y, X
+	LDA Objects_YHi, X
+	ADC #$00
+	STA Objects_YHi, X
+	INC Objects_Var1, X
+	RTS		 ; Return
+
+Ninji_Fall:
+	LDA Objects_DetStat, X
+	AND #$04
+	BEQ Ninji_FallRTS
+	LDA #$20
+	STA Objects_Timer, X
+	LDA #$00
+	STA Objects_Var1, X
+	STA Objects_Frame, X
+
+Ninji_FallRTS:
 	RTS
 
 CheepCheepHopper_InitXVel:	.byte $0C, -$0C
@@ -3042,8 +2882,6 @@ ObjInit_CheepCheepHopper:
 	; Set hopper's initial X velocity
 	LDA CheepCheepHopper_InitXVel,Y
 	STA <Objects_XVel,X
-
-ObjInit_TinyCheepCheep:
 	RTS		 ; Return
 
 
@@ -3175,9 +3013,6 @@ PRG003_B551:
 
 PRG003_B55D:
 	STA <Objects_Var5,X	 ; -> Var5
-
-	ADD <Objects_VarBSS,X
-	STA <Objects_VarBSS,X
 
 	STA <Temp_Var15		 ; -> Temp_Var15
 
@@ -4946,7 +4781,6 @@ TailEnemy_InitOrHalt:
 
 	LSR A
 	STA <Objects_XVel,X	; Stop horizontal velocity
-	STA <Objects_VarBSS+1,X
 
 	; Color cycle!
 	LDA #$10

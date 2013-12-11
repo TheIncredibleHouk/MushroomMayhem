@@ -1763,6 +1763,16 @@ InitPals_Per_MapPUp:
 ; Luigi (see Map_PlayerPalFix and BonusGame_PlayerPal)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Setup_PalData:
+	LDX #$01
+	STA Debug_Snap
+	LDA PaletteEffect
+	CMP #$02
+	BNE SetDNActive1
+	LDX #$00
+
+SetDNActive1:
+	STX DayNightActive
+
 	LDA PAGE_C000
 	STA DAIZ_TEMP1
 	LDA #$15
@@ -1803,11 +1813,14 @@ SkipMasterBackup:
 	DEY		 ; Y--
 	BPL PRG027_B85E	 ; While Y >= 0, loop
 
-	LDA Pal_Data
-	CMP #$0F			; if we're already dark, no day/night applied (inside)
+	LDA DayNightActive
 	BEQ No_Darken
 	LDA DayNight
 	BEQ No_Darken
+	LDA Pal_Data
+	CMP #$0F
+	BEQ No_Darken
+
 	LDX #$0F
 
 Darken_Pal:
@@ -1903,14 +1916,7 @@ PRG027_B8F9:
 	LDA DAIZ_TEMP1
 	STA PAGE_C000
 	JSR PRGROM_Change_C000
-	LDX #$01
-	LDA MasterPal_Data
-	CMP #$0F
-	BNE SetDNActive
-	DEX
 
-SetDNActive:
-	STX DayNightActive
 	RTS		 ; Return
 
 

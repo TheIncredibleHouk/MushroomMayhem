@@ -3129,7 +3129,7 @@ Restore_Curr_Player_Pal:
 	STA (Player_Pal_Backup + $01)
 	RTS
 
-Fox_DashDir: .byte $E0, $20
+Fox_DashDir: .byte $D0, $30
 Fox_DashFlip: .byte $40, $00
 
 Try_Burning_Mode:
@@ -3142,14 +3142,14 @@ Try_Burning_Mode:
 	AND #PAD_B
 	BEQ Kill_Burn_NoFX
 	LDA Air_Time
-	CMP #$04
+	CMP #$08
 	BCC Kill_Burn_NoFX
 	JMP ContinueDash
 
 Try_FireBall:					; not a fireball, so let's try it!
 
 	LDA Air_Time
-	CMP #$04
+	CMP #$08
 	BCC Try_Burning_ModeRTS
 	LDA Player_InWater			
 	BNE Try_Burning_ModeRTS		; can't go into burning mode in sand or water
@@ -3190,7 +3190,7 @@ Store_Direction:
 	STA <Player_FlipBits
 	LDA #$00
 	STA <Player_YVel
-	LDA #$FC
+	LDA #$F8
 	STA Air_Change
 
 Try_Burning_ModeRTS:

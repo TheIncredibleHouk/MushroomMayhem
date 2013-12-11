@@ -3770,7 +3770,7 @@ PRG007_B588:
 	; Spike ball pattern
 	LDA #$4D
 	STA Sprite_RAM+$01,Y
-	LDA #$4F
+	LDA #$4D
 	STA Sprite_RAM+$05,Y
 
 	JSR SObj_Draw16x16	 ; Draw spike ball
@@ -3778,6 +3778,7 @@ PRG007_B588:
 	; Set spike ball left attributes
 	LDA #SPR_PAL3
 	STA Sprite_RAM+$02,Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAM+$06,Y
 
 
@@ -3969,35 +3970,19 @@ PRG007_B797:
 PRG007_B798:
 	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
 
-	LDA SpecialObj_Var1,X
-	AND #%00001100
-	LSR A
-	LSR A
-	TAX		 ; X = 0 to 3
-
 	; Set boomerang sprites attributes
-	LDA <Temp_Var1
-	EOR Boomerang_Attributes,X
-	ORA #SPR_PAL1
+	LDA #SPR_PAL1
 	STA Sprite_RAM+$02,Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAM+$06,Y
 
-	LDA <Temp_Var1
-	BEQ PRG007_B7B5	 ; If Temp_Var1 = 0, jump to PRG007_B7B5
-
-	INX
-	INX
-
 PRG007_B7B5:
-	TXA
-	AND #$03
-	TAX
 
 	; Set boomerang sprites patterns
-	LDA Boomerang_Patterns,X
+	LDA #$4D
 	STA Sprite_RAM+$01,Y
-	LDA Boomerang_Patterns+2,X
 	STA Sprite_RAM+$05,Y
+	
 
 PRG007_B7C5:
 	LDX <SlotIndexBackup	 ; X = special object slot index
@@ -4147,11 +4132,6 @@ Boomerang_XVelDelta:	.byte $01, -$01
 Boomerang_XVelLimit:	.byte $20, $E0
 Boomerang_YVelAccel:	.byte $01, -$01
 Boomerang_YVelLimit:	.byte $12, -$12
-
-Boomerang_Attributes:	.byte SPR_HFLIP | SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, $00, $00
-
-Boomerang_Patterns:
-	.byte $8B, $8F, $89, $8D, $8B, $8F
 
 
 SObj_Boomerang:
