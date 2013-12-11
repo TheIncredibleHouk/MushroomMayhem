@@ -33,7 +33,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
-	.word ObjInit_PDoor	; Object $08 - OBJ_PSWITCHDOOR
+	.word ObjInit_Coin	; Object $08 - OBJ_COIN
 	.word ObjInit_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjInit_Bully	; Object $0A - OBJ_BULLY
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -75,7 +75,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $05
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjNorm_Brick	; Object $07 - OBJ_BRICK
-	.word ObjNorm_PDoor	; Object $08 - OBJ_PSWITCHDOOR
+	.word ObjNorm_Coin	; Object $08 - OBJ_COIN
 	.word ObjNorm_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjNorm_Bully	; Object $0A OBJ_BULLY
 	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -118,7 +118,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $05
 	.word ObjHit_DoNothing	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word Player_GetHurt	; Object $07 - OBJ_BRICK
-	.word ObjHit_DoNothing	; Object $08 - OBJ_PSWITCHDOOR
+	.word ObjHit_Coin	; Object $08 - OBJ_COIN
 	.word ObjHit_DoNothing	; Object $09 - OBJ_AIRSHIPANCHOR
 	.word ObjHit_Bully	; Object $0A
 	.word ObjHit_NinjaShroom	; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -160,11 +160,11 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $05
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $07 - OBJ_BRICK
-	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $08 - OBJ_PSWITCHDOOR
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $08 - OBJ_COIN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A- OBJ_BULLY
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_NINJASHROOM
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $0E - OBJ_BOSS_KOOPALING
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0F - 
@@ -209,7 +209,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $05
 	.byte OA2_TDOGRP1	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA2_TDOGRP1	; Object $07 - OBJ_BRICK
-	.byte OA2_TDOGRP0	; Object $08 - OBJ_PSWITCHDOOR
+	.byte OA2_TDOGRP1	; Object $08 - OBJ_COIN
 	.byte OA2_TDOGRP1	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA2_TDOGRP1	; Object $0A
 	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -258,7 +258,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAW 	; Object $05
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_PSWITCHDOOR
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_COIN
 	.byte OA3_HALT_JUSTDRAW 	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -300,7 +300,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT5 | $48	; Object $05
 	.byte OPTS_NOCHANGE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_BRICK
-	.byte OPTS_SETPT6 | $13	; Object $08 - OBJ_PSWITCHDOOR
+	.byte OPTS_NOCHANGE	; Object $08 - OBJ_COIN
 	.byte OPTS_SETPT6 | $37	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OPTS_SETPT5 | $0B	; Object $0A - OBJ_BULLY
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -342,7 +342,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $05
 	.byte KILLACT_STANDARD	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte KILLACT_STANDARD	; Object $07 - OBJ_BRICK
-	.byte KILLACT_STANDARD	; Object $08 - OBJ_PSWITCHDOOR
+	.byte KILLACT_STANDARD	; Object $08 - OBJ_COIN
 	.byte KILLACT_STANDARD	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte KILLACT_STANDARD	; Object $0A
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -669,7 +669,7 @@ PRG001_A4C6:
 	; Power-up which may emerge from different types of bounce blocks
 
 Bouncer_PUp:
-	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF, OBJ_POISONMUSHROOM; #DAHRKDAIZ added OBJ_POWERUP_ICE
+	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
 	; Power-up X or Y velocity upon emerging from the bounce block
 Bouncer_PUpVel:	.byte $00, -$40, -$40, -$30, -$20, -$10, $00, $10, $20, $30, $40
@@ -1592,93 +1592,6 @@ PRG001_A963:
 
 	RTS		 ; Return
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_InteractWithWorld
-;
-; Calls Object_Move and handles the object responding to hitting
-; the floor/ceiling, or bump blocks
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $A966
-Object_InteractWithWorld:
-	JSR Object_Move	; Move and collide with world
-
-	LDA <Objects_DetStat,X
-
-	TAY		 ; Object detection status -> 'Y'
-	AND #$04	 
-	BEQ PRG001_A973	 ; If object did NOT hit floor, jump to PRG001_A973
-
-	JSR Object_HitGround ; Object hit ground, align
-
-PRG001_A973:
-	TYA		 ; Object detection status -> 'A'
-	AND #$08
-	BEQ PRG001_A97C	 ; If object did NOT hit ceiling, jump to PRG001_A97C
-
-	LDA #$04
-	STA <Objects_YVel,X ; Object hit ceiling, use rebound velocity
-
-PRG001_A97C:
-	LDA Object_TileFeet2
-	CMP #TILEA_BLOCKBUMP_CLEAR
-	BNE PRG001_A993	 ; If object did not hit the TILEA_BLOCKBUMP_CLEAR tile, jump to PRG001_A993
-
-	; Hit the blockbump tile... (i.e. this kills an enemy who was unlucky enough to be on a bumped block)
-
-	LDA #-$30
-	STA <Objects_YVel,X	 ; Object Y velocity = -$30
-
-	LDA <Objects_X,X
-	ASL A	
-	ASL A	
-	ASL A	
-	ASL A			; Shift X left 4 (sort of makes it a 4.4FP)
-	EOR <Objects_XVel,X	; Flip against the "whole" part of the X velocity
-	AND #$80	 	
-	BNE PRG001_A9B1	 	; If object is on the left half of the tile with a right going velocity or vice versa, jump to PRG001_A9B1
-
-PRG001_A993:
-
-	; Object didn't hit the bump tile 
-
-	TYA		 ; Object detection status -> 'A'
-	AND #$03
-	BEQ PRG001_A9B7	 ; If object did NOT hit a wall, jump to PRG001_A9B7 (RTS)
-
-	CPX #$05
-	BNE PRG001_A9B1	 ; If object slot is NOT 5, jump to PRG001_A9B1
-
-	; Object slot 5 only...
-
-	LSR A		 ; Shifts detection bits right 1
- 
-	LDA <Objects_X,X
-	AND #$0f	 ; Tile-relative X
-
-	LDY #$03	 ; Y = 3
-
-	BCS PRG001_A9A7	 ; If object hit wall on the right, jump to PRG001_A9A7
-
-	LDY #$03	 ; Otherwise, Y = 3 (oops?)
-
-PRG001_A9A7:
-	STY <Temp_Var1	 ; Temp_Var1 = 3 (because the above does nothing, heh)
-	ADD <Temp_Var1	 ; Temp_Var1 = 6
-	CMP #$08	 
-	BGE PRG001_A9B1	 ; If Temp_Var1 >= 8 (never gonna happen), jump to PRG001_A9B1
-
-	RTS		 ; Return
-
-PRG001_A9B1:
-
-	; Combined, this just reverses the X velocity
-	JSR Object_AboutFace
-	JSR Object_FlipFace
-
-PRG001_A9B7:
-	RTS		 ; Return
-
 ObjInit_FireFlower:
 	LDA From_Reserve
 	BEQ Do_Fire_Init
@@ -2201,6 +2114,9 @@ ObjInit_Vine:
 	STA Objects_FlipBits,X
 	LDA #$00
 	STA PUp_StarManFlash
+	LDA Objects_X, X
+	AND #$F0
+	STA Objects_X, X
 	RTS		 ; Return
 
 	; Stores the high byte of the VRAM address
@@ -2356,9 +2272,7 @@ PRG001_AD23:
 	RTS		 ; Return
 
 	; Basically this bumps the object up by 1 pixel...
-ObjInit_PDoor:
-	LDA #$00
-	STA DayNightActive
+ObjInit_Coin:
  	RTS		 ; Return
 
 ObjInit_WarpHide:
@@ -2373,7 +2287,47 @@ PRG001_AD37:
 	RTS		 ; Return
 
 
-ObjNorm_PDoor:
+ObjNorm_Coin:
+	LDA <Player_HaltGame
+	BNE DrawCoin
+
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_WorldDetect4
+	JSR Object_HitTestRespond
+
+	LDA <Objects_DetStat,X
+	AND #$04
+	BEQ DrawCoin
+	JSR Object_HitGround
+
+DrawCoin:
+	LDA Objects_SprHVis, X
+	ORA Objects_SprVVis, X
+	BNE Coin_RTS
+
+	JSR Object_ShakeAndCalcSprite
+	LDX <SlotIndexBackup
+	LDY Object_SprRAM, X
+	LDA #$49
+	STA Sprite_RAM + 1, Y
+	LDA #SPR_PAL3
+	STA Sprite_RAM + 2, Y
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAM, Y
+	LDA <Objects_SpriteX, X
+	STA Sprite_RAM + 3, Y
+	
+Coin_RTS:
+	RTS
+
+ObjHit_Coin:
+	INC Coins_Earned
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State, X
 	RTS
 
 ObjHit_IceFlower:
@@ -2930,190 +2884,6 @@ PRG001_B07B:
 	RTS		 ; Return
 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_CalcHomingVels
-;
-; How an 8-bit CPU can calculate aiming projectiles
-; towards the Player!  Returns values in respective
-; Objects_TargetingXVal and Objects_TargetingYVal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Object_CalcHomingVels:
-	
-	LDA #$14
-	STA <Temp_Var2	 ; Temp_Var2 = $14
-	
-	; Backup 'X' and 'Y'
-	TXA
-	PHA
-	TYA
-	PHA
-
-	; Backup Player_Y
-	LDA <Player_Y
-	PHA
-
-	CMP #$50
-	BGE PRG001_B08F	 ; If Player_Y >= $50, jump to PRG001_B08F
-
-	; Otherwise, force Player_Y = $50
-	LDA #$50
-	STA <Player_Y
-
-PRG001_B08F:
-	JSR Level_ObjCalcYDiffs
-	STY <Temp_Var3		 ; Store above/below flag -> Temp_Var3
-
-	; Get absolute value of Temp_Var16 (Y difference between Player and Koopaling)
-	LDA <Temp_Var16	
-	BPL PRG001_B09B	 
-	JSR Negate	 
-PRG001_B09B:
-	STA <Temp_Var13		 ; -> Temp_Var13
-
-	JSR Level_ObjCalcXDiffs
-	STY <Temp_Var4		 ; Store left/right of flag -> Temp_Var4
-
-	; Get absolute value of Temp_Var16 (X difference between Player and Koopaling)
-	LDA <Temp_Var16	
-	BPL PRG001_B0A9	
-	JSR Negate
-PRG001_B0A9:
-	STA <Temp_Var14		 ; -> Temp_Var14
-
-	LDY #$00	 ; Y = 0
-
-	LDA <Temp_Var14
-	CMP <Temp_Var13
-	BGE PRG001_B0BC	 ; If Temp_Var14 (Player vs Koopaling X diff) >= Temp_Var13 (Player vs Koopaling Y diff), jump to PRG001_B0BC
-
-	INY		 ; Y = 1
-
-	; Swap Temp_Var13 and Temp_Var14
-	PHA
-	LDA <Temp_Var13
-	STA <Temp_Var14
-	PLA
-	STA <Temp_Var13
-
-PRG001_B0BC:
-
-	; At this point, Temp_Var13 >= Temp_Var14, guaranteed
-
-	; What follows is some kind of algorithm that can "aim" a projectile
-	; towards a Player (e.g., Koopaling wand shots) but I'm not going to
-	; research the "why" at this time... it "just works"
-
-	LDA #$00
-	STA <Temp_Var12		; Temp_Var12 = 0
-	STA <Temp_Var1		; Temp_Var1 = 0
-	LDX <Temp_Var2		; X = Temp_Var2 (starts at $14)
-
-PRG001_B0C4:
-	LDA <Temp_Var12
-	ADD <Temp_Var13
-	CMP <Temp_Var14
-	BLT PRG001_B0D1		; If (Temp_Var12 + Temp_Var13) < Temp_Var14, jump to PRG001_B0D1
-
-	; Otherwise...
-	SBC <Temp_Var14		; Subtract Temp_Var14 from Temp_Var12
-	INC <Temp_Var1		; Temp_Var1++
-
-PRG001_B0D1:
-	STA <Temp_Var12 	; Update Temp_Var12
-	DEX		 	; X--
-	BNE PRG001_B0C4	 	; While X > 0, loop!
-
-	TYA
-	BEQ PRG001_B0E3	 ; If Y = 0, jump to PRG001_B0E3
-
-	; Swap Temp_Var1 and Temp_Var2
-	LDA <Temp_Var1
-	PHA		
-	LDA <Temp_Var2	
-	STA <Temp_Var1	
-	PLA		
-	STA <Temp_Var2	
-
-PRG001_B0E3:
-	LDA <Temp_Var1	
-	LDY <Temp_Var3	
-	BEQ PRG001_B0EE	
-
-	JSR Negate	
-	STA <Temp_Var1	
-
-PRG001_B0EE:
-	LDA <Temp_Var2	
-	LDY <Temp_Var4	
-	BEQ PRG001_B0F9	
-
-	JSR Negate	
-	STA <Temp_Var2	
-
-PRG001_B0F9:
-
-	; Restore Player_Y
-	PLA
-	STA <Player_Y
-
-	; Restore 'Y' and 'X'
-	PLA
-	TAY
-	PLA
-	TAX
-
-
-	; Temp_Var1 contains the "homing in" Y velocity
-	LDA <Temp_Var1
-	STA Objects_TargetingYVal,X
-
-	; Temp_Var2 contains the "homing in" X velocity
-	LDA <Temp_Var2
-	STA Objects_TargetingXVal,X
-
-	RTS		 ; Return
-
-PRG001_B10B:
-	; Immediately after defeated Koopaling has exited stage left...
-
-	LDY #$05	 ; Y = 5
-PRG001_B10D:
-	LDA SpecialObj_ID,Y
-	BEQ PRG001_B116  ; If this object slot is dead/empty, jump to PRG001_B116
-	DEY		 ; Y--
-	BPL PRG001_B10D	 ; While Y >= 0, loop!
-
-	RTS		 ; Return
-
-PRG001_B116:
-
-	; Recovered Koopaling wand
-	LDA #SOBJ_RECOVEREDWAND
-	STA SpecialObj_ID,Y
-
-	; Start X at center of screen
-	LDA #$80
-	STA SpecialObj_XLo,Y
-
-	; Start Y at Koopaling's Y
-	LDA <Objects_Y,X
-	STA SpecialObj_YLo,Y
-	LDA <Objects_YHi,X
-	STA SpecialObj_YHi,Y
-
-	; Halt velocities in this slo
-	LDA #$00
-	STA SpecialObj_YVel,Y
-	STA SpecialObj_XVel,Y
-
-	; Var 1 = $50
-	LDA #$50	
-	STA SpecialObj_Var1,Y
-
-PRG001_B137:
-	RTS		 ; Return
-
 ObjHit_Koopaling:
 	LDA Objects_Frame,X
 	CMP #$04
@@ -3125,7 +2895,7 @@ ObjHit_Koopaling:
 
 	LDY <Temp_Var15
 	CPY #$04	
-	BGS PRG001_B137	 ; If the Y difference value > +4, jump to PRG001_B137 (RTS)
+	BGS PRG001_B07B	 ; If the Y difference value > +4, jump to PRG001_B137 (RTS)
 
 	DEY		 ; Y--
 	BMI PRG001_B158	 ; If the difference was 0 (because now it just turned negative), jump to PRG001_B158
@@ -6016,5 +5786,7 @@ ObjNorm_Brick:
 	RTS
 
 ObjNorm_BrickDraw:
+	LDA #$00
+	STA Objects_Frame, X
 	JSR Object_ShakeAndDrawMirrored
 	RTS

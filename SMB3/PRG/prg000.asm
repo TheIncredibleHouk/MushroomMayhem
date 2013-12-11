@@ -67,8 +67,8 @@ Object_TileDetectOffsets:
 	; Group 12) are used for left/right wall detection!
 	;	        Y    X
 OTDO_G1R1:
-	.byte $10, $03	; At feet
-	.byte $00, $0	;8 At head
+	.byte $10, $08	; At feet
+	.byte $00, $08	; At head
 	.byte $09, $00	; Wall to left
 	.byte $09, $0F	; Wall to right
 
@@ -197,8 +197,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX02	; Object $04
 	.byte OAT_BOUNDBOX01	; Object $05
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $07 - OBJ_BRICK
-	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_PSWITCHDOOR
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $07 - OBJ_BRICK
+	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_COIN
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0A
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0B - OBJ_POWERUP_NINJASHROOM
@@ -262,7 +262,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY	; Object $45 - OBJ_HOTFOOT
 	.byte OAT_BOUNDBOX02	; Object $46 - OBJ_PIRANHASPIKEBALL
 	.byte OAT_BOUNDBOX06 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $47 - OBJ_GIANTBLOCKCTL
-	.byte OAT_BOUNDBOX01	; Object $48 - OBJ_TINYCHEEPCHEEP
+	.byte OAT_BOUNDBOX01	; Object $48 - OBJ_NINJI
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $4A - OBJ_MAGICSTAR
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $4B - OBJ_BOOMBOOMJUMP
@@ -282,7 +282,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $59 - OBJ_FIRESNAKE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $5C - OBJ_ICEBLOCK
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $5C - OBJ_ICEBLOCK
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $5D - OBJ_STONEBLOCK
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
@@ -297,7 +297,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OAT_BOUNDBOX01	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OAT_BOUNDBOX01	; Object $6A - OBJ_BLOOPERCHILDSHOOT
-	.byte OAT_BOUNDBOX12 | OAT_FIREIMMUNITY	; Object $6B - OBJ_PILEDRIVER
+	.byte OAT_BOUNDBOX01	; Object $6B - OBJ_SHYGUY
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6C - OBJ_GREENTROOPA
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6D - OBJ_REDTROOPA
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6E - OBJ_PARATROOPAGREENHOP
@@ -595,6 +595,8 @@ PRG000_C559:
 	LDA <Objects_DetStat,X
 	STA Temp_VarNP0	 ; Object's detection status -> Temp_VarNP0
 
+	LDA <Objects_DetStat,X
+	STA Objects_PrevDetStat,X
 	LDA #$00
 	STA <Objects_DetStat,X	; Clear Object's detection status
 	STA LRBounce_Vel	; Clear left/right bounce power
@@ -713,6 +715,7 @@ PRG000_C69C:
 Object_GetAttrAndMoveTiles:
 	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile	; Get tile here	
+	STA Object_TileWater
 	STA Objects_LastProp, X
 	JSR Object_Check_Water
 
@@ -786,6 +789,7 @@ PRG000_C797:
 	STA Object_TileWall2
 	STA Object_TileWall
 
+	JSR SetSpriteFG
 	RTS		 ; Return
 
 
@@ -896,11 +900,6 @@ PRG000_C82A:
 	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
 	TAY
 	LDA TileProperties, Y
-	PHA
-	JSR CheckSpriteOnFG
-	ORA Objects_SprAttr,X
-	STA Objects_SprAttr,X
-	PLA
 	RTS	 ; Jump to PRG000_C834
 
 PRG000_C832:
@@ -1475,6 +1474,9 @@ PRG000_CB5B:
 	JSR Object_BumpOffOthers	 ; Bump off and turn away from other objects 
 
 PRG000_CB5E:
+	LDA Level_ObjectID,X
+	CMP #OBJ_KEY
+	BEQ Object_DrawShelled
 	JSR Object_DeleteOffScreen	 ; Delete object if it goes off-screen 
 
 
@@ -1790,24 +1792,24 @@ PRG000_CC73:
 	LDA Level_ObjectID, X
 	CMP #OBJ_ICEBLOCK
 	BNE PRG000_CC74
+	LDA <Objects_Y, X
+	ADD #$08
+	AND #$F0
+	ORA #$08
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	ADC #$00
+	STA <Objects_YHi, X
 	LDA #$00
-	STA Objects_YVel, X
-	STA Objects_XVel, X
+	STA <Objects_XVel, X
+	STA <Objects_YVel, X
 
 PRG000_CC74:
 	LDA <Objects_DetStat,X 
 	AND #$04 
 	BEQ PRG000_CC94	 ; If object has hit ground, jump to PRG000_CC94
- 
-	LDA <Objects_XVel,X 
-	BNE PRG000_CC8D	 ; If object is moving horizontally, jump to PRG000_CC8D
 
-PRG000_CC8D:
 	JSR Object_HitGround	; Align to floor
- 
-	; Y Velocity = $0C (begin drop)
-	LDA #$0c 
-	STA <Objects_YVel,X 
 
 PRG000_CC94:
 	LDA <Objects_DetStat,X 
@@ -1955,16 +1957,6 @@ PRG000_CD47:
 	AND #$FE
 	CMP #OBJ_ICEBLOCK
 	BEQ PRG000_CD77	 ; If the kicked object is an ice block, jump to PRG000_CD77
-
-	; Object is NOT an ice block...
-
-	; NOTE: I really, really wish Nintendo used a consistent check here!
-	; Other code checks Objects_IsGiant before taking this route...
-	CMP #OBJ_BLUESPINY
-	BEQ NotGiant
-
-	CMP #OBJ_BIGGOOMBA
-	BGE PRG000_CD80	 ; If the object ID >= OBJ_BIGGREENTROOPA (why not use Objects_IsGiant?!), jump to PRG000_CD80
 
 NotGiant:
 	LDA Level_NoStopCnt
@@ -3043,18 +3035,19 @@ PRG000_D16B:	.byte -$08, $08
 ; $D16D
 Object_HandleBumpUnderneath:
 	JSR Object_AnySprOffscreen
-	BNE PRG000_D1C4	 ; If any sprite is off-screen, jump to PRG000_D1C4 (RTS)
- 
-	LDA Level_ObjectID,X 
-	CMP #OBJ_ICEBLOCK
-	BEQ Player_HitEnemy
+	BNE PRG000_D1B8	 ; If any sprite is off-screen, jump to PRG000_D1C4 (RTS)
 
+	
 	LDA Object_TileFeet2 
+	BEQ Object_HandleBumpUnderneath0
 	AND #$3F
-	BNE Player_HitEnemy	 ; If object did not detect a block bump clear tile, jump to Player_HitEnemy 
+	BEQ Object_HandleBumpUnderneath1
+Object_HandleBumpUnderneath0:
+	JMP Player_HitEnemy	 ; If object did not detect a block bump clear tile, jump to Player_HitEnemy 
 
 	; Object detected a block bump tile (object got bumped)
 
+Object_HandleBumpUnderneath1:
 	; Set Y Vel to -$30 (bounce dead)
 	LDA #-$30 
 	STA <Objects_YVel,X
@@ -3119,6 +3112,54 @@ PRG000_D19E:
 PRG000_D1B7:
 	JMP Object_SetShellState	 ; Jump to Object_SetShellState ("dies" into shelled state) 
 
+PRG000_D1B8:
+	RTS
+
+IceBlockYRange: .byte $16, $16
+IceBlockYOffset: .byte $0D, $1E
+IceBlockStand:
+
+	LDA <Player_YVel
+	BMI Player_HitEnemy1
+	JSR Level_ObjCalcXDiffs
+	LDA <Temp_Var16
+	BPL IceBlockStand1
+	JSR Negate
+
+IceBlockStand1:
+	CMP #$0D
+	BCS IceBlockStandRTS
+
+	JSR Level_ObjCalcYDiffs
+	CPY #$01
+	BNE IceBlockStandRTS
+
+	LDA <Player_Suit
+	BNE IceBlockStand23
+	DEY
+
+IceBlockStand23:
+	LDA <Temp_Var16
+	BPL IceBlockStand2
+	JSR Negate
+
+IceBlockStand2:
+	SUB IceBlockYRange, Y
+	CMP #$0A
+	BCS Player_HitEnemy1
+
+	LDA Objects_Y, X
+	SUB IceBlockYOffset, Y
+	STA <Player_Y
+	LDA <Objects_YHi, X
+	SBC #$00
+	STA <Player_YHi
+	LDA #$00
+	STA <Player_YVel
+	STA <Player_InAir
+
+IceBlockStandRTS:
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_HitEnemy
 ;
@@ -3126,7 +3167,13 @@ PRG000_D1B7:
 ; colliding with it (good and bad)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D1BA
+
 Player_HitEnemy:
+	LDA Level_ObjectID, X
+	CMP #OBJ_ICEBLOCK
+	BEQ IceBlockStand
+
+Player_HitEnemy1:
 	JSR Object_HitTest	; Check for collision
 
 	; Clear hit status bits
@@ -3217,22 +3264,7 @@ PRG000_D218:
 	; G
 	;
 	; ... if the above is true, that's considered "stompable" range.
-
-	LDY #17	 ; Y = 17 (the following two objects)
-
-	LDA Level_ObjectID,X
-	CMP #OBJ_PILEDRIVER
-	BEQ PRG000_D22E	 ; If object is a pile driver microgoomba, jump to PRG000_D22E
-
-	CMP #OBJ_CHEEPCHEEPHOPPER
-	BEQ PRG000_D22E	 ; If object is a hopping Cheep Cheep jump to PRG000_D22E
-
-	LDY #19		 ; Y = 19 (anything else, unless object is giant)
-
-	LDA Objects_IsGiant,X
-	BEQ PRG000_D22E	 ; If object is not giant, jump to PRG000_D22E
-
-	LDY #8	 	; Y = 8 (not the first two, if object is giant set)
+	LDY #19	 	; Y = 8 (not the first two, if object is giant set)
 
 PRG000_D22E:
 	STY <Temp_Var2		 ; -> Temp_Var2 (height above object considered "stompable" range)
@@ -3267,28 +3299,6 @@ PRG000_D22E:
 	BEQ PRG000_D20F	 	; If Player hasn't killed anything yet, jump to PRG000_D20F (Object_HoldKickOrHurtPlayer)
 
 PRG000_D253:
-
-	LDA Level_ObjectID, X
-	CMP #OBJ_ICEBLOCK
-	BNE Not_Ice_Block
-	; Player hit from top bit
-	; Enemy is in a shell...
-
-	LDA Objects_Y, X
-	SUB #$1C
-	STA <Player_Y
-	LDA <Objects_YHi, X
-	SBC #$00
-	STA <Player_YHi
-	LDA #$00
-	STA <Player_YVel
-	STA <Player_InAir
-	LDA #$00
-	STA Player_NoSlopeStick
-	RTS
-
-Not_Ice_Block:
-
 	LDA #$01
 	STA Objects_PlayerHitStat,X
 
@@ -3530,7 +3540,6 @@ PRG000_D351:
 PRG000_D355:
 
 	; Player potentially gonna get hurt!
-
 	LDA Player_FlashInv	; If Player is flashing from getting hit recently...
 	ORA Objects_Timer2,X	; ... or this object's timer2 is not expired ...
 	ORA Player_StarInv	; ... or Player is invincible by Star Man ...
@@ -5818,6 +5827,10 @@ Level_ObjCalcXBlockDiffs:
 	INC <Temp_Var16
 	LDA <Temp_Var15
 	SUB <Temp_Var16
+	BPL XDiffRTS
+	LDA #$00
+
+XDiffRTS:
 	LDY #$00
 	RTS
 
@@ -5827,9 +5840,77 @@ ToTheRight:
 	STA <Temp_Var15
 	LDA <Temp_Var16
 	SUB <Temp_Var15
+	BPL ToTheRightRTS
+	LDA #$00
+
+ToTheRightRTS:
 	LDY #$01
 	RTS
 
+Level_ObjCalcYBlockDiffs:
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	PHA
+	LDA <Objects_Y,X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var15
+	LDA <Objects_YHi, X
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var15
+	STA <Temp_Var15
+	LDA <Player_Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var16
+	LDA <Player_YHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var16
+	STA <Temp_Var16
+	CMP <Temp_Var15
+	BCS ToTheBottom
+
+	PLA
+	INC <Temp_Var16
+
+	LDA <Player_Suit
+	BEQ PlayerTall
+	INC <Temp_Var16
+
+PlayerTall:
+	LDA <Temp_Var15
+	SUB <Temp_Var16
+	BPL PlayerTallRTS
+	LDA #$00
+
+PlayerTallRTS:
+	LDY #$00
+	RTS
+
+ToTheBottom:
+	PLA
+	ADD <Temp_Var15
+	STA <Temp_Var15
+	LDA <Temp_Var16
+	SUB <Temp_Var15
+	BPL ToTheBottomRTS
+	LDA #$00
+
+ToTheBottomRTS:
+	LDY #$01
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_ObjCalcXDiffs
 ;
@@ -6440,3 +6521,317 @@ DoSpinnerE:
 	LDX TempX
 	LDA TempY
 	RTS
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Object_InteractWithWorld
+;
+; Calls Object_Move and handles the object responding to hitting
+; the floor/ceiling, or bump blocks
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; $A966
+Object_InteractWithWorld:
+	JSR Object_Move	; Move and collide with world
+
+	LDA <Objects_DetStat,X
+
+	TAY		 ; Object detection status -> 'Y'
+	AND #$04	 
+	BEQ PRG001_A973	 ; If object did NOT hit floor, jump to PRG001_A973
+
+	JSR Object_HitGround ; Object hit ground, align
+
+PRG001_A973:
+	TYA		 ; Object detection status -> 'A'
+	AND #$08
+	BEQ PRG001_A97C	 ; If object did NOT hit ceiling, jump to PRG001_A97C
+
+	LDA #$04
+	STA <Objects_YVel,X ; Object hit ceiling, use rebound velocity
+
+PRG001_A97C:
+	LDA Object_TileFeet2
+	CMP #TILEA_BLOCKBUMP_CLEAR
+	BNE PRG001_A993	 ; If object did not hit the TILEA_BLOCKBUMP_CLEAR tile, jump to PRG001_A993
+
+	; Hit the blockbump tile... (i.e. this kills an enemy who was unlucky enough to be on a bumped block)
+
+	LDA #-$30
+	STA <Objects_YVel,X	 ; Object Y velocity = -$30
+
+	LDA <Objects_X,X
+	ASL A	
+	ASL A	
+	ASL A	
+	ASL A			; Shift X left 4 (sort of makes it a 4.4FP)
+	EOR <Objects_XVel,X	; Flip against the "whole" part of the X velocity
+	AND #$80	 	
+	BNE PRG001_A9B1	 	; If object is on the left half of the tile with a right going velocity or vice versa, jump to PRG001_A9B1
+
+PRG001_A993:
+
+	; Object didn't hit the bump tile 
+
+	TYA		 ; Object detection status -> 'A'
+	AND #$03
+	BEQ PRG001_A9B7	 ; If object did NOT hit a wall, jump to PRG001_A9B7 (RTS)
+
+	CPX #$05
+	BNE PRG001_A9B1	 ; If object slot is NOT 5, jump to PRG001_A9B1
+
+	; Object slot 5 only...
+
+	LSR A		 ; Shifts detection bits right 1
+ 
+	LDA <Objects_X,X
+	AND #$0f	 ; Tile-relative X
+
+	LDY #$03	 ; Y = 3
+
+	BCS PRG001_A9A7	 ; If object hit wall on the right, jump to PRG001_A9A7
+
+	LDY #$03	 ; Otherwise, Y = 3 (oops?)
+
+PRG001_A9A7:
+	STY <Temp_Var1	 ; Temp_Var1 = 3 (because the above does nothing, heh)
+	ADD <Temp_Var1	 ; Temp_Var1 = 6
+	CMP #$08	 
+	BGE PRG001_A9B1	 ; If Temp_Var1 >= 8 (never gonna happen), jump to PRG001_A9B1
+
+	RTS		 ; Return
+
+PRG001_A9B1:
+
+	; Combined, this just reverses the X velocity
+	JSR Object_AboutFace
+
+PRG001_A9B7:
+	RTS		 ; Return
+
+SetSpriteFG:
+	LDA Objects_SprAttr, X
+	AND #$DF
+	STA Objects_SprAttr, X
+
+	LDA Object_TileFeet
+	CMP #TILE_ITEM_COIN
+	BCS SetSpriteFG1
+	AND #TILE_PROP_FOREGROUND
+	BNE SetSpriteFG1
+
+	LDA Object_TileWall
+	CMP #TILE_ITEM_COIN
+	BCS SetSpriteFG1
+	AND #TILE_PROP_FOREGROUND
+	BNE SetSpriteFG1
+
+	LDA Object_TileWater
+	CMP #TILE_ITEM_COIN
+	BCS SetSpriteFG1
+	AND #TILE_PROP_FOREGROUND
+	BEQ SetSpriteFG2
+
+SetSpriteFG1:
+	LDA Objects_SprAttr, X
+	ORA #SPR_BEHINDBG
+	STA  Objects_SprAttr, X
+
+SetSpriteFG2:
+	RTS
+
+
+FindEmptyEnemySlot:
+	LDX #$04
+
+FindEmptyEnemySlot1:
+	LDA Objects_State,X
+	BEQ FindEmptyEnemySlot2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
+
+	DEX		 ; X--
+	BPL FindEmptyEnemySlot1	 ; While X >= 0, loop!
+
+FindEmptyEnemySlot2:
+	RTS
+
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Object_CalcHomingVels
+;
+; How an 8-bit CPU can calculate aiming projectiles
+; towards the Player!  Returns values in respective
+; Objects_TargetingXVal and Objects_TargetingYVal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Object_CalcHomingVels:
+	
+	LDA #$14
+	STA <Temp_Var2	 ; Temp_Var2 = $14
+	
+	; Backup 'X' and 'Y'
+	TXA
+	PHA
+	TYA
+	PHA
+
+	; Backup Player_Y
+	LDA <Player_Y
+	PHA
+
+	CMP #$50
+	BGE PRG001_B08F	 ; If Player_Y >= $50, jump to PRG001_B08F
+
+	; Otherwise, force Player_Y = $50
+	LDA #$50
+	STA <Player_Y
+
+PRG001_B08F:
+	JSR Level_ObjCalcYDiffs
+	STY <Temp_Var3		 ; Store above/below flag -> Temp_Var3
+
+	; Get absolute value of Temp_Var16 (Y difference between Player and Koopaling)
+	LDA <Temp_Var16	
+	BPL PRG001_B09B	 
+	JSR Negate	 
+PRG001_B09B:
+	STA <Temp_Var13		 ; -> Temp_Var13
+
+	JSR Level_ObjCalcXDiffs
+	STY <Temp_Var4		 ; Store left/right of flag -> Temp_Var4
+
+	; Get absolute value of Temp_Var16 (X difference between Player and Koopaling)
+	LDA <Temp_Var16	
+	BPL PRG001_B0A9	
+	JSR Negate
+PRG001_B0A9:
+	STA <Temp_Var14		 ; -> Temp_Var14
+
+	LDY #$00	 ; Y = 0
+
+	LDA <Temp_Var14
+	CMP <Temp_Var13
+	BGE PRG001_B0BC	 ; If Temp_Var14 (Player vs Koopaling X diff) >= Temp_Var13 (Player vs Koopaling Y diff), jump to PRG001_B0BC
+
+	INY		 ; Y = 1
+
+	; Swap Temp_Var13 and Temp_Var14
+	PHA
+	LDA <Temp_Var13
+	STA <Temp_Var14
+	PLA
+	STA <Temp_Var13
+
+PRG001_B0BC:
+
+	; At this point, Temp_Var13 >= Temp_Var14, guaranteed
+
+	; What follows is some kind of algorithm that can "aim" a projectile
+	; towards a Player (e.g., Koopaling wand shots) but I'm not going to
+	; research the "why" at this time... it "just works"
+
+	LDA #$00
+	STA <Temp_Var12		; Temp_Var12 = 0
+	STA <Temp_Var1		; Temp_Var1 = 0
+	LDX <Temp_Var2		; X = Temp_Var2 (starts at $14)
+
+PRG001_B0C4:
+	LDA <Temp_Var12
+	ADD <Temp_Var13
+	CMP <Temp_Var14
+	BLT PRG001_B0D1		; If (Temp_Var12 + Temp_Var13) < Temp_Var14, jump to PRG001_B0D1
+
+	; Otherwise...
+	SBC <Temp_Var14		; Subtract Temp_Var14 from Temp_Var12
+	INC <Temp_Var1		; Temp_Var1++
+
+PRG001_B0D1:
+	STA <Temp_Var12 	; Update Temp_Var12
+	DEX		 	; X--
+	BNE PRG001_B0C4	 	; While X > 0, loop!
+
+	TYA
+	BEQ PRG001_B0E3	 ; If Y = 0, jump to PRG001_B0E3
+
+	; Swap Temp_Var1 and Temp_Var2
+	LDA <Temp_Var1
+	PHA		
+	LDA <Temp_Var2	
+	STA <Temp_Var1	
+	PLA		
+	STA <Temp_Var2	
+
+PRG001_B0E3:
+	LDA <Temp_Var1	
+	LDY <Temp_Var3	
+	BEQ PRG001_B0EE	
+
+	JSR Negate	
+	STA <Temp_Var1	
+
+PRG001_B0EE:
+	LDA <Temp_Var2	
+	LDY <Temp_Var4	
+	BEQ PRG001_B0F9	
+
+	JSR Negate	
+	STA <Temp_Var2	
+
+PRG001_B0F9:
+
+	; Restore Player_Y
+	PLA
+	STA <Player_Y
+
+	; Restore 'Y' and 'X'
+	PLA
+	TAY
+	PLA
+	TAX
+
+
+	; Temp_Var1 contains the "homing in" Y velocity
+	LDA <Temp_Var1
+	STA Objects_TargetingYVal,X
+
+	; Temp_Var2 contains the "homing in" X velocity
+	LDA <Temp_Var2
+	STA Objects_TargetingXVal,X
+
+	RTS		 ; Return
+
+PRG001_B10B:
+	; Immediately after defeated Koopaling has exited stage left...
+
+	LDY #$05	 ; Y = 5
+PRG001_B10D:
+	LDA SpecialObj_ID,Y
+	BEQ PRG001_B116  ; If this object slot is dead/empty, jump to PRG001_B116
+	DEY		 ; Y--
+	BPL PRG001_B10D	 ; While Y >= 0, loop!
+
+	RTS		 ; Return
+
+PRG001_B116:
+
+	; Recovered Koopaling wand
+	LDA #SOBJ_RECOVEREDWAND
+	STA SpecialObj_ID,Y
+
+	; Start X at center of screen
+	LDA #$80
+	STA SpecialObj_XLo,Y
+
+	; Start Y at Koopaling's Y
+	LDA <Objects_Y,X
+	STA SpecialObj_YLo,Y
+	LDA <Objects_YHi,X
+	STA SpecialObj_YHi,Y
+
+	; Halt velocities in this slo
+	LDA #$00
+	STA SpecialObj_YVel,Y
+	STA SpecialObj_XVel,Y
+
+	; Var 1 = $50
+	LDA #$50	
+	STA SpecialObj_Var1,Y
+
+PRG001_B137:
+	RTS		 ; Return

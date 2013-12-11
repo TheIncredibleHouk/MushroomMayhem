@@ -335,8 +335,12 @@ PRG008_A17F:
 	JSR Do_Air_Timer
 	JSR Increase_Game_Timer
 	JSR Try_Item_Reserve_Release
+	LDA DayNightActive
+	BEQ NoTransition
 	JSR DoNightTransition
 	JSR DoDayTransition
+
+NoTransition:
 	JSR DoPaletteEffect
 	INC Level_NoStopCnt	; As long as none of the above is happening, continue the "no stop" counter...
 
@@ -4341,6 +4345,7 @@ PRG008_B585_3:
 	CPX #$02
 	BCS PRG008_B585_4
 	LDA <Level_Tile
+	BEQ PRG008_B585_4
 	AND #$3F
 	BNE PRG008_B585_4
 	LDA #$01
@@ -5903,6 +5908,7 @@ DoPaletteEffect:
 
 	.word NoEffect
 	.word RainbowWithMovement
+	.word NoEffect
 
 NoEffect:
 	RTS

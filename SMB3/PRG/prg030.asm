@@ -4871,8 +4871,6 @@ DoNightTransition:
 	BNE NightTransRTS
 	LDA NightTransition
 	BEQ NightTransRTS
-	LDA DayNightActive
-	BEQ SkipNightTransition
 	LDA NightTransition
 	CMP #$01
 	BEQ FinalNightTransition

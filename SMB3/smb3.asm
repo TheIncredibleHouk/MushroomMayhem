@@ -438,9 +438,6 @@ PAD_RIGHT	= $01
 	; resets to zero.
 	Graphics_Queue:		.ds 1
 
-				.ds 1	; $5F unused
-				.ds 1	; $60 unused
-
 	Level_LayPtr_AddrL:	.ds 1	; Low byte of address to tile layout (ORIGINAL stored in Level_LayPtrOrig_AddrL)
 	Level_LayPtr_AddrH:	.ds 1	; High byte of address to tile layout (ORIGINAL stored in Level_LayPtrOrig_AddrH)
 
@@ -448,6 +445,7 @@ PAD_RIGHT	= $01
 	Map_Tile_AddrL:		.ds 1	; Low byte of tile address
 	Map_Tile_AddrH:		.ds 1	; High byte of tile address
 
+						.ds 2
 
 	.org $63	; NOTE, the following two are also $63/$64, bonus game context
 	BonusText_BaseL:	.ds 1	; Instruction text base address low
@@ -456,9 +454,7 @@ PAD_RIGHT	= $01
 
 	Level_ObjPtr_AddrL:	.ds 1	; Low byte of address to object set (ORIGINAL stored in Level_ObjPtrOrig_AddrL)
 	Level_ObjPtr_AddrH:	.ds 1	; High byte of address to object set (ORIGINAL stored in Level_ObjPtrOrig_AddrH)
-
-				.ds 1	; $67 unused
-				.ds 1	; $68 unused
+						.ds 2
 
 	Video_Upd_AddrL:	.ds 1	; Video_Misc_Updates routine uses this as an address, low byte
 	Video_Upd_AddrH:	.ds 1	; Video_Misc_Updates routine uses this as an address, hi byte
@@ -1270,7 +1266,8 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	.org $0400	; $0400-$04CF (except $0461 and $0462, see "$04xx RAM SOUND/MUSIC ENGINE") is available for this context-dependent situation
 
-	.ds 27	; $0400-$041A unused
+	Objects_PrevDetStat:		.ds 8
+	.ds 19	; $0400-$041A unused
 
 	Fade_State:		.ds 1	; 0 = Nothing, 1 = Fade in, 3 = Fade out
 	Fade_Tick:		.ds 1	; Ticks down and then decrements Fade_Level
@@ -1848,9 +1845,10 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 
 	Object_TileFeet:	.ds 1	; Object tile detected at "feet" of object
 	Object_TileWall:	.ds 1	; Object tile detected in front of object, i.e. a wall
+	Object_TileWater:	.ds 1
 	Object_LevelTile:	.ds 1
 	Object_TileProp:	.ds 1
-				.ds 2	; $0650 unused
+				.ds 1	; $0650 unused
 
 	Objects_SprHVis:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
 	Objects_SpawnIdx:	.ds 8	; $0659-$0660 Holds the index into level data that this object was spawned from
@@ -3430,8 +3428,9 @@ KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
 
 OBJ_BOUNCEDOWNUP	= $06	; Down/up block bounce effect object
 OBJ_BRICK		= $07	; Hidden object that jumps you to the secret warp whistle in 1-3
-OBJ_WARPHIDE		= $00
-OBJ_PSWITCHDOOR		= $08	; Door that appears under influence of P-Switch
+OBJ_WARPHIDE		= $00	;
+OBJ_PSWITCHDOOR = $00	;
+OBJ_COIN		= $08	; Door that appears under influence of P-Switch
 OBJ_AIRSHIPANCHOR	= $09	; Airship anchor
 OBJ_BULLY			= $0A	;
 OBJ_POWERUP_NINJASHROOM		= $0B	; Ninja Mushroom
@@ -3490,7 +3489,8 @@ OBJ_WOODENPLATUNSTABLE	= $44	; Fall-after-touch log platform
 OBJ_HOTFOOT		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)
 OBJ_PIRANHASPIKEBALL	= $46	; Tall plant carrying spike ball
 OBJ_GIANTBLOCKCTL	= $47	; Enables Giant World blocks to function
-OBJ_TINYCHEEPCHEEP	= $48	; Tiny cheep cheep
+OBJ_TINYCHEEPCHEEP	= $00
+OBJ_NINJI	= $48	; Tiny cheep cheep
 OBJ_FLOATINGBGCLOUD	= $49	; Floating background cloud
 OBJ_MAGICSTAR	= $4A 	; Boom Boom (?) end-level ball
 OBJ_BOOMBOOMJUMP	= $4B	; Jumping Boom-Boom (can actually hit ? blocks!)
@@ -3528,7 +3528,8 @@ OBJ_LAVALOTUS		= $67 	; Underwater lava plant
 OBJ_TWIRLINGBUZZY	= $68	; Twirling, upside down buzzy beatle
 OBJ_TWIRLINGSPINY	= $69	; Twirling, upside down spiny
 OBJ_BLOOPERCHILDSHOOT	= $6A	; Blooper (shoots off children
-OBJ_PILEDRIVER		= $6B	; Pile driver micro goomba
+OBJ_PILEDRIVER	= $00	;
+OBJ_SHYGUY		= $6B	; Pile driver micro goomba
 OBJ_GREENTROOPA		= $6C	; green koopa troopa
 OBJ_REDTROOPA		= $6D	; red koopa troopa
 OBJ_PARATROOPAGREENHOP	= $6E	; Hopping green paratroopa
