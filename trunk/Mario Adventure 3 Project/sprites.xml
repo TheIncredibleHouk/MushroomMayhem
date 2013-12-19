@@ -756,21 +756,21 @@
     <sprite x="36" y="0" value="1A" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="-64" y="0" value="29" palette="1" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="8A" width="02" height="02" name="Thwomp" class="2" group="Fortress">
-    <sprite x="4" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="12" y="0" value="32" palette="2" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="20" y="0" value="30" palette="2" horizontalflip="true" verticalflip="false" table="12" />
-    <sprite x="4" y="16" value="3A" palette="2" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="12" y="16" value="3C" palette="2" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="20" y="16" value="3A" palette="2" horizontalflip="true" verticalflip="false" table="12" />
+  <spritedefinition id="8A" width="01" height="02" name="Thwomp" class="2" group="Fortress">
+    <sprite x="-4" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="4" y="0" value="32" palette="2" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="12" y="0" value="30" palette="2" horizontalflip="true" verticalflip="false" table="12" />
+    <sprite x="-4" y="16" value="3A" palette="2" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="4" y="16" value="3C" palette="2" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="12" y="16" value="3A" palette="2" horizontalflip="true" verticalflip="false" table="12" />
   </spritedefinition>
-  <spritedefinition id="8B" width="03" height="02" name="Hyper Thwomp" class="2" group="Fortress">
-    <sprite x="12" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="20" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="28" y="0" value="30" palette="1" horizontalflip="true" verticalflip="false" table="12" />
-    <sprite x="12" y="16" value="3A" palette="1" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="20" y="16" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="28" y="16" value="3A" palette="1" horizontalflip="true" verticalflip="false" table="12" />
+  <spritedefinition id="8B" width="01" height="02" name="Hyper Thwomp" class="2" group="Fortress">
+    <sprite x="-4" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="4" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="12" y="0" value="30" palette="1" horizontalflip="true" verticalflip="false" table="12" />
+    <sprite x="-4" y="16" value="3A" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="4" y="16" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="12" y="16" value="3A" palette="1" horizontalflip="true" verticalflip="false" table="12" />
   </spritedefinition>
   <spritedefinition id="8C" width="02" height="02" name="Thwomp (Moves Right)" class="2" group="Fortress">
     <sprite x="4" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="12" />
