@@ -2015,6 +2015,8 @@ ObjInit_FloatWoodenPlat:
 	STA <Objects_YHi,X
 
 PRG002_AB35:
+	LDA #$01
+	STA ObjSplash_DisTimer, X
 	RTS		 ; Return
 
 
@@ -2025,41 +2027,75 @@ ObjNorm_WoodenPlatFloat:
 	BNE PRG002_AB35	 ; If gameplay is halted, jump to PRG002_AB35 (RTS)
 
 PRG002_AB5E:
-	LDA Objects_Var1, X
-	BNE Float_Do_Fall
-
-	LDA #$00
-	STA Objects_Var2, X
-
 	JSR Object_Move	 ; Apply Y Velocity
-	LDA <Objects_DetStat, X
+	LDA Object_TileFeet2
+	AND #$3F
+	BNE PRG002_AB5E2
+	LDA #$E0
+	STA <Objects_YVel, X
+	RTS
 
-	AND #$04
-	ORA Objects_InWater, X
+PRG002_AB5E2:
+	LDA Objects_InWater, X
+	BNE PRG002_AB60
+	JSR Object_DetectTile	; Get tile here	
+	JSR Object_Check_Water
+	LDA Objects_InWater, X
+	BNE PRG002_AB60
+	LDY #(Platform_Extended_Check - Object_TileDetectOffsets)
+	INY
+	INY
+	JSR Object_DetectTile	; Get tile here	
+	JSR Object_Check_Water
+
+	LDA Objects_InWater, X
 	BEQ Float_Do_Fall
+
+PRG002_AB60:
+	LDA <Objects_Y, X
+	AND #$0F
+	CMP #$0E
+	BCC Float_Do_Carry
+	LDA <Objects_Y, X
+	AND #$F0
+	ORA #$0E
+	STA <Objects_Y, X
+	LDA #$00
+	STA <Objects_YVel, X
+	BNE Float_Do_Carry
+
+Float_Do_Fall:
+	LDA <Objects_DetStat, X
+	AND #$04
+	BEQ Float_Do_Carry
 	LDA <Objects_Y, X
 	AND #$F0
 	STA <Objects_Y, X
 	LDA #$00
 	STA <Objects_YVel, X
 
-Try_Float:	
-	LDA Objects_InWater, X
-	BEQ Float_Do_Fall
-	LDA <Objects_Y, X
-	ADD #$0C
-	STA <Objects_Y, X
-	INC Objects_Var1, X
+Float_Do_Carry:
+	LDA Object_TileFeet
+	CMP #TILE_ITEM_COIN
+	BCS No_Carry
+	AND #$0F
+	STA TempA
+	LDA #TILE_PROP_MOVE_RIGHT
+	SUB TempA
+	BMI No_Carry
+	CMP #$02
+	BCS No_Carry
+	LDY #$10
+	CMP #01
+	BNE Float_Do_Carry1
+	LDY #$F0
+ 
+Float_Do_Carry1:
+	TYA
+	STA Objects_XVel, X
 
-Float_Do_Fall:
-	LDA #$00
-	STA Object_VelCarry
+No_Carry:
 	JSR PlayerPlatform_Collide	; Do Player-platform collision
-	BCC PRG002_AB8F	 		; If Player did not collide with Platform, jump to PRG002_AB8F
-
-	; Player collided with floater
-
-	ROL Player_NoSlopeStick	 	; Set Player_NoSlopeStick
 
 PRG002_AB8F:
 	RTS		 ; Return
@@ -4293,14 +4329,14 @@ PRG002_BAA6:
 	; Carry set if carrying collision occurred
 PlayerPlatform_Collide:
 	JSR Object_HitTest	 ; Test if Player is touching object
-	BCC PRG002_BAEE	 	; If not, jump to PRG002_BAEE (RTS)
+	BCC PRG002_BABD	 	; If not, jump to PRG002_BAEE (RTS)
 
 	; Test if Player is standing on top of platform
 
 	LDA <Player_SpriteY
 	ADD #24
 	CMP <Objects_SpriteY,X
-	BGE PRG002_BABE	 ; If Player's bottom is beneath object's top, jump to PRG002_BABE
+	BGE PRG002_BABD	 ; If Player's bottom is beneath object's top, jump to PRG002_BABE
 
 	LDA <Player_YVel
 	BMI PRG002_BABD	 ; If Player is moving upward, jump to PRG002_BABD
@@ -4308,96 +4344,14 @@ PlayerPlatform_Collide:
 	LDA #$00
 	STA Object_VelCarry
 	JSR Player_StandOnPlatform	 ; Stand on platform
+	LDA <Objects_XVel,X
+	STA Player_CarryXVel
+
+PRG002_BABC:
 	SEC		 ; Set carry (collided)
 
 PRG002_BABD:
 	RTS		 ; Return
-
-PRG002_BABE:
-
-	; Check if Player is hitting off bottom of platform
-
-	LDA #-$08	; A = -8 unless small or ducking
-
-	LDY <Player_Suit
-	BEQ PRG002_BAC9	 ; If Player is small, jump to PRG002_BAC9
-
-	LDY Player_IsDucking
-	BEQ PRG002_BACB	 ; If Player is NOT ducking, jump to PRG002_BACB
-
-PRG002_BAC9:
-	LDA #$08	 ; A = 8 if small or ducking
-
-PRG002_BACB:
-	ADD <Player_SpriteY
-	CMP <Objects_SpriteY,X
-	BLT PRG002_BADC	 ; If Player's Sprite top is near object's top, jump to PRG002_BADC
-
-	LDA <Player_YVel
-	BPL PRG002_BADA	 ; If Player is falling, jump to PRG002_BADA
-
-	; Player hits head off platform
-	;LDA #$10
-	;STA <Player_YVel
-
-PRG002_BADA:
-	CLC		 ; Clear carry (no collision)
-	RTS		 ; Return
-
-PRG002_BADC:
-	LDA <Objects_XVel,X
-	BEQ PRG002_BAF4	 ; If platform is not moving horizontally, jump to PRG002_BAF4
-
-	; Platform is moving horizontally...
-
-	LDA <Player_X
-	SUB <Objects_X,X	; Difference between Player and Platform X
-	EOR <Objects_XVel,X	; Most importantly, check if sign differs from velocity
-
-	CLC		 ; Clear carry (no collision)
-	BMI PRG002_BAEF	 ; If signs differ, jump to PRG002_BAEF
-
-	; Otherwise, set Player's X velocity to platform's X velocity
-	LDA <Objects_XVel,X
-	STA <Player_XVel
-
-PRG002_BAEE:
-	RTS		 ; Return
-
-
-PRG002_BAEF:
-
-	; Halt Player's movement
-	;LDA #$00
-	;STA <Player_XVel
-
-	RTS		 ; Return
-
-PRG002_BAF4:
-
-	; Platform is not moving horizontally... 
-
-	JSR Level_ObjCalcXDiffs
-
-	INY		 ; Y = 1 or 2, depending on Player's relative position
-
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	STA <Temp_Var1	 ; Temp_Var1 is non-zero if Player is pressing left/right
-
-	CPY <Temp_Var1	 ; Check if Player is pressing a direction favorable to his position
-
-	CLC		 ; Clear carry (no collision)
-
-	BNE PRG002_BAEF	 ; If Player is pressing against it, jump to PRG002_BAEF (halt Player's movement)
-
-	; Player pushing with platform
-	;LDA PlayerPushWithPlatform_XVel-1,Y
-	;STA <Player_XVel
-
-	RTS		 ; Return
-
-PlayerPushWithPlatform_XVel:	.byte $04, -$04
 
 	; Attribute by frame
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

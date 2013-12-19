@@ -512,7 +512,6 @@ SpringAnim:
 	LDA #$00
 	STA <Player_YVel
 	STA <Player_InAir
-	STA Player_NoSlopeStick
 
 	LDA Objects_Timer, X
 	BNE SpringAnimRTS
@@ -524,7 +523,6 @@ SpringAnim:
 	LDA Spring_Jump_Height, Y
 	STA <Player_YVel
 	STA <Player_InAir
-	STA Player_NoSlopeStick
 	LDA #$E0
 	STA <Objects_YVel, X
 
@@ -3975,7 +3973,7 @@ PRG001_B7A7:
 	STA Objects_State,Y
 
 	; New object ID 
-	LDA #OBJ_BOSSATTACK
+	LDA #OBJ_WATERFILLER
 	STA Level_ObjectID,Y
 
 	; New object Y -- Koopaling Y + 32
@@ -4681,7 +4679,7 @@ PRG001_BB5E:
 	STA Objects_State,X
 
 	; Bowser's fireball
-	LDA #OBJ_BOSSATTACK
+	LDA #OBJ_WATERFILLER
 	STA Level_ObjectID,X
 
 	; Set Bowser's internal state to 2

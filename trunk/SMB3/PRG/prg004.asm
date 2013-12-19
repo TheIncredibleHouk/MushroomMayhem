@@ -33,7 +33,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GroundTroop	; Object $72 - OBJ_GOOMBA
 	.word ObjInit_GroundTroop	; Object $73 - OBJ_PARAGOOMBA
 	.word ObjInit_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.word ObjInit_BossAttack	; Object $75 - OBJ_BOSSATTACK
+	.word ObjInit_Waterfill	; Object $75 - OBJ_WATERFILLER
 	.word ObjInit_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjInit_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_Set3DoNothing	; Object $78 - OBJ_BULLETBILL
@@ -75,7 +75,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_GroundTroop	; Object $72 - OBJ_GOOMBA
 	.word ObjNorm_ParaGoomba	; Object $73 - OBJ_PARAGOOMBA
 	.word ObjNorm_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.word ObjNorm_BossAttack	; Object $75 - OBJ_BOSSATTACK
+	.word ObjNorm_Waterfill	; Object $75 - OBJ_WATERFILLER
 	.word ObjNorm_PoisonMushroom	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjNorm_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
@@ -118,7 +118,7 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_ZOMBIEGOOMBA	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $75 - OBJ_BOSSATTACK (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
+	.word $0000	; Object $75 - OBJ_WATERFILLER (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
 	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
 	.word $0000					; Object $78 - OBJ_BULLETBILL
@@ -160,7 +160,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $72 - OBJ_GOOMBA
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $73 - OBJ_PARAGOOMBA
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $75 - OBJ_BOSSATTACK
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $75 - OBJ_WATERFILLER
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA1_PAL1  | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
@@ -201,7 +201,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $72 - OBJ_GOOMBA
 	.byte OA2_TDOGRP1			; Object $73 - OBJ_PARAGOOMBA
 	.byte OA2_TDOGRP1			; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $75 - OBJ_BOSSATTACK
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $75 - OBJ_WATERFILLER
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $77 - OBJ_GREENCHEEP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $78 - OBJ_BULLETBILL
@@ -243,7 +243,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $72 - OBJ_GOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $73 - OBJ_PARAGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE			; Object $75 - OBJ_BOSSATTACK
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE			; Object $75 - OBJ_WATERFILLER
 	.byte OA3_HALT_NORMALONLY 					; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
 	.byte OA3_HALT_NORMALONLY 					; Object $78 - OBJ_BULLETBILL
@@ -285,7 +285,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT6 | $4F	; Object $72 - OBJ_GOOMBA
 	.byte OPTS_SETPT6 | $4F	; Object $73 - OBJ_PARAGOOMBA
 	.byte OPTS_SETPT5 | $13	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OPTS_NOCHANGE	; Object $75 - OBJ_BOSSATTACK
+	.byte OPTS_SETPT5 | $12	; Object $75 - OBJ_WATERFILLER
 	.byte OPTS_NOCHANGE; Object $76 - OBJ_POISONMUSHROOM
 	.byte OPTS_NOCHANGE	; Object $77 - OBJ_GREENCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $78 - OBJ_BULLETBILL
@@ -327,7 +327,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $72 - OBJ_GOOMBA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $73 - OBJ_PARAGOOMBA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte KILLACT_JUSTDRAW16X16	; Object $75 - OBJ_BOSSATTACK
+	.byte KILLACT_JUSTDRAW16X16	; Object $75 - OBJ_WATERFILLER
 	.byte KILLACT_POOFDEATH	; Object $76 - OBJ_POISONMUSHROOM
 	.byte KILLACT_NORMALANDKILLED	; Object $77 - OBJ_GREENCHEEP
 	.byte KILLACT_JUSTDRAW16X16	; Object $78 - OBJ_BULLETBILL
@@ -392,7 +392,8 @@ ObjectGroup03_PatternSets:
 
 	JMP GiantEnemy_Draw	; The special exception as noted above!!
 ObjP75:
-	.byte $DB, $F7, $DB, $DD, $F3, $F3, $DD, $DB, $F3, $F3, $BB, $BD, $BB, $BF, $F3, $F5
+	.byte $81, $83
+
 ObjP89:
 	.byte $91, $93, $9D, $9F, $9D, $9F
 ObjP8A:
@@ -456,399 +457,84 @@ ObjP82:
 	.byte $95, $97, $B9, $BB, $95, $97, $A1, $A3, $99, $9B, $B9, $BB, $99, $9B, $A1, $A3
 	.byte $00, $00, $00, $00, $9D, $9F, $9D, $9F
 
-BossAttack_XVelTowardsPlayer:
-	.byte $10, -$10
+	
+ObjInit_Waterfill:
+	LDA #$40
+	STA Objects_XVel, X
+	RTS
 
-ObjInit_BossAttack:
+ObjNorm_Waterfill:
+	STA (Debug_Snap - 1)
+	LDA <Objects_XHi, X
+	BEQ ObjNorm_Waterfill1
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State, X
+	RTS
 
-	; NOTE: This initialization state is used ONLY for the in-level Bowser Fireballs
-	; (that you see just prior to Bowser himself), even though this object is 
-	; actually intended for use by Bowser or the Koopalings as a respective attack.
+ObjNorm_Waterfill1:
+	LDA <Objects_X, X
+	AND #$0F
+	BNE ObjNorm_Waterfill_RTS
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	CMP #TILE_PROP_SOLID_TOP
+	BCC FillWater
 
-	JSR Level_ObjCalcXDiffs
-
-	; Set X velocity towards Player
-	LDA BossAttack_XVelTowardsPlayer,Y
-	STA <Objects_XVel,X
-
-	; Var5 and Var4 = 2
-	LDA #$02
-	STA <Objects_Var5,X
-	STA <Objects_Var4,X
-
-	; Flame sound
-	LDA #SND_LEVELFLAME
+	LDA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
 
-	RTS		 ; Return
+	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
 
-LemmyBall_FloorBounceYVel:	.byte -$40, -$3C, -$38, -$34
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En
 
-LemmyBall_RotateBits:	.byte $00, SPR_HFLIP, SPR_HFLIP | SPR_VFLIP, SPR_VFLIP
+	; Brick bust upper Y
+	LDA <Objects_Y, X
+	CLC
+	SBC Level_VertScroll
+	STA BrickBust_YUpr
 
-BossAttack_SprRAMOff:	.byte $80, $88, $90, $98
-	
-ObjNorm_BossAttack:
-	LDA <Objects_Var5,X
-	CMP #$02
-	BEQ PRG004_A2B8	 ; If Var5 = 2 (Bowser fireball), jump to PRG004_A2B8
+	; Brick bust lower Y
+	ADD #$08
+	STA BrickBust_YLwr
 
-	JMP PRG004_A35F	 ; Jump to PRG004_A35F
+	; Brick bust X
+	LDA <Objects_X, X
+	SUB <Horz_Scroll	
+	STA BrickBust_X
 
-PRG004_A2B8:
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA BrickBust_XDist
+	STA BrickBust_HEn
 
-	; Load graphics
-	LDA #$3b
-	STA PatTable_BankSel+5
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel
 
-	LDA Objects_Timer,X
-	CMP #$01
-	BNE PRG004_A2C7	 ; If timer <> 1, jump to PRG004_A2C7
+FillWater:
+	LDA #$33
+	STA Level_ChgTileEvent
 
-	JSR BossAttack_Poof	 ; Generate a poof at the boss attack object
-
-PRG004_A2C7:
-
-	TXA	
-	AND #$03
-	TAY		 ; Y = 0 to 3, based on boss attack's object index
-
-	; Select a Sprite_RAM offset by the object's index
-	LDA BossAttack_SprRAMOff,Y
-	STA Object_SprRAM,X
-
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-	LDA <Player_HaltGame
-	BNE PRG004_A33E	 ; If gameplay is halted, jump to PRG004_A33E
-
-	JSR Object_FlipByXVel	 ; Flip based on direction of travel
-	JSR Object_HandleBumpUnderneath	 ; Test if bumped underneath??
-
-	LDA Objects_PlayerHitStat,X
-	BEQ PRG004_A2E6	 ; If Player hasn't collided, jump to PRG004_A2E6
-
-	JSR Player_GetHurt	 ; Any collision, hurt Player!
-
-PRG004_A2E6:
-
-	; Toggle frame to 5/6
-	LDA <Counter_1
-	LSR A
-	AND #$01
-	ADD #$05
-	STA Objects_Frame,X
-
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
-
-	LDA <Objects_Var4,X
-	BNE PRG004_A32D	 ; If Var4 <> 0, jump to PRG004_A32D
-
-	LDA <Objects_Y,X
-	PHA		 ; Save Object Y
-
-	ADD Objects_TargetingYVal,X
-	STA <Objects_Y,X
-
-	JSR Object_WorldDetectN1	; Detect against world
-
-	PLA		 ; Restore Object Y
-	STA <Objects_Y,X
-
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG004_A33E	 ; If boss attack has NOT hit floor, jump to PRG004_A33E
-
-	JSR Object_HitGround	 ; Align to ground + offset
-
-	INC <Objects_Var4,X	 ; Var4++
-
-	LDY #-$10	 ; Y = -$10
-
-	LDA Objects_FlipBits,X
-	AND #SPR_HFLIP
-	BEQ PRG004_A328	 ; If not horizontally flipped, jump to PRG004_A328
-
-	LDY #$10	 ; Y = $10
-
-PRG004_A328:
-	NOP
-	NOP
-	JMP PRG004_A33E	 ; Jump to PRG004_A33E
-
-PRG004_A32D:
-
-	; Set frame to 7
-	LDA #$07
-	STA Objects_Frame,X
-
-	ASL Objects_FlipBits,X
-	LDA <Counter_1
-	LSR A
-	LSR A
-	NOP
-	NOP
-	ROR Objects_FlipBits,X
-
-PRG004_A33E:
-	JMP Object_ShakeAndDraw	 ; Draw and don't come back
-
-PRG004_A341:
-	RTS		 ; Return
-
-
-BossAttack_Poof:
-	JSR SpecialObj_FindEmptyAbort	 
-
-	LDA <Objects_Y,X
-	STA SpecialObj_YLo,Y
-
+	; Set all of the block change coordinates to remove the ice brick
 	LDA <Objects_YHi,X
-	STA SpecialObj_YHi,Y
+	STA Level_BlockChgYHi
+
+	LDA <Objects_Y,X
+	AND #$f0
+	STA Level_BlockChgYLo
+
+	LDA <Objects_XHi,X
+	STA Level_BlockChgXHi
 
 	LDA <Objects_X,X
-	STA SpecialObj_XLo,Y
-
-	; A "poof"
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,Y
-
-	; Poof counter"
-	LDA #$17
-	STA SpecialObj_Data,Y
-
-	RTS		 ; Return
-
-
-PRG004_A35F:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-	JSR BossAttack_Draw	 	; Draw the boss attack
-
-	LDA <Player_HaltGame
-	ORA Objects_ColorCycle,X
-	BNE PRG004_A341	 ; If gameplay is halted or a color cycle is going on (Lemmy's ball when stomped), jump to PRG004_A341 (RTS)
-
-	LDA <Counter_1
-	AND #$03
-	BEQ PRG004_A375	 ; 1:4 ticks jump to PRG004_A375
-
-	INC Objects_Var3,X	 ; Var3++
-
-PRG004_A375:
-	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath (??)
-
-	LDA Objects_PlayerHitStat,X
-	BEQ PRG004_A3B2	 ; If player is not colliding with boss attack, jump to PRG004_A3B2
-
-	LDA <Objects_Var5,X
-	BNE PRG004_A3AF	 ; If Var5 <> 0 (Lemmy's balls), jump to PRG004_A3AF
-
-	; Lemmy's balls here...
-
-	LDA Objects_ColorCycle,X
-	BNE PRG004_A3AF	 ; If already color cycling, jump to PRG004_A3AF
-
-	LDA <Objects_XVel,X
-	BNE PRG004_A393	 ; If moving horizontally, jump to PRG004_A393
-
-	LDA #$08	 ; A = $08
-
-	LDY RandomN,X
-	BPL PRG004_A393	 ; Randomly jump to PRG004_A393
-
-	LDA #-$08	 ; A = -$08
-
-PRG004_A393:
-	STA <Objects_Var4,X	 ; Var4 = randomly $08 or -$08 if the ball was stopped (by Player stomp), or the X Velocity
-
-	; Halt movement
-	LDA #$00
-	STA <Objects_XVel,X
-	STA <Objects_YVel,X
-
-	; Player bounces off ball
-	LDA #-$30
-	STA <Player_YVel
-
-	; Play bounce noise
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERSWIM
-	STA Sound_QPlayer
-
-	; Short burst of color cycle
-	LDA #$0c
-	STA Objects_ColorCycle,X
-
-	JMP PRG004_A3B2	 ; Jump to PRG004_A3B2
-
-PRG004_A3AF:
-	JSR Player_GetHurt	 ; Hurt Player!
-
-PRG004_A3B2:
-	LDA <Objects_Var5,X
-	BNE PRG004_A408	 ; If Var5 <> 0 (Lemmy's ball), jump to PRG004_A408
-
-	; Lemmy's ball...
-
-	LDA <Objects_XVel,X
-
-	PHP		 ; Save CPU state (most importantly, sign of Lemmy's ball's X velocity)
-
-	LDA Objects_Var3,X
-	LSR A
-	LSR A
-	AND #$03	; A = 0 to 3
-
-	PLP		 ; Restore CPU state (most importantly, sign of Lemmy's ball's X velocity)
-
-	BPL PRG004_A3C5	 ; If ball is not traveling to the left, jump to PRG004_A3C5
-
-	EOR #$03	 ; Otherwise, reverse the value
-
-PRG004_A3C5:
-	TAY		 ; Y = 0 to 3
-
-	; Rotation of Lemmy's ball
-	LDA LemmyBall_RotateBits,Y
-	STA Objects_FlipBits,X
-
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
-
-	LDA <Objects_YVel,X
-	CMP #$20
-	BGS PRG004_A3DD	 ; If Lemmy's ball at $20 or faster, jump to PRG004_A3DD
-
-	INC <Objects_YVel,X	 ; Y++ (fall rate)
-
-	; Hm, something removed... maybe it was a scaled fall once?
-	NOP
-	NOP
-	NOP
-
-PRG004_A3DD:
-	JSR Object_WorldDetectN1	 ; Detect against world
-
-	LDA <Objects_DetStat,X
-	AND #$08
-	BEQ PRG004_A3E9	 ; If ball did not hit ceiling, jump to PRG004_A3E9
-
-	JSR BossAttack_HitOffCeiling	 ; Complete bounce off ceiling
-
-PRG004_A3E9:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG004_A404	 ; If ball did not hit ground, jump to PRG004_A404
-
-	LDA RandomN,X
-	AND #$03
-	TAY		 ; Y = random 0 to 3
-
-	; Bounce off floor at a bit of random Y velocity
-	LDA LemmyBall_FloorBounceYVel,Y
-	STA <Objects_YVel,X
-
-	LDA <Objects_Var4,X
-	BEQ PRG004_A404	 ; If Var4 = 0 (no X velocity to restore), jump to PRG004_A404
-
-	; Otherwise, restore X velocity
-	STA <Objects_XVel,X
-
-	; Clear Var4
-	LDA #$00
-	STA <Objects_Var4,X
-
-PRG004_A404:
-	; Hit off walls
-	JSR BossAttack_HitOffWall
-
-	RTS		 ; Return
-
-PRG004_A408:
-
-	; Wendy's rings...
-
-	JSR Object_ApplyXVel	 	; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
-	JSR Object_WorldDetectN1	; Detect against world
-
-	LDY <Objects_SpriteY,X	 ; Y = Sprite Y
-
-	LDA <Objects_YVel,X
-	BPL PRG004_A41D	 ; If ring is not moving downward, jump to PRG004_A41D
-
-	CPY #8
-	BLT PRG004_A427	 ; If ring Sprite Yis higher than 8, jump to PRG004_A427
-	BGE PRG004_A421	 ; Otherwise, jump to PRG004_A421
-
-PRG004_A41D:
-	CPY #240
-	BGE PRG004_A427	 ; If ring Sprite Y is lower than 240, jump to PRG004_A427
-
-PRG004_A421:
-	LDA <Objects_DetStat,X
-	AND #$0c
-	BEQ BossAttack_HitOffWall	 ; If ring hit neither floor nor ceiling, jump to BossAttack_HitOffWall
-
-PRG004_A427:
-	JSR BossAttack_HitOffCeiling	 ; Otherwise, hit off ceiling
-
-BossAttack_HitOffWall:
-	LDA <Objects_DetStat,X
-	AND #$03
-	BNE PRG004_A440	 ; If boss attack has hit off a wall, jump to PRG004_A440
-
-	LDY <Objects_SpriteX,X	 ; Y = Sprite X
-
-	LDA <Objects_XVel,X
-	BPL PRG004_A43C	 ; If boss attack is not moving to the left, jump to PRG004_A43C
-
-	CPY #$08
-	BLT PRG004_A440	 ; If Sprite X < 8, jump to PRG004_A440
-	BGE PRG004_A443	 ; Otherwise, jump to PRG004_A443 (RTS)
-
-PRG004_A43C:
-	CPY #240
-	BLT PRG004_A443	 ; If Sprite X < 240, jump to PRG004_A443
-
-PRG004_A440:
-	JSR Object_AboutFace	 ; Turn around
-
-PRG004_A443:
-	RTS		 ; Return
-
-
-BossAttack_HitOffCeiling:
-
-	; Reverse Y velocity
-	LDA <Objects_YVel,X
-	JSR Negate
-	STA <Objects_YVel,X
-
-	RTS		 ; Return
-
-BossAttack_Frame:
-	.byte $01, $02, $03, $04
-
-
-BossAttack_Draw:
-	LDA <Objects_Var5,X	 
-	BNE PRG004_A457	 ; If Var5 <> 0, jump to PRG004_A457
-
-	JMP Object_ShakeAndDraw	 ; Draw and don't come back
-
-PRG004_A457:
-	LDA Objects_Var3,X
-	LSR A
-	LSR A
-	AND #$03
-	TAY		 ; Y = 0 to 3
-
-	LDA BossAttack_Frame,Y
-	STA Objects_Frame,X
-
-	JMP Object_ShakeAndDrawMirrored	 ; Draw mirrored and don't come back
+	AND #$f0
+	STA Level_BlockChgXLo
+
+ObjNorm_Waterfill_RTS:
+	JSR Object_ApplyXVel
+	JMP Object_ShakeAndDraw
 
 	; A "hammer brother" object has special purpose when 
 	; Player has entered through a enemy battle object
@@ -868,22 +554,6 @@ BattleEnemy_ByEnterID:
 	; sure, but still interesting that they went as far as they did.
 
 ObjInit_HammerBro:
-	LDA Level_Event
-	CMP #$07
-	BNE PRG004_A48F	 ; If we're not getting a treasure box (i.e. a Hammer Bro battle), jump to PRG004_A48F (RTS)
-
-	LDY #$00
-	;LDY Map_EnterViaID	; Y = Map_EnterViaID
-
-	LDA BattleEnemy_ByEnterID,Y
-	CMP #OBJ_HAMMERBRO
-	BEQ PRG004_A490	 	; If battling a hammer brother, jump to PRG004_A490
-
-	; Not a hammer brother...
-
-	STA Level_ObjectID,X	; Store the enemy ID
-
-	DEC Objects_State,X	 ; Take state back to 0 
 
 	RTS		 ; Return
 
@@ -1321,8 +991,11 @@ ObjInit_Thwomp:
 Thwomp_Center:
 	; center the X
 	LDA <Objects_X,X
-	ADD #$04
+	SUB #$04
 	STA <Objects_X,X
+	LDA <Objects_XHi,X
+	SBC #$00
+	STA <Objects_XHi,X
 
 PRG004_A676:
 	RTS		 ; Return
@@ -1495,7 +1168,6 @@ PRG004_A740:
 	RTS		 ; Return
 
 ObjInit_HyperThwomp:
-	JSR Thwomp_Center	 ; Center the X of the Thwomp
 	JSR Thwomp_Center	 ; Center the X of the Thwomp
 	LDA #$00
 	STA <Objects_Var5,X

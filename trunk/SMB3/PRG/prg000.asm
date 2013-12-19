@@ -125,8 +125,9 @@ OTDO_G1R1:
 	;       Y    X
 	.byte $10, $18	; At feet
 	.byte $00, $03	; At head
-	.byte $0A, $01	; Wall to left
-	.byte $0A, $07	; Wall to right
+Platform_Extended_Check:
+	.byte $08, $00	; Wall to left
+	.byte $08, $2F	; Wall to right
 
 	; Group 10
 	;       Y    X
@@ -307,7 +308,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $72 - OBJ_GOOMBA
 	.byte OAT_BOUNDBOX01	; Object $73 - OBJ_PARAGOOMBA
 	.byte OAT_BOUNDBOX01	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $75 - OBJ_BOSSATTACK
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $75 - OBJ_WATERFILLER
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OAT_BOUNDBOX01	; Object $77 - OBJ_GREENCHEEP
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $78 - OBJ_BULLETBILL
@@ -6331,28 +6332,6 @@ Change_MapY:
 	ASL A
 	ASL A
 	STA Map_Entered_X
-	RTS
-
-ESwitchTiles:
-	.byte $FF, ESWITCH_BLOCK1, ESWITCH_BLOCK2, ESWITCH_BLOCK3
-
-ESwitches:
-	.byte $FF, ESWITCH1, ESWITCH2, ESWITCH3
-
-CheckESwitch:
-	LDY ESwitch
-	BEQ No_Replace
-	CMP ESwitches, Y
-	BNE TryReplace
-	LDA #$00
-	RTS
-
-TryReplace:
-	CMP ESwitchTiles,Y
-	BNE No_Replace
-
-	LDA #$FD
-No_Replace:
 	RTS
 
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on

@@ -396,6 +396,7 @@ PAGE_A000_ByTileset: ; $83E9
 	; The normal level VROM page cycle set
 PT2_Anim:	.byte $80, $82, $84, $86, $88, $8A, $8C, $8E
 PT2_Anim2:	.byte $D0, $D2, $D4, $D6, $D8, $DA, $DC, $DE
+PT2_Anim3:	.byte $F0, $F2, $F4, $F6, $F8, $FA, $FC, $FE
 PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
 PSwitch_Anim2: .byte $E0, $E2, $E4, $E6, $E8, $EA, $EC, $EE
 
@@ -407,9 +408,6 @@ Suit_Anim:
 
 SPR_PowerUps:
 	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, $FF, $FF, $FF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE
-
-ESwitchTableChange1:
-	.byte $10, $68, $6A
 
 PAUSE_Sprites:
 	.byte $58, $F1, $03, $60	; P
@@ -1831,7 +1829,6 @@ PRG030_8F31:
 	LDA <Player_Suit
 	STA World_Map_Power,X
 	LDA #$00
-	STA ESwitch
 	STA LeftRightInfection
 	LDA #$40
 	STA Air_Time
@@ -3002,6 +2999,11 @@ Tile_Mem_ClearB:	; $9734
 ;	.byte $70	;  Throne Room
 
 
+
+AnimOffsets: .byte $00, $08, $10
+AnimStarts: .byte $80, $D0, $F0
+PSwitchAnimStarts: .byte $88, $D8, $F8
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad
 ;
@@ -3100,33 +3102,21 @@ SkipMemClear:
 	LDY #$01
 	; now load bg gfx, for eswitch levels (dungeon)
 	; we use the tables, otherwise we use 
-	LDX ESwitch
-	BEQ Normal_Gfx2
-	LDA ESwitchTableChange1, X
-	BNE Skip_Normal_Gfx2
 
-Normal_Gfx2:
 	LDA [Temp_Var14],Y
 
 Skip_Normal_Gfx2:
 	STA PatTable_BankSel
 
-	INY
+	LDY #$02
 
 	; now we load palette index, we load palette later...
 	LDA [Temp_Var14],Y
 	STA PaletteIndex
 
-	; next we load level action
-	INY
 	LDA Level_JctCtl	 
 	BNE Set_Level_Exit_Action
-	LDA [Temp_Var14],Y
-	AND #$70
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	LDA #$00
 	STA Level_InitAction
 	JMP Level_Exit_Set
 
@@ -3154,45 +3144,41 @@ NoXOffset:
 
 Level_Exit_Set:
 	; Load level size/width
-	LDX #$80
+	LDY #$03
 	LDA [Temp_Var14], Y
-	AND #$80
-	BEQ NotAnimBank2
-	LDA #$08
-	LDX #$D0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
 
-NotAnimBank2:
+	LDA AnimOffsets, X
 	STA AnimOffset
+	LDA AnimStarts, X
+	STA PatTable_BankSel+1	
+
 	LDA Level_PSwitchCnt
 	BEQ NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
 
-	LDX #$88	 	; Otherwise, force override to page $3E
+	LDA PSwitchAnimStarts, X
+	STA PatTable_BankSel+1	
 
 NormAnimBank:
-	TXA
-	STA PatTable_BankSel+1	 ; Select second bank of BG VROM
 
 	LDA [Temp_Var14],Y
 	AND #$0F
 	
 	STA <Level_Width
 	STA Level_SizeOrig
-	INY
+	LDY #$04
 
 	LDA Level_JctCtl	 
 	BEQ Not_Lvl_Jct
-	INY
-	INY
-	INY
 	JMP Skip_Level_Position
 
 Not_Lvl_Jct:
-	LDA UseAltEntrance
-	BEQ UseNormEntrance
-	INY
-	INY
-
-UseNormEntrance:
 	; load X/Y starting position
 	LDA [Temp_Var14], Y	
 	AND #$0F
@@ -3206,20 +3192,17 @@ UseNormEntrance:
 
 DontOffsetX:
 	STA <Player_X
-	INY
+	LDY #$05
 	LDA [Temp_Var14], Y
 	AND #$0F
 	STA <Player_YHi
 	LDA [Temp_Var14], Y
 	AND #$F0
 	STA <Player_Y
-	LDA UseAltEntrance
-	BNE Skip_Level_Position
-	INY
-	INY
 
 Skip_Level_Position:
-	INY
+	LDY #$06
+
 	LDA [Temp_Var14], Y
 	LDX SndCur_Music2	; X = currently playing music
 
@@ -3233,7 +3216,7 @@ Skip_Level_Position:
 
 Skip_Set_Music:
 	STA Level_MusicQueueRestore
-	INY
+	LDY #$07
 	LDA [Temp_Var14],Y
 	LDX Level_JctCtl
 	BNE Skip_Time_Set
@@ -3248,7 +3231,7 @@ Skip_Set_Music:
 	STA Level_TimerMid
 	
 Skip_Time_Set:
-	INY
+	LDY #$08
 
 	; set scroll type
 	LDA [Temp_Var14],Y
@@ -3271,7 +3254,7 @@ HorzNotLocked:
 	LDA [Temp_Var14], Y
 	AND #$08
 	STA BlockedLevel
-	INY
+	LDY #$09
 
 	; set invincible enemies
 	LDA [Temp_Var14],Y
@@ -3292,18 +3275,18 @@ HorzNotLocked:
 	STA PaletteEffect
 
 ;DontReverseWind:
-	INY
+	LDY #$0A
 
 	; load misc data
 	LDA [Temp_Var14], Y
 	STA MiscValue1
-	INY
+	LDY #$0B
 	LDA [Temp_Var14], Y
 	STA MiscValue2
-	INY
+	LDY #$0C
 	LDA [Temp_Var14], Y
 	STA MiscValue3
-	INY 
+	LDY #$0D
 
 	LDX #$00
 	STY TempY
@@ -4659,37 +4642,6 @@ Next_Value:
 	DEX
 	BPL Subtraction_Loop
 Subtract_RTS:
-	RTS
-
-
-PTableChange:
-	.byte $10, $68, $6A
-
-Try_ESwitch:
-	STX DAIZ_TEMP1
-	LDX ESwitch
-	BEQ Cant_ESwitch
-	LDX #$03
-
-Find_ESwitch:
-	CMP ESwitches, X
-	BEQ Change_ESwitch
-	DEX
-	BNE Find_ESwitch
-	BEQ Cant_ESwitch
-
-Change_ESwitch:
-	STX ESwitch
-	DEX
-	LDA PTableChange, X
-	STA PatTable_BankSel
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-	LDA #$00
-
-Cant_ESwitch:
-	LDX DAIZ_TEMP1
 	RTS
 
 Check_For_Level_Exit:

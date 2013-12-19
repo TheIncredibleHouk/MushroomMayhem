@@ -11,90 +11,6 @@
 ; This source file last updated: 2012-01-05 18:11:17.050297840 -0600
 ; Distribution package date: Fri Apr  6 23:46:16 UTC 2012
 ;---------------------------------------------------------------------------
-Tile_Layout_TS18:
-	; This defines the individual 8x8 blocks used to construct one of the tiles
-	; Referenced by Address_Per_Tileset, addressed by Level_Tileset
-	; Stored by upper left, then lower left, then upper right, then lower right
-
-	; Remember that palette is determined by the upper 2 bits of a TILE (not the PATTERN)
-	; I.e. tiles starting at index $00, $40, $80, $C0 are each on that respective palette
-
-	; Upper left 8x8 pattern per tile
-	.byte $FC, $3B, $FF, $CC, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $10 - $1F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $20 - $2F
-	.byte $FF, $FF, $BC, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DC, $EC, $EC, $EC, $FF, $FF, $FF, $FF, $FF, $29, $28, $2D, $29, $FF, $2B, $2D ; Tiles $40 - $4F
-	.byte $00, $14, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $50 - $5F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $60 - $6F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $50, $40, $52, $42, $BC, $B0, $BE, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2 ; Tiles $80 - $8F
-	.byte $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2 ; Tiles $90 - $9F
-	.byte $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $8C, $8E, $8C ; Tiles $A0 - $AF
-	.byte $8E, $8C, $8E, $8C, $8E, $52, $52, $50, $40, $42, $AC, $AE, $98, $FF, $FF, $FF ; Tiles $B0 - $BF
-	.byte $18, $02, $02, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $D0 - $DF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
-
-	; Lower left 8x8 pattern per tile
-	.byte $FC, $3A, $FF, $CD, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $10 - $1F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $20 - $2F
-	.byte $FF, $FF, $BD, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DD, $ED, $ED, $ED, $24, $28, $25, $FF, $28, $26, $28, $28, $27, $FF, $28, $28 ; Tiles $40 - $4F
-	.byte $10, $15, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $50 - $5F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $60 - $6F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $51, $41, $53, $43, $BD, $B1, $BF, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3 ; Tiles $80 - $8F
-	.byte $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3 ; Tiles $90 - $9F
-	.byte $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $9C, $9E, $9C ; Tiles $A0 - $AF
-	.byte $9E, $9C, $9E, $9C, $9E, $53, $53, $51, $41, $43, $AC, $AE, $99, $FF, $FF, $FF ; Tiles $B0 - $BF
-	.byte $18, $12, $12, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $D0 - $DF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
-
-	; Upper right 8x8 pattern per tile	
-	.byte $FC, $FC, $FF, $CE, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $10 - $1F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $20 - $2F
-	.byte $FF, $FF, $BE, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DE, $EE, $EE, $EE, $FF, $FF, $FF, $FF, $FF, $2A, $2D, $2D, $FF, $29, $28, $29 ; Tiles $40 - $4F
-	.byte $01, $16, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $50 - $5F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $60 - $6F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $70, $40, $72, $42, $E8, $B0, $EA, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2 ; Tiles $80 - $8F
-	.byte $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2 ; Tiles $90 - $9F
-	.byte $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $B2, $8D, $8F, $8D ; Tiles $A0 - $AF
-	.byte $8F, $8D, $8F, $8D, $8F, $72, $72, $70, $40, $42, $AD, $AF, $9A, $FF, $FF, $FF ; Tiles $B0 - $BF
-	.byte $19, $03, $03, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $D0 - $DF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
-
-	; Lower right 8x8 pattern per tile
-	.byte $FC, $FC, $FF, $CF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $10 - $1F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $20 - $2F
-	.byte $FF, $FF, $BF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DF, $EF, $EF, $EF, $28, $28, $FF, $24, $25, $28, $28, $28, $FF, $26, $28, $27 ; Tiles $40 - $4F
-	.byte $11, $17, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $50 - $5F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $60 - $6F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $71, $41, $73, $43, $E9, $B1, $EB, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3 ; Tiles $80 - $8F
-	.byte $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3 ; Tiles $90 - $9F
-	.byte $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $B3, $9D, $9F, $9D ; Tiles $A0 - $AF
-	.byte $9F, $9D, $9F, $9D, $9F, $73, $73, $71, $41, $43, $AD, $AF, $9B, $FF, $FF, $FF ; Tiles $B0 - $BF
-	.byte $19, $13, $13, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $D0 - $DF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $E0 - $EF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $F0 - $FF
-
-Tile_Attributes_TS18:
-	.byte $32, $50, $AD, $C1, $32, $50, $AD, $C1
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_TS18
 ;
@@ -4653,205 +4569,8 @@ LoadLevel_MiscBG:
 	LDA LL_MiscBG,X	 	; Get misc BG tile
 	STA [Map_Tile_AddrL],Y	; Store into tile mem
 	RTS		 	; Return
-	
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_PrefabBlock
-;
-; Produces large, pre-defined 8x7 blocks.  I'm guessing this was
-; just for the sake of pre-fabricating certain types of geometry
-; that the typical generators were just not efficient for, but it
-; really seems like an inconsistent waste!!
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-PRG014_DB23:	.byte TILE14_ABOVE_CORNER_UR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DB29:	.byte TILE3_SKY
-PRG014_DB2A:	.byte TILE3_UNDERGROUND
-PRG014_DB2B:	.byte TILE3_UNDERGROUND
-PRG014_DB2C:	.byte TILE3_UNDERGROUND
-PRG014_DB2D:	.byte TILE3_SLOPE45T2B
-PRG014_DB2E:	.byte TILE3_MIDGROUND
-PRG014_DB2F:	.byte TILE14_SLOPE45T2B_CEIL
-PRG014_DB30:	.byte TILE3_SKY
-PRG014_DB31:	.byte TILE3_UNDERGROUND
-PRG014_DB32:	.byte TILE3_UNDERGROUND
-PRG014_DB33:	.byte TILE3_UNDERGROUND
-PRG014_DB34:	.byte TILE3_UNDERGROUND
-PRG014_DB35:	.byte TILE3_UNDERGROUND
-PRG014_DB36:	.byte TILE3_URCORNERGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DB3C:	.byte TILE14_ABOVE_CORNER_UL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL, TILE14_SLOPE45T2B_CEIL
-PRG014_DB40: 	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_HORZGROUND, TILE3_CEILING
-PRG014_DB44:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_ULCORNERGROUND, TILE3_LLCORNERGROUND
-PRG014_DB48:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_URCORNERGROUND, TILE3_LRCORNERGROUND, TILE3_UNDERGROUND
-PRG014_DB4D:	.byte TILE3_UNDERGROUND, TILE3_SLOPE225B2T_L, TILE3_VERTGROUNDL, TILE3_WVERTGROUND_L, TILE3_WVERTGROUND_L, TILE3_MIDGROUND
-PRG014_DB53:	.byte TILE3_SKY, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE45T2B
-PRG014_DB59:	.byte TILE14_ABOVE_HORZGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE14_SLOPE45T2B_CEIL
-PRG014_DB5E:	.byte TILE3_UNDERGROUND, TILE3_SLOPE225B2T_U, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DB64:	.byte TILE14_ABOVE_HORZGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE14_SLOPE45T2B_CEIL
-PRG014_DB6A:	.byte TILE14_ABOVE_HORZGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DB70:	.byte TILE14_ABOVE_HORZGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE14_SLOPE45B2T_CEIL
-PRG014_DB76:	.byte TILE14_ABOVE_HORZGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE14_SLOPE45B2T_CEIL
-PRG014_DB7B:	.byte TILE3_UNDERGROUND, TILE3_SLOPE225T2B_U, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DB81:	.byte TILE14_ABOVE_CORNER_UR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR, TILE14_SLOPE45B2T_CEIL, TILE3_UNDERGROUND
-PRG014_DB86:	.byte TILE3_UNDERGROUND, TILE3_SLOPE225T2B_L, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DB8C:	.byte TILE3_SKY, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE45B2T
-PRG014_DB92:	.byte TILE14_ABOVE_CORNER_UL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DB98:	.byte TILE3_SKY
-PRG014_DB99:	.byte TILE3_UNDERGROUND
-PRG014_DB9A:	.byte TILE3_UNDERGROUND
-PRG014_DB9B:	.byte TILE3_UNDERGROUND
-PRG014_DB9C:	.byte TILE3_SLOPE45B2T
-PRG014_DB9D:	.byte TILE3_MIDGROUND
-PRG014_DB9E:	.byte TILE14_SLOPE45B2T_CEIL
-PRG014_DB9F:	.byte TILE3_UNDERGROUND
-PRG014_DBA0:	.byte TILE3_UNDERGROUND
-PRG014_DBA1:	.byte TILE3_UNDERGROUND
-PRG014_DBA2:	.byte TILE3_UNDERGROUND
-PRG014_DBA3:	.byte TILE3_UNDERGROUND
-PRG014_DBA4:	.byte TILE3_UNDERGROUND
-PRG014_DBA5:	.byte TILE3_ULCORNERGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DBAB:	.byte TILE3_VERTGROUNDL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL, TILE3_VERTGROUNDL
-PRG014_DBB1:	.byte TILE3_VERTGROUNDR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR, TILE3_VERTGROUNDR
-PRG014_DBB7:	.byte TILE3_UNDERGROUND
-PRG014_DBB8:	.byte TILE3_UNDERGROUND
-PRG014_DBB9:	.byte TILE3_UNDERGROUND
-PRG014_DBBA:	.byte TILE3_SLOPE225B2T_L, TILE3_MIDGROUND, TILE14_SLOPE225B2T_U_CEIL
-PRG014_DBBD:	.byte TILE3_UNDERGROUND
-PRG014_DBBE:	.byte TILE3_UNDERGROUND
-PRG014_DBBF:	.byte TILE3_UNDERGROUND
-PRG014_DBC0:	.byte TILE3_SLOPE225B2T_U, TILE3_MIDGROUND, TILE14_SLOPE225B2T_L_CEIL
-PRG014_DBC3:	.byte TILE3_UNDERGROUND
-PRG014_DBC4:	.byte TILE3_UNDERGROUND
-PRG014_DBC5:	.byte TILE3_UNDERGROUND
-PRG014_DBC6:	.byte TILE3_SLOPE225T2B_L, TILE3_MIDGROUND, TILE14_SLOPE225T2B_U_CEIL
-PRG014_DBC9:	.byte TILE3_UNDERGROUND
-PRG014_DBCA:	.byte TILE3_UNDERGROUND
-PRG014_DBCB:	.byte TILE3_UNDERGROUND
-PRG014_DBCC:	.byte TILE3_SLOPE225T2B_U, TILE3_MIDGROUND, TILE14_SLOPE225T2B_L_CEIL
-PRG014_DBCF:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND
-PRG014_DBD2:	.byte TILE3_HORZGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DBD8:	.byte TILE3_ULCORNERGROUND, TILE14_SLOPE225T2B_L_CEIL
-PRG014_DBDA:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225B2T_L, TILE3_LLCORNERGROUND
-PRG014_DBE0:	.byte TILE3_HORZGROUND, TILE14_SLOPE225T2B_U_CEIL
-PRG014_DBE2:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225B2T_U, TILE3_CEILING
-PRG014_DBE8:	.byte TILE3_HORZGROUND, TILE3_MIDGROUND, TILE14_SLOPE225T2B_L_CEIL
-PRG014_DBEB:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225B2T_L, TILE3_MIDGROUND, TILE3_CEILING
-PRG014_DBF1:	.byte TILE3_HORZGROUND, TILE3_MIDGROUND, TILE14_SLOPE225T2B_U_CEIL
-PRG014_DBF4:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225B2T_U, TILE3_MIDGROUND, TILE3_CEILING
-PRG014_DBFA:	.byte TILE3_HORZGROUND, TILE3_MIDGROUND, TILE14_SLOPE225B2T_U_CEIL
-PRG014_DBFD:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225T2B_U, TILE3_MIDGROUND, TILE3_CEILING
-PRG014_DC03: 	.byte TILE3_HORZGROUND, TILE3_MIDGROUND, TILE14_SLOPE225B2T_L_CEIL
-PRG014_DC06:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225T2B_L, TILE3_MIDGROUND, TILE3_CEILING
-PRG014_DC0C:	.byte TILE3_HORZGROUND, TILE14_SLOPE225B2T_U_CEIL
-PRG014_DC0E:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225T2B_U, TILE3_CEILING
-PRG014_DC14:	.byte TILE3_URCORNERGROUND, TILE14_SLOPE225B2T_L_CEIL
-PRG014_DC16:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_UNDERGROUND, TILE3_SLOPE225T2B_L, TILE3_LRCORNERGROUND
-PRG014_DC1C:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND
-PRG014_DC1E:	.byte TILE3_UNDERGROUND, TILE3_WCORNER_UR, TILE3_WVERTGROUND_R, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DC24:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND
-PRG014_DC26:	.byte TILE3_UNDERGROUND, TILE3_WATERTOP, TILE3_WATER, TILE3_WHORZGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DC2C:	.byte TILE3_UNDERGROUND, TILE3_UNDERGROUND
-PRG014_DC2E:	.byte TILE3_UNDERGROUND, TILE3_WCORNER_UL, TILE3_WVERTGROUND_L, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DC34:	.byte TILE3_ULCORNERGROUND, TILE3_WVERTGROUND_L, TILE3_WVERTGROUND_L, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-PRG014_DC3A:	.byte TILE3_URCORNERGROUND, TILE3_WVERTGROUND_R, TILE3_WVERTGROUND_R, TILE3_MIDGROUND, TILE3_MIDGROUND, TILE3_MIDGROUND
-
-
-PRG014_DC40:
-	; Each row defines one of the "entry indexes" -- from where that point, we pull 7 tiles
-	; Each address in one row is the next column, pointing to the next 7 tiles to pull
-	.word PRG014_DB23, PRG014_DB29, PRG014_DB53, PRG014_DB30, PRG014_DB3C, PRG014_DB59, PRG014_DB64, PRG014_DB6A	; Entry 0
-	.word PRG014_DB6A, PRG014_DB70, PRG014_DB76, PRG014_DB81, PRG014_DB30, PRG014_DB8C, PRG014_DB98, PRG014_DB92	; Entry 1
-	.word PRG014_DB99, PRG014_DB9A, PRG014_DB9B, PRG014_DB9C, PRG014_DB9D, PRG014_DB9E, PRG014_DB9F, PRG014_DB9F	; Entry 2
-	.word PRG014_DB9F, PRG014_DB9F, PRG014_DB2F, PRG014_DB2E, PRG014_DB2D, PRG014_DB2C, PRG014_DB2B, PRG014_DB2A	; Entry 3
-	.word PRG014_DB40, PRG014_DB40, PRG014_DB40, PRG014_DB40, PRG014_DB40, PRG014_DB40, PRG014_DB40, PRG014_DB40	; Entry 4
-	.word PRG014_DB9F, PRG014_DB9F, PRG014_DB9F, PRG014_DBAB, PRG014_DBB1, PRG014_DB9F, PRG014_DB9F, PRG014_DB9F	; Entry 5
-	.word PRG014_DBB7, PRG014_DBBD, PRG014_DBB8, PRG014_DBBE, PRG014_DBB9, PRG014_DBBF, PRG014_DBBA, PRG014_DBC0	; Entry 6
-	.word PRG014_DBCC, PRG014_DBC6, PRG014_DBCB, PRG014_DBC5, PRG014_DBCA, PRG014_DBC4, PRG014_DBC9, PRG014_DBC3	; Entry 7
-	.word PRG014_DBD8, PRG014_DBE0, PRG014_DBE8, PRG014_DBF1, PRG014_DBFA, PRG014_DC03, PRG014_DC0C, PRG014_DC14	; Entry 8
-	.word PRG014_DBDA, PRG014_DBE2, PRG014_DBEB, PRG014_DBF4, PRG014_DBFD, PRG014_DC06, PRG014_DC0E, PRG014_DC16	; Entry 9
-	.word PRG014_DB9F, PRG014_DBA0, PRG014_DBA1, PRG014_DBA2, PRG014_DBA3, PRG014_DBA4, PRG014_DBA5, PRG014_DBD2	; Entry 10
-	.word PRG014_DBD2, PRG014_DB36, PRG014_DB35, PRG014_DB34, PRG014_DB33, PRG014_DB32, PRG014_DB31, PRG014_DB9F	; Entry 11
-	.word PRG014_DB9F, PRG014_DB9F, PRG014_DB9F, PRG014_DB44, PRG014_DB48, PRG014_DB9F, PRG014_DB9F, PRG014_DB9F	; Entry 12
-	.word PRG014_DC1C, PRG014_DC24, PRG014_DC2C, PRG014_DBCF, PRG014_DC1C, PRG014_DC24, PRG014_DC2C, PRG014_DBCF	; Entry 13
-	.word PRG014_DC1C, PRG014_DC24, PRG014_DB4D, PRG014_DB5E, PRG014_DC1E, PRG014_DC26, PRG014_DC34, PRG014_DBD2	; Entry 14
-	.word PRG014_DC3A, PRG014_DC26, PRG014_DC2E, PRG014_DB7B, PRG014_DB86, PRG014_DC24, PRG014_DC2C, PRG014_DBCF	; Entry 15
 
 LoadLevel_PrefabBlock:
-	; Backup Map_Tile_Addr into Temp_Var1/2
-	LDA <Map_Tile_AddrL
-	STA <Temp_Var1	
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var2	
-
-	LDA LL_ShapeDef	; LL_ShapeDef is a value 0 - 15 in fixed size gens
-	ASL A		
-	ASL A	
-	ASL A	
-	STA <Temp_Var5	 ; Temp_Var5 = 0, 8, 16, 24, ...
-
-	; This loops for 8 columns
-PRG014_DD50:
-	LDA TileAddr_Off
-	STA <Temp_Var6	 ; Temp_Var6 = TileAddr_Off
-
-	LDA #$00
-	STA <Temp_Var7	 ; Temp_Var7 = 0
-
-	LDA <Temp_Var5
-	ASL A		 
-	TAX		 ; X = Temp_Var5 << 1 (0, 16, 32, 48, ...)
-
-	; Get address from one row of PRG014_DC40 array above, store into Temp_Var3/4
-	LDA PRG014_DC40,X
-	STA <Temp_Var3	
-	LDA PRG014_DC40+1,X
-	STA <Temp_Var4	
-
-	; This copies in 7 tiles vertically
-PRG014_DD67:
-	LDY <Temp_Var7		 ; Y = Temp_Var7 (row offset into pointer)
-	LDA [Temp_Var3],Y	 ; Get byte from pointer for this row
-
-	LDY <Temp_Var6		 ; Y = Temp_Var6 (row offset into tile memory)
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	; Go to next row by adding 16 to tile offset and also the TileAddr_Off
-	TYA	
-	ADD #16
-	STA <Temp_Var6
-	LDA <Map_Tile_AddrH
-	ADC #$00	 
-	STA <Map_Tile_AddrH
-
-	INC <Temp_Var7		 ; Temp_Var7++ (row increment)
-
-	LDA <Temp_Var7	
-	CMP #$06	 
-	BNE PRG014_DD67	 	; If Temp_Var6 <> 6, loop!
-
-	; Restore Map_Tile_Addr from backup
-	LDA <Temp_Var1	
-	STA <Map_Tile_AddrL
-	LDA <Temp_Var2	
-	STA <Map_Tile_AddrH
-
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-
-	JSR LoadLevel_NextColumn ; Next column
-
-	STY TileAddr_Off	 ; Tile_Addr_Off = Y
-	
-	; Update backup
-	LDA <Map_Tile_AddrL
-	STA <Temp_Var1	
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var2	
-
-	INC <Temp_Var5		 ; Temp_Var5++ (column increment, get next address in same row)
-	LDA <Temp_Var5
-	AND #$07	
-	BNE PRG014_DD50	 	; If Temp_Var5 < 8, loop!
-
-	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4861,76 +4580,13 @@ PRG014_DD67:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; The end world castle throne room
 LL_ThroneRoom:
-; The princess's letter is actually here (at Vert_Scroll = 0)
-	.byte $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02
-	.byte $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02
-	.byte $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02
-	.byte $02, $02, $47, $48, $48, $48, $48, $48, $48, $48, $48, $48, $48, $49, $02, $02
-	.byte $02, $02, $4A, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4C, $02, $02
-	.byte $02, $02, $4A, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4C, $02, $02
-	.byte $02, $02, $4A, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4C, $02, $02
-	.byte $02, $02, $4A, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4C, $02, $02
-	.byte $02, $02, $4A, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4C, $02, $02
-	.byte $02, $02, $4A, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4C, $02, $02
-	.byte $02, $02, $4A, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4B, $4F, $02, $02
-	.byte $02, $02, $4D, $4E, $4E, $4E, $4E, $4E, $4E, $4E, $4E, $4E, $50, $51, $02, $02
-	.byte $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02
-	.byte $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02
-	.byte $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02
-
-; You only see from here though... (at Vert_Scroll = $EF)
-	.byte $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C, $9C
-	.byte $C0, $96, $C2, $C4, $C4, $C4, $C4, $C4, $C4, $C4, $C4, $C4, $C4, $C4, $C4, $96
-	.byte $C7, $82, $C3, $C9, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $82
-	.byte $C7, $82, $C6, $C8, $C9, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $CB, $82
-	.byte $C7, $82, $C6, $C7, $C8, $CE, $CF, $D0, $CE, $CF, $D0, $CE, $CF, $D0, $CE, $82
-	.byte $C7, $82, $C6, $C7, $C7, $D3, $D4, $C7, $D3, $D4, $C7, $D3, $D4, $C7, $D3, $82
-	.byte $C7, $82, $C6, $C7, $C7, $C7, $C7, $C7, $C7, $C7, $C7, $D6, $52, $53, $E7, $82
-	.byte $C7, $82, $C6, $C7, $C7, $C7, $C7, $C7, $C7, $C7, $C7, $D6, $54, $55, $E7, $82
-	.byte $C7, $82, $C6, $C7, $C7, $C7, $C7, $C7, $C7, $C7, $C7, $D6, $56, $57, $E7, $82
-	.byte $C7, $83, $C6, $C7, $C7, $C7, $C7, $D6, $58, $59, $59, $59, $59, $59, $59, $83
-	.byte $FF	; Terminator
 
 LoadLevel_ThroneRoom:
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-
-	; Temp_Var1/2 point to LL_ThroneRoom
-	LDA #(LL_ThroneRoom & $FF)
-	STA <Temp_Var1		
-	LDA #(LL_ThroneRoom >> 8)
-	STA <Temp_Var2		
-
-PRG014_DF41:
-	LDA [Temp_Var1],Y	 ; Get next tile
-	CMP #$ff	 
-	BEQ PRG014_DF60	 	; If we hit the terminator, jump to PRG014_DF60
-
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-	INY		 	; Y++ next tile
-	CPY #$00	 	; Check if we overflowed
-	BNE PRG014_DF5C	 	; If not, jump to PRG014_DF5C
-
-	; Map_Tile_AddrH++
-	LDA <Map_Tile_AddrH
-	ADD #$01	 
-	STA <Map_Tile_AddrH
-
-	; Temp_Var2++ (move ahead 256 bytes)
-	LDA <Temp_Var2
-	ADD #$01	
-	STA <Temp_Var2	
-
-PRG014_DF5C:
-	INX		 ; X++	; um, actually I don't think this serves a purpose!  Old version of loop idea I guess?
-	JMP PRG014_DF41	; Jump to PRG014_DF41
-
-PRG014_DF60:
 	RTS		 ; Return
 
 
 
 LBGHM_BitMasks:
-	.byte $80, $40, $20, $10, $08, $04, $02, $01
 
 	; Prevents collected coins or discovered hidden power ups from
 	; reappearing if you switch areas
@@ -5024,5 +4680,79 @@ PRG014_DFCC:
 ; Temp_Var16 and LL_ShapeDef become bytes that fill in Level_JctYLHStart 
 ; and Level_JctXLHStart arrays, based on lower 4-bits of Temp_Var15
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Rest of ROM bank was empty...
+
+
+
+HandleLevelEvent
+	LDA MiscValue1
+	JSR DynJump
+
+	.word NoEvent
+	.word FloodFloor1
+	.word FloodFloor2
+
+NoEvent:
+	RTS
+
+FFLevelsY:	.byte $17, $16, $15, $14, $13, $12, $11
+			.byte $10, $0F, $0E, $0D, $0C, $0B, $0A, $09, $08
+FloodFloor:
+	LDA #$01
+	STA Player_VibeDisable
+	LDA Objects_State
+	BNE FloodFloorRTS
+
+	LDA #OBJ_WATERFILLER
+	STA Level_ObjectID
+	LDA #OBJSTATE_INIT
+	STA Objects_State
+	LDA #$A0
+	STA Objects_X
+	LDA #$00
+	STA Objects_XHi
+	LDX EventVar
+	LDA FFLevelsY, X
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_YHi
+	LDA FFLevelsY, X
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA Objects_Y
+	INC EventVar
+
+FloodFloorRTS:
+	RTS
+
+FloodFloor1:
+	LDX EventVar
+	CPX #$07
+	BEQ FloodFloorEnd
+	JMP FloodFloor
+
+FloodFloor2:
+	LDX EventVar
+	BNE FloodFloor2_1
+	LDX #$07
+	STX EventVar
+
+FloodFloor2_1:
+	CPX #$10
+	BEQ FloodFloorEnd
+	JMP FloodFloor
+
+
+FloodFloorEnd:
+	LDA #$00
+	STA Player_VibeDisable
+	STA EventSwitch
+	RTS
 ; Rest of ROM bank was empty...
 
