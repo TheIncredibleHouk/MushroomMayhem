@@ -5480,7 +5480,7 @@ Hammer_BrickBust:
 	LDA #-6	 
 	STA BrickBust_YVel	 ; Y velocity = -6
 
-	LDY #$90
+	LDY #$81
 	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof

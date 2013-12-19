@@ -277,21 +277,6 @@ Player_DoGameplay:
 	; NOTE: If a partial initialization occurred (above),
 	; it will NOT return here!  It will be back up at PRG030...
 
-	LDA Map_Starman
-	BEQ PRG008_A17B	 ; If Player did not use a Starman, jump to PRG008_A17B
-
-	; The following is used to prevent the invincibility star 
-	; from being wasted on the airship's intro
-
-	DEC Map_Starman	 ; Map_Starman = 0 (or so it assumes)
-
-	LDA #$e0
-	STA Player_StarInv	 ; Player_StarInv = $E0 (224 ticks of invincible fun)
-
-	LDA #MUS2A_INVINCIBILITY
-	STA Sound_QMusic2	 ; Queue invincibility song!
-
-PRG008_A17B:
 
 	; Quick clears all the sprites by setting all hardware
 	; sprite Y positions to $F8
@@ -311,12 +296,6 @@ PRG008_A17F:
 	DEY
 	DEY
 	BPL PRG008_A17F
-
-	; Makes for "wobbly" raising of the airship at least..
-	;LDA Counter_Wiggly
-	;AND #$F0
-	;SUB #$90
-	;STA Counter_Wiggly
 
 	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 
@@ -450,13 +429,6 @@ Level_Initialize:
 PRG008_A242:
 	STA Level_ChangeReset ; Set Level_ChangeReset = 0 (trigger scene-change reset)
 
-	LDA Level_Tileset
-	CMP #$02
-	BNE No_ESwitch
-	LDA #$01
-	STA ESwitch
-
-No_ESwitch:
 	LDA #$28
 	STA Player_SprOff ; Player sprite rooted at offset $28
 
@@ -834,6 +806,7 @@ PRG008_A472:
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
 	JSR Player_Draw29	 	; ... and if you get through all that, draw the Player!!
+	JSR Player_Events
 
 	LDA #$00
 	STA Player_XVelAdj	 ; Player_XVelAdj = 0
@@ -2772,6 +2745,7 @@ Player_CommonGroundAnims:
 	LDA <Player_XVel
 	BPL PRG008_ADE0
 	JSR Negate
+
 PRG008_ADE0:
 
 	LSR A
@@ -4362,7 +4336,8 @@ PRG008_B585:
 	CPX  #$02
 	BCS PRG008_B585_2
 	CMP #TILE_PROP_PSWITCH
-	BNE PRG008_B585_3
+	BCC PRG008_B585_3
+	PHA
 
 	LDY <Temp_Var12		 
 	LDA <Level_Tile
@@ -4377,6 +4352,9 @@ PRG008_B585:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
+	PLA
+	CMP #TILE_PROP_PSWITCH
+	BNE PRG008_B585_2_2
 	LDA #$80	 
 	STA Level_PSwitchCnt	 ; Level_PSwitchCnt = $80 (duration of switch)
 
@@ -4388,6 +4366,12 @@ PRG008_B585_2:
 	LDA TempA
 	RTS
 
+PRG008_B585_2_2:
+	LDA #$01
+	STA EventSwitch
+	LDA #$00
+	STA EventVar
+	RTS
 
 PRG008_B586
 	CPX #$02
@@ -5573,6 +5557,7 @@ Player_ApplyVelocity:
 
 No_Weather_Vel:
 	ADD Player_XVelAdj	; Add Player_XVelAdj
+	ADD Player_CarryXVel
 
 PRG008_BFBE:
 	PHA		 ; Save result
@@ -5639,6 +5624,8 @@ Dont_Flip:
 	STA Odometer_Increase
 
 No_Odo_Increase:
+	LDA #$00
+	STA Player_CarryXVel
 	RTS		 ; Return
 
 
@@ -5914,7 +5901,7 @@ NoEffect:
 	RTS
 
 RainbowEffectColors:
-	.byte $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $31, $32
+	.byte $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C
 
 RainbowWithMovement:
 	LDA <Counter_1
@@ -5930,14 +5917,37 @@ RainbowWithMovement:
 DontClearCounter:
 	LDX EffectCounter
 	LDA RainbowEffectColors, X
+	STA Palette_Buffer + 06
+	STA Palette_Buffer + 10
 	STA Palette_Buffer + 14
 	LDA RainbowEffectColors, X
 	SUB #$10
+	STA Palette_Buffer + 7
+	STA Palette_Buffer + 11
 	STA Palette_Buffer + 15
 	INX
 	LDA RainbowEffectColors, X
 	SUB #$30
+	STA Palette_Buffer + 5
+	STA Palette_Buffer + 9
 	STA Palette_Buffer + 13
 
 NoEffectChange:
+	RTS
+
+Player_Events:
+	LDA EventSwitch
+	BEQ Player_EventsRTS
+
+	LDA PAGE_C000
+	PHA
+	LDA #$0E
+	STA PAGE_C000
+	JSR PRGROM_Change_C000 
+	JSR HandleLevelEvent
+	PLA 
+	STA PAGE_C000
+	JSR PRGROM_Change_C000 
+
+Player_EventsRTS:
 	RTS

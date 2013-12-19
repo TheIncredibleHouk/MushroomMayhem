@@ -1764,7 +1764,6 @@ InitPals_Per_MapPUp:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Setup_PalData:
 	LDX #$01
-	STA Debug_Snap
 	LDA PaletteEffect
 	CMP #$02
 	BNE SetDNActive1
@@ -2088,8 +2087,3 @@ PRG027_B9C3:
 	LDA #$00
 	STA FadeOut_Cancel
 	RTS		 ; Return
-
-
-
-; Rest of ROM bank was empty...
-

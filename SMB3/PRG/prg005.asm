@@ -3543,10 +3543,12 @@ RadialTableY:
 	.byte 01, 03, 04, 06
 
 ObjNorm_ProjectileBarCW:
+	JSR Object_DeleteOffScreen
 	LDY #$08
 	JSR Object_DetermineVertVis
 	LDY #$08
 	JSR Object_DetermineHorzVis
+DoPBarDraw:
 	LDA Objects_SprVVis, X
 	ORA Objects_SprHVis, X
 	BEQ DrawPBar
@@ -3579,8 +3581,7 @@ DrawPBar:
 	LDA Objects_Var2, X
 	TAX
 	LDA <Counter_1, X
-	AND #$3E
-	ASL A
+	AND #$7C
 	STA TempX
 	LDX <SlotIndexBackup
 

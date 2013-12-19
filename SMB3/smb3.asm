@@ -2448,7 +2448,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Map_Unused7984:		.ds 2	; $7984-$7985 (Mario/Luigi) Unused; cleared and never touched again
 	Map_Prev_XOff2:		.ds 2	; $7986-$7987 (Mario/Luigi) Holds a copy of Map_Prev_XOff, but I'm not sure why?
 	Map_Prev_XHi2:		.ds 2	; $7988-$7989 (Mario/Luigi) Holds a copy of Map_Prev_XHi, but I'm not sure why?
-	Map_Unused798A:		.ds 2	; $798A-$798B (Mario/Luigi) Unused; cleared and never touched again
+	Map_Unused798A:		.ds 1	; $798A-$798B (Mario/Luigi) Unused; cleared and never touched again
 
 	; These define values to use when you junction back
 	; to the level you were before...
@@ -2466,24 +2466,26 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 
 	Poison_Mode:		.ds 1	; Unused; cleared but never used otherwise
 
-	Player_NoSlopeStick:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
+	Player_CarryXVel:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
+	Player_CarryYVel:	.ds 1	;
 
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Wind:					.ds 1	; Wind factor (affects player!)
 	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
 	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
-	Do_Shell_Bump:			.ds 1;
 	Fox_FireBall:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
-	Player_Direction:			.ds 1	;
+	Player_Direction:		.ds 1	;
 	Ignore_Vel_Stop:		.ds	1	;
-	ESwitch:				.ds 1	; For e-switch levels
-	BoomBoomMiscTimer:		.ds 1	;
-	LeftRightInfection:			.ds 1	;
+	EventSwitch:			.ds 1	; For e-switch levels
+	EventVar:				.ds 1
+	EventType:				.ds 1	; For e-switch levels
+	LeftRightInfection:		.ds 1	;
 	Frozen_State:			.ds 1	;
 	Frozen_Frame:			.ds	1
 	PaletteEffect:			.ds 1
 	EffectCounter:			.ds 1
+
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
 
@@ -3540,7 +3542,8 @@ OBJ_GOOMBA		= $72	; Regular goomba
 OBJ_PARAGOOMBA		= $73	; Hopping red flying goomba
 OBJ_PARAGOOMBAWITHMICROS = $00 ;
 OBJ_ZOMBIEGOOMBA= $74	; Micro goomba dropping flying goomba
-OBJ_BOSSATTACK		= $75	; Lemmy's ball, Wendy's ring, Bowser's fireball, depends
+OBJ_BOSSATTACK		= $00	;
+OBJ_WATERFILLER		= $75	; Lemmy's ball, Wendy's ring, Bowser's fireball, depends
 OBJ_POISONMUSHROOM	= $76	; Jumping Cheep Cheep
 OBJ_JUMPINGCHEEPCHEEP = $00 ;
 OBJ_GREENCHEEP		= $77	; Green Cheep Cheep
