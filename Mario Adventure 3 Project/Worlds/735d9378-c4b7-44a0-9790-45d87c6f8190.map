@@ -6,7 +6,7 @@
     <pointer levelguid="f0a489a9-7d86-4eaa-8b6b-25d37638e662" x="8" y="19" altentrance="false" />
     <pointer levelguid="cdafd017-4607-46c0-a8ab-5420caa3e22d" x="6" y="21" altentrance="false" />
     <pointer levelguid="ae704d35-4b12-49d3-b370-56c5554cf3f3" x="2" y="23" altentrance="false" />
-    <pointer levelguid="6f0f472c-d0a6-42fa-a8aa-53c1c9fd0c6c" x="11" y="21" altentrance="false" />
+    <pointer levelguid="22a5a5e5-ccc5-4f9a-abb9-3ae0525d987a" x="11" y="21" altentrance="false" />
   </pointers>
   <spritedata>
     <sprite x="24" y="20" value="13" item="0" visibility="0" />
