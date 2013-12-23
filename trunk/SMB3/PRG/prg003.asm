@@ -27,7 +27,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_Ninji	; Object $48 - OBJ_NINJI
 	.word ObjInit_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjInit_MagicStar	; Object $4A - OBJ_MAGICSTAR
-	.word ObjInit_Boss		; Object $4B - OBJ_BOOMBOOMJUMP
+	.word ObjInit_DoNothing		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjInit_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
 	.word ObjInit_DoNothing	; Object $4D
 	.word ObjInit_DoNothing		; Object $4E
@@ -69,7 +69,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_Ninji	; Object $48 - OBJ_NINJI
 	.word ObjNorm_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
-	.word ObjNorm_Boss		; Object $4B - OBJ_BOOMBOOMJUMP
+	.word ObjNorm_DoNothing		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjNorm_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
 	.word ObjNorm_Explosion	; Object $4D
 	.word ObjNorm_DoNothing		; Object $4E
@@ -1979,51 +1979,6 @@ ObjNorm_FloatingBGCloud:
 
 
 ObjInit_FloatingBGCloud:
-	RTS
-
-ObjInit_Boss:
-	LDA World_Num
-	JSR DynJump
-
-	.word World0BossInit
-	.word World1BossInit
-	.word World2BossInit
-	.word World3BossInit
-	.word World4BossInit
-	.word World5BossInit
-	.word World6BossInit
-
-World0BossInit
-World1BossInit:
-World2BossInit:
-World3BossInit:
-World4BossInit:
-World5BossInit:
-World6BossInit:
-	RTS
-
-ObjNorm_Boss:
-
-	LDA World_Num
-	JSR DynJump
-
-	.word World0BossNorm
-	.word World1BossNorm
-	.word World2BossNorm
-	.word World3BossNorm
-	.word World4BossNorm
-	.word World5BossNorm
-	.word World6BossNorm	
-
-World0BossNorm:
-World1BossNorm:
-	RTS
-
-World2BossNorm:
-World3BossNorm:
-World4BossNorm:
-World5BossNorm:
-World6BossNorm:
 	RTS
 
 ObjInit_Explosion:

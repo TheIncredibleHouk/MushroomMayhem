@@ -266,6 +266,4 @@ LeveLoad_FixedSizeGen_TS1:
 
 	; Broken into another file for ease of integration in NoDice editor
 	.include "PRG/levels/Plains.asm"
-
 ; Rest of ROM bank was empty
-

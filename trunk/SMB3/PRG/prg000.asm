@@ -200,7 +200,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $07 - OBJ_BRICK
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_COIN
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $09 - OBJ_AIRSHIPANCHOR
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $09 - OBJ_BUBBLE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0A
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0C - OBJ_POWERUP_STARMAN
@@ -1104,9 +1104,18 @@ PRG000_C98B:
 	; Non-special objects in slots 0 to 4...
 
 	LDA Objects_Timer4,X
-	BEQ PRG000_C997	 ; If this timer is already at zero, jump to PRG000_C997
+	BEQ PRG000_C996	 ; If this timer is already at zero, jump to PRG000_C997
 
 	DEC Objects_Timer4,X	; Otherwise, decrement it
+
+PRG000_C996:
+	LDA Objects_SlowTimer,X
+	BEQ PRG000_C997	 ; If this timer is already at zero, jump to PRG000_C997
+
+	LDA <Counter_1
+	AND #$01
+	BEQ PRG000_C997
+	DEC Objects_SlowTimer,X	; Otherwise, decrement it
 
 PRG000_C997:
 	LDA Objects_Timer3,X
@@ -3675,9 +3684,6 @@ PRG000_D3EF:
 	JSR Object_AnySprOffscreen
 	BEQ PRG000_D463	 ; If any sprites are off-screen, jump to PRG000_D463
 
-	LDA Level_7Vertical
-	BNE PRG000_D464	 ; If level is vertical, jump to PRG000_D464
-
 
 	; LEVEL NOT VERTICAL
 
@@ -3776,50 +3782,6 @@ Object_SetDeadEmpty:
 
 PRG000_D463:
 	RTS		 ; Return
-
-
-PRG000_D464:
-	; LEVEL IS VERTICAL
-
-	LDA <Counter_1
-	LSR A		 
-	BCS PRG000_D463	 ; Every other tick, jump to PRG000_D463 (RTS)
-
-	AND #$01
-	STA <Temp_Var2	 ; Temp_Var2 = 0 or 1
-	TAY		 ; -> 'Y'
-
-	LDA Level_VertScroll
-	ADD PRG000_D3C8,Y
-	ROL <Temp_Var1		 ; 0/1 or 4/5
-
-	CMP <Objects_Y,X	 ; Compare to object Y
-
-PRG000_D479:
-	PHP		 ; Save CPU state
-
-	LDA Level_VertScrollH
-	LSR <Temp_Var1	
-	ADC PRG000_D3CA,Y
-
-	PLP		 ; Restore CPU state
-
-	SBC <Objects_YHi,X
-	STA <Temp_Var1	
-	LDY <Temp_Var2	
-	BEQ PRG000_D48F	 
-
-	EOR #$80	
-	STA <Temp_Var1	
-
-PRG000_D48F:
-	LDA <Temp_Var1
-	BPL PRG000_D463	
-	BMI Object_Delete	
-	BPL PRG000_D497	 
-
-PRG000_D497:
-	BEQ PRG000_D479	
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4258,6 +4220,11 @@ PRG000_D67B:
 	STA Objects_Frame,X	 ; Set as frame 0 or 1
 	RTS		 ; Return
 
+VisMask:
+	.byte $81, $41, $21, $11, $82, $42, $22, $12
+
+SprRAMOffset:
+	.byte $00, $04, $08, $0C, $10, $14, $80, $80
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_Draw16x16Sprite
@@ -4391,7 +4358,6 @@ PRG000_D6E4:
 PRG000_D726:
 	RTS		 ; Return
 	
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_GetRandNearUnusedSpr
 ;
@@ -6773,44 +6739,111 @@ PRG001_B0F9:
 	LDA <Temp_Var2
 	STA Objects_TargetingXVal,X
 
-	RTS		 ; Return
+	RTS		 ; Returns
 
-PRG001_B10B:
-	; Immediately after defeated Koopaling has exited stage left...
+DoBossFights:
+	LDA PAGE_A000
+	PHA
+	LDA #$10
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	JSR BossFight
+	PLA 
+	STA PAGE_A000
+	JSR PRGROM_Change_A000 
+	RTS
 
-	LDY #$05	 ; Y = 5
-PRG001_B10D:
-	LDA SpecialObj_ID,Y
-	BEQ PRG001_B116  ; If this object slot is dead/empty, jump to PRG001_B116
-	DEY		 ; Y--
-	BPL PRG001_B10D	 ; While Y >= 0, loop!
+GiantXFrame:
+	.byte $00, $08, $10, $18, $00, $08, $10, $18
 
-	RTS		 ; Return
+GiantXFrameFlip:
+	.byte $18, $10, $08, $00, $18, $10, $08, $00
 
-PRG001_B116:
+GiantYFrame:
+	.byte $00, $00, $00, $00, $10, $10, $10, $10
 
-	; Recovered Koopaling wand
-	LDA #SOBJ_RECOVEREDWAND
-	STA SpecialObj_ID,Y
+DrawGiantObject:
+	JSR Object_CalcSpriteXY_NoHi
+	LDA Objects_Frame, X
+	ASL A
+	ASL A
+	ASL A
+	STA <Temp_Var6
+	LDA Objects_FlipBits, X
+	AND #SPR_HFLIP
+	STA <Temp_Var16
 
-	; Start X at center of screen
-	LDA #$80
-	STA SpecialObj_XLo,Y
+	LDA Objects_SprHVis, X
+	AND #$F0
+	ORA Objects_SprVVis, X
+	STA <Temp_Var1
 
-	; Start Y at Koopaling's Y
-	LDA <Objects_Y,X
-	STA SpecialObj_YLo,Y
-	LDA <Objects_YHi,X
-	STA SpecialObj_YHi,Y
-
-	; Halt velocities in this slo
 	LDA #$00
-	STA SpecialObj_YVel,Y
-	STA SpecialObj_XVel,Y
+	STA <Temp_Var2
+	
+DrawNextGiant:
+	JSR DrawGiantSprite
+	INC <Temp_Var6
 
-	; Var 1 = $50
-	LDA #$50	
-	STA SpecialObj_Var1,Y
+DrawNextGiant2:
+	INC <Temp_Var2
+	LDA Object_SprRAM, X
+	ADD #$04
+	STA Object_SprRAM, X
+	LDA <Temp_Var2
+	CMP #$08
+	BNE DrawNextGiant
 
-PRG001_B137:
-	RTS		 ; Return
+	RTS
+
+DrawGiantSprite:
+	LDY <Temp_Var6
+	LDA [Temp_Var10], Y
+	STA <Temp_Var3
+
+	LDY <Temp_Var2
+	LDX <SlotIndexBackup
+
+	LDA <Temp_Var16
+	BNE GetXFlip
+	LDA GiantXFrame, Y
+	JMP GiantSetX
+
+GetXFlip:
+	LDA GiantXFrameFlip, Y
+
+GiantSetX:
+	ADD Objects_SpriteX,X
+	STA <Temp_Var4
+
+	LDA GiantYFrame, Y
+	ADD Objects_SpriteY,X
+	STA <Temp_Var5
+
+
+	LDA VisMask, Y
+	AND <Temp_Var1
+	BNE DontDrawGiant
+
+	LDA <Temp_Var2
+	CMP #$06
+	BCS GetExtendedSprite
+	LDY Object_SprRAM, X
+	JMP LetsDrawGiant
+
+GetExtendedSprite:
+	JSR Object_GetRandNearUnusedSpr
+	
+LetsDrawGiant:
+	LDA <Temp_Var5
+	STA Sprite_RAM, Y
+	LDA <Temp_Var3
+	STA Sprite_RAM + 1, Y
+	LDA Objects_SprAttr,X
+	ORA Objects_FlipBits,X
+	STA Sprite_RAM + 2, Y
+	LDA <Temp_Var4
+	STA Sprite_RAM + 3, Y
+	
+DontDrawGiant:
+	RTS

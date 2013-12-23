@@ -4822,8 +4822,6 @@ DoNightTransition:
 	AND #$03
 	BNE NightTransRTS
 	LDA NightTransition
-	BEQ NightTransRTS
-	LDA NightTransition
 	CMP #$01
 	BEQ FinalNightTransition
 	ASL A
@@ -4879,8 +4877,6 @@ DoDayTransition:
 	LDA <Counter_1
 	AND #$03
 	BNE DayTransRTS
-	LDA DayTransition
-	BEQ DayTransRTS
 	LDA MasterPal_Data
 	CMP #$0F
 	BEQ SkyDayTransition
