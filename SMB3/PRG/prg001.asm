@@ -34,7 +34,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
 	.word ObjInit_Coin	; Object $08 - OBJ_COIN
-	.word ObjInit_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
+	.word ObjInit_Bubble	; Object $09 - OBJ_BUBBLE
 	.word ObjInit_Bully	; Object $0A - OBJ_BULLY
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
@@ -76,7 +76,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjNorm_Brick	; Object $07 - OBJ_BRICK
 	.word ObjNorm_Coin	; Object $08 - OBJ_COIN
-	.word ObjNorm_Anchor	; Object $09 - OBJ_AIRSHIPANCHOR
+	.word ObjNorm_Bubble	; Object $09 - OBJ_BUBBLE
 	.word ObjNorm_Bully	; Object $0A OBJ_BULLY
 	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
@@ -88,7 +88,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Spring	; Object $12
 	.word ObjNorm_Spring	; Object $13
 	.word ObjNorm_GiantChomp	; Object $14 OBJ_GIANTCHOMP
-	.word ObjNorm_DoNothing	; Object $15
+	.word ObjNorm_Boss	; Object $15 OBJ_BOSS
 	.word ObjNorm_DoNothing	; Object $16
 	.word ObjNorm_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
@@ -119,7 +119,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word Player_GetHurt	; Object $07 - OBJ_BRICK
 	.word ObjHit_Coin	; Object $08 - OBJ_COIN
-	.word ObjHit_DoNothing	; Object $09 - OBJ_AIRSHIPANCHOR
+	.word BubblePop	; Object $09 - OBJ_BUBBLE
 	.word ObjHit_Bully	; Object $0A
 	.word ObjHit_NinjaShroom	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjHit_StarOrSuit	; Object $0C - OBJ_POWERUP_STARMAN
@@ -161,7 +161,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $07 - OBJ_BRICK
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $08 - OBJ_COIN
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $09 - OBJ_AIRSHIPANCHOR
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $09 - OBJ_BUBBLE
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A- OBJ_BULLY
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
@@ -172,8 +172,8 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $11 OBJ_KEY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $12 OBJ_REDPRING
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $13 OBJ_GREENSPRING
-	.byte OA1_PAL0 | OA1_HEIGHT64 | OA1_WIDTH64	; Object $14 OBJ_GIANTCHOMP
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $15
+	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $14 OBJ_GIANTCHOMP
+	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $15
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $16
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $17 - OBJ_SPINYCHEEP
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH32	; Object $18 - OBJ_BOSS_BOWSER
@@ -210,7 +210,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA2_TDOGRP1	; Object $07 - OBJ_BRICK
 	.byte OA2_TDOGRP1	; Object $08 - OBJ_COIN
-	.byte OA2_TDOGRP1	; Object $09 - OBJ_AIRSHIPANCHOR
+	.byte OA2_TDOGRP1	; Object $09 - OBJ_BUBBLE
 	.byte OA2_TDOGRP1	; Object $0A
 	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA2_TDOGRP1	; Object $0C - OBJ_POWERUP_STARMAN
@@ -259,7 +259,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_COIN
-	.byte OA3_HALT_JUSTDRAW 	; Object $09 - OBJ_AIRSHIPANCHOR
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE 	; Object $09 - OBJ_BUBBLE
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
@@ -301,7 +301,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_BRICK
 	.byte OPTS_NOCHANGE	; Object $08 - OBJ_COIN
-	.byte OPTS_SETPT6 | $37	; Object $09 - OBJ_AIRSHIPANCHOR
+	.byte OPTS_SETPT5 | $1A	; Object $09 - OBJ_BUBBLE
 	.byte OPTS_SETPT5 | $0B	; Object $0A - OBJ_BULLY
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
@@ -343,7 +343,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte KILLACT_STANDARD	; Object $07 - OBJ_BRICK
 	.byte KILLACT_STANDARD	; Object $08 - OBJ_COIN
-	.byte KILLACT_STANDARD	; Object $09 - OBJ_AIRSHIPANCHOR
+	.byte KILLACT_STANDARD	; Object $09 - OBJ_BUBBLE
 	.byte KILLACT_STANDARD	; Object $0A
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0C - OBJ_POWERUP_STARMAN
@@ -430,7 +430,7 @@ ObjP04:	.byte $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
 ObjP05:	.byte $A5, $A7, $A1, $A3, $A1, $A3
 ObjP06:	
 ObjP1B:	.byte $79, $7B, $79, $7B, $77, $77, $75, $75	; RAS: Not actually used, see BounceBlock_Tile
-ObjP09:	.byte $E1, $E5, $E1
+ObjP09:	.byte $A7, $A7, $A9, $A9, $AB, $AB
 ObjP0A:	.byte $A9, $AB, $BD, $BF
 ObjP0C:	.byte $51, $53, $51, $53, $51, $53, $51, $53
 ObjP0B:	.byte $51, $53	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
@@ -972,94 +972,47 @@ PRG001_A63F:
 	RTS		 ; Return
 
 	; Force's some X bits
-ObjInit_Anchor:
-	LDA <Objects_X,X
-	ORA #%00001100	
-	STA <Objects_X,X
+ObjInit_Bubble:
+	LDA #$F8
+	STA Objects_YVel, X
+	STA ObjSplash_DisTimer, X
 	RTS		 ; Return
 
 
-ObjNorm_Anchor:
-	LDA Level_AirshipCtl
-	CMP #$03
-	BNE PRG001_A6A3	 	; If Level_AirshipCtl <> 3 (enter airship), jump to PRG001_A6A3
+ObjNorm_Bubble:
+	JSR Object_DeleteOffScreen
+	JSR Object_WorldDetect4
+	LDA Objects_DetStat, X
+	AND #HIT_DET_CEIL
+	BNE BubbleDraw
+	JSR Object_ApplyYVel
 
-	LDA #-$0C
-	STA <Objects_YVel,X 	; Y velocity = -$0C
-
-	JSR Object_ApplyYVel	; Apply Y velocity
-
-PRG001_A6A3:
-	LDA #$50
-	STA Object_SprRAM,X	 ; Set anchor's Sprite_RAM offset @ $50
-
-	JSR Object_DrawWide	 ; Draw the main anchor
- 
-	; Flips the edge of the anchor sprite
-	LDA Sprite_RAM+10,Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+10,Y
-
-	LDA Objects_SprHVis,X
-	BNE PRG001_A702		; Any off-screen flags, jump to PRG001_A702 (RTS)
-
-	LDA <Objects_YHi,X
-	BEQ PRG001_A702	 	; If anchor is "high", it's invisible for this sake, jump to PRG001_A702 (RTS)
-
-	; Anchor top
-	LDA <Objects_SpriteY,X
-	STA <Temp_Var1		; Temp_Var1 = Sprite Y
-	SUB #16	
-	STA <Temp_Var1		; Temp_Var1 -= 16
-
-	STA Sprite_RAM+12,Y	; Set Sprite Y
-
-	LDA <Objects_SpriteX,X	
-	ADD #$08	
-	STA <Temp_Var2		; Temp_Var2 = Sprite X + 8
-	STA Sprite_RAM+15,Y	; Set sprite X
-
-	; Set pattern of anchor top
-	LDA #$e3
-	STA Sprite_RAM+13,Y
-
-	; Set attribute of anchor top
-	LDA Objects_SprAttr,X
-	STA Sprite_RAM+14,Y
-	STA Objects_SprAttr,X 
-
-	LDY #$60	 ; Y = $60
-PRG001_A6DF:
-	LDA <Temp_Var1
-	SUB #16
-	STA <Temp_Var1	 ; Temp_Var1 -= 16 (next link up)
-	BCC PRG001_A702	 ; If we're done with the chain, jump to PRG001_A702
-
-	STA Sprite_RAM,Y ; Set sprite Y
-
-	; Pattern of anchor chain link
-	LDA #$e7	 
-	STA Sprite_RAM+1,Y
-
-	; Set attribute
-	LDA Objects_SprAttr,X
-	STA Sprite_RAM+2,Y
-	AND #$DF
-	STA  Objects_SprAttr,X
-
-	; Set sprite X
-	LDA <Temp_Var2	
-	STA Sprite_RAM+3,Y
-
-	INY
-	INY
-	INY
-	INY		 ; Y += 4 (next sprite)
-
-	JMP PRG001_A6DF	 ; Jump to PRG001_A6DF
-
-PRG001_A702:
+BubbleDraw:
+	LDA Objects_Var1, X
+	STA Objects_Frame, X
+	JSR Object_HitTestRespond
+	JSR Object_ShakeAndDrawMirrored
+	LDY Object_SprRAM,X
+	LDA Sprite_RAM +6, Y
+	ORA #SPR_VFLIP
+	STA Sprite_RAM +6, Y
 	RTS		 ; Return
+
+BubblePop:
+	LDA Objects_Var1, X
+	CMP #$02
+	BEQ BubblePopped
+	LDA <Counter_1
+	AND #$07
+	BEQ BubblePopRTS
+	INC Objects_Var1, X
+	LDA #$40
+	STA Air_Time
+BubblePopRTS:
+	RTS
+
+BubblePopped:
+	JMP Object_SetDeadAndNotSpawned
 
 ObjInit_Bully:
 	LDA #$40
@@ -2580,7 +2533,6 @@ PRG001_AF02:
 
 	; After Koopaling has left...
 	INC Level_GetWandState	 ; Level_GetWandState = 2
-	JMP PRG001_B10B	 	; Jump to PRG001_B10B
 
 PRG001_AF20:
 	JSR Object_ApplyXVel	 ; Apply X velocity
@@ -5638,7 +5590,6 @@ ObjNorm_GiantChomp:
 
 
 DoGCRoutine:
-	JSR Object_CalcSpriteXY_NoHi
 	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)
 	JSR Object_DetectTile
 	AND #TILE_PROP_SOLID_TOP
@@ -5654,7 +5605,17 @@ TryEatRightBlock:
 	JSR ChompEatBlock
 
 ChompDoneEating:
-	JSR DrawGiantChomp
+	LDA #LOW(GiantChompFrames)
+	STA <Temp_Var10
+	LDA #HIGH(GiantChompFrames)
+	STA <Temp_Var11
+	LDA <Counter_1
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+	JSR DrawGiantObject
 
 DoneGC:
 	RTS
@@ -5663,88 +5624,6 @@ GiantChompFrames:
 	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
 	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
 
-GiantChompXFrame:
-	.byte $00, $08, $10, $18, $00, $08, $10, $18
-
-GiantChompYFrame:
-	.byte $00, $00, $00, $00, $10, $10, $10, $10
-
-VisMask:
-	.byte $81, $41, $21, $11, $82, $42, $22, $12
-
-SprRAMOffset:
-	.byte $00, $04, $08, $0C, $10, $14, $80, $80
-
-DrawGiantChomp:
-	LDA <Counter_1
-	AND #$08
-	STA <Temp_Var6
-
-	LDA Objects_SprHVis, X
-	AND #$F0
-	ORA Objects_SprVVis, X
-	STA <Temp_Var1
-
-	LDA #$00
-	STA <Temp_Var2
-	
-DrawNextGC:
-	JSR DrawGCSprite
-	INC <Temp_Var6
-	INC <Temp_Var2
-	LDA <Temp_Var2
-	CMP #$08
-	BNE DrawNextGC
-
-
-	RTS
-
-DrawGCSprite:
-	LDX <Temp_Var6
-	LDA GiantChompFrames, X
-	STA <Temp_Var3
-	
-
-	LDX <Temp_Var2
-	LDY <SlotIndexBackup
-
-	LDA GiantChompXFrame, X
-	ADD Objects_SpriteX,Y
-	STA <Temp_Var4
-
-	LDA GiantChompYFrame, X
-	ADD Objects_SpriteY,Y
-	STA <Temp_Var5
-
-
-	LDA VisMask, X
-	AND <Temp_Var1
-	BNE DontDrawGC
-
-	
-	LDA SprRAMOffset, X
-	BMI GetExtendedSprite
-	
-	ADD Object_SprRAM, Y
-	TAY
-	JMP LetsDrawGC
-
-GetExtendedSprite:
-	JSR Object_GetRandNearUnusedSpr
-	
-LetsDrawGC:
-	LDX <SlotIndexBackup
-	LDA <Temp_Var5
-	STA Sprite_RAM, Y
-	LDA <Temp_Var3
-	STA Sprite_RAM + 1, Y
-	LDA #$22
-	STA Sprite_RAM + 2, Y
-	LDA <Temp_Var4
-	STA Sprite_RAM + 3, Y
-	
-DontDrawGC:
-	RTS
 	
 ChompEatBlock:
 	LDA #$00
@@ -5787,4 +5666,8 @@ ObjNorm_BrickDraw:
 	LDA #$00
 	STA Objects_Frame, X
 	JSR Object_ShakeAndDrawMirrored
+	RTS
+
+ObjNorm_Boss:
+	JSR DoBossFights
 	RTS

@@ -464,7 +464,6 @@ ObjInit_Waterfill:
 	RTS
 
 ObjNorm_Waterfill:
-	STA (Debug_Snap - 1)
 	LDA <Objects_XHi, X
 	BEQ ObjNorm_Waterfill1
 	LDA #OBJSTATE_DEADEMPTY

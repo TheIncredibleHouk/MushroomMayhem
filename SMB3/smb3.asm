@@ -1900,17 +1900,13 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 ;	In all other states, timer decrements every 2 ticks
 	Objects_Timer3:		.ds 5	; $06A6-$06AA Used as the "wake up" out of shell timer
 	Objects_Timer4:		.ds 5	; $06AB-$06AF "Timer" values; automatically decrements to zero (used in "shakin' awake" effect)
+	Objects_SlowTimer:	.ds 5
 
-				.ds 3	; $06B0-$06B2 unused
-
-	Object_SlopeHeight:	.ds 1	; Object calculated slope height
 	Buffer_Occupied:	.ds 2	; $06B4-$06B5 Set if respective Object_BufferX/Y buffer is already taken by an object
 
 	Player_UphillSpeedIdx:		; Override when Player_UphillFlag is set (shared with Player_Microgoomba)
 	Player_Microgoomba:	.ds 1	; Microgoomba stuck to Player
 	Objects_InWater:	.ds 5	; $06B7-$06BB Set when object is in water
-
-				.ds 1	; $06BC unused
 
 	SpecialObj_Var1:	.ds 8	; $06BD-$06C4 General purpose variable 1
 
@@ -2970,7 +2966,7 @@ SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
 SOBJ_FIREBROFIREBALL	= $0C	; Fire bro bouncing fireball
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
-SOBJ_BUBBLE		= $0E 	; Bubble
+SOBJ_BUBBLE		= $00 	; Bubble
 SOBJ_LAVALOTUSFIRE	= $0F	; Lava Lotus fire
 SOBJ_RECOVEREDWAND	= $10 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
@@ -3433,7 +3429,8 @@ OBJ_BRICK		= $07	; Hidden object that jumps you to the secret warp whistle in 1-
 OBJ_WARPHIDE		= $00	;
 OBJ_PSWITCHDOOR = $00	;
 OBJ_COIN		= $08	; Door that appears under influence of P-Switch
-OBJ_AIRSHIPANCHOR	= $09	; Airship anchor
+OBJ_AIRSHIPANCHOR	= $00	; Airship anchor
+OBJ_BUBBLE			= $09;
 OBJ_BULLY			= $0A	;
 OBJ_POWERUP_NINJASHROOM		= $0B	; Ninja Mushroom
 OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tanooki, Frog, Hammer)

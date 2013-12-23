@@ -2783,7 +2783,7 @@ PRG007_AF9E:
 	.word SObj_Cannonball	; 0B: Cannonball
 	.word SObj_Fireball	; 0C: Fire bro bouncing fireball
 	.word SObj_ExplodeStar	; 0D: Explosion star
-	.word SObj_Bubble	; 0E: Bubble
+	.word SOBJ_BUBBLE	; 0E: Bubble
 	.word SObj_LavaLotusFire; 0F: Lava Lotus fire
 	.word SObj_Wand		; 10: Recovered wand
 	.word SObj_CoinOrDebris	; 11: Popped out coin
@@ -3317,7 +3317,7 @@ PRG007_B315:
 PRG007_B320:
 	RTS		 ; Return
 
-SObj_Bubble:
+
 	LDA <Player_HaltGame
 	BNE PRG007_B364	 ; If gameplay is halted, jump to PRG007_B364
 

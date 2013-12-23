@@ -316,11 +316,17 @@ PRG008_A17F:
 	JSR Try_Item_Reserve_Release
 	LDA DayNightActive
 	BEQ NoTransition
+	LDA NightTransition
+	BEQ NotNight
 	JSR DoNightTransition
+NotNight:
+	LDA DayTransition
+	BEQ NoTransition
 	JSR DoDayTransition
 
 NoTransition:
 	JSR DoPaletteEffect
+	JSR Player_Refresh
 	INC Level_NoStopCnt	; As long as none of the above is happening, continue the "no stop" counter...
 
 PRG008_A1C1:
@@ -1521,6 +1527,7 @@ PRG008_A890:
 	BEQ TryAirDepleteProp
 	AND #TILE_PROP_WATER
 	BNE Deplete_Air
+
 TryAirDepleteProp:
 	LDA Level_Tile_Prop_Head
 	AND #$0F
@@ -1536,7 +1543,7 @@ PRG008_A891:
 	LDA #$00
 	STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
 
-	LDA #$10
+	LDA #$08
 	STA <Temp_Var10
 	LDA #$08
 	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
@@ -3392,11 +3399,7 @@ PRG008_B11E:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoScrolling:
 	LDA Level_JctCtl
-	BNE PRG008_B126
-	LDA Level_7Vertical
-	BEQ PRG008_B127	 ; If Level is not vertical, jump to PRG008_B127
-
-	JMP PRG008_B2AB	 ; Otherwise, jump to PRG008_B2AB
+	BEQ PRG008_B127
 
 PRG008_B126:
 	RTS
@@ -3726,119 +3729,6 @@ PRG008_B2A2:
 
 	RTS		 ; Return
 
-PRG008_B2AB:
-	; Vertical style for Player_DoScrolling
-
-	LDA #$00	 
-	STA <Player_XHi	 ; Player_XHi = 0 (never used in vertical mode)
-
-	LDY <Level_Width ; Y = Level_Width ("height" actually, in this context)
-
-	; Get address starting this screen -> Temp_Var1/2
-	LDA VertLevel_ScreenH,Y
-	STA <Temp_Var1		
-	LDA VertLevel_ScreenL,Y	
-	STA <Temp_Var2
-
-	LDA <Player_Y
-	SUB Level_VertScroll
-	TAY		 ; Y = Player_Y - Level_VertScroll
-
-	LDA <Player_YHi
-	SBC Level_VertScrollH
-	BEQ PRG008_B2D7	 ; If Player_YHi <> Level_VertScrollH, jump to PRG008_B345 (RTS)
-	RTS
-
-PRG008_B2D7:
-	TYA		 ; A = Player_Y - Level_VertScroll
-	SUB #$30
-	BCS PRG008_B2F9	 ; If no borrow occurred, jump to PRG008_B2F9
-
-	; Minimum vertical scroll delta value is -3
-	DEC Level_VertScrollH
-	CMP #-3
-	BGE PRG008_B2D8
-
-	LDA #-3
-
-PRG008_B2D8:
-	STA Level_ScrollDiffV	 ; Set difference
-
-	ADD Level_VertScroll
-	STA Level_VertScroll	 ; Level_VertScroll += Level_ScrollDiffV
-
-	LDA #$00
-	STA <Scroll_LastDir	 ; Scroll_LastDir = 0 (last scrolled up)
-
-	ADC Level_VertScrollH	; Apply carry, if any
-	BPL PRG008_B2F3	 	; If Level_VertScrollH >= 0, jump to PRG008_B2F3
-
-	; Otherwise clear Level_VertScroll and Level_ScrollDiffV
-	LDA #$00
-	STA Level_VertScroll
-	STA Level_ScrollDiffV
-
-PRG008_B2F3:
-	STA Level_VertScrollH	 ; Update Level_VertScrollH
-	JMP PRG008_B338	 ; Jump to PRG008_B338
-
-PRG008_B2F9:
-	TYA		 ; A = Player_Y - Level_VertScroll
-	SBC #$58
-	BCC PRG008_B345	 ; If borrow occurred, jump to PRG008_B345 (RTS)
-
-	; Maximum vertical scroll delta value is 4
-	CMP #$04
-	BLT PRG008_B304	 ; If value is < 4, jump to PRG008_B304
-
-	LDA #$04	 ; A = 4
-
-PRG008_B304:
-	STA Level_ScrollDiffV	 ; Store vertical difference
-
-	ADD Level_VertScroll
-	STA Level_VertScroll	 ; Level_VertScroll += Level_ScrollDiffV
-
-	LDA #$00
-	ADC Level_VertScrollH
-	STA Level_VertScrollH	 ; Apply carry, if any
-
-	CMP <Temp_Var1
-
-	PHP		 ; Save processor status
-
-	LDA #$01
-	STA <Scroll_LastDir	 ; Scroll_LastDir = 1 (last scrolled down)
-
-	PLP		 ; Restore processor status
-
-	BLT PRG008_B338		; If Level_VertScrollH < Temp_Var1 (base screen high address start), jump to PRG008_B338
-	BNE PRG008_B329		; If Level_VertScrollH <> Temp_Var1 (base screen high address start), jump to PRG008_B329
-
-	LDA Level_VertScroll
-	CMP <Temp_Var2
-	BLT PRG008_B338	 	; If Level_VertScroll < Temp_Var2, jump to PRG008_B338
-
-PRG008_B329:
-
-	; Update Level_VertScrollH and Level_VertScroll
-	LDA <Temp_Var1
-	STA Level_VertScrollH
-	LDA <Temp_Var2
-	STA Level_VertScroll
-
-	LDA #$00
-	STA Level_ScrollDiffV	 ; Level_VertScrollH = 0
-
-PRG008_B338:
-	JSR LevelJct_GetVScreenH
-
-	STA <Vert_Scroll
-	STY <Vert_Scroll_Hi
-
-PRG008_B345:
-	RTS		 ; Return
-
 
 	; Offsets used for tile detection in non-sloped levels
 	; +16 if moving downward
@@ -3906,10 +3796,6 @@ PRG008_B3B0:	.byte $04, $0D
 
 	; If $01, this is treated as a "not floor" tile, which means to watch out
 	; for the Player to hit his head rather than track the sloped floor...
-Slope_IsNotFloorShape:
-	.byte $01, $00, $00, $00, $00, $01, $01, $00	; $00-$07
-	.byte $01, $01, $00, $01, $00, $00, $00, $00	; $08-$0F
-	.byte $01, $01, $01, $01, $01			; $10-$14
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_GetTileAndSlope
@@ -5280,6 +5166,9 @@ PushFull:
 
 PRG008_BD73:
 	LDA <Temp_Var1
+	CMP #TILE_ITEM_COIN
+	BCS PRG008_BDB1
+	AND #$0F
 	CMP #TILE_PROP_HARMFUL
 	BNE PRG008_BDB1	
  
@@ -5950,4 +5839,45 @@ Player_Events:
 	JSR PRGROM_Change_C000 
 
 Player_EventsRTS:
+	RTS
+
+Player_Refresh:
+	LDA <Pad_Holding
+	AND #(PAD_A | PAD_B)
+	BEQ Player_RefreshRTS
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ Player_RefreshRTS
+	INC Level_JctCtl
+	INC Level_Redraw
+	LDA Player_XHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA TempA
+	LDA Player_X
+	AND #$0F
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA TempA
+	STA Player_XExit
+	LDA Player_YHi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA TempA
+	LDA Player_Y
+	AND #$0F
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA TempA
+	STA Player_YExit
+
+Player_RefreshRTS:
 	RTS
