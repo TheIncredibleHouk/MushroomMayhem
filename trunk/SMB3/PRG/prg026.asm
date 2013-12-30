@@ -2194,68 +2194,7 @@ PRG026_AF9C:
 ; the current time remaining; also updates the clock
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Fill_Time:
-	LDA Level_Tileset
-	BEQ Timer_NoChange	 ; If Level_Tileset = 0, jump to Timer_NoChange (no timer on map EVER)
-	CMP #15	 
-	BGE Timer_NoChange	 ; If Level_Tileset >= 15, jump to Timer_NoChange
-	LDA Level_TimerEn
-	AND #$7f	 	; Only checking the timer disable here
-	ORA Player_InPipe 	; ... or if Player is in pipe
-	BNE Timer_NoChange 	; If set, timer is disabled!  Jump to Timer_NoChange
 
-	DEC Level_TimerTick	; Level_TimerTick--
-	BPL Timer_NoChange	; If Level_TimerTick >= 0, jump to Timer_NoChange
-
-	; Reload Level_TimerTick
-	LDA #$28
-	STA Level_TimerTick	 ; Level_TimerTick = $28
-
-	DEC Level_TimerLSD	; Level_TimerLSD--
-	BPL PRG026_AFDC	 	; If it hasn't rolled over, jump to PRG026_AFDC
-
-	; LSD rolled over!
-	LDA #$09	 	
-	STA Level_TimerLSD	; Level_TimerLSD = 9
-	DEC Level_TimerMid	; Level_TimerMid--
-	BPL PRG026_AFDC	 	; If it hasn't rolled over, jump to PRG026_AFDC
-
-	; Mid rolled over!
-	STA Level_TimerMid	; Level_TimerMid = 9
-	DEC Level_TimerMSD	; Level_TimerMSD--
-	BPL PRG026_AFDC	 	; If it hasn't rolled over, jump to PRG026_AFDC
-
-	; At expiration of MSD, we're out of time!  Zero everybody!
-	LDA #$00	 	
-	STA Level_TimerMSD
-	STA Level_TimerMid
-	STA Level_TimerLSD
-
-PRG026_AFDC:
-	LDA Level_TimerMSD	
-	CMP #$01	 	
-	BNE Timer_NoChange	; If Level_TimerMSD <> 1, jump to Timer_NoChange
-
-	; MSD is 1...
-	LDA Level_TimerMid
-	ORA Level_TimerLSD
-	BNE Timer_NoChange	; If !(Level_TimerMid == 0 && Level_TimerLSD == 0), jump to Timer_NoChange
-
-	; Time is running out!
-	LDA #MUS1_TIMEWARNING	 
-	STA Sound_QMusic1	; Queue low-time warning music!
-Timer_NoChange:
-	; For all 3 digits of time, write their tiles...
-	LDX #$02	 	; X = 2
-PRG026_AFF2:
-	LDA Status_Bar_Mode
-	BNE No_Time
-	LDA Level_TimerMSD,X	; Get digit
-	ORA #$30	 	; Offset as tile
-	STA Status_Bar_Bottom + 15,X	; Store it into StatusBar_Time
-	DEX		 	; X--
-	BPL PRG026_AFF2	 	; While X >= 0, loop!
-
-No_Time:
 	RTS		 ; Return
 
 
@@ -2523,62 +2462,25 @@ PRG026_B13E:
 PRG026_B156:
 	.byte $2B, $48, $06, $00, $00, $00, $00, $00, $00, $00 
 
-
-Exp_Levels:
-	.byte $00, $00, $00, $00, $01, $00, $00, $01 ; level 1
-	.byte $00, $00, $00, $00, $01, $00, $00, $02 ; level 2
-	.byte $00, $00, $00, $00, $01, $00, $00, $03 ; level 3
-	.byte $00, $00, $00, $00, $01, $00, $00, $04 ; level 4
-	.byte $00, $00, $00, $00, $01, $00, $00, $05 ; level 5
-	.byte $00, $00, $00, $00, $01, $00, $00, $06 ; level 6
-	.byte $00, $00, $00, $00, $01, $00, $00, $07 ; level 7
-	.byte $00, $00, $00, $00, $01, $00, $00, $08 ; level 8
-	.byte $00, $00, $00, $00, $01, $00, $00, $09 ; level 9
-
 StatusBar_Fill_Exp:
-	LDA (Exp_Earned + 2)
-	ORA (Exp_Earned + 1)
-	ORA Exp_Earned
+	LDA Exp_Earned
 	BEQ Exp_Done
-	JSR Clear_Calc
+	DEC Exp_Earned
 	LDX #$05
 
-Fill_Exp:
+IncExpMore:
+	INC Player_Experience, X
 	LDA Player_Experience, X
-	STA (Calc_From + 2), X
-	DEX
-	BPL Fill_Exp
-	LDX #$02
-
-Fill_Exp_Earned:
-	LDA Exp_Earned, X
-	STA Calc_Value + 5, X
-	DEX
-	BPL Fill_Exp_Earned
-	JSR Add_Values
-	LDA Calc_From + 1
-	BEQ Exp_Loop
-	LDX #$05
-	LDA #$09
-
-Max_Exp:
-	STA Player_Experience,X
-	DEX
-	BPL Max_Exp
-	BMI Try_Update
-
-Exp_Loop:
-	LDX #$05
-
-Exp_Loop2:
-	LDA (Calc_From + 2), X
+	CMP #$0A
+	BCC Try_Update
+	LDA #$00
 	STA Player_Experience, X
 	DEX
-	BPL Exp_Loop2
+	BPL IncExpMore
 
 Try_Update:
 	LDA Status_Bar_Mode
-	BNE Dont_Draw_Exp
+	BNE Exp_Done
 
 Exp_Update:
 	LDX #$05
@@ -2590,51 +2492,9 @@ Exp_Loop3:
 	DEX
 	BPL Exp_Loop3
 
-Dont_Draw_Exp:
-	LDA #$00
-	STA Exp_Earned
-	STA Exp_Earned + 1
-	STA Exp_Earned + 2
-	JSR Check_Exp_Level
 Exp_Done:
 	RTS		 ; Return
 
-
-Check_Exp_Level:
-	LDA Player_Level
-	LDA #$00
-	BEQ No_New_Ability
-	JSR Clear_Calc
-	LDA Player_Level
-	ASL A
-	ASL A
-	ASL A
-	TAX
-	LDY #$05
-
-Store_Ex2:
-	LDA Player_Experience, Y
-	STA (Calc_From + 2), Y
-	DEY
-	BPL Store_Ex2
-	LDY #$00
-
-Store_Exp_Check:
-	LDA Exp_Levels, X
-	STA Calc_Value, Y
-	INX
-	INY
-	CPY #$08
-	BNE Store_Exp_Check
-	JSR Subtract_Values
-	LDA Calc_From
-	BMI No_New_Ability
-	LDA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-	INC Player_Level
-
-No_New_Ability:
-	RTS
 
 Ability_Tiles1:
 	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F, $6C, $6D
@@ -3069,8 +2929,6 @@ StatusBar_UpdateValues:
 No_Switch:
 	JSR Do_Odometer
 	JSR Draw_DayNightMeter
-	JSR Draw_Game_Timer
-	JSR Draw_DayNightMeter
 	JSR Draw_HBros_Coin
 	JSR Initialize_Status_Bar
 	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
@@ -3209,7 +3067,7 @@ LevelLoad_CopyObjectList:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $48, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $D6, $30, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
 	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
 
 Initial_Bar_Display2:
@@ -3310,55 +3168,44 @@ Draw_HBros_Coin:
 	LDA Status_Bar_Mode
 	BNE No_HBros_Update
 	LDA Magic_Stars
-	AND #$0F
+	JSR ToThreeDigits
+	LDX #$02
+
+MS_Next_Digit:
+	LDA <Temp_Var1, X
 	ORA #$30
-	STA Status_Bar_Top + 17
-	LDA Magic_Stars
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA #$30
-	STA Status_Bar_Top + 16
+	STA Status_Bar_Top + 15, X
+	DEX
+	BPL MS_Next_Digit
+	
 	JSR GetLevelBit
-	AND Magic_Stars_Collected, Y
-	BNE CoinCollected
-	LDA #$FE
-	BNE DrawCoinNotCollected
-CoinCollected:
-	LDA #$D0
-DrawCoinNotCollected:
-	STA Status_Bar_Top + 14
+	LDA #$D6
+	LDX Magic_Stars_Collected1, Y
+	BEQ Draw_Game_Timer1
+	ORA #$01
+
+Draw_Game_Timer1:
+	STA Status_Bar_Bottom + 15
+	LDA #$D6
+	LDX Magic_Stars_Collected2, Y
+	BEQ Draw_Game_Timer2
+	ORA #$01
+
+Draw_Game_Timer2:
+	STA Status_Bar_Bottom + 16
+	LDA #$D6
+	LDX Magic_Stars_Collected3, Y
+	BEQ Draw_Game_Timer3
+	ORA #$01
+
+Draw_Game_Timer3:
+	STA Status_Bar_Bottom + 17
+
 No_HBros_Update:
 	RTS
 
-
-Draw_Game_Timer:
-	LDA Status_Bar_Mode
-	BEQ DontDraw_Game_Timer
-	LDA Game_Timer + 5
-	ORA #$30
-	STA Status_Bar_Top + 17
-	LDA Game_Timer + 4
-	ORA #$30
-	STA Status_Bar_Top + 16
-	LDA Game_Timer + 3
-	ORA #$30
-	STA Status_Bar_Top + 14
-	LDA Game_Timer + 2
-	ORA #$30
-	STA Status_Bar_Top + 13
-	LDA Game_Timer + 1
-	ORA #$30
-	STA Status_Bar_Top + 11
-	LDA Game_Timer
-	ORA #$30
-	STA Status_Bar_Top + 10
-
-DontDraw_Game_Timer:
-	RTS
-
+DayNightIcon:
+	.byte $D8, $D9
 DayNightTiles:
 	.byte $60, $74, $61, $74, $62, $74, $63, $74, $64, $65, $66, $67, $70, $71, $72, $73, $74, $60, $74, $61, $74, $62, $74, $63
 
@@ -3366,13 +3213,21 @@ Draw_DayNightMeter:
 	LDA Status_Bar_Mode
 	CMP #$00
 	BNE NoDayNightMeter
+	LDX #$00
+	LDA DayNight
+	BPL Draw_DayNightMeter2
+	INX
+
+Draw_DayNightMeter2:
+	LDA DayNightIcon, X
+	STA Status_Bar_Bottom + 19
 	LDA DayNightTicker
 	ASL A
 	TAX
 	LDA DayNightTiles, X
-	STA Status_Bar_Bottom + 19
-	LDA DayNightTiles + 1,X
 	STA Status_Bar_Bottom + 20
+	LDA DayNightTiles + 1,X
+	STA Status_Bar_Bottom + 21
 
 NoDayNightMeter: 
 	RTS

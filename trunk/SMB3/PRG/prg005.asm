@@ -3896,30 +3896,6 @@ PRG005_B872:
 	RTS		 ; Return
 
 PRG005_B873:
-	LDA Level_Objects + 1, Y
-	AND #$60
-	BEQ PRG005_B877
-
-	CMP #HARD_FLAG
-	BNE PRG005_B875
-
-	LDA Hard_Mode
-	BNE PRG005_B877
-	JMP PRG005_B863
-
-PRG005_B875:
-	CMP #DAY_FLAG
-	BNE PRG005_B876
-	LDA DayNight
-	BEQ PRG005_B877
-	JMP PRG005_B863
-
-PRG005_B876:
-	LDA DayNight
-	BNE PRG005_B877
-	JMP PRG005_B863
-
-PRG005_B877:
 	LDA Level_Objects-1,Y	 ; Get object ID (we're aligned by column, hence -1)
 	CMP #$ff	 
 	BEQ PRG005_B872	 ; If this is the terminator, jump to PRG005_B872 (RTS)
@@ -4037,14 +4013,8 @@ PRG005_B909:
 	; spawn into slot 6, regardless of what was there previously.
 	; (Normal objects are in lower slots so this generally should
 	; not be too noticeable.)
-	CMP #OBJ_ENDLEVELCARD
-	BNE PRG005_B911	 ; If object ID <> OBJ_ENDLEVELCARD, jump to PRG005_B911
-
-	LDX #$06	 ; X = 6
-	BNE PRG005_B91E	 ; Jump (technically always) to PRG005_B91E (skip looking for empty slot, force 6)
-
-PRG005_B911:
 	LDX #$04	 ; X = 4
+
 PRG005_B913:
 	LDA Objects_State,X	
 	BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
@@ -4061,6 +4031,15 @@ PRG005_B91E:
 	STA <Objects_XHi,X
 
 	INY		 ; Y++ (different way of getting at row, I guess)
+
+	LDA Level_Objects,Y
+	AND #$E0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Property, X
 
 	; Upper 4 bits shifted right (high Y)
 	LDA Level_Objects,Y	 ; Get object row

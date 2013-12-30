@@ -1885,9 +1885,9 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 				.ds 1	; $069B unused
 
-	Exp_Earned:		.ds 3	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
-						.ds 5	;
-
+	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
+						.ds 2	;
+	Objects_Property:		.ds 5
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
 	Player_ISHolding_OLD:	.ds 1	; Holds onto whether Player WAS holding onto something (so we can be sure to clear Player_IsHolding)
 
@@ -3010,7 +3010,9 @@ SOBJ_POOF		= $16 	; Poof
 	Pointers:			.ds 60	;
 	UseAltEntrance:		.ds 1
 	WorldWidth:			.ds 1
-	Magic_Stars_Collected:  .ds 32 ;
+	Magic_Stars_Collected1: .ds 16 ;
+	Magic_Stars_Collected2:	.ds 16
+	Magic_Stars_Collected3:	.ds 16
 	World_Complete_Tiles: .ds 16	;
 	StarLevel:			.ds 1
 	MiscValue1:			.ds 1
@@ -3024,9 +3026,9 @@ SOBJ_POOF		= $16 	; Poof
 	Hard_Mode:			.ds 1;
 
 	; Tile map property flags
-MAP_PROP_ENTERABLE:		= %00000001
-MAP_PROP_TRAVERSABLE:	= %00000010
-MAP_PROP_COMPLETABLE:	= %00000100
+MAP_PROP_TRAVERSABLE	= $01
+MAP_PROP_ENTERABLE		= $02
+MAP_PROP_COMPLETABLE	= $03
 	; Tile Property Flags
 	; TSWF XXXX
 	; T - Top Solid
@@ -3102,7 +3104,7 @@ TILE_ITEM_SPINNER	= $FE
 	BankCoins:			.ds 6 ;
 	TileCheckX:			.ds 1
 	TileCheckXHi:		.ds 1
-						.ds 66;
+						.ds 50;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

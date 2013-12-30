@@ -1300,7 +1300,7 @@ PRG007_A6EC:
 	BEQ ICE_BALL_SKIP1
 	
 Kill_Enemy_Anyway:
-	INC (Exp_Earned + 2)
+	INC Exp_Earned
 
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 

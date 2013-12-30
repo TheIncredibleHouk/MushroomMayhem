@@ -1576,8 +1576,8 @@ MO_DoLevelClear:
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 	TAY
 	LDA TileProperties, Y
-	AND #MAP_PROP_COMPLETABLE
-	BNE PRG011_AA19
+	CMP #MAP_PROP_COMPLETABLE
+	BEQ PRG011_AA19
 
 DoNotClear:
 	LDA #$0D

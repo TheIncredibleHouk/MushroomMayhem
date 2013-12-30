@@ -1382,3 +1382,387 @@ LL19_ReturnTileAndNextRow:
 
 ; Rest of ROM bank was empty!
 
+
+BossFight:
+	
+	LDA World_Num
+	JSR DynJump
+
+	.word World0Boss
+	.word World1Boss
+
+CCPause:
+World0Boss:
+	RTS
+
+GiantCheepPatterns:
+	.byte $8D, $8F, $91, $93, $AD, $AF, $B1, $B3
+	.byte $8D, $8F, $95, $97, $AD, $AF, $B5, $B7
+
+World1Boss:
+	
+	LDA <Player_HaltGame
+	BNE DrawGiantCheep
+	
+	LDA <Counter_1
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+	JSR DrawGiantCheep
+	LDA Objects_Var2, X
+	CMP #$03
+	BCS CCNoMove
+	JSR Object_ApplyXVel
+
+CCNoMove:
+	LDA Objects_SlowTimer, X
+	BEQ World1BossDoAction
+	RTS
+
+World1BossDoAction:
+	LDA Objects_Var1, X
+	JSR DynJump
+
+	.word CCSwim
+	.word CCJump
+	.word CCBounce
+	.word CCFlood1
+	.word CCFlood2
+	.word CCFlood3
+	.word CCSwim2
+	.word CCDrain1
+	.word CCDrain2
+	.word CCDrain3
+	.word CCExplode
+	.word CCEnd
+
+
+DrawGiantCheep:
+	LDA #$1B
+	STA PatTable_BankSel + 4
+	LDA #SPR_PAL1
+	STA Objects_SprAttr, X
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE DrawGiantCheep1
+	LDA <Counter_1
+	AND #$04
+	BEQ DrawGiantCheep1
+	LDA #SPR_PAL3
+	STA Objects_SprAttr, X
+
+DrawGiantCheep1:
+	LDA #LOW(GiantCheepPatterns)
+	STA <Temp_Var10
+	LDA #HIGH(GiantCheepPatterns)
+	STA <Temp_Var11
+	LDA #SPR_BEHINDBG
+	ORA Objects_SprAttr, X
+	STA Objects_SprAttr, X
+	JSR DrawGiantObject
+	RTS
+
+CCXPositions:
+	.byte $C0, $10
+	.byte $FF, $01
+
+CCVelocities:
+	.byte $20, $E0
+
+CCTimers:
+	.byte $68, $18
+
+CCNextAction:
+	.byte $01, $02
+
+CCHFlip:
+	.byte SPR_HFLIP, $00
+
+CCSwimY:
+	.byte $90, $82, $74, $66, $48, $3A, $2C, $1E 
+
+CCSwim2:
+	JSR CCSwim
+	LDA #$06
+	STA Objects_Var1, X
+	LDA #$68
+	STA Objects_SlowTimer, X
+	LDA RandomN + 3
+	AND #$07
+	TAY
+	LDA CCSwimY, Y
+	STA Objects_Y, X
+	DEC Objects_Var4, X
+	BNE CCSwim2_2
+	LDA #$07
+	STA Objects_Var1, X
+
+CCSwim2_2:	
+	JSR FindEmptyEnemySlot
+	LDA RandomN + 2
+	STA Objects_X, X
+	LDA #$00
+	STA Objects_XHi, X
+	STA Objects_YHi, X
+	STA Objects_Var1, X
+	LDA #$90
+	STA Objects_Y, X
+	LDA #OBJ_BUBBLE
+	STA Level_ObjectID, X
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	LDA #$F8
+	STA Objects_YVel, X
+	RTS
+	
+CCSwim:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE CCSwim1
+	LDA #$03
+	STA Objects_Var1, X
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	INC Objects_Var2, X
+	LDA #$20
+	STA Objects_SlowTimer, X
+	LDX #$03
+	JSR KeepDestroying
+	RTS
+
+
+CCSwim1:
+	LDA RandomN
+	AND #$01
+	TAY
+	LDA CCXPositions, Y
+	STA <Objects_X, X
+	LDA CCXPositions + 2, Y
+	STA <Objects_XHi, X
+	LDA CCVelocities, Y
+	STA <Objects_XVel, X
+	LDA CCHFlip, Y
+	STA Objects_FlipBits, X
+	LDA #$00
+	STA <Objects_YHi, X
+	LDA #$98
+	STA <Objects_Y, X
+	LDA RandomN
+	AND #$10
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA CCTimers, Y
+	STA Objects_SlowTimer, X
+	TYA
+	STA Objects_Var1, X
+	LDA #$00
+	STA Objects_Var3, X
+	RTS
+
+CCJump:
+	LDA #$B0
+	STA Objects_YVel, X
+	LDA #$02
+	STA Objects_Var1, X
+	RTS
+
+CCBounce:
+	LDA Objects_Var2, X
+	CMP #$02
+	BNE CCBounce1
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE CCBounce1
+	LDA #$0A
+	STA Objects_Var1, X
+	LDA #$20
+	STA Objects_SlowTimer, X
+	INC Objects_Var2, X
+	LDX #$03
+	JSR KeepDestroying
+	RTS
+
+CCBounce1:
+	LDA Objects_SprHVis,X
+	CMP #$F0
+	BNE CCBounce2
+	LDA #$10
+	STA Objects_SlowTimer, X
+	LDA #$00
+	STA Objects_Var1, X
+	RTS
+
+CCObjects:
+	.byte OBJ_BRICK, OBJ_GREENTROOPA, OBJ_POWERUP_MUSHROOM, OBJ_GOOMBA
+
+CCBounce2:
+	JSR Object_ApplyY_With_Gravity
+	LDA Objects_YVel, X
+	BMI CCBounceRTS
+	LDY #(SuperGiantOffsets1  - Object_TileDetectOffsets)
+	INY
+	INY
+	JSR Object_DetectTile
+	AND #TILE_PROP_SOLID_TOP
+	BEQ CCBounceRTS
+
+	LDA #$C0
+	STA Objects_YVel, X
+
+	LDA #$18
+	STA Level_Vibration
+
+	; Ba-bam! sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA Objects_Var3, X
+	BNE CCBounceRTS
+	INC Objects_Var3, X
+
+	LDA Objects_Var2, X
+	STA <Temp_Var3
+
+CCAnother_Object:
+	LDY <Temp_Var3
+	LDA RandomN, Y
+	STA <Temp_Var1
+	LDA RandomN + 4, Y
+	AND #$03
+	STA <Temp_Var2
+	JSR FindEmptyEnemySlot
+	TXA
+	TAY
+	LDA <Temp_Var1
+	AND #$F0
+	STA Objects_X, Y
+	LDA #$00
+	STA Objects_XHi, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State,Y
+	LDA #$00
+	STA Objects_Y, Y
+	STA Objects_YHi, Y
+
+	LDX <Temp_Var2
+	LDA CCObjects ,X
+	STA Level_ObjectID, Y
+	DEC <Temp_Var3
+	BPL CCAnother_Object
+
+CCBounceRTS:
+	RTS
+
+
+CCXFloodOffset:
+	.byte $FC, $F8, $F4, $FC, $F8, $F4, $FC, $F8, $F4
+
+CCYFloodStages:
+	.byte $80, $70, $60, $50, $40, $30, $20, $10, $00
+
+CCDrain1:
+CCFlood1:
+	LDA #$00
+	STA <Temp_Var1
+	INC Objects_Var1, X
+	JMP CCFlood
+
+CCDrain2:
+CCFlood2:
+	LDA #$03
+	STA <Temp_Var1
+	INC Objects_Var1, X
+	JMP CCFlood
+
+CCFlood3:
+	LDA #$06
+	STA <Temp_Var1
+	LDA #$06
+	STA Objects_Var1, X
+	LDA Objects_Var2, X
+	STA Objects_Var4, X
+	JMP CCFlood
+
+CCDrain3:
+	LDA #$06
+	STA <Temp_Var1
+	LDA #$00
+	STA Objects_Var1, X
+	JMP CCFlood
+
+CCFlood:
+	LDA #$02
+	STA <Temp_Var2
+	LDY <Temp_Var1
+
+CreateFlood:
+	JSR FindEmptyEnemySlot
+	LDA #OBJ_WATERFILLER
+	STA Level_ObjectID, X
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	LDA #SPR_PAL2
+	STA Objects_SprAttr, X
+	LDA #$40
+	STA Objects_XVel, X
+	LDA CCYFloodStages, Y
+	STA <Objects_Y, X
+	LDA #$00
+	STA <Objects_YHi, X 
+	STA Objects_FlipBits, X
+	STA Objects_Var1, X
+	STA Objects_Frame, X
+	LDA #$FF
+	STA <Objects_XHi, X
+	LDA CCXFloodOffset, Y
+	STA <Objects_X, X
+	INY
+	DEC <Temp_Var2
+	BPL CreateFlood
+	LDA #$28
+	LDX <SlotIndexBackup
+	STA Objects_SlowTimer, X
+	LDA #SND_LEVELAIRSHIP
+	ORA Sound_QLevel2
+	STA Sound_QLevel2
+	RTS
+
+CCExplode
+	JSR FindEmptyEnemySlot
+	TXA
+	TAY
+	LDX <SlotIndexBackup
+	LDA #OBJ_BOBOMBEXPLODE
+	STA Level_ObjectID, Y
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State, Y
+	LDA Objects_X, X
+	ADD #$08
+	STA Objects_X, Y
+	LDA Objects_XHi, X
+	ADC #$00
+	STA Objects_XHi, Y
+	LDA Objects_Y, X
+	ADD #$08
+	STA Objects_Y, Y
+	LDA Objects_YHi, X
+	ADC #$00
+	STA Objects_YHi, Y
+	LDA #20
+	STA Objects_SlowTimer, X
+	LDA #$02
+	STA Objects_XHi, X
+	INC Objects_Var1, X
+	RTS
+
+CCEnd:
+	LDA #$80
+	STA CompleteLevelTimer
+	RTS

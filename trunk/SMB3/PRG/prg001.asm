@@ -271,7 +271,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE  	; Object $14
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $15
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $15
 	.byte OA3_HALT_DONOTHING4 	; Object $16
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $17 - OBJ_SPINYCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $18 - OBJ_BOSS_BOWSER
@@ -301,7 +301,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_BRICK
 	.byte OPTS_NOCHANGE	; Object $08 - OBJ_COIN
-	.byte OPTS_SETPT5 | $1A	; Object $09 - OBJ_BUBBLE
+	.byte OPTS_NOCHANGE	; Object $09 - OBJ_BUBBLE
 	.byte OPTS_SETPT5 | $0B	; Object $0A - OBJ_BULLY
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
@@ -355,7 +355,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $12
 	.byte KILLACT_STANDARD	; Object $13
 	.byte KILLACT_STANDARD	; Object $14
-	.byte KILLACT_STANDARD	; Object $15
+	.byte KILLACT_NORMALSTATE	; Object $15
 	.byte KILLACT_STANDARD	; Object $16
 	.byte KILLACT_JUSTDRAW16X16	; Object $17 - OBJ_SPINYCHEEP
 	.byte KILLACT_NORMALSTATE	; Object $18 - OBJ_BOSS_BOWSER
@@ -1114,7 +1114,7 @@ ObjHit_Bully:
 	STA Sound_QPlayer
 
 	; 100 points pop up
-	INC (Exp_Earned + 2)
+	INC Exp_Earned
 	RTS 
 
 Do_Knock_Back:
@@ -1401,7 +1401,7 @@ PRG001_A8AB:
 PUp_GeneralCollect:
 	JSR PowerUp_PlaySound	 ; Play Power Up sound
 	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State + 5	 ; Set power-up to dead/empty
+	STA Objects_State, X	 ; Set power-up to dead/empty
 
 	RTS		 ; Return
 
@@ -5598,7 +5598,9 @@ DoGCRoutine:
 	JMP ChompDoneEating
 
 TryEatRightBlock:
-	LDY #(SuperGiantOffsets2  - Object_TileDetectOffsets)
+	LDY #(SuperGiantOffsets1  - Object_TileDetectOffsets)
+	INY
+	INY
 	JSR Object_DetectTile
 	AND #TILE_PROP_SOLID_TOP
 	BEQ ChompDoneEating

@@ -3114,6 +3114,7 @@ TDiagBox_R3:	.byte $DC, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $
 TDiagBox_RowOffs:
 	.byte (TDiagBox_R1 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
 	.byte (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R3 - TDiagBox_R1)
+
 TDiagBox_RowOffs_End
 
 Toad_DrawDiagBox:
