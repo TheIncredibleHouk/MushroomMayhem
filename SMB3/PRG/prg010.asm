@@ -2511,8 +2511,8 @@ PRG010_CDEC:
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 
 	LDA <World_Map_Prop
-	AND #MAP_PROP_ENTERABLE
-	BEQ PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
+	CMP #MAP_PROP_TRAVERSABLE
+	BCC PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
 
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)
@@ -2661,11 +2661,10 @@ PRG010_CEBF:
 	BEQ PRG010_CEE1	 	; If Player is not pressing 'A', jump to PRG010_CEE1
 
 PRG010_CEC9:
-
 	; What makes other tiles (e.g. standard panels) work...
 	LDA <World_Map_Prop
-	AND #MAP_PROP_ENTERABLE
-	BEQ PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
+	CMP #MAP_PROP_ENTERABLE
+	BCS PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
 
 PRG010_CEE1:		
 	JMP WorldMap_UpdateAndDraw	; Jump to WorldMap_UpdateAndDraw

@@ -1751,57 +1751,23 @@ Title_DoState:
 	LDA #$00
 	STA <Title_ObjMLQueue
 	STA <Title_ObjMLQueue+1
+	STA Total_Players
 
 	LDA <Title_State	
 	JSR DynJump	 	; Dynamically jump based on Title_State...
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word TitleState_CurtainRaise		; 00 - Curtain raise
-	.word TitleState_OpeningSequence	; 01 - Opening sequence (updates Mario/Luigi's action scripts, the title screen objects, makes the big '3' glow...)
-	.word Title_PrepForMenu			; 02 - Prepares some variables before going into 1P/2P menu mode
-	.word Title_Do1P2PMenu			; 03 - Runs the 1P/2P menu with the koopas
+	.word Title_PrepForWorldMap		; 00 - Curtain raise
+	.word Title_PrepForWorldMap	; 01 - Opening sequence (updates Mario/Luigi's action scripts, the title screen objects, makes the big '3' glow...)
+	.word Title_PrepForWorldMap			; 02 - Prepares some variables before going into 1P/2P menu mode
+	.word Title_PrepForWorldMap			; 03 - Runs the 1P/2P menu with the koopas
 	.word Title_PrepForWorldMap		; 04 - Final data initialization before going to world map
-	.word Title_DoNothing			; 05 - just RTS, bootstraps world map
-	.word Title_IntroSkip			; 06 - Skip intro sequence (cleanly jump to 1P/2P menu)
-	.word Title_DebugMenu			; 07 - Debug menu
+	.word Title_PrepForWorldMap			; 05 - just RTS, bootstraps world map
+	.word Title_PrepForWorldMap			; 06 - Skip intro sequence (cleanly jump to 1P/2P menu)
+	.word Title_PrepForWorldMap			; 07 - Debug menu
 
 TitleState_CurtainRaise:
-	LDY #$01	 	; Y = 1
 
-PRG024_A9D1:
-	; Moving curtain up...
-	INC <Vert_Scroll	; Vert_Scroll++
-	LDA <Vert_Scroll	
-	CMP #208
-	BEQ Title_LoadGraphics	 	; If Vert_Scroll = 208, jump to Title_LoadGraphics
-
-	; Still haven't risen all the way...
-
-	CMP #78	 		
-	BNE PRG024_A9E4	 	; If Vert_Scroll <> 78, jump to PRG024_A9E4
-
-	; Special stuff when curtain (Vert_Scroll) hits 78
-	LDA #$40
-	STA <Title_ObjMLStop	; Title_ObjMLStop = $40 (holds Mario/Luigi in place at first so they get a "running start")
-	STA Title_MLHoldTick 	; Title_MLHoldTick = $40 (ticks until they are released)
-
-PRG024_A9E4:
-	DEY		 ; Y--
-	BPL PRG024_A9D1	 ; If Y >= 0, jump to PRG024_A9D1
-
-	LDA <Title_ObjMLStop
-	BEQ PRG024_A9EE	 	; If Title_ObjMLStop = 0, jump to PRG024_A9EE (i.e. don't call Title_UpdateAllObjs)
-	JSR Title_UpdateAllObjs	; Update all objects!
-
-PRG024_A9EE:
-	LDA <Pad_Input
-	AND #PAD_START
-	BEQ PRG024_A9F8	 ; If Player is NOT pressing start, jump to PRG024_A9F8 (RTS)
-
-	LDA #$06	 
-	STA <Title_State ; Title_State = 6 (skip intro)
-
-PRG024_A9F8:
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2402,16 +2368,16 @@ PRG024_ACA5:
 	STA Air_Time
 	STA Tile_Anim_Enabled
 
-	LDX #$00
-	LDY #$01
-
-FillItemsLoop:
-	TYA
-	STA Inventory_Items, X
-	INX
-	INY
-	CPX #28
-	BNE FillItemsLoop
+;	LDX #$00
+;	LDY #$01
+;
+;FillItemsLoop:
+;	TYA
+;	STA Inventory_Items, X
+;	INX
+;	INY
+;	CPX #28
+;	BNE FillItemsLoop
 
 PRG024_ACBA:
 	RTS		 ; Return

@@ -1796,4 +1796,3 @@ LoadLevel_18UNK_B:
 	.include "PRG/levels/WatToPM.asm"
 
 ; Rest of ROM bank was unused
-

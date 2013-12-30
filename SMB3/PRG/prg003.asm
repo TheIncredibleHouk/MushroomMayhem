@@ -1942,6 +1942,8 @@ BobOmb_CalcULOffXY:
 	STA <Temp_Var8
 
 	RTS		 ; Return
+MagicStarOffset:
+	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
 
@@ -1949,14 +1951,19 @@ ObjNorm_MagicStar:
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
 
-	; #DAHRKDAIZ this little diddy will set a bit basted on the X/Y  position of the coin when it's collected
-	; the Y's postion hi end will be where in the Magic_Stars_Collected of 16 bytes we index into
-	; the X's position hi end will be what bit is set
-	; once a bit is set, the coin will not reproduce
+	STA Debug_Snap
 	JSR Increase_Magic_Stars
 	JSR GetLevelBit
-	ORA Magic_Stars_Collected, Y
-	STA Magic_Stars_Collected, Y
+	STA <Temp_Var1
+	STY <Temp_Var2
+	LDA Objects_Property, X
+	TAY
+	LDA <Temp_Var2
+	ADD MagicStarOffset, Y
+	TAY
+	LDA <Temp_Var1
+	ORA Magic_Stars_Collected1, Y
+	STA Magic_Stars_Collected1, Y
 	JSR Object_Delete
 PRG003_A92D:
 	RTS
@@ -1964,7 +1971,15 @@ PRG003_A92D:
 ObjInit_MagicStar:
 
 	JSR GetLevelBit
-	AND Magic_Stars_Collected, Y
+	STA <Temp_Var1
+	STY <Temp_Var2
+	LDA Objects_Property, X
+	TAY
+	LDA <Temp_Var2
+	ADD MagicStarOffset, Y
+	TAY
+	LDA <Temp_Var1
+	AND Magic_Stars_Collected1, Y
 	BEQ Dont_Kill_Star
 
 Kill_Star:

@@ -3105,6 +3105,30 @@ SkipDestroy:
 	STA Level_Event
 	RTS
 
+SubOffset:
+	.byte 100, 10, 1
+
+ToThreeDigits:
+	STA <Temp_Var4
+	LDX #$00
+	STX <Temp_Var1
+	STX <Temp_Var2
+	STX <Temp_Var3
+
+NextSub:
+	LDA <Temp_Var4
+	SUB SubOffset, X
+	BCC IncX
+	INC <Temp_Var1, X
+	STA <Temp_Var4
+	BCS NextSub
+
+IncX:
+	INX
+	CPX #$03
+	BNE NextSub
+	RTS
+	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; DynJump
 ;
@@ -3439,14 +3463,6 @@ PRGROM_Change_C000:	; $FFD1
 	STA MMC3_PAGE			; Set MMC3 page
 	RTS				; Return
 
-
-	.byte $FF, $FF, $FF
-
-	; A marker of some kind? :)
-	.byte "SUPER MARIO 3"
-
-	; Signature?
-	.byte $00, $00, $6C, $56, $03, $00, $01, $0C, $01, $2D
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $FFFA
 .Bound_FFFA:	BoundCheck .Bound_FFFA, $FFFA, PRG031: Vector space

@@ -944,4 +944,3 @@ LL17_ReturnTileAndNextRow:
 	.include "PRG/levels/High&Ice.asm"
 
 ; Rest of ROM bank was empty
-

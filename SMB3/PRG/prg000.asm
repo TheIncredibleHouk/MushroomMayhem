@@ -139,14 +139,13 @@ Platform_Extended_Check:
 	; Group 11
 	;       Y    X
 SuperGiantOffsets1:
-	.byte $18, $08	; At feet
-	.byte $18, $08	; At head
+	.byte $20, $08	; At feet
+	.byte $20, $18	; At head
 	.byte $10, $01	; Wall to left
 	.byte $10, $0E	; Wall to right
 
 	; Group 12
 	;       Y    X
-SuperGiantOffsets2:
 	.byte $18, $18	; At feet
 	.byte $18, $18	; At head
 	.byte $23, $01	; Wall to left
@@ -212,7 +211,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $12
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $13
 	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY	; Object $14
-	.byte OAT_BOUNDBOX00	; Object $15
+	.byte OAT_BOUNDBOX09 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $15
 	.byte OAT_BOUNDBOX00	; Object $16
 	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_SPINYCHEEP
 	.byte OAT_BOUNDBOX13	; Object $18 - OBJ_BOSS_BOWSER
@@ -442,16 +441,13 @@ PRG000_C454:
 	; Goes into Exp_Inc, but object index is stored in 'Y'
 	; NOTE: Overwrites 'X' anyway, so be careful!
 Exp_Inc_Lots:
-Exp_Inc:
-	INC Kill_Tally
-	LDA Kill_Tally
-	CMP #$09
-	BEQ DontAddTally
-	CLC
-	ADC (Exp_Earned + 2)
+	LDA Objects_KillTally,X
+	ADD Exp_Earned
+	STA Exp_Earned
+	RTS
 
-DontAddTally:
-	STA (Exp_Earned + 2)
+Exp_Inc:
+	INC Exp_Earned
 	RTS		 ; Return
 
 
@@ -905,7 +901,7 @@ PRG000_C82A:
 
 PRG000_C832:
 	LDA #$00	; No tile detected
-	STA <Level_Tile	; Store tile index detected
+	STA Object_LevelTile	; Store tile index detected
 
 PRG000_C834:
 
@@ -2284,7 +2280,7 @@ PRG000_CE94:
 	CMP #OBJ_KEY
 	BEQ PRG000_CEC6
 	; 1 EXP
-	INC (Exp_Earned + 2)
+	INC Exp_Earned
 
 	; Object state is Killed
 	JSR Exp_Inc	 ; Get proper score award
@@ -2847,6 +2843,7 @@ PRG000_D0A9:
 
 	STA <Objects_XVel,X	 ; Undoes Object_ApplyXVel
 
+Object_ApplyY_With_Gravity:
 	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity without limit
 
 	JSR Object_WorldDetect4	 ; Detect against the world
@@ -2955,7 +2952,7 @@ PRG000_D120:
 	; Held object impacted...
  
 	; 1 EXP for enemy defeated
-	INC (Exp_Earned + 2)
+	INC Exp_Earned
 
 	; Set object state to Killed
 	JSR Exp_Inc	 ; Get proper score award
@@ -3362,7 +3359,7 @@ PRG000_D295:
 
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
-	INC (Exp_Earned + 2)
+	INC Exp_Earned
 
 	RTS		 ; Return
 
@@ -4852,7 +4849,7 @@ Dont_Coin_It9:
 	STA Sound_QPlayer
 
 	; 100 points pop up
-	INC (Exp_Earned + 2)
+	INC Exp_Earned
 
 	JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
 
@@ -6744,7 +6741,7 @@ PRG001_B0F9:
 DoBossFights:
 	LDA PAGE_A000
 	PHA
-	LDA #$10
+	LDA #$13
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JSR BossFight
@@ -6756,11 +6753,11 @@ DoBossFights:
 GiantXFrame:
 	.byte $00, $08, $10, $18, $00, $08, $10, $18
 
-GiantXFrameFlip:
-	.byte $18, $10, $08, $00, $18, $10, $08, $00
-
 GiantYFrame:
 	.byte $00, $00, $00, $00, $10, $10, $10, $10
+
+GiantFlipOffset:
+	.byte $03, $01, $FF, $FD, $03, $01, $FF, $FD
 
 DrawGiantObject:
 	JSR Object_CalcSpriteXY_NoHi
@@ -6769,14 +6766,15 @@ DrawGiantObject:
 	ASL A
 	ASL A
 	STA <Temp_Var6
-	LDA Objects_FlipBits, X
-	AND #SPR_HFLIP
-	STA <Temp_Var16
 
 	LDA Objects_SprHVis, X
 	AND #$F0
 	ORA Objects_SprVVis, X
 	STA <Temp_Var1
+
+	LDA Objects_FlipBits, X
+	AND #SPR_HFLIP
+	STA <Temp_Var16
 
 	LDA #$00
 	STA <Temp_Var2
@@ -6784,8 +6782,6 @@ DrawGiantObject:
 DrawNextGiant:
 	JSR DrawGiantSprite
 	INC <Temp_Var6
-
-DrawNextGiant2:
 	INC <Temp_Var2
 	LDA Object_SprRAM, X
 	ADD #$04
@@ -6798,21 +6794,22 @@ DrawNextGiant2:
 
 DrawGiantSprite:
 	LDY <Temp_Var6
+	LDA <Temp_Var16
+	BEQ DrawGiantSprite1
+
+	LDY <Temp_Var2
+	LDA GiantFlipOffset, Y
+	ADD <Temp_Var6
+	TAY
+
+DrawGiantSprite1:
 	LDA [Temp_Var10], Y
 	STA <Temp_Var3
-
 	LDY <Temp_Var2
 	LDX <SlotIndexBackup
 
-	LDA <Temp_Var16
-	BNE GetXFlip
+	
 	LDA GiantXFrame, Y
-	JMP GiantSetX
-
-GetXFlip:
-	LDA GiantXFrameFlip, Y
-
-GiantSetX:
 	ADD Objects_SpriteX,X
 	STA <Temp_Var4
 

@@ -466,6 +466,7 @@ ObjInit_Waterfill:
 ObjNorm_Waterfill:
 	LDA <Objects_XHi, X
 	BEQ ObjNorm_Waterfill1
+	BMI ObjNorm_Waterfill_RTS
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State, X
 	RTS
@@ -513,7 +514,8 @@ ObjNorm_Waterfill1:
 	STA BrickBust_YVel
 
 FillWater:
-	LDA #$33
+	LDA Object_LevelTile
+	EOR #$01
 	STA Level_ChgTileEvent
 
 	; Set all of the block change coordinates to remove the ice brick
@@ -533,7 +535,12 @@ FillWater:
 
 ObjNorm_Waterfill_RTS:
 	JSR Object_ApplyXVel
-	JMP Object_ShakeAndDraw
+	JSR Object_ShakeAndDraw
+	LDA Object_SprRAM, X 
+	TAX
+	DEC Sprite_RAM, X
+	DEC Sprite_RAM + 4, X
+	RTS
 
 	; A "hammer brother" object has special purpose when 
 	; Player has entered through a enemy battle object
@@ -3172,14 +3179,10 @@ PRG004_B353:
 	.byte $FF, $C0, $80, $60, $40
 
 GroundTroop_XVel:
-	.byte -$08, $08
-	.byte -$06, $06
-	.byte -$05, $05
-
-	.byte $F0, $10, $F4, $0C, $F7, $09
+	.byte $f8, $08
 
 Troopers:
-	.byte OBJ_BLUESPINY, OBJ_PURPLETROOPA, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte OBJ_BLUESPINY, OBJ_PURPLETROOPA
 
 ObjNorm_PoisonMushroom:
 	JSR ObjNorm_GroundTroop
@@ -3187,7 +3190,7 @@ ObjNorm_PoisonMushroom:
 
 ObjNorm_GroundTroop:
 	STY DAIZ_TEMP1
-	LDY #$07
+	LDY #$01
 
 FindTroopers:
 	LDA Level_ObjectID, X
@@ -3218,23 +3221,6 @@ PRG004_B36E:
 	ROL A
 	AND #$01
 	TAY		 ; Y = 0 or 1, depending if horizontally flipped or not
-
-	; Objects_TargetingXVal is set if enemy is hit by a left/right bouncing block
-	LDA Objects_TargetingXVal,X
-	BPL PRG004_B384	 ; If TargetingXVal >= 0, jump to PRG004_B384
-
-	; Otherwise, 'Y' += 2
-	INY
-	INY
-
-	CMP #-$02
-	BNE PRG004_B384	 ; If TargetingXVal <> -2, jump to PRG004_B384 
-
-	; Otherwise, 'Y' += 2
-	INY
-	INY
-
-PRG004_B384:
 
 	; Set proper ground troop X velocity
 	LDA GroundTroop_XVel,Y

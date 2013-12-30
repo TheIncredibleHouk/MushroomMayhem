@@ -4184,7 +4184,7 @@ PRG008_B583:
 	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
 
-	INC Exp_Earned + 2
+	INC Exp_Earned
 	LDA #$00
 	LDY TempY
 
