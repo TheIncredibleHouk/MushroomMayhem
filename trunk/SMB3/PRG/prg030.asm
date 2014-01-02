@@ -4942,7 +4942,7 @@ DontIncVar9:
 	RTS
 
 ClearPointers:
-	LDX #$5F
+	LDX #59
 	LDA #$00
 
 ClearPointerLoop:
@@ -5257,17 +5257,22 @@ DontIncWorldVar2:
 
 
 Try_Replace_Tile:
-	CMP #$20
-	BCC Try_Replace_TileRTS
-	CMP #$30
-	BCS Try_Replace_TileRTS
+	STA DAIZ_TEMP2
+	TAX
+	LDA TileProperties, X
+	CMP #MAP_PROP_COMPLETABLE
+	BNE Try_Replace_TileRTS
+
+	LDA DAIZ_TEMP2
 	JSR MapGetTileBit
 	AND World_Complete_Tiles,X
 	BEQ Try_Replace_TileRTS
-	LDA #$BF
+	LDA DAIZ_TEMP2
+	ORA #$0F
 	STA DAIZ_TEMP2
 
 Try_Replace_TileRTS:
+	LDA DAIZ_TEMP2
 	RTS
 
 

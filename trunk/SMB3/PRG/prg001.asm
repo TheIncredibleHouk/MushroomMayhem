@@ -48,7 +48,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_GiantChomp	; Object $14 OBJ_GIANTCHOMP
 	.word ObjInit_DoNothing	; Object $15
 	.word ObjInit_DoNothing	; Object $16
-	.word ObjInit_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
+	.word ObjInit_DoNothing; Object $17 - OBJ_SPINYCHEEP
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_DoNothing	; Object $1A that is a l
@@ -90,7 +90,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_GiantChomp	; Object $14 OBJ_GIANTCHOMP
 	.word ObjNorm_Boss	; Object $15 OBJ_BOSS
 	.word ObjNorm_DoNothing	; Object $16
-	.word ObjNorm_SpinyCheep; Object $17 - OBJ_SPINYCHEEP
+	.word ObjNorm_PoisonClear; Object $17 - OBJ_SPINYCHEEP
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjNorm_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Obj1A	; Object $1A
@@ -250,7 +250,7 @@ ObjectGroup00_Attributes2:
 
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup00_Attributes3:
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $00
+	.byte OA3_HALT_NORMALONLY 	; Object $00
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $01
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $02
 	.byte OA3_HALT_JUSTDRAWWIDE 	; Object $03
@@ -265,7 +265,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0E - OBJ_BOSS_KOOPALING
-	.byte OA3_TAILATKIMMUNE 	; Object $0F
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
 	.byte OA3_HALT_NORMALONLY 	; Object $10
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_DIESHELLED 	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
@@ -282,7 +282,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_DONOTHING 	; Object $1D
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $1F - OBJ_GROWINGVINE
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $20
+	.byte OA3_HALT_NORMALONLY 	; Object $20
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -540,98 +540,52 @@ ObjNorm_Key:
 	
 	RTS
 
-SpinyCheep_XVel:
-	.byte 8, -8
+PC_MemoryPoints:
+	.word $6000
+	.word $62F7
+	.word $6307
+	.word $6317
+	.word $6327
+	.word $6337
+	.word $6347
+	.word $7000
+	.word $7000
+	.word $7000
 
-ObjInit_SpinyCheep:
-	INC Objects_InWater,X	 ; Set object as in-water
+WorldDoorTiles:
+	.byte $00, $1E
 
-	; Pick the correct X Velocity to chase Player
-	JSR Level_ObjCalcXDiffs
-	LDA SpinyCheep_XVel,Y
-	STA <Objects_XVel,X
+ObjNorm_PoisonClear:
+	LDX World_Num
+	LDA Mushrooms_Defeated, X
+	BEQ ObjNorm_PoisonClearRTS
+	STA <Temp_Var3
 
-	; Var10 = Object's X
-	LDA <Objects_X,X
-	SUB #$30
-	STA Objects_Var10,X
-
-	; Var11 = Object's X + 96
-	ADD #96
-	STA Objects_Var11,X
-
-	RTS		 ; Return
-
-	; Y velocity acceleration and limits based on direction
-SpinyCheep_YVelAccel:	.byte $01, -$01
-SpinyCheep_YVelMax:	.byte $08, -$08
-
-ObjNorm_SpinyCheep:
-	LDA <Player_HaltGame
-	BNE PRG001_A277	 ; If gameplay is halted, jump to PRG001_A277
-
-	INC <Objects_Var5,X	 ; Not sure what this is used for?
-
-	LDA <Counter_1	
-	AND #$07	
-	BNE PRG001_A23F	 ; Only proceed every 8 ticks, otherwise, jump to PRG001_A23F
-
-	LDA <Objects_Var4,X	 ; Get Var 4 (selects direction)
-	AND #$01
-	TAY		 ; Y = 0 or 1
-
-	; Spike Cheep's Y velocity
-	LDA <Objects_YVel,X
-	ADD SpinyCheep_YVelAccel,Y
-	STA <Objects_YVel,X
-
-	CMP SpinyCheep_YVelMax,Y
-	BNE PRG001_A23F	 	; If Spiny cheep hasn't hit velocity limit, jump to PRG001_A23F
-
-	INC <Objects_Var4,X	 ; Effectively, change direction
-
-PRG001_A23F:
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
-
-	LDA <Objects_X,X
-	CMP Objects_Var10,X
-	BEQ PRG001_A25A	 	; If Spiny Cheep is back at his origin, jump to PRG001_A25A
-
-	CMP Objects_Var11,X
-	BEQ PRG001_A25A	 	; If Spiny Cheep is at his origin + 96, jump to PRG001_A25A
-
-	JSR Object_WorldDetect4	 
-
-	LDA <Objects_DetStat,X	
-	AND #$03	 
-	BEQ PRG001_A263	 ; If spiny cheep hasn't hit a wall on either side, jump to PRG001_A263
-
-PRG001_A25A:
-	; Flip Spiny cheep around!
-	JSR Object_AboutFace
-	JSR Object_ApplyXVel
-	JSR Object_ApplyXVel
-
-PRG001_A263:
-	JSR Player_HitEnemy	 ; Player hits enemy
-	JSR Object_DeleteOffScreen_N4	 ; Delete object if it falls off-screen
-
-	; Swim frame based on counter and index (just to keep it interesting)
-	TXA
+BlankTileOut:
+	LDA <Temp_Var3
 	ASL A
-	ASL A
-	ADC Level_NoStopCnt
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
+	TAX
+	LDA PC_MemoryPoints, X
+	STA <Temp_Var1
+	LDA PC_MemoryPoints + 1, X
+	STA <Temp_Var2
+	LDY #$00
+	LDX World_Num
+	LDA WorldDoorTiles, X
+	STA [Temp_Var1], Y
+	INY
+	STA [Temp_Var1], Y
+	INY
+	STA [Temp_Var1], Y
+	INY
+	STA [Temp_Var1], Y
+	DEC <Temp_Var3
+	BNE BlankTileOut
 
-PRG001_A277:
-	JMP Object_ShakeAndDraw	 ; Draw object and don't return
-
-
+	
+ObjNorm_PoisonClearRTS:
+	LDX <SlotIndexBackup
+	JSR Object_Delete
 	RTS		 ; Return	
 
 ObjInit_BounceDU: 

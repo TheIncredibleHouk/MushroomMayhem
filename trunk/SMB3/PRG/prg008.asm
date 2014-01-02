@@ -1529,17 +1529,34 @@ PRG008_A890:
 	BNE Deplete_Air
 
 TryAirDepleteProp:
+	LDA Level_Tile_Prop_Body
+	AND #$0F
+	CMP #TILE_PROP_DEPLETE_AIR
+	BEQ Deplete_Air0
+
 	LDA Level_Tile_Prop_Head
 	AND #$0F
 	CMP #TILE_PROP_DEPLETE_AIR
 	BNE PRG008_A891
 
+Deplete_Air0:
+	LDA #$01
+	STA WasDepletingAir
+
 Deplete_Air:
 	LDA #$FF
 	STA Air_Change
+	BNE PRG008_A892
 
 PRG008_A891:
 	
+	LDA WasDepletingAir
+	BEQ PRG008_A892
+
+	LDA #$01
+	STA Air_Change
+
+PRG008_A892:
 	LDA #$00
 	STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
 
@@ -4174,6 +4191,10 @@ PRG008_B583:
 	CMP #TILE_PROP_CHERRY
 	BNE PRG008_B584
 
+	LDA Cherries
+	CMP #99
+	BCS PRG008_B584
+
 	LDY <Temp_Var12		 
 	LDA <Level_Tile	; prevent double collecting
 	EOR #$01
@@ -4184,7 +4205,7 @@ PRG008_B583:
 	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
 
-	INC Exp_Earned
+	INC Cherries
 	LDA #$00
 	LDY TempY
 

@@ -1951,7 +1951,6 @@ ObjNorm_MagicStar:
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
 
-	STA Debug_Snap
 	JSR Increase_Magic_Stars
 	JSR GetLevelBit
 	STA <Temp_Var1
@@ -1965,6 +1964,7 @@ ObjNorm_MagicStar:
 	ORA Magic_Stars_Collected1, Y
 	STA Magic_Stars_Collected1, Y
 	JSR Object_Delete
+
 PRG003_A92D:
 	RTS
 

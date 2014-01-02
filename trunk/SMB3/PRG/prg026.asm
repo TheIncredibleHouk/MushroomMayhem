@@ -2927,13 +2927,18 @@ StatusBar_UpdateValues:
 	STA Status_Bar_Mode
 
 No_Switch:
+	JSR Initialize_Status_Bar
+
+	JSR StatusBar_Fill_PowerMT	
+	JSR StatusBar_Fill_Air_MT	
+	JSR Draw_HBros_Coin
+	JSR Draw_Cherries
 	JSR Do_Odometer
 	JSR Draw_DayNightMeter
-	JSR Draw_HBros_Coin
-	JSR Initialize_Status_Bar
-	JSR StatusBar_Fill_PowerMT	; Fill in StatusBar_PMT with tiles of current Power Meter state
+
+	; Fill in StatusBar_PMT with tiles of current Power Meter state
 	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
-	JSR StatusBar_Fill_Air_MT	;
+	;
 	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Exp_Earned
 	JSR StatusBar_Ability_Level
 	JSR Status_Bar_Draw_Item_Reserve
@@ -3067,7 +3072,7 @@ LevelLoad_CopyObjectList:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $D6, $30, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $D7, $30, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
 	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
 
 Initial_Bar_Display2:
@@ -3179,27 +3184,31 @@ MS_Next_Digit:
 	BPL MS_Next_Digit
 	
 	JSR GetLevelBit
-	LDA #$D6
-	LDX Magic_Stars_Collected1, Y
+	PHA
+	LDX #$D6
+	AND Magic_Stars_Collected1, Y
 	BEQ Draw_Game_Timer1
-	ORA #$01
+	INX
 
 Draw_Game_Timer1:
-	STA Status_Bar_Bottom + 15
-	LDA #$D6
-	LDX Magic_Stars_Collected2, Y
+	STX Status_Bar_Bottom + 15
+	LDX #$D6
+	PLA
+	PHA
+	AND Magic_Stars_Collected2, Y
 	BEQ Draw_Game_Timer2
-	ORA #$01
+	INX
 
 Draw_Game_Timer2:
-	STA Status_Bar_Bottom + 16
-	LDA #$D6
-	LDX Magic_Stars_Collected3, Y
+	STX Status_Bar_Bottom + 16
+	LDX #$D6
+	PLA
+	AND Magic_Stars_Collected3, Y
 	BEQ Draw_Game_Timer3
-	ORA #$01
+	INX
 
 Draw_Game_Timer3:
-	STA Status_Bar_Bottom + 17
+	STX Status_Bar_Bottom + 17
 
 No_HBros_Update:
 	RTS
@@ -3263,4 +3272,15 @@ CopyCF:
 	LDX TempX
 
 NoInterest:
+	RTS
+
+Draw_Cherries:
+	LDA Cherries
+	JSR ToThreeDigits
+	LDA <Temp_Var2
+	ORA #$30
+	STA Status_Bar_Top + 20
+	LDA <Temp_Var3
+	ORA #$30
+	STA Status_Bar_Top + 21
 	RTS
