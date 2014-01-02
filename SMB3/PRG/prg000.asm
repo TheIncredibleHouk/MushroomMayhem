@@ -2672,6 +2672,12 @@ Object_PoofDie:
 End_The_Level:
 	LDA #$80
 	STA CompleteLevelTimer
+	LDA Mushroom_Already_Defeated
+	BNE End_The_Level1
+	LDX World_Num
+	INC Mushrooms_Defeated, X
+
+End_The_Level1:
 	RTS
 
 Object_DrawAndMoveNotHalt:

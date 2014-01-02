@@ -22,72 +22,9 @@ FALLRATE_MAX		= $40	; Maximum Y velocity falling rate
 FALLRATE_OBJECTMAX	= $60	; Maximum Y velocity falling rate of an object
 
 Cinematic_ToadAndKing:
-	LDA Cine_ToadKing
-	LSR A
-	BNE PRG024_A03A	 ; If Cine_ToadKing > 1, jump to PRG024_A03A
-
-	LDX #$00	 ; X = 0
-
-	JSR Level_PrepareNewObject
-
-	; Disable timer and animations
-	LDA #$81	 
-	STA Level_TimerEn
-
-	; CineKing_Timer = $20
-	LDA #$20
-	STA CineKing_Timer
-
-	; Initialize VRAM address for Toad and King Cinematic Dialog Box
-	LDA #$28
-	STA ToadTalk_VH
-	LDA #$86
-	STA ToadTalk_VL
-
-	; Initialize character counter
-	LDA #$00
-	STA ToadTalk_CPos
-
-	LDA #168
-	STA <Objects_X
-
-	LDA #$60	 ; A = $60
-
-	LDY World_Num	 ; Y = World_Num
-
-	CPY #$01
-	BNE PRG024_A033	 ; If World_Num <> 1 (World 2), jump to PRG024_A033
-
-	LDA #$20	 ; A = $20
-
-PRG024_A033:
-	STA King_Y
-
-	INC Cine_ToadKing ; Cine_ToadKing = 2
-	RTS		 ; Return
-
-PRG024_A03A:
-
-	; Keep the Player halted
-	LDA #$02
-	STA Player_HaltTick
-
-	LDA Player_HaltGame
-	BNE PRG024_A04A	 ; If gameplay is halted, jump to PRG024_A04A
-
-	JSR King_Animate  ; Do King's animation logic
-	JSR King_DoDialog ; Do King's dialog
-
-PRG024_A04A:
-	JMP PRG024_A39D	 ; Jump to PRG024_A39D
-
 
 King_DoDialog:
-	; Load font patterns
-	LDA #$5E
-	STA PatTable_BankSel+1
 
-	LDA <CineKing_DialogState
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -106,183 +43,17 @@ DiagBox_RowOffs:
 DiagBox_RowOffs_End
 
 TAndK_DrawDiagBox:
-	LDA CineKing_Timer 
-	BNE PRG024_A119	 ; If CineKing_Timer has not expired, jump to PRG024_A119 (RTS)
-
-	LDA King_Y
-	CMP #90
-	BLT PRG024_A119	 ; If King is higher than pixel line 90, jump to PRG024_A119 (RTS)
-
-	LDX Graphics_BufCnt	 ; X = buffer count
-
-	; Set current VRAM address 
-	LDA ToadTalk_VH
-	STA Graphics_Buffer,X
-	LDA ToadTalk_VL
-	STA Graphics_Buffer+1,X
-
-	; Jump to next video row
-	ADD #$20	; 32 bytes to next row
-	STA ToadTalk_VL
-	BCC PRG024_A0CD
-	INC ToadTalk_VH	 ; Apply carry
-PRG024_A0CD:
-
-	LDA #(DiagBox_R2 - DiagBox_R1)	; run count per row
-	STA Graphics_Buffer+2,X
-	STA <Temp_Var1		 ; -> Temp_Var1
-
-	LDY ToadTalk_CPos	 ; Y = current dialog box row
-	LDA DiagBox_RowOffs,Y
-	TAY		 	; Y = offset to this row index
-
-PRG024_A0DB:
-	; Store next pattern in dialog box
-	LDA DiagBox_R1,Y
-	STA Graphics_Buffer+3,X
-
-	INY		 ; Y++ (next pattern for dialog box)
-	INX		 ; X++ (next index in graphics buffer)
-
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BNE PRG024_A0DB	 ; While Temp_Var1 > 0, loop!
-
-	; Insert terminator
-	LDA #$00
-	STA Graphics_Buffer+3,X
-
-	; X += 3
-	INX
-	INX
-	INX
-	STX Graphics_BufCnt
-
-	INC ToadTalk_CPos	 ; Next row
-
-	LDA ToadTalk_CPos
-	CMP #(DiagBox_RowOffs_End - DiagBox_RowOffs)
-	BLT PRG024_A119	 ; If row count < 8, jump to PRG024_A119
-
-	; Dialog box is complete
-
-	LDA #$00	 ; A = 0 ("The King has been transformed!")
-
-	LDY Map_Objects_IDs
-	BNE PRG024_A105	 ; If the "HELP!" bubble is still present (haven't been on airship yet), jump to PRG024_A105
-
-	LDA #(KingHelpMsg2 - KingHelpMsg1)	 ; ("Get the magic wand back from little koopa!")
-
-PRG024_A105:
-	STA ToadTalk_CPos	 ; Set proper character position
-
-	; Initialize VRAM address for Toad and King Cinematic Dialog Box Text
-	LDA #$28
-	STA ToadTalk_VH
-	LDA #$a7
-	STA ToadTalk_VL
-
-	; CineKing_Timer = $10
-	LDA #$10
-	STA CineKing_Timer
-
-	INC <CineKing_DialogState	; CineKing_DialogState = 1
-
-PRG024_A119:
 	RTS		 ; Return
 
 	; English: "Oh,it's terrible!" / "The King has been" / "transformed!" / "Please find the" / "Magic Wand so we can" / "change him back"
 KingHelpMsg1:
-	;       O    h    ,    i    t    '    s         t    e    r    r    i    b    l    e    !
-	.byte $BE, $D7, $9A, $D8, $CD, $AB, $CC, $FE, $CD, $D4, $CB, $CB, $D8, $D1, $DB, $D4, $EA, $FE, $FE, $FE
-
-	;       T    h    e         K    i    n    g         h    a    s         b    e    e    n
-	.byte $C3, $D7, $D4, $FE, $BA, $D8, $DD, $D6, $FE, $D7, $D0, $CC, $FE, $D1, $D4, $D4, $DD, $FE, $FE, $FE
-
-	;       t    r    a    n    s    f    o    r    m    e    d    !
-	.byte $CD, $CB, $D0, $DD, $CC, $D5, $DE, $CB, $DC, $D4, $D3, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
-	;       P    l    e    a    s    e         f    i    n    d         t    h    e
-	.byte $BF, $DB, $D4, $D0, $CC, $D4, $FE, $D5, $D8, $DD, $D3, $FE, $CD, $D7, $D4, $FE, $FE, $FE, $FE, $FE
-
-	;       M    a    g    i    c         W    a    n    d         s    o         w    e         c    a    n
-	.byte $BC, $D0, $D6, $D8, $D2, $FE, $C6, $D0, $DD, $D3, $FE, $CC, $DE, $FE, $81, $D4, $FE, $D2, $D0, $DD
-
-	;       c    h    a    n    g    e         h    i    m         b    a    c    k    .
-	.byte $D2, $D7, $D0, $DD, $D6, $D4, $FE, $D7, $D8, $DC, $FE, $D1, $D0, $D2, $DA, $E9, $FE, $FE, $FE, $FE
 
 	; English: "Hurry! Hurry!" / "Get the Magic Wand" / "back from Little" / "Koopa."
 KingHelpMsg2:
 	;       H    u    r    r    y    !         H    u    r    r    y    !
-	.byte $B7, $CE, $CB, $CB, $8C, $EA, $FE, $B7, $CE, $CB, $CB, $8C, $EA, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
-	;       G    e    t         t    h    e         M    a    g    i    c         W    a    n    d
-	.byte $B6, $D4, $CD, $FE, $CD, $D7, $D4, $FE, $BC, $D0, $D6, $D8, $D2, $FE, $C6, $D0, $DD, $D3, $FE, $FE
-
-	;       b    a    c    k         f    r    o    m         L    i    t    t    l    e
-	.byte $D1, $D0, $D2, $DA, $FE, $D5, $CB, $DE, $DC, $FE, $BB, $D8, $CD, $CD, $DB, $D4, $FE, $FE, $FE, $FE
-
-	;       K    o    o    p    a    .
-	.byte $BA, $DE, $DE, $DF, $D0, $E9, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
-	;
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
-
-	;
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	
 
 TAndK_DoToadText:
-	LDA CineKing_Timer
-	BNE PRG024_A260	 ; If the timer is not expired, jump to PRG024_A260
-
-	LDY ToadTalk_CPos	 ; Y = dialog message character position
-
-	LDA KingHelpMsg1,Y	 ; Get next character of message
-
-	LDY Graphics_BufCnt	 ; Y = graphics buffer counter
-	STA Graphics_Buffer+3,Y	 ; Store into buffer
-
-	; Insert one character into graphics buffer
-	LDA ToadTalk_VH
-	STA Graphics_Buffer,Y	; address high
-	LDA #$01	 
-	STA Graphics_Buffer+2,Y	; run length
-	LSR A
-	STA Graphics_Buffer+4,Y	; terminator
-	TYA
-	ADD #$04
-	STA Graphics_BufCnt	; count
-	LDA ToadTalk_VL
-	STA Graphics_Buffer+1,Y	; address low
-
-	INC ToadTalk_CPos	 ; Next character in message
-	INC ToadTalk_VL	 ; Next VRAM byte
-	AND #$1f	 	; Get current column
-	CMP #$1a	 
-	BNE PRG024_A25B	 	; If we're not in column 26, jump to PRG024_A25B
-
-	; Line break!
-
-	LDA ToadTalk_VL
-	ADC #$0b		; Add enough bytes to get to next row
-	STA ToadTalk_VL
-	BCC PRG024_A250
-	INC ToadTalk_VH	; Apply carry
-PRG024_A250:
-
-	CMP #$67	
-	BNE PRG024_A25B	 ; If we haven't reached the last character, jump to PRG024_A25B
-
-	INC <CineKing_DialogState		 ; CineKing_DialogState = 2
-
-	LDA #$00
-	STA ToadTalk_CPos
-
-PRG024_A25B:
-	; Reset tick counter for next character
-	LDA #$04
-	STA CineKing_Timer
-
-PRG024_A260:
 	RTS		 ; Return
 
 
@@ -1719,28 +1490,35 @@ PRG024_A98A:
 ; You know that nifty "bowser" curtain 
 ; on the title screen?  Here it is...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Title_Screen_Tiles:
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0F, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1F, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $2A, $2B, $2C, $2D, $2F, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F, $60, $61, $62, $63, $64, $65, $66, $67, $68, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $70, $71, $72, $73, $74, $75, $76, $77, $78, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $5A, $5B, $5C, $5D, $5E, $5F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $69, $6A, $6B, $6C, $6D, $6E
+
 Title_Display_Curtain:
 	LDA PPU_STAT 	; read PPU status to reset the high/low latch
 
 	; Set VRAM_ADDR to $2000 (Nametable 0)
 	LDA #$20
 	STA PPU_VRAM_ADDR
-	LDA #$00
+	LDA #$A0
 	STA PPU_VRAM_ADDR
 
-	LDX #$02	 ; X = 2 (performs loop twice)
-	LDA #$08	 ; A = 8 (the Bowser curtain tile)
+	LDX #$00	 ; X = 2 (performs loop twice)
+	
+	
 PRG024_A9A1:
-	LDY #$ff	 ; Y = $FF (fill count)
+	LDA Title_Screen_Tiles, X
+
 PRG024_A9A3:
 	STA PPU_VRAM_DATA	; Write $08/$09 to this byte in the VRAM
-	EOR #$01	 	; Toggle between $08/$09
-	DEY		 	; Y--
-	BNE PRG024_A9A3	 	; Loop while Y not zero
-	STA PPU_VRAM_DATA	; One more write since we come up one short
-	EOR #$01	 	; And its cooresponding flip
-	DEX		 	; X--
- 	BPL PRG024_A9A1		; Loop while X >= 0...
+	INX
+	CPX #$D2
+	BNE PRG024_A9A1	 	; Loop while Y not zero
 
 	RTS		 	; Return!
 
@@ -5441,11 +5219,11 @@ PRG024_BBB0:
 	LDA #$23
 	ASL A
 	TAY
-	LDA Video_Upd_Table2,Y
-	STA <Video_Upd_AddrL
-	LDA Video_Upd_Table2+1,Y
-	STA <Video_Upd_AddrH
-	JSR Video_Misc_Updates2
+	;LDA Video_Upd_Table2,Y
+	;STA <Video_Upd_AddrL
+	;LDA Video_Upd_Table2+1,Y
+	;STA <Video_Upd_AddrH
+	;JSR Video_Misc_Updates2
 
 	; Set scroll at lowest point (technically, curtain fully raised)
 	LDA #$ef
@@ -5461,9 +5239,9 @@ PRG024_BBB0:
 
 	; Curtain extension
 	LDA #$24
-	STA Graphics_Queue
+	;STA Graphics_Queue
 
-	JSR GraphicsBuf_Prep_And_WaitVSyn2
+	;JSR GraphicsBuf_Prep_And_WaitVSyn2
 
 
 	; This will push graphics command sets $5C, $5D, and $5E
@@ -6222,7 +6000,6 @@ Ending2_EndPicSpriteListL:
 Ending2_EndPicSpriteListLen:	
 	.byte (Ending2_EndPicSprites1_End - Ending2_EndPicSprites1 - 1)
 	.byte (Ending2_EndPicSprites2_End - Ending2_EndPicSprites2 - 1)
-	.byte (Ending2_EndPicSprites3_End - Ending2_EndPicSprites3 - 1)
 	.byte (Ending2_EndPicSprites4_End - Ending2_EndPicSprites4 - 1)
 	.byte (Ending2_EndPicSprites5_End - Ending2_EndPicSprites5 - 1)
 	.byte (Ending2_EndPicSprites6_End - Ending2_EndPicSprites6 - 1)

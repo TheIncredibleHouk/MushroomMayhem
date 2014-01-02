@@ -331,36 +331,36 @@ Title_Load_Palette:
 	.byte 32	; 32 bytes to follow (32 colors)
 
 	; The colors!
-	.byte $0F, $0F, $30, $16, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
-	.byte $0F, $16, $36, $0F, $0F, $2A, $36, $0F, $0F, $27, $30, $0F, $0F, $2A, $30, $0F
+	.byte $31, $0F, $30, $21, $31, $0F, $30, $21, $31, $0F, $30, $21, $31, $0F, $30, $21
+	.byte $31, $0F, $30, $21, $31, $0F, $30, $21, $31, $0F, $30, $21, $31, $0F, $30, $21
 
 	; Falls into...
 
 Title_Checkerboard_Floor:
 	vaddr $22E0	; Bottom of nametable
 	.byte 32	; 32 bytes to follow
-	.byte $18, $19, $18, $19, $18, $19, $18, $19, $18, $19, $18, $19, $18, $19, $18, $19
-	.byte $18, $19, $18, $19, $18, $19, $18, $19, $18, $19, $18, $19, $18, $19, $18, $19
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 	vaddr $2B00
 	.byte 32	; 32 bytes to follow
-	.byte $15, $15, $16, $16, $15, $15, $16, $16, $15, $15, $16, $16, $15, $15, $16, $16
-	.byte $15, $15, $16, $16, $15, $15, $16, $16, $15, $15, $16, $16, $15, $15, $16, $16
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 	
 	vaddr $2B20
 	.byte 32	; 32 bytes to follow
-	.byte $E6, $E6, $E7, $E7, $E6, $E6, $E7, $E7, $E6, $E6, $E7, $E7, $E6, $E6, $E7, $E7
-	.byte $E6, $E6, $E7, $E7, $E6, $E6, $E7, $E7, $E6, $E6, $E7, $E7, $E6, $E6, $E7, $E7
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 	vaddr $2B40
 	.byte 32	; 32 bytes to follow
-	.byte $F6, $F6, $F7, $F7, $F6, $F6, $F7, $F7, $F6, $F6, $F7, $F7, $F6, $F6, $F7, $F7
-	.byte $F6, $F6, $F7, $F7, $F6, $F6, $F7, $F7, $F6, $F6, $F7, $F7, $F6, $F6, $F7, $F7
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 	vaddr $2B60
 	.byte 32	; 32 bytes to follow
-	.byte $5D, $5D, $5F, $5F, $5D, $5D, $5F, $5F, $5D, $5D, $5F, $5F, $5D, $5D, $5F, $5F
-	.byte $5D, $5D, $5F, $5F, $5D, $5D, $5F, $5F, $5D, $5D, $5F, $5F, $5D, $5D, $5F, $5F
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 	; Terminator!
 	.byte $00

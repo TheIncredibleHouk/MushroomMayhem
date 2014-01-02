@@ -2638,6 +2638,13 @@ PRG010_CE78:
 	STA <Map_Enter2PFlag	; Map_Enter2PFlag = $12 (enterint 2P Vs)
 
 PRG010_CEA7:
+	LDX #$01
+	CMP #MAP_PROP_COMPLETABLE
+	BNE PRG010_CEA8
+	LDX #$00
+
+PRG010_CEA8:
+	STX Mushroom_Already_Defeated
 	LDA #$10
 	STA Map_Operation	; Map_Operation = $10 (begin "enter level" effect)
 
@@ -2662,6 +2669,7 @@ PRG010_CEBF:
 
 PRG010_CEC9:
 	; What makes other tiles (e.g. standard panels) work...
+	
 	LDA <World_Map_Prop
 	CMP #MAP_PROP_ENTERABLE
 	BCS PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
@@ -3294,9 +3302,8 @@ PRG010_D2AD:
 	
 PRG010_D2C1:
 	LDA <World_Map_Prop
-	AND #(MAP_PROP_TRAVERSABLE | MAP_PROP_ENTERABLE)
-	LDA #$01
-	BNE PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
+	CMP #MAP_PROP_TRAVERSABLE
+	BCS PRG010_D336	 	; If Player is going to travel over this particular valid tile, jump to PRG010_D336
 	RTS		 ; Return
 
 PRG010_D336:

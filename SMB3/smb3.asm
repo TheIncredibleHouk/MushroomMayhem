@@ -2434,18 +2434,18 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Map_WasInPipeway:	.ds 1	; Set if you just came out of a pipeway
 	EndCard_Flag:		.ds 1	; Set when End Level card is hit (can determine when level has ended)
 	Map_PlyrSprOvrY:	.ds 1	; "Player Sprite Override Y"; If set to $F8 during warp, erases Player's map sprite; otherwise provides a Y to put it at
-	Map_Entered_Y:		.ds 2	; $7976-$7977 (Mario/Luigi) Stores the Y value when you enter a level; this is the Y used if you complete the level
-	Map_Entered_XHi:	.ds 2	; $7978-$7979 (Mario/Luigi) Hi byte for Map_Entered_X
-	Map_Entered_X:		.ds 2	; $797A-$797B (Mario/Luigi) Same as Map_Entered_Y, only for X
-	Map_Previous_UnusedPVal2:.ds 2	; $797C-$797D (Mario/Luigi) Backup of Map_UnusedPlayerVal2
-	Map_Previous_Y:		.ds 2	; $797E-$797F (Mario/Luigi) Stores the previous Y you were "safe" at; this is the Y you go back to if you die
-	Map_Previous_XHi:	.ds 2	; $7980-$7981 (Mario/Luigi) Same as Map_Previous_Y, only for XHi
-	Map_Previous_X:		.ds 2	; $7982-$7983 (Mario/Luigi) Same as Map_Previous_Y, only for X
-	Map_Unused7984:		.ds 2	; $7984-$7985 (Mario/Luigi) Unused; cleared and never touched again
-	Map_Prev_XOff2:		.ds 2	; $7986-$7987 (Mario/Luigi) Holds a copy of Map_Prev_XOff, but I'm not sure why?
-	Map_Prev_XHi2:		.ds 2	; $7988-$7989 (Mario/Luigi) Holds a copy of Map_Prev_XHi, but I'm not sure why?
+	Map_Entered_Y:		.ds 1	; $7976-$7977 (Mario/Luigi) Stores the Y value when you enter a level; this is the Y used if you complete the level
+	Map_Entered_XHi:	.ds 1	; $7978-$7979 (Mario/Luigi) Hi byte for Map_Entered_X
+	Map_Entered_X:		.ds 1	; $797A-$797B (Mario/Luigi) Same as Map_Entered_Y, only for X
+	Map_Previous_UnusedPVal2:.ds 1	; $797C-$797D (Mario/Luigi) Backup of Map_UnusedPlayerVal2
+	Map_Previous_Y:		.ds 1	; $797E-$797F (Mario/Luigi) Stores the previous Y you were "safe" at; this is the Y you go back to if you die
+	Map_Previous_XHi:	.ds 1	; $7980-$7981 (Mario/Luigi) Same as Map_Previous_Y, only for XHi
+	Map_Previous_X:		.ds 1	; $7982-$7983 (Mario/Luigi) Same as Map_Previous_Y, only for X
+	Map_Unused7984:		.ds 1	; $7984-$7985 (Mario/Luigi) Unused; cleared and never touched again
+	Map_Prev_XOff2:		.ds 1	; $7986-$7987 (Mario/Luigi) Holds a copy of Map_Prev_XOff, but I'm not sure why?
+	Map_Prev_XHi2:		.ds 1	; $7988-$7989 (Mario/Luigi) Holds a copy of Map_Prev_XHi, but I'm not sure why?
 	Map_Unused798A:		.ds 1	; $798A-$798B (Mario/Luigi) Unused; cleared and never touched again
-
+						.ds 10
 	; These define values to use when you junction back
 	; to the level you were before...
 	Level_Jct_HSHi:		.ds 1	; Level junction horizontal scroll high value
@@ -2891,7 +2891,7 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	;  9: Fighter Fly Only 
 	; 10: Sidestepper Only
 	; 11: Ladder and [?] blocks
-	Map_2PVsGame:		.ds 1
+	Cherries:		.ds 1
 
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
@@ -3104,7 +3104,10 @@ TILE_ITEM_SPINNER	= $FE
 	BankCoins:			.ds 6 ;
 	TileCheckX:			.ds 1
 	TileCheckXHi:		.ds 1
-						.ds 50;
+	WasDepletingAir:	.ds 1
+	Mushrooms_Defeated: .ds 6;
+	Mushroom_Already_Defeated: .ds 1
+						.ds 42;
 	Debug_Mode:			.ds	1;
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

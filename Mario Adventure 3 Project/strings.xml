@@ -273,7 +273,7 @@
     <block value="0B">Platform Top</block>
     <block value="0C">Platform Top</block>
     <block value="0D"></block>
-    <block value="0E">Cleared Coin</block>
+    <block value="0E"></block>
     <block value="0F"></block>
     <block value="10"></block>
     <block value="11"></block>
@@ -381,11 +381,11 @@
     <block value="77"></block>
     <block value="78"></block>
     <block value="79"></block>
-    <block value="7A"></block>
+    <block value="7A">Cleared Coin</block>
     <block value="7B">Koopa Shell</block>
     <block value="7C"></block>
     <block value="7D">Koopa Shell</block>
-    <block value="7E"></block>
+    <block value="7E">Brick</block>
     <block value="7F">Empty ? Block</block>
     <block value="80">Hidden Coin</block>
     <block value="81"></block>
@@ -512,7 +512,7 @@
     <block value="FA"></block>
     <block value="FB"></block>
     <block value="FC"></block>
-    <block value="FD">Ice Block</block>
+    <block value="FD"></block>
     <block value="FE"></block>
     <block value="FF">Empty ? Block</block>
   </set>
@@ -3647,8 +3647,8 @@
     <block value="1F"></block>
     <block value="20"></block>
     <block value="21"></block>
-    <block value="22"></block>
-    <block value="23"></block>
+    <block value="22">Cherry</block>
+    <block value="23">Background</block>
     <block value="24"></block>
     <block value="25"></block>
     <block value="26"></block>
@@ -3738,7 +3738,7 @@
     <block value="7A"></block>
     <block value="7B"></block>
     <block value="7C"></block>
-    <block value="7D"></block>
+    <block value="7D">Fire Flower Block</block>
     <block value="7E"></block>
     <block value="7F">Empty ? Block</block>
     <block value="80">Background</block>

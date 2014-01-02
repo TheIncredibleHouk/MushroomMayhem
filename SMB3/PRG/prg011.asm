@@ -142,7 +142,6 @@ PRG011_A23E:
 	DEX		 ; X--
 	BPL PRG011_A23E	 ; As long as we have another player to init, loop!
 
-	STX Map_2PVsGame ; Map_2PVsGame = $FF (since game increments at start, this will play game style 0)
 
 	; Clear the following
 	STA Map_WhiteHouse
@@ -1572,10 +1571,7 @@ Map_NoLoseTurnTiles:
 Map_NoLoseTurnTiles_End
 
 MO_DoLevelClear:
-
 	JSR Map_GetTile	 	; Get current tile Player is standing on
-	TAY
-	LDA TileProperties, Y
 	CMP #MAP_PROP_COMPLETABLE
 	BEQ PRG011_AA19
 
@@ -1651,7 +1647,7 @@ PRG011_AA58:
 	
 	LDA [Map_Tile_AddrL], Y
 	STA Old_World_Map_Tile
-	LDA #$3F
+	ORA #$0F
 	STA [Map_Tile_AddrL],Y	 ; Get the tile here
 	STA <World_Map_Tile	; ... as well as the tile detected
 
@@ -1688,14 +1684,21 @@ PRG011_AA58:
 PRG011_AAEF:
 	LDX Graphics_BufCnt	 ; X = Graphics_BufCnt
 
+	LDA Old_World_Map_Tile
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
 	; Add in the four replacement patterns to cover over the completed level
-	LDA #$EE
+	LDA Map_ClearTiles1, Y
 	STA Graphics_Buffer+$03,X
-	LDA #$EE
+	LDA Map_ClearTiles3, Y
 	STA Graphics_Buffer+$08,X
-	LDA #$EE
+	LDA Map_ClearTiles2, Y
 	STA Graphics_Buffer+$04,X
-	LDA #$EE
+	LDA Map_ClearTiles4, Y
 	STA Graphics_Buffer+$09,X
 
 	; Terminator
@@ -1853,6 +1856,14 @@ PRG011_ABBE:
 PRG011_ABCC:
 	JMP MapObjects_UpdateDrawEnter	 ; Jump to MapObjects_UpdateDrawEnter
 
+Map_ClearTiles1:
+	.byte $FE, $FE, $82, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+Map_ClearTiles2:
+	.byte $FE, $FE, $83, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+Map_ClearTiles3:
+	.byte $FE, $FE, $92, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+Map_ClearTiles4:
+	.byte $FE, $FE, $93, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 	; Draws the "Poof" effect that occurs after a Fortress is completed
 Map_DrawClearLevelPoof:
