@@ -1355,6 +1355,7 @@ PRG001_A8AB:
 PUp_GeneralCollect:
 	JSR PowerUp_PlaySound	 ; Play Power Up sound
 	LDA #OBJSTATE_DEADEMPTY
+	LDX <SlotIndexBackup
 	STA Objects_State, X	 ; Set power-up to dead/empty
 
 	RTS		 ; Return
@@ -1562,11 +1563,13 @@ PRG001_A9F6:
 
 
 ObjHit_FireFlower:
+
 	JSR Try_PUp_Reserve
 	JSR Get_Normalized_Suit
 	CMP #$02
 	BNE Do_Fire_Power
 	JMP PUp_GeneralCollect
+
 Do_Fire_Power:
 	LDA #$03
 	JMP Do_PUp_Pallete_Collect

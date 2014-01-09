@@ -2084,10 +2084,7 @@ PRG024_AC52:
 	LDA #SND_MAPPATHMOVE	 
 	STA Sound_QMap	 	; "Path move" sound (in this case, the "bleep" for the menu)
 
-	; Basically makes sure that the value of Total_Players is 0 or 1 
-	LDA Hard_Mode
-	EOR #$01	 
-	STA Hard_Mode
+	; Basically makes sure that the value of Total_Players is 0 or 1
 
 PRG024_AC6B:
 	LDY Total_Players	 ; Y = Total_Players (0 or 1)
@@ -2210,9 +2207,6 @@ PRG024_ACFB:
 	BEQ PRG024_AD0C		; If Player is not pressing SELECT, jump to PRG024_AD0C
 
 	; Basically makes sure that the value of Total_Players is 0 or 1 
-	LDA Hard_Mode
-	EOR #$01	 
-	STA Hard_Mode
 
 PRG024_AD0C:
 	LDY Total_Players	 ; Y = Total_Players (0 or 1)
@@ -5473,11 +5467,9 @@ PRG024_BD01:
 
 	; Middle byte of the N-Spade score
 	LDA #HIGH(8000)
-	STA Map_NSpade_NextScore+1
 
 	; Lowest byte of the N-Spade score
 	LDA #LOW(8000)
-	STA Map_NSpade_NextScore+2
 
 	; If they jumped a little earlier, they could've included the N-Spade score init, strangely
 	JMP PRG030_845A		; Jump to PRG030_845A

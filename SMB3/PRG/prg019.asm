@@ -751,7 +751,6 @@ LL_DarkSkyStar:	.byte TILE13_SKY_DARKSTAR, TILE13_SKY_DARKTOBLACKS
 
 LoadLevel_Stars:
 	LDA #$60
-	STA Misc_Counter ; Misc_Counter = $60
 
 PRG019_A773:
 	JSR Randomize	 ; Shake up the random number generator
@@ -823,7 +822,6 @@ PRG019_A7C4:
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
 PRG019_A7C6:
-	DEC Misc_Counter ; Misc_Counter--
 	BPL PRG019_A773	 ; $A7C9 
 	RTS		 ; Return
 

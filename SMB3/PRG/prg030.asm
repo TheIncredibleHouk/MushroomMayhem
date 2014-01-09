@@ -470,11 +470,9 @@ PRG030_8437:
 
 	; Middle byte of the N-Spade score
 	LDA #HIGH(8000)
-	STA Map_NSpade_NextScore+1
 
 	; Lowest byte of the N-Spade score
 	LDA #LOW(8000)
-	STA Map_NSpade_NextScore+2
 
 PRG030_845A:
 	JSR Sprite_RAM_Clear	 
@@ -3225,7 +3223,6 @@ Skip_Set_Music:
 	LSR A
 	LSR A
 	LSR A
-	STA Level_TimerMSD
 	LDA [Temp_Var14],Y
 	AND #$0F
 	STA Level_TimerMid

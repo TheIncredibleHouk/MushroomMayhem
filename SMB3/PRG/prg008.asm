@@ -745,36 +745,7 @@ PRG008_A3FA:
 	BNE PRG008_A472	 	; Jump (technically always) to PRG008_A472
 
 PRG008_A427:
-	LDA Level_TimerEn
-	AND #$7f
-	BNE PRG008_A472	 ; If the clock is disabled, jump to PRG008_A472
-
-	LDA Level_TimerMSD
-	ORA Level_TimerMid
-	ORA Level_TimerLSD
-	BNE PRG008_A45A	 ; If there's some sort of time left, jump to PRG008_A45A
-
-	; TIME UP!
-	JSR Player_Die	 ; Begin death sequence
-
-	LDA #$03
-	STA <Player_IsDying	 ; Player_IsDying = 3 (Death due to TIME UP)
-
-	; I think this will hide any Player masking sprites (e.g. from pipe usage)
-	; Not sure if the Player could die when a pipe is activated or not?
-	LDA #$ff
-	STA <Pipe_PlayerX ; Pipe_PlayerX = $FF
-	STA <Pipe_PlayerY ; Pipe_PlayerY = $FF
-
 PRG008_A44D:
-	LDA #$01	 
-	STA Player_QueueSuit	 ; Queue change to small (superfluous, Player_Die sets it to 1)
-
-	LDA #$50	 ; Event_Countdown to be set to $50
-
-	STA Event_Countdown
-	JMP PRG008_A472	 	; Jump to PRG008_A472
-
 PRG008_A45A:
 	; Still have time left OR in debug mode...
 
@@ -1560,11 +1531,12 @@ PRG008_A892:
 	LDA #$00
 	STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
 
-	LDA #$08
+	LDA #$18
 	STA <Temp_Var10
 	LDA #$08
 	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
 	JSR Player_GetTileAndSlope
+
 	STA Level_Tile_Prop_Body
 	AND #$0F
 	CMP #TILE_PROP_TREASURE
@@ -4541,17 +4513,6 @@ LATP_Coin:
 	ORA <Temp_Var15	; Regenerate 10 coin block ID
 	CMP B10Coin_ID
 	BNE PRG008_B82F	; If this is a DIFFERENT coin block than the last one we started, jump to PRG008_B82F (RTS)
-
-	LDA B10Coin_Timer
-	BEQ PRG008_B82F	; In any case, if a 10 coin timer is not still on, jump to PRG008_B82F (RTS)
-
-	LDA B10Coin_Count
-	BMI PRG008_B82F	; If you've already got 10 coins (ideally), jump to PRG008_B82F (RTS)
-
-	DEC B10Coin_Count	 ; B10Coin_Count--
-
-	LDA #$17
-	STA <Temp_Var6	 ; Temp_Var6 = $17
 
 PRG008_B82F:
 	RTS		 ; Return

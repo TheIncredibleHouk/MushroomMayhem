@@ -2615,8 +2615,6 @@ LL_PUPClouds:
 	.byte TILE1_PUPCLOUD_M, TILE1_PUPCLOUD_F, TILE1_PUPCLOUD_S
 
 LoadLevel_RandomPUpClouds:
-	LDA #59
-	STA Misc_Counter ; Generate 60 random power up clouds!
 
 PRG014_D22B:
 	JSR Randomize	 ; Seed the randomizer
@@ -2665,7 +2663,6 @@ PRG014_D257:
 	LDA LL_PUPClouds,X	 ; Get random power up cloud!
 	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
 
-	DEC Misc_Counter	 ; Misc_Counter--
 	BPL PRG014_D22B	 	; While Misc_Counter >= 0, loop!
 
 	RTS		 ; Return

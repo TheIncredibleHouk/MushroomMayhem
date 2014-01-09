@@ -439,6 +439,7 @@ PRG007_A1F8:
 
 	RTS		 ; Return
 
+PlayerXVel: .byte 03, 02
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Gameplay_UpdateAndDrawMisc
 ;
@@ -536,6 +537,7 @@ PRG007_A2AE:
 
 PlayerProj_ThrowWeapon:
 	LDX #$01	 ; X = 1
+
 PRG007_A2B1:
 	LDA PlayerProj_ID,X
 	BEQ PRG007_A2BA	 ; If this Player projectile slot is free
@@ -575,6 +577,7 @@ PRG007_A2BA:
 	SEC		 ; Set carry (if NOT wearing the hammer suit)
 	BNE PRG007_A2E3	 ; If Player is NOT wearing the Hammer Suit, jump to PRG007_A2E3
 	ASL A		 ; Clears carry, also A = 2
+
 PRG007_A2E3:
 	STA PlayerProj_ID,X	 ; Set projectile as type 1 or 2
 
@@ -590,7 +593,13 @@ PRG007_A2EC:
 	LDA #$00
 	STA <Temp_Var1
 
-	LDA #$03	 ; A = $03 (Fire)
+	LDY #$00
+	LDA Special_Suit_Flag
+	BEQ PRG007_A2ED
+	INY 
+
+PRG007_A2ED:
+	LDA PlayerXVel, Y
 	BCS PRG007_A304	 ; If Player is NOT wearing Hammer Suit, jump to PRG007_A304
 
 	; Calculate the hammer X velocity offset
@@ -934,6 +943,8 @@ PlayerProj_ChangeToPoof:
 PRG007_A4A2:
 	RTS		 ; Return
 
+PUpYVel: .byte -03, -04
+
 Fireball_DetectWorld:
 
 	LDA <Temp_Var13	 ; Detect Y of fireball
@@ -1082,10 +1093,17 @@ PRG007_A586:
 	STA PlayerProj_Y,X
 	BCS PRG007_A594
 	DEC PlayerProj_YHi,X	 ; Apply carry
+
 PRG007_A594:
 
 	; Bounce fireball!
-	LDA #-$03
+	LDY #$00
+	LDA Special_Suit_Flag
+	BEQ PRG007_A595
+	INY
+
+PRG007_A595:
+	LDA PUpYVel, Y
 
 PRG007_A596:
 	STA PlayerProj_YVel,X
