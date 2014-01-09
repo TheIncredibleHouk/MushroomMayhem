@@ -308,7 +308,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01	; Object $73 - OBJ_PARAGOOMBA
 	.byte OAT_BOUNDBOX01	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $75 - OBJ_WATERFILLER
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OAT_BOUNDBOX01	; Object $77 - OBJ_GREENCHEEP
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $78 - OBJ_BULLETBILL
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $79 - OBJ_BULLETBILLHOMING
@@ -1795,20 +1795,27 @@ PRG000_CC75:
 PRG000_CC73:
 	LDA Objects_InWater, X
 	BEQ PRG000_CC74
+
 	LDA Level_ObjectID, X
 	CMP #OBJ_ICEBLOCK
 	BNE PRG000_CC74
-	LDA <Objects_Y, X
-	ADD #$08
-	AND #$F0
-	ORA #$08
-	STA <Objects_Y, X
-	LDA <Objects_YHi, X
-	ADC #$00
-	STA <Objects_YHi, X
+
+	LDA #$01
+	STA ObjSplash_DisTimer, X
+
 	LDA #$00
 	STA <Objects_XVel, X
+
+	LDA <Objects_YVel, X
+	BNE PRG000_CC742
+	LDA #$00
 	STA <Objects_YVel, X
+	BEQ PRG000_CC74
+
+PRG000_CC742:
+	DEC <Objects_YVel, X
+	DEC <Objects_YVel, X
+	DEC <Objects_YVel, X
 
 PRG000_CC74:
 	LDA <Objects_DetStat,X 
@@ -2417,7 +2424,7 @@ PRG000_CEEE_2:
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
 KickedXVel:
-	.byte $08, $20, $38, $50
+	.byte $08, $18, $2C, $40
 
 PRG000_CEEF:
 
@@ -3535,12 +3542,6 @@ PRG000_D343:
 	JMP Player_KickObject	 ; Kick away the object and don't come back!
 
 PRG000_D34F:
-
-	LDA <Player_YVel
-	BPL PRG000_D350
-	LDA Objects_YVel
-	BEQ PRG000_D351
-
 PRG000_D350:
 	; Keep held object in state 4 (Held)
 	LDA #OBJSTATE_HELD

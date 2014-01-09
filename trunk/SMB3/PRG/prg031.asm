@@ -1193,6 +1193,7 @@ Music_UpdateBend:
 	LSR A	
 	BCC PRG031_E860
 
+	STA Debug_Snap
 	; Diminish the bend
 	DEC Music_Sq1Bend,X
 
@@ -1201,6 +1202,7 @@ PRG031_E860:
 	CMP Sound_Sq1_CurFL,X	; Compare to current frequency 
 	BGE PRG031_E870		; If bend >= Sound_Sq1_CurFL, jump to PRG031_E870
 
+PRG031_E861:
 	LDA #$00	 	
 	STA Music_Sq1Bend,X	; Clear/disable bend
 	LDA Sound_Sq1_CurFL,X	; Just get current frequency
@@ -1236,18 +1238,7 @@ Music_RestH_LUT:
 
 	; NOTE NOTE NOTE!!
 	; If you're creating a custom hack, delete these $FFs and use the following line instead:
-; .AlignDMC04:	DMCAlign .AlignDMC04
-
-;	.byte $FF, $FF, $FF
-;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-;	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-
-	; END UNUSED SPACE
+ .AlignDMC04:	DMCAlign .AlignDMC04
 
 DMC04:	.byte $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $B5, $82, $DC
 	.byte $7F, $00, $E0, $FF, $03, $E8, $FF, $03, $00, $F8, $FF, $00, $F0, $FF, $62, $0B
@@ -3059,16 +3050,21 @@ Increase_Game_Timer:
 	EOR #$FF
 	STA DayNight
 	BNE DoNightTrans
+	LDA DayNightActive
+	BEQ DoGameTimer
 	LDA #$03
 	STA DayTransition
 	JMP DoGameTimer
 
 DoNightTrans:
+	LDA DayNightActive
+	BEQ DoGameTimer
 	LDA #$03
 	STA NightTransition
 
 DoGameTimer:
 	LDX #$05
+
 Game_Timer_Loop:
 	INC Game_Timer,X
 	LDA Game_Timer,X

@@ -1636,7 +1636,7 @@ PRG005_A794:
 ; #DAHRKDAIZ #$00 = Up, #$01 = down
 
 Piranha_Velocity_Table:
-	.byte -$30, $10, -$10, $30
+	.byte -$20, $10, -$10, $20
 
 Venus_Velocity_Table:
 	.byte -$10, $10

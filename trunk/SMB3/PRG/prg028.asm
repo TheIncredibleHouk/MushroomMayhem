@@ -629,6 +629,7 @@ SndLev1_PUpRiseData:
 	.byte $4A, $4C, $3E, $7E, $4C, $4E
 
 SndLev1_Coin2:
+
 	STY SndCur_Level1	 ; Mark what "level 1" sound we're playing
 	LDA #$35	 ; SFX_Counter2 value
 	LDX #$8d	 ; PAPU_CTL2
@@ -727,9 +728,9 @@ Sound_PlayLevel1:
 	AND #$40	 ; 
 	BNE SndLev1_1upCont	 ; If currently playing level 1 sound is $40 1-up, jump to SndLev1_1up (overrides any new sounds!)
 
+	
 	LDY Sound_QLevel1
 	BEQ PRG028_A47A	 ; If no Level 1 sound is queued, jump to PRG028_A47A
-
 	BMI SndLev1_SuitLost	 ; If sound $80 (SND_LEVELPOOF) sound, jump to SndLev1_SuitLost
 
 	; Since the input is a bit value ($01, $02, $04, ...), this will
