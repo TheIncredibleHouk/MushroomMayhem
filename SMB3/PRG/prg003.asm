@@ -877,10 +877,10 @@ ShyGuyGetBrick2:
 	AND #$C0
 	ORA #$01
 	STA Level_ChgTileEvent
-	LDA Objects_LastTileY
+	LDA <Objects_Y, X
 	SUB #$08
 	STA Objects_LastTileY
-	LDA Objects_LastTileYHi
+	LDA <Objects_YHi, X
 	SBC #$00
 	STA Objects_LastTileYHi
 
@@ -1003,6 +1003,7 @@ PRG003_A4E9:
 	STA Objects_State + 5
 	LDA #$C0
 	STA <Objects_YVel + 5
+	STA PowerUp_NoRaise
 	LDY #$10
 	LDA <Objects_XVel, X
 	BPL PRG003_A4E91

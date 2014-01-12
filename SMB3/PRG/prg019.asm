@@ -1420,6 +1420,16 @@ CCNoMove:
 	RTS
 
 World1BossDoAction:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ World1BossDoAction1
+	LDA #OAT_BOUNDBOX04
+	STA BossBoundBox
+	JSR Object_HitTest
+	BCC World1BossDoAction1
+	JSR Player_GetHurt
+
+World1BossDoAction1:
 	LDA Objects_Var1, X
 	JSR DynJump
 
@@ -1652,6 +1662,7 @@ CCAnother_Object:
 	LDX <Temp_Var2
 	LDA CCObjects ,X
 	STA Level_ObjectID, Y
+	STA From_Reserve
 	DEC <Temp_Var3
 	BPL CCAnother_Object
 

@@ -1837,7 +1837,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	Objects_Var1:		.ds 8	; $0689-$0690 Generic variable 1 for objects
 	Objects_Var2:		.ds 8	; $0691-$0698 Generic variable 2 for objects
 
-	Unused699:		.ds 1	; Absolutely no idea, it is set once in one place and never used again... MAY be lost bonus game related?
+	BossBoundBox:		.ds 1	; Absolutely no idea, it is set once in one place and never used again... MAY be lost bonus game related?
 
 	; UNUSED Bonus Game Die counter
 	; While the die is rotating, just used as a counter 0 to 3 to time the rolling animation.
@@ -2925,7 +2925,7 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
-	Current_Save_Slot:	.ds 1	; Current slot we are saving to
+	PowerUp_NoRaise:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
 	From_Reserve:		.ds 1
 	DayNight:			.ds 1	; signifies if it's day or night

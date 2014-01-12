@@ -3237,6 +3237,7 @@ Try_Poison_Mode:
 	AND #PAD_B
 	BEQ Cant_Poison_Mode
 	INC Poison_Mode
+	STA Debug_Snap
 	LDA #$FC
 	STA Air_Change
 	STA Player_StarInv

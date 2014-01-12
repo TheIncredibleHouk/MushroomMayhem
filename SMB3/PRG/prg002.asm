@@ -2027,8 +2027,9 @@ ObjNorm_WoodenPlatFloat:
 	BNE PRG002_AB35	 ; If gameplay is halted, jump to PRG002_AB35 (RTS)
 
 PRG002_AB5E:
-	JSR Object_Move	 ; Apply Y Velocity
+	JSR Object_Move	 ; Apply Velocity
 	LDA Object_TileFeet2
+	BEQ PRG002_AB5E2
 	AND #$3F
 	BNE PRG002_AB5E2
 	LDA #$E0

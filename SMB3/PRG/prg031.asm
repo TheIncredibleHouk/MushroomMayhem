@@ -1193,7 +1193,6 @@ Music_UpdateBend:
 	LSR A	
 	BCC PRG031_E860
 
-	STA Debug_Snap
 	; Diminish the bend
 	DEC Music_Sq1Bend,X
 
