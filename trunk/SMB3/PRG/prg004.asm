@@ -1182,6 +1182,7 @@ ObjInit_HyperThwomp:
 ObjNorm_HyperThwomp:
 	JSR Thwomp_Draw	 ; Draw Thwomp
 	JSR Object_AnySprOffscreen
+	BNE PRG004_A78B
 
 	LDA <Player_HaltGame
 	BNE PRG004_A78B	 ; If gameplay is halted, jump to PRG004_A78B (RTS)

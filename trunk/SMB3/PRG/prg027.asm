@@ -1742,15 +1742,18 @@ InitPals_Per_MapPUp:
 	; Note that the first byte is never actually used.
 	; Also note this should agree with Map_PostJC_PUpPP1/2 in PRG010
 	; See also PRG027 InitPals_Per_MapPUp
-	.byte $FF, $16, $36, $0F	; 0 Small
-	.byte $FF, $16, $36, $0F	; 1 Big
-	.byte $FF, $27, $36, $16	; 2 Fire
-	.byte $FF, $16, $36, $0F	; 3 Leaf
-	.byte $FF, $2A, $36, $0F	; 4 Frog
-	.byte $FF, $17, $36, $0F	; 5 Tanooki
-	.byte $FF, $30, $36, $0F	; 6 Hammer
-	.byte $FF, $30, $36, $0F	; 7 Judgems
-	.byte $FF, $16, $36, $0F	; 8 P-Wing
+	.byte $FF, $16, $36, $0F	; 0 - Mario default palette
+	.byte $FF, $16, $36, $0F	; 1 - #DAHRKDAIZ SUPER MARIO
+	.byte $FF, $30, $36, $06	; 2 - Fire Flower
+	.byte $FF, $16, $36, $0F	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
+	.byte $FF, $28, $36, $0F	; 4 - Frog Suit
+	.byte $FF, $19, $36, $0F	; 5 - #DAHRKDAIZ Koopa Suit
+	.byte $FF, $30, $27, $0F	; 6 - Hammer Suit
+	.byte $FF, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
+	.byte $FF, $27, $36, $06	; 8 - #DAHRKDAIZ Fire Fox Mario
+	.byte $FF, $30, $31, $01	; 9 - Unused
+	.byte $FF, $06, $30, $0F	; A - #DAHRKDAIZ Boo Mario
+	.byte $FF, $36, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Setup_PalData
@@ -1876,20 +1879,8 @@ PRG027_B8C3:
 	; The following patches in the correct palette for the
 	; power-up the Player current has active.  Note this is
 	; ONLY for the INITIAL LOADING of the map screen.
-	LDX Player_Current	; X = Player_Current
-	LDY #$08	 	; Y = 8
-	LDA World_Map_Power,X	; A = World_Map_Power of this player
 
-PRG027_B8CF:
-	CMP InitPal_Per_MapPowerup,Y	; Does this index match the player's current power-up?
-	BEQ PRG027_B8D9	 	; If so, jump to PRG027_B8D9
-	DEY		 	; Y--
-	BPL PRG027_B8CF	 	; While Y >= 0, loop!
-
-	BMI PRG027_B8F9	 ; If no match, jump to PRG027_B8F9 (RTS)
-
-PRG027_B8D9:
-	TYA		 
+	LDA World_Map_Power	; A = World_Map_Power of this player
 	ASL A		 
 	ASL A		 
 	TAY		 	; Y <<= 2
@@ -1901,14 +1892,6 @@ PRG027_B8D9:
 	STA Pal_Data+18
 	LDA InitPals_Per_MapPUp+1,Y
 	STA Pal_Data+17 
-
-	; Mario vs Luigi palette fix: $16 is the first byte in Small,
-	; Big, and Starman.  
-	CMP #$16	 
-	BNE PRG027_B8F9	 ; If palette byte is not $16, jump to PRG027_B8F9 (RTS)
-
-	LDA Map_PlayerPalFix,X	; Get correct color for Player
-	STA Pal_Data+17	 	; Store it!
 
 PRG027_B8F9:
 	; restores the C000 bank

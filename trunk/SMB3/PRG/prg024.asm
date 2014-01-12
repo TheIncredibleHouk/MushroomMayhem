@@ -1412,8 +1412,9 @@ PRG024_A946:
 	; Used for VSync
 	JSR GraphicsBuf_Prep_And_WaitVSyn2
 
-	LDA <Pad_Input
-	AND #PAD_START
+	;LDA <Pad_Input
+	;AND #PAD_START
+	LDA #$00
 	BEQ PRG024_A955	 ; If Player is NOT pressing Start, jump to PRG024_A955
 
 	; Player pressed START -- skips rest of intro, if any

@@ -441,8 +441,8 @@ PRG008_A242:
 
 	; Set player power up based on current suit on 
 	LDX World_Map_Power
-	LDA MapPowersToSuit,X
-	STA Player_QueueSuit 
+	INX
+	STX Player_QueueSuit 
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled
@@ -459,18 +459,6 @@ PRG008_A242:
 	STA <Player_XStart	; Also set Player_XStart
 
 	JSR Level_InitAction_Do	; Do whatever action this level wants at the start, if any
-
-	LDA Map_Power_Disp
-	CMP #$08
-	BNE PRG008_A277	 ; If Map_Power_Disp <> 8 (P-Wing), jump to PRG008_A277
-
-	; Max "Power"
-	LDA #$7f	
-	STA Player_Power ; Player_Power = $7F
-
-	; Infinite flight time
-	LDA #$ff
-	STA Player_FlyTime ; Player_FlyTime = $FF
 
 PRG008_A277:
 
@@ -1530,6 +1518,7 @@ PRG008_A891:
 PRG008_A892:
 	LDA #$00
 	STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
+	STA WasDepletingAir
 
 	LDA #$18
 	STA <Temp_Var10
@@ -5615,6 +5604,11 @@ CheckPlayer_YHi:
 	LDA <Player_YHi
 	BPL NotYHi
 	LDA <Player_Y
+	LDX Player_IsClimbing
+	BEQ NormalYHiCheck
+	SUB #$10
+	
+NormalYHiCheck:
 	CMP #$F4
 	BCS NotYHi
 

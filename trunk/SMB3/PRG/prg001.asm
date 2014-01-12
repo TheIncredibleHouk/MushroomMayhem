@@ -1237,6 +1237,13 @@ Do_Suit_Power:
 	TAY		 ; Suit -> 'Y'
 	INY		 ; Y++ (valid Player_QueueSuit value)
 	TYA
+	CMP #$05
+	BNE Do_Suit_Power1
+	LDA #$01
+	STA Air_Change
+	LDA #$05
+
+Do_Suit_Power1:
 	JMP Do_PUp_Poof_Collect
 
 
@@ -1368,6 +1375,13 @@ PowerUp_PlaySound:
 	RTS		 ; Return
 
 PowerUp_DoRaise:
+	LDA PowerUp_NoRaise
+	BEQ PowerUp_DoRaise1
+	LDA #$00
+	STA PowerUp_NoRaise
+	STA Objects_Timer, X
+
+PowerUp_DoRaise1:
 	LDA Objects_Timer,X
 	BEQ PRG001_A940	 ; If timer expired, jump to PRG001_A940 (will NOT return here if game is halted)
 
@@ -1726,8 +1740,6 @@ PRG001_AAC5:
 
 	LDY #$05	 ; Y = 5 (power-up always in slot 5)
 
-	LDA Objects_State,Y	; ? Maybe they were going to check first?
-
 	; Set the ID
 	LDA <Temp_Var1
 	STA Level_ObjectID,Y
@@ -2015,6 +2027,7 @@ ObjHit_SuperLeaf:
 
 Do_Leaf_Power:
 	LDA #$04
+	
 	JMP Do_PUp_Poof_Collect
 	
 ObjInit_Vine:
@@ -2181,6 +2194,8 @@ PRG001_AD23:
 
 	; Basically this bumps the object up by 1 pixel...
 ObjInit_Coin:
+	LDA #$00
+	STA PowerUp_NoRaise
  	RTS		 ; Return
 
 ObjInit_WarpHide:

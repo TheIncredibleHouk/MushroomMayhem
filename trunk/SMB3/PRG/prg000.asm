@@ -175,7 +175,7 @@ Object_BoundBox:
 	.byte  1,  13,   2,   8	; 1
 	.byte  2,  12,   2,  24	; 2
 	.byte 10,  27,  -2,  18	; 3
-	.byte  1,  14,   2,  26	; 4 (UNUSED)
+	.byte  2,  30,   2,  30	; 4 (UNUSED)
 	.byte  5,  14,  10,  18	; 5 (UNUSED)
 	.byte  2,  27,  -2,  34	; 6
 	.byte  2,  20,   2,  12	; 7
@@ -451,60 +451,15 @@ Exp_Inc:
 	RTS		 ; Return
 
 
-Conveyor_CarryX:	.byte -$01, $01	; Left, Right
-Conveyor_CarryXHi:	.byte $FF, $00	; 16-bit sign extension
-
 	; Checks for and handles object touching conveyor belt by carrying object
 ; $C4D6
 Object_HandleConveyorCarry:
-	LDA <Objects_DetStat,X
-	AND #$03
-	BNE PRG000_C4F5	 ; If object has hit a wall, jump to PRG000_C4F5 (RTS)
-
-	LDA Object_TileFeet2
-	SUB #TILE2_CONVEYORL
-	CMP #$02
-	BGE PRG000_C4F5	 ; If object is not standing on a conveyor belt, jump to PRG000_C4F5 (RTS)
-
-	TAY		 ; Conveyor tile relative index -> 'Y'
-
-	LDA <Objects_X,X
-	ADC Conveyor_CarryX,Y
-	STA <Objects_X,X
-
-	LDA <Objects_XHi,X
-	ADC Conveyor_CarryXHi,Y
-	STA <Objects_XHi,X
-
-PRG000_C4F5:
 	RTS		 ; Return
 
 
 	; Checks for and handles object touching conveyor belt, storing result into LRBounce_Vel
 ; $CF46
 Object_HandleConveyorBounceVel:
-	LDA Level_PSwitchCnt
-	BNE PRG000_C4F5	 ; If P-Switch is active, jump to PRG000_C4F5
-
-	LDA Object_TileFeet2
-	SUB #TILE2_CONVEYORL
-	CMP #$02
-	BGE PRG000_C4F5	 ; If object is not standing on a conveyor belt, jump to PRG000_C4F5 (RTS)
- 
-	TAY		 ; Conveyor tile relative index -> 'Y'
-
-	LDA Conveyor_CarryX,Y
-
-	LDY #-$01	 ; Y = -$01
-
-	EOR <Objects_XVel,X	 ; Check if object is not going with conveyor
-	BMI PRG000_C511	 ; If the signs differ (going against conveyor), jump to PRG000_C511
-
-	LDY #$01	 ; Y = $01
-
-PRG000_C511:
-	STY LRBounce_Vel ; -> LRBounce_Vel
-
 	RTS		 ; Return
 
 
@@ -1281,6 +1236,7 @@ PRG000_CA5C:
 	; by bit 7.  
 
 	LDX #$00	 ; X = 0 (fifth CHRROM bank)
+	STX BossBoundBox
 	LDA ObjectGroup_PatTableSel,Y	 ; Load CHRROM bank request for this object, if any
 	BEQ PRG000_CA7F	 ; If CHRROM bank request is zero, no change, jump to PRG000_CA7F
 	BPL PRG000_CA7A	 ; If CHRROM bank request does not have bit 7 set, jump to PRG000_CA7A
@@ -2334,10 +2290,15 @@ PRG000_CEBB:
 
 PRG000_CEBE:
 PRG000_CEC6:
+	LDA Objects_State, X
+	CMP #OBJSTATE_HELD
+	BNE PRG000_CEC6_1
+
 	LDA <Pad_Holding
 	AND #(PAD_UP)
 	BNE PRG000_CEC6_2
 	
+PRG000_CEC6_1:
 	LDA #$30
 	BNE PRG000_CEC6_3
 
@@ -2391,9 +2352,14 @@ PRG000_CEDC:
 	BEQ PRG000_CEE8
 
 	; Set object state to 5 (Kicked)
-	
+	LDA Objects_State, X
+	STA TempA
 	LDA #OBJSTATE_KICKED
-	STA Objects_State,X
+	STA Objects_State, X
+	LDA TempA
+	CMP #OBJSTATE_HELD
+	BNE PRG000_CEEE_3
+	
 
 PRG000_CEE8:
 
@@ -2401,8 +2367,10 @@ PRG000_CEE8:
 	LDA <Pad_Holding
 	AND #PAD_UP
 	BEQ PRG000_CEEE
+
 	LDA <Player_XVel
 	BNE PRG000_CEED
+
 	LDA #$00
 	STA <Objects_XVel, X
 	LDA #OBJSTATE_SHELLED
@@ -2414,6 +2382,7 @@ PRG000_CEED:
 PRG000_CEEE:
 	STA <Objects_YVel,X
 
+PRG000_CEEE_3:
 	LDA Level_ObjectID,X
 	CMP #OBJ_KEY
 	BNE PRG000_CEEE_2
@@ -3062,6 +3031,7 @@ Object_HandleBumpUnderneath:
 	BEQ Object_HandleBumpUnderneath0
 	AND #$3F
 	BEQ Object_HandleBumpUnderneath1
+
 Object_HandleBumpUnderneath0:
 	JMP Player_HitEnemy	 ; If object did not detect a block bump clear tile, jump to Player_HitEnemy 
 
@@ -3811,7 +3781,8 @@ Level_PrepareNewObject:
 	STA Objects_FlipBits,X
 	STA Objects_Frame,X	
 	STA Objects_ColorCycle,X
-	STA <Objects_DetStat,X	
+	STA <Objects_DetStat,X
+
 
 	CPX #$06
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)
@@ -4901,8 +4872,12 @@ Object_CalcBoundBox:
 	; X is object's slot
 	; Y is group relative object index
 
+	LDA BossBoundBox
+	BNE CustomBoundBox
 	LDY Level_ObjectID,X	 ; Get this object's ID -> Y
 	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
+
+CustomBoundBox:
 	AND #OAT_BOUNDBOXMASK	; Mask off the bounding box
 	ASL A		 
 	ASL A		 ; Shift left 2

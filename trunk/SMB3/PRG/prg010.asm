@@ -2473,16 +2473,10 @@ MapMove_DeltaDiff = MapMove_DeltaYC - MapMove_DeltaY	; For clarity
 PRG010_CDA7:
 	.byte $06, $05, $0A, $09, $09, $0A, $05, $06
 
-	; Color table for setting the 2nd entry power up color on the map used for clearing Judgem's cloud!
-	; NOTE: This is a patch table, you'll want it to agree with PRG027's "InitPals_Per_MapPUp"
-Map_PostJC_PUpPP1:	.byte $16, $16, $27, $16, $2A, $17, $30
 
 	; In conjunction with the table above; patches $1A (Luigi) for $16 as needed
 Map_PostJC_PUpPML:	.byte $16, $1A
 
-	; Color table for setting the 4th entry power up color on the map used for clearing Judgem's cloud!
-	; NOTE: This is a patch table, you'll want it to agree with PRG027's "InitPals_Per_MapPUp"
-Map_PostJC_PUpPP2:	.byte $0F, $0F, $16, $0F, $0F, $0F, $0F
 
 
 MO_NormalMoveEnter:
@@ -2563,24 +2557,10 @@ PRG010_CE39:
 
 	; Restore the displayed power up to the Player's actual power up
 	LDX Player_Current
-	LDA World_Map_Power,X
+	LDA World_Map_Power
 	STA Map_Power_Disp	
 
 	TAY		 	; A = Player's actual power up
-
-	; Get the color we need to patch in...
-	LDA Map_PostJC_PUpPP1,Y
-	CMP #$16	 
-	BNE PRG010_CE54	 	; If color <> $16 (Mario's red), jump to PRG010_CE54
-
-	; Otherwise possibly change to Luigi green, if that's appropriate...
-	LDA Map_PostJC_PUpPML,X	 
-
-PRG010_CE54:
-	; Copy appropriate power up patch values into the palette buffer
-	STA Palette_Buffer+$11
-	LDA Map_PostJC_PUpPP2,Y
-	STA Palette_Buffer+$13	
 
 	; Queue the palette buffer to update!
 	LDA #$06
@@ -2746,28 +2726,30 @@ Map_Power_Pats_F1:
 	; See code following label PRG010_D045 for this hardcode...
 	.byte $11, $11, $2D, $2F	; Small
 	.byte $81, $83, $A1, $A3	; Super Mushroom
-	.byte $81, $83, $A1, $A3	;
-	.byte $81, $83, $A1, $A3	;
-	.byte $85, $87, $A5, $A7	; Fire Flower
-	.byte $89, $8B, $A9, $AB	; Fire Flower
-	.byte $8D, $8D, $AD, $AD	; Leaf
-	.byte $91, $93, $B1, $B3	; Frog Suit
-	.byte $95, $97, $B5, $B7	; Tanooki Suit
-	.byte $99, $9B, $B9, $BB	; Hammer Suit
-	.byte $9D, $9F, $BD, $BF	; Judgems Cloud
+	.byte $81, $83, $A1, $A3	; Fire
+	.byte $85, $87, $A5, $A7	; Racoon
+	.byte $8D, $8D, $AD, $AD	; Frog
+	.byte $91, $93, $B1, $B3	; Koopa
+	.byte $99, $9B, $B9, $BB	; Hammer
+	.byte $81, $83, $A1, $A3	; Ice
+	.byte $89, $8B, $A9, $AB	; Fox
+	.byte $99, $9B, $B9, $BB	; None
+	.byte $95, $97, $A5, $A7	; Boo
+	.byte $9D, $9F, $BD, $BF	; Ninja
 
 Map_Power_Pats_F2:
 	.byte $11, $11, $2F, $2D	; Small
 	.byte $83, $81, $A3, $A1	; Super Mushroom
-	.byte $83, $81, $A3, $A1	; Fire Flower
-	.byte $83, $81, $A3, $A1	; Fire Flower
-	.byte $87, $85, $A7, $A5	; Leaf
-	.byte $8B, $89, $AB, $A9	; Frog Suit
-	.byte $8F, $8F, $AF, $AF	; Tanooki Suit
-	.byte $93, $91, $B3, $B1	; Hammer Suit
-	.byte $97, $95, $B7, $B5	; Judgems Cloud
-	.byte $9B, $99, $BB, $B9	; P-Wing
-	.byte $9F, $9D, $BF, $BD
+	.byte $83, $81, $A3, $A1	; Fire
+	.byte $87, $85, $A7, $A5	; Racoon
+	.byte $8F, $8F, $AF, $AF	; Frog
+	.byte $93, $91, $B3, $B1	; Koopa
+	.byte $9B, $99, $BB, $B9	; Hammer
+	.byte $83, $81, $A3, $A1	; Ice
+	.byte $8B, $89, $AB, $A9	; Fox
+	.byte $9B, $99, $BB, $B9	; None
+	.byte $97, $95, $A7, $A5	; Boo
+	.byte $9F, $9D, $BF, $BD	; Ninja
 
 Map_Power_Attrib_F1:
 	; This table defines attributes to be applied per power-up
@@ -2776,31 +2758,33 @@ Map_Power_Attrib_F1:
 	; Byte order is upper left, upper right, lower left, lower right
 	; Note that Small Mario / Judgems do not have a visible "upper"
 	.byte $00, $00, $00, $00	; Small
-	.byte $00, $00, $00, $00	; Super Mushroom
-	.byte $00, $00, $00, $00	; Fire Flower
-	.byte $00, $00, $00, $00	; Leaf
-	.byte $00, $00, $00, $00	; Frog Suit
-	.byte $00, $00, $00, $00	; Frog Suit
-	.byte $00, $40, $00, $40	; Tanooki Suit
-	.byte $00, $00, $00, $00	; Hammer Suit
-	.byte $00, $00, $00, $00	; Judgems Cloud
-	.byte $00, $00, $00, $00	; P-Wing
-	.byte $00, $00, $00, $00	; P-Wing
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $40, $00, $40	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
+	.byte $00, $00, $00, $00	; Small
 
 
 Map_Power_Attrib_F2:
 	; Frame 2; see Map_Power_Attrib_F1
 	.byte $40, $40, $40, $40	; Small
-	.byte $40, $40, $40, $40	; Super Mushroom
-	.byte $40, $40, $40, $40	; Fire Flower
-	.byte $40, $40, $40, $40	; Leaf
-	.byte $40, $40, $40, $40	; Frog Suit
-	.byte $40, $40, $40, $40	; Frog Suit
-	.byte $00, $40, $00, $40	; Tanooki Suit
-	.byte $40, $40, $40, $40	; Hammer Suit
-	.byte $40, $40, $40, $40	; Judgems Cloud
-	.byte $40, $40, $40, $40	; P-Wing
-	.byte $40, $40, $40, $40	; P-Wing
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $00, $40, $00, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
+	.byte $40, $40, $40, $40	; Small
 
 Map_Marker_MorL:
 	.byte $63, $4F		; The (M), (L) small markers

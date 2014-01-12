@@ -575,7 +575,7 @@ PRG030_84D7:
 
 	; Unused699 = 3 (never used)
 	LDA #$03	 
-	STA Unused699
+	;STA Unused699
 
 	; Update_Select = $C0
 	LDA #$c0	 	
@@ -640,7 +640,7 @@ PRG030_857E:
 
 	LDX Player_Current	 ; X = current Player index
 
-	LDA World_Map_Power,X	; X = Player's current world map power
+	LDA World_Map_Power	; X = Player's current world map power
 	STA Map_Power_Disp	; Set as powerup currently displayed 
 
 	LDY #$00	 ; "Darkness" flag (only works correctly on World 8 level 2)
@@ -715,11 +715,6 @@ PRG012_85CE:
 	LDA #26		
 	STA MMC3_PAGE	 
 
-	;JSR StatusBar_Update_Cards	 ; Update status bar cards
-	;JSR StatusBar_UpdateValues	 ; Update other status bar stuff
-	;JSR StatusBar_Fill_MorL	 	 ; Patch in correct M or L on status bar
-	;JSR StatusBar_Fill_World	 ; Fill in correct world number
-
 	LDA #$00	 		; Commit graphics in Graphics_Buffer
 	JSR Video_Do_Update		; Do it!
 
@@ -791,6 +786,7 @@ PRG030_8670:
 	LDA Player_Current
 	BEQ PRG030_8676		; If Player_Current = 0 (Mario), jump to PRG030_8676
 	INX		 	; Otherwise, increment X (use Luigi's name!)
+
 PRG030_8676:
 	TXA		 	; A = X ($0E/$0F, $10/$11)
 	JSR Video_Do_Update	; Do the World X intro box!
@@ -800,29 +796,6 @@ PRG030_8676:
 	; Push the buffered update
 	LDA #$00
 	JSR Video_Do_Update	 
-
-	LDX World_Num	 	
-	LDY World_BGM,X		; Get BGM index for this world
-	CPX #4	 	
-	BNE PRG030_8698		; If we're NOT on world 5, jump to PRG030_8698
-
-	; World 5 special handling (Sky part different music)
-	LDX Player_Current	; X = Player_Current
-	LDA <World_Map_XHi,X	; Get the high byte of this Player's X position
-	BEQ PRG030_8698	 	; If it's equal to 0 (the "lower" part of the Sky World), jump to PRG030_8698
-
-	; Otherwise...
-	LDY #MUS2A_SKY	 ; Use Sky music!
-	JMP PRG030_869F	 
-
-PRG030_8698:
-	; Either not world 5, or ground-side of world 5
-	LDA Map_MusicBox_Cnt	
-	BEQ PRG030_869F		; If Map_MusicBox_Cnt = 0, jump to PRG030_869F
-	LDY #MUS2A_MUSICBOX	 	; Otherwise, play the music box song
-
-PRG030_869F:
-	STY Sound_QMusic2	; Play BGM!
 
 PRG030_86A2:
 	LDA #$00
@@ -1824,8 +1797,9 @@ PRG030_8F31:
 	LDX Player_Current	 ; X = Player_Current
 
 	; Transfer Player's current power up to the World Map counterpart
-	LDA <Player_Suit
-	STA World_Map_Power,X
+	JSR Get_Normalized_Suit
+	STA World_Map_Power
+
 	LDA #$00
 	STA LeftRightInfection
 	LDA #$40
@@ -1953,8 +1927,8 @@ PRG030_8FCA:
 	STA Vert_Scroll_Off
 
 	; Stop the music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
+	;LDA #MUS1_STOPMUSIC
+	;STA Sound_QMusic1
 
 	LDA Map_ReturnStatus
 	BNE PRG030_8FFC	 ; If Player died, jump to PRG030_8FFC
@@ -2060,8 +2034,8 @@ PRG030_9062:
 	DEX		 ; X--
 	BPL PRG030_9062	 ; While X >= 0, loop
 	; Stop any music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
+	;LDA #MUS1_STOPMUSIC
+	;STA Sound_QMusic1
 
 	INC World_Num	 ; Go to next world!
 
@@ -2154,8 +2128,8 @@ PRG030_910C:
 PRG030_9128:
 
 	; Stop any music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
+	;LDA #MUS1_STOPMUSIC
+	;STA Sound_QMusic1
 
 	STY Map_Operation	 ; Map_Operation = 2
 	JMP PRG030_84D7	 	; Jump to PRG030_84D7
@@ -2387,8 +2361,8 @@ PRG030_927E:
 PRG030_929C:
 	
 	; Stop music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
+	;LDA #MUS1_STOPMUSIC
+	;STA Sound_QMusic1
 
 	; Switch bank A000 to page 26
 	LDA #26
@@ -2493,8 +2467,8 @@ PRG030_932E:
 	; All Players are dead and have given up
 
 	; Stop music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
+	;LDA #MUS1_STOPMUSIC
+	;STA Sound_QMusic1
 
 	; Reset game
 	JMP IntReset_Part2
@@ -3202,6 +3176,7 @@ Skip_Level_Position:
 	LDY #$06
 
 	LDA [Temp_Var14], Y
+	BEQ Skip_Set_Music
 	LDX SndCur_Music2	; X = currently playing music
 
 	CPX #MUS2B_PSWITCH
@@ -3211,9 +3186,10 @@ Skip_Level_Position:
 
 	; Queue this music to play
 	STA Level_MusicQueue
+	STA Level_MusicQueueRestore
 
 Skip_Set_Music:
-	STA Level_MusicQueueRestore
+	
 	LDY #$07
 	LDA [Temp_Var14],Y
 	LDX Level_JctCtl

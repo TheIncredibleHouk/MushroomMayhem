@@ -4688,12 +4688,14 @@ HandleLevelEvent
 	.word NoEvent
 	.word FloodFloor1
 	.word FloodFloor2
+	.word FloodFloor3
 
 NoEvent:
 	RTS
 
 FFLevelsY:	.byte $17, $16, $15, $14, $13, $12, $11
 			.byte $10, $0F, $0E, $0D, $0C, $0B, $0A, $09, $08
+			.byte $07, $06, $05, $04
 FloodFloor:
 	LDA #$01
 	STA Player_VibeDisable
@@ -4744,6 +4746,18 @@ FloodFloor2_1:
 	CPX #$10
 	BEQ FloodFloorEnd
 	JMP FloodFloor
+
+FloodFloor3:
+	LDX EventVar
+	BNE FloodFloor3_1
+	LDX #$10
+	STX EventVar
+
+FloodFloor3_1:
+	CPX #$14
+	BEQ FloodFloorEnd
+	JMP FloodFloor
+
 
 
 FloodFloorEnd:
