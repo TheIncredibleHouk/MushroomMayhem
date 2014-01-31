@@ -24,16 +24,16 @@
 
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_InitJumpTable:
-	.word ObjInit_CloudPlatFast	; Object $24 - OBJ_CLOUDPLATFORM_FAST
-	.word ObjInit_PipewayCtlr	; Object $25 - OBJ_PIPEWAYCONTROLLER
+	.word ObjInit_WoodenPlatHorz	; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.word ObjInit_WoodenPlatVert	; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjInit_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
-	.word ObjInit_WoodenPlat	; Object $27 - OBJ_OSCILLATING_H
-	.word ObjInit_WoodenPlat	; Object $28 - OBJ_OSCILLATING_V
+	.word ObjInit_WoodenPlatDiagonal1	; Object $27 - OBJ_OSCILLATING_H
+	.word ObjInit_WoodenPlatDiagonal2	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjInit_TowardsPlayer	; Object $29 - OBJ_SPIKE
-	.word ObjInit_SparkRight		; Object $2A - OBJ_SPARKRIGHT
+	.word ObjInit_Spark		; Object $2A - OBJ_SPARKRIGHT
 	.word ObjInit_SparkLeft		; Object $2B - OBJ_SPARKLEFT
-	.word ObjInit_CloudPlatform	; Object $2C - OBJ_CLOUDPLATFORM
-	.word ObjInit_ChasingFish	; Object $2D - OBJ_BIGBERTHA
+	.word ObjInit_WoodenPlatCCW	; Object $2C - OBJ_CLOUDPLATFORM
+	.word ObjInit_WoodenPlatCW	; Object $2D - OBJ_BIGBERTHA
 	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
 	.word ObjInit_DoNothing		; Object $2F - OBJ_BOO
 	.word ObjInit_HotFootShy	; Object $30 - OBJ_HOTFOOT_SHY
@@ -42,19 +42,19 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DoNothing		; Object $33 - OBJ_NIPPER
 	.word ObjInit_Toad		; Object $34 - OBJ_TOAD
 	.word ObjInit_DoNothing		; Object $35 - OBJ_TOADHOUSEITEM
-	.word ObjInit_WoodenPlatform	; Object $36 - OBJ_WOODENPLATFORM
-	.word ObjInit_OscillatingShort	; Object $37 - OBJ_OSCILLATING_HS
-	.word ObjInit_OscillatingShort	; Object $38 - OBJ_OSCILLATING_VS
+	.word ObjInit_DoNothing	; Object $36 - OBJ_WOODENPLATFORM
+	.word ObjInit_DoNothing	; Object $37 - OBJ_OSCILLATING_HS
+	.word ObjInit_DoNothing	; Object $38 - OBJ_OSCILLATING_VS
 	.word ObjInit_NipperHopping	; Object $39 - OBJ_NIPPERHOPPING
 	.word ObjInit_FallingPlatform	; Object $3A - OBJ_FALLINGPLATFORM
-	.word ObjInit_ChasingFish	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.word ObjInit_DoNothing	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
 	.word ObjInit_WoodenFallingPlat	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.word ObjInit_DoNothing		; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjInit_FloatWoodenPlat	; Object $3E - OBJ_WOODENPLATFORMFLOAT
 	.word ObjInit_TowardsPlayer	; Object $3F - OBJ_DRYBONES
 	.word ObjInit_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjInit_DoNothing		; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjInit_BeachedCheep	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.word ObjInit_DoNothing	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_FallingPlatform	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjInit_HotFoot		; Object $45 - OBJ_HOTFOOT
@@ -66,16 +66,16 @@ ObjectGroup01_InitJumpTable:
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_NormalJumpTable:
-	.word ObjNorm_CloudPlat		; Object $24 - OBJ_CLOUDPLATFORM_FAST
-	.word ObjNorm_DoNothing	; Object $25 - OBJ_PIPEWAYCONTROLLER
+	.word ObjNorm_PlatformPattern		; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.word ObjNorm_PlatformPattern	; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjNorm_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
-	.word ObjNorm_OscillatingH	; Object $27 - OBJ_OSCILLATING_H
-	.word ObjNorm_OscillatingV	; Object $28 - OBJ_OSCILLATING_V
+	.word ObjNorm_PlatformPattern	; Object $27 - OBJ_OSCILLATING_H
+	.word ObjNorm_PlatformPattern	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjNorm_Spike		; Object $29 - OBJ_SPIKE
 	.word ObjNorm_Spark		; Object $2A - OBJ_SPARKRIGHT
 	.word ObjNorm_Spark	; Object $2B - OBJ_SPARKLEFT
-	.word ObjNorm_CloudPlat		; Object $2C - OBJ_CLOUDPLATFORM
-	.word ObjNorm_BigBertha		; Object $2D - OBJ_BIGBERTHA
+	.word ObjNorm_PlatformPattern		; Object $2C - OBJ_CLOUDPLATFORM
+	.word ObjNorm_PlatformPattern		; Object $2D - OBJ_BIGBERTHA
 	.word ObjNorm_Boo	; Object $2E - OBJ_PIRATEBOO
 	.word ObjNorm_Boo		; Object $2F - OBJ_BOO
 	.word ObjNorm_HotfootShy	; Object $30 - OBJ_HOTFOOT_SHY
@@ -85,11 +85,11 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_Toad		; Object $34 - OBJ_TOAD
 	.word ObjNorm_ToadHouseItem	; Object $35 - OBJ_TOADHOUSEITEM
 	.word ObjNorm_WoodenPlatform	; Object $36 - OBJ_WOODENPLATFORM
-	.word ObjNorm_OscillatingH	; Object $37 - OBJ_OSCILLATING_HS
-	.word ObjNorm_OscillatingV	; Object $38 - OBJ_OSCILLATING_VS
+	.word ObjNorm_PlatformPattern	; Object $37 - OBJ_OSCILLATING_HS
+	.word ObjNorm_PlatformPattern	; Object $38 - OBJ_OSCILLATING_VS
 	.word ObjNorm_Nipper		; Object $39 - OBJ_NIPPERHOPPING
 	.word ObjNorm_PathFollowPlat	; Object $3A - OBJ_FALLINGPLATFORM
-	.word ObjNorm_CharginCheepCheep	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.word ObjNorm_DoNothing	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
 	.word ObjNorm_PathFollowPlat	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.word ObjNorm_NipperFireBreathe	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjNorm_WoodenPlatFloat	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -109,7 +109,7 @@ ObjectGroup01_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_CollideJumpTable:
-	.word ObjHit_CloudPlat		; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.word ObjHit_DoNothing		; Object $24 - OBJ_CLOUDPLATFORM_FAST
 	.word ObjHit_DoNothing		; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjHit_DoNothing		; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjHit_DoNothing		; Object $27 - OBJ_OSCILLATING_H
@@ -117,7 +117,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DoNothing		; Object $29 - OBJ_SPIKE
 	.word Player_GetHurt		; Object $2A - OBJ_SPARKRIGHT
 	.word Player_GetHurt	; Object $2B - OBJ_SPARKLEFT
-	.word ObjHit_CloudPlat		; Object $2C - OBJ_CLOUDPLATFORM
+	.word ObjHit_DoNothing		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjHit_DoNothing		; Object $2D - OBJ_BIGBERTHA
 	.word Player_Take_Coins		; Object $2E - OBJ_PIRATEBOO
 	.word Player_GetHurt		; Object $2F - OBJ_BOO
@@ -151,16 +151,16 @@ ObjectGroup01_CollideJumpTable:
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup01_Attributes:
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $24 - OBJ_CLOUDPLATFORM_FAST
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $25
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48		; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48		; Object $25
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $28 - OBJ_OSCILLATING_V
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $29 - OBJ_SPIKE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2A - OBJ_SPARKRIGHT
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2B - OBJ_SPARKLEFT
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2C - OBJ_CLOUDPLATFORM
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $2D - OBJ_BIGBERTHA
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2C - OBJ_CLOUDPLATFORM
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2D - OBJ_BIGBERTHA
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2E - OBJ_PIRATEBOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2F - OBJ_BOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $30 - OBJ_HOTFOOT_SHY
@@ -200,7 +200,7 @@ ObjectGroup01_Attributes:
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP2	; Object $24 - OBJ_CLOUDPLATFORM_FAST
-	.byte OA2_TDOGRP0	; Object $25
+	.byte OA2_TDOGRP2	; Object $25
 	.byte OA2_TDOGRP2	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA2_TDOGRP2	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA2_TDOGRP2	; Object $28 - OBJ_OSCILLATING_V
@@ -208,7 +208,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP3	; Object $2A - OBJ_SPARKRIGHT
 	.byte OA2_TDOGRP3	; Object $2B - OBJ_SPARKLEFT
 	.byte OA2_TDOGRP2	; Object $2C - OBJ_CLOUDPLATFORM
-	.byte OA2_TDOGRP0	; Object $2D - OBJ_BIGBERTHA
+	.byte OA2_TDOGRP2	; Object $2D - OBJ_BIGBERTHA
 	.byte OA2_TDOGRP1	; Object $2E - OBJ_PIRATEBOO
 	.byte OA2_TDOGRP1	; Object $2F - OBJ_BOO
 	.byte OA2_TDOGRP0	; Object $30 - OBJ_HOTFOOT_SHY
@@ -230,7 +230,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA2_TDOGRP0	; Object $41 - OBJ_ENDLEVELCARD
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $42 - OBJ_ANTIGRAVITYCHEEP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $43 - OBJ_BEACHEDCHEEP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA2_TDOGRP9	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA2_TDOGRP0	; Object $45 - OBJ_HOTFOOT
 	.byte OA2_TDOGRP2	; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -242,7 +242,7 @@ ObjectGroup01_Attributes2:
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $24 - OBJ_CLOUDPLATFORM_FAST
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $25
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $25
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $28 - OBJ_OSCILLATING_V
@@ -250,7 +250,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2A - OBJ_SPARKRIGHT
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_SPARKLEFT
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_CLOUDPLATFORM
-	.byte OA3_HALT_NORMALONLY 	; Object $2D - OBJ_BIGBERTHA
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $2D - OBJ_BIGBERTHA
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2F - OBJ_BOO
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $30 - OBJ_HOTFOOT_SHY
@@ -283,7 +283,7 @@ ObjectGroup01_Attributes3:
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup01_PatTableSel:
-	.byte OPTS_SETPT5 | $0E	; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.byte OPTS_NOCHANGE	; Object $24 - OBJ_CLOUDPLATFORM_FAST
 	.byte OPTS_NOCHANGE	; Object $25
 	.byte OPTS_NOCHANGE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OPTS_NOCHANGE	; Object $27 - OBJ_OSCILLATING_H
@@ -291,8 +291,8 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT5 | $0A	; Object $29 - OBJ_SPIKE
 	.byte OPTS_SETPT5 | $0A	; Object $2A - OBJ_SPARKRIGHT
 	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_SPARKLEFT
-	.byte OPTS_SETPT5 | $0E	; Object $2C - OBJ_CLOUDPLATFORM
-	.byte OPTS_SETPT5 | $1A	; Object $2D - OBJ_BIGBERTHA
+	.byte OPTS_NOCHANGE	; Object $2C - OBJ_CLOUDPLATFORM
+	.byte OPTS_NOCHANGE	; Object $2D - OBJ_BIGBERTHA
 	.byte OPTS_SETPT5 | $4E	; Object $2E - OBJ_PIRATEBOO
 	.byte OPTS_SETPT5 | $12	; Object $2F - OBJ_BOO
 	.byte OPTS_SETPT5 | $12	; Object $30 - OBJ_HOTFOOT_SHY
@@ -334,7 +334,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $2A - OBJ_SPARKRIGHT
 	.byte KILLACT_STANDARD	; Object $2B - OBJ_SPARKLEFT
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_CLOUDPLATFORM
-	.byte KILLACT_NORMALSTATE	; Object $2D - OBJ_BIGBERTHA
+	.byte KILLACT_STANDARD	; Object $2D - OBJ_BIGBERTHA
 	.byte KILLACT_STANDARD	; Object $2E - OBJ_PIRATEBOO
 	.byte KILLACT_STANDARD	; Object $2F - OBJ_BOO
 	.byte KILLACT_POOFDEATH	; Object $30 - OBJ_HOTFOOT_SHY
@@ -397,7 +397,7 @@ ObjectGroup01_PatternStarts:
 ObjectGroup01_PatternSets:
 	; (End restricted alignment space)
 
-ObjP25:
+
 ObjP2F:
 ObjP35:
 ObjP47:
@@ -408,8 +408,12 @@ ObjP45:
 ObjP31:
 ObjP32:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $71, $71
+
+ObjP25:
 ObjP26:
 ObjP27:
+ObjP2C:
+ObjP2D:
 ObjP28:
 ObjP36:
 ObjP37:
@@ -425,11 +429,7 @@ ObjP34:
 	.byte $71, $71, $71, $71 ; #DAHRKDAIZ - Toad looks like Hammer Bros.
 ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
-ObjP2D:
-	.byte $81, $83, $85, $8D, $A1, $8B, $81, $83, $85, $87, $89, $8B, $81, $83, $85, $87, $89, $A4, $81, $83, $85, $8D, $A1, $8B, $81, $83, $85, $8D, $A1, $A4, $71, $A3, $A5, $71, $71, $71, $71, $99, $9B, $71, $71, $71
 ObjP24:
-ObjP2C:
-	.byte $81, $83, $83, $83, $85, $87
 ObjP3F:
 	.byte $C1, $C3, $C5, $C7, $C9, $CB, $CD, $CF, $D1, $D3, $D5, $F9, $DD, $DF
 	
@@ -1160,15 +1160,21 @@ PRG002_A663:
 PRG002_A68B:
 	RTS		 ; Return
 
-ObjInit_PipewayCtlr:
-	
-	RTS		 ; Return
-
-
 ObjInit_BeachedCheep:
+	LDY Objects_Property, X
+	LDA BeachedCheep_VFlip, Y
+	STA Objects_FlipBits, X
+	STA Objects_Var1, X
+	CPY #$02
+	BNE ObjInit_BeachedCheep2
+	LDA #$30
+	STA <Objects_YVel, X
+
+ObjInit_BeachedCheep2:
 	JSR Object_WorldDetect4
 	LDA Objects_InWater, X
 	BEQ ObjInit_BeachedCheep1
+	RTS
 
 BeachedCheepReset:
 	LDA #$00
@@ -1183,6 +1189,8 @@ ObjInit_BeachedCheep1:
 	LDA BeachedCheep_XVel, Y
 	STA <Objects_XVel, X
 	LDA BeachedCheep_Flip, Y
+	LDY Objects_Property, X
+	ORA BeachedCheep_VFlip, Y
 	STA Objects_FlipBits, X
 	RTS
 
@@ -1190,6 +1198,16 @@ PRG002_A772:	.byte $20, $20, -$20, -$20, $00, $00
 	
 BeachedCheep_XVel: .byte $10, $F0
 BeachedCheep_Flip: .byte SPR_HFLIP, 00
+BeachedCheep_VFlip: .byte $00, SPR_VFLIP, $00
+
+BeachedCheep_PondJump:
+	.byte $A0, $50
+
+BeachedCheep_GroundBounce: 
+	.byte $D0, $08, $D0
+
+BeachedCheep_CeilingBounce: 
+	.byte $08, $30, $30
 
 ObjNorm_BeachedCheep:
 	LDA <Player_HaltGame
@@ -1200,29 +1218,58 @@ ObjNorm_BeachedCheep:
 	LDA Objects_Var1, X
 	BNE ObjNorm_BeachedCheep1
 	INC Objects_Var1, X
-	LDA #$A0
+	LDY Objects_Property, X
+	LDA BeachedCheep_PondJump, Y
 	STA <Objects_YVel, X
 	JSR Level_ObjCalcXDiffs
 	LDA BeachedCheep_XVel, Y
 	STA <Objects_XVel, X
 	LDA BeachedCheep_Flip, Y
+	LDY Objects_Property, X
+	ORA BeachedCheep_VFlip, Y
 	STA Objects_FlipBits, X
 
 ObjNorm_BeachedCheep1:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
+	LDA Objects_Property, X
+	BEQ Normal_Bounce
+	CMP #$01
+	BNE DoNoGravity
+	STA ReverseGravity
+	BEQ Normal_Bounce
+
+DoNoGravity:
+	STA NoGravity
+
+Normal_Bounce:
 	JSR Object_InteractWithWorld
 	JSR Player_HitEnemy
 
 	LDA Objects_DetStat, X
 	AND #$04
 	BEQ ObjNorm_BeachedCheep2
-	
-	LDA #$D0
+
+	LDY Objects_Property, X
+	LDA BeachedCheep_GroundBounce, Y
 	STA <Objects_YVel, X
 
 ObjNorm_BeachedCheep2:
-	LDA Objects_YVel, X
-	BMI PRG002_A7E0
+	LDA Objects_DetStat, X
+	AND #$08
+	BEQ ObjNorm_BeachedCheep3
+
+	LDY Objects_Property, X
+	LDA BeachedCheep_CeilingBounce, Y
+	STA <Objects_YVel, X
+
+ObjNorm_BeachedCheep3:
+	LDA Objects_Property, X
+	BEQ PRG002_A7DF
+	LDA <Objects_Y, X
+	AND #$0F
+	BNE PRG002_A7E0
+
+PRG002_A7DF:
 	LDA Objects_InWater, X
 	BEQ PRG002_A7E0
 	JSR BeachedCheepReset
@@ -1234,6 +1281,7 @@ PRG002_A7E0:
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
+
 PRG002_A7E1:
 	JMP Object_ShakeAndDraw	 ; Draw Cheep Cheep and don't come back!
 
@@ -1416,9 +1464,6 @@ PRG002_A8C5:
 PRG002_A8CC:
 	RTS		 ; Return
 
-Boo_VelAccel:	.byte $01, -$01
-Boo_VelLimit:	.byte $10, -$10
-
 ObjNorm_Boo:
 	LDA Level_ObjectID, X
 	CMP #OBJ_PIRATEBOO		; it's pirate boo, chase Mario ALWAYS!
@@ -1434,42 +1479,7 @@ ObjNorm_Boo:
 	BEQ PRG002_AA46	 ; Jump (technically always) to PRG002_AA46
 
 PRG002_A8DE:
-	JSR Level_ObjCalcXDiffs
-
-	LDA <Objects_XVel,X
-	CMP Boo_VelLimit,Y	
-	BEQ PRG002_A8EE	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
-
-	ADD Boo_VelAccel,Y	 ; Boo accelerates!
-	STA <Objects_XVel,X	 ; Update Boo's X velocity
-
-PRG002_A8EE:
-
-	; Set flip bit as appropriate
-	LDA FacePlayer_FlipBitsStart+1,Y
-	STA Objects_FlipBits,X	
-
-	JSR Object_CalcCoarseYDiff
-
-	LDY #$00	 ; Y = 0 (Player is lower, move down!)
-
-	LDA <Temp_Var15
-	SUB #$04
-	BMI PRG002_A841
-
-	INY		 ; Y = 1 (Player is higher, move up!)
-
-PRG002_A841:
-	LDA <Objects_YVel,X
-	CMP Boo_VelLimit,Y
-	BEQ PRG002_A84E	 ; If Boo is at his acceleration limit, jump to PRG002_A84E
-
-	ADD Boo_VelAccel,Y	 ; Boo accelerates!
-	STA <Objects_YVel,X	 ; Update Boo's Y velocity
-
-PRG002_A84E:
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
+	JSR Chase
 	LDA #$01	 ; A = 1 (frame 1, chase!)
 
 PRG002_AA46:
@@ -1734,60 +1744,75 @@ PRG002_AA21:
 	LDX <SlotIndexBackup		 ; X = object slot index
 	RTS		 ; Return
 
-ObjInit_CloudPlatFast:
+PlatformTimers:
+	.byte $00, $10, $20, $30, $40, $50, $60
 
-	; Set X velocity to -$0A
-	LDA #-$0A
+ObjInit_WoodenPlatHorz:
+	LDA Objects_Property, X
+	TAY
+	LDA PlatformTimers, Y
+	STA Objects_Var10, X
+	LDA #$00
+	STA Objects_Property, X
+	JMP InitPatrol
 
-PRG002_AA37:
-	STA <Objects_XVel,X
+ObjInit_WoodenPlatVert:
+	LDA Objects_Property, X
+	TAY
+	LDA PlatformTimers, Y
+	STA Objects_Var11, X
+	LDA #$01
+	STA Objects_Property, X
+	JMP InitPatrol
 
+ObjInit_WoodenPlatDiagonal1:
+	LDA Objects_Property, X
+	TAY
+	LDA PlatformTimers, Y
+	STA Objects_Var10, X
+	STA Objects_Var11, X
+	LDA #$02
+	STA Objects_Property, X
+	JMP InitPatrol
+
+ObjInit_WoodenPlatDiagonal2:
+	LDA Objects_Property, X
+	TAY
+	LDA PlatformTimers, Y
+	STA Objects_Var10, X
+	STA Objects_Var11, X
+	LDA #$03
+	STA Objects_Property, X
+	JMP InitPatrol
+
+ObjInit_WoodenPlatCCW:
+	LDA Objects_Property, X
+	TAY
+	LDA PlatformTimers, Y
+	STA Objects_Var10, X
+	STA Objects_Var11, X
+	LDA #$04
+	STA Objects_Property, X
+	JMP InitPatrol
+
+ObjInit_WoodenPlatCW:
+	LDA Objects_Property, X
+	TAY
+	LDA PlatformTimers, Y
+	STA Objects_Var10, X
+	STA Objects_Var11, X
+	LDA #$05
+	STA Objects_Property, X
+	JMP InitPatrol
+	
 ObjInit_WoodenPlat:
-
-	; Platform starts one pixel higher than its placement
-	LDA <Objects_Y,X
-	BNE PRG002_AA3F
-	DEC <Objects_YHi,X
-PRG002_AA3F:
-	DEC <Objects_Y,X
-
-PRG002_AA41:
 	RTS		 ; Return
 
 
-ObjInit_CloudPlatform:
-	LDA #-$06	 ; X velocity = -$06
-	BNE PRG002_AA37	 ; Jump (technically always) to PRG002_AA37
-
-ObjInit_WoodenPlatform:
-	LDA #-$08	 ; X velocity = -$08
-	BNE PRG002_AA37	 ; Jump (technically always) to PRG002_AA37
-
-ObjInit_OscillatingShort:
-	INC <Objects_Var4,X	; Objects_Var4 = 1 (selects the short timer, less distance)
-	BNE ObjInit_WoodenPlat	 ; Jump (technically always) to ObjInit_WoodenPlat
-
-
-ObjNorm_CloudPlat:
-	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
-
-	LDA <Player_HaltGame
-	BNE PRG002_AA41	 ; If gameplay halted, jump to PRG002_AA41 (RTS)
-
-	JSR Object_ApplyXVel	 	; Apply object's X velocity
-	JMP Object_HitTestRespond	; Do hit test and respond, and don't come back!
-
-
-ObjHit_CloudPlat:
-	LDA <Temp_Var12
-	LSR A
-	BCC PRG002_AA85	 ; If not hit by Player jumping on top, jump to PRG002_AA85 (RTS)
-
-	LDA <Player_YVel
-	BMI PRG002_AA85	 ; If Player is moving upward, jump to PRG002_AA85 (RTS)
-
 Player_StandOnPlatform:
 	; Set Player to object's Y - 31
+	LDA <Player_YVel
+	BMI PRG002_AA85
 	LDA <Objects_Y,X	 
 	SUB #31
 	STA <Player_Y
@@ -1795,29 +1820,22 @@ Player_StandOnPlatform:
 	SBC #$00
 	STA <Player_YHi
 
+	LDA <Objects_XVel, X
+	BEQ PRG002_AA84
+	LDA #$01
+	STA Player_OnPlatform
+
 	; Flag Player as NOT mid-air
+PRG002_AA84:
 	LDY #$00
 	STY <Player_InAir
-
-	LDA Object_VelCarry
-	BPL PRG002_AA7B	
-
-	DEY		 ; Y = -1 (provides a sort of carry if Player's X Velocity caused one)
-
-PRG002_AA7B:
-	; Add to Player_X, with carry
-	ADD <Player_X
-	STA <Player_X
-	TYA
-	ADC <Player_XHi
-	STA <Player_XHi
 
 PRG002_AA85:
 	RTS		 ; Return
 
 ObjInit_WoodenPlatFallGen:
 	LDA #$FC
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	LDA Objects_SprAttr,X
 	ORA #SPR_BEHINDBG
 	STA Objects_SprAttr,X
@@ -1892,7 +1910,7 @@ CreatePlatForm:
 	
 ObjNorm_WoodenPlatFallApplyY:
 	LDA #$FC
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	JSR Object_ApplyYVel	 ; Apply X velocity
 
 ObjNorm_WoodenPlatFallGenRTS:
@@ -1928,77 +1946,19 @@ Object_HitFloorAlign:
 	BEQ PRG002_AAA6	 ; If object has NOT hit ground, jump to PRG002_AAA6 (RTS)
 	JMP Object_HitGround	 ; Otherwise, align to ground and don't come back!
 
-	; Oscillating platform velocity and limits by direction
-OscXVelLimit:	.byte -$10, $10
-OscXVel:	.byte -$01, $01
-
-ObjNorm_OscillatingH:
-	LDA <Player_HaltGame
-	BNE DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
-
-	JSR Platform_Oscillate	 ; Do platform oscillation
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JMP PlayerPlatform_Collide	 ; Do platform-player collision tests and don't come back!
-
 	; Timers set per direction (long and short, respectively)
-OscTimerSets:	.byte $41, $23	; longer timer means longer travel
-
-Platform_Oscillate:
-	LDA Objects_Timer,X	 
-	BNE DeleteIfOffAndDrawWide	 ; If timer not expired, Delete if off-screen, otherwise draw wide 48x16 sprite
-
-	LDA Level_NoStopCnt
-	LSR A
-	BCS DeleteIfOffAndDrawWide	 ; Every other tick, Delete if off-screen, otherwise draw wide 48x16 sprite
-
-	LDY <Objects_Var5,X	 ; Y = Objects_Var5 (direction of oscillation)
-
-	; 
-	LDA <Objects_XVel,X
-	ADC OscXVel,Y
-	STA <Objects_XVel,X
-
-	CMP OscXVelLimit,Y
-	BNE DeleteIfOffAndDrawWide	 ; If platform not hit the velocity limit, Delete if off-screen, otherwise draw wide 48x16 sprite
-
-	; Change direction!
-	TYA
-	EOR #$01
-	STA <Objects_Var5,X
-
-	LDY <Objects_Var4,X	; Y = Var4 (specifies length)
-
-	; Reset timer
-	LDA OscTimerSets,Y
-	STA Objects_Timer,X
 
 DeleteIfOffAndDrawWide:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
+	JSR Object_DeleteOffScreen_N2	 ; Delete object if it falls off-screen
 	JMP LogPlat_Draw	 ; Jump to LogPlat_Draw
 
-ObjNorm_OscillatingV:
+ObjNorm_PlatformPattern:
 	LDA <Player_HaltGame
 	BNE DeleteIfOffAndDrawWide	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
 
-	; Vertical oscillating platform reuses the horizontal's code,
-	; so the YVel is set equal to the XVel
-	LDA <Objects_YVel,X
-	STA <Objects_XVel,X
-
-	JSR Platform_Oscillate	 ; Do platform oscillation
-
-	; Same deal, Platform_Oscillate is working with the XVel, 
-	; so transfer is into the YVel..
-	LDA <Objects_XVel,X
-	STA <Objects_YVel,X
-
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-
-	; Clear X velocity remainders
-	LDA #$00
-	STA Object_VelCarry
-
-	JMP PlayerPlatform_Collide	; Do Player-platform collision and don't come back!
+	JSR DoPatrol
+	JSR PlayerPlatform_Collide
+	JMP DeleteIfOffAndDrawWide
 
 ObjInit_FloatWoodenPlat:
 	LDA Level_AScrlConfig
@@ -2134,74 +2094,8 @@ ObjInit_FallingPlatform:
 PRG002_ABB9:
 	RTS		 ; Return
 
-	; Index offsets looking for next path element
-WoodenPlat_ScanIndices:
-	.byte -$06, $06, -$05, $05, -$04, $04, -$03, $03, -$02, $02, -$01, $01, $00
-WoodenPlat_ScanIndices_End:
-
-
-	; All of the following WoodenPlat_* are parallel arrays 
-
-	; Determines which direction the platform should seek for its next path tile
-WoodenPlat_NextTileIdx:
-	.byte $03, $02, $02, $02
-	.byte $02, $00, $00, $00
-	.byte $01, $01, $01, $01
-	.byte $03, $03, $03, $03
-
-	; The different path tiles the platform may encounter (Typical Set)
-WoodenPlat_PathTiles:
-	.byte TILEA_PATH_VERT, TILEA_PATH_625B2T_L, TILEA_PATH_625B2T_U, TILEA_PATH_45B2T
-	.byte TILEA_PATH_HORZ, TILEA_PATH_45T2B, TILEA_PATH_625T2B_L, TILEA_PATH_625T2B_U
-	.byte TILEA_PATH_VERT, TILEA_PATH_625B2T_U, TILEA_PATH_625B2T_L, TILEA_PATH_45B2T
-	.byte TILEA_PATH_HORZ, TILEA_PATH_45T2B, TILEA_PATH_625T2B_U, TILEA_PATH_625T2B_L
-
-	; Same setup as WoodenPlat_PathTiles, but for Tileset 2 (Fortress Style)
-WoodenPlat_PathTilesAlt:
-	.byte TILE2_PATH_VERT, TILE2_PATH_625B2T_L, TILE2_PATH_625B2T_U, TILE2_PATH_45B2T
-	.byte TILE2_PATH_HORZ, TILE2_PATH_45T2B, TILE2_PATH_625T2B_L, TILE2_PATH_625T2B_U
-	.byte TILE2_PATH_VERT, TILE2_PATH_625B2T_U, TILE2_PATH_625B2T_L, TILE2_PATH_45B2T
-	.byte TILE2_PATH_HORZ, TILE2_PATH_45T2B, TILE2_PATH_625T2B_U, TILE2_PATH_625T2B_L
-
-	; Y velocities appropriate to path tile hit
-WoodenPlat_YVel:
-	.byte -$10, -$10, -$10, -$10	; forward
-	.byte  $00,  $10,  $10,  $10
-	.byte  $10,  $10,  $10,  $10	; reverse
-	.byte  $00, -$10, -$10, -$10
-	.byte  $00	; Stop
-
-	; X velocities appropriate to path tile hit
-WoodenPlat_XVel:
-	.byte  $00,  $08,  $08,  $10	; forward
-	.byte  $10,  $10,  $08,  $08
-	.byte  $00, -$08, -$08, -$10	; reverse
-	.byte -$10, -$10, -$08, -$08
-	.byte  $00	; Stop
-
 
 ObjNorm_PathFollowPlat:
-	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
-
-	LDA <Player_HaltGame
-	BNE PRG002_ABB9	 ; If gameplay is halted, jump to PRG002_ABB9 (RTS)
-
-	LDA <Objects_Var4,X
-	BEQ PRG002_AC29	 ; If Var4 = 0, jump to PRG002_AC29
-
-PRG002_ACAB:
-	LDA #$10
-	STA Objects_YVel,X
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-
-PRG002_AC29:
-	JSR PlayerPlatform_Collide	 ; Do Player-to-platform collision
-	BCC PRG002_ACBC	 ; If Player did not collide with platform, jump to PRG002_ACBC (RTS)
-
-	LDA #$01
-	STA <Objects_Var4,X
-
-PRG002_ACBC:
 	RTS		 ; Return
 
 EnemyEnterFlip:	.byte  $00, SPR_HFLIP
@@ -2466,7 +2360,7 @@ PRG002_AE3A:
 
 	RTS		 ; Return
 
-ObjInit_SparkRight:
+ObjInit_Spark:
 	LDA #$00
 	STA Objects_Var1, X
 	STA Objects_Var2, X
@@ -2485,22 +2379,41 @@ SparkDetects:
 	.byte (HIT_DET_LEFT | HIT_DET_GRND), (HIT_DET_RIGHT | HIT_DET_GRND), (HIT_DET_CEIL | HIT_DET_RIGHT), (HIT_DET_LEFT | HIT_DET_CEIL)
 
 SparkYVel:
-	.byte $10, $10, $F0, $F0
-	.byte $10, $10, $F0, $F0
+	.byte $04, $04, $fc, $fc
+	.byte $04, $04, $fc, $fc
 
 SparkXVeL:
-	.byte $10, $F0, $F0, $10
-	.byte $F0, $10, $10, $F0
+	.byte $04, $fc, $fc, $04
+	.byte $fc, $04, $04, $fc
 
 ObjNorm_Spark:
+	LDA <Player_HaltGame
+	BEQ  Norm_Spark
+	RTS
+
+Norm_Spark:
+	JSR Object_ShakeAndDrawMirrored
 	LDA <Counter_1
 	AND #$04
 	LSR A
 	LSR A
 	STA Objects_Frame, X
-	JSR Object_ShakeAndDrawMirrored
 	JSR Object_DeleteOffScreen
-	LDA Objects_Var1, X
+	JSR Object_HitTestRespond
+	LDA Objects_Property, X
+	LSR A
+	STA <Temp_Var5
+	INC <Temp_Var5
+
+Spark_Again:
+	JSR Do_Spark
+	DEC <Temp_Var5
+	BPL Spark_Again
+	RTS
+
+Do_Spark:
+	LDA Objects_Property, X
+	AND #$01
 	ASL A
 	ASL A
 	ORA Objects_Var2, X
@@ -2544,8 +2457,13 @@ ApplySparkY:
 	BNE KeepGoing
 
 SparkHitDetection:
+	LDA Objects_XVelFrac, X
+	BNE KeepGoing
+	LDA Objects_YVelFrac, X
+	BNE KeepGoing
 	JSR Object_WorldDetect4
-	LDA Objects_Var1, X		; var1 = 0 -> clockwise movement, var1 = 1 -> counter clockwise
+	LDA Objects_Property, X		; var1 = 0 -> clockwise movement, var1 = 1 -> counter clockwise
+	AND #$01
 	ASL A
 	ASL A
 	ORA Objects_Var2, X
@@ -2568,7 +2486,7 @@ WallCeilGrndDet:
 	STA Objects_Var2, X
 
 KeepGoing:						; if we only detected one ground or wall we keep going in the same direction
-	JMP Object_HitTestRespond
+	RTS
 
 
 ObjNorm_PiranhaSpikeBall:
@@ -3819,512 +3737,6 @@ PRG002_B815:
 	LDX <SlotIndexBackup		 ; X = object slot index
 	RTS		 ; Return
 
-Respawn_XLo:	.byte $40, -$40
-Respawn_XHi:	.byte $00, $FF
-
-Fish_Repawn:
-	LDY <Scroll_LastDir	 ; Y = last scroll direction value
-
-	; Respawn near Player depending on direction he last moved
-	LDA <Player_X
-	ADD Respawn_XLo,Y
-	STA <Objects_X,X
-	LDA <Player_XHi
-	ADC Respawn_XHi,Y
-	STA <Objects_XHi,X
-
-	TYA
-	STA <Objects_Var5,X	 ; Objects_Var5 = entrance direction
-
-ObjInit_ChasingFish:
-
-	; Chasing fish always appear at the current vertical scroll + 160
-	LDA Level_VertScroll
-	ADD #160
-	STA <Objects_Y,X
-	LDA Level_VertScrollH
-	ADC #$00
-	STA <Objects_YHi,X
-
-	; Come in hopping!
-	LDA #-$08
-	STA <Objects_YVel,X
-
-	; Frame -1??
-	LDA #-1
-	STA Objects_Frame,X
-
-	RTS		 ; Return
-
-BigBertha_ProxLimit:	.byte $08, -$09	; How close (in coarse units) Big Bertha must be to Player to lunge
-BigBertha_XVelLimit:	.byte $30, $50	; Limit on X Velocity (relative, used in addition)
-BigBertha_Accel:	.byte -$04, $04	; X Velocity acceleration for each direction
-BigBertha_XCoarseLimit:	.byte $10, $70	; How far away Big Bertha can be before turning around
-BigBertha_EatLimit:	.byte $01, $03	; In coarse units (relative, used in addition), when Player is close enough to be eaten
-
-ObjNorm_BigBertha:
-	JSR Fish_FixedYIfAppro	 ; Fixes 'Y' coordinate for Big Bertha that swims in fixed water
-	JSR BigBertha_Draw	 ; Draw Big Bertha
-
-	LDA <Player_HaltGame
-	BNE PRG002_B896	 ; If gameplay is halted, jump to PRG002_B896
-
-	LDA Objects_State,X
-	CMP #OBJSTATE_KILLED
-	BNE PRG002_B897	 ; If Big Bertha's state is not Dying, jump to PRG002_B897
-
-PRG002_B867:
-	; Big Bertha is dying...
-
-	LDA Objects_Timer,X
-	BEQ PRG002_B87A	 ; If timer expired, jump to PRG002_B87A
-
-	LSR A	
-	BNE PRG002_B896	 ; If timer >= 2, jump to PRG002_B896 (RTS)
-
-	; Timer tick 1...
-
-	; Big Bertha recreates self!
-	JSR Level_PrepareNewObject
-
-	; Set back to state 2 (Normal operation)
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State,X
-	JMP Fish_Repawn	 ; Jump to Fish_Repawn
-
-PRG002_B87A:
-
-	; Timer expired on dying Big Bertha...
-
-	; Fix the flip bits
-	ASL Objects_FlipBits,X
-	SEC
-	ROR Objects_FlipBits,X
-
-	LDA Objects_Var7,X
-	BEQ PRG002_B889	 ; If Var7 = 0 (Mario not devoured), jump to PRG002_B889
-	JMP PRG002_B981	 ; Jump to PRG002_B981
-
-PRG002_B889:
-	JSR Object_Move	 ; Do standard object movements
-
-	LDA Objects_SprVVis,X
-	BEQ PRG002_B896	 ; If no sprites are vertically off-screen, jump to PRG002_B896
-
-	; Otherwise, set Big Bertha's timer to $FF (time until Big Bertha respawns!)
-	LDA #$ff
-	STA Objects_Timer,X
-
-PRG002_B896:
-	RTS		 ; Return
-
-
-PRG002_B897:
-	LDY Objects_Var7,X
-	BEQ PRG002_B8A0	 ; If Mario not devoured, jump to PRG002_B8A0
-
-	INY
-	STY Player_HaltTick	; Player is halted until Big Bertha drowns him!
-
-PRG002_B8A0:
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-	JSR Object_HitTestRespond	 ; Do collision test with Player and respond
-
-	LDA Objects_Frame,X
-	BPL PRG002_B840	 ; If frame = 0, jump to PRG002_B840
-
-	LDA <Objects_SpriteY,X
-	CMP #154
-	BGE PRG002_B8B8	 ; If Big Bertha's SpriteY >= 154, jump to PRG002_B8B8
-
-	; Otherwise, halt vertical movement
-	LDA #$00
-	STA <Objects_YVel,X
-
-PRG002_B8B8:
-	LDY <Objects_Var5,X	 ; Y = Var5 (current direction)
-
-	LDA <Objects_XVel,X
-	ADD BigBertha_XVelLimit,Y
-	BMI PRG002_B8CA		; If negative result, jump to PRG002_B8CA
-
-	; Apply acceleration
-	LDA <Objects_XVel,X
-	ADD BigBertha_Accel,Y
-	STA <Objects_XVel,X
-
-PRG002_B8CA:
-	LDA <Objects_XVel,X
-	LSR A		; Shift right 1
-	AND #SPR_HFLIP	; Mask if it was negative
-	EOR #SPR_HFLIP	; Flip it
-	STA Objects_FlipBits,X	 ; Store horizontal flip bit
-
-	JSR Object_CalcCoarseXDiff
-	LDA <Temp_Var15		 ; Get coarse X diff
-	ADD BigBertha_XCoarseLimit,Y
-	BPL PRG002_B8E4	 ; If limit not reached, jump to PRG002_B8E4
-
-	; Turn Big Bertha around
-	TYA		
-	EOR #$01	
-	STA <Objects_Var5,X	 ; Store reversed direction flag
-
-PRG002_B8E4:
-	LDA <Temp_Var15		
-	CMP BigBertha_ProxLimit,Y
-	BNE PRG002_B896	 ; If not hit limit, jump to PRG002_B896 (RTS)
-
-	JSR Object_CalcCoarseYDiff
-	LDA <Temp_Var15
-	CMP #$10
-	BGE PRG002_B896	 ; If Big Bertha is vertically too far from Player, jump to PRG002_B896
-
-	; Does ... nothing to X Velocity?
-	LDA <Objects_XVel,X
-	ASL A			; Bit 7 shifted into carry
-	ROR <Objects_XVel,X	; Carry shifted back into Bit 7
-
-	; Big Bertha jumps!
-	LDA #-$28
-	STA <Objects_YVel,X
-
-	; Gaping mouth
-	INC Objects_Frame,X
-
-PRG002_B840:
-
-	; Big Bertha's gravity, Y Vel += 2
-	INC <Objects_YVel,X
-	INC <Objects_YVel,X
-
-	LDA <Objects_SpriteY,X
-
-	; NOTE: Big Bertha is clearly abusing the purpose of Objects_Frame
-
-	LDY Objects_Frame,X
-	CPY #$05
-	BGE PRG002_B978	 ; If frame >= 5, jump to PRG002_B978
-
-	CPY #$04
-	BLT PRG002_BA49	 ; If frame < 4, jump to PRG002_BA49
-
-	CMP #148
-	BLT PRG002_B896	 ; If SpriteY < 148, jump to PRG002_B896 (RTS)
-
-	LDA #$05
-	BNE PRG002_B993	 ; Jump (technically always) to PRG002_B993 (sets Objects_Frame)
-
-PRG002_BA49:
-	LDA <Counter_1
-	AND #$07
-	BNE PRG002_B925	 ; Only 1:8 ticks we don't jump to PRG002_B925
-
-	; Reverse frame
-	TYA
-	EOR #$01
-	STA Objects_Frame,X
-
-PRG002_B925:
-	CPY #$02
-	BGE PRG002_B95C	 ; If frame >= 2, jump to PRG002_B95C
-
-	JSR Object_CalcCoarseXDiff
-	LDY <Objects_Var5,X	; get direction flag
-	LDA <Temp_Var15
-	ADD BigBertha_EatLimit,Y
-	CMP #$02
-	BGE PRG002_B95C	 ; If Player is horizontally too far away to be eaten, jump to PRG002_B95C
-
-	; Player might get eaten!
-
-	JSR Object_CalcCoarseYDiff
-	LDA <Temp_Var15
-	ADD #$08
-	CMP #$0a
-	BGE PRG002_B95C	 ; If Player is vertically too far away to be eaten, jump to PRG002_B95C
-
-	LDA Player_StarInv
-	ORA <Player_IsDying
-	BNE PRG002_B95C	 ; If Player is invincible by Starman, dying, or "behind the scenes", jump to PRG002_B95C
-
-	; Player gets eaten!
-
-	INC Objects_Var7,X ; Flag Player as devoured
-
-	LDA #$08
-	STA <Player_YHi		; Set Player impossibly low
-	STA Player_OffScreen	; Flag Player as off-screen
-
-	LDA #$02
-	BNE PRG002_B993	 ; Jump (technically always) to PRG002_B993 (set frame)
-
-PRG002_B95C:
-	LDA <Objects_YVel,X
-	BMI PRG002_B996	 ; If Big Bertha is moving upward, jump to PRG002_B996 (RTS)
-
-	; Big Bertha is falling...
-	
-	LDA <Objects_SpriteY,X
-	CMP #160
-	BLT PRG002_B996	 ; If SpriteY < 160, jump to PRG002_B996 (RTS)
-
-	JSR BigBertha_Splash	 ; Splash!
-
-	; Big Bertha Y -= 24
-	LDA <Objects_Y,X
-	SUB #24
-	STA <Objects_Y,X
-	BCS PRG002_B974
-	DEC <Objects_YHi,X	 ; Apply carry
-PRG002_B974:
-
-	LDA #$04
-	BNE PRG002_B993	 ; Jump (technically always) to PRG002_B993 (set frame)
-
-PRG002_B978:
-	CMP #160
-	BLT PRG002_B996	 ; If Big Bertha's Y < 160, jump to PRG002_B996
-
-	LDA Objects_Var7,X
-	BEQ PRG002_B98D	 ; If Player is not devoured, jump to PRG002_B98D
-
-PRG002_B981:
-	LDA #$00
-	STA Player_HaltTick	; Player not halted
-	STA Player_AboveTop	; Player not above top of screen
-
-	; Hold Player really low
-	LDA #196
-	STA <Player_SpriteY
-
-PRG002_B98D:
-	; Big Bertha Y Vel = -$08
-	LDA #-$08
-	STA <Objects_YVel,X
-
-	; Sprite frame = -1 (??)
-	LDA #$ff
-
-PRG002_B993:
-	STA Objects_Frame,X
-
-PRG002_B996:
-	RTS		 ; Return
-
-PRG002_B997:
-	.byte $FE, $02, $05, $FB, $01, $02, $03, $00
-
-BigBertha_Splash:
-	LDY #$02	 ; Y = 2 (use splash slot 2)
-
-	LDA Splash_Counter,Y
-	BEQ PRG002_B9A7	 ; If this slot is free, jump to PRG002_B9A7
-
-	DEY		 ; Otherwise, try slot 1
-
-PRG002_B9A7:
-
-	; Initialize splash
-	LDA #$01
-	STA Splash_Counter,Y
-	STA Splash_NoScrollY,Y
-
-	; Set Splash Y
-	LDA #147
-	STA Splash_Y,Y
-
-	; Set Splash X
-	LDA <Objects_X,X
-	STA Splash_X,Y
-	RTS		 ; Return
-
-BigBertha_Draw:
-	LDA Objects_Var7,X	 
-	BNE PRG002_B9CB	 ; If there's fractional X, jump to PRG002_B9CB
-
-	LDY Objects_State,X
-	CPY #OBJSTATE_KILLED
-	BNE PRG002_B9CB	 ; If Big Bertha's state is not Killed, jump to PRG002_B9CB
-
-	; Big Bertha's frame set to 1 if Dying
-	LDA #$01
-	STA Objects_Frame,X
-
-PRG002_B9CB:
-	INC Objects_Frame,X	 ; Big Bertha's frame++
-	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite data
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	LDA Objects_Frame,X
-	DEC Objects_Frame,X	 ; Big Bertha's frame--
-	ASL A	
-	ASL A			; Multiply by 4
-	ADD <Temp_Var6		 ; Add to starting tile
-	STA <Temp_Var6		 ; Set as starting tile
-	TAX		 ; Starting tile -> 'X'
-
-	LDA <Temp_Var3
-	BPL PRG002_B9E8	 ; If Big Bertha is not vertically flipped, jump to PRG002_B9E8
-
-	; Otherwise, starting tile += 3
-	INX
-	INX
-	INX
-
-PRG002_B9E8:
-	JSR Object_Draw48x16Sprite ; Draw upper half of Big Bertha
-
-	LSR <Temp_Var5	; Shift the vertical visibility bits
-
-	; Sprite_RAM offset += 12 (3 sprites ahead)
-	TYA
-	ADD #$0c
-	TAY
-
-	LDX <Temp_Var6	 ; X = starting tile
-
-	LDA <Temp_Var3	
-	BMI PRG002_B9FB	 ; If Big Bertha is vertically flipped, jump to PRG002_B9FB
-
-	; Otherwise, starting tile += 3
-	INX
-	INX
-	INX
-
-PRG002_B9FB:
-	; Sprite Y += 16 (lower half of Big Bertha)
-	LDA #16
-	ADD <Temp_Var1
-	STA <Temp_Var1
-	JSR Object_Draw48x16Sprite ; Draw lower half of Big Bertha
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-	RTS		 ; Return
-
-CheepCheepCharge_ProxLimit:	.byte $06, -$06	; How close (in coarse units) Cheep Cheep must be to Player to lunge
-CheepCheepCharge_XVelLimit:	.byte $20, $60	; Limit on X Velocity (relative, used in addition)
-CheepCheepCharge_Accel:		.byte -$01, $01	; X Velocity acceleration for each direction
-CheepCheepCharge_XCoarseLimit:	.byte $10, $70	; How far away Cheep Cheep can be before turning around
-
-
-ObjNorm_CharginCheepCheep:
-	JSR Fish_FixedYIfAppro	 ; Fixes 'Y' coordinate for Cheep Cheep that swims in fixed water
-	JSR Object_ShakeAndDraw	 ; Draw Cheep Cheep
-
-	LDA Objects_State,X
-	CMP #OBJSTATE_KILLED
-	BNE PRG002_BA20	 ; If Cheep Cheep's state is not Killed, jump to PRG002_BA20
-
-	JMP PRG002_B867	 ; Jump to PRG002_B867 (use Big Bertha style respawn routine)
-
-PRG002_BA20:
-
-	; Cheep Cheep is not dying...
-
-	; Toggle Cheep Cheep's frame
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	AND #$01
-	STA Objects_Frame,X
-
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-	JSR Object_HandleBumpUnderneath	 ; Get killed if hit underneath by block
-
-	LDA <Objects_Var4,X
-	BNE PRG002_BA96	 ; If Var4 <> 0 (Cheep Cheep is lunging), jump to PRG002_BA96
-
-	LDA <Objects_SpriteY,X
-	CMP #156
-	BGE PRG002_BA40	 ; If Cheep Cheep's SpriteY >= 156, jump to PRG002_BA40
-
-	; Stop Cheep Cheep's vertical movement
-	LDA #$00
-	STA <Objects_YVel,X
-
-PRG002_BA40:
-	LDY <Objects_Var5,X	 ; Y = Var5
-
-	LDA <Objects_XVel,X
-	ADD CheepCheepCharge_XVelLimit,Y
-	BMI PRG002_BA52	 ; If Cheep Cheep has hit velocity limit, jump to PRG002_BA52
-
-	; Cheep Cheep accelerate!
-	LDA <Objects_XVel,X
-	ADD CheepCheepCharge_Accel,Y
-	STA <Objects_XVel,X	
-
-PRG002_BA52:
-
-	LDA <Objects_XVel,X
-	LSR A
-	AND #SPR_HFLIP
-	EOR #SPR_HFLIP
-	STA Objects_FlipBits,X	 ; Store flip bit by X velocity
-
-	JSR Object_CalcCoarseXDiff
-	LDA <Temp_Var15	
-	ADD #$40
-	CMP #$80
-	BLT PRG002_BA6B		; If Cheep Cheep isn't too far away, jump to PRG002_BA6B
-
-	JMP Fish_Repawn	 	; Cheep Cheep went too far, restart
-
-PRG002_BA6B:
-	LDA <Temp_Var15
-	ADD CheepCheepCharge_XCoarseLimit,Y
-	BPL PRG002_BA78	 ; If Cheep Cheep hasn't gotten too close to Player, jump to PRG002_BA78
-
-	; Reverse direction
-	TYA	
-	EOR #$01
-	STA <Objects_Var5,X
-
-PRG002_BA78:
-	LDA <Temp_Var15	
-	CMP CheepCheepCharge_ProxLimit,Y
-	BNE PRG002_BAA6	 ; If not hit limit, jump to PRG002_BAA6 (RTS)
-
-	JSR Object_CalcCoarseYDiff
-	LDA <Temp_Var15	
-	SUB #$05
-	CMP #$18
-	BGE PRG002_BAA6	 ; If Cheep Cheep is vertically too far from Player, jump to PRG002_BAA6 (RTS)
-
-	; Big Bertha jumps!
-	LDA #-$28
-	STA <Objects_YVel,X
-
-	; Does ... nothing to X Velocity?
-	LDA <Objects_XVel,X
-	ASL A			; Bit 7 shifted into carry
-	ROR <Objects_XVel,X	; Carry shifted back into Bit 7
-
-	INC <Objects_Var4,X	 ; Var4 = 1 (Cheep Cheep lunge)
-
-PRG002_BA96:
-
-	; Cheep Cheep's gravity
-	INC <Objects_YVel,X
-	INC <Objects_YVel,X
-
-	LDA <Objects_SpriteY,X
-	CMP #168
-	BLT PRG002_BAA6	 ; If Cheep Cheep Y < 168, jump to PRG002_BAA6 (RTS)
-
-	; Stop Cheep Cheep from falling too far; bounce back up
-	LDA #-$08
-	STA <Objects_YVel,X
-
-	DEC <Objects_Var4,X	 ; Var4 = 0 (Cheep Cheep done lunging)
-
-PRG002_BAA6:
-	RTS		 ; Return
-
 
 	; Performs collision tests against platform and enables Player
 	; to stand on the platform, hit head off platform, etc.
@@ -4340,14 +3752,11 @@ PlayerPlatform_Collide:
 	CMP <Objects_SpriteY,X
 	BGE PRG002_BABD	 ; If Player's bottom is beneath object's top, jump to PRG002_BABE
 
-	LDA <Player_YVel
-	BMI PRG002_BABD	 ; If Player is moving upward, jump to PRG002_BABD
-
-	LDA #$00
-	STA Object_VelCarry
 	JSR Player_StandOnPlatform	 ; Stand on platform
-	LDA <Objects_XVel,X
+	LDA <Objects_XVel, X
 	STA Player_CarryXVel
+	LDA <Objects_YVel,X
+	STA Player_CarryYVel
 
 PRG002_BABC:
 	SEC		 ; Set carry (collided)

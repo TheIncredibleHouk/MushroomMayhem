@@ -1522,7 +1522,7 @@ CCSwim2_2:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 	LDA #$F8
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	RTS
 	
 CCSwim:
@@ -1574,7 +1574,7 @@ CCSwim1:
 
 CCJump:
 	LDA #$B0
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	LDA #$02
 	STA Objects_Var1, X
 	RTS
@@ -1610,7 +1610,7 @@ CCObjects:
 
 CCBounce2:
 	JSR Object_ApplyY_With_Gravity
-	LDA Objects_YVel, X
+	LDA <Objects_YVel, X
 	BMI CCBounceRTS
 	LDY #(SuperGiantOffsets1  - Object_TileDetectOffsets)
 	INY
@@ -1620,7 +1620,7 @@ CCBounce2:
 	BEQ CCBounceRTS
 
 	LDA #$C0
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 
 	LDA #$18
 	STA Level_Vibration

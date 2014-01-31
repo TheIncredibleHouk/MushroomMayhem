@@ -2501,6 +2501,7 @@ SObj_CheckHitSolid:
 	LDA SpecialObj_YHi,X
 	ADC #$00	 ; Apply carry
 	PHA		 ; Save Y Hi
+	STA <Temp_Var4
 
 	; Special object X + 4 -> Temp_Var5
 	LDA SpecialObj_XLo,X
@@ -2511,9 +2512,10 @@ SObj_CheckHitSolid:
 
 	LDA <Horz_Scroll_Hi
 	ADC #$00	 ; Apply carry
+	STA <Temp_Var7
 	ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
 	TAY		 ; -> 'Y'
-	STA <Temp_Var7
+	
 
 	; Low byte of Tile_Mem_Addr -> Temp_Var1
 	LDA Tile_Mem_Addr,Y
@@ -2542,55 +2544,35 @@ SObj_CheckHitSolid:
 	LDA TileProperties, Y
 	STA CurrentTileProperty
 
-	AND #TILE_PROP_SOLID_TOP
-	BEQ PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
-
-
-	LDA CurrentTileProperty
-	AND #TILE_PROP_SOLID_ALL
-	BEQ PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
-
-	; Tile is solid all around
-	LDA SpecialObj_YLo, X
-	ADD #12
-	STA <Temp_Var3
-
-	LDA SpecialObj_YHi, X
-	STA <Temp_Var4
-
-	LDA SpecialObj_XLo, X
-	ADD #$04
-	SUB <Horz_Scroll	; -
-	ADD <Horz_Scroll	; + ??
-	STA <Temp_Var5
-
-	LDA <Horz_Scroll_Hi
-	ADC #$00	 ; Apply carry
-	;ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
-	STA <Temp_Var7
+	LDA SpecialObj_YHi,X
 
 	STX TempX
 	LDA SpecialObj_ID,X
 	LDX #$00
 	CMP #SOBJ_FIREBROFIREBALL
-	BEQ PRG007_AEB3	 ; If this a Fire Bro's fireball (the only one that bounces on the floor), jump to PRG007_AEB3
+	BEQ DoInteract
 	CMP #SOBJ_ICEBALL
-	BEQ PRG007_AEB2
-
-	SEC		 ; Set carry
-
-	RTS		 ; Return
-
-PRG007_AEB2:
+	BNE NoPoof
 	LDX #$08
 
-PRG007_AEB3:
+DoInteract:
 	LDA TempA
 	JSR ProjectileInteractions
 	LDX TempX
 	CMP #$00
-	BNE PRG007_AF03
+	BEQ NoPoof
+	JMP PRG007_AF03
 
+NoPoof:
+	LDA CurrentTileProperty
+	AND #TILE_PROP_SOLID_TOP
+	BNE SObj_CheckHitSolid1
+	JMP PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
+
+SObj_CheckHitSolid1:
+	LDA CurrentTileProperty
+	AND #TILE_PROP_SOLID_ALL
+	BEQ PRG007_AECF	 ; If this tile is not solid on the sides/bottom, jump to PRG007_AECF
 	
 	INC SpecialObj_Data,X	 ; SpecialObj_Data++
 
@@ -2609,7 +2591,16 @@ PRG007_AEC0:
 
 PRG007_AEC9:
 	; Bounce fireball!
+	LDA SpecialObj_ID,X
+	CMP #SOBJ_ICEBALL
+	BNE PRG007_AEC9_2
+	LDA #-$3C
+	BNE PRG007_AECA
+
+PRG007_AEC9_2:
 	LDA #-$2C
+
+PRG007_AECA:
 	STA SpecialObj_YVel,X
 
 PRG007_AECE:
@@ -2636,7 +2627,7 @@ PRG007_AECF:
 PRG007_AEE0:
 
 	; Tile not solid on top (literally, but likely assumes not solid on the side/bottom either)
-
+	LDX TempX
 	LDA SpecialObj_ID,X
 	CMP #SOBJ_BLOOPERKID
 
@@ -4289,6 +4280,8 @@ SObj_Acid:
 	JSR SObj_Hammer
 
 	JSR SObj_CheckHitSolid
+	LDA CurrentTileProperty
+	CMP #TILE_PROP_SOLID_TOP
 	BCC SObj_Acid2
 
 	LDX <SlotIndexBackup
@@ -5613,6 +5606,8 @@ Poof_Sound:
 
 
 ProjectileInteractions:
+	LDY Level_ChgTileEvent
+	BNE Bounce_Ball
 	LDY #$03
 
 FindInteractions:

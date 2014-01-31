@@ -1948,6 +1948,7 @@ MagicStarOffset:
 
 ObjNorm_MagicStar:
 
+	JSR Object_DeleteOffScreen
 	JSR Object_ShakeAndDrawMirrored
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
@@ -1964,7 +1965,7 @@ ObjNorm_MagicStar:
 	LDA <Temp_Var1
 	ORA Magic_Stars_Collected1, Y
 	STA Magic_Stars_Collected1, Y
-	JSR Object_Delete
+	JMP Object_SetDeadEmpty
 
 PRG003_A92D:
 	RTS
@@ -2764,14 +2765,14 @@ Ninji_Idle:
 	AND #$03
 	TAY
 	LDA Ninji_Jumps, Y
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	INC Objects_Frame, X
 
 Ninji_IdleRTS:
 	RTS
 
 Ninji_Jump:
-	LDA Objects_YVel, X
+	LDA <Objects_YVel, X
 	BMI Ninji_Jump1
 	INC Objects_Var1, X
 	LDA #$08
@@ -2782,7 +2783,7 @@ Ninji_Jump1:
 
 Ninji_Hover:
 	LDA #$FF
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	LDA Objects_Timer, X
 	BNE Ninji_Hover1
 	INC Objects_Var1, X
@@ -5082,7 +5083,7 @@ PRG003_BFAE:
 
 Increase_Magic_Stars:
 	LDA Sound_QLevel1
-	ORA #SND_LEVELCOIN
+	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
 	INC Magic_Stars
 	LDA Magic_Stars

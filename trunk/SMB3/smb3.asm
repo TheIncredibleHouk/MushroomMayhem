@@ -811,14 +811,15 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	Player_XVel:		.ds 1	; Player's X Velocity (negative values to the left) (max value is $38)
 	Objects_XVel:		.ds 8	; $BE-$C5 Other object's X velocities
 
-	Objects_VarBSS:		.ds 7	; $C6-$CC OBJECT SLOTS 0 - 5 ONLY ... uncleared var??
+	Player_CarryXVel:	.ds 1
+	Objects_VarBSS:		.ds 6	; $C6-$CC OBJECT SLOTS 0 - 5 ONLY ... uncleared var??
 	SlotIndexBackup:	.ds 1	; Used as a backup for the slot index (e.g. current object, current score, etc.)
 	Player_HaltGame:	.ds 1	; Player is halting game (e.g. dying, shrinking/growing, etc.)
 
 	; WARNING: The distance between Player/Objects_XVel and Player/Objects_YVel must be same as Player/Objects_X/YVelFrac!
 	Player_YVel:		.ds 1	; Player's Y Velocity (negative values upward)
 	Objects_YVel:		.ds 8	; $D0-$D7 Other object's Y velocities
-
+	Player_CarryYVel:	.ds 1
 	Player_InAir:		.ds 1	; When set, Player is in the air
 
 	; Reuse of $D9
@@ -840,13 +841,12 @@ HIT_DET_CEIL =		8
 	Player_SprWorkL:	.ds 1	; Sprite work address low
 	Player_SprWorkH:	.ds 1	; Sprite work address high
 
-				.ds 1	; $E3 unused
-
 	Level_TileOff:		.ds 1	; Tile mem offset
 	Level_Tile:		.ds 1	; Temporary holding point for a detected tile index
 	Tile_Value:		.ds 1
-	Player_Slopes:		.ds 2	; for sloped levels only (3 bytes allocated, but only one actually used)
+	Player_Slopes:		.ds 1	; for sloped levels only (3 bytes allocated, but only one actually used)
 				; *NOTE: Code at PRG030_9EDB clears Player_Slopes+1 and Player_Slopes+2, but these are never used!
+	Player_OnPlatform:	.ds 1
 
 				.ds 1	; $E9 unused
 				.ds 1	; $EA unused
@@ -1306,6 +1306,10 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	AnimOffset:			.ds 1;
 	TrapSet:			.ds 1;
 	DayNightActive:		.ds 1;
+	LastPowerUp:		.ds 1;
+	ReverseGravity:		.ds 1
+	NoGravity:			.ds 1;
+	Player_ForcedSlide:	.ds 1
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
 	.org $0461
@@ -1567,7 +1571,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_FrogHopCnt:	.ds 1	; Counter used for frog hopping along the ground (shared with Player_FireCount)
 	Player_PMeterCnt:	.ds 1	; Tick counter used to count when to increase/decrease Power Meter
 	Player_TailAttack:	.ds 1	; Initiailized to $12; counts down to zero, performs tail attack!
-
+						.ds 2
 	CineKing_Timer:			; Timer; decrements to zero (shares Objects_Timer first byte)
 	Objects_Timer:		.ds 8	; $0518-$051F "Timer" values; automatically decrements to zero
 
@@ -2395,9 +2399,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 
 	Poison_Mode:		.ds 1	; Unused; cleared but never used otherwise
 
-	Player_CarryXVel:	.ds 1	; If set, Player does not stick to slopes (noticeable running downhill)
-	Player_CarryYVel:	.ds 1	;
-
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Wind:					.ds 1	; Wind factor (affects player!)
 	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
@@ -2689,6 +2690,8 @@ CFIRE_LASER		= $15	; Laser fire
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
 	Player_Coins:		.ds 4	; Mario's coins
 	Air_Time:			.ds 1	;
+
+AIR_INCREASE	= 3
 	Air_Change:			.ds 1	;
 
 	Top_Of_Water:		.ds 1	;
@@ -3373,6 +3376,7 @@ OBJ_BOSS_KOOPALING	= $0E 	; Koopaling (as appropriate to current world)
 OBJ_KEY				= $11	;
 OBJ_REDSPRING		= $12	;
 OBJ_GREENSPRING		= $13	;
+OBJ_KEYPIECES		= $13	;
 OBJ_SPINYCHEEP		= $17	; Spiny cheep
 OBJ_BOSS_BOWSER		= $18 	; King Bowser
 OBJ_POWERUP_FIREFLOWER	= $19	; Fire flower
