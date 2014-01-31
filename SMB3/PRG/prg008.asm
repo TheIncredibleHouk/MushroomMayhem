@@ -1137,7 +1137,6 @@ Player_Control:
 	JSR VScreenTransitions
 	LDA #$02
 	STA Top_Of_Water
-	;STA Air_Change
 	LDA <Player_FlipBits
 	STA Player_FlipBits_OLD
 
@@ -1254,19 +1253,29 @@ PRG008_A743:
 	STA <Temp_Var1		 ; -> Temp_Var1
 
 PRG008_A77E:
-	LDA Level_Tile_Prop_Head
+	LDA Level_Tile_Prop_Body
 	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
-	BNE PRG008_A7AD	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
+	BNE PRG008_A7AC	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
-	LDA <Player_Y
-	AND #$0F
-	BNE PRG008_A7AD
+	;LDA <Player_Y
+	;AND #$0F
+	;BNE PRG008_A7AD
 	
 	;#DAHRKDAIZ modified to make low clearance situations = death >:D
 	JSR Player_GetHurt
 
+PRG008_A7AC:
+	LDX #$00
+	LDA Level_Tile_Prop_Head
+	AND #TILE_PROP_SOLID_ALL
+	CMP #TILE_PROP_SOLID_ALL
+	BNE PRG008_A7AD
+
+	INX
+
 PRG008_A7AD:
+	STX Player_ForcedSlide
 
 	; This will be used in Level_CheckIfTileUnderwater 
 	; as bits 2-3 of an index into Level_MinTileUWByQuad
@@ -1362,7 +1371,7 @@ PRG008_A7F1:
 	LDA <Player_Suit
 	CMP #$04
 	BEQ NoAirInc
-	LDA #$01
+	LDA #AIR_INCREASE
 	STA Air_Change
 
 NoAirInc:
@@ -1398,7 +1407,7 @@ PRG008_A819:
 	LDA <Player_Suit
 	CMP #$04
 	BEQ PRG008_A827
-	LDA #$01
+	LDA #AIR_INCREASE
 	STA Air_Change
 
 PRG008_A827:
@@ -1512,7 +1521,7 @@ PRG008_A891:
 	LDA WasDepletingAir
 	BEQ PRG008_A892
 
-	LDA #$01
+	LDA #AIR_INCREASE
 	STA Air_Change
 
 PRG008_A892:
@@ -3092,8 +3101,6 @@ PRG008_AFAD:
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Koopa_Shell:
-	LDA Player_Slide
-	BNE RTSShell
 	LDA <Player_InAir
 	BNE RTSShell
 	JSR Get_Normalized_Suit
@@ -3979,17 +3986,34 @@ PRG008_B4F3:
 	; Wall hit detection
 
 	LDA Level_Tile_Prop_InFL
+	CMP #TILE_ITEM_BRICK
+	BNE PRG008_B4F4
+
+	LDA Player_Shell
+	BNE PRG008_B53B
+	
+
+PRG008_B4F4:
+	LDA Level_Tile_Prop_InFL
 	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
 	BEQ PRG008_B53A
+
 	LDA Level_Tile_Prop_InFR
 	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG008_B53B	 ; If not touching a solid tile, jump to PRG008_B53B
-
+	BEQ PRG008_B53A_2
+	
 PRG008_B53A:
-	JSR Can_Wall_Jump
 	JSR Shell_Bounce
+
+PRG008_B53A_2:
+	JSR Can_Wall_Jump
+	
+	LDA Player_ForcedSlide
+	BNE PRG008_B53B
+
 	LDY #$01	 ; Y = 1
 	LDX #$00	 ; X = 0
 
@@ -4241,7 +4265,7 @@ PRG008_B585_2_2:
 	STA EventVar
 	RTS
 
-PRG008_B586
+PRG008_B586:
 	CPX #$02
 	BCC NoFireFoxBusts
 	LDY Fox_FireBall
@@ -4252,6 +4276,8 @@ NoFireFoxBusts:
 	BPL PRG008_B588
 	CPX  #$01
 	BCS PRG008_B588
+	LDY #$04
+	STY <Player_YVel
 	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
 
 PRG008_B588:
@@ -4859,7 +4885,6 @@ Do_Tile_Attack:
 	STA Level_Tile_Prop_GndL,X	 ; Store into tail's special slot
 	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
 
-Skip_Shell_Bump:
 PRG008_B979:
 	RTS		 ; Return
 
@@ -5376,6 +5401,13 @@ Level_QueueChangeBlock:
 ; faster than the cap value (PLAYER_MAXSPEED)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_ApplyXVelocity:
+	LDA Player_ForcedSlide
+	BEQ Player_ApplyXVelocity1
+
+	LDA #$10
+	STA <Player_XVel
+
+Player_ApplyXVelocity1:
 	LDX #$00	; X = 0
 	LDY #PLAYER_MAXSPEED	; Y = PLAYER_MAXSPEED
 
@@ -5401,7 +5433,6 @@ PRG008_BFAC:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_ApplyVelocity:
 	; X may specify offset to YVel, or else be zero
-
 	LDA <Player_XVel,X	; Get velocity
 	CPX #$00	 
 	BNE PRG008_BFBE	 	; If we're not doing the X velocity, jump to PRG008_BFBE
@@ -5411,15 +5442,19 @@ Player_ApplyVelocity:
 	; X Velocity only
 	LDY Level_PipeMove
 	BNE No_Weather_Vel
+	LDY Player_OnPlatform
+	BNE PRG008_BFBE
 	LDY Wind
 	BEQ No_Weather_Vel
 	ADD Wind
 
 No_Weather_Vel:
 	ADD Player_XVelAdj	; Add Player_XVelAdj
-	ADD Player_CarryXVel
 
 PRG008_BFBE:
+	ADD Player_CarryXVel, X
+
+PRG008_BFBF:
 	PHA		 ; Save result
 
 	ASL A
@@ -5486,6 +5521,8 @@ Dont_Flip:
 No_Odo_Increase:
 	LDA #$00
 	STA Player_CarryXVel
+	STA Player_CarryYVel
+	STA Player_OnPlatform
 	RTS		 ; Return
 
 
@@ -5553,11 +5590,6 @@ NotMaxAir:
 NoChange:
 	RTS
 
-FireBall_ChangeBlocks:
-	.byte $00; TILE_GLOBAL_ICE, TILE_GLOBAL_FROZEN_COIN, FROZEN_WATER, $3B
-
-FireBall_ChangeBlocksTo:
-	.byte $00;CHNGTILE_DELETETOBG, CHNGTILE_FROZENCOIN, CHGTILESTANDING_WATER, $80
 
 Do_PUp_Proper:
 	LDA Player_Ability
@@ -5572,6 +5604,7 @@ PUp_RTS:
 Shell_Bounce:
 	LDA Player_Shell			; If in a shell we bounce in the opposite direction
 	BEQ Shell_BounceRTS
+
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
@@ -5818,6 +5851,7 @@ Player_EventsRTS:
 	RTS
 
 Player_Refresh:
+	RTS
 	LDA <Pad_Holding
 	AND #(PAD_A | PAD_B)
 	BEQ Player_RefreshRTS

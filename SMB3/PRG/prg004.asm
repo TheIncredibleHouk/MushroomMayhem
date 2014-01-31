@@ -27,7 +27,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GroundTroop	; Object $6C - OBJ_GREENTROOPA
 	.word ObjInit_GroundTroop	; Object $6D - OBJ_REDTROOPA
 	.word ObjInit_GroundTroop	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.word ObjInit_GroundTroop	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.word ObjNormParaTroopas	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word ObjInit_GroundTroop	; Object $70 - OBJ_BUZZYBEATLE
 	.word ObjInit_GroundTroop	; Object $71 - OBJ_SPINY
 	.word ObjInit_GroundTroop	; Object $72 - OBJ_GOOMBA
@@ -35,7 +35,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word ObjInit_Waterfill	; Object $75 - OBJ_WATERFILLER
 	.word ObjInit_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
-	.word ObjInit_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
+	.word ObjNormParaTroopas	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_Set3DoNothing	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_Set3DoNothing	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjInit_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
@@ -44,7 +44,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GiantDRYPIRANHA	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjInit_GiantTroop	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
-	.word ObjInit_Set3DoNothing	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word InitPatrol	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjInit_BoomerangBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
@@ -69,7 +69,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_GroundTroop	; Object $6C - OBJ_GREENTROOPA
 	.word ObjNorm_RedTroopa		; Object $6D - OBJ_REDTROOPA
 	.word ObjNorm_GroundTroop	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.word ObjNorm_FlyingRedTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.word ObjNorm_FlyingTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word ObjNorm_GroundTroop	; Object $70 - OBJ_BUZZYBEATLE
 	.word ObjNorm_GroundTroop	; Object $71 - OBJ_SPINY
 	.word ObjNorm_GroundTroop	; Object $72 - OBJ_GOOMBA
@@ -77,7 +77,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word ObjNorm_Waterfill	; Object $75 - OBJ_WATERFILLER
 	.word ObjNorm_PoisonMushroom	; Object $76 - OBJ_POISONMUSHROOM
-	.word ObjNorm_SpikeCheep	; Object $77 - OBJ_GREENCHEEP
+	.word ObjNorm_SwimmingCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjNorm_BulletBill	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjNorm_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
@@ -86,7 +86,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_BigPiranha	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjNorm_GroundTroop	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
-	.word ObjNorm_FlyingGreenPara	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word ObjNorm_FlyingTroopa	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjNorm_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjNorm_BoomerangBro	; Object $82 - OBJ_NINJABRO
 	.word ObjNorm_Lakitu		; Object $83 - OBJ_LAKITU
@@ -287,7 +287,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $13	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OPTS_SETPT5 | $12	; Object $75 - OBJ_WATERFILLER
 	.byte OPTS_NOCHANGE; Object $76 - OBJ_POISONMUSHROOM
-	.byte OPTS_NOCHANGE	; Object $77 - OBJ_GREENCHEEP
+	.byte OPTS_SETPT6 | $4F	; Object $77 - OBJ_GREENCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $78 - OBJ_BULLETBILL
 	.byte OPTS_SETPT6 | $4F	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OPTS_SETPT6 | $4F	; Object $7A - OBJ_PURPLETROOPA
@@ -329,7 +329,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte KILLACT_JUSTDRAW16X16	; Object $75 - OBJ_WATERFILLER
 	.byte KILLACT_POOFDEATH	; Object $76 - OBJ_POISONMUSHROOM
-	.byte KILLACT_NORMALANDKILLED	; Object $77 - OBJ_GREENCHEEP
+	.byte KILLACT_JUSTDRAW16X16	; Object $77 - OBJ_GREENCHEEP
 	.byte KILLACT_JUSTDRAW16X16	; Object $78 - OBJ_BULLETBILL
 	.byte KILLACT_JUSTDRAW16X16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $7A - OBJ_PURPLETROOPA
@@ -608,7 +608,7 @@ PRG004_A4B2:
 	STA Objects_FlipBits,X
 
 PRG004_A4C1:
-	LDA Objects_YVel, X
+	LDA <Objects_YVel, X
 	BNE PRG004_A4C3
 	JSR Level_ObjCalcYDiffs
 	CPY #$01
@@ -622,14 +622,14 @@ PRG004_A4C1:
 	LDA #$C0
 	STA Objects_XVel, X
 	LDA #$F0
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	RTS
 
 PRG004_A4C2:
 	LDA #$40
 	STA Objects_XVel, X
 	LDA #$F0
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	RTS
 
 PRG004_A4C3:
@@ -1687,6 +1687,7 @@ PRG004_A9C0:
 	RTS		 ; Return
 
 FireBro_FireballXVel:	.byte $20, -$20
+IceBro_FireballXVel:	.byte $18, -$18
 
 FireBro_SpitFire:
 	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back
@@ -1718,6 +1719,7 @@ FireBro_SpitFire:
 	JSR Level_ObjCalcXDiffs
 
 	; Spit fire towards Player!
+	STY TempY
 	LDA FireBro_FireballXVel,Y
 	LDY <Temp_Var1		; Y = special object slot
 	STA SpecialObj_XVel,Y
@@ -1725,6 +1727,10 @@ FireBro_SpitFire:
 	LDA Level_ObjectID,X
 	CMP #OBJ_ICEBRO
 	BNE Fire_Bros_FBall
+	LDY TempY
+	LDA IceBro_FireballXVel,Y
+	LDY <Temp_Var1
+	STA SpecialObj_XVel,Y
 	LDA #SOBJ_ICEBALL
 	BNE Store_SObject
 
@@ -2596,7 +2602,7 @@ ZombieSameSpeed:
 	BNE Zombie_Move
 	INC Objects_Var1,X
 	LDA #$D8
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	BNE Zombie_Move
 
 
@@ -2672,96 +2678,28 @@ PRG004_B0CC:
 SpikeCheep_YAccel:	.byte $01, -$01
 SpikeCheep_YLimit:	.byte $04, -$04
 
-ObjNorm_SpikeCheep:
-	LDA Objects_Var1,X
-	BEQ PRG004_B0E5	 ; If Var1 = 0, jump to PRG004_B0E5
-
-	; This is Spiny Cheep's graphics
-	LDA #$1a
-	STA PatTable_BankSel+4
-
-	BNE PRG004_B0EA	 ; Jump (technically always) to PRG004_B0EA
-
-PRG004_B0E5:
-
-	; Not sure what this loads for?
-	LDA #$4f
-	STA PatTable_BankSel+5
-
-PRG004_B0EA:
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BEQ PRG004_B0FE	 ; If Spike Cheep's state is Normal, jump to PRG004_B0FE
-
-	; Not normal state...
-
-	LDA Objects_Var1,X
-	BEQ PRG004_B0FB	 ; If Var1 = 0, jump to PRG004_B0FB
-
-	; Frame = 5
-	LDA #$05
-	STA Objects_Frame,X
-
-PRG004_B0FB:
-	JMP GroundTroop_DrawNormal	 ; Draw Spiny Cheep
-
-PRG004_B0FE:
-	JSR Object_SetPaletteFromAttr	 ; Set Spike Cheep's palette
-
+ObjNorm_SwimmingCheep:
 	LDA <Player_HaltGame
-	BNE PRG004_B14D	 ; If gameplay is halted, jump to PRG004_B14D
+	BNE JustDrawCheep
 
 	INC <Objects_Var5,X	 ; Var5++
 
-	LDA <Counter_1
-	AND #$07
-	BNE PRG004_B121	 ; 1:8 ticks proceed, otherwise jump to PRG004_B121
-
-	LDA <Objects_Var4,X
+	; Toggle frame 0/1
+	LDA <Objects_Var5,X
+	LSR A
+	LSR A
+	LSR A
 	AND #$01
-	TAY		 ; Y = 0 or 1 (vertical direction)
+	STA Objects_Frame,X
 
-	; Accelerate Y Velocity
-	LDA <Objects_YVel,X
-	ADD SpikeCheep_YAccel,Y
-	STA <Objects_YVel,X
+	JSR Object_WorldDetect4
+	JSR Object_InteractWithWorldNoMove
+	JSR Object_DeleteOffScreen
+	JSR Player_HitEnemy
+	JSR DoPatrol
 
-	CMP SpikeCheep_YLimit,Y
-	BNE PRG004_B121	 ; If Spike Cheep is not at its Y velocity limit, jump to PRG004_B121
-
-	INC <Objects_Var4,X	 ; Otherwise, Var4++ (reverses his vertical direction)
-
-PRG004_B121:
-	JSR Object_ApplyXVel	 	; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
-
-	LDA Objects_Var1,X
-	BNE PRG004_B14A	 ; If Var1 <> 0, jump to PRG004_B14A
-
-	LDA <Objects_X,X
-	CMP Objects_Var10,X
-	BEQ PRG004_B141	 ; If Spike Cheep is at left limit, jump to PRG004_B141
-
-	CMP Objects_Var11,X
-	BEQ PRG004_B141	 ; If Spike Cheep is at right limit, jump to PRG004_B141
-
-	JSR Object_WorldDetect4	 ; Detect against world
-
-	LDA <Objects_DetStat,X
-	AND #$03
-	BEQ PRG004_B14A	 ; If Spike Cheep did not hit wall, jump to PRG004_B14A
-
-PRG004_B141:
-	JSR Object_AboutFace	 ; Turn around
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyXVel	 ; Apply Y velocity
-
-PRG004_B14A:
-	JSR Player_HitEnemy	 ; Player to Spike Cheep collision check
-
-PRG004_B14D:
-	JSR Object_DeleteOffScreen_N4	 ; Delete if Spike Cheep goes off-screen
-	JMP PRG004_B0BD	; Jump to PRG004_B0BD
+JustDrawCheep:
+	JMP Object_ShakeAndDraw
 
 BulletBill_XAccel:	.byte $01, -$01
 BulletBill_XLimit:	.byte $18, -$18
@@ -2928,21 +2866,28 @@ PRG004_B21A:
 
 GroundTroop_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
 SpikeCheep_XVelTowardsPlayer:	.byte $08, -$08
+TroopSpeed:
+	.byte $08, $0C
 
-	; DEAD CODE
-	LDA #$10	 
-	STA <Objects_YVel,X
-	BNE ObjInit_GroundTroop
+ObjInit_FlyingTroopa:
+	JSR ObjInit_GroundTroop
+	JMP InitPatrol
 
 ObjInit_GiantTroop:
 	INC Objects_IsGiant,X	 ; Flag this enemy as giant!
 
 ObjInit_GroundTroop:
+	LDY Objects_Property, X
+	LDA TroopSpeed,Y
+	STA <Objects_XVel, X
 	JSR Level_ObjCalcXDiffs
-
-	; Face Player when appearing
-	LDA GroundTroop_FlipTowardsPlayer,Y
+	LDA GroundTroop_FlipTowardsPlayer, Y
 	STA Objects_FlipBits,X
+	CPY #$00
+	BEQ ObjInit_Set3DoNothing
+	LDA <Objects_XVel, X
+	JSR Negate
+	STA <Objects_XVel, X
 
 ObjInit_Set3DoNothing:
 	RTS		 ; Return
@@ -3047,84 +2992,7 @@ PRG004_B29F:
 PRG004_B2A2:
 	JMP PRG004_AF1A	 ; (Indirectly) Handle getting bumped underneath and don't come back
 
-ParaTroopaFly_Accel:	.byte $01, $FF
-ParaTroopaFly_Limit:	.byte $10, $F0
-
-ObjNorm_FlyingGreenPara:
-	JSR Object_DeleteOffScreen_N2	 ; Delete if object falls off screen
-	JSR Troopa_Draw	 		; Draw the paratroopa
-
-	LDA <Player_HaltGame
-	BNE PRG004_B2FB	 ; If gameplay halted, jump to PRG004_B2FB
-
-	LDY #SPR_HFLIP	 ; Y = SPR_HFLIP (paratroopa moving to the right)
-
-	LDA <Objects_XVel,X
-	BEQ PRG004_B2C1	 ; If paratroopa is not moving horizontally, jump to PRG004_B2C1
-	BPL PRG004_B2BD	 ; If paratroopa is moving to the right, jump to PRG004_B2BD
-
-	LDY #$00	 ; Y = 0 (paratroopa moving to the left)
-
-PRG004_B2BD:
-	TYA		 
-	STA Objects_FlipBits,X	 ; Set appropriate flip
-
-PRG004_B2C1:
-	INC <Objects_Var5,X	 ; Var5++
-
-	; Toggle frame 0/1
-	LDA <Objects_Var5,X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
-
-	LDA Objects_Timer,X
-	BNE PRG004_B2FB	 ; If timer is not expired, jump to PRG004_B2FB
-
-	INC <Objects_Var4,X	 ; Var4++
-
-	LDA <Objects_Var4,X
-	AND #$03
-	BNE PRG004_B2FB	 ; 1:4 ticks proceed, otherwise jump to PRG004_B2FB
-
-	LDA Objects_Var3,X
-	AND #$01
-	TAY		 ; Y = 0 or 1
-
-	; Accelerate!
-	LDA <Objects_XVel,X
-	ADD ParaTroopaFly_Accel,Y
-	STA <Objects_XVel,X
-
-	CMP ParaTroopaFly_Limit,Y
-	BNE PRG004_B2FB	 ; If Paratroopa is not at his velocity limit, jump to PRG004_B2FB
- 
-	INC Objects_Var3,X	 ; Var3++
-
-	; Reset timer to $30
-	LDA #$30
-	STA Objects_Timer,X
-
-PRG004_B2FB:
-	LDY #$02	 ; Y = $02
-
-	LDA <Objects_Var5,X
-	AND #$20
-	BEQ PRG004_B305	 ; 32 ticks on, 32 ticks off; jump to PRG004_B305
-
-	LDY #-$02	 ; Y = -$02
-
-PRG004_B305:
-	STY <Objects_YVel,X	 ; Slight bob in the flight path
-	JMP Player_HitEnemy	 ; Do Player to Paratroopa collision and don't come back!
-
-
-ObjNorm_FlyingRedTroopa:
+ObjNorm_FlyingTroopa:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 	JSR Troopa_Draw	 		; Draw like a troopa
 
@@ -3141,34 +3009,10 @@ ObjNorm_FlyingRedTroopa:
 	AND #$01
 	STA Objects_Frame,X
 
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
-
-	LDA Objects_Timer,X
-	BNE PRG004_B34B	 ; If timer not expired, jump to PRG004_B34B
-
-	INC <Objects_Var4,X	 ; Var4++
-
-	LDA <Objects_Var4,X
-	AND #$03
-	BNE PRG004_B34B	 ; 1:4 ticks proceed, otherwise jump to PRG004_B34B
-
-	LDA Objects_Var3,X
-	AND #$01
-	TAY		 ; Y = 0 or 1 (current flight direction)
-
-	; Accelerate
-	LDA <Objects_YVel,X
-	ADD ParaTroopaFly_Accel,Y
-	STA <Objects_YVel,X
-
-	CMP ParaTroopaFly_Limit,Y
-	BNE PRG004_B34B	 ; If Y velocity is not at limit, jump to PRG004_B34B
-
-	INC Objects_Var3,X	 ; Var3++ (technically, turn around, only bit 0 matters)
-
-	; Set timer to $30
-	LDA #$30
-	STA Objects_Timer,X
+	JSR Object_WorldDetect4
+	JSR Object_InteractWithWorldNoMove
+	JSR DoPatrol
+	
 
 PRG004_B34B:
 	JMP Player_HitEnemy	 ; Do Player to enemy collision and don't come back
@@ -3179,8 +3023,11 @@ PRG004_B34E:
 PRG004_B353:
 	.byte $FF, $C0, $80, $60, $40
 
-GroundTroop_XVel:
-	.byte $f8, $08
+ObjNormParaTroopas:
+	LDA #$20 
+	STA Objects_Var10, X
+	STA Objects_Var11, X
+	JMP InitPatrol
 
 Troopers:
 	.byte OBJ_BLUESPINY, OBJ_PURPLETROOPA
@@ -3216,19 +3063,9 @@ DisableTrooping:
 	JMP GroundTroop_Draw	 ; Draw the enemy and don't come back!
 
 PRG004_B36E:
-	LDA Objects_FlipBits,X
-	ASL A
-	ASL A
-	ROL A
-	AND #$01
-	TAY		 ; Y = 0 or 1, depending if horizontally flipped or not
-
-	; Set proper ground troop X velocity
-	LDA GroundTroop_XVel,Y
-	STA <Objects_XVel,X
-
 	; Toggle frame 0/1
 	LDA <Objects_Var5,X
+	LSR A
 	LSR A
 	LSR A
 	AND #$01
@@ -3249,26 +3086,14 @@ PRG004_B36E:
 
 
 PRG004_B3A5:
+	
 	JSR GroundTroop_Draw	 ; Draw the enemy
+	JSR ObjectCarry
+	BCS PRG004_B3C6
+	JSR GroundTroop_BumpOffOthers
+
+PRG004_B3C6:
 	JSR Object_Move		 ; Standard object movements
-
-	; If this enemy is in contact with a left/right bouncing block, set Objects_TargetingXVal
-	LDA LRBounce_Vel
-	STA Objects_TargetingXVal,X
-
-	JSR GroundTroop_BumpOffOthers	 ; Bounce off other enemies
-
-	LDY LRBounce_Vel
-	INY
-	INY
-
-	; Var7 += PRG004_B353[Y]
-	LDA Objects_Var7,X
-	ADD PRG004_B353,Y
-	STA Objects_Var7,X
-
-	BCC PRG004_B3C7	 ; If no carry, jump to PRG004_B3C7
-
 	INC <Objects_Var5,X	 ; Var5++
 
 PRG004_B3C7:
@@ -3337,7 +3162,7 @@ PRG004_B405:
 	AND #$03
 	BEQ PRG004_B40E	 ; If enemy hasn't hit a wall, jump to PRG004_B40E
 
-	JSR Object_FlipFace	 ; Turn around
+	JSR Object_AboutFace	 ; Turn around
 
 PRG004_B40E:
 	LDA <Temp_Var15
@@ -3431,28 +3256,11 @@ PRG004_B43A:
 	ADC #$00
 	BNE PRG004_B49A	 ; If sprite is off-screen, jump to PRG004_B49A (skip to next object)
 
-	LSR <Temp_Var2	 ; Determine which side the object is on
-
-	LDY #$00	 ; Y = 0 
-	BCS PRG000_B484	 ; If this object's sprite X < the OTHER object's sprite X, jump to PRG000_B484
-	LDY #SPR_HFLIP	 ; Otherwise, Y = SPR_HFLIP
-
-PRG000_B484:
-	TYA 
- 	STA <Temp_Var1	 ; Store target flip -> Temp_Var1
-
-	LDY <SlotIndexBackup	 ; Y = original enemy slot index
-	STA Objects_FlipBits,Y	 ; -> FlipBits
-
-	; This check is redundant
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BNE PRG004_B49A	 ; If the hit object is not in state Normal, jump to PRG004_B49A (skip to next object)
-
 	; Set the object flip opposite of the object it hit
-	LDA <Temp_Var1
-	EOR #SPR_HFLIP
-	STA Objects_FlipBits,X
+	JSR Object_AboutFace
+	LDX <SlotIndexBackup
+	JSR Object_AboutFace
+	RTS
 
 PRG004_B49A:
 	DEX		 ; X-- (previous object)

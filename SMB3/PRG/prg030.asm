@@ -4748,6 +4748,9 @@ PRG000_C4A7:
 	RTS		 ; Return
 
 Can_Wall_Jump:
+	LDA Player_IsHolding
+	ORA Player_IsClimbing
+	BNE No_Wall_Jump
 	LDA <Player_YVel
 	BMI No_Wall_Jump
 	LDA <Pad_Holding

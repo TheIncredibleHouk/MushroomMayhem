@@ -417,7 +417,7 @@
     <block value="9B">Platform Filler</block>
     <block value="9C">Platform Filler Right</block>
     <block value="9D">Green Bottom</block>
-    <block value="9E">Green Bottom</block>
+    <block value="9E">Top Mid Solid Ground</block>
     <block value="9F">Green Bottom</block>
     <block value="A0"></block>
     <block value="A1"></block>
@@ -3133,7 +3133,7 @@
     <block value="21"></block>
     <block value="22"></block>
     <block value="23"></block>
-    <block value="24">Cleared Coin</block>
+    <block value="24"></block>
     <block value="25"></block>
     <block value="26"></block>
     <block value="27"></block>

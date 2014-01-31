@@ -3217,7 +3217,7 @@ Kill_Burn_NoFX:
 	STA Fox_FireBall
 	LDA #$10					
 	STA Player_SuitLost
-	LDA #$01
+	LDA #AIR_INCREASE
 	STA Air_Change
 	LDA <Player_FlipBits
 	EOR #$40
@@ -3237,7 +3237,6 @@ Try_Poison_Mode:
 	AND #PAD_B
 	BEQ Cant_Poison_Mode
 	INC Poison_Mode
-	STA Debug_Snap
 	LDA #$FC
 	STA Air_Change
 	STA Player_StarInv
@@ -3255,7 +3254,7 @@ Continue_Poison_Mode:
 	RTS
 
 Stop_Poison_Mode:
-	LDA #$01
+	LDA #AIR_INCREASE
 	STA Air_Change
 	STA Player_StarInv
 	LDA #$00

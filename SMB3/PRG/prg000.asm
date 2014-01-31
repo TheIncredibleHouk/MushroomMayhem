@@ -25,22 +25,6 @@
 	;	5) If tile is in range, it is subtracted, so using the Hills example:
 	;	   Tile $25 -- first table, index 0.  Tile $26 -- first table, index 1.
 	;	   Tile $5F -- second table, index 0.  Etc...
-	
-ToadItem_PalPerItem:
-	.byte $30	; 0: INVALID
-	.byte $16	; 1: Mushroom
-	.byte $2A	; 2: Fire flower
-	.byte $2A	; 3: Leaf
-	.byte $2A	; 4: Frog
-	.byte $17	; 5: Tanooki
-	.byte $27	; 6: Hammer
-	.byte $36	; 7: Judgems
-	.byte $27	; 8: P-Wing
-	.byte $30	; 9: Star
-	.byte $07	; A: Anchor
-	.byte $36	; B: Hammer
-	.byte $27	; C: Whistle
-	.byte $27	; D: Music Box
 
 	; Objects detect using a specific offset from this list
 	; Which "group" they use is specified by the respective value in ObjectGroup_Attributes2
@@ -199,35 +183,35 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $07 - OBJ_BRICK
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_COIN
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $09 - OBJ_BUBBLE
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0A
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0B - OBJ_POWERUP_NINJASHROOM
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0C - OBJ_POWERUP_STARMAN
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $09 - OBJ_BUBBLE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY| OAT_HITNOTKILL	; Object $0A
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY| OAT_HITNOTKILL	; Object $0B - OBJ_POWERUP_NINJASHROOM
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY| OAT_HITNOTKILL	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY| OAT_HITNOTKILL	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OAT_BOUNDBOX09 | OAT_HITNOTKILL	; Object $0E - OBJ_BOSS_KOOPALING
 	.byte OAT_BOUNDBOX00	; Object $0F
 	.byte OAT_BOUNDBOX00	; Object $10
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $11
-	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $12
-	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $13
-	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY	; Object $14
+	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $12
+	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $13
+	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY 	; Object $14
 	.byte OAT_BOUNDBOX09 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $15
-	.byte OAT_BOUNDBOX00	; Object $16
+	.byte OAT_BOUNDBOX01	; Object $16
 	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_SPINYCHEEP
 	.byte OAT_BOUNDBOX13	; Object $18 - OBJ_BOSS_BOWSER
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1A
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $1A
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OAT_BOUNDBOX01	; Object $1C
 	.byte OAT_BOUNDBOX00	; Object $1D
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1E - OBJ_POWERUP_SUPERLEAF
-	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1F - OBJ_GROWINGVINE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $1F - OBJ_GROWINGVINE
 	.byte OAT_BOUNDBOX00	; Object $20
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $23 - OBJ_POWERUP_FOXLEAF
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $23 - OBJ_POWERUP_FOXLEAF
 	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $24 - OBJ_CLOUDPLATFORM_FAST
-	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $25
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $25
 	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $27 - OBJ_OSCILLATING_H
 	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $28 - OBJ_OSCILLATING_V
@@ -235,7 +219,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2A - OBJ_SPARKRIGHT
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2B - OBJ_SPARKLEFT
 	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $2C - OBJ_CLOUDPLATFORM
-	.byte OAT_BOUNDBOX07	; Object $2D - OBJ_BIGBERTHA
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $2D - OBJ_BIGBERTHA
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $2E - OBJ_PIRATEBOO
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $2F - OBJ_BOO
 	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY	; Object $30 - OBJ_HOTFOOT_SHY
@@ -244,15 +228,15 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01	; Object $33 - OBJ_NIPPER
 	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $34 - OBJ_TOAD
 	.byte OAT_BOUNDBOX00	; Object $35 - OBJ_TOADHOUSEITEM
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $36 - OBJ_WOODENPLATFORM
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $37 - OBJ_OSCILLATING_HS
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $38 - OBJ_OSCILLATING_VS
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $36 - OBJ_WOODENPLATFORM
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $37 - OBJ_OSCILLATING_HS
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $38 - OBJ_OSCILLATING_VS
 	.byte OAT_BOUNDBOX01	; Object $39 - OBJ_NIPPERHOPPING
 	.byte OAT_BOUNDBOX03 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3A - OBJ_FALLINGPLATFORM
 	.byte OAT_BOUNDBOX01	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3C - OBJ_WOODENPLATFORMFALL
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OAT_BOUNDBOX01	; Object $3D - OBJ_NIPPERFIREBREATHER
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3E - OBJ_WOODENPLATFORMFLOAT
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3E - OBJ_WOODENPLATFORMFLOAT
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_FIREIMMUNITY	; Object $3F - OBJ_DRYBONES
 	.byte OAT_BOUNDBOX01	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $41 - OBJ_ENDLEVELCARD
@@ -264,13 +248,13 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX06 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $47 - OBJ_GIANTBLOCKCTL
 	.byte OAT_BOUNDBOX01	; Object $48 - OBJ_NINJI
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $4A - OBJ_MAGICSTAR
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $4A - OBJ_MAGICSTAR
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $4B - OBJ_BOOMBOOMJUMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $4C - OBJ_BOOMBOOMFLY
 	.byte OAT_BOUNDBOX00	; Object $4D
 	.byte OAT_BOUNDBOX00	; Object $4E
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY	; Object $4F - OBJ_CHAINCHOMPFREE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OAT_BOUNDBOX01	; Object $52 - OBJ_SPINTULA
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $53 - OBJ_PODOBOOCEILING
@@ -453,14 +437,14 @@ Exp_Inc:
 
 	; Checks for and handles object touching conveyor belt by carrying object
 ; $C4D6
+Object_HandleConveyorBounceVel:
 Object_HandleConveyorCarry:
 	RTS		 ; Return
 
 
 	; Checks for and handles object touching conveyor belt, storing result into LRBounce_Vel
 ; $CF46
-Object_HandleConveyorBounceVel:
-	RTS		 ; Return
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -472,30 +456,9 @@ Object_HandleConveyorBounceVel:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $C515
 Object_HitGround:
-	LDA <Objects_DetStat,X
-	BPL PRG000_C533	 	; If object is NOT touching the "32 pixel partition" floor, jump to PRG000_C533
-
-	; Object is touching the "32 pixel partition" floor...
-
-	LDA <Objects_Y,X
-	SUB Level_VertScroll
-	AND #$f0
-	ADD #$01
-	ADD Level_VertScroll
-	STA <Objects_Y,X	 ; Aligns to grid and adds 1
-
-	LDA #$00	 
-	ADC #$00	 
-	STA <Objects_YHi,X	 ; Apply carry
-
-	JMP PRG000_C53D	 ; Jump to PRG000_C53D
-
-PRG000_C533:
 	LDA <Objects_Y,X
 	AND #$f0
 	STA <Objects_Y,X	 ; Align to tile and apply slope
-
-PRG000_C53D:
 	LDA #$00
 	STA <Objects_YVel,X	 ; Halt vertical movement
 
@@ -666,7 +629,7 @@ PRG000_C69C:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_GetAttrAndMoveTiles:
 	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile	; Get tile here	
+	JSR Object_DetectTile	; Get tile here
 	STA Object_TileWater
 	STA Objects_LastProp, X
 	JSR Object_Check_Water
@@ -863,10 +826,6 @@ PRG000_C834:
 	RTS		 ; Return
 
 
-; FIXME: Anybody want to claim this?
-; $C893
-	.byte $FC, $04, $01, $02
-
 
 	; When Object hits water, splash!
 Object_WaterSplash:
@@ -893,6 +852,9 @@ Podoboo_Splash:
 	BEQ PRG000_C914
 	CMP #OBJ_BLOOPERWITHKIDS
 	BEQ PRG000_C914
+
+	LDA TempA
+	BEQ PRG000_C8BE
 
 	LDA #$00
 	STA <Objects_YVel,X	; Object's Y velocity is zeroed at impact of water
@@ -930,37 +892,6 @@ PRG000_C8BE:
 	; Set appropriate splash X
 	LDA <Objects_X,X
 	STA Splash_X,Y
-
-	LDA <Objects_YVel,X
-	BMI PRG000_C914	 ; If object's Y velocity is negative (moving upwards), jump to PRG000_C914 (RTS)
-
-	; NOTE: The following is probably old debug code; it basically catches the coordinates
-	; of the very first splash any object makes... and then will never update again because
-	; nothing clears the WatrHit_IsSetFlag value... may also be an unused feature where an
-	; object could respond somehow to having splashed down?
-
-	LDA WatrHit_IsSetFlag
-	BNE PRG000_C914	 ; If WatrHit_IsSetFlag is set, jump to PRG000_C914 (RTS)
-
-	LDA #$80
-	STA WatrHit_IsSetFlag	 ; WatrHit_IsSetFlag = $80
-
-	; Store Object_WatrHit vars
-	LDA <Objects_Y,X
-	ADC #$06
-	STA Object_WatrHitY
-
-	LDA <Objects_YHi,X
-	ADC #$00
-	STA Object_WatrHitYHi
-
-	LDA <Objects_X,X
-	ADC #$04
-	STA Object_WatrHitX
-
-	LDA <Objects_XHi,X
-	ADC #$00
-	STA Object_WatrHitXHi
 
 PRG000_C914:
 	RTS		 ; Return
@@ -1103,6 +1034,7 @@ PRG000_C9B6:
 	STA Object_SprRAM,X	 ; Store this object's Sprite_RAM offset
 
 	JSR Object_DoStateAction 	; Do whatever's required by this object by its current state
+	LDX <SlotIndexBackup
 	JSR Object_HitByTailOrBouncer	; Test and respond if object was hit by Player tail attack or left/right bouncer
 
 	LDA Objects_State,X
@@ -1502,7 +1434,7 @@ PRG000_CB8E:
 	CMP #OBJ_STONEBLOCK
 	BEQ PRG000_CBB3
 	CMP #OBJ_ICEBLOCK
-	BEQ PRG000_CBB3	 ; If object is an Iceblock, jump to PRG000_CBB3 (RTS)
+	BEQ PRG000_CBB3_2	 ; If object is an Iceblock, jump to PRG000_CBB3 (RTS)
 
 	JSR Object_SetShakeAwakeTimer	 ; Set the "shake awake" timers
 
@@ -1525,6 +1457,13 @@ PRG000_CB8E:
 
 PRG000_CBB3:
 	RTS		 ; Return
+
+PRG000_CBB3_2:
+	LDY Object_SprRAM,X	
+	LDA Sprite_RAM + $06, Y
+	ORA #SPR_VFLIP
+	STA Sprite_RAM + $06, Y
+	RTS
 
 PRG000_CBB4:
 
@@ -1707,17 +1646,11 @@ PRG000_CC37:
 	JSR ObjectObject_Intersect 
 	BCC PRG000_CC66	 ; If object did not intersect with prior object, jump to PRG000_CC66
  
-	LDY <SlotIndexBackup	 ; Y = object slot index
- 
-	LDA <Objects_SpriteX,X 
-	CMP Objects_SpriteX,Y 
-	LDY #$00	 ; Y = 0 
-	BLT PRG000_CC62	 ; If this object's sprite X < the OTHER object's sprite X, jump to PRG000_CC62 
-	LDY #$40	 ; Otherwise, Y = $40
-
-PRG000_CC62:
-	TYA 
-	STA Objects_FlipBits,X	 ; Object turns around if it hit another object 
+	JSR Object_AboutFace
+	JSR Object_Move
+	JSR Object_Move
+	LDX <SlotIndexBackup	 ; Y = object slot index
+	RTS
 
 PRG000_CC66:
 	DEX		 ; X-- 
@@ -2275,47 +2208,31 @@ Dont_Coin_It4:
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
 PRG000_CEB4:
-
-	; Object kicked not against wall...
-	JSR Level_ObjCalcXDiffs
-	LDY #$28	 	; Y = 0
-	LDA <Temp_Var16
-	BMI PRG000_CEBB
-	LDY #$E8
-
 PRG000_CEBB:
-	TYA
-	;PHA
-	JMP PRG000_CED9	; Jump to PRG000_CEC6
-
 PRG000_CEBE:
 PRG000_CEC6:
 	LDA Objects_State, X
 	CMP #OBJSTATE_HELD
-	BNE PRG000_CEC6_1
+	BNE PRG000_CEC6_3
 
 	LDA <Pad_Holding
 	AND #(PAD_UP)
-	BNE PRG000_CEC6_2
-	
-PRG000_CEC6_1:
-	LDA #$30
-	BNE PRG000_CEC6_3
+	BEQ PRG000_CEC6_3
 
 PRG000_CEC6_2:
 	LDA <Player_XVel
 	BNE PRG000_CED9
 
 PRG000_CEC6_3:
-	LDY <Player_FlipBits
-	BEQ PRG000_CED8
-
-PRG000_CEC7:
-	LDA #$30
+	JSR Level_ObjCalcXDiffs
+	LDY <Temp_Var16
+	BPL PRG000_CED8
+	LDA #$50
 	BNE PRG000_CED9
+	
 
 PRG000_CED8:
-	LDA #$D0
+	LDA #$B0
 
 PRG000_CED9:
 	PHA
@@ -2323,10 +2240,10 @@ PRG000_CED9:
 	EOR #$FF
 
 PRG000_CEDA:
-	SUB #$01
+	ADD #$01
 
 PRG000_CEDA_2:
-	AND #$30
+	AND #$F0
 	LSR A
 	LSR A
 	LSR A
@@ -2393,7 +2310,7 @@ PRG000_CEEE_2:
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
 KickedXVel:
-	.byte $08, $18, $2C, $40
+	.byte $10, $20, $30, $40, $40, $28
 
 PRG000_CEEF:
 
@@ -2792,6 +2709,8 @@ PRG000_D090:
 Object_MaxFalls:
 	.byte OBJECT_MAXFALL, OBJECT_MAXFALLINWATER
 
+Object_MaxAntiGravity:
+	.byte -OBJECT_MAXFALL, -OBJECT_MAXFALLINWATER
 	; Gravity of object 
 Object_Gravity:
 	.byte OBJECT_FALLRATE, OBJECT_FALLRATEINWATER
@@ -2849,6 +2768,12 @@ Object_ApplyY_With_Gravity:
 	BNE PRG000_D0CA	 ; Jump (technically always) to PRG000_D0CA (uhh... pointless, heh)
 
 PRG000_D0CA:
+	LDA NoGravity
+	BNE PRG000_D0DE
+
+	LDA ReverseGravity
+	BNE PRG000_D0DF
+
 	LDA <Objects_YVel,X
 	ADD Object_Gravity,Y
 	STA <Objects_YVel,X	; Apply gravity to object
@@ -2862,7 +2787,25 @@ PRG000_D0CA:
 	STA <Objects_YVel,X	; Cap fall at max rate
 
 PRG000_D0DE:
+	LDA #$00
+	STA NoGravity
 	RTS		 ; Return
+
+PRG000_D0DF:
+	LDA #$00
+	STA ReverseGravity
+	LDA <Objects_YVel,X
+	SUB Object_Gravity,Y
+	STA <Objects_YVel,X	; Apply gravity to object
+
+	BPL PRG000_D0DE	 	; If Y velocity is negative, jump to PRG000_D0DE (RTS)
+
+	CMP Object_MaxAntiGravity,Y
+	BCS PRG000_D0DE	 	; If object is not falling at the max rate, jump to PRG000_D0DE (RTS)
+
+	LDA Object_MaxAntiGravity,Y
+	STA <Objects_YVel,X	; Cap fall at max rate
+	RTS
 
 ObjectHeld_WakeUpDir:	.byte $40, $00 
 
@@ -2969,13 +2912,8 @@ PRG000_D147:
 	; Held object did NOT impact... (time to wake up!)
 
 	; Set object state to Normal
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_INIT
 	STA Objects_State,X
- 
-	; Have object "wake up" towards Player!
-	JSR Level_ObjCalcXDiffs	 
-	LDA ObjectHeld_WakeUpDir,Y 
-	STA Objects_FlipBits,X
 
 PRG000_D155:
 
@@ -3568,6 +3506,7 @@ PRG000_D382:
 	DEY		 
 	BEQ PRG000_D399
 	ORA #SPR_HFLIP	 ; Set horizontal flip
+
 PRG000_D399:
 	STA Objects_FlipBits,X	 ; Update object flip bits as necessary
 
@@ -5930,85 +5869,6 @@ Object_AnySprOffscreen:
 	RTS		 ; Return
 
 
-;; FIXME: Anybody want to claim this?
-;; Appears it would return a free object slot
-;; $DD5B 
-;	LDY #$04	; Y = 4
-;PRG000_DD5D:
-;	LDA Objects_State,Y
-;	BEQ PRG000_DD65	 ; If this object slot is dead/empty, jump to PRG000_DD65
-;
-;	DEY		 ; Y--
-;	BPL PRG000_DD5D	 ; While Y >= 0, loop
-;
-;PRG000_DD65:
-;	RTS		 ; Return
-;
-;
-;; FIXME: Anybody want to claim this?
-;; Appears to apply offsets to Player X/Y (Temp_Var11/Temp_Var10) and get a tile there
-;; $DD66 
-;
-;	; Temp_Var13 = Player_YHi
-;	LDA <Player_YHi
-;	STA <Temp_Var13
-;
-;	; Temp_Var14 = Temp_Var10 (? input var?) + Player_Y
-;	LDA <Temp_Var10
-;	ADD <Player_Y
-;	STA <Temp_Var14
-;
-;	BCC PRG000_DD75	 ; If no carry, jump to PRG000_DD75
-;
-;	INC <Temp_Var13		 ; Apply carry
-;
-;PRG000_DD75:
-;	LDA <Temp_Var13
-;	BNE PRG000_DD84	 ; If Temp_Var13 <> 0 (Player is on lower screen), jump to PRG000_DD84
-;
-;	; Temp_Var14 -= 16
-;	LDA <Temp_Var14
-;	SUB #16
-;	STA <Temp_Var14
-;	BCS PRG000_DD84	 ; If carry set, jump to PRG000_DD84
-;
-;	DEC <Temp_Var13		 ; Apply carry
-;
-;PRG000_DD84:
-;
-;	; Temp_Var15 = Player_XHi
-;	LDA <Player_XHi
-;	STA <Temp_Var15
-;
-;	LDA <Temp_Var11
-;	BPL PRG000_DD8E	 ; If Temp_Var11 (? input var?) >= 0, jump to PRG000_DD8E
-;
-;	DEC <Temp_Var15		 ; Otherwise, Temp_Var15--
-;
-;PRG000_DD8E:
-;
-;	; Temp_Var16 = Player_X + Temp_Var11 (? input var)
-;	LDA <Player_X
-;	ADD <Temp_Var11
-;	STA <Temp_Var16
-;	BCC PRG000_DD99	 ; If no carry, jump to PRG000_DD99
-;
-;	INC <Temp_Var15		 ; Apply carry
-;
-;PRG000_DD99:
-;	; Backup X/Y
-;	STY <Temp_Var10
-;	STX <Temp_Var11
-;
-;	JSR Player_GetTileAndSlope_Normal
-;
-;	; Restore X/Y
-;	LDY <Temp_Var10
-;	LDX <Temp_Var11
-;	RTS		 ; Return
-;
-
-
 	; Initializes a "block bump" effect, if one of the 2 slots is open...
 BlockBump_Init:
 	LDY #$00	 ; Y = 0
@@ -6237,48 +6097,6 @@ Video_3CMFlowBot
 	.byte VU_REPEAT | $08, $A9
 	.byte $00	; Terminator
 
-Do_Exit_Map:
-	LDA #$01
-	STA DAIZ_TEMP1
-	LDA <Objects_Y,X	; Y = object's Y position
-	AND #$10
-	BEQ DontChangeWorld
-	JMP Change_World
-	RTS
-
-DontChangeWorld:
-	LDA <Objects_X,X
-	AND #$10
-	BNE Change_MapY
-	JMP Change_MapX
-	RTS
-
-Change_World:
-	LDA <Objects_Y,X
-	AND #$0F
-	STA World_Num	
-	RTS
-
-Change_MapX:
-	LDA <Objects_Y,X
-	AND #$0F
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	STA Map_Entered_Y
-	RTS
-
-Change_MapY:
-	LDA <Objects_Y,X
-	AND #$0F
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	STA Map_Entered_X
-	RTS
-
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
 	; the water flag for the tile rather than all these range comparisons
 Object_Check_Water:
@@ -6341,36 +6159,6 @@ NoBumpTiles:
 	STA <Objects_XHi, X
 	PLA
 	STA <Objects_X, X
-	RTS
-
-CheckKeyAgainstLock:
-	LDA Objects_LastProp,X
-	CMP #TILE_ITEM_COIN
-	BCS RemainLocked
-
-	AND #$0F
-	CMP #TILE_PROP_LOCK
-	BNE RemainLocked
-
-	LDA Level_ChgTileEvent
-	BNE RemainLocked
-
-	LDA Object_LevelTile
-	EOR #$01
-	STA Level_ChgTileEvent
-	
-	JSR SetObjectTileCoordAlignObj
-
-	LDA #OBJSTATE_POOFDEATH
-	LDX <SlotIndexBackup
-	STA Objects_State, X
-
-	LDA #$20
-	STA Objects_Timer,X
-	PLA
-	PLA
-
-RemainLocked:
 	RTS
 
 SetObjectTileCoordAlignObj:
@@ -6457,6 +6245,7 @@ DoSpinnerE:
 Object_InteractWithWorld:
 	JSR Object_Move	; Move and collide with world
 
+Object_InteractWithWorldNoMove:
 	LDA <Objects_DetStat,X
 
 	TAY		 ; Object detection status -> 'Y'
@@ -6475,7 +6264,8 @@ PRG001_A973:
 
 PRG001_A97C:
 	LDA Object_TileFeet2
-	CMP #TILEA_BLOCKBUMP_CLEAR
+	BEQ PRG001_A993
+	AND #$3F
 	BNE PRG001_A993	 ; If object did not hit the TILEA_BLOCKBUMP_CLEAR tile, jump to PRG001_A993
 
 	; Hit the blockbump tile... (i.e. this kills an enemy who was unlucky enough to be on a bumped block)
@@ -6825,4 +6615,264 @@ LetsDrawGiant:
 	STA Sprite_RAM + 3, Y
 	
 DontDrawGiant:
+	RTS
+
+ObjectCarry:
+	LDA <Objects_X, X
+	STA <Temp_Var6
+	LDA <Objects_XHi, X
+	STA <Temp_Var7
+	LDA <Objects_Y, X
+	ADD #$10
+	STA <Temp_Var8
+	LDA <Objects_YHi, X
+	ADC #$00
+	STA <Temp_Var9
+	LDX #$04
+
+DetectNextSprite:
+	CPX <SlotIndexBackup
+	BEQ GoNextSprite
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BNE GoNextSprite
+	LDA <Objects_X, X
+	SUB <Temp_Var6
+	STA <Temp_Var10
+	LDA <Objects_XHi, X
+	SBC <Temp_Var7
+	BMI KeepCalcingX
+	BNE GoNextSprite
+
+KeepCalcingX:
+	LDA <Temp_Var10
+	CMP #$F0
+	BCS TrySpriteCarry
+	CMP #$10
+	BCS GoNextSprite
+
+TrySpriteCarry:
+	STX TempX
+	LDA <Temp_Var8
+	SUB <Objects_Y, X
+	STA <Temp_Var10
+	LDA <Objects_YHi, X
+	SBC <Temp_Var9
+	BMI KeepCalcingY
+	BNE GoNextSprite
+
+KeepCalcingY:
+	LDA <Temp_Var10
+	CMP #$04
+	BCS GoNextSprite
+
+DoSpriteCarry:
+	STX TempX
+	LDY TempX
+	LDX <SlotIndexBackup
+	LDA Objects_XVel, Y
+	STA <Objects_XVel, X
+	LDA #$00;Objects_YVel, Y
+	STA <Objects_YVel, X
+	LDA Objects_Y, Y
+	SUB #$10
+	STA <Objects_Y, X
+	LDA Objects_YHi, X
+	SBC #$00
+	STA <Objects_YHi, X
+	SEC
+	RTS
+
+GoNextSprite:
+	DEX
+	BPL DetectNextSprite
+	LDX <SlotIndexBackup
+	CLC
+	RTS
+
+PatrolAccel_Limit: .byte $01, $FF
+PatrolVel_Limit: .byte $10, $F0
+
+
+InitPatrol:
+	LDA #$01
+	STA Objects_Var3,X
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word InitPatrolRTS
+	.word InitPatrolRTS
+	.word InitPatrolRTS
+	.word InitDiagonal2
+	.word InitCircleCCW
+	.word InitCircleCW
+	.word InitPatrolRTS
+
+InitCircleCCW:
+	LDA Objects_Var11, X
+	LSR A
+	STA Objects_Timer2, X
+	LDA #$F0
+	STA Objects_YVel, X
+	RTS
+
+InitCircleCW:
+	LDA Objects_Var11, X
+	LSR A
+	STA Objects_Timer2, X
+	LDA #$10
+	STA Objects_YVel, X
+
+InitDiagonal2:
+	LDA #$01
+	STA Objects_Var7, X
+
+InitPatrolRTS:
+	RTS
+
+DoPatrol:
+	LDA Objects_Property, X
+
+	JSR DynJump
+	.word PatrolBackForth
+	.word PatrolUpDown
+	.word PatrolDiagonal
+	.word PatrolDiagonal
+	.word PatrolDiagonal
+	.word PatrolDiagonal
+	.word Chase
+
+PatrolDiagonal:
+	JSR PatrolUpDown
+
+PatrolBackForth:
+	LDY #SPR_HFLIP	 ; Y = SPR_HFLIP (paratroopa moving to the right)
+
+	LDA <Objects_XVel,X
+	BPL PRG004_B2BD	 ; If paratroopa is moving to the right, jump to PRG004_B2BD
+
+	LDY #$00	 ; Y = 0 (paratroopa moving to the left)
+
+PRG004_B2BD:
+	TYA		 
+	STA Objects_FlipBits,X	 ; Set appropriate flip
+
+	LDA Objects_Timer,X
+	BNE PRG004_B2FB	 ; If timer is not expired, jump to PRG004_B2FB
+
+	INC <Objects_Var4,X	 ; Var4++
+
+	LDA <Objects_Var4,X
+	AND #$03
+	BNE PRG004_B2FB	 ; 1:4 ticks proceed, otherwise jump to PRG004_B2FB
+
+	LDA Objects_Var3,X
+	AND #$01
+	TAY		 ; Y = 0 or 1
+
+	; Accelerate!
+	LDA <Objects_XVel,X
+	ADD PatrolAccel_Limit,Y
+	STA <Objects_XVel,X
+
+	CMP PatrolVel_Limit,Y
+	BNE PRG004_B2FB	 ; If Paratroopa is not at his velocity limit, jump to PRG004_B2FB
+ 
+	INC Objects_Var3,X	 ; Var3++
+
+	; Reset timer to $30
+	
+	LDA Objects_Var10, X
+	STA Objects_Timer,X
+
+PRG004_B2FB:
+	JSR Object_ApplyXVel	 ; Apply X velocity
+	RTS
+
+PatrolUpDown:
+	
+	LDA Objects_Timer2,X
+	BNE PRG004_B2FB_2	 ; If timer is not expired, jump to PRG004_B2FB
+
+	INC Objects_Var6,X	 ; Var4++
+
+	LDA Objects_Var6,X
+	AND #$03
+	BNE PRG004_B2FB_2	 ; 1:4 ticks proceed, otherwise jump to PRG004_B2FB
+
+	LDA Objects_Var7,X
+	AND #$01
+	TAY		 ; Y = 0 or 1
+
+	; Accelerate!
+	LDA <Objects_YVel,X
+	ADD PatrolAccel_Limit,Y
+	STA <Objects_YVel,X
+
+	CMP PatrolVel_Limit,Y
+	BNE PRG004_B2FB_2	 ; If Paratroopa is not at his velocity limit, jump to PRG004_B2FB
+ 
+	INC Objects_Var7,X	 ; Var3++
+
+	; Reset timer to $30
+	LDA Objects_Var11, X
+	STA Objects_Timer2,X
+
+PRG004_B2FB_2:
+	JSR Object_ApplyYVel_NoLimit	 ; Apply X velocity
+	RTS
+
+Chase:
+	LDA Objects_InWater, X
+	BEQ PRG002_A8ED
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	AND #$03
+	BEQ PRG002_A84F
+
+PRG002_A8ED:	
+	JSR Level_ObjCalcXDiffs
+
+	LDA <Objects_XVel,X
+	CMP PatrolVel_Limit,Y	
+	BEQ PRG002_A8EE	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+
+	ADD PatrolAccel_Limit,Y	 ; Boo accelerates!
+	STA <Objects_XVel,X	 ; Update Boo's X velocity
+
+PRG002_A8EE:
+
+	; Set flip bit as appropriate
+	LDY #SPR_HFLIP
+	LDA Objects_XVel, X
+	BPL SetChaseFlip
+	LDY #$00
+
+SetChaseFlip:
+	TYA
+	STA Objects_FlipBits,X	
+
+	JSR Object_CalcCoarseYDiff
+
+	LDY #$00	 ; Y = 0 (Player is lower, move down!)
+
+	LDA <Temp_Var15
+	SUB #$04
+	BMI PRG002_A841
+
+	INY		 ; Y = 1 (Player is higher, move up!)
+
+PRG002_A841:
+	LDA <Objects_YVel,X
+	CMP PatrolVel_Limit,Y
+	BEQ PRG002_A84E	 ; If Boo is at his acceleration limit, jump to PRG002_A84E
+
+	ADD PatrolAccel_Limit,Y	 ; Boo accelerates!
+	STA <Objects_YVel,X	 ; Update Boo's Y velocity
+
+PRG002_A84E:
+	JSR Object_ApplyXVel	 ; Apply X velocity
+	JSR Object_ApplyYVel	 ; Apply Y Velocity
+
+PRG002_A84F:
 	RTS

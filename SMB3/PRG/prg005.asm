@@ -24,10 +24,10 @@
 
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_InitJumpTable:
-	.word ObjInit_FireBarCW	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjInit_FireBarCCW	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.word ObjInit_IceBarCW	; Object $92 - OBJ_TWIRLINGPLATCW
-	.word ObjInit_IceBarCCW	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.word ObjInit_ProjBar	; Object $90 - OBJ_TILTINGPLATFORM
+	.word ObjInit_DoNothing	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.word ObjInit_DoNothing	; Object $92 - OBJ_TWIRLINGPLATCW
+	.word ObjInit_DoNothing	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjInit_Dimmer		; Object $94 - OBJ_DIMMER
 	.word ObjInit_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.word ObjInit_DoNothing		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -40,16 +40,16 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_FireJetUpward	; Object $9D - OBJ_FIREJET_UPWARD
 	.word ObjInit_Podoboo		; Object $9E - OBJ_PODOBOO
 	.word ObjInit_ParaBeetle	; Object $9F - OBJ_PARABEETLE
-	.word ObjInit_DryPiranha	; Object $A0 - OBJ_DRYPIRANHA
-	.word ObjInit_DryPiranhaFlip	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
-	.word ObjInit_RedPiranha	; Object $A2 - OBJ_REDPIRANHA
-	.word ObjInit_RedPiranhaFlip	; Object $A3 - OBJ_REDPIRANHA_FLIPPED
-	.word ObjInit_DryPiranha	; Object $A4 - OBJ_PIRANHA_ICE
-	.word ObjInit_DryPiranhaFlip	; Object $A5 - OBJ_PIRANHA_ICEC
-	.word ObjInit_RedPiranha	; Object $A6 - OBJ_VENUSFIRETRAP
-	.word ObjInit_RedPiranhaFlip	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjInit_RedPiranha		; Object $A8 - OBJ_ACIDTRAP
-	.word ObjInit_RedPiranhaFlip		; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.word ObjInit_PiranhaPlant	; Object $A0 - OBJ_DRYPIRANHA
+	.word ObjInit_DoNothing	; Object $A1 - OBJ_DRYPIRANHA_FLIPPED
+	.word ObjInit_PiranhaPlant	; Object $A2 - OBJ_REDPIRANHA
+	.word ObjInit_DoNothing	; Object $A3 - OBJ_REDPIRANHA_FLIPPED
+	.word ObjInit_DoNothing	; Object $A4 - OBJ_PIRANHA_ICE
+	.word ObjInit_DoNothing	; Object $A5 - OBJ_PIRANHA_ICEC
+	.word ObjInit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
+	.word ObjInit_DoNothing	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
+	.word ObjInit_DoNothing		; Object $A8 - OBJ_ACIDTRAP
+	.word ObjInit_DoNothing		; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.word ObjInit_DoNothing		; Object $AA - OBJ_AIRSHIPPROP
 	.word ObjInit_FireJetRight	; Object $AB (doesn't really work, and the "normal" routine is even weirder)
 	.word ObjInit_FireJetLeft	; Object $AC - OBJ_FIREJET_LEFT
@@ -419,15 +419,17 @@ ObjPA0:
 
 ObjPA1:
 ObjPA2:
-ObjPA3:
 	.byte $E1, $E1, $E3, $E3, $E5, $E5, $E3, $E3, $E1, $E1, $71, $71, $E5, $E5, $71, $71
+	.byte $F1, $F3, $E3, $E3, $F5, $F7, $E3, $E3, $F1, $F3, $71, $71, $F5, $F7, $71, $71
+
 ObjPA4:
 ObjPA5:
 ObjPA6:
 ObjPA7:
 ObjPA8:
 ObjPA9:
-	.byte $F1, $F3, $E3, $E3, $F5, $F7, $E3, $E3, $F1, $F3, $71, $71, $F5, $F7, $71, $71
+ObjPA3:
+	
 ObjP9F:
 	.byte $B1, $B3, $B5, $B7, $B1, $B3
 ObjPAF:
@@ -1211,43 +1213,31 @@ FireJet_PlayerHitTest:
 PRG005_A61D:
 	RTS		 ; Return
 
+PiranhaPals:
+	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL1, SPR_PAL1
 
-ObjInit_RedPiranhaFlip:
-	LDY #$21	 ; Y = $21
+PiranhaFlips:
+	.byte $00, SPR_VFLIP
 
-	LDA #16		; Start at Y + 16
-	BNE PRG005_A628	 ; Jump (technically always) to PRG005_A628
-
-ObjInit_DryPiranhaFlip:
-	LDY #$19	 ; Y = $19
-
-	; X += 8
-	LDA #$08
-
-PRG005_A628:
-	ADD <Objects_Y,X
-	STA <Objects_Y,X
-
-	; Start vertically flipped
-	LDA #SPR_VFLIP
-	STA Objects_FlipBits,X
-
-	BNE PRG005_A63A	 ; Jump (technically always) to PRG005_A63A
-
-ObjInit_DryPiranha:
+ObjInit_PiranhaPlant:
 	LDA #$00
 	STA Objects_Var2, X	
 	STA Objects_Var6, X	
-
-ObjInit_RedPiranha:
-	LDY #33	; Y = 33	
+	LDY Objects_Property, X
+	LDA PiranhaPals, Y
+	STA Objects_SprAttr, X
+	TYA
+	AND #$01
+	TAY
+	LDA PiranhaFlips, Y
+	STA Objects_FlipBits,X 
 
 PRG005_A63A:
 	; Var5 = original Y
 	LDA <Objects_Y,X
 	STA <Objects_Var5,X
 
-	TYA
+	LDA #33
 	STA Objects_TargetingYVal,X	 ; Objects_TargetingYVal = 25 if green, 33 if red
 
 	; Objects_Var1 = 9 or 17
@@ -1293,7 +1283,7 @@ DryPiranhaWait1:
 	BCS DryPiranhaWaitRTS
 
 	LDA #$B0
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 	INC Objects_Var6, X
 	LDA #$04
 	STA Objects_Var3, X
@@ -1317,7 +1307,7 @@ DryPiranhaAttack0:
 	AND #$0C 
 	BEQ DryPiranhaAttack2
 
-	LDA Objects_YVel, X
+	LDA <Objects_YVel, X
 	BMI DryPiranhaAttack1
 
 	JSR Object_HitGround
@@ -1331,7 +1321,7 @@ DryPiranhaAttack0:
 
 DryPiranhaAttack1:
 	LDA #$01
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
 
 DryPiranhaAttack2:
 	JMP DryPiranhaDraw
@@ -1344,7 +1334,7 @@ DryPiranhaBounce:
 	AND #$0C 
 	BEQ DryPiranhaBounce3
 
-	LDA Objects_YVel, X
+	LDA <Objects_YVel, X
 	BMI DryPiranhaBounce1
 
 	LDA #$C0
@@ -1354,7 +1344,7 @@ DryPiranhaBounce1
 	LDA #$01
 
 DryPiranhaBounce2:
-	STA Objects_YVel,X
+	STA <Objects_YVel,X
 
 DryPiranhaBounce3:
 	LDA <Objects_DetStat, X
@@ -1390,8 +1380,6 @@ Piranha_Style:
 	; Bit 0: Set for "ceiling" (vertically flipped) version of Piranha
 	; Bit 7: Set for fire spitting type
 
-	.byte $00	; OBJ_DRYPIRANHA
-	.byte $01	; OBJ_DRYPIRANHA_FLIPPED
 	.byte $00	; OBJ_REDPIRANHA
 	.byte $01	; OBJ_REDPIRANHA_FLIPPED
 	.byte $80	; OBJ_PIRANHA_ICE
@@ -1401,9 +1389,12 @@ Piranha_Style:
 	.byte $80	; OBJ_VENUSFIRETRAP
 	.byte $81	; OBJ_VENUSFIRETRAP_CEIL
 
+Piranha_Projectile:
+	.byte $00, $00, SOBJ_FIREBROFIREBALL, SOBJ_FIREBROFIREBALL, SOBJ_ICEBALL, SOBJ_ICEBALL, SOBJ_ACID, SOBJ_ACID
+
 Piranha_FacePlayerFlip:	.byte SPR_HFLIP, $00
 Piranha_VFlip:	.byte $00, SPR_VFLIP
-
+Piranha_FrameOffset: .byte $00, $00, $04, $04, $04, $04, $04, $04
 ObjNorm_Piranha:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
@@ -1440,17 +1431,17 @@ PRG005_A67D:
 	ADD #$08
 	STA Object_SprRAM,X
 
+	LDY Objects_Property, X
 	; Toggle frame 0/1
 	LDA Objects_Var3,X
 	LSR A
 	LSR A
 	LSR A
 	AND #$01
+	ORA Piranha_FrameOffset, Y
 	STA Objects_Frame,X
 
-	LDA Level_ObjectID,X
-	SUB #OBJ_DRYPIRANHA
-	TAY		 ; Y = relative Piranha index
+	LDY Objects_Property, X
 
 	; Load Var2 with appropriate value
 	LDA Piranha_Style,Y
@@ -1630,36 +1621,6 @@ PRG005_A794:
 	.word Piranha_Emerge
 	.word Piranha_Attack
 	.word Piranha_Retract
-
-
-; #DAHRKDAIZ - hacked to have diferent velocities per plant
-; #DAHRKDAIZ #$00 = Up, #$01 = down
-
-Piranha_Velocity_Table:
-	.byte -$20, $10, -$10, $20
-
-Venus_Velocity_Table:
-	.byte -$10, $10
-
-Piranha_Velocity:
-	STA DAIZ_TEMP1
-	STX DAIZ_TEMP2
-	LDA Objects_Var2,X
-	BMI Use_Venus_Table
-	ASL A
-	ADC DAIZ_TEMP1
-	TAX
-	LDA Piranha_Velocity_Table, X
-	BNE Plant_Vel_RTS
-
-Use_Venus_Table:
-	LDX DAIZ_TEMP1
-	LDA Venus_Velocity_Table, X
-
-Plant_Vel_RTS:
-	LDX DAIZ_TEMP2
-	RTS 
-
 Piranha_Emerge:
 
 	; Var5 = original Y 
@@ -1679,8 +1640,7 @@ Piranha_Emerge:
 	SBC <Objects_YHi,X
 	BCS PRG005_A824	 ; Basically if Piranha is at his Y and Y Hi highest point, jump to PRG004_B7F0
 
-	LDA #00	 ; A = -$10
-	JSR Piranha_Velocity
+	LDA #-$10	 ; A = -$10
 	BNE PRG005_A7DC	 ; Jump (technically always) to PRG005_A7DC
 
 Piranha_Retract:
@@ -1700,8 +1660,7 @@ Piranha_Retract:
 	SBC Objects_Var7,X
 	BCS PRG005_A824	 ; Basically if Piranha is at his Y and Y Hi origin, jump to PRG005_A824
 
-	LDA #$01	 ; A = $10
-	JSR Piranha_Velocity
+	LDA #$10	 ; A = $10
 
 PRG005_A7DC:
 	; Piranha is not fully extended/retracted...
@@ -1726,16 +1685,6 @@ Piranha_Attack:
 	STA Objects_Var3,X
 
 	LDA Objects_Timer,X
-
-	LDY World_Num
-	BNE PRG005_A7FD	 ; If this is not World 1, jump to PRG005_A7FD
-
-	; World 1 only...
-
-	CMP #$28
-	BEQ PRG005_A805	 ; If timer = $28, jump to PRG005_A805
-
-	TYA		 ; A = 0 (deliberately fails the following checks) 
 
 PRG005_A7FD:
 	CMP #$10
@@ -1835,7 +1784,7 @@ PRG005_A877:
 	RTS		 ; Return
 
 PiranhaFireball_YVel:	.byte $1B, $15
-PiranhaFireball_XVel:	.byte $1B, $1E
+PiranhaFireball_XVel:	.byte $20, $18
 
 Piranha_SpitFire:
 	LDY #$00	 ; Y = 0
@@ -1864,15 +1813,17 @@ PRG005_A885:
 	ADC #$00
 	STA SpecialObj_YHi,Y
 
-	; Piranha fireball
-	LDA Level_ObjectID, X
+	LDA Objects_Property, X
 	AND #$FE
-	CMP #OBJ_ACIDTRAP
+	CMP #$06
 	BEQ Throw_Acid
 
-	CMP #OBJ_PIRANHA_ICE
+	CMP #$04
 	BNE Throw_PFireball
 
+	LDA SpecialObj_XVel,Y
+	LSR A
+	STA SpecialObj_XVel,Y
 	LDA #SOBJ_ICEBALL
 	BNE STA_Proj
 
@@ -1885,6 +1836,7 @@ Throw_PFireball:
 
 STA_Proj:
 	STA SpecialObj_ID,Y
+	STA TempA
 
 	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
 
@@ -1898,10 +1850,9 @@ STA_Proj:
 
 	LDX #$00	 ; X = 0 (Player is close)
 
-	LDA <Temp_Var16
-	ADD #$50
-	CMP #$a0
-	BLT PRG005_A8C0	 ; If Player is close, jump to PRG005_A8C0
+	LDA TempA
+	CMP #SOBJ_ICEBALL
+	BNE PRG005_A8C0
 
 	INX		 ; X = 1 (Player is far)
 
@@ -3454,43 +3405,26 @@ PRG005_B1B2:
 PRG005_B1B4:
 	RTS
 
-ObjInit_FireBarCW:
-	LDA Objects_X, X
-	ADD #$04
-	STA Objects_X, X
-	LDA #$00
-	STA Objects_Var1, X
-	STA Objects_Var2, X
-	RTS		 ; Return
 
-ObjInit_IceBarCW:
+ObjInit_ProjBar:
 	LDA Objects_X, X
 	ADD #$04
 	STA Objects_X, X
-	LDA #$01
-	STA Objects_Var1, X
-	LDA #$00
+	LDA Objects_Property, X
+	AND #$01
 	STA Objects_Var2, X
-	RTS		 ; Return
+	LDA Objects_Property, X
+	LSR A
+	AND #01
+	STA Objects_Var1, X
+	LDA Objects_Property, X
+	AND #$04
+	BEQ Init_ProjBarRTS
+	LDA #$40
+	STA Objects_Var3, X
 
-ObjInit_FireBarCCW:
-	LDA Objects_X, X
-	ADD #$04
-	STA Objects_X, X
-	LDA #$00
-	STA Objects_Var1, X
-	LDA #$01
-	STA Objects_Var2, X
-	RTS		 ; Return
-
-ObjInit_IceBarCCW:
-	LDA Objects_X, X
-	ADD #$04
-	STA Objects_X, X
-	LDA #$01
-	STA Objects_Var1, X
-	STA Objects_Var2, X
-	RTS		 ; Return
+Init_ProjBarRTS:
+	RTS
 
 BarTiles:
 	.byte $65, $59
@@ -3544,10 +3478,23 @@ RadialTableY:
 
 ObjNorm_ProjectileBarCW:
 	JSR Object_DeleteOffScreen
+	LDA <Player_HaltGame
+	BNE DoBarBar
+	LDA Objects_Property, X
+	AND #$01
+	BEQ DecBar
+	INC Objects_Var3, X
+	JMP DoBarBar
+
+DecBar:
+	DEC Objects_Var3, X
+
+DoBarBar:
 	LDY #$08
 	JSR Object_DetermineVertVis
 	LDY #$08
 	JSR Object_DetermineHorzVis
+
 DoPBarDraw:
 	LDA Objects_SprVVis, X
 	ORA Objects_SprHVis, X
@@ -3578,9 +3525,8 @@ DrawPBar:
 	STA Sprite_RAM + 14, Y
 	STA Sprite_RAM + 18, Y
 	LDX <SlotIndexBackup
-	LDA Objects_Var2, X
-	TAX
-	LDA <Counter_1, X
+
+	LDA Objects_Var3, X
 	AND #$7C
 	STA TempX
 	LDX <SlotIndexBackup
