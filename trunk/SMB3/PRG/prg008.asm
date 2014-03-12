@@ -441,6 +441,10 @@ PRG008_A242:
 
 	; Set player power up based on current suit on 
 	LDX World_Map_Power
+	BNE Store_Suit
+	LDX #$01
+
+Store_Suit:
 	INX
 	STX Player_QueueSuit 
 	LDA #$40
@@ -5180,6 +5184,7 @@ PRG008_BDAE:
 	JMP Player_GetHurt	 ; Get hurt!
 
 PRG008_BDAF:
+	STA Debug_Snap
 	AND #TILE_PROP_WATER
 	BEQ PRG008_BDAE
 	JSR Get_Normalized_Suit

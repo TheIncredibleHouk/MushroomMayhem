@@ -2919,6 +2919,12 @@ PRG007_B0F6:
 PRG007_B0F7:
 	JMP SpecialObj_Remove	 ; Remove Blooper kid
 
+DebrisPattern:
+	.byte $49, $59, $55
+
+DebrisPalette:
+	.byte SPR_PAL3, SPR_PAL1, SPR_PAL1
+
 SObj_CoinOrDebris:
 	LDA <Player_HaltGame
 	BNE PRG007_B11F	 ; If gameplay halted, jump to PRG007_B11F
@@ -2964,18 +2970,15 @@ PRG007_B11F:
 
 	; Brick debris chunk pattern
 	LDA SpecialObj_Var2,X
-	BEQ UseBrickPattern
-
-	LDA #$59
+	STA TempA
+	TAX
+	LDA DebrisPattern, X
 	STA Sprite_RAM+$01,Y
-	LDA #SPR_PAL1
-	BNE KeepDrawingDebris
-
-UseBrickPattern:
-	LDA #$4b
-	STA Sprite_RAM+$01,Y
-	LDA #SPR_PAL3
+	LDX TempA
+	LDA DebrisPalette, X
 	STA <Temp_Var1
+	LDX <SlotIndexBackup
+	
 
 	; Temp_Var1 = SPR_PAL3
 

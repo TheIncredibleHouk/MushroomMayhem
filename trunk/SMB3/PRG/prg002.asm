@@ -409,6 +409,7 @@ ObjP31:
 ObjP32:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $71, $71
 
+ObjP24:
 ObjP25:
 ObjP26:
 ObjP27:
@@ -429,7 +430,7 @@ ObjP34:
 	.byte $71, $71, $71, $71 ; #DAHRKDAIZ - Toad looks like Hammer Bros.
 ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
-ObjP24:
+
 ObjP3F:
 	.byte $C1, $C3, $C5, $C7, $C9, $CB, $CD, $CF, $D1, $D3, $D5, $F9, $DD, $DF
 	
@@ -2062,6 +2063,7 @@ PRG002_AB8F:
 	RTS		 ; Return
 
 ObjNorm_WoodenPlatform:
+	JSR Object_GetAttrAndMoveTiles
 	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
 
 	LDA <Player_HaltGame
