@@ -3615,7 +3615,7 @@
   <set leveltype="0E">
     <block value="00">Background</block>
     <block value="01">Cleared Coin</block>
-    <block value="02">P-Switch Stomped</block>
+    <block value="02"></block>
     <block value="03">Background</block>
     <block value="04"></block>
     <block value="05"></block>
@@ -3743,7 +3743,7 @@
     <block value="7F">Empty ? Block</block>
     <block value="80">Background</block>
     <block value="81">Cleared Coin</block>
-    <block value="82">P-Switch Stomped</block>
+    <block value="82"></block>
     <block value="83"></block>
     <block value="84"></block>
     <block value="85"></block>

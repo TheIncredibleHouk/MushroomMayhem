@@ -1003,7 +1003,6 @@ BubbleRTS:
 	RTS		 ; Return
 
 BubblePop:
-	STA Debug_Snap
 	LDA Objects_Var1, X
 	STA Objects_Frame, X
 	CMP #$05
@@ -5476,7 +5475,14 @@ DontReverseWind:
 	BPL KeepRandomizing
 	RTS
 
+WeatherDrawOffset:	
+	.byte $00, $80
+
 ObjNorm_Weather:
+	LDA <Counter_1
+	TAY
+	LDA WeatherDrawOffset, Y
+	STA <Temp_Var7
 	LDA Object_SprRAM, X
 	STA TempX
 	LDY #$05
@@ -5562,8 +5568,10 @@ RainPattern:
 
 DrawSingleParticle:
 	LDA Weather_YPos, Y
+	;ADD <Temp_Var7
 	STA Sprite_RAM, X
 	LDA Weather_XPos, Y
+	;ADD <Temp_Var7
 	STA Sprite_RAM + 3, X
 	LDA Weather_Pattern, Y
 	STA Sprite_RAM + 1, X
@@ -5580,7 +5588,7 @@ DontFlipParticle:
 	STA Sprite_RAM + 2, X
 	RTS
 	
-Weather_Patterns: .byte $7B, $7B, $75, $55
+Weather_Patterns: .byte $7B, $7B, $75, $75
 Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04

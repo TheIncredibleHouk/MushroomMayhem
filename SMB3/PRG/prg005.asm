@@ -445,7 +445,13 @@ ObjPAA:
 	.byte $A9, $71
 
 ObjInit_Podoboo:
+	LDA Objects_Property, X
+	BEQ ObjInit_Podoboo1
 
+	LDA #$0A
+	STA PatTable_BankSel+4
+
+ObjInit_Podoboo1:
 	; Var5 = Original Y
 	LDA <Objects_Y,X
 	STA <Objects_Var5,X

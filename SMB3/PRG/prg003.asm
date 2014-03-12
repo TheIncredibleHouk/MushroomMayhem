@@ -25,7 +25,7 @@
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup02_InitJumpTable:
 	.word ObjInit_Ninji	; Object $48 - OBJ_NINJI
-	.word ObjInit_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
+	.word ObjInit_SnowGuy	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjInit_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_DoNothing		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjInit_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
@@ -67,7 +67,7 @@ ObjectGroup02_InitJumpTable:
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_Ninji	; Object $48 - OBJ_NINJI
-	.word ObjNorm_FloatingBGCloud	; Object $49 - OBJ_FLOATINGBGCLOUD
+	.word ObjNorm_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjNorm_DoNothing		; Object $4B - OBJ_BOOMBOOMJUMP
 	.word ObjNorm_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
@@ -628,7 +628,6 @@ Spintula_StopUpVel:
 	JMP Object_ShakeAndDrawMirrored
 
 ObjInit_PodobooCeiling:
-
 	; Store original Y/Hi into Var5/Var4
 	LDA <Objects_Y,X
 	STA <Objects_Var5,X
@@ -691,7 +690,7 @@ PRG003_A3AA:
 	BEQ PRG003_A3D2
 	DEC Objects_Var1, X
 	BPL PRG003_A3D2
-	JSR ResetPipePodobo
+	JMP ResetPipePodobo
 
 PRG003_A3D2:
 	JSR Object_ApplyYVel
@@ -721,7 +720,6 @@ ObjNorm_ShyGuy:
 	JSR Player_HitEnemy
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
-	JSR SetSpriteFG
 	LDA Objects_DetStat,X 
 	AND #$04
 	BEQ ObjNorm_ShyGuy1
@@ -738,6 +736,7 @@ ObjNorm_ShyGuy1:
 	.word ShyGuyMarch
 	.word ShyGuyGetBrick
 	.word ShyGuyCarryBrick
+	.word ShyGuyWait
 
 ShyGuyMarch:
 	LDA <Counter_1
@@ -747,6 +746,8 @@ ShyGuyMarch:
 	AND #$01
 	STA Objects_Frame, X
 
+	LDA Objects_Property, X
+	BEQ ShyGuyDraw
 	LDA <Objects_X,X
 	AND #$0F
 	BEQ ShyGuyFindBrickAbove
@@ -961,13 +962,25 @@ ShyGuyCarryBrick2:
 ShyGuyCarryBrick3:
 	JMP ShyGuyDraw
 
-	; Runs compare against object's state to see if it's state 2 (Normal)
+
+ShyGuyWait:
+	LDA #SPR_BEHINDBG
+	ORA Objects_SprAttr,X
+	STA Objects_SprAttr,X
+	LDA #$10
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$04
+	BCS ShyGuyCarryBrick3
+
+	INC Objects_Var1,X
+	BNE ShyGuyCarryBrick3
+
+ShyGuySurprise:
+	
 Object_CheckIfNormalState:
 	LDA Objects_State,X
 	CMP #OBJSTATE_NORMAL
 	RTS		 ; Return
-
-
 
 
 BrickBust_MicroGoomba:
@@ -1432,6 +1445,23 @@ PRG003_A6E8:
 	RTS		 ; Return
 
 BobOmb_WalkAround:
+	
+	LDA Objects_PrevDetStat, X
+	AND #$04
+	BNE BobOmb_WalkAround1
+
+	LDA <Objects_DetStat, X
+	AND #$04
+	BEQ BobOmb_WalkAround1
+
+	JSR Level_ObjCalcXDiffs
+
+	; March toward Player
+	LDA BobOmbExp_StartXVel,Y
+	STA <Objects_XVel,X
+
+BobOmb_WalkAround1:
+
 	JSR Object_Move	 ; Do standard movements
 
 	LDA Objects_Var7,X
@@ -1476,15 +1506,6 @@ PRG003_A712:
 	BEQ PRG003_A730	 ; If Var7 = 0 (not ready to explode), jump to PRG003_A730
 
 	INC Objects_Var3,X	 ; Var3++
-	LDA Objects_Var3,X
-	AND #$3f	 
-	BNE PRG003_A730	 ; Every 1:64 ticks proceed, otherwise jump to PRG003_A730
-
-	JSR Level_ObjCalcXDiffs
-
-	; March toward Player
-	LDA BobOmbExp_StartXVel,Y
-	STA <Objects_XVel,X
 
 PRG003_A730:
 	LDA <Objects_DetStat,X
@@ -1991,11 +2012,11 @@ Dont_Kill_Star:
 	RTS		 ; Return
 
 
-ObjNorm_FloatingBGCloud:
+ObjNorm_SnowGuy:
 	RTS
 
 
-ObjInit_FloatingBGCloud:
+ObjInit_SnowGuy:
 	RTS
 
 ObjInit_Explosion:
