@@ -311,7 +311,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $10
 	.byte OPTS_NOCHANGE	; Object $11
 	.byte OPTS_SETPT6 | $4F		; Object $12
-	.byte OPTS_NOCHANGE		; Object $13
+	.byte OPTS_SETPT5 | $4D		; Object $13
 	.byte OPTS_SETPT5 | $0E	; Object $14
 	.byte OPTS_NOCHANGE	; Object $15
 	.byte OPTS_NOCHANGE	; Object $16
@@ -418,7 +418,7 @@ ObjP12:
 	.byte $D7, $D7, $ED, $ED, $FF, $FF
 ObjP13:
 ObjP16:
-	.byte $69, $7D, $71, $71
+	.byte $81, $83, $85, $87, $89, $89, $87, $85
 
 ObjP14:
 ObjP15:
@@ -5703,11 +5703,6 @@ KeyPieceXOffset:
 	.byte $10, $18, $20, $28, $30
 
 ObjNorm_KeyPieces:
-	INC Objects_Var2, X
-	LDA Objects_Var2, X
-	AND #$01
-	STA TempA
-
 	LDY Object_SprRAM, X
 	LDA Objects_Var1, X
 	STA <Temp_Var5
@@ -5725,17 +5720,14 @@ CheckNextPiece:
 	AND KeyPieceGet, X
 	BNE UseFilledKey
 
-	LDA TempA
-	BEQ UseFilledKey1
-
-	LDA #$71
+	LDA #$95
 	BNE DrawKeyPiece
 
 UseFilledKey:
 	DEC <Temp_Var6
 
 UseFilledKey1:
-	LDA #$75
+	LDA #$93
 
 DrawKeyPiece:
 	STA Sprite_RAM + 1, Y
@@ -5773,6 +5765,11 @@ NextCheck:
 KeyPieceRTS:
 	RTS
 
+KPFlips1:
+	.byte $00, $00, $00, SPR_HFLIP
+
+KPFlips2:
+	.byte $00, $00, SPR_HFLIP, SPR_HFLIP
 
 ObjNormal_KeyPiece:
 	LDA <Player_HaltGame
@@ -5783,12 +5780,22 @@ ObjNormal_KeyPiece:
 	JSR Object_HitTestRespond
 	INC Objects_Var5, X
 	LDA Objects_Var5, X
-	AND #$01
+	LSR A
+	LSR A
+	AND #$03
 	STA Objects_Frame, X
 
 DrawKeyPieceAnim:
-	JMP Object_ShakeAndDraw	
-
+	JSR Object_ShakeAndDraw
+	LDA Objects_Frame, X
+	TAX
+	LDA KPFlips1, X
+	ORA Sprite_RAM + 2, Y
+	STA Sprite_RAM + 2, Y
+	LDA KPFlips2, X
+	ORA Sprite_RAM + 6, Y
+	STA Sprite_RAM + 6, Y
+	RTS
 
 ObjHit_KeyPiece:
 	LDY #$04

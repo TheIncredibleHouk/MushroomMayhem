@@ -2020,23 +2020,11 @@ PRG031_F7D8:
 
 PRG031_F7DF:
 
-	; Flags for vertical World 7 speciality levels
-	LDA Level_7Vertical
-	BEQ IntIRQ_Vertical	 ; For vertical type levels
-	JMP IntIRQ_Standard	 ; Otherwise, just do the standard thing (status bar used in level and map)
-
 IntIRQ_Vertical:
 	STA MMC3_IRQENABLE ; Active IRQ
-	NOP		 ; 
-	NOP		 ; 
-	NOP		 ; 
 	LDY #$0b	 ; Y = $0B
 	LDA Level_Tileset ; A = current tileset
-	CMP #17
-	BNE PRG031_F7F8	 ; If tileset <> 17 (N-Spade), jump to PRG031_F7F8
-	LDY #$03	 ; Y = $03
 
-PRG031_F7F8:
 	LDX #$00	 ; X = 0
 
 	CMP #$00	 ; 
@@ -2088,7 +2076,7 @@ PRG031_F7F8:
 	STA MMC3_PAGE
 	LDA #MMC3_1K_TO_PPU_1800
 	STA MMC3_COMMAND
-	LDA #$18	 ; 
+	LDA #$08	 ; 
 	STA PPU_CTL2	 ; Sprites + BG now visible
 	LDA SpriteHideCHR_1800
 	STA MMC3_PAGE	

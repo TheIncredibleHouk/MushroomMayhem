@@ -318,7 +318,7 @@
     <block value="38"></block>
     <block value="39"></block>
     <block value="3A"></block>
-    <block value="3B">Cleared Coin</block>
+    <block value="3B"></block>
     <block value="3C"></block>
     <block value="3D"></block>
     <block value="3E"></block>
@@ -477,7 +477,7 @@
     <block value="D7"></block>
     <block value="D8">Platform Filler Left</block>
     <block value="D9">Platform Filler</block>
-    <block value="DA">Platform Filler Right</block>
+    <block value="DA"></block>
     <block value="DB"></block>
     <block value="DC"></block>
     <block value="DD"></block>

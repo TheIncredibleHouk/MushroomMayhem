@@ -26,9 +26,9 @@
 ObjectGroup02_InitJumpTable:
 	.word ObjInit_Ninji	; Object $48 - OBJ_NINJI
 	.word ObjInit_SnowGuy	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.word ObjInit_MagicStar	; Object $4A - OBJ_MAGICSTAR
-	.word ObjInit_DoNothing		; Object $4B - OBJ_BOOMBOOMJUMP
-	.word ObjInit_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
+	.word ObjInit_MagicStar1	; Object $4A - OBJ_MAGICSTAR
+	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
+	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
 	.word ObjInit_DoNothing	; Object $4D
 	.word ObjInit_DoNothing		; Object $4E
 	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
@@ -69,8 +69,8 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_Ninji	; Object $48 - OBJ_NINJI
 	.word ObjNorm_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
-	.word ObjNorm_DoNothing		; Object $4B - OBJ_BOOMBOOMJUMP
-	.word ObjNorm_DoNothing		; Object $4C - OBJ_BOOMBOOMFLY
+	.word ObjNorm_MagicStar		; Object $4B - OBJ_MAGICSTAR
+	.word ObjNorm_MagicStar		; Object $4C - OBJ_MAGICSTAR
 	.word ObjNorm_Explosion	; Object $4D
 	.word ObjNorm_DoNothing		; Object $4E
 	.word ObjNorm_ChainChompFree	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -112,8 +112,8 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $48 - OBJ_NINJI
 	.word ObjHit_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
-	.word ObjHit_DoNothing	; Object $4B - OBJ_BOOMBOOMJUMP
-	.word ObjHit_DoNothing	; Object $4C - OBJ_BOOMBOOMFLY
+	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
+	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
 	.word ObjHit_DoNothing	; Object $4D
 	.word ObjHit_DoNothing	; Object $4E
 	.word ObjHit_DoNothing	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -154,8 +154,8 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $48 - OBJ_NINJI
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4A - OBJ_MAGICSTAR
-	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $4B - OBJ_BOOMBOOMJUMP
-	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $4C - OBJ_BOOMBOOMFLY
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4B - OBJ_MAGICSTAR
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4C - OBJ_MAGICSTAR
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $4D
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $4E
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -195,8 +195,8 @@ ObjectGroup02_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $48 - OBJ_NINJI
 	.byte OA2_TDOGRP0	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4A - OBJ_MAGICSTAR
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP2	; Object $4B - OBJ_BOOMBOOMJUMP
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP2	; Object $4C - OBJ_BOOMBOOMFLY
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4B - OBJ_MAGICSTAR
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4C - OBJ_MAGICSTAR
 	.byte OA2_TDOGRP0	; Object $4D
 	.byte OA2_TDOGRP0	; Object $4E
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -237,8 +237,8 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY  	; Object $48 - OBJ_NINJI
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4A - OBJ_MAGICSTAR
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4B - OBJ_BOOMBOOMJUMP
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4C - OBJ_BOOMBOOMFLY
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4B - OBJ_MAGICSTAR
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4C - OBJ_MAGICSTAR
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $4D
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $4E
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -279,8 +279,8 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $0F	; Object $48 - OBJ_NINJI
 	.byte OPTS_NOCHANGE	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte OPTS_NOCHANGE	; Object $4A - OBJ_MAGICSTAR
-	.byte OPTS_SETPT6 | $33	; Object $4B - OBJ_BOOMBOOMJUMP
-	.byte OPTS_SETPT6 | $33	; Object $4C - OBJ_BOOMBOOMFLY
+	.byte OPTS_NOCHANGE	; Object $4B - OBJ_MAGICSTAR
+	.byte OPTS_NOCHANGE	; Object $4C - OBJ_MAGICSTAR
 	.byte OPTS_NOCHANGE	; Object $4D
 	.byte OPTS_NOCHANGE	; Object $4E
 	.byte OPTS_SETPT5 | $0E	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -324,8 +324,8 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $48 - OBJ_NINJI
 	.byte KILLACT_STANDARD	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte KILLACT_STANDARD	; Object $4A - OBJ_MAGICSTAR
-	.byte KILLACT_NORMALANDKILLED	; Object $4B - OBJ_BOOMBOOMJUMP
-	.byte KILLACT_NORMALANDKILLED	; Object $4C - OBJ_BOOMBOOMFLY
+	.byte KILLACT_STANDARD	; Object $4B - OBJ_MAGICSTAR
+	.byte KILLACT_STANDARD	; Object $4C - OBJ_MAGICSTAR
 	.byte KILLACT_STANDARD	; Object $4D
 	.byte KILLACT_STANDARD	; Object $4E
 	.byte KILLACT_NORMALANDKILLED	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -420,13 +420,12 @@ ObjP55:
 	.byte $B1, $B3, $B5, $B7, $A7, $B9, $A7, $B9
 
 ObjP4A:
+ObjP4B:
+ObjP4C:
 	.byte $7F, $7F
 ObjP48:
 	.byte $A1, $A3, $A5, $A7, $A5, $A7
-
-ObjP4B:
-ObjP4C:
-	.byte $C1, $C1, $CF, $CD, $C1, $C1, $C5, $C7, $C1, $C1, $CF, $CD, $C1, $C1, $C5, $C7, $C1, $C1, $CF, $CD, $C1, $C1, $C5, $C7, $D3, $D3, $ED, $ED, $D9, $D9, $DD, $DD, $71, $71, $E7, $E9, $71, $71, $E9, $E7, $C1, $C1, $C7, $C7, $C1, $C1, $C5, $C5, $81, $81, $85, $87, $81, $81, $8D, $8F, $89, $89, $91, $93, $81, $81, $87, $85, $81, $81, $8F, $8D, $89, $89, $93, $91, $71, $71, $AD, $99, $71, $71, $9D, $9F, $A1, $A1, $A5, $A5, $A7, $A7, $AB, $AB
+	 
 ObjP56:
 ObjP57:
 	.byte $81, $83, $87, $89
@@ -628,6 +627,13 @@ Spintula_StopUpVel:
 	JMP Object_ShakeAndDrawMirrored
 
 ObjInit_PodobooCeiling:
+	LDA Objects_Property, X
+	BEQ ObjInit_PodobooCeiling1
+
+	LDA #$0A
+	STA PatTable_BankSel+4
+
+ObjInit_PodobooCeiling1:
 	; Store original Y/Hi into Var5/Var4
 	LDA <Objects_Y,X
 	STA <Objects_Var5,X
@@ -1968,8 +1974,10 @@ MagicStarOffset:
 	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
-
+	
 	JSR Object_DeleteOffScreen
+	JSR Object_WorldDetect8
+	JSR Magic_Star_Action
 	JSR Object_ShakeAndDrawMirrored
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
@@ -1978,7 +1986,7 @@ ObjNorm_MagicStar:
 	JSR GetLevelBit
 	STA <Temp_Var1
 	STY <Temp_Var2
-	LDA Objects_Property, X
+	LDA Objects_Var1, X
 	TAY
 	LDA <Temp_Var2
 	ADD MagicStarOffset, Y
@@ -1991,12 +1999,56 @@ ObjNorm_MagicStar:
 PRG003_A92D:
 	RTS
 
+Magic_Star_Action:
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word ObjNorm_DoNothing
+	.word Object_InteractWithWorld
+	.word MagicStar_CheckEnemies
+
+MagicStar_CheckEnemies:
+	LDY #$04
+
+CheckEnemies:
+	CPY <SlotIndexBackup
+	BEQ NoCheck
+	LDA Objects_State, Y
+	CMP #OBJSTATE_DEADEMPTY
+	BNE Check_Done
+
+NoCheck:
+	DEY
+	BPL CheckEnemies
+
+	LDA #$01
+	STA Objects_Property, X
+
+Check_Done:
+	PLA
+	PLA
+	RTS
+
+ObjInit_MagicStar1:
+	LDA #$00
+	STA Objects_Var1, X
+	JMP ObjInit_MagicStar
+
+ObjInit_MagicStar2:
+	LDA #$01
+	STA Objects_Var1, X
+	JMP ObjInit_MagicStar
+
+ObjInit_MagicStar3:
+	LDA #$02
+	STA Objects_Var1, X
+
 ObjInit_MagicStar:
 
 	JSR GetLevelBit
 	STA <Temp_Var1
 	STY <Temp_Var2
-	LDA Objects_Property, X
+	LDA Objects_Var1, X
 	TAY
 	LDA <Temp_Var2
 	ADD MagicStarOffset, Y
