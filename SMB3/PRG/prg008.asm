@@ -4091,11 +4091,26 @@ PRG008_B53B:
 	AND #TILE_PROP_SOLID_BOTTOM
 	BEQ PRG008_B55B
 
-PRG008_B558
+PRG008_B558:
 	LDA #$01
 	STA Player_HitCeiling	 ; Flag Player as having just hit head off ceiling
 	STA <Player_YVel ; Update Player_YVel
+	LDA Player_Y
+	AND #$F0
+	LDX Player_Suit
+	BEQ PRG008_B559
+	LDX Player_IsDucking
+	BNE PRG008_B559
+	ORA #$08
+	STA Player_Y
 	RTS		 ; Return
+
+PRG008_B559:
+	AND #$F0
+	ORA #$0F
+	STA Player_Y
+	RTS
+
 
 PRG008_B55B:
 	LDA <Player_YVel
@@ -5184,9 +5199,10 @@ PRG008_BDAE:
 	JMP Player_GetHurt	 ; Get hurt!
 
 PRG008_BDAF:
-	STA Debug_Snap
 	AND #TILE_PROP_WATER
 	BEQ PRG008_BDAE
+	LDA Player_InWater
+	BEQ PRG008_BDB1
 	JSR Get_Normalized_Suit
 	CMP #$08
 	BNE PRG008_BDAE

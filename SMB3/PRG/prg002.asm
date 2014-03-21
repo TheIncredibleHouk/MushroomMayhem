@@ -1954,6 +1954,10 @@ DeleteIfOffAndDrawWide:
 	JMP LogPlat_Draw	 ; Jump to LogPlat_Draw
 
 ObjNorm_PlatformPattern:
+	LDA Objects_SprAttr, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SprAttr, X
+
 	LDA <Player_HaltGame
 	BNE DeleteIfOffAndDrawWide	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
 
@@ -2063,7 +2067,6 @@ PRG002_AB8F:
 	RTS		 ; Return
 
 ObjNorm_WoodenPlatform:
-	JSR Object_GetAttrAndMoveTiles
 	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
 
 	LDA <Player_HaltGame

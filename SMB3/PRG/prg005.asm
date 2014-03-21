@@ -1819,6 +1819,10 @@ PRG005_A885:
 	ADC #$00
 	STA SpecialObj_YHi,Y
 
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERFIRE
+	STA Sound_QPlayer
+
 	LDA Objects_Property, X
 	AND #$FE
 	CMP #$06

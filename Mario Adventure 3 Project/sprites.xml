@@ -118,6 +118,12 @@
     <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="94" />
     <sprite x="8" y="0" value="10" palette="2" horizontalflip="true" verticalflip="false" table="94" />
   </spritedefinition>
+  <spritedefinition id="1A" width="01" height="01" name="Bubble Generator" class="2" group="Sea Enemies">
+    <sprite x="0" y="0" value="26" palette="2" horizontalflip="false" verticalflip="false" table="1A" />
+    <sprite x="8" y="0" value="26" palette="2" horizontalflip="true" verticalflip="true" table="1A" />
+    <property>Won't force graphics change.</property>
+    <property>Will force graphics change.</property>
+  </spritedefinition>
   <spritedefinition id="1B" width="01" height="01" name="Green Note Block" class="1" group="Global">
     <sprite x="0" y="0" value="84" palette="-5" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="0" value="86" palette="-5" horizontalflip="false" verticalflip="false" table="-1" />
@@ -547,28 +553,26 @@
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
   </spritedefinition>
-  <spritedefinition id="4A" width="01" height="01" name="Magic Star" class="1" group="Global">
+  <spritedefinition id="4A" width="01" height="01" name="Magic Star #1" class="1" group="Global">
     <sprite x="0" y="0" value="3E" palette="3" horizontalflip="false" verticalflip="false" table="90" />
     <sprite x="8" y="0" value="3E" palette="3" horizontalflip="true" verticalflip="false" table="90" />
-    <property>Star #1</property>
-    <property>Star #2</property>
-    <property>Star #3</property>
+    <property>Free floating.</property>
+    <property>Obeys gravity.</property>
+    <property>Appears when all enemies off screen.</property>
   </spritedefinition>
-  <spritedefinition id="4B" width="02" height="02" name="Boom Boom" class="3" group="Boom Boom">
-    <sprite x="8" y="0" value="00" palette="3" horizontalflip="false" verticalflip="false" table="33" />
-    <sprite x="16" y="0" value="00" palette="3" horizontalflip="true" verticalflip="false" table="33" />
-    <sprite x="0" y="16" value="02" palette="3" horizontalflip="false" verticalflip="false" table="33" />
-    <sprite x="8" y="16" value="04" palette="3" horizontalflip="false" verticalflip="false" table="33" />
-    <sprite x="16" y="16" value="06" palette="3" horizontalflip="true" verticalflip="false" table="33" />
-    <sprite x="24" y="8" value="08" palette="3" horizontalflip="true" verticalflip="false" table="33" />
+  <spritedefinition id="4B" width="01" height="01" name="Magic Star #2" class="1" group="Global">
+    <sprite x="0" y="0" value="3E" palette="3" horizontalflip="false" verticalflip="false" table="90" />
+    <sprite x="8" y="0" value="3E" palette="3" horizontalflip="true" verticalflip="false" table="90" />
+    <property>Free floating.</property>
+    <property>Obeys gravity.</property>
+    <property>Appears when all enemies off screen.</property>
   </spritedefinition>
-  <spritedefinition id="4C" width="02" height="02" name="Flying Boom Boom" class="3" group="Boom Boom">
-    <sprite x="8" y="0" value="00" palette="3" horizontalflip="false" verticalflip="false" table="4D" />
-    <sprite x="16" y="0" value="00" palette="3" horizontalflip="true" verticalflip="false" table="4D" />
-    <sprite x="0" y="8" value="02" palette="3" horizontalflip="false" verticalflip="false" table="4D" />
-    <sprite x="8" y="16" value="06" palette="3" horizontalflip="false" verticalflip="false" table="4D" />
-    <sprite x="16" y="16" value="06" palette="3" horizontalflip="true" verticalflip="false" table="4D" />
-    <sprite x="24" y="8" value="02" palette="3" horizontalflip="true" verticalflip="false" table="4D" />
+  <spritedefinition id="4C" width="01" height="01" name="Magic Star #3" class="1" group="Global">
+    <sprite x="0" y="0" value="3E" palette="3" horizontalflip="false" verticalflip="false" table="90" />
+    <sprite x="8" y="0" value="3E" palette="3" horizontalflip="true" verticalflip="false" table="90" />
+    <property>Free floating.</property>
+    <property>Obeys gravity.</property>
+    <property>Appears when all enemies off screen.</property>
   </spritedefinition>
   <spritedefinition id="4D" width="01" height="01" name="Trap Set Explosion" class="1" group="Global">
     <sprite x="4" y="-16" value="32" palette="3" horizontalflip="false" verticalflip="false" table="90" />
@@ -611,9 +615,11 @@
     <sprite x="0" y="0" value="2C" palette="3" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="0" value="2C" palette="3" horizontalflip="true" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="53" width="01" height="01" name="Ceiling Podoboo" class="2" group="Fortress">
-    <sprite x="0" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="8" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="false" table="12" />
+  <spritedefinition id="53" width="02" height="01" name="Ceiling Podoboo" class="2" group="Fortress">
+    <sprite x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite x="16" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="false" table="12" />
+    <property>Does not change graphics bank</property>
+    <property>Changes graphics bank</property>
   </spritedefinition>
   <spritedefinition id="55" width="01" height="01" name="Bob-omb" class="2" group="Spiny/Buzzy Beetle/Bob-omb">
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
