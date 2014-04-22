@@ -990,6 +990,8 @@ SPR_VFLIP	= %10000000
 	Level_JctFlag:		.ds 1	; Toggles when you junction
 
 	Level_Redraw:		.ds 1
+	Level_KeepObjects:	.ds 1
+	Object_Priority:	.ds 1
 
 	Map_DrawPanState:	.ds 1	; Map draw/pan state
 	ObjGroupRel_Idx:	.ds 1	; Holds relative index of object within its group (see PRG000_CA51)
@@ -1303,6 +1305,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Weather_YPos:		.ds 6;
 	Weather_YVel:		.ds 6;
 	Weather_Pattern:	.ds 6;
+	Weather_Disabled:	.ds 1
 	AnimOffset:			.ds 1;
 	TrapSet:			.ds 1;
 	DayNightActive:		.ds 1;
@@ -1310,6 +1313,9 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	ReverseGravity:		.ds 1
 	NoGravity:			.ds 1;
 	Player_ForcedSlide:	.ds 1
+	RhythmPlatformEnabed: .ds 1
+	RhythmKeeper:		.ds 5;
+	RhythmMusic:		.ds 1;
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
 	.org $0461
@@ -1809,8 +1815,8 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	PSwitchActivateTile:.ds 1
 	PSwitchTiles:		.ds 4
 
-	Object_TileFeet:	.ds 1	; Object tile detected at "feet" of object
-	Object_TileWall:	.ds 1	; Object tile detected in front of object, i.e. a wall
+	Object_TileFeetProp:	.ds 1	; Object tile detected at "feet" of object
+	Object_TileWallProp:	.ds 1	; Object tile detected in front of object, i.e. a wall
 	Object_TileWater:	.ds 1
 	Object_LevelTile:	.ds 1
 	Object_TileProp:	.ds 1
@@ -1884,6 +1890,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	CannonFire_Var:		.ds 8	; $06DB-$06E2
 	CannonFire_Timer:	.ds 8	; $06E3-$06EA Cannon Fire timer, decrements to zero
+	CannonFire_Property: .ds 8;
 	Objects_QSandCtr:	.ds 8	; $06EB-$06F2 When enemy has fallen into quicksand, increments until $90 which deletes it
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0700
@@ -1961,6 +1968,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	; 1000 (1/4 sprites), 1400 (2/4 sprites), 1800 (3/4 sprites),
 	; and 1C00 (4/4 sprites), respectively
 	PatTable_BankSel:	.ds 6	; $0719-$071E  Provides an array of 6 pages to set the entire Pattern Table [BG_Full_CHRROM_Switch]
+	LastPatTab_Sel:		.ds 1
 	PAGE_C000:		.ds 1	; Page to set PRG ROM C000 (PRGROM_Change_Both)
 	PAGE_A000:		.ds 1	; Page to set PRG ROM A000 (PRGROM_Change_Both)
 	PAGE_CMD:		.ds 1	; When using PRGROM_Change_Both2 or PRGROM_Change_A000, this value stores the MMC3 command
@@ -2521,7 +2529,8 @@ CFIRE_LASER		= $15	; Laser fire
 	Roulette_Unused7A5F:	.ds 1	; Unused value in Roulette game
 	Roulette_Unused7A5F_Delta:.ds 1	; Delta value added to Roulette_Unused7A5F
 
-	Bowser_Tiles:		.ds 2	; $7A61-$7A62 Bowser's detected tiles (to determine what to break)
+	Bowser_TileValues:		.ds 2	; $7A61-$7A62 Bowser's detected tiles (to determine what to break)
+	Bowser_TileProps:	.ds 2
 	Bowser_Counter1:	.ds 1	; A counter used by Bowser, decrements to zero
 	Bowser_Counter2:	.ds 1	; A counter used by Bowser, decrements to zero 
 	Bowser_Counter3:	.ds 1	; A counter used by Bowser, random setting, decrements to zero
@@ -2620,6 +2629,8 @@ CFIRE_LASER		= $15	; Laser fire
 	Objects_Var12:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
 	Objects_Var13:		.ds 5	; $7CD7-$7CDB Generic object variable 13
 	Objects_Var14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Var15:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Var16:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 
 ; Player's hammer/fireball
 	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
@@ -2685,7 +2696,7 @@ CFIRE_LASER		= $15	; Laser fire
 	; C = Warp Whistle
 	; D = Music Box
 	
-	Inventory_Items:	.ds 4*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
+	Inventory_Items:	.ds 2*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
 	Player_Coins:		.ds 4	; Mario's coins
@@ -2841,8 +2852,8 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	;	Bits 4 - 6: 0 to 7, selects start position from LevelJct_YLHStarts and sets proper vertical with LevelJct_VertStarts
 	;	Bit      7: If set, entering in vertical mode (for "dirty" refresh purposes)
 
-	Object_TileFeet2:	.ds 1	; ? Difference against Object_TileFeet?
-	Object_TileWall2:	.ds 1	; ? Difference against Object_TileWall?
+	Object_TileFeetValue:	.ds 1	; ? Difference against Object_TileFeetProp?
+	Object_TileWallValue:	.ds 1	; ? Difference against Object_TileWallProp?
 
 	ObjTile_DetYHi:		.ds 1	; Object tile detect Y Hi
 	ObjTile_DetYLo:		.ds 1	; Object tile detect Y Lo
@@ -2928,6 +2939,7 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
+	Player_Dialog:		.ds 1
 	PowerUp_NoRaise:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
 	From_Reserve:		.ds 1
@@ -3249,6 +3261,8 @@ OA1_WIDTH48		= %01010000	; Object is 48 pixels wide
 OA1_WIDTH64		= %01100000	; Object is 64 pixels wide
 OA1_WIDTHMASK		= %01110000	; Not intended for use in attribute table, readability/traceability only
 
+OA1_LOWPRIORITY	= %10000000
+
 
 ; Object Attributes Set 2 Flags
 
@@ -3375,8 +3389,8 @@ OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
 OBJ_BOSS_KOOPALING	= $0E 	; Koopaling (as appropriate to current world)
 OBJ_KEY				= $11	;
 OBJ_REDSPRING		= $12	;
-OBJ_GREENSPRING		= $13	;
 OBJ_KEYPIECES		= $13	;
+OBJ_KEYPIECE		= $16
 OBJ_SPINYCHEEP		= $17	; Spiny cheep
 OBJ_BOSS_BOWSER		= $18 	; King Bowser
 OBJ_POWERUP_FIREFLOWER	= $19	; Fire flower
@@ -5091,3 +5105,4 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr125.pcx"
 	.incchr "CHR/chr126.pcx"
 	.incchr "CHR/chr127.pcx"
+

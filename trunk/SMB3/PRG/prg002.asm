@@ -29,7 +29,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjInit_WoodenPlatDiagonal1	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjInit_WoodenPlatDiagonal2	; Object $28 - OBJ_OSCILLATING_V
-	.word ObjInit_TowardsPlayer	; Object $29 - OBJ_SPIKE
+	.word ObjInit_DoNothing	; Object $29 - OBJ_SPIKE
 	.word ObjInit_Spark		; Object $2A - OBJ_SPARKRIGHT
 	.word ObjInit_SparkLeft		; Object $2B - OBJ_SPARKLEFT
 	.word ObjInit_WoodenPlatCCW	; Object $2C - OBJ_CLOUDPLATFORM
@@ -204,7 +204,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP2	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA2_TDOGRP2	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA2_TDOGRP2	; Object $28 - OBJ_OSCILLATING_V
-	.byte OA2_TDOGRP1	; Object $29 - OBJ_SPIKE
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $29 - OBJ_SPIKE
 	.byte OA2_TDOGRP3	; Object $2A - OBJ_SPARKRIGHT
 	.byte OA2_TDOGRP3	; Object $2B - OBJ_SPARKLEFT
 	.byte OA2_TDOGRP2	; Object $2C - OBJ_CLOUDPLATFORM
@@ -229,7 +229,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP1	; Object $3F - OBJ_DRYBONES
 	.byte OA2_NOSHELLORSQUASH | OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA2_TDOGRP0	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $42 - OBJ_ANTIGRAVITYCHEEP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA2_TDOGRP9	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA2_TDOGRP0	; Object $45 - OBJ_HOTFOOT
@@ -246,7 +246,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $28 - OBJ_OSCILLATING_V
-	.byte OA3_HALT_SPIKESPECIAL 	; Object $29 - OBJ_SPIKE
+	.byte OA3_HALT_JUSTDRAW 	; Object $29 - OBJ_SPIKE
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2A - OBJ_SPARKRIGHT
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_SPARKLEFT
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_CLOUDPLATFORM
@@ -288,7 +288,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OPTS_NOCHANGE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OPTS_NOCHANGE	; Object $28 - OBJ_OSCILLATING_V
-	.byte OPTS_SETPT5 | $0A	; Object $29 - OBJ_SPIKE
+	.byte OPTS_SETPT5 | $0E	; Object $29 - OBJ_SPIKE
 	.byte OPTS_SETPT5 | $0A	; Object $2A - OBJ_SPARKRIGHT
 	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_SPARKLEFT
 	.byte OPTS_NOCHANGE	; Object $2C - OBJ_CLOUDPLATFORM
@@ -422,7 +422,7 @@ ObjP38:
 ObjP3C:
 ObjP3E:
 ObjP44:
-	.byte $5B, $5D, $5D, $5D, $5D, $5F
+	.byte $77, $77, $77, $77, $77, $77
 ObjP33:
 ObjP39:
 	.byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
@@ -436,8 +436,10 @@ ObjP3F:
 	
 	; Spike's / Patooie's spike ball patterns are actually here
 SpikeBall_Patterns:
-	.byte $95, $95, $D9, $DB
+	.byte $95, $95, $95, $95
+
 ObjP29:
+	.byte $B1, $B3, $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
 ObjP2A:
 ObjP2B:
 	.byte $BD, $BD, $BF, $BF
@@ -867,11 +869,11 @@ ObjNorm_BusterBeatle:
 
 	LDY #$02	; Y = 1 (Buster's got brick!)
 
-	LDA Object_TileWall
+	LDA Object_TileWallProp
 	AND #$F0
 	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG002_A532
-	LDA Object_TileWall
+	LDA Object_TileWallProp
 	AND #$0F
 	CMP #TILE_PROP_STONE
 	BNE PRG002_A532	 ; If Buster's touching an ice brick, jump to PRG002_A508
@@ -1993,7 +1995,7 @@ ObjNorm_WoodenPlatFloat:
 
 PRG002_AB5E:
 	JSR Object_Move	 ; Apply Velocity
-	LDA Object_TileFeet2
+	LDA Object_TileFeetValue
 	BEQ PRG002_AB5E2
 	AND #$3F
 	BNE PRG002_AB5E2
@@ -2041,7 +2043,7 @@ Float_Do_Fall:
 	STA <Objects_YVel, X
 
 Float_Do_Carry:
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
 	BCS No_Carry
 	AND #$0F
@@ -2101,6 +2103,29 @@ PRG002_ABB9:
 
 
 ObjNorm_PathFollowPlat:
+	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
+
+	LDA <Player_HaltGame
+	BNE ObjNorm_PathFollowPlat2	
+
+	LDA Objects_Var1, X
+	CMP #$03
+	BCC ObjNorm_PathFollowPlat1
+
+	JSR Object_ApplyY_With_Gravity
+
+ObjNorm_PathFollowPlat1:
+	LDA <Player_YVel
+	BMI ObjNorm_PathFollowPlat2
+	JSR PlayerPlatform_Collide
+	BCC ObjNorm_PathFollowPlat2
+	LDA Objects_Var1, X
+	CMP #$03
+	BCS ObjNorm_PathFollowPlat2
+
+	INC Objects_Var1, X
+
+ObjNorm_PathFollowPlat2:
 	RTS		 ; Return
 
 EnemyEnterFlip:	.byte  $00, SPR_HFLIP
@@ -2148,10 +2173,12 @@ ObjNorm_Spike:
 
 	JSR Spike_TossSpikeBall	 ; Cough up a spike ball!
 
+	LDX <SlotIndexBackup
 	LDA <Objects_Var5,X
 	BEQ PRG002_AD31	 	; ?? I think this was meant to check that no sprites are off-screen, but most likely you'll make this jump
 
 	INC Objects_Timer,X	 ; Timer++ (delay decrementing it)
+	INC Objects_Var4, X
 
 PRG002_AD31:
 	LDA Objects_Timer,X
@@ -2165,7 +2192,7 @@ PRG002_AD31:
 	BPL PRG002_AD95	 ; If positive, jump to PRG002_AD95
 
 PRG002_AD3F:
-	JSR Object_SetXVelByFacingDir	 ; Set Spike's X velocity by his facing direction
+	;JSR Object_SetXVelByFacingDir	 ; Set Spike's X velocity by his facing direction
 
 	LDA <Objects_DetStat,X
 	AND #$04
@@ -2201,13 +2228,12 @@ PRG002_AD6E:
 
 	; This gets a little tricky to follow...
 
-	LDA <Temp_Var15	
+	LDA #$00
 	ADD #$20
 	CMP #$40
 	BGE PRG002_AD80	 ; Player out of X range
 
-	JSR Object_CalcCoarseYDiff
-	LDA <Temp_Var15	
+	LDA #$00
 	CMP #$08	
 	BCC PRG002_AD84	 ; Player out of Y range
 
@@ -2232,7 +2258,13 @@ PRG002_AD88:
 	STA <Objects_XVel,X
 
 PRG002_AD95:
-	JSR Enemy_CollideWithWorld	 ; Collide with world
+	JSR Object_Move	 ; Collide with world
+	LDA <Objects_DetStat,X
+	AND #$04
+	BEQ PRG002_AD96	 ; If object has NOT hit ground, jump to PRG002_AAA6 (RTS)
+	JSR Object_HitGround
+
+PRG002_AD96:
 	JSR Object_HandleBumpUnderneath	 ; Get killed if hit underneath by block
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
@@ -2260,7 +2292,8 @@ PRG002_ADB4:
 	LDX <SlotIndexBackup		 ; X = object slot index
 
 	LDY <Objects_Var4,X	 ; Y = Var4
-
+	BEQ SpikeRTS
+	
 	LDA <Objects_SpriteY,X
 	BIT <Temp_Var3		
 	BMI PRG002_ADC5	 ; If Spike is vertically flipped, jump to PRG002_ADC5
@@ -2281,6 +2314,8 @@ PRG002_ADD1:
 	ADD <Temp_Var2		 ; Offset by Spike's X
 	STA <Temp_Var2		 ; -> Temp_Var2
 
+	LDA Objects_SprVVis,X
+	STA <Temp_Var5
 	LDX #(SpikeBall_Patterns - ObjectGroup01_PatternSets)	 ; Offset to patterns for spike ball
 
 	; Draw Spike's pre-thrown spike ball sprite at +8 to Spike's assigned Sprite_RAM offset
@@ -2289,44 +2324,64 @@ PRG002_ADD1:
 	TAY		
 	JSR Object_Draw16x16Sprite
 
+
 	; Set Spike's spike ball attributes
 	LDA #$02
 	STA Sprite_RAM+$02,Y
 	ORA #$c0
 	STA Sprite_RAM+$06,Y
 
-	LDX <SlotIndexBackup		 ; X = object slot index
+SpikeRTS:
 	RTS		 ; Return
 
 Spike_TossSpikeBall:
-	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot if on-screen (or don't come back!)	 
-	STA <Objects_Var5,X	 ; Objects_Var5 = 0 (because we wouldn't be here otherwise)
+	
+	TXA
+	TAY
+	JSR FindEmptyEnemySlot	; Find an empty special object slot if on-screen (or don't come back!
+
+	STA Objects_Var5,Y	 ; Objects_Var5 = 0 (because we wouldn't be here otherwise)
 
 	; Spike's spike ball
-	LDA #SOBJ_NINJASTAR	 
-	STA SpecialObj_ID,Y
+	LDA #$05
+	STA Level_ObjectID, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #SPR_PAL2
+	STA Objects_SprAttr,X
 
 	; Set Spike's ball X
-	LDA <Objects_X,X
-	STA SpecialObj_XLo,Y
+	LDA Objects_X,Y
+	STA <Objects_X, X
 
-	; Set Spike's ball Y
-	LDA <Objects_Y,X
+
+	LDA Objects_XHi, Y
+	STA <Objects_XHi, X
+
+	; Set Spike's ball X
+	LDA Objects_Y,Y
 	SUB #14
-	STA SpecialObj_YLo,Y
-	LDA <Objects_YHi,X
+	STA <Objects_Y, X
+	LDA Objects_YHi,Y
 	SBC #$00
-	STA SpecialObj_YHi,Y
+	STA <Objects_YHi, X
 
-	JSR Object_SetXVelByFacingDir	 ; Set Spike's X velocity by his facing direction
-	ASL A	
-	ASL A		; Multiply result by 4
-	STA SpecialObj_XVel,Y	 ; Set as Spike's ball X velocity
+	LDA Objects_FlipBits,Y
+	ASL A
+	ASL A	; If HFlip is set, pushed into carry
 
-	; Spike's ball Y velocity and Data = 0
-	LDA #$00
-	STA SpecialObj_YVel,Y
-	STA SpecialObj_Data,Y
+	LDA #$18
+
+	BCS PRG002_AE282
+	LDA #-$18
+
+PRG002_AE282:
+	STA Objects_XVel, X
+
+	LDA #$D0
+	STA Objects_YVel, X
 
 	RTS		 ; Return
 
@@ -3271,51 +3326,21 @@ ObjNorm_ToadHouseItem:
 
 LogPlat_Draw:
 	JSR Object_ShakeAndCalcSprite
-
-	; Do not preserve the H/V flip bits
-	LDA <Temp_Var3
-	AND #%00111111
+	STY TempY
+	LDA #$00
 	STA <Temp_Var3
-
-	LDA <Counter_1
-	LSR A
-	PHP		 ; Save CPU state (most importantly the carry flag)
-	BCC PRG002_B5BD	 ; Every other tick, jump to PRG002_B5BD
-
-	; Y += (11 + C = 12) -- Every other tick, offset Sprite_RAM
-	TYA
-	ADC #$0b
-	TAY
-
-PRG002_B5BD:
 	JSR Object_Draw48x16Sprite	 ; Draw wide sprite
 
-	LDA <Temp_Var7	 ; Get Sprite_RAM offset (as determined by Object_ShakeAndCalcSprite)
-	PLP		 ; Restore CPU state
-	BCS PRG002_B5C7	 ; Every other opposite tick, jump to PRG002_B5C7
-
-	; Otherwise, add +12 to Sprite_RAM offset
-	ADC #$0c
-
-PRG002_B5C7:
-	TAY		 ; Sprite_RAM offset -> 'Y'
-
-	INX
-	INX
-	INX	; X += 3 (starting tiles index)
-
-	; Temp_Var2 (Sprite Y) += 24
-	LDA #24
-	ADD <Temp_Var2
-	STA <Temp_Var2
-
-	; Alters horizontal visibility ??
-	ASL <Temp_Var8
-	ASL <Temp_Var8
-	ASL <Temp_Var8
-
-	JSR Object_Draw48x16Sprite	 ; Draw wide sprite
-
+	LDY TempY
+	LDA #SPR_HFLIP
+	ORA Sprite_RAM + 6, Y
+	STA  Sprite_RAM + 6, Y
+	LDA #SPR_HFLIP
+	ORA Sprite_RAM + 14, Y
+	STA  Sprite_RAM + 14, Y
+	LDA #SPR_HFLIP
+	ORA Sprite_RAM + 22, Y
+	STA  Sprite_RAM + 22, Y
 	LDX <SlotIndexBackup		 ; X = object slot index
 	RTS		 ; Return
 
@@ -3765,8 +3790,10 @@ PlayerPlatform_Collide:
 
 PRG002_BABC:
 	SEC		 ; Set carry (collided)
+	RTS
 
 PRG002_BABD:
+	CLC
 	RTS		 ; Return
 
 	; Attribute by frame

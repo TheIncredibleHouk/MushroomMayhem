@@ -319,6 +319,7 @@ PRG008_A17F:
 	LDA NightTransition
 	BEQ NotNight
 	JSR DoNightTransition
+
 NotNight:
 	LDA DayTransition
 	BEQ NoTransition
@@ -694,7 +695,13 @@ PRG008_A3F2:
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Fox_FireBall
+	LDX Poison_Mode
+	BEQ PRG008_A3F1
 	STA Poison_Mode
+	LDA #AIR_INCREASE
+	STA Air_Change
+
+PRG008_A3F1:
 	LDA #$FF
 	STA CompleteLevelTimer
 
@@ -764,6 +771,7 @@ PRG008_A45A:
 PRG008_A472:
 	; The following are always called, dead or alive...
 
+	JSR Debug_Code
 	JSR Player_DrawAndDoActions29	; Draw Player and perform reactions to various things (coin heaven, pipes, etc lots more)
 	JSR Player_ControlJmp	 	; Controllable actions
 	JSR Player_PowerUpdate	 	; Update "Power Meter"
@@ -1475,7 +1483,7 @@ PRG008_A86C:
 	BNE PRG008_A890	 ; If tile is not the vine, jump to PRG008_A890
 
 	LDA Player_IsClimbing
-	BNE PRG008_A898	 ; If climbing flag is set, jump to PRG008_A898
+	BNE PRG008_A898Boost	 ; If climbing flag is set, jump to PRG008_A898
 
 	LDA <Pad_Holding
 	AND #(PAD_UP | PAD_DOWN)
@@ -1488,6 +1496,7 @@ PRG008_A86C:
 	BNE PRG008_A898	 ; If Player is in the air, jump to PRG008_A898
 
 	AND #%00001000
+PRG008_A898Boost:
 	BNE PRG008_A898	 ; If Player is pressing up, jump to PRG008_A898
 
 PRG008_A890:
@@ -1546,12 +1555,7 @@ PRG008_A892:
 	LDA <Pad_Input
 	AND #PAD_B
 	BEQ PRG008_A897
-	JSR LATP_CoinCommon
-	LDA #$09
-	STA Coins_Earned_Buffer
-	LDA <Level_Tile
-	EOR #$01
-	JSR Level_QueueChangeBlock
+	JSR OpenTreasure
 
 PRG008_A897:
 	JMP PRG008_A8F9	 ; Jump to PRG008_A8F9
@@ -2383,7 +2387,6 @@ STORE_SMALL_JUMP:
 	BEQ PRG008_AC6C
 
 	; Otherwise, mark as mid air AND backflipping
-	STA Player_Flip
 	STA <Player_InAir
 
 	LDA #$00
@@ -3830,6 +3833,14 @@ Player_GetTileAndSlope:
 
 PRG008_B3F7:
 	LDA <Player_YHi
+	BPL PRG008_B3F8
+
+	LDA #$00
+	STA <Temp_Var13
+	STA <Temp_Var14
+	BEQ PRG008_B406
+
+PRG008_B3F8:
 	STA <Temp_Var13	 ; Temp_Var13 = Player_YHi
 
 	LDA <Temp_Var10	 ; Temp_Var10 is the Y offset 
@@ -4084,12 +4095,12 @@ PRG008_B53B:
 	BEQ PRG008_B55B	 ; If Player is NOT mid air, jump to PRG008_B55B
 
 	LDA Level_Tile_Prop_GndL
-	AND #TILE_PROP_SOLID_BOTTOM
-	BNE PRG008_B558	 ; If not touching a solid tile, jump to PRG008_B55A
+	CMP #TILE_PROP_SOLID_ALL
+	BCS PRG008_B558	 ; If not touching a solid tile, jump to PRG008_B55A
 
 	LDA Level_Tile_Prop_GndR
-	AND #TILE_PROP_SOLID_BOTTOM
-	BEQ PRG008_B55B
+	CMP #TILE_PROP_SOLID_ALL
+	BCC PRG008_B55B
 
 PRG008_B558:
 	LDA #$01
@@ -4160,19 +4171,20 @@ Level_DoCommonSpecialTiles:
 	JMP PRG008_B586
 
 PRG008_B582:
-	LDY Level_ChgTileEvent
-	BNE PRG008_B584
-	CMP #TILE_PROP_SOLID_TOP
-	BCS PRG008_B585
-	AND #$0F
-	CMP #TILE_PROP_HIDDEN_BLOCK
+	AND #$F0
+	CMP #TILE_PROP_SOLID_BOTTOM
 	BNE PRG008_B582_2
-	LDA #$00
-	STA TempA
+	LDA TempA
 	JMP PRG008_B586
 
 PRG008_B582_2:
+	CMP #TILE_PROP_SOLID_TOP
+	BCS PRG008_B585
+	LDA TempA
 	CMP #TILE_PROP_COIN
+	BNE PRG008_B583
+
+	LDA Level_ChgTileEvent
 	BNE PRG008_B583
 
 	LDY <Temp_Var12		 
@@ -4198,6 +4210,9 @@ PRG008_B583:
 	LDA Cherries
 	CMP #99
 	BCS PRG008_B584
+
+	LDA Level_ChgTileEvent
+	BNE PRG008_B583
 
 	LDY <Temp_Var12		 
 	LDA <Level_Tile	; prevent double collecting
@@ -4243,6 +4258,7 @@ PRG008_B585_4:
 	RTS
 
 PRG008_B585:
+	LDA TempA
 	AND #$0F
 	CPX  #$02
 	BCS PRG008_B585_2
@@ -4807,6 +4823,7 @@ LATP_CoinCommon:
 
 	; X Lo - center it up, shove into Temp_Var2
 	LDA <Temp_Var16
+	AND #$F0
 	ORA #$04
 	STA <Temp_Var2
 
@@ -5911,4 +5928,44 @@ Player_Refresh:
 	STA Player_YExit
 
 Player_RefreshRTS:
+	RTS
+
+Debug_Code:
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Debug_CodeRTS
+
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ Debug_CodeRTS
+
+	JSR Get_Normalized_Suit
+	CMP #$08
+	BEQ Debug_Code0
+
+	CMP #$0B
+	BCC Debug_Code1
+
+	LDA #$FF
+	BMI Debug_Code1
+
+Debug_Code0:
+	LDA #$09
+
+Debug_Code1:
+	ADD #$02
+	STA Player_QueueSuit
+
+Debug_CodeRTS:
+	RTS
+
+
+OpenTreasure:
+	JSR LATP_CoinCommon
+	LDA #$09
+	ADD Coins_Earned_Buffer
+	STA Coins_Earned_Buffer
+	LDA <Level_Tile
+	EOR #$01
+	JSR Level_QueueChangeBlock
 	RTS
