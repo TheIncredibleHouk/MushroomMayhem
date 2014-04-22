@@ -12,309 +12,6 @@
 ; Distribution package date: Fri Apr  6 23:46:16 UTC 2012
 ;---------------------------------------------------------------------------
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_DoLavaDonutArrowBounce
-;
-; Handles the Player coming into contact with lava, donut lifts,
-; or arrow platforms (supported in vertical level only)
-; This also checks to see if the Player should bounce because the
-; block beneath his feet bounced (by checking for the 
-; TILEA_BLOCKBUMP_CLEAR tile...)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-	; Specifies which kind of arrow lift should be created relative to which tile
-	; the Player stepped on.  Note the zero near the end; if you look at tileset #8
-	; the donut lift appears right between what would be the multidirectional lift.
-ArrowPlat_ByTile:
-	.byte OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP, OBJ_ACIDTRAP_CEIL, $00, OBJ_ACIDTRAP_CEIL
-
-	; Sets the direction value as used by the arrow platform
-ArrowPlat_DirByTile:
-	.byte $00, $00, $03, $03, $01, $01, $00, $00, $00
-
-ArrowPlat_XOff:
-	.byte 0, -16, 0, -16, 0, -16, 0, 0, -16
-
-Player_DoLavaDonutArrowBounce:
-	RTS
-	LDA <Player_IsDying		  
-	BNE PRG007_A06F	 ; If Player is dying, jump to PRG007_A06F (RTS)
-
-	LDA Level_7Vertical
-	BEQ PRG007_A027	 ; If this is NOT a vertically-oriented level, jump to PRG007_A027
-
-	JMP PRG007_A0DE	 ; Otherwise, jump to PRG007_A0DE
-
-PRG007_A027:
-
-	; Not vertically oriented level...
-
-	LDA <Player_Y	; Get Player Y
-	ADD #32		; +32
-	AND #$f0	; Align to tile grid
-	STA <Temp_Var5	; -> Temp_Var5
-
-	LDA <Player_YHi
-	BMI PRG007_A06F	; If Player is up off the top of the screen, jump to PRG007_A06F (RTS)
-
-	ADC #$00	; Apply carry
-	AND #$01	; Only bit 0 is valid anyway in non-vertical mode
-	STA <Temp_Var3	; -> Temp_Var3
-
-	LDA <Player_X	; Get Player X
-	ADD #$08	; +8
-	AND #$f0	; Align to tile grid
-	STA <Temp_Var4	; -> Temp_Var4
-
-	LDA <Player_XHi
-	ADC #$00	; Apply carry
-	STA <Temp_Var6	; -> Temp_Var6
-
-	CMP #16		; 16 screens are the max!!
-	BCS PRG007_A06F	; If Player is really far to the right (somehow), jump to PRG007_A06F (RTS)
-
-	ASL A		; 2 byte index for current screen
-	TAY		; -> 'Y'
-
-	; Store high byte of screen address -> Temp_Var1
-	LDA Tile_Mem_Addr,Y
-	STA <Temp_Var1	
-
-	; Store low byte of screen address + Player's Y Hi -> Temp_Var2
-	LDA Tile_Mem_Addr+1,Y
-	ADD <Temp_Var3	
-	STA <Temp_Var2
-
-	; Calculate a proper offset into the tile memory for the X/Y position of the Player
-	LDA <Temp_Var4
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var5
-	TAY	; -> 'Y'
-
-	LDA [Temp_Var1],Y	; Get the tile here
-
-	CMP #TILEA_BLOCKBUMP_CLEAR
-	BNE PRG007_A070	 ; If this is not a bumped block tile, jump to PRG007_A070
-
-	; Otherwise, bounce Player!
-	;LDA #-$30
-	;STA <Player_YVel
-
-PRG007_A06F:
-	RTS		 ; Return
-
-
-PRG007_A070:
-	CMP #TILE2_LAVATOP
-	BNE PRG007_A082	 ; If this is not (possibly) a lava tile, jump to PRG007_A082
-
-	JSR Get_Normalized_Suit
-	CMP #$08
-	BEQ Swim_Lava
-
-PRG007_A07F:
-	JMP PRG007_A183	 ; Jump to PRG007_A183 (Player dies!)
-
-Swim_Lava:
-	LDA DAIZ_TEMP1
-PRG007_A082:
-	CMP #TILE2_DONUTLIFT
-	JMP PRG007_A0DD	 ; If this is not (possibly) a Donut Lift, jump to PRG007_A0DD (RTS)
-
-PRG007_A086:
-	; If this is tileset 4, 8, 12, or 2 (all valid for Donut Lift), jump to PRG007_A099, otherwise jump to PRG007_A06F (RTS)
-	LDY Level_Tileset
-	CPY #4
-	BEQ PRG007_A099
-
-	CPY #8
-	BEQ PRG007_A099
-
-	CPY #12
-	BEQ PRG007_A099
-
-	CPY #2
-	BNE PRG007_A06F
-
-PRG007_A099:
-	LDA Level_ChgTileEvent
-	BNE PRG007_A06F	 ; If there's already a tile change event queued, jump to PRG007_A06F (RTS)
-
-	JSR PrepareNewObjectOrAbort	 ; Prepare a new object or don't come back!
-
-	; This is a falling donut lift!
-	LDA #OBJ_DONUTLIFTSHAKEFALL
-	STA Level_ObjectID,X
-
-	; Set donut lift Y 
-	LDA <Temp_Var5
-	SUB #$01
-	STA <Objects_Y,X
-	LDA <Temp_Var3
-	SBC #$00
-	STA <Objects_YHi,X
-
-	; Set donut lift X
-	LDA <Temp_Var4
-	STA <Objects_X,X
-	LDA <Temp_Var6
-	STA <Objects_XHi,X
-
-	; Set donut lift object's Var5 = $20
-	LDA #$20
-	STA <Objects_Var5,X
-
-	; Set sprite attribute = 3
-	LDA #$03
-	STA Objects_SprAttr,X
-
-	; Do tile change event to clear the tile version of the donut lift
-	LDA #$02
-	STA Level_ChgTileEvent
-	LDA <Temp_Var3	
-	STA Level_BlockChgYHi
-	LDA <Temp_Var5	
-	STA Level_BlockChgYLo
-	LDA <Temp_Var4	
-	STA Level_BlockChgXLo
-	LDA <Temp_Var6	
-	STA Level_BlockChgXHi
-
-PRG007_A0DD:
-	RTS		 ; Return
-
-PRG007_A0DE:
-
-	; Vertically oriented level...
-
-	LDA <Player_Y	; Get Player Y
-	ADD #33		; +33
-	AND #$f0	; Aligned to tile grid
-	STA <Temp_Var1	; -> Temp_Var1
-	STA <Temp_Var5	; -> Temp_Var5
-
-	LDA <Player_YHi
-	BMI PRG007_A0DD	 ; If Player is up off the top of the level, jump to PRG007_A0DD (RTS)
-
-	ADC #$00	; Apply carry
-	STA <Temp_Var3	; -> Temp_Var3
-
-	; High byte of Tile_Mem -> Temp_Var2
-	ORA #HIGH(Tile_Mem)
-	STA <Temp_Var2
-
-	LDA <Player_X	; Get Player X
-	ADD #$08	; +8
-	AND #$f0	; Aligned to tile grid
-	STA <Temp_Var4	; -> Temp_Var4
-
-	; Construct tile offset
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var1
-	STA <Temp_Var1
-
-	; Temp_Var6 = 0 (would be "X Hi", which is always zero in vertical level)
-	LDY #$00
-	STY <Temp_Var6
-
-	LDA [Temp_Var1],Y	 ; Get tile here
-
-	CMP #TILE2_DONUTLIFT
-	BNE PRG007_A113	 ; If this is not donut lift tile, jump to PRG007_A113
-
-	JMP PRG007_A086	 ; Otherwise, jump to PRG007_A086
-
-PRG007_A113:
-	LDY <Player_InAir
-	BNE PRG007_A0DD	 ; If Player is mid-air, jump to PRG007_A0DD (RTS)
-
-	LDY ArrowPlat_IsActive
-	BNE PRG007_A0DD	 ; If an arrow platform is already active, jump to PRG007_A0DD (RTS)
-
-	; If not standing on some kind of arrow platform tile, jump to PRG007_A0DD (RTS)
-	CMP #TILE8_ARROWLIFT_UPL
-	BLT PRG007_A0DD
-	CMP #(TILE8_ARROWLIFT_RANDOMR+1)
-	BGE PRG007_A0DD
-
-	SUB #TILE8_ARROWLIFT_UPL
-	TAY		 ; Y = relative index of tile for arrow platform
-
-	; Temp_Var3 = $FF
-	LDA #$ff
-	STA <Temp_Var3
-
-	LDX #$04	 ; X = 4
-PRG007_A12E:
-	LDA Objects_State,X
-	BNE PRG007_A146	 ; If this object slot is dead/empty, jump to PRG007_A144
-
-PRG007_A144:
-	STX <Temp_Var3		; Temp_Var3 = index we just searched
-
-PRG007_A146:
-	DEX		 ; X--
-	BPL PRG007_A12E	 ; While X >= 0, loop!
-
-	LDX <Temp_Var3	 ; X = free object slot!
-	BMI PRG007_A182	 ; If no free object slot was found, jump to PRG007_A182
-
-	; Set this to "Normal!"
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State,X
-
-	; Create the correct arrow platform by the tile
-	LDA ArrowPlat_ByTile,Y
-	STA Level_ObjectID,X
-
-	; Set the direction value by tile
-	LDA ArrowPlat_DirByTile,Y
-	STA <Objects_Var4,X
-
-	; Arrow platform Y
-	LDA <Temp_Var1
-	AND #$f0
-	SUB #$01
-	STA <Objects_Y,X
-	LDA <Temp_Var2
-	SBC #$00
-	AND #$0f
-	STA <Objects_YHi,X
-
-	; Arrow platform X
-	LDA <Temp_Var1
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ADD ArrowPlat_XOff,Y
-	STA <Objects_X,X
-	LDA #$00
-	STA <Objects_XHi,X
-
-	; Arrow platform's Var5 (lifespan counter) = $FF
-	LDA #$ff
-	STA <Objects_Var5,X
-
-PRG007_A182:
-	RTS		 ; Return
-
-PRG007_A183:
-
-	; Player hit death tile!
-
-	; Zap suit
-	LDA #$01
-	STA Player_QueueSuit
-
-	JMP Player_Die	 ; Player dies and don't come back!
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ColorRotation_Do
@@ -450,7 +147,6 @@ PlayerXVel: .byte 03, 02
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Gameplay_UpdateAndDrawMisc:
 	JSR ColorRotation_Do	 	 ; Do color rotation effects, if any
-	JSR Player_DoLavaDonutArrowBounce	 ; Handle Lava, Donut Lifts, and Arrow platforms
 	JSR BrickBusts_DrawAndUpdate	 ; Draw and update brick bust effects
 	JSR Player_WaterOrWaterfallVizFX ; Standing in a waterfall splashing or periodic bubbles underwater
 	JSR Bubbles_UpdateAndDraw	 ; Update and draw underwater bubbles
@@ -558,8 +254,114 @@ PRG007_A2BA:
 	LDA #$0b
 	STA Player_FireCount
 
-	; Set projectile X
+	JSR SetProjectilePosition
+	LDA <Player_Suit
+	CMP #$02
+	BNE PRG007_A2BB
+	JSR ThrowFireIceBall
+	JMP ProjDirSwitch
+
+PRG007_A2BB:
+	JSR ThrowHammerStar
+
+ProjDirSwitch:
+	LDY <Player_FlipBits
+	BNE ProjDirSwitch1
+	LDA PlayerProj_XVel, X
+	JSR Negate
+	STA PlayerProj_XVel, X
+
+ProjDirSwitch1:
+	RTS
+
+ThrowHammerStar:
+	JSR Get_Proj_YVel
+	STA PlayerProj_YVel, X
+	JSR Get_Proj_XVel
+	STA PlayerProj_XVel, X
+	LDA #$02
+	STA PlayerProj_ID, X
+	RTS
+
+Get_Proj_YVel:
+	LDA Special_Suit_Flag
+	BEQ Normal_Hammer_YVel
+	LDA <Pad_Holding
+	AND #(PAD_DOWN)
+	BNE Throw_Down
+	LDA <Pad_Holding
+	AND #(PAD_UP)
+	BEQ No_YVel
+
+	LDA #-$03
+	BNE No_YVel
+Throw_Down:
+	LDA #$03
+	BNE No_YVel
+
+Normal_Hammer_YVel:
+	LDA #-$03
+
+No_YVel:
+	RTS
+
+Get_Proj_XVel:
+	LDA Special_Suit_Flag
+	BEQ Normal_Hammer_XVel
+	LDA <Pad_Holding
+	AND #(PAD_UP | PAD_LEFT | PAD_RIGHT)
+	CMP #PAD_UP
+	BNE Ninaj_XVel
+	LDA #$00
+	BEQ No_XVel 
+
+Ninaj_XVel:
+	LDA #$30
+	BNE No_XVel
+	
+Normal_Hammer_XVel:
+	LDA <Player_XVel	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
+	BPL Normal_Hammer_XVel2
+	JSR Negate
+
+	; Otherwise, set Temp_Var1 = Player_XVel
+Normal_Hammer_XVel2:
+	ADD #$10
+
+	RTS
+
+PRG007_A302:
+	LDA #$10	 ; A = $10 (Hammer)
+
+No_XVel:
+	RTS
+
+ThrowFireIceBall:
+	LDA #$03
+	STA PlayerProj_XVel, X
+
+	LDY #$00
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ ThrowFireBall1
+	INY
+
+ThrowFireBall1:
+	LDA FireBallYVel,Y 
+	STA PlayerProj_YVel, X
+	LDA #$01
+	STA PlayerProj_ID, X
+	RTS
+
+SetProjectilePosition:
+	LDY #$00
+	LDA Player_FlipBits
+	BEQ SetProjectilePosition1
+	INY
+
+SetProjectilePosition1:
 	LDA <Player_X
+	ADD ProjectileXOff,Y
 	STA PlayerProj_X,X
 
 	; Set projectile Y Hi
@@ -569,60 +371,14 @@ PRG007_A2BA:
 	LDA <Player_YHi
 	ADC #$00
 	STA PlayerProj_YHi,X
+	RTS
 
-	LDA #$01	 ; A = 1
+ProjectileXOff:
+	.byte $FE, $06
 
-	LDY <Player_Suit
-	CPY #PLAYERSUIT_HAMMER
-	SEC		 ; Set carry (if NOT wearing the hammer suit)
-	BNE PRG007_A2E3	 ; If Player is NOT wearing the Hammer Suit, jump to PRG007_A2E3
-	ASL A		 ; Clears carry, also A = 2
-
-PRG007_A2E3:
-	STA PlayerProj_ID,X	 ; Set projectile as type 1 or 2
-
-	; Set Player Projectile Y velocity
-	LDA #$03	 ; A = $03 (Fireballs are thrown down)
-	BCS PRG007_A2EC	 ; If Player is NOT wearing Hammer Suit, jump to PRG007_A2EC
-	JSR Get_Proj_YVel	; #Get Y Vel based on special suit and pad input
-	
-PRG007_A2EC:
-	STA PlayerProj_YVel,X
-
-	; Temp_Var1 = 0 (no offset for fireballs)
-	LDA #$00
-	STA <Temp_Var1
-
-	LDY #$00
-	LDA Special_Suit_Flag
-	BEQ PRG007_A2ED
-	INY 
-
-PRG007_A2ED:
-	LDA PlayerXVel, Y
-	BCS PRG007_A304	 ; If Player is NOT wearing Hammer Suit, jump to PRG007_A304
-
-	; Calculate the hammer X velocity offset
-	JSR Get_Proj_XVel	; #DAHRKDAIZ - new routine calculating the x velocity based on special suit
-
-
-PRG007_A304:
-	LDY <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
-	BNE PRG007_A30B	 	; If Player is horizontally flipped, jump to PRG007_A30B
-
-	JSR Negate	 ; If Player is turned around, negate value
-
-PRG007_A30B:
-	ADD <Temp_Var1	 ; Add Temp_Var1 (X Velocity offset, if applicable)
-	STA PlayerProj_XVel,X	 ; Store Projectile X velocity
-
-	; PlayerProj_Cnt = 0
-	LDA #$00
-	STA PlayerProj_Cnt,X
-
-	RTS		 ; Return
-
-
+FireBallYVel:
+	.byte $02, -$04
+	 
 	; #DAHRKDAIZ removed extra values for the sake of using animation trick
 PlayerFireball_Pats:		.byte $65, $59
 
@@ -1017,11 +773,14 @@ PRG007_A52D:
 	LDA Special_Suit_Flag
 	BNE No_Block_Bust
 	LDA <Temp_Var1
+	CMP #TILE_ITEM_COIN
+	BCS No_Block_Bust
 	CMP #TILE_ITEM_BRICK
 	BEQ Do_Brick_Bust
 	AND #$0F
 	CMP #$0D
 	BNE No_Block_Bust
+
 Do_Brick_Bust:
 
 	JSR Hammer_BrickBust
@@ -1250,15 +1009,35 @@ PRG007_A6BD:
 
 	; Hammer hit...
 	LDA Invincible_Enemies
-	BNE PRG007_A6FD
+	BNE PRG007_A6CA
 	LDA <Temp_Var1	; Object's attributes
-	BMI PRG007_A6FD	 ; If OAT_HITNOTKILL is set, jump to PRG007_A6FD (RTS)
+	BMI PRG007_A6CA	 ; If OAT_HITNOTKILL is set, jump to PRG007_A6FD (RTS)
 	BPL PRG007_A6C9	 ; Otherwise, jump to PRG007_A6C9
 
 PRG007_A6C3:
 
 	; Fireball/iceball only...
+	LDA Level_ObjectID, Y
+	CMP #OBJ_BOBOMB
+	BNE PRG007_A6C6
 
+	LDA #OBJ_BOBOMBEXPLODE
+	STA Level_ObjectID, Y
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State,Y
+	BNE PRG007_A6C8
+
+PRG007_A6C6:
+	CMP #OBJ_BULLETBILLHOMING
+	BNE PRG007_A6C6_1
+	STX TempX
+	TYA
+	TAX
+	INC Objects_Var3, X
+	LDX TempX
+	BNE PRG007_A6C8
+
+PRG007_A6C6_1:
 	LDA Invincible_Enemies
 	BNE PRG007_A6C8
 
@@ -1291,6 +1070,7 @@ PRG007_A6C9:
 	SUB #$01
 	STA Objects_HitCount,Y
 
+PRG007_A6CA:
 	RTS		 ; Return
 
 
@@ -2014,6 +1794,7 @@ PRG007_AA4C:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BrickBusts_DrawAndUpdate:
 	LDX #$01	 ; X = 1
+
 PRG007_ABC7:
 	STX <SlotIndexBackup	; -> SlotIndexBackup
 
@@ -2920,7 +2701,7 @@ PRG007_B0F7:
 	JMP SpecialObj_Remove	 ; Remove Blooper kid
 
 DebrisPattern:
-	.byte $49, $59, $55
+	.byte $4B, $59, $55
 
 DebrisPalette:
 	.byte SPR_PAL3, SPR_PAL1, SPR_PAL1
@@ -3455,12 +3236,12 @@ PRG007_B3C2:
 	; Set cannon ball sprite attributes
 	LDA #SPR_PAL3
 	STA Sprite_RAM+$02,Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAM+$06,Y
 
 	; Set left and right cannonball patterns
-	LDA #$8B
+	LDA #$5B
 	STA Sprite_RAM+$05,Y
-	LDA #$89
 	STA Sprite_RAM+$01,Y
 
 	LDA SpecialObj_Data,X
@@ -4287,21 +4068,6 @@ SObj_Acid:
 	CMP #TILE_PROP_SOLID_TOP
 	BCC SObj_Acid2
 
-	LDX <SlotIndexBackup
-	LDA CurrentTileProperty
-	CMP #TILE_ITEM_COIN
-	BCS SObj_Acid1
-
-	AND #$0F
-	CMP #TILE_PROP_ACID_MELT
-	BNE SObj_Acid1
-
-	LDA CurrentTile
-	EOR #$01
-
-	JSR Fireball_ThawTile
-	JMP PRG007_B84C
-
 SObj_Acid1:
 	LDX <SlotIndexBackup
 	LDA #$06
@@ -4732,6 +4498,9 @@ PRG007_BB8F:
 
 PRG007_BB97:
 	PLA		 ; Restore ID
+	STA TempA
+	JSR DetermineCannonVisibilty
+	LDA TempA
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -4948,8 +4717,8 @@ PRG007_BD09:
 	RTS
 
 BobOmbXVelocity:	.byte $10, $F0
-Goomb_XVelocity:	.byte SPR_HFLIP, $00, SPR_HFLIP
-Goomb_YVelocity:	.byte $E0, $00
+Goomb_XVelocity:	.byte $E0, $20
+Goomb_YVelocity:    .byte $C0, $C0
 
 CFire_GoombaPipe:
 	LDA CannonFire_Timer,X
@@ -4972,39 +4741,22 @@ CFire_GoombaPipe:
 
 	; Set Goomba X
 	LDA CannonFire_X,Y
-	ORA #$08
 	STA <Objects_X,X
 	LDA CannonFire_XHi,Y
 	STA <Objects_XHi,X
-
-	JSR Level_ObjCalcXDiffs
-	STY <Temp_Var2		 ; Store directional flag -> Temp_Var2
-
-	LDY <SlotIndexBackup	 ; Y = Cannon Fire index
-
-	LDA CannonFire_ID,Y
-
-	LDY #$00
-	CMP #CFIRE_GOOMBAPIPE_DOWN
-	BNE PRG007_BD49	 ; If this is not a left output Goomba pipe, jump to CFIRE_GOOMBAPIPE
-
-	INY		 ; Y = 1 (left output Goomba pipe)
-
-PRG007_BD49:
-	; set the motion of the goomba as it "pops" out of the pipe
-	LDA Goomb_YVelocity, Y
-	STA <Objects_YVel, X
-
-	LDY <Temp_Var2
-	LDA Goomb_XVelocity, Y
-	STA Objects_FlipBits, X
-
-	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
-	; Set Goomba's Y
 	LDA CannonFire_Y,Y
 	STA <Objects_Y,X
 	LDA CannonFire_YHi,Y
 	STA <Objects_YHi,X
+
+PRG007_BD49:
+	; set the motion of the goomba as it "pops" out of the pipe
+	LDA CannonFire_Property, Y
+	TAY
+	LDA Goomb_YVelocity, Y
+	STA <Objects_YVel, X
+	LDA Goomb_XVelocity, Y
+	STA Objects_XVel, X
 
 	; It's a Goomba
 	LDA #OBJ_GOOMBA
@@ -5017,8 +4769,9 @@ PRG007_BD49:
 	LDA #SPR_PAL3
 	STA Objects_SprAttr,X
 
-	LDA #$ff
-	STA Objects_SprHVis,X
+
+	LDX <SlotIndexBackup
+	JSR CannonFire_NoiseAndSmoke
 
 PRG007_BD78:
 	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
@@ -5079,6 +4832,37 @@ Cannons_CPYOff:
 
 Bill_CPYOff:	.byte $00, $00		; Bullet/Missile Bill
 
+CannonWidths: .byte $00, $08
+DetermineCannonVisibilty:
+	LDA #$01
+	STA <Temp_Var1
+	LDY #$01
+
+DetermineCannonVisibilty1:
+	LDA CannonFire_X,X
+	ADD CannonWidths,Y
+	STA <Temp_Var15		; Temp_Var15 = object's X + ??
+
+	LDA CannonFire_XHi,X
+	ADC #$00	 
+	STA <Temp_Var16		; Temp_Var16 = Object's X Hi with carry applied
+
+	LDA <Temp_Var15
+	CMP <Horz_Scroll
+	LDA <Temp_Var16	
+	SBC <Horz_Scroll_Hi
+	BEQ DetermineCannonVisibilty2	 ; If sprite is not horizontally off-screen, jump to PRG000_D7DE
+	DEC <Temp_Var1
+	BPL DetermineCannonVisibilty2
+	PLA
+	PLA
+	RTS
+
+DetermineCannonVisibilty2:
+	DEY		 ; Y--
+	BPL DetermineCannonVisibilty1	 ; While Y >= 0, loop
+
+	RTS		 ; Return
 
 CFire_4Way:
 
@@ -5220,12 +5004,21 @@ PRG007_BEAA:
 	RTS		 ; Return
 
 	; Produces the smoke resulting from cannon fire; specify X/Y offset
-	; from Cannon Fire's position by Temp_Var1 which indexes CannonPoof_X/YOffs
+	; from Cannon Fire's position by Temp_Var1 which indexes CannonPoof_X/YOffs 
 CannonFire_NoiseAndSmoke:
+	LDX <SlotIndexBackup
+
 	; Cannon firing noise
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
+
+	
+	LDA CannonFire_Y,X
+	CMP Level_VertScroll
+	LDA CannonFire_YHi,X
+	SBC Level_VertScrollH
+	BNE CannonPoofRTS		; If Cannon Fire has fallen off screen vertically, jump to PRG007_BF28 (RTS)
 
 	JSR BrickBust_MoveOver	 ; Make room in first "brick bust" slot for poof
 
@@ -5235,9 +5028,6 @@ CannonFire_NoiseAndSmoke:
 
 	; Set poof X
 	LDA CannonFire_X,X	; Get Cannon Fire X
-	CLC
-	LDX <Temp_Var1		; X = Temp_Var1 holds the index into CannonPoof_XOffs
-	ADC CannonPoof_XOffs,X	; + CannonPoof_XOffs[Temp_Var1]
 	SUB <Horz_Scroll	; Make relative to horizontal scroll
 	STA BrickBust_X		; Set X
 
@@ -5245,7 +5035,7 @@ CannonFire_NoiseAndSmoke:
 
 	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
 
-	ADD CannonFire_Y,X	 ; + Cannon Fire Y
+	LDA CannonFire_Y,X	 ; + Cannon Fire Y
 	SUB Level_VertScroll	 ; Make relative to vertical scroll
 	STA BrickBust_YUpr	 ; Set Y
 
@@ -5253,6 +5043,7 @@ CannonFire_NoiseAndSmoke:
 	LDA #$1f
 	STA BrickBust_HEn
 
+CannonPoofRTS:
 	RTS		 ; Return
 
 
@@ -5310,31 +5101,18 @@ CFire_RockyWrench:
 PRG007_BF28:
 	RTS		 ; Return
 
-Bill_XVelTowardsPlayer:	.byte $18, -$18
-Bill_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
-Bill_Var4TowardsPlayer:	.byte $01, $00
-	
+Bill_XVel:	.byte $18, -$18, $00, -$18, -$18, $00, $18, $18
+Bill_YVel:	.byte $00, $00, -$18, -$18, $18, $18, $18, -$18
+CanonTimers: .byte $20, $40, $60, $40, $20, $80, $40, $60
 CFire_BulletBill:
 	LDA CannonFire_Timer,X
 	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
 
-	LDA CannonFire_Y,X
-	CMP Level_VertScroll
-	LDA CannonFire_YHi,X
-	SBC Level_VertScrollH
-	BNE PRG007_BF28		; If Cannon Fire has fallen off screen vertically, jump to PRG007_BF28 (RTS)
-
-	LDA CannonFire_X,X
-	CMP <Horz_Scroll
-	LDA CannonFire_XHi,X
-	SBC <Horz_Scroll_Hi
-	BNE PRG007_BF28		; If Cannon Fire has fallen off screen horizontally, jump to PRG007_BF28 (RTS)
-
 	; Reset Cannon Fire timer to $80-$9F, random
 	LDA RandomN,X
-	AND #$1f
-	ORA #$80
-	LSR A
+	AND #$07
+	TAY
+	LDA CanonTimers, Y
 	STA CannonFire_Timer,X
 
 	LDA CannonFire_X,X
@@ -5360,6 +5138,8 @@ CFire_BulletBill:
 
 	BCS PRG007_BF80	 ; If carry set, jump to PRG007_BF80
 
+	LDA #$50
+	STA Objects_Timer, X
 	LDA #OBJ_BULLETBILLHOMING
 
 PRG007_BF80:
@@ -5384,33 +5164,21 @@ PRG007_BF80:
 	STA <Objects_X,X
 	STA Objects_Var13,X	; original X hold
 
-	; Bill's timer = $0C
-	LDA #$0c
-	STA Objects_Timer,X
-
-	; Bill's Var3 = $20
-	LDA #$20
-	STA Objects_Var3,X
+	LDA CannonFire_Property,Y
+	TAY
+	BNE PRG007_BF81
 
 	JSR Level_ObjCalcXDiffs
 
+PRG007_BF81:
 	; Bill fires towards Player
-	LDA Bill_XVelTowardsPlayer,Y
+	LDA Bill_XVel,Y
 	STA <Objects_XVel,X
 
-	; Bill faces Player
-	LDA Bill_FlipTowardsPlayer,Y
-	STA Objects_FlipBits,X
-
-	; Set Bill's direction flag
-	LDA Bill_Var4TowardsPlayer,Y
-	STA <Objects_Var4,X
+	LDA Bill_YVel, Y
+	STA <Objects_YVel, X
 
 	LDX <SlotIndexBackup	; X = Cannon Fire slot index
-
-	TYA		; 0 or 1
-	ADD #(Bill_CPXOff - CannonPoof_XOffs)
-	STA <Temp_Var1	; -> Temp_Var1
 
 	JSR CannonFire_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
 
@@ -5498,57 +5266,6 @@ Hammer_BrickBust:
 	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof
-
-Get_Proj_YVel:
-	LDA Special_Suit_Flag
-	BEQ Normal_Hammer_YVel
-	LDA <Pad_Holding
-	AND #(PAD_DOWN)
-	BNE Throw_Down
-	LDA <Pad_Holding
-	AND #(PAD_UP)
-	BEQ No_YVel
-
-	LDA #-$03
-	BNE No_YVel
-Throw_Down:
-	LDA #$03
-	BNE No_YVel
-
-Normal_Hammer_YVel:
-	LDA #-$03
-
-No_YVel:
-	RTS
-
-Get_Proj_XVel:
-	LDA Special_Suit_Flag
-	BEQ Normal_Hammer_XVel
-	LDA <Pad_Holding
-	AND #(PAD_UP | PAD_LEFT | PAD_RIGHT)
-	CMP #PAD_UP
-	BNE Ninaj_XVel
-	LDA #$00
-	BEQ No_XVel 
-Ninaj_XVel:
-	LDA #$30
-	BNE No_XVel
-	
-Normal_Hammer_XVel:
-	LDA <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
-	ASL A			; ... so this makes a positive or negative sign
-	EOR <Player_XVel	; XOR in the Player's X velocity
-	BPL PRG007_A302	 	; If result is positive, jump to PRG007_A302
-
-	; Otherwise, set Temp_Var1 = Player_XVel
-	LDA <Player_XVel
-	STA <Temp_Var1
-
-PRG007_A302:
-	LDA #$10	 ; A = $10 (Hammer)
-
-No_XVel:
-	RTS
 
 Do_Boo_Mode:
 	JSR Get_Normalized_Suit

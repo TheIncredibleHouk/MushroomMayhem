@@ -529,7 +529,7 @@ PRG005_A283:
 
 	JSR Object_WorldDetectN1	 ; Detect against world
 
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	AND #$E0
 	CMP #TILE_PROP_WATER
 	BNE PRG005_A2C9	 	; If Podoboo has not hit the lava, jump to PRG005_A2C9
@@ -1789,8 +1789,8 @@ PRG005_A85B:
 PRG005_A877:
 	RTS		 ; Return
 
-PiranhaFireball_YVel:	.byte $1B, $15
-PiranhaFireball_XVel:	.byte $20, $18
+PiranhaFireball_YVel:	.byte $00, $D0
+PiranhaFireball_XVel:	.byte $20, $E0
 
 Piranha_SpitFire:
 	LDY #$00	 ; Y = 0
@@ -1831,9 +1831,6 @@ PRG005_A885:
 	CMP #$04
 	BNE Throw_PFireball
 
-	LDA SpecialObj_XVel,Y
-	LSR A
-	STA SpecialObj_XVel,Y
 	LDA #SOBJ_ICEBALL
 	BNE STA_Proj
 
@@ -1846,54 +1843,28 @@ Throw_PFireball:
 
 STA_Proj:
 	STA SpecialObj_ID,Y
-	STA TempA
-
-	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
+	STY TempY	 ; Special object slot index -> Temp_Var1
 
 	; Y difference -> Temp_Var6
 	JSR Level_ObjCalcYDiffs
-	STY <Temp_Var6	
-
-	; X difference -> Temp_Var7
-	JSR Level_ObjCalcXDiffs
-	STY <Temp_Var7	
-
-	LDX #$00	 ; X = 0 (Player is close)
-
-	LDA TempA
-	CMP #SOBJ_ICEBALL
-	BNE PRG005_A8C0
-
-	INX		 ; X = 1 (Player is far)
-
-PRG005_A8C0:
-	LDY <Temp_Var1		 ; Y = special object slot index
-
+	TYA
+	TAX
+	LDY TempY
 	LDA PiranhaFireball_YVel,X
-
-	LSR <Temp_Var6
-	BCC PRG005_A8CC	 ; If Y differance is not negative, jump to PRG005_A8CC
-
-	JSR Negate	 ; Otherwise, negate the loaded Y velocity
-
-PRG005_A8CC:
 	STA SpecialObj_YVel,Y	 ; Set fireball Y velocity
 
+	LDX <SlotIndexBackup
+	; X difference -> Temp_Var7
+	JSR Level_ObjCalcXDiffs	
+	TYA
+	TAX
+	LDY TempY
 	LDA PiranhaFireball_XVel,X
-
-	LSR <Temp_Var7
-	BCC PRG005_A8D9	 ; If X difference is not negative, jump to PRG005_A8D9
-
-	JSR Negate	 ; Otherwise negate the loaded X velocity
-
-PRG005_A8D9:
 	STA SpecialObj_XVel,Y	 ; Set fireball X velocity
 
 	LDA #$00
 	STA SpecialObj_XVelFrac,Y
 	STA SpecialObj_YVelFrac,Y
-
-	LDX <SlotIndexBackup		 ; X = object slot index
 	RTS		 ; Return
 
 ;ObjInit_AirshipProp:
@@ -2533,7 +2504,7 @@ PRG005_ABE2:
 	JSR Bolt_CheckOnThread	 ; Checks if bolt is on thread tile; if not, Var5 = 1
 
 	JSR Object_WorldDetectN1
-	LDA Object_TileWall2
+	LDA Object_TileWallValue
 	CMP #TILE10_BOLT_H
 	BNE PRG005_ABF5	 	; If bolt has not hit thread end tile, jump to PRG005_ABF5
 
@@ -2669,7 +2640,7 @@ PRG005_AC6B:
 	PLA
 	STA <Objects_X,X
 
-	LDA Object_TileWall2
+	LDA Object_TileWallValue
 	CMP #TILE10_BOLT_H
 	BEQ PRG005_AC93	 ; If bolt lift has hit a thread end tile, jump to PRG005_AC93
 
@@ -3699,17 +3670,17 @@ Dimmer_Fade:
 	ASL A
 	ASL A
 	STA TempA
-	LDY #$0F
+	LDY #$0B
 
 Dimmer_Fade2:
-	LDA MasterPal_Data,Y	; Get this color
+	LDA MasterPal_Data+4,Y	; Get this color
 	SUB TempA	 	; Subtract 16 from it
 	BPL Dimmer_Fade3	 	; If we didn't go below zero, jump to PRG026_AC55
 
 	LDA #$0f	 	; Otherwise, set it to safe minimum
 
 Dimmer_Fade3:
-	STA Palette_Buffer,Y	; Update palette color
+	STA Palette_Buffer+4,Y	; Update palette color
 	DEY		 	; Y--
 	BPL Dimmer_Fade2	 	; While Y >= 0, loop!
 
@@ -3782,6 +3753,8 @@ PRG005_B82E:
 PRG005_B831:
 	RTS		 ; Return
 
+Priority_Objects:
+	.byte OBJ_KEYPIECES, OBJ_KEYPIECE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_ObjectsSpawnByScroll
 ;
@@ -3950,13 +3923,12 @@ PRG005_B8F3:
 
 	SBC #OBJ_CFIRE_BULLETBILL	 ; Zero base it
 	ADD #$01	 ; +1 (because zero means "empty/unused" in Cannon Fire)
-
+	STY TempY
 	JSR CannonFire_Init	 ; Initialize the Cannon Fire
 
 	JMP PRG005_B863	 ; Jump to PRG005_B863 (next object)
 
 PRG005_B902:
-
 	; Trigger Level_Event
 	SUB #(OBJ_8WAYBULLETBILLS-1)	; Base at 1
 	STA Level_Event	 		; Set Level_Event
@@ -3964,11 +3936,29 @@ PRG005_B902:
 	RTS		 ; Return
 
 PRG005_B909:
-
+PRG005_B904:
 	; Basically the end level card gets priority and will ALWAYS
 	; spawn into slot 6, regardless of what was there previously.
 	; (Normal objects are in lower slots so this generally should
 	; not be too noticeable.)
+	LDX Object_Priority
+	BEQ PRG005_B905
+
+	LDX #$01
+
+PRG005_B9041:
+	CMP Priority_Objects
+	BNE PRG005_B9042
+	LDX #$04
+	BNE PRG005_B913
+
+PRG005_B9042:
+	DEX
+	BPL PRG005_B9041
+	LDX #$02
+	BNE PRG005_B913
+
+PRG005_B905:
 	LDX #$04	 ; X = 4
 
 PRG005_B913:
@@ -4246,7 +4236,8 @@ PRG005_BA3D:
 
 CannonFire_Init:
 	STA <Temp_Var16	 ; Store index value (1+)
-	TXA		 ; -> 'X'
+	STX TempX
+	TXA		 ; -> 'X
 	PHA		 ; Save it too
 
 
@@ -4277,6 +4268,8 @@ PRG005_BA54:
 	STA CannonFire_Var+1,X	
 	LDA CannonFire_Timer2,X	
 	STA CannonFire_Timer2+1,X	
+	LDA CannonFire_Property,X	
+	STA CannonFire_Property+1,X	
 
 	DEX		 ; X--
 	BPL PRG005_BA54	 ; While X >= 0, loop
@@ -4294,6 +4287,7 @@ PRG005_BA54:
 
 PRG005_BA9A:
 	; Upper 4 bits shifted right -> CannonFire_YHi (high Y)
+	STY TempY
 	LDA Level_Objects+1,Y	 ; Get object row
 	AND #$10	 
 	LSR A		 
@@ -4344,178 +4338,23 @@ PRG005_BACE:
 	LDA <Temp_Var16	
 	STA CannonFire_ID
 
+	TXA
+	TAY
+
 	PLA		 ; Restore input index value
 	TAX		 ; -> 'X'
-
+	LDY TempY
+	LDA Level_Objects+1,Y
+	AND #$E0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA CannonFire_Property
 	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Level_ObjectsSpawnByScrollV
-;
-; Spawns object while screen scrolls (how it goes from static 
-; level data to dynamic stuff on the screen)
-; Vertical variant of Level_ObjectsSpawnByScroll
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-	; This defines the values used as "look ahead" when screen is moving
-	; Basically the values are $110 (one screen over + 16)
-	; and -$20 (32 pixels to the left)
-LOSBSV_LookAhead:	.byte -32, 32
-LOSBSV_LookAheadHi:	.byte $FF, $01	; sign extensions
 
 Level_ObjectsSpawnByScrollV:
-	LDY <Scroll_LastDir
-
-	LDA Level_VertScroll
-	ADD LOSBSV_LookAhead,Y
-	AND #$f0	 
-	STA <Temp_Var6	 ; Temp_Var6 = Vert_Scroll + LOSBSV_LookAhead[Y] (appropriate "look ahead" values)
-
-	LDA Level_VertScrollH
-	ADC LOSBSV_LookAheadHi,Y
-	STA <Temp_Var7		 ; Temp_Var7 = "look ahead" high part
-
-	LDY <Level_Width
-	CMP VertLevel_ScreenH+1,Y
-	BLT PRG005_BB12	 ; If the "high part" is < the level high size, jump to PRG005_BB12
-	BNE PRG005_BB0F	 ; If the "high part" is otherwise not equal, jump to PRG005_BB0F
-
-	LDA <Temp_Var6
-	CMP VertLevel_ScreenL+1,Y
-	BLT PRG005_BB12	 ; If the lookahead low part is < the level low size, jump to PRG005_BB12
-
-PRG005_BB0F:
-	JMP PRG005_BB9A	 ; Jump to PRG005_BB9A (RTS)
-
-PRG005_BB12:
-	LDX <Temp_Var7		 ; X = "look ahead" high part
-	LDA Level_ObjIdxStartByScreen,X	 	 ; Get starting Level_Objects index for this screen
-	BMI PRG005_BB2F	 ; If no objects on this screen, jump to PRG005_BB2F (RTS)
-
-
-
-	STA <Temp_Var2	 ; Starting index -> Temp_Var2
-	TAX		 ; -> 'X'
-
-	ASL A		 
-	ADD <Temp_Var2	 ; Multiply by 3 (get to appropriate object)
-	TAY		 ; -> 'Y'
-
-PRG005_BB21:
-	INY
-	INY
-	INY		 ; Y += 3 (next object, aligned to "row" element)
-
-	LDA Level_Objects,Y	 ; Get object row
-	LSR A
-	LSR A
-	LSR A
-	LSR A		 ; Divide by 16 to get "screen" (16 rows per screen)
-	CMP <Temp_Var7	 
-	BEQ PRG005_BB30	 ; If object is on this "look ahead" screen, jump to PRG005_BB30
-
-PRG005_BB2F:
-	RTS		 ; Return
-
-PRG005_BB30:
-	LDA Level_Objects-2,Y
-	CMP #$ff	 
-	BEQ PRG005_BB2F	 ; If this is the terminator, jump to PRG005_B82F (RTS)
-
-	LDA Level_ObjectsSpawned,X
-	INX		 ; X++
-	CMP #$00
-	BMI PRG005_BB21	 ; If this object is already currently spawned, jump to PRG005_BB21 (skip to next object)
-
-	LDA Level_Objects,Y	 ; Get object row
-	ASL A
-	ASL A
-	ASL A
-	ASL A		; Multiply by 16 (make pixel position)
-	CMP <Temp_Var6
-	BNE PRG005_BB21	 ; If object not equal to "look ahead" low component, jump to PRG005_BB21 (skip to next object)
-
-	; Object should be spawned...
-
-	DEX		 ; X-- (undo INX above)
-
-	STX <Temp_Var2		 ; Backup object index -> Temp_Var2
-	STA <Temp_Var1		 ; Backup pixel X position -> Temp_Var1
-
-	; BUG!! This appears to be done wrong!  They really meant
-	; Level_Objects-2 (i.e. the Object ID); incidentally, this
-	; still works because you would never find an object at
-	; column $B4 (OBJ_8WAYBULLETBILLS), but you can't access
-	; and Level_Events this way (not that they were ever used	
-	; in a vertical area!)  Sort of a half-schroedinbug.
-	; And who knows why there's a double load; probably a very
-	; old copy and paste error, eh? :)
-	
-	LDA Level_Objects-1,Y
-	LDA Level_Objects-1,Y
-	CMP #OBJ_8WAYBULLETBILLS
-	BLT PRG005_BB5F	
-
-	; This is never used, but actually cheep cheep swarms in a
-	; vertical pipe maze is really kinda cool!
-	SBC #(OBJ_8WAYBULLETBILLS-1)
-	STA Level_Event	 ; Store into Level_Event
-	RTS		 ; Return
-
-PRG005_BB5F:
-	LDX #$04	 ; X = 4
-PRG005_BB61:
-	LDA Objects_State,X	
-	BEQ PRG005_BB6C	 ; If this object is "dead/empty", jump to PRG005_BB6C
-	DEX		 ; X--
-	BPL PRG005_BB61	 ; While X >= 0, loop!
-	JMP PRG005_BB9A	 ; Jump to PRG005_BB9A (RTS)
-
-PRG005_BB6C:
-
-	; Set object Y
-	LDA <Temp_Var1
-	STA <Objects_Y,X
-	LDA <Temp_Var7	
-	STA <Objects_YHi,X
-
-	; Object X Hi is never used in a vertical level
-	LDA #$00
-	STA <Objects_XHi,X
-
-	DEY		 ; Y-- (different way of getting at the column...)
-
-	; Turn column into X pixel coordinate
-	LDA Level_Objects,Y	 ; Get object column
-	ASL A	
-	ASL A	
-	ASL A	
-	ASL A	
-	STA <Objects_X,X
-
-	DEY		 ; Y-- (now we're at the ID field)
-
-	; Store object ID
-	LDA Level_Objects,Y
-	STA Level_ObjectID,X
-
-	LDY <Temp_Var2		 ; Y = Temp_Var2 (object index)
-
-	; Mark object as spawned
-	LDA Level_ObjectsSpawned,Y
-	ORA #$80
-	STA Level_ObjectsSpawned,Y
-
-	TYA		 ; Y -> 'A' (object index)
-
-	STA Objects_SpawnIdx,X	 ; Store parent index
-
-	INC Objects_State,X	 ; Set object state to 1
-
-PRG005_BB9A:
-	RTS		 ; Return
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelEvent_Do
@@ -4776,8 +4615,6 @@ PRG005_BCF4:
 	RTS		 ; Return
 
 
-	; Random X Offsets employed by the jumping 
-	; Cheep Cheeps; may negate sign!
 BB8WayXVels:
 	.byte -$16, -$20, -$16, $00, $22, $20, $22, $00
 
@@ -4811,7 +4648,6 @@ LevelEvent_8WayBulletBills:
 	AND #$07
 	TAY
 
-	; Set Cheep Cheep's Y at bottom of screen
 	LDA Level_VertScroll
 	ADD BB8WayYOffset, Y
 	STA <Objects_Y,X
@@ -5032,6 +4868,7 @@ Level_DoChangeReset:
 	RTS		 ; Return
 
 PRG005_BE35:
+
 	LDY #$09	 	; Y = 9
 
 PRG005_BE37:
@@ -5040,6 +4877,8 @@ PRG005_BE37:
 	CPY #$08	 
 	BGE PRG005_BE41	 	; If Y >= 8, jump to PRG005_BE41
 
+	LDX Level_KeepObjects
+	BNE PRG005_BE41
 	STA CannonFire_ID,Y
 
 PRG005_BE41:
@@ -5083,7 +4922,10 @@ PRG005_BE67:
 	STA Level_ScrollDiffH
 	STA Wind
 	STA Level_ScrollDiffV
+	STA Object_Priority
 
+	LDX Level_KeepObjects
+	BNE PRG005_BE91
 	; Clear Level_ObjectsSpawned (nothing spawned)
 	LDY #$2f	 ; Y = $2F
 PRG005_BE90:
@@ -5091,6 +4933,8 @@ PRG005_BE90:
 	DEY		 ; Y--
 	BPL PRG005_BE90	 ; While Y >= 0, loop!
 
+PRG005_BE91:
+	LDY #$FF
 	STY Level_ChangeReset
 	STA Player_PartDetEn
 	STA Level_ObjIdxStartByScreen
@@ -5116,15 +4960,7 @@ PRG005_BEB6:
 	CMP #$ff	 
 	BEQ PRG005_BEE5	 ; If terminator, jump to PRG005_BEE5
 
-	LDA Level_7Vertical
-	PHP		 	; Save process status
 	LDA Level_Objects+1,Y	; Get object column
-	PLP		 	; Restore process status
-
-	BEQ PRG005_BECE	 	; If level is NOT vertical, jump to PRG005_BECE
-
-	LDA Level_Objects+2,Y	; Get object row instead for vertical
-
 PRG005_BECE:
 	LSR A
 	LSR A
@@ -5166,29 +5002,33 @@ PRG005_BEF8:
 
 	; Clear all object states
 PRG005_BEFC:
+	LDA Level_KeepObjects
+	BEQ PRG005_BF02
+
+	LDX #$02
+	BNE PRG005_BF00
+
+PRG005_BEFD:
 	LDX #$07	 ; X = 7
-PRG005_BEFE:
+
+
+PRG005_BF00:
+	LDA Level_KeepObjects
+	BEQ PRG005_BF002
+
+	JSR Object_SetDeadAndNotSpawned
+
+PRG005_BF002:
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X	 ; Clear object state
-	DEX		 ; X--
-	BPL PRG005_BEFE	 ; While X >= 0, loop!
 
+PRG005_BF01:
+	DEX		 ; X--
+	BPL PRG005_BF00	 ; While X >= 0, loop!
+
+PRG005_BF02:
 	LDA #$4f	 
 	STA PatTable_BankSel+5	 ; Set sixth pattern table to $4F
-
-	LDA Level_TilesetIdx
-	CMP #$0a	 
-	BNE PRG005_BF1C	 ; If Level_TilesetIdx <> 10 (Giant World), jump to PRG005_BF1C
-
-	; Setup object slot 4 for OBJ_GIANTBLOCKCTL
-	LDA #OBJSTATE_INIT
-	STA Objects_State+4
-	LDA #OBJ_GIANTBLOCKCTL
-	STA Level_ObjectID+4
-
-PRG005_BF1C:
-	LDA Level_7Vertical	 
-	BNE PRG005_BF70	 ; If level is vertical, jump to PRG005_BF70
 
 	LDA <Horz_Scroll
 	PHA		 ; Save Horz_Scroll
@@ -5251,68 +5091,6 @@ PRG005_BF55:
 
 	PLA
 	STA <Horz_Scroll	 ; Restore Horz_Scroll
-
-	; Do not return to caller!!
-	PLA
-	PLA
-
-	RTS		 ; Return
-
-PRG005_BF70:
-
-	; This loop spawns all objects which should be visible at the initial
-	; screen of the level by pretending to scroll a whole screen's worth
-
-	LDA Level_VertScroll
-	PHA		 ; Save Level_VertScroll
-
-	ADD LOSBSV_LookAhead+1
-	AND #$f0
-	STA <Temp_Var14	 ; Temp_Var14 = Level_VertScroll + [LOSBSV_LookAhead+1], aligned to nearest row
-
-	LDA Level_VertScrollH
-	PHA		 ; Save Level_VertScrollH
-	
-	ADD LOSBSV_LookAheadHi+1
-	STA <Temp_Var15	 ; Temp_Var15 = Level_VertScrollH + [LOSBSV_LookAheadHi+1]
-
-	LDA #$00
-	STA <Scroll_LastDir	 ; Scroll_LastDir = 0 (screen last moved up)
-
-	; Fake upward scroll by one row
-	LDA Level_VertScroll
-	SUB #16
-	STA Level_VertScroll	 ; Level_VertScroll -= 16
-
-	BCS PRG005_BF98		 ; If carry set, jump to PRG005_BF98
-	DEC Level_VertScrollH	 ; Apply carry
-PRG005_BF98:
-
-	LDA Level_VertScroll
-	ADC #16
-	AND #$f0
-	STA Level_VertScroll	 ; Level_VertScroll += 16, aligned to row
-	BCC PRG005_BFA7	 ; If carry clear, jump to PRG005_BFA7
-	INC Level_VertScrollH	 ; Apply carry
-PRG005_BFA7:
-
-	; Ensures all objects that should appear on the initial screen, will appear
-	JSR Level_ObjectsSpawnByScrollV
-	JSR Level_ObjectsSpawnByScrollV
-
-	LDA <Temp_Var15
-	CMP Level_VertScrollH
-	BNE PRG005_BF98	 ; If we haven't reached the high target yet, loop
-
-	LDA <Temp_Var14
-	CMP Level_VertScroll
-	BNE PRG005_BF98	 ; If we haven't reached the low target yet, loop
-
-	PLA
-	STA Level_VertScrollH	 ; Restore Level_VertScrollH
-
-	PLA
-	STA Level_VertScroll	 ; Restore Level_VertScroll
 
 	; Do not return to caller!!
 	PLA

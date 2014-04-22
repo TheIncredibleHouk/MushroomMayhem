@@ -3239,6 +3239,7 @@ Try_Poison_Mode:
 	INC Poison_Mode
 	LDA #$FC
 	STA Air_Change
+	LDA #$02
 	STA Player_StarInv
 
 Cant_Poison_Mode:
@@ -3251,6 +3252,8 @@ Continue_Poison_Mode:
 	LDA Air_Time
 	CMP #$05
 	BCC Stop_Poison_Mode
+	LDA #$02
+	STA Player_StarInv
 	RTS
 
 Stop_Poison_Mode:

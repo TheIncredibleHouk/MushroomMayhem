@@ -130,8 +130,8 @@ SuperGiantOffsets1:
 
 	; Group 12
 	;       Y    X
-	.byte $18, $18	; At feet
-	.byte $18, $18	; At head
+	.byte $30, $08	; At feet
+	.byte $00, $08	; At head
 	.byte $23, $01	; Wall to left
 	.byte $23, $0E	; Wall to right
 
@@ -159,7 +159,7 @@ Object_BoundBox:
 	.byte  1,  13,   2,   8	; 1
 	.byte  2,  12,   2,  24	; 2
 	.byte 10,  27,  -2,  18	; 3
-	.byte  2,  30,   2,  30	; 4 (UNUSED)
+	.byte  4,  28,  4,  0	; 4 (UNUSED)
 	.byte  5,  14,  10,  18	; 5 (UNUSED)
 	.byte  2,  27,  -2,  34	; 6
 	.byte  2,  20,   2,  12	; 7
@@ -179,7 +179,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $02
 	.byte OAT_BOUNDBOX00	; Object $03
 	.byte OAT_BOUNDBOX02	; Object $04
-	.byte OAT_BOUNDBOX01	; Object $05
+	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $05
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $07 - OBJ_BRICK
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_COIN
@@ -194,7 +194,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $11
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $12
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $13
-	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY 	; Object $14
+	.byte OAT_BOUNDBOX04 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL 	; Object $14
 	.byte OAT_BOUNDBOX09 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $15
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $16
 	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_SPINYCHEEP
@@ -253,7 +253,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $4C - OBJ_MAGICSTAR
 	.byte OAT_BOUNDBOX00	; Object $4D
 	.byte OAT_BOUNDBOX00	; Object $4E
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY	; Object $4F - OBJ_CHAINCHOMPFREE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY 	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OAT_BOUNDBOX01	; Object $52 - OBJ_SPINTULA
@@ -294,11 +294,11 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $75 - OBJ_WATERFILLER
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OAT_BOUNDBOX01	; Object $77 - OBJ_GREENCHEEP
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $78 - OBJ_BULLETBILL
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	| OAT_ICEIMMUNITY	; Object $78 - OBJ_BULLETBILL
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $7A - OBJ_PURPLETROOPA
 	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7C - OBJ_BIGGOOMBA
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $7C - OBJ_BIGGOOMBA
 	.byte OAT_BOUNDBOX13	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OAT_BOUNDBOX13	; Object $7F - OBJ_BIGREDPIRANHA
@@ -311,7 +311,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX02	; Object $86 - OBJ_ICEBRO
 	.byte OAT_BOUNDBOX02	; Object $87 - OBJ_FIREBRO
 	.byte OAT_BOUNDBOX02	; Object $88 - OBJ_PIRATEBRO
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $89 - OBJ_CHAINCHOMP
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY	; Object $89 - OBJ_CHAINCHOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8A - OBJ_THWOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8C - OBJ_THWOMPRIGHTSLIDE
@@ -432,6 +432,7 @@ Exp_Inc_Lots:
 
 Exp_Inc:
 	INC Exp_Earned
+	INC Kill_Tally
 	RTS		 ; Return
 
 
@@ -466,9 +467,13 @@ Object_HitGround:
 
 Object_HitCeiling:
 	LDA <Objects_Y,X
+	ADD #$08
 	AND #$f0
-	ORA #$0F
 	STA <Objects_Y,X	 ; Align to tile and apply slope
+
+	LDA <Objects_YHi, X
+	ADC #$00
+	STA <Objects_YHi, X
 
 	LDA #$00
 	STA <Objects_YVel,X	
@@ -516,12 +521,12 @@ PRG000_C559:
 	STA <Objects_DetStat,X	; Clear Object's detection status
 	STA LRBounce_Vel	; Clear left/right bounce power
 
-	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_TileFeet/Quad and Object_TileWall/Quad
+	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_TileFeetProp/Quad and Object_TileWallProp/Quad
 
 	PLA		 ; Restore input value
 	STA <Temp_Var1	 ; Store into Temp_Var1
 
-	LDA Object_TileWall	; A = detected tile index
+	LDA Object_TileWallProp	; A = detected tile index
 	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG000_C584	 	
@@ -551,7 +556,7 @@ PRG000_C584:
 PRG000_C59A:
 
 	; Non-slope detection
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	AND #TILE_PROP_SOLID_BOTTOM
 	BEQ PRG000_C5A8	 
 
@@ -567,7 +572,7 @@ PRG000_C5A8:
 PRG000_C5A9:
 
 	; Object moving downwards (floor detection)
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	AND #TILE_PROP_SOLID_TOP
 	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
 	JMP PRG000_C65C	 ; Otherwise, jump to PRG000_C65D
@@ -670,16 +675,16 @@ PRG000_C713:
 	JSR Object_DetectTile	 ; Get tile
  
 	; Store into tile index holders
-	STA Object_TileFeet
+	STA Object_TileFeetProp
 	LDA Object_LevelTile
-	STA Object_TileFeet2
+	STA Object_TileFeetValue
 
 
 	LDA ObjTile_DetXLo
 	STA <Temp_Var16	 ; Temp_Var16 = ObjTile_DetXLo
 
 	LDA #$00
-	STA Object_TileWall2	 ; Object_TileWall2 = 0
+	STA Object_TileWallValue	 ; Object_TileWallValue = 0
 
 	PLA		 ; Restore Object_TileDetectOffsets index
 
@@ -701,8 +706,10 @@ PRG000_C797:
 	JSR Object_DetectTile	 ; Get tile here
 
 	; Store into tile index holders
-	STA Object_TileWall2
-	STA Object_TileWall
+	STA Object_TileWallProp
+
+	LDA Object_LevelTile
+	STA Object_TileWallValue
 
 	JSR SetSpriteFG
 	RTS		 ; Return
@@ -789,6 +796,7 @@ PRG000_C7FA:
 	CMP #$10
 	BGE PRG000_C832	 ; If the high part is more than $10 (biggest possible within other limits), jump to PRG000_C832
 
+IndependentBlockCheck:
 	ASL A		 ; Change high part into 2 byte index to select the screen
 	TAY		 ; -> 'Y'
 
@@ -957,7 +965,7 @@ PRG000_C948:
 	STA Counter_7to0 ; Otherwise, reset Counter_7to0 to 7
 
 PRG000_C973:
-	LDA #$07
+	LDA #$00
 	STA <SlotIndexBackup
 
 PRG000_C975:
@@ -1045,8 +1053,10 @@ PRG000_C9B6:
 	STA Objects_SpawnIdx,X
 
 PRG000_C9D2:
-	DEC <SlotIndexBackup
-	BPL PRG000_C975	 ; While X >= 0, loop!
+	INC <SlotIndexBackup
+	LDA <SlotIndexBackup
+	CMP #$08
+	BCC PRG000_C975	 ; While X >= 0, loop!
 
 PRG000_C9E5:
 	LDA Player_Flip
@@ -1177,6 +1187,7 @@ PRG000_CA5C:
 PRG000_CA7A:
 	AND #$7f	 ; Bit 7 is used to specify which bank, so filter it here
 	STA PatTable_BankSel+4,X	 ; Store pattern bank
+	STX LastPatTab_Sel
 
 PRG000_CA7F:
 	LDX <SlotIndexBackup		 ; Restore X as the object slot index
@@ -1645,7 +1656,11 @@ PRG000_CC37:
 	JSR Object_CalcBoundBox 
 	JSR ObjectObject_Intersect 
 	BCC PRG000_CC66	 ; If object did not intersect with prior object, jump to PRG000_CC66
- 
+
+	JSR ObjectKill_NoScore
+	JMP PRG000_CC66
+
+PRG000_CC38:
 	JSR Object_AboutFace
 	JSR Object_Move
 	JSR Object_Move
@@ -1765,7 +1780,7 @@ PRG000_CCAE:
 	; Handle object bouncing off blocks
 	LDA Object_LevelTile
 	STA <Level_Tile
-	LDA Object_TileWall2
+	LDA Object_TileWallProp
 	JSR Object_BumpOffBlocks 
 
 	LDX <SlotIndexBackup	 ; X = object slot index
@@ -1796,59 +1811,8 @@ PRG000_CCF7:
 	JSR Object_HandleBumpUnderneath	 ; Handle the kicked shelled object getting hit from underneath
 
 PRG000_CCF8:
-	TXA 
-	ADD <Counter_1 
-	LSR A 
-	BCC PRG000_CD46	 ; Semi-randomly jump to PRG000_CD46
- 
-	JSR ObjectToObject_HitTest 
-	BCC PRG000_CD46	 ; If object has not hit another object, jump to PRG000_CD46
+	JSR ObjectKill_Others
 
-	; Play object-to-object collision sound 
-	LDA Sound_QPlayer 
-	ORA #SND_PLAYERKICK 
-	STA Sound_QPlayer
- 
-	; Knock object in same general direction as the kicked shell object
-	LDA <Objects_XVel,X 
-	ASL A 
-	LDA #$10	 ; A = $10
-	BCC PRG000_CD17 
-	LDA #-$10	 ; A = -$10
-
-PRG000_CD17: 
-	STA Objects_XVel,Y
- 
-	LDA Objects_State,Y 
-	CMP #OBJSTATE_KICKED
-	BNE PRG000_CD36	 ; If the impacted object's state is not Kicked, jump to PRG000_CD36
-
-	; Another kicked object on the way... (slam and kill eachother)
-
-	LDA Objects_KillTally,Y
- 	JSR Exp_Inc	 ; Get the total score this OTHER kicked shell object earned
-	JSR ObjectKill_SetShellKillVars	 ; Kill our kicked object and set ShellKill variables
-
-	; Set X Velocity of our kicked object in the direction of the impacted object
-	LDA Objects_XVel,Y
-	ASL A	
-	LDA #$10
-	BCS PRG000_CD34
-	LDA #-$10	
-PRG000_CD34:
-	STA <Objects_XVel,X
-
-PRG000_CD36:
-	TYA
-	TAX		 ; X = the other object we just hit
-	JSR ObjectKill_SetShellKillVars	 ; Kill the impacted object and set ShellKill variables
-
-	LDX <SlotIndexBackup		 ; X = object slot index (our kicked object)
-	LDA Objects_KillTally,X	
-	INC Objects_KillTally,X		; Increase our kicked object's kill tally...
-	JSR Exp_Inc_Lots	; Get points by the kill tally!  (Incidentally, Exp_Inc would work too)
-
-PRG000_CD46:
 	LDA Level_ObjectID,X
 	CMP #OBJ_KEY
 	BEQ PRG000_CD47
@@ -1932,6 +1896,7 @@ ObjectKill_SetShellKillVars:
 	STA <Temp_Var2
 	JSR Produce_Coin
 
+ObjectKill_NoScore:
 Dont_Coin_It3:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
@@ -1949,6 +1914,62 @@ Dont_Coin_It3:
 	STA ShellKillFlash_Cnt
 	JSR Exp_Inc
 	RTS		 ; Return
+
+ObjectKill_Others:
+	TXA 
+	ADD <Counter_1 
+	LSR A 
+	BCC PRG000_CD46	 ; Semi-randomly jump to PRG000_CD46
+ 
+	JSR ObjectToObject_HitTest 
+	BCC PRG000_CD46	 ; If object has not hit another object, jump to PRG000_CD46
+
+	; Play object-to-object collision sound 
+	LDA Sound_QPlayer 
+	ORA #SND_PLAYERKICK 
+	STA Sound_QPlayer
+ 
+	; Knock object in same general direction as the kicked shell object
+	LDA <Objects_XVel,X 
+	ASL A 
+	LDA #$10	 ; A = $10
+	BCC PRG000_CD17 
+	LDA #-$10	 ; A = -$10
+
+PRG000_CD17: 
+	STA Objects_XVel,Y
+ 
+	LDA Objects_State,Y 
+	CMP #OBJSTATE_KICKED
+	BNE PRG000_CD36	 ; If the impacted object's state is not Kicked, jump to PRG000_CD36
+
+	; Another kicked object on the way... (slam and kill eachother)
+
+	LDA Objects_KillTally,Y
+ 	JSR Exp_Inc	 ; Get the total score this OTHER kicked shell object earned
+	JSR ObjectKill_SetShellKillVars	 ; Kill our kicked object and set ShellKill variables
+
+	; Set X Velocity of our kicked object in the direction of the impacted object
+	LDA Objects_XVel,Y
+	ASL A	
+	LDA #$10
+	BCS PRG000_CD34
+	LDA #-$10	
+PRG000_CD34:
+	STA <Objects_XVel,X
+
+PRG000_CD36:
+	TYA
+	TAX		 ; X = the other object we just hit
+	JSR ObjectKill_SetShellKillVars	 ; Kill the impacted object and set ShellKill variables
+
+	LDX <SlotIndexBackup		 ; X = object slot index (our kicked object)
+	LDA Objects_KillTally,X	
+	INC Objects_KillTally,X		; Increase our kicked object's kill tally...
+	JSR Exp_Inc_Lots	; Get points by the kill tally!  (Incidentally, Exp_Inc would work too)
+
+PRG000_CD46:
+	RTS
 	
 	; Kicked shell object animation frames and flips
 ObjShell_AnimFlipBits:	.byte $00, $00, $00, $40
@@ -2624,11 +2645,6 @@ PRG000_D02E:
 
 	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
 
-	; Set sprite priority 
-	LDA Objects_FlipBits,X
-	ORA #SPR_BEHINDBG
-	STA Objects_FlipBits,X
-
 	CPX #$05
 	BLT PRG000_D044	 ; If object index < 5 (object is a "general" object), jump to PRG000_D044 (RTS)
 
@@ -2973,7 +2989,7 @@ Object_HandleBumpUnderneath:
 	BNE PRG000_D1B8	 ; If any sprite is off-screen, jump to PRG000_D1C4 (RTS)
 
 	
-	LDA Object_TileFeet2 
+	LDA Object_TileFeetValue 
 	BEQ Object_HandleBumpUnderneath0
 	AND #$3F
 	BEQ Object_HandleBumpUnderneath1
@@ -3294,6 +3310,9 @@ PRG000_D295:
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
 	INC Exp_Earned
+	INC Kill_Tally
+	LDA #$01
+	STA Player_InAir
 
 	RTS		 ; Return
 
@@ -3342,6 +3361,7 @@ PRG000_D2B4:
 	; Set Player's Y velocity to -$40 (bounce!)
 	LDA #-$40
 	STA <Player_YVel
+	STA Player_InAir
 
 	; Play squish sound
 	LDA Sound_QPlayer
@@ -3811,7 +3831,7 @@ Object_DoHaltedAction:
 	.word Bank2_HotFootHaltAction		; 0: Bank2/Hotfoot ONLY
 	.word Object_ShakeAndDraw		; 1: Standard draw
 	.word Object_Draw16x32Sprite		; 2: Draw tall sprite
-	.word Bank2_SpikeHaltAction		; 3: Bank2/Spike ONLY
+	.word ObjHalt_DoNothing		; 3: Bank2/Spike ONLY
 	.word ObjHalt_DoNothing			; 4: Do nothing
 	.word ObjHalt_DoNothingNotNormal	; 5: If object is in "normal" state, do its normal routine, otherwise do nothing (COMMON)
 	.word Object_DrawWide			; 6: Draw wide sprite
@@ -4224,63 +4244,44 @@ PRG000_D6C6:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D6C7
 Object_Draw48x16Sprite:
+	LDA #$05
+	STA TempA
 	LDA <Temp_Var5	; Check sprite vertical visibility
-	LSR A		
-	BCS PRG000_D726	; If this sprite is off-screen, jump to PRG000_D726 (RTS)
+	BNE PRG000_D726	; If this sprite is off-screen, jump to PRG000_D726 (RTS)
 
+
+PRG000_D6D7:
 	LDA <Temp_Var8	; Checking horizontal sprite visibility
 	ASL A		; Left shift flags value
-	STA <Temp_Var10	; -> Temp_Var10
+	STA <Temp_Var8	; -> Temp_Var10
+	BCS PRG000_D725
 
 	LDA <Temp_Var1	; Sprite Y
-	BCS PRG000_D6D8	; If sprite is horizontally off-screen, jump to PRG000_D6D8
-
 	STA Sprite_RAM+$00,Y	 ; Set sprite Y in RAM
 
-PRG000_D6D8:
-	BIT <Temp_Var10	 
-	BMI PRG000_D6DF	 ; If this sprite is off-screen, jump to PRG000_D6DF
-
-	STA Sprite_RAM+$04,Y	 ; Set sprite Y in RAM
-
-PRG000_D6DF:
-	BVS PRG000_D6E4	 ; If this sprite is off-screen, jump to PRG000_D6E4
-
-	STA Sprite_RAM+$08,Y	 ; Set sprite Y in RAM
-
-PRG000_D6E4:
 	LDA <Temp_Var2
-	STA Sprite_RAM+$03,Y	 ; Set sprite X in RAM
-	ADD #$08
-	STA Sprite_RAM+$07,Y	 ; Set sprite X in RAM (+8)
-	ADD #$08
-	STA Sprite_RAM+$0B,Y	 ; Set sprite X in RAM (+16)
+	STA Sprite_RAM+$03,Y	 ; Set sprite X in RA
 
 	; Set each of the sprite's patterns
 	LDA ObjectGroup_PatternSets,X
 	STA Sprite_RAM+$01,Y
-	LDA ObjectGroup_PatternSets+1,X
-	STA Sprite_RAM+$05,Y
-	LDA ObjectGroup_PatternSets+2,X
-	STA Sprite_RAM+$09,Y
 
 	; Set each sprite's attributes
 	LDA <Temp_Var3
 	ORA <Temp_Var4		 ; Combine attributes
 	STA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$06,Y
-	STA Sprite_RAM+$0A,Y
-
-	BIT <Temp_Var3
-	BVC PRG000_D6C6	 ; If sprite is not horizontally flipped, jump to PRG000_D6C6 (RTS)
-
-	; Swap end sprites patterns
-	LDA Sprite_RAM+$01,Y
-	PHA	
-	LDA Sprite_RAM+$09,Y
-	STA Sprite_RAM+$01,Y
-	PLA	
-	STA Sprite_RAM+$09,Y
+	
+PRG000_D725:
+	INY
+	INY
+	INY
+	INY
+	INX
+	LDA #$08
+	ADD <Temp_Var2
+	STA <Temp_Var2
+	DEC TempA
+	BPL PRG000_D6D7
 
 PRG000_D726:
 	RTS		 ; Return
@@ -5570,14 +5571,24 @@ Object_CalcCoarseXDiff:
 ; Temp_Var16 holds the raw difference in "Y Hi"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $DCB9
-Object_CalcCoarseYDiff
+
+Object_CalcCoarseYDiff:
 	LDA <Objects_Y,X
-	SUB <Player_Y	
+	SUB <Player_Y
+	
 	STA <Temp_Var15		 ; Temp_Var15 = difference between object's Y and Player's Y
 
 	LDA <Objects_YHi,X
 	SBC <Player_YHi	
 	STA <Temp_Var16		 ; Temp_Var16 = difference between object's Y Hi and Player's Y Hi
+
+	LDA <Temp_Var15
+	ADD #$10
+	STA <Temp_Var15
+
+	LDA <Temp_Var16
+	ADC #$00
+	STA <Temp_Var16
 
 	LSR A		 	; least significant bit of Y Hi -> carry
 
@@ -6140,10 +6151,17 @@ PRG000_C6FA:
 TestShellBumpBlocks:
 	LDA <Objects_YVel, X
 	BPL NoBumps
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
 	BCC CheckOtherTile
 	JSR Object_BumpBlocks	 ; Boom Boom can hit blocks!
+	LDA Level_ObjectID, X
+	CMP #OBJ_ICEBLOCK
+	BNE TestShellBumpBlocks1
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+TestShellBumpBlocks1:
 	LDA #$01
 	STA <Objects_YVel, X
 
@@ -6160,7 +6178,7 @@ CheckOtherTile:
 	ADC #$00
 	STA <Objects_XHi, X
 	JSR Object_GetAttrAndMoveTiles_NoWater
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
 	BCC NoBumpTiles
 	JSR Object_BumpBlocks
@@ -6276,7 +6294,7 @@ PRG001_A973:
 	STA <Objects_YVel,X ; Object hit ceiling, use rebound velocity
 
 PRG001_A97C:
-	LDA Object_TileFeet2
+	LDA Object_TileFeetValue
 	BEQ PRG001_A993
 	AND #$3F
 	BNE PRG001_A993	 ; If object did not hit the TILEA_BLOCKBUMP_CLEAR tile, jump to PRG001_A993
@@ -6340,21 +6358,23 @@ SetSpriteFG:
 	AND #$DF
 	STA Objects_SprAttr, X
 
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
-	BCS SetSpriteFG1
+	BCS NextTile1
 	AND #TILE_PROP_FOREGROUND
 	BNE SetSpriteFG1
 
-	LDA Object_TileWall
+NextTile1:
+	LDA Object_TileWallProp
 	CMP #TILE_ITEM_COIN
-	BCS SetSpriteFG1
+	BCS NextTile2
 	AND #TILE_PROP_FOREGROUND
 	BNE SetSpriteFG1
 
+NextTile2:
 	LDA Object_TileWater
 	CMP #TILE_ITEM_COIN
-	BCS SetSpriteFG1
+	BCS SetSpriteFG2
 	AND #TILE_PROP_FOREGROUND
 	BEQ SetSpriteFG2
 
@@ -6376,6 +6396,8 @@ FindEmptyEnemySlot1:
 
 	DEX		 ; X--
 	BPL FindEmptyEnemySlot1	 ; While X >= 0, loop!
+	PLA
+	PLA
 
 FindEmptyEnemySlot2:
 	RTS
@@ -6649,6 +6671,10 @@ DetectNextSprite:
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BNE GoNextSprite
+	LDY Level_ObjectID,X	 ; Y = this object's ID
+	LDA Object_AttrFlags,Y
+	AND #OAT_BOUNCEOFFOTHERS
+	BEQ GoNextSprite
 	LDA <Objects_X, X
 	SUB <Temp_Var6
 	STA <Temp_Var10
@@ -6669,8 +6695,8 @@ TrySpriteCarry:
 	LDA <Temp_Var8
 	SUB <Objects_Y, X
 	STA <Temp_Var10
-	LDA <Objects_YHi, X
-	SBC <Temp_Var9
+	LDA <Temp_Var9
+	SBC <Objects_YHi, X
 	BMI KeepCalcingY
 	BNE GoNextSprite
 
@@ -6685,7 +6711,7 @@ DoSpriteCarry:
 	LDX <SlotIndexBackup
 	LDA Objects_XVel, Y
 	STA <Objects_XVel, X
-	LDA #$00;Objects_YVel, Y
+	LDA #$00
 	STA <Objects_YVel, X
 	LDA Objects_Y, Y
 	SUB #$10
@@ -6705,6 +6731,7 @@ GoNextSprite:
 
 PatrolAccel_Limit: .byte $01, $FF
 PatrolVel_Limit: .byte $10, $F0
+ChaseVel_Limit: .byte $18, $E8
 
 
 InitPatrol:
@@ -6847,7 +6874,7 @@ PRG002_A8ED:
 	JSR Level_ObjCalcXDiffs
 
 	LDA <Objects_XVel,X
-	CMP PatrolVel_Limit,Y	
+	CMP ChaseVel_Limit,Y	
 	BEQ PRG002_A8EE	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
 
 	ADD PatrolAccel_Limit,Y	 ; Boo accelerates!
@@ -6877,7 +6904,7 @@ SetChaseFlip:
 
 PRG002_A841:
 	LDA <Objects_YVel,X
-	CMP PatrolVel_Limit,Y
+	CMP ChaseVel_Limit,Y
 	BEQ PRG002_A84E	 ; If Boo is at his acceleration limit, jump to PRG002_A84E
 
 	ADD PatrolAccel_Limit,Y	 ; Boo accelerates!

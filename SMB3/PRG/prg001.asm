@@ -35,7 +35,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
 	.word ObjInit_Coin	; Object $08 - OBJ_COIN
 	.word ObjInit_Bubble	; Object $09 - OBJ_BUBBLE
-	.word ObjInit_Bully	; Object $0A - OBJ_BULLY
+	.word ObjInit_DoNothing	; Object $0A - OBJ_BULLY
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -52,8 +52,8 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_Bubble	; Object $1A that is a l
-	.word ObjInit_BounceLR	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.word ObjInit_Obj1C	; Object $1C
+	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.word ObjInit_DoNothing	; Object $1C
 	.word ObjInit_DoNothing	; Object $1D
 	.word ObjInit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjInit_Vine	; Object $1F - OBJ_GROWINGVINE
@@ -72,12 +72,12 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $02
 	.word ObjNorm_DoNothing	; Object $03
 	.word ObjNorm_DoNothing	; Object $04
-	.word ObjNorm_DoNothing	; Object $05
+	.word ObjNorm_SpikeBall	; Object $05
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjNorm_Brick	; Object $07 - OBJ_BRICK
 	.word ObjNorm_Coin	; Object $08 - OBJ_COIN
 	.word ObjNorm_Bubble	; Object $09 - OBJ_BUBBLE
-	.word ObjNorm_Bully	; Object $0A OBJ_BULLY
+	.word ObjNorm_DoNothing	; Object $0A OBJ_BULLY
 	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -94,8 +94,8 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjNorm_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Bubble	; Object $1A
-	.word ObjNorm_BounceLR	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.word ObjNorm_Obj1C	; Object $1C
+	.word ObjNorm_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.word ObjNorm_DoNothing	; Object $1C
 	.word ObjNorm_DoNothing	; Object $1D
 	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjNorm_Vine	; Object $1F - OBJ_GROWINGVINE
@@ -115,12 +115,12 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $02
 	.word ObjHit_DoNothing	; Object $03
 	.word ObjHit_DoNothing	; Object $04
-	.word ObjHit_DoNothing	; Object $05
+	.word Player_GetHurt	; Object $05
 	.word ObjHit_DoNothing	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word Player_GetHurt	; Object $07 - OBJ_BRICK
 	.word ObjHit_Coin	; Object $08 - OBJ_COIN
 	.word BubblePop	; Object $09 - OBJ_BUBBLE
-	.word ObjHit_Bully	; Object $0A
+	.word ObjHit_DoNothing	; Object $0A
 	.word ObjHit_NinjaShroom	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjHit_StarOrSuit	; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjHit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -137,7 +137,7 @@ ObjectGroup00_CollideJumpTable:
 	.word OCSPECIAL_HIGHSCORE; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjHit_FireFlower	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word BubblePop	; Object $1A
-	.word ObjHit_BoundLR	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.word ObjHit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjHit_DoNothing	; Object $1C
 	.word ObjHit_DoNothing	; Object $1D
 	.word ObjHit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
@@ -157,7 +157,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $02
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $03
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $04
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $05
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $05
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $07 - OBJ_BRICK
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $08 - OBJ_COIN
@@ -255,7 +255,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $02
 	.byte OA3_HALT_JUSTDRAWWIDE 	; Object $03
 	.byte OA3_HALT_JUSTDRAWTALL 	; Object $04
-	.byte OA3_HALT_JUSTDRAW 	; Object $05
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $05
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_COIN
@@ -270,7 +270,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_DIESHELLED 	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE  	; Object $14
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE  	; Object $14
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $15
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $16
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $17 - OBJ_SPINYCHEEP
@@ -297,7 +297,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT5 | $4C	; Object $02
 	.byte OPTS_SETPT5 | $48	; Object $03
 	.byte OPTS_SETPT5 | $48	; Object $04
-	.byte OPTS_SETPT5 | $48	; Object $05
+	.byte OPTS_SETPT5 | $0E	; Object $05
 	.byte OPTS_NOCHANGE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_BRICK
 	.byte OPTS_NOCHANGE	; Object $08 - OBJ_COIN
@@ -311,7 +311,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $10
 	.byte OPTS_NOCHANGE	; Object $11
 	.byte OPTS_SETPT6 | $4F		; Object $12
-	.byte OPTS_SETPT5 | $4D		; Object $13
+	.byte OPTS_NOCHANGE	; Object $13
 	.byte OPTS_SETPT5 | $0E	; Object $14
 	.byte OPTS_NOCHANGE	; Object $15
 	.byte OPTS_NOCHANGE	; Object $16
@@ -339,7 +339,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $02
 	.byte KILLACT_STANDARD	; Object $03
 	.byte KILLACT_STANDARD	; Object $04
-	.byte KILLACT_STANDARD	; Object $05
+	.byte KILLACT_POOFDEATH	; Object $05
 	.byte KILLACT_STANDARD	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte KILLACT_STANDARD	; Object $07 - OBJ_BRICK
 	.byte KILLACT_STANDARD	; Object $08 - OBJ_COIN
@@ -418,8 +418,7 @@ ObjP12:
 	.byte $D7, $D7, $ED, $ED, $FF, $FF
 ObjP13:
 ObjP16:
-	.byte $81, $83, $85, $87, $89, $89, $87, $85
-
+	.byte $81, $83, $85, $87, $89, $89, $87, $85, $C1, $C3, $C5, $C7, $C9, $C9, $C7, $C5
 ObjP14:
 ObjP15:
 ObjP17:
@@ -429,7 +428,7 @@ ObjP20:	.byte $AD, $AF, $B9, $BB, $B9, $BB
 ObjP01:	.byte $81, $81
 ObjP02:	.byte $8F, $8F, $99, $9B, $9D, $9F
 ObjP04:	.byte $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
-ObjP05:	.byte $A5, $A7, $A1, $A3, $A1, $A3
+ObjP05:	.byte $95, $95, $97, $97
 ObjP06:	
 ObjP1B:	.byte $79, $7B, $79, $7B, $77, $77, $75, $75	; RAS: Not actually used, see BounceBlock_Tile
 ObjP09:	
@@ -439,7 +438,7 @@ ObjP0C:	.byte $51, $53, $51, $53, $51, $53, $51, $53
 ObjP0B:	.byte $51, $53	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
 ObjP0D:	.byte $51, $53
 ObjP19:	.byte $51, $53
-ObjP1C:	.byte $75, $77
+ObjP1C:	
 ObjP1E:	.byte $51, $53
 ObjP1F:	.byte $51, $53	; #DAHRKDAIZ - VINE
 ObjP21:	.byte $51, $53
@@ -1035,128 +1034,6 @@ BubblePopped:
 DestroyBubble:
 	JMP Object_SetDeadAndNotSpawned
 
-ObjInit_Bully:
-	LDA #$40
-	STA Objects_Var1, X	; Var1 = march timer
-	LDA #$00
-	STA Objects_Var2, X	; Var2 = about to charge timer
-	STA Objects_Var3, X ; Var3 = charging timer
-	JSR Level_ObjCalcXDiffs
-	LDA Bully_XVel, Y
-	STA Objects_XVel, X
-	RTS		 ; Return
-
-Bully_XVel: .byte $08, $F8
-Bully_XVelCharge: .byte $20, $E0
-
-ObjNorm_Bully:
-	
-	JSR Object_MoveAndReboundOffWall	 ; Move, detect, interact with blocks of world
-	JSR Level_ObjCalcXDiffs
-
-	LDA Objects_Var1, X
-	BEQ BullyNot_March
-
-	DEC Objects_Var1, X
-	BNE DontChargeYet
-	LDA #$30
-	STA Objects_Var2, X
-
-DontChargeYet:
-	JMP Bully_JustDraw
-
-BullyNot_March:
-	LDA Objects_Var2, X
-	BEQ Bully_DoCharge
-	LDA #$00
-	STA Objects_XVel, X
-	DEC Objects_Var2, X
-	BNE Dont_Bully_Yet
-	LDA #$60
-	STA Objects_Var3, X
-	LDA Bully_XVelCharge, Y
-	STA Objects_XVel, X
-
-Dont_Bully_Yet:
-	JMP Bully_Draw_Fast
-
-Bully_DoCharge:
-	DEC Objects_Var3, X
-	BNE Bully_Draw_Fast
-	JSR ObjInit_Bully		; Reset bully parameters
-	JMP Bully_JustDraw
-
-Bully_Draw_Fast:
-	LDA <Counter_1
-	AND #$04
-	LSR A	
-	LSR A	
-	JMP Do_Bully_Draw
-	
-Bully_JustDraw:
-	LDA <Counter_1
-	AND #$08
-	LSR A	
-	LSR A	
-	LSR A	
-
-Do_Bully_Draw:
-	STA Objects_Frame,X	 ; Alternate between frame 0 and 1 every 8 ticks
-	LDY #$00
-	LDA Objects_XVel, X
-	BMI BullyFlip
-	LDY #SPR_HFLIP
-
-BullyFlip:
-	TYA
-	STA Objects_FlipBits,X
-
-	JSR Object_ShakeAndDraw	; Draw object and "shake awake" 
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-	JSR Object_HitTestRespond	 ; hit test
-
-	RTS		 ; Return
-
-ObjHit_Bully:
-	LDA Player_StarInv
-	ORA Boo_Mode_KillTimer
-	ORA Fox_FireBall
-	BEQ Do_Knock_Back	 ; If Player is NOT invincible, jump to PRG000_D922
-
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X	 ; Set object state to Killed
-
-	LDA #-$38	
-	STA <Objects_YVel,X	 ; Set Y Velocity to -$38
-
-	; "Kick" sound
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERKICK
-	STA Sound_QPlayer
-
-	; 100 points pop up
-	INC Exp_Earned
-	RTS 
-
-Do_Knock_Back:
-	LDA <Objects_XVel, X
-	BPL Do_Knock
-	JSR Negate
-	ASL A
-	JSR Negate
-
-Do_Knock:
-	ASL A
-	STA <Player_XVel
-	LDA #$C8
-	STA <Player_YVel
-	STA Player_InAir
-	LDA Sound_QPlayer 
-	ORA #SND_PLAYERBUMP 
-	STA Sound_QPlayer
-	;JSR ObjInit_Obj0A
-	RTS		 ; Return
-
 ObjNorm_PUpNinjaShroom:
 	JSR PowerUp_DoRaise	 ; Do power up raising out of box
 
@@ -1658,273 +1535,7 @@ Do_Fire_Power:
 PRG001_AA41:
 	.byte $1C, $0E, $1C, $14, $18, $0A, $18, $17
 
-ObjInit_BounceLR:
-;	LDA Player_BounceDir
-;	STA Objects_Var2,X	 ; Store Player's bounce into var 2
-;
-;	LDY #-$10	 ; Y = -$10 (bounce left)
-;
-;	CMP #$02	 
-;	BEQ PRG001_AA57	 ; If bouncing to the left, jump to PRG001_AA57
-;
-;	LDY #$10	 ; Otherwise, Y = $10 (bounce right)
-;
-;PRG001_AA57:
-;	STY <Player_XVel 	; Store appropriate X velocity
-;
-;	LDA Player_Bounce
-;	STA Objects_Var1,X	; Store Player_Bounce -> var1
-;
-;	LDA #$00
-;	STA Objects_SprVVis,X	 ; Clear flags 2
-;	STA Objects_SprHVis,X	 ; Clear flags 1
-;	STA Player_Bounce	 ; Clear Player_Bounce
-;	STA Objects_FlipBits,X	 ; Force left/right flag to zero
-;
-;	LDA #10
-;	STA Level_BlkBump_Pos-6,X ; Block bump position = 10
-;
-;	JSR BounceBlock_Update	 ; Do block bounce update
-;
-;	RTS		 ; Return
 
-
-ObjNorm_BounceLR:
-	LDY Level_BlkBump_Pos-6,X
-	BNE PRG001_AAB1	 ; If block bump pos <> 0, jump to PRG001_AAB1
-
-	; Block bump pos = 0...
-
-	; Set to dead/empty
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
-
-	LDA Objects_Var1,X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY		 ; Y = var >> 4
-
-	LDA Level_ChgTileValue
-	STA <Temp_Var12
-
-	; Temp_Var15 = Bouncer X Hi
-	LDA <Objects_XHi,X
-	STA <Temp_Var15
-
-	; Temp_Var16 = Bouncer X
-	LDA <Objects_X,X
-	STA <Temp_Var16
-
-	; Temp_Var13 = Bouncer Y Hi
-	LDA <Objects_YHi,X
-	STA <Temp_Var13
-
-	; Temp_Var14 = Bouncer Y
-	LDA <Objects_Y,X
-	STA <Temp_Var14
-
-	JSR BlockBump_Init
-
-	LDY #10		 ; Y = 10
-
-	LDA <Objects_XVel,X
-	BPL PRG001_AAA8	 ; If bouncer is moving to the right, jump to PRG001_AAA8
-
-	LDY #-10	 ; Y = -10
-
-PRG001_AAA8:
-	TYA		 ; A = 10 or -10
-
-	; SpriteX += 10 or -10
-	ADD <Objects_SpriteX,X
-	STA <Objects_SpriteX,X
-
-	JMP Object_HitTestRespond	 ; Do hit test and don't come back
-
-
-PRG001_AAB1:
-
-	; Block bump pos <> 0...
-
-	LDA Level_BlkBump_Pos-6,X
-	CMP #$05
-	BNE PRG001_AAC5	 ; If block bump pos <> 5, jump to PRG001_AAC5
-
-	; Block bump pos = 5...
-
-	; LRBounce_X = Sprite X
-	LDA <Objects_SpriteX,X
-	STA LRBounce_X
-
-	; LRBounce_Y = Sprite Y
-	LDA <Objects_SpriteY,X
-	STA LRBounce_Y
-
-	JMP PRG001_AAFE	 ; Jump to PRG001_AAFE
-
-PRG001_AAC5:
-	CMP #$0A
-	BNE PRG001_AAFE	 ; If block bump pos <> 10, jump to PRG001_AAFE
-
-	; Block bump pos = 10...
-
-	LDA Objects_Var1,X
-	AND #$0f
-	TAY		 ; Y = lower 4 bits of Var1
-
-	LDA Bouncer_PUp,Y ; Get power-up for this block
-	BEQ PRG001_AAFE	 ; If no Power Up for this block, jump to PRG001_AAFE
-
-	STA <Temp_Var1	 ; Power Up type -> Temp_Var1
-
-	LDY #$05	 ; Y = 5 (power-up always in slot 5)
-
-	; Set the ID
-	LDA <Temp_Var1
-	STA Level_ObjectID,Y
-
-	; Set X
-	LDA <Objects_X,X
-	STA Objects_X,Y
-	LDA <Objects_XHi,X
-	STA Objects_XHi,Y
-
-	; Set Y
-	LDA <Objects_Y,X
-	SUB #$01
-	STA Objects_Y,Y
-
-	; Set Y Hi
-	LDA <Objects_YHi,X
-	SBC #$00
-	STA Objects_YHi,Y
-
-	; State 1 (Initialize)
-	LDA #OBJSTATE_INIT
-	STA Objects_State,Y
-
-PRG001_AAFE:
-	JSR Object_ApplyXVel	 ; Apply X Velocity
-	JSR BounceBlock_Update	 ; Do block bounce update
-
-	LDY Level_BlkBump_Pos-6,X ; Y = block bump pos
-
-	LDA Bouncer_PUpVel,Y	 ; Get velocity
-
-	LDY Objects_Var2,X
-	CPY #$02
-	BEQ PRG001_AB14	 ; If var2 = 2, jump to PRG001_AB14
-
-	JSR Negate	 ; Otherwise, negate the velocity
-
-PRG001_AB14:
-	STA <Objects_XVel,X	 ; Set appropriate X velocity
-
-	DEC Level_BlkBump_Pos-6,X ; Block bump pos--
-
-	RTS		 ; Return
-
-
-ObjHit_BoundLR:
-	LDY #$10	 ; Y = $10
-
-	LDA <Player_X
-	CMP <Objects_X,X
-	BGS PRG001_AB24	 ; If Player_X > Objects_X, jump to PRG001_AB24
-
-	LDY #-$10	 ; Y = -$10
-
-PRG001_AB24:
-	STY <Player_XVel ; Set Player's X velocity as appropriate
-
-	LDY #15		 ; Y = 15 (Player will be aligned to right side of bouncer)
-
-	LDA <Player_X
-	PHA		 ; Save Player_X
-
-	AND #$0f	 ; Lower 4 bits only
-	CMP #$08
-	BGS PRG001_AB33	 ; If Player is to the right of the bouncer, jump to PRG001_AB33
-
-	LDY #$00	 ; Y = 0 (Player will be aligned to left side of bouncer)
-
-PRG001_AB33:
-	STY <Temp_Var1	 ; Temp_Var1 = $00 or $0F
-	PLA		 ; Restore Player_X
-
-
-	AND #$f0	 ; Keep only upper 4 bits of Player's position
-	ORA <Temp_Var1	 ; Apply the alignment
-	STA <Player_X	 ; -> Player_X
-
-	RTS		 ; Return
-
-
-ObjInit_Obj1C:
-	LDA #$40	 ; A = $40
-
-	LDY <Objects_X,X
-	CPY <Player_X	
-	BGS PRG001_AB48	 ; If Object's X > Player_X, jump to PRG001_AB48
-
-	JSR Negate	 ; A = -$40
-
-PRG001_AB48:
-	STA <Objects_XVel,X	 ; Set X Velocity
-
-	LDA #-$80
-	STA <Objects_YVel,X	 ; Y Velocity = -$80
-
-	LDA #$05
-	STA Objects_Timer,X	 ; Object's timer = 5
-
-	LDY #$05	 ; Y = 5
-
-	LDA #OBJSTATE_INIT
-	STA Objects_State,Y	 ; Set object state to 1 (re-init)
-
-	LDA #OBJ_POWERUP_MUSHROOM
-	STA Level_ObjectID,Y	 ; ... as object OBJ_POWERUP_MUSHROOM
-
-	; Copy this object's X to slot 5
-	LDA <Objects_X,X
-	STA Objects_X,Y	
-
-	; Copy this object's X Hi to slot 5
-	LDA <Objects_XHi,X
-	STA Objects_XHi,Y
-
-	; Copy this object's Y Hi to slot 5
-	LDA <Objects_YHi,X
-	STA Objects_YHi,Y
-
-	; Copy this object's Y minus 8 to slot 5
-	LDA <Objects_Y,X
-	SUB #$08
-	STA Objects_Y,Y
-
-	BCS PRG001_AB7A	 ; If that didn't cause a borrow, jump to PRG001_AB7A
-
-	DEC <Objects_YHi,X	 ; Otherwise, apply it
-
-PRG001_AB7A:
-	RTS		 ; Return
-
-
-ObjNorm_Obj1C:
-	JSR Object_ShakeAndDraw	; Draw object and "shake awake" 
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-
-	LDA Objects_Timer,X
-	BNE PRG001_AB89	 ; If timer has not expired, jump to PRG001_AB89
-
-	JMP Object_InteractWithWorld	 ; Interact with world and don't come back!
-
-PRG001_AB89:
-	JSR Object_ApplyYVel	 ; Apply Y velocity
-	JMP Object_ApplyXVel	 ; Apply X velocity and don't come back!
 
 	; Values used by the leaf based on bounce direction
 Leaf_YVels:	.byte $04, $E0, $E0, $E0
@@ -2097,7 +1708,7 @@ ObjNorm_Vine:
 
 	JSR Object_WorldDetectN1 ; Detect against world
 
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	AND #$C0
 	BEQ PRG001_AC86	 ; If vine is not within the solid tiles, jump to PRG001_AC86
 
@@ -4014,17 +3625,6 @@ PRG001_B811:
 PRG001_B819:
 	RTS		 ; Return
 
-
-	; Hmm, unused space?
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF
-
-
 ObjInit_Bowser:
 
 	; Bowser takes 34 fireball hits!
@@ -4779,8 +4379,10 @@ PRG001_BBFC:
 	BNE PRG001_BC0B	; If var 4 <> 2, jump to PRG001_BC0B
 
 	; Store tile detected under Bowser's left
-	LDA Object_TileFeet2
-	STA Bowser_Tiles	 ; Store detected tile -> Bowser_Tiles
+	LDA Object_TileFeetValue
+	STA Bowser_TileValues	 ; Store detected tile -> Bowser_TileValues
+	LDA Object_TileFeetProp
+	STA Bowser_TileProps
 
 PRG001_BC0B:
 	LDA <Objects_DetStat,X	; Get Bowser's detection status bits
@@ -4807,8 +4409,10 @@ PRG001_BC0B:
 	BNE PRG001_BC2D	; If var 4 <> 2, jump to PRG001_BC2D
 
 	; Store tile detected under Bowser's right
-	LDA Object_TileFeet2
-	STA Bowser_Tiles+1
+	LDA Object_TileFeetValue
+	STA Bowser_TileValues+1
+	LDA Object_TileFeetProp
+	STA Bowser_TileProps+1
 
 PRG001_BC2D:
 	RTS		 ; Return
@@ -4822,16 +4426,23 @@ Bowser_TileOffsets:	.byte 8, 24
 Bowser_BustFloor:
 	LDY #$01	 ; Y = 1 (two tiles to potentially smash)
 PRG001_BC32:
-	LDA Bowser_Tiles,Y	; Get this tile
-	CMP #TILE2_SOLIDBRICK
+	STA Debug_Snap
+	LDA Bowser_TileProps,Y	; Get this tile
+	CMP #TILE_ITEM_BRICK
+	BEQ PRG001_BC33
+
+	CMP #TILE_PROP_STONE
 	BNE PRG001_BC69	 	; If this tile is not the solid brick tile, jump to PRG001_BC69
 
+PRG001_BC33:
 	; Bowser hit brick!
 	LDA #$00
-	STA Bowser_Tiles,Y	; Clear this tile
+	STA Bowser_TileProps,Y	; Clear this tile
 
 	; Queue a block change to erase to background!
-	LDA #$80
+	LDA Bowser_TileValues,Y
+	AND #$C0
+	ORA #$01
 	STA Level_ChgTileEvent
 
 	; Aligned Bowser impact Y
@@ -4862,7 +4473,6 @@ PRG001_BC69:
 
 
 PRG001_BC6D:
-
 	; Smash block sound
 	LDA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
@@ -5448,6 +5058,8 @@ ObjInit_Snow:
 
 
 ObjInit_Rain:
+	LDA #$00
+	STA Weather_Disabled
 	LDY #$05
 
 KeepRandomizing:
@@ -5473,12 +5085,17 @@ DontReverseWind:
 	STA Weather_YPos, Y
 	DEY
 	BPL KeepRandomizing
+
+DontReverseWind1:
 	RTS
 
 WeatherDrawOffset:	
 	.byte $00, $80
 
 ObjNorm_Weather:
+	LDA Weather_Disabled
+	BNE DontReverseWind1
+
 	LDA <Counter_1
 	TAY
 	LDA WeatherDrawOffset, Y
@@ -5588,34 +5205,81 @@ DontFlipParticle:
 	STA Sprite_RAM + 2, X
 	RTS
 	
-Weather_Patterns: .byte $7B, $7B, $75, $75
+Weather_Patterns: .byte $7B, $7B, $7B, $7B
 Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
 
+
+ChompPal: .byte SPR_PAL1, SPR_PAL0
+
 ObjInit_GiantChomp:
 	LDA #$00
 	STA Objects_Var1, X
+	STA Objects_Var2, X
+
+	LDA #$D0
+	STA Objects_YVel, X
 	RTS
 
 ObjNorm_GiantChomp:
 	LDA <Player_HaltGame
-	BNE ChompDoneEating
+	BNE DrawChomp
+
+	LDA <Counter_1
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+	LDA Objects_Property, X
+	BEQ NoChompFlash
+
+	LDA <Counter_1
+	AND #$01
+	TAY
+	LDA ChompPal, Y
+	STA Objects_SprAttr,X
+
+NoChompFlash:
+	LDA Objects_Property, X
+	CMP #$02
+	BEQ ChompNoDelete
 
 	JSR Object_DeleteOffScreen
-	JSR Object_Move
-	JSR Level_ObjCalcXDiffs
-	LDA <Temp_Var16
-	CMP #$10
-	BCS DoGCRoutine
 
+ChompNoDelete:
+	LDA Objects_Var2, X
+	BNE GiantChompStuff
+
+	JSR Object_ApplyYVel_NoLimit
+	LDA Objects_SprVVis,X
+	BEQ DrawMiniChomp
+
+	JSR Level_ObjCalcYDiffs
+	CPY #$01
+	BEQ ChompRTS
+
+	INC Objects_Var2, X
+
+	LDA Objects_Property, X
+	BEQ ChompRTS
+
+	JSR GCTargetPlayer
+ChompRTS:
+	RTS
+
+GiantChompStuff:
+	JSR Player_HitEnemy
+	JSR Object_Move
 
 DoGCRoutine:
 	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)
 	JSR Object_DetectTile
-	AND #TILE_PROP_SOLID_TOP
-	BEQ TryEatRightBlock
+	CMP #TILE_PROP_SOLID_ALL
+	BCC TryEatRightBlock
 	JSR ChompEatBlock
 	JMP ChompDoneEating
 
@@ -5624,24 +5288,60 @@ TryEatRightBlock:
 	INY
 	INY
 	JSR Object_DetectTile
-	AND #TILE_PROP_SOLID_TOP
-	BEQ ChompDoneEating
+	CMP #TILE_PROP_SOLID_ALL
+	BCC ChompDoneEating 
 	JSR ChompEatBlock
 
 ChompDoneEating:
+DrawChomp:
+	LDA Objects_Var2, X
+	BEQ DrawMiniChomp
 	LDA #LOW(GiantChompFrames)
 	STA <Temp_Var10
 	LDA #HIGH(GiantChompFrames)
 	STA <Temp_Var11
-	LDA <Counter_1
-	AND #$08
-	LSR A
-	LSR A
-	LSR A
-	STA Objects_Frame, X
 	JSR DrawGiantObject
 
+	LDA Objects_Property, X
+	CMP #$02
+	BCC DoneGC
+
+	JSR Level_ObjCalcYDiffs
+	CPY #$00
+	BEQ DoneGC
+
+	LDA Objects_SprVVis, X
+	CMP #$03
+	BCC DoneGC
+	
+	JSR GCTargetPlayer
+	LDA #$D0
+	STA Objects_YVel, X
+	DEC Objects_Var2, X
+
 DoneGC:
+	RTS
+
+DrawMiniChomp:
+	JSR Object_ShakeAndCalcSprite
+	LDX <SlotIndexBackup
+	LDA Objects_SprHVis, X
+	AND #$60
+	BNE DrawMiniChompRTS
+	LDA <Temp_Var1
+	STA Sprite_RAM , Y
+	LDA <Temp_Var2
+	ADD #$0C
+	STA Sprite_RAM + $03, Y
+	LDA Objects_SprAttr,X
+	ORA #SPR_BEHINDBG
+	STA Sprite_RAM + $02, Y
+	LDA Objects_Frame, X
+	ASL A
+	ADD #$99
+	STA Sprite_RAM + $01, Y
+
+DrawMiniChompRTS:
 	RTS
 
 GiantChompFrames:
@@ -5665,7 +5365,57 @@ ChompEatBlock:
 	STA Level_BlockChgXLo
 	LDA ObjTile_DetXHi
 	STA Level_BlockChgXHi
+
+	LDA Objects_SprHVis, X
+	AND #$C0
+	BNE ChompEatBlockRTS
+
+	LDA Objects_SprVVis, X
+	AND #$03
+	BNE ChompEatBlockRTS
 	JSR PRG001_BC6D
+	 
+ChompEatBlockRTS:
+	RTS
+
+
+GCTargets: .byte $00, $20, $40, $60, $80, $A0, $C0, $E0
+
+GCTargetPlayer:
+	LDA <Player_XVel
+	BPL GCTargetPlayerRight
+	JSR Negate
+	
+	AND #$38
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA <Player_X
+	SUB GCTargets, Y
+	AND #$F0
+	STA <Objects_X, X
+
+	LDA <Player_XHi
+	SBC #$00
+	STA <Objects_XHi, X
+
+	RTS
+
+GCTargetPlayerRight:
+	AND #$31
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	LDA <Player_X
+	ADD GCTargets, Y
+	AND #$F0
+	STA <Objects_X, X
+
+	LDA <Player_XHi
+	ADC #$00
+	STA <Objects_XHi, X
 	RTS
 
 ObjInit_Brick:
@@ -5682,8 +5432,10 @@ ObjNorm_Brick:
 	LDA <Objects_DetStat,X
 	BEQ ObjNorm_BrickDraw
 
+Object_ToBrickBust:
 	LDA #OBJ_STONEBLOCK
 	STA Level_ObjectID, X
+
 	RTS
 
 ObjNorm_BrickDraw:
@@ -5702,7 +5454,33 @@ KeyPieceGet:
 KeyPieceXOffset:
 	.byte $10, $18, $20, $28, $30
 
+ObjInit_KeyPieces:
+	LDA #$FF
+	STA Objects_YHi, X
+	STA Object_Priority
+	RTS
+
 ObjNorm_KeyPieces:
+	LDA #$93
+	STA <Temp_Var1
+	LDA #$95
+	STA <Temp_Var2
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	CPY #$00
+	BEQ ObjNorm_KeyPieces1
+
+	LDA <Temp_Var1
+	ADD #$40
+	STA <Temp_Var1
+	LDA <Temp_Var2
+	ADD #$40
+	STA <Temp_Var2
+
+ObjNorm_KeyPieces1:
 	LDY Object_SprRAM, X
 	LDA Objects_Var1, X
 	STA <Temp_Var5
@@ -5720,14 +5498,14 @@ CheckNextPiece:
 	AND KeyPieceGet, X
 	BNE UseFilledKey
 
-	LDA #$95
+	LDA <Temp_Var2
 	BNE DrawKeyPiece
 
 UseFilledKey:
 	DEC <Temp_Var6
 
 UseFilledKey1:
-	LDA #$93
+	LDA <Temp_Var1
 
 DrawKeyPiece:
 	STA Sprite_RAM + 1, Y
@@ -5765,6 +5543,9 @@ NextCheck:
 KeyPieceRTS:
 	RTS
 
+KPFrames:
+	.byte $00, $04
+
 KPFlips1:
 	.byte $00, $00, $00, SPR_HFLIP
 
@@ -5775,19 +5556,30 @@ ObjNormal_KeyPiece:
 	LDA <Player_HaltGame
 	BNE DrawKeyPieceAnim
 
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	LDA KPFrames, Y
+	STA Objects_Frame, X
+
 	JSR Object_DeleteOffScreen
 	JSR Object_GetAttrAndMoveTiles
 	JSR Object_HitTestRespond
 	INC Objects_Var5, X
 	LDA Objects_Var5, X
 	LSR A
+	LSR A 
 	LSR A
 	AND #$03
+	ORA Objects_Frame, X
 	STA Objects_Frame, X
 
 DrawKeyPieceAnim:
 	JSR Object_ShakeAndDraw
 	LDA Objects_Frame, X
+	AND #$03
 	TAX
 	LDA KPFlips1, X
 	ORA Sprite_RAM + 2, Y
@@ -5855,4 +5647,162 @@ CheckKeyAgainstLock:
 	PLA
 
 RemainLocked:
+	RTS
+
+ObjInit_SpikeBall:
+	
+	RTS
+
+ObjNorm_SpikeBall:
+	
+	JSR Object_ShakeAndDrawMirrored
+	LDA <Player_HaltGame
+	BNE ObjNorm_SpikeBallRTS
+
+	JSR Object_DeleteOffScreen
+	JSR Player_HitEnemy
+	JSR ObjectKill_Others
+
+	LDX <SlotIndexBackup
+
+	INC Objects_Var1, X
+	LDA Objects_Var1, X
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+	JSR Object_Move
+
+	LDA <Objects_DetStat,X
+	AND #$04
+	BEQ SpikeNoBounce1
+
+	JSR Object_HitGround
+
+	LDA #$E0
+	STA Objects_YVel, X
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+SpikeNoBounce1:
+	
+	LDA <Objects_DetStat, x
+	AND #$04
+	BEQ TrySideBlock
+
+SpikeNoBounce2:
+	LDA Object_TileFeetProp
+	CMP #TILE_ITEM_BRICK
+	BNE TrySideBlock
+
+	LDA Object_TileFeetValue
+	STA <Temp_Var3
+	LDA #$08
+	STA <Temp_Var1
+
+	LDA #$10
+	STA <Temp_Var2
+	JMP SpikeBrickBust
+
+TrySideBlock:
+	LDA <Objects_DetStat, x
+	AND #$03
+	BEQ ObjNorm_SpikeBallRTS
+
+	LDA Object_TileWallProp
+	CMP #TILE_ITEM_BRICK
+	BNE SpikeBusted
+
+	LDA #$08
+	STA <Temp_Var2
+
+	LDA Object_TileWallValue
+	STA <Temp_Var3
+
+	LDA Objects_XVel, X
+	BMI TrySideBlock1
+
+	LDA #$10
+	STA <Temp_Var1
+	BNE TrySideBlock2
+
+TrySideBlock1:	
+
+	LDA #$00
+	STA <Temp_Var1
+
+TrySideBlock2:
+	JMP SpikeBrickBust
+
+SpikeBusted:
+	LDA #$00
+	STA Objects_Var5, X
+	STA Objects_Frame, X
+	JMP Object_ToBrickBust
+
+ObjNorm_SpikeBallRTS:
+	JMP Object_ShakeAndDrawMirrored
+
+SpikeBrickBust:
+	LDA Level_ChgTileEvent
+	BNE SpikeBrickBustRTS
+
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
+
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En
+
+	; Brick bust upper Y
+	LDA <Objects_Y, X
+	ADD <Temp_Var2
+	CLC
+	SBC Level_VertScroll
+	STA BrickBust_YUpr
+
+	; Brick bust lower Y
+	ADD #$08
+	STA BrickBust_YLwr
+
+	; Brick bust X
+	LDA <Objects_X, X
+	ADD <Temp_Var1
+	SUB <Horz_Scroll	
+	STA BrickBust_X
+
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA BrickBust_XDist
+	STA BrickBust_HEn
+
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel
+
+	LDA <Temp_Var3
+	AND #$C0
+	ORA #$01
+	STA Level_ChgTileEvent
+
+	LDA <Objects_Y,X
+	ADD <Temp_Var2
+	AND #$f0
+	STA Level_BlockChgYLo
+	LDA <Objects_YHi,X
+	ADC #$00
+	STA Level_BlockChgYHi
+
+	LDA <Objects_X,X
+	ADD <Temp_Var1
+	AND #$f0
+	STA Level_BlockChgXLo
+	LDA <Objects_XHi,X
+	ADC #$00
+	STA Level_BlockChgXHi
+
+SpikeBrickBustRTS:
 	RTS

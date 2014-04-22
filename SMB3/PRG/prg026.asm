@@ -2919,6 +2919,10 @@ StatusBar_UpdTemplate:
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_UpdateValues:
+	LDA Status_Bar_Mode
+	CMP #$80
+	BEQ NoBarUpdates
+
 	LDA <Pad_Input
 	AND #PAD_SELECT
 	BEQ No_Switch
@@ -2928,7 +2932,6 @@ StatusBar_UpdateValues:
 
 No_Switch:
 	JSR Initialize_Status_Bar
-
 	JSR StatusBar_Fill_PowerMT	
 	JSR StatusBar_Fill_Air_MT	
 	JSR Draw_HBros_Coin
@@ -2944,6 +2947,7 @@ No_Switch:
 	JSR Status_Bar_Draw_Item_Reserve
 	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
+NoBarUpdates:
 	LDX #$00	 	; X = 0
 	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
 	BEQ PRG026_B466	 	; If graphics buffer is empty, jump to PRG026_B466
@@ -3275,6 +3279,8 @@ NoInterest:
 	RTS
 
 Draw_Cherries:
+	LDA Status_Bar_Mode
+	BMI Draw_Cherries1
 	LDA Cherries
 	JSR ToThreeDigits
 	LDA <Temp_Var2
@@ -3283,4 +3289,5 @@ Draw_Cherries:
 	LDA <Temp_Var3
 	ORA #$30
 	STA Status_Bar_Top + 21
+Draw_Cherries1:
 	RTS

@@ -36,19 +36,19 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_Waterfill	; Object $75 - OBJ_WATERFILLER
 	.word ObjInit_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjNormParaTroopas	; Object $77 - OBJ_GREENCHEEP
-	.word ObjInit_Set3DoNothing	; Object $78 - OBJ_BULLETBILL
-	.word ObjInit_Set3DoNothing	; Object $79 - OBJ_BULLETBILLHOMING
+	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
+	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjInit_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
-	.word ObjInit_GiantTroop	; Object $7B - OBJ_BIGREDTROOPA
-	.word ObjInit_GiantTroop	; Object $7C - OBJ_BIGGOOMBA
+	.word ObjInit_DoNothing	; Object $7B - OBJ_BIGREDTROOPA
+	.word ObjInit_DeliveryLakitu	; Object $7C - OBJ_BIGGOOMBA
 	.word ObjInit_GiantDRYPIRANHA	; Object $7D - OBJ_BIGGREENPIRANHA
-	.word ObjInit_GiantTroop	; Object $7E - OBJ_BIGGREENHOPPER
+	.word ObjInit_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
 	.word InitPatrol	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjInit_BoomerangBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
-	.word ObjInit_Set3DoNothing	; Object $84 - OBJ_SPINYEGG
+	.word ObjInit_DoNothing	; Object $84 - OBJ_SPINYEGG
 	.word ObjInit_GroundTroop	; Object $85 - OBJ_BLUESPINY
 	.word ObjInit_FireBro		; Object $86 - OBJ_ICEBRO
 	.word ObjInit_FireBro		; Object $87 - OBJ_FIREBRO
@@ -79,10 +79,10 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_PoisonMushroom	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjNorm_SwimmingCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
-	.word ObjNorm_BulletBill	; Object $79 - OBJ_BULLETBILLHOMING
+	.word ObjNorm_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjNorm_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjNorm_RedTroopa		; Object $7B - OBJ_BIGREDTROOPA
-	.word ObjNorm_GroundTroop	; Object $7C - OBJ_BIGGOOMBA
+	.word ObjNorm_DeliveryLakitu	; Object $7C - OBJ_BIGGOOMBA
 	.word ObjNorm_BigPiranha	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjNorm_GroundTroop	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
@@ -122,7 +122,7 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
 	.word $0000					; Object $78 - OBJ_BULLETBILL
-	.word $0000					; Object $79 - OBJ_BULLETBILLHOMING
+	.word KoopaExpload					; Object $79 - OBJ_BULLETBILLHOMING
 	.word $0000					; Object $7A - OBJ_PURPLETROOPA
 	.word $0000					; Object $7B - OBJ_BIGREDTROOPA
 	.word $0000					; Object $7C - OBJ_BIGGOOMBA
@@ -167,7 +167,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $7A - OBJ_PURPLETROOPA
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OA1_PAL3 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7C - OBJ_BIGGOOMBA
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $7C - OBJ_BIGGOOMBA
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7F - OBJ_BIGREDPIRANHA
@@ -208,7 +208,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $7A - OBJ_PURPLETROOPA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7C - OBJ_BIGGOOMBA
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $7C - OBJ_BIGGOOMBA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7F - OBJ_BIGREDPIRANHA
@@ -250,7 +250,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7A - OBJ_PURPLETROOPA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7B - OBJ_BIGREDTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $7C - OBJ_BIGGOOMBA
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 				; Object $7C - OBJ_BIGGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH | OA3_NOTSTOMPABLE 	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7F - OBJ_BIGREDPIRANHA
@@ -289,10 +289,10 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_NOCHANGE; Object $76 - OBJ_POISONMUSHROOM
 	.byte OPTS_SETPT6 | $4F	; Object $77 - OBJ_GREENCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $78 - OBJ_BULLETBILL
-	.byte OPTS_SETPT6 | $4F	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte OPTS_SETPT5 | $4C	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OPTS_SETPT6 | $4F	; Object $7A - OBJ_PURPLETROOPA
 	.byte OPTS_SETPT5 | $3D	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OPTS_SETPT5 | $3D	; Object $7C - OBJ_BIGGOOMBA
+	.byte OPTS_SETPT5 | $0B	; Object $7C - OBJ_BIGGOOMBA
 	.byte OPTS_SETPT5 | $3D	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OPTS_SETPT5 | $3D	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OPTS_SETPT5 | $3D	; Object $7F - OBJ_BIGREDPIRANHA
@@ -305,7 +305,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $4E	; Object $86 - OBJ_ICEBRO
 	.byte OPTS_SETPT5 | $4E	; Object $87 - OBJ_FIREBRO
 	.byte OPTS_SETPT5 | $4E	; Object $88 - OBJ_PIRATEBRO
-	.byte OPTS_SETPT5 | $0A	; Object $89 - OBJ_CHAINCHOMP
+	.byte OPTS_SETPT5 | $0E	; Object $89 - OBJ_CHAINCHOMP
 	.byte OPTS_SETPT5 | $12	; Object $8A - OBJ_THWOMP
 	.byte OPTS_SETPT5 | $12	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OPTS_SETPT5 | $12	; Object $8C - OBJ_THWOMPRIGHTSLIDE
@@ -334,7 +334,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $7A - OBJ_PURPLETROOPA
 	.byte KILLACT_GIANTKILLED	; Object $7B - OBJ_BIGREDTROOPA
-	.byte KILLACT_GIANTKILLED	; Object $7C - OBJ_BIGGOOMBA
+	.byte KILLACT_JUSTDRAW16X16	; Object $7C - OBJ_BIGGOOMBA
 	.byte KILLACT_POOFDEATH		; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte KILLACT_GIANTKILLED	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte KILLACT_POOFDEATH		; Object $7F - OBJ_BIGREDPIRANHA
@@ -410,7 +410,7 @@ ObjP7B:
 ObjP7E:
 	.byte $8D, $8F, $93, $95, $99, $8F, $9B, $9D, $B1, $B3, $B5, $B7
 ObjP7C:
-	.byte $81, $83, $87, $89, $81, $83, $87, $89, $81, $83, $87, $89, $71, $71, $BD, $BF
+	.byte $9F, $9F, $87, $89, $AB, $AB, $A9, $A9
 ObjP6C:
 ObjP6D:
 ObjP6E:
@@ -431,7 +431,8 @@ ObjP74:
 
 ObjP78:
 ObjP79:
-	.byte $DD, $DF, $B1, $B3, $DD, $DF, $BD, $BF, $B5, $B7, $B9, $BB
+	.byte $BD, $BF, $B9, $BB, $DD, $DF, $B5, $B7
+
 ObjP76:
 	.byte $79, $79, $79, $79, $79, $79
 ObjP77:
@@ -444,7 +445,7 @@ ObjP85:
 ObjP83:
 	.byte $9F, $9F, $9F, $9F, $9F, $9F, $01, $01, $9D, $9D, $9F, $9F
 ObjP88:
-	.byte $8D, $8F, $A5, $A7, $8D, $8F, $B5, $B7, $91, $93, $BB, $A7
+	.byte $8D, $8F, $A5, $A7, $8D, $8F, $B5, $B7, $91, $93, $A5, $A7
 
 ObjP86:
 ObjP87:
@@ -2025,6 +2026,9 @@ ObjInit_Lakitu:
 	LDA <Objects_YHi,X
 	STA Objects_TargetingXVal,X
 
+	LDA #$9D
+	STA Objects_Var10, X
+
 	RTS		 ; Return
 
 
@@ -2193,6 +2197,7 @@ PRG004_ADAE:
 	PLA		 
 	STA <Objects_XVel,X	; Restore Lakitu X Vloeicty
 
+DrawLakitu:
 PRG004_ADC2:
 	JSR GroundTroop_DrawMirrored	 ; Draw's Lakitu's cloud
 
@@ -2257,7 +2262,7 @@ PRG004_AE0B:
 	STA Sprite_RAM+$0F,Y
 
 	; Lakitu's sprite patterns
-	LDA #$9d
+	LDA Objects_Var10, X
 	STA Sprite_RAM+$09,Y
 	STA Sprite_RAM+$0D,Y
 
@@ -2697,6 +2702,12 @@ ObjNorm_SwimmingCheep:
 	JSR Object_DeleteOffScreen
 	JSR Player_HitEnemy
 	JSR DoPatrol
+	LDA Objects_YVel, X
+	BPL JustDrawCheep
+	LDA Object_TileFeetProp
+	CMP #TILE_PROP_WATER
+	BCS JustDrawCheep
+	JSR Object_HitCeiling
 
 JustDrawCheep:
 	JMP Object_ShakeAndDraw
@@ -2705,6 +2716,11 @@ BulletBill_XAccel:	.byte $01, -$01
 BulletBill_XLimit:	.byte $18, -$18
 
 BulletBill_FlipBits:	.byte SPR_HFLIP, $00
+
+ObjInit_BulletBill:
+	LDA #$02
+	STA Objects_Frame, X
+	RTS
 
 ObjNorm_BulletBill:
 	LDA <Player_HaltGame
@@ -2715,181 +2731,139 @@ ObjNorm_BulletBill:
 	JSR Object_ApplyXVel	 	; Apply X velocity
 	JSR Object_ApplyYVel_NoLimit
 
-	LDA Level_ObjectID,X
-	CMP #OBJ_BULLETBILLHOMING
-	BNE PRG004_B1C2	 ; If this is NOT a homing Bullet Bill, jump to PRG004_B1C2
+PRG004_B1C2:
+	JMP DrawBullet
 
-	; Homing Bullet Bill...
+ObjInit_MissileMark:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	RTS
 
-	; Color cycling
-	LDA <Counter_1
-	ORA #$f8
-	STA Objects_ColorCycle,X
+MissileMarkFrames:
+	.byte $00, $00, $00, $00, $00, $00, $00, $00
 
-	; Palette select into attribute
-	AND #$03
+ObjNorm_MissileMark:
+	LDA <Player_HaltGame
+	BNE PRG004_B1C2	 ; If gameplay is halted, jump to PRG004_B1C2
+
+	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
+	JSR Player_HitEnemy	 	; Player to Bullet Bill collision
+
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	LSR A
+	LSR A
+	LSR A
+
+ObjNorm_MissileMarkB:
+	AND #$01
 	STA Objects_SprAttr,X
 
-	LDA Objects_Var3,X
-	BEQ PRG004_B193	 ; If Var3 = 0, jump to PRG004_B193
+	LDA Objects_Timer, X
+	BEQ ObjNorm_MissileMarkA
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit
+	JMP DrawBullet
+	 
+ObjNorm_MissileMarkA:
+	LDA Objects_Var3, X
+	BEQ ObjNorm_MissileMarkC
 
-	JSR Level_ObjCalcXDiffs	
-	STY <Temp_Var1	 ; Store the difference value -> Temp_Var1
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit
+	JMP ObjNorm_MissileMarkA1
 
-	LDY #$00	 ; Y = 0 (moving right)
+ObjNorm_MissileMarkC:
+	JSR Chase
 
-	LDA <Objects_XVel,X
-	BPL PRG004_B18A	 ; If Bullet Bill is not moving left, jump to PRG004_B18A
+ObjNorm_MissileMarkA1:
+	JSR Object_WorldDetect4
+	LDA Objects_DetStat, X
+	BEQ DrawBullet
 
-	INY		 ; Y = 1 (moving left)
-
-PRG004_B18A:
-	CPY <Temp_Var1	
-	BEQ PRG004_B1C2	 ; If too close, jump to PRG004_B1C2
-
-	DEC Objects_Var3,X	; Var3--
-
-	BNE PRG004_B1C2	 ; If Var3 <> 0, jump to PRG004_B1C2
-
-PRG004_B193:
-	LDA <Counter_1
-	AND #$01
-	BNE PRG004_B1C2	 ; Every other tick, jump to PRG004_B1C2
-
-	LDA <Objects_Var4,X
-	BMI PRG004_B1C2	 ; If Var4 < 0, jump to PRG004_B1C2
-
-	AND #$01
-	TAY		 ; Y = 0 or 1
-
-	; Set Bullet Bill flip bits
-	LDA BulletBill_FlipBits,Y
-	STA Objects_FlipBits,X
-
-	; Accelerate towards target
-	LDA <Objects_XVel,X
-	ADD BulletBill_XAccel,Y
-	STA <Objects_XVel,X
-
-	CMP #$00
-	NOP
-	BNE PRG004_B1B9	 ; If X velocity = 0, jump to PRG004_B1B9
-
-	; X velocity hit zero point
-
-	PHA		 ; Save X velocity
-
-	; Clear Var5
 	LDA #$00
-	STA <Objects_Var5,X
+	STA Objects_Frame, X
+	JMP KoopaExpload
 
-	PLA		 ; Restore X velocity
+DrawBullet:
+	LDA #$00
+	STA Objects_FlipBits, X
+	LDA Objects_XVel, X
+	BMI DrawBullet1
 
-PRG004_B1B9:
-	CMP BulletBill_XLimit,Y
-	BNE PRG004_B1C2	 ; If Bullet Bill is not at X velocity limit, jump to PRG004_B1C2
- 
-	; Var4 = $FF
-	LDA #$ff
-	STA <Objects_Var4,X
+	LDA #SPR_HFLIP
+	STA Objects_FlipBits, X
 
-PRG004_B1C2:
-	LDA <Objects_Var5,X
-	BEQ PRG004_B1D3	 ; If Var5 = 0, jump to PRG004_B1D3
+DrawBullet1:
+	LDA Objects_XVel, X
+	BEQ DrawBullet2
 
-	DEC <Objects_Var5,X	 ; Var5--
+	CMP #$02
+	BCC DrawBullet2
 
-	JSR GroundTroop_DrawMirrored	 ; Draw mirrored??
-	JMP PRG004_B21A	 ; Jump to PRG004_B21A
+	CMP #$FE
+	BCS DrawBullet2
+	BCC ObjNorm_MissileMark1
 
-PRG004_B1D3:
+DrawBullet2:
+	LDA #$00
+	STA <Temp_Var1
+	BEQ ObjNorm_MissileMark2
 
-	; Frame = 0
+ObjNorm_MissileMark1:
+	LDA #$02
+	STA <Temp_Var1
+	LDA Objects_YVel, X
+	BEQ ObjNorm_MissileMark2
 
-	LDA Object_SprRAM,X
-	PHA		 ; Save Sprite_RAM offset
+	CMP #$08
+	BCC ObjNorm_MissileMark2
 
-	; +8 
-	ADD #$08
-	STA Object_SprRAM,X
+	CMP #$F8
+	BCS ObjNorm_MissileMark2
+	AND #$80
+	EOR #$80
+	ROL A
+	ROL A
+	ROL A
+	ORA #$01
+	STA <Temp_Var1
 
-	JSR GroundTroop_DrawNormal	; Draw Bullet Bill
+ObjNorm_MissileMark2:
+	LDA Objects_Frame, X
+	BNE ObjNorm_MissileMark2_1
 
-	; Restore Sprite_RAM offset
-	PLA
-	STA Object_SprRAM,X
+	LDA Objects_YVel, X
+	BMI ObjNorm_MissileMark2_1
+	LDA #SPR_VFLIP
+	STA Objects_FlipBits, X
 
-	LDA Objects_Timer,X
-	BEQ PRG004_B21A	 ; If timer expired, jump to PRG004_B21A
+ObjNorm_MissileMark2_1:
+	LDA <Temp_Var1
+	STA Objects_Frame, X
+	CMP #$02
+	BEQ ObjNorm_MissileMark3
+	LDA #$4F
+	STA PatTable_BankSel + 5
 
-	LDA <Objects_Y,X
-	PHA		 ; Save Object Y
-
-	LDA <Objects_X,X
-	PHA		 ; Save Object X
-
-	LDA Objects_FlipBits,X
-	PHA		 ; Save Flip Bits
-
-	LDA Objects_Var13,X
-	STA <Objects_X,X
-
-	INC <Objects_Y,X	; Y++
-
-	; Set priority bit
-	LDA #$20
-	STA Objects_FlipBits,X
-
-	; Frame = 4
-
-	JSR Object_DetermineHorzVis	 ; Determine horizontal visibility
-
-	JSR GroundTroop_DrawNormal	 ; Draw Bullet Bill
-
-	; Restore Flip Bits
-	PLA
-	STA Objects_FlipBits,X
-
-	; Restore X
-	PLA
-	STA <Objects_X,X
-
-	; Restore Y
-	PLA
-	STA <Objects_Y,X
-
-	RTS		 ; Return
-
-PRG004_B21A:
-	JMP Fish_FixedY_ExceptHitFloor	 ; Fix the Y unless fish hit floor and don't come back!
-
+ObjNorm_MissileMark3:
+	JMP Object_ShakeAndDraw
 
 GroundTroop_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
 SpikeCheep_XVelTowardsPlayer:	.byte $08, -$08
-TroopSpeed:
-	.byte $08, $0C
+TroopSpeed:	.byte $08, -$08
 
 ObjInit_FlyingTroopa:
 	JSR ObjInit_GroundTroop
 	JMP InitPatrol
 
-ObjInit_GiantTroop:
-	INC Objects_IsGiant,X	 ; Flag this enemy as giant!
-
 ObjInit_GroundTroop:
-	LDY Objects_Property, X
+	JSR Level_ObjCalcXDiffs
 	LDA TroopSpeed,Y
 	STA <Objects_XVel, X
-	JSR Level_ObjCalcXDiffs
 	LDA GroundTroop_FlipTowardsPlayer, Y
 	STA Objects_FlipBits,X
-	CPY #$00
-	BEQ ObjInit_Set3DoNothing
-	LDA <Objects_XVel, X
-	JSR Negate
-	STA <Objects_XVel, X
-
-ObjInit_Set3DoNothing:
 	RTS		 ; Return
 
 ObjInit_SpikeCheep:
@@ -3030,7 +3004,7 @@ ObjNormParaTroopas:
 	JMP InitPatrol
 
 Troopers:
-	.byte OBJ_BLUESPINY, OBJ_PURPLETROOPA
+	.byte OBJ_PURPLETROOPA
 
 ObjNorm_PoisonMushroom:
 	JSR ObjNorm_GroundTroop
@@ -3054,7 +3028,6 @@ EnableTrooping:
 
 DisableTrooping:
 	STA <Temp_Var15
-	LDY DAIZ_TEMP1
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 	LDA <Player_HaltGame
@@ -3076,8 +3049,6 @@ PRG004_B36E:
 
 	DEC Objects_Var1,X	 ; Var1--
 
-	JSR Object_ApplyYVel	 ; Apply X velocity
-
 	INC <Objects_Var5,X	 ; Var5++
 
 	JSR GroundTroop_Draw	 ; Draw the enemy
@@ -3094,6 +3065,22 @@ PRG004_B3A5:
 
 PRG004_B3C6:
 	JSR Object_Move		 ; Standard object movements
+	LDA Objects_PrevDetStat, X
+	AND #$04
+	BNE PRG004_B3C72
+	LDA Objects_DetStat, X
+	AND #$04
+	BEQ PRG004_B3C72
+	LDY #$00
+	LDA Objects_XVel, X
+	BPL PRG004_B3C62
+	INY
+
+PRG004_B3C62:
+	LDA TroopSpeed, Y
+	STA Objects_XVel, X
+	
+PRG004_B3C72:
 	INC <Objects_Var5,X	 ; Var5++
 
 PRG004_B3C7:
@@ -3307,8 +3294,6 @@ PRG004_B4B6:
 
 	LDA Objects_FlipBits,X
 	PHA		 ; Save FlipBits
-	ORA #SPR_BEHINDBG
-	STA Objects_FlipBits,X	 ; Set priority bit
 
 	JSR GroundTroop_DrawMirrored	 ; Draw mirrored sprite
 
@@ -4402,6 +4387,12 @@ ObjInit_ChainChomp:
 	SBC #$00
 	STA Objects_Var7,X
 
+	LDA Objects_XHi, X
+	STA Objects_Var15, X
+
+	LDA Objects_YHi, X
+	STA Objects_Var16, X
+
 	RTS		 ; Return
 
 ChainChomp_BreakFree:
@@ -4466,8 +4457,15 @@ PRG004_BA27:
 	LDA #$00
 	STA Objects_Timer,X
 
+	JSR Level_ObjCalcXDiffs
+	LDA Chomp_FreeXVels, Y
+	STA Objects_XVel, X
+	LDA #$00
+	STA Objects_YVel, X
+
 	RTS		 ; Return
 
+Chomp_FreeXVels: .byte -$20, $20
 ChainChomp_ChaseYVel:	.byte -$20, -$40, -$30, -$50
 ChainChomp_ChaseXVel:	.byte  $50,  $30,  $40,  $20
 
@@ -4480,8 +4478,8 @@ ObjNorm_ChainChomp:
 	LDA <Player_HaltGame
 	BNE PRG004_BAC8	 ; If gameplay is halted, jump to PRG004_BAC8 (RTS)
 
+	JSR Object_DeleteOffScreen	 
 	JSR Player_HitEnemy	 ; Do Player to Chain Chomp collision detection
-	JSR Object_DeleteOffScreen_N4	 ; Detect against world
 	JSR Object_FlipByXVel	 ; Flip based on travel direction
 
 	INC Objects_Var3,X	 ; Var3++
@@ -4495,6 +4493,22 @@ ObjNorm_ChainChomp:
 	AND #$01
 	STA Objects_Frame,X
 
+	LDA Objects_SprHVis, X
+	AND #$C0
+	CMP #$C0
+	BEQ ChompNoCheck
+
+	JSR ChompRoutine
+	LDA RandomN
+	AND #$01
+	BNE ChompNoCheck
+
+	JSR ChainChomp_DetectFree
+
+ChompNoCheck:
+	RTS
+
+ChompRoutine:
 	LDA <Objects_Var5,X	 ; Var5 is internal state
 	JSR DynJump
 
@@ -4523,10 +4537,7 @@ PRG004_BA8B:
 	CMP #64
 	BLT PRG004_BA97	 ; If the distance < 64, jump to PRG004_BA97
 
-	; If Player is too far away, just sort of dart about randomly
-	LDA RandomN,X
-	AND #$03	; A = random 0 to 3
-	JMP PRG004_BA9E	 ; Jump to PRG004_BA9E
+	LDA #63
 
 PRG004_BA97:
 
@@ -4535,11 +4546,6 @@ PRG004_BA97:
 	LSR A
 	LSR A
 	LSR A
-
-	; .. something removed?
-	NOP
-	NOP
-	NOP
 
 PRG004_BA9E:
 	STA Objects_TargetingXVal,X	 ; -> Objects_TargetingXVal
@@ -4565,13 +4571,8 @@ PRG004_BAB2:
 
 	INC Objects_Var1,X	 ; Var1++
 
-	LDA Objects_Var1,X
-	CMP #$32
-	BNE PRG004_BAC8	 ; If Var1 <> $32, jump to PRG004_BAC8
-
-	JSR ChainChomp_BreakFree	 ; Chain Chomp breaks free!
-
 PRG004_BAC8:
+
 	RTS		 ; Return
 
 
@@ -4752,7 +4753,6 @@ ChainChomp_Drop:
 	STA Objects_Timer,X	 ; Reset timer
 	STA <Objects_Var5,X	 ; Return to initial internal state
 	STA Objects_TargetingYVal,X
-
 	RTS		 ; Return
 
 PRG004_BBB4:
@@ -4946,7 +4946,7 @@ PRG004_BC66:
 	STA Sprite_RAM+$03,Y
 
 	; Chain Link pattern
-	LDA #$9b
+	LDA #$75
 	STA Sprite_RAM+$01,Y
 
 	LDA Objects_Var1,X
@@ -5226,3 +5226,227 @@ PRG004_BE54:
 
 ; Rest of ROM bank was empty
 
+ChainChomp_DetectFree:
+	LDA Objects_X, X
+	PHA
+	LDA Objects_XHi, X
+	PHA
+	LDA Objects_Y, X
+	PHA
+	LDA Objects_YHi, X
+	PHA
+
+	LDA Objects_Var13, X
+	STA Objects_X, X
+
+	LDA Objects_Var14, X
+	STA Objects_Y, X
+
+	LDA Objects_Var16, X
+	STA Objects_YHi, X
+	
+	LDA Objects_Var15, X
+	STA Objects_XHi, X
+
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	BNE ChainChomp_DetectFreeRTS
+	JSR ChainChomp_BreakFree
+
+ChainChomp_DetectFreeRTS:
+	PLA
+	STA Objects_YHi, X
+	PLA
+	STA Objects_Y, X
+	PLA
+	STA Objects_XHi, X
+	PLA
+	STA Objects_X, X
+	RTS
+
+LakituMessage1:
+	.byte "THANK YOU FOR FREEING ME. "
+
+LakituMessage2:
+	.byte "I WILL HELP YOU IN RETURN."
+
+ObjInit_DeliveryLakitu:
+	LDA #$BD
+	STA Objects_Var10, X
+	RTS
+
+ObjNorm_DeliveryLakitu:
+	LDA Objects_Var1, X
+	JSR DynJump
+
+	.word WaitForMario
+	.word DisplayLakituText
+	.word DeliveryLakituFlyAway
+	.word DeliveryLakituTrack
+	.word DeliveryLakituWait
+
+WaitForMario:
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	ORA #$02
+	STA Objects_Frame, X
+	JSR Object_ShakeAndDrawMirrored
+	JSR Object_HitTest
+	BCC WaitForMarioRTS
+	JSR SpecialObj_FindEmptyAbort
+	INC Objects_Var1, X
+	LDA <Objects_X, X
+	STA SpecialObj_XLo, Y
+	LDA <Objects_Y, X
+	STA SpecialObj_YLo, Y
+	LDA <Objects_YHi,X
+	STA SpecialObj_YHi,Y
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+	LDA #$20	 
+	STA SpecialObj_Data, Y
+	STA Objects_Timer, X
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA #$40
+	STA Objects_SlowTimer, X
+
+	LDA #$80
+	STA Status_Bar_Mode
+
+	LDX #$8C
+	STX Status_Bar_Top
+	INX
+	STX Status_Bar_Top + 1
+	LDX #$9C
+	STX Status_Bar_Bottom
+	INX
+	STX Status_Bar_Bottom + 1
+	LDX #$00
+
+NextLakituLetter:
+	LDA LakituMessage1, X
+	STA Status_Bar_Top + 2, X
+	LDA LakituMessage2, X
+	STA Status_Bar_Bottom + 2, X
+	INX
+	CPX #26
+	BNE NextLakituLetter
+
+WaitForMarioRTS:
+	RTS
+
+DisplayLakituText:
+	LDA Objects_SlowTimer, X
+	BNE DisplayLakituText1
+	LDA Last_Status_Bar_Mode
+	STA Status_Bar_Mode
+	LDA #$80
+	STA Last_Status_Bar_Mode
+	INC Objects_Var1, X
+	LDY Objects_Property, X
+	JSR Get_Normalized_Suit
+	CMP PowerUpChecks, Y
+	BEQ DisplayLakituText1
+	LDA #$03
+	STA Objects_Var1, X
+
+DisplayLakituText1:
+	JSR DrawLakitu
+	LDA #$01
+	STA Player_HaltTick
+	RTS
+
+DeliveryLakituFlyAway:
+	LDA Objects_YHi, X
+	BPL DeliveryLakituFlyAway1
+
+	LDA #$04
+	STA Objects_Var1, X
+	LDA #$00
+	STA <Objects_YVel, X
+	RTS
+	
+DeliveryLakituFlyAway1:
+	INC ReverseGravity
+	JSR Object_Move
+	JSR DrawLakitu
+	RTS
+
+PowerUpChecks:
+	.byte $02
+
+PowerUpDeliveries:
+	.byte OBJ_POWERUP_FIREFLOWER
+
+PowerUpDeliveriesFlash:
+	.byte 00
+
+DeliveryLakituWait:
+	LDY Objects_Property, X
+	JSR Get_Normalized_Suit
+	CMP PowerUpChecks, Y
+	BEQ DeliveryLakituWait1
+	LDA #$03
+	STA Objects_Var1, X
+	LDA <Player_X
+	STA <Objects_X, X
+	LDA <Player_XHi
+	ADD #$01
+	STA <Objects_XHi, X
+	LDA <Player_Y
+	STA <Objects_Y, X
+	LDA <Player_YHi
+	STA <Objects_YHi, X
+
+DeliveryLakituWait1:
+	RTS
+
+DeliveryLakituTrack:
+	LDA <Player_HaltGame
+	BNE DeliveryLakituTrack1
+	JSR Get_Normalized_Suit
+	CMP #$02
+	BEQ DeliveryLakituEscape
+	JSR Chase
+	JSR Object_HitTest
+	BCC DeliveryLakituTrack1
+	
+	LDA Objects_State + 5
+	BNE DeliveryLakituTrack1
+
+	LDA #$01
+	STA PowerUp_Reserve
+	
+	LDA #OBJSTATE_INIT
+	STA Objects_State + 5
+	
+	LDY Objects_Property, X
+	LDA PowerUpDeliveries, Y
+	STA Level_ObjectID + 5
+
+	LDA PowerUpDeliveriesFlash, Y
+	STA PUp_StarManFlash
+
+	LDA <Objects_X, X
+	STA <Objects_X + 5
+	LDA <Objects_XHi, X
+	STA <Objects_XHi + 5
+	LDA <Objects_Y, X
+	SUB #$10
+	STA <Objects_Y + 5
+	LDA <Objects_YHi, X
+	SBC #$00
+	STA <Objects_YHi + 5
+	
+DeliveryLakituEscape:
+	LDA #$02
+	STA Objects_Var1, X
+
+DeliveryLakituTrack1:
+	JSR DrawLakitu
+	RTS

@@ -691,7 +691,7 @@ PRG003_A3AA:
 	AND #$0F
 	BNE PRG003_A3D2
 	JSR Object_WorldDetect4
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	AND #TILE_PROP_SOLID_TOP
 	BEQ PRG003_A3D2
 	DEC Objects_Var1, X
@@ -753,7 +753,7 @@ ShyGuyMarch:
 	STA Objects_Frame, X
 
 	LDA Objects_Property, X
-	BEQ ShyGuyDraw
+	BNE ShyGuyDraw
 	LDA <Objects_X,X
 	AND #$0F
 	BEQ ShyGuyFindBrickAbove
@@ -812,7 +812,7 @@ ShyGuyFindBrickAbove:
 	STA <Temp_Var14
 	LDA <Objects_YHi, X
 	STA <Temp_Var15
-	LDA #$04
+	LDA #$03
 	STA <Temp_Var16
 
 ShyGuyLookForBrick:
@@ -869,7 +869,7 @@ ShyGuyGetBrick1:
 ShyGuyGetBrick2:
 	LDA Level_ChgTileEvent
 	BNE ShyGuyGetBrick1
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
 	BCC ShyGuyGetBrick1
 	AND #$0F
@@ -880,7 +880,7 @@ ShyGuyGetBrick2:
 	STA Objects_Var7, X
 	INC Objects_Var2, X
 
-	LDA Object_TileFeet2
+	LDA Object_TileFeetValue
 	AND #$C0
 	ORA #$01
 	STA Level_ChgTileEvent
@@ -1579,7 +1579,7 @@ BobOmb_Explode:
 	STA <Objects_Var5,X
 
 	; Reset timer to $28 (length of explosion)
-	LDA #$28
+	LDA #$10
 	STA Objects_Timer,X
 
 	; Ba-boom
@@ -1833,20 +1833,11 @@ PRG003_A89D:
 PRG003_A8D2:
 
 BobOmb_CheckExplodables:
-	LDA Objects_Timer,X
-	CMP #$20
-	BCC NoMoreExplodables
-	CMP #$24
-	BCC DoNotOffset
 	JSR BackUpPosition
-	JSR OffsetPosition
-
-DoNotOffset:
 	LDA Objects_Timer,X
-	AND #$03
-	TAX
-	LDA ExplodeOffsets, X
+	AND #$07
 	TAY
+	JSR OffsetPosition
 	LDX <SlotIndexBackup
 	JSR CheckBreakables
 	JSR RestorePosition
@@ -1854,34 +1845,84 @@ DoNotOffset:
 NoMoreExplodables:
 	RTS
 
-ExplodeOffsets:
-	.byte $6E, $70, $72, $74
+ExplodeXOffsets:
+	.byte -$10, -$10, -$10, $00, $10, $10, $10, $00
+
+ExplodeYOffsets
+	.byte -$08, $08, $18, $18, $18, $08, -$08, -$08
 
 BackUpPosition:
-	LDA Objects_X, X
+	LDA <Objects_X, X
 	STA BackUpX
-	LDA Objects_XHi, X
+	LDA <Objects_XHi, X
 	STA BackUpXHi
+	LDA <Objects_Y, X
+	STA BackUpY
+	LDA <Objects_YHi, X
+	STA BackUpYHi
 	RTS
 
 OffsetPosition:
-	LDA Objects_X, X
-	SUB #$04
-	STA Objects_X, X
-	LDA Objects_XHi, X
+	JSR OffsetPositionX
+	JSR OffsetPositionY
+	RTS
+
+OffsetPositionX:
+	LDA ExplodeXOffsets, Y
+	BMI OffsetPositionX1
+	ADD <Objects_X, X
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	ADC #$00
+	STA <Objects_XHi, X
+	RTS
+
+OffsetPositionX1:
+	JSR Negate
+	STA TempA
+	LDA <Objects_X, X
+	SUB TempA
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
 	SBC #$00
-	STA Objects_XHi, X
+	STA <Objects_XHi, X
+	RTS
+
+OffsetPositionY:
+	LDA ExplodeYOffsets, Y
+	BMI OffsetPositionY1
+	ADD <Objects_Y, X
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	ADC #$00
+	STA <Objects_YHi, X
+	RTS
+
+OffsetPositionY1:
+	JSR Negate
+	STA TempA
+	LDA <Objects_Y, X
+	SUB TempA
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	SBC #$00
+	STA <Objects_YHi, X
 	RTS
 
 RestorePosition:
 	LDX SlotIndexBackup
 	LDA BackUpX
-	STA Objects_X, X
+	STA <Objects_X, X
 	LDA BackUpXHi
-	STA Objects_XHi, X
+	STA <Objects_XHi, X
+	LDA BackUpY
+	STA <Objects_Y, X
+	LDA BackUpYHi
+	STA <Objects_YHi, X
 	RTS
 
 CheckBreakables:
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile
 	JSR CheckExplodableTile
 	BNE No_Exploads
@@ -2006,6 +2047,10 @@ Magic_Star_Action:
 	.word ObjNorm_DoNothing
 	.word Object_InteractWithWorld
 	.word MagicStar_CheckEnemies
+	.word MagicStar_CheckPSwitch
+	.word MagicStar_CheckItemBlock
+	.word MagicStar_CheckClearedBlock
+	.word MagicStar_SpinnersActive
 
 MagicStar_CheckEnemies:
 	LDY #$04
@@ -2028,6 +2073,71 @@ Check_Done:
 	PLA
 	PLA
 	RTS
+
+MagicStar_CheckPSwitch:
+	LDA Level_PSwitchCnt
+	BNE MagicStar_CheckPSwitch1
+	PLA
+	PLA
+	RTS
+
+MagicStar_CheckPSwitch1:
+	JMP Object_InteractWithWorld
+
+MagicStar_CheckItemBlock:
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	LDA Object_LevelTile
+	AND #$3F
+	BNE MagicStar_CheckItemBlock1
+	LDA #$01
+	STA Objects_Property, X
+	LDA #$D0
+	STA Objects_YVel, X
+	LDA Objects_Y, X
+	SUB #$10
+	STA Objects_Y, X
+	LDA Objects_YHi, X
+	SBC #$00
+	STA Objects_YHi, X
+	RTS
+
+MagicStar_CheckItemBlock1:
+	PLA
+	PLA
+	RTS
+
+MagicStar_CheckClearedBlock:
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	AND #$3F
+	BNE MagicStar_CheckItemBlock1
+	LDA #$01
+	STA Objects_Property, X
+	RTS
+
+MagicStar_SpinnersActive:
+	LDY #$04
+	LDX #$09
+
+NextSpinnerCheck:
+	LDA SpinnerBlockTimers, X
+	BEQ NextSpinnerCheck1
+	DEY
+	BPL NextSpinnerCheck1
+	LDX <SlotIndexBackup
+	LDA #$01
+	STA Objects_Property, X
+	RTS
+
+NextSpinnerCheck1:
+	DEX
+	BPL NextSpinnerCheck
+	PLA
+	PLA
+	RTS
+
+
 
 ObjInit_MagicStar1:
 	LDA #$00
@@ -2721,7 +2831,7 @@ WillFreeMine:
 
 
 MineWaterSolid:
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	AND #TILE_PROP_SOLID_ALL
 	BEQ Mine_JustDraw
 	JMP MineDoExplode
@@ -3790,8 +3900,8 @@ PRG003_B8E9:
 	CLC		 ; Clear carry
 	RTS		 ; Return
 
-Chomp_JumpYVels:	.byte -$40, -$60
-Chomp_XVels:		.byte $30, -$30
+Chomp_JumpYVels:	.byte -$20, -$30
+Chomp_XVels:		.byte $20, -$20
 
 ObjNorm_ChainChompFree:
 	JSR Object_CheckIfNormalState
@@ -3816,41 +3926,26 @@ PRG003_B8FE:
 	AND #$01
 	STA Objects_Frame,X
 
-	JSR Object_WorldDetectN1	 ; Detect world
-	JSR Object_HandleBumpUnderneath	 ; Get killed if hit from underneath
+	JSR Object_Move
+	JSR Player_HitEnemy
+	LDA Objects_DetStat, X
+	AND #$03
+	BEQ PRG003_B932
 
-	LDA <Player_HaltGame
-	BEQ PRG003_B918	 ; If gameplay is not halted, jump to PRG003_B918
-
-	JMP PRG003_BB17	 ; Jump to PRG003_BB17
-
-PRG003_B918:
-	LDA Objects_Timer,X
-	BNE PRG003_B95A		; If timer is not expired, jump to PRG003_B95A
-
-	JSR Object_ApplyXVel	 ; Apply X Velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
-
-	LDA <Objects_YVel,X
-	BMI PRG003_B92B	 ; If freed chomp is moving upward, jump to PRG003_B92B
-
-	CMP #$70
-	BGE PRG003_B932	 ; If Y velocity >= $70, jump to PRG003_B932
-
-PRG003_B92B:
-	; Chomp's gravity
-	LDA <Objects_YVel,X
-	ADD #$06
-	STA <Objects_YVel,X
+	LDA Objects_XVel, X
+	JSR Negate
+	STA  Objects_XVel, X
 
 PRG003_B932:
+	LDA Objects_DetStat, X
+	AND #$08
+	BEQ PRG003_B933
+	JSR Object_HitCeiling
+
+PRG003_B933:
 	LDA <Objects_DetStat,X
 	AND #$04
 	BEQ PRG003_B95A	 ; If chomp has not hit ground, jump to PRG003_B95A
-
-	; Timer = $0C
-	LDA #$0c
-	STA Objects_Timer,X
 
 	JSR Object_HitGround	 ; Align to floor
 
@@ -3862,19 +3957,29 @@ PRG003_B932:
 	LDA Chomp_JumpYVels,Y
 	STA <Objects_YVel,X
 
-	LDA <Objects_XVel,X
-	ASL A
-	ROL A
-	AND #$01
-	TAY		; Y = 0 or 1, depending if X Velocity is negative
-
+	JSR Level_ObjCalcXDiffs
 	; Set X velocity in facing direction
 	LDA Chomp_XVels,Y
 	STA <Objects_XVel,X
 
-	JMP PRG003_BDE6	 ; Jump to PRG003_BDE6
+	LDA RandomN, X
+	AND #$02
+	BEQ PRG003_B95A
+	LDA <Objects_XVel, X
+	PHP
+	LSR A
+	PLP
+	BPL PRG003_B959
+	ORA #$80
+
+PRG003_B959:
+	STA <Objects_XVel, X
+	LDA <Objects_YVel, X
+	ASL A
+	STA <Objects_YVel, X
 
 PRG003_B95A:
+	
 	JMP Enemy_DeleteIfOffAndDrawTail	 ; Jump to Enemy_DeleteIfOffAndDrawTail
 
 ObjInit_FireSnake:
@@ -3973,7 +4078,8 @@ ObjNorm_Pyrantula:
 	LDA <Player_HaltGame
 	BEQ PRG003_B9D4	 ; If gameplay is not halted, jump to PRG003_B9D4
 
-	JMP Enemy_DeleteIfOffAndDrawTail	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!
+	JSR Object_DeleteOffScreen
+	JMP Object_ShakeAndDrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!
 
 PRG003_B9D4:
 
@@ -3992,7 +4098,8 @@ PRG003_B9F2:
 	STA Objects_Frame,X
 
 PRG003_BA02:
-	JMP Enemy_DeleteIfOffAndDrawTail	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
+	JSR Object_DeleteOffScreen
+	JMP Object_ShakeAndDrawMirrored	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
 
 PRG003_BA08:
 	LDA <Counter_1
@@ -4005,7 +4112,7 @@ PRG003_BA08:
 
 Enemy_DeleteIfOffAndDrawTail:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-	JMP Object_ShakeAndDrawMirrored	 ; Jump to Tail_DrawAndHurtPlayer
+	JMP Tail_DrawAndHurtPlayer	 ; Jump to Tail_DrawAndHurtPlayer
 
 FireChomp_XVelLimit:	.byte $0A, -$0A, $10, -$10
 FireChomp_XVelAccel:	.byte $01, -$01, $01, -$01
@@ -4057,7 +4164,7 @@ PRG003_BA5C:
 	STA <Objects_XVel,X
 
 PRG003_BA72:
-	LDA Object_TileWall
+	LDA Object_TileWallProp
 	CMP #TILE_ITEM_COIN
 	BCS PRG003_BA73
 	AND #$0F
@@ -4099,7 +4206,7 @@ PRG003_BA73:
 	STA <Objects_YVel,X
 
 PRG003_BAA0:
-	LDA Object_TileFeet
+	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
 	BCS PRG003_BAA1
 	AND #$0F
@@ -4215,8 +4322,8 @@ PRG003_BB2A:
 
 	; For a Fire Chomp....
 
-	LDA Objects_Frame,X
-	BEQ PRG003_BB24	 ; If frame = 0, jump to PRG003_BB24
+	;LDA Objects_Frame,X
+	;BEQ PRG003_BB24	 ; If frame = 0, jump to PRG003_BB24
 
 PRG003_BB33:
 	JSR Object_ShakeAndDraw	 ; Draw object, not mirrored
@@ -4330,7 +4437,7 @@ PRG003_BBB2:
 	; Freed Chain Chomp 
 
 	; Chain link pattern
-	LDA #$9b
+	LDA #$75
 	STA Sprite_RAM+$01,Y
 
 	; Palette select 3
@@ -5156,8 +5263,8 @@ PRG003_BFAE:
 
 Increase_Magic_Stars:
 	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP
-	STA Sound_QLevel1
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 	INC Magic_Stars
 	LDA Magic_Stars
 	AND #$0F
