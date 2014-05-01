@@ -557,7 +557,7 @@ LevelJunction_PartialInit:
 
 	LDA #$00
 	STA LevelPartialInit	 ; LevelPartialInit = 0
-
+	STA ForcedSwitch
 	STA Level_HAutoScroll	 ; Disable auto horizontal scrolling
 	STA Level_AScrlConfig	 ; Clear auto scroll configuration (no auto scroll)
 	STA Player_SlideRate	 ; No slide

@@ -292,7 +292,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $4C	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OPTS_SETPT6 | $4F	; Object $7A - OBJ_PURPLETROOPA
 	.byte OPTS_SETPT5 | $3D	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OPTS_SETPT5 | $0B	; Object $7C - OBJ_BIGGOOMBA
+	.byte OPTS_NOCHANGE	; Object $7C - OBJ_BIGGOOMBA
 	.byte OPTS_SETPT5 | $3D	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OPTS_SETPT5 | $3D	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OPTS_SETPT5 | $3D	; Object $7F - OBJ_BIGREDPIRANHA
@@ -2026,7 +2026,7 @@ ObjInit_Lakitu:
 	LDA <Objects_YHi,X
 	STA Objects_TargetingXVal,X
 
-	LDA #$9D
+	LDA #$BD
 	STA Objects_Var10, X
 
 	RTS		 ; Return
@@ -5271,7 +5271,7 @@ LakituMessage2:
 	.byte "I WILL HELP YOU IN RETURN."
 
 ObjInit_DeliveryLakitu:
-	LDA #$BD
+	LDA #$9D
 	STA Objects_Var10, X
 	RTS
 

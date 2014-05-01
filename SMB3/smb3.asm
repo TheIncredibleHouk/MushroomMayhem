@@ -3051,7 +3051,8 @@ TILE_ITEM_SPINNER	= $FE
 	WasDepletingAir:	.ds 1
 	Mushrooms_Defeated: .ds 6;
 	Mushroom_Already_Defeated: .ds 1
-
+	PreviousLevel:		.ds 1
+	ForcedSwitch:       .ds 1
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
