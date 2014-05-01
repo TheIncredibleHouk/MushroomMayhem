@@ -3574,10 +3574,6 @@ PRG007_B588:
 	ORA #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAM+$06,Y
 
-
-	LDA SpecialObj_Data,X
-	BNE PRG007_B5B1	 ; If SpecialObj_Data <> 0 (Gravity version, specifically Patooie's spike ball), jump to PRG007_B5B1 (RTS)
-
 	JMP SObj_PlayerCollide	 ; Do Player to spike ball collision and don't come back!
 
 PRG007_B5B1:

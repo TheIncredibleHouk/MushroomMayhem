@@ -2987,6 +2987,7 @@ LevelPointerOffsets:
 LevelLoad:	; $97B7
 	; Clear loading variables
 	
+	STA Debug_Snap
 	LDA #$00
 	STA <Vert_Scroll
 	STA Level_Jct_VS
@@ -3077,13 +3078,15 @@ Skip_Normal_Gfx2:
 	LDA [Temp_Var14],Y
 	STA PaletteIndex
 
-	LDA Level_JctCtl	 
+	LDA Level_JctCtl
 	BNE Set_Level_Exit_Action
 	LDA #$00
 	STA Level_InitAction
 	JMP Level_Exit_Set
 
 Set_Level_Exit_Action:
+    LDA ForcedSwitch 
+	BNE Level_Exit_Set
 	LDA Player_XExit
 	AND #$F0
 	LDX Level_PipeExitDir
@@ -5338,6 +5341,8 @@ UsePointer:
 	RTS
 
 LevelJction:
+	LDA LevelLoadPointer
+	STA PreviousLevel
 	LDA Pointers, X
 	STA LevelLoadPointer
 	LDA Pointers + 3, X

@@ -5003,7 +5003,7 @@ PRG005_BEF8:
 	; Clear all object states
 PRG005_BEFC:
 	LDA Level_KeepObjects
-	BEQ PRG005_BF02
+	BEQ PRG005_BEFD
 
 	LDX #$02
 	BNE PRG005_BF00

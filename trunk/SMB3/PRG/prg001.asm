@@ -53,7 +53,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_Bubble	; Object $1A that is a l
 	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.word ObjInit_DoNothing	; Object $1C
+	.word ObjInit_SendBack	; Object $1C
 	.word ObjInit_DoNothing	; Object $1D
 	.word ObjInit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjInit_Vine	; Object $1F - OBJ_GROWINGVINE
@@ -95,7 +95,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Bubble	; Object $1A
 	.word ObjNorm_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.word ObjNorm_DoNothing	; Object $1C
+	.word ObjNorm_SendBack	; Object $1C
 	.word ObjNorm_DoNothing	; Object $1D
 	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjNorm_Vine	; Object $1F - OBJ_GROWINGVINE
@@ -4426,7 +4426,7 @@ Bowser_TileOffsets:	.byte 8, 24
 Bowser_BustFloor:
 	LDY #$01	 ; Y = 1 (two tiles to potentially smash)
 PRG001_BC32:
-	STA Debug_Snap
+	
 	LDA Bowser_TileProps,Y	; Get this tile
 	CMP #TILE_ITEM_BRICK
 	BEQ PRG001_BC33
@@ -5805,4 +5805,59 @@ SpikeBrickBust:
 	STA Level_BlockChgXHi
 
 SpikeBrickBustRTS:
+	RTS
+
+ObjInit_SendBack:
+	LDA #$C0
+	STA Objects_SlowTimer, X
+	RTS
+
+ObjNorm_SendBack:
+	LDA Objects_SlowTimer, X
+	BNE ObjNorm_SendBackRTS
+
+	INC Level_JctCtl
+	INC Level_Redraw
+	INC ForcedSwitch
+	LDA #$00
+	STA LevelVertJct
+	STA <Player_XVel
+	STA <Player_YVel
+	LDA #$F0
+	SUB <Player_X
+	STA <Player_X
+	STA Debug_Snap
+	LDA PreviousLevel
+	STA LevelLoadPointer
+
+ObjNorm_SendBackRTS:
+	RTS
+
+ObjInit_Timer:
+	RTS
+
+ObjNorm_Timer:
+	LDA Objects_Var1, X
+	;BNE
+
+	RTS
+
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	CPY #$00
+	BEQ ObjNorm_Timer1
+
+	LDA <Temp_Var1
+	ADD #$40
+	STA <Temp_Var1
+	LDA <Temp_Var2
+	ADD #$40
+	STA <Temp_Var2
+
+ObjNorm_Timer1:
+	JSR ToThreeDigits
+
 	RTS
