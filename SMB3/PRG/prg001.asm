@@ -54,7 +54,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Bubble	; Object $1A that is a l
 	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_SendBack	; Object $1C
-	.word ObjInit_DoNothing	; Object $1D
+	.word ObjInit_Timer	; Object $1D
 	.word ObjInit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjInit_Vine	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_DoNothing	; Object $20
@@ -81,7 +81,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.word ObjNorm_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
+	.word ObjNorm_DoNothing	; Object $0E - OBJ_BOSS_KOOPALING
 	.word ObjNorm_Weather	; Object $0F
 	.word ObjNorm_Weather	; Object $10
 	.word ObjNorm_Key	; Object $11
@@ -96,10 +96,10 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Bubble	; Object $1A
 	.word ObjNorm_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjNorm_SendBack	; Object $1C
-	.word ObjNorm_DoNothing	; Object $1D
+	.word ObjNorm_Timer	; Object $1D
 	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjNorm_Vine	; Object $1F - OBJ_GROWINGVINE
-	.word ObjNorm_DoNothing	; Object $20
+	.word ObjNorm_Clock	; Object $20
 	.word ObjNorm_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjNorm_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjNorm_SuperLeaf	; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -142,7 +142,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $1D
 	.word ObjHit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjHit_DoNothing	; Object $1F - OBJ_GROWINGVINE
-	.word ObjHit_DoNothing	; Object $20
+	.word ObjHit_Clock	; Object $20
 	.word ObjHit_IceFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjHit_Pumpkin	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjHit_FoxLeaf    ; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -181,10 +181,10 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1A
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1C
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $1D
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_HEIGHT16	; Object $1D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1F - OBJ_GROWINGVINE
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $20
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $20
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -233,7 +233,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP2	; Object $1D
 	.byte OA2_TDOGRP1	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OA2_TDOGRP1	; Object $1F - OBJ_GROWINGVINE
-	.byte OA2_TDOGRP0	; Object $20
+	.byte OA2_TDOGRP1	; Object $20
 	.byte OA2_TDOGRP1	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA2_TDOGRP1	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA2_TDOGRP1	; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -278,11 +278,11 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OA3_HALT_JUSTDRAW 	; Object $1A
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1C
-	.byte OA3_HALT_DONOTHING 	; Object $1D
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $1C
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $1D
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $1F - OBJ_GROWINGVINE
-	.byte OA3_HALT_NORMALONLY 	; Object $20
+	.byte  OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $20
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -321,10 +321,10 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT5 | $1A	; Object $1A
 	.byte OPTS_NOCHANGE	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OPTS_NOCHANGE	; Object $1C
-	.byte OPTS_SETPT5 | $48	; Object $1D
+	.byte OPTS_NOCHANGE	; Object $1D
 	.byte OPTS_NOCHANGE	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OPTS_NOCHANGE	; Object $1F - OBJ_GROWINGVINE
-	.byte OPTS_SETPT5 | $0A	; Object $20
+	.byte OPTS_NOCHANGE 	; Object $20
 	.byte OPTS_NOCHANGE	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OPTS_NOCHANGE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OPTS_NOCHANGE	; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -424,7 +424,10 @@ ObjP15:
 ObjP17:
 ObjP18:	
 ObjP1D:
-ObjP20:	.byte $AD, $AF, $B9, $BB, $B9, $BB
+ObjP20:
+	.byte $97, $99, $9B, $9D, $A1, $AB, $A3, $A1, $A3, $AB, $A5, $A1, $A5, $AB, $A7, $A1
+	.byte $D7, $D9, $DB, $DD, $E1, $EB, $E3, $E1, $E3, $EB, $E5, $E1, $E5, $EB, $E7, $E1
+
 ObjP01:	.byte $81, $81
 ObjP02:	.byte $8F, $8F, $99, $9B, $9D, $9F
 ObjP04:	.byte $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
@@ -1945,25 +1948,6 @@ Do_Fox_Power:
 PRG001_ADE2:
 	RTS
 
-Object_MoveAndReboundOffWall:
-	JSR Object_Move	 ; Do general movement code
-
-	LDA <Objects_DetStat,X
-	AND #$08
-	BEQ PRG001_ADEE	 ; If object hit ceiling, jump to PRG001_ADEE
-
-	STA <Objects_YVel,X	 ; Otherwise, update Y Velocity
-
-PRG001_ADEE:
-	LDA <Objects_DetStat,X
-	AND #$03
-	BEQ Object_HitGroundAlign ; If object has not hit a wall, jump to Object_HitGroundAlign
-
-	LDA <Objects_XVel,X
-	BEQ Object_HitGroundAlign ; If object not moving, jump to Object_HitGroundAlign
-
-	JSR Object_AboutFace	 ; Otherwise, turn around
-
 	; Aligns object that impacts the ground onto the floor
 Object_HitGroundAlign:
 	LDA <Objects_DetStat,X 
@@ -1973,1657 +1957,10 @@ Object_HitGroundAlign:
 	JMP Object_HitGround	 ; Otherwise, jump to Object_HitGround
 
 Koopaling_Palettes:
-	.byte $0F, $26, $30, $19	; World 1
-	.byte $0F, $17, $30, $10	; World 2
-	.byte $0F, $26, $30, $16	; World 3
-	.byte $0F, $27, $30, $11	; World 4
-	.byte $0F, $17, $30, $15	; World 5
-	.byte $0F, $27, $30, $1A	; World 6
-	.byte $0F, $18, $30, $1C	; World 7
 
 ObjInit_Koopaling:
-	LDA MiscValue1
-	AND #$0F
-	STA KoopaKidType
-	ASL A		
-	ASL A		 ; A = World_Num * 4
-	PHA		 ; Save it
-	TAY		 ; -> Y
-
-	; X = current buffer counter
-	LDX Graphics_BufCnt
-
-	; Going to change the sprite palette
-	LDA #$3f	 
-	STA Graphics_Buffer,X
-	LDA #$18	 
-	STA Graphics_Buffer+1,X	
-
-	; 4 bytes (full sprite palette)
-	LDA #$04	 
-	STA Graphics_Buffer+2,X	 
-
-	; Copy Koopaling's palette into buffer
-	STA <Temp_Var1		 ; Temp_Var1 = 4 (loop counter)
-PRG001_AE3B:
-	LDA Koopaling_Palettes,Y ; Get palette byte
-	STA Graphics_Buffer+3,X	 ; Store into buffer
-	INX		 ; X++
-	INY		 ; Y++
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BNE PRG001_AE3B	 ; While Temp_Var1 > 0, loop!
-
-	; Terminator
-	LDA #$00	 
-	STA Graphics_Buffer+3,X	
-
-	INX
-	INX
-	INX	
-	STX Graphics_BufCnt	; Graphics_BufCnt += 3
-
-	PLA		 ; Restore World_Num * 4
-	TAY		 ; -> Y
-
-	LDX #$18	 ; X = $18
-
-	; Copy Koopaling palette into Pal_Data and Palette_Buffer
-PRG001_AE56:
-	LDA Koopaling_Palettes,Y
-	STA Pal_Data,X	 
-	STA Palette_Buffer,X
-	INY		 ; Y++
-	INX		 ; X++
-	CPX #$1c	 
-	BLT PRG001_AE56	 ; If X < $1C (end of Pal_Data offset), loop!
-
-	LDX <SlotIndexBackup	 ; X = current object slot index
-
-
-	; 10 hits to take out a Koopaling
-	LDA #$0a	
-	STA Objects_HitCount,X
-
-	; Set object variable 3 to $40
-	LDA #$40	
-	STA Objects_Var3,X
-
-	RTS		 ; Return
-
-
-	; Selects the pattern table index 4 for the respective world Koopaling
-KoopalingPatSet4:
-	.byte $48	; World 1
-	.byte $49	; World 2
-	.byte $4A	; World 3
-	.byte $48	; World 4
-	.byte $49	; World 5
-	.byte $48	; World 6
-	.byte $4A	; World 7
-
-	; Selects the pattern table index 5 for the respective world Koopaling
-KoopalingPatSet5:
-	.byte $37	; World 1
-	.byte $37	; World 2
-	.byte $4A	; World 3
-	.byte $37	; World 4
-	.byte $37	; World 5
-	.byte $48	; World 6
-	.byte $37	; World 7
-
-
-	; Speed Koopaling moves when in the air
-Koopaling_XVelMidAir:	.byte $10, $F0
-
-	; The world number is added to this value to produce an index into
-	; the Koopaling_JumpChanceMask and Koopaling_JumpYVels tables
-Koopaling_JumpYVelsBase:
-	.byte $00, $07, $0E
-
-PRG001_AE85:
-	.byte $63, $63, $9F, $63, $63, $00, $3F, $63, $3F, $9F, $23, $63, $00
-	.byte $33, $33, $33, $9F, $43, $63, $00, $23
-
-	; Provides a bitmask placed against Counter_1 which if zero means
-	; the Koopaling will jump; thus, less bits means greater chance
-Koopaling_JumpChanceMask:
-	.byte $BF, $BF, $41, $83, $FF, $00, $7F, $BF, $BF, $41, $83, $FF, $00, $7F, $DF, $DF
-	.byte $41, $83, $7F, $00, $9F
-
-	; Jump velocities
-Koopaling_JumpYVels:
-	.byte -$30, -$30, -$10, -$30, -$50,  $00, -$50, -$40, -$38, -$20, -$40, -$60,  $00, -$60, -$50, -$50
-	.byte -$50, -$50, -$70,  $00, -$70
-
-Koopaling_Projectiles:
-	.byte SOBJ_ICEBALL, SOBJ_HAMMER, SOBJ_FIREBROFIREBALL, $00, $00, $00, $00, $00
-
-ObjNorm_Koopaling:
-	LDY KoopaKidType
-
-	; Use the right graphics for the Koopaling	
-	LDA KoopalingPatSet4,Y
-	STA PatTable_BankSel+5
-
-	;LDA KoopalingPatSet5,Y
-	;STA PatTable_BankSel+5
-
-	; Behavior based on Level_GetWandState...
-	LDA Level_GetWandState
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word Koopaling_Normal		; Wand State 0: Normal operation
-	.word Koopaling_FinalHit	; Wand State 1: when Koopa Kid gets last hit and flies off
-	.word Koopaling_WandFall	; Wand State 2: Koopaling gone, wand drops down (do-nothing state)
-	.word Koopaling_WandGrab	; Wand State 3: when wand grabbed (do flashy color effect)
-	.word Koopaling_TimeBonus	; Wand State 4: run down time for bonus
-	.word Koopaling_AirshipVanish	; Wand State 5: as airship vanishes
-	.word Koopaling_DoPlayerFall	; Wand State 6: Player falling...
-	.word Koopaling_FallOff		; Wand State 7: Player falls off-screen into king's room
-
-Koopaling_FinalHit:
-	JSR Koopaling_DrawAndAnimate
-
-	LDA <Player_HaltGame		
-	BNE PRG001_AF2A	 ; If gameplay is halted (Player dead, etc.), jump to PRG001_AF2A (RTS)
-
-	LDA Objects_Timer2,X
-	CMP #$08	 
-	BLT PRG001_AF02	 ; If timer2 < 8, jump to PRG001_AF02
-	BNE PRG001_AF2A	 ; If timer2 <> 8, jump to PRG001_AF2A (RTS)
-
-	; Koopaling exit sound...
-	LDA Sound_QLevel2
-	ORA #SND_LEVELAIRSHIP	
-	STA Sound_QLevel2
-
-	RTS		 ; Return
-
-PRG001_AF02:
-	ORA #$04
-	STA Objects_Timer2,X	 ; timer 2 |= 4
-
-	; Unused comparison and jump!  (Goes nowhere)
-
-	LDA Objects_SprVVis,X
-	CMP #$03
-	BNE PRG001_AF20
-
-	LDA <Objects_X,X
-	SBC #$78	 ; Koopaling flies off to the left!
-	CMP #$10	
-	BGE PRG001_AF20	 ; If Koopaling's X >= $10, jump to PRG001_AF20
-
-	; After Koopaling has left...
-	INC Level_GetWandState	 ; Level_GetWandState = 2
-
-PRG001_AF20:
-	JSR Object_ApplyXVel	 ; Apply X velocity
-
-	LDA #-$60
-	STA <Objects_YVel,X	 ; Y Velocity = -$60 (fly up and out!)
-	JSR Object_ApplyYVel	 ; Apply Y velocity
-
-PRG001_AF2A:
-	RTS		 ; Return
-
-Koopaling_Normal:
-	LDA KoopaKidType
-	CMP #$05
-	BNE PRG001_AF35	 ; If World_Num <> 5 (World 6, Lemmy), jump to PRG001_AF35
-	JMP PRG001_B671	 ; Jump to PRG001_B671
-
-PRG001_AF35:
-
-	; Variable 1 is used as a counter to indicate that the heavy Koopaling has jumped onto the floor
-
-	LDA Objects_Var1,X
-	BEQ PRG001_AF55	 	; If object variable 1 = 0 (no heavy jump shake occurring), jump to PRG001_AF55
-
-	DEC Objects_Var1,X 	; Decrement variable 1
-
-	LDA <Player_InAir
-	BNE PRG001_AF55	 	; If Player is in the air, jump to PRG001_AF55
-
-	INC <Player_InAir	; Set Player as in the air
-
-	LDA #$20	 
-	STA Player_VibeDisable	; "Vibrationally disable" Player!
-
-	LDA #-$10
-	STA <Player_YVel	; Player Y velocity = -$10 (bounce the Player a bit)
-
-	; Player_Y/Hi -= 1
-	DEC <Player_Y
-	LDY <Player_Y
-	INY		
-	BNE PRG001_AF55	
-	DEC <Player_YHi
-
-PRG001_AF55:
-	JSR Koopaling_DrawAndAnimate	; Draw and animate Koopaling!
-
-	LDA <Player_HaltGame
-	BNE PRG001_AF8F	 		; If gameplay is halted, jump to PRG001_AF8F (RTS)
-
-	JSR Koopaling_DetectWorld	; Detect world and do floor vibration, if appropriate
-	JSR Koopaling_DieByFire		; If hit by enough fireballs, battle ends
-	JSR Object_HitTestRespond	; Respond to Player collision
-	JSR Object_CalcCoarseXDiff	; Calculate "coarse" X difference value
-
-	LDA Objects_Timer2,X	
-	BEQ PRG001_AF90	 ; If timer 2 is zero, jump to PRG001_AF90
-
-	CMP #$40
-	BGE PRG001_AF8F	 ; If timer 2 >= $40, jump to PRG001_AF8F (RTS)
-
-	LSR A	
-	BNE PRG001_AF7D	 	; Every other tick, jump to PRG001_AF7D (Koopaling jump!)
-
-	STA Objects_Frame,X	 ; Set object frame 0 - 31??
-
-	LDA <Temp_Var16		 
-	STA Objects_FlipBits,X	 ; Stores $00 or $40, depending on result of Object_CalcCoarseXDiff
-
-	RTS		 ; Return
-
-
-PRG001_AF7D:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG001_AF8F	 ; If Koopaling is not on the ground, jump to PRG001_AF8F (RTS)
-
-	; Koopaling on ground; jump!
-
-	JSR Level_ObjCalcXDiffs	  
-
-	; Set appropriate X velocity based on direction
-	LDA Koopaling_XVelMidAir,Y
-	STA <Objects_XVel,X
-
-	; Set Y velocity for jump
-	LDA #-$48
-	STA <Objects_YVel,X
-
-PRG001_AF8F:
-	RTS		 ; Return
-
-
-PRG001_AF90:
-
-	; Timer 2 expired...
-
-	LDA Objects_Timer,X
-	BEQ PRG001_AFAB	 ; If timer is zero, jump to PRG001_AFAB
-
-	; This creates the wand firing repetition
-	AND #$07
-	BNE PRG001_AF8F	 ; Only proceed every 8 ticks
-
-	LDA #$03
-	STA Objects_Frame,X	; Koopaling frame 3 (wand fire!)
-
-	LDA KoopaKidType
-	CMP #$02
-	BNE PRG001_AFA8	 ; If World_Num <> 2 (World 3, Wendy), jump to PRG001_AFA8
-
-	JMP PRG001_B7EC	 ; Jump to PRG001_B7EC
-
-PRG001_AFA8:
-	JMP PRG001_B02E	 ; Otherwise, jump to PRG001_B02E
-
-PRG001_AFAB:
-
-	; Timer expired
-
-	LDA <Objects_DetStat,X
-	AND #$04	
-	BEQ PRG001_B01F	 ; If Koopaling is not on the ground, jump to PRG001_B01F
-
-	LDA <Counter_1
-	AND #$07
-	BNE PRG001_AFC5	 ; Every 7:8 ticks, jump to PRG001_AFC5
-
-	; Once every 8 ticks, turn in the direction of the Player
-
-	LDA <Temp_Var16		; Holds last checked direction towards Player
-	STA Objects_FlipBits,X	 ; Objects_FlipBits = Temp_Var16 (face towards Player)
-
-	; Set appropriate X velocity by facing direction
-	LDY #$10
-	ASL A		; If $40, now $80, thus BMI
-	BMI PRG001_AFC3
-	LDY #-$10
-
-PRG001_AFC3:
-	STY <Objects_XVel,X	 ; Set proper X velocity towards Player!
-
-PRG001_AFC5:
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	LSR A	
-	AND #$01
-	STA Objects_Frame,X	; Set current walking frame 0/1
-
-	; this basically selects a jump velocity from the Koopaling_JumpYVels
-	; table with certain values only being reached by later world Koopalings
-	; and making the overall height a bit variable
-	LDY <Objects_Var4,X	 ; Get Koopaling's current hit count
-	LDA Koopaling_JumpYVelsBase,Y
-	ADD KoopaKidType
-	TAY		; -> 'Y'
-
-	; This determines the chance that they will actually jump
-	LDA <Counter_1	
-	AND Koopaling_JumpChanceMask,Y
-	BNE PRG001_AFE6	; If not jumping, jump to PRG001_AFE6
-
-	; Koopaling jumps!
-	LDA Koopaling_JumpYVels,Y
-	STA <Objects_YVel,X
-
-	RTS		 ; Return
-
-
-PRG001_AFE6:
-
-	; If Koopaling is not jumping...
-
-	LDA KoopaKidType
-	CMP #$02	
-	BNE PRG001_AFF9	 ; If World_Num <> 2 (World 3, Wendy), jump to PRG001_AFF9
-
-	; Wendy only...
-
-	LDA <Objects_Var4,X
-	CMP Objects_Var6,X	 
-	BLT PRG001_B01F	 ; If Objects_Var4 < Objects_Var6, jump to PRG001_B01F (RTS)
-
-	INC Objects_Var6,X	 ; Objects_Var6++ 
-	BNE PRG001_B000	 ; If Objects_Var6 <> 0, jump to PRG001_B000
-
-PRG001_AFF9:
-	LDA <Counter_1
-	AND PRG001_AE85,Y
-	BNE PRG001_B01F
-
-PRG001_B000:
-	; Face the Player
-	LDA <Temp_Var16	
-	STA Objects_FlipBits,X
-
-	; Wand out frame
-	LDA #$02
-	STA Objects_Frame,X
-
-	; Halt horizontal movement
-	LDA #$00
-	STA <Objects_XVel,X
-
-	LDA #$10	 ; A = $10
-
-	LDY KoopaKidType
-	CPY #$02	
-	BEQ PRG001_B01C	 ; If World_Num = 2 (World 3, Wendy), jump to PRG001_B01C
-
-	; Everybody but Wendy...
-
-	JSR Object_CalcHomingVels
-
-	LDA #$20	 ; A = $20
-PRG001_B01C:
-	STA Objects_Timer,X	; This timer kicks off the wand firing!
-
-PRG001_B01F:
-	RTS		 ; Return
-
-
-Koopaling_DieByFire:
-	LDA Objects_HitCount,X
-	BNE PRG001_B01F	 ; If hits remain, jump to PRG001_B01F
-
-	; Set hit count to 2 (will force the third and final hit after the jump!)
-	LDA #$02	
-	STA <Objects_Var4,X
-	JMP PRG001_B17B	 ; Jump to PRG001_B17B (force third and final hit!)
-
-PRG001_B02C:
-	.byte -$0E, $1E
-
-PRG001_B02E:
-
-	; All Koopalings except Wendy and Lemmy...
-
-	LDA Objects_FlipBits,X
-	ASL A
-	ROL A
-	ROL A		 ; Effectively, shift bit 6 to bit 0 (i.e. if $40, now 1)
-	AND #$01	 ; Capping value to be sure
-	TAY		 ; Y = 0 or 1
-
-	LDA PRG001_B02C,Y
-	STA <Temp_Var1	 ; Temp_Var1 = -$0E or $1E
-
-	; Find an empty special object slot -> 'Y' OR if none available, do not return here!
-	JSR SpecialObj_FindEmptyAbort
-
-	STX DAIZ_TEMP1
-	LDX KoopaKidType
-
-	; Special object: Koopaling wand blast!
-	LDA Koopaling_Projectiles, X
-	STA SpecialObj_ID,Y
-	LDX DAIZ_TEMP1
-
-	; Set wand blast X
-	LDA <Objects_X,X
-	ADD <Temp_Var1	
-	STA SpecialObj_XLo,Y
-
-	; Set wand blast Y
-	LDA <Objects_Y,X
-	ADD #$0a
-	STA SpecialObj_YLo,Y
-
-	; Set wand blast Y Hi
-	LDA <Objects_YHi,X
-	ADC #$00	
-	STA SpecialObj_YHi,Y
-
-	; Set wand Y velocity
-	LDA Objects_TargetingYVal,X
-	STA SpecialObj_YVel,Y
-
-	; Set wand X velocity
-	LDA Objects_TargetingXVal,X
-	STA SpecialObj_XVel,Y
-
-	; Timer = $FF
-	LDA #$ff	 
-	STA SpecialObj_Timer,Y
-
-
-	; Play wand sound if it isn't playing already
-	LDA SndCur_Level1
-	AND #$80
-	BNE PRG001_B07B
-
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
-
-PRG001_B07B:
-	RTS		 ; Return
-
 
 ObjHit_Koopaling:
-	LDA Objects_Frame,X
-	CMP #$04
-	BLT PRG001_B158	 ; If Koopaling's current animation frame < 4 (not in a spinning shell mode), jump to PRG001_B158
-
-	; Koopaling is spinning in his shell...
-
-	JSR Object_CalcCoarseYDiff	 ; Calculate Y difference between Koopaling and Player
-
-	LDY <Temp_Var15
-	CPY #$04	
-	BGS PRG001_B07B	 ; If the Y difference value > +4, jump to PRG001_B137 (RTS)
-
-	DEY		 ; Y--
-	BMI PRG001_B158	 ; If the difference was 0 (because now it just turned negative), jump to PRG001_B158
-
-	; This gives the Player a semi-random rebound X Velocity after hitting the Koopaling
-	; that is in his spinning shell mode
-	LDA <Counter_1
-	LSR A		 ; Bit 0 of Counter_1 -> carry
-	LDA #$30	 ; A = $30
-	BCS PRG001_B154	 ; If carry set from Counter_1 (i.e. every other tick), jump to PRG001_B154
-
-	LDA #-$30	 ; A = -$30 instead
-
-PRG001_B154:
-	STA <Player_XVel ; Set Player's rebound velocity
-	BNE PRG001_B160	 ; Jump (technically always) to PRG001_B160
-
-PRG001_B158:
-
-	; From Object_HitTestRespond:
-	; Temp_Var12 holds specific info:
-	;	Bit 0 - Set if Player's bbox bottom is HIGHER than object's bbox bottom
-	;	Bit 1 - Set if Player's bbox left edge is to the LEFT of object's bbox left edge
-
-	LDA <Temp_Var12	
-	LSR A		
-	BCS PRG001_B160	 ; If Player is above the Koopaling, jump to PRG001_B160
-
-	JMP Player_GetHurt ; Hurt Player! (and don't come back
-
-PRG001_B160:
-
-	; Bounce Player off Koopaling!
-	LDA #-$30
-	STA <Player_YVel
-
-	LDA Objects_Timer2,X
-	BNE PRG001_B1C9	 ; If timer 2 is not expired, jump to PRG001_B1C9 (RTS)
-
-	; Squish sound
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERSWIM	
-	STA Sound_QPlayer
-
-	LDA KoopaKidType
-	CMP #$05
-	BNE PRG001_B17B	 ; If World_Num = 5 (World 6, Lemmy), jump to PRG001_B17B
-
-	; Lemmy pops out another ball if hit
-	JSR Lemmy_SpawnBall
-
-PRG001_B17B:
-
-	; Stop Koopaling's horizontal movement
-	LDA #$00
-	STA <Objects_XVel,X
-
-	LDY <Objects_YVel,X
-	BPL PRG001_B185	 ; If Koopaling's Y velocity >= 0 (not moving upward), jump to PRG001_B185
-
-	; If Koopaling was moving upward when stomped, stop him!
-	STA <Objects_YVel,X
-
-PRG001_B185:
-
-	; Hit Koopaling!
-	INC <Objects_Var4,X	; Increment the hit count
-	LDA <Objects_Var4,X
-	CMP #$03
-	BGE PRG001_B193	 ; If Objects_Var4 >= 3 (Koopaling's last hit), jump to PRG001_B193
-
-	LDA #$80
-	STA Objects_Timer2,X	 ; Timer 2 set to $80
-
-	RTS		 ; Return
-
-PRG001_B193:
-
-	; Koopaling defeated!
-
-	; Set all objects besides the Koopaling to "Dying" state!
-	LDY #$04	 ; Y = 4
-PRG001_B195:
-	CPY <SlotIndexBackup
-	BEQ PRG001_B1A8	 ; If this is the Koopaling's object index, jump to PRG001_B1A8 (do nothing)
-
-	LDA Objects_State,Y
-	BEQ PRG001_B1A8	 ; If this object slot is already dead/empty, jmp to PRG001_B1A8
-
-	; There's an object here; set state to Poof Death
-	LDA #OBJSTATE_POOFDEATH
-	STA Objects_State,Y
-
-	; Set object's timer to $1F
-	LDA #$1f	 
-	STA Objects_Timer,Y
-
-PRG001_B1A8:
-	DEY		 ; Y--
-	BPL PRG001_B195	 ; While Y >= 0, loop!
-
-	INC Level_GetWandState	 ; Level_GetWandState = 1
-
-	; Lock the clock
-	LDA #$81
-	STA Level_TimerEn
-
-	; Shoot him all you want >:(
-	LDA #$7f
-	STA Objects_HitCount,X	 
-
-	; Set a velocity that moves Koopaling somewhere towards center
-	; Not really precise though!
-	LDA #$80
-	SUB <Objects_X,X
-	STA <Objects_XVel,X
-	ASL A
-	ROR <Objects_XVel,X
-
-	LDA #$a0
-	STA Objects_Timer2,X	 ; Set timer 2 to $A0
-
-	; Do not return to caller!!
-	PLA
-	PLA
-
-PRG001_B1C9:
-	RTS		 ; Return
-
-Koopaling_PowerUp:
-	;.byte $OBJ_POWERUP_NINJASHROOM, $OBJ_POWERUP_FIREFLOWER, $OBJ_POWERUP_SUPERLEAF, $OBJ_POWERUP_ICEFLOWER, $OBJ_POWERUP_FOXLEAF, $OBJ_POWERUP_STARMAN, $OBJ_POWERUP_STARMAN, $OBJ_POWERUP_STARMAN
-
-;Koopaling_StarFlash:
-;	.byte
-	RTS
-
-	; End and start frames of animation loop for Koopaling
-Koopaling_FrameLoopEnd:
-	.byte $0A	; Wand State 0: Normal operation
-	.byte $12	; Wand State 1: when Koopa Kid gets last hit
-
-Koopaling_FrameLoopStart:
-	.byte $04	; Wand State 0: Normal operation
-	.byte $0A	; Wand State 1: when Koopa Kid gets last hit
-
-	; Objects_FlipBits setting by Object_Frame
-Koopaling_LRByFrame:
-	.byte $00, SPR_HFLIP, $00, SPR_HFLIP, $00, $00, SPR_HFLIP, SPR_HFLIP, $00, $00, $00, $00, $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP
-	.byte $00, $00
-
-
-Koopaling_PatLookup:
-
-	; Koopaling patterns; for some reason the origin is behind the array by 17 bytes?
-KPatTable = Koopaling_PatLookup - 17
-
-	; There are 18 bytes per Koopaling for their 6 sprites arranged 3x2
-KPATS .func ((\1 - KPatTable) / 6)
-
-	.byte KPATS(KoopalingPats_Larry)	; World 1
-	.byte KPATS(KoopalingPats_Morton)	; World 2
-	.byte KPATS(KoopalingPats_Wendy)	; World 3
-	.byte KPATS(KoopalingPats_Iggy)		; World 4
-	.byte KPATS(KoopalingPats_Roy)		; World 5
-	.byte KPATS(KoopalingPats_Lemmy)	; World 6
-	.byte KPATS(KoopalingPats_Ludwig)	; World 7
-
-	; Each Koopaling uses six 8x16 sprite chunks arranged 3x2
-
-	; Koopaling neutral frames
-	.byte $B9, $31, $B9, $A1, $A3, $A5	; 4: Spinning shell 1
-	.byte $BB, $31, $BB, $AD, $AF, $B1	; 5: Spinning shell 2
-	.byte $BD, $31, $BD, $A1, $A3, $A5	; 6: Spinning shell 3
-	.byte $B9, $31, $B9, $A7, $A9, $AB	; 7: Spinning shell 4
-	.byte $BB, $31, $BB, $B3, $B5, $B7	; 8: Spinning shell 5
-	.byte $BD, $31, $BD, $A7, $A9, $AB	; 9: Spinning shell 6
-	.byte $8D, $8F, $31, $91, $93, $31	; 10: Exiting shell 1
-	.byte $85, $87, $31, $89, $8B, $31	; 11: Exiting shell 2
-	.byte $81, $81, $31, $83, $83, $31	; 12: Exiting shell 3
-	.byte $31, $85, $87, $31, $89, $8B	; 13: Exiting shell 4
-	.byte $31, $8D, $8F, $31, $91, $93	; 14: Exiting shell 5
-	.byte $31, $95, $97, $31, $99, $9B	; 15: Exiting shell 6
-	.byte $9D, $9D, $31, $9F, $9F, $31	; 16: Exiting shell 7
-	.byte $95, $97, $31, $99, $9B, $31	; 17: Exiting shell 8
-
-	; Larry
-KoopalingPats_Larry:
-	.byte $81, $83, $85, $87, $89, $8B	; Walk 1
-	.byte $81, $83, $85, $87, $8D, $8F	; Walk 2
-	.byte $81, $91, $85, $93, $95, $8B	; Wand swing
-
-	; Morton
-KoopalingPats_Morton:
-	.byte $81, $83, $85, $87, $89, $8B	; Walk 1
-	.byte $81, $83, $85, $8D, $8F, $91	; Walk 2
-	.byte $81, $93, $85, $95, $A7, $8B	; Wand swing
-
-	; Wendy
-KoopalingPats_Wendy:
-	.byte $9F, $A1, $A3, $B5, $A5, $A7	; Walk 1
-	.byte $9F, $A1, $A3, $B5, $A9, $AB	; Walk 2
-	.byte $9F, $AD, $A3, $AF, $B1, $A7	; Wand swing
-
-	; Iggy
-KoopalingPats_Iggy:
-	.byte $9D, $9F, $A1, $87, $89, $8B	; Walk 1
-	.byte $9D, $9F, $A1, $87, $8D, $8F	; Walk 2
-	.byte $9D, $A3, $A1, $93, $95, $8B	; Wand swing
-
-	; Roy
-KoopalingPats_Roy:
-	.byte $9F, $A1, $85, $87, $89, $8B	; Walk 1
-	.byte $9F, $A1, $85, $8D, $8F, $91	; Walk 2
-	.byte $9F, $A3, $85, $95, $A7, $8B	; Wand swing
-
-	; Lemmy
-KoopalingPats_Lemmy:
-	.byte $A7, $AD, $71, $AF, $B1, $AB	; Walk 1
-	.byte $A7, $AD, $71, $AF, $B3, $B5	; Walk 2
-	.byte $A7, $A5, $71, $71, $A9, $AB	; Wand swing
-
-	; Ludwig
-KoopalingPats_Ludwig:
-	.byte $81, $83, $85, $87, $89, $8B	; Walk 1
-	.byte $81, $83, $85, $8D, $8F, $91	; Walk 2
-	.byte $81, $93, $85, $95, $B7, $8B	; Wand swing
-
-Koopaling_WandFrame:
-	.byte $49, $49, $4B, $4D
-
-Koopaling_OffYLo:
-	.byte $05, $05, $FB, $0A, $0A, $0A, $FF, $0F, $08, $08, $FB, $0D
-
-Koopaling_OffXLo:
-	.byte $F4, $F4, $0C, $F2, $FA, $FA, $0A, $F8, $F5, $F5, $0C, $F3
-
-	.byte $14, $14, $FC, $16, $0E, $0E, $FE, $10, $13, $13, $FC, $15
-
-Koopaling_OffXHi:
-	.byte $FF, $FF, $00, $FF, $FF, $FF, $00, $FF, $FF, $FF, $00, $FF
-
-Koopaling_OffYHi:
-	.byte $00, $00, $FF, $00, $00, $00, $FF, $00, $00, $00, $FF, $00
-
-	; Offset to Koopaling_OffYLo/Hi by World
-Koopaling_OffYOff:
-	.byte $04	; World 1
-	.byte $00	; World 2
-	.byte $04	; World 3
-	.byte $04	; World 4
-	.byte $00	; World 5
-	.byte $04	; World 6
-	.byte $08	; World 7
-
-Koopaling_DrawAndAnimate:
-	LDA <Player_HaltGame
-	BNE PRG001_B336	 ; If game is halted, jump to PRG001_B336
-
-	LDA Objects_Timer2,X
-	BEQ PRG001_B336	 ; If object timer 2 is zero, jump to PRG001_B336
-
-	AND #$03
-	BNE PRG001_B328	 ; 3:4 ticks, jump to PRG001_B328
-
-	LDY Level_GetWandState	 ; Y = Level_GetWandState
-
-	INC Objects_Frame,X	 ; Increment object's frame
-
-	LDA Objects_Frame,X	; Get frame
-	CMP Koopaling_FrameLoopEnd,Y	
-	BLT PRG001_B321	 	; If frame is not at the end of the loop, jump to PRG001_B321
-
-	LDA Koopaling_FrameLoopStart,Y
-	STA Objects_Frame,X	 ; Set back to first frame of animation loop
-
-PRG001_B321:
-	TAY		 ; Frame -> 'Y'
-
-	; Set the Objects_FlipBits setting for this frame
-	LDA Koopaling_LRByFrame,Y
-	STA Objects_FlipBits,X
-
-PRG001_B328:
-
-	; Every 15 ticks, play the shell rotation "swish" sound
-	LDA <Counter_1
-	AND #$0f
-	BNE PRG001_B336
-
-	; Play the shell rotation "swish" sound
-	LDA Sound_QLevel2
-	ORA #SND_LEVELMARCH
-	STA Sound_QLevel2
-
-PRG001_B336:
-	JSR Object_DeleteOffScreen	; Delete object if it falls off screen
-	JSR Draw_KoopalingWand		; Draw the Koopaling's wand
-	JSR Object_ShakeAndCalcSprite	; Calculate sprite info
-
-	LDX <SlotIndexBackup		; X = object's slot index
-
-	LDA Objects_Frame,X
-	CMP #$04	 
-	BLT PRG001_B35C	 	; If object's frame < 4, jump to PRG001_B35C
-
-	; Koopaling spinning shell frames here... (frame 4 - 9)
-
-	; Force pattern table bank 4 to $4B
-	LDY #$4b
-	STY PatTable_BankSel+5
-
-	CMP #$0a
-	BLT PRG001_B368	 	; If object's frame < 10, jump to PRG001_B368
-
-	; Koopaling exiting shell frames here... (frame 10 - 17)
-
-	TAY		 	; Backup the frame -> 'Y'
-
-	; Temp_Var2 += 4 (Sprite_X from Object_ShakeAndCalcSprite)
-	LDA <Temp_Var2
-	ADD #$04
-	STA <Temp_Var2
-
-	TYA		 	; Restore Frame
-	BNE PRG001_B368	 	; Jump (most likely always) to PRG001_B368
-
-PRG001_B35C:
-	CMP #$03	 
-	BNE PRG001_B362	 	; If object's frame <> 3, jump to PRG001_B362
-
-	LDA #$00	 	; Otherwise, A = 0
-
-PRG001_B362:
-	LDY KoopaKidType	 	; Y = World number
-	ADC Koopaling_PatLookup,Y	; Get index into the Koopaling pattern table (divided by 6)
-
-PRG001_B368:
-
-	; A = frame value with offset
-
-	; Multiply by 6
-	ASL A	
-	STA <Temp_Var16
-	ASL A	
-	ADC <Temp_Var16
-	TAX		 	; -> 'X' (offset into Koopaling_PatLookup)
-
-	LDY <Temp_Var7		 ; Y = Sprite_RAM offset
-
-	JSR Draw_KoopalingBody	 ; Draw upper half Koopaling
-
-	; Second row sprites
-	LDA <Temp_Var1
-	ADD #$10
-	STA <Temp_Var1
-
-	; Sprite_RAM offset += 12 (next three sprites)
-	TYA
-	ADD #$0c
-	TAY
-
-	; X += 3 (next sprite pattern set)
-	INX
-	INX
-	INX
-
-	JSR Draw_KoopalingBody	 ; Draw lower half Koopaling
-
-	LDX <SlotIndexBackup	 ; X = object slot index
-
-	LDY <Temp_Var7		 ; Y = starting Sprite_RAM offset
-
-	LDA Objects_Frame,X
-	CMP #$0c	 
-	BEQ PRG001_B395	 ; If sprite frame = $C, jump to PRG001_B395
-
-	CMP #$10	 
-	BNE PRG001_B3A1	 ; If sprite frame <> $10, jump to PRG001_B3A1
-
-PRG001_B395:
-
-	; Set horizontal flip on some shell flip frames
-	LDA Sprite_RAM+6,Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+6,Y
-
-	STA Sprite_RAM+$12,Y
-	RTS		 ; Return
-
-PRG001_B3A1:
-	CMP #$04
-	BLT PRG001_B3D0	 ; If frame < 4 (not shell frame), jump to PRG001_B3D0 (RTS)
-
-	CMP #$0a
-	BGE PRG001_B3D0	 ; If frame >= 10 (exiting shell frame), jump to PRG001_B3D0 (RTS)
-
-	; Spinning shell frames only...
-
-	; Offset Y +6
-	LDA Sprite_RAM,Y
-	ADC #$06
-	STA Sprite_RAM,Y
-	STA Sprite_RAM+8,Y
-
-	; Clear horizontal/vertical flip bit on first half
-	LDA Sprite_RAM+2,Y
-	AND #$3f
-	STA Sprite_RAM+2,Y
-
-	; Set horizontal flip on second half
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+10,Y
-
-	LDA Objects_Timer2,X
-	CMP #$60
-	BGE PRG001_B3D0	 ; If Timer 2 >= $60, jump to PRG001_B3D0 (RTS)
-
-	; Otherwise, set pattern $71
-	LDA #$71
-	STA Sprite_RAM+1,Y
-	STA Sprite_RAM+9,Y
-
-PRG001_B3D0:
-	RTS		 ; Return
-
-Draw_KoopalingWand:
-	LDA Objects_Frame,X
-	CMP #$04
-	BGE PRG001_B3D0	 ; If frame >= 4, jump to PRG001_B3D0 (RTS)
-
-	LDY KoopaKidType	 ; Y = World number
-
-	LDA Objects_Frame,X	; Get current frame
-	ADD Koopaling_OffYOff,Y	; Add respective base index
-	TAY		 	; Result -> 'Y'
-
-	; Add offset to object Y and store previous value
-	LDA <Objects_Y,X
-	PHA		
-	ADD Koopaling_OffYLo,Y
-	STA <Objects_Y,X
-
-	LDA <Objects_YHi,X
-	PHA
-	ADC Koopaling_OffYHi,Y
-	STA <Objects_YHi,X
-
-	LDA Objects_FlipBits,X
-	ASL A
-	BPL PRG001_B3FF	 ; If Player is not right of object, jump to PRG001_B3FF
-
-	; Add 12 to offset index
-	TYA
-	ADD #$0c
-	TAY
-
-PRG001_B3FF:
-
-	; Add offset to object X and store previous value
-	LDA <Objects_X,X
-	PHA
-	ADD Koopaling_OffXLo,Y
-	STA <Objects_X,X
-
-	LDA <Objects_XHi,X
-	PHA	
-	ADC Koopaling_OffXHi,Y
-	STA <Objects_XHi,X
-
-	JSR Object_DetermineHorzVis	; Set flags based on which sprites of this object are horizontally visible
-	JSR Object_DetermineVertVis	; Set flags based on which sprites of this object are vertically visible
-	JSR Object_ShakeAndCalcSprite	; Calculate sprite info
-
-	LDX <SlotIndexBackup		; Restore 'X' as object index
-
-	LDY #$02	 ; Y = 2
-
-	LDA Objects_Timer,X
-	BEQ PRG001_B425	 ; If first object timer = 0, jump to PRG001_B425
- 
-	AND #$03	; Cap 0 - 3
-	TAY		; -> 'Y'
-
-PRG001_B425:
-	STY <Temp_Var4	; Store value -> Temp_Var4
-
-	; Draw Koopaling's wand
-	LDY Objects_Frame,X	; Y = current frame
-	LDX Koopaling_WandFrame,Y
-	LDY #$20
-	JSR Object_Draw16x16Sprite
-
-	BIT <Temp_Var3
-	BVS PRG001_B43A	 ; If wand is horizontally flipped, jump to PRG001_B43A
-
-	; Y += 4 (offset to next sprite because wand second half occurred second)
-	INY
-	INY
-	INY
-	INY
-
-PRG001_B43A:
-
-	; Horizontally flips the "staff" part of the wand sprite
-	LDA Sprite_RAM+2,Y
-	EOR #SPR_HFLIP
-	STA Sprite_RAM+2,Y
-
-	LDX <SlotIndexBackup	; X = Object's index 
-
-	PLA		 	; Restore pre-offset X Hi
-	STA <Objects_XHi,X	; Store as object's X Hi
-
-	PLA		 	; Restore pre-offset X
-	STA <Objects_X,X	; Store as object's X
-
-	PLA		 	; Restore pre-offset Y Hi
-	STA <Objects_YHi,X	; Store as object's Y Hi
-
-	PLA		 	; Restore pre-offset Y
-	STA <Objects_Y,X	; Store as object's Y
-
-	JSR Object_DetermineHorzVis	; Set flags based on which sprites of this object are horizontally visible
-	JMP Object_DetermineVertVis	; Set flags based on which sprites of this object are vertically visible (and do not return...)
-
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-Draw_KoopalingBody:
-
-	; Shift Temp_Var5; if bit set, skip this sprite
-	LSR <Temp_Var5
-	BCS PRG001_B4B4	 ; If carry set, jump to PRG001_B4B4 (RTS)
-
-	LDA <Temp_Var8	 ; Holds Object's Flags1 (sprites horizontally off-screen)
-	ASL A		 ; Shift value to the left
-	STA <Temp_Var16	 ; -> Temp_Var16
-
-	LDA <Temp_Var1	 ; Object's Y
-
-	BCS PRG001_B466	 	; If sprite is not visible, jump to PRG001_B466
-
-	STA Sprite_RAM,Y 	; Otherwise, store sprite Y
-
-PRG001_B466:
-	BIT <Temp_Var16	 
-	BMI PRG001_B46D	 	; If next sprite is not visible, jump to PRG001_B46D
-
-	STA Sprite_RAM+4,Y	; Otherwise, store next sprite Y
-
-PRG001_B46D:
-	BVS PRG001_B472	 	; If next sprite is not visible, jump to PRG001_B472
-
-	STA Sprite_RAM+8,Y	; Otherwise, store next sprite Y
-
-PRG001_B472:
-
-	; Store all sprites' Xs
-	LDA <Temp_Var2
-	STA Sprite_RAM+3,Y
-	ADD #$08
-	STA Sprite_RAM+7,Y
-	ADD #$08
-	STA Sprite_RAM+11,Y
-
-	LDA KPatTable,X
-	ADD #$40
-	STA Sprite_RAM+1,Y
-	LDA KPatTable+1,X
-	ADD #$40
-	STA Sprite_RAM+5,Y
-	LDA KPatTable+2,X
-	ADD #$40
-	STA Sprite_RAM+9,Y
-
-	LDA <Temp_Var3
-	ORA <Temp_Var4
-
-	; Store combined attributes
-	STA Sprite_RAM+2,Y 
-	STA Sprite_RAM+6,Y
-	STA Sprite_RAM+10,Y 
-
-	BIT <Temp_Var3 
-	BVC PRG001_B4B4	 ; If not horizontally flipped, jump to PRG001_B4B4 
-
-	; Otherwise, reverse the sprites...
-	LDA Sprite_RAM+1,Y 
-	PHA	 
-	LDA Sprite_RAM+9,Y 
-	STA Sprite_RAM+1,Y 
-	PLA	 
-	STA Sprite_RAM+9,Y 
-
-PRG001_B4B4:
-	RTS		 ; Return
-
-PRG001_B4B5:
-	.byte $AF, $BF, $81, $41
-	
-Koopaling_WandGrab: 
-
-	; Do the wand flashy colors effect!
-	LDA #$9e	 
-	STA RotatingColor_Cnt
-
-PRG001_B4BE:
-	INC Level_GetWandState	 ; Level_GetWandState = 4, 5, 6, or 7 depending how we got here
-
-Koopaling_WandFall:
-	RTS		 ; Return
-
-
-Koopaling_TimeBonus:
-	BNE Koopaling_WandFall	 ; Not done running down time bonus, jump to Koopaling_WandFall (RTS)
-
-	; All time depleted...
-
-	LDA #$c0
-	STA Objects_Timer,X	 ; Object timer = $C0
-
-	BNE PRG001_B4BE	 ; Jump (technically always) to PRG001_B4BE
-
-	; Defeated Koopaling vanishing air ship timer mask; smaller the timer,
-	; the smaller the mask, and the faster it flickers
-KDefeat_VanishMask:	.byte $01, $02, $04, $08
-
-Koopaling_AirshipVanish:
-	LDA Objects_Timer,X	 
-	BNE PRG001_B4E6	 ; If timer is not expired, jump to PRG001_B4E6
-
-	; Timer expired!
-
-	; Play "King's Room" music (as Mario begins to fall)
-	LDA #MUS2A_THRONEROOM
-	STA Sound_QMusic2
-
-	; Position all the clouds visible after airship vanishes semi-randomly
-	JSR KDefeat_PositionClouds
-
-	LDA #$ff
-	STA Objects_Timer,X	 ; Set timer to $FF
-
-	BNE PRG001_B4BE	 ; Jump (technically always) to PRG001_B4BE (next wand state)
-
-PRG001_B4E6:
-	CMP #$80
-	BGE Koopaling_WandFall	 ; If timer < $80, jump to Koopaling_WandFall (RTS)
-
-	; Could have just done this with right shifts?
-	ASL A		; Bit 7 lost
-	ASL A		; Bit 6 lost
-	ROL A		; Bit 5 -> 0
-	ROL A		; Bit 5 -> 1, Bit 4 -> 0 (Effectively, timer is divided by 16)
-	AND #$03	; Cap 0 - 3
-
-	TAY			 	; Y = 0 to 3
-	LDA KDefeat_VanishMask,Y	; A = 1, 2, 4, or 8
-
-	; The "flicker away" effect just takes advantage of forcing the scroll 
-	; to the absolute top or absolute bottom, back and forth
-	LDY #$00	 	; Y = 0 (scroll top)
-	AND Objects_Timer,X	; Mask timer to control flicker rate
-	BEQ PRG001_B4FD	 	; If masked value is zero, jump to PRG001_B4FD
-
-	LDY #$ef	 ; Y = $EF (scroll bottom)
-
-PRG001_B4FD:
-	STY <Vert_Scroll ; Set scroll as appropriate!
-
-	RTS		 ; Return
-
-
-Koopaling_DoPlayerFall:
-	LDA Objects_Timer,X	  
-	BEQ PRG001_B4BE	 ; If timer expired, jump to PRG001_B4BE (next wand state)
-
-PRG001_B505:
-	JSR KDefeat_MoveClouds	; Move the clouds in the background
-
-	; I suspect that there was an idea to have your time bonus
-	; counted up as Mario fell instead of doing it beforehand...
-
- Koopaling_FallOff:
-	JSR PRG001_B505	 ; Keep doing stuff from Koopaling_DoPlayerFall
-	BNE PRG001_B525	 ; If time bonus hasn't finished counting down, jump to PRG001_B525 (RTS) (not used!)
-
-	LDA <Player_YHi
-	CMP #$02
-	BLT PRG001_B525	 ; If Player's Y Hi < 2, jump to PRG001_B525 (RTS)
-
-	LDY Player_Current	; Y = Player_Current
-
-	; When Level_ExitToMap goes non-zero, fall to king's room, not exit to map
-	LDA #$01
-	STA Player_FallToKing,Y
-
-	LSR A
-	STA Map_ReturnStatus	 ; Map status = 0 (level cleared)
-	INC Level_ExitToMap	 ; Fall into king's room (in this context)
-
-PRG001_B525:
-	RTS		 ; Return
-
-
-	; Initialized semi-random position of clouds shown after airship vanishes
-KDefeat_CloudXs:	
-KDefeat_CloudYs:	
-	
-	; Positions the post-airship-vanishing clouds semi-randomly
-KDefeat_PositionClouds:
-
-	RTS		 ; Return
-
-PRG001_B556:	
-
-KDefeat_MoveClouds:
-	RTS		 ; Return
-
-	; Widths of the different clouds
-KDefeat_CloudWidths:
-
-	; Clouds are drawn manually, not actual objects of their own free will!
-KDefeat_DrawClouds:
-	RTS		 ; Return
-
-	; Different impact counts for the heavy Koopalings Roy and Ludwig, sets Level_Vibration
-	; Basically larger vibrations based on more hits to the Koopaling
-KoopalingImpact_Count:
-	.byte $20, $30, $40
-
-
-	; Koopaling hits solid tiles and also causes the paralyzing Player
-	; floor vibration, if it's the right Koopaling to do so..
-Koopaling_DetectWorld:
-
-	; Apply velocities and detect against world
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit
-	JSR Object_WorldDetectN1
-
-	LDA KoopaKidType
-	CMP #$04	
-	BEQ PRG001_B617	 ; If World = 4 (World 5, Roy), jump to PRG001_B617
-
-	CMP #$06	 
-	BEQ PRG001_B617	 ; If World = 6 (World 7, Ludwig), jump to PRG001_B617
-
-	; Not World 5 (Roy) or World 7 (Ludwig) ...
-
-	; Object Y velocity += 2 (fall)
-	INC <Objects_YVel,X
-	INC <Objects_YVel,X
-
-	JSR Object_HitGroundAlign	 ; Hit ground and align
-	JMP PRG001_B654	 		; Jump to PRG001_B654
-
-PRG001_B617:
-
-	; World 5 (Roy) or World 7 (Ludwig) ...
-
-	LDA <Objects_YVel,X
-	BMI PRG001_B621	 ; If Y velocity < 0 (moving upward), jump to PRG001_B621
-
-	CMP #$78	 
-	BGE PRG001_B62E	 ; If Y velocity >= $78, jump to PRG001_B62E
-	BLT PRG001_B624	 ; If Y velocity < $78, jump to PRG001_B624
-
-PRG001_B621:
-	JSR Negate	 ; Get absolute value of Y velocity
-
-PRG001_B624:
-	; Absolute value of Y velocity < $78
-
-	; Basically add 1/8 current velocity to the Y velocity (Roy and Ludwig's fast fall rate)
-	LSR A
-	LSR A
-	LSR A	
-	ADD #$01
-	ADC <Objects_YVel,X
-	STA <Objects_YVel,X
-
-PRG001_B62E:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG001_B654	 ; If Roy/Ludwig hasn't hit ground, jump to PRG001_B654
-
-	LDA <Objects_YVel,X
-	CMP #$20
-	BLT PRG001_B651	 ; If Y velocity < $20, jump to PRG001_B651 (cutoff for shaking floor)
-
-	; Slam floor sound!
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	LDY <Objects_Var4,X	 ; Y = current Koopaling hit count
-
-	LDA KoopalingImpact_Count,Y
-	STA Level_Vibration	 	; Shake floor!
-
-	LDY <Player_InAir
-	BNE PRG001_B651	 	; If Player is mid-air, jump to PRG001_B651
-
-	STA Objects_Var1,X	 ; If Player's on the ground, set Variable 1 to the same as the shake (used to paralyze Player)
-
-PRG001_B651:
-	JSR Object_HitGround	 ; Hit ground, align to floor
-
-PRG001_B654:
-	LDA <Objects_DetStat,X
-	AND #$08
-	BEQ PRG001_B65C	 ; If Koopaling did not hit ceiling, jump to PRG001_B65C
-
-	STA <Objects_YVel,X	 ; Otherwise, Y vel = 0
-
-PRG001_B65C:
-	LDA <Objects_DetStat,X
-	AND #$03
-	BEQ PRG001_B668	 ; If Koopaling did not hit left or right wall, jump to PRG001_B668
-
-	; Hit wall, turn around...
-	JSR Object_AboutFace
-	JSR Object_FlipFace
-
-PRG001_B668:
-	RTS		 ; Return
-
-Lemmy_XLimits:		.byte 208, 32	; Lemmy's X coordinate limits (does not take "X Hi" into account)
-Lemmy_XVelLimits:	.byte $18, -$18	; Lemmy's X velocity limits
-Lemmy_XVelAccel:	.byte 1, -1	; Lemmy's X velocity acceleration
-
-	; Converts the "0 if Player is to the right of object, 1 if to the left" 
-	; to an appropriate horizontal flip
-Koopaling_FacePlayerBit:	.byte SPR_HFLIP, $00
-
-PRG001_B671:
-
-	; World 6 (Lemmy)
-
-	JSR DrawLemmyBall_AndHit	; Draw Lemmy and his ball, also detect Player touching his ball
-	JSR Object_HitTestRespond	; Perform normal hit test and response 
-	JSR Koopaling_DieByFire		; If hit by enough fireballs, battle ends
-
-	LDA <Player_HaltGame
-	ORA Objects_Timer2,X
-	BNE PRG001_B6F1	 	; If game is halted or timer 2 is non-zero, jump to PRG001_B6F1
-
-	; Get absolute value of X velocity
-	LDA <Objects_XVel,X
-	BPL PRG001_B688	
-	JSR Negate
-PRG001_B688:
-
-	LSR A
-	LSR A
-	LSR A
-
-	AND #$07	 ; A = (absolute value of X velocity) / 8, capped 0 - 7
-	TAY		 ; -> 'Y'
-
-	LDA KoopalingAnimSpd,Y
-	ADD Objects_Var7,X
-	STA Objects_Var7,X	 ; Koopaling's animation timer += KoopalingAnimSpd[Y]
-	BCC PRG001_B6A0	 	; If no overflow, jump PRG001_B6A0
-
-	INC Objects_Var6,X 	; Animation counter 
-	INC Objects_Frame,X	; If overflow, Koopaling stepped, so go to next frame
-
-PRG001_B6A0:
-
-	; Alternate between frame 0 and 1 when "walking"
-	LDA Objects_Frame,X
-	AND #$01
-	STA Objects_Frame,X
-
-	LDA <Counter_1
-	AND #$7f	
-	BNE PRG001_B6B7	 ; 127 ticks, jump to PRG001_B6B7
-
-	; Every 128 ticks...
-	JSR Level_ObjCalcXDiffs	 ; Determine which side Player is on
-
-	; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
-	LDA Koopaling_FacePlayerBit,Y	 ; Get appropriate flip bit
-	STA Objects_FlipBits,X	 	; Set it!
-
-PRG001_B6B7:
-	LDA <Counter_1
-	LSR A		
-	BCS PRG001_B6D1	 ; Every other tick, jump to PRG001_B6D1
-
-	DEC Objects_Var3,X	; Objects_Var3-- 
-	BNE PRG001_B6D1	 	; If Objects_Var3[X] <> 0, jump to PRG001_B6D1
-
-	INC Objects_TargetingXVal,X	 ; Objects_TargetingXVal++ 
-
-	LDA RandomN,X
-	AND #$3f	
-	ORA #$80	
-	STA Objects_Var3,X	 ; Random value $80-$BF -> Objects_Var3 
-
-	JSR Lemmy_SpawnBall	 ; Lemmy will spawn another ball, if available
-
-PRG001_B6D1:
-	LDA Objects_TargetingXVal,X
-	AND #$01
-	TAY			; Y = 0 or 1
-	LDA Lemmy_XLimits,Y
-	CMP <Objects_X,X
-	LDY #$00		; Y = 0
-	BGE PRG001_B6E1		; If Lemmy is beyond his limit, jump to PRG001_B6E1
-
-	INY			; Y = 1
-
-PRG001_B6E1:
-	LDA <Objects_XVel,X
-	CMP Lemmy_XVelLimits,Y
-	BEQ PRG001_B6EE	 	; If Lemmy is at his limit, jump to PRG001_B6EE
-
-	ADD Lemmy_XVelAccel,Y
-	STA <Objects_XVel,X	; Otherwise, apply acceleration
-
-PRG001_B6EE:
-	JSR Object_ApplyXVel	; Apply X Velocity
-
-PRG001_B6F1:
-	RTS		 ; Return
-
-KoopalingAnimSpd:
-	.byte $00, $20, $40, $50, $60, $70, $80, $A0
-
-	; Lemmy's ball components, four frames
-LemmyBall_Left:		.byte $DB, $F7, $F7, $DB
-LemmyBall_Right:	.byte $F7, $DB, $DB, $F7 
-LemmyBall_Attrs:	.byte $02, $42, $C2, $82
-
-	; Lemmy has a special routine to draw his ball and detect getting hit by it
-DrawLemmyBall_AndHit:
-	LDY #$00	 ; Y = 0
-
-	LDA Objects_Frame,X
-	CMP #$02	 
-	BGE PRG001_B710	 ; If frame >= 2, jump to PRG001_B710
-
-	TAY		 ; Y = 1
-
-PRG001_B710:
-	STY <Temp_Var1	 ; Temp_Var1 = 0 or 1
-
-	LDA <Objects_Y,X	; Get object's Y
-	PHA		 	; Save it
-	SUB <Temp_Var1		; Subtract 0 or 1
-	STA <Objects_Y,X	; Store into object's Y
-
-	LDA <Objects_YHi,X	; Get object's Y Hi
-	PHA		 	; Save it
-	SBC #$00	 	; Apply carry
-	STA <Objects_YHi,X	; Store into object's Y Hi
-
-	JSR Koopaling_DrawAndAnimate	 ; Draw and animate the Koopaling
-
-	PLA		 	; Restore object's Y Hi
-	STA <Objects_YHi,X	; Save it
-
-	PLA		 	; Restore object's Y
-	STA <Objects_Y,X	; Save it
-
-	JSR Object_CalcSpriteXY_NoHi	 ; Calculate Sprite X and Y
-
-	LDA <Objects_XVel,X
-	ASL A		 ; A = X velocity << 1
-
-	LDA Objects_Var6,X	 ; Get animation frame counter for Lemmy's ball
-	BCC PRG001_B737	 ; If velocity negative, jump to PRG001_B737
-
-	EOR #$03	 ; Invert part of Objects_Var6 we care about
-
-PRG001_B737:
-	AND #$03	 ; Mask lower 2 bits of Objects_Var6 (0-3)
-	TAY		 ; -> 'Y'
-
-	; Stores patterns for Lemmy's ball
-	LDA LemmyBall_Left,Y
-	STA Sprite_RAM+$19
-
-	LDA LemmyBall_Right,Y
-	STA Sprite_RAM+$1D
-
-	; Store attributes for Lemmy's ball
-	LDA LemmyBall_Attrs,Y
-	STA Sprite_RAM+$1A
-	STA Sprite_RAM+$1E
-
-	LDA #$04	 ; A = 4
-
-	LDY Objects_Timer2,X	; Y = timer 2
-	BNE PRG001_B761	 	; If timer 2 is zero, jump to PRG001_B761
-
-	; Non-zero timer...
-
-	; Pushes horizontal flip bit into carry
-	LDA Objects_FlipBits,X
-	ASL A
-	ASL A
-
-	LDA #$00	 ; A = 0
-	BCS PRG001_B761	 ; If horizontally flipped, jump to PRG001_B761
-
-	LDA #$08	 ; A = 8
-
-PRG001_B761:
-	ADD <Objects_SpriteX,X	 ; Add the Sprite X factor
-	STA Sprite_RAM+$1B	 ; Store into sprite X
-	STA <Temp_Var2		 ; -> Temp_Var2
-
-	ADD #$08	 
-	STA Sprite_RAM+$1F	 ; Store into second sprite X
-
-	; Set sprite Y with +$20 offset
-	LDA <Objects_SpriteY,X
-	ADD #$20
-	STA Sprite_RAM+$18
-	STA Sprite_RAM+$1C
-
-
-	; Check if Player is touching Lemmy's ball
-
-	; X bound
-	LDA <Player_SpriteX
-	SBC <Temp_Var2
-	ADD #$0c
-	CMP #$18
-	BGE PRG001_B799
-
-	; Y bound
-	LDA <Player_SpriteY
-	SBC Sprite_RAM+$18
-	ADD #$20
-	CMP #$20
-	BGE PRG001_B799
-
-	; Offscreen
-	LDA Player_OffScreen
-	BNE PRG001_B799	 ; If Player is offscreen, jump to PRG001_B799 (RTS)
-
-	JSR Player_GetHurt	 ; Hurt Player!
-
-PRG001_B799:
-	RTS		 ; Return
-
-	; Set X velocity of Lemmy ball
-LemmyBall_XVel:
-	.byte -8, 8
-
-Lemmy_SpawnBall:
-
-	LDY #$02	; Y = 2
-PRG001_B79E:
-	LDA Objects_State,Y
-	BEQ PRG001_B7A7	 ; If this object slot is dead/empty, jump to PRG001_B7A7
-
-	DEY		 ; Y--
-	BPL PRG001_B79E	 ; While Y >= 0, loop!
-
-	RTS		 ; Return
-
-PRG001_B7A7:
-	TYA		 ; A = Y
-	TAX		 ; X = A (slot index for new object)
-
-	JSR Level_PrepareNewObject	 ; Prepare new object!
-
-	LDX <SlotIndexBackup	 ; X = original object slot index
-
-	; New object in state 2 (normal operation)
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State,Y
-
-	; New object ID 
-	LDA #OBJ_WATERFILLER
-	STA Level_ObjectID,Y
-
-	; New object Y -- Koopaling Y + 32
-	LDA <Objects_Y,X
-	ADD #$20
-	STA Objects_Y,Y
-	LDA <Objects_YHi,X
-	ADC #$00
-	STA Objects_YHi,Y
-
-	; New object X -- Koopaling X + 4
-	LDA <Objects_X,X
-	ADD #$04
-	STA Objects_X,Y
-	LDA <Objects_XHi,X
-	ADC #$00
-	STA Objects_XHi,Y
-
-	LDA Objects_TargetingXVal,X
-	AND #$01
-	TAX		; X = 0 or 1
-	LDA LemmyBall_XVel,X
-	STA Objects_XVel,Y	; Set X velocity
-
-	LDA #$02
-	STA Objects_SprAttr,Y	 ; Set sprite priority
-
-	LDX <SlotIndexBackup		 ; Restore 'X' as object slot index yet again
-	RTS		 ; Return
-
-
-	; Wendy's ring thing X velocity (by facing direction)
-Wendy_RingXVel: .byte $10, -$10
-
-PRG001_B7EC:
-	; World 3, Wendy ...
-	JSR Lemmy_SpawnBall
-	BMI PRG001_B819	 ; If unable to spawn, jump to PRG001_B819 (RTS)
-
-	; Not sure what this is for?
-	LDA #$01
-	STA Objects_Var5,Y
-
-	; Change spawned object Y to match Wendy
-	LDA <Objects_Y,X
-	STA Objects_Y,Y
-
-	; Change spawned object Y Hi to match Wendy
-	LDA <Objects_YHi,X
-	STA Objects_YHi,Y
-
-	; Set Y velocity to -$10
-	LDA #-$10
-	STA Objects_YVel,Y
-
-	STY <Temp_Var1	 ; Save 'Y'
-
-	; Y = 0 or 1, depending on facing direction
-	LDY #$00
-	LDA Objects_FlipBits,X
-	AND #SPR_HFLIP
-	BNE PRG001_B811
-	INY	
-
-PRG001_B811:
-	LDA Wendy_RingXVel,Y
-
-	LDY <Temp_Var1	 ; Restore 'Y'
-
-	; Set ring X velocity as appropriate!
-	STA Objects_XVel,Y
-
-PRG001_B819:
-	RTS		 ; Return
 
 ObjInit_Bowser:
 
@@ -5457,7 +3794,6 @@ KeyPieceXOffset:
 ObjInit_KeyPieces:
 	LDA #$FF
 	STA Objects_YHi, X
-	STA Object_Priority
 	RTS
 
 ObjNorm_KeyPieces:
@@ -5490,7 +3826,7 @@ ObjNorm_KeyPieces1:
 
 CheckNextPiece:
 	
-	LDA #$10
+	LDA #$00
 	STA Sprite_RAM, Y
 	LDA #SPR_PAL3
 	STA Sprite_RAM + 2, Y
@@ -5631,7 +3967,7 @@ CheckKeyAgainstLock:
 	LDA Level_ChgTileEvent
 	BNE RemainLocked
 
-	LDA Object_LevelTile
+	LDA Objects_LastTile, X
 	EOR #$01
 	STA Level_ChgTileEvent
 	
@@ -5826,38 +4162,174 @@ ObjNorm_SendBack:
 	LDA #$F0
 	SUB <Player_X
 	STA <Player_X
-	STA Debug_Snap
 	LDA PreviousLevel
 	STA LevelLoadPointer
 
 ObjNorm_SendBackRTS:
 	RTS
 
+TimerStartTimes:
+	.byte 05
+
 ObjInit_Timer:
+	LDA Objects_Property, X
+	TAY
+	LDA TimerStartTimes, Y
+	STA Objects_Var1, X
+	LDA #$B0
+	STA Objects_Var2, X
+	LDA #MUS1_TIMEWARNING	 
+	STA Sound_QMusic1
 	RTS
 
 ObjNorm_Timer:
+	LDA <Player_HaltGame
+	BNE ObjNorm_Timer1
 	LDA Objects_Var1, X
-	;BNE
+	BEQ ObjNorm_Timer2
 
+	DEC Objects_Var2, X
+	BNE ObjNorm_Timer1
+	DEC Objects_Var1, X
+	LDA #$2D
+	STA Objects_Var2, X
+
+ObjNorm_Timer1:
+	JSR DrawTimer
 	RTS
 
+ObjNorm_Timer2:
+	JSR Player_Die
+	RTS
+
+DrawTimer:
+	LDA #$00
+	STA <Temp_Var10
 	LDA LastPatTab_Sel
 	EOR #$01
 	TAY
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
 	CPY #$00
-	BEQ ObjNorm_Timer1
+	BEQ DrawTimer0
 
-	LDA <Temp_Var1
-	ADD #$40
-	STA <Temp_Var1
-	LDA <Temp_Var2
-	ADD #$40
-	STA <Temp_Var2
+	LDA #$40
+	STA <Temp_Var10
 
-ObjNorm_Timer1:
+DrawTimer0:
+	LDA Objects_Var1, X
 	JSR ToThreeDigits
+	LDX <SlotIndexBackup
+	LDY Object_SprRAM, X
+	LDX #$00
 
+DrawTimer1:
+	LDA #$10
+	STA Sprite_RAM, Y
+	LDA #SPR_PAL2
+	STA Sprite_RAM + 2, Y
+
+	LDA KeyPieceXOffset, X
+	STA Sprite_RAM + 3, Y
+
+	LDA <Temp_Var1, X
+	ASL A
+	ADD #$A1
+	ADD <Temp_Var10
+	STA Sprite_RAM + 1, Y
+	INY
+	INY
+	INY
+	INY
+	INX
+	CPX #$03
+	BNE DrawTimer1
+
+	LDX <SlotIndexBackup
+	RTS
+
+ObjNorm_Clock:
+	JSR Object_DeleteOffScreen
+	LDA #$00
+	STA <Temp_Var10
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	CPY #$00
+	BEQ ObjNorm_Clock0
+
+	LDA #$08
+	STA <Temp_Var10
+
+ObjNorm_Clock0:
+	LDA Objects_Var2, X
+	BNE ObjNorm_Clock2
+
+	JSR Object_HitTestRespond
+	LDA <Player_HaltGame
+	BNE ObjNorm_Clock1
+
+	INC Objects_Var1, X
+	LDA Objects_Var1, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	ADD <Temp_Var10
+	STA Objects_Frame, X
+	
+ObjNorm_Clock1:
+	JMP Object_ShakeAndDraw
+
+ObjNorm_Clock2:
+	LDA <Player_HaltGame
+	BNE ObjNorm_Clock3
+
+	LDA Objects_Property, X
+	ADD #$02
+	ADD <Temp_Var10
+	STA Objects_Frame, X
+	JSR Object_ApplyYVel_NoLimit
+	LDA Objects_Timer, X
+	BEQ ObjNorm_Clock4
+
+ObjNorm_Clock3:
+	JMP Object_ShakeAndDraw
+
+ObjNorm_Clock4:
+	JMP Object_SetDeadEmpty
+
+ClockTimes:
+	.byte 5, 10, 15, 20, 25, 30
+
+ObjHit_Clock:
+	LDY #$04
+
+ObjHit_Clock1:
+	LDA Level_ObjectID, Y
+	CMP #$1D
+	BEQ ObjHit_Clock2
+	DEY
+	BPL ObjHit_Clock1
+	RTS
+
+ObjHit_Clock2:
+	LDA Objects_Property, X
+	TAX
+	LDA ClockTimes, X
+	ADD Objects_Var1, Y
+	STA Objects_Var1, Y
+	LDX <SlotIndexBackup
+	INC Objects_Var2, X
+	LDA #$20
+	STA Objects_Timer, X
+	LDA #$F8
+	STA Objects_YVel, X
+	LDA #SPR_PAL2
+	STA Objects_SprAttr, X
+	LDA Sound_QLevel1
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 	RTS
