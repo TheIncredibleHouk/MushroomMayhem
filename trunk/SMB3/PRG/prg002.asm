@@ -2068,6 +2068,8 @@ No_Carry:
 PRG002_AB8F:
 	RTS		 ; Return
 
+ObjNorm_PlatformMovesWhenTouched:
+	
 ObjNorm_WoodenPlatform:
 	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
 
@@ -3789,6 +3791,8 @@ PlayerPlatform_Collide:
 	STA Player_CarryYVel
 
 PRG002_BABC:
+	LDA #$01
+	STA Objects_Var5, X
 	SEC		 ; Set carry (collided)
 	RTS
 

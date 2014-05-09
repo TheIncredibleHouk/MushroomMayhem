@@ -2702,11 +2702,17 @@ ObjNorm_SwimmingCheep:
 	JSR Object_DeleteOffScreen
 	JSR Player_HitEnemy
 	JSR DoPatrol
-	LDA Objects_YVel, X
-	BPL JustDrawCheep
+
+	STA Debug_Snap
+	LDA Object_TileWallProp
+	BNE ObjNorm_SwimmingCheep1
+
+	JSR Object_HitWall
+
+ObjNorm_SwimmingCheep1:
 	LDA Object_TileFeetProp
-	CMP #TILE_PROP_WATER
-	BCS JustDrawCheep
+	BNE JustDrawCheep
+
 	JSR Object_HitCeiling
 
 JustDrawCheep:
@@ -5449,4 +5455,27 @@ DeliveryLakituEscape:
 
 DeliveryLakituTrack1:
 	JSR DrawLakitu
+	RTS
+
+Object_HitWall:
+	LDA <Objects_XVel, X
+	BPL Object_HitWall1
+
+	LDA <Objects_X, X
+	ADD #$08
+	AND #$F0
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	ADC #$00
+	STA <Objects_XHi, X
+	LDA #$00
+	STA Objects_XVel, X
+	RTS
+
+Object_HitWall1:
+	LDA <Objects_X, X
+	AND #$F0
+	STA <Objects_X, X
+	LDA #$00
+	STA Objects_XVel, X
 	RTS

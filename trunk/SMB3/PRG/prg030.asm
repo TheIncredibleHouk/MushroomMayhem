@@ -2987,7 +2987,6 @@ LevelPointerOffsets:
 LevelLoad:	; $97B7
 	; Clear loading variables
 	
-	STA Debug_Snap
 	LDA #$00
 	STA <Vert_Scroll
 	STA Level_Jct_VS

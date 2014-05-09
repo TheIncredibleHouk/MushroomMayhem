@@ -991,7 +991,6 @@ SPR_VFLIP	= %10000000
 
 	Level_Redraw:		.ds 1
 	Level_KeepObjects:	.ds 1
-	Object_Priority:	.ds 1
 
 	Map_DrawPanState:	.ds 1	; Map draw/pan state
 	ObjGroupRel_Idx:	.ds 1	; Holds relative index of object within its group (see PRG000_CA51)
