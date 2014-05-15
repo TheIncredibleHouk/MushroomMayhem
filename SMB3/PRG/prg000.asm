@@ -159,7 +159,7 @@ Object_BoundBox:
 	.byte  1,  13,   2,   8	; 1
 	.byte  2,  12,   2,  24	; 2
 	.byte 10,  27,  -2,  18	; 3
-	.byte  4,  28,  4,  0	; 4 (UNUSED)
+	.byte  0,   16,   -3,   17	; 4 (UNUSED)
 	.byte  5,  14,  10,  18	; 5 (UNUSED)
 	.byte  2,  27,  -2,  34	; 6
 	.byte  2,  20,   2,  12	; 7
@@ -177,7 +177,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00	; Object $00
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $01
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $02
-	.byte OAT_BOUNDBOX00	; Object $03
+	.byte OAT_BOUNDBOX04 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $03
 	.byte OAT_BOUNDBOX02	; Object $04
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $05
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -358,10 +358,6 @@ Object_AttrFlags:
 
 	; Index by Level_TilesetIdx
 	; Sets the tile which is a pain in the ass (typically muncher, sometimes jelectro)
-
-PowerUp_Ability:
-	;     Small, Big, Fire, Leaf, Frog, Tanooki, Hammer
-	.byte $00,   $00, $00,  $01,  $02,  $00,     $00
 
 	; Velocities set to X/Y directly to Player for what might be a now-unused debug routine of sorts
 PRG000_C3E7:
@@ -631,7 +627,16 @@ PRG000_C69C:
 ; Gets tiles for an object based on its attribute settings and
 ; current state of movement.  Handles entering/leaving water.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Object_GetAttrJustTile:
+	LDA #$01
+	STA JustTileFlag
+	BNE Object_GetAttrAndMoveTiles1
+
 Object_GetAttrAndMoveTiles:
+	LDA #$00
+	STA JustTileFlag
+
+Object_GetAttrAndMoveTiles1:
 	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile	; Get tile here
 	STA Object_TileWater
@@ -651,6 +656,10 @@ Object_GetAttrAndMoveTiles:
 
 	LDA ObjTile_DetYHi
 	STA Objects_LastTileYHi
+
+	LDA JustTileFlag
+	BEQ Object_GetAttrAndMoveTiles_NoWater
+	RTS
 
 Object_GetAttrAndMoveTiles_NoWater:
 	LDA Object_LevelTile
@@ -1055,7 +1064,7 @@ PRG000_C9D2:
 	INC <SlotIndexBackup
 	LDA <SlotIndexBackup
 	CMP #$08
-	BCC PRG000_C975	 ; While X >= 0, loop!
+	BNE PRG000_C975	 ; While X >= 0, loop!
 
 PRG000_C9E5:
 	LDA Player_Flip
@@ -1297,7 +1306,7 @@ PRG000_CB10:
 	; Attribute set 3 bit 4 is NOT set... (object is "shelled" when stomped)
 
 	LDA <Player_HaltGame	 
-	BNE PRG000_CB5B	 ; If gameplay is halted, jump to PRG000_CB5B
+	BNE Object_DrawShelled	 ; If gameplay is halted, jump to PRG000_CB5B
 	
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
 	JSR Object_Move	 		; Perform standard object movements
@@ -4017,9 +4026,28 @@ Object_ShakeAndDraw:
 ; Used to draw 16x16 mirrored object sprites.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D5F0
-Object_ShakeAndDrawMirrored:
-	JSR Object_ShakeAndDraw	; Draw object and "shake awake"
+Object_ShakeAndDrawMirroredAligned:
+	LDA #$01
+	STA AlignSpriteFlag
+	BNE Object_ShakeAndDrawMirrored0
 
+
+Object_ShakeAndDrawMirrored:
+	LDA #$00
+	STA AlignSpriteFlag
+
+Object_ShakeAndDrawMirrored0:
+	JSR Object_ShakeAndDraw	; Draw object and "shake awake"
+	LDA AlignSpriteFlag
+	BEQ Object_ShakeAndDrawMirrored1
+
+	TYA
+	TAX
+	DEC Sprite_RAM,X
+	DEC Sprite_RAM+4,X
+	LDX <SlotIndexBackup
+
+Object_ShakeAndDrawMirrored1:
 	; Keep all attributes except horizontal flip
 	LDA Sprite_RAM+$02,Y
 	AND #%10111111	 
@@ -4124,47 +4152,6 @@ Object_DrawWide:
 	LDX <SlotIndexBackup	 ; X = object's slot index
 	RTS		 ; Return
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_ToggleFrameBySpd
-;
-; Sets object's frame alternating 0 or 1 at a rate which 
-; increases in speed (X velocity)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $D660
-Object_ToggleFrameBySpd:
-	LDA <Objects_XVel,X	 
-	BNE PRG000_D665	 ; If object is moving horizontally, jump to PRG000_D665
-
-	; Otherwise, do nothing
-	RTS		 ; Return
-
-PRG000_D665:
-
-	; Absolute value of X Velocity
-	BPL PRG000_D66A	 
-	JSR Negate
-PRG000_D66A:
-
-	AND #$f0
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	TAY		 ; Y = "whole" part of X Velocity only
-
-	LDA PRG000_D5E3,Y	 ; Get masking value
-
-	LDY #$00	 ; Y = 0
-
-	AND <Counter_1	
-	BEQ PRG000_D67B	 ; If Counter_1 masked by value is zero, jump to PRG000_D67B
-
-	INY		 ; Otherwise, Y = 1
-
-PRG000_D67B:
-	TYA		 
-	STA Objects_Frame,X	 ; Set as frame 0 or 1
-	RTS		 ; Return
 
 VisMask:
 	.byte $81, $41, $21, $11, $82, $42, $22, $12
@@ -4641,9 +4628,6 @@ PRG000_D862:
 	; positions (full 16-bit coordinate check)
 
 	STA <Temp_Var1		 ; Store Player's bounding box top offset -> Temp_Var1
-
-	LDA Level_7Vertical
-	BNE PRG000_D8B1	 ; If level is vertical, jump to PRG000_D8B1
 
 	; Calculate full 16-bit X difference of object -> Temp_Var14/15
 	LDA <Player_X
@@ -6896,7 +6880,7 @@ SetChaseFlip:
 	LDY #$00	 ; Y = 0 (Player is lower, move down!)
 
 	LDA <Temp_Var15
-	SUB #$04
+	SUB #$0C
 	BMI PRG002_A841
 
 	INY		 ; Y = 1 (Player is higher, move up!)

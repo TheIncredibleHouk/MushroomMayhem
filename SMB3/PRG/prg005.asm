@@ -3753,8 +3753,6 @@ PRG005_B82E:
 PRG005_B831:
 	RTS		 ; Return
 
-Priority_Objects:
-	.byte OBJ_KEYPIECES, $1D
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_ObjectsSpawnByScroll
 ;
@@ -3936,17 +3934,6 @@ PRG005_B902:
 	RTS		 ; Return
 
 PRG005_B909:
-	; Basically the end level card gets priority and will ALWAYS
-	; spawn into slot 6, regardless of what was there previously.
-	; (Normal objects are in lower slots so this generally should
-	; not be too noticeable.)
-	CMP MiscValue2
-	BNE PRG005_B905
-
-	LDX #$00
-	BEQ PRG005_B913
-
-PRG005_B905:
 	LDX #$04	 ; X = 4
 
 PRG005_B913:
@@ -4993,8 +4980,16 @@ PRG005_BEFD:
 
 PRG005_BF001:
 	LDA Level_ObjectID, X
-	CMP MiscValue2
+	CMP Global_Object
 	BEQ PRG005_BF01
+
+	LDA Level_KeepObjects
+	BEQ PRG005_BF002
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BNE PRG005_BF002
+	
+	JSR Object_SetDeadAndNotSpawned
 
 PRG005_BF002:
 	LDA #OBJSTATE_DEADEMPTY

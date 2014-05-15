@@ -15,8 +15,8 @@
   <spritedata>
     <sprite x="41" y="20" value="136" item="0" property="0" />
     <sprite x="49" y="20" value="136" item="0" property="0" />
-    <sprite x="1" y="0" value="15" item="0" property="0" />
-    <sprite x="1" y="1" value="19" item="0" property="2" />
+    <sprite x="3" y="0" value="15" item="0" property="0" />
+    <sprite x="1" y="0" value="19" item="0" property="2" />
     <sprite x="155" y="2" value="74" item="0" property="0" />
     <sprite x="67" y="16" value="192" item="0" property="1" />
     <sprite x="15" y="22" value="192" item="0" property="0" />
@@ -37,6 +37,11 @@
     <sprite x="223" y="6" value="118" item="0" property="0" />
     <sprite x="94" y="22" value="196" item="0" property="0" />
     <sprite x="109" y="17" value="196" item="0" property="0" />
+    <sprite x="35" y="0" value="15" item="0" property="0" />
+    <sprite x="77" y="0" value="15" item="0" property="0" />
+    <sprite x="99" y="0" value="15" item="0" property="0" />
+    <sprite x="121" y="0" value="15" item="0" property="0" />
+    <sprite x="51" y="0" value="15" item="0" property="0" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

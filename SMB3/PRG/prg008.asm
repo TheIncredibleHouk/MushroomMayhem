@@ -188,7 +188,7 @@ PRG008_A0E7:
 	LDA <Player_Y
 	ADD <Temp_Var1	; Y offset
 	AND #$F0	; align to grid
-	ADD #$08	; +2
+	;ADD #$08	; +2
 
 PRG008_A0F1:
 	STA Splash_Y	 ; 147 or above formula -> Splash_Y 
@@ -197,18 +197,28 @@ PRG008_A0F1:
 	STA Splash_X	 ; Splash_X = Player_X
 
 PRG008_A0F9:
+	STA Debug_Snap
 	LDA <Player_YVel
-	BMI PRG008_A111	 ; If Player Y velocity < 0 (Player traveling up), jump to PRG008_A111 (RTS)
+	BMI PRG008_A0FA
+	AND #$80
+	STA <Temp_Var1
+	LDA <Player_YVel
+	LSR A
+	ORA <Temp_Var1
+	LSR A
+	ORA <Temp_Var1
+	STA <Player_YVel
 
-	LDA #$00
-	STA <Player_YVel ; Otherwise, halt movement
-
-	LDY <Player_InAir
-	BEQ PRG008_A107	 ; If Player is not mid air, jump to PRG008_A107
-
-	STA <Player_XVel ; Otherwise, stop horizontal movement, too
-
-PRG008_A107:
+PRG008_A0FA:
+	LDA <Player_XVel
+	AND #$80
+	STA <Temp_Var1
+	LDA <Player_XVel
+	LSR A
+	ORA <Temp_Var1
+	LSR A
+	ORA <Temp_Var1
+	STA <Player_XVel
 
 	; When Player hits water, a bubble is made
 
@@ -689,15 +699,16 @@ Is_Special:
 	STY <Player_Suit ; Store into Player_Suit
 
 PRG008_A3F2:
-	LDA #$00
-	STA Player_QueueSuit	  ; Clear Player_QueueSuit
-	STA Player_Shell
-	STA Boo_Mode_Timer
-	STA Boo_Mode_KillTimer
-	STA Fox_FireBall
-	LDX Poison_Mode
+	LDX #$00
+	STX Player_QueueSuit	  ; Clear Player_QueueSuit
+	STX Player_Shell
+	STX Boo_Mode_Timer
+	STX Boo_Mode_KillTimer
+	LDA Poison_Mode
+	ORA Fox_FireBall
 	BEQ PRG008_A3F1
-	STA Poison_Mode
+	STX Poison_Mode
+	STX Fox_FireBall
 	LDA #AIR_INCREASE
 	STA Air_Change
 
@@ -2732,6 +2743,9 @@ PRG008_ADD2:
 
 	RTS		 ; Return
 
+PowerUp_Ability:
+	;     Small, Big, Fire, Leaf, Frog, Tanooki, Hammer
+	.byte $00,   $00, $00,  $01,  $02,  $00,     $00
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_CommonGroundAnims
 ;
@@ -4181,6 +4195,7 @@ PRG008_B582_2:
 	CMP #TILE_PROP_SOLID_TOP
 	BCS PRG008_B585
 	LDA TempA
+	AND #$0F
 	CMP #TILE_PROP_COIN
 	BNE PRG008_B583
 
@@ -4311,7 +4326,7 @@ NoFireFoxBusts:
 	BPL PRG008_B588
 	CPX  #$01
 	BCS PRG008_B588
-	LDY #$04
+	LDY #$00
 	STY <Player_YVel
 	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
 
@@ -5282,8 +5297,12 @@ TryVertMove:
 	BEQ MoveTileDone
 
 	LDA Player_InWater
-	BNE TryVertMove3
+	BEQ TryVertMove10
+	LDA Player_IsHolding
+	BNE MoveTileDone
+	BEQ TryVertMove3
 
+TryVertMove10:
 	CPX #$01
 	BNE TryVertMove1
 
