@@ -3150,10 +3150,6 @@ Not_Lvl_Jct:
 	STA <Player_XHi
 	LDA [Temp_Var14], Y
 	AND #$F0
-	LDX Level_InitAction
-	CPX #$04
-	BCS DontOffsetX
-	ORA #$08
 
 DontOffsetX:
 	STA <Player_X

@@ -1126,7 +1126,7 @@ PRG003_A567:
 	RTS		 ; Return
 
 Twirler_InitXVel:	.byte $08, -$08
-Twirl_DropXVel: .byte $18, $E8
+Twirl_DropXVel: .byte $10, $F0
 
 ObjInit_Twirling:
 	JSR Level_ObjCalcXDiffs
@@ -3020,7 +3020,7 @@ Ninji_Fall:
 	LDA Objects_DetStat, X
 	AND #$04
 	BEQ Ninji_FallRTS
-	LDA #$20
+	LDA #$60
 	STA Objects_Timer, X
 	LDA #$00
 	STA Objects_Var1, X
@@ -3028,6 +3028,9 @@ Ninji_Fall:
 
 Ninji_FallRTS:
 	RTS
+
+NinjiIdleTimes:
+	.byte $30, $40, $38, $48
 
 CheepCheepHopper_InitXVel:	.byte $0C, -$0C
 

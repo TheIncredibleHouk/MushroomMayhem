@@ -28,7 +28,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $00
 	.word ObjInit_DoNothing	; Object $01
 	.word ObjInit_DoNothing	; Object $02
-	.word ObjInit_DoNothing	; Object $03
+	.word ObjInit_EaterBlock	; Object $03
 	.word ObjInit_DoNothing	; Object $04
 	.word ObjInit_DoNothing	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -44,7 +44,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Snow	; Object $10 - OBJ_SNOW
 	.word ObjInit_Key	; Object $11 OBJ_KEY
 	.word ObjInit_Spring	; Object $12 OBJ_SPRING
-	.word ObjInit_DoNothing	; Object $13 OBJ_KEYPIECES
+	.word ObjInit_KeyPieces	; Object $13 OBJ_KEYPIECES
 	.word ObjInit_GiantChomp	; Object $14 OBJ_GIANTCHOMP
 	.word ObjInit_DoNothing	; Object $15 
 	.word ObjInit_DoNothing	; Object $16 OBJ_KEYPIECE
@@ -70,7 +70,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $00
 	.word ObjNorm_DoNothing	; Object $01
 	.word ObjNorm_DoNothing	; Object $02
-	.word ObjNorm_DoNothing	; Object $03
+	.word ObjNorm_EaterBlock	; Object $03
 	.word ObjNorm_DoNothing	; Object $04
 	.word ObjNorm_SpikeBall	; Object $05
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -113,7 +113,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $00
 	.word ObjHit_DoNothing	; Object $01
 	.word ObjHit_DoNothing	; Object $02
-	.word ObjHit_DoNothing	; Object $03
+	.word ObjHit_SolidBlock	; Object $03
 	.word ObjHit_DoNothing	; Object $04
 	.word Player_GetHurt	; Object $05
 	.word ObjHit_DoNothing	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -155,7 +155,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $00
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $01
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $02
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $03
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $03
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $04
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $05
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -204,7 +204,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP0	; Object $00
 	.byte OA2_TDOGRP1	; Object $01
 	.byte OA2_TDOGRP1	; Object $02
-	.byte OA2_TDOGRP5	; Object $03
+	.byte OA2_TDOGRP1	; Object $03
 	.byte OA2_TDOGRP2	; Object $04
 	.byte OA2_TDOGRP1	; Object $05
 	.byte OA2_TDOGRP1	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -253,7 +253,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $00
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $01
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $02
-	.byte OA3_HALT_JUSTDRAWWIDE 	; Object $03
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $03
 	.byte OA3_HALT_JUSTDRAWTALL 	; Object $04
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $05
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -295,7 +295,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $00
 	.byte OPTS_SETPT5 | $48	; Object $01
 	.byte OPTS_SETPT5 | $4C	; Object $02
-	.byte OPTS_SETPT5 | $48	; Object $03
+	.byte OPTS_NOCHANGE	; Object $03
 	.byte OPTS_SETPT5 | $48	; Object $04
 	.byte OPTS_SETPT5 | $0E	; Object $05
 	.byte OPTS_NOCHANGE	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -406,6 +406,7 @@ ObjectGroup00_PatternSets:
 	; (End restricted alignment space)
 ObjP00:
 ObjP03:
+	.byte $77, $77
 ObjP07:
 	.byte $67, $67
 
@@ -457,7 +458,7 @@ ObjInit_Spring:
 	RTS
 
 Spring_Jump_Height:
-	.byte $C0, $B8, $B0
+	.byte $C0, $B4, $A8
 
 Spring_Frames:
 	.byte $00, $01, $02, $01
@@ -3387,16 +3388,34 @@ Do_PUp_Pallete_Collect:
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State + 5
 	RTS
-	
+
+
+DeleteWeather:
+	JMP Object_Delete
 
 ObjInit_Snow:
+
 	LDA #$01
 	STA Objects_Var1, X
 
 
 ObjInit_Rain:
-	LDA #$00
-	STA Weather_Disabled
+	STX TempX
+	LDY #$04
+
+ObjInit_Rain1:
+	CPY TempX
+	BEQ ObjInit_Rain2
+	LDA Level_ObjectID, Y
+	CMP #$0F
+	BEQ DeleteWeather
+	CMP #$10
+	BEQ DeleteWeather
+
+ObjInit_Rain2:
+	DEY
+	BPL ObjInit_Rain1
+
 	LDY #$05
 
 KeepRandomizing:
@@ -3794,6 +3813,8 @@ KeyPieceXOffset:
 ObjInit_KeyPieces:
 	LDA #$FF
 	STA Objects_YHi, X
+	LDA #$13
+	STA Global_Object
 	RTS
 
 ObjNorm_KeyPieces:
@@ -3826,7 +3847,7 @@ ObjNorm_KeyPieces1:
 
 CheckNextPiece:
 	
-	LDA #$00
+	LDA #$08
 	STA Sprite_RAM, Y
 	LDA #SPR_PAL3
 	STA Sprite_RAM + 2, Y
@@ -3861,6 +3882,7 @@ NextCheck:
 	JSR FindEmptyEnemySlot
 	LDA #OBJ_KEY
 	STA Level_ObjectID, X
+	STA Global_Object
 	LDA #OBJSTATE_INIT
 	STA Objects_State, X
 	LDY <SlotIndexBackup
@@ -4178,11 +4200,18 @@ ObjInit_Timer:
 	STA Objects_Var1, X
 	LDA #$B0
 	STA Objects_Var2, X
-	LDA #MUS1_TIMEWARNING	 
-	STA Sound_QMusic1
+	LDA #$1D
+	STA Global_Object
 	RTS
 
 ObjNorm_Timer:
+	LDA Objects_Var5, X
+	BNE ObjNorm_Timer0
+	LDA #MUS1_TIMEWARNING	 
+	STA Sound_QMusic1
+	INC Objects_Var5, X
+
+ObjNorm_Timer0:
 	LDA <Player_HaltGame
 	BNE ObjNorm_Timer1
 	LDA Objects_Var1, X
@@ -4332,4 +4361,309 @@ ObjHit_Clock2:
 	LDA Sound_QLevel1
 	ORA #SND_MAPBONUSAPPEAR
 	STA Sound_QMap
+	RTS
+
+BlockEaterYVel:
+	.byte $F0, $00, $10, $00, $00, $E0, $00, $20, $00
+
+BlockEaterXVel
+	.byte $00, $10, $00, $F0, $00, $00, $20, $00, $E0
+
+BlockEaterVelOffset:
+	.byte $00, $05
+
+BlockEaterChecks:
+	.byte (TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID), TILE_PROP_ENEMY
+
+ObjInit_EaterBlock:
+	LDA Objects_Property, X
+	AND #$01
+	TAY
+	LDA BlockEaterChecks, Y
+	STA Objects_Var1, X
+	LDA Objects_Property, X
+	AND #$02
+	STA Objects_Var2, X
+	LDA Objects_Property, X
+	AND #$04
+	LSR A
+	LSR A
+	TAY
+	LDA BlockEaterVelOffset, Y
+	STA Objects_Var3, X
+
+	LDA Objects_X, X
+	STA Objects_Var5, X
+	LDA Objects_XHi, X
+	STA Objects_Var6, X
+	LDA Objects_Y, X
+	STA Objects_Var7, X
+	LDA Objects_YHi, X
+	STA Objects_Var10, X
+	RTS
+
+ObjNorm_EaterBlock:
+	
+	LDA <Player_HaltGame
+	BEQ ObjNormal_EaterBlock3
+
+	JMP Object_ShakeAndDrawMirroredAligned
+
+ObjNormal_EaterBlock3:
+	
+	LDA <Objects_X, X
+	ORA <Objects_Y, X
+	AND #$0F
+	BEQ ObjNormal_EaterBlock31
+	JMP ObjNormal_EaterBlock2
+
+ObjNormal_EaterBlock31:
+	LDA Objects_X, X
+	CMP Objects_Var5, X
+	BNE ObjNormal_EaterBlock32
+	LDA Objects_XHi, X
+	CMP Objects_Var6, X
+	BNE ObjNormal_EaterBlock32
+	LDA Objects_Y, X
+	CMP Objects_Var7, X
+	BNE ObjNormal_EaterBlock32
+	LDA Objects_YHi, X
+	CMP Objects_Var10, X
+	BNE ObjNormal_EaterBlock32
+
+	JSR Object_DeleteOffScreen
+
+ObjNormal_EaterBlock32:
+	LDA #$04
+	STA <Temp_Var13
+	LDA Level_ChgTileEvent
+	BNE ObjNormal_EaterBlock1
+
+	JSR Object_GetAttrJustTile
+	LDA Objects_LastProp, X
+	CMP Objects_Var1, X
+	BNE ObjNorm_EaterBlock0
+	LDA Object_LevelTile
+	EOR #$01
+	STA Level_ChgTileEvent
+	
+	JSR SetObjectTileCoordAlignObj
+
+ObjNorm_EaterBlock0:
+	LDA #$00
+	STA <Temp_Var13
+	JSR CheckBlockAbove
+	CMP Objects_Var1, X
+	BEQ ObjNormal_EaterBlock1
+
+	INC <Temp_Var13
+	JSR CheckBlockRight
+	CMP Objects_Var1, X
+	BEQ ObjNormal_EaterBlock1
+
+	INC <Temp_Var13
+	JSR CheckBlockBelow
+	CMP Objects_Var1, X
+	BEQ ObjNormal_EaterBlock1
+	
+	INC <Temp_Var13
+	JSR CheckBlockLeft
+	CMP Objects_Var1, X
+	BEQ ObjNormal_EaterBlock1
+	
+	LDA Objects_Var2, X
+	BNE ObjNormal_EaterBlock1A
+	JMP Object_PoofDie
+
+ObjNormal_EaterBlock1A:
+	INC Objects_Var4, X
+	LDA Objects_Var4, X
+	AND #$01
+	TAY
+	LDA BlockEaterChecks, Y
+	STA Objects_Var1, X
+	JMP Object_ShakeAndDrawMirroredAligned
+
+ObjNormal_EaterBlock1:
+	LDA <Temp_Var13
+	ADD Objects_Var3, X
+	TAY
+	LDA BlockEaterYVel, Y
+	STA <Objects_YVel, X
+	LDA BlockEaterXVel, Y
+	STA <Objects_XVel, X
+
+ObjNormal_EaterBlock2:	
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit	
+	JSR Object_HitTestRespond
+	
+	JMP Object_ShakeAndDrawMirroredAligned
+
+GetBlock:
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	RTS
+
+CheckBlockAbove:
+	LDA <Objects_Y, X
+	STA <Temp_Var14
+	SUB #$10
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	STA <Temp_Var15
+	SBC #$00
+	STA <Objects_YHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_Y, X
+	LDA <Temp_Var15
+	STA <Objects_YHi, X
+	PLA
+	RTS
+
+CheckBlockBelow:
+	LDA <Objects_Y, X
+	STA <Temp_Var14
+	ADD #$10
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	STA <Temp_Var15
+	ADC #$00
+	STA <Objects_YHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_Y, X
+	LDA <Temp_Var15
+	STA <Objects_YHi, X
+	PLA
+	RTS
+
+CheckBlockRight:
+	LDA <Objects_X, X
+	STA <Temp_Var14
+	ADD #$10
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	STA <Temp_Var15
+	ADC #$00
+	STA <Objects_XHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_X, X
+	LDA <Temp_Var15
+	STA <Objects_XHi, X
+	PLA
+	RTS
+
+CheckBlockLeft:
+	LDA <Objects_X, X
+	STA <Temp_Var14
+	SUB #$10
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	STA <Temp_Var15
+	SBC #$00
+	STA <Objects_XHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_X, X
+	LDA <Temp_Var15
+	STA <Objects_XHi, X
+	PLA
+	RTS
+
+Player_Heights:
+	.byte $06, $11
+
+ObjHit_SolidBlock:
+	LDA Objects_PlayerHitStat,X
+	AND #$01
+	BEQ ObjHit_SolidBlock1
+
+	LDA <Player_YVel
+	BPL ObjHit_SolidBlock0
+
+	RTS
+
+ObjHit_SolidBlock0:
+	LDA <Objects_Y, X
+	SUB #32
+	STA <Player_Y
+	LDA <Objects_YHi,X
+	SBC #$00
+	STA <Player_YHi
+	LDA #$01
+	STA Player_OnPlatform
+	LDA #$00
+	STA <Player_InAir
+	STA <Player_YVel
+	RTS
+
+ObjHit_SolidBlock1:
+	LDA #$00
+	STA <Temp_Var1
+	LDA <Player_Suit
+	BEQ ObjHit_SolidBlock10
+	LDA Player_IsDucking
+	BEQ ObjHit_SolidBlock11
+
+ObjHit_SolidBlock10:
+	LDA #12
+	STA <Temp_Var1
+
+ObjHit_SolidBlock11:
+	LDA <Player_Y
+	ADD <Temp_Var1
+	SUB <Objects_Y, X
+	STA <Temp_Var3
+	LDA <Player_YHi
+	SBC <Objects_YHi, X
+	BNE ObjHit_SolidBlock2
+	LDA <Temp_Var3
+	CMP #$10
+	BCS ObjHit_SolidBlock2
+	LDA <Objects_Y, X
+	SUB <Temp_Var1
+	ADD #$0A
+	STA <Player_Y
+	LDA <Player_YHi
+	ADC #$00
+	STA <Player_YHi
+	LDA #$00
+	STA <Player_YVel
+	RTS
+	
+ObjHit_SolidBlock2:
+	LDA Objects_PlayerHitStat,X
+	AND #$02
+	BEQ ObjHit_SolidBlock3
+
+	LDA <Objects_X, X
+	SUB #$0F
+	STA <Player_X
+	LDA <Objects_XHi,X
+	SBC #$00
+	STA <Player_XHi
+	LDA #$00
+	STA <Player_XVel
+
+ObjHit_SolidBlock32:
+	LDA #$00
+	STA Objects_XVel
+	RTS
+
+ObjHit_SolidBlock3:
+	LDA <Objects_X, X
+	ADD #15
+	STA <Player_X
+	LDA <Player_XHi
+	ADC #$00
+	STA <Player_XHi
+	LDA #$00
+	STA <Player_XVel
 	RTS

@@ -2967,6 +2967,9 @@ SOBJ_POOF		= $16 	; Poof
 	TempX:				.ds 1
 	TempY:				.ds 1
 	TempA:				.ds 1;
+	Global_Object:		.ds 1
+	JustTileFlag:		.ds 1
+	AlignSpriteFlag:	.ds 1
 
 	; Tile map property flags
 MAP_PROP_TRAVERSABLE	= $01
@@ -3016,7 +3019,7 @@ TILE_PROP_UNSTABLE		= $07 ;
 TILE_PROP_VPIPE_LEFT	= $08 ;
 TILE_PROP_VPIPE_RIGHT	= $09 ;
 TILE_PROP_HPIPE_BOTTOM	= $0A ;
-TILE_PROP_ACID_MELT		= $0C ;
+TILE_PROP_ENEMYSOLID	= $0C ;
 TILE_PROP_STONE			= $0D ;
 TILE_PROP_PSWITCH		= $0E ;
 TILE_PROP_ESWITCH		= $0F ;

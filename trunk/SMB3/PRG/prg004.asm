@@ -2703,7 +2703,6 @@ ObjNorm_SwimmingCheep:
 	JSR Player_HitEnemy
 	JSR DoPatrol
 
-	STA Debug_Snap
 	LDA Object_TileWallProp
 	BNE ObjNorm_SwimmingCheep1
 
@@ -5384,13 +5383,13 @@ DeliveryLakituFlyAway1:
 	RTS
 
 PowerUpChecks:
-	.byte $02
+	.byte $02, $0B
 
 PowerUpDeliveries:
-	.byte OBJ_POWERUP_FIREFLOWER
+	.byte OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_NINJASHROOM
 
 PowerUpDeliveriesFlash:
-	.byte 00
+	.byte 00, 00
 
 DeliveryLakituWait:
 	LDY Objects_Property, X
@@ -5434,6 +5433,7 @@ DeliveryLakituTrack:
 	LDY Objects_Property, X
 	LDA PowerUpDeliveries, Y
 	STA Level_ObjectID + 5
+	STA PowerUp_NoRaise
 
 	LDA PowerUpDeliveriesFlash, Y
 	STA PUp_StarManFlash
