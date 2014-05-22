@@ -65,10 +65,10 @@ OTDO_G1R1:
 
 	; Group 3
 	;       Y    X
-	.byte $10, $08	; At feet
+	.byte $0F, $08	; At feet
 	.byte $00, $08	; At head
 	.byte $08, $00	; Wall to left
-	.byte $08, $10	; Wall to right
+	.byte $08, $0F	; Wall to right
 
 	; Group 4
 	;       Y    X
@@ -154,13 +154,13 @@ OTDO_Explosion:
 	; Defines the "bounding box" 
 	; Selected by Object_AttrFlags lower 4 bits
 Object_BoundBox:
-	;    Left Right Bot Top - offsets applied to sprite X/Y
+	;    Left Right Top  Bot- offsets applied to sprite X/Y
 	.byte  2,   4,   2,   8	; 0
 	.byte  1,  13,   2,   8	; 1
 	.byte  2,  12,   2,  24	; 2
 	.byte 10,  27,  -2,  18	; 3
-	.byte  0,   16,   -3,   17	; 4 (UNUSED)
-	.byte  5,  14,  10,  18	; 5 (UNUSED)
+	.byte  0,  16,  -3,  17	;
+	.byte  0,  15,   0,  15	; 5 (UNUSED)
 	.byte  2,  27,  -2,  34	; 6
 	.byte  2,  20,   2,  12	; 7
 	.byte  2,  43,  -2,  18	; 8
@@ -280,7 +280,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $67 - OBJ_LAVALOTUS
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OAT_BOUNDBOX01	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OAT_BOUNDBOX01	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.byte OAT_BOUNDBOX01	; Object $6A - OBJ_VEGGIEGUY
 	.byte OAT_BOUNDBOX01	; Object $6B - OBJ_SHYGUY
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6C - OBJ_GREENTROOPA
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6D - OBJ_REDTROOPA
@@ -734,36 +734,6 @@ PRG000_C797:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $C7A9
 Object_DetectTile:
-PRG000_C7B1:
-	LDA Player_PartDetEn
-	BEQ PRG000_C7D9	 ; If Player_PartDetEn is not set, jump to PRG000_C7D9
-
-	; The 32 pixel partition floor is enabled
-	; Any object Y >= 160 must detect the bottom two tile rows instead!
-
-	LDA <Objects_Y,X	 
-	ADD Object_TileDetectOffsets,Y	; Adding tile detection offset to Object's Y
-	SUB Level_VertScroll	; Make relative to scroll
-	CMP #160
-	BLT PRG000_C7D9	 	; If Y < 160, jump to PRG000_C7D9
-
-	; Object is low enough to the visual floor...
-
-	SBC #16		 ; Subtract 16
-	AND #$f0	 ; Align to grid
-	STA ObjTile_DetYLo	 ; -> ObjTile_DetYLo
-
-	; Flag object as touching "32 pixel partition" floor
-	LDA <Objects_DetStat,X
-	ORA #$80
-	STA <Objects_DetStat,X
-
-	LDA #$01
-	STA ObjTile_DetYHi	 ; ObjTile_DetYHi = 1
-
-	JMP PRG000_C7F1	 ; Jump to PRG000_C7F1
-
-PRG000_C7D9:
 	LDA <Objects_Y,X
 	ADD Object_TileDetectOffsets,Y	; Adding tile detection Y offset to Object's Y
 	AND #$f0		; Align to grid
@@ -864,7 +834,7 @@ Podoboo_Splash:
 	LDA Level_ObjectID,X
 	CMP #OBJ_BLOOPER
 	BEQ PRG000_C914
-	CMP #OBJ_BLOOPERCHILDSHOOT
+	CMP #OBJ_VEGGIEGUY
 	BEQ PRG000_C914
 	CMP #OBJ_BLOOPERWITHKIDS
 	BEQ PRG000_C914
@@ -3534,22 +3504,6 @@ PRG000_D373:
 	BEQ PRG000_D39C	 ; Otherwise, jump to PRG000_D39C
 
 PRG000_D382:
-	LDY Level_ObjectID,X	; Y = object's ID
-
-	LDA Object_AttrFlags,Y
-	AND #OAT_BOUNCEOFFOTHERS
-	BEQ PRG000_D39C	 ; If OAT_BOUNCEOFFOTHERS is NOT set (turn around when hit), jump to PRG000_D39C
-
-	JSR Level_ObjCalcXDiffs
-
-	LDA Objects_FlipBits,X
-	AND #~SPR_HFLIP	 ; Clear horizontal flip
-	DEY		 
-	BEQ PRG000_D399
-	ORA #SPR_HFLIP	 ; Set horizontal flip
-
-PRG000_D399:
-	STA Objects_FlipBits,X	 ; Update object flip bits as necessary
 
 PRG000_D39C:
 	JMP Player_GetHurt	; Hurt Player and don't come back!
@@ -3690,7 +3644,7 @@ PRG000_D42E:
 Object_Delete:
 	LDA Level_ObjectID,X
 
-	; If object ID is OBJ_FIRECHOMP, OBJ_CHAINCHOMPFREE, OBJ_BLOOPERCHILDSHOOT, 
+	; If object ID is OBJ_FIRECHOMP, OBJ_CHAINCHOMPFREE, OBJ_VEGGIEGUY, 
 	; OBJ_BLOOPERWITHKIDS, or OBJ_FIRESNAKE, jump to PRG000_D449	
 	; These objects are hardcoded to release their X/Y Buffer allocations!
 	CMP #OBJ_FIRECHOMP
@@ -3699,7 +3653,7 @@ Object_Delete:
 	CMP #OBJ_CHAINCHOMPFREE	
 	BEQ PRG000_D449	
 
-	CMP #OBJ_BLOOPERCHILDSHOOT
+	CMP #OBJ_VEGGIEGUY
 	BEQ PRG000_D449
 
 	CMP #OBJ_BLOOPERWITHKIDS

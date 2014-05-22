@@ -2035,7 +2035,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	Objects_ColorCycle:	.ds 8	; $0768-$076F Cycles colors of object and decrements to zero (e.g. "Melting" ice block, starman, etc.)
 
 	; Objects_Var6: Special hardcoded behavior for the following objects ONLY:
-	; OBJ_PYRANTULA, OBJ_CHAINCHOMPFREE, OBJ_BLOOPERCHILDSHOOT, 
+	; OBJ_PYRANTULA, OBJ_CHAINCHOMPFREE, OBJ_VEGGIEGUY, 
 	; OBJ_BLOOPERWITHKIDS, or OBJ_FIRESNAKE
 	; ... as the X/Y buffer slot they occupy (see Object_Delete)
 	Objects_Var6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
@@ -2897,6 +2897,7 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 
 	; Special Object IDs:
 SOBJ_HAMMER		= $01	; Hammer Bro hammer
+SOBJ_VEGGIE	=	$02
 SOBJ_BOOMERANG		= $02	; Boomerangs
 SOBJ_ACID		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
 SOBJ_NIPPERFIREBALL	= $04 	; Nipper fireball (falls)
@@ -3000,7 +3001,7 @@ TILE_PROP_MOVE_UP		= $05 ;
 TILE_PROP_MOVE_DOWN		= $06 ;
 TILE_PROP_TREASURE		= $07 ; 
 TILE_PROP_LOCK			= $08 ; 
-TILE_PROP_ENEMY			= $09 ;
+TILE_PROP_ENEMY			= $09; 
 TILE_PROP_TRAP			= $0A ;
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
@@ -3481,6 +3482,7 @@ OBJ_WATERCURRENTDOWNARD = $66 ;
 OBJ_LAVALOTUS		= $67 	; Underwater lava plant
 OBJ_TWIRLINGBUZZY	= $68	; Twirling, upside down buzzy beatle
 OBJ_TWIRLINGSPINY	= $69	; Twirling, upside down spiny
+OBJ_VEGGIEGUY			= $6A
 OBJ_BLOOPERCHILDSHOOT	= $6A	; Blooper (shoots off children
 OBJ_PILEDRIVER	= $00	;
 OBJ_SHYGUY		= $6B	; Pile driver micro goomba

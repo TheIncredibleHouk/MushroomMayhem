@@ -197,7 +197,6 @@ PRG008_A0F1:
 	STA Splash_X	 ; Splash_X = Player_X
 
 PRG008_A0F9:
-	STA Debug_Snap
 	LDA <Player_YVel
 	BMI PRG008_A0FA
 	AND #$80
@@ -3879,8 +3878,8 @@ PRG008_B406:
 	BLT PRG008_B419	 ; If Temp_Var14 < $B0, jump to PRG008_B419
 
 PRG008_B414:
-	LDA #$00
-	RTS		 ; Return
+	LDA #$A8
+	STA <Temp_Var14
 
 
 PRG008_B419:
@@ -5190,7 +5189,7 @@ PRG008_BD30:
 	RTS		 ; Return
 
 PRG008_BD4B:
-	LDX #$04	 ; X = 1 (check one tile by foot, then check the other!)	
+	LDX #$05	 ; X = 1 (check one tile by foot, then check the other!)	
 
 PRG008_BD59:
 	STX <Temp_Var2
@@ -5205,11 +5204,11 @@ PRG008_BD59:
 	SBC <Temp_Var1
 	CMP #$04
 	BGE PRG008_BD73
-	TAX
+	TAY
 
 PushFull:
 	JSR ApplyTileMove
-	JMP PRG008_BE2F		; Jump to PRG008_BD73
+	JMP PRG008_BE2E		; Jump to PRG008_BD73
 
 PRG008_BD73:
 	LDA <Temp_Var1
@@ -5241,9 +5240,12 @@ PRG008_BDAF:
 
 PRG008_BDB1:
 	; SLIPPERY, ICY GROUND LOGIC
+	LDA Wall_Jump_Enabled
+	BNE PRG008_BDB2
 	LDA <Player_InAir
 	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
 
+PRG008_BDB2:
 	LDA <Temp_Var3
 	CMP #TILE_PROP_SOLID_TOP
 	BCC PRG008_BE2E
@@ -5263,75 +5265,64 @@ PRG008_BE2E:
 
 PRG008_BE2F:
 	RTS		 ; Return
-MoveTileHorz:		.byte 0, 0, $01, $FF
-MoveTileVert:		.byte $01, $FD, 0, 0
-MoveTileVertUp:		.byte $01, $FF, 0, 0
-MoveTileVertDown:	.byte $03, $FC, 0, 0
 
+TileGround:	 .byte $00, $00, $10, $F0
+TileWaterX:	 .byte $00, $00, $10, $F0
+TileWaterY:	 .byte $01, $FE, $00, $00
+TileWall:	 .byte $08, $F8, $00, $00
 
 ApplyTileMove:
-	LDA MoveTileHorz, X
-	BEQ TryVertMove
-	BMI ApplyTileXMove
-	ADD <Player_X
-	STA <Player_X
-	LDA <Player_XHi
-	ADC #$00
-	STA <Player_XHi
-	RTS
+	CPX #$03
+	BEQ ApplyTileMove1
+	CPX #$02
+	BNE ApplyTileMove2
 
-ApplyTileXMove:
-	JSR Negate
-	STA TempA
-	LDA <Player_X
-	SUB TempA
-	STA <Player_X
-	LDA <Player_XHi
-	SBC #$00
-	STA <Player_XHi
-	RTS
-	
-TryVertMove:
-	LDA <Counter_1
-	AND #$01
-	BEQ MoveTileDone
-
-	LDA Player_InWater
-	BEQ TryVertMove10
-	LDA Player_IsHolding
-	BNE MoveTileDone
-	BEQ TryVertMove3
-
-TryVertMove10:
-	CPX #$01
-	BNE TryVertMove1
-
-TryVertMove1:
-	LDA <Player_YVel
-	BMI TryVertMove2
-	TXA
-	ADD #$08
-	TAX
-	BNE TryVertMove3
-
-TryVertMove2:
-	TXA
-	ADD #$04
-	TAX
-
+ApplyTileMove1:
 	LDA <Player_InAir
-	BNE TryVertMove3
-	LDA #$D0
-	BNE TryVertMove4
+	ORA Player_InWater
+	BNE ApplyTileMove1_1
+	LDA TileGround, Y
+	STA Player_CarryXVel 
 
-TryVertMove3:
-	LDA MoveTileVert, X
+ApplyTileMove1_1:
+	RTS
 
-TryVertMove4:
-	ADD <Player_YVel
-	STA <Player_YVel
+ApplyTileMove2:
+	CPX #$01
+	BNE ApplyTileMove3
+	LDA Player_InWater
+	BEQ ApplyTileMove3
 
-MoveTileDone:
+	LDA TileWaterX, Y
+	STA Player_CarryXVel
+
+	LDA Player_IsHolding
+	BNE ApplyTileMove2_1
+	LDA Player_YVel
+	ADD TileWaterY, Y
+	STA Player_YVel
+	
+
+ApplyTileMove2_1:
+	LDA #$01
+	STA Player_InAir
+	RTS
+
+ApplyTileMove3:
+	CPX #$05
+	BEQ ApplyTileMove4
+	CPX #$04
+	BNE ApplyTileMove5
+
+ApplyTileMove4:
+	LDA Wall_Jump_Enabled
+	BEQ ApplyTileMove5
+	LDA TileWall, Y
+	STA Player_CarryYVel
+	LDA #$00
+	STA Player_YVel
+
+ApplyTileMove5:
 	RTS
 
 PipeMove_SetPlayerFrame:
@@ -5577,9 +5568,7 @@ Dont_Flip:
 
 No_Odo_Increase:
 	LDA #$00
-	STA Player_CarryXVel
-	STA Player_CarryYVel
-	STA Player_OnPlatform
+	STA Player_CarryXVel, X
 	RTS		 ; Return
 
 

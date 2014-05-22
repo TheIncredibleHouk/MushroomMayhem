@@ -58,7 +58,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_LavaLotus		; Object $67 - OBJ_LAVALOTUS
 	.word ObjInit_Twirling		; Object $68 - OBJ_TWIRLINGBUZZY
 	.word ObjInit_Twirling		; Object $69 - OBJ_TWIRLINGSPINY
-	.word ObjInit_BlooperWithKids	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.word ObjInit_ShyGuy	; Object $6A - OBJ_VEGGIEGUY
 	.word ObjInit_ShyGuy	; Object $6B - OBJ_SHYGUY
 
 
@@ -100,7 +100,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_LavaLotus		; Object $67 - OBJ_LAVALOTUS
 	.word ObjNorm_TwirlingShell	; Object $68 - OBJ_TWIRLINGBUZZY
 	.word ObjNorm_TwirlingShell	; Object $69 - OBJ_TWIRLINGSPINY
-	.word ObjNorm_Blooper		; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.word ObjNorm_VeggieGuy		; Object $6A - OBJ_VEGGIEGUY
 	.word ObjNorm_ShyGuy	; Object $6B - OBJ_SHYGUY
 
 
@@ -143,7 +143,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $67 - OBJ_LAVALOTUS
 	.word OCSPECIAL_KILLCHANGETO | OBJ_BUZZYBEATLE	; Object $68 - OBJ_TWIRLINGBUZZY
 	.word OCSPECIAL_KILLCHANGETO | OBJ_SPINY	; Object $69 - OBJ_TWIRLINGSPINY
-	.word ObjHit_DoNothing	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.word ObjHit_DoNothing	; Object $6A - OBJ_VEGGIEGUY
 	.word ObjHit_DoNothing	; Object $6B - OBJ_SHYGUY
 
 	
@@ -185,7 +185,7 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $67 - OBJ_LAVALOTUS
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $6A - OBJ_VEGGIEGUY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $6B - OBJ_SHYGUY
 
 	; Object group $02 (i.e. objects starting at ID $48) second set attribute bits
@@ -226,7 +226,7 @@ ObjectGroup02_Attributes2:
 	.byte OA2_TDOGRP0	; Object $67 - OBJ_LAVALOTUS
 	.byte OA2_TDOGRP1	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA2_TDOGRP1	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6A - OBJ_VEGGIEGUY
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6B - OBJ_SHYGUY
 
 
@@ -268,7 +268,7 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $67 - OBJ_LAVALOTUS
 	.byte OA3_HALT_NORMALONLY 	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.byte OA3_HALT_NORMALONLY 	; Object $6A - OBJ_VEGGIEGUY
 	.byte OA3_HALT_NORMALONLY 	; Object $6B - OBJ_SHYGUY
 
 
@@ -310,7 +310,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT6 | $1B	; Object $67 - OBJ_LAVALOTUS
 	.byte OPTS_SETPT5 | $0B	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OPTS_SETPT5 | $0B	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OPTS_SETPT5 | $1A	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.byte OPTS_SETPT5 | $0F	; Object $6A - OBJ_VEGGIEGUY
 	.byte OPTS_SETPT5 | $0F	; Object $6B - OBJ_SHYGUY
 
 
@@ -355,7 +355,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_NORMALANDKILLED	; Object $67 - OBJ_LAVALOTUS
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte KILLACT_NORMALSTATE	; Object $6A - OBJ_BLOOPERCHILDSHOOT
+	.byte KILLACT_JUSTDRAW16X16	; Object $6A - OBJ_VEGGIEGUY
 	.byte KILLACT_JUSTDRAW16X16	; Object $6B - OBJ_SHYGUY
 
 
@@ -446,14 +446,16 @@ ObjP60:
 	.byte $99, $9B, $9D, $9F
 ObjP61:
 ObjP62:
-ObjP6A:
+
 	.byte $B1, $B1, $B3, $B3, $B1, $B1
 ObjP63:
 	.byte $81, $83, $A1, $A3
 ObjP64:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF
+
+ObjP6A:
 ObjP6B:
-	.byte $81, $83, $85, $87, $85, $87, $B1, $B1, $81, $B5, $85, $B7
+	.byte $81, $83, $85, $87, $85, $87, $B1, $B1, $81, $B5, $85, $B7, $BB, $BB
 
 ObjInit_IceBlock:
 	LDA #$ff
@@ -664,7 +666,7 @@ ObjNorm_PodobooCeiling:
 	BNE PRG003_A3D5	 ; If gameplay halted, jump to PRG003_A3D5
 
 	LDA Objects_Timer, X
-	BNE ObjInit_ShyGuy
+	;BNE ObjInit_ShyGuy
 	JSR Player_HitEnemy	 ; Handle Player collision with Podoboo
 
 	; Flip vertically based on velocity
@@ -710,13 +712,239 @@ Brick_StarManFlash: .byte $00, $00, $00, $00, $01, $00, $02, $00, $03, $00, $00,
 ShyGuyDirection: .byte $08, $F8
 ShyGuyFlip: .byte SPR_HFLIP, $00
 
+ObjInit_VeggieGuy:
+	JSR Level_ObjCalcXDiffs
+	LDA ShyGuyDirection, Y
+	STA <Objects_XVel,X
+	LDA ShyGuyFlip, Y
+	STA Objects_FlipBits, X
+	LDA Objects_Property, X
+	BEQ ObjInit_VeggieGuy1
+
+	LDA #$03
+	STA Objects_Var1, X
+	LDA #$00
+	STA Objects_Property, X
+
+ObjInit_VeggieGuy1:
+	RTS		 ; Return
+
 ObjInit_ShyGuy:
 	JSR Level_ObjCalcXDiffs
 	LDA ShyGuyDirection, Y
 	STA <Objects_XVel,X
 	LDA ShyGuyFlip, Y
 	STA Objects_FlipBits, X
+	LDA Objects_Property, X
+	BEQ ObjInit_ShyGuy1
+
+	STA Objects_Var2, X
+	LDA #$00
+	STA Objects_Property, X
+	LDA #$02
+	STA Objects_Var1, X
+
+ObjInit_ShyGuy1:
 	RTS		 ; Return
+
+ObjNorm_VeggieGuy:
+	LDA <Player_HaltGame
+	BNE VeggieGuyDraw
+
+	JSR Object_DeleteOffScreen
+	JSR Player_HitEnemy
+	JSR Object_InteractWithWorld
+	JSR Object_HandleBumpUnderneath
+	LDA Objects_DetStat,X 
+	AND #$04
+	BEQ ObjNorm_VeggieGuy1
+	LDA Objects_PrevDetStat,X 
+	AND #$04
+	BNE ObjNorm_VeggieGuy1
+
+	JSR ObjInit_VeggieGuy
+	RTS
+
+ObjNorm_VeggieGuy1:
+	LDA Objects_Var1,X
+	JSR DynJump
+
+	.word VeggieGuyMarch
+	.word VeggieGuyPull
+	.word VeggieGuyWait
+	.word VeggieGuyCarry
+
+VeggieGuyMarch:
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	LDA Objects_Var2, X
+	BNE VeggieGuyDraw
+
+	LDA <Objects_X,X
+	AND #$0F
+	BEQ VeggieGuyFindGrass
+
+VeggieGuyDraw:
+	LDA Objects_Frame,X
+	CMP #$03
+	BEQ VeggieGuyDrawMirrored
+	CMP #$06
+	BEQ VeggieGuyDrawMirrored
+	JSR Object_ShakeAndDraw
+	JSR VeggieGuyDrawVeggieCarried
+
+VeggieGuyDraw1:
+	RTS
+
+VeggieGuyDrawMirrored:
+	JSR Object_ShakeAndDrawMirrored
+	JSR VeggieGuyDrawVeggieCarried
+	RTS
+
+VeggieGuyDrawVeggieCarried:
+	LDA Objects_Var2, X
+	BEQ VeggieGuyDrawVeggieCarried1
+	
+	LDY Object_SprRAM, X
+	LDA #$B3
+	STA Sprite_RAM + 9, Y
+	STA Sprite_RAM + 13, Y
+	
+	LDA #SPR_PAL2
+	STA Sprite_RAM + 10, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAM + 14, Y
+	
+	 
+	LDA Sprite_RAM + 3, Y
+	STA Sprite_RAM + 11, Y
+	LDA Sprite_RAM + 7, Y
+	STA Sprite_RAM + 15, Y
+	
+	LDA Sprite_RAM , Y
+	SUB #$10
+	BCC VeggieGuyDrawVeggieCarried1
+	STA TempA
+	LDA Objects_Frame, X
+	AND #$01
+	ADD TempA
+	STA Sprite_RAM + 8, Y
+	STA Sprite_RAM + 12, Y
+
+VeggieGuyDrawVeggieCarried1:
+	RTS
+
+VeggieGuyFindGrass:
+	LDA Objects_LastProp, X
+	AND #$0F
+	CMP #TILE_PROP_ENEMY
+	BNE VeggieGuyFindGrass1 
+	INC Objects_Var1, X
+	LDA #$18
+	STA Objects_Timer, X
+	LDA #$00
+	STA Objects_XVel, X
+	LDA #$06
+	STA Objects_Frame, X
+
+VeggieGuyFindGrass1:
+	JMP VeggieGuyDraw
+
+VeggieGuyPull:
+	LDA Objects_Timer, X
+	BNE VeggieGuyFindGrass1
+	LDA Level_ChgTileEvent
+	BNE VeggieGuyPull1
+	INC Objects_Var2, X
+
+	LDA Objects_LastTile, X
+	AND #$C0
+	ORA #$01
+	STA Level_ChgTileEvent
+	LDA <Objects_Y, X
+	STA Objects_LastTileY
+	LDA <Objects_YHi, X
+	STA Objects_LastTileYHi
+
+	JSR SetObjectTileCoord
+	LDA #$E0
+	STA Objects_YVel, X
+	INC Objects_Var1, X
+	LDA #$03
+	STA Objects_Frame, X
+
+VeggieGuyPull1:
+	JMP VeggieGuyDraw
+
+VeggieGuyWait:
+	LDA Objects_DetStat, X
+	AND #HIT_DET_GRND
+	BEQ VeggieGuyWait1
+	LDA #$00
+	INC Objects_Var1, X
+	JSR ObjInit_ShyGuy
+
+VeggieGuyWait1:
+	JMP VeggieGuyDraw
+
+VeggieGuyCarry:
+	LDA #$10
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$04
+	BCS VeggieGuyCarryVeggi2
+	JSR Level_ObjCalcYBlockDiffs
+	CMP #$02
+	BCS VeggieGuyCarryVeggi2
+	JSR SpecialObj_FindEmptyAbort
+	LDA #SOBJ_VEGGIE
+	STA SpecialObj_ID,Y
+
+	LDA Objects_X,X
+	STA SpecialObj_XLo,Y
+
+	LDA Objects_Y, X
+	SUB #$10
+	STA SpecialObj_YLo,Y
+	LDA Objects_YHi, X
+	SBC #$00
+	STA SpecialObj_YHi,Y
+	LDA #$20	 ; Y = $30
+	STA TempA
+
+	LDA Objects_XVel, X
+	ROL A
+	BCC ThrowVeggie	 ; If Buster's turned around, jump to PRG002_A5F2
+	LDA #-$20	 ; Otherwise, Y = -$30
+	STA TempA
+
+ThrowVeggie:
+	LDA TempA
+	STA SpecialObj_XVel,Y
+
+	; Set Y velocity
+	LDA #-$18
+	STA SpecialObj_YVel,Y
+
+	LDA #$00
+	STA Objects_Var1, X
+	STA Objects_Var2, X
+
+VeggieGuyCarryVeggi2:
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	ADD #$04
+	STA Objects_Frame, X
+
+VeggieGuyCarryVeggi3:
+	JMP VeggieGuyDraw
 
 ObjNorm_ShyGuy:
 	LDA <Player_HaltGame
@@ -752,8 +980,6 @@ ShyGuyMarch:
 	AND #$01
 	STA Objects_Frame, X
 
-	LDA Objects_Property, X
-	BNE ShyGuyDraw
 	LDA <Objects_X,X
 	AND #$0F
 	BEQ ShyGuyFindBrickAbove
@@ -1126,7 +1352,7 @@ PRG003_A567:
 	RTS		 ; Return
 
 Twirler_InitXVel:	.byte $08, -$08
-Twirl_DropXVel: .byte $10, $F0
+Twirl_DropXVel: .byte $18, $E8
 
 ObjInit_Twirling:
 	JSR Level_ObjCalcXDiffs
@@ -3564,15 +3790,6 @@ PRG003_B753:
 ObjInit_Blooper:
 	RTS		 ; Return
 
-ObjInit_BlooperWithKids:
-
-	; Var7 = 4 (kids left)
-	LDA #$04
-	STA Objects_Var7,X
-
-	JSR Object_InitTailBuffer	 ; Initialize tail buffer (if no buffer available, will be destroyed and won't come back)
-
-	RTS		 ; Return
 
 Blooper_YVelAccel:	
 	.byte $02, -$02
@@ -3585,6 +3802,16 @@ PRG003_B763:
 
 Blooper_FlipTowardsPlayer:
 	.byte SPR_HFLIP, $00
+
+ObjInit_BlooperWithKids:
+
+	; Var7 = 4 (kids left)
+	LDA #$04
+	STA Objects_Var7,X
+
+	JSR Object_InitTailBuffer	 ; Initialize tail buffer (if no buffer available, will be destroyed and won't come back)
+
+	RTS		 ; Return
 
 ObjNorm_Blooper:
 	LDA Level_ObjectID,X
@@ -3764,7 +3991,7 @@ PRG003_B833:
 	CMP #OBJ_BLOOPER
 	BEQ PRG003_B85F	 ; If this is a normal Blooper, jump to PRG003_B85F
 
-	CMP #OBJ_BLOOPERCHILDSHOOT
+	CMP #OBJ_VEGGIEGUY
 	BNE PRG003_B85C	 ; If this is NOT a Blooper that launches children, jump to PRG003_B85C
 
 	INC Objects_Var2,X	; Var2++
@@ -4309,7 +4536,7 @@ PRG003_BB17:
 	LDX <SlotIndexBackup		 ; X = object slot index
 
 	LDA Level_ObjectID,X
-	CMP #OBJ_BLOOPERCHILDSHOOT
+	CMP #OBJ_VEGGIEGUY
 	BEQ PRG003_BB24	 ; If this is a Blooper who launches off kids, jump to PRG003_BB24
 
 	CMP #OBJ_BLOOPERWITHKIDS
