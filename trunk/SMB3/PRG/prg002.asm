@@ -31,7 +31,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_WoodenPlatDiagonal2	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjInit_DoNothing	; Object $29 - OBJ_SPIKE
 	.word ObjInit_Spark		; Object $2A - OBJ_SPARKRIGHT
-	.word ObjInit_SparkLeft		; Object $2B - OBJ_SPARKLEFT
+	.word ObjInit_DoNothing		; Object $2B - OBJ_SPARKLEFT
 	.word ObjInit_WoodenPlatCCW	; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjInit_WoodenPlatCW	; Object $2D - OBJ_BIGBERTHA
 	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
@@ -837,8 +837,10 @@ PRG002_A4C5:
 Buster_XVel:	.byte -$10, $10
 
 ObjInit_BusterBeatle:
-	LDY <Scroll_LastDir	; Get last scroll direction
-
+	JSR Level_ObjCalcXDiffs
+	TYA
+	EOR #$01
+	TAY
 	; Set flip bits to face Player
 	LDA FacePlayer_FlipBitsStart,Y
 	STA Objects_FlipBits,X
@@ -992,7 +994,7 @@ PRG002_A587:
 
 	JSR Object_CalcCoarseYDiff
 	LDA <Temp_Var15
-	CMP #$0c
+	CMP #$11
 	BGE PRG002_A5A1	 ; If Player is too far away, jump to PRG002_A5A1 (RTS)
 
 	; "Stay close for $1B and I'll getcha..."
@@ -1215,6 +1217,9 @@ BeachedCheep_CeilingBounce:
 ObjNorm_BeachedCheep:
 	LDA <Player_HaltGame
 	BNE PRG002_A7E1
+
+	JSR Player_HitEnemy
+
 	LDA Objects_Timer,X
 	BNE PRG002_A7E0	 ; If timer expired, jump to PRG002_A793
 
@@ -1246,7 +1251,6 @@ DoNoGravity:
 
 Normal_Bounce:
 	JSR Object_InteractWithWorld
-	JSR Player_HitEnemy
 
 	LDA Objects_DetStat, X
 	AND #$04
@@ -1836,7 +1840,13 @@ PRG002_AA84:
 PRG002_AA85:
 	RTS		 ; Return
 
+PlatformGenDelay:
+	.byte $00, $20
+
 ObjInit_WoodenPlatFallGen:
+	LDY Objects_Property, X
+	LDA PlatformGenDelay, Y
+	STA Objects_Timer, X
 	LDA #$FC
 	STA <Objects_YVel, X
 	LDA Objects_SprAttr,X
@@ -1862,61 +1872,6 @@ Reset_WoodenPlatFallGen:
 	RTS
 
 ObjNorm_WoodenPlatFallGen:
-
-	LDA Objects_Timer, X
-	BNE ObjNorm_WoodenPlatFallGenRTS
-
-	JSR DeleteIfOffAndDrawWide
-
-	LDA <Player_HaltGame
-	BNE ObjNorm_WoodenPlatFallGenRTS	 ; If gameplay is halted, jump to PRG002_AAA6 (RTS)
-
-	LDA Objects_Y, X
-	AND #$0F
-	CMP #$0D
-	BNE ObjNorm_WoodenPlatFallApplyY
-
-	LDA Objects_Var3, X
-	CMP #$07
-	BEQ CreatePlatForm
-	INC Objects_Var3, X
-	BNE ObjNorm_WoodenPlatFallApplyY
-
-CreatePlatForm:
-	JSR FindEmptyEnemySlot
-	CPX #$FF
-	BEQ ObjNorm_WoodenPlatFallGenRTS
-
-	LDY <SlotIndexBackup
-	LDA #OBJ_WOODENPLATUNSTABLE
-	STA Level_ObjectID,X
-
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State,X
-
-	LDA #$00
-	STA Objects_Frame, X
-
-	LDA Objects_X,Y
-	STA <Objects_X,X
-	LDA Objects_XHi,Y
-	STA <Objects_XHi,X
-	LDA Objects_Y,Y
-	STA <Objects_Y,X
-	LDA Objects_YHi,Y
-	STA <Objects_YHi,X
-	INC Objects_Var4,X
-	LDA #SPR_PAL3
-	STA Objects_SprAttr,X
-	LDX <SlotIndexBackup
-	JMP Reset_WoodenPlatFallGen
-	
-ObjNorm_WoodenPlatFallApplyY:
-	LDA #$FC
-	STA <Objects_YVel, X
-	JSR Object_ApplyYVel	 ; Apply X velocity
-
-ObjNorm_WoodenPlatFallGenRTS:
 	RTS		 ; Return
 
 
@@ -2097,30 +2052,31 @@ ObjInit_WoodenFallingPlat:
 	INC <Objects_Var4,X	 ; Var4 = 1
 
 ObjInit_FallingPlatform:
-
-	; Center the platform
-
-PRG002_ABB9:
-	RTS		 ; Return
-
+ObjInit_PathFollowPlat:
+	LDA #$20
+	STA Objects_Var2, X
+	RTS
 
 ObjNorm_PathFollowPlat:
 	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
 
 	LDA <Player_HaltGame
 	BNE ObjNorm_PathFollowPlat2	
-
+	STA Debug_Snap
 	LDA Objects_Var1, X
 	CMP #$03
 	BCC ObjNorm_PathFollowPlat1
 
-	JSR Object_ApplyY_With_Gravity
+	LDA Objects_Var2, X
+	STA Objects_YVel, X
+	JSR Object_ApplyYVel_NoLimit
 
 ObjNorm_PathFollowPlat1:
 	LDA <Player_YVel
 	BMI ObjNorm_PathFollowPlat2
 	JSR PlayerPlatform_Collide
 	BCC ObjNorm_PathFollowPlat2
+	STA Debug_Snap
 	LDA Objects_Var1, X
 	CMP #$03
 	BCS ObjNorm_PathFollowPlat2
@@ -2423,13 +2379,7 @@ PRG002_AE3A:
 	RTS		 ; Return
 
 ObjInit_Spark:
-	LDA #$00
-	STA Objects_Var1, X
-	STA Objects_Var2, X
-	RTS
-
-ObjInit_SparkLeft:
-	LDA #$01
+	LDA Objects_Property, X
 	STA Objects_Var1, X
 	LDA #$00
 	STA Objects_Var2, X
@@ -2441,41 +2391,22 @@ SparkDetects:
 	.byte (HIT_DET_LEFT | HIT_DET_GRND), (HIT_DET_RIGHT | HIT_DET_GRND), (HIT_DET_CEIL | HIT_DET_RIGHT), (HIT_DET_LEFT | HIT_DET_CEIL)
 
 SparkYVel:
-	.byte $04, $04, $fc, $fc
-	.byte $04, $04, $fc, $fc
+	.byte $10, $10, $F0, $F0
+	.byte $10, $10, $F0, $F0
 
 SparkXVeL:
-	.byte $04, $fc, $fc, $04
-	.byte $fc, $04, $04, $fc
+	.byte $10, $F0, $F0, $10
+	.byte $F0, $10, $10, $F0
 
 ObjNorm_Spark:
-	LDA <Player_HaltGame
-	BEQ  Norm_Spark
-	RTS
-
-Norm_Spark:
-	JSR Object_ShakeAndDrawMirrored
 	LDA <Counter_1
 	AND #$04
 	LSR A
 	LSR A
 	STA Objects_Frame, X
+	JSR Object_ShakeAndDrawMirrored
 	JSR Object_DeleteOffScreen
-	JSR Object_HitTestRespond
-	LDA Objects_Property, X
-	LSR A
-	STA <Temp_Var5
-	INC <Temp_Var5
-
-Spark_Again:
-	JSR Do_Spark
-	DEC <Temp_Var5
-	BPL Spark_Again
-	RTS
-
-Do_Spark:
-	LDA Objects_Property, X
-	AND #$01
+	LDA Objects_Var1, X
 	ASL A
 	ASL A
 	ORA Objects_Var2, X
@@ -2519,13 +2450,8 @@ ApplySparkY:
 	BNE KeepGoing
 
 SparkHitDetection:
-	LDA Objects_XVelFrac, X
-	BNE KeepGoing
-	LDA Objects_YVelFrac, X
-	BNE KeepGoing
 	JSR Object_WorldDetect4
-	LDA Objects_Property, X		; var1 = 0 -> clockwise movement, var1 = 1 -> counter clockwise
-	AND #$01
+	LDA Objects_Var1, X		; var1 = 0 -> clockwise movement, var1 = 1 -> counter clockwise
 	ASL A
 	ASL A
 	ORA Objects_Var2, X
@@ -2548,7 +2474,7 @@ WallCeilGrndDet:
 	STA Objects_Var2, X
 
 KeepGoing:						; if we only detected one ground or wall we keep going in the same direction
-	RTS
+	JMP Object_HitTestRespond
 
 
 ObjNorm_PiranhaSpikeBall:

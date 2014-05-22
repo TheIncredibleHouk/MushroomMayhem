@@ -2561,7 +2561,7 @@ PRG007_AF9E:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word SObj_DoNothing	; 00: EMPTY / NOT USED (should never get here anyway)
 	.word SObj_Hammer	; 01: Hammer Bro hammer
-	.word SObj_Boomerang	; 02: Boomerangs
+	.word SObj_Veggie	; 02: Boomerangs
 	.word SObj_Acid	; 03: 
 	.word SObj_Fireball	; 04: Nipper fireball
 	.word SObj_Fireball	; 05: Piranha fireball
@@ -3917,143 +3917,40 @@ Acid_Draw:
 
 	RTS		 ; Return
 
-Boomerang_XVelDelta:	.byte $01, -$01
-Boomerang_XVelLimit:	.byte $20, $E0
-Boomerang_YVelAccel:	.byte $01, -$01
-Boomerang_YVelLimit:	.byte $12, -$12
-
-
-SObj_Boomerang:
+SObj_Veggie:
 
 	LDA <Player_HaltGame
-	BEQ PRG007_B8B7	 ; If gameplay is not halted, jump to PRG007_B8B7
+	BNE DrawVeggie	 ; If gameplay is not halted, jump to PRG007_B8B7
 
-	JMP PRG007_B773	 ; Jump to PRG007_B773 (Draw Boomerang)
+	JSR SObj_ApplyXYVelsWithGravity	
+
+DrawVeggie:
+	JSR SObj_PlayerCollide
+	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
+	BNE DrawVeggie1	 ; If object is on the same vertical screen (see Temp_Var14 calculation), jump to PRG007_B779
+
+	JSR SObj_SetSpriteXYRelative
+
+	LDA Sprite_RAM, Y
+	STA Sprite_RAM + 4, Y
+	LDA Sprite_RAM +3, Y
+	ADD #$08
+	STA Sprite_RAM + 7, y
+
+	LDA #$B3
+	STA Sprite_RAM+$01,Y
+	STA Sprite_RAM+$05,Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAM + $02, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAM + $06, Y
+
+DrawVeggie1:
+	RTS
 
 PRG007_B8B7:
-	LDA SpecialObj_Data,X
-	AND #%00001111
-	BEQ PRG007_B8C1	 ; If lower 4 bits of SpecialObj_Data = 0, jump to PRG007_B8C1
 
-	JMP PRG007_B6F2	 ; Jump to PRG007_B6F2
-
-PRG007_B8C1:
-	INC SpecialObj_Var1,X	 ; Var1 ++
-
-	LDA SndCur_Level2
-	AND #SND_BOOMERANG
-	BNE PRG007_B8D3	 ; If boomerang sound is currently playing, jump to PRG007_B8D3
-
-	; Player boomerang sound
-	LDA Sound_QLevel2
-	ORA #SND_BOOMERANG
-	STA Sound_QLevel2
-
-PRG007_B8D3:
-	LDA SpecialObj_Var2,X
-	BMI PRG007_B904
-
-	LDA SpecialObj_Timer,X
-	BNE PRG007_B904	 ; If timer not expired, jump to PRG007_B904
-
-	LDA SpecialObj_Var2,X
-	AND #$01
-	TAY		 ; Y = 0 or 1 (Boomerang Direction)
-
-	; Accelerate Boomerang
-	LDA SpecialObj_XVel,X
-	ADD Boomerang_XVelDelta,Y
-	STA SpecialObj_XVel,X
-
-	CMP Boomerang_XVelLimit,Y
-	BNE PRG007_B904	 ; If boomerang has not hit limit, jump to PRG007_B904
-
-	; Set boomerang timer
-	LDA #$30
-	STA SpecialObj_Timer,X
-
-	INC SpecialObj_Var2,X	 ; SpecialObj_Var2++ (change direction)
-
-	LDA SpecialObj_Var3,X
-	BEQ PRG007_B904	 ; If SpecialObj_Var3 = 0, jump to PRG007_B904
-
-	; Boomerang is on the return
-	LDA #$ff
-	STA SpecialObj_Var2,X
-
-PRG007_B904:
-	LDA <Counter_1
-	LSR A
-	BCS PRG007_B92A	 ; Every other tick, jump to PRG007_B92A
-
-	LDA SpecialObj_Var3,X
-	CMP #$01
-	BLT PRG007_B915
-
-	LDY SpecialObj_YVel,X
-	BEQ PRG007_B92A	 ; If Boomerang Y Vel = 0, jump to PRG007_B92A
-
-PRG007_B915:
-	AND #$01
-	TAY		 ; Y = 0 or 1
-
-	; Accelerate Boomerang Y Velocity
-	LDA SpecialObj_YVel,X
-	ADD Boomerang_YVelAccel,Y
-	STA SpecialObj_YVel,X
-
-	CMP Boomerang_YVelLimit,Y
-	BNE PRG007_B92A	 ; If Boomerang Y Velocity is at limit, jump to PRG007_B92A
-
-	INC SpecialObj_Var3,X	 ; SpecialObj_Var3++
-
-PRG007_B92A:
-	JSR SObj_AddXVelFrac	; Apply X Velocity
-	JSR SObj_AddYVelFrac	; Apply Y Velocity
-	JSR PRG007_B773	 	; Draw Boomerang
-
-	LDA SpecialObj_Var2,X
-	BPL PRG007_B979	 ; If SpecialObj_Var2 <> $FF, jump to PRG007_B979
-
-	TXA		 ; Keep things interesting
- 	ADD <Counter_1	
-	LSR A	
-	BCS PRG007_B979	 ; Every other tick, jump to PRG007_B979 (RTS)
-
-	LDA SpecialObj_Data,X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY		 ; Y = object slot index of boomerang thrower
-
-	LDA Objects_State,Y
-	CMP #OBJSTATE_NORMAL
-	BNE PRG007_B979	 ; If thrower's state <> Normal, jump to PRG007_B979 (RTS)
-
-	LDA Level_ObjectID,Y
-	CMP #OBJ_BOOMERANGBRO
-	BNE PRG007_B979	; If thrower's slot is not a boomerang brother (Anymore), jump to PRG007_B979 (RTS)
-
-	; This is for the Boomerang brother to "catch"
-
-	LDA SpecialObj_YLo,X
-	ADD #8
-	SUB Objects_Y,Y
-	SUB #8
-	CMP #16
-	BGE PRG007_B979	 ; If boomerang Y diff >= 16, jump to PRG007_B979 (RTS)
-
-	LDA SpecialObj_XLo,X
-	ADD #8
-	SUB Objects_X,Y
-	SBC #0
-	CMP #16
-	BGE PRG007_B979 ; If boomerang X diff >= 16, jump to PRGO007_B979 (RTS)
-
-	JMP SpecialObj_Remove	 ; Boomerang Bro caught boomerang
-
-PRG007_B979:
 	RTS		 ; Return
 	
 SObj_Acid:
@@ -4504,7 +4401,7 @@ PRG007_BB97:
 	.word CFire_BulletBill	; 01: Bullet Bill cannon
 	.word CFire_BulletBill	; 02: Missile Bill (homing Bullet Bill)
 	.word CFire_RockyWrench	; 03: Creates Rocky Wrench
-	.word CFire_4Way	; 04: 4-way cannon
+	.word CFire_Platform	; 04: 4-way cannon
 	.word CFire_GoombaPipe	; 05: Goomba pipe (left output)
 	.word CFire_GoombaPipe	; 06: Goomba pipe (right output)
 	.word CFire_Cannonball 	; 07: Fires cannonballs horizontally left
@@ -4860,78 +4757,79 @@ DetermineCannonVisibilty2:
 
 	RTS		 ; Return
 
-CFire_4Way:
+CFire_Platform:
+	LDA CannonFire_Timer, X
+	BNE CFire_Platform2
+	LDA CannonFire_Var, X
+	BNE CFire_Platform1
 
-	LDA CannonFire_Timer2,X
-	BNE PRG007_BE1C	 ; If timer2 has not expired, jump to PRG007_BE1C (RTS)
+	JSR FindEmptyEnemySlot
 
-	; Reset timer2 = $3D
-	LDA #$3d
-	STA CannonFire_Timer2,X
+	LDY <SlotIndexBackup
 
-	LDA CannonFire_Y,X
-	CMP Level_VertScroll
-	LDA CannonFire_YHi,X
-	SBC Level_VertScrollH
-	BNE PRG007_BE42	 ; If the 4-Way cannon is vertically off-screen, jump to PRG007_BE42 (RTS)
+	LDA #OBJ_WOODENPLATUNSTABLE
+	STA Level_ObjectID,X
 
-	LDA CannonFire_X,X
-	CMP <Horz_Scroll
-	LDA CannonFire_XHi,X
-	SBC <Horz_Scroll_Hi
-	BNE PRG007_BE42	 ; If the 4-Way cannon is horizontally off-screen, jump to PRG007_BE42 (RTS)
+	LDA #$FC
+	STA Objects_Var2, X
 
-	LDA CannonFire_X,X
-	SUB <Horz_Scroll
-	ADD #32
-	CMP #40
-	BLT PRG007_BE42	 ; If the 4-Way cannon is too far left off-screen, jump to PRG007_BE42 (RTS)
+	LDA #$00
+	STA Objects_Frame, X
 
-	; Reset cannon timer to $20
-	LDA #$20
-	STA CannonFire_Timer,X
+	LDA #$03
+	STA Objects_Var1, X
 
-	INC CannonFire_Var,X	 ; CannonFire_Var++
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State,X
 
-PRG007_BE1C:
-	LDA CannonFire_Timer,X
-	BEQ PRG007_BE42	 ; If timer expired, jump to PRG007_BE42 (RTS)
+	LDA CannonFire_X,Y
+	STA <Objects_X,X
 
-	CMP #$1d
-	BNE PRG007_BE43	 ; If timer <> $1D, jump to PRG007_BE43
+	LDA CannonFire_XHi,Y
+	STA <Objects_XHi,X
 
-	;LDA #CHNGTILE_4WAYCANNON
-	STA Level_ChgTileEvent
+	LDA CannonFire_Y,Y
+	SUB #$01
+	STA <Objects_Y,X
 
-	; Set coordinates of change
-	LDA CannonFire_Y,X
-	STA Level_BlockChgYLo
+	LDA CannonFire_YHi,Y
+	SBC #$00
+	STA <Objects_YHi,X
 
-	LDA CannonFire_YHi,X
-	STA Level_BlockChgYHi
+	LDA #(SPR_PAL3 | SPR_BEHINDBG)
+	STA Objects_SprAttr,X
 
-	LDA CannonFire_X,X
-	STA Level_BlockChgXLo
+	TXA
 
-	LDA CannonFire_XHi,X
-	STA Level_BlockChgXHi
+	STA CannonFire_Var, Y
+	LDA #$48
+	STA CannonFire_Timer2, Y
+	RTS
 
-PRG007_BE42:
-	RTS		 ; Return
+CFire_Platform1:
+	LDA CannonFire_Timer2, X
+	BNE CFire_Platform2
 
-PRG007_BE43:
-	CMP #$01
-	BNE PRG007_BEAA	 ; If timer <> 1, jump to PRG007_BEAA
+	LDA CannonFire_Var, X
+	TAY
+	LDA #$00
+	STA Objects_Var3, Y
+	STA CannonFire_Var, X
+	LDA #$18
+	STA Objects_Var2, Y
 
-	LDA CannonFire_Var,X
-	AND #$07
-	STA <Temp_Var1	; Temp_Var1 = 0 to 7
+	LDA #SPR_PAL3
+	STA Objects_SprAttr,Y
 
-	JSR FireCannonBall	 ; Fire cannon ball
- 
-	LDA CannonFire_Var,X
-	ADD #$04
-	AND #$07	 ; +4 wrap around (fire the cannonball on the opposite side)
+	LDY CannonFire_Property, X
+	LDA PlatformGenTimer, Y
+	STA CannonFire_Timer, X
+
+CFire_Platform2:
+	RTS
+	
+PlatformGenTimer:
+	.byte $C0, $80, $20
 
 PRG007_BE59:
 	STA <Temp_Var1

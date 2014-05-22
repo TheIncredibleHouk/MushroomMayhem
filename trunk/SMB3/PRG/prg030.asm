@@ -3300,6 +3300,8 @@ Pointers_Done:
 NoCarryInc:
 	LDA #$00
 	STA <Temp_Var8
+	STA <Temp_Var1
+	STA <Temp_Var2
 	LDA #$60
 	STA <Temp_Var9
 	LDY #$00
@@ -4765,6 +4767,8 @@ Set_Wall_Jump:
 	LDA #$00
 	STA Player_Flip
 	LDA <Player_YVel
+	LDX Player_Slippery
+	BNE No_Wall_Jump
 	CLC
 	SBC #$20			; slow down decent during wall jump mode
 	BMI No_Wall_Jump
@@ -4897,8 +4901,37 @@ NextColorDay:
 
 NextLevelByte:
 	INC <Temp_Var14
+	LDA <Temp_Var14
+	AND #$0F
 	BNE DontIncVar5
-	INC <Temp_Var15
+	INC <Temp_Var1
+	LDA <Temp_Var1
+	CMP Level_Width
+	BNE NextLevelByte1
+	LDA #$00
+	STA <Temp_Var1
+	INC <Temp_Var2
+	LDA <Temp_Var2
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA <Temp_Var14
+	LDA <Temp_Var2
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var15
+	RTS
+
+NextLevelByte1:
+	LDA #$B0
+	ADD <Temp_Var14
+	STA <Temp_Var14
+	LDA <Temp_Var15
+	ADC #$01
+	STA <Temp_Var15
 DontIncVar5:
 	RTS
 
