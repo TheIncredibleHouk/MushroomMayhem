@@ -825,6 +825,7 @@ PRG010_C4A9:
 	BPL PRG010_C488	 ; If Y >= 0, loop!
 
 Map_DoOperation:
+	JSR DrawMapBackground
 	LDA Map_Operation
 	JSR DynJump	 
 
@@ -2010,8 +2011,8 @@ PRG010_CB1E:
 
 Border_VAttrMask:	.byte $CC, $CC, $CC, $CC, $CC, $CC
 			.byte $33, $33, $33, $33, $33, $33
-Border_VAttrs:		.byte $11, $11, $11, $11, $11, $11	; Attributes along left vertical border
-			.byte $44, $44, $44, $44, $44, $44	; Attributes along right vertical border
+Border_VAttrs:		.byte $00, $00, $00, $00, $00, $00	; Attributes along left vertical border
+			.byte $00, $00, $00, $00, $00, $00	; Attributes along right vertical border
 
 PRG010_CB39:
 	vaddr $2BC0
@@ -2063,9 +2064,9 @@ PRG010_CB6B:
 	.byte $01, $00
 
 	vaddr $2880
-	.byte VU_VERT | VU_REPEAT | $13, $00
+	.byte VU_VERT | VU_REPEAT | $12, $00
 
-	vaddr $2AE0
+	vaddr $2AC0
 	.byte $01, $00
 
 	.byte $00	; Terminator
@@ -2237,10 +2238,9 @@ Scroll_ColumnLOff:	.byte $00, $0F, $00
 
 Map_PanRight:
 	; Switch to page 12 @ A000 (for map tile 8x8 layout data)
-	LDA #MMC3_8K_TO_PRG_A000
-	STA MMC3_COMMAND
 	LDA #$0F
-	STA MMC3_PAGE
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 
 	LDY <Map_ScrollOddEven		 ; Y = Map_ScrollOddEven
 
@@ -2345,10 +2345,9 @@ PRG010_CCC0:
 
 PRG010_CCD7:
 	; Switch to page 11 @ A000
-	LDA #MMC3_8K_TO_PRG_A000
-	STA MMC3_COMMAND
 	LDA #11
-	STA MMC3_PAGE
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 
 	JMP Scroll_Map_SpriteBorder	 ; Draw map sprite border and don't come back
 
@@ -2691,6 +2690,9 @@ PRG010_CEF4:
 	BNE WorldMap_UpdateAndDraw	; If so, jump to WorldMap_UpdateAndDraw...
 
 	; The move has completed...
+	JSR FindLevelInfo
+	JSR UpdateLevel
+	LDX #$00
 	JSR Map_GetTile	 
 	CMP #TILE_HANDTRAP
 	BNE WorldMap_UpdateAndDraw	; If the Player has not landed on a hand trap, jump to WorldMap_UpdateAndDraw
@@ -3035,6 +3037,9 @@ PRG010_D16F:
 	CMP #$01	
 	BLT PRG010_D179	 ; If Map_Operation < 1, jump to PRG010_D179
 
+	LDA #$0B
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 	JSR MapObjects_UpdateDrawEnter	; Update all objects, draw them, enter them
 
 PRG010_D179:
@@ -3580,10 +3585,10 @@ W8D_GetNext8x8:
 	STA <Temp_Var11		 ; -> Temp_Var11
 
 	; Switch to page 12 @ A000 (for map tile 8x8 layout data)
-	LDA #MMC3_8K_TO_PRG_A000
-	STA MMC3_COMMAND
+
 	LDA #12
-	STA MMC3_PAGE
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 
 	JSR TileLayout_GetBaseAddr	 ; Set Temp_Var13/14 to layout pointer, and reload Y = Temp_Var11 (the tile)
 
@@ -3818,4 +3823,217 @@ Reset_Ability:
 	STA Player_Ability
 
 Ability_RTS:
+	RTS
+
+FindLevelInfo:
+	LDA World_Map_X
+	ORA World_Map_XHi
+	STA DAIZ_TEMP1
+	LDA World_Map_Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA DAIZ_TEMP2
+	LDY #01
+
+FindLevelInfo1:
+	LDA DAIZ_TEMP1
+	CMP MapPointers, Y
+	BNE FindLevelInfo10
+	INY
+	LDA DAIZ_TEMP2
+	CMP MapPointers, Y
+	BEQ FindLevelInfo2
+
+FindLevelInfo10:
+	INY
+	INY
+	INY
+	CPY #$40
+ 	BCC FindLevelInfo1
+	LDA #$FF
+	STA LevelNumber
+	LDY #$27
+	LDA #$FE
+
+FindLevelInfo11:
+	STA LevelName, Y
+	DEY
+	BPL FindLevelInfo11
+	RTS
+
+FindLevelInfo2:
+	DEY
+	DEY
+	LDA MapPointers, Y
+	STA LevelLoadPointer
+	STA LevelNumber
+	LDA #$01
+	STA JustName
+	JSR LevelLoadQuick
+	LDA #$00
+	STA JustName
+	RTS
+
+UpdateLevel:
+	LDY #$00
+	LDA Status_Bar_Mode
+	BNE UpdateLevel1
+
+	LDA LevelNumber
+	JSR GetLevelBit
+	PHA
+	LDX #$D6
+	AND Magic_Stars_Collected1, Y
+	BEQ UpdateLevelA1
+	INX
+
+UpdateLevelA1:
+	STX Status_Bar_Bottom + 15
+	LDX #$D6
+	PLA
+	PHA
+	AND Magic_Stars_Collected2, Y
+	BEQ UpdateLevelA2
+	INX
+
+UpdateLevelA2:
+	STX Status_Bar_Bottom + 16
+	LDX #$D6
+	PLA
+	AND Magic_Stars_Collected3, Y
+	BEQ UpdateLevelA3
+	INX
+
+UpdateLevelA3:
+	STX Status_Bar_Bottom + 17
+	RTS
+
+UpdateLevel1:
+	LDA LevelName, Y
+	STA Status_Bar_Bottom, Y
+	INY
+	CPY #28
+	BNE UpdateLevel1
+	RTS
+
+
+DrawMapBackground:
+	LDA MapBackgroundInit
+	BNE DrawMapBackground1
+	INC MapBackgroundInit
+
+	JSR InitStarsBackground
+
+DrawMapBackground1:
+	LDA DayNight
+	BNE DrawMapStarsBackground1
+
+
+DrawMapSkyBackground1:
+	LDA <Counter_1
+	AND #$3F
+	BNE DrawMapSkyBackground2
+	INC Weather_XPos
+	INC Weather_XPos + 1
+	INC Weather_XPos + 2
+	INC Weather_XPos + 3
+	INC Weather_XPos + 4
+	INC Weather_XPos + 5
+
+DrawMapSkyBackground2:
+	LDX #$05
+	LDY #$F8
+	LDA <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var2
+	LDA <Horz_Scroll_Hi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var2
+	STA <Temp_Var2
+
+DrawMapClouds0:
+	JSR FindUnusedSprite
+	LDA Weather_XPos, X
+	SUB <Temp_Var2
+	CMP #$10
+	BCC DrawMapClouds1
+	CMP #$E8
+	BCS DrawMapClouds1
+	STA Sprite_RAM +3, Y
+
+	LDA Weather_YPos, X
+	ADD #$18
+	CMP #$38
+	BCC DrawMapClouds2
+
+	SUB #$10
+
+DrawMapClouds2:
+	STA Sprite_RAM, Y
+
+	LDA #(SPR_PAL3)
+	STA Sprite_RAM + 2, Y
+	LDA #$E1
+	STA Sprite_RAM + 1, Y
+	
+DrawMapClouds1:
+	DEX
+	BPL DrawMapClouds0
+	RTS
+
+StarTiles:
+	.byte $E3, $E5, $E7, $E3, $E5, $E7
+
+DrawMapStarsBackground1:
+	LDA <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	STA TempA
+	LDA <Horz_Scroll_Hi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA TempA
+	STA TempA
+	LDY #$F8
+	LDX #$05
+
+DrawMapStars0:
+	JSR FindUnusedSprite
+	LDA StarXPositions, X
+	SUB TempA
+	CMP #$10
+	BCC DrawMapStars1
+	CMP #$E8
+	BCS DrawMapStars1
+	STA Sprite_RAM +3, Y
+
+	LDA StarYPositions, X
+	ADD #$1A
+	CMP #$38
+	BCC DrawMapStars2
+	SUB #$10
+
+DrawMapStars2:
+	STA Sprite_RAM, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAM + 2, Y
+	LDA StarTiles, X
+	STA Sprite_RAM + 1, Y
+
+DrawMapStars1:
+	DEX
+	BPL DrawMapStars0
 	RTS

@@ -3234,7 +3234,7 @@ ChallengeRTS:
 	BNE Kill_Ctrls
 
 Unfreeze:
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CLC
 	ADC #$01
 	STA Player_QueueSuit

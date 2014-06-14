@@ -25,7 +25,7 @@
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_InitJumpTable:
 	.word ObjInit_ProjBar	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjInit_DoNothing	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.word ObjInit_Freezie	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.word ObjInit_DoNothing	; Object $92 - OBJ_TWIRLINGPLATCW
 	.word ObjInit_DoNothing	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjInit_Dimmer		; Object $94 - OBJ_DIMMER
@@ -67,7 +67,7 @@ ObjectGroup04_InitJumpTable:
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_ProjectileBarCW	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjNorm_ProjectileBarCW	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.word ObjNorm_Freezie	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.word ObjNorm_ProjectileBarCW	; Object $92 - OBJ_TWIRLINGPLATCW
 	.word ObjNorm_ProjectileBarCW	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjNorm_Dimmer		; Object $94 - OBJ_DIMMER
@@ -110,7 +110,7 @@ ObjectGroup04_NormalJumpTable:
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjHit_DoNothing	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.word ObjHit_Freezie	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.word ObjHit_DoNothing	; Object $92 - OBJ_TWIRLINGPLATCW
 	.word ObjHit_DoNothing	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjHit_DoNothing	; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -152,7 +152,7 @@ ObjectGroup04_CollideJumpTable:
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup04_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -193,7 +193,7 @@ ObjectGroup04_Attributes:
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup04_Attributes2:
 	.byte OA2_TDOGRP0	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OA2_TDOGRP0	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte OA2_TDOGRP0	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte OA2_TDOGRP0	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OA2_TDOGRP0	; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -234,7 +234,7 @@ ObjectGroup04_Attributes2:
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup04_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OA3_HALT_NORMALONLY 	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte OA3_HALT_NORMALONLY 	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte OA3_HALT_NORMALONLY 	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -276,7 +276,7 @@ ObjectGroup04_Attributes3:
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup04_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OPTS_NOCHANGE	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.byte OPTS_SETPT5 | $33	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte OPTS_SETPT6 | $4F	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte OPTS_SETPT6 | $4F	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OPTS_NOCHANGE ; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -318,7 +318,7 @@ ObjectGroup04_PatTableSel:
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup04_KillAction:
 	.byte KILLACT_STANDARD	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte KILLACT_STANDARD	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.byte KILLACT_NORMALSTATE	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte KILLACT_STANDARD	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte KILLACT_STANDARD	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte KILLACT_STANDARD	; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -391,6 +391,7 @@ ObjectGroup04_PatternSets:
 
 ObjP90:
 ObjP91:
+	.byte $AD, $AF, $B1, $AF, $B5, $B7, $AD, $B3
 ObjP92:
 ObjP93:
 ObjP94:
@@ -604,106 +605,12 @@ SpinyEgg_TowardsPlayer:	.byte $0A, -$0A
 
 ObjInit_ObjB3:
 
-	JSR Level_ObjCalcXDiffs
-
-	; Set X velocity towards Player
-	LDA SpinyEgg_TowardsPlayer,Y
-	STA <Objects_XVel,X
-
 	RTS		 ; Return
 
-ObjB3_AttrByFrame:	.byte $03, $01, $02, $01
-	
 ObjNorm_ObjB3:
-
-	; Strange object... hurts Player, can be killed, appears able to be "bounced" off a sideways bounce block
-
-	LDA Level_NoStopCnt
-	LSR A
-	LSR A
-	AND #$03
-	STA Objects_Frame,X	 ; Set frame 0 to 3
-
-	TAY		 	 ; Y = 0 to 3
-	LDA ObjB3_AttrByFrame,Y
-	STA Objects_SprAttr,X	 ; Set attribute by frame
-
-	JSR Object_ShakeAndDraw	 ; Draw thing
-
-	; Clear horizontal and vertical flip bits on first sprite
-	LDA Sprite_RAM+$02,Y
-	AND #$3f
-	STA Sprite_RAM+$02,Y
-
-	; Set horizontal and vertical flip bits on second sprite
-	ORA #$c0
-	STA Sprite_RAM+$06,Y
-
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BNE PRG005_A34A	 ; If object state is not Normal, jump to PRG005_A34A
-
-	LDA <Player_HaltGame
-	BNE PRG005_A34A	 ; If gameplay halted, jump to PRG005_A34A
-
-	LDA <Counter_1
-	LSR A
-	NOP
-	NOP
-	AND #$01
-	STA Objects_Frame,X	 ; Toggle frame 0 or 1
-
-	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
-	JSR Player_HitEnemy	 	; Do Player to "thing" collision
-	JSR Object_Move	 		; Do standard movements
-
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG005_A34F	 ; If object did not hit floor, jump to PRG005_A34F
-
-	JSR Object_HitGround	; Align to floor
-
-	LDA Objects_Timer,X
-	BNE PRG005_A34A	 ; If timer not expired, jump to PRG005_A34A
-
-	LDA LRBounce_Vel
-	CMP <Objects_Var4,X
-	BEQ PRG005_A34A	 ; If bounced different, jump to PRG005_A34A
-
-	JSR PRG005_A355	 ; Turn around
-
-PRG005_A34A:
-
-	; Lock in how object was bounced so it can't be bounced the same again
-	LDA LRBounce_Vel
-	STA <Objects_Var4,X
-
-PRG005_A34F:
-	LDA <Objects_DetStat,X
-	AND #$03
-	BEQ ObjInit_BigCannonBall	 ; If object did not hit wall, jump to ObjInit_BigCannonBall (RTS)
-
-
-PRG005_A355:
-
-	; Set timer to $20
-	LDA #$20
-	STA Objects_Timer,X
-
-	JSR Object_AboutFace	 ; Turn around
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyXVel	 ; Apply Y velocity
 
 ObjInit_BigCannonBall:
 	RTS		 ; Return
-
-
-	; FIXME: Anybody want to claim this??
-; $A364
-	.byte $A1, $A1, $A1, $A9, $AF, $B5, $A1, $10, $08, $10, $10, $10, $10, $10, $08, $10
-	.byte $10, $10, $10, $10, $10, $03, $83, $03, $03, $03, $03, $03, $C3, $43, $43, $43
-	.byte $43, $43, $43, $00, $03, $08, $0D, $10, $0D, $08, $03, $04, $03, $00, $03, $04
-	.byte $07, $08, $07
 
 ObjNorm_BigCannonBall:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
@@ -807,416 +714,12 @@ PRG005_A429:
 	RTS		 ; Return
 
 ObjInit_FireJetUpward:
-
-	; Start +15 Y
-	LDA <Objects_Y,X
-	ADD #15
-	STA <Objects_Y,X
-	LDA <Objects_YHi,X
-	ADC #$00
-	STA <Objects_YHi,X
 	RTS		 ; Return
 
 ObjInit_FireJetUpsideDown:
-
-	; Start at Y - 1
-	DEC <Objects_Y,X 
-	LDA <Objects_Y,X
-	CMP #$ff
-	BNE PRG005_A442
-	DEC <Objects_YHi,X
-PRG005_A442:
-
 	RTS		 ; Return
-
-FireJet_TimerReload:
-	.byte $78, $08, $08, $60, $02, $02
-
-FireJet_Frame:
-	.byte -$01, $00, $01, $02, $01, $00
 
 ObjNorm_FireJet:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-	LDA <Player_HaltGame
-	BNE PRG005_A47F	 ; If gameplay is halted, jump to PRG005_A47F
-
-	LDA Objects_Timer,X
-	BNE PRG005_A47F	 ; If timer is not expired, jump to PRG005_A47F
-
-	; Timer expired...
-
-	INC <Objects_Var4,X	 ; Var4++
-
-	LDA <Objects_Var4,X
-	CMP #$06
-	BLT PRG005_A465	 ; If Var4 < 6, jump to PRG005_A465
-
-	LDA #$00	 ; A = 0 (reset Var4)
-
-PRG005_A465:
-	STA <Objects_Var4,X	 ; Update Var4
-
-	TAY		 ; -> 'Y'
-
-	; Reload the Flame Jet timer
-	LDA FireJet_TimerReload,Y
-	STA Objects_Timer,X
-
-	CPY #$03
-	BNE PRG005_A47F	 ; If Var4 <> 3, jump to PRG005_A47F
-
-	LDA SndCur_Level2
-	BNE PRG005_A47F	 ; If a sound is already playing out of the "Level2" set, jump to PRG005_A47F (flame sound not priority)
-
-	; Flame sound
-	LDA Sound_QLevel2
-	ORA #SND_LEVELFLAME
-	STA Sound_QLevel2
-
-PRG005_A47F:
-	LDA Level_ObjectID,X
-	CMP #OBJ_FIREJET_UPWARD
-	BEQ PRG005_A48D	 ; If upward jet, jump to PRG005_A48D
-
-	CMP #OBJ_FIREJET_UPSIDEDOWN
-	BEQ PRG005_A4F6	 ; If downward jet, jump to PRG005_A4F6
-
-	JMP PRG005_A581	 ; Jump to PRG005_A581
-
-PRG005_A48D:
-
-	; Upward jet
-
-	LDA <Objects_X,X
-	PHA		 ; Save X
-
-	LDY <Objects_Var4,X
-	BEQ PRG005_A4F2	 ; If Var4 = 0, jump to PRG005_A4F2
-
-	LDA Level_NoStopCnt
-	LSR A
-
-	CPY #$03
-	BEQ PRG005_A49F	 ; If Var4 = 3, jump to PRG005_A49F
-
-	; Divide further otherwise!
-	LSR A
-	LSR A
-	LSR A
-
-PRG005_A49F:
-	LSR A	
-
-	LDA #$00	; A = $00 (No flip, Var4 < 3)
-
-	BLT PRG005_A4A6	 ; If Var4 < 3, jump to PRG005_A4A6
-
-	LDA #SPR_HFLIP	 ; A = SPR_HFLIP (Horizontal flip, otherwise)
-
-PRG005_A4A6:
-	STA Objects_FlipBits,X	 ; Set proper flip
-
-	CPY #$03
-	BEQ PRG005_A4BB	 ; If Var4 = 3, jump to PRG005_A4BB
-
-	; Var4 <> 3...
-
-	LDA #$04	; A = $04
-
-	LDY Objects_FlipBits,X
-	BEQ PRG005_A4B6	 ; If not flipped, jump to PRG005_A4B6
-
-	LDA #-$04	 ; A = -$04
-
-PRG005_A4B6:
-	ADD <Objects_X,X
-	STA <Objects_X,X ; Apply offset to X
-
-PRG005_A4BB:
-	LDY <Objects_Var4,X	 ; Y = Var4
-
-	LDA FireJet_Frame,Y
-	PHA		 ; Save frame value
-	STA Objects_Frame,X	 ; -> Frame
-
-	JSR Object_Draw16x32Sprite	 ; Draw bottom of flame
-
-	PLA		 ; Restore frame value
-	ADD #$06	 ; +6
-	STA Objects_Frame,X	 ; Set as new frame value
-
-	LDA <Objects_Y,X
-	PHA		 ; Save Y
-	SUB #16
-	STA <Objects_Y,X	 ; Subtract 16 from Y
-	LDA <Objects_YHi,X
-	PHA		 ; Save Y Hi
-	SBC #$00
-	STA <Objects_YHi,X
-
-	LDA Object_SprRAM,X
-	ADD #16		; 4 sprites forward
-	STA Object_SprRAM,X
-
-	JSR Object_ShakeAndDraw	; Draw top of flame
-
-	; Restore Y/Hi
-	PLA
-	STA <Objects_YHi,X
-	PLA
-	STA <Objects_Y,X
-
-	JSR FireJet_PlayerHitTest	 ; Do Player to Fire Jet collision
-
-PRG005_A4F2:
-
-	; Restore X
-	PLA
-	STA <Objects_X,X
-
-	RTS		 ; Return
-
-PRG005_A4F6:
-
-	; Downward jet
-
-	; Vertically flip
-	LDA #SPR_VFLIP
-	STA Objects_FlipBits,X
-
-
-	LDA <Objects_X,X
-	PHA		 ; Save X
-
-	LDY <Objects_Var4,X
-	BEQ PRG005_A565	 ; If Var4 = 0, jump to PRG005_A565
-
-	LDA Level_NoStopCnt
-	LSR A
-	CPY #$03
-	BEQ PRG005_A50D	 ; If Var4 = 3, jump to PRG005_A50D
-
-	; Divide further otherwise!
-	LSR A
-	LSR A
-	LSR A
-
-PRG005_A50D:
-	LSR A
-
-	LDA #SPR_VFLIP	; A = SPR_VFLIP (Vertical flip only, Var4 < 3)
-
-	BLT PRG005_A514	 ; If Var4 < 3, jump to PRG005_A514
-
-	LDA #(SPR_HFLIP | SPR_VFLIP)	 ; A = (Horizontal and Vertical flip, otherwise)
-
-PRG005_A514:
-	STA Objects_FlipBits,X	 ; Set proper flip
-
-
-	CPY #$03
-	BEQ PRG005_A52B	 ; If Var4 = 3, jump to PRG005_A52B
-
-	; Var4 <> 3...
-
-	LDA Objects_FlipBits,X
-	ASL A
-	ASL A	; will set carry if horizontally flipped
-
-	LDA #$04	; A = $04
-	BCC PRG005_A526	; If horizontally flipped, jump to PRG005_A526
-
-	LDA #-$04	 ; A = -$04
-
-PRG005_A526:
-	ADD <Objects_X,X
-	STA <Objects_X,X ; Apply offset to X
-
-PRG005_A52B:
-
-	LDY <Objects_Var4,X	 ; Y = Var4
-
-	LDA FireJet_Frame,Y
-	PHA		 ; Save frame value
-	STA Objects_Frame,X	 ; -> Frame
-
-	JSR Object_Draw16x32Sprite	 ; Draw bottom of flame
-
-	PLA		 ; Restore frame value
-	ADD #$06	 ; +6
-	STA Objects_Frame,X	 ; Set as new frame value
-
-	LDA <Objects_Y,X
-	PHA		 ; Save Y
-	ADD #32
-	STA <Objects_Y,X	 ; Add 32 to Y
-	LDA <Objects_YHi,X
-	PHA		 ; Save Y Hi
-	ADC #$00
-	STA <Objects_YHi,X
-
-	LDA Object_SprRAM,X
-	ADD #16		; 4 sprites forward
-	STA Object_SprRAM,X
-
-	JSR Object_ShakeAndDraw	; Draw top of flame
-
-	; Restore Y/Hi
-	PLA
-	STA <Objects_YHi,X
-	PLA
-	STA <Objects_Y,X
-
-	JSR Object_CalcSpriteXY_NoHi
-	JSR FireJet_PlayerHitTest	 ; Do Player to Fire Jet collision
-
-PRG005_A565:
-
-	; Restore X
-	PLA
-	STA <Objects_X,X
-
-PRG005_A568:
-	RTS		 ; Return
-
-FireJetLR_Patterns:
-	.byte $71, $71, $71, $F3, $F5, $F7, $01, $01, $71, $E9, $EB, $ED, $EF, $F1, $01, $01
-	.byte $FF, $C1, $C3, $C5, $C7, $C9, $01, $01
-
-PRG005_A581:
-
-	; Left or Right Fire jet here...
-
-	; Temp_Var16 = 0
-	LDA #$00
-	STA <Temp_Var16
-
-	LDY <Objects_Var4,X
-	BEQ PRG005_A568	 ; If Var4 = 0, jump to PRG005_A568 (RTS)
-
-	LDA FireJet_Frame,Y
-	STA Objects_Frame,X	 ; -> Frame
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	; Temp_Var1 = Sprite Y - 1
-	LDA <Objects_SpriteY,X
-	SUB #$01
-	STA <Temp_Var1
-
-	; Temp_Var2 = Sprite X
-	LDA <Objects_SpriteX,X	
-	STA <Temp_Var2	
-
-PRG005_A59D:
-	LDA <Temp_Var2
-	JSR FireJetLR_SpriteVisibleTest
-	BCS PRG005_A605	 ; If sprite is not visible, jump to PRG005_A605
-
-	LDA <Temp_Var16
-	ASL A	
-	ASL A	
-	ADC Object_SprRAM,X
-	TAY		 ; Y = Sprite RAM offset
-
-	; Set Sprite Y
-	LDA <Temp_Var1
-	STA Sprite_RAM+$00,Y
-
-	; Set Sprite X
-	LDA <Temp_Var2	
-	STA Sprite_RAM+$03,Y
-
-	; Counter value -> Temp_Var3
-	LDA Level_NoStopCnt
-	STA <Temp_Var3
-
-	LDA <Objects_Var4,X
-	LSR <Temp_Var3
-	CMP #$03
-	BEQ PRG005_A5C9	 ; If Var4 = 3, jump to PRG005_A5C9
-
-	; Otherwise, divide it further
-	LSR <Temp_Var3
-	LSR <Temp_Var3
-	LSR <Temp_Var3
-
-PRG005_A5C9:
-	LSR <Temp_Var3
-
-	PHP		 ; Save process status
-
-	LDA Level_ObjectID,X
-	TAX		 ; This Fire Jet's ID -> 'X'
-
-	LDA #SPR_PAL1	; Use palette select 1
-
-	CPX #OBJ_FIREJET_RIGHT
-	BNE PRG005_A5D8	 ; If this is not a rightward fire jet, jump to PRG005_A5D8
-
-	LDA #(SPR_HFLIP | SPR_PAL1)	 ; Use horizontal flip and palette select 1
-
-PRG005_A5D8:
-	PLP		 ; Restore process status
-
-	BCC PRG005_A5DD	 ; Periodically jump to PRG005_A5DD
-
-	ORA #(SPR_VFLIP | SPR_PAL1)	 ; Apply vertical flip (and palette select 1, though that's needless)
-
-PRG005_A5DD:
-	STA Sprite_RAM+$02,Y	 ; Set sprite attribute
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	; Temp_Var15 = Temp_Var16 (sprite ram offset)
-	LDA <Temp_Var16
-	STA <Temp_Var15
-
-	LDA Level_ObjectID,X
-	CMP #OBJ_FIREJET_RIGHT
-	BNE PRG005_A5F4	 ; If this is not a rightward fire jet, jump to PRG005_A5F4
-
-	; Otherwise, Temp_Var15 = 5 - Temp_Var16
-	LDA #$05
-	SUB <Temp_Var16
-	STA <Temp_Var15
-
-PRG005_A5F4:
-	LDA Objects_Frame,X
-	ASL A
-	ASL A
-	ASL A
-	ADC <Temp_Var15
-	TAX		 ; X = appropriate fire jet pattern index
-
-	; Set pattern for this sprite
-	LDA FireJetLR_Patterns,X
-	STA Sprite_RAM+$01,Y
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-PRG005_A605:
-
-	; Temp_Var2 (Sprite X) += 8 (next sprite over)
-	LDA <Temp_Var2
-	ADD #$08
-	STA <Temp_Var2
-
-	INC <Temp_Var16	 ; Temp_Var16
-
-	LDA <Temp_Var16
-	CMP #$06
-	BNE PRG005_A59D	 ; If this is not the sixth fire jet sprite, jump to PRG005_A59D
-
-FireJet_PlayerHitTest:
-	LDA <Objects_Var4,X
-	CMP #$03
-	BNE PRG005_A61D	 ; If Var4 <> 3, jump to PRG005_A61D (RTS)
-
-	JSR Player_HitEnemy	 ; Do Player to Fire Jet collision
-
-PRG005_A61D:
 	RTS		 ; Return
 
 PiranhaPals:
@@ -1867,151 +1370,13 @@ STA_Proj:
 	STA SpecialObj_YVelFrac,Y
 	RTS		 ; Return
 
-;ObjInit_AirshipProp:
-;
-;	; Start at Y + 3
-;	LDA <Objects_Y,X
-;	ADD #$03
-;	STA <Objects_Y,X
-;
-;	RTS
-
-;Prop_UpperYOff:	.byte -$10,  $08
-;Prop_LowerYOff:	.byte  $00, -$08
-
-;ObjNorm_AirshipPropellar:
-;	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-;
-;	JSR Object_AnySprOffscreen
-;	BNE PRG005_A95B	 ; If any sprite is off-screen, jump to PRG005_A95B (RTS)
-;
-;	JSR Object_CalcSpriteXY_NoHi
-;
-;	; Temp_Var1 = Sprite Y
-;	LDA <Objects_SpriteY,X
-;	STA <Temp_Var1	
-;
-;	LDY Object_SprRAM,X	 ; Y = Sprite RAM offset
-;
-;	; Set Sprite Xs
-;	LDA <Objects_SpriteX,X
-;	STA Sprite_RAM+$03,Y
-;	STA Sprite_RAM+$07,Y
-;
-;	; Set upper sprite pattern
-;	LDA #$a9
-;	STA Sprite_RAM+$01,Y
-;
-;	; Set lower sprite pattern
-;	LDA #$ab
-;	STA Sprite_RAM+$05,Y
-;
-;	; Temp_Var3 = 2 (palette select 2)
-;	LDA #SPR_PAL2
-;	STA <Temp_Var3
-;
-;	LDX #$00	 ; X = 0
-;
-;	LDA Level_NoStopCnt
-;	AND #$02
-;	BEQ PRG005_A929	 ; 2 ticks on, 2 ticks off; jump to PRG005_A929
-;
-;	LDA #(SPR_VFLIP | SPR_PAL2)	 ; palette select 2, vertically flipped
-;	STA <Temp_Var3	 ; -> Temp_Var3
-;
-;	INX		 ; X = 1
-;
-;PRG005_A929:
-;	LDA Level_NoStopCnt
-;	LSR A
-;	LSR A
-;	LSR A
-;
-;	; Set upper and lower sprite attributes
-;	LDA <Temp_Var3
-;	STA Sprite_RAM+$06,Y
-;	STA Sprite_RAM+$02,Y
-;
-;	BCC PRG005_A947	 ; 8 ticks on, 8 ticks off; jump to PRG005_A947
-;
-;	; Set horizontal flip to upper sprite
-;	ORA #SPR_HFLIP
-;	STA Sprite_RAM+$02,Y
-;
-;	; Add 2 to upper sprite X
-;	LDA Sprite_RAM+$03,Y
-;	ADD #$02
-;	STA Sprite_RAM+$03,Y
-;
-;PRG005_A947:
-;	LDA <Temp_Var1		; Get Upper Sprite Y
-;	ADD Prop_UpperYOff,X	; Add Y offset to upper sprite Y
-;	STA Sprite_RAM+$00,Y	; Update Sprite Y
-;
-;	LDA <Temp_Var1		; Get Lower Sprite Y
-;	ADD Prop_LowerYOff,X	; Add Y offset to lower sprite Y
-;	STA Sprite_RAM+$04,Y	; Update Sprite Y
-;
-;	LDX <SlotIndexBackup	; X = object slot index
-;
-;PRG005_A95B:
-;	RTS		 ; Return
-
-
 	; Returns carry set if not visible, carry clear if is visible
 	; Very similar to ChainChomp_LinkVisibleTest
 FireJetLR_SpriteVisibleTest:
 
-	; Backup X, Y, A
-	STX <Temp_Var4
-	STY <Temp_Var3
-	STA <Temp_Var2
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-
-	LDA Objects_SprVVis,X
-	BNE PRG005_A97E	 ; If any sprite is vertically off-screen, jump to PRG005_A97E
-
-	LDY #$40	 ; Y = $40
-
-	LDA <Objects_SpriteX,X
-	BMI PRG005_A971	 ; If on right half, jump to PRG005_A971
-
-	LDY #$c0	 ; Y = $C0
-
-PRG005_A971:
-	CPY <Temp_Var2
-	EOR Objects_SprHVis,X
-	BMI PRG005_A97C
-	BCC PRG005_A97E	
-	BCS PRG005_A981
-
-PRG005_A97C:
-	BCC PRG005_A981
-
-PRG005_A97E:
-	SEC		 ; Set carry (sprite not visible)
-	BCS PRG005_A982	 ; Jump (technically always) to PRG005_A982
-
-PRG005_A981:
-	CLC		 ; Clear carry (sprite visible)
-
-PRG005_A982:
-	; Restore Y, A, X
-	LDY <Temp_Var3
-	LDA <Temp_Var2
-	LDX <Temp_Var4
-
 	RTS		 ; Return
 
 ObjInit_FireJetLeft:
-	DEC <Objects_Y,X	 ; Start at Y - 1
-	LDY <Objects_Y,X
-	INY
-	BNE ObjInit_FireJetRight
-	DEC <Objects_YHi,X	 ; Apply carry
-
 ObjInit_FireJetRight:
 	RTS		 ; Return
 
@@ -4895,6 +4260,7 @@ PRG005_BE67:
 	STA Splash_DisTimer
 	STA Level_ScrollDiffH
 	STA Wind
+	STA WeatherActive
 	STA Level_ScrollDiffV
 
 	LDX Level_KeepObjects
@@ -4913,10 +4279,9 @@ PRG005_BE91:
 	STA Level_ObjIdxStartByScreen
 	STA Player_InWater
 	STA Air_Change
-	STA Player_UphillFlag
+	STA Power_Change
 	STA AScrlURDiag_WrapState_Copy
 	STA AScrlURDiag_WrapState
-	STA Cine_ToadKing
 	STA Level_AScrlVVel
 	STA <Temp_Var1
 
@@ -5078,12 +4443,6 @@ PObj_VLimit:	.byte $10, $16
 
 ProjectileBarCollide:
 
-	; Player to Special Object collision logic...
-	TXA		 ; object slot index -> 'A'
-	ADD <Counter_1	 ; Keep it interesting
-	LSR A
-	BCC P_PRG007_B826	 ; Every other tick, jump to PRG007_B826 (RTS)
-
 	LDY #$00	 ; Y = 0 (small/ducking)
 
 	LDA <Player_Suit
@@ -5103,7 +4462,7 @@ P_PRG007_B7E4:
 	BGE P_PRG007_B826	 	; If result >= SObj_VLimit, jump to PRG007_B843 (RTS)
 
 	LDA PBarHitTestX,X		; Special object X
-	ADD #$06			; +6
+	ADD #$04			; +6
 	SUB <Player_X			; Subtract Player X
 	SBC #$00			; Carry?
 	CMP #16
@@ -5148,3 +4507,201 @@ P_PRG007_B827:
 
 P_PRG007_B828:
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
+
+FreezieDirection: .byte $10, $F0
+FreezieFlip: .byte SPR_HFLIP, $00
+
+ObjInit_Freezie:
+	JSR Level_ObjCalcXDiffs
+	LDA FreezieDirection, Y
+	STA <Objects_XVel,X
+	LDA FreezieFlip, Y
+	STA Objects_FlipBits, X
+	LDA Objects_Property, X
+	BEQ ObjInit_Freezie2
+
+	CMP #$01
+	BNE ObjInit_Freezie0
+
+	LDA Objects_X, X
+	ADD #$08
+	STA Objects_X, X
+	LDA Objects_XHi, X
+	ADC #$00
+	STA Objects_XHi, X
+	JMP ObjInit_Freezie1
+
+ObjInit_Freezie0:
+	LDA Objects_Y, X
+	SUB #$08
+	STA Objects_Y, X
+	LDA Objects_YHi, X
+	SBC #$00
+	STA Objects_YHi, X
+
+ObjInit_Freezie1:
+	LDA #$01
+	STA Objects_Var2, X
+
+ObjInit_Freezie2:
+	RTS
+
+ObjNorm_Freezie:
+	LDA <Player_HaltGame
+	BEQ ObjNorm_Freezie01
+
+	JMP DrawFreezie
+
+ObjNorm_Freezie01:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_Freezie0
+	JMP Freezie_DieSpawned
+
+ObjNorm_Freezie0:
+	JSR Object_DeleteOffScreen
+	JSR Object_HitTestRespond
+	LDA Objects_Var2, X
+	JSR DynJump
+
+	.word FreezieMove
+	.word FreezieWait
+
+
+FreezieWait:
+	LDA #$10
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$05
+	BCS FreezieWait3
+
+	LDA Objects_Property, X
+	CMP #$01
+	BNE FreezieWait1
+
+	LDA #$C0
+	STA Objects_YVel, X
+	TYA
+	EOR #$01
+	TAY
+	JMP FreezieWait2
+
+FreezieWait1:
+	AND #$01
+	STA TempA
+	TYA
+	EOR #$01
+	TAY
+	CPY TempA
+	BNE FreezieWait3
+
+FreezieWait2:
+	
+	LDA FreezieDirection, Y
+	STA <Objects_XVel,X
+
+	LDA FreezieFlip, Y
+	STA Objects_FlipBits, X
+	DEC Objects_Var2, X
+	LDA #$10
+	STA Objects_Timer, X
+
+FreezieWait3:
+	LDA Objects_SprAttr, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SprAttr, X
+	JMP DrawFreezie
+
+FreezieMove:
+	LDA Objects_Timer, X
+	BEQ FreezieMove1
+	LDA Objects_Property, X
+	CMP #$01
+	BEQ FreezieMove0
+
+	LDA #$01
+	STA NoGravity
+
+FreezieMove0:
+	JSR Object_Move
+	LDA Objects_SprAttr, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SprAttr, X
+	JMP DrawFreezie
+
+
+FreezieMove1:
+	JSR Object_InteractWithWorld
+	JSR ObjectCarry
+	BCS ObjNorm_Freezie1
+
+	LDA Objects_DetStat, X
+	AND #(HIT_DET_LEFT | HIT_DET_RIGHT)
+	BNE Freezie_Die
+	LDA Object_TileFeetProp
+	AND #$F0
+	CMP #TILE_PROP_WATER
+	BEQ ObjNorm_Freezie1_0
+
+	CMP #(TILE_PROP_WATER | TILE_PROP_FOREGROUND)
+	BNE ObjNorm_Freezie1
+
+ObjNorm_Freezie1_0:
+
+	LDA Level_ChgTileEvent
+	BNE ObjNorm_Freezie1
+
+	LDA Object_TileFeetValue
+	EOR #$01
+	STA Level_ChgTileEvent
+
+	LDA Objects_Y, X
+	ADD #$10
+	AND #$F0
+	STA Level_BlockChgYLo
+	LDA Objects_YHi, X
+	ADC #$00
+	STA Level_BlockChgYHi
+	
+	LDA ObjTile_DetXLo
+	AND #$F0
+	STA Level_BlockChgXLo
+	LDA ObjTile_DetXHi
+	STA Level_BlockChgXHi
+	LDA #$00
+	STA Objects_YVel, X
+
+ObjNorm_Freezie1:
+	INC Objects_Var1, X
+	LDA Objects_Var1, X
+	LSR A
+	LSR A 
+	LSR A
+	AND #$03
+	STA Objects_Frame, X
+
+
+DrawFreezie:
+	JMP Object_ShakeAndDraw
+
+FreezieThrowPlayerX:
+	.byte $30, $D0
+
+ObjHit_Freezie:
+	JSR SetPlayerFrozen
+	JSR Level_ObjCalcXDiffs
+	LDA FreezieThrowPlayerX, Y
+	STA <Player_XVel
+	LDA #$A0
+	STA <Player_YVel
+	STA <Player_InAir
+
+Freezie_Die:
+	LDY Objects_SpawnIdx,X
+	LDA Level_ObjectsSpawned,Y
+	AND #$7f
+	STA Level_ObjectsSpawned,Y
+
+Freezie_DieSpawned:
+	LDA #OBJ_ICEBLOCK
+	STA Level_ObjectID, X
+	RTS

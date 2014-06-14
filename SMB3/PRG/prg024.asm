@@ -2159,7 +2159,7 @@ PRG024_ACBA:
 	RTS		 ; Return
 
 Title_PrepForWorldMap:
-	LDA #$00
+	LDA #$01
 	STA World_Map_Power	 ; Mario starts as small on world map
 	INC Total_Players	 ; Total_Players should be 1/2, not 0/1
 	INC <Title_State	 ; Next title state...
@@ -2270,7 +2270,7 @@ PRG024_AD54:
 PRG024_AD69:
 	TYA		 	; A = Player_Lives
 	STA Player_Lives,X	; Store to this player
-	LDA #$00	 
+	LDA #$01
 	STA World_Map_Power,X	; This player starts small on world map
 	DEX		 	; X--
 	BPL PRG024_AD69	 	; While X >= 0, loop...

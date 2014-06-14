@@ -439,7 +439,7 @@ SpikeBall_Patterns:
 	.byte $95, $95, $95, $95
 
 ObjP29:
-	.byte $B1, $B3, $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
+	.byte $B1, $B3, $B1, $B3, $B5, $B7, $B9, $BB, $B1, $BF
 ObjP2A:
 ObjP2B:
 	.byte $BD, $BD, $BF, $BF
@@ -1755,6 +1755,14 @@ PlatformTimers:
 	.byte $00, $10, $20, $30, $40, $50, $60
 
 ObjInit_WoodenPlatHorz:
+	LDA Objects_Y, X
+	STA Objects_Var1, X
+	LDA Objects_YHi, X
+	STA Objects_Var2, X
+	LDA Objects_X, X
+	STA Objects_Var3, X
+	LDA Objects_XHi, X
+	STA Objects_Var4, X
 	LDA Objects_Property, X
 	TAY
 	LDA PlatformTimers, Y
@@ -2062,7 +2070,6 @@ ObjNorm_PathFollowPlat:
 
 	LDA <Player_HaltGame
 	BNE ObjNorm_PathFollowPlat2	
-	STA Debug_Snap
 	LDA Objects_Var1, X
 	CMP #$03
 	BCC ObjNorm_PathFollowPlat1
@@ -2076,7 +2083,6 @@ ObjNorm_PathFollowPlat1:
 	BMI ObjNorm_PathFollowPlat2
 	JSR PlayerPlatform_Collide
 	BCC ObjNorm_PathFollowPlat2
-	STA Debug_Snap
 	LDA Objects_Var1, X
 	CMP #$03
 	BCS ObjNorm_PathFollowPlat2
@@ -3381,7 +3387,6 @@ ObjNorm_DryBones:
 	LDA <Objects_Var5,X
 	BNE PRG002_B6B2	 ; If Var5 <> 0 (Dry Bones is crumpled), jump to PRG002_B6B2
 
-	JSR Object_HandleConveyorBounceVel	; Sets LRBounce_Vel which way Dry Bones will need to be effected by conveyor
 	LDY LRBounce_Vel
 	INY		 ; Y++ (index into DryBones_XVelConveyor)
 

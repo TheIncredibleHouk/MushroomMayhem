@@ -763,7 +763,6 @@ ObjNorm_VeggieGuy:
 	BNE ObjNorm_VeggieGuy1
 
 	JSR ObjInit_VeggieGuy
-	RTS
 
 ObjNorm_VeggieGuy1:
 	LDA Objects_Var1,X
@@ -885,9 +884,7 @@ VeggieGuyWait:
 	LDA Objects_DetStat, X
 	AND #HIT_DET_GRND
 	BEQ VeggieGuyWait1
-	LDA #$00
 	INC Objects_Var1, X
-	JSR ObjInit_ShyGuy
 
 VeggieGuyWait1:
 	JMP VeggieGuyDraw
@@ -1288,7 +1285,6 @@ Piledriver_YOff:	.byte $01, $00, $02, $04, $05, $02
 	; First four are the brick bits, the last is the microgoomba
 BustBlock_YOffByInput:	.byte -$04, -$04, $04, $04, $00
 BustBlock_YHiOffByInput:	.byte  $FF,  $FF, $00, $00, $00
-PRG003_A502:	.byte $00, $08, $00, $08, $04
 BustBlock_YVelByInput:	.byte $C0, $C0, $D0, $D0, $D0
 BustBlock_XVelByInput:	.byte $F8, $08, $F8, $08, $00 
 
@@ -2354,6 +2350,8 @@ NextSpinnerCheck:
 	LDX <SlotIndexBackup
 	LDA #$01
 	STA Objects_Property, X
+	LDA #SND_LEVELUNK
+	STA Sound_QLevel1
 	RTS
 
 NextSpinnerCheck1:
@@ -2999,8 +2997,11 @@ MineTrigger: .byte $20 , $18
 
 ObjInit_FloatMine:
 	LDA <Objects_X, X
-	ADD #$05
+	SUB #$04
 	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	SBC #$00
+	STA <Objects_XHi, X
 	LDA #$01
 	STA Objects_InWater, X
 	LDA #$00
@@ -3100,6 +3101,10 @@ MineDoExplode:
 	STA Level_ObjectID, X
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
+	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
+	LDA Level_ObjectsSpawned,Y
+	AND #$7f
+	STA Level_ObjectsSpawned,Y
 	RTS
 
 ObjInit_Ninji:
@@ -4667,7 +4672,7 @@ PRG003_BBB2:
 	; Freed Chain Chomp 
 
 	; Chain link pattern
-	LDA #$75
+	LDA #$BD
 	STA Sprite_RAM+$01,Y
 
 	; Palette select 3

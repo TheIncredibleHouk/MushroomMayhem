@@ -2255,6 +2255,7 @@ StatusBar_Fill_Air_MT:
 	LSR A
 	TAX
 	BEQ Paritial_Air
+
 Full_Air_Loop:				; #DAHRKDAIZ fill parts that display as full 8 pixels
 	LDA #$E9
 	STA Status_Bar_Top + 9, Y
@@ -2571,37 +2572,44 @@ Item_ReserveRTS:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Fill_PowerMT:
 	LDA Status_Bar_Mode
-	BNE PRG026_B292
-	LDY #$00		; Y = 0
-	LDA #$01		; A = 1
-	STA <Temp_Var15		; <Temp_Var15 = 1
+	BNE StatusBar_Fill_PowerMT5
 
-PRG026_B25C:
-	LDX #$D1		; X = $EF (dark '>')
-	LDA Player_Power	; Player's current "Power" charge (each "unit" of power sets one more bit in this field)
-	AND <Temp_Var15		; A = Player_Power & Temp_Var15
-	BEQ PRG026_B267	 	; If Player_Power bit not set, jump to PRG026_B267
-	LDX #$D2		; Otherwise, X = $EE (glowing '>')
+	LDY #$00
+	LDA Player_Power
+	BEQ StatusBar_Fill_PowerMT3
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	CPX #$05
+	BCC StatusBar_Fill_PowerMT1
 
+	LDX #$05
 
-PRG026_B267:
-	TXA		 	; A = X ($EF dark or $EE glowing)
+StatusBar_Fill_PowerMT1:
+	LDA #$D2
+
+StatusBar_Fill_PowerMT2:
 	STA (Status_Bar_Top + 1),Y	; Store this tile into the buffer
-	INY		 	; Y++
-	ASL <Temp_Var15		; Shift up to next power bit
-	LDA <Temp_Var15		; A = Temp_Var15
-	CMP #$40	 	
-	BNE PRG026_B25C	 	; If Temp_Var15 <> $40, loop!
+	INY
+	DEX
+	BPL StatusBar_Fill_PowerMT2
 
-	; Temp_Var15 is $40...
-	LDA Player_Power	; A = Player_Power
-	AND <Temp_Var15		; Checking bit 7 or 8...
-	BEQ PRG026_B292	 	; Not set, jump to PRG026_B289
+StatusBar_Fill_PowerMT3:
+	CPY #$06
+	BCS StatusBar_Fill_PowerMT5
 
-	; Player is at max power!  Set [P] flash state
-	DEC MaxPower_Tick	; PRG026_B289--
+	LDA #$D1
 
-PRG026_B292:
+StatusBar_Fill_PowerMT4:
+	STA (Status_Bar_Top + 1),Y
+	INY
+	CPY #$06
+	BCC StatusBar_Fill_PowerMT4
+
+StatusBar_Fill_PowerMT5:
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
@@ -2619,7 +2627,7 @@ Video_Misc_Updates:
 
 	LDY #$00	 	; Y = 0
 	LDA [Video_Upd_AddrL],Y	; Get byte
-	BEQ PRG026_B292	 	; If 0, jump to PRG026_B292 (RTS)
+	BEQ StatusBar_Fill_PowerMT5	 	; If 0, jump to PRG026_B292 (RTS)
 
 	LDX PPU_STAT	 	; Flush video
 
@@ -2936,6 +2944,7 @@ No_Switch:
 	JSR StatusBar_Fill_Air_MT	
 	JSR Draw_HBros_Coin
 	JSR Draw_Cherries
+	JSR Update_Game_Timer
 	JSR Do_Odometer
 	JSR Draw_DayNightMeter
 
@@ -2945,7 +2954,6 @@ No_Switch:
 	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Exp_Earned
 	JSR StatusBar_Ability_Level
 	JSR Status_Bar_Draw_Item_Reserve
-	JSR StatusBar_Fill_Time	 	; Fill in StatusBar_Time with tiles for time; also updates clock
 
 NoBarUpdates:
 	LDX #$00	 	; X = 0
@@ -3134,6 +3142,7 @@ Draw_Update2:
 	JSR DrawTotalCoins
 	JSR Update_Odometer
 	JSR Draw_World_Name
+	JSR Update_Game_Timer
 No_Init:
 	RTS
 
@@ -3289,5 +3298,35 @@ Draw_Cherries:
 	LDA <Temp_Var3
 	ORA #$30
 	STA Status_Bar_Top + 21
+
 Draw_Cherries1:
+	RTS
+
+
+Update_Game_Timer:
+	LDA Status_Bar_Mode
+	BPL Update_Game_Timer1
+
+	LDA Game_Timer
+	ORA #$30
+	STA Status_Bar_Top + 10
+	LDA Game_Timer + 1
+	ORA #$30
+	STA Status_Bar_Top + 11
+
+	LDA Game_Timer + 2
+	ORA #$30
+	STA Status_Bar_Top + 13
+	LDA Game_Timer + 3
+	ORA #$30
+	STA Status_Bar_Top + 14
+
+	LDA Game_Timer + 4
+	ORA #$30
+	STA Status_Bar_Top + 16
+	LDA Game_Timer + 5
+	ORA #$30
+	STA Status_Bar_Top + 17
+
+Update_Game_Timer1:
 	RTS

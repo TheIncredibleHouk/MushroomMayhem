@@ -972,7 +972,8 @@ SPR_VFLIP	= %10000000
 
 	Map_Stars_PRelX:	.ds 1	; During world intro, screen relative position of Player X
 	Map_Stars_PRelY:	.ds 1	; During world intro, screen relative position of Player Y
-	Player_Power:		.ds 1	; >>>>>>[P] charge level ($7F max)
+	Player_RunMeter:		.ds 1	; >>>>>>[P] charge level ($7F max)
+	Player_Power:		.ds 1
 
 	; Level_JctCtl is configured when you enter a door or a pipe
 	; * When $80, use current values for Level_AltLayout and Level_AltObjects
@@ -996,7 +997,7 @@ SPR_VFLIP	= %10000000
 	ObjGroupRel_Idx:	.ds 1	; Holds relative index of object within its group (see PRG000_CA51)
 	InvFlip_VAddrHi:	.ds 1	; Hi byte of VRAM address during inventory flip modifications
 
-				.ds 1	; $03E4 unused
+	MapBackgroundInit:	.ds 1	; $03E4 unused
 
 	; CLOSING
 	;  0: Erase old status bar complete, palette changed to blue
@@ -1300,9 +1301,9 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	PBarHitTestX:		.ds 5
 	PBarHitTestY:		.ds 5
 	Weather_XPos:		.ds 6;
-	Weather_XVel:		.ds 6;
 	Weather_YPos:		.ds 6;
-	Weather_YVel:		.ds 6;
+	Weather_XVel:		.ds 6
+	Weather_YVel:		.ds 6
 	Weather_Pattern:	.ds 6;
 	Weather_Disabled:	.ds 1
 	AnimOffset:			.ds 1;
@@ -1646,6 +1647,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_IsClimbing:	.ds 1	; Set when Player is climing vine
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
 	Player_HitCeiling:	.ds 1	; Flag set when Player has just hit head off ceiling
+	Player_HitLeftWall: .ds 1
+	Player_HitRightWall:	 .ds 1
 	Player_FlyTime:		.ds 1	; When > 0, Player can fly (for power ups that do so); decrements (unless $FF) to 0
 	Player_IsDucking:	.ds 1	; Set when Player is ducking down
 	Player_XExit:	.ds 1	;
@@ -2408,6 +2411,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Wind:					.ds 1	; Wind factor (affects player!)
+	WeatherActive:			.ds 1
 	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
 	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
 	Fox_FireBall:			.ds 1	; Indicates we are in Burning mode
@@ -2552,6 +2556,7 @@ CFIRE_LASER		= $15	; Laser fire
 									; Frog				Frog
 									; Koopa/Tanooki		Boo
 									; Hammer/Sledge		Ninja
+	Effective_Suit:			ds 1
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
 	DAIZ_TEMP4:			.ds 1	;
@@ -2703,7 +2708,7 @@ CFIRE_LASER		= $15	; Laser fire
 
 AIR_INCREASE	= 3
 	Air_Change:			.ds 1	;
-
+	Power_Change:		.ds 1
 	Top_Of_Water:		.ds 1	;
 
 	; #DAHRKDAIZ these are unused, but the labels ramin to one byte to allow the assembler to corrrectly calculate some offsets in the game
@@ -2886,6 +2891,8 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	BrickBust_XDist:	.ds 3	; $7FA6-$7FA8 Brick bust X split
 	BrickBust_YLwr:		.ds 3	; $7FA9-$7FAB Brick bust lower chunks Y
 	BrickBust_HEn:		.ds 3	; $7FAC-$7FAE Bits to hide chunks (Bit 0 = Right, 1 = Left, 2 = Lower, 3 = Upper) OR poof counter
+	BrickBust_Tile:		.ds 3
+	BrickBust_Pal:		.ds 3
 
 	TileAnimSet:		.ds 1
 
@@ -2958,7 +2965,7 @@ SOBJ_POOF		= $16 	; Poof
 	Magic_Stars_Collected1: .ds 16 ;
 	Magic_Stars_Collected2:	.ds 16
 	Magic_Stars_Collected3:	.ds 16
-	World_Complete_Tiles: .ds 16	;
+	Levels_Complete: .ds 16	;
 	StarLevel:			.ds 1
 	MiscValue1:			.ds 1
 	MiscValue2:			.ds 1
@@ -2971,6 +2978,7 @@ SOBJ_POOF		= $16 	; Poof
 	Global_Object:		.ds 1
 	JustTileFlag:		.ds 1
 	AlignSpriteFlag:	.ds 1
+	JustName:			.ds 1
 
 	; Tile map property flags
 MAP_PROP_TRAVERSABLE	= $01
@@ -3529,6 +3537,7 @@ OBJ_THWOMPUPDOWN	= $8D	; Up-down sliding Thwomp
 OBJ_THWOMPDIAGONALUL	= $8E	; Diagonal up-left Thwomp
 OBJ_THWOMPDIAGONALDL	= $8F	; Diagonal down-left Thwomp
 OBJ_TILTINGPLATFORM	= $90	; Tilting platform
+OBJ_FREEZIE			= $91
 OBJ_TWIRLINGPLATCWNS	= $91	; Twirling platform, clockwise, non-stop
 OBJ_TWIRLINGPLATCW	= $92	; Twirling platform, clockwise
 OBJ_TWIRLINGPERIODIC	= $93	; Twirling platform, periodic
@@ -3732,8 +3741,8 @@ TILE_LUIGICOMP_O	= $41	; Luigi Completed, orange color
 TILE_HORZPATH		= $45	; Standard horizontal path
 TILE_VERTPATH		= $46	; Standard vertical path
 TILE_DOCK		= $4B	; Docking spot for canoe
-TILE_BORDER3		= $4E
-TILE_BORDER1		= $4F
+TILE_BORDER3		= $01
+TILE_BORDER1		= $02
 TILE_TOADHOUSE		= $50	; Toad House
 TILE_ROCKBREAKH		= $51	; Rock which breaks into horizontal path
 TILE_ROCKBREAKV		= $52	; Rock which breaks into vertical path
