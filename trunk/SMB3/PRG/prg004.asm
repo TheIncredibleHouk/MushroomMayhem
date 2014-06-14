@@ -299,7 +299,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT6 | $4F	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OPTS_SETPT5 | $4E	; Object $81 - OBJ_HAMMERBRO
 	.byte OPTS_SETPT5 | $4E	; Object $82 - OBJ_NINJABRO
-	.byte OPTS_SETPT5 | $0B	; Object $83 - OBJ_LAKITU
+	.byte OPTS_NOCHANGE	; Object $83 - OBJ_LAKITU
 	.byte OPTS_SETPT5 | $0B	; Object $84 - OBJ_SPINYEGG
 	.byte OPTS_SETPT5 | $0B	; Object $85 - OBJ_BLUESPINY
 	.byte OPTS_SETPT5 | $4E	; Object $86 - OBJ_ICEBRO
@@ -2026,9 +2026,6 @@ ObjInit_Lakitu:
 	LDA <Objects_YHi,X
 	STA Objects_TargetingXVal,X
 
-	LDA #$BD
-	STA Objects_Var10, X
-
 	RTS		 ; Return
 
 
@@ -2038,11 +2035,12 @@ Lakitu_XVelLimit:	.byte $20, -$20
 Lakitu_YOff:	.byte -15, -14, -15, -16
 
 ObjNorm_Lakitu:
+	LDA #$BD
+	STA Objects_Var10, X
+
 	LDA Objects_State,X
 	CMP #OBJSTATE_NORMAL
 	BEQ PRG004_AD59	 ; If Lakitu is in state Normal, jump to PRG004_AD59
-
-	; Not normal state...
 
 
 	; Vertical flip
@@ -2112,6 +2110,13 @@ PRG004_AD58:
 PRG004_AD59:
 
 	; Lakitu normal operation...
+	LDA <Vert_Scroll
+	ADD #$20
+	STA Objects_Y, X
+	
+	LDA #$00
+	ADC #$00
+	STA Objects_YHi, X
 
 	LDA <Player_HaltGame
 	BNE PRG004_ADC2	 ; If gameplay is halted, jump to PRG004_ADC2
@@ -2168,6 +2173,9 @@ PRG004_AD96:
 	LDA Lakitu_Active
 	BEQ PRG004_ADA5	 ; If Lakitu_Active is not set, jump to PRG004_ADA5
 
+	LDA RandomN
+	AND #$01
+	BNE PRG004_ADAE
 	; Set timer to $1F
 	LDA #$1f
 	STA Objects_Timer,X
@@ -2274,10 +2282,20 @@ PRG004_AE0B:
 	LDA #$43
 	STA Sprite_RAM+$0E,Y
 
+Lakitu_TossEnemyRts:
 	RTS		 ; Return
 
+Lakitu_Enemies:
+	.byte OBJ_SPINY, OBJ_FREEZIE
+
 Lakitu_TossEnemy:
-	LDY #$04	 ; Y = 4
+	
+	JSR Object_GetAttrJustTile
+	LDA Objects_LastProp, X
+	CMP #TILE_PROP_SOLID_TOP
+	BCS Lakitu_TossEnemyRts 
+
+	LDY #$03	 ; Y = 4
 PRG004_AE2C:
 	LDA Objects_State,Y
 	BEQ PRG004_AE35	 ; If this object slot is dead/empty, jump to PRG004_AE35
@@ -2290,8 +2308,8 @@ PRG004_AE2C:
 PRG004_AE35:
 
 	; Not really better than TYA, TAX is it?
-	STY <Temp_Var1	 ; Temp_Var1 = the empty object slot index
-	LDX <Temp_Var1	 ; X = empty object slot index
+	TYA
+	TAX
 
 	JSR Level_PrepareNewObject	 ; Prepare new object
 
@@ -2301,36 +2319,24 @@ PRG004_AE35:
 	LDA #OBJSTATE_INIT
 	STA Objects_State,Y
 
-	; Set palette select 1
-	LDA #SPR_PAL1
-	STA Objects_SprAttr,Y
-
-	LDA #$00
-	CMP Level_SlopeEn
-
-	; Non-sloped level uses Spiny Egg instead
-	LDA MiscValue1
-	BNE PRG004_AE58
-
-	LDA #OBJ_SPINYEGG
-	BGE PRG004_AE58	 ; If Level_SlopeEn >= 0 (i.e. a level with slopes), jump to PRG004_AE58
-
-	; Sloped level uses Green "Dud" Egg
-	LDA #$02
-	STA Objects_SprAttr,Y
-
-	LDA #OBJ_SPINY
+	STY TempY
+	LDY Objects_Property, X
+	LDA Lakitu_Enemies, Y
+	LDY TempY
 
 PRG004_AE58:
 	STA Level_ObjectID,Y	 ; Set appropriate drop object
 
 	; Object appears at Lakitu Y - 12
 	LDA <Objects_Y,X
-	ADD #10
-	STA Objects_Y,Y
+	SUB #$10
+	STA Objects_Y,Y 
 	LDA <Objects_YHi,X
-	ADD #$00
+	SBC #$00
 	STA Objects_YHi,Y
+
+	LDA #$00
+	STA Objects_Property, Y
 
 	; Object appears same as Lakitu X
 	LDA <Objects_X,X
@@ -2339,7 +2345,7 @@ PRG004_AE58:
 	STA Objects_XHi,Y
 
 	; Set object Y velocity at -$30
-	LDA #$20
+	LDA #-$10
 	STA Objects_YVel,Y
 
 	LDA Level_ScrollDiffH
@@ -2755,7 +2761,11 @@ ObjNorm_MissileMark:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Player_HitEnemy	 	; Player to Bullet Bill collision
 
+	LDA Objects_Var3, X
+	BNE ObjNorm_MissileMarkB0
 	INC Objects_Var2, X
+
+ObjNorm_MissileMarkB0:
 	LDA Objects_Var2, X
 	LSR A
 	LSR A
@@ -5354,7 +5364,7 @@ DisplayLakituText:
 	STA Last_Status_Bar_Mode
 	INC Objects_Var1, X
 	LDY Objects_Property, X
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP PowerUpChecks, Y
 	BEQ DisplayLakituText1
 	LDA #$03
@@ -5383,17 +5393,17 @@ DeliveryLakituFlyAway1:
 	RTS
 
 PowerUpChecks:
-	.byte $02, $0B
+	.byte $02, $0B, $05, $04
 
 PowerUpDeliveries:
-	.byte OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_NINJASHROOM
+	.byte OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN
 
 PowerUpDeliveriesFlash:
-	.byte 00, 00
+	.byte 00, 00, 02, 01
 
 DeliveryLakituWait:
 	LDY Objects_Property, X
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP PowerUpChecks, Y
 	BEQ DeliveryLakituWait1
 	LDA #$03
@@ -5412,11 +5422,16 @@ DeliveryLakituWait1:
 	RTS
 
 DeliveryLakituTrack:
+	LDY Objects_Property, X
 	LDA <Player_HaltGame
 	BNE DeliveryLakituTrack1
-	JSR Get_Normalized_Suit
-	CMP #$02
+	LDA Effective_Suit
+	CMP PowerUpChecks, Y
 	BEQ DeliveryLakituEscape
+
+	LDA Objects_State + 5
+	BNE DeliveryLakituEscape
+
 	JSR Chase
 	JSR Object_HitTest
 	BCC DeliveryLakituTrack1

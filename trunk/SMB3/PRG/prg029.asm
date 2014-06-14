@@ -410,7 +410,7 @@ RAINBOW_PAL_CYCLE:
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$08
 	BNE No_Burning_Mode
 	JSR Try_Burning_Mode
@@ -3141,22 +3141,19 @@ Try_Burning_Mode:
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Kill_Burn_NoFX
-	LDA Air_Time
-	CMP #$08
-	BCC Kill_Burn_NoFX
+	LDA Player_Power
+	BEQ Kill_Burn_NoFX
 	JMP ContinueDash
 
 Try_FireBall:					; not a fireball, so let's try it!
 
-	LDA Air_Time
-	CMP #$08
-	BCC Try_Burning_ModeRTS
+	LDA Player_Power
+	BEQ Try_Burning_ModeRTS
 	LDA Player_InWater			
 	BNE Try_Burning_ModeRTS		; can't go into burning mode in sand or water
 	LDA Player_TailAttack
-	BEQ Try_Burning_ModeRTS
 	CMP #$12
-	BEQ Try_Burning_ModeRTS
+	BCS Try_Burning_ModeRTS
 		
 	LDA <Pad_Input			; we have! This finds the direction to send based on input
 	AND #(PAD_B)
@@ -3190,8 +3187,8 @@ Store_Direction:
 	STA <Player_FlipBits
 	LDA #$00
 	STA <Player_YVel
-	LDA #$F8
-	STA Air_Change
+	LDA #$F4
+	STA Power_Change
 
 Try_Burning_ModeRTS:
 	RTS
@@ -3217,8 +3214,8 @@ Kill_Burn_NoFX:
 	STA Fox_FireBall
 	LDA #$10					
 	STA Player_SuitLost
-	LDA #AIR_INCREASE
-	STA Air_Change
+	LDA #$06
+	STA Power_Change
 	LDA <Player_FlipBits
 	EOR #$40
 	STA <Player_FlipBits
@@ -3227,9 +3224,10 @@ Kill_Burn_NoFX:
 Try_Poison_Mode:
 	LDA Poison_Mode
 	BNE Continue_Poison_Mode
-	LDA Air_Time
-	CMP #$05
-	BCC Cant_Poison_Mode
+	LDA Player_Power
+	BEQ Cant_Poison_Mode
+	CMP #$50
+	BNE Cant_Poison_Mode
 	LDA <Pad_Holding
 	AND #PAD_DOWN
 	BEQ Cant_Poison_Mode
@@ -3237,8 +3235,8 @@ Try_Poison_Mode:
 	AND #PAD_B
 	BEQ Cant_Poison_Mode
 	INC Poison_Mode
-	LDA #$FC
-	STA Air_Change
+	LDA #$FA
+	STA Power_Change
 	LDA #$02
 	STA Player_StarInv
 
@@ -3249,16 +3247,15 @@ Continue_Poison_Mode:
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Stop_Poison_Mode
-	LDA Air_Time
-	CMP #$05
-	BCC Stop_Poison_Mode
+	LDA Player_Power
+	BEQ Stop_Poison_Mode
 	LDA #$02
 	STA Player_StarInv
 	RTS
 
 Stop_Poison_Mode:
-	LDA #AIR_INCREASE
-	STA Air_Change
+	LDA #$06
+	STA Power_Change
 	STA Player_StarInv
 	LDA #$00
 	STA Poison_Mode

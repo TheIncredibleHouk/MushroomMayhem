@@ -39,9 +39,9 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.word ObjInit_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
+	.word ObjInit_DoNothing	; Object $0E - OBJ_BOSS_KOOPALING
 	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
-	.word ObjInit_Snow	; Object $10 - OBJ_SNOW
+	.word ObjInit_DoNothing; Object $10 - OBJ_SNOW
 	.word ObjInit_Key	; Object $11 OBJ_KEY
 	.word ObjInit_Spring	; Object $12 OBJ_SPRING
 	.word ObjInit_KeyPieces	; Object $13 OBJ_KEYPIECES
@@ -94,7 +94,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjNorm_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Bubble	; Object $1A
-	.word ObjNorm_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.word ObjNorm_StarPiece	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjNorm_SendBack	; Object $1C
 	.word ObjNorm_Timer	; Object $1D
 	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
@@ -137,7 +137,7 @@ ObjectGroup00_CollideJumpTable:
 	.word OCSPECIAL_HIGHSCORE; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjHit_FireFlower	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word BubblePop	; Object $1A
-	.word ObjHit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.word Object_SetDeadEmpty	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjHit_DoNothing	; Object $1C
 	.word ObjHit_DoNothing	; Object $1D
 	.word ObjHit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
@@ -179,7 +179,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH32	; Object $18 - OBJ_BOSS_BOWSER
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1A
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1C
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_HEIGHT16	; Object $1D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1E - OBJ_POWERUP_SUPERLEAF
@@ -434,7 +434,7 @@ ObjP02:	.byte $8F, $8F, $99, $9B, $9D, $9F
 ObjP04:	.byte $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
 ObjP05:	.byte $95, $95, $97, $97
 ObjP06:	
-ObjP1B:	.byte $79, $7B, $79, $7B, $77, $77, $75, $75	; RAS: Not actually used, see BounceBlock_Tile
+ObjP1B:	.byte $8B, $8D, $8F, $91, $89, $89, $91, $8F, $CB, $CD, $CF, $D1, $C9, $C9, $D1, $CF	; RAS: Not actually used, see BounceBlock_Tile
 ObjP09:	
 ObjP1A: .byte $8D, $8D, $8F, $8F, $91, $91, $A7, $A7, $A9, $A9, $AB, $AB
 ObjP0A:	.byte $A9, $AB, $BD, $BF
@@ -1031,7 +1031,7 @@ BubblePopped:
 	LDA #$00
 	STA Objects_Var1, X
 	STA Objects_Var4, X
-	LDA #$80
+	LDA #$40
 	STA Objects_SlowTimer, X
 	RTS
 
@@ -1059,7 +1059,7 @@ PRG001_A78E:
 
 ObjHit_NinjaShroom:
 	JSR Try_PUp_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$0B
 	BNE Do_Ninja_Power
 	JMP PUp_GeneralCollect
@@ -1175,23 +1175,14 @@ PRG001_A818:
 	ADC #$03	 ; Frame -> 'Y' (index)
 	STA DAIZ_TEMP1
 	JSR Try_PUp_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP DAIZ_TEMP1
 	BNE Do_Suit_Power
 	JMP PUp_GeneralCollect
 
 Do_Suit_Power:
+	INC DAIZ_TEMP1
 	LDA DAIZ_TEMP1
-	TAY		 ; Suit -> 'Y'
-	INY		 ; Y++ (valid Player_QueueSuit value)
-	TYA
-	CMP #$05
-	BNE Do_Suit_Power1
-	LDA #AIR_INCREASE
-	STA Air_Change
-	LDA #$05
-
-Do_Suit_Power1:
 	JMP Do_PUp_Poof_Collect
 
 
@@ -1527,7 +1518,7 @@ PRG001_A9F6:
 ObjHit_FireFlower:
 
 	JSR Try_PUp_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$02
 	BNE Do_Fire_Power
 	JMP PUp_GeneralCollect
@@ -1676,7 +1667,7 @@ PRG001_AC22:
 
 ObjHit_SuperLeaf:
 	JSR Try_PUp_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$03
 	BNE Do_Leaf_Power
 	JMP PUp_GeneralCollect
@@ -1911,7 +1902,7 @@ ObjHit_Coin:
 
 ObjHit_IceFlower:
 	JSR Try_PUp_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$07 
 	BNE Do_Ice_Power
 	JMP PUp_GeneralCollect
@@ -1923,7 +1914,7 @@ Do_Ice_Power:
 
 ObjHit_Pumpkin:
 	JSR Try_PUp_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$0A
 	BNE Do_Boo_Power
 	JMP PUp_GeneralCollect
@@ -1934,7 +1925,7 @@ Do_Boo_Power:
 
 ObjHit_FoxLeaf:
 	JSR Try_PUp_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$08
 	BNE Do_Fox_Power
 	JMP PUp_GeneralCollect
@@ -3362,7 +3353,7 @@ Try_PUp_Reserve:
 	LDA Player_Ability
 	CMP #$07
 	BNE Cant_Reserve
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	STA PowerUp_Reserve
 Cant_Reserve:
 	RTS
@@ -3393,13 +3384,9 @@ Do_PUp_Pallete_Collect:
 DeleteWeather:
 	JMP Object_Delete
 
-ObjInit_Snow:
-
-	LDA #$01
-	STA Objects_Var1, X
-
-
 ObjInit_Rain:
+	LDA Objects_Property, X
+	STA Objects_Var1, X
 	STX TempX
 	LDY #$04
 
@@ -3436,6 +3423,8 @@ KeepRandomizing:
 DontReverseWind:
 	LDA TempA
 	STA Wind
+	LDA #$01
+	STA WeatherActive
 	JSR Randomize_Weather
 	LDA RandomN
 	STA Weather_YPos, Y
@@ -3445,17 +3434,28 @@ DontReverseWind:
 DontReverseWind1:
 	RTS
 
-WeatherDrawOffset:	
-	.byte $00, $80
-
 ObjNorm_Weather:
 	LDA Weather_Disabled
 	BNE DontReverseWind1
 
-	LDA <Counter_1
-	TAY
-	LDA WeatherDrawOffset, Y
+	LDA <Vert_Scroll
 	STA <Temp_Var7
+	LDA <Horz_Scroll
+	STA <Temp_Var8
+
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	AND #$01
+	BNE DoNextParticle0
+	LDA <Temp_Var7
+	ADD #$80
+	STA <Temp_Var7
+	LDA <Temp_Var8
+	ADD #$80
+	STA <Temp_Var8
+
+
+DoNextParticle0:
 	LDA Object_SprRAM, X
 	STA TempX
 	LDY #$05
@@ -3475,10 +3475,6 @@ DoNextParticle:
 MoveSingleParticle:
 	LDA Weather_YPos, Y
 	ADD Weather_YVel, Y
-	CMP #$D0
-	BCS Randomize_Weather
-
-SetPosition:
 	STA Weather_YPos, Y
 	LDA Weather_XPos, Y
 	ADD Weather_XVel, Y
@@ -3540,11 +3536,12 @@ RainPattern:
 	RTS
 
 DrawSingleParticle:
+
 	LDA Weather_YPos, Y
-	;ADD <Temp_Var7
+	SUB <Temp_Var7
 	STA Sprite_RAM, X
 	LDA Weather_XPos, Y
-	;ADD <Temp_Var7
+	SUB <Temp_Var8
 	STA Sprite_RAM + 3, X
 	LDA Weather_Pattern, Y
 	STA Sprite_RAM + 1, X
@@ -3561,7 +3558,7 @@ DontFlipParticle:
 	STA Sprite_RAM + 2, X
 	RTS
 	
-Weather_Patterns: .byte $7B, $7B, $7B, $7B
+Weather_Patterns: .byte $7B, $7B, $55, $5F
 Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
@@ -3582,6 +3579,9 @@ ObjInit_GiantChomp:
 ObjNorm_GiantChomp:
 	LDA <Player_HaltGame
 	BNE DrawChomp
+
+	LDA #SND_BOOMERANG
+	STA Sound_QLevel2
 
 	LDA <Counter_1
 	AND #$08
@@ -4666,4 +4666,39 @@ ObjHit_SolidBlock3:
 	STA <Player_XHi
 	LDA #$00
 	STA <Player_XVel
+	RTS
+
+ObjNorm_StarPiece:
+	LDA <Player_HaltGame
+	BNE DrawStarPieceAnim
+
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	LDA KPFrames, Y
+	STA Objects_Frame, X
+
+	JSR Object_HitTestRespond
+	INC Objects_Var5, X
+	LDA Objects_Var5, X
+	LSR A
+	LSR A 
+	LSR A
+	AND #$03
+	ORA Objects_Frame, X
+	STA Objects_Frame, X
+
+DrawStarPieceAnim:
+	JSR Object_ShakeAndDraw
+	LDA Objects_Frame, X
+	AND #$03
+	TAX
+	LDA KPFlips1, X
+	ORA Sprite_RAM + 2, Y
+	STA Sprite_RAM + 2, Y
+	LDA KPFlips2, X
+	ORA Sprite_RAM + 6, Y
+	STA Sprite_RAM + 6, Y
 	RTS

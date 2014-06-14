@@ -273,7 +273,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OAT_BOUNDBOX01	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte OAT_BOUNDBOX01	; Object $62 - OBJ_BLOOPER
-	.byte OAT_BOUNDBOX13	; Object $63 - OBJ_FLOATMINE
+	.byte OAT_BOUNDBOX13 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $63 - OBJ_FLOATMINE
 	.byte OAT_BOUNDBOX01	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $66 - OBJ_WATERCURRENTUPWARD
@@ -305,7 +305,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OAT_BOUNDBOX02	; Object $81 - OBJ_HAMMERBRO
 	.byte OAT_BOUNDBOX02	; Object $82 - OBJ_NINJABRO
-	.byte OAT_BOUNDBOX01	; Object $83 - OBJ_LAKITU
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY	; Object $83 - OBJ_LAKITU
 	.byte OAT_BOUNDBOX01	; Object $84 - OBJ_SPINYEGG
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_BLUESPINY
 	.byte OAT_BOUNDBOX02	; Object $86 - OBJ_ICEBRO
@@ -319,7 +319,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8E - OBJ_THWOMPDIAGONALUL
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $8F - OBJ_THWOMPDIAGONALDL
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $91 - OBJ_TWIRLINGPLATCWNS
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_BOUNCEOFFOTHERS	; Object $91 - OBJ_TWIRLINGPLATCWNS
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $92 - OBJ_TWIRLINGPLATCW
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OAT_BOUNDBOX06 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -890,16 +890,6 @@ PRG000_C914:
 ; updates the timers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
-	JMP PRG000_C927	 ; Jump to PRG000_C927
-
-PRG000_C918:
-	.byte $35, $F0, $0C
-
-; FIXME: Anybody want to claim this?
-; Appears to be a debug routine that would toggle the Player to be invincible by pressing SELECT
-; $C91B
-
-PRG000_C927:
 	LDA Splash_DisTimer
 	BEQ PRG000_C93A	 ; If Splash_DisTimer > 0, jump to PRG000_C92F
 
@@ -1976,6 +1966,12 @@ BrickBust_MoveOver:
 
 	LDA BrickBust_HEn
 	STA BrickBust_HEn+1
+	
+	LDA BrickBust_Pal
+	STA BrickBust_Pal+1
+
+	LDA BrickBust_Tile
+	STA BrickBust_Tile+1
 
 	RTS		 ; Return
 
@@ -2572,10 +2568,9 @@ Object_PoofDie:
 End_The_Level:
 	LDA #$80
 	STA CompleteLevelTimer
-	LDA Mushroom_Already_Defeated
-	BNE End_The_Level1
-	LDX World_Num
-	INC Mushrooms_Defeated, X
+	JSR GetLevelBit
+	ORA Levels_Complete, Y
+	STA Levels_Complete, Y
 
 End_The_Level1:
 	RTS
@@ -3217,11 +3212,6 @@ PRG000_D22E:
 
 	LDA <Player_YVel	
 	BPL PRG000_D253	 	; If Player's Y Velocity >= 0 (stationary or moving downward), jump to PRG000_D253
-
-	; Player is moving upward...
-
-	LDA Player_FlyTime
-	BNE PRG000_D253	 	; If Player is flying, jump to PRG000_D253
 
 	; Player moving upward, not flying...
 
@@ -5066,12 +5056,6 @@ Player_Die:
 	STA <Player_IsDying	 ; Player_IsDying = 1
 
 PRG000_DAAE:
-	; Ensure Player_FlipBits is correct?
-	; RAS: May be a cosmetic bugfix for player coming out of a somersault
-	; (see jump to PRG000_DAAE) and getting hit, but I'm not really sure...
-	LDA <Player_FlipBits
-	AND #$7f
-	STA <Player_FlipBits
 
 	RTS		 ; Return
 
@@ -6590,6 +6574,14 @@ DontDrawGiant:
 	RTS
 
 ObjectCarry:
+	LDA <Objects_YVel, X
+	BEQ CarryDone
+	BPL ObjectCarry1
+
+CarryDone:
+	RTS
+
+ObjectCarry1:
 	LDA <Objects_X, X
 	STA <Temp_Var6
 	LDA <Objects_XHi, X
@@ -6653,7 +6645,7 @@ DoSpriteCarry:
 	LDA Objects_Y, Y
 	SUB #$10
 	STA <Objects_Y, X
-	LDA Objects_YHi, X
+	LDA Objects_YHi, Y
 	SBC #$00
 	STA <Objects_YHi, X
 	SEC

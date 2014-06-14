@@ -520,11 +520,6 @@ PRG030_84A0:
 
 	LDA #$01
 	STA Map_Operation	; Map_Operation = 0 ("World X" intro)
-	LDA #$00
-	STA BigQBlock_GotIt	; Clear the opened Big ? Block variable
-	STA Map_Airship_Dest	; Map_Airship_Dest = 0
-	STA Map_Got13Warp	; Clear the "Got 1-3 Warp Whistle" flag
-	STA Map_Anchored	; Map_Anchored = 0 (not anchored yet)
 
 	; Map_UnusedGOFlag = $F8?
 	LDA #$f8
@@ -542,12 +537,6 @@ PRG030_84D7:
 	JSR Scroll_PPU_Reset	 
 	JSR Reset_PPU_Clear_Nametables
 
-	; Init for lost bonus game??
-	LDA #$2b
-	STA Bonus_UnusedVH
-	LDA #$35
-	STA Bonus_UnusedVL
-
 	LDA #$00
 	STA Level_Tileset	; Level_Tileset = 0
 	STA Map_Unused72C 	; Map_Unused72C = 0
@@ -556,19 +545,6 @@ PRG030_84D7:
 	STA UpdSel_Disable 	; Stop Update_Select activity
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 
-	; Init for lost bonus game??
-	LDA #$04
-	STA BonusText_CharPause
-	STA Bonus_DieCnt
-
-	; Reload the timer tick for the next time it's used
-	LDA #$28	
-	STA Level_TimerTick
-
-	; Unused699 = 3 (never used)
-	LDA #$03	 
-	;STA Unused699
-
 	; Update_Select = $C0
 	LDA #$c0	 	
 	STA Update_Select
@@ -576,8 +552,6 @@ PRG030_84D7:
 	; Load world map graphics
 	LDA #$14
 	STA PatTable_BankSel
-	;LDA #$16
-	;STA PatTable_BankSel+1
 	LDX #$20
 	STX PatTable_BankSel+2
 	INX
@@ -1618,7 +1592,6 @@ PRG030_8E4F:
 	JSR RhythmPlatforms
 
 Graphics_Anim:
-
 	LDA <Counter_1
 	AND #$1C
 	LSR A	
@@ -1771,6 +1744,7 @@ PRG030_8EE7:
 	; and, last but not least (well, maybe least), "shell kill flashes"!
 	JSR Gameplay_UpdateAndDrawMisc
 
+	JSR DrawStarsBackground
 	LDA Level_HAutoScroll
 	BEQ PRG030_8F31	 ; If Auto Horizontal Scrolling is NOT active, jump to PRG030_8F31
 
@@ -1788,7 +1762,7 @@ PRG030_8F31:
 	LDX Player_Current	 ; X = Player_Current
 
 	; Transfer Player's current power up to the World Map counterpart
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	STA World_Map_Power
 
 	LDA #$00
@@ -1796,10 +1770,6 @@ PRG030_8F31:
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled
-
-	; Level_GetWandState = 0
-	LDA #$00
-	STA Level_GetWandState
 
 PRG030_8F42:
 
@@ -2176,6 +2146,8 @@ PRG030_9185:
 	; Set Player's previous travel direction
 	LDA Map_Previous_Dir,X
 	STA <World_Map_Dir,X
+	LDA #$00
+	STA MapBackgroundInit
 
 	DEX		 ; X--
 	BPL PRG030_9185	; While X >= 0, loop!
@@ -2986,10 +2958,13 @@ LevelPointerOffsets:
 
 LevelLoad:	; $97B7
 	; Clear loading variables
-	
+	JSR InitStarsBackground
+
 	LDA #$00
 	STA <Vert_Scroll
 	STA Level_Jct_VS
+
+LevelLoadQuick:
 	LDA #$12
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
@@ -3025,6 +3000,10 @@ LevelLoad:	; $97B7
 	LDA [Temp_Var1],Y
 	STA <Temp_Var15  ; hi address
 	INY
+
+	LDA JustName
+	BNE  JustName1
+
 	LDA [Temp_Var1],Y
 	STA Level_Tileset
 	STA Level_TilesetIdx
@@ -3034,6 +3013,17 @@ LevelLoad:	; $97B7
 	JSR LoadTransitions
 	LDY TempY
 	; now we swap banks and start loading level headers
+
+JustName1:
+	LDA JustName
+	BEQ JustName10
+
+	LDA PAGE_A000
+	PHA
+	LDA PAGE_C000
+	PHA
+
+JustName10:
 	LDX <Temp_Var3
 	STX PAGE_A000
 	JSR PRGROM_Change_A000
@@ -3042,8 +3032,32 @@ LevelLoad:	; $97B7
 	STX PAGE_C000
 	JSR PRGROM_Change_C000
 	
+	LDA JustName
+	BEQ NormalLoading
+
+	LDY #$0D
+	LDX #$00
+
+JustName2:
+	LDA [Temp_Var14],Y
+	STA LevelName, X
+	INY
+	INX
+	CPX #$28
+	BNE JustName2
+	PLA
+	STA PAGE_C000
+	PLA
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	JSR PRGROM_Change_C000
+	RTS
+
+NormalLoading:
+
 	LDA LevelVertJct
 	BEQ NotJctBQ
+
 SkipLevelLoad:
 	JMP Skip_Level_Loading
 
@@ -3300,8 +3314,6 @@ Pointers_Done:
 NoCarryInc:
 	LDA #$00
 	STA <Temp_Var8
-	STA <Temp_Var1
-	STA <Temp_Var2
 	LDA #$60
 	STA <Temp_Var9
 	LDY #$00
@@ -4613,16 +4625,6 @@ Subtract_RTS:
 Check_For_Level_Exit:
 	RTS
 
-Get_Normalized_Suit:
-	STY TempY
-	LDA Player_Suit
-	LDY Special_Suit_Flag
-	BEQ Normalized_Suit_RTS
-	CLC
-	ADC #$05
-Normalized_Suit_RTS:
-	LDY TempY
-	RTS
 
 Reserve_Sprites:
 	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_NINJASHROOM
@@ -4753,7 +4755,7 @@ Can_Wall_Jump:
 	BEQ No_Wall_Jump
 	LDA <Player_InAir
 	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$0B
 	BNE No_Wall_Jump
 	LDX #$01
@@ -4901,37 +4903,8 @@ NextColorDay:
 
 NextLevelByte:
 	INC <Temp_Var14
-	LDA <Temp_Var14
-	AND #$0F
 	BNE DontIncVar5
-	INC <Temp_Var1
-	LDA <Temp_Var1
-	CMP Level_Width
-	BNE NextLevelByte1
-	LDA #$00
-	STA <Temp_Var1
-	INC <Temp_Var2
-	LDA <Temp_Var2
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	STA <Temp_Var14
-	LDA <Temp_Var2
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var15
-	RTS
-
-NextLevelByte1:
-	LDA #$B0
-	ADD <Temp_Var14
-	STA <Temp_Var14
-	LDA <Temp_Var15
-	ADC #$01
-	STA <Temp_Var15
+	INC <Temp_Var15
 DontIncVar5:
 	RTS
 
@@ -5084,7 +5057,7 @@ PRG012_A462:
 	TYA		 
 	ADD #$10	 
 	TAY		 
-	LDA #$4e	 
+	LDA #$01
 	JSR Tile_Mem_ClearB
 	INX		 ; X++
 	CPX #$40
@@ -5186,6 +5159,8 @@ CopyMapPointers:
 	JSR Next_World_Byte
 	DEC <Temp_Var15
 	BNE CopyMapPointers
+	LDA #$FF
+	STA MapPointers, X
 
 	LDA PAGE_A000
 	PHA
@@ -5204,7 +5179,6 @@ PRG012_A498:
 	STA DAIZ_TEMP2
 	STY TempY
 	JSR Try_Replace_Tile
-	LDA DAIZ_TEMP2
 	LDY TempY
 	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
 	INY		 	; Y++
@@ -5246,6 +5220,8 @@ PRG012_A4C1:
 	LDA DAIZ_TEMP3
 	STA PAGE_C000
 	JSR PRGROM_Change_C000
+	JSR FindCompletedLevels
+	LDX #$00
 	RTS		 ; Return
 
 
@@ -5259,22 +5235,18 @@ DontIncWorldVar2:
 
 
 Try_Replace_Tile:
-	STA DAIZ_TEMP2
-	TAX
-	LDA TileProperties, X
-	CMP #MAP_PROP_COMPLETABLE
-	BNE Try_Replace_TileRTS
+	STA TempA
+	CMP #$3E
+	BNE Try_Replace_Tile1
 
-	LDA DAIZ_TEMP2
-	JSR MapGetTileBit
-	AND World_Complete_Tiles,X
-	BEQ Try_Replace_TileRTS
-	LDA DAIZ_TEMP2
-	ORA #$0F
-	STA DAIZ_TEMP2
+	LDA DayNight
+	BEQ Try_Replace_Tile1
 
-Try_Replace_TileRTS:
-	LDA DAIZ_TEMP2
+	LDA #$3F
+	RTS
+
+Try_Replace_Tile1:
+	LDA TempA
 	RTS
 
 
@@ -5502,7 +5474,7 @@ RemoveBlocksByRow:
 	ASL A
 	TAX
 	LDY #$00
-	LDA World_Complete_Tiles, X
+	;LDA World_Complete_Tiles, X
 	STA TempA
 
 IsBitSet:
@@ -5640,4 +5612,264 @@ RhythmPlatforms5:
 	TAY
 	LDA #TILE_PROP_SOLID_ALL
 	STA TileProperties, Y
+	LDA TileProperties + $53
+	STA TileProperties + $03
+	LDA TileProperties + $83
+	STA TileProperties + $53
+	LDA TileProperties + $D3
+	STA TileProperties + $83
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+	LDA RhythmCurrents, Y
+	STA TileProperties + $D3
+	RTS
+
+RhythmCurrents:
+	.byte TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP, TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN
+
+StarXPositions:
+	.byte $00, $54, $A8, $2A, $7E, $D2
+
+StarYPositions:
+	.byte $01, $22, $13, $0C, $29, $1B
+
+StarPals:
+	.byte SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL2, SPR_PAL3
+
+InitStarsBackground:
+	LDY #$07
+
+ObjInit_Stars1:
+	LDA RandomN, Y
+	AND #$1F
+	ADD StarXPositions, Y
+	STA Weather_XPos, Y
+
+	LDA RandomN + 6, Y
+	AND #$0F
+	ADD StarYPositions, Y
+	STA Weather_YPos, Y
+	DEY
+	BPL ObjInit_Stars1
+	RTS
+
+DrawStarsBackground:
+	
+	LDA WeatherActive
+	BNE DrawStarsBackground01
+	LDA DayNightActive
+	BNE DrawParallaxBackground
+
+DrawStarsBackground01:
+	RTS
+
+DrawParallaxBackground:
+	LDA DayNight
+	BNE DrawStarsBackground1
+
+
+DrawSkyBackground1:
+	LDA <Counter_1
+	AND #$3F
+	BNE DrawSkyBackground2
+	INC Weather_XPos
+	INC Weather_XPos + 1
+	INC Weather_XPos + 2
+	INC Weather_XPos + 3
+	INC Weather_XPos + 4
+	INC Weather_XPos + 5
+
+DrawSkyBackground2:
+	LDX #$05
+	LDY #$F8
+	LDA <Vert_Scroll
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var2
+	LDA <Horz_Scroll_Hi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var2
+	STA <Temp_Var2
+
+DrawClouds0:
+	JSR FindUnusedSprite
+	LDA #(SPR_PAL1 | SPR_BEHINDBG)
+	STA Sprite_RAM + 2, Y
+	LDA #$75
+	STA Sprite_RAM + 1, Y
+	
+	LDA Weather_YPos, X
+	SUB <Temp_Var1
+	STA Sprite_RAM, Y
+	
+	LDA Weather_XPos, X
+	SUB <Temp_Var2
+	STA Sprite_RAM +3, Y
+	DEX
+	BPL DrawClouds0
+	RTS
+
+
+DrawStarsBackground1:
+	LDY #$F8
+	LDX #$05
+	LDA <Vert_Scroll
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var2
+	LDA <Horz_Scroll_Hi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var2
+	STA <Temp_Var2
+
+DrawStars0:
+	JSR FindUnusedSprite
+	TXA
+	AND #$03
+	ORA #SPR_BEHINDBG
+	STA Sprite_RAM + 2, Y
+	LDA #$5D
+	STA Sprite_RAM + 1, Y
+
+	LDA StarYPositions, X
+	SUB <Temp_Var1
+	STA Sprite_RAM, Y
+	
+	LDA StarXPositions, X
+	SUB <Temp_Var2
+	STA Sprite_RAM +3, Y
+	DEX
+	BPL DrawStars0
+	RTS
+
+FindUnusedSprite:
+	LDA Sprite_RAM, Y
+	CMP #$F8
+	BEQ FindUnusedSprite1
+	DEY
+	DEY
+	DEY
+	DEY
+	BNE FindUnusedSprite
+	PLA
+	PLA
+
+FindUnusedSprite1:
+	RTS
+	
+FindCompletedLevels:
+	LDX #$00
+
+FindCompletedLevels3:
+	LDA MapPointers, X
+	CMP #$FF
+	BNE FindCompletedLevels0
+	RTS
+
+FindCompletedLevels0:
+	STA LevelNumber
+	JSR GetLevelBit
+	AND Levels_Complete, Y
+	BEQ FindCompletedLevels1
+	LDA MapPointers + 1, X
+	AND #$0F
+	STA Level_BlockChgXHi
+	LDA MapPointers + 1, X
+	AND #$F0
+	STA Level_BlockChgXLo
+
+	LDA MapPointers + 2, X
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	SUB #$10
+	STA Level_BlockChgYLo
+	LDA #$01
+	STA Level_BlockChgYHi
+	STX TempX
+	JSR MarkCompletedLevels
+	LDX TempX
+
+FindCompletedLevels1:
+	INX
+	INX
+	INX
+	JMP FindCompletedLevels3
+
+
+MarkCompletedLevels:
+	LDA Level_BlockChgXHi
+	ASL A
+	TAX	
+	LDA Tile_Mem_Addr,X
+	STA <Map_Tile_AddrL
+	LDA Tile_Mem_Addr+1,X
+	STA <Map_Tile_AddrH
+
+	LDA #$00
+	STA <Temp_Var7
+
+	LDA Level_BlockChgYHi
+	BEQ MarkCompletedLevels1	
+
+	INC <Map_Tile_AddrH	
+
+MarkCompletedLevels1:
+
+	LDA Level_BlockChgYLo
+	AND #$f0
+	STA <Temp_Var6
+	LDA Level_BlockChgXLo
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA <Temp_Var6
+	STA <Temp_Var5
+
+	LDA Level_BlockChgYHi
+	BNE MarkCompletedLevels2	
+	LDA Level_BlockChgYLo
+	AND #$f0
+	CMP #$f0
+	BNE MarkCompletedLevels3	 
+
+MarkCompletedLevels2:
+	LDA Level_BlockChgYLo
+	ADD #$10
+	STA <Temp_Var6
+
+	LDA #$01
+	STA <Temp_Var7
+
+MarkCompletedLevels3:
+	LDY <Temp_Var5
+	LDA [Map_Tile_AddrL],Y
+	EOR #$01
+	STA [Map_Tile_AddrL],Y
 	RTS

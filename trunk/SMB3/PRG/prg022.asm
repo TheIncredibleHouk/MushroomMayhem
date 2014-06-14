@@ -2610,18 +2610,16 @@ PRG022_CF7C:
 	JSR Roulette_DoGame	 ; Actually run the Roulette game
 
 	; Switch to page 26 @ A000
-	LDA #MMC3_8K_TO_PRG_A000
-	STA MMC3_COMMAND
 	LDA #26		
-	STA MMC3_PAGE	 
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 
 	JSR StatusBar_UpdateValues	 ; Update Status Bar (not really used)
 
 	; Switch to page 28 @ A000
-	LDA #MMC3_8K_TO_PRG_A000
-	STA MMC3_COMMAND
 	LDA #28	
-	STA MMC3_PAGE	 
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 
 	; Jump to the sound engine, newly inserted at page A000!
 	JSR Sound_Engine_Begin

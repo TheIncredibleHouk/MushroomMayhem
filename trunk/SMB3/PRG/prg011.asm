@@ -4245,8 +4245,8 @@ Map_MarkLevelComplete:
 	LDA Old_World_Map_Tile 	 ; X = Player_Current
 	AND #$0F
 	JSR MapGetTileBit
-	ORA World_Complete_Tiles,X
-	STA World_Complete_Tiles,X
+	;ORA World_Complete_Tiles,X
+	;STA World_Complete_Tiles,X
 	RTS
 
 Map_Object_CheckVisibility:

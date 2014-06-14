@@ -767,18 +767,13 @@ PRG007_A52D:
 	STA <Temp_Var1
 
 	; start #DAHRKDAIZ - code used to handle hammer specific tile interaction
-	LDA <Player_Suit
-	CMP #$02
-	BEQ FIRE_BALL_COLL
-	LDA Special_Suit_Flag
-	BNE No_Block_Bust
+	LDA Effective_Suit
+	CMP #$06
+	BNE FIRE_BALL_COLL
 	LDA <Temp_Var1
-	CMP #TILE_ITEM_COIN
-	BCS No_Block_Bust
-	CMP #TILE_ITEM_BRICK
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
 	BEQ Do_Brick_Bust
-	AND #$0F
-	CMP #$0D
+	CMP #TILE_ITEM_BRICK
 	BNE No_Block_Bust
 
 Do_Brick_Bust:
@@ -887,7 +882,7 @@ Fireball_ThawTile:
 	JSR BrickBust_MoveOver	 ; Open up a brick bust
 
 	; Brick bust "poof" style (over top of the changing tile)
-	LDA #$01
+	LDA #$03
 	STA BrickBust_En
 
 	; Set block change Y 
@@ -1034,6 +1029,8 @@ PRG007_A6C6:
 	TYA
 	TAX
 	INC Objects_Var3, X
+	LDA #$00
+	STA Objects_Var2, X
 	LDX TempX
 	BNE PRG007_A6C8
 
@@ -1093,7 +1090,7 @@ PRG007_A6EC:
 	TYA
 	TAX	; object index -> 'X'
 
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$07
 	BEQ ICE_BALL_SKIP1
 	
@@ -1243,13 +1240,6 @@ SwimBubble_XOff:
 	.byte $05, $05	; Up frog swim
 
 Player_WaterOrWaterfallVizFX:
-	LDY Player_FlyTime
-	INY
-	BNE PRG007_A783	 ; (Will be zero if Player_FlyTime = $FF, i.e. P-Wing) If not using P-Wing, jump to PRG007_A783
-
-	; Otherwise, clear kill tally (P-Wing does not net you 1-ups)
-	STY Kill_Tally
-
 PRG007_A783:
 	LDY <Player_HaltGame
 	BNE PRG007_A7F0	 ; If gameplay halted, jump to PRG007_A7F0 (RTS)
@@ -1991,7 +1981,7 @@ PRG007_ACBB:
 PRG007_ACC7:
 
 	; Pattern for bust chunks
-	LDA #$4b
+	LDA BrickBust_Tile, X
 	STA Sprite_RAM+$01,Y
 	STA Sprite_RAM+$05,Y
 	STA Sprite_RAM+$09,Y
@@ -2030,13 +2020,7 @@ PRG007_ACF2:
 PRG007_AD09:
 
 	; Rotate the horizontal / vertical flips
-	LDA Level_NoStopCnt
-	AND #$06
-	LSR A
-	LSR A
-	ROR A
-	ROR A
-	ORA #SPR_PAL3
+	LDA BrickBust_Pal, X
 	STA Sprite_RAM+$02,Y
 	STA Sprite_RAM+$06,Y
 	STA Sprite_RAM+$0A,Y
@@ -2049,6 +2033,10 @@ PRG007_AD21:
 	; Disable this brick bust
 	LDA #$00
 	STA BrickBust_En,X
+	LDA #$4B
+	STA BrickBust_Tile, X
+	LDA #SPR_PAL3
+	STA BrickBust_Pal, X
 
 	RTS		 ; Return
 
@@ -5162,7 +5150,7 @@ Hammer_BrickBust:
 	JMP PlayerProj_ChangeToPoof
 
 Do_Boo_Mode:
-	JSR Get_Normalized_Suit
+	LDA Effective_Suit
 	CMP #$0A
 	BNE Boo_Do_Nothing
 	LDA Boo_Mode_KillTimer	; If "kill" timer mode, the slight point on which boo kills enemies when he transforms back to mario
