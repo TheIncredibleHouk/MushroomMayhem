@@ -1280,7 +1280,7 @@ ObjHit_PUpMush:
 PRG001_A897:
 	LDA <Player_Suit
 	BEQ Do_Grow
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$07
 	BNE Just_Collect
 	LDA #$01
@@ -3350,7 +3350,7 @@ PRG001_BF9B:
 ; Rest of ROM bank was empty
 
 Try_PUp_Reserve:
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$07
 	BNE Cant_Reserve
 	LDA Effective_Suit

@@ -3577,7 +3577,8 @@ ObjHit_DryBones:
 	ORA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
 
-	JSR Exp_Inc
+	LDA Kill_Tally
+	STA Exp_Earned
 
 PRG002_B77D:
 	RTS		 ; Return

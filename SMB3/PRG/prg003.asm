@@ -2050,7 +2050,7 @@ PRG003_A89D:
 	LDA Objects_Var3,X
 	INC Objects_Var3,X
 
-	JSR Exp_Inc_Lots	 ; Get score for that
+	INC Exp_Earned	 ; Get score for that
 
 PRG003_A8D2:
 
@@ -3004,8 +3004,12 @@ ObjInit_FloatMine:
 	STA <Objects_XHi, X
 	LDA #$01
 	STA Objects_InWater, X
-	LDA #$00
+	LDA Objects_Property, X
+	BEQ ObjInit_FloatMine0
+	LDA #$02
 	STA Objects_Var1, X
+
+ObjInit_FloatMine0:
 	RTs
 
 ObjNorm_FloatMine:

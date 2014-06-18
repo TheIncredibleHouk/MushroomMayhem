@@ -1859,7 +1859,8 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 
 	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
-						.ds 2	;
+	Exp_Doubler:	.ds 1
+						.ds 1	;
 	Objects_Property:		.ds 5
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
 	Player_ISHolding_OLD:	.ds 1	; Holds onto whether Player WAS holding onto something (so we can be sure to clear Player_IsHolding)
@@ -2572,7 +2573,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Virus:				.ds 1	;
 	Old_World_Map_Tile:	.ds	1	;
-	Player_Ability:		.ds 1	;
+	Player_Badge:		.ds 1	;
 	Player_Level:		.ds 1	;
 	Tile_Anim_Enabled:  .ds 1	;
 
@@ -2700,7 +2701,7 @@ CFIRE_LASER		= $15	; Laser fire
 	; C = Warp Whistle
 	; D = Music Box
 	
-	Inventory_Items:	.ds 2*7	; $7D80-$7D9B Mario, 4 rows of 7 items 
+	Inventory_Items:	.ds 24	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
 	Player_Coins:		.ds 4	; Mario's coins
@@ -2712,10 +2713,10 @@ AIR_INCREASE	= 3
 	Top_Of_Water:		.ds 1	;
 
 	; #DAHRKDAIZ these are unused, but the labels ramin to one byte to allow the assembler to corrrectly calculate some offsets in the game
-	Inventory_Items2:	.ds 1	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
-	Inventory_Cards2:	.ds 1	; $7DBF-$7DC1 Luigi, 3 cards
-	Inventory_Score2:	.ds 1	; $7DC2-$7DC4 Luigi, 3 byte score
-	Player_Coins2:	.ds 1	; Luigi's coins
+	Inventory_Items2:	.ds 0	; $7DA3-$7DBE Luigi, 4 rows of 7 items 
+	Inventory_Cards2:	.ds 0	; $7DBF-$7DC1 Luigi, 3 cards
+	Inventory_Score2:	.ds 0	; $7DC2-$7DC4 Luigi, 3 byte score
+	Player_Coins2:	.ds 0	; Luigi's coins
 
 	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)
 	Boo_Mode_Timer:			.ds 1	; Indicates how long we are in boo mode

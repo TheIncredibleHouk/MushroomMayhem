@@ -2105,7 +2105,7 @@ PRG024_AC6B:
 
 	LDA <Pad_Input	
 	AND #PAD_START
-	BEQ PRG024_ACBA	 	; If Player is not pressing START, jump to PRG024_ACBA (RTS)
+	BEQ Title_PrepForWorldMap	 	; If Player is not pressing START, jump to PRG024_ACBA (RTS)
 
 	LDA #SND_LEVELCOIN	 
 	STA Sound_QLevel1	; Play coin sound (in this case, selected and begin!)
@@ -2135,33 +2135,31 @@ PRG024_ACA5:
 	BNE PRG024_AC96	 ; If the "gling" sound has not ended, loop!
 
 	INC <Title_State ; Title_State++
-
+Title_PrepForWorldMap:
 	; World_Num = 0 (World 1)
 	LDA #$00
 	STA World_Num
 
+	STA Debug_Snap
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled
 
-;	LDX #$00
-;	LDY #$01
-;
-;FillItemsLoop:
-;	TYA
-;	STA Inventory_Items, X
-;	INX
-;	INY
-;	CPX #28
-;	BNE FillItemsLoop
+	
+	LDX #$00
+	LDY #$01
 
-PRG024_ACBA:
-	RTS		 ; Return
+FillItemsLoop:
+	TYA
+	STA Inventory_Items, X
+	INX
+	INY
+	CPX #24
+	BNE FillItemsLoop
 
-Title_PrepForWorldMap:
 	LDA #$01
 	STA World_Map_Power	 ; Mario starts as small on world map
-	INC Total_Players	 ; Total_Players should be 1/2, not 0/1
+	STA Total_Players	 ; Total_Players should be 1/2, not 0/1
 	INC <Title_State	 ; Next title state...
 	RTS		 ; Return
 
@@ -2270,7 +2268,7 @@ PRG024_AD54:
 PRG024_AD69:
 	TYA		 	; A = Player_Lives
 	STA Player_Lives,X	; Store to this player
-	LDA #$01
+	LDA #$00	 
 	STA World_Map_Power,X	; This player starts small on world map
 	DEX		 	; X--
 	BPL PRG024_AD69	 	; While X >= 0, loop...

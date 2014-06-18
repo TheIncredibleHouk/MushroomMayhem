@@ -180,55 +180,6 @@ PRG007_A251:
 	JSR PlayerProj_ThrowWeapon	 ; Player throws weapon, whatever's appropriate
 
 PRG007_A268:
-	LDA ShellKillFlash_Cnt
-	BEQ PRG007_A2AE	 ; If ShellKillFlash_Cnt = 0, jump to PRG007_A2AE (RTS)
-
-	DEC ShellKillFlash_Cnt	 ; ShellKillFlash_Cnt--
-
-	LDY #$00	 ; Y = 0
-
-	; Set the shell kill flash left/right sprite Y
-	LDA ShellKillFlash_Y
-	SUB Level_VertScroll
-	STA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$04,Y
-
-	; Set left sprite X
-	LDA ShellKillFlash_X
-	SUB <Horz_Scroll
-	STA Sprite_RAM+$03,Y
-
-	; Set right sprite X
-	ADD #$08
-	STA Sprite_RAM+$07,Y
-
-	; Set left/right sprite pattern
-	LDA #$57
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
-
-	; Temp_Var1 = toggled vertical flip bit
-	LDA <Counter_1
-	LSR A
-	LSR A
-	LSR A
-	ROR A
-	AND #SPR_VFLIP
-	STA <Temp_Var1
-
-	; OR in a palette cycle
-	LDA <Counter_1
-	AND #$03
-	ORA <Temp_Var1
-
-	; Set left sprite attribute
-	STA Sprite_RAM+$02,Y
-
-	; Set right sprite attribute
-	EOR #(SPR_HFLIP | SPR_VFLIP)
-	STA Sprite_RAM+$06,Y
-
-PRG007_A2AE:
 	RTS		 ; Return
 
 PlayerProj_ThrowWeapon:
@@ -1095,13 +1046,11 @@ PRG007_A6EC:
 	BEQ ICE_BALL_SKIP1
 	
 Kill_Enemy_Anyway:
-	INC Exp_Earned
-
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 
 	STY DAIZ_TEMP1
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	INC Exp_Earned	 ; Get proper score award
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It11
 	INC Coins_Earned ; One more coin earned

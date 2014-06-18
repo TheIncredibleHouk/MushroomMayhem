@@ -73,7 +73,7 @@ Inventory_DoHilites:
 	STA InvStart_Item	; If not Toad House, Start on first row, first item
 
 PRG026_A0A6:
-	LDA #$48	 
+	LDA #$38
 	STA InvHilite_X	 	; First item hilited
 
 	LDX #$00	 
@@ -361,12 +361,12 @@ InvItem_Tile_Layout:
 	.byte $FE, $FE, $FE, $FE	; Empty
 	.byte $B0, $B1, $C0, $C1
 	.byte $B2, $B3, $C2, $C3
-	.byte $BC, $BD, $CC, $CD
 	.byte $B4, $B5, $C4, $C5
-	.byte $BE, $BF, $CE, $CF
 	.byte $B6, $B7, $C6, $C7
 	.byte $B8, $B9, $C8, $C9
-	.byte $DC, $DD, $EC, $ED
+	.byte $BA, $BB, $CA, $CB
+	.byte $BC, $BD, $CC, $CD
+	.byte $BE, $BF, $CE, $CF
 	.byte $BA, $BB, $CA, $CB
 	.byte $DE, $DF, $EE, $EF
 	.byte $84, $85, $94, $95
@@ -413,7 +413,7 @@ PRG026_A2E4:
 	BNE PRG026_A2E4	 	; While Y <> end of update data, loop!
 
 	LDA Graphics_BufCnt
-	ADD #12
+	ADD #10
 	STA <Temp_Var13		; Temp_Var13 = Offset to 12 bytes in from where we started the graphics buffer
 	DEX		 
 	STX Graphics_BufCnt	; Update Graphics_BufCnt with where the buffer actually is
@@ -469,7 +469,7 @@ PRG026_A344:
 PRG026_A34D:
 	ADD InvStart_Item	; Offset to the starting item
 	STA <Temp_Var14		; Store this into Temp_Var14 (offset to first pattern in item layout)
-	LDA #$06	 	; Number of items to display minus one
+	LDA #$07	 	; Number of items to display minus one
 
 PRG026_A355:
 	STA <Temp_Var11		; Store number of items to display...
@@ -487,8 +487,6 @@ PRG026_A366:
 	LDY <Temp_Var14	; Starting item/card offset
 
 	LDA Inventory_Items,Y	; Get this item
-	BEQ PRG026_A38B	 	; If it's an empty slot, jump to PRG026_A38B
-
 	; Item/card to process...
 	ASL A		
 	ASL A		
@@ -559,8 +557,8 @@ InvItem_AddSub:		.byte 7, -7	; Press down to go forward 7 items, up to go back 7
 InvItem_IndexOOR:	.byte 28, -7	; Out-of-range index values for wrap-around when pressing down/up
 InvItem_Wrap:		.byte 0, 21	; Wrap-around values for Inventory start
 InvItem_NextPrior:	.byte 24, -24	; Whether left or right was pressed, how to add/sub the highlight X position
-InvItem_HiliteOORX:	.byte 240, 48	; Highlight out-of-range X position to tell when at ends, for right/left
-InvItem_HiliteMinMax:	.byte 72, 216	; Highlight left min and right max for right/left overflows
+InvItem_HiliteOORX:	.byte $F8, $20	; Highlight out-of-range X position to tell when at ends, for right/left
+InvItem_HiliteMinMax:	.byte $38, $E0	; Highlight left min and right max for right/left overflows
 InvItem_RightLeft:	.byte 1, -1	; Whether right or left was pressed, how to inc/dec the highlight index
 InvItem_RightLeftMinMax:.byte 0, 6	; Right/left overflows wrap-around index value
 InvItem_PerPlayerOff:	.byte $00, (Inventory_Items2 - Inventory_Items)	; Offset per player
@@ -642,7 +640,7 @@ Inventory_ForceUpdate_AndFlip:
 	STA InvFlip_Counter	 	; InvFlip_Counter = 3
 	LDA #$00	 
 	STA InvHilite_Item	 	; InvHilite_Item = 0 (first item highlighted on new row)
-	LDA #$48	 
+	LDA #$38	 
 	STA InvHilite_X			; InvHilite_X = $48 (first item highlighted on new row)
 	RTS		 	; Return...
 
@@ -737,14 +735,14 @@ InvItem_Pal:
 	; Per-Item LUT
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
 	.byte $FF, $0F, $30, $16
-	.byte $FF, $0F, $30, $16
+	.byte $FF, $0F, $30, $1A
+	.byte $FF, $0F, $30, $06
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $1A
-	.byte $FF, $0F, $36, $06
 	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $1A
-	.byte $FF, $0F, $30, $1A
-	.byte $FF, $0F, $36, $27
+	.byte $FF, $0F, $30, $27
+	.byte $FF, $0F, $30, $30
 	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $16
@@ -912,12 +910,7 @@ PRG026_A646:
 PRG026_A64B:
 	LDY InvStart_Item	; Y = InvStart_Item
 	BEQ PRG026_A66B	 	; If InvStart_Item = 0, jump to PRG025_A66B
-
-	LDA Player_Current
-	BEQ PRG026_A65A	 	; If Player_Current = 0, jump to PRG026_A65A
-	TYA
-	ADD #(Inventory_Items2 - Inventory_Items)
-	TAY		 	; Y is Offset to Luigi's items
+		 	; Y is Offset to Luigi's items
 
 PRG026_A65A:
 	LDA Inventory_Items,Y	; Get item
@@ -1236,13 +1229,13 @@ InvItem_Hilite_Layout:
 	;        half is horizontally flipped
 	.byte $FF, $FF		; Empty
 	.byte $C1, $C1
-	.byte $C3, $C3
-	.byte $C5, $C5
-	.byte $C7, $C9
-	.byte $EB, $ED
+	.byte $C3, $C5
+	.byte $C7, $C7
+	.byte $C9, $C9
 	.byte $CB, $CB
 	.byte $CD, $CD
-	.byte $CF, $CF
+	.byte $CF, $D1
+	.byte $D3, $D3
 	.byte $D1, $D1
 	.byte $D3, $D3
 	.byte $D5, $D7
@@ -1273,12 +1266,6 @@ PRG026_A876:
 	LDA InvStart_Item
 	ADD InvHilite_Item	; A = InvStart_Item + InvHilite_Item
 	TAY		 	; Y = A
-
-	LDA Player_Current
-	BEQ PRG026_A88E		; If Player_Current = 0 (Mario), jump to PRG026_A88E
-	TYA		 
-	ADD #(Inventory_Items2 - Inventory_Items)
-	TAY		 	; Y += Luigi items offset
 
 PRG026_A88E:
 	LDX Inventory_Items,Y	; X = currently highlighted item
@@ -2464,9 +2451,25 @@ PRG026_B156:
 	.byte $2B, $48, $06, $00, $00, $00, $00, $00, $00, $00 
 
 StatusBar_Fill_Exp:
+	LDA <Counter_1
+	AND #$07
+	BNE Exp_Done
+
 	LDA Exp_Earned
 	BEQ Exp_Done
+
+	LDA Player_Suit
+	BNE DecExp
+
+	LDA Exp_Doubler
+	EOR #$01
+	STA Exp_Doubler
+	BNE DecExp1
+	
+DecExp:
 	DEC Exp_Earned
+
+DecExp1:
 	LDX #$05
 
 IncExpMore:
@@ -2513,7 +2516,7 @@ StatusBar_Ability_Level:
 	LDA Status_Bar_Mode
 	CMP #$00
 	BNE Dont_Draw_Current_Ability
-	LDA Player_Ability
+	LDA Player_Badge
 	BEQ Dont_Draw_Current_Ability
 	SEC
 	SBC #$01
@@ -2542,7 +2545,7 @@ Status_Bar_Draw_Item_Reserve:
 	CMP #$00
 	BNE Item_ReserveRTS
 	LDA PowerUp_Reserve
-	LDX Player_Ability
+	LDX Player_Badge
 	CPX #$07
 	BEQ Draw_ItemReserve
 	LDA #$00
