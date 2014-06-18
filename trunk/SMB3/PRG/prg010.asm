@@ -3811,16 +3811,16 @@ Try_Ability_Change:
 	LDA <Pad_Input
 	AND #PAD_START
 	BEQ Ability_RTS
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP Player_Level
 	BCS Reset_Ability
-	INC Player_Ability
-	LDA Player_Ability
-	STA Player_Ability
+	INC Player_Badge
+	LDA Player_Badge
+	STA Player_Badge
 	RTS
 Reset_Ability:
 	LDA #$01
-	STA Player_Ability
+	STA Player_Badge
 
 Ability_RTS:
 	RTS

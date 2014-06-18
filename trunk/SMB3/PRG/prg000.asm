@@ -418,20 +418,6 @@ PRG000_C454:
 	RTS		 ; Return
 
 
-	; Goes into Exp_Inc, but object index is stored in 'Y'
-	; NOTE: Overwrites 'X' anyway, so be careful!
-Exp_Inc_Lots:
-	LDA Objects_KillTally,X
-	ADD Exp_Earned
-	STA Exp_Earned
-	RTS
-
-Exp_Inc:
-	INC Exp_Earned
-	INC Kill_Tally
-	RTS		 ; Return
-
-
 	; Checks for and handles object touching conveyor belt by carrying object
 ; $C4D6
 Object_HandleConveyorBounceVel:
@@ -1851,8 +1837,7 @@ PRG000_CD80:
 
 ObjectKill_SetShellKillVars:
 	; Set object state to Killed
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It3
 	INC Coins_Earned ; One more coin earned
@@ -1880,7 +1865,6 @@ Dont_Coin_It3:
 	STA ShellKillFlash_X
 	LDA #$0a	 
 	STA ShellKillFlash_Cnt
-	JSR Exp_Inc
 	RTS		 ; Return
 
 ObjectKill_Others:
@@ -1914,7 +1898,6 @@ PRG000_CD17:
 	; Another kicked object on the way... (slam and kill eachother)
 
 	LDA Objects_KillTally,Y
- 	JSR Exp_Inc	 ; Get the total score this OTHER kicked shell object earned
 	JSR ObjectKill_SetShellKillVars	 ; Kill our kicked object and set ShellKill variables
 
 	; Set X Velocity of our kicked object in the direction of the impacted object
@@ -1932,9 +1915,9 @@ PRG000_CD36:
 	JSR ObjectKill_SetShellKillVars	 ; Kill the impacted object and set ShellKill variables
 
 	LDX <SlotIndexBackup		 ; X = object slot index (our kicked object)
-	LDA Objects_KillTally,X	
 	INC Objects_KillTally,X		; Increase our kicked object's kill tally...
-	JSR Exp_Inc_Lots	; Get points by the kill tally!  (Incidentally, Exp_Inc would work too)
+	LDA Objects_KillTally,X
+	STA Exp_Earned
 
 PRG000_CD46:
 	RTS
@@ -2173,9 +2156,7 @@ PRG000_CE94:
 	; 1 EXP
 	INC Exp_Earned
 
-	; Object state is Killed
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It4
 	INC Coins_Earned ; One more coin earned
@@ -2436,8 +2417,8 @@ PRG000_CF49:
 	STA Sound_QPlayer
 
 	; Object which was held is dead!
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	INC Exp_Earned
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It5
 	INC Coins_Earned ; One more coin earned
@@ -2466,7 +2447,7 @@ Dont_Coin_It5:
 	STA Objects_YVel,Y
 
 	; Get 100 pts for the hit!
-	JSR Exp_Inc
+	INC Exp_Earned
 
 	; Object will not collide again for 16 ticks (dampener I guess)
 	LDA #16
@@ -2876,9 +2857,7 @@ PRG000_D120:
 	; 1 EXP for enemy defeated
 	INC Exp_Earned
 
-	; Set object state to Killed
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It6
 	INC Coins_Earned ; One more coin earned
@@ -2994,8 +2973,8 @@ Object_HandleBumpUnderneath1:
 
 	; Object killed, get 100 pts
 
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	INC Exp_Earned
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It7
 	INC Coins_Earned ; One more coin earned
@@ -3011,7 +2990,8 @@ Dont_Coin_It7:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X 
 
-	JMP Exp_Inc ; Jump to Exp_Inc and don't come back! 
+	INC Exp_Earned ; Jump to Exp_Inc and don't come back! 
+	RTS
 
 PRG000_D19E:
 	LDA ObjGroupRel_Idx 
@@ -3032,7 +3012,7 @@ PRG000_D19E:
 
 	; Get 100 pts
 
-	JSR Exp_Inc 
+	INC Exp_Earned
 
 PRG000_D1B7:
 	JMP Object_SetShellState	 ; Jump to Object_SetShellState ("dies" into shelled state) 
@@ -3215,8 +3195,8 @@ PRG000_D22E:
 
 	; Player moving upward, not flying...
 
-	LDA Kill_Tally	 
-	BEQ PRG000_D20F	 	; If Player hasn't killed anything yet, jump to PRG000_D20F (Object_HoldKickOrHurtPlayer)
+	;LDA Kill_Tally	 
+	;BEQ PRG000_D20F	 	; If Player hasn't killed anything yet, jump to PRG000_D20F (Object_HoldKickOrHurtPlayer)
 
 PRG000_D253:
 	LDA #$01
@@ -3231,7 +3211,7 @@ PRG000_D253:
 	BNE PRG000_D267	 ; If Player is in water, jump to PRG000_D267
 
 PRG000_D268:
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$08
 	BEQ PRG000_D272
 	LDY ObjGroupRel_Idx	 ; Y = group relative index
@@ -3277,11 +3257,13 @@ PRG000_D295:
 
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
-	INC Exp_Earned
+	LDA Kill_Tally
+	STA Exp_Earned
 	INC Kill_Tally
 	LDA #$01
 	STA Player_InAir
 
+PRG000_D2B3
 	RTS		 ; Return
 
 
@@ -3294,29 +3276,7 @@ PRG000_D29B:
 	BNE PRG000_D2B4	 ; If object state is not shelled, jump to PRG000_D2B4 (typical stomp)
 
 PRG000_D2A2:
-
-	JSR Exp_Inc	 ; Get points for the kick
-	JSR Player_KickObject	 ; Player kicks the enemy!
-
-	LDA Player_Ability
-	CMP #$09
-	BNE Dont_Coin_It1
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
-
-
-Dont_Coin_It1:
-	; Clear Player kick
-	LDA #$00
-	STA Player_Kick
-
-PRG000_D2B3:
+	JSR Player_KickObject	 ; Player kicks the enemy
 	RTS		 ; Return
 
 
@@ -3346,8 +3306,10 @@ PRG000_D2B4:
 	TAY		 ; -> 'Y'
 
 PRG000_D2E4:
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	LDA Kill_Tally
+	STA Exp_Earned
+	INC Kill_Tally
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It2
 	INC Coins_Earned ; One more coin earned
@@ -4680,8 +4642,8 @@ PRG000_D8EB:
 
 	; For all objects where bit 7 is not set in their attributes...
 
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	INC Exp_Earned
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It9
 	INC Coins_Earned ; One more coin earned
@@ -4960,7 +4922,7 @@ PRG000_DA15:
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
 
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$01
 	BNE PRG000_DA4E
 	; Higher level power-up suits...
@@ -5225,7 +5187,7 @@ Enemy_Kill:
 	BNE PRG000_DBB2	 	; If Player is sliding, jump to PRG000_DBB2
 
 	LDA Kill_Tally	 	; Get current kill tally
-	JSR Exp_Inc	; Get appropriate score based on kill tally
+	STA Exp_Earned	; Get appropriate score based on kill tally
 
 PRG000_DBB2:
 	LDA #$06	 ; A = 6 (object state 6, killed)

@@ -1759,10 +1759,16 @@ PRG030_8F31:
 	LDA <Level_ExitToMap
 	BEQ PRG030_8F42	 ; If Level_ExitToMap flag is not set, jump to PRG030_8F42
 
-	LDX Player_Current	 ; X = Player_Current
-
 	; Transfer Player's current power up to the World Map counterpart
 	LDA Effective_Suit
+	BNE PRG030_8F32
+
+	LDA Map_ReturnStatus
+	BEQ PRG030_8F32
+
+	LDA #$01
+
+PRG030_8F32:
 	STA World_Map_Power
 
 	LDA #$00
@@ -4633,7 +4639,7 @@ Reserve_Flash:
 	.byte $00, $00, $00, $01, $02, $03, $00, $00, $00, $00, $00
 
 Try_Item_Reserve_Release:
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$07
 	BNE No_Release
 	LDA PowerUp_Reserve

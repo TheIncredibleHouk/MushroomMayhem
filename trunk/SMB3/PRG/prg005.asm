@@ -1590,8 +1590,8 @@ Rocky_Killed:
 	LDA Objects_Timer,X	  
 	BNE PRG005_AA96	 ; If timer not expired, jump to PRG005_AA96
 
-	JSR Exp_Inc	 ; Get proper score award
-	LDA Player_Ability
+	INC Exp_Earned	 ; Get proper score award
+	LDA Player_Badge
 	CMP #$09
 	BNE Dont_Coin_It10
 	INC Coins_Earned ; One more coin earned
@@ -1670,7 +1670,7 @@ PRG005_AACA:
 	ORA #SND_PLAYERKICK
 	STA Sound_QPlayer
 
-	JSR Exp_Inc
+	INC Exp_Earned
 
 PRG005_AAE8:
 	RTS		 ; Return

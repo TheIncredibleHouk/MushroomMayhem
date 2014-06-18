@@ -319,6 +319,9 @@ PRG008_A17F:
 	BNE PRG008_A1C1	 	; And if that's the case, jump to PRG008_A1C1
 	
 	JSR CheckForLevelEnding
+	LDA CompleteLevelTimer
+	BPL GameIsHalted
+
 	JSR CoinsEarnedBuffer
 	JSR Do_Air_Timer
 	JSR Do_PowerChange
@@ -337,6 +340,8 @@ NotNight:
 
 NoTransition:
 	JSR DoPaletteEffect
+
+GameIsHalted:
 	JSR Player_Refresh
 	INC Level_NoStopCnt	; As long as none of the above is happening, continue the "no stop" counter...
 
@@ -452,10 +457,6 @@ PRG008_A242:
 
 	; Set player power up based on current suit on 
 	LDX World_Map_Power
-	BNE Store_Suit
-	LDX #$01
-
-Store_Suit:
 	INX
 	STX Player_QueueSuit 
 	LDA #$40
@@ -669,7 +670,6 @@ Player_Update:
 	BEQ PRG008_A3FA	 ; If we don't have a suit change queued, jump to PRG008_A3FA
 	BMI PRG008_A3F2
 
-	STA Debug_Snap
 	CMP #$0f
 	BLS PRG008_A3EC	 ; If Player_QueueSuit < $0F (statue enable), jump to PRG008_A3EC
 
@@ -720,6 +720,7 @@ Is_Special:
 PRG008_A3F2:
 	LDX #$00
 	STX Player_QueueSuit	  ; Clear Player_QueueSuit
+	STX Exp_Doubler
 	STX Player_Shell
 	STX Boo_Mode_Timer
 	STX Boo_Mode_KillTimer
@@ -792,7 +793,6 @@ PRG008_A472:
 	JSR Player_DrawAndDoActions29	; Draw Player and perform reactions to various things (coin heaven, pipes, etc lots more)
 	LDA #$04
 	STA Air_Change
-	STA Debug_Snap
 	JSR Player_ControlJmp	 	; Controllable actions
 	LDA Player_InWater
 	BEQ PRG008_A473
@@ -928,7 +928,7 @@ PRG008_A50C:
 	BEQ PRG008_A51A	 ; If Player is not running, jump to PRG008_A51A
 
 	LDY #$08	 ; Otherwise, Y = $8
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #06
 	BNE PRG008_A51A
 	LDY #$02
@@ -2397,7 +2397,7 @@ PRG008_AC73:
 
 Normal_Jump:
 	STA DAIZ_TEMP1
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$05
 	BNE Jump_Normal
 	LDA DAIZ_TEMP1
@@ -4060,6 +4060,7 @@ PRG008_B580:
 	LDA #$00	 
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVel  ; Halt Player vertically
+	LDA #$01
 	STA Kill_Tally	  ; Reset Kill_Tally
 
 PRG008_B581:
@@ -5119,7 +5120,7 @@ PRG008_BDA4:
 	LDA <Temp_Var3
 	CMP #TILE_PROP_SOLID_TOP
 	BCC PRG008_BDAF
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$08
 	BEQ PRG008_BDAE	 ; 
 
@@ -5149,7 +5150,7 @@ PRG008_BDB2:
 	AND #$0F
 	CMP #TILE_PROP_SLICK
 	BNE PRG008_BE2E
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$04
 	BEQ PRG008_BE2E
 	LDA #$02	 
@@ -5164,7 +5165,7 @@ PRG008_BE2F:
 	RTS		 ; Return
 
 TileGround:	 .byte $00, $00, $10, $F0
-TileWaterX:	 .byte $00, $00, $10, $F0
+TileWaterX:	 .byte $00, $00, $20, $E0
 TileWaterY:	 .byte $01, $FE, $00, $00
 TileWall:	 .byte $08, $F8, $00, $00
 TileAirX:	 .byte $00, $00, $30, $D0
@@ -5191,10 +5192,15 @@ ApplyTileMove2:
 	BNE ApplyTileMove3
 	LDA Player_InWater
 	BEQ ApplyTileMove3
+	LDA Effective_Suit
+	CMP #$04
+	BEQ ApplyTileMove2_1
 
 	LDA TileWaterX, Y
-	STA Player_CarryXVel
+	BEQ ApplyTileMove2_0
+	STA Player_XVel
 
+ApplyTileMove2_0:
 	LDA Player_IsHolding
 	BNE ApplyTileMove2_1
 	LDA Player_YVel
@@ -5225,6 +5231,8 @@ ApplyTileMove5:
 	CPX #$01
 	BEQ ApplyTileMove5_1
 	CPX #$00
+	BNE ApplyTileMove6
+	LDA Player_InWater
 	BNE ApplyTileMove6
 
 ApplyTileMove5_1:
@@ -5597,7 +5605,7 @@ Do_PowerChange3:
 	RTS
 
 Do_PUp_Proper:
-	LDA Player_Ability
+	LDA Player_Badge
 	CMP #$03
 	BEQ PUp_RTS
 	LDA <Player_Suit

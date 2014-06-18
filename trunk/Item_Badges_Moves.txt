@@ -1,16 +1,22 @@
 Badges:
 ----------------------------
-Shield
+Damage Shield
 No Mushrooms
-Grave Robber
+Coins From Killing Enemies
 1.5x Air
+Jump Higher
 
 
 Items
 ----------------------------
 Stop Watch
+Slow Motion
 Pow Block
-Star Radar 
+Star Radar
+Star
+Pit Catch
+Health Bar
+Projectile Block
 
 Moves
 ----------------------------
@@ -18,7 +24,7 @@ Direction Projectiles
 Throw Shells Up/Down
 Item Reserve
 Power Up Special Move
-
+1.5 P Meter
 
 Keys
 ----------------------------
