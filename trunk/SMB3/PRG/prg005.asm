@@ -25,8 +25,8 @@
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_InitJumpTable:
 	.word ObjInit_ProjBar	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjInit_Freezie	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.word ObjInit_DoNothing	; Object $92 - OBJ_TWIRLINGPLATCW
+	.word ObjInit_Freezie	; Object $91 - OBJ_FREEZIE
+	.word ObjInit_Swoosh	; Object $92 - OBJ_SWOOSH
 	.word ObjInit_DoNothing	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjInit_Dimmer		; Object $94 - OBJ_DIMMER
 	.word ObjInit_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -67,8 +67,8 @@ ObjectGroup04_InitJumpTable:
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_ProjectileBarCW	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjNorm_Freezie	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.word ObjNorm_ProjectileBarCW	; Object $92 - OBJ_TWIRLINGPLATCW
+	.word ObjNorm_Freezie	; Object $91 - OBJ_FREEZIE
+	.word ObjNorm_Swoosh	; Object $92 - OBJ_SWOOSH
 	.word ObjNorm_ProjectileBarCW	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjNorm_Dimmer		; Object $94 - OBJ_DIMMER
 	.word ObjNorm_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -110,8 +110,8 @@ ObjectGroup04_NormalJumpTable:
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $90 - OBJ_TILTINGPLATFORM
-	.word ObjHit_Freezie	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.word ObjHit_DoNothing	; Object $92 - OBJ_TWIRLINGPLATCW
+	.word ObjHit_Freezie	; Object $91 - OBJ_FREEZIE
+	.word ObjHit_DoNothing	; Object $92 - OBJ_SWOOSH
 	.word ObjHit_DoNothing	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.word ObjHit_DoNothing	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.word ObjHit_DoNothing	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -152,8 +152,8 @@ ObjectGroup04_CollideJumpTable:
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup04_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $92 - OBJ_TWIRLINGPLATCW
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $91 - OBJ_FREEZIE
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $92 - OBJ_SWOOSH
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -193,8 +193,8 @@ ObjectGroup04_Attributes:
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup04_Attributes2:
 	.byte OA2_TDOGRP0	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.byte OA2_TDOGRP0	; Object $92 - OBJ_TWIRLINGPLATCW
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $91 - OBJ_FREEZIE
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $92 - OBJ_SWOOSH
 	.byte OA2_TDOGRP0	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OA2_TDOGRP0	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OA2_TDOGRP0	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -234,8 +234,8 @@ ObjectGroup04_Attributes2:
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup04_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.byte OA3_HALT_NORMALONLY 	; Object $92 - OBJ_TWIRLINGPLATCW
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $91 - OBJ_FREEZIE
+	.byte OA3_HALT_NORMALONLY	; Object $92 - OBJ_SWOOSH
 	.byte OA3_HALT_NORMALONLY 	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -276,8 +276,8 @@ ObjectGroup04_Attributes3:
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup04_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte OPTS_SETPT5 | $33	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.byte OPTS_SETPT6 | $4F	; Object $92 - OBJ_TWIRLINGPLATCW
+	.byte OPTS_SETPT5 | $33	; Object $91 - OBJ_FREEZIE
+	.byte OPTS_SETPT5 | $33	; Object $92 - OBJ_SWOOSH
 	.byte OPTS_SETPT6 | $4F	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte OPTS_NOCHANGE ; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OPTS_SETPT5 | $4C	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -318,8 +318,8 @@ ObjectGroup04_PatTableSel:
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup04_KillAction:
 	.byte KILLACT_STANDARD	; Object $90 - OBJ_TILTINGPLATFORM
-	.byte KILLACT_NORMALSTATE	; Object $91 - OBJ_TWIRLINGPLATCWNS
-	.byte KILLACT_STANDARD	; Object $92 - OBJ_TWIRLINGPLATCW
+	.byte KILLACT_NORMALSTATE	; Object $91 - OBJ_FREEZIE
+	.byte KILLACT_POOFDEATH	; Object $92 - OBJ_SWOOSH
 	.byte KILLACT_STANDARD	; Object $93 - OBJ_TWIRLINGPERIODIC
 	.byte KILLACT_STANDARD	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte KILLACT_STANDARD	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
@@ -393,6 +393,7 @@ ObjP90:
 ObjP91:
 	.byte $AD, $AF, $B1, $AF, $B5, $B7, $AD, $B3
 ObjP92:
+	.byte $A1, $A3, $A5, $A7, $81, $83, $85, $87, $85, $87, $81, $83, $A1, $A3, $A9, $AB
 ObjP93:
 ObjP94:
 ObjP95:
@@ -3975,7 +3976,7 @@ BB8WayAttr:
 
 LevelEvent_8WayBulletBills:	
 	LDA Level_NoStopCnt
-	AND #$3f	 ; Cap 0 - 31
+	AND #$7f	 ; Cap 0 - 31
 	BNE PRG005_BD53	 ; If not zero, jump to PRG005_BD53 (RTS)
 
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
@@ -4542,6 +4543,9 @@ ObjInit_Freezie0:
 ObjInit_Freezie1:
 	LDA #$01
 	STA Objects_Var2, X
+	LDA Objects_SprAttr, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SprAttr, X
 
 ObjInit_Freezie2:
 	RTS
@@ -4705,3 +4709,259 @@ Freezie_DieSpawned:
 	LDA #OBJ_ICEBLOCK
 	STA Level_ObjectID, X
 	RTS
+
+ObjInit_Swoosh:
+	LDA #$60
+	STA Objects_SlowTimer, X
+	RTS
+
+Swoosh_Pull:
+	.byte $10, $F0
+
+Swoosh_Push:
+	.byte $E0, $20
+
+Swoosh_Particles1:
+	.byte $89, $8B, $8D, $8F
+
+Swoosh_Particles2:
+	.byte $8F, $8D, $8B, $89
+
+ObjNorm_Swoosh:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_Swoosh0
+	JMP Object_SetDeadAndNotSpawned
+
+ObjNorm_Swoosh0:
+	
+	JSR Object_DeleteOffScreen
+	LDA <Player_HaltGame
+	BEQ ObjNorm_Swoosh1
+	JMP Object_ShakeAndDraw
+
+ObjNorm_Swoosh1:
+
+	LDA Objects_Property, X
+	AND #$01
+	BEQ ObjNorm_Swoosh2
+	JSR Chase
+	JSR Object_FacePlayer
+	TYA
+	EOR #$01
+	STA Objects_Var4, X
+
+ObjNorm_Swoosh2:
+	LDA Objects_Var1, X
+	JSR DynJump
+
+	.word Swoosh_Idle
+	.word Swoosh_BreathIn
+	.word Swoosh_Hold
+	.word Swoosh_BlowOut
+
+Swoosh_Idle:
+	INC Objects_Var3, X
+	LDA Objects_Var3, X
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+	JSR Object_FacePlayer
+	TYA
+	EOR #$01
+	STA Objects_Var4, X
+
+	LDA Objects_Timer, X
+	BNE Swoosh_Idle0
+	INC Objects_Var1, X
+	LDA #$00
+	STA Objects_Var3, X
+	LDA #$20
+	STA Objects_Timer, X
+
+Swoosh_Idle0:
+	JMP Object_ShakeAndDraw
+
+Swoosh_BreathIn:
+	INC Objects_Var3, X
+	LDA Objects_Var3, X
+	CMP #$40
+	BCS Swoosh_BreathIn_1
+	AND #$20
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA #$02
+	STA Objects_Frame, X
+
+Swoosh_BreathIn_1:
+	LDA #$10
+	JSR Level_ObjCalcYBlockDiffs
+	CMP #$03
+	BCS Swoosh_BreathIn1
+
+Swoosh_BreathIn_2:
+	LDA #$10
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$00
+	BEQ Swoosh_BreathIn1
+	CMP #$03
+	BCS Swoosh_BreathIn1
+	TYA
+	CMP Objects_Var4, X
+	BNE Swoosh_BreathIn1
+
+	LDA Objects_SprVVis, X
+	BNE Swoosh_BreathIn1
+
+	LDA Swoosh_Pull, Y
+	STA Player_CarryXVel
+
+Swoosh_BreathIn1:
+	LDA Objects_Timer, X
+	BNE Swoosh_BreathIn2
+	INC Objects_Var1, X
+	LDA #$00
+	STA Objects_Var3, X
+	LDA #$20
+	STA Objects_Timer, X
+
+Swoosh_BreathIn2:
+	JSR Object_ShakeAndDraw
+	LDA Sprite_RAM + 3, Y
+	SUB #$08
+	STA TempA
+	LDA Objects_FlipBits, X
+	BEQ Swoosh_BreathIn3
+
+	LDA TempA
+	ADD #$18
+	STA TempA
+	BCS Swoosh_BreathIn4
+	SEC
+
+Swoosh_BreathIn3:
+	BCC Swoosh_BreathIn4
+	LDA TempA
+	STA Sprite_RAM + 11, Y
+
+	LDA #SPR_PAL1
+	ORA Objects_FlipBits, X
+	STA Sprite_RAM + 10, Y
+
+	LDA Objects_Var3, X
+	AND #$0C
+	LSR A
+	LSR A
+	TAX
+	LDA Swoosh_Particles1, X
+	STA Sprite_RAM + 9, Y
+	
+	LDA Sprite_RAM, Y
+	STA Sprite_RAM + 8, Y
+
+Swoosh_BreathIn4:
+	RTS
+
+Swoosh_Hold:
+	LDA Objects_Timer, X
+	BNE Swoosh_Hold1
+	LDA #$20
+	STA Objects_Timer, X
+	LDA #SND_LEVELAIRSHIP
+	STA Sound_QLevel2
+	INC Objects_Var1, X
+
+Swoosh_Hold1:
+	JMP Object_ShakeAndDraw
+
+Swoosh_BlowOut:
+	INC Objects_Var3, X
+	LDA Objects_Var3, X
+	CMP #$20
+	BCS Swoosh_BlowOut_1
+	AND #$18
+	LSR A
+	LSR A
+	LSR A
+	ORA #$04
+	STA Objects_Frame, X
+
+Swoosh_BlowOut_1:
+	LDA #$10
+	JSR Level_ObjCalcYBlockDiffs
+	CMP #$03
+	BCS Swoosh_BlowOut1
+
+Swoosh_BlowOut_2:
+	LDA #$10
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$05
+	BCS Swoosh_BlowOut1
+
+	TYA
+	CMP Objects_Var4, X
+	BNE Swoosh_BlowOut1
+
+	LDA Objects_SprVVis, X
+	BNE Swoosh_BlowOut1
+
+	LDA Swoosh_Push, Y
+	STA Player_CarryXVel
+
+Swoosh_BlowOut1:
+	LDA Objects_Timer, X
+	BNE Swoosh_BlowOut2
+	LDA #$00
+	STA Objects_Var3, X
+	STA Objects_Var1, X
+	LDA RandomN
+	AND #$03
+	TAY
+	LDA WooshTimes, Y
+	STA Objects_Timer, X
+
+Swoosh_BlowOut2:
+	JSR Object_ShakeAndDraw
+	LDA Sprite_RAM + 3, Y
+	SUB #$08
+	STA TempA
+	LDA Objects_FlipBits, X
+	BEQ Swoosh_BlowOut3
+
+	LDA TempA
+	ADD #$18
+	STA TempA
+	BCS Swoosh_BlowOut4
+	SEC
+
+Swoosh_BlowOut3:
+	BCC Swoosh_BlowOut4
+	LDA TempA
+	STA Sprite_RAM + 11, Y
+
+	LDA #SPR_PAL1
+	ORA Objects_FlipBits, X
+	STA Sprite_RAM + 10, Y
+
+	LDA Objects_Var3, X
+	AND #$0C
+	LSR A
+	LSR A
+	TAX
+	LDA Swoosh_Particles2, X
+	STA Sprite_RAM + 9, Y
+	
+	LDA Sprite_RAM, Y
+	STA Sprite_RAM + 8, Y
+
+Swoosh_BlowOut4:
+	RTS
+
+WooshTimes:
+	.byte $40, $60, $80, $A0

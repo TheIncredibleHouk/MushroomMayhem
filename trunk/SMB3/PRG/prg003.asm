@@ -25,7 +25,7 @@
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup02_InitJumpTable:
 	.word ObjInit_Ninji	; Object $48 - OBJ_NINJI
-	.word ObjInit_SnowGuy	; Object $49 - OBJ_FLOATINGBGCLOUD
+	.word ObjInit_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.word ObjInit_MagicStar1	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
@@ -55,7 +55,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjInit_WaterCurrent	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjInit_WaterCurrent	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.word ObjInit_LavaLotus		; Object $67 - OBJ_LAVALOTUS
+	.word ObjInit_ShyGuy		; Object $67 - OBJ_SNOWGUY
 	.word ObjInit_Twirling		; Object $68 - OBJ_TWIRLINGBUZZY
 	.word ObjInit_Twirling		; Object $69 - OBJ_TWIRLINGSPINY
 	.word ObjInit_ShyGuy	; Object $6A - OBJ_VEGGIEGUY
@@ -97,7 +97,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjNorm_WaterCurrent	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjNorm_WaterCurrent	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.word ObjNorm_LavaLotus		; Object $67 - OBJ_LAVALOTUS
+	.word ObjNorm_SnowGuy	; Object $67 - OBJ_SNOWGUY
 	.word ObjNorm_TwirlingShell	; Object $68 - OBJ_TWIRLINGBUZZY
 	.word ObjNorm_TwirlingShell	; Object $69 - OBJ_TWIRLINGSPINY
 	.word ObjNorm_VeggieGuy		; Object $6A - OBJ_VEGGIEGUY
@@ -140,7 +140,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.word ObjHit_DoNothing	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.word ObjHit_DoNothing	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.word ObjHit_DoNothing	; Object $67 - OBJ_LAVALOTUS
+	.word ObjHit_DoNothing	; Object $67 - OBJ_SNOWGUY
 	.word OCSPECIAL_KILLCHANGETO | OBJ_BUZZYBEATLE	; Object $68 - OBJ_TWIRLINGBUZZY
 	.word OCSPECIAL_KILLCHANGETO | OBJ_SPINY	; Object $69 - OBJ_TWIRLINGSPINY
 	.word ObjHit_DoNothing	; Object $6A - OBJ_VEGGIEGUY
@@ -182,7 +182,7 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $67 - OBJ_LAVALOTUS
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $67 - OBJ_SNOWGUY
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $6A - OBJ_VEGGIEGUY
@@ -223,7 +223,7 @@ ObjectGroup02_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA2_TDOGRP0	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA2_TDOGRP0	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte OA2_TDOGRP0	; Object $67 - OBJ_LAVALOTUS
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $67 - OBJ_SNOWGUY
 	.byte OA2_TDOGRP1	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA2_TDOGRP1	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6A - OBJ_VEGGIEGUY
@@ -265,7 +265,7 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $67 - OBJ_LAVALOTUS
+	.byte OA3_HALT_NORMALONLY	; Object $67 - OBJ_SNOWGUY
 	.byte OA3_HALT_NORMALONLY 	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OA3_HALT_NORMALONLY 	; Object $6A - OBJ_VEGGIEGUY
@@ -307,7 +307,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT6 | $4F	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OPTS_NOCHANGE	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OPTS_NOCHANGE	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte OPTS_SETPT6 | $1B	; Object $67 - OBJ_LAVALOTUS
+	.byte OPTS_SETPT5 | $0F	; Object $67 - OBJ_SNOWGUY
 	.byte OPTS_SETPT5 | $0B	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte OPTS_SETPT5 | $0B	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte OPTS_SETPT5 | $0F	; Object $6A - OBJ_VEGGIEGUY
@@ -352,7 +352,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte KILLACT_STANDARD	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte KILLACT_STANDARD	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte KILLACT_NORMALANDKILLED	; Object $67 - OBJ_LAVALOTUS
+	.byte KILLACT_JUSTDRAW16X16	; Object $67 - OBJ_SNOWGUY
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte KILLACT_JUSTDRAW16X16	; Object $6A - OBJ_VEGGIEGUY
@@ -429,8 +429,6 @@ ObjP48:
 ObjP56:
 ObjP57:
 	.byte $81, $83, $87, $89
-ObjP67:
-	.byte $C1, $C5, $C3, $C7, $C9, $CD, $CB, $CF, $D1, $D5, $D3, $E7
 
 ObjP52:
 ObjP58:
@@ -453,9 +451,10 @@ ObjP63:
 ObjP64:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF
 
+ObjP67:
 ObjP6A:
 ObjP6B:
-	.byte $81, $83, $85, $87, $85, $87, $B1, $B1, $81, $B5, $85, $B7, $BB, $BB
+	.byte $81, $83, $85, $87, $85, $87, $B1, $B1, $81, $B5, $85, $B7, $BB, $BB, $91, $93
 
 ObjInit_IceBlock:
 	LDA #$ff
@@ -746,6 +745,241 @@ ObjInit_ShyGuy:
 
 ObjInit_ShyGuy1:
 	RTS		 ; Return
+
+ObjNorm_SnowGuy:
+	LDA <Player_HaltGame
+	BNE SnowGuyDraw
+
+	JSR Object_DeleteOffScreen
+	JSR Player_HitEnemy
+	JSR Object_InteractWithWorld
+	JSR Object_HandleBumpUnderneath
+	LDA Objects_DetStat,X 
+	AND #$04
+	BEQ ObjNorm_SnowGuy1
+	LDA Objects_PrevDetStat,X 
+	AND #$04
+	BNE ObjNorm_SnowGuy1
+
+	JSR ObjInit_VeggieGuy
+
+ObjNorm_SnowGuy1:
+	LDA Objects_Var1,X
+	JSR DynJump
+
+	.word SnowGuyMarch
+	.word SnowGuyPull
+	.word SnowGuyLift
+	.word SnowGuyWait
+	.word SnowGuyCarry
+
+SnowGuyMarch:
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	LDA Objects_Var2, X
+	BNE SnowGuyDraw
+
+	LDA <Objects_X,X
+	AND #$0F
+	BEQ SnowGuyFindGrass
+
+SnowGuyDraw:
+	LDA Objects_Frame,X
+	CMP #$03
+	BEQ SnowGuyDrawMirrored
+	CMP #$06
+	BEQ SnowGuyDrawMirrored
+	JSR Object_ShakeAndDraw
+	JSR SnowGuyDrawSnowCarried
+
+SnowGuyDraw1:
+	RTS
+
+SnowGuyDrawMirrored:
+	JSR Object_ShakeAndDrawMirrored
+	JSR SnowGuyDrawSnowCarried
+	RTS
+
+SnowGuyDrawSnowCarried:
+	LDA Objects_Var2, X
+	BEQ SnowGuyDrawSnowCarried1
+	
+	LDY Object_SprRAM, X
+	LDA #$95
+	STA Sprite_RAM + 9, Y
+	LDA #$97
+	STA Sprite_RAM + 13, Y
+	
+	LDA Sprite_RAM + 2
+	AND #SPR_BEHINDBG
+	ORA #SPR_PAL2
+	STA Sprite_RAM + 10, Y
+	STA Sprite_RAM + 14, Y
+	
+	 
+	LDA Sprite_RAM + 3, Y
+	STA Sprite_RAM + 11, Y
+	LDA Sprite_RAM + 7, Y
+	STA Sprite_RAM + 15, Y
+	
+	LDA Sprite_RAM , Y
+	SUB #$10
+	BCC SnowGuyDrawSnowCarried1
+	STA TempA
+	LDA Objects_Frame, X
+	AND #$01
+	ADD TempA
+	STA Sprite_RAM + 8, Y
+	STA Sprite_RAM + 12, Y
+
+SnowGuyDrawSnowCarried1:
+	RTS
+
+SnowGuyFindGrass:
+	LDA Objects_LastProp, X
+	AND #$0F
+	CMP #TILE_PROP_ENEMY
+	BNE SnowGuyFindGrass1 
+	INC Objects_Var1, X
+	LDA #$20
+	STA Objects_Timer, X
+	LDA #$00
+	STA Objects_XVel, X
+	LDA #$06
+	STA Objects_Frame, X
+
+SnowGuyFindGrass1:
+	JMP SnowGuyDraw
+
+SnowGuyPull:
+	LDA #$03
+	STA Objects_Frame, X
+	LDA Objects_Timer, X
+	BNE SnowGuyPull1
+	
+	LDA #$18
+	STA Objects_Timer, X
+	INC Objects_Var1, X
+	BNE SnowGuyPull2
+
+SnowGuyPull1:
+	LDA Objects_Timer, X
+	AND #$08
+	BNE SnowGuyPull2
+
+	LDA #$06
+	STA Objects_Frame, X
+
+SnowGuyPull2:
+	JMP SnowGuyDraw
+
+SnowGuyLift:
+	LDA #$07
+	STA Objects_Frame, X
+	LDA Objects_Timer, X
+	BNE SnowGuyLift1
+
+	LDA #$18
+	STA Objects_Timer, X
+
+	LDA #$E0
+	STA Objects_YVel, X
+	INC Objects_Var2, X
+	INC Objects_Var1, X
+	LDA #$03
+	STA Objects_Frame, X
+
+SnowGuyLift1:
+	JMP SnowGuyDraw
+
+SnowGuyWait:
+	LDA Objects_DetStat, X
+	AND #HIT_DET_GRND
+	BEQ SnowGuyWait1
+	INC Objects_Var1, X
+
+SnowGuyWait1:
+	JMP SnowGuyDraw
+
+SnowGuyCarry:
+	LDA #$10
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$04
+	BCS SnowGuyCarrySnow2
+	JSR Level_ObjCalcYBlockDiffs
+	CMP #$02
+	BCS SnowGuyCarrySnow2
+	JSR FindEmptyEnemySlot
+	CPX #$FF
+	BEQ SnowGuyCarrySnow2
+
+FoundEmptyForSnow:
+
+	LDA #OBJ_SNOWBALL
+	STA Level_ObjectID,X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State,X
+
+	LDY <SlotIndexBackup
+	LDA Objects_X,Y
+	STA <Objects_X,X
+
+	; Set X Hi
+	LDA Objects_XHi,Y
+	STA <Objects_XHi,X
+
+	; Set Y/Hi
+	LDA Objects_Y,Y
+	SUB #16
+	STA <Objects_Y,X
+	LDA Objects_YHi,Y
+	SBC #$00
+	STA <Objects_YHi,X
+
+
+	LDA #$00
+	STA Objects_Var5, X
+	LDA #SPR_HFLIP
+	STA Objects_FlipBits, X
+	LDA Objects_XVel, Y
+	LDY #$20	 ; Y = $30
+	ROL A
+	BCC ThrowSnow	 ; If Buster's turned around, jump to PRG002_A5F2
+	LDY #-$20	 ; Otherwise, Y = -$30
+	LDA #$00
+	STA Objects_FlipBits, X
+
+ThrowSnow:
+	STY <Objects_XVel,X
+
+	LDA #SPR_PAL2
+	STA Objects_SprAttr, X
+
+	; Set Y velocity
+	LDA #-$20
+	STA <Objects_YVel,X
+	LDX <SlotIndexBackup
+	LDA #$00
+	STA Objects_Var1, X
+	STA Objects_Var2, X
+
+SnowGuyCarrySnow2:
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	ADD #$04
+	STA Objects_Frame, X
+
+SnowGuyCarrySnow3:
+	JMP SnowGuyDraw
 
 ObjNorm_VeggieGuy:
 	LDA <Player_HaltGame
@@ -2397,14 +2631,6 @@ Kill_Star:
 Dont_Kill_Star:
 	RTS		 ; Return
 
-
-ObjNorm_SnowGuy:
-	RTS
-
-
-ObjInit_SnowGuy:
-	RTS
-
 ObjInit_Explosion:
 	RTS
 
@@ -2635,217 +2861,6 @@ PRG003_AFFA:
 	STA Sprite_RAM+$11,Y
 
 	RTS		 ; Return
-
-LavaLotus_RightEdgePatTop:	.byte $C1, $C9, $D1
-LavaLotus_RightEdgePatBottom:	.byte $C3, $CB, $D3
-
-ObjNorm_LavaLotus:
-	JSR Object_CheckIfNormalState
-	BNE PRG003_B05F	 ; If not in normal state, jump to PRG003_B05F
-
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-
-	LDA <Player_HaltGame
-	BNE PRG003_B05F		; If gameplay is halted, jump to PRG003_B05F
-
-	JSR Player_HitEnemy	 ; Player to Lava Lotus collision
-
-	LDA Objects_SprHVis,X
-	AND #%11100000
-	CMP #%11100000
-	BNE PRG003_B030	 ; If the Lava Lotus does not have three horizontally off-screen sprites, jump to PRG003_B030
-
-	; Var5 = $FF
-	LDA #$ff
-	STA <Objects_Var5,X
-
-	; Var4 = $05
-	LDA #$05
-	STA <Objects_Var4,X
-
-PRG003_B030:
-	DEC <Objects_Var5,X	 ; Var5--
-
-	LDA <Objects_Var5,X
-	CMP #$50
-	BLT PRG003_B056	 ; If Var5 < $50, jump to PRG003_B056
-
-	LDY #$00	 ; Y = 0
-
-	AND #%00001100
-	BEQ PRG003_B03F	 ; Periodically jump to PRG003_B03F
- 
-	INY		 ; Y = 1
-
-PRG003_B03F:
-	TYA		 
-	STA Objects_Frame,X	 ; Set frame 0/1
-
-	LDA Level_NoStopCnt
-	AND #$1f
-	BNE PRG003_B053	 ; 1:32 ticks proceed, otherwise, jump to PRG003_B053
-
-	LDA <Objects_Var4,X
-	BEQ PRG003_B053	 ; If Var4 = 0, jump to PRG003_B053
-
-	DEC <Objects_Var4,X	 ; Var4--
-
-	JSR LavaLotus_SpitFire	 ; Spit a fireball
-
-PRG003_B053:
-	JMP PRG003_B05F	; Jump to PRG003_B05F
-
-PRG003_B056:
-
-	; Var4 = 5
-	LDA #$05
-	STA <Objects_Var4,X
-
-	; Frame = 2 (open lotus)
-	LDA #$02
-	STA Objects_Frame,X
-
-PRG003_B05F:
-	; Clear flip bits
-	LDA #$00
-	STA Objects_FlipBits,X
-
-	; Draw most of lotus
-	JSR Object_Draw16x32Sprite
-
-	LDA Objects_SprHVis,X
-	AND #%00100000
-	BNE PRG003_B0B1	 ; If edge sprite of lotus is off-screen, jump to PRG003_B0B1 (RTS)
-
-	; Need to draw one more sprite for lotus...
-
-	LDY Object_SprRAM,X	 ; Y = Sprite_RAM offset
-
-	; Right edge sprite, so +16
-	LDA <Objects_SpriteX,X
-	ADD #16
-	STA Sprite_RAM+$13,Y
-	STA Sprite_RAM+$17,Y
-
-	; Vertical off-screen bits -> Temp_Var1
-	LDA Objects_SprVVis,X
-	STA <Temp_Var1
-
-	LDA <Objects_SpriteY,X
-	LSR <Temp_Var1	
-	BCS PRG003_B08A	 ; If this sprite is vertically off-screen, jump to PRG003_B08A
-
-	STA Sprite_RAM+$10,Y	 ; Store this sprite's Y
-
-PRG003_B08A:
-	LSR <Temp_Var1
-	BCS PRG003_B094	 ; If this sprite is vertically off-screen, jump to PRG003_B08A
-
-	ADD #16
-	STA Sprite_RAM+$14,Y	 ; Store this sprite's Y
-
-PRG003_B094:
-	LDA Sprite_RAM+$02,Y	 ; Get sprite attributes from left edge
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$12,Y	 ; Horizontally flipped compared to left edge
-	STA Sprite_RAM+$16,Y	 ; Horizontally flipped compared to left edge
-
-	LDA Objects_Frame,X
-	TAX
-	LDA LavaLotus_RightEdgePatTop,X	
-	STA Sprite_RAM+$11,Y	 ; Set top pattern
-
-	LDA LavaLotus_RightEdgePatBottom,X
-	STA Sprite_RAM+$15,Y	 ; Set bottom pattern
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-PRG003_B0B1:
-	RTS		 ; Return
-
-LavaLotusFire_XOff:	.byte $03, $0D, $06, $0B, $08
-LavaLotusFire_XVel:	.byte $FB, $05, $FD, $03, $00
-LavaLotusFire_YVel:	.byte $F5, $F5, $F0, $F0, $EE
-
-LavaLotus_SpitFire:
-	JSR Object_AnySprOffscreen
-	BNE PRG003_B0D0	 ; If any part of Lava Lotus is off-screen, jump to PRG003_B0D0 (RTS)
-
-	LDY #$07	 ; Y = 7
-
-	; This loop really could be replaced by 
-	;JSR SpecialObj_FindEmptyAbortY
-
-PRG003_B0C8:
-	LDA SpecialObj_ID,Y
-	BEQ PRG003_B0D1	 ; If this special object slot is free, jump to PRG003_B0D1
-
-	DEY		 ; Y--
-	BPL PRG003_B0C8	; If Y >= 0, loop!
-
-PRG003_B0D0:
-	RTS		 ; Return
-
-PRG003_B0D1:
-
-	; Lava Lotus fireball
-	LDA #SOBJ_LAVALOTUSFIRE
-	STA SpecialObj_ID,Y
-
-	LDA #$c0
-	STA SpecialObj_Var2,Y
-
-	; Fireball at Y + 7
-	LDA <Objects_Y,X
-	ADD #$07
-	STA SpecialObj_YLo,Y
-	LDA <Objects_YHi,X
-	ADC #$00
-	STA SpecialObj_YHi,Y
-
-	; Temp_Var1 = Var4 (which fireball we're on)
-	LDA <Objects_Var4,X
-	STA <Temp_Var1
-
-	; Fireball X
-	LDA <Objects_X,X
-	CLC	
-	LDX <Temp_Var1		 ; X = Temp_Var1 (Var4)
-	ADC LavaLotusFire_XOff,X
-	STA SpecialObj_XLo,Y
-
-	; Fireball Y velocity
-	LDA LavaLotusFire_YVel,X
-	STA SpecialObj_YVel,Y
-
-	; Fireball X velocity
-	LDA LavaLotusFire_XVel,X
-	STA SpecialObj_XVel,Y
-
-	; Fireball data = 1
-	LDA #$01
-	STA SpecialObj_Data,Y
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-	; Store parent's object index into SpecialObj_Var1
-	TXA
-	STA SpecialObj_Var1,Y
-
-	RTS		 ; Return
-
-ObjInit_LavaLotus:
-
-	; Var5 = $FF
-	LDA #$ff
-	STA <Objects_Var5,X
-
-	; Var4 = 5
-	LDA #$05
-	STA <Objects_Var4,X
-
-	; Mark object as in water
-	INC Objects_InWater,X
 
 ObjInit_WaterCurrent:
 	RTS		 ; Return
@@ -3475,7 +3490,7 @@ PRG003_B5B3:
 
 	; Set a little plug-along value to the Player
 	LDA Tornado_PlayerXVelAdj,Y
-	STA Player_XVelAdj
+	STA Player_CarryXVel
 
 PRG003_B5C2:
 	RTS		 ; Return
@@ -3538,7 +3553,7 @@ PRG003_B5EF:
 	JSR Negate	 ; Otherwise, negate value from Tornado_PlayerXVelAdj2
 
 PRG003_B604:
-	STA Player_XVelAdj	 ; -> Player_XVelAdj
+	STA Player_CarryXVel	 ; -> Player_XVelAdj
 
 	LDA <Temp_Var16	
 	CMP #$10

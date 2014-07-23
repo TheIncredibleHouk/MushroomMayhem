@@ -39,7 +39,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.word ObjInit_DoNothing	; Object $0E - OBJ_BOSS_KOOPALING
+	.word ObjInit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
 	.word ObjInit_DoNothing; Object $10 - OBJ_SNOW
 	.word ObjInit_Key	; Object $11 OBJ_KEY
@@ -69,7 +69,7 @@ ObjectGroup00_InitJumpTable:
 ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $00
 	.word ObjNorm_DoNothing	; Object $01
-	.word ObjNorm_DoNothing	; Object $02
+	.word ObjNorm_SnowBall	; Object $02
 	.word ObjNorm_EaterBlock	; Object $03
 	.word ObjNorm_DoNothing	; Object $04
 	.word ObjNorm_SpikeBall	; Object $05
@@ -81,7 +81,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.word ObjNorm_DoNothing	; Object $0E - OBJ_BOSS_KOOPALING
+	.word ObjNorm_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjNorm_Weather	; Object $0F
 	.word ObjNorm_Weather	; Object $10
 	.word ObjNorm_Key	; Object $11
@@ -112,7 +112,7 @@ ObjectGroup00_NormalJumpTable:
 ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $00
 	.word ObjHit_DoNothing	; Object $01
-	.word ObjHit_DoNothing	; Object $02
+	.word ObjHit_SnowBall	; Object $02
 	.word ObjHit_SolidBlock	; Object $03
 	.word ObjHit_DoNothing	; Object $04
 	.word Player_GetHurt	; Object $05
@@ -124,7 +124,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_NinjaShroom	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjHit_StarOrSuit	; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjHit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.word ObjHit_Koopaling	; Object $0E - OBJ_BOSS_KOOPALING
+	.word ObjHit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjHit_DoNothing	; Object $0F
 	.word ObjHit_DoNothing	; Object $10
 	.word ObjHit_DoNothing	; Object $11
@@ -154,7 +154,7 @@ ObjectGroup00_CollideJumpTable:
 ObjectGroup00_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $00
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $01
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $02
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $02
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $03
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $04
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $05
@@ -166,7 +166,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $0E - OBJ_BOSS_KOOPALING
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0E - OBJ_HARDICE
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0F - 
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $10
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $11 OBJ_KEY
@@ -215,7 +215,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA2_TDOGRP1	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA2_TDOGRP1	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte OA2_TDOGRP6	; Object $0E - OBJ_BOSS_KOOPALING
+	.byte OA2_TDOGRP1	; Object $0E - OBJ_HARDICE
 	.byte OA2_TDOGRP1	; Object $0F
 	.byte OA2_TDOGRP0	; Object $10
 	.byte OA2_TDOGRP1	; Object $11
@@ -252,7 +252,7 @@ ObjectGroup00_Attributes2:
 ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $00
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $01
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $02
+	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE	; Object $02
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $03
 	.byte OA3_HALT_JUSTDRAWTALL 	; Object $04
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $05
@@ -264,7 +264,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0E - OBJ_BOSS_KOOPALING
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $0E - OBJ_HARDICE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
 	.byte OA3_HALT_NORMALONLY 	; Object $10
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_DIESHELLED 	; Object $11
@@ -294,7 +294,7 @@ ObjectGroup00_Attributes3:
 ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $00
 	.byte OPTS_SETPT5 | $48	; Object $01
-	.byte OPTS_SETPT5 | $4C	; Object $02
+	.byte OPTS_NOCHANGE	; Object $02
 	.byte OPTS_NOCHANGE	; Object $03
 	.byte OPTS_SETPT5 | $48	; Object $04
 	.byte OPTS_SETPT5 | $0E	; Object $05
@@ -306,7 +306,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte OPTS_NOCHANGE	; Object $0E - OBJ_BOSS_KOOPALING
+	.byte OPTS_SETPT5 | $0F	; Object $0E - OBJ_HARDICE
 	.byte OPTS_NOCHANGE	; Object $0F
 	.byte OPTS_NOCHANGE	; Object $10
 	.byte OPTS_NOCHANGE	; Object $11
@@ -336,7 +336,7 @@ ObjectGroup00_PatTableSel:
 ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $00
 	.byte KILLACT_STANDARD	; Object $01
-	.byte KILLACT_STANDARD	; Object $02
+	.byte KILLACT_NORMALANDKILLED	; Object $02
 	.byte KILLACT_STANDARD	; Object $03
 	.byte KILLACT_STANDARD	; Object $04
 	.byte KILLACT_POOFDEATH	; Object $05
@@ -348,7 +348,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte KILLACT_NORMALANDKILLED	; Object $0E - OBJ_BOSS_KOOPALING
+	.byte KILLACT_NORMALANDKILLED	; Object $0E - OBJ_HARDICE
 	.byte KILLACT_STANDARD	; Object $0F
 	.byte KILLACT_STANDARD	; Object $10
 	.byte KILLACT_STANDARD	; Object $11
@@ -407,10 +407,13 @@ ObjectGroup00_PatternSets:
 ObjP00:
 ObjP03:
 	.byte $77, $77
+
 ObjP07:
 	.byte $67, $67
 
 ObjP0E:
+	.byte $99, $9B
+
 ObjP0F:
 ObjP10:
 ObjP11:
@@ -430,7 +433,7 @@ ObjP20:
 	.byte $D7, $D9, $DB, $DD, $E1, $EB, $E3, $E1, $E3, $EB, $E5, $E1, $E5, $EB, $E7, $E1
 
 ObjP01:	.byte $81, $81
-ObjP02:	.byte $8F, $8F, $99, $9B, $9D, $9F
+ObjP02:	.byte $95, $97, $8D, $8F
 ObjP04:	.byte $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
 ObjP05:	.byte $95, $95, $97, $97
 ObjP06:	
@@ -3443,16 +3446,16 @@ ObjNorm_Weather:
 	LDA <Horz_Scroll
 	STA <Temp_Var8
 
-	INC Objects_Var2, X
-	LDA Objects_Var2, X
-	AND #$01
-	BNE DoNextParticle0
-	LDA <Temp_Var7
-	ADD #$80
-	STA <Temp_Var7
-	LDA <Temp_Var8
-	ADD #$80
-	STA <Temp_Var8
+	;INC Objects_Var2, X
+	;LDA Objects_Var2, X
+	;AND #$01
+	;BNE DoNextParticle0
+	;LDA <Temp_Var7
+	;ADD #$80
+	;STA <Temp_Var7
+	;LDA <Temp_Var8
+	;ADD #$80
+	;STA <Temp_Var8
 
 
 DoNextParticle0:
@@ -4191,7 +4194,7 @@ ObjNorm_SendBackRTS:
 	RTS
 
 TimerStartTimes:
-	.byte 05
+	.byte 05, 100
 
 ObjInit_Timer:
 	LDA Objects_Property, X
@@ -4364,10 +4367,10 @@ ObjHit_Clock2:
 	RTS
 
 BlockEaterYVel:
-	.byte $F0, $00, $10, $00, $00, $E0, $00, $20, $00
+	.byte $F8, $00, $08, $00, $00, $F0, $00, $10, $00
 
 BlockEaterXVel
-	.byte $00, $10, $00, $F0, $00, $00, $20, $00, $E0
+	.byte $00, $08, $00, $F8, $00, $00, $10, $00, $F0
 
 BlockEaterVelOffset:
 	.byte $00, $05
@@ -4581,91 +4584,82 @@ Player_Heights:
 	.byte $06, $11
 
 ObjHit_SolidBlock:
-	LDA Objects_PlayerHitStat,X
-	AND #$01
-	BEQ ObjHit_SolidBlock1
+	STA Debug_Snap
+	LDA <Player_Y
+	ADC #32
+	SUB <Objects_Y, X
+	STA <Temp_Var1
+	CMP #$05
+	BCS ObjHit_SolidBlock1
 
-	LDA <Player_YVel
-	BPL ObjHit_SolidBlock0
-
-	RTS
-
-ObjHit_SolidBlock0:
+	LDA #$00
+	STA <Player_YVel
 	LDA <Objects_Y, X
 	SUB #32
 	STA <Player_Y
-	LDA <Objects_YHi,X
+	LDA <Objects_YHi, X
 	SBC #$00
 	STA <Player_YHi
-	LDA #$01
-	STA Player_OnPlatform
 	LDA #$00
-	STA <Player_InAir
 	STA <Player_YVel
+	STA Player_InAir
 	RTS
 
 ObjHit_SolidBlock1:
 	LDA #$00
 	STA <Temp_Var1
 	LDA <Player_Suit
-	BEQ ObjHit_SolidBlock10
+	BEQ ObjHit_SolidBlock2
 	LDA Player_IsDucking
-	BEQ ObjHit_SolidBlock11
+	BEQ ObjHit_SolidBlock3
 
-ObjHit_SolidBlock10:
-	LDA #12
+ObjHit_SolidBlock2:
+	LDA #10
 	STA <Temp_Var1
 
-ObjHit_SolidBlock11:
+ObjHit_SolidBlock3:
 	LDA <Player_Y
 	ADD <Temp_Var1
-	SUB <Objects_Y, X
-	STA <Temp_Var3
-	LDA <Player_YHi
-	SBC <Objects_YHi, X
-	BNE ObjHit_SolidBlock2
-	LDA <Temp_Var3
-	CMP #$10
-	BCS ObjHit_SolidBlock2
+	STA <Temp_Var2
 	LDA <Objects_Y, X
-	SUB <Temp_Var1
-	ADD #$0A
+	ADD #$10
+	SUB <Temp_Var2
+	CMP #$03
+	BCS ObjHit_SolidBlock4
+
+	LDA <Objects_Y, X
+	ADD #$10
+	ADD <Temp_Var1
 	STA <Player_Y
 	LDA <Player_YHi
 	ADC #$00
 	STA <Player_YHi
-	LDA #$00
+	LDA #$FF
 	STA <Player_YVel
 	RTS
-	
-ObjHit_SolidBlock2:
-	LDA Objects_PlayerHitStat,X
-	AND #$02
-	BEQ ObjHit_SolidBlock3
+
+ObjHit_SolidBlock4:
+	LDA <Objects_X, X
+	ADD #$08
+	STA <Temp_Var1
+	SUB <Player_X
+	BMI ObjHit_SolidBlock5
 
 	LDA <Objects_X, X
-	SUB #$0F
+	SUB #$0D
 	STA <Player_X
 	LDA <Objects_XHi,X
 	SBC #$00
 	STA <Player_XHi
-	LDA #$00
-	STA <Player_XVel
-
-ObjHit_SolidBlock32:
-	LDA #$00
-	STA Objects_XVel
 	RTS
 
-ObjHit_SolidBlock3:
+ObjHit_SolidBlock5:
 	LDA <Objects_X, X
-	ADD #15
+	ADD #$08
 	STA <Player_X
-	LDA <Player_XHi
+	LDA <Objects_XHi,X
 	ADC #$00
 	STA <Player_XHi
-	LDA #$00
-	STA <Player_XVel
 	RTS
 
 ObjNorm_StarPiece:
@@ -4701,4 +4695,115 @@ DrawStarPieceAnim:
 	LDA KPFlips2, X
 	ORA Sprite_RAM + 6, Y
 	STA Sprite_RAM + 6, Y
+	RTS
+
+ObjInit_HardIce:
+	LDA #$00
+	STA Objects_XVel, X
+	STA Objects_FlipBits, X
+	LDA Objects_X, X
+	ADD #$08
+	AND #$F0
+	STA Objects_X, X
+	LDA #$20
+	STA Objects_Timer, X
+	RTS
+
+ObjNorm_HardIce:
+	LDA <Player_HaltGame
+	BNE ObjNorm_HardIce2
+
+ObjNorm_HardIce_0:
+	JSR Object_InteractWithWorld
+	JSR Object_DeleteOffScreen
+	JSR Object_HitTestRespond
+
+	LDA Objects_DetStat, X
+	AND #HIT_DET_GRND
+	BEQ ObjNorm_HardIce2
+
+	JSR ObjectKill_Others
+	LDA Objects_Var1, X
+	BNE ObjNorm_HardIce1
+
+	INC Objects_Var1, X
+	LDA Object_TileProp
+	CMP #TILE_PROP_ENEMY
+	BEQ ObjNorm_HardIce1_0
+
+ObjNorm_HardIce1_1:
+	LDA #OBJ_ICEBLOCK
+	STA Level_ObjectID, X
+	RTS
+
+ObjNorm_HardIce1_0:
+	LDA #$F0
+	STA Objects_YVel, X
+	BNE ObjNorm_HardIce2
+
+ObjNorm_HardIce1:
+	LDA Level_ChgTileEvent
+	BNE ObjNorm_HardIce2
+
+	LDA Object_LevelTile
+	EOR #$01
+	STA Level_ChgTileEvent
+	
+	JSR SetObjectTileCoordAlignObj
+	JMP Object_SetDeadEmpty
+
+ObjNorm_HardIce2:
+	JMP Object_ShakeAndDraw 
+	
+
+ObjHit_HardIce:
+	LDA Objects_Var1, X
+	BNE ObjHit_HardIce1
+	LDA #OBJ_ICEBLOCK
+	STA Level_ObjectID, X
+
+ObjHit_HardIce1:
+	RTS
+
+ObjNorm_SnowBall:
+	LDA <Player_HaltGame
+	BNE ObjNorm_SnowBall2
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ ObjNorm_SnowBall1
+	JSR Object_InteractWithWorld
+	JSR Object_DeleteOffScreen
+	JSR Object_HitTestRespond
+
+	LDA Object_TileWallProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC ObjNorm_SnowBall2
+
+ObjNorm_SnowBall1:
+	LDA #OBJ_ICEBLOCK
+	STA Level_ObjectID, X
+
+ObjNorm_SnowBall2:
+	INC Objects_Var1, X
+	LDA Objects_Var1, X
+	AND #$04
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+	JMP Object_ShakeAndDraw 
+
+SnowThrowPlayerX:
+	.byte $20, $E0
+
+ObjHit_SnowBall:
+	JSR SetPlayerFrozen
+	JSR Level_ObjCalcXDiffs
+	LDA SnowThrowPlayerX, Y
+	STA <Player_XVel
+	LDA #$A0
+	STA <Player_YVel
+	STA <Player_InAir
+	LDA #OBJ_ICEBLOCK
+	STA Level_ObjectID, X
 	RTS

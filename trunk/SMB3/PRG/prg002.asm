@@ -2060,16 +2060,32 @@ ObjInit_WoodenFallingPlat:
 	INC <Objects_Var4,X	 ; Var4 = 1
 
 ObjInit_FallingPlatform:
-ObjInit_PathFollowPlat:
+ObjInit_PathFollowPlat: 
 	LDA #$20
 	STA Objects_Var2, X
+	LDA Objects_Y, X
+	STA Objects_Var4, X
+	LDA Objects_YHi, X
+	STA Objects_Var6, X
+	RTS
+
+ObjResetPlatform:
+	
+	LDA Objects_Var4, X
+	STA Objects_Y, X
+	LDA Objects_Var6, X
+	STA Objects_YHi, X
+	LDA #$00
+	STA Objects_YVel, X
+	STA Objects_Var1, X
 	RTS
 
 ObjNorm_PathFollowPlat:
 	JSR DeleteIfOffAndDrawWide	 ; Delete if off-screen, otherwise draw wide 48x16 sprite
-
+	 
 	LDA <Player_HaltGame
 	BNE ObjNorm_PathFollowPlat2	
+
 	LDA Objects_Var1, X
 	CMP #$03
 	BCC ObjNorm_PathFollowPlat1
@@ -2077,6 +2093,18 @@ ObjNorm_PathFollowPlat:
 	LDA Objects_Var2, X
 	STA Objects_YVel, X
 	JSR Object_ApplyYVel_NoLimit
+
+
+	LDA Objects_Y, X
+	CMP #$B0
+	BCC ObjNorm_PathFollowPlat0
+
+	LDA Objects_YHi, X
+	BEQ ObjNorm_PathFollowPlat0
+
+	JMP ObjResetPlatform
+
+ObjNorm_PathFollowPlat0:
 
 ObjNorm_PathFollowPlat1:
 	LDA <Player_YVel
