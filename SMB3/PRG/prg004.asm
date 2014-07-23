@@ -40,11 +40,11 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjInit_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjInit_DoNothing	; Object $7B - OBJ_BIGREDTROOPA
-	.word ObjInit_DeliveryLakitu	; Object $7C - OBJ_BIGGOOMBA
+	.word ObjInit_DeliveryLakitu	; Object $7C - OBJ_HELPER
 	.word ObjInit_GiantDRYPIRANHA	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjInit_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
-	.word InitPatrol	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word ObjNormParaTroopas	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjInit_BoomerangBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
@@ -82,7 +82,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjNorm_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjNorm_RedTroopa		; Object $7B - OBJ_BIGREDTROOPA
-	.word ObjNorm_DeliveryLakitu	; Object $7C - OBJ_BIGGOOMBA
+	.word ObjNorm_DeliveryLakitu	; Object $7C - OBJ_HELPER
 	.word ObjNorm_BigPiranha	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjNorm_GroundTroop	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
@@ -125,11 +125,11 @@ ObjectGroup03_CollideJumpTable:
 	.word KoopaExpload					; Object $79 - OBJ_BULLETBILLHOMING
 	.word $0000					; Object $7A - OBJ_PURPLETROOPA
 	.word $0000					; Object $7B - OBJ_BIGREDTROOPA
-	.word $0000					; Object $7C - OBJ_BIGGOOMBA
+	.word $0000					; Object $7C - OBJ_HELPER
 	.word $0000					; Object $7D - OBJ_BIGGREENPIRANHA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $7E - OBJ_BIGGREENHOPPER
 	.word $0000					; Object $7F - OBJ_BIGREDPIRANHA
-	.word OCSPECIAL_KILLCHANGETO | OBJ_GREENTROOPA	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word OCSPECIAL_HIGHSCORE			; Object $81 - OBJ_HAMMERBRO
 	.word OCSPECIAL_HIGHSCORE			; Object $82 - OBJ_NINJABRO
 	.word OCSPECIAL_HIGHSCORE			; Object $83 - OBJ_LAKITU
@@ -167,11 +167,11 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $7A - OBJ_PURPLETROOPA
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $7C - OBJ_BIGGOOMBA
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $7C - OBJ_HELPER
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7F - OBJ_BIGREDPIRANHA
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA1_PAL3 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $81 - OBJ_HAMMERBRO
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $82 - OBJ_NINJABRO
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $83 - OBJ_LAKITU
@@ -208,11 +208,11 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $7A - OBJ_PURPLETROOPA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $7C - OBJ_BIGGOOMBA
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $7C - OBJ_HELPER
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7F - OBJ_BIGREDPIRANHA
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.byte OA2_TDOGRP1	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $81 - OBJ_HAMMERBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $82 - OBJ_NINJABRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $83 - OBJ_LAKITU
@@ -250,7 +250,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7A - OBJ_PURPLETROOPA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7B - OBJ_BIGREDTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 				; Object $7C - OBJ_BIGGOOMBA
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 				; Object $7C - OBJ_HELPER
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH | OA3_NOTSTOMPABLE 	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7F - OBJ_BIGREDPIRANHA
@@ -292,7 +292,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $4C	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OPTS_SETPT6 | $4F	; Object $7A - OBJ_PURPLETROOPA
 	.byte OPTS_SETPT5 | $3D	; Object $7B - OBJ_BIGREDTROOPA
-	.byte OPTS_NOCHANGE	; Object $7C - OBJ_BIGGOOMBA
+	.byte OPTS_NOCHANGE	; Object $7C - OBJ_HELPER
 	.byte OPTS_SETPT5 | $3D	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OPTS_SETPT5 | $3D	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OPTS_SETPT5 | $3D	; Object $7F - OBJ_BIGREDPIRANHA
@@ -334,7 +334,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $7A - OBJ_PURPLETROOPA
 	.byte KILLACT_GIANTKILLED	; Object $7B - OBJ_BIGREDTROOPA
-	.byte KILLACT_JUSTDRAW16X16	; Object $7C - OBJ_BIGGOOMBA
+	.byte KILLACT_JUSTDRAW16X16	; Object $7C - OBJ_HELPER
 	.byte KILLACT_POOFDEATH		; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte KILLACT_GIANTKILLED	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte KILLACT_POOFDEATH		; Object $7F - OBJ_BIGREDPIRANHA
@@ -2026,6 +2026,9 @@ ObjInit_Lakitu:
 	LDA <Objects_YHi,X
 	STA Objects_TargetingXVal,X
 
+	LDA #OBJ_LAKITU
+	STA Global_Object
+
 	RTS		 ; Return
 
 
@@ -2173,16 +2176,8 @@ PRG004_AD96:
 	LDA Lakitu_Active
 	BEQ PRG004_ADA5	 ; If Lakitu_Active is not set, jump to PRG004_ADA5
 
-	LDA RandomN
-	AND #$01
-	BNE PRG004_ADAE
-	; Set timer to $1F
-	LDA #$1f
-	STA Objects_Timer,X
-
 PRG004_ADA5:
-	LDY Objects_Timer,X
-	DEY		 ; Y--
+	LDA Objects_Timer,X
 	BNE PRG004_ADAE	 ; If timer > 1, jump to PRG004_ADAE
 
 	JSR Lakitu_TossEnemy	 ; Toss enemy
@@ -2216,6 +2211,11 @@ PRG004_ADC2:
 	LDA Objects_Timer,X
 	BEQ PRG004_ADE1	 ; If timer expired, jump to PRG004_ADE1
 
+	CMP #$1F
+	BCC PRG004_ADC3
+	LDA #$1F
+
+PRG004_ADC3:
 	CMP #16
 	BLT PRG004_ADF1	 ; If timer < 16 ticks, jump to PRG004_ADF1
 
@@ -2285,18 +2285,27 @@ PRG004_AE0B:
 Lakitu_TossEnemyRts:
 	RTS		 ; Return
 
+Laktiu_ResetTimes:
+	.byte $2F, $4F, $3F, $5F
+	
 Lakitu_Enemies:
-	.byte OBJ_SPINY, OBJ_FREEZIE
+	.byte OBJ_SPINY, OBJ_FREEZIE, OBJ_HARDICE
 
 Lakitu_TossEnemy:
-	
+	LDA RandomN
+	AND #$03
+	TAY
+	LDA Laktiu_ResetTimes, Y
+	STA Objects_Timer,X
+
 	JSR Object_GetAttrJustTile
 	LDA Objects_LastProp, X
 	CMP #TILE_PROP_SOLID_TOP
 	BCS Lakitu_TossEnemyRts 
 
-	LDY #$03	 ; Y = 4
+	LDY #$04	 ; Y = 4
 PRG004_AE2C:
+
 	LDA Objects_State,Y
 	BEQ PRG004_AE35	 ; If this object slot is dead/empty, jump to PRG004_AE35
 
@@ -3518,7 +3527,7 @@ PRG004_B5A3:
 
 GiantEnemy_Draw:
 	LDA Level_ObjectID,X
-	CMP #OBJ_BIGGOOMBA
+	CMP #OBJ_HELPER
 	BNE PRG004_B5D6	 ; If this is not a Giant Goomba, jump to PRG004_B5D6
 
 	; Giant Goomba only...
@@ -3680,7 +3689,7 @@ PRG004_B668:
 
 PRG004_B68A:
 	LDA Level_ObjectID,X
-	CMP #OBJ_BIGGOOMBA
+	CMP #OBJ_HELPER
 	BNE PRG004_B694	 ; If this is not a Giant Goomba, jump to PRG004_B694
 
 	JMP PRG004_B719	 ; Jump to PRG004_B719

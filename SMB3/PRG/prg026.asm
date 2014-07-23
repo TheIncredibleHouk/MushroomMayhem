@@ -358,6 +358,7 @@ InvCard_Tile_Layout:
 InvItem_Tile_Layout:
 	; Item tiles layout when closing/unselected
 	; NOTE: See also InvItem_Hilite_Layout
+	; power ups
 	.byte $FE, $FE, $FE, $FE	; Empty
 	.byte $B0, $B1, $C0, $C1
 	.byte $B2, $B3, $C2, $C3
@@ -367,17 +368,24 @@ InvItem_Tile_Layout:
 	.byte $BA, $BB, $CA, $CB
 	.byte $BC, $BD, $CC, $CD
 	.byte $BE, $BF, $CE, $CF
-	.byte $BA, $BB, $CA, $CB
-	.byte $DE, $DF, $EE, $EF
+	;equippible items
+	.byte $68, $69, $78, $79
+	.byte $6A, $6B, $7A, $7B
+	.byte $6C, $6D, $7C, $7D
+	.byte $6E, $6F, $7E, $7F
 	.byte $84, $85, $94, $95
 	.byte $86, $87, $96, $97
 	.byte $88, $89, $98, $99
-	.byte $8A, $8B, $9A, $9B
-	.byte $8E, $8F, $9E, $9F
 	.byte $A4, $A5, $A6, $A7
-	.byte $A8, $A9, $AA, $AB
-	; Shield
-	.byte $00, $01, $10, $33
+	;badges
+	.byte $00, $01, $10, $11
+	.byte $02, $03, $12, $13
+	.byte $04, $05, $14, $15
+	.byte $06, $07, $16, $17
+	.byte $08, $09, $18, $19
+	.byte $0A, $0B, $1A, $1B
+	.byte $0C, $0D, $1C, $1D
+	.byte $0E, $0F, $1E, $1F
 
 
 Inventory_DoFlipVideoUpd:
@@ -553,9 +561,9 @@ InvFlipFrame_DrawMLLivesScore:
 	RTS		 ; Return
 
 ; These tables really define a lot of behavior for the inventory item menu
-InvItem_AddSub:		.byte 7, -7	; Press down to go forward 7 items, up to go back 7 items
-InvItem_IndexOOR:	.byte 28, -7	; Out-of-range index values for wrap-around when pressing down/up
-InvItem_Wrap:		.byte 0, 21	; Wrap-around values for Inventory start
+InvItem_AddSub:		.byte 8, -8	; Press down to go forward 7 items, up to go back 7 items
+InvItem_IndexOOR:	.byte 24, -8	; Out-of-range index values for wrap-around when pressing down/up
+InvItem_Wrap:		.byte 0, 24	; Wrap-around values for Inventory start
 InvItem_NextPrior:	.byte 24, -24	; Whether left or right was pressed, how to add/sub the highlight X position
 InvItem_HiliteOORX:	.byte $F8, $20	; Highlight out-of-range X position to tell when at ends, for right/left
 InvItem_HiliteMinMax:	.byte $38, $E0	; Highlight left min and right max for right/left overflows
@@ -734,6 +742,7 @@ PRG026_A511:
 InvItem_Pal: 
 	; Per-Item LUT
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
+	;inventory power ups
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $06
@@ -742,6 +751,7 @@ InvItem_Pal:
 	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $27
+	;equippables
 	.byte $FF, $0F, $30, $30
 	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $16
@@ -752,8 +762,8 @@ InvItem_Pal:
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $31
 	.byte $FF, $0F, $30, $16
-	; Shield
-	.byte $FF, $0F, $36, $27
+	; Badges
+	
 
 InvItem_SetColor:
 	; Inventory is open ... assign proper color for item that is highlighted
@@ -918,7 +928,7 @@ PRG026_A65A:
 
 	; If Player used first item on row, this backs it up one row
 	LDA InvStart_Item
-	SUB #$07
+	SUB #$08
 	STA InvStart_Item	; InvStart_Item -= 7
 	JMP PRG026_A64B		; Jump to PRG026_A64B
 
@@ -3088,7 +3098,7 @@ LevelLoad_CopyObjectList:
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
 	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $D7, $30, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
-	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D3, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
+	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $FE, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
 
 Initial_Bar_Display2:
 	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $20, $20, $20, $20, $20, $F0, $F0, $F0, $F0, $F0, $F0, $F0

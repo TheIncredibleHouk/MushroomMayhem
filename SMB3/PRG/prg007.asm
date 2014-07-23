@@ -4340,7 +4340,7 @@ PRG007_BB97:
 	.word CFire_RockyWrench	; 03: Creates Rocky Wrench
 	.word CFire_Platform	; 04: 4-way cannon
 	.word CFire_GoombaPipe	; 05: Goomba pipe (left output)
-	.word CFire_GoombaPipe	; 06: Goomba pipe (right output)
+	.word CFire_ShellCannon	; 06: Goomba pipe (right output)
 	.word CFire_Cannonball 	; 07: Fires cannonballs horizontally left
 	.word CFire_Cannonball	; 08: Fires BIG cannonballs horizontally left
 	.word CFire_Cannonball	; 09: Fires cannonballs diagonally, upper left
@@ -4555,11 +4555,11 @@ CFire_GoombaPipe:
 	BNE PRG007_BD7A	 ; If timer not expired, jump to PRG007_BD7A (RTS)
 
 	TXA
-	TAY	; Cannon Fire index -> 'Y' (this isn't really used)
+	TAY
 
 	; Set timer to $70
 	LDA #$70
-	STA CannonFire_Timer,Y	; (only used here, then it goes back to 'X' anyway)
+	STA CannonFire_Timer,X	; (only used here, then it goes back to 'X' anyway)
 
 	INC CannonFire_Var,X	 ; CannonFire_Var++
 
@@ -4607,6 +4607,62 @@ PRG007_BD78:
 	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
 
 PRG007_BD7A:
+	RTS		 ; Return
+
+
+CFire_ShellCannon:
+	LDA CannonFire_Timer,X
+	BNE CFire_ShellCannon1	 ; If timer not expired, jump to PRG007_BD7A (RTS)
+
+	TXA
+	TAY
+	; Set timer to $70
+	LDA #$70
+	STA CannonFire_Timer,X	; (only used here, then it goes back to 'X' anyway)
+
+	INC CannonFire_Var,X	 ; CannonFire_Var++
+
+	LDA CannonFire_Var,X
+	AND #$03
+	BEQ CFire_ShellCannon1	 ; 1:4 ticks proceed, otherwise jump to PRG007_BD7A (RTS)
+
+	JSR PrepareNewObjectOrAbort	 ; Prepare me a Goomba!
+
+	; Set Goomba X
+	LDA CannonFire_X,Y
+	STA <Objects_X,X
+	LDA CannonFire_XHi,Y
+	STA <Objects_XHi,X
+	LDA CannonFire_Y,Y
+	STA <Objects_Y,X
+	LDA CannonFire_YHi,Y
+	STA <Objects_YHi,X
+	; set the motion of the goomba as it "pops" out of the pipe
+	LDA CannonFire_Property, Y
+	TAY
+	LDA Goomb_YVelocity, Y
+	STA <Objects_YVel, X
+	LDA Goomb_XVelocity, Y
+	STA Objects_XVel, X
+
+	; It's a Goomba
+	LDA #OBJ_PURPLETROOPA
+	STA Level_ObjectID,X
+
+	LDA #OBJSTATE_KICKED
+	STA Objects_State, X
+
+	LDA #$60
+	STA Objects_Timer3, X
+
+	; Set Goomba's color
+	LDA #SPR_PAL1
+	STA Objects_SprAttr,X
+
+	LDX <SlotIndexBackup
+	JSR CannonFire_NoiseAndSmoke
+
+CFire_ShellCannon1:
 	RTS		 ; Return
 
 PRG007_BD82:

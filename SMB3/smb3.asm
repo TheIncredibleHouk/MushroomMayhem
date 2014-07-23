@@ -810,7 +810,6 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	; WARNING: The distance between Player/Objects_XVel and Player/Objects_YVel must be same as Player/Objects_X/YVelFrac!
 	Player_XVel:		.ds 1	; Player's X Velocity (negative values to the left) (max value is $38)
 	Objects_XVel:		.ds 8	; $BE-$C5 Other object's X velocities
-
 	Player_CarryXVel:	.ds 1
 	Objects_VarBSS:		.ds 6	; $C6-$CC OBJECT SLOTS 0 - 5 ONLY ... uncleared var??
 	SlotIndexBackup:	.ds 1	; Used as a backup for the slot index (e.g. current object, current score, etc.)
@@ -1277,7 +1276,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Fade_Level:		.ds 1	; 4 to 0, fade in level
 	FadeOut_Cancel:		.ds 1	; If set, the next attempted fade out will be cancelled, which then resets this to zero
 	Player_AllowAirJump:	.ds 1	; Counts down to zero, but while set, you can jump in the air
-	Player_XVelAdj:		.ds 1	; Applies additional value to the X Velocity
+	Player_XVelAdj:		.ds 2	; Applies additional value to the X Velocity
 
 	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Var7 first byte)
 	Objects_Var7:		.ds 8	; $0421-$0428 General object variable 7
@@ -1408,6 +1407,7 @@ SND_LEVELMARCH	= $10 	; Hammer Bros. march around
 ; $20 - Unused
 ; $40 - Unused
 SND_LEVELSKID	= $80 	; Skid
+
 	Sound_QLevel2:		.ds 1
 
 
@@ -1855,7 +1855,8 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	; While the die is rotating, just used as a counter 0 to 3 to time the rolling animation.
 	; After Player would press 'A', this value is immediately set to 0.
 	; In the case of the odd/even game, if the Player "won", it is set to 5 or 6.
-	Bonus_DieCnt:		.ds 1
+	Bonus_DieCnt:		.ds 0
+	EnemyCount:			.ds 1
 
 
 	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
@@ -2701,7 +2702,7 @@ CFIRE_LASER		= $15	; Laser fire
 	; C = Warp Whistle
 	; D = Music Box
 	
-	Inventory_Items:	.ds 24	; $7D80-$7D9B Mario, 4 rows of 7 items 
+	Inventory_Items:	.ds 32	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
 	Player_Coins:		.ds 4	; Mario's coins
@@ -3388,6 +3389,7 @@ KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
 
 ; Object IDs
 
+OBJ_SNOWBALL		= $02
 OBJ_BOUNCEDOWNUP	= $06	; Down/up block bounce effect object
 OBJ_BRICK		= $07	; Hidden object that jumps you to the secret warp whistle in 1-3
 OBJ_WARPHIDE		= $00	;
@@ -3399,7 +3401,8 @@ OBJ_BULLY			= $0A	;
 OBJ_POWERUP_NINJASHROOM		= $0B	; Ninja Mushroom
 OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tanooki, Frog, Hammer)
 OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
-OBJ_BOSS_KOOPALING	= $0E 	; Koopaling (as appropriate to current world)
+OBJ_BOSS_KOOPALING	= $00 ;
+OBJ_HARDICE	= $0E 	; Koopaling (as appropriate to current world)
 OBJ_KEY				= $11	;
 OBJ_REDSPRING		= $12	;
 OBJ_KEYPIECES		= $13	;
@@ -3488,7 +3491,8 @@ OBJ_FLOATMINE	= $63	; Big Bertha with spit-out child
 OBJ_CHEEPCHEEPHOPPER	= $64	; Cheep Cheep water hopper
 OBJ_WATERCURRENTUPWARD	= $65	; upward current
 OBJ_WATERCURRENTDOWNARD = $66 ;
-OBJ_LAVALOTUS		= $67 	; Underwater lava plant
+OBJ_LAVALOTUS			= $00 ;
+OBJ_SNOWGUY		= $67 	; Underwater lava plant
 OBJ_TWIRLINGBUZZY	= $68	; Twirling, upside down buzzy beatle
 OBJ_TWIRLINGSPINY	= $69	; Twirling, upside down spiny
 OBJ_VEGGIEGUY			= $6A
@@ -3515,7 +3519,8 @@ OBJ_BULLETBILLHOMING	= $79	; Homing Bullet Bill
 OBJ_PURPLETROOPA		= $7A	;
 OBJ_BIGGREENTROOPA	= $00	; Big Green Turtle
 OBJ_BIGREDTROOPA	= $7B	; Big Red Turtle
-OBJ_BIGGOOMBA		= $7C	; Big Goomba
+OBJ_HELPER		= $7C	; Big Goomba
+OBJ_BIGGOOMBA = $00 ;
 OBJ_BIGGREENPIRANHA	= $7D	; Big Green Piranha
 OBJ_BIGGREENHOPPER	= $7E	; Big, bouncing turtle
 OBJ_BIGREDPIRANHA	= $7F	; Big Red Pirahana
@@ -3540,6 +3545,7 @@ OBJ_THWOMPDIAGONALDL	= $8F	; Diagonal down-left Thwomp
 OBJ_TILTINGPLATFORM	= $90	; Tilting platform
 OBJ_FREEZIE			= $91
 OBJ_TWIRLINGPLATCWNS	= $91	; Twirling platform, clockwise, non-stop
+OBJ_SWOOSH			= $92
 OBJ_TWIRLINGPLATCW	= $92	; Twirling platform, clockwise
 OBJ_TWIRLINGPERIODIC	= $93	; Twirling platform, periodic
 OBJ_BIGQBLOCK_3UP	= $00 ; 

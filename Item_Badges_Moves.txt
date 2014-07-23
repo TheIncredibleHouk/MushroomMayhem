@@ -2,10 +2,10 @@ Badges:
 ----------------------------
 Damage Shield
 No Mushrooms
-Coins From Killing Enemies
-1.5x Air
 Jump Higher
-
+1.5x Air
+1.5 P Meter
+Coin Reaper
 
 Items
 ----------------------------
@@ -13,10 +13,10 @@ Stop Watch
 Slow Motion
 Pow Block
 Star Radar
-Star
+Secret Radar
 Pit Catch
 Health Bar
-Projectile Block
+Projectile Protection
 
 Moves
 ----------------------------
@@ -24,7 +24,6 @@ Direction Projectiles
 Throw Shells Up/Down
 Item Reserve
 Power Up Special Move
-1.5 P Meter
 
 Keys
 ----------------------------

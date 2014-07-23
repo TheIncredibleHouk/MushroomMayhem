@@ -1310,6 +1310,7 @@ PRG008_A77E:
 	BCC PRG008_A7AC	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
 PRG008_A7AB:
+
 	JSR Player_GetHurt
 
 
@@ -3766,9 +3767,8 @@ TileAttrAndQuad_OffsFlat_Sm:
 
 
 PlayerY_HeightOff:	.byte $12, $05	; Left value is Player_Y offset for small/ducking, right for otherwise
-PRG008_B3AC:	
-	.byte $02, $0E	; Left/Right half, not small
-	.byte $03, $0D	; Left/Right half, small
+Wall_Clip:	
+	.byte $02, $03	; Left/Right half, not small
 
 PRG008_B3B0:	.byte $04, $0D
 
@@ -3914,8 +3914,6 @@ Player_DetectSolids:
 	BNE No_Detection
 	LDA #$00
 	STA Player_HitCeiling ; Clear Player_HitCeiling
-	STA Player_HitLeftWall
-	STA Player_HitRightWall
 	STA Wall_Jump_Enabled
 
 	LDA Level_PipeMove
@@ -4005,7 +4003,7 @@ PRG008_B4F3:
 PRG008_B558:
 	LDA #$01
 	STA Player_HitCeiling	 ; Flag Player as having just hit head off ceiling
-	LDA #$00
+	LDA #$FF
 	STA <Player_YVel ; Update Player_YVel
 	LDA Player_Y
 	AND #$F0
@@ -4019,11 +4017,11 @@ PRG008_B558:
 
 PRG008_B559:
 	AND #$F0
-	ADD #$10
+	ORA #$0F
 	STA <Player_Y
-	LDA <Player_YHi
-	ADC #$00
-	STA <Player_YHi
+	;LDA <Player_YHi
+	;ADC #$00
+	;STA <Player_YHi
 	RTS
 
 
@@ -5238,17 +5236,6 @@ ApplyTileMove5:
 ApplyTileMove5_1:
 	LDA TileAirX, Y
 	BEQ ApplyTileMove5_2
-	BMI ApplyTileMove5_1_2
-
-	LDX Player_HitRightWall
-	BNE ApplyTileMove5_2
-	BEQ ApplyTileMove5_1_1
-
-ApplyTileMove5_1_2:
-	LDX Player_HitLeftWall
-	BNE ApplyTileMove5_2
-
-ApplyTileMove5_1_1:
 	STA <Player_XVel
 
 ApplyTileMove5_2:
@@ -5420,25 +5407,27 @@ PRG008_BFAC:
 Player_ApplyVelocity:
 	; X may specify offset to YVel, or else be zero
 	LDA <Player_XVel,X	; Get velocity
-	CPX #$00	 
-	BNE PRG008_BFBE	 	; If we're not doing the X velocity, jump to PRG008_BFBE
+
+	CPX #$00
+	BNE No_Weather_Vel
 
 	LDY Player_InWater
 	BNE No_Weather_Vel
+
 	; X Velocity only
 	LDY Level_PipeMove
 	BNE No_Weather_Vel
+
 	LDY Player_OnPlatform
-	BNE PRG008_BFBE
+	BNE No_Weather_Vel
+
 	LDY Wind
 	BEQ No_Weather_Vel
+
 	ADD Wind
 
 No_Weather_Vel:
-	ADD Player_XVelAdj	; Add Player_XVelAdj
-
-PRG008_BFBE:
-	ADD Player_CarryXVel, X
+	ADD <Player_CarryXVel, X
 
 PRG008_BFBF:
 	PHA		 ; Save result
@@ -5506,7 +5495,7 @@ Dont_Flip:
 
 No_Odo_Increase:
 	LDA #$00
-	STA Player_CarryXVel, X
+	STA <Player_CarryXVel, X
 	RTS		 ; Return
 
 
@@ -5615,6 +5604,10 @@ PUp_RTS:
 	RTS
 
 Shell_Bounce:
+	LDA Level_Tile_Prop_GndL, X
+	CMP #TILE_ITEM_BRICK
+	BEQ Shell_Bounce0
+
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERBUMP
 	STA Sound_QPlayer
@@ -5630,6 +5623,8 @@ Shell_Bounce:
 	LDA <Player_X
 	AND #$F0
 	STA <Player_X
+
+Shell_Bounce0:
 	RTS
 
 Shell_Bounce1:
@@ -5683,6 +5678,7 @@ NotSmallMario:
 	LDA #$01
 	STA <Player_YHi
 	INC Level_JctCtl
+	INC Level_KeepObjects
 	PLA
 	PLA
 
@@ -5692,7 +5688,11 @@ ClearSprite:
 	LDY Objects_State, X
 	CPY #OBJSTATE_HELD
 	BEQ NextSprite
+	LDY Level_ObjectID, X
+	CPY Global_Object
+	BEQ NextSprite
 	STA Objects_State, X
+
 NextSprite:
 	DEX
 	BPL ClearSprite
@@ -5877,45 +5877,6 @@ Player_EventsRTS:
 
 Player_Refresh:
 	RTS
-	LDA <Pad_Holding
-	AND #(PAD_A | PAD_B)
-	BEQ Player_RefreshRTS
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ Player_RefreshRTS
-	INC Level_JctCtl
-	INC Level_Redraw
-	LDA Player_XHi
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	STA TempA
-	LDA Player_X
-	AND #$0F
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA TempA
-	STA Player_XExit
-	LDA Player_YHi
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	STA TempA
-	LDA Player_Y
-	AND #$0F
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA TempA
-	STA Player_YExit
-
-Player_RefreshRTS:
-	RTS
 
 Debug_Code:
 	LDA <Pad_Holding
@@ -5959,15 +5920,11 @@ OpenTreasure:
 
 Player_WallHandle:
 	CPX #$02
-	BCC PRG008_B53B
+	BCS Player_WallHandle1
+	JMP PRG008_B53B
+
+Player_WallHandle1:
 	LDA Level_Tile_Prop_GndL, X
-	CMP #TILE_ITEM_BRICK
-	BNE PRG008_B4F4_1
-
-	LDX Player_Shell
-	BNE PRG008_B53B
-
-PRG008_B4F4_1:
 	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
 	BNE PRG008_B53B	 ; If not touching a solid tile, jump to PRG008_B53B
@@ -5983,66 +5940,73 @@ PRG008_B53A_2:
 	LDA Player_ForcedSlide
 	BNE PRG008_B53B
 
-	LDY #$01	 ; Y = 1
-	LDX #$00	 ; X = 0
-
 	LDA <Player_X
-	AND #$0f	
-	CMP #$08	
-	BGS PRG008_B511	 ; If Player is on the right side of the tile, jump to PRG008_B511
+	STA TempA
+	ADD #$08
+	AND #$F0
+	STA <Player_X
 
-	; Otherwise...
-	LDY #-1		 ; Y = -1
-	INX		 ; X = 1
+	LDA <Player_XHi
+	STA TempY
+	ADC #$00
+	STA <Player_XHi
 
-PRG008_B511:
-	INC Player_HitLeftWall, X
+	LDX #$00
 	LDA <Player_Suit
-	BNE PRG008_B517	 ; If Player is NOT small, jump to PRG008_B517
+	BEQ PRG008_B530
 
-	INX		 
-	INX		 ; X += 2 (X = 2 or 3)
+	INX
 
-PRG008_B517:
-	LDA PRG008_B3AC,X
-	ADD <Player_X	 ; Add appropriate offset to Player_X
-
-	AND #$0f
-	BEQ PRG008_B53B	 ; If Player is on new tile, jump to PRG008_B53B
-
-	TYA		 ; A = 1 or -1
-	BPL PRG008_B526	 ; If the positive version, jump to PRG008_B526
-
-	DEC <Player_XHi	 ; When negative, decrement the "Hi" component
-
-PRG008_B526:
-	ADD <Player_X	 ; Add +1/-1 to Player_X
-	STA <Player_X	 ; Update Player_X
-
-	BCC PRG008_B52F	 ; If no carry, jump to PRG008_B52F
-	INC <Player_XHi	 ; Otherwise, apply carry
-
-PRG008_B52F:
-	INY		 ; Y++
+PRG008_B530:
+	LDA TempA
+	AND #$0F
+	CMP #$08
+	BCS PRG008_B531
 
 	LDA <Player_XVel
-	BPL PRG008_B536	 ; If Player_XVel >= 0, jump to Player_XVel
+	ADD Player_CarryXVel, X
+	ADD Wind
+	BMI PRG008_B53C
 
-	; This basically amounts to a single decrement of 'Y' if Player_XVel < 0
-	DEY
-	DEY
+	LDA #$00
+	STA <Player_XVel
 
-PRG008_B536:
-	TYA		
-	BNE PRG008_B53B	 ; If Y <> 0, jump to PRG008_B53B
+	LDA <Player_X
+	ADD Wall_Clip, X
+	STA <Player_X
 
-	
-	;#DAHRKDAIZ modified solid wall detect to bounce shell mode
-	; Player hit wall; stop!
+	LDA <Player_XHi
+	ADC #$00
+	STA <Player_XHi
+	RTS
 
-	STA <Player_XVel ; Otherwise, halt Player horizontally
+PRG008_B531:
+	LDA <Player_XVel
+	ADD Player_CarryXVel, X
+	ADD Wind
+	BEQ PRG008_B531_2
+	BPL PRG008_B53C
+
+PRG008_B531_2:
+	LDA #$00
+	STA <Player_XVel
+
+	LDA <Player_X
+	SUB Wall_Clip, X
+	STA <Player_X
+
+	LDA <Player_XHi
+	SBC #$00
+	STA <Player_XHi
 
 PRG008_B53B:
+	RTS
+
+PRG008_B53C:
+	LDA TempA
+	STA <Player_X
+	LDA TempY
+	STA <Player_XHi
 	RTS
 
 HandleIceBreak:
