@@ -186,19 +186,30 @@
     <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
     <sprite x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
   </spritedefinition>
-  <spritedefinition id="24" width="01" height="01" name="Bouncing Podobo" class="2" group="Fire/Spark">
-    <sprite property="0" x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="true" table="0A" />
-    <sprite property="0" x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="true" table="0A" />
-    <sprite property="1" x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
-    <sprite property="1" x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
-    <sprite property="2" x="8" y="0" value="30" palette="3" horizontalflip="true" verticalflip="false" table="0A" />
-    <sprite property="2" x="0" y="0" value="32" palette="3" horizontalflip="true" verticalflip="false" table="0A" />
-    <sprite property="3" x="8" y="0" value="30" palette="3" horizontalflip="true" verticalflip="true" table="0A" />
-    <sprite property="3" x="0" y="0" value="32" palette="3" horizontalflip="true" verticalflip="true" table="0A" />
-    <property>Starts Diagonal Down/Left</property>
-    <property>Starts Diagonal Up/Left</property>
-    <property>Starts Diagonal Up/Right</property>
-    <property>Starts Diagonal Down/Right</property>
+  <spritedefinition id="24" width="03" height="01" name="Platform Moves Left/Right" class="1" group="Platform">
+    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="48" y="0" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="-56" y="0" property="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <sprite x="-72" y="0" property="1" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <sprite x="-88" y="0" property="2" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <sprite x="-104" y="0" property="3" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <sprite x="-120" y="0" property="4" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <sprite x="-136" y="0" property="5" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <sprite x="-152" y="0" property="6" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <sprite x="-168" y="0" property="7" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+    <property>3 Blocks</property>
+    <property>4 Blocks</property>
+    <property>5 Blocks</property>
+    <property>6 Blocks</property>
+    <property>7 Blocks</property>
+    <property>8 Blocks</property>
+    <property>9 Blocks</property>
+    <property>10 Blocks</property>
   </spritedefinition>
   <spritedefinition id="25" width="03" height="01" name="Platform Moves Up/Down" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -326,7 +337,19 @@
     <property>2x Speed Clockwise</property>
     <property>2x Speed Counter Clockwise</property>
   </spritedefinition>
-  <spritedefinition id="2B" width="01" height="01" name="Spark Counter Clockwise" class="1" group="Unused">
+  <spritedefinition id="2B" width="01" height="01" name="Ricochet Podobo" class="2" group="Fire/Spark">
+    <sprite property="0" x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="true" table="0A" />
+    <sprite property="0" x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="true" table="0A" />
+    <sprite property="1" x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite property="1" x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite property="2" x="8" y="0" value="30" palette="3" horizontalflip="true" verticalflip="false" table="0A" />
+    <sprite property="2" x="0" y="0" value="32" palette="3" horizontalflip="true" verticalflip="false" table="0A" />
+    <sprite property="3" x="8" y="0" value="30" palette="3" horizontalflip="true" verticalflip="true" table="0A" />
+    <sprite property="3" x="0" y="0" value="32" palette="3" horizontalflip="true" verticalflip="true" table="0A" />
+    <property>Starts Diagonal Down/Left</property>
+    <property>Starts Diagonal Up/Left</property>
+    <property>Starts Diagonal Up/Right</property>
+    <property>Starts Diagonal Down/Right</property>
   </spritedefinition>
   <spritedefinition id="2C" width="03" height="01" name="Platform Moves Counter Clockwise" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
