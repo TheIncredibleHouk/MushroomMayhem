@@ -24,14 +24,14 @@
 
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_InitJumpTable:
-	.word ObjInit_DiagonalPodobo	; Object $24 - OBJ_BOUNCING_PODOBO
+	.word ObjInit_WoodenPlatHorz	; Object $24 - OBJ_PLATFORMHORZ
 	.word ObjInit_WoodenPlatVert	; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjInit_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjInit_WoodenPlatDiagonal1	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjInit_WoodenPlatDiagonal2	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjInit_DoNothing	; Object $29 - OBJ_SPIKE
 	.word ObjInit_Spark		; Object $2A - OBJ_SPARKRIGHT
-	.word ObjInit_DoNothing		; Object $2B - OBJ_SPARKLEFT
+	.word ObjInit_DiagonalPodobo		; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjInit_WoodenPlatCCW	; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjInit_WoodenPlatCW	; Object $2D - OBJ_BIGBERTHA
 	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
@@ -66,14 +66,14 @@ ObjectGroup01_InitJumpTable:
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_NormalJumpTable:
-	.word ObjNorm_DiagonalPodobo		; Object $24 - OBJ_BOUNCING_PODOBO
+	.word ObjNorm_PlatformPattern		; Object $24 - OBJ_PLATFORMHORZ
 	.word ObjNorm_PlatformPattern	; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjNorm_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjNorm_PlatformPattern	; Object $27 - OBJ_OSCILLATING_H
 	.word ObjNorm_PlatformPattern	; Object $28 - OBJ_OSCILLATING_V
 	.word ObjNorm_Spike		; Object $29 - OBJ_SPIKE
 	.word ObjNorm_Spark		; Object $2A - OBJ_SPARKRIGHT
-	.word ObjNorm_Spark	; Object $2B - OBJ_SPARKLEFT
+	.word ObjNorm_DiagonalPodobo	; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjNorm_PlatformPattern		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjNorm_PlatformPattern		; Object $2D - OBJ_BIGBERTHA
 	.word ObjNorm_Boo	; Object $2E - OBJ_PIRATEBOO
@@ -109,14 +109,14 @@ ObjectGroup01_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_CollideJumpTable:
-	.word Player_GetHurt		; Object $24 - OBJ_BOUNCING_PODOBO
+	.word ObjHit_DoNothing		; Object $24 - OBJ_PLATFORMHORZ
 	.word ObjHit_DoNothing		; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjHit_DoNothing		; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjHit_DoNothing		; Object $27 - OBJ_OSCILLATING_H
 	.word ObjHit_DoNothing		; Object $28 - OBJ_OSCILLATING_V
 	.word ObjHit_DoNothing		; Object $29 - OBJ_SPIKE
 	.word Player_GetHurt		; Object $2A - OBJ_SPARKRIGHT
-	.word Player_GetHurt	; Object $2B - OBJ_SPARKLEFT
+	.word Player_GetHurt	; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjHit_DoNothing		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjHit_DoNothing		; Object $2D - OBJ_BIGBERTHA
 	.word Player_Take_Coins		; Object $2E - OBJ_PIRATEBOO
@@ -151,14 +151,14 @@ ObjectGroup01_CollideJumpTable:
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup01_Attributes:
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16		; Object $24 - OBJ_BOUNCING_PODOBO
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48		; Object $24 - OBJ_PLATFORMHORZ
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48		; Object $25
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $28 - OBJ_OSCILLATING_V
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $29 - OBJ_SPIKE
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2A - OBJ_SPARKRIGHT
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2B - OBJ_SPARKLEFT
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2A - OBJ_SPARKRIGHT
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2D - OBJ_BIGBERTHA
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2E - OBJ_PIRATEBOO
@@ -199,14 +199,14 @@ ObjectGroup01_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup01_Attributes2:
-	.byte OA2_TDOGRP1	; Object $24 - OBJ_BOUNCING_PODOBO
+	.byte OA2_TDOGRP1	; Object $24 - OBJ_PLATFORMHORZ
 	.byte OA2_TDOGRP2	; Object $25
 	.byte OA2_TDOGRP2	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA2_TDOGRP2	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA2_TDOGRP2	; Object $28 - OBJ_OSCILLATING_V
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $29 - OBJ_SPIKE
-	.byte OA2_TDOGRP3	; Object $2A - OBJ_SPARKRIGHT
-	.byte OA2_TDOGRP3	; Object $2B - OBJ_SPARKLEFT
+	.byte OA2_TDOGRP1	; Object $2A - OBJ_SPARKRIGHT
+	.byte OA2_TDOGRP1	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OA2_TDOGRP2	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA2_TDOGRP2	; Object $2D - OBJ_BIGBERTHA
 	.byte OA2_TDOGRP1	; Object $2E - OBJ_PIRATEBOO
@@ -241,14 +241,14 @@ ObjectGroup01_Attributes2:
 
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup01_Attributes3:
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $24 - OBJ_BOUNCING_PODOBO
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $24 - OBJ_PLATFORMHORZ
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $25
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $28 - OBJ_OSCILLATING_V
 	.byte OA3_HALT_JUSTDRAW 	; Object $29 - OBJ_SPIKE
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2A - OBJ_SPARKRIGHT
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_SPARKLEFT
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $2D - OBJ_BIGBERTHA
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
@@ -283,14 +283,14 @@ ObjectGroup01_Attributes3:
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup01_PatTableSel:
-	.byte OPTS_SETPT5 | $0A	; Object $24 - OBJ_BOUNCING_PODOBO
+	.byte OPTS_NOCHANGE	; Object $24 - OBJ_PLATFORMHORZ
 	.byte OPTS_NOCHANGE	; Object $25
 	.byte OPTS_NOCHANGE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OPTS_NOCHANGE	; Object $27 - OBJ_OSCILLATING_H
 	.byte OPTS_NOCHANGE	; Object $28 - OBJ_OSCILLATING_V
 	.byte OPTS_SETPT5 | $0E	; Object $29 - OBJ_SPIKE
 	.byte OPTS_SETPT5 | $0A	; Object $2A - OBJ_SPARKRIGHT
-	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_SPARKLEFT
+	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OPTS_NOCHANGE	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OPTS_NOCHANGE	; Object $2D - OBJ_BIGBERTHA
 	.byte OPTS_SETPT5 | $4E	; Object $2E - OBJ_PIRATEBOO
@@ -325,14 +325,14 @@ ObjectGroup01_PatTableSel:
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup01_KillAction:
-	.byte KILLACT_POOFDEATH	; Object $24 - OBJ_BOUNCING_PODOBO
+	.byte KILLACT_STANDARD	; Object $24 - OBJ_PLATFORMHORZ
 	.byte KILLACT_STANDARD	; Object $25
 	.byte KILLACT_STANDARD	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte KILLACT_STANDARD	; Object $27 - OBJ_OSCILLATING_H
 	.byte KILLACT_STANDARD	; Object $28 - OBJ_OSCILLATING_V
 	.byte KILLACT_STANDARD	; Object $29 - OBJ_SPIKE
 	.byte KILLACT_STANDARD	; Object $2A - OBJ_SPARKRIGHT
-	.byte KILLACT_STANDARD	; Object $2B - OBJ_SPARKLEFT
+	.byte KILLACT_POOFDEATH	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte KILLACT_STANDARD	; Object $2D - OBJ_BIGBERTHA
 	.byte KILLACT_STANDARD	; Object $2E - OBJ_PIRATEBOO
@@ -410,8 +410,6 @@ ObjP32:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $71, $71
 
 ObjP24:
-	.byte $B1, $B3, $B5, $B7, $B9, $BB
-
 ObjP25:
 ObjP26:
 ObjP27:
@@ -443,8 +441,9 @@ SpikeBall_Patterns:
 ObjP29:
 	.byte $B1, $B3, $B1, $B3, $B5, $B7, $B9, $BB, $B1, $BF
 ObjP2A:
-ObjP2B:
 	.byte $BD, $BD, $BF, $BF
+ObjP2B:
+	.byte $B1, $B3, $B5, $B7, $B9, $BB
 ObjP46:
 	.byte $E5, $E5, $E1, $E1, $E1, $E1, $BD, $BF, $E3, $E3
 ObjP3B:

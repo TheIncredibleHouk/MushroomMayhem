@@ -2216,6 +2216,7 @@ SObj_CheckHitSolid:
 	LDX #$08
 
 DoInteract:
+	LDA CurrentTile
 	JSR ProjectileInteractions
 	LDX TempX
 
