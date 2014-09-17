@@ -30,10 +30,10 @@
     <sprite x="72" y="24" value="27" item="0" property="0" />
     <sprite x="76" y="24" value="27" item="0" property="0" />
     <sprite x="71" y="3" value="92" item="0" property="0" />
-    <sprite x="88" y="22" value="36" item="0" property="0" />
-    <sprite x="90" y="19" value="36" item="0" property="3" />
-    <sprite x="88" y="18" value="36" item="0" property="3" />
+    <sprite x="88" y="22" value="43" item="0" property="0" />
+    <sprite x="90" y="19" value="43" item="0" property="3" />
+    <sprite x="88" y="18" value="43" item="0" property="1" />
     <sprite x="87" y="14" value="76" item="0" property="2" />
   </spritedata>
-  <settings showgrid="true" specialtiles="false" specialsprites="false" blockproperties="true" showstart="true" zoom="false" drawmode="Fill" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="true" specialtiles="false" specialsprites="false" blockproperties="true" showstart="true" zoom="false" drawmode="Fill" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
