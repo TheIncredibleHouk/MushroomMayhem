@@ -1209,8 +1209,6 @@ CancelSpinners:
 	DEX
 	BPL CancelSpinners
 
-	LDA #$01
-	STA Tile_Anim_Enabled
 
 	; Scroll_Cols2Upd = 32 (full dirty scroll update sweep)
 	LDA #32
@@ -1592,18 +1590,14 @@ PRG030_8E4F:
 	JSR RhythmPlatforms
 
 Graphics_Anim:
-	LDA <Counter_1
+	LDA <Player_HaltGame
+	BNE PRG030_8E5D
+
+	LDA <Anim_Counter
 	AND #$1C
 	LSR A	
 	LSR A		
-	TAX	        ; 0-3, changing every 8 ticks
-	AND #$03
-	STA DAIZ_TEMP1
-
-	LDY Tile_Anim_Enabled
-	BEQ Skip_Tile_Anim
-
-	TXA
+	PHA
 	ADD AnimOffset
 	TAX 
 	LDA PT2_Anim,X
@@ -1614,9 +1608,12 @@ Graphics_Anim:
 Normal_Anim:
 	
 	STA PatTable_BankSel+1 ; Set pattern for this tick
-
-Skip_Tile_Anim:
-	JSR Do_Spr_Anim
+	PLA
+	AND #$03
+	TAX
+	LDA SPR_Anim, X
+	ADD SprAnimOffset
+	STA PatTable_BankSel+3
 
 PRG030_8E5D:
 	; End of animations...
@@ -1708,8 +1705,6 @@ PRG030_8EE7:
 
 	LDA #$00
 	STA PAGE_C000	 ; Load page 0 @ C000
-
-	LDA #$00
 	STA Level_ScrollDiffH	 ; Level_ScrollDiffH = 0
 	STA Level_ScrollDiffV	 ; Level_ScrollDiffV = 0
 
@@ -2811,6 +2806,8 @@ GraphicsBuf_Prep_And_WaitVSync:	; 96E5
 	LDA Video_Upd_Table+1,Y
 	STA <Video_Upd_AddrH	
 
+	;LDA #%00011001
+	;STA PPU_CTL2
 	LDA #$01	
 	STA <VBlank_TickEn	 ; Enable the VBlank tick
 	LDA #$00	 
@@ -4459,7 +4456,6 @@ Player_GetTileAndSlope_Normal:	; $9E9D
 	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
 
 	; Clear slope array
-
 	LDA <Temp_Var16
 	LSR A
 	LSR A
@@ -4676,38 +4672,8 @@ No_PUp_Dec:
 	LDA #$00
 	STA PowerUp_Reserve
 	STA Objects_XVel + 5
-	JMP Do_Spr_Anim
+	
 No_Release:
-	RTS
-
-Do_Spr_Anim:
-	LDX DAIZ_TEMP1
-	LDY #$0B
-	LDA (Level_ObjectID + 5)
-
-Find_PUp:
-	CMP SPR_PowerUps, Y
-	BEQ PUp_Found
-	DEY
-	BPL Find_PUp
-	INY
-
-PUp_Found:
-	LDA PUp_StarManFlash
-	BEQ Not_Suit
-	BMI Not_Suit
-	TAY
-	DEY
-	LDA Suit_Anim, Y
-	TAY
-
-Not_Suit:
-	TYA
-	ASL A
-	ASL A
-	CLC
-	ADC SPR_Anim, X
-	STA PatTable_BankSel+3
 	RTS
 
 Produce_Coin:
@@ -5879,3 +5845,73 @@ MarkCompletedLevels3:
 	EOR #$01
 	STA [Map_Tile_AddrL],Y
 	RTS
+
+Sprite_RAM_Clear:	; $FD84
+	LDA #$f8	 	; A = $F8 
+	STA Sprite_RAM
+	STA Sprite_RAM + 4
+	STA Sprite_RAM + 8
+	STA Sprite_RAM + 12
+	STA Sprite_RAM + 16
+	STA Sprite_RAM + 20
+	STA Sprite_RAM + 24
+	STA Sprite_RAM + 28
+	STA Sprite_RAM + 32
+	STA Sprite_RAM + 36
+	STA Sprite_RAM + 40
+	STA Sprite_RAM + 44
+	STA Sprite_RAM + 48
+	STA Sprite_RAM + 52
+	STA Sprite_RAM + 56
+	STA Sprite_RAM + 60
+	STA Sprite_RAM + 64
+	STA Sprite_RAM + 68
+	STA Sprite_RAM + 72
+	STA Sprite_RAM + 74
+	STA Sprite_RAM + 76
+	STA Sprite_RAM + 80
+	STA Sprite_RAM + 84
+	STA Sprite_RAM + 88
+	STA Sprite_RAM + 92
+	STA Sprite_RAM + 96
+	STA Sprite_RAM + 100
+	STA Sprite_RAM + 104
+	STA Sprite_RAM + 108
+	STA Sprite_RAM + 112
+	STA Sprite_RAM + 116
+	STA Sprite_RAM + 120
+	STA Sprite_RAM + 124
+	STA Sprite_RAM + 128
+	STA Sprite_RAM + 132
+	STA Sprite_RAM + 136
+	STA Sprite_RAM + 140
+	STA Sprite_RAM + 144
+	STA Sprite_RAM + 148
+	STA Sprite_RAM + 152
+	STA Sprite_RAM + 156
+	STA Sprite_RAM + 160
+	STA Sprite_RAM + 164
+	STA Sprite_RAM + 168
+	STA Sprite_RAM + 172
+	STA Sprite_RAM + 174
+	STA Sprite_RAM + 176
+	STA Sprite_RAM + 180
+	STA Sprite_RAM + 184
+	STA Sprite_RAM + 188
+	STA Sprite_RAM + 192
+	STA Sprite_RAM + 196
+	STA Sprite_RAM + 200
+	STA Sprite_RAM + 204
+	STA Sprite_RAM + 208
+	STA Sprite_RAM + 212
+	STA Sprite_RAM + 216
+	STA Sprite_RAM + 220
+	STA Sprite_RAM + 224
+	STA Sprite_RAM + 228
+	STA Sprite_RAM + 232
+	STA Sprite_RAM + 236
+	STA Sprite_RAM + 240
+	STA Sprite_RAM + 244
+	STA Sprite_RAM + 248
+	STA Sprite_RAM + 252
+	RTS		 ; Return

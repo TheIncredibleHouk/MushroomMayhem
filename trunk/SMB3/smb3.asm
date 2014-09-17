@@ -380,7 +380,7 @@ PAD_RIGHT	= $01
 	Pad_Holding:		.ds 1	; Active player's inputs (i.e. 1P or 2P, whoever's playing) buttons being held in (continuous)
 	Pad_Input:		.ds 1	; Active player's inputs (i.e. 1P or 2P, whoever's playing) buttons newly pressed only (one shot)
 
-	Roulette_RowIdx:	.ds 1	; Roulette Bonus Game only obviously
+	Anim_Counter:	.ds 1
 
 ; Pal_Force_Set12:
 ; This overrides the normal palette routine of selecting by Level_Tileset and 
@@ -1306,6 +1306,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Weather_Pattern:	.ds 6;
 	Weather_Disabled:	.ds 1
 	AnimOffset:			.ds 1;
+	SprAnimOffset:		.ds 1;
 	TrapSet:			.ds 1;
 	DayNightActive:		.ds 1;
 	LastPowerUp:		.ds 1;
@@ -1819,10 +1820,10 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 
 	Object_TileFeetProp:	.ds 1	; Object tile detected at "feet" of object
 	Object_TileWallProp:	.ds 1	; Object tile detected in front of object, i.e. a wall
+	Object_TileProp:	.ds 1
 	Object_TileWater:	.ds 1
 	Object_LevelTile:	.ds 1
-	Object_TileProp:	.ds 1
-				.ds 1	; $0650 unused
+	Object_IgnoreWater:			.ds 1	; $0650 unused
 
 	Objects_SprHVis:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
 	Objects_SpawnIdx:	.ds 8	; $0659-$0660 Holds the index into level data that this object was spawned from
@@ -2348,7 +2349,9 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	AScrlURDiag_OffsetY:	.ds 1	; When diagonal autoscroller is wrapping, this holds an Y offset for Player/Objects to temporarily correct
 	StatusBar_UpdFl:	.ds 1	; Status bar Update Flag; toggles so to update status bar only every other frame
 	UpdSel_Disable:		.ds 1	; When set, disables the Update_Select routine during the NMI, which halts most activity due to no reported V-Blanking
-	Map_Objects_Itm:	.ds 13	; $7956-$795D, "Item given by" map objects
+	Map_Objects_Itm:	.ds 11	; $7956-$795D, "Item given by" map objects
+	ChaseTargetY:			.ds 1
+	ChaseTargetYHi:			.ds 1
 
 	; Item that will be given by treasure box; set by the object OBJ_TREASURESET by its row
 	; Level_TreasureItem:
@@ -3403,6 +3406,7 @@ OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tano
 OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
 OBJ_BOSS_KOOPALING	= $00 ;
 OBJ_HARDICE	= $0E 	; Koopaling (as appropriate to current world)
+OBJ_PIXIE		= $10
 OBJ_KEY				= $11	;
 OBJ_REDSPRING		= $12	;
 OBJ_KEYPIECES		= $13	;
@@ -3416,7 +3420,8 @@ OBJ_GROWINGVINE		= $1F	; Growing vine
 OBJ_POWERUP_ICEFLOWER	= $21	; Free mushroom card ????
 OBJ_POWERUP_PUMPKIN	= $22	; Free flower card ????
 OBJ_POWERUP_FOXLEAF	= $23	; Free star card ????
-OBJ_CLOUDPLATFORM_FAST	= $24	; Fast cloud platform
+OBJ_CLOUDPLATFORM_FAST = $00 ; 
+OBJ_BOUNCING_PODOBO	= $24	; Fast cloud platform
 OBJ_PIPEWAYCONTROLLER	= $25	; "Pipe Way" Controller (World Map pipe-to-pipe location setter)
 OBJ_WOODENPLAT_RIDER	= $26	; Log that rides you to the right after stepping on it
 OBJ_OSCILLATING_H	= $27	; Horizontal oscillating log platform
@@ -3450,7 +3455,7 @@ OBJ_BUSTERBEATLE	= $40	; Buster Beatle
 OBJ_ENDLEVELCARD	= $41	; End-of-level card
 OBJ_CHEEPCHEEPPOOL2POOL	= $42	; Pool-to-pool-to-pool hopping cheep cheep
 OBJ_CHEEPCHEEPPOOL2POOL2 = $43 ;
-OBJ_ANTIGRAVITYCHEEP = $42 ;
+OBJ_FLAMINGCHEEP = $42 ;
 OBJ_BEACHEDCHEEP= $43	; Pool-to-pool hopping cheep cheep
 OBJ_WOODENPLATUNSTABLE	= $44	; Fall-after-touch log platform
 OBJ_HOTFOOT		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)

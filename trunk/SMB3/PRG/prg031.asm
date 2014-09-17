@@ -1624,6 +1624,12 @@ PRG031_F567:
 	INC <Counter_1	 ; Simply increments every frame, used for timing
 	DEC <Counter_2
 
+	LDA <Player_HaltGame
+	BNE PRG031_F568
+
+	INC <Anim_Counter
+
+PRG031_F568:
 	; Not sure what this is for
 	LDA PAGE_CMD
 	STA MMC3_COMMAND
@@ -2778,29 +2784,6 @@ PRG031_FD7F:
 
 	RTS		 ; Return
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Sprite_RAM_Clear
-;
-; This subroutine clears the local copy of OAM by filling
-; the X/Y values in with $F8 and $01, essentially making
-; them all invisible until actually needed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Sprite_RAM_Clear:	; $FD84
-	LDY #$00	 ; Y = 0
-
-PRG031_FD86:
-	LDA #$f8	 	; A = $F8 
-	STA Sprite_RAM,  Y	; Next X value
-	LDA #$01	 	; A = $01
-	STA Sprite_RAM+1,Y	; Next Y value
-	INY		 ; 
-	INY		 ; 
-	INY		 ; 
-	INY		 ; Y += 4
-	BNE PRG031_FD86	 ; While Y does not equal zero (covers all 256 bytes)
-
-	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Scroll_PPU_Reset

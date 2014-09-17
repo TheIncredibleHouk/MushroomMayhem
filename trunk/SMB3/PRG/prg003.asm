@@ -627,14 +627,25 @@ Spintula_StopUpVel:
 	STA <Objects_YVel, X
 	JMP Object_ShakeAndDrawMirrored
 
+CPodobo_YVel:
+	.byte $20, $E0
+
 ObjInit_PodobooCeiling:
 	LDA Objects_Property, X
+	AND #$01
 	BEQ ObjInit_PodobooCeiling1
 
 	LDA #$0A
 	STA PatTable_BankSel+4
 
 ObjInit_PodobooCeiling1:
+	LDA Objects_Property, X
+	AND #$02
+	LSR A
+	TAY
+	LDA CPodobo_YVel, Y
+	STA Objects_YVel, X
+
 	; Store original Y/Hi into Var5/Var4
 	LDA <Objects_Y,X
 	STA <Objects_Var5,X
@@ -654,18 +665,13 @@ ResetPipePodobo:
 	STA <Objects_Y, X
 	LDA <Objects_Var4, X
 	STA <Objects_YHi, X
-	LDA #$20
-	STA <Objects_YVel, X
-	LDA #01
-	STA Objects_Var1,X
 	RTS		 ; Return
 
 ObjNorm_PodobooCeiling:
 	LDA <Player_HaltGame
 	BNE PRG003_A3D5	 ; If gameplay halted, jump to PRG003_A3D5
 
-	LDA Objects_Timer, X
-	;BNE ObjInit_ShyGuy
+	JSR Object_ApplyYVel_NoLimit
 	JSR Player_HitEnemy	 ; Handle Player collision with Podoboo
 
 	; Flip vertically based on velocity
@@ -691,16 +697,16 @@ PRG003_A3AA:
 	LDA <Objects_Y, X
 	AND #$0F
 	BNE PRG003_A3D2
+
 	JSR Object_WorldDetect4
-	LDA Object_TileFeetProp
-	AND #TILE_PROP_SOLID_TOP
+
+	LDA Object_TileProp
+	AND #TILE_PROP_SOLID_ALL
 	BEQ PRG003_A3D2
-	DEC Objects_Var1, X
-	BPL PRG003_A3D2
+
 	JMP ResetPipePodobo
 
 PRG003_A3D2:
-	JSR Object_ApplyYVel
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
 
 PRG003_A3D5:
@@ -2388,7 +2394,7 @@ No_Exploads:
 	RTS
 
 CheckExplodableTile:
-	CMP #TILE_PROP_SOLID_TOP
+	CMP #TILE_PROP_SOLID_ALL
 	BCC NotBreakable
 	AND #$0F
 	CMP #$0D
@@ -2399,8 +2405,14 @@ NotBreakable:
 
 ExplodeBreakBlocks:
 	LDA Object_LevelTile
+	LDA Object_TileProp
+	CMP #$F0
+	BCC ExplodeBreakBlocks1
+
 	AND #$C0
-	ORA #$01
+
+ExplodeBreakBlocks1:
+	EOR #$01
 	STA Level_ChgTileEvent
 
 	LDA ObjTile_DetYLo
@@ -2515,6 +2527,9 @@ CheckEnemies:
 	CPY <SlotIndexBackup
 	BEQ NoCheck
 	LDA Objects_State, Y
+	CMP #OBJSTATE_KILLED
+	BCS NoCheck
+
 	CMP #OBJSTATE_DEADEMPTY
 	BNE Check_Done
 
@@ -5034,7 +5049,7 @@ FireSnake_XVelTowardsPlayer:	.byte $08, -$08
 FireSnake_FlipForTick:	.byte $00, $00, SPR_HFLIP, SPR_HFLIP
 FireSnake_FrameForTick:	.byte $00, $01, $00, $01
 
-FireSnake_JumpYVel:	.byte -$18, -$24
+FireSnake_JumpYVel:	.byte -$1A, -$20, -$26, -$2C, -$32, -$38, -$3E, -$44
 
 FireSnake_RandomTimer3Vals:	.byte $50, $70, $00, $70, $50, $00, $00, $00
 
@@ -5052,22 +5067,35 @@ ObjNorm_FireSnake:
 	LDA FireSnake_FrameForTick,Y
 	STA Objects_Frame,X
 
-	JSR Object_WorldDetect4	 ; Detect against the world
-
-	JSR TailEnemy_DoStandard	 ; Do standard tailed enemy states
-
 	LDA <Player_HaltGame
-	BEQ PRG003_BD95	 ; If gameplay is NOT halted, jump to PRG003_BD95
+	BEQ ObjNorm_FireSnake1	 ; If gameplay is NOT halted, jump to PRG003_BD95
 
-PRG003_BD92:
 	JMP PRG003_BB17	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
 
-PRG003_BD95:
-	LDA Objects_Timer,X
-	BNE PRG003_BDE6_Divert	 ; If timer not expired, jump to PRG003_BDE6
+ObjNorm_FireSnake1:
+	JSR Object_WorldDetect4	 ; Detect against the world
+	JSR FireSnake_ChangeSolids
 
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	LDA <Objects_DetStat, X
+	AND #(HIT_DET_RIGHT | HIT_DET_LEFT)
+	BEQ PRG003_BD91
+
+	JSR Object_AboutFace
+
+PRG003_BD91:
+	LDA <Objects_DetStat, X
+	AND #HIT_DET_CEIL
+	BEQ PRG003_BD91_2
+
+	JSR Object_HitCeiling
+
+PRG003_BD91_2:
+	JSR TailEnemy_DoStandard	 ; Do standard tailed enemy states
+
+PRG003_BD95:
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit
 
 	LDA <Objects_YVel,X
 	BMI PRG003_BDA8	 ; If Fire Snake is moving upward, jump to PRG003_BDA8
@@ -5079,48 +5107,70 @@ PRG003_BDA8:
 	INC <Objects_YVel,X	 ; Fire Snake's light gravity
 
 PRG003_BDAA:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG003_BDE6	 ; If Fire Snake has not touched ground, jump to PRG003_BDE6
+	LDA <Objects_DetStat, X
+	AND #HIT_DET_GRND
+	BEQ PRG003_BDE6
+
+	JSR Object_HitGround	 ; Align Fire Snake to ground
+	LDA #$00
+	STA Objects_XVel, X
+
+	LDA Objects_PrevDetStat, X
+	AND #HIT_DET_GRND
+	BNE PRG003_BDE7
 
 	LDA Level_ChgTileEvent
-	BNE DontTurnToFire
+	BNE PRG003_BDAB
 
 	LDA Objects_LastProp, X
 	CMP #TILE_PROP_SOLID_TOP
-	BCS DontTurnToFire
+	BCS PRG003_BDAB
 
 	AND #$0F
 	CMP #TILE_PROP_ENEMY
-	BNE DontTurnToFire
+	BNE PRG003_BDAB
 
 	LDA Level_ChgTileEvent
-	BNE DontTurnToFire
+	BNE PRG003_BDAB
 
 	JSR SetObjectTileCoord
 	LDA Objects_LastTile, X
 	JSR DrawEnemyTempBlock
-	BEQ DontTurnToFire
+	BEQ PRG003_BDAB
 
 	EOR #$01
 	STA Level_ChgTileEvent 
 
-DontTurnToFire:
-	LDA Objects_Timer3,X
+PRG003_BDAB:
 
-PRG003_BDE6_Divert:
-	BNE PRG003_BDE6	; If timer 3 is not expired, jump to PRG003_BDE6
+	LDA Objects_Property, X
+	BNE PRG003_BDE7
 
-	; timer = $15
 	LDA #$15
-	STA Objects_Timer,X
+	STA Objects_Timer, X
 
-	JSR Object_HitGround	 ; Align Fire Snake to ground
+PRG003_BDE7:
 
-	LDA RandomN,X
-	AND #$01
-	TAY		 ; Y = 0 or 1, random
+	LDA Objects_Timer,X
+	BNE PRG003_BDE6	 ; If timer not expired, jump to PRG003_BDE6
 
+	LDY #$00
+	LDA #$10
+	JSR Level_ObjCalcYBlockDiffs
+	CMP #$80
+	BCS PRG003_BDE6_Divert2
+
+	CMP #$08
+	BCS PRG003_BDE6_Divert1
+
+	TAY
+	JMP PRG003_BDE6_Divert2
+
+
+PRG003_BDE6_Divert1:
+	LDY #$07
+
+PRG003_BDE6_Divert2:
 	; Fire Snake's random hop
 	LDA FireSnake_JumpYVel,Y
 	STA <Objects_YVel,X
@@ -5281,6 +5331,108 @@ PRG003_BE76:
 	STY <Objects_XVel,X	 ; Set X velocity as $08 or -$08
 
 	JMP PRG003_BE37	; Draw tail, Do NOT return to caller, and don't come back!
+
+FireSnake_ChangeSolids:
+	LDA Level_ChgTileEvent
+	BEQ FireSnake_ChangeSolids1
+	RTS
+
+FireSnake_ChangeSolids1:
+	LDA Object_TileFeetProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE FireSnake_ChangeSolids5
+
+	LDA Objects_YVel, X
+	BPL FireSnake_ChangeSolids2
+
+	LDA Objects_Y, X
+	SUB #$08
+	AND #$F0
+	STA Level_BlockChgYLo
+	LDA Objects_YHi, X
+	SBC #$00
+	STA Level_BlockChgYHi
+	JMP FireSnake_ChangeSolids3
+
+FireSnake_ChangeSolids2:
+	LDA Objects_Y, X
+	ADD #$10
+	AND #$F0
+	STA Level_BlockChgYLo
+	LDA Objects_YHi, X
+	ADC #$00
+	STA Level_BlockChgYHi
+
+FireSnake_ChangeSolids3:
+	LDA Objects_X, X
+	ADD #$08
+	AND #$F0
+	STA Level_BlockChgXLo
+	LDA Objects_XHi, X
+	ADC #$00
+	STA Level_BlockChgXHi
+	LDA Object_TileFeetValue
+	EOR #$01
+	STA Level_ChgTileEvent
+	JMP FireSnake_ChangeSolids8
+
+FireSnake_ChangeSolids5:
+	LDA Object_TileWallProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE FireSnake_ChangeSolids10
+	
+	LDA Objects_XVel, X
+	BPL FireSnake_ChangeSolids6
+
+	LDA Objects_X, X
+	SUB #$08
+	AND #$F0
+	STA Level_BlockChgXLo
+	LDA Objects_XHi, X
+	SBC #$00
+	STA Level_BlockChgXHi
+	JMP FireSnake_ChangeSolids7
+
+FireSnake_ChangeSolids6:
+	LDA Objects_X, X
+	ADD #$10
+	AND #$F0
+	STA Level_BlockChgXLo
+	LDA Objects_XHi, X
+	ADC #$00
+	STA Level_BlockChgXHi
+
+FireSnake_ChangeSolids7:
+	LDA Objects_Y, X
+	ADD #$04
+	AND #$F0
+	STA Level_BlockChgYLo
+	LDA Objects_YHi, X
+	ADC #$00
+	STA Level_BlockChgYHi
+	LDA Object_TileWallValue
+	EOR #$01
+	STA Level_ChgTileEvent
+	
+FireSnake_ChangeSolids8:
+	JSR SpecialObj_FindEmpty
+	BMI FireSnake_ChangeSolids9
+
+FireSnake_ChangeSolids9:
+
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+	LDA #$20	 
+	STA SpecialObj_Data, Y
+	LDA Level_BlockChgXLo
+	STA SpecialObj_XLo, Y
+	LDA Level_BlockChgYLo
+	STA SpecialObj_YLo, Y
+	LDA Level_BlockChgYHi
+	STA SpecialObj_YHi, Y
+	
+FireSnake_ChangeSolids10:
+	RTS
 
 ObjInit_RotoDiscDualCW:
 	LDY #$03	 ; Y = 3

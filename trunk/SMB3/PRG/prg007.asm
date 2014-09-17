@@ -752,9 +752,6 @@ FIRE_BALL_COLL:
 InteractionTest:
 	LDA TempA
 	JSR ProjectileInteractions
-	CMP #$00
-	BNE PRG007_A57A
-
 	LDX TempX
 	LDA <Temp_Var1
 	AND #TILE_PROP_SOLID_TOP
@@ -1072,6 +1069,9 @@ PRG007_A6FD:
 
 ICE_BALL_SKIP1:
 
+	LDA Level_ObjectID,Y
+	CMP #OBJ_PIXIE
+	BEQ Kill_Enemy_Anyway
 	LDA #$01	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
 	STA Objects_State,Y
 	LDA #OBJ_ICEBLOCK
@@ -2204,84 +2204,21 @@ PRG007_AE4A:
 SObj_CheckHitSolid:
 
 	; Flag Blooper Kid as out of water until determined otherwise
-	LDA #$01	 
-	STA SObjBlooperKid_OutOfWater,X
 
 	; Temp_Var6 = special object Y + 12
-	LDA SpecialObj_YLo,X
-	ADD #12
-	STA <Temp_Var6
-
-	; Aligned to grid -> Temp_Var3
-	AND #$f0
-	STA <Temp_Var3
-
-	LDA SpecialObj_YHi,X
-	ADC #$00	 ; Apply carry
-	PHA		 ; Save Y Hi
-	STA <Temp_Var4
-
-	; Special object X + 4 -> Temp_Var5
-	LDA SpecialObj_XLo,X
-	ADD #$04
-	SUB <Horz_Scroll	; -
-	ADD <Horz_Scroll	; + ??
-	STA <Temp_Var5
-
-	LDA <Horz_Scroll_Hi
-	ADC #$00	 ; Apply carry
-	STA <Temp_Var7
-	ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
-	TAY		 ; -> 'Y'
-	
-
-	; Low byte of Tile_Mem_Addr -> Temp_Var1
-	LDA Tile_Mem_Addr,Y
-	STA <Temp_Var1
-
-	PLA		 ; Restore Y Hi
-
-	AND #$01	 ; Only use 0 or 1 (only valid Y His in a non-vertical level)
-	ADD Tile_Mem_Addr+1,Y	 ; Add to the high byte of Tile_Mem_Addr
-	STA <Temp_Var2		 ; -> Temp_Var2
-
-	; Form a row/column offset -> 'Y'
-	LDA <Temp_Var5
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var3
-	TAY
-
-	LDA [Temp_Var1],Y ; Get the tile here
-	JSR PSwitch_SubstTileAndAttr
-	STA TempA
-	STA CurrentTile
-	TAY
-	LDA TileProperties, Y
-	STA CurrentTileProperty
-
-	LDA SpecialObj_YHi,X
+	JSR SObj_GetTile
 
 	STX TempX
 	LDA SpecialObj_ID,X
 	LDX #$00
 	CMP #SOBJ_FIREBROFIREBALL
 	BEQ DoInteract
-	CMP #SOBJ_ICEBALL
-	BNE NoPoof
 	LDX #$08
 
 DoInteract:
-	LDA TempA
 	JSR ProjectileInteractions
 	LDX TempX
-	CMP #$00
-	BEQ NoPoof
-	JMP PRG007_AF03
 
-NoPoof:
 	LDA CurrentTileProperty
 	AND #TILE_PROP_SOLID_TOP
 	BNE SObj_CheckHitSolid1
@@ -2326,56 +2263,19 @@ PRG007_AECE:
 
 PRG007_AECF:
 
-	; Tile solid only on top
-
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_FIREBROFIREBALL
-
-	CLC		 ; Clear carry
-
-	BNE PRG007_AECE	 ; If this is not the Fire Bro's fireball, jump to PRG007_AECE
-
 	LDA <Temp_Var6
 	AND #$0f	 ; Find Y relative to the tile
 	CMP #$05
 	BLT PRG007_AEC9	 ; If it's less than 5 pixels from the top, count as hit the floor, and bounce!
 
-	RTS		 ; Return
-
 PRG007_AEE0:
-
-	; Tile not solid on top (literally, but likely assumes not solid on the side/bottom either)
-	LDX TempX
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_BLOOPERKID
-
-	CLC		 ; Clear carry
-
-	BNE PRG007_AEFC	 ; If this is not a Blooper Kid, jump to PRG007_AEFC
-
-	; Blooper kid only...
-	LDA CurrentTileProperty
-	AND #TILE_PROP_ITEM
-	CMP #TILE_PROP_ITEM
-	BEQ PRG007_AEFB
-	AND #TILE_PROP_WATER
-	BEQ PRG007_AEFB	 ; If this tile is not considered underwater, jump to PRG007_AEFB (RTS)
-
-	DEC SObjBlooperKid_OutOfWater,X	 ; Otherwise, SObjBlooperKid_OutOfWater = 0 (Blooper Kid is still in water!)
-
-PRG007_AEFB:
-	RTS		 ; Return
-
-PRG007_AEFC:
-
-	; SpecialObj_Data = 0
-	LDA #$00
-	STA SpecialObj_Data,X
-
 	RTS		 ; Return
 
 
 PRG007_AF02:
+	
+	LDA SpecialObj_Data,X
+	BNE PRG007_AF03
 
 	; impact sound
 	LDA Sound_QPlayer
@@ -2468,15 +2368,6 @@ PRG007_AF57:
 	; otherwise the object will be deleted immediately
 	LDA SpecialObj_ID,X
 
-	CMP #SOBJ_BUBBLE
-	BEQ PRG007_AF97
-
-	CMP #SOBJ_MICROGOOMBA
-	BEQ PRG007_AF97
-
-	CMP #SOBJ_RECOVEREDWAND
-	BEQ PRG007_AF97	
-
 	CMP #SOBJ_BRICKDEBRIS
 	BEQ PRG007_AF97
 
@@ -2505,7 +2396,7 @@ PRG007_AF9E:
 	.word SObj_AcidPool	; 06: Micro goombas
 	.word SOBJ_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word SObj_WandBlast	; 08: Koopaling wand blast
-	.word SObj_KuriboShoe	; 09: Lost Kuribo shoe
+	.word SObj_DoNothing	; 09: Lost Kuribo shoe
 	.word SObj_Wrench	; 0A: Rocky's Wrench
 	.word SObj_Cannonball	; 0B: Cannonball
 	.word SObj_Fireball	; 0C: Fire bro bouncing fireball
@@ -2938,68 +2829,6 @@ PRG007_B291:
 	RTS		 ; Return
 
 SObj_LavaLotusFire:
-
-	; Load Lava Lotus fire patterns
-	LDA #$1b
-	STA PatTable_BankSel+5
-
-	LDA <Player_HaltGame
-	BNE PRG007_B2EE	 ; If gameplay halted, jump to PRG007_B2EE
-
-	LDA SpecialObj_Var2,X
-	BEQ PRG007_B2A8	 ; If Var2 (Lava Lotus fire "life" counter) = 0, jump to PRG007_B2A8
-
-	LDA <Counter_1
-	LSR A	
-	BCC PRG007_B2A8	 ; Every other tick, jump to PRG007_B2A8
-
-	DEC SpecialObj_Var2,X	 ; Var2--
-
-PRG007_B2A8:
-	LDA SpecialObj_Data,X
-	BEQ PRG007_B2E2	 ; If SpecialObj_Data = 0, jump to PRG007_B2E2
-
-	LDY SpecialObj_Var1,X	 ; Y = Var1 (the parent Lava Lotus index)
-
-	LDA Objects_State,Y
-	CMP #OBJSTATE_NORMAL
-	BNE PRG007_B2D8	 ; If Lava Lotus is no longer in normal state, jump to PRG007_B2D8
-
-	LDA Level_ObjectID,Y
-	CMP #OBJ_LAVALOTUS
-	BNE PRG007_B2D8	 ; If this is no longer a Lava Lotus, jump to PRG007_B2D8
-
-	LDA Objects_Var5,Y
-	CMP #$4f
-	BLT PRG007_B2D8	 ; If Lava Lotus' Var5 < $4F, jump to PRG007_B2D8
-
-	LDA Level_NoStopCnt
-
-	INC SpecialObj_XLo,X	 ; X++
-	AND #$02
-	BNE PRG007_B2D5	 ; 2 ticks on, 2 ticks off; jump to PRG007_B2D5
-
-	; X -= 2
-	DEC SpecialObj_XLo,X
-	DEC SpecialObj_XLo,X
-
-PRG007_B2D5:
-	JMP PRG007_B2EE	 ; Jump to PRG007_B2EE
-
-PRG007_B2D8:
-
-	; SpecialObj_Data = 0
-	LDA #$00
-	STA SpecialObj_Data,X
-
-	; Var2 = $C0
-	LDA #$c0
-	STA SpecialObj_Var2,X
-
-PRG007_B2E2:
-	LDA <Counter_1
-	AND #$03
-	BNE PRG007_B2EE	 ; 1:4 ticks proceed, otherwise jump to PRG007_B2EE
 
 	JSR SObj_AddXVelFrac	 ; Apply X Velocity
 	JSR SObj_AddYVelFrac	 ; Apply Y Velocity
@@ -3659,31 +3488,31 @@ PRG007_B773:
 	RTS		 ; Return
 
 PRG007_B779:
-	STY <Temp_Var2	 ; Sprite RAM offset -> 'Y'
-
-	LDA SpecialObj_XVel,X
-
-	LDY SpecialObj_ID,X
-	CPY #SOBJ_HAMMER
-	BEQ PRG007_B787	 ; If this is a hammer, jump to PRG007_B787
-	CPY #SOBJ_ACID
-	BEQ PRG007_B787
-
-	EOR #$80	 ; Invert sign on X velocity
-
-PRG007_B787:
-	LSR A		 ; Shift down the bit
-	AND #SPR_HFLIP	 ; Horizontal flip bit
-	STA <Temp_Var1	 ; -> Temp_Var1
-
-	CPY #SOBJ_ACID
+	STY <Temp_Var2
+	LDA SpecialObj_ID,X
+	CMP #SOBJ_ACID
 	BEQ PRG007_B797
 
-	CPY #SOBJ_HAMMER
+	CMP #SOBJ_HAMMER
 	BNE PRG007_B798	 ; If this is not a hammer, jump to PRG007_B798
 
-	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
+	LDA <Temp_Var2
+	PHA
+	JSR SObj_GetTile
+	PLA
+	STA <Temp_Var2
+	LDA CurrentTileProperty
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BEQ PRG007_B789
+	
+	CMP #TILE_ITEM_BRICK
+	BNE PRG007_B78A
 
+PRG007_B789:
+	JSR EnemyHammerBrickBust
+
+PRG007_B78A:
+	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
 	JSR Hammer_Draw	 ; Draw hammer
 	JMP PRG007_B7C5	 ; Jump to PRG007_B7C5
 
@@ -3825,7 +3654,11 @@ PRG007_B84C:
 
 
 Hammer_Draw:
-	; Set upper and lower sprite attributes
+	; Set upper and lower sprite 
+
+	LDA SpecialObj_XVel, X
+	BMI Hammer_Draw1
+
 	LDA #SPR_PAL1
 	STA Sprite_RAM+$02,Y
 	STA Sprite_RAM+$06,Y
@@ -3837,7 +3670,22 @@ Hammer_Draw:
 	; Set bottom sprite pattern
 	LDA #$6F
 	STA Sprite_RAM+$05,Y
+	BNE Hammer_Draw2
 
+Hammer_Draw1:
+
+	LDA #$6D
+	STA Sprite_RAM+$05,Y
+
+	; Set bottom sprite pattern
+	LDA #$6F
+	STA Sprite_RAM+$01,Y
+
+	LDA #(SPR_PAL1 | SPR_HFLIP)
+	STA Sprite_RAM+$02,Y
+	STA Sprite_RAM+$06,Y
+
+Hammer_Draw2:
 	RTS		 ; Return
 
 Acid_Draw:
@@ -3893,7 +3741,7 @@ PRG007_B8B7:
 SObj_Acid:
 	JSR SObj_Hammer
 
-	JSR SObj_CheckHitSolid
+	JSR SObj_GetTile
 	LDA CurrentTileProperty
 	CMP #TILE_PROP_SOLID_TOP
 	BCC SObj_Acid2
@@ -3984,11 +3832,8 @@ PRG007_BA1A:
 	LDA SpecialObj_ID,X
 	CMP #SOBJ_FIREBROFIREBALL
 	BEQ Do_Gravity	 ; If this is not Fire Bro's fireball, jump to PRG007_BA24
-	CMP #SOBJ_ICEBALL
-	BNE PRG007_BA24
 
 Do_Gravity:
-
 	JSR SObj_CheckHitSolid	 ; Bounce fireball off surfaces
 
 PRG007_BA24:
@@ -4030,11 +3875,6 @@ PRG007_BA4D:
 	JMP PRG007_BA6E	 ; Jump to PRG007_BA6E
 
 PRG007_BA55:
-	LDA SpecialObj_XVel,X
-	LSR A
-	AND #SPR_HFLIP	 ; Flip based on X velocity
-	PHA		 ; Save flip
-
 	LDA #$00
 	STA DAIZ_TEMP1
 	LDA SpecialObj_ID,X
@@ -4049,8 +3889,7 @@ Do_FB_Pattern:
 	LDA Fireball_Patterns,X
 	STA Sprite_RAM+$01,Y
 
-	PLA		 ; Restore flip
-	EOR Fireball_Attributes,X
+	LDA Fireball_Attributes,X
 
 PRG007_BA6E:
 
@@ -5149,8 +4988,17 @@ Hammer_BrickBust:
 	LDA #-6	 
 	STA BrickBust_YVel	 ; Y velocity = -6
 
-	LDY #$81
-	STY Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
+	
+	TYA
+    LDY <Temp_Var1
+	CPY #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BEQ Hammer_BrickBust1
+
+	AND #$C0
+
+Hammer_BrickBust1:
+	EOR #$01
+	STA Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof
 
@@ -5233,13 +5081,20 @@ Change_Tile:
 	BPL ProjChangeTile
 
 Bounce_Ball:
-	LDA #$00
 	RTS
 
 ProjChangeTile:
 	JSR Fireball_ThawTile	 ; Thaw the frozen tile!
-	LDA #$01
-	RTS
+	LDA Level_BlockChgXLo
+	AND #$F0
+	ORA #$04
+	STA PlayerProj_X, X
+	LDA Level_BlockChgYLo
+	AND #$F0
+	STA PlayerProj_Y, X
+	LDA Level_BlockChgYHi
+	STA PlayerProj_YHi, X
+	JMP PlayerProj_ChangeToPoof
 
 DrawProjectileTempBlock:
 	STX TempX
@@ -5275,4 +5130,121 @@ DoSpinnerP:
 
 	LDX TempX
 	LDA TempY
+	RTS
+
+EnemyHammerBrickBust:
+	; Crumbling sound
+	LDA Sound_QLevel2
+	ORA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	JSR BrickBust_MoveOver	 ; If a brick is busting in slot 1, move it to slot 2
+
+	LDA #$02
+	STA BrickBust_En	 ; Set brick bust enable
+
+	;
+	LDA <Temp_Var3
+	STA Level_BlockChgYLo
+
+	; Set poof Y
+	SBC Level_VertScroll
+	STA BrickBust_YUpr
+	ADD #$08
+	STA BrickBust_YLwr	 ; Store lower brick segment Y
+
+	; Set block change Y Hi
+	LDA <Temp_Var4
+	STA Level_BlockChgYHi
+
+	; Set block change X
+	LDA <Temp_Var5
+	AND #$f0
+	STA Level_BlockChgXLo
+
+	; Set poof X
+	SBC <Horz_Scroll
+	STA BrickBust_X	
+
+	; Set block change X Hi
+	LDA <Temp_Var7
+	STA Level_BlockChgXHi
+
+	LDA #$00	 
+	STA BrickBust_XDist	 ; Reset X fan out distance
+	STA BrickBust_HEn	 ; Reset horizontal enablers
+
+	LDA #-6	 
+	STA BrickBust_YVel	 ; Y velocity = -6
+
+	LDA CurrentTile
+	LDY CurrentTileProperty
+	CPY #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BEQ EnemyHammerBrickBust1
+
+	AND #$C0
+
+EnemyHammerBrickBust1:
+	EOR #$01
+	STA Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
+	LDX <SlotIndexBackup
+
+	PLA
+	PLA
+	JMP PRG007_B84C
+
+SObj_GetTile:
+	LDA SpecialObj_YLo,X
+	ADD #12
+	STA <Temp_Var6
+
+	; Aligned to grid -> Temp_Var3
+	AND #$f0
+	STA <Temp_Var3
+
+	LDA SpecialObj_YHi,X
+	ADC #$00	 ; Apply carry
+	PHA		 ; Save Y Hi
+	STA <Temp_Var4
+
+	; Special object X + 4 -> Temp_Var5
+	LDA SpecialObj_XLo,X
+	ADD #$04
+	SUB <Horz_Scroll	; -
+	ADD <Horz_Scroll	; + ??
+	STA <Temp_Var5
+
+	LDA <Horz_Scroll_Hi
+	ADC #$00	 ; Apply carry
+	STA <Temp_Var7
+	ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
+	TAY		 ; -> 'Y'
+	
+
+	; Low byte of Tile_Mem_Addr -> Temp_Var1
+	LDA Tile_Mem_Addr,Y
+	STA <Temp_Var1
+
+	PLA		 ; Restore Y Hi
+
+	AND #$01	 ; Only use 0 or 1 (only valid Y His in a non-vertical level)
+	ADD Tile_Mem_Addr+1,Y	 ; Add to the high byte of Tile_Mem_Addr
+	STA <Temp_Var2		 ; -> Temp_Var2
+
+	; Form a row/column offset -> 'Y'
+	LDA <Temp_Var5
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA <Temp_Var3
+	TAY
+
+	LDA [Temp_Var1],Y ; Get the tile here
+	JSR PSwitch_SubstTileAndAttr
+	STA TempA
+	STA CurrentTile
+	TAY
+	LDA TileProperties, Y
+	STA CurrentTileProperty
 	RTS

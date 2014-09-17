@@ -53,13 +53,13 @@
     <property>Rain</property>
     <property>Snow</property>
   </spritedefinition>
-  <spritedefinition id="10" width="01" height="01" name="Weather" class="1" group="Global">
-    <sprite property="0" x="0" y="0" value="3A" palette="2" horizontalflip="false" verticalflip="false" table="94" />
-    <sprite property="0" x="8" y="0" value="3A" palette="2" horizontalflip="false" verticalflip="false" table="94" />
-    <sprite property="1" x="0" y="0" value="14" palette="2" horizontalflip="false" verticalflip="false" table="94" />
-    <sprite property="1" x="8" y="0" value="14" palette="2" horizontalflip="false" verticalflip="false" table="94" />
-    <property>Rain</property>
-    <property>Snow</property>
+  <spritedefinition id="10" width="01" height="01" name="Ice Fire Fly" class="2" group="Wind/Ice Enemies">
+    <sprite property="0" x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="33" />
+    <sprite property="0" x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="33" />
+    <sprite property="1" x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="33" />
+    <sprite property="1" x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="33" />
+    <property>Starts Fire</property>
+    <property>Starts Ice</property>
   </spritedefinition>
   <spritedefinition id="11" width="01" height="01" name="Key" class="1" group="Global">
     <sprite x="0" y="0" value="28" palette="3" horizontalflip="false" verticalflip="false" table="94" />
@@ -186,30 +186,19 @@
     <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
     <sprite x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
   </spritedefinition>
-  <spritedefinition id="24" width="03" height="01" name="Platform Moves Left/Right" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="48" y="0" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="-56" y="0" property="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <sprite x="-72" y="0" property="1" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <sprite x="-88" y="0" property="2" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <sprite x="-104" y="0" property="3" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <sprite x="-120" y="0" property="4" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <sprite x="-136" y="0" property="5" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <sprite x="-152" y="0" property="6" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <sprite x="-168" y="0" property="7" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-    <property>3 Blocks</property>
-    <property>4 Blocks</property>
-    <property>5 Blocks</property>
-    <property>6 Blocks</property>
-    <property>7 Blocks</property>
-    <property>8 Blocks</property>
-    <property>9 Blocks</property>
-    <property>10 Blocks</property>
+  <spritedefinition id="24" width="01" height="01" name="Bouncing Podobo" class="2" group="Fire/Spark">
+    <sprite property="0" x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="true" table="0A" />
+    <sprite property="0" x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="true" table="0A" />
+    <sprite property="1" x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite property="1" x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite property="2" x="8" y="0" value="30" palette="3" horizontalflip="true" verticalflip="false" table="0A" />
+    <sprite property="2" x="0" y="0" value="32" palette="3" horizontalflip="true" verticalflip="false" table="0A" />
+    <sprite property="3" x="8" y="0" value="30" palette="3" horizontalflip="true" verticalflip="true" table="0A" />
+    <sprite property="3" x="0" y="0" value="32" palette="3" horizontalflip="true" verticalflip="true" table="0A" />
+    <property>Starts Diagonal Down/Left</property>
+    <property>Starts Diagonal Up/Left</property>
+    <property>Starts Diagonal Up/Right</property>
+    <property>Starts Diagonal Down/Right</property>
   </spritedefinition>
   <spritedefinition id="25" width="03" height="01" name="Platform Moves Up/Down" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -327,18 +316,17 @@
     <sprite x="0" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="32" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
   </spritedefinition>
-  <spritedefinition id="2A" width="01" height="01" name="Spark" class="2" group="Spike/Nipper/Spark">
+  <spritedefinition id="2A" width="01" height="01" name="Spark" class="2" group="Fire/Spark">
     <sprite x="0" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="3C" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
     <sprite property="0,2,4,6" x="16" y="0" value="8C" palette="1" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite property="1,3,5,7" x="-8" y="0" value="8c" palette="1" horizontalflip="false" verticalflip="false" table="-1" />
     <property>Clockwise</property>
     <property>Counter Clockwise</property>
+    <property>2x Speed Clockwise</property>
+    <property>2x Speed Counter Clockwise</property>
   </spritedefinition>
-  <spritedefinition id="2B" width="01" height="01" name="Spark Counter Clockwise" class="2" group="Spike/Nipper/Spark">
-    <sprite x="0" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
-    <sprite x="8" y="0" value="3C" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
-
+  <spritedefinition id="2B" width="01" height="01" name="Spark Counter Clockwise" class="1" group="Unused">
   </spritedefinition>
   <spritedefinition id="2C" width="03" height="01" name="Platform Moves Counter Clockwise" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -427,7 +415,7 @@
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
   </spritedefinition>
-  <spritedefinition id="33" width="01" height="01" name="Nipper Plant" class="2" group="Spike/Nipper/Spark">
+  <spritedefinition id="33" width="01" height="01" name="Nipper Plant" class="2" group="Unused">
     <sprite x="0" y="0" value="24" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="26" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
   </spritedefinition>
@@ -435,14 +423,16 @@
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
   </spritedefinition>
-  <spritedefinition id="36" width="03" height="01" name="Platform Moves Right" class="1" group="Platform">
+  <spritedefinition id="36" width="03" height="01" name="Platform Follows Path" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
+
+    <property>Starts off up or right</property>
+    <property>Starts off down or left</property>
   </spritedefinition>
   <spritedefinition id="37" width="03" height="01" name="Platform Moves Left/Right Short" class="1" group="Unused">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -466,7 +456,7 @@
     <sprite x="16" y="-80" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="24" y="-80" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="39" width="01" height="01" name="Walking Nipper Plant" class="2" group="Spike/Nipper/Spark">
+  <spritedefinition id="39" width="01" height="01" name="Walking Nipper Plant" class="2" group="Unused">
     <sprite x="0" y="0" value="24" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="26" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="0" y="-16" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
@@ -496,7 +486,7 @@
     <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="16" y="16" value="96" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="3D" width="01" height="01" name="Fire Spitting Nipper Plant" class="2" group="Spike/Nipper/Spark">
+  <spritedefinition id="3D" width="01" height="01" name="Fire Spitting Nipper Plant" class="2" group="Fire/Spark">
     <sprite x="0" y="0" value="28" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="0" y="-12" value="24" palette="1" horizontalflip="false" verticalflip="false" table="04" />
@@ -516,21 +506,20 @@
     <sprite x="0" y="16" value="04" palette="2" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="16" value="06" palette="2" horizontalflip="false" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="40" width="01" height="01" name="Buster Beetle" class="2" group="Spike/Nipper/Spark">
+  <!--<spritedefinition id="40" width="01" height="01" name="Bouncing Podobo" class="2" group="Fire/Spark/Podobo">
     <sprite x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="41" width="01" height="01" name="Goal Card" class="1" group="Unused">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
   </spritedefinition>
-  <spritedefinition id="42" width="01" height="01" name="Puddle Cheep Cheep 1" class="1" group="Unused">
-    <sprite x="0" y="0" value="26" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite x="8" y="0" value="28" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite x="48" y="-32" value="98" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="56" y="-32" value="98" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="96" y="-64" value="98" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="104" y="-64" value="98" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
+  <spritedefinition id="42" width="01" height="01" name="Flaming Cheep" class="2" group="Fire/Spark">
+    <sprite property="0" x="0" y="0" value="28" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite property="0" x="8" y="0" value="2A" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite property="0" x="0" y="-16" value="20" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite property="0" x="8" y="-16" value="22" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
+    <property>Normal</property>
   </spritedefinition>
   <spritedefinition id="43" width="01" height="01" name="Bouncing Cheep Cheep" class="3" group="Common">
     <sprite property="0" x="0" y="0" value="26" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
@@ -567,7 +556,7 @@
   <spritedefinition id="45" width="01" height="01" name="Shy Hot Foot" class="2" group="Fortress">
     <sprite x="4" y="0" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="12" />
   </spritedefinition>
-  <spritedefinition id="46" width="01" height="02" name="Pipe Ptooie" class="2" group="Spike/Nipper/Spark">
+  <spritedefinition id="46" width="01" height="02" name="Pipe Ptooie" class="2" group="Unused">
     <sprite x="0" y="0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite x="8" y="0" value="20" palette="1" horizontalflip="true" verticalflip="false" table="4F" />
     <sprite x="0" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
@@ -657,11 +646,15 @@
     <sprite x="0" y="0" value="2C" palette="3" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="0" value="2C" palette="3" horizontalflip="true" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="53" width="02" height="01" name="Ceiling Podoboo" class="2" group="Fortress">
-    <sprite x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="12" />
-    <sprite x="16" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="false" table="12" />
+  <spritedefinition id="53" width="02" height="01" name="Pipe Podoboo" class="2" group="Fire/Spark">
+    <sprite property="0,1" x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="true" table="12" />
+    <sprite property="0,1" x="16" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="true" table="12" />
+    <sprite property="2,3" x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="12" />
+    <sprite property="2,3" x="16" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="false" table="12" />
     <property>Does not change graphics bank</property>
     <property>Changes graphics bank</property>
+    <property>Upside Down/Does not change graphics bank</property>
+    <property>Upside Down/Changes graphics bank</property>
   </spritedefinition>
   <spritedefinition id="55" width="01" height="01" name="Bob-omb" class="2" group="Spiny/Buzzy Beetle/Bob-omb">
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
@@ -681,11 +674,13 @@
     <sprite x="0" y="0" value="2C" palette="1" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="0" value="2C" palette="1" horizontalflip="true" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="59" width="01" height="01" name="Fire Snake" class="2" group="Spike/Nipper/Spark">
+  <spritedefinition id="59" width="01" height="01" name="Fire Snake" class="2" group="Fire/Spark">
     <sprite x="4" y="-16" value="08" palette="1" horizontalflip="false" verticalflip="false" table="A" />
     <sprite x="4" y="-32" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="A" />
     <sprite x="0" y="0" value="00" palette="1" horizontalflip="false" verticalflip="false" table="A" />
     <sprite x="8" y="0" value="02" palette="1" horizontalflip="false" verticalflip="false" table="A" />
+    <property>Normal</property>
+    <property>Angry</property>
   </spritedefinition>
   <spritedefinition id="5A" width="01" height="01" name="Roto Disc (Clockwise)" class="2" group="Fortress">
     <sprite x="0" y="0" value="18" palette="3" horizontalflip="false" verticalflip="false" table="12" />
@@ -1165,7 +1160,7 @@
     <sprite x="16" y="0" value="C2" palette="1" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite x="24" y="0" value="C0" palette="1" horizontalflip="true" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="90" width="01" height="01" name="Rotating Bar" class="3" group="Common">
+  <spritedefinition id="90" width="01" height="01" name="Rotating Bar" class="1" group="Global">
     <sprite property="0,1" x="4" y="0" value="24" palette="1" horizontalflip="true" verticalflip="false" table="90" />
     <sprite property="0,1" x="12" y="0" value="24" palette="1" horizontalflip="false" verticalflip="false" table="90" />
     <sprite property="0,1" x="20" y="0" value="24" palette="1" horizontalflip="false" verticalflip="false" table="90" />
@@ -1233,11 +1228,13 @@
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
   </spritedefinition>
-  <spritedefinition id="9E" width="01" height="01" name="Podoboo" class="2" group="Fortress">
+  <spritedefinition id="9E" width="01" height="01" name="Podoboo" class="2" group="Fire/Spark">
     <sprite x="0" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="12" />
     <sprite x="8" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="false" table="12" />
     <property>Does not change graphics bank</property>
     <property>Changes graphics bank</property>
+    <property>Upside Down/Does not change graphics bank</property>
+    <property>Upside Down/Changes graphics bank</property>
   </spritedefinition>
   <spritedefinition id="9F" width="01" height="01" name="Para Beetle" class="2" group="Chomps">
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
@@ -1421,11 +1418,9 @@
     <sprite x="0" y="0" value="C8" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="0" value="CA" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="B7" width="01" height="01" name="Para Beetle Generator" class="2" group="Chomps">
-    <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
-    <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
-    <sprite x="0" y="16" value="A8" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="8" y="16" value="AA" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
+  <spritedefinition id="B7" width="01" height="01" name="Earthquake/Stone Generator" class="2" group="Fire/Spark">
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
+    <sprite x="8" y="0" value="18" palette="3" horizontalflip="false" verticalflip="false" table="0A" />    
   </spritedefinition>
   <spritedefinition id="B8" width="02" height="01" name="Cloud Background Generator" class="1" group="Unused">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />

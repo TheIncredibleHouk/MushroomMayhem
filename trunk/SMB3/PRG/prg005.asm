@@ -899,9 +899,6 @@ Piranha_Style:
 	.byte $80	; OBJ_VENUSFIRETRAP
 	.byte $81	; OBJ_VENUSFIRETRAP_CEIL
 
-Piranha_Projectile:
-	.byte $00, $00, SOBJ_FIREBROFIREBALL, SOBJ_FIREBROFIREBALL, SOBJ_ICEBALL, SOBJ_ICEBALL, SOBJ_ACID, SOBJ_ACID
-
 Piranha_FacePlayerFlip:	.byte SPR_HFLIP, $00
 Piranha_VFlip:	.byte $00, SPR_VFLIP
 Piranha_FrameOffset: .byte $00, $00, $04, $04, $04, $04, $04, $04
@@ -3711,9 +3708,9 @@ LevelEvent_Do:
 
 	.word LevelEvent_DoNothing	; 0 - Do nothing (not used!)
 	.word LevelEvent_8WayBulletBills	; 1 - Cheep Cheep attack
-	.word LevelEvent_SpikeCheep	; 2 - Spike Cheeps float by
+	.word LevelEvent_ProduceMines	; 2 - Spike Cheeps float by
 	.word LevelEvent_LakituFlee	; 3 - Clears Lakitu_Active which causes an active Lakitu to flee / be removed
-	.word LevelEvent_Parabeetles	; 4 - Green and red parabeetles flyby!
+	.word LevelEvent_Earthquake	; 4 - Green and red parabeetles flyby!
 	.word LevelEvent_CloudsinBG	; 5 - Floating clouds in background float by
 	.word LevelEvent_WoodPlatforms	; 6 - Random wooden platforms 
 	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
@@ -4037,7 +4034,7 @@ PRG005_BD53:
 SpikeCheepX:	.byte 0, 255
 SpikeCheepXVel:	.byte 8, -16
 
-LevelEvent_SpikeCheep:
+LevelEvent_ProduceMines:
 	LDA <Player_HaltGame
 	BNE PRG005_BDB0
 	INC LevelEvent_Cnt	 ; LevelEvent_Cnt++
@@ -4073,56 +4070,60 @@ LevelEvent_SpikeCheep:
 PRG005_BDB0:
 	RTS		 ; Return
 
-ParaBeetle_X:		.byte 0, 255
-ParaBeetle_XVel:	.byte 8, -8
+EarthquakeEventTimers: .byte $80, $A0, $C0, $FF
+DebrisOffset: .byte $00, $10, $F0, $20, $E0, $00, $10, $E0
 
-LevelEvent_Parabeetles:
-	LDA Level_NoStopCnt
-	AND #$3f	 
-	BNE PRG005_BDFF	 ; Only do anything once every 64 ticks
+LevelEvent_Earthquake:
+	LDA LevelEvent_Cnt
+	BEQ LevelEvent_Earthquake0
+	DEC LevelEvent_Cnt
+	RTS
 
-	LDA #OBJ_PARABEETLE
-	JSR Level_CountNotDeadObjs
-	CPY #$04
-	BGE PRG005_BDFF	 ; If there's already at least 4 parabeetles, jump to PRG005_BDFF (RTS)
+LevelEvent_Earthquake0:
+	JSR Level_SpawnObj
 
-	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
-
-	; Set parabeetle's object ID
-	LDA #OBJ_PARABEETLE
+	LDA #$0A
+	STA PatTable_BankSel+4
+	; Set Ice Block to state Kicked
+	LDA #OBJ_BRICK
 	STA Level_ObjectID,X
 
-	LDA RandomN,X
-	AND #$01
-	TAY		 ; Y = random 0 or 1
+	LDA #$01
+	STA Objects_Frame, X
 
-	; Set appropriate starting X position
-	LDA <Horz_Scroll
-	ADD ParaBeetle_X,Y
-	STA <Objects_X,X
-	LDA <Horz_Scroll_Hi
-	ADC #$00
-	STA <Objects_XHi,X
+	LDA #$03
+	STA Objects_SprAttr, X
 
-	; Set appropriate starting X velocity
-	LDA ParaBeetle_XVel,Y
-	LDY RandomN+1,X
-	BPL PRG005_BDEA
-	ASL A		; Roughly 50/50 chance that this parabeetle will be twice as fast!
-PRG005_BDEA:
-	STA <Objects_XVel,X
+	; Set Frame = 2
+	LDA #$01
+	STA Objects_Frame,X
 
-	; Set Y position (screen height + 16 + (Random 0 - 127))
-	LDA RandomN,X
-	AND #$7f	
-	ADD #$10	
-	ADC Level_VertScroll
-	STA <Objects_Y,X	
-	LDA <Vert_Scroll_Hi	
-	ADC #$00
-	STA <Objects_YHi,X
+	; Set expiration timer
+	LDA #$ff
+	STA Objects_Timer3,X
 
-PRG005_BDFF:
+	LDA RandomN + 2
+	AND #$07
+	TAY
+	LDA <Player_X
+	ADD DebrisOffset, Y
+	STA <Objects_X, X
+	LDA <Player_XHi
+	STA <Objects_XHi, X
+
+	LDA <Player_Y
+	SUB #$80
+	STA <Objects_Y,X 
+	LDA <Player_YHi
+	SBC #$01
+	STA <Objects_YHi, X
+	LDA RandomN + 1
+	AND #$03
+	TAY
+	LDA EarthquakeEventTimers, Y
+	STA LevelEvent_Cnt
+	LDA #$20
+	STA Level_Vibration
 	RTS		 ; Return
 
 
