@@ -3421,7 +3421,7 @@ OBJ_POWERUP_ICEFLOWER	= $21	; Free mushroom card ????
 OBJ_POWERUP_PUMPKIN	= $22	; Free flower card ????
 OBJ_POWERUP_FOXLEAF	= $23	; Free star card ????
 OBJ_CLOUDPLATFORM_FAST = $00 ; 
-OBJ_BOUNCING_PODOBO	= $24	; Fast cloud platform
+OBJ_PLATFORMHORZ	= $24	; Fast cloud platform
 OBJ_PIPEWAYCONTROLLER	= $25	; "Pipe Way" Controller (World Map pipe-to-pipe location setter)
 OBJ_WOODENPLAT_RIDER	= $26	; Log that rides you to the right after stepping on it
 OBJ_OSCILLATING_H	= $27	; Horizontal oscillating log platform
@@ -3430,7 +3430,7 @@ OBJ_SPIKE		= $29	; Spike (the spike ball barfer)
 OBJ_PATOOIE			= $00
 OBJ_SPARKRIGHT		= $2A	; Patooie
 OBJ_GOOMBAINSHOE	= $00 ;
-OBJ_SPARKLEFT	= $2B	; Goomba in Kuribo's Shoe (yes, I know Kuribo = Goomba, quiet)
+OBJ_RICOCHET_PODOBO	= $2B	; Goomba in Kuribo's Shoe (yes, I know Kuribo = Goomba, quiet)
 OBJ_CLOUDPLATFORM	= $2C	; Cloud platform
 OBJ_BIGBERTHA		= $2D	; Big Bertha that eats you
 OBJ_PIRATEBOO	= $2E	; Invisible (until touched) lift that goes up to fixed position of Y/Hi = 64
