@@ -24,7 +24,7 @@
 
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_InitJumpTable:
-	.word ObjInit_WoodenPlatHorz	; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.word ObjInit_DiagonalPodobo	; Object $24 - OBJ_BOUNCING_PODOBO
 	.word ObjInit_WoodenPlatVert	; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjInit_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjInit_WoodenPlatDiagonal1	; Object $27 - OBJ_OSCILLATING_H
@@ -42,7 +42,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DoNothing		; Object $33 - OBJ_NIPPER
 	.word ObjInit_Toad		; Object $34 - OBJ_TOAD
 	.word ObjInit_DoNothing		; Object $35 - OBJ_TOADHOUSEITEM
-	.word ObjInit_DoNothing	; Object $36 - OBJ_WOODENPLATFORM
+	.word ObjInit_PlatformFollow	; Object $36 - OBJ_WOODENPLATFORM
 	.word ObjInit_DoNothing	; Object $37 - OBJ_OSCILLATING_HS
 	.word ObjInit_DoNothing	; Object $38 - OBJ_OSCILLATING_VS
 	.word ObjInit_NipperHopping	; Object $39 - OBJ_NIPPERHOPPING
@@ -54,7 +54,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_TowardsPlayer	; Object $3F - OBJ_DRYBONES
 	.word ObjInit_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjInit_DoNothing		; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjInit_DoNothing	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.word ObjInit_BeachedCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_FallingPlatform	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjInit_HotFoot		; Object $45 - OBJ_HOTFOOT
@@ -66,7 +66,7 @@ ObjectGroup01_InitJumpTable:
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_NormalJumpTable:
-	.word ObjNorm_PlatformPattern		; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.word ObjNorm_DiagonalPodobo		; Object $24 - OBJ_BOUNCING_PODOBO
 	.word ObjNorm_PlatformPattern	; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjNorm_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjNorm_PlatformPattern	; Object $27 - OBJ_OSCILLATING_H
@@ -84,7 +84,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_Nipper		; Object $33 - OBJ_NIPPER
 	.word ObjNorm_Toad		; Object $34 - OBJ_TOAD
 	.word ObjNorm_ToadHouseItem	; Object $35 - OBJ_TOADHOUSEITEM
-	.word ObjNorm_WoodenPlatform	; Object $36 - OBJ_WOODENPLATFORM
+	.word ObjNorm_PlatformFollow	; Object $36 - OBJ_WOODENPLATFORM
 	.word ObjNorm_PlatformPattern	; Object $37 - OBJ_OSCILLATING_HS
 	.word ObjNorm_PlatformPattern	; Object $38 - OBJ_OSCILLATING_VS
 	.word ObjNorm_Nipper		; Object $39 - OBJ_NIPPERHOPPING
@@ -96,7 +96,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjNorm_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjNorm_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjNorm_BeachedCheep	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.word ObjNorm_BeachedCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjNorm_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjNorm_PathFollowPlat	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjNorm_Hotfoot		; Object $45 - OBJ_HOTFOOT
@@ -109,7 +109,7 @@ ObjectGroup01_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup01_CollideJumpTable:
-	.word ObjHit_DoNothing		; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.word Player_GetHurt		; Object $24 - OBJ_BOUNCING_PODOBO
 	.word ObjHit_DoNothing		; Object $25 - OBJ_PIPEWAYCONTROLLER
 	.word ObjHit_DoNothing		; Object $26 - OBJ_WOODENPLAT_RIDER
 	.word ObjHit_DoNothing		; Object $27 - OBJ_OSCILLATING_H
@@ -139,7 +139,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjHit_DoNothing		; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjHit_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
-	.word Player_GetHurt		; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.word Player_GetHurt		; Object $42 - OBJ_FLAMINGCHEEP
 	.word Player_GetHurt		; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjHit_DoNothing		; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word Player_GetHurt		; Object $45 - OBJ_HOTFOOT
@@ -151,7 +151,7 @@ ObjectGroup01_CollideJumpTable:
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup01_Attributes:
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48		; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16		; Object $24 - OBJ_BOUNCING_PODOBO
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48		; Object $25
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $27 - OBJ_OSCILLATING_H
@@ -181,7 +181,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3F - OBJ_DRYBONES
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $45 - OBJ_HOTFOOT
@@ -199,7 +199,7 @@ ObjectGroup01_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup01_Attributes2:
-	.byte OA2_TDOGRP2	; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.byte OA2_TDOGRP1	; Object $24 - OBJ_BOUNCING_PODOBO
 	.byte OA2_TDOGRP2	; Object $25
 	.byte OA2_TDOGRP2	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA2_TDOGRP2	; Object $27 - OBJ_OSCILLATING_H
@@ -229,7 +229,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP1	; Object $3F - OBJ_DRYBONES
 	.byte OA2_NOSHELLORSQUASH | OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA2_TDOGRP0	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA2_TDOGRP9	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA2_TDOGRP0	; Object $45 - OBJ_HOTFOOT
@@ -241,7 +241,7 @@ ObjectGroup01_Attributes2:
 
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup01_Attributes3:
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $24 - OBJ_BOUNCING_PODOBO
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $25
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_OSCILLATING_H
@@ -271,7 +271,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $3F - OBJ_DRYBONES
 	.byte OA3_HALT_BUSTERSPECIAL 	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA3_HALT_ENDCARDSPECIAL | OA3_TAILATKIMMUNE	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA3_HALT_JUSTDRAW 	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte OA3_HALT_JUSTDRAW 	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $45 - OBJ_HOTFOOT
@@ -283,7 +283,7 @@ ObjectGroup01_Attributes3:
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup01_PatTableSel:
-	.byte OPTS_NOCHANGE	; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.byte OPTS_SETPT5 | $0A	; Object $24 - OBJ_BOUNCING_PODOBO
 	.byte OPTS_NOCHANGE	; Object $25
 	.byte OPTS_NOCHANGE	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OPTS_NOCHANGE	; Object $27 - OBJ_OSCILLATING_H
@@ -313,7 +313,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT6 | $13	; Object $3F - OBJ_DRYBONES
 	.byte OPTS_SETPT5 | $0A	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OPTS_NOCHANGE	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OPTS_SETPT6 | $4F	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.byte OPTS_SETPT5 | $0A	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OPTS_NOCHANGE ; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OPTS_SETPT5 | $12	; Object $45 - OBJ_HOTFOOT
@@ -325,7 +325,7 @@ ObjectGroup01_PatTableSel:
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup01_KillAction:
-	.byte KILLACT_STANDARD	; Object $24 - OBJ_CLOUDPLATFORM_FAST
+	.byte KILLACT_POOFDEATH	; Object $24 - OBJ_BOUNCING_PODOBO
 	.byte KILLACT_STANDARD	; Object $25
 	.byte KILLACT_STANDARD	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte KILLACT_STANDARD	; Object $27 - OBJ_OSCILLATING_H
@@ -355,7 +355,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_NORMALANDKILLED	; Object $3F - OBJ_DRYBONES
 	.byte KILLACT_STANDARD	; Object $40 - OBJ_BUSTERBEATLE
 	.byte KILLACT_STANDARD	; Object $41 - OBJ_ENDLEVELCARD
-	.byte KILLACT_STANDARD	; Object $42 - OBJ_ANTIGRAVITYCHEEP
+	.byte KILLACT_POOFDEATH	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte KILLACT_STANDARD	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte KILLACT_POOFDEATH	; Object $45 - OBJ_HOTFOOT
@@ -410,6 +410,8 @@ ObjP32:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $71, $71
 
 ObjP24:
+	.byte $B1, $B3, $B5, $B7, $B9, $BB
+
 ObjP25:
 ObjP26:
 ObjP27:
@@ -447,6 +449,7 @@ ObjP46:
 	.byte $E5, $E5, $E1, $E1, $E1, $E1, $BD, $BF, $E3, $E3
 ObjP3B:
 ObjP42:
+	.byte $A9, $AB, $AD, $AF
 ObjP43:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF
 ObjP3A:
@@ -1216,7 +1219,11 @@ BeachedCheep_CeilingBounce:
 
 ObjNorm_BeachedCheep:
 	LDA <Player_HaltGame
-	BNE PRG002_A7E1
+	BEQ ObjNorm_BeachedCheep0
+	
+	JMP PRG002_A7E1
+
+ObjNorm_BeachedCheep0:
 
 	JSR Player_HitEnemy
 
@@ -1279,6 +1286,21 @@ ObjNorm_BeachedCheep3:
 PRG002_A7DF:
 	LDA Objects_InWater, X
 	BEQ PRG002_A7E0
+
+	LDA Object_TileProp
+	AND #$0F
+	CMP #TILE_PROP_HARMFUL
+	BEQ PRG002_A7DF1
+
+	LDA #OBJ_BEACHEDCHEEP
+	BNE PRG002_A7DF2
+
+PRG002_A7DF1:
+	LDA #OBJ_FLAMINGCHEEP
+
+PRG002_A7DF2:
+	STA Level_ObjectID,X
+
 	JSR BeachedCheepReset
 
 PRG002_A7E0:
@@ -1290,8 +1312,58 @@ PRG002_A7E0:
 	STA Objects_Frame, X
 
 PRG002_A7E1:
-	JMP Object_ShakeAndDraw	 ; Draw Cheep Cheep and don't come back!
+	JSR Object_ShakeAndDraw	 ; Draw Cheep Cheep and don't come back!
+	LDA Level_ObjectID,X
+	CMP #OBJ_FLAMINGCHEEP
+	BNE PRG002_A7E2
 
+	LDA Sprite_RAM,Y
+	SUB #$10
+	STA Sprite_RAM+8,Y
+	STA Sprite_RAM+12,Y
+
+	LDA Sprite_RAM+3,Y
+	STA Sprite_RAM+11,Y
+	LDA Sprite_RAM+7,Y
+	STA Sprite_RAM+15,Y
+
+	LDA Sprite_RAM+2,Y
+	STA Sprite_RAM+10,Y
+	STA Sprite_RAM+14,Y
+
+	LDA Sprite_RAM+1,Y
+	SUB #$08
+	STA Sprite_RAM+9,Y
+	LDA Sprite_RAM+5,Y
+	SUB #$08
+	STA Sprite_RAM+13,Y
+
+	LDA Objects_XVel, X
+	ORA Objects_YVel, X
+	BEQ PRG002_A7E2
+
+	LDA Objects_Timer2, X
+	BNE PRG002_A7E2
+
+	LDA Objects_Timer, X
+	BNE PRG002_A7E2
+
+	JSR SpecialObj_FindEmpty
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+	LDA #$20	 
+	STA SpecialObj_Data, Y
+	LDA <Objects_X, X
+	STA SpecialObj_XLo, Y
+	LDA <Objects_Y, X
+	STA SpecialObj_YLo, Y
+	LDA <Objects_YHi, X
+	STA SpecialObj_YHi, Y
+	LDA #$0C
+	STA Objects_Timer2, X
+
+PRG002_A7E2:
+	RTS
 	; Different "entropy" values by the object's slot -- keeps things random looking
 Entropy_BySlot:	.byte $13, $D7, $F9, $36, $7F
 
@@ -1822,6 +1894,36 @@ ObjInit_WoodenPlatCW:
 	
 ObjInit_WoodenPlat:
 	RTS		 ; Return
+
+ObjInit_PlatformFollow:
+	LDA Objects_Property, X
+	ASL A
+	STA Objects_Var2, X
+	LDA #$00
+	STA Objects_XVelFrac, X
+	STA Objects_YVelFrac, X
+	RTS
+
+ObjNorm_PlatformFollow:
+	LDA <Player_HaltGame
+	BNE ObjNormal_PlatformFollow0	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
+
+	JSR BlockPlatformMove
+	LDA Objects_Var1, X
+	BNE ObjNormal_PlatformFollow2
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit	
+	JMP ObjNormal_PlatformFollow1
+
+ObjNormal_PlatformFollow2:
+	JSR Object_Move
+
+ObjNormal_PlatformFollow1:
+	JSR Object_DeleteOffScreen
+	JSR PlayerPlatform_Collide
+
+ObjNormal_PlatformFollow0:
+	JMP DeleteIfOffAndDrawWide
 
 
 Player_StandOnPlatform:
@@ -2414,7 +2516,12 @@ PRG002_AE3A:
 
 ObjInit_Spark:
 	LDA Objects_Property, X
+	AND #$01
 	STA Objects_Var1, X
+	LDA Objects_Property, X
+	AND #$FE
+	LSR A
+	STA Objects_Var3, X
 	LDA #$00
 	STA Objects_Var2, X
 	RTS
@@ -2440,6 +2547,18 @@ ObjNorm_Spark:
 	STA Objects_Frame, X
 	JSR Object_ShakeAndDrawMirrored
 	JSR Object_DeleteOffScreen
+
+	LDA Objects_Var3, X
+	STA TempA
+
+ObjNorm_Spark1:
+	JSR Spark_Move
+	DEC TempA
+	BPL ObjNorm_Spark1
+
+	JMP Object_HitTestRespond
+
+Spark_Move:
 	LDA Objects_Var1, X
 	ASL A
 	ASL A
@@ -2508,7 +2627,7 @@ WallCeilGrndDet:
 	STA Objects_Var2, X
 
 KeepGoing:						; if we only detected one ground or wall we keep going in the same direction
-	JMP Object_HitTestRespond
+	RTS
 
 
 ObjNorm_PiranhaSpikeBall:
@@ -2822,10 +2941,10 @@ PRG002_AF96:
 	LDA Level_ObjectID,X
 	PHA		 ; Save piranha/Patooie iID
 
-	; Temporarily switch and masquerade as a OBJ_ANTIGRAVITYCHEEP
+	; Temporarily switch and masquerade as a OBJ_FLAMINGCHEEP
 	; NOTE: This really just needs to be a 16x16 sized object so we
 	; can "cheat" and use Object_HitTest on a "special object"
-	LDA #OBJ_ANTIGRAVITYCHEEP
+	LDA #OBJ_FLAMINGCHEEP
 	STA Level_ObjectID,X
 
 	JSR Object_HitTest
@@ -4729,3 +4848,231 @@ Taking_Coins:
 No_More_Coins:
 	LDX DAIZ_TEMP1
 	RTS
+
+
+BlockPlatformYVel:
+	.byte $F8, $00, $00, $08
+
+BlockPlatformXVel
+	.byte $00, $08, $F8, $00
+
+BlockPlatformMove:
+	LDA #$00
+	STA Objects_Var1, X
+	LDA <Objects_X, X
+	ORA <Objects_Y, X
+	AND #$0F
+	ORA Objects_XVelFrac, X
+	ORA Objects_YVelFrac, X
+	BEQ BlockPlatform0
+	RTS
+
+BlockPlatform0:
+	LDA Objects_Var2, X
+	AND #$01
+	BNE BlockPlatform2
+
+BlockPlatform1:
+	LDA Objects_Var2, X
+	INC Objects_Var2, X
+	AND #$03
+	JSR CheckNextBlock
+	CMP #TILE_PROP_ENEMY
+	BNE BlockPlatform1
+	BEQ BlockPlatform3
+
+BlockPlatform2:
+	LDA Objects_Var2, X
+	DEC Objects_Var2, X
+	AND #$03
+	JSR CheckNextBlock
+	CMP #TILE_PROP_ENEMY
+	BNE BlockPlatform2
+	
+BlockPlatform3:
+	LDA <Temp_Var12
+	TAY
+	STA Objects_Var2, X
+	LDA BlockPlatformYVel, Y
+	STA <Objects_YVel, X
+	LDA BlockPlatformXVel, Y
+	STA <Objects_XVel, X
+	RTS
+
+CheckNextBlock:
+	JSR DynJump
+
+	.word CheckBlockPlatformAbove
+	.word CheckBlockPlatformRight
+	.word CheckBlockPlatformLeft
+	.word CheckBlockPlatformBelow
+	
+
+SetBlockDirection:
+	LDA <Temp_Var12
+	TAY
+	AND #$02
+	STA Objects_Var2, X
+	LDA BlockPlatformYVel, Y
+	STA <Objects_YVel, X
+	LDA BlockPlatformXVel, Y
+	STA <Objects_XVel, X
+	RTS
+
+GetBlockPlatform:
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile
+	RTS
+
+CheckBlockPlatformAbove:
+	LDA #$00
+	STA <Temp_Var12
+	LDA <Objects_Y, X
+	STA <Temp_Var14
+	SUB #$10
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	STA <Temp_Var15
+	SBC #$00
+	STA <Objects_YHi, X
+	JSR GetBlockPlatform
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_Y, X
+	LDA <Temp_Var15
+	STA <Objects_YHi, X
+	PLA
+	RTS
+
+CheckBlockPlatformBelow:
+	LDA #$03
+	STA <Temp_Var12
+	LDA <Objects_Y, X
+	STA <Temp_Var14
+	ADD #$10
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	STA <Temp_Var15
+	ADC #$00
+	STA <Objects_YHi, X
+	JSR GetBlockPlatform
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_Y, X
+	LDA <Temp_Var15
+	STA <Objects_YHi, X
+	PLA
+	RTS
+
+CheckBlockPlatformRight:
+	LDA #$01
+	STA <Temp_Var12
+	LDA <Objects_X, X
+	STA <Temp_Var14
+	ADD #$10
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	STA <Temp_Var15
+	ADC #$00
+	STA <Objects_XHi, X
+	JSR GetBlockPlatform
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_X, X
+	LDA <Temp_Var15
+	STA <Objects_XHi, X
+	PLA
+	RTS
+
+CheckBlockPlatformLeft:
+	LDA #$02
+	STA <Temp_Var12
+	LDA <Objects_X, X
+	STA <Temp_Var14
+	SUB #$10
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	STA <Temp_Var15
+	SBC #$00
+	STA <Objects_XHi, X
+	JSR GetBlockPlatform
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_X, X
+	LDA <Temp_Var15
+	STA <Objects_XHi, X
+	PLA
+	RTS
+
+Diagonal_PodoboInitXVel:
+	.byte $F0, $F0, $10, $10
+
+Diagonal_PodoboInitYVel:
+	.byte $10, $F0, $F0, $10
+
+Diagonal_PodoboSpriteFlips:
+	.byte SPR_VFLIP, $00, SPR_HFLIP, SPR_VFLIP | SPR_HFLIP
+
+ObjInit_DiagonalPodobo:
+	LDA Objects_Property, X
+	TAY
+	LDA Diagonal_PodoboInitXVel, Y
+	STA Objects_XVel, X
+	LDA Diagonal_PodoboInitYVel, Y
+	STA Objects_YVel, X
+	LDA Diagonal_PodoboSpriteFlips, Y
+	STA Objects_FlipBits, X
+	RTS
+
+ObjNorm_DiagonalPodobo:
+	LDA <Player_HaltGame
+	BNE ObjNorm_DiagonalPodoboEnd
+
+	JSR Object_DeleteOffScreen
+	
+	LDA Objects_Var1, X
+	CMP #$0A
+	BCS ObjNorm_DiagonalPodobo0
+
+	INC Objects_Var1, X
+	BNE ObjNorm_DiagonalPodobo01
+
+ObjNorm_DiagonalPodobo0
+	LDA #$00
+	STA Objects_Var1, X
+	
+ObjNorm_DiagonalPodobo01:
+	LDA Objects_Var1, X
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit
+	LDA Objects_YVel, X
+	PHA
+	JSR Object_WorldDetect4
+	PLA 
+	STA Objects_YVel, X
+
+	LDA <Objects_DetStat,X
+	AND #(HIT_DET_GRND | HIT_DET_CEIL)
+	BEQ ObjNorm_DiagonalPodobo1
+	LDA <Objects_YVel,X	 
+	JSR Negate
+	STA <Objects_YVel,X
+	LDA Objects_FlipBits, X
+	EOR #SPR_VFLIP
+	STA Objects_FlipBits, X
+
+ObjNorm_DiagonalPodobo1:
+	LDA <Objects_DetStat,X
+	AND #(HIT_DET_LEFT | HIT_DET_RIGHT)
+	BEQ ObjNorm_DiagonalPodobo2
+	JSR Object_AboutFace
+
+ObjNorm_DiagonalPodobo2:
+	JSR Object_HitTestRespond
+
+ObjNorm_DiagonalPodoboEnd:
+	JMP Object_ShakeAndDraw

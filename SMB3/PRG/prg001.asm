@@ -41,7 +41,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjInit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
-	.word ObjInit_DoNothing; Object $10 - OBJ_SNOW
+	.word ObjInit_IceFireFly; Object $10 - OBJ_PIXIE
 	.word ObjInit_Key	; Object $11 OBJ_KEY
 	.word ObjInit_Spring	; Object $12 OBJ_SPRING
 	.word ObjInit_KeyPieces	; Object $13 OBJ_KEYPIECES
@@ -83,7 +83,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjNorm_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjNorm_Weather	; Object $0F
-	.word ObjNorm_Weather	; Object $10
+	.word ObjNorm_IceFireFly	; Object $10 - OBJ_PIXIE
 	.word ObjNorm_Key	; Object $11
 	.word ObjNorm_Spring	; Object $12
 	.word ObjNorm_KeyPieces	; Object $13 
@@ -100,9 +100,9 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjNorm_Vine	; Object $1F - OBJ_GROWINGVINE
 	.word ObjNorm_Clock	; Object $20
-	.word ObjNorm_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjNorm_IceFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjNorm_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjNorm_SuperLeaf	; Object $23 - OBJ_POWERUP_FOXLEAF
+	.word ObjNorm_FoxLeaf	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) Collision routine jump table (if calling Object_HitTestRespond;
@@ -126,7 +126,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjHit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjHit_DoNothing	; Object $0F
-	.word ObjHit_DoNothing	; Object $10
+	.word Player_GetHurt	; Object $10 OBJ_PIXIE
 	.word ObjHit_DoNothing	; Object $11
 	.word ObjHit_DoNothing	; Object $12
 	.word ObjHit_DoNothing	; Object $13
@@ -168,7 +168,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0E - OBJ_HARDICE
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0F - 
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $10
+	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $10 OBJ_PIXIE
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $11 OBJ_KEY
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $12 OBJ_REDPRING
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $13 OBJ_GREENSPRING
@@ -217,7 +217,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA2_TDOGRP1	; Object $0E - OBJ_HARDICE
 	.byte OA2_TDOGRP1	; Object $0F
-	.byte OA2_TDOGRP0	; Object $10
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $10 OBJ_PIXIE
 	.byte OA2_TDOGRP1	; Object $11
 	.byte OA2_TDOGRP1	; Object $12
 	.byte OA2_TDOGRP1	; Object $13
@@ -266,7 +266,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $0E - OBJ_HARDICE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
-	.byte OA3_HALT_NORMALONLY 	; Object $10
+	.byte OA3_HALT_NORMALONLY 	; Object $10 OBJ_PIXIE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_DIESHELLED 	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
@@ -308,7 +308,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OPTS_SETPT5 | $0F	; Object $0E - OBJ_HARDICE
 	.byte OPTS_NOCHANGE	; Object $0F
-	.byte OPTS_NOCHANGE	; Object $10
+	.byte OPTS_NOCHANGE | $33	; Object $10 OBJ_PIXIE
 	.byte OPTS_NOCHANGE	; Object $11
 	.byte OPTS_SETPT6 | $4F		; Object $12
 	.byte OPTS_NOCHANGE	; Object $13
@@ -350,7 +350,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte KILLACT_NORMALANDKILLED	; Object $0E - OBJ_HARDICE
 	.byte KILLACT_STANDARD	; Object $0F
-	.byte KILLACT_STANDARD	; Object $10
+	.byte KILLACT_NORMALANDKILLED	; Object $10
 	.byte KILLACT_STANDARD	; Object $11
 	.byte KILLACT_STANDARD	; Object $12
 	.byte KILLACT_STANDARD	; Object $13
@@ -409,13 +409,15 @@ ObjP03:
 	.byte $77, $77
 
 ObjP07:
-	.byte $67, $67
+	.byte $67, $67, $97, $99
 
 ObjP0E:
 	.byte $99, $9B
 
 ObjP0F:
 ObjP10:
+	.byte $91, $93, $95, $97, $99, $9B, $95, $97
+
 ObjP11:
 	.byte $69, $7D, $69, $7D, $69, $7D
 ObjP12:
@@ -1042,6 +1044,8 @@ DestroyBubble:
 	JMP Object_SetDeadAndNotSpawned
 
 ObjNorm_PUpNinjaShroom:
+	LDA #$20
+	STA SprAnimOffset
 	JSR PowerUp_DoRaise	 ; Do power up raising out of box
 
 	LDA <Objects_DetStat,X
@@ -1120,16 +1124,23 @@ Do_Star_Init2:
 Star_RTS:
 	RTS		 ; Return
 
+SprStarAnimOffset: .byte $28, $0C, $10, $14
 
 ObjNorm_StarOrSuit:
 	LDA PUp_StarManFlash
-	BPL PRG001_A7E0	 ; If flashing is not active, jump to PRG001_A7E0
+	BNE PRG001_A7E0	 ; If flashing is not active, jump to PRG001_A7E0
 
 	; Store counter into cycler
 	LDA <Counter_1	
 	STA Objects_ColorCycle,X
 
 PRG001_A7E0:
+	LDA PUp_StarManFlash
+	AND #$03
+	TAY
+	LDA SprStarAnimOffset, Y
+	STA SprAnimOffset
+
 	JSR PowerUp_DoRaise	 ; Do power up raising out of box
 	JSR Object_InteractWithWorld	 ; Move, detect, interact with blocks of world
 
@@ -1149,7 +1160,6 @@ PRG001_A7F1:
 
 	; Different "frames" of the "Starman" power up include the super
 	; suits; Tanooki, Frog, and Hammer, in order
-PUp_StarOrSuitFrames:	.byte $00, $51, $51, $51	; Star, Tanooki, Frog, Hammer
 
 ObjHit_StarOrSuit:
 	LDA Objects_Frame,X
@@ -1248,6 +1258,8 @@ PRG001_A86E:
 
 
 ObjNorm_PUpMush:
+	LDA #$00
+	STA SprAnimOffset
 	JSR PowerUp_DoRaise	 ; Do power up raising out of box
 
 	LDA <Objects_DetStat,X
@@ -1496,6 +1508,15 @@ PRG001_A9D5:
 	RTS		 ; Return
 
 ObjNorm_FireFlower:
+	LDA #$04
+	STA SprAnimOffset
+	BNE ObjNorm_FireFlower1
+
+ObjNorm_IceFlower:
+	LDA #$08
+	STA SprAnimOffset
+
+ObjNorm_FireFlower1:
 	LDA PUp_StarManFlash
 	BPL PRG001_A9E4	 ; If there's no star man flash going on, jump to PRG001_A9E4
 
@@ -1601,7 +1622,16 @@ Leaf_XVelLimit:	.byte $20, -$20
 PRG001_ABD1:
 	.byte $0A, -$0A, $08
 
+ObjNorm_FoxLeaf:
+	LDA #$24
+	STA SprAnimOffset
+	BNE ObjNorm_SuperLeaf1
+
 ObjNorm_SuperLeaf:
+	LDA #$08
+	STA SprAnimOffset
+
+ObjNorm_SuperLeaf1:
 	LDA Objects_Timer,X
 	BEQ PRG001_ABEC	 ; If timer expired, jump to PRG001_ABEC
 
@@ -1694,7 +1724,8 @@ ObjInit_Vine:
 Vine_NTHigh:	.byte $20, $28
 
 ObjNorm_Vine:
-
+	LDA #$2C
+	STA SprAnimOffset
 	; Vine moves at Y Vel = -$10
 	LDA #-$10
 	STA <Objects_YVel,X
@@ -3798,10 +3829,12 @@ Object_ToBrickBust:
 	RTS
 
 ObjNorm_BrickDraw:
-	LDA #$00
-	STA Objects_Frame, X
-	JSR Object_ShakeAndDrawMirrored
-	RTS
+	LDA Objects_Frame, X
+	BNE ObjNorm_BrickDraw1
+	JMP Object_ShakeAndDrawMirrored
+
+ObjNorm_BrickDraw1:
+	JMP Object_ShakeAndDraw
 
 ObjNorm_Boss:
 	JSR DoBossFights
@@ -4584,18 +4617,24 @@ Player_Heights:
 	.byte $06, $11
 
 ObjHit_SolidBlock:
-	STA Debug_Snap
 	LDA <Player_Y
 	ADC #32
 	SUB <Objects_Y, X
 	STA <Temp_Var1
+	CMP #$F4
+	BCS ObjHit_SolidBlock_0
+
 	CMP #$05
 	BCS ObjHit_SolidBlock1
 
+	LDA <Player_YVel
+	BMI ObjHit_SolidBlock0
+
+ObjHit_SolidBlock_0:
 	LDA #$00
 	STA <Player_YVel
 	LDA <Objects_Y, X
-	SUB #32
+	SUB #31
 	STA <Player_Y
 	LDA <Objects_YHi, X
 	SBC #$00
@@ -4603,10 +4642,12 @@ ObjHit_SolidBlock:
 	LDA #$00
 	STA <Player_YVel
 	STA Player_InAir
+
+ObjHit_SolidBlock0:
 	RTS
 
 ObjHit_SolidBlock1:
-	LDA #$00
+	LDA #$07
 	STA <Temp_Var1
 	LDA <Player_Suit
 	BEQ ObjHit_SolidBlock2
@@ -4614,31 +4655,32 @@ ObjHit_SolidBlock1:
 	BEQ ObjHit_SolidBlock3
 
 ObjHit_SolidBlock2:
-	LDA #10
+	LDA #$13
 	STA <Temp_Var1
 
 ObjHit_SolidBlock3:
+	LDA <Objects_Y, X
+	ADD #$0E
+	STA <Temp_Var2
 	LDA <Player_Y
 	ADD <Temp_Var1
-	STA <Temp_Var2
-	LDA <Objects_Y, X
-	ADD #$10
 	SUB <Temp_Var2
-	CMP #$03
+	CMP #$04
 	BCS ObjHit_SolidBlock4
 
-	LDA <Objects_Y, X
-	ADD #$10
-	ADD <Temp_Var1
-	STA <Player_Y
-	LDA <Player_YHi
-	ADC #$00
-	STA <Player_YHi
-	LDA #$FF
+	LDY <Player_YVel
+	BPL ObjHit_SolidBlock3_1
+
+	LDA #$01
 	STA <Player_YVel
+	STA Player_HitCeiling
+	
+ObjHit_SolidBlock3_1:
 	RTS
 
 ObjHit_SolidBlock4:
+	LDA #$00
+	STA <Player_XVel
 	LDA <Objects_X, X
 	ADD #$08
 	STA <Temp_Var1
@@ -4655,7 +4697,7 @@ ObjHit_SolidBlock4:
 
 ObjHit_SolidBlock5:
 	LDA <Objects_X, X
-	ADD #$08
+	ADD #$0E
 	STA <Player_X
 	LDA <Objects_XHi,X
 	ADC #$00
@@ -4807,3 +4849,185 @@ ObjHit_SnowBall:
 	LDA #OBJ_ICEBLOCK
 	STA Level_ObjectID, X
 	RTS
+
+IceFireFlyColors:
+	.byte SPR_PAL1, SPR_PAL2
+
+IceFireFlyProjectiles:
+	.byte SOBJ_FIREBROFIREBALL, SOBJ_ICEBALL
+
+IceFlyRotationX:
+	.byte 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2, 0
+
+IceFlyRotationY:
+	.byte -2, -5, -7, -9, -11, -13, -15, -17, -19, -20, -21, -22, -23, -24, -24, -24, -24, -24, -24, -23, -22, -21, -20, -19, -17, -15, -13, -11, -9, -7, -5, -2, 0, 2, 5, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 24, 24, 24, 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2, 0
+
+IceFlyRotationVel:
+   .byte -$20, $20
+
+ObjInit_IceFireFly:
+	LDY Objects_Property, X
+	LDA IceFireFlyProjectiles, Y
+	STA Objects_Var3, X
+	LDA IceFireFlyColors, Y
+	STA Objects_SprAttr, X
+	LDA #$00
+	STA Objects_SprHVis, X
+	STA Objects_SprVVis, X
+	JSR SpecialObj_FindEmptyAbort
+	TYA
+	STA Objects_Var2, X
+	LDA Objects_Var3, X
+	STA SpecialObj_ID,Y
+	LDA #$02
+	STA SpecialObj_YHi, Y
+	RTS
+
+ObjNorm_IceFireFly:
+	LDA <Player_HaltGame
+	BEQ ObjNorm_IceFireFly00
+	JMP ObjNorm_IceFireFly0
+
+ObjNorm_IceFireFly00:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_IceFireFly01
+
+	LDA Objects_Var2, X
+	TAY
+	LDA SpecialObj_ID, Y
+	BNE ObjNorm_IceFireFly02
+
+	JMP ObjNorm_IceFireFly4
+
+ObjNorm_IceFireFly02:
+	LDX <SlotIndexBackup
+	LDA Objects_Var1, X
+	AND #$20
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	LDA IceFlyRotationVel, X
+	STA <Temp_Var1
+	LDX <SlotIndexBackup
+	LDA Objects_Var2, X
+	TAY
+	LDA <Temp_Var1
+	STA SpecialObj_XVel, Y
+	JMP ObjNorm_IceFireFly4
+
+ObjNorm_IceFireFly01:
+	
+	INC Objects_Var1, X
+	LDA Objects_Var1, X
+	AND #$0C
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+	JSR Object_DeleteOffScreen
+	JSR Player_HitEnemy
+
+	LDA Objects_Var1, X
+	AND #$01
+	BEQ ObjNorm_IceFireFly0
+	JSR Chase
+
+ObjNorm_IceFireFly0:
+	LDA Objects_X, X
+	ADD #$04
+	STA <Temp_Var13
+	LDA Objects_XHi, X
+	ADC #$00
+	STA <Temp_Var14
+	LDA Objects_Y, X
+	STA <Temp_Var15
+	LDA Objects_YHi, X
+	STA <Temp_Var16
+
+	LDA Objects_Var2, X
+	TAY
+	LDA Objects_Var1, X
+	AND #$3F
+	TAX
+	LDA IceFlyRotationX, X
+	BPL ObjNorm_IceFireFly1
+
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var12
+	LDA <Temp_Var13
+	SUB <Temp_Var12
+	STA SpecialObj_XLo, Y
+	LDA <Temp_Var14
+	SBC #$00
+	STA <Temp_Var14
+	JMP ObjNorm_IceFireFly2
+
+ObjNorm_IceFireFly1:
+	ADD <Temp_Var13
+	STA SpecialObj_XLo, Y
+	LDA <Temp_Var14
+	ADC #$00
+	STA <Temp_Var14
+
+ObjNorm_IceFireFly2:
+	LDA SpecialObj_XLo, Y
+	CMP <Horz_Scroll
+	LDA <Temp_Var14
+	SBC <Horz_Scroll_Hi
+	BNE ObjNorm_IceFireFly2_1
+
+	LDA SpecialObj_XLo, Y
+	CMP <Horz_Scroll
+	LDA <Temp_Var14
+	SBC <Horz_Scroll_Hi
+	BEQ ObjNorm_IceFireFly2_2
+
+ObjNorm_IceFireFly2_1
+	LDA #$C0
+	STA SpecialObj_YLo, Y
+	LDA #$01
+	STA SpecialObj_YHi, Y
+	BNE ObjNorm_IceFireFly4
+	
+ObjNorm_IceFireFly2_2:
+	LDA IceFlyRotationY, X
+	BPL ObjNorm_IceFireFly3
+
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var12
+	LDA <Temp_Var15
+	SUB <Temp_Var12
+	STA SpecialObj_YLo, Y
+
+	LDA <Temp_Var16
+	SBC #$00
+	STA SpecialObj_YHi, Y
+	JMP ObjNorm_IceFireFly3_1
+
+ObjNorm_IceFireFly3:
+	ADD <Temp_Var15
+	STA SpecialObj_YLo, Y
+
+	LDA #$00
+	STA SpecialObj_XVel, Y
+	STA SpecialObj_YVel, Y
+
+	LDA <Temp_Var16
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+ObjNorm_IceFireFly3_1:
+	LDX <SlotIndexBackup
+	LDA Objects_Var3, X
+	STA SpecialObj_ID,Y
+	STA SpecialObj_Data, Y
+
+ObjNorm_IceFireFly4:
+	LDX <SlotIndexBackup
+	JMP Object_ShakeAndDraw

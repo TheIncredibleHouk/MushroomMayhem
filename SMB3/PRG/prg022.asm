@@ -2829,7 +2829,6 @@ PRG022_D0DF:
 
 	LDX #$02
 PRG022_D0E1:
-	STX <Roulette_RowIdx	; Update Roulette_RowIdx
 
 	LDA Roulette_StopCnt,X
 	BEQ PRG022_D0EB		; If this row's stop counter = 0, jump to PRG022_D0EB
@@ -3031,7 +3030,6 @@ PRG022_D1E0:
 	LDA #$00
 	STA Roulette_StopCnt
 
-	LDX <Roulette_RowIdx		 ; X = Roulette_RowIdx
 
 	; Do NOT return to caller
 	PLA
@@ -3045,7 +3043,6 @@ PRG022_D200:
 	STA Sound_QMap
 
 PRG022_D205:
-	LDX <Roulette_RowIdx		 ; X = Roulette_RowIdx
 
 	INC Roulette_StopState,X ; This row's stop state = 5
 

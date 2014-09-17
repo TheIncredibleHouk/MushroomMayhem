@@ -758,6 +758,14 @@ PRG004_A545;
 	BEQ PRG004_A587	 ; Jump (technically always) to PRG004_A587
 
 PRG004_A551:
+	LDA Object_TileFeetProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE PRG004_A552
+	
+	LDA #$00
+	STA Objects_Timer2,X
+
+PRG004_A552:
 	LDA Objects_Timer2,X
 	BNE PRG004_A587	 ; If timer2 is not expired, jump to PRG004_A587
 
@@ -883,6 +891,10 @@ Hammer_XVel:	.byte $12, -$12
 HammerBro_ThrowHammer:
 	LDA Objects_SprHVis,X	 
 	BNE PRG004_A61B	 ; If any sprite is horizontally off-screen, jump to PRG004_A61B (RTS)
+
+	LDA Objects_SprVVis,X	 
+	AND #$07
+	BNE PRG004_A61B
 
 	LDY #$05	 ; Y = 5
 PRG004_A5ED:
@@ -2882,6 +2894,7 @@ ObjInit_FlyingTroopa:
 	JSR ObjInit_GroundTroop
 	JMP InitPatrol
 
+ObjInit_PurpleTroopa:
 ObjInit_GroundTroop:
 	JSR Level_ObjCalcXDiffs
 	LDA TroopSpeed,Y
@@ -3077,7 +3090,7 @@ PRG004_B36E:
 
 	JSR GroundTroop_Draw	 ; Draw the enemy
 	JSR Object_Move
-	JMP Player_HitEnemy	 ; Do Player to enemy collision and don't come back!
+	JMP Object_HitTestRespond	 ; Do Player to enemy collision and don't come back!
 
 
 PRG004_B3A5:
@@ -4317,9 +4330,6 @@ PRG004_B96D:
 	STA <Temp_Var1
 	ORA Objects_SprAttr,X	 ; OR in the sprite attributes
 	STA DAIZ_TEMP1
-	LDA Objects_SprAttr,X
-	AND #$DF
-	STA Objects_SprAttr, X
 	LDA DAIZ_TEMP1
 
 	ASL <Temp_Var9

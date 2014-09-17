@@ -286,26 +286,7 @@ Player_DoGameplay:
 	; NOTE: If a partial initialization occurred (above),
 	; it will NOT return here!  It will be back up at PRG030...
 
-
-	; Quick clears all the sprites by setting all hardware
-	; sprite Y positions to $F8
-	LDY #$1c
-	LDA #$f8
-PRG008_A17F:
-	STA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$20,Y
-	STA Sprite_RAM+$40,Y
-	STA Sprite_RAM+$60,Y
-	STA Sprite_RAM+$80,Y
-	STA Sprite_RAM+$A0,Y
-	STA Sprite_RAM+$C0,Y
-	STA Sprite_RAM+$E0,Y
-	DEY
-	DEY
-	DEY
-	DEY
-	BPL PRG008_A17F
-
+	JSR Sprite_RAM_Clear
 	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 
 	; If Player is...
@@ -3768,7 +3749,7 @@ TileAttrAndQuad_OffsFlat_Sm:
 
 PlayerY_HeightOff:	.byte $12, $05	; Left value is Player_Y offset for small/ducking, right for otherwise
 Wall_Clip:	
-	.byte $02, $03	; Left/Right half, not small
+	.byte $03, $02
 
 PRG008_B3B0:	.byte $04, $0D
 
@@ -3968,6 +3949,7 @@ PRG008_B4CA:
 	STA <Temp_Var11	 ; Temp_Var11 (X offset)
 
 	JSR Player_GetTileAndSlope	 ; Get tile
+	
 	JSR Level_DoCommonSpecialTiles
 	STA Level_Tile_Prop_GndL,X	 ; Store it
 	JSR HandleIceBreak
@@ -4155,8 +4137,10 @@ PRG008_B585_3:
 	BNE PRG008_B585_4
 	LDA #$01
 	STA <Player_InAir
-	LDA #$B0
+	LDA #$D0
 	STA <Player_YVel
+	LDA #$00
+	STA TempA
 
 PRG008_B585_4:
 	LDA TempA
@@ -4841,11 +4825,11 @@ PRG008_B979:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_BumpOffBlocks:
 	CMP #TILE_ITEM_COIN
-	BCC PRG008_B9D3
+	BCC PRG008_B994
 	STA TempA
  
 	LDA Player_Bounce 
-	BNE PRG008_B9D3	 ; If Player is bouncing, jump to PRG008_B9D3 
+	BNE PRG008_B994	 ; If Player is bouncing, jump to PRG008_B9D3 
  
 	TXA
 	PHA
@@ -4864,53 +4848,6 @@ Object_BumpOffBlocks:
 	STA Player_BounceObj 
 
 PRG008_B994:
-	LDA Level_TilesetIdx
-	CMP #10
-	BNE PRG008_B9D3	 ; If Level_TilesetIdx <> 10 (Giant World), jump to PRG008_B9D3 (RTS)
- 
-	LDX #$04	 ; X = 4 
-
-	LDA Objects_Timer,X 
-	BNE PRG008_B9D3	 ; If this object's timer is NOT expired, jump to PRG008_B9D3
-
-	; Object's YHi = Temp_Var13 (aligns to initiator's tile detect Y Hi) 
-	LDA <Temp_Var13	 
-	STA <Objects_YHi,X
-
-	; Object's Y = Temp_Var14 - 16 (aligns to one tile above the initator's tile detect Y)
-	LDA <Temp_Var14 
-	SUB #16 
-	BCS PRG008_B9AF 
-	DEC <Objects_YHi,X	; Apply carry if needed
-PRG008_B9AF: 
-	AND #$e0	 ; Keep value sane 
-	ORA #$10	 
-	STA <Objects_Y,X
- 
-	; Object's XHi = Temp_Var15 (aligns to initiator's tile detect X Hi) 
-	LDA <Temp_Var15	 
-	STA <Objects_XHi,X
-
-	; Object's X = Temp_Var16 (aligns to initator's tile detect X)
-	LDA <Temp_Var16 
-	AND #$e0	 ; Keep value sane 
-	STA <Objects_X,X 
-
-	SUB <Horz_Scroll 
-	TAY		 ; Y = screen scroll relative X
- 
-	LDA <Objects_XHi,X 
-	SBC <Horz_Scroll_Hi 
-	BNE PRG008_B9D3	 ; If Object is not on same screen, jump to PRG008_B9D3 (RTS)
- 
-	CPY #224
-	BGE PRG008_B9D3	 ; If object X is further than screen coordinate 224, jump to PRG008_B9D3 (RTS)  
-
-	; Set object's Var2 to object detected by Player's tail attack
-	LDA Level_Tile_Whack 
-	STA Objects_Var2,X 
-
-PRG008_B9D3:
 	RTS		 ; Return
 
 
