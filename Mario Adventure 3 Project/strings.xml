@@ -3663,7 +3663,7 @@
     <block value="2F"></block>
     <block value="30"></block>
     <block value="31"></block>
-    <block value="32"></block>
+    <block value="32">Water Fill</block>
     <block value="33"></block>
     <block value="34"></block>
     <block value="35"></block>
@@ -3687,9 +3687,9 @@
     <block value="47"></block>
     <block value="48"></block>
     <block value="49"></block>
-    <block value="4A"></block>
-    <block value="4B"></block>
-    <block value="4C"></block>
+    <block value="4A">P-Switch</block>
+    <block value="4B">P-Switch</block>
+    <block value="4C">Water Fill</block>
     <block value="4D"></block>
     <block value="4E"></block>
     <block value="4F"></block>

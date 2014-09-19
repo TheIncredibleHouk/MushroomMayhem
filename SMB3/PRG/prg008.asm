@@ -787,7 +787,12 @@ PRG008_A472:
 
 PRG008_A473:
 	JSR Player_RunMeterUpdate	 	; Update "Power Meter"
+	LDA <Horz_Scroll
+	STA LastHorzScroll
+	LDA <Horz_Scroll_Hi
+	STA LastHorzScrollHi
 	JSR Player_DoScrolling	 	; Scroll relative to Player against active rules
+	JSR SetLastScrollDirection
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
 	JSR Player_DoSpecialTiles	; Handle unique-to-style tiles!
@@ -3359,16 +3364,10 @@ PRG008_B11E:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoScrolling:
 	LDA Level_JctCtl
-	BEQ PRG008_B127
+	BEQ PRG008_B12F
 
 PRG008_B126:
 	RTS
-
-PRG008_B127:
-	LDA LevelVertJct
-	BEQ PRG008_B12F	 ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
-
-	JMP PRG008_B1CE	 ; Otherwise, jump to PRG008_B1CE
 
 PRG008_B12F:
 	LDY Level_AScrlConfig
@@ -3430,8 +3429,6 @@ PRG008_B166:
 	INC <Horz_Scroll_Hi	 ; Otherwise, apply carry
 
 PRG008_B181:
-	LDA #$00	 
-	STA <Scroll_LastDir	 ; Scroll_LastDir = 0 (screen last moved right)
 
 	LDA <Horz_Scroll_Hi
 	CMP <Level_Width
@@ -3470,8 +3467,6 @@ PRG008_B1A4:
 	DEC <Horz_Scroll_Hi	; Otherwise, remove carry
 
 PRG008_B1BD:
-	LDA #$01
-	STA <Scroll_LastDir	; Scroll_LastDir = 1 (last moved left)
 
 	LDA <Horz_Scroll_Hi
 	BPL PRG008_B1CE	 	; If Horz_Scroll_Hi >= 0, jump to PRG008_B1CE
@@ -3968,6 +3963,7 @@ PRG008_B4CA:
 	JMP PRG008_B4CA	 ; Otherwise, loop!
 
 PRG008_B4F3:
+
 	LDA <Player_YVel
 	BPL PRG008_B55B	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
 
@@ -5972,4 +5968,20 @@ HandleIceBreak:
 	JSR Level_QueueChangeBlock
 
 HandleIceBreak2:
+	RTS
+
+SetLastScrollDirection:
+	LDA <Horz_Scroll
+	SUB LastHorzScroll
+	LDA <Horz_Scroll_Hi
+	SBC LastHorzScrollHi
+	BPL SetLastScrollDirection1
+
+	LDA #$01
+	STA <Scroll_LastDir
+	RTS
+
+SetLastScrollDirection1:
+	LDA #$00
+	STA <Scroll_LastDir
 	RTS

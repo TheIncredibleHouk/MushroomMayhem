@@ -1513,7 +1513,7 @@ ObjNorm_FireFlower:
 	BNE ObjNorm_FireFlower1
 
 ObjNorm_IceFlower:
-	LDA #$08
+	LDA #$18
 	STA SprAnimOffset
 
 ObjNorm_FireFlower1:

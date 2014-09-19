@@ -2984,6 +2984,8 @@ SOBJ_POOF		= $16 	; Poof
 	JustTileFlag:		.ds 1
 	AlignSpriteFlag:	.ds 1
 	JustName:			.ds 1
+	LastHorzScroll:		.ds 1
+	LastHorzScrollHi:		.ds 1
 
 	; Tile map property flags
 MAP_PROP_TRAVERSABLE	= $01

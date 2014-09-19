@@ -54,7 +54,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_TowardsPlayer	; Object $3F - OBJ_DRYBONES
 	.word ObjInit_BusterBeatle	; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjInit_DoNothing		; Object $41 - OBJ_ENDLEVELCARD
-	.word ObjInit_BeachedCheep	; Object $42 - OBJ_FLAMINGCHEEP
+	.word ObjInit_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_FallingPlatform	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjInit_HotFoot		; Object $45 - OBJ_HOTFOOT
@@ -139,8 +139,8 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DryBones		; Object $3F - OBJ_DRYBONES
 	.word ObjHit_DoNothing		; Object $40 - OBJ_BUSTERBEATLE
 	.word ObjHit_DoNothing	; Object $41 - OBJ_ENDLEVELCARD
-	.word Player_GetHurt		; Object $42 - OBJ_FLAMINGCHEEP
-	.word Player_GetHurt		; Object $43 - OBJ_BEACHEDCHEEP
+	.word ObjHit_DoNothing		; Object $42 - OBJ_FLAMINGCHEEP
+	.word ObjHit_DoNothing		; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjHit_DoNothing		; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word Player_GetHurt		; Object $45 - OBJ_HOTFOOT
 	.word Player_GetHurt		; Object $46 - OBJ_PIRANHASPIKEBALL
@@ -271,7 +271,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $3F - OBJ_DRYBONES
 	.byte OA3_HALT_BUSTERSPECIAL 	; Object $40 - OBJ_BUSTERBEATLE
 	.byte OA3_HALT_ENDCARDSPECIAL | OA3_TAILATKIMMUNE	; Object $41 - OBJ_ENDLEVELCARD
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $42 - OBJ_FLAMINGCHEEP
+	.byte OA3_HALT_JUSTDRAW 	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte OA3_HALT_JUSTDRAW 	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $45 - OBJ_HOTFOOT
@@ -355,7 +355,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_NORMALANDKILLED	; Object $3F - OBJ_DRYBONES
 	.byte KILLACT_STANDARD	; Object $40 - OBJ_BUSTERBEATLE
 	.byte KILLACT_STANDARD	; Object $41 - OBJ_ENDLEVELCARD
-	.byte KILLACT_POOFDEATH	; Object $42 - OBJ_FLAMINGCHEEP
+	.byte KILLACT_STANDARD	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte KILLACT_STANDARD	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte KILLACT_POOFDEATH	; Object $45 - OBJ_HOTFOOT
@@ -448,7 +448,7 @@ ObjP46:
 	.byte $E5, $E5, $E1, $E1, $E1, $E1, $BD, $BF, $E3, $E3
 ObjP3B:
 ObjP42:
-	.byte $A9, $AB, $AD, $AF
+	.byte $91, $93, $91, $9B
 ObjP43:
 	.byte $E7, $E9, $E7, $EF, $E7, $EF
 ObjP3A:
@@ -1167,6 +1167,13 @@ PRG002_A663:
 PRG002_A68B:
 	RTS		 ; Return
 
+ObjInit_DryCheep:
+	LDA Objects_Property, X
+	STA Objects_Var5, X
+	LDA #$00
+	STA Objects_Property, X
+	JMP ObjInit_BeachedCheep1
+
 ObjInit_BeachedCheep:
 	LDY Objects_Property, X
 	LDA BeachedCheep_VFlip, Y
@@ -1188,6 +1195,12 @@ BeachedCheepReset:
 	STA Objects_Var1, X
 	LDA #$20
 	STA Objects_Timer,X
+	LDA <Objects_X, X
+	STA Objects_Var2, X
+	LDA <Objects_Y, X
+	STA Objects_Var3, X
+	LDA <Objects_YHi, X
+	STA Objects_Var4, X
 	RTS		 ; Return
 
 ObjInit_BeachedCheep1:
@@ -1225,10 +1238,19 @@ ObjNorm_BeachedCheep:
 ObjNorm_BeachedCheep0:
 
 	JSR Player_HitEnemy
+	LDA Objects_PlayerHitStat, X
+	BEQ ObjNorm_BeachedCheep01
 
+	LDA Objects_Var5, X
+	BEQ ObjNorm_BeachedCheep01
+	JSR Player_GetHurt
+
+ObjNorm_BeachedCheep01:
 	LDA Objects_Timer,X
-	BNE PRG002_A7E0	 ; If timer expired, jump to PRG002_A793
+	BEQ ObjNorm_BeachedCheep02
+	JMP PRG002_A7E0	 ; If timer expired, jump to PRG002_A793
 
+ObjNorm_BeachedCheep02:
 	LDA Objects_Var1, X
 	BNE ObjNorm_BeachedCheep1
 	INC Objects_Var1, X
@@ -1289,17 +1311,19 @@ PRG002_A7DF:
 	LDA Object_TileProp
 	AND #$0F
 	CMP #TILE_PROP_HARMFUL
-	BEQ PRG002_A7DF1
+	BNE PRG002_A7DF1
 
-	LDA #OBJ_BEACHEDCHEEP
+	LDA #OBJ_FLAMINGCHEEP
+	STA Level_ObjectID,X
+	LDA #$02
+	STA Objects_Var5, X
 	BNE PRG002_A7DF2
 
 PRG002_A7DF1:
-	LDA #OBJ_FLAMINGCHEEP
+	LDA #$00
+	STA Objects_Var5, X
 
 PRG002_A7DF2:
-	STA Level_ObjectID,X
-
 	JSR BeachedCheepReset
 
 PRG002_A7E0:
@@ -1311,32 +1335,37 @@ PRG002_A7E0:
 	STA Objects_Frame, X
 
 PRG002_A7E1:
-	JSR Object_ShakeAndDraw	 ; Draw Cheep Cheep and don't come back!
-	LDA Level_ObjectID,X
-	CMP #OBJ_FLAMINGCHEEP
-	BNE PRG002_A7E2
+	JSR Object_ShakeAndDraw	
+	LDA Objects_Var5, X
+	BEQ PRG002_A7E2
 
+	STA Debug_Snap
 	LDA Sprite_RAM,Y
-	SUB #$10
+	SUB #$08
 	STA Sprite_RAM+8,Y
 	STA Sprite_RAM+12,Y
 
 	LDA Sprite_RAM+3,Y
 	STA Sprite_RAM+11,Y
+
 	LDA Sprite_RAM+7,Y
 	STA Sprite_RAM+15,Y
 
 	LDA Sprite_RAM+2,Y
+	AND #$BF
 	STA Sprite_RAM+10,Y
 	STA Sprite_RAM+14,Y
 
-	LDA Sprite_RAM+1,Y
-	SUB #$08
+	LDA Objects_Frame, X
+	ASL A
+	TAX 
+	LDA Flame_Frames, X
 	STA Sprite_RAM+9,Y
-	LDA Sprite_RAM+5,Y
-	SUB #$08
+	LDA Flame_Frames + 1, X
 	STA Sprite_RAM+13,Y
-
+	
+	LDX <SlotIndexBackup
+	
 	LDA Objects_XVel, X
 	ORA Objects_YVel, X
 	BEQ PRG002_A7E2
@@ -1352,18 +1381,31 @@ PRG002_A7E1:
 	STA SpecialObj_ID, Y
 	LDA #$20	 
 	STA SpecialObj_Data, Y
-	LDA <Objects_X, X
+	
+	LDA Objects_Var2, X
 	STA SpecialObj_XLo, Y
-	LDA <Objects_Y, X
+	LDA Objects_Var3, X
 	STA SpecialObj_YLo, Y
-	LDA <Objects_YHi, X
+	LDA Objects_Var4, X
 	STA SpecialObj_YHi, Y
+
 	LDA #$0C
 	STA Objects_Timer2, X
 
+	LDA <Objects_X, X
+	STA Objects_Var2, X
+	LDA <Objects_Y, X
+	STA Objects_Var3, X
+	LDA <Objects_YHi, X
+	STA Objects_Var4, X
+	
 PRG002_A7E2:
 	RTS
 	; Different "entropy" values by the object's slot -- keeps things random looking
+
+Flame_Frames:
+	.byte $81, $83, $85, $87
+
 Entropy_BySlot:	.byte $13, $D7, $F9, $36, $7F
 
 ObjInit_HotFoot:
