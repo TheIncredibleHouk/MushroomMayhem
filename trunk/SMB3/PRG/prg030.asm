@@ -3779,16 +3779,19 @@ PRG030_9B66:
 ; changes in Horz_Scroll
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Scroll_Update:
-	LDA Level_7Vertical
-	BNE PRG030_9BB2	 	; If this is a vertical scroller world, jump to PRG030_9BB2
-
 	LDX <Scroll_LastDir	; X = Scroll_LastDir
 	LDA <Horz_Scroll	; A = Horz_Scroll
 	AND #$f8		; Only caring about every 8 pixels (for valid comparison to Scroll_RightUpd)
 	CMP <Scroll_RightUpd,X	; Compared to whichever update applies to the last scroll
 	BEQ PRG030_9BA9	 	; If we are updated completely, jump to PRG030_9BA9
 
-	; Otherwise ...
+	CPX #$00
+	BNE Scroll_Update1
+
+	STA Debug_Snap
+	; Otherwise ..
+
+Scroll_Update1:
 	TAY		 	; Y = A (Horz_Scroll, 8 pixel aligned)
 
 	LDA Scroll_Cols2Upd
@@ -3820,7 +3823,7 @@ PRG030_9B9B:
 	LDA <Scroll_LastDir
 	EOR #$01	 
 	TAX		 
-	LDA #$ff	 
+	LDA #$FF
 	STA <Scroll_RightUpd,X	 ; Store $FF on the other side
 
 	JSR Scroll_DoColumn	 ; Render a column of tiles...
@@ -3833,18 +3836,6 @@ PRG030_9BA9:
 
 PRG030_9BB1:
 	RTS		 ; Return
-
-
-PRG030_9BB2:
-	LDA <Vert_Scroll
-	AND #$f8
-	CMP <Scroll_VertUpd
-	BEQ PRG030_9BD2	 ; If the vertical scroll hasn't changed 8 pixels, jump to PRG030_9BD2 (RTS)
-
-	; Otherwise, change the Scroll_VertUpd value
-	LDA <Vert_Scroll
-	AND #$f8
-	STA <Scroll_VertUpd
 
 VScroll_PageAndDoPatAttrRow:
 	; Set proper Page @ A000 for tile layout data
