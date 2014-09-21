@@ -27,7 +27,7 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_ProjBar	; Object $90 - OBJ_TILTINGPLATFORM
 	.word ObjInit_Freezie	; Object $91 - OBJ_FREEZIE
 	.word ObjInit_Swoosh	; Object $92 - OBJ_SWOOSH
-	.word ObjInit_DoNothing	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.word ObjInit_IntroSequence	; Object $93 - OBJ_INTRO
 	.word ObjInit_Dimmer		; Object $94 - OBJ_DIMMER
 	.word ObjInit_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.word ObjInit_DoNothing		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -69,7 +69,7 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_ProjectileBarCW	; Object $90 - OBJ_TILTINGPLATFORM
 	.word ObjNorm_Freezie	; Object $91 - OBJ_FREEZIE
 	.word ObjNorm_Swoosh	; Object $92 - OBJ_SWOOSH
-	.word ObjNorm_ProjectileBarCW	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.word ObjNorm_IntroSequence	; Object $93 - OBJ_INTRO
 	.word ObjNorm_Dimmer		; Object $94 - OBJ_DIMMER
 	.word ObjNorm_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.word ObjNorm_DoNothing		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -112,7 +112,7 @@ ObjectGroup04_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $90 - OBJ_TILTINGPLATFORM
 	.word ObjHit_Freezie	; Object $91 - OBJ_FREEZIE
 	.word ObjHit_DoNothing	; Object $92 - OBJ_SWOOSH
-	.word ObjHit_DoNothing	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.word ObjHit_DoNothing	; Object $93 - OBJ_INTRO
 	.word ObjHit_DoNothing	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.word ObjHit_DoNothing	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.word ObjHit_DoNothing	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -154,7 +154,7 @@ ObjectGroup04_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $90 - OBJ_TILTINGPLATFORM
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $91 - OBJ_FREEZIE
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $92 - OBJ_SWOOSH
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $93 - OBJ_INTRO
 	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -195,7 +195,7 @@ ObjectGroup04_Attributes2:
 	.byte OA2_TDOGRP0	; Object $90 - OBJ_TILTINGPLATFORM
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $91 - OBJ_FREEZIE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $92 - OBJ_SWOOSH
-	.byte OA2_TDOGRP0	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.byte OA2_TDOGRP0	; Object $93 - OBJ_INTRO
 	.byte OA2_TDOGRP0	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OA2_TDOGRP0	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte OA2_TDOGRP0	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -236,7 +236,7 @@ ObjectGroup04_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $90 - OBJ_TILTINGPLATFORM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $91 - OBJ_FREEZIE
 	.byte OA3_HALT_NORMALONLY	; Object $92 - OBJ_SWOOSH
-	.byte OA3_HALT_NORMALONLY 	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.byte OA3_HALT_NORMALONLY 	; Object $93 - OBJ_INTRO
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -278,7 +278,7 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $90 - OBJ_TILTINGPLATFORM
 	.byte OPTS_SETPT5 | $33	; Object $91 - OBJ_FREEZIE
 	.byte OPTS_SETPT5 | $33	; Object $92 - OBJ_SWOOSH
-	.byte OPTS_SETPT6 | $4F	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.byte OPTS_SETPT5 | $36	; Object $93 - OBJ_INTRO
 	.byte OPTS_NOCHANGE ; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OPTS_SETPT5 | $4C	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte OPTS_SETPT5 | $4C	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -320,7 +320,7 @@ ObjectGroup04_KillAction:
 	.byte KILLACT_STANDARD	; Object $90 - OBJ_TILTINGPLATFORM
 	.byte KILLACT_NORMALSTATE	; Object $91 - OBJ_FREEZIE
 	.byte KILLACT_POOFDEATH	; Object $92 - OBJ_SWOOSH
-	.byte KILLACT_STANDARD	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.byte KILLACT_STANDARD	; Object $93 - OBJ_INTRO
 	.byte KILLACT_STANDARD	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte KILLACT_STANDARD	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte KILLACT_STANDARD	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -394,7 +394,10 @@ ObjP91:
 	.byte $AD, $AF, $B1, $AF, $B5, $B7, $AD, $B3
 ObjP92:
 	.byte $A1, $A3, $A5, $A7, $81, $83, $85, $87, $85, $87, $81, $83, $A1, $A3, $A9, $AB
+
 ObjP93:
+	.byte $81, $83, $A1, $A3, $85, $87, $A5, $A7
+
 ObjP94:
 ObjP95:
 ObjP96:
@@ -4889,7 +4892,7 @@ Swoosh_BlowOut:
 	AND #$18
 	LSR A
 	LSR A
-	LSR A
+	LSR A 
 	ORA #$04
 	STA Objects_Frame, X
 
@@ -4966,3 +4969,303 @@ Swoosh_BlowOut4:
 
 WooshTimes:
 	.byte $40, $60, $80, $A0
+
+ObjInit_IntroSequence:
+	LDA #$FF
+	STA <Objects_XHi, X
+	LDA #$F0
+	STA <Objects_X, X
+	LDA #$FF
+	STA Objects_Timer, X
+	LDA #$08
+	STA <Objects_XVel, X
+	LDA #$01
+	STA Player_QueueSuit
+	RTS
+
+ObjNorm_IntroSequence:
+	LDA Objects_Var1, X
+
+	JSR DynJump
+
+Messages:
+	.word DrawBowserMessage
+	.word IntroWalkToad
+	.word ToadTalk
+	.word ToadFollow
+	.word ToadBye
+
+
+DrawToad:
+	LDA <Objects_X, X
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+	
+	JSR Object_FaceMovement
+	JSR Object_ShakeAndCalcSprite
+	LDX <SlotIndexBackup
+	LDA #SPR_BEHINDBG
+	ORA Objects_SprAttr, X
+	STA Objects_SprAttr, X
+	JSR Object_Draw16x32Sprite
+	RTS
+
+BowserMessage1:
+	.byte $8E, $8F
+	.byte " TRICKED YOU, MARIO! YOU  "
+
+BowserMessage2:
+	.byte $9E, $9F
+	.byte " WILL NEVER ESCAPE ME NOW!"
+
+DrawBowserMessage:
+	LDA #$01
+	STA Player_HaltTick
+	LDA Objects_Timer, X
+	BNE DrawBowserMessage1
+	INC Objects_Var1, X
+
+DrawBowserMessage1:
+	LDA #$80
+	STA Status_Bar_Mode
+	STA Last_Status_Bar_Mode
+	LDA Objects_Var2, X
+	TAX
+
+DrawBowserMessage2:
+	LDA BowserMessage1, X
+	STA Status_Bar_Top , X
+	LDA BowserMessage2, X
+	STA Status_Bar_Bottom , X
+	INX
+	CPX #28
+	BNE DrawBowserMessage2
+
+	RTS
+
+IntroWalkToad:
+	LDA #$00
+	STA Status_Bar_Mode
+	LDA #$01
+	STA Player_HaltTick
+	LDA <Objects_X, X
+	CMP #$30
+	BNE IntroWalkToad1
+
+	INC Objects_Var1, X
+	LDA #$FF
+	STA Objects_Timer, X
+
+IntroWalkToad1:
+	LDA #$08
+	INC NoGravity
+	JSR Object_ApplyXVel
+	JSR DrawToad
+	RTS
+
+ToadMessage1:
+	.byte $8A, $8B
+	.byte " MARIO! IT IS A TRAP! OH  "
+	.byte $8A, $8B
+	.byte " BOWSER FORCED ME TO BUILD"
+	.byte $8A, $8B
+	.byte " HE DOES NOT KNOW I BUILT "
+	.byte $8A, $8B
+	.byte " I WILL HELP YOU ESCAPE.  "
+
+ToadMessage2:
+	.byte $9A, $9B
+	.byte " I GUESS I WAS TOO LATE..."
+	.byte $9A, $9B
+	.byte " THIS PART OF THE CASTLE. "
+	.byte $9A, $9B
+	.byte " A WAY FOR YOU TO ESCAPE  "
+	.byte $9A, $9B
+	.byte " GO THROUGH THE RIGHT WALL"
+
+ToadTalkOffsets:
+	.byte $00, $1C, $38, $54
+
+ToadTalk:
+	LDA #$01
+	STA Player_HaltTick
+	LDA #$80
+	STA Status_Bar_Mode
+	STA Last_Status_Bar_Mode
+
+	LDA Objects_Var2, X
+	TAX
+	LDA ToadTalkOffsets, X
+	TAX
+	LDY #$00
+
+ToadTalk1:
+	LDA ToadMessage1, X
+	STA Status_Bar_Top , Y
+	LDA ToadMessage2, X
+	STA Status_Bar_Bottom , Y
+	INX
+	INY
+	CPY #$1C
+	BNE ToadTalk1
+	LDX <SlotIndexBackup
+	LDA Objects_Timer, X
+	BNE ToadTalk2
+	LDA #$FF
+	STA Objects_Timer, X
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	CMP #$04
+	BNE ToadTalk2
+	
+	INC Objects_Var1, X
+	LDA #$00
+	STA Objects_Var2, X
+
+ToadTalk2:
+	JMP DrawToad
+
+ToadFollow:
+	LDA <Player_HaltGame
+	BNE ToadFollow2
+	LDA #$40
+	STA Air_Time
+	LDA <Objects_XHi, X
+	CMP #$0C
+	BNE ToadFollow0
+	LDA #$FF
+	STA Objects_Timer, X
+	INC Objects_Var1, X
+
+ToadFollow0:
+	LDA #$00
+	STA Status_Bar_Mode
+	LDA <Player_XVel
+	STA <Objects_XVel, X
+	JSR Object_ApplyXVel
+	LDA Effective_Suit
+	BEQ ToadFollow2
+
+	LDA Effective_Suit
+	CMP #$0B
+	BEQ ToadFollow3
+
+	SUB #$02
+	CMP Objects_Var2, X
+	BNE ToadFollow1
+
+	INC Objects_Var2, X
+
+ToadFollow1:
+	JSR ToadExplainText
+
+ToadFollow2:
+	LDX <SlotIndexBackup
+	JMP DrawToad
+
+ToadFollow3:
+	LDA #$08
+	STA Objects_Var2, X
+	BNE ToadFollow1
+
+ToadExplain1:
+	.byte $8A, $8B
+	.byte " THE SUPER MUSHROOM SHOULD"
+	.byte $8A, $8B
+	.byte " USE B TO THROW FIREBALLS "
+	.byte $8A, $8B
+	.byte " USE B TO BREAK BRICKS AND"
+	.byte $8A, $8B
+	.byte " HOLD DOWN AND PRESS B TO "
+	.byte $8A, $8B
+	.byte " DUCK WHEN MOVING TO GO IN"
+	.byte $8A, $8B
+	.byte " USE B TO THROW HAMMERS   "
+	.byte $8A, $8B
+	.byte " USE B TO THROW ICEBALLS  "
+	.byte $8A, $8B
+	.byte " DOUBLE TAP B TO DASH AND "
+	.byte $8A, $8B
+	.byte " PRESS AGAINST A WALL MID "
+	
+
+ToadExplain2:
+	.byte $9A, $9B
+	.byte " BE FAMILIAR TO YOU.      "
+	.byte $9A, $9B
+	.byte " THAT CAN MELT ICE.       "
+	.byte $9A, $9B
+	.byte " DEFLECT PROJECTILES.     "
+	.byte $9A, $9B
+	.byte " BE INVINCIBLE TEMPORARILY"
+	.byte $9A, $9B
+	.byte " YOUR SHELL TO BUST BRICKS"
+	.byte $9A, $9B
+	.byte " TO BREAK BIRCKS AND STONE"
+	.byte $9A, $9B
+	.byte " TO FREEZE WATER AND FOES."
+	.byte $9A, $9B
+	.byte " BREAK TURN BLOCKS.       "
+	.byte $9A, $9B
+	.byte " AIR AND TAP A TO WALLJUMP"
+
+ToadExplainOffsets:
+	.byte $00, $1C, $38, $54, $70, $8C, $A8, $C4, $E0
+
+ToadExplainText:
+	LDA #$80
+	STA Status_Bar_Mode
+	STA Last_Status_Bar_Mode
+	LDA Objects_Var2, X
+	TAX
+	LDA ToadExplainOffsets, X
+	TAX
+	LDY #$00
+
+ToadExplainText1:
+	LDA ToadExplain1, X
+	STA Status_Bar_Top , Y
+	LDA ToadExplain2, X
+	STA Status_Bar_Bottom , Y
+	INX
+	INY
+	CPY #$1C
+	BNE ToadExplainText1
+	RTS
+
+
+ToadByeMsg1:
+	.byte $8A, $8B
+	.byte " USE THE PIPE TO ESCAPE. I"
+
+ToadByeMsg2:
+	.byte $9A, $9B
+	.byte " MUST STAY BEHIND FOR NOW."
+
+ToadBye:
+	LDA Objects_Timer, X
+	BNE ToadBye0
+	LDA #$00
+	STA Status_Bar_Mode
+	RTS
+
+
+ToadBye0:
+	LDA #$01
+	STA Player_HaltTick 
+	LDA #$80
+	STA Status_Bar_Mode
+	STA Last_Status_Bar_Mode
+	LDX #$00
+
+ToadBye1:
+	LDA ToadByeMsg1, X
+	STA Status_Bar_Top , X
+	LDA ToadByeMsg2, X
+	STA Status_Bar_Bottom , X
+	INX
+	CPX #$1C
+	BNE ToadBye1
+	RTS

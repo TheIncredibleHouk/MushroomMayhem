@@ -68,7 +68,7 @@ ObjectGroup00_InitJumpTable:
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_DoNothing	; Object $00
-	.word ObjNorm_DoNothing	; Object $01
+	.word ObjNorm_BowserFireBall	; Object $01
 	.word ObjNorm_SnowBall	; Object $02
 	.word ObjNorm_EaterBlock	; Object $03
 	.word ObjNorm_DoNothing	; Object $04
@@ -110,7 +110,7 @@ ObjectGroup00_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup00_CollideJumpTable:
-	.word ObjHit_DoNothing	; Object $00
+	.word Player_GetHurt	; Object $00
 	.word ObjHit_DoNothing	; Object $01
 	.word ObjHit_SnowBall	; Object $02
 	.word ObjHit_SolidBlock	; Object $03
@@ -153,7 +153,7 @@ ObjectGroup00_CollideJumpTable:
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup00_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $00
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $01
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $01
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $02
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $03
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $04
@@ -251,7 +251,7 @@ ObjectGroup00_Attributes2:
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $00
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $01
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $01
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE	; Object $02
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $03
 	.byte OA3_HALT_JUSTDRAWTALL 	; Object $04
@@ -293,7 +293,7 @@ ObjectGroup00_Attributes3:
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $00
-	.byte OPTS_SETPT5 | $48	; Object $01
+	.byte OPTS_NOCHANGE; Object $01
 	.byte OPTS_NOCHANGE	; Object $02
 	.byte OPTS_NOCHANGE	; Object $03
 	.byte OPTS_SETPT5 | $48	; Object $04
@@ -434,7 +434,7 @@ ObjP20:
 	.byte $97, $99, $9B, $9D, $A1, $AB, $A3, $A1, $A3, $AB, $A5, $A1, $A5, $AB, $A7, $A1
 	.byte $D7, $D9, $DB, $DD, $E1, $EB, $E3, $E1, $E3, $EB, $E5, $E1, $E5, $EB, $E7, $E1
 
-ObjP01:	.byte $81, $81
+ObjP01:	.byte $F3, $F5, $F3, $F5, $BB, $BD, $BB, $BF
 ObjP02:	.byte $95, $97, $8D, $8F
 ObjP04:	.byte $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
 ObjP05:	.byte $95, $95, $97, $97
@@ -1991,7 +1991,7 @@ ObjHit_Koopaling:
 ObjInit_Bowser:
 
 	; Bowser takes 34 fireball hits!
-	LDA #34
+	LDA #$01
 	STA Objects_HitCount,X
 
 	; Bowser is giant!
@@ -2607,7 +2607,7 @@ PRG001_BB5E:
 	STA Objects_State,X
 
 	; Bowser's fireball
-	LDA #OBJ_WATERFILLER
+	LDA #$01
 	STA Level_ObjectID,X
 
 	; Set Bowser's internal state to 2
@@ -2629,6 +2629,7 @@ PRG001_BB5E:
 	STA Objects_YHi,Y
 
 	LDA Objects_FlipBits,X
+	STA Objects_FlipBits, Y
 	ASL A
 	ASL A
 	ROL A
@@ -2651,14 +2652,16 @@ PRG001_BB5E:
 	LDX <Temp_Var1		
 	ADD Bowser_FireballXOff,X
 	STA Objects_X,Y	
+	LDA #$00
+	STA Objects_YVel, Y
 
-	LDA RandomN,Y
-	AND #$07	
-	TAX		 ; X = random 0 to 7
-
-	; A bit random how the fireball moves
-	LDA PRG001_BB4B,X
-	STA Objects_TargetingYVal,Y
+	;LDA RandomN,Y
+	;AND #$07	
+	;TAX		 ; X = random 0 to 7
+	;
+	;; A bit random how the fireball moves
+	;LDA PRG001_BB4B,X
+	;STA Objects_TargetingYVal,Y
 
 	; Set fireball palette
 	LDA #SPR_PAL1
@@ -2789,12 +2792,12 @@ Bowser_TileOffsets:	.byte 8, 24
 Bowser_BustFloor:
 	LDY #$01	 ; Y = 1 (two tiles to potentially smash)
 PRG001_BC32:
-	
+
 	LDA Bowser_TileProps,Y	; Get this tile
-	CMP #TILE_ITEM_BRICK
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
 	BEQ PRG001_BC33
 
-	CMP #TILE_PROP_STONE
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
 	BNE PRG001_BC69	 	; If this tile is not the solid brick tile, jump to PRG001_BC69
 
 PRG001_BC33:
@@ -2804,8 +2807,7 @@ PRG001_BC33:
 
 	; Queue a block change to erase to background!
 	LDA Bowser_TileValues,Y
-	AND #$C0
-	ORA #$01
+	EOR #$01
 	STA Level_ChgTileEvent
 
 	; Aligned Bowser impact Y
@@ -3138,6 +3140,34 @@ PRG001_BE7F:
 	LDA #$02
 	STA <Objects_Var5,X
 
+	LDY #$04	 ; Y = 4
+PRG001_BE80:
+
+	LDA Objects_State,Y
+	BEQ PRG001_BE81	 ; If this object slot is dead/empty, jump to PRG004_AE35
+
+	DEY		 ; Y--
+	BPL PRG001_BE80	 ; While
+
+PRG001_BE81:
+	LDA #OBJ_KEY
+	STA Level_ObjectID, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, Y
+	
+	LDA <Objects_X, X
+	STA Objects_X, Y
+
+	LDA <Objects_Y, X
+	STA Objects_Y, Y
+
+	LDA <Objects_XHi, X
+	STA Objects_XHi, Y
+
+	LDA <Objects_YHi, X
+	STA Objects_YHi, Y
+
 	; Disable timer
 	LSR A	; A = 1
 	STA Level_TimerEn
@@ -3258,127 +3288,12 @@ PRG001_BF09:
 
 Bowser_DoTimeBonus:
 
-	; Set timer to $40
-	LDA #$40
-	STA Objects_Timer,X
-
-	INC <Objects_Var5,X	 ; Objects_Var5 = 4
-
 PRG001_BF16:
 	RTS		 ; Return
 
 
 Bowser_DoorAppear:
-	LDA Objects_Timer,X	  
-	BEQ PRG001_BF45	 ; If timer expired, jump to PRG001_BF45
 
-	; Otherwise...
-
-	CMP #$10
-	BNE PRG001_BF40	 ; If timer <> $10, jump to PRG001_BF40
-
-	; Door appearance sound
-	LDA #SND_LEVELPOOF
-	STA Sound_QLevel1
-
-	LDY #$01	 ; Y = 1 (two tiles for the final door)
-PRG001_BF27:
-
-	; Using brick bust for door change
-	LDA #$01
-	STA BrickBust_En,Y
-
-	; Door appearance coordinates
-	LDA DoorAppear_YUpr,Y
-	STA BrickBust_YUpr,Y
-	LDA DoorAppear_X,Y
-	STA BrickBust_X,Y
-
-	LDA #$1f
-	STA BrickBust_HEn,Y
-
-	DEY		 ; Y--
-	BPL PRG001_BF27	; While Y >= 0, loop
-
-PRG001_BF40:
-	RTS		 ; Return
-
-	; Different palette colors applied to door
-Bowser_FinalDoorColorCycle:
-	.byte $21, $2A, $31, $26
-
-PRG001_BF45:
-	; Patterns for door
-	LDA #$3e 
-	STA PatTable_BankSel+4 
-
-	LDY #$01	 ; Y = 1 
-PRG001_BF4C:
-	LDX Object_SprRAM,Y	 ; X = Sprite RAM Offset
- 
-	; Store Y parts where door appears
-	LDA DoorAppear_YUpr,Y 
-	STA Sprite_RAM,X 
-	STA Sprite_RAM+4,X
- 
-	; Door patterns
-	LDA #$a1 
-	STA Sprite_RAM+1,X 
-	STA Sprite_RAM+5,X
- 
-	; Door attributes
-	LDA #$01 
-	STA Sprite_RAM+2,X 
-	STA Sprite_RAM+6,X
- 
-	; Store X parts of door
-	LDA DoorAppear_X,Y 
-	STA Sprite_RAM+3,X 
-	ADD #$08 
-	STA Sprite_RAM+7,X 
-
-	DEY		 ; Y-- 
-	BPL PRG001_BF4C	 ; While Y >= 0, loop!
- 
-	LDA <Player_YHi 
-	BEQ PRG001_BF9B	 ; If Player is not low, jump to PRG001_BF9B
- 
-	LDA <Player_X 
-	SUB #$e4 
-	CMP #$08 
-	BGE PRG001_BF9B	 ; If Player is way to the right, jump to PRG001_BF9B
-
-	LDA <Player_Y 
-	CMP #$48 
-	BLT PRG001_BF9B	 ; If Player is higher than Y 48, jump to PRG001_BF9B
-
-	; Player is low enough and not way to the right
-	LDA <Pad_Holding 
-	AND #PAD_UP
-	BEQ PRG001_BF9B	 ; If Player is not pressing UP, jump to PRG001_BF9B
- 
-	; Jump to princess rescue scene
-	STA Player_RescuePrincess	; Flag for princess rescue! 
-	LDA #$00 
-	STA Map_ReturnStatus 
-	INC Level_ExitToMap 
-
-PRG001_BF9B:
-	LDA <Counter_1 
-	LSR A	 
-	LSR A	 
-	AND #$03	 ; A = 0 to 3 
-	TAY		 ; -> 'Y'
-
-	; Store cycle color into palette buffer
-	LDA Bowser_FinalDoorColorCycle,Y 
-	STA Palette_Buffer+$15 
-
-	; Queue palette update!
-	LDA #$06
-	STA Graphics_Queue 
-
-	LDX <SlotIndexBackup	; X = object slot index 
 	RTS		 ; Return
 
 ; Rest of ROM bank was empty
@@ -5030,4 +4945,28 @@ ObjNorm_IceFireFly3_1:
 
 ObjNorm_IceFireFly4:
 	LDX <SlotIndexBackup
+	JMP Object_ShakeAndDraw
+
+Fireball_Flips:
+	.byte $00, SPR_VFLIP
+
+ObjNorm_BowserFireBall:
+	LDA <Player_HaltGame
+	BNE ObjNorm_BowserFireBall1
+
+	JSR Object_DeleteOffScreen
+	INC Objects_Var1, X
+	LDA Objects_Var1, X
+	LSR A
+	AND #$01
+	TAY
+	LDA Objects_FlipBits, X
+	AND #~SPR_VFLIP
+	ORA Fireball_Flips, Y
+	STA Objects_FlipBits, X
+	JSR Object_ApplyXVel	 ; Apply X Velocity
+	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+	JSR Object_HitTestRespond
+
+ObjNorm_BowserFireBall1:
 	JMP Object_ShakeAndDraw

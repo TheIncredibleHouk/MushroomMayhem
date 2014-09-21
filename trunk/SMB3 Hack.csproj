@@ -87,7 +87,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>C:\Users\Daiz\Desktop\ROM Hacking\SMB3 ASM\bin\build-SMB3.bat</PreBuildEvent>
+    <PreBuildEvent>cd "F:\ROM Hacking\Mario Adventure 3\SMB3"
+..\nesasm.exe smb3.asm
+cd ..
+RomMerger.exe "SMB3\smb3.nes" "MarioAdventure3.nes"
+pause</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

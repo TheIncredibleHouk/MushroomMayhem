@@ -1339,7 +1339,6 @@ PRG002_A7E1:
 	LDA Objects_Var5, X
 	BEQ PRG002_A7E2
 
-	STA Debug_Snap
 	LDA Sprite_RAM,Y
 	SUB #$08
 	STA Sprite_RAM+8,Y

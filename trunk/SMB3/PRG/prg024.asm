@@ -2150,7 +2150,7 @@ Title_PrepForWorldMap:
 
 FillItemsLoop:
 	TYA
-	STA Inventory_Items, X
+	;STA Inventory_Items, X
 	INX
 	INY
 	CPX #24

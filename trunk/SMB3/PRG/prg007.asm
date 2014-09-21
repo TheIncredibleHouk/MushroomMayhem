@@ -1046,23 +1046,11 @@ Kill_Enemy_Anyway:
 	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
 
 	STY DAIZ_TEMP1
-	INC Exp_Earned	 ; Get proper score award
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It11
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, Y
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, Y
-	STA <Temp_Var2
-	JSR Produce_Coin
+	JSR Reap_CoinY
 	LDY DAIZ_TEMP1
-
-Dont_Coin_It11:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,Y
+	INC Exp_Earned
 
 PRG007_A6FD:
 	RTS		 ; Return
@@ -3598,30 +3586,19 @@ PRG007_B826:
 PRG007_B827:	
 	LDA SpecialObj_ID, X
 	CMP #SOBJ_ICEBALL
-	BNE Try_Wand
+	BNE PRG007_B836
+	JSR CheckTailSpin
 	JSR SetPlayerFrozen
 	LDA SpecialObj_XVel,X
 	STA <Player_XVel
 	JMP SpecialObj_Remove
 
-Try_Wand:
-	CMP #$10
-	BNE PRG007_B836	 ; If this is not the recovered wand, jump to PRG007_B836
-
-	; Wand grabbed!
-
-	INC Level_GetWandState	 ; Level_GetWandState++
-
-	; Play victory music!
-	LDA #MUS1_BOSSVICTORY
-	STA Sound_QMusic1
-
-	JMP SpecialObj_Remove	 ; Remove the wand and don't come back!
-
 PRG007_B836:
 	LDA Player_StarInv
 	BNE PRG007_B844	 ; If Player is Star Man invincible, jump to PRG007_B844
-
+	
+	JSR CheckTailSpin
+	
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
 
 SpecialObj_Remove:
@@ -5248,4 +5225,23 @@ SObj_GetTile:
 	TAY
 	LDA TileProperties, Y
 	STA CurrentTileProperty
+	RTS
+
+CheckTailSpin:
+	LDA Player_TailAttack
+	BEQ CheckTailSpin1
+
+	LDA SpecialObj_XVel, X
+	JSR Negate
+	STA SpecialObj_XVel, X
+	LDA SpecialObj_YVel, X
+	JSR Negate
+	STA SpecialObj_YVel, X
+	JSR SObj_AddXVelFrac
+	JSR SObj_AddYVelFrac
+	INC Exp_Earned
+	PLA
+	PLA
+
+CheckTailSpin1:
 	RTS

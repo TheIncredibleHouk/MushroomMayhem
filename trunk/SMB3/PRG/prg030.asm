@@ -1758,6 +1758,9 @@ PRG030_8F31:
 	LDA Effective_Suit
 	BNE PRG030_8F32
 
+	LDX Player_Level
+	CPX #ABILITY_RESURRECT
+	BCC PRG030_8F32
 	LDA Map_ReturnStatus
 	BEQ PRG030_8F32
 
@@ -3788,7 +3791,6 @@ Scroll_Update:
 	CPX #$00
 	BNE Scroll_Update1
 
-	STA Debug_Snap
 	; Otherwise ..
 
 Scroll_Update1:
@@ -4626,9 +4628,9 @@ Reserve_Flash:
 	.byte $00, $00, $00, $01, $02, $03, $00, $00, $00, $00, $00
 
 Try_Item_Reserve_Release:
-	LDA Player_Badge
-	CMP #$07
-	BNE No_Release
+	LDA Player_Level
+	CMP #ABILITY_ITEMRESERVE
+	BCC No_Release
 	LDA PowerUp_Reserve
 	BEQ No_Release
 	LDA <Pad_Input
@@ -4647,16 +4649,12 @@ Try_Item_Reserve_Release:
 	LDA <Player_XHi
 	STA Objects_XHi + 5
 	LDA <Player_Y
+	SUB #$08
 	STA Objects_Y + 5
 	LDA <Player_YHi
+	SBC #$00
 	STA Objects_YHi + 5
-	LDA Objects_Y + 5
-	SEC
-	SBC #$08
-	STA Objects_Y + 5
-	BCS No_PUp_Dec
-	DEC Objects_YHi + 5
-
+	
 No_PUp_Dec:
 	LDA #$01
 	STA From_Reserve
@@ -5906,3 +5904,8 @@ Sprite_RAM_Clear:	; $FD84
 	STA Sprite_RAM + 248
 	STA Sprite_RAM + 252
 	RTS		 ; Return
+
+GetPowerBadgeY:
+	LDA Player_Badge
+	CMP #BADGE_PMETER
+	
