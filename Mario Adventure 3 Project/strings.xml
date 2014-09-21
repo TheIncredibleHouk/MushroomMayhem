@@ -582,7 +582,7 @@
     <block value="3E">Empty ? Block</block>
     <block value="3F">Empty ? Block</block>
     <block value="40">Background</block>
-    <block value="41"></block>
+    <block value="41">Background</block>
     <block value="42"></block>
     <block value="43"></block>
     <block value="44"></block>
@@ -646,7 +646,7 @@
     <block value="7E"></block>
     <block value="7F">Empty ? Block</block>
     <block value="80">Background</block>
-    <block value="81"></block>
+    <block value="81">Background</block>
     <block value="82"></block>
     <block value="83"></block>
     <block value="84"></block>
@@ -710,7 +710,7 @@
     <block value="BE"></block>
     <block value="BF">Empty ? Block</block>
     <block value="C0">Background</block>
-    <block value="C1"></block>
+    <block value="C1">Background</block>
     <block value="C2"></block>
     <block value="C3"></block>
     <block value="C4"></block>

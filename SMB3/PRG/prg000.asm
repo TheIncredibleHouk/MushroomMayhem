@@ -175,7 +175,7 @@ Object_BoundBox:
 Object_AttrFlags:
 	; Defines flags which set attributes of objects
 	.byte OAT_BOUNDBOX00	; Object $00
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $01
+	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY | OA3_NINJAHAMMER_IMMUNE | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $01
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $02
 	.byte OAT_BOUNDBOX04 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $03
 	.byte OAT_BOUNDBOX02	; Object $04
@@ -321,7 +321,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $90 - OBJ_TILTINGPLATFORM
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_BOUNCEOFFOTHERS	; Object $91 - OBJ_FREEZIE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY 	; Object $92 - OBJ_SWOOSH
-	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $93 - OBJ_TWIRLINGPERIODIC
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $93 - OBJ_INTRO
 	.byte OAT_BOUNDBOX06 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OAT_BOUNDBOX06 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte OAT_BOUNDBOX06 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -1849,35 +1849,15 @@ PRG000_CD80:
 
 
 ObjectKill_SetShellKillVars:
-	; Set object state to Killed
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It3
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
+	JSR Reap_Coin
 
 ObjectKill_NoScore:
-Dont_Coin_It3:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
 	; Bounce up a bit
 	LDA #-$30
 	STA <Objects_YVel,X
-
-	; Set ShellKillFlash vars
-	LDA <Objects_Y,X
-	STA ShellKillFlash_Y
-	LDA <Objects_X,X
-	STA ShellKillFlash_X
-	LDA #$0a	 
-	STA ShellKillFlash_Cnt
 	RTS		 ; Return
 
 ObjectKill_Others:
@@ -2168,18 +2148,7 @@ PRG000_CE94:
 	BEQ PRG000_CEC6
 	; 1 EXP
 	INC Exp_Earned
-
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It4
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
+	JSR Reap_Coin
 
 Dont_Coin_It4:
 
@@ -2431,17 +2400,7 @@ PRG000_CF49:
 
 	; Object which was held is dead!
 	INC Exp_Earned
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It5
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
+	JSR Reap_Coin
 
 Dont_Coin_It5:
 	LDA #OBJSTATE_KILLED
@@ -2870,17 +2829,7 @@ PRG000_D120:
 	; 1 EXP for enemy defeated
 	INC Exp_Earned
 
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It6
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
+	JSR Reap_Coin
 
 Dont_Coin_It6:
 	LDA #OBJSTATE_KILLED
@@ -2942,6 +2891,21 @@ Object_FlipFace:
 
 PRG000_D16B:	.byte -$08, $08
 
+Object_FaceMovement:
+	LDA Objects_XVel, X
+	BEQ Object_FaceMovement1
+	LDA Objects_FlipBits, X
+	AND #~SPR_HFLIP
+	STA Objects_FlipBits, X
+	LDA Objects_XVel, X
+	BMI Object_FaceMovement1
+
+	LDA Objects_FlipBits, X
+	ORA #SPR_HFLIP
+	STA Objects_FlipBits, X
+
+Object_FaceMovement1:
+	RTs
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_HandleBumpUnderneath
@@ -2987,23 +2951,10 @@ Object_HandleBumpUnderneath1:
 	; Object killed, get 100 pts
 
 	INC Exp_Earned
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It7
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
+	JSR Reap_Coin
 
-Dont_Coin_It7:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X 
-
-	INC Exp_Earned ; Jump to Exp_Inc and don't come back! 
 	RTS
 
 PRG000_D19E:
@@ -3225,7 +3176,7 @@ PRG000_D253:
 
 PRG000_D268:
 	LDA Player_Badge
-	CMP #$08
+	CMP #BADGE_BOOTS
 	BEQ PRG000_D272
 	LDY ObjGroupRel_Idx	 ; Y = group relative index
 	LDA ObjectGroup_Attributes3,Y	 ; Get object's attribute 3 setting
@@ -3322,19 +3273,8 @@ PRG000_D2E4:
 	LDA Kill_Tally
 	STA Exp_Earned
 	INC Kill_Tally
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It2
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
+	JSR Reap_Coin
 
-Dont_Coin_It2:
 	PLA		 ; Restore index into CollideJumpTable
 	TAY		 ; -> 'Y'
 
@@ -4662,19 +4602,7 @@ PRG000_D8EB:
 	; For all objects where bit 7 is not set in their attributes...
 
 	INC Exp_Earned
-	LDA Player_Badge
-	CMP #$09
-	BNE Dont_Coin_It9
-	INC Coins_Earned ; One more coin earned
-	LDA Objects_Y, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-	LDA Objects_X, X
-	STA <Temp_Var2
-	JSR Produce_Coin
-
-Dont_Coin_It9:
+	JSR Reap_Coin
 
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X	 ; Set object state to Killed
@@ -4941,7 +4869,7 @@ PRG000_DA15:
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
 
 	LDA Player_Badge
-	CMP #$01
+	CMP #BADGE_DAMAGE
 	BNE PRG000_DA4E
 	; Higher level power-up suits...
 	LDA #$17
@@ -5162,17 +5090,7 @@ Player_TailAttackDo:
 
 PRG000_DB7A:
 
-	; Set ShellKillFlash vars
-	LDA PRG000_DB17,Y
-	ADD <Player_X	
-	STA ShellKillFlash_X
-
-	LDA <Player_Y
-	ADD #$10
-	STA ShellKillFlash_Y
-
-	LDA #$0a
-	STA ShellKillFlash_Cnt
+	JSR Reap_Coin
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6836,4 +6754,38 @@ Object_FacePlayer:
 	JSR Level_ObjCalcXDiffs
 	LDA PlayerDirection, Y
 	STA Objects_FlipBits, X
+	RTS
+
+Reap_Coin:
+	LDA Player_Badge
+	CMP #BADGE_COIN
+	BNE Reap_Coin1
+
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, X
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, X
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Reap_Coin1:
+	RTS
+
+Reap_CoinY:
+	LDA Player_Badge
+	CMP #BADGE_COIN
+	BNE Reap_CoinY1
+
+	INC Coins_Earned ; One more coin earned
+	LDA Objects_Y, Y
+	CLC
+	ADC #$08
+	STA <Temp_Var1
+	LDA Objects_X, Y
+	STA <Temp_Var2
+	JSR Produce_Coin
+
+Reap_CoinY1:
 	RTS

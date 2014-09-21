@@ -914,11 +914,6 @@ PRG008_A50C:
 	BEQ PRG008_A51A	 ; If Player is not running, jump to PRG008_A51A
 
 	LDY #$08	 ; Otherwise, Y = $8
-	LDA Player_Badge
-	CMP #06
-	BNE PRG008_A51A
-	LDY #$02
-
 PRG008_A51A:
 	STY Player_PMeterCnt	 ; Set Player_PMeterCnt
 
@@ -953,7 +948,7 @@ PowerUp_Palettes:
 	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
 	.byte $00, $27, $36, $06	; 8 - #DAHRKDAIZ Fire Fox Mario
 	.byte $00, $30, $31, $01	; 9 - Unused
-	.byte $00, $06, $30, $0F	; A - #DAHRKDAIZ Boo Mario
+	.byte $00, $25, $36, $0F	; A - #DAHRKDAIZ Boo Mario
 	.byte $00, $36, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
 	.byte $00, $0B, $2B, $0F	; infected
 
@@ -2385,7 +2380,7 @@ PRG008_AC73:
 Normal_Jump:
 	STA DAIZ_TEMP1
 	LDA Player_Badge
-	CMP #$05
+	CMP #BADGE_JUMP
 	BNE Jump_Normal
 	LDA DAIZ_TEMP1
 	SEC
@@ -4128,13 +4123,13 @@ PRG008_B585_3:
 	CPX #$02
 	BCS PRG008_B585_4
 	LDA <Level_Tile
-	BEQ PRG008_B585_4
 	AND #$3F
 	BNE PRG008_B585_4
-	LDA #$01
-	STA <Player_InAir
+	LDA <Player_YVel
+	BMI PRG008_B585_4
 	LDA #$D0
 	STA <Player_YVel
+	STA <Player_InAir
 	LDA #$00
 	STA TempA
 
@@ -5051,9 +5046,6 @@ PRG008_BDA4:
 	LDA <Temp_Var3
 	CMP #TILE_PROP_SOLID_TOP
 	BCC PRG008_BDAF
-	LDA Player_Badge
-	CMP #$08
-	BEQ PRG008_BDAE	 ; 
 
 PRG008_BDAE:
 	JMP Player_GetHurt	 ; Get hurt!
@@ -5081,9 +5073,7 @@ PRG008_BDB2:
 	AND #$0F
 	CMP #TILE_PROP_SLICK
 	BNE PRG008_BE2E
-	LDA Player_Badge
-	CMP #$04
-	BEQ PRG008_BE2E
+
 	LDA #$02	 
 	STA Player_Slippery	 ; Player_Slippery = 2 (ground is REALLY slippery!)
 
@@ -5464,6 +5454,7 @@ Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 	BNE CheckAirChange
 	RTS
 
+AirTicker: .byte $07, $0A
 CheckAirChange:
 	LDA Air_Time
 	BPL Change_Air
@@ -5474,17 +5465,29 @@ Air_Kill:
 Change_Air:
 	ADD Air_Change
 	BMI Air_Kill
-	CMP #$41
-	BLS NotMaxAir
+	CMP #$40
+	BCC NotMaxAir
 	LDA #$40
 	STA Air_Time
 	RTS
 
 NotMaxAir:
 	STA TempA
-	LDA <Counter_1
-	AND #$07
-	BNE NoChange
+	INC Air_Time_Frac
+	LDA Air_Time_Frac
+	LDY #$00
+	LDX Player_Badge
+	CPX #BADGE_AIR
+	BNE NotMaxAir1
+
+	INY
+
+NotMaxAir1:
+	CMP AirTicker, Y
+	BCC NoChange
+
+	LDA #$00
+	STA Air_Time_Frac
 	LDA TempA
 	STA Air_Time
 	CMP #$10
@@ -5528,7 +5531,7 @@ Do_PowerChange3:
 
 Do_PUp_Proper:
 	LDA Player_Badge
-	CMP #$03
+	CMP #BADGE_NOSHOORMS
 	BEQ PUp_RTS
 	LDA <Player_Suit
 	BNE PUp_RTS

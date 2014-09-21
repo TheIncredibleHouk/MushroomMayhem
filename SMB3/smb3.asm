@@ -2577,6 +2577,20 @@ CFIRE_LASER		= $15	; Laser fire
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Virus:				.ds 1	;
 	Old_World_Map_Tile:	.ds	1	;
+
+BADGE_COIN = 1
+BADGE_NOSHOORMS = 2
+BADGE_AIR = 3
+BADGE_PMETER = 4
+BADGE_JUMP = 5
+BADGE_BOOTS = 6
+BADGE_DAMAGE = 7
+
+ABILITY_RESURRECT = 1
+ABILITY_RESHELL = 2
+ABILITY_SHELCATCH = 3
+ABILITY_ITEMRESERVE = 4
+ABILITY_CHERRY_STAR = 5
 	Player_Badge:		.ds 1	;
 	Player_Level:		.ds 1	;
 	Tile_Anim_Enabled:  .ds 1	;
@@ -2709,6 +2723,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
 	Player_Coins:		.ds 4	; Mario's coins
+	Air_Time_Frac:		.ds 1
 	Air_Time:			.ds 1	;
 
 AIR_INCREASE	= 3
@@ -3554,7 +3569,8 @@ OBJ_FREEZIE			= $91
 OBJ_TWIRLINGPLATCWNS	= $91	; Twirling platform, clockwise, non-stop
 OBJ_SWOOSH			= $92
 OBJ_TWIRLINGPLATCW	= $92	; Twirling platform, clockwise
-OBJ_TWIRLINGPERIODIC	= $93	; Twirling platform, periodic
+OBJ_TWIRLINGPERIODIC = 0 ;
+OBJ_INTRO	= $93	; Twirling platform, periodic
 OBJ_BIGQBLOCK_3UP	= $00 ; 
 OBJ_DIMMER	= $94	; Big ? block (3 1-ups)
 OBJ_BIGQBLOCK_MUSHROOM	= $95	; Big ? block (biggie)

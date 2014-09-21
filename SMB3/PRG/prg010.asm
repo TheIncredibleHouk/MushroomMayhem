@@ -3807,15 +3807,15 @@ DMC08_End
 
 Try_Ability_Change:
 	LDA Player_Level
-	BEQ Ability_RTS
+	;BEQ Ability_RTS
 	LDA <Pad_Input
 	AND #PAD_START
 	BEQ Ability_RTS
 	LDA Player_Badge
-	CMP Player_Level
+	;CMP Player_Level
 	BCS Reset_Ability
 	INC Player_Badge
-	LDA Player_Badge
+	LDA Player_Badge 
 	STA Player_Badge
 	RTS
 Reset_Ability:
@@ -3920,6 +3920,11 @@ UpdateLevel1:
 
 
 DrawMapBackground:
+	LDA World_Num
+	BNE DrawMapBackground0
+	RTS 
+
+DrawMapBackground0:
 	LDA MapBackgroundInit
 	BNE DrawMapBackground1
 	INC MapBackgroundInit
