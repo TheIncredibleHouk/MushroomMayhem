@@ -74,7 +74,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_Explosion	; Object $4D
 	.word ObjNorm_DoNothing		; Object $4E
 	.word ObjNorm_ChainChompFree	; Object $4F - OBJ_CHAINCHOMPFREE
-	.word ObjNorm_BobOmb		; Object $50 - OBJ_BOBOMBEXPLODE
+	.word BobOmb_DoExplosion		; Object $50 - OBJ_BOBOMBEXPLODE
 	.word ObjNorm_RotoDiscDual	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjNorm_Spintula	; Object $52 - OBJ_SPINTULA
 	.word ObjNorm_PodobooCeiling	; Object $53 - OBJ_PODOBOOCEILING
@@ -164,7 +164,7 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $52 - OBJ_SPINTULA
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $55 - OBJ_BOBOMB
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $55 - OBJ_BOBOMB
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $58 - OBJ_PYRANTULA
@@ -286,13 +286,13 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $0E	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OPTS_NOCHANGE	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OPTS_SETPT5 | $12	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OPTS_SETPT5 | $13	; Object $52 - OBJ_SPINTULA
+	.byte OPTS_SETPT5 | $10	; Object $52 - OBJ_SPINTULA
 	.byte OPTS_NOCHANGE	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OPTS_SETPT5 | $0E	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte OPTS_SETPT5 | $0B	; Object $55 - OBJ_BOBOMB
+	.byte OPTS_SETPT5 | $0A	; Object $55 - OBJ_BOBOMB
 	.byte OPTS_SETPT5 | $5A	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OPTS_SETPT5 | $5A	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
-	.byte OPTS_SETPT5 | $13	; Object $58 - OBJ_PYRANTULA
+	.byte OPTS_SETPT5 | $10	; Object $58 - OBJ_PYRANTULA
 	.byte OPTS_SETPT5 | $0A	; Object $59 - OBJ_FIRESNAKE
 	.byte OPTS_SETPT5 | $12	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte OPTS_SETPT5 | $12	; Object $5B - OBJ_ROTODISCCCLOCKWISE
@@ -417,7 +417,7 @@ ObjP54:
 
 ObjP50:
 ObjP55:
-	.byte $B1, $B3, $B5, $B7, $A7, $B9, $A7, $B9
+	.byte $A7, $A9, $AB, $AD, $97, $99, $97, $99
 
 ObjP4A:
 ObjP4B:
@@ -432,7 +432,7 @@ ObjP57:
 
 ObjP52:
 ObjP58:
-	.byte $AD, $AD, $AF, $AF, $B1, $B1
+	.byte $A1, $A1, $A3, $A3, $A5, $A5
 ObjP59:
 	.byte $81, $83, $85, $87, $85, $87
 ObjP51:
@@ -1874,16 +1874,8 @@ ObjInit_BobOmb:
 	RTS		 ; Return
 
 ObjInit_BobOmbExplode:
-	LDA #$0B
-	STA PatTable_BankSel+4
-	JSR Level_ObjCalcXDiffs
-
-	; Start Bob-omb moving towards Player
-	LDA BobOmbExp_StartXVel,Y
-	STA <Objects_XVel,X
-
-	INC Objects_Var7,X	 ; Var7 = 1 for exploding Bob-omb!
-
+	LDA #$80
+	STA Objects_Timer, X
 	RTS		 ; Return
 
 ObjNorm_BobOmb:
@@ -1893,6 +1885,22 @@ ObjNorm_BobOmb:
 	CMP #$02
 	BEQ PRG003_A6DD	 ; If Var5 = 2 (Exploding), jump to PRG003_A6DD
 
+	LDA Objects_Timer2, X
+	BEQ PRG003_A6DC
+
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit
+	LDA #(SPR_PAL1 | SPR_BEHINDBG)
+	STA Objects_SprAttr, X
+	JMP Object_ShakeAndDraw
+
+PRG003_A6DC:
 	JSR Object_ShakeAndDraw	 ; Normally draw Bob-omb (Except when exploding)
 
 	LDA <Player_HaltGame
@@ -1908,6 +1916,7 @@ PRG003_A6DD:
 	.word BobOmb_WalkAround		; 0: Unsquashed Bob-omb minding his own business
 	.word BobOmb_FlashToExplode	; 1: Squashed Bob-omb who then flashes and explodes
 	.word BobOmb_DoExplosion	; 2: Do the explosion, kill things, etc.
+	.word BobOmb_Unstable
 
 PRG003_A6E8:
 	RTS		 ; Return
@@ -1930,57 +1939,14 @@ BobOmb_WalkAround:
 
 BobOmb_WalkAround1:
 
-	JSR Object_Move	 ; Do standard movements
-
-	LDA Objects_Var7,X
-	BEQ PRG003_A6FF	 ; If Var7 = 0 (Bob-omb not ready to explode), jump to PRG003_A6FF
-
-	; Bob-omb has been squashed and ready to blow!
-
-	LDA Objects_Timer3,X
-	ORA <Objects_Var5,X
-	BNE PRG003_A6FF	 ; If timer 3 not expired or Var5 <> 0 (initial internal state), jump to PRG003_A6FF
-
-	INC <Objects_Var5,X	 ; Var5++ (next internal state)
-
-	; Set timer to $60
-	LDA #$60
-	STA Objects_Timer,X
-
-PRG003_A6FF:
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG003_A730	 ; If Bob-omb's not on the ground, jump to PRG003_A730
-
-	LDA #-$20
-	STA <Objects_YVel,X
-
-	LDY #$00	 ; Y = 0
+	JSR Object_InteractWithWorld	 ; Do standard movements
 
 	LDA <Counter_1
-	AND #$08
-	BEQ PRG003_A712	 ; 8 ticks on, 8 ticks off; jump to PRG003_A712
-
-	INY		 ; Y = 1
-
-PRG003_A712:
-	; Little walking frame
-	TYA
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
 	STA Objects_Frame,X
-
-	JSR Object_HitGround	 ; Align to floor
-
-	LDA Objects_Var7,X
-	BEQ PRG003_A730	 ; If Var7 = 0 (not ready to explode), jump to PRG003_A730
-
-	INC Objects_Var3,X	 ; Var3++
-
-PRG003_A730:
-	LDA <Objects_DetStat,X
-	AND #$03
-	BEQ PRG003_A739	 ; If Bob-omb has not hit wall, jump to PRG003_A739
-
-	JSR Object_AboutFace	 ; Otherwise, turn around
 
 PRG003_A739:
 	JSR Object_HandleBumpUnderneath
@@ -1991,13 +1957,18 @@ PRG003_A739:
 
 
 PRG003_A74B:
+	LDA Objects_Property, X
+	BEQ PRG003_A74D
+	INC <Objects_Var5,X
 	INC <Objects_Var5,X
 
+PRG003_A74D:
+	INC <Objects_Var5,X
+
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State, X
 	LDA #$ff
 	STA Objects_Timer,X
-
-	LDA #$08
-	STA Objects_Timer2,X
 
 	; Little bounce for the Player
 	LDA #-$30
@@ -2011,21 +1982,32 @@ PRG003_A75E:
 PRG003_A75F:
 	.byte $10, $20, $30, $40, $FC, $F8, $F4, $F0
 
-BobOmb_FlashToExplode:
-	; Toggles between frames 2 and 3, but these are indiscernable,
-	; both look like the "eyes closed, footless" Bob-omb...
-	; Maybe was supposed to animate crank or something?
-	LDY #$02	; Y = 2
+BobOmb_Unstable:
 
+	LDA Objects_PrevDetStat, X
+	BNE BobOmb_Unstable1
+
+	LDA Objects_DetStat, X
+	BEQ BobOmb_Unstable1
+
+	JMP BobOmb_Explode
+
+BobOmb_Unstable1:
+	JSR PRG003_A79F
+	LDY Object_SprRAM, X
 	LDA <Counter_1
-	AND #$08
-	BEQ PRG003_A770	 ; 8 ticks on, 8 ticks off; jump to PRG003_A770
-
-	INY		 ; Y = 3
-
-PRG003_A770:
+	AND #$01
+	BEQ BobOmb_Unstable2
 	TYA
-	STA Objects_Frame,X
+	TAX
+	DEC Sprite_RAM,X
+	DEC Sprite_RAM+4,X
+
+BobOmb_Unstable2:
+	RTS
+
+
+BobOmb_FlashToExplode:
 	LDA Objects_Timer,X
 	BNE PRG003_A798	 ; If timer not expired, jump to PRG003_A798
 
@@ -2087,6 +2069,7 @@ PRG003_A7B0:
 	PLP		 ; Restore CPU state
 	BPL PRG003_A7B7	 ; If the X velocity was positive, jump to PRG003_A7B7
 	JSR Negate	 ; Otherwise, make this negative again
+
 PRG003_A7B7:
 	STA <Objects_XVel,X	 ; X velocity now divided by 2
 
@@ -2111,21 +2094,10 @@ PRG003_A7CC:
 	AND #$03
 	BEQ PRG003_A7DC	 ; If Bob-omb did not hit a wall, jump to PRG003_A7DC
 
-	; Otherwise bounce off
-	LDA <Objects_XVel,X
-	JSR Negate
-	STA <Objects_XVel,X
-
-	; ... and sort of arithmetically divide by 2
-	ASL A
-	ROR <Objects_XVel,X
-
+	JSR Object_AboutFace
 PRG003_A7DC:
 	JSR Object_HitTest
 	BCC PRG003_A7F0	 ; If Player and Bob-omb didn't collide, jump to PRG003_A7F0 (RTS)
-
-	LDA Objects_Timer2,X
-	BNE PRG003_A7F0	 ; If timer2 has not expired, jump to PRG003_A7F0 (RTS)
 
 	; Otherwise, set Bob-omb's state to 4 (Held, doesn't really make sense)
 	LDA #OBJSTATE_HELD
@@ -2397,6 +2369,8 @@ CheckExplodableTile:
 	CMP #TILE_PROP_SOLID_ALL
 	BCC NotBreakable
 	AND #$0F
+	CMP #$0C
+	BEQ ExplodeBreakBlocks
 	CMP #$0D
 	BEQ ExplodeBreakBlocks
 
@@ -2405,8 +2379,8 @@ NotBreakable:
 
 ExplodeBreakBlocks:
 	LDA Object_LevelTile
-	LDA Object_TileProp
-	CMP #$F0
+	LDY Object_TileProp
+	CPY #$F0
 	BCC ExplodeBreakBlocks1
 
 	AND #$C0

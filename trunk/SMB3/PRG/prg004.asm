@@ -3161,8 +3161,6 @@ PRG004_B3EC:
 	JSR Object_HitGround	 ; Align to floor
 
 	LDA Level_ObjectID,X
-	CMP #OBJ_BIGGREENHOPPER
-	BEQ PRG004_B3FA	 ; If this the GIANT hopping green shell paratroopa, jump to PPRG004_B3FA
 
 	CMP #OBJ_PARATROOPAGREENHOP
 	BNE PRG004_B405	 ; If this is NOT a hopping green shell paratroopa, jump to PRG004_B405
@@ -3315,11 +3313,11 @@ GroundTroop_Draw:
 	CMP #OBJ_BUZZYBEATLE
 	BLT Troopa_Draw	 ; If this is one of the regular troopas or paratroopas, jump to Troopa_Draw
 
-	CMP #OBJ_PURPLETROOPA + 1
-	BLT PRG004_B4B6	 ; If this is not one of the giant troopas, jump to PRG004_B4B6
-
-	JMP ObjectGroup03_PatternSets	 ; Jump indirectly to GiantEnemy_Draw
-
+;	CMP #OBJ_PURPLETROOPA + 1
+;	BLT PRG004_B4B6	 ; If this is not one of the giant troopas, jump to PRG004_B4B6
+;
+;	JMP ObjectGroup03_PatternSets	 ; Jump indirectly to GiantEnemy_Draw
+;
 PRG004_B4B6:
 
 	; Not a green shell troopa/paratroopa nor a giant enemy...
