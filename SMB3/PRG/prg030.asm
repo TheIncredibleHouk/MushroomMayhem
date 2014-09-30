@@ -5288,9 +5288,12 @@ UsePointer:
 	LDA Pointers + 3, X
 	AND #$0F
 	STA Map_Entered_XHi
+	STA Map_Prev_XHi
 	LDA Pointers + 3, X
 	AND #$F0
 	STA Map_Entered_X
+	AND #$80
+	STA Map_Prev_XOff
 	LDA Pointers + 4, X
 	AND #$F0
 	STA Map_Entered_Y

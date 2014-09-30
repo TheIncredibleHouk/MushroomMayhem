@@ -958,34 +958,7 @@ PRG007_A6BD:
 	BPL PRG007_A6C9	 ; Otherwise, jump to PRG007_A6C9
 
 PRG007_A6C3:
-
-	; Fireball/iceball only...
-	LDA Level_ObjectID, Y
-	CMP #OBJ_BOBOMB
-	BNE PRG007_A6C6
-
-	LDA #OBJ_BOBOMBEXPLODE
-	STA Level_ObjectID, Y
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State,Y
-	BNE PRG007_A6C8
-
-PRG007_A6C6:
-	CMP #OBJ_BULLETBILLHOMING
-	BNE PRG007_A6C6_1
-	STX TempX
-	TYA
-	TAX
-	INC Objects_Var3, X
-	LDA #$00
-	STA Objects_Var2, X
-	LDX TempX
-	BNE PRG007_A6C8
-
-PRG007_A6C6_1:
-	LDA Invincible_Enemies
-	BNE PRG007_A6C8
-
+	
 	LDA #OAT_FIREIMMUNITY
 	STA <Temp_Var5
 	LDA Special_Suit_Flag
@@ -997,12 +970,36 @@ PRG007_A6C7:
 	AND <Temp_Var5
 
 PRG007_A6C8:
-	BNE PRG007_A6FE	 ; If object is immune to fire/ice, jump to PRG007_A6FE
+	BEQ PRG007_A6C9	 ; If object is immune to fire/ice, jump to PRG007_A6FE
+	JMP PRG007_A637
 
 PRG007_A6C9:
+;;;;;;
 
+	LDA Level_ObjectID, Y
+	CMP #OBJ_BOBOMB
+	BNE PRG007_A6C6
+
+	LDA #OBJ_BOBOMBEXPLODE
+	STA Level_ObjectID, Y
+	LDA #$20
+	STA Objects_Timer,Y
+	RTS
+
+PRG007_A6C6:
+	CMP #OBJ_BULLETBILLHOMING
+	BNE PRG007_A6CA
+
+	TYA
+	TAX
+	INC Objects_Var3, X
+	LDA #$00
+	STA Objects_Var2, X
+	LDX TempX
+	RTS
 	; Weapon successfully hit!
-
+;;;;;
+PRG007_A6CA:
 	; Play "kick" sound
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERKICK
@@ -1011,11 +1008,10 @@ PRG007_A6C9:
 	LDA Objects_HitCount,Y
 	BEQ PRG007_A6DD	 ; If enemy has no hits left, jump to PRG007_A6DD
 
-	; Otherwise, just remove a hit...
 	SUB #$01
 	STA Objects_HitCount,Y
 
-PRG007_A6CA:
+PRG007_A6CB:
 	RTS		 ; Return
 
 
@@ -3840,11 +3836,11 @@ PRG007_BA33:
 	LSR A
 	LSR A
 
-	LDA #$B3	 ; A = $89 (first fireball pattern)
+	LDA #$89	 ; A = $89 (first fireball pattern)
 
 	BCC PRG007_BA4D	 ; 4 ticks on, 4 ticks off; jump to PRG007_BA4D
 
-	LDA #$B5	 ; A = $8B (second fireball pattern)
+	LDA #$8B	 ; A = $8B (second fireball pattern)
 
 PRG007_BA4D:
 	STA Sprite_RAM+$01,Y	 ; Set fireball pattern
@@ -4154,7 +4150,7 @@ PRG007_BB97:
 	.word PRG007_BB80	; 00: Unused (would never get here anyway)
 	.word CFire_BulletBill	; 01: Bullet Bill cannon
 	.word CFire_BulletBill	; 02: Missile Bill (homing Bullet Bill)
-	.word CFire_RockyWrench	; 03: Creates Rocky Wrench
+	.word Cfire_Bobombs	; 03: Creates Rocky Wrench
 	.word CFire_Platform	; 04: 4-way cannon
 	.word CFire_GoombaPipe	; 05: Goomba pipe (left output)
 	.word CFire_ShellCannon	; 06: Goomba pipe (right output)
@@ -4213,7 +4209,7 @@ PRG007_BC4E:
 	CMP #CFIRE_LBOBOMBS
 	BLT PRG007_BC55	 ; If this is not one of the Bob-omb cannons, jump to PRG007_BC55
 
-	JMP PRG007_BCB4	 ; For all Bob-omb cannons, jump to PRG007_BCB4
+	JMP Cfire_Bobombs	 ; For all Bob-omb cannons, jump to PRG007_BCB4
 
 PRG007_BC55: 
 	ADD #(Cannons_CPXOff - CannonPoof_XOffs - CFIRE_HLCANNON)	; Offset to proper array index for this Cannon Fire
@@ -4291,79 +4287,61 @@ PRG007_BC92:
 
 	RTS		 ; Return
 
-PRG007_BCB4:
+Cfire_Bobombs:
 
 	; Bob-omb cannons!
 
 	JSR PrepareNewObjectOrAbort
 
 	; It's a Bob-omb!!
-	LDA #OBJ_BOBOMBEXPLODE
+	LDA #OBJ_BOBOMB
 	STA Level_ObjectID,X
 
-	LDA #$0B
+	LDA #$0A
 	STA PatTable_BankSel+4
 
-	LDA #$10
-	STA Objects_Var1, X
-
 	; Bobomb's Timer3 = $80
-	LDA #$C0
-	STA Objects_Timer3,X
-
-	INC Objects_Var7,X	 ; Bob-omb's Var7++
-	INC Objects_Var1,X	 ; Bob-omb's Var1++
+	LDA #$10
+	STA Objects_Timer2,X
 
 	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
 
 	; Set Bob-omb's Y
 	LDA CannonFire_Y,Y
+	SUB #$02
 	STA <Objects_Y,X
 	LDA CannonFire_YHi,Y
+	SBC #$00
 	STA <Objects_YHi,X
-
-	LDA <Temp_Var1
-	CMP #CFIRE_RBOBOMBS
-
-	LDA #-$10	 ; A = $10
-	LDY #$0b	 ; Y = $0B
-	BCS PRG007_BCE9	 ; If this is a right-shot Bob-omb, jump to PRG007_BCE9
-
-	DEY		 ; Y = $0A
-	LDA #$10	 ; A = -$10
-
-PRG007_BCE9:
-	STY <Temp_Var1	 ; Temp_Var1 = $0A or $0B
-	STA <Objects_YVel,X	 ; Set Bob-omb's X velocity (-$10 or $10)
-
-	ASL A		 ; Shift sign bit into carry
-
-	; Temp_Var2 = $00 (16-bit sign extension)
-	LDA #$00
-	STA <Temp_Var2
-
-	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
-
-	; Set Bob-omb's X
-	
-PRG007_BCFC:
-	LDA #$08	 ; A = $08
-	ADD CannonFire_X,Y
+	LDA CannonFire_X,Y
 	STA <Objects_X,X
 	LDA CannonFire_XHi,Y
-	ADC <Temp_Var2	
 	STA <Objects_XHi,X
+
+	LDA CannonFire_Property, Y
+	LSR A
+	AND #$01
+	STA Objects_Property, X
+	LDA CannonFire_Property, Y
+	AND #$01
+	TAY
+	LDA BobOmbXVelocity, Y
+	STA Objects_XVel, X
+	LDA BobOmbYVelocity, Y
+	STA Objects_YVel, X
+	LDA BobOmbHFlip, Y
+	STA Objects_FlipBits, X
+	LDA #$00
+	STA Objects_Var5, X
 
 
 PRG007_BD09:
-	; Set Cannon Ball / Bob-omb attributes
-	LDA #SPR_PAL3
-	STA Objects_SprAttr,X
-
-	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
+	LDY <SlotIndexBackup	 ; X = Cannon Fire slot index
 	RTS
 
-BobOmbXVelocity:	.byte $10, $F0
+BobOmbHFlip:	.byte $00, SPR_HFLIP
+BobOmbXVelocity:	.byte $F0, $10
+BobOmbYVelocity:	.byte $00, $00
 Goomb_XVelocity:	.byte $E0, $20
 Goomb_YVelocity:    .byte $C0, $C0
 

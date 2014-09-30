@@ -441,7 +441,7 @@ SpikeBall_Patterns:
 ObjP29:
 	.byte $B1, $B3, $B1, $B3, $B5, $B7, $B9, $BB, $B1, $BF
 ObjP2A:
-	.byte $BD, $BD, $BF, $BF
+	.byte $AF, $AF, $BF, $BF
 ObjP2B:
 	.byte $B1, $B3, $B5, $B7, $B9, $BB
 ObjP46:

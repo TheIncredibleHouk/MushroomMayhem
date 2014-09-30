@@ -10,5 +10,5 @@
     <sprite x="22" y="16" value="145" item="0" property="0" />
     <sprite x="27" y="0" value="15" item="0" property="1" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="true" showstart="true" zoom="false" drawmode="Line" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="true" showstart="true" zoom="false" drawmode="Outline" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

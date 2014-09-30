@@ -594,7 +594,7 @@ PRG029_CF1E:
 	BEQ Try_Boo_Animation
 	TXA
 	PHA							; Save X
-	LDA Counter_1
+	LDA <Counter_1
 	AND #$06
 	LSR A
 	TAX

@@ -4074,15 +4074,23 @@ PRG005_BDB0:
 	RTS		 ; Return
 
 EarthquakeEventTimers: .byte $80, $A0, $C0, $FF
-DebrisOffset: .byte $00, $10, $F0, $20, $E0, $00, $10, $E0
+DebrisOffset: .byte $F8, $F0, $E8, $E0, $08, $10, $18, $20
+DebrisColors: .byte SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL1
 
 LevelEvent_Earthquake:
 	LDA LevelEvent_Cnt
 	BEQ LevelEvent_Earthquake0
 	DEC LevelEvent_Cnt
+	BNE LevelEvent_Earthquake0_1
+	LDA #$20
+	STA Level_Vibration
+
+LevelEvent_Earthquake0_1:
 	RTS
 
 LevelEvent_Earthquake0:
+	LDA Level_Vibration
+	BNE LevelEvent_Earthquake0_1
 	JSR Level_SpawnObj
 
 	LDA #$0A
@@ -4094,7 +4102,10 @@ LevelEvent_Earthquake0:
 	LDA #$01
 	STA Objects_Frame, X
 
-	LDA #$03
+	LDA RandomN + 3
+	AND #$03
+	TAY
+	LDA DebrisColors, Y
 	STA Objects_SprAttr, X
 
 	; Set Frame = 2
@@ -4114,19 +4125,18 @@ LevelEvent_Earthquake0:
 	LDA <Player_XHi
 	STA <Objects_XHi, X
 
-	LDA <Player_Y
-	SUB #$80
+	LDA <Vert_Scroll
+	SUB #$40
 	STA <Objects_Y,X 
-	LDA <Player_YHi
-	SBC #$01
+	LDA #$00
+	SBC #$00
 	STA <Objects_YHi, X
 	LDA RandomN + 1
 	AND #$03
 	TAY
 	LDA EarthquakeEventTimers, Y
 	STA LevelEvent_Cnt
-	LDA #$20
-	STA Level_Vibration
+
 	RTS		 ; Return
 
 

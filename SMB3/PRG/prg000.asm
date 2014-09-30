@@ -175,7 +175,7 @@ Object_BoundBox:
 Object_AttrFlags:
 	; Defines flags which set attributes of objects
 	.byte OAT_BOUNDBOX00	; Object $00
-	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY | OA3_NINJAHAMMER_IMMUNE | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $01
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OA3_NINJAHAMMER_IMMUNE | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $01
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $02
 	.byte OAT_BOUNDBOX04 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $03
 	.byte OAT_BOUNDBOX02	; Object $04
@@ -259,7 +259,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01	; Object $52 - OBJ_SPINTULA
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OAT_BOUNDBOX12 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $54
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $55 - OBJ_BOBOMB
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY	; Object $55 - OBJ_BOBOMB
 	.byte OAT_BOUNDBOX07	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OAT_BOUNDBOX07	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte OAT_BOUNDBOX01	; Object $58 - OBJ_FIRECHOMP
@@ -1235,6 +1235,7 @@ ObjWakeUp_FeetYOff:	.byte 10, -10
 
 	; Called for an object in state 3 to do its "shelled" routine
 ObjState_Shelled:
+	
 	LDY ObjGroupRel_Idx	; Y = object's group-relative index
 
 	LDA ObjectGroup_Attributes3,Y 
@@ -1358,44 +1359,37 @@ Object_DrawShelled:
 	LDA #$02	 
 	STA Objects_Frame,X
 
-	LDA Objects_IsGiant,X
-	BEQ PRG000_CB7B	 ; If object is NOT giant, jump to PRG000_CB7B
-
-	; Call special "giant" object draw routine (giant objects assume a JMP instruction @ ObjectGroup_PatternSets)
-	JSR ObjectGroup_PatternSets
-
-Object_SetShakeAwakeTimer:
-
-	; Set timer for object to wake up from
-
-	LDA Objects_Timer3,X
-	CMP #$60	 
-	BGE PRG000_CB7A	 ; If timer 3 >= $60, jump to PRG000_CB7A
-
-	AND #$07
-	STA Objects_Timer4,X	; Timer 4 = 0-7, based on timer3
-
-PRG000_CB7A:
-	RTS		 ; Return
-
-
-PRG000_CB7B:
-
 	LDA Level_ObjectID,X
 
-	CMP #OBJ_BOBOMBEXPLODE
+	CMP #OBJ_BOBOMB
 	BEQ PRG000_CB86		; If this is a Bob-omb exploding, jump to PRG000_CB86
 
 	CMP #OBJ_KEY
-	BEQ PRG000_CB86
+	BNE PRG000_CB8E
 
-	CMP #OBJ_BOBOMB
-	BNE PRG000_CB8E		; If this is not a Bob-omb of any sort, jump to PRG000_CB8E
-
+	JMP Object_ShakeAndDraw
 PRG000_CB86:
 
 	; Have object flip same way as Player
-	JMP Object_ShakeAndDraw	 ; Draw object and never come back!
+	JSR Object_ShakeAndDraw	 ; Draw object and never come back!
+	LDA Objects_Property, X
+	BEQ PRG000_CB88
+	LDY Object_SprRAM, X
+	LDA <Counter_1
+	AND #$01
+	BEQ PRG000_CB87
+	TYA
+	TAX
+	DEC Sprite_RAM,X
+	DEC Sprite_RAM+4,X
+	LDX <SlotIndexBackup
+
+PRG000_CB87:
+	LDA #$80
+	STA Objects_Timer, X
+
+PRG000_CB88:
+	RTS
 
 PRG000_CB8E:
 	STA TempA
@@ -1403,8 +1397,7 @@ PRG000_CB8E:
 
 	LDA TempA
 	CMP #OBJ_KEY
-	BEQ PRG000_CBB3
-	CMP #OBJ_STONEBLOCK
+
 	BEQ PRG000_CBB3
 	CMP #OBJ_ICEBLOCK
 	BEQ PRG000_CBB3_2	 ; If object is an Iceblock, jump to PRG000_CBB3 (RTS)
@@ -1582,10 +1575,25 @@ KoopaExpload0:
 KoopaExpload:
 	LDA #OBJ_BOBOMBEXPLODE
 	STA Level_ObjectID, X
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State,X
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	LDA #$20
+	STA Objects_Timer, X
 	RTS
 
+Object_SetShakeAwakeTimer:
+
+	; Set timer for object to wake up from
+
+	LDA Objects_Timer3,X
+	CMP #$60	 
+	BGE PRG000_CB7A	 ; If timer 3 >= $60, jump to PRG000_CB7A
+
+	AND #$07
+	STA Objects_Timer4,X	; Timer 4 = 0-7, based on timer3
+
+PRG000_CB7A:
+	RTS		 ; Return
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_BumpOffOthers
 ;
@@ -1644,13 +1652,9 @@ PRG000_CC6B:
 	RTS		 ; Return
 
 
-ObjKickXvel:	.byte $18, -$18
-
 ObjState_Kicked:
 	LDA <Player_HaltGame 
 	BEQ PRG000_CC75	 ; If gameplay is NOT halted, jump to PRG000_CC75
- 
-	JMP NotGiant	 ; Jump to PRG000_CD46 
 
 PRG000_CC75:
 	JSR Object_Move	 ; Perform standard object movements
@@ -1765,7 +1769,6 @@ PRG000_CCE2:
 	STA Sound_QPlayer
  
 	LDA Level_ObjectID,X 
-	AND #$FE
 	CMP #OBJ_ICEBLOCK 
 	BNE PRG000_CCF4	 ; If this object is NOT an Ice Block, jump to PRG000_CCF4
  
@@ -1775,10 +1778,10 @@ PRG000_CCF4:
 	JSR Object_AboutFace	 ; Bounced off block, turn around
 
 PRG000_CCF7: 
-	JSR Object_HandleBumpUnderneath	 ; Handle the kicked shelled object getting hit from underneath
+	JSR ObjectKill_Others
 
 PRG000_CCF8:
-	JSR ObjectKill_Others
+	JSR Object_HandleBumpUnderneath	 ; Handle the kicked shelled object getting hit from underneath
 
 	LDA Level_ObjectID,X
 	CMP #OBJ_KEY
@@ -1787,7 +1790,6 @@ PRG000_CCF8:
 
 PRG000_CD47:
 	LDA Level_ObjectID,X
-	AND #$FE
 	CMP #OBJ_ICEBLOCK
 	BEQ PRG000_CD77	 ; If the kicked object is an ice block, jump to PRG000_CD77
 
@@ -2011,7 +2013,7 @@ ObjectKickXVelMoving:	.byte -$30, $30
 PlayerKickFlipBits:	.byte $00, $40
 
 	; X velocities depending on kick direction
-BobombKickXVel:	.byte -$28, $28
+BobombKickXVel:	.byte -$40, $40
 
 	; Different X and X Hi offsets applied to object being held by Player
 	; Changes whether not doing anything special, in pipe, etc.
@@ -2046,6 +2048,7 @@ PRG000_CE2F:
 
 
 Player_KickObject:
+
 	LDA Level_PipeMove	 
 	BNE PRG000_CE2F	 ; If Player is moving through pipes, jump to PRG000_CE2F (PRG000_CEEF)
 
@@ -2058,53 +2061,43 @@ Player_KickObject:
 	LDA #$0c
 	STA Player_Kick
 
-	; Set object timer 2 to $10
-	LDA #$10
-	STA Objects_Timer2,X
-
 	LDA Level_ObjectID,X
-
-	CMP #OBJ_BOBOMBEXPLODE
-	BEQ PRG000_CE54	 ; If this is a Bob-omb ready to explode, jump to PRG000_CE54
-
 	CMP #OBJ_BOBOMB	 
 	BNE PRG000_CE79	 ; If this is NOT a Bob-omb, jump to PRG000_CE79
 
 PRG000_CE54:
 
 	; Bob-ombs only...
-
 	; State remains "normal"
+
+	LDA Objects_LastProp, X
+	CMP #(TILE_PROP_SOLID_ALL)
+	BCC PRG000_CE53
+	JMP Kill_Held
+
+PRG000_CE53:
+
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
 
 	; Set Y vel to -$20 (bounce up)
-	LDA #-$20
+	LDA #-$10
 	STA <Objects_YVel,X
 
 	; Set X Velocity appropriately based on kick direction
-	JSR Level_ObjCalcXDiffs
+	LDY #$00
+	LDA Objects_FlipBits, X
+	BEQ PRG000_CE75
+	INY
+
+PRG000_CE75:
 	LDA BobombKickXVel,Y
 	STA <Objects_XVel,X
-
-	EOR <Player_XVel
-	BMI PRG000_CE76	 ; If the Bob-omb's X velocity is the opposite sign of the Player's, jump to PRG000_CE76
-
-	LDA <Player_XVel
-	STA <Temp_Var1		; -> Temp_Var1 (yyyy xxxx)
-	ASL <Temp_Var1		; Shift 1 bit left (bit 7 into carry) (y yyyx xxx0)
-	ROR A			; A is now arithmatically shifted to the right (yyyyy xxx) (signed division by 2)
-	ADD ObjectKickXVelMoving,Y	 ; Add base "moving" X velocity of Bob-omb
-	STA <Objects_XVel,X	 ; Set this as Bob-omb's X Velocity
+	JSR Object_ApplyXVel
+	JSR AlignToWall
 
 PRG000_CE76:
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ PRG000_CE77
-	LDA #$C0
-	STA <Objects_YVel,X
 
-PRG000_CE77:
 	JMP Object_ShakeAndDraw	 ; Draw Bob-omb and don't come back!
 
 PRG000_CE79:
@@ -2122,7 +2115,6 @@ PRG000_CE79:
 	; This object is being held by Player...
 
 	LDA Level_ObjectID,X
-	AND #$FE
 	CMP #OBJ_ICEBLOCK
 	BEQ PRG000_CEB4	 ; If this is an ice block, jump to PRG000_CEB4
 
@@ -2146,6 +2138,8 @@ PRG000_CE94:
 	LDA Level_ObjectID, X
 	CMP #OBJ_KEY
 	BEQ PRG000_CEC6
+
+Kill_Held
 	; 1 EXP
 	INC Exp_Earned
 	JSR Reap_Coin
@@ -2207,6 +2201,7 @@ PRG000_CEDA_2:
 	LSR A
 	LSR A
 	TAY
+
 	LDA KickedXVel, Y
 	TAY
 	PLA
@@ -2254,6 +2249,7 @@ PRG000_CEE8:
 	LDA <Player_XVel
 	BNE PRG000_CEED
 
+	STA Debug_Snap
 	LDA #$00
 	STA <Objects_XVel, X
 	LDA #OBJSTATE_SHELLED
@@ -2269,14 +2265,17 @@ PRG000_CEEE_3:
 	LDA Level_ObjectID,X
 	CMP #OBJ_KEY
 	BNE PRG000_CEEE_2
+
+	JSR AlignToWall
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
 
 PRG000_CEEE_2:
+	JSR Object_ApplyXVel
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
 KickedXVel:
-	.byte $10, $20, $30, $40, $40, $28
+	.byte $10, $20, $30, $40, $40, $40
 
 PRG000_CEEF:
 
@@ -2301,17 +2300,7 @@ PRG000_CEFD:
 	INY		 ; Y = 1
 
 PRG000_CF04:
-	LDA Objects_IsGiant,X
-	BEQ PRG000_CF0E	 ; If object is not giant, jump to PRG000_CF0E
 
-	; Y += 5
-	INY
-	INY
-	INY
-	INY
-	INY
-
-PRG000_CF0E:
 	LDA Player_PipeFace
 	BEQ PRG000_CF1F	 ; If Player is NOT "pipe facing" (facing forward in pipe), jump to PRG000_CF1F
 
@@ -2766,19 +2755,19 @@ Object_ShellDoWakeUp:
 	LDA Level_ObjectID,X	  
 	CMP #OBJ_KEY
 	BEQ PRG000_D100
-	CMP #OBJ_BOBOMBEXPLODE 
-	BEQ PRG000_D0EC 
+
 	CMP #OBJ_BOBOMB 
 	BNE PRG000_D101
 
 PRG000_D0EC: 
 
 	; A Bob-omb only...
-
+	
 	LDA Objects_Timer,X 
 	BNE PRG000_D0F9	 ; If timer is not expired, jump to PRG000_D0F9 
 
 	; Timer expired, change to state 2 (Normal)
+
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X 
 	JMP BobOmb_Explode	 ; Jump to BobOmb_Explode and don't come back!
@@ -2796,14 +2785,9 @@ PRG000_D101:
 
 	; Anything besides a Bob-omb...
 
-	AND #$FE
 	CMP #OBJ_ICEBLOCK ;
 	BNE PRG000_D120	 ; If object is NOT an Ice Block, jump to PRG000_D120
 
-	; Object is an ice block...  
-	LDA #$01
-	STA Objects_ColorCycle,X
-	STA Objects_SprAttr,X
 	RTS		 ; Return
 
 
@@ -3332,8 +3316,6 @@ Object_SetShellState:
 	CMP #OBJ_PURPLETROOPA
 	BEQ FuseTroopa
 
-	CMP #OBJ_BOBOMBEXPLODE
-	BEQ FuseTroopa
 	; Set timer 3 = $FF (wake up timer)
 	LDA #$ff
 	STA Objects_Timer3,X
@@ -6788,4 +6770,39 @@ Reap_CoinY:
 	JSR Produce_Coin
 
 Reap_CoinY1:
+	RTS
+
+AlignToWall:
+	LDA Object_TileWater
+	CMP #TILE_PROP_SOLID_ALL
+	BCC AlignToWall2
+
+	LDA Objects_XVel, X
+	BMI AlignToWall1
+
+	JSR Negate
+	STA Objects_XVel, X
+	LDA <Objects_X, X
+	SBC #$10
+	AND #$F0
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	SBC #$00
+	STA <Objects_XHi, X
+	JSR Object_ApplyXVel
+	RTS
+
+AlignToWall1:
+	JSR Negate
+	STA Objects_XVel, X
+	LDA <Objects_X, X
+	ADD #$10
+	AND #$F0
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	ADC #$00
+	STA <Objects_XHi, X
+	JSR Object_ApplyXVel
+
+AlignToWall2:
 	RTS
