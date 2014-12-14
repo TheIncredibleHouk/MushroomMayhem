@@ -3256,6 +3256,17 @@ InfectionSwap2:
 	STA <Pad_Holding
 
 InfectionRTS:
+	LDA Yolked
+	BEQ YolkedRTS
+
+	LDA <Pad_Holding
+	AND #(~PAD_B)
+	STA <Pad_Holding
+	LDA <Pad_Input
+	AND #(~PAD_B)
+	STA <Pad_Input
+
+YolkedRTS:
 	RTS		 ; Return
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

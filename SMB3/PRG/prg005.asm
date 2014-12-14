@@ -3916,8 +3916,8 @@ PRG005_BCB8:
 	BGE PRG005_BCCD	 ; If Y >= 5, jump to PRG005_BCCD
 
 	LDA Level_ObjectID,Y
-	CMP #OBJ_GIANTBLOCKCTL	 
-	BEQ PRG005_BCCD	 ; If object ID = OBJ_GIANTBLOCKCTL (the Giant World block controller), jump to PRG005_BCCD
+	CMP #OBJ_BIRDO	 
+	BEQ PRG005_BCCD	 ; If object ID = OBJ_BIRDO (the Giant World block controller), jump to PRG005_BCCD
 
 	LDA Objects_State,Y	
 	BNE PRG005_BCF4	 ; If this object slot is not "dead/empty", jump to PRG005_BCF4

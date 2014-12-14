@@ -155,7 +155,7 @@ Gameplay_UpdateAndDrawMisc:
 	JSR SpecialObjs_UpdateAndDraw	 ; Update and draw Special objects
 	JSR CannonFire_UpdateAndDraw	 ; Update and draw the Cannon Fires
 	JSR PlayerProjs_UpdateAndDraw	 ; Update and draw Player's weapon projectiles
-	JSR Do_Boo_Mode
+	;JSR Do_Boo_Mode
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_HAMMER
 	BEQ PRG007_A251	 ; If Player is wearing a Hammer Suit, jump to PRG007_A251
@@ -954,8 +954,9 @@ PRG007_A6BD:
 	LDA Invincible_Enemies
 	BNE PRG007_A6CA
 	LDA <Temp_Var1	; Object's attributes
-	BMI PRG007_A6CA	 ; If OAT_HITNOTKILL is set, jump to PRG007_A6FD (RTS)
-	BPL PRG007_A6C9	 ; Otherwise, jump to PRG007_A6C9
+	AND #OA3_NINJAHAMMER_IMMUNE
+	BNE PRG007_A6CB	 ; If OAT_HITNOTKILL is set, jump to PRG007_A6FD (RTS)
+	BEQ PRG007_A6C9	 ; Otherwise, jump to PRG007_A6C9
 
 PRG007_A6C3:
 	
@@ -2380,7 +2381,7 @@ PRG007_AF9E:
 	.word SObj_Fireball	; 05: Piranha fireball
 	.word SObj_AcidPool	; 06: Micro goombas
 	.word SOBJ_NinjaStar	; 07: Spike/Patooie's spike ball
-	.word SObj_WandBlast	; 08: Koopaling wand blast
+	.word SObj_Egg	; 08: Koopaling wand blast
 	.word SObj_DoNothing	; 09: Lost Kuribo shoe
 	.word SObj_Wrench	; 0A: Rocky's Wrench
 	.word SObj_Cannonball	; 0B: Cannonball
@@ -3194,61 +3195,121 @@ LostShoe_Pattern:	.byte $A9, $AB	; 0
 			.byte $3D, $3D	; 3
 LostShoe_Attribute:	.byte $02, $01, $01, $01
 	
-SObj_WandBlast:
-	LDA <Player_HaltGame
-	BNE PRG007_B502	 ; If gameplay is halted, jump to PRG007_B502
+SObj_Egg:
+	LDA Player_HaltGame
+	BNE SObj_Egg0
 
-	JSR SObj_AddXVelFrac	 ; Apply X Velocity
-	JSR SObj_AddYVelFrac	 ; Apply Y Velocity
+	JSR SObj_AddXVelFrac
+	JSR SObj_PlayerCollide 
 
-PRG007_B502:
+SObj_Egg0:
 	JSR SObj_GetSprRAMOffChkVScreen
+	JSR SObj_SetSpriteXYRelative	
 
+	LDX <SlotIndexBackup
+	LDA #$97
+	STA Sprite_RAM + 1, Y
+	LDA #$99
+	STA Sprite_RAM + 5, Y
+
+	LDA Sprite_RAM , Y
+	STA Sprite_RAM + 4, Y
+
+	LDA Sprite_RAM +3 , Y
+	ADD #$08
+	BCS SObj_Egg1
+	STA Sprite_RAM + 7, Y
+
+SObj_Egg1:
+	LDA #SPR_PAL1
+	STA Sprite_RAM + 2, Y
+	STA Sprite_RAM + 6, Y
+
+	LDA SpecialObj_XVel, X
+	BMI SObj_Egg2
+
+	LDA #$99
+	STA Sprite_RAM + 1, Y
+	LDA #$97
+	STA Sprite_RAM + 5, Y
+	LDA #(SPR_PAL1 | SPR_HFLIP)
+	STA Sprite_RAM + 2, Y
+	STA Sprite_RAM + 6, Y
+
+SObj_Egg2:
 	LDA SpecialObj_Timer,X
-	TAX	; Timer -> 'X'
+	BNE SObj_EggRTS
 
-	; Select which pattern to use by timer
-	LDA #$fd	 ; A = $FD
+SObj_Egg3:
+	LDX #$04
+	LDA Sprite_RAM + 3, Y
+	ADD Object_BoundBox,X
+	STA <Temp_Var3		 ; Temp_Var3 object's sprite X with offset
 
-	CPX #$e0
-	BGE PRG007_B517	 ; If timer >= $E0, jump to PRG007_B517
+	LDA Sprite_RAM, Y
+	ADD Object_BoundBox+2,X
+	STA <Temp_Var7		 ; Temp_Var7 object's sprite Y with offset
 
-	LDA #$f9	 ; A = $F9
+	LDA Object_BoundBox+1,X
+	STA <Temp_Var4		 ; Temp_Var4 has the right offset
 
-	CPX #$c0
-	BGE PRG007_B517	 ; If timer >= $C0, jump to PRG007_B517
+	LDA Object_BoundBox+3,X	
+	STA <Temp_Var8		 ; Temp_Var8 has the bottom offset
+	
+	LDX <SlotIndexBackup
+	STX TempX
+	LDA #$FF
+	STA <SlotIndexBackup
+	
+	INC HitTestOnly
 
-	LDA #$fb	 ; A = $FB
+	JSR PRG000_DC09
+	LDX TempX
+	STX <SlotIndexBackup
+	BCC SObj_EggRTS	 ; If object has not hit another object, jump to PRG000_CD46
 
-PRG007_B517:
-	; Set the wand blast pattern
-	STA Sprite_RAM+$01,Y
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,X
 
-	LDX <SlotIndexBackup		 ; X = special object slot index
+	; SpecialObj_Data = $1F
+	LDA #$1f
+	STA SpecialObj_Data,X
 
-	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
+	TYA
+	TAX
+	DEC Objects_HitCount,X
+	DEC Objects_HitCount,X
+	DEC Objects_HitCount,X
+	BPL SObj_EggRTS
 
-	TXA		; Special object slot index -> 'A'
-	LSR A		; Shift bit 0 into carry
-	ROR A		; Rotate it around to bit 7
-	AND #SPR_VFLIP
-	STA <Temp_Var1	; Temp_Var1 = VFlip attribute or not
+	LDX <SlotIndexBackup
+	; Play object-to-object collision sound 
+	LDA Sound_QPlayer 
+	ORA #SND_PLAYERKICK 
+	STA Sound_QPlayer
+ 
+	; Knock object in same general direction as the kicked shell object
+	LDA SpecialObj_XVel,X 
+	ASL A 
+	LDA #$10	 ; A = $10
+	BCC SObj_Egg4 
+	LDA #$F0	 ; A = -$10
 
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	LSR A	
-	ROR A	
-	AND #SPR_VFLIP
-	ORA #SPR_PAL1
-	EOR <Temp_Var1	 ; Invert VFlip by Temp_Var1
+SObj_Egg4: 
+	STA Objects_XVel,Y
 
-	; Set wand blast attribute
-	STA Sprite_RAM+$02,Y
+	LDA #OBJSTATE_KILLED
+	STA  Objects_State,Y
+	LDA #$F0
+	STA Objects_YVel,Y
 
-	JMP SObj_PlayerCollide	 ; Do Player-to-wand blast collision and don't come back!
+	INC Exp_Earned
+	INC Exp_Earned
+	INC Exp_Earned
 
-	RTS		 ; Return
+SObj_EggRTS:
+	RTS
+
 
 SObj_KuriboShoe:
 	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
@@ -3594,8 +3655,33 @@ PRG007_B836:
 	BNE PRG007_B844	 ; If Player is Star Man invincible, jump to PRG007_B844
 	
 	JSR CheckTailSpin
+	LDA SpecialObj_ID, X
+	CMP #SOBJ_EGG
+	BEQ YolkPlayer
 	
+PRG007_B837:
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
+
+YolkPlayer:
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,X
+
+	; SpecialObj_Data = $1F
+	LDA #$1f
+	STA SpecialObj_Data,X
+
+	LDA Yolked
+	BNE PRG007_B837
+	LDA #$17
+	STA Player_SuitLost
+	LDA #$80
+	STA Player_QueueSuit
+
+	LDA #$FF
+	STA Yolked
+
+YolkPlayer1:
+	RTS
 
 SpecialObj_Remove:
 
@@ -4144,6 +4230,7 @@ PRG007_BB97:
 	STA TempA
 	JSR DetermineCannonVisibilty
 	LDA TempA
+	STA Debug_Snap
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -4302,33 +4389,56 @@ Cfire_Bobombs:
 
 	; Bobomb's Timer3 = $80
 	LDA #$10
-	STA Objects_Timer2,X
+	STA Objects_Timer4,X
 
 	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
 
 	; Set Bob-omb's Y
 	LDA CannonFire_Y,Y
-	SUB #$02
 	STA <Objects_Y,X
 	LDA CannonFire_YHi,Y
-	SBC #$00
 	STA <Objects_YHi,X
+
 	LDA CannonFire_X,Y
 	STA <Objects_X,X
+
 	LDA CannonFire_XHi,Y
 	STA <Objects_XHi,X
 
 	LDA CannonFire_Property, Y
 	LSR A
+	LSR A
 	AND #$01
 	STA Objects_Property, X
 	LDA CannonFire_Property, Y
-	AND #$01
+	AND #$03
 	TAY
+
 	LDA BobOmbXVelocity, Y
-	STA Objects_XVel, X
+	STA <Objects_XVel, X
 	LDA BobOmbYVelocity, Y
-	STA Objects_YVel, X
+	STA <Objects_YVel, X
+
+	LDA <Objects_X, X
+	ADD BobOmbXOffset,Y
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	ADC #$00
+	STA <Objects_XHi, X
+
+	LDA <Objects_Y, X
+	SUB BobOmbYOffset,Y
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	SBC #$00
+	STA <Objects_YHi, X
+
+	LDY #$00
+	LDA Objects_XVel, X
+	BMI Cfire_Bobombs1
+	INY
+
+Cfire_Bobombs1:
 	LDA BobOmbHFlip, Y
 	STA Objects_FlipBits, X
 	LDA #$00
@@ -4336,12 +4446,16 @@ Cfire_Bobombs:
 
 
 PRG007_BD09:
+	LDA #$80
+	STA CannonFire_Timer, X
 	LDY <SlotIndexBackup	 ; X = Cannon Fire slot index
 	RTS
 
 BobOmbHFlip:	.byte $00, SPR_HFLIP
-BobOmbXVelocity:	.byte $F0, $10
-BobOmbYVelocity:	.byte $00, $00
+BobOmbXVelocity:	.byte $F0, $10, $00, $00
+BobOmbYVelocity:	.byte $00, $00, $F0, $10
+BobOmbXOffset:		.byte $00, $00, $08, $08
+BobOmbYOffset:		.byte $02, $02, $00, $00
 Goomb_XVelocity:	.byte $E0, $20
 Goomb_YVelocity:    .byte $C0, $C0
 
@@ -4846,6 +4960,7 @@ PRG007_BF80:
 	STA <Objects_X,X
 	STA Objects_Var13,X	; original X hold
 
+	STA Debug_Snap
 	LDA CannonFire_Property,Y
 	TAY
 	BNE PRG007_BF81

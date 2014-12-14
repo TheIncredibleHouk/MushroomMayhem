@@ -29,7 +29,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_MagicStar1	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
-	.word ObjInit_DoNothing	; Object $4D
+	.word ObjInit_Explosion	; Object $4D
 	.word ObjInit_DoNothing		; Object $4E
 	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjInit_BobOmbExplode	; Object $50 - OBJ_BOBOMBEXPLODE
@@ -286,7 +286,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $0E	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OPTS_NOCHANGE	; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OPTS_SETPT5 | $12	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OPTS_SETPT5 | $10	; Object $52 - OBJ_SPINTULA
+	.byte OPTS_SETPT5 | $0A	; Object $52 - OBJ_SPINTULA
 	.byte OPTS_NOCHANGE	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OPTS_SETPT5 | $0E	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte OPTS_SETPT5 | $0A	; Object $55 - OBJ_BOBOMB
@@ -1850,10 +1850,15 @@ DonutLift_ChangeBlock:
 
 	RTS		 ; Return
 
+ObjInit_Explosion:
+	RTS
+
 ObjNorm_Explosion:
 	JSR Object_DeleteOffScreen
 	LDA TrapSet
 	BEQ NoExplosionYet
+	LDA #$10
+	STA Objects_Timer,X
 	JMP MineDoExplode
 
 NoExplosionYet:
@@ -1874,7 +1879,7 @@ ObjInit_BobOmb:
 	RTS		 ; Return
 
 ObjInit_BobOmbExplode:
-	LDA #$80
+	LDA #$18
 	STA Objects_Timer, X
 	RTS		 ; Return
 
@@ -1885,7 +1890,7 @@ ObjNorm_BobOmb:
 	CMP #$02
 	BEQ PRG003_A6DD	 ; If Var5 = 2 (Exploding), jump to PRG003_A6DD
 
-	LDA Objects_Timer2, X
+	LDA Objects_Timer4, X
 	BEQ PRG003_A6DC
 
 	LDA <Counter_1
@@ -1993,19 +1998,8 @@ BobOmb_Unstable:
 	JMP BobOmb_Explode
 
 BobOmb_Unstable1:
-	JSR PRG003_A79F
-	LDY Object_SprRAM, X
-	LDA <Counter_1
-	AND #$01
-	BEQ BobOmb_Unstable2
-	TYA
-	TAX
-	DEC Sprite_RAM,X
-	DEC Sprite_RAM+4,X
-
-BobOmb_Unstable2:
-	RTS
-
+	LDA #$FF
+	STA Objects_Timer, X
 
 BobOmb_FlashToExplode:
 	LDA Objects_Timer,X
@@ -2375,6 +2369,8 @@ CheckExplodableTile:
 	BEQ ExplodeBreakBlocks
 
 NotBreakable:
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	BEQ ExplodeBreakBlocks
 	RTS
 
 ExplodeBreakBlocks:
@@ -2620,8 +2616,6 @@ Kill_Star:
 Dont_Kill_Star:
 	RTS		 ; Return
 
-ObjInit_Explosion:
-	RTS
 
 Star_Vel:
 	.byte -$20, -$17, $00, $17, $20, $17, $00, -$17
