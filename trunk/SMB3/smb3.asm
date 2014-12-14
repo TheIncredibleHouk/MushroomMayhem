@@ -2427,10 +2427,12 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	EventVar:				.ds 1
 	EventType:				.ds 1	; For e-switch levels
 	LeftRightInfection:		.ds 1	;
+	Yolked:					.ds 1	;
 	Frozen_State:			.ds 1	;
 	Frozen_Frame:			.ds	1
 	PaletteEffect:			.ds 1
 	EffectCounter:			.ds 1
+	HitTestOnly:			.ds 1
 
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
@@ -2931,7 +2933,7 @@ SOBJ_NIPPERFIREBALL	= $04 	; Nipper fireball (falls)
 SOBJ_PIRANHAFIREBALL	= $05	; Piranha fireball
 SOBJ_MICROGOOMBA	= $06 	; Micro goombas
 SOBJ_NINJASTAR		= $07 	; Spike's or Patooie's spike ball
-SOBJ_WANDBLAST		= $08 	; Koopaling wand blast
+SOBJ_EGG		= $08 	; Koopaling wand blast
 SOBJ_KURIBOSHOE		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
 SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
@@ -3477,7 +3479,8 @@ OBJ_BEACHEDCHEEP= $43	; Pool-to-pool hopping cheep cheep
 OBJ_WOODENPLATUNSTABLE	= $44	; Fall-after-touch log platform
 OBJ_HOTFOOT		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)
 OBJ_PIRANHASPIKEBALL	= $46	; Tall plant carrying spike ball
-OBJ_GIANTBLOCKCTL	= $47	; Enables Giant World blocks to function
+OBJ_GIANTBLOCKCTL	= $47
+OBJ_BIRDO	= $47	; Enables Giant World blocks to function
 OBJ_TINYCHEEPCHEEP	= $00
 OBJ_NINJI	= $48	; Tiny cheep cheep
 OBJ_FLOATINGBGCLOUD	= $49	; Floating background cloud

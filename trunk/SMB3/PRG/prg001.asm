@@ -51,7 +51,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing; Object $17 - OBJ_SPINYCHEEP
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.word ObjInit_Bubble	; Object $1A that is a l
+	.word ObjInit_BubbleGenerator	; Object $1A that is a l
 	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_SendBack	; Object $1C
 	.word ObjInit_Timer	; Object $1D
@@ -933,7 +933,10 @@ PRG001_A63F:
 
 	RTS		 ; Return
 
-	
+ObjInit_BubbleGenerator:
+	LDA #$01
+	STA Objects_Var4, X
+
 ObjInit_Bubble:
 	LDA #$01
 	STA ObjSplash_DisTimer, X
@@ -1027,7 +1030,7 @@ BubblePopRTS:
 	RTS
 
 BubblePopped:
-	LDA Objects_Property, X
+	LDA Objects_Var4, X
 	BEQ DestroyBubble
 	LDA Objects_Var2, X
 	STA Objects_Y, X
@@ -1035,7 +1038,6 @@ BubblePopped:
 	STA Objects_YHi, X
 	LDA #$00
 	STA Objects_Var1, X
-	STA Objects_Var4, X
 	LDA #$40
 	STA Objects_SlowTimer, X
 	RTS
@@ -3168,9 +3170,6 @@ PRG001_BE81:
 	LDA <Objects_YHi, X
 	STA Objects_YHi, Y
 
-	; Disable timer
-	LSR A	; A = 1
-	STA Level_TimerEn
 
 	; Set Bowser's frame to 6
 	LDA #$06
@@ -3930,7 +3929,7 @@ SetKeyField:
 
 CheckKeyAgainstLock:
 	LDA Objects_LastProp,X
-	CMP #TILE_ITEM_COIN
+	CMP #TILE_PROP_SOLID_TOP
 	BCS RemainLocked
 
 	AND #$0F

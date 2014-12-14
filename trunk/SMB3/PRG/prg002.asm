@@ -59,7 +59,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_FallingPlatform	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjInit_HotFoot		; Object $45 - OBJ_HOTFOOT
 	.word ObjInit_PiranhaSpikeBall	; Object $46 - OBJ_PIRANHASPIKEBALL
-	.word ObjInit_DoNothing		; Object $47 - OBJ_GIANTBLOCKCTL
+	.word ObjInit_Birdo		; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) State 2 jump table
@@ -101,7 +101,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_PathFollowPlat	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word ObjNorm_Hotfoot		; Object $45 - OBJ_HOTFOOT
 	.word ObjNorm_PiranhaSpikeBall	; Object $46 - OBJ_PIRANHASPIKEBALL
-	.word ObjNorm_GiantBlockCtl	; Object $47 - OBJ_GIANTBLOCKCTL
+	.word ObjNorm_Birdo	; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) Collision routine jump table (if calling Object_HitTestRespond;
@@ -144,7 +144,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DoNothing		; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.word Player_GetHurt		; Object $45 - OBJ_HOTFOOT
 	.word Player_GetHurt		; Object $46 - OBJ_PIRANHASPIKEBALL
-	.word ObjHit_DoNothing		; Object $47 - OBJ_GIANTBLOCKCTL
+	.word Player_GetHurt		; Object $47 - OBJ_BIRDO
 
 	
 	; Object group $01 (i.e. objects starting at ID $24) attribute bits set 1 (OA1_* flags valid here)
@@ -186,7 +186,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $45 - OBJ_HOTFOOT
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $46 - OBJ_PIRANHASPIKEBALL
-	.byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $47 - OBJ_GIANTBLOCKCTL
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $47 - OBJ_BIRDO
 
 	; Object group $01 (i.e. objects starting at ID $24) second set attribute bits
 
@@ -234,7 +234,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP9	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA2_TDOGRP0	; Object $45 - OBJ_HOTFOOT
 	.byte OA2_TDOGRP2	; Object $46 - OBJ_PIRANHASPIKEBALL
-	.byte OA2_TDOGRP1	; Object $47 - OBJ_GIANTBLOCKCTL
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2		; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) third set attribute bits
@@ -276,7 +276,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $45 - OBJ_HOTFOOT
 	.byte OA3_HALT_PIRANHASPECIAL 	; Object $46 - OBJ_PIRANHASPIKEBALL
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $47 - OBJ_GIANTBLOCKCTL
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) Pattern Table Select
@@ -318,7 +318,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE ; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte OPTS_SETPT5 | $12	; Object $45 - OBJ_HOTFOOT
 	.byte OPTS_SETPT5 | $0A	; Object $46 - OBJ_PIRANHASPIKEBALL
-	.byte OPTS_NOCHANGE	; Object $47 - OBJ_GIANTBLOCKCTL
+	.byte OPTS_SETPT5 | $4C		; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) "Kill Action"
@@ -360,7 +360,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte KILLACT_POOFDEATH	; Object $45 - OBJ_HOTFOOT
 	.byte KILLACT_NORMALSTATE	; Object $46 - OBJ_PIRANHASPIKEBALL
-	.byte KILLACT_STANDARD	; Object $47 - OBJ_GIANTBLOCKCTL
+	.byte KILLACT_JUSTDRAW16X32	; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) pattern index starts
@@ -401,7 +401,7 @@ ObjectGroup01_PatternSets:
 ObjP2F:
 ObjP35:
 ObjP47:
-	.byte $91, $93, $B9, $BF
+	.byte $81, $83, $89, $8B, $81, $83, $93, $95, $85, $87, $89, $8B, $85, $87, $93, $95
 ObjP30:
 ObjP45:
 	.byte $85, $87, $89, $8B, $81, $83
@@ -459,366 +459,6 @@ ObjP41:
 	.byte $51, $51, $53, $53, $55, $55, $F7, $F7, $F9, $F9, $FB, $FB, $E3, $E3, $E5, $E5, $F5, $F5, $FD, $FD, $FD, $FD, $FD, $FD, $E3, $E3, $E5, $E5, $F5, $F5, $D1, $D3, $D5, $D7
 ObjP40:
 	.byte $B1, $B3, $B5, $B7, $B9, $BB, $75, $75
-
-GiantBlockCtl_BlkBump:	.byte $00 ;CHNGTILE_GIANTBRICKFIX, CHNGTILE_GIANTBLOCKHIT, CHNGTILE_GIANTBLOCKHIT, CHNGTILE_GIANTBRICKBUST
-GiantBlockCtl_BlockStarts:	.byte $00 ;TILE11_BRICK_UL, TILE11_QBLOCKC_UL, TILE11_QBLOCKP_UL
-GiantBlockCtl_Frames:	.byte $00, $08, $08
-
-	.byte $00
-
-PRG002_A27B:
-	.byte $00, $00, $50, $40, $30, $20, $00, $E0, $D0, $C0, $B0
-
-ObjNorm_GiantBlockCtl:
-	RTS		 ; Return
-
-PRG002_A2DB:
-	JSR PRG002_A450
-
-	LDA <Player_HaltGame
-	BEQ PRG002_A2E3	 ; If gameplay halted, jump to PRG002_A2E3
-
-	RTS		 ; Return
-
-PRG002_A2E3:
-	LDA Objects_Timer,X
-	CMP #$0a
-	BNE PRG002_A30C	 ; If timer <> $0A, jump to PRG002_A30C
-
-	; Timer = $0A...
-
-	PHA		 ; Save timer value
-
-	; Object Y Hi -> Temp_Var13
-	LDA <Objects_YHi,X
-	STA <Temp_Var13	
-
-	; Object Y -> Temp_Var14
-	LDA <Objects_Y,X
-	STA <Temp_Var14	
-
-	; Object X Hi -> Temp_Var15
-	LDA <Objects_XHi,X
-	STA <Temp_Var15	
-
-	; Object X -> Temp_Var16
-	LDA <Objects_X,X
-	PHA		 ; Save Object X
-	STA <Temp_Var16
-
-	; Clear this tile
-	LDA #TILEA_BLOCKBUMP_CLEAR
-	JSR Level_ChangeTile_ByTempVars
-
-	PLA		 ; Restore 'X'
-	ORA #$10	 ; Intended as next tile to the right I think
-	STA <Temp_Var16	 ; -> Temp_Var16
-
-	; Clear this tile too
-	LDA #TILEA_BLOCKBUMP_CLEAR
-	JSR Level_ChangeTile_ByTempVars
-
-	PLA		 ; Restore timer
-
-PRG002_A30C:
-	TAY		 ; current timer value -> 'Y'
-	LDA PRG002_A27B,Y	
-	STA <Objects_YVel,X	 ; Applies a staggering Y velocity
-
-	JMP Object_ApplyYVel	 ; Apply Y velocity and don't come back!
-
-GiantBlockCtl_DebrisXOff:	.byte $00, $10, $00, $10
-GiantBlockCtl_DebrisYOff:	.byte $00, $00, $10, $10
-GiantBlockCtl_DebrisXVel:	.byte -$10, $10, -$10, $10
-GiantBlockCtl_DebrisYVel	.byte -$40, -$40, -$28, -$28
-
-PRG002_A325:
-	; Set like Player bounced up
-	LDA #$01	 
-	STA Player_BounceDir
-
-	LDA <Temp_Var11	 ; A = Temp_Var11 (previous Var2)
-	BNE PRG002_A35E	 ; If non-zero, jump to PRG002_A35E
-
-	; Play "bump" sound
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERBUMP
-	STA Sound_QPlayer
-
-	; Set Object Y Hi = Player's Y Hi
-	LDA <Player_YHi
-	STA <Objects_YHi,X
-
-	LDA <Player_Y
-
-	LDY <Player_Suit
-	BEQ PRG002_A347	 ; If Player is small, jump to PRG002_A347
-
-	; Player is NOT small; subtract 16
-	SUB #$10
-	BCS PRG002_A347
-	DEC <Objects_YHi,X	; Apply carry
-PRG002_A347:
-
-	AND #$f0	 ; Align to tile grid row
-	ORA #$10	 ; Ensures nearest 32
-	STA <Objects_Y,X ; -> Object_Y
-
-	; Set Object X Hi = Player's X Hi
-	LDA <Player_XHi	
-	STA <Objects_XHi,X
-
-	; Use Player X + 8
-	LDA <Player_X
-	ADD #$08	
-	BCC PRG002_A35A	
-	INC <Objects_XHi,X	; Apply carry
-PRG002_A35A:
-
-	AND #$e0	 ; Aligned to tile grid, left side only
-	STA <Objects_X,X ; -> Object_X
-
-PRG002_A35E:
-
-	; Set BlkBump slot 2 coordinates to the object's position
-
-	LDA <Objects_X,X
-	STA Level_BlkBump_XLo+2
-
-	LDA <Objects_XHi,X
-	STA Level_BlkBump_XHi+2
-
-	LDA <Objects_YHi,X
-	STA Level_BlkBump_YHi+2
-
-	LDA <Objects_Y,X
-	STA Level_BlkBump_YLo+2
-
-	;LDA #CHNGTILE_GIANTBRICKBUST
-	STA Level_BlkBump+2
-
-	LDA Objects_Var1,X
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word GBCtl_BrickBump	; 0: Giant brick bump (small Player hit it)
-	.word GBCtl_CoinBlock	; 1: Giant [?] block with coin
-	.word GBCtl_LeafBlock	; 2: Giant [?] block with power up
-	.word GBCtl_BrickBust	; 3: Giant brick bust
-
-GBCtl_BrickBump:
-	JMP PRG002_A420	; Jump to PRG002_A420
-
-GBCtl_CoinBlock:
-	INC Coins_Earned	 ; Give a coin
-
-	LDA <Objects_Y,X
-	STA <Temp_Var1		; Temp_Var1 = Object's Y
-
-	LDA <Objects_X,X
-	ORA #$0e
-	STA <Temp_Var2		; Temp_Var2 = Object's X aligned evenly in column
-
-	JSR Produce_Coin	 ; Init for emerging coin
-
-	JMP PRG002_A420	 ; Jump to Produce_Coin
-
-GBCtl_LeafBlock:
-	LDA <Player_X
-	AND #$10
-	STA Player_MushFall ; Determine which way a powerup should fall
-
-	LDA #$1e	; A = $1E if Player is not small (Super Leaf)
-
-	LDY <Player_Suit
-	BNE PRG002_A3AA	 ; If Player is NOT small, jump to PRG002_A3AA
-
-	LDA #$0d	 ; Otherwise, A = $0D (Mushroom)
-
-PRG002_A3AA:
-	LDY #$05	 ; Y = 5 (altering fifth object slot)
-
-	; Make power up appear
-	STA Level_ObjectID,Y
-
-	; Set State = 1 (Init)
-	LDA #OBJSTATE_INIT
-	STA Objects_State,Y
-
-	; Set X as +8 from Object X
-	LDA <Objects_X,X
-	ADD #$08
-	STA Objects_X,Y
-
-	; Match other coordinates
-	LDA <Objects_XHi,X
-	STA Objects_XHi,Y
-	LDA <Objects_Y,X
-	STA Objects_Y,Y	
-	LDA <Objects_YHi,X
-	STA Objects_YHi,Y
-
-	JMP PRG002_A420	 ; Jump to PRG002_A420
-
-GBCtl_BrickBust:
-	; Crumbling brick noise
-	LDA Sound_QLevel2
-	ORA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	LDX #$03	 ; X = 3 (looking for up to 4 special objects, the brick debris)
-	LDY #$05	 ; Y = 5
-
-PRG002_A3DA:
-	LDA SpecialObj_ID,Y
-	BEQ PRG002_A3E5	 ; If this special object slot is free, jump to PRG002_A3E5
-
-	DEY		 ; Y--
-	BPL PRG002_A3DA	 ; While Y >= 0, loop!
-
-	JMP PRG002_A417	 ; Jump to PRG002_A417
-
-PRG002_A3E5:
-
-	; Found a free slot!
-
-	; Brick debris
-	LDA #SOBJ_BRICKDEBRIS
-	STA SpecialObj_ID,Y
-
-	; Set brick debris coordinates
-	LDA GiantBlockCtl_DebrisXOff,X
-	ADD Level_BlkBump_XLo+2	
-	STA SpecialObj_XLo,Y	
-
-	LDA GiantBlockCtl_DebrisYOff,X	
-	ADD Level_BlkBump_YLo+2
-	STA SpecialObj_YLo,Y
-	LDA #$00	
-	ADC Level_BlkBump_YHi+2	
-	STA SpecialObj_YHi,Y	
-
-	; Set brick debris X Velocity
-	LDA GiantBlockCtl_DebrisXVel,X	
-	STA SpecialObj_XVel,Y	
-
-	; Set brick debris Y Velocity
-	LDA GiantBlockCtl_DebrisYVel,X	
-	STA SpecialObj_YVel,Y
-
-	; Brick data = 0
-	LDA #$00
-	STA SpecialObj_Data,Y
-
-PRG002_A417:
-	DEY		 ; Y--
-	DEX		 ; X--
-	BPL PRG002_A3DA	 ; While X >= 0, loop!
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-	JMP PRG002_A420	 ; Jump to PRG002_A420
-
-PRG002_A420:
-	LDA <Temp_Var11	; A = Temp_Var11 (previous Var2)
-	BNE PRG002_A428	 ; If non-zero, jump to PRG002_A428
-
-	; Otherwise, halt Player's vertical movement
-	LDA #$00
-	STA <Player_YVel
-
-PRG002_A428:
-
-	; Set timer to $0B
-	LDA #$0b
-	STA Objects_Timer,X
-
-	JMP PRG002_A450	 ; Jump to PRG002_A450
-
-GiantBlockCtl_Pats:	.byte $73, $7B, $7B, $73, $7D, $7F, $7F, $7D, $79, $7B, $7B, $79, $79, $7B, $7B, $79
-GiantBlockCtl_Attrs:	.byte $00, $00, SPR_HFLIP, SPR_HFLIP, $00, $00, SPR_HFLIP, SPR_HFLIP, $00, $00, SPR_HFLIP, SPR_HFLIP, SPR_VFLIP, SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, SPR_HFLIP | SPR_VFLIP
-
-PRG002_A450:
-	LDA Objects_Var1,X
-	CMP #$03
-	BEQ PRG002_A487	 ; If Var1 = 3, jump to PRG002_A487 (RTS)
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	LDA <Objects_SpriteX,X
-	STA <Temp_Var2		 ; Temp_Var2 = Sprite X
-
-	PHA		 ; Save it
-
-	DEC <Objects_SpriteY,X	 ; Sprite Y--
-
-	LDA <Objects_SpriteY,X
-	STA <Temp_Var3		 ; Temp_Var3 = Sprite Y
-
-	PHA		 ; Save it
-
-	LDY Object_SprRAM,X	 ; Y = Sprite_RAM offset
-
-	LDA Objects_Frame,X
-	TAX		 ; X = object's frame
-	JSR GiantBlockCtl_Draw
-	JSR GiantBlockCtl_Draw
-
-	PLA		 ; Restore Sprite Y
-	ADD #16
-	STA <Temp_Var3	 ; Temp_Var3 = Sprite Y + 16
-
-	PLA		 ; Restore Sprite X
-	STA <Temp_Var2	 ; -> Temp_Var2
-
-	JSR GiantBlockCtl_Draw
-	JSR Object_GetRandNearUnusedSpr	 ; Get random nearby unused sprite
-	JSR GiantBlockCtl_Draw
-
-	LDX <SlotIndexBackup		 ; X = object slot index
-
-PRG002_A487:
-	RTS		 ; Return
-
-GiantBlockCtl_Draw:
-	LDA Player_AboveTop
-	BNE PRG002_A4B7	 ; If Player is way up high, jump to PRG002_A4B7 (RTS)
-
-	LDA #$02
-	STA <Temp_Var5	 ; Temp_Var5 = 2
-PRG002_A4A4:
-	; Store Sprite Y
-	LDA <Temp_Var3
-	STA Sprite_RAM+$00,Y
-
-	; Store appropriate pattern
-	LDA GiantBlockCtl_Pats,X
-	STA Sprite_RAM+$01,Y
-
-	; Set attributes
-	LDA #SPR_PAL3	; Palette select 3
-	ORA GiantBlockCtl_Attrs,X	; And what he's having
-	STA Sprite_RAM+$02,Y
-
-	; Store Sprite X
-	LDA <Temp_Var2
-	STA Sprite_RAM+$03,Y
-
-	; X += 8
-	ADD #$08
-	STA <Temp_Var2
-
-	INY
-	INY
-	INY
-	INY		 ; Y += 4 (next sprite)
-
-	INX		 ; X++ (next pattern/attribute)
-
-	DEC <Temp_Var5	 ; Temp_Var5--
-	BNE PRG002_A4A4	 ; While Temp_Var5 > 0, loop!
-
-PRG002_A4B7:
-	RTS		 ; Return
 
 	; Carry is set if gameplay not halted and object not dead
 CarryClearIfAliveAndNoHalt:
@@ -5116,3 +4756,126 @@ ObjNorm_DiagonalPodobo2:
 
 ObjNorm_DiagonalPodoboEnd:
 	JMP Object_ShakeAndDraw
+
+ObjInit_Birdo:
+	LDA RandomN
+	AND #$03
+	TAY
+	LDA Birdo_ShootTimers, Y
+	STA Objects_Timer, X
+	LDA #$04
+	STA Objects_HitCount, X
+	RTS
+
+Birdo_Walk:
+	.byte $00, $0C, $00, $F4
+
+Birdo_EggShoot:
+	.byte $20, $E0
+
+Birdo_ShootTimers:
+	.byte $80, $C0, $A0, $E0
+
+ObjNorm_Birdo:
+	LDA <Player_HaltGame
+	BEQ ObjNorm_Birdo1
+	JMP ObjNorm_BirdoDraw
+
+ObjNorm_Birdo1:
+	JSR Object_DeleteOffScreen
+	JSR Object_FacePlayer
+	
+	LDA Objects_Var1, X
+	BNE Birdo_PauseShoot
+
+Birdo_Waltz:
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	AND #$C0
+	CLC
+	ROL A
+	ROL A
+	ROL A
+	TAY
+	LDA Birdo_Walk, Y
+	STA Objects_XVel, X 
+
+	LDA Objects_Timer, X
+	BNE Birdo_Norm
+	
+	LDA #$20
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA Objects_XVel, X
+	LDA #$02
+	STA Objects_Var1, X
+	BNE Birdo_Norm
+
+Birdo_PauseShoot:
+	LDA Objects_Timer, X
+	BNE Birdo_TryShoot
+	LDA RandomN
+	AND #$03
+	TAY
+	LDA Birdo_ShootTimers, Y
+	STA Objects_Timer, X
+	LDA #$00
+	STA Objects_Var1, X
+
+Birdo_TryShoot:
+	CMP #$08
+	BNE Birdo_Norm
+
+	LDA Objects_SprVVis,X
+	AND #$80
+	ORA Objects_SprHVis,X
+	BNE Birdo_Norm
+
+	LDA Birdo_EggShoot, Y
+	STA <Temp_Var16
+
+	JSR SpecialObj_FindEmpty
+	CPY #$FF
+	BEQ Birdo_Norm
+
+	LDA #SOBJ_EGG
+	STA SpecialObj_ID,Y
+
+	LDA #$10
+	STA SpecialObj_Timer,Y
+
+	LDA <Objects_X,X
+	STA SpecialObj_XLo,Y
+
+	LDA <Objects_Y,X
+	ADD #$02
+	STA SpecialObj_YLo,Y
+
+	LDA <Objects_YHi, X
+	ADC #$00
+	STA SpecialObj_YHi,Y
+
+	LDA <Temp_Var16
+	STA SpecialObj_XVel,Y
+
+	LDA RandomN
+	AND #$01
+	BNE Birdo_Norm
+	LDA #$28
+	STA Objects_Timer, X
+
+
+Birdo_Norm:
+	JSR Object_HitTestRespond
+	JSR Object_InteractWithWorld
+
+ObjNorm_BirdoDraw:
+	LDA <Objects_X, X
+	LSR A
+	LSR A
+	AND #$01
+	ORA Objects_Var1, X
+	STA Objects_Frame, X
+	JSR Object_Draw16x32Sprite
+	RTS

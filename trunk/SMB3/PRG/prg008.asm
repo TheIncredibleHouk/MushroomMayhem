@@ -951,6 +951,7 @@ PowerUp_Palettes:
 	.byte $00, $25, $36, $0F	; A - #DAHRKDAIZ Boo Mario
 	.byte $00, $36, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
 	.byte $00, $0B, $2B, $0F	; infected
+	.byte $00, $28, $30, $27	; yolked
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Suit pallete code removed
@@ -958,6 +959,13 @@ PowerUp_Palettes:
 
 ; #DAHRKDAIZ if we're i special suit mode, we jump farther into the table.
 Level_SetPlayerPUpPal:
+	LDA Yolked
+	BEQ CheckInfection
+
+	LDA #$0D
+	BNE Skipped_Palette
+
+CheckInfection:
 	LDA LeftRightInfection
 	BEQ Normal_Palette
 	LDA #$0C
@@ -1129,6 +1137,7 @@ PRG008_A68D:
 	BEQ PRG008_A6A6	 ; If the starting underwater tile is greater than the detected tile, jump to PRG008_A6A6
 
 	LDA LeftRightInfection
+	ORA Yolked
 	BEQ PRG008_A6A5
 	LDA #$17
 	STA Player_SuitLost
@@ -1137,6 +1146,7 @@ PRG008_A68D:
 	STA Player_QueueSuit
 	LDA #$00
 	STA LeftRightInfection
+	STA Yolked
 	; Otherwise...
 
 PRG008_A6A5:

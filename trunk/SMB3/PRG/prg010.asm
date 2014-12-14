@@ -3806,6 +3806,7 @@ DMC08_End
 ; Rest of ROM bank was empty
 
 Try_Ability_Change:
+	
 	LDA Player_Level
 	;BEQ Ability_RTS
 	LDA <Pad_Input

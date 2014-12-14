@@ -1596,7 +1596,7 @@
     <block value="2C">Background</block>
     <block value="2D">Background</block>
     <block value="2E">Background</block>
-    <block value="2F">Background</block>
+    <block value="2F">Water Fill</block>
     <block value="30">Background</block>
     <block value="31">Background</block>
     <block value="32">Background</block>
@@ -3742,7 +3742,7 @@
     <block value="7E"></block>
     <block value="7F">Empty ? Block</block>
     <block value="80">Background</block>
-    <block value="81">Cleared Coin</block>
+    <block value="81"></block>
     <block value="82"></block>
     <block value="83"></block>
     <block value="84"></block>
