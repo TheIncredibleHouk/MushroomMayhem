@@ -71,7 +71,7 @@
     <palette background="00" data="0F,0F,30,21,0F,08,30,28,0F,08,30,18,0F,0C,30,1C,0F,00,00,00,0F,0F,30,06,0F,0F,30,19,0F,07,30,27" name="Bowser Prison" guid="793e83dc-d2f5-436a-b4ec-f804b5da3f6b" />
     <palette background="00" data="0F,0F,30,11,0F,18,30,28,0F,0B,30,1B,0F,05,30,16,0F,00,00,00,0F,0F,30,16,0F,0F,30,1B,0F,0F,30,28" name="Colorful" guid="8f7f7e3e-d0bd-4022-9a96-0ad54fc78d79" />
     <palette background="00" data="0F,0F,30,11,0F,0C,20,10,0F,07,37,17,0F,05,30,25,0F,00,00,00,0F,0F,30,14,0F,0B,30,2A,0F,08,36,27" name="Lost World" guid="f4ef7755-8114-44c1-bef6-0b31d06d9086" />
-    <palette background="37" data="37,0F,30,00,37,0F,30,18,37,0F,30,17,37,0F,30,15,37,00,00,00,37,0F,30,16,37,0F,30,1A,37,0F,30,28" name="Dusk Island" guid="044b7107-8b00-4c59-bd8a-d269ce8dd46f" />
+    <palette background="32" data="32,0F,30,31,32,0F,30,17,32,0F,30,1A,32,0F,30,27,32,00,00,00,32,0F,30,16,32,0F,30,1A,32,0F,30,28" name="Dusk Island" guid="044b7107-8b00-4c59-bd8a-d269ce8dd46f" />
   </paletteinfo>
   <blocklayouts />
   <worldinfo>
@@ -146,6 +146,7 @@
     <level name="Bowser Prison" worldguid="a88cce07-d75c-4e6c-a34d-b149a4841f8d" levelguid="66bd6579-8ef4-4ca7-aeff-e20c50693e00" leveltype="2" lastcompressionsize="0" lastmodified="2014-10-13T06:03:44.2553729-04:00" layout="Horizontal" bonusfor="2f4efb91-3fc8-4cc6-991f-dfd6ecd9864c" />
     <level name="Crazy Crumbles" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="d3538842-3aaa-44c7-83da-b4b6742ca6d2" leveltype="3" lastcompressionsize="0" lastmodified="2014-10-08T20:41:13.818486-04:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
     <level name="Lost World" worldguid="40f6c25f-1581-495c-b5e9-edd37eec7432" levelguid="4682d759-a06e-4856-93da-d632f280b778" leveltype="14" lastcompressionsize="0" lastmodified="2014-12-05T06:06:39.7757138-05:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
-    <level name="Watch Your Step" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="45130f0a-3282-499b-8e04-66572d044135" leveltype="6" lastcompressionsize="0" lastmodified="2014-12-14T11:19:12.8293979-05:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Watch Your Step" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="45130f0a-3282-499b-8e04-66572d044135" leveltype="6" lastcompressionsize="0" lastmodified="2014-12-14T21:36:45.928714-05:00" layout="Horizontal" bonusfor="00000000-0000-0000-0000-000000000000" />
+    <level name="Watch Your Step Bonus" worldguid="e302aa7b-d54f-4eb0-b9e0-a75b4b19522d" levelguid="f874daa2-7c7a-4681-9139-631469dcd28b" leveltype="6" lastcompressionsize="0" lastmodified="2014-12-14T21:36:45.9357144-05:00" layout="Horizontal" bonusfor="45130f0a-3282-499b-8e04-66572d044135" />
   </levelinfo>
 </project>

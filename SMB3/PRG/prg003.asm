@@ -2454,10 +2454,14 @@ MagicStarOffset:
 
 ObjNorm_MagicStar:
 	
+	JSR Object_ShakeAndDrawMirrored
+	LDA <Player_HaltGame
+	BNE PRG003_A92D
+
 	JSR Object_DeleteOffScreen
 	JSR Object_WorldDetect8
 	JSR Magic_Star_Action
-	JSR Object_ShakeAndDrawMirrored
+	
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
 
