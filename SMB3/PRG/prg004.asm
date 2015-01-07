@@ -39,7 +39,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjInit_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
-	.word ObjInit_DoNothing	; Object $7B - OBJ_BIGREDTROOPA
+	.word ObjInit_BlueShell	; Object $7B - OBJ_BLUESHELL
 	.word ObjInit_DeliveryLakitu	; Object $7C - OBJ_HELPER
 	.word ObjInit_GiantDRYPIRANHA	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjInit_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
@@ -81,7 +81,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjNorm_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjNorm_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
-	.word ObjNorm_RedTroopa		; Object $7B - OBJ_BIGREDTROOPA
+	.word ObjNorm_BlueShell		; Object $7B - OBJ_BLUESHELL
 	.word ObjNorm_DeliveryLakitu	; Object $7C - OBJ_HELPER
 	.word ObjNorm_BigPiranha	; Object $7D - OBJ_BIGGREENPIRANHA
 	.word ObjNorm_GroundTroop	; Object $7E - OBJ_BIGGREENHOPPER
@@ -124,7 +124,7 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $78 - OBJ_BULLETBILL
 	.word KoopaExpload					; Object $79 - OBJ_BULLETBILLHOMING
 	.word $0000					; Object $7A - OBJ_PURPLETROOPA
-	.word $0000					; Object $7B - OBJ_BIGREDTROOPA
+	.word Player_GetHurt					; Object $7B - OBJ_BLUESHELL
 	.word $0000					; Object $7C - OBJ_HELPER
 	.word $0000					; Object $7D - OBJ_BIGGREENPIRANHA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $7E - OBJ_BIGGREENHOPPER
@@ -166,7 +166,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $7A - OBJ_PURPLETROOPA
-	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7B - OBJ_BIGREDTROOPA
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $7B - OBJ_BLUESHELL
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $7C - OBJ_HELPER
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7E - OBJ_BIGGREENHOPPER
@@ -207,7 +207,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $78 - OBJ_BULLETBILL
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $7A - OBJ_PURPLETROOPA
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7B - OBJ_BIGREDTROOPA
+	.byte  OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $7B - OBJ_BLUESHELL
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $7C - OBJ_HELPER
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7E - OBJ_BIGGREENHOPPER
@@ -249,7 +249,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY 					; Object $78 - OBJ_BULLETBILL
 	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7A - OBJ_PURPLETROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7B - OBJ_BIGREDTROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7B - OBJ_BLUESHELL
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 				; Object $7C - OBJ_HELPER
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH | OA3_NOTSTOMPABLE 	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7E - OBJ_BIGGREENHOPPER
@@ -291,7 +291,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT6 | $4F	; Object $78 - OBJ_BULLETBILL
 	.byte OPTS_SETPT5 | $4C	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OPTS_SETPT6 | $4F	; Object $7A - OBJ_PURPLETROOPA
-	.byte OPTS_SETPT5 | $3D	; Object $7B - OBJ_BIGREDTROOPA
+	.byte OPTS_SETPT5 | $0B	; Object $7B - OBJ_BLUESHELL
 	.byte OPTS_NOCHANGE	; Object $7C - OBJ_HELPER
 	.byte OPTS_SETPT5 | $3D	; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte OPTS_SETPT5 | $3D	; Object $7E - OBJ_BIGGREENHOPPER
@@ -333,7 +333,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $78 - OBJ_BULLETBILL
 	.byte KILLACT_JUSTDRAW16X16	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $7A - OBJ_PURPLETROOPA
-	.byte KILLACT_GIANTKILLED	; Object $7B - OBJ_BIGREDTROOPA
+	.byte KILLACT_JUSTDRAWMIRROR	; Object $7B - OBJ_BLUESHELL
 	.byte KILLACT_JUSTDRAW16X16	; Object $7C - OBJ_HELPER
 	.byte KILLACT_POOFDEATH		; Object $7D - OBJ_BIGGREENPIRANHA
 	.byte KILLACT_GIANTKILLED	; Object $7E - OBJ_BIGGREENHOPPER
@@ -406,7 +406,10 @@ ObjP8F:
 ObjP7D:
 ObjP7F:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF
+
 ObjP7B:
+	.byte $AD, $AD, $AF, $B1, $AD, $AD
+
 ObjP7E:
 	.byte $8D, $8F, $93, $95, $99, $8F, $9B, $9D, $B1, $B3, $B5, $B7
 ObjP7C:
@@ -3090,7 +3093,7 @@ PRG004_B36E:
 
 	JSR GroundTroop_Draw	 ; Draw the enemy
 	JSR Object_Move
-	JMP Object_HitTestRespond	 ; Do Player to enemy collision and don't come back!
+	JMP PRG004_B3D7	 ; Do Player to enemy collision and don't come back!
 
 
 PRG004_B3A5:
@@ -3430,6 +3433,7 @@ PRG004_B520:
 	CMP #OBJ_PARATROOPAGREENHOP
 	BLT PRG004_B55D	 ; If this is not a paratroopa, jump to PRG004_B55D
 
+DrawWings:
 	LDA Sprite_RAM+$00,Y
 	CMP #$f8
 	BEQ PRG004_B55D	 ; If sprite was found to be vertically off-screen, jump to PRG004_B55D
@@ -5510,4 +5514,146 @@ Object_HitWall1:
 	STA <Objects_X, X
 	LDA #$00
 	STA Objects_XVel, X
+	RTS
+
+BlueShellExplosionTimers:
+	.byte $80, $C0, $A0, $E0
+
+ObjInit_BlueShell:
+	LDA RandomN
+	AND #$03
+	TAY
+	LDA BlueShellExplosionTimers, Y
+	STA Objects_SlowTimer, X
+	RTS
+
+ObjNorm_BlueShell:
+	LDA <Player_HaltGame
+	BNE DrawBlueShell
+
+	JSR PRG004_AF1A
+	INC Objects_Var1, X
+
+	LDA Objects_SlowTimer, X
+	BEQ ObjNorm_BlueShell0
+
+ObjNorm_BlueShell_1:
+	LDA Level_VertScroll
+	ADD #$10
+	STA ChaseTargetY
+	LDA #$00
+	ADC #$00
+	STA ChaseTargetYHi
+	JSR ChaseTargeted
+	JSR Object_ApplyXVel
+	JMP DrawBlueShell
+
+ObjNorm_BlueShell0:
+	LDA Objects_Var2, X
+	BNE ObjNorm_BlueShell1
+
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$01
+	BNE ObjNorm_BlueShell_1
+
+	CPY #$00
+	BNE ObjNorm_BlueShell01
+
+	LDY <Player_XVel
+	BPL ObjNorm_BlueShell_1
+	BMI ObjNorm_BlueShellDive
+
+ObjNorm_BlueShell01:
+	LDY <Player_XVel
+	BMI ObjNorm_BlueShell_1 
+
+ObjNorm_BlueShellDive:
+	INC Objects_Var2, X
+	LDA #$40
+	STA Objects_YVel, X
+
+ObjNorm_BlueShell1:
+	LDA #$01
+	STA Objects_Frame, X
+	JSR Object_ApplyYVel_NoLimit
+	JSR Object_WorldDetect4
+	LDA Objects_DetStat, X
+	BEQ DrawBlueShell
+	LDY Objects_SpawnIdx,X
+	LDA Level_ObjectsSpawned,Y
+	AND #$7f
+	STA Level_ObjectsSpawned,Y
+	JMP KoopaExpload
+
+
+DrawBlueShell:
+	LDA Objects_Frame, X
+	CMP #$01
+	BNE DrawBlueShell0_1
+	JMP Object_ShakeAndDraw
+
+DrawBlueShell0_1:
+	JSR Object_ShakeAndDrawMirrored
+	
+DrawBlueShell0_2:
+	LDA Objects_Var2, X
+	BNE ObjNorm_BlueShellDraw2
+
+	LDA Objects_SlowTimer, X
+	CMP #$10
+	BCS DrawBlueShell0
+
+	LDA Objects_Var1, X
+	AND #$02
+	BEQ ObjNorm_BlueShellDraw2
+
+DrawBlueShell0:
+	LDY Object_SprRAM, X
+	LDA Sprite_RAM+$00,Y
+	CMP #$f8
+	BEQ ObjNorm_BlueShellDraw1	 ; If sprite was found to be vertically off-screen, jump to PRG004_B55D
+
+	; The wing sprite is Y-8 from the body
+	SUB #$08
+	STA Sprite_RAM+08,Y
+
+	; Temp_Var1 = $CD (pattern for wing up)
+	LDA #$CD
+	STA <Temp_Var1
+
+	
+	LDA Objects_Var1, X
+	AND #$04
+	BEQ ObjNorm_BlueShellDraw0	 ; 4 ticks on, 4 ticks off; jump to PRG004_B548
+
+	; Temp_Var1 = $CF (pattern for wing down)
+	LDA #$CF
+	STA <Temp_Var1 
+
+ObjNorm_BlueShellDraw0:
+
+	; Set correct wing pattern
+	LDA <Temp_Var1
+	STA Sprite_RAM+9,Y
+
+	; Copy Sprite X
+	LDA #$0C
+	STA <Temp_Var1
+
+	LDA Objects_FlipBits, X
+	BEQ  ObjNorm_BlueShellDraw1
+
+	LDA #$FC
+	STA <Temp_Var1
+
+ObjNorm_BlueShellDraw1:
+	LDA Sprite_RAM+03,Y
+	ADD <Temp_Var1
+	STA Sprite_RAM+11,Y
+
+	LDA #SPR_PAL1
+	ORA Objects_FlipBits, X
+	STA Sprite_RAM+10,Y	 ; Set wing attribute
+
+ObjNorm_BlueShellDraw2:
 	RTS

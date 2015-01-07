@@ -29,13 +29,13 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $01
 	.word ObjInit_DoNothing	; Object $02
 	.word ObjInit_EaterBlock	; Object $03
-	.word ObjInit_DoNothing	; Object $04
+	.word ObjInit_CoinLock	; Object $04
 	.word ObjInit_DoNothing	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
 	.word ObjInit_Coin	; Object $08 - OBJ_COIN
 	.word ObjInit_Bubble	; Object $09 - OBJ_BUBBLE
-	.word ObjInit_DoNothing	; Object $0A - OBJ_BULLY
+	.word ObjInit_ForcePowerUp	; Object $0A - OBJ_BULLY
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -71,7 +71,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_BowserFireBall	; Object $01
 	.word ObjNorm_SnowBall	; Object $02
 	.word ObjNorm_EaterBlock	; Object $03
-	.word ObjNorm_DoNothing	; Object $04
+	.word ObjNorm_CoinLock	; Object $04
 	.word ObjNorm_SpikeBall	; Object $05
 	.word ObjNorm_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjNorm_Brick	; Object $07 - OBJ_BRICK
@@ -156,7 +156,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $01
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $02
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $03
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $04
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $04
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $05
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $07 - OBJ_BRICK
@@ -254,7 +254,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $01
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE	; Object $02
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $03
-	.byte OA3_HALT_JUSTDRAWTALL 	; Object $04
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $04
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $05
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
@@ -296,7 +296,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE; Object $01
 	.byte OPTS_NOCHANGE	; Object $02
 	.byte OPTS_NOCHANGE	; Object $03
-	.byte OPTS_SETPT5 | $48	; Object $04
+	.byte OPTS_NOCHANGE	; Object $04
 	.byte OPTS_SETPT5 | $0E	; Object $05
 	.byte OPTS_NOCHANGE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_BRICK
@@ -336,9 +336,9 @@ ObjectGroup00_PatTableSel:
 ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $00
 	.byte KILLACT_STANDARD	; Object $01
-	.byte KILLACT_NORMALANDKILLED	; Object $02
+	.byte KILLACT_STANDARD	; Object $02
 	.byte KILLACT_STANDARD	; Object $03
-	.byte KILLACT_STANDARD	; Object $04
+	.byte KILLACT_POOFDEATH	; Object $04
 	.byte KILLACT_POOFDEATH	; Object $05
 	.byte KILLACT_STANDARD	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte KILLACT_STANDARD	; Object $07 - OBJ_BRICK
@@ -436,7 +436,7 @@ ObjP20:
 
 ObjP01:	.byte $F3, $F5, $F3, $F5, $BB, $BD, $BB, $BF
 ObjP02:	.byte $95, $97, $8D, $8F
-ObjP04:	.byte $B1, $B3, $B5, $B7, $B9, $BB, $BD, $BF
+ObjP04:	.byte $F5, $F7, $B5, $B7
 ObjP05:	.byte $95, $95, $97, $97
 ObjP06:	
 ObjP1B:	.byte $8B, $8D, $8F, $91, $89, $89, $91, $8F, $CB, $CD, $CF, $D1, $C9, $C9, $D1, $CF	; RAS: Not actually used, see BounceBlock_Tile
@@ -1083,6 +1083,11 @@ Star_Palettes:
 	.byte SPR_PAL0, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 ObjInit_StarOrSuit:
+	LDA Objects_Property, X
+	BEQ ObjInit_StarOrSuit1
+	STA From_Reserve
+
+ObjInit_StarOrSuit1:
 	LDA From_Reserve
 	BEQ Do_Star_Init
 	LDA #$00
@@ -1129,6 +1134,7 @@ Star_RTS:
 SprStarAnimOffset: .byte $28, $0C, $10, $14
 
 ObjNorm_StarOrSuit:
+
 	LDA PUp_StarManFlash
 	BNE PRG001_A7E0	 ; If flashing is not active, jump to PRG001_A7E0
 
@@ -1142,6 +1148,9 @@ PRG001_A7E0:
 	TAY
 	LDA SprStarAnimOffset, Y
 	STA SprAnimOffset
+
+	LDA Objects_Property, X
+	BNE PRG001_A7F1
 
 	JSR PowerUp_DoRaise	 ; Do power up raising out of box
 	JSR Object_InteractWithWorld	 ; Move, detect, interact with blocks of world
@@ -1297,7 +1306,7 @@ ObjHit_PUpMush:
 PRG001_A897:
 	LDA <Player_Suit
 	BEQ Do_Grow
-	LDA Player_Badge
+	LDA Player_Equip
 	CMP #$07
 	BNE Just_Collect
 	LDA #$01
@@ -3298,7 +3307,7 @@ Bowser_DoorAppear:
 ; Rest of ROM bank was empty
 
 Try_PUp_Reserve:
-	LDA Player_Badge
+	LDA Player_Equip
 	CMP #$07
 	BNE Cant_Reserve
 	LDA Effective_Suit
@@ -4969,3 +4978,164 @@ ObjNorm_BowserFireBall:
 
 ObjNorm_BowserFireBall1:
 	JMP Object_ShakeAndDraw
+
+CoinLocks:
+	.byte $0A, $19, $32, $32, $32, $32, $32, $63
+
+ObjInit_CoinLock:
+	LDA <Objects_Y, X
+	ADD #$04
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	ADC #$00
+	STA <Objects_YHi, X
+	LDY Objects_Property, X
+	LDA CoinLocks,  Y
+	STA Objects_Var1, X
+	RTS
+
+Coin_Unlock:
+	LDA Level_ChgTileEvent
+	BNE Coin_UnlockRTS
+
+	JSR SpecialObj_FindEmpty
+	CPY #$FF
+	BEQ Coin_UnlockRTS
+
+	STY <Temp_Var15
+	JSR Object_GetAttrJustTile
+	LDA Object_LevelTile
+	EOR #$01
+	STA Level_ChgTileEvent
+	
+	JSR SetObjectTileCoordAlignObj
+	
+	LDA Objects_SprHVis, X
+	BNE Coin_Unlock0
+
+	LDY <Temp_Var15
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+	LDA #$20	 
+	STA SpecialObj_Data, Y
+	
+	LDA Objects_X, X
+	STA SpecialObj_XLo, Y
+	LDA Objects_YHi, X
+	STA SpecialObj_YHi, Y
+	LDA Objects_Y, X
+	STA SpecialObj_YLo, Y
+
+Coin_Unlock0:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
+
+	LDA Objects_Y, X
+	ADD #$10
+	STA Objects_Y, X
+	LDA Objects_YHi, X
+	ADC #$00
+	STA Objects_YHi, X
+
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	CMP #$03
+	BNE Coin_UnlockRTS
+
+	LDA Objects_Y, X
+	SUB #$38
+	STA Objects_Y, X
+	LDA Objects_YHi, X
+	SBC #$00
+	STA Objects_YHi, X
+	JMP ObjectKill_NoScore
+
+Coin_UnlockRTS:	
+	RTS
+	
+ObjNorm_CoinLock:
+	LDA Objects_Var1, X
+	BEQ Coin_Unlock
+
+	LDY Objects_Property, X
+	LDA Objects_Var1, X
+	SUB Coins_Earned
+	ADD Coins_Lost
+	CMP CoinLocks, Y
+	BEQ ObjNorm_CoinLock0
+	BCS ObjNorm_CoinLock1
+
+ObjNorm_CoinLock0:
+	STA Objects_Var1, X
+
+ObjNorm_CoinLock1:
+	LDA #$00
+	STA Coins_Lost
+	STA Coins_Earned
+
+	LDA LastPatTab_Sel
+	AND #$01
+	STA Objects_Frame, X
+	LDA #$00
+	STA <Temp_Var10
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	CPY #$00
+	BEQ DrawCoinLock0
+
+	LDA #$40
+	STA <Temp_Var10
+
+DrawCoinLock0:
+	JSR Object_ShakeAndDraw
+	LDA Objects_SprHVis,X 
+	ORA Objects_SprVVis,X
+	BEQ DrawCoinLock1
+
+	LDA #$08
+	STA Sprite_RAM, Y
+	STA Sprite_RAM+3, Y
+	STA Sprite_RAM+4, Y
+	LDA #$10
+	STA Sprite_RAM+7, Y
+
+
+DrawCoinLock1:
+
+	LDA Objects_Var1, X
+	JSR ToThreeDigits
+
+	LDA Sprite_RAM, Y
+	ADD #$10
+	STA Sprite_RAM+8, Y
+	STA Sprite_RAM+12, Y
+
+	LDA Sprite_RAM+3, Y
+	STA Sprite_RAM+11, Y
+	ADD #$08
+	STA Sprite_RAM+15, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAM+10,Y
+	STA Sprite_RAM+14,Y
+
+	LDA <Temp_Var2
+	ASL A
+	ADD #$A1
+	ADD <Temp_Var10
+	STA Sprite_RAM + 9, Y
+	LDA <Temp_Var3
+	ASL A
+	ADD #$A1
+	ADD <Temp_Var10
+	STA Sprite_RAM + 13, Y
+	RTS
+
+ObjInit_ForcePowerUp:
+	LDA #$01
+	STA Player_QueueSuit
+	RTS

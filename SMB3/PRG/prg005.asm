@@ -1592,7 +1592,7 @@ Rocky_Killed:
 	BNE PRG005_AA96	 ; If timer not expired, jump to PRG005_AA96
 
 	INC Exp_Earned	 ; Get proper score award
-	LDA Player_Badge
+	LDA Player_Equip
 	CMP #$09
 	BNE Dont_Coin_It10
 	INC Coins_Earned ; One more coin earned

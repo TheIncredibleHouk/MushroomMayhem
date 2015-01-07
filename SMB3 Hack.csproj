@@ -71,7 +71,9 @@
     <None Include="SMB3\PRG\prg031.asm" />
     <None Include="SMB3\smb3.asm" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="SMB3\manual\images\FireFlower.png" />
     <Content Include="SMB3\manual\images\FoxLeaf.png" />
@@ -85,6 +87,9 @@
     <Content Include="SMB3\manual\images\Sledge.png" />
     <Content Include="SMB3\manual\images\Star.png" />
     <Content Include="SMB3\manual\manual.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -49,7 +49,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_RotoDiscDualCW	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.word ObjInit_RotoDiscDualCW	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.word ObjInit_RotoDiscDualCW	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.word ObjInit_BlooperWithKids	; Object $61 - OBJ_BLOOPERWITHKIDS
+	.word ObjInit_Blooper	; Object $61 - OBJ_SKULLBLOOPER
 	.word ObjInit_Blooper		; Object $62 - OBJ_BLOOPER
 	.word ObjInit_FloatMine	; Object $63 - OBJ_FLOATMINE
 	.word ObjInit_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
@@ -91,7 +91,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_RotoDiscDualOpp	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.word ObjNorm_RotoDiscDualOpp2	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.word ObjNorm_RotoDiscDual	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.word ObjNorm_Blooper		; Object $61 - OBJ_BLOOPERWITHKIDS
+	.word ObjNorm_SkullBlooper		; Object $61 - OBJ_SKULLBLOOPER
 	.word ObjNorm_Blooper		; Object $62 - OBJ_BLOOPER
 	.word ObjNorm_FloatMine	; Object $63 - OBJ_FLOATMINE
 	.word ObjNorm_CheepCheepHopper	; Object $64 - OBJ_CHEEPCHEEPHOPPER
@@ -134,7 +134,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.word ObjHit_DoNothing	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.word ObjHit_DoNothing	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.word ObjHit_DoNothing	; Object $61 - OBJ_BLOOPERWITHKIDS
+	.word ObjHit_DoNothing	; Object $61 - OBJ_SKULLBLOOPER
 	.word ObjHit_DoNothing	; Object $62 - OBJ_BLOOPER
 	.word MineDoExplode	; Object $63 - OBJ_FLOATMINE
 	.word ObjHit_DoNothing	; Object $64 - OBJ_CHEEPCHEEPHOPPER
@@ -176,8 +176,8 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $61 - OBJ_BLOOPERWITHKIDS
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $62 - OBJ_BLOOPER
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $61 - OBJ_SKULLBLOOPER
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $62 - OBJ_BLOOPER
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $63 - OBJ_FLOATMINE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $65 - OBJ_WATERCURRENTUPWARD
@@ -217,7 +217,7 @@ ObjectGroup02_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $61 - OBJ_BLOOPERWITHKIDS
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $61 - OBJ_SKULLBLOOPER
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $62 - OBJ_BLOOPER
 	.byte OA2_NOSHELLORSQUASH | OA3_TAILATKIMMUNE | OA2_TDOGRP1	; Object $63 - OBJ_FLOATMINE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $64 - OBJ_CHEEPCHEEPHOPPER
@@ -259,8 +259,8 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $61 - OBJ_BLOOPERWITHKIDS
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $62 - OBJ_BLOOPER
+	.byte OA3_HALT_NORMALONLY  	; Object $61 - OBJ_SKULLBLOOPER
+	.byte OA3_HALT_NORMALONLY  	; Object $62 - OBJ_BLOOPER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $63 - OBJ_FLOATMINE
 	.byte OA3_HALT_NORMALONLY 	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $65 - OBJ_WATERCURRENTUPWARD
@@ -301,7 +301,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $12	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte OPTS_SETPT5 | $12	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte OPTS_SETPT5 | $12	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte OPTS_SETPT5 | $1A	; Object $61 - OBJ_BLOOPERWITHKIDS
+	.byte OPTS_SETPT5 | $1A	; Object $61 - OBJ_SKULLBLOOPER
 	.byte OPTS_SETPT5 | $1A	; Object $62 - OBJ_BLOOPER
 	.byte OPTS_SETPT5 | $1A	; Object $63 - OBJ_FLOATMINE
 	.byte OPTS_SETPT6 | $4F	; Object $64 - OBJ_CHEEPCHEEPHOPPER
@@ -346,7 +346,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_STANDARD	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte KILLACT_STANDARD	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte KILLACT_STANDARD	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte KILLACT_NORMALSTATE	; Object $61 - OBJ_BLOOPERWITHKIDS
+	.byte KILLACT_JUSTDRAWMIRROR	; Object $61 - OBJ_SKULLBLOOPER
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $62 - OBJ_BLOOPER
 	.byte KILLACT_NORMALANDKILLED	; Object $63 - OBJ_FLOATMINE
 	.byte KILLACT_JUSTDRAW16X16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
@@ -442,7 +442,10 @@ ObjP5E:
 ObjP5F:
 ObjP60:
 	.byte $99, $9B, $9D, $9F
+
 ObjP61:
+	.byte $B5, $B5, $B7, $B7, $B5, $B5
+
 ObjP62:
 
 	.byte $B1, $B1, $B3, $B3, $B1, $B1
@@ -1116,6 +1119,11 @@ VeggieGuyPull:
 	INC Objects_Var1, X
 	LDA #$03
 	STA Objects_Frame, X
+
+	LDA Sound_QPlayer
+	AND #~SND_PLAYERSWIM
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
 
 VeggieGuyPull1:
 	JMP VeggieGuyDraw
@@ -2454,13 +2462,15 @@ MagicStarOffset:
 
 ObjNorm_MagicStar:
 	
+	JSR Magic_Star_Action
+
 	JSR Object_ShakeAndDrawMirrored
 	LDA <Player_HaltGame
 	BNE PRG003_A92D
 
 	JSR Object_DeleteOffScreen
 	JSR Object_WorldDetect8
-	JSR Magic_Star_Action
+	
 	
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
@@ -3824,11 +3834,11 @@ ObjInit_BlooperWithKids:
 
 	RTS		 ; Return
 
-ObjNorm_Blooper:
-	LDA Level_ObjectID,X
-	CMP #OBJ_BLOOPER
-	BNE PRG003_B781	 ; If this is not a straight Blooper, jump to PRG003_B781
+ObjNorm_SkullBlooper:
+	LDA #$10
+	STA ObjSplash_DisTimer, X
 
+ObjNorm_Blooper:
 	; Just a regular Blooper...
 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
@@ -3836,39 +3846,15 @@ ObjNorm_Blooper:
 	LDA <Player_HaltGame
 	BEQ PRG003_B77B	 ; If gameplay is not halted, jump to PRG003_B77B
 
+	LDA Objects_SprAttr, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SprAttr, X
+
 	JMP Object_ShakeAndDrawMirrored	 ; Otherwise, draw Blooper and don't come back!
 
 PRG003_B77B:
 	JSR Player_HitEnemy	 ; Do Player to Blooper hit detection!
-	JMP PRG003_B78B	 ; Jump to PRG003_B78B
 
-PRG003_B781:
-	JSR TailEnemy_DoStandard	 ; A Blooper with kids... gotta do Tail updates!
-
-	LDA <Player_HaltGame
-	BEQ PRG003_B78B	 ; If gameplay is not halted, jump to PRG003_B78B
-
-	JMP PRG003_BB17	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
-
-PRG003_B78B:
-	LDA Objects_Timer,X
-	BEQ PRG003_B7A2	 ; If timer = 0, jump to PRG003_B7A2
-
-	STA Objects_ColorCycle,X	; Cycle colors
-
-	CMP #$01
-	BNE PRG003_B79F	 ; If timer <> 1, jump to PRG003_B79F
-
-	; Var7 = 0
-	LDA #$00
-	STA Objects_Var7,X
-
-	JSR Blooper_LaunchKids	 ; Blooper launches off his four spawn
-
-PRG003_B79F:
-	JMP PRG003_B85C	 ; Jump to PRG003_B85C
-
-PRG003_B7A2:
 	LDA <Objects_Var5,X
 	AND #$01
 	TAY		 ; Y = 0 or 1
@@ -3921,8 +3907,23 @@ PRG003_B7D5
 PRG003_B7DD:
 	STA <Objects_XVel,X	 ; Update X Velocity
 
-	JSR Object_WorldDetectN1	 ; Detect against world
+	JSR Object_WorldDetect4	 ; Detect against world
+	LDA Level_ObjectID, X
+	CMP #OBJ_SKULLBLOOPER
+	BNE PRG003_B7DE
 
+	LDA #$00
+	STA <Objects_DetStat, X
+
+	LDA Objects_LastProp, X
+	CMP #TILE_PROP_SOLID_ALL		= $C0 ;
+
+	BEQ PRG003_B7DE
+
+	LDA #$01
+	STA Objects_InWater, X
+
+PRG003_B7DE:
 	LDA <Objects_DetStat,X
 	AND #$03
 	BNE PRG003_B7EB	 ; If Blooper hit a wall, jump to PRG003_B7EB
@@ -3998,36 +3999,10 @@ PRG003_B826:
 PRG003_B833:
 	STA Objects_Frame,X	 ; Set frame based on movement
 
-	LDA Level_ObjectID,X
-	CMP #OBJ_BLOOPER
-	BEQ PRG003_B85F	 ; If this is a normal Blooper, jump to PRG003_B85F
-
-	CMP #OBJ_VEGGIEGUY
-	BNE PRG003_B85C	 ; If this is NOT a Blooper that launches children, jump to PRG003_B85C
-
-	INC Objects_Var2,X	; Var2++
-
-	LDA Objects_Var2,X
-	AND #$3f
-	BNE PRG003_B85C	 ; If Var2 hasn't hit 64 ticks yet, jump to PRG003_B85C
-
-	LDA Objects_Var7,X
-	CMP #$04
-	BNE PRG003_B859	 ; If Var7 <> 4, jump to PRG003_B859
-
-	; After all this, set timer to $40
-	LDA #$40
-	STA Objects_Timer,X
-
-	BNE PRG003_B85C	 ; Jump (technically always) to PRG003_B85C
-
-PRG003_B859:
-	INC Objects_Var7,X	 ; Var7++
-
-PRG003_B85C:
-	JMP Tail_DrawAndHurtPlayer	 ; Jump to Tail_DrawAndHurtPlayer
-
 PRG003_B85F:
+	LDA Objects_SprAttr, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SprAttr, X
 	JMP Object_ShakeAndDrawMirrored	 ; Draw Blooper and don't come back!
 
 BlooperKid_YVel:	.byte $F8, $08, $08, $F8
@@ -4550,7 +4525,7 @@ PRG003_BB17:
 	CMP #OBJ_VEGGIEGUY
 	BEQ PRG003_BB24	 ; If this is a Blooper who launches off kids, jump to PRG003_BB24
 
-	CMP #OBJ_BLOOPERWITHKIDS
+	CMP #OBJ_SKULLBLOOPER
 	BNE PRG003_BB2A	 ; If this is not a Blooper w/ kids, jump to PRG003_BB2A
 
 PRG003_BB24:

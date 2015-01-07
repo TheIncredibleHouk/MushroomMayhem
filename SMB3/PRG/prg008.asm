@@ -274,11 +274,9 @@ PRG008_A118:
 ; objects; this is handled elsewhere...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoGameplay:
-	LDA #$04	; A = 4
-
 	LDY Level_Tileset
-	LDA Level_TilesetIdx_ByTileset,Y
-	STA Level_TilesetIdx
+	DEY
+	STY Level_TilesetIdx
 
 	JSR Level_Initialize	 ; Initialize level if needed
 	JSR LevelJunction_PartialInit	 
@@ -295,7 +293,7 @@ Player_DoGameplay:
 	ORA Player_SuitLost	; ... just lost his suit ...
 	ORA Player_StarOff	; ... starman is wearing off ...
 	ORA Player_Grow		; ... is growing/shrinking ...
-	STA Player_HaltGame	; ... means he's halting the gameplay for now
+	STA <Player_HaltGame	; ... means he's halting the gameplay for now
 
 	BNE PRG008_A1C1	 	; And if that's the case, jump to PRG008_A1C1
 	
@@ -308,6 +306,7 @@ Player_DoGameplay:
 	JSR Do_PowerChange
 	JSR Increase_Game_Timer
 	JSR Try_Item_Reserve_Release
+	JSR Try_Use_Equipped
 	LDA DayNightActive
 	BEQ NoTransition
 	LDA NightTransition
@@ -554,7 +553,7 @@ LevelJunction_PartialInit:
 	STA ForcedSwitch
 	STA Level_HAutoScroll	 ; Disable auto horizontal scrolling
 	STA Level_AScrlConfig	 ; Clear auto scroll configuration (no auto scroll)
-	STA Player_SlideRate	 ; No slide
+;	STA Player_SlideRate	 ; No slide
 	STA Level_ChangeReset	 ; Do level scene change reset
 
 	JSR Level_SetPlayerPUpPal  ; Set power up's correct palette
@@ -754,8 +753,7 @@ PRG008_A45A:
 	; Player_SpriteX has been pushed too far left! Assumed crushed!
 	; (Except in Vertical levels or if the level was completed)
 
-	LDA Level_7Vertical
-	ORA Player_EndLevel
+	LDA Player_EndLevel
 	BNE PRG008_A472	 ; If either a vertical level or the level was completed, jump to PRG008_A472
 
 	; Player was crushed!
@@ -1229,8 +1227,6 @@ PRG008_A6F2:
 	BEQ PRG008_A70E	 	; If Player is Frog, jump to PRG008_A70E
 
 	LDA Player_IsHolding
-	ORA Player_Slide
-	ORA Player_Kuribo
 	BNE PRG008_A70E	 	; If Player is holding something, sliding down a slope, or in a Kuribo's shoe, jump to PRG008_A70E 
 
 	LDA <Player_InAir
@@ -1255,8 +1251,8 @@ PRG008_A71C:
 	LDA #$00
 	STA Player_IsDucking	; Player_IsDucking = 0
 
-	LDA Player_SlideRate 
-	BNE PRG008_A736	 	; If Player has a slide magnitude, jump to PRG008_A736
+	;LDA Player_SlideRate 
+	;BNE PRG008_A736	 	; If Player has a slide magnitude, jump to PRG008_A736
 
 PRG008_A72B:
 	LDA <Pad_Holding
@@ -1301,6 +1297,12 @@ PRG008_A77E:
 	BCC PRG008_A7AC	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
 PRG008_A7AB:
+	LDA <Player_X
+	AND #$0F
+	CMP #04
+	BCC PRG008_A7AC
+	CMP #$0C
+	BCS PRG008_A7AC
 
 	JSR Player_GetHurt
 
@@ -1667,13 +1669,13 @@ PRG008_A8F9:
 
 	; Player not climbing...
 
-	LDA Player_SlideRate
-	BEQ PRG008_A906	 ; If Player sliding rate is zero, jump to PRG008_A906
-
-	; Otherwise, apply it
-	LDA <Player_XVel
-	ADD Player_SlideRate
-	STA <Player_XVel
+;	LDA Player_SlideRate
+;	BEQ PRG008_A906	 ; If Player sliding rate is zero, jump to PRG008_A906
+;
+;	; Otherwise, apply it
+;	LDA <Player_XVel
+;	ADD Player_SlideRate
+;	STA <Player_XVel
 
 PRG008_A906:
 	JSR Player_ApplyXVelocity	 ; Apply Player's X Velocity
@@ -2389,7 +2391,7 @@ PRG008_AC73:
 
 Normal_Jump:
 	STA DAIZ_TEMP1
-	LDA Player_Badge
+	LDA Player_Equip
 	CMP #BADGE_JUMP
 	BNE Jump_Normal
 	LDA DAIZ_TEMP1
@@ -5105,8 +5107,8 @@ TileGround:	 .byte $00, $00, $10, $F0
 TileWaterX:	 .byte $00, $00, $20, $E0
 TileWaterY:	 .byte $01, $FE, $00, $00
 TileWall:	 .byte $08, $F8, $00, $00
-TileAirX:	 .byte $00, $00, $30, $D0
-TileAirY:	 .byte $40, $C0, $00, $00
+TileAirX:	 .byte $00, $00, $28, $C8
+TileAirY:	 .byte $38, $B8, $00, $00
 
 ApplyTileMove:
 	CPX #$03
@@ -5492,7 +5494,7 @@ NotMaxAir:
 	INC Air_Time_Frac
 	LDA Air_Time_Frac
 	LDY #$00
-	LDX Player_Badge
+	LDX Player_Equip
 	CPX #BADGE_AIR
 	BNE NotMaxAir1
 
@@ -5546,7 +5548,7 @@ Do_PowerChange3:
 	RTS
 
 Do_PUp_Proper:
-	LDA Player_Badge
+	LDA Player_Equip
 	CMP #BADGE_NOSHOORMS
 	BEQ PUp_RTS
 	LDA <Player_Suit
@@ -5776,7 +5778,9 @@ NoEffect:
 	RTS
 
 RainbowEffectColors:
-	.byte $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C
+	.byte $31, $33, $35, $37, $38, $39, $3A, $3B, $3C, $31, $33, $35, $37, $38, $39
+	.byte $21, $23, $25, $27, $28, $29, $2A, $2B, $2C, $21, $23, $25, $27, $28, $29
+	.byte $01, $03, $05, $07, $08, $09, $0A, $0B, $0C, $01, $03, $05, $07, $08, $09
 
 RainbowWithMovement:
 	LDA <Counter_1
@@ -5784,7 +5788,7 @@ RainbowWithMovement:
 	BNE NoEffectChange
 	INC EffectCounter
 	LDA EffectCounter
-	CMP #$0C
+	CMP #$09
 	BNE DontClearCounter
 	LDA #$00
 	STA EffectCounter
@@ -5793,18 +5797,23 @@ DontClearCounter:
 	LDX EffectCounter
 	LDA RainbowEffectColors, X
 	STA Palette_Buffer + 06
-	STA Palette_Buffer + 10
-	STA Palette_Buffer + 14
-	LDA RainbowEffectColors, X
-	SUB #$10
+	LDA RainbowEffectColors + 15, X
 	STA Palette_Buffer + 7
-	STA Palette_Buffer + 11
-	STA Palette_Buffer + 15
-	INX
-	LDA RainbowEffectColors, X
-	SUB #$30
+	LDA RainbowEffectColors + 30, X
 	STA Palette_Buffer + 5
+
+	LDA RainbowEffectColors + 3, X
+	STA Palette_Buffer + 10
+	LDA RainbowEffectColors + 18, X
+	STA Palette_Buffer + 11
+	LDA RainbowEffectColors + 33, X
 	STA Palette_Buffer + 9
+
+	LDA RainbowEffectColors + 6, X
+	STA Palette_Buffer + 14
+	LDA RainbowEffectColors + 21, X
+	STA Palette_Buffer + 15
+	LDA RainbowEffectColors + 36, X
 	STA Palette_Buffer + 13
 
 NoEffectChange:
@@ -5831,6 +5840,7 @@ Player_Refresh:
 	RTS
 
 Debug_Code:
+	RTS
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Debug_CodeRTS
@@ -5991,6 +6001,8 @@ HandleIceBreak2:
 
 SetLastScrollDirection:
 	LDA <Horz_Scroll
+	CMP LastHorzScroll
+	BEQ SetLastScrollDirection2
 	SUB LastHorzScroll
 	LDA <Horz_Scroll_Hi
 	SBC LastHorzScrollHi
@@ -6003,4 +6015,34 @@ SetLastScrollDirection:
 SetLastScrollDirection1:
 	LDA #$00
 	STA <Scroll_LastDir
+
+SetLastScrollDirection2:
+	RTS
+
+
+Try_Use_Equipped:
+	LDA Player_Equip
+	BEQ SetLastScrollDirection2
+	CMP #BADGE_COIN
+	BCS SetLastScrollDirection2
+
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ SetLastScrollDirection2
+
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ SetLastScrollDirection2
+
+	LDA Player_Equip
+	JSR DynJump
+
+	.word StopWatch
+	.word StopWatch
+	.word StopWatch
+
+StopWatch:
+	DEC Player_Equip
+	LDA #$80
+	STA Stop_Watch
 	RTS

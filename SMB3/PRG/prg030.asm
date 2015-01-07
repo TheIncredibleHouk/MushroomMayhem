@@ -389,6 +389,7 @@ PAGE_A000_ByTileset: ; $83E9
 PT2_Anim:	.byte $80, $82, $84, $86, $88, $8A, $8C, $8E
 PT2_Anim2:	.byte $D0, $D2, $D4, $D6, $D8, $DA, $DC, $DE
 PT2_Anim3:	.byte $F0, $F2, $F4, $F6, $F8, $FA, $FC, $FE
+PT2_Anim4:	.byte $6A, $6A, $6A, $6A, $6A, $6A, $6A, $6A
 PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
 PSwitch_Anim2: .byte $E0, $E2, $E4, $E6, $E8, $EA, $EC, $EE
 
@@ -1585,8 +1586,13 @@ PRG030_8E4F:
 
 	LDA Level_PauseFlag
 	BNE Graphics_Anim
+	LDA DPad_RhythmControl
+	BEQ PRG030_8E50
+	JSR DPad_ControlTiles
+
+PRG030_8E50:
 	LDA RhythmPlatformEnabed
-	BEQ Graphics_Anim	 ; If Level_Tileset <> 5 (pipe world plant infestation), jump to Level_MainLoop
+	BEQ Graphics_Anim	
 	JSR RhythmPlatforms
 
 Graphics_Anim:
@@ -2746,6 +2752,7 @@ Scroll_Update_Ranges:
 	; Most importantly, this has taken a pixel-based scroll X and a "high byte" of X
 	; scroll and combined them into a reduced accuracy (column-based) value of where
 	; we're at horizontally...
+
 	LDX #$03	 ; X = 3
 PRG030_9695:
 	LSR A		 ; Pushes the LSb -> Carry
@@ -2941,8 +2948,8 @@ Tile_Mem_ClearB:	; $9734
 
 
 
-AnimOffsets: .byte $00, $08, $10
-AnimStarts: .byte $80, $D0, $F0
+AnimOffsets: .byte $00, $08, $10, $18
+AnimStarts: .byte $80, $D0, $F0, $6A
 PSwitchAnimStarts: .byte $88, $D8, $F8
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3251,6 +3258,9 @@ HorzNotLocked:
 	AND #$20
 	STA RhythmPlatformEnabed
 
+	LDA [Temp_Var14],Y
+	AND #$10
+	STA DPad_RhythmControl
 	;set weather type
 
 	LDA [Temp_Var14],Y
@@ -4665,8 +4675,9 @@ No_PUp_Dec:
 No_Release:
 	RTS
 
-Produce_Coin:
 
+
+Produce_Coin:
 	LDY #$03	 ; Y = 3
 
 Produce_Coin_Loop:
@@ -5478,6 +5489,48 @@ Keep_Going:
 	STA Palette_Buffer+$13
 	RTS
 
+DPad_ControlTiles:
+	LDA <Player_HaltGame
+	BNE DPad_ControlTiles4
+
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ DPad_ControlTiles1
+
+	LDA #$01
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles1:
+	LDA <Pad_Holding
+	AND #PAD_LEFT
+	BEQ DPad_ControlTiles2
+
+	LDA #$02
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles2:
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ DPad_ControlTiles3
+
+	LDA #$03
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles3:
+	LDA <Pad_Holding
+	AND #PAD_RIGHT
+	BEQ DPad_ControlTiles4
+
+	LDA #$00
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles4:
+	RTS
+
 RhythmPlatforming:
 RhythmGraphics:
 	.byte $60, $62, $64, $66
@@ -5591,6 +5644,19 @@ RhythmPlatforms5:
 
 RhythmCurrents:
 	.byte TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP, TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN
+
+DPadTiles:
+	.byte TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN, TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP
+
+UpdateRhythmTiles:
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+	LDA RhythmGraphics, Y
+	STA PatTable_BankSel
+	LDA DPadTiles, Y
+	STA TileProperties + $57
+	RTS
 
 StarXPositions:
 	.byte $00, $54, $A8, $2A, $7E, $D2
@@ -5909,6 +5975,6 @@ Sprite_RAM_Clear:	; $FD84
 	RTS		 ; Return
 
 GetPowerBadgeY:
-	LDA Player_Badge
+	LDA Player_Equip
 	CMP #BADGE_PMETER
-	
+	RTS
