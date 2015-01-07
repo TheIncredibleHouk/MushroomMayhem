@@ -36,7 +36,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_WoodenPlatCW	; Object $2D - OBJ_BIGBERTHA
 	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
 	.word ObjInit_DoNothing		; Object $2F - OBJ_BOO
-	.word ObjInit_HotFootShy	; Object $30 - OBJ_HOTFOOT_SHY
+	.word ObjInit_PacBoo	; Object $30 - OBJ_PACBOO
 	.word ObjInit_Stretch		; Object $31 - OBJ_BOOSTRETCH
 	.word ObjInit_StretchFlip	; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.word ObjInit_DoNothing		; Object $33 - OBJ_NIPPER
@@ -76,9 +76,9 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_DiagonalPodobo	; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjNorm_PlatformPattern		; Object $2C - OBJ_CLOUDPLATFORM
 	.word ObjNorm_PlatformPattern		; Object $2D - OBJ_BIGBERTHA
-	.word ObjNorm_Boo	; Object $2E - OBJ_PIRATEBOO
+	.word ObjNorm_PirateBoo	; Object $2E - OBJ_PIRATEBOO
 	.word ObjNorm_Boo		; Object $2F - OBJ_BOO
-	.word ObjNorm_HotfootShy	; Object $30 - OBJ_HOTFOOT_SHY
+	.word ObjNorm_PacBoo	; Object $30 - OBJ_PACBOO
 	.word ObjNorm_Stretch		; Object $31 - OBJ_BOOSTRETCH
 	.word ObjNorm_Stretch		; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.word ObjNorm_Nipper		; Object $33 - OBJ_NIPPER
@@ -121,7 +121,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DoNothing		; Object $2D - OBJ_BIGBERTHA
 	.word Player_Take_Coins		; Object $2E - OBJ_PIRATEBOO
 	.word Player_GetHurt		; Object $2F - OBJ_BOO
-	.word Player_GetHurt		; Object $30 - OBJ_HOTFOOT_SHY
+	.word Player_GetHurt		; Object $30 - OBJ_PACBOO
 	.word Player_GetHurt		; Object $31 - OBJ_BOOSTRETCH
 	.word Player_GetHurt		; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.word Player_GetHurt		; Object $33 - OBJ_NIPPER
@@ -163,7 +163,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2D - OBJ_BIGBERTHA
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2E - OBJ_PIRATEBOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2F - OBJ_BOO
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $30 - OBJ_HOTFOOT_SHY
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $30 - OBJ_PACBOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $31 - OBJ_BOOSTRETCH
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $33 - OBJ_NIPPER
@@ -211,7 +211,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP2	; Object $2D - OBJ_BIGBERTHA
 	.byte OA2_TDOGRP1	; Object $2E - OBJ_PIRATEBOO
 	.byte OA2_TDOGRP1	; Object $2F - OBJ_BOO
-	.byte OA2_TDOGRP0	; Object $30 - OBJ_HOTFOOT_SHY
+	.byte OA2_TDOGRP1	; Object $30 - OBJ_PACBOO
 	.byte OA2_TDOGRP1	; Object $31 - OBJ_BOOSTRETCH
 	.byte OA2_TDOGRP1	; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.byte OA2_TDOGRP1	; Object $33 - OBJ_NIPPER
@@ -253,7 +253,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $2D - OBJ_BIGBERTHA
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2F - OBJ_BOO
-	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $30 - OBJ_HOTFOOT_SHY
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $30 - OBJ_PACBOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $31 - OBJ_BOOSTRETCH
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $33 - OBJ_NIPPER
@@ -293,13 +293,13 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OPTS_NOCHANGE	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OPTS_NOCHANGE	; Object $2D - OBJ_BIGBERTHA
-	.byte OPTS_SETPT5 | $4E	; Object $2E - OBJ_PIRATEBOO
+	.byte $00	; Object $2E - OBJ_PIRATEBOO
 	.byte OPTS_SETPT5 | $12	; Object $2F - OBJ_BOO
-	.byte OPTS_SETPT5 | $12	; Object $30 - OBJ_HOTFOOT_SHY
+	.byte OPTS_SETPT5 | $12	; Object $30 - OBJ_PACBOO
 	.byte OPTS_SETPT5 | $12	; Object $31 - OBJ_BOOSTRETCH
 	.byte OPTS_SETPT5 | $12	; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.byte OPTS_SETPT5 | $0A	; Object $33 - OBJ_NIPPER
-	.byte OPTS_SETPT5 | $05	; Object $34 - OBJ_TOAD
+	.byte OPTS_SETPT5 | $36	; Object $34 - OBJ_TOAD
 	.byte OPTS_SETPT5 | $05	; Object $35 - OBJ_TOADHOUSEITEM
 	.byte OPTS_NOCHANGE	; Object $36 - OBJ_WOODENPLATFORM
 	.byte OPTS_NOCHANGE	; Object $37 - OBJ_OSCILLATING_HS
@@ -337,7 +337,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $2D - OBJ_BIGBERTHA
 	.byte KILLACT_STANDARD	; Object $2E - OBJ_PIRATEBOO
 	.byte KILLACT_STANDARD	; Object $2F - OBJ_BOO
-	.byte KILLACT_POOFDEATH	; Object $30 - OBJ_HOTFOOT_SHY
+	.byte KILLACT_NORMALSTATE	; Object $30 - OBJ_PACBOO
 	.byte KILLACT_POOFDEATH	; Object $31 - OBJ_BOOSTRETCH
 	.byte KILLACT_POOFDEATH	; Object $32 - OBJ_BOOSTRETCH_FLIP
 	.byte KILLACT_STANDARD	; Object $33 - OBJ_NIPPER
@@ -403,6 +403,7 @@ ObjP35:
 ObjP47:
 	.byte $81, $83, $89, $8B, $81, $83, $93, $95, $85, $87, $89, $8B, $85, $87, $93, $95
 ObjP30:
+	.byte $B9, $BF, $91, $93, $B5, $71
 ObjP45:
 	.byte $85, $87, $89, $8B, $81, $83
 ObjP31:
@@ -426,8 +427,9 @@ ObjP44:
 ObjP33:
 ObjP39:
 	.byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
+
 ObjP34:
-	.byte $71, $71, $71, $71 ; #DAHRKDAIZ - Toad looks like Hammer Bros.
+	.byte $8D, $8F, $89, $8B
 ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
 
@@ -454,7 +456,7 @@ ObjP43:
 ObjP3A:
 	.byte $71, $E1, $E3, $E1, $E3, $71
 ObjP2E:
-	.byte $71, $71, $A9, $AB
+	.byte $F9, $FB, $B9, $BB
 ObjP41:
 	.byte $51, $51, $53, $53, $55, $55, $F7, $F7, $F9, $F9, $FB, $FB, $E3, $E3, $E5, $E5, $F5, $F5, $FD, $FD, $FD, $FD, $FD, $FD, $E3, $E3, $E5, $E5, $F5, $F5, $D1, $D3, $D5, $D7
 ObjP40:
@@ -1051,156 +1053,12 @@ ObjInit_HotFoot:
 	LDA Entropy_BySlot,X
 	STA <Objects_Var5,X
 
-ObjInit_HotFootShy:
-
-	; Center Hot Foot
-	LDA <Objects_X,X
-	ORA #$04
-	STA <Objects_X,X
-
-	RTS		 ; Return
-
-ObjNorm_HotfootShy:
-	JSR Object_ApplyYVel	 ; Apply Y Velocity
-
-	; Hotfoot's gravity
-	INC <Objects_YVel,X
-	INC <Objects_YVel,X
-	INC <Objects_YVel,X
-
-	JSR Object_WorldDetectN1
-	LDA <Objects_DetStat,X
-	AND #$03
-	BNE PRG002_A81B	 ; If Hotfoot hit a wall, jump to PRG002_A81B
-
-	JSR Object_ApplyXVel	 ; Apply X velocity
-
-PRG002_A81B:
-	JSR Object_HitFloorAlign	 ; If HotFoot hits the floor, align him to it
-	JSR Boo_CheckPlayerSight	 ; Uses Boo's check-facing logic
-
-	LDY #$04	 ; Y = 4
-
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG002_A846	 ; If Hotfoot has NOT hit floor, jump to PRG002_A846
-
-	LDA #$00	; Don't move (if not chasing Player)
-
-	BCC PRG002_A844	 ; (From Boo_CheckPlayerSight) if not chasing Player, jump to PRG002_A844
-
-	; Hotfoot is chasing Player...
-
-	; Face same way as Player
-	LDA <Player_FlipBits
-	STA Objects_FlipBits,X
-
-PRG002_A832:
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	AND #$02
-	TAY		 ; Y = 0 or 2
-
-	LDA Objects_FlipBits,X
-	ASL A
-	ASL A
-
-	LDA #$08	; Walk right
-
-	BCS PRG002_A844	; If horizontally flipped, jump to PRG002_A844
-
-	LDA #-$08	; Walk left
-
-PRG002_A844:
-	STA <Objects_XVel,X	 ; Set X velocity appropriately
-
-PRG002_A846:
-	TYA		 ; A = 0 or 2
-	STA Objects_Frame,X	 ; Set frame
-
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-	JSR Object_HitTestRespond	 ; Do collision test with Player and respond
-
-PRG002_A850:
-	LSR Objects_Frame,X	 ; Frame becomes 0 or 1 (to be ROLled back)
-
-	LDA <Counter_1
-	LSR A	
-	ROL Objects_Frame,X	 ; Frame is now 0/1 or 2/3, depending on counter LSb (flickering effect) 
 
 Bank2_HotFootHaltAction:
-	JSR Object_AnySprOffscreen
-	BNE PRG002_A888	 ; If any of Hotfoot's sprites are off-screen, jump to PRG002_A888 (RTS)
-
-	JSR Object_CalcSpriteXY_NoHi	; Calculate Hotfoot's sprites
-	LDY ObjGroupRel_Idx	 	; Y = Object's group relative index
-	LDA ObjectGroup_PatternStarts,Y	; Get Hotfoot's starting pattern index
-	ADD Objects_Frame,X	 	; Offset by frame
-	TAY		 		; -> 'Y'
-	LDA ObjectGroup_PatternSets,Y	; Get appropriate sprite pattern for this frame
-
-	; Store pattern into sprite RAM
-	LDY Object_SprRAM,X
-	STA Sprite_RAM+$01,Y
-
-	; Store Y coordinate
-	LDA <Objects_SpriteY,X
-	STA Sprite_RAM+$00,Y
-
-	; Store attributes
-	LDA Objects_SprAttr,X
-	ORA Objects_FlipBits,X
-	STA Sprite_RAM+$02,Y
-
-	; Store X coordinate
-	LDA <Objects_SpriteX,X
-	STA Sprite_RAM+$03,Y	
-
-PRG002_A888: 
 	RTS		 ; Return
 
 
 ObjNorm_Hotfoot:
-
-	; Mostly reuses the "shy" Hotfoot's code
-
-	JSR CarryClearIfAliveAndNoHalt
-	BCS PRG002_A850	 ; If Hotfoot is not alive or gameplay is halted, jump to PRG002_A850
-
-	; Hotfoot alive and gameplay not halted...
-
-	JSR Enemy_CollideWithWorld	 ; Collide with world
-
-	LDY #$04	 ; Y = 4
-
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG002_A846	 ; If Hotfoot hasn't hit floor, jump to PRG002_A846
-
-	INC <Objects_Var5,X	 ; Var5++
-	LDA <Objects_Var5,X	
-	AND #$a0
-	BEQ PRG002_A844	 ; If Var5 = $A0, jump to PRG002_A844
-
-	ASL A
-
-	LDA <Objects_Var5,X
-	TAY		 ; Y = Var5
-	AND #%01011111
-	BNE PRG002_A8B6	 ; Most of the time, jump to PRG002_A8B6
-
-	BCC PRG002_A8B3	 ; If Var5 bit 7 not set, jump to PRG002_A8B3
-
-	JSR Object_CalcCoarseXDiff
-	EOR #SPR_HFLIP
-	STA Objects_FlipBits,X	 ; Store flip towards Player
-
-PRG002_A8B3:
-	JSR Object_FlipFace	 ; Turn around
-
-PRG002_A8B6:
-	JMP PRG002_A832	 ; Jump to PRG002_A832
 
 Boo_CheckPlayerSight:
 	LDY <Objects_Var5,X
@@ -1223,10 +1081,28 @@ PRG002_A8C5:
 PRG002_A8CC:
 	RTS		 ; Return
 
+ObjNorm_PirateBoo:
+	LDA LastPatTab_Sel
+	AND #$01
+	STA Objects_Frame, X
+	LDA #$00
+	STA <Temp_Var10
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	JSR Chase
+	JSR Object_HitTestRespond	; Do collision test with Player and respond
+	JSR Fish_FixedYIfAppro	 	; Fix Boo Y for raster area
+	JMP Object_ShakeAndDraw	 	; Draw and don't come back!
+	
 ObjNorm_Boo:
-	LDA Level_ObjectID, X
-	CMP #OBJ_PIRATEBOO		; it's pirate boo, chase Mario ALWAYS!
-	BEQ PRG002_A8DE
+	LDA Objects_Property, X
+	BEQ ObjNorm_Boo1
+
+ObjNorm_Boo1:
+	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Boo_CheckPlayerSight
 	BCS PRG002_A8DE	 ; If carry set, it's time to start chasing Player!  Jump to PRG002_A8DE
 
@@ -1248,7 +1124,6 @@ PRG002_AA46:
 	JSR Fish_FixedYIfAppro	 	; Fix Boo Y for raster area
 
 Object_DeleteOrDraw:
-	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JMP Object_ShakeAndDraw	 	; Draw and don't come back!
 
 Stretch_XVelStart:	.byte -$10, $10
@@ -1599,11 +1474,10 @@ ObjNormal_PlatformFollow2:
 	JSR Object_Move
 
 ObjNormal_PlatformFollow1:
-	JSR Object_DeleteOffScreen
 	JSR PlayerPlatform_Collide
 
 ObjNormal_PlatformFollow0:
-	JMP DeleteIfOffAndDrawWide
+	JMP LogPlat_Draw
 
 
 Player_StandOnPlatform:
@@ -1875,6 +1749,8 @@ ObjNorm_PathFollowPlat:
 	LDA Objects_Var2, X
 	STA Objects_YVel, X
 	JSR Object_ApplyYVel_NoLimit
+	LDA #$00
+	STA Objects_XVel, X
 
 
 	LDA Objects_Y, X
@@ -1883,7 +1759,12 @@ ObjNorm_PathFollowPlat:
 
 	LDA Objects_YHi, X
 	BEQ ObjNorm_PathFollowPlat0
+	
+	LDA Objects_Var5, X
+	BEQ ObjNorm_PathFollowPlat10
+	RTS
 
+ObjNorm_PathFollowPlat10:
 	JMP ObjResetPlatform
 
 ObjNorm_PathFollowPlat0:
@@ -2776,23 +2657,12 @@ PRG002_B20F:
 	RTS		 ; Return
 
 ObjInit_Toad:
-	LDA Objects_X,X		 ; Otherwise, Y = 1 
-	AND #$70
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY
-
-PRG002_B21A:
-	STY <Objects_Var5,X	 ; -> Objects_Var5 (which message Toad gives)
+	LDA Objects_Property,X		 ; Otherwise, Y = 1 
+	STA <Objects_Var5,X	 ; -> Objects_Var5 (which message Toad gives)
 
 	; Toad is always on the lower screen space
 	LDA #$01
 	STA <Objects_YHi,X
-
-	; Stop the timer
-	STA Level_TimerEn
 
 	; Halt the Player
 	LDA #$ff
@@ -2819,17 +2689,39 @@ ObjNorm_Toad:
 	JSR Object_CalcCoarseXDiff
 	STA Objects_FlipBits,X
  
-	; Do Toad's dialog message
-	LDA #$5C
-	STA PatTable_BankSel+1
-	LDA #$5b
-	STA PatTable_BankSel+5
-	JSR Toad_Speak
-
 	LDA #$01
 	STA Player_HaltTick
 	LDA #$00
 	STA Tile_Anim_Enabled
+
+	; Do Toad's dialog message
+	LDA Objects_Var1, X
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+	JSR Object_ShakeAndDraw
+	
+	LDA Sprite_RAM,Y
+	STA Sprite_RAM+8,Y
+	LDA Sprite_RAM+4,Y
+	STA Sprite_RAM+12,Y
+
+	LDA Sprite_RAM+3,Y
+	STA Sprite_RAM+11,Y
+	LDA Sprite_RAM+7,Y
+	STA Sprite_RAM+15,Y
+
+	LDA Objects_FlipBits,X
+	ORA #SPR_PAL1
+	STA Sprite_RAM+10,Y
+	STA Sprite_RAM+14,Y
+
+	LDA #$A9
+	STA Sprite_RAM+9,Y
+	LDA #$AB
+	STA Sprite_RAM+13,Y
+
+	JSR Toad_Speak
 	RTS
 
 
@@ -2841,15 +2733,12 @@ Toad_Speak:
 	.word Toad_DrawDiagBox		; 0
 	.word Toad_DoToadText		; 1
 	.word Decide_What_Next		; 2
-	.word Enough_Magic_Stars	; 3
-	.word Deduct_Coins			; 4
-	.word End_Level				; 5
 	.word Do_Shop_Controls		; 6
 	.word Bank_Toad		; 7
 
-TDiagBox_R1:	.byte $E8, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $E9, $EA
-TDiagBox_R2:	.byte $F8, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $FA
-TDiagBox_R3:	.byte $DC, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DD, $DE
+TDiagBox_R1:	.byte $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65
+TDiagBox_R2:	.byte $65, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
+TDiagBox_R3:	.byte $65, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
 
 TDiagBox_RowOffs:
 	.byte (TDiagBox_R1 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
@@ -2934,19 +2823,6 @@ PRG002_B2E3:
 
 PRG002_B325:
 	RTS		 ; Return
-
-HammerCoinsRequired:
-	.byte $01, $00, $00, $00, $00, $00, $00, $00, $00
-
-ToadMsg_Standard:
-
-	.byte "IN ORDER TO    "
-	.byte "PASS, YOU NEED "
-	.byte "TO COLLECT ()  "
-	.byte "STARS.         "
-	.byte "               "
-	.byte "               "
-
 	
 ToadMsg_Shop:
 	.byte "WELCOME TO THE "
@@ -2957,7 +2833,7 @@ ToadMsg_Shop:
 	.byte "THE SHOP.      "
 
 	
-ChallengeMessage:
+ToadMsg_Bank:
 	.byte "USE UP AND DOWN"
 	.byte "TO SET AMOUNT. "
 	.byte "LEFT AND RIGHT "
@@ -2969,8 +2845,8 @@ ChallengeMessage:
 	; Warp Whistle
 	; Standard
 	; Anchor/P-Wing
-ToadMsg_Low:	.byte LOW(ToadMsg_Standard), LOW(ToadMsg_Shop), LOW(ChallengeMessage)
-ToadMsg_High:	.byte HIGH(ToadMsg_Standard), HIGH(ToadMsg_Shop), HIGH(ChallengeMessage)
+ToadMsg_Low:	.byte LOW(ToadMsg_Shop), LOW(ToadMsg_Bank)
+ToadMsg_High:	.byte HIGH(ToadMsg_Shop), HIGH(ToadMsg_Bank)
 
 
 Toad_DoToadText:
@@ -3009,29 +2885,6 @@ PRG002_B451:
 
 PRG002_B468:
 	TYA
-	CMP #$28
-	BEQ DoFirstDigit
-	CMP #$29
-	BNE Draw_Letter
-	LDY StarLevel
-	LDA HammerCoinsRequired, Y
-	AND #$0F
-	ORA #$30
-	JMP Draw_Letter
-
-DoFirstDigit:
-	LDY StarLevel
-	LDA HammerCoinsRequired, Y
-	AND #$F0
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ORA #$30
-
-Draw_Letter:
-	CLC
-	ADC #$80
 
 	LDY Graphics_BufCnt	 ; Y = graphics buffer counter
 	STA Graphics_Buffer+3,Y	 ; Store into buffer
@@ -3567,125 +3420,8 @@ PRG002_BABD:
 Player_GetInventoryOffset:
 	RTS		 ; Return
 
-	; Draws the card backs, though the backs are almost immediately
-	; overwritten with the proper card face...
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Start goal card routine removed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Enough_Magic_Stars:
-	LDA Pay_Toll_Timer
-	BNE Skip_Pay_Toll_Timer
-	LDY World_Num
-	LDA Magic_Stars + 1
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA Magic_Stars
-	CMP HammerCoinsRequired, Y
-	BCS Pay_Toll
-	LDA Sound_QMap		; Not enough coins
-	ORA #SND_MAPDENY
-	STA Sound_QMap
-	LDA #$40
-	STA End_Level_Timer	; end level
-	LDA #$00
-	STA TollPaid		; toll not paid
-	INC <Objects_Var4,X
-	INC <Objects_Var4,X
-	RTS
-
-Skip_Pay_Toll_Timer:
-	DEC Pay_Toll_Timer
-	RTS
-
-Pay_Toll:
-	LDA HammerCoinsRequired, Y
-	AND #$0F
-	STA DAIZ_TEMP1
-	LDA HammerCoinsRequired, Y
-	AND #$F0
-	ASL A
-	ASL A
-	ASL A					; get coins needed to deduct
-	ASL A
-	TAY
-Multiply_10_Loop:
-	DEY
-	BMI Store_Coins_Deduct
-	CLC
-	LDA DAIZ_TEMP1
-	ADC #$0A
-	STA DAIZ_TEMP1
-	JMP Multiply_10_Loop
-
-Store_Coins_Deduct:
-	LDA DAIZ_TEMP1
-	STA Coins_To_Deduct
-	LDA #$10
-	STA Deduct_Coin_Timer
-	INC <Objects_Var4,X
-	RTS
-
-Deduct_Coins:
-	DEC Deduct_Coin_Timer
-	BNE Deduct_CoinsRTS
-	JSR Decrease_Magic_Stars
-	DEC Coins_To_Deduct
-	BEQ Deduct_Coins_Done
-	LDA #$10
-	STA Deduct_Coin_Timer
-
-Deduct_CoinsRTS:
-	RTS
-
-Deduct_Coins_Done:
-	LDA #$20
-	STA End_Level_Timer
-	STA TollPaid
-	INC <Objects_Var4,X
-	RTS
-
-End_Level:
-	DEC End_Level_Timer
-	LDA End_Level_Timer
-	BNE End_LevelRTS
-	
-	LDA #$01
-	STA Level_ExitToMap	
-	LDA TollPaid		; if TollPaid = 1, complete this sprite
-	BEQ Return_Map
-	LDA #$00			; if toll not paid, return to last spot
-	BEQ Store_Return_Status
-
-Return_Map:
-	LDA #$01
-
-Store_Return_Status:
-	STA Map_ReturnStatus
-
-End_LevelRTS:
-	RTS
-
-Decrease_Magic_Stars:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELCOIN
-	STA Sound_QLevel1
-	DEC Magic_Stars
-	LDA Magic_Stars
-	AND #$0F
-	CMP #$0A
-	BCC No_HBros_Dec
-	LDA Magic_Stars
-	AND #$F0
-	ORA #$09
-	STA Magic_Stars
-
-No_HBros_Dec:
-	RTS
-
-Next_Toad_Routine: .byte  $03, $06, $07
+Next_Toad_Routine: .byte  $03, $04, $05
 
 Toad_Do_Nothing:
 	RTS
@@ -3701,10 +3437,6 @@ Do_Shop_Controls:
 	STX DAIZ_TEMP1
 	LDA #$08
 	STA Player_HaltTick
-	LDA #$5E
-	STA PatTable_BankSel
-	LDA #$5B
-	STA PatTable_BankSel + 5
 	LDA Shop_Mode_Initialized
 	BEQ Initialize_Shop_Mode
 	LDA <Pad_Input
@@ -3735,12 +3467,12 @@ Try_Buy_Item:
 	BEQ Shop_RTS
 	JSR Buy_Item
 Shop_RTS:
-	JSR Draw_Item_Sprite
+
 	LDX DAIZ_TEMP1
 	RTS
 
-Item_Frame_Top:		.byte $E8, $E9, $E9, $EA
-Item_Frame_Bottom:	.byte $DC, $DD, $DD, $DE
+Item_Frame_Top:		.byte $D8, $D9, $D9, $DA
+Item_Frame_Bottom:	.byte $E8, $E9, $E9, $EA
 
 Initialize_Shop_Mode:
 	LDA #$00 
@@ -3838,38 +3570,25 @@ Next_Item_Please2:
 	RTS
 
 Item_Tiles:
-	.byte $30, $31, $40, $41
-	.byte $32, $33, $42, $43
-	.byte $3C, $3D, $4C, $4D
-	.byte $34, $35, $44, $45
-	.byte $36, $37, $46, $47
-	.byte $38, $39, $48, $49
-	.byte $5C, $5D, $6C, $6D
-	.byte $3A, $3B, $4A, $4B
-	.byte $5E, $5F, $6E, $6F
-	.byte $3E, $3F, $4E, $4F
-	.byte $04, $05, $14, $15
-	.byte $06, $07, $16, $17
-	.byte $08, $09, $18, $19
-	.byte $0A, $0B, $1A, $1B
-	.byte $0E, $0F, $1E, $1F
+	.byte $68, $69, $78, $79
+	.byte $6A, $6B, $7A, $7B
+	.byte $6C, $6D, $7C, $7D
+	.byte $6E, $6F, $7E, $7F
+	.byte $86, $87, $96, $97
+	.byte $AE, $AF, $AC, $AD
+	.byte $A4, $A5, $A8, $A9
+	.byte $A4, $A5, $A6, $A7
+	
 
 Item_Prices:
-	.byte $00, $02, $00, $00
 	.byte $00, $05, $00, $00
-	.byte $00, $05, $00, $00
-	.byte $00, $05, $00, $00
-	.byte $00, $09, $00, $00
-	.byte $01, $04, $00, $00
-	.byte $01, $04, $00, $00
-	.byte $02, $01, $00, $00
-	.byte $02, $02, $00, $00
-	.byte $00, $05, $00, $00
-	.byte $00, $09, $00, $00
+	.byte $01, $00, $00, $00
+	.byte $00, $08, $00, $00
 	.byte $02, $00, $00, $00
-	.byte $01, $00, $00, $00
-	.byte $00, $09, $00, $00
-	.byte $01, $00, $00, $00
+	.byte $01, $02, $00, $00
+	.byte $02, $00, $00, $00
+	.byte $02, $08, $00, $00
+	.byte $03, $06, $00, $00
 
 Draw_Current_Items:
 	LDA #$00
@@ -3979,7 +3698,7 @@ Next_Price_Digit:
 	CMP #$7F
 	BEQ Skip_Digit
 	CLC
-	ADC #$A2
+	ADC #$22
 
 Skip_Digit:
 	STA Graphics_Buffer, Y
@@ -4034,21 +3753,8 @@ Cannot_Take_Item:
 	RTS
 
 Take_Item:
-	LDX #$00
-
-Find_Slot:
-	LDA Inventory_Items, X
-	BEQ Slot_Found
-	INX
-	CPX #$1C
-	BNE Find_Slot
-	BEQ Cannot_Take_Item
-
-Slot_Found:
-	LDY Item_Shop_Window + 1
-	INY
-	TYA
-	STA Inventory_Items, X
+	LDX Item_Shop_Window + 1
+	INC Inventory_Items, X
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
@@ -4060,65 +3766,6 @@ Store_New_Coin:
 	STA Player_Coins, X
 	DEX
 	BPL Store_New_Coin
-	RTS
-
-Item_Sprites:
-	.byte $C1, $C1
-	.byte $C3, $C3
-	.byte $C5, $C5
-	.byte $C7, $C9
-	.byte $CB, $CB
-	.byte $CD, $CD
-	.byte $CF, $CF
-	.byte $D1, $D1
-	.byte $D3, $D3
-	.byte $D5, $D5
-	.byte $D7, $D5
-	.byte $D9, $DB
-	.byte $DD, $DF
-	.byte $E1, $E3
-	.byte $E5, $E7
-
-Item_Pal:
-	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
-	.byte SPR_PAL2, SPR_PAL2 | SPR_HFLIP
-	.byte SPR_PAL2, SPR_PAL2  | SPR_HFLIP
-	.byte SPR_PAL1, SPR_PAL1
-	.byte SPR_PAL2, SPR_PAL2 | SPR_HFLIP
-	.byte SPR_PAL2, SPR_PAL2 | SPR_HFLIP
-	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP
-	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP
-	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
-	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
-	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
-	.byte SPR_PAL1, SPR_PAL1
-	.byte SPR_PAL3, SPR_PAL3
-	.byte SPR_PAL1, SPR_PAL1
-	.byte SPR_PAL1, SPR_PAL1
-
-Draw_Item_Sprite:
-	LDA Item_Shop_Window + 1 
-	ASL A
-	TAX
-	JSR Object_GetRandNearUnusedSpr
-	LDA #$90
-	STA Sprite_RAM, Y
-	LDA #$78
-	STA Sprite_RAM + 3, Y
-	LDA Item_Sprites, X
-	STA Sprite_RAM + 1, Y
-	LDA Item_Pal, X
-	STA Sprite_RAM + 2, Y
-	INX
-	JSR Object_GetRandNearUnusedSpr
-	LDA #$90
-	STA Sprite_RAM, Y
-	LDA #$80
-	STA Sprite_RAM + 3, Y
-	LDA Item_Sprites, X
-	STA Sprite_RAM + 1, Y
-	LDA Item_Pal, X
-	STA Sprite_RAM + 2, Y
 	RTS
 
 Bank_Toad:
@@ -4500,6 +4147,7 @@ Player_Take_Coins:
 	LDA <Counter_1
 	AND #$03
 	BNE No_More_Coins
+	INC Coins_Lost
 	JSR Clear_Calc
 	LDX #$03
 
@@ -4531,10 +4179,10 @@ No_More_Coins:
 
 
 BlockPlatformYVel:
-	.byte $F8, $00, $00, $08
+	.byte $F0, $00, $00, $10
 
 BlockPlatformXVel
-	.byte $00, $08, $F8, $00
+	.byte $00, $10, $F0, $00
 
 BlockPlatformMove:
 	LDA #$00
@@ -4879,3 +4527,133 @@ ObjNorm_BirdoDraw:
 	STA Objects_Frame, X
 	JSR Object_Draw16x32Sprite
 	RTS
+
+ObjInit_PacBoo:
+	LDA <Objects_X,X
+	STA Objects_Var2, X
+	LDA <Objects_XHi,X
+	STA Objects_Var3, X
+
+	LDA <Objects_Y,X
+	STA Objects_Var4, X
+	LDA <Objects_YHi,X
+	STA Objects_Var5, X
+	RTS
+
+ObjNorm_PacBoo:
+	LDA <Player_HaltGame
+	BEQ ObjNorm_PacBoo1
+	
+	JMP Object_ShakeAndDraw	
+
+ObjNorm_PacBoo1:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ ObjNorm_PacBoo3
+
+	JSR Object_HitTestRespond
+	LDA Player_StarInv
+	BEQ ObjNorm_PacBoo2
+
+	LDA #$01
+	STA Objects_Frame, X
+
+	JSR Chase
+	LDA <Objects_XVel, X
+	EOR #$FF
+	STA <Objects_XVel, X
+	LDA <Objects_YVel, X
+	EOR #$FF
+	STA <Objects_YVel, X
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel
+
+	LDA <Objects_XVel, X
+	EOR #$FF
+	STA <Objects_XVel, X
+
+	LDA <Objects_YVel, X
+	EOR #$FF
+	STA <Objects_YVel, X
+
+	LDA #SPR_PAL2
+	STA Objects_SprAttr, X
+	JMP Object_ShakeAndDraw
+
+ObjNorm_PacBoo2:
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA #SPR_PAL1
+	STA Objects_SprAttr, X
+
+	LDA RandomN, X
+	AND #$03
+	BNE ObjNorm_PacBoo21
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel
+	JMP Object_ShakeAndDraw
+
+ObjNorm_PacBoo21:
+	JSR Chase
+	JMP Object_ShakeAndDraw
+	
+ObjNorm_PacBoo3:
+	LDA Objects_Var1, X
+	BNE ObjNorm_PacBoo4
+
+	INC Objects_Var1, X
+
+	LDA #$10
+	STA Player_HaltTick
+
+ObjNorm_PacBoo4:
+	LDA #$02
+	STA Objects_Frame, X
+
+	LDA #SPR_PAL1
+	STA Objects_SprAttr, X
+
+	LDA <Player_X
+	PHA
+	LDA <Player_XHi
+	PHA
+	LDA <Player_Y
+	PHA
+	LDA <Player_YHi
+	PHA
+
+	LDA Objects_Var2, X
+	STA <Player_X
+	LDA Objects_Var3, X
+	STA <Player_XHi
+
+	LDA Objects_Var4, X
+	STA <Player_Y
+	LDA Objects_Var5, X
+	STA <Player_YHi
+	JSR Chase
+	
+	PLA
+	STA <Player_YHi
+	PLA
+	STA <Player_Y
+	PLA
+	STA <Player_XHi
+	PLA
+	STA <Player_X
+
+	JSR Object_GetAttrJustTile
+	LDA Objects_LastProp, X
+	CMP #TILE_PROP_ENEMY
+
+	BNE ObjNorm_PacBoo5
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	DEC Objects_Var1, X
+
+ObjNorm_PacBoo5:
+	JMP Object_ShakeAndDraw

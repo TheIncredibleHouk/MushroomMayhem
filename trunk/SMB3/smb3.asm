@@ -1038,6 +1038,7 @@ SPR_VFLIP	= %10000000
 	Coins_Earned_Buffer:	.ds 1
 
 	Coins_Earned:		.ds 1	; A "buffer" of coins earned to be added to your total, actual coinage stored in Player_Coins[2]
+	Coins_Lost:			.ds 1
 	Map_Powerup_Poof:	.ds 1	; Counter that handles the "poof" effect when a powerup is used on the map (requires Inventory to be open, and forces it to close afterward)
 
 	; Level_FreeVertScroll
@@ -1316,6 +1317,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	RhythmPlatformEnabed: .ds 1
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;
+	DPad_RhythmControl: .ds 1;
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
 	.org $0461
@@ -2042,7 +2044,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	; Objects_Var6: Special hardcoded behavior for the following objects ONLY:
 	; OBJ_PYRANTULA, OBJ_CHAINCHOMPFREE, OBJ_VEGGIEGUY, 
-	; OBJ_BLOOPERWITHKIDS, or OBJ_FIRESNAKE
+	; OBJ_SKULLBLOOPER, or OBJ_FIRESNAKE
 	; ... as the X/Y buffer slot they occupy (see Object_Delete)
 	Objects_Var6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
 	Objects_TargetingXVal:	.ds 5	; $0775-$0779 X velocity result of Object_CalcHomingVels for this object OR some other X pixel target
@@ -2580,20 +2582,37 @@ CFIRE_LASER		= $15	; Laser fire
 	Virus:				.ds 1	;
 	Old_World_Map_Tile:	.ds	1	;
 
-BADGE_COIN = 1
-BADGE_NOSHOORMS = 2
-BADGE_AIR = 3
-BADGE_PMETER = 4
-BADGE_JUMP = 5
-BADGE_BOOTS = 6
-BADGE_DAMAGE = 7
+ITEM_STOP1  = 1
+ITEM_STOP2	=	2
+ITEM_SLOW1	=	3
+ITEM_SLOW2	=	4
+ITEM_POW1	= 5
+ITEM_POW2	= 6
+ITEM_POW3	= 7
+ITEM_RADAR	= 8
+ITEM_CATCH	= 9
+ITEM_HEART1	= 10
+ITEM_HEART2	= 11
+ITEM_HEART3	= 12
+ITEM_BUBBLE1 = 13
+ITEM_BUBBLE2 = 14
+
+
+BADGE_COIN = 16
+BADGE_NOSHOORMS = 17
+BADGE_AIR = 18
+BADGE_PMETER = 19
+BADGE_JUMP = 20
+BADGE_BOOTS = 21
+BADGE_DAMAGE = 22
+
 
 ABILITY_RESURRECT = 1
 ABILITY_RESHELL = 2
 ABILITY_SHELCATCH = 3
 ABILITY_ITEMRESERVE = 4
 ABILITY_CHERRY_STAR = 5
-	Player_Badge:		.ds 1	;
+	Player_Equip:		.ds 1	;
 	Player_Level:		.ds 1	;
 	Tile_Anim_Enabled:  .ds 1	;
 
@@ -2768,7 +2787,7 @@ AIR_INCREASE	= 3
 	Previous_X:				.ds 1; Keeps track of the the Previous x position
 	Game_Timer_Tick:		.ds 1; Indicates the game timer needs to increase by 1 second
 
-Max_Item_Count = 4
+Max_Item_Count = 8
 CARD_MUSHROOM	= 0
 CARD_FLOWER	= 1
 CARD_STAR	= 2
@@ -2968,6 +2987,7 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
+	Stop_Watch:			.ds 1	;
 	Player_Dialog:		.ds 1
 	PowerUp_NoRaise:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
@@ -3355,8 +3375,6 @@ OA3_HALT_BUSTERSPECIAL	= %00001101	; 13: Bank2/Buster Beatle ONLY
 OA3_HALT_PIRANHASPECIAL	= %00001110	; 14: Bank2/Piranha Spike Ball ONLY
 OA3_HALT_MASK		= %00001111	; Not intended for use in attribute table, readability/traceability only
 
-OA3_NINJAHAMMER_IMMUNE = %00010000 ; Immune to hammers/stars
-
 OA3_SQUASH		= %00010000	; Enemy should "squash" (state 7) not "shell" (state 3), or "killed" (state 6) in case of statue/Kuribo's shoe stomp; requires OA2_NOTSHELLED to be NOT SET
 OA3_NOTSTOMPABLE	= %00100000	; If the Player tries to stomp this enemy, he will be HURT!  (E.g. Spikey enemy)
 OA3_DIESHELLED		= %01000000	; The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
@@ -3454,7 +3472,8 @@ OBJ_CLOUDPLATFORM	= $2C	; Cloud platform
 OBJ_BIGBERTHA		= $2D	; Big Bertha that eats you
 OBJ_PIRATEBOO	= $2E	; Invisible (until touched) lift that goes up to fixed position of Y/Hi = 64
 OBJ_BOO			= $2F	; Boo Diddly
-OBJ_HOTFOOT_SHY		= $30	; Hot Foot (returns to flame if looked at)
+OBJ_HOTFOOT_SHY = $00
+OBJ_PACBOO		= $30	; Hot Foot (returns to flame if looked at)
 OBJ_BOOSTRETCH		= $31	; "Stretch" Boo, upright
 OBJ_BOOSTRETCH_FLIP	= $32	; "Stretch" Boo, upside-down
 OBJ_NIPPER		= $33 	; Stationary nipper plant
@@ -3509,7 +3528,8 @@ OBJ_STONEBLOCK		= $5D	;
 OBJ_ROTODISCDUALOPPOSE	= $5E	; Dual Rotodisc, opposites, horizontal meeting
 OBJ_ROTODISCDUALOPPOSE2	= $5F 	; Dual Rotodisc, opposites, vertical meeting
 OBJ_ROTODISCDUALCCLOCK	= $60	; Dual Rotodisc, sync, counter-clockwise
-OBJ_BLOOPERWITHKIDS	= $61	; Blooper w/ kids
+OBJ_BLOOPERWITHKIDS = $00
+OBJ_SKULLBLOOPER	= $61	; Blooper w/ kids
 OBJ_BLOOPER		= $62	; Blooper
 OBJ_BIGBERTHABIRTHER = $00 ;
 OBJ_FLOATMINE	= $63	; Big Bertha with spit-out child
@@ -3543,7 +3563,8 @@ OBJ_BULLETBILL		= $78	; Regular Bullet bill
 OBJ_BULLETBILLHOMING	= $79	; Homing Bullet Bill
 OBJ_PURPLETROOPA		= $7A	;
 OBJ_BIGGREENTROOPA	= $00	; Big Green Turtle
-OBJ_BIGREDTROOPA	= $7B	; Big Red Turtle
+OBJ_BIGREDTROOPA	= $00	; Big Red Turtle
+OBJ_BLUESHELL	= $7B	; Big Red Turtle
 OBJ_HELPER		= $7C	; Big Goomba
 OBJ_BIGGOOMBA = $00 ;
 OBJ_BIGGREENPIRANHA	= $7D	; Big Green Piranha

@@ -89,7 +89,6 @@ PRG026_A0A6:
 PRG026_A0C3:
 	TAX		 	; X = A (InvStart_Item + offset)
 	LDA Inventory_Items,X	; Get this item -> A
-	JMP InvItem_SetColor 	; Jump to InvItem_SetColor
 
 PRG026_A0CA:
 	RTS		 ; Return
@@ -359,8 +358,7 @@ InvItem_Tile_Layout:
 	; Item tiles layout when closing/unselected
 	; NOTE: See also InvItem_Hilite_Layout
 	; power ups
-	.byte $FE, $FE, $FE, $FE	; Empty
-	.byte $B0, $B1, $C0, $C1
+	.byte $00, $01, $10, $11
 	.byte $B2, $B3, $C2, $C3
 	.byte $B4, $B5, $C4, $C5
 	.byte $B6, $B7, $C6, $C7
@@ -494,7 +492,8 @@ PRG026_A355:
 PRG026_A366:
 	LDY <Temp_Var14	; Starting item/card offset
 
-	LDA Inventory_Items,Y	; Get this item
+	TYA
+	;LDA Inventory_Items,Y	; Get this item
 	; Item/card to process...
 	ASL A		
 	ASL A		
@@ -562,13 +561,13 @@ InvFlipFrame_DrawMLLivesScore:
 
 ; These tables really define a lot of behavior for the inventory item menu
 InvItem_AddSub:		.byte 8, -8	; Press down to go forward 7 items, up to go back 7 items
-InvItem_IndexOOR:	.byte 24, -8	; Out-of-range index values for wrap-around when pressing down/up
-InvItem_Wrap:		.byte 0, 24	; Wrap-around values for Inventory start
+InvItem_IndexOOR:	.byte 16, -8	; Out-of-range index values for wrap-around when pressing down/up
+InvItem_Wrap:		.byte 0, 8	; Wrap-around values for Inventory start
 InvItem_NextPrior:	.byte 24, -24	; Whether left or right was pressed, how to add/sub the highlight X position
 InvItem_HiliteOORX:	.byte $F8, $20	; Highlight out-of-range X position to tell when at ends, for right/left
 InvItem_HiliteMinMax:	.byte $38, $E0	; Highlight left min and right max for right/left overflows
 InvItem_RightLeft:	.byte 1, -1	; Whether right or left was pressed, how to inc/dec the highlight index
-InvItem_RightLeftMinMax:.byte 0, 6	; Right/left overflows wrap-around index value
+InvItem_RightLeftMinMax:.byte 0, 7	; Right/left overflows wrap-around index value
 InvItem_PerPlayerOff:	.byte $00, (Inventory_Items2 - Inventory_Items)	; Offset per player
 Inventory_DoPowerupUse:
 	LDA Map_Powerup_Poof
@@ -633,14 +632,9 @@ PRG026_A468:
 	TXA		 		; A = starting of the row Inventory item
 	CMP InvItem_PerPlayerOff,Y	; If it's the very first item of this player (just wrapped around)
 	BEQ PRG026_A476	 		; If so, jump to PRG026_A476
-
-	LDA Inventory_Items,X	 	; A = next item
-	BEQ PRG026_A436	 		; Jump to PRG026_A436 if row is not empty
-
 PRG026_A476:
-	LDA Inventory_Items,X	 	; A = next item
-	JSR InvItem_SetColor	 	; Properly set colors for this item
-
+	TXA
+	
 Inventory_ForceUpdate_AndFlip:
 	LDA #$0c	 		
 	STA InvFlip_Frame	 	; InvFlip_Frame = $0C
@@ -653,23 +647,15 @@ Inventory_ForceUpdate_AndFlip:
 	RTS		 	; Return...
 
 PRG026_A491:
+	
 	; Neither B nor START nor Up nor Down pressed...
-	LDA Level_Tileset
-	CMP #$07	 
-	BEQ PRG026_A4A6	 	; If Level_Tileset = 7 (Toad House), jump to PRG026_A4A6 (RTS)
 	LDY #$00		; Y = 0
 	LDX Player_Current	; X = Player_Current
 	BEQ PRG026_A4A1		; If Player_Current = 0 (Mario), jump to PRG026_A4A1
 	LDY #(Inventory_Items2 - Inventory_Items)	 ; Offset to Luigi's items
 
 PRG026_A4A1:
-	LDA Inventory_Items,Y
-	BNE PRG026_A4A7		; If first item is not empty, jump to PRG026_A4A7
 
-PRG026_A4A6:
-	RTS		 	; Otherwise, just return...
-
-PRG026_A4A7:
 	LDA <Pad_Input	 
 	AND #(PAD_LEFT | PAD_RIGHT)	 
 	BEQ PRG026_A4F6	 	; If neither left nor right is pressed, jump to PRG026_A4F6
@@ -699,22 +685,8 @@ PRG026_A4B4:
 	STA InvHilite_X	 	
 
 PRG026_A4D9:
-	LDA InvHilite_Item
-	ADD InvStart_Item
-	TAY		 	; Y = InvHilite_Item + InvStart_Item
-	LDA Player_Current	; A = Player_Current
-	BEQ PRG026_A4EB	 	; If Player_Current = 0 (Mario), jump to PRG026_A4EB
-
-	; Luigi...
-	TYA		 	
-	ADD #(Inventory_Items2 - Inventory_Items)
-	TAY		 	; Y = InvHilite_Item + InvStart_Item + Luigi offset
-
-PRG026_A4EB:
-	LDA Inventory_Items,Y	; Get the selected item
-	BEQ PRG026_A4B4	 	; If item is zero (empty slot), jump to PRG026_A4B4 (moves inventory slot back)
-	JSR InvItem_SetColor 	; Otherwise, set the color...
-	JMP PRG026_A511	 	; Then jump to PRG026_A511
+	STA Debug_Snap	 	; Y = InvHilite_Item + InvStart_Item
+	JMP Inv_Display_Hilite
 
 PRG026_A4F6:
 	LDA <Pad_Input		
@@ -742,7 +714,7 @@ PRG026_A511:
 InvItem_Pal: 
 	; Per-Item LUT
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
-	;inventory power ups
+	;badges
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $06
@@ -751,7 +723,7 @@ InvItem_Pal:
 	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $27
-	;equippables
+	;items
 	.byte $FF, $0F, $30, $30
 	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $16
@@ -790,12 +762,12 @@ PRG026_A539:
 
 ; #ITEM USE JUMP TABLE
 Inv_UseItem:
-	LDA Inventory_Items,Y		; Get which item to use
+	TYA
 	JSR DynJump	 		; Dynamic jump based on item used
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	; Inventory per-item jump table!
-	.word PRG026_A4A6			; Small
+	.word Inv_UseItem_Powerup			; Small
 	.word Inv_UseItem_Powerup	; Big
 	.word Inv_UseItem_Powerup	; Fire
 	.word Inv_UseItem_Powerup	; Ice
@@ -813,12 +785,16 @@ InvItem_PerPowerUp_L1Sound:
 	.byte SND_LEVELPOWER	; Big
 	.byte SND_LEVELPOWER	; Fire
 	.byte SND_LEVELPOWER	; Ice
-	.byte SND_LEVELPOOF		; Raccoon
-	.byte SND_LEVELPOOF		; Fox
-	.byte SND_LEVELPOOF		; Frog
-	.byte SND_LEVELPOOF		; Koopa
+	.byte SND_LEVELPOWER		; Raccoon
+	.byte SND_LEVELPOWER		; Fox
+	.byte SND_LEVELPOWER		; Frog
+	.byte SND_LEVELPOWER		; Koopa
 	.byte SND_LEVELPOOF		; Boo
 	.byte SND_LEVELPOOF		; Hammer Suit
+	.byte SND_LEVELPOOF		; Ninja
+	.byte SND_LEVELPOOF		; Ninja
+	.byte SND_LEVELPOOF		; Ninja
+	.byte SND_LEVELPOOF		; Ninja
 	.byte SND_LEVELPOOF		; Ninja
 
 InvItem_PerPowerUp_Disp:
@@ -847,35 +823,22 @@ InvItem_PerPowerUp_Palette:
 Inv_UseItem_Powerup:
 	LDA InvHilite_Item
 	ADD InvStart_Item
-	TAY		 	; Y = InvHilite_Item + InvStart_Item (currently highlighted item)
+	TAX		 	; Y = InvHilite_Item + InvStart_Item (currently highlighted item)
 
-	LDX Inventory_Items,Y	; Get the item (should be a POWER-UP item, Super Mushroom to P-Wing only)
-	TXA		 	
-	ASL A		 
-	ASL A		 
-	TAY		 	; Y = X << 2
-	 
-	; Load the colors for this power-up into the palette buffer
-	LDA InvItem_PerPowerUp_Palette,Y
-	STA Palette_Buffer+17
-	LDA InvItem_PerPowerUp_Palette+1,Y
-	STA Palette_Buffer+18
-	LDA InvItem_PerPowerUp_Palette+2,Y
-	STA Palette_Buffer+19
+	LDA Inventory_Items,X	; Get the item (should be a POWER-UP item, Super Mushroom to P-Wing only)
+	BNE Inv_UseItem_Powerup1
 
-	; Queue palette update
-	LDA #$06
-	STA <Graphics_Queue
+	; play error sound
+	RTS
 
-	; Play the correct sound for this power up item
-	LDA InvItem_PerPowerUp_L1Sound,X
-	STA Sound_QLevel1
+Inv_Item_Map:
+	.byte ITEM_STOP2, ITEM_SLOW2, ITEM_POW3, ITEM_RADAR, ITEM_CATCH, ITEM_HEART3, ITEM_BUBBLE2
 
-	LDA InvItem_PerPowerUp_Disp,X	; Store proper power-up to display -> A
-	STA Map_Power_Disp	 	; Power-up to display -> Map_Power_Disp
-	STA World_Map_Power	 	; Update appropriate player's "Map Power Up"
-
-PRG026_A60B:
+Inv_UseItem_Powerup1:
+	
+	DEC Inventory_Items, X
+	LDA Inv_Item_Map, X
+	STA Player_Equip
 	LDA #$14	 
 	STA Map_Powerup_Poof	 	; Map_Powerup_Poof = $14
 	LDX Player_Current	 	; X = Player_Current
@@ -885,6 +848,10 @@ PRG026_A60B:
 	STA <MapPoof_Y	
 	LDA <World_Map_X,X
 	STA <MapPoof_X	
+	;JSR Inventory_ForceUpdate_AndFlip	; Forces Inventory to flip back over
+	;JMP Inv_Display_Hilite	 	; Jump to Inv_Display_Hilite...
+
+	RTS
 
 Inv_UseItem_ShiftOver:
 	LDA #27
@@ -1259,58 +1226,79 @@ InvItem_Hilite_Layout:
 	.byte $D9, $DB
 
 Inv_Display_Hilite:
-	; Displays the hilited item
-	LDY #$c8	 ; Y = $C8
-	LDA <Map_UseItem 
-	BEQ PRG026_A876	 ; If not using an item, jump to PRG026_A876
-
-	LDA <Counter_1
-	AND #$18
-	BNE PRG026_A876	 ; Periodically jump to PRG026_A876
-
-	LDY #$f8	 ; Y = $F8 (hilite is pushed off bottom of screen during item use)
-
-PRG026_A876:
-	STY Sprite_RAM+$00	; Store 'Y' position into left half
-	STY Sprite_RAM+$04	; Store 'Y' position into right half
-	LDA InvStart_Item
-	ADD InvHilite_Item	; A = InvStart_Item + InvHilite_Item
-	TAY		 	; Y = A
-
-PRG026_A88E:
-	LDX Inventory_Items,Y	; X = currently highlighted item
+	LDA InvHilite_Item
+	ADD InvStart_Item
+	TAY	
+	LDA Inventory_Items,Y	
+	JSR ToThreeDigits
 
 	; Use palette 3 for both
-	LDA #$01
-	STA Sprite_RAM+$02
-	STA Sprite_RAM+$06
+	LDA #SPR_PAL1
+	STA Sprite_RAM+02
+	STA Sprite_RAM+06
+	STA Sprite_RAM+10
+	STA Sprite_RAM+22
+	STA Sprite_RAM+26
 
-	TXA
-	ASL A
-	TAX		 ; X << 1 (index into InvItem_Hilite_Layout)
+	LDA #(SPR_PAL1 | SPR_HFLIP)
+	STA Sprite_RAM+14
 
-	; Index highlight tiles
-	LDA InvItem_Hilite_Layout,X
-	STA Sprite_RAM+$01
-	LDA InvItem_Hilite_Layout+1,X
-	STA Sprite_RAM+$05
+	LDA #(SPR_PAL1 | SPR_VFLIP)
+	STA Sprite_RAM+18
+	
 
-	LDA Sprite_RAM+$01
-	CMP Sprite_RAM+$05
-	BNE PRG026_A8B8	 	; If left half / right half tiles differ, jump to PRG026_A8B8
+	LDA #(SPR_PAL1 | SPR_VFLIP | SPR_HFLIP)
+	STA Sprite_RAM+30
 
-	; Otherwise, a horizontal flip is applied to the right half
-	LDA Sprite_RAM+$06
-	ORA #$40	 	; H-Flip
-	STA Sprite_RAM+$06	
+	LDA #$c0
+	STA Sprite_RAM+00
+	STA Sprite_RAM+04
+	STA Sprite_RAM+08
+	STA Sprite_RAM+12
 
-PRG026_A8B8:
-	LDA InvHilite_X	 
-	STA Sprite_RAM+$03	; Highlight X for left
-	ADD #$08	 	; +8
-	STA Sprite_RAM+$07	; Highlight X for right
+	LDA #$d0
+	STA Sprite_RAM+16
+	STA Sprite_RAM+20
+	STA Sprite_RAM+24
+	STA Sprite_RAM+28
+
+	LDA InvHilite_X
+	SUB #$08
+	STA Sprite_RAM+03
+	STA Sprite_RAM+19
+
+	ADD #$08
+	STA Sprite_RAM+07
+	STA Sprite_RAM+23
+
+	ADD #$08
+	STA Sprite_RAM+11
+	STA Sprite_RAM+27
+
+	ADD #$08
+	STA Sprite_RAM+15
+	STA Sprite_RAM+31
+
+	LDA #$F5
+	STA Sprite_RAM+1
+	STA Sprite_RAM+13
+	STA Sprite_RAM+17
+	STA Sprite_RAM+29
+
+	LDA #$F7
+	STA Sprite_RAM+5
+	STA Sprite_RAM+9
+	
+	LDX <Temp_Var2
+	LDA NumberSpriteMap, X
+	STA Sprite_RAM+21
+	LDX <Temp_Var3
+	LDA NumberSpriteMap, X
+	STA Sprite_RAM+25
 	RTS		 	; Return...
 
+NumberSpriteMap:
+	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $B1, $B3
 Map_Poof_To_Row:
 	; Convert a Map Poof Y coordinate to a row LUT
 	.byte $20, $30, $40, $50, $60, $70, $80
@@ -2510,35 +2498,33 @@ Exp_Done:
 	RTS		 ; Return
 
 
-Ability_Tiles1:
-	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F, $6C, $6D
-
-Ability_Tiles2:
-	.byte $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F, $7C, $7D
+BadgeTiles:
+	.byte $FE, $FE, $FE, $FE
+	.byte $68, $FE, $78, $FE
+	.byte $68, $69, $78, $79
+	.byte $6A, $FE, $7A, $FE
+	.byte $6A, $6B, $7A, $7B
+	.byte $68, $69, $78, $79
 
 StatusBar_Ability_Level:
+	STA Debug_Snap
 	LDA Status_Bar_Mode
 	CMP #$00
 	BNE Dont_Draw_Current_Ability
 	LDA Player_Level
 	ORA #$30
 	STA (Status_Bar_Top + 20)
-	LDA Status_Bar_Mode
-	CMP #$00
-	BNE Dont_Draw_Current_Ability
-	LDA Player_Badge
-	BEQ Dont_Draw_Current_Ability
-	SEC
-	SBC #$01
+	LDA Player_Equip
+	ASL A
 	ASL A
 	TAX
-	LDA Ability_Tiles1, X
+	LDA BadgeTiles, X
 	STA (Status_Bar_Top + 26)
-	LDA (Ability_Tiles1 + 1), X
+	LDA BadgeTiles + 1, X
 	STA (Status_Bar_Top + 27)
-	LDA Ability_Tiles2, X
+	LDA BadgeTiles + 2, X
 	STA (Status_Bar_Bottom + 26)
-	LDA (Ability_Tiles2 + 1), X
+	LDA BadgeTiles + 3, X
 	STA (Status_Bar_Bottom + 27)
 
 Dont_Draw_Current_Ability:
@@ -2555,7 +2541,7 @@ Status_Bar_Draw_Item_Reserve:
 	CMP #$00
 	BNE Item_ReserveRTS
 	LDA PowerUp_Reserve
-	LDX Player_Badge
+	LDX Player_Equip
 	CPX #$07
 	BEQ Draw_ItemReserve
 	LDA #$00

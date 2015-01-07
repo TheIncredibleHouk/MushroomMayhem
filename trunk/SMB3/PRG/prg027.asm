@@ -1768,8 +1768,7 @@ InitPals_Per_MapPUp:
 Setup_PalData:
 	LDX #$01
 	LDA PaletteEffect
-	CMP #$02
-	BNE SetDNActive1
+	BEQ SetDNActive1
 	LDX #$00
 
 SetDNActive1:

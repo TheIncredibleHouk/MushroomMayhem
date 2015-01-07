@@ -2690,8 +2690,6 @@ PRG010_CEF4:
 	BNE WorldMap_UpdateAndDraw	; If so, jump to WorldMap_UpdateAndDraw...
 
 	; The move has completed...
-	JSR FindLevelInfo
-	JSR UpdateLevel
 	LDX #$00
 	JSR Map_GetTile	 
 	CMP #TILE_HANDTRAP
@@ -2707,6 +2705,9 @@ PRG010_CEF4:
 	JMP PRG010_CEAC	 		; Jump to PRG010_CEAC
 
 WorldMap_UpdateAndDraw:
+	JSR FindLevelInfo
+	JSR UpdateLevel
+
 	LDY Player_Current 	; Y = Player_Current
 
 	LDA Map_UnusedPlayerVal2,Y	; A = Map_UnusedPlayerVal2
@@ -3806,22 +3807,22 @@ DMC08_End
 ; Rest of ROM bank was empty
 
 Try_Ability_Change:
-	
+	RTS
 	LDA Player_Level
 	;BEQ Ability_RTS
 	LDA <Pad_Input
 	AND #PAD_START
 	BEQ Ability_RTS
-	LDA Player_Badge
+	LDA Player_Equip
 	;CMP Player_Level
 	BCS Reset_Ability
-	INC Player_Badge
-	LDA Player_Badge 
-	STA Player_Badge
+	INC Player_Equip
+	LDA Player_Equip 
+	STA Player_Equip
 	RTS
 Reset_Ability:
 	LDA #$01
-	STA Player_Badge
+	STA Player_Equip
 
 Ability_RTS:
 	RTS

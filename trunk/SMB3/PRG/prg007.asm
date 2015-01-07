@@ -954,7 +954,7 @@ PRG007_A6BD:
 	LDA Invincible_Enemies
 	BNE PRG007_A6CA
 	LDA <Temp_Var1	; Object's attributes
-	AND #OA3_NINJAHAMMER_IMMUNE
+	AND #OAT_HITNOTKILL
 	BNE PRG007_A6CB	 ; If OAT_HITNOTKILL is set, jump to PRG007_A6FD (RTS)
 	BEQ PRG007_A6C9	 ; Otherwise, jump to PRG007_A6C9
 
@@ -2208,6 +2208,8 @@ DoInteract:
 	LDA CurrentTileProperty
 	AND #TILE_PROP_SOLID_TOP
 	BNE SObj_CheckHitSolid1
+	LDA #$00
+	STA SpecialObj_Data,X
 	JMP PRG007_AEE0	 ; If this tile is not solid on top, jump to PRG007_AEE0
 
 SObj_CheckHitSolid1:
@@ -2231,7 +2233,7 @@ PRG007_AEC0:
 
 
 PRG007_AEC9:
-	; Bounce fireball!
+
 	LDA SpecialObj_ID,X
 	CMP #SOBJ_ICEBALL
 	BNE PRG007_AEC9_2
@@ -2248,11 +2250,14 @@ PRG007_AECE:
 	RTS		 ; Return
 
 PRG007_AECF:
-
 	LDA <Temp_Var6
 	AND #$0f	 ; Find Y relative to the tile
 	CMP #$05
-	BLT PRG007_AEC9	 ; If it's less than 5 pixels from the top, count as hit the floor, and bounce!
+	BCS PRG007_AEE0	 ; If it's less than 5 pixels from the top, count as hit the floor, and bounce!
+	; Bounce fireball!
+	LDA #$00
+	STA SpecialObj_Data, X
+	BEQ PRG007_AEC9
 
 PRG007_AEE0:
 	RTS		 ; Return
@@ -3958,28 +3963,6 @@ PRG007_BA6E:
 
 	LDX <SlotIndexBackup	 ; X = special object slot index
 
-	LDA <Player_Suit
-	CMP #$06
-	BNE PRG007_BA8F	 ; If Player is not wearing the Hammer Suit, jump to PRG007_BA8F
-
-	LDA Player_IsDucking
-	BEQ PRG007_BA8F	 ; If Player is NOT ducking (immunity to fireballs), jump to PRG007_BA8F
-
-	LDA Player_StarInv
-	PHA		 ; Save Player's Star Man invincibility status
-
-	; Collide with it like Player were invincible!  (Visually the shell protects him)
-	LDA #$10
-	STA Player_StarInv
-	JSR SObj_PlayerCollide
-
-	; Restore actual Star Man invincibility
-	PLA
-	STA Player_StarInv
-
-	RTS		 ; Return
-
-PRG007_BA8F:
 	JMP SObj_PlayerCollide	 ; Do Player-to-Fireball collision and don't come back!
 
 PRG007_BA92:
@@ -4230,7 +4213,6 @@ PRG007_BB97:
 	STA TempA
 	JSR DetermineCannonVisibilty
 	LDA TempA
-	STA Debug_Snap
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -4672,6 +4654,9 @@ CFire_Platform:
 	LDA #OBJ_WOODENPLATUNSTABLE
 	STA Level_ObjectID,X
 
+	LDA #$01
+	STA Objects_Var5, X
+
 	LDA #$FC
 	STA Objects_Var2, X
 
@@ -4960,7 +4945,6 @@ PRG007_BF80:
 	STA <Objects_X,X
 	STA Objects_Var13,X	; original X hold
 
-	STA Debug_Snap
 	LDA CannonFire_Property,Y
 	TAY
 	BNE PRG007_BF81
@@ -5321,6 +5305,10 @@ SObj_GetTile:
 	RTS
 
 CheckTailSpin:
+	LDA Effective_Suit
+	CMP #$03
+	BNE CheckTailSpin1
+
 	LDA Player_TailAttack
 	BEQ CheckTailSpin1
 
