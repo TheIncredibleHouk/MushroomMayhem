@@ -292,6 +292,8 @@ ThrowFireIceBall:
 	STA PlayerProj_XVel, X
 
 	LDY #$00
+	LDA Special_Suit_Flag
+	BNE ThrowFireBall1
 	LDA <Pad_Holding
 	AND #PAD_UP
 	BEQ ThrowFireBall1

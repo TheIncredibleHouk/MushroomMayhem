@@ -1314,6 +1314,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	ReverseGravity:		.ds 1
 	NoGravity:			.ds 1;
 	Player_ForcedSlide:	.ds 1
+	Player_PrevXDirection:	ds 1
 	RhythmPlatformEnabed: .ds 1
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;

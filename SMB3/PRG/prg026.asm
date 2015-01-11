@@ -2992,7 +2992,6 @@ Draw_Cherries:
 	BMI Draw_Cherries1
 	LDA Cherries
 	JSR ToThreeDigits
-	STA Debug_Snap
 	LDA <Temp_Var2
 	ORA #$30
 	STA Status_Bar_Top + 20
