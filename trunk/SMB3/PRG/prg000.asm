@@ -197,7 +197,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX04 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL 	; Object $14
 	.byte OAT_BOUNDBOX09 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $15
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $16
-	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_SPINYCHEEP
+	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_WINGS
 	.byte OAT_BOUNDBOX13	; Object $18 - OBJ_BOSS_BOWSER
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $1A
@@ -891,6 +891,15 @@ Objects_HandleScrollAndUpdate:
 
 
 PRG000_C93A:
+	LDA Slow_Watch
+	BEQ PRG000_C93A1
+	LDA <Counter_1
+	AND #$01
+	STA Stop_Watch
+	BNE PRG000_C93B
+	DEC Slow_Watch
+
+PRG000_C93A1:
 	LDA Stop_Watch
 	BEQ PRG000_C93B
 	LDA <Counter_1
@@ -4897,7 +4906,6 @@ PRG000_DA15:
 	LDA Player_Equip
 	CMP #BADGE_DAMAGE
 	BNE PRG000_DA4E
-	; Higher level power-up suits...
 	LDA #$17
 	STA Player_SuitLost	 ; Player_SuitLost = $17
 
@@ -4907,9 +4915,10 @@ PRG000_DA15:
 	STA Sound_QLevel1
 
 	LDA #$02
-
-PRG000_DA44:
 	STA Player_QueueSuit	 ; Queue power-up change
+
+	LDA #$80
+	STA Player_FlyTime
 
 PRG000_DA47:
 	LDA #$00	 
@@ -4922,9 +4931,26 @@ PRG000_DA4E:
 	LDA <Player_Suit
 	BEQ PRG000_DA7A	 ; If Player is small, jump to PRG000_DA7A (gonna die!!)
 
+	LDA Player_Equip
+	SUB #ITEM_HEART1
+	BMI PRG000_DA4F
+	CMP #$03
+	BCS PRG000_DA4F
+	CMP #$00
+	BEQ PRG000_DA4F1
+	DEC Player_Equip
+	JMP PRG000_DA50
+	
+PRG000_DA4F1:
+	LDA #$00
+	STA Player_Equip
+	BEQ PRG000_DA50
+
+PRG000_DA4F:
 	LDA #$02
 	STA Player_QueueSuit	 ; Return to Big
 
+PRG000_DA50:
 	; Play shrinking sound!!
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERPIPE
@@ -5487,9 +5513,9 @@ Object_ApplyYVel_NoLimit:
 	BNE Object_ApplyYVel_NoLimit1
 	JSR Object_AddVelFrac	 ; Apply the velocity to the object's position
 
-	LDX <SlotIndexBackup	 ; Restore X as Object slot index
-
+		 ; Restore X as Object slot index
 Object_ApplyYVel_NoLimit1:
+	LDX <SlotIndexBackup
 	RTS		 ; Return
 
 
