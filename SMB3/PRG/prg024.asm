@@ -2145,10 +2145,13 @@ Title_PrepForWorldMap:
 	STA Tile_Anim_Enabled
 
 	LDA #$09
-	STA Player_Coins
-	STA Player_Coins + 1
-	STA Player_Coins + 2
-	STA Player_Coins + 3
+	;STA Player_Coins
+	;STA Player_Coins + 1
+	;STA Player_Coins + 2
+	;STA Player_Coins + 3
+
+	LDA #$63
+	;STA Cherries
 
 	LDA #$01
 	STA World_Map_Power	 ; Mario starts as small on world map

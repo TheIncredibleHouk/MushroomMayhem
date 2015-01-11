@@ -2462,6 +2462,7 @@ MagicStarOffset:
 
 ObjNorm_MagicStar:
 	
+	JSR MagicStar_Radar
 	JSR Magic_Star_Action
 
 	JSR Object_ShakeAndDrawMirrored
@@ -2630,6 +2631,50 @@ Kill_Star:
 Dont_Kill_Star:
 	RTS		 ; Return
 
+MagicStar_Radar:
+	LDA Player_Equip
+	SUB #ITEM_RADARNE
+	BMI MagicStar_RadarRTS
+	CMP #$09
+	BCS MagicStar_RadarRTS
+	LDA #$00
+	STA <Temp_Var1
+	JSR Level_ObjCalcXBlockDiffs
+
+	CMP #$00
+	BEQ MagicStar_Radar1
+
+	LDA EWBitMap, Y
+	STA <Temp_Var1
+	
+MagicStar_Radar1:
+	JSR Level_ObjCalcYBlockDiffs
+	CMP #$00
+	BEQ MagicStar_Radar2
+
+	LDA NSBitMap, Y
+	ORA <Temp_Var1
+	STA <Temp_Var1
+
+MagicStar_Radar2:
+	LDY <Temp_Var1
+	LDA RadarMap, Y
+	STA Player_Equip
+	RTS
+
+MagicStar_RadarRTS:
+	RTS
+EWBitMap:
+	.byte $01, $02
+
+NSBitMap:
+	.byte $08, $04
+
+RadarMap:
+	.byte ITEM_RADAR, ITEM_RADARE, ITEM_RADARW, ITEM_RADAR
+	.byte ITEM_RADARN, ITEM_RADARNE, ITEM_RADARNW, ITEM_RADAR
+	.byte ITEM_RADARS, ITEM_RADARSE, ITEM_RADARSW
+	
 
 Star_Vel:
 	.byte -$20, -$17, $00, $17, $20, $17, $00, -$17

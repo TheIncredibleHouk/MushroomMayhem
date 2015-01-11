@@ -445,6 +445,21 @@ PRG008_A242:
 	LDA #$FF
 	STA CompleteLevelTimer
 
+	LDA Player_Coins
+	STA Previous_Coins
+	LDA Player_Coins+1
+	STA Previous_Coins+1
+	LDA Player_Coins+2
+	STA Previous_Coins+2
+	LDA Player_Coins+3
+	STA Previous_Coins+3
+	LDA Cherries
+	STA Previous_Cherries
+	LDA Magic_Stars
+	STA Previous_Stars
+	LDA Magic_Stars+1
+	STA Previous_Stars+1
+
 	; Set power up's correct palette
 	JSR Level_SetPlayerPUpPal
 
@@ -731,6 +746,25 @@ PRG008_A3FA:
 	CMP #$c0
 	BNE PRG008_A427	 ; If Player_SpriteY < $C0 && Player_SpriteY > $CF, jump to PRG008_A427
 
+	LDA Player_Equip
+	CMP #ITEM_CATCH
+	BNE PRG008_A3FB
+
+	LDA #$00
+	STA Player_Equip
+
+	LDA #$80
+	STA Player_FlyTime
+
+	LDA #$04
+	STA Player_QueueSuit
+
+	LDA #$B0
+	STA <Player_YVel
+	STA <Player_Y
+	BNE PRG008_A427
+
+PRG008_A3FB:
 	JSR Player_Die	 ; Begin death sequence
 
 	; This jumps the initial part of the death sequence
@@ -2419,6 +2453,7 @@ Jump_Normal:
 
 	LDA #$80
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = $80
+
 
 PRG008_AC9E:
 	LDA <Player_InAir
@@ -5497,7 +5532,6 @@ NotMaxAir:
 	LDX Player_Equip
 	CPX #BADGE_AIR
 	BNE NotMaxAir1
-
 	INY
 
 NotMaxAir1:
@@ -5517,10 +5551,24 @@ NotMaxAir1:
 NoChange:
 	RTS
 
+Power_TickChange:
+	.byte $07, $0A
+
 Do_PowerChange:				; Added code to increase/decrease the air time based on water
-	LDA <Counter_1
-	AND #$07
+	INC Power_Tick
+	LDX #$00
+	STA Debug_Snap
+	LDA Player_Equip
+	CMP #BADGE_PMETER
+	BNE Do_PowerChange01
+	INX
+
+Do_PowerChange01:
+	LDA Power_Tick
+	CMP Power_TickChange, X
 	BNE Do_PowerChange0
+	LDA #$00
+	STA Power_Tick
 	LDA Power_Change
 	BNE Do_PowerChange1
 
@@ -6017,6 +6065,7 @@ SetLastScrollDirection1:
 	STA <Scroll_LastDir
 
 SetLastScrollDirection2:
+EquipNoUse:
 	RTS
 
 
@@ -6037,12 +6086,99 @@ Try_Use_Equipped:
 	LDA Player_Equip
 	JSR DynJump
 
+	.word EquipNoUse
 	.word StopWatch
 	.word StopWatch
-	.word StopWatch
+	.word SlowWatch
+	.word SlowWatch
+	.word PowBlock
+	.word PowBlock
+	.word PowBlock
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word EquipNoUse
+	.word StarManItem
+	.word StarManItem
 
 StopWatch:
 	DEC Player_Equip
-	LDA #$80
+	LDA #$FF
 	STA Stop_Watch
+	RTS
+
+SlowWatch:
+	LDA #$FF
+	STA Slow_Watch
+	LDA Player_Equip
+	CMP #ITEM_SLOW2
+	BNE SlowWatch1
+	DEC Player_Equip
+	RTS
+
+SlowWatch1:
+	LDA #$00
+	STA Player_Equip
+	RTS
+	
+PowBlock:
+	LDA #$10
+	STA Level_Vibration
+	LDX #$04
+
+PowBlock0:
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BNE PowBlock1
+	LDY Level_ObjectID,X	 ; Get object's ID -> Y
+	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
+	AND #OAT_HITNOTKILL	 
+	BNE PowBlock1
+	JSR Object_PoofDie
+
+PowBlock1:
+	DEX
+	BPL PowBlock0
+
+
+	STA Slow_Watch
+	LDA Player_Equip
+	CMP #ITEM_POW1
+	BEQ PowBlock2
+	DEC Player_Equip
+	RTS
+
+PowBlock2:
+	LDA #$00
+	STA Player_Equip
+	RTS
+
+StarManItem:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	LDA Sound_QMusic2
+	ORA #MUS2A_INVINCIBILITY
+	STA Sound_QMusic2
+	; Player_StarInv = $E0
+	LDA #$e0
+	STA Player_StarInv
+	LDA Player_Equip
+	CMP #ITEM_STAR2
+	BNE StarManItem1
+	DEC Player_Equip
+	RTS
+
+StarManItem1:
+	LDA #$00
+	STA Player_Equip
 	RTS

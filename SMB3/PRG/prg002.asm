@@ -2735,6 +2735,7 @@ Toad_Speak:
 	.word Decide_What_Next		; 2
 	.word Do_Shop_Controls		; 6
 	.word Bank_Toad		; 7
+	.word Do_BadgeShop_Controls
 
 TDiagBox_R1:	.byte $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65
 TDiagBox_R2:	.byte $65, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
@@ -2841,12 +2842,20 @@ ToadMsg_Bank:
 	.byte "A TO ACCEPT.   "
 	.byte "B TO LEAVE.    "
 
+ToadMsg_Badge:
+	.byte "NEED A BADGE? I"
+	.byte "ONLY ACCEPT    "
+	.byte "CHERRIES. PRESS"
+	.byte "LEFT AND RIGHT "
+	.byte "TO BROWSE, A TO"
+	.byte "TAKE, B TO EXIT"
+
 	; Pointer table to Toad's three messages
 	; Warp Whistle
 	; Standard
 	; Anchor/P-Wing
-ToadMsg_Low:	.byte LOW(ToadMsg_Shop), LOW(ToadMsg_Bank)
-ToadMsg_High:	.byte HIGH(ToadMsg_Shop), HIGH(ToadMsg_Bank)
+ToadMsg_Low:	.byte LOW(ToadMsg_Shop), LOW(ToadMsg_Bank), LOW(ToadMsg_Badge)
+ToadMsg_High:	.byte HIGH(ToadMsg_Shop), HIGH(ToadMsg_Bank), HIGH(ToadMsg_Badge)
 
 
 Toad_DoToadText:
@@ -3417,9 +3426,6 @@ PRG002_BABD:
 ; #DAHRKDAIZ - Start goal card routine removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;	; Returns 'Y' as offset to Mario's or Luigi's inventory memory
-Player_GetInventoryOffset:
-	RTS		 ; Return
-
 
 Next_Toad_Routine: .byte  $03, $04, $05
 
@@ -3575,11 +3581,12 @@ Item_Tiles:
 	.byte $6C, $6D, $7C, $7D
 	.byte $6E, $6F, $7E, $7F
 	.byte $86, $87, $96, $97
-	.byte $AE, $AF, $AC, $AD
-	.byte $A4, $A5, $A8, $A9
 	.byte $A4, $A5, $A6, $A7
-	
+	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
+	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
 
+
+	
 Item_Prices:
 	.byte $00, $05, $00, $00
 	.byte $01, $00, $00, $00
@@ -4177,6 +4184,302 @@ No_More_Coins:
 	LDX DAIZ_TEMP1
 	RTS
 
+Do_BadgeShop_Controls:
+	STX DAIZ_TEMP1
+	LDA #$08
+	STA Player_HaltTick
+	LDA Shop_Mode_Initialized
+	BEQ Initialize_BadgeShop_Mode
+	LDA <Pad_Input
+	AND #PAD_RIGHT
+	BEQ Try_BadgeShop_Left
+	JSR Move_Badges_Right
+	JSR Draw_Current_Badges
+	JMP BadgeShop_RTS
+
+Try_BadgeShop_Left:
+	LDA <Pad_Input
+	AND #PAD_LEFT
+	BEQ Try_Leave_BadgeShop
+	JSR Move_Badges_Left
+	JSR Draw_Current_Badges
+	JMP BadgeShop_RTS
+
+Try_Leave_BadgeShop:
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Try_Buy_Badge
+	INC Level_ExitToMap
+	JMP BadgeShop_RTS
+
+Try_Buy_Badge:
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ BadgeShop_RTS
+	JSR Buy_Badge
+BadgeShop_RTS:
+
+	LDX DAIZ_TEMP1
+	RTS
+
+Initialize_BadgeShop_Mode:
+	LDA #$00 
+	STA Item_Shop_Window + 1
+	LDA #$01
+	STA Item_Shop_Window + 2
+	LDA #(Max_Item_Count - 1)
+	STA Item_Shop_Window
+	STA Shop_Mode_Initialized
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$2E
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$04
+	STA Graphics_Buffer, Y
+	INY
+	LDX #$00
+
+Top_BadgeFrame_Loop:
+	LDA Item_Frame_Top, X
+	STA Graphics_Buffer, Y
+	INY
+	INX
+	CPX #$04
+	BNE Top_BadgeFrame_Loop
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$8E
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$04
+	STA Graphics_Buffer, Y
+	INY
+	LDX #$00
+
+Bottom_BadgeFrame_Loop:
+	LDA Item_Frame_Bottom, X
+	STA Graphics_Buffer, Y
+	INY
+	INX
+	CPX #$04
+	BNE Bottom_BadgeFrame_Loop
+	LDA #$00
+	STA Graphics_Buffer, Y
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$0E
+	STA Graphics_BufCnt
+	JSR Draw_Current_Badges
+	RTS
+
+
+Move_Badges_Right:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	INC Item_Shop_Window
+	INC Item_Shop_Window + 1
+	INC Item_Shop_Window + 2
+	LDX #$02
+
+Check_OverFlow_Badge:
+	LDA Item_Shop_Window, X
+	CMP #Max_Item_Count
+	BNE Next_Badge_Please
+	LDA #$00
+	STA Item_Shop_Window, X
+Next_Badge_Please:
+	DEX
+	BPL Check_OverFlow_Badge
+	RTS
+
+Move_Badges_Left:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	DEC Item_Shop_Window
+	DEC Item_Shop_Window + 1
+	DEC Item_Shop_Window + 2
+	LDX #$02
+
+Check_UnderFlow_Badge:
+	LDA Item_Shop_Window, X
+	CMP #$FF
+	BNE Next_Badge_Please2
+	LDA #(Max_Item_Count - 1)
+	STA Item_Shop_Window, X
+
+Next_Badge_Please2:
+	DEX
+	BPL Check_UnderFlow_Badge
+	RTS
+
+Badge_Tiles:
+	.byte $00, $01, $10, $11
+	.byte $02, $03, $12, $13
+	.byte $04, $05, $14, $15
+	.byte $06, $07, $16, $17
+	.byte $08, $09, $18, $19
+	.byte $0A, $0B, $1A, $1B
+	.byte $0C, $0D, $1C, $1D	
+	.byte $0E, $0F, $1E, $1F	
+
+	
+Badge_Prices:
+	.byte $01
+	.byte $02
+	.byte $03
+	.byte $04
+	.byte $05
+	.byte $06
+	.byte $07
+	.byte $08
+
+Draw_Current_Badges:
+	LDA #$00
+	STA DAIZ_TEMP1
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$4C
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$08
+	STA Graphics_Buffer, Y
+	INY
+
+Draw_Badge_Window_Top:
+	LDX DAIZ_TEMP1
+	LDA Item_Shop_Window, X
+	ASL A
+	ASL A
+	TAX
+	LDA Badge_Tiles, X
+	STA Graphics_Buffer, Y
+	INY
+	LDA Badge_Tiles + 1, X
+	STA Graphics_Buffer, Y
+	INY
+	INY
+	INC DAIZ_TEMP1
+	LDA DAIZ_TEMP1
+	CMP #$03
+	BNE Draw_Badge_Window_Top
+	LDY Graphics_BufCnt
+	LDA #$F8
+	STA Graphics_Buffer + 5, Y
+	LDA #$FA
+	STA Graphics_Buffer + 8, Y
+
+	LDA #$00
+	STA DAIZ_TEMP1
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$0B
+	STA Graphics_BufCnt
+	TAY
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$6C
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$08
+	STA Graphics_Buffer, Y
+	INY
+
+Draw_Badge_Window_Bottom:
+	LDX DAIZ_TEMP1
+	LDA Item_Shop_Window, X
+	ASL A
+	ASL A
+	TAX
+	INX
+	INX
+	LDA Badge_Tiles, X
+	STA Graphics_Buffer, Y
+	INY
+	LDA Badge_Tiles + 1, X
+	STA Graphics_Buffer, Y
+	INY
+	INY
+	INC DAIZ_TEMP1
+	LDA DAIZ_TEMP1
+	CMP #$03
+	BNE Draw_Badge_Window_Bottom
+	LDY Graphics_BufCnt
+	LDA #$F8
+	STA Graphics_Buffer + 5, Y
+	LDA #$FA
+	STA Graphics_Buffer + 8, Y
+	LDA #$00
+	STA Graphics_Buffer + 11, Y
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$0B
+	STA Graphics_BufCnt
+
+	LDX Item_Shop_Window + 1
+	LDA #$00
+	STA DAIZ_TEMP1
+
+	LDY Graphics_BufCnt
+	LDA #$2A
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$AF
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$02
+	STA Graphics_Buffer, Y
+	INY
+	LDA Badge_Prices, X
+	JSR ToThreeDigits
+
+Next_BadgePrice_Digit:
+	LDA <Temp_Var2
+	ORA #$30
+	STA Graphics_Buffer, Y
+	INY
+	LDA <Temp_Var3
+	ORA #$30
+	STA Graphics_Buffer, Y
+	INY
+	LDA #$00
+	STA Graphics_Buffer, Y
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$08
+	STA Graphics_BufCnt
+	RTS
+
+Buy_Badge:
+	JSR Clear_Calc
+	LDX Item_Shop_Window + 1
+	LDA Cherries
+	SUB Badge_Prices, X
+	BMI Cannot_Take_Badge
+	BPL Take_Badge
+
+Cannot_Take_Badge:
+	LDA Sound_QMap		; Not enough coins
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+	RTS
+
+Take_Badge:
+	STA Cherries
+	LDX Item_Shop_Window + 1
+	INC Inventory_Items + 8, X
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	RTS
 
 BlockPlatformYVel:
 	.byte $F0, $00, $00, $10

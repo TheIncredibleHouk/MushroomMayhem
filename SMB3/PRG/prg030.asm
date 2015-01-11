@@ -611,22 +611,6 @@ PRG030_857E:
 	STA Map_Power_Disp	; Set as powerup currently displayed 
 
 	LDY #$00	 ; "Darkness" flag (only works correctly on World 8 level 2)
-	LDA World_Num	 ; A = World_Num
-	CMP #$07	 
-	BNE PRG030_85A5	 ; If this is NOT World 8, jump to PRG030_85A5
-
-	; We're in World 8...
-	LDA <World_Map_XHi,X
-	CMP #$02	 
-	BNE PRG030_85A5	 ; If NOT on the third level of World 8, jump to PRG030_85A5
-	INY		 ; Activate darkness
-
-PRG030_85A5:
-	STY World_8_Dark ; Set the darkness flag
-
-	; Not sure what this assignment means here?
-	LDA #$00
-	STA Bonus_UnusedFlag
 
 	; Changes pages at A000 and C000 based on value Level_Tileset (0)
 	JSR SetPages_ByTileset	 ;	A000 = Page 11, C000 = Page 10
@@ -1760,6 +1744,27 @@ PRG030_8F31:
 	LDA <Level_ExitToMap
 	BEQ PRG030_8F42	 ; If Level_ExitToMap flag is not set, jump to PRG030_8F42
 
+
+	LDA Map_ReturnStatus
+	BEQ PRG030_8F31_2
+
+	LDA Previous_Coins
+	STA Player_Coins
+	LDA Previous_Coins+1
+	STA Player_Coins+1
+	LDA Previous_Coins+2
+	STA Player_Coins+2
+	LDA Previous_Coins+3
+	STA Player_Coins+3
+	LDA Previous_Cherries
+	STA Cherries
+	LDA Previous_Stars
+	STA Magic_Stars
+	LDA Previous_Stars+1
+	STA Magic_Stars+1
+	INC Force_Coin_Update
+
+PRG030_8F31_2:
 	; Transfer Player's current power up to the World Map counterpart
 	LDA Effective_Suit
 	BNE PRG030_8F32

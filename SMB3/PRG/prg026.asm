@@ -358,33 +358,23 @@ InvItem_Tile_Layout:
 	; Item tiles layout when closing/unselected
 	; NOTE: See also InvItem_Hilite_Layout
 	; power ups
-	.byte $00, $01, $10, $11
-	.byte $B2, $B3, $C2, $C3
-	.byte $B4, $B5, $C4, $C5
-	.byte $B6, $B7, $C6, $C7
-	.byte $B8, $B9, $C8, $C9
-	.byte $BA, $BB, $CA, $CB
-	.byte $BC, $BD, $CC, $CD
-	.byte $BE, $BF, $CE, $CF
 	;equippible items
 	.byte $68, $69, $78, $79
 	.byte $6A, $6B, $7A, $7B
 	.byte $6C, $6D, $7C, $7D
-	.byte $6E, $6F, $7E, $7F
-	.byte $84, $85, $94, $95
+	.byte $DC, $DD, $EC, $ED
 	.byte $86, $87, $96, $97
-	.byte $88, $89, $98, $99
 	.byte $A4, $A5, $A6, $A7
-	;badges
+	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
+	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
 	.byte $00, $01, $10, $11
 	.byte $02, $03, $12, $13
 	.byte $04, $05, $14, $15
 	.byte $06, $07, $16, $17
 	.byte $08, $09, $18, $19
 	.byte $0A, $0B, $1A, $1B
-	.byte $0C, $0D, $1C, $1D
+	.byte $0C, $0D, $1C, $1D	
 	.byte $0E, $0F, $1E, $1F
-
 
 Inventory_DoFlipVideoUpd:
 	LDA Inventory_Open
@@ -685,7 +675,6 @@ PRG026_A4B4:
 	STA InvHilite_X	 	
 
 PRG026_A4D9:
-	STA Debug_Snap	 	; Y = InvHilite_Item + InvStart_Item
 	JMP Inv_Display_Hilite
 
 PRG026_A4F6:
@@ -705,7 +694,7 @@ PRG026_A4FC:
 	TAY		 	; Y += Luigi offset
 
 PRG026_A50E:
-	JMP Inv_UseItem	 ; Use item and don't come back!
+	JMP Inv_UseItem_Powerup	 ; Use item and don't come back!
 
 PRG026_A511:
 	JMP Inv_Display_Hilite	 ; Highlight item and don't come back!
@@ -714,7 +703,7 @@ PRG026_A511:
 InvItem_Pal: 
 	; Per-Item LUT
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
-	;badges
+	;items
 	.byte $FF, $0F, $30, $16
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $06
@@ -723,18 +712,15 @@ InvItem_Pal:
 	.byte $FF, $0F, $30, $27
 	.byte $FF, $0F, $30, $1A
 	.byte $FF, $0F, $30, $27
-	;items
-	.byte $FF, $0F, $30, $30
-	.byte $FF, $0F, $30, $27
-	.byte $FF, $0F, $30, $16
-	.byte $FF, $0F, $30, $16
-	.byte $FF, $0F, $30, $11
-	.byte $FF, $0F, $30, $28
-	.byte $FF, $0F, $36, $17
-	.byte $FF, $0F, $30, $16
-	.byte $FF, $0F, $30, $31
-	.byte $FF, $0F, $30, $16
-	; Badges
+	;badges
+	.byte $00, $01, $10, $11
+	.byte $02, $03, $12, $13
+	.byte $04, $05, $14, $15
+	.byte $06, $07, $16, $17
+	.byte $08, $09, $18, $19
+	.byte $0A, $0B, $1A, $1B
+	.byte $0C, $0D, $1C, $1D	
+	.byte $0E, $0F, $1E, $1F	
 	
 
 InvItem_SetColor:
@@ -759,67 +745,6 @@ InvItem_SetColor:
 PRG026_A539:
 	RTS		 ; Return
 
-
-; #ITEM USE JUMP TABLE
-Inv_UseItem:
-	TYA
-	JSR DynJump	 		; Dynamic jump based on item used
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	; Inventory per-item jump table!
-	.word Inv_UseItem_Powerup			; Small
-	.word Inv_UseItem_Powerup	; Big
-	.word Inv_UseItem_Powerup	; Fire
-	.word Inv_UseItem_Powerup	; Ice
-	.word Inv_UseItem_Powerup	; Raccoon
-	.word Inv_UseItem_Powerup	; Fox
-	.word Inv_UseItem_Powerup	; Frog
-	.word Inv_UseItem_Powerup	; Koopa
-	.word Inv_UseItem_Powerup	; Boo
-	.word Inv_UseItem_Powerup	; Hammer Suit
-	.word Inv_UseItem_Powerup	; Ninja
-	
-InvItem_PerPowerUp_L1Sound:
-	; Sound to play for each Power Up item when used...
-	.byte $00				; Small
-	.byte SND_LEVELPOWER	; Big
-	.byte SND_LEVELPOWER	; Fire
-	.byte SND_LEVELPOWER	; Ice
-	.byte SND_LEVELPOWER		; Raccoon
-	.byte SND_LEVELPOWER		; Fox
-	.byte SND_LEVELPOWER		; Frog
-	.byte SND_LEVELPOWER		; Koopa
-	.byte SND_LEVELPOOF		; Boo
-	.byte SND_LEVELPOOF		; Hammer Suit
-	.byte SND_LEVELPOOF		; Ninja
-	.byte SND_LEVELPOOF		; Ninja
-	.byte SND_LEVELPOOF		; Ninja
-	.byte SND_LEVELPOOF		; Ninja
-	.byte SND_LEVELPOOF		; Ninja
-
-InvItem_PerPowerUp_Disp:
-	; Powerup to display on map per powerup used
-	;      ES   SM   FF   L    FS   TS   HS   JC   PW 
-	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B
-
-	; These define the colors set per use of a power-up item.  Note that only the first three
-	; bytes are actually used.  "Power-up zero" (which I guess would be small Mario) is 
-	; present here, likely for simplicity, but it is also not used (there is no "power down")
-	; See also PRG027 InitPals_Per_MapPUp
-InvItem_PerPowerUp_Palette:
-	; Mario
-	.byte $16, $36, $0F, $FF	; Small
-	.byte $16, $36, $0F, $FF	; Big
-	.byte $30, $36, $06, $FF	; Fire
-	.byte $30, $31, $01, $FF	; Ice
-	.byte $16, $36, $0F, $FF	; Raccoon
-	.byte $27, $36, $06, $FF	; Fox
-	.byte $2A, $36, $0F, $FF	; Frog
-	.byte $19, $36, $0F, $FF	; Koopa
-	.byte $06, $30, $0F, $FF	; Boo
-	.byte $30, $27, $0F, $FF	; Hammer Suit
-	.byte $30, $27, $0F, $FF	; Ninja
-
 Inv_UseItem_Powerup:
 	LDA InvHilite_Item
 	ADD InvStart_Item
@@ -832,7 +757,8 @@ Inv_UseItem_Powerup:
 	RTS
 
 Inv_Item_Map:
-	.byte ITEM_STOP2, ITEM_SLOW2, ITEM_POW3, ITEM_RADAR, ITEM_CATCH, ITEM_HEART3, ITEM_BUBBLE2
+	.byte ITEM_STOP2, ITEM_SLOW2, ITEM_POW3, ITEM_RADAR, ITEM_CATCH, ITEM_HEART3, ITEM_STAR2, ITEM_STAR2
+	.byte BADGE_DAMAGE, BADGE_NOSHOORMS, BADGE_JUMP, BADGE_AIR, BADGE_PMETER, BADGE_COIN, BADGE_BOOTS
 
 Inv_UseItem_Powerup1:
 	
@@ -848,260 +774,7 @@ Inv_UseItem_Powerup1:
 	STA <MapPoof_Y	
 	LDA <World_Map_X,X
 	STA <MapPoof_X	
-	;JSR Inventory_ForceUpdate_AndFlip	; Forces Inventory to flip back over
-	;JMP Inv_Display_Hilite	 	; Jump to Inv_Display_Hilite...
-
 	RTS
-
-Inv_UseItem_ShiftOver:
-	LDA #27
-	STA <Temp_Var15	 	; Temp_Var15 = 27 (last index of items to shift)
-
-	LDA InvHilite_Item
-	ADD InvStart_Item
-	TAY			; Y = InvHilite_Item + InvStart_Item
-
-	LDA Player_Current	
-	BEQ PRG026_A638	 	; If Player_Current = 0 (Mario), jump to PRG026_A638
-
-	LDA #27
-	ADD #(Inventory_Items2 - Inventory_Items)	; This could've been done as a constant, but oh well!
-	STA <Temp_Var15		; Temp_Var15 += Luigi items offset (last index of Luigi items to shift)
-
-	TYA		 
-	ADD #(Inventory_Items2 - Inventory_Items)
-	TAY		 	; Y += Luigi items offset
-
-	; This loop "removes" the used item by backing the other items over it
-PRG026_A638:
-	CPY <Temp_Var15
-	BEQ PRG026_A646
-	LDA Inventory_Items+1,Y
-	STA Inventory_Items,Y	
-	INY		
-	JMP PRG026_A638	
-PRG026_A646:
-	LDA #$00	
-	STA Inventory_Items,Y	 ; This clears the very last item
-
-PRG026_A64B:
-	LDY InvStart_Item	; Y = InvStart_Item
-	BEQ PRG026_A66B	 	; If InvStart_Item = 0, jump to PRG025_A66B
-		 	; Y is Offset to Luigi's items
-
-PRG026_A65A:
-	LDA Inventory_Items,Y	; Get item
-	BNE PRG026_A66B	 	; If Y <> 0, jump to PRG026_A66B
-
-	; If Player used first item on row, this backs it up one row
-	LDA InvStart_Item
-	SUB #$08
-	STA InvStart_Item	; InvStart_Item -= 7
-	JMP PRG026_A64B		; Jump to PRG026_A64B
-
-PRG026_A66B:
-	JSR Inventory_ForceUpdate_AndFlip	; Forces Inventory to flip back over
-	JMP Inv_Display_Hilite	 	; Jump to Inv_Display_Hilite...
-
-Inv_UseItem_Starman:
-	INC Map_Starman	 		; Set Starman active (Nintendo's betting you never would have more than 255 on the map!)
-	LDA Sound_QLevel1	 
-	ORA #SND_LEVELPOWER	 	
-	STA Sound_QLevel1		; Player "Power-up" noise
-	JSR Inv_UseItem_ShiftOver	; Shift over all items over top of the Starman
-	JMP Inventory_ForceFlip		; Force inventory to flip over
-
-Inv_UseItem_Anchor: 
-	LDA Map_Anchored
-	BEQ PRG026_A690	 ; If Map_Anchored = 0, jump to PRG026_A690
-
-Inv_UseItem_Denial:
-	; Otherwise, play denial sound; prevents multiple usage
-	LDA Sound_QMap
-	ORA #SND_MAPDENY	
-	STA Sound_QMap	 ; Denial sound
-	RTS		 ; Return
-
-PRG026_A690: 
-	INC Map_Anchored 		; Set map as anchored
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF	 
-	STA Sound_QLevel1		; Player powerup sound
-	JSR Inv_UseItem_ShiftOver	; Shift over all items over top of the Anchor
-	JMP Inventory_ForceFlip	 	; Force inventory to flip over
-
-Inv_UseItem_MusicBox:
-	LDA #$02
-	STA Map_MusicBox_Cnt	 ; Map_MusicBox_Cnt = 2
-
-	LDA #MUS2A_MUSICBOX
-	STA Sound_QMusic2	 ; Play Music Box song
-
-	JSR Inv_UseItem_ShiftOver	 ; Shift over all items over top of the Music Box
-	JMP Inventory_ForceFlip	 ; Force inventory to flip and don't come back! 
-
-RockBreak_Replace:	.byte $BF, $BF	; The path replacement tiles (NOTE: see also PRG012 Map_RemoveTo_Tiles)
-
-RockBreak_TileFix:
-	; These specify the tiles that replace the tiles of the rock.
-	; Note for some reason these are interleved, meaning the first,
-	; third, fifth, and seventh bytes are for rock $51, and the others
-	; for rock $52...
-	.byte $FE, $FE, $E1, $FE, $FE, $C0, $E1, $C0
-
-Inv_UseItem_Hammer: 
-	LDA #$03
-	STA <Temp_Var1	 ; Temp_Var1 = 3 (checking all 4 directions around Player)
-
-PRG026_A6BF:
-	LDY <Temp_Var1	 		; Y = LDY <Temp_Var1
-	JSR MapTile_Get_By_Offset	; Get map tile nearby player (on page 10)
-
-	; Rock tiles:
-	SUB #TILE_ROCKBREAKH	 ; Offset to rock tiles
-	CMP #$02	 ; See if value is less than 2 (rock to break)
-	BLT PRG026_A6D2	 ; If rock, jump to PRG026_A6D2
-
-	DEC <Temp_Var1		; Temp_Var1--
-	BPL PRG026_A6BF	 	; While directions to search, loop!
-
-	JMP Inv_UseItem_Denial	; No way to use hammer; deny!
-
-PRG026_A6D2:
-	; Rock to break...
-
-	STX <Temp_Var2		; Store screen high byte -> Temp_Var2
-	LSR <Temp_Var2		; Temp_Var2 >>= 1 (previously used as index into Map_Tile_Addr, now back to just a screen index)
-	PHA		 	; Save 'A' (map tile minus TILE_ROCKBREAKH, either 0 or 1)
-	TAX		 	; X = A
-	LDA RockBreak_Replace,X	; Get the tile number that replaces this rock
-	STA [Map_Tile_AddrL],Y	; Store it in place!
-
-	; "Poof" where the rock sits
-	TYA
-	ASL A
-	ASL A
-	ASL A
-	ASL A		; Multiply by 16 for X
-	STA <MapPoof_X
-	STA <Temp_Var3	; Temp_Var3 = MapPoof_X
-
-	TYA		
-	AND #$f0	
-	ADD #$10	; Decouple a Y
-	STA <MapPoof_Y
-	STA <Temp_Var1	; Temp_Var1 = MapPoof_Y
-
-	JSR Map_SetCompletion_By_Poof	 ; Set completion bit based on location of map "poof"
-
-	; Rock removal sets completion bit for BOTH Players!
-	; The following will set it for whatever Player didn't get the 
-	; completion bit set... pretty neat.
-	TYA		 ; A = offset to map completion byte for this Player
-	EOR #$40	 ; Flip to the OTHER Player
-	TAY	
-
-	; Take the Map poof coordinates and calculate what address in
-	; Nametable 2 we need to modify to remove the rock...
-	LDX <MapPoof_X		 ; X = MapPoof_X
-	LDA <MapPoof_Y		 ; A = MapPoof_Y
-	JSR Map_Calc_NT2Addr_By_XY
-
-	PLA		 	; Retore 'A' (0 or 1, depending on which rock was busted)
-	TAX		 	; X = A
-
-	; Buffer in the rock replacement tiles
-	LDY Graphics_BufCnt
-	LDA <Temp_Var15	
-	STA Graphics_Buffer,Y
-	STA Graphics_Buffer+5,Y
-	LDA <Temp_Var16	
-	STA Graphics_Buffer+1,Y	
-	ADD #$01
-	STA Graphics_Buffer+6,Y
-	LDA #$82
-	STA Graphics_Buffer+2,Y
-	STA Graphics_Buffer+7,Y
-	LDA RockBreak_TileFix,X
-	STA Graphics_Buffer+3,Y
-	LDA RockBreak_TileFix+2,X
-	STA Graphics_Buffer+4,Y	
-	LDA RockBreak_TileFix+4,X
-	STA Graphics_Buffer+8,Y
-	LDA RockBreak_TileFix+6,X
-	STA Graphics_Buffer+9,Y	
-
-	; Terminator
-	LDA #$00
-	STA Graphics_Buffer+10,Y
-
-	TYA		 
-	ADD #10	 		
-	STA Graphics_BufCnt	; Graphics_BufCnt += 10 (bytes added to buffer)
-
-	; Play rock crumbling sound
-	LDA Sound_QLevel2
-	ORA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	; Do the poof!
-	LDA #$14	
-	STA Map_Powerup_Poof
-	JSR Map_Poof_Update
-
-	JMP Inv_UseItem_ShiftOver	 ; Shift all items over and don't come back 
-
-Map_WWOrHT_StartX:
-	; For the wind coming from the left or the right...
-	.byte 0, 240
-
-Inv_UseItem_WarpWhistle:
-	LDY Player_Current	; Y = Player_Current
-	LDX #$00	 	; X = 0 (Wind comes from the left)
-	LDA World_Map_X,Y	; Get Player's X position on Map
-	SUB <Horz_Scroll	; Offset it by the horizontal scroll
-	CMP #$80	
-	BGE PRG026_A771	 	
-	LDX #$01		; Wind comes from the right
-PRG026_A771:
-	STX <Map_WWOrHT_Dir		; Store travel direction
-
-	LDA Map_WWOrHT_StartX,X	; Get proper start position for the wind
-	STA <Map_WWOrHT_X		; Set it as the wind's X
-	LDA World_Map_Y,Y		; Get Player's Y position on map
-	STA <Map_WWOrHT_Y		; Set it as the wind's Y
-	STA Map_PlyrSprOvrY		; Clear the map sprite override Y
-
-	; Back up the Player's map positioning (why??)
-	LDA World_Map_Y,Y
-	STA Map_WW_Backup_Y	; Store Player's map Y position
-
-	LDA World_Map_X,Y	
-	STA Map_WW_Backup_X	; Store Player's map X position
-
-	LDA World_Map_XHi,Y	
-	STA Map_WW_Backup_XH	; Store Player's map X Hi position
-
-	LDA Map_UnusedPlayerVal2,Y	
-	STA Map_WW_Backup_UPV2	; Store Player's Map_WW_Backup_UPV2
-
-
-	LDX #$01	 ; X = 1
-
-	LDA #$00
-	; Clear all of the following:
-	STA Map_Prev_XOff,Y
-	STA Map_Prev_XHi,Y
-	STA <Scroll_LastDir
-	STA Map_InCanoe_Flag		; Not in a canoe
-
-	STX <Map_WarpWind_FX		 ; Map_WarpWind_FX = 1 (Warp Whistle begin!)
-	JSR Inv_UseItem_ShiftOver	 ; Shift out the Warp Whistle
-
-	LDA #MUS2A_WARPWHISTLE	 
-	STA Sound_QMusic2	 ; Play the Warp Whistle tune
-	JMP Inventory_ForceFlip	 ; Flip over the inventory
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Map_Poof_Update
 ;
@@ -2500,20 +2173,45 @@ Exp_Done:
 
 BadgeTiles:
 	.byte $FE, $FE, $FE, $FE
-	.byte $68, $FE, $78, $FE
-	.byte $68, $69, $78, $79
-	.byte $6A, $FE, $7A, $FE
-	.byte $6A, $6B, $7A, $7B
-	.byte $68, $69, $78, $79
+	.byte $68, $FE, $78, $FE	; ITEM_CLOCK1
+	.byte $68, $69, $78, $79	; ITEM_CLOCK2
+	.byte $6A, $FE, $7A, $FE	; ITEM_SLOW1
+	.byte $6A, $6B, $7A, $7B	; ITEM_SLOW2
+	.byte $B0, $B1, $C0, $C1	; ITEM_POW1
+	.byte $84, $85, $94, $95	; ITEM_POW2
+	.byte $6C, $6D, $7C, $7D	; ITEM_POW3
+	.byte $6E, $6F, $7E, $7F	; ITEM_RADARNE
+	.byte $B2, $B3, $C2, $C3	; ITEM_RADARN
+	.byte $B4, $B5, $C4, $C5	; ITEM_RADARNW
+	.byte $B6, $B7, $C6, $C7	; ITEM_RADARW
+	.byte $B8, $B9, $C8, $C9	; ITEM_RADARSW
+	.byte $BA, $BB, $CA, $CB	; ITEM_RADARS
+	.byte $BC, $BD, $CC, $CD	; ITEM_RADARSE
+	.byte $BE, $BF, $CE, $CF	; ITEM_RADARE
+	.byte $DC, $DD, $EC, $ED	; ITEM_RADAR
+	.byte $86, $87, $96, $97	; ITEM_CATCH
+	.byte $AA, $AB, $AC, $AD	; ITEM_HEART1
+	.byte $A4, $A5, $A8, $A9	; ITEM_HEART2
+	.byte $A4, $A5, $A6, $A7	; ITEM_HEART3
+	.byte $DE, $FE, $EE, $FE	; ITEM_STAR1
+	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
+	.byte $0E, $0F, $1E, $1F
+	.byte $0E, $0F, $1E, $1F
+	.byte $0E, $0F, $1E, $1F
+	.byte $00, $01, $10, $11
+	.byte $02, $03, $12, $13
+	.byte $04, $05, $14, $15
+	.byte $06, $07, $16, $17
+	.byte $08, $09, $18, $19
+	.byte $0A, $0B, $1A, $1B
+	.byte $0C, $0D, $1C, $1D	
+	.byte $0E, $0F, $1E, $1F
+
 
 StatusBar_Ability_Level:
-	STA Debug_Snap
 	LDA Status_Bar_Mode
 	CMP #$00
 	BNE Dont_Draw_Current_Ability
-	LDA Player_Level
-	ORA #$30
-	STA (Status_Bar_Top + 20)
 	LDA Player_Equip
 	ASL A
 	ASL A
@@ -2933,6 +2631,9 @@ StatusBar_UpdateValues:
 	LDA <Pad_Input
 	AND #PAD_SELECT
 	BEQ No_Switch
+	LDA <Pad_Holding
+	AND #(PAD_UP | PAD_DOWN)
+	BNE No_Switch
 	LDA Status_Bar_Mode
 	EOR #$FF
 	STA Status_Bar_Mode
@@ -3291,6 +2992,7 @@ Draw_Cherries:
 	BMI Draw_Cherries1
 	LDA Cherries
 	JSR ToThreeDigits
+	STA Debug_Snap
 	LDA <Temp_Var2
 	ORA #$30
 	STA Status_Bar_Top + 20

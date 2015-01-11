@@ -1,0 +1,51 @@
+Change log:
+1/11/2015
+-------------------------
+-Fixed Red Para Troopa hit detection bug.
+-Modified "High and Dry" to include a Frog Suit.
+-Removed a random cherry in "Gate Keypers".
+-Added bridges at the start of "Shy Guy Shennanigans". Extended bridge to first key.
+-When you die, your coins, cherries and stars collected resets to what it was before entering the level. Any experience gained remains.
+
+1/10/2015
+-------------------------
+-Badge shop complete! Badges are purchased with cherries.
+-Shield badge complete.
+-No mushroom badge complete.
+-Jump higher badge complete.
+-Increased air time badge complete.
+-Coin reaper badge complete.
+
+1/9/2015
+-------------------------
+-Implelemented equipped star (activate invincinbility, use twice).
+
+1/8/2015
+-------------------------
+-Star radar done. Detects nearby stars and points to them in the status bar.
+-Pit catcher done. When you fall into a pit, Mario gets the Raccoon suit and a full P-Meter.
+-3 Heart shield done. Mario can sustain 3 hits before completely losing his power up.
+
+1/7/2015
+-------------------------
+-Modified item shop to increase item quantities.
+-Created a mapping table for item slots to item values.
+-Modified item use code to set an equipped item and to decrease item quantities.
+-Stop watch done!
+-Slow watch done!
+-Pow block done!
+
+1/6/2015
+-------------------------
+-Switched the sprite highlight from the old inventory system to be a cursor that indicates the number of items of the specified item type.
+-Switched item slots to be quantities of items: i.e. slot 1 is quantity for item id 1. Up to 99 of each item can be had.
+
+
+1/4/2015
+-------------------------
+-Fixed scrolling bug when scrolling left. The columns were not drawing correctly.
+-Modified Reuben to have less tabs, moved starting position under level options, palette effects under graphic options.
+-Switched  item shop to be hosted by Toad, removed the Hammer Bros toll
+-Changed the "Toad type" (item shop, bank, etc) to an enemy property rather than based off X position of sprite.
+-Revamped the item shop's look, gave Toad a talking animation and a window.
+-Removed power ups as items, set the actual items in the shop instead.

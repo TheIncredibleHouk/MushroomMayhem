@@ -1966,6 +1966,9 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	Map_Intro_Tick:		.ds 1	; Counts down to zero while displaying the "World X" intro
 
 
+	Previous_Coins:		.ds 4
+	Previous_Cherries:	.ds 1
+	Previous_Stars:		.ds 2
 	Map_ReturnStatus:	.ds 1	; When 0, level panel is cleared; otherwise, Player is considered to have died (decrements life!)
 	MaxPower_Tick:		.ds 1	; When Player has maximum "power" charge, this counts for the flashing [P]
 	OldPlayer_Experience:		.ds 3	; $0715 (H)-$0717 (L) treated as 3-byte integer, with least significant zero on display not part of this value 
@@ -2589,22 +2592,29 @@ ITEM_SLOW2	=	4
 ITEM_POW1	= 5
 ITEM_POW2	= 6
 ITEM_POW3	= 7
-ITEM_RADAR	= 8
-ITEM_CATCH	= 9
-ITEM_HEART1	= 10
-ITEM_HEART2	= 11
-ITEM_HEART3	= 12
-ITEM_BUBBLE1 = 13
-ITEM_BUBBLE2 = 14
+ITEM_RADARNE	= 8
+ITEM_RADARN		= 9
+ITEM_RADARNW	= 10
+ITEM_RADARW		= 11
+ITEM_RADARSW	= 12
+ITEM_RADARS		= 13
+ITEM_RADARSE	= 14
+ITEM_RADARE		= 15
+ITEM_RADAR		= 16
+ITEM_CATCH	= 17
+ITEM_HEART1	= 18
+ITEM_HEART2	= 19
+ITEM_HEART3	= 20
+ITEM_STAR1 = 21
+ITEM_STAR2 = 22
 
-
-BADGE_COIN = 16
-BADGE_NOSHOORMS = 17
-BADGE_AIR = 18
-BADGE_PMETER = 19
-BADGE_JUMP = 20
-BADGE_BOOTS = 21
-BADGE_DAMAGE = 22
+BADGE_DAMAGE = 26
+BADGE_NOSHOORMS = 27
+BADGE_JUMP = 28
+BADGE_AIR = 29
+BADGE_PMETER = 30
+BADGE_COIN = 31
+BADGE_BOOTS = 32
 
 
 ABILITY_RESURRECT = 1
@@ -2750,6 +2760,7 @@ ABILITY_CHERRY_STAR = 5
 AIR_INCREASE	= 3
 	Air_Change:			.ds 1	;
 	Power_Change:		.ds 1
+	Power_Tick:			.ds 1
 	Top_Of_Water:		.ds 1	;
 
 	; #DAHRKDAIZ these are unused, but the labels ramin to one byte to allow the assembler to corrrectly calculate some offsets in the game
@@ -2988,6 +2999,7 @@ SOBJ_POOF		= $16 	; Poof
 
 	;#FREERAM
 	Stop_Watch:			.ds 1	;
+	Slow_Watch:			.ds 1	;
 	Player_Dialog:		.ds 1
 	PowerUp_NoRaise:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
@@ -3448,7 +3460,8 @@ OBJ_KEY				= $11	;
 OBJ_REDSPRING		= $12	;
 OBJ_KEYPIECES		= $13	;
 OBJ_KEYPIECE		= $16
-OBJ_SPINYCHEEP		= $17	; Spiny cheep
+OBJ_SPINYCHEEP		= $00
+OBJ_WINGS		= $17	; Spiny cheep
 OBJ_BOSS_BOWSER		= $18 	; King Bowser
 OBJ_POWERUP_FIREFLOWER	= $19	; Fire flower
 OBJ_BOUNCELEFTRIGHT	= $1B	; Left/right block bounce effect object
