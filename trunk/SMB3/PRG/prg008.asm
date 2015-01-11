@@ -2326,9 +2326,9 @@ PRG008_AC22:
 	.byte $D0, $CE, $CC, $CA, $CA, $CA
 
 Player_JumpFlyFlutter:
-	LDA Player_ForcedSlide
-	BEQ Player_JumpFlyFlutter1
-	RTS
+	;LDA Player_ForcedSlide
+	; Player_JumpFlyFlutter1
+	;RTS
 
 Player_JumpFlyFlutter1:
 	LDA Wall_Jump_Enabled
@@ -5346,11 +5346,16 @@ Level_QueueChangeBlock:
 ; Applies Player's X velocity and makes sure he's not moving
 ; faster than the cap value (PLAYER_MAXSPEED)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ForceDirection:
+	.byte $10, $F0
+
 Player_ApplyXVelocity:
 	LDA Player_ForcedSlide
 	BEQ Player_ApplyXVelocity1
 
-	LDA #$10
+	STA Debug_Snap
+	LDY Player_PrevXDirection
+	LDA ForceDirection, Y
 	STA <Player_CarryXVel
 
 	LDA #$00
@@ -5454,13 +5459,15 @@ PRG008_BFD3:
 	LDA <Player_XHi,X
 	ADC <Temp_Var13	
 	STA <Player_XHi,X
-
 	CPX #$00
 	BNE No_Odo_Increase
+	LDY #$00
 	LDA Previous_X
 	SEC
 	SBC Player_X
+	BEQ No_Odo_Increase
 	BPL Dont_Flip
+	INY
 	EOR #$FF
 	CLC
 	ADC #$01
@@ -5468,10 +5475,14 @@ Dont_Flip:
 	CLC
 	ADC Odometer_Increase
 	STA Odometer_Increase
+	LDA Player_ForcedSlide
+	BNE No_Odo_Increase
+	STY Player_PrevXDirection
 
 No_Odo_Increase:
 	LDA #$00
 	STA <Player_CarryXVel, X
+	
 	RTS		 ; Return
 
 
@@ -5557,7 +5568,6 @@ Power_TickChange:
 Do_PowerChange:				; Added code to increase/decrease the air time based on water
 	INC Power_Tick
 	LDX #$00
-	STA Debug_Snap
 	LDA Player_Equip
 	CMP #BADGE_PMETER
 	BNE Do_PowerChange01
@@ -5888,7 +5898,6 @@ Player_Refresh:
 	RTS
 
 Debug_Code:
-	RTS
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Debug_CodeRTS

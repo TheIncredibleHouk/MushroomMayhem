@@ -6,6 +6,8 @@ Change log:
 -Removed a random cherry in "Gate Keypers".
 -Added bridges at the start of "Shy Guy Shennanigans". Extended bridge to first key.
 -When you die, your coins, cherries and stars collected resets to what it was before entering the level. Any experience gained remains.
+-Removed Ice Mario's ability to lob ice balls up in order to balance it with Fire Mario.
+-Modified the forced slide when your head is in a block so that you go in the opposite direction you came from.
 
 1/10/2015
 -------------------------
