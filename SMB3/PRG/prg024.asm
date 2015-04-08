@@ -2144,6 +2144,17 @@ Title_PrepForWorldMap:
 	STA Air_Time
 	STA Tile_Anim_Enabled
 
+	; GAME START
+	LDA #$09
+	STA NegaStars
+	STA NegaStars+1
+	STA NegaStars+2
+	STA NegaStars+3
+	STA NegaStars+4
+	STA NegaStars+5
+	STA NegaStars+6
+	STA NegaStars+7
+
 	LDA #$09
 	;STA Player_Coins
 	;STA Player_Coins + 1
@@ -2165,6 +2176,15 @@ Title_PrepForWorldMap:
 	STA BrickBust_Pal
 	STA BrickBust_Pal+1
 	STA BrickBust_Pal+2
+
+	LDA #$63
+	LDX #$00
+
+Title_PrepForWorldMap1:
+	STA Inventory_Items, X
+	INX
+	CPX #$10
+	BNE Title_PrepForWorldMap1
 	RTS		 ; Return
 
 Title_DebugMenu:
@@ -6037,6 +6057,3 @@ Ending2_EndPicSprites3:
 	.byte $47, $B5
 
 	; List continued in PRG025
-
-
-

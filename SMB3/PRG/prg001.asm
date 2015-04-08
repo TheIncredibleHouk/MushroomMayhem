@@ -35,7 +35,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
 	.word ObjInit_Coin	; Object $08 - OBJ_COIN
 	.word ObjInit_Bubble	; Object $09 - OBJ_BUBBLE
-	.word ObjInit_ForcePowerUp	; Object $0A - OBJ_BULLY
+	.word ObjInit_ModifyPointers	; Object $0A - OBJ_BULLY
 	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -48,7 +48,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_GiantChomp	; Object $14 OBJ_GIANTCHOMP
 	.word ObjInit_DoNothing	; Object $15 
 	.word ObjInit_DoNothing	; Object $16 OBJ_KEYPIECE
-	.word ObjInit_DoNothing; Object $17 - OBJ_SPINYCHEEP
+	.word ObjInit_DoNothing; Object $17 - OBJ_NEGASTAR
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_BubbleGenerator	; Object $1A that is a l
@@ -90,7 +90,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_GiantChomp	; Object $14 OBJ_GIANTCHOMP
 	.word ObjNorm_Boss	; Object $15 OBJ_BOSS
 	.word ObjNormal_KeyPiece	; Object $16 OBJ_KEYPIECE
-	.word ObjNorm_PoisonClear; Object $17 - OBJ_SPINYCHEEP
+	.word ObjNorm_NegaStar; Object $17 - OBJ_NEGASTAR
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjNorm_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Bubble	; Object $1A
@@ -133,7 +133,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $14 OBJ_GIANTCHOMP
 	.word ObjHit_DoNothing	; Object $15
 	.word ObjHit_KeyPiece	; Object $16
-	.word ObjHit_DoNothing	; Object $17 - OBJ_SPINYCHEEP
+	.word ObjHit_DoNothing	; Object $17 - OBJ_NEGASTAR
 	.word OCSPECIAL_HIGHSCORE; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjHit_FireFlower	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word BubblePop	; Object $1A
@@ -175,7 +175,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $14 OBJ_GIANTCHOMP
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $15
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $16
-	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $17 - OBJ_SPINYCHEEP
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $17 - OBJ_NEGASTAR
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH32	; Object $18 - OBJ_BOSS_BOWSER
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1A
@@ -224,7 +224,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP0	; Object $14
 	.byte OA2_TDOGRP0	; Object $15
 	.byte  OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $16
-	.byte OA2_TDOGRP1	; Object $17 - OBJ_SPINYCHEEP
+	.byte OA2_TDOGRP1	; Object $17 - OBJ_NEGASTAR
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP12	; Object $18 - OBJ_BOSS_BOWSER
 	.byte OA2_TDOGRP1	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OA2_TDOGRP1	; Object $1A
@@ -273,7 +273,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE  	; Object $14
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $15
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $16
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $17 - OBJ_SPINYCHEEP
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $17 - OBJ_NEGASTAR
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $18 - OBJ_BOSS_BOWSER
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OA3_HALT_JUSTDRAW 	; Object $1A
@@ -302,7 +302,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $07 - OBJ_BRICK
 	.byte OPTS_NOCHANGE	; Object $08 - OBJ_COIN
 	.byte OPTS_NOCHANGE	; Object $09 - OBJ_BUBBLE
-	.byte OPTS_SETPT5 | $0B	; Object $0A - OBJ_BULLY
+	.byte OPTS_NOCHANGE	; Object $0A - OBJ_BULLY
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
@@ -315,7 +315,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT5 | $0E	; Object $14
 	.byte OPTS_NOCHANGE	; Object $15
 	.byte OPTS_NOCHANGE	; Object $16
-	.byte OPTS_SETPT5 | $1A	; Object $17 - OBJ_SPINYCHEEP
+	.byte OPTS_SETPT5 | $4D	; Object $17 - OBJ_NEGASTAR
 	.byte OPTS_SETPT5 | $3A	; Object $18 - OBJ_BOSS_BOWSER
 	.byte OPTS_NOCHANGE	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OPTS_SETPT5 | $1A	; Object $1A
@@ -357,7 +357,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $14
 	.byte KILLACT_NORMALSTATE	; Object $15
 	.byte KILLACT_STANDARD	; Object $16
-	.byte KILLACT_JUSTDRAW16X16	; Object $17 - OBJ_SPINYCHEEP
+	.byte KILLACT_POOFDEATH	; Object $17 - OBJ_NEGASTAR
 	.byte KILLACT_NORMALSTATE	; Object $18 - OBJ_BOSS_BOWSER
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte KILLACT_STANDARD	; Object $1A
@@ -428,6 +428,8 @@ ObjP16:
 ObjP14:
 ObjP15:
 ObjP17:
+	.byte $9F, $9F
+
 ObjP18:	
 ObjP1D:
 ObjP20:
@@ -456,7 +458,9 @@ ObjP23:	.byte $51, $53	; #DAHRKDAIZ - GOLD LEAF
 ObjP08:	.byte $BB, $BB, $FB, $F9, $FB, $F9, $FF, $FD, $DA, $DA
 
 SpringPals: .byte SPR_PAL1, SPR_PAL2, SPR_PAL3
+
 ObjInit_Spring:
+	; difficult strengths of spring 0 = normal, 1 = stronger, 2 = strongest
 	LDY Objects_Property, X
 	LDA SpringPals, Y
 	STA Objects_SprAttr,X
@@ -497,6 +501,7 @@ DontMoveSpring:
 	BEQ Spring_RTS
 	BMI Spring_RTS
 
+	; check to see if Mario hits spring from above
 	JSR Object_HitTest
 	BCC Spring_RTS
 	LDA #$02
@@ -511,6 +516,8 @@ Spring_RTS:
 	RTS
 
 SpringAnim:
+
+	; animate the spring and move the player with it
 	LDY Objects_Var2, X
 	LDA Objects_Y, X
 	SUB Spring_Player_YOffsets, Y
@@ -522,12 +529,15 @@ SpringAnim:
 	STA <Player_YVel
 	STA <Player_InAir
 
+
 	LDA Objects_Timer, X
 	BNE SpringAnimRTS
 	LDA #$02
 	STA Objects_Timer, X
 	DEC Objects_Var2, X
 	BNE SpringAnimRTS
+
+	; once the spring's animation is done, throw the player in the air
 	LDY Objects_Property, X
 	LDA Spring_Jump_Height, Y
 	STA <Player_YVel
@@ -538,7 +548,9 @@ SpringAnim:
 SpringAnimRTS:
 	RTS
 
+	
 ObjInit_Key:
+	; key is "shelled" so that it may be carried
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
 	LDA #$E0
@@ -546,55 +558,118 @@ ObjInit_Key:
 	RTS
 
 ObjNorm_Key:
-	
+	; key code is handled by the ObjectHeld code in prg000.asm, should probably change that
 	RTS
 
-PC_MemoryPoints:
-	.word $6000
-	.word $62F7
-	.word $6307
-	.word $6317
-	.word $6327
-	.word $6337
-	.word $6347
-	.word $7000
-	.word $7000
-	.word $7000
+ObjInit_NegaStar:
+	; Objects_Var1 is just a timer for taking stars
+	LDA #$FF
+	STA Objects_Var1,X
+	RTS
 
-WorldDoorTiles:
-	.byte $00, $1E
+ObjNorm_NegaStar:
 
-ObjNorm_PoisonClear:
-	LDX World_Num
-	LDA Mushrooms_Defeated, X
-	BEQ ObjNorm_PoisonClearRTS
-	STA <Temp_Var3
+	; Up to 8 Negastars are possible, each with different star costs, the NegaStars are prefilled at game initialization
+	; see GAME START comment
+	LDY Objects_Property, X
+	LDA NegaStars, Y
+	BNE ObjNorm_NegaStar0
+	JMP Coin_Unlock
 
-BlankTileOut:
+ObjNorm_NegaStar0:
+	JSR Object_DeleteOffScreen
+	LDA <Player_HaltGame
+	BNE ObjNorm_NegaStar01
+	LDA #$91
+	BEQ ObjNorm_NegaStar01
+	JSR TakeMagic_Star
+
+ObjNorm_NegaStar01:
+	JSR Object_ShakeAndDrawMirrored
+
+	LDA Objects_SprHVis,X 
+	ORA Objects_SprVVis,X
+	BNE NegaStarRTS
+
+	LDY Objects_Property, X
+	LDA NegaStars, Y
+	JSR ToThreeDigits
+
+	LDY Object_SprRAM, X
+
+	LDA Sprite_RAM, Y
+	ADD #$10
+	STA Sprite_RAM+8, Y
+	STA Sprite_RAM+12, Y
+
+	LDA Sprite_RAM+3, Y
+	STA Sprite_RAM+11, Y
+	ADD #$08
+	STA Sprite_RAM+15, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAM+10,Y
+	STA Sprite_RAM+14,Y
+
+	LDA <Temp_Var2
+	ASL A
+	ADD #$A1
+	STA Sprite_RAM + 9, Y
 	LDA <Temp_Var3
 	ASL A
-	TAX
-	LDA PC_MemoryPoints, X
-	STA <Temp_Var1
-	LDA PC_MemoryPoints + 1, X
-	STA <Temp_Var2
-	LDY #$00
-	LDX World_Num
-	LDA WorldDoorTiles, X
-	STA [Temp_Var1], Y
-	INY
-	STA [Temp_Var1], Y
-	INY
-	STA [Temp_Var1], Y
-	INY
-	STA [Temp_Var1], Y
-	DEC <Temp_Var3
-	BNE BlankTileOut
+	ADD #$A1
+	STA Sprite_RAM + 13, Y
 
-	
-ObjNorm_PoisonClearRTS:
-	LDX <SlotIndexBackup
-	JMP Object_Delete
+NegaStarRTS:
+	RTS
+
+TakeMagic_Star:
+	LDA Objects_Var1, X
+	BEQ TakeMagic_Star0
+	DEC Objects_Var1, X
+	RTS
+
+TakeMagic_Star0:
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	CMP #$20
+	BEQ TakeMagic_Star1
+
+	LDY Objects_Property, X
+	LDA <Player_SpriteX
+	STA Sprite_RAM+11,Y
+	ADD #$08
+	STA Sprite_RAM+15,Y
+
+	LDA <Player_SpriteY
+	SUB Objects_Var2, X
+	STA Sprite_RAM+8,Y
+	STA Sprite_RAM+12,Y
+
+	LDA #$7F
+	STA Sprite_RAM+9,Y
+	STA Sprite_RAM+13,Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAM+10,Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAM+14,Y
+	RTS
+
+TakeMagic_Star1:
+	DEC Magic_Stars
+	LDY Objects_Property, X
+	LDA NegaStars, Y
+	SUB #$01
+	STA NegaStars, Y
+	LDA Sound_QLevel1
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+	LDA #40
+	STA Objects_Var1,X
+	LDA #$00
+	STA Objects_Var2,X
+	RTS
 
 ObjInit_BounceDU: 
 	LDA Level_BlkFinish
@@ -4459,83 +4534,6 @@ ObjNormal_EaterBlock2:
 	
 	JMP Object_ShakeAndDrawMirroredAligned
 
-GetBlock:
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile
-	RTS
-
-CheckBlockAbove:
-	LDA <Objects_Y, X
-	STA <Temp_Var14
-	SUB #$10
-	STA <Objects_Y, X
-	LDA <Objects_YHi, X
-	STA <Temp_Var15
-	SBC #$00
-	STA <Objects_YHi, X
-	JSR GetBlock
-	PHA
-	LDA <Temp_Var14
-	STA <Objects_Y, X
-	LDA <Temp_Var15
-	STA <Objects_YHi, X
-	PLA
-	RTS
-
-CheckBlockBelow:
-	LDA <Objects_Y, X
-	STA <Temp_Var14
-	ADD #$10
-	STA <Objects_Y, X
-	LDA <Objects_YHi, X
-	STA <Temp_Var15
-	ADC #$00
-	STA <Objects_YHi, X
-	JSR GetBlock
-	PHA
-	LDA <Temp_Var14
-	STA <Objects_Y, X
-	LDA <Temp_Var15
-	STA <Objects_YHi, X
-	PLA
-	RTS
-
-CheckBlockRight:
-	LDA <Objects_X, X
-	STA <Temp_Var14
-	ADD #$10
-	STA <Objects_X, X
-	LDA <Objects_XHi, X
-	STA <Temp_Var15
-	ADC #$00
-	STA <Objects_XHi, X
-	JSR GetBlock
-	PHA
-	LDA <Temp_Var14
-	STA <Objects_X, X
-	LDA <Temp_Var15
-	STA <Objects_XHi, X
-	PLA
-	RTS
-
-CheckBlockLeft:
-	LDA <Objects_X, X
-	STA <Temp_Var14
-	SUB #$10
-	STA <Objects_X, X
-	LDA <Objects_XHi, X
-	STA <Temp_Var15
-	SBC #$00
-	STA <Objects_XHi, X
-	JSR GetBlock
-	PHA
-	LDA <Temp_Var14
-	STA <Objects_X, X
-	LDA <Temp_Var15
-	STA <Objects_XHi, X
-	PLA
-	RTS
-
 Player_Heights:
 	.byte $06, $11
 
@@ -5138,4 +5136,18 @@ DrawCoinLock1:
 ObjInit_ForcePowerUp:
 	LDA #$01
 	STA Player_QueueSuit
+	RTS
+
+PointerDataOffset:
+	.byte 0, 6, 12, 18, 24
+
+ObjInit_ModifyPointers:
+	LDA Objects_Property, X
+	TAY
+	LDA BossLevelData, Y
+	TAY
+	LDA PointerDataOffset, Y
+	TAY
+	LDA Pointers, Y
+	STA Pointers
 	RTS

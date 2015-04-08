@@ -457,8 +457,6 @@ PRG008_A242:
 	STA Previous_Cherries
 	LDA Magic_Stars
 	STA Previous_Stars
-	LDA Magic_Stars+1
-	STA Previous_Stars+1
 
 	; Set power up's correct palette
 	JSR Level_SetPlayerPUpPal
@@ -5106,8 +5104,8 @@ PRG008_BDAE:
 PRG008_BDAF:
 	AND #TILE_PROP_WATER
 	BEQ PRG008_BDAE
-	LDA Player_InWater
-	BEQ PRG008_BDB1
+	;LDA Player_InWater
+	;BEQ PRG008_BDB1
 	LDA Effective_Suit
 	CMP #$08
 	BNE PRG008_BDAE
@@ -5353,7 +5351,6 @@ Player_ApplyXVelocity:
 	LDA Player_ForcedSlide
 	BEQ Player_ApplyXVelocity1
 
-	STA Debug_Snap
 	LDY Player_PrevXDirection
 	LDA ForceDirection, Y
 	STA <Player_CarryXVel
@@ -5704,6 +5701,10 @@ ClearSprite:
 	CPY Global_Object
 	BEQ NextSprite
 	STA Objects_State, X
+	LDY Objects_SpawnIdx,X	
+	LDA Level_ObjectsSpawned,Y
+	AND #$7f
+	STA Level_ObjectsSpawned,Y
 
 NextSprite:
 	DEX
@@ -5935,6 +5936,8 @@ OpenTreasure:
 	LDA <Level_Tile
 	EOR #$01
 	JSR Level_QueueChangeBlock
+
+OpenTreasure1:
 	RTS
 
 Player_WallHandle:
@@ -5946,7 +5949,7 @@ Player_WallHandle1:
 	LDA Level_Tile_Prop_GndL, X
 	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
-	BNE PRG008_B53B	 ; If not touching a solid tile, jump to PRG008_B53B
+	BNE OpenTreasure1	 ; If not touching a solid tile, jump to PRG008_B53B
 
 	LDA Player_Shell
 	BEQ PRG008_B53A_2
@@ -5987,9 +5990,18 @@ PRG008_B530:
 	ADD Wind
 	BMI PRG008_B53C
 
+	LDA <Player_XVel
+	BPL PRG008_B530_1
+
+	LDA <Pad_Holding
+	AND #PAD_LEFT
+	BNE PRG008_B530_2
+
+PRG008_B530_1:
 	LDA #$00
 	STA <Player_XVel
 
+PRG008_B530_2:
 	LDA <Player_X
 	ADD Wall_Clip, X
 	STA <Player_X
@@ -6007,8 +6019,18 @@ PRG008_B531:
 	BPL PRG008_B53C
 
 PRG008_B531_2:
+	LDA <Player_XVel
+	BMI PRG008_B531_3
+
+	LDA <Pad_Holding
+	AND #PAD_RIGHT
+	BNE PRG008_B531_4
+
+PRG008_B531_3:
 	LDA #$00
 	STA <Player_XVel
+
+PRG008_B531_4:
 
 	LDA <Player_X
 	SUB Wall_Clip, X

@@ -1383,24 +1383,16 @@ LL19_ReturnTileAndNextRow:
 
 BossFight:
 	
-	LDA World_Num
+	LDA Objects_Property, X
 	JSR DynJump
 
-	.word World0Boss
-	.word World1Boss
-
-CCPause:
-World0Boss:
-	RTS
+	.word CollosalCheep
 
 GiantCheepPatterns:
 	.byte $8D, $8F, $91, $93, $AD, $AF, $B1, $B3
 	.byte $8D, $8F, $95, $97, $AD, $AF, $B5, $B7
 
-World1Boss:
-	
-	LDA <Player_HaltGame
-	BNE DrawGiantCheep
+CollosalCheep:
 	
 	LDA <Counter_1
 	AND #$08
@@ -1408,6 +1400,8 @@ World1Boss:
 	LSR A
 	LSR A
 	STA Objects_Frame, X
+	LDA <Player_HaltGame
+	BNE DrawGiantCheep
 	JSR DrawGiantCheep
 	LDA Objects_Var2, X
 	CMP #$03
@@ -1416,20 +1410,21 @@ World1Boss:
 
 CCNoMove:
 	LDA Objects_SlowTimer, X
-	BEQ World1BossDoAction
+	BEQ CollosalCheepDoAction
 	RTS
 
-World1BossDoAction:
+CollosalCheepDoAction:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BEQ World1BossDoAction1
+	BEQ CollosalCheepDoAction1
 	LDA #OAT_BOUNDBOX04
 	STA BossBoundBox
 	JSR Object_HitTest
-	BCC World1BossDoAction1
+	BCC CollosalCheepDoAction1
 	JSR Player_GetHurt
 
-World1BossDoAction1:
+CollosalCheepDoAction1:
+
 	LDA Objects_Var1, X
 	JSR DynJump
 
@@ -1485,6 +1480,9 @@ CCTimers:
 CCNextAction:
 	.byte $01, $02
 
+CCJumpNoJump:
+	.byte $01, $00, $01, $01, $01, $00, $01, $01, $00
+
 CCHFlip:
 	.byte SPR_HFLIP, $00
 
@@ -1519,6 +1517,8 @@ CCSwim2_2:
 	STA Objects_Y, X
 	LDA #OBJ_BUBBLE
 	STA Level_ObjectID, X
+	LDA #$00
+	STA Objects_Var4, X
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 	LDA #$F8
@@ -1558,11 +1558,13 @@ CCSwim1:
 	LDA #$98
 	STA <Objects_Y, X
 	LDA RandomN
-	AND #$10
+	AND #$30
 	LSR A
 	LSR A
 	LSR A
 	LSR A
+	TAY
+	LDA CCJumpNoJump, Y
 	TAY
 	LDA CCTimers, Y
 	STA Objects_SlowTimer, X
@@ -1588,7 +1590,7 @@ CCBounce:
 	BNE CCBounce1
 	LDA #$0A
 	STA Objects_Var1, X
-	LDA #$20
+	LDA #$40
 	STA Objects_SlowTimer, X
 	INC Objects_Var2, X
 	LDX #$03
@@ -1606,7 +1608,10 @@ CCBounce1:
 	RTS
 
 CCObjects:
-	.byte OBJ_BRICK, OBJ_GREENTROOPA, OBJ_POWERUP_MUSHROOM, OBJ_GOOMBA
+	.byte OBJ_BRICK, OBJ_GREENTROOPA, OBJ_POWERUP_MUSHROOM, OBJ_GREENTROOPA, OBJ_BRICK, OBJ_GREENTROOPA, OBJ_POWERUP_MUSHROOM, OBJ_GREENTROOPA
+
+CCObjectsY:
+	.byte $F0, $A0, $50, $10
 
 CCBounce2:
 	JSR Object_ApplyY_With_Gravity
@@ -1642,7 +1647,7 @@ CCAnother_Object:
 	LDA RandomN, Y
 	STA <Temp_Var1
 	LDA RandomN + 4, Y
-	AND #$03
+	AND #$07
 	STA <Temp_Var2
 	JSR FindEmptyEnemySlot
 	TXA
@@ -1655,8 +1660,11 @@ CCAnother_Object:
 
 	LDA #OBJSTATE_INIT
 	STA Objects_State,Y
-	LDA #$00
+
+	LDX <Temp_Var3
+	LDA CCObjectsY, X
 	STA Objects_Y, Y
+	LDA #$FF
 	STA Objects_YHi, Y
 
 	LDX <Temp_Var2
@@ -1743,7 +1751,7 @@ CreateFlood:
 	STA Sound_QLevel2
 	RTS
 
-CCExplode
+CCExplode:
 	JSR FindEmptyEnemySlot
 	TXA
 	TAY

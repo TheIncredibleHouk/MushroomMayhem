@@ -4688,14 +4688,12 @@ HandleLevelEvent
 	.word NoEvent
 	.word FloodFloor1
 	.word FloodFloor2
-	.word FloodFloor3
 
 NoEvent:
 	RTS
 
-FFLevelsY:	.byte $17, $16, $15, $14, $13, $12, $11
-			.byte $10, $0F, $0E, $0D, $0C, $0B, $0A, $09, $08
-			.byte $07, $06, $05, $04
+FFLevelsY:	.byte $17, $16, $15, $14, $13, $12, $11, $10
+			.byte $0B, $0A, $09, $08, $07, $06, $05, $04
 FloodFloor:
 	LDA #$01
 	STA Player_VibeDisable
@@ -4710,7 +4708,6 @@ FloodFloor:
 	STA Objects_X
 	LDA #$00
 	STA Objects_XHi
-	LDX EventVar
 	LDA FFLevelsY, X
 	AND #$F0
 	LSR A
@@ -4731,34 +4728,22 @@ FloodFloorRTS:
 	RTS
 
 FloodFloor1:
+	LDA #$01
+	STA BossLevelData
 	LDX EventVar
-	CPX #$07
+	CPX #$08
 	BEQ FloodFloorEnd
 	JMP FloodFloor
 
 FloodFloor2:
-	LDX EventVar
-	BNE FloodFloor2_1
-	LDX #$07
-	STX EventVar
-
-FloodFloor2_1:
-	CPX #$10
+	LDA #$02
+	STA BossLevelData
+	LDA EventVar
+	CMP #$08
 	BEQ FloodFloorEnd
+	ADD #$08
+	TAX
 	JMP FloodFloor
-
-FloodFloor3:
-	LDX EventVar
-	BNE FloodFloor3_1
-	LDX #$10
-	STX EventVar
-
-FloodFloor3_1:
-	CPX #$14
-	BEQ FloodFloorEnd
-	JMP FloodFloor
-
-
 
 FloodFloorEnd:
 	LDA #$00

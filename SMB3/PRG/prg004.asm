@@ -46,7 +46,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
 	.word ObjNormParaTroopas	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
-	.word ObjInit_BoomerangBro	; Object $82 - OBJ_NINJABRO
+	.word ObjInit_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjInit_DoNothing	; Object $84 - OBJ_SPINYEGG
 	.word ObjInit_GroundTroop	; Object $85 - OBJ_BLUESPINY
@@ -88,7 +88,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
 	.word ObjNorm_FlyingTroopa	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjNorm_HammerBro		; Object $81 - OBJ_HAMMERBRO
-	.word ObjNorm_BoomerangBro	; Object $82 - OBJ_NINJABRO
+	.word ObjNorm_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjNorm_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjNorm_SpinyEgg		; Object $84 - OBJ_SPINYEGG
 	.word ObjNorm_GroundTroop	; Object $85 - OBJ_BLUESPINY
@@ -160,7 +160,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $72 - OBJ_GOOMBA
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $73 - OBJ_PARAGOOMBA
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $75 - OBJ_WATERFILLER
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $75 - OBJ_WATERFILLER
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA1_PAL2  | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
@@ -173,7 +173,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH24	; Object $7F - OBJ_BIGREDPIRANHA
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA1_PAL3 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $81 - OBJ_HAMMERBRO
-	.byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $82 - OBJ_NINJABRO
+	.byte OA1_PAL3 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $82 - OBJ_NINJABRO
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $83 - OBJ_LAKITU
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $84 - OBJ_SPINYEGG
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $85 - OBJ_BLUESPINY
@@ -214,7 +214,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7F - OBJ_BIGREDPIRANHA
 	.byte OA2_TDOGRP1	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $81 - OBJ_HAMMERBRO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $82 - OBJ_NINJABRO
+	.byte OA2_STOMPDONTCARE | OA2_TDOGRP2	; Object $82 - OBJ_NINJABRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $83 - OBJ_LAKITU
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $84 - OBJ_SPINYEGG
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $85 - OBJ_BLUESPINY
@@ -222,8 +222,8 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $87 - OBJ_FIREBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $88 - OBJ_PIRATEBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $89 - OBJ_CHAINCHOMP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8A - OBJ_THWOMP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8B - OBJ_HYPERTHWOMP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $8A - OBJ_THWOMP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -340,7 +340,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_POOFDEATH		; Object $7F - OBJ_BIGREDPIRANHA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte KILLACT_JUSTDRAW16X32	; Object $81 - OBJ_HAMMERBRO
-	.byte KILLACT_JUSTDRAW16X32	; Object $82 - OBJ_NINJABRO
+	.byte KILLACT_NORMALSTATE	; Object $82 - OBJ_NINJABRO
 	.byte KILLACT_NORMALSTATE	; Object $83 - OBJ_LAKITU
 	.byte KILLACT_JUSTDRAW16X16	; Object $84 - OBJ_SPINYEGG
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $85 - OBJ_BLUESPINY
@@ -567,8 +567,9 @@ ObjInit_HammerBro:
 
 	RTS		 ; Return
 
-ObjInit_BoomerangBro:
-
+ObjInit_NinjaBro:
+	LDA #$10
+	STA Objects_SlowTimer, X
 	; Var5 = random value
 	LDA RandomN,X
 	STA <Objects_Var5,X
@@ -582,21 +583,159 @@ PRG004_A490:
 	STA Objects_Var6,X
 	RTS		 ; Return
 
-BoomerangBro_FacePlayerFlip:	.byte SPR_HFLIP, $00
+NinjaBro_FacePlayerFlip:	.byte SPR_HFLIP, $00
 
-ObjNorm_BoomerangBro:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-	JSR EnemyBro_DrawAndHandleBump	 ; Draw Boomerang Bro and handle getting bumped underneath
+
+NinjaDodge_KillOrPoof:
+	LDA RandomN
+	AND #$01
+	STA TempA
+	LDA Objects_SlowTimer, X
+	BEQ NinjaDodge_Poof1
+	JMP Object_FinishStompKill
+	RTS
+
+NinjaDodge_Poof:
+	LDA Objects_SpriteX, X
+	AND #$80
+	STA TempA
+	LDA Objects_SlowTimer, X
+	BEQ NinjaDodge_Poof1
+	INC Objects_SlowTimer, X
+	JMP Object_Draw16x32Killed
+	RTS
+
+NinjaDodge_Poof1:
+	
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JSR SpecialObj_FindEmpty
+	TYA
+	BMI NinjaDodge_Poof2
+
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,Y
+
+	; SpecialObj_Data = $1F
+	LDA #$1f
+	STA SpecialObj_Data,Y
+
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+	LDA #$20	 
+	STA SpecialObj_Data, Y
+	
+	LDA Objects_X, X
+	STA SpecialObj_XLo, Y
+	LDA Objects_Y, X
+	ADD #$04
+	STA SpecialObj_YLo, Y
+	LDA Objects_YHi, X
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+	JSR SpecialObj_FindEmpty
+	TYA
+	BMI NinjaDodge_Poof2
+
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,Y
+
+	; SpecialObj_Data = $1F
+	LDA #$1f
+	STA SpecialObj_Data,Y
+
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+	LDA #$20	 
+	STA SpecialObj_Data, Y
+	
+	LDA Objects_X, X
+	STA SpecialObj_XLo, Y
+	LDA Objects_Y, X
+	ADD #$14
+	STA SpecialObj_YLo, Y
+	LDA Objects_YHi, X
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+NinjaDodge_Poof2:
+	LDA Objects_Var3, X
+	BNE NinjaPoof_Adjust_0
+
+	LDA TempA
+	BNE NinjaPoof_Left
+
+NinjaPoof_Right:
+	LDA Objects_X, X
+	ADD #$50
+	STA Objects_X, X
+	LDA Objects_XHi, X
+	ADC #$00
+	STA Objects_XHi, X
+	BNE NinjaPoof_Adjust
+
+NinjaPoof_Left:
+	LDA Objects_X, X
+	SUB #$50
+	STA Objects_X, X
+	LDA Objects_XHi, X
+	SBC #$00
+	STA Objects_XHi, X
+
+NinjaPoof_Adjust:
+	LDA #$40
+	STA Objects_SlowTimer, X
+	JSR Object_GetAttrJustTile
+	LDA Objects_LastProp, X
+	AND #TILE_PROP_SOLID_ALL
+	BEQ NinjaPoof_Adjust1
+
+NinjaPoof_Adjust_0:
+	LDA Objects_Y, X
+	SUB #$40
+	STA Objects_Y, X
+	LDA Objects_YHi, X
+	SBC #$00
+	STA Objects_YHi, X
+
+NinjaPoof_Adjust1:
+	LDA #$00
+	STA Objects_Var3, X
+	LDA #$00
+	STA Sound_QPlayer
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
+	RTS
+
+ObjNorm_NinjaBro:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_NinjaBro_0
+	JMP NinjaDodge_Poof
+
+ObjNorm_NinjaBro_0:
+
+	JSR Object_DeleteOffScreen_N2	 ; Delete object if it falls off-screen
+	JSR EnemyBro_DrawAndHandleBump	 ; Draw Ninja Bro and handle getting bumped underneath
+	LDA Objects_PlayerHitStat, X
+	BEQ ObjNorm_NinjaBro_1
+	JSR  NinjaDodge_KillOrPoof
+
+ObjNorm_NinjaBro_1:
 
 	LDA <Player_HaltGame
-	BNE PRG004_A48F	 ; If gameplay halted, jump to PRG004_A48F (RTS)
+	BEQ ObjNorm_NinjaBro_2	 ; If gameplay halted, jump to PRG004_A48F (RTS)
+	RTS
+
+ObjNorm_NinjaBro_2:
 
 	JSR Object_Move	 ; Do standard movement
-	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped underneath (again, technically)
-
 	LDA <Objects_DetStat,X
 	AND #$04
-	BEQ PRG004_A4B2	 ; If Boomerang Bro has not hit ground, jump to PRG004_A4B2
+	BEQ PRG004_A4B2	 ; If Ninja Bro has not hit ground, jump to PRG004_A4B2
 
 	JSR Object_HitGround	 ; Align to ground
 
@@ -608,52 +747,23 @@ PRG004_A4B2:
 	JSR Level_ObjCalcXDiffs
 
 	; Face towards Player
-	LDA BoomerangBro_FacePlayerFlip,Y
+	LDA NinjaBro_FacePlayerFlip,Y
 	STA Objects_FlipBits,X
 
 PRG004_A4C1:
-	LDA <Objects_YVel, X
-	BNE PRG004_A4C3
-	JSR Level_ObjCalcYDiffs
-	CPY #$01
-	BCC PRG004_A4C4
-	JSR Level_ObjCalcXDiffs
-	LDA <Temp_Var16
-	CMP #$10
-	BCC PRG004_A4C2
-	CMP #$F0
-	BCC PRG004_A4C3
-	LDA #$C0
-	STA Objects_XVel, X
-	LDA #$F0
-	STA <Objects_YVel, X
-	RTS
 
-PRG004_A4C2:
-	LDA #$40
-	STA Objects_XVel, X
-	LDA #$F0
-	STA <Objects_YVel, X
-	RTS
-
-PRG004_A4C3:
-	LDA <Objects_YVel, X
-	BEQ PRG004_A4C4
-	RTS
-
-PRG004_A4C4:
 	LDA <Objects_Var5,X
 	AND #$03	; 0-3 based on Var5 for internal state
 
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word BoomerangBro_WalkThenStop
-	.word BoomerangBro_WalkRight
-	.word BoomerangBro_WalkThenStop
-	.word BoomerangBro_WalkLeft
+	.word NinjaBro_WalkThenStop
+	.word NinjaBro_WalkRight
+	.word NinjaBro_WalkThenStop
+	.word NinjaBro_WalkLeft
 
-BoomerangBro_WalkThenStop:
+NinjaBro_WalkThenStop:
 	LDA Objects_Timer3,X	 
 	BNE PRG004_A4DC	 ; If timer 3 is not expired, jump to PRG004_A4DC
 
@@ -671,11 +781,21 @@ PRG004_A4DC:
 
 	RTS		 ; Return
 
-BoomerangBro_WalkLeft:
+NinjaBro_NoWalk:
+	LDA #$00
+	BEQ PRG004_A4E7
+
+NinjaBro_WalkLeft:
+	LDA <Objects_DetStat, X
+	AND #HIT_DET_LEFT
+	BNE NinjaBro_NoWalk
 	LDA #-$08	 ; A = -$08
 	BNE PRG004_A4E7	 ; Jump (technically always) to PRG004_A4E7
 
-BoomerangBro_WalkRight:
+NinjaBro_WalkRight:
+	LDA <Objects_DetStat, X
+	AND #HIT_DET_RIGHT
+	BNE NinjaBro_NoWalk
 	LDA #$08	 ; A = $08
 
 PRG004_A4E7:
@@ -692,7 +812,7 @@ PRG004_A4E7:
 	BPL PRG004_A4FA	 ; 50/50 chance to jump to PRG004_A4FA
 
 	; Little jump
-	LDA #-$50
+	LDA #-$30
 	STA <Objects_YVel,X
 
 PRG004_A4FA:
@@ -708,12 +828,15 @@ PRG004_A4FA:
 PRG004_A506:
 	LDA Objects_Var6,X
 	INC Objects_Var6,X	; Var6++
+	AND #$bf
+	CMP #$1f
+	BNE PRG004_A51A	 ; Periodically jump to PRG004_A51A (RTS)
 
-	LDA Objects_Timer, X
-	BNE PRG004_A51A
 	; Reload timer with $0F
+	LDA #$0f
+	STA Objects_Timer,X
 
-	JSR BoomerangBro_ThrowBoomerang	 ; Throw a boomerang
+	JSR NinjaBro_ThrowNinjaStar	 ; Throw a Ninja
 
 PRG004_A51A:
 	RTS		 ; Return
@@ -937,10 +1060,10 @@ PRG004_A5F6:
 PRG004_A61B:
 	RTS		 ; Return
 
-NinjaStarVel: .byte $00, $08, $10, $18, $20, $28, $30, $38, $40, $C0, $C8, $D0, $D8, $E0, $E8, $F0, $F8
+NinjaStarTimers:
+	.byte $40, $80, $C0, $80, $40, $40, $80, $C0
 
-BoomerangBro_ThrowBoomerang:
-
+NinjaBro_ThrowNinjaStar:	
 	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back!
 
 	LDA #SOBJ_NINJASTAR
@@ -950,41 +1073,18 @@ BoomerangBro_ThrowBoomerang:
 	LDA <Objects_X,X
 	STA SpecialObj_XLo,Y
 	LDA <Objects_Y,X
-	ADD #$08
 	STA SpecialObj_YLo,Y
-	LDA <Objects_YHi,X
-	ADC #$00
+	LDA <Objects_YHi,X 
 	STA SpecialObj_YHi,Y
-
-	STY TempY
-	LDX <SlotIndexBackup
-
-	JSR Level_ObjCalcXDiffs
-	LDA <Temp_Var16
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY
-	LDA NinjaStarVel, Y
-	LDY TempY
+	JSR Object_CalcHomingVels
+	
+	LDA Objects_TargetingYVal, X
+	ASL A
+	STA SpecialObj_YVel, Y
+	LDA Objects_TargetingXVal, X
+	ASL A
 	STA SpecialObj_XVel, Y
 
-	JSR Level_ObjCalcYDiffs
-	LDA <Temp_Var16
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY
-	LDA NinjaStarVel, Y
-	LDY TempY
-	STA SpecialObj_YVel, Y
-
-	LDA #$3f
-	STA Objects_Timer,X
 	RTS		 ; Return
 
 PRG004_A658:
@@ -1009,14 +1109,16 @@ ObjInit_Thwomp:
 	; Var4 = origin Y
 	LDA <Objects_Y,X
 	STA <Objects_Var4,X
-
+	LDA #$03
+	STA Objects_Var6, X
+	
 Thwomp_Center:
 	; center the X
 	LDA <Objects_X,X
-	SUB #$04
+	ADD #$04
 	STA <Objects_X,X
 	LDA <Objects_XHi,X
-	SBC #$00
+	ADD #$00
 	STA <Objects_XHi,X
 
 PRG004_A676:
@@ -1041,6 +1143,7 @@ ObjNorm_Thwomp:
 	.word Thwomp_ReturnToOrigin
 
 Thwomp_WaitForPlayer
+	
 	JSR Object_AnySprOffscreen
 	BNE PRG004_A6A6	 ; If any sprite is off-screen, jump to PRG004_A6A6 (RTS)
 
@@ -1072,12 +1175,11 @@ Thwomp_FallToGround:
 	STA <Objects_YVel,X
 
 PRG004_A6B4:
-	JSR Object_WorldDetectN1 ; Detect against world
+	LDA Objects_Var6, X
+	BEQ PRG004_A6B5
+	JMP ThwompDetectLeftBlock
 
-	LDA <Objects_DetStat,X
-	AND #$04
-	BEQ PRG004_A6D4	 ; If Thwomp did not hit ground, jump to PRG004_A6D4 (RTS)
-
+PRG004_A6B5:
 	JSR Object_HitGround	 ; Align to floor
 
 	; Shake floor!
@@ -1092,7 +1194,11 @@ PRG004_A6B4:
 	; Set timer to $40
 	LDA #$40
 	STA Objects_Timer,X
+	LDA #$03
+	STA Objects_Var6, X
 
+	LDA #$10
+	STA Objects_Timer, X
 	INC <Objects_Var5,X	 ; Var5++ (next internal state)
 
 PRG004_A6D4:
@@ -1190,23 +1296,40 @@ PRG004_A740:
 	RTS		 ; Return
 
 ObjInit_HyperThwomp:
-	JSR Thwomp_Center	 ; Center the X of the Thwomp
-	LDA #$00
-	STA <Objects_Var5,X
+	LDA Objects_Property, X
+	STA Objects_Var5, X
+	LDA #$03
+	STA Objects_Var6, X
+	JSR Thwomp_Center
 	RTS
 
 ObjNorm_HyperThwomp:
+	JSR Object_DeleteOffScreen
 	JSR Thwomp_Draw	 ; Draw Thwomp
-	JSR Object_AnySprOffscreen
+
+	LDA Objects_Timer, X
 	BNE PRG004_A78B
 
 	LDA <Player_HaltGame
 	BNE PRG004_A78B	 ; If gameplay is halted, jump to PRG004_A78B (RTS)
 
-	JSR Object_DeleteOffScreen_N2	 ; Delete if falls off-screen
+		 ; Delete if falls off-screen
 	JSR Player_HitEnemy	 ; Do Player to Thwomp collision detection
-
 	
+	LDA Objects_YVel, X
+	BNE PRG004_A78A
+
+	JSR Object_AnySprOffscreen
+	BNE PRG004_A78B
+
+	JSR Level_ObjCalcXDiffs
+
+	LDA <Temp_Var16
+	ADD #$24
+	CMP #$60
+	BGE PRG004_A78B
+
+PRG004_A78A:
 	LDA <Objects_Var5, X
 	BNE ObjThwomp_FallToCeiling
 	JSR Thwomp_FallToGround
@@ -1228,15 +1351,12 @@ FallAnyways:
 	STA <Objects_YVel,X
 
 NoDecVel:
-	JSR Object_WorldDetectN1 ; Detect against world
+	LDA Objects_Var6, X
+	BEQ ObjThwomp_FallToCeiling1
+	JMP ThwompDetectLeftBlock
 
-	LDA <Objects_DetStat,X
-	AND #$08
-	BEQ EndQuickRise	 ; If Thwomp did not hit ground, jump to PRG004_A6D4 (RTS)
-
-	JSR Object_HitCeiling	 ; Align to floor
-
-	; Shake floor!
+ObjThwomp_FallToCeiling1:
+	JSR Object_HitCeiling
 	LDA #$18
 	STA Level_Vibration
 
@@ -1248,7 +1368,11 @@ NoDecVel:
 	; Set timer to $40
 	LDA #$40
 	STA Objects_Timer,X
+	LDA #$03
+	STA Objects_Var6, X
 
+	LDA #$10
+	STA Objects_Timer, X
 	DEC <Objects_Var5,X	 ; Var5++ (next internal state)
 
 EndQuickRise:
@@ -1270,7 +1394,7 @@ ObjInit_ThwompUDSlide:
 	LDA SlideThwomp_InitYVel,Y
 	STA <Objects_YVel,X
 
-	JMP Thwomp_Center	 ; Center this Thwomp and don't come back!
+	RTS
 
 
 ObjNorm_ThwompVertical:
@@ -1759,6 +1883,7 @@ Store_SObject:
 
 	; Data = 0
 	LDA #$00
+	STA SpecialObj_Var1, Y
 	STA SpecialObj_Data,Y
 
 	RTS		 ; Return
@@ -5493,35 +5618,11 @@ DeliveryLakituTrack1:
 	JSR DrawLakitu
 	RTS
 
-Object_HitWall:
-	LDA <Objects_XVel, X
-	BPL Object_HitWall1
-
-	LDA <Objects_X, X
-	ADD #$08
-	AND #$F0
-	STA <Objects_X, X
-	LDA <Objects_XHi, X
-	ADC #$00
-	STA <Objects_XHi, X
-	LDA #$00
-	STA Objects_XVel, X
-	RTS
-
-Object_HitWall1:
-	LDA <Objects_X, X
-	AND #$F0
-	STA <Objects_X, X
-	LDA #$00
-	STA Objects_XVel, X
-	RTS
-
 BlueShellExplosionTimers:
-	.byte $80, $C0, $A0, $E0
+	.byte $40, $80, $C0, $FF
 
 ObjInit_BlueShell:
-	LDA RandomN
-	AND #$03
+	LDA Objects_Property, X
 	TAY
 	LDA BlueShellExplosionTimers, Y
 	STA Objects_SlowTimer, X
@@ -5550,7 +5651,7 @@ ObjNorm_BlueShell_1:
 
 ObjNorm_BlueShell0:
 	LDA Objects_Var2, X
-	BNE ObjNorm_BlueShell1
+	BNE ObjNorm_BlueShellDive1
 
 	JSR Level_ObjCalcXBlockDiffs
 	CMP #$01
@@ -5569,8 +5670,17 @@ ObjNorm_BlueShell01:
 
 ObjNorm_BlueShellDive:
 	INC Objects_Var2, X
-	LDA #$40
+
+ObjNorm_BlueShellDive1:
+
+	LDA Objects_YVel, X
+	AND #$F0
+	CMP #$70
+	BEQ ObjNorm_BlueShell1
+	LDA Objects_YVel, X
+	ADD #$04
 	STA Objects_YVel, X
+	
 
 ObjNorm_BlueShell1:
 	LDA #$01
@@ -5579,12 +5689,7 @@ ObjNorm_BlueShell1:
 	JSR Object_WorldDetect4
 	LDA Objects_DetStat, X
 	BEQ DrawBlueShell
-	LDY Objects_SpawnIdx,X
-	LDA Level_ObjectsSpawned,Y
-	AND #$7f
-	STA Level_ObjectsSpawned,Y
-	JMP KoopaExpload
-
+	BNE BlueShell_Expload
 
 DrawBlueShell:
 	LDA Objects_Frame, X
@@ -5656,4 +5761,145 @@ ObjNorm_BlueShellDraw1:
 	STA Sprite_RAM+10,Y	 ; Set wing attribute
 
 ObjNorm_BlueShellDraw2:
+	RTS
+
+BlueShell_Expload:
+	LDY Objects_SpawnIdx,X
+	LDA Level_ObjectsSpawned,Y
+	AND #$7f
+	STA Level_ObjectsSpawned,Y
+	LDA Objects_X, X
+	SUB #$10
+	STA Objects_X, X
+	LDA Objects_XHi, X
+	SBC #$00
+	STA Objects_XHi, X
+	STX TempX
+	JSR KoopaExpload
+	JSR FindEmptyEnemySlot
+	LDY TempX
+	LDA Objects_X, Y
+	ADD #$20
+	STA Objects_X, X
+	LDA Objects_XHi, Y
+	ADC #$00
+	STA Objects_XHi, X
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	LDA Objects_Y, Y
+	STA Objects_Y, X
+	LDA Objects_YHi, Y
+	STA Objects_YHi, X
+	JMP KoopaExpload
+	
+ThwompDetectLeftBlock:
+	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)
+	LDA Objects_YVel, X
+	BPL ThwompDetectLeftBlock0
+
+	INY
+	INY
+	INY
+	INY
+
+ThwompDetectLeftBlock0:
+	JSR Object_DetectTile
+	CMP #TILE_ITEM_BRICK
+	BEQ ThwompDetectLeftBlock1
+
+	CMP #TILE_PROP_SOLID_TOP
+	BCC ThwompDetectRightBlock
+	LDA #$00
+	STA Objects_Var6, X
+	RTS
+
+ThwompDetectLeftBlock1:
+	JSR ThwompBreakBlock
+	JMP ThwompBreakBlockRTS
+
+ThwompDetectRightBlock:
+	LDY #((SuperGiantOffsets1  - Object_TileDetectOffsets) + 2)
+	LDA Objects_YVel, X
+	BPL ThwompDetectRightBlock0
+	INY
+	INY
+	INY
+	INY
+
+ThwompDetectRightBlock0:
+	JSR Object_DetectTile
+	CMP #TILE_ITEM_BRICK
+	BEQ ThwompBreakBlock
+
+	CMP #TILE_PROP_SOLID_TOP
+	BCC ThwompBreakBlockRTS
+	LDA #$00
+	STA Objects_Var6, X
+	RTS
+
+ThwompBreakBlock:
+	DEC Objects_Var6, X
+	BEQ ThwompBreakBlockRTS
+
+	LDA #$00
+	STA <Objects_YVel, X
+	LDA #$81
+	STA Level_ChgTileEvent
+	LDA ObjTile_DetYLo
+	AND #$F0
+	STA Level_BlockChgYLo
+	LDA ObjTile_DetYHi
+	STA Level_BlockChgYHi
+	
+	LDA ObjTile_DetXLo
+	AND #$F0
+	STA Level_BlockChgXLo
+	LDA ObjTile_DetXHi
+	STA Level_BlockChgXHi
+
+	LDA Objects_SprHVis, X
+	AND #$C0
+	BNE ThwompBreakBlockRTS
+
+	LDA Objects_SprVVis, X
+	AND #$03
+	BNE ThwompBreakBlockRTS
+	JSR ThwompBustBrick
+	 
+ThwompBreakBlockRTS:
+	RTS
+
+ThwompBustBrick:
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
+
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En
+
+	; Brick bust upper Y
+	LDA Level_BlockChgYLo
+	CLC
+	SBC Level_VertScroll
+	STA BrickBust_YUpr
+
+	; Brick bust lower Y
+	ADD #$08
+	STA BrickBust_YLwr
+
+	; Brick bust X
+	LDA Level_BlockChgXLo
+	SUB <Horz_Scroll	
+	STA BrickBust_X
+
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA BrickBust_XDist
+	STA BrickBust_HEn
+
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel
 	RTS
