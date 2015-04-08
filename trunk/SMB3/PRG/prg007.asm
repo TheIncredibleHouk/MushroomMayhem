@@ -2195,7 +2195,6 @@ SObj_CheckHitSolid:
 	; Temp_Var6 = special object Y + 12
 	JSR SObj_GetTile
 
-	STX TempX
 	LDA SpecialObj_ID,X
 	LDX #$00
 	CMP #SOBJ_FIREBROFIREBALL
@@ -2205,8 +2204,7 @@ SObj_CheckHitSolid:
 DoInteract:
 	LDA CurrentTile
 	JSR ProjectileInteractions
-	LDX TempX
-
+	LDX <SlotIndexBackup
 	LDA CurrentTileProperty
 	AND #TILE_PROP_SOLID_TOP
 	BNE SObj_CheckHitSolid1
@@ -2229,20 +2227,18 @@ SObj_CheckHitSolid1:
 
 PRG007_AEC0:
 	; Fireball's Y -= 3
-	DEC SpecialObj_YLo,X
-	DEC SpecialObj_YLo,X
-	DEC SpecialObj_YLo,X
-
+	LDA SpecialObj_Var1, X
+	BNE PRG007_AECE
 
 PRG007_AEC9:
 
 	LDA SpecialObj_ID,X
 	CMP #SOBJ_ICEBALL
-	BNE PRG007_AEC9_2
+	BNE PRG007_AEC1
 	LDA #-$3C
 	BNE PRG007_AECA
 
-PRG007_AEC9_2:
+PRG007_AEC1:
 	LDA #-$2C
 
 PRG007_AECA:
@@ -3866,82 +3862,39 @@ SObj_AcidPool3:
 
 Fireball_Patterns:	.byte $65, $59
 Fireball_Attributes:	.byte SPR_PAL1, SPR_PAL2
+SobjFireball_Flips: .byte SPR_HFLIP, $00
 
 SObj_Fireball:
 	LDA <Player_HaltGame
-	BNE PRG007_BA33	 ; If gameplay halted, jump to PRG007_BA33
+	BNE DrawFireBall	 ; If gameplay halted, jump to PRG007_BA33
 
-	; Gameplay not halted...
+	LDA SpecialObj_Var1, X
+	BEQ SObj_Fireball1
+	JSR SObj_AddXVelFrac
+	JSR SObj_AddYVelFrac
+	JMP PRG007_BA1A
 
-	INC SpecialObj_Var1,X	 ; SpecialObj_Var1++
-
-	LDA SpecialObj_ID,X
-
-	CMP #SOBJ_PIRANHAFIREBALL
-	BEQ PRG007_BA2D	 ; If this is a piranha's fireball, jump to PRG007_BA2D
-
-	CMP #SOBJ_PYRANTULAFIRE
-	BEQ PRG007_BA2D	 ; If this is a Fire Chomp's fireball, jump to PRG007_BA2D
-
-	; Not a piranha's or Fire Chomp's fireball
-
+SObj_Fireball1:
 	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
 
-	LDA SpecialObj_YVel,X
-	CMP #$30
-	BPL PRG007_BA1A	 ; If fireball Y vel < $30, jump to PRG007_BA1A
-
-	; Heavier gravity
-	INC SpecialObj_YVel,X
-	INC SpecialObj_YVel,X
 
 PRG007_BA1A:
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_FIREBROFIREBALL
-	BEQ Do_Gravity	 ; If this is not Fire Bro's fireball, jump to PRG007_BA24
-
-Do_Gravity:
 	JSR SObj_CheckHitSolid	 ; Bounce fireball off surfaces
 
-PRG007_BA24:
-	JMP PRG007_BA33	 ; Jump to PRG007_BA33
-
-	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
-	JMP PRG007_BA33	 ; Jump to PRG007_BA33
-
-PRG007_BA2D:
-	JSR SObj_AddXVelFrac	 ; Apply X velocity
-	JSR SObj_AddYVelFrac	 ; Apply Y velocity
-
-PRG007_BA33:
+DrawFireBall:
 	JSR SObj_GetSprRAMOffChkVScreen
 	BNE PRG007_BA92	 ; If fireball isn't vertically on-screen, jump to PRG007_BA92
 
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
 
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_PYRANTULAFIRE
-	BNE PRG007_BA55	 ; If this is not a Fire Chomp's fireball, jump to PRG007_BA55
+	LDA #$00
+	STA <Temp_Var4
+	LDA SpecialObj_XVel, X
+	BMI DrawFireBall1
+	INC <Temp_Var4
 
-	; Fire Chomp's fireball only...
+DrawFireBall1:
 
-	LDA Level_NoStopCnt
-	LSR A
-	LSR A
-
-	LDA #$89	 ; A = $89 (first fireball pattern)
-
-	BCC PRG007_BA4D	 ; 4 ticks on, 4 ticks off; jump to PRG007_BA4D
-
-	LDA #$8B	 ; A = $8B (second fireball pattern)
-
-PRG007_BA4D:
-	STA Sprite_RAM+$01,Y	 ; Set fireball pattern
-
-	LDA #$01	; A = 1
-	JMP PRG007_BA6E	 ; Jump to PRG007_BA6E
-
-PRG007_BA55:
 	LDA #$00
 	STA DAIZ_TEMP1
 	LDA SpecialObj_ID,X
@@ -3957,10 +3910,11 @@ Do_FB_Pattern:
 	STA Sprite_RAM+$01,Y
 
 	LDA Fireball_Attributes,X
+	STA Sprite_RAM+$02,Y
 
-PRG007_BA6E:
-
-	; Set fireball attributes
+	LDX <Temp_Var4
+	LDA SobjFireball_Flips, X
+	ORA Sprite_RAM+$02,Y
 	STA Sprite_RAM+$02,Y
 
 	LDX <SlotIndexBackup	 ; X = special object slot index
@@ -4443,9 +4397,25 @@ BobOmbYOffset:		.byte $02, $02, $00, $00
 Goomb_XVelocity:	.byte $E0, $20
 Goomb_YVelocity:    .byte $C0, $C0
 
+CanonPoofXOffset:
+	.byte $FA, $06
+
+EnemyCannonType:
+	.byte OBJ_GOOMBA, OBJ_BEACHEDCHEEP
+
+EnemyCannonDirection:
+	.byte $00, SPR_HFLIP
+
+EnemyCannonColor:
+	.byte SPR_PAL3, SPR_PAL1
+
 CFire_GoombaPipe:
 	LDA CannonFire_Timer,X
 	BNE PRG007_BD7A	 ; If timer not expired, jump to PRG007_BD7A (RTS)
+
+	LDA Kill_Tally
+	CMP #$03
+	BCS PRG007_BD7A
 
 	TXA
 	TAY
@@ -4475,25 +4445,38 @@ CFire_GoombaPipe:
 PRG007_BD49:
 	; set the motion of the goomba as it "pops" out of the pipe
 	LDA CannonFire_Property, Y
+	AND #$01
 	TAY
+	LDA EnemyCannonDirection, Y
+	STA Objects_FlipBits, X
 	LDA Goomb_YVelocity, Y
 	STA <Objects_YVel, X
 	LDA Goomb_XVelocity, Y
 	STA Objects_XVel, X
 
+	LDA CannonFire_Property, Y
+	LSR A
+	TAY
 	; It's a Goomba
-	LDA #OBJ_GOOMBA
+	LDA EnemyCannonType, Y
 	STA Level_ObjectID,X
 
 	LDA #$10
 	STA Objects_Var1, X
 
 	; Set Goomba's color
-	LDA #SPR_PAL3
+	LDA EnemyCannonColor, Y
 	STA Objects_SprAttr,X
 
+	LDA #$00
+	STA Objects_Property, X
 
 	LDX <SlotIndexBackup
+	LDA CannonFire_Property, X
+	AND #$01
+	TAY
+	
+	
 	JSR CannonFire_NoiseAndSmoke
 
 PRG007_BD78:
@@ -4506,6 +4489,10 @@ PRG007_BD7A:
 CFire_ShellCannon:
 	LDA CannonFire_Timer,X
 	BNE CFire_ShellCannon1	 ; If timer not expired, jump to PRG007_BD7A (RTS)
+
+	LDA Kill_Tally
+	CMP #$03
+	BCS CFire_ShellCannon1
 
 	TXA
 	TAY
@@ -4553,6 +4540,10 @@ CFire_ShellCannon:
 	STA Objects_SprAttr,X
 
 	LDX <SlotIndexBackup
+	LDA CannonFire_Property, X
+	AND #$01
+	TAY
+	
 	JSR CannonFire_NoiseAndSmoke
 
 CFire_ShellCannon1:
@@ -4656,7 +4647,7 @@ CFire_Platform:
 	LDA #OBJ_WOODENPLATUNSTABLE
 	STA Level_ObjectID,X
 
-	LDA #$01
+	LDA #$00
 	STA Objects_Var5, X
 
 	LDA #$FC
@@ -4796,7 +4787,6 @@ CannonFire_NoiseAndSmoke:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-	
 	LDA CannonFire_Y,X
 	CMP Level_VertScroll
 	LDA CannonFire_YHi,X
@@ -4809,16 +4799,15 @@ CannonFire_NoiseAndSmoke:
 	LDA #$01
 	STA BrickBust_En
 
-	; Set poof X
-	LDA CannonFire_X,X	; Get Cannon Fire X
+	LDA CanonPoofXOffset, Y
+	ADD CannonFire_X,X
 	SUB <Horz_Scroll	; Make relative to horizontal scroll
 	STA BrickBust_X		; Set X
-
-	LDA CannonPoof_YOffs,X	 ; A = CannonPoof_YOffs[Temp_Var1]
 
 	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
 
 	LDA CannonFire_Y,X	 ; + Cannon Fire Y
+	SUB #$08
 	SUB Level_VertScroll	 ; Make relative to vertical scroll
 	STA BrickBust_YUpr	 ; Set Y
 
@@ -5134,10 +5123,9 @@ FindInteractions:
 Change_Tile:
 	INX
 	LDA FireBallTransitions, X
-	LDX TempX
 	BPL ProjChangeTile
 
-Bounce_Ball:
+Bounce_Ball
 	RTS
 
 ProjChangeTile:

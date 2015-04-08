@@ -2999,6 +2999,7 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
+	Objects_ObjDetStat:	.ds 8
 	Stop_Watch:			.ds 1	;
 	Slow_Watch:			.ds 1	;
 	Player_Dialog:		.ds 1
@@ -3035,7 +3036,7 @@ SOBJ_POOF		= $16 	; Poof
 	AlignSpriteFlag:	.ds 1
 	JustName:			.ds 1
 	LastHorzScroll:		.ds 1
-	LastHorzScrollHi:		.ds 1
+	LastHorzScrollHi:	.ds 1
 
 	; Tile map property flags
 MAP_PROP_TRAVERSABLE	= $01
@@ -3121,6 +3122,8 @@ TILE_ITEM_SPINNER	= $FE
 	Mushroom_Already_Defeated: .ds 1
 	PreviousLevel:		.ds 1
 	ForcedSwitch:       .ds 1
+	NegaStars:			.ds 8
+	BossLevelData:		.ds 8
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3461,8 +3464,8 @@ OBJ_KEY				= $11	;
 OBJ_REDSPRING		= $12	;
 OBJ_KEYPIECES		= $13	;
 OBJ_KEYPIECE		= $16
-OBJ_SPINYCHEEP		= $00
-OBJ_WINGS		= $17	; Spiny cheep
+OBJ_SPINYCHEEP
+OBJ_NEGASTAR		= $17	; Spiny cheep
 OBJ_BOSS_BOWSER		= $18 	; King Bowser
 OBJ_POWERUP_FIREFLOWER	= $19	; Fire flower
 OBJ_BOUNCELEFTRIGHT	= $1B	; Left/right block bounce effect object
@@ -3503,15 +3506,19 @@ OBJ_WOODENPLATFORMFALL	= $3C 	; Falling wooden platform
 OBJ_NIPPERFIREBREATHER	= $3D	; Fire belching nipper plant
 OBJ_WOODENPLATFORMFLOAT	= $3E	; Floating (on water) log
 OBJ_DRYBONES		= $3F	; Dry Bones
-OBJ_BUSTERBEATLE	= $40	; Buster Beatle
-OBJ_ENDLEVELCARD	= $41	; End-of-level card
+OBJ_BUSTERBEATLE = $00 ;
+OBJ_GOLDENPIRANHAGROWER	= $40	; Buster Beatle
+OBJ_ENDLEVELCARD = $00	;
+OBJ_PIRANHAGROWER	= $41	; End-of-level card
 OBJ_CHEEPCHEEPPOOL2POOL	= $42	; Pool-to-pool-to-pool hopping cheep cheep
 OBJ_CHEEPCHEEPPOOL2POOL2 = $43 ;
 OBJ_FLAMINGCHEEP = $42 ;
 OBJ_BEACHEDCHEEP= $43	; Pool-to-pool hopping cheep cheep
 OBJ_WOODENPLATUNSTABLE	= $44	; Fall-after-touch log platform
-OBJ_HOTFOOT		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)
-OBJ_PIRANHASPIKEBALL	= $46	; Tall plant carrying spike ball
+OBJ_HOTFOOT = $00	;
+OBJ_PWING		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)
+OBJ_PIRANHASPIKEBALL	= $00
+OBJ_SNIFIT	= $46	; Tall plant carrying spike ball
 OBJ_GIANTBLOCKCTL	= $47
 OBJ_BIRDO	= $47	; Enables Giant World blocks to function
 OBJ_TINYCHEEPCHEEP	= $00
@@ -3602,7 +3609,8 @@ OBJ_THWOMPRIGHTSLIDE	= $8C	; Right sliding Thwomp
 OBJ_THWOMPUPDOWN	= $8D	; Up-down sliding Thwomp
 OBJ_THWOMPDIAGONALUL	= $8E	; Diagonal up-left Thwomp
 OBJ_THWOMPDIAGONALDL	= $8F	; Diagonal down-left Thwomp
-OBJ_TILTINGPLATFORM	= $90	; Tilting platform
+OBJ_TILTINGPLATFORM = $00
+OBJ_FIREICEBAR	= $90	; Tilting platform
 OBJ_FREEZIE			= $91
 OBJ_TWIRLINGPLATCWNS	= $91	; Twirling platform, clockwise, non-stop
 OBJ_SWOOSH			= $92

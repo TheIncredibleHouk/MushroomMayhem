@@ -20,7 +20,7 @@
 	;	   loaded by tileset) is grabbed; the tile retrieved in #1 is used as
 	;	   a base value.  Hills/Underground style attr table: $25, $5F, $99, $E2
 	;	4) If the tile is beneath the base this data is not used 
-	;	   (e.g. using the above Hills example, if we got tile $16 -- this is 
+	;	   (e.g. using the above Hills Object_HitWall, if we got tile $16 -- this is 
 	;	   quad $00, and the quad $00 base tile is $25, so this is not valid)
 	;	5) If tile is in range, it is subtracted, so using the Hills example:
 	;	   Tile $25 -- first table, index 0.  Tile $26 -- first table, index 1.
@@ -125,8 +125,8 @@ Platform_Extended_Check:
 SuperGiantOffsets1:
 	.byte $20, $08	; At feet
 	.byte $20, $18	; At head
-	.byte $10, $01	; Wall to left
-	.byte $10, $0E	; Wall to right
+	.byte $00, $08	; At feet
+	.byte $00, $18	; At head
 
 	; Group 12
 	;       Y    X
@@ -159,7 +159,7 @@ Object_BoundBox:
 	.byte  1,  13,   2,   8	; 1
 	.byte  2,  12,   2,  24	; 2
 	.byte 10,  27,  -2,  18	; 3
-	.byte  1,  15,  -2,  14	;
+	.byte  8,  24,   8,  30	; (BOSS)
 	.byte  0,  15,   0,  15	; 5 (UNUSED)
 	.byte  2,  27,  -2,  34	; 6
 	.byte  2,  20,   2,  12	; 7
@@ -183,7 +183,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $07 - OBJ_BRICK
 	.byte OAT_BOUNDBOX00 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_COIN
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $09 - OBJ_BUBBLE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $09 - OBJ_BUBBLE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY| OAT_HITNOTKILL	; Object $0A
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY| OAT_HITNOTKILL	; Object $0B - OBJ_POWERUP_NINJASHROOM
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY| OAT_HITNOTKILL	; Object $0C - OBJ_POWERUP_STARMAN
@@ -196,8 +196,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $13
 	.byte OAT_BOUNDBOX04 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL 	; Object $14
 	.byte OAT_BOUNDBOX09 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $15
-	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $16
-	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_WINGS
+	.byte OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $16
+	.byte  OAT_BOUNDBOX01  | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $17 - OBJ_WINGS
 	.byte OAT_BOUNDBOX13	; Object $18 - OBJ_BOSS_BOWSER
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $1A
@@ -210,17 +210,17 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY| OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $23 - OBJ_POWERUP_FOXLEAF
-	.byte  OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $24 - OBJ_PLATFORMHORZ
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $25
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $26 - OBJ_WOODENPLAT_RIDER
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $27 - OBJ_OSCILLATING_H
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $28 - OBJ_OSCILLATING_V
+	.byte  OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $24 - OBJ_PLATFORMHORZ
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $25
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $26 - OBJ_WOODENPLAT_RIDER
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $27 - OBJ_OSCILLATING_H
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $28 - OBJ_OSCILLATING_V
 	.byte OAT_BOUNDBOX01	; Object $29 - OBJ_SPIKE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2A - OBJ_SPARKRIGHT
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $2B - OBJ_RICOCHET_PODOBO
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $2C - OBJ_CLOUDPLATFORM
-	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $2D - OBJ_BIGBERTHA
-	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL		; Object $2E - OBJ_PIRATEBOO
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $2C - OBJ_CLOUDPLATFORM
+	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $2D - OBJ_BIGBERTHA
+	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL		; Object $2E - OBJ_PIRATEBOO
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY	; Object $2F - OBJ_BOO
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_FIREIMMUNITY	; Object $30 - OBJ_PACBOO
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $31 - OBJ_BOOSTRETCH
@@ -228,33 +228,33 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01	; Object $33 - OBJ_NIPPER
 	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $34 - OBJ_TOAD
 	.byte OAT_BOUNDBOX00	; Object $35 - OBJ_TOADHOUSEITEM
-	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $36 - OBJ_WOODENPLATFORM
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $36 - OBJ_WOODENPLATFORM
 	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $37 - OBJ_OSCILLATING_HS
 	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $38 - OBJ_OSCILLATING_VS
 	.byte OAT_BOUNDBOX01	; Object $39 - OBJ_NIPPERHOPPING
 	.byte OAT_BOUNDBOX03 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3A - OBJ_FALLINGPLATFORM
 	.byte OAT_BOUNDBOX01	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
-	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $3C - OBJ_WOODENPLATFORMFALL
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OAT_BOUNDBOX01	; Object $3D - OBJ_NIPPERFIREBREATHER
-	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $3E - OBJ_WOODENPLATFORMFLOAT
+	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3E - OBJ_WOODENPLATFORMFLOAT
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_FIREIMMUNITY	; Object $3F - OBJ_DRYBONES
-	.byte OAT_BOUNDBOX01	; Object $40 - OBJ_BUSTERBEATLE
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $41 - OBJ_ENDLEVELCARD
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.byte OAT_BOUNDBOX01  	; Object $41 - OBJ_PIRANHAGROWER
 	.byte OAT_BOUNDBOX01| OAT_FIREIMMUNITY	; Object $42 - OBJ_DRYCHEEP
 	.byte OAT_BOUNDBOX01	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OAT_BOUNDBOX08 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	 | OAT_HITNOTKILL; Object $44 - OBJ_WOODENPLATUNSTABLE
-	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY	; Object $45 - OBJ_HOTFOOT
-	.byte OAT_BOUNDBOX02	; Object $46 - OBJ_PIRANHASPIKEBALL
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $45 - OBJ_PWING
+	.byte OAT_BOUNDBOX01	; Object $46 - OBJ_SNIFIT
 	.byte OAT_BOUNDBOX10 | OAT_ICEIMMUNITY 	; Object $47 - OBJ_BIRDO
 	.byte OAT_BOUNDBOX01	; Object $48 - OBJ_NINJI
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $4A - OBJ_MAGICSTAR
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $4B - OBJ_MAGICSTAR
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL | OAT_HITNOTKILL	; Object $4C - OBJ_MAGICSTAR
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $4A - OBJ_MAGICSTAR
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $4B - OBJ_MAGICSTAR
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $4C - OBJ_MAGICSTAR
 	.byte OAT_BOUNDBOX00	; Object $4D
 	.byte OAT_BOUNDBOX00	; Object $4E
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY 	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY ; Object $4F - OBJ_CHAINCHOMPFREE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL		; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OAT_BOUNDBOX01	; Object $52 - OBJ_SPINTULA
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $53 - OBJ_PODOBOOCEILING
@@ -318,7 +318,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $8E - OBJ_THWOMPDIAGONALUL
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $8F - OBJ_THWOMPDIAGONALDL
-	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $90 - OBJ_TILTINGPLATFORM
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $90 - OBJ_FIREICEBAR
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_BOUNCEOFFOTHERS	; Object $91 - OBJ_FREEZIE
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY 	; Object $92 - OBJ_SWOOSH
 	.byte OAT_BOUNDBOX01 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $93 - OBJ_INTRO
@@ -456,8 +456,9 @@ Object_HitGround:
 	RTS		 ; Return
 
 Object_HitCeiling:
+	
 	LDA <Objects_Y,X
-	ADD #$08
+	ADD #$0F
 	AND #$f0
 	STA <Objects_Y,X	 ; Align to tile and apply slope
 
@@ -884,6 +885,14 @@ PRG000_C914:
 ; updates the timers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
+	LDX #$08
+	LDA #$00
+
+PRG000_C939:
+	STA Objects_ObjDetStat, X
+	DEX
+	BPL PRG000_C939
+
 	LDA Splash_DisTimer
 	BEQ PRG000_C93A	 ; If Splash_DisTimer > 0, jump to PRG000_C92F
 
@@ -913,10 +922,10 @@ PRG000_C93B:
 	BNE PRG000_C948	 ; If Player is NOT dying due to TIME UP, jump to PRG000_C948
 
 	; Otherwise...
-	LDA PatTable_BankSel+2
-	CMP #$52
-	BNE PRG000_C948	 ; If third pattern table bank has not been set to $52, jump to PRG000_C948
-	RTS		 ; Return
+;	LDA PatTable_BankSel+2
+;	CMP #$52
+;	BNE PRG000_C948	 ; If third pattern table bank has not been set to $52, jump to PRG000_C948
+;	RTS		 ; Return
 
 PRG000_C948:
 	LDA Player_IsHolding
@@ -1678,14 +1687,11 @@ PRG000_CC66:
 PRG000_CC6B:
 	RTS		 ; Return
 
-
-ObjKickXvel:	.byte $18, -$18
-
 ObjState_Kicked:
 	LDA <Player_HaltGame 
 	BEQ PRG000_CC75	 ; If gameplay is NOT halted, jump to PRG000_CC75
  
-	JMP NotGiant	 ; Jump to PRG000_CD46 
+	JMP PRG000_CD47	 ; Jump to PRG000_CD46 
 
 PRG000_CC75:
 	JSR Object_Move	 ; Perform standard object movements
@@ -2539,8 +2545,6 @@ Object_NormalWhileKilled:
 	JMP Object_DoNormal
 
 Object_GiantKilled:
-	JSR ObjectGroup_PatternSets	 ; Do special draw routine used by "giant" enemies
-	JMP Object_DoKilledAction
 
 Object_PoofDie:
 	; Set object state to 8 ("Poof" Dying)
@@ -3241,6 +3245,7 @@ PRG000_D272:
 
 	; Player is a statue or in a Kuribo's shoe...
 
+Object_FinishStompKill:
 	JSR PRG000_D2B4	 ; Handle stomp!
 
 	LDY ObjGroupRel_Idx	 ; Y = object group relative index
@@ -3386,7 +3391,7 @@ FuseTroopa:
 Object_HoldKickOrHurtPlayer:
 	LDA Level_ObjectID, X
 	CMP #OBJ_ICEBLOCK
-	BEQ PRG000_D34F
+	BEQ PRG000_D343
 
 	LDA Objects_State,X
 	CMP #OBJSTATE_SHELLED
@@ -3403,6 +3408,9 @@ PRG000_D343:
 
 PRG000_D34F:
 PRG000_D350:
+	LDA Player_ISHolding_OLD
+	BNE PRG000_D351
+
 	; Keep held object in state 4 (Held)
 	LDA #OBJSTATE_HELD
 	STA Objects_State,X
@@ -3914,10 +3922,29 @@ PRG000_D5E3:
 
 	; Object "shaking awake" and draw its sprite
 ; $D5E7
+
+Object_ShakeAndDrawAligned:
+	LDA #$01
+	STA AlignSpriteFlag
+	BNE Object_ShakeAndDraw1
+
 Object_ShakeAndDraw:
+	LDA #$00
+	STA AlignSpriteFlag
+
+Object_ShakeAndDraw1:
 	JSR Object_ShakeAndCalcSprite
 	JSR Object_Draw16x16Sprite
 
+	LDA AlignSpriteFlag
+	BEQ Object_ShakeAndDraw2
+
+	TYA
+	TAX
+	DEC Sprite_RAM,X
+	DEC Sprite_RAM+4,X
+
+Object_ShakeAndDraw2:
 	LDX <SlotIndexBackup
 	RTS		 ; Return
 
@@ -5284,6 +5311,9 @@ PRG000_DC0B:
 	CPX <SlotIndexBackup
 	BEQ PRG000_DC51	 ; If this object slot is the current object, jump to PRG000_DC51 (don't do anything to self)
 
+	LDA Objects_ObjDetStat, X
+	BNE PRG000_DC51
+
 	LDY Objects_State,X
 	LDA Obj2Obj_EnByState,Y
 	BNE PRG000_DC51	 ; If the state this object is in does not do object-to-object detection, jump to PRG000_DC51 (do nothing)
@@ -5300,6 +5330,7 @@ PRG000_DC0B:
 	JSR ObjectObject_Intersect	 ; Returns carry SET if object and OTHER object intersected
 	BCC PRG000_DC51	 	; If object did NOT intersect the OTHER object, jump to PRG000_DC51 (do nothing)
 
+	INC Objects_ObjDetStat, X
 	LDA HitTestOnly
 	BEQ PRG000_DC0C
 	TXA
@@ -5848,165 +5879,6 @@ AScroll_HorizontalInitMove:
 	.byte ASHIM(ASM_World8Tank2)	; 14 World 8 Tank 2
 	.byte ASHIM(ASM_Terminator)	; 15 ** Terminator Only (because it seeks ahead to see the terminating movement index)
 
-Video_3CMMushTop:
-	vaddr $208D
-	.byte VU_REPEAT | $06, $A9
-	vaddr $20AB
-	.byte VU_REPEAT | $04, $A9
-	vaddr $20B1
-	.byte VU_REPEAT | $04, $A9
-	vaddr $20CA
-	.byte VU_REPEAT | $05, $A9
-	vaddr $20D1
-	.byte VU_REPEAT | $05, $A9
-	vaddr $214A
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	.byte $00	; Terminator
-
-Video_3CMMushLeft:
-	vaddr $20E9
-	.byte $05, $A9, $A9, $FC, $A9, $A9
-	vaddr $20F2
-	.byte $05, $A9, $A9, $FC, $A9, $A9
-	vaddr $2128
-	.byte VU_VERT | VU_REPEAT | $07, $A9
-	vaddr $2109
-	.byte VU_VERT | VU_REPEAT | $06, $A9
-	vaddr $214D
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	.byte $00	; Terminator
-
-Video_3CMMushMid:
-	vaddr $212E
-	.byte VU_VERT | VU_REPEAT | $08, $A9
-	vaddr $212F
-	.byte VU_VERT | VU_REPEAT | $05, $A9
-	vaddr $2130
-	.byte VU_VERT | VU_REPEAT | $05, $A9
-	vaddr $2131
-	.byte VU_VERT | VU_REPEAT | $08, $A9
-	vaddr $2152
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	.byte $00	; Terminator
-
-Video_3CMMushRight:
-	vaddr $2155
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	vaddr $2116
-	.byte VU_VERT | VU_REPEAT | $06, $A9
-	vaddr $2137
-	.byte VU_VERT | VU_REPEAT | $07, $A9
-	vaddr $21CB
-	.byte VU_REPEAT | $0A, $A9
-	vaddr $21E9
-	.byte VU_VERT | VU_REPEAT | $02, $A9
-	.byte $00	; Terminator
-
-Video_3CMMushBot:
-	vaddr $21EA
-	.byte VU_VERT | VU_REPEAT | $04, $A9
-	vaddr $21EB
-	.byte VU_VERT | $04, $A9, $FC, $FC, $A9
-	vaddr $21F4
-	.byte VU_VERT | $04, $A9, $FC, $FC, $A9
-	vaddr $21F5
-	.byte VU_VERT | VU_REPEAT | $04, $A9
-	vaddr $21F6
-	.byte VU_VERT | VU_REPEAT | $02, $A9
-	vaddr $226B
-	.byte VU_REPEAT | $0A, $A9
-	.byte $00	; Terminator
-
-Video_3CMFlowTop:
-	vaddr $208B
-	.byte VU_REPEAT | $0A, $A9
-	vaddr $20A9
-	.byte VU_REPEAT | $03, $A9
-	vaddr $20B4
-	.byte VU_REPEAT | $03, $A9
-	vaddr $20C8
-	.byte VU_REPEAT | $02, $A9
-	vaddr $20D6
-	.byte VU_REPEAT | $02, $A9
-	vaddr $20E8
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	vaddr $20EB
-	.byte VU_REPEAT | $03, $A9
-	vaddr $210B
-	.byte $01, $A9
-	.byte $00	; Terminator
-
-Video_3CMFlowDiag:
-	vaddr $2148
-	.byte VU_REPEAT | $02, $A9
-	vaddr $20CD
-	.byte VU_REPEAT | $06, $A9
-	vaddr $20F2
-	.byte VU_REPEAT | $03, $A9
-	vaddr $20F7
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	vaddr $214D
-	.byte VU_REPEAT | $06, $A9
-	vaddr $212B
-	.byte VU_REPEAT | $03, $A9
-	vaddr $2156
-	.byte VU_REPEAT | $02, $A9
-	vaddr $21A9
-	.byte VU_REPEAT | $02, $A9
-	.byte $00	; Terminator
-
-Video_3CMFlowMid:
-	vaddr $2114
-	.byte $01, $A9
-	vaddr $210E
-	.byte VU_REPEAT | $04, $A9
-	vaddr $2132
-	.byte VU_REPEAT | $03, $A9
-	vaddr $2169
-	.byte VU_REPEAT | $03, $A9
-	vaddr $2174
-	.byte VU_REPEAT | $03, $A9
-	vaddr $218B
-	.byte VU_REPEAT | $0A, $A9
-	vaddr $21B5
-	.byte VU_REPEAT | $02, $A9
-	vaddr $21D7
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	.byte $00	; Terminator
-
-Video_3CMFlowStem:
-	vaddr $21AE
-	.byte VU_VERT | VU_REPEAT | $06, $A9
-	vaddr $21B1
-	.byte VU_VERT | VU_REPEAT | $06, $A9
-	vaddr $21C8
-	.byte VU_VERT | VU_REPEAT | $03, $A9
-	vaddr $21CB
-	.byte VU_REPEAT | $02, $A9
-	vaddr $21D3
-	.byte VU_REPEAT | $02, $A9
-	vaddr $21EA
-	.byte $04, $A9, $FC, $FC, $A9
-	vaddr $21F2
-	.byte $04, $A9, $FC, $FC, $A9
-	.byte $00	; Terminator
-
-Video_3CMFlowBot
-	vaddr $220B
-	.byte $01, $A9
-	vaddr $2214
-	.byte $01, $A9
-	vaddr $2229
-	.byte $04, $A9, $FC, $FC, $A9
-	vaddr $2233
-	.byte $04, $A9, $FC, $FC, $A9
-	vaddr $224A
-	.byte $04, $A9, $A9, $FC, $A9
-	vaddr $2252
-	.byte $04, $A9, $FC, $A9, $A9
-	vaddr $226C
-	.byte VU_REPEAT | $08, $A9
-	.byte $00	; Terminator
 
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
 	; the water flag for the tile rather than all these range comparisons
@@ -6306,12 +6178,12 @@ Object_CalcHomingVels:
 	LDA <Player_Y
 	PHA
 
-	CMP #$50
-	BGE PRG001_B08F	 ; If Player_Y >= $50, jump to PRG001_B08F
-
-	; Otherwise, force Player_Y = $50
-	LDA #$50
-	STA <Player_Y
+	;CMP #$50
+	;BGE PRG001_B08F	 ; If Player_Y >= $50, jump to PRG001_B08F
+	;
+	;; Otherwise, force Player_Y = $50
+	;LDA #$50
+	;STA <Player_Y
 
 PRG001_B08F:
 	JSR Level_ObjCalcYDiffs
@@ -6558,6 +6430,8 @@ ObjectCarry1:
 DetectNextSprite:
 	CPX <SlotIndexBackup
 	BEQ GoNextSprite
+	LDA Objects_ObjDetStat, X
+	BNE GoNextSprite
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BNE GoNextSprite
@@ -6856,4 +6730,104 @@ Reap_CoinY:
 	JSR Produce_Coin
 
 Reap_CoinY1:
+	RTS
+
+Object_HitWall:
+	LDA <Objects_XVel, X
+	BPL Object_HitWall1
+
+	LDA <Objects_X, X
+	ADD #$08
+	AND #$F0
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	ADC #$00
+	STA <Objects_XHi, X
+	LDA #$00
+	STA Objects_XVel, X
+	RTS
+
+Object_HitWall1:
+	LDA <Objects_X, X
+	AND #$F0
+	STA <Objects_X, X
+	LDA #$00
+	STA Objects_XVel, X
+	RTS
+
+CheckBlockAbove:
+	LDA <Objects_Y, X
+	STA <Temp_Var14
+	SUB #$10
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	STA <Temp_Var15
+	SBC #$00
+	STA <Objects_YHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_Y, X
+	LDA <Temp_Var15
+	STA <Objects_YHi, X
+	PLA
+	RTS
+
+CheckBlockBelow:
+	LDA <Objects_Y, X
+	STA <Temp_Var14
+	ADD #$10
+	STA <Objects_Y, X
+	LDA <Objects_YHi, X
+	STA <Temp_Var15
+	ADC #$00
+	STA <Objects_YHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_Y, X
+	LDA <Temp_Var15
+	STA <Objects_YHi, X
+	PLA
+	RTS
+
+CheckBlockRight:
+	LDA <Objects_X, X
+	STA <Temp_Var14
+	ADD #$10
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	STA <Temp_Var15
+	ADC #$00
+	STA <Objects_XHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_X, X
+	LDA <Temp_Var15
+	STA <Objects_XHi, X
+	PLA
+	RTS
+
+CheckBlockLeft:
+	LDA <Objects_X, X
+	STA <Temp_Var14
+	SUB #$10
+	STA <Objects_X, X
+	LDA <Objects_XHi, X
+	STA <Temp_Var15
+	SBC #$00
+	STA <Objects_XHi, X
+	JSR GetBlock
+	PHA
+	LDA <Temp_Var14
+	STA <Objects_X, X
+	LDA <Temp_Var15
+	STA <Objects_XHi, X
+	PLA
+	RTS
+
+GetBlock:
+	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	JSR Object_DetectTile
 	RTS

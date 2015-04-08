@@ -2887,14 +2887,12 @@ Draw_HBros_Coin:
 	BNE No_HBros_Update
 	LDA Magic_Stars
 	JSR ToThreeDigits
-	LDX #$02
-
-MS_Next_Digit:
-	LDA <Temp_Var1, X
+	LDA <Temp_Var2
 	ORA #$30
-	STA Status_Bar_Top + 15, X
-	DEX
-	BPL MS_Next_Digit
+	STA Status_Bar_Top + 16
+	LDA <Temp_Var3
+	ORA #$30
+	STA Status_Bar_Top + 17
 	
 	JSR GetLevelBit
 	PHA

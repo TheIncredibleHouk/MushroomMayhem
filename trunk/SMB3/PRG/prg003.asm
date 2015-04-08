@@ -2476,7 +2476,11 @@ ObjNorm_MagicStar:
 	JSR Object_HitTest
 	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
 
-	JSR Increase_Magic_Stars
+	LDA Sound_QLevel1
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+	INC Magic_Stars
+
 	JSR GetLevelBit
 	STA <Temp_Var1
 	STY <Temp_Var2
@@ -3053,6 +3057,7 @@ PRG003_B1D7:
 MineTrigger: .byte $20 , $18
 
 ObjInit_FloatMine:
+
 	LDA <Objects_X, X
 	SUB #$04
 	STA <Objects_X, X
@@ -5657,22 +5662,4 @@ PRG003_BFAE:
 
 	JMP Object_ShakeAndDraw	 ; Draw Rotodisc and don't come back!
 
-; Rest of ROM bank was empty
-
-Increase_Magic_Stars:
-	LDA Sound_QLevel1
-	ORA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-	INC Magic_Stars
-	LDA Magic_Stars
-	AND #$0F
-	CMP #$0A
-	BCC No_HBros_Inc
-	LDA Magic_Stars
-	AND #$F0
-	CLC
-	ADC #$10
-	STA Magic_Stars
-
-No_HBros_Inc:
-	RTS
+; Rest of ROM bank was empt

@@ -24,7 +24,7 @@
 
 	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_InitJumpTable:
-	.word ObjInit_ProjBar	; Object $90 - OBJ_TILTINGPLATFORM
+	.word ObjInit_ProjBar	; Object $90 - OBJ_FIREICEBAR
 	.word ObjInit_Freezie	; Object $91 - OBJ_FREEZIE
 	.word ObjInit_Swoosh	; Object $92 - OBJ_SWOOSH
 	.word ObjInit_IntroSequence	; Object $93 - OBJ_INTRO
@@ -66,7 +66,7 @@ ObjectGroup04_InitJumpTable:
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_NormalJumpTable:
-	.word ObjNorm_ProjectileBarCW	; Object $90 - OBJ_TILTINGPLATFORM
+	.word ObjNorm_ProjectileBarCW	; Object $90 - OBJ_FIREICEBAR
 	.word ObjNorm_Freezie	; Object $91 - OBJ_FREEZIE
 	.word ObjNorm_Swoosh	; Object $92 - OBJ_SWOOSH
 	.word ObjNorm_IntroSequence	; Object $93 - OBJ_INTRO
@@ -109,7 +109,7 @@ ObjectGroup04_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup04_CollideJumpTable:
-	.word ObjHit_DoNothing	; Object $90 - OBJ_TILTINGPLATFORM
+	.word ObjHit_DoNothing	; Object $90 - OBJ_FIREICEBAR
 	.word ObjHit_Freezie	; Object $91 - OBJ_FREEZIE
 	.word ObjHit_DoNothing	; Object $92 - OBJ_SWOOSH
 	.word ObjHit_DoNothing	; Object $93 - OBJ_INTRO
@@ -151,7 +151,7 @@ ObjectGroup04_CollideJumpTable:
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ObjectGroup04_Attributes:
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $90 - OBJ_TILTINGPLATFORM
+	.byte OA1_PAL1 | OA1_WIDTH8 | OA1_WIDTH8	; Object $90 - OBJ_FIREICEBAR
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $91 - OBJ_FREEZIE
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $92 - OBJ_SWOOSH
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $93 - OBJ_INTRO
@@ -192,7 +192,7 @@ ObjectGroup04_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup04_Attributes2:
-	.byte OA2_TDOGRP0	; Object $90 - OBJ_TILTINGPLATFORM
+	.byte OA2_TDOGRP0	; Object $90 - OBJ_FIREICEBAR
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $91 - OBJ_FREEZIE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $92 - OBJ_SWOOSH
 	.byte OA2_TDOGRP0	; Object $93 - OBJ_INTRO
@@ -233,7 +233,7 @@ ObjectGroup04_Attributes2:
 
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup04_Attributes3:
-	.byte OA3_HALT_NORMALONLY 	; Object $90 - OBJ_TILTINGPLATFORM
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $90 - OBJ_FIREICEBAR
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $91 - OBJ_FREEZIE
 	.byte OA3_HALT_NORMALONLY	; Object $92 - OBJ_SWOOSH
 	.byte OA3_HALT_NORMALONLY 	; Object $93 - OBJ_INTRO
@@ -275,7 +275,7 @@ ObjectGroup04_Attributes3:
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup04_PatTableSel:
-	.byte OPTS_NOCHANGE	; Object $90 - OBJ_TILTINGPLATFORM
+	.byte OPTS_NOCHANGE	; Object $90 - OBJ_FIREICEBAR
 	.byte OPTS_SETPT5 | $33	; Object $91 - OBJ_FREEZIE
 	.byte OPTS_SETPT5 | $33	; Object $92 - OBJ_SWOOSH
 	.byte OPTS_SETPT5 | $36	; Object $93 - OBJ_INTRO
@@ -317,7 +317,7 @@ ObjectGroup04_PatTableSel:
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup04_KillAction:
-	.byte KILLACT_STANDARD	; Object $90 - OBJ_TILTINGPLATFORM
+	.byte KILLACT_STANDARD	; Object $90 - OBJ_FIREICEBAR
 	.byte KILLACT_NORMALSTATE	; Object $91 - OBJ_FREEZIE
 	.byte KILLACT_POOFDEATH	; Object $92 - OBJ_SWOOSH
 	.byte KILLACT_STANDARD	; Object $93 - OBJ_INTRO
@@ -1369,6 +1369,7 @@ STA_Proj:
 	LDA #$00
 	STA SpecialObj_XVelFrac,Y
 	STA SpecialObj_YVelFrac,Y
+	STA SpecialObj_Data, Y
 	RTS		 ; Return
 
 	; Returns carry set if not visible, carry clear if is visible
@@ -2979,7 +2980,9 @@ StoreYOffset:
 	LDX #$04
 
 CheckColide:
+	STX TempX
 	JSR ProjectileBarCollide
+	LDX TempX
 	DEX
 	BPL CheckColide
 	LDX SlotIndexBackup
@@ -4046,9 +4049,29 @@ LevelEvent_ProduceMines:
 	BNE PRG005_BDB0
 	LDA #$00
 	STA LevelEvent_Cnt
+
+	LDA #$00
+	STA <Temp_Var1
+	LDX #$04
+
+LevelEvent_ProduceMines1:
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BNE LevelEvent_ProduceMines2
+	LDA Level_ObjectID,X
+	CMP #OBJ_FLOATMINE
+	BNE LevelEvent_ProduceMines2
+	INC <Temp_Var1
+
+LevelEvent_ProduceMines2:
+	DEX
+	BPL LevelEvent_ProduceMines1
+
+	LDA <Temp_Var1
+	CMP #$02
+	BCS PRG005_BDB0
 	
-	LDX #$02	 ; X = 2 (only spawning Spike Cheeps in slots 0 - 2)
-	JSR Level_SpawnObjSetMax	 ; Spawn new object (Note: If no slots free, does not return)
+	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
 	; Set Spike Cheep's object ID
 	LDA #OBJ_FLOATMINE
@@ -4065,6 +4088,7 @@ LevelEvent_ProduceMines:
 	STA Objects_Y, X
 	LDA #$01
 	STA Objects_YHi, X
+	STA Objects_Var1, X
 
 	LDA RandomN
 	ADC <Player_X
