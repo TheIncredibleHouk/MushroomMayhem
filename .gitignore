@@ -1,0 +1,21 @@
+*.pcx
+SMB3/PRG/
+PRG/
+SMB3/icons/
+.svn/
+*.png
+Backup/prg013.asm
+Backup/prg006.asm
+Backup/prg012.asm
+smb3.nes
+Backup/
+Demo/
+Levels backup/
+Mario Adventure 3 Project/MarioAdventure3.nes
+*.avi
+MarioAdventure3.nes
+SMB3/manual.zip
+SMB3/manual/manual.html
+SMB3/musconv.xml
+bin/
+obj/x86/Release/SMB3 Hack.csproj.FileListAbsolute.txt
