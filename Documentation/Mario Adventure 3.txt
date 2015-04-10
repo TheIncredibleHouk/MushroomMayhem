@@ -1,0 +1,74 @@
+Mario Adventure 3 Hacking Ideas
+--------------------------------------
+-Create a sprite that modifies the timer to a raw value, rather than 200, 300, 400, Unlimited
+
+-Experience points:
+	-Experience points will enable the player to access new power ups. ? blocks will check
+	exp level before generating power ups.
+	
+-Power Up List:
+
+	
+-Complete status bar rewrite
+
+
+-Strengthening enemies, as worlds progress, double the HP of enemies from fireballs 
+
+	
+-Per tile background priority, sprites go behind the background based on what tile they are on.
+
+-Change the "broken blocks" animation for ice blocks to use ice ball sprites
+-Change hammers to break a different kind of block (rocks?)
+-World types
+	-Mushroom Valley
+	-(Sea Name)  Keys
+	-Underground
+	-Forest
+	-Ice
+	-Lava
+	-
+	-Rainbow
+
+-Paratroopa Mario
+
+- 7 Keys
+
+- Alternate status bar
+	-Displays total coins earned
+	-Enemies defeated
+	-Total Time Played
+	-Odometer
+
+-Special level types
+	-P-Switch Mode (color based)
+	-Collect itemso
+
+-Events
+	- Double strength enemies
+	- Quadruble strength enemies
+
+-Experience scoring
+	-Enemy defeated x 10
+	-Stronger enemy defeated x 20
+	-Coin collected	x 1
+	-Brick broken x 1
+	-Power up x 5
+	-Ever 10 steps x 1
+
+-Experience Powers
+	-Item storage
+	-Projectile increase
+	
+
+Special Level Types
+-------------------------
+- Mini Dares
+- Collect all the items
+
+Enemies
+-------------------------
+-Charging Boo
+	-He will charge after Mario at higher speeds when he turns his back, when Mario looks at him, Boo will continue to go in the same 	direction he was going until Mario turns his back, in which Boo will turn around.
+
+-Lakitu Types
+	- Base Lakitu's thrown based on initial X position (1 of 16 types)
