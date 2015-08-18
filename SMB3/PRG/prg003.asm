@@ -292,7 +292,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_SETPT5 | $0A	; Object $55 - OBJ_BOBOMB
 	.byte OPTS_SETPT5 | $5A	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OPTS_SETPT5 | $5A	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
-	.byte OPTS_SETPT5 | $10	; Object $58 - OBJ_PYRANTULA
+	.byte OPTS_SETPT5 | $0A	; Object $58 - OBJ_PYRANTULA
 	.byte OPTS_SETPT5 | $0A	; Object $59 - OBJ_FIRESNAKE
 	.byte OPTS_SETPT5 | $12	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte OPTS_SETPT5 | $12	; Object $5B - OBJ_ROTODISCCCLOCKWISE
@@ -438,6 +438,7 @@ ObjP59:
 ObjP51:
 ObjP5A:
 ObjP5B:
+	.byte $A1, $A1, $A3, $A3, $A5 ,$A5
 ObjP5E:
 ObjP5F:
 ObjP60:
@@ -522,8 +523,8 @@ Spintula_SpinDown:
 	LDA <Objects_DetStat,X
 	AND #$04
 	BNE Spintula_SpinDownStop
-	LDA Objects_LastProp, X
-	AND #$C0
+	LDA Object_TileFeetProp
+	AND #$E0
 	BNE Spintula_SpinDownStop
 	LDA Objects_YHi, X
 	BEQ Spintula_SpinDown1
@@ -4344,11 +4345,10 @@ ObjNorm_Pyrantula:
 	LDA <Player_HaltGame
 	BEQ PRG003_B9D4	 ; If gameplay is not halted, jump to PRG003_B9D4
 
-	JSR Object_DeleteOffScreen
 	JMP Object_ShakeAndDrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!
 
 PRG003_B9D4:
-
+	JSR Object_DeleteOffScreen
 	LDA Objects_Timer,X
 	BEQ PRG003_BA08	 ; If timer expired, jump to PRG003_BA08
 
@@ -4362,19 +4362,19 @@ PRG003_B9F2:
 
 	LDA #$02
 	STA Objects_Frame,X
-
-PRG003_BA02:
-	JSR Object_DeleteOffScreen
-	JMP Object_ShakeAndDrawMirrored	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
+	BNE PRG003_BA09
 
 PRG003_BA08:
+	JSR PyrantulaMove	 
 	LDA <Counter_1
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame,X
-	JSR PyrantulaMove	 ; Move and explode when out of fire balls!
-	JSR Player_HitEnemy
+
+PRG003_BA09:
+	JSR Object_ShakeAndDrawMirrored	
+	JMP Player_HitEnemy
 
 Enemy_DeleteIfOffAndDrawTail:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
@@ -4394,7 +4394,7 @@ PyrantulaMove:
 	INC Objects_Var2,X	 ; Var2++
 
 	LDA Objects_Var2,X
-	AND #$7f
+	AND #$3f
 	BNE PRG003_BA4C	 ; 128 ticks on, 128 ticks off; jump to PRG003_BA4C
 
 	LDA Objects_Var7,X
@@ -4431,9 +4431,6 @@ PRG003_BA5C:
 
 PRG003_BA72:
 	LDA Object_TileWallProp
-	CMP #TILE_ITEM_COIN
-	BCS PRG003_BA73
-	AND #$0F
 	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG003_BA73
 	JSR Object_ApplyXVel	 ; Apply X velocity
@@ -4473,9 +4470,6 @@ PRG003_BA73:
 
 PRG003_BAA0:
 	LDA Object_TileFeetProp
-	CMP #TILE_ITEM_COIN
-	BCS PRG003_BAA1
-	AND #$0F
 	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG003_BAA1
 	JMP Object_ApplyYVel_NoLimit	 ; Apply Y velocity and don't come back!
@@ -4855,6 +4849,9 @@ FireChomp_SpitFire:
 	; Fire Chomp's fireball
 	LDA #SOBJ_PYRANTULAFIRE
 	STA SpecialObj_ID,Y
+
+	LDA #$01
+	STA SpecialObj_Var1, Y
 
 	; Calculate a flight path towards Player
 	LDA #$14

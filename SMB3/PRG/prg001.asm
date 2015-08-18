@@ -40,7 +40,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
 	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjInit_HardIce	; Object $0E - OBJ_HARDICE
-	.word ObjInit_Rain	; Object $0F - OBJ_RAIN
+	.word ObjInit_Weather	; Object $0F - OBJ_RAIN
 	.word ObjInit_IceFireFly; Object $10 - OBJ_PIXIE
 	.word ObjInit_Key	; Object $11 OBJ_KEY
 	.word ObjInit_Spring	; Object $12 OBJ_SPRING
@@ -3412,28 +3412,37 @@ Do_PUp_Pallete_Collect:
 	STA Objects_State + 5
 	RTS
 
+Weather_Patterns: .byte $7B, $7B, $55, $5F, $5D, $5D 
+Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
+Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
+Sand_XVel: .byte $06, $07, $0A, $09, $06, $08, $08, $08
+Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
+Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
+Sand_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
+
 
 DeleteWeather:
+	LDA Objects_State, Y
+	CMP #OBJSTATE_NORMAL
+	BNE ObjInit_Weather2
 	JMP Object_Delete
 
-ObjInit_Rain:
+ObjInit_Weather:
 	LDA Objects_Property, X
 	STA Objects_Var1, X
 	STX TempX
 	LDY #$04
 
-ObjInit_Rain1:
+ObjInit_Weather1:
 	CPY TempX
-	BEQ ObjInit_Rain2
+	BEQ ObjInit_Weather2
 	LDA Level_ObjectID, Y
 	CMP #$0F
 	BEQ DeleteWeather
-	CMP #$10
-	BEQ DeleteWeather
 
-ObjInit_Rain2:
+ObjInit_Weather2:
 	DEY
-	BPL ObjInit_Rain1
+	BPL ObjInit_Weather1
 
 	LDY #$05
 
@@ -3475,16 +3484,20 @@ ObjNorm_Weather:
 	LDA <Horz_Scroll
 	STA <Temp_Var8
 
-	;INC Objects_Var2, X
-	;LDA Objects_Var2, X
-	;AND #$01
-	;BNE DoNextParticle0
-	;LDA <Temp_Var7
-	;ADD #$80
-	;STA <Temp_Var7
-	;LDA <Temp_Var8
-	;ADD #$80
-	;STA <Temp_Var8
+	LDA Objects_Property, X
+	CMP #$02
+	BNE DoNextParticle0
+
+	INC Objects_Var2, X
+	LDA Objects_Var2, X
+	AND #$01
+	BNE DoNextParticle0
+	LDA <Temp_Var7
+	ADD #$80
+	STA <Temp_Var7
+	LDA <Temp_Var8
+	ADD #$80
+	STA <Temp_Var8
 
 
 DoNextParticle0:
@@ -3504,13 +3517,21 @@ DoNextParticle:
 	LDX <SlotIndexBackup
 	RTS
 
-MoveSingleParticle:
-	LDA Weather_YPos, Y
-	ADD Weather_YVel, Y
-	STA Weather_YPos, Y
+MoveSingleParticle:	
 	LDA Weather_XPos, Y
 	ADD Weather_XVel, Y
 	STA Weather_XPos, Y
+
+	LDA Weather_YPos, Y
+	ADD Weather_YVel, Y
+	STA Weather_YPos, Y
+
+	CMP #$F0
+	BCC MoveSingleParticle1
+
+	JSR Randomize_Weather
+
+MoveSingleParticle1:
 	RTS
 
 Randomize_Weather:
@@ -3524,9 +3545,12 @@ Randomize_Weather:
 	STA Weather_YPos, Y
 	LDA RandomN + 1
 	AND #$07
-	LDY Objects_Var1, X
-	BEQ RainVel1
-	ORA #$08
+	STA TempA
+	LDA Objects_Var1, X
+	ASL A
+	ASL A
+	ASL A
+	ORA TempA
 
 RainVel1:
 	TAY
@@ -3535,9 +3559,12 @@ RainVel1:
 	STA Weather_XVel, Y
 	LDA RandomN + 2
 	AND #$07
-	LDY Objects_Var1, X
-	BEQ RainVel2
-	ORA #$08
+	STA TempA
+	LDA Objects_Var1, X
+	ASL A
+	ASL A
+	ASL A
+	ORA TempA
 
 RainVel2:
 	TAY
@@ -3554,11 +3581,13 @@ RainVel2:
 	STA Weather_XVel, Y
 
 DoNotReverse: 
+
 	LDA RandomN + 3
 	AND #$01
-	LDY Objects_Var1, X
-	BEQ RainPattern
-	ORA #$02
+	STA TempA
+	LDA Objects_Var1, X
+	ASL A
+	ORA TempA
 
 RainPattern:
 	TAY
@@ -3572,11 +3601,14 @@ DrawSingleParticle:
 	LDA Weather_YPos, Y
 	SUB <Temp_Var7
 	STA Sprite_RAM, X
+
 	LDA Weather_XPos, Y
 	SUB <Temp_Var8
 	STA Sprite_RAM + 3, X
+
 	LDA Weather_Pattern, Y
 	STA Sprite_RAM + 1, X
+
 	LDA #$02
 	STA TempA
 	LDA Weather_XVel, Y
@@ -3590,13 +3622,6 @@ DontFlipParticle:
 	STA Sprite_RAM + 2, X
 	RTS
 	
-Weather_Patterns: .byte $7B, $7B, $55, $5F
-Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
-Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
-Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
-Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
-
-
 ChompPal: .byte SPR_PAL1, SPR_PAL0
 
 ObjInit_GiantChomp:

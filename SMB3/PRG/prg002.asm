@@ -37,8 +37,8 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
 	.word ObjInit_DoNothing		; Object $2F - OBJ_BOO
 	.word ObjInit_PacBoo	; Object $30 - OBJ_PACBOO
-	.word ObjInit_Stretch		; Object $31 - OBJ_BOOSTRETCH
-	.word ObjInit_StretchFlip	; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.word ObjInit_Phanto		; Object $31 - OBJ_PHANTO
+	.word ObjInit_PhantoFlip	; Object $32 - OBJ_PHANTO_FLIP
 	.word ObjInit_DoNothing		; Object $33 - OBJ_NIPPER
 	.word ObjInit_Toad		; Object $34 - OBJ_TOAD
 	.word ObjInit_DoNothing		; Object $35 - OBJ_TOADHOUSEITEM
@@ -79,8 +79,8 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_PirateBoo	; Object $2E - OBJ_PIRATEBOO
 	.word ObjNorm_Boo		; Object $2F - OBJ_BOO
 	.word ObjNorm_PacBoo	; Object $30 - OBJ_PACBOO
-	.word ObjNorm_Stretch		; Object $31 - OBJ_BOOSTRETCH
-	.word ObjNorm_Stretch		; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.word ObjNorm_Phanto		; Object $31 - OBJ_PHANTO
+	.word ObjNorm_Phanto		; Object $32 - OBJ_PHANTO_FLIP
 	.word ObjNorm_Nipper		; Object $33 - OBJ_NIPPER
 	.word ObjNorm_Toad		; Object $34 - OBJ_TOAD
 	.word ObjNorm_ToadHouseItem	; Object $35 - OBJ_TOADHOUSEITEM
@@ -122,8 +122,8 @@ ObjectGroup01_CollideJumpTable:
 	.word Player_Take_Coins		; Object $2E - OBJ_PIRATEBOO
 	.word Player_GetHurt		; Object $2F - OBJ_BOO
 	.word Player_GetHurt		; Object $30 - OBJ_PACBOO
-	.word Player_GetHurt		; Object $31 - OBJ_BOOSTRETCH
-	.word Player_GetHurt		; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.word Player_GetHurt		; Object $31 - OBJ_PHANTO
+	.word Player_GetHurt		; Object $32 - OBJ_PHANTO_FLIP
 	.word Player_GetHurt		; Object $33 - OBJ_NIPPER
 	.word ObjHit_DoNothing		; Object $34 - OBJ_TOAD
 	.word ObjHit_DoNothing		; Object $35 - OBJ_TOADHOUSEITEM
@@ -164,8 +164,8 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2E - OBJ_PIRATEBOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2F - OBJ_BOO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $30 - OBJ_PACBOO
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $31 - OBJ_BOOSTRETCH
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $31 - OBJ_PHANTO
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $33 - OBJ_NIPPER
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $34 - OBJ_TOAD
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $35 - OBJ_TOADHOUSEITEM
@@ -212,8 +212,8 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP1	; Object $2E - OBJ_PIRATEBOO
 	.byte OA2_TDOGRP1	; Object $2F - OBJ_BOO
 	.byte OA2_TDOGRP1	; Object $30 - OBJ_PACBOO
-	.byte OA2_TDOGRP1	; Object $31 - OBJ_BOOSTRETCH
-	.byte OA2_TDOGRP1	; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.byte OA2_TDOGRP1	; Object $31 - OBJ_PHANTO
+	.byte OA2_TDOGRP1	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OA2_TDOGRP1	; Object $33 - OBJ_NIPPER
 	.byte OA2_TDOGRP2	; Object $34 - OBJ_TOAD
 	.byte OA2_TDOGRP0	; Object $35 - OBJ_TOADHOUSEITEM
@@ -254,8 +254,8 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2F - OBJ_BOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $30 - OBJ_PACBOO
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $31 - OBJ_BOOSTRETCH
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $31 - OBJ_PHANTO
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $33 - OBJ_NIPPER
 	.byte OA3_HALT_JUSTDRAWTALL | OA3_TAILATKIMMUNE	; Object $34 - OBJ_TOAD
 	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $35 - OBJ_TOADHOUSEITEM
@@ -296,8 +296,8 @@ ObjectGroup01_PatTableSel:
 	.byte $00	; Object $2E - OBJ_PIRATEBOO
 	.byte OPTS_SETPT5 | $12	; Object $2F - OBJ_BOO
 	.byte OPTS_SETPT5 | $12	; Object $30 - OBJ_PACBOO
-	.byte OPTS_SETPT5 | $12	; Object $31 - OBJ_BOOSTRETCH
-	.byte OPTS_SETPT5 | $12	; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.byte OPTS_SETPT5 | $13	; Object $31 - OBJ_PHANTO
+	.byte OPTS_SETPT5 | $12	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OPTS_SETPT5 | $0A	; Object $33 - OBJ_NIPPER
 	.byte OPTS_SETPT5 | $36	; Object $34 - OBJ_TOAD
 	.byte OPTS_SETPT5 | $05	; Object $35 - OBJ_TOADHOUSEITEM
@@ -310,7 +310,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OPTS_SETPT5 | $0A	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OPTS_NOCHANGE; Object $3E - OBJ_WOODENPLATFORMFLOAT
-	.byte OPTS_SETPT6 | $13	; Object $3F - OBJ_DRYBONES
+	.byte OPTS_SETPT5 | $13	; Object $3F - OBJ_DRYBONES
 	.byte OPTS_SETPT5 | $0B	; Object $40 - OBJ_GOLDENPIRANHAGROWER
 	.byte OPTS_SETPT5 | $0B	; Object $41 - OBJ_PIRANHAGROWER
 	.byte OPTS_SETPT5 | $0A	; Object $42 - OBJ_FLAMINGCHEEP
@@ -338,8 +338,8 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $2E - OBJ_PIRATEBOO
 	.byte KILLACT_STANDARD	; Object $2F - OBJ_BOO
 	.byte KILLACT_NORMALSTATE	; Object $30 - OBJ_PACBOO
-	.byte KILLACT_POOFDEATH	; Object $31 - OBJ_BOOSTRETCH
-	.byte KILLACT_POOFDEATH	; Object $32 - OBJ_BOOSTRETCH_FLIP
+	.byte KILLACT_POOFDEATH	; Object $31 - OBJ_PHANTO
+	.byte KILLACT_POOFDEATH	; Object $32 - OBJ_PHANTO_FLIP
 	.byte KILLACT_STANDARD	; Object $33 - OBJ_NIPPER
 	.byte KILLACT_STANDARD	; Object $34 - OBJ_TOAD
 	.byte KILLACT_STANDARD	; Object $35 - OBJ_TOADHOUSEITEM
@@ -408,7 +408,7 @@ ObjP45:
 	.byte $BD, $BF
 ObjP31:
 ObjP32:
-	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $71, $71
+	.byte $BD, $BF
 
 ObjP24:
 ObjP25:
@@ -434,11 +434,11 @@ ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
 
 ObjP3F:
-	.byte $C1, $C3, $C5, $C7, $C9, $CB, $CD, $CF, $D1, $D3, $D5, $F9, $DD, $DF
+	.byte $81, $83, $85, $87, $89, $8B, $8D, $8F, $91, $93, $95, $B9, $9D, $9F
 	
 	; Spike's / Patooie's spike ball patterns are actually here
 SpikeBall_Patterns:
-	.byte $95, $95, $95, $95
+	.byte $95, $95, $D9, $DB
 
 ObjP29:
 	.byte $B1, $B3, $B1, $B3, $B5, $B7, $B9, $BB, $B1, $BF
@@ -828,133 +828,178 @@ Object_DeleteOrDraw:
 Stretch_XVelStart:	.byte -$10, $10
 FacePlayer_FlipBitsStart:	.byte $00, SPR_HFLIP, $00	; Boo uses an off-by-1 index here, hence the other $00
 
-ObjInit_Stretch:
-
-	; Stretch starts 4 pixels lower than his placement
-	LDA <Objects_Y,X
-	ADD #$04
-	STA <Objects_Y,X
-	BCC PRG002_A935
-	INC <Objects_YHi,X
-PRG002_A935:
-
-	; Determine which direction Player was moving when Stretch appeared
-	LDY <Scroll_LastDir	
-
-	; Set Stretch's flip to be towards Player
-	LDA FacePlayer_FlipBitsStart,Y
-	STA Objects_FlipBits,X	
-
-	; Set Stretch's X velocity to be towards Player
-	LDA Stretch_XVelStart,Y	
-	STA <Objects_XVel,X
-
+ObjInit_Phanto:
+	
 	RTS		 ; Return
 
-ObjInit_StretchFlip:
-	JSR PRG002_A935	 ; Do most of what the un-flipped Stretch does
-
-	; Flipped Stretch's Y velocity = -$80 (Ram into nearest ceiling)
-	LDA #-$80
-	STA <Objects_YVel,X
-
-	; Set vertical flip
-	ORA Objects_FlipBits,X
-	STA Objects_FlipBits,X
-
-	; Set Stretch at 6 pixels above his placement position
-	LDA <Objects_Y,X
-	SUB #$06
-	STA <Objects_Y,X
-	BCS PRG002_A95B
-	DEC <Objects_YHi,X
-PRG002_A95B:
+ObjInit_PhantoFlip:
 
 	RTS		 ; Return
 
 	; Stretch timer reset values by internal state (Var5)
-Stretch_TimerByIntState:
-	.byte $7F, $1F, $1F, $17
 
-ObjNorm_Stretch:
-	LDY <Objects_Var5,X	 ; Y = Var5 (internal state)
+ObjNorm_Phanto:
+	LDA <Player_HaltGame
+	BEQ ObjNorm_Phanto1
+	JMP Object_ShakeAndDraw
 
-	LDA Objects_Timer,X
-	BNE PRG002_A974	 ; If timer not expired, jump to PRG002_A974
+ObjNorm_Phanto1:
+	LDA Objects_Var1, X
+	JSR DynJump
 
-	DEY		 ; Y--
-	BPL PRG002_A96C	 ; If Y >= 0, jump to PRG002_A96C
+	.word Phanto_Wait
+	.word Phanto_Wake
+	.word Phanto_Chase
 
-	LDY #$03	 ; Otherwise, Y = 3
+Phanto_Wait:
+	LDA Level_ObjectID + 5
+	CMP #OBJ_KEY
+	BNE Phanto_Wait_End
 
-PRG002_A96C:
-	STY <Objects_Var5,X	 ; Var5 = 0 to 3
+	LDA Objects_State + 5
+	CMP #OBJSTATE_HELD
+	BNE Phanto_Wait_End
 
-	; Set timer based on Var5
-	LDA Stretch_TimerByIntState,Y
-	STA Objects_Timer,X
+	INC Objects_Var1, X
+	LDA #$40
+	STA Objects_Timer, X
 
-PRG002_A974:
+Phanto_Wait_End:
+	JMP Phanto_Draw
+
+Phanto_Wake:
+	LDA Objects_Timer, X
+	BNE Phanto_Wake1
+
+	INC Objects_Var1, X
+
+Phanto_Wake1:
+	JSR Object_ShakeAndDraw
+	LDA Objects_Var2, X
+	AND #$08
+	BNE Phanto_Wake2
+
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+Phanto_Wake2:
+	LDA Objects_Var2, X
+	AND #$01
+	BNE Phanto_Wake_End
 	TYA
-	LSR A
-	PHP		 ; Save CPU state (most importantly, zero flag)
-	BCS PRG002_A9A0	 ; If in internal state 1 or 3, jump to PRG002_A9A0
+	TAX
+	INC  Sprite_RAM+$03,X
+	INC  Sprite_RAM+$07,X
 
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	LDY ObjGroupRel_Idx	 ; Y = Object's group relative index
+Phanto_Wake_End:
+	LDX <SlotIndexBackup
+	INC Objects_Var2, X
+	RTS
 
-	LDA ObjectGroup01_Attributes2,Y	 ; Get attributes set 2
-	AND #OA2_TDOGRPMASK		; Mask out the root tile detection group offset
-	LSR A		 	; Correct the index
-	TAY		 	; -> 'Y'
+Phanto_Chase:
+	LDA Level_ObjectID + 5
+	CMP #OBJ_KEY
+	BNE Phanto_Chase5
 
-	LDA <Objects_YVel,X
-	BPL PRG002_A98C	 ; If Stretch is on top, jump to PRG002_A98C
+	LDA Objects_State + 5
+	CMP #OBJSTATE_HELD
+	BNE Phanto_Chase1
 
-	; Otherwise, Y += 2 (Different detection offset)
-	INY
-	INY
+	LDA #$10
+	STA Objects_Var3, X
+	LDA <Counter_1
+	AND #$01
+	BNE Phanto_Chase0_1
+	JSR Chase
+	JMP Phanto_Chase0
+	
+Phanto_Chase0_1:
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel
 
-PRG002_A98C:
-	JSR Object_DetectTile
-	CMP #TILE2_GHOSTM
-	BEQ PRG002_A996	 ; If Stretch is gliding along a non-edge "Ghost tile", jump to PRG002_A996
+Phanto_Chase0:
+	JSR Object_HitTestRespond
+	JMP Phanto_Draw
 
-	JSR Object_AboutFace	 ; Otherwise, turn around!
+Phanto_Chase1:
+	LDA Objects_Var3, X
+	BEQ Phanto_Chase4
 
-PRG002_A996:
+	DEC Objects_Var3, X
+	CMP #$01
+	BEQ Phanto_Chase3
 
-	; FYI: You don't come here in internal state 1 or 3; those are explicitly handled by PRG002_A9A0
+	CMP #$0F
+	BEQ Phanto_Chase2
+	RTS
 
-	LDA #$02	 ; A = 2
-	PLP		 ; Restore CPU state (most importantly, zero flag, which means internal state 0 or 1)
-	BEQ PRG002_A9AD	 ; If in internal state 0, jump to PRG002_A9AD
+Phanto_Chase2:
+	JSR Phanto_Poof
+	LDA Level_VertScroll
+	ADD #$10
+	STA <Objects_Y, X
+	LDA #$00
+	ADC #$00
+	STA <Objects_YHi, X
+	STA <Objects_XVel, X
+	RTS
 
-	; Use frame 4 if in internal state 2 
-	ASL A
-	STA Objects_Frame,X
+Phanto_Chase3:
+	JSR Phanto_Poof
+	RTS
+	
+Phanto_Chase4:
+	LDA <Counter_1
+	AND #$01
+	BNE Phanto_Chase4_1
+	LDA Level_VertScroll
+	ADD #$10
+	STA ChaseTargetY
+	LDA #$00
+	ADC #$00
+	STA ChaseTargetYHi
+	JSR ChaseTargeted
+	JSR Object_HitTestRespond
+	JMP Phanto_Draw
 
-	RTS		 ; Return
+Phanto_Chase4_1:
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel
+	JMP Phanto_Draw
 
-PRG002_A9A0:
+Phanto_Chase5:
+	JSR Phanto_Poof
+	JMP Object_Delete
 
-	; Internal state 1 or 3 ONLY (Stretch rising or Stretch receding)
+Phanto_Poof:
+	JSR SpecialObj_FindEmpty
 
-	LDA Objects_Timer,X
-	LSR A
-	LSR A
-	LSR A
-	AND #$03	 ; A = 0 to 3, by timer
+	LDA #$1f
+	STA SpecialObj_Data,Y
 
-	PLP		 ; Restore CPU state (most importantly, zero flag, which means internal state 0 or 1)
-	BNE PRG002_A9AD	 ; If in internal state 3, jump to PRG002_A9AD
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+	LDA #$20	 
+	STA SpecialObj_Data, Y
+	
+	LDA Objects_X, X
+	STA SpecialObj_XLo, Y
 
-	EOR #$03	 ; In state 1, invert the value
+	LDA Objects_Y, X
+	STA SpecialObj_YLo, Y
+	LDA Objects_YHi, X
+	STA SpecialObj_YHi, Y
 
-PRG002_A9AD:
-	STA Objects_Frame,X	 ; Store the frame
-	JSR Object_DeleteOrDraw	 ; Delete Stretch if he falls off-screen, or draw him
-	JMP Object_HitTestRespond	 ; Do collision test and respond, and don't come back!
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
+	RTS
+
+Phanto_Draw:
+	LDA #SPR_HFLIP
+	STA Objects_FlipBits, X
+	JSR Object_ShakeAndDraw
+	RTS
 
 ObjInit_InvisibleLift:
 
@@ -1485,15 +1530,14 @@ ObjNorm_PathFollowPlat1:
 ObjNorm_PathFollowPlat2:
 	RTS		 ; Return
 
-EnemyEnterFlip:	.byte  $00, SPR_HFLIP
-EnemyEnterXVel:	.byte -$08, $08
+EnemyEnterFlip:	.byte  SPR_HFLIP, $00
+EnemyEnterXVel:	.byte $08, -$08
 
 ObjInit_TowardsPlayer:
 
 	; Get last scroll direction so we know which way to face
-	LDY Scroll_LastDir
-
-	; Enemy faces Player relative to which direction he's headed
+	JSR Object_FacePlayer
+	
 	LDA EnemyEnterFlip,Y
 	STA Objects_FlipBits,X
 
@@ -2661,22 +2705,39 @@ ObjNorm_ToadHouseItem:
 	RTS		 ; Return
 
 LogPlat_Draw:
-	JSR Object_ShakeAndCalcSprite
-	STY TempY
-	LDA #$00
-	STA <Temp_Var3
-	JSR Object_Draw48x16Sprite	 ; Draw wide sprite
 
-	LDY TempY
-	LDA #SPR_HFLIP
-	ORA Sprite_RAM + 6, Y
-	STA  Sprite_RAM + 6, Y
-	LDA #SPR_HFLIP
-	ORA Sprite_RAM + 14, Y
-	STA  Sprite_RAM + 14, Y
-	LDA #SPR_HFLIP
-	ORA Sprite_RAM + 22, Y
-	STA  Sprite_RAM + 22, Y
+	JSR Object_ShakeAndCalcSprite
+	JSR Object_Draw24x16Sprite	 ; Draw wide sprite
+
+	LDX <SlotIndexBackup
+	JSR Object_ShakeAndCalcSprite
+
+	LDA <Temp_Var7
+	ADD #$0C
+	STA <Temp_Var7
+	ASL <Temp_Var8
+	ASL <Temp_Var8
+	ASL <Temp_Var8
+
+	JSR Object_Draw24x16Sprite	 ; Draw wide sprite
+	
+	LDX <SlotIndexBackup
+	LDY Object_SprRAM,X
+	
+	LDA Sprite_RAM + 6, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAM + 6, Y
+	STA Sprite_RAM + 14, Y
+	STA Sprite_RAM + 22, Y
+	
+	LDA Sprite_RAM + 15, Y
+	ADD #$18
+	STA Sprite_RAM + 15, Y
+	ADD #$08
+	STA Sprite_RAM + 19, Y
+	ADD #$08
+	STA Sprite_RAM + 23, Y
+	
 	LDX <SlotIndexBackup		 ; X = object slot index
 	RTS		 ; Return
 
@@ -2789,6 +2850,7 @@ ObjNorm_DryBones:
 	LDA <Objects_Var5,X
 	BNE PRG002_B6B2	 ; If Var5 <> 0 (Dry Bones is crumpled), jump to PRG002_B6B2
 
+	JSR Object_HandleConveyorBounceVel	; Sets LRBounce_Vel which way Dry Bones will need to be effected by conveyor
 	LDY LRBounce_Vel
 	INY		 ; Y++ (index into DryBones_XVelConveyor)
 
@@ -2920,7 +2982,7 @@ PRG002_B71C:
 
 	LDX DryBones_CrumblePats-2,Y	 ; X = pattern start for this frame of Dry Bones (-2 because we start crumbling at frame 2)
 	LDY <Temp_Var7			 ; Y = Sprite_RAM offset
-	JSR Object_Draw48x16Sprite	 ; Draw wide sprite (crumbled Dry Bones)
+	JSR Object_Draw24x16Sprite	 ; Draw wide sprite (crumbled Dry Bones)
 
 	LDX <SlotIndexBackup		 ; X = object slot index
 	BIT <Temp_Var3
@@ -2979,8 +3041,7 @@ ObjHit_DryBones:
 	ORA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
 
-	LDA Kill_Tally
-	STA Exp_Earned
+	INC Kill_Tally
 
 PRG002_B77D:
 	RTS		 ; Return
@@ -4718,7 +4779,6 @@ ObjNorm_PiranhaGrower:
 	LDA Objects_Timer, X
 	BNE SkipHitDetect
 
-	STA Debug_Snap
 	JSR Object_WorldDetect4	
 	LDA <Objects_X, X
 	ORA <Objects_Y, X

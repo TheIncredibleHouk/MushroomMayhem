@@ -10,7 +10,7 @@
     <pointer levelguid="3e53e5fe-2b89-4590-852b-4ef5a5c0aaf1" x="47" y="21" altentrance="false" />
     <pointer levelguid="e689be33-9b16-4612-8b5e-7b8c96d9f89a" x="43" y="21" altentrance="false" />
     <pointer levelguid="66bd6579-8ef4-4ca7-aeff-e20c50693e00" x="16" y="21" altentrance="false" />
-    <pointer levelguid="0ec3e06c-8eb6-490b-855e-fad3ed63d439" x="5" y="21" altentrance="false" />
+    <pointer levelguid="7078db37-a1f5-4304-bc4c-9c87028ebb72" x="5" y="21" altentrance="false" />
   </pointers>
   <spritedata />
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />

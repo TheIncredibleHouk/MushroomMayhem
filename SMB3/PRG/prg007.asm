@@ -5123,7 +5123,7 @@ FindInteractions:
 Change_Tile:
 	INX
 	LDA FireBallTransitions, X
-	BPL ProjChangeTile
+	BNE ProjChangeTile
 
 Bounce_Ball
 	RTS

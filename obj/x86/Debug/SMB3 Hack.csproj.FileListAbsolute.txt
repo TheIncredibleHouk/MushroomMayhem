@@ -1,0 +1,5 @@
+F:\ROM Hacking\Mario Adventure 3\bin\Debug\SMB3 Hack.exe
+F:\ROM Hacking\Mario Adventure 3\bin\Debug\SMB3 Hack.pdb
+F:\ROM Hacking\Mario Adventure 3\obj\x86\Debug\SMB3 Hack.csprojResolveAssemblyReference.cache
+F:\ROM Hacking\Mario Adventure 3\obj\x86\Debug\SMB3 Hack.exe
+F:\ROM Hacking\Mario Adventure 3\obj\x86\Debug\SMB3 Hack.pdb

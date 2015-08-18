@@ -75,8 +75,11 @@
     <sprite property="0" x="8" y="0" value="3A" palette="2" horizontalflip="false" verticalflip="false" table="94" />
     <sprite property="1" x="0" y="0" value="14" palette="2" horizontalflip="false" verticalflip="false" table="94" />
     <sprite property="1" x="8" y="0" value="14" palette="2" horizontalflip="false" verticalflip="false" table="94" />
+    <sprite property="2" x="0" y="0" value="1C" palette="2" horizontalflip="false" verticalflip="false" table="94" />
+    <sprite property="2" x="8" y="4" value="1C" palette="2" horizontalflip="false" verticalflip="false" table="94" />
     <property>Rain</property>
     <property>Snow</property>
+    <property>Sand</property>
   </spritedefinition>
   <spritedefinition id="10" width="01" height="01" name="Ice Fire Fly" class="2" group="Wind/Ice Enemies">
     <sprite property="0" x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="33" />
@@ -471,9 +474,9 @@
     <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="12" />
     <sprite x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="12" />
   </spritedefinition>
-  <spritedefinition id="31" width="01" height="01" name="Stretch" class="1" group="Unused">
-    <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
-    <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
+  <spritedefinition id="31" width="01" height="01" name="Phanto" class="2" group="Desert">
+    <sprite x="8" y="0" value="3C" palette="3" horizontalflip="true" verticalflip="false" table="13" />
+    <sprite x="0" y="0" value="3E" palette="3" horizontalflip="true" verticalflip="false" table="13" />
   </spritedefinition>
   <spritedefinition id="32" width="01" height="01" name="Upside Down Stretch" class="1" group="Unused">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
@@ -526,7 +529,7 @@
     <sprite x="0" y="-16" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="-16" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="3A" width="02" height="01" name="Platform Follows Wire" class="2" group="Toxic/Poison/Tricky">
+  <spritedefinition id="3A" width="02" height="01" name="Platform Follows Wire" class="2" group="Desert">
     <sprite x="0" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="1C" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="16" y="0" value="1C" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -564,7 +567,7 @@
     <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
   </spritedefinition>
-  <spritedefinition id="3F" width="01" height="02" name="Dry Bones" class="2" group="Toxic/Poison/Tricky">
+  <spritedefinition id="3F" width="01" height="02" name="Dry Bones" class="2" group="Desert">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="0" value="02" palette="2" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="0" y="16" value="04" palette="2" horizontalflip="false" verticalflip="false" table="13" />
@@ -760,9 +763,9 @@
     <sprite x="8" y="8" value="08" palette="1" horizontalflip="true" verticalflip="false" table="5A" />
     <sprite x="0" y="8" value="04" palette="2" horizontalflip="true" verticalflip="false" table="5A" />
   </spritedefinition>
-  <spritedefinition id="58" width="01" height="01" name="Pyrantula" class="2" group="Toxic/Poison/Tricky">
-    <sprite x="0" y="0" value="2C" palette="1" horizontalflip="false" verticalflip="false" table="13" />
-    <sprite x="8" y="0" value="2C" palette="1" horizontalflip="true" verticalflip="false" table="13" />
+  <spritedefinition id="58" width="01" height="01" name="Pyrantula" class="2" group="Fire/Mine">
+    <sprite x="0" y="0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="A" />
+    <sprite x="8" y="0" value="20" palette="1" horizontalflip="true" verticalflip="false" table="A" />
   </spritedefinition>
   <spritedefinition id="59" width="01" height="01" name="Fire Snake" class="2" group="Fire/Mine">
     <sprite x="4" y="-16" value="08" palette="1" horizontalflip="false" verticalflip="false" table="A" />
@@ -1029,9 +1032,15 @@
     <sprite x="8" y="0" value="1A" palette="1" horizontalflip="true" verticalflip="false" table="4F" />
     <sprite x="12" y="-8" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
   </spritedefinition>
-  <spritedefinition id="74" width="01" height="01" name="Zombie Goomba" class="2" group="Toxic/Poison/Tricky">
+  <spritedefinition id="74" width="01" height="01" name="Zombie Goomba" class="2" group="Desert">
     <sprite x="0" y="0" value="18" palette="2" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="0" value="1A" palette="2" horizontalflip="true" verticalflip="false" table="13" />
+
+    <property>Normal</property>
+    <property>Waits Inside Block</property>
+    <property>Waits In Ground</property>
+    <property>Waits In Pipe</property>
+    
   </spritedefinition>
   <spritedefinition id="75" width="01" height="01" name="Bowser Fireball" class="3" group="Bowser">
     <sprite x="0" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="3B" />
@@ -1337,11 +1346,11 @@
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
   </spritedefinition>
-  <spritedefinition id="A0" width="02" height="01" name="Piranha Skull" class="2" group="Toxic/Poison/Tricky">
+  <spritedefinition id="A0" width="02" height="01" name="Piranha Skull" class="2" group="Desert">
     <sprite x="8" y="0" value="20" palette="2" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="16" y="0" value="20" palette="2" horizontalflip="true" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="A1" width="02" height="01" name="Upside Down Possessed Piranha" class="2" group="Toxic/Poison/Tricky">
+  <spritedefinition id="A1" width="02" height="01" name="Upside Down Possessed Piranha" class="2" group="Desert">
     <sprite x="8" y="0" value="20" palette="2" horizontalflip="false" verticalflip="true" table="13" />
     <sprite x="16" y="0" value="20" palette="2" horizontalflip="true" verticalflip="true" table="13" />
   </spritedefinition>

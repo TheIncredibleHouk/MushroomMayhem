@@ -1248,18 +1248,6 @@ Piranha_HideInPipe:
 	STA Objects_Var3,X
 
 	LDA Objects_Timer,X
-
-	LDY World_Num
-	BNE PRG005_A850	 ; If this is not World 1, jump to PRG005_A850
-
-	; World 1 only...
-
-	CMP #$28
-	BEQ PRG005_A858	 ; If timer = $28, jump to PRG005_A858
-
-
-	TYA		 ; A = 0 (deliberately fails the following checks) 
-
 PRG005_A850:
 	CMP #$10
 	BEQ PRG005_A858	 ; If timer = $10, jump to PRG005_A805

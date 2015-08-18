@@ -1329,6 +1329,7 @@ PRG008_A77E:
 	BCC PRG008_A7AC	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
 PRG008_A7AB:
+	;STA Debug_2Snap
 	LDA <Player_X
 	AND #$0F
 	CMP #04
@@ -2338,10 +2339,15 @@ Player_JumpFlyFlutter1:
 
 PRG008_AC30:
 
+	LDA Player_ForcedSlide
+	BNE PRG008_AC31
+
 	LDA <Pad_Input
 	AND #PAD_A
 	STA <Temp_Var1	 ; Temp_Var1 = $80 if Player is pressing 'A', otherwise 0
 	BNE Jump_Over_PRG008_AC9E
+
+PRG008_AC31:
 	JMP PRG008_AC9E	 ;
 
 Jump_Over_PRG008_AC9E:
@@ -5693,6 +5699,7 @@ NotSmallMario:
 
 	LDX #$07
 	LDA #$00
+
 ClearSprite:
 	LDY Objects_State, X
 	CPY #OBJSTATE_HELD

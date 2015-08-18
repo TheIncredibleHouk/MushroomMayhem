@@ -242,7 +242,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_DIESHELLED 	; Object $71 - OBJ_SPINY
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $72 - OBJ_GOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $73 - OBJ_PARAGOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $74 - OBJ_ZOMBIEGOOMBA
+	.byte OA3_HALT_NORMALONLY |OA3_TAILATKIMMUNE				; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE			; Object $75 - OBJ_WATERFILLER
 	.byte OA3_HALT_NORMALONLY 					; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
@@ -2704,20 +2704,33 @@ Paragoomba_XVelLimit:	.byte $14, $EC
 ObjInit_ZombieGoomba:
 	LDA #$01
 	STA Objects_HitCount, X
-	LDA #$00
-	STA Objects_Var1, X
+
+	LDA Objects_Property, X
+	BNE ObjInit_ZombieGoomba1
+
+	LDA #$01
+	STA Objects_Var2, X
+
+ObjInit_ZombieGoomba1:
 	JMP ObjInit_GroundTroop
 	
 
 ZombieSpeed:	.byte $01, $FF
-ZombieMaxSpeed:	.byte $20, $E0
+ZombieMaxSpeed:	.byte $10, $F0
 
 ObjNorm_ZombieGoomba:
 	JSR Object_DeleteOffScreen	; Delete if off-screen
 
 	LDA <Player_HaltGame
-	BNE ZombieDone	 ; If gameplay is not halted, jump to PRG004_AF7D
+	BEQ ObjNorm_ZombieGoomba0
+	JMP GroundTroop_DrawMirrored	 ; If gameplay is not halted, jump to PRG004_AF7D
 
+ObjNorm_ZombieGoomba0:
+	LDA Objects_Var2, X
+	BNE ObjNorm_ZombieGoomba1
+	JMP Zombie_Wait
+
+ObjNorm_ZombieGoomba1:
 	JSR Object_HitTest
 	BCC Zombie_NoInfection
 
@@ -2753,11 +2766,15 @@ ZombieSameSpeed:
 	JSR Object_WorldDetect4
 
 	LDA Objects_DetStat, X
-	AND #03
+	AND #(HIT_DET_LEFT | HIT_DET_RIGHT)
 	BEQ Zombie_Move
-
 	LDA #$00
 	STA Objects_XVel, X
+	LDA Objects_DetStat, X
+	AND #HIT_DET_GRND
+	BEQ Zombie_Move
+
+ZombieSameSpeed0:
 	LDA Objects_Var1, X
 	BNE Zombie_Move
 	INC Objects_Var1,X
@@ -2780,13 +2797,13 @@ Zombie_Move:
 Zombie_Move1:
 	LDA Objects_DetStat, X
 	AND #$04
-	BEQ ZombieDone
+	BEQ ZombieDraw
 
 	JSR Object_HitGround
 	LDA #$00
 	STA Objects_Var1,X
 
-ZombieDone:
+ZombieDraw:
 	LDA <Counter_1
 	LSR A	
 	LSR A	
@@ -2796,6 +2813,100 @@ ZombieDone:
 	JMP GroundTroop_DrawMirrored
 		 ; Draw Paragoomba and don't come back!
 
+Zombie_Wait:
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word ObjNorm_DoNothing
+	.word Zombie_InsideBlock
+	.word Zombie_InsideGround
+	;.word Zombie_InsidePipe
+
+Zombie_CheckDistances:
+	.byte $D0, $28
+
+Zombie_InsideBlock:
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$03
+	BCS Zombie_InsideBlock1
+
+	LDA Level_ChgTileEvent
+	BNE Zombie_InsideBlock1
+
+	JSR Zombie_Crumbles
+
+	JSR Object_GetAttrJustTile
+	LDA Object_LevelTile
+	AND #$C0
+	ORA #$01
+	STA Level_ChgTileEvent
+	
+	JSR SetObjectTileCoordAlignObj
+	LDA #$01
+	STA Objects_Var2, X
+	LDA #$E0
+	STA Objects_YVel, X
+	LDA #$00
+	STA Objects_XVel, X
+
+Zombie_InsideBlock1:
+	RTS
+
+Zombie_InsideGround:
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$03
+	BCS Zombie_InsideGround1
+	JSR Zombie_Crumbles
+	LDA #$01
+	STA Objects_Var2, X
+	LDA #$C0
+	STA Objects_YVel, X
+	LDA #$00
+	STA Objects_XVel, X
+
+Zombie_InsideGround1:
+	RTS
+
+Zombie_Crumbles:
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
+
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En
+
+	; Brick bust upper Y
+	LDA <Objects_Y, X
+	ADD #$08
+	CLC
+	SBC Level_VertScroll
+	STA BrickBust_YUpr
+
+	; Brick bust lower Y
+	ADD #$08
+	STA BrickBust_YLwr
+
+	; Brick bust X
+	LDA <Objects_X, X
+	ADD #$08
+	SUB <Horz_Scroll	
+	STA BrickBust_X
+
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA BrickBust_XDist
+	STA BrickBust_HEn
+
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel
+
+	RTS
+
+
+	
 
 ObjNorm_JumpingCheepCheep:
 	JSR Object_SetPaletteFromAttr	 ; Set palette for Cheep Cheep

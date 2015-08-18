@@ -2356,6 +2356,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	StatusBar_UpdFl:	.ds 1	; Status bar Update Flag; toggles so to update status bar only every other frame
 	UpdSel_Disable:		.ds 1	; When set, disables the Update_Select routine during the NMI, which halts most activity due to no reported V-Blanking
 	Map_Objects_Itm:	.ds 11	; $7956-$795D, "Item given by" map objects
+	ChaseTargetX:			.ds 1
+	ChaseTargetXHi:			.ds 1
 	ChaseTargetY:			.ds 1
 	ChaseTargetYHi:			.ds 1
 
@@ -3323,14 +3325,14 @@ OA1_HEIGHT32		= %00000100	; Object is 32 pixels tall
 OA1_HEIGHT48		= %00001000	; Object is 48 pixels tall
 OA1_HEIGHT64		= %00001100	; Object is 64 pixels tall
 OA1_HEIGHTMASK		= %00001100	; Not intended for use in attribute table, readability/traceability only
-
-OA1_WIDTH8		= %00000000	; Object is 8 pixels wide
-OA1_WIDTH16		= %00010000	; Object is 16 pixels wide
-OA1_WIDTH24		= %00100000	; Object is 24 pixels wide
-OA1_WIDTH32		= %00110000	; Object is 32 pixels wide
-OA1_WIDTH40		= %01000000	; Object is 40 pixels wide
-OA1_WIDTH48		= %01010000	; Object is 48 pixels wide
-OA1_WIDTH64		= %01100000	; Object is 64 pixels wide
+	
+OA1_WIDTH8		= %00010000	; Object is 8 pixels wide
+OA1_WIDTH16		= %00100000	; Object is 16 pixels wide
+OA1_WIDTH24		= %00110000	; Object is 24 pixels wide
+OA1_WIDTH32		= %01000000	; Object is 32 pixels wide
+OA1_WIDTH40		= %01010000	; Object is 40 pixels wide
+OA1_WIDTH48		= %01100000	; Object is 48 pixels wide
+OA1_WIDTH64		= %01110000	; Object is 64 pixels wide
 OA1_WIDTHMASK		= %01110000	; Not intended for use in attribute table, readability/traceability only
 
 OA1_LOWPRIORITY	= %10000000
@@ -3491,7 +3493,8 @@ OBJ_PIRATEBOO	= $2E	; Invisible (until touched) lift that goes up to fixed posit
 OBJ_BOO			= $2F	; Boo Diddly
 OBJ_HOTFOOT_SHY = $00
 OBJ_PACBOO		= $30	; Hot Foot (returns to flame if looked at)
-OBJ_BOOSTRETCH		= $31	; "Stretch" Boo, upright
+OBJ_BOOSTRETCH   = $00
+OBJ_PHANTO		= $31	; "Stretch" Boo, upright
 OBJ_BOOSTRETCH_FLIP	= $32	; "Stretch" Boo, upside-down
 OBJ_NIPPER		= $33 	; Stationary nipper plant
 OBJ_TOAD		= $34 	; Toad and his house message
