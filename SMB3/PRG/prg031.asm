@@ -3013,7 +3013,7 @@ Increase_Game_Timer:
 	INC DayNightMicroTicker
 	LDA DayNightMicroTicker
 	CMP #$0A
-	BNE DoGameTimer
+	BCC DoGameTimer
 	LDA #$00
 	STA DayNightMicroTicker
 	INC DayNightTicker

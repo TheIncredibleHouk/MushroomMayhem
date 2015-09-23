@@ -2894,7 +2894,8 @@ PRG001_BC33:
 	; Queue a block change to erase to background!
 	LDA Bowser_TileValues,Y
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 
 	; Aligned Bowser impact Y
 	LDA <Objects_Y,X
@@ -3766,7 +3767,8 @@ ChompEatBlock:
 	LDA #$00
 	STA <Objects_YVel, X
 	LDA #$81
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	LDA ObjTile_DetYLo
 	AND #$F0
 	STA Level_BlockChgYLo
@@ -4050,7 +4052,8 @@ CheckKeyAgainstLock:
 
 	LDA Objects_LastTile, X
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 
@@ -4203,7 +4206,8 @@ SpikeBrickBust:
 	LDA <Temp_Var3
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 
 	LDA <Objects_Y,X
 	ADD <Temp_Var2
@@ -4504,7 +4508,8 @@ ObjNormal_EaterBlock32:
 	BNE ObjNorm_EaterBlock0
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 
@@ -4735,7 +4740,8 @@ ObjNorm_HardIce1:
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 	JMP Object_SetDeadEmpty
@@ -5029,7 +5035,8 @@ Coin_Unlock:
 	JSR Object_GetAttrJustTile
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 	

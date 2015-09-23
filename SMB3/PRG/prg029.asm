@@ -1043,7 +1043,8 @@ PRG029_D17F:
 
 	;LDA #CHNGTILE_TOADBOXOPEN
 	STA Level_SkipStatusBarUpd	; Set Level_SkipStatusBarUpd (skip status bar for a frame, priority update!)
-	STA Level_ChgTileEvent	 	; Toad House tile change event!
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent	 	; Toad House tile change event!
 
 	; Coins_Earned_Buffer = 7 is standard random basic item (mushroom, flower, leaf)
 
@@ -2567,7 +2568,7 @@ TileChng_OneTile:
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
 	; Change the tile to the proper target tile
-	LDA Level_ChgTileEvent
+	LDA Level_ChgTileValue
 	STA [Map_Tile_AddrL],Y
 	
 	LDA Level_BlockChgXLo
@@ -2587,7 +2588,7 @@ PRG029_DD21:
 	BNE PRG029_DD20
 
 	LDX #$00	 ; Y = 0
-	LDY Level_ChgTileEvent
+	LDY Level_ChgTileValue
 PRG029_DD22:
 	LDA [Temp_Var14],Y	 ; Get pattern
 	STA TileChng_Pats,X	 ; Copy into TileChng_Pats

@@ -294,12 +294,12 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OPTS_NOCHANGE	; Object $2D - OBJ_BIGBERTHA
 	.byte $00	; Object $2E - OBJ_PIRATEBOO
-	.byte OPTS_SETPT5 | $12	; Object $2F - OBJ_BOO
+	.byte OPTS_SETPT5 | $37	; Object $2F - OBJ_BOO
 	.byte OPTS_SETPT5 | $12	; Object $30 - OBJ_PACBOO
 	.byte OPTS_SETPT5 | $13	; Object $31 - OBJ_PHANTO
 	.byte OPTS_SETPT5 | $12	; Object $32 - OBJ_PHANTO_FLIP
-	.byte OPTS_SETPT5 | $0A	; Object $33 - OBJ_NIPPER
-	.byte OPTS_SETPT5 | $36	; Object $34 - OBJ_TOAD
+	.byte OPTS_SETPT5 | $37	; Object $33 - OBJ_NIPPER
+	.byte OPTS_SETPT5 | $37	; Object $34 - OBJ_TOAD
 	.byte OPTS_SETPT5 | $05	; Object $35 - OBJ_TOADHOUSEITEM
 	.byte OPTS_NOCHANGE	; Object $36 - OBJ_WOODENPLATFORM
 	.byte OPTS_NOCHANGE	; Object $37 - OBJ_OSCILLATING_HS
@@ -399,6 +399,8 @@ ObjectGroup01_PatternSets:
 
 
 ObjP2F:
+	.byte $B1, $B3, $91, $93
+
 ObjP35:
 ObjP47:
 	.byte $81, $83, $89, $8B, $81, $83, $93, $95, $85, $87, $89, $8B, $85, $87, $93, $95
@@ -425,6 +427,8 @@ ObjP3E:
 ObjP44:
 	.byte $77, $77, $77, $77, $77, $77
 ObjP33:
+	.byte $95, $97, $B5, $B7, $9D, $9F, $BD, $BF, $99, $9B, $B9, $BB
+
 ObjP39:
 	.byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
 
@@ -760,24 +764,14 @@ ObjHit_PWing:
 	RTS
 
 Boo_CheckPlayerSight:
-	LDY <Objects_Var5,X
-
-	JSR Object_CalcCoarseXDiff
-	EOR <Player_FlipBits	 ; Check flip direction against Player; if Player and Boo are facing eachother, result is non-zero
-	ASL A		 ; Push up result so it is $00 or $80
-	BPL PRG002_A8C5	 ; If Player is not facing Boo, jump to PRG002_A8C5
-
-	LDY #$00	 ; Otherwise, Y = 0
-
-PRG002_A8C5:
-	CPY #$14
-	BGE PRG002_A8CC	 ; If Var5 >= $14 (Time to start chasing!), jump to PRG002_A8CC
-
-	INY		 ; Y++ (Delaying before starting chase)
-
-	STY <Objects_Var5,X	; Update Var5
+	LDA DayNight
+	BNE PRG002_A8CC
+	JSR Object_FacePlayer
+	CLC
+	RTS
 
 PRG002_A8CC:
+	SEC
 	RTS		 ; Return
 
 ObjNorm_PirateBoo:
@@ -797,10 +791,6 @@ ObjNorm_PirateBoo:
 	JMP Object_ShakeAndDraw	 	; Draw and don't come back!
 	
 ObjNorm_Boo:
-	LDA Objects_Property, X
-	BEQ ObjNorm_Boo1
-
-ObjNorm_Boo1:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Boo_CheckPlayerSight
 	BCS PRG002_A8DE	 ; If carry set, it's time to start chasing Player!  Jump to PRG002_A8DE
@@ -814,6 +804,7 @@ ObjNorm_Boo1:
 
 PRG002_A8DE:
 	JSR Chase
+
 	LDA #$01	 ; A = 1 (frame 1, chase!)
 
 PRG002_AA46:
@@ -2315,7 +2306,19 @@ ObjInit_NipperHopping:
 	RTS		 ; Return
 
 
+NipperJump:
+	.byte $D0, $CA, $BC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC
+
+NipperMove:
+	.byte $F0, $10
+
 ObjNorm_Nipper:
+	LDA <Player_HaltGame
+	BEQ ObjNorm_Nipper0_1
+
+	JMP PRG002_B1CE
+
+ObjNorm_Nipper0_1:
 	JSR Enemy_CollideWithWorld	 ; Collide with world
 
 	LDA <Counter_1
@@ -2324,94 +2327,126 @@ ObjNorm_Nipper:
 	AND #$02	 
 	TAY		 ; Y = 0 or 2
 
-	JSR Object_CalcCoarseXDiff	 ; Get X difference between Nipper and Player
-	STA <Temp_Var14		 ; Store flip direction -> Temp_Var14
+	LDA DayNight
+	BNE PRG002_B1CC
 
-	LDA <Temp_Var15	
-	ADD #$03
-	CMP #$06
-	BGE PRG002_B1CD	 ; If Player is horizontally too far away from Nipper, jump to PRG002_B1CD
+	LDA <Objects_Var5, X
+	BNE ObjNorm_Nipper2_0
 
-	JSR Object_CalcCoarseYDiff
-	LDA <Temp_Var15
-	BMI PRG002_B1CD	 ; If Player is below Nipper, jump to PRG002_B1CD
+ObjNorm_Nipper0:
+	;STA Debug_Snap
+	JSR Object_FacePlayer
 
-	INY		 ; Y = 1 or 3
+	LDA <Objects_Var5, X
+	BNE PRG002_B1CD
 
+	LDA <Objects_DetStat,X
+	AND #$04
+	BEQ ObjNorm_Nipper2
+
+	JSR Level_ObjCalcXBlockDiffs
+	CMP #$00
+	BNE ObjNorm_Nipper2
+
+	LDA #$10
+	JSR Level_ObjCalcYBlockDiffs
+	CPY #$01
+	BNE ObjNorm_Nipper2
+	TAY
+
+	LDA NipperJump, Y
+	STA <Objects_YVel, X
+	STA <Objects_Var5, X
+	BNE PRG002_B1CC
+
+ObjNorm_Nipper2_0:
 	LDA <Objects_DetStat,X
 	AND #$04
 	BEQ PRG002_B1CD	 ; If Nipper has not touched ground, jump to PRG002_B1CD
 
-	; Nipper plant don't move horizontally!
 	LDA #$00
-	STA <Objects_XVel,X
+	STA <Objects_Var5, X
+	BEQ PRG002_B1CD
 
-	; Jump little Nipper!
-	LDA #-$30
-	STA <Objects_YVel,X
+ObjNorm_Nipper2:
+	LDA <Objects_DetStat, X
+	AND #(HIT_DET_LEFT | HIT_DET_RIGHT)
+	BEQ ObjNorm_Nipper2_2
 
-PRG002_B1CD:
-	TYA	
-	STA Objects_Frame,X	 ; Set frame
+	JSR Object_HitWall
 
-	JSR Object_DeleteOrDraw	 ; Delete if falls off-screen, otherwise draw
-	JSR Object_HitTestRespond	 ; Do collision test with Player and respond
+ObjNorm_Nipper2_2:
+	LDY #$00
+	LDA Objects_FlipBits, X
+	BEQ ObjNorm_Nipper3
 
-	LDA <Objects_Var4,X
-	BNE PRG002_B1E1	 ; If Var4 <> 0, jump to PRG002_B1E1
+	INY
 
-	; Set the flip bits
-	LDA <Temp_Var14
-	STA Objects_FlipBits,X
-
-	RTS		 ; Return
-
-PRG002_B1E1:
-	LDA Objects_Timer,X
-	BEQ PRG002_B1EC	 ; If timer expired, jump to PRG002_B1EC
-
-	LSR A
-	BNE PRG002_B20F	 ; If timer > 1, jump to PRG002_B20F (RTS)
-
-	JSR Object_FlipFace	 ; Otherwise, turn around
-
-PRG002_B1EC:
-
-	; Timer expired...
-
+ObjNorm_Nipper3:
 	LDA <Objects_DetStat,X
 	AND #$04
-	BEQ PRG002_B20F	 ; If Nipper has not touched ground, jump to PRG002_B20F (RTS)
+	BEQ PRG002_B1CD
 
-	LDA <Objects_YVel,X
-	BMI PRG002_B20F	 ; If Nipper is moving upward, jump to PRG002_B20F (RTS)
+	LDA NipperMove, Y
+	STA <Objects_XVel, X
 
-	DEC <Objects_Var5,X	; Var5--
-	BPL PRG002_B208	 ; If Var5 >= 0, jump to PRG002_B208
+	LDA #$F0
+	STA <Objects_YVel, X
+	BNE PRG002_B1CD
 
-	; Reset Var5 = 8
-	LDA #$08
-	STA <Objects_Var5,X
-
-	; Reset timer to $20
-	LDA #$20
-	STA Objects_Timer,X
-
-	; Halt horizontal movement
+PRG002_B1CC:
 	LDA #$00
-	STA <Objects_XVel,X
+	STA <Objects_XVel, X
 
-	RTS		 ; Return
+PRG002_B1CD:
+	JSR NipperDetermineFrame
+	STA Objects_Frame,X	 ; Set frame
 
-PRG002_B208:
-	JSR Object_SetXVelByFacingDir	; Face travel direction 
+PRG002_B1CE:
+	JSR Object_DeleteOffScreen
+	JSR Object_ShakeAndDraw	 ; Delete if falls off-screen, otherwise draw
+	JMP Object_HitTestRespond	 ; Do collision test with Player and respond
 
-	; Hop hop hop
-	LDA #-$10
-	STA <Objects_YVel,X
 
-PRG002_B20F:
-	RTS		 ; Return
+NipperDetermineFrame:
+	LDA DayNight
+	BEQ NipperDetermineFrame1
+
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	ORA #$04
+	
+	RTS
+
+NipperDetermineFrame1:
+	LDA <Objects_Var5, X
+	BNE NipperDetermineFrame2
+
+	LDA <Counter_1
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	
+	RTS
+
+NipperDetermineFrame2:
+	LDA Objects_YVel, X
+	BPL NipperDetermineFrame3
+
+	LDA #$02
+	RTS
+
+NipperDetermineFrame3:
+	LDA #$03
+	RTS
+	
 
 ObjInit_Toad:
 	LDA Objects_Property,X		 ; Otherwise, Y = 1 
@@ -4832,7 +4867,8 @@ PiranhaCheckOffScreen:
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 	PLA
@@ -4940,7 +4976,8 @@ Piranha_CheckTiles2:
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 	LDA #$00
@@ -4951,7 +4988,8 @@ Piranha_SetVelocity:
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 	LDY <Temp_Var13

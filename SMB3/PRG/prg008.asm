@@ -4746,7 +4746,8 @@ PRG008_B8FD:
 	STA Level_BlockChgXHi	 ; Store block change X high coord
 
 	LDA PSwitchActivateTile	 
-	STA Level_ChgTileEvent	 ; Queue P-Switch appear!
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent	 ; Queue P-Switch appear!
 
 	LDY #$01	 ; Y = 1 (index into PRG001 Bouncer_PUp, i.e. nothing)
 	RTS		 ; Return
@@ -5325,7 +5326,8 @@ PRG008_BF7E:
 ; Register 'A' as input sets Level_ChgTileEvent
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_QueueChangeBlock:
-	STA Level_ChgTileEvent	 ; Store type of block change!
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent	 ; Store type of block change!
 
 	; Store change Y Hi and Lo
 	LDA <Temp_Var13

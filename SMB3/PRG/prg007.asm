@@ -828,7 +828,8 @@ PRG007_A59F:
 	RTS		 ; Return
 
 Fireball_ThawTile:
-	STA Level_ChgTileEvent	 ; Queue tile change event!
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent	 ; Queue tile change event!
 	JSR BrickBust_MoveOver	 ; Open up a brick bust
 
 	; Brick bust "poof" style (over top of the changing tile)
@@ -5044,7 +5045,8 @@ Hammer_BrickBust:
 
 Hammer_BrickBust1:
 	EOR #$01
-	STA Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	JMP PlayerProj_ChangeToPoof
 
@@ -5231,7 +5233,8 @@ EnemyHammerBrickBust:
 
 EnemyHammerBrickBust1:
 	EOR #$01
-	STA Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 	LDX <SlotIndexBackup
 
 	PLA

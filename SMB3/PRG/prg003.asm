@@ -552,7 +552,8 @@ Spintula_SpinDown1:
 	JSR SetObjectTileCoord
 	LDA Objects_LastTile, X
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 
 Spintula_SpinDownRTS:
 	JMP Object_ShakeAndDrawMirrored
@@ -608,7 +609,8 @@ Spintula_SpinUp:
 	JSR SetObjectTileCoord
 	LDA Objects_LastTile, X
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 
 Spintula_SpinUpRTS:
 	JMP Object_ShakeAndDrawMirrored
@@ -1108,7 +1110,8 @@ VeggieGuyPull:
 	LDA Objects_LastTile, X
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	LDA <Objects_Y, X
 	STA Objects_LastTileY
 	LDA <Objects_YHi, X
@@ -1355,7 +1358,8 @@ ShyGuyGetBrick2:
 	LDA Object_TileFeetValue
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	LDA <Objects_Y, X
 	SUB #$08
 	STA Objects_LastTileY
@@ -1842,7 +1846,8 @@ PRG003_A691:
 DonutLift_ChangeBlock:
 	; Queue tile change event
 	LDA #$80
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 
 	; Block change to occur at Y+1
 	LDA <Objects_Y,X
@@ -2392,7 +2397,8 @@ ExplodeBreakBlocks:
 
 ExplodeBreakBlocks1:
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 
 	LDA ObjTile_DetYLo
 	AND #$F0
@@ -5103,8 +5109,11 @@ PRG003_BDA8:
 PRG003_BDAA:
 	LDA <Objects_DetStat, X
 	AND #HIT_DET_GRND
-	BEQ PRG003_BDE6
+	BNE PRG003_BDAA2
 
+	JMP Enemy_DeleteIfOffAndDrawTail
+
+PRG003_BDAA2:
 	JSR Object_HitGround	 ; Align Fire Snake to ground
 	LDA #$00
 	STA Objects_XVel, X
@@ -5133,7 +5142,8 @@ PRG003_BDAA:
 	BEQ PRG003_BDAB
 
 	EOR #$01
-	STA Level_ChgTileEvent 
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent 
 
 PRG003_BDAB:
 
@@ -5367,7 +5377,8 @@ FireSnake_ChangeSolids3:
 	STA Level_BlockChgXHi
 	LDA Object_TileFeetValue
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	JMP FireSnake_ChangeSolids8
 
 FireSnake_ChangeSolids5:
@@ -5406,7 +5417,8 @@ FireSnake_ChangeSolids7:
 	STA Level_BlockChgYHi
 	LDA Object_TileWallValue
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 FireSnake_ChangeSolids8:
 	JSR SpecialObj_FindEmpty

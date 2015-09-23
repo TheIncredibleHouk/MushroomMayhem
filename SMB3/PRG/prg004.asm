@@ -520,7 +520,8 @@ ObjNorm_Waterfill1:
 FillWater:
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 
 	; Set all of the block change coordinates to remove the ice brick
 	LDA <Objects_YHi,X
@@ -1378,22 +1379,7 @@ ObjThwomp_FallToCeiling1:
 EndQuickRise:
 	RTS		 ; Return
 	; Values for OBJ_THWOMPUPDOWN, OBJ_THWOMPDIAGONALUL, OBJ_THWOMPDIAGONALDL, respectively
-SlideThwomp_InitXVel:	.byte $00, $10, $10
-SlideThwomp_InitYVel:	.byte $10, $10, $F0
-
 ObjInit_ThwompUDSlide:
-	LDA Level_ObjectID,X
-	SUB #OBJ_THWOMPUPDOWN
-	TAY		 ; Y = relative Thwomp index
-
-	; Set initial X velocity
-	LDA SlideThwomp_InitXVel,Y
-	STA <Objects_XVel,X
-
-	; Set initial Y velocity
-	LDA SlideThwomp_InitYVel,Y
-	STA <Objects_YVel,X
-
 	RTS
 
 
@@ -2839,7 +2825,8 @@ Zombie_InsideBlock:
 	LDA Object_LevelTile
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	
 	JSR SetObjectTileCoordAlignObj
 	LDA #$01
@@ -5955,7 +5942,8 @@ ThwompBreakBlock:
 	LDA #$00
 	STA <Objects_YVel, X
 	LDA #$81
-	STA Level_ChgTileEvent
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
 	LDA ObjTile_DetYLo
 	AND #$F0
 	STA Level_BlockChgYLo
