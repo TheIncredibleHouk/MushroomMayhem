@@ -1624,7 +1624,7 @@ PRG031_F567:
 	INC <Counter_1	 ; Simply increments every frame, used for timing
 	DEC <Counter_2
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG031_F568
 
 	INC <Anim_Counter
@@ -3063,7 +3063,7 @@ DestroyAllEnemies:
 	LDX #$04
 
 KeepDestroying:
-	LDA Level_ObjectID,X
+	LDA Objects_ID,X
 	BEQ SkipDestroy
 	LDA Objects_State,X
 	BEQ SkipDestroy

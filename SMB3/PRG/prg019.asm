@@ -1400,10 +1400,10 @@ CollosalCheep:
 	LSR A
 	LSR A
 	STA Objects_Frame, X
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE DrawGiantCheep
 	JSR DrawGiantCheep
-	LDA Objects_Var2, X
+	LDA Objects_Data2, X
 	CMP #$03
 	BCS CCNoMove
 	JSR Object_ApplyXVel
@@ -1425,7 +1425,7 @@ CollosalCheepDoAction:
 
 CollosalCheepDoAction1:
 
-	LDA Objects_Var1, X
+	LDA Objects_Data1, X
 	JSR DynJump
 
 	.word CCSwim
@@ -1446,7 +1446,7 @@ DrawGiantCheep:
 	LDA #$1B
 	STA PatTable_BankSel + 4
 	LDA #SPR_PAL1
-	STA Objects_SprAttr, X
+	STA Objects_SpriteAttributes, X
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE DrawGiantCheep1
@@ -1454,7 +1454,7 @@ DrawGiantCheep:
 	AND #$04
 	BEQ DrawGiantCheep1
 	LDA #SPR_PAL3
-	STA Objects_SprAttr, X
+	STA Objects_SpriteAttributes, X
 
 DrawGiantCheep1:
 	LDA #LOW(GiantCheepPatterns)
@@ -1462,8 +1462,8 @@ DrawGiantCheep1:
 	LDA #HIGH(GiantCheepPatterns)
 	STA <Temp_Var11
 	LDA #SPR_BEHINDBG
-	ORA Objects_SprAttr, X
-	STA Objects_SprAttr, X
+	ORA Objects_SpriteAttributes, X
+	STA Objects_SpriteAttributes, X
 	JSR DrawGiantObject
 	RTS
 
@@ -1492,37 +1492,37 @@ CCSwimY:
 CCSwim2:
 	JSR CCSwim
 	LDA #$06
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 	LDA #$68
 	STA Objects_SlowTimer, X
 	LDA RandomN + 3
 	AND #$07
 	TAY
 	LDA CCSwimY, Y
-	STA Objects_Y, X
-	DEC Objects_Var4, X
+	STA Objects_YZ, X
+	DEC Objects_Data4Z, X
 	BNE CCSwim2_2
 	LDA #$07
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 
 CCSwim2_2:	
 	JSR FindEmptyEnemySlot
 	LDA RandomN + 2
-	STA Objects_X, X
+	STA Objects_XZ, X
 	LDA #$00
-	STA Objects_XHi, X
-	STA Objects_YHi, X
-	STA Objects_Var1, X
+	STA Objects_XHiZ, X
+	STA Objects_YHiZ, X
+	STA Objects_Data1, X
 	LDA #$90
-	STA Objects_Y, X
+	STA Objects_YZ, X
 	LDA #OBJ_BUBBLE
-	STA Level_ObjectID, X
+	STA Objects_ID, X
 	LDA #$00
-	STA Objects_Var4, X
+	STA Objects_Data4Z, X
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 	LDA #$F8
-	STA <Objects_YVel, X
+	STA <Objects_YVelZ, X
 	RTS
 	
 CCSwim:
@@ -1530,10 +1530,10 @@ CCSwim:
 	CMP #OBJSTATE_KILLED
 	BNE CCSwim1
 	LDA #$03
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
-	INC Objects_Var2, X
+	INC Objects_Data2, X
 	LDA #$20
 	STA Objects_SlowTimer, X
 	LDX #$03
@@ -1546,17 +1546,17 @@ CCSwim1:
 	AND #$01
 	TAY
 	LDA CCXPositions, Y
-	STA <Objects_X, X
+	STA <Objects_XZ, X
 	LDA CCXPositions + 2, Y
-	STA <Objects_XHi, X
+	STA <Objects_XHiZ, X
 	LDA CCVelocities, Y
-	STA <Objects_XVel, X
+	STA <Objects_XVelZ, X
 	LDA CCHFlip, Y
-	STA Objects_FlipBits, X
+	STA Objects_Orientation, X
 	LDA #$00
-	STA <Objects_YHi, X
+	STA <Objects_YHiZ, X
 	LDA #$98
-	STA <Objects_Y, X
+	STA <Objects_YZ, X
 	LDA RandomN
 	AND #$30
 	LSR A
@@ -1569,30 +1569,30 @@ CCSwim1:
 	LDA CCTimers, Y
 	STA Objects_SlowTimer, X
 	TYA
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 	LDA #$00
-	STA Objects_Var3, X
+	STA Objects_Data3, X
 	RTS
 
 CCJump:
 	LDA #$B0
-	STA <Objects_YVel, X
+	STA <Objects_YVelZ, X
 	LDA #$02
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 	RTS
 
 CCBounce:
-	LDA Objects_Var2, X
+	LDA Objects_Data2, X
 	CMP #$02
 	BNE CCBounce1
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE CCBounce1
 	LDA #$0A
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 	LDA #$40
 	STA Objects_SlowTimer, X
-	INC Objects_Var2, X
+	INC Objects_Data2, X
 	LDX #$03
 	JSR KeepDestroying
 	RTS
@@ -1604,7 +1604,7 @@ CCBounce1:
 	LDA #$10
 	STA Objects_SlowTimer, X
 	LDA #$00
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 	RTS
 
 CCObjects:
@@ -1615,7 +1615,7 @@ CCObjectsY:
 
 CCBounce2:
 	JSR Object_ApplyY_With_Gravity
-	LDA <Objects_YVel, X
+	LDA <Objects_YVelZ, X
 	BMI CCBounceRTS
 	LDY #(SuperGiantOffsets1  - Object_TileDetectOffsets)
 	INY
@@ -1625,7 +1625,7 @@ CCBounce2:
 	BEQ CCBounceRTS
 
 	LDA #$C0
-	STA <Objects_YVel, X
+	STA <Objects_YVelZ, X
 
 	LDA #$18
 	STA Level_Vibration
@@ -1635,11 +1635,11 @@ CCBounce2:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-	LDA Objects_Var3, X
+	LDA Objects_Data3, X
 	BNE CCBounceRTS
-	INC Objects_Var3, X
+	INC Objects_Data3, X
 
-	LDA Objects_Var2, X
+	LDA Objects_Data2, X
 	STA <Temp_Var3
 
 CCAnother_Object:
@@ -1654,22 +1654,22 @@ CCAnother_Object:
 	TAY
 	LDA <Temp_Var1
 	AND #$F0
-	STA Objects_X, Y
+	STA Objects_XZ, Y
 	LDA #$00
-	STA Objects_XHi, Y
+	STA Objects_XHiZ, Y
 
 	LDA #OBJSTATE_INIT
 	STA Objects_State,Y
 
 	LDX <Temp_Var3
 	LDA CCObjectsY, X
-	STA Objects_Y, Y
+	STA Objects_YZ, Y
 	LDA #$FF
-	STA Objects_YHi, Y
+	STA Objects_YHiZ, Y
 
 	LDX <Temp_Var2
 	LDA CCObjects ,X
-	STA Level_ObjectID, Y
+	STA Objects_ID, Y
 	STA From_Reserve
 	DEC <Temp_Var3
 	BPL CCAnother_Object
@@ -1688,30 +1688,30 @@ CCDrain1:
 CCFlood1:
 	LDA #$00
 	STA <Temp_Var1
-	INC Objects_Var1, X
+	INC Objects_Data1, X
 	JMP CCFlood
 
 CCDrain2:
 CCFlood2:
 	LDA #$03
 	STA <Temp_Var1
-	INC Objects_Var1, X
+	INC Objects_Data1, X
 	JMP CCFlood
 
 CCFlood3:
 	LDA #$06
 	STA <Temp_Var1
 	LDA #$06
-	STA Objects_Var1, X
-	LDA Objects_Var2, X
-	STA Objects_Var4, X
+	STA Objects_Data1, X
+	LDA Objects_Data2, X
+	STA Objects_Data4Z, X
 	JMP CCFlood
 
 CCDrain3:
 	LDA #$06
 	STA <Temp_Var1
 	LDA #$00
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 	JMP CCFlood
 
 CCFlood:
@@ -1722,29 +1722,29 @@ CCFlood:
 CreateFlood:
 	JSR FindEmptyEnemySlot
 	LDA #OBJ_WATERFILLER
-	STA Level_ObjectID, X
+	STA Objects_ID, X
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 	LDA #SPR_PAL2
-	STA Objects_SprAttr, X
+	STA Objects_SpriteAttributes, X
 	LDA #$40
-	STA Objects_XVel, X
+	STA <Objects_XVelZ, X
 	LDA CCYFloodStages, Y
-	STA <Objects_Y, X
+	STA <Objects_YZ, X
 	LDA #$00
-	STA <Objects_YHi, X 
-	STA Objects_FlipBits, X
-	STA Objects_Var1, X
+	STA <Objects_YHiZ, X 
+	STA Objects_Orientation, X
+	STA Objects_Data1, X
 	STA Objects_Frame, X
 	LDA #$FF
-	STA <Objects_XHi, X
+	STA <Objects_XHiZ, X
 	LDA CCXFloodOffset, Y
-	STA <Objects_X, X
+	STA <Objects_XZ, X
 	INY
 	DEC <Temp_Var2
 	BPL CreateFlood
 	LDA #$28
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	STA Objects_SlowTimer, X
 	LDA #SND_LEVELAIRSHIP
 	ORA Sound_QLevel2
@@ -1755,28 +1755,28 @@ CCExplode:
 	JSR FindEmptyEnemySlot
 	TXA
 	TAY
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	LDA #OBJ_BOBOMBEXPLODE
-	STA Level_ObjectID, Y
+	STA Objects_ID, Y
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State, Y
-	LDA Objects_X, X
+	LDA Objects_XZ, X
 	ADD #$08
-	STA Objects_X, Y
-	LDA Objects_XHi, X
+	STA Objects_XZ, Y
+	LDA Objects_XHiZ, X
 	ADC #$00
-	STA Objects_XHi, Y
-	LDA Objects_Y, X
+	STA Objects_XHiZ, Y
+	LDA Objects_YZ, X
 	ADD #$08
-	STA Objects_Y, Y
-	LDA Objects_YHi, X
+	STA Objects_YZ, Y
+	LDA Objects_YHiZ, X
 	ADC #$00
-	STA Objects_YHi, Y
+	STA Objects_YHiZ, Y
 	LDA #20
 	STA Objects_SlowTimer, X
 	LDA #$02
-	STA Objects_XHi, X
-	INC Objects_Var1, X
+	STA Objects_XHiZ, X
+	INC Objects_Data1, X
 	RTS
 
 CCEnd:

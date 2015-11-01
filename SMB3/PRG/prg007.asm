@@ -171,7 +171,7 @@ PRG007_A251:
 	ORA Player_IsDucking	; ... Player is ducking ...
 	ORA Player_Kick	 	; ... Player is kicking ...
 	ORA Player_InPipe	; ... Player is in a pipe ...
-	ORA <Player_HaltGame	; ... gameplay is halted ...
+	ORA <Player_HaltGameZ	; ... gameplay is halted ...
 	BNE PRG007_A268	 	; ... then jump to PRG007_A268
 
 	BIT <Pad_Input
@@ -349,11 +349,11 @@ PRG007_A328:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PlayerProjs_UpdateAndDraw:
 	LDX #$01	; X = 1  
-	STX <SlotIndexBackup		 ; SlotIndexBackup = 1
+	STX <CurrentObjectIndexZ		 ; CurrentObjectIndexZ = 1
 
 	JSR PlayerProj_UpdateAndDraw	 ; Update and draw this Player Projectile
 
-	DEC <SlotIndexBackup		 ; SlotIndexBackup = 0
+	DEC <CurrentObjectIndexZ		 ; CurrentObjectIndexZ = 0
 	DEX		 ; X = 0
 
 PlayerProj_UpdateAndDraw:
@@ -372,7 +372,7 @@ PRG007_A33F:
 	LDA AScrlURDiag_WrapState_Copy
 	BEQ PRG007_A361	 ; If diagonal scroller is not wrapping, jump to PRG007_A361
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_A361	 ; If gameplay is halted, jump to PRG007_A361
 
 	; Offset Player projectile to compensate for the diagonal autoscroller's wrap
@@ -387,7 +387,7 @@ PRG007_A33F:
 	INC PlayerProj_YHi,X	 ; Apply carry
 
 PRG007_A361:
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_A3DB	 ; If gameplay halted, jump to PRG007_A3DB
 
 	LDA PlayerProj_YVel,X
@@ -541,7 +541,7 @@ PRG007_A40E:
 	BNE Do_Spr_1
 	ASL A
 Do_Spr_1:
-	ADD Object_SprRAM+6	 ; Offset into high end Sprite RAM
+	ADD Object_SpriteRAM_Offset+6	 ; Offset into high end Sprite RAM
 	TAY		 ; -> 'Y'
 
 	; Set projectile sprite X
@@ -633,9 +633,9 @@ PRG007_A472:
 
 PRG007_A485:
 PRG007_A48C:
-	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
+	LDX <CurrentObjectIndexZ	 ; X = Player Projectile slot index
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_A4A2	 ; If gameplay is halted, jump to PRG007_A4A2
 
 	JSR Fireball_DetectWorld	 ; end #DAHRKDAIZ Hit tests for projectiles (bounce, poof, etc.)
@@ -898,7 +898,7 @@ PRG007_A648:
 	LDA Obj2Obj_EnByState,X
 	BNE PRG007_A667	 ; If this state does not support object-to-object (object-to-Projectile), jump to PRG007_A667 (Forget it!)
 
-	LDX Level_ObjectID,Y	; X = object's ID
+	LDX Objects_ID,Y	; X = object's ID
 	LDA Object_AttrFlags,X	
 	STA <Temp_Var1		; Object attribute flags -> Temp_Var1
 
@@ -911,7 +911,7 @@ PRG007_A667:
 	DEY		 ; Y--
 	BPL PRG007_A648	; While Y >= 0, loop
 
-	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
+	LDX <CurrentObjectIndexZ	 ; X = Player Projectile slot index
 
 PRG007_A66C:
 	RTS		 ; Return
@@ -932,14 +932,14 @@ PlayerProj_HitObject:
 	LDA <Temp_Var13	 	; Detect Y of projectile
 	SUB Objects_SpriteY,Y	; Difference against this object's Sprite Y
 	CMP Projectile_BBoxY,X
-	LDX <SlotIndexBackup	; X = Player Projectile slot index
+	LDX <CurrentObjectIndexZ	; X = Player Projectile slot index
 	BGE PRG007_A66C	 	; If projectile is out of range vertically, jump to PRG007_A66C (RTS)
 
 	LDA <Temp_Var14		; Detect X of projectile
 	SUB Objects_SpriteX,Y	; Difference against this object's Sprite X
 	LDX <Temp_Var2		; X = bounding box index
 	CMP Projectile_BBoxX,X
-	LDX <SlotIndexBackup	; X = Player Projectile slot index
+	LDX <CurrentObjectIndexZ	; X = Player Projectile slot index
 	BCC PRG007_A6BC	 	; If projectile is out of range horizontally, jump to PRG007_A6FD (RTS)
 	RTS
 
@@ -980,12 +980,12 @@ PRG007_A6C8:
 PRG007_A6C9:
 ;;;;;;
 
-	LDA Level_ObjectID, Y
+	LDA Objects_ID, Y
 	CMP #OBJ_BOBOMB
 	BNE PRG007_A6C6
 
 	LDA #OBJ_BOBOMBEXPLODE
-	STA Level_ObjectID, Y
+	STA Objects_ID, Y
 	LDA #$20
 	STA Objects_Timer,Y
 	RTS
@@ -996,9 +996,9 @@ PRG007_A6C6:
 
 	TYA
 	TAX
-	INC Objects_Var3, X
+	INC Objects_Data3, X
 	LDA #$00
-	STA Objects_Var2, X
+	STA Objects_Data2, X
 	LDX TempX
 	RTS
 	; Weapon successfully hit!
@@ -1023,7 +1023,7 @@ PRG007_A6DD:
 	
 	; Enemy bounces upward a bit
 	LDA #-$34
-	STA Objects_YVel,Y
+	STA Objects_YVelZ,Y
 
 	; Set object's velocity based on Player's velocity (sort of works)
 	LDA PlayerProj_XVel,X
@@ -1033,7 +1033,7 @@ PRG007_A6DD:
 	LDA #-$0C
 
 PRG007_A6EC:
-	STA Objects_XVel,Y
+	STA Objects_XVelZ,Y
 
 	TYA
 	TAX	; object index -> 'X'
@@ -1043,7 +1043,7 @@ PRG007_A6EC:
 	BEQ ICE_BALL_SKIP1
 	
 Kill_Enemy_Anyway:
-	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
+	LDX <CurrentObjectIndexZ	 ; X = Player Projectile slot index
 
 	STY DAIZ_TEMP1
 	JSR Reap_CoinY
@@ -1057,15 +1057,15 @@ PRG007_A6FD:
 
 ICE_BALL_SKIP1:
 
-	LDA Level_ObjectID,Y
+	LDA Objects_ID,Y
 	CMP #OBJ_PIXIE
 	BEQ Kill_Enemy_Anyway
 	LDA #$01	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
 	STA Objects_State,Y
 	LDA #OBJ_ICEBLOCK
-	STA Level_ObjectID,Y ; #DAHRKDAIZ Replace sprite with ice block
+	STA Objects_ID,Y ; #DAHRKDAIZ Replace sprite with ice block
 	LDA #$01
-	STA Objects_SprAttr,X
+	STA Objects_SpriteAttributes,X
 	LDA #$00
 	STA Objects_Frame, X
 	RTS
@@ -1079,7 +1079,7 @@ PRG007_A705:
 
 	; Fireball poof!
 
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_A719	 ; If gameplay halted, jump to PRG007_A719
 
 	; PlayerProj_ID is now the fireball poof counter for the remainder
@@ -1150,7 +1150,7 @@ PRG007_A75F:
 	ORA #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAM+$06,Y	 ; Set right sprite attributes
 
-	LDX <SlotIndexBackup	 ; X = Player Projectile slot index
+	LDX <CurrentObjectIndexZ	 ; X = Player Projectile slot index
 
 	RTS		 ; Return
 
@@ -1178,7 +1178,7 @@ SwimBubble_XOff:
 
 Player_WaterOrWaterfallVizFX:
 PRG007_A783:
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_A7F0	 ; If gameplay halted, jump to PRG007_A7F0 (RTS)
 
 	LDA Player_InWater
@@ -1233,7 +1233,7 @@ PRG007_A7C6:
 PRG007_A7C9:
 	STA <Temp_Var1	 ; -> Temp_Var1
 
-	LDX <SlotIndexBackup	 ; Restore 'X' as slot index
+	LDX <CurrentObjectIndexZ	 ; Restore 'X' as slot index
 
 	; Sprite "splashing" effect Y
 	LDA <Player_SpriteY
@@ -1275,10 +1275,10 @@ PRG007_A7FB:
 	AND <Counter_1
 	BNE PRG007_A80C	 ; Periodically jump to PRG007_A80C (RTS)
 
-	; SlotIndexBackup = 2
+	; CurrentObjectIndexZ = 2
 	LDX #$02
 PRG007_A802:
-	STX <SlotIndexBackup
+	STX <CurrentObjectIndexZ
 
 	LDA Bubble_Cnt,X
 	BEQ PRG007_A80D	 ; If this bubble slot is empty, jump to PRG007_A80D
@@ -1344,7 +1344,7 @@ PRG007_A83D:
 	LDA #$08	 ; Otherwise, A = 8
 
 PRG007_A845:
-	LDX <SlotIndexBackup	 ; X = slot backup
+	LDX <CurrentObjectIndexZ	 ; X = slot backup
 
 	; Set Bubble Y
 	ADD <Player_Y
@@ -1373,7 +1373,7 @@ PRG007_A845:
 Bubbles_UpdateAndDraw:
 	LDX #$03	 ; X = 3
 PRG007_A86A:
-	STX <SlotIndexBackup	 ; -> Slot index backup
+	STX <CurrentObjectIndexZ	 ; -> Slot index backup
 
 	LDA Bubble_Cnt,X
 	BEQ PRG007_A874	 ; If this bubble slot is not in use, jump to PRG007_A874
@@ -1388,7 +1388,7 @@ PRG007_A874:
 
 
 Bubble_UpdateAndDraw:
-	LDA <Player_HaltGame		 
+	LDA <Player_HaltGameZ		 
 	BEQ PRG007_A87F	 ; If gameplay is not halted, juimp to PRG007_A89A
 
 	JMP PRG007_A89A	 ; Otherwise, jump to PRG007_A89A
@@ -1507,7 +1507,7 @@ Bubble_Draw:
 
 	LDA <Counter_1
 	AND #%00000011
-	ADC <SlotIndexBackup 	
+	ADC <CurrentObjectIndexZ 	
 	TAY		 ; Y = (0 to 3) + bubble's index
 
 	LDA Bubble_SprRAMOff,Y
@@ -1556,12 +1556,12 @@ PRG007_A978:
 Splash_UpdateAndDraw:
 	LDX #$02	 ; X = 2
 PRG007_A97B:
-	STX <SlotIndexBackup	 ; -> Slot Index backup
+	STX <CurrentObjectIndexZ	 ; -> Slot Index backup
 
 	LDA Splash_Counter,X
 	BEQ PRG007_A9A0	 ; If no splash is active here, jump to PRG007_A9A0
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 
 	; This probably used to skip something if gameplay was halted, i.e. (BNE xxxx)
 	NOP
@@ -1658,7 +1658,7 @@ PRG007_A9D5:
 	STA Sprite_RAM+$01,Y
 	STA Sprite_RAM+$05,Y
 
-	LDX <SlotIndexBackup	 ; X = splash index
+	LDX <CurrentObjectIndexZ	 ; X = splash index
 
 	LDA <Temp_Var1
 	CMP #$03
@@ -1666,7 +1666,7 @@ PRG007_A9D5:
 
 	LDA <Counter_1
 	AND #$01
-	ORA <Player_HaltGame
+	ORA <Player_HaltGameZ
 	BNE PRG007_AA10	 ; Every other tick or gameplay halted, jump to 
 
 	INC Splash_Y,X	 ; Splash_Y++
@@ -1723,7 +1723,7 @@ BrickBusts_DrawAndUpdate:
 	LDX #$01	 ; X = 1
 
 PRG007_ABC7:
-	STX <SlotIndexBackup	; -> SlotIndexBackup
+	STX <CurrentObjectIndexZ	; -> CurrentObjectIndexZ
 
 	JSR BrickBust_DrawAndUpdate	 ; Draw and update this brick bust
 
@@ -1747,7 +1747,7 @@ BrickBust_DrawAndUpdate:
 	JMP PRG007_AD27	 ; Otherwise, jump to PRG007_AD27
 
 PRG007_ABE0:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_ABED	 ; If gameplay halted, jump to PRG007_ABED
 
 	LDA <Counter_1
@@ -1763,7 +1763,7 @@ PRG007_ABED:
 	CLC		 ; Clear carry (no point?)
 	SUB Level_ScrollDiffV	 ; Adjust Y based on vertical screen scroll
 
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_ABFE	 ; If gameplay is halted, jump to PRG007_ABFE
 
 	ADD BrickBust_YVel,X	 ; Apply brick bust Y velocity
@@ -1779,7 +1779,7 @@ PRG007_ABFE:
 
 	LDA Level_ScrollDiffV
 
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_AC12	 ; If gameplay halted, jump to PRG007_AC12
 
 	SUB BrickBust_YVel,X	 ; Apply velocity in reverse
@@ -1800,7 +1800,7 @@ PRG007_AC1F:
 	CLC		 ; Clear carry (no point?)
 	SUB Level_ScrollDiffV	 ; Adjust Y based on vertical screens croll
 
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_AC36	 ; If gameplay is halted, jump to PRG007_AC36
 
 	INC BrickBust_XDist,X	 ; Increase the chunk separation
@@ -1820,7 +1820,7 @@ PRG007_AC36:
 
 	LDA Level_ScrollDiffV
 
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_AC4D	 ; If gameplay halted, jump to PRG007_AC4D
 
 	SUB BrickBust_YVel,X	 ; Apply velocity in reverse
@@ -1867,7 +1867,7 @@ PRG007_AC7A:
 
 	; Upper and lower are both disabled!
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_AC8E	 ; If gameplay halted, jump to PRG007_AC8E
 
 	LDA BrickBust_YVel,X
@@ -1984,7 +1984,7 @@ PRG007_AD27:
 	LDA BrickBust_HEn,X
 	BEQ PRG007_AD21	 ; If BrickBust_HEn = 0 (poof expired), jump to PRG007_AD21 (disable this brick bust)
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_AD33	 ; If gameplay is halted, jump to PRG007_AD33
 
 	DEC BrickBust_HEn,X	 ; BrickBust_HEn-- (used as a counter here)
@@ -2067,7 +2067,7 @@ PRG007_AD54:
 	STA Sprite_RAM+$01,Y	 ; Left
 	STA Sprite_RAM+$05,Y	 ; Right
 
-	LDX <SlotIndexBackup	 ; X = restore slot index
+	LDX <CurrentObjectIndexZ	 ; X = restore slot index
 
 PRG007_ADA7:
 	RTS		 ; Return
@@ -2084,7 +2084,7 @@ CoinPUp_Attributes:	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3, SPR_PAL3
 CoinPUps_DrawAndUpdate:
 	LDX #$03	 ; X = 3 (all "power up" coin slots)
 PRG007_ADB2: 
-	STX <SlotIndexBackup	 ; -> slot index backup
+	STX <CurrentObjectIndexZ	 ; -> slot index backup
 
 	LDA CoinPUp_State,X
 	BEQ PRG007_ADBC	 ; If there's no active "powerup coin" here, jump to PRG007_ADBC
@@ -2098,7 +2098,7 @@ PRG007_ADBC:
 	RTS		 ; Return
 
 CoinPUp_UpdateAndDraw:
-	LDA <Player_HaltGame		 
+	LDA <Player_HaltGameZ		 
 	BNE PRG007_ADF0	 ; If gameplay is halted, jump to PRG007_ADF0
 
 	INC CoinPUp_Counter,X	 ; counter++
@@ -2128,7 +2128,7 @@ PRG007_ADE2:
 	STA CoinPUp_X,X	 ; Update coin X
 
 PRG007_ADF0:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BEQ PRG007_AE02	 ; If gameplay is not halted, jump to PRG007_AE02
 
 	; Move coin Y with vertical scroll
@@ -2164,7 +2164,7 @@ PRG007_AE02:
 	LDA CoinPUp_Attributes,X
 	STA Sprite_RAM+$02,Y
 
-	LDX <SlotIndexBackup	; X = power up coin slot index
+	LDX <CurrentObjectIndexZ	; X = power up coin slot index
 
 	RTS		 ; Return
 
@@ -2198,14 +2198,14 @@ SObj_CheckHitSolid:
 
 	LDA SpecialObj_ID,X
 	LDX #$00
-	CMP #SOBJ_FIREBROFIREBALL
+	CMP #SOBJ_FIREBALL
 	BEQ DoInteract
 	LDX #$08
 
 DoInteract:
 	LDA CurrentTile
 	JSR ProjectileInteractions
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	LDA CurrentTileProperty
 	AND #TILE_PROP_SOLID_TOP
 	BNE SObj_CheckHitSolid1
@@ -2289,7 +2289,7 @@ SpecialObjs_UpdateAndDraw:
 
 	LDX #$07	 ; X = 7
 PRG007_AF1B:
-	STX <SlotIndexBackup ; Store current checked index -> SlotIndexBackup
+	STX <CurrentObjectIndexZ ; Store current checked index -> CurrentObjectIndexZ
 
 	JSR SpecialObj_UpdateAndDraw	 ; Does the update and draw routines of Special OBjects
 
@@ -2307,7 +2307,7 @@ SpecialObj_UpdateAndDraw:
 	LDA AScrlURDiag_WrapState_Copy
 	BEQ PRG007_AF4B	 ; If diagonal scroller is not wrapping, jump to PRG007_AF4B
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_AF4B	 ; If gameplay is halted, jump to PRG007_AF4B
 
 	; Offset special object to compensate for the diagonal autoscroller's wrap
@@ -2322,7 +2322,7 @@ SpecialObj_UpdateAndDraw:
 	INC SpecialObj_YHi,X	 ; Apply carry
 PRG007_AF4B:
 
-	LDY <Player_HaltGame
+	LDY <Player_HaltGameZ
 	BNE PRG007_AF57	 ; If gameplay halted, jump to PRG007_AF57
 
 	LDY SpecialObj_Timer,X
@@ -2382,23 +2382,23 @@ PRG007_AF9E:
 	.word SObj_Veggie	; 02: Boomerangs
 	.word SObj_Acid	; 03: 
 	.word SObj_Fireball	; 04: Nipper fireball
-	.word SObj_Fireball	; 05: Piranha fireball
+	.word SObj_Iceball	; 05: Piranha fireball
 	.word SObj_AcidPool	; 06: Micro goombas
 	.word SOBJ_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word SObj_Egg	; 08: Koopaling wand blast
 	.word SObj_DoNothing	; 09: Lost Kuribo shoe
 	.word SObj_Wrench	; 0A: Rocky's Wrench
 	.word SObj_Cannonball	; 0B: Cannonball
-	.word SObj_Fireball	; 0C: Fire bro bouncing fireball
+	.word SObj_DoNothing	; 0C: Fire bro bouncing fireball
 	.word SObj_ExplodeStar	; 0D: Explosion star
 	.word SOBJ_BUBBLE	; 0E: Bubble
 	.word SObj_LavaLotusFire; 0F: Lava Lotus fire
 	.word SObj_Wand		; 10: Recovered wand
 	.word SObj_CoinOrDebris	; 11: Popped out coin
-	.word SObj_Fireball	; 12: Fire Chomp's fire
+	.word SObj_DoNothing	; 12: Fire Chomp's fire
 	.word SObj_CoinOrDebris	; 13: Brick debris (e.g. from Piledriver Microgoomba)
 	.word SObj_BlooperKid	; 14: Blooper kid
-	.word SObj_Fireball	; 15: Laser
+	.word SObj_DoNothing	; 15: Laser
 	.word SObj_Poof		; 16: Poof
 
 PUpCoin_Patterns:	.byte $49, $4F, $4D, $4F
@@ -2415,7 +2415,7 @@ BlooperKid_VelLimit:	.byte $10, -$10
 BlooperKid_SpriteYOff:	.byte $00, $01, $02, $03, $04, $05, $06, $07, $08, $07, $06, $05, $04, $03, $02, $01
 
 SObj_BlooperKid:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_B0BC	 ; If gameplay halted, jump to PRG007_B0BC
 
 	LDA <Counter_1
@@ -2493,7 +2493,7 @@ PRG007_B0C9:
 
 	TXA
 
-	LDX <SlotIndexBackup	; X = special object slot index
+	LDX <CurrentObjectIndexZ	; X = special object slot index
 
 	CMP #$08
 	LDA #$b5	 ; A = $B5
@@ -2525,7 +2525,7 @@ DebrisPalette:
 	.byte SPR_PAL3, SPR_PAL1, SPR_PAL1
 
 SObj_CoinOrDebris:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_B11F	 ; If gameplay halted, jump to PRG007_B11F
 
 	INC SpecialObj_Var1,X	 ; Var1++
@@ -2576,7 +2576,7 @@ PRG007_B11F:
 	LDX TempA
 	LDA DebrisPalette, X
 	STA <Temp_Var1
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	
 
 	; Temp_Var1 = SPR_PAL3
@@ -2651,7 +2651,7 @@ PRG007_B17E:
 	LDA PUpCoin_Attributes,X
 	STA Sprite_RAM+$02,Y	
 
-	LDX <SlotIndexBackup	 ; X = special object slot index
+	LDX <CurrentObjectIndexZ	 ; X = special object slot index
 
 	RTS		 ; Return
 
@@ -2695,7 +2695,7 @@ PRG007_B1C3:
 	LSR A
 	LSR A
 	NOP
-	ADD <SlotIndexBackup
+	ADD <CurrentObjectIndexZ
 	AND #$03	 ; A = 0 to 3 (palette select)
 	STA Sprite_RAM+$02,Y
 
@@ -2718,7 +2718,7 @@ SObj_Wand:
 	LDA #$48
 	STA PatTable_BankSel+4
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_B254	 ; If gameplay is halted, jump to PRG007_B254
 
 	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
@@ -2812,7 +2812,7 @@ PRG007_B274:
 	ORA #SPR_HFLIP
 	STA Sprite_RAM+$06,Y
 
-	LDX <SlotIndexBackup	 ; X = special object slot index
+	LDX <CurrentObjectIndexZ	 ; X = special object slot index
 	JMP SObj_PlayerCollide	 ; Do Player-to-wand collision and don't come back!
 
 PRG007_B291:
@@ -2867,7 +2867,7 @@ PRG007_B320:
 	RTS		 ; Return
 
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_B364	 ; If gameplay is halted, jump to PRG007_B364
 
 	LDA SpecialObj_Timer,X
@@ -2970,7 +2970,7 @@ Cannonball_YOffset:	.byte 16, $00
 Cannonball_YDiffLimit:	.byte 16, 32
 
 SObj_Cannonball:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_B3C2	 ; If gameplay halted, jump to PRG007_B3C2
 
 	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
@@ -3130,7 +3130,7 @@ Wrench_Patterns:	.byte $A1, $95, $9F, $95
 Wrench_Attributes:	.byte SPR_PAL2, SPR_PAL2 | SPR_VFLIP, SPR_PAL2, SPR_PAL2
 	
 SObj_Wrench:
-	LDA <Player_HaltGame		 
+	LDA <Player_HaltGameZ		 
 	BNE PRG007_B4AF	 ; If gameplay halted, jump to PRG007_B4AF
 
 	JSR SObj_OffsetYForRaster	; Offset Y with raster effects (if any)
@@ -3157,7 +3157,7 @@ PRG007_B4AF:
 
 	LDA Level_NoStopCnt
 	LSR A
-	ADD <SlotIndexBackup
+	ADD <CurrentObjectIndexZ
 	AND #$03
 	TAX		 ; X = 0 to 3
 
@@ -3170,7 +3170,7 @@ PRG007_B4AF:
 	EOR <Temp_Var1	
 	STA Sprite_RAM+$02,Y
 
-	LDX <SlotIndexBackup	; X = special object slot index
+	LDX <CurrentObjectIndexZ	; X = special object slot index
 
 SObj_SetSpriteXYRelative:
 	LDA SpecialObj_YLo,X
@@ -3200,7 +3200,7 @@ LostShoe_Pattern:	.byte $A9, $AB	; 0
 LostShoe_Attribute:	.byte $02, $01, $01, $01
 	
 SObj_Egg:
-	LDA Player_HaltGame
+	LDA Player_HaltGameZ
 	BNE SObj_Egg0
 
 	JSR SObj_AddXVelFrac
@@ -3210,7 +3210,7 @@ SObj_Egg0:
 	JSR SObj_GetSprRAMOffChkVScreen
 	JSR SObj_SetSpriteXYRelative	
 
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	LDA #$97
 	STA Sprite_RAM + 1, Y
 	LDA #$99
@@ -3260,16 +3260,16 @@ SObj_Egg3:
 	LDA Object_BoundBox+3,X	
 	STA <Temp_Var8		 ; Temp_Var8 has the bottom offset
 	
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	STX TempX
 	LDA #$FF
-	STA <SlotIndexBackup
+	STA <CurrentObjectIndexZ
 	
 	INC HitTestOnly
 
 	JSR PRG000_DC09
 	LDX TempX
-	STX <SlotIndexBackup
+	STX <CurrentObjectIndexZ
 	BCC SObj_EggRTS	 ; If object has not hit another object, jump to PRG000_CD46
 
 	LDA #SOBJ_POOF
@@ -3286,7 +3286,7 @@ SObj_Egg3:
 	DEC Objects_HitCount,X
 	BPL SObj_EggRTS
 
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	; Play object-to-object collision sound 
 	LDA Sound_QPlayer 
 	ORA #SND_PLAYERKICK 
@@ -3300,12 +3300,12 @@ SObj_Egg3:
 	LDA #$F0	 ; A = -$10
 
 SObj_Egg4: 
-	STA Objects_XVel,Y
+	STA Objects_XVelZ,Y
 
 	LDA #OBJSTATE_KILLED
 	STA  Objects_State,Y
 	LDA #$F0
-	STA Objects_YVel,Y
+	STA Objects_YVelZ,Y
 
 	INC Exp_Earned
 	INC Exp_Earned
@@ -3348,7 +3348,7 @@ PRG007_B54F:
 	LDA LostShoe_Pattern+1,X
 	STA Sprite_RAM+$05,Y
 
-	LDX <SlotIndexBackup	; X = special object slot index
+	LDX <CurrentObjectIndexZ	; X = special object slot index
 
 SObj_Draw16x16:
 	JSR SObj_SetSpriteXYRelative	 
@@ -3366,7 +3366,7 @@ SObj_Draw16x16:
 
 
 SOBJ_NinjaStar:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_B588	 ; If gameplay is halted, jump to PRG007_B588
 
 PRG007_B585:
@@ -3414,7 +3414,7 @@ SObj_VLimit:	.byte $10, $16
 PRG007_B6E2:	.byte $00, $10
 
 SObj_Hammer:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BEQ PRG007_B6EB	 ; If gameplay is not halted, jump to PRG007_B6EB
 
 	JMP PRG007_B773	 ; Otherwise, jump to PRG007_B773
@@ -3456,7 +3456,7 @@ PRG007_B70D:
 	JMP SpecialObj_Remove
 
 PRG007_B710:
-	LDA Objects_FlipBits,Y
+	LDA Objects_Orientation,Y
 	AND #SPR_HFLIP
 	STA <Temp_Var3	 ; Catch the horizontal flip bit of the referenced object -> Temp_Var3
 
@@ -3467,31 +3467,8 @@ PRG007_B710:
 	AND #$01
 	STA <Temp_Var1
 
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_HAMMER
-	BEQ PRG007_B729	 ; If this is a hammer, jump to PRG007_B729
-
-	CMP #SOBJ_ACID
-	BEQ PRG007_B729
-
-	; Otherwise, Temp_Var1 += 2
-	INC <Temp_Var1
-	INC <Temp_Var1
-
-PRG007_B729:
-	LDA Level_ObjectID,Y
-	CMP #OBJ_ICEBRO
-	BNE PRG007_B737	 ; If this not a Heavy Bro, jump to PRG007_B737
-
-	; Otherwise, Temp_Var1 += 4
-	LDA <Temp_Var1
-	ADD #$04
-	STA <Temp_Var1
-
-PRG007_B737:
-
 	; Set hammer starting X
-	LDA Objects_X,Y
+	LDA Objects_XZ,Y
 	LDY <Temp_Var1	
 	ADD Hammer_XOff,Y
 	STA SpecialObj_XLo,X
@@ -3499,7 +3476,7 @@ PRG007_B737:
 	LDY <Temp_Var2		 ; Y = referenced object slot index
 
 	; Set hammer starting Y
-	LDA Objects_Y,Y
+	LDA Objects_YZ,Y
 	CLC
 	LDY <Temp_Var1
 	ADC Hammer_YOff,Y
@@ -3539,21 +3516,6 @@ PRG007_B773:
 
 PRG007_B779:
 	STY <Temp_Var2
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_ACID
-	BEQ PRG007_B797
-
-	CMP #SOBJ_HAMMER
-	BNE PRG007_B798	 ; If this is not a hammer, jump to PRG007_B798
-
-	LDA <Temp_Var2
-	PHA
-	JSR SObj_GetTile
-	PLA
-	STA <Temp_Var2
-	LDA CurrentTileProperty
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
-	BEQ PRG007_B789
 	
 	CMP #TILE_ITEM_BRICK
 	BNE PRG007_B78A
@@ -3564,12 +3526,6 @@ PRG007_B789:
 PRG007_B78A:
 	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
 	JSR Hammer_Draw	 ; Draw hammer
-	JMP PRG007_B7C5	 ; Jump to PRG007_B7C5
-
-PRG007_B797:
-	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
-
-	JSR Acid_Draw	 ; Draw hammer
 	JMP PRG007_B7C5	 ; Jump to PRG007_B7C5
 
 PRG007_B798:
@@ -3590,7 +3546,7 @@ PRG007_B7B5:
 	
 
 PRG007_B7C5:
-	LDX <SlotIndexBackup	 ; X = special object slot index
+	LDX <CurrentObjectIndexZ	 ; X = special object slot index
 
 	JSR SObj_Draw16x16	 ; Draw Boomerang
 
@@ -3633,7 +3589,7 @@ PRG007_B7E4:
 
 PRG007_B805:
 	LDA Player_FlashInv	; If Player is flashing from being hit ...
-	ORA <Player_HaltGame	; ... if gameplay is halted ...
+	ORA <Player_HaltGameZ	; ... if gameplay is halted ...
 	ORA Player_IsDying	; ... Player is dying ...
 	ORA Player_OffScreen	; ... Player is off-screen ...
 	ORA <Temp_Var14		; ... or special object is not vertically on-screen ...
@@ -3752,23 +3708,9 @@ Hammer_Draw1:
 Hammer_Draw2:
 	RTS		 ; Return
 
-Acid_Draw:
-	; Set upper and lower sprite attributes
-	LDA #SPR_PAL1
-	STA Sprite_RAM+$02,Y
-	ORA #(SPR_HFLIP | SPR_VFLIP)
-	STA Sprite_RAM+$06,Y
-
-	; Set upper sprite pattern
-	LDA #$4F
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
-
-	RTS		 ; Return
-
 SObj_Veggie:
 
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE DrawVeggie	 ; If gameplay is not halted, jump to PRG007_B8B7
 
 	JSR SObj_ApplyXYVelsWithGravity	
@@ -3803,29 +3745,69 @@ PRG007_B8B7:
 	RTS		 ; Return
 	
 SObj_Acid:
-	JSR SObj_Hammer
+	LDA <Player_HaltGameZ
+	BNE SObj_Acid2
 
-	JSR SObj_GetTile
+	INC SpecialObj_Var1, X
+	LDA SpecialObj_Var1, X
+	AND #$01
+	BEQ SObj_Acid00
+
+	JSR SObj_AddXVelFrac
+	JMP SObj_Acid01
+
+SObj_Acid00:
+	JSR SObj_ApplyXYVelsWithGravity
+
+SObj_Acid01:
+	JSR SObj_PlayerCollide
+	JSR CheckAcidMelt
+
 	LDA CurrentTileProperty
 	CMP #TILE_PROP_SOLID_TOP
 	BCC SObj_Acid2
 
 SObj_Acid1:
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	LDA #$06
 	STA SpecialObj_ID, X
 	LDA SpecialObj_YLo, X
 	AND #$F0
-	ORA #$08
+	ORA #$06
 	STA SpecialObj_YLo, X
 	LDA #$80
 	STA SpecialObj_Var1, X
+	RTS
 
 SObj_Acid2:
+	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
+	BNE DrawVeggie1	 ; If object is on the same vertical screen (see Temp_Var14 calculation), jump to PRG007_B779
+
+	JSR SObj_SetSpriteXYRelative
+	LDA Sprite_RAM+$00,Y
+	STA Sprite_RAM+$04,Y
+
+	LDA Sprite_RAM+$03,Y
+	ADD #$08
+	STA Sprite_RAM+$07,Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAM+$02,Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
+	STA Sprite_RAM+$06,Y
+
+	; Set upper sprite pattern
+	LDA #$4F
+	STA Sprite_RAM+$01,Y
+	STA Sprite_RAM+$05,Y
+
+	JSR SObj_PlayerCollide
+
+SObj_Acid3:
 	RTS
 
 SObj_AcidPool:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE SObj_AcidPool1
 
 	DEC SpecialObj_Var1, X
@@ -3866,64 +3848,72 @@ Fireball_Attributes:	.byte SPR_PAL1, SPR_PAL2
 SobjFireball_Flips: .byte SPR_HFLIP, $00
 
 SObj_Fireball:
-	LDA <Player_HaltGame
-	BNE DrawFireBall	 ; If gameplay halted, jump to PRG007_BA33
+	LDA <Player_HaltGameZ
+	BNE SObj_Fireball1
 
-	LDA SpecialObj_Var1, X
-	BEQ SObj_Fireball1
-	JSR SObj_AddXVelFrac
-	JSR SObj_AddYVelFrac
-	JMP PRG007_BA1A
+	JSR SObj_BouncyBalls
 
 SObj_Fireball1:
+	JSR SObj_GetSprRAMOffChkVScreen
+	BNE SObj_FireballRTS
+
+	JSR SObj_DrawBall
+
+	LDA #$65
+	STA Sprite_RAM+$01,Y
+	JMP SObj_PlayerCollide
+
+SObj_FireballRTS:
+	RTS
+
+SObj_Iceball:
+	LDA <Player_HaltGameZ
+	BNE SObj_Iceball1
+
+	JSR SObj_BouncyBalls
+
+SObj_Iceball1:
+	JSR SObj_GetSprRAMOffChkVScreen
+	BNE SObj_IceballRTS
+
+	JSR SObj_DrawBall
+
+	LDA #$59
+	STA Sprite_RAM+$01,Y
+	JMP SObj_PlayerCollide
+
+SObj_IceballRTS:
+	RTS
+
+SObj_DrawBall:
+	JSR SObj_SetSpriteXYRelative
+
+	LDA #SPR_PAL1
+	STA Sprite_RAM+$02,Y
+	LDA SpecialObj_XVel, X
+	BPL SObj_DrawBall1
+
+	LDA #(SPR_PAL1 | SPR_HFLIP)
+	STA Sprite_RAM+$02,Y
+
+SObj_DrawBall1:
+	RTS
+
+SObj_BouncyBalls:
+
+	LDA SpecialObj_Var1, X
+	BEQ SObj_BouncyBalls1
+	JSR SObj_AddXVelFrac
+	JSR SObj_AddYVelFrac
+	JMP SObj_BouncyBalls2
+
+SObj_BouncyBalls1:
 	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
 
 
-PRG007_BA1A:
+SObj_BouncyBalls2:
 	JSR SObj_CheckHitSolid	 ; Bounce fireball off surfaces
-
-DrawFireBall:
-	JSR SObj_GetSprRAMOffChkVScreen
-	BNE PRG007_BA92	 ; If fireball isn't vertically on-screen, jump to PRG007_BA92
-
-	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
-
-	LDA #$00
-	STA <Temp_Var4
-	LDA SpecialObj_XVel, X
-	BMI DrawFireBall1
-	INC <Temp_Var4
-
-DrawFireBall1:
-
-	LDA #$00
-	STA DAIZ_TEMP1
-	LDA SpecialObj_ID,X
-	CMP #SOBJ_ICEBALL
-	BNE Do_FB_Pattern
-	INC DAIZ_TEMP1
-
-Do_FB_Pattern:
-	
-	LDX DAIZ_TEMP1
-	; Set fireball pattern
-	LDA Fireball_Patterns,X
-	STA Sprite_RAM+$01,Y
-
-	LDA Fireball_Attributes,X
-	STA Sprite_RAM+$02,Y
-
-	LDX <Temp_Var4
-	LDA SobjFireball_Flips, X
-	ORA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$02,Y
-
-	LDX <SlotIndexBackup	 ; X = special object slot index
-
-	JMP SObj_PlayerCollide	 ; Do Player-to-Fireball collision and don't come back!
-
-PRG007_BA92:
-	RTS		 ; Return
+	RTS
 
 Poof_Patterns:	.byte $47, $45, $43, $41
 
@@ -3934,7 +3924,7 @@ SObj_Poof:
 	JMP SpecialObj_Remove	 ; Otherwise, remove the puff
 
 PRG007_BA9F:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG007_BAA6	 ; If gameplay halted, jump to PRG007_BAA6
 
 	DEC SpecialObj_Data,X	 ; Data--
@@ -3972,7 +3962,7 @@ PRG007_BAA6:
 	STA Sprite_RAM+$01,Y
 	STA Sprite_RAM+$05,Y
 
-	LDX <SlotIndexBackup	; X = special object slot index
+	LDX <CurrentObjectIndexZ	; X = special object slot index
 
 PRG007_BAD6:
 	RTS		 ; Return
@@ -4000,7 +3990,7 @@ SObj_GetSprRAMOffChkVScreen:
 
 PRG007_BAED:
 	LDA SObj_SprRAMBase-1,X
-	ADD Object_SprRAM-1,Y
+	ADD Object_SpriteRAM_Offset-1,Y
 	TAY		 ; Y = Sprite RAM offset
 
 	CPX #$00
@@ -4013,13 +4003,10 @@ PRG007_BAED:
 
 	; If this special object is empty, or is a Nipper fireball/Piranha Fireball/Microgoomba, jump to PRG007_BB1A
 
-	CMP #SOBJ_NIPPERFIREBALL
+	CMP #SOBJ_FIREBALL
 	BEQ PRG007_BB1A
 
-	CMP #SOBJ_PIRANHAFIREBALL
-	BEQ PRG007_BB1A
-
-	CMP #SOBJ_MICROGOOMBA
+	CMP #SOBJ_ICEBALL
 	BEQ PRG007_BB1A
 
 	CMP #$00
@@ -4122,13 +4109,13 @@ PRG007_BB60:
 ; Updates and draws the Cannon Fires
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 CannonFire_UpdateAndDraw:
-	LDA <Player_HaltGame		 
+	LDA <Player_HaltGameZ		 
 	ORA EndCard_Flag
 	BNE PRG007_BB80	 ; If gameplay halted or end level card grabbed, jump to PRG007_BB80 (RTS)
 
 	LDX #$07	 ; X = 7
 PRG007_BB78:
-	STX <SlotIndexBackup	 ; Update index backup
+	STX <CurrentObjectIndexZ	 ; Update index backup
 
 	JSR CannonFire_DrawAndUpdate	; Draw and Update Cannon Fire
 
@@ -4253,18 +4240,18 @@ PRG007_BC5C:
 
 	; This is a BIG Cannon Ball!
 	LDA #OBJ_BIGCANNONBALL
-	STA Level_ObjectID,X
+	STA Objects_ID,X
 
 	; Big Cannon Ball is BIG
 	INC Objects_IsGiant,X
 
-	LDY <SlotIndexBackup	; Y = Cannon Fire slot index
+	LDY <CurrentObjectIndexZ	; Y = Cannon Fire slot index
 
 	; Set BIG Cannon Ball Y
 	LDA CannonFire_Y,Y
-	STA <Objects_Y,X
+	STA <Objects_YZ,X
 	LDA CannonFire_YHi,Y
-	STA <Objects_YHi,X
+	STA <Objects_YHiZ,X
 
 	LDA <Temp_Var1
 	CMP #CFIRE_HRCANNON
@@ -4280,11 +4267,11 @@ PRG007_BC5C:
 PRG007_BC81:
 	STY <Temp_Var1	 ; Temp_Var1 = $12 (if right-shooting) or $09 (if left-shooting)
 
-	STA <Objects_XVel,X	 ; X velocity = -$30 or $30, depending on direction
+	STA <Objects_XVelZ,X	 ; X velocity = -$30 or $30, depending on direction
 
 	EOR #$80	 ; Invert the sign bit
 
-	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
+	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire slot index
 
 	ASL A		 ; Inverted sign bit -> carry
 
@@ -4293,10 +4280,10 @@ PRG007_BC81:
 	BCS PRG007_BC92	 ; If right-shooting, jump to PRG007_BC92
 	SUB #16		; -16 for left-shooting
 PRG007_BC92:
-	STA <Objects_X,X
+	STA <Objects_XZ,X
 	LDA CannonFire_XHi,Y
 	SBC #$00
-	STA <Objects_XHi,X
+	STA <Objects_XHiZ,X
 
 	JSR PRG007_BD09		; Set attribute and make noise and smoke!
 	JSR CannonFire_NoiseAndSmoke	 ; make more smoke!!
@@ -4321,7 +4308,7 @@ Cfire_Bobombs:
 
 	; It's a Bob-omb!!
 	LDA #OBJ_BOBOMB
-	STA Level_ObjectID,X
+	STA Objects_ID,X
 
 	LDA #$0A
 	STA PatTable_BankSel+4
@@ -4330,19 +4317,19 @@ Cfire_Bobombs:
 	LDA #$10
 	STA Objects_Timer4,X
 
-	LDY <SlotIndexBackup	 ; Y = Cannon Fire slot index
+	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire slot index
 
 	; Set Bob-omb's Y
 	LDA CannonFire_Y,Y
-	STA <Objects_Y,X
+	STA <Objects_YZ,X
 	LDA CannonFire_YHi,Y
-	STA <Objects_YHi,X
+	STA <Objects_YHiZ,X
 
 	LDA CannonFire_X,Y
-	STA <Objects_X,X
+	STA <Objects_XZ,X
 
 	LDA CannonFire_XHi,Y
-	STA <Objects_XHi,X
+	STA <Objects_XHiZ,X
 
 	LDA CannonFire_Property, Y
 	LSR A
@@ -4354,40 +4341,40 @@ Cfire_Bobombs:
 	TAY
 
 	LDA BobOmbXVelocity, Y
-	STA <Objects_XVel, X
+	STA <Objects_XVelZ, X
 	LDA BobOmbYVelocity, Y
-	STA <Objects_YVel, X
+	STA <Objects_YVelZ, X
 
-	LDA <Objects_X, X
+	LDA <Objects_XZ, X
 	ADD BobOmbXOffset,Y
-	STA <Objects_X, X
-	LDA <Objects_XHi, X
+	STA <Objects_XZ, X
+	LDA <Objects_XHiZ, X
 	ADC #$00
-	STA <Objects_XHi, X
+	STA <Objects_XHiZ, X
 
-	LDA <Objects_Y, X
+	LDA <Objects_YZ, X
 	SUB BobOmbYOffset,Y
-	STA <Objects_Y, X
-	LDA <Objects_YHi, X
+	STA <Objects_YZ, X
+	LDA <Objects_YHiZ, X
 	SBC #$00
-	STA <Objects_YHi, X
+	STA <Objects_YHiZ, X
 
 	LDY #$00
-	LDA Objects_XVel, X
+	LDA <Objects_XVelZ, X
 	BMI Cfire_Bobombs1
 	INY
 
 Cfire_Bobombs1:
 	LDA BobOmbHFlip, Y
-	STA Objects_FlipBits, X
+	STA Objects_Orientation, X
 	LDA #$00
-	STA Objects_Var5, X
+	STA Objects_Data5Z, X
 
 
 PRG007_BD09:
 	LDA #$80
 	STA CannonFire_Timer, X
-	LDY <SlotIndexBackup	 ; X = Cannon Fire slot index
+	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 	RTS
 
 BobOmbHFlip:	.byte $00, SPR_HFLIP
@@ -4435,13 +4422,13 @@ CFire_GoombaPipe:
 
 	; Set Goomba X
 	LDA CannonFire_X,Y
-	STA <Objects_X,X
+	STA <Objects_XZ,X
 	LDA CannonFire_XHi,Y
-	STA <Objects_XHi,X
+	STA <Objects_XHiZ,X
 	LDA CannonFire_Y,Y
-	STA <Objects_Y,X
+	STA <Objects_YZ,X
 	LDA CannonFire_YHi,Y
-	STA <Objects_YHi,X
+	STA <Objects_YHiZ,X
 
 PRG007_BD49:
 	; set the motion of the goomba as it "pops" out of the pipe
@@ -4449,30 +4436,30 @@ PRG007_BD49:
 	AND #$01
 	TAY
 	LDA EnemyCannonDirection, Y
-	STA Objects_FlipBits, X
+	STA Objects_Orientation, X
 	LDA Goomb_YVelocity, Y
-	STA <Objects_YVel, X
+	STA <Objects_YVelZ, X
 	LDA Goomb_XVelocity, Y
-	STA Objects_XVel, X
+	STA <Objects_XVelZ, X
 
 	LDA CannonFire_Property, Y
 	LSR A
 	TAY
 	; It's a Goomba
 	LDA EnemyCannonType, Y
-	STA Level_ObjectID,X
+	STA Objects_ID,X
 
 	LDA #$10
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 
 	; Set Goomba's color
 	LDA EnemyCannonColor, Y
-	STA Objects_SprAttr,X
+	STA Objects_SpriteAttributes,X
 
 	LDA #$00
 	STA Objects_Property, X
 
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	LDA CannonFire_Property, X
 	AND #$01
 	TAY
@@ -4481,7 +4468,7 @@ PRG007_BD49:
 	JSR CannonFire_NoiseAndSmoke
 
 PRG007_BD78:
-	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
+	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 
 PRG007_BD7A:
 	RTS		 ; Return
@@ -4511,24 +4498,24 @@ CFire_ShellCannon:
 
 	; Set Goomba X
 	LDA CannonFire_X,Y
-	STA <Objects_X,X
+	STA <Objects_XZ,X
 	LDA CannonFire_XHi,Y
-	STA <Objects_XHi,X
+	STA <Objects_XHiZ,X
 	LDA CannonFire_Y,Y
-	STA <Objects_Y,X
+	STA <Objects_YZ,X
 	LDA CannonFire_YHi,Y
-	STA <Objects_YHi,X
+	STA <Objects_YHiZ,X
 	; set the motion of the goomba as it "pops" out of the pipe
 	LDA CannonFire_Property, Y
 	TAY
 	LDA Goomb_YVelocity, Y
-	STA <Objects_YVel, X
+	STA <Objects_YVelZ, X
 	LDA Goomb_XVelocity, Y
-	STA Objects_XVel, X
+	STA <Objects_XVelZ, X
 
 	; It's a Goomba
 	LDA #OBJ_PURPLETROOPA
-	STA Level_ObjectID,X
+	STA Objects_ID,X
 
 	LDA #OBJSTATE_KICKED
 	STA Objects_State, X
@@ -4538,9 +4525,9 @@ CFire_ShellCannon:
 
 	; Set Goomba's color
 	LDA #SPR_PAL1
-	STA Objects_SprAttr,X
+	STA Objects_SpriteAttributes,X
 
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 	LDA CannonFire_Property, X
 	AND #$01
 	TAY
@@ -4643,42 +4630,42 @@ CFire_Platform:
 
 	JSR FindEmptyEnemySlot
 
-	LDY <SlotIndexBackup
+	LDY <CurrentObjectIndexZ
 
 	LDA #OBJ_WOODENPLATUNSTABLE
-	STA Level_ObjectID,X
+	STA Objects_ID,X
 
 	LDA #$00
-	STA Objects_Var5, X
+	STA Objects_Data5Z, X
 
 	LDA #$FC
-	STA Objects_Var2, X
+	STA Objects_Data2, X
 
 	LDA #$00
 	STA Objects_Frame, X
 
 	LDA #$03
-	STA Objects_Var1, X
+	STA Objects_Data1, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
 
 	LDA CannonFire_X,Y
-	STA <Objects_X,X
+	STA <Objects_XZ,X
 
 	LDA CannonFire_XHi,Y
-	STA <Objects_XHi,X
+	STA <Objects_XHiZ,X
 
 	LDA CannonFire_Y,Y
 	SUB #$01
-	STA <Objects_Y,X
+	STA <Objects_YZ,X
 
 	LDA CannonFire_YHi,Y
 	SBC #$00
-	STA <Objects_YHi,X
+	STA <Objects_YHiZ,X
 
 	LDA #(SPR_PAL3 | SPR_BEHINDBG)
-	STA Objects_SprAttr,X
+	STA Objects_SpriteAttributes,X
 
 	TXA
 
@@ -4694,13 +4681,13 @@ CFire_Platform1:
 	LDA CannonFire_Var, X
 	TAY
 	LDA #$00
-	STA Objects_Var3, Y
+	STA Objects_Data3, Y
 	STA CannonFire_Var, X
 	LDA #$18
-	STA Objects_Var2, Y
+	STA Objects_Data2, Y
 
 	LDA #SPR_PAL3
-	STA Objects_SprAttr,Y
+	STA Objects_SpriteAttributes,Y
 
 	LDY CannonFire_Property, X
 	LDA PlatformGenTimer, Y
@@ -4762,7 +4749,7 @@ PRG007_BE69:
 
 PRG007_BE91:
 	CLC
-	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
+	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 	ADC CannonFire_Y,X
 	STA SpecialObj_YLo,Y
 	LDA CannonFire_YHi,X
@@ -4781,7 +4768,7 @@ PRG007_BEAA:
 	; Produces the smoke resulting from cannon fire; specify X/Y offset
 	; from Cannon Fire's position by Temp_Var1 which indexes CannonPoof_X/YOffs 
 CannonFire_NoiseAndSmoke:
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 
 	; Cannon firing noise
 	LDA Sound_QLevel1
@@ -4805,7 +4792,7 @@ CannonFire_NoiseAndSmoke:
 	SUB <Horz_Scroll	; Make relative to horizontal scroll
 	STA BrickBust_X		; Set X
 
-	LDX <SlotIndexBackup	 ; X = Cannon Fire slot index
+	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 
 	LDA CannonFire_Y,X	 ; + Cannon Fire Y
 	SUB #$08
@@ -4832,29 +4819,29 @@ CFire_RockyWrench:
 
 	JSR PrepareNewObjectOrAbort	; Get me a slot for Rocky Wrench or don't come back!
 
-	LDY <SlotIndexBackup	; Y = Cannon Fire slot index
+	LDY <CurrentObjectIndexZ	; Y = Cannon Fire slot index
 
 	; This is a Rocky Wrench
 	LDA #OBJ_ROCKYWRENCH
-	STA Level_ObjectID,X
+	STA Objects_ID,X
 
 	; Start at Cannon Fire Y - 6
 	LDA CannonFire_Y,Y
 	SUB #$06
-	STA <Objects_Y,X
+	STA <Objects_YZ,X
 	LDA CannonFire_YHi,Y
 	SBC #$00
-	STA <Objects_YHi,X
+	STA <Objects_YHiZ,X
 
 	; Set Rocky's X to Cannon Fire's X
 	LDA CannonFire_XHi,Y
-	STA <Objects_XHi,X
+	STA <Objects_XHiZ,X
 	LDA CannonFire_X,Y
-	STA <Objects_X,X
+	STA <Objects_XZ,X
 
 	; Var5 = 0
 	LDA #$00
-	STA <Objects_Var5,X
+	STA <Objects_Data5Z,X
 
 	; Set Rocky's timer to $28
 	LDA #$28
@@ -4862,14 +4849,14 @@ CFire_RockyWrench:
 
 	; Set Rocky's attributes
 	LDA #SPR_PAL3
-	STA Objects_SprAttr,X
+	STA Objects_SpriteAttributes,X
 
 	; Set Rocky's initial attributes towards Player
 	JSR Level_ObjCalcXDiffs
 	LDA Rocky_InitAttr,Y
-	STA Objects_FlipBits,X
+	STA Objects_Orientation,X
 
-	LDX <SlotIndexBackup	; X = Cannon Fire slot index
+	LDX <CurrentObjectIndexZ	; X = Cannon Fire slot index
 
 PRG007_BF28:
 	RTS		 ; Return
@@ -4902,7 +4889,7 @@ CFire_BulletBill:
 
 	JSR PrepareNewObjectOrAbort
 
-	LDY <SlotIndexBackup	 ; Y = Cannon Fire object slot
+	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire object slot
 
 	LDA CannonFire_ID,Y
 	LSR A		; Selects which Bill type
@@ -4916,26 +4903,26 @@ CFire_BulletBill:
 	LDA #OBJ_BULLETBILLHOMING
 
 PRG007_BF80:
-	STA Level_ObjectID,X	 ; Store Bill's ID
+	STA Objects_ID,X	 ; Store Bill's ID
 
 	; Set Bill's palette
 	LDA #SPR_PAL3
-	STA Objects_SprAttr,X
+	STA Objects_SpriteAttributes,X
 
 	; Set Bill's Y
 	LDA CannonFire_Y,Y
 	SUB #$01
-	STA <Objects_Y,X
+	STA <Objects_YZ,X
 	LDA CannonFire_YHi,Y
 	SBC #$00
-	STA <Objects_YHi,X
+	STA <Objects_YHiZ,X
 
 	; Set Bill's X
 	LDA CannonFire_XHi,Y
-	STA <Objects_XHi,X
+	STA <Objects_XHiZ,X
 	LDA CannonFire_X,Y
-	STA <Objects_X,X
-	STA Objects_Var13,X	; original X hold
+	STA <Objects_XZ,X
+	STA Objects_Data13,X	; original X hold
 
 	LDA CannonFire_Property,Y
 	TAY
@@ -4946,12 +4933,12 @@ PRG007_BF80:
 PRG007_BF81:
 	; Bill fires towards Player
 	LDA Bill_XVel,Y
-	STA <Objects_XVel,X
+	STA <Objects_XVelZ,X
 
 	LDA Bill_YVel, Y
-	STA <Objects_YVel, X
+	STA <Objects_YVelZ, X
 
-	LDX <SlotIndexBackup	; X = Cannon Fire slot index
+	LDX <CurrentObjectIndexZ	; X = Cannon Fire slot index
 
 	JSR CannonFire_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
 
@@ -4973,7 +4960,7 @@ PRG007_BFCF:
 	PLA
 	PLA
 
-	LDX <SlotIndexBackup	 ; Restore 'X' to its slot index value
+	LDX <CurrentObjectIndexZ	 ; Restore 'X' to its slot index value
 
 	RTS		 ; Return
 
@@ -5179,6 +5166,59 @@ DoSpinnerP:
 	LDA TempY
 	RTS
 
+CheckAcidMelt:
+	LDA <Temp_Var2
+	PHA
+	JSR SObj_GetTile
+	PLA
+	STA <Temp_Var2
+	
+	LDA CurrentTileProperty
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE CheckAcidMelt1
+
+	LDA <Temp_Var3
+	STA Level_BlockChgYLo
+
+	; Set block change Y Hi
+	LDA <Temp_Var4
+	STA Level_BlockChgYHi
+
+	; Set block change X
+	LDA <Temp_Var5
+	AND #$f0
+	STA Level_BlockChgXLo
+
+	; Set block change X Hi
+	LDA <Temp_Var7
+	STA Level_BlockChgXHi
+
+	LDA CurrentTile
+	EOR #$01
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
+
+	LDA SpecialObj_XLo, X
+	AND #$F0
+	STA SpecialObj_XLo, X
+
+	LDA SpecialObj_YLo, X
+	ADD #$08
+	AND #$F0
+	STA SpecialObj_YLo, X
+
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,X
+
+	; SpecialObj_Data = $1F
+	LDA #$1f
+	STA SpecialObj_Data,X
+	PLA
+	PLA
+
+CheckAcidMelt1:
+	RTS
+
 EnemyHammerBrickBust:
 	; Crumbling sound
 	LDA Sound_QLevel2
@@ -5235,7 +5275,7 @@ EnemyHammerBrickBust1:
 	EOR #$01
 	STA Level_ChgTileValue
 	INC Level_ChgTileEvent		 ; Temp_Var12 = CHNGTILE_DELETETOBG
-	LDX <SlotIndexBackup
+	LDX <CurrentObjectIndexZ
 
 	PLA
 	PLA

@@ -770,7 +770,7 @@ PAD_RIGHT	= $01
 ; There's a consistent difference of $12 between X and Y; this consistent distancing is meant to be maintained, so leave it alone!
 
 	Player_XHi:		.ds 1	; Player X Hi 
-	Objects_XHi:		.ds 8	; $76-$7D Other object's X Hi positions
+	Objects_XHiZ:		.ds 8	; $76-$7D Other object's X Hi positions
 
 				.ds 1	; $7E unused
 
@@ -778,7 +778,7 @@ PAD_RIGHT	= $01
 CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text versus the dialog box itself
 
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
-	Objects_Var4:		.ds 5	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
+	Objects_Data4Z:		.ds 5	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
 
 	; Pipe_PlayerX/Y variables in use when traveling through pipes
 	Pipe_PlayerX:		.ds 1	; Stores Player's X when they went into pipe (non-transit)
@@ -791,51 +791,51 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 				.ds 1	; $86 unused
 
 	Player_YHi:		.ds 1	; Player Y Hi
-	Objects_YHi:		.ds 8	; $88-$8F Other object's Y Hi positions
+	Objects_YHiZ:		.ds 8	; $88-$8F Other object's Y Hi positions
 	Player_X:		.ds 1	; Player X
-	Objects_X:		.ds 8	; $91-$98 Other object's X positions
+	Objects_XZ:		.ds 8	; $91-$98 Other object's X positions
 
 				.ds 1	; $99 unused
 	; Reuse of $9A
 	CineKing_Var:		; General variable
 
-	Objects_Var5:		.ds 8	; $9A-$A1 Generic variable 5 for objects
+	Objects_Data5Z:		.ds 8	; $9A-$A1 Generic variable 5 for objects
 	Player_Y:		.ds 1	; Player Y
-	Objects_Y:		.ds 8	; $A3-$A9 Other object's Y positions
+	Objects_YZ:		.ds 8	; $A3-$A9 Other object's Y positions
 
 	Player_SpriteX:		.ds 1	; Player's sprite X
 	Objects_SpriteX:	.ds 8	; $AC-$B3 Other object's sprite X positions
 	Player_SpriteY:		.ds 1	; Player's sprite Y
 	Objects_SpriteY:	.ds 8	; $B5-$BC Other object's sprite Y positions
-	; WARNING: The distance between Player/Objects_XVel and Player/Objects_YVel must be same as Player/Objects_X/YVelFrac!
+	; WARNING: The distance between Player/Objects_XVelZ and Player/Objects_YVelZ must be same as Player/Objects_X/YVelFrac!
 	Player_XVel:		.ds 1	; Player's X Velocity (negative values to the left) (max value is $38)
-	Objects_XVel:		.ds 8	; $BE-$C5 Other object's X velocities
+	Objects_XVelZ:		.ds 8	; $BE-$C5 Other object's X velocities
 	Player_CarryXVel:	.ds 1
 	Objects_VarBSS:		.ds 6	; $C6-$CC OBJECT SLOTS 0 - 5 ONLY ... uncleared var??
-	SlotIndexBackup:	.ds 1	; Used as a backup for the slot index (e.g. current object, current score, etc.)
-	Player_HaltGame:	.ds 1	; Player is halting game (e.g. dying, shrinking/growing, etc.)
+	CurrentObjectIndexZ:	.ds 1	; Used as a backup for the slot index (e.g. current object, current score, etc.)
+	Player_HaltGameZ:	.ds 1	; Player is halting game (e.g. dying, shrinking/growing, etc.)
 
-	; WARNING: The distance between Player/Objects_XVel and Player/Objects_YVel must be same as Player/Objects_X/YVelFrac!
+	; WARNING: The distance between Player/Objects_XVelZ and Player/Objects_YVelZ must be same as Player/Objects_X/YVelFrac!
 	Player_YVel:		.ds 1	; Player's Y Velocity (negative values upward)
-	Objects_YVel:		.ds 8	; $D0-$D7 Other object's Y velocities
+	Objects_YVelZ:		.ds 8	; $D0-$D7 Other object's Y velocities
 	Player_CarryYVel:	.ds 1
 	Player_InAir:		.ds 1	; When set, Player is in the air
 
 	; Reuse of $D9
 	CineKing_Frame2:		; Used only by the World 6 King (Seal juggling a crown, the crown's frame)
 
-	; Objects_DetStat:
+	; <Objects_CollisionDetectionZ:
 	; Object's detection bits:
 	;	$01-hit wall right
 	;	$02-hit wall left
 	;	$04-hit ground
 	;	$08-hit ceiling
 	;	$80-object touching "32 pixel partition" floor (if active)
-HIT_DET_RIGHT =		1
-HIT_DET_LEFT =		2
-HIT_DET_GRND =		4
-HIT_DET_CEIL =		8
-	Objects_DetStat:	.ds 8	; $D9-$E0  on screen
+HIT_RIGHTWALL =		1
+HIT_LEFTWALL =		2
+HIT_GROUND =		4
+HIT_CEILING =		8
+	Objects_CollisionDetectionZ:	.ds 8	; $D9-$E0  on screen
 
 	Player_SprWorkL:	.ds 1	; Sprite work address low
 	Player_SprWorkH:	.ds 1	; Sprite work address high
@@ -1270,7 +1270,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	.org $0400	; $0400-$04CF (except $0461 and $0462, see "$04xx RAM SOUND/MUSIC ENGINE") is available for this context-dependent situation
 
-	Objects_PrevDetStat:		.ds 8
+	Objects_PreviousCollisionDetection:		.ds 8
 
 	Fade_State:		.ds 1	; 0 = Nothing, 1 = Fade in, 3 = Fade out
 	Fade_Tick:		.ds 1	; Ticks down and then decrements Fade_Level
@@ -1279,8 +1279,8 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Player_AllowAirJump:	.ds 1	; Counts down to zero, but while set, you can jump in the air
 	Player_XVelAdj:		.ds 2	; Applies additional value to the X Velocity
 
-	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Var7 first byte)
-	Objects_Var7:		.ds 8	; $0421-$0428 General object variable 7
+	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Data7 first byte)
+	Objects_Data7:		.ds 8	; $0421-$0428 General object variable 7
 
 	SpinnerBlockTimers:	.ds 10;
 	SpinnerBlocksX:		.ds 10;
@@ -1733,7 +1733,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_SprOff:		.ds 1	; Player sprite offset (NOTE: Should be multiples of 4, otherwise bad unaligned stuff happens!)
 
 	; Strange gapping here; there's pretty much enough room for a couple more special objects
-	Object_SprRAM:		.ds 8	; $058F-$0596 Sprite_RAM offset by object
+	Object_SpriteRAM_Offset:		.ds 8	; $058F-$0596 Sprite_RAM offset by object
 
 	SpecialObj_Var2:	.ds 8	; $0597-$059E General purpose variable 2
 
@@ -1845,13 +1845,13 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	Objects_Frame:		.ds 8	; $0669-$0670 "Frame" of object (see ObjectGroup_PatternSets)
 
-	Level_ObjectID:		.ds 8	; $0671-$0678 All active actor IDs
+	Objects_ID:		.ds 8	; $0671-$0678 All active actor IDs
 
-	Objects_FlipBits:	.ds 8	; $0679-$0680 Applied sprite attributes for this object (usually just horizontal/vertical flip)
+	Objects_Orientation:	.ds 8	; $0679-$0680 Applied sprite attributes for this object (usually just horizontal/vertical flip)
 
 	Objects_SprVVis:	.ds 8	; $0681-$0688 Flags; Bits 3-0 set when each 8x16 sprite is vertically off-screen (top-to-bottom from MSb)
-	Objects_Var1:		.ds 8	; $0689-$0690 Generic variable 1 for objects
-	Objects_Var2:		.ds 8	; $0691-$0698 Generic variable 2 for objects
+	Objects_Data1:		.ds 8	; $0689-$0690 Generic variable 1 for objects
+	Objects_Data2:		.ds 8	; $0691-$0698 Generic variable 2 for objects
 
 	BossBoundBox:		.ds 1	; Absolutely no idea, it is set once in one place and never used again... MAY be lost bonus game related?
 
@@ -2027,9 +2027,9 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	Object_VelCarry:	.ds 1	; '1' when last Object Velocity fraction accumulation rolled over
 
-	; WARNING: The distance between Player/Objects_XVelFrac and Player/Objects_YVelFrac must be same as Player/Objects_X/YVel!
+	; WARNING: The distance between Player/Objects_XVelFracZ and Player/Objects_YVelFracZ must be same as Player/Objects_X/YVel!
 	Player_XVelFrac:	.ds 1	; X velocity fractional accumulator
-	Objects_XVelFrac:	.ds 8	; $074E-$0755 Other object's X velocity fractional accumulator
+	Objects_XVelFracZ:	.ds 8	; $074E-$0755 Other object's X velocity fractional accumulator
 
 				.ds 1	; $0756 unused
 
@@ -2039,18 +2039,18 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 				; So use it if you want, but maintain the distance!!
 				.ds 7	; $0758-$075E unused
 
-	; WARNING: The distance between Player/Objects_XVelFrac and Player/Objects_YVelFrac must be same as Player/Objects_X/YVel!
+	; WARNING: The distance between Player/Objects_XVelFracZ and Player/Objects_YVelFracZ must be same as Player/Objects_X/YVel!
 	Player_YVelFrac:	.ds 1	; Y velocity fractional accumulator
-	Objects_YVelFrac:	.ds 8	; $0760-$0767 Other object's Y velocity fractional accumulator
+	Objects_YVelFracZ:	.ds 8	; $0760-$0767 Other object's Y velocity fractional accumulator
 
 
 	Objects_ColorCycle:	.ds 8	; $0768-$076F Cycles colors of object and decrements to zero (e.g. "Melting" ice block, starman, etc.)
 
-	; Objects_Var6: Special hardcoded behavior for the following objects ONLY:
+	; Objects_Data6: Special hardcoded behavior for the following objects ONLY:
 	; OBJ_PYRANTULA, OBJ_CHAINCHOMPFREE, OBJ_VEGGIEGUY, 
 	; OBJ_SKULLBLOOPER, or OBJ_FIRESNAKE
 	; ... as the X/Y buffer slot they occupy (see Object_Delete)
-	Objects_Var6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
+	Objects_Data6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
 	Objects_TargetingXVal:	.ds 5	; $0775-$0779 X velocity result of Object_CalcHomingVels for this object OR some other X pixel target
 
 	King_Y:				; Y position (NOTE: shared with Objects_TargetingYVal)
@@ -2681,13 +2681,13 @@ ABILITY_CHERRY_STAR = 5
 	ChainChomp_ChainY4:	.ds 5	; $7CC3-$7CC8 Chain Link 4 Y
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
-	Objects_Var10:		.ds 5	; $7CC8-$7CCC Generic object variable 10
-	Objects_Var11:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
-	Objects_Var12:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
-	Objects_Var13:		.ds 5	; $7CD7-$7CDB Generic object variable 13
-	Objects_Var14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Var15:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Var16:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data10:		.ds 5	; $7CC8-$7CCC Generic object variable 10
+	Objects_Data11:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
+	Objects_Data12:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
+	Objects_Data13:		.ds 5	; $7CD7-$7CDB Generic object variable 13
+	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data15:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data16:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 
 ; Player's hammer/fireball
 	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
@@ -2962,28 +2962,25 @@ SOBJ_HAMMER		= $01	; Hammer Bro hammer
 SOBJ_VEGGIE	=	$02
 SOBJ_BOOMERANG		= $02	; Boomerangs
 SOBJ_ACID		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
-SOBJ_NIPPERFIREBALL	= $04 	; Nipper fireball (falls)
-SOBJ_PIRANHAFIREBALL	= $05	; Piranha fireball
+SOBJ_FIREBALL	= $04 	; Nipper fireball (falls)
+SOBJ_ICEBALL	= $05	; Piranha fireball
 SOBJ_MICROGOOMBA	= $06 	; Micro goombas
 SOBJ_NINJASTAR		= $07 	; Spike's or Patooie's spike ball
 SOBJ_EGG		= $08 	; Koopaling wand blast
 SOBJ_KURIBOSHOE		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
 SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
-SOBJ_FIREBROFIREBALL	= $0C	; Fire bro bouncing fireball
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
 SOBJ_BUBBLE		= $00 	; Bubble
 SOBJ_LAVALOTUSFIRE	= $0F	; Lava Lotus fire
 SOBJ_RECOVEREDWAND	= $10 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
-SOBJ_PYRANTULAFIRE	= $12 	; Fire Chomp's fire
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_BLOOPERKID		= $14 	; Blooper kid
-SOBJ_ICEBALL		= $15 	; Laser
 SOBJ_POOF		= $16 	; Poof
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
-	Objects_Var3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
+	Objects_Data3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
 
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
 
@@ -2994,14 +2991,14 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_LastTileY:  .ds 1
 	Objects_LastTileYHi:  .ds 1
 
-	Objects_SprAttr:	.ds 8	; $7FE7-$7FEE Object sprite attributes (only uses bit 6 for H-Flip and bits 0-1 for palette)
+	Objects_SpriteAttributes:	.ds 8	; $7FE7-$7FEE Object sprite attributes (only uses bit 6 for H-Flip and bits 0-1 for palette)
 	Objects_UseShortHTest:	.ds 8	; $7FEF-$7FF6 If set, object will use a short horizontal test to determine if it is off-screen
 
 	Roulette_Lives:			; Number of lives you are rewarded from winning the Roulette (NOTE: Shared with first byte of Objects_IsGiant)
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
-	Objects_ObjDetStat:	.ds 8
+	Objects_InteractionState:	.ds 8
 	Stop_Watch:			.ds 1	;
 	Slow_Watch:			.ds 1	;
 	Player_Dialog:		.ds 1
@@ -3591,7 +3588,8 @@ OBJ_BIGREDTROOPA	= $00	; Big Red Turtle
 OBJ_BLUESHELL	= $7B	; Big Red Turtle
 OBJ_HELPER		= $7C	; Big Goomba
 OBJ_BIGGOOMBA = $00 ;
-OBJ_BIGGREENPIRANHA	= $7D	; Big Green Piranha
+OBJ_BIGGREENPIRANHA = $00
+OBJ_PARAZOMBIEGOOMBA	= $7D	; Big Green Piranha
 OBJ_BIGGREENHOPPER	= $7E	; Big, bouncing turtle
 OBJ_BIGREDPIRANHA	= $7F	; Big Red Pirahana
 OBJ_FLYINGGREENPARATROOPA= $80	; Flying left/right green winged turtle
@@ -3632,15 +3630,17 @@ OBJ_FIREJET_UPWARD	= $9D	; upward fire jet
 OBJ_PODOBOO		= $9E	; Podoboo
 OBJ_PARABEETLE		= $9F	; Parabeetle
 OBJ_GREENPIRANHA = $00
-OBJ_DRYPIRANHA	= $A0	; short pipe muncher
+OBJ_PUMPKINFREE	= $A0	; short pipe muncher
 OBJ_GREENPIRANHA_FLIPPED = $00
-OBJ_DRYPIRANHA_FLIPPED= $A1	; upside down short pipe muncher
-OBJ_REDPIRANHA		= $A2	; tall pipe muncher
-OBJ_REDPIRANHA_FLIPPED	= $A3	; upside down tall pipe muncher
+OBJ_PUMPKINFREE_FLIPPED= $A1	; upside down short pipe muncher
+OBJ_REDPIRANHA = $00 ;
+OBJ_REDPIRANHA_FLIPPED = $00;
+OBJ_PIRANHA		= $A2	; tall pipe muncher
+OBJ_PIRANHA_TWOSHOT	= $A3	; upside down tall pipe muncher
 OBJ_GREENPIRANHA_FIRE	 = $00
-OBJ_PIRANHA_ICE	= $A4	; short green fire plant
+OBJ_PUMPKINPLANT	= $A4	; short green fire plant
 OBJ_GREENPIRANHA_FIREC = $00
-OBJ_PIRANHA_ICEC	= $A5	; short, upside down, green fire plant
+OBJ_PUMPKINPLANT_HOPPER	= $A5	; short, upside down, green fire plant
 OBJ_VENUSFIRETRAP	= $A6	; Tall red fire plant
 OBJ_VENUSFIRETRAP_CEIL	= $A7	; upside down tall fire plant
 OBJ_ARROWONE		= $00
@@ -3696,7 +3696,7 @@ OBJ_CFIRE_LASER		= $BC + CFIRE_LASER - 1		; Laser fire
 OBJ_SPAWN3GREENTROOPAS	= $D1	; Spawns up to 3 (depending on available slots) hopping green paratroops
 OBJ_SPAWN3ORANGECHEEPS	= $D2	; Spawns up to 3 (depending on available slots) "lost" orange cheep cheeps (a school)
 OBJ_AUTOSCROLL		= $D3	; Activates auto scrolling for e.g. World 1-4, World 8 Tank, etc.
-OBJ_BONUSCONTROLLER	= $D4	; Handles the judgement of whether you get a White Toad House / Coin Ship
+OBJ_BONUSCONTROLLER	= $D4	; Handles the judgement of w39hether you get a White Toad House / Coin Ship
 OBJ_TOADANDKING		= $D5	; Toad and the king from the end of the world
 OBJ_TREASURESET		= $D6	; Sets the treasure box item (Level_TreasureItem) based on what row this object is placed at
 

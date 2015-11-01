@@ -1273,11 +1273,11 @@ PRG029_D296:
 
 	INC <Vert_Scroll
 
-	LDA <Objects_Y+4
+	LDA <Objects_YZ+4
 	SUB #$01
-	STA <Objects_Y+4	; Anchor's Y minus 1
+	STA <Objects_YZ+4	; Anchor's Y minus 1
 	BCS PRG029_D2AF
-	DEC <Objects_YHi+4	; If overflow occurred, propogate the carry
+	DEC <Objects_YHiZ+4	; If overflow occurred, propogate the carry
 PRG029_D2AF: 
 
 	PLA		 ; Restore Level_AirshipCtl
@@ -1564,7 +1564,7 @@ Wand_XOff_BySuitR:	.byte  6,  6,  6,  6,  8,  6,  6
 Wand_YOff_BySuit:	.byte  1, -9, -9, -9,  3, -9, -9
 
 Wand_Offset_BySuit:
-	LDY Object_SprRAM+5	; Y = 5th index object Sprite RAM offset
+	LDY Object_SpriteRAM_Offset+5	; Y = 5th index object Sprite RAM offset
 	LDX <Player_Suit	; X = Player's suit
 
 	LDA <Player_FlipBits

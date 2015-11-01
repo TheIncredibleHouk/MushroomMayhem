@@ -293,7 +293,7 @@ Player_DoGameplay:
 	ORA Player_SuitLost	; ... just lost his suit ...
 	ORA Player_StarOff	; ... starman is wearing off ...
 	ORA Player_Grow		; ... is growing/shrinking ...
-	STA <Player_HaltGame	; ... means he's halting the gameplay for now
+	STA <Player_HaltGameZ	; ... means he's halting the gameplay for now
 
 	BNE PRG008_A1C1	 	; And if that's the case, jump to PRG008_A1C1
 	
@@ -4325,17 +4325,17 @@ PRG008_B766:
 	LDA <Temp_Var14
 	AND #$F0
 	STA <Temp_Var14
-	STA Objects_Y,Y	 ; Store into object slot
+	STA Objects_YZ,Y	 ; Store into object slot
 
 	LDA <Temp_Var13
-	STA Objects_YHi,Y ; Store Y Hi into object slot
+	STA Objects_YHiZ,Y ; Store Y Hi into object slot
 
 	LDA <Temp_Var15	
-	STA Objects_XHi,Y ; Store X Hi into object slot
+	STA Objects_XHiZ,Y ; Store X Hi into object slot
 
 	LDA <Temp_Var16
 	AND #$F0
-	STA Objects_X,Y	 ; Store X Lo into object slot
+	STA Objects_XZ,Y	 ; Store X Lo into object slot
 
 	
 	JSR BlockBump_Init	; Init the block bump effect!
@@ -4400,7 +4400,7 @@ PRG008_B7A7:
 
 	LDA <Temp_Var16	 ; Player detect X low
 	AND #$F0	 ; Aligned to tile grid
-	CMP Objects_X,Y	 
+	CMP Objects_XZ,Y	 
 	BNE PRG008_B7BA	 ; If this object's X does not match the aligned detect X, jump to PRG008_B7BA
 
 PRG008_B7B7:
@@ -4630,20 +4630,20 @@ LATP_Key:
 	LDA #OBJSTATE_INIT
 	STA Objects_State + 5
 	LDA #OBJ_KEY
-	STA Level_ObjectID + 5
+	STA Objects_ID + 5
 	LDA <Temp_Var14
 	AND #$F0
 	SUB #$11
-	STA Objects_Y + 5
+	STA Objects_YZ + 5
 	LDA <Temp_Var13
 	SBC #$00
-	STA Objects_YHi + 5
+	STA Objects_YHiZ + 5
 
 	LDA <Temp_Var16
 	AND #$F0
-	STA Objects_X + 5
+	STA Objects_XZ + 5
 	LDA <Temp_Var15
-	STA Objects_XHi + 5
+	STA Objects_XHiZ + 5
 
 	LDY #$00
 KeyRTS:
@@ -5706,7 +5706,7 @@ ClearSprite:
 	LDY Objects_State, X
 	CPY #OBJSTATE_HELD
 	BEQ NextSprite
-	LDY Level_ObjectID, X
+	LDY Objects_ID, X
 	CPY Global_Object
 	BEQ NextSprite
 	STA Objects_State, X
@@ -5817,6 +5817,9 @@ EndLevel:
 	STA Map_ReturnStatus
 	LDA #$01
 	STA Level_ExitToMap
+	JSR GetLevelBit
+	ORA Levels_Complete, Y
+	STA Levels_Complete, Y
 	RTS
 
 CoinsEarnedBuffer:
@@ -6179,7 +6182,7 @@ PowBlock0:
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BNE PowBlock1
-	LDY Level_ObjectID,X	 ; Get object's ID -> Y
+	LDY Objects_ID,X	 ; Get object's ID -> Y
 	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
 	AND #OAT_HITNOTKILL	 
 	BNE PowBlock1

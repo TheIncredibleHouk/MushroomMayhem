@@ -1580,7 +1580,7 @@ PRG030_8E50:
 	JSR RhythmPlatforms
 
 Graphics_Anim:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE PRG030_8E5D
 
 	LDA <Anim_Counter
@@ -4656,26 +4656,26 @@ Try_Item_Reserve_Release:
 	LDA #OBJSTATE_INIT
 	STA Objects_State + 5
 	LDA Reserve_Sprites, X
-	STA Level_ObjectID + 5
+	STA Objects_ID + 5
 	LDA Reserve_Flash, X
 	STA PUp_StarManFlash
 	LDA <Player_X
-	STA Objects_X + 5
+	STA Objects_XZ + 5
 	LDA <Player_XHi
-	STA Objects_XHi + 5
+	STA Objects_XHiZ + 5
 	LDA <Player_Y
 	SUB #$08
-	STA Objects_Y + 5
+	STA Objects_YZ + 5
 	LDA <Player_YHi
 	SBC #$00
-	STA Objects_YHi + 5
+	STA Objects_YHiZ + 5
 	
 No_PUp_Dec:
 	LDA #$01
 	STA From_Reserve
 	LDA #$00
 	STA PowerUp_Reserve
-	STA Objects_XVel + 5
+	STA Objects_XVelZ + 5
 	
 No_Release:
 	RTS
@@ -5495,7 +5495,7 @@ Keep_Going:
 	RTS
 
 DPad_ControlTiles:
-	LDA <Player_HaltGame
+	LDA <Player_HaltGameZ
 	BNE DPad_ControlTiles4
 
 	LDA <Pad_Holding
