@@ -766,7 +766,8 @@ ObjNorm_SnowGuy:
 	JSR Player_HitEnemy
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
-	LDA  <Objects_CollisionDetectionZ,X 
+	JSR Object_InteractWithPlayer
+	LDA <Objects_CollisionDetectionZ,X 
 	AND #$04
 	BEQ ObjNorm_SnowGuy1
 	LDA Objects_PreviousCollisionDetection,X 
@@ -1001,6 +1002,7 @@ ObjNorm_VeggieGuy:
 	JSR Player_HitEnemy
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	LDA  <Objects_CollisionDetectionZ,X 
 	AND #$04
 	BEQ ObjNorm_VeggieGuy1
@@ -1203,6 +1205,7 @@ ObjNorm_ShyGuy:
 	JSR Player_HitEnemy
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	LDA  <Objects_CollisionDetectionZ,X 
 	AND #$04
 	BEQ ObjNorm_ShyGuy1
@@ -1636,6 +1639,7 @@ ObjNorm_TwirlingShell:
 	BNE PRG003_A5EF	 ; If gameplay halted, jump to PRG003_A5EF
 
 	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
+	JSR Object_InteractWithPlayer
 
 	LDA Objects_ID,X
 	CMP #OBJ_BUZZYBEATLE
@@ -1969,6 +1973,7 @@ BobOmb_WalkAround1:
 
 PRG003_A739:
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	BCC PRG003_A75E	 ; If Bob-omb wasn't hit from underneath, jump to PRG003_A75E
 
 	LDA Objects_PlayerHitStat,X
@@ -3196,6 +3201,7 @@ ObjNorm_Ninji:
 	JSR ObjNorm_NinjiDraw
 	JSR Object_InteractWithWorld	 	; Move, detect, interact with blocks of world
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 
 	JSR Level_ObjCalcXDiffs
 

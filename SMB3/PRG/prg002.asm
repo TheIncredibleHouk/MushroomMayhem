@@ -1660,6 +1660,7 @@ PRG002_AD95:
 
 PRG002_AD96:
 	JSR Object_HandleBumpUnderneath	 ; Get killed if hit underneath by block
+	JSR Object_InteractWithPlayer
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 Bank2_SpikeHaltAction:
@@ -1823,6 +1824,7 @@ ObjNorm_Snifit:
 ObjNorm_Snifit0:
 
 	JSR Object_HandleBumpUnderneath	
+	JSR Object_InteractWithPlayer
 	JSR Object_DeleteOffScreen	 
 	JSR Object_InteractWithWorld
 	JSR Object_FacePlayer

@@ -1273,27 +1273,6 @@ ObjWakeUp_FeetYOff:	.byte 10, -10
 	; Called for an object in state 3 to do its "shelled" routine
 ObjState_Shelled:
 	LDY ObjGroupRel_Idx	; Y = object's group-relative index
-
-	LDA ObjectGroup_Attributes3,Y 
-	AND #OA3_SQUASH
-	BEQ PRG000_CB10	 ; If OA3_SQUASH is NOT set (stomp does not "shell" this object), jump to PRG000_CB10  
-
-	; Attribute set 3 bit 4 is set...
-
-	; Go to "stomped" state
-
-	; Timer 3 = $10
-	LDA #$10 
-	STA Objects_Timer3,X 
-
-	; Set object state to Squashed
-	LDA #OBJSTATE_SQUASHED
-	STA Objects_State,X
- 
-	JMP Object_ShakeAndDraw	 ; Draw object and don't come back... 
-
-PRG000_CB10:
-
 	; Attribute set 3 bit 4 is NOT set... (object is "shelled" when stomped)
 
 	LDA <Player_HaltGameZ	 
@@ -1373,6 +1352,7 @@ PRG000_CB4F:
 
 PRG000_CB58:
 	JSR Object_HandleBumpUnderneath	 ; Handle object getting hit from underside 
+	JSR Object_InteractWithPlayer
 
 PRG000_CB5B:
 	;JSR Object_BumpOffOthers	 ; Bump off and turn away from other objects 
@@ -1771,6 +1751,7 @@ PRG000_CCF4:
 
 PRG000_CCF7: 
 	JSR Object_HandleBumpUnderneath	 ; Handle the kicked shelled object getting hit from underneath
+	JSR Object_InteractWithPlayer
 
 PRG000_CCF8:
 	JSR ObjectKill_Others
@@ -4478,6 +4459,7 @@ PRG000_D862:
 	STA <Temp_Var1		 ; Store Player's bounding box top offset -> Temp_Var1
 
 	; Calculate full 16-bit X difference of object -> Temp_Var14/15
+
 	LDA <Player_X
 	SUB <Objects_XZ,X
 	STA <Temp_Var15	

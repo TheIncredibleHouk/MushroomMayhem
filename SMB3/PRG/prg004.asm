@@ -109,21 +109,21 @@ ObjectGroup03_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup03_CollideJumpTable:
-	.word $0000					; Object $6C - OBJ_GREENTROOPA
-	.word $0000					; Object $6D - OBJ_REDTROOPA
+	.word Player_HitEnemy					; Object $6C - OBJ_GREENTROOPA
+	.word ObjHit_DoNothing					; Object $6D - OBJ_REDTROOPA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GREENTROOPA	; Object $6E - OBJ_PARATROOPAGREENHOP
 	.word OCSPECIAL_KILLCHANGETO | OBJ_REDTROOPA	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.word $0000					; Object $70 - OBJ_BUZZYBEATLE
-	.word $0000					; Object $71 - OBJ_SPINY
-	.word $0000					; Object $72 - OBJ_GOOMBA
+	.word ObjHit_DoNothing					; Object $70 - OBJ_BUZZYBEATLE
+	.word ObjHit_DoNothing					; Object $71 - OBJ_SPINY
+	.word Player_HitEnemy					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
 	.word $0000	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word $0000	; Object $75 - OBJ_WATERFILLER (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
 	.word ObjHit_DoNothing					; Object $76 - OBJ_POISONMUSHROOM
-	.word $0000					; Object $77 - OBJ_GREENCHEEP
-	.word $0000					; Object $78 - OBJ_BULLETBILL
+	.word ObjHit_DoNothing					; Object $77 - OBJ_GREENCHEEP
+	.word ObjHit_DoNothing					; Object $78 - OBJ_BULLETBILL
 	.word KoopaExpload					; Object $79 - OBJ_BULLETBILLHOMING
-	.word $0000					; Object $7A - OBJ_PURPLETROOPA
+	.word ObjHit_DoNothing					; Object $7A - OBJ_PURPLETROOPA
 	.word Player_GetHurt					; Object $7B - OBJ_BLUESHELL
 	.word $0000					; Object $7C - OBJ_HELPER
 	.word $0000					; Object $7D - OBJ_PARAZOMBIEGOOMBA
@@ -198,7 +198,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_TDOGRP1			; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $70 - OBJ_BUZZYBEATLE
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $71 - OBJ_SPINY
-	.byte OA2_TDOGRP1	; Object $72 - OBJ_GOOMBA
+	.byte  OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $72 - OBJ_GOOMBA
 	.byte OA2_TDOGRP1			; Object $73 - OBJ_PARAGOOMBA
 	.byte OA2_TDOGRP1			; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $75 - OBJ_WATERFILLER
@@ -240,8 +240,8 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $70 - OBJ_BUZZYBEATLE
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_DIESHELLED 	; Object $71 - OBJ_SPINY
-	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $72 - OBJ_GOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_SQUASH 				; Object $73 - OBJ_PARAGOOMBA
+	.byte OA3_HALT_NORMALONLY 				; Object $72 - OBJ_GOOMBA
+	.byte OA3_HALT_NORMALONLY 				; Object $73 - OBJ_PARAGOOMBA
 	.byte OA3_HALT_NORMALONLY				; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE			; Object $75 - OBJ_WATERFILLER
 	.byte OA3_HALT_NORMALONLY 					; Object $76 - OBJ_POISONMUSHROOM
@@ -1641,6 +1641,7 @@ PRG004_A8DD:
 	BNE PRG004_A92C	 ; If gameplay is halted, jump to PRG004_A92C (RTS)
 
 	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
+	JSR Object_InteractWithPlayer
 
 	LDA Objects_Timer,X
 	CMP #$40
@@ -2019,6 +2020,7 @@ PRG004_AC43:
 
 PRG004_AC4D:
 	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
+	JSR Object_InteractWithPlayer
 	;JSR GroundTroop_BumpOffOthers	 ; Bounce off other objects
 
 PRG004_AC53:
@@ -2099,6 +2101,7 @@ PRG004_ACA3:
 
 PRG004_ACAC:
 	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped underneath
+	JSR Object_InteractWithPlayer
 
 	LDA <Objects_CollisionDetectionZ,X
 	AND #$04
@@ -2853,7 +2856,6 @@ Zombie_InsideBlock1:
 	RTS
 
 Zombie_InsideGround:
-	STA Debug_Snap
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Zombie_InsideGround2
@@ -3293,13 +3295,8 @@ ObjInit_Goomba1:
 	RTS
 
 ObjNorm_Goomba:
-	LDA DayNight
-	BNE ObjNorm_Goomba01
-
-	JSR Object_FacePlayerOnLanding
-
-ObjNorm_Goomba01:
-	JSR Object_DeleteOffScreen
+	LDA <Player_HaltGameZ
+	BNE Goomba_DrawNoAnimate
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
@@ -3307,8 +3304,14 @@ ObjNorm_Goomba01:
 	JMP Goomba_Death
 
 ObjNorm_Goomba0:
-	LDA <Player_HaltGameZ
+
+	LDA DayNight
 	BNE ObjNorm_Goomba1
+
+	JSR Object_FacePlayerOnLanding
+
+ObjNorm_Goomba1:
+	JSR Object_DeleteOffScreen
 
 	LDA Objects_Property, X
 	BEQ ObjNorm_Goomba02
@@ -3321,8 +3324,9 @@ ObjNorm_Goomba02:
 
 ObjNorm_Goomba03:
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	JSR Objects_Interact
-	BCS ObjNorm_Goomba1
+	BCS ObjNorm_Goomba4
 
 Goomba_Draw:
 	INC <Objects_Data5Z,X
@@ -3333,8 +3337,8 @@ Goomba_Draw:
 	AND #$01
 	STA Objects_Frame,X
 
-ObjNorm_Goomba1:
-
+ObjNorm_Goomba4:
+Goomba_DrawNoAnimate:
 	LDA Objects_Orientation, X
 	ORA #SPR_HFLIP
 	EOR #SPR_HFLIP
@@ -3348,13 +3352,8 @@ ObjNorm_Goomba1:
 	RTS
 
 Goomba_Death:
-	LDA <Player_HaltGameZ
-	BEQ ObjNorm_Goomba1
-
 	LDA Objects_HitCount, X
 	BNE Goomba_Death1
-
-	JSR Object_Move
 	JMP Goomba_Draw
 	 
 Goomba_Death1:
@@ -3363,9 +3362,16 @@ Goomba_Death1:
 	CMP #20
 	BNE Goomba_Death2
 
-	JMP Object_Delete
+	JMP Object_SetDeadEmpty
+
 Goomba_Death2:
-	RTS
+	LDA #$03
+	STA Objects_Frame, X
+	LDA #$00
+	STA <Objects_YVelZ, X
+	LDA #$00
+	STA Objects_Orientation, X
+	JMP Object_ShakeAndDrawMirrored
 
 ObjNorm_FlyingTroopa:
 	LDA <Player_HaltGameZ
@@ -3376,6 +3382,7 @@ ObjNorm_FlyingTroopa:
 	JSR Object_WorldDetect4
 	JSR Object_InteractWithWorldNoMove
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	JSR Objects_Interact
 
 	INC <Objects_Data5Z,X
@@ -3424,6 +3431,7 @@ ObjNorm_Troopa0:
 	JSR Object_DeleteOffScreen
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	JSR Objects_Interact
 	BCS ObjNorm_Troopa1
 
@@ -3444,9 +3452,9 @@ ObjNorm_PoisonMushroom:
 	BNE ObjNorm_PoisonMushroom1
 
 	JSR Object_DeleteOffScreen
-	JSR Player_HitEnemy
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	JSR Objects_Interact
 
 ObjNorm_PoisonMushroom1:
@@ -3495,6 +3503,7 @@ ObjNorm_SpinyBuzzy:
 	JSR Object_DeleteOffScreen
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	JSR Objects_Interact
 	BCS ObjNorm_SpinyBuzzy1
 
@@ -5674,6 +5683,7 @@ ObjNorm_BlueShell:
 	BNE DrawBlueShell
 
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 	INC Objects_Data1, X
 
 	LDA Objects_SlowTimer, X

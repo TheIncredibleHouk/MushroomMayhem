@@ -1741,6 +1741,7 @@ Rocky_KillOrStandOn:
 	BEQ PRG005_AAE8	 ; If Var5 = 6, jump to PRG005_AAE8 (RTS)
 
 	JSR Object_HandleBumpUnderneath
+	JSR Object_InteractWithPlayer
 
 	LDA Objects_PlayerHitStat,X
 	BEQ PRG005_AAE8	; If Player has not collided with Rocky, jump to PRG005_AAE8
