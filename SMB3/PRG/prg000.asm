@@ -1352,10 +1352,7 @@ PRG000_CB4F:
 
 PRG000_CB58:
 	JSR Object_HandleBumpUnderneath	 ; Handle object getting hit from underside 
-	JSR Object_InteractWithPlayer
-
-PRG000_CB5B:
-	;JSR Object_BumpOffOthers	 ; Bump off and turn away from other objects 
+	JSR Object_InteractWithPlayer	 ; Bump off and turn away from other objects 
 
 PRG000_CB5E:
 	LDA Objects_ID,X
@@ -2914,48 +2911,48 @@ PRG000_D1B8:
 IceBlockYRange: .byte $16, $16
 IceBlockYOffset: .byte $0D, $1E
 IceBlockStand:
-
-	LDA <Player_YVel
-	BMI Player_HitEnemy1
-	JSR Level_ObjCalcXDiffs
-	LDA <Temp_Var16
-	BPL IceBlockStand1
-	JSR Negate
-
-IceBlockStand1:
-	CMP #$0D
-	BCS IceBlockStandRTS
-
-	JSR Level_ObjCalcYDiffs
-	CPY #$01
-	BNE IceBlockStandRTS
-
-	LDA <Player_Suit
-	BNE IceBlockStand23
-	DEY
-
-IceBlockStand23:
-	LDA <Temp_Var16
-	BPL IceBlockStand2
-	JSR Negate
-
-IceBlockStand2:
-	SUB IceBlockYRange, Y
-	CMP #$0A
-	BCS Player_HitEnemy1
-
-	LDA Objects_YZ, X
-	SUB IceBlockYOffset, Y
-	STA <Player_Y
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Player_YHi
-	LDA #$00
-	STA <Player_YVel
-	STA <Player_InAir
-
-IceBlockStandRTS:
-	RTS
+;	RTS
+;	LDA <Player_YVel
+;	BMI Player_HitEnemy1
+;	JSR Level_ObjCalcXDiffs
+;	LDA <Temp_Var16
+;	BPL IceBlockStand1
+;	JSR Negate
+;
+;IceBlockStand1:
+;	CMP #$0D
+;	BCS IceBlockStandRTS
+;
+;	JSR Level_ObjCalcYDiffs
+;	CPY #$01
+;	BNE IceBlockStandRTS
+;
+;	LDA <Player_Suit
+;	BNE IceBlockStand23
+;	DEY
+;
+;IceBlockStand23:
+;	LDA <Temp_Var16
+;	BPL IceBlockStand2
+;	JSR Negate
+;
+;IceBlockStand2:
+;	SUB IceBlockYRange, Y
+;	CMP #$0A
+;	BCS Player_HitEnemy1
+;
+;	LDA Objects_YZ, X
+;	SUB IceBlockYOffset, Y
+;	STA <Player_Y
+;	LDA <Objects_YHiZ, X
+;	SBC #$00
+;	STA <Player_YHi
+;	LDA #$00
+;	STA <Player_YVel
+;	STA <Player_InAir
+;
+;IceBlockStandRTS:
+;	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_HitEnemy
 ;
@@ -2965,11 +2962,6 @@ IceBlockStandRTS:
 ; $D1BA
 
 Player_HitEnemy:
-	LDA Objects_ID, X
-	CMP #OBJ_ICEBLOCK
-	BEQ IceBlockStand
-
-Player_HitEnemy1:
 	JSR Object_HitTest	; Check for collision
 
 	; Clear hit status bits
