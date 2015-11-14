@@ -6365,17 +6365,22 @@ DetectNextSprite:
 	STA <Temp_Var10			; object difference
 	LDA <Objects_XHiZ, X		; original object's XHi
 	SBC <Temp_Var7
-	BMI KeepCalcingX
+	BEQ KeepCalcingX
+	CMP #$FF
 	BNE GoNextSprite
 
-KeepCalcingX:
 	LDA <Temp_Var10
 	CMP #$F2
 	BCS TrySpriteCarry
+	BCC GoNextSprite
+
+KeepCalcingX:
+	LDA <Temp_Var10
 	CMP #$0E
 	BCS GoNextSprite
 
 TrySpriteCarry:
+	STA Debug_Snap
 	STX TempX
 	LDA <Temp_Var8		; original object's Y 'bottom'
 	SUB <Objects_YZ, X

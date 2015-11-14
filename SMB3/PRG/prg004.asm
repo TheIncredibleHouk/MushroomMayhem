@@ -110,11 +110,11 @@ ObjectGroup03_NormalJumpTable:
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup03_CollideJumpTable:
 	.word Player_HitEnemy					; Object $6C - OBJ_GREENTROOPA
-	.word ObjHit_DoNothing					; Object $6D - OBJ_REDTROOPA
+	.word Player_HitEnemy					; Object $6D - OBJ_REDTROOPA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GREENTROOPA	; Object $6E - OBJ_PARATROOPAGREENHOP
 	.word OCSPECIAL_KILLCHANGETO | OBJ_REDTROOPA	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.word ObjHit_DoNothing					; Object $70 - OBJ_BUZZYBEATLE
-	.word ObjHit_DoNothing					; Object $71 - OBJ_SPINY
+	.word Player_HitEnemy					; Object $70 - OBJ_BUZZYBEATLE
+	.word Player_HitEnemy					; Object $71 - OBJ_SPINY
 	.word Player_HitEnemy					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
 	.word $0000	; Object $74 - OBJ_ZOMBIEGOOMBA
@@ -123,7 +123,7 @@ ObjectGroup03_CollideJumpTable:
 	.word ObjHit_DoNothing					; Object $77 - OBJ_GREENCHEEP
 	.word ObjHit_DoNothing					; Object $78 - OBJ_BULLETBILL
 	.word KoopaExpload					; Object $79 - OBJ_BULLETBILLHOMING
-	.word ObjHit_DoNothing					; Object $7A - OBJ_PURPLETROOPA
+	.word Player_HitEnemy					; Object $7A - OBJ_PURPLETROOPA
 	.word Player_GetHurt					; Object $7B - OBJ_BLUESHELL
 	.word $0000					; Object $7C - OBJ_HELPER
 	.word $0000					; Object $7D - OBJ_PARAZOMBIEGOOMBA
