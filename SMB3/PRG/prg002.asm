@@ -1114,9 +1114,9 @@ PRG002_AA21:
 	RTS		 ; Return
 
 PlatformTimers:
-	.byte $00, $10, $20, $30, $40, $50, $60
+	.byte $00, $10, $20, $30, $40, $50, $60, $70
 
-ObjInit_WoodenPlatHorz:
+ObjInit_WoodenPlatformPatternCommon:
 	LDA Objects_YZ, X
 	STA Objects_Data1, X
 	LDA Objects_YHiZ, X
@@ -1125,62 +1125,80 @@ ObjInit_WoodenPlatHorz:
 	STA Objects_Data3, X
 	LDA Objects_XHiZ, X
 	STA Objects_Data4Z, X
-	LDA Objects_Property, X
-	TAY
+	LDY Objects_Property, X
 	LDA PlatformTimers, Y
+
 	STA Objects_Data10, X
+	STA Objects_Data11, X
+	RTS
+
+ObjInit_WoodenPlatHorz:
+	JSR ObjInit_WoodenPlatformPatternCommon
 	LDA #$00
 	STA Objects_Property, X
 	JMP InitPatrol
 
 ObjInit_WoodenPlatVert:
-	LDA Objects_Property, X
-	TAY
-	LDA PlatformTimers, Y
-	STA Objects_Data11, X
+	JSR ObjInit_WoodenPlatformPatternCommon
 	LDA #$01
 	STA Objects_Property, X
 	JMP InitPatrol
 
 ObjInit_WoodenPlatDiagonal1:
-	LDA Objects_Property, X
-	TAY
-	LDA PlatformTimers, Y
-	STA Objects_Data10, X
-	STA Objects_Data11, X
+	JSR ObjInit_WoodenPlatformPatternCommon
 	LDA #$02
 	STA Objects_Property, X
 	JMP InitPatrol
 
 ObjInit_WoodenPlatDiagonal2:
-	LDA Objects_Property, X
-	TAY
-	LDA PlatformTimers, Y
-	STA Objects_Data10, X
-	STA Objects_Data11, X
+	JSR ObjInit_WoodenPlatformPatternCommon
 	LDA #$03
 	STA Objects_Property, X
 	JMP InitPatrol
 
 ObjInit_WoodenPlatCCW:
-	LDA Objects_Property, X
-	TAY
-	LDA PlatformTimers, Y
-	STA Objects_Data10, X
-	STA Objects_Data11, X
+	JSR ObjInit_WoodenPlatformPatternCommon
 	LDA #$04
 	STA Objects_Property, X
 	JMP InitPatrol
 
 ObjInit_WoodenPlatCW:
-	LDA Objects_Property, X
-	TAY
-	LDA PlatformTimers, Y
-	STA Objects_Data10, X
-	STA Objects_Data11, X
+	JSR ObjInit_WoodenPlatformPatternCommon
 	LDA #$05
 	STA Objects_Property, X
 	JMP InitPatrol
+
+ObjNorm_PlatformPattern:
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA <Player_HaltGameZ
+	BNE ObjNorm_PlatformPattern1	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
+
+	JSR DoPatrol
+	JSR PlayerPlatform_Collide
+
+	;LDA Objects_YZ, X
+	;CMP Objects_Data1, X
+	;BNE ObjNorm_PlatformPattern1
+	;
+	;LDA Objects_YHiZ, X
+	;CMP Objects_Data2, X
+	;BNE ObjNorm_PlatformPattern1
+	;
+	;LDA Objects_XZ, X
+	;CMP Objects_Data3, X
+	;BNE ObjNorm_PlatformPattern1
+	;
+	;LDA Objects_XHiZ, X
+	;CMP Objects_Data4Z, X
+	;BNE ObjNorm_PlatformPattern1
+	;
+	JSR Object_DeleteOffScreen_N2
+
+ObjNorm_PlatformPattern1:
+	JMP LogPlat_Draw
 	
 ObjInit_WoodenPlat:
 	RTS		 ; Return
@@ -1190,9 +1208,13 @@ ObjInit_PlatformFollow:
 	ASL A
 	STA Objects_Data2, X
 	LDA #$00
-	STA Objects_XVelFracZ, X
-	STA Objects_YVelFracZ, X
+	STA Objects_XVelFrac, X
+	STA Objects_YVelFrac, X
 	RTS
+
+DeleteIfOffAndDrawWide:
+	JSR Object_DeleteOffScreen_N2	 ; Delete object if it falls off-screen
+	JMP LogPlat_Draw	 ; Jump to LogPlat_Draw
 
 ObjNorm_PlatformFollow:
 	LDA <Player_HaltGameZ
@@ -1304,22 +1326,6 @@ Object_HitFloorAlign:
 	JMP Object_HitGround	 ; Otherwise, align to ground and don't come back!
 
 	; Timers set per direction (long and short, respectively)
-
-DeleteIfOffAndDrawWide:
-	JSR Object_DeleteOffScreen_N2	 ; Delete object if it falls off-screen
-	JMP LogPlat_Draw	 ; Jump to LogPlat_Draw
-
-ObjNorm_PlatformPattern:
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
-
-	LDA <Player_HaltGameZ
-	BNE DeleteIfOffAndDrawWide	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
-
-	JSR DoPatrol
-	JSR PlayerPlatform_Collide
-	JMP DeleteIfOffAndDrawWide
 
 ObjInit_FloatWoodenPlat:
 	LDA Level_AScrlConfig
@@ -1702,7 +1708,7 @@ PRG002_ADD1:
 	ADD <Temp_Var2		 ; Offset by Spike's X
 	STA <Temp_Var2		 ; -> Temp_Var2
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	STA <Temp_Var5
 	LDX #(SpikeBall_Patterns - ObjectGroup01_PatternSets)	 ; Offset to patterns for spike ball
 
@@ -1902,7 +1908,7 @@ Snifit_Shoot1:
 	TYA
 	BMI Snifit_ShootRTS
 
-	LDA Objects_SprHVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$C0
 	BNE Snifit_ShootRTS
 
@@ -2200,7 +2206,7 @@ PRG002_AF96:
 	STA <Objects_YHiZ,X
 
 	LDY #$00	 ; Y = 0 (height of 16)
-	JSR Object_DetermineVertVisY	 ; Determine visibility of spike ball sprites
+	JSR Object_DetermineVerticallyOffScreenY	 ; Determine visibility of spike ball sprites
 	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite data for spike ball
 
 	LDA Level_NoStopCnt
@@ -2275,7 +2281,7 @@ PRG002_B00E:
 	PLA
 	STA <Objects_YHiZ,X
 
-	JSR Object_DetermineVertVis	 ; Restore true vertical visibility for this Patooie/piranha
+	JSR Object_DetermineVerticallyOffScreen	 ; Restore true vertical visibility for this Patooie/piranha
 	JSR Object_CalcSpriteXY_NoHi	 ; Calculate the true sprite positions
 
 PRG002_B01A:
@@ -2947,8 +2953,8 @@ DryBones_Draw:
 PRG002_B6F2:
 
 	; Draw Dry Bones
-	LDY #$01	 ; 32 pixels height for Object_DetermineVertVisY
-	JSR Object_DetermineVertVisY
+	LDY #$01	 ; 32 pixels height for Object_DetermineVerticallyOffScreenY
+	JSR Object_DetermineVerticallyOffScreenY
 	JSR Object_Draw16x32Sprite
 
 	; Restore Dry Bones' Y/Hi
@@ -2957,7 +2963,7 @@ PRG002_B6F2:
 	PLA
 	STA <Objects_YHiZ,X
 
-	JSR Object_DetermineVertVis
+	JSR Object_DetermineVerticallyOffScreen
 	JMP Object_CalcSpriteXY_NoHi	 ; Calculate sprite X/Y and don't come back!
 
 PRG002_B706:
@@ -2983,8 +2989,8 @@ PRG002_B706:
 	DEC <Objects_XHiZ,X
 PRG002_B71C:
 
-	LDY #$02	 ; Select width = 24 for Object_DetermineHorzVisY
-	JSR Object_DetermineHorzVisY	 ; Determine horizontal visibility
+	LDY #$02	 ; Select width = 24 for Object_DetermineHorizontallyOffScreenY
+	JSR Object_DetermineHorizontallyOffScreenY	 ; Determine horizontal visibility
 	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite X/Y
 
 	LDX <CurrentObjectIndexZ	 	 ; X = object slot index
@@ -3020,7 +3026,7 @@ PRG002_B73C:
 	PLA
 	STA <Objects_XHiZ,X
 
-	JSR Object_DetermineHorzVis	 ; Determine horizontal visibility of Dry Bones' sprites
+	JSR Object_DetermineHorizontallyOffScreen	 ; Determine horizontal visibility of Dry Bones' sprites
 	JMP Object_CalcSpriteXY_NoHi	 ; Calculate Sprite X/Y and don't come back!
 
 
@@ -3072,10 +3078,10 @@ PRG002_B788:
 	RTS		 ; Return
 
 PRG002_B789:
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG002_B77D	 ; If any sprite of Dry Bones is vertically off-screen, jump to PRG002_B77D (RTS)
 
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #$c0
 	CMP #$c0
 	BEQ PRG002_B77D	 ; If some of Dry Bones is horizontally off-screen, jump to PRG002_B77D (RTS)
@@ -3100,10 +3106,10 @@ PRG002_B7A9:
 	AND #OAT_BOUNCEOFFOTHERS
 	BEQ PRG002_B815	 ; If OAT_BOUNCEOFFOTHERS is NOT set, jump to PRG002_B815
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG002_B815	 ; If any sprite is vertically off-screen, jump to PRG002_B815
 
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #$c0
 	CMP #$c0
 	BEQ PRG002_B815	 ; If previous object has sprites horizontally off-screen, jump to PRG002_B815
@@ -4277,8 +4283,8 @@ BlockPlatformMove:
 	LDA <Objects_XZ, X
 	ORA <Objects_YZ, X
 	AND #$0F
-	ORA Objects_XVelFracZ, X
-	ORA Objects_YVelFracZ, X
+	ORA Objects_XVelFrac, X
+	ORA Objects_YVelFrac, X
 	BEQ BlockPlatform0
 	RTS
 
@@ -4562,9 +4568,9 @@ Birdo_TryShoot:
 	CMP #$08
 	BNE Birdo_Norm
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	AND #$80
-	ORA Objects_SprHVis,X
+	ORA Objects_SpritesHorizontallyOffScreen,X
 	BNE Birdo_Norm
 
 	LDA Birdo_EggShoot, Y

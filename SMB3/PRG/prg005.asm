@@ -485,14 +485,14 @@ ObjNorm_Podoboo:
 	LDA Objects_Timer,X
 	BEQ PRG005_A259	 ; If timer expired, jump to PRG005_A259
 
-	; Objects_SprHVis = Timer (screwy way to make Podoboo invisible until timer expires)
-	STA Objects_SprHVis,X
+	; Objects_SpritesHorizontallyOffScreen = Timer (screwy way to make Podoboo invisible until timer expires)
+	STA Objects_SpritesHorizontallyOffScreen,X
 
 	CMP #$01
 	BNE PRG005_A258	 ; If timer <> 1, jump to PRG005_A258 (RTS)
 
 PRG005_A250:
-	JSR Object_DetermineHorzVis	; Determine ACTUAL horizontal visibility
+	JSR Object_DetermineHorizontallyOffScreen	; Determine ACTUAL horizontal visibility
 
 	; Podoboo splashes coming out of the lava
 	LDA #$13
@@ -643,7 +643,7 @@ BigCannonBall_Draw:
 	STA Objects_Orientation,X	; No flip
 
 	; horizontal visibility bits -> Temp_VarNP0
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	STA Temp_VarNP0
 
 	LDA <Objects_XZ,X
@@ -656,7 +656,7 @@ BigCannonBall_Draw:
 	ADC #$00	 ; Apply carry
 	STA <Objects_XHiZ,X	 ; Update big cannon ball's X Hi
 
-	ASL Objects_SprHVis,X
+	ASL Objects_SpritesHorizontallyOffScreen,X
 	JSR Object_Draw16x32Sprite	 ; Draw center of big cannon ball
 
 	; Restore X/Hi
@@ -667,7 +667,7 @@ BigCannonBall_Draw:
 
 	JSR Object_CalcSpriteXY_NoHi
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG005_A429	 	; If any sprite of the big cannon ball is vertically off-screen, jump to PRG005_A429 (RTS)
 
 	; Temp_Var1 = big cannon ball's Sprite Y
@@ -745,6 +745,9 @@ ObjInit_PumpkinFree:
 ObjNorm_PumpkinFree:
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_PumpkinFree1
+	LDA Objects_Data6, X
+	BNE PumpkinFreeDraw1
+	RTS
 	JMP PumpkinFreeDraw1
 
 ObjNorm_PumpkinFree1:
@@ -929,9 +932,9 @@ PRG005_A66E:
 
 	JSR Object_CalcSpriteXY_NoHi
 
-	; Objects_SprHVis = 1 (?)
+	; Objects_SpritesHorizontallyOffScreen = 1 (?)
 	LDA #$01
-	STA Objects_SprHVis,X
+	STA Objects_SpritesHorizontallyOffScreen,X
 
 	JMP PRG005_A78F	 ; Jump to PRG005_A78F
 
@@ -1080,7 +1083,7 @@ DrawMaskingSprite:
 	; The following adds the masking sprite over the bottom of the Piranha,
 	; the trick used to make it appear as if it is emerging from the pipe..
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG005_A78F	 ; If any sprite is vertically off-screen, jump to PRG005_A78F
 
 	; Temp_Var1 = 1
@@ -1096,7 +1099,7 @@ DrawMaskingSprite:
 	STA <Temp_Var1
 
 PRG005_A74F:
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	BMI PRG005_A760	 ; If leftmost sprite is horizontally off-screen, jump to PRG005_A760
 
 	; Set Sprite Y at Origin Y - Temp_Var1, made relative to scroll
@@ -1106,7 +1109,7 @@ PRG005_A74F:
 	STA Sprite_RAM-$08,Y
 
 PRG005_A760:
-	LDA Objects_SprHVis,X	
+	LDA Objects_SpritesHorizontallyOffScreen,X	
 	AND #$40
 	BNE PRG005_A773	 ; If the second from left sprite is horizontally off-screen, jump to PRG005_A773
 
@@ -1206,7 +1209,6 @@ PRG005_A7DC:
 
 
 Piranha_Attack:
-	STA Debug_Snap
 	; TIP: For Var2, see Piranha_Style
 	LDA Objects_Property,X	 
 	CMP #$02
@@ -1890,13 +1892,13 @@ ObjNorm_BoltLift:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Object_ShakeAndDraw	 	; Draw left half of bolt lift
 
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	PHA		 ; Save horizontal visibility bits
 
 	; Shift over visibility to draw second half
 	ASL A
 	ASL A
-	STA Objects_SprHVis,X
+	STA Objects_SpritesHorizontallyOffScreen,X
 
 	LDA <Objects_XZ,X
 	PHA		 	; Save object X
@@ -1921,7 +1923,7 @@ ObjNorm_BoltLift:
 	PLA
 	STA <Objects_XZ,X
 	PLA
-	STA Objects_SprHVis,X
+	STA Objects_SpritesHorizontallyOffScreen,X
 
 	JSR Object_CalcSpriteXY_NoHi
 
@@ -2135,10 +2137,10 @@ PRG005_AC93:
 	RTS		 ; Return
 
 Bolt_ToBoltCollide:
-	LDA Objects_SprVVis,X 
+	LDA Objects_SpritesVerticallyOffScreen,X 
 	BNE PRG005_AD06	 ; If any sprite of the bolt is vertically off-screen, jump to PRG005_AD06 (RTS)
 
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #%11000000
 	CMP #%11000000
 	BEQ PRG005_AD06	 ; If left two sprites are off-screen, jump to PRG005_AD06 (RTS)
@@ -2158,10 +2160,10 @@ PRG005_ACA9:
 	CMP #OBJ_BOLTLIFT
 	BNE PRG005_AD01	 ; If this is not another bolt lift, jump to PRG005_AD01 (skip this object)
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG005_AD01	 ; If this other bolt is vertically off-screen, jump to PRG005_AD01 (skip this object)
 
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #%11000000
 	CMP #%11000000
 	BEQ PRG005_AD01	 ; If this other bolt is horizontally off-screen, jump to PRG005_AD01 (skip this object)
@@ -2594,7 +2596,7 @@ DrawSunMoon1:
 ;	LDA Objects_Orientation,X
 ;	ORA #~SPR_BEHINDBG	 ; Clear priority bit
 ;
-;	LDA Objects_SprHVis,X
+;	LDA Objects_SpritesHorizontallyOffScreen,X
 ;	STA Temp_VarNP0	 ; Sprite horizontal visibility -> Temp_VarNP0
 ;
 ;	LDA <Objects_XZ,X
@@ -2609,7 +2611,7 @@ DrawSunMoon1:
 ;	ADC #$00	 ; Apply carry
 ;	STA <Objects_XHiZ,X	 ; Update X Hi
 ;
-;	ASL Objects_SprHVis,X
+;	ASL Objects_SpritesHorizontallyOffScreen,X
 ;
 ;	JSR Object_DrawTallAndHFlip	 ; Draw's middle of sun
 ;
@@ -2625,7 +2627,7 @@ DrawSunMoon1:
 ;
 ;	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite RAM offset
 ;
-;	LDA Objects_SprVVis,X
+;	LDA Objects_SpritesVerticallyOffScreen,X
 ;	BNE PRG005_AE56	 ; If Sun is vertically off-screen, jump to PRG005_AE56 (RTS)
 ;
 ;	; Sun's Sprite Y -> Temp_Var1
@@ -3029,13 +3031,13 @@ DecBar:
 
 DoBarBar:
 	LDY #$08
-	JSR Object_DetermineVertVis
+	JSR Object_DetermineVerticallyOffScreen
 	LDY #$08
-	JSR Object_DetermineHorzVis
+	JSR Object_DetermineHorizontallyOffScreen
 
 DoPBarDraw:
-	LDA Objects_SprVVis, X
-	ORA Objects_SprHVis, X
+	LDA Objects_SpritesVerticallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
 	BEQ DrawPBar
 	RTS
 
@@ -5045,7 +5047,7 @@ Swoosh_BreathIn_2:
 	CMP Objects_Data4Z, X
 	BNE Swoosh_BreathIn1
 
-	LDA Objects_SprVVis, X
+	LDA Objects_SpritesVerticallyOffScreen, X
 	BNE Swoosh_BreathIn1
 
 	LDA Swoosh_Pull, Y
@@ -5137,7 +5139,7 @@ Swoosh_BlowOut_2:
 	CMP Objects_Data4Z, X
 	BNE Swoosh_BlowOut1
 
-	LDA Objects_SprVVis, X
+	LDA Objects_SpritesVerticallyOffScreen, X
 	BNE Swoosh_BlowOut1
 
 	LDA Swoosh_Push, Y

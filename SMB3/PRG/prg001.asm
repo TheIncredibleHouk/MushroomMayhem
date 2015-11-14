@@ -587,8 +587,8 @@ ObjNorm_NegaStar0:
 ObjNorm_NegaStar01:
 	JSR Object_ShakeAndDrawMirrored
 
-	LDA Objects_SprHVis,X 
-	ORA Objects_SprVVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X 
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE NegaStarRTS
 
 	LDY Objects_Property, X
@@ -693,8 +693,8 @@ PRG001_A4C6:
 	STA Player_Bounce	 ; Clear Player_Bounce
 	STA Player_BounceObj	 ; Clear Player_BounceObj
 	STA Objects_Orientation,X	 ; Force left/right flag to zero
-	STA Objects_SprVVis,X	 ; Clear flags 2
-	STA Objects_SprHVis,X	 ; Clear flags 1
+	STA Objects_SpritesVerticallyOffScreen,X	 ; Clear flags 2
+	STA Objects_SpritesHorizontallyOffScreen,X	 ; Clear flags 1
 
 	LDA #10
 	STA Level_BlkBump_Pos-6,X ; Block bump position = 10
@@ -1881,7 +1881,7 @@ PRG001_ACA9:
 	LDA VineGrowthTile
 	STA [Temp_Var1],Y
 
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	CMP #$03
 	BGE PRG001_AD23	; If vine object is off-screen horizontally, jump to PRG001_AD23 (RTS)
 
@@ -1992,8 +1992,8 @@ ObjNorm_Coin:
 	JSR Object_HitGround
 
 DrawCoin:
-	LDA Objects_SprHVis, X
-	ORA Objects_SprVVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE Coin_RTS
 
 	JSR Object_ShakeAndCalcSprite
@@ -2157,7 +2157,7 @@ PRG001_B8E0:
 
 	; Otherwise, mark Bowser as totally invisible horizontally (??)
 	LDA #$ff
-	STA Objects_SprHVis,X
+	STA Objects_SpritesHorizontallyOffScreen,X
 
 PRG001_B8E5:
 	RTS		 ; Return
@@ -2175,7 +2175,7 @@ Bowser_DoVar5Action:
 	.word Bowser_DoorAppear		; Internal state 5: Final door appears
 
 Bowser_WaitForPlayer:
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	BNE PRG001_B928	 ; If any of Bowser's sprites are horizontally off-screen, jump to PRG001_B928 (RTS)
 
 	LDA <Horz_Scroll
@@ -3027,11 +3027,11 @@ Bowser_Draw:
 	STA <Temp_Var4		
 
 	; Temp_Var5 = Bowser's horizontal visibility flags
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	STA <Temp_Var5	
 
 	; Temp_Var6 = Bowser's vertical visibility flags
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	STA <Temp_Var6
 
 	LDY Objects_Frame,X
@@ -3342,7 +3342,7 @@ PRG001_BEDE:
 	ADC #$00	 	; Apply carry
 	STA <Objects_YHiZ,X	; -> Bowser's Y Hi
 
-	JSR Object_DetermineVertVis	; Check if Bowser is vertically invisible
+	JSR Object_DetermineVerticallyOffScreen	; Check if Bowser is vertically invisible
 
 	; Restore Y and Y Hi
 	PLA
@@ -3669,7 +3669,7 @@ ChompNoDelete:
 	BNE GiantChompStuff
 
 	JSR Object_ApplyYVel_NoLimit
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BEQ DrawMiniChomp
 
 	JSR Level_ObjCalcYDiffs
@@ -3724,7 +3724,7 @@ DrawChomp:
 	CPY #$00
 	BEQ DoneGC
 
-	LDA Objects_SprVVis, X
+	LDA Objects_SpritesVerticallyOffScreen, X
 	CMP #$03
 	BCC DoneGC
 	
@@ -3739,7 +3739,7 @@ DoneGC:
 DrawMiniChomp:
 	JSR Object_ShakeAndCalcSprite
 	LDX <CurrentObjectIndexZ
-	LDA Objects_SprHVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$60
 	BNE DrawMiniChompRTS
 	LDA <Temp_Var1
@@ -3781,11 +3781,11 @@ ChompEatBlock:
 	LDA ObjTile_DetXHi
 	STA Level_BlockChgXHi
 
-	LDA Objects_SprHVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$C0
 	BNE ChompEatBlockRTS
 
-	LDA Objects_SprVVis, X
+	LDA Objects_SpritesVerticallyOffScreen, X
 	AND #$03
 	BNE ChompEatBlockRTS
 	JSR PRG001_BC6D
@@ -4824,8 +4824,8 @@ ObjInit_IceFireFly:
 	LDA IceFireFlyColors, Y
 	STA Objects_SpriteAttributes, X
 	LDA #$00
-	STA Objects_SprHVis, X
-	STA Objects_SprVVis, X
+	STA Objects_SpritesHorizontallyOffScreen, X
+	STA Objects_SpritesVerticallyOffScreen, X
 	JSR SpecialObj_FindEmptyAbort
 	TYA
 	STA Objects_Data2, X
@@ -5040,7 +5040,7 @@ Coin_Unlock:
 	
 	JSR SetObjectTileCoordAlignObj
 	
-	LDA Objects_SprHVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	BNE Coin_Unlock0
 
 	LDY <Temp_Var15
@@ -5122,8 +5122,8 @@ ObjNorm_CoinLock1:
 
 DrawCoinLock0:
 	JSR Object_ShakeAndDraw
-	LDA Objects_SprHVis,X 
-	ORA Objects_SprVVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X 
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BEQ DrawCoinLock1
 
 	LDA #$08

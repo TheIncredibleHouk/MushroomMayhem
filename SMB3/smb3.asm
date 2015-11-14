@@ -1828,7 +1828,7 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	Object_LevelTile:	.ds 1
 	Object_IgnoreWater:			.ds 1	; $0650 unused
 
-	Objects_SprHVis:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
+	Objects_SpritesHorizontallyOffScreen:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
 	Objects_SpawnIdx:	.ds 8	; $0659-$0660 Holds the index into level data that this object was spawned from
 
 ; Objects_State
@@ -1849,7 +1849,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	Objects_Orientation:	.ds 8	; $0679-$0680 Applied sprite attributes for this object (usually just horizontal/vertical flip)
 
-	Objects_SprVVis:	.ds 8	; $0681-$0688 Flags; Bits 3-0 set when each 8x16 sprite is vertically off-screen (top-to-bottom from MSb)
+	Objects_SpritesVerticallyOffScreen:	.ds 8	; $0681-$0688 Flags; Bits 3-0 set when each 8x16 sprite is vertically off-screen (top-to-bottom from MSb)
 	Objects_Data1:		.ds 8	; $0689-$0690 Generic variable 1 for objects
 	Objects_Data2:		.ds 8	; $0691-$0698 Generic variable 2 for objects
 
@@ -2027,9 +2027,9 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	Object_VelCarry:	.ds 1	; '1' when last Object Velocity fraction accumulation rolled over
 
-	; WARNING: The distance between Player/Objects_XVelFracZ and Player/Objects_YVelFracZ must be same as Player/Objects_X/YVel!
+	; WARNING: The distance between Player/Objects_XVelFrac and Player/Objects_YVelFrac must be same as Player/Objects_X/YVel!
 	Player_XVelFrac:	.ds 1	; X velocity fractional accumulator
-	Objects_XVelFracZ:	.ds 8	; $074E-$0755 Other object's X velocity fractional accumulator
+	Objects_XVelFrac:	.ds 8	; $074E-$0755 Other object's X velocity fractional accumulator
 
 				.ds 1	; $0756 unused
 
@@ -2039,9 +2039,9 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 				; So use it if you want, but maintain the distance!!
 				.ds 7	; $0758-$075E unused
 
-	; WARNING: The distance between Player/Objects_XVelFracZ and Player/Objects_YVelFracZ must be same as Player/Objects_X/YVel!
+	; WARNING: The distance between Player/Objects_XVelFrac and Player/Objects_YVelFrac must be same as Player/Objects_X/YVel!
 	Player_YVelFrac:	.ds 1	; Y velocity fractional accumulator
-	Objects_YVelFracZ:	.ds 8	; $0760-$0767 Other object's Y velocity fractional accumulator
+	Objects_YVelFrac:	.ds 8	; $0760-$0767 Other object's Y velocity fractional accumulator
 
 
 	Objects_ColorCycle:	.ds 8	; $0768-$076F Cycles colors of object and decrements to zero (e.g. "Melting" ice block, starman, etc.)

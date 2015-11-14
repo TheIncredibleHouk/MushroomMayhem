@@ -680,6 +680,7 @@ PRG008_A3EC:
 	; Suit queue
 	AND #$0f
 	LDY #$00
+	STY LeftRightInfection
 	STY Player_Power
 	STY Power_Change
 	CMP #$05

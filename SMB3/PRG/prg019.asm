@@ -1598,7 +1598,7 @@ CCBounce:
 	RTS
 
 CCBounce1:
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	CMP #$F0
 	BNE CCBounce2
 	LDA #$10

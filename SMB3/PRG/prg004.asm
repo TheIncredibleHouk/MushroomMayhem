@@ -104,7 +104,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_ThwompVertical	; Object $8F - OBJ_THWOMPDIAGONALDL
 
 
-	; Object group $03 (i.e. objects starting at ID $6C) Collision routine jump table (if calling Object_InteractWithPlayer;
+	; Object group $03 (i.e. objects starting at ID $6C) Collision routine jump table (if calling Object_HitTestRespond;
 	; Special values of OCSPECIAL_KILLCHANGETO or OCSPECIAL_HIGHSCORE can be used here instead otherwise.)
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
@@ -119,7 +119,7 @@ ObjectGroup03_CollideJumpTable:
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
 	.word $0000	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word $0000	; Object $75 - OBJ_WATERFILLER (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
-	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
+	.word ObjHit_DoNothing					; Object $76 - OBJ_POISONMUSHROOM
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
 	.word $0000					; Object $78 - OBJ_BULLETBILL
 	.word KoopaExpload					; Object $79 - OBJ_BULLETBILLHOMING
@@ -1017,10 +1017,10 @@ PRG004_A5C2:
 Hammer_XVel:	.byte $12, -$12
 
 HammerBro_ThrowHammer:
-	LDA Objects_SprHVis,X	 
+	LDA Objects_SpritesHorizontallyOffScreen,X	 
 	BNE PRG004_A61B	 ; If any sprite is horizontally off-screen, jump to PRG004_A61B (RTS)
 
-	LDA Objects_SprVVis,X	 
+	LDA Objects_SpritesVerticallyOffScreen,X	 
 	AND #$07
 	BNE PRG004_A61B
 
@@ -1239,7 +1239,7 @@ Thwomp_Draw:
 
 	JSR Object_Draw16x32Sprite	 ; Draw left 2/3 of Thwomp
 
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #$20
 	BNE PRG004_A737	 ; If sprite is not visible, jump to PRG004_A737
 
@@ -1252,7 +1252,7 @@ Thwomp_Draw:
 	STA Sprite_RAM+$17,Y
 
 	; Temp_Var1 = vertical visibility bits
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	STA <Temp_Var1	
 
 	LDA <Objects_SpriteY,X
@@ -2729,7 +2729,6 @@ Zombie_NoInfection:
 
 	LDA #$00
 	STA <Objects_Data5Z, X
-	BEQ Zombie_NoInfection1
 
 Zombie_NoInfection1:
 
@@ -2804,17 +2803,33 @@ Zombie_Wait:
 	.word ObjNorm_DoNothing
 	.word Zombie_InsideBlock
 	.word Zombie_InsideGround
-	;.word Zombie_InsidePipe
+
 
 Zombie_CheckDistances:
 	.byte $D0, $28
 
 Zombie_InsideBlock:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE Zombie_InsideBlock1
+
+	JSR Object_GetAttrJustTile
+	LDA Object_LevelTile
+	AND #$3F
+	CMP #$01
+	BNE Zombie_InsideBlock0
+	LDA #$01
+	STA Objects_Data2, X
+	RTS
+
+Zombie_InsideBlock0:
+
+	LDA #$10
 	JSR Level_ObjCalcXBlockDiffs
 	CMP #$03
 	BCS Zombie_InsideBlock1
 
-	LDA Level_ChgTileEvent
+	LDA Level_ChgTileEvent   
 	BNE Zombie_InsideBlock1
 
 	JSR Zombie_Crumbles
@@ -2838,6 +2853,12 @@ Zombie_InsideBlock1:
 	RTS
 
 Zombie_InsideGround:
+	STA Debug_Snap
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE Zombie_InsideGround2
+
+	LDA #$10
 	JSR Level_ObjCalcXBlockDiffs
 	CMP #$03
 	BCS Zombie_InsideGround1
@@ -2852,8 +2873,25 @@ Zombie_InsideGround:
 	STA Objects_YVelZ, X
 	LDA #$00
 	STA Objects_XVelZ, X
+	RTs
 
 Zombie_InsideGround1:
+	JSR Object_GetAttrJustTile
+	LDA Object_LevelTile
+	AND #$01
+	BEQ Zombie_InsideGround2
+
+	LDA Level_ChgTileEvent
+	BNE Zombie_InsideGround2
+
+	LDA Object_LevelTile
+	AND #$FE
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
+	
+	JSR SetObjectTileCoordAlignObj
+
+Zombie_InsideGround2
 	RTS
 
 Zombie_Crumbles:
@@ -2893,7 +2931,8 @@ Zombie_Crumbles:
 	
 	JSR Object_GetAttrJustTile
 	LDA Object_LevelTile
-	EOR #$01
+	AND #$FE
+	ORA #$01
 	STA Level_ChgTileValue
 	INC Level_ChgTileEvent
 
@@ -2911,6 +2950,7 @@ ObjNorm_ParaZombieGoomba:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_ParaZombieGoomba1
 
+	JSR Object_DeleteOffScreen
 	JSR DoPatrol
 	LDA <Objects_YVelZ, X
 	BPL ObjNorm_ParaZombieGoomba0
@@ -3403,10 +3443,11 @@ ObjNorm_PoisonMushroom:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PoisonMushroom1
 
+	JSR Object_DeleteOffScreen
+	JSR Player_HitEnemy
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
 	JSR Objects_Interact
-	JSR Object_InteractWithPlayer
 
 ObjNorm_PoisonMushroom1:
 	JMP Object_ShakeAndDrawMirrored
@@ -3722,14 +3763,14 @@ PRG004_B5E7:
 	STA <Objects_YHiZ,X	 ; Apply carry
 
 	; Temp_VarNP0 = sprite horizontal visibility bits
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	STA Temp_VarNP0
 
 	LDA Objects_Orientation,X
 	AND #SPR_HFLIP
 	BEQ PRG004_B60D	 ; If not horizontally flipped, jump to PRG004_B60D
 
-	ASL Objects_SprHVis,X
+	ASL Objects_SpritesHorizontallyOffScreen,X
 
 	; Add 8 to X
 	LDA <Objects_XZ,X
@@ -3790,7 +3831,7 @@ PRG004_B60D:
 ;	STA Sprite_RAM+$17,Y
 ;
 ;	; Vertical visibilty -> Temp_Var1
-;	LDA Objects_SprVVis,X
+;	LDA Objects_SpritesVerticallyOffScreen,X
 ;	STA <Temp_Var1	
 ;
 ;	LDA <Objects_SpriteY,X	
@@ -4035,7 +4076,7 @@ ObjNorm_BigPiranha:
 
 	; Set all sprites as horizontally off-screen (piranha is fully retracted in pipe)
 	LDA #$ff
-	STA Objects_SprHVis,X
+	STA Objects_SpritesHorizontallyOffScreen,X
 
 	JMP PRG004_B79D	 ; Jump to PRG004_B79D
 
@@ -4156,14 +4197,14 @@ GiantPiranha_Draw:
 	PHA		 ; Save piranha X Hi
 
 	; Temp_VarNP0 = Sprite horizontal visibility flags
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	STA Temp_VarNP0
 
 	LDA Objects_Orientation,X
 	AND #SPR_HFLIP
 	BEQ PRG004_B833	 ; If piranha is not horizontally flipped, jump to PRG004_B833
 
-	ASL Objects_SprHVis,X
+	ASL Objects_SpritesHorizontallyOffScreen,X
 
 	LDA <Objects_XZ,X
 	ADD #$08
@@ -4210,7 +4251,7 @@ PRG004_B849:
 	STA Sprite_RAM+$17,Y
 
 	; Temp_Var1 = vertical visibility flags
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	STA <Temp_Var1	
 
 	LDA <Objects_SpriteY,X
@@ -4396,14 +4437,14 @@ PRG004_B938:
 
 	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	LSR A
 	BCC SkipPRG004_B9BA	 	; If this sprite is vertically off-screen, jump to PRG004_B9BA (RTS)
 	RTS
 
 SkipPRG004_B9BA
 	; Temp_Var3 = horizontal visibility bits
-	LDA Objects_SprHVis,X
+	LDA Objects_SpritesHorizontallyOffScreen,X
 	STA <Temp_Var3
 
 	LDA <Objects_SpriteY,X
@@ -4654,7 +4695,7 @@ ObjNorm_ChainChomp:
 	AND #$01
 	STA Objects_Frame,X
 
-	LDA Objects_SprHVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$C0
 	CMP #$C0
 	BEQ ChompNoCheck
@@ -5352,7 +5393,7 @@ PRG004_BE31:
 	; Carry set if not visible, cleared if it is visible
 ChainChomp_LinkVisibleTest:
 
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG004_BE52	 ; If any sprite is vertically off-screen, jump to PRG004_BE52
 
 	LDA <Objects_SpriteY,X	
@@ -5368,7 +5409,7 @@ ChainChomp_LinkVisibleTest:
 
 PRG004_BE45:
 	CPY <Temp_Var2
-	EOR Objects_SprHVis,X
+	EOR Objects_SpritesHorizontallyOffScreen,X
 	BMI PRG004_BE50
 	BCC PRG004_BE52
 	BCS PRG004_BE54
@@ -5858,11 +5899,11 @@ ThwompBreakBlock:
 	LDA ObjTile_DetXHi
 	STA Level_BlockChgXHi
 
-	LDA Objects_SprHVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$C0
 	BNE ThwompBreakBlockRTS
 
-	LDA Objects_SprVVis, X
+	LDA Objects_SpritesVerticallyOffScreen, X
 	AND #$03
 	BNE ThwompBreakBlockRTS
 	JSR ThwompBustBrick

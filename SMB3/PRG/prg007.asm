@@ -890,8 +890,8 @@ PlayerProj_HitEnemies:
 
 	LDY #$04	 ; Y = 4 (enemies only exist in the lower slots)
 PRG007_A648:
-	LDA Objects_SprHVis,Y
-	ORA Objects_SprVVis,Y
+	LDA Objects_SpritesHorizontallyOffScreen,Y
+	ORA Objects_SpritesVerticallyOffScreen,Y
 	BNE PRG007_A667	 ; If object has sprites horizontally or vertically off-screen, jump to PRG007_A667 (Forget it!)
 
 	LDX Objects_State,Y	; X = object's state
@@ -3446,7 +3446,7 @@ PRG007_B6F2:
 	CMP #OBJSTATE_NORMAL
 	BNE PRG007_B70D	 ; If this object is not in normal state, jump to PRG007_B70D
 
-	LDA Objects_SprHVis,Y
+	LDA Objects_SpritesHorizontallyOffScreen,Y
 	AND #%11000000
 	BEQ PRG007_B710	 ; If this sprite does not have its two left sprites off-screen, jump to PRG007_B710
 

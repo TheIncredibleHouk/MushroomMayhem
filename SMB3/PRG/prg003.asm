@@ -2859,7 +2859,7 @@ PRG003_AFB2:
 	AND #SPR_HFLIP
 	BEQ PRG003_AFC9	 ; If piranha is not horizontally flipped, jump to PRG003_AFC9
 
-	ASL Objects_SprHVis,X
+	ASL Objects_SpritesHorizontallyOffScreen,X
 
 	; Piranha's X += 8 (Piranha is 24 pixels wide, of which there's no routine for exactly)
 	LDA <Objects_XZ,X
@@ -2894,7 +2894,7 @@ PRG003_AFDC:
 	STA Sprite_RAM+$13,Y
 
 	; Temp_Var1 = vertical visibility
-	LDA Objects_SprVVis,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	STA <Temp_Var1
 
 	LDA <Objects_SpriteY,X
@@ -3138,10 +3138,10 @@ MineWaterSolid:
 
 Mine_JustDraw:
 	JSR Object_Draw16x32Sprite
-	LDA Objects_SprHVis, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$20
 	BNE NoMineDraw
-	LDA Objects_SprVVis, X
+	LDA Objects_SpritesVerticallyOffScreen, X
 	BNE NoMineDraw
 	
 	LDY Object_SpriteRAM_Offset, X
@@ -4138,7 +4138,7 @@ PRG003_B8C6:
 	; I don't really understand this function, but it determines horizontal
 	; visibility by Sprite X somehow. Carry set if not visible.
 Sprite_NoCarryIfVisible:
-	LDA Objects_SprVVis,X	 
+	LDA Objects_SpritesVerticallyOffScreen,X	 
 	BNE PRG003_B8E7	 ; If any of the sprites are vertically off-screen, jump to PRG003_B8E7
 
 	LDA <Objects_SpriteY,X
@@ -4155,7 +4155,7 @@ Sprite_NoCarryIfVisible:
 PRG003_B8DA:
 	CPY <Temp_Var2	 ; Compare $40 or $C0 to input X value
 
-	EOR Objects_SprHVis,X
+	EOR Objects_SpritesHorizontallyOffScreen,X
 
 	BMI PRG003_B8E5	 ; If there are inappropriate horizontally off-screen sprites (??) jump to PRG003_B8E5
 
@@ -4523,7 +4523,7 @@ FireChompTail_Attributes:
 
 	; For objects which have "tails", like the Fire Snake, Blooper w/ kids, etc.
 Tail_DrawAndHurtPlayer:
-	JSR Object_DetermineHorzVis	 ; Determine is object is horizontally visible
+	JSR Object_DetermineHorizontallyOffScreen	 ; Determine is object is horizontally visible
 
 	; Essentially shift Var6 left 5 places, so A = $00 or $20 (buffer offset)
 	LDA Objects_Data6,X
@@ -5457,8 +5457,8 @@ PRG003_BE87:
 
 	LDA #$00
 	STA <Objects_XVelZ,X
-	STA Objects_XVelFracZ,X
-	STA Objects_YVelFracZ,X
+	STA Objects_XVelFrac,X
+	STA Objects_YVelFrac,X
 
 	LDA <Objects_XZ,X
 	STA Objects_Data13,X	
@@ -5520,8 +5520,8 @@ ObjNorm_RotoDiscDualOpp:
 	ADD #$08
 	STA Object_SpriteRAM_Offset,X
 
-	JSR Object_DetermineHorzVis	 ; Determine horizontal visibility of the RotoDisc
-	JSR Object_DetermineVertVis	 ; Determine vertical visibility of the RotoDisc
+	JSR Object_DetermineHorizontallyOffScreen	 ; Determine horizontal visibility of the RotoDisc
+	JSR Object_DetermineVerticallyOffScreen	 ; Determine vertical visibility of the RotoDisc
 	JSR RotoDisc_CollideAndCycle	 ; Test for collision and cycle the second RotoDisc
 
 	; Restore the Y coordinates
@@ -5563,8 +5563,8 @@ ObjNorm_RotoDiscDualOpp2:
 	ADD #$08
 	STA Object_SpriteRAM_Offset,X
 
-	JSR Object_DetermineHorzVis	 ; Determine horizontal visibility of the RotoDisc
-	JSR Object_DetermineVertVis	 ; Determine vertical visibility of the RotoDisc
+	JSR Object_DetermineHorizontallyOffScreen	 ; Determine horizontal visibility of the RotoDisc
+	JSR Object_DetermineVerticallyOffScreen	 ; Determine vertical visibility of the RotoDisc
 	JSR RotoDisc_CollideAndCycle	 ; Test for collision and cycle the second RotoDisc
 
 	; Restore the X coordinates
@@ -5626,8 +5626,8 @@ ObjNorm_RotoDiscDual:
 	ADD #$08
 	STA Object_SpriteRAM_Offset,X
 
-	JSR Object_DetermineHorzVis	 ; Determine horizontal visibility of the RotoDisc
-	JSR Object_DetermineVertVis	 ; Determine vertical visibility of the RotoDisc
+	JSR Object_DetermineHorizontallyOffScreen	 ; Determine horizontal visibility of the RotoDisc
+	JSR Object_DetermineVerticallyOffScreen	 ; Determine vertical visibility of the RotoDisc
 	JSR RotoDisc_CollideAndCycle	 ; Test for collision and cycle the second RotoDisc
 
 	; Restore all of the coordinates
