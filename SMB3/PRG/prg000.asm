@@ -1631,34 +1631,8 @@ PRG000_CC75:
 
 	LDA <Objects_CollisionDetectionZ, X
 	AND #$08
-	BEQ PRG000_CC73
-	LDA #$01
-	STA <Objects_YVelZ, X
-
-PRG000_CC73:
-	LDA Objects_InWater, X
 	BEQ PRG000_CC74
-
-	LDA Objects_ID, X
-	CMP #OBJ_ICEBLOCK
-	BNE PRG000_CC74
-
-	LDA #$01
-	STA ObjSplash_DisTimer, X
-
-	LDA #$00
-	STA <Objects_XVelZ, X
-
-	LDA <Objects_YVelZ, X
-	BNE PRG000_CC742
-	LDA #$00
-	STA <Objects_YVelZ, X
-	BEQ PRG000_CC74
-
-PRG000_CC742:
-	DEC <Objects_YVelZ, X
-	DEC <Objects_YVelZ, X
-	DEC <Objects_YVelZ, X
+	STA Object_HitCeiling
 
 PRG000_CC74:
 	LDA <Objects_CollisionDetectionZ,X 
