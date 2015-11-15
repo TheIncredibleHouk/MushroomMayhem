@@ -5755,7 +5755,29 @@ AScroll_HorizontalInitMove:
 	; the water flag for the tile rather than all these range comparisons
 Object_Check_Water:
 	STY TempY
+	STA TempA
+	LDY Objects_ID,X	 
+	LDA Object_AttrFlags,Y	
+	AND #OAT_FIREIMMUNITY
+	BNE Object_Check_Water1
+
+	LDA TempA
+	CMP #(TILE_PROP_FOREGROUND | TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	BEQ Object_Check_Water0
+	CMP #(TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	BNE Object_Check_Water1
+
+Object_Check_Water0:
+	LDA #OBJSTATE_POOFDEATH
+	STA Objects_State, X
+	LDA #$1f
+	STA Objects_Timer,X
+	RTS
+
+
+Object_Check_Water1:
 	LDY #$00
+	LDA TempA
 	AND #TILE_PROP_ITEM
 	CMP #TILE_PROP_ITEM
 	BEQ Not_Water
@@ -6346,7 +6368,6 @@ KeepCalcingX:
 	BCS GoNextSprite
 
 TrySpriteCarry:
-	STA Debug_Snap
 	STX TempX
 	LDA <Temp_Var8		; original object's Y 'bottom'
 	SUB <Objects_YZ, X

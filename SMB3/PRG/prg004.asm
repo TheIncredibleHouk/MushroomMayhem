@@ -117,7 +117,7 @@ ObjectGroup03_CollideJumpTable:
 	.word Player_HitEnemy					; Object $71 - OBJ_SPINY
 	.word Player_HitEnemy					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
-	.word $0000	; Object $74 - OBJ_ZOMBIEGOOMBA
+	.word Player_HitEnemy	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word $0000	; Object $75 - OBJ_WATERFILLER (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
 	.word ObjHit_DoNothing					; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjHit_DoNothing					; Object $77 - OBJ_GREENCHEEP
@@ -126,7 +126,7 @@ ObjectGroup03_CollideJumpTable:
 	.word Player_HitEnemy					; Object $7A - OBJ_PURPLETROOPA
 	.word Player_GetHurt					; Object $7B - OBJ_BLUESHELL
 	.word $0000					; Object $7C - OBJ_HELPER
-	.word $0000					; Object $7D - OBJ_PARAZOMBIEGOOMBA
+	.word Player_HitEnemy					; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $7E - OBJ_BIGGREENHOPPER
 	.word $0000					; Object $7F - OBJ_BIGREDPIRANHA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $80 - OBJ_FLYINGGREENPARATROOPA
