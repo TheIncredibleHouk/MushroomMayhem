@@ -2514,7 +2514,7 @@ Magic_Star_Action:
 	JSR DynJump
 
 	.word ObjNorm_DoNothing
-	.word Object_InteractWithWorld
+	.word MagicStar_NoFloat
 	.word MagicStar_CheckEnemies
 	.word MagicStar_CheckPSwitch
 	.word MagicStar_CheckItemBlock
@@ -2555,6 +2555,10 @@ MagicStar_CheckPSwitch:
 
 MagicStar_CheckPSwitch1:
 	JMP Object_InteractWithWorld
+
+MagicStar_NoFloat:
+	JSR Object_InteractWithWorld
+	JMP Objects_Interact
 
 MagicStar_CheckItemBlock:
 	LDY #(OTDO_Water - Object_TileDetectOffsets)

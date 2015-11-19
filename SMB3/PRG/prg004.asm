@@ -2750,6 +2750,7 @@ Zombie_Detect1:
 	JSR Object_HitGround
 
 Zombie_Detect2:
+
 	LDA <Objects_CollisionDetectionZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ Zombie_Move

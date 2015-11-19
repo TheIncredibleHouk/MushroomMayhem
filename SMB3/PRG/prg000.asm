@@ -5999,6 +5999,7 @@ PRG001_A9A7:
 PRG001_A9B1:
 
 	; Combined, this just reverses the X velocity
+	JSR Object_HitWall
 	JSR Object_Reverse
 
 PRG001_A9B7:
@@ -6665,6 +6666,7 @@ Reap_CoinY1:
 	RTS
 
 Object_HitWall:
+	STA Debug_Snap
 	LDA <Objects_XVelZ, X
 	BPL Object_HitWall1
 
