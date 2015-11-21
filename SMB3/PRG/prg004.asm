@@ -2694,7 +2694,7 @@ ObjNorm_ZombieGoomba:
 
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_ZombieGoomba0
-	JMP ObjNorm_Goomba1	 ; If gameplay is not halted, jump to PRG004_AF7D
+	JMP Goomba_Draw	 ; If gameplay is not halted, jump to PRG004_AF7D
 
 ObjNorm_ZombieGoomba0:
 	LDA Objects_Data2, X
