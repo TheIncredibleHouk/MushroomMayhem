@@ -2225,16 +2225,31 @@ PRG005_AD01:
 
 PRG005_AD06:
 ObjInit_Sun:
+	LDA DayNight
+	EOR #$FF
+	STA Objects_Data1, X
 	RTS		 ; Return
 
 SunMoonPalette:
 	.byte SPR_PAL3, SPR_PAL1
 
-SunMoonTiles:
-	.byte $03, $BC, $03, $BC
+SunMoonDayEnemies:
+	.byte OBJ_GOOMBA, OBJ_PARAGOOMBA, OBJ_PIRANHA, OBJ_GREENTROOPA,  OBJ_BEACHEDCHEEP, OBJ_PUMPKINFREE
 
-SunMoonTileProps:
-	.byte TILE_PROP_SOLID_ALL, $00, $00, TILE_PROP_SOLID_ALL
+SunMoonDayEnemyPals:
+	.byte SPR_PAL3, SPR_PAL3, SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2
+
+SunMoonDayEnemyStates:
+	.byte OBJSTATE_INIT, OBJSTATE_NORMAL, OBJSTATE_NORMAL, OBJSTATE_INIT, OBJSTATE_INIT,  OBJSTATE_POOFDEATH
+
+SunMoonNightEnemies:
+	.byte OBJ_ZOMBIEGOOMBA, OBJ_PARAZOMBIEGOOMBA, OBJ_PUMPKINPLANT, OBJ_DRYBONES, OBJ_SPECTERCHEEP, OBJ_PUMPKINFREE
+
+SunMoonNightEnemyPals:
+	.byte SPR_PAL2, SPR_PAL3, SPR_PAL3, SPR_PAL2, SPR_PAL2, SPR_PAL2
+
+SunMoonNightEnemyStates:
+	.byte OBJSTATE_NORMAL, OBJSTATE_NORMAL, OBJSTATE_NORMAL, OBJSTATE_INIT, OBJSTATE_NORMAL, OBJSTATE_POOFDEATH
 
 SunMoonGraphics:
 	.byte $7C, $00, $7E
@@ -2242,35 +2257,23 @@ SunMoonGraphics:
 ObjNorm_Sun:
 	
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_Sun1
+	BEQ ObjNorm_Sun0
 	JMP DrawSunMoon
 
-ObjNorm_Sun1:
-	LDY #$00
+ObjNorm_Sun0:
 	LDA DayNight
-	BEQ ObjNorm_Sun1_2
+	BMI ObjNorm_Sun0_1
 
-	LDY #$02
+	JSR ToDayEnemies
+	JMP ObjNorm_Sun0_2
 
-ObjNorm_Sun1_2:
-	
-	LDX SunMoonTiles, Y
-	LDA SunMoonTileProps, Y
-	STA TileProperties, X
-	STA TileProperties + 1, X
+ObjNorm_Sun0_1:
+	JSR ToNightEnemies
 
-	LDA SunMoonGraphics, Y
-	STA PatTable_BankSel
-
-	INY
-	LDX SunMoonTiles, Y
-	LDA SunMoonTileProps, Y
-	STA TileProperties, X
-	STA TileProperties + 1, X
-
-	LDX <CurrentObjectIndexZ
-
+ObjNorm_Sun0_2:
 	JSR Object_InteractWithPlayer
+	INC Game_Timer_Tick
+	INC Game_Timer_Tick
 	INC Game_Timer_Tick
 	INC Game_Timer_Tick
 	INC Game_Timer_Tick
@@ -2347,391 +2350,107 @@ DrawSunMoon1:
 
 	JMP DrawGiantObjectMirrored
 
+ToNightEnemies:
+	LDX #$04
 
-;	; Set frame to 1
-;	LDA #$01
-;	STA Objects_Frame,X
-;
-;	JMP DrawGiant	 ; Draw Sun and don't come back
-;
-;PRG005_AD1E:
-;	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-;
-;	LDA Objects_Data7,X
-;	BEQ PRG005_AD29	 ; If Var7 = 0 (initial internal state), jump to PRG005_AD29
-;
-;	JSR Player_HitEnemy	 ; Do Player to Sun collision
-;
-;PRG005_AD29
-;	LDA <Player_HaltGameZ
-;	BNE PRG005_AD41	 ; If gameplay halted, jump to PRG005_AD41
-;
-;	LDY #$00	 ; Y = $00 (16-bit sign extension)
-;	BNE PRG005_AD48	 ; Jump technically NEVER to PRG005_AD48
-;
-;	LDA Level_ScrollDiffH
-;	BPL PRG005_AD37	 ; If the screen scroll difference is positive, jump to PRG005_AD37
-;
-;	DEY		 ; Y = $FF (16-bit sign extension)
-;
-;PRG005_AD37:
-;	ADD <Objects_XZ,X ; Sun moves by horizontal scroll
-;	STA <Objects_XZ,X ; Update X position
-;
-;	TYA		 ; Sign extension -> 'A'
-;	ADC <Objects_XHiZ,X	 ; Apply carry
-;	STA <Objects_XHiZ,X	 ; Update XHi
-;
-;PRG005_AD41:
-;	JSR Sun_Draw	 ; Draw the Sun
-;
-;	LDA <Player_HaltGameZ
-;	BNE PRG005_AD7D	 ; If gameplay halted, jump to PRG005_AD7D (RTS)
-;
-;PRG005_AD48:
-;	LDY #$00	 ; Y = 0
-;
-;	LDA <Counter_1
-;	AND #%00001100
-;	BEQ PRG005_AD51	 ; 12 ticks on, 12 ticks off; jump to PRG005_AD51
-;
-;	INY		 ; Y = 1
-;
-;PRG005_AD51:
-;	TYA		 
-;	STA Objects_Frame,X	 ; Periodically use frame 0 or 1
-;
-;	LDA Objects_Data7,X	 ; Var7 is internal state
-;	JSR DynJump
-;
-;	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!! 
-;	.word Sun_WaitFarEnough		; 0: Waits until screen has 
-;
-;Sun_WaitThenAttackRight:
-;	JSR Sun_DoMovement	 ; Do sun's circling movement
-;
-;	LDA Objects_Timer,X
-;	BNE PRG005_AD96	 ; If timer not expired, jump to PRG005_AD96 (RTS)
-;
-;	INC Objects_Data7,X	 ; Next internal state
-;
-;	; Sun launches down and to the right!
-;
-;	; Set Y velocity to $40
-;	LDA #$40
-;	STA <Objects_YVelZ,X
-;
-;	; Set X velocity to $14
-;	LDA #$14
-;	STA <Objects_XVelZ,X
-;
-;PRG005_AD91:
-;	; Set timer to $10
-;	LDA #$10
-;	STA Objects_Timer,X
-;
-;PRG005_AD96:
-;	RTS		 ; Return
-;
-;Sun_WaitThenAttackLeft:
-;	JSR Sun_DoMovement	 ; Do sun's circling movement
-;
-;	LDA Objects_Timer,X
-;	BNE PRG005_ADAD		; If timer not expired, jump to PRG005_ADAD
-;
-;	INC Objects_Data7,X	 ; Var7++ (next internal state)
-;
-;	; Set Y velocity to $40
-;	LDA #$40
-;	STA <Objects_YVelZ,X
-;
-;	; Set X velocity to -$14
-;	LDA #-$14
-;	STA <Objects_XVelZ,X
-;
-;	JMP PRG005_AD91	; Jump to PRG005_AD91
-;
-;PRG005_ADAD:
-;	RTS		 ; Return
-;
-;Sun_TimerReload:	.byte $40, $60, $80, $A0
-;	
-;Sun_WaitForUpperReturn:
-;	JSR Object_ApplyXVel	  	; Apply X velocity
-;	JSR Object_ApplyYVel_NoLimit	; Apply Y Velocity
-;
-;	DEC <Objects_YVelZ,X	; Sun slows down and moves upward
-;
-;	LDA <Objects_YZ,X
-;	CMP #16
-;	BGE PRG005_ADE3	 ; If Sun's Y >= 16, jump to PRG005_ADE3 (RTS)
-;
-;	; Lock Sun Y at 16
-;	LDA #16
-;	STA <Objects_YZ,X
-;
-;	INC Objects_Data7,X	 ; Var7++ (next internal state)
-;
-;	; Set directions
-;	LDA #$01
-;	STA Objects_TargetingYVal,X
-;	STA Objects_TargetingXVal,X
-;
-;	; Halt horizontal movement
-;	LDA #$00
-;	STA <Objects_XVelZ,X
-;
-;	; Set Y Vel to -$40
-;	LDA #-$40
-;	STA <Objects_YVelZ,X
-;
-;PRG005_ADD7:
-;	LDA RandomN,X
-;	AND #$03
-;	TAY		 ; Y = random 0 to 3
-;
-;	; Reload the sun with a randomly selected timer value
-;	LDA Sun_TimerReload,Y
-;	STA Objects_Timer,X
-;
-;PRG005_ADE3:
-;	RTS		 ; Return
-;
-;
-;Sun_WaitForUpperReturn2:
-;	JSR Object_ApplyXVel	 	; Apply X velocity
-;	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
-;
-;	DEC <Objects_YVelZ,X	; Sun slows down and moves upward
-;
-;	LDA <Objects_YZ,X
-;	CMP #16
-;	BGE PRG005_AE10	 ; If Sun's Y >= 16, jump to PRG005_AE10 (RTS)
-;
-;	; Lock Sun Y at 16
-;	LDA #16
-;	STA <Objects_YZ,X
-;
-;PRG005_ADF6:
-;
-;	; Set internal state to 1
-;	LDA #$01
-;	STA Objects_Data7,X
-;
-;	; Objects_TargetingYVal = 1
-;	LDA #$01
-;	STA Objects_TargetingYVal,X
-;
-;	; Objects_TargetingXVal = 0
-;	LDA #$00
-;	STA Objects_TargetingXVal,X
-;
-;	; Halt horizontal movement
-;	LDA #$00
-;	STA <Objects_XVelZ,X
-;
-;	; Set Y Vel = -$40
-;	LDA #-$40
-;	STA <Objects_YVelZ,X
-;
-;	JMP PRG005_ADD7	; Jump to PRG005_ADD7
-;
-;PRG005_AE10:
-;	RTS		 ; Return
-;
-;Sun_WaitAndResetTimer20:
-;	LDA Objects_Timer,X	  
-;	BNE PRG005_AE21	 ; If timer not expired, jump to PRG005_AE21
-;
-;	INC Objects_Data7,X	 ; Var7++ (next internal state)
-;
-;	LDY Objects_Data7,X	; ??
-;
-;	; Set timer to $20
-;	LDA #$20
-;	STA Objects_Timer,X
-;
-;PRG005_AE21:
-;	RTS		 ; Return
-;
-;Sun_DoMovement:
-;	JSR Object_ApplyXVel	  	; Apply X velocity
-;	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
-;
-;	; Objects_TargetingXVal is used as a horizontal direction here
-;	LDA Objects_TargetingXVal,X
-;	AND #$01
-;	TAY		 ; Y = 0 or 1
-;
-;	LDA <Objects_XVelZ,X
-;	CMP Sun_VelLimits,Y
-;	BNE PRG005_AE39	 ; If Sun is not at his X Vel limit, jump to PRG005_AE39
-;
-;	INC Objects_TargetingXVal,X	 ; Otherwise, change horizontal direction
-;	INY		 ; Y++
-;
-;PRG005_AE39:
-;	ADD Sun_VelAccel,Y	 ; Apply acceleration to X velocity
-;	STA <Objects_XVelZ,X	 ; Update X velocity
-;
-;	; Objects_TargetingYVal is used as a vertical direction here
-;	LDA Objects_TargetingYVal,X
-;	AND #$01
-;	TAY		 ; Y = 0 or 1
-;
-;	LDA <Objects_YVelZ,X
-;	CMP Sun_VelLimits,Y
-;	BNE PRG005_AE50	 ; If Sun is not at his X Vel limit, jump to PRG005_AE50
-;
-;	INC Objects_TargetingYVal,X	 ; Otherwise, change vertical direction
-;	INY		 ; Y++
-;
-;PRG005_AE50:
-;	ADD Sun_VelAccel,Y	 ; Apply acceleration to Y velocity
-;	STA <Objects_YVelZ,X	 ; Update Y velocity
-;
-;PRG005_AE56:
-;	RTS		 ; Return
-;
-;Sun_Draw:
-;	LDA Objects_Orientation,X
-;	ORA #~SPR_BEHINDBG	 ; Clear priority bit
-;
-;	LDA Objects_SpritesHorizontallyOffScreen,X
-;	STA Temp_VarNP0	 ; Sprite horizontal visibility -> Temp_VarNP0
-;
-;	LDA <Objects_XZ,X
-;	PHA		 ; Save Sun's X
-;
-;	ADD #$08
-;	STA <Objects_XZ,X ; Set Sun's X + 8
-;
-;	LDA <Objects_XHiZ,X
-;	PHA		 ; Save Sun's X Hi
-;
-;	ADC #$00	 ; Apply carry
-;	STA <Objects_XHiZ,X	 ; Update X Hi
-;
-;	ASL Objects_SpritesHorizontallyOffScreen,X
-;
-;	JSR Object_DrawTallAndHFlip	 ; Draw's middle of sun
-;
-;	; Restore X/Hi
-;	PLA
-;	STA <Objects_XHiZ,X
-;	PLA
-;	STA <Objects_XZ,X
-;
-;	; Left and right edges of sun...
-;
-;	JSR Object_CalcSpriteXY_NoHi
-;
-;	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite RAM offset
-;
-;	LDA Objects_SpritesVerticallyOffScreen,X
-;	BNE PRG005_AE56	 ; If Sun is vertically off-screen, jump to PRG005_AE56 (RTS)
-;
-;	; Sun's Sprite Y -> Temp_Var1
-;	LDA <Objects_SpriteY,X
-;	STA <Temp_Var1	
-;
-;	LDA Objects_Frame,X
-;	TAX		 ; Frame -> 'X'
-;
-;	LDA Temp_VarNP0
-;	BMI PRG005_AEAC	 ; If sprite is horizontally off-screen, jump to PRG005_AEAC
-;
-;	; Set Sprite Y
-;	LDA <Temp_Var1	
-;	ADD Sun_SpriteYOffs,X
-;	STA Sprite_RAM+$10,Y
-;
-;PRG005_AEAC:
-;	LDA Temp_VarNP0	
-;	AND #%00010000
-;	BNE PRG005_AEBC	 ; If this sprite is horizontally off-screen, jump to PRG005_AEBC
-;
-;	; Set Sprite Y
-;	LDA <Temp_Var1
-;	ADD Sun_SpriteYOffs,X
-;	STA Sprite_RAM+$14,Y
-;
-;PRG005_AEBC:
-;
-;	; Set sun patterns
-;	LDA Sun_Patterns,X
-;	STA Sprite_RAM+$11,Y
-;	STA Sprite_RAM+$15,Y
-;
-;	; Keep all sun bits except vertical flip from first sprite -> Temp_Var15 and four sprites over
-;	LDA Sprite_RAM+$02,Y
-;	AND #~SPR_VFLIP
-;	STA <Temp_Var15
-;	STA Sprite_RAM+$12,Y
-;
-;	; Keep all sun bits except vertical flip from second sprite -> Temp_Var16 and four sprites over
-;	LDA Sprite_RAM+$06,Y
-;	AND #~SPR_VFLIP
-;	STA <Temp_Var16
-;	STA Sprite_RAM+$16,Y
-;
-;	LDX <CurrentObjectIndexZ	 ; X = object slot index
-;
-;	; Sun Sprite X -> Temp_Var2 and sprite
-;	LDA <Objects_SpriteX,X
-;	STA <Temp_Var2
-;	STA Sprite_RAM+$13,Y
-;
-;	; +24 for right edge sprite
-;	ADD #24
-;	STA Sprite_RAM+$17,Y
-;
-;	LDA Objects_Frame,X
-;	BEQ PRG005_AF28	 ; If frame = 0, jump to PRG005_AF28 (RTS)
-;
-;	JSR Object_GetRandNearUnusedSpr
-;
-;	; Set lower left sprite at Sprite Y + 16
-;	LDA <Temp_Var1
-;	ADD #16
-;	STA Sprite_RAM+$00,Y
-;
-;	; Set lower left Sprite X
-;	LDA <Temp_Var2
-;	STA Sprite_RAM+$03,Y
-;
-;	; Vertically flip lower left sprite
-;	LDA <Temp_Var15
-;	ORA #SPR_VFLIP
-;	STA Sprite_RAM+$02,Y
-;
-;	; Lower left sprite pattern
-;	LDA #$91
-;	STA Sprite_RAM+$01,Y
-;
-;	JSR Object_GetRandNearUnusedSpr
-;
-;	; Set lower right sprite Y + 16
-;	LDA <Temp_Var1
-;	ADD #16
-;	STA Sprite_RAM+$00,Y
-;
-;	; Set lower right sprite X
-;	LDA <Temp_Var2
-;	ADD #24
-;	STA Sprite_RAM+$03,Y
-;
-;	; Set lower right sprite attributes
-;	LDA <Temp_Var16
-;	ORA #SPR_VFLIP
-;	STA Sprite_RAM+$02,Y
-;
-;	; Lower right sprite pattern
-;	LDA #$91
-;	STA Sprite_RAM+$01,Y
-;
-;PRG005_AF28:
-;	RTS		 ; Return
+ToNightEnemies1:
+	LDA Objects_State, X
+	BEQ ToNightEnemies4
+
+	CMP #OBJSTATE_NORMAL
+	BCC ToNightEnemies2
+
+	CMP #OBJSTATE_KILLED
+	BCS ToNightEnemies4
+
+	CMP #OBJSTATE_HELD
+	BCC ToNightEnemies3
+
+ToNightEnemies2:
+	LDA #OBJSTATE_POOFDEATH
+	STA Objects_State, X
+
+	LDA #$1f
+	STA Objects_Timer,X
+	BNE ToNightEnemies4
+
+ToNightEnemies3:
+	LDY #$04
+
+ToNightEnemies3_0:
+	LDA Objects_ID, X
+	CMP SunMoonDayEnemies, Y
+	BNE ToNightEnemies3_1
+
+	LDA SunMoonNightEnemies, Y
+	STA Objects_ID, X
+
+	LDA SunMoonNightEnemyStates, Y
+	STA Objects_State, X
+
+	LDA SunMoonNightEnemyPals, Y
+	STA Objects_SpriteAttributes, X
+	BNE ToNightEnemies4
+
+ToNightEnemies3_1:
+	DEY
+	BPL ToNightEnemies3_0
+
+ToNightEnemies4:
+	DEX
+	BPL ToNightEnemies1
+	LDX <CurrentObjectIndexZ
+	RTS
+
+ToDayEnemies:
+	LDX #$04
+
+ToDayEnemies1:
+	LDA Objects_State, X
+	BEQ ToDayEnemies4
+
+	CMP #OBJSTATE_NORMAL
+	BCC ToDayEnemies2
+
+	CMP #OBJSTATE_KILLED
+	BCS ToDayEnemies4
+
+ToDayEnemies2:
+ToDayEnemies3:
+	LDY #$05
+
+ToDayEnemies3_0:
+	LDA Objects_ID, X
+	CMP SunMoonNightEnemies, Y
+	BNE ToDayEnemies3_1
+
+	LDA SunMoonDayEnemies, Y
+	STA Objects_ID, X
+
+	LDA SunMoonDayEnemyStates, Y
+	STA Objects_State, X
+
+	CMP #OBJSTATE_POOFDEATH
+	BNE ToDayEnemies3_1_1
+
+	LDA #$1F
+	STA Objects_Timer, X
+
+ToDayEnemies3_1_1:
+
+	LDA SunMoonDayEnemyPals, Y
+	STA Objects_SpriteAttributes, X 
+	BNE ToDayEnemies4
+
+ToDayEnemies3_1:
+	DEY
+	BPL ToDayEnemies3_0
+
+ToDayEnemies4:
+	DEX
+	BPL ToDayEnemies1
+	LDX <CurrentObjectIndexZ
+	RTS
 
 ArrowPlat_XVel:
 	.byte  $00	; Platform Type 0 (Up)

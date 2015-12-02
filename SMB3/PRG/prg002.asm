@@ -47,7 +47,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $38 - OBJ_OSCILLATING_VS
 	.word ObjInit_NipperHopping	; Object $39 - OBJ_NIPPERHOPPING
 	.word ObjInit_FallingPlatform	; Object $3A - OBJ_FALLINGPLATFORM
-	.word ObjInit_DoNothing	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.word ObjInit_SpecterCheep	; Object $3B - OBJ_SPECTERCHEEP
 	.word ObjInit_WoodenFallingPlat	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.word ObjInit_DoNothing		; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjInit_FloatWoodenPlat	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -89,7 +89,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_PlatformPattern	; Object $38 - OBJ_OSCILLATING_VS
 	.word ObjNorm_Nipper		; Object $39 - OBJ_NIPPERHOPPING
 	.word ObjNorm_PathFollowPlat	; Object $3A - OBJ_FALLINGPLATFORM
-	.word ObjNorm_DoNothing	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.word ObjNorm_SpecterCheep	; Object $3B - OBJ_SPECTERCHEEP
 	.word ObjNorm_PathFollowPlat	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.word ObjNorm_NipperFireBreathe	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjNorm_WoodenPlatFloat	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -132,7 +132,7 @@ ObjectGroup01_CollideJumpTable:
 	.word ObjHit_DoNothing		; Object $38 - OBJ_OSCILLATING_VS
 	.word Player_GetHurt		; Object $39 - OBJ_NIPPERHOPPING
 	.word ObjHit_DoNothing		; Object $3A - OBJ_FALLINGPLATFORM
-	.word Player_GetHurt		; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.word Player_GetHurt		; Object $3B - OBJ_SPECTERCHEEP
 	.word ObjHit_DoNothing		; Object $3C - OBJ_WOODENPLATFORMFALL
 	.word Player_GetHurt		; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjHit_DoNothing		; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -174,7 +174,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $38 - OBJ_OSCILLATING_VS
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $39 - OBJ_NIPPERHOPPING
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -222,7 +222,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP2	; Object $38 - OBJ_OSCILLATING_VS
 	.byte OA2_TDOGRP1	; Object $39 - OBJ_NIPPERHOPPING
 	.byte OA2_TDOGRP9	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OA2_TDOGRP9	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OA2_TDOGRP9	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -264,7 +264,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $38 - OBJ_OSCILLATING_VS
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $39 - OBJ_NIPPERHOPPING
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OA3_HALT_JUSTDRAW 	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -306,11 +306,11 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $38 - OBJ_OSCILLATING_VS
 	.byte OPTS_SETPT5 | $0A	; Object $39 - OBJ_NIPPERHOPPING
 	.byte OPTS_SETPT6 | $13	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OPTS_SETPT6 | $4F	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.byte OPTS_SETPT6 | $13	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OPTS_NOCHANGE	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OPTS_SETPT5 | $0A	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OPTS_NOCHANGE; Object $3E - OBJ_WOODENPLATFORMFLOAT
-	.byte OPTS_SETPT5 | $13	; Object $3F - OBJ_DRYBONES
+	.byte OPTS_SETPT6 | $13	; Object $3F - OBJ_DRYBONES
 	.byte OPTS_SETPT5 | $0B	; Object $40 - OBJ_GOLDENPIRANHAGROWER
 	.byte OPTS_SETPT5 | $0B	; Object $41 - OBJ_PIRANHAGROWER
 	.byte OPTS_SETPT5 | $0A	; Object $42 - OBJ_FLAMINGCHEEP
@@ -348,7 +348,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $38 - OBJ_OSCILLATING_VS
 	.byte KILLACT_STANDARD	; Object $39 - OBJ_NIPPERHOPPING
 	.byte KILLACT_STANDARD	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte KILLACT_NORMALSTATE	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.byte KILLACT_POOFDEATH	; Object $3B - OBJ_SPECTERCHEEP
 	.byte KILLACT_STANDARD	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte KILLACT_STANDARD	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte KILLACT_STANDARD	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -438,7 +438,7 @@ ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
 
 ObjP3F:
-	.byte $81, $83, $85, $87, $89, $8B, $8D, $8F, $91, $93, $95, $B9, $9D, $9F
+	.byte $C1, $C3, $C5, $C7, $C9, $CB, $CD, $CF, $D1, $D3, $D5, $F9, $DD, $DF
 	
 	; Spike's / Patooie's spike ball patterns are actually here
 SpikeBall_Patterns:
@@ -454,6 +454,8 @@ ObjP46:
 	.byte $A9, $AB, $89, $AB, $AD, $AF, $8B, $AF
 
 ObjP3B:
+	.byte $FB, $FD, $71, $71, $FB, $FD, $71, $71, $FB, $FF, $71, $71, $FB, $FF, $71, $71
+
 ObjP42:
 	.byte $91, $93, $91, $9B
 ObjP43:
@@ -498,7 +500,7 @@ Buster_DrawHoldingIceBrick:
 
 ObjInit_DryCheep:
 	LDA Objects_Property, X
-	STA Objects_Data5Z, X
+	STA <Objects_Data5Z, X
 	LDA #$00
 	STA Objects_Property, X
 	JMP ObjInit_BeachedCheep1
@@ -582,13 +584,18 @@ ObjNorm_BeachedCheep01:
 ObjNorm_BeachedCheep02:
 	LDA Objects_Data1, X
 	BNE ObjNorm_BeachedCheep1
+
 	INC Objects_Data1, X
+
 	LDY Objects_Property, X
 	LDA BeachedCheep_PondJump, Y
 	STA <Objects_YVelZ, X
+
 	JSR Level_ObjCalcXDiffs
+
 	LDA BeachedCheep_XVel, Y
 	STA <Objects_XVelZ, X
+
 	LDA BeachedCheep_Flip, Y
 	LDY Objects_Property, X
 	ORA BeachedCheep_VFlip, Y
@@ -596,10 +603,13 @@ ObjNorm_BeachedCheep02:
 
 ObjNorm_BeachedCheep1:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
+
 	LDA Objects_Property, X
 	BEQ Normal_Bounce
+
 	CMP #$01
 	BNE DoNoGravity
+
 	STA ReverseGravity
 	BEQ Normal_Bounce
 
@@ -608,8 +618,24 @@ DoNoGravity:
 
 Normal_Bounce:
 	JSR Object_InteractWithWorld
+	LDA Objects_LastProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BNE Normal_Bounce0
 
-	LDA  <Objects_CollisionDetectionZ, X
+	INC Objects_Data2, X
+	LDA Objects_Data2, X
+	CMP #$02
+	BCC Normal_Bounce1
+
+	LDA #OBJSTATE_KILLED
+	STA Objects_State, X
+
+Normal_Bounce0:
+	LDA #$00
+	STA Objects_Data2, X
+
+Normal_Bounce1:
+	LDA <Objects_CollisionDetectionZ, X
 	AND #$04
 	BEQ ObjNorm_BeachedCheep2
 
@@ -1528,6 +1554,36 @@ ObjNorm_PathFollowPlat2:
 	RTS		 ; Return
 
 EnemyEnterXVel:	.byte $08, -$08
+
+ObjInit_SpecterCheep:
+	LDA #$20 
+	STA Objects_Data10, X
+	STA Objects_Data11, X
+	JMP InitPatrol
+
+ObjNorm_SpecterCheep:
+	LDA <Player_HaltGameZ
+	BNE ObjNorm_SpecterCheep1
+
+	INC Objects_Data2,X	 ; Var5++
+
+	; Toggle frame 0/1
+	LDA Objects_Data2,X
+	AND #$07
+	STA Objects_Frame,X
+
+	JSR Object_DeleteOffScreen
+	JSR Object_InteractWithPlayer
+
+	LDA Objects_Frame,X
+	AND #$01
+	BEQ ObjNorm_SpecterCheep1
+
+	JSR Chase
+
+ObjNorm_SpecterCheep1:
+	JMP Object_ShakeAndDraw
+
 
 ObjInit_TowardsPlayer:
 

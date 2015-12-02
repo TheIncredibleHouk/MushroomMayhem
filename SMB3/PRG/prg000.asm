@@ -233,7 +233,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $38 - OBJ_OSCILLATING_VS
 	.byte OAT_BOUNDBOX01	; Object $39 - OBJ_NIPPERHOPPING
 	.byte OAT_BOUNDBOX03 | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OAT_BOUNDBOX01	; Object $3B - OBJ_CHARGINGCHEEPCHEEP
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3C - OBJ_WOODENPLATFORMFALL
 	.byte OAT_BOUNDBOX01	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OAT_BOUNDBOX08 | OAT_FIREIMMUNITY | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $3E - OBJ_WOODENPLATFORMFLOAT
@@ -2229,7 +2229,7 @@ PRG000_CEEE_2:
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
 KickedXVel:
-	.byte $10, $20, $30, $40, $40, $40
+	.byte $10, $20, $30, $38, $38, $38
 
 PRG000_CEEF:
 
@@ -2780,6 +2780,10 @@ Object_Reverse:
 	LDA <Objects_XVelZ,X	 
 	JSR Negate
 	STA <Objects_XVelZ,X	 ; Negate object's X velocity
+
+	LDA Objects_XVelFrac,X
+	JSR Negate 
+	STA Objects_XVelFrac,X
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_FlipFace
@@ -5999,7 +6003,6 @@ PRG001_A9A7:
 PRG001_A9B1:
 
 	; Combined, this just reverses the X velocity
-	JSR Object_HitWall
 	JSR Object_Reverse
 
 PRG001_A9B7:
@@ -6666,7 +6669,6 @@ Reap_CoinY1:
 	RTS
 
 Object_HitWall:
-	STA Debug_Snap
 	LDA <Objects_XVelZ, X
 	BPL Object_HitWall1
 

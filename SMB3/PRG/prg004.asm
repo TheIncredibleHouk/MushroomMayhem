@@ -27,7 +27,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_GroundTroop	; Object $6C - OBJ_GREENTROOPA
 	.word ObjInit_GroundTroop	; Object $6D - OBJ_REDTROOPA
 	.word ObjInit_GroundTroop	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.word ObjNormParaTroopas	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.word ObjInit_ParaTroopas	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word ObjInit_GroundTroop	; Object $70 - OBJ_BUZZYBEATLE
 	.word ObjInit_GroundTroop	; Object $71 - OBJ_SPINY
 	.word ObjInit_Goomba	; Object $72 - OBJ_GOOMBA
@@ -35,7 +35,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word ObjInit_Waterfill	; Object $75 - OBJ_WATERFILLER
 	.word ObjInit_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
-	.word ObjNormParaTroopas	; Object $77 - OBJ_GREENCHEEP
+	.word ObjInit_ParaTroopas	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjInit_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
@@ -44,7 +44,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.word ObjInit_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
-	.word ObjNormParaTroopas	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word ObjInit_ParaTroopas	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjInit_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
@@ -2683,7 +2683,7 @@ ObjInit_ZombieGoomba:
 	LDA Objects_Property, X
 	BNE ObjInit_ZombieGoomba1
 
-	LDA #$01
+	LDA #$00
 	STA Objects_Data2, X
 
 ObjInit_ZombieGoomba1:
@@ -2698,7 +2698,7 @@ ObjNorm_ZombieGoomba:
 
 ObjNorm_ZombieGoomba0:
 	LDA Objects_Data2, X
-	BNE ObjNorm_ZombieGoomba1
+	BEQ ObjNorm_ZombieGoomba1
 	JMP Zombie_Wait
 
 ObjNorm_ZombieGoomba1:
@@ -2822,7 +2822,7 @@ Zombie_InsideBlock:
 	AND #$3F
 	CMP #$01
 	BNE Zombie_InsideBlock0
-	LDA #$01
+	LDA #$00
 	STA Objects_Data2, X
 	RTS
 
@@ -2870,12 +2870,11 @@ Zombie_InsideGround:
 	BNE Zombie_InsideGround1
 
 	JSR Zombie_Crumbles
-	LDA #$01
-	STA Objects_Data2, X
 	LDA #$C0
 	STA Objects_YVelZ, X
 	LDA #$00
 	STA Objects_XVelZ, X
+	STA Objects_Data2, X
 	RTs
 
 Zombie_InsideGround1:
@@ -3087,9 +3086,6 @@ PRG004_B0CC:
 	JSR Object_FlipByXVel	 ; Apply X velocity
 
 	JMP GroundTroop_DrawNormal	 ; Draw and don't come back!
-
-SpikeCheep_YAccel:	.byte $01, -$01
-SpikeCheep_YLimit:	.byte $04, -$04
 
 ObjNorm_SwimmingCheep:
 	LDA <Player_HaltGameZ
@@ -3403,7 +3399,7 @@ PRG004_B34E:
 PRG004_B353:
 	.byte $FF, $C0, $80, $60, $40
 
-ObjNormParaTroopas:
+ObjInit_ParaTroopas:
 	LDA #$20 
 	STA Objects_Data10, X
 	STA Objects_Data11, X
@@ -3436,8 +3432,8 @@ ObjNorm_Troopa0:
 	JSR Objects_Interact
 	BCS ObjNorm_Troopa1
 
-	INC <Objects_Data5Z,X
-	LDA <Objects_Data5Z,X
+	INC Objects_Data3, X
+	LDA Objects_Data3, X
 	LSR A
 	LSR A
 	LSR A
@@ -3453,10 +3449,15 @@ ObjNorm_PoisonMushroom:
 	BNE ObjNorm_PoisonMushroom1
 
 	JSR Object_DeleteOffScreen
+
+	JSR Objects_Interact
+	BCS ObjNorm_PoisonMushroom0
+
 	JSR Object_InteractWithWorld
 	JSR Object_HandleBumpUnderneath
-	JSR Object_InteractWithPlayer
-	JSR Objects_Interact
+
+ObjNorm_PoisonMushroom0:
+	JSR Player_HitEnemy 
 
 ObjNorm_PoisonMushroom1:
 	JMP Object_ShakeAndDrawMirrored
