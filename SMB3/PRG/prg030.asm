@@ -387,11 +387,11 @@ PAGE_A000_ByTileset: ; $83E9
 
 	; The normal level VROM page cycle set
 PT2_Anim:	.byte $80, $82, $84, $86, $88, $8A, $8C, $8E
+PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
 PT2_Anim2:	.byte $D0, $D2, $D4, $D6, $D8, $DA, $DC, $DE
+PSwitch_Anim2: .byte $E0, $E2, $E4, $E6, $E8, $EA, $EC, $EE
 PT2_Anim3:	.byte $F0, $F2, $F4, $F6, $F8, $FA, $FC, $FE
 PT2_Anim4:	.byte $6A, $6A, $6A, $6A, $6A, $6A, $6A, $6A
-PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
-PSwitch_Anim2: .byte $E0, $E2, $E4, $E6, $E8, $EA, $EC, $EE
 
 SPR_Anim:
 	.byte $90, $91, $92, $93
@@ -1570,14 +1570,14 @@ PRG030_8E4F:
 
 	LDA Level_PauseFlag
 	BNE Graphics_Anim
-	LDA DPad_RhythmControl
-	BEQ PRG030_8E50
-	JSR DPad_ControlTiles
+	;LDA DPad_RhythmControl
+	;BEQ PRG030_8E50
+	;JSR DPad_ControlTiles
 
 PRG030_8E50:
-	LDA RhythmPlatformEnabed
-	BEQ Graphics_Anim	
-	JSR RhythmPlatforms
+	;LDA RhythmPlatformEnabed
+	;BEQ Graphics_Anim	
+	;JSR RhythmPlatforms
 
 Graphics_Anim:
 	LDA <Player_HaltGameZ
@@ -1587,18 +1587,19 @@ Graphics_Anim:
 	AND #$1C
 	LSR A	
 	LSR A		
-	PHA
-	ADD AnimOffset
-	TAX 
-	LDA PT2_Anim,X
-	LDY Level_PSwitchCnt
-	BEQ Normal_Anim
-	LDA PSwitch_Anim,X
+	TAX
+	LDA Level_PSwitchCnt
+	BNE Graphics_Anim1
 
-Normal_Anim:
-	
+	LDA Background_Animations,X
+	BNE Graphics_Anim2
+
+Graphics_Anim1:
+	LDA Background_Animations + 8,X
+
+Graphics_Anim2:
 	STA PatTable_BankSel+1 ; Set pattern for this tick
-	PLA
+	TXA
 	AND #$03
 	TAX
 	LDA SPR_Anim, X
@@ -2953,9 +2954,8 @@ Tile_Mem_ClearB:	; $9734
 
 
 
-AnimOffsets: .byte $00, $08, $10, $18
+AnimOffsets: .byte $00, $10, $20, $28
 AnimStarts: .byte $80, $D0, $F0, $6A
-PSwitchAnimStarts: .byte $88, $D8, $F8
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad
@@ -3156,10 +3156,23 @@ Level_Exit_Set:
 	LDA AnimStarts, X
 	STA PatTable_BankSel+1	
 
+	STY TempY
+	LDY #$00
+	LDX AnimOffset
+
+LoadAnimBanks:
+	LDA PT2_Anim, X
+	STA Background_Animations, Y
+	INX
+	INY
+	CPY #$10
+	BCC LoadAnimBanks
+
+	LDY TempY
 	LDA Level_PSwitchCnt
 	BEQ NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
 
-	LDA PSwitchAnimStarts, X
+	LDA Background_Animations + 8
 	STA PatTable_BankSel+1	
 
 NormAnimBank:
@@ -4502,6 +4515,7 @@ PRG030_9EC3:
 	STA <Level_Tile
 	TAY
 	LDA TileProperties, Y
+	STA <Level_Tile_Prop
 	RTS		 ; Return
 
 
@@ -4721,44 +4735,11 @@ PRG000_C4A7:
 
 	RTS		 ; Return
 
-Can_Wall_Jump:
-	LDA Player_IsHolding
-	ORA Player_IsClimbing
-	BNE No_Wall_Jump
-	LDA <Player_YVel
-	BMI No_Wall_Jump
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BEQ No_Wall_Jump
-	LDA <Player_InAir
-	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
-	LDA Effective_Suit
-	CMP #$0B
-	BNE No_Wall_Jump
-	LDX #$01
-	LDA <Player_FlipBits
-	BNE Set_Wall_Jump
-	DEX
-	DEX
 
-Set_Wall_Jump:
-	STX Wall_Jump_Enabled
-	LDA #$00
-	STA Player_Flip
-	LDA <Player_YVel
-	LDX Player_Slippery
-	BNE No_Wall_Jump
-	CLC
-	SBC #$20			; slow down decent during wall jump mode
-	BMI No_Wall_Jump
-	STA <Player_YVel
-
-No_Wall_Jump:
-	RTS
 
 Do_Wall_Jump:
 	LDA Wall_Jump_Enabled
-	BPL  Jump_Right
+	BPL Jump_Right
 	LDA #$20
 	BNE Do_Jump_Off
 

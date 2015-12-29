@@ -422,9 +422,9 @@ No_Burning_Mode:
 	JSR Try_Poison_Mode
 
 No_Poison_Mode:
-	LDA Invincible_Enemies
-	BEQ No_Invincible_Enemies
-	JSR Rainbow_Palette_Cycle_Sprites
+	;LDA Invincible_Enemies
+	;BEQ No_Invincible_Enemies
+	;JSR Rainbow_Palette_Cycle_Sprites
 
 No_Invincible_Enemies:
 	LDA Player_Grow
@@ -445,6 +445,7 @@ Not_Frozen:
 Do_Frame:
 	LDA Wall_Jump_Enabled
 	BEQ Try_Boo_Frames
+
 	LDX #$30			; #DAHRKDAIZ if wall jump enabled, we override the frame
 	LDA <Player_FlipBits
 	EOR #$40
@@ -457,7 +458,7 @@ Try_Boo_Frames:
 	BEQ Normal_Player_Frames
 
 Try_Fireball_Frames:
-	LDA Fox_FireBall
+	LDA Player_FireDash
 	BEQ Normal_Player_Frames
 	LDA #$01
 	BNE Override_Page_Offset
@@ -628,7 +629,7 @@ Try_Boo_Animation:
 	JMP PRG029_CF2F
 
 Try_Fireball_Animation:
-	LDA Fox_FireBall			; If in shell, override the animation
+	LDA Player_FireDash			; If in shell, override the animation
 	BEQ Draw_Player_Sprites
 	LDA #LOW(FireballAnim1)
 	STA <Player_SprWorkL
@@ -779,7 +780,7 @@ PRG029_CF88:
 
 
 	LDA Player_Flip
-	ORA Fox_FireBall
+	ORA Player_FireDash
 	BEQ PRG029_D010	; If Player is not somersaulting, or in fireball mode jump to PRG029_D010
 
 	; Otherwise all of the sprites are pushed to the right by 8
@@ -1089,8 +1090,6 @@ Player_DrawAndDoActions:
 	LDA Player_HaltTick
 	BEQ PRG029_D1CE	 	; If Player_HaltTick = 0 (not halted), jump to PRG029_D1CE
 
-	; This code is only executed if the Player is halted
-
 	DEC Player_HaltTick	; Player_HaltTick--
 
 	JSR Player_Draw	 	; Draw Player's sprite!
@@ -1111,47 +1110,6 @@ PRG029_D1CE:
 	JMP PRG029_D6BC	 ; Jump to PRG029_D6BC (the Player's death routine)
 
 PRG029_D1D5:
-	LDA Level_CoinHeav
-	BPL PRG029_D205	 ; If Level_CoinHeav >= 0, jump to PRG029_D205
-
-	; Note that by above logic, Level_CoinHeav must be <= -1...
-	; Technically, it is set to $80 (-128) at start!
-
-	; Release holding anything and stop horizontal movement
-	LDA #$00	 
-	STA Player_IsHolding
-	STA <Player_XVel
-
-	; Produces an initial burst of upward Y velocity which slows down
-	INC Level_CoinHeav	; Level_CoinHeav++
-	LDA Level_CoinHeav
-	STA <Player_YVel
-	BNE PRG029_D1EE	 	; If Level_CoinHeav <> 0, jump to PRG029_D1EE
-
-	INC Level_CoinHeav	; Level_CoinHeav++
-
-PRG029_D1EE:
-	LDA <Player_YHi
-	BPL PRG029_D205	 ; If Player hasn't gone above top of screen yet, jump to PRG029_D205
-
-	; Once Player crosses top of screen, he is then placed at halfway 
-	; above the status bar (16 pixels above the death point!)
-	LDA #$01
-	STA <Player_YHi	; Player_YHi = 1 (really low)
-	LDA #$b0	 
-	STA <Player_Y	; Player_Y = $B0 (near the bottom)
-
-	LDA #$d0
-	STA Level_CoinHeav
-
-	; Change to coin heaven (technically, this is the "general" level junction)
-	LDA #$03	
-	STA Level_JctCtl ; Level_JctCtl = 3
-
-	RTS		 ; Return
-
-
-PRG029_D205:
 	LDA Player_SuitLost
 	BEQ PRG029_D20E	 ; If Player_SuitLost = 0, jump to PRG029_D20E
 
@@ -1200,12 +1158,15 @@ PRG029_D238:
 	STA <Player_Frame	 ; Set as current frame
 	LDA <Player_Suit
 	BNE Big_Frame
+
 	LDA #$3E
 	STA Frozen_Frame
 	BNE Do_Draw_Plyer
+
 Big_Frame:
 	LDA #$0E
 	STA Frozen_Frame
+
 Do_Draw_Plyer:
 	JSR Player_Draw		 ; Draw Player
 
@@ -1224,201 +1185,6 @@ PRG029_D250:
 	RTS		 ; Return
 
 PRG029_D257:
-	LDA Player_EndLevel
-	BEQ PRG029_D279	 ; If we're not doing the end of level run, jump to PRG029_D279
-
-PRG029_D26B:
-	LDA <Player_InAir
-	BNE PRG029_D279		; If Player is mid-air, jump to PRG029_D279
-
-	DEC Player_EndLevel	; Player_EndLevel--
-
-	LDA #$14
-	STA <Player_XVel	; Player_XVel = $14
-	JMP PRG029_D457	 	; Jump to PRG029_D457 
-
-PRG029_D279:
-	LDA Level_AirshipCtl
-	BNE PRG029_D281	 ; If Level_AirshipCtl <> 0, jump to PRG029_D281
-
-	JMP PRG029_D33E	 ; Otherwise, jump to PRG029_D33E
-
-PRG029_D281:
-
-	; Level_AirshipCtl <> 0...
-
-	PHA		 ; Save Level_AirshipCtl
-
-	LDA #$00
-	STA <Scroll_LastDir	; Force screen to have "last moved right"
-
-	INC <Horz_Scroll	; Screen scrolls to the right
-	BNE PRG029_D28C	 	; If it hasn't rolled over, jump to PRG029_D28C
-	INC <Horz_Scroll_Hi	; Otherwise, apply carry
-
-PRG029_D28C:
-	LDA <Horz_Scroll_Hi
-	BNE PRG029_D296	 	; If Horz_Scroll_Hi <> 0, jump to PRG029_D296
-
-	LDA <Horz_Scroll
-	CMP #$60	
-	BLT PRG029_D2AF	 ; If Horz_Scroll < $60, jump to PRG029_D2AF
-
-PRG029_D296:
-	INC Level_AirshipH	 ; Level_AirshipH++
-
-	LDA Level_AirshipH
-	ADD Counter_Wiggly	 ; Increase height of the airship in a bit of a wobbly way
-	BCC PRG029_D2AF	 	; If it hasn't overflowed, jump to PRG029_D2AF
-
-	INC <Vert_Scroll
-
-	LDA <Objects_YZ+4
-	SUB #$01
-	STA <Objects_YZ+4	; Anchor's Y minus 1
-	BCS PRG029_D2AF
-	DEC <Objects_YHiZ+4	; If overflow occurred, propogate the carry
-PRG029_D2AF: 
-
-	PLA		 ; Restore Level_AirshipCtl
-	JSR DynJump	 ; Dynamic jump based on Level_AirshipCtl... 
-	
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word AirshipCtl_DoNothing	; 0 - Do nothing (not used)
-	.word AirshipCtl_RunAndJump	; 1 - Run and jump (when horizontal scroll hits $80)
-	.word AirshipCtl_Catch		; 2 - Catch anchor
-	.word AirshipCtl_HoldAnchor	; 3 - Hold onto anchor
-	.word AirshipCtl_LandOnDeck	; 4 - Land Player on deck
-
-AirshipCtl_DoNothing:
-	RTS		 ; Return
-
-
-AirshipCtl_RunAndJump:
-	LDA #$ef
-	STA Level_VertScroll	 ; Level_VertScroll = $EF
-
-	LDA <Horz_Scroll
-	CMP #$80
-	BLT PRG029_D2D0	 ; If Horz_Scroll < $80, jump to PRG029_D2D0
-
-	; Player makes the jump!
-	LDA #-$60
-	STA <Player_YVel	 ; Player_YVel = -$60
-	INC Level_AirshipCtl	 ; Next Level_AirshipCtl!
-
-PRG029_D2D0:
-	LDA #$01
-	STA <Player_FlipBits	 ; Player_FlipBits = 1
-
-	LDA #$20
-	STA <Player_XVel	 ; Player_XVel = $20
-
-	JMP PRG029_D457	 ; $D2D8 
-
-
-AirshipCtl_Catch:
-	LDA <Player_X
-	CMP #$36	
-	BLT PRG029_D2FF	 ; If Player_X < $36, jump to PRG029_D2FF
-
-	; Apply Player's velocities
-	JSR Player_ApplyYVelocity
-	JSR Player_ApplyXVelocity
-
-	LDA <Player_YVel
-	ADD #$04
-	STA <Player_YVel ; Player_YVel += 4
-
-	CMP #$0f
-	BLS PRG029_D2F5	 ; If Player_YVel < $0F, jump to PRG029_D2F5
-
-	INC Level_AirshipCtl	 ; Otherwise, next Level_AirshipCtl!
-
-PRG029_D2F5:
-
-	; Set mid-air jump frame as appropriate by suit and draw Player...
-	LDY <Player_Suit
-	LDA Airship_JumpFrameByPup,Y
-	STA <Player_Frame
-	JMP Player_Draw	
-
-PRG029_D2FF:
-	JMP PRG029_D457	 ; Jump to PRG029_D457
-
-
-AirshipCtl_HoldAnchor:
-	LDA #$02
-	STA <Player_FlipBits	 ; Player_FlipBits = 2 (use "caught anchor" frame)
-
-	LDA #-$14
-	STA <Player_YVel ; Player_YVel = -$14
-	JSR PRG029_D457	 ; Continue using the "run" code
-
-	LDA <Vert_Scroll
-	CMP #$70
-	BLT PRG029_D31B	 ; If Vert_Scroll < $70, jump to PRG029_D31B (RTS)
-
-	LDA #$03	 
-	STA Level_JctCtl	 ; Level_JctCtl = 3 (general purpose junction)
-
-	INC Level_AirshipCtl	 ; Next Level_AirshipCtl!
-
-PRG029_D31B:
-	RTS		 ; Return
-
-
-AirshipCtl_LandOnDeck:
-	LDA Level_AScrlConfig
-	BEQ PRG029_D33D	 ; If autoscroll not enabled, jump to PRG029_D33D
-
-	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
-
-	LDA <Player_YVel
-	BMI PRG029_D330	 	; If Player's Y velocity is negative (still rising), jump to PRG029_D330
-
-	LDA #$00
-	STA Level_AirshipCtl	; Level_AirshipCtl = 0 (airship sequence complete)
-	STA Level_TimerEn	; Level_TimerEn = 0 (level timer enabled!)
-
-PRG029_D330:
-	LDA <Player_YVel
-	ADD #$04
-	STA <Player_YVel ; Player_YVel += 4 (Player falling to airship)
-
-	JSR Player_DoScrolling	; Update scrolling at Player's position
-
-	JSR PRG029_D2F5	 ; Mid-air frame as appropriate
-
-PRG029_D33D:
-	RTS		 ; Return
-
-
-PRG029_D33E:
-	LDA Level_GetWandState
-	CMP #$03
-	BLS PRG029_D361	 ; If Level_GetWandState < 3 (wand grabbed), jump to PRG029_D361
-
-	CMP #$07
-	BLS PRG029_D354	 ; If Level_GetWandState < 7, jump to PRG029_D354
-
-	; Player's slow decent...
-	LDA <Player_Y
-	ADD #$02
-	STA <Player_Y	 ; Player_Y += 2
-
-	BCC PRG029_D354	 ; If no carry, jump to PRG029_D354
-	INC <Player_YHi	 ; Otherwise, apply carry
-
-PRG029_D354:
-	; Player holding wand!
-	LDY <Player_Suit ; Y = Player_Suit
-	LDA Airship_JumpFrameByPup,Y	 
-	STA <Player_Frame	; Use proper "mid-air" frame
-	JSR Player_Draw	 	; Draw Player
-	JMP Wand_Offset_BySuit	 	; Jump to Wand_Offset_BySuit
-
-PRG029_D361:
 
 	; Level_PipeMove is set to $8x when we are EXITING from
 	; a pipe OR moving through it (in-level transit style),
@@ -1434,7 +1200,7 @@ PRG029_D361:
 PRG029_D369:
 	BNE Level_PipeEnter	 ; If Level_PipeMove is not zero (and not in the $8x range), jump to Level_PipeEnter
 
-	JMP PRG029_D3EC	 ; Otherwise, jump to PRG029_D3EC
+	JMP PRG008_A224	 ; Otherwise, jump to PRG008_A224
 
 Level_PipeEnter:
 
@@ -1551,116 +1317,10 @@ PRG029_D3EB:
 	RTS		 ; Return
 
 
-PRG029_D3EC:
-
-	; Nothing to do with pipes...
-
-	JMP PRG008_A224	 ; Jump to PRG008_A224
-
-
-	; When Player has grabbed wand, offset from Player X/Y by suit / power-up
-Wand_XOff_BySuitL:	.byte -5, -5, -5, -5, -7, -5, -5
-Wand_XOff_BySuitR:	.byte  6,  6,  6,  6,  8,  6,  6
-Wand_YOff_BySuit:	.byte  1, -9, -9, -9,  3, -9, -9
-
-Wand_Offset_BySuit:
-	LDY Object_SpriteRAM_Offset+5	; Y = 5th index object Sprite RAM offset
-	LDX <Player_Suit	; X = Player's suit
-
-	LDA <Player_FlipBits
-	PHP		 	; Save Player flip bits
-
-	LDA Wand_XOff_BySuitR,X	; Wand offset, held right
-
-	PLP		 	; Restore Player flip bits
-	BNE PRG029_D415	 	; If Player is not flipped, jump to PRG029_D415
-
-	LDA Wand_XOff_BySuitL,X	; Wand offset, held left
-
-PRG029_D415:
-	ADD <Player_SpriteX	; Add offset to Player sprite X
-	STA Sprite_RAM+$03,Y	; -> Sprite X
-
-	ADD #$08		; +8
-	STA Sprite_RAM+$07,Y	; -> Sprite X
-
-	; Temp_Var1 = Player_YHi
-	LDA <Player_YHi
-	STA <Temp_Var1
-
-	LDA Wand_YOff_BySuit,X
-	BPL PRG029_D42C	 	; If Y offset is positive, jump to PRG029_D42C
-
-	DEC <Temp_Var1		; Otherwise, Temp_Var1--
-
-PRG029_D42C:
-	ADD <Player_SpriteY	; Add offset to Player Y
-	BCC PRG029_D433	 	; If no carry, jump to PRG029_D433
-
-	INC <Temp_Var1		; Otherwise, apply carry
-
-PRG029_D433:
-	LDX <Temp_Var1		; X = Temp_Var1
-	CPX #$01
-	BPL PRG029_D454	 	; If off-screen, jump to PRG029_D454
-
-	; Store Wand Sprites Y
-	STA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$04,Y
-
-	; Store Wand Sprite Patterns
-	LDA #$99
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
-
-	; Palette cycling of wand
-	LDA <Counter_1
-	AND #$06
-	LSR A
-	STA Sprite_RAM+$02,Y
-
-	; Mirrored half
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$06,Y
-
-PRG029_D454:
-	RTS		 ; Return
-
 Level_EndFlipBits:
 	.byte $00, $40
 
-PRG029_D457:
-
-	; The "run forward" bit at the end of a level...
-	; OR the run & jump for the airship!
-
-	LDA <Player_FlipBits
-	AND #$02
-	BEQ PRG029_D468	 ; If (Player_FlipBits & 2) = 0, jump to PRG029_D468
-
-	JSR Player_ApplyYVelocity	 ; Apply Y velocity
-
-	; Used by airship only (the "caught anchor" frames)
-	LDY <Player_Suit
-	LDA Player_ClimbFrame,Y ; Get "caught anchor" frame
-	JMP PRG029_D49B	 	  ; Jump to PRG029_D49B
-
-PRG029_D468:
-	LDA <Player_FlipBits
-	AND #$01
-	TAY		; Y = Player_FlipBits & 1 
-	LDA Level_EndFlipBits,Y	 ; Get proper flip bit
-	ORA <Player_FlipBits	
-	STA <Player_FlipBits	 ; Level_EndFlipBits |= Level_EndFlipBits[Y]
-
-	JSR Player_ApplyXVelocity ; Apply X Velocity
-
-	LDA <Counter_1
-	AND #$06	
-	LSR A		
-	STA <Temp_Var1	 ; Temp_Var1 = (Counter_1 & 6) >> 1  (0-3)
-
-
+PRG029_D457
 PRG029_D47E:	; Jump point for horizontal pipe-walking
 
 PRG029_D491:
@@ -3128,98 +2788,6 @@ Restore_Curr_Player_Pal:
 	STA Player_Pal_Backup
 	STA (Player_Pal_Backup + $01)
 	STA (Player_Pal_Backup + $01)
-	RTS
-
-Fox_DashDir: .byte $D0, $30
-Fox_DashFlip: .byte $40, $00
-
-Try_Burning_Mode:
-	LDA Fox_FireBall			; we're already in fireball mode, let's continue doing velocity checks
-	BEQ Try_FireBall
-	LDA Player_InWater			; if we're a fireball and hit water, kill it		
-	ORA Player_SandSink
-	BNE Kill_Burn_NoFX
-	LDA <Pad_Holding
-	AND #PAD_B
-	BEQ Kill_Burn_NoFX
-	LDA Player_Power
-	BEQ Kill_Burn_NoFX
-	JMP ContinueDash
-
-Try_FireBall:					; not a fireball, so let's try it!
-
-	LDA Player_Power
-	BEQ Try_Burning_ModeRTS
-	LDA Player_InWater			
-	BNE Try_Burning_ModeRTS		; can't go into burning mode in sand or water
-	LDA Player_TailAttack
-	CMP #$12
-	BCS Try_Burning_ModeRTS
-		
-	LDA <Pad_Input			; we have! This finds the direction to send based on input
-	AND #(PAD_B)
-	BEQ	Try_Burning_ModeRTS
-	
-	LDA #$10				; poof effect, we're now in the air	
-	STA Player_SuitLost
-	STA Fox_FireBall
-	LDA #$00
-	STA Player_TailAttack
-	LDA Sound_QLevel2		; flame sound effect
-	ORA #SND_LEVELFLAME
-	STA Sound_QLevel2
-	BNE ContinueDash1
-
-ContinueDash:
-	LDA <Player_XVel
-	BEQ Kill_Burn_Mode
-
-ContinueDash1:
-	LDY #$00
-	LDA Player_Direction
-	BEQ Store_Direction
-	INY
-
-Store_Direction:
-	LDA Fox_DashDir, Y
-	STA <Player_XVel
-	STA <Player_InAir
-	LDA Fox_DashFlip, Y
-	STA <Player_FlipBits
-	LDA #$00
-	STA <Player_YVel
-	LDA #$F4
-	STA Power_Change
-
-Try_Burning_ModeRTS:
-	RTS
-
-
-BounceBack:
-	.byte $00, $20, $00, $E0, $00
-
-Kill_Burn_Mode:
-	LDA #$10			; if we reach here, we hit a wall, shake the ground!
-	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
-
-	; Wham! sound effect
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-	LDX Fox_FireBall
-	LDA BounceBack, X	; if we're hitting a wall, we have some recoil
-	STA <Player_XVel
-
-Kill_Burn_NoFX:
-	LDA #$00			; kills burn mode completely
-	STA Fox_FireBall
-	LDA #$10					
-	STA Player_SuitLost
-	LDA #$06
-	STA Power_Change
-	LDA <Player_FlipBits
-	EOR #$40
-	STA <Player_FlipBits
 	RTS
 
 Try_Poison_Mode:

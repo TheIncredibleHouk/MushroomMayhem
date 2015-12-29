@@ -811,7 +811,7 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	Player_XVel:		.ds 1	; Player's X Velocity (negative values to the left) (max value is $38)
 	Objects_XVelZ:		.ds 8	; $BE-$C5 Other object's X velocities
 	Player_CarryXVel:	.ds 1
-	Objects_VarBSS:		.ds 6	; $C6-$CC OBJECT SLOTS 0 - 5 ONLY ... uncleared var??
+	TileYIndexBase:		.ds 6	; $C6-$CC OBJECT SLOTS 0 - 5 ONLY ... uncleared var??
 	CurrentObjectIndexZ:	.ds 1	; Used as a backup for the slot index (e.g. current object, current score, etc.)
 	Player_HaltGameZ:	.ds 1	; Player is halting game (e.g. dying, shrinking/growing, etc.)
 
@@ -842,17 +842,17 @@ HIT_CEILING =		8
 
 	Level_TileOff:		.ds 1	; Tile mem offset
 	Level_Tile:		.ds 1	; Temporary holding point for a detected tile index
-	Tile_Value:		.ds 1
+	Level_Tile_Prop:		.ds 1
 	Player_Slopes:		.ds 1	; for sloped levels only (3 bytes allocated, but only one actually used)
 				; *NOTE: Code at PRG030_9EDB clears Player_Slopes+1 and Player_Slopes+2, but these are never used!
 	Player_OnPlatform:	.ds 1
 
-				.ds 1	; $E9 unused
-				.ds 1	; $EA unused
+	TileXIndex:			.ds 1	; $E9 unused
+	TileYIndex:			.ds 1	; $EA unused
 
 	Player_XStart:		.ds 1	; Set to Player's original starting X position (also used to check if level has initialized)
 
-				.ds 1	; $EC unused
+						.ds 1	; $EC unused
 
 ; Player_Suit -- Player's active powerup (see also: Player_QueueSuit)
 PLAYERSUIT_SMALL	= 0
@@ -1790,12 +1790,19 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	; Normal purpose $06xx RAM...
 	.org $0600
 
+HEAD_INDEX				= 0 ;
+BODY_INDEX				= 1 ;
+HEAD_FEET_LEFT_INDEX	= 2 ;
+HEAD_FEET_RIGHT_INDEX	= 3 ;
+HEAD_WALL_INDEX			= 4 ;
+FEET_WALL_INDEX			= 5 ;
+TAIL_INDEX				= 6 ;
 	Level_Tile_Prop_Head:	.ds 1	; Tile at Player's head 
 	Level_Tile_Prop_Body:	.ds 1
-	Level_Tile_Prop_GndL:	.ds 1	; Tile at Player's feet left
-	Level_Tile_Prop_GndR:	.ds 1	; Tile at Player's feet right
-	Level_Tile_Prop_InFL:	.ds 1	; Tile "in front" of Player ("lower", at feet)
-	Level_Tile_Prop_InFR:	.ds 1	; Tile "in front" of Player ("upper", at face)
+	Level_Tile_Prop_Floor_Ceiling_Left:	.ds 1	; Tile at Player's feet left
+	Level_Tile_Prop_Floor_Ceiling_Right:	.ds 1	; Tile at Player's feet right
+	Level_Tile_Prop_Wall_Upper:	.ds 1	; Tile "in front" of Player ("lower", at feet)
+	Level_Tile_Prop_Wall_Lower:	.ds 1	; Tile "in front" of Player ("upper", at face)
 	Level_Tile_Whack:	.ds 1	; Tile last hit by tail attack or shell
 
 	; Level_Tile_Slope: Slope of tile for each of the positions above (first byte also used by objects)
@@ -2427,7 +2434,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	WeatherActive:			.ds 1
 	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
 	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
-	Fox_FireBall:			.ds 1	; Indicates we are in Burning mode
+	Player_FireDash:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
 	Player_Direction:		.ds 1	;
 	Ignore_Vel_Stop:		.ds	1	;
@@ -2998,7 +3005,7 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
-	Objects_InteractionState:	.ds 8
+	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
 	Slow_Watch:			.ds 1	;
 	Player_Dialog:		.ds 1

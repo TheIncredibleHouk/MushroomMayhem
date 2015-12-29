@@ -2925,7 +2925,6 @@ ObjNorm_DryBones:
 	CMP #OBJSTATE_KILLED	
 	BEQ ObjNorm_DryBones2	
 
-
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_DryBones2	 ; If gameplay is not halted, jump to PRG002_A4C5
 
@@ -2934,7 +2933,6 @@ ObjNorm_DryBones0:
 	JSR Object_DeleteOffScreen
 	JSR Object_InteractWithWorld
 	JSR Object_InteractWithPlayer
-	JSR Objects_Interact
 	BCS ObjNorm_DryBones2
 
 ObjNorm_DryBones1:
@@ -2943,6 +2941,7 @@ ObjNorm_DryBones1:
 	LDA <Objects_Data5Z,X
 	BNE PRG002_B6B2	 ; If Var5 <> 0 (Dry Bones is crumpled), jump to PRG002_B6B2
 
+	JSR Objects_Interact
 	
 	INC Objects_Data2,X
 	LDA Objects_Data2,X
@@ -2955,6 +2954,7 @@ ObjNorm_DryBones1:
 ObjNorm_DryBones2:
 	JSR DryBones_Draw
 	RTS
+
 PRG002_B6B2:
 
 	; Crumpled Dry Bones...
@@ -3122,122 +3122,6 @@ PRG002_B77D:
 
 PRG002_B77E:
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
-
-
-	; Essentially an implementation of Object_BumpOffOthers tailored
-	; for Dry Bones, handling one or the other being crumpled
-DryBones_BumpOffOthers:
-	TXA		  
-	ADD <Counter_1
-	LSR A		
-	BCS PRG002_B789	 ; Semi-randomly jump to PRG002_B789
-
-PRG002_B788:
-	RTS		 ; Return
-
-PRG002_B789:
-	LDA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG002_B77D	 ; If any sprite of Dry Bones is vertically off-screen, jump to PRG002_B77D (RTS)
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	AND #$c0
-	CMP #$c0
-	BEQ PRG002_B77D	 ; If some of Dry Bones is horizontally off-screen, jump to PRG002_B77D (RTS)
-
-	JSR Object_CalcBoundBox2
-	TXA	
-	BEQ PRG002_B788	 ; If this Dry Bones is in object slot 0, jump to PRG002_B788
-
-	DEX		 ; X-- (consider the previous object)
-PRG002_B79E:
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BEQ PRG002_B7A9	 ; If previous object state is Normal, jump to PRG002_B7A9
-
-	CMP #OBJSTATE_SHELLED
-	BNE PRG002_B815	 ; If previous object state is not Shelled, jump to PRG002_B815
-
-PRG002_B7A9:
-	LDY Objects_ID,X	 ; Y = object's ID
-
-	LDA Object_AttrFlags,Y
-	AND #OAT_BOUNCEOFFOTHERS
-	BEQ PRG002_B815	 ; If OAT_BOUNCEOFFOTHERS is NOT set, jump to PRG002_B815
-
-	LDA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG002_B815	 ; If any sprite is vertically off-screen, jump to PRG002_B815
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	AND #$c0
-	CMP #$c0
-	BEQ PRG002_B815	 ; If previous object has sprites horizontally off-screen, jump to PRG002_B815
-
-	JSR Object_CalcBoundBox 
-	JSR ObjectObject_Intersect 
-	BCC PRG002_B815	 ; If object did not intersect with prior object, jump to PRG002_B815
-
-	LDY <CurrentObjectIndexZ	 ; Y = object slot index
-
-	LDA <Objects_XZ,X
-	SUB Objects_XZ,Y
-	PHA		 ; Save the difference between the two objects' Xs
-
-	LDA <Objects_XHiZ,X
-	SBC Objects_XHiZ,Y
-	STA <Temp_Var1	 ; Temp_Var1 = the difference between the two objects' X His
-
-	; Determine which way this object should face relative to its position
-	ROL <Temp_Var2
-	PLA	
-	ADC #$80
-	LDA <Temp_Var1
-	ADC #$00	
-	BNE PRG002_B815	 
-
-	LSR <Temp_Var2	
-	LDY #$00	 ; Y = $00 (face one way)
-	BCS PRG002_B7EC	
-
-	LDY #SPR_HFLIP	 ; Y = SPR_HFLIP (face the other)
-
-PRG002_B7EC:
-	TYA		 
-	STA <Temp_Var1	 ; Temp_Var1
-
-	LDY <CurrentObjectIndexZ	 ; Y = The Dry Bones who started this
-
-	LDA Objects_Data5Z,Y
-	BNE PRG002_B7FB	 ; If Var5 <> 0, jump to PRG002_B7FB (crumbled Dry Bones need not turn around)
-
-	; I'm not crumbled, I get to turn...
-	LDA <Temp_Var1
-	STA Objects_Orientation,Y
-
-PRG002_B7FB:
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BNE PRG002_B815	 ; If bumped-into object's state is not Normal, jump to PRG002_B815
-
-	LDA Objects_ID,X
-	CMP #OBJ_DRYBONES
-	BNE PRG002_B80E	 ; If Dry Bones bumped into something that's not a Dry Bones, jump to PRG002_B80E
-
-	LDA Objects_Data5Z,X
-	BNE PRG002_B815	 ; If Dry Bones bumped into a crumpled Dry Bones, jump to PRG002_B815
-
-PRG002_B80E:
-	; Dry Bones "bumps" into a non-crumpled Dry Bones or something not a Dry Bones, turn around
-	LDA <Temp_Var1
-	EOR #SPR_HFLIP
-	STA Objects_Orientation,X
-
-PRG002_B815:
-	DEX		 ; X--
-	BPL PRG002_B79E	 ; While X >= 0, loop!
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-	RTS		 ; Return
-
 
 	; Performs collision tests against platform and enables Player
 	; to stand on the platform, hit head off platform, etc.
