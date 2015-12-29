@@ -719,10 +719,10 @@ PRG008_A3F2:
 	STX Boo_Mode_Timer
 	STX Boo_Mode_KillTimer
 	LDA Poison_Mode
-	ORA Fox_FireBall
+	ORA Player_FireDash
 	BEQ PRG008_A3F1
 	STX Poison_Mode
-	STX Fox_FireBall
+	STX Player_FireDash
 
 PRG008_A3F1:
 
@@ -1240,7 +1240,7 @@ PRG008_A6DA:
 	STA <Pad_Input		; Otherwise, disable 'B' button
 
 PRG008_A6E5:
-	LDA Fox_FireBall		; if in fireball mode, disable, all but select and start
+	LDA Player_FireDash		; if in fireball mode, disable, all but select and start
 	BEQ Normal_008_1
 
 	LDA <Pad_Input		
@@ -1313,7 +1313,7 @@ PRG008_A743:
 	LDA #$08
 	STA <Temp_Var11		; Temp_Var11 (X offset) = 8
 
-	LDA Level_Tile_Prop_GndL	 ; Get left ground tilee
+	LDA Level_Tile_Prop_Floor_Ceiling_Left	 ; Get left ground tilee
 	STA <Temp_Var2		 ; -> Temp_Var2
 
 	JSR Player_GetTileAndSlope ; Get tile above Player
@@ -1534,7 +1534,7 @@ PRG008_A86C:
 	LDA Player_InWater
 	ORA Player_IsHolding
 	ORA Boo_Mode_Timer
-	ORA Fox_FireBall
+	ORA Player_FireDash
 	ORA Player_Shell
 	BNE PRG008_A890	 ; If Player is in water, holding something, or in 
 
@@ -2122,7 +2122,7 @@ Player_UphillSpeedVals:
 
 Player_GroundHControl:
 	LDA Player_Shell
-	ORA Fox_FireBall
+	ORA Player_FireDash
 	BEQ Grnd_No_Shell
 	JSR Player_Shell_HitBlocks
 	RTS
@@ -2500,7 +2500,7 @@ PRG008_ACCD:
 	ADD <Player_YVel
 	LDX Boo_Mode_Timer
 	BNE Skip_YVel
-	LDX Fox_FireBall
+	LDX Player_FireDash
 	BNE Skip_YVel
 	STA <Player_YVel ; Player_YVel += Y
 
@@ -3999,7 +3999,7 @@ PRG008_B4CA:
 	JSR Player_GetTileAndSlope	 ; Get tile
 	
 	JSR Level_DoCommonSpecialTiles
-	STA Level_Tile_Prop_GndL,X	 ; Store it
+	STA Level_Tile_Prop_Floor_Ceiling_Left,X	 ; Store it
 	JSR HandleIceBreak
 	JSR Player_WallHandle
 
@@ -4023,7 +4023,7 @@ PRG008_B4F3:
 	LDA <Player_InAir
 	BEQ PRG008_B55B	 ; If Player is NOT mid air, jump to PRG008_B55B
 
-	LDA Level_Tile_Prop_GndL
+	LDA Level_Tile_Prop_Floor_Ceiling_Left
 	CMP #TILE_PROP_SOLID_ALL
 	BCS PRG008_B558	 ; If not touching a solid tile, jump to PRG008_B55A
 
@@ -4063,7 +4063,7 @@ PRG008_B55B:
 	AND #TILE_PROP_SOLID_TOP
 	BNE PRG008_B580	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
 
-	LDA Level_Tile_Prop_GndL	 ; Get left tile
+	LDA Level_Tile_Prop_Floor_Ceiling_Left	 ; Get left tile
 	AND #TILE_PROP_SOLID_TOP	
 	BNE PRG008_B580	 	 ; If the tile is >= the attr value, jump to PRG008_B57E
 
@@ -4241,7 +4241,7 @@ PRG008_B585_2_2:
 PRG008_B586:
 	CPX #$02
 	BCC NoFireFoxBusts
-	LDY Fox_FireBall
+	LDY Player_FireDash
 	BNE DoSpinnerBusts
 
 NoFireFoxBusts:
@@ -4509,7 +4509,7 @@ PRG008_B82F:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LATP_Spinner:
 	
-	LDA Fox_FireBall
+	LDA Player_FireDash
 	BNE LATP_Brick
 	LDA Level_ChgTileEvent
 	BNE NoSpinner
@@ -4858,7 +4858,7 @@ Do_Tile_Attack:
 	CMP #TILE_ITEM_COIN
 	BCC PRG008_B979
 	LDX #$04	 
-	STA Level_Tile_Prop_GndL,X	 ; Store into tail's special slot
+	STA Level_Tile_Prop_Floor_Ceiling_Left,X	 ; Store into tail's special slot
 	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
 
 PRG008_B979:
@@ -4975,7 +4975,7 @@ PRG008_BCA7:
 
 PRG008_BCAA:
 	LDX #$02	 ; X = 2
-	LDA Level_Tile_Prop_GndL	 
+	LDA Level_Tile_Prop_Floor_Ceiling_Left	 
 
 	LDY <Player_InAir
 	BEQ PRG008_BCC4	 ; If Player is NOT mid air, jump to PRG008_BCC4
@@ -5622,7 +5622,7 @@ PUp_RTS:
 	RTS
 
 Shell_Bounce:
-	LDA Level_Tile_Prop_GndL, X
+	LDA Level_Tile_Prop_Floor_Ceiling_Left, X
 	CMP #TILE_ITEM_BRICK
 	BEQ Shell_Bounce0
 
@@ -5959,7 +5959,7 @@ Player_WallHandle:
 	JMP PRG008_B53B
 
 Player_WallHandle1:
-	LDA Level_Tile_Prop_GndL, X
+	LDA Level_Tile_Prop_Floor_Ceiling_Left, X
 	AND #TILE_PROP_SOLID_ALL
 	CMP #TILE_PROP_SOLID_ALL
 	BNE OpenTreasure1	 ; If not touching a solid tile, jump to PRG008_B53B
