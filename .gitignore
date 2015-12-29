@@ -8,3 +8,4 @@ SMB3/Backup/
 bin/
 Backup/
 obj/
+*.fns
