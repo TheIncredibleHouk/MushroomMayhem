@@ -898,7 +898,6 @@ Objects_HandleScrollAndUpdate:
 	LDA #$00
 
 PRG000_C939:
-	STA Objects_InteractionState, X
 	DEX
 	BPL PRG000_C939
 
@@ -1694,6 +1693,7 @@ PRG000_CCAE:
 	LDA Object_LevelTile
 	STA <Level_Tile
 	LDA Object_TileWallProp
+	STA <Level_Tile_Prop
 	JSR Object_BumpOffBlocks 
 
 	LDX <CurrentObjectIndexZ	 ; X = object slot index
@@ -1939,6 +1939,7 @@ Object_BumpBlocks:
 	; Send detected tile over to check if object has hit any blocks
 	; that respond to being hit with head
 	LDA <Temp_Var8
+	STA <Level_Tile_Prop
 	JSR Object_BumpOffBlocks
 
 	LDX <CurrentObjectIndexZ	; X = object slot index
@@ -4524,7 +4525,7 @@ PRG000_D8EB:
 	LDA Player_StarInv
 	ORA Player_Shell
 	ORA Boo_Mode_KillTimer
-	ORA Fox_FireBall
+	ORA Player_FireDash
 	BEQ PRG000_D922	 ; If Player is NOT invincible, jump to PRG000_D922
 
 	; Player is invincible...
@@ -4789,7 +4790,7 @@ Player_GetHurt:
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGameZ		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
-	ORA Fox_FireBall		;
+	ORA Player_FireDash		;
 	BNE PRG000_D9B7	 ; ... then jump to PRG000_D9B7 (RTS)
 
 	JMP PRG000_DA15	 ; Jump to PRG000_DA15 (skips lost/dead Japanese version code)
@@ -4895,7 +4896,7 @@ Player_Die:
 	STA Player_FlashInv
 	STA Player_StarInv
 	STA Player_Shell
-	STA Fox_FireBall
+	STA Player_FireDash
 	STA Boo_Mode_Timer
 	STA Boo_Mode_KillTimer
 	STA Level_PSwitchCnt
@@ -5182,9 +5183,6 @@ PRG000_DC09:
 PRG000_DC0B:
 	CPX <CurrentObjectIndexZ
 	BEQ PRG000_DC51	 ; If this object slot is the current object, jump to PRG000_DC51 (don't do anything to self)
-
-	LDA Objects_InteractionState, X
-	BNE PRG000_DC51
 
 	LDY Objects_State,X
 	LDA Obj2Obj_EnByState,Y
