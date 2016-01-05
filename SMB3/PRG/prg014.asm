@@ -4681,7 +4681,7 @@ PRG014_DFCC:
 
 
 
-HandleLevelEvent
+HandleLevelEvent:
 	LDA MiscValue1
 	JSR DynJump
 

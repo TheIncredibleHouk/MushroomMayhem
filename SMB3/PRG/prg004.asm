@@ -3407,9 +3407,6 @@ ObjInit_ParaTroopas:
 
 
 ObjNorm_RedTroopa:
-	JSR Object_FacePlayerOnLanding
-
-ObjNorm_RedTroopa1:
 	LDA Objects_PreviousCollisionDetection, X
 	AND #HIT_GROUND
 	BEQ ObjNorm_Troopa
@@ -3419,6 +3416,7 @@ ObjNorm_RedTroopa1:
 	BNE ObjNorm_Troopa
 
 	JSR Object_Reverse
+	JSR Object_ApplyXVel
 
 ObjNorm_Troopa:
 	LDA <Player_HaltGameZ

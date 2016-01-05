@@ -1269,6 +1269,50 @@ PRG000_CAF1:
 	; this offsets their Y depending on whether v-flipped
 ObjWakeUp_FeetYOff:	.byte 10, -10
 
+Object_DampenVelocity:
+	LDA <Objects_CollisionDetectionZ, X
+	AND #HIT_GROUND
+	BEQ Object_DampenVelocityRTS
+
+	LDA <Objects_YVelZ,X 
+	CMP #$10
+	BCC Object_DampenStop
+
+	LDA <Objects_YVelZ,X
+	TAY
+	JSR Object_HitGround
+
+	TYA
+	AND #$80
+	STA TempA
+	TYA
+	LSR A
+	ORA TempA
+	EOR #$FF
+	ADD #$01
+	STA <Objects_YVelZ,X 
+
+	LDA <Objects_CollisionDetectionZ, X
+	AND #~HIT_GROUND
+	STA <Objects_CollisionDetectionZ, X
+	
+	LDA <Objects_XVelZ,X 
+	AND #$80
+	STA TempA
+	LDA <Objects_XVelZ,X 
+	LSR A
+	ORA TempA
+	STA <Objects_XVelZ,X 
+	RTS
+
+Object_DampenStop:
+	LDA #$00
+	STA <Objects_XVelZ,X 
+
+Object_DampenVelocityRTS:
+	RTS
+
+
 	; Called for an object in state 3 to do its "shelled" routine
 ObjState_Shelled:
 	LDY ObjGroupRel_Idx	; Y = object's group-relative index
@@ -1278,60 +1322,11 @@ ObjState_Shelled:
 	BNE Object_DrawShelled	 ; If gameplay is halted, jump to PRG000_CB5B
 	
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
-	JSR Object_Move	 		; Perform standard object movements
+	JSR Object_Move	 ; Move, detect, interact with blocks of world
 	JSR TestShellBumpBlocks
-
-DontBumpBlocks:
-	LDA Objects_ID, X
-	CMP #OBJ_KEY
-	BNE PRG000_CB11
-
-	JSR CheckKeyAgainstLock
-
-PRG000_CB11:
-	LDA <Objects_CollisionDetectionZ,X 
-	AND #$04 
-	BEQ PRG000_CB45	 ; If object hit floor, jump to PRG000_CB45 
-
-	LDA <Objects_YVelZ,X 
-	BMI PRG000_CB45	 ; If object is moving upward, jump to PRG000_CB45 
-
-	; Object has NOT hit floor and is NOT moving upward...
-
-	PHA		 ; Save Y velocity
-
-	JSR Object_HitGround	 ; Align with ground
- 
-	LDA <Objects_XVelZ,X	 ; Get X velocity
- 
-	PHP		 ; Save CPU state
-
-	; Get absolute value of X velocity
-	BPL PRG000_CB30 
-	JSR Negate
-PRG000_CB30:
-
-	LSR A		 ; Divide by 2 
-	PLP		 ; Restore CPU state
-
-	; If needed to negate before, negate again
-	BPL PRG000_CB37 
-	JSR Negate
-PRG000_CB37: 
-	STA <Objects_XVelZ,X	 ; Set as X velocity 
-
-	PLA		 ; Restore Y velocity
- 
-	; Divide by 4
-	LSR A 
-	LSR A 
-	JSR Negate	 ; Negate it 
-	CMP #-$02 
-	BGE PRG000_CB45	 ; If object only lightly moving upward, jump to PRG000_CB45
- 
-	STA <Objects_YVelZ,X	 ; Set object Y velocity
-
-PRG000_CB45: 
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithWorldNoMove
+	
 	LDA <Objects_CollisionDetectionZ,X 
 	AND #$08 
 	BEQ PRG000_CB4F	 ; If object has NOT hit ceiling, jump to PRG000_CB4F
@@ -1354,9 +1349,6 @@ PRG000_CB58:
 	JSR Object_InteractWithPlayer	 ; Bump off and turn away from other objects 
 
 PRG000_CB5E:
-	LDA Objects_ID,X
-	CMP #OBJ_KEY
-	BEQ Object_DrawShelled
 	JSR Object_DeleteOffScreen	 ; Delete object if it goes off-screen 
 
 
@@ -1396,9 +1388,6 @@ PRG000_CB7B:
 
 	LDA Objects_ID,X
 
-	CMP #OBJ_KEY
-	BEQ PRG000_CB86
-
 	CMP #OBJ_BOBOMB
 	BNE PRG000_CB8E		; If this is not a Bob-omb of any sort, jump to PRG000_CB8E
 
@@ -1433,8 +1422,6 @@ PRG000_CB8E:
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
 
 	LDA TempA
-	CMP #OBJ_KEY
-	BEQ PRG000_CBB3
 	CMP #OBJ_STONEBLOCK
 	BEQ PRG000_CBB3
 	CMP #OBJ_ICEBLOCK
@@ -1726,10 +1713,6 @@ PRG000_CCF7:
 
 PRG000_CCF8:
 	JSR ObjectKill_Others
-
-	LDA Objects_ID,X
-	CMP #OBJ_KEY
-	BEQ PRG000_CD47
 	JSR Object_DeleteOffScreen	 ; Delete the kicked shell object if it goes off-screen
 
 PRG000_CD47:
@@ -1940,6 +1923,7 @@ Object_BumpBlocks:
 	; that respond to being hit with head
 	LDA <Temp_Var8
 	STA <Level_Tile_Prop
+
 	JSR Object_BumpOffBlocks
 
 	LDX <CurrentObjectIndexZ	; X = object slot index
@@ -1975,23 +1959,24 @@ ObjState_Held:
 	LDA <Player_IsDying 
 	BEQ PRG000_CE28	 ; If Player is NOT dying, jump to PRG000_CE28
  
-	JMP PRG000_CF98	 ; Jump to PRG000_CF98 (just draw held object) 
+	RTS
 
 PRG000_CE28:
-	LDA Objects_ID, X
-	CMP #OBJ_KEY
-	BNE PRG000_CE29
-	JSR Object_GetAttrAndMoveTiles
-	JSR CheckKeyAgainstLock
-
-PRG000_CE29:
 	JSR Object_ShellDoWakeUp ; Wake up while Player is holding object... 
 
 	BIT <Pad_Holding 
 	BVC Player_KickObject	 ; If Player is NOT holding B button, jump to Player_KickObject  
 
 PRG000_CE2F:
-	JMP PRG000_CEEF	 ; Jump to PRG000_CEEF
+	LDA #$01
+	STA Player_IsHolding
+
+	JSR Object_HeldCollide
+	JSR Object_PositionHeld
+	JSR Object_DrawShelled	 ; Draw shelled object
+
+PRG000_CFA8:
+	RTS	 ; Jump to PRG000_CEEF
 
 
 Player_KickObject:
@@ -1999,65 +1984,54 @@ Player_KickObject:
 	BNE PRG000_CE2F	 ; If Player is moving through pipes, jump to PRG000_CE2F (PRG000_CEEF)
 
 	; Play kick sound
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERKICK
-	STA Sound_QPlayer
 
-	; Have Player do kick frame
-	LDA #$0c
-	STA Player_Kick
 
-	; Set object timer 2 to $10
-	LDA #$10
-	STA Objects_Timer2,X
-
-	LDA Objects_ID,X
-
-	CMP #OBJ_BOBOMB	 
-	BNE PRG000_CE79	 ; If this is NOT a Bob-omb, jump to PRG000_CE79
+	;LDA Objects_ID,X
+	;CMP #OBJ_BOBOMB	 
+	;BNE PRG000_CE79	 ; If this is NOT a Bob-omb, jump to PRG000_CE79
 
 PRG000_CE54:
 
-	; Bob-ombs only...
-
-	; State remains "normal"
-	LDA Objects_LastProp, X
-	CMP #TILE_PROP_SOLID_ALL
-	BCC PRG000_CE55
-	JMP KillShell
+	;; Bob-ombs only...
+	;
+	;; State remains "normal"
+	;LDA Objects_LastProp, X
+	;CMP #TILE_PROP_SOLID_ALL
+	;BCC PRG000_CE55
+	;JMP KillShell
 
 PRG000_CE55:
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State,X
-
-	; Set Y vel to -$20 (bounce up)
-	LDA #-$20
-	STA <Objects_YVelZ,X
-
-	; Set X Velocity appropriately based on kick direction
-	JSR Level_ObjCalcXDiffs
-	LDA BobombKickXVel,Y
-	STA <Objects_XVelZ,X
-
-	EOR <Player_XVel
-	BMI PRG000_CE76	 ; If the Bob-omb's X velocity is the opposite sign of the Player's, jump to PRG000_CE76
-
-	LDA <Player_XVel
-	STA <Temp_Var1		; -> Temp_Var1 (yyyy xxxx)
-	ASL <Temp_Var1		; Shift 1 bit left (bit 7 into carry) (y yyyx xxx0)
-	ROR A			; A is now arithmatically shifted to the right (yyyyy xxx) (signed division by 2)
-	ADD ObjectKickXVelMoving,Y	 ; Add base "moving" X velocity of Bob-omb
-	STA <Objects_XVelZ,X	 ; Set this as Bob-omb's X Velocity
+	;LDA #OBJSTATE_NORMAL
+	;STA Objects_State,X
+	;
+	;; Set Y vel to -$20 (bounce up)
+	;LDA #-$20
+	;STA <Objects_YVelZ,X
+	;
+	;; Set X Velocity appropriately based on kick direction
+	;JSR Level_ObjCalcXDiffs
+	;LDA BobombKickXVel,Y
+	;STA <Objects_XVelZ,X
+	;
+	;EOR <Player_XVel
+	;BMI PRG000_CE76	 ; If the Bob-omb's X velocity is the opposite sign of the Player's, jump to PRG000_CE76
+	;
+	;LDA <Player_XVel
+	;STA <Temp_Var1		; -> Temp_Var1 (yyyy xxxx)
+	;ASL <Temp_Var1		; Shift 1 bit left (bit 7 into carry) (y yyyx xxx0)
+	;ROR A			; A is now arithmatically shifted to the right (yyyyy xxx) (signed division by 2)
+	;ADD ObjectKickXVelMoving,Y	 ; Add base "moving" X velocity of Bob-omb
+	;STA <Objects_XVelZ,X	 ; Set this as Bob-omb's X Velocity
 
 PRG000_CE76:
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ PRG000_CE77
-	LDA #$C0
-	STA <Objects_YVelZ,X
+	;LDA <Pad_Holding
+	;AND #PAD_UP
+	;BEQ PRG000_CE77
+	;LDA #$C0
+	;STA <Objects_YVelZ,X
 
 PRG000_CE77:
-	JMP Object_ShakeAndDraw	 ; Draw Bob-omb and don't come back!
+	;JMP Object_ShakeAndDraw	 ; Draw Bob-omb and don't come back!
 
 PRG000_CE79:
 
@@ -2066,17 +2040,6 @@ PRG000_CE79:
 	; Clear Objects_KillTally 
 	LDA #$00	
 	STA Objects_KillTally,X
-
-	LDA Objects_State,X
-	CMP #OBJSTATE_HELD
-	BNE PRG000_CEB4	 ; If object's state is not Held, jump to PRG000_CEBE
-
-	; This object is being held by Player...
-
-	LDA Objects_ID,X
-	AND #$FE
-	CMP #OBJ_ICEBLOCK
-	BEQ PRG000_CEB4	 ; If this is an ice block, jump to PRG000_CEB4
 
 	LDY #1	 ; Y = 1
 
@@ -2092,12 +2055,8 @@ PRG000_CE94:
 
 	LDA <Objects_CollisionDetectionZ,X
 	AND #$03	
-	BEQ PRG000_CEC6	 ; If object has not hit a wall, jump to PRG000_CEB4
+	BEQ Object_GetKicked	 ; If object has not hit a wall, jump to PRG000_CEB4
 
-	; KICK OBJECT INTO WALL LOGIC
-	LDA Objects_ID, X
-	CMP #OBJ_KEY
-	BEQ PRG000_CEC6
 
 KillShell:
 	; 1 EXP
@@ -2117,44 +2076,64 @@ Dont_Coin_It4:
 	LDA #$00
 	STA <Objects_XVelZ,X
 
-	JMP PRG000_CF98	 ; Jump to PRG000_CF98
+	JSR Object_DrawShelled
+	RTS
 
-PRG000_CEB4:
-PRG000_CEBB:
-PRG000_CEBE:
-PRG000_CEC6:
-	LDA Objects_State, X
-	CMP #OBJSTATE_HELD
-	BNE PRG000_CEC6_3
+Object_GetKicked:
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
+
+	; Have Player do kick frame
+	LDA #$0c
+	STA Player_Kick
+
+	; Set object timer 2 to $10
+	LDA #$10
+	STA Objects_Timer2,X
+
+	LDA #$00
+	STA Player_IsHolding
 
 	LDA <Pad_Holding
 	AND #(PAD_UP)
-	BEQ PRG000_CEC6_3
+	BNE Kick_Up
 
 PRG000_CEC6_2:
-	LDA <Player_XVel
-	BNE PRG000_CED9
-
-PRG000_CEC6_3:
-	JSR Level_ObjCalcXDiffs
-	LDY <Temp_Var16
-	BPL PRG000_CED8
-	LDA #$50
-	BNE PRG000_CED9
+	LDA <Pad_Holding
+	AND #(PAD_DOWN)
+	BNE Kick_Down
+	LDA #$00
+	STA <Objects_YVelZ, X
+	BEQ Kick_Forward
 	
-
-PRG000_CED8:
+Kick_Up:
 	LDA #$B0
+	STA <Objects_YVelZ,X
 
-PRG000_CED9:
-	PHA
-	BPL PRG000_CEDA
+	LDA <Player_XVel
+	BNE Kick_Forward
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+	RTS
+
+Kick_Forward:
+	LDA #OBJSTATE_KICKED
+	STA Objects_State, X
+
+Kick_Down:
+	LDA <Player_XVel
+	BNE Kick_Forward1
+
+	LDA #$50
+
+Kick_Forward1:
+	BPL Kick_Forward2
 	EOR #$FF
-
-PRG000_CEDA:
 	ADD #$01
 
-PRG000_CEDA_2:
+Kick_Forward2:
 	AND #$F0
 	LSR A
 	LSR A
@@ -2162,190 +2141,36 @@ PRG000_CEDA_2:
 	LSR A
 	TAY
 	LDA KickedXVel, Y
-	TAY
-	PLA
-	BPL PRG000_CEDB
-	TYA
+	
+	LDY <Player_XVel
+	BMI Kick_Forward2_1
+	BNE Kick_Forward3
+
+	LDY <Player_FlipBits
+	BEQ Kick_Forward2_1
+
 	EOR #$FF
 	ADD #$01
-	TAY
 
-PRG000_CEDB:
-	TYA
+Kick_Forward2_1:
+	EOR #$FF
+	ADD #$01
+
+Kick_Forward3:
 	STA <Objects_XVelZ,X	 ; Set as object's X velocity
 
-PRG000_CEDC:
-	; If object's state is not Killed, jump to PRG000_CEE8
-	LDA Objects_State,X
-	CMP #OBJSTATE_KILLED
-	BEQ PRG000_CEE8
-
-	LDY #OBJSTATE_KICKED
-	; Set object state to 5 (Kicked)
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ PRG000_CEE9
-
-	LDY #OBJSTATE_SHELLED
-
-PRG000_CEE9:
-	LDA Objects_State, X
-	STA TempA
-	TYA
-	STA Objects_State, X
-	LDA TempA
-	CMP #OBJSTATE_HELD
-	BNE PRG000_CEEE_3
-	
-
-PRG000_CEE8:
-
-	; Set object's Y velocity to zero
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ PRG000_CEEE
-
-	LDA <Player_XVel
-	BNE PRG000_CEED
-
-	LDA #$00
-	STA <Objects_XVelZ, X
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State,X
-
-PRG000_CEED:
-	LDA #$B0
-	
-PRG000_CEEE:
-	STA <Objects_YVelZ,X
-
-PRG000_CEEE_3:
-	LDA Objects_ID,X
-	CMP #OBJ_KEY
-	BNE PRG000_CEEE_2
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State,X
-
-PRG000_CEEE_2:
-	JMP PRG000_CF98	 ; Jump to PRG000_CF98
+	RTS
 
 KickedXVel:
 	.byte $10, $20, $30, $38, $38, $38
 
-PRG000_CEEF:
-
-	; Player moving through pipes... 
-
-	; Player keeps on holding through the pipes!!
-	LDA #$01
-	STA Player_IsHolding
-
-	LDA Level_PipeMove
-	BEQ PRG000_CEFD	 ; If Player is NOT moving through pipes, jump to PRG000_CEFD
-
-	LDY #$0a	 ; Y = 10
-	BNE PRG000_CF1A	 ; Jump (technically always) to PRG000_CF1A
-
-PRG000_CEFD:
-	LDY #$00	 ; Y = 0
-
-	LDA <Player_FlipBits
-	BNE PRG000_CF04	 ; If Player is turned around, jump to PRG000_CF04
-
-	INY		 ; Y = 1
-
-PRG000_CF04:
-	LDA Objects_IsGiant,X
-	BEQ PRG000_CF0E	 ; If object is not giant, jump to PRG000_CF0E
-
-	; Y += 5
-	INY
-	INY
-	INY
-	INY
-	INY
-
-PRG000_CF0E:
-	LDA Player_PipeFace
-	BEQ PRG000_CF1F	 ; If Player is NOT "pipe facing" (facing forward in pipe), jump to PRG000_CF1F
-
-	; Y += 2
-	INY
-	INY
-
-	CMP #$05	
-	BLT PRG000_CF1A	 ; If less than 5 ticks remaining on the "pipe face", jump to PRG000_CF1A
-
-	INY		 ; Otherwise, Y++
-
-PRG000_CF1A:
-
-	; Set object to occupy Sprite_RAM offset $10
-	LDA #$10
-	STA Object_SpriteRAM_Offset,X
-
-PRG000_CF1F:
-
-	; Set held object's proper X position
-	LDA <Player_X	
-	ADD ObjectHoldXOff,Y
-	STA <Objects_XZ,X	
-
-	LDA <Player_XHi	
-	ADC ObjectHoldXHiOff,Y
-	STA <Objects_XHiZ,X	
-
-	LDA #-$02	; A = -$02
-
-	LDY Objects_IsGiant,X
-	BNE PRG000_CF3D	 ; If object is giant, jump to PRG000_CF3D
-
-	LDA #$0d	; A = $0D
-
-	LDY <Player_Suit
-	BNE PRG000_CF3D	 ; If Player is not small, jump to PRG000_CF3D
-
-	LDA #$0f	; Otherwise, A = $0F
-
-PRG000_CF3D:
-	PHA		 ; Save 'A'
-
-	; Set Y offset to object being held
-	ADD <Player_Y
-	STA <Objects_YZ,X
-
-	LDY #$00	 ; Y = 0
-
-	PLA		 ; Restore 'A'
-
-	BPL PRG000_CF49	 ; If A >= 0 (negative when object was giant), jump to PRG000_CF49
-
-	DEY		 ; Y = -1
-
-PRG000_CF49:
-	TYA		 ; A = 0 or -1
-
-	; Apply carry
-	ADC <Player_YHi
-	STA <Objects_YHiZ,X
-
-	; While held, object's velocities match Player's
-	LDA <Player_XVel
-	STA <Objects_XVelZ,X
-	LDA <Player_YVel
-	STA <Objects_YVelZ,X
-
-	JSR Object_WorldDetectN1	; Detect against world
-	JSR Object_CalcSpriteXY_NoHi	; Calculate low parts of sprite X/Y (never off-screen when held by Player!)
-	LDA Objects_ID, X
-	CMP #OBJ_KEY
-	BEQ PRG000_CF98
+Object_HeldCollide:
 	JSR ObjectToObject_HitTest	; Test if this object has collided with another object
-	BCC PRG000_CF98		 ; If this object did not collide with any other objects, jump to PRG000_CF98
+	BCC Object_HeldCollideRTS		 ; If this object did not collide with any other objects, jump to PRG000_CF98
 
 	LDA Objects_Timer2,X
 	ORA Level_PipeMove
-	BNE PRG000_CF98	 	; If timer 2 is not expired or Player is moving through pipes, jump to PRG000_CF98
+	BNE Object_HeldCollideRTS	 	; If timer 2 is not expired or Player is moving through pipes, jump to PRG000_CF98
 
 	; Object colliding sound!
 	LDA Sound_QPlayer
@@ -2387,22 +2212,87 @@ Dont_Coin_It5:
 	LDA ObjectToObject_HitXVel,Y
 	STA <Objects_XVelZ,X
 
+Object_HeldCollideRTS:
+	RTS
+
+Object_PositionHeld:
+	LDA Level_PipeMove
+	BEQ PRG000_CEFD	 ; If Player is NOT moving through pipes, jump to PRG000_CEFD
+
+	LDY #$0a	 ; Y = 10
+	BNE PRG000_CF1A	 ; Jump (technically always) to PRG000_CF1A
+
+PRG000_CEFD:
+	LDY #$00	 ; Y = 0
+
+	LDA <Player_FlipBits
+	BNE PRG000_CF04	 ; If Player is turned around, jump to PRG000_CF04
+
+	INY		 ; Y = 1
+
+PRG000_CF04:
+	LDA Player_PipeFace
+	BEQ PRG000_CF1F	 ; If Player is NOT "pipe facing" (facing forward in pipe), jump to PRG000_CF1F
+
+	; Y += 2
+	INY
+	INY
+
+	CMP #$05	
+	BLT PRG000_CF1A	 ; If less than 5 ticks remaining on the "pipe face", jump to PRG000_CF1A
+
+	INY		 ; Otherwise, Y++
+
+PRG000_CF1A:
+
+	; Set object to occupy Sprite_RAM offset $10
+	LDA #$10
+	STA Object_SpriteRAM_Offset,X
+
+PRG000_CF1F:
+
+	; Set held object's proper X position
+	LDA <Player_X	
+	ADD ObjectHoldXOff,Y
+	STA <Objects_XZ,X	
+
+	LDA <Player_XHi	
+	ADC ObjectHoldXHiOff,Y
+	STA <Objects_XHiZ,X	
+
+	LDA #$0d	; A = $0D
+
+	LDY <Player_Suit
+	BNE PRG000_CF3D	 ; If Player is not small, jump to PRG000_CF3D
+
+	LDA #$0f	; Otherwise, A = $0F
+
+PRG000_CF3D:
+	STA TempA		 ; Save 'A'
+
+	; Set Y offset to object being held
+	ADD <Player_Y
+	STA <Objects_YZ,X
+
+	LDY #$00	 ; Y = 0
+
+	LDA TempA
+
+	BPL PRG000_CF49	 ; If A >= 0 (negative when object was giant), jump to PRG000_CF49
+
+	DEY		 ; Y = -1
+
+PRG000_CF49:
+	TYA		 ; A = 0 or -1
+
+	; Apply carry
+	ADC <Player_YHi
+	STA <Objects_YHiZ,X
+
+;	JSR Object_WorldDetectN1	; Detect against world
+;	JSR Object_CalcSpriteXY_NoHi	; Calculate low parts of sprite X/Y (never off-screen when held by Player!)
+
 PRG000_CF98:
-	LDX <CurrentObjectIndexZ	 ; Restore 'X' to the object slot index
-
-	LDA <Player_IsDying
-	BNE PRG000_CFA5	 ; If Player is dying, jump to PRG000_CFA5
-
-	; Player is NOT dying...
-
-	LDA Sprite_RAM+$28
-	CMP #$f8
-	BEQ PRG000_CFA8	 ; ?? If Sprite_RAM+$28 (10th sprite) Y coordinate = $F8 (unused), jump to PRG000_CFA8 ??
-
-PRG000_CFA5:
-	JSR Object_DrawShelled	 ; Draw shelled object
-
-PRG000_CFA8:
 	RTS		 ; Return
 
 
@@ -2672,8 +2562,6 @@ Object_ShellDoWakeUp:
 
 	; If object is a Bob-omb, jump to PRG000_D0EC, otherwise jump to PRG000_D101
 	LDA Objects_ID,X	  
-	CMP #OBJ_KEY
-	BEQ PRG000_D100 
 	CMP #OBJ_BOBOMB 
 	BNE PRG000_D101
 
@@ -5805,9 +5693,11 @@ PRG000_C6FA:
 TestShellBumpBlocks:
 	LDA <Objects_YVelZ, X
 	BPL NoBumps
+
 	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
 	BCC CheckOtherTile
+
 	JSR Object_BumpBlocks	 ; Boom Boom can hit blocks!
 	LDA Objects_ID, X
 	CMP #OBJ_ICEBLOCK

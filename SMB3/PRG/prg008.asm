@@ -706,6 +706,7 @@ PRG008_A473:
 	JSR SetLastScrollDirection
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
+	JSR Player_HandlePipe
 	;JSR Player_DoSpecialTiles	; Handle unique-to-style tiles!
 	JSR CheckSpinners
 	JSR Player_DoVibration		; Shake the screen when required to do so!
@@ -1031,11 +1032,7 @@ Level_CheckIfTileUnderwater:
 	STY <Temp_Var15	 ; Temp_Var15 = 1 (Indicates underwater)
 
 	; UNDERWATER OVERRIDE (for "floating" levels that have fixed water at the bottom)
-	LDA FloatLevel_PlayerWaterStat
-	AND FloatLevel_StatCheck,X
-	BNE PRG008_A6A8	 ; If bit is set, jump to PRG008_A6A8
 
-	LDA <Temp_Var1,X
 	AND #$F0
 	CMP #$C0
 	BCS PRG008_A6A9	 ; If tile is solid floor, jump to PRG008_A6A9 (RTS)
@@ -1046,19 +1043,6 @@ PRG008_A68D:
 
 	AND #TILE_PROP_WATER
 	BEQ PRG008_A6A6	 ; If the starting underwater tile is greater than the detected tile, jump to PRG008_A6A6
-
-	LDA LeftRightInfection
-	ORA Yolked
-	BEQ PRG008_A6A5
-	LDA #$17
-	STA Player_SuitLost
-	LDA Effective_Suit
-	ADD #$01
-	STA Player_QueueSuit
-	LDA #$00
-	STA LeftRightInfection
-	STA Yolked
-	; Otherwise...
 
 PRG008_A6A5:
 	INY		 ; Y = 1 (Underwater)
@@ -1222,355 +1206,7 @@ PRG008_A7AD:
 
 PRG008_A7AD_2:
 	JSR Player_HandleWater
-	JMP PRG008_A827
-	; This will be used in Level_CheckIfTileUnderwater 
-	; as bits 2-3 of an index into Level_MinTileUWByQuad
-;LDX #$00	; Checks Temp_Var1 for tile and $40 override bit in UNK_584
-;JSR Level_CheckIfTileUnderwater
-
-	; Carry is set by Level_CheckIfTileUnderwater if tile was in the
-	; "solid floor" region regardless of being "underwater"
-	;BCS PRG008_A7BE	 ; If carry set (tile was in solid region), jump to PRG008_A7BE
-
-	; 'Y' is the result of Level_CheckIfTileUnderwater:
-	; 0 = Not under water, 1 = Underwater, 2 = Waterfall
-;	TYA		 
-;	BNE PRG008_A812	 ; If Y <> 0 (somehow under water), jump to PRG008_A812
-;
-;PRG008_A7BE:
-;
-;	; NOT underwater!
-;	LDA Player_InWater
-;	BNE PRG008_A7BF
-;	JMP PRG008_A827	 ; If Player was not previously in water, jump to PRG008_A827
-;
-;PRG008_A7BF:
-;	LDA <Player_InAir
-;	BNE PRG008_A7CB	 ; If Player is mid air, jump to PRG008_A7CB
-;
-;	; Player is NOT flagged as mid air...
-;
-;	BCS PRG008_A827	 ; If tile was in the floor solid region, jump to PRG008_A827
-;	BCC PRG008_A80B	 ; If tile was NOT in the floor solid region, jump to PRG008_A80B
-;
-;PRG008_A7CB:
-;
-;	; Player is known as mid air!
-;
-;	BCS PRG008_A7D1	 ; If tile was in floor solid region, jump to PRG008_A7D1
-;
-;	LDA <Player_YVel
-;	BMI PRG008_A7E2	 ; If Player's Y velocity < 0 (moving upward), jump to PRG008_A7E2
-;
-;PRG008_A7D1:
-;
-;	; Player's Y velocity >= 0...
-;	; OR Player just hit a solid tile with the head
-;
-;	ROR A		 ; The important concept here is to save the previous carry flag
-;	STA <Temp_Var16	 ; Temp_Var16 (most importantly) contains the previous carry flag in bit 7
-;
-;	LDX #$01	 ; Checks Temp_Var2 for tile and $80 override bit in UNK_584
-;	JSR Level_CheckIfTileUnderwater
-;
-;	BCS PRG008_A7DE	 ; If tile was in the floor solid region, jump to PRG008_A7DE
-;
-;	TYA
-;	BEQ PRG008_A80B	 ; If Y = 0 (Not underwater), jump to PRG008_A80B
-;
-;PRG008_A7DE:
-;	LDA <Temp_Var16
-;	BMI PRG008_A812	 ; If we had a floor solid tile in the last check, jump to PRG008_A812
-;
-;	; Did NOT hit a solid floor tile with head last check
-;
-;PRG008_A7E2:
-;	LDY <Player_YVel
-;	CPY #-$0C
-;	BGS PRG008_A7EA	 ; If Player_YVel >= -$0C, jump to PRG008_A7EA
-;
-;	; Prevent Player_YVel from being less than -$0C
-;	LDY #-$0C
-;
-;PRG008_A7EA:
-;	LDA <Counter_1
-;	AND #$07
-;	BNE PRG008_A7F1
-;
-;	INY		 ; 1:8 chance velocity will be dampened just a bit
-;
-;PRG008_A7F1:
-;	STY <Player_YVel ; Update Player_YVel
-;
-;	LDA <Pad_Input
-;	AND #~PAD_A
-;	STA <Pad_Input	 ; Strip out 'A' button press
-;
-;	LDA <Pad_Holding
-;	TAY		 ; Y = Pad_Holding
-;
-;	AND #~PAD_UP
-;	STA <Pad_Holding ; Strip out 'Up'
-;
-;	LDA #$01
-;	STA Top_Of_Water
-;
-;NoAirInc:
-;	TYA		 ; A = original Pad_Holding
-;	AND #(PAD_UP | PAD_A)
-;	CMP #(PAD_UP | PAD_A)
-;	BNE PRG008_A827	 ; If Player is not pressing UP + A, jump to PRG008_A827
-;
-;	; Player wants to exit water!
-;	LDA #-$34
-;	STA <Player_YVel ; Player_YVel = -$34 (exit velocity from water)
-;
-;PRG008_A80B:
-;
-;	; Player NOT marked as "in air" and last checked tile was NOT in the solid region
-;	; OR second check tile was not underwater
-;
-;	LDY #$00	 
-;	STY Player_SwimCnt ; Player_SwimCnt = 0
-;	BEQ PRG008_A819	   ; Jump (technically always) to PRG008_A819
-;
-;PRG008_A812:
-;	LDY <Temp_Var15
-;	CPY Player_InWater
-;	BEQ PRG008_A827	   ; If Player_InWater = Temp_Var15 (underwater flag = underwater status), jump to PRG008_A827
-;
-;PRG008_A819:
-;	; Player's underwater flag doesn't match the water he's in...
-;
-;	TYA
-;	STA Player_InWater	; Merge water flag status
-;	JSR Player_WaterSplash	 ; Hit water; splash!
-;
-PRG008_A827:
-
-	; Player not flagged as "under water"
-	; Player not flagged as "mid air" and last checked tile was in solid region
-
-	LDA <Player_FlipBits
-	AND #%01111111	 
-	STA <Player_FlipBits	 ; Clear vertical flip on sprite
-
-	LDA Level_Tile_Prop_Body	
-	CMP #TILE_ITEM_COIN
-	BCS PRG008_A86C	 ; If tile is DOOR2's tile, jump to PRG008_A83F
-
-	AND #$0F
-	CMP #TILE_PROP_DOOR
-	BNE PRG008_A86C	 ; If tile is not DOOR1, jump to PRG008_A86C
-
-PRG008_A83F:
-
-	; DOOR LOGIC
-	LDA <Pad_Input
-	AND #PAD_UP
-	BEQ PRG008_A86C	 ; If Player is not pressing up in front of a door, jump to PRG008_A86C
-
-	LDA <Player_InAir
-	BNE PRG008_A86C	 ; If Player is mid air, jump to PRG008_A86C
-
-PRG008_A852:
-
-	LDA <Player_X
-	ADD #$08
-	STA <Player_X
-	LDA <Player_XHi
-	ADC #$00
-	STA <Player_XHi
-	LDA <Player_X
-	AND #$F0	 ; Lock to nearest column (place directly in doorway)
-	STA <Player_X	 ; Update Player_X
-	LDA #$00
-	STA <Player_XVel
-	JSR Do_Pointer_Effect
-	INC Level_JctCtl ; Set appropriate value to Level_JctCtl
-	LDA #$00
-	STA Level_PipeMove
-
-PRG008_A86C:
-
-	; VINE CLIMBING LOGIC
-	LDA Player_InWater
-	ORA Player_IsHolding
-	ORA Boo_Mode_Timer
-	ORA Player_FireDash
-	ORA Player_Shell
-	BNE PRG008_A890	 ; If Player is in water, holding something, or in 
-
-	LDA Level_Tile_Prop_Head
-	AND #$0F
-	CMP #TILE_PROP_CLIMBABLE
-	BNE PRG008_A890	 ; If tile is not the vine, jump to PRG008_A890
-
-	LDA Player_IsClimbing
-	BNE PRG008_A898Boost	 ; If climbing flag is set, jump to PRG008_A898
-
-	LDA <Pad_Holding
-	AND #(PAD_UP | PAD_DOWN)
-	BEQ PRG008_A890	 ; If Player is not pressing up or down, jump to PRG008_A890
-
-	LDY <Player_YVel
-	BMI PRG008_A890
-
-	LDY <Player_InAir
-	BNE PRG008_A898	 ; If Player is in the air, jump to PRG008_A898
-
-	AND #%00001000
-PRG008_A898Boost:
-	BNE PRG008_A898	 ; If Player is pressing up, jump to PRG008_A898
-
-PRG008_A890:
-	LDA Level_Tile_Prop_Head
-	CMP #TILE_ITEM_COIN
-	BCS PRG008_A892
-
-	LDA Level_Tile_Prop_Body
-	AND #$0F
-	CMP #TILE_PROP_DEPLETE_AIR
-	BEQ Deplete_Air0
-
-	LDA Level_Tile_Prop_Head
-	AND #$0F
-	CMP #TILE_PROP_DEPLETE_AIR
-	BNE PRG008_A892
-
-Deplete_Air0:
-	LDA #$FF
-	STA Air_Change
-
-PRG008_A892:
-	;LDA #$00
-	;STA Player_IsClimbing	 ; Player_IsClimbing = 0 (Player is not climbing)
-	;
-	;LDA #$18
-	;STA <Temp_Var10
-	;LDA #$08
-	;STA <Temp_Var11		; Temp_Var11 (X offset) = 8
-	;JSR Player_GetTileAndSlope
-	;
-	;STA Level_Tile_Prop_Body
-	AND #$0F
-	CMP #TILE_PROP_TREASURE
-	BNE PRG008_A897
-	LDA <Pad_Input
-	AND #PAD_B
-	BEQ PRG008_A897
-
-	JSR LATP_CoinCommon
-	LDA #$09
-	ADD Coins_Earned_Buffer
-	STA Coins_Earned_Buffer
-	LDA <Level_Tile
-	EOR #$01
-	JSR Level_QueueChangeBlock
-	JSR OpenTreasure
-
-PRG008_A897:
-	JMP PRG008_A8F9	 ; Jump to PRG008_A8F9
-
-PRG008_A898:
-	; #DAHRKDAIZ check for jumping off climbables
-	LDA <Pad_Input
-	AND #PAD_A
-	BEQ DO_CLIMBING
-	LDA #$00
-	STA Player_IsClimbing
-	JSR DIRECT_TO_JUMP
-	RTS
-
-DO_CLIMBING:
-	LDA #$01
-	STA Player_IsClimbing	 ; Player_IsClimbing = 1 (Player is climbing)
-	; Kill Player velocities
-	LDA #$00
-	STA <Player_XVel
-	STA <Player_YVel
-
-	LDY #$10 	; Y = $10 (will be Y velocity down if Player is pressing down)
-
-	LDA <Pad_Holding
-	AND #(PAD_UP | PAD_DOWN)
-	BEQ PRG008_A8CA	 ; If Player is not pressing up or down, jump to PRG008_A8CA
-
-	; Player is pressing UP or DOWN...
-
-	AND #PAD_UP
-	BEQ PRG008_A8C8	 ; If Player is NOT pressing UP, jump to PRG008_A8C8
-
-	; Player is pressing UP...
-
-	LDY #16		; Y = 16
-
-	LDA <Player_Suit
-	BEQ PRG008_A8B7	 ; If Player is small, jump to PRG008_A8B7
-
-	LDY #0	 	; Otherwise, Y = 0
-
-PRG008_A8B7:
-	STY <Temp_Var10	 ; Temp_Var10 = 16 or 0 (if small) (Y Offset for Player_GetTileAndSlope)
-
-	LDA #$08
-	STA <Temp_Var11	 ; Temp_Var11 = 8 (X Offset for Player_GetTileAndSlope)
-
-	JSR Player_GetTileAndSlope	; Get tile
-
-	CMP #TILE_ITEM_COIN
-	BGE PRG008_A8CA
-	AND #$0F
-	CMP #TILE_PROP_CLIMBABLE
-	BNE PRG008_A8CA	 ; If tile is NOT another vine, jump to PRG008_A8CA
-
-	LDY #-$10
-	STY <Player_InAir ; Flag Player as "in air"
-
-PRG008_A8C8:
-	STY <Player_YVel  ; Set Player's Y Velocity
-
-PRG008_A8CA:
-	LDY #$10	 ; Y = $10 (rightward X velocity)
-
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BEQ PRG008_A8DA	 ; If Player is NOT pressing LEFT or RIGHT, jump to PRG008_A8DA
-
-	AND #PAD_LEFT
-	BEQ PRG008_A8D8	 ; If Player is NOT pressing LEFT, jump to PRG008_A8D8
-
-	LDY #-$10	 ; Y = -$10 (leftward X velocity)
-
-PRG008_A8D8:
-	STY <Player_XVel ; Set Player's X Velocity
-
-PRG008_A8DA:
-	LDA Player_IsClimbing
-	BEQ PRG008_A8EC	 ; If Player is NOT climbing, jump to PRG008_A8EC
-
-	; Player is climbing...
-
-	LDA <Player_InAir
-	BNE PRG008_A8EC	 ; If Player is in air, jump to PRG008_A8EC
-
-	LDA <Pad_Holding
-	AND #(PAD_UP | PAD_DOWN)
-	BNE PRG008_A8EC	 ; If Player is pressing UP or DOWN, jump to PRG008_A8EC
-
-	STA Player_IsClimbing	 ; Set climbing flag
-
-PRG008_A8EC:
-
-	; Apply Player's X and Y velocity for the vine climbing
-	JSR Player_ApplyXVelocity
-	JSR Player_ApplyYVelocity
-
-	JSR Player_DoClimbAnim	 ; Animate climbing
-	JSR Player_Draw29	 ; Draw Player
-	RTS		 ; Return
-
-PRG008_A8F9:
+	JSR Player_HandleClimbing
 
 PRG008_A906:
 	JSR Player_ApplyXVelocity	 ; Apply Player's X Velocity
@@ -1978,10 +1614,15 @@ Move_Kuribo:
 ; underwater); configures walking/running
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Table of values that have to do with Player_UphillSpeedIdx override
-Player_UphillSpeedVals:
-	.byte $00, $16, $15, $14, $13, $12, $11, $10, $0F, $0E, $0D
 
 Player_GroundHControl:
+
+	LDA Player_Shell
+	ORA Player_FireDash
+	BEQ Player_GroundHControl1
+	RTS
+
+Player_GroundHControl1:
 	LDY #Pad_Input
 
 	BIT <Pad_Holding
@@ -3665,13 +3306,6 @@ TileAttrAndQuad_OffsFlat_Sm:
 	.byte $1B, $02	; In-front lower
 	.byte $14, $02	; In-front upper
 
-
-PlayerY_HeightOff:	.byte $12, $05	; Left value is Player_Y offset for small/ducking, right for otherwise
-Wall_Clip:	
-	.byte $03, $02
-
-PRG008_B3B0:	.byte $04, $0D
-
 	; If $01, this is treated as a "not floor" tile, which means to watch out
 	; for the Player to hit his head rather than track the sloped floor...
 
@@ -3784,6 +3418,7 @@ Player_DetectSolids:
 	LDA #$00
 	STA Player_HitCeiling ; Clear Player_HitCeiling
 	STA Player_Slippery	 
+	STA TrapSet
 	STA Wall_Jump_Enabled
 
 	LDA Level_PipeMove
@@ -3838,7 +3473,6 @@ PRG008_B4C9:
 	STA <TileXIndex
 
 PRG008_B4CA:
-
 	JSR Player_NextTile	
 	JSR Player_DetectWall
 
@@ -3851,26 +3485,19 @@ Player_DetectSolids5:
 	BPL Player_DetectSolids2	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
 	
 	JSR Player_NextTile	
-	JSR Player_DetectCeiling
-	JSR Player_TopTileInteract
-
 	JSR Player_NextTile	
+
 	JSR Player_DetectCeiling
-	JSR Player_TopTileInteract
 	JMP Player_DetectSolids3
 
 Player_DetectSolids2:
 	JSR Player_NextTile	
-	JSR Player_DetectFloor
-	JSR Player_TopTileInteract
-
 	JSR Player_NextTile	
 	JSR Player_DetectFloor
-	JSR Player_TopTileInteract
 	
 
 Player_DetectSolids3:
-	JSR Player_NextTile	
+	JSR Player_NextTile
 	JSR Player_NextTile	
 	RTS
 
@@ -3879,184 +3506,32 @@ Player_DetectSolids3:
 	; Does not include things like instant-kill lava tiles...
 Player_TileInteractions:
 	AND #$0F
-	BEQ Player_TileInteractions0
+	BEQ Player_TileInteractions3
 
 	LDA <Level_Tile_Prop
 	CMP #TILE_PROP_SOLID_BOTTOM
-	BEQ Player_TileInteractions0
+	BEQ Player_TileInteractions3
 
 	CMP #TILE_PROP_ITEM
-	BCC Player_TileInteractions1
+	BCS Player_TileInteractions3
 
-Player_TileInteractions0:
-	RTS
-
-Player_TileInteractions1:
 	CMP #TILE_PROP_SOLID_TOP
 	BCS Player_TileInteractions2
 
-	JSR Player_Collectibles
-	JSR Player_BgTileInteract
-	RTS
+	LDX <TileXIndex
+	CPX #HEAD_FEET_LEFT_INDEX
+	BCS Player_TileInteractions1
+	JMP Player_BodyHeadTileInteract
+
+Player_TileInteractions1:
+
+	JMP Player_BgTileInteract
 
 Player_TileInteractions2:
 	AND #$0F
-	JSR Player_SolidsInteract
+	JMP Player_SolidTileInteract
 
 Player_TileInteractions3:
-	RTS
-;	CMP #TILE_ITEM_COIN
-;	BCC PRG008_B582
-;	JMP PRG008_B586
-;
-;PRG008_B582:
-;	AND #$F0
-;	CMP #TILE_PROP_SOLID_BOTTOM
-;	BNE PRG008_B582_2
-;	LDA TempA
-;	JMP PRG008_B586
-;
-;PRG008_B582_2:
-;	CMP #TILE_PROP_SOLID_TOP
-;	BCS PRG008_B585
-;	LDA TempA
-;	AND #$0F
-;	CMP #TILE_PROP_COIN
-;	BNE PRG008_B583
-;
-;	LDA Level_ChgTileEvent
-;	BNE PRG008_B583
-;
-;	LDY <Temp_Var12		 
-;	LDA <Level_Tile	; prevent double collecting
-;	EOR #$01
-;	STA [Map_Tile_AddrL],Y	; prevent double collecting
-;	JSR Level_QueueChangeBlock
-;
-;	LDA Sound_QLevel1
-;	ORA #SND_LEVELCOIN
-;	STA Sound_QLevel1
-;
-;	INC Coins_Earned
-;
-;	LDA #$00
-;	LDY TempY
-;	RTS
-;
-;PRG008_B583:
-;	CMP #TILE_PROP_CHERRY
-;	BNE PRG008_B584
-;
-;	LDA Cherries
-;	CMP #99
-;	BCS PRG008_B584
-;
-;	LDA Level_ChgTileEvent
-;	BNE PRG008_B583
-;
-;	LDY <Temp_Var12		 
-;	LDA <Level_Tile	; prevent double collecting
-;	EOR #$01
-;	STA [Map_Tile_AddrL],Y	; prevent double collecting
-;	JSR Level_QueueChangeBlock
-;
-;	LDA Sound_QLevel1
-;	ORA #SND_LEVELBLIP
-;	STA Sound_QLevel1
-;
-;	INC Cherries
-;	LDA #$00
-;	LDY TempY
-;
-;PRG008_B584:
-;	CMP #TILE_PROP_TRAP
-;	BNE NoTrapSet
-;	LDA #$01
-;	BNE SetTrapVal
-;
-;NoTrapSet:
-;	LDA #$00
-;
-;SetTrapVal:
-;	STA TrapSet
-;
-;PRG008_B585_3:
-;
-;	CPX #$02
-;	BCS PRG008_B585_4
-;	LDA <Level_Tile
-;	AND #$3F
-;	BNE PRG008_B585_4
-;	LDA <Player_YVel
-;	BMI PRG008_B585_4
-;	LDA #$D0
-;	STA <Player_YVel
-;	STA <Player_InAir
-;	LDA #$00
-;	STA TempA
-;
-;PRG008_B585_4:
-;	LDA TempA
-;	RTS
-;
-;PRG008_B585:
-;	LDA TempA
-;	AND #$0F
-;	CPX  #$02
-;	BCS PRG008_B585_2
-;	CMP #TILE_PROP_PSWITCH
-;	BCC PRG008_B585_3
-;	PHA
-;
-;	LDY <Temp_Var12		 
-;	LDA <Level_Tile
-;	EOR #$01
-;	STA [Map_Tile_AddrL],Y	
-;	JSR Level_QueueChangeBlock
-;	LDA #$10
-;	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
-;
-;	; Wham! sound effect
-;	LDA Sound_QLevel1
-;	ORA #SND_LEVELBABOOM
-;	STA Sound_QLevel1
-;
-;	PLA
-;	CMP #TILE_PROP_PSWITCH
-;	BNE PRG008_B585_2_2
-;	LDA #$80	 
-;	STA Level_PSwitchCnt	 ; Level_PSwitchCnt = $80 (duration of switch)
-;
-;	; Play P-Switch song
-;	LDA #MUS2B_PSWITCH
-;	STA Sound_QMusic2
-;
-;PRG008_B585_2:
-;	LDA TempA
-;	RTS
-;
-;PRG008_B585_2_2:
-;	LDA #$01
-;	STA EventSwitch
-;	LDA #$00
-;	STA EventVar
-;	RTS
-
-PRG008_B586:
-	CPX #$02
-	BCC NoFireFoxBusts
-	LDY Player_FireDash
-	BNE DoSpinnerBusts
-
-NoFireFoxBusts:
-	LDY <Player_YVel
-	BPL PRG008_B588
-	CPX  #$01
-	BCS PRG008_B588
-	JSR Level_DoBumpBlocks	 ; Handle any bumpable blocks (e.g. ? blocks, note blocks, etc.)
-
-PRG008_B588:
-	LDA TempA
 	RTS
 
 DoSpinnerBusts:
@@ -4352,14 +3827,14 @@ DoSpinner:
 	RTS
 
 LATP_Brick:
-	LDA <Level_Tile
-	PHA
-	JSR LATP_GetCoinAboveBlock	; Get coin above block, if any
-	PLA
-	STA <Level_Tile
+	;LDA <Level_Tile
+	;Player_ShellPHA
+	;JSR LATP_GetCoinAboveBlock	; Get coin above block, if any
+	;PLA
+	;STA <Level_Tile
 
-	CPX #$04
-	BEQ PRG008_B84E	 ; If on tile check index 4 (tail attack's tile), jump to PRG008_B84E (bust brick!)
+	LDA Player_TailAttack
+	BNE PRG008_B84E
 
 	LDA <Player_Suit
 	BNE PRG008_B84E	 ; If Player is not small, jump to PRG008_B84E (bust brick!)
@@ -4639,17 +4114,6 @@ Player_Shell_HitBlocks:
 	LDY #$02	 ; Y = 2 (Player flipped)
 
 PRG008_B95F:
-	LDA Player_Shell		; in shell mode, we flip the flip bits so we break bricks
-	BEQ Normal_Tail_Flip			; while moving forward
-	LDA Player_Shell_FlipFlip, Y
-	TAY
-	LDA Player_ShellAttack_Offsets,Y
-	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
-	LDA Player_ShellAttack_Offsets+1,Y
-	STA <Temp_Var11	 ; Temp_Var11 (X offset)
-	JMP Do_Tile_Attack
-
-Normal_Tail_Flip:
 	LDA Player_TailAttack_Offsets,Y
 	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
 	LDA Player_TailAttack_Offsets+1,Y
@@ -4712,163 +4176,9 @@ PRG008_B994:
 ; Good place to put custom-by-Tileset tiles!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-PRG008_BC43:
-	.byte $08, $04, $04	; Offset applied to Player_X when: in air or level is sloped, Player is NOT small, Player is small
-
-Pipe_PadDirForEnter:	
-	.byte PAD_RIGHT, PAD_LEFT	; What to press to enter a horizontal pipe; pad right and left, respectively
-	.byte PAD_DOWN, PAD_UP		; What to press to enter a vertical pipe; pad down and up, respectively
 
 Player_DoSpecialTiles:
 	RTS
-	LDA Player_Shell
-	ORA Player_TailAttack
-	ORA Player_Flip	 
-	BNE PRG008_BCA7	 ; If Player is a Tanooki Statue, tail attacking, or invincibility flipping, jump to PRG008_BCA7
-	; Copy in the mask of allowable pipe tiles -> Temp_Var16
-	
-	LDA <Player_InAir
-	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
-
-	LDA Level_Tile_Prop_Wall_Upper	 ; Get tile near head...
-	CMP #TILE_PROP_SOLID_TOP
-	BGE PRG008_BC79
-	JMP PRG008_BCAA
-
-PRG008_BC79:
-	AND #$0F
-	CMP #TILE_PROP_HPIPE_BOTTOM
-	BEQ PRG008_BC7A
-	JMP PRG008_BCAA
-
-PRG008_BC7A:
-	LDX #$00
-	LDA <Player_X
-	AND #$0f	
-	CMP #$08	
-	BLS PRG008_BC92	 ; If Player is on left half of tile, jump to PRG008_BC92
- 
-	INX		 ; X = 1
-
-PRG008_BC92:
-	LDA <Pad_Holding
-	AND Pipe_PadDirForEnter,X
-	BEQ PRG008_BCAA	 ; If Player is NOT pressing correct direction to enter pipe, jump to PRG008_BCAA
-
-	; Correct direction to enter pipe...
-
-	TYA
-	BNE PRG008_BCA4	 ; If pipe type (Y) is not 0, jump to PRG008_BCA4
-
-	LDY #$01	 ; Y = 1 
-
-	LDA LevelVertJct	
-	BEQ PRG008_BCA4	 ; If not currently junctioning, jump to PRG008_BCA4
-
-	DEY		 ; Y = 0 
-
-PRG008_BCA4:
-	JSR PipeEntryPrepare	 ; Prepare pipe entry
-
-PRG008_BCA7:
-	JMP PRG008_BD4B	 ; Jump to PRG008_BD4B
-
-PRG008_BCAA:
-	LDX #$02	 ; X = 2
-	LDA Level_Tile_Prop_Floor_Ceiling_Left	 
-
-	LDY <Player_InAir
-	BEQ PRG008_BCC4	 ; If Player is NOT mid air, jump to PRG008_BCC4
-
-	LDY Player_HitCeiling
-	BEQ PRG008_BCA7	 ; If Player has not just hit off a ceiling, jump to PRG008_BCA7
-
-	LDY Player_IsDucking
-	BEQ PRG008_BCC0	 ; If Player is NOT ducking, jump to PRG008_BCC0
-
-	JMP PRG008_BD4B	 ; Otherwise, jump to PRG008_BD4B
-
-PRG008_BCC0:
-	INX		 ; X = 3
-
-	LDA Level_Tile_Prop_Floor_Ceiling_Right
-
-PRG008_BCC4:
-	STX <Temp_Var3		 ; Store pipe mode -> Temp_Var3
-	CMP #TILE_ITEM_COIN
-	BGE PRG008_BD4B
-	AND #$0F
-	STA <Temp_Var1
-	LDA #TILE_PROP_VPIPE_RIGHT
-	SEC
-	SBC <Temp_Var1
-	CMP #$02
-	BGE PRG008_BD4B
-
-PRG008_BCD6:
-	TAY		 ; Tile index result -> 'A'
-	STY <Temp_Var1	 ; Store pipe type -> Temp_Var1
-
-	AND #$01	 ; Determine left vs right tile (odd/bit 0 indicates right tile)
-	ASL A
-	ASL A
-	ASL A
-	ASL A		 ; Multiply 0/1 by 16
-	STA <Temp_Var2	 ; Temp_Var2 = 0 or 16
-
-	LDA <Pad_Holding
-	AND Pipe_PadDirForEnter,X
-	BEQ PRG008_BD4B	 ; If Player is NOT pressing the correct direction to enter pipe, jump to PRG008_BD4B
-
-	LDA Level_PipeMove
-	BNE PRG008_BD4B	 ; If Player is already in pipe, jump to PRG008_BD4B
-
-	LDY #$00	 ; Y = 0 (Player is mid-air or level is sloped)
-
-	LDA <Player_InAir
-	BNE PRG008_BD1F	 ; If Player is mid air or this is a sloping level, jump to PRG008_BD1F
-
-	INY		 ; Y = 1 (Player is NOT small)
-	LDA <Player_Suit
-	BNE PRG008_BD1F	 ; If Player is NOT small, jump to PRG008_BD1F
-
-	INY		 ; Y = 2 (Player is small)
-
-PRG008_BD1F:
-	LDA <Player_X	
-	AND #$0f	
-	PHA		 ; Save Player's relative X across tile
-
-	ADD PRG008_BC43,Y ; Add appropriate offset
-	AND #$10	 ; Check if on "odd" tile (only true on Player_X 16, 48, 80, etc.) AKA right tile
-	BNE PRG008_BD30	 ; If so, jump to PRG008_BD30
-
-	PLA		 ; Restore Player's relative X across tile
-	ORA #$F0	 ; Make negative, sort of
-	PHA		 ; Save it again
-
-PRG008_BD30:
-	PLA		 ; Restore Player's relative X across tile
-	ADD <Temp_Var2	 ; 0 or 16, left or right tile
-	SUB #3	 
-	CMP #10
-	BGE PRG008_BD4B	 ; If Player_X >= 10 after subtracting 3 (??), jump to PRG008_BD4B
-
-	LDA <Temp_Var1	 ; Get pipe type
-	LSR A		 
-	TAY		 
-	JSR PipeEntryPrepare	 ; Prepare entry into pipe!
-	JSR PipeMove_SetPlayerFrame	 ; Update Player frame!
-	JSR Player_Draw29	 ; Draw Player
-
-	; Do not return to caller!!
-	PLA		 
-	PLA
-
-	RTS		 ; Return
-
-PRG008_BD4B:
-	LDX #$05	 ; X = 1 (check one tile by foot, then check the other!)	
 
 PRG008_BD59:
 	;STX <Temp_Var2
@@ -4894,55 +4204,55 @@ PushFull:
 	;JMP PRG008_BE2E		; Jump to PRG008_BD73
 
 PRG008_BD73:
-	LDA <Temp_Var1
-	CMP #TILE_ITEM_COIN
-	BCS PRG008_BDB1
-	AND #$0F
-	CMP #TILE_PROP_HARMFUL
-	BNE PRG008_BDB1	
- 
-PRG008_BDA4:
-	LDA <Temp_Var3
-	CMP #TILE_PROP_SOLID_TOP
-	BCC PRG008_BDAF
-
-PRG008_BDAE:
-	JMP Player_GetHurt	 ; Get hurt!
-
-PRG008_BDAF:
-	AND #TILE_PROP_WATER
-	BEQ PRG008_BDAE
-	;LDA Player_InWater
-	;BEQ PRG008_BDB1
-	LDA Effective_Suit
-	CMP #$08
-	BNE PRG008_BDAE
-
-PRG008_BDB1:
-	; SLIPPERY, ICY GROUND LOGIC
-	LDA Wall_Jump_Enabled
-	BNE PRG008_BDB2
-	LDA <Player_InAir
-	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
-
-PRG008_BDB2:
-	;LDA <Temp_Var3
-	;CMP #TILE_PROP_SOLID_TOP
-	;BCC PRG008_BE2E
-	;AND #$0F
-	;CMP #TILE_PROP_SLICK
-	;BNE PRG008_BE2E
-	;
-	;LDA #$02	 
-	;STA Player_Slippery	 ; Player_Slippery = 2 (ground is REALLY slippery!)
-
-PRG008_BE2E:
-	LDX <Temp_Var2
-	DEX		 ; X--
-	BPL PRG008_BD59	 ; While X >= 0, loop!
-
-PRG008_BE2F:
-	RTS		 ; Return
+;	LDA <Temp_Var1
+;	CMP #TILE_ITEM_COIN
+;	BCS PRG008_BDB1
+;	AND #$0F
+;	CMP #TILE_PROP_HARMFUL
+;	BNE PRG008_BDB1	
+; 
+;PRG008_BDA4:
+;	LDA <Temp_Var3
+;	CMP #TILE_PROP_SOLID_TOP
+;	BCC PRG008_BDAF
+;
+;PRG008_BDAE:
+;	JMP Player_GetHurt	 ; Get hurt!
+;
+;PRG008_BDAF:
+;	AND #TILE_PROP_WATER
+;	BEQ PRG008_BDAE
+;	;LDA Player_InWater
+;	;BEQ PRG008_BDB1
+;	LDA Effective_Suit
+;	CMP #$08
+;	BNE PRG008_BDAE
+;
+;PRG008_BDB1:
+;	; SLIPPERY, ICY GROUND LOGIC
+;	LDA Wall_Jump_Enabled
+;	BNE PRG008_BDB2
+;	LDA <Player_InAir
+;	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
+;
+;PRG008_BDB2:
+;	;LDA <Temp_Var3
+;	;CMP #TILE_PROP_SOLID_TOP
+;	;BCC PRG008_BE2E
+;	;AND #$0F
+;	;CMP #TILE_PROP_SLICK
+;	;BNE PRG008_BE2E
+;	;
+;	;LDA #$02	 
+;	;STA Player_Slippery	 ; Player_Slippery = 2 (ground is REALLY slippery!)
+;
+;PRG008_BE2E:
+;	LDX <Temp_Var2
+;	DEX		 ; X--
+;	BPL PRG008_BD59	 ; While X >= 0, loop!
+;
+;PRG008_BE2F:
+;	RTS		 ; Return
 
 TileGround:	 .byte $00, $00, $10, $F0
 TileWaterX:	 .byte $00, $00, $20, $E0
@@ -4952,6 +4262,8 @@ TileAirX:	 .byte $00, $00, $18, $D8
 TileAirY:	 .byte $18, $D8, $00, $00
 
 ApplyTileMove:
+	LDA <Level_Tile_Prop
+	AND #$0F
 	STA <Temp_Var1
 	LDA #TILE_PROP_MOVE_DOWN
 	SUB <Temp_Var1
@@ -5429,42 +4741,6 @@ Do_PUp_Proper:
 PUp_RTS:
 	RTS
 
-Shell_Bounce:
-	LDA Level_Tile_Prop_Floor_Ceiling_Left, X
-	CMP #TILE_ITEM_BRICK
-	BEQ Shell_Bounce0
-
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERBUMP
-	STA Sound_QPlayer
-	LDA Player_FlipBits			; flip direction the player is facing
-	EOR #$40				
-	STA Player_FlipBits				
-	LDA <Player_XVel
-	EOR #$FF
-	ADC #$01
-	STA <Player_XVel
-	JSR Player_ApplyXVelocity
-	BPL Shell_Bounce1
-	LDA <Player_X
-	AND #$F0
-	STA <Player_X
-
-Shell_Bounce0:
-	RTS
-
-Shell_Bounce1:
-	LDA <Player_X
-	ADD #$08
-	AND #$F0
-	STA <Player_X
-	LDA <Player_XHi
-	ADC #$00
-	STA <Player_XHi
-
-Shell_BounceRTS:
-	RTS
-
 VScreenTransitions:
 	LDA Level_FreeVertScroll
 	CMP #$03
@@ -5756,31 +5032,62 @@ Debug_Code1:
 Debug_CodeRTS:
 	RTS
 
-
-OpenTreasure:
-	JSR LATP_CoinCommon
-	LDA #$09
-	ADD Coins_Earned_Buffer
-	STA Coins_Earned_Buffer
-	LDA <Level_Tile
-	EOR #$01
-	JSR Level_QueueChangeBlock
-
-OpenTreasure1:
-	RTS
-
 Player_DetectWall:
 	LDA Player_ForcedSlide
-	BEQ Player_DetectWall1
+	BNE Player_DetectWallRTS
 
-Player_DetectWall0:
-	RTS
-
-Player_DetectWall1:
 	LDA <Level_Tile_Prop
 	CMP #TILE_PROP_SOLID_ALL
-	BCC Player_DetectWall0
+	BCC Player_DetectWallRTS
 
+
+Player_DetectWall1:
+	LDA Player_Shell
+	BEQ Player_DetectWall2
+
+	LDA Sound_QPlayer 
+	ORA #SND_PLAYERBUMP 
+	STA Sound_QPlayer
+
+	LDA <Level_Tile_Prop
+	CMP #TILE_PROP_ITEM
+	BCC Player_DetectWall1_1
+
+	JSR Level_DoBumpBlocks
+
+Player_DetectWall1_1:
+	LDA <Level_Tile_Prop
+	CMP #TILE_ITEM_BRICK
+	BEQ Player_DetectWall1_2
+
+	LDA <Player_XVel
+	EOR #$FF
+	ADD #$01
+	STA <Player_XVel
+	JSR Player_ApplyXVelocity
+
+Player_DetectWall1_2:
+	RTS
+
+Player_DetectWall2:
+	LDA Player_FireDash
+	BEQ Player_DetectWall4
+
+	LDA <Level_Tile_Prop
+	CMP #TILE_PROP_ITEM
+	BCC Player_DetectWall3
+
+	JSR Level_DoBumpBlocks
+
+	LDA <Level_Tile_Prop
+	CMP #TILE_ITEM_BRICK
+	BEQ Player_DetectWallRTS
+
+Player_DetectWall3:
+	JSR Player_KillDash
+	RTS
+
+Player_DetectWall4:
 	LDY <TileYIndexBase
 	LDA #$10
 	SUB TileAttrAndQuad_OffsFlat + 1, Y
@@ -5795,22 +5102,10 @@ Player_DetectWall1:
 	LDA Player_FireDash
 	BEQ Wall_NoDash
 
-	JSR Player_KillDash
-
 Wall_NoDash:
 	JSR Player_CheckWallJump
 
-Player_DetectWall3:
-	LDA Player_Shell
-	BEQ Player_DetectWall4
-
-	JSR Player_Shell_HitBlocks
-	LDA <Player_XVel
-	EOR #$FF
-	ADD #$01
-	STA <Player_XVel
-
-Player_DetectWall4:
+Player_DetectWallRTS:
 	RTS
 
 WallClingXVel: .byte $00, $01, $FF
@@ -5948,12 +5243,12 @@ No_Wall_Jump:
 ;PRG008_B53B:
 ;	RTS
 
-PRG008_B53C:
-	LDA TempA
-	STA <Player_X
-	LDA TempY
-	STA <Player_XHi
-	RTS
+;PRG008_B53C:
+;	LDA TempA
+;	STA <Player_X
+;	LDA TempY
+;	STA <Player_XHi
+;	RTS
 
 HandleIceBreak:
 	LDY Player_InWater
@@ -6190,51 +5485,78 @@ Player_SuitChange9:
 	RTS
 
 Player_DetectCeiling:
-	LDA <Level_Tile_Prop
+	LDA Level_Tile_Prop_Floor_Ceiling_Left
 	CMP #TILE_PROP_SOLID_BOTTOM
-	BCC Player_DetectCeiling3
+	BCS Player_DetectCeiling1
+
+	LDA Level_Tile_Prop_Floor_Ceiling_Right
+	CMP #TILE_PROP_SOLID_BOTTOM
+	BCC Player_SuitChange9
 
 Player_DetectCeiling1:
+	LDY <TileYIndexBase
+	LDA #$20
+
+	LDX <Player_Suit
+	BEQ Player_DetectCeiling1_1
+
+	LDX Player_IsDucking
+	BNE Player_DetectCeiling1_1
+
+	LDA #$10
+
+Player_DetectCeiling1_1:
+	SUB TileAttrAndQuad_OffsFlat - 4, Y
+	STA TempA
+
+	LDA <Player_Y
+	AND #$F0
+	ADD TempA
+	STA <Player_Y
+
+	LDA <Player_YHi
+	ADC #$00
+	STA <Player_YHi
+
 	LDA #$01
-	STA <Player_InAir
 	STA <Player_YVel
 	STA Player_HitCeiling
 
-	LDA Player_Y
-	AND #$F0
-
-	LDY Player_Suit
-	BEQ Player_DetectCeiling2
-
-	LDX Player_IsDucking
-	BNE Player_DetectCeiling2
-
-	ORA #$08
-	STA <Player_Y
-
-	LDA <Level_Tile_Prop
+	LDA Level_Tile_Prop_Floor_Ceiling_Left
+	STA <Level_Tile_Prop
 	AND #$F0
 	CMP #TILE_PROP_SOLID_BOTTOM
 	BEQ Player_HitBlocks
 
 	CMP #TILE_PROP_ITEM
-	BCC Player_DetectCeiling3
+	BEQ Player_HitBlocks
+
+	LDA Level_Tile_Prop_Floor_Ceiling_Right
+	STA <Level_Tile_Prop
+	AND #$F0
+	CMP #TILE_PROP_SOLID_BOTTOM
+	BEQ Player_HitBlocks
+
+	CMP #TILE_PROP_ITEM
+	BNE Player_DetectCeiling2
 
 Player_HitBlocks:
 	JSR Level_DoBumpBlocks
 	RTS		 ; Return
 
 Player_DetectCeiling2:
-	AND #$F0
-	ORA #$0F
-	STA <Player_Y
-	RTS
-
-Player_DetectCeiling3:
 	RTS
 
 Player_DetectFloor:
-	LDA <Level_Tile_Prop
+	LDA Level_Tile_Prop_Floor_Ceiling_Right
+	AND #$F0
+	CMP #TILE_PROP_SOLID_TOP
+	BEQ Player_DetectFloor1
+
+	CMP #TILE_PROP_SOLID_ALL
+	BCS Player_DetectFloor1
+
+	LDA Level_Tile_Prop_Floor_Ceiling_Left
 	AND #$F0
 	CMP #TILE_PROP_SOLID_TOP
 	BEQ Player_DetectFloor1
@@ -6307,23 +5629,80 @@ Player_DetermineAir:
 	CMP #$04
 	BEQ Player_AirChanges1
 
+Player_AirChanges0:
 	LDA #$FF
 	STA Air_Change
-
-Player_AirChanges1:
 	RTS
 
-Player_Collectibles:
-	LDA Level_ChgTileEvent
-	BNE Player_Collectibles_RTS
+Player_AirChanges1:
+	LDA Level_Tile_Prop_Head
+	CMP #TILE_PROP_DEPLETE_AIR
+	BEQ Player_AirChanges0
 
-	CMP #TILE_PROP_ITEM
-	BCS Player_Collectibles_RTS
+	CMP #(TILE_PROP_DEPLETE_AIR | TILE_PROP_FOREGROUND)
+	BEQ Player_AirChanges0
 
+Player_AirChanges2:
+	RTS
+
+Player_ToggleBlock:
+	LDY <Temp_Var12		 
+	LDA <Level_Tile	; prevent double collecting
+	EOR #$01
+	STA [Map_Tile_AddrL],Y	; prevent double collecting
+	
+	JSR Level_QueueChangeBlock
+	RTS
+
+Tile_NoInteract:
+	RTS
+
+Player_BgTileInteract:
 	LDA <Level_Tile_Prop
 	AND #$0F
-	CMP #TILE_PROP_COIN
-	BNE Player_Collectibles1
+
+	JSR DynJump
+
+	.word Tile_NoInteract	;
+	.word Bg_HurtPlayer		; TILE_PROP_HARMFUL		= $01 ;
+	.word Tile_NoInteract	; TILE_PROP_DEPLETE_AIR	= $02 ;
+	.word Tile_NoInteract	; TILE_PROP_MOVE_LEFT		= $03 ;
+	.word Tile_NoInteract	; TILE_PROP_MOVE_RIGHT	= $04 ;
+	.word Tile_NoInteract	; TILE_PROP_MOVE_UP		= $05 ;
+	.word Tile_NoInteract	; TILE_PROP_MOVE_DOWN		= $06 ;
+	.word Tile_NoInteract	; TILE_PROP_TREASURE		= $07 ;
+	.word Tile_NoInteract	; TILE_PROP_LOCK			= $08 ;
+	.word Tile_NoInteract	; TILE_PROP_ENEMY			= $09; 
+	.word Bg_ActivateTrap	; TILE_PROP_TRAP			= $0A ;
+	.word Tile_NoInteract	; TILE_PROP_CLIMBABLE		= $0B ;
+	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
+	.word Tile_NoInteract	; TILE_PROP_DOOR			= $0D ;
+	.word Bg_Cherry			; TILE_PROP_CHERRY		= $0E ;
+	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+
+Bg_HurtPlayer:
+	LDA <Level_Tile_Prop
+	CMP #TILE_PROP_WATER
+	BCC Bg_HurtPlayer1
+
+	LDA Effective_Suit
+	CMP #$08
+	BEQ Bg_HurtPlayer2
+
+Bg_HurtPlayer1:
+	JMP Player_GetHurt
+
+Bg_HurtPlayer2:
+	RTS
+
+Bg_ActivateTrap:
+	LDA #$01
+	STA TrapSet
+	RTS
+
+Bg_Coin:
+	LDA Level_ChgTileEvent
+	BNE Bg_CoinRTS
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
@@ -6334,13 +5713,17 @@ Player_Collectibles:
 	STA <Level_Tile_Prop
 	JMP Player_ToggleBlock
 
-Player_Collectibles1:
-	CMP #TILE_PROP_CHERRY
-	BNE Player_Collectibles_RTS
+Bg_CoinRTS:
+	RTS
+
+Bg_Cherry:
+
+	LDA Level_ChgTileEvent
+	BNE Bg_CherryRTS
 
 	LDA Cherries
 	CMP #99
-	BCS Player_Collectibles_RTS
+	BCS Bg_CherryRTS
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
@@ -6351,14 +5734,129 @@ Player_Collectibles1:
 	STA <Level_Tile_Prop
 	JMP Player_ToggleBlock
 
-Player_Collectibles_RTS:
+Bg_CherryRTS:
 	RTS
 
-Player_TopTileInteract:
+
+Player_BodyHeadTileInteract:
+
 	LDA <Level_Tile_Prop
 	AND #$0F
-	CMP #TILE_PROP_PSWITCH
-	BNE Player_TopTileInteract1
+
+	JSR DynJump
+
+	.word Tile_NoInteract	;
+	.word Tile_NoInteract		; TILE_PROP_HARMFUL		= $01 ;
+	.word Tile_NoInteract	; TILE_PROP_DEPLETE_AIR		= $02 ;
+	.word ApplyTileMove		; TILE_PROP_MOVE_LEFT		= $03 ;
+	.word ApplyTileMove		; TILE_PROP_MOVE_RIGHT		= $04 ;
+	.word ApplyTileMove		; TILE_PROP_MOVE_UP			= $05 ;
+	.word ApplyTileMove		; TILE_PROP_MOVE_DOWN		= $06 ;
+	.word Body_Treasure		; TILE_PROP_TREASURE		= $07 ;
+	.word Tile_NoInteract	; TILE_PROP_LOCK			= $08 ;
+	.word Tile_NoInteract	; TILE_PROP_ENEMY			= $09; 
+	.word Tile_NoInteract	; TILE_PROP_TRAP			= $0A ;
+	.word BodyHead_Climb	; TILE_PROP_CLIMBABLE		= $0B ;
+	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
+	.word Body_Head	; TILE_PROP_DOOR					= $0D ;
+	.word Bg_Cherry			; TILE_PROP_CHERRY			= $0E ;
+	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+
+Body_Treasure:
+	LDX <TileXIndex
+	CPX #BODY_INDEX
+	BNE Body_TreasureRTS
+
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Body_TreasureRTS
+
+	LDA Level_ChgTileEvent
+	BNE Body_TreasureRTS
+
+	JSR LATP_CoinCommon
+	LDA #$09
+	ADD Coins_Earned_Buffer
+	STA Coins_Earned_Buffer
+	JMP Player_ToggleBlock
+
+Body_TreasureRTS:
+	RTS
+
+BodyHead_Climb:
+	RTS
+
+Body_Head:
+	RTS
+
+Player_SolidTileInteract:
+	LDA <Level_Tile_Prop
+	AND #$0F
+
+	JSR DynJump
+
+	.word Tile_NoInteract	;
+	.word Player_GetHurt	; TILE_PROP_HARMFUL		= $01
+	.word Solid_Slick		; TILE_PROP_SLICK		= $02
+	.word ApplyTileMove		; TILE_PROP_MOVE_LEFT	= $03
+	.word ApplyTileMove		; TILE_PROP_MOVE_RIGHT	= $04
+	.word ApplyTileMove		; TILE_PROP_MOVE_UP		= $05
+	.word ApplyTileMove		; TILE_PROP_MOVE_DOWN	= $06
+	.word Tile_NoInteract	; TILE_PROP_UNSTABLE	= $07
+	.word Tile_NoInteract	; TILE_PROP_VPIPE_LEFT	= $08
+	.word Tile_NoInteract	; TILE_PROP_VPIPE_RIGHT	= $09
+	.word Tile_NoInteract	; TILE_PROP_HPIPE_BOTTOM= $0A
+	.word Tile_NoInteract	; TILE_PROP_CLIMBABLE	= $0B
+	.word Tile_NoInteract	; TILE_PROP_ENEMYSOLID	= $0C
+	.word Tile_NoInteract	; TILE_PROP_STONE		= $0D
+	.word Solid_PSwitch		; TILE_PROP_PSWITCH		= $0E
+	.word Solid_ESwitch		; TILE_PROP_ESWITCH		= $0F
+
+
+Solid_Slick:
+	LDA <Player_YVel
+	BNE Solid_Slick1
+
+	LDA #$02
+	STA Player_Slippery
+	RTS
+
+Solid_Slick1:
+	BPL Solid_SlickRTS
+
+	LDA Player_InWater
+	BEQ Solid_SlickRTS
+
+	LDX <TileXIndex
+	CPX #HEAD_WALL_INDEX
+	BCS Solid_SlickRTS
+
+	LDA Level_ChgTileEvent
+	BNE Solid_SlickRTS
+
+	JSR LATP_BustIce
+	LDA #$59
+	STA BrickBust_Tile
+	LDA #SPR_PAL1
+	STA BrickBust_Pal
+	LDA Level_Tile
+	EOR #$01
+	JSR Level_QueueChangeBlock
+
+Solid_SlickRTS:
+	RTS
+
+Solid_PSwitch:
+	LDA <TileXIndex
+	CMP #HEAD_FEET_LEFT_INDEX
+	BEQ Solid_PSwitch1
+
+	CMP HEAD_FEET_RIGHT_INDEX
+	BNE Solid_PSwitchRTS
+
+Solid_PSwitch1:
+	LDA Level_ChgTileEvent
+	BNE Solid_PSwitchRTS
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
@@ -6374,77 +5872,33 @@ Player_TopTileInteract:
 	STA Sound_QMusic2
 
 	JMP Player_ToggleBlock
+
+Solid_PSwitchRTS:
+	RTS
+
+Solid_ESwitch:
+	LDA <TileXIndex
+	CMP #HEAD_FEET_LEFT_INDEX
+	BEQ Solid_ESwitch1
+
+	CMP HEAD_FEET_RIGHT_INDEX
+	BNE Solid_ESwitchRTS
+
+Solid_ESwitch1:
+	LDA Level_ChgTileEvent
+	BNE Solid_ESwitchRTS
+
+	INC EventSwitch
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
 	
-Player_TopTileInteract1:
-	CMP #TILE_PROP_SLICK
-	BNE Player_TopTileInteract2
+	LDA #$08
+	STA Level_Vibration
 
-	LDA #$02
-	STA Player_Slippery
-
-Player_TopTileInteract2:
+Solid_ESwitchRTS:
 	RTS
 
-Player_ToggleBlock:
-	LDY <Temp_Var12		 
-	LDA <Level_Tile	; prevent double collecting
-	EOR #$01
-	STA [Map_Tile_AddrL],Y	; prevent double collecting
-	
-	JSR Level_QueueChangeBlock
-	RTS
-
-Player_BgTileInteract:
-	LDA <Level_Tile_Prop
-	AND #$0F
-	CMP #TILE_PROP_HARMFUL
-	BNE Player_BgTileInteract1
-
-	LDA <Level_Tile_Prop
-	CMP #TILE_PROP_WATER
-	BCC Player_BgTileInteract1
-
-	LDA Effective_Suit
-	CMP #$08
-	BEQ Player_BgTileInteract1
-
-	JMP Player_GetHurt
-
-Player_BgTileInteract1:
-	CMP #TILE_PROP_MOVE_LEFT
-	BCC Player_BgTileInteract2
-
-	CMP #(TILE_PROP_MOVE_DOWN + 1)
-	BCS Player_BgTileInteract2
-
-	JMP ApplyTileMove
-
-Player_BgTileInteract2:
-	RTS
-
-Player_SolidsInteract:
-	LDA <Level_Tile_Prop
-	AND #$0F
-	CMP #TILE_PROP_HARMFUL
-	BNE Player_SolidsInteract1
-
-	LDA Player_Equip
-	CMP #BADGE_BOOTS
-	BEQ Player_BgTileInteract3
-
-	JMP Player_GetHurt
-
-Player_SolidsInteract1:
-	CMP #TILE_PROP_MOVE_LEFT
-	BCC Player_BgTileInteract3
-
-	CMP #(TILE_PROP_MOVE_DOWN + 1)
-	BCS Player_BgTileInteract3
-
-	JMP ApplyTileMove
-
-Player_BgTileInteract3:
-	RTS
 
 Player_NextTile:
 	LDY <TileYIndex
@@ -6574,81 +6028,369 @@ Player_KillDash_NoFX:
 	RTS
 
 Player_HandleWater:
-	LDA Top_Of_Water
-	STA <Temp_Var15
-	BEQ Player_HandleWater0
 	
-	STA Debug_Snap
-
-Player_HandleWater0:
-
-	LDA #$00
-	STA TempA
-
 	LDA Level_Tile_Prop_Head
-	AND #$F0
-	CMP #TILE_PROP_WATER
-	BEQ Player_HeadInWater
+	JSR Level_CheckIfTileUnderwater
 
-	CMP #(TILE_PROP_WATER | TILE_PROP_FOREGROUND)
-	BNE Player_HandleWater1
+	BCS Player_HandleWater1
 
-Player_HeadInWater:
-	INC TempA
+	TYA		 
+	BNE Player_HandleWater10	
 
 Player_HandleWater1:
-	LDA TempA
-	CMP Player_InWater
-	BEQ Player_HandleWater2
 
-	STA Player_InWater
-	JSR Player_WaterSplash
+	LDA Player_InWater
+	BNE Player_HandleWater2
+	JMP Player_HandleWater12	
 
 Player_HandleWater2:
-	LDA Player_InWater
-	BEQ Player_WaterRTS
+	LDA <Player_InAir
+	BNE Player_HandleWater3	 
+
+	BCS Player_HandleWater12	 
+	BCC Player_HandleWater9	 
 
 Player_HandleWater3:
+	BCS Player_HandleWater4	
+
 	LDA <Player_YVel
-	BPL Player_WaterRTS
+	BMI Player_HandleWater6	
+
+Player_HandleWater4:
+
+	ROR A		
+	STA <Temp_Var16	
 
 	LDA Level_Tile_Prop_Floor_Ceiling_Left
-	CMP #TILE_PROP_WATER
-	BCS Player_WaterRTS
+	JSR Level_CheckIfTileUnderwater
+
+	BCS Player_HandleWater5
+
+	TYA
+	BEQ Player_HandleWater9
+
+Player_HandleWater5:
+	LDA <Temp_Var16
+	BMI Player_HandleWater10	
+
+Player_HandleWater6:
+	LDY <Player_YVel
+	CPY #-$0C
+	BGS Player_HandleWater7	 
+
+	LDY #-$0C
+
+Player_HandleWater7:
+	LDA <Counter_1
+	AND #$07
+	BNE Player_HandleWater8
+
+	INY		 
+
+Player_HandleWater8:
+	STY <Player_YVel 
+
+	LDA <Pad_Input
+	AND #~PAD_A
+	STA <Pad_Input	 
+
+	LDA <Pad_Holding
+	TAY		 
+
+	AND #~PAD_UP
+	STA <Pad_Holding 
 
 	LDA #$01
 	STA Top_Of_Water
 
-	LDY <Player_YVel
-	BPL Player_WaterSink1
+	TYA		 
+	AND #(PAD_UP | PAD_A)
+	CMP #(PAD_UP | PAD_A)
+	BNE Player_HandleWater12	 
 
-	CPY #$F4
-	BCS Player_NotTopWater
+	; Player wants to exit water!
+	LDA #-$34
+	STA <Player_YVel 
 
-	LDY #$F4
+Player_HandleWater9:
+	LDY #$00	 
+	STY Player_SwimCnt
+	BEQ Player_HandleWater11	 
 
-Player_NotTopWater:
-	LDA <Counter_1
-	AND #$07
-	BNE Player_WaterSink
+Player_HandleWater10:
+	LDY <Temp_Var15
+	CPY Player_InWater
+	BEQ Player_HandleWater12	 
 
-	INY		 
+Player_HandleWater11:
+	TYA
+	STA Player_InWater	
+	JSR Player_WaterSplash	
 
-Player_WaterSink:
-	STY <Player_YVel 
+Player_HandleWater12:
+	LDA Player_InWater
+	BEQ Player_HandleWaterRTS
 
-Player_WaterSink1:
-	LDA <Pad_Input
-	STA Debug_Snap - 1 
-	AND #~PAD_A
-	STA <Pad_Input	 ; Strip out 'A' button press
+	LDA LeftRightInfection
+	ORA Yolked
+	BEQ Player_HandleWaterRTS
+
+	LDA #$17
+	STA Player_SuitLost
+
+	LDA Effective_Suit
+	ADD #$01
+	STA Player_QueueSuit
+
+	LDA #$00
+	STA LeftRightInfection
+	STA Yolked
+
+Player_HandleWaterRTS:
+	RTS
+
+Pipe_PadDirForEnter:	
+	.byte PAD_RIGHT, PAD_LEFT	; What to press to enter a horizontal pipe; pad right and left, respectively
+	.byte PAD_DOWN, PAD_UP		; What to press to enter a vertical pipe; pad down and up, respectively
+
+PRG008_BC43:
+	.byte $08, $04, $04	; Offset applied to Player_X when: in air or level is sloped, Player is NOT small, Player is small
+
+Player_HandlePipe:
+	LDA <Player_InAir
+	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
+
+	LDA Level_Tile_Prop_Wall_Upper	 ; Get tile near head...
+	CMP #TILE_PROP_SOLID_TOP
+	BGE PRG008_BC79
+	JMP PRG008_BCAA
+
+PRG008_BC79:
+	AND #$0F
+	CMP #TILE_PROP_HPIPE_BOTTOM
+	BEQ PRG008_BC7A
+	JMP PRG008_BCAA
+
+PRG008_BC7A:
+	LDX #$00
+	LDA <Player_X
+	AND #$0f	
+	CMP #$08	
+	BLS PRG008_BC92	 ; If Player is on left half of tile, jump to PRG008_BC92
+ 
+	INX		 ; X = 1
+
+PRG008_BC92:
+	LDA <Pad_Holding
+	AND Pipe_PadDirForEnter,X
+	BEQ PRG008_BCAA	 ; If Player is NOT pressing correct direction to enter pipe, jump to PRG008_BCAA
+
+	; Correct direction to enter pipe...
+
+	TYA
+	BNE PRG008_BCA4	 ; If pipe type (Y) is not 0, jump to PRG008_BCA4
+
+	LDY #$01	 ; Y = 1 
+
+	LDA LevelVertJct	
+	BEQ PRG008_BCA4	 ; If not currently junctioning, jump to PRG008_BCA4
+
+	DEY		 ; Y = 0 
+
+PRG008_BCA4:
+	JSR PipeEntryPrepare	 ; Prepare pipe entry
+
+PRG008_BCA7:
+	RTS
+
+PRG008_BCAA:
+
+	LDX #$02	 ; X = 2
+	LDA Level_Tile_Prop_Floor_Ceiling_Left	 
+
+	LDY <Player_InAir
+	BEQ PRG008_BCC4	 ; If Player is NOT mid air, jump to PRG008_BCC4
+
+	LDY Player_HitCeiling
+	BEQ Player_HandlePipeRTS	 ; If Player has not just hit off a ceiling, jump to PRG008_BCA7
+
+	LDY Player_IsDucking
+	BNE Player_HandlePipeRTS	 ; If Player is NOT ducking, jump to PRG008_BCC0
+
+PRG008_BCC0:
+	INX		 ; X = 3
+
+	LDA Level_Tile_Prop_Floor_Ceiling_Right
+
+PRG008_BCC4:
+	STX <Temp_Var3		 ; Store pipe mode -> Temp_Var3
+	CMP #TILE_ITEM_COIN
+	BGE Player_HandlePipeRTS
+	AND #$0F
+	STA <Temp_Var1
+	LDA #TILE_PROP_VPIPE_RIGHT
+	SEC
+	SBC <Temp_Var1
+	CMP #$02
+	BGE Player_HandlePipeRTS
+
+PRG008_BCD6:
+	TAY		 ; Tile index result -> 'A'
+	STY <Temp_Var1	 ; Store pipe type -> Temp_Var1
+
+	AND #$01	 ; Determine left vs right tile (odd/bit 0 indicates right tile)
+	ASL A
+	ASL A
+	ASL A
+	ASL A		 ; Multiply 0/1 by 16
+	STA <Temp_Var2	 ; Temp_Var2 = 0 or 16
 
 	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ Player_WaterRTS
+	AND Pipe_PadDirForEnter,X
+	BEQ Player_HandlePipeRTS	 ; If Player is NOT pressing the correct direction to enter pipe, jump to PRG008_BD4B
 
-	LDA #-$34
-	STA <Player_YVel ; Player_YVel = -$34 (exit velocity from water)
+	LDA Level_PipeMove
+	BNE Player_HandlePipeRTS	 ; If Player is already in pipe, jump to PRG008_BD4B
 
-Player_WaterRTS:
+	LDY #$00	 ; Y = 0 (Player is mid-air or level is sloped)
+
+	LDA <Player_InAir
+	BNE PRG008_BD1F	 ; If Player is mid air or this is a sloping level, jump to PRG008_BD1F
+
+	INY		 ; Y = 1 (Player is NOT small)
+	LDA <Player_Suit
+	BNE PRG008_BD1F	 ; If Player is NOT small, jump to PRG008_BD1F
+
+	INY		 ; Y = 2 (Player is small)
+
+PRG008_BD1F:
+	LDA <Player_X	
+	AND #$0f	
+	PHA		 ; Save Player's relative X across tile
+
+	ADD PRG008_BC43,Y ; Add appropriate offset
+	AND #$10	 ; Check if on "odd" tile (only true on Player_X 16, 48, 80, etc.) AKA right tile
+	BNE PRG008_BD30	 ; If so, jump to PRG008_BD30
+
+	PLA		 ; Restore Player's relative X across tile
+	ORA #$F0	 ; Make negative, sort of
+	PHA		 ; Save it again
+
+PRG008_BD30:
+	PLA		 ; Restore Player's relative X across tile
+	ADD <Temp_Var2	 ; 0 or 16, left or right tile
+	SUB #3	 
+	CMP #10
+	BGE Player_HandlePipeRTS	 ; If Player_X >= 10 after subtracting 3 (??), jump to PRG008_BD4B
+
+	LDA <Temp_Var1	 ; Get pipe type
+	LSR A		 
+	TAY		 
+	JSR PipeEntryPrepare	 ; Prepare entry into pipe!
+	JSR PipeMove_SetPlayerFrame	 ; Update Player frame!
+	JSR Player_Draw29	 ; Draw Player
+
+	; Do not return to caller!!
+	PLA		 
+	PLA
+Player_HandlePipeRTS:
+	RTS		 ; Return
+
+Climbing_XVel: .byte $00, $10, $F0, $00
+Climbing_YVel: .byte $00, $10, $F0, $00
+
+Player_HandleClimbing:
+	LDA Player_InWater
+	ORA Player_IsHolding
+	ORA Player_FireDash
+	ORA Player_Shell
+	BEQ Player_HandleClimbing1
+
+Player_NotClimbing:
+	LDA #$00
+	STA Player_IsClimbing
+	RTS
+
+Player_HandleClimbing1:
+	LDA Level_Tile_Prop_Head
+	AND #$0F
+	CMP #TILE_PROP_CLIMBABLE
+	BNE Player_NotClimbing
+
+Player_HandleClimbing2:
+	LDA Player_IsClimbing
+	BNE Player_DoClimbing
+
+	LDA <Pad_Holding
+	AND #(PAD_UP | PAD_DOWN)
+	BEQ Player_NotClimbing
+
+Player_DoClimbing:
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ Player_DoClimbing1
+
+	LDA #$00
+	STA Player_IsClimbing
+	JMP DIRECT_TO_JUMP
+
+Player_DoClimbing1:
+	LDA #$01
+	STA Player_IsClimbing
+
+	LDA #$00
+	STA <Player_XVel
+	STA <Player_YVel
+
+Player_DoClimbing2:
+	LDA <Pad_Holding
+	AND #$0C
+	LSR A
+	LSR A
+	TAX
+
+	LDA Climbing_YVel, X
+	STA <Player_YVel
+
+	LDA <Pad_Holding
+	AND #$03
+	TAX
+
+	LDA Climbing_XVel, X
+	STA <Player_XVel
+
+	LDA <Player_YVel
+	BPL Player_DoClimbing2_0
+
+	LDA #$08
+	STA <Temp_Var11
+
+	LDA #$04
+	LDX <Player_Suit
+	BNE Player_DoClimbing1_1
+
+	LDA #$10
+
+Player_DoClimbing1_1:
+	STA <Temp_Var10
+
+	JSR Player_GetTileAndSlope
+	CMP #TILE_PROP_CLIMBABLE
+	BEQ Player_DoClimbing2_0
+
+	JSR Player_ApplyXVelocity
+	JMP Player_DoClimbing2_1
+
+Player_DoClimbing2_0:
+
+	JSR Player_ApplyXVelocity
+	JSR Player_ApplyYVelocity
+
+Player_DoClimbing2_1:
+	JSR Player_DoClimbAnim	 ; Animate climbing
+	JSR Player_Draw29	 ; Draw Player
+	PLA
+	PLA
+
+Player_DoClimbingRTS:
 	RTS

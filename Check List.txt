@@ -1,0 +1,49 @@
+Solid Wall From Left
+Solid Wall From Right
+Solid Wall From Ceiling
+Solid Wall From Ground
+Wall in head forces slide
+Wall in body kills player
+
+Water swim
+Water jump
+
+Air
+---------------
+Harmful
+Deplete Air
+Current Left
+Current Right
+Current Up
+Current Down
+Treasure
+Locked Door
+Trap Activate
+Climbable
+Coin
+Cherry
+
+Water
+---------------
+Current Left
+Current Right
+Current Up
+Current Down
+
+Solid
+---------------
+Harmful
+Slick
+Conveyor Left
+Conveyor Right
+Conveyor Up
+Conveyor Down
+Unstable (Unused)
+Vertical Pipe (Left)
+Vertical Pipe (Right)
+Horizontal Pipe
+Climbable (unused)
+Enemy Interaction
+Stone
+PSwitch
+ESwitch

@@ -127,7 +127,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjHit_DoNothing	; Object $0F
 	.word Player_GetHurt	; Object $10 OBJ_PIXIE
-	.word ObjHit_DoNothing	; Object $11
+	.word Key_Hold	; Object $11
 	.word ObjHit_DoNothing	; Object $12
 	.word ObjHit_DoNothing	; Object $13
 	.word ObjHit_DoNothing	; Object $14 OBJ_GIANTCHOMP
@@ -419,7 +419,8 @@ ObjP10:
 	.byte $91, $93, $95, $97, $99, $9B, $95, $97
 
 ObjP11:
-	.byte $69, $7D, $69, $7D, $69, $7D
+	.byte $69, $7D
+
 ObjP12:
 	.byte $D7, $D7, $ED, $ED, $FF, $FF
 ObjP13:
@@ -550,15 +551,124 @@ SpringAnimRTS:
 
 	
 ObjInit_Key:
-	; key is "shelled" so that it may be carried
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State,X
-	LDA #$E0
-	STA <Objects_YVelZ, X
 	RTS
 
 ObjNorm_Key:
-	; key code is handled by the ObjectHeld code in prg000.asm, should probably change that
+	LDA <Player_HaltGameZ
+	BNE ObjNorm_KeyDraw
+
+	JSR Object_InteractWithPlayer
+
+	LDA Objects_Data1, X
+	BNE ObjNorm_Key1
+
+	JSR Object_Move	 ; Move, detect, interact with blocks of world
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithWorldNoMove
+
+ObjNorm_Key1:
+	JSR CheckKeyAgainstLock
+	
+ObjNorm_KeyDraw:
+	JSR Object_ShakeAndDraw
+	RTS
+
+Key_Hold:
+	LDA Objects_Timer2, X
+	BNE Key_HoldRTS
+
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Key_Kick
+
+	LDA #$01
+	STA Player_IsHolding
+	STA Objects_Data1, X
+
+	LDA Player_FlipBits
+	STA Objects_Orientation,X
+	LDA Player_XVel, X
+	STA Objects_XVelZ, X
+
+	LDA Player_YVel, X
+	STA Objects_YVelZ, X
+
+	JSR Object_PositionHeld
+
+Key_HoldRTS:
+	RTS
+
+Key_Kick:
+	LDA #$00
+	STA Objects_Data1, X
+	STA Player_IsHolding
+	JSR Object_GetKicked
+	
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JSR Object_WorldDetect4
+
+	LDA <Objects_CollisionDetectionZ,X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BNE Key_ReverseXVel
+
+	STA Debug_Snap
+	LDA Objects_LastProp, X
+	AND #$F0
+	CMP #TILE_PROP_SOLID_ALL
+	BEQ Key_ReverseXVel
+
+	CMP #TILE_PROP_ITEM
+	BNE Key_KickNotWall
+
+Key_ReverseXVel:
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+Key_KickNotWall:
+	LDA <Objects_CollisionDetectionZ,X
+	AND #HIT_GROUND
+	BEQ Key_KickRTS
+
+	LDA #$F0
+	STA <Objects_YVelZ, X
+
+Key_KickRTS:
+	RTS
+
+CheckKeyAgainstLock:
+	
+	LDA Objects_LastProp,X
+	CMP #TILE_PROP_SOLID_TOP
+	BCS RemainLocked
+
+	AND #$0F
+	CMP #TILE_PROP_LOCK
+	BNE RemainLocked
+
+	LDA Level_ChgTileEvent
+	BNE RemainLocked
+
+	LDA Objects_LastTile, X
+	EOR #$01
+	STA Level_ChgTileValue
+	INC Level_ChgTileEvent
+	
+	JSR SetObjectTileCoordAlignObj
+
+	LDA #OBJSTATE_POOFDEATH
+	LDX <CurrentObjectIndexZ
+	STA Objects_State, X
+
+	LDA #$20
+	STA Objects_Timer,X
+	PLA
+	PLA
+
+RemainLocked:
 	RTS
 
 ObjInit_NegaStar:
@@ -4037,37 +4147,6 @@ SetKeyField:
 	LDA Objects_YHiZ, X
 	STA Objects_YHiZ, Y
 	JMP Object_SetDeadEmpty
-
-CheckKeyAgainstLock:
-	LDA Objects_LastProp,X
-	CMP #TILE_PROP_SOLID_TOP
-	BCS RemainLocked
-
-	AND #$0F
-	CMP #TILE_PROP_LOCK
-	BNE RemainLocked
-
-	LDA Level_ChgTileEvent
-	BNE RemainLocked
-
-	LDA Objects_LastTile, X
-	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
-	
-	JSR SetObjectTileCoordAlignObj
-
-	LDA #OBJSTATE_POOFDEATH
-	LDX <CurrentObjectIndexZ
-	STA Objects_State, X
-
-	LDA #$20
-	STA Objects_Timer,X
-	PLA
-	PLA
-
-RemainLocked:
-	RTS
 
 ObjInit_SpikeBall:
 	
