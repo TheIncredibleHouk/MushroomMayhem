@@ -3834,6 +3834,7 @@ LATP_Brick:
 	;STA <Level_Tile
 
 	LDA Player_TailAttack
+	ORA Object_BlockAttack
 	BNE PRG008_B84E
 
 	LDA <Player_Suit
@@ -3882,6 +3883,8 @@ PRG008_B84E:
 	STY <Temp_Var12		 ; Temp_Var12 = CHNGTILE_DELETETOBG
 
 	LDY #$80	 	; Y = $80
+	LDA #$00
+	STA Object_BlockAttack
 	RTS		 ; Return
 
 LATP_Vine:
@@ -4128,42 +4131,6 @@ Do_Tile_Attack:
 	JSR Level_DoBumpBlocks	 ; Handle blocks that can be "bumped"
 
 PRG008_B979:
-	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_BumpOffBlocks
-;
-; Handle a kicked shelled object bouncing off blocks.  Modifies
-; Level_Tile_Whack as part of the logic (i.e. like the Player
-; tail-attacked whatever block got hit) 
-; A = input detected tile by kicked shelled object
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Object_BumpOffBlocks:
-	CMP #TILE_ITEM_COIN
-	BCC PRG008_B994
-	STA TempA
- 
-	LDA Player_Bounce 
-	BNE PRG008_B994	 ; If Player is bouncing, jump to PRG008_B9D3 
- 
-	TXA
-	PHA
-	LDA TempA
-	LDX #$04
-	JSR Level_DoBumpBlocks	 ; Have kicked object hit bumpable blocks
-	PLA
-	TAX
-
-	LDA Player_Bounce 
-	BEQ PRG008_B994	 ; If block is NOT a bouncing type, jump to PRG008_B994  
-
-	; Set bounce direction and flag that it was an object that bounced
-	LDA #$01 
-	STA Player_BounceDir 
-	STA Player_BounceObj 
-
-PRG008_B994:
 	RTS		 ; Return
 
 

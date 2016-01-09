@@ -1403,7 +1403,7 @@ CollosalCheep:
 	LDA <Player_HaltGameZ
 	BNE DrawGiantCheep
 	JSR DrawGiantCheep
-	LDA Objects_Data2, X
+	LDA Objects_Data5, X
 	CMP #$03
 	BCS CCNoMove
 	JSR Object_ApplyXVel
@@ -1425,7 +1425,7 @@ CollosalCheepDoAction:
 
 CollosalCheepDoAction1:
 
-	LDA Objects_Data1, X
+	LDA Objects_Data4, X
 	JSR DynJump
 
 	.word CCSwim
@@ -1492,7 +1492,7 @@ CCSwimY:
 CCSwim2:
 	JSR CCSwim
 	LDA #$06
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	LDA #$68
 	STA Objects_SlowTimer, X
 	LDA RandomN + 3
@@ -1500,10 +1500,10 @@ CCSwim2:
 	TAY
 	LDA CCSwimY, Y
 	STA Objects_YZ, X
-	DEC Objects_Data4Z, X
+	DEC <Objects_Data1, X
 	BNE CCSwim2_2
 	LDA #$07
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 
 CCSwim2_2:	
 	JSR FindEmptyEnemySlot
@@ -1512,13 +1512,13 @@ CCSwim2_2:
 	LDA #$00
 	STA Objects_XHiZ, X
 	STA Objects_YHiZ, X
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	LDA #$90
 	STA Objects_YZ, X
 	LDA #OBJ_BUBBLE
 	STA Objects_ID, X
 	LDA #$00
-	STA Objects_Data4Z, X
+	STA <Objects_Data1, X
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 	LDA #$F8
@@ -1530,10 +1530,10 @@ CCSwim:
 	CMP #OBJSTATE_KILLED
 	BNE CCSwim1
 	LDA #$03
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
-	INC Objects_Data2, X
+	INC Objects_Data5, X
 	LDA #$20
 	STA Objects_SlowTimer, X
 	LDX #$03
@@ -1569,7 +1569,7 @@ CCSwim1:
 	LDA CCTimers, Y
 	STA Objects_SlowTimer, X
 	TYA
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	LDA #$00
 	STA Objects_Data3, X
 	RTS
@@ -1578,21 +1578,21 @@ CCJump:
 	LDA #$B0
 	STA <Objects_YVelZ, X
 	LDA #$02
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	RTS
 
 CCBounce:
-	LDA Objects_Data2, X
+	LDA Objects_Data5, X
 	CMP #$02
 	BNE CCBounce1
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE CCBounce1
 	LDA #$0A
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	LDA #$40
 	STA Objects_SlowTimer, X
-	INC Objects_Data2, X
+	INC Objects_Data5, X
 	LDX #$03
 	JSR KeepDestroying
 	RTS
@@ -1604,7 +1604,7 @@ CCBounce1:
 	LDA #$10
 	STA Objects_SlowTimer, X
 	LDA #$00
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	RTS
 
 CCObjects:
@@ -1639,7 +1639,7 @@ CCBounce2:
 	BNE CCBounceRTS
 	INC Objects_Data3, X
 
-	LDA Objects_Data2, X
+	LDA Objects_Data5, X
 	STA <Temp_Var3
 
 CCAnother_Object:
@@ -1688,30 +1688,30 @@ CCDrain1:
 CCFlood1:
 	LDA #$00
 	STA <Temp_Var1
-	INC Objects_Data1, X
+	INC Objects_Data4, X
 	JMP CCFlood
 
 CCDrain2:
 CCFlood2:
 	LDA #$03
 	STA <Temp_Var1
-	INC Objects_Data1, X
+	INC Objects_Data4, X
 	JMP CCFlood
 
 CCFlood3:
 	LDA #$06
 	STA <Temp_Var1
 	LDA #$06
-	STA Objects_Data1, X
-	LDA Objects_Data2, X
-	STA Objects_Data4Z, X
+	STA Objects_Data4, X
+	LDA Objects_Data5, X
+	STA <Objects_Data1, X
 	JMP CCFlood
 
 CCDrain3:
 	LDA #$06
 	STA <Temp_Var1
 	LDA #$00
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	JMP CCFlood
 
 CCFlood:
@@ -1734,7 +1734,7 @@ CreateFlood:
 	LDA #$00
 	STA <Objects_YHiZ, X 
 	STA Objects_Orientation, X
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 	STA Objects_Frame, X
 	LDA #$FF
 	STA <Objects_XHiZ, X
@@ -1776,7 +1776,7 @@ CCExplode:
 	STA Objects_SlowTimer, X
 	LDA #$02
 	STA Objects_XHiZ, X
-	INC Objects_Data1, X
+	INC Objects_Data4, X
 	RTS
 
 CCEnd:

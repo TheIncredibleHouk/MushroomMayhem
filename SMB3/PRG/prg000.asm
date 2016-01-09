@@ -480,7 +480,7 @@ Object_HitCeiling0:
 	RTS
 	; The only difference amongst the Object_WorldDetect[x] entries
 	; are the input value, which specifies the limit that an object
-	; should acknowledge a floor tile.  E.g., Object_WorldDetect4
+	; should acknowledge a floor tile.  E.g., Object_DetectTiles
 	; means the object will not detect a floor if it is more than
 	; 4 pixels vertically down in to it.  "N1" (Negative one) is
 	; thus basically to never use that limit because the object
@@ -497,7 +497,7 @@ Object_WorldDetect8:
 	BNE PRG000_C54C	; Jump (technically always) to PRG000_C54C
 
 ; $C54A
-Object_WorldDetect4:
+Object_DetectTiles:
 	LDA #$04	; Use A = 4
 
 PRG000_C54C:
@@ -929,20 +929,17 @@ PRG000_C93B:
 	CMP #$03
 	BNE PRG000_C948	 ; If Player is NOT dying due to TIME UP, jump to PRG000_C948
 
-	; Otherwise...
-;	LDA PatTable_BankSel+2
-;	CMP #$52
-;	BNE PRG000_C948	 ; If third pattern table bank has not been set to $52, jump to PRG000_C948
-;	RTS		 ; Return
 
 PRG000_C948:
-	LDA Player_IsHolding
-	STA Player_ISHolding_OLD ; Player_ISHolding_OLD = Player_ISHolding
+	
+	LDA <Pad_Holding
+	AND #PAD_B
+	BNE PRG000_C949
 
 	LDA #$00
-	STA Player_IsHolding	 ; Clear Player_IsHolding
-	STA ArrowPlat_IsActive 	; Clear ArrowPlat_IsActive
+	STA Player_IsHolding
 
+PRG000_C949:
 	LDA #$ff
 	STA LRBounce_Y	 ; LRBounce_Y = $FF 
 
@@ -1321,35 +1318,18 @@ ObjState_Shelled:
 	LDA <Player_HaltGameZ	 
 	BNE Object_DrawShelled	 ; If gameplay is halted, jump to PRG000_CB5B
 	
-	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
-	JSR Object_Move	 ; Move, detect, interact with blocks of world
-	JSR TestShellBumpBlocks
+	JSR Object_DeleteOffScreen
+	JSR Object_Move	 
 	JSR Object_DampenVelocity
-	JSR Object_InteractWithWorldNoMove
+	JSR Object_InteractWithTiles
+	JSR Object_InteractWithOtherObjects
+	JSR Object_TestTopBumpBlocks
 	
-	LDA <Objects_CollisionDetectionZ,X 
-	AND #$08 
-	BEQ PRG000_CB4F	 ; If object has NOT hit ceiling, jump to PRG000_CB4F
- 
-	; Set object Y velocity to $10 (rebound off ceiling)
-	LDA #$10 
-	STA <Objects_YVelZ,X 
-
-PRG000_CB4F:
-	LDA <Objects_XVelZ, X
-	BEQ PRG000_CB58
-	LDA <Objects_CollisionDetectionZ,X 
-	AND #$03 
-	BEQ PRG000_CB58	 ; If object has NOT hit wall, jump to PRG000_CB58 
- 
-	JSR Object_Reverse	 ; Turn around... 
-
-PRG000_CB58:
 	JSR Object_HandleBumpUnderneath	 ; Handle object getting hit from underside 
-	JSR Object_InteractWithPlayer	 ; Bump off and turn away from other objects 
+	JSR Object_AttackOrDefeat	 ; Bump off and turn away from other objects 
+	JSR Object_ShellDoWakeUp	 
 
-PRG000_CB5E:
-	JSR Object_DeleteOffScreen	 ; Delete object if it goes off-screen 
+	JMP Object_DrawShelled
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1358,16 +1338,6 @@ PRG000_CB5E:
 ; Draw object in "shelled" state
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $CB61
-Object_DrawShelled:
-	; Set object frame to 2
-	LDA #$02	 
-	STA Objects_Frame,X
-
-	LDA Objects_IsGiant,X
-	BEQ PRG000_CB7B	 ; If object is NOT giant, jump to PRG000_CB7B
-
-	; Call special "giant" object draw routine (giant objects assume a JMP instruction @ ObjectGroup_PatternSets)
-	JSR ObjectGroup_PatternSets
 
 Object_SetShakeAwakeTimer:
 
@@ -1383,16 +1353,13 @@ Object_SetShakeAwakeTimer:
 PRG000_CB7A:
 	RTS		 ; Return
 
-
-PRG000_CB7B:
-
 	LDA Objects_ID,X
 
 	CMP #OBJ_BOBOMB
-	BNE PRG000_CB8E		; If this is not a Bob-omb of any sort, jump to PRG000_CB8E
+	;BNE PRG000_CB8E		; If this is not a Bob-omb of any sort, jump to PRG000_CB8E
 
 	JSR Object_ShakeAndDraw
-	LDA Objects_Data5Z, X
+	LDA Objects_Data2, X
 	CMP #$03
 	BNE BobOmbDrawShelled2
 	LDY Object_SpriteRAM_Offset, X
@@ -1417,34 +1384,14 @@ PRG000_CB86:
 	; Have object flip same way as Player
 	JMP Object_ShakeAndDraw	 ; Draw object and never come back!
 
-PRG000_CB8E:
-	STA TempA
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-
-	LDA TempA
-	CMP #OBJ_STONEBLOCK
-	BEQ PRG000_CBB3
-	CMP #OBJ_ICEBLOCK
-	BEQ PRG000_CBB3_2	 ; If object is an Iceblock, jump to PRG000_CBB3 (RTS)
-
+Object_DrawShelled:
+	; Set object frame to 2
+	LDA #$02	 
+	STA Objects_Frame,X
+	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprit
 	JSR Object_SetShakeAwakeTimer	 ; Set the "shake awake" timers
-
-	LDA TempA
-
-	CMP #OBJ_BUZZYBEATLE
-	BNE PRG000_CBB4	 ; If object is NOT a Buzzy Beatle, jump to PRG000_CBB4
-
-	; Buzzy Beatle
-	LDY Objects_Orientation,X
-	BMI PRG000_CBB3	 ; If Buzzy is vertically flipped, jump to PRG000_CBB3 (RTS)
-
-	LDY Object_SpriteRAM_Offset,X	 ; Y = object's Sprite_RAM offset
-
-	; +1 to Y to sprite if not flipped
-	LDA Sprite_RAM+$00,Y
-	ADD #$01
-	STA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$04,Y
+	JSR Object_Vibrate
+	JSR Object_TestTopBumpBlocks
 
 PRG000_CBB3:
 	RTS		 ; Return
@@ -1471,6 +1418,7 @@ PRG000_CBB4:
 
 	; "Shake awake" speed
 
+Object_Vibrate:
 	LDA Objects_Timer3,X
 	CMP #$50
 	BGE PRG000_CC23	 ; If timer 3 >= $50, jump to PRG000_CC23
@@ -1606,122 +1554,21 @@ KoopaExpload:
 
 ObjState_Kicked:
 	LDA <Player_HaltGameZ 
-	BEQ PRG000_CC75	 ; If gameplay is NOT halted, jump to PRG000_CC75
+	BEQ ObjState_Kicked1	 ; If gameplay is NOT halted, jump to PRG000_CC75
  
-	JMP PRG000_CD47	 ; Jump to PRG000_CD46 
+	JMP DrawKickedShell	 ; Jump to PRG000_CD46 
 
-PRG000_CC75:
-	JSR Object_Move	 ; Perform standard object movements
-	JSR Object_DetermineHorizontallyOffScreen	 ; Determine horizontally visible sprites
-	JSR TestShellBumpBlocks
-
-	LDA <Objects_CollisionDetectionZ, X
-	AND #$08
-	BEQ PRG000_CC74
-	STA Object_HitCeiling
-
-PRG000_CC74:
-	LDA <Objects_CollisionDetectionZ,X 
-	AND #$04 
-	BEQ PRG000_CC94	 ; If object has hit ground, jump to PRG000_CC94
-
-	JSR Object_HitGround	; Align to floor
-
-PRG000_CC94:
-	LDA <Objects_CollisionDetectionZ,X 
-	AND #$03 
-	BNE PRG000_CC9D	 ; If object has hit a wall, jump to PRG000_CC9D
- 
-	JMP PRG000_CCF7	 ; Otherwise, jump to PRG000_CCF7
-
-PRG000_CC9D:
-	LDA Objects_SpriteX,X 
-
-	LDY <Objects_XVelZ,X 
-	BPL PRG000_CCAA	 ; If object is not moving to the left, jump to PRG000_CCAA
- 
-	CMP #$06 
-	BLT PRG000_CCE2	 ; If object's sprite X < 6, jump to PRG000_CCAA 
-	BGE PRG000_CCAE	 ; Otherwise, jump to PRG000_CCAE 
-
-PRG000_CCAA:
-	CMP #228 
-	BGE PRG000_CCE2	 ; If object's sprite X < 228, jump to PRG000_CCE2
-
-PRG000_CCAE:
-	JSR Object_AnySprOffscreen
-	BNE PRG000_CCE2	 ; If any sprite is off-screen, jump to PRG000_CCE2
- 
-	LDA PAGE_A000 
-	PHA		 ; Save current PAGE_A000 page 
-
-	; Set page @ A000 to 8
-	LDA #$08 
-	STA PAGE_A000 
-	JSR PRGROM_Change_A000
- 
-	; Temp_Var13 = Object tile detect Y Hi
-	LDA ObjTile_DetYHi 
-	STA <Temp_Var13	 
-
-	; Temp_Var13 = Object tile detect Y Hi
-	LDA ObjTile_DetYLo 
-	STA <Temp_Var14	 
-
-	; Temp_Var15 = Object tile detect X Hi
-	LDA ObjTile_DetXHi 
-	STA <Temp_Var15	 
-
-	; Temp_Var16 = Object tile detect X Lo
-	LDA ObjTile_DetXLo 
-	STA <Temp_Var16	 
-
-	; Handle object bouncing off blocks
-	LDA Object_LevelTile
-	STA <Level_Tile
-	LDA Object_TileWallProp
-	STA <Level_Tile_Prop
-	JSR Object_BumpOffBlocks 
-
-	LDX <CurrentObjectIndexZ	 ; X = object slot index
- 
-	; Restore page @ A000 to previous value
-	PLA 
-	STA PAGE_A000 
-	JSR PRGROM_Change_A000 
-
-PRG000_CCE2:
-
-	; Play bump sound
-	LDA Sound_QPlayer 
-	ORA #SND_PLAYERBUMP 
-	STA Sound_QPlayer
- 
-	LDA Objects_ID,X 
-	AND #$FE
-	CMP #OBJ_ICEBLOCK 
-	BNE PRG000_CCF4	 ; If this object is NOT an Ice Block, jump to PRG000_CCF4
- 
-	JMP PRG000_D295	 ; Jump to PRG000_D295 (set Ice Block to "killed" state) 
-
-PRG000_CCF4:
-	JSR Object_Reverse	 ; Bounced off block, turn around
-
-PRG000_CCF7: 
-	JSR Object_HandleBumpUnderneath	 ; Handle the kicked shelled object getting hit from underneath
-	JSR Object_InteractWithPlayer
-
-PRG000_CCF8:
+ObjState_Kicked1:
+	JSR Object_DeleteOffScreen
+	JSR Object_Move	 
+	JSR Object_TestTopBumpBlocks
+	JSR Object_TestSideBumpBlocks
+	JSR Object_InteractWithTiles
+	JSR Object_HandleBumpUnderneath
+	JSR Object_AttackOrDefeat
 	JSR ObjectKill_Others
-	JSR Object_DeleteOffScreen	 ; Delete the kicked shell object if it goes off-screen
-
-PRG000_CD47:
-	LDA Objects_ID,X
-	AND #$FE
-	CMP #OBJ_ICEBLOCK
-	BEQ PRG000_CD77	 ; If the kicked object is an ice block, jump to PRG000_CD77
-
-NotGiant:
+	
+DrawKickedShell:
 	LDA Level_NoStopCnt
 	LSR A	
 	AND #$03
@@ -1735,47 +1582,14 @@ NotGiant:
 	; Set animation frame as appropriate
 	LDA ObjShell_AnimFrame,Y
 	STA Objects_Frame,X
-
-	LDA Objects_ID, X
-	CMP #OBJ_PURPLETROOPA
-	BEQ PRG000_CD75
-
-PRG000_CD73:
 	TYA
 	AND #$01
-	BNE PRG000_CD74	 ; Every other tick, jump to PRG000_CD74
+	BNE DrawKickedShell1	 ; Every other tick, jump to PRG000_CD74
 
 	JMP Object_ShakeAndDrawMirrored	; Draw sprite and don't come back
 
-PRG000_CD74:
+DrawKickedShell1:
 	JMP Object_ShakeAndDraw	 ; Update sprite data, draw sprite, and don't come back
-
-PRG000_CD75:
-	JSR RotatePaletteInstead
-	JMP PRG000_CD73
-
-PRG000_CD77:
-
-	; Ice block only...
-	LDA Objects_ID, X
-	CMP #OBJ_ICEBLOCK
-	BNE PRG000_CD7F
-
-	LDA #$01
-	STA Objects_ColorCycle,X
-	JSR Object_ShakeAndDrawMirrored	 ; Draw sprite and don't come back!
-	LDA Sprite_RAM+$06,Y
-	ORA #SPR_VFLIP
-	STA Sprite_RAM+$06,Y
-	RTS
-
-PRG000_CD7F:
-	LDA #$15
-	STA ObjGroupRel_Idx
-	JMP Object_ShakeAndDraw
-
-PRG000_CD80:
-	JMP ObjectGroup_PatternSets	 ; Jump to ObjectGroup_PatternSets (giant object special shelled draw routine)
 
 
 ObjectKill_SetShellKillVars:
@@ -1890,17 +1704,12 @@ BrickBust_MoveOver:
 ; gets a chance to employ that in the game...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $CDD2
-Object_BumpBlocks:
-	STA <Temp_Var8	; Store detected tile -> Temp_Var8
+Object_TopBumpBlocks:
+	LDA Object_TileFeetValue
+	STA <Level_Tile
 
-	; Backup current PAGE_A000 bank
-	LDA PAGE_A000
-	PHA	
-
-	; Change page @ A000 to 8
-	LDA #$08
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+	LDA Object_TileFeetProp
+	STA <Level_Tile_Prop
 
 	; Transfer tile detection 
 	LDA <Objects_YZ, X
@@ -1912,19 +1721,62 @@ Object_BumpBlocks:
 	STA <Temp_Var13	
 
 	LDA <Objects_XZ, X
-	ADD #$04
+	ADD #$08
 	STA <Temp_Var16	
 
 	LDA <Objects_XHiZ, X
 	ADC #$00
 	STA <Temp_Var15	
 
-	; Send detected tile over to check if object has hit any blocks
-	; that respond to being hit with head
-	LDA <Temp_Var8
+	JMP Object_BumpBlocks
+
+Object_SideBumpBlocks:
+	LDA Object_TileWallValue
+	STA <Level_Tile
+
+	LDA Object_TileWallProp
 	STA <Level_Tile_Prop
 
-	JSR Object_BumpOffBlocks
+	; Transfer tile detection 
+	LDA <Objects_YZ, X
+	ADD #$09
+	STA <Temp_Var14	
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Temp_Var13	
+
+	LDA <Objects_XVelZ, X
+	BMI Object_SideBumpBlocks1
+
+	LDA <Objects_XZ, X
+	ADD #$0F
+	STA <Temp_Var16	
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Temp_Var15	
+	JMP Object_BumpBlocks
+
+Object_SideBumpBlocks1:
+	LDA <Objects_XZ, X
+	STA <Temp_Var16	
+
+	LDA <Objects_XHiZ, X
+	STA <Temp_Var15	
+
+Object_BumpBlocks:
+	; Backup current PAGE_A000 bank
+	INC Object_BlockAttack
+	LDA PAGE_A000
+	PHA	
+
+	; Change page @ A000 to 8
+	LDA #$08
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+
+	JSR Level_DoBumpBlocks
 
 	LDX <CurrentObjectIndexZ	; X = object slot index
 
@@ -1954,15 +1806,13 @@ ObjectHoldXHiOff:	.byte $00,  $FF, $00,  $FF, $00, $00,  $FF, $00,  $FF, $00, $0
 ObjectToObject_HitXVel:	.byte -$08, $08
 
 ObjState_Held:
-	LDA <Player_FlipBits
-	STA Objects_Orientation,X
+
 	LDA <Player_IsDying 
 	BEQ PRG000_CE28	 ; If Player is NOT dying, jump to PRG000_CE28
  
 	RTS
 
 PRG000_CE28:
-	JSR Object_ShellDoWakeUp ; Wake up while Player is holding object... 
 
 	BIT <Pad_Holding 
 	BVC Player_KickObject	 ; If Player is NOT holding B button, jump to Player_KickObject  
@@ -1973,7 +1823,8 @@ PRG000_CE2F:
 
 	JSR Object_HeldCollide
 	JSR Object_PositionHeld
-	JSR Object_DrawShelled	 ; Draw shelled object
+	JSR Object_ShellDoWakeUp
+	JSR Object_DrawShelled
 
 PRG000_CFA8:
 	RTS	 ; Jump to PRG000_CEEF
@@ -2097,72 +1948,74 @@ Object_GetKicked:
 
 	LDA <Pad_Holding
 	AND #(PAD_UP)
-	BNE Kick_Up
+	BEQ Object_GetKicked1
 
-PRG000_CEC6_2:
-	LDA <Pad_Holding
-	AND #(PAD_DOWN)
-	BNE Kick_Down
-	LDA #$00
-	STA <Objects_YVelZ, X
-	BEQ Kick_Forward
-	
-Kick_Up:
 	LDA #$B0
 	STA <Objects_YVelZ,X
 
+Object_GetKicked1:
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ Object_GetKicked3
+
 	LDA <Player_XVel
-	BNE Kick_Forward
+	BEQ Object_GetKicked2_1
+
+	LDA #OBJSTATE_KICKED
+	STA Objects_State, X
+
+	LDA <Player_XVel
+	BPL Object_GetKicked2_0
+	EOR #$FF
+	ADD #$01
+
+Object_GetKicked2_0:
+	ADD #$08
+	BNE Object_GetKicked6
+
+Object_GetKicked2_1:
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State, X
 
 	LDA #$00
 	STA <Objects_XVelZ, X
 	RTS
 
-Kick_Forward:
+Object_GetKicked2:
 	LDA #OBJSTATE_KICKED
 	STA Objects_State, X
 
-Kick_Down:
-	LDA <Player_XVel
-	BNE Kick_Forward1
+	LDA <Objects_XVelZ, X
+	BNE Object_GetKicked6
 
-	LDA #$50
+Object_GetKicked3:
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ Object_GetKicked4
 
-Kick_Forward1:
-	BPL Kick_Forward2
-	EOR #$FF
-	ADD #$01
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State, X
+	BNE Object_GetKicked5
 
-Kick_Forward2:
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY
-	LDA KickedXVel, Y
+Object_GetKicked4:
+	LDA #OBJSTATE_KICKED
+	STA Objects_State, X
+
+Object_GetKicked5:
+	LDA #$30
+
+Object_GetKicked6:
 	
-	LDY <Player_XVel
-	BMI Kick_Forward2_1
-	BNE Kick_Forward3
-
 	LDY <Player_FlipBits
-	BEQ Kick_Forward2_1
+	BNE Object_GetKicked7
 
 	EOR #$FF
 	ADD #$01
 
-Kick_Forward2_1:
-	EOR #$FF
-	ADD #$01
-
-Kick_Forward3:
+Object_GetKicked7:
 	STA <Objects_XVelZ,X	 ; Set as object's X velocity
 
 	RTS
-
-KickedXVel:
-	.byte $10, $20, $30, $38, $38, $38
 
 Object_HeldCollide:
 	JSR ObjectToObject_HitTest	; Test if this object has collided with another object
@@ -2178,40 +2031,18 @@ Object_HeldCollide:
 	STA Sound_QPlayer
 
 	; Object which was held is dead!
-	INC Exp_Earned
-	JSR Reap_Coin
-
-Dont_Coin_It5:
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X
-
-	; Y velocity = -$30 (fly up a bit)
-	LDA #-$30
-	STA <Objects_YVelZ,X
-
-	; Object that got hit is dead!
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,Y
-
-	; Y velocity = -$30 (fly up a bit)
-	LDA #-$30
-	STA Objects_YVelZ,Y
-
-	; Get 100 pts for the hit!
-	INC Exp_Earned
-
-	; Object will not collide again for 16 ticks (dampener I guess)
-	LDA #16
-	STA Objects_Timer2,X
-
+	STA Debug_Snap
+	JSR Object_GetKilled
+	
 	TYA
 	TAX
-	JSR Level_ObjCalcXDiffs	 ; Determine which side the OTHER object is on
 
-	; Set the OTHER object's X velocity appropriately
-	LDA ObjectToObject_HitXVel,Y
-	STA <Objects_XVelZ,X
+	JSR Object_GetKilled
 
+	LDX <CurrentObjectIndexZ
+	LDA #$00
+	STA Player_IsHolding
+	
 Object_HeldCollideRTS:
 	RTS
 
@@ -2495,7 +2326,7 @@ PRG000_D0A9:
 Object_ApplyY_With_Gravity:
 	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity without limit
 
-	JSR Object_WorldDetect4	 ; Detect against the world
+	JSR Object_DetectTiles	 ; Detect against the world
 
 	LDY Objects_InWater,X	; Y = whether in-water
 
@@ -2644,17 +2475,14 @@ PRG000_D147:
 	; Held object did NOT impact... (time to wake up!)
 
 	; Set object state to Normal
-	LDA #OBJSTATE_INIT
+	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
 
+	JSR ObjInit_TowardsPlayer
+	PLA
+	PLA
+
 PRG000_D155:
-
-	; Do NOT return to caller! 
-	PLA 
-	PLA 
-
-	JMP PRG000_CB5E	 ; Jump to PRG000_CB5E (essentially JSR Object_DeleteOffScreen) 
-
 PRG000_D15A:
 	RTS		 ; Return
 
@@ -2780,7 +2608,7 @@ IceBlockYOffset: .byte $0D, $1E
 IceBlockStand:
 ;	RTS
 ;	LDA <Player_YVel
-;	BMI Player_HitEnemy1
+;	BMI Object_AttackOrDefeat1
 ;	JSR Level_ObjCalcXDiffs
 ;	LDA <Temp_Var16
 ;	BPL IceBlockStand1
@@ -2806,7 +2634,7 @@ IceBlockStand:
 ;IceBlockStand2:
 ;	SUB IceBlockYRange, Y
 ;	CMP #$0A
-;	BCS Player_HitEnemy1
+;	BCS Object_AttackOrDefeat1
 ;
 ;	LDA Objects_YZ, X
 ;	SUB IceBlockYOffset, Y
@@ -2821,14 +2649,14 @@ IceBlockStand:
 ;IceBlockStandRTS:
 ;	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_HitEnemy
+; Object_AttackOrDefeat
 ;
 ; General routine for how the object responds to a Player 
 ; colliding with it (good and bad)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D1BA
 
-Player_HitEnemy:
+Object_AttackOrDefeat:
 	JSR Object_HitTest	; Check for collision
 
 	; Clear hit status bits
@@ -3027,8 +2855,7 @@ PRG000_D29B:
 	BNE PRG000_D2B4	 ; If object state is not shelled, jump to PRG000_D2B4 (typical stomp)
 
 PRG000_D2A2:
-	JSR Player_KickObject	 ; Player kicks the enemy
-	RTS		 ; Return
+	JMP Object_GetKicked	 ; Player kicks the enemy
 
 
 PRG000_D2B4:
@@ -3400,8 +3227,8 @@ Level_PrepareNewObject:
 	
 	; Clear various object variables
 	LDA #$00
-	STA Objects_Data1,X
-	STA Objects_Data2,X
+	STA Objects_Data4,X
+	STA Objects_Data5,X
 	STA <Objects_SpriteX,X
 	STA Objects_Timer,X
 	STA Objects_Timer2,X
@@ -3433,9 +3260,9 @@ PRG000_D4C8:
 	STA Objects_Timer4,X
 	STA Objects_Timer3,X
 	STA Objects_Slope,X
-	STA Objects_Data7,X
-	STA <Objects_Data5Z,X
-	STA <Objects_Data4Z,X
+	STA Objects_Data3,X
+	STA <Objects_Data2,X
+	STA <Objects_Data1,X
 	STA Objects_Data3,X	
 	STA Objects_Data6,X	 
 	STA Objects_TargetingXVal,X
@@ -3443,11 +3270,11 @@ PRG000_D4C8:
 	STA Objects_UseShortHTest,X
 	STA Objects_HitCount,X
 	STA Objects_DisPatChng,X
+	STA Objects_Data8,X
+	STA Objects_Data9,X
 	STA Objects_Data10,X
 	STA Objects_Data11,X
 	STA Objects_Data12,X
-	STA Objects_Data13,X
-	STA Objects_Data14,X
 
 PRG000_D506:
 	RTS		 ; Return
@@ -4412,7 +4239,6 @@ PRG000_D8EB:
 
 	LDA Player_StarInv
 	ORA Player_Shell
-	ORA Boo_Mode_KillTimer
 	ORA Player_FireDash
 	BEQ PRG000_D922	 ; If Player is NOT invincible, jump to PRG000_D922
 
@@ -4457,6 +4283,7 @@ PRG000_D922:
 	; For all objects where bit 7 is set in their attributes...
 	LDA Player_Shell
 	BNE Do_Hit_Stuff
+
 	LDA <Temp_Var16	 ; Returns 0 or 1, depending on original entry point
 	BNE PRG000_D929	 ; If it was 1 (do not respond to hit), jump to PRG000_D929
 
@@ -5690,50 +5517,28 @@ PRG000_C6FA:
 	LDY TempY
 	RTS
 
-TestShellBumpBlocks:
-	LDA <Objects_YVelZ, X
-	BPL NoBumps
+Object_TestTopBumpBlocks:
+	LDA <Objects_CollisionDetectionZ,X
+	AND #HIT_CEILING
+	BEQ Object_TestTopBumpBlocks1
 
 	LDA Object_TileFeetProp
-	CMP #TILE_ITEM_COIN
-	BCC CheckOtherTile
+	CMP #TILE_PROP_ITEM
+	BCC Object_TestTopBumpBlocks1
 
-	JSR Object_BumpBlocks	 ; Boom Boom can hit blocks!
-	LDA Objects_ID, X
-	CMP #OBJ_ICEBLOCK
-	BNE TestShellBumpBlocks1
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
+	JSR Object_TopBumpBlocks
 
-TestShellBumpBlocks1:
-	LDA #$01
-	STA <Objects_YVelZ, X
-
-NoBumps:
+Object_TestTopBumpBlocks1:
 	RTS
 
-CheckOtherTile:
-	LDA <Objects_XZ, X
-	PHA
-	ADD #$08
-	STA <Objects_XZ, X
-	LDA <Objects_XHiZ, X
-	PHA
-	ADC #$00
-	STA <Objects_XHiZ, X
-	JSR Object_GetAttrAndMoveTiles_NoWater
-	LDA Object_TileFeetProp
-	CMP #TILE_ITEM_COIN
-	BCC NoBumpTiles
-	JSR Object_BumpBlocks
-	LDA #$01
-	STA <Objects_YVelZ, X
+Object_TestSideBumpBlocks:
+	LDA Object_TileWallProp
+	CMP #TILE_PROP_ITEM
+	BCC Object_TestSideBumpBlocks1
 
-NoBumpTiles:
-	PLA
-	STA <Objects_XHiZ, X
-	PLA
-	STA <Objects_XZ, X
+	JSR Object_SideBumpBlocks
+
+Object_TestSideBumpBlocks1:
 	RTS
 
 SetObjectTileCoordAlignObj:
@@ -5811,16 +5616,13 @@ DoSpinnerE:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_InteractWithWorld
+; Object_InteractWithTiles
 ;
 ; Calls Object_Move and handles the object responding to hitting
 ; the floor/ceiling, or bump blocks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $A966
-Object_InteractWithWorld:
-	JSR Object_Move	; Move and collide with world
-
-Object_InteractWithWorldNoMove:
+Object_InteractWithTiles:
 	LDA <Objects_CollisionDetectionZ,X
 
 	TAY		 ; Object detection status -> 'Y'
@@ -6213,7 +6015,7 @@ DontDrawGiant:
 
 ; Only works with 16x16 wide objects, nothing taller
 
-Objects_Interact:
+Object_InteractWithOtherObjects:
 
 	LDA <Objects_XZ, X
 	STA <Temp_Var6		; original object's X
@@ -6335,7 +6137,7 @@ InitPatrol:
 	.word InitPatrolRTS
 
 InitCircleCCW:
-	LDA Objects_Data10, X
+	LDA Objects_Data8, X
 	LSR A
 	STA Objects_Timer2, X
 	LDA #$F0
@@ -6343,7 +6145,7 @@ InitCircleCCW:
 	RTS
 
 InitCircleCW:
-	LDA Objects_Data10, X
+	LDA Objects_Data8, X
 	LSR A
 	STA Objects_Timer2, X
 	LDA #$10
@@ -6351,7 +6153,7 @@ InitCircleCW:
 
 InitDiagonal2:
 	LDA #$01
-	STA Objects_Data7, X
+	STA Objects_Data3, X
 
 InitPatrolRTS:
 	RTS
@@ -6386,9 +6188,9 @@ PRG004_B2BD:
 	LDA Objects_Timer,X
 	BNE PRG004_B2FB	 ; If timer is not expired, jump to PRG004_B2FB
 
-	INC <Objects_Data4Z,X	 ; Var4++
+	INC <Objects_Data1,X	 ; Var4++
 
-	LDA <Objects_Data4Z,X
+	LDA <Objects_Data1,X
 	AND #$03
 	BNE PRG004_B2FB	 ; 1:4 ticks proceed, otherwise jump to PRG004_B2FB
 
@@ -6408,7 +6210,7 @@ PRG004_B2BD:
 
 	; Reset timer to $30
 	
-	LDA Objects_Data10, X
+	LDA Objects_Data8, X
 	STA Objects_Timer,X
 
 PRG004_B2FB:
@@ -6426,7 +6228,7 @@ PatrolUpDown:
 	AND #$03
 	BNE PRG004_B2FB_2	 ; 1:4 ticks proceed, otherwise jump to PRG004_B2FB
 
-	LDA Objects_Data7,X
+	LDA Objects_Data3,X
 	AND #$01
 	TAY		 ; Y = 0 or 1
 
@@ -6438,10 +6240,10 @@ PatrolUpDown:
 	CMP PatrolVel_Limit,Y
 	BNE PRG004_B2FB_2	 ; If Paratroopa is not at his velocity limit, jump to PRG004_B2FB
  
-	INC Objects_Data7,X	 ; Var3++
+	INC Objects_Data3,X	 ; Var3++
 
 	; Reset timer to $30
-	LDA Objects_Data11, X
+	LDA Objects_Data9, X
 	STA Objects_Timer2,X
 
 PRG004_B2FB_2:
@@ -6457,8 +6259,8 @@ Chase:
 ChaseTargeted:
 	LDA Objects_InWater, X
 	BEQ PRG002_A8ED
-	INC Objects_Data2, X
-	LDA Objects_Data2, X
+	INC Objects_Data5, X
+	LDA Objects_Data5, X
 	AND #$03
 	BEQ PRG002_A84F
 
@@ -6511,14 +6313,27 @@ PRG002_A84F:
 
 
 
-PlayerDirection: .byte SPR_HFLIP, $00
+FaceDirection: .byte SPR_HFLIP, $00
+
+Object_FaceDirectionMoving:
+	LDY #$00
+	LDA <Objects_XVelZ, X
+	BPL Object_FaceDirectionMoving1
+
+	INY
+
+Object_FaceDirectionMoving1:
+	LDA Objects_Orientation, X
+	AND #~SPR_HFLIP
+	ORA FaceDirection, Y
+	STA Objects_Orientation, X
+	RTS
 
 Object_FacePlayer:
-
 	JSR Level_ObjCalcXDiffs
 	LDA Objects_Orientation, X
 	AND #~SPR_HFLIP
-	ORA PlayerDirection, Y
+	ORA FaceDirection, Y
 	STA Objects_Orientation, X
 	RTS
 
@@ -6656,4 +6471,108 @@ CheckBlockLeft:
 GetBlock:
 	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile
+	RTS
+
+Object_GetKilled:
+	INC Exp_Earned
+	JSR Reap_Coin
+
+	LDA #OBJSTATE_KILLED
+	STA Objects_State,X
+ 
+	; Set object Y velocity to -$40 (fly up after death)
+	LDA #-$40 
+	STA <Objects_YVelZ,X
+ 
+	RTS
+
+EnemyEnterXVel:	.byte $08, -$08
+
+
+
+ObjInit_TowardsPlayer:
+
+	; Get last scroll direction so we know which way to face
+	JSR Object_FacePlayer
+
+	; Enemy charges at Player the same
+	LDA EnemyEnterXVel,Y
+	STA <Objects_XVelZ,X
+
+	RTS		 ; Return
+
+
+Object_Hold:
+	LDA Objects_Timer2, X
+	BNE Object_HoldRTS
+
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Object_Kick
+
+	LDA Objects_Data4, X
+	BNE Object_HoldRTS0
+
+	LDA Player_IsHolding
+	BNE Object_HoldRTS
+
+	LDA #$01
+	STA Player_IsHolding
+	STA Objects_Data4, X
+
+	LDA Player_FlipBits
+	STA Objects_Orientation,X
+	LDA Player_XVel, X
+	STA Objects_XVelZ, X
+
+	LDA Player_YVel, X
+	STA Objects_YVelZ, X
+
+Object_HoldRTS0:
+	JSR Object_PositionHeld
+
+Object_HoldRTS:
+	RTS
+
+Object_Kick:
+	LDA Objects_Data4, X
+	BEQ Object_KickRTS
+
+	LDA #$00
+	STA Objects_Data4, X
+	STA Player_IsHolding
+	JSR Object_GetKicked
+	
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JSR Object_DetectTiles
+
+	LDA <Objects_CollisionDetectionZ,X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BNE Object_ReverseXVel
+
+	LDA Objects_LastProp, X
+	AND #$F0
+	CMP #TILE_PROP_SOLID_ALL
+	BEQ Object_ReverseXVel
+
+	CMP #TILE_PROP_ITEM
+	BNE Object_KickNotWall
+
+Object_ReverseXVel:
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+Object_KickNotWall:
+	LDA <Objects_CollisionDetectionZ,X
+	AND #HIT_GROUND
+	BEQ Object_KickRTS
+
+	LDA #$F0
+	STA <Objects_YVelZ, X
+
+Object_KickRTS:
 	RTS

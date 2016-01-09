@@ -778,7 +778,7 @@ PAD_RIGHT	= $01
 CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text versus the dialog box itself
 
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
-	Objects_Data4Z:		.ds 5	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
+	Objects_Data1:		.ds 5	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
 
 	; Pipe_PlayerX/Y variables in use when traveling through pipes
 	Pipe_PlayerX:		.ds 1	; Stores Player's X when they went into pipe (non-transit)
@@ -799,7 +799,7 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	; Reuse of $9A
 	CineKing_Var:		; General variable
 
-	Objects_Data5Z:		.ds 8	; $9A-$A1 Generic variable 5 for objects
+	Objects_Data2:		.ds 8	; $9A-$A1 Generic variable 5 for objects
 	Player_Y:		.ds 1	; Player Y
 	Objects_YZ:		.ds 8	; $A3-$A9 Other object's Y positions
 
@@ -1279,7 +1279,8 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Player_AllowAirJump:	.ds 1	; Counts down to zero, but while set, you can jump in the air
 	Player_XVelAdj:		.ds 2	; Applies additional value to the X Velocity
 
-	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Data7 first byte)
+	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Data3 first byte)
+
 	Objects_Data7:		.ds 8	; $0421-$0428 General object variable 7
 
 	SpinnerBlockTimers:	.ds 10;
@@ -1581,7 +1582,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_FrogHopCnt:	.ds 1	; Counter used for frog hopping along the ground (shared with Player_FireCount)
 	Player_PMeterCnt:	.ds 1	; Tick counter used to count when to increase/decrease Power Meter
 	Player_TailAttack:	.ds 1	; Initiailized to $12; counts down to zero, performs tail attack!
-						.ds 2
+	Object_BlockAttack:	.ds 1
+						.ds 1
 	CineKing_Timer:			; Timer; decrements to zero (shares Objects_Timer first byte)
 	Objects_Timer:		.ds 8	; $0518-$051F "Timer" values; automatically decrements to zero
 
@@ -1857,8 +1859,8 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	Objects_Orientation:	.ds 8	; $0679-$0680 Applied sprite attributes for this object (usually just horizontal/vertical flip)
 
 	Objects_SpritesVerticallyOffScreen:	.ds 8	; $0681-$0688 Flags; Bits 3-0 set when each 8x16 sprite is vertically off-screen (top-to-bottom from MSb)
-	Objects_Data1:		.ds 8	; $0689-$0690 Generic variable 1 for objects
-	Objects_Data2:		.ds 8	; $0691-$0698 Generic variable 2 for objects
+	Objects_Data4:		.ds 8	; $0689-$0690 Generic variable 1 for objects
+	Objects_Data5:		.ds 8	; $0691-$0698 Generic variable 2 for objects
 
 	BossBoundBox:		.ds 1	; Absolutely no idea, it is set once in one place and never used again... MAY be lost bonus game related?
 
@@ -2688,13 +2690,14 @@ ABILITY_CHERRY_STAR = 5
 	ChainChomp_ChainY4:	.ds 5	; $7CC3-$7CC8 Chain Link 4 Y
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
-	Objects_Data10:		.ds 5	; $7CC8-$7CCC Generic object variable 10
-	Objects_Data11:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
-	Objects_Data12:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
-	Objects_Data13:		.ds 5	; $7CD7-$7CDB Generic object variable 13
+	
+	Objects_Data8:		.ds 5	; $7CC8-$7CCC Generic object variable 10
+	Objects_Data9:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
+	Objects_Data10:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
+	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
+	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data15:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data16:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 
 ; Player's hammer/fireball
 	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")

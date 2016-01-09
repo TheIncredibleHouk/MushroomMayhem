@@ -996,9 +996,9 @@ PRG007_A6C6:
 
 	TYA
 	TAX
-	INC Objects_Data3, X
+	INC Objects_Data8, X
 	LDA #$00
-	STA Objects_Data2, X
+	STA Objects_Data5, X
 	LDX TempX
 	RTS
 	; Weapon successfully hit!
@@ -4368,7 +4368,7 @@ Cfire_Bobombs1:
 	LDA BobOmbHFlip, Y
 	STA Objects_Orientation, X
 	LDA #$00
-	STA Objects_Data5Z, X
+	STA Objects_Data2, X
 
 
 PRG007_BD09:
@@ -4450,7 +4450,7 @@ PRG007_BD49:
 	STA Objects_ID,X
 
 	LDA #$10
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 
 	; Set Goomba's color
 	LDA EnemyCannonColor, Y
@@ -4636,16 +4636,16 @@ CFire_Platform:
 	STA Objects_ID,X
 
 	LDA #$00
-	STA Objects_Data5Z, X
+	STA Objects_Data2, X
 
 	LDA #$FC
-	STA Objects_Data2, X
+	STA Objects_Data5, X
 
 	LDA #$00
 	STA Objects_Frame, X
 
 	LDA #$03
-	STA Objects_Data1, X
+	STA Objects_Data4, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
@@ -4681,10 +4681,10 @@ CFire_Platform1:
 	LDA CannonFire_Var, X
 	TAY
 	LDA #$00
-	STA Objects_Data3, Y
+	STA Objects_Data8, Y
 	STA CannonFire_Var, X
 	LDA #$18
-	STA Objects_Data2, Y
+	STA Objects_Data5, Y
 
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes,Y
@@ -4841,7 +4841,7 @@ CFire_RockyWrench:
 
 	; Var5 = 0
 	LDA #$00
-	STA <Objects_Data5Z,X
+	STA <Objects_Data2,X
 
 	; Set Rocky's timer to $28
 	LDA #$28
@@ -4922,7 +4922,7 @@ PRG007_BF80:
 	STA <Objects_XHiZ,X
 	LDA CannonFire_X,Y
 	STA <Objects_XZ,X
-	STA Objects_Data13,X	; original X hold
+	STA Objects_Data11,X	; original X hold
 
 	LDA CannonFire_Property,Y
 	TAY
