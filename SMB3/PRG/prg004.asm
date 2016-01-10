@@ -22,23 +22,23 @@
 
 	; Object group $03 (i.e. objects starting at ID $6C) State 1 jump table
 
-	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*
+	.org ObjectGroup_InitJumpTable	; <-- help enforce this table *here*  
 ObjectGroup03_InitJumpTable:
-	.word ObjInit_GroundTroop	; Object $6C - OBJ_GREENTROOPA
-	.word ObjInit_GroundTroop	; Object $6D - OBJ_REDTROOPA
-	.word ObjInit_GroundTroop	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.word ObjInit_Troopa	; Object $6C - OBJ_GREENTROOPA
+	.word ObjInit_Troopa	; Object $6D - OBJ_REDTROOPA
+	.word Object_MoveTowardsPlayer	; Object $6E - OBJ_PARATROOPAGREENHOP
 	.word ObjInit_ParaTroopas	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.word ObjInit_GroundTroop	; Object $70 - OBJ_BUZZYBEATLE
-	.word ObjInit_GroundTroop	; Object $71 - OBJ_SPINY
+	.word Object_MoveTowardsPlayer	; Object $70 - OBJ_BUZZYBEATLE
+	.word Object_MoveTowardsPlayer	; Object $71 - OBJ_SPINY
 	.word ObjInit_Goomba	; Object $72 - OBJ_GOOMBA
 	.word ObjInit_ParaGoomba	; Object $73 - OBJ_PARAGOOMBA
 	.word ObjInit_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word ObjInit_Waterfill	; Object $75 - OBJ_WATERFILLER
-	.word ObjInit_GroundTroop	; Object $76 - OBJ_POISONMUSHROOM
+	.word Object_MoveTowardsPlayer	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjInit_ParaTroopas	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
-	.word ObjInit_GroundTroop	; Object $7A - OBJ_PURPLETROOPA
+	.word Object_MoveTowardsPlayer	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjInit_BlueShell	; Object $7B - OBJ_BLUESHELL
 	.word ObjInit_DeliveryLakitu	; Object $7C - OBJ_HELPER
 	.word ObjInit_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
@@ -49,7 +49,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjInit_DoNothing	; Object $84 - OBJ_SPINYEGG
-	.word ObjInit_GroundTroop	; Object $85 - OBJ_BLUESPINY
+	.word Object_MoveTowardsPlayer	; Object $85 - OBJ_BLUESPINY
 	.word ObjInit_FireBro		; Object $86 - OBJ_ICEBRO
 	.word ObjInit_FireBro		; Object $87 - OBJ_FIREBRO
 	.word ObjInit_FireBro	; Object $88 - OBJ_PIRATEBRO
@@ -2509,24 +2509,9 @@ PRG004_AE89:
 
 	RTS		 ; Return
 
-Object_FacePlayerOnLanding:
-	LDA  <Objects_CollisionDetectionZ, X
-	AND #HIT_GROUND
-	BEQ Object_FacePlayerOnLanding1
-
-	LDA Objects_PreviousCollisionDetection, X
-	AND #HIT_GROUND
-	BNE Object_FacePlayerOnLanding1
-
-	JSR Object_FacePlayer
-	LDA TroopSpeed,Y
-	STA <Objects_XVelZ, X
-
-Object_FacePlayerOnLanding1:
-	RTS
 
 ObjInit_ParaGoomba:
-	JSR ObjInit_GroundTroop
+	JSR Object_MoveTowardsPlayer
 	LDA #$80
 	STA Objects_Timer, X
 	RTS
@@ -2687,7 +2672,7 @@ ObjInit_ZombieGoomba:
 	STA Objects_Data5, X
 
 ObjInit_ZombieGoomba1:
-	JMP ObjInit_GroundTroop
+	JMP Object_MoveTowardsPlayer
 	
 ObjNorm_ZombieGoomba:
 	JSR Object_DeleteOffScreen	; Delete if off-screen
@@ -3263,25 +3248,13 @@ ObjNorm_MissileMark2_1:
 ObjNorm_MissileMark3:
 	JMP Object_ShakeAndDraw
 
-GroundTroop_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
-SpikeCheep_XVelTowardsPlayer:	.byte $08, -$08
-TroopSpeed:	.byte $08, -$08
-
-ObjInit_FlyingTroopa:
-	JSR InitPatrol
-
-ObjInit_GroundTroop:
-	JSR Object_FacePlayer
-	LDA TroopSpeed,Y
-	STA <Objects_XVelZ, X
-	RTS		 ; Return
 
 ObjInit_SpikeCheep:
 
 	RTS		 ; Return
 
 ObjInit_Goomba:
-	JSR ObjInit_GroundTroop
+	JSR Object_MoveTowardsPlayer
 	LDA Objects_Property, X
 	BEQ ObjInit_Goomba1
 
@@ -3301,6 +3274,7 @@ ObjNorm_Goomba:
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
+
 	BNE ObjNorm_Goomba0
 	JMP Goomba_Death
 
@@ -3374,55 +3348,137 @@ Goomba_Death2:
 	STA Objects_Orientation, X
 	JMP Object_ShakeAndDrawMirrored
 
+FlyingTroopa_StartX = Objects_Data6
+FlyingTroopa_StartXHi = Objects_Data7
+
+ObjInit_ParaTroopas:
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$20 
+	STA Objects_Data8, X
+	STA Objects_Data9, X
+
+	LDA Objects_Property, X
+	AND #$FE
+	CMP #$04
+	BNE ObjInit_ParaTroopas1
+
+	LDA <Objects_YZ, X
+	ADD #$30
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+ObjInit_ParaTroopas1:
+	LDA <Objects_XZ, X
+	STA FlyingTroopa_StartX, X
+
+	LDA <Objects_XHiZ, X
+	STA FlyingTroopa_StartXHi, X
+	JMP InitPatrol
+
 ObjNorm_FlyingTroopa:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_FlyingTroopa1
+	BNE ObjNorm_FlyingTroopa2
 
+	STA Debug_Snap
+	LDA Objects_Property, X
+	CMP #$06
+	BEQ FlyingTroopa_OffScreen
+	
+	LDA <Objects_XZ, X
+	CMP FlyingTroopa_StartX, X
+	BNE ObjNorm_FlyingTroopa0
+
+	LDA <Objects_XHiZ, X
+	CMP FlyingTroopa_StartXHi, X
+	BNE ObjNorm_FlyingTroopa0
+
+
+FlyingTroopa_OffScreen:
 	JSR Object_DeleteOffScreen
+
+ObjNorm_FlyingTroopa0:
 	JSR DoPatrol
+	JSR Object_FaceDirectionMoving
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_HandleBumpUnderneath
-	JSR Object_InteractWithPlayer
-	JSR Object_InteractWithOtherObjects
+	JSR Object_AttackOrDefeat
 
-	INC <Objects_Data2,X
-	LDA <Objects_Data2,X
+	INC <Koopa_CurrentFrame,X
+	LDA <Koopa_CurrentFrame,X
 	LSR A
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame,X
 
-ObjNorm_FlyingTroopa1:
+ObjNorm_FlyingTroopa2:
 	JMP Troopa_Draw
 
-PRG004_B34E:
-	.byte $04, $08, $08, $08, $10
+ObjInit_Troopa:
+	JSR Object_MoveTowardsPlayer
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Objects_YZ, X
 
-PRG004_B353:
-	.byte $FF, $C0, $80, $60, $40
-
-ObjInit_ParaTroopas:
-	LDA #$20 
-	STA Objects_Data8, X
-	STA Objects_Data9, X
-	JMP InitPatrol
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+	RTS
 
 
-Koopa_CurrentFrame = Objects_Data3
+Koopa_CurrentFrame = Objects_Data1
 
 ObjNorm_RedTroopa:
+
+	LDA <Player_HaltGameZ
+	BNE ObjNorm_Troopa1
+
+	LDA <Objects_YVelZ, X
+	BEQ Troopa_Normal
+
+Troopa_Normal:
+	JSR Object_Move
+	JSR Object_AttackOrDefeat
+
+	JSR Object_InteractWithOtherObjects
+	BCS RedTroopa_Draw
+
+	JSR Object_InteractWithTiles
+	JSR Object_HandleBumpUnderneath
+	JSR Object_FaceDirectionMoving
+
 	LDA Objects_PreviousCollisionDetection, X
 	AND #HIT_GROUND
-	BEQ ObjNorm_Troopa
+	BEQ Troopa_Animate
 
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA <Objects_CollisionDetectionZ, X
 	AND #HIT_GROUND
-	BNE ObjNorm_Troopa
+	BNE Troopa_Animate
 
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
+
+Troopa_Animate:
+	INC <Koopa_CurrentFrame, X
+	LDA <Koopa_CurrentFrame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+
+RedTroopa_Draw:
+	JMP Troopa_Draw
 
 ObjNorm_Troopa:
 	LDA <Player_HaltGameZ
@@ -3439,8 +3495,8 @@ ObjNorm_Troopa0:
 	JSR Object_InteractWithTiles
 	JSR Object_HandleBumpUnderneath
 
-	INC Koopa_CurrentFrame, X
-	LDA Koopa_CurrentFrame, X
+	INC <Koopa_CurrentFrame, X
+	LDA <Koopa_CurrentFrame, X
 	LSR A
 	LSR A
 	LSR A
@@ -3464,7 +3520,7 @@ ObjNorm_PoisonMushroom:
 ObjNorm_PoisonMushroom1:
 	JMP Object_ShakeAndDrawMirrored
 
-Bouncey_FlutterTime: = Objects_Data1
+Bouncey_FlutterTime: = Objects_Data2
 
 ObjNorm_BouncyTroopa:
 	LDA  <Objects_CollisionDetectionZ, X
@@ -3476,7 +3532,7 @@ ObjNorm_BouncyTroopa:
 	BNE ObjNorm_BouncyTroopa1
 
 	LDA #$00
-	STA <Bouncye_FlutterTime, X
+	STA <Bouncey_FlutterTime, X
 	LDA #$C0
 	STA Objects_YVelZ, X
 	BNE ObjNorm_BouncyTroopa2
@@ -3628,7 +3684,7 @@ DrawWings:
 	LDA #$CD
 	STA <Temp_Var1
 
-	LDA <Objects_Data2,X
+	LDA <Koopa_CurrentFrame,X
 	ADC #$02
 	AND #$04
 	BEQ PRG004_B548	 ; 4 ticks on, 4 ticks off; jump to PRG004_B548

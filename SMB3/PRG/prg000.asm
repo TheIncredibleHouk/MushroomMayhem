@@ -2031,7 +2031,6 @@ Object_HeldCollide:
 	STA Sound_QPlayer
 
 	; Object which was held is dead!
-	STA Debug_Snap
 	JSR Object_GetKilled
 	
 	TYA
@@ -2405,7 +2404,7 @@ PRG000_D0EC:
 
 	; Timer expired, change to state 2 (Normal)
 	LDA #OBJSTATE_NORMAL
-	STA Objects_State,X 
+	STA Objects_State,X
 	JMP BobOmb_Explode	 ; Jump to BobOmb_Explode and don't come back!
 
 PRG000_D0F9:
@@ -2478,7 +2477,7 @@ PRG000_D147:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
 
-	JSR ObjInit_TowardsPlayer
+	JSR Object_MoveTowardsPlayer
 	PLA
 	PLA
 
@@ -2542,8 +2541,12 @@ Object_FaceMovement1:
 Object_HandleBumpUnderneath:
 	
 	LDA Object_TileFeetValue 
+	BEQ Object_HandleBumpUnderneath0
+
 	AND #$3F
 	BEQ Object_HandleBumpUnderneath1
+
+Object_HandleBumpUnderneath0:
 	RTS
 
 	; Object detected a block bump tile (object got bumped)
@@ -2593,6 +2596,8 @@ PRG000_D19E:
 	; Change to alternate ObjectID in low byte
 	LDA ObjectGroup_CollideJumpTable,Y
 	STA Objects_ID,X
+	STA Debug_Snap
+	JSR Object_MoveTowardsPlayer
 	; Get 100 pts
 
 	INC Exp_Earned
@@ -2902,7 +2907,7 @@ PRG000_D2E4:
 	; Change to alternate ObjectID in low byte
 	LDA ObjectGroup_CollideJumpTable,Y
 	STA Objects_ID,X
-
+	JSR Object_MoveTowardsPlayer
 	INC Objects_HitCount,X	 ; Give hit back (restore to zero)
 	JMP PRG000_D31E	 ; Jump to PRG000_D31E
 
@@ -3070,9 +3075,6 @@ Object_SetPaletteFromAttr:
 ; The routine that removes objects if they go off-screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Vertical level
-PRG000_D3C8:	.byte $40, $B0	; Lo
-PRG000_D3CA:	.byte $01, $FF	; Hi
-
 	; Non-vertical level -- selectable remove sizes
 PRG000_D3CC:	.byte $20, $D0, 	$80, $80, 	$40, $B0	; Lo
 PRG000_D3D2:	.byte $01, $FF, 	$01, $FF, 	$01, $FF	; Hi
@@ -6117,46 +6119,116 @@ TryBumpOff:
 	CLC
 	RTS
 
-PatrolAccel_Limit: .byte $01, $FF
-PatrolVel_Limit: .byte $10, $F0
-ChaseVel_Limit: .byte $18, $E8
-
-
 InitPatrol:
-	LDA #$01
-	STA Objects_Data3,X
+	LDA #$38
+	STA Patrol_ResetTimer, X
+
+InitPatrol_NoTimers:
 	LDA Objects_Property, X
 	JSR DynJump
 
-	.word InitPatrolRTS
-	.word InitPatrolRTS
-	.word InitPatrolRTS
+	.word InitPatrolHorizontal
+	.word InitPatrolVertical
+	.word InitDiagonal
 	.word InitDiagonal2
 	.word InitCircleCCW
 	.word InitCircleCW
-	.word InitPatrolRTS
+	.word InitPatrol_Chase
 
-InitCircleCCW:
-	LDA Objects_Data8, X
-	LSR A
-	STA Objects_Timer2, X
+
+InitPatrolHorizontal:
+	LDA #$FF
+	STA Patrol_XVelocityChange, X
+
 	LDA #$F0
-	STA Objects_YVelZ, X
+	STA Patrol_XAccelLimit, X
+	RTS
+
+InitPatrolVertical:
+	LDA #$FF
+	STA Patrol_YVelocityChange, X
+
+	LDA #$F0
+	STA Patrol_YAccelLimit, X
+	RTS
+
+InitDiagonal:
+	JSR InitPatrolHorizontal
+	JMP InitPatrolVertical
+
+InitDiagonal2:
+	JSR InitPatrolHorizontal
+	JSR InitPatrolVertical
+
+	LDA Patrol_YVelocityChange, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_YVelocityChange, X
+	
+	LDA Patrol_YAccelLimit, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_YAccelLimit, X
+
+	LDA <Objects_YVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_YVelZ, X
+
+	RTS
+	
+InitCircleCCW:
+	JSR InitDiagonal
+
+	LDA Patrol_ResetTimer, X
+	LSR A
+	STA Patrol_XCycleTimer, X
+
+	LDA Patrol_XAccelLimit, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+	LDA Patrol_XAccelLimit, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_XAccelLimit, X
+
+	LDA Patrol_XVelocityChange, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_XVelocityChange, X
 	RTS
 
 InitCircleCW:
-	LDA Objects_Data8, X
+	JSR InitDiagonal
+
+	LDA Patrol_ResetTimer, X
 	LSR A
-	STA Objects_Timer2, X
-	LDA #$10
-	STA Objects_YVelZ, X
+	STA Patrol_XCycleTimer, X
 
-InitDiagonal2:
-	LDA #$01
-	STA Objects_Data3, X
-
-InitPatrolRTS:
+	LDA Patrol_XAccelLimit, X
+	STA <Objects_XVelZ, X
 	RTS
+
+InitPatrol_Chase:
+	LDA #$10
+	STA ChaseVel_LimitHi, X
+
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
+	RTS
+
+Patrol_XAccelLimit = Objects_Data8
+Patrol_YAccelLimit = Objects_Data9
+Patrol_XVelocityChange = Objects_Data10
+Patrol_YVelocityChange = Objects_Data11
+Patrol_XCycleTimer = Objects_Data12
+Patrol_YCycleTimer = Objects_Data13
+Patrol_ResetTimer = Objects_Data14
+
+ChaseVel_LimitLo = Objects_Data10
+ChaseVel_LimitHi = Objects_Data11
 
 DoPatrol:
 	LDA Objects_Property, X
@@ -6174,141 +6246,144 @@ PatrolDiagonal:
 	JSR PatrolUpDown
 
 PatrolBackForth:
-	LDY #SPR_HFLIP	 ; Y = SPR_HFLIP (paratroopa moving to the right)
+	LDA Patrol_XCycleTimer,X
+	BEQ PatrolBackForth_Accel	 ; If timer is not expired, jump to PRG004_B2FB
 
-	LDA <Objects_XVelZ,X
-	BPL PRG004_B2BD	 ; If paratroopa is moving to the right, jump to PRG004_B2BD
+	DEC Patrol_XCycleTimer,X
+	BNE PatrolBackForth_Move
 
-	LDY #$00	 ; Y = 0 (paratroopa moving to the left)
+	LDA Patrol_XVelocityChange, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_XVelocityChange, X
 
-PRG004_B2BD:
-	TYA		 
-	STA Objects_Orientation,X	 ; Set appropriate flip
+	LDA Patrol_XAccelLimit, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_XAccelLimit, X
 
-	LDA Objects_Timer,X
-	BNE PRG004_B2FB	 ; If timer is not expired, jump to PRG004_B2FB
 
-	INC <Objects_Data1,X	 ; Var4++
-
-	LDA <Objects_Data1,X
+PatrolBackForth_Accel:
+	LDA Level_NoStopCnt
 	AND #$03
-	BNE PRG004_B2FB	 ; 1:4 ticks proceed, otherwise jump to PRG004_B2FB
+	BNE PatrolBackForth_Move
 
-	LDA Objects_Data3,X
-	AND #$01
-	TAY		 ; Y = 0 or 1
+	LDA Patrol_XVelocityChange,X
+	ADD <Objects_XVelZ,X
+	CMP Patrol_XAccelLimit, X
+	BNE PatrolBackForth_SetVel
 
-	; Accelerate!
-	LDA <Objects_XVelZ,X
-	ADD PatrolAccel_Limit,Y
+PatrolBackForth_Reset:
+	LDA Patrol_ResetTimer, X
+	STA Patrol_XCycleTimer, X
+	LDA Patrol_XAccelLimit, X
+
+PatrolBackForth_SetVel:
 	STA <Objects_XVelZ,X
 
-	CMP PatrolVel_Limit,Y
-	BNE PRG004_B2FB	 ; If Paratroopa is not at his velocity limit, jump to PRG004_B2FB
- 
-	INC Objects_Data3,X	 ; Var3++
-
-	; Reset timer to $30
-	
-	LDA Objects_Data8, X
-	STA Objects_Timer,X
-
-PRG004_B2FB:
+PatrolBackForth_Move:
 	JSR Object_ApplyXVel	 ; Apply X velocity
+	JSR Object_FaceDirectionMoving
 	RTS
 
 PatrolUpDown:
-	
-	LDA Objects_Timer2,X
-	BNE PRG004_B2FB_2	 ; If timer is not expired, jump to PRG004_B2FB
+	LDA Patrol_YCycleTimer,X
+	BEQ PatrolUpDown_Accel	 ; If timer is not expired, jump to PRG004_B2FB
 
-	INC Objects_Data6,X	 ; Var4++
+	DEC Patrol_YCycleTimer,X
+	BNE PatrolUpDown_Move
 
-	LDA Objects_Data6,X
+	LDA Patrol_YVelocityChange, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_YVelocityChange, X
+
+	LDA Patrol_YAccelLimit, X
+	EOR #$FF
+	ADD #$01
+	STA Patrol_YAccelLimit, X
+
+
+PatrolUpDown_Accel:
+	LDA Level_NoStopCnt
 	AND #$03
-	BNE PRG004_B2FB_2	 ; 1:4 ticks proceed, otherwise jump to PRG004_B2FB
+	BNE PatrolUpDown_Move
 
-	LDA Objects_Data3,X
-	AND #$01
-	TAY		 ; Y = 0 or 1
+	LDA Patrol_YVelocityChange,X
+	ADD <Objects_YVelZ,X
+	CMP Patrol_YAccelLimit, X
+	BNE PatrolUpDown_SetVel
 
-	; Accelerate!
-	LDA <Objects_YVelZ,X
-	ADD PatrolAccel_Limit,Y
+PatrolUpDown_Reset:
+	LDA Patrol_ResetTimer, X
+	STA Patrol_YCycleTimer, X
+	LDA Patrol_YAccelLimit, X
+
+PatrolUpDown_SetVel:
 	STA <Objects_YVelZ,X
 
-	CMP PatrolVel_Limit,Y
-	BNE PRG004_B2FB_2	 ; If Paratroopa is not at his velocity limit, jump to PRG004_B2FB
- 
-	INC Objects_Data3,X	 ; Var3++
-
-	; Reset timer to $30
-	LDA Objects_Data9, X
-	STA Objects_Timer2,X
-
-PRG004_B2FB_2:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply X velocity
+PatrolUpDown_Move:
+	JSR Object_ApplyYVel	 ; Apply X velocity
 	RTS
 
 Chase:
-	LDA <Player_Y
-	STA ChaseTargetY
-	LDA <Player_YHi
-	STA ChaseTargetYHi
-
 ChaseTargeted:
+	STA Debug_Snap
 	LDA Objects_InWater, X
-	BEQ PRG002_A8ED
-	INC Objects_Data5, X
-	LDA Objects_Data5, X
-	AND #$03
-	BEQ PRG002_A84F
+	BEQ ChaseDetermineX
 
-PRG002_A8ED:	
+	LDA Level_NoStopCnt
+	AND #$03
+	BEQ Chase_Move
+
+ChaseDetermineX:	
 	JSR Level_ObjCalcXDiffs
 
-	LDA <Objects_XVelZ,X
-	CMP ChaseVel_Limit,Y	
-	BEQ PRG002_A8EE	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+	CPY #$01
+	BNE ChaseDetermineXRight
 
-	ADD PatrolAccel_Limit,Y	 ; Boo accelerates!
+	LDA <Objects_XVelZ,X
+	CMP ChaseVel_LimitLo,X	
+	BEQ Chase_DetermineY	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+
+	ADD #$FF	 ; Boo accelerates!
+	STA <Objects_XVelZ,X	 ; Update Boo's X velocity
+	JMP Chase_DetermineY
+
+ChaseDetermineXRight:
+	LDA <Objects_XVelZ,X
+	CMP ChaseVel_LimitHi,X	
+	BEQ Chase_DetermineY	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+
+	ADD #$01	 ; Boo accelerates!
 	STA <Objects_XVelZ,X	 ; Update Boo's X velocity
 
-PRG002_A8EE:
+Chase_DetermineY:
+	JSR Level_ObjCalcYDiffs
 
-	; Set flip bit as appropriate
-	LDY #SPR_HFLIP
-	LDA Objects_XVelZ, X
-	BPL SetChaseFlip
-	LDY #$00
+	CPY #$01
+	BNE ChaseDetermineYUp
 
-SetChaseFlip:
-	TYA
-	STA Objects_Orientation,X	
-
-	JSR Object_CalcCoarseTargetYDiff
-
-	LDY #$00	 ; Y = 0 (Player is lower, move down!)
-
-	LDA <Temp_Var15
-	SUB #$0C
-	BMI PRG002_A841
-
-	INY		 ; Y = 1 (Player is higher, move up!)
-
-PRG002_A841:
 	LDA <Objects_YVelZ,X
-	CMP ChaseVel_Limit,Y
-	BEQ PRG002_A84E	 ; If Boo is at his acceleration limit, jump to PRG002_A84E
+	CMP ChaseVel_LimitLo,X	
+	BEQ Chase_Move	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
 
-	ADD PatrolAccel_Limit,Y	 ; Boo accelerates!
-	STA <Objects_YVelZ,X	 ; Update Boo's Y velocity
+	ADD #$FF	 ; Boo accelerates!
+	STA <Objects_YVelZ,X	 ; Update Boo's X velocity
+	JMP Chase_Move
 
-PRG002_A84E:
+ChaseDetermineYUp:
+	LDA <Objects_YVelZ,X
+	CMP ChaseVel_LimitHi,X	
+	BEQ Chase_Move	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+
+	ADD #$01	 ; Boo accelerates!
+	STA <Objects_YVelZ,X	 ; Update Boo's X velocity
+
+Chase_Move:
 	JSR Object_ApplyXVel	 ; Apply X velocity
 	JSR Object_ApplyYVel	 ; Apply Y Velocity
 
-PRG002_A84F:
 	RTS
 
 
@@ -6316,6 +6391,7 @@ PRG002_A84F:
 FaceDirection: .byte SPR_HFLIP, $00
 
 Object_FaceDirectionMoving:
+
 	LDY #$00
 	LDA <Objects_XVelZ, X
 	BPL Object_FaceDirectionMoving1
@@ -6329,8 +6405,34 @@ Object_FaceDirectionMoving1:
 	STA Objects_Orientation, X
 	RTS
 
+TowardsPlayerSpeed:	.byte $08, -$08
+
+Object_FacePlayerOnLanding:
+	LDA  <Objects_CollisionDetectionZ, X
+	AND #HIT_GROUND
+	BEQ Object_FacePlayerOnLanding1
+
+	LDA Objects_PreviousCollisionDetection, X
+	AND #HIT_GROUND
+	BNE Object_FacePlayerOnLanding1
+
+	JSR Object_FacePlayer
+	LDA TowardsPlayerSpeed,Y
+	STA <Objects_XVelZ, X
+
+Object_FacePlayerOnLanding1:
+	RTS
+
+Object_MoveTowardsPlayer:
+	JSR Object_FacePlayer
+	LDA TowardsPlayerSpeed,Y
+	STA <Objects_XVelZ, X
+	RTS
+
 Object_FacePlayer:
 	JSR Level_ObjCalcXDiffs
+
+Object_FacePlayer1:
 	LDA Objects_Orientation, X
 	AND #~SPR_HFLIP
 	ORA FaceDirection, Y
