@@ -738,6 +738,20 @@ PRG000_C797:
 ; Y/X offset pair.  Seems kind of a limited way to go, but hey..
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $C7A9
+Object_DetectTileDirect:
+
+	LDA ObjTile_DetYHi 	; -> ObjTile_DetYHi (high)
+	AND #$01
+	STA <Temp_Var3	 ; Temp_Var3 = 0 or 1, depending if Y lo is on odd line or not
+
+	LDA ObjTile_DetYLo
+	AND #$F0
+	STA ObjTile_DetYLo
+
+	LDA ObjTile_DetXHi
+	STA Debug_Snap
+	JMP Tile_DirectDetect
+
 Object_DetectTile:
 	LDA <Objects_YZ,X
 	ADD Object_TileDetectOffsets,Y	; Adding tile detection Y offset to Object's Y
@@ -779,7 +793,7 @@ PRG000_C7FA:
 	CMP #$10
 	BGE PRG000_C832	 ; If the high part is more than $10 (biggest possible within other limits), jump to PRG000_C832
 
-IndependentBlockCheck:
+Tile_DirectDetect:
 	ASL A		 ; Change high part into 2 byte index to select the screen
 	TAY		 ; -> 'Y'
 
@@ -807,11 +821,13 @@ PRG000_C82A:
 	TAY
 	LDA TileProperties, Y
 	STA Object_TileProp
+	STY Object_LevelTile
 	RTS	 ; Jump to PRG000_C834
 
 PRG000_C832:
 	LDA #$00	; No tile detected
 	STA Object_LevelTile	; Store tile index detected
+	STA Object_TileProp
 
 PRG000_C834:
 
@@ -966,7 +982,6 @@ PRG000_C975:
 
 	LDA <Player_HaltGameZ
 	BNE PRG000_C9B6	 ; If gameplay is halted, jump to PRG000_C9B6
-
 	LDA Objects_Timer,X
 	BEQ PRG000_C983	 ; If this timer is already at zero, jump to PRG000_C983
 
@@ -985,6 +1000,24 @@ PRG000_C98B:
 	BGE PRG000_C9B6	 ; If object slot index >= 5, jump to PRG000_C9B6
 
 	; Non-special objects in slots 0 to 4...
+
+	LDA Explosion_Timer, X
+	BEQ DoNot_Explode
+
+	CMP #$40
+	BNE NoExplosion_Colors
+
+	LDA #$40
+	STA Objects_ColorCycle,X
+
+NoExplosion_Colors:
+
+	DEC Explosion_Timer, X
+	BNE DoNot_Explode
+
+	JSR Object_Explode
+
+DoNot_Explode:
 
 	LDA Objects_Timer4,X
 	BEQ PRG000_C996	 ; If this timer is already at zero, jump to PRG000_C997
@@ -1049,7 +1082,8 @@ PRG000_C9D2:
 	INC <CurrentObjectIndexZ
 	LDA <CurrentObjectIndexZ
 	CMP #$08
-	BNE PRG000_C975	 ; While X >= 0, loop!
+	BEQ PRG000_C9E5
+	JMP PRG000_C975	 ; While X >= 0, loop!
 
 PRG000_C9E5:
 	LDA Player_Flip
@@ -1413,9 +1447,6 @@ PRG000_CBB4:
 	CMP #OBJ_BLUESPINY
 	BEQ PRG000_CBB3	 
 
-	CMP #OBJ_PURPLETROOPA
-	BEQ RotatePaletteInstead
-
 	; "Shake awake" speed
 
 Object_Vibrate:
@@ -1497,60 +1528,6 @@ PRG000_CBF8:
 
 PRG000_CC23:
 	RTS		 ; Return
-
-RotatePaletteInstead:
-	LDX <CurrentObjectIndexZ 
-	LDA Objects_SpriteAttributes,X
-	AND #$FC
-	STA TempA
-	LDA Objects_Timer3, X
-	CMP #$01
-	BEQ KoopaExpload0
-	CMP #$60
-	BCS DontSetColors
-	CMP #$40
-	BCS RotateColors1
-	CMP #$20
-	BCS RotateColors2
-	LDA <Counter_1
-	AND #$06
-	LSR A
-	JMP SetColors
-
-RotateColors1:
-	LDA <Counter_1
-	AND #$18
-	LSR A
-	LSR A
-	LSR A
-	JMP SetColors
-
-RotateColors2:
-	LDA <Counter_1
-	AND #$0C
-	LSR A
-	LSR A
-	JMP SetColors
-
-SetColors:
-	ORA TempA
-	STA Objects_SpriteAttributes,X
-
-DontSetColors:
-	RTS
-
-KoopaExpload0:
-	LDY Objects_SpawnIdx,X	
-	LDA Level_ObjectsSpawned,Y
-	AND #$7f
-	STA Level_ObjectsSpawned,Y
-
-KoopaExpload:
-	LDA #OBJ_BOBOMBEXPLODE
-	STA Objects_ID, X
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State,X
-	RTS
 
 ObjState_Kicked:
 	LDA <Player_HaltGameZ 
@@ -1728,6 +1705,27 @@ Object_TopBumpBlocks:
 	ADC #$00
 	STA <Temp_Var15	
 
+	JMP Object_BumpBlocks
+
+Object_DirectBumpBlocks:
+	LDA Object_LevelTile	; Store tile index detected
+	STA <Level_Tile
+
+	LDA Object_TileProp
+	STA <Level_Tile_Prop
+
+	; Transfer tile detection 
+	LDA ObjTile_DetYLo
+	STA <Temp_Var14	
+
+	LDA ObjTile_DetYHi
+	STA <Temp_Var13	
+
+	LDA ObjTile_DetXLo
+	STA <Temp_Var16	
+
+	LDA ObjTile_DetXHi
+	STA <Temp_Var15	
 	JMP Object_BumpBlocks
 
 Object_SideBumpBlocks:
@@ -2596,7 +2594,6 @@ PRG000_D19E:
 	; Change to alternate ObjectID in low byte
 	LDA ObjectGroup_CollideJumpTable,Y
 	STA Objects_ID,X
-	STA Debug_Snap
 	JSR Object_MoveTowardsPlayer
 	; Get 100 pts
 
@@ -2830,7 +2827,6 @@ Object_FinishStompKill:
 	AND #OA3_SQUASH
 	BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
 
-
 	LDA #OBJSTATE_SHELLED	 ; Otherwise, state is Shelled
 	BNE PRG000_D297	 ; Jump (technically always) to PRG000_D297
 
@@ -2945,24 +2941,20 @@ Object_SetShellState:
 	; Set Objects_State to Shelled
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
-	
-	PHP
-	LDA Objects_ID, X
-	CMP #OBJ_PURPLETROOPA
-	BEQ FuseTroopa
 
 	; Set timer 3 = $FF (wake up timer)
 	LDA #$ff
 	STA Objects_Timer3,X
 
-	PLP
-	RTS		 ; Return
+	LDA Objects_ID, X
+	CMP #OBJ_PURPLETROOPA
+	BNE NotPurple_Troopa
 
-FuseTroopa:
-	LDA #$80
-	STA Objects_Timer3, X
-	PLP
-	RTS
+	LDA #$ff
+	STA Explosion_Timer, X
+
+NotPurple_Troopa:
+	RTS		 ; Return
 
 Object_HoldKickOrHurtPlayer:
 	LDA Objects_ID, X
@@ -5624,6 +5616,10 @@ DoSpinnerE:
 ; the floor/ceiling, or bump blocks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $A966
+Object_InteractWithTilesWallStops:
+	LDA #$01
+	STA Object_WallStops
+
 Object_InteractWithTiles:
 	LDA <Objects_CollisionDetectionZ,X
 
@@ -5690,14 +5686,47 @@ PRG001_A9A7:
 	CMP #$08	 
 	BGE PRG001_A9B1	 ; If Temp_Var1 >= 8 (never gonna happen), jump to PRG001_A9B1
 
+	LDA #$00
+	STA Object_WallStops
 	RTS		 ; Return
 
 PRG001_A9B1:
 
 	; Combined, this just reverses the X velocity
+	LDA Object_WallStops
+	BEQ Object_DoReverse
+
+	LDA <Objects_XVelZ, X
+	BPL Object_HitRightWall
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	AND #$F0
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Objects_XHiZ, X
+	JMP Stop_Object
+
+Object_HitRightWall:
+	LDA <Objects_XZ, X
+	AND #$F0
+	STA <Objects_XZ, X
+
+Stop_Object:
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA Objects_XVelFrac,X
+	STA Object_WallStops
+	RTS
+
+Object_DoReverse:
 	JSR Object_Reverse
 
 PRG001_A9B7:
+	LDA #$00
+	STA Object_WallStops
 	RTS		 ; Return
 
 SetSpriteFG:
@@ -6328,7 +6357,6 @@ PatrolUpDown_Move:
 
 Chase:
 ChaseTargeted:
-	STA Debug_Snap
 	LDA Objects_InWater, X
 	BEQ ChaseDetermineX
 
@@ -6386,19 +6414,28 @@ Chase_Move:
 
 	RTS
 
-
-
 FaceDirection: .byte SPR_HFLIP, $00
 
 Object_FaceDirectionMoving:
-
 	LDY #$00
 	LDA <Objects_XVelZ, X
+	BEQ Object_FacePlayer
 	BPL Object_FaceDirectionMoving1
 
 	INY
 
 Object_FaceDirectionMoving1:
+	LDA Objects_Orientation, X
+	AND #~SPR_HFLIP
+	ORA FaceDirection, Y
+	STA Objects_Orientation, X
+	RTS
+
+
+Object_FacePlayer:
+	JSR Level_ObjCalcXDiffs
+
+Object_FacePlayer1:
 	LDA Objects_Orientation, X
 	AND #~SPR_HFLIP
 	ORA FaceDirection, Y
@@ -6429,15 +6466,6 @@ Object_MoveTowardsPlayer:
 	STA <Objects_XVelZ, X
 	RTS
 
-Object_FacePlayer:
-	JSR Level_ObjCalcXDiffs
-
-Object_FacePlayer1:
-	LDA Objects_Orientation, X
-	AND #~SPR_HFLIP
-	ORA FaceDirection, Y
-	STA Objects_Orientation, X
-	RTS
 
 Reap_Coin:
 	LDA Player_Equip
@@ -6677,4 +6705,20 @@ Object_KickNotWall:
 	STA <Objects_YVelZ, X
 
 Object_KickRTS:
+	RTS
+
+Object_Explode:
+	LDA #OBJ_EXPLOSION
+	STA Objects_ID, X
+
+	LDA #$00
+	STA Objects_Timer, X
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
+
+	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
+	LDA Level_ObjectsSpawned,Y
+	AND #$7f
+	STA Level_ObjectsSpawned,Y
 	RTS

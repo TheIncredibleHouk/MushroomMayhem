@@ -38,7 +38,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_ParaTroopas	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
-	.word Object_MoveTowardsPlayer	; Object $7A - OBJ_PURPLETROOPA
+	.word ObjInit_Troopa	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjInit_BlueShell	; Object $7B - OBJ_BLUESHELL
 	.word ObjInit_DeliveryLakitu	; Object $7C - OBJ_HELPER
 	.word ObjInit_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
@@ -122,7 +122,7 @@ ObjectGroup03_CollideJumpTable:
 	.word ObjHit_DoNothing					; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjHit_DoNothing					; Object $77 - OBJ_GREENCHEEP
 	.word ObjHit_DoNothing					; Object $78 - OBJ_BULLETBILL
-	.word KoopaExpload					; Object $79 - OBJ_BULLETBILLHOMING
+	.word ObjHit_DoNothing					; Object $79 - OBJ_BULLETBILLHOMING
 	.word Object_AttackOrDefeat					; Object $7A - OBJ_PURPLETROOPA
 	.word Player_GetHurt					; Object $7B - OBJ_BLUESHELL
 	.word $0000					; Object $7C - OBJ_HELPER
@@ -3072,25 +3072,17 @@ PRG004_B0CC:
 
 	JMP GroundTroop_DrawNormal	 ; Draw and don't come back!
 
+SwimCheep_CurrentFrame = Objects_Data1
+
 ObjNorm_SwimmingCheep:
 	LDA <Player_HaltGameZ
-	BNE JustDrawCheep
+	BNE Cheep_Draw
 
-	INC <Objects_Data2,X	 ; Var5++
-
-	; Toggle frame 0/1
-	LDA <Objects_Data2,X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-	JSR Object_DetectTiles
-	JSR Object_InteractWithTiles
 	JSR Object_DeleteOffScreen
-	JSR Object_AttackOrDefeat
 	JSR DoPatrol
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTilesWallStops
+	JSR Object_FaceDirectionMoving
 
 	LDA Object_TileWallProp
 	BNE ObjNorm_SwimmingCheep1
@@ -3099,11 +3091,24 @@ ObjNorm_SwimmingCheep:
 
 ObjNorm_SwimmingCheep1:
 	LDA Object_TileFeetProp
-	BNE JustDrawCheep
+	BNE ObjNorm_SwimmingCheep2
 
 	JSR Object_HitCeiling
 
-JustDrawCheep:
+ObjNorm_SwimmingCheep2:
+	JSR Object_AttackOrDefeat
+
+	INC <SwimCheep_CurrentFrame,X	 ; Var5++
+
+	; Toggle frame 0/1
+	LDA <SwimCheep_CurrentFrame,X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+
+Cheep_Draw:
 	JMP Object_ShakeAndDraw
 
 BulletBill_XAccel:	.byte $01, -$01
@@ -3182,7 +3187,7 @@ ObjNorm_MissileMarkA1:
 
 	LDA #$00
 	STA Objects_Frame, X
-	JMP KoopaExpload
+	;JMP KoopaExpload
 
 DrawBullet:
 	LDA #$00
@@ -3389,7 +3394,6 @@ ObjNorm_FlyingTroopa:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_FlyingTroopa2
 
-	STA Debug_Snap
 	LDA Objects_Property, X
 	CMP #$06
 	BEQ FlyingTroopa_OffScreen
@@ -3410,7 +3414,7 @@ ObjNorm_FlyingTroopa0:
 	JSR DoPatrol
 	JSR Object_FaceDirectionMoving
 	JSR Object_DetectTiles
-	JSR Object_InteractWithTiles
+	JSR Object_InteractWithTilesWallStops
 	JSR Object_AttackOrDefeat
 
 	INC <Koopa_CurrentFrame,X
@@ -3439,7 +3443,6 @@ ObjInit_Troopa:
 Koopa_CurrentFrame = Objects_Data1
 
 ObjNorm_RedTroopa:
-
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_Troopa1
 
@@ -5889,7 +5892,7 @@ BlueShell_Expload:
 	SBC #$00
 	STA Objects_XHiZ, X
 	STX TempX
-	JSR KoopaExpload
+	;JSR KoopaExpload
 	JSR FindEmptyEnemySlot
 	LDY TempX
 	LDA Objects_XZ, Y
@@ -5904,7 +5907,7 @@ BlueShell_Expload:
 	STA Objects_YZ, X
 	LDA Objects_YHiZ, Y
 	STA Objects_YHiZ, X
-	JMP KoopaExpload
+	;JMP KoopaExpload
 	
 ThwompDetectLeftBlock:
 	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)

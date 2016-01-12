@@ -29,10 +29,10 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_MagicStar1	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
-	.word ObjInit_Explosion	; Object $4D
+	.word ObjInit_DoNothing	; Object $4D
 	.word ObjInit_DoNothing		; Object $4E
 	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
-	.word ObjInit_BobOmbExplode	; Object $50 - OBJ_BOBOMBEXPLODE
+	.word ObjInit_Explosion	; Object $50 - OBJ_EXPLOSION
 	.word ObjInit_RotoDiscDualCCW	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjInit_Spintula	; Object $52 - OBJ_SPINTULA
 	.word ObjInit_PodobooCeiling	; Object $53 - OBJ_PODOBOOCEILING
@@ -71,10 +71,10 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjNorm_MagicStar		; Object $4B - OBJ_MAGICSTAR
 	.word ObjNorm_MagicStar		; Object $4C - OBJ_MAGICSTAR
-	.word ObjNorm_Explosion	; Object $4D
+	.word ObjNorm_DoNothing	; Object $4D
 	.word ObjNorm_DoNothing		; Object $4E
 	.word ObjNorm_ChainChompFree	; Object $4F - OBJ_CHAINCHOMPFREE
-	.word BobOmb_DoExplosion		; Object $50 - OBJ_BOBOMBEXPLODE
+	.word ObjNorm_Explosion		; Object $50 - OBJ_EXPLOSION
 	.word ObjNorm_RotoDiscDual	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjNorm_Spintula	; Object $52 - OBJ_SPINTULA
 	.word ObjNorm_PodobooCeiling	; Object $53 - OBJ_PODOBOOCEILING
@@ -117,7 +117,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $4D
 	.word ObjHit_DoNothing	; Object $4E
 	.word ObjHit_DoNothing	; Object $4F - OBJ_CHAINCHOMPFREE
-	.word ObjHit_DoNothing	; Object $50 - OBJ_BOBOMBEXPLODE
+	.word ObjHit_DoNothing	; Object $50 - OBJ_EXPLOSION
 	.word ObjHit_DoNothing	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjHit_DoNothing	; Object $52 - OBJ_SPINTULA
 	.word ObjHit_DoNothing	; Object $53 - OBJ_PODOBOOCEILING
@@ -159,7 +159,7 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $4D
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $4E
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $50 - OBJ_EXPLOSION
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $52 - OBJ_SPINTULA
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $53 - OBJ_PODOBOOCEILING
@@ -200,7 +200,7 @@ ObjectGroup02_Attributes2:
 	.byte OA2_TDOGRP0	; Object $4D
 	.byte OA2_TDOGRP0	; Object $4E
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OA2_TDOGRP1	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OA2_TDOGRP1	; Object $50 - OBJ_EXPLOSION
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $52 - OBJ_SPINTULA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $53 - OBJ_PODOBOOCEILING
@@ -242,7 +242,7 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $4D
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $4E
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OA3_HALT_NORMALONLY 	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OA3_HALT_NORMALONLY 	; Object $50 - OBJ_EXPLOSION
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OA3_HALT_NORMALONLY	; Object $52 - OBJ_SPINTULA
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $53 - OBJ_PODOBOOCEILING
@@ -284,7 +284,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $4D
 	.byte OPTS_NOCHANGE	; Object $4E
 	.byte OPTS_SETPT5 | $0E	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OPTS_NOCHANGE	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte OPTS_NOCHANGE	; Object $50 - OBJ_EXPLOSION
 	.byte OPTS_SETPT5 | $12	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OPTS_SETPT5 | $0A	; Object $52 - OBJ_SPINTULA
 	.byte OPTS_NOCHANGE	; Object $53 - OBJ_PODOBOOCEILING
@@ -329,7 +329,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_STANDARD	; Object $4D
 	.byte KILLACT_STANDARD	; Object $4E
 	.byte KILLACT_NORMALANDKILLED	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte KILLACT_JUSTDRAW16X16	; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte KILLACT_JUSTDRAW16X16	; Object $50 - OBJ_EXPLOSION
 	.byte KILLACT_STANDARD	; Object $51 - OBJ_ROTODISCDUAL
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $52 - OBJ_SPINTULA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $53 - OBJ_PODOBOOCEILING
@@ -1871,19 +1871,6 @@ DonutLift_ChangeBlock:
 
 	RTS		 ; Return
 
-ObjInit_Explosion:
-	RTS
-
-ObjNorm_Explosion:
-	JSR Object_DeleteOffScreen
-	LDA TrapSet
-	BEQ NoExplosionYet
-	LDA #$10
-	STA Objects_Timer,X
-	JMP MineDoExplode
-
-NoExplosionYet:
-	RTS
 	; Bob-omb's starting X velocity depending on where Player is
 BobOmb_StartXVel:	.byte $08, -$08
 
@@ -1897,11 +1884,6 @@ ObjInit_BobOmb:
 	LDA BobOmb_StartXVel,Y
 	STA <Objects_XVelZ,X
 
-	RTS		 ; Return
-
-ObjInit_BobOmbExplode:
-	LDA #$18
-	STA Objects_Timer, X
 	RTS		 ; Return
 
 ObjNorm_BobOmb:
@@ -1941,7 +1923,7 @@ PRG003_A6DD:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word BobOmb_WalkAround		; 0: Unsquashed Bob-omb minding his own business
 	.word BobOmb_FlashToExplode	; 1: Squashed Bob-omb who then flashes and explodes
-	.word BobOmb_DoExplosion	; 2: Do the explosion, kill things, etc.
+	.word ObjNorm_Explosion	; 2: Do the explosion, kill things, etc.
 	.word BobOmb_Unstable
 
 PRG003_A6E8:
@@ -2148,13 +2130,28 @@ PRG003_A7FE:
 BombStars_XOff:	.byte -$04, $04, $08, $04, -$04, -$08, $00, $08, $08, $00, -$08, -$08
 BombStars_YOff:	.byte -$08, -$08, $00, $08, $08, $00, $08, $04, -$04, -$08, -$04, $04
 
-BobOmb_DoExplosion:
+Explosion_Offset = Objects_Data1
+
+ObjInit_Explosion:
+	LDA #$18
+	STA Objects_Timer,X
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA RotatingColor_Cnt
+	RTS		 ; Return
+
+ObjNorm_Explosion:
+	
 	LDA <Player_HaltGameZ
-	BNE PRG003_A82E	 ; If gameplay is halted, jump to PRG003_A82E
+	BNE DrawEx	 ; If gameplay is halted, jump to PRG003_A82E
 
-	INC <Objects_Data1,X	 ; Otherwise, Var4++
+	INC <Explosion_Offset,X	 ; Otherwise, Var4++
 
-PRG003_A82E:
+DrawEx:
 	LDA Objects_Timer,X
 	BNE PRG003_A836	 ; If timer has not expired, jump to PRG003_A836
 
@@ -2246,7 +2243,7 @@ PRG003_A89D:
 	BPL PRG003_A83D	 ; While Temp_Var16 >= 0, loop!
 
 	JSR Object_AnySprOffscreen
-	BNE PRG003_A8D2	 ; If any part of the exploding Bob-omb has fallen off-screen, jump to PRG003_A8D2
+	BNE Explosion_BumpBlocks	 ; If any part of the exploding Bob-omb has fallen off-screen, jump to Explosion_BumpBlocks
 
 	JSR BobOmb_CalcULOffXY	; (large bounding box for explosion)
 
@@ -2255,7 +2252,7 @@ PRG003_A89D:
 	STA <Temp_Var13
 
 	JSR PRG000_DC09	 ; Object-to-object collision test sans visibility check and bounding box calculation
-	BCC PRG003_A8D2	 ; If there hasn't been a collision, jump to PRG003_A8D2 (RTS)
+	BCC Explosion_BumpBlocks	 ; If there hasn't been a collision, jump to Explosion_BumpBlocks (RTS)
 
 	; "Kick" sound
 	LDA Sound_QPlayer
@@ -2280,179 +2277,56 @@ PRG003_A89D:
 
 	INC Exp_Earned	 ; Get score for that
 
-PRG003_A8D2:
-
-BobOmb_CheckExplodables:
-	JSR BackUpPosition
+Explosion_BumpBlocks:
 	LDA Objects_Timer,X
 	AND #$07
 	TAY
-	JSR OffsetPosition
-	LDX <CurrentObjectIndexZ
-	JSR CheckBreakables
-	JSR RestorePosition
 
-NoMoreExplodables:
+	STA Debug_Snap
+	LDA <Objects_XZ, X
+	ADD ExplodeXOffsets + 8, Y
+	STA ObjTile_DetXLo
+
+	LDA <Objects_XHiZ, X
+	ADC ExplodeXOffsets, Y
+	STA ObjTile_DetXHi
+
+	LDA <Objects_YZ, X
+	ADD ExplodeYOffsets + 8, Y
+	STA ObjTile_DetYLo
+
+	LDA <Objects_YHiZ, X
+	ADC ExplodeYOffsets, Y
+	STA ObjTile_DetYHi
+
+	JSR Object_DetectTileDirect
+	LDA Object_TileProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BEQ Switch_ToBrick
+
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_STONE)
+	BNE Explosion_Bump
+
+Switch_ToBrick:
+	LDA #(TILE_PROP_ITEM | TILE_ITEM_BRICK)
+	STA Object_TileProp
+
+Explosion_Bump:
+	LDA Object_TileProp
+	CMP #TILE_PROP_ITEM
+	BCC Explosion_BumpRTS
+
+	JSR Object_DirectBumpBlocks
+Explosion_BumpRTS:
 	RTS
 
 ExplodeXOffsets:
-	.byte -$10, -$10, -$10, $00, $10, $10, $10, $00
+	.byte $FF, $00, $00, $FF, $00, $FF, $00, $00
+	.byte $F8, $08, $18, $F8, $18, $F8, $08, $18
 
 ExplodeYOffsets
-	.byte -$08, $08, $18, $18, $18, $08, -$08, -$08
-
-BackUpPosition:
-	LDA <Objects_XZ, X
-	STA BackUpX
-	LDA <Objects_XHiZ, X
-	STA BackUpXHi
-	LDA <Objects_YZ, X
-	STA BackUpY
-	LDA <Objects_YHiZ, X
-	STA BackUpYHi
-	RTS
-
-OffsetPosition:
-	JSR OffsetPositionX
-	JSR OffsetPositionY
-	RTS
-
-OffsetPositionX:
-	LDA ExplodeXOffsets, Y
-	BMI OffsetPositionX1
-	ADD <Objects_XZ, X
-	STA <Objects_XZ, X
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA <Objects_XHiZ, X
-	RTS
-
-OffsetPositionX1:
-	JSR Negate
-	STA TempA
-	LDA <Objects_XZ, X
-	SUB TempA
-	STA <Objects_XZ, X
-	LDA <Objects_XHiZ, X
-	SBC #$00
-	STA <Objects_XHiZ, X
-	RTS
-
-OffsetPositionY:
-	LDA ExplodeYOffsets, Y
-	BMI OffsetPositionY1
-	ADD <Objects_YZ, X
-	STA <Objects_YZ, X
-	LDA <Objects_YHiZ, X
-	ADC #$00
-	STA <Objects_YHiZ, X
-	RTS
-
-OffsetPositionY1:
-	JSR Negate
-	STA TempA
-	LDA <Objects_YZ, X
-	SUB TempA
-	STA <Objects_YZ, X
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Objects_YHiZ, X
-	RTS
-
-RestorePosition:
-	LDX CurrentObjectIndexZ
-	LDA BackUpX
-	STA <Objects_XZ, X
-	LDA BackUpXHi
-	STA <Objects_XHiZ, X
-	LDA BackUpY
-	STA <Objects_YZ, X
-	LDA BackUpYHi
-	STA <Objects_YHiZ, X
-	RTS
-
-CheckBreakables:
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile
-	JSR CheckExplodableTile
-	BNE No_Exploads
-	JSR ExplodeBreakBlocks
-
-No_Exploads:
-	RTS
-
-CheckExplodableTile:
-	CMP #TILE_PROP_SOLID_ALL
-	BCC NotBreakable
-	AND #$0F
-	CMP #$0C
-	BEQ ExplodeBreakBlocks
-	CMP #$0D
-	BEQ ExplodeBreakBlocks
-
-NotBreakable:
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
-	BEQ ExplodeBreakBlocks
-	RTS
-
-ExplodeBreakBlocks:
-	LDA Object_LevelTile
-	LDY Object_TileProp
-	CPY #$F0
-	BCC ExplodeBreakBlocks1
-
-	AND #$C0
-
-ExplodeBreakBlocks1:
-	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
-
-	LDA ObjTile_DetYLo
-	AND #$F0
-	STA Level_BlockChgYLo
-	LDA ObjTile_DetYHi
-	STA Level_BlockChgYHi
-	
-	LDA ObjTile_DetXLo
-	AND #$F0
-	STA Level_BlockChgXLo
-	LDA ObjTile_DetXHi
-	STA Level_BlockChgXHi
-
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-
-	; Set the brick bust
-	LDA #$02
-	STA BrickBust_En
-
-	; Brick bust upper Y
-	LDA Level_BlockChgYLo
-	CLC
-	SBC Level_VertScroll
-	STA BrickBust_YUpr
-
-	; Brick bust lower Y
-	ADD #$08
-	STA BrickBust_YLwr
-
-	; Brick bust X
-	LDA Level_BlockChgXLo
-	SUB <Horz_Scroll	
-	STA BrickBust_X
-
-	; reset brick bust X distance, no horizontal
-	LDA #$00
-	STA BrickBust_XDist
-	STA BrickBust_HEn
-
-	; Brick bust Y velocity
-	LDA #-$06
-	STA BrickBust_YVel
-	RTS
+	.byte $FF, $FF, $FF, $00, $00, $00, $00, $00
+	.byte $F8, $F8, $F8, $08, $08, $18, $18, $18
 
 	; Calculates an upper left X/Y offset
 BobOmb_CalcULOffXY:
@@ -3183,7 +3057,7 @@ NoMineDraw:
 
 
 MineDoExplode:
-	LDA #OBJ_BOBOMBEXPLODE
+	LDA #OBJ_EXPLOSION
 	STA Objects_ID, X
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X

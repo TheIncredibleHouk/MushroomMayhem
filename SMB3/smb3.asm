@@ -1314,6 +1314,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	LastPowerUp:		.ds 1;
 	ReverseGravity:		.ds 1
 	NoGravity:			.ds 1;
+	Object_WallStops:	.ds 1;
 	Player_ForcedSlide:	.ds 1
 	Player_PrevXDirection:	ds 1
 	RhythmPlatformEnabed: .ds 1
@@ -1889,6 +1890,7 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	Objects_Timer3:		.ds 5	; $06A6-$06AA Used as the "wake up" out of shell timer
 	Objects_Timer4:		.ds 5	; $06AB-$06AF "Timer" values; automatically decrements to zero (used in "shakin' awake" effect)
 	Objects_SlowTimer:	.ds 5
+	Explosion_Timer:	.ds 5
 
 	Buffer_Occupied:	.ds 2	; $06B4-$06B5 Set if respective Object_BufferX/Y buffer is already taken by an object
 
@@ -3538,9 +3540,9 @@ OBJ_FLOATINGBGCLOUD	= $49	; Floating background cloud
 OBJ_MAGICSTAR	= $4A 	; Boom Boom (?) end-level ball
 OBJ_BOOMBOOMJUMP	= $4B	; Jumping Boom-Boom (can actually hit ? blocks!)
 OBJ_BOOMBOOMFLY		= $4C	; Flying Boom-boom
-OBJ_EXPLOSION		= $4D	;
 OBJ_CHAINCHOMPFREE	= $4F	; Jumping chain chomp head after he breaks free
-OBJ_BOBOMBEXPLODE	= $50	; Ready-to-explode Bob-Omb
+OBJ_BOBOMBEXPLODE	= $00
+OBJ_EXPLOSION	= $50	; Ready-to-explode Bob-Omb
 OBJ_ROTODISCDUAL	= $51	; Dual Rotodisc, sync, clockwise
 OBJ_TREASUREBOX		= $00	;
 OBJ_SPINTULA		= $52	; Treasure box
