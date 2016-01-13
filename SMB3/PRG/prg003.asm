@@ -2282,7 +2282,6 @@ Explosion_BumpBlocks:
 	AND #$07
 	TAY
 
-	STA Debug_Snap
 	LDA <Objects_XZ, X
 	ADD ExplodeXOffsets + 8, Y
 	STA ObjTile_DetXLo

@@ -155,10 +155,10 @@ OTDO_Explosion:
 	; Selected by Object_AttrFlags lower 4 bits
 Object_BoundBox:
 	;    Left Right Top  Bot- offsets applied to sprite X/Y
-	.byte  2,   4,   2,   8	; 0
-	.byte  1,  13,   2,   8	; 1
-	.byte  2,  12,   2,  24	; 2
-	.byte 10,  27,  -2,  18	; 3
+	.byte  2,   4,   2,   8	; 0 ; 8x16  OAT_BOUNDBOX00
+	.byte  1,  13,   2,   8	; 1 ; 16x16 OAT_BOUNDBOX01
+	.byte  2,  12,   2,  24	; 2 ; 24x16 OAT_BOUNDBOX02
+	.byte  1,  16,   -2,  16	; 3 ; solid block (16x16) OAT_BOUNDBOX03
 	.byte  8,  24,   8,  30	; (BOSS)
 	.byte  8,  18,   8,  18	; 5 (UNUSED)
 	.byte  2,  27,  -2,  34	; 6
@@ -177,7 +177,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00	; Object $00
 	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $01
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $02
-	.byte OAT_BOUNDBOX04 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $03
+	.byte OAT_BOUNDBOX03 | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $03
 	.byte OAT_BOUNDBOX02 | OAT_FIREIMMUNITY | OAT_HITNOTKILL | OAT_ICEIMMUNITY | OAT_HITNOTKILL	; Object $04
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_ICEIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $05
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -749,7 +749,6 @@ Object_DetectTileDirect:
 	STA ObjTile_DetYLo
 
 	LDA ObjTile_DetXHi
-	STA Debug_Snap
 	JMP Tile_DirectDetect
 
 Object_DetectTile:
@@ -5475,6 +5474,7 @@ Object_Check_Water:
 	LDA TempA
 	CMP #(TILE_PROP_FOREGROUND | TILE_PROP_WATER | TILE_PROP_HARMFUL)
 	BEQ Object_Check_Water0
+
 	CMP #(TILE_PROP_WATER | TILE_PROP_HARMFUL)
 	BNE Object_Check_Water1
 

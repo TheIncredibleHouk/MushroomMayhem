@@ -4514,9 +4514,12 @@ ObjNorm_EaterBlock:
 	BEQ ObjNormal_EaterBlock3
 
 	JMP Object_ShakeAndDrawMirroredAligned
-
-ObjNormal_EaterBlock3:
 	
+ObjNormal_EaterBlock3:
+	JSR Object_InteractWithPlayer	
+	JSR Object_Move
+	JSR Object_DetectTiles
+
 	LDA <Objects_XZ, X
 	ORA <Objects_YZ, X
 	AND #$0F
@@ -4619,93 +4622,105 @@ Player_Heights:
 	.byte $06, $11
 
 ObjHit_SolidBlock:
-	LDA <Player_Y
-	ADC #32
-	SUB <Objects_YZ, X
-	STA <Temp_Var1
-	CMP #$F4
-	BCS ObjHit_SolidBlock_0
-
-	CMP #$05
-	BCS ObjHit_SolidBlock1
+	LDA Objects_PlayerHitStat, X
+	AND #$01
+	BEQ TestHit_FromBelow
 
 	LDA <Player_YVel
-	BMI ObjHit_SolidBlock0
+	BPL HitFrom_Top
+	RTS
 
-ObjHit_SolidBlock_0:
-	LDA #$00
-	STA <Player_YVel
-	LDA <Objects_YZ, X
-	SUB #31
-	STA <Player_Y
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Player_YHi
+HitFrom_Top:
+
 	LDA #$00
 	STA <Player_YVel
 	STA Player_InAir
 
-ObjHit_SolidBlock0:
+	LDA <Objects_YZ, X
+	SUB #$1F
+	STA <Player_Y
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Player_YHi
 	RTS
 
-ObjHit_SolidBlock1:
-	LDA #$07
-	STA <Temp_Var1
-	LDA <Player_Suit
-	BEQ ObjHit_SolidBlock2
-	LDA Player_IsDucking
-	BEQ ObjHit_SolidBlock3
+TestHit_FromBelow:
+	LDA #$06	 ; A = 0 when small or ducking
 
-ObjHit_SolidBlock2:
-	LDA #$13
+	LDY Player_IsDucking
+	BNE ClipTop_Small	 ; If Player is ducking, jump to PRG000_D862
+
+	LDY Player_Suit
+	BNE DoTop_Clip
+
+ClipTop_Small:
+	LDA #$10
+
+DoTop_Clip:
+	ADD <Player_Y
 	STA <Temp_Var1
 
-ObjHit_SolidBlock3:
 	LDA <Objects_YZ, X
-	ADD #$0E
-	STA <Temp_Var2
-	LDA <Player_Y
-	ADD <Temp_Var1
-	SUB <Temp_Var2
-	CMP #$04
-	BCS ObjHit_SolidBlock4
+	ADD #$10
+	SUB <Temp_Var1
 
-	LDY <Player_YVel
-	BPL ObjHit_SolidBlock3_1
+	STA Debug_Snap
+	CMP #$09
+	BCS DoWall_Clip
+
+	ADD <Player_Y
+	STA <Player_Y
+
+	LDA <Player_YHi
+	ADC #$00
+	STA <Player_YHi
 
 	LDA #$01
 	STA <Player_YVel
-	STA Player_HitCeiling
-	
-ObjHit_SolidBlock3_1:
 	RTS
 
-ObjHit_SolidBlock4:
+DoWall_Clip:
+	STA Debug_Snap
+	LDA Objects_PlayerHitStat, X
+	AND #$02
+	BNE HitFrom_Right
+
+	LDA <Player_XVel
+	BPL LeftClip_RTS
+
 	LDA #$00
 	STA <Player_XVel
-	
+
 	LDA <Objects_XZ, X
-	ADD #$08
-	STA <Temp_Var1
-	SUB <Player_X
-	BMI ObjHit_SolidBlock5
+	ADD #$0F
+
+	STA <Player_X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Player_XHi
+
+LeftClip_RTS:
+	RTS
+
+HitFrom_Right:
+	LDA <Player_XVel
+	BMI RightClip_RTS
+
+	LDA #$00
+	STA <Player_XVel
+
 
 	LDA <Objects_XZ, X
 	SUB #$0D
 	STA <Player_X
-	
-	LDA <Objects_XHiZ,X
+
+	LDA <Objects_XHiZ, X
 	SBC #$00
 	STA <Player_XHi
-	RTS
 
-ObjHit_SolidBlock5:
-	LDA <Objects_XZ, X
-	ADD #$0E
-	STA <Player_X
-	LDA <Objects_XHiZ,X
-	ADC #$00
-	STA <Player_XHi
+RightClip_RTS:
 	RTS
 
 ObjNorm_StarPiece:
