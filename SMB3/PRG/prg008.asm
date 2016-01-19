@@ -1142,29 +1142,7 @@ PRG008_A733:
 	STY Player_IsDucking	; Set ducking flag (uses non-zero suit value)
 
 PRG008_A736:
-	;LDY #20		 	; Y = 20 (ducking or small)
-	;
-	;LDA <Player_Suit 	
-	;BEQ PRG008_A743	 	; If Player is small, jump to PRG008_A743
-	;
-	;LDA Player_IsDucking
-	;BNE PRG008_A743	 	; If Player is ducking, jump to PRG008_A743
-	;
-	;LDY #10		 	; Otherwise, Y = 10 (not ducking, not small)
-
 PRG008_A743:
-	;STY <Temp_Var10		; Temp_Var10 (Y offset) = 20 or 10
-	;
-	;LDA #$08
-	;STA <Temp_Var11		; Temp_Var11 (X offset) = 8
-	;
-	;LDA Level_Tile_Prop_Floor_Ceiling_Left	 ; Get left ground tilee
-	;STA <Temp_Var2		 ; -> Temp_Var2
-	;
-	;JSR Player_GetTileAndSlope ; Get tile above Player
-	;STA Level_Tile_Prop_Head	 ; -> Level_Tile_Head
-	;STA <Temp_Var1		 ; -> Temp_Var1
-
 PRG008_A77E:
 	LDA Player_InAir
 	ORA Player_Shell
@@ -1210,6 +1188,13 @@ PRG008_A7AD_2:
 
 PRG008_A906:
 	JSR Player_ApplyXVelocity	 ; Apply Player's X Velocity
+
+	LDA <Player_FlipBits
+	ROL A
+	ROL A
+	ROL A
+	AND #$01
+	STA Player_Direction
 
 PRG008_A916:
 
@@ -2821,12 +2806,6 @@ Player_TailAttackAnim:
 
 	LDA #$12
 	STA Player_TailAttack	 ; Player_TailAttack = $12
-	LDA <Player_FlipBits
-	ROL A
-	ROL A
-	ROL A
-	AND #$01
-	STA Player_Direction
 
 	; Plays the tail wag sound
 	LDA Sound_QLevel1
@@ -3547,14 +3526,21 @@ SpinnerBustRts
 	RTS
 
 Level_DoBumpBlocks:
+	LDA Level_ChgTileEvent
+	BNE CantBumpBlocks
+
 	LDA <Level_Tile_Prop
 	AND #$0F
 	TAY 
 	BEQ DoBumps
+
 	CMP #$0C
 	BCS DoBumps
+
 	LDA Objects_State + 5
 	BEQ DoBumps
+
+CantBumpBlocks:
 	RTS
 
 DoBumps:
@@ -4002,7 +3988,7 @@ PRG008_B8D3:
 	STA SpecialObj_YLo,Y	 ; Otherwise, store Y Lo
 
 PRG008_B8E2:
-	STA Level_BlockChgYLo	 ; Store block change Y low coord
+	STA Block_ChangeY	 ; Store block change Y low coord
 	PLP		 ; Restore processor status
 
 	LDA <Temp_Var13	 ; Get Y high
@@ -4013,7 +3999,7 @@ PRG008_B8E2:
 	STA SpecialObj_YHi,Y	 ; Otherwise, store Y Hi
 
 PRG008_B8F1:
-	STA Level_BlockChgYHi	 ; Store block change Y high coord
+	STA Block_ChangeY	 ; Store block change Y high coord
 
 	LDA <Temp_Var16	 ; Get X Low
 
@@ -4022,10 +4008,10 @@ PRG008_B8F1:
 	STA SpecialObj_XLo,Y	 ; Otherwise, store X Lo
 
 PRG008_B8FD:
-	STA Level_BlockChgXLo	 ; Store block change X low coord
+	STA Block_ChangeX	 ; Store block change X low coord
 
 	LDA <Temp_Var15		 ; Get X Hi
-	STA Level_BlockChgXHi	 ; Store block change X high coord
+	STA Block_ChangeXHi	 ; Store block change X high coord
 
 	LDA PSwitchActivateTile	 
 	STA Level_ChgTileValue
@@ -4419,17 +4405,19 @@ Level_QueueChangeBlock:
 
 	; Store change Y Hi and Lo
 	LDA <Temp_Var13
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
+
 	LDA <Temp_Var14
 	AND #$F0		; Align to nearest grid coordinate
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 
 	; Store change X Hi and Lo
 	LDA <Temp_Var15
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
+
 	LDA <Temp_Var16	
 	AND #$F0	 	; Align to nearest grid coordinate
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 	RTS		 ; Return
 
@@ -5936,16 +5924,10 @@ Try_FireBall:					; not a fireball, so let's try it!
 	LDA Sound_QLevel2		; flame sound effect
 	ORA #SND_LEVELFLAME
 	STA Sound_QLevel2
-	BNE ContinueDash1
+	BNE ContinueDash
 
 ContinueDash:
-ContinueDash1:
-	LDY #$00
-	LDA Player_Direction
-	BEQ Store_Direction
-	INY
-
-Store_Direction:
+	LDY Player_Direction
 	LDA Fox_DashDir, Y
 	STA <Player_XVel
 	STA <Player_InAir

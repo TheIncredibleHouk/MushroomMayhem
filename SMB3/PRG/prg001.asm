@@ -422,7 +422,8 @@ ObjP11:
 	.byte $69, $7D
 
 ObjP12:
-	.byte $D7, $D7, $ED, $ED, $FF, $FF
+	.byte $D7, $D7, $ED, $ED, $FF, $FF, $ED, $ED
+
 ObjP13:
 ObjP16:
 	.byte $81, $83, $85, $87, $89, $89, $87, $85, $C1, $C3, $C5, $C7, $C9, $C9, $C7, $C5
@@ -470,9 +471,6 @@ ObjInit_Spring:
 Spring_Jump_Height:
 	.byte $C0, $B4, $A8
 
-Spring_Frames:
-	.byte $00, $01, $02, $01
-
 Spring_Player_YOffsets:
 	.byte $20, $1C, $17, $1C
 
@@ -483,33 +481,23 @@ ObjNorm_Spring:
 	BNE Spring_RTS
 
 	JSR Object_DeleteOffScreen
-	
-	LDY Spring_CurrentFrame, X
-	LDA Spring_Frames, Y
-	STA Objects_Frame, X
-	
-	JSR Object_InteractWithOtherObjects
-	JSR Object_InteractWithPlayer
 	JSR Object_Move
-	JSR Object_DampenVelocity
-	JSR Object_InteractWithTiles
 	
 	LDA Spring_CurrentFrame, X
 	BNE SpringAnim
 
-	; check to see if Mario hits spring from above
 	JSR Object_InteractWithPlayer
-	BCC Spring_RTS
-	
-	LDA Objects_Data4, X
+	BCC Spring_2
+
+	LDA Object_BeingHeld, X
 	BNE Spring_RTS
 
 	LDA Objects_PlayerHitStat, X
 	AND #$01
-	BEQ Spring_RTS
+	BEQ Spring_2
 
-	LDA <Player_YVel, X
-	BMI Spring_RTS
+	LDA <Player_YVel
+	BMI Spring_2
 
 	LDA #$02
 	STA Objects_Timer, X
@@ -519,12 +507,14 @@ ObjNorm_Spring:
 
 	BEQ SpringAnim
 
+Spring_2:
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithTiles
+
 Spring_RTS:
 	JMP Object_ShakeAndDrawMirrored
 
 SpringAnim:
-
-	; animate the spring and move the player with it
 	LDY Spring_CurrentFrame, X
 	LDA Objects_YZ, X
 	SUB Spring_Player_YOffsets, Y
@@ -556,23 +546,23 @@ SpringAnim:
 	STA <Objects_YVelZ, X
 
 SpringAnimRTS:
+	LDA Spring_CurrentFrame, X
+	STA Objects_Frame, X
 	JMP Object_ShakeAndDrawMirrored
 
 ObjInit_Key:
 	RTS
 
-Key_Held = Objects_Data4
-
 ObjNorm_Key:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_KeyDraw
 
+	JSR Object_Move
 	JSR Object_InteractWithPlayer
 
-	LDA Key_Held, X
+	LDA Object_BeingHeld, X
 	BNE ObjNorm_Key1
 
-	JSR Object_Move	 
 	JSR Object_DampenVelocity
 	JSR Object_InteractWithTiles
 
@@ -1527,7 +1517,8 @@ PRG001_A8F7:
 
 	LDY #$00	 ; Y = 0
 
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG001_A937	 ; If any sprite is off-screen, jump to PRG001_A937 (no masking sprite)
 
 	; This puts on the masking sprite over the raising powerup
@@ -2139,9 +2130,6 @@ ObjInit_Bowser:
 	LDA #$01
 	STA Objects_HitCount,X
 
-	; Bowser is giant!
-	INC Objects_IsGiant,X
-
 	RTS		 ; Return
 
 
@@ -2489,7 +2477,7 @@ PRG001_BA1F:
 	EOR <Objects_XVelZ,X
 	BPL PRG001_BA4B	 ; If Bowser's velocity is moving away from Player, jump to PRG001_BA4B
 
-	JSR Level_ObjCalcYDiffs	 
+	JSR Object_QuickYDistanceFromPlayer	 
 
 	DEY		 ; Y--
 	BEQ PRG001_BA4B	 ; If Y was 1, jump to PRG001_BA4B
@@ -2960,19 +2948,19 @@ PRG001_BC33:
 	LDA <Objects_YZ,X
 	ADD #$30
 	AND #$f0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA <Objects_YHiZ,X
 	ADC #$00
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	; Aligned Bowser impact X
 	LDA <Objects_XZ,X
 	ADD Bowser_TileOffsets, Y
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 	LDA <Objects_XHiZ,X
 	ADC #$00
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	JMP PRG001_BC6D	 ; Jump to PRG001_BC6D
 
@@ -2995,7 +2983,7 @@ PRG001_BC6D:
 	STA BrickBust_En
 
 	; Brick bust upper Y
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	CLC
 	SBC Level_VertScroll
 	STA BrickBust_YUpr
@@ -3005,7 +2993,7 @@ PRG001_BC6D:
 	STA BrickBust_YLwr
 
 	; Brick bust X
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	SUB <Horz_Scroll	
 	STA BrickBust_X
 
@@ -3243,7 +3231,7 @@ Bowser_CalcPlayersSide:
 	; +8 Bowser's X; calculation of which side the Player is on is offset
 	ADD #$08
 	STA <Objects_XZ,X
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Restore Bowser's X
 	PLA
@@ -3731,7 +3719,7 @@ ChompNoDelete:
 	LDA Objects_SpritesVerticallyOffScreen,X
 	BEQ DrawMiniChomp
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 	CPY #$01
 	BEQ ChompRTS
 
@@ -3779,7 +3767,7 @@ DrawChomp:
 	CMP #$02
 	BCC DoneGC
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 	CPY #$00
 	BEQ DoneGC
 
@@ -3830,15 +3818,15 @@ ChompEatBlock:
 	INC Level_ChgTileEvent
 	LDA ObjTile_DetYLo
 	AND #$F0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA ObjTile_DetYHi
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 	
 	LDA ObjTile_DetXLo
 	AND #$F0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 	LDA ObjTile_DetXHi
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$C0
@@ -3999,7 +3987,7 @@ NextCheck:
 	LDA <Temp_Var6
 	BPL KeyPieceRTS
 
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	LDA #OBJ_KEY
 	STA Objects_ID, X
 	STA Global_Object
@@ -4109,7 +4097,7 @@ ObjNorm_SpikeBall:
 
 	JSR Object_DeleteOffScreen
 	JSR Object_AttackOrDefeat
-	JSR ObjectKill_Others
+	JSR Object_KillOthers
 
 	LDX <CurrentObjectIndexZ
 
@@ -4240,18 +4228,18 @@ SpikeBrickBust:
 	LDA <Objects_YZ,X
 	ADD <Temp_Var2
 	AND #$f0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA <Objects_YHiZ,X
 	ADC #$00
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	LDA <Objects_XZ,X
 	ADD <Temp_Var1
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 	LDA <Objects_XHiZ,X
 	ADC #$00
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 SpikeBrickBustRTS:
 	RTS
@@ -4454,273 +4442,192 @@ ObjHit_Clock2:
 	STA Sound_QMap
 	RTS
 
-BlockEaterYVel:
-	.byte $F8, $00, $08, $00, $00, $F0, $00, $10, $00
-
-BlockEaterXVel
-	.byte $00, $08, $00, $F8, $00, $00, $10, $00, $F0
-
-BlockEaterVelOffset:
-	.byte $00, $05
-
-BlockEaterChecks:
-	.byte (TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID), TILE_PROP_ENEMY
-
-
-BlockEater_StartYHi = Objects_Data8
-BlockEater_StartX = Objects_Data2
+BlockEater_StartX = Objects_Data1
+BlockEater_StartXHi = Objects_Data2
 BlockEater_StartY = Objects_Data3
-BlockEater_StartXHi = Objects_Data6
-BlockEater_VelocityIndex = Objects_Data3
-BlockEater_TileValueCheckingFor = Objects_Data4
+BlockEater_StartYHi = Objects_Data4
+BlockEater_DirectionIndex = Objects_Data5
+BlockEater_TileDetectValue = Objects_Data6
+BlockEater_BlockIndexCheck = Objects_Data7
+BlockEater_XVelocity: .byte $00, $08, $00, $F8
+BlockEater_YVelocity: .byte $F8, $00, $08, $00
+
+
+BlockCheck_XOffsets:
+	.byte $08, $18, $08, $F8
+	.byte $00, $00, $00, $FF
+	
+
+BlockCheck_YOffsets:
+	.byte $F8, $08, $18, $08
+	.byte $FF, $00, $00, $00
+	
 
 ObjInit_EaterBlock:
-	LDA Objects_Property, X
-	AND #$01
-	TAY
-	
-	LDA BlockEaterChecks, Y
-	STA BlockEater_TileValueCheckingFor, X
-	
-	LDA Objects_Property, X
-	AND #$02
-	STA Objects_Data5, X
-	
-	LDA Objects_Property, X
-	AND #$04
-	LSR A
-	LSR A
-	TAY
-	
-	LDA BlockEaterVelOffset, Y
-	STA BlockEater_VelocityIndex, X
-
-	LDA <Objects_XZ, X
-	STA <BlockEater_StartX, X
-
-	LDA Objects_XHiZ, X
-	STA BlockEater_StartXHi, X
-
-	LDA Objects_YZ, X
-	STA BlockEater_StartY, X
-
-	LDA Objects_YHiZ, X
-	STA BlockEater_StartYHi, X
-	RTS
-
-ObjNorm_EaterBlock:
-	
-	LDA <Player_HaltGameZ
-	BEQ ObjNormal_EaterBlock3
-
-	JMP Object_ShakeAndDrawMirroredAligned
-	
-ObjNormal_EaterBlock3:
-	JSR Object_InteractWithPlayer	
-	JSR Object_Move
 	JSR Object_DetectTiles
-
-	LDA <Objects_XZ, X
-	ORA <Objects_YZ, X
-	AND #$0F
-	BEQ ObjNormal_EaterBlock31
-	JMP ObjNormal_EaterBlock2
-
-ObjNormal_EaterBlock31:
-	LDA Objects_XZ, X
-	CMP <BlockEater_StartX, X
-	BNE ObjNormal_EaterBlock32
-
-	LDA Objects_XHiZ, X
-	CMP BlockEater_StartXHi, X
-	BNE ObjNormal_EaterBlock32
-
-	LDA Objects_YZ, X
-	CMP BlockEater_StartY, X
-	BNE ObjNormal_EaterBlock32
-
-	LDA Objects_YHiZ, X
-	CMP BlockEater_StartYHi, X
-	BNE ObjNormal_EaterBlock32
-
-	JSR Object_DeleteOffScreen
-
-ObjNormal_EaterBlock32:
-	LDA #$04
-	STA <Temp_Var13
-	
-	LDA Level_ChgTileEvent
-	BNE ObjNormal_EaterBlock1
-
-	JSR Object_GetAttrJustTile
-	
-	LDA Objects_LastProp, X
-	CMP BlockEater_TileValueCheckingFor, X
-	BNE ObjNorm_EaterBlock0
 	
 	LDA Object_LevelTile
-	EOR #$01
-	STA Level_ChgTileValue
-	
-	INC Level_ChgTileEvent
-	
-	JSR SetObjectTileCoordAlignObj
-
-ObjNorm_EaterBlock0:
-	LDA #$00
-	STA <Temp_Var13
-	
-	JSR CheckBlockAbove
-	CMP BlockEater_TileValueCheckingFor, X
-	BEQ ObjNormal_EaterBlock1
-
-	INC <Temp_Var13
-	JSR CheckBlockRight
-	CMP BlockEater_TileValueCheckingFor, X
-	BEQ ObjNormal_EaterBlock1
-
-	INC <Temp_Var13
-	JSR CheckBlockBelow
-	CMP BlockEater_TileValueCheckingFor, X
-	BEQ ObjNormal_EaterBlock1
-	
-	INC <Temp_Var13
-	JSR CheckBlockLeft
-	CMP BlockEater_TileValueCheckingFor, X
-	BEQ ObjNormal_EaterBlock1
-	
-	LDA Objects_Data5, X
-	BNE ObjNormal_EaterBlock1A
-	JMP Object_PoofDie
-
-ObjNormal_EaterBlock1A:
-	INC <Objects_Data1, X
-	LDA <Objects_Data1, X
-	AND #$01
-	TAY
-	LDA BlockEaterChecks, Y
-	STA BlockEater_TileValueCheckingFor, X
-	JMP Object_ShakeAndDrawMirroredAligned
-
-ObjNormal_EaterBlock1:
-	LDA <Temp_Var13
-	ADD BlockEater_VelocityIndex, X
-	TAY
-	LDA BlockEaterYVel, Y
-	STA <Objects_YVelZ, X
-	LDA BlockEaterXVel, Y
-	STA <Objects_XVelZ, X
-
-ObjNormal_EaterBlock2:	
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit	
-	JSR Object_InteractWithPlayer
-	
-	JMP Object_ShakeAndDrawMirroredAligned
-
-Player_Heights:
-	.byte $06, $11
-
-ObjHit_SolidBlock:
-	LDA Objects_PlayerHitStat, X
-	AND #$01
-	BEQ TestHit_FromBelow
-
-	LDA <Player_YVel
-	BPL HitFrom_Top
-	RTS
-
-HitFrom_Top:
-
-	LDA #$00
-	STA <Player_YVel
-	STA Player_InAir
+	STA BlockEater_TileDetectValue, X
 
 	LDA <Objects_YZ, X
-	SUB #$1F
-	STA <Player_Y
+	SUB #$01
+	STA <Objects_YZ, X
+	STA BlockEater_StartY, X
 
 	LDA <Objects_YHiZ, X
 	SBC #$00
-	STA <Player_YHi
+	STA <Objects_YHiZ, X
+	STA BlockEater_StartYHi, X
+
+	LDA <Objects_XZ, X
+	STA BlockEater_StartX, X
+
+	LDA <Objects_XHiZ, X
+	STA BlockEater_StartXHi, X
 	RTS
 
-TestHit_FromBelow:
-	LDA #$06	 ; A = 0 when small or ducking
+ObjNorm_EaterBlock:
 
-	LDY Player_IsDucking
-	BNE ClipTop_Small	 ; If Player is ducking, jump to PRG000_D862
+	JSR Object_ShakeAndDrawMirrored
 
-	LDY Player_Suit
-	BNE DoTop_Clip
+	LDA <Player_HaltGameZ
+	BEQ EaterMaker
 
-ClipTop_Small:
-	LDA #$10
+EaterMaker_RTS1:
+	RTS
+	
+EaterMaker_Halt:
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
+	RTS
 
-DoTop_Clip:
-	ADD <Player_Y
-	STA <Temp_Var1
+EaterMaker:
+	LDA <Objects_XZ, X
+	CMP BlockEater_StartX, X
+	BNE EaterMaker1
+
+	LDA <Objects_XHiZ, X
+	CMP BlockEater_StartXHi, X
+	BNE EaterMaker1
 
 	LDA <Objects_YZ, X
-	ADD #$10
-	SUB <Temp_Var1
+	CMP BlockEater_StartY, X
+	BNE EaterMaker1
 
-	STA Debug_Snap
-	CMP #$09
-	BCS DoWall_Clip
+	LDA <Objects_YHiZ, X
+	CMP BlockEater_StartYHi, X
+	BNE EaterMaker1
 
-	ADD <Player_Y
-	STA <Player_Y
+	JSR Object_DeleteOffScreen
 
-	LDA <Player_YHi
+EaterMaker1:
+	JSR Object_InteractWithPlayer	
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoLimit
+
+	LDA <Objects_XZ, X
+	AND #$0F
+	BNE EaterMaker_RTS1
+
+	LDA <Objects_YZ, X
+	AND #$0F
+	CMP #$0F
+	BNE EaterMaker_RTS1
+
+	LDA Level_ChgTileEvent
+	BNE EaterMaker_Halt
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Block_DetectX
+
+	LDA <Objects_XHiZ, X
 	ADC #$00
-	STA <Player_YHi
+	STA Block_DetectXHi
 
-	LDA #$01
-	STA <Player_YVel
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA Block_DetectY
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Block_DetectYHi
+
+	LDA BlockEater_TileDetectValue, X
+	EOR #$01
+	JSR Object_ChangeBlock
+	
+	LDA #$03
+	STA BlockEater_BlockIndexCheck, X
+
+EaterMaker_CheckBlocks:
+	LDY BlockEater_BlockIndexCheck, X
+	LDA BlockCheck_XOffsets, Y
+	ADD <Objects_XZ, X
+	STA Block_DetectX
+
+	LDA BlockCheck_XOffsets + 4, Y
+	ADC <Objects_XHiZ, X
+	STA Block_DetectXHi
+
+	LDA BlockCheck_YOffsets, Y
+	ADD <Objects_YZ, X
+	STA Block_DetectY
+
+	LDA BlockCheck_YOffsets + 4, Y
+	ADC <Objects_YHiZ, X
+	STA Block_DetectYHi
+
+	JSR Object_DetectTileDirect
+	LDA Object_LevelTile
+	CMP BlockEater_TileDetectValue, X
+	BEQ EaterMaker_SetVel
+
+	DEC BlockEater_BlockIndexCheck, X
+	BPL EaterMaker_CheckBlocks
+
+	LDA Objects_Property, X
+	AND #$01
+	BNE EaterMark_Reverse
+
+	JMP Object_PoofDie
+
+EaterMark_Reverse:
+	LDA BlockEater_TileDetectValue, X
+	EOR #$01
+	STA BlockEater_TileDetectValue, X
 	RTS
 
-DoWall_Clip:
-	STA Debug_Snap
-	LDA Objects_PlayerHitStat, X
+EaterMaker_SetVel:
+	
+	LDY BlockEater_BlockIndexCheck, X
+	LDA BlockEater_XVelocity, Y
+	STA <Objects_XVelZ, X
+
+	LDA BlockEater_YVelocity, Y
+	STA <Objects_YVelZ, X
+	LDA Objects_Property, X
 	AND #$02
-	BNE HitFrom_Right
+	BEQ EaterMaker_NormalSpeed
 
-	LDA <Player_XVel
-	BPL LeftClip_RTS
+	LDA <Objects_XVelZ, X
+	AND #$80
+	STA TempA
+	LDA <Objects_XVelZ, X
+	ASL A
+	ORA TempA
+	STA <Objects_XVelZ, X
 
-	LDA #$00
-	STA <Player_XVel
+	LDA <Objects_YVelZ, X
+	AND #$80
+	STA TempA
+	LDA <Objects_YVelZ, X
+	ASL A
+	ORA TempA
+	STA <Objects_YVelZ, X
 
-	LDA <Objects_XZ, X
-	ADD #$0F
-
-	STA <Player_X
-
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA <Player_XHi
-
-LeftClip_RTS:
-	RTS
-
-HitFrom_Right:
-	LDA <Player_XVel
-	BMI RightClip_RTS
-
-	LDA #$00
-	STA <Player_XVel
-
-
-	LDA <Objects_XZ, X
-	SUB #$0D
-	STA <Player_X
-
-	LDA <Objects_XHiZ, X
-	SBC #$00
-	STA <Player_XHi
-
-RightClip_RTS:
+EaterMaker_NormalSpeed:
 	RTS
 
 ObjNorm_StarPiece:
@@ -4784,7 +4691,7 @@ ObjNorm_HardIce_0:
 	AND #HIT_GROUND
 	BEQ ObjNorm_HardIce2
 
-	JSR ObjectKill_Others
+	JSR Object_KillOthers
 	LDA Objects_Data4, X
 	BNE ObjNorm_HardIce1
 
@@ -4862,7 +4769,7 @@ SnowThrowPlayerX:
 
 ObjHit_SnowBall:
 	JSR SetPlayerFrozen
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA SnowThrowPlayerX, Y
 	STA <Player_XVel
 	LDA #$A0
@@ -4896,7 +4803,7 @@ ObjInit_IceFireFly:
 	LDA #$00
 	STA Objects_SpritesHorizontallyOffScreen, X
 	STA Objects_SpritesVerticallyOffScreen, X
-	JSR SpecialObj_FindEmptyAbort
+	JSR SpecialObject_FindEmptyAbort
 	TYA
 	STA Objects_Data5, X
 	LDA Objects_Data3, X
@@ -5101,12 +5008,12 @@ Coin_Unlock:
 	LDA Level_ChgTileEvent
 	BNE Coin_UnlockRTS
 
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 	CPY #$FF
 	BEQ Coin_UnlockRTS
 
 	STY <Temp_Var15
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	
 	LDA Object_LevelTile
 	EOR #$01

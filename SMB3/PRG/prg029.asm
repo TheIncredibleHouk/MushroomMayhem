@@ -1032,15 +1032,15 @@ PRG029_D17F:
 
 	; Block change is always same height regardless of which box...
 	LDA #$80
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA #$01
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	LSR A		 ; A = 0, effectively
-	STA Level_BlockChgXHi	 ; Always zero
+	STA Block_ChangeXHi	 ; Always zero
 
 	LDA ToadHouse_Box_X,Y	 ; Get proper X for the selected box
-	STA Level_BlockChgXLo	 ; Store as low X of tile change
+	STA Block_ChangeX	 ; Store as low X of tile change
 
 	;LDA #CHNGTILE_TOADBOXOPEN
 	STA Level_SkipStatusBarUpd	; Set Level_SkipStatusBarUpd (skip status bar for a frame, priority update!)
@@ -2098,7 +2098,7 @@ PRG029_DC36:
 
 	; Non-vertical level only...
 
-	LDA Level_BlockChgXHi
+	LDA Block_ChangeXHi
 	ASL A		 ; Multiply by 2 (2 byte index per Tile_Mem_Addr)
 	TAX		 ; -> 'X'
 
@@ -2112,7 +2112,7 @@ PRG029_DC36:
 	LDA #$00
 	STA <Temp_Var7
 
-	LDA Level_BlockChgYHi
+	LDA Block_ChangeYHi
 	BEQ PRG029_DC50	 ; If block change is not on the lower part of the screen, jump to PRG029_DC50
 
 	INC <Map_Tile_AddrH	; Otherwise, jump to lower screen address
@@ -2120,10 +2120,10 @@ PRG029_DC36:
 PRG029_DC50:
 
 	; Construct a row/column offset -> Temp_Var5
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	AND #$f0
 	STA <Temp_Var6
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	LSR A
 	LSR A
 	LSR A
@@ -2131,12 +2131,12 @@ PRG029_DC50:
 	ORA <Temp_Var6
 	STA <Temp_Var5
 
-	LDA Level_BlockChgYHi
-	BNE PRG029_DC70	 ; If Level_BlockChgYHi <> 0 (block change is down low on the lower screen space), jump to PRG029_DC70
+	LDA Block_ChangeYHi
+	BNE PRG029_DC70	 ; If Block_ChangeYHi <> 0 (block change is down low on the lower screen space), jump to PRG029_DC70
 
 	; Block change is on upper screen space... 
 
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	AND #$f0	 ; Align to grid
 	CMP #$f0
 	BNE PRG029_DC7C	 ; If not TOO low, jump to PRG029_DC7C
@@ -2149,7 +2149,7 @@ PRG029_DC70:
 	; and use $F0 would overflow back to $10 and misalign the tile change!!
 
 	; Temp_Var6 = 0-ish
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	ADD #$10
 	STA <Temp_Var6
 
@@ -2231,11 +2231,11 @@ TileChng_OneTile:
 	LDA Level_ChgTileValue
 	STA [Map_Tile_AddrL],Y
 	
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	SUB <Horz_Scroll
 	STA TileCheckX
 	
-	LDA Level_BlockChgXHi
+	LDA Block_ChangeXHi
 	SBC <Horz_Scroll_Hi
 	STA TileCheckXHi
 	BPL PRG029_DD21
@@ -2298,10 +2298,10 @@ PRG029_DD41:
 	AND #%11110000	; Keep the upper 4 bits
 	STA <Temp_Var2	; -> Temp_Var2
 
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	LSR A
 	LSR A
-	LSR A		; A = Level_BlockChgXLo / 8
+	LSR A		; A = Block_ChangeX / 8
 	ORA <Temp_Var2	
 	STA TileChng_VRAM_L	 ; Store the low byte of the tile change base address
 
@@ -2388,10 +2388,10 @@ PRG029_DDA2:
 	AND #%11110000	; Keep the upper 4 bits
 	STA <Temp_Var2	; -> Temp_Var2
 
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	LSR A
 	LSR A
-	LSR A		; A = Level_BlockChgXLo / 8
+	LSR A		; A = Block_ChangeX / 8
 	ORA <Temp_Var2	
 
 	; Set low address for left column of patterns of door
@@ -2475,10 +2475,10 @@ PRG029_DE0E:
 	AND #%11110000	; Keep the upper 4 bits
 	STA <Temp_Var2	; -> Temp_Var2
 
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	LSR A
 	LSR A
-	LSR A		; A = Level_BlockChgXLo / 8
+	LSR A		; A = Block_ChangeX / 8
 	ORA <Temp_Var2	
 
 	; Set low address for first row of open chest patterns

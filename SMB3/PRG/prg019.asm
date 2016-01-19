@@ -1506,7 +1506,7 @@ CCSwim2:
 	STA Objects_Data4, X
 
 CCSwim2_2:	
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	LDA RandomN + 2
 	STA Objects_XZ, X
 	LDA #$00
@@ -1649,7 +1649,7 @@ CCAnother_Object:
 	LDA RandomN + 4, Y
 	AND #$07
 	STA <Temp_Var2
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	TXA
 	TAY
 	LDA <Temp_Var1
@@ -1720,7 +1720,7 @@ CCFlood:
 	LDY <Temp_Var1
 
 CreateFlood:
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	LDA #OBJ_WATERFILLER
 	STA Objects_ID, X
 	LDA #OBJSTATE_NORMAL
@@ -1752,7 +1752,7 @@ CreateFlood:
 	RTS
 
 CCExplode:
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	TXA
 	TAY
 	LDX <CurrentObjectIndexZ

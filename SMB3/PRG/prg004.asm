@@ -526,18 +526,18 @@ FillWater:
 
 	; Set all of the block change coordinates to remove the ice brick
 	LDA <Objects_YHiZ,X
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	LDA <Objects_YZ,X
 	AND #$f0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 
 	LDA <Objects_XHiZ,X
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	LDA <Objects_XZ,X
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 ObjNorm_Waterfill_RTS:
 	JSR Object_ApplyXVel
@@ -612,7 +612,7 @@ NinjaDodge_Poof1:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 	TYA
 	BMI NinjaDodge_Poof2
 
@@ -637,7 +637,7 @@ NinjaDodge_Poof1:
 	ADC #$00
 	STA SpecialObj_YHi, Y
 
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 	TYA
 	BMI NinjaDodge_Poof2
 
@@ -689,7 +689,7 @@ NinjaPoof_Left:
 NinjaPoof_Adjust:
 	LDA #$40
 	STA Objects_SlowTimer, X
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	LDA Objects_LastProp, X
 	AND #TILE_PROP_SOLID_ALL
 	BEQ NinjaPoof_Adjust1
@@ -720,7 +720,7 @@ ObjNorm_NinjaBro:
 
 ObjNorm_NinjaBro_0:
 
-	JSR Object_DeleteOffScreen_N2	 ; Delete object if it falls off-screen
+	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 	JSR EnemyBro_DrawAndHandleBump	 ; Draw Ninja Bro and handle getting bumped underneath
 	LDA Objects_PlayerHitStat, X
 	BEQ ObjNorm_NinjaBro_1
@@ -746,7 +746,7 @@ PRG004_A4B2:
 	AND #$0f
 	BNE PRG004_A4C1	 ; 1:16 ticks proceed, otherwise jump to PRG004_A4C1
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Face towards Player
 	LDA NinjaBro_FacePlayerFlip,Y
@@ -853,7 +853,7 @@ HammerBro_FacePlayerFlip:
 ObjNorm_HammerBro: 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Face Player
 	LDA HammerBro_FacePlayerFlip,Y
@@ -1050,7 +1050,7 @@ PRG004_A5F6:
 
 	STY <Temp_Var1		 ; Temp_Var1 = Special Object slot index
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA Hammer_XVel,Y	; Hammer towards Player X Vel
 	LDY <Temp_Var1		 ; Y = Special Object slot index
@@ -1066,7 +1066,7 @@ NinjaStarTimers:
 	.byte $40, $80, $C0, $80, $40, $40, $80, $C0
 
 NinjaBro_ThrowNinjaStar:	
-	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back!
+	JSR SpecialObject_FindEmptyAbort	; Find an empty special object slot or don't come back!
 
 	LDA #SOBJ_NINJASTAR
 	STA SpecialObj_ID,Y
@@ -1146,10 +1146,11 @@ ObjNorm_Thwomp:
 
 Thwomp_WaitForPlayer
 	
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG004_A6A6	 ; If any sprite is off-screen, jump to PRG004_A6A6 (RTS)
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$24
@@ -1321,10 +1322,11 @@ ObjNorm_HyperThwomp:
 	LDA Objects_YVelZ, X
 	BNE PRG004_A78A
 
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG004_A78B
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$24
@@ -1547,7 +1549,7 @@ FireBro_FacePlayerFlip:	.byte SPR_HFLIP, $00
 ObjNorm_FireBro: 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Fire Bro faces Player
 	LDA FireBro_FacePlayerFlip,Y
@@ -1818,7 +1820,7 @@ FireBro_FireballXVel:	.byte $20, -$20
 IceBro_FireballXVel:	.byte $18, -$18
 
 FireBro_SpitFire:
-	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back
+	JSR SpecialObject_FindEmptyAbort	; Find an empty special object slot or don't come back
 
 	; Fireball sound!
 	LDA Sound_QPlayer
@@ -1844,7 +1846,7 @@ FireBro_SpitFire:
 
 	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Spit fire towards Player!
 	STY TempY
@@ -1886,7 +1888,7 @@ Pirate_CannonxPos:
 	.byte $00, -$08
 
 PirateBro_SpitCannon:
-	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back
+	JSR SpecialObject_FindEmptyAbort	; Find an empty special object slot or don't come back
 
 	; Fireball sound!
 	LDA Sound_QLevel1
@@ -1907,7 +1909,7 @@ PirateBro_SpitCannon:
 
 	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	STY DAIZ_TEMP1
 	; Spit fire towards Player!
@@ -1991,7 +1993,7 @@ PRG004_AC11:
 	NEG			; Negate (bounce)
 	STA <Objects_YVelZ,X	 ; Set as Y velocity
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Set towards Player
 	LDA SpinyEggDud_FlipTowardsPlayer,Y
@@ -2111,7 +2113,7 @@ PRG004_ACAC:
 	LDA #OBJ_SPINY
 	STA Objects_ID,X
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Face Player
 	LDA SpinyEgg_HatchFacePlayerFlip,Y
@@ -2262,7 +2264,7 @@ PRG004_AD59:
 PRG004_AD65:
 	JSR Object_AttackOrDefeat	 ; Do Player to Lakitu collision
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA Lakitu_Active
 	BNE PRG004_AD74	 ; If Lakitu is active, jump to PRG004_AD74
@@ -2428,7 +2430,7 @@ Lakitu_TossEnemy:
 	LDA Laktiu_ResetTimes, Y
 	STA Objects_Timer,X
 
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	LDA Objects_LastProp, X
 	CMP #TILE_PROP_SOLID_TOP
 	BCS Lakitu_TossEnemyRts 
@@ -2802,7 +2804,7 @@ Zombie_InsideBlock:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Zombie_InsideBlock1
 
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	LDA Object_LevelTile
 	AND #$3F
 	CMP #$01
@@ -2814,7 +2816,7 @@ Zombie_InsideBlock:
 Zombie_InsideBlock0:
 
 	LDA #$10
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	CMP #$03
 	BCS Zombie_InsideBlock1
 
@@ -2823,7 +2825,7 @@ Zombie_InsideBlock0:
 
 	JSR Zombie_Crumbles
 
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	LDA Object_LevelTile
 	AND #$C0
 	ORA #$01
@@ -2847,7 +2849,7 @@ Zombie_InsideGround:
 	BNE Zombie_InsideGround2
 
 	LDA #$10
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	CMP #$03
 	BCS Zombie_InsideGround1
 
@@ -2863,7 +2865,7 @@ Zombie_InsideGround:
 	RTs
 
 Zombie_InsideGround1:
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	LDA Object_LevelTile
 	AND #$01
 	BEQ Zombie_InsideGround2
@@ -2916,7 +2918,7 @@ Zombie_Crumbles:
 	LDA #-$06
 	STA BrickBust_YVel
 	
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	LDA Object_LevelTile
 	AND #$FE
 	ORA #$01
@@ -3394,20 +3396,6 @@ ObjNorm_FlyingTroopa:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_FlyingTroopa2
 
-	LDA Objects_Property, X
-	CMP #$06
-	BEQ FlyingTroopa_OffScreen
-	
-	LDA <Objects_XZ, X
-	CMP FlyingTroopa_StartX, X
-	BNE ObjNorm_FlyingTroopa0
-
-	LDA <Objects_XHiZ, X
-	CMP FlyingTroopa_StartXHi, X
-	BNE ObjNorm_FlyingTroopa0
-
-
-FlyingTroopa_OffScreen:
 	JSR Object_DeleteOffScreen
 
 ObjNorm_FlyingTroopa0:
@@ -3450,6 +3438,7 @@ ObjNorm_RedTroopa:
 	BEQ Troopa_Normal
 
 Troopa_Normal:
+	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_AttackOrDefeat
 
@@ -3488,6 +3477,7 @@ ObjNorm_Troopa:
 	BNE ObjNorm_Troopa1
 
 ObjNorm_Troopa0:
+	
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
@@ -4135,8 +4125,6 @@ PRG004_B75A:
 	; Set priority
 	LDA #SPR_BEHINDBG
 	STA Objects_Orientation,X
-
-	INC Objects_IsGiant,X	 ; Flag as a giant enemy
 	RTS		 ; Return
 
 GiantPiranha_TimerReloads:
@@ -4254,7 +4242,7 @@ GiantPiranha_HideInPipe:
 	LDA Objects_Timer,X
 	BNE PRG004_B80F	 ; If timer not expired, jump to PRG004_B80F
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$18
@@ -4396,7 +4384,7 @@ PRG004_B8B0:
 	PHA
 
 	; Y Difference flag -> Temp_Var3
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 	STY <Temp_Var3
 
 	; Get absolute value of Temp_Var16 (Y difference) -> Temp_Var13
@@ -4407,7 +4395,7 @@ PRG004_B8C5:
 	STA <Temp_Var13
 
 	; X Difference flag -> Temp_Var4
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	STY <Temp_Var4
 
 	; Get absolute value of Temp_Var16 (X difference) -> Temp_Var14
@@ -4734,7 +4722,7 @@ PRG004_BA27:
 	LDA #$00
 	STA Objects_Timer,X
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA Chomp_FreeXVels, Y
 	STA Objects_XVelZ, X
 	LDA #$00
@@ -4802,7 +4790,7 @@ ChainChomp_ChooseLunge:
 	AND #$03
 	; ...??
 
-	JSR Level_ObjCalcXDiffs	
+	JSR Object_QuickXDistanceFromPlayer	
 
 	LDA <Temp_Var16
 	PHP		 ; Save CPU state
@@ -5013,7 +5001,7 @@ ChainChomp_LungeMask:	.byte $1f, $0f
 ChainChomp_XVel:	.byte $10, $20
 
 ChainChomp_Drop:
-	JSR Level_ObjCalcXDiffs	 
+	JSR Object_QuickXDistanceFromPlayer	 
 
 	LDA <Temp_Var16
 	ADC #$60
@@ -5573,7 +5561,7 @@ WaitForMario:
 	JSR Object_ShakeAndDrawMirrored
 	JSR Object_HitTest
 	BCC WaitForMarioRTS
-	JSR SpecialObj_FindEmptyAbort
+	JSR SpecialObject_FindEmptyAbort
 	INC Objects_Data4, X
 	LDA <Objects_XZ, X
 	STA SpecialObj_XLo, Y
@@ -5770,7 +5758,7 @@ ObjNorm_BlueShell0:
 	LDA Objects_Data5, X
 	BNE ObjNorm_BlueShellDive1
 
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	CMP #$01
 	BNE ObjNorm_BlueShell_1
 
@@ -5893,7 +5881,7 @@ BlueShell_Expload:
 	STA Objects_XHiZ, X
 	STX TempX
 	;JSR KoopaExpload
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	LDY TempX
 	LDA Objects_XZ, Y
 	ADD #$20
@@ -5965,15 +5953,15 @@ ThwompBreakBlock:
 	INC Level_ChgTileEvent
 	LDA ObjTile_DetYLo
 	AND #$F0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA ObjTile_DetYHi
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 	
 	LDA ObjTile_DetXLo
 	AND #$F0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 	LDA ObjTile_DetXHi
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #$C0
@@ -5998,7 +5986,7 @@ ThwompBustBrick:
 	STA BrickBust_En
 
 	; Brick bust upper Y
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	CLC
 	SBC Level_VertScroll
 	STA BrickBust_YUpr
@@ -6008,7 +5996,7 @@ ThwompBustBrick:
 	STA BrickBust_YLwr
 
 	; Brick bust X
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	SUB <Horz_Scroll	
 	STA BrickBust_X
 

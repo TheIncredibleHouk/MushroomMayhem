@@ -839,7 +839,7 @@ Fireball_ThawTile:
 	; Set block change Y 
 	LDA <Temp_Var3
 	AND #$F0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 
 	; Set poof Y
 	SBC Level_VertScroll
@@ -847,12 +847,12 @@ Fireball_ThawTile:
 
 	; Set block change Y Hi
 	LDA <Temp_Var4
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	; Set block change X
 	LDA <Temp_Var5
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 	; Set poof X
 	SBC <Horz_Scroll
@@ -860,7 +860,7 @@ Fireball_ThawTile:
 
 	; Set block change X Hi
 	LDA <Temp_Var7
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	LDA ProjectileToSpinners
 	BEQ SkipSpinnerChange
@@ -1062,10 +1062,13 @@ ICE_BALL_SKIP1:
 	BEQ Kill_Enemy_Anyway
 	LDA #$01	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
 	STA Objects_State,Y
+
 	LDA #OBJ_ICEBLOCK
 	STA Objects_ID,Y ; #DAHRKDAIZ Replace sprite with ice block
+
 	LDA #$01
 	STA Objects_SpriteAttributes,X
+
 	LDA #$00
 	STA Objects_Frame, X
 	RTS
@@ -2708,114 +2711,7 @@ PRG007_B1DD:
 PRG007_B1DE:
 	JMP SpecialObj_Remove	 ; Remove special object and don't come back!
 
-Wand_Pattern1:		.byte $99, $B9, $BD, $B9, $99, $BB, $BF, $BB
-Wand_Pattern2:		.byte $99, $BB, $BB, $BB, $99, $B9, $BD, $B9
-Wand_Attributes:	.byte SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2 | SPR_VFLIP, SPR_PAL2 | SPR_VFLIP, SPR_PAL2 | SPR_VFLIP, SPR_PAL2, SPR_PAL2
-
 SObj_Wand:
-
-	; Load wand graphics
-	LDA #$48
-	STA PatTable_BankSel+4
-
-	LDA <Player_HaltGameZ
-	BNE PRG007_B254	 ; If gameplay is halted, jump to PRG007_B254
-
-	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
-
-	DEC SpecialObj_YVel,X
-
-	; Wand_FrameCnt += Var1 (spin rate)
-	LDA Wand_FrameCnt
-	ADD SpecialObj_Var1,X
-	STA Wand_FrameCnt
-	BCC PRG007_B217	 ; If no carry, jump to PRG007_B217
-
-	INC Wand_Frame	 ; Next wand frame
-
-PRG007_B217:
-
-	JSR SObj_CheckHitSolid
-	BCC PRG007_B254	 ; If wand has not hit solid surface, jump to PRG007_B254
-
-	LDA SpecialObj_YVel,X
-	BMI PRG007_B254	 ; If wand is moving upward, jump to PRG007_B254
-
-	CMP #$20
-	BLT PRG007_B241	 ; If wand Y Vel < $20, jump to PRG007_B241
-
-	; Wand bounces!
-	LSR A		; Divide by 2
-	JSR Negate	; Negate
-	STA SpecialObj_YVel,X
-
-	; Wand Y -= 2
-	DEC SpecialObj_YLo,X
-	DEC SpecialObj_YLo,X
-
-	INC Wand_BounceFlag	 ; Wand_BounceFlag++
-
-	; Var1 += $80 (rapid spin rate!)
-	LDA SpecialObj_Var1,X
-	ADD #$80
-	STA SpecialObj_Var1,X
-
-	JMP PRG007_B254	 ; Jump to PRG007_B254
-
-PRG007_B241:
-
-	; Wand has landed!
-	LDA #$00
-	STA SpecialObj_YVel,X
-	STA Wand_Frame	 ; Wand_Frame = 0
-
-	; Align wand Y to grid + 5
-	LDA SpecialObj_YLo,X
-	AND #$f0
-	ADD #$05
-	STA SpecialObj_YLo,X
-
-PRG007_B254:
-	JSR SObj_GetSprRAMOffChkVScreen
-	BNE PRG007_B291	 ; If wand is not on vertical screen, jump to PRG007_B291 (RTS)
-
-	JSR SObj_Draw16x16	 ; Prepare wand sprite
-
-	; Subtract 4 from sprite Ys
-	LDA Sprite_RAM+$00,Y
-	SBC #$04
-	STA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$04,Y
-
-	LDA Wand_BounceFlag
-	LSR A		; Sets carry on odd bounces
-
-	LDA Wand_Frame
-	AND #$07	; A = 0 to 7 by Wand_Frame
-
-	BCC PRG007_B274	 ; If wand is not on an odd bounce, jump to PRG007_B274
-
-	EOR #$07	 ; Invert result (wand spin)
-
-PRG007_B274:
-	TAX		 ; Frame -> 'X'
-
-	; Set wand sprites patterns
-	LDA Wand_Pattern1,X
-	STA Sprite_RAM+$01,Y
-	LDA Wand_Pattern2,X
-	STA Sprite_RAM+$05,Y
-
-	; Set wand sprite attributes
-	LDA Wand_Attributes,X
-	STA Sprite_RAM+$02,Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$06,Y
-
-	LDX <CurrentObjectIndexZ	 ; X = special object slot index
-	JMP SObj_PlayerCollide	 ; Do Player-to-wand collision and don't come back!
-
-PRG007_B291:
 	RTS		 ; Return
 
 SObj_LavaLotusFire:
@@ -4242,9 +4138,6 @@ PRG007_BC5C:
 	LDA #OBJ_BIGCANNONBALL
 	STA Objects_ID,X
 
-	; Big Cannon Ball is BIG
-	INC Objects_IsGiant,X
-
 	LDY <CurrentObjectIndexZ	; Y = Cannon Fire slot index
 
 	; Set BIG Cannon Ball Y
@@ -4628,7 +4521,7 @@ CFire_Platform:
 	LDA CannonFire_Var, X
 	BNE CFire_Platform1
 
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 
 	LDY <CurrentObjectIndexZ
 
@@ -4852,7 +4745,7 @@ CFire_RockyWrench:
 	STA Objects_SpriteAttributes,X
 
 	; Set Rocky's initial attributes towards Player
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA Rocky_InitAttr,Y
 	STA Objects_Orientation,X
 
@@ -4928,7 +4821,7 @@ PRG007_BF80:
 	TAY
 	BNE PRG007_BF81
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 PRG007_BF81:
 	; Bill fires towards Player
@@ -4990,7 +4883,7 @@ Hammer_BrickBust:
 
 	;
 	LDA <Temp_Var3
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 
 	; Set poof Y
 	SBC Level_VertScroll
@@ -5000,12 +4893,12 @@ Hammer_BrickBust:
 
 	; Set block change Y Hi
 	LDA <Temp_Var4
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	; Set block change X
 	LDA <Temp_Var5
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 	; Set poof X
 	SBC <Horz_Scroll
@@ -5013,7 +4906,7 @@ Hammer_BrickBust:
 
 	; Set block change X Hi
 	LDA <Temp_Var7
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	LDA #$00	 
 	STA BrickBust_XDist	 ; Reset X fan out distance
@@ -5119,14 +5012,14 @@ Bounce_Ball
 
 ProjChangeTile:
 	JSR Fireball_ThawTile	 ; Thaw the frozen tile!
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	AND #$F0
 	ORA #$04
 	STA PlayerProj_X, X
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	AND #$F0
 	STA PlayerProj_Y, X
-	LDA Level_BlockChgYHi
+	LDA Block_ChangeYHi
 	STA PlayerProj_YHi, X
 	JMP PlayerProj_ChangeToPoof
 
@@ -5178,20 +5071,20 @@ CheckAcidMelt:
 	BNE CheckAcidMelt1
 
 	LDA <Temp_Var3
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 
 	; Set block change Y Hi
 	LDA <Temp_Var4
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	; Set block change X
 	LDA <Temp_Var5
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 	; Set block change X Hi
 	LDA <Temp_Var7
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	LDA CurrentTile
 	EOR #$01
@@ -5232,7 +5125,7 @@ EnemyHammerBrickBust:
 
 	;
 	LDA <Temp_Var3
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 
 	; Set poof Y
 	SBC Level_VertScroll
@@ -5242,12 +5135,12 @@ EnemyHammerBrickBust:
 
 	; Set block change Y Hi
 	LDA <Temp_Var4
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	; Set block change X
 	LDA <Temp_Var5
 	AND #$f0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 	; Set poof X
 	SBC <Horz_Scroll
@@ -5255,7 +5148,7 @@ EnemyHammerBrickBust:
 
 	; Set block change X Hi
 	LDA <Temp_Var7
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 	LDA #$00	 
 	STA BrickBust_XDist	 ; Reset X fan out distance

@@ -667,7 +667,7 @@ DryCheep_DrawFlamesAndSmoke:
 	LDA BeachedCheep_PoofTimer, X
 	BNE DryCheep_DrawFlamesAndSmoke1
 
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID, Y
 	LDA #$20	 
@@ -928,7 +928,7 @@ Phanto_Chase5:
 	JMP Object_Delete
 
 Phanto_Poof:
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 
 	LDA #$1f
 	STA SpecialObj_Data,Y
@@ -1160,7 +1160,7 @@ ObjNorm_PlatformPattern:
 	;CMP Objects_Data1, X
 	;BNE ObjNorm_PlatformPattern1
 	;
-	JSR Object_DeleteOffScreen_N2
+	JSR Object_DeleteOffScreen
 
 ObjNorm_PlatformPattern1:
 	JMP LogPlat_Draw
@@ -1178,7 +1178,7 @@ ObjInit_PlatformFollow:
 	RTS
 
 DeleteIfOffAndDrawWide:
-	JSR Object_DeleteOffScreen_N2	 ; Delete object if it falls off-screen
+	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 	JMP LogPlat_Draw	 ; Jump to LogPlat_Draw
 
 ObjNorm_PlatformFollow:
@@ -1716,7 +1716,7 @@ Spike_TossSpikeBall:
 	
 	TXA
 	TAY
-	JSR FindEmptyEnemySlot	; Find an empty special object slot if on-screen (or don't come back!
+	JSR Object_FindEmpty	; Find an empty special object slot if on-screen (or don't come back!
 
 	STA Objects_Data2,Y	 ; Objects_Data2 = 0 (because we wouldn't be here otherwise)
 
@@ -1795,7 +1795,7 @@ ObjNorm_Snifit:
 	LDA Objects_Data3, X
 	BEQ ObjNorm_Snifit0
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 	CPY #$01
 	BNE ObjNorm_Snifit0
 
@@ -1890,7 +1890,7 @@ Snifit_Shoot:
 
 Snifit_Shoot1:
 	INC Objects_Data3, X
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 	TYA
 	BMI Snifit_ShootRTS
 
@@ -2235,7 +2235,8 @@ PRG002_AF96:
 	LDA <Player_HaltGameZ
 	BNE PRG002_B00E	 ; If gameplay is halted, jump to PRG002_B00E
 
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG002_B00E	 ; If any sprites of the spike ball are off-screen, jump to PRG002_B00E
 
 	LDA Objects_ID,X
@@ -2334,13 +2335,13 @@ ObjNorm_Nipper0:
 	AND #$04
 	BEQ ObjNorm_Nipper2
 
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	STY TempY
 	CMP #$00
 	BNE ObjNorm_Nipper2
 
 	LDA #$10
-	JSR Level_ObjCalcYBlockDiffs
+	JSR Object_YDistanceFromPlayer
 	CPY #$01
 	BNE ObjNorm_Nipper2
 	TAY
@@ -2773,7 +2774,8 @@ ObjNorm_NipperFireBreathe:
 	AND #$01
 	STA Objects_Frame,X	 ; Nipper just smacks his lips
 
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG002_B65A	 ; If any of Nipper's sprites are not visible, jump to PRG002_B65A (RTS)
 
 	LDA <Counter_1
@@ -2812,7 +2814,7 @@ PRG002_B61F:
 	CMP #$40
 	BGE PRG002_B65A	 	; If Player is too high above Nipper, jump to PRG002_B65A (RTS)
 
-	JSR SpecialObj_FindEmptyAbort	 ; Find an empty special object slot if on-screen (or don't come back!)
+	JSR SpecialObject_FindEmptyAbort	 ; Find an empty special object slot if on-screen (or don't come back!)
 
 	; Nipper fireball ID
 	;LDA #SOBJ_NIPPERFIREBALL
@@ -4448,7 +4450,7 @@ Birdo_TryShoot:
 	LDA Birdo_EggShoot, Y
 	STA <Temp_Var16
 
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 	CPY #$FF
 	BEQ Birdo_Norm
 
@@ -4611,7 +4613,7 @@ ObjNorm_PacBoo4:
 	PLA
 	STA <Player_X
 
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 	LDA Objects_LastProp, X
 	CMP #TILE_PROP_ENEMY
 
@@ -4716,7 +4718,7 @@ PiranhaCheckOffScreen:
 
 	LDA TempA
 	BEQ PiranhaCheckOffScreen1
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 
 
 	LDA Object_LevelTile
@@ -4732,8 +4734,6 @@ PiranhaCheckOffScreen1:
 	RTS
 
 PiranahDeleteOffScreen:
-	LDA #$01
-	STA Objects_UseShortHTest, X
 	JSR Object_DeleteOffScreen
 	LDA #$00
 	STA TempA
@@ -4826,7 +4826,7 @@ Piranha_CheckTiles2:
 	LDA #$80
 	STA Objects_Timer, X
 
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 
 	LDA Object_LevelTile
 	EOR #$01
@@ -4838,7 +4838,7 @@ Piranha_CheckTiles2:
 	RTS
 
 Piranha_SetVelocity:
-	JSR Object_GetAttrJustTile
+	JSR Object_DetectTileOn
 
 	LDA Object_LevelTile
 	EOR #$01

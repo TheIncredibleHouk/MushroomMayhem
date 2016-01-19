@@ -1594,10 +1594,10 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Objects_Timer2:		.ds 8	; $0520-$0527 "Timer" values; automatically decrements to zero 
 
 	; All the Level_BlockChgX/Y values are aligned to nearest 16 (i.e. tile coordinate)
-	Level_BlockChgXHi:	.ds 1	; Player X High value when block change was queued
-	Level_BlockChgXLo:	.ds 1	; Player X Low value when block change was queued
-	Level_BlockChgYHi:	.ds 1	; Player Y High value when block change was queued
-	Level_BlockChgYLo:	.ds 1	; Player Y Low value when block change was queued
+	Block_ChangeXHi:	.ds 1	; Player X High value when block change was queued
+	Block_ChangeX:	.ds 1	; Player X Low value when block change was queued
+	Block_ChangeYHi:	.ds 1	; Player Y High value when block change was queued
+	Block_ChangeY:	.ds 1	; Player Y Low value when block change was queued
 
 	; the block "bounce" that occurs after hitting ? block, music note block, etc.
 	Level_BlkBump_Pos:	.ds 2	; $052C-$052D Block bump effect slot "position" (from 10 down, "position" of bounce)
@@ -2700,6 +2700,12 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_XDiff:	.ds 8
+	Objects_YDiff:	.ds 8
+	Player_XMid:	.ds 1
+	Player_XHiMid:	.ds 1
+	Player_YMid:	.ds 1
+	Player_YHiMid: .ds 1
 
 ; Player's hammer/fireball
 	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
@@ -2723,16 +2729,7 @@ ABILITY_CHERRY_STAR = 5
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
 	Objects_HitCount:	.ds 5	; $7CF6-$7CFA Somewhat uncommon "HP" used generally for bosses only (e.g. they take so many fireballs)
 
-
 	RotatingColor_Cnt:	.ds 1	; When non-zero, causes rainbow palettes in the background; $80 bit is used by Koopaling wand grab
-
-; Some variables used by the recovered magic wand
-	Wand_FrameCnt:		.ds 1	; A counter that overflows to increment Wand_Frame (added to by the wand's SpecialObj_Var1)
-	Wand_Frame:		.ds 1	; Wand frame
-	Wand_BounceFlag:	.ds 1	; Tracks the recovered wand bounce; odd on first bounce
-
-	Player_DebugNoHitFlag:	.ds 1	; UNUSED: (Old debug routine) When set, disables getting hurt (would be toggled by pressing SELECT; see PRG000 $C91B)
-
 
 ; Stores "rows" of completed levels or other map alterations (e.g. rock break,
 ; mini-fortress lock removal, etc.) for a given column, from the leftmost.
@@ -2765,7 +2762,7 @@ ABILITY_CHERRY_STAR = 5
 	; C = Warp Whistle
 	; D = Music Box
 	
-	Inventory_Items:	.ds 32	; $7D80-$7D9B Mario, 4 rows of 7 items 
+	Inventory_Items:	.ds 16	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
 	Player_Coins:		.ds 4	; Mario's coins
@@ -3004,12 +3001,12 @@ SOBJ_POOF		= $16 	; Poof
 	Objects_LastTileYHi:  .ds 1
 
 	Objects_SpriteAttributes:	.ds 8	; $7FE7-$7FEE Object sprite attributes (only uses bit 6 for H-Flip and bits 0-1 for palette)
-	Objects_UseShortHTest:	.ds 8	; $7FEF-$7FF6 If set, object will use a short horizontal test to determine if it is off-screen
 
 	Roulette_Lives:			; Number of lives you are rewarded from winning the Roulette (NOTE: Shared with first byte of Objects_IsGiant)
-	Objects_IsGiant:	.ds 8	; $7FF7-$7FFE Set mainly for World 4 "Giant" enemies (but some others, like Bowser, also use it)
 
 	;#FREERAM
+	Objects_LeftRight: .ds 8
+	Objects_AboveBelow:	.ds 8
 	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
 	Slow_Watch:			.ds 1	;

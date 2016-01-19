@@ -36,7 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="SMB3\PRG\Build Mario Adventure 3.lnk" />
-    <None Include="SMB3\PRG\Common Routines.asm" />
     <None Include="SMB3\PRG\prg000.asm" />
     <None Include="SMB3\PRG\prg001.asm" />
     <None Include="SMB3\PRG\prg002.asm" />

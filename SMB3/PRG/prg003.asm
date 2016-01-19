@@ -129,7 +129,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $59 - OBJ_FIRESNAKE
 	.word ObjHit_DoNothing	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.word ObjHit_DoNothing	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.word ObjHit_DoNothing	; Object $5C - OBJ_ICEBLOCK
+	.word Object_Hold	; Object $5C - OBJ_ICEBLOCK
 	.word ObjHit_DoNothing	; Object $5D - OBJ_STONEBLOCK
 	.word ObjHit_DoNothing	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.word ObjHit_DoNothing	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
@@ -404,7 +404,7 @@ ObjP66:
 ObjP53:
 	.byte $8D, $8D
 ObjP5C:
-	.byte $8F, $8F, $8F, $8F, $61, $61
+	.byte $61, $61
 
 ObjP5D:
 	.byte $97, $99, $97, $99, $61, $63   ;#DAHRKDAIZ ICEBLOCK_SPRITE
@@ -461,25 +461,73 @@ ObjP6B:
 	.byte $81, $83, $85, $87, $85, $87, $B1, $B1, $81, $B5, $85, $B7, $BB, $BB, $91, $93
 
 ObjInit_IceBlock:
-	LDA #$ff
-	STA Objects_Timer3,X
-
-	LDA #OBJSTATE_KICKED	         ; #DAHRKDAIZ makes sure the ice block doesn't disappear immediately
-	STA Objects_State,X
-	LDA #$01
-	STA Objects_SpriteAttributes,X
-	LDA #$02
-	STA Objects_Frame, X
-	LDA <Objects_YZ,X
 	RTS
 
 ObjNorm_IceBlock:
+	LDA <Player_HaltGameZ
+	BNE IceBlock_Draw
 
-	; This may seem confusing, but an Ice Block is in held state when grabbed,
-	; shelled state when kicked, and just comes here to get busted...
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ IceBlock_Burst
 
-	LDA #$03	 ; A = 3
-	JMP PRG003_A4DD	 ; Jump to PRG003_A4DD
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_InteractWithPlayer
+
+	LDA <Objects_XVelZ, X
+	ORA <Objects_XVelZ, X
+	ORA Object_BeingHeld, X
+	BEQ IceBlock_NoBurst
+
+	JSR Object_KillOthers
+	BCC IceBlock_NoBurst
+
+	; if hit another object an held, it bursts
+	LDA Object_BeingHeld, X
+	BEQ IceBlock_NoBurst
+
+	LDA #$00
+	STA Player_IsHolding
+	BEQ IceBlock_Burst
+
+IceBlock_NoBurst:
+	LDA Object_BeingHeld, X
+	BNE IceBlock_Draw
+
+	JSR Object_InteractWithTiles
+
+IceBlock_TestBreak:
+	LDA <Objects_CollisionDetectionZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL | HIT_CEILING)
+	BEQ IceBlock_Draw
+	
+IceBlock_Burst:
+	LDA #$59
+	STA <Object_BurstTile
+
+	LDA #SPR_PAL1
+	STA <Object_BurstPalette
+
+	JSR Object_Burst
+	JSR Object_TestTopBumpBlocks
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+	JSR Object_TestSideBumpBlocks
+
+	JMP Object_SetDeadEmpty
+
+IceBlock_Draw:
+	JSR Object_ShakeAndDrawMirrored
+	LDA Sprite_RAM+$06, Y
+	ORA #SPR_VFLIP
+	STA Sprite_RAM+$06, Y
+	RTS
+
 
 ObjInit_Spintula:
 	
@@ -506,7 +554,7 @@ ObjNorm_Spintula1:
 Spintula_Wait:
 	LDA Objects_Timer,X
 	BNE Spintula_WaitRTS
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA <Temp_Var16
 	BPL Spintula_Wait1
 	JSR Negate
@@ -724,7 +772,7 @@ ShyGuyDirection: .byte $08, $F8
 ShyGuyFlip: .byte SPR_HFLIP, $00
 
 ObjInit_VeggieGuy:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA ShyGuyDirection, Y
 	STA <Objects_XVelZ,X
 	LDA ShyGuyFlip, Y
@@ -741,7 +789,7 @@ ObjInit_VeggieGuy1:
 	RTS		 ; Return
 
 ObjInit_ShyGuy:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA ShyGuyDirection, Y
 	STA <Objects_XVelZ,X
 	LDA ShyGuyFlip, Y
@@ -922,13 +970,13 @@ SnowGuyWait1:
 
 SnowGuyCarry:
 	LDA #$10
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	CMP #$04
 	BCS SnowGuyCarrySnow2
-	JSR Level_ObjCalcYBlockDiffs
+	JSR Object_YDistanceFromPlayer
 	CMP #$02
 	BCS SnowGuyCarrySnow2
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	CPX #$FF
 	BEQ SnowGuyCarrySnow2
 
@@ -1147,13 +1195,13 @@ VeggieGuyWait1:
 
 VeggieGuyCarry:
 	LDA #$10
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	CMP #$04
 	BCS VeggieGuyCarryVeggi2
-	JSR Level_ObjCalcYBlockDiffs
+	JSR Object_YDistanceFromPlayer
 	CMP #$02
 	BCS VeggieGuyCarryVeggi2
-	JSR SpecialObj_FindEmptyAbort
+	JSR SpecialObject_FindEmptyAbort
 	LDA #SOBJ_VEGGIE
 	STA SpecialObj_ID,Y
 
@@ -1380,13 +1428,13 @@ ShyGuyGetBrick2:
 ShyGuyThrowDistance: .byte $40, $B0
 ShyGuyCarryBrick:
 	LDA #$10
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	CMP #$04
 	BCS ShyGuyCarryBrick2
-	JSR Level_ObjCalcYBlockDiffs
+	JSR Object_YDistanceFromPlayer
 	CMP #$02
 	BCS ShyGuyCarryBrick2
-	JSR FindEmptyEnemySlot
+	JSR Object_FindEmpty
 	CPX #$FF
 	BEQ ShyGuyCarryBrick2
 
@@ -1456,7 +1504,7 @@ ShyGuyWait:
 	ORA Objects_SpriteAttributes,X
 	STA Objects_SpriteAttributes,X
 	LDA #$10
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 	CMP #$04
 	BCS ShyGuyCarryBrick3
 
@@ -1551,7 +1599,7 @@ BustBlock_XVelByInput:	.byte $F8, $08, $F8, $08, $00
 BustBlock_Segment:
 	LDY #$07	 ; Y = 7 (wider expanse of special object slots)
 
-	JSR SpecialObj_FindEmptyAbortY	 ; Find an empty special object slot or don't come back here...
+	JSR SpecialObject_FindEmptyAbortY	 ; Find an empty special object slot or don't come back here...
 
 	; Temp_Var1 = Ice Block's Y
 	LDA <Objects_YZ,X
@@ -1610,7 +1658,7 @@ Twirler_InitXVel:	.byte $08, -$08
 Twirl_DropXVel: .byte $18, $E8
 
 ObjInit_Twirling:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Set twirler X velocity towards Player
 	LDA Twirler_InitXVel,Y
@@ -1693,7 +1741,7 @@ PRG003_A5CA:
 	STA Objects_Data3,X
 
 PRG003_A5CF:
-	JSR Level_ObjCalcXDiffs	
+	JSR Object_QuickXDistanceFromPlayer	
 
 	LDA <Temp_Var16
 	ADD #$30
@@ -1713,7 +1761,7 @@ PRG003_A5DB:
 	LDA ObjectGroup02_CollideJumpTable,Y
 	STA Objects_ID,X	 ; Change into the appropriate target object
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA Twirl_DropXVel, Y
 	STA <Objects_XVelZ,X
 
@@ -1768,7 +1816,8 @@ PRG003_A62A:
 	STY PatTable_BankSel+4
 
 PRG003_A62D:
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG003_A64E	 ; If object falls off-screen at all, jump to PRG003_A64E (destroys it)
 
 	JSR Object_ShakeAndDraw		; Draw donut lift
@@ -1859,15 +1908,15 @@ DonutLift_ChangeBlock:
 	; Block change to occur at Y+1
 	LDA <Objects_YZ,X
 	ADD #$01
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA <Objects_YHiZ,X
 	ADC #$00
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 	LDA <Objects_XHiZ,X
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 	LDA <Objects_XZ,X
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 	RTS		 ; Return
 
@@ -1878,7 +1927,7 @@ BobOmb_StartXVel:	.byte $08, -$08
 BobOmbExp_StartXVel:	.byte $10, -$10
 
 ObjInit_BobOmb:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Start Bob-omb moving towards Player
 	LDA BobOmb_StartXVel,Y
@@ -1939,7 +1988,7 @@ BobOmb_WalkAround:
 	AND #$04
 	BEQ BobOmb_WalkAround1
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; March toward Player
 	LDA BobOmbExp_StartXVel,Y
@@ -2242,7 +2291,8 @@ PRG003_A89D:
 	DEC <Temp_Var16	 ; Temp_Var16--
 	BPL PRG003_A83D	 ; While Temp_Var16 >= 0, loop!
 
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Explosion_BumpBlocks	 ; If any part of the exploding Bob-omb has fallen off-screen, jump to Explosion_BumpBlocks
 
 	JSR BobOmb_CalcULOffXY	; (large bounding box for explosion)
@@ -2536,7 +2586,7 @@ MagicStar_Radar:
 	BCS MagicStar_RadarRTS
 	LDA #$00
 	STA <Temp_Var1
-	JSR Level_ObjCalcXBlockDiffs
+	JSR Object_XDistanceFromPlayer
 
 	CMP #$00
 	BEQ MagicStar_Radar1
@@ -2545,7 +2595,7 @@ MagicStar_Radar:
 	STA <Temp_Var1
 	
 MagicStar_Radar1:
-	JSR Level_ObjCalcYBlockDiffs
+	JSR Object_YDistanceFromPlayer
 	CMP #$00
 	BEQ MagicStar_Radar2
 
@@ -2810,18 +2860,19 @@ CurrentDownward_YAccel:	.byte  $03,  $02,  $01,  $00, $00, $00, $00, $00, $00
 ObjNorm_WaterCurrent:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
 
-	JSR Object_AnySprOffscreen
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
 	ORA <Player_HaltGameZ
 	BNE PRG003_B197	 ; If object falls off-screen or gameplay is halted, jump to PRG003_B197
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$08
 	CMP #$20
 	BGE PRG003_B18C	 ; If Player is not close enough, jump to PRG003_B18C
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 
 	LDA Objects_ID,X
 	CMP #OBJ_WATERCURRENTDOWNARD
@@ -2892,7 +2943,7 @@ PRG003_B197:
 
 Current_GenerateBubble:
 	LDY #$01
-	JSR SpecialObj_FindEmptyAbortY	; Find a free special object in one of the first two slots or don't come back!
+	JSR SpecialObject_FindEmptyAbortY	; Find a free special object in one of the first two slots or don't come back!
 
 	; SpecialObj_Timer = $28
 	LDA #$28
@@ -3005,7 +3056,7 @@ SetYMineUpVel:
 	JMP MineWaterSolid
 	
 CanFreeMine:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	LDA <Temp_Var16
 	BPL WillFreeMine
 	JSR Negate
@@ -3085,7 +3136,7 @@ ObjNorm_Ninji:
 	JSR Object_HandleBumpUnderneath
 	JSR Object_InteractWithPlayer
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA Ninji_Facing, Y
 	STA Objects_Orientation, X
@@ -3170,7 +3221,7 @@ Ninji_ThrowStar:
 	LDA #$00
 	STA Objects_Frame, X
 
-	JSR SpecialObj_FindEmptyAbort	; Find an empty special object slot or don't come back!
+	JSR SpecialObject_FindEmptyAbort	; Find an empty special object slot or don't come back!
 
 	LDA #SOBJ_NINJASTAR
 	STA SpecialObj_ID,Y
@@ -3227,7 +3278,7 @@ NinjiIdleTimes:
 CheepCheepHopper_InitXVel:	.byte $0C, -$0C
 
 ObjInit_CheepCheepHopper:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Set hopper's initial X velocity
 	LDA CheepCheepHopper_InitXVel,Y
@@ -3249,7 +3300,7 @@ ObjNorm_CheepCheepHopper:
 	LDA Objects_InWater,X
 	BEQ PRG003_B471	 	; If Cheep Cheep is NOT in water, jump to PRG003_B471
 
-	JSR Level_ObjCalcXDiffs	
+	JSR Object_QuickXDistanceFromPlayer	
 
 	LDY #-$30	 ; Y = -$30
 
@@ -3277,7 +3328,7 @@ PRG003_B47A:
 Tornado_InitXVel:	.byte $08, -$08
 
 ObjInit_Tornado:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Set initial X velocity towards Player
 	LDA Tornado_InitXVel,Y
@@ -3428,7 +3479,7 @@ PRG003_B5B3:
 	LDA #$00
 	STA <Player_XVel
 
-	JSR Level_ObjCalcXDiffs	
+	JSR Object_QuickXDistanceFromPlayer	
 
 	; Set a little plug-along value to the Player
 	LDA Tornado_PlayerXVelAdj,Y
@@ -3439,7 +3490,7 @@ PRG003_B5C2:
 
 
 PRG003_B5C3:
-	JSR Level_ObjCalcXDiffs	
+	JSR Object_QuickXDistanceFromPlayer	
 
 	; Palette select 0/1 depending on which side the particle is on
 	TYA
@@ -3840,7 +3891,7 @@ PRG003_B7CF:
 	JMP PRG003_B7D5	 ; Jump to PRG003_B7D5
 
 PRG003_B7D2:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 PRG003_B7D5
 	; Blooper faces Player
@@ -3893,7 +3944,7 @@ PRG003_B7EB:
 	SBC #$00	 ; Apply carry
 	STA <Player_YHi	
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 
 	; Restore Player Y/Hi
 	PLA
@@ -3962,7 +4013,7 @@ Blooper_LaunchKids:
 	STA <Temp_Var1
 
 PRG003_B876:
-	JSR SpecialObj_FindEmptyAbort
+	JSR SpecialObject_FindEmptyAbort
 
 	; Blooper child
 	LDA #SOBJ_BLOOPERKID
@@ -4118,7 +4169,7 @@ PRG003_B933:
 	LDA Chomp_JumpYVels,Y
 	STA <Objects_YVelZ,X
 
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	; Set X velocity in facing direction
 	LDA Chomp_XVels,Y
 	STA <Objects_XVelZ,X
@@ -4299,7 +4350,7 @@ PyrantulaMove:
 	STA Objects_Timer,X
 
 PRG003_BA4C:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	LDA Objects_Data3,X
 	BNE PRG003_BA5C	 ; If Var7 <> 0, jump to PRG003_BA5C
@@ -4342,7 +4393,7 @@ PRG003_BA73:
 	ADC #$00	 ; Apply carry
 	STA <Player_YHi	 ; Update Player's Y Hi
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 
 	PLA		 
 	STA <Player_YHi	; Restore Player's Y Hi
@@ -4738,7 +4789,7 @@ PRG003_BC6D:
 	RTS		 ; Return
 
 FireChomp_SpitFire:
-	JSR SpecialObj_FindEmptyAbort	 ; Find an empty special object slot or don't come back!
+	JSR SpecialObject_FindEmptyAbort	 ; Find an empty special object slot or don't come back!
  
 	; Fire Chomp's fireball
 	LDA #SOBJ_FIREBALL
@@ -4778,7 +4829,7 @@ BoomBoom_CalcFlightPath:
 	TYA
 	PHA
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 	STY <Temp_Var3		 ; Store Y difference indicator -> Temp_Var3
 
 	; Get absolute value of Y difference
@@ -4788,7 +4839,7 @@ BoomBoom_CalcFlightPath:
 PRG003_BCAA:
 	STA <Temp_Var13		 ; -> Temp_Var13
  
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 	STY <Temp_Var4		 ; Store X difference indicator -> Temp_Var4
 
 	; Get absolute value of X difference
@@ -5048,7 +5099,7 @@ PRG003_BDE7:
 
 	LDY #$00
 	LDA #$10
-	JSR Level_ObjCalcYBlockDiffs
+	JSR Object_YDistanceFromPlayer
 	CMP #$80
 	BCS PRG003_BDE6_Divert2
 
@@ -5067,7 +5118,7 @@ PRG003_BDE6_Divert2:
 	LDA FireSnake_JumpYVel,Y
 	STA <Objects_YVelZ,X
 
-	JSR Level_ObjCalcYDiffs
+	JSR Object_QuickYDistanceFromPlayer
 
 	CPY #$00
 	BNE PRG003_BDDB	; If Player is lower than Fire Snake, jump to PRG003_BDDB
@@ -5081,7 +5132,7 @@ PRG003_BDE6_Divert2:
 	STA Objects_Timer3,X
 
 PRG003_BDDB:
-	JSR Level_ObjCalcXDiffs
+	JSR Object_QuickXDistanceFromPlayer
 
 	; Set X velocity towards Player
 	LDA FireSnake_XVelTowardsPlayer,Y
@@ -5240,29 +5291,29 @@ FireSnake_ChangeSolids1:
 	LDA Objects_YZ, X
 	SUB #$08
 	AND #$F0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA Objects_YHiZ, X
 	SBC #$00
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 	JMP FireSnake_ChangeSolids3
 
 FireSnake_ChangeSolids2:
 	LDA Objects_YZ, X
 	ADD #$10
 	AND #$F0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA Objects_YHiZ, X
 	ADC #$00
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 
 FireSnake_ChangeSolids3:
 	LDA Objects_XZ, X
 	ADD #$08
 	AND #$F0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 	LDA Objects_XHiZ, X
 	ADC #$00
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 	LDA Object_TileFeetValue
 	EOR #$01
 	STA Level_ChgTileValue
@@ -5280,36 +5331,36 @@ FireSnake_ChangeSolids5:
 	LDA Objects_XZ, X
 	SUB #$08
 	AND #$F0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 	LDA Objects_XHiZ, X
 	SBC #$00
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 	JMP FireSnake_ChangeSolids7
 
 FireSnake_ChangeSolids6:
 	LDA Objects_XZ, X
 	ADD #$10
 	AND #$F0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 	LDA Objects_XHiZ, X
 	ADC #$00
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 
 FireSnake_ChangeSolids7:
 	LDA Objects_YZ, X
 	ADD #$04
 	AND #$F0
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA Objects_YHiZ, X
 	ADC #$00
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 	LDA Object_TileWallValue
 	EOR #$01
 	STA Level_ChgTileValue
 	INC Level_ChgTileEvent
 	
 FireSnake_ChangeSolids8:
-	JSR SpecialObj_FindEmpty
+	JSR SpecialObject_FindEmpty
 	BMI FireSnake_ChangeSolids9
 
 FireSnake_ChangeSolids9:
@@ -5318,11 +5369,11 @@ FireSnake_ChangeSolids9:
 	STA SpecialObj_ID, Y
 	LDA #$20	 
 	STA SpecialObj_Data, Y
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	STA SpecialObj_XLo, Y
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	STA SpecialObj_YLo, Y
-	LDA Level_BlockChgYHi
+	LDA Block_ChangeYHi
 	STA SpecialObj_YHi, Y
 	
 FireSnake_ChangeSolids10:

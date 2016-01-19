@@ -5812,10 +5812,10 @@ FindCompletedLevels0:
 	BEQ FindCompletedLevels1
 	LDA MapPointers + 1, X
 	AND #$0F
-	STA Level_BlockChgXHi
+	STA Block_ChangeXHi
 	LDA MapPointers + 1, X
 	AND #$F0
-	STA Level_BlockChgXLo
+	STA Block_ChangeX
 
 	LDA MapPointers + 2, X
 	AND #$0F
@@ -5824,9 +5824,9 @@ FindCompletedLevels0:
 	ASL A
 	ASL A
 	SUB #$10
-	STA Level_BlockChgYLo
+	STA Block_ChangeY
 	LDA #$01
-	STA Level_BlockChgYHi
+	STA Block_ChangeYHi
 	STX TempX
 	JSR MarkCompletedLevels
 	LDX TempX
@@ -5839,7 +5839,7 @@ FindCompletedLevels1:
 
 
 MarkCompletedLevels:
-	LDA Level_BlockChgXHi
+	LDA Block_ChangeXHi
 	ASL A
 	TAX	
 	LDA Tile_Mem_Addr,X
@@ -5850,17 +5850,17 @@ MarkCompletedLevels:
 	LDA #$00
 	STA <Temp_Var7
 
-	LDA Level_BlockChgYHi
+	LDA Block_ChangeYHi
 	BEQ MarkCompletedLevels1	
 
 	INC <Map_Tile_AddrH	
 
 MarkCompletedLevels1:
 
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	AND #$f0
 	STA <Temp_Var6
-	LDA Level_BlockChgXLo
+	LDA Block_ChangeX
 	LSR A
 	LSR A
 	LSR A
@@ -5868,15 +5868,15 @@ MarkCompletedLevels1:
 	ORA <Temp_Var6
 	STA <Temp_Var5
 
-	LDA Level_BlockChgYHi
+	LDA Block_ChangeYHi
 	BNE MarkCompletedLevels2	
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	AND #$f0
 	CMP #$f0
 	BNE MarkCompletedLevels3	 
 
 MarkCompletedLevels2:
-	LDA Level_BlockChgYLo
+	LDA Block_ChangeY
 	ADD #$10
 	STA <Temp_Var6
 
