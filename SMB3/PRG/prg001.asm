@@ -36,9 +36,9 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Coin	; Object $08 - OBJ_COIN
 	.word ObjInit_Bubble	; Object $09 - OBJ_BUBBLE
 	.word ObjInit_ModifyPointers	; Object $0A - OBJ_BULLY
-	.word ObjInit_PUpMush	; Object $0B - OBJ_POWERUP_NINJASHROOM
-	.word ObjInit_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
-	.word ObjInit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.word ObjInit_PowerUp	; Object $0B - OBJ_POWERUP
+	.word ObjInit_PUp1; Object $0C - OBJ_POWERUP_INIT1
+	.word ObjInit_PUp2	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjInit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjInit_Weather	; Object $0F - OBJ_RAIN
 	.word ObjInit_IceFireFly; Object $10 - OBJ_PIXIE
@@ -50,17 +50,17 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $16 OBJ_KEYPIECE
 	.word ObjInit_DoNothing; Object $17 - OBJ_NEGASTAR
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
-	.word ObjInit_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word ObjNorm_DoNothing; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_BubbleGenerator	; Object $1A that is a l
 	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_SendBack	; Object $1C
 	.word ObjInit_Timer	; Object $1D
-	.word ObjInit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
-	.word ObjInit_Vine	; Object $1F - OBJ_GROWINGVINE
+	.word ObjInit_DoNothing	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_DoNothing	; Object $20
-	.word ObjInit_FireFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.word ObjInit_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjInit_SuperLeaf	; Object $23 - OBJ_POWERUP_FOXLEAF
+	.word ObjNorm_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) State 2 jump table
@@ -78,9 +78,9 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Coin	; Object $08 - OBJ_COIN
 	.word ObjNorm_Bubble	; Object $09 - OBJ_BUBBLE
 	.word ObjNorm_DoNothing	; Object $0A OBJ_BULLY
-	.word ObjNorm_PUpNinjaShroom; Object $0B - OBJ_POWERUP_NINJASHROOM
-	.word ObjNorm_StarOrSuit; Object $0C - OBJ_POWERUP_STARMAN
-	.word ObjNorm_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.word ObjNorm_PowerUp; Object $0B - OBJ_POWERUP
+	.word ObjInit_DoNothing; Object $0C - OBJ_POWERUP_STARMAN
+	.word ObjInit_DoNothing	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjNorm_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjNorm_Weather	; Object $0F
 	.word ObjNorm_IceFireFly	; Object $10 - OBJ_PIXIE
@@ -92,17 +92,17 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNormal_KeyPiece	; Object $16 OBJ_KEYPIECE
 	.word ObjNorm_NegaStar; Object $17 - OBJ_NEGASTAR
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
-	.word ObjNorm_FireFlower; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word ObjNorm_DoNothing; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Bubble	; Object $1A
 	.word ObjNorm_StarPiece	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjNorm_SendBack	; Object $1C
 	.word ObjNorm_Timer	; Object $1D
-	.word ObjNorm_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
-	.word ObjNorm_Vine	; Object $1F - OBJ_GROWINGVINE
+	.word ObjInit_DoNothing	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjNorm_Clock	; Object $20
-	.word ObjNorm_IceFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.word ObjNorm_StarOrSuit	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjNorm_FoxLeaf	; Object $23 - OBJ_POWERUP_FOXLEAF
+	.word ObjInit_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) Collision routine jump table (if calling Object_InteractWithPlayer;
@@ -121,9 +121,9 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_Coin	; Object $08 - OBJ_COIN
 	.word BubblePop	; Object $09 - OBJ_BUBBLE
 	.word ObjHit_DoNothing	; Object $0A
-	.word ObjHit_NinjaShroom	; Object $0B - OBJ_POWERUP_NINJASHROOM
-	.word ObjHit_StarOrSuit	; Object $0C - OBJ_POWERUP_STARMAN
-	.word ObjHit_PUpMush	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.word PUp_Collect	; Object $0B - OBJ_POWERUP
+	.word ObjInit_DoNothing	; Object $0C - OBJ_POWERUP_STARMAN
+	.word ObjInit_DoNothing	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjHit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjHit_DoNothing	; Object $0F
 	.word Player_GetHurt	; Object $10 OBJ_PIXIE
@@ -135,12 +135,12 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_KeyPiece	; Object $16
 	.word ObjHit_DoNothing	; Object $17 - OBJ_NEGASTAR
 	.word OCSPECIAL_HIGHSCORE; Object $18 - OBJ_BOSS_BOWSER
-	.word ObjHit_FireFlower	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word ObjNorm_DoNothing	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word BubblePop	; Object $1A
 	.word Object_SetDeadEmpty	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjHit_DoNothing	; Object $1C
 	.word ObjHit_DoNothing	; Object $1D
-	.word ObjHit_SuperLeaf	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.word ObjHit_DoNothing	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjHit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjHit_Clock	; Object $20
 	.word ObjHit_IceFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
@@ -163,7 +163,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $08 - OBJ_COIN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $09 - OBJ_BUBBLE
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A- OBJ_BULLY
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_NINJASHROOM
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0E - OBJ_HARDICE
@@ -212,7 +212,7 @@ ObjectGroup00_Attributes2:
 	.byte OA2_TDOGRP1	; Object $08 - OBJ_COIN
 	.byte OA2_TDOGRP1	; Object $09 - OBJ_BUBBLE
 	.byte OA2_TDOGRP1	; Object $0A
-	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP_NINJASHROOM
+	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP
 	.byte OA2_TDOGRP1	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA2_TDOGRP1	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA2_TDOGRP1	; Object $0E - OBJ_HARDICE
@@ -261,13 +261,13 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_COIN
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE 	; Object $09 - OBJ_BUBBLE
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP_NINJASHROOM
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $0E - OBJ_HARDICE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
 	.byte OA3_HALT_NORMALONLY 	; Object $10 OBJ_PIXIE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_DIESHELLED 	; Object $11
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_SHELL 	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE  	; Object $14
@@ -303,7 +303,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $08 - OBJ_COIN
 	.byte OPTS_NOCHANGE	; Object $09 - OBJ_BUBBLE
 	.byte OPTS_NOCHANGE	; Object $0A - OBJ_BULLY
-	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP_NINJASHROOM
+	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP
 	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OPTS_SETPT5 | $0F	; Object $0E - OBJ_HARDICE
@@ -345,7 +345,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $08 - OBJ_COIN
 	.byte KILLACT_STANDARD	; Object $09 - OBJ_BUBBLE
 	.byte KILLACT_STANDARD	; Object $0A
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP_NINJASHROOM
+	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte KILLACT_NORMALANDKILLED	; Object $0E - OBJ_HARDICE
@@ -584,13 +584,13 @@ CheckKeyAgainstLock:
 	CMP #TILE_PROP_LOCK
 	BNE RemainLocked
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE RemainLocked
 
 	LDA Objects_LastTile, X
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 
@@ -637,8 +637,11 @@ ObjNorm_NegaStar01:
 	BNE NegaStarRTS
 
 	LDY Objects_Property, X
+
 	LDA NegaStars, Y
-	JSR ToThreeDigits
+	STA DigitsParam
+
+	JSR BytesTo2Digits
 
 	LDY Object_SpriteRAM_Offset, X
 
@@ -656,11 +659,12 @@ ObjNorm_NegaStar01:
 	STA Sprite_RAM+10,Y
 	STA Sprite_RAM+14,Y
 
-	LDA <Temp_Var2
+	LDA <DigitsResult
 	ASL A
 	ADD #$A1
 	STA Sprite_RAM + 9, Y
-	LDA <Temp_Var3
+
+	LDA <DigitsResult + 1
 	ASL A
 	ADD #$A1
 	STA Sprite_RAM + 13, Y
@@ -749,7 +753,7 @@ PRG001_A4C6:
 	; Power-up which may emerge from different types of bounce blocks
 
 Bouncer_PUp:
-	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF; #DAHRKDAIZ added OBJ_POWERUP_ICE
+	.byte $00, $00, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_MUSHROOM, OBJ_GROWINGVINE, OBJ_POWERUP, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_FOXLEAF; #DAHRKDAIZ added OBJ_POWERUP_ICE
 
 	; Power-up X or Y velocity upon emerging from the bounce block
 Bouncer_PUpVel:	.byte $00, -$40, -$40, -$30, -$20, -$10, $00, $10, $20, $30, $40
@@ -1165,363 +1169,140 @@ BubblePopped:
 DestroyBubble:
 	JMP Object_SetDeadAndNotSpawned
 
-ObjNorm_PUpNinjaShroom:
-	LDA #$20
-	STA SprAnimOffset
-	JSR PowerUp_DoRaise	 ; Do power up raising out of box
+POWERUP_MUSHROOM	= 0
+POWERUP_FIREFLOWER	= 1
+POWERUP_SUPERLEAF	= 2
+POWERUP_FROGSUIT	= 3
+POWERUP_SHELL		= 4
+POWERUP_HAMMERSUIT	= 5
+POWERUP_ICEFLOWER	= 6
+POWERUP_FOXLEAF		= 7
+POWERUP_NINJASHROOM = 8
+POWERUP_STAR		= 9
+POWERUP_VINE		= 10
 
-	LDA <Objects_CollisionDetectionZ,X
-	AND #$04
-	BEQ PRG001_A78E	 	; If mushroom has not hit ground, jump to PRG001_A78E
+PowerUp_Palette:
+	.byte SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL1, SPR_PAL2
 
-	LDA <Objects_XVelZ,X
-	BNE PRG001_A78E	 	; If mushroom is moving horizontally, jump to PRG001_A78E
+PowerUp_YVelocities:
+	.byte $FF, $FF, $FF, $01, $01, $01, $01, $01, $01, $01, $F0
 
-	JSR PowerUp_BounceXVel	 ; Bounce off wall
-
-PRG001_A78E:
-	JSR Object_Move
-	JSR Object_InteractWithTiles	 	; Move, detect, interact with blocks of world
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-	JSR Object_DeleteOffScreen 		; Delete object if it falls off screen
-	JMP PowerUp_DoHitTest	 		; Do hit test and don't come back!
-
-
-ObjHit_NinjaShroom:
-	JSR Try_PUp_Reserve
-	LDA Effective_Suit
-	CMP #$0B
-	BNE Do_Ninja_Power
-	JMP PUp_GeneralCollect
-
-Do_Ninja_Power:
-
-	LDA #$0C
-	JMP Do_PUp_Poof_Collect
+PowerUp_AnimOff:
+	.byte $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $2C
 
 
-Star_Palettes:
-	.byte SPR_PAL0, SPR_PAL2, SPR_PAL2, SPR_PAL3
-
-ObjInit_StarOrSuit:
-	LDA Objects_Property, X
-	BEQ ObjInit_StarOrSuit1
-	STA From_Reserve
-
-ObjInit_StarOrSuit1:
-	LDA From_Reserve
-	BEQ Do_Star_Init
-	LDA #$00
-	STA From_Reserve
-	LDA #$A0
-	STA <Objects_YVelZ + 5
-	BNE Do_Star_Init2
-
-Do_Star_Init:
-	JSR Mushroom_SetFall	 ; Figure the way that the star should fall
-
-	LDA #$10	
-	STA Objects_Timer2,X	 ; Object's timer 2 = 16
-
-	; This will make mushroom drop downward if it was "knocked out" downward
-	LDY #$10	
-	LDA Player_BounceDir
-	BEQ PRG001_A7BF	 
-	LDY #-$38
-
-	; Delay until rise
-	LDA #$3d
-	STA Objects_Timer,X	 ; Set object's timer to $3d
-
-PRG001_A7BF:
-	STY <Objects_YVelZ,X	 ; Set object's Y velocity
-	STY <Objects_CollisionDetectionZ,X	 ; I think this is a mistake?  They probably meant to clear it?
-
-	JSR PowerUp_BounceXVel	 ; Bounce off wall
-
-Do_Star_Init2:
-	LDA PUp_StarManFlash
-	AND #$03	 
-	STA Objects_Frame,X
-	TAY
-	BEQ Star_RTS
-
-	; Set a start palette
-	LDA Star_Palettes,Y
-	STA Objects_SpriteAttributes,X
-Star_RTS:
-	RTS		 ; Return
-
-SprStarAnimOffset: .byte $28, $0C, $10, $14
-
-ObjNorm_StarOrSuit:
-
-	LDA PUp_StarManFlash
-	BNE PRG001_A7E0	 ; If flashing is not active, jump to PRG001_A7E0
-
-	; Store counter into cycler
-	LDA <Counter_1	
-	STA Objects_ColorCycle,X
-
-PRG001_A7E0:
-	LDA PUp_StarManFlash
-	AND #$03
-	TAY
-	LDA SprStarAnimOffset, Y
-	STA SprAnimOffset
+ObjInit_PUp1:
+	LDA #OBJ_POWERUP
+	STA Objects_ID, X
 
 	LDA Objects_Property, X
-	BNE PRG001_A7F1
+	STA PowerUp_Type, X
+	JMP ObjInit_PowerUp
 
-	JSR PowerUp_DoRaise	 ; Do power up raising out of box
-	JSR Object_Move
-	JSR Object_InteractWithTiles	 ; Move, detect, interact with blocks of world
+ObjInit_PUp2:
+	LDA Objects_Property, X
+	ADD #$07
+	STA PowerUp_Type, X
+	JMP ObjInit_PowerUp
 
-	LDA <Objects_CollisionDetectionZ,X
-	TAY		 ; Detection status -> 'Y'
+ObjInit_PowerUp:
+	CPX #$05
+	BEQ ObjInit_PowerUp1
 
-	AND #$04
-	BEQ PRG001_A7F1	 ; If star hasn't touched the ground, jump to PRG001_A7F1
+	STX TempX
 
-	LDA #-$40
-	STA <Objects_YVelZ,X	; Star bounce off ground!
+	LDX #$05
+	JSR Level_PrepareNewObject
+	
+	LDX TempX
 
-PRG001_A7F1:
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
- 	JMP PowerUp_DoHitTest	 ; Do hit test and don't come back!
+	LDA #OBJ_POWERUP
+	STA Objects_ID + 5
 
-	; Different "frames" of the "Starman" power up include the super
-	; suits; Tanooki, Frog, and Hammer, in order
+	LDA PowerUp_Type, X
+	STA PowerUp_Type + 5
+	
+	LDA <Objects_XZ, X
+	STA <Objects_XZ + 5
 
-ObjHit_StarOrSuit:
-	LDA Objects_Frame,X
-	BNE PRG001_A818	 ; If frame <> 0, jump to PRG001_A818
+	LDA <Objects_XHiZ, X
+	STA <Objects_XHiZ + 5
 
-	LDA Level_PSwitchCnt
-	BNE PRG001_A810	 ; If P-Switch is active, jump to PRG001_A810
+	LDA <Objects_YZ, X
+	STA <Objects_YZ + 5
 
-	; Otherwise, play invincibility theme!
-	LDA Sound_QMusic2
-	ORA #MUS2A_INVINCIBILITY
-	STA Sound_QMusic2
+	LDA <Objects_YHiZ, X
+	STA <Objects_YHiZ + 5
 
-PRG001_A810:
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State, X
 
-	; Player_StarInv = $E0
-	LDA #$e0
-	STA Player_StarInv
-
-	JMP PUp_GeneralCollect	 ; Jump to PUp_GeneralCollect
-
-PRG001_A818:
-
-	LDA PUp_StarManFlash
-	CLC
-	ADC #$03	 ; Frame -> 'Y' (index)
-	STA DAIZ_TEMP1
-	JSR Try_PUp_Reserve
-	LDA Effective_Suit
-	CMP DAIZ_TEMP1
-	BNE Do_Suit_Power
-	JMP PUp_GeneralCollect
-
-Do_Suit_Power:
-	INC DAIZ_TEMP1
-	LDA DAIZ_TEMP1
-	JMP Do_PUp_Poof_Collect
-
-
-ObjInit_PUpMush:
-	LDA From_Reserve
-	BEQ Do_Shroom_Init
-	LDA #$00
-	STA From_Reserve
-	LDA #$A0
-	STA <Objects_YVelZ + 5
+	LDA #OBJSTATE_INIT
+	STA Objects_State + 5
 	RTS
 
-Do_Shroom_Init:
-	JSR Mushroom_SetFall	 ; Figure the way that the mushroom should fall
+ObjInit_PowerUp1:
+	LDY PowerUp_Type, X
 
-	LDA #$10	
-	STA Objects_Timer2,X	 ; Object's timer 2 = 16
+	LDA PowerUp_Palette, Y
+	STA Objects_SpriteAttributes, X
 
-	; RAS: This is probably used by the Big ? block which CAN spawn mushroom/flower/star for some reason
-	LDA PUp_StarManFlash
-	BEQ PRG001_A852	 ; If flashing is NOT active, jump to PRG001_A852
+	LDA PowerUp_YVelocities, Y
+	STA <Objects_YVelZ, X
 
-	JSR Mushroom_SetXVel	 ; Set's X velocity appropriately by Player's 
-
-	LDY #-$38
-	JSR Mushroom_SetUpVel	 ; Set vertical velocity and mid air flag
-	JMP PRG001_A859		; Jump to PRG001_A859
-
-PRG001_A852:
-
-	; This will make mushroom drop downward if it was "knocked out" downward
-	LDY #$10	
-	LDA Player_BounceDir
-	BEQ Mushroom_SetUpVel
-
-PRG001_A859:
-	; Delay until rise
-	LDA #$3d
-	STA Objects_Timer,X
-
-	RTS		 ; Return
-
-
-Mushroom_SetUpVel:
-	STY <Objects_YVelZ,X	 ; Set object's Y velocity
-	STY <Objects_CollisionDetectionZ,X	 ; I think this is a mistake?  They probably meant to clear it?
-	RTS		 ; Return
-
-
-Mushroom_SetXVel:
-	LDY #$10	 ; Y = $10
-
-	LDA <Player_X
-	AND #$10	 ; determine if Player is on even/odd tile
-	BNE PRG001_A86E	 ; Jump to PRG001_A86E if odd
-	LDY #-$10	 ; Otherwise, Y = -$10
-PRG001_A86E:
-	STY <Objects_XVelZ,X	 ; Set X velocity appropriately
-	RTS		 ; Return
-
-
-ObjNorm_PUpMush:
-	LDA #$00
+	LDA PowerUp_AnimOff, Y
 	STA SprAnimOffset
-	JSR PowerUp_DoRaise	 ; Do power up raising out of box
 
-	LDA <Objects_CollisionDetectionZ,X
-	AND #$04
-	BEQ PRG001_A881	 ; If mushroom has NOT hit the ground, jump to PRG001_A881
+	JSR Object_MoveTowardsPlayer
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
 
-	LDA <Objects_XVelZ,X
-	BNE PRG001_A881	 ; If mushroom hasn't hit a wall, jump to PRG001_A881
+	RTS
 
-	JSR PowerUp_BounceXVel	 ; Otherwise, bounce off wall!
+PowerUp_Type = Objects_Data1
 
-PRG001_A881:
-	JSR Object_Move
-	JSR Object_InteractWithTiles	 ; Move, detect, interact with blocks of world
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
+ObjNorm_PowerUp:
+	LDA <Player_HaltGameZ, X
+	BNE ObjNorm_PowerUp0
 
-PowerUp_DoHitTest:
-	; Cannot collect power up while it's "raising"
-	LDA Objects_Timer2,X
-	BNE PRG001_A892	 ; If the timer is still active, jump to PRG001_A892 (RTS)
+	LDA Objects_Timer, X
+	BEQ ObjNorm_PowerUp1
 
-	JSR Object_InteractWithPlayer	 ; Otherwise, perform hit testing
+	JSR Object_ApplyYVel_NoGravity
+	JSR PUp_DrawMaskSprite
+	JSR Object_ShakeAndDraw
 
-PRG001_A892:
-	RTS		 ; Return
+ObjNorm_PowerUp0:
+	RTS
 
-ObjHit_PUpMush:
+ObjNorm_PowerUp1:
 
-	; Temp_Var = 1
-	LDA #$01
-	STA <Temp_Var1
+	LDA PowerUp_Type, X
+	JSR DynJump
 
-PRG001_A897:
-	LDA <Player_Suit
-	BEQ Do_Grow
-	LDA Player_Equip
-	CMP #$07
-	BNE Just_Collect
-	LDA #$01
-	STA PowerUp_Reserve
-Just_Collect:
-	JMP PUp_GeneralCollect	; If Player is not small, jump to PUp_GeneralCollect
-
-Do_Grow:
-	LDA #$02
-	STA Player_QueueSuit
-
-PRG001_A8AB:
-
-	; Do "growing" animation
-	LDA #$2f
-	STA Player_Grow
-
-PUp_GeneralCollect:
-	JSR PowerUp_PlaySound	 ; Play Power Up sound
-	LDA #OBJSTATE_DEADEMPTY
-	LDX <CurrentObjectIndexZ
-	STA Objects_State, X	 ; Set power-up to dead/empty
-
-	RTS		 ; Return
-
-PowerUp_PlaySound:
-	; Play the standard "Power Up" sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
-	RTS		 ; Return
-
-PowerUp_DoRaise:
-	LDA PowerUp_NoRaise
-	BEQ PowerUp_DoRaise1
-	LDA #$00
-	STA PowerUp_NoRaise
-	STA Objects_Timer, X
-
-PowerUp_DoRaise1:
-	LDA Objects_Timer,X
-	BEQ PRG001_A940	 ; If timer expired, jump to PRG001_A940 (will NOT return here if game is halted)
-
-	CMP #$2d
-	BNE PRG001_A8D5	 ; If object timer <> $2D, jump to PRG001_A8D5
-
-	; Play powerup rising sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELRISE
-	STA Sound_QLevel1
-
-PRG001_A8D5:
-	BGE PRG001_A93D	 ; If timer is >= $2D, jump to PRG001_A93D
-
-	; ObjSplash_DisTimer = 8
-	LDA #$08
-	STA ObjSplash_DisTimer,X
-
-	DEC Objects_Data4,X	 ; Objects_Data4--
-	BPL PRG001_A8F7	 ; If Objects_Data4 >= 0, jump to PRG001_A8F7
-
-	; When var 1 falls below 0, reset to 2
-	LDA #$02
-	STA Objects_Data4,X
-
-	LDA <Player_HaltGameZ
-	BNE PRG001_A8F7	 ; If game is halted, jump to PRG001_A8F7
+	.word PUp_Mushroom
+	.word PUp_Flower
+	.word PUp_Leaf
+	.word PUp_Bouncer
+	.word PUp_Mushroom
+	.word PUp_Bouncer
+	.word PUp_Flower
+	.word PUp_Leaf
+	.word PUp_Mushroom
+	.word PUp_Bouncer
+	.word PUp_Vine
 
 
-	; Game not halted...
-
-	; Move powerup up 1 pixel
-	LDA <Objects_YZ,X
-	SUB #$01
-	STA <Objects_YZ,X
-	LDA <Objects_YHiZ,X
-	SBC #$00
-	STA <Objects_YHiZ,X
-
-PRG001_A8F7:
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-
-	LDA Level_PipeMove
-	BNE PRG001_A937	 ; If starman flashing or Player in pipe, jump to PRG001_A937 (no masking sprite)
-
-	LDY #$00	 ; Y = 0
-
+PUp_DrawMaskSprite:
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG001_A937	 ; If any sprite is off-screen, jump to PRG001_A937 (no masking sprite)
+	BNE PUp_DrawMaskSprite1	 ; If any sprite is off-screen, jump to PRG001_A937 (no masking sprite)
 
-	; This puts on the masking sprite over the raising powerup
+	LDA Object_SpriteRAM_Offset, X
+	ADD #$08
+	TAY
 
 	LDA <Objects_YZ,X
 	AND #$f0	 	; Align object Y to tile
@@ -1548,209 +1329,133 @@ PRG001_A8F7:
 	ADD #$08
 	STA Sprite_RAM+7,Y
 
-PRG001_A937:
-	JSR PowerUp_DoHitTest	 ; Hit test power up when it has emerged from the box
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-
-PRG001_A93D:
-
-	; Do NOT return to caller!
-	PLA
-	PLA
-
-	RTS		 ; Return
-
-PRG001_A940:
-	LDA <Player_HaltGameZ
-	BEQ PRG001_A949	 ; If game is NOT halted by Player, jump to PRG001_A949
-
-	; Draw mushroom if game halted
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-
-	; Do NOT return to caller!! (JSR could've been a JMP?)
-	PLA
-	PLA
-
-PRG001_A949:
-	RTS		 ; Return
-
-	; Determines which way a mushroom should fall based on Player's position
-Mushroom_SetFall:
-	LDY #$00	 ; Y = 0 (mushroom falls to the left)
-
-	LDA <Objects_XZ,X
-	SUB <Horz_Scroll	; Make X relative to screen
-	CMP <Player_SpriteX	
-	BLT PRG001_A956	 	; If object X is less than Player's X, jump to PRG001_A956
-
-	INY		 	; Otherwise, Y = 1 (mushroom falls to the right)
-
-PRG001_A956:
-	STY Player_MushFall	; Set direction of mushroom fall
-	RTS		 ; Return
-
-PowerUp_BounceXVel:
-	LDY #$10	 ; Y = $10
-
-	LDA Player_MushFall	
-	BNE PRG001_A963	 ; If falling to right, jump to PRG001_A963
-	LDY #-$10	 ; Otherwise, Y = -$10
-PRG001_A963:
-	STY <Objects_XVelZ,X	 ; Set X velocity appropriately
-
-
-	RTS		 ; Return
-
-ObjInit_FireFlower:
-	LDA From_Reserve
-	BEQ Do_Fire_Init
-	LDA #$00
-	STA From_Reserve
-	LDA #$A0
-	STA <Objects_YVelZ + 5
+PUp_DrawMaskSprite1:
 	RTS
 
-Do_Fire_Init:
-	LDA #$10
-	STA Objects_Timer2,X	 ; Fire flower's timer 2 = $10
+PUp_Compare:
+	.byte $01, $02, $03, $04, $05, $06, $07, $08, $0B, $FF
 
-	; RAS: This is probably used by the Big ? block which CAN spawn mushroom/flower/star for some reason
-	LDA PUp_StarManFlash
-	BEQ PRG001_A9C8	 ; If flashing is NOT active, jump to PRG001_A852
+PUp_Queue:
+	.byte $02, $03, $04, $05, $06, $07, $08, $09, $0C, $00
 
-	; Strangely, the Big ? flower will "move over"; probably a partially developed idea??
-	; Or they just accidentally leftover stuff from mushroom
-	JSR Mushroom_SetXVel
-	JMP PRG001_A9CF	 ; Jump to PRG001_A9CF
+PUp_Collect:
+	LDA #OBJSTATE_DEADEMPTY
+	LDX <CurrentObjectIndexZ
+	STA Objects_State, X
 
-PRG001_A9C8:
+	LDA PowerUp_Type, X
+	CMP #$01
+	BNE PUp_Collect2
 
-	; This will make flower drop downward if it was "knocked out" downward
-	LDY #$10
-	LDA Player_BounceDir
-	BEQ PRG001_A9D5	
+	LDA Effective_Suit, X
+	CMP #$01
+	BCS PUp_Collect1
 
-PRG001_A9CF:
-	; Delay until rise
-	LDA #$3d
-	STA Objects_Timer,X
-	RTS		 ; Return
+PUp_Collect1:
+	
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	RTS
 
-PRG001_A9D5:
-	; Knock flower downward
-	STY <Objects_YVelZ,X	; Y Vel = $10
-	STY <Objects_CollisionDetectionZ,X	 ; I think this is a mistake?  They probably meant to clear it?
-	RTS		 ; Return
-
-ObjNorm_FireFlower:
-	LDA #$04
-	STA SprAnimOffset
-	BNE ObjNorm_FireFlower1
-
-ObjNorm_IceFlower:
-	LDA #$18
-	STA SprAnimOffset
-
-ObjNorm_FireFlower1:
-	LDA PUp_StarManFlash
-	BPL PRG001_A9E4	 ; If there's no star man flash going on, jump to PRG001_A9E4
-
-	; Otherwise, color cycle (?)
-	LDA <Counter_1
-	STA Objects_ColorCycle,X
-
-PRG001_A9E4:
-	JSR PowerUp_DoRaise	 ; Do power up raising out of box
-	JSR Object_Move
-	JSR Object_InteractWithTiles	 ; Move, detect, interact with blocks of world
-	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-
-	LDA <Objects_YVelZ,X
-	BNE PRG001_A9F6	 ; If Y Velocity <> 0, jump to PRG001_A9F6
-
-	STA <Objects_XVelZ,X	 ; Otherwise, halt horizontal movement too
-
-PRG001_A9F6:
- 	JMP PowerUp_DoHitTest	 ; Do hit test and don't come back!
-
-
-ObjHit_FireFlower:
-
-	JSR Try_PUp_Reserve
+PUp_Collect2:
+	TAY
 	LDA Effective_Suit
-	CMP #$02
-	BNE Do_Fire_Power
-	JMP PUp_GeneralCollect
+	CMP PUp_Compare, Y
+	BEQ PUp_Collect1
 
-Do_Fire_Power:
-	LDA #$03
-	JMP Do_PUp_Pallete_Collect
+PUp_Collect3:
+	LDA PUp_Queue, Y
+	STA Player_QueueSuit
 
-PRG001_AA41:
-	.byte $1C, $0E, $1C, $14, $18, $0A, $18, $17
+	LDA PowerUp_Type, X
 
+	JSR DynJump
 
+	.word PUp_Grow
+	.word PUp_Rainbow
+	.word PUp_Poof
+	.word PUp_Poof
+	.word PUp_Poof
+	.word PUp_Poof
+	.word PUp_Rainbow
+	.word PUp_Poof
+	.word PUp_Poof
+	.word PUp_Star
 
-	; Values used by the leaf based on bounce direction
-Leaf_YVels:	.byte $04, $E0, $E0, $E0
-Leaf_TimerVals:	.byte $08, $FF, $FF, $FF
+PUp_Grow:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
 
-ObjInit_SuperLeaf:
-	LDA From_Reserve
-	BEQ Do_Leaf_Init
-	LDA #$00
-	STA From_Reserve
-	LDA #$A0
-	STA <Objects_YVelZ + 5
-	LDA #$14
-	STA Objects_Timer + 5
+	LDA #$2f
+	STA Player_Grow
 	RTS
 
-Do_Leaf_Init:
+PUp_Rainbow:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+
+	LDA #$1f
+	STA Player_StarOff
+	RTS
+
+PUp_Poof:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOOF
+	STA Sound_QLevel1
+
+	LDA #$17
+	STA Player_SuitLost
+	RTS
+
+PUp_Mushroom:
+
+	;JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	BCS PUp_Mushroom2
+
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+
+PUp_Mushroom2:
+	JMP Object_ShakeAndDraw
+
+PUp_Flower:
 	LDA #$00
-	STA <Objects_XVelZ,X	 ; Halt X velocity
-	STA Objects_Data5,X	 ; Var2 = 0
+	STA <Objects_XVelZ, X
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	BCS PUp_Flower2
 
-	LDA #$0c	; A = $C (top spawn offset)
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
 
-	LDY Player_BounceDir
-	BEQ PRG001_ABA9	 ; If Player bounce down, jump to PRG001_ABA9
+PUp_Flower2:
+	JMP Object_ShakeAndDraw
 
-	LDA #-$0d	; A = -$D (bottom spawn offset)
+PUp_Bouncer:
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	BCS PUp_Bouncer1
 
-	DEC <Objects_YHiZ,X	
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	LDA <Objects_CollisionDetectionZ,X
+	AND #HITTEST_BOTTOM
+	BEQ PUp_Bouncer1
 
-PRG001_ABA9:
-	ADD <Objects_YZ,X
-	STA <Objects_YZ,X	 ; Set object Y
+	LDA #$C0
+	STA <Objects_YVelZ, X
 
-	BCC PRG001_ABB2	 	; If there's no carry, jump to PRG001_ABB2
-
-	INC <Objects_YHiZ,X	 ; Otherwise, apply carry
-
-PRG001_ABB2:
-	; Set appropriate timer value (used to figure how far up the leaf needs to go)
-	LDA Leaf_TimerVals,Y
-	STA Objects_Timer,X
-
-	; Set Y velocity
-	LDA Leaf_YVels,Y
-	STA <Objects_YVelZ,X
-
-	; Timer2 = $10
-	LDA #$10
-	STA Objects_Timer2,X
-
-	LDA PUp_StarManFlash
-	BEQ PRG001_ABCC	; If leaf did not come from big ? block, jump to PRG001_ABCC
-
-	; Otherwise, be green!!  (What IS this about anyway?)
-	LDA #$02
-	STA Objects_SpriteAttributes,X
-
-PRG001_ABCC:
-	RTS		 ; Return
+PUp_Bouncer1:
+	JMP Object_ShakeAndDraw
+	; Values used by the leaf based on bounce direction
 
 Leaf_XVelByOsc:	.byte $02, -$02
 Leaf_XVelLimit:	.byte $20, -$20
@@ -1758,36 +1463,14 @@ Leaf_XVelLimit:	.byte $20, -$20
 PRG001_ABD1:
 	.byte $0A, -$0A, $08
 
-ObjNorm_FoxLeaf:
-	LDA #$24
-	STA SprAnimOffset
-	BNE ObjNorm_SuperLeaf1
+Leaf_OscData = Objects_Data5
 
-ObjNorm_SuperLeaf:
-	LDA #$08
-	STA SprAnimOffset
+PUp_Leaf:
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	BCS PRG001_AC22
 
-ObjNorm_SuperLeaf1:
-	LDA Objects_Timer,X
-	BEQ PRG001_ABEC	 ; If timer expired, jump to PRG001_ABEC
-
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
-	INC <Objects_YVelZ,X	 ; YVel ++
-
-	LDA <Objects_YVelZ,X
-	CMP #$00
-	BEQ PRG001_ABE7	 ; If Super Leaf Y Vel = 0, jump to PRG001_ABE7
-
-	JMP PRG001_AC15	 ; Jump to PRG001_AC15
-
-PRG001_ABE7:
-
-	; Reset timer
-	LDA #$00
-	STA Objects_Timer,X
-
-PRG001_ABEC:
-	LDA Objects_Data5,X
+	LDA Leaf_OscData,X
 	AND #$01
 	TAY		 ; Y = 0 or 1 (which oscillation direction)
 
@@ -1799,7 +1482,7 @@ PRG001_ABEC:
 	CMP Leaf_XVelLimit,Y
 	BNE PRG001_AC02	 ; If leaf has not hit X Vel limit, jump to PRG001_AC02
 
-	INC Objects_Data5,X	 ; Switch oscillation direction
+	INC Leaf_OscData,X	 ; Switch oscillation direction
 
 PRG001_AC02:
 	LDA <Objects_XVelZ,X
@@ -1813,7 +1496,7 @@ PRG001_AC07:
 	STA <Objects_YVelZ,X	; -> Y Velocity
 
 	JSR Object_ApplyXVel	 ; Apply X Velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
 
 PRG001_AC15:
 	LDA #SPR_HFLIP	 ; A = SPR_HFLIP (horizontal flip)
@@ -1828,186 +1511,59 @@ PRG001_AC1F:
 	STA Objects_Orientation,X	 ; Set flip
 
 PRG001_AC22:
-	JSR Object_ShakeAndDraw	; Draw object and "shake awake" 
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
- 	JMP PowerUp_DoHitTest	 ; Do hit test and don't come back!
+	JMP Object_ShakeAndDraw	; Draw object and "shake awake" 
 
+PUp_Star:
+	LDA Level_PSwitchCnt
+	BNE PRG001_A810	 ; If P-Switch is active, jump to PRG001_A810
 
+	; Otherwise, play invincibility theme!
+	LDA Sound_QMusic2
+	ORA #MUS2A_INVINCIBILITY
+	STA Sound_QMusic2
 
-ObjHit_SuperLeaf:
-	JSR Try_PUp_Reserve
-	LDA Effective_Suit
-	CMP #$03
-	BNE Do_Leaf_Power
-	JMP PUp_GeneralCollect
+PRG001_A810:
 
-Do_Leaf_Power:
-	LDA #$04
-	
-	JMP Do_PUp_Poof_Collect
-	
-ObjInit_Vine:
-	LDA #SPR_BEHINDBG
-	STA Objects_Orientation,X
+	; Player_StarInv = $E0
+	LDA #$e0
+	STA Player_StarInv
+	RTS
+
+PUp_Vine:
+	JSR Object_ApplyYVel_NoGravity
+
+	LDA <Objects_YZ, X
+	AND #$0F
+	BNE PUp_VineDraw
+
+	LDA Block_NeedsUpdate
+	BEQ PUp_Detect
+
 	LDA #$00
-	STA PUp_StarManFlash
-	LDA Objects_XZ, X
-	AND #$F0
-	STA Objects_XZ, X
-	RTS		 ; Return
+	STA <Objects_YVelZ, X
+	BEQ PUp_VineDraw
 
-	; Stores the high byte of the VRAM address
-Vine_NTHigh:	.byte $20, $28
+PUp_Detect:
+	STA Debug_Snap
+	JSR Object_DetectTileOn
+	LDA Object_TileProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC PUp_VineBlock
 
-ObjNorm_Vine:
-	LDA #$2C
-	STA SprAnimOffset
-	; Vine moves at Y Vel = -$10
-	LDA #-$10
-	STA <Objects_YVelZ,X
-
-	JSR Object_ApplyYVel	; Apply Y Velocity
-
-	LDA <Objects_YHiZ,X
-	BMI PRG001_AC80	 ; If vine goes off absolute top, jump to PRG001_AC80
-
-	JSR Object_WorldDetectN1 ; Detect against world
-
-	LDA Object_TileFeetProp
-	AND #$C0
-	BEQ PRG001_AC86	 ; If vine is not within the solid tiles, jump to PRG001_AC86
-
-PRG001_AC80:
-
-	; Set vine to dead/empty
 	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State,X
+	STA Objects_State, X
+	RTS
 
-	RTS		 ; Return
+PUp_VineBlock:
+	LDA Object_LevelTile
+	EOR #$01
+	JSR Object_ChangeBlock
+	LDA #$F0
+	STA <Objects_YVelZ, X
 
-PRG001_AC86:
-	LDA <Objects_YZ,X
-	AND #$0f
-	BNE PRG001_AC92	 ; If vine has NOT covered a new tile, jump to PRG001_AC92
- 
-	STA Objects_Orientation,X	; Clears flip bits
-	JSR Vine_Set8x8s	; Instant graphics update while vine moves
-
-PRG001_AC92:
-	JMP Object_ShakeAndDrawMirrored	 ; Draw sprite and don't come back!
-
-Vine_Set8x8s:
-	LDA <Objects_XHiZ,X
-	ASL A		 ; Convert X Hi into 2 byte index
-	TAY		 ; -> 'Y'
-
-	; Get address of screen Vine is on (NOTE: Non-vertical level only!)
-	LDA Tile_Mem_Addr,Y
-	STA <Temp_Var1
-	LDA Tile_Mem_Addr+1,Y
-	STA <Temp_Var2	
-
-	LDA <Objects_YHiZ,X
-	BEQ PRG001_ACA9	 ; If vine is not on lower area of screen, jump to PRG001_ACA9
-
-	INC <Temp_Var2	 ; Select address of lower tiles
-
-PRG001_ACA9:
-	LDA <Objects_YZ,X
-	AND #$f0	 ; Get current "row" of vine object
-	STA <Temp_Var3	 ; -> Temp_Var3
-
-	LDA <Objects_XZ,X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var3	 ; Merge column into lower 4 bits
-
-	TAY		 ; -> 'Y'
-
-	; Change tile to vine tile
+PUp_VineDraw:
+	JMP Object_ShakeAndDraw	; Draw object and "shake awake" 
 	
-	LDA VineGrowthTile
-	STA [Temp_Var1],Y
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	CMP #$03
-	BGE PRG001_AD23	; If vine object is off-screen horizontally, jump to PRG001_AD23 (RTS)
-
-	LDA <Objects_YZ,X	 ; A = Objects_Y
-
-	LDY <Objects_YHiZ,X
-	BNE PRG001_ACCE	 ; If the vine is on the low part of the screen, jump to PRG001_ACCE
-
-	CMP #240
-	BLT PRG001_ACD1	 ; If Y < 240, jump to PRG001_ACD1
-
-	INY		 ; Y = 1 (uses the next nametable address in Vine_NTHigh)
-
-PRG001_ACCE:
-	ADD #16	 	; Next row
-
-PRG001_ACD1:
-	ASL A	
-	ADC #$00
-	ASL A	
-	ADC #$00
-
-	PHA		 ; Save VRAM column offset
-
-	AND #$03	; Keep address from going out of range
-	ORA Vine_NTHigh,Y	 ; Set the high bits
-
-	LDY Graphics_BufCnt	 ; Y = current graphics buffer count
-
-	; Set two rounds of high byte 
-	STA Graphics_Buffer,Y	 
-	STA Graphics_Buffer+5,Y	
-
-	PLA		 ; Restore VRAM column offset
- 
-	AND #$c0
-	STA <Temp_Var1
-
-	; Store left column update
-	LDA <Objects_XZ,X
-	LSR A	
-	LSR A	
-	LSR A	
-	ORA <Temp_Var1
-	STA Graphics_Buffer+1,Y
-
-	; Store right column update
-	ADD #$01
-	STA Graphics_Buffer+6,Y
-
-	LDA #$82
-	STA Graphics_Buffer+2,Y
-	STA Graphics_Buffer+7,Y
-
-	; Vine left 8x8 tiles
-	LDA VineTiles
-	STA Graphics_Buffer+3,Y
-	LDA VineTiles + 2
-	STA Graphics_Buffer+4,Y
-
-	; Vine right 8x8 tiles
-	LDA VineTiles + 1
-	STA Graphics_Buffer+8,Y
-	LDA VineTiles + 3
-	STA Graphics_Buffer+9,Y
-
-	LDA #$00
-	STA Graphics_Buffer+10,Y
-
-	; Update run count
-	TYA
-	ADD #$0a	 ; Count += 10
-	STA Graphics_BufCnt
-
-PRG001_AD23:
-	RTS		 ; Return
 
 	; Basically this bumps the object up by 1 pixel...
 ObjInit_Coin:
@@ -2270,7 +1826,7 @@ PRG001_B928:
 Bowser_DoMovements:
 	JSR Bowser_HandleIfDead	 ; Handle Bowser if he got killed
 
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	AND #%00011111
 	ORA Bowser_Counter1
 	BNE PRG001_B948	 ; If Bowser Counter 1 > 0 and except every 32nd tick, jump to PRG001_B948
@@ -2840,7 +2396,7 @@ PRG001_BBDC:
 Bowser_DetectTiles:
 	; Apply Bowser's X and Y Velocities
 	JSR Object_ApplyXVel	 
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 
 	LDY <Objects_XZ,X	 ; Y = Bowser's X
 
@@ -2941,8 +2497,8 @@ PRG001_BC33:
 	; Queue a block change to erase to background!
 	LDA Bowser_TileValues,Y
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 
 	; Aligned Bowser impact Y
 	LDA <Objects_YZ,X
@@ -3339,7 +2895,7 @@ PRG001_BEA4:
 	ROR Objects_Orientation,X
 
 PRG001_BEB2:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
 
 	LDA <Objects_YVelZ,X
 	CMP #$25
@@ -3715,7 +3271,7 @@ ChompNoDelete:
 	LDA Objects_Data5, X
 	BNE GiantChompStuff
 
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	LDA Objects_SpritesVerticallyOffScreen,X
 	BEQ DrawMiniChomp
 
@@ -3814,8 +3370,8 @@ ChompEatBlock:
 	LDA #$00
 	STA <Objects_YVelZ, X
 	LDA #$81
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	LDA ObjTile_DetYLo
 	AND #$F0
 	STA Block_ChangeY
@@ -4181,7 +3737,7 @@ ObjNorm_SpikeBallRTS:
 	JMP Object_ShakeAndDrawMirrored
 
 SpikeBrickBust:
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE SpikeBrickBustRTS
 
 	LDA #SND_LEVELCRUMBLE
@@ -4222,8 +3778,8 @@ SpikeBrickBust:
 	LDA <Temp_Var3
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 
 	LDA <Objects_YZ,X
 	ADD <Temp_Var2
@@ -4326,7 +3882,10 @@ DrawTimer:
 
 DrawTimer0:
 	LDA Objects_Data4, X
-	JSR ToThreeDigits
+	STA DigitsParam
+
+	JSR BytesTo2Digits
+
 	LDX <CurrentObjectIndexZ
 	LDY Object_SpriteRAM_Offset, X
 	LDX #$00
@@ -4340,7 +3899,7 @@ DrawTimer1:
 	LDA KeyPieceXOffset, X
 	STA Sprite_RAM + 3, Y
 
-	LDA <Temp_Var1, X
+	LDA <DigitsResult, X
 	ASL A
 	ADD #$A1
 	ADD <Temp_Var10
@@ -4399,7 +3958,7 @@ ObjNorm_Clock2:
 	ADD #$02
 	ADD <Temp_Var10
 	STA Objects_Frame, X
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	LDA Objects_Timer, X
 	BEQ ObjNorm_Clock4
 
@@ -4524,7 +4083,7 @@ EaterMaker:
 EaterMaker1:
 	JSR Object_InteractWithPlayer	
 	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 
 	LDA <Objects_XZ, X
 	AND #$0F
@@ -4535,7 +4094,7 @@ EaterMaker1:
 	CMP #$0F
 	BNE EaterMaker_RTS1
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE EaterMaker_Halt
 
 	LDA <Objects_XZ, X
@@ -4711,13 +4270,13 @@ ObjNorm_HardIce1_0:
 	BNE ObjNorm_HardIce2
 
 ObjNorm_HardIce1:
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE ObjNorm_HardIce2
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 	JMP Object_SetDeadEmpty
@@ -4979,7 +4538,7 @@ ObjNorm_BowserFireBall:
 	ORA Fireball_Flips, Y
 	STA Objects_Orientation, X
 	JSR Object_ApplyXVel	 ; Apply X Velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
 	JSR Object_InteractWithPlayer
 
 ObjNorm_BowserFireBall1:
@@ -5005,7 +4564,7 @@ ObjInit_CoinLock:
 	RTS
 
 Coin_Unlock:
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Coin_UnlockRTS
 
 	JSR SpecialObject_FindEmpty
@@ -5017,8 +4576,8 @@ Coin_Unlock:
 	
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 	
@@ -5123,7 +4682,9 @@ DrawCoinLock0:
 DrawCoinLock1:
 
 	LDA CoinLock_CoinsRemaining, X
-	JSR ToThreeDigits
+	STA DigitsParam
+
+	JSR BytesTo2Digits
 
 	LDA Sprite_RAM, Y
 	ADD #$10
@@ -5139,12 +4700,12 @@ DrawCoinLock1:
 	STA Sprite_RAM+10,Y
 	STA Sprite_RAM+14,Y
 
-	LDA <Temp_Var2
+	LDA <DigitsResult
 	ASL A
 	ADD #$A1
 	ADD <Temp_Var10
 	STA Sprite_RAM + 9, Y
-	LDA <Temp_Var3
+	LDA <DigitsResult + 1
 	ASL A
 	ADD #$A1
 	ADD <Temp_Var10
@@ -5168,4 +4729,7 @@ ObjInit_ModifyPointers:
 	TAY
 	LDA Pointers, Y
 	STA Pointers
+	RTS
+
+PUp_GeneralCollect:
 	RTS

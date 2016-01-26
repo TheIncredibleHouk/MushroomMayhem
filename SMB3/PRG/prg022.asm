@@ -2607,14 +2607,12 @@ PRG022_CF7C:
 	DEY		 ; Y--
 	BNE PRG022_CF7C	 ; While Y >= 0, loop
 
-	JSR Roulette_DoGame	 ; Actually run the Roulette game
-
 	; Switch to page 26 @ A000
 	LDA #26		
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
-	JSR StatusBar_UpdateValues	 ; Update Status Bar (not really used)
+	JSR StatusBar_Update	 ; Update Status Bar (not really used)
 
 	; Switch to page 28 @ A000
 	LDA #28	

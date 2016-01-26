@@ -322,7 +322,7 @@ NoTransition:
 
 GameIsHalted:
 	JSR Player_Refresh
-	INC Level_NoStopCnt	; As long as none of the above is happening, continue the "no stop" counter...
+	INC GameCounter	; As long as none of the above is happening, continue the "no stop" counter...
 
 PRG008_A1C1:
 	; Decrement several adjacent counters!
@@ -425,7 +425,7 @@ Level_Initialize:
 
 
 PRG008_A242:
-	STA Level_ChangeReset ; Set Level_ChangeReset = 0 (trigger scene-change reset)
+	STA Level_ObjectsInitialized ; Set Level_ObjectsInitialized = 0 (trigger scene-change reset)
 
 	LDA #$28
 	STA Player_SprOff ; Player sprite rooted at offset $28
@@ -563,7 +563,7 @@ LevelJunction_PartialInit:
 	STA Level_HAutoScroll	 ; Disable auto horizontal scrolling
 	STA Level_AScrlConfig	 ; Clear auto scroll configuration (no auto scroll)
 ;	STA Player_SlideRate	 ; No slide
-	STA Level_ChangeReset	 ; Do level scene change reset
+	STA Level_ObjectsInitialized	 ; Do level scene change reset
 
 	JSR Level_SetPlayerPUpPal  ; Set power up's correct palette
 	JSR PRG008_A27A		   ; Partial level initialization (basically continues after setting the power up)
@@ -664,34 +664,18 @@ Player_Update:
 	JSR Player_SuitChange
 	
 Player_Update1
-	LDA <Player_YHi
-	BEQ Player_Update2
-	BMI Player_Update2
-
-	LDA <Player_Y
-	CMP #$C0
-	BCC Player_Update2
-
 	JSR Player_PitDeath
-
-Player_Update2:
-
-	LDA <Player_SpriteX
-	CMP #$F8
-	BCC Player_Update3
-
-	JSR Player_Die	 ; Begin death sequence
 
 Player_Update3:
 	; The following are always called, dead or alive...
 
 	JSR Debug_Code
 	JSR Player_DrawAndDoActions29	; Draw Player and perform reactions to various things (coin heaven, pipes, etc lots more)
+	
 
 	LDA #$04
 	STA Air_Change
 
-	JSR VScreenTransitions
 	JSR Player_Control	 	; Controllable actions
 	JSR VScreenTransitions
 	JSR Player_DetermineAir
@@ -707,7 +691,6 @@ PRG008_A473:
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
 	JSR Player_HandlePipe
-	;JSR Player_DoSpecialTiles	; Handle unique-to-style tiles!
 	JSR CheckSpinners
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
@@ -1153,27 +1136,11 @@ PRG008_A77E:
 	BCC PRG008_A7AC	 	; If Player is mid air, in water, or moving in a pipe, jump to PRG008_A7AD
 
 PRG008_A7AB:
-	;STA Debug_2Snap
-	LDA <Player_X
-	AND #$0F
-	CMP #04
-	BCC PRG008_A7AC
-	CMP #$0C
-	BCS PRG008_A7AC
-
 	JSR Player_GetHurt
-
 
 PRG008_A7AC:
 	LDX #$00
 	LDA Level_Tile_Prop_Head
-	CMP #TILE_ITEM_BRICK
-	BNE PRG008_A7AC1
-
-	LDY Player_Shell
-	BNE PRG008_A7AD_2
-
-PRG008_A7AC1:
 	CMP #TILE_PROP_SOLID_ALL
 	BCC PRG008_A7AD
 
@@ -1189,12 +1156,13 @@ PRG008_A7AD_2:
 PRG008_A906:
 	JSR Player_ApplyXVelocity	 ; Apply Player's X Velocity
 
-	LDA <Player_FlipBits
-	ROL A
-	ROL A
-	ROL A
-	AND #$01
+	LDA #$00
 	STA Player_Direction
+
+	LDA <Player_FlipBits
+	BEQ PRG008_A916
+
+	INC Player_Direction
 
 PRG008_A916:
 
@@ -1343,11 +1311,11 @@ GndMov_Leaf:
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
 	JSR Player_AnimTailWag ; Do Player's tail animations
 	JSR Player_TailAttackAnim ; Do Player's tail attack animations
+	JSR Fox_BurnMode
 	RTS		 ; Return
 
-	RTS		 ; Return?
-
 GndMov_Frog:
+	JSR Player_PoisonMode
 	JSR Player_GroundHControl ; Do Player left/right input control
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
 
@@ -3526,8 +3494,12 @@ SpinnerBustRts
 	RTS
 
 Level_DoBumpBlocks:
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE CantBumpBlocks
+
+	LDA Objects_State + 5
+	BEQ DoBumps
+
 
 	LDA <Level_Tile_Prop
 	AND #$0F
@@ -3537,8 +3509,6 @@ Level_DoBumpBlocks:
 	CMP #$0C
 	BCS DoBumps
 
-	LDA Objects_State + 5
-	BEQ DoBumps
 
 CantBumpBlocks:
 	RTS
@@ -3546,10 +3516,13 @@ CantBumpBlocks:
 DoBumps:
 	LDA #$00
 	STA ObjectBump
+
 	LDA #$10
 	STA Splash_DisTimer
 	TYA
+
 	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
+
 	TYA		 ; Power up result (if any) is in 'Y'!
 	BMI PRG008_B78C
 
@@ -3775,7 +3748,7 @@ LATP_Spinner:
 	
 	LDA Player_FireDash
 	BNE LATP_Brick
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE NoSpinner
 	STX TempX
 	LDX #$09
@@ -4014,8 +3987,8 @@ PRG008_B8FD:
 	STA Block_ChangeXHi	 ; Store block change X high coord
 
 	LDA PSwitchActivateTile	 
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent	 ; Queue P-Switch appear!
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate	 ; Queue P-Switch appear!
 
 	LDY #$01	 ; Y = 1 (index into PRG001 Bouncer_PUp, i.e. nothing)
 	RTS		 ; Return
@@ -4396,12 +4369,12 @@ PRG008_BF7E:
 ; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
 ; Temp_Var15 / Temp_Var16 -- X Hi and Lo
 ;
-; Register 'A' as input sets Level_ChgTileEvent
+; Register 'A' as input sets Block_NeedsUpdate
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_QueueChangeBlock:
-	STA Level_ChgTileValue
+	STA Block_UpdateValue
 	LDA #$80
-	STA Level_ChgTileEvent	 ; Store type of block change!
+	STA Block_NeedsUpdate	 ; Store type of block change!
 
 	; Store change Y Hi and Lo
 	LDA <Temp_Var13
@@ -4802,7 +4775,7 @@ CheckCurrentSpinners
 	DEC SpinnerBlockTimers, X
 	BNE NextSpinner
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE SkipSpinner
 
 	LDA SpinnerBlocksX, X
@@ -5218,7 +5191,7 @@ HandleIceBreak:
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SLICK)
 	BNE HandleIceBreak2
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE HandleIceBreak2
 
 	JSR LATP_BustIce
@@ -5327,7 +5300,7 @@ PowBlock0:
 	BNE PowBlock1
 	LDY Objects_ID,X	 ; Get object's ID -> Y
 	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
-	AND #OAT_HITNOTKILL	 
+	AND #OAT_WEAPONSHELLPROOF	 
 	BNE PowBlock1
 	JSR Object_PoofDie
 
@@ -5542,6 +5515,14 @@ Player_DetectFloor2:
 	RTS
 
 Player_PitDeath:
+	LDA <Player_YHi
+	BEQ Player_PitDeath2
+	BMI Player_PitDeath2
+
+	LDA <Player_Y
+	CMP #$C0
+	BCC Player_PitDeath2
+
 	LDA Player_Equip
 	CMP #ITEM_CATCH
 	BNE Player_PitDeath1
@@ -5656,7 +5637,7 @@ Bg_ActivateTrap:
 	RTS
 
 Bg_Coin:
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Bg_CoinRTS
 
 	LDA Sound_QLevel1
@@ -5673,7 +5654,7 @@ Bg_CoinRTS:
 
 Bg_Cherry:
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Bg_CherryRTS
 
 	LDA Cherries
@@ -5726,7 +5707,7 @@ Body_Treasure:
 	AND #PAD_B
 	BEQ Body_TreasureRTS
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Body_TreasureRTS
 
 	JSR LATP_CoinCommon
@@ -5786,7 +5767,7 @@ Solid_Slick1:
 	CPX #HEAD_WALL_INDEX
 	BCS Solid_SlickRTS
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Solid_SlickRTS
 
 	JSR LATP_BustIce
@@ -5810,7 +5791,7 @@ Solid_PSwitch:
 	BNE Solid_PSwitchRTS
 
 Solid_PSwitch1:
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Solid_PSwitchRTS
 
 	LDA Sound_QLevel1
@@ -5840,7 +5821,7 @@ Solid_ESwitch:
 	BNE Solid_ESwitchRTS
 
 Solid_ESwitch1:
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Solid_ESwitchRTS
 
 	INC EventSwitch
@@ -5881,7 +5862,7 @@ Player_NextTile:
 Fox_DashDir: .byte $D0, $30
 Fox_DashFlip: .byte $40, $00
 
-Try_Burning_Mode:
+Fox_BurnMode:
 	LDA Player_FireDash			; we're already in fireball mode, let's continue doing velocity checks
 	BEQ Try_FireBall
 
@@ -5901,18 +5882,18 @@ Try_Burning_Mode:
 Try_FireBall:					; not a fireball, so let's try it!
 
 	LDA Player_Power
-	BEQ Try_Burning_ModeRTS
+	BEQ Fox_BurnModeRTS
 
 	LDA Player_InWater			
-	BNE Try_Burning_ModeRTS		; can't go into burning mode in sand or water
+	BNE Fox_BurnModeRTS		; can't go into burning mode in sand or water
 
 	LDA Player_TailAttack
 	CMP #$12
-	BCS Try_Burning_ModeRTS
+	BCS Fox_BurnModeRTS
 		
 	LDA <Pad_Input			; we have! This finds the direction to send based on input
 	AND #(PAD_B)
-	BEQ	Try_Burning_ModeRTS
+	BEQ	Fox_BurnModeRTS
 	
 	LDA #$10				; poof effect, we're now in the air	
 	STA Player_SuitLost
@@ -5941,7 +5922,7 @@ ContinueDash:
 	LDA #$F4
 	STA Power_Change
 
-Try_Burning_ModeRTS:
+Fox_BurnModeRTS:
 	RTS
 
 
@@ -6342,4 +6323,52 @@ Player_DoClimbing2_1:
 	PLA
 
 Player_DoClimbingRTS:
+	RTS
+
+Player_PoisonMode:
+	LDA Poison_Mode
+	BNE Continue_Poison_Mode
+
+	LDA Player_Power
+	CMP #$50
+	BNE Cant_Poison_Mode
+
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ Cant_Poison_Mode
+
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Cant_Poison_Mode
+
+	INC Poison_Mode
+
+	LDA #$FA
+	STA Power_Change
+
+	LDA #$02
+	STA Player_StarInv
+
+Cant_Poison_Mode:
+	RTS
+
+Continue_Poison_Mode:	
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Stop_Poison_Mode
+
+	LDA Player_Power
+	BEQ Stop_Poison_Mode
+
+	LDA #$02
+	STA Player_StarInv
+	RTS
+
+Stop_Poison_Mode:
+	LDA #$06
+	STA Power_Change
+	STA Player_StarInv
+
+	LDA #$00
+	STA Poison_Mode
 	RTS

@@ -1766,6 +1766,7 @@ InitPals_Per_MapPUp:
 ; Luigi (see Map_PlayerPalFix and BonusGame_PlayerPal)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Setup_PalData:
+
 	LDX #$01
 	LDA PaletteEffect
 	BEQ SetDNActive1

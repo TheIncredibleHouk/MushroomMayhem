@@ -48,10 +48,56 @@
     <property>Bank</property>
     <property>Badge Shop</property>
   </spritedefinition>
-  <!--<spritedefinition id="0B" width="01" height="01" name="Ninja Shroom" class="1" group="Global">
-    <sprite x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="10" palette="2" horizontalflip="true" verticalflip="false" table="B0" />
+  <spritedefinition id="0C" width="01" height="01" name="Power Up" class="1" group="Global">
+    <sprite property="0" x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="90" />
+    <sprite property="0" x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="90" />
+
+    <sprite property="1" x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="94" />
+    <sprite property="1" x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="94" />
+
+    <sprite property="2" x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="98" />
+    <sprite property="2" x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="98" />
+
+    <sprite property="3" x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="9C" />
+    <sprite property="3" x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="9C" />
+
+    <sprite property="4" x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="A0" />
+    <sprite property="4" x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="A0" />
+
+    <sprite property="5" x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="A4" />
+    <sprite property="5" x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="A4" />
+
+    <sprite property="6" x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="A8" />
+    <sprite property="6" x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="A8" />
+
+    <property>Mushroom</property>
+    <property>Fire Flower</property>
+    <property>Super Leaf</property>
+    <property>Frog Suit</property>
+    <property>Koopa Suit</property>
+    <property>Hammer Suit</property>
+    <property>Ice FLower</property>
   </spritedefinition>
+  <spritedefinition id="0D" width="01" height="01" name="Power Up" class="1" group="Global">
+    <sprite property="0" x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
+    <sprite property="0" x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="B4" />
+
+    <sprite property="1" x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite property="1" x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="B0" />
+
+    <sprite property="2" x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="B8" />
+    <sprite property="2" x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="B8" />
+
+    <sprite property="3" x="0" y="0" value="10" palette="2" horizontalflip="false" verticalflip="false" table="BC" />
+    <sprite property="3" x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="BC" />
+
+    <property>Fox Leaf</property>
+    <property>Ninjashroom</property>
+    <property>Super Star</property>
+    <property>Vine</property>
+    
+  </spritedefinition>
+  <!--
   <spritedefinition id="0C" width="01" height="01" name="Starman" class="1" group="Global">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="B8" />
     <sprite x="8" y="0" value="10" palette="1" horizontalflip="true" verticalflip="false" table="B8" />

@@ -1189,7 +1189,7 @@ ObjNorm_PlatformFollow:
 	LDA Objects_Data4, X
 	BNE ObjNormal_PlatformFollow2
 	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit	
+	JSR Object_ApplyYVel_NoGravity	
 	JMP ObjNormal_PlatformFollow1
 
 ObjNormal_PlatformFollow2:
@@ -1457,7 +1457,7 @@ ObjNorm_PathFollowPlat:
 
 	LDA Objects_Data5, X
 	STA Objects_YVelZ, X
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	LDA #$00
 	STA Objects_XVelZ, X
 
@@ -2045,7 +2045,7 @@ Spark_Move:
 	LDA <Objects_YZ, X
 	AND #$0F
 	BNE ApplySparkX
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 
 ApplySparkX:
 	JSR Object_ApplyXVel
@@ -2064,7 +2064,7 @@ NoSparkXVel:
 	JSR Object_ApplyXVel
 
 ApplySparkY:
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	LDA <Objects_YZ, X
 	AND #$0F
 	CMP #$0F
@@ -2195,7 +2195,7 @@ PRG002_AF96:
 	JSR Object_DetermineVerticallyOffScreenY	 ; Determine visibility of spike ball sprites
 	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite data for spike ball
 
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	LSR A
 	AND #$03
 	TAX		 ; X = 0 to 3, based on timer
@@ -2215,7 +2215,7 @@ PRG002_AF96:
 	JSR Object_Draw16x16Sprite
 
 	; Set spike ball vertical flip periodically
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	LSR A
 	LSR A
 	LSR A
@@ -3388,7 +3388,7 @@ Skip_Digit:
 	RTS
 
 Buy_Item:
-	JSR Clear_Calc
+	;JSR Clear_Calc
 	LDA Item_Shop_Window + 1
 	ASL A
 	ASL A
@@ -3400,7 +3400,7 @@ Buy_Item:
 
 Store_Next_Price:
 	LDA Item_Prices, X
-	STA Calc_Value, Y
+	;STA Calc_Value, Y
 	DEX
 	DEY
 	CPY #$03
@@ -3409,12 +3409,12 @@ Store_Next_Price:
 
 Store_Next_Coin:
 	LDA Player_Coins, X
-	STA Calc_From + 4, Y
+	;STA Calc_From + 4, Y
 	DEX
 	DEY
 	BPL Store_Next_Coin
-	JSR Subtract_Values
-	LDA Calc_From + 3
+	;JSR Subtract_Values
+	;LDA Calc_From + 3
 	BEQ Take_Item
 
 Cannot_Take_Item:
@@ -3433,7 +3433,7 @@ Take_Item:
 	LDX #$03
 
 Store_New_Coin:
-	LDA Calc_From + 4, X
+	;LDA Calc_From + 4, X
 	STA Player_Coins, X
 	DEX
 	BPL Store_New_Coin
@@ -3500,7 +3500,7 @@ DoDrawAct:
 	RTS
 
 Do_Bank:
-	JSR Clear_Calc
+	;JSR Clear_Calc
 	LDA <Pad_Input
 	AND #(PAD_UP | PAD_DOWN)
 	BNE Do_Small_Change
@@ -3515,7 +3515,7 @@ Do_Bank:
 Do_Small_Change:
 	LDX #$01
 	STX SpinnerBlocksX + 5
-	STX Calc_Value + 6
+	;STX Calc_Value + 6
 	AND #PAD_UP
 	BEQ Decrease_By_Ten
 	JSR Add_To_DW
@@ -3592,7 +3592,7 @@ Set_DW_Amount:
 
 CopyDWAmount:
 	LDA SpinnerBlocksX, X
-	STA Calc_From + 4, X
+	;STA Calc_From + 4, X
 	INX
 	CPX #$04
 	BNE CopyDWAmount
@@ -3602,7 +3602,7 @@ Set_New_DW_Amount:
 	LDX #$00
 
 CopyNewDWAmount:
-	LDA Calc_From + 4, X
+	;LDA Calc_From + 4, X
 	STA SpinnerBlocksX, X
 	INX
 	CPX #$04
@@ -3623,7 +3623,7 @@ TestMaxDWMax:
 
 Do_DW_Add:
 	JSR Set_DW_Amount
-	JSR Add_Values
+	;JSR Add_Values
 	JSR Set_New_DW_Amount
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
@@ -3644,7 +3644,7 @@ TestMaxDWMin:
 
 Do_DW_Sub:
 	JSR Set_DW_Amount
-	JSR Subtract_Values
+	;JSR Subtract_Values
 	JSR Set_New_DW_Amount
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
@@ -3708,13 +3708,13 @@ Do_Action:
 	BNE Do_Withdraw_Instead
 	JSR Set_Player_Coins_From
 	JSR Set_DW_Coins_Value
-	JSR Subtract_Values
-	LDA Calc_From
+	;JSR Subtract_Values
+	;LDA Calc_From
 	BMI Cannot_Do_Action
 	JSR Backup_From_Value
 	JSR Set_Bank_Coins_From
-	JSR Add_Values
-	LDA Calc_From + 1
+	;JSR Add_Values
+	;LDA Calc_From + 1
 	CMP #$01
 	BCS Cannot_Do_Action
 	JSR Set_New_Bank_Value
@@ -3728,14 +3728,14 @@ Do_Action:
 Do_Withdraw_Instead:
 	JSR Set_Player_Coins_From
 	JSR Set_DW_Coins_Value
-	JSR Add_Values
-	LDA Calc_From + 3
+	;JSR Add_Values
+	;LDA Calc_From + 3
 	CMP #$01
 	BCS Cannot_Do_Action
 	JSR Backup_From_Value
 	JSR Set_Bank_Coins_From
-	JSR Subtract_Values
-	LDA Calc_From
+	;JSR Subtract_Values
+	;LDA Calc_From
 	BMI Cannot_Do_Action
 	JSR Set_New_Bank_Value
 	JSR Set_New_Player_Coins
@@ -3756,7 +3756,7 @@ Set_Player_Coins_From:
 
 SPCF:
 	LDA Player_Coins, X
-	STA Calc_From + 4, X
+	;STA Calc_From + 4, X
 	DEX
 	BPL SPCF
 	RTS
@@ -3766,7 +3766,7 @@ Set_Bank_Coins_From:
 
 SBCF:
 	LDA BankCoins, X
-	STA Calc_From + 2, X
+	;STA Calc_From + 2, X
 	INX
 	CPX #$06
 	BNE SBCF
@@ -3777,7 +3777,7 @@ Set_DW_Coins_Value:
 
 SDWCV:
 	LDA SpinnerBlocksX, X
-	STA Calc_Value + 4, X
+	;STA Calc_Value + 4, X
 	DEX
 	BPL SDWCV
 	RTS
@@ -3786,7 +3786,7 @@ Backup_From_Value:
 	LDX #$03
 
 BFV:
-	LDA Calc_From + 4, X
+	;LDA Calc_From + 4, X
 	STA SpinnerBlocksY, X
 	DEX
 	BPL BFV
@@ -3796,7 +3796,7 @@ Set_New_Bank_Value:
 	LDX #$05
 
 SNBV:
-	LDA Calc_From + 2, X
+	;LDA Calc_From + 2, X
 	STA BankCoins, X
 	DEX
 	BPL SNBV
@@ -3819,23 +3819,23 @@ Player_Take_Coins:
 	AND #$03
 	BNE No_More_Coins
 	INC Coins_Lost
-	JSR Clear_Calc
+	;JSR Clear_Calc
 	LDX #$03
 
 Store_Next_Coin1:
 	LDA Player_Coins, X
-	STA Calc_From + 4, X
+	;STA Calc_From + 4, X
 	DEX
 	BPL Store_Next_Coin1
 	LDA #$01
-	STA Calc_Value + 7
-	JSR Subtract_Values
-	LDA Calc_From
+	;STA Calc_Value + 7
+	;JSR Subtract_Values
+	;LDA Calc_From
 	BMI No_More_Coins
 	LDX #$03
 
 Taking_Coins:
-	LDA Calc_From + 4, X
+	;LDA Calc_From + 4, X
 	STA Player_Coins, X
 	DEX
 	BPL Taking_Coins
@@ -4103,7 +4103,7 @@ Draw_Badge_Window_Bottom:
 	STA Graphics_Buffer, Y
 	INY
 	LDA Badge_Prices, X
-	JSR ToThreeDigits
+	;JSR ToThreeDigits
 
 Next_BadgePrice_Digit:
 	LDA <Temp_Var2
@@ -4123,7 +4123,7 @@ Next_BadgePrice_Digit:
 	RTS
 
 Buy_Badge:
-	JSR Clear_Calc
+	;JSR Clear_Calc
 	LDX Item_Shop_Window + 1
 	LDA Cherries
 	SUB Badge_Prices, X
@@ -4343,7 +4343,7 @@ ObjNorm_DiagonalPodobo01:
 	STA Objects_Frame, X
 
 	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	LDA Objects_YVelZ, X
 	PHA
 	JSR Object_DetectTiles
@@ -4723,8 +4723,8 @@ PiranhaCheckOffScreen:
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 	PLA
@@ -4791,7 +4791,7 @@ DrawPiranhaGrow:
 
 Piranha_CheckTiles:
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BEQ Piranha_CheckTiles2
 
 Piranha_CheckTiles1:
@@ -4830,8 +4830,8 @@ Piranha_CheckTiles2:
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 	LDA #$00
@@ -4842,8 +4842,8 @@ Piranha_SetVelocity:
 
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 	LDY <Temp_Var13

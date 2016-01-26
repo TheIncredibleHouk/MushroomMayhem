@@ -943,7 +943,7 @@ SPR_VFLIP	= %10000000
 	Graphics_Buffer:	.ds 107	; $0301-$036B Simple (and small!) delayed write buffer; uses same format as Video_Upd_Table in PRG030, get format info there
 	TileChng_VRAM_H:	.ds 1	; High part of VRAM address to change
 	TileChng_VRAM_L:	.ds 1	; Low part of VRAM address to change
-	TileChng_Pats:		.ds 4	; $036E-$0371 The four patterns required to change a tile (for Level_ChgTileEvent)
+	TileChng_Pats:		.ds 4	; $036E-$0371 The four patterns required to change a tile (for Block_NeedsUpdate)
 	Level_SizeOrig:		.ds 1	; Holds original size (width or height) of level (in screens)
 	Level_PipeExitDir:	.ds 1	; Direction Player is going to exit from a pipe (1 = Up, 2 = Down, 3 = Right, 4 = Left, 5 = In-level Transit)
 	Level_7VertCopy:	.ds 1	; Just seems to be an unmaintained copy of Level_7Vertical from level load, but that's it
@@ -973,6 +973,7 @@ SPR_VFLIP	= %10000000
 	Map_Stars_PRelY:	.ds 1	; During world intro, screen relative position of Player Y
 	Player_RunMeter:		.ds 1	; >>>>>>[P] charge level ($7F max)
 	Player_Power:		.ds 1
+	Old_Player_Power:	.ds 1
 
 	; Level_JctCtl is configured when you enter a door or a pipe
 	; * When $80, use current values for Level_AltLayout and Level_AltObjects
@@ -1283,22 +1284,34 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 
 	Objects_Data7:		.ds 8	; $0421-$0428 General object variable 7
 
-	SpinnerBlockTimers:	.ds 10;
-	SpinnerBlocksX:		.ds 10;
-	SpinnerBlocksXHi:	.ds 10;
-	SpinnerBlocksY:		.ds 10;
-	SpinnerBlocksYHi:	.ds 10;
+	Objects_BoundLeft:	.ds 8
+	Player_BoundLeft:	.ds 1
 
-	.BoundGame_0461:	BoundCheck .BoundGame_0461, $0461, $04xx range Bonus context
-	.org $470
+	Objects_BoundLeftHi:.ds 8
+	Player_BoundLeftHi:	.ds 1
+
+	Objects_BoundRight:	.ds 8
+	Player_BoundRight:	.ds 1
+
+	Objects_BoundRightHi: .ds 8
+	Player_BoundRightHi:  .ds 1
+
+	Objects_BoundBottom:	.ds 8
+	Player_BoundBottom:	.ds 1
+
+	Objects_BoundBottomHi:.ds 8
+	Player_BoundBottomHi:	.ds 1
+
+	Objects_BoundTop:	.ds 8
+	Player_BoundTop:	.ds 1
+
+	Objects_BoundTopHi:.ds 8
+	Player_BoundTopHi:	.ds 1
+
 	SpinnerBlocksReplace:.ds 10;
 	ObjectBump:			.ds 1
 	BlockedLevel:		.ds 1
 	CompleteLevelTimer:	.ds 1
-	BackUpX:			.ds 1
-	BackUpXHi:			.ds 1
-	BackUpY:			.ds 1
-	BackUpYHi:			.ds 1
 	PBarHitTestX:		.ds 5
 	PBarHitTestY:		.ds 5
 	Weather_XPos:		.ds 6;
@@ -1321,6 +1334,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;
 	DPad_RhythmControl: .ds 1;
+
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
 	.org $0461
@@ -1568,7 +1582,6 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 ; $5xx GAMEPLAY CONTEXT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	.org $0500	; $0500-$05FF is available for this context-dependent situation
-	EnemiesKilled:		.ds 1
 
 	; Event_Countdown is context dependent; without context, does nothing
 	; * When you come out of a pipe, this counter decrements until the pipe should be finished
@@ -1594,14 +1607,14 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Objects_Timer2:		.ds 8	; $0520-$0527 "Timer" values; automatically decrements to zero 
 
 	; All the Level_BlockChgX/Y values are aligned to nearest 16 (i.e. tile coordinate)
-	Block_ChangeXHi:	.ds 1	; Player X High value when block change was queued
-	Block_ChangeX:	.ds 1	; Player X Low value when block change was queued
-	Block_ChangeYHi:	.ds 1	; Player Y High value when block change was queued
-	Block_ChangeY:	.ds 1	; Player Y Low value when block change was queued
+	Block_ChangeXHi:	.ds 3	; Player X High value when block change was queued
+	Block_ChangeX:	.ds 3	; Player X Low value when block change was queued
+	Block_ChangeYHi:	.ds 3	; Player Y High value when block change was queued
+	Block_ChangeY:	.ds 3	; Player Y Low value when block change was queued
 
 	; the block "bounce" that occurs after hitting ? block, music note block, etc.
 	Level_BlkBump_Pos:	.ds 2	; $052C-$052D Block bump effect slot "position" (from 10 down, "position" of bounce)
-	Level_BlkBump:		.ds 3	; $052E-$0530 Block bump effect slot (use Level_ChgTileEvent value, or 0 for inactive)
+	Level_BlkBump:		.ds 3	; $052E-$0530 Block bump effect slot (use Block_NeedsUpdate value, or 0 for inactive)
 	Level_BlkBump_XHi:	.ds 3	; $0531-$0533 Block bump slot X Hi
 	Level_BlkBump_XLo:	.ds 3	; $0534-$0536 Block bump slot X Lo
 	Level_BlkBump_YHi:	.ds 3	; $0537-$0539 Block bump slot Y Hi
@@ -1639,13 +1652,13 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 
 	LevelPartialInit:	.ds 1	; When set, performs a partial reinitialization of level data (notably does not perform the Level InitAction unless it is airship related)
 	Level_TilesetIdx:	.ds 1	; Holds Level_Tileset as an "index" value instead, relative to levels (i.e. Level_Tileset - 1)
-	Level_ChangeReset:	.ds 1	; When set to zero, a mass reset is performed (used when changing "scenes" in a single level)
+	Level_ObjectsInitialized:	.ds 1	; When set to zero, a mass reset is performed (used when changing "scenes" in a single level)
 	Level_UnusedFlag:	.ds 1	; Unused; only set in a couple places, but never read back!
 	Level_SlopeEn:		.ds 1	; If set, enables slope tiles (otherwise they're considered flat top-only solids)
 
-	Level_ChgTileEvent:	.ds 1	; When non-zero, queues a "change tile" event
-	Level_ChgTileValue:	.ds 1	;
-	Level_NoStopCnt:	.ds 1	; A counter which continuously increments unless something is "stopping" the action
+	Block_NeedsUpdate:	.ds 1	; When non-zero, queues a "change tile" event
+	Block_UpdateValue:	.ds 1	;
+	GameCounter:	.ds 1	; A counter which continuously increments unless something is "stopping" the action
 	Level_Event:		.ds 1	; Check "LevelEvent_Do" for values; 0 means nothing
 	Level_PSwitchCnt:	.ds 1	; When non-zero, P-Switch is active (init @ $80); counts down to zero and restarts music
 
@@ -1739,30 +1752,33 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Object_SpriteRAM_Offset:		.ds 8	; $058F-$0596 Sprite_RAM offset by object
 
 	SpecialObj_Var2:	.ds 8	; $0597-$059E General purpose variable 2
+	PlayerProj_Var2:	.ds 2
+
+	SpecialObj_Var3:	.ds 8	; $05B5-$05BC General purpose variable 3
 
 	SpecialObj_YVelFrac:	.ds 8	; $05A1-$05A8 Y velocity fractional accumulator
+	PlayerProj_YVelFrac:	.ds 2
 
 	SpecialObj_XVelFrac:	.ds 8	; $05AB-$05B2 X velocity fractional accumulator
-	SpecialObj_Var3:	.ds 8	; $05B5-$05BC General purpose variable 3
+	PlayerProj_XVelFrac:	.ds 2
+
 	SpecialObj_YLo:		.ds 8	; $05BF-$05C6 Y low coordinate of special object
+	PlayerProj_Y:		.ds 2	; $7CE3-$7CE4 Player projectile Y
 
 	SpecialObj_XLo:		.ds 8	; $05C9-$05D0 X low coordinate of special object
+	PlayerProj_X:		.ds 2	; $7CE5-$7CE6 Player projectile X
 
 	SpecialObj_YVel:	.ds 8	; $05D3-$05DA Y Velocity of special object
+	PlayerProj_YVel:	.ds 2	; $7CE7-$7CE8 Player projectile Y Velocity (NOTE: Integer, not 4.4FP)
 
 	SpecialObj_XVel:	.ds 8	; $05DD-$05E4 X Velocity of special object
+	PlayerProj_XVel:	.ds 2	; $7CE9-$7CEA Player projectile X Velocity (NOTE: Fireball is integer, 4.4FP for hammer ONLY)
 
-	Level_TimerMSD:		.ds 1	; Leftmost / most significant digit on timer
-	Level_TimerMid:		.ds 1	; Middle digit on timer
-	Level_TimerLSD:		.ds 1	; Rightmost / least significant digit on timer
-	Level_TimerTick:	.ds 1	; Timer decrementing tick
 	Inventory_Open:		.ds 1	; Set when inventory panel is open, also used to dictate whether it is "opening" (1) or "closing" (0)
 	Level_TimerEn:		.ds 1	; Set to disable clock (bit 7 will also disable level animations, e.g. '?s')
 	Kill_Tally:		.ds 1	; Counter that increases with each successful hit of an object without touching the ground
 
 	Objects_KillTally:	.ds 5	; $05F5-$05F9 OBJECT SLOTS 0 - 4 ONLY: Kill_Tally for a kicked shell as it hits other enemies 
-
-	PlayerProj_YHi:		.ds 2	; $05FA-$05FB Player projectile Y Hi
 
 	; NOTE: Since Level_AScrlConfig checks are generally implemented as "BEQ/BNE", technically ANY
 	; value enables auto scroll adjustments, but officially ASCONFIG_ENABLE is used to enable it
@@ -1834,7 +1850,7 @@ TAIL_INDEX				= 6 ;
 	Object_TileFeetProp:	.ds 1	; Object tile detected at "feet" of object
 	Object_TileWallProp:	.ds 1	; Object tile detected in front of object, i.e. a wall
 	Object_TileProp:	.ds 1
-	Object_TileWater:	.ds 1
+	Object_TileBody:	.ds 1
 	Object_LevelTile:	.ds 1
 	Object_IgnoreWater:			.ds 1	; $0650 unused
 
@@ -1900,8 +1916,8 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 
 	SpecialObj_Var1:	.ds 8	; $06BD-$06C4 General purpose variable 1
 
-
 	SpecialObj_Data:	.ds 8	; $06C7-$06CE Special object "data" field, defined by object
+	PlayerProj_Data:	.ds 2
 
 
 	SpecialObj_Timer:	.ds 8	; $06D1-$06D8 "Timer" values; automatically decrements to zero
@@ -1983,7 +1999,6 @@ OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 	Previous_Stars:		.ds 2
 	Map_ReturnStatus:	.ds 1	; When 0, level panel is cleared; otherwise, Player is considered to have died (decrements life!)
 	MaxPower_Tick:		.ds 1	; When Player has maximum "power" charge, this counts for the flashing [P]
-	OldPlayer_Experience:		.ds 3	; $0715 (H)-$0717 (L) treated as 3-byte integer, with least significant zero on display not part of this value 
 
 	; Each byte of PatTable_BankSel sets the VROM available at
 	; 0000 (first half BG), 0800 (second half BG, typ animated), 
@@ -2124,8 +2139,6 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 	
 	BigQBlock_GotIt:	.ds 1
 
-				.ds 13	; $07E3-$07EF unused
-
 	DMC_Queue:		.ds 1	; Stores value to play on DMC
 	DMC_Current:		.ds 1	; Currently playing DMC sound
 
@@ -2149,6 +2162,7 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 	Sound_Map_Len:		.ds 1	; Countdown tick for current note/rest that map sound effect is on
 	Sound_Map_Off2:		.ds 1	; Same as Sound_Map_Off, used for the secondary track
 	Sound_Unused7FF:	.ds 1	; Cleared once, never used otherwise
+
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0800
 .Bound_0800:	BoundCheck .Bound_0800, $0800, $07xx RAM
@@ -2424,7 +2438,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Level_Jct_VSHi:		.ds 1	; Level junction vertical scroll high value
 	Level_Jct_VS:		.ds 1	; Level junction vertical scroll value
 
-	Magic_Stars:			.ds 2	; #DAHRKDAIZ keeps track of hammer bros coins collected
+	Magic_Stars:			.ds 1	; #DAHRKDAIZ keeps track of hammer bros coins collected
+	Old_Magic_Stars:		.ds 1
 
 	Map_Unused7992:			; Value used in some dead code in PRG011; cleared elsewhere (NOT SURE if maybe it sometimes meant Bonus_DiePos?)
 	Bonus_DiePos:		.ds 1	; UNUSED Die in the lost bonus games, counts 0-5
@@ -2452,6 +2467,11 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	PaletteEffect:			.ds 1
 	EffectCounter:			.ds 1
 	HitTestOnly:			.ds 1
+	SpinnerBlockTimers:	.ds 10;
+	SpinnerBlocksX:		.ds 10;
+	SpinnerBlocksXHi:	.ds 10;
+	SpinnerBlocksY:		.ds 10;
+	SpinnerBlocksYHi:	.ds 10;
 
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
@@ -2540,18 +2560,11 @@ CFIRE_LASER		= $15	; Laser fire
 
 	Splash_DisTimer:	.ds 1	; Player water splashes are disabled until decrements to zero; set when Player hits any bounce block
 
-	; For that little "flash" that comes from the shell kill impact!
-	ShellKillFlash_Cnt:	.ds 1	; "Shell Kill Flash" counter
-	ShellKillFlash_Y:	.ds 1	; "Shell Kill Flash" Y
-	ShellKillFlash_X:	.ds 1	; "Shell Kill Flash" X
-
 ; NOTE!! Objects_DisPatChng for OBJECT SLOT 0 - 5 ONLY!
 	Objects_DisPatChng:	.ds 6	; $7A49-$7A4E If set, this object no longer enforces a pattern bank change
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 5 ONLY!
 	ObjSplash_DisTimer:	.ds 6	; $7A4F-$7A54 Object water/lava splashes are disabled until decrements to zero
-
-	PlayerProj_XVelFrac:	.ds 2	; $7A55-$7A56 Player Projectile X velocity fractional accumulator
 
 	CannonFire_Timer2:	.ds 8	; $7A57-$7A5E Cannon Fire timer (decrements to zero)
 
@@ -2593,8 +2606,6 @@ CFIRE_LASER		= $15	; Laser fire
 	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
 	Coins_To_Deduct:	.ds 1	; Indicates the number of coins to deduct during toll payments
 	TollPaid:			.ds 1	; Indicates whether the toll was paid (1 was paid, 0 was not paid)
-	Calc_From:			.ds 8	; Used in doing decimal byte-wise subtraction, this is the A part of A - B
-	Calc_Value:			.ds 8	; Used in doign decimal byte-wise subtraction, this is the B part of A - B
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Virus:				.ds 1	;
 	Old_World_Map_Tile:	.ds	1	;
@@ -2637,6 +2648,7 @@ ABILITY_SHELCATCH = 3
 ABILITY_ITEMRESERVE = 4
 ABILITY_CHERRY_STAR = 5
 	Player_Equip:		.ds 1	;
+	Old_Player_Equip:	.ds 1
 	Player_Level:		.ds 1	;
 	Tile_Anim_Enabled:  .ds 1	;
 
@@ -2700,21 +2712,6 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_XDiff:	.ds 8
-	Objects_YDiff:	.ds 8
-	Player_XMid:	.ds 1
-	Player_XHiMid:	.ds 1
-	Player_YMid:	.ds 1
-	Player_YHiMid: .ds 1
-
-; Player's hammer/fireball
-	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
-	PlayerProj_Y:		.ds 2	; $7CE3-$7CE4 Player projectile Y
-	PlayerProj_X:		.ds 2	; $7CE5-$7CE6 Player projectile X
-	PlayerProj_YVel:	.ds 2	; $7CE7-$7CE8 Player projectile Y Velocity (NOTE: Integer, not 4.4FP)
-	PlayerProj_XVel:	.ds 2	; $7CE9-$7CEA Player projectile X Velocity (NOTE: Fireball is integer, 4.4FP for hammer ONLY)
-	Fireball_HitChkPass:	.ds 2	; $7CEB-$7CEC Count of times Player's fireball has gone through hit check; when it hits 2, fireball poofs
-	PlayerProj_Cnt:		.ds 2	; $7CED-$7CEE Player projectile counter
 
 	Temp_VarNP0:		.ds 1	; A temporary not on page 0
 
@@ -2763,14 +2760,15 @@ ABILITY_CHERRY_STAR = 5
 	; D = Music Box
 	
 	Inventory_Items:	.ds 16	; $7D80-$7D9B Mario, 4 rows of 7 items 
-	Inventory_Cards:	.ds 1	; #DAHRKDAIZ indicates the player is at the top of water
-	Inventory_Score:	.ds 1	; $7D9F-$7DA1 Mario, 3 byte score
-	Player_Coins:		.ds 4	; Mario's coins
+	Inventory_Cards:	.ds 0	; #DAHRKDAIZ indicates the player is at the top of water
+	Inventory_Score:	.ds 0	; $7D9F-$7DA1 Mario, 3 byte score
+	Player_Coins:		.ds 3	; Mario's coins
 	Air_Time_Frac:		.ds 1
 	Air_Time:			.ds 1	;
+	Old_Air_Time:		.ds 1
 
 AIR_INCREASE	= 3
-	Air_Change:			.ds 1	;
+	Air_Change:			.ds 1	
 	Power_Change:		.ds 1
 	Power_Tick:			.ds 1
 	Top_Of_Water:		.ds 1	;
@@ -2796,16 +2794,19 @@ AIR_INCREASE	= 3
 	Status_Bar_Top:		.ds 28		; Tiles to display at the top of the status bar
 	Status_Bar_Bottom:	.ds 28		; Tiles to display at the bottom of the status bar
 	Status_Bar_Render_Toggle: .ds 1	; Indicates if we're toggling the status mode
-	Player_Experience:	.ds 6		; Experience points that increase by defeating enemies
+	Player_Experience:	.ds 3		; Experience points that increase by defeating enemies
 	Player_Pal_Backup:  .ds 3	; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
-	Status_Bar_Mode:	.ds 1	; Indicates what status bar information should be displayed
+	StatusBar_Mode:	.ds 1	; Indicates what status bar information should be displayed
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
+	Last_StatusBar_Mode: .ds 1;
 	Game_Coins:				.ds 7; over all coins collected
-	Odometer:				.ds 7; over all distance traveled
+	Odometer:				.ds 3; over all distance traveled
 	Enemies_Defeated:		.ds 7; over all number of enemies defeated
 	Game_Timer:				.ds 6; over all time spent in the game
-	Last_Status_Bar_Mode:	.ds 1; Indicates what the last status bar mode was before the toggle
+	Old_Game_TimerSeconds:	.ds 1
+	Top_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
+	Bottom_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Odometer_Increase:		.ds 1; Indicates we need to increase the odometer
 	Previous_X:				.ds 1; Keeps track of the the Previous x position
 	Game_Timer_Tick:		.ds 1; Indicates the game timer needs to increase by 1 second
@@ -2904,7 +2905,7 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	; 10: Sidestepper Only
 	; 11: Ladder and [?] blocks
 	Cherries:		.ds 1
-
+	Old_Cherries:	.ds 1
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
 	StatusBar_PMT:		.ds 8	; $7F3E-$7F45, tiles that currently make up the power meter >>>>>>[P]
@@ -2989,10 +2990,19 @@ SOBJ_BLOOPERKID		= $14 	; Blooper kid
 SOBJ_POOF		= $16 	; Poof
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
+; Player's hammer/fireball
+PLAYER_FIREBALL		= 01
+PLAYER_ICEBALL		= 02
+PLAYER_HAMMER		= 03
+PLAYER_NINJASTAR	= 04
+PLAYER_POOF			= 05
+
+	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
+
 	Objects_Data3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
 
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
-
+	PlayerProj_YHi:			.ds 2
 	Objects_LastTile:	.ds 8	; $7FDF-$7FE6 Last tile this object detected
 	Objects_LastProp:	.ds 8
 	Objects_LastTileX:  .ds 1
@@ -3005,18 +3015,19 @@ SOBJ_POOF		= $16 	; Poof
 	Roulette_Lives:			; Number of lives you are rewarded from winning the Roulette (NOTE: Shared with first byte of Objects_IsGiant)
 
 	;#FREERAM
-	Objects_LeftRight: .ds 8
-	Objects_AboveBelow:	.ds 8
+	StatusBar_Ticker:	.ds 1
 	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
 	Slow_Watch:			.ds 1	;
 	Player_Dialog:		.ds 1
 	PowerUp_NoRaise:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
+	Old_PowerUp_Reserve:.ds 1
 	From_Reserve:		.ds 1
 	DayNight:			.ds 1	; signifies if it's day or night
 	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
 	DayNightTicker:		.ds 1	;
+	Old_DayNightTicker:	.ds 1
 	NightTransition:	.ds 1	; when not 0, we're transitioning into night
 	DayTransition:		.ds 1	; when not 0, we're transitioning into day
 	MasterPal_Data:		.ds 16	; keeps track of the unmodified, original palette
@@ -3122,6 +3133,7 @@ TILE_ITEM_SPINNER	= $FE
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
 	LevelName:			.ds 28
+	Force_LeveNameUpdate: .ds 1
 	BankCoins:			.ds 6 ;
 	TileCheckX:			.ds 1
 	TileCheckXHi:		.ds 1
@@ -3313,7 +3325,7 @@ LEVEL5_TIME_UNLIMITED	= %11000000	; Clock at 000, unlimited
 
 ; Special values that go into the Collide Jump Table
 OCSPECIAL_HIGHSCORE	= $0400		; Stomp-killing this enemy gives you 1000 pts instead of 100 pts base score
-OCSPECIAL_KILLCHANGETO	= $0800		; When enemy is killed, it changes to the object ID in the lower 8 bits (requires OA3_DIESHELLED)
+OCSPECIAL_KILLCHANGETO	= $0800		; When enemy is killed, it changes to the object ID in the lower 8 bits (requires OA3_SHELL)
 
 ; Object Attributes Set 1 Flags
 
@@ -3401,7 +3413,7 @@ OA3_HALT_MASK		= %00001111	; Not intended for use in attribute table, readabilit
 
 OA3_SQUASH		= %00010000	; Enemy should "squash" (state 7) not "shell" (state 3), or "killed" (state 6) in case of statue/Kuribo's shoe stomp; requires OA2_NOTSHELLED to be NOT SET
 OA3_NOTSTOMPABLE	= %00100000	; If the Player tries to stomp this enemy, he will be HURT!  (E.g. Spikey enemy)
-OA3_DIESHELLED		= %01000000	; The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
+OA3_SHELL		= %01000000	; The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
 OA3_TAILATKIMMUNE	= %10000000	; Object cannot be Raccoon tail attacked
 
 
@@ -3427,9 +3439,9 @@ OAT_BOUNDBOX15		= %00001111
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
 OAT_BOUNCEOFFOTHERS	= %00010000	; Turn away from other enemies if their paths collide
-OAT_ICEIMMUNITY		= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
-OAT_FIREIMMUNITY	= %01000000	; Object is immune to Player's fireballs
-OAT_HITNOTKILL		= %10000000	; Object will run collision routine instead of standard "Kick"-sound/100 points/OBJSTATE_KILLED [i.e. object not killed by being rammed with held object]
+OAT_ICEIPROOF		= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
+OAT_FIREPROOF	= %01000000	; Object is immune to Player's fireballs
+OAT_WEAPONSHELLPROOF		= %10000000	; Object will run collision routine instead of standard "Kick"-sound/100 points/OBJSTATE_KILLED [i.e. object not killed by being rammed with held object]
 
 
 ; Flags for the ObjectGroup_PatTableSel table
@@ -3462,7 +3474,7 @@ OBJ_COIN		= $08	; Door that appears under influence of P-Switch
 OBJ_AIRSHIPANCHOR	= $00	; Airship anchor
 OBJ_BUBBLE			= $09;
 OBJ_BULLY			= $0A	;
-OBJ_POWERUP_NINJASHROOM		= $0B	; Ninja Mushroom
+OBJ_POWERUP		= $0B	; Ninja Mushroom
 OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tanooki, Frog, Hammer)
 OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
 OBJ_BOSS_KOOPALING	= $00 ;
@@ -5208,4 +5220,3 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr125.pcx"
 	.incchr "CHR/chr126.pcx"
 	.incchr "CHR/chr127.pcx"
-

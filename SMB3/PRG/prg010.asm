@@ -3880,7 +3880,7 @@ FindLevelInfo2:
 
 UpdateLevel:
 	LDY #$00
-	LDA Status_Bar_Mode
+	LDA StatusBar_Mode
 	BNE UpdateLevel1
 
 	LDA LevelNumber

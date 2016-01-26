@@ -400,7 +400,7 @@ Suit_Anim:
 	.byte $03, $04, $05
 
 SPR_PowerUps:
-	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, $FF, $FF, $FF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE
+	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, $FF, $FF, $FF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE
 
 PAUSE_Sprites:
 	.byte $58, $F1, $03, $60	; P
@@ -472,7 +472,7 @@ PRG030_845A:
 	JSR Scroll_PPU_Reset	 
 	JSR Reset_PPU_Clear_Nametables
 	LDA #$01
-	STA Last_Status_Bar_Mode
+	STA Last_StatusBar_Mode
 	; Load title screen graphics
 	LDA #$78
 	STA PatTable_BankSel
@@ -837,7 +837,7 @@ PRG030_8715:
 	LDA #26
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
-	JSR StatusBar_UpdateValues	; Update status bar
+	JSR StatusBar_Update	; Update status bar
 
 PRG030_8732:
 	LDY Map_Operation
@@ -1396,7 +1396,7 @@ BonusGame_Loop:
 	STA Level_MusicQueue
 
 PRG030_8D23:
-	JSR BonusGame_Do	 ; Run the Bonus Game
+	;JSR BonusGame_Do	 ; Run the Bonus Game
 	;JSR StatusBar_Fill_Exp ; Update score
 
 	LDA <Level_ExitToMap
@@ -1823,7 +1823,7 @@ PRG030_8F42:
 	LDA InvFlip_Counter
 	BNE PRG030_8F7D	 ; If InvFlip_Counter <> 0 (flipping open Inventory), jump to PRG030_8F7D
 
-	JSR StatusBar_UpdateValues	; Just update values on the status bar
+	JSR StatusBar_Update	; Just update values on the status bar
 
 	LDA Inventory_Open
 	BEQ PRG030_8F85	 ; If Inventory is not open, jump to PRG030_8F85
@@ -2831,6 +2831,8 @@ GraphicsBuf_Prep_And_WaitVSync:	; 96E5
 
 	; Waiting for VBlank...
 PRG030_96FB:
+	;LDA #%00011110
+	;STA $2001
 	LDA <VBlank_Tick
 	BPL PRG030_96FB	
 
@@ -2838,6 +2840,9 @@ PRG030_96FB:
 	STA <VBlank_TickEn	 ; Disable the VBlank
 
 	CLI		 ; Enable further masked interrupts
+
+	;LDA #%00011111
+	;STA $2001
 	RTS		 ; Return
 
 
@@ -3235,7 +3240,7 @@ Skip_Set_Music:
 	LSR A
 	LDA [Temp_Var14],Y
 	AND #$0F
-	STA Level_TimerMid
+	
 	
 Skip_Time_Set:
 	LDY #$08
@@ -4443,28 +4448,6 @@ PRG030_9E8A:
 PRG030_9E8E:
 	RTS		 ; Return
 
-
-	; Something similar to LevelJct_GetVScreenH, but I'm 
-	; not quite following the purpose
-LevelJct_GetVScreenH2:
-	; A = Player_Y
-	; Y = Player_YHi
-	CPY #$00
-	BLS PRG030_9E9A	 ; If YHi < 0 (shouldn't happen?), jump to PRG030_9E9A
-
-	SUB PRG030_9E6C,Y
-	BCS PRG030_9E9A	 ; If carry set, jump to PRG030_9E9A
-
-	DEY		 ; Y--
-
-PRG030_9E9A:
-	RTS		 ; Return
-
-
-; FIXME: Anybody want to claim this??
-; $9E9B
-	.byte $F0, $20
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_GetTileAndSlope_Normal
 ;
@@ -4526,9 +4509,6 @@ PRG030_SUB_9F40:
 	LDA Update_Request
 	JMP PRG031_F499
 
-	; Filler space
-	.byte $ff, $ff, $ff, $ff, $ff
-
 	; Sub part of A0 mode of IRQ
 PRG030_SUB_9F50:
 	; Some kind of delay loop?
@@ -4589,69 +4569,133 @@ PRG030_9FAF:
 
 	JMP IntIRQ_32PixelPartition_Part3
 
-;; #DAHRKDAIZ This routine clears the Calc_From and Calc_Value bytes to prepare multibyte addition
-Clear_Calc:
-	LDX #$07
+CalcParam1 = Temp_Var1
+CalcParam2 = Temp_Var4
+CalcResult = Temp_Var7
+
+Add3ByteValue:
+	LDA <CalcParam1
+	ADD <CalcParam2
+	STA <CalcResult
+		
+	LDA <CalcParam1 + 1
+	ADC <CalcParam2 + 1
+	STA <CalcResult + 1
+		
+	LDA CalcParam1 + 2
+	ADC CalcParam2 + 2
+	STA CalcResult + 2
+	RTS
+
+Subtract2ByteValue:
 	LDA #$00
+	STA <CalcParam1 + 2
+	STA <CalcParam2 + 2
 
-Next_Clear_Calc:
-	STA Calc_From, X
-	STA Calc_Value, X
-	DEX
-	BPL Next_Clear_Calc
+Subtract3ByteValue:
+	LDA <CalcParam1
+	SUB <CalcParam2
+	STA <CalcResult
+		
+	LDA <CalcParam1 + 1
+	SBC <CalcParam2 + 1
+	STA <CalcResult + 1
+		
+	LDA <CalcParam1 + 2
+	SBC <CalcParam2 + 2
+	STA <CalcResult + 2
 	RTS
 
-; #DAHRKDAIZ for multibyte addition and sobtraction, use Calc_From for the original value and Calc_Value for the amount
-; you are adding. For example, if adding coins, set current coin value to Calc_From and the amount adding to Calc_Value
-; The result will be stored in Calc_From.
-Add_Values:
-	LDX #$07
 
-Addition_Loop:
-	CLC 
-	LDA Calc_From, X
-	ADC Calc_Value, X
-	STA Calc_From, X
-	CMP #$0A
-	BCC Next_Value2
-	SEC
-	SBC #$0A
-	STA Calc_From, X
-	INC (Calc_From - 1), X
+DigitsParam = Temp_Var1
 
-Next_Value2:
+DigitsResult = Temp_Var10
+
+DigitsCalcsLo:
+	.byte $0A, $64, $E8, $10, $A0, $40
+
+DigitsCalcsMid:
+	.byte $00, $00, $03, $27, $86, $42
+
+DigitsCalcsHi:
+	.byte $00, $00, $00, $00, $01, $0F
+
+BytesTo7Digits:
+	LDX #$05
+	BNE BytesToDigits
+
+BytesTo6Digits:
+	LDX #$04
+	BNE BytesToDigits
+
+BytesTo5Digits:
+	LDX #$03
+	BNE BytesToDigits
+
+BytesTo4Digits:
+	LDA #$00
+	STA DigitsParam + 2
+
+	LDX #$02
+	BNE BytesToDigits
+
+BytesTo3Digits:
+	LDA #$00
+	STA DigitsParam + 2
+
+	LDX #$01
+	BNE BytesToDigits
+
+BytesTo2Digits:
+	LDA #$00
+	STA DigitsParam + 1
+	STA DigitsParam + 2
+	LDX #$00
+	BNE BytesToDigits
+
+BytesToDigits:
+	
+	LDA #$00
+	STA <DigitsResult + 1, X
+	LDA DigitsCalcsLo, X
+	STA <CalcParam2
+
+	LDA DigitsCalcsMid, X
+	STA <CalcParam2 + 1
+
+	LDA DigitsCalcsHi, X
+	STA <CalcParam2 + 2
+
+BytesToDigits0:
+	JSR Subtract3ByteValue
+	LDA <CalcResult + 2
+	BMI BytesToDigits1
+
+	INC <DigitsResult + 1, X
+	LDA <CalcResult
+	STA <DigitsParam
+
+	LDA <CalcResult + 1
+	STA <DigitsParam + 1
+
+	LDA <CalcResult + 2
+	STA <DigitsParam + 2
+	JMP BytesToDigits0
+
+BytesToDigits1:
 	DEX
-	BPL Addition_Loop
-	RTS
+	BPL BytesToDigits
 
-Subtract_Values:
-	LDX #$07
-	SEC 
 
-Subtraction_Loop:
-	LDA Calc_From, X
-	SBC Calc_Value, X
-	STA Calc_From, X
-	BPL Next_Value
-	CPX #$00
-	BEQ Subtract_RTS
-	CLC
-	ADC #$0A
-	STA Calc_From, X
-	DEC (Calc_From - 1), X
-
-Next_Value:
-	DEX
-	BPL Subtraction_Loop
-Subtract_RTS:
+	LDA DigitsParam
+	STA DigitsResult
 	RTS
 
 Check_For_Level_Exit:
 	RTS
 
-
 Reserve_Sprites:
-	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_NINJASHROOM
+	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP
 
 Reserve_Flash:
 	.byte $00, $00, $00, $01, $02, $03, $00, $00, $00, $00, $00
@@ -5674,6 +5718,7 @@ DrawStarsBackground:
 	
 	LDA WeatherActive
 	BNE DrawStarsBackground01
+
 	LDA DayNightActive
 	BNE DrawParallaxBackground
 
@@ -5892,73 +5937,16 @@ MarkCompletedLevels3:
 
 Sprite_RAM_Clear:	; $FD84
 	LDA #$f8	 	; A = $F8 
-	STA Sprite_RAM
-	STA Sprite_RAM + 4
-	STA Sprite_RAM + 8
-	STA Sprite_RAM + 12
-	STA Sprite_RAM + 16
-	STA Sprite_RAM + 20
-	STA Sprite_RAM + 24
-	STA Sprite_RAM + 28
-	STA Sprite_RAM + 32
-	STA Sprite_RAM + 36
-	STA Sprite_RAM + 40
-	STA Sprite_RAM + 44
-	STA Sprite_RAM + 48
-	STA Sprite_RAM + 52
-	STA Sprite_RAM + 56
-	STA Sprite_RAM + 60
-	STA Sprite_RAM + 64
-	STA Sprite_RAM + 68
-	STA Sprite_RAM + 72
-	STA Sprite_RAM + 74
-	STA Sprite_RAM + 76
-	STA Sprite_RAM + 80
-	STA Sprite_RAM + 84
-	STA Sprite_RAM + 88
-	STA Sprite_RAM + 92
-	STA Sprite_RAM + 96
-	STA Sprite_RAM + 100
-	STA Sprite_RAM + 104
-	STA Sprite_RAM + 108
-	STA Sprite_RAM + 112
-	STA Sprite_RAM + 116
-	STA Sprite_RAM + 120
-	STA Sprite_RAM + 124
-	STA Sprite_RAM + 128
-	STA Sprite_RAM + 132
-	STA Sprite_RAM + 136
-	STA Sprite_RAM + 140
-	STA Sprite_RAM + 144
-	STA Sprite_RAM + 148
-	STA Sprite_RAM + 152
-	STA Sprite_RAM + 156
-	STA Sprite_RAM + 160
-	STA Sprite_RAM + 164
-	STA Sprite_RAM + 168
-	STA Sprite_RAM + 172
-	STA Sprite_RAM + 174
-	STA Sprite_RAM + 176
-	STA Sprite_RAM + 180
-	STA Sprite_RAM + 184
-	STA Sprite_RAM + 188
-	STA Sprite_RAM + 192
-	STA Sprite_RAM + 196
-	STA Sprite_RAM + 200
-	STA Sprite_RAM + 204
-	STA Sprite_RAM + 208
-	STA Sprite_RAM + 212
-	STA Sprite_RAM + 216
-	STA Sprite_RAM + 220
-	STA Sprite_RAM + 224
-	STA Sprite_RAM + 228
-	STA Sprite_RAM + 232
-	STA Sprite_RAM + 236
-	STA Sprite_RAM + 240
-	STA Sprite_RAM + 244
-	STA Sprite_RAM + 248
-	STA Sprite_RAM + 252
-	RTS		 ; Return
+	LDY #$00
+
+Sprite_RAM_Clear1:
+	STA Sprite_RAM, Y
+	INY
+	INY
+	INY
+	INY
+	BNE Sprite_RAM_Clear1
+	RTS
 
 GetPowerBadgeY:
 	LDA Player_Equip

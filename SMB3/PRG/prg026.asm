@@ -903,7 +903,7 @@ Inv_Display_Hilite:
 	ADD InvStart_Item
 	TAY	
 	LDA Inventory_Items,Y	
-	JSR ToThreeDigits
+	;JSR ToThreeDigits
 
 	; Use palette 3 for both
 	LDA #SPR_PAL1
@@ -1845,105 +1845,7 @@ PRG026_AF87:
 PRG026_AF9C:
 	RTS		 ; Return
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_Fill_Time
-;
-; Fills the StatusBar_Time array with tiles representing
-; the current time remaining; also updates the clock
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-StatusBar_Fill_Time:
 
-	RTS		 ; Return
-
-
-; FIXME: Anybody want to claim this?
-; Uses graphics buffer to push out the 3 digits of timer unlike the special buffers used by status bar
-; $AFFE 
-	LDX Graphics_BufCnt	; X = graphics buffer count
-
-	LDA #$2b	; VRAM High in non-vertical level
-
-	LDY Level_7Vertical
-	BEQ PRG026_B00A
-
-	LDA #$27	; VRAM High in vertical level
-
-PRG026_B00A:
-	; VRAM High address
-	STA Graphics_Buffer,X
-
-	; VRAM Low address
-	LDA #$51
-	STA Graphics_Buffer+1,X
-
-	; Run length of 3
-	LDA #$03
-	STA Graphics_Buffer+2,X
-
-	; 3 timer digits
-	LDA Level_TimerMSD
-	ORA #$30
-	STA Graphics_Buffer+3,X
-	LDA Level_TimerMid
-	ORA #$30
-	STA Graphics_Buffer+4,X
-	LDA Level_TimerLSD
-	ORA #$30
-	STA Graphics_Buffer+5,X
-
-	; Terminator
-	LDA #$00
-	STA Graphics_Buffer+6,X
-
-	; Add to graphics buffer count
-	TXA
-	ADD #$06
-	STA Graphics_BufCnt
-
-	RTS		 ; Return
-
-StatusBar_Fill_Air_MT:
-	LDA Status_Bar_Mode
-	BNE Fill_Air_MT_Done
-	LDY #$00
-	LDA Air_Time
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX
-	BEQ Paritial_Air
-
-Full_Air_Loop:				; #DAHRKDAIZ fill parts that display as full 8 pixels
-	LDA #$E9
-	STA Status_Bar_Top + 9, Y
-	INY
-	DEX
-	BNE Full_Air_Loop
-	
-	CPY #$04				; Did it fill all the way? we're done!
-	BEQ Fill_Air_MT_Done
-
-Paritial_Air:
-							; Not filled all the way, let's fill the partial bar
-	LDA Air_Time
-	AND #$0F
-	LSR A
-	ADC #$E1				; offset the tile number
-	STA Status_Bar_Top + 9, Y
-	INY
-
-	LDA #$E1
-
-Empty_Air_Loop:
-	CPY #$04				
-	BEQ Fill_Air_MT_Done		; Did it fill all the way? we're done!
-	STA Status_Bar_Top + 9, Y	; no? let's fill empty tiles
-	INY
-	BNE Empty_Air_Loop
-	
-Fill_Air_MT_Done: 
-	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; StatusBar_Fill_Coins
@@ -1955,309 +1857,15 @@ Fill_Air_MT_Done:
 StatusBar_Fill_Coins:
 
 ; #DAHRKDAIZ rewritten to account for 2 byte coins, up to 9999 coins
-
-StatusBar_Fill_Coin:
-	LDA Coins_Earned
-	BNE UpdateCoins
-	LDA Force_Coin_Update
-	BNE Update_Draw_Coin
+StatusBar_Debug:
 	RTS
 
-UpdateCoins:
-
-	JSR Clear_Calc
-	LDX #$03
-
-Fill_Coins:
-	LDA Player_Coins, X
-	STA (Calc_From + 4), X
-	DEX
-	BPL Fill_Coins
-	LDA Coins_Earned
-	STA Calc_Value + 7
-	JSR Add_Values
-	LDA Calc_From + 3
-	BEQ Coins_Loop 
-	LDX #$03
-	LDA #$09
-
-Max_Coins:
-	STA Player_Coins,X
-	DEX
-	BPL Max_Coins
-	BMI Do_Game_Coins
-Coins_Loop:
-	LDX #$03
-
-Coins_Loop2:
-	LDA (Calc_From + 4), X
-	STA Player_Coins, X
-	DEX
-	BPL Coins_Loop2
-
-Do_Game_Coins:
-	LDX #$06
-
-FillGame_Coins:
-	LDA Game_Coins, X
-	STA (Calc_From + 1), X
-	DEX
-	BPL FillGame_Coins
-	LDA Coins_Earned
-	STA Calc_Value + 7
-	JSR Add_Values
-	LDX #$06
-
-GameCoins_Loop2:
-	LDA (Calc_From + 1), X
-	STA Game_Coins, X
-	DEX
-	BPL GameCoins_Loop2
-	LDA #$00
-	STA Coins_Earned
-
-Update_Draw_Coin:
-	LDA Status_Bar_Mode
-	BEQ DrawCurrentCoins
-	BNE DrawTotalCoins	
-
-DrawCurrentCoins:
-	LDX #$03
-
-Coin_Loop2:
-	LDA Player_Coins, X
-	ORA #$30
-	STA Status_Bar_Bottom+ 9, X
-	DEX
-	BPL Coin_Loop2
-	RTS
-
-DrawTotalCoins:
-	LDX #$06
-Coin_Loop3:
-	LDA Game_Coins, X
-	ORA #$30
-	STA Status_Bar_Top + 1, X
-	DEX
-	BPL Coin_Loop3
-	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; StatusBar_Fill_World
 ;
 ; Simply puts the correct world number in the status bar
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-StatusBar_Fill_World:
-	RTS		 ; Return
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_Fill_MorL
-;
-; Simply puts the correct <M> or <L> in the status bar
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-PRG026_B104:
-	.byte $74, $75, $76, $77  ; Two tiles each, for <M> or <L>, respectively
-
-StatusBar_Fill_MorL:
-	LDA Player_Current
-	ASL A		 	; A = Player_Current << 1
-	TAX		 	; X = A
-	LDA #$01	 	; A = 1
-	STA <Temp_Var15		; Temp_Var15 = 1
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-
-	; Loop to copy the two tiles
-PRG026_B114:
-	LDA PRG026_B104,X	; Get player-relevant tile
-	STA Graphics_Buffer+3,Y ; -> graphics buffer
- 
-	INX		 	; X++
-	INY		 	; Y++
-	DEC <Temp_Var15		; Temp_Var15--
-	BPL PRG026_B114	 	; While Temp_Var15 > 0, loop!
-
-	LDA #$00	 	
-	STA Graphics_Buffer+3,Y	; Add a terminator
-
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-	LDX #$27	 	; X = $27 (VRAM address high if vertical)
-
-	LDA Level_7Vertical
-	BNE PRG026_B13E	 	; If level is vertical, jump to PRG026_B13E
-
-	LDX #$2b	 	; X = $2B (VRAM address high if non-vertical)
-
-	LDA Level_Tileset	
-
-	CMP #16	 
-	BEQ PRG026_B13C	 	; If Level_Tileset = 16 (Spade game), jump to PRG026_B13C
-
-	CMP #17
-	BNE PRG026_B13E	 	; If Level_Tileset = 17 (N-Spade game), jump to PRG026_B13E
-
-PRG026_B13C:
-	LDX #$23	 ; X = $23 (VRAM Address high for Spade/N-Spade bonus games only)
-
-PRG026_B13E:
-
-	; VRAM Address High
-	TXA
-	STA Graphics_Buffer,Y
-
-	; VRAM Address low
-	LDA #$42
-	STA Graphics_Buffer+1,Y
-
-	; Run length of 2
-	LDA #$02
-	STA Graphics_Buffer+2,Y
-
-	; Update buffer count appropriately
-	LDA Graphics_BufCnt	
-	ADD #$05	 
-	STA Graphics_BufCnt	
-	RTS		 ; Return
-
-
-PRG026_B156:
-	.byte $2B, $48, $06, $00, $00, $00, $00, $00, $00, $00 
-
-StatusBar_Fill_Exp:
-	LDA <Counter_1
-	AND #$07
-	BNE Exp_Done
-
-	LDA Exp_Earned
-	BEQ Exp_Done
-
-	LDA Player_Suit
-	BNE DecExp
-
-	LDA Exp_Doubler
-	EOR #$01
-	STA Exp_Doubler
-	BNE DecExp1
-	
-DecExp:
-	DEC Exp_Earned
-
-DecExp1:
-	LDX #$05
-
-IncExpMore:
-	INC Player_Experience, X
-	LDA Player_Experience, X
-	CMP #$0A
-	BCC Try_Update
-	LDA #$00
-	STA Player_Experience, X
-	DEX
-	BPL IncExpMore
-
-Try_Update:
-	LDA Status_Bar_Mode
-	BNE Exp_Done
-
-Exp_Update:
-	LDX #$05
-
-Exp_Loop3:
-	LDA Player_Experience, X
-	ORA #$30
-	STA Status_Bar_Bottom + 1, X
-	DEX
-	BPL Exp_Loop3
-
-Exp_Done:
-	RTS		 ; Return
-
-
-BadgeTiles:
-	.byte $FE, $FE, $FE, $FE
-	.byte $68, $FE, $78, $FE	; ITEM_CLOCK1
-	.byte $68, $69, $78, $79	; ITEM_CLOCK2
-	.byte $6A, $FE, $7A, $FE	; ITEM_SLOW1
-	.byte $6A, $6B, $7A, $7B	; ITEM_SLOW2
-	.byte $B0, $B1, $C0, $C1	; ITEM_POW1
-	.byte $84, $85, $94, $95	; ITEM_POW2
-	.byte $6C, $6D, $7C, $7D	; ITEM_POW3
-	.byte $6E, $6F, $7E, $7F	; ITEM_RADARNE
-	.byte $B2, $B3, $C2, $C3	; ITEM_RADARN
-	.byte $B4, $B5, $C4, $C5	; ITEM_RADARNW
-	.byte $B6, $B7, $C6, $C7	; ITEM_RADARW
-	.byte $B8, $B9, $C8, $C9	; ITEM_RADARSW
-	.byte $BA, $BB, $CA, $CB	; ITEM_RADARS
-	.byte $BC, $BD, $CC, $CD	; ITEM_RADARSE
-	.byte $BE, $BF, $CE, $CF	; ITEM_RADARE
-	.byte $DC, $DD, $EC, $ED	; ITEM_RADAR
-	.byte $86, $87, $96, $97	; ITEM_CATCH
-	.byte $AA, $AB, $AC, $AD	; ITEM_HEART1
-	.byte $A4, $A5, $A8, $A9	; ITEM_HEART2
-	.byte $A4, $A5, $A6, $A7	; ITEM_HEART3
-	.byte $DE, $FE, $EE, $FE	; ITEM_STAR1
-	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
-	.byte $0E, $0F, $1E, $1F
-	.byte $0E, $0F, $1E, $1F
-	.byte $0E, $0F, $1E, $1F
-	.byte $00, $01, $10, $11
-	.byte $02, $03, $12, $13
-	.byte $04, $05, $14, $15
-	.byte $06, $07, $16, $17
-	.byte $08, $09, $18, $19
-	.byte $0A, $0B, $1A, $1B
-	.byte $0C, $0D, $1C, $1D	
-	.byte $0E, $0F, $1E, $1F
-
-
-StatusBar_Ability_Level:
-	LDA Status_Bar_Mode
-	CMP #$00
-	BNE Dont_Draw_Current_Ability
-	LDA Player_Equip
-	ASL A
-	ASL A
-	TAX
-	LDA BadgeTiles, X
-	STA (Status_Bar_Top + 26)
-	LDA BadgeTiles + 1, X
-	STA (Status_Bar_Top + 27)
-	LDA BadgeTiles + 2, X
-	STA (Status_Bar_Bottom + 26)
-	LDA BadgeTiles + 3, X
-	STA (Status_Bar_Bottom + 27)
-
-Dont_Draw_Current_Ability:
-	RTS	
-
-PUp_Reserve_Tiles1:
-	.byte $FE, $FE, $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $00, $00, $00, $00, $00, $00
-
-PUp_Reserve_Tiles2:
-	.byte $FE, $FE, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $00, $00, $00, $00, $00, $00
-
-Status_Bar_Draw_Item_Reserve:
-	LDA Status_Bar_Mode
-	CMP #$00
-	BNE Item_ReserveRTS
-	LDA PowerUp_Reserve
-	LDX Player_Equip
-	CPX #$07
-	BEQ Draw_ItemReserve
-	LDA #$00
-
-Draw_ItemReserve:
-	ASL A
-	TAX
-	LDA PUp_Reserve_Tiles1, X
-	STA (Status_Bar_Top + 23)
-	LDA (PUp_Reserve_Tiles1 + 1), X
-	STA (Status_Bar_Top + 24)
-	LDA PUp_Reserve_Tiles2, X
-	STA (Status_Bar_Bottom + 23)
-	LDA (PUp_Reserve_Tiles2 + 1), X
-	STA (Status_Bar_Bottom + 24)
-
-Item_ReserveRTS:
-	RTS
 
 ; FIXME: Anybody want to claim this?
 
@@ -2267,47 +1875,6 @@ Item_ReserveRTS:
 ; Fills the StatusBar_PMT array with tiles representing
 ; the current "charge" of the power meter in the status bar
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-StatusBar_Fill_PowerMT:
-	LDA Status_Bar_Mode
-	BNE StatusBar_Fill_PowerMT5
-
-	LDY #$00
-	LDA Player_Power
-	BEQ StatusBar_Fill_PowerMT3
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX
-	CPX #$05
-	BCC StatusBar_Fill_PowerMT1
-
-	LDX #$05
-
-StatusBar_Fill_PowerMT1:
-	LDA #$D2
-
-StatusBar_Fill_PowerMT2:
-	STA (Status_Bar_Top + 1),Y	; Store this tile into the buffer
-	INY
-	DEX
-	BPL StatusBar_Fill_PowerMT2
-
-StatusBar_Fill_PowerMT3:
-	CPY #$06
-	BCS StatusBar_Fill_PowerMT5
-
-	LDA #$D1
-
-StatusBar_Fill_PowerMT4:
-	STA (Status_Bar_Top + 1),Y
-	INY
-	CPY #$06
-	BCC StatusBar_Fill_PowerMT4
-
-StatusBar_Fill_PowerMT5:
-	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ; Video_Misc_Updates
@@ -2324,8 +1891,10 @@ Video_Misc_Updates:
 
 	LDY #$00	 	; Y = 0
 	LDA [Video_Upd_AddrL],Y	; Get byte
-	BEQ StatusBar_Fill_PowerMT5	 	; If 0, jump to PRG026_B292 (RTS)
+	BNE Video_Misc_Updates1	 	; If 0, jump to PRG026_B292 (RTS)
+	RTS
 
+Video_Misc_Updates1:
 	LDX PPU_STAT	 	; Flush video
 
 	STA PPU_VRAM_ADDR	; Store byte into video address high
@@ -2615,7 +2184,7 @@ StatusBar_UpdTemplate:
 	.byte $00 ; Terminator
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_UpdateValues
+; StatusBar_Update
 ;
 ; This subroutine basically handles all of the status bar updates
 ; besides cards; it inserts all of the following data:
@@ -2623,44 +2192,60 @@ StatusBar_UpdTemplate:
 ; ... and performs updates where relevant, and even pushes it to the
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-StatusBar_UpdateValues:
-	LDA Status_Bar_Mode
+StatusBar_Update:
+	LDA StatusBar_Mode
 	CMP #$80
-	BEQ NoBarUpdates
+	BNE StatusBar_DoUpdates
+	RTS
+
+StatusBar_DoUpdates:
 
 	LDA <Pad_Input
 	AND #PAD_SELECT
 	BEQ No_Switch
+
 	LDA <Pad_Holding
 	AND #(PAD_UP | PAD_DOWN)
 	BNE No_Switch
-	LDA Status_Bar_Mode
+
+	LDA StatusBar_Mode
 	EOR #$FF
-	STA Status_Bar_Mode
+	STA StatusBar_Mode
+	JSR Initialize_Status_Bar
+	BNE AttemptUpdate
 
 No_Switch:
-	JSR Initialize_Status_Bar
-	JSR StatusBar_Fill_PowerMT	
-	JSR StatusBar_Fill_Air_MT	
-	JSR Draw_HBros_Coin
-	JSR Draw_Cherries
-	JSR Update_Game_Timer
-	JSR Do_Odometer
-	JSR Draw_DayNightMeter
+	LDA StatusBar_Mode
+	BNE UpdateMode2
 
-	; Fill in StatusBar_PMT with tiles of current Power Meter state
-	JSR StatusBar_Fill_Coins	; Fill in StatusBar_CoinsL/H with tiles for coins held; also applies Coins_Earned
-	;
-	JSR StatusBar_Fill_Exp 	; Fill in StatusBar_Score with tiles for score; also applies Exp_Earned
-	JSR StatusBar_Ability_Level
-	JSR Status_Bar_Draw_Item_Reserve
+	JSR Game_UpdatePower
+	JSR Game_UpdateAir
+	JSR Game_UpdateStars
+	JSR Game_UpdateCherries
+	JSR Game_UpdateExperience
+	JSR Game_UpdateCoins
+	JSR Game_UpdateDayNightMeter
+	JSR Game_UpdateBadge
+	JSR Game_UpdateReserve
+	JMP AttemptUpdate
 
-NoBarUpdates:
+UpdateMode2:
+	JSR Game_UpdateCoins
+	JSR Game_UpdateTimer
+	JSR Game_UpdateOdometer
+	JSR Game_UpdateLevelName
+
+AttemptUpdate:
 	LDX #$00	 	; X = 0
+
+	LDA Top_Needs_Redraw
+	ORA Bottom_Needs_Redraw
+	BEQ NoStatusRedraw
+	
 	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
 	BEQ PRG026_B466	 	; If graphics buffer is empty, jump to PRG026_B466
 
-	; Graphics buffer has content... skips delay functionality:
+NoStatusRedraw:
 	STX StatusBar_UpdFl	; StatusBar_UpdFl = 0
 	JMP PRG026_B47A	 	; Jump to PRG026_B47A
 
@@ -2717,6 +2302,9 @@ Status_Top_Loop:
 	CLC
 	ADC #$1F
 	STA Graphics_BufCnt
+
+	LDA #$00
+	STA Top_Needs_Redraw
 	RTS
 
 	; #DAHRKDAIZ render bottom
@@ -2744,43 +2332,10 @@ Status_Bottom_Loop:
 	CLC
 	ADC #$1F
 	STA Graphics_BufCnt
-	RTS
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LevelLoad_CopyObjectList
-;
-; Copies the level's object list in from ROM to RAM
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LevelLoad_CopyObjectList:
-;	LDY #$00	 ; Y = 0
-;
-;	LDA [Level_ObjPtr_AddrL],Y	; Get first byte from object layout data
-;	STA Level_Objects,Y	 	; Copy to beginning of Level_Objects array
-;
-;PRG026_B506:
-;
-;	; Next byte is ID of object (or $FF to terminate the list)
-;	INY
-;	LDA [Level_ObjPtr_AddrL],Y
-;	STA Level_Objects,Y
-;
-;	CMP #$ff	 
-;	BEQ PRG026_B51F	 	; If terminator hit, jump to PRG026_B51F (RTS)
-;
-;	; Copy in start column of object
-;	INY		 
-;	LDA [Level_ObjPtr_AddrL],Y
-;	STA Level_Objects,Y
-;
-;	; Copy in start row of object
-;	INY
-;	LDA [Level_ObjPtr_AddrL],Y
-;	STA Level_Objects,Y
-;
-;	JMP PRG026_B506		; Loop!
-;
-;PRG026_B51F:
-;	RTS		 ; Return
+	LDA #$00
+	STA Bottom_Needs_Redraw
+	RTS
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
@@ -2791,220 +2346,638 @@ Initial_Bar_Display2:
 	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $20, $20, $20, $20, $20, $F0, $F0, $F0, $F0, $F0, $F0, $F0
 	.byte $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20
 
-Draw_World_Name:
-
-	LDX #$00
-
-DrawName:
-	LDA LevelName, X
-	STA Status_Bar_Bottom, X
-	INX
-	CPX #28
-	BNE DrawName
-	RTS
-
 
 Initialize_Status_Bar:
-	LDA Status_Bar_Mode
-	CMP Last_Status_Bar_Mode
-	BEQ No_Init
-	STA Last_Status_Bar_Mode
-	LDY #$00
-	LDA Status_Bar_Mode
+	LDA StatusBar_Mode
 	BNE Init_Bar_2
+
 	LDA #LOW(Initial_Bar_Display1)
 	STA <Temp_Var1
+
 	LDA #HIGH(Initial_Bar_Display1)
 	STA <Temp_Var2
-	BNE Init_Bar_Loop
+
+	JSR StatusBar_Template
+	JSR StatusBar_DrawPower
+	JSR StatusBar_DrawAir
+	JSR StatusBar_DrawStars
+	JSR StatusBar_DrawCherries
+	JSR StatusBar_DrawExperience
+	JSR StatusBar_DrawCoins
+	JSR StatusBar_DrawStarsCollected
+	JSR StatusBar_DrawDayNightMeter
+	JSR StatusBar_DrawReserve
+	RTS
 
 Init_Bar_2:
-	JSR DrawTotalCoins
 	LDA #LOW(Initial_Bar_Display2)
 	STA <Temp_Var1
+
 	LDA #HIGH(Initial_Bar_Display2)
 	STA <Temp_Var2
 
-Init_Bar_Loop:
+	JSR StatusBar_Template
+	JSR StatusBar_DrawGameCoins
+	JSR StatusBar_DrawOdometer
+	JSR StatusBar_DrawTimer
+	JSR StatusBar_DrawLevelName
+	RTS
+
+StatusBar_Template:
+	LDY #$00
+
+StatusBar_Template1:
 	LDA [Temp_Var1], Y
 	STA Status_Bar_Top, Y
 	INY
 	CPY #$38
-	BNE Init_Bar_Loop
-
-	LDA Status_Bar_Mode
-	BNE Draw_Update2
-	JSR DrawCurrentCoins
-	JSR Exp_Update
+	BNE StatusBar_Template1
 	RTS
 
-Draw_Update2:
-	JSR DrawTotalCoins
-	JSR Update_Odometer
-	JSR Draw_World_Name
-	JSR Update_Game_Timer
-No_Init:
-	RTS
-
-Do_Odometer:
-	LDA Odometer_Increase
-	CMP #$80
-	BCC No_Odometer
-	SBC #$80
-	STA Odometer_Increase
-	LDX #$06
-	 
-Increase_Odometer:
-	INC Odometer, X
-	LDA Odometer, X
-	CMP #$0A
-	BCC Next_Odometer
-	LDA #$00
-	STA Odometer, X
-	DEX
-	BPL Increase_Odometer
-
-Next_Odometer:
-	JSR DoBankInterest
-	LDA Status_Bar_Mode
-	BEQ No_Odometer
-
-Update_Odometer:
-	LDY #$06
+Game_UpdatePower:
+	LDA StatusBar_Mode
+	BNE Game_UpdatePower1
 	
-Odometer_Loop:
-	LDA Odometer, Y
-	ORA #$30
-	STA Status_Bar_Top + 21,Y
-	DEY
-	BPL Odometer_Loop
+	LDA Player_Power
+	CMP Old_Player_Power
+	BEQ Game_UpdatePower1
+	
+	STA Old_Player_Power
+	BNE StatusBar_DrawPower
+	
+Game_UpdatePower1:
+	RTs
 
-No_Odometer:
+StatusBar_DrawPower:
+	LDY #$00
+	LDA Player_Power
+	BEQ StatusBar_Fill_PowerMT3
+	
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	CPX #$05
+	BCC StatusBar_Fill_PowerMT1
+
+	LDX #$05
+
+StatusBar_Fill_PowerMT1:
+	LDA #$D2
+
+StatusBar_Fill_PowerMT2:
+	STA (Status_Bar_Top + 1),Y	; Store this tile into the buffer
+	INY
+	DEX
+	BPL StatusBar_Fill_PowerMT2
+
+StatusBar_Fill_PowerMT3:
+	CPY #$06
+	BCS StatusBar_Fill_PowerMT5
+
+	LDA #$D1
+
+StatusBar_Fill_PowerMT4:
+	STA (Status_Bar_Top + 1),Y
+	INY
+	CPY #$06
+	BCC StatusBar_Fill_PowerMT4
+
+StatusBar_Fill_PowerMT5:
+	INC Top_Needs_Redraw
+	RTS		 ; Return
+;--------------------------------------
+Game_UpdateAir:
+	LDA StatusBar_Mode
+	BNE Game_UpdateAir1
+	
+	LDA Air_Time
+	CMP Old_Air_Time
+	BEQ Game_UpdateAir1
+	
+	STA Old_Air_Time
+	BNE StatusBar_DrawAir
+		
+Game_UpdateAir1:
 	RTS
 
-Draw_HBros_Coin:
-	LDA Status_Bar_Mode
-	BNE No_HBros_Update
+StatusBar_DrawAir:
+
+	LDY #$00
+	LDA Air_Time
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	BEQ Paritial_Air
+
+Full_Air_Loop:				; #DAHRKDAIZ fill parts that display as full 8 pixels
+	LDA #$E9
+	STA Status_Bar_Top + 9, Y
+	INY
+	DEX
+	BNE Full_Air_Loop
+	
+	CPY #$04				; Did it fill all the way? we're done!
+	BEQ Fill_Air_MT_Done
+
+Paritial_Air:
+							; Not filled all the way, let's fill the partial bar
+	LDA Air_Time
+	AND #$0F
+	LSR A
+	ADC #$E1				; offset the tile number
+	STA Status_Bar_Top + 9, Y
+	INY
+
+	LDA #$E1
+
+Empty_Air_Loop:
+	CPY #$04				
+	BEQ Fill_Air_MT_Done		; Did it fill all the way? we're done!
+	STA Status_Bar_Top + 9, Y	; no? let's fill empty tiles
+	INY
+	BNE Empty_Air_Loop
+	
+Fill_Air_MT_Done: 
+	INC Top_Needs_Redraw
+	RTS
+
+;--------------------------------------
+
+Game_UpdateStars:
+	LDA StatusBar_Mode
+	BNE Game_UpdateStars1
+	
 	LDA Magic_Stars
-	JSR ToThreeDigits
-	LDA <Temp_Var2
+	CMP Old_Magic_Stars
+	BEQ Game_UpdateStars1
+
+	STA Old_Magic_Stars
+	JSR StatusBar_DrawStars
+	JMP StatusBar_DrawStarsCollected
+
+Game_UpdateStars1:
+	RTS
+
+StatusBar_DrawStars:
+	LDA Magic_Stars
+	STA <DigitsParam
+
+	LDA #$00
+	STA DigitsParam + 1
+	
+	JSR BytesTo3Digits
+
+	LDA <DigitsResult
+	ORA #$30
+	STA Status_Bar_Top + 15
+
+	LDA <DigitsResult + 1
 	ORA #$30
 	STA Status_Bar_Top + 16
-	LDA <Temp_Var3
+
+	LDA <DigitsResult + 2
 	ORA #$30
 	STA Status_Bar_Top + 17
+	INC Top_Needs_Redraw
+	RTS
 	
+;--------------------------------------
+Game_UpdateCherries:
+	LDA StatusBar_Mode
+	BNE Game_UpdateCherries1
+
+	LDA Cherries
+	CMP Old_Cherries
+	BEQ Game_UpdateCherries1
+		
+	STA Old_Cherries
+	BNE StatusBar_DrawCherries
+	
+Game_UpdateCherries1:
+	RTS
+	
+StatusBar_DrawCherries:
+	LDA Cherries
+	STA <DigitsParam
+	
+	JSR BytesTo2Digits
+
+	LDA <DigitsResult
+	ORA #$30
+	STA Status_Bar_Top + 21
+	
+	LDA <DigitsResult + 1
+	ORA #$30
+	STA Status_Bar_Top + 20
+
+StatusBar_DrawCherries1:
+	INC Top_Needs_Redraw
+	RTS
+	
+;-----------------------------------
+Game_UpdateExperience:
+	LDA Exp_Earned
+ 	BNE Game_UpdateExperience1
+	RTS
+
+Game_UpdateExperience1:
+	STA <CalcParam1
+
+	LDA #$00
+	STA <CalcParam1 + 1
+	STA <CalcParam1 + 2
+
+	LDA Player_Experience
+	STA <CalcParam2
+
+	LDA Player_Experience + 1
+	STA <CalcParam2 + 1
+
+	LDA Player_Experience + 2
+	STA <CalcParam2 + 2
+
+	JSR Add3ByteValue
+
+	LDA <CalcResult 
+	STA Player_Experience
+
+	LDA <CalcResult + 1
+	STA Player_Experience + 1
+
+	LDA <CalcResult + 2
+	STA Player_Experience + 2
+
+	DEC Exp_Earned
+	RTS
+
+	LDA StatusBar_Mode
+	BEQ StatusBar_DrawExperience
+	RTS
+
+
+StatusBar_DrawExperience:
+	LDA Player_Experience
+	STA <DigitsParam
+
+	LDA Player_Experience + 1
+	STA <DigitsParam + 1
+
+	LDA Player_Experience + 2
+	STA <DigitsParam + 2
+
+	JSR BytesTo6Digits
+
+	LDY #$05
+	LDX #$00
+
+StatusBar_DrawExperience1:
+	LDA <DigitsResult, X
+	ORA #$30
+	STA Status_Bar_Bottom + 1, Y
+	INX
+	DEY
+	BPL StatusBar_DrawExperience1
+	INC Bottom_Needs_Redraw
+	RTS		 ; Return
+;--------------------------------------
+Game_UpdateCoins:
+	LDA Coins_Earned
+	BNE Game_UpdateCoins0
+	RTS
+	
+Game_UpdateCoins0:
+	LDA Player_Coins
+	STA <CalcParam1
+
+	LDA Player_Coins + 1
+	STA <CalcParam1 + 1
+
+	LDA Player_Coins + 2
+	STA <CalcParam1 + 2
+
+	LDA Coins_Earned
+	STA <CalcParam2
+
+	LDA #$00
+	STA <CalcParam2 + 1
+	STA <CalcParam2 + 2
+
+	JSR Add3ByteValue
+
+	LDA <CalcResult
+	STA Player_Coins
+
+	LDA <CalcResult + 1
+	STA Player_Coins + 1
+
+	LDA <CalcResult + 2
+	STA Player_Coins + 2
+
+	LDA Game_Coins
+	STA <CalcParam1
+
+	LDA Game_Coins + 1
+	STA <CalcParam1 + 1
+
+	LDA Game_Coins + 2
+	STA <CalcParam1 + 2
+
+	JSR Add3ByteValue
+
+	LDA <CalcResult
+	STA Game_Coins
+
+	LDA <CalcResult + 1
+	STA Game_Coins + 1
+
+	LDA <CalcResult + 2
+	STA Game_Coins + 2
+
+	LDA #$00
+	STA Coins_Earned
+
+	LDA Player_Coins + 1
+	CMP #$03
+	BCC Game_UpdateCoins1
+
+	LDA Player_Coins
+	CMP #$E7
+	BCC Game_UpdateCoins1
+
+	LDA #$03
+	STA Player_Coins + 1
+
+	LDA #$E7
+	STA Player_Coins + 1
+
+Game_UpdateCoins1:
+	LDA StatusBar_Mode
+	BNE StatusBar_DrawGameCoins
+	
+StatusBar_DrawCoins:
+	LDA Player_Coins
+	STA <DigitsParam
+
+	LDA Player_Coins + 1
+	STA <DigitsParam + 1
+
+	LDA Player_Coins + 2
+	STA <DigitsParam + 2
+
+	JSR BytesTo4Digits
+
+	LDX #$00
+	LDY #$03
+
+StatusBar_DrawCoins1:
+	LDA <DigitsResult, X
+	ORA #$30
+	STA Status_Bar_Bottom + 9, Y
+	INX
+	DEY
+	BPL StatusBar_DrawCoins1
+
+	INC Bottom_Needs_Redraw
+	RTS
+	
+StatusBar_DrawGameCoins:
+	LDA Game_Coins
+	STA <DigitsParam
+
+	LDA Game_Coins + 1
+	STA <DigitsParam + 1
+
+	LDA Game_Coins + 2
+	STA <DigitsParam + 2
+
+	JSR BytesTo7Digits
+
+	LDX #$00
+	LDY #$06
+
+StatusBar_DrawGameCoins1:
+	LDA <DigitsResult, X
+	ORA #$30
+	STA Status_Bar_Top + 1, Y
+	INX
+	DEY
+	BPL StatusBar_DrawGameCoins1
+	INC Top_Needs_Redraw
+	RTS
+
+;--------------------------------------
+StatusBar_DrawStarsCollected:
 	JSR GetLevelBit
 	PHA
 	LDX #$D6
 	AND Magic_Stars_Collected1, Y
-	BEQ Draw_Game_Timer1
+	BEQ StatusBar_DrawStars1
 	INX
 
-Draw_Game_Timer1:
+StatusBar_DrawStars1:
 	STX Status_Bar_Bottom + 15
 	LDX #$D6
 	PLA
 	PHA
 	AND Magic_Stars_Collected2, Y
-	BEQ Draw_Game_Timer2
+	BEQ StatusBar_DrawStars2
 	INX
 
-Draw_Game_Timer2:
+StatusBar_DrawStars2:
 	STX Status_Bar_Bottom + 16
 	LDX #$D6
 	PLA
 	AND Magic_Stars_Collected3, Y
-	BEQ Draw_Game_Timer3
+	BEQ StatusBar_DrawStars3
 	INX
 
-Draw_Game_Timer3:
+StatusBar_DrawStars3:
 	STX Status_Bar_Bottom + 17
-
-No_HBros_Update:
+	INC Bottom_Needs_Redraw
 	RTS
+;--------------------------------------
 
 DayNightIcon:
 	.byte $D8, $D9
+
 DayNightTiles:
 	.byte $60, $74, $61, $74, $62, $74, $63, $74, $64, $65, $66, $67, $70, $71, $72, $73, $74, $60, $74, $61, $74, $62, $74, $63
 
-Draw_DayNightMeter:
-	LDA Status_Bar_Mode
-	CMP #$00
-	BNE NoDayNightMeter
+Game_UpdateDayNightMeter:
+	LDA StatusBar_Mode
+	BNE Game_UpdateDayNightMeter1
+
+	LDA DayNightTicker
+	CMP Old_DayNightTicker
+	BEQ Game_UpdateDayNightMeter1
+	
+	STA Old_DayNightTicker
+	BNE StatusBar_DrawDayNightMeter
+	
+Game_UpdateDayNightMeter1:
+	RTS
+	
+StatusBar_DrawDayNightMeter:
 	LDX #$00
+	
 	LDA DayNight
-	BPL Draw_DayNightMeter2
+	BPL StatusBar_DrawDayNightMeter1
 	INX
 
-Draw_DayNightMeter2:
+StatusBar_DrawDayNightMeter1:
 	LDA DayNightIcon, X
 	STA Status_Bar_Bottom + 19
+	
 	LDA DayNightTicker
 	ASL A
 	TAX
+	
 	LDA DayNightTiles, X
 	STA Status_Bar_Bottom + 20
+	
 	LDA DayNightTiles + 1,X
 	STA Status_Bar_Bottom + 21
+	INC Bottom_Needs_Redraw
+	RTS
+;--------------------------------------
+BadgeTiles:
+	.byte $FE, $FE, $FE, $FE
+	.byte $68, $FE, $78, $FE	; ITEM_CLOCK1
+	.byte $68, $69, $78, $79	; ITEM_CLOCK2
+	.byte $6A, $FE, $7A, $FE	; ITEM_SLOW1
+	.byte $6A, $6B, $7A, $7B	; ITEM_SLOW2
+	.byte $B0, $B1, $C0, $C1	; ITEM_POW1
+	.byte $84, $85, $94, $95	; ITEM_POW2
+	.byte $6C, $6D, $7C, $7D	; ITEM_POW3
+	.byte $6E, $6F, $7E, $7F	; ITEM_RADARNE
+	.byte $B2, $B3, $C2, $C3	; ITEM_RADARN
+	.byte $B4, $B5, $C4, $C5	; ITEM_RADARNW
+	.byte $B6, $B7, $C6, $C7	; ITEM_RADARW
+	.byte $B8, $B9, $C8, $C9	; ITEM_RADARSW
+	.byte $BA, $BB, $CA, $CB	; ITEM_RADARS
+	.byte $BC, $BD, $CC, $CD	; ITEM_RADARSE
+	.byte $BE, $BF, $CE, $CF	; ITEM_RADARE
+	.byte $DC, $DD, $EC, $ED	; ITEM_RADAR
+	.byte $86, $87, $96, $97	; ITEM_CATCH
+	.byte $AA, $AB, $AC, $AD	; ITEM_HEART1
+	.byte $A4, $A5, $A8, $A9	; ITEM_HEART2
+	.byte $A4, $A5, $A6, $A7	; ITEM_HEART3
+	.byte $DE, $FE, $EE, $FE	; ITEM_STAR1
+	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
+	.byte $0E, $0F, $1E, $1F
+	.byte $0E, $0F, $1E, $1F
+	.byte $0E, $0F, $1E, $1F
+	.byte $00, $01, $10, $11
+	.byte $02, $03, $12, $13
+	.byte $04, $05, $14, $15
+	.byte $06, $07, $16, $17
+	.byte $08, $09, $18, $19
+	.byte $0A, $0B, $1A, $1B
+	.byte $0C, $0D, $1C, $1D	
+	.byte $0E, $0F, $1E, $1F
 
-NoDayNightMeter: 
+Game_UpdateBadge:
+	LDA StatusBar_Mode
+	BNE Game_UpdateBadge1
+
+	LDA Player_Equip
+	CMP Old_Player_Equip
+	BEQ Game_UpdateBadge1
+	
+	STA Old_Player_Equip
+	BNE StatusBar_DrawBadge
+
+Game_UpdateBadge1:	
 	RTS
 
-DoBankInterest:
-	STX TempX
-	JSR Clear_Calc
-	LDX #$05
+StatusBar_DrawBadge:
+	LDA Player_Equip
+	ASL A
+	ASL A
+	TAX
+	
+	LDA BadgeTiles, X
+	STA (Status_Bar_Top + 26)
+	
+	LDA BadgeTiles + 1, X
+	STA (Status_Bar_Top + 27)
+	
+	LDA BadgeTiles + 2, X
+	STA (Status_Bar_Bottom + 26)
+	
+	LDA BadgeTiles + 3, X
+	STA (Status_Bar_Bottom + 27)
 
-CopyBC:
-	LDA BankCoins, X
-	STA Calc_From + 2,X
-	DEX
-	BPL CopyBC
-	LDX #$03
+	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
+	RTS	
 
-CopyPC100:
-	LDA BankCoins, X
-	STA Calc_Value + 4, X
-	DEX
-	BPL CopyPC100
-	JSR Add_Values
-	LDA Calc_From + 1
-	CMP #$01
-	BCS NoInterest
-	LDX #$05
+;--------------------------------------
 
-CopyCF:
-	LDA Calc_From + 2, X
-	STA BankCoins, X
-	DEX
-	BPL CopyCF
-	LDX TempX
+PUp_Reserve_Tiles1:
+	.byte $FE, $FE, $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $00, $00, $00, $00, $00, $00
 
-NoInterest:
+PUp_Reserve_Tiles2:
+	.byte $FE, $FE, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $00, $00, $00, $00, $00, $00
+
+Game_UpdateReserve:
+	LDA StatusBar_Mode
+	BNE Game_UpdateReserve1
+
+	LDA PowerUp_Reserve
+	CMP Old_PowerUp_Reserve
+	BEQ Game_UpdateReserve1
+	
+	STA Old_PowerUp_Reserve
+	BNE StatusBar_DrawReserve
+
+Game_UpdateReserve1:	
 	RTS
+	
+StatusBar_DrawReserve:
+	LDA PowerUp_Reserve
+	ASL A
+	TAX
+	
+	LDA PUp_Reserve_Tiles1, X
+	STA (Status_Bar_Top + 23)
+	
+	LDA (PUp_Reserve_Tiles1 + 1), X
+	STA (Status_Bar_Top + 24)
+	
+	LDA PUp_Reserve_Tiles2, X
+	STA (Status_Bar_Bottom + 23)
+	
+	LDA (PUp_Reserve_Tiles2 + 1), X
+	STA (Status_Bar_Bottom + 24)
 
-Draw_Cherries:
-	LDA Status_Bar_Mode
-	BMI Draw_Cherries1
-	LDA Cherries
-	JSR ToThreeDigits
-	LDA <Temp_Var2
-	ORA #$30
-	STA Status_Bar_Top + 20
-	LDA <Temp_Var3
-	ORA #$30
-	STA Status_Bar_Top + 21
-
-Draw_Cherries1:
+Item_ReserveRTS:
+	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
 	RTS
+	
+;--------------------------------------
+Game_UpdateTimer:
+	LDA StatusBar_Mode
+	BEQ Game_UpdateTimer1
 
-
-Update_Game_Timer:
-	LDA Status_Bar_Mode
-	BPL Update_Game_Timer1
-
+	LDA Game_Timer + 5
+	CMP Old_Game_TimerSeconds
+	BEQ Game_UpdateTimer1
+	
+	STA Old_Game_TimerSeconds
+	BNE StatusBar_DrawTimer
+	
+Game_UpdateTimer1:
+	RTS
+	
+StatusBar_DrawTimer:
+	
 	LDA Game_Timer
 	ORA #$30
 	STA Status_Bar_Top + 10
@@ -3025,6 +2998,86 @@ Update_Game_Timer:
 	LDA Game_Timer + 5
 	ORA #$30
 	STA Status_Bar_Top + 17
+	INC Top_Needs_Redraw
+	RTS
 
-Update_Game_Timer1:
+;------------------------------------
+Game_UpdateOdometer:
+	LDA Odometer_Increase
+	CMP #$80
+	BCC Game_UpdateOdometer1
+
+	SBC #$80
+	STA Odometer_Increase
+
+	LDA Odometer
+	ADD #$01
+	STA Odometer
+
+	LDA Odometer + 1
+	ADC #$00
+	STA Odometer + 1
+
+	LDA Odometer + 2
+	ADC #$00
+	STA Odometer + 2
+	
+	LDA StatusBar_Mode
+	BNE StatusBar_DrawOdometer
+
+Game_UpdateOdometer1
+	RTS
+
+StatusBar_DrawOdometer:
+	LDA Odometer
+	STA <DigitsParam
+
+	LDA Odometer + 1
+	STA <DigitsParam + 1
+
+	LDA Odometer + 2
+	STA <DigitsParam + 2
+
+	JSR BytesTo7Digits
+	
+	LDY #$06
+	LDX #$00
+
+Odometer_Loop:
+	LDA <DigitsResult, X
+	ORA #$30
+	STA Status_Bar_Top + 21, Y
+	INX
+	DEY
+	BPL Odometer_Loop
+
+	INC Top_Needs_Redraw
+	RTS
+	
+;----------------------------------------------
+Game_UpdateLevelName:
+	LDA StatusBar_Mode
+	BEQ Game_UpdateLevelName1
+
+	LDA Force_LeveNameUpdate
+	BNE StatusBar_DrawLevelName
+
+Game_UpdateLevelName1:
+	RTS
+	
+StatusBar_DrawLevelName:
+
+	LDX #$00
+
+StatusBar_DrawLevelName1:
+	LDA LevelName, X
+	STA Status_Bar_Bottom, X
+	
+	INX
+	CPX #28
+	BNE StatusBar_DrawLevelName1
+
+	INC Bottom_Needs_Redraw
+	LDA #$00
+	STA Force_LeveNameUpdate
 	RTS

@@ -411,15 +411,10 @@ RAINBOW_PAL_CYCLE:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
 	LDA Effective_Suit
-	CMP #$08
-	BNE No_Burning_Mode
-	JSR Try_Burning_Mode
-	JMP No_Poison_Mode
-
 No_Burning_Mode:
 	CMP #$04
 	BNE No_Poison_Mode
-	JSR Try_Poison_Mode
+	JSR Player_PoisonMode
 
 No_Poison_Mode:
 	;LDA Invincible_Enemies
@@ -541,17 +536,15 @@ PRG029_CEEA:
 ;	BCS PRG029_CF09	 ; If we're NOT doing the "wearing off" star invincibility, jump to PRG029_CF09
 
 PRG029_CF07:
-	TXA
-	PHA
-	CLC
-	; #DAHRKDAIZ this function tests for both the invincibility and "color cycling"
 
 	LDA Player_StarOff
 	CMP #$02		
 	BCS DO_RBOW_CYCLE		; at #$02 we just reset the palette
+
 	LDA Player_StarInv
 	CMP #$01				; at #$01 we just reset the palette
 	BCS DO_RBOW_CYCLE
+
 	JSR Restore_Curr_Player_Pal
 	BEQ RESTORE_A
 
@@ -564,9 +557,7 @@ RAINBOW_CYCLE:
 	JSR Rainbow_Palette_Cycle ; color cycle the palette for a rainbow effect!
 
 RESTORE_A:
-	PLA
-	TAX
-	
+
 
 PRG029_CF0B:
 	LDA #$00		; #DAHRKDAIZ disables palette cycling
@@ -1044,8 +1035,8 @@ PRG029_D17F:
 
 	;LDA #CHNGTILE_TOADBOXOPEN
 	STA Level_SkipStatusBarUpd	; Set Level_SkipStatusBarUpd (skip status bar for a frame, priority update!)
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent	 	; Toad House tile change event!
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate	 	; Toad House tile change event!
 
 	; Coins_Earned_Buffer = 7 is standard random basic item (mushroom, flower, leaf)
 
@@ -2091,7 +2082,7 @@ PRG029_D7FC:
 ; Performs a Block Change command, if one is needed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BlockChange_Do:
-	LDA Level_ChgTileEvent	 
+	LDA Block_NeedsUpdate	 
 	BEQ PRG029_DC7D	
 
 PRG029_DC36:
@@ -2158,7 +2149,7 @@ PRG029_DC70:
 	STA <Temp_Var7
 
 PRG029_DC7C:
-	JMP TileChng_OneTile	 ; If Level_ChgTileEvent <> 0, jump to PRG029_DC82
+	JMP TileChng_OneTile	 ; If Block_NeedsUpdate <> 0, jump to PRG029_DC82
 
 	; Otherwise, do nothing... seems like they should've checked for
 	; this BEFORE bothering with all those calculations!  :)
@@ -2228,7 +2219,7 @@ TileChng_OneTile:
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
 	; Change the tile to the proper target tile
-	LDA Level_ChgTileValue
+	LDA Block_UpdateValue
 	STA [Map_Tile_AddrL],Y
 	
 	LDA Block_ChangeX
@@ -2248,7 +2239,8 @@ PRG029_DD21:
 	BNE PRG029_DD20
 
 	LDX #$00	 ; Y = 0
-	LDY Level_ChgTileValue
+	LDY Block_UpdateValue
+
 PRG029_DD22:
 	LDA [Temp_Var14],Y	 ; Get pattern
 	STA TileChng_Pats,X	 ; Copy into TileChng_Pats
@@ -2307,7 +2299,7 @@ PRG029_DD41:
 
 EndDynaTileDraw:
 	LDA #$00
-	STA Level_ChgTileEvent
+	STA Block_NeedsUpdate
 	PLA
 	STA PAGE_A000	 
 	JSR PRGROM_Change_A000
@@ -2322,9 +2314,9 @@ TileChng_DoorBufCmds_End
 
 TileChng_DoorAppear:
 
-	; Level_ChgTileEvent = 0 (we're handling it)
+	; Block_NeedsUpdate = 0 (we're handling it)
 	LDA #$00
-	STA Level_ChgTileEvent
+	STA Block_NeedsUpdate
 
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
@@ -2417,9 +2409,9 @@ TileChng_ToadBoxBufCmds:
 TileChng_ToadBoxBufCmds_End
 
 TileChng_ToadBoxOpen:
-	; Level_ChgTileEvent = 0 (we're handling it)
+	; Block_NeedsUpdate = 0 (we're handling it)
 	LDA #$00
-	STA Level_ChgTileEvent
+	STA Block_NeedsUpdate
 
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)
 
@@ -2559,7 +2551,7 @@ CBig_ChngTiles:
 ChngTile_32x32:
 	LDX #$00	; X = 0
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	;CMP #CHNGTILE_4WAYCANNON
 	BNE PRG029_DEF3	 ; If this is not the 4-way cannon change, jump to PRG029_DEF3
 
@@ -2714,9 +2706,9 @@ PRG029_DF4C:
 	ADD #(CBIG_BCSize - 1)
 	STA Graphics_BufCnt
 
-	; Level_ChgTileEvent = 0 (redundant!)
+	; Block_NeedsUpdate = 0 (redundant!)
 	LDA #$00
-	STA Level_ChgTileEvent
+	STA Block_NeedsUpdate
 
 	INC Level_SkipStatusBarUpd	; Set Level_SkipStatusBarUpd (skip status bar for a frame, priority update!)
 
@@ -2790,42 +2782,3 @@ Restore_Curr_Player_Pal:
 	STA (Player_Pal_Backup + $01)
 	RTS
 
-Try_Poison_Mode:
-	LDA Poison_Mode
-	BNE Continue_Poison_Mode
-	LDA Player_Power
-	BEQ Cant_Poison_Mode
-	CMP #$50
-	BNE Cant_Poison_Mode
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ Cant_Poison_Mode
-	LDA <Pad_Input
-	AND #PAD_B
-	BEQ Cant_Poison_Mode
-	INC Poison_Mode
-	LDA #$FA
-	STA Power_Change
-	LDA #$02
-	STA Player_StarInv
-
-Cant_Poison_Mode:
-	RTS
-
-Continue_Poison_Mode:	
-	LDA <Pad_Holding
-	AND #PAD_B
-	BEQ Stop_Poison_Mode
-	LDA Player_Power
-	BEQ Stop_Poison_Mode
-	LDA #$02
-	STA Player_StarInv
-	RTS
-
-Stop_Poison_Mode:
-	LDA #$06
-	STA Power_Change
-	STA Player_StarInv
-	LDA #$00
-	STA Poison_Mode
-	RTS

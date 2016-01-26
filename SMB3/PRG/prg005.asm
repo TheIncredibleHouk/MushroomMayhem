@@ -588,7 +588,7 @@ PRG005_A2AF:
 	RTS		 ; Return
 
 PRG005_A2C9:
-	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	; Apply Y velocity
 
 	LDA Objects_Timer3,X
 	BNE PRG005_A2DE	 ; If Timer3 not expired, jump to PRG005_A2DE
@@ -838,6 +838,7 @@ Piranha_CurrentFrame = Objects_Data1
 Piranha_CurrentState = Objects_Data3
 Piranha_AttackCount	= Objects_Data4
 Piranha_AttacksLeft	= Objects_Data5
+Piranha_AttackData = Objects_Data6
 Piranha_StateTimer = Objects_Timer
 
 Piranha_YVel:
@@ -858,9 +859,6 @@ Piranha_Velocities:
 Piranha_AttackProjectiles:
 	.byte $00, SOBJ_FIREBALL,  SOBJ_ICEBALL,  SOBJ_ACID
 
-Piranha_AttackData:
-	.byte $00, $02, $02, $00
-
 Piranah_AttackNumbers:
 	.byte $00, $01, $01, $01
 
@@ -871,6 +869,9 @@ ObjInit_Pumpkin:
 	RTS
 
 ObjInit_Piranha:
+
+	LDA #$02
+	STA Piranha_AttackData, X
 
 	LDA Objects_Property, X
 	AND #$01
@@ -930,7 +931,7 @@ ObjNorm_Piranha1:
 	CMP #$02
 	BCC Piranha_Animate
 
-	LDY Objects_LeftRight, X
+	;LDY Objects_LeftRight, X
 	
 	LDA Objects_Orientation, X
 	AND #~SPR_HFLIP
@@ -988,7 +989,7 @@ Piranha_HeadFlips:
 	.byte SPR_VFLIP, $00
 
 Piranha_DrawUpsideDown:
-	LDY Objects_AboveBelow, X
+	;LDY Objects_AboveBelow, X
 	LDA Piranha_HeadFlips, Y
 	STA TempA
 
@@ -1024,7 +1025,7 @@ Piranha_Wait:
 	AND #$01
 	BNE Piranha_Wait1  
 
-	LDA Objects_XDiff, X
+	JSR Object_XDistanceFromPlayer
 	CMP #$18
 	BCC Piranha_Wait2
 
@@ -1038,7 +1039,7 @@ Piranha_Wait2:
 	RTS
 
 Piranha_Move:	
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 
 	LDA Objects_Timer, X
 	BNE Piranha_Move1
@@ -1073,7 +1074,6 @@ Piranha_Attack:
 	LDY Objects_Property, X
 	STY <Temp_Var15
 
-
 	LDA Piranha_AttackProjectiles, Y
 	BEQ Piranha_Attack1
 
@@ -1081,25 +1081,41 @@ Piranha_Attack:
 	ORA Objects_SpritesHorizontallyOffScreen, X
 	BNE Piranha_Attack1
 
-
 	JSR SpecialObject_FindEmpty
 	BCC Piranha_Attack1
 
+	JSR Piranha_Projectile
+	LDA #$20
+	STA Objects_Timer, X
+	RTS
+
+Piranha_Attack1:
+	LDA #$20
+	STA Objects_Timer, X
+	
+	INC Piranha_CurrentState, X
+
+Piranha_Attack2:
+	RTS
+
+Piranha_Projectile:
 	LSR <Temp_Var15
 	LDX <Temp_Var15
 	LDA Piranha_AttackProjectiles, X
 	STA SpecialObj_ID,Y
 
+	LDX <CurrentObjectIndexZ
+
 	LDA Piranha_AttackData, X
 	STA SpecialObj_Var1,Y
 
-	LDX <CurrentObjectIndexZ
 
 	LDA #$00
 	STA <Temp_Var14
 
-	LDA Objects_AboveBelow, X
-	BPL ShootProjectile
+	LDA Objects_Orientation, X
+	AND #SPR_VFLIP
+	BEQ ShootProjectile
 
 	LDA #$10
 	STA <Temp_Var14
@@ -1121,20 +1137,18 @@ ShootProjectile:
 	ORA Sound_QPlayer
 	STA Sound_QPlayer
 
+	LDA Palette_Buffer + $10 
+	CMP #$0F
+	BEQ ShootProjectile1 ; if dark, we aim blindly
+
 	JSR Object_AimProjectile
+	JMP ShootProjectile2
+
+ShootProjectile1:
+	JSR Object_AimProjectileRandom
+
+ShootProjectile2:
 	DEC Piranha_AttacksLeft, X
-
-	LDA #$20
-	STA Objects_Timer, X
-	RTS
-
-Piranha_Attack1:
-	LDA #$20
-	STA Objects_Timer, X
-	
-	INC Piranha_CurrentState, X
-
-Piranha_Attack2:
 	RTS
 
 ObjInit_RockyWrench:
@@ -1495,7 +1509,7 @@ PRG005_AB22:
 Rocky_Draw:
 	LDY #$02	 ; Y = 2
 
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	AND #$10
 	BEQ PRG005_AB43	 ; 16 ticks on, 16 ticks off; jump to PRG005_AB43
 
@@ -1784,7 +1798,7 @@ Bolt_ToBoltCollide:
 	CMP #%11000000
 	BEQ PRG005_AD06	 ; If left two sprites are off-screen, jump to PRG005_AD06 (RTS)
 
-	JSR Object_CalcBoundBox2
+	;JSR Object_CalcBoundBox2
 	TXA
 	BEQ PRG005_AD06	 ; If this is object slot 0, jump to PRG005_AD06 (RTS)
 
@@ -1808,7 +1822,7 @@ PRG005_ACA9:
 	BEQ PRG005_AD01	 ; If this other bolt is horizontally off-screen, jump to PRG005_AD01 (skip this object)
 
 	JSR Object_CalcSpriteXY_NoHi
-	JSR Object_CalcBoundBox
+	;JSR Object_CalcBoundBox
 	JSR ObjectObject_Intersect
 	BCC PRG005_AD01	 ; If the two bolts are colliding with eachother, jump to PRG005_AD01 (skip this object)
 
@@ -2173,7 +2187,7 @@ PRG005_B105:
 
 	INC Objects_Data3,X	 ; Var3++
 
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
 	JSR Object_ApplyXVel	 	; Apply X velocity
 
 	; Temp_VarNP0 = Player hit status bits (previous frame's detection status)
@@ -2625,52 +2639,7 @@ Level_SpawnObjsAndBounce:
 	; Do scene-change-reset, if needed
 	; NOTE!! Does NOT return here if it did!
 	JSR Level_DoChangeReset	
-
-	LDA Player_Bounce
-	BEQ PRG005_B826	 ; If Player is not bouncing, jump to PRG005_B826
-
-	; If we're going to do a Player bounce, a special effect of the block
-	; bouncing is performed as an object.  This uses the reserved object
-	; slots of 6 or 7.  If neither is free, no bounce for the Player!
-
-	LDX #$06	 ; X = 6
-	LDA Objects_State,X
-	BEQ PRG005_B80D	 ; If object slot is "dead/empty", jump to PRG005_B80D
-
-	INX		 ; X = 7
-
-	LDA Objects_State,X
-	BEQ PRG005_B80D	 ; If object slot is "dead/empty", jump to PRG005_B80D
-
-	; Slot 6 & 7 are occupied; no bounce for you!
-	LDA #$00
-	STA Player_Bounce ; Player_Bounce = 0
-
-	JMP PRG005_B826	 ; Jump to PRG005_B80D
-
-PRG005_B80D:
-
-	; Found a free slot (6 or 7)
-
-	LDA #OBJ_BOUNCEDOWNUP	 ; Y = OBJ_BOUNCEDOWNUP (up/down bounce effect block)
-
-PRG005_B81A:
-
-	; Store appropriate object ID
-	STA Objects_ID,X
-
-	; Set object state to 1
-	LDA #OBJSTATE_INIT
-	STA Objects_State,X
-
-	JMP PRG005_B831	 ; Jump to PRG005_B831 (RTS)
-
-PRG005_B826:
-PRG005_B82E:
 	JMP Level_ObjectsSpawnByScroll	 ; Spawn objects as screen scrolls
-
-PRG005_B831:
-	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_ObjectsSpawnByScroll
@@ -3045,6 +3014,7 @@ Spawn3TroopsOrCheeps:
 
 PRG005_B9D9:
 	LDX #$04	; X = 4
+
 PRG005_B9DB:
 	LDA Objects_State,X	
 	BEQ PRG005_B9E6	 ; If this object slot is "dead/empty", jump to PRG005_B9E6
@@ -3288,7 +3258,7 @@ WoodenPlatform_XVel:
 	.byte -$04, -$08, -$06, -$08
 
 LevelEvent_WoodPlatforms:
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	AND #$7f
 	BNE PRG005_BC41	 ; Only do anything every 127 ticks
 
@@ -3379,7 +3349,7 @@ FloatingCloud_Var5:	.byte $00, $01, $02, $01
 FloatingCloud_XVel:	.byte $10, $12, $14, $12
 
 LevelEvent_CloudsinBG:
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	AND #$03
 	BNE PRG005_BCA2
 	INC LevelEvent_Cnt
@@ -3525,7 +3495,7 @@ BB8WayAttr:
 	.byte $00, $00, $00, $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP, $00
 
 LevelEvent_8WayBulletBills:	
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	AND #$7f	 ; Cap 0 - 31
 	BNE PRG005_BD53	 ; If not zero, jump to PRG005_BD53 (RTS)
 
@@ -3784,16 +3754,15 @@ PRG005_BE26:
 ;
 ; Whenever a new "scene" of a level is entered into, the initial
 ; screen needs to be set up (clears old objects out, spawns new
-; ones in!)  This activates only when Level_ChangeReset = 0!
+; ones in!)  This activates only when Level_ObjectsInitialized = 0!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_DoChangeReset: 
-	LDA Level_ChangeReset
-	BEQ PRG005_BE35	 ; If Level_ChangeReset not set, jump to PRG005_BE35
+	LDA Level_ObjectsInitialized
+	BEQ PRG005_BE35	 ; If Level_ObjectsInitialized not set, jump to PRG005_BE35
 
 	RTS		 ; Return
 
 PRG005_BE35:
-
 	LDY #$09	 	; Y = 9
 
 PRG005_BE37:
@@ -3859,7 +3828,7 @@ PRG005_BE90:
 
 PRG005_BE91:
 	LDY #$FF
-	STY Level_ChangeReset
+	STY Level_ObjectsInitialized
 	STA Player_PartDetEn
 	STA Level_ObjIdxStartByScreen
 	STA Player_InWater
@@ -4236,13 +4205,13 @@ FreezieMove1:
 
 ObjNorm_Freezie1_0:
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE ObjNorm_Freezie1
 
 	LDA Object_TileFeetValue
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 
 	LDA Objects_YZ, X
 	ADD #$10
@@ -4611,8 +4580,8 @@ DrawBowserMessage:
 
 DrawBowserMessage1:
 	LDA #$80
-	STA Status_Bar_Mode
-	STA Last_Status_Bar_Mode
+	STA StatusBar_Mode
+	STA Last_StatusBar_Mode
 	LDA Objects_Data5, X
 	TAX
 
@@ -4629,7 +4598,7 @@ DrawBowserMessage2:
 
 IntroWalkToad:
 	LDA #$00
-	STA Status_Bar_Mode
+	STA StatusBar_Mode
 	LDA #$01
 	STA Player_HaltTick
 	LDA <Objects_XZ, X
@@ -4674,8 +4643,8 @@ ToadTalk:
 	LDA #$01
 	STA Player_HaltTick
 	LDA #$80
-	STA Status_Bar_Mode
-	STA Last_Status_Bar_Mode
+	STA StatusBar_Mode
+	STA Last_StatusBar_Mode
 
 	LDA Objects_Data5, X
 	TAX
@@ -4723,7 +4692,7 @@ ToadFollow:
 
 ToadFollow0:
 	LDA #$00
-	STA Status_Bar_Mode
+	STA StatusBar_Mode
 	LDA <Player_XVel
 	STA <Objects_XVelZ, X
 	JSR Object_ApplyXVel
@@ -4798,8 +4767,8 @@ ToadExplainOffsets:
 
 ToadExplainText:
 	LDA #$80
-	STA Status_Bar_Mode
-	STA Last_Status_Bar_Mode
+	STA StatusBar_Mode
+	STA Last_StatusBar_Mode
 	LDA Objects_Data5, X
 	TAX
 	LDA ToadExplainOffsets, X
@@ -4830,7 +4799,7 @@ ToadBye:
 	LDA Objects_Timer, X
 	BNE ToadBye0
 	LDA #$00
-	STA Status_Bar_Mode
+	STA StatusBar_Mode
 	RTS
 
 
@@ -4838,8 +4807,8 @@ ToadBye0:
 	LDA #$01
 	STA Player_HaltTick 
 	LDA #$80
-	STA Status_Bar_Mode
-	STA Last_Status_Bar_Mode
+	STA StatusBar_Mode
+	STA Last_StatusBar_Mode
 	LDX #$00
 
 ToadBye1:

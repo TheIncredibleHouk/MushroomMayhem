@@ -541,7 +541,7 @@ ObjNorm_Spintula:
 ObjNorm_Spintula1:
 	JSR Object_DeleteOffScreen
 	JSR Object_AttackOrDefeat
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	JSR Object_DetectTiles
 
 	LDA Objects_Data4, X
@@ -594,14 +594,14 @@ Spintula_SpinDown1:
 	AND #$0F
 	CMP #TILE_PROP_CLIMBABLE
 	BEQ Spintula_SpinDownRTS
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BNE Spintula_StopDownVel
 
 	JSR SetObjectTileCoord
 	LDA Objects_LastTile, X
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_UpdateValue
 
 Spintula_SpinDownRTS:
 	JMP Object_ShakeAndDrawMirrored
@@ -647,7 +647,7 @@ Spintula_SpinUp:
 	LDA Objects_YZ, X
 	AND #$0F
 	BNE Spintula_SpinUpRTS
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BNE Spintula_StopUpVel
 
 	LDA Objects_LastProp, X
@@ -657,8 +657,8 @@ Spintula_SpinUp:
 	JSR SetObjectTileCoord
 	LDA Objects_LastTile, X
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_UpdateValue
 
 Spintula_SpinUpRTS:
 	JMP Object_ShakeAndDrawMirrored
@@ -725,7 +725,7 @@ ObjNorm_PodobooCeiling:
 	LDA <Player_HaltGameZ
 	BNE PRG003_A3D5	 ; If gameplay halted, jump to PRG003_A3D5
 
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	JSR Object_AttackOrDefeat	 ; Handle Player collision with Podoboo
 
 	; Flip vertically based on velocity
@@ -766,7 +766,7 @@ PRG003_A3D2:
 PRG003_A3D5:
 	JMP Object_ShakeAndDrawMirrored	 ; Draw Podoboo and don't come back!
 
-BrickBustPowerUp: .byte OBJ_COIN, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_STARMAN, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE, $00, $00, $00, OBJ_KEY
+BrickBustPowerUp: .byte OBJ_COIN, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_STARMAN, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_STARMAN, OBJ_POWERUP, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE, $00, $00, $00, OBJ_KEY
 Brick_StarManFlash: .byte $00, $00, $00, $00, $01, $00, $02, $00, $03, $00, $00, $00, $00, $00, $00, $00
 ShyGuyDirection: .byte $08, $F8
 ShyGuyFlip: .byte SPR_HFLIP, $00
@@ -1155,15 +1155,15 @@ VeggieGuyFindGrass1:
 VeggieGuyPull:
 	LDA Objects_Timer, X
 	BNE VeggieGuyFindGrass1
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BNE VeggieGuyPull1
 	INC Objects_Data5, X
 
 	LDA Objects_LastTile, X
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_UpdateValue
 	LDA <Objects_YZ, X
 	STA Objects_LastTileY
 	LDA <Objects_YHiZ, X
@@ -1396,7 +1396,7 @@ ShyGuyGetBrick1:
 	JMP ShyGuyDraw
 
 ShyGuyGetBrick2:
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BNE ShyGuyGetBrick1
 	LDA Object_TileFeetProp
 	CMP #TILE_ITEM_COIN
@@ -1412,8 +1412,8 @@ ShyGuyGetBrick2:
 	LDA Object_TileFeetValue
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_UpdateValue
 	LDA <Objects_YZ, X
 	SUB #$08
 	STA Objects_LastTileY
@@ -1833,7 +1833,7 @@ PRG003_A62D:
 	LDA Objects_PlayerHitStat,X
 	BNE PRG003_A652	 ; If Player is not touching object, jump to PRG003_A652
 
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BNE PRG003_A651	 ; If a tile change event is active, jump to PRG003_A651
 
 	JSR DonutLift_ChangeBlock	; Do block change
@@ -1866,7 +1866,7 @@ PRG003_A669:
 	RTS		 ; Return
 
 PRG003_A66A:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y limit
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y limit
 
 	LDA <Objects_YVelZ,X
 	CMP #$40
@@ -1902,8 +1902,8 @@ PRG003_A691:
 DonutLift_ChangeBlock:
 	; Queue tile change event
 	LDA #$80
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_UpdateValue
 
 	; Block change to occur at Y+1
 	LDA <Objects_YZ,X
@@ -1952,7 +1952,7 @@ ObjNorm_BobOmb:
 	AND #$01
 	STA Objects_Frame,X
 	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	LDA #(SPR_PAL1 | SPR_BEHINDBG)
 	STA Objects_SpriteAttributes, X
 	JMP Object_ShakeAndDraw
@@ -3034,7 +3034,7 @@ DoMine:
 	LDA Objects_InWater, X
 	BEQ MineWaterSolid
 
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	LDA Objects_Data4, X
 	BEQ MineWaterSolid
 
@@ -3722,7 +3722,7 @@ Tornado_DrawParticle:
 	CPX #$06
 	BLT PRG003_B6F3	 ; If object slot < 6, jump to PRG003_B6F3
 
-	JSR Object_GetRandNearUnusedSpr
+	JSR Object_GetUnusedSprite
 
 	LDX <CurrentObjectIndexZ		 ; X = object slot index
 	BGS PRG003_B6FD	 ; Jump (technically always) to PRG003_B6FD
@@ -3977,7 +3977,7 @@ PRG003_B814:
 	BEQ PRG003_B826	 ; If Blooper is not in water, jump to PRG003_B826
 
 PRG003_B823:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
 
 PRG003_B826:
 	PLA		 ; Restore Y Velocity
@@ -4417,7 +4417,7 @@ PRG003_BAA0:
 	LDA Object_TileFeetProp
 	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG003_BAA1
-	JMP Object_ApplyYVel_NoLimit	 ; Apply Y velocity and don't come back!
+	JMP Object_ApplyYVel_NoGravity	 ; Apply Y velocity and don't come back!
 
 PRG003_BAA1:
 	RTS
@@ -4596,7 +4596,7 @@ PRG003_BB54:
 
 	LDA <Temp_Var16
 	ASL A
-	ADC Level_NoStopCnt
+	ADC GameCounter
 	LSR A
 	LSR A
 	AND #$03
@@ -4619,7 +4619,7 @@ PRG003_BB9B:
 	; Fire snake
 
 	; Sets the carry
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	LSR A
 	LSR A
 
@@ -4654,7 +4654,7 @@ PRG003_BBB2:
 PRG003_BBBE:
 	LDA <Temp_Var16
 	ASL A	
-	ADC Level_NoStopCnt
+	ADC GameCounter
 
 	LDX #$b5	 ; X = $B5
 
@@ -4702,7 +4702,7 @@ RotoDiscSpin:
 	BEQ PRG003_BC6D		; If Var4 = 0, jump to PRG003_BC6D (RTS)
 
 	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
 
 	LDA <Objects_Data1,X
 	CMP #$01
@@ -4993,7 +4993,7 @@ FireSnake_JumpYVel:	.byte -$1A, -$20, -$26, -$2C, -$32, -$38, -$3E, -$44
 FireSnake_RandomTimer3Vals:	.byte $50, $70, $00, $70, $50, $00, $00, $00
 
 ObjNorm_FireSnake:
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	LSR A
 	AND #$03
 	TAY		 ; Y = 0 to 3
@@ -5034,7 +5034,7 @@ PRG003_BD91_2:
 PRG003_BD95:
 
 	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 
 	LDA <Objects_YVelZ,X
 	BMI PRG003_BDA8	 ; If Fire Snake is moving upward, jump to PRG003_BDA8
@@ -5061,7 +5061,7 @@ PRG003_BDAA2:
 	AND #HIT_GROUND
 	BNE PRG003_BDE7
 
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BNE PRG003_BDAB
 
 	LDA Objects_LastProp, X
@@ -5072,7 +5072,7 @@ PRG003_BDAA2:
 	CMP #TILE_PROP_ENEMY
 	BNE PRG003_BDAB
 
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BNE PRG003_BDAB
 
 	JSR SetObjectTileCoord
@@ -5081,8 +5081,8 @@ PRG003_BDAA2:
 	BEQ PRG003_BDAB
 
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent 
+	STA Block_UpdateValue
+	INC Block_UpdateValue 
 
 PRG003_BDAB:
 
@@ -5248,7 +5248,7 @@ PRG003_BE52:
 	ROR Objects_Orientation,X
 
 	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
 
 	LDA <Objects_YVelZ,X
 	BMI PRG003_BE67	 ; If enemy moving upward, jump to PRG003_BE67
@@ -5264,7 +5264,7 @@ PRG003_BE67:
 PRG003_BE6B:
 	LDY #$08	 ; Y = $08
 
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	AND #$08
 	BEQ PRG003_BE76	 ; 8 ticks on, 8 ticks off; jump to PRG003_BE76
 
@@ -5276,7 +5276,7 @@ PRG003_BE76:
 	JMP PRG003_BE37	; Draw tail, Do NOT return to caller, and don't come back!
 
 FireSnake_ChangeSolids:
-	LDA Level_ChgTileEvent
+	LDA Block_UpdateValue
 	BEQ FireSnake_ChangeSolids1
 	RTS
 
@@ -5316,8 +5316,8 @@ FireSnake_ChangeSolids3:
 	STA Block_ChangeXHi
 	LDA Object_TileFeetValue
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_UpdateValue
 	JMP FireSnake_ChangeSolids8
 
 FireSnake_ChangeSolids5:
@@ -5356,8 +5356,8 @@ FireSnake_ChangeSolids7:
 	STA Block_ChangeYHi
 	LDA Object_TileWallValue
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_UpdateValue
 	
 FireSnake_ChangeSolids8:
 	JSR SpecialObject_FindEmpty

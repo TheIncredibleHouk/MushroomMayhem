@@ -2201,7 +2201,7 @@ PRG031_F8E0:
  	LDA #MMC3_2K_TO_PPU_0800
 	STA MMC3_COMMAND
 	LDA StatusBarCHR_0800
-	LDX Status_Bar_Mode
+	LDX StatusBar_Mode
 	CPX #$80
 	BNE DoSwitchOut
 	LDA #$58
@@ -3077,30 +3077,6 @@ SkipDestroy:
 	BPL KeepDestroying
 	LDA #$00
 	STA Level_Event
-	RTS
-
-SubOffset:
-	.byte 100, 10, 1
-
-ToThreeDigits:
-	STA <Temp_Var4
-	LDX #$00
-	STX <Temp_Var1
-	STX <Temp_Var2
-	STX <Temp_Var3
-
-NextSub:
-	LDA <Temp_Var4
-	SUB SubOffset, X
-	BCC IncX
-	INC <Temp_Var1, X
-	STA <Temp_Var4
-	BCS NextSub
-
-IncX:
-	INX
-	CPX #$03
-	BNE NextSub
 	RTS
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

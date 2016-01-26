@@ -115,7 +115,7 @@ ObjectGroup03_CollideJumpTable:
 	.word OCSPECIAL_KILLCHANGETO | OBJ_REDTROOPA	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word Object_AttackOrDefeat					; Object $70 - OBJ_BUZZYBEATLE
 	.word Object_AttackOrDefeat					; Object $71 - OBJ_SPINY
-	.word Object_AttackOrDefeat					; Object $72 - OBJ_GOOMBA
+	.word ObjHit_DoNothing					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
 	.word Object_AttackOrDefeat	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word $0000	; Object $75 - OBJ_WATERFILLER (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
@@ -234,12 +234,12 @@ ObjectGroup03_Attributes2:
 
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup03_Attributes3:
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $6C - OBJ_GREENTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $6D - OBJ_REDTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $6E - OBJ_PARATROOPAGREENHOP
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $70 - OBJ_BUZZYBEATLE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_DIESHELLED 	; Object $71 - OBJ_SPINY
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6C - OBJ_GREENTROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6D - OBJ_REDTROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6E - OBJ_PARATROOPAGREENHOP
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $70 - OBJ_BUZZYBEATLE
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_SHELL 	; Object $71 - OBJ_SPINY
 	.byte OA3_HALT_NORMALONLY 				; Object $72 - OBJ_GOOMBA
 	.byte OA3_HALT_NORMALONLY 				; Object $73 - OBJ_PARAGOOMBA
 	.byte OA3_HALT_NORMALONLY				; Object $74 - OBJ_ZOMBIEGOOMBA
@@ -248,18 +248,18 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
 	.byte OA3_HALT_NORMALONLY 					; Object $78 - OBJ_BULLETBILL
 	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7A - OBJ_PURPLETROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $7A - OBJ_PURPLETROOPA
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7B - OBJ_BLUESHELL
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 				; Object $7C - OBJ_HELPER
 	.byte OA3_HALT_NORMALONLY 	; Object $7D - OBJ_PARAZOMBIEGOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $7E - OBJ_BIGGREENHOPPER
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7F - OBJ_BIGREDPIRANHA
-	.byte OA3_HALT_NORMALONLY | OA3_DIESHELLED 			; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte OA3_HALT_NORMALONLY 					; Object $81 - OBJ_HAMMERBRO
 	.byte OA3_HALT_NORMALONLY 					; Object $82 - OBJ_NINJABRO
 	.byte OA3_HALT_NORMALONLY 					; Object $83 - OBJ_LAKITU
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $84 - OBJ_SPINYEGG
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_DIESHELLED 			; Object $85 - OBJ_BLUESPINY
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_SHELL 			; Object $85 - OBJ_BLUESPINY
 	.byte OA3_HALT_NORMALONLY 					; Object $86 - OBJ_ICEBRO
 	.byte OA3_HALT_NORMALONLY 					; Object $87 - OBJ_FIREBRO
 	.byte OA3_HALT_NORMALONLY 			; Object $88 - OBJ_PIRATEBRO
@@ -521,8 +521,8 @@ ObjNorm_Waterfill1:
 FillWater:
 	LDA Object_LevelTile
 	EOR #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 
 	; Set all of the block change coordinates to remove the ice brick
 	LDA <Objects_YHiZ,X
@@ -594,7 +594,7 @@ NinjaDodge_KillOrPoof:
 	STA TempA
 	LDA Objects_SlowTimer, X
 	BEQ NinjaDodge_Poof1
-	JMP Object_FinishStompKill
+	JMP Object_GetKilled
 	RTS
 
 NinjaDodge_Poof:
@@ -1167,7 +1167,7 @@ PRG004_A6A6:
 	RTS		 ; Return
 
 Thwomp_FallToGround:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
  
 	LDA <Objects_YVelZ,X
 	CMP #$70
@@ -1226,7 +1226,7 @@ PRG004_A6E5:
 	LDA #-$10
 	STA <Objects_YVelZ,X
 
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
 
 PRG004_A6EC:
 	RTS		 ; Return
@@ -1342,7 +1342,7 @@ PRG004_A78B:
 	RTS		 ; Return
 
 ObjThwomp_FallToCeiling:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
  
 	LDA <Objects_YVelZ,X
 	BEQ FallAnyways
@@ -1443,7 +1443,7 @@ ObjNorm_ThwompVertical:
 ;
 ;PRG004_A82B:
 ;	JSR Object_ApplyXVel	 	; Apply X velocity
-;	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
+;	JSR Object_ApplyYVel_NoGravity	; Apply Y velocity
 ;
 ;PRG004_A831:
 	RTS		 ; Return
@@ -1495,7 +1495,7 @@ PRG004_A843:
 	INC <Objects_Data2,X	 ; Var5++
 
 	JSR Object_ApplyXVel	 ; Apply X Velocity
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y Velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
 
 	LDA <Objects_Data2,X
 	AND #$01
@@ -2028,7 +2028,7 @@ PRG004_AC4D:
 PRG004_AC53:
 	LDY #$00	 ; Y = 0
 
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	AND #$08
 	BEQ PRG004_AC5D	 ; 8 ticks on, 8 ticks off; jump to PRG004_AC5D
 
@@ -2097,7 +2097,7 @@ PRG004_AC99:
 	INC <Objects_YVelZ,X
 
 PRG004_ACA3:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
 	JSR Object_ApplyXVel	 ; Apply X velocity
 	JSR Object_DetectTiles	 ; Detect against world
 
@@ -2820,7 +2820,7 @@ Zombie_InsideBlock0:
 	CMP #$03
 	BCS Zombie_InsideBlock1
 
-	LDA Level_ChgTileEvent   
+	LDA Block_NeedsUpdate   
 	BNE Zombie_InsideBlock1
 
 	JSR Zombie_Crumbles
@@ -2829,8 +2829,8 @@ Zombie_InsideBlock0:
 	LDA Object_LevelTile
 	AND #$C0
 	ORA #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 	LDA #$01
@@ -2853,7 +2853,7 @@ Zombie_InsideGround:
 	CMP #$03
 	BCS Zombie_InsideGround1
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Zombie_InsideGround1
 
 	JSR Zombie_Crumbles
@@ -2870,13 +2870,13 @@ Zombie_InsideGround1:
 	AND #$01
 	BEQ Zombie_InsideGround2
 
-	LDA Level_ChgTileEvent
+	LDA Block_NeedsUpdate
 	BNE Zombie_InsideGround2
 
 	LDA Object_LevelTile
 	AND #$FE
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
 
@@ -2922,8 +2922,8 @@ Zombie_Crumbles:
 	LDA Object_LevelTile
 	AND #$FE
 	ORA #$01
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 
 	JSR SetObjectTileCoordAlignObj
 	RTS
@@ -3045,7 +3045,7 @@ ObjNorm_JumpingCheepCheep:
 	INC <Objects_Data2,X	 ; Var5++
 
 	JSR Object_ApplyXVel	 	; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	; Apply Y velocity
 	JSR Object_WorldDetectN1	; Detect against world
 
 	INC <Objects_YVelZ,X	 ; YVel++
@@ -3130,7 +3130,7 @@ ObjNorm_BulletBill:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Object_AttackOrDefeat	 	; Player to Bullet Bill collision
 	JSR Object_ApplyXVel	 	; Apply X velocity
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 
 PRG004_B1C2:
 	JMP DrawBullet
@@ -3168,7 +3168,7 @@ ObjNorm_MissileMarkB:
 	LDA Objects_Timer, X
 	BEQ ObjNorm_MissileMarkA
 	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	JMP DrawBullet
 	 
 ObjNorm_MissileMarkA:
@@ -3176,7 +3176,7 @@ ObjNorm_MissileMarkA:
 	BEQ ObjNorm_MissileMarkC
 
 	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	JMP ObjNorm_MissileMarkA1
 
 ObjNorm_MissileMarkC:
@@ -3301,8 +3301,8 @@ ObjNorm_Goomba1:
 	STA ReverseGravity
 
 ObjNorm_Goomba02:
-	JSR Object_DeleteOffScreen
 	JSR Object_Move
+	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
 	JSR Object_InteractWithOtherObjects
 	BCS Goomba_DrawNoAnimate
@@ -3335,7 +3335,7 @@ Goomba_DrawNoAnimate:
 
 Goomba_Death:
 	LDA Objects_HitCount, X
-	BNE Goomba_Death1
+	BPL Goomba_Death1
 	JMP Goomba_Draw
 	 
 Goomba_Death1:
@@ -4146,7 +4146,7 @@ ObjNorm_BigPiranha:
 PRG004_B78C:
 
 	; Toggle frame 0/1
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	LSR A
 	LSR A
 	LSR A
@@ -4219,7 +4219,7 @@ PRG004_B7E6:
 	; Giant Piranha is not fully extended/retracted...
 
 	STA <Objects_YVelZ,X	 ; Set Y velocity as appropriate
-	JMP Object_ApplyYVel_NoLimit	 ; Apply Y velocity and don't come back!!
+	JMP Object_ApplyYVel_NoGravity	 ; Apply Y velocity and don't come back!!
 
 GiantPiranha_Chomp:
 	LDA Objects_Timer,X
@@ -5219,7 +5219,7 @@ PRG004_BC66:
 	LDA #$03	 ; A = 3
 	BLT PRG004_BCB1	 ; If Var1 < $2F, jump to PRG004_BCB1
 
-	LDA Level_NoStopCnt
+	LDA GameCounter
 	LSR A
 	AND #$03	; Palette cycle 0-3
 
@@ -5234,7 +5234,7 @@ PRG004_BCB4:
 	RTS		 ; Return
 
 ChainChomp_MoveChain:
-	JSR Object_ApplyYVel_NoLimit	 ; Apply Y velocity
+	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
 	STA <Temp_Var1		 ; Store carry flag -> Temp_Var1
 
 	JSR Object_ApplyXVel	; Apply X velocity
@@ -5581,7 +5581,7 @@ WaitForMario:
 	STA Objects_SlowTimer, X
 
 	LDA #$80
-	STA Status_Bar_Mode
+	STA StatusBar_Mode
 
 	LDX #$8C
 	STX Status_Bar_Top
@@ -5608,10 +5608,11 @@ WaitForMarioRTS:
 DisplayLakituText:
 	LDA Objects_SlowTimer, X
 	BNE DisplayLakituText1
-	LDA Last_Status_Bar_Mode
-	STA Status_Bar_Mode
+
+	LDA Last_StatusBar_Mode
+	STA StatusBar_Mode
 	LDA #$80
-	STA Last_Status_Bar_Mode
+	STA Last_StatusBar_Mode
 	INC Objects_Data4, X
 	LDY Objects_Property, X
 	LDA Effective_Suit
@@ -5646,7 +5647,7 @@ PowerUpChecks:
 	.byte $02, $0B, $05, $04
 
 PowerUpDeliveries:
-	.byte OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_NINJASHROOM, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN
+	.byte OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN
 
 PowerUpDeliveriesFlash:
 	.byte 00, 00, 02, 01
@@ -5790,7 +5791,7 @@ ObjNorm_BlueShellDive1:
 ObjNorm_BlueShell1:
 	LDA #$01
 	STA Objects_Frame, X
-	JSR Object_ApplyYVel_NoLimit
+	JSR Object_ApplyYVel_NoGravity
 	JSR Object_DetectTiles
 	LDA  <Objects_CollisionDetectionZ, X
 	BEQ DrawBlueShell
@@ -5949,8 +5950,8 @@ ThwompBreakBlock:
 	LDA #$00
 	STA <Objects_YVelZ, X
 	LDA #$81
-	STA Level_ChgTileValue
-	INC Level_ChgTileEvent
+	STA Block_UpdateValue
+	INC Block_NeedsUpdate
 	LDA ObjTile_DetYLo
 	AND #$F0
 	STA Block_ChangeY
