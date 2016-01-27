@@ -2678,7 +2678,6 @@ Player_RainbowCycle:
 	BCS Player_RainbowCycle1
 
 	JSR Restore_Curr_Player_Pal
-	INC Palette_NeedsUpdate
 	RTS
 
 Player_RainbowCycle1:
@@ -2689,7 +2688,6 @@ Player_RainbowCycle1:
 
 Player_RainbowCycle2:
 	JSR Rainbow_Palette_Cycle ; color cycle the palette for a rainbow effect!
-	INC Palette_NeedsUpdate
 
 Player_RainbowCycle3:
 	RTS

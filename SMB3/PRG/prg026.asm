@@ -2236,49 +2236,36 @@ UpdateMode2:
 	JSR Game_UpdateLevelName
 
 AttemptUpdate:
-	LDX #$00	 	; X = 0
+	INC Status_Bar_Render_Toggle
+
+	LDA Status_Bar_Render_Toggle
+	AND #$01
+	BNE UpdatePalette
+
+	LDA Graphics_BufCnt
+	BNE AttemptUpdate1
 
 	LDA Top_Needs_Redraw
-	ORA Bottom_Needs_Redraw
-	BEQ NoStatusRedraw
-	
-	LDY Graphics_BufCnt	; Y = Graphics_BufCnt
-	BEQ PRG026_B466	 	; If graphics buffer is empty, jump to PRG026_B466
+	BNE Do_Top
 
-NoStatusRedraw:
-	STX StatusBar_UpdFl	; StatusBar_UpdFl = 0
-	JMP PRG026_B47A	 	; Jump to PRG026_B47A
+	LDA Bottom_Needs_Redraw
+	BNE Do_Bottom	 	; If graphics buffer is empty, jump to PRG026_B466
 
-PRG026_B466:
-	; No data in graphics buffer, adds delay functionality
+AttemptUpdate1:
+	RTS
 
-	; Basically, only one of two frames update the status
-	; bar if the buffer is otherwise empty... I guess the
-	; contrary is "well, they'll be processing update data
-	; anyway, so we might as well get in there..."
+UpdatePalette:
+	STA Debug_Snap
+	LDA <Graphics_Queue	; A = StatusBar_UpdFl
+	BNE UpdatePalette1
 
-	INC StatusBar_UpdFl	; StatusBar_UpdFl++
-	LDA StatusBar_UpdFl	; A = StatusBar_UpdFl
-	AND #$01	 	; going for a toggle
-	BNE PRG026_B47A	 	; If set, jump to PRG026_B47A
-
-	LDA #$00	 	
-	STA StatusBar_UpdFl	; StatusBar_UpdFl = 0
 	LDA #$06	 	;
 	STA <Graphics_Queue	; Set Graphics_Queue = 6 (6?? Does it matter?)
-	RTS		 ; Return
 
-	; Arriving, X = 0, Y = Graphics_BufCnt
-	; Copy StatusBar_UpdTemplate into the graphics buffer, which makes
-	; room for everything to be done to the status bar, and includes
-	; things like the video addresses and whatnot...
-PRG026_B47A:
-	; #DAHRKDAIZ new status bar rendiner
-	LDA Status_Bar_Render_Toggle
-	INC Status_Bar_Render_Toggle		; #DAHRKDAIZ Toggle between rendering top and bottom
-	AND #$01
-	BNE Do_Bottom
+UpdatePalette1:
+	RTS
 
+Do_Top:
 	; #DAHRKDAIZ render top
 	LDX Graphics_BufCnt
 	LDA #$2B
