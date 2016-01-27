@@ -2233,7 +2233,7 @@ PRG030_91D1:
 	;JSR StatusBar_Update_Cards	 ; Update status bar cards
 	;JSR StatusBar_UpdateValues	 ; Update other status bar stuff
 	;JSR StatusBar_Fill_MorL	 	 ; Patch in correct M or L on status bar
-	JSR StatusBar_Fill_World	 ; Fill in correct world number
+	;JSR StatusBar_Fill_World	 ; Fill in correct world number
 
 	LDA #$00		 ; A = 0 (Graphics buffer push)
 	JSR Video_Do_Update	 ; Push through what's in graphics buffer

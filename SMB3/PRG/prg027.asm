@@ -1766,20 +1766,23 @@ InitPals_Per_MapPUp:
 ; Luigi (see Map_PlayerPalFix and BonusGame_PlayerPal)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Setup_PalData:
+	LDX #$01
+	LDA PaletteEffect
+	BEQ SetDNActive1
+	LDX #$00
+
+SetDNActive1:
+	STX DayNightActive
 
 	LDA PAGE_C000
 	STA DAIZ_TEMP1
-
 	LDA #$15
 	STA PAGE_C000
-
 	JSR PRGROM_Change_C000
 	LDA #$00
 	STA <Temp_Var2
-
 	LDA PaletteIndex
 	STA <Temp_Var1
-
 	CLC
 	ROL <Temp_Var1
 	ROL <Temp_Var2
@@ -1813,10 +1816,8 @@ SkipMasterBackup:
 
 	LDA DayNightActive
 	BEQ No_Darken
-
 	LDA DayNight
 	BEQ No_Darken
-
 	LDA Pal_Data
 	CMP #$0F
 	BEQ No_Darken
@@ -1828,7 +1829,6 @@ Darken_Pal:
 	SEC
 	SBC #$10
 	BMI Skip_Darken
-
 	STA Pal_Data, X
 
 Skip_Darken:
@@ -1846,6 +1846,29 @@ No_Darken:
 	STA Pal_Data+20
 	STA Pal_Data+24
 	STA Pal_Data+28
+
+	LDA Level_Tileset
+	CMP #15	 
+	BNE PRG027_B8C3	 	; If Level_Tileset <> 15 (Bonus Game intro), jump to PRG027_B8C3
+
+	; Level_Tileset = 15... (the intro to the bonus games)
+	LDA Player_Current
+	ASL A		 
+	ASL A		 
+	ASL A		 
+	TAY		 ; Y = Player_Current << 3
+
+	; This loop copies in the correct palette for the Player
+	; meeting with the bonus game host (Toad ... typically)
+	LDX #$00	 ; X = 0
+PRG027_B8B4:
+	LDA BonusGame_PlayerPal,Y
+	STA Pal_Data+4,X	 
+	INY		 ; Y++
+	INX		 ; X++
+	CPX #$08
+	BNE PRG027_B8B4	 ; While X <> 8, loop!
+	JMP PRG027_B8F9	 ; (RTS)
 
 PRG027_B8C3:
 	CMP #$0f	 	; 
