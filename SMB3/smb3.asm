@@ -1286,27 +1286,35 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 
 	Objects_BoundLeft:	.ds 8
 	Player_BoundLeft:	.ds 1
+	Custom_BoundLeft:	.ds 1
 
 	Objects_BoundLeftHi:.ds 8
 	Player_BoundLeftHi:	.ds 1
+	Custom_BoundLeftHi:	.ds 1
 
 	Objects_BoundRight:	.ds 8
 	Player_BoundRight:	.ds 1
+	Custom_BoundRight:	.ds 1
 
 	Objects_BoundRightHi: .ds 8
 	Player_BoundRightHi:  .ds 1
+	Custom_BoundRightHi:  .ds 1
 
 	Objects_BoundBottom:	.ds 8
 	Player_BoundBottom:	.ds 1
+	Custom_BoundBottom:	.ds 1
 
 	Objects_BoundBottomHi:.ds 8
 	Player_BoundBottomHi:	.ds 1
+	Custom_BoundBottomHi:	.ds 1
 
 	Objects_BoundTop:	.ds 8
 	Player_BoundTop:	.ds 1
+	Custom_BoundTop:	.ds 1
 
 	Objects_BoundTopHi:.ds 8
 	Player_BoundTopHi:	.ds 1
+	Custom_BoundTopHi:	.ds 1
 
 	SpinnerBlocksReplace:.ds 10;
 	ObjectBump:			.ds 1
@@ -1762,10 +1770,10 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	SpecialObj_XVelFrac:	.ds 8	; $05AB-$05B2 X velocity fractional accumulator
 	PlayerProj_XVelFrac:	.ds 2
 
-	SpecialObj_YLo:		.ds 8	; $05BF-$05C6 Y low coordinate of special object
+	SpecialObj_Y:		.ds 8	; $05BF-$05C6 Y low coordinate of special object
 	PlayerProj_Y:		.ds 2	; $7CE3-$7CE4 Player projectile Y
 
-	SpecialObj_XLo:		.ds 8	; $05C9-$05D0 X low coordinate of special object
+	SpecialObj_X:		.ds 8	; $05C9-$05D0 X low coordinate of special object
 	PlayerProj_X:		.ds 2	; $7CE5-$7CE6 Player projectile X
 
 	SpecialObj_YVel:	.ds 8	; $05D3-$05DA Y Velocity of special object
@@ -2137,7 +2145,8 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 ;	NOTE: This is cleared completely upon Player death which works since levels
 ;	are not re-enterable, but still seems a bit extreme...
 	
-	BigQBlock_GotIt:	.ds 1
+	BigQBlock_GotIt:	.ds 0;
+	Palette_NeedsUpdate:		.ds 1;
 
 	DMC_Queue:		.ds 1	; Stores value to play on DMC
 	DMC_Current:		.ds 1	; Currently playing DMC sound
@@ -2465,6 +2474,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Frozen_State:			.ds 1	;
 	Frozen_Frame:			.ds	1
 	PaletteEffect:			.ds 1
+	PreviousPaletteEFfect:	.ds 1
 	EffectCounter:			.ds 1
 	HitTestOnly:			.ds 1
 	SpinnerBlockTimers:	.ds 10;
@@ -3001,6 +3011,9 @@ PLAYER_POOF			= 05
 
 	Objects_Data3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
 
+	SpecialObj_XHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
+	PlayerProj_XHi:			.ds 2
+
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
 	PlayerProj_YHi:			.ds 2
 	Objects_LastTile:	.ds 8	; $7FDF-$7FE6 Last tile this object detected
@@ -3439,7 +3452,7 @@ OAT_BOUNDBOX15		= %00001111
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
 OAT_BOUNCEOFFOTHERS	= %00010000	; Turn away from other enemies if their paths collide
-OAT_ICEIPROOF		= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
+OAT_ICEPROOF		= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
 OAT_FIREPROOF	= %01000000	; Object is immune to Player's fireballs
 OAT_WEAPONSHELLPROOF		= %10000000	; Object will run collision routine instead of standard "Kick"-sound/100 points/OBJSTATE_KILLED [i.e. object not killed by being rammed with held object]
 

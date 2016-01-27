@@ -173,7 +173,7 @@ PRG007_A268:
 	RTS		 ; Return
 
 Player_Projectiles:
-	.byte $00, $00, PLAYER_FIREBALL, $00, $00, $00, PLAYER_HAMMER, PLAYER_ICEBALL, $00, $00, PLAYER_NINJASTAR
+	.byte $00, $00, PLAYER_FIREBALL, $00, $00, $00, PLAYER_HAMMER, PLAYER_ICEBALL, $00, $00, $00, PLAYER_NINJASTAR
 
 PlayerProj_ThrowWeapon:
 	LDY Effective_Suit
@@ -209,12 +209,12 @@ PlayerProj_ThrowWeapon3:
 
 	.word Throw_FireBall
 	.word Throw_FireBall
-	.word Throw_Hammer
 	.word Throw_IceBall
+	.word Throw_Hammer
 	.word Throw_NinjaStar
 
 IceFire_XVel:
-	.byte $D0, $30
+	.byte $D0, $30, $E8, $18
 
 IceFire_YVel:
 	.byte $10, $D0
@@ -241,97 +241,102 @@ Throw_FireBall1:
 	RTS
 
 Throw_IceBall:
-	LDY Player_Direction
-	LDA IceFire_XVel, Y
-	STA PlayerProj_XVel, X
+	JSR SetProjectilePosition8x16
 
-	LDA IceFire_YVel
+	LDA IceFire_XVel + 2, Y
+	STA SpecialObj_XVel, X
+
+	LDA #$00
+	STA SpecialObj_Var1, X
 	STA PlayerProj_YVel, X
 	RTS
 
+Hammer_Vel:
+	.byte $F0, $10
+
 Throw_Hammer:
-	LDA #$FD
-	STA PlayerProj_YVel, X
-
-	LDA <Player_XVel, X
-	BPL Throw_Hammer1
-
-	EOR #$FF
-	ADD #$01
-
-Throw_Hammer1:
-	ADD #$10
+	JSR SetProjectilePosition16x16
 	
-	LDY Player_Direction
-	BNE Throw_Hammer2
+	LDA <Player_XVel
+	ADC Hammer_Vel, Y
+	STA SpecialObj_XVel, X
 
-	EOR #$FF
-	ADD #$01
-
-Throw_Hammer2:
-	STA PlayerProj_YVel, X
+	LDA #$C0
+	STA SpecialObj_YVel, X
 	RTS
 
 Ninja_YVel:
-	.byte $00, $03, $03, $FD
+	.byte $00, $30, $D0, $D0
 
 Ninja_XVel:
-	.byte $FD, $03, $00
+	.byte $D0, $30, $00
 
 Throw_NinjaStar:
+	
+	JSR SetProjectilePosition16x16
+
 	LDA <Pad_Holding
 	AND #$0C
 	LSR A
 	LSR A
 	TAY
 
-	LDA Ninja_YVel, X
-	STA PlayerProj_YVel, X
+	LDA Ninja_YVel, Y
+	STA SpecialObj_YVel, X
 	BEQ Throw_NinjaStar1
 
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT)
 	BNE Throw_NinjaStar1
 
-	LDA PlayerProj_YVel, X
+	LDA SpecialObj_YVel, X
 	BPL Throw_NinjaStar1
 	
 	LDA #$00
-	STA PlayerProj_XVel, X
+	STA SpecialObj_XVel, X
 	RTS
 
 Throw_NinjaStar1:
 	LDY Player_Direction
 	LDA Ninja_XVel, Y
-	STA PlayerProj_XVel, X
+	STA SpecialObj_XVel, X
 	RTS		 ; Return
 
 Proj_BallPos:
-	.byte $FC, $0C
+	.byte $02, $0E, $FE, $04
+	.byte $00, $00, $FF, $00
+
+SetProjectilePosition16x16:
+	LDY Player_Direction
+
+	LDA <Player_X
+	ADD Proj_BallPos + 2, Y
+	STA SpecialObj_X,X
+
+	LDA <Player_XHi
+	ADC #$00
+	STA SpecialObj_XHi + 10,X
+	JMP SetProjectileYPos
 
 SetProjectilePosition8x16:
 	LDY Player_Direction
 
 	LDA <Player_X
 	ADD Proj_BallPos, Y
-	STA SpecialObj_XLo,X
+	STA SpecialObj_X,X
 
+	LDA <Player_XHi
+	ADC #$00
+	STA SpecialObj_XHi,X
+
+SetProjectileYPos:
 	LDA <Player_Y
 	ADD #$08
-	STA SpecialObj_YLo,X
+	STA SpecialObj_Y,X
 
 	LDA <Player_YHi
 	ADC #$00
 	STA SpecialObj_YHi,X
-	RTS
-	 
-	; #DAHRKDAIZ removed extra values for the sake of using animation trick
-PlayerFireball_Pats:		.byte $65, $59
-
-PlayerHammer_YOff:	.byte $00 ; NOTE: Next three values overlap into following table)
-PlayerHammer_XOff:	.byte $06, $06, $00, $00
-
-PRG007_A328:
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -363,6 +368,7 @@ Player_ProjDoState:
 Player_Nothing
 	RTS
 
+SpecialObj_ObjectAttributes = Temp_Var16
 Player_FireBall:
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
@@ -371,7 +377,7 @@ Player_FireBall:
 	JSR PlayerProj_HitEnemies8x16
 	BCC Player_FireBallTiles
 	
-	LDA SpecialObj_ObjectAttributes
+	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_FIREPROOF
 	BNE Player_FireBallNoKill
 
@@ -387,13 +393,13 @@ Player_FireBallTiles:
 	LDA SpecialObj_YVel, X
 	BPL Player_FireBall1
 
-	LDA CurrentTileProperty
+	LDA Object_TileProp
 	CMP #TILE_PROP_SOLID_ALL
 	BCC Player_FireBall4
 	BCS Player_FireBall2
 
 Player_FireBall1:
-	LDA CurrentTileProperty
+	LDA Object_TileProp
 	CMP #TILE_PROP_SOLID_TOP
 	BCC Player_FireBall4
 
@@ -403,9 +409,9 @@ Player_FireBall2:
 	CMP #$02
 	BNE Player_FireBall3
 
-	LDA SpecialObj_XLo, X
+	LDA SpecialObj_X, X
 	SUB #$08
-	STA SpecialObj_XLo, X
+	STA SpecialObj_X, X
 
 	JMP Player_ToPoof
 
@@ -433,9 +439,88 @@ Player_FireBall5:
 	RTS
 
 Player_IceBall:
-
 	JSR SObj_ApplyXYVelsWithGravity
-	RTs
+	INC SpecialObj_YVel, X
+	INC SpecialObj_YVel, X
+
+	JSR PlayerProj_HitEnemies8x16
+	BCC Player_IceBallTiles
+	
+	LDA <SpecialObj_ObjectAttributes
+	AND #OAT_ICEPROOF
+	BNE Player_IceBallNoKill
+
+	JSR SpecialObj_AttackEnemy
+	LDA Objects_State, Y
+	CMP #OBJSTATE_KILLED
+	BNE Player_IceBallNoKill
+
+	LDA #OBJ_ICEBLOCK
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, Y
+
+	LDA #$00
+	STA Objects_Frame, Y
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, Y
+	JMP Player_ToPoofNoSound
+
+Player_IceBallNoKill:
+	JMP Player_ToPoof
+
+Player_IceBallTiles:
+	JSR SpecialObj_DetectWorld8x16
+
+	LDA SpecialObj_YVel, X
+	BPL Player_IceBall1
+
+	LDA Object_TileProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Player_IceBall4
+	BCS Player_IceBall2
+
+Player_IceBall1:
+	LDA Object_TileProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCC Player_IceBall4
+
+Player_IceBall2:
+	INC SpecialObj_Var1, X
+	LDA SpecialObj_Var1, X
+	CMP #$02
+	BNE Player_IceBall3
+
+	LDA SpecialObj_X, X
+	SUB #$08
+	STA SpecialObj_X, X
+
+	JMP Player_ToPoof
+
+Player_IceBall3:
+	LDA SpecialObj_YVel, X
+	BMI Player_IceBall5
+
+	LDA #-$50
+	STA SpecialObj_YVel, X
+	BNE Player_IceBall5
+
+Player_IceBall4:
+	LDA #$00
+	STA SpecialObj_Var1, X
+
+Player_IceBall5:
+	LDA #$59
+	STA <SpecialObj_Tile
+
+	LDA #SPR_PAL2
+	STA <SpecialObj_Attributes
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection
+	JSR SpecialObj_Draw8x16
+	RTS
 
 Player_ToPoof:
 	LDA #SND_PLAYERBUMP
@@ -451,10 +536,71 @@ Player_ToPoofNoSound:
 
 Player_Hammer:
 	JSR SObj_ApplyXYVelsWithGravity
+	JSR PlayerProj_HitEnemies16x16
+	BCC Player_HammerNoKill
+
+	LDA <SpecialObj_ObjectAttributes
+	AND #OAT_WEAPONSHELLPROOF
+	BNE Player_HammerNoKill
+
+	JSR SpecialObj_AttackEnemy
+
+Player_HammerNoKill:
+	JSR SpecialObj_DetectWorld16x16
+
+	LDA #$6D
+	STA <SpecialObj_Tile
+
+	LDA #$6F
+	STA <SpecialObj_Tile + 1
+
+	LDA #SPR_PAL3
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection16x6
+	JSR SpecialObj_Draw16x16
+	RTS
 
 Player_NinjaStar:
-	JSR SObj_AddXVelFrac
-	JSR SObj_AddYVelFrac
+	JSR SObj_ApplyXYVels
+	JSR PlayerProj_HitEnemies16x16
+	BCC Player_StarNoKill
+
+	LDA <SpecialObj_ObjectAttributes
+	AND #OAT_WEAPONSHELLPROOF
+	BNE Player_HammerNoKill
+
+	JSR SpecialObj_AttackEnemy
+
+Player_StarNoKill:
+
+	LDA #$4D
+	STA <SpecialObj_Tile
+	STA <SpecialObj_Tile + 1
+
+	LDA SpecialObj_XVel, X
+	BPL NinjaStar_ThrowFlip
+
+	LDA #SPR_PAL3
+	STA <SpecialObj_Attributes
+
+	LDA #(SPR_PAL3 | SPR_VFLIP | SPR_HFLIP)
+	STA <SpecialObj_Attributes + 1
+	BNE NinjaStar_Throw
+
+NinjaStar_ThrowFlip:
+	
+	LDA #(SPR_PAL3 | SPR_HFLIP)
+	STA <SpecialObj_Attributes + 1
+
+	LDA #(SPR_PAL3 | SPR_VFLIP)
+	STA <SpecialObj_Attributes
+
+NinjaStar_Throw:
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_Draw16x16
+	RTS
 
 Player_Poof:
 	DEC SpecialObj_Data, X
@@ -496,96 +642,77 @@ Player_Poof0:
 Player_Poof1:
 	JMP SpecialObj_Delete
 
-SpecialObj_DetectWorld16x16:
-	LDA SpecialObj_YLo,X
-	ADD #$08
-	STA <Temp_Var6
+Detect16x16:
+	.byte $00, $10
 
-	; Aligned to grid -> Temp_Var3
-	AND #$F0
-	STA <Temp_Var3
+SpecialObj_DetectWorld16x16:
+	LDY #$00
+	LDA SpecialObj_YVel,X
+	BPL DW161
+
+	INY
+
+DW161:
+	LDA SpecialObj_Y,X
+	ADD Detect16x16, Y
+	STA ObjTile_DetYLo
 
 	LDA SpecialObj_YHi,X
-	ADC #$00	 ; Apply carry
-	PHA		 ; Save Y Hi
-	STA <Temp_Var4
+	ADC #$00
+	STA ObjTile_DetYHi
 
-	; Special object X + 4 -> Temp_Var5
-	LDA SpecialObj_XLo,X
-	ADD #$08
-	SUB <Horz_Scroll	
-	ADD <Horz_Scroll	
-	STA <Temp_Var5
+	LDY #$00
+	LDA SpecialObj_XVel,X
+	BPL DW162
 
-	LDA <Horz_Scroll_Hi
-	ADC #$00	 ; Apply carry
-	STA <Temp_Var7
-	ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
-	TAY		 ; -> 'Y'
-	JMP SpecialObj_DetectWorld8x161
+	INY
+
+DW162:
+	LDA SpecialObj_X,X
+	ADD Detect16x16, Y
+	STA ObjTile_DetXLo
+
+	LDA SpecialObj_XHi,X
+	ADC #$00
+	STA ObjTile_DetXHi
+
+	JSR Object_DetectTileDirect
+	RTS
+Detect8x8:
+	.byte $00, $08, $04, $0C
 
 SpecialObj_DetectWorld8x16:
+	LDY #$00
 	LDA SpecialObj_YVel,X
-	BMI SO_8x16_Up
+	BPL DW81
 
-	LDA SpecialObj_YLo,X
-	ADD #$0C
-	STA <Temp_Var6
-	JMP SpecialObj_DetectWorld8x160
+	INY
 
-SO_8x16_Up:
-	LDA SpecialObj_YLo,X
-	ADD #$04
-	STA <Temp_Var6
-
-SpecialObj_DetectWorld8x160:
-	; Aligned to grid -> Temp_Var3
-	AND #$F0
-	STA <Temp_Var3
+DW81:
+	LDA SpecialObj_Y,X
+	ADD Detect8x8 + 2, Y
+	STA ObjTile_DetYLo
 
 	LDA SpecialObj_YHi,X
-	ADC #$00	 ; Apply carry
-	PHA		 ; Save Y Hi
-	STA <Temp_Var4
+	ADC #$00
+	STA ObjTile_DetYHi
 
-	; Special object X + 4 -> Temp_Var5
-	LDA SpecialObj_XLo,X
-	ADD #$04
-	SUB <Horz_Scroll	
-	ADD <Horz_Scroll	
-	STA <Temp_Var5
+	LDY #$00
+	LDA SpecialObj_XVel,X
+	BPL DW82
 
-	LDA <Horz_Scroll_Hi
-	ADC #$00	 ; Apply carry
-	STA <Temp_Var7
-	ASL A		 ; 2 bytes per screen (for Tile_Mem_Addr)
-	TAY		 ; -> 'Y'
-	
-SpecialObj_DetectWorld8x161:
-	LDA Tile_Mem_Addr,Y
-	STA <Temp_Var1
+	INY
 
-	PLA		 ; Restore Y Hi
+DW82:
+	LDA SpecialObj_X,X
+	ADD Detect8x8, Y
+	STA ObjTile_DetXLo
 
-	AND #$01	 ; Only use 0 or 1 (only valid Y His in a non-vertical level)
-	ADD Tile_Mem_Addr+1,Y	 ; Add to the high byte of Tile_Mem_Addr
-	STA <Temp_Var2		 ; -> Temp_Var2
+	LDA SpecialObj_XHi,X
+	ADC #$00
+	STA ObjTile_DetXHi
 
-	; Form a row/column offset -> 'Y'
-	LDA <Temp_Var5
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var3
-	TAY
-
-	LDA [Temp_Var1],Y ; Get the tile here
-	JSR PSwitch_SubstTileAndAttr
-	STA CurrentTile
-	TAY
-	LDA TileProperties, Y
-	STA CurrentTileProperty
+	JSR Object_DetectTileDirect
 	RTS
 
 SpecialObj_Delete:
@@ -603,9 +730,37 @@ SpecialObj_CheckForeground:
 
 	LDA <SpecialObj_Attributes
 	ORA #SPR_BEHINDBG
-	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes 
+
+	LDA <SpecialObj_Attributes + 1
+	ORA #SPR_BEHINDBG
+	STA <SpecialObj_Attributes + 1
 
 SpecialObj_CheckForeground1:
+	RTS
+
+SpecialObj_CheckDirection16x6:
+	LDA SpecialObj_XVel, X
+	BMI SpecialObj_CheckDirection16x61
+
+	LDA <SpecialObj_Attributes
+	EOR #SPR_HFLIP
+	STA <SpecialObj_Attributes
+
+	LDA <SpecialObj_Attributes + 1
+	EOR #SPR_HFLIP
+	STA <SpecialObj_Attributes + 1
+
+	LDA <SpecialObj_Tile
+	PHA
+
+	LDA <SpecialObj_Tile + 1
+	STA <SpecialObj_Tile
+
+	PLA
+	STA  <SpecialObj_Tile + 1
+
+SpecialObj_CheckDirection16x61:
 	RTS
 
 SpecialObj_CheckDirection:
@@ -628,14 +783,14 @@ SpecialObj_Attributes2 = Temp_Var12
 SpecialObj_Draw8x16:
 	JSR Object_GetUnusedSprite
 
-	LDA SpecialObj_YLo,X
+	LDA SpecialObj_Y,X
 	SUB Level_VertScroll
 	CMP #$F8
 	BCS SpecialObj_Draw8x161
 
 	STA Sprite_RAM+$00,Y
 
-	LDA SpecialObj_XLo,X
+	LDA SpecialObj_X,X
 	SUB <Horz_Scroll
 	CMP #$08
 
@@ -660,14 +815,14 @@ SpecialObj_Draw8x161
 SpecialObj_Draw16x16:
 	JSR Object_GetUnusedSprite
 
-	LDA SpecialObj_YLo,X
+	LDA SpecialObj_Y,X
 	SUB Level_VertScroll
 	CMP #$F8
 	BCS SpecialObj_Draw16x16Delete
 	STA <Temp_Var1
 	STA Sprite_RAM+$00,Y
 
-	LDA SpecialObj_XLo,X
+	LDA SpecialObj_X,X
 	SUB <Horz_Scroll
 	CMP #$08
 
@@ -706,28 +861,74 @@ SpecialObj_Draw16x16Delete:
 	STA Sprite_RAM, Y
 	JMP SpecialObj_Delete
 	
-ProjXBounds:
+ProjXBound:
 	.byte $00, $07
 
 PlayerProj_HitEnemies8x16:
-	LDY #$00
-	LDA SpecialObj_XVel, X
-	BMI PlayerProj_HitEnemies8x161
+	LDA SpecialObj_X, X
+	STA Custom_BoundLeft
 
-	INY
+	LDA SpecialObj_XHi, X
+	STA Custom_BoundLeftHi
 
-PlayerProj_HitEnemies8x161:
-
-	LDA SpecialObj_XLo, X
-	CLC
-	ADC ProjXBounds, Y
-	SUB Horz_Scroll
-	STA <PlayerProj_XPos
-
-	LDA SpecialObj_YLo, X
+	LDA Custom_BoundLeft
 	ADD #$08
-	SUB Level_VertScroll
-	STA <PlayerProj_YPos
+	STA Custom_BoundRight
+
+	LDA Custom_BoundRightHi
+	ADC #$00
+	STA Custom_BoundRightHi
+
+	LDA SpecialObj_Y, X
+	ADD #$04
+	STA Custom_BoundTop
+
+	LDA SpecialObj_YHi, X
+	ADC #$00
+	STA Custom_BoundTopHi
+
+	LDA Custom_BoundTop
+	ADD #$08
+	STA Custom_BoundBottom
+
+	LDA Custom_BoundTopHi
+	ADC #$00
+	STA Custom_BoundBottomHi
+	
+	JMP PlayerProj_HitEnemies
+
+PlayerProj_HitEnemies16x16:
+
+	LDA SpecialObj_X, X
+	STA Custom_BoundLeft
+
+	LDA SpecialObj_XHi, X
+	STA Custom_BoundLeftHi
+
+	LDA Custom_BoundLeft
+	ADD #$10
+	STA Custom_BoundRight
+
+	LDA Custom_BoundRightHi
+	ADC #$00
+	STA Custom_BoundRightHi
+
+	LDA SpecialObj_Y, X
+	ADD #$10
+	STA Custom_BoundTop
+
+	LDA SpecialObj_YHi, X
+	ADC #$00
+	STA Custom_BoundTopHi
+
+	LDA Custom_BoundTop
+	ADD #$10
+	STA Custom_BoundBottom
+
+	LDA Custom_BoundTopHi
+	ADC #$00
+	STA Custom_BoundBottomHi
+	
 	JMP PlayerProj_HitEnemies
 
 PlayerProj_HitEnemies:
@@ -746,7 +947,10 @@ PlayerProj_HitEnemies1:
 	LDA Object_AttrFlags,X	
 	STA <SpecialObj_ObjectAttributes		; Object attribute flags -> Temp_Var1
 
-	JSR PlayerProj_HitObject	 ; See if Player Project hit an object and respond!
+	TYA
+	TAX
+
+	JSR Object_DetectCustom	 ; See if Player Project hit an object and respond!
 	BCC PlayerProj_HitEnemies2
 	LDX <CurrentObjectIndexZ
 	RTS
@@ -760,41 +964,6 @@ PlayerProj_HitEnemies2:
 	RTS		 ; Return
 
 	; A Y range per bounding box index
-
-PlayerProj_YPos = Temp_Var13
-PlayerProj_XPos = Temp_Var14
-ObjectBoundBoxIndex = Temp_Var2
-SpecialObj_ObjectAttributes = Temp_Var1
-
-PlayerProj_HitObject:
-	LDA <SpecialObj_ObjectAttributes		 
-	AND #OAT_BOUNDBOXMASK
-	TAX		 ; X = Object's bounding box index
-	STX <ObjectBoundBoxIndex	 ; -> Temp_var2
-
-	LDA <PlayerProj_XPos	 	; Detect Y of projectile
-	CMP Objects_BoundLeft, Y
-	BCC PlayerProj_NoHit
-
-	CMP Objects_BoundRight, Y
-	BCS PlayerProj_NoHit
-
-	LDA <PlayerProj_YPos	 	; Detect Y of projectile
-	CMP Objects_BoundTop, Y
-	BCC PlayerProj_NoHit
-
-	CMP Objects_BoundBottom, Y
-	BCS PlayerProj_NoHit
-
-PlayerProj_Hit:
-	LDX <CurrentObjectIndexZ	; X = Player Projectile slot index
-	SEC
-	RTS
-
-PlayerProj_NoHit:
-	LDX <CurrentObjectIndexZ	; X = Player Projectile slot index
-	CLC
-	RTS
 
 SpecialObj_AttackEnemy:
 
@@ -1908,12 +2077,12 @@ SpecialObj_UpdateAndDraw:
 	BNE PRG007_AF4B	 ; If gameplay is halted, jump to PRG007_AF4B
 
 	; Offset special object to compensate for the diagonal autoscroller's wrap
-	LDA SpecialObj_XLo,X
+	LDA SpecialObj_X,X
 	ADD AScrlURDiag_OffsetX
-	STA SpecialObj_XLo,X
-	LDA SpecialObj_YLo,X
+	STA SpecialObj_X,X
+	LDA SpecialObj_Y,X
 	ADD AScrlURDiag_OffsetY
-	STA SpecialObj_YLo,X
+	STA SpecialObj_Y,X
 
 	BCC PRG007_AF4B	 ; If no carry, jump to PRG007_AF4B
 	INC SpecialObj_YHi,X	 ; Apply carry
@@ -1928,12 +2097,12 @@ PRG007_AF4B:
 PRG007_AF57:
 
 
-	LDA SpecialObj_XLo,X
+	LDA SpecialObj_X,X
 	SUB <Horz_Scroll
 	CMP #248
 	BGE SpecialObj_RemoveInd ; If special object X >= 248, jump to SpecialObj_RemoveInd (remove special object)
 
-	LDA SpecialObj_YLo,X
+	LDA SpecialObj_Y,X
 	ADD #16
 	PHA		 ; Save Special object Y + 16
 
@@ -2296,7 +2465,7 @@ PRG007_B352:
 	AND #%00110000
 	BEQ PRG007_B364	 ; 48 ticks on, 48 ticks off; jump to PRG007_B364
 
-	DEC SpecialObj_YLo,X	 ; Bubble Y --
+	DEC SpecialObj_Y,X	 ; Bubble Y --
 	BNE PRG007_B364
 	DEC SpecialObj_YHi,X	 ; Apply carry
 PRG007_B364:
@@ -2315,7 +2484,7 @@ PRG007_B364:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
 
 	; Set bubble X
-	LDA SpecialObj_XLo,X
+	LDA SpecialObj_X,X
 	ADD <Temp_Var1	
 	SUB <Horz_Scroll
 	STA Sprite_RAM+$03,Y
@@ -2336,6 +2505,11 @@ PRG007_B364:
 ;
 ; Apply the special object X and Y velocity with gravity
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SObj_ApplyXYVels:
+	JSR SObj_AddXVelFrac
+	JSR SObj_AddYVelFrac
+	RTS
+
 SObj_ApplyXYVelsWithGravity:
 	JSR SObj_AddXVelFrac	 ; Apply X velocity
 	JSR SObj_AddYVelFrac	 ; Apply Y velocity
@@ -2406,13 +2580,13 @@ PRG007_B3C2:
 	INY		 ; Y = 1 (Player not small/ducking)
 
 PRG007_B3F3:
-	LDA SpecialObj_YLo,X	; Cannonball Y
+	LDA SpecialObj_Y,X	; Cannonball Y
 	SUB <Player_Y		; Player Y
 	SUB Cannonball_YOffset,Y	; Offset
 	CMP Cannonball_YDiffLimit,Y
 	BGE PRG007_B445	 ; If Player is not close enough to top of cannonball, jump to PRG007_B445 (RTS)
 
-	LDA SpecialObj_XLo,X
+	LDA SpecialObj_X,X
 	ADD #$08	 ; Cannonball X + 8
 	SUB <Player_X	 ; Diff against Player X
 	CMP #20
@@ -2424,7 +2598,7 @@ PRG007_B3F3:
 	LDA <Player_YVel
 	BMI PRG007_B442	 ; If Player is moving upward, jump to PRG007_B442
 
-	LDA SpecialObj_YLo,X
+	LDA SpecialObj_Y,X
 	SUB Level_VertScroll
 	SUB #19
 	CMP <Player_SpriteY
@@ -2474,7 +2648,7 @@ PRG007_B446:
 ;	LDA #$30
 ;	STA Scores_Counter,Y
 ;
-;	LDA SpecialObj_YLo,X
+;	LDA SpecialObj_Y,X
 ;	SUB Level_VertScroll
 ;	SBC #$06
 ;	CMP #192
@@ -2486,7 +2660,7 @@ PRG007_B446:
 ;	STA Scores_Y,Y	 ; Set score Y
 ;
 ;	; Set score X
-;	LDA SpecialObj_XLo,X
+;	LDA SpecialObj_X,X
 ;	SUB <Horz_Scroll
 ;	STA Scores_X,Y
 
@@ -2505,8 +2679,8 @@ SObj_OffsetYForRaster:
 	DEY		 ; Otherwise, Y = $FF (16-bit sign extension)
 
 PRG007_B483:
-	ADD SpecialObj_YLo,X
-	STA SpecialObj_YLo,X	; Apply raster offset to Special Object Y
+	ADD SpecialObj_Y,X
+	STA SpecialObj_Y,X	; Apply raster offset to Special Object Y
 
 	TYA
 
@@ -2563,11 +2737,11 @@ PRG007_B4AF:
 	LDX <CurrentObjectIndexZ	; X = special object slot index
 
 SObj_SetSpriteXYRelative:
-	LDA SpecialObj_YLo,X
+	LDA SpecialObj_Y,X
 	SUB Level_VertScroll
 	STA Sprite_RAM+$00,Y
 
-	LDA SpecialObj_XLo,X
+	LDA SpecialObj_X,X
 	SUB <Horz_Scroll
 	STA Sprite_RAM+$03,Y
 
@@ -2861,7 +3035,7 @@ PRG007_B710:
 	LDA Objects_XZ,Y
 	LDY <Temp_Var1	
 	ADD Hammer_XOff,Y
-	STA SpecialObj_XLo,X
+	STA SpecialObj_X,X
 
 	LDY <Temp_Var2		 ; Y = referenced object slot index
 
@@ -2870,7 +3044,7 @@ PRG007_B710:
 	CLC
 	LDY <Temp_Var1
 	ADC Hammer_YOff,Y
-	STA SpecialObj_YLo,X
+	STA SpecialObj_Y,X
 
 	LDA #$00	; A = 0
 
@@ -2963,14 +3137,14 @@ SObj_PlayerCollide:
 	INY		 ; Y = 1 (otherwise)
 
 PRG007_B7E4:
-	LDA SpecialObj_YLo,X		; Special object Y
+	LDA SpecialObj_Y,X		; Special object Y
 	ADD #$08			; +8
 	SUB <Player_Y			; Subtract Player Y
 	SUB SObjYOff_PlayerSize,Y	; Subtract Player height offset
 	CMP SObj_VLimit,Y
 	BGE PRG007_B843	 	; If result >= SObj_VLimit, jump to PRG007_B843 (RTS)
 
-	LDA SpecialObj_XLo,X		; Special object X
+	LDA SpecialObj_X,X		; Special object X
 	ADD #$06			; +6
 	SUB <Player_X			; Subtract Player X
 	SBC #$00			; Carry?
@@ -3161,10 +3335,10 @@ SObj_Acid1:
 	LDX <CurrentObjectIndexZ
 	LDA #$06
 	STA SpecialObj_ID, X
-	LDA SpecialObj_YLo, X
+	LDA SpecialObj_Y, X
 	AND #$F0
 	ORA #$06
-	STA SpecialObj_YLo, X
+	STA SpecialObj_Y, X
 	LDA #$80
 	STA SpecialObj_Var1, X
 	RTS
@@ -3421,7 +3595,7 @@ PRG007_BB1A:
 ; Adds the 4.4FP X velocity to X of special object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SObj_AddXVelFrac:
-	LDA SpecialObj_XVel,X		; Get X Velocity  
+	LDA SpecialObj_XVel,X		; Get Y Velocity
 	ASL A
 	ASL A
 	ASL A
@@ -3432,22 +3606,29 @@ SObj_AddXVelFrac:
 	PHP		 ; Save CPU status
 
 	; Basically amounts to an arithmetic shift right 4 places
-	LDA SpecialObj_XVel,X	; Get X Velocity
+	LDA SpecialObj_XVel,X	; Get Y Velocity
 	LSR A
 	LSR A
 	LSR A
 	LSR A		 	; Whole part shifted down (integer)
 	CMP #%00001000	; Check the sign bit
-	BLT PRG007_BB39 ; If the value was not negatively signed, jump to PRG007_BB39
+	LDY #$00	 ; Y = $00 (16-bit sign extension)
+	BLT SObj_AddXVelFrac1	 ; If the value was not negatively signed, jump to PRG007_BB60
 	ORA #%11110000	; Otherwise, apply a sign extension
 
-PRG007_BB39:
+	DEY		 ; Y = $FF (16-bit sign extension)
 
+SObj_AddXVelFrac1:
 	PLP		 ; Restore CPU status
 
-	ADC SpecialObj_XLo,X
-	STA SpecialObj_XLo,X ; Add with carry
+	ADC SpecialObj_X,X
+	STA SpecialObj_X,X ; Add with carry
 
+	TYA		 ; Sign extension
+
+	; Apply sign extension
+	ADC SpecialObj_XHi,X
+	STA SpecialObj_XHi,X
 	RTS		 ; Return
 
 
@@ -3483,8 +3664,8 @@ SObj_AddYVelFrac:
 PRG007_BB60:
 	PLP		 ; Restore CPU status
 
-	ADC SpecialObj_YLo,X
-	STA SpecialObj_YLo,X ; Add with carry
+	ADC SpecialObj_Y,X
+	STA SpecialObj_Y,X ; Add with carry
 
 	TYA		 ; Sign extension
 
@@ -4115,7 +4296,7 @@ PRG007_BE69:
 	CLC
 	LDX <Temp_Var1		; X = 0 to 7
 	ADC CannonPoof_XOffs,X
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	; Set cannonball Y velocity
 	LDA FourWay_CannonballYVel,X
@@ -4140,7 +4321,7 @@ PRG007_BE91:
 	CLC
 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 	ADC CannonFire_Y,X
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA CannonFire_YHi,X
 	ADC <Temp_Var3		; 16-bit sign extension
 	STA SpecialObj_YHi,Y	

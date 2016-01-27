@@ -1206,11 +1206,11 @@ VeggieGuyCarry:
 	STA SpecialObj_ID,Y
 
 	LDA Objects_XZ,X
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	LDA Objects_YZ, X
 	SUB #$10
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA Objects_YHiZ, X
 	SBC #$00
 	STA SpecialObj_YHi,Y
@@ -1619,14 +1619,14 @@ BustBlock_Segment:
 	; Add Y offset by input
 	LDA <Temp_Var1
 	ADD BustBlock_YOffByInput,X
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Temp_Var3
 	ADC BustBlock_YHiOffByInput,X
 	STA SpecialObj_YHi,Y
 
 	; X Lo = Temp_Var2
 	LDA <Temp_Var2
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	; Set Ice Block Y Velocity by input
 	LDA BustBlock_YVelByInput,X
@@ -2638,12 +2638,12 @@ PRG003_AEF1:
 	; Star X +4
 	LDA <Objects_XZ,X
 	ADD #$04
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	; Star Y +16
 	LDA <Objects_YZ,X
 	ADD #16
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	ADC #$00
 	STA SpecialObj_YHi,Y
@@ -2965,7 +2965,7 @@ Current_GenerateBubble:
 	AND #$17
 	ADD <Objects_XZ,X
 	LDY <Temp_Var1		 ; Y = special object index
-	STA SpecialObj_XLo,Y	 ; Store slightly random adjusted X -> Bubble X
+	STA SpecialObj_X,Y	 ; Store slightly random adjusted X -> Bubble X
 
 	LDA Objects_ID,X
 	CMP #OBJ_WATERCURRENTDOWNARD
@@ -2974,7 +2974,7 @@ Current_GenerateBubble:
 	; Bubble appears at Y - 8
 	LDA <Objects_YZ,X
 	SBC #$08
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	SBC #$00
 	STA SpecialObj_YHi,Y
@@ -2989,7 +2989,7 @@ PRG003_B1D7:
 	; Bubble appears at Y + 3
 	LDA <Objects_YZ,X
 	ADC #$03
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X	; Bug? They don't apply the carry (ADC) here!
 	STA SpecialObj_YHi,Y
 
@@ -3228,10 +3228,10 @@ Ninji_ThrowStar:
 
 	; Set Boomerang at Boomerang Bro's position
 	LDA <Objects_XZ,X
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 	LDA <Objects_YZ,X
 	SUB #$10
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	SBC #$00
 	STA SpecialObj_YHi,Y
@@ -4022,11 +4022,11 @@ PRG003_B876:
 	; Blooper child X
 	LDA <Objects_XZ,X
 	ADD #$04
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	; Blooper child Y
 	LDA <Objects_YZ,X
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 
 	; Blooper child Y Hi
 	LDA <Objects_YHiZ,X
@@ -4811,9 +4811,9 @@ FireChomp_SpitFire:
 	; Set coordinates as offset from Fire Chomp
 	LDA <Objects_XZ,X
 	ADD #$04
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 	LDA <Objects_YZ,X
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	STA SpecialObj_YHi,Y
 
@@ -5370,9 +5370,9 @@ FireSnake_ChangeSolids9:
 	LDA #$20	 
 	STA SpecialObj_Data, Y
 	LDA Block_ChangeX
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	LDA Block_ChangeY
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 	LDA Block_ChangeYHi
 	STA SpecialObj_YHi, Y
 	

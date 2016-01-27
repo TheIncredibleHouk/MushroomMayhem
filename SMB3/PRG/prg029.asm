@@ -268,6 +268,7 @@ M12ASegData23:
 	; But, for some reason, everything is off by 4?  The SPPF function below compensates for this, and 
 	; PRG029_CF1E loads from 4 bytes shy of the proper address.  Maybe this was a mistake?  
 SPPF .func ((\1 - SPPF_Table + 4) / 2)	; The offsets 
+SPPF2 .func ((\1 - SPPF_Table2 + 4) / 2)	; The offsets 
 SPPF_Offsets:
 	.byte SPPF(PF00), SPPF(PF01), SPPF(PF02), SPPF(PF03), SPPF(PF04), SPPF(PF05), SPPF(PF06), SPPF(PF07)
 	.byte SPPF(PF08), SPPF(PF09), SPPF(PF0A), SPPF(PF0B), SPPF(PF0C), SPPF(PF0D), SPPF(PF0E), SPPF(PF0F)
@@ -279,7 +280,9 @@ SPPF_Offsets:
 	.byte SPPF(PF38), SPPF(PF39), SPPF(PF3A), SPPF(PF3B), SPPF(PF3C), SPPF(PF3D), SPPF(PF3E), SPPF(PF3F)
 	.byte SPPF(PF40), SPPF(PF41), SPPF(PF42), SPPF(PF43), SPPF(PF44), SPPF(PF45), SPPF(PF46), SPPF(PF47)
 	.byte SPPF(PF48), SPPF(PF49), SPPF(PF4A), SPPF(PF4B), SPPF(PF4C), SPPF(PF4D), SPPF(PF4E), SPPF(PF4F)
-	.byte SPPF(PF50)
+	.byte SPPF(PF50), SPPF2(PF51), SPPF2(PF52), SPPF2(PF53), SPPF2(PF54), SPPF2(PF55)
+	
+	
 
 	; The six Patterns per Player_Frame to start each of the six Player sprites with!
 	; Note the order is the three patterns for the three sprites that make the upper 
@@ -370,15 +373,16 @@ PF4D:	.byte $F1, $F1, $F1, $35, $37, $F1
 PF4E:	.byte $F1, $F1, $F1, $0F, $3F, $F1
 PF4F:	.byte $19, $1B, $F1, $1D, $21, $F1
 PF50:	.byte $19, $1B, $F1, $1D, $21, $23
-ShellAnim1:		.byte $F1, $F1, $F1, $35, $37, $F1
-ShellAnim2:		.byte $F1, $F1, $F1, $1D, $1F, $F1
-ShellAnim3:		.byte $F1, $F1, $F1, $39, $3B, $F1
-ShellAnim4:		.byte $F1, $F1, $F1, $3D, $3F, $F1
-BooAnim:		.byte $F1, $F1, $F1, $1D, $1F, $F1
-FireballAnim1:	.byte $01, $03, $05, $21, $23, $25
-FireballAnim2:	.byte $07, $09, $0B, $27, $29, $2B
-FireballAnim3:	.byte $0D, $0F, $19, $2D, $2F, $39
-FireballAnim4:	.byte $1B, $1D, $1F, $3B, $3D, $3F
+
+SPPF_Table2:
+PF51:	.byte $F1, $F1, $F1, $35, $37, $F1 ; ShellAnim1
+PF52:	.byte $F1, $F1, $F1, $1D, $1F, $F1 ; ShellAnim2		
+PF53:	.byte $F1, $F1, $F1, $39, $3B, $F1 ; ShellAnim3		
+PF54:	.byte $F1, $F1, $F1, $3D, $3F, $F1 ; ShellAnim4		
+PF55:	.byte $01, $03, $05, $21, $23, $25 ; FireballAnim1
+PF56:	.byte $07, $09, $0B, $27, $29, $2B ; FireballAnim2	
+PF57:	.byte $0D, $0F, $19, $2D, $2F, $39 ; FireballAnim3	
+PF58:	.byte $1B, $1D, $1F, $3B, $3D, $3F ; FireballAnim4	
 
 	; Selects a VROM page offset per Player_Frame
 Player_FramePageOff:
@@ -410,69 +414,11 @@ RAINBOW_PAL_CYCLE:
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
-	LDA Effective_Suit
-No_Burning_Mode:
-	CMP #$04
-	BNE No_Poison_Mode
-	JSR Player_PoisonMode
-
-No_Poison_Mode:
-	;LDA Invincible_Enemies
-	;BEQ No_Invincible_Enemies
-	;JSR Rainbow_Palette_Cycle_Sprites
-
-No_Invincible_Enemies:
-	LDA Player_Grow
-	BNE Not_Frozen
-	LDA Frozen_State
-	BEQ Not_Frozen
-
-	LDX Frozen_Frame
-	JMP Do_Frame
-
-Not_Frozen:
 	LDX <Player_Frame
-
-	LDA Player_Shell
-	BEQ Do_Frame
-	LDX #$0E
-
-Do_Frame:
-	LDA Wall_Jump_Enabled
-	BEQ Try_Boo_Frames
-
-	LDX #$30			; #DAHRKDAIZ if wall jump enabled, we override the frame
-	LDA <Player_FlipBits
-	EOR #$40
-	STA <Player_FlipBits
-
-Try_Boo_Frames:
-	LDA Boo_Mode_Timer
-	BEQ Try_Fireball_Frames
-	LDX #$00
-	BEQ Normal_Player_Frames
-
-Try_Fireball_Frames:
-	LDA Player_FireDash
-	BEQ Normal_Player_Frames
-	LDA #$01
-	BNE Override_Page_Offset
-
-Normal_Player_Frames:
 	LDA Player_FramePageOff,X
-
-Override_Page_Offset:
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
 	LDY <Player_Suit
-	LDA Special_Suit_Flag
-	BEQ Normal_Gfx
-	TYA
-	CLC
-	ADC #$05
-	TAY
-
-Normal_Gfx:
 	LDA Player_PUpRootPage,Y ; Get VROM root page for this power up
 	ADD <Temp_Var1		 ; Add appropriate offset to the VROM base for the animation frame
 
@@ -499,79 +445,15 @@ Normal_Gfx:
 	JMP PRG029_D094	 	; Every other 2 ticks, don't!
 
 PRG029_CED7:
-	LDA Player_StarOff
-	BNE PRG029_CEEA	 	; If Player_StarOff <> 0 (star invincibility wearing off), jump to PRG029_CEEA
-
-	LDA Player_StarInv
-	BEQ PRG029_CF0B	 	; If Player_StarInv = 0 (not star invincible), jump to PRG029_CF0B
-
-	LDA <Counter_1
-	AND #$01
-	BEQ PRG029_CEEA		; Every other tick, jump to PRG029_CEEA
-
-	DEC Player_StarInv	 ; Player_StarInv--
-
-
-PRG029_CEEA:
-	;LDA <Counter_1
-	;AND #$0f	; A = 0-15 ticks
-
-	LDY Player_StarOff
-	BNE PRG029_CF07	 ; If Player_StarOff <> 0 (star invincibility wearing off), jump to PRG029_CF07
-
-	LDY Player_StarInv
-	CPY #32
-	BNE PRG029_CF07	 ; If Player_StarInv <> 32, jump to PRG029_CF05
-
-	; At precisely star invincibility tick 32...
-
-	LDA Level_PSwitchCnt
-	BNE PRG029_CF07	 	; If P-Switch is active, jump to PRG029_CF05
-
-	; Otherwise, restore level BGM music now that invincibility is wearing off
-	LDY Level_MusicQueueRestore
-	STY Sound_QMusic2
-
-
-;	BCS PRG029_CF09	 ; If we're NOT doing the "wearing off" star invincibility, jump to PRG029_CF09
-
-PRG029_CF07:
-
-	LDA Player_StarOff
-	CMP #$02		
-	BCS DO_RBOW_CYCLE		; at #$02 we just reset the palette
-
-	LDA Player_StarInv
-	CMP #$01				; at #$01 we just reset the palette
-	BCS DO_RBOW_CYCLE
-
-	JSR Restore_Curr_Player_Pal
-	BEQ RESTORE_A
-
-DO_RBOW_CYCLE:
-	LDA Player_Pal_Backup	; Check the current palette backup, if it doens't exist, back it up
-	BNE RAINBOW_CYCLE
-	JSR Backup_Curr_Player_Pal
-
-RAINBOW_CYCLE:
-	JSR Rainbow_Palette_Cycle ; color cycle the palette for a rainbow effect!
-
-RESTORE_A:
-
-
-PRG029_CF0B:
-	LDA #$00		; #DAHRKDAIZ disables palette cycling
+	LDA #$00
 	STA <Temp_Var1	 ; Store cycle tick into Temp_Var1 (0 if not invincible, sprite palette 0)
 
 	LDA Level_PipeMove
 	LDA Player_Behind
 	ORA Player_SandSink
-	ORA Player_Behind_En
 	BEQ PRG029_CF1E	 ; If Player is behind the scenes, jump to PRG029_CF1E
 
 	; Set priority over background (normal most game sprite behavior)
-	LDA #$00
-	STA Player_Behind_En
 	LDA #$20
 	ORA <Temp_Var1
 	STA <Temp_Var1
@@ -582,71 +464,6 @@ PRG029_CF1E:
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
 
-	LDA Player_Shell			; If in shell, override the animation
-	BEQ Try_Boo_Animation
-	TXA
-	PHA							; Save X
-	LDA <Counter_1
-	AND #$06
-	LSR A
-	TAX
-	LDA #-$06
-	
-Add_Six_Loop:
-	CLC	
-	ADC #$06
-	DEX
-	BPL Add_Six_Loop
-	STA DAIZ_TEMP1
-	LDA #LOW(ShellAnim1 - 5)
-	CLC	
-	ADC DAIZ_TEMP1
-	STA <Player_SprWorkL
-	LDA #HIGH(ShellAnim1)
-	STA <Player_SprWorkH
-	PLA
-	TAX
-	JMP PRG029_CF2F
-
-Try_Boo_Animation:
-	LDA Boo_Mode_Timer
-	BEQ Try_Fireball_Animation
-
-	LDA #LOW(BooAnim)
-	STA <Player_SprWorkL
-	LDA #HIGH(BooAnim)
-	STA <Player_SprWorkH
-	LDY #$00
-	JMP PRG029_CF2F
-
-Try_Fireball_Animation:
-	LDA Player_FireDash			; If in shell, override the animation
-	BEQ Draw_Player_Sprites
-	LDA #LOW(FireballAnim1)
-	STA <Player_SprWorkL
-	LDA #HIGH(FireballAnim1)
-	STA <Player_SprWorkH
-	LDA #$00
-	STA DAIZ_TEMP1
-	LDA <Counter_1
-	LSR A
-	LSR A
-	AND #$03
-	BEQ Dont_Toggle_Fire
-	TAY
-
-Add_Six:
-	LDA DAIZ_TEMP1
-	ADD #$06
-	STA DAIZ_TEMP1
-	DEY 
-	BNE Add_Six
-
-Dont_Toggle_Fire:
-	LDY DAIZ_TEMP1
-	JMP PRG029_CF2F
-
-Draw_Player_Sprites:
 	; X = Player_Frame
 	LDA SPPF_Offsets,X	; Get offset value to sprite's pattern set
 	ASL A
@@ -771,8 +588,7 @@ PRG029_CF88:
 
 
 	LDA Player_Flip
-	ORA Player_FireDash
-	BEQ PRG029_D010	; If Player is not somersaulting, or in fireball mode jump to PRG029_D010
+	BEQ PRG029_D010	; If Player is not somersaulting, jump to PRG029_D010
 
 	; Otherwise all of the sprites are pushed to the right by 8
 
@@ -793,6 +609,52 @@ PRG029_CF88:
 
 
 PRG029_D010:
+	LDA Player_Kuribo
+	BEQ PRG029_D050	 ; If Player is not in a Kuribo's shoe, jump to PRG029_D050
+
+	; In short, if Player is small, use Temp_Var1 = 6, otherwise Temp_Var1 = 0 (sprite vertical offset in shoe)
+	LDY #$00
+	LDA <Player_Suit
+	BNE PRG029_D01D
+	LDY #$06
+PRG029_D01D:
+	STY <Temp_Var1
+
+	LDA <Player_InAir
+	BEQ PRG029_D036	 ; If Player is not mid-air, jump to PRG029_D036
+
+	LDA <Player_YVel
+	BPL PRG029_D029	 ; If Player is falling, jump to PRG029_D029
+
+	EOR #$ff	 ; Otherwise negate it (sort of)
+
+PRG029_D029:
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	SUB #$03	; The "whole" part of the Y Velocity, minus 3
+
+	EOR #$ff	 ; Negate that (sort of)
+	BPL PRG029_D036	 ; If the result is positive, jump to PRG029_D036
+
+	LDA #$00	 ; Otherwise if it slipped below zero, just use zero
+
+PRG029_D036:
+	ADD <Temp_Var1	 ; Add that to the initial offset
+	ADD <Player_SpriteY	 ; And add in the Player's sprite Y position
+
+	; Store that as the new Y position on the "first row" sprites
+	STA Sprite_RAM+$0C,X
+	STA Sprite_RAM+$10,X
+	STA Sprite_RAM+$14,X
+
+	; The "second row" sprites (the shoe part in this case) use a different palette
+	LDA Sprite_RAM+$02,X
+	ORA #$02
+	STA Sprite_RAM+$02,X
+	STA Sprite_RAM+$06,X
+
 PRG029_D050:
 	LDA <Player_Frame
 	CMP #PF_KICK_BIG 
@@ -943,7 +805,7 @@ PRG029_D10E:
 	; it once in a while)
 
 	; Uses pattern $77 ("metal block" from used up [?], should be completely opaque)
-	LDA #$67
+	LDA #$77
 	STA Sprite_RAM+$01
 	STA Sprite_RAM+$05
 	STA Sprite_RAM+$09
@@ -2728,6 +2590,7 @@ Rainbow_Palette_Cycle:
 	AND #$07
 	TAX
 	CLC
+
 	LDA RAINBOW_PAL_CYCLE, X
 	STA (Palette_Buffer + $13)
 	ADC #$10
@@ -2762,8 +2625,10 @@ Backup_Curr_Player_Pal:
 	
 	LDA (Palette_Buffer + $11)
 	STA Player_Pal_Backup
+
 	LDA (Palette_Buffer + $12)
 	STA (Player_Pal_Backup + $01)
+
 	LDA (Palette_Buffer + $13)
 	STA (Player_Pal_Backup+ $02)
 	RTS
@@ -2772,13 +2637,97 @@ Backup_Curr_Player_Pal:
 Restore_Curr_Player_Pal:
 	LDA Player_Pal_Backup
 	STA (Palette_Buffer + $11)
+
 	LDA (Player_Pal_Backup + $01)
 	STA (Palette_Buffer + $12)
+
 	LDA (Player_Pal_Backup+ $02)
 	STA (Palette_Buffer + $13)
+
 	LDA #$00
 	STA Player_Pal_Backup
 	STA (Player_Pal_Backup + $01)
 	STA (Player_Pal_Backup + $01)
 	RTS
 
+
+Player_FrameOverride:
+	RTS
+
+Player_RainbowCycle:
+	STA Debug_Snap
+	LDA Player_StarOff
+	BNE Player_RainbowCycle1
+
+	LDA Player_StarInv
+	BEQ Player_RainbowCycle3
+
+	CMP #32
+	BNE Player_RainbowCycle1	 ; If Player_StarInv <> 32, jump to PRG029_CF05
+
+	; At precisely star invincibility tick 32...
+
+	LDA Level_PSwitchCnt
+	BNE Player_RainbowCycle1	 	; If P-Switch is active, jump to PRG029_CF05
+
+	; Otherwise, restore level BGM music now that invincibility is wearing off
+	LDA Level_MusicQueueRestore
+	STA Sound_QMusic2
+
+	CMP #$01				; at #$01 we just reset the palette
+	BCS Player_RainbowCycle1
+
+	JSR Restore_Curr_Player_Pal
+	INC Palette_NeedsUpdate
+	RTS
+
+Player_RainbowCycle1:
+	LDA Player_Pal_Backup	; Check the current palette backup, if it doens't exist, back it up
+	BNE Player_RainbowCycle2
+
+	JSR Backup_Curr_Player_Pal
+
+Player_RainbowCycle2:
+	JSR Rainbow_Palette_Cycle ; color cycle the palette for a rainbow effect!
+	INC Palette_NeedsUpdate
+
+Player_RainbowCycle3:
+	RTS
+;	LDA Player_Grow
+;	BNE Not_Frozen
+;
+;	LDA Frozen_State
+;	BEQ Not_Frozen
+;
+;	LDA Frozen_Frame
+;	STA <Player_Frame
+;	RTS
+;
+;Not_Frozen:
+;	
+;	LDA Player_Shell
+;	BEQ Do_Frame
+;
+;	LDX #$0E
+;
+;Do_Frame:
+;	LDA Wall_Jump_Enabled
+;	BEQ Try_Boo_Frames
+;
+;	LDX #$30			; #DAHRKDAIZ if wall jump enabled, we override the frame
+;	LDA <Player_FlipBits
+;	EOR #$40
+;	STA <Player_FlipBits
+;
+;	LDA Player_FireDash
+;	BEQ Normal_Player_Frames
+;
+;	LDA #$01
+;	BNE Normal_Player_Frames
+;	CLC
+;	RTS
+;
+;Normal_Player_Frames:
+;	LDX <Player_Frame
+;	SEC
+;	RTS

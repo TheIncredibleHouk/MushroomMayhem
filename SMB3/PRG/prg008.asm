@@ -306,10 +306,13 @@ Player_DoGameplay:
 	JSR Increase_Game_Timer
 	JSR Try_Item_Reserve_Release
 	JSR Try_Use_Equipped
+
 	LDA DayNightActive
 	BEQ NoTransition
+
 	LDA NightTransition
 	BEQ NotNight
+
 	JSR DoNightTransition
 
 NotNight:
@@ -372,6 +375,7 @@ PRG008_A20C:
 	; Just amounts to calling Player_Draw, but takes care of switching to page 29 and back
 Player_Draw29:
 	JSR PChg_C000_To_29	 ; Change page @ C000 to 29
+	JSR Player_RainbowCycle
 	JSR Player_Draw	 	; Draw Player
 	JMP PChg_C000_To_0	 ; Change page @ C000 to 0 and don't come back!
 
@@ -1382,6 +1386,7 @@ Frog_Velocity:
 	.byte 16, -16
 
 Swim_Frog:
+	JSR Player_PoisonMode
 	LDX #$ff	 ; X = $FF
 
 	LDA <Pad_Holding
@@ -2578,11 +2583,14 @@ PRG008_AFAD:
 Player_Koopa_Shell:
 	LDA <Player_InAir
 	BNE RTSShell
+
 	LDA Effective_Suit
 	CMP #$05
 	BNE Kill_Shell
+
 	LDA <Player_XVel
 	BEQ NoShellRTS				; If XVel is not 0 and holding down, we're in shell mode
+
 	LDA <Pad_Holding
 	AND #(PAD_DOWN)
 	BNE NoShellRTS
@@ -3420,10 +3428,19 @@ PRG008_B4C9:
 	STA <TileXIndex
 
 PRG008_B4CA:
-	JSR Player_NextTile	
+	JSR Player_NextTile
+
+	LDA Player_ForcedSlide
+	BNE PRG008_B4CB
+
 	JSR Player_DetectWall
 
+PRG008_B4CB:
 	JSR Player_NextTile	
+
+	LDA Player_ForcedSlide
+	BNE Player_DetectSolids5
+
 	JSR Player_DetectWall
 
 Player_DetectSolids5:
@@ -3958,7 +3975,7 @@ PRG008_B8D3:
 	CPY #$00
 	BLS PRG008_B8E2	 ; If index < 0, then we don't have a special object, and skip setting Y Lo
 
-	STA SpecialObj_YLo,Y	 ; Otherwise, store Y Lo
+	STA SpecialObj_Y,Y	 ; Otherwise, store Y Lo
 
 PRG008_B8E2:
 	STA Block_ChangeY	 ; Store block change Y low coord
@@ -3978,7 +3995,7 @@ PRG008_B8F1:
 
 	CPY #$00
 	BLS PRG008_B8FD	 ; If index < 0, then we don't have a special object, and skip setting X Lo
-	STA SpecialObj_XLo,Y	 ; Otherwise, store X Lo
+	STA SpecialObj_X,Y	 ; Otherwise, store X Lo
 
 PRG008_B8FD:
 	STA Block_ChangeX	 ; Store block change X low coord
@@ -4878,10 +4895,13 @@ RainbowWithMovement:
 	LDA <Counter_1
 	AND #$07
 	BNE NoEffectChange
+
 	INC EffectCounter
+
 	LDA EffectCounter
 	CMP #$09
 	BNE DontClearCounter
+
 	LDA #$00
 	STA EffectCounter
 
@@ -4889,26 +4909,53 @@ DontClearCounter:
 	LDX EffectCounter
 	LDA RainbowEffectColors, X
 	STA Palette_Buffer + 06
+
 	LDA RainbowEffectColors + 15, X
 	STA Palette_Buffer + 7
+
 	LDA RainbowEffectColors + 30, X
 	STA Palette_Buffer + 5
 
 	LDA RainbowEffectColors + 3, X
 	STA Palette_Buffer + 10
+
 	LDA RainbowEffectColors + 18, X
 	STA Palette_Buffer + 11
+
 	LDA RainbowEffectColors + 33, X
 	STA Palette_Buffer + 9
 
 	LDA RainbowEffectColors + 6, X
 	STA Palette_Buffer + 14
+
 	LDA RainbowEffectColors + 21, X
 	STA Palette_Buffer + 15
+
 	LDA RainbowEffectColors + 36, X
 	STA Palette_Buffer + 13
 
 NoEffectChange:
+	RTS
+
+PlayerRainbow:
+	LDA <Counter_1
+	AND #$07
+	BEQ PlayerRainbow1
+
+	RTS
+
+PlayerRainbow1:
+
+	INC EffectCounter
+
+	LDA EffectCounter
+	CMP #$09
+	BNE PlayerRainbow2
+
+	LDA #$00
+	STA EffectCounter
+
+PlayerRainbow2
 	RTS
 
 Player_Events:
@@ -5036,7 +5083,7 @@ Wall_NoDash:
 Player_DetectWallRTS:
 	RTS
 
-WallClingXVel: .byte $00, $01, $FF
+WallClingXVel: .byte $FF, $01
 
 Player_CheckWallJump:
 	LDA Effective_Suit

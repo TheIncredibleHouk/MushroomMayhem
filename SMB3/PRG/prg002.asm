@@ -674,9 +674,9 @@ DryCheep_DrawFlamesAndSmoke:
 	STA SpecialObj_Data, Y
 	
 	LDA Objects_Data5, X
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	LDA Objects_Data3, X
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 	LDA <Objects_Data1, X
 	STA SpecialObj_YHi, Y
 
@@ -939,10 +939,10 @@ Phanto_Poof:
 	STA SpecialObj_Data, Y
 	
 	LDA Objects_XZ, X
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 
 	LDA Objects_YZ, X
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 	LDA Objects_YHiZ, X
 	STA SpecialObj_YHi, Y
 
@@ -1015,8 +1015,6 @@ PRG002_A9F0:
 PRG002_A9F5:
 
 	; Don't worry about carry since this platform doesn't move horizontally
-	LDA #$00
-	STA Object_VelCarry
 
 	JSR PlayerPlatform_Collide
 	BCC PRG002_AA03	 ; If Player is not being carried by lift, jump to PRG002_AA03 (RTS)
@@ -1906,7 +1904,7 @@ Snifit_Shoot1:
 
 	LDA <Objects_YZ, X
 	ADD #$02
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 
 	LDA <Objects_YHiZ, X
 	ADC #$00
@@ -1934,7 +1932,7 @@ Snifit_Shoot1:
 
 	LDA <Objects_XZ, X
 	ADD <Temp_Var1
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 
 	LDA #$00
 	STA SpecialObj_Data, Y
@@ -2823,11 +2821,11 @@ PRG002_B61F:
 	; Nipper fireball X
 	LDA <Objects_XZ,X
 	ADD #$04
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	; Nipper fireball Y
 	LDA <Objects_YZ,X
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	STA SpecialObj_YHi,Y
 
@@ -4461,11 +4459,11 @@ Birdo_TryShoot:
 	STA SpecialObj_Timer,Y
 
 	LDA <Objects_XZ,X
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	LDA <Objects_YZ,X
 	ADD #$02
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 
 	LDA <Objects_YHiZ, X
 	ADC #$00

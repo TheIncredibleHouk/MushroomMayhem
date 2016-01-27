@@ -629,10 +629,10 @@ NinjaDodge_Poof1:
 	STA SpecialObj_Data, Y
 	
 	LDA Objects_XZ, X
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	LDA Objects_YZ, X
 	ADD #$04
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 	LDA Objects_YHiZ, X
 	ADC #$00
 	STA SpecialObj_YHi, Y
@@ -654,10 +654,10 @@ NinjaDodge_Poof1:
 	STA SpecialObj_Data, Y
 	
 	LDA Objects_XZ, X
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	LDA Objects_YZ, X
 	ADD #$14
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 	LDA Objects_YHiZ, X
 	ADC #$00
 	STA SpecialObj_YHi, Y
@@ -1038,9 +1038,9 @@ PRG004_A5F6:
 
 	; Set Hammer X/Y at Hammer Bro's position
 	LDA <Objects_XZ,X
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 	LDA <Objects_YZ,X
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	STA SpecialObj_YHi,Y
 
@@ -1073,9 +1073,9 @@ NinjaBro_ThrowNinjaStar:
 
 	; Set Boomerang at Boomerang Bro's position
 	LDA <Objects_XZ,X
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 	LDA <Objects_YZ,X
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X 
 	STA SpecialObj_YHi,Y
 	JSR Object_CalcHomingVels
@@ -1830,12 +1830,12 @@ FireBro_SpitFire:
 	; Fireball at X + 4
 	LDA <Objects_XZ,X
 	ADD #$04
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	; Fireball at Y + 3
 	LDA <Objects_YZ,X
 	ADD #$03
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	ADC #$00
 	STA SpecialObj_YHi,Y
@@ -1898,7 +1898,7 @@ PirateBro_SpitCannon:
 	; Fireball at Y + 3
 	LDA <Objects_YZ,X
 	ADD #$0B
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	ADC #$00
 	STA SpecialObj_YHi,Y
@@ -1921,7 +1921,7 @@ PirateBro_SpitCannon:
 	LDA <Objects_XZ,X
 	ADD Pirate_CannonxPos, Y
 	LDY <Temp_Var1
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 	
 
 	LDA #SOBJ_CANNONBALL
@@ -5564,9 +5564,9 @@ WaitForMario:
 	JSR SpecialObject_FindEmptyAbort
 	INC Objects_Data4, X
 	LDA <Objects_XZ, X
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	LDA <Objects_YZ, X
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 	LDA <Objects_YHiZ,X
 	STA SpecialObj_YHi,Y
 	LDA #SOBJ_POOF

@@ -475,28 +475,31 @@ Spring_Player_YOffsets:
 	.byte $20, $1C, $17, $1C
 
 Spring_CurrentFrame = Objects_Data5
-
+Spring_LastInteract = Objects_Data6
 ObjNorm_Spring:
 	LDA <Player_HaltGameZ
 	BNE Spring_RTS
 
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
+	JSR Object_CalcBoundBox
 	
 	LDA Spring_CurrentFrame, X
 	BNE SpringAnim
 
 	JSR Object_InteractWithPlayer
+	STA Spring_LastInteract, X
 	BCC Spring_2
 
 	LDA Object_BeingHeld, X
 	BNE Spring_RTS
 
-	LDA Objects_PlayerHitStat, X
-	AND #$01
+	LDA Spring_LastInteract, X
+	AND #(HITTEST_BOTTOM)
 	BEQ Spring_2
 
 	LDA <Player_YVel
+	BEQ Spring_2
 	BMI Spring_2
 
 	LDA #$02
@@ -1344,10 +1347,9 @@ PUp_Collect:
 	STA Objects_State, X
 
 	LDA PowerUp_Type, X
-	CMP #$01
 	BNE PUp_Collect2
 
-	LDA Effective_Suit, X
+	LDA Effective_Suit
 	CMP #$01
 	BCS PUp_Collect1
 
@@ -1544,7 +1546,6 @@ PUp_Vine:
 	BEQ PUp_VineDraw
 
 PUp_Detect:
-	STA Debug_Snap
 	JSR Object_DetectTileOn
 	LDA Object_TileProp
 	CMP #TILE_PROP_SOLID_ALL
@@ -4449,7 +4450,7 @@ ObjNorm_IceFireFly0:
 	STA <Temp_Var12
 	LDA <Temp_Var13
 	SUB <Temp_Var12
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	LDA <Temp_Var14
 	SBC #$00
 	STA <Temp_Var14
@@ -4457,19 +4458,19 @@ ObjNorm_IceFireFly0:
 
 ObjNorm_IceFireFly1:
 	ADD <Temp_Var13
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	LDA <Temp_Var14
 	ADC #$00
 	STA <Temp_Var14
 
 ObjNorm_IceFireFly2:
-	LDA SpecialObj_XLo, Y
+	LDA SpecialObj_X, Y
 	CMP <Horz_Scroll
 	LDA <Temp_Var14
 	SBC <Horz_Scroll_Hi
 	BNE ObjNorm_IceFireFly2_1
 
-	LDA SpecialObj_XLo, Y
+	LDA SpecialObj_X, Y
 	CMP <Horz_Scroll
 	LDA <Temp_Var14
 	SBC <Horz_Scroll_Hi
@@ -4477,7 +4478,7 @@ ObjNorm_IceFireFly2:
 
 ObjNorm_IceFireFly2_1
 	LDA #$C0
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 	LDA #$01
 	STA SpecialObj_YHi, Y
 	BNE ObjNorm_IceFireFly4
@@ -4491,7 +4492,7 @@ ObjNorm_IceFireFly2_2:
 	STA <Temp_Var12
 	LDA <Temp_Var15
 	SUB <Temp_Var12
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 
 	LDA <Temp_Var16
 	SBC #$00
@@ -4500,7 +4501,7 @@ ObjNorm_IceFireFly2_2:
 
 ObjNorm_IceFireFly3:
 	ADD <Temp_Var15
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 
 	LDA #$00
 	STA SpecialObj_XVel, Y
@@ -4592,13 +4593,13 @@ Coin_Unlock:
 	STA SpecialObj_Data, Y
 	
 	LDA Objects_XZ, X
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	
 	LDA Objects_YHiZ, X
 	STA SpecialObj_YHi, Y
 	
 	LDA Objects_YZ, X
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 
 Coin_Unlock0:
 	LDA Sound_QLevel1

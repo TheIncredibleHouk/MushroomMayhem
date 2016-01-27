@@ -1123,7 +1123,7 @@ Piranha_Projectile:
 ShootProjectile:
 	LDA <Objects_YZ, X
 	ADD <Temp_Var14
-	STA SpecialObj_YLo, Y
+	STA SpecialObj_Y, Y
 
 	LDA <Objects_YHiZ, X
 	ADC #$00
@@ -1131,7 +1131,7 @@ ShootProjectile:
 
 	LDA <Objects_XZ, X
 	ADD #$04
-	STA SpecialObj_XLo, Y
+	STA SpecialObj_X, Y
 	
 	LDA #SND_PLAYERFIRE
 	ORA Sound_QPlayer
@@ -1457,13 +1457,13 @@ Rocky_ThrowWrench:
 	; Set Wrench at Rocky's Y - 8
 	LDA <Objects_YZ,X
 	SUB #$08
-	STA SpecialObj_YLo,Y
+	STA SpecialObj_Y,Y
 	LDA <Objects_YHiZ,X
 	SBC #$00
 	STA SpecialObj_YHi,Y
 
 	LDA <Objects_XZ,X
-	STA SpecialObj_XLo,Y
+	STA SpecialObj_X,Y
 
 	LDA Level_AScrlHVel
 	CMP #$0e

@@ -28,7 +28,7 @@ Map_List_Object_XHis:
 
 Map_List_Object_XLos:
 	; List of X values for objects on this world
-	.word W1_Obj_XLos, W2_Obj_XLos, W3_Obj_XLos, W4_Obj_XLos, W5_Obj_XLos, W6_Obj_XLos, W7_Obj_XLos, W8_Obj_XLos
+	.word W1_Obj_Xs, W2_Obj_Xs, W3_Obj_Xs, W4_Obj_Xs, W5_Obj_Xs, W6_Obj_Xs, W7_Obj_Xs, W8_Obj_Xs
 
 Map_List_Object_IDs:
 	; Object ID list for objects on this world
@@ -56,14 +56,14 @@ W5_Obj_XHis:	.include "PRG/maps/World5OH"
 W6_Obj_XHis:	.include "PRG/maps/World6OH"
 W7_Obj_XHis:	.include "PRG/maps/World7OH"
 W8_Obj_XHis:	.include "PRG/maps/World8OH"
-W1_Obj_XLos:	.include "PRG/maps/World1OX"
-W2_Obj_XLos:	.include "PRG/maps/World2OX"
-W3_Obj_XLos:	.include "PRG/maps/World3OX"
-W4_Obj_XLos:	.include "PRG/maps/World4OX"
-W5_Obj_XLos:	.include "PRG/maps/World5OX"
-W6_Obj_XLos:	.include "PRG/maps/World6OX"
-W7_Obj_XLos:	.include "PRG/maps/World7OX"
-W8_Obj_XLos:	.include "PRG/maps/World8OX"
+W1_Obj_Xs:	.include "PRG/maps/World1OX"
+W2_Obj_Xs:	.include "PRG/maps/World2OX"
+W3_Obj_Xs:	.include "PRG/maps/World3OX"
+W4_Obj_Xs:	.include "PRG/maps/World4OX"
+W5_Obj_Xs:	.include "PRG/maps/World5OX"
+W6_Obj_Xs:	.include "PRG/maps/World6OX"
+W7_Obj_Xs:	.include "PRG/maps/World7OX"
+W8_Obj_Xs:	.include "PRG/maps/World8OX"
 
 ; The IDs of the map objects
 ; NOTE: The second index is considered reserved for the Airship, which will
