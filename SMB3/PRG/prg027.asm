@@ -1872,7 +1872,7 @@ PRG027_B8B4:
 
 PRG027_B8C3:
 	CMP #$0f	 	; 
-	BGE PRG027_B8F9	 	; For all Level_TileSet values greater than $0F, don't do this next patch!
+	BGE PRG027_B8F9	 	; For all Level_Tileset values greater than $0F, don't do this next patch!
 
 
 	; The following patches in the correct palette for the

@@ -778,7 +778,7 @@ PAD_RIGHT	= $01
 CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text versus the dialog box itself
 
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
-	Objects_Data1:		.ds 5	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
+	Objects_Data1:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
 
 	; Pipe_PlayerX/Y variables in use when traveling through pipes
 	Pipe_PlayerX:		.ds 1	; Stores Player's X when they went into pipe (non-transit)
@@ -824,7 +824,7 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	; Reuse of $D9
 	CineKing_Frame2:		; Used only by the World 6 King (Seal juggling a crown, the crown's frame)
 
-	; <Objects_CollisionDetectionZ:
+	; <Objects_TilesDetectZ:
 	; Object's detection bits:
 	;	$01-hit wall right
 	;	$02-hit wall left
@@ -835,7 +835,7 @@ HIT_RIGHTWALL =		1
 HIT_LEFTWALL =		2
 HIT_GROUND =		4
 HIT_CEILING =		8
-	Objects_CollisionDetectionZ:	.ds 8	; $D9-$E0  on screen
+	Objects_TilesDetectZ:	.ds 8	; $D9-$E0  on screen
 
 	Player_SprWorkL:	.ds 1	; Sprite work address low
 	Player_SprWorkH:	.ds 1	; Sprite work address high
@@ -1271,7 +1271,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	.org $0400	; $0400-$04CF (except $0461 and $0462, see "$04xx RAM SOUND/MUSIC ENGINE") is available for this context-dependent situation
 
-	Objects_PreviousCollisionDetection:		.ds 8
+	Objects_PreviousTilesDetect:		.ds 8
 
 	Fade_State:		.ds 1	; 0 = Nothing, 1 = Fade in, 3 = Fade out
 	Fade_Tick:		.ds 1	; Ticks down and then decrements Fade_Level
@@ -1286,35 +1286,35 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 
 	Objects_BoundLeft:	.ds 8
 	Player_BoundLeft:	.ds 1
-	Custom_BoundLeft:	.ds 1
+	SpecialObj_BoundLeft:	.ds 1
 
 	Objects_BoundLeftHi:.ds 8
 	Player_BoundLeftHi:	.ds 1
-	Custom_BoundLeftHi:	.ds 1
+	SpecialObj_BoundLeftHi:	.ds 1
 
 	Objects_BoundRight:	.ds 8
 	Player_BoundRight:	.ds 1
-	Custom_BoundRight:	.ds 1
+	SpecialObj_BoundRight:	.ds 1
 
 	Objects_BoundRightHi: .ds 8
 	Player_BoundRightHi:  .ds 1
-	Custom_BoundRightHi:  .ds 1
+	SpecialObj_BoundRightHi:  .ds 1
 
 	Objects_BoundBottom:	.ds 8
 	Player_BoundBottom:	.ds 1
-	Custom_BoundBottom:	.ds 1
+	SpecialObj_BoundBottom:	.ds 1
 
 	Objects_BoundBottomHi:.ds 8
 	Player_BoundBottomHi:	.ds 1
-	Custom_BoundBottomHi:	.ds 1
+	SpecialObj_BoundBottomHi:	.ds 1
 
 	Objects_BoundTop:	.ds 8
 	Player_BoundTop:	.ds 1
-	Custom_BoundTop:	.ds 1
+	SpecialObj_BoundTop:	.ds 1
 
 	Objects_BoundTopHi:.ds 8
 	Player_BoundTopHi:	.ds 1
-	Custom_BoundTopHi:	.ds 1
+	SpecialObj_BoundTopHi:	.ds 1
 
 	SpinnerBlocksReplace:.ds 10;
 	ObjectBump:			.ds 1
@@ -1343,18 +1343,12 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	RhythmMusic:		.ds 1;
 	DPad_RhythmControl: .ds 1;
 
-	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
-.BoundGame_04D0:	BoundCheck .BoundGame_04D0, $04D0, $04xx range Bonus context
-	.org $0461
-
 ; $0461-$0462 are reserved for use by the sound/music engine
 ; These ought to be moved into the greater range to spare this area...
 ; $04EB and $04EC are unused, good place for these vars!!
 
 Level_MusicQueue:		.ds 1	; Requests a song from Set 2A/B (used to allow delayed start)
 Level_MusicQueueRestore:	.ds 1	; What to "restore" the BGM to when it changes (e.g. Starman, P-Switch, etc.)
-
-	.org $04D0
 
 ; $04D0-$04FF is reserved for use by the sound/music engine
 ; Lower ranges are context-dependent
@@ -1666,6 +1660,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 
 	Block_NeedsUpdate:	.ds 1	; When non-zero, queues a "change tile" event
 	Block_UpdateValue:	.ds 1	;
+	Block_WasUpdated:	.ds 1
 	GameCounter:	.ds 1	; A counter which continuously increments unless something is "stopping" the action
 	Level_Event:		.ds 1	; Check "LevelEvent_Do" for values; 0 means nothing
 	Level_PSwitchCnt:	.ds 1	; When non-zero, P-Switch is active (init @ $80); counts down to zero and restarts music
@@ -1783,10 +1778,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	PlayerProj_XVel:	.ds 2	; $7CE9-$7CEA Player projectile X Velocity (NOTE: Fireball is integer, 4.4FP for hammer ONLY)
 
 	Inventory_Open:		.ds 1	; Set when inventory panel is open, also used to dictate whether it is "opening" (1) or "closing" (0)
-	Level_TimerEn:		.ds 1	; Set to disable clock (bit 7 will also disable level animations, e.g. '?s')
 	Kill_Tally:		.ds 1	; Counter that increases with each successful hit of an object without touching the ground
-
-	Objects_KillTally:	.ds 5	; $05F5-$05F9 OBJECT SLOTS 0 - 4 ONLY: Kill_Tally for a kicked shell as it hits other enemies 
+	Kill_Tally_Ticker: .ds 1
 
 	; NOTE: Since Level_AScrlConfig checks are generally implemented as "BEQ/BNE", technically ANY
 	; value enables auto scroll adjustments, but officially ASCONFIG_ENABLE is used to enable it
@@ -1841,26 +1834,28 @@ TAIL_INDEX				= 6 ;
 	Scroll_Cols2Upd:	.ds 1	; Number of 8x8 columns to update (typically set to 32 for a full dirty update)
 
 
-	Bonus_CoinsYVel:	.ds 6	; $0619-$061E UNUSED Bonus game coins Y velocity
-	Bonus_CoinsY:		.ds 6	; $061F-$0624 UNUSED Bonus game coins Y
-	Bonus_CoinsXVel:	.ds 6	; $0625-$062A UNUSED Bonus game coins X velocity
-	Bonus_CoinsX:		.ds 6	; $062B-$0630 UNUSED Bonus game coins X
-	Bonus_CoinsYVelFrac:	.ds 6	; $0631-$0636 UNUSED Bonus game coins Y velocity fractional accumulator
+	Bonus_CoinsYVel:	.ds 0	; $0619-$061E UNUSED Bonus game coins Y velocity
+	Bonus_CoinsY:		.ds 0	; $061F-$0624 UNUSED Bonus game coins Y
+	Bonus_CoinsXVel:	.ds 0	; $0625-$062A UNUSED Bonus game coins X velocity
+	Bonus_CoinsX:		.ds 0	; $062B-$0630 UNUSED Bonus game coins X
+	Bonus_CoinsYVelFrac:	.ds 0	; $0631-$0636 UNUSED Bonus game coins Y velocity fractional accumulator
 
 
-	Bonus_CoinsXVelFrac:	.ds 6	; $063D-$0642 UNUSED Bonus game coins X velocity fractional accumulator
+	Bonus_CoinsXVelFrac:	.ds 0	; $063D-$0642 UNUSED Bonus game coins X velocity fractional accumulator
 
-	VineGrowthTile:		.ds 1
-	VineTiles:			.ds 4
-	PSwitchActivateTile:.ds 1
+	VineGrowthTile:		.ds 0
+	VineTiles:			.ds 0
+	PSwitchActivateTile:.ds 0
 	PSwitchTiles:		.ds 4
 
-	Object_TileFeetProp:	.ds 1	; Object tile detected at "feet" of object
-	Object_TileWallProp:	.ds 1	; Object tile detected in front of object, i.e. a wall
-	Object_TileProp:	.ds 1
-	Object_TileBody:	.ds 1
-	Object_LevelTile:	.ds 1
-	Object_IgnoreWater:			.ds 1	; $0650 unused
+	Object_VertTileProp:	.ds 8	; Object tile detected at "feet" of object
+	Object_VertTileValue:	.ds 8
+	Object_HorzTileProp:	.ds 8	; Object tile detected in front of object, i.e. a wall
+	Object_HorzTileValue:	.ds 8
+	Object_BodyTileProp:	.ds 8
+	Object_BodyTileValue:	.ds 8
+	Tile_LastValue:		.ds 1
+	Tile_LastProp:		.ds 1
 
 	Objects_SpritesHorizontallyOffScreen:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
 	Objects_SpawnIdx:	.ds 8	; $0659-$0660 Holds the index into level data that this object was spawned from
@@ -1875,6 +1870,7 @@ OBJSTATE_KICKED		= 5	; Kicked (kicked by Player / spinning shell)
 OBJSTATE_KILLED		= 6	; Killed (flipped over and falling off screen)
 OBJSTATE_SQUASHED	= 7	; Squashed (generally Goomba only)
 OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
+OBJSTATE_FRESH		= 9 ;
 	Objects_State:		.ds 8
 
 	Objects_Frame:		.ds 8	; $0669-$0670 "Frame" of object (see ObjectGroup_PatternSets)
@@ -2703,25 +2699,28 @@ ABILITY_CHERRY_STAR = 5
 	Object_BufferY:		.ds 32*2	; $7C60-$7C7F / $7C80-$7C9F
 
 ; Variables used by Chain Chomps ONLY -- manages the chain links 
-	ChainChomp_ChainX1:	.ds 5	; $7CA0-$7CA4 Chain Link 1 X
-	ChainChomp_ChainX2:	.ds 5	; $7CA5-$7CA9 Chain Link 2 X
-	ChainChomp_ChainX3:	.ds 5	; $7CAA-$7CAE Chain Link 3 X
-	ChainChomp_ChainX4:	.ds 5	; $7CAF-$7CB4 Chain Link 4 X
-
-	ChainChomp_ChainY1:	.ds 5	; $7CB4-$7CB8 Chain Link 1 Y
-	ChainChomp_ChainY2:	.ds 5	; $7CB9-$7CBD Chain Link 2 Y
-	ChainChomp_ChainY3:	.ds 5	; $7CBE-$7CC2 Chain Link 3 Y
-	ChainChomp_ChainY4:	.ds 5	; $7CC3-$7CC8 Chain Link 4 Y
+	ChainChomp_ChainX1:	.ds 0	; $7CA0-$7CA4 Chain Link 1 X
+	ChainChomp_ChainX2:	.ds 0	; $7CA5-$7CA9 Chain Link 2 X
+	ChainChomp_ChainX3:	.ds 0	; $7CAA-$7CAE Chain Link 3 X
+	ChainChomp_ChainX4:	.ds 0	; $7CAF-$7CB4 Chain Link 4 X
+							
+	ChainChomp_ChainY1:	.ds 0	; $7CB4-$7CB8 Chain Link 1 Y
+	ChainChomp_ChainY2:	.ds 0	; $7CB9-$7CBD Chain Link 2 Y
+	ChainChomp_ChainY3:	.ds 0	; $7CBE-$7CC2 Chain Link 3 Y
+	ChainChomp_ChainY4:	.ds 0	; $7CC3-$7CC8 Chain Link 4 Y
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
 	
-	Objects_Data8:		.ds 5	; $7CC8-$7CCC Generic object variable 10
-	Objects_Data9:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
-	Objects_Data10:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
-	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
-	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data8:		.ds 8	; $7CC8-$7CCC Generic object variable 10
+	Objects_Data9:		.ds 8	; $7CCD-$7CD1 Generic object variable 11
+	Objects_Data10:		.ds 8	; $7CD2-$7CD6 Generic object variable 12
+	Objects_Data11:		.ds 8	; $7CD7-$7CDB Generic object variable 13
+	Objects_Data12:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data13:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_XYCS:		.ds 8
+	Objects_XYCSPrev:	.ds 8
+	
 
 	Temp_VarNP0:		.ds 1	; A temporary not on page 0
 
@@ -2734,7 +2733,7 @@ ABILITY_CHERRY_STAR = 5
 	Player_TwisterSpin:	.ds 1	; While greater than zero, Player is twirling from sand twister
 
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
-	Objects_HitCount:	.ds 5	; $7CF6-$7CFA Somewhat uncommon "HP" used generally for bosses only (e.g. they take so many fireballs)
+	Objects_Health:	.ds 5	; $7CF6-$7CFA Somewhat uncommon "HP" used generally for bosses only (e.g. they take so many fireballs)
 
 	RotatingColor_Cnt:	.ds 1	; When non-zero, causes rainbow palettes in the background; $80 bit is used by Koopaling wand grab
 
@@ -2931,13 +2930,13 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	;	Bits 4 - 6: 0 to 7, selects start position from LevelJct_YLHStarts and sets proper vertical with LevelJct_VertStarts
 	;	Bit      7: If set, entering in vertical mode (for "dirty" refresh purposes)
 
-	Object_TileFeetValue:	.ds 1	; ? Difference against Object_TileFeetProp?
-	Object_TileWallValue:	.ds 1	; ? Difference against Object_TileWallProp?
+	Object_TileFeetValue:	.ds 0	; ? Difference against Object_VertTileProp?
+	Object_TileWallValue:	.ds 0	; ? Difference against Object_HorzTileProp?
 
-	ObjTile_DetYHi:		.ds 1	; Object tile detect Y Hi
-	ObjTile_DetYLo:		.ds 1	; Object tile detect Y Lo
-	ObjTile_DetXHi:		.ds 1	; Object tile detect X Hi
-	ObjTile_DetXLo:		.ds 1	; Object tile detect X Lo
+	Tile_DetectionYHi:		.ds 1	; Object tile detect Y Hi
+	Tile_DetectionY:		.ds 1	; Object tile detect Y Lo
+	Tile_DetectionXHi:		.ds 1	; Object tile detect X Hi
+	Tile_DetectionX:		.ds 1	; Object tile detect X Lo
 
 	Bubble_Cnt:		.ds 3	; $7F7A-$7F7C Bubble counter value (0 = no bubble)
 
@@ -2959,15 +2958,19 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	Splash_X:		.ds 3	; $7F94-$7F96 Water splash Y
 	Splash_NoScrollY:	.ds 3	; $7F97-$7F99 If set, flags this water splash to not display sprite Y as relative to screen scroll
 
+	Brick_Index:		.ds 1
 	BrickBust_En:		.ds 3	; $7F9A-$7F9C Brick bust "Enable" (0 = disable, 2 = brick debris, anything else = "poof" away)
-	BrickBust_YUpr:		.ds 3	; $7F9D-$7F9F Brick bust upper chunks Y
-	BrickBust_X:		.ds 3	; $7FA0-$7FA2 Brick bust base X
+	Brick_DebrisYHi:	.ds 3	; $7F9D-$7F9F Brick bust upper chunks Y
+	Brick_DebrisX:		.ds 3	; $7FA0-$7FA2 Brick bust base X
 	BrickBust_YVel:		.ds 3	; $7FA3-$7FA5 Brick bust Y velocity
-	BrickBust_XDist:	.ds 3	; $7FA6-$7FA8 Brick bust X split
-	BrickBust_YLwr:		.ds 3	; $7FA9-$7FAB Brick bust lower chunks Y
+	Brick_DebrisXDist:	.ds 3	; $7FA6-$7FA8 Brick bust X split
+	Brick_DebrisY:		.ds 3	; $7FA9-$7FAB Brick bust lower chunks Y
 	BrickBust_HEn:		.ds 3	; $7FAC-$7FAE Bits to hide chunks (Bit 0 = Right, 1 = Left, 2 = Lower, 3 = Upper) OR poof counter
 	BrickBust_Tile:		.ds 3
 	BrickBust_Pal:		.ds 3
+
+BRICK_DEBRIS = $4B
+ICE_DEBRIS = $59	;
 
 	TileAnimSet:		.ds 1
 
@@ -3016,12 +3019,12 @@ PLAYER_POOF			= 05
 
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
 	PlayerProj_YHi:			.ds 2
-	Objects_LastTile:	.ds 8	; $7FDF-$7FE6 Last tile this object detected
-	Objects_LastProp:	.ds 8
-	Objects_LastTileX:  .ds 1
-	Objects_LastTileXHi:  .ds 1
-	Objects_LastTileY:  .ds 1
-	Objects_LastTileYHi:  .ds 1
+	Objects_LastTile:	.ds 0	; $7FDF-$7FE6 Last tile this object detected
+	Objects_LastProp:	.ds 0
+	Objects_LastTileX:  .ds 0
+	Objects_LastTileXHi:  .ds 0
+	Objects_LastTileY:  .ds 0
+	Objects_LastTileYHi:  .ds 0
 
 	Objects_SpriteAttributes:	.ds 8	; $7FE7-$7FEE Object sprite attributes (only uses bit 6 for H-Flip and bits 0-1 for palette)
 
@@ -3433,10 +3436,10 @@ OA3_TAILATKIMMUNE	= %10000000	; Object cannot be Raccoon tail attacked
 ; Object Attribute Common Flags
 
 ; Selects a bounding box from Object_BoundBox
-OAT_BOUNDBOX00		= %00000000
-OAT_BOUNDBOX01		= %00000001
-OAT_BOUNDBOX02		= %00000010
-OAT_BOUNDBOX03		= %00000011
+BOUND8x16		= %00000000
+BOUND16x16		= %00000001
+BOUND16x24		= %00000010
+BOUND16x16BLOCK		= %00000011
 OAT_BOUNDBOX04		= %00000100
 OAT_BOUNDBOX05		= %00000101
 OAT_BOUNDBOX06		= %00000110

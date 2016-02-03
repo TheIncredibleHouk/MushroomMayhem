@@ -375,7 +375,6 @@ PRG008_A20C:
 	; Just amounts to calling Player_Draw, but takes care of switching to page 29 and back
 Player_Draw29:
 	JSR PChg_C000_To_29	 ; Change page @ C000 to 29
-	JSR Player_RainbowCycle
 	JSR Player_Draw	 	; Draw Player
 	JMP PChg_C000_To_0	 ; Change page @ C000 to 0 and don't come back!
 
@@ -694,8 +693,10 @@ PRG008_A473:
 	JSR SetLastScrollDirection
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
+	JSR Player_CheckForeground
 	JSR Player_HandlePipe
 	JSR CheckSpinners
+	JSR Check_KillTally
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
 	JSR Player_Draw29	 	; ... and if you get through all that, draw the Player!!
@@ -3345,17 +3346,12 @@ PRG008_B42E:
 	STY <Temp_Var10	 ; Temp_Var10 = Player_YVel
 	STX <Temp_Var11	 ; Temp_Var11 = 0 or 1
 
-	JSR Player_GetTileAndSlope_Normal	 ; Set Level_Tile and Player_Slopes
+	JSR Player_GetTile	 ; Set Tile_LastValue and Player_Slopes
 
 	LDX <Temp_Var11	 	; Temp_Var11 = 0 (going down) or 1 (going up)
 	LDY Level_PipeMove	; Y = Level_PipeMove (movement command in $8x form)
 	BNE PRG008_B43F	 	; If Level_PipeMove <> 0, jump to PRG008_B43F
 
-	PHA
-	JSR CheckSpriteOnFG
-	ORA Player_Behind_En
-	STA Player_Behind_En
-	PLA
 
 PRG008_B43F:
 	LDY <Temp_Var10	 ; Y = Player_YVel
@@ -3472,7 +3468,7 @@ Player_TileInteractions:
 	AND #$0F
 	BEQ Player_TileInteractions3
 
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_BOTTOM
 	BEQ Player_TileInteractions3
 
@@ -3512,262 +3508,182 @@ SpinnerBustRts
 
 Level_DoBumpBlocks:
 	LDA Block_NeedsUpdate
-	BNE CantBumpBlocks
-
-	LDA Objects_State + 5
 	BEQ DoBumps
-
-
-	LDA <Level_Tile_Prop
-	AND #$0F
-	TAY 
-	BEQ DoBumps
-
-	CMP #$0C
-	BCS DoBumps
-
-
-CantBumpBlocks:
 	RTS
 
 DoBumps:
-	LDA #$00
-	STA ObjectBump
+	LDA Tile_LastProp
+	STA Bump_Prop
 
-	LDA #$10
-	STA Splash_DisTimer
-	TYA
+	LDA Tile_LastValue
+	STA Bump_Value
 
-	JSR LATP_HandleSpecialBounceTiles	; Do what this special tile ought to do!
-
-	TYA		 ; Power up result (if any) is in 'Y'!
-	BMI PRG008_B78C
-
-PRG008_B723:
-	; Play bump sound
-
-	TYA
-	ORA #$20
-	STA Player_Bounce
-	LDY #$01
-
-PRG008_B723_2:
-	LDA #$C0
-	STA TempA
-	INY
-
-PRG008_B724:
-	STY Player_BounceDir
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERBUMP
-	STA Sound_QPlayer
-
-	LDA <Level_Tile
-	AND #$C0
-	STA <Temp_Var12
-
-	
-PRG008_B75B:
-	LDY #$06	; Y = 6
-
-	LDA Objects_State,Y
-	BEQ PRG008_B766	 ; If this object is dead/empty, jump to PRG008_B766
-	INY		 ; Y++
-
-PRG008_B766:
-	; Align Y lo to tile grid
-	LDA <Temp_Var14
-	AND #$F0
-	STA <Temp_Var14
-	STA Objects_YZ,Y	 ; Store into object slot
-
-	LDA <Temp_Var13
-	STA Objects_YHiZ,Y ; Store Y Hi into object slot
-
-	LDA <Temp_Var15	
-	STA Objects_XHiZ,Y ; Store X Hi into object slot
-
-	LDA <Temp_Var16
-	AND #$F0
-	STA Objects_XZ,Y	 ; Store X Lo into object slot
-
-	
-	JSR BlockBump_Init	; Init the block bump effect!
-
-	STX TempX
-	LDA <Level_Tile_Prop
-	AND #$0F
-	SUB #$0D
-	BMI PRG008_B78B
-	CMP #$02
-	BCS PRG008_B78B
-	TAX
-	LDA <Level_Tile
-	STA Level_BlkFinish
-	LDA NoPUpTypes, X
-	STA Player_Bounce
-	LDX TempX
-	CPX #$01
-	BNE PRG008_B78B
-	LDA #$00
-	RTS
-	
-PRG008_B78B:
-	LDA TempA
-	RTS		 ; Return
-
-PRG008_B78C:
-	LDA <Level_Tile
-	AND #$C0
-	ORA #$01
-	JSR Level_QueueChangeBlock
-	LDA #$00
-	RTS
-
-NoPUpTypes:
-	.byte $31, $41, $2B
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LATP_HandleSpecialBounceTiles
+; Tiles_BumpBlocks
 ;
 ; Ever wondered where the code was that makes ? blocks emerge 
 ; powerups, music note blocks bounce you around, and bricks bust?
 ; Well, here it is!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LATP_HandleSpecialBounceTiles:
-	STA <Temp_Var1	 ; Backup power-up request -> Temp_Var1 
-	LDA Player_Bounce
-	BNE PRG008_B7B7	 ; If Player is already in a bounce, jump to PRG008_B7B7
+Bump_Value	= Temp_Var11
+Bump_Prop	= Temp_Var12
+Bump_Y		= Temp_Var14
+Bump_YHi	= Temp_Var13
+Bump_X		= Temp_Var16
+Bump_XHi	= Temp_Var15
 
-	LDY #$06	 ; Y = 6 (object slot index)
-	LDA Objects_State,Y	; Check this object's state
-	ORA Level_BlkBump	; And block bump 1...
-	BEQ PRG008_B7A7	 	; If item is "dead/empty" and block bump 1 isn't in use, jump to PRG008_B7A7
+Tiles_BumpBlocks
+	LDA Bump_Prop
+	AND #$0F
+	JSR DynJump
 
-	LDA Objects_State+1,Y ; Check next object's state
-	ORA Level_BlkBump+1  ; And block bump 2...
-	BNE PRG008_B7B7	 	; If item is NOT "dead/empty" or block bump 2 is in use, jump to PRG008_B7B7
+BumpBlock_JumpTable:
+	.word BumpBlock_Coin
+	.word BumpBlock_Flower	; 1 = Mushroom/Flower
+	.word BumpBlock_Leaf		; 2 = Mushroom/Leaf
+	.word BumpBlock_IceFlower; 5 = Coin/Star
+	.word BumpBlock_Frog     ;
+	.word BumpBlock_FoxLeaf	; A = Fox Leaf
+	.word BumpBlock_Koopa	;
+	.word BumpBlock_Pumpkin	; 8 = 10 coin
+	.word BumpBlock_Sledge   ;
+	.word BumpBlock_NinjaShroom		; 9 = 1-up
+	.word BumpBlock_Star		; 3 = Star-
+	.word BumpBlock_Vine		; 7 = Vine
+	.word BumpBlock_PSwitch	; B = P-Switch
+	.word BumpBlock_Brick	; 6 = Standard brick behavior
+	.word BumpBlock_Spinner
+	.word BumpBlock_Key
+	
+Bumps_PowerUpBlock:
+	LDX #$05
 
-PRG008_B7A7:
-	LDY #$05	 ; Y = 5 (object slot index)
+Bumps_PowerUpBlock1:
+	LDA Objects_State, X
+	BEQ Bumps_PowerUpBlock2
 
-	LDA Objects_Timer,Y
-	BEQ PRG008_B7BA	 ; If timer expired, jump to PRG008_B7BA
+	PLA
+	PLA
+	RTS
 
-	LDA <Temp_Var16	 ; Player detect X low
-	AND #$F0	 ; Aligned to tile grid
-	CMP Objects_XZ,Y	 
-	BNE PRG008_B7BA	 ; If this object's X does not match the aligned detect X, jump to PRG008_B7BA
+Bumps_CoinBlock:
+	LDX #$05
 
-PRG008_B7B7:
-	LDY #$00	 ; Y = 0 (no space for bounce object found)
+Bumps_CoinBlock1:
+	LDA Objects_State, X
+	BEQ Bumps_PowerUpBlock2
 
- 
+	INX
+	CPX #$08
+	BNE Bumps_CoinBlock1
+
+	PLA
+	PLA
+	RTS
+
+Bumps_PowerUpBlock2:
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+
+	JSR Object_New
+	LDA #OBJ_BOUNCEDOWNUP 
+	STA Objects_ID, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA Bump_X
+	AND #$F0
+	STA <Objects_XZ, X
+
+	LDA Bump_Y
+	AND #$F0
+	STA <Objects_YZ, X
+
+	LDA Bump_XHi
+	STA <Objects_XHiZ, X
+
+	LDA Bump_YHi
+	STA <Objects_YHiZ, X
+	RTS
+
+BumpBlock_CheckMushroom:
+	LDY Player_Suit
+	BNE BumpBlock_CheckMushroom1
+
+	LDA #POWERUP_MUSHROOM
+
+BumpBlock_CheckMushroom1:
+	STA Bouncer_PowerUp, X
+	RTS
+
+BumpBlock_Coin:
+	JSR Bumps_CoinBlock
+	LDA #POWERUP_COIN
+	STA Bouncer_PowerUp, X
 	RTS		 ; Return
 
+BumpBlock_Flower:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_FIREFLOWER
+	JSR BumpBlock_CheckMushroom
+	RTS
 
-PRG008_B7BA:
-
-	; Align X Detect low to tile grid
-	LDA <Temp_Var16
-	AND #$F0
-	STA <Temp_Var16
-
-	LDA <Temp_Var1	 ; Get power-up value
-	ASL A		 ; Make into 2-byte index
-	TAY		 ; -> 'Y'
-
-	; Load jump address as per block tile type...
-	LDA LATP_JumpTable,Y
-	STA <Temp_Var1	
-	LDA LATP_JumpTable+1,Y
-	STA <Temp_Var2	
-	JMP [Temp_Var1]	 ; Handle special block!
-
-LATP_JumpTable:
-	.word LATP_Coin	; 1 = Mushroom/Flower
-	.word LATP_Flower		; 4 = Coin
-	.word LATP_Leaf		; 2 = Mushroom/Leaf
-	.word LATP_IceFlower; 5 = Coin/Star
-	.word LATP_Frog     ;
-	.word LATP_FoxLeaf	; A = Fox Leaf
-	.word LATP_Koopa	;
-	.word LATP_Pumpkin	; 8 = 10 coin
-	.word LATP_Sledge   ;
-	.word LATP_NinjaShroom		; 9 = 1-up
-	.word LATP_Star		; 3 = Star-
-	.word LATP_Vine		; 7 = Vine
-	.word LATP_PSwitch	; B = P-Switch
-	.word LATP_Brick	; 6 = Standard brick behavior
-	.word LATP_Spinner
-	.word LATP_Key
-	
-LATP_None:
+BumpBlock_None:
 	LDY #$01		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
 	RTS		 ; Return
 
-LATP_Flower:
-	LDA #$00
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-	LDY #$02	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
-	JSR Do_PUp_Proper
-	RTS		 ; Return
+
 
 ; #DAHRKDAIZE ICE_FLOWER
-LATP_IceFlower:
-	LDA #$00
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-
-	LDY #$08	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
-	JSR Do_PUp_Proper
+BumpBlock_IceFlower:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_ICEFLOWER
+	JSR BumpBlock_CheckMushroom
 	RTS		 ; Return
 
 ;;;;;;;;;;;;
-LATP_Pumpkin:
+BumpBlock_Pumpkin:
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
 	LDY #$09	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
 	JSR Do_PUp_Proper
 	RTS		 ; Return
 
-LATP_Leaf:
-	LDA #$00
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-
-	LDY #$03	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)
-	JSR Do_PUp_Proper
+BumpBlock_Leaf:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_SUPERLEAF
+	JSR BumpBlock_CheckMushroom
 	RTS		 ; Return
 
-LATP_Star:
-	LDA #$80
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = $80 (activate star man flash)
-
-	LDY #$04	 ; Y = 4 (spawn a starman) (index into PRG001 Bouncer_PUp)
-
-	RTS		 ; Return
-
-LATP_Coin:
-	JSR LATP_CoinCommon	 ; Do common "power up" coin routine
-
-	LDY #$01	 ; Y = 1 (spawn a coin) (index into PRG001 Bouncer_PUp, i.e. nothing)
-
-	LDA <Temp_Var16
-	ORA <Temp_Var15	; Regenerate 10 coin block ID
-	CMP B10Coin_ID
-	BNE PRG008_B82F	; If this is a DIFFERENT coin block than the last one we started, jump to PRG008_B82F (RTS)
-
-PRG008_B82F:
+BumpBlock_Star:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_STAR
+	JSR BumpBlock_CheckMushroom
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Code removed for Starman continuation block
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LATP_Spinner:
-	
+BumpBlock_Spinner:
 	LDA Player_FireDash
-	BNE LATP_Brick
-	LDA Block_NeedsUpdate
-	BNE NoSpinner
-	STX TempX
+	BEQ BumpBlock_Spinner1
+
+	JMP  BumpBlock_Brick
+
+BumpBlock_Spinner1:
+	JSR Bumps_PowerUpBlock
+
+	LDA #$02
+	STA Bouncer_Frame, X
+
+	LDA Tile_LastValue
+	ORA #$01
+	STA Bouncer_ReplaceTile, X
+
+
+Tile_WriteTempChange:
 	LDX #$09
 
 FindFreeSpinner:
@@ -3781,288 +3697,141 @@ NoSpinner:
 	RTS
 
 DoSpinner:
-	LDA <Level_Tile
+	LDA Tile_LastValue
 	STA SpinnerBlocksReplace, X
-	EOR #$01
-	STA <Level_Tile
+
 	LDA #$FF
 	STA SpinnerBlockTimers, X
-	LDA <Temp_Var14
+	LDA Tile_Y
 	STA SpinnerBlocksY,X	 ; Store into object slot
 
-	LDA <Temp_Var13
+	LDA Tile_YHi
 	STA SpinnerBlocksYHi,X ; Store Y Hi into object slot
 
-	LDA <Temp_Var15	
+	LDA Tile_XHi	
 	STA SpinnerBlocksXHi,X ; Store X Hi into object slot
 
-	LDA <Temp_Var16
+	LDA Tile_X
 	STA SpinnerBlocksX,X ; Store X Hi into object slot
-	LDX TempX
-	LDY #$01
+
 	RTS
 
-LATP_Brick:
-	;LDA <Level_Tile
-	;Player_ShellPHA
-	;JSR LATP_GetCoinAboveBlock	; Get coin above block, if any
-	;PLA
-	;STA <Level_Tile
+BumpBlock_Brick:
 
-	LDA Player_TailAttack
-	ORA Object_BlockAttack
-	BNE PRG008_B84E
+	LDA Player_Suit
+	BNE BumpBlock_Brick1
 
-	LDA <Player_Suit
-	BNE PRG008_B84E	 ; If Player is not small, jump to PRG008_B84E (bust brick!)
-
-	LDY #$01	 ; Y = 1 (spawn a coin) (index into PRG001 Bouncer_PUp, i.e. nothing)
-
-	RTS		 ; Return
-
-LATP_BustIce:
-PRG008_B84E:
-	; Crumbling sound
-	LDA Sound_QLevel2
-	ORA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	JSR BrickBust_MoveOver	 ; If a brick is busting in slot 1, move it to slot 2
-
-	LDA #$02
-	STA BrickBust_En	 ; Set brick bust enable
-
-	; Y
-	LDA <Temp_Var14
-	AND #$F0
-	CLC
-	SBC Level_VertScroll
-	STA BrickBust_YUpr	 ; Store upper brick segment Y
-
-	ADD #$08
-	STA BrickBust_YLwr	 ; Store lower brick segment Y
-
- 	; X
-	LDA <Temp_Var16
-	AND #$F0
-	SUB <Horz_Scroll
-	STA BrickBust_X	 ; Store X base coordinate
-
-	LDA #$00	 
-	STA BrickBust_XDist	 ; Reset X fan out distance
-	STA BrickBust_HEn	 ; Reset horizontal enablers
-
-	LDA #-6	 
-	STA BrickBust_YVel	 ; Y velocity = -6
-
-	LDY #$80
-	STY <Temp_Var12		 ; Temp_Var12 = CHNGTILE_DELETETOBG
-
-	LDY #$80	 	; Y = $80
-	LDA #$00
-	STA Object_BlockAttack
-	RTS		 ; Return
-
-LATP_Vine:
-	LDY #$00	 ; Y = 0 (??)
-
-	; Vine raise sound!
-	LDA Sound_QLevel1
-	ORA #SND_LEVELVINE
-	STA Sound_QLevel1
-
-	LDY #$06	 ; Y = 6 (vine) (index into PRG001 Bouncer_PUp)
-	RTS		 ; Return
-
-LATP_NinjaShroom:
-	
-	LDA #$00
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-
-	LDY #$07	 ; Y = 7 (1-up) (index into PRG001 Bouncer_PUp)
-	JSR Do_PUp_Proper
-	RTS		 ; Return
-
-LATP_Key:
-
-	LDA #OBJSTATE_INIT
-	STA Objects_State + 5
-	LDA #OBJ_KEY
-	STA Objects_ID + 5
-	LDA <Temp_Var14
-	AND #$F0
-	SUB #$11
-	STA Objects_YZ + 5
-	LDA <Temp_Var13
-	SBC #$00
-	STA Objects_YHiZ + 5
-
-	LDA <Temp_Var16
-	AND #$F0
-	STA Objects_XZ + 5
-	LDA <Temp_Var15
-	STA Objects_XHiZ + 5
-
-	LDY #$00
-KeyRTS:
-	RTS		 ; Return
-
-LATP_FoxLeaf:
-	LDA #$00
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-
-	LDY #$0A	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)
-	JSR Do_PUp_Proper
-	RTS		 ; Return
-
-LATP_Frog:
-	LDY #$04
-	JSR Do_PUp_Proper
-	CPY #$04
-	BNE Frog_RTS
+	JSR Bumps_PowerUpBlock
 	LDA #$01
-	STA PUp_StarManFlash
+	STA Bouncer_Frame, X
 
-Frog_RTS:
-	RTS		 ; Return
+	LDA #$00
+	STA Bouncer_PowerUp, X
 
-
-LATP_Koopa:
-	LDY #$04
-	JSR Do_PUp_Proper
-	CPY #$04
-	BNE Koopa_RTS
-	LDA #$02
-	STA PUp_StarManFlash
-
-Koopa_RTS:
+	LDA Tile_LastValue
+	STA Bouncer_ReplaceTile, X
 	RTS
 
+BumpBlock_Brick1:
 
-LATP_Sledge:
-	LDY #$04
-	JSR Do_PUp_Proper
-	CPY #$04
-	BNE Sledge_RTS
-	LDA #$03
-	STA PUp_StarManFlash
-
-Sledge_RTS:
-	RTS
-
-LATP_PSwitch:
-	LDY #$05	 ; Y = 5
-
-PRG008_B8BE:
-	LDA SpecialObj_ID,Y
-	BEQ PRG008_B8C9	 ; If this is a free spawn event slot, jump to PRG008_B8C9
-	DEY		 ; Y--
-	BPL PRG008_B8BE	 ; While Y >= 0, loop!
-	JMP PRG008_B8D3	 ; Jump to PRG008_B8D3
-
-PRG008_B8C9:
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,Y	 ; Special object "poof"
-	LDA #$20	 
-	STA SpecialObj_Data,Y	 ; Used as "counter" while poof is in effect
-
-PRG008_B8D3: 
-	LDA <Temp_Var14	 ; Get Y Low
-	AND #$F0	 ; Align to tile grid
-	SUB #16		 ; Above hit tile
-	PHP		 ; Save processor status
-
-	CPY #$00
-	BLS PRG008_B8E2	 ; If index < 0, then we don't have a special object, and skip setting Y Lo
-
-	STA SpecialObj_Y,Y	 ; Otherwise, store Y Lo
-
-PRG008_B8E2:
-	STA Block_ChangeY	 ; Store block change Y low coord
-	PLP		 ; Restore processor status
-
-	LDA <Temp_Var13	 ; Get Y high
-	SBC #$00	 ; Apply carry as necessary from previous subtraction
-
-	CPY #$00	 
-	BLS PRG008_B8F1	 ; If index < 0, then we don't have a special object, and skip setting Y Hi
-	STA SpecialObj_YHi,Y	 ; Otherwise, store Y Hi
-
-PRG008_B8F1:
-	STA Block_ChangeY	 ; Store block change Y high coord
-
-	LDA <Temp_Var16	 ; Get X Low
-
-	CPY #$00
-	BLS PRG008_B8FD	 ; If index < 0, then we don't have a special object, and skip setting X Lo
-	STA SpecialObj_X,Y	 ; Otherwise, store X Lo
-
-PRG008_B8FD:
-	STA Block_ChangeX	 ; Store block change X low coord
-
-	LDA <Temp_Var15		 ; Get X Hi
-	STA Block_ChangeXHi	 ; Store block change X high coord
-
-	LDA PSwitchActivateTile	 
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate	 ; Queue P-Switch appear!
-
-	LDY #$01	 ; Y = 1 (index into PRG001 Bouncer_PUp, i.e. nothing)
-	RTS		 ; Return
-
-LATP_CoinCommon:
-	INC Coins_Earned ; One more coin earned
-	INC Coins_ThisLevel	 ; One more coin earned this level
-
-	; Y Lo - into Temp_Var1
-	LDA <Temp_Var14	
-	STA <Temp_Var1	
-
-	; X Lo - center it up, shove into Temp_Var2
-	LDA <Temp_Var16
+	LDA Bump_X
 	AND #$F0
-	ORA #$04
-	STA <Temp_Var2
+	STA Debris_X
 
-	JMP Produce_Coin	 ; Jump to Produce_Coin (common "power up" coin entry)
+	LDA Bump_Y
+	AND #$F0
+	STA Debris_Y
 
-	; Special routine which gets a coin above a ? block, if one is present!
-LATP_GetCoinAboveBlock:
-	LDA <Temp_Var14
-	PHA		 ; Save Temp_Var14 (Y Lo)
-	SUB #16	
-	STA <Temp_Var14	 ; Temp_Var14 -= 16 (get tile above)
+	JSR Common_MakeBricks
 
-	STX <Temp_Var5	 ; Backup X into Temp_Var5
-	JSR Player_GetTileAndSlope_Normal	 ; Get a tile here
-	LDX <Temp_Var5	 ; Restore X into Temp_Var5
-
-	TAY
-	LDA TileProperties, Y
-	CMP #TILE_ITEM_COIN
-	BCS PRG008_B948
-	AND #$0F
-	CMP #TILE_PROP_COIN
-	BNE PRG008_B948	 ; If tile above is not a coin, jump to PRG008_B948
-
-	; Tile above was a coin...
-	; The following will collect the coin along with the ? block hit!
-	LDY <Temp_Var12		 ; ... and copied into Temp_Var12
-	LDA [Map_Tile_AddrL],Y
-	EOR #$01
-	STA [Map_Tile_AddrL],Y
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
 	
-	JSR Level_QueueChangeBlock	; Delete to background
-
-	PLA		 
-	STA <Temp_Var14		 ; Restore Temp_Var14
-	JMP LATP_CoinCommon	 ; Jump to common coin routine
-
-PRG008_B948:
-	PLA		 
-	STA <Temp_Var14	 ; Restore Temp_Var14
+	JSR Level_QueueChangeBlock
+	
 	RTS		 ; Return
 
+
+BumpBlock_Vine:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_VINE
+	STA Bouncer_PowerUp, X
+	RTS		 ; Return
+
+BumpBlock_NinjaShroom:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_NINJASHROOM
+	JSR BumpBlock_CheckMushroom
+	RTS		 ; Return
+
+BumpBlock_Key:
+
+	JSR Bumps_PowerUpBlock
+	LDA #$80
+	STA Bouncer_PowerUp, X
+	RTS		 ; Return
+
+BumpBlock_FoxLeaf:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_FOXLEAF
+	JSR BumpBlock_CheckMushroom
+	RTS		 ; Return
+
+BumpBlock_Frog:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_FROGSUIT
+	JSR BumpBlock_CheckMushroom
+	RTS		 ; Return
+
+
+BumpBlock_Koopa:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_SHELL
+	JSR BumpBlock_CheckMushroom
+	RTS
+
+
+BumpBlock_Sledge:
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_HAMMERSUIT
+	JSR BumpBlock_CheckMushroom
+	RTS
+
+BumpBlock_PSwitch:
+
+	LDA Block_NeedsUpdate
+	BNE BumpBlock_PSwitch1
+
+	JSR Bumps_PowerUpBlock
+
+	LDA Tile_Y
+	SUB #$10
+	STA Tile_Y
+
+	LDA Tile_YHi
+	SBC #$00
+	STA Tile_YHi
+
+	JSR Player_GetTile
+	INY
+	TYA
+	JSR Level_QueueChangeBlock
+
+	LDA Tile_Y
+	AND #$F0
+	STA Poof_Y
+
+	LDA Tile_YHi
+	STA Poof_YHi
+
+	LDA Tile_X
+	AND #$F0
+	STA Poof_X
+	JSR Common_MakePoof
+
+BumpBlock_PSwitch1:
+	RTS
 
 Player_TailAttack_Offsets: ; (Y and X)
 	.byte 28, -6	; Player not horizontally flipped
@@ -4205,7 +3974,7 @@ TileAirX:	 .byte $00, $00, $18, $D8
 TileAirY:	 .byte $18, $D8, $00, $00
 
 ApplyTileMove:
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	AND #$0F
 	STA <Temp_Var1
 	LDA #TILE_PROP_MOVE_DOWN
@@ -5011,7 +4780,7 @@ Player_DetectWall:
 	LDA Player_ForcedSlide
 	BNE Player_DetectWallRTS
 
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_ALL
 	BCC Player_DetectWallRTS
 
@@ -5024,14 +4793,14 @@ Player_DetectWall1:
 	ORA #SND_PLAYERBUMP 
 	STA Sound_QPlayer
 
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	CMP #TILE_PROP_ITEM
 	BCC Player_DetectWall1_1
 
 	JSR Level_DoBumpBlocks
 
 Player_DetectWall1_1:
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	CMP #TILE_ITEM_BRICK
 	BEQ Player_DetectWall1_2
 
@@ -5048,13 +4817,13 @@ Player_DetectWall2:
 	LDA Player_FireDash
 	BEQ Player_DetectWall4
 
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	CMP #TILE_PROP_ITEM
 	BCC Player_DetectWall3
 
 	JSR Level_DoBumpBlocks
 
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	CMP #TILE_ITEM_BRICK
 	BEQ Player_DetectWallRTS
 
@@ -5224,34 +4993,6 @@ No_Wall_Jump:
 ;	LDA TempY
 ;	STA <Player_XHi
 ;	RTS
-
-HandleIceBreak:
-	LDY Player_InWater
-	BEQ HandleIceBreak2
-
-	LDY <Player_YVel
-	BPL HandleIceBreak2
-
-	CPX #$00
-	BNE HandleIceBreak2
-
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SLICK)
-	BNE HandleIceBreak2
-
-	LDA Block_NeedsUpdate
-	BNE HandleIceBreak2
-
-	JSR LATP_BustIce
-	LDA #$59
-	STA BrickBust_Tile
-	LDA #SPR_PAL1
-	STA BrickBust_Pal
-	LDA Level_Tile
-	EOR #$01
-	JSR Level_QueueChangeBlock
-
-HandleIceBreak2:
-	RTS
 
 SetLastScrollDirection:
 	LDA <Horz_Scroll
@@ -5498,7 +5239,7 @@ Player_DetectCeiling1_1:
 	STA Player_HitCeiling
 
 	LDA Level_Tile_Prop_Floor_Ceiling_Left
-	STA <Level_Tile_Prop
+	STA Tile_LastProp
 	AND #$F0
 	CMP #TILE_PROP_SOLID_BOTTOM
 	BEQ Player_HitBlocks
@@ -5507,7 +5248,7 @@ Player_DetectCeiling1_1:
 	BEQ Player_HitBlocks
 
 	LDA Level_Tile_Prop_Floor_Ceiling_Right
-	STA <Level_Tile_Prop
+	STA Tile_LastProp
 	AND #$F0
 	CMP #TILE_PROP_SOLID_BOTTOM
 	BEQ Player_HitBlocks
@@ -5552,8 +5293,7 @@ Player_DetectFloor1:
 	LDA #$00	 
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVel  ; Halt Player vertically
-	LDA #$01
-	STA Kill_Tally	  ; Reset Kill_Tally
+
 	RTS
 
 Player_DetectFloor2:
@@ -5630,7 +5370,7 @@ Player_AirChanges2:
 
 Player_ToggleBlock:
 	LDY <Temp_Var12		 
-	LDA <Level_Tile	; prevent double collecting
+	LDA Tile_LastValue	; prevent double collecting
 	EOR #$01
 	STA [Map_Tile_AddrL],Y	; prevent double collecting
 	
@@ -5641,7 +5381,7 @@ Tile_NoInteract:
 	RTS
 
 Player_BgTileInteract:
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	AND #$0F
 
 	JSR DynJump
@@ -5664,7 +5404,7 @@ Player_BgTileInteract:
 	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Bg_HurtPlayer:
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	CMP #TILE_PROP_WATER
 	BCC Bg_HurtPlayer1
 
@@ -5693,7 +5433,7 @@ Bg_Coin:
 
 	INC Coins_Earned
 	LDA #$00
-	STA <Level_Tile_Prop
+	STA Tile_LastProp
 	JMP Player_ToggleBlock
 
 Bg_CoinRTS:
@@ -5714,7 +5454,7 @@ Bg_Cherry:
 
 	INC Cherries
 	LDA #$00
-	STA <Level_Tile_Prop
+	STA Tile_LastProp
 	JMP Player_ToggleBlock
 
 Bg_CherryRTS:
@@ -5723,7 +5463,7 @@ Bg_CherryRTS:
 
 Player_BodyHeadTileInteract:
 
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	AND #$0F
 
 	JSR DynJump
@@ -5757,7 +5497,19 @@ Body_Treasure:
 	LDA Block_NeedsUpdate
 	BNE Body_TreasureRTS
 
-	JSR LATP_CoinCommon
+	
+	LDA Tile_Y
+	AND #$F0
+	SUB #$08
+	STA <Temp_Var1
+
+	LDA Tile_X, X
+	AND #$F0
+	ORA #$04
+	STA <Temp_Var2
+
+	JSR Produce_Coin
+
 	LDA #$09
 	ADD Coins_Earned_Buffer
 	STA Coins_Earned_Buffer
@@ -5773,7 +5525,7 @@ Body_Head:
 	RTS
 
 Player_SolidTileInteract:
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	AND #$0F
 
 	JSR DynJump
@@ -5817,12 +5569,18 @@ Solid_Slick1:
 	LDA Block_NeedsUpdate
 	BNE Solid_SlickRTS
 
-	JSR LATP_BustIce
-	LDA #$59
-	STA BrickBust_Tile
-	LDA #SPR_PAL1
-	STA BrickBust_Pal
-	LDA Level_Tile
+	LDA Tile_X
+	AND #$F0
+	STA Debris_X
+
+	LDA Tile_Y
+	AND #$F0
+	SUB #$08
+	STA Debris_Y
+
+	JSR Common_MakeIce
+	
+	LDA Tile_LastValue
 	EOR #$01
 	JSR Level_QueueChangeBlock
 
@@ -5830,11 +5588,12 @@ Solid_SlickRTS:
 	RTS
 
 Solid_PSwitch:
+	STA Debug_Snap
 	LDA <TileXIndex
 	CMP #HEAD_FEET_LEFT_INDEX
 	BEQ Solid_PSwitch1
 
-	CMP HEAD_FEET_RIGHT_INDEX
+	CMP #HEAD_FEET_RIGHT_INDEX
 	BNE Solid_PSwitchRTS
 
 Solid_PSwitch1:
@@ -5897,7 +5656,7 @@ Player_NextTile:
 	JSR Player_TileInteractions
 
 	LDX <TileXIndex
-	LDA <Level_Tile_Prop
+	LDA Tile_LastProp
 	STA Level_Tile_Prop_Head,X	 ; Store it
 
 	DEC <TileYIndex
@@ -6418,4 +6177,39 @@ Stop_Poison_Mode:
 
 	LDA #$00
 	STA Poison_Mode
+	RTS
+
+Player_CheckForeground:
+	LDA #$00
+	STA Player_Behind
+
+	LDX #$05
+
+Player_CheckForeground1:
+	LDA Level_Tile_Prop_Head, X
+	CMP #(TILE_PROP_SOLID_TOP)
+	BCS Player_CheckForeground2
+
+	AND #(TILE_PROP_FOREGROUND)
+	BEQ Player_CheckForeground2
+
+	INC Player_Behind
+	RTS
+
+Player_CheckForeground2:
+	DEX
+	BPL Player_CheckForeground1
+	RTS
+
+Check_KillTally:
+	LDA Kill_Tally_Ticker
+	BEQ Check_KillTally1
+
+	DEC Kill_Tally_Ticker
+	BNE Check_KillTally1
+
+	LDA #$00
+	STA Kill_Tally
+
+Check_KillTally1:
 	RTS

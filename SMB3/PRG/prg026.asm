@@ -2255,7 +2255,6 @@ AttemptUpdate1:
 	RTS
 
 UpdatePalette:
-	STA Debug_Snap
 	LDA <Graphics_Queue	; A = StatusBar_UpdFl
 	BNE UpdatePalette1
 
@@ -2519,7 +2518,7 @@ StatusBar_DrawStars:
 	
 	JSR BytesTo3Digits
 
-	LDA <DigitsResult
+	LDA <DigitsResult + 2
 	ORA #$30
 	STA Status_Bar_Top + 15
 
@@ -2527,7 +2526,7 @@ StatusBar_DrawStars:
 	ORA #$30
 	STA Status_Bar_Top + 16
 
-	LDA <DigitsResult + 2
+	LDA <DigitsResult
 	ORA #$30
 	STA Status_Bar_Top + 17
 	INC Top_Needs_Redraw
@@ -2599,8 +2598,9 @@ Game_UpdateExperience1:
 	LDA <CalcResult + 2
 	STA Player_Experience + 2
 
-	DEC Exp_Earned
-	RTS
+	LDA #$00
+	STA Exp_Earned
+	INC Bottom_Needs_Redraw
 
 	LDA StatusBar_Mode
 	BEQ StatusBar_DrawExperience

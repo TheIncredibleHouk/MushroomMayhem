@@ -453,9 +453,9 @@
     <block value="BF">Empty ? Block</block>
     <block value="C0"></block>
     <block value="C1"></block>
-    <block value="C2">Cleared Coin</block>
-    <block value="C3">Coin</block>
-    <block value="C4">Waterfall FG</block>
+    <block value="C2">P-Switch</block>
+    <block value="C3">P-Switch Stomped</block>
+    <block value="C4">P-Switch</block>
     <block value="C5"></block>
     <block value="C6"></block>
     <block value="C7">Platform Top</block>

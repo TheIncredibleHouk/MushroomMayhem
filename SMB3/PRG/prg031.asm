@@ -3006,14 +3006,17 @@ Time_Digit_Limits: .byte $09, $0A, $06, $0A, $06, $0A
 
 Increase_Game_Timer:
 	INC Game_Timer_Tick
+	
 	LDA Game_Timer_Tick
 	CMP #$3C
 	BCC Game_Timer_RTS
 
 	INC DayNightMicroTicker
+
 	LDA DayNightMicroTicker
 	CMP #$0A
 	BCC DoGameTimer
+
 	LDA #$00
 	STA DayNightMicroTicker
 	INC DayNightTicker

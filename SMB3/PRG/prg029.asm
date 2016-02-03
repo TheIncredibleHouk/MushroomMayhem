@@ -280,7 +280,7 @@ SPPF_Offsets:
 	.byte SPPF(PF38), SPPF(PF39), SPPF(PF3A), SPPF(PF3B), SPPF(PF3C), SPPF(PF3D), SPPF(PF3E), SPPF(PF3F)
 	.byte SPPF(PF40), SPPF(PF41), SPPF(PF42), SPPF(PF43), SPPF(PF44), SPPF(PF45), SPPF(PF46), SPPF(PF47)
 	.byte SPPF(PF48), SPPF(PF49), SPPF(PF4A), SPPF(PF4B), SPPF(PF4C), SPPF(PF4D), SPPF(PF4E), SPPF(PF4F)
-	.byte SPPF(PF50), SPPF2(PF51), SPPF2(PF52), SPPF2(PF53), SPPF2(PF54), SPPF2(PF55)
+	.byte SPPF(PF50), SPPF2(PF51), SPPF2(PF52), SPPF2(PF53), SPPF2(PF54), SPPF2(PF55), SPPF2(PF56)
 	
 	
 
@@ -414,11 +414,12 @@ RAINBOW_PAL_CYCLE:
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
+	JSR Player_RainbowCycle
 	LDX <Player_Frame
 	LDA Player_FramePageOff,X
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
-	LDY <Player_Suit
+	LDY Effective_Suit
 	LDA Player_PUpRootPage,Y ; Get VROM root page for this power up
 	ADD <Temp_Var1		 ; Add appropriate offset to the VROM base for the animation frame
 
@@ -862,7 +863,7 @@ ToadHouse_Box_X:	.byte $40, $70, $A0
 	; (Already checked for him pressing 'B'!)
 ToadHouse_ChestPressB:
 	LDA #TILE7_CHEST_LR
-	;SUB Level_Tile_Head
+	;SUB Tile_LastValue_Head
 	CMP #$04
 	BGE PRG029_D1B7	 ; If Player is NOT touching one of the treasure boxes, jump to PRG029_D1B7
 
@@ -1435,9 +1436,11 @@ PRG029_D59B:
 	JSR Player_GetTileAndSlope	; Get tile
 	CMP #TILE_ITEM_COIN
 	BGE PRG029_D5B7
+
 	AND #$0F
 	CMP #TILE_PROP_VPIPE_LEFT
 	BEQ PRG029_D5C3
+
 	CMP #TILE_PROP_VPIPE_RIGHT
 	BEQ PRG029_D5C3	 	; If tile is one of the transit pipe top/bottom tiles, jump to PRG029_D5C3 (RTS)
 
@@ -1945,6 +1948,7 @@ PRG029_D7FC:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BlockChange_Do:
 	LDA Block_NeedsUpdate	 
+	STA Block_WasUpdated
 	BEQ PRG029_DC7D	
 
 PRG029_DC36:
@@ -2655,13 +2659,13 @@ Player_FrameOverride:
 	RTS
 
 Player_RainbowCycle:
-	STA Debug_Snap
 	LDA Player_StarOff
 	BNE Player_RainbowCycle1
 
 	LDA Player_StarInv
 	BEQ Player_RainbowCycle3
 
+	DEC Player_StarInv
 	CMP #32
 	BNE Player_RainbowCycle1	 ; If Player_StarInv <> 32, jump to PRG029_CF05
 
@@ -2674,12 +2678,6 @@ Player_RainbowCycle:
 	LDA Level_MusicQueueRestore
 	STA Sound_QMusic2
 
-	CMP #$01				; at #$01 we just reset the palette
-	BCS Player_RainbowCycle1
-
-	JSR Restore_Curr_Player_Pal
-	RTS
-
 Player_RainbowCycle1:
 	LDA Player_Pal_Backup	; Check the current palette backup, if it doens't exist, back it up
 	BNE Player_RainbowCycle2
@@ -2688,8 +2686,14 @@ Player_RainbowCycle1:
 
 Player_RainbowCycle2:
 	JSR Rainbow_Palette_Cycle ; color cycle the palette for a rainbow effect!
+	RTS
 
 Player_RainbowCycle3:
+	LDA Player_Pal_Backup
+	BEQ Player_RainbowCycle4
+
+	JSR Restore_Curr_Player_Pal
+Player_RainbowCycle4:
 	RTS
 ;	LDA Player_Grow
 ;	BNE Not_Frozen

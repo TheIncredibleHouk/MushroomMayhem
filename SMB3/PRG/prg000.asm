@@ -151,49 +151,13 @@ OTDO_Explosion:
 	.byte $16, $16
 
 	; Defines the "bounding box" 
-	; Selected by Object_AttrFlags lower 4 bits
-
-Object_MidX:
-	.byte $03 ; BOX00
-	.byte $07 ; BOX01
-	.byte $07 ; BOX02
-	.byte $07 ; BOX03
-	.byte $0F ; BOX04
-	.byte $07 ; BOX05
-	.byte $07 ; BOX06
-	.byte $07 ; BOX07
-	.byte $07 ; BOX08
-	.byte $07 ; BOX09
-	.byte $07 ; BOX10
-	.byte $07 ; BOX11
-	.byte $07 ; BOX12
-	.byte $07 ; BOX13
-	.byte $07 ; BOX14
-	.byte $07 ; BOX15
-
-Object_MidY:
-	.byte $07 ; BOX00
-	.byte $07 ; BOX01
-	.byte $0C ; BOX02
-	.byte $07 ; BOX03
-	.byte $0F ; BOX04
-	.byte $00 ; BOX05
-	.byte $00 ; BOX06
-	.byte $00 ; BOX07
-	.byte $00 ; BOX08
-	.byte $00 ; BOX09
-	.byte $0F ; BOX10
-	.byte $00 ; BOX11
-	.byte $00 ; BOX13
-	.byte $00 ; BOX14
-	.byte $00 ; BOX15
 
 Object_BoundBox:
 	;    Left Right Top  Bot- offsets applied to sprite X/Y
-	.byte  1,   7,   2,   8	; 0 ; 8x16  OAT_BOUNDBOX00
-	.byte  1,  14,   2,   14	; 1 ; 16x16 OAT_BOUNDBOX01
-	.byte  2,  12,   2,  24	; 2 ; 16x24 OAT_BOUNDBOX02
-	.byte  1,  16,   -2,  16	; 3 ; solid block (16x16) OAT_BOUNDBOX03
+	.byte  1,   6,   1,   15	; 8x16  BOUND8x16
+	.byte  1,  14,   1,   16	; 16x16 BOUND16x16
+	.byte  1,  14,   1,   23	; 16x24 BOUND16x24
+	.byte  0,  16,   0,  16	;  ; solid block (16x16) BOUND16x16BLOCK
 	.byte  8,  24,   8,  30	; (BOSS)
 	.byte  8,  18,   8,  18	; 5 (UNUSED)
 	.byte  2,  27,  -2,  34	; 6
@@ -209,154 +173,154 @@ Object_BoundBox:
 
 Object_AttrFlags:
 	; Defines flags which set attributes of objects
-	.byte OAT_BOUNDBOX00	; Object $00
-	.byte OAT_BOUNDBOX02 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $01
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $02
-	.byte OAT_BOUNDBOX03 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $03
-	.byte OAT_BOUNDBOX02 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $04
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $05
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_FIREPROOF	; Object $07 - OBJ_BRICK
-	.byte OAT_BOUNDBOX00 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $08 - OBJ_COIN
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $09 - OBJ_BUBBLE
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0A
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0B - OBJ_POWERUP
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0C - OBJ_POWERUP_STARMAN
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0E - OBJ_HARDICE
-	.byte OAT_BOUNDBOX00	; Object $0F
-	.byte OAT_BOUNDBOX01	; Object $10 OBJ_PIXIE
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $11
-	.byte OAT_BOUNDBOX01  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
-	.byte OAT_BOUNDBOX01  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $13
+	.byte BOUND8x16	; Object $00
+	.byte BOUND16x24 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $01
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $02
+	.byte BOUND16x16BLOCK | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $03
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $04
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $05
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $06 - OBJ_BOUNCEDOWNUP
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_FIREPROOF	; Object $07 - OBJ_BRICK
+	.byte BOUND8x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $08 - OBJ_COIN
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $09 - OBJ_BUBBLE
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0A
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0B - OBJ_POWERUP
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0E - OBJ_HARDICE
+	.byte BOUND8x16	; Object $0F
+	.byte BOUND16x16	; Object $10 OBJ_PIXIE
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $11
+	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
+	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $13
 	.byte OAT_BOUNDBOX04 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF 	; Object $14
 	.byte OAT_BOUNDBOX09 | OAT_ICEPROOF | OAT_FIREPROOF	; Object $15
-	.byte OAT_BOUNDBOX01  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $16
-	.byte  OAT_BOUNDBOX01  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $17 - OBJ_WINGS
+	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $16
+	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $17 - OBJ_WINGS
 	.byte OAT_BOUNDBOX13	; Object $18 - OBJ_BOSS_BOWSER
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1A
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.byte OAT_BOUNDBOX01	; Object $1C
-	.byte OAT_BOUNDBOX00 | OAT_WEAPONSHELLPROOF	; Object $1D
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1E - OBJ_POWERUP_SUPERLEAF
-	.byte OAT_BOUNDBOX00 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1F - OBJ_GROWINGVINE
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $20
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $23 - OBJ_POWERUP_FOXLEAF
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1A
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.byte BOUND16x16	; Object $1C
+	.byte BOUND8x16 | OAT_WEAPONSHELLPROOF	; Object $1D
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte BOUND8x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1F - OBJ_GROWINGVINE
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $20
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $23 - OBJ_POWERUP_FOXLEAF
 	.byte  OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $24 - OBJ_PLATFORMHORZ
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $25
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $27 - OBJ_OSCILLATING_H
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $28 - OBJ_OSCILLATING_V
-	.byte OAT_BOUNDBOX01	; Object $29 - OBJ_SPIKE
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $2A - OBJ_SPARKRIGHT
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $2B - OBJ_RICOCHET_PODOBO
+	.byte BOUND16x16	; Object $29 - OBJ_SPIKE
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $2A - OBJ_SPARKRIGHT
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $2C - OBJ_CLOUDPLATFORM
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $2D - OBJ_BIGBERTHA
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF		; Object $2E - OBJ_PIRATEBOO
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_FIREPROOF	; Object $2F - OBJ_BOO
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_FIREPROOF	; Object $30 - OBJ_PACBOO
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF; Object $31 - OBJ_PHANTO
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	| OAT_ICEPROOF ; Object $32 - OBJ_PHANTO_FLIP
-	.byte OAT_BOUNDBOX01	; Object $33 - OBJ_NIPPER
-	.byte OAT_BOUNDBOX02 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $34 - OBJ_TOAD
-	.byte OAT_BOUNDBOX00	; Object $35 - OBJ_TOADHOUSEITEM
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF		; Object $2E - OBJ_PIRATEBOO
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_FIREPROOF	; Object $2F - OBJ_BOO
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_FIREPROOF	; Object $30 - OBJ_PACBOO
+	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF; Object $31 - OBJ_PHANTO
+	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF ; Object $32 - OBJ_PHANTO_FLIP
+	.byte BOUND16x16	; Object $33 - OBJ_NIPPER
+	.byte BOUND16x24 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $34 - OBJ_TOAD
+	.byte BOUND8x16	; Object $35 - OBJ_TOADHOUSEITEM
 	.byte OAT_BOUNDBOX08 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $36 - OBJ_WOODENPLATFORM
 	.byte OAT_BOUNDBOX08 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $37 - OBJ_OSCILLATING_HS
 	.byte OAT_BOUNDBOX08 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $38 - OBJ_OSCILLATING_VS
-	.byte OAT_BOUNDBOX01	; Object $39 - OBJ_NIPPERHOPPING
-	.byte OAT_BOUNDBOX03 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3B - OBJ_SPECTERCHEEP
+	.byte BOUND16x16	; Object $39 - OBJ_NIPPERHOPPING
+	.byte BOUND16x16BLOCK | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3A - OBJ_FALLINGPLATFORM
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OAT_BOUNDBOX08 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3C - OBJ_WOODENPLATFORMFALL
-	.byte OAT_BOUNDBOX01	; Object $3D - OBJ_NIPPERFIREBREATHER
+	.byte BOUND16x16	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OAT_BOUNDBOX08 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3E - OBJ_WOODENPLATFORMFLOAT
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF	; Object $3F - OBJ_DRYBONES
-	.byte OAT_BOUNDBOX01	; Object $40 - OBJ_GOLDENPIRANHAGROWER
-	.byte OAT_BOUNDBOX01  	; Object $41 - OBJ_PIRANHAGROWER
-	.byte OAT_BOUNDBOX01| OAT_FIREPROOF	; Object $42 - OBJ_DRYCHEEP
-	.byte OAT_BOUNDBOX01	; Object $43 - OBJ_BEACHEDCHEEP
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF	; Object $3F - OBJ_DRYBONES
+	.byte BOUND16x16	; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.byte BOUND16x16  	; Object $41 - OBJ_PIRANHAGROWER
+	.byte BOUND16x16| OAT_FIREPROOF	; Object $42 - OBJ_DRYCHEEP
+	.byte BOUND16x16	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	 | OAT_WEAPONSHELLPROOF; Object $44 - OBJ_WOODENPLATUNSTABLE
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $45 - OBJ_PWING
-	.byte OAT_BOUNDBOX01	; Object $46 - OBJ_SNIFIT
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $45 - OBJ_PWING
+	.byte BOUND16x16	; Object $46 - OBJ_SNIFIT
 	.byte OAT_BOUNDBOX10 | OAT_ICEPROOF 	; Object $47 - OBJ_BIRDO
-	.byte OAT_BOUNDBOX01	; Object $48 - OBJ_NINJI
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4A - OBJ_MAGICSTAR
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4B - OBJ_MAGICSTAR
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4C - OBJ_MAGICSTAR
-	.byte OAT_BOUNDBOX00	; Object $4D
-	.byte OAT_BOUNDBOX00	; Object $4E
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF ; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF		; Object $50 - OBJ_BOBOMBEXPLODE
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OAT_BOUNDBOX01	; Object $52 - OBJ_SPINTULA
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $53 - OBJ_PODOBOOCEILING
+	.byte BOUND16x16	; Object $48 - OBJ_NINJI
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $49 - OBJ_FLOATINGBGCLOUD
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4A - OBJ_MAGICSTAR
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4B - OBJ_MAGICSTAR
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4C - OBJ_MAGICSTAR
+	.byte BOUND8x16	; Object $4D
+	.byte BOUND8x16	; Object $4E
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF ; Object $4F - OBJ_CHAINCHOMPFREE
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF		; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $51 - OBJ_ROTODISCDUAL
+	.byte BOUND16x16	; Object $52 - OBJ_SPINTULA
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OAT_BOUNDBOX12 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $54
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $55 - OBJ_BOBOMB
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $55 - OBJ_BOBOMB
 	.byte OAT_BOUNDBOX07	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OAT_BOUNDBOX07	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
-	.byte OAT_BOUNDBOX01	; Object $58 - OBJ_FIRECHOMP
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $59 - OBJ_FIRESNAKE
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5A - OBJ_ROTODISCCLOCKWISE
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5C - OBJ_ICEBLOCK
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF ; Object $5D - OBJ_STONEBLOCK
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5E - OBJ_ROTODISCDUALOPPOSE
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte OAT_BOUNDBOX01	; Object $61 - OBJ_SKULLBLOOPER
-	.byte OAT_BOUNDBOX01	; Object $62 - OBJ_BLOOPER
+	.byte BOUND16x16	; Object $58 - OBJ_FIRECHOMP
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $59 - OBJ_FIRESNAKE
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5A - OBJ_ROTODISCCLOCKWISE
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5B - OBJ_ROTODISCCCLOCKWISE
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5C - OBJ_ICEBLOCK
+	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF ; Object $5D - OBJ_STONEBLOCK
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5E - OBJ_ROTODISCDUALOPPOSE
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $60 - OBJ_ROTODISCDUALCCLOCK
+	.byte BOUND16x16	; Object $61 - OBJ_SKULLBLOOPER
+	.byte BOUND16x16	; Object $62 - OBJ_BLOOPER
 	.byte OAT_BOUNDBOX13 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $63 - OBJ_FLOATMINE
-	.byte OAT_BOUNDBOX01	; Object $64 - OBJ_CHEEPCHEEPHOPPER
-	.byte OAT_BOUNDBOX00 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $65 - OBJ_WATERCURRENTUPWARD
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $66 - OBJ_WATERCURRENTUPWARD
-	.byte OAT_BOUNDBOX01	; Object $67 - OBJ_SNOWGUY
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $68 - OBJ_TWIRLINGBUZZY
-	.byte OAT_BOUNDBOX01	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OAT_BOUNDBOX01	; Object $6A - OBJ_VEGGIEGUY
-	.byte OAT_BOUNDBOX01	; Object $6B - OBJ_SHYGUY
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6C - OBJ_GREENTROOPA
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6D - OBJ_REDTROOPA
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF	; Object $70 - OBJ_BUZZYBEATLE
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $71 - OBJ_SPINY
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $72 - OBJ_GOOMBA
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $73 - OBJ_PARAGOOMBA
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS 	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $75 - OBJ_WATERFILLER
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
-	.byte OAT_BOUNDBOX01	; Object $77 - OBJ_GREENCHEEP
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	| OAT_ICEPROOF	; Object $78 - OBJ_BULLETBILL
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $7A - OBJ_PURPLETROOPA
-	.byte OAT_BOUNDBOX01	; Object $7B - OBJ_BLUESHELL
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $7C - OBJ_HELPER
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS 	; Object $7D - OBJ_PARAZOMBIEGOOMBA
+	.byte BOUND16x16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
+	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $65 - OBJ_WATERCURRENTUPWARD
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $66 - OBJ_WATERCURRENTUPWARD
+	.byte BOUND16x16	; Object $67 - OBJ_SNOWGUY
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $68 - OBJ_TWIRLINGBUZZY
+	.byte BOUND16x16	; Object $69 - OBJ_TWIRLINGSPINY
+	.byte BOUND16x16	; Object $6A - OBJ_VEGGIEGUY
+	.byte BOUND16x16	; Object $6B - OBJ_SHYGUY
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6C - OBJ_GREENTROOPA
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6D - OBJ_REDTROOPA
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF	; Object $70 - OBJ_BUZZYBEATLE
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $71 - OBJ_SPINY
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $72 - OBJ_GOOMBA
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $73 - OBJ_PARAGOOMBA
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS 	; Object $74 - OBJ_ZOMBIEGOOMBA
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $75 - OBJ_WATERFILLER
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
+	.byte BOUND16x16	; Object $77 - OBJ_GREENCHEEP
+	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF	; Object $78 - OBJ_BULLETBILL
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $7A - OBJ_PURPLETROOPA
+	.byte BOUND16x16	; Object $7B - OBJ_BLUESHELL
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $7C - OBJ_HELPER
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS 	; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OAT_BOUNDBOX13	; Object $7F - OBJ_BIGREDPIRANHA
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $80 - OBJ_FLYINGGREENPARATROOPA
-	.byte OAT_BOUNDBOX02	; Object $81 - OBJ_HAMMERBRO
-	.byte OAT_BOUNDBOX02	; Object $82 - OBJ_NINJABRO
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF	; Object $83 - OBJ_LAKITU
-	.byte OAT_BOUNDBOX01	; Object $84 - OBJ_SPINYEGG
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_BLUESPINY
-	.byte OAT_BOUNDBOX02	; Object $86 - OBJ_ICEBRO
-	.byte OAT_BOUNDBOX02	; Object $87 - OBJ_FIREBRO
-	.byte OAT_BOUNDBOX02	; Object $88 - OBJ_PIRATEBRO
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF	; Object $89 - OBJ_CHAINCHOMP
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.byte BOUND16x24	; Object $81 - OBJ_HAMMERBRO
+	.byte BOUND16x24	; Object $82 - OBJ_NINJABRO
+	.byte BOUND16x16 | OAT_ICEPROOF	; Object $83 - OBJ_LAKITU
+	.byte BOUND16x16	; Object $84 - OBJ_SPINYEGG
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_BLUESPINY
+	.byte BOUND16x24	; Object $86 - OBJ_ICEBRO
+	.byte BOUND16x24	; Object $87 - OBJ_FIREBRO
+	.byte BOUND16x24	; Object $88 - OBJ_PIRATEBRO
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF	; Object $89 - OBJ_CHAINCHOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREPROOF	; Object $8A - OBJ_THWOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREPROOF	; Object $8B - OBJ_HYPERTHWOMP
 	.byte OAT_BOUNDBOX13 | OAT_FIREPROOF	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OAT_BOUNDBOX13 | OAT_FIREPROOF	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OAT_BOUNDBOX13 | OAT_FIREPROOF	; Object $8E - OBJ_THWOMPDIAGONALUL
-	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $8F - OBJ_THWOMPDIAGONALDL
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $90 - OBJ_FIREICEBAR
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $91 - OBJ_FREEZIE
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF 	; Object $92 - OBJ_SWOOSH
-	.byte OAT_BOUNDBOX01 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $93 - OBJ_INTRO
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $8F - OBJ_THWOMPDIAGONALDL
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $90 - OBJ_FIREICEBAR
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $91 - OBJ_FREEZIE
+	.byte BOUND16x16 | OAT_ICEPROOF 	; Object $92 - OBJ_SWOOSH
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $93 - OBJ_INTRO
 	.byte OAT_BOUNDBOX06 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $94 - OBJ_BIGQBLOCK_3UP
 	.byte OAT_BOUNDBOX06 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
 	.byte OAT_BOUNDBOX06 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
@@ -364,23 +328,23 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX06 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $98 - OBJ_BIGQBLOCK_TANOOKI
 	.byte OAT_BOUNDBOX06 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $99 - OBJ_BIGQBLOCK_FROG
 	.byte OAT_BOUNDBOX06 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $9A - OBJ_BIGQBLOCK_HAMMER
-	.byte OAT_BOUNDBOX00	; Object $9B
-	.byte OAT_BOUNDBOX00	; Object $9C
+	.byte BOUND8x16	; Object $9B
+	.byte BOUND8x16	; Object $9C
 	.byte OAT_BOUNDBOX14 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $9E - OBJ_PODOBOO
-	.byte OAT_BOUNDBOX01 | OAT_FIREPROOF	; Object $9F - OBJ_PARABEETLE
-	.byte OAT_BOUNDBOX01		; Object $A0 - OBJ_PUMPKINFREE
-	.byte OAT_BOUNDBOX01		; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $9E - OBJ_PODOBOO
+	.byte BOUND16x16 | OAT_FIREPROOF	; Object $9F - OBJ_PARABEETLE
+	.byte BOUND16x16		; Object $A0 - OBJ_PUMPKINFREE
+	.byte BOUND16x16		; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.byte OAT_BOUNDBOX10	; Object $A2 - OBJ_REDPIRANHA
 	.byte OAT_BOUNDBOX10	; Object $A3 - OBJ_PIRANHA_TWOSHOT
 	.byte OAT_BOUNDBOX10		; Object $A4 - OBJ_PUMPKINPLANT
-	.byte OAT_BOUNDBOX01		; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
+	.byte BOUND16x16		; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.byte OAT_BOUNDBOX10	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OAT_BOUNDBOX10	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
 	.byte OAT_BOUNDBOX10	; Object $A8 - OBJ_UPARROW
 	.byte OAT_BOUNDBOX10	; Object $A9 - OBJ_MANYARROW
-	.byte OAT_BOUNDBOX00 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AA - OBJ_AIRSHIPPROP
-	.byte OAT_BOUNDBOX00 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AB
+	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AA - OBJ_AIRSHIPPROP
+	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AB
 	.byte OAT_BOUNDBOX15 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AC - OBJ_FIREJET_LEFT
 	.byte OAT_BOUNDBOX12	; Object $AD - OBJ_ROCKYWRENCH
 	.byte OAT_BOUNDBOX11 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AE - OBJ_BOLTLIFT
@@ -388,7 +352,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX13 | OAT_FIREPROOF	; Object $B0 - OBJ_BIGCANNONBALL
 	.byte OAT_BOUNDBOX15 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $B1 - OBJ_FIREJET_RIGHT
 	.byte OAT_BOUNDBOX14 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.byte OAT_BOUNDBOX01	; Object $B3
+	.byte BOUND16x16	; Object $B3
 
 
 	; Index by Level_TilesetIdx
@@ -474,6 +438,7 @@ Object_HitGround:
 	STA <Objects_YZ,X	 ; Align to tile and apply slope
 	LDA #$00
 	STA <Objects_YVelZ,X	 ; Halt vertical movement
+	STA Objects_YVelFrac,X	 
 
 	RTS		 ; Return
 
@@ -513,24 +478,37 @@ Object_WorldDetectN1:
 ; $C546 
 Object_WorldDetect8:
 ; $C54A
-Object_DetectTiles:
+Object_DetectTilesForced:
+	LDA <Objects_TilesDetectZ,X
+	STA Objects_PreviousTilesDetect,X
+	JMP Object_DetectTiles1
 
-PRG000_C54C:
+Object_DetectTiles:
+	LDA <Objects_TilesDetectZ,X
+	STA Objects_PreviousTilesDetect,X
+
+	LDA Block_WasUpdated
+	BNE Object_DetectTiles1
+
+	LDA Objects_XYCS, X
+	CMP Objects_XYCSPrev, X
+	BNE Object_DetectTiles1
+	RTS
+
+Object_DetectTiles1:
 	LDA ObjSplash_DisTimer,X
 	BEQ PRG000_C559	 ; If ObjSplash_DisTimer = 0, jump to PRG000_C559
 
 	DEC ObjSplash_DisTimer,X	 ; ObjSplash_DisTimer --
 
 PRG000_C559:
-	LDA <Objects_CollisionDetectionZ,X
-	STA Objects_PreviousCollisionDetection,X
 
 	LDA #$00
-	STA <Objects_CollisionDetectionZ,X	; Clear Object's detection status
+	STA <Objects_TilesDetectZ,X	; Clear Object's detection status
 
-	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_TileFeetProp/Quad and Object_TileWallProp/Quad
+	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_VertTileProp/Quad and Object_HorzTileProp/Quad
 
-	LDA Object_TileWallProp	; A = detected tile index
+	LDA Object_HorzTileProp, X	; A = detected tile index
 	AND #TILE_PROP_SOLID_ALL
 	BEQ PRG000_C584	 	
 
@@ -545,8 +523,8 @@ PRG000_C559:
 	ASL A		 	; A = 2
 
 PRG000_C580:
-	ORA <Objects_CollisionDetectionZ,X	; Set bit 0 or 1
-	STA <Objects_CollisionDetectionZ,X	 ; Update Objects_CollisionDetectionZ
+	ORA <Objects_TilesDetectZ,X	; Set bit 0 or 1
+	STA <Objects_TilesDetectZ,X	 ; Update Objects_TilesDetectZ
 
 PRG000_C584:
 
@@ -555,15 +533,15 @@ PRG000_C584:
 
 PRG000_C59A:
 
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp, X
 	AND #TILE_PROP_SOLID_BOTTOM
 	BEQ PRG000_C5A8	 
 
 PRG000_C5A2:
 	; Flag ceiling impact
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	ORA #$08
-	STA <Objects_CollisionDetectionZ,X
+	STA <Objects_TilesDetectZ,X
 
 PRG000_C5A8:
 	RTS		 ; Return
@@ -571,7 +549,7 @@ PRG000_C5A8:
 PRG000_C5A9:
 
 	; Object moving downwards (floor detection)
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp, X
 	AND #TILE_PROP_SOLID_TOP
 	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
 	RTS
@@ -579,9 +557,9 @@ PRG000_C5A9:
 PRG000_C5B4:
 
 	; Flag object as "hit ground"
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ, X
 	ORA #$04
-	STA <Objects_CollisionDetectionZ,X
+	STA <Objects_TilesDetectZ, X
 
 PRG000_C65C:
 	RTS		 ; Return
@@ -593,84 +571,43 @@ PRG000_C65C:
 ; current state of movement.  Handles entering/leaving water.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_GetAttrAndMoveTiles:
-
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile	; Get tile here
-	STA Object_TileBody
-	STA Objects_LastProp, X
+	JSR Object_DetectTileCenter	; Get tile here
+	STA Object_BodyTileProp, X
+	TYA
+	STA Object_BodyTileValue, X
+	
 	JSR Object_Check_Water
 
-	LDA ObjTile_DetXLo
-	AND #$F0
-	STA Objects_LastTileX
-
-	LDA ObjTile_DetXHi
-	STA Objects_LastTileXHi
-
-	LDA ObjTile_DetYLo
-	AND #$F0
-	STA Objects_LastTileY
-	LDA ObjTile_DetYHi
-	STA Objects_LastTileYHi
-
-	LDA Object_LevelTile
-	STA Objects_LastTile,X	 ; Set last tile this object detected
-
-	LDY ObjGroupRel_Idx	 ; Y = object's group-relative index
-
-	LDA ObjectGroup_Attributes2,Y	; Get attributes set 2 for this object
-	AND #OA2_TDOGRPMASK	 
-	LSR A		; Upper 4 bits of attributes set 2 shifted right 1 (value * 8)
-	PHA		; Save it
-	TAY		; -> 'Y' (use respective Object_TileDetectOffsets group Row 1)
-
 	LDA <Objects_YVelZ,X
-	BPL PRG000_C713	 ; If object Y velocity is >= 0 (stopped or moving downward), jump to PRG000_C713
+	BMI PRG000_C713	 ; If object Y velocity is >= 0 (stopped or moving downward), jump to PRG000_C713
 
-	INY
-	INY		 ; If object moving upward, Y += 2 (use respective Object_TileDetectOffsets group Row 2)
+	JSR Object_DetectTileBottomEdge
+	JMP PRG000_C714
 
 PRG000_C713:
-	JSR Object_DetectTile	 ; Get tile
- 
+	JSR Object_DetectTileTopEdge	 ; Get tile
+
+PRG000_C714: 
 	; Store into tile index holders
-	STA Object_TileFeetProp
-	LDA Object_LevelTile
-	STA Object_TileFeetValue
+	STA Object_VertTileProp, X
+	TYA
+	STA Object_VertTileValue, X
 
-
-	LDA ObjTile_DetXLo
-	STA <Temp_Var16	 ; Temp_Var16 = ObjTile_DetXLo
-
-	LDA #$00
-	STA Object_TileWallValue	 ; Object_TileWallValue = 0
-
-	PLA		 ; Restore Object_TileDetectOffsets index
-
-	TAY		 ; Object_TileDetectOffsets index -> 'Y'
-
-	INY
-	INY
-	INY
-	INY		 ; Y += 4 (move down two Rows in Object_TileDetectOffsets)
-
-PRG000_C791:
 	LDA <Objects_XVelZ,X
 	BMI PRG000_C797	 ; If object's X velocity < 0 (moving leftward), jump to PRG000_C797
 
-	INY
-	INY		 ; Y += 2 (move down one Rows in Object_TileDetectOffsets)
+	JSR Object_DetectTileRightEdge
+	JMP PRG000_C798
 
 PRG000_C797:
-	JSR Object_DetectTile	 ; Get tile here
+	JSR Object_DetectTileLeftEdge	 ; Get tile here
 
+PRG000_C798:
 	; Store into tile index holders
-	STA Object_TileWallProp
+	STA Object_HorzTileProp, X
+	TYA
+	STA Object_HorzTileValue, X
 
-	LDA Object_LevelTile
-	STA Object_TileWallValue
-
-	JSR SetSpriteFG
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -681,84 +618,161 @@ PRG000_C797:
 ; Y/X offset pair.  Seems kind of a limited way to go, but hey..
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $C7A9
-Block_DetectX = ObjTile_DetXLo
-Block_DetectXHi = ObjTile_DetXHi
-Block_DetectY = ObjTile_DetYLo
-Block_DetectYHi = ObjTile_DetYHi
+Block_DetectX = Tile_DetectionX
+Block_DetectXHi = Tile_DetectionXHi
+Block_DetectY = Tile_DetectionY
+Block_DetectYHi = Tile_DetectionYHi
 
-Object_DetectTileOn:
-	LDA <Objects_XZ, X
-	STA ObjTile_DetXLo
+Object_DetectTileCenter:
+	LDA Objects_BoundRight, X
+	SUB Objects_BoundLeft, X
+	LSR A
+	STA <Temp_Var1
 
-	LDA <Objects_XHiZ, X 
-	STA ObjTile_DetXHi
+	LDA Objects_BoundLeft, X
+	ADD <Temp_Var1
+	STA Tile_DetectionX
 
-	LDA <Objects_YZ, X
-	STA ObjTile_DetYLo
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Tile_DetectionXHi
 
-	LDA <Objects_YHiZ, X 
-	STA ObjTile_DetYHi
+	LDA Objects_BoundBottom, X
+	SUB Objects_BoundTop, X
+	LSR A
+	STA <Temp_Var1
+
+	LDA Objects_BoundTop, X
+	ADD <Temp_Var1
+	STA Tile_DetectionY
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Tile_DetectionYHi
+	JMP Object_DetectTile
+
+Object_DetectTileRightEdge:
+	LDA Objects_BoundRight, X
+	STA Tile_DetectionX
+
+	LDA Objects_BoundRightHi, X
+	STA Tile_DetectionXHi
+
+	LDA Objects_BoundBottom, X
+	SUB Objects_BoundTop, X
+	LSR A
+	STA <Temp_Var1
+
+	LDA Objects_BoundTop, X
+	ADD <Temp_Var1
+	STA Tile_DetectionY
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Tile_DetectionYHi
+	JMP Object_DetectTile
+
+Object_DetectTileLeftEdge:
+	LDA Objects_BoundLeft, X
+	STA Tile_DetectionX
+
+	LDA Objects_BoundLeftHi, X
+	STA Tile_DetectionXHi
+
+	LDA Objects_BoundBottom, X
+	SUB Objects_BoundTop, X
+	LSR A
+	STA <Temp_Var1
+
+	LDA Objects_BoundTop, X
+	ADD <Temp_Var1
+	STA Tile_DetectionY
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Tile_DetectionYHi
+	JMP Object_DetectTile
+
+Object_DetectTileTopEdge:
+	LDA Objects_BoundTop, X
+	STA Tile_DetectionY
+
+	LDA Objects_BoundTopHi, X
+	STA Tile_DetectionYHi
+
+	LDA Objects_BoundRight, X
+	SUB Objects_BoundLeft, X
+	LSR A
+	STA <Temp_Var1
+
+	LDA Objects_BoundLeft, X
+	ADD <Temp_Var1
+	STA Tile_DetectionX
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Tile_DetectionXHi
+	JMP Object_DetectTile
 
 
-Object_DetectTileDirect:
+Object_DetectTileBottomEdge:
+	LDA Objects_BoundBottom, X
+	STA Tile_DetectionY
 
-	LDA ObjTile_DetYHi 	; -> ObjTile_DetYHi (high)
-	AND #$01
-	STA <Temp_Var3	 ; Temp_Var3 = 0 or 1, depending if Y lo is on odd line or not
+	LDA Objects_BoundBottomHi, X
+	STA Tile_DetectionYHi
 
-	LDA ObjTile_DetYLo
-	AND #$F0
-	STA ObjTile_DetYLo
+	LDA Objects_BoundRight, X
+	SUB Objects_BoundLeft, X
+	LSR A
+	STA <Temp_Var1
 
-	LDA ObjTile_DetXLo
-	AND #$F0
-	STA ObjTile_DetXLo
+	LDA Objects_BoundLeft, X
+	ADD <Temp_Var1
+	STA Tile_DetectionX
 
-	LDA ObjTile_DetXHi
-	JMP Tile_DirectDetect
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Tile_DetectionXHi
+	JMP Object_DetectTile
 
 Object_DetectTile:
-	LDA <Objects_YZ,X
-	ADD Object_TileDetectOffsets,Y	; Adding tile detection Y offset to Object's Y
-	AND #$f0		; Align to grid
-	STA ObjTile_DetYLo 	; -> ObjTile_DetYLo (low)
+	LDA Tile_DetectionYHi
+	BEQ TileYFine
+	BPL CheckTileLow
 
-	LDA <Objects_YHiZ,X
-	ADC #$00	 	; Apply carry
-	STA ObjTile_DetYHi 	; -> ObjTile_DetYHi (high)
+TileTooHigh:
+	LDA #$00
+	STA Tile_DetectionY
+	STA Tile_DetectionYHi
+	BEQ TileYFine
 
-	BEQ PRG000_C7FA	 	; If no carry, jump to PRG000_C7FA
+CheckTileLow:
+	CMP #$01
+	BCC TileYFine
 
-	; In a non-vertical level, a high value of 2 or greater is way beyond the bottom
-	CMP #$02
-	BGE PRG000_C832	 ; If the Y Hi >= 2, jump to PRG000_C832
+	LDA Tile_DetectionY
+	CMP #$B0
+	BCC TileYFine
 
-PRG000_C7F1:
-	PHA		 ; Save high part
+	LDA #$A0
+	STA Tile_DetectionY
 
-	LDA ObjTile_DetYLo
-	CMP #$b0
 
-	PLA		 ; Restore high part
-
-	BGE PRG000_C832	 ; If the Y lo part is greater than $B0 (the bottom of the screen), jump to PRG000_C832
-
-PRG000_C7FA:
+TileYFine:
+	LDA Tile_DetectionYHi 	; -> Tile_DetectionYHi (high)
 	AND #$01
 	STA <Temp_Var3	 ; Temp_Var3 = 0 or 1, depending if Y lo is on odd line or not
 
-	LDA <Objects_XZ,X
-	ADC Object_TileDetectOffsets+1,Y	; Adding tile detection X offset to Object's X
-	STA ObjTile_DetXLo 	; -> ObjTile_DetXLo (low)
+	LDA Tile_DetectionY
+	AND #$F0
+	STA Tile_DetectionY
 
-	LDA <Objects_XHiZ,X
-	ADC #$00	 	; Apply carry
-	STA ObjTile_DetXHi 	; -> ObjTile_DetXHi (high)
+	LDA Tile_DetectionX
+	AND #$F0
+	STA Tile_DetectionX
 
-	CMP #$10
-	BGE PRG000_C832	 ; If the high part is more than $10 (biggest possible within other limits), jump to PRG000_C832
-
-Tile_DirectDetect:
+	LDA Tile_DetectionXHi
 	ASL A		 ; Change high part into 2 byte index to select the screen
 	TAY		 ; -> 'Y'
 
@@ -770,29 +784,28 @@ Tile_DirectDetect:
 	STA <Temp_Var2	
 
 	; Calculate tile offset within screen
-	LDA ObjTile_DetXLo
+	LDA Tile_DetectionX
 	LSR A	
 	LSR A	
 	LSR A	
 	LSR A	
-	ORA ObjTile_DetYLo
+	ORA Tile_DetectionY
 
 	TAY		 	; -> 'Y'
 
 PRG000_C82A:
 	LDA [Temp_Var1],Y	; Get tile
-	STA Object_LevelTile
 	JSR PSwitch_SubstTileAndAttr	 ; Substitute tile if P-Switch is active
 	TAY
 	LDA TileProperties, Y
-	STA Object_TileProp
-	STY Object_LevelTile
+	STA Tile_LastProp
+	STY Tile_LastValue
 	RTS	 ; Jump to PRG000_C834
 
 PRG000_C832:
 	LDA #$00	; No tile detected
-	STA Object_LevelTile	; Store tile index detected
-	STA Object_TileProp
+	STA Tile_LastValue	; Store tile index detected
+	STA Tile_LastProp
 
 PRG000_C834:
 
@@ -1193,6 +1206,7 @@ PRG000_CA82:
 	.word ObjState_Killed		; 6 - Killed
 	.word ObjState_PoofDying		; 7 - Object was squashed (NOTE: Really only intended for Goomba/Giant Goomba)
 	.word ObjState_PoofDying	; 8 - "Poof" Dying
+	.word ObjState_Fresh
 
 	; Patterns selected by "poof" death frame
 PoofDeath_Pats:
@@ -1257,7 +1271,7 @@ PRG000_CAF1:
 ObjWakeUp_FeetYOff:	.byte 10, -10
 
 Object_DampenVelocity:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ Object_DampenVelocityRTS
 
@@ -1279,9 +1293,9 @@ Object_DampenVelocity:
 	ADD #$01
 	STA <Objects_YVelZ,X 
 
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #~HIT_GROUND
-	STA <Objects_CollisionDetectionZ, X
+	STA <Objects_TilesDetectZ, X
 	
 	LDA <Objects_XVelZ,X 
 	AND #$80
@@ -1302,28 +1316,51 @@ Object_DampenVelocityRTS:
 
 	; Called for an object in state 3 to do its "shelled" routine
 ObjState_Shelled:
-	LDY ObjGroupRel_Idx	; Y = object's group-relative index
-	; Attribute set 3 bit 4 is NOT set... (object is "shelled" when stomped)
-
 	LDA <Player_HaltGameZ	 
-	BNE Object_DrawShelled	 ; If gameplay is halted, jump to PRG000_CB5B
+	BNE ObjState_Shelled3	 ; If gameplay is halted, jump to PRG000_CB5B
 
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
-
 	JSR Object_CalcBoundBox	
-	JSR Object_AttackOrDefeat
-	JSR Object_InteractWithOtherObjects
-	BCS ObjState_Shelled1
+	JSR Object_InteractWithPlayer
+	BCC ObjState_Shelled1
 
+	LDA Object_BeingHeld, X
+	BNE ObjState_Shelled0
+
+	LDA #OBJSTATE_KICKED
+	STA Objects_State, X
+	JMP Object_GetKicked
+
+ObjState_Shelled0
+
+	JSR Object_KillOthers
+	BCC ObjState_Shelled2
+
+	DEC Objects_Health, X
+	JSR Object_GetKilled
+
+	TYA
+	TAX
+
+	DEC Objects_Health, X
+	JSR Object_GetKilled
+	JMP Object_DrawShelled
+
+ObjState_Shelled1:
+	JSR Object_InteractWithOtherObjects
+	BCS ObjState_Shelled2
+
+	JSR Object_DetectTiles
 	JSR Object_DampenVelocity
 	JSR Object_InteractWithTiles
 	JSR Object_TestTopBumpBlocks
-	JSR Object_HandleBumpUnderneath	 ; Handle object getting hit from underside 
 
-ObjState_Shelled1:
+ObjState_Shelled2:
+	
 	JSR Object_ShellDoWakeUp	 
 
+ObjState_Shelled3:
 	JMP Object_DrawShelled
 
 
@@ -1348,37 +1385,6 @@ Object_SetShakeAwakeTimer:
 PRG000_CB7A:
 	RTS		 ; Return
 
-	LDA Objects_ID,X
-
-	CMP #OBJ_BOBOMB
-	;BNE PRG000_CB8E		; If this is not a Bob-omb of any sort, jump to PRG000_CB8E
-
-	JSR Object_ShakeAndDraw
-	LDA Objects_Data2, X
-	CMP #$03
-	BNE BobOmbDrawShelled2
-	LDY Object_SpriteRAM_Offset, X
-	LDA <Counter_1
-	AND #$01
-	BEQ BobOmbDrawShelled1
-	TYA
-	TAX
-	DEC Sprite_RAM,X
-	DEC Sprite_RAM+4,X
-
-BobOmbDrawShelled1:
-	LDX <CurrentObjectIndexZ
-	LDA #$FF
-	STA Objects_Timer, X
-
-BobOmbDrawShelled2:
-	RTS
-
-PRG000_CB86:
-
-	; Have object flip same way as Player
-	JMP Object_ShakeAndDraw	 ; Draw object and never come back!
-
 Object_DrawShelled:
 	; Set object frame to 2
 	LDA #$02	 
@@ -1386,29 +1392,10 @@ Object_DrawShelled:
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprit
 	JSR Object_SetShakeAwakeTimer	 ; Set the "shake awake" timers
 	JSR Object_Vibrate
-	JSR Object_TestTopBumpBlocks
 
 PRG000_CBB3:
 	RTS		 ; Return
 
-PRG000_CBB3_2:
-	LDY Object_SpriteRAM_Offset,X	
-	LDA Sprite_RAM + $06, Y
-	ORA #SPR_VFLIP
-	STA Sprite_RAM + $06, Y
-	RTS
-
-PRG000_CBB4:
-
-	; NOT a Buzzy Beatle
-
-	CMP #OBJ_SPINY
-	BEQ PRG000_CBB3	 ; If Object is a Spiny, jump to PRG000_CBB3
-
-	CMP #OBJ_BLUESPINY
-	BEQ PRG000_CBB3	 
-
-	; "Shake awake" speed
 
 Object_Vibrate:
 	LDA Objects_Timer3,X
@@ -1502,11 +1489,12 @@ ObjState_Kicked1:
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
 	JSR Object_KillOthers
+	JSR Object_DetectTiles
 	JSR Object_TestTopBumpBlocks
 	JSR Object_TestSideBumpBlocks
+	BCS DrawKickedShell
+
 	JSR Object_InteractWithTiles
-	JSR Object_HandleBumpUnderneath
-	
 	
 DrawKickedShell:
 	LDA GameCounter
@@ -1545,62 +1533,45 @@ ObjectKill_NoScore:
 	RTS		 ; Return
 
 Object_KillOthers:
-	TXA 
-	ADD <Counter_1 
-	LSR A 
-	BCC PRG000_CD46	 ; Semi-randomly jump to PRG000_CD46
- 
-	;JSR ObjectToObject_HitTest 
-	BCC PRG000_CD46	 ; If object has not hit another object, jump to PRG000_CD46
+	LDY #$04
 
-	; Play object-to-object collision sound 
-	LDA Sound_QPlayer 
-	ORA #SND_PLAYERKICK 
-	STA Sound_QPlayer
+Object_KillOthers1:
+	CPY <CurrentObjectIndexZ
+	BEQ Object_KillOthers2
 
-	LDA Objects_HitCount,Y	; HitCount--
-	SUB #$01
-	STA Objects_HitCount,Y	; HitCount--
- 
-	; Knock object in same general direction as the kicked shell object
-	LDA <Objects_XVelZ,X 
-	ASL A 
-	LDA #$10	 ; A = $10
-	BCC PRG000_CD17 
-	LDA #-$10	 ; A = -$10
+	LDA Objects_State, Y
+	AND #$FE
+	CMP #OBJSTATE_NORMAL
+	BNE Object_KillOthers2
 
-PRG000_CD17: 
-	STA Objects_XVelZ,Y
- 
-	LDA Objects_State,Y 
-	CMP #OBJSTATE_KICKED
-	BNE PRG000_CD36	 ; If the impacted object's state is not Kicked, jump to PRG000_CD36
+	LDA Objects_ID,Y	 ; Y = this object's ID
+	TAX
 
-	; Another kicked object on the way... (slam and kill eachother)
+	LDA Object_AttrFlags,X
+	AND #OAT_WEAPONSHELLPROOF
+	BNE Object_KillOthers2
 
-	LDA Objects_KillTally,Y
-	JSR ObjectKill_SetShellKillVars	 ; Kill our kicked object and set ShellKill variables
+	LDX <CurrentObjectIndexZ
+	JSR Object_DetectObjects
+	BCC Object_KillOthers2
 
-	; Set X Velocity of our kicked object in the direction of the impacted object
-	LDA Objects_XVelZ,Y
-	ASL A	
-	LDA #$10
-	BCS PRG000_CD34
-	LDA #-$10	
-PRG000_CD34:
-	STA <Objects_XVelZ,X
-
-PRG000_CD36:
 	TYA
-	TAX		 ; X = the other object we just hit
-	JSR ObjectKill_SetShellKillVars	 ; Kill the impacted object and set ShellKill variables
+	TAX
+	DEC Objects_Health, X
 
-	LDX <CurrentObjectIndexZ		 ; X = object slot index (our kicked object)
-	INC Objects_KillTally,X		; Increase our kicked object's kill tally...
-	INC Exp_Earned
+	JSR Object_GetKilled
+	
+
+	LDX <CurrentObjectIndexZ
 	SEC
+	RTS
 
-PRG000_CD46:
+Object_KillOthers2:
+	DEY
+	BPL Object_KillOthers1
+
+	CLC
+	LDX <CurrentObjectIndexZ
 	RTS
 	
 	; Kicked shell object animation frames and flips
@@ -1613,20 +1584,20 @@ BrickBust_MoveOver:
 	LDA BrickBust_En
 	STA BrickBust_En+1
 
-	LDA BrickBust_YUpr
-	STA BrickBust_YUpr+1
+	LDA Brick_DebrisYHi
+	STA Brick_DebrisYHi+1
 
-	LDA BrickBust_YLwr
-	STA BrickBust_YLwr+1
+	LDA Brick_DebrisY
+	STA Brick_DebrisY+1
 
-	LDA BrickBust_X
-	STA BrickBust_X+1
+	LDA Brick_DebrisX
+	STA Brick_DebrisX+1
 
 	LDA BrickBust_YVel
 	STA BrickBust_YVel+1
 
-	LDA BrickBust_XDist
-	STA BrickBust_XDist+1
+	LDA Brick_DebrisXDist
+	STA Brick_DebrisXDist+1
 
 	LDA BrickBust_HEn
 	STA BrickBust_HEn+1
@@ -1649,11 +1620,11 @@ BrickBust_MoveOver:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $CDD2
 Object_TopBumpBlocks:
-	LDA Object_TileFeetValue
-	STA <Level_Tile
+	LDA Object_VertTileValue, X
+	STA Tile_LastValue
 
-	LDA Object_TileFeetProp
-	STA <Level_Tile_Prop
+	LDA Object_VertTileProp, X
+	STA Tile_LastProp
 
 	; Transfer tile detection 
 	LDA <Objects_YZ, X
@@ -1675,32 +1646,32 @@ Object_TopBumpBlocks:
 	JMP Object_BumpBlocks
 
 Object_DirectBumpBlocks:
-	LDA Object_LevelTile	; Store tile index detected
-	STA <Level_Tile
+	LDA Tile_LastValue	; Store tile index detected
+	STA Tile_LastValue
 
-	LDA Object_TileProp
-	STA <Level_Tile_Prop
+	LDA Tile_LastProp
+	STA Tile_LastProp
 
 	; Transfer tile detection 
-	LDA ObjTile_DetYLo
+	LDA Tile_DetectionY
 	STA <Temp_Var14	
 
-	LDA ObjTile_DetYHi
+	LDA Tile_DetectionYHi
 	STA <Temp_Var13	
 
-	LDA ObjTile_DetXLo
+	LDA Tile_DetectionX
 	STA <Temp_Var16	
 
-	LDA ObjTile_DetXHi
+	LDA Tile_DetectionXHi
 	STA <Temp_Var15	
 	JMP Object_BumpBlocks
 
 Object_SideBumpBlocks:
-	LDA Object_TileWallValue
-	STA <Level_Tile
+	LDA Object_TileWallValue, X
+	STA Tile_LastValue
 
-	LDA Object_TileWallProp
-	STA <Level_Tile_Prop
+	LDA Object_HorzTileProp, X
+	STA Tile_LastProp
 
 	; Transfer tile detection 
 	LDA <Objects_YZ, X
@@ -1760,8 +1731,6 @@ ObjectKickXVelMoving:	.byte -$30, $30
 PlayerKickFlipBits:	.byte $00, $40
 
 	; X velocities depending on kick direction
-BobombKickXVel:	.byte -$18, $18
-
 	; Different X and X Hi offsets applied to object being held by Player
 	; Changes whether not doing anything special, in pipe, etc.
 ObjectHoldXOff:		.byte $0B, -$0B, $04, -$04, $04, $0B, -$13, $04, -$08, $04, $00
@@ -1772,127 +1741,6 @@ ObjectToObject_HitXVel:	.byte -$08, $08
 
 ObjState_Held:
 
-	LDA <Player_IsDying 
-	BEQ PRG000_CE28	 ; If Player is NOT dying, jump to PRG000_CE28
- 
-	RTS
-
-PRG000_CE28:
-	BIT <Pad_Holding 
-	BVC Player_KickObject	 ; If Player is NOT holding B button, jump to Player_KickObject  
-
-PRG000_CE2F:
-	LDA #$01
-	STA Player_IsHolding
-
-	JSR Object_CalcBoundBox	
-	JSR Object_HeldCollide
-	JSR Object_PositionHeld
-	JSR Object_ShellDoWakeUp
-	JSR Object_DrawShelled
-
-PRG000_CFA8:
-	RTS	 ; Jump to PRG000_CEEF
-
-
-Player_KickObject:
-	LDA Level_PipeMove	 
-	BNE PRG000_CE2F	 ; If Player is moving through pipes, jump to PRG000_CE2F (PRG000_CEEF)
-
-	; Play kick sound
-
-
-	;LDA Objects_ID,X
-	;CMP #OBJ_BOBOMB	 
-	;BNE PRG000_CE79	 ; If this is NOT a Bob-omb, jump to PRG000_CE79
-
-PRG000_CE54:
-
-	;; Bob-ombs only...
-	;
-	;; State remains "normal"
-	;LDA Objects_LastProp, X
-	;CMP #TILE_PROP_SOLID_ALL
-	;BCC PRG000_CE55
-	;JMP KillShell
-
-PRG000_CE55:
-	;LDA #OBJSTATE_NORMAL
-	;STA Objects_State,X
-	;
-	;; Set Y vel to -$20 (bounce up)
-	;LDA #-$20
-	;STA <Objects_YVelZ,X
-	;
-	;; Set X Velocity appropriately based on kick direction
-	;JSR Object_QuickXDistanceFromPlayer
-	;LDA BobombKickXVel,Y
-	;STA <Objects_XVelZ,X
-	;
-	;EOR <Player_XVel
-	;BMI PRG000_CE76	 ; If the Bob-omb's X velocity is the opposite sign of the Player's, jump to PRG000_CE76
-	;
-	;LDA <Player_XVel
-	;STA <Temp_Var1		; -> Temp_Var1 (yyyy xxxx)
-	;ASL <Temp_Var1		; Shift 1 bit left (bit 7 into carry) (y yyyx xxx0)
-	;ROR A			; A is now arithmatically shifted to the right (yyyyy xxx) (signed division by 2)
-	;ADD ObjectKickXVelMoving,Y	 ; Add base "moving" X velocity of Bob-omb
-	;STA <Objects_XVelZ,X	 ; Set this as Bob-omb's X Velocity
-
-PRG000_CE76:
-	;LDA <Pad_Holding
-	;AND #PAD_UP
-	;BEQ PRG000_CE77
-	;LDA #$C0
-	;STA <Objects_YVelZ,X
-
-PRG000_CE77:
-	;JMP Object_ShakeAndDraw	 ; Draw Bob-omb and don't come back!
-
-PRG000_CE79:
-
-	; Anything besides a Bob-omb...
-
-	; Clear Objects_KillTally 
-	LDA #$00	
-	STA Objects_KillTally,X
-
-	LDY #1	 ; Y = 1
-
-	LDA <Player_FlipBits
-	BNE PRG000_CE94	 ; If Player is not turned around, jump to PRG000_CE94
-
-	LDY #-1	 ; Y = -1
-
-PRG000_CE94:
-	STY <Objects_XVelZ,X	 ; Set minimum X velocity on object (to enable wall hit detection)
-
-	JSR Object_WorldDetectN1 ; Detect against world
-
-	LDA <Objects_CollisionDetectionZ,X
-	AND #$03	
-	BEQ Object_GetKicked	 ; If object has not hit a wall, jump to PRG000_CEB4
-
-
-KillShell:
-	; 1 EXP
-	INC Exp_Earned
-	JSR Reap_Coin
-
-Dont_Coin_It4:
-
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X
-
-	; Set object Y velocity to -$40 (fly up a bit)
-	LDA #-$40
-	STA <Objects_YVelZ,X
-
-	; Remove that minimum X velocity
-	LDA #$00
-	STA <Objects_XVelZ,X
-
-	JSR Object_DrawShelled
 	RTS
 
 Object_GetKicked:
@@ -1982,35 +1830,6 @@ Object_GetKicked6:
 
 Object_GetKicked7:
 	STA <Objects_XVelZ,X	 ; Set as object's X velocity
-
-	RTS
-
-Object_HeldCollide:
-	;JSR ObjectToObject_HitTest	; Test if this object has collided with another object
-	BCC Object_HeldCollideRTS		 ; If this object did not collide with any other objects, jump to PRG000_CF98
-
-	LDA Objects_Timer2,X
-	ORA Level_PipeMove
-	BNE Object_HeldCollideRTS	 	; If timer 2 is not expired or Player is moving through pipes, jump to PRG000_CF98
-
-	; Object colliding sound!
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERKICK
-	STA Sound_QPlayer
-
-	; Object which was held is dead!
-	JSR Object_GetKilled
-	
-	TYA
-	TAX
-
-	JSR Object_GetKilled
-
-	LDX <CurrentObjectIndexZ
-	LDA #$00
-	STA Player_IsHolding
-	
-Object_HeldCollideRTS:
 	RTS
 
 Object_PositionHeld:
@@ -2160,18 +1979,7 @@ Object_PoofDie:
 	LDA #$1f
 	STA Objects_Timer,X
 
-	LDA Objects_ID,X
-	CMP #OBJ_POISONMUSHROOM
-	BEQ End_The_Level
- 
 	RTS		 ; Return
-
-End_The_Level:
-	LDA #$80
-	STA CompleteLevelTimer
-
-End_The_Level1:
-	RTS
 
 Object_DrawAndMoveNotHalt:
 	JSR Object_ShakeAndDraw	
@@ -2265,8 +2073,6 @@ PRG000_D0A9:
 Object_ApplyY_With_Gravity:
 	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity without limit
 
-	JSR Object_DetectTiles	 ; Detect against the world
-
 	LDY Objects_InWater,X	; Y = whether in-water
 
 	LDA <Objects_YVelZ,X
@@ -2282,8 +2088,6 @@ Object_ApplyY_With_Gravity:
 
 	LDA #OBJECT_MAXWATERUPWARD	 
 	STA <Objects_YVelZ,X ; Otherwise, cut off velocity at OBJECT_MAXWATERUPWARD
-
-	BNE PRG000_D0CA	 ; Jump (technically always) to PRG000_D0CA (uhh... pointless, heh)
 
 PRG000_D0CA:
 	LDA NoGravity
@@ -2307,7 +2111,7 @@ PRG000_D0CA:
 PRG000_D0DE:
 	LDA #$00
 	STA NoGravity
-	RTS		 ; Return
+	JMP Object_XYCheckSum
 
 PRG000_D0DF:
 	LDA #$00
@@ -2323,6 +2127,15 @@ PRG000_D0DF:
 
 	LDA Object_MaxAntiGravity,Y
 	STA <Objects_YVelZ,X	; Cap fall at max rate
+
+Object_XYCheckSum:
+
+	LDA Objects_XYCS, X
+	STA Objects_XYCSPrev, X
+
+	LDA <Objects_XZ, X
+	ADD <Objects_YZ, X
+	STA Objects_XYCS, X
 	RTS
 
 ObjectHeld_WakeUpDir:	.byte $40, $00 
@@ -2335,36 +2148,15 @@ Object_ShellDoWakeUp:
 	LDA Objects_Timer3,X 
 	BNE PRG000_D15A	 ; If timer 3 is not expired, jump to PRG000_D15A (RTS) 
 
-	LDA Objects_State,X 
-	CMP #OBJSTATE_HELD
-	BNE PRG000_D147	 ; If object is not currently being held, jump to PRG000_D147
+	LDA Object_BeingHeld, X
+	BEQ PRG000_D147	 ; If object is not currently being held, jump to PRG000_D147
 
-	; Object is being held... 
-
-	JSR Object_WorldDetectN1 
-	LDA <Objects_CollisionDetectionZ,X 
+	LDA <Objects_TilesDetectZ,X 
 	BEQ PRG000_D147	 ; If held object did not impact anything, jump to PRG000_D147 
 
-	; Held object impacted...
- 
-	; 1 EXP for enemy defeated
-	INC Exp_Earned
-
-	JSR Reap_Coin
-
-Dont_Coin_It6:
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X
- 
-	; Set object Y velocity to -$40 (fly up after death)
-	LDA #-$40 
-	STA <Objects_YVelZ,X
- 
-	; Halt horizontal movement
-	LDA #$00 
-	STA <Objects_XVelZ,X
- 
-	BEQ PRG000_D155	 ; Jump (technically always) to PRG000_D155
+	DEC Objects_Health, X
+	JSR Object_GetKilled
+	RTS
 
 PRG000_D147: 
 
@@ -2482,6 +2274,11 @@ PRG000_D1C5:
 	LDA Player_InWater
 	BNE Object_HurtPlayer
 
+	LDY ObjGroupRel_Idx
+	LDA ObjectGroup_Attributes3, Y
+	AND #OA3_NOTSTOMPABLE
+	BNE Object_HurtPlayer
+
 	LDA <HitTest_Result
 	AND #(HITTEST_BOTTOM)
 	BEQ Object_HurtPlayer
@@ -2497,7 +2294,28 @@ Object_HurtPlayer:
 
 
 Object_Defeated:
+	LDA ObjGroupRel_Idx
+	ASL A
+	TAY
+	LDA ObjectGroup_CollideJumpTable + 1, Y
+	CMP #$08
+	BNE Object_Defeated1
+
+	LDA ObjectGroup_CollideJumpTable, Y
+	STA Objects_ID, X
+
+	LDA #-$40
+	STA <Player_YVel
+	STA Player_InAir
+
 	
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERSWIM
+	STA Sound_QPlayer
+	JMP Object_MoveTowardsPlayer
+
+
+Object_Defeated1:
 	JSR Object_GetKilled
 	
 	LDA #-$40
@@ -2510,79 +2328,7 @@ Object_Defeated:
 	STA Sound_QPlayer
 	RTS
 
-
-Object_SetShellState:
-	; Set Objects_State to Shelled
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State,X
-
-	; Set timer 3 = $FF (wake up timer)
-	LDA #$ff
-	STA Objects_Timer3,X
-	RTS		 ; Return
-
 Object_HoldKickOrHurtPlayer:
-	LDA Objects_State,X
-	CMP #OBJSTATE_SHELLED
-	BNE PRG000_D355	 ; If object state is not Shelled, jump to PRG000_D355 (hurt Player!)
-
-
-PRG000_D343:
-	LDA Player_ISHolding_OLD
-	BNE PRG000_D39F	 ; If Player WAS holding something, jump to PRG000_D39F (RTS)
-
-	BIT <Pad_Holding
-	BVS PRG000_D34F	 	; If Player is holding B, jump to PRG000_D34F
-	JMP Player_KickObject	 ; Kick away the object and don't come back!
-
-PRG000_D34F:
-
-	; Keep held object in state 4 (Held)
-	LDA #OBJSTATE_HELD
-	STA Objects_State,X
-
-	RTS		 ; Return
-
-
-PRG000_D355:
-
-	; Player potentially gonna get hurt!
-	LDA Player_FlashInv	; If Player is flashing from getting hit recently...
-	ORA Objects_Timer2,X	; ... or this object's timer2 is not expired ...
-	ORA Player_StarInv	; ... or Player is invincible by Star Man ...
-	BNE PRG000_D39F	 	; ... then jump to PRG000_D39F (RTS)
-
-	LDA Objects_State,X
-	CMP #OBJSTATE_KICKED
-	BNE PRG000_D382	 	; If object's state is not Kicked, jump to PRG000_D382
-
-	LDY #$00	 ; Y = 0
-
-	LDA <Player_XVel
-	BEQ PRG000_D382	 ; If Player is not moving horizontally, jump to PRG000_D382
-	BPL PRG000_D373	 ; If Player is moving to the right, jump to PRG000_D373
-
-	INY		 ; Otherwise, Y = 1
-
-PRG000_D373:
-	STY <Temp_Var1		 ; Temp_Var1 = 0 (Player moving left) or 1 (Player moving right)
-
-	EOR <Objects_XVelZ,X	 ; Check for X velocity sign difference between Player and object
-	BMI PRG000_D382	 	; If there's a difference in sign, jump to PRG000_D382
-
-	; Object and Player are moving in the same horizontal direction...
-
-	JSR Object_QuickXDistanceFromPlayer	
-	CPY <Temp_Var1
-	BNE PRG000_D39F	 ; If Player is moving away from object, jump to PRG000_D39F
-	BEQ PRG000_D39C	 ; Otherwise, jump to PRG000_D39C
-
-PRG000_D382:
-
-PRG000_D39C:
-	JMP Player_GetHurt	; Hurt Player and don't come back!
-
-PRG000_D39F:
 	RTS		 ; Return
 
 	; A very popular RTS @ $D3A0
@@ -2596,9 +2342,12 @@ LevelEvent_DoNothing:
 
 	; Called for an object in state 1 to perform initialization logic
 ObjState_Initializing:
-	JSR Level_PrepareNewObject ; Prepare the object
+	JSR Object_New ; Prepare the object
 
-	INC Objects_State,X	 	; Set object state to 2 (Normal run)
+ObjState_Fresh:
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State,X	 	; Set object state to 2 (Normal run)
 	JSR Object_SetPaletteFromAttr	; Set object's palette
 
 	LDA ObjGroupRel_Idx	 ; Get object's group relative index
@@ -2695,7 +2444,7 @@ PRG000_D463:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Level_PrepareNewObject
+; Object_New
 ;
 ; Prepares a new object by initializing all of the many object
 ; variables to zero...
@@ -2703,9 +2452,12 @@ PRG000_D463:
 ; X = index of on-screen object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D499
-Level_PrepareNewObject:
+Object_New:
 	
 	; Clear various object variables
+	LDA #80
+	STA Objects_XYCSPrev, X
+
 	LDA #$00
 	STA Objects_Data4,X
 	STA Objects_Data5,X
@@ -2717,10 +2469,9 @@ Level_PrepareNewObject:
 	STA Objects_Orientation,X
 	STA Objects_Frame,X	
 	STA Objects_ColorCycle,X
-	STA <Objects_CollisionDetectionZ,X
-	STA Objects_PreviousCollisionDetection,X
-	
-
+	STA <Objects_TilesDetectZ,X
+	STA Objects_PreviousTilesDetect,X
+	STA Objects_XYCS, X
 
 	CPX #$06
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)
@@ -2747,7 +2498,7 @@ PRG000_D4C8:
 	STA Objects_Data6,X	 
 	STA Objects_TargetingXVal,X
 	STA Objects_TargetingYVal,X
-	STA Objects_HitCount,X
+	STA Objects_Health,X
 	STA Objects_DisPatChng,X
 	STA Objects_Data8,X
 	STA Objects_Data9,X
@@ -2840,7 +2591,7 @@ Object_CalcSpriteXY_NoHi:
 
 ; $D564
 Fish_FixedY_ExceptHitFloor:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BNE PRG000_D588	 ; If object has hit floor, jump to PRG000_D588
 
@@ -3504,8 +3255,8 @@ PRG000_D834:
 	.byte -8, 8
 
 Player_BoundBox:
-	;    Left Right  Bot Top - offsets applied to sprite X/Y
-	.byte 2,  13, 16, 31	; small/ducking
+	;  Left Right  Top Bot - offsets applied to sprite X/Y
+	.byte 2,  13, 17, 31	; small/ducking
 	.byte 1, 14,  10, 31	; otherwise
 
 Player_TailAttackLeftOff:
@@ -3581,41 +3332,46 @@ PRG000_DB2F:
 
 	LDA Player_TailAttackLeftOff,Y
 	ADD Player_BoundLeft
-	STA Custom_BoundLeft
+	STA SpecialObj_BoundLeft
 
 	LDA Player_BoundLeftHi
 	ADC Player_TailAttackLeftOff+ 2,Y
-	STA Custom_BoundLeftHi
+	STA SpecialObj_BoundLeftHi
 
 	LDA Player_TailAttackRightOff,Y
 	ADD Player_BoundRight
-	STA Custom_BoundRight
+	STA SpecialObj_BoundRight
 
 	LDA Player_BoundRightHi
 	ADC Player_TailAttackRightOff+ 2,Y
-	STA Custom_BoundRightHi
+	STA SpecialObj_BoundRightHi
 
 	LDA Player_BoundTop
 	ADD #$0F
-	STA Custom_BoundTop
+	STA SpecialObj_BoundTop
 
 	LDA Player_BoundTopHi
 	ADC #$00
-	STA Custom_BoundTopHi
+	STA SpecialObj_BoundTopHi
 
-	LDA Custom_BoundTop
+	LDA SpecialObj_BoundTop
 	ADD #08
-	STA Custom_BoundBottom
+	STA SpecialObj_BoundBottom
 
-	LDA Custom_BoundTopHi
+	LDA SpecialObj_BoundTopHi
 	ADC #$00
-	STA Custom_BoundBottomHi
+	STA SpecialObj_BoundBottomHi
 
 Player_BoundRTS:
 	RTS
 
 Object_CalcBoundBox:
-	; X is object's slot
+	LDA Objects_XYCS, X
+	CMP Objects_XYCSPrev, X
+	BNE Object_CalcBoundBox1
+	RTS
+
+Object_CalcBoundBox1:
 	LDA BossBoundBox
 	BNE CustomBoundBox
 	LDY Objects_ID,X	 ; Get this object's ID -> Y
@@ -3728,15 +3484,11 @@ HITTEST_LEFT	= 02
 HITTEST_BOTTOM = 04
 HITTEST_TOP		= 08
 
-Object_DetectCustom:
+SpecialObj_DetectObject:
 	STX TempX
-	STY TempY
-	LDY TempX
-
 	LDX #$09
 	JSR Object_DetectObjects
 	LDX TempX
-	LDY TempY
 	RTS
 
 
@@ -3755,12 +3507,12 @@ Object_DetectObjects:
 	SBC Objects_BoundLeftHi, Y
 	BMI ODORight
 
-	LDA Objects_BoundLeft, X
-	SUB Objects_BoundRight, Y
+	LDA Objects_BoundRight, Y
+	SUB Objects_BoundLeft, X
 
-	LDA Objects_BoundLeftHi, X
-	SBC Objects_BoundRightHi, Y
-	BPL ODORight
+	LDA Objects_BoundRightHi, Y
+	SBC Objects_BoundLeftHi, X
+	BMI ODORight
 
 	LDA #HITTEST_LEFT
 	STA <HitTest_Result
@@ -3775,14 +3527,34 @@ ODORight:
 	SBC Objects_BoundLeftHi, Y
 	BMI ODOBottom
 
-	LDA Objects_BoundRight, X
-	SUB Objects_BoundRight, Y
+	LDA Objects_BoundRight, Y
+	SUB Objects_BoundRight, X
 
-	LDA Objects_BoundRightHi, X
-	SBC Objects_BoundRightHi, Y
-	BPL ODOBottom
+	LDA Objects_BoundRightHi, Y
+	SBC Objects_BoundRightHi, X
+	BMI ODOHorzIntersect
 
 	LDA #HITTEST_RIGHT
+	STA <HitTest_Result
+	INC <HitTest_Count
+	BNE ODOBottom
+
+ODOHorzIntersect:
+	LDA Objects_BoundLeft, Y ; smaller object
+	SUB Objects_BoundLeft, X
+	
+	LDA Objects_BoundLeftHi, Y  ; smaller object
+	SBC Objects_BoundLeftHi, X
+	BMI ODOBottom
+
+	LDA Objects_BoundRight, X  ; smaller object
+	SUB Objects_BoundRight, Y
+	
+	LDA Objects_BoundRightHi, X
+	SBC Objects_BoundRightHi, Y
+	BMI ODOBottom
+
+	LDA #(HITTEST_RIGHT | HITTEST_LEFT)
 	STA <HitTest_Result
 	INC <HitTest_Count
 
@@ -3797,14 +3569,15 @@ ODOBottom:
 	SBC Objects_BoundTopHi, Y
 	BMI ODOTop
 
-	LDA Objects_BoundBottom, X
-	SUB Objects_BoundBottom, Y
+	LDA Objects_BoundBottom, Y
+	SUB Objects_BoundBottom, X
 	
-	LDA Objects_BoundBottomHi, X
-	SBC Objects_BoundBottomHi, Y
-	BPL ODOTop
+	LDA Objects_BoundBottomHi, Y
+	SBC Objects_BoundBottomHi, X
+	BMI ODOTop
 
 	LDA #HITTEST_TOP
+	ORA <HitTest_Result
 	STA <HitTest_Result
 	INC <HitTest_Count
 	BNE ODOFin
@@ -3815,24 +3588,53 @@ ODOTop:
 
 	LDA Objects_BoundTopHi, X
 	SBC Objects_BoundTopHi, Y
-	BMI ODOFin
+	BMI ODOVertIntersect
 
-	LDA Objects_BoundTop, X
-	SUB Objects_BoundBottom, Y
+	LDA Objects_BoundBottom, Y
+	SUB Objects_BoundTop, X
 	
-	LDA Objects_BoundTopHi, X
-	SBC Objects_BoundBottomHi, Y
-	BPL ODOFin
+	LDA Objects_BoundBottomHi, Y
+	SBC Objects_BoundTopHi, X
+	BMI ODOVertIntersect
 
 	LDA #HITTEST_BOTTOM
+	ORA <HitTest_Result
+	STA <HitTest_Result
+	INC <HitTest_Count
+	BNE ODOFin
+
+ODOVertIntersect:	
+	LDA Objects_BoundTop, Y ; smaller object
+	SUB Objects_BoundTop, X
+	
+	LDA Objects_BoundTopHi, Y  ; smaller object
+	SBC Objects_BoundTopHi, X
+	BMI ODOFin
+
+	LDA Objects_BoundBottom, X  ; smaller object
+	SUB Objects_BoundBottom, Y
+	
+	LDA Objects_BoundBottomHi, X
+	SBC Objects_BoundBottomHi, Y
+	BMI ODOFin
+
+	LDA #(HITTEST_TOP | HITTEST_BOTTOM)
+	ORA <HitTest_Result
 	STA <HitTest_Result
 	INC <HitTest_Count
 
 ODOFin:
 	LDA <HitTest_Count
 	CMP #$02
-	
+	BCS ODOFin2
+
+	LDA #$00
+	CLC
+	RTS
+
+ODOFin2:
 	LDA <HitTest_Result
+	SEC
 	RTS
 
 ObjectObject_Intersect:
@@ -4004,7 +3806,7 @@ EnemyKill_XVels:	.byte -$08, $08
 Object_RespondToTailAttack:
 
 	LDA Player_TailAttack
-	BEQ Object_RespondToTailAttack1	 ; If Player is not tail attacking, jump to PRG000_DB16 (RTS)
+	BEQ Object_RespondToTailAttack2	 ; If Player is not tail attacking, jump to PRG000_DB16 (RTS)
 
 	CMP #$0c
 	BEQ Object_RespondToTailAttack1	 ; If tail attack counter = $0C, jump to PRG000_DB26
@@ -4018,6 +3820,7 @@ Object_RespondToTailAttack1:
 	LDA Obj2Obj_EnByState,Y
 	BNE Object_RespondToTailAttack2	 ; If object is not hit tested in this state, jump to PRG000_DB16 (RTS)
 
+	LDY ObjGroupRel_Idx
 	LDA ObjectGroup_Attributes3,Y
 	AND #OA3_TAILATKIMMUNE
 	BNE Object_RespondToTailAttack2	 ; If OA3_TAILATKIMMUNE is SET (Object cannot be tail-attacked), jump to PRG000_DB16 (RTS)
@@ -4026,14 +3829,14 @@ Object_RespondToTailAttack1:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Object_RespondToTailAttack2	 ; If any sprite of the object is off-screen, jump to PRG000_DB16 (RTS)
 
-	JSR Object_DetectCustom
+	JSR SpecialObj_DetectObject
 	BCC Object_RespondToTailAttack2	 ; If Player and object are not intersecting, jump to PRG000_DB16 (RTS)
 
 
 	JSR Object_GetKilled
 	LDA #-$34
 	STA <Objects_YVelZ, X
-	DEC Objects_HitCount, X
+	DEC Objects_Health, X
 	PLA
 	PLA
 
@@ -4522,6 +4325,7 @@ AScroll_HorizontalInitMove:
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
 	; the water flag for the tile rather than all these range comparisons
 Object_Check_Water:
+	RTS
 	STY TempY
 	STA TempA
 	LDY Objects_ID,X	 
@@ -4570,11 +4374,11 @@ PRG000_C6FA:
 	RTS
 
 Object_TestTopBumpBlocks:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #HIT_CEILING
 	BEQ Object_TestTopBumpBlocks1
 
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp, X
 	CMP #TILE_PROP_ITEM
 	BCC Object_TestTopBumpBlocks1
 
@@ -4588,13 +4392,17 @@ Object_TestSideBumpBlocks:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Object_TestSideBumpBlocks1
 
-	LDA Object_TileWallProp
+	LDA Object_HorzTileProp, X
 	CMP #TILE_PROP_ITEM
 	BCC Object_TestSideBumpBlocks1
 
 	JSR Object_SideBumpBlocks
+	JSR Object_Reverse
+	SEC
+	RTS
 
 Object_TestSideBumpBlocks1:
+	CLC
 	RTS
 
 SetObjectTileCoordAlignObj:
@@ -4683,8 +4491,16 @@ Object_InteractWithTilesWallStops:
 	STA Object_WallStops
 
 Object_InteractWithTiles:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA Block_WasUpdated
+	BNE Object_InteractWithTiles1
 
+	LDA Objects_XYCS, X
+	CMP Objects_XYCSPrev, X
+	BNE Object_InteractWithTiles1
+	RTS
+
+Object_InteractWithTiles1:
+	LDA <Objects_TilesDetectZ,X
 	TAY		 ; Object detection status -> 'Y'
 	AND #$04	 
 	BEQ PRG001_A973	 ; If object did NOT hit floor, jump to PRG001_A973
@@ -4706,7 +4522,6 @@ PRG001_A993:
 	AND #$03
 	BEQ PRG001_A9B7	 ; If object did NOT hit a wall, jump to PRG001_A9B7 (RTS)
 
-	; Combined, this just reverses the X velocity
 	LDA Object_WallStops
 	BEQ Object_DoReverse
 
@@ -4732,8 +4547,7 @@ Stop_Object:
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA Objects_XVelFrac,X
-	STA Object_WallStops
-	RTS
+	JMP PRG001_A9B7
 
 Object_DoReverse:
 	JSR Object_Reverse
@@ -4741,9 +4555,10 @@ Object_DoReverse:
 PRG001_A9B7:
 	LDA #$00
 	STA Object_WallStops
+	JSR Object_CheckForeground
 	RTS		 ; Return
 
-SetSpriteFG:
+Object_CheckForeground:
 	LDA Objects_SpriteAttributes, X
 	AND #$DF
 	STA Objects_SpriteAttributes, X
@@ -4751,24 +4566,36 @@ SetSpriteFG:
 	LDY #$02
 
 SetSpriteFG1:
-	LDA Object_TileFeetProp, Y
-	CMP #TILE_ITEM_COIN
+	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
 	BCS SetSpriteFG2
 	
 	AND #TILE_PROP_FOREGROUND
-	BNE SetSpriteFG3
+	BNE SetSpriteFG4
 
 SetSpriteFG2:
-	DEY
-	BPL SetSpriteFG1
-	BMI SetSpriteFG4
+	LDA Object_HorzTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCS SetSpriteFG3
+	
+	AND #TILE_PROP_FOREGROUND
+	BNE SetSpriteFG4
+
 
 SetSpriteFG3:
+	LDA Object_HorzTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCS SetSpriteFG5
+
+	AND #TILE_PROP_FOREGROUND
+	BEQ SetSpriteFG5
+
+SetSpriteFG4:
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA  Objects_SpriteAttributes, X
 
-SetSpriteFG4:
+SetSpriteFG5:
 	RTS
 
 
@@ -5134,7 +4961,7 @@ Objects_BumpOff1:
 	RTS
 
 InitPatrol:
-	LDA #$38
+	LDA #$40
 	STA Patrol_ResetTimer, X
 
 InitPatrol_NoTimers:
@@ -5430,11 +5257,11 @@ Object_FacePlayer1:
 TowardsPlayerSpeed:	.byte $08, -$08
 
 Object_FacePlayerOnLanding:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ Object_FacePlayerOnLanding1
 
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
 	BNE Object_FacePlayerOnLanding1
 
@@ -5525,12 +5352,43 @@ CheckBlockLeft:
 	RTS
 
 Object_GetKilled:
-	INC Exp_Earned
+	INC Kill_Tally
+
+	LDA #$3
+	STA Kill_Tally_Ticker
+
+	LDA Kill_Tally
+	ADD Exp_Earned
+	STA Exp_Earned
+
 	JSR Reap_Coin
 
+	LDA Objects_Health, X
+	BMI KillEnemy
+
+	LDY ObjGroupRel_Idx
+	LDA ObjectGroup_Attributes3, Y
+	AND #OA3_SHELL
+	BEQ KillEnemy
+
+	LDA #OBJSTATE_SHELLED
+	STA Objects_State, X
+
+	LDA #$ff
+	STA Objects_Timer3,X
+	RTS
+
+KillEnemy:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
- 
+
+	LDA Object_BeingHeld, X
+	BEQ KillEnemy1
+
+	LDA #$00
+	STA Player_IsHolding
+
+KillEnemy1:
 	; Set object Y velocity to -$40 (fly up after death)
 	LDA #-$34
 	STA <Objects_YVelZ,X
@@ -5603,20 +5461,27 @@ Object_Kick:
 	STA <Objects_YVelZ, X
 	
 Object_KickSame:
+	LDY ObjGroupRel_Idx
+	LDA ObjectGroup_Attributes3, Y
+	AND #OA3_SHELL
+	BNE Object_KickSame1
+
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	JSR Object_DetectTiles
+Object_KickSame1:
+	JSR Object_DetectTilesForced
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
-	BNE Object_ReverseXVel
+	BEQ Object_KickNotWall
 
-	LDA Objects_LastProp, X
-	CMP #TILE_PROP_SOLID_ALL
-	BCC Object_KickNotWall
 
 Object_ReverseXVel:
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BNE Object_DieInstead
+
 	LDY Player_Direction
 	LDA <Objects_XZ, X
 	ADD Object_XPreventStuck, Y
@@ -5625,6 +5490,15 @@ Object_ReverseXVel:
 	LDA <Objects_XHiZ, X
 	ADC Object_XPreventStuck + 2, Y
 	STA <Objects_XHiZ, X
+	RTS
+
+Object_DieInstead:	
+	LDA #$00
+	STA Player_IsHolding
+	DEC Objects_Health, X
+	PLA
+	PLA
+	JMP Object_GetKilled
 
 Object_KickNotWall:
 Object_KickRTS:
@@ -5654,7 +5528,6 @@ Object_ChangeBlock:
 
 Object_ChangeBlock1:
 	STA Block_UpdateValue
-
 	INC Block_NeedsUpdate	 ; Store type of block change!
 
 	LDA Block_DetectX
@@ -5678,10 +5551,6 @@ Object_BurstTile = Temp_Var1
 Object_BurstPalette = Temp_Var2
 
 Object_Burst:
-	
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Object_Burst1
@@ -5697,20 +5566,20 @@ Object_Burst:
 	LDA <Objects_YZ, X
 	CLC
 	SBC Level_VertScroll
-	STA BrickBust_YUpr
+	STA Brick_DebrisYHi
 
 	; Brick bust lower Y
 	ADD #$08
-	STA BrickBust_YLwr
+	STA Brick_DebrisY
 
 	; Brick bust X
 	LDA <Objects_XZ, X
 	SUB <Horz_Scroll	
-	STA BrickBust_X
+	STA Brick_DebrisX
 
 	; reset brick bust X distance, no horizontal
 	LDA #$00
-	STA BrickBust_XDist
+	STA Brick_DebrisXDist
 	STA BrickBust_HEn
 
 	; Brick bust Y velocity
@@ -5727,103 +5596,96 @@ Object_Burst1:
 	RTS		 ; Return
 
 ObjHit_SolidBlock:
-	LDA Objects_PlayerHitStat, X
-	AND #$01
+	LDA HitTest_Result
+	AND #HITTEST_BOTTOM
 	BEQ TestHit_FromBelow
 
-	LDA <Player_YVel
-	BPL HitFrom_Top
-	RTS
-
 HitFrom_Top:
+	LDA Player_BoundBottom
+	SUB Objects_BoundTop, X
+	CMP #$04
+	BCS TestHit_FromLeft
+
+	LDY <Player_YVel
+	BMI HitFrom_Top1
+
+	STA <Temp_Var1
+	DEC <Temp_Var1
+
+	LDA <Player_Y
+	SUB <Temp_Var1
+	STA <Player_Y
+
+	LDA <Player_YHi
+	SBC #$00
+	STA <Player_YHi
 
 	LDA #$00
 	STA <Player_YVel
 	STA Player_InAir
 
-	LDA <Objects_YZ, X
-	SUB #$1F
-	STA <Player_Y
-
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Player_YHi
+HitFrom_Top1:
 	RTS
 
 TestHit_FromBelow:
-	LDA #$06	 ; A = 0 when small or ducking
+	LDA HitTest_Result
+	AND #HITTEST_TOP
+	BEQ TestHit_FromLeft
 
-	LDY Player_IsDucking
-	BNE ClipTop_Small	 ; If Player is ducking, jump to PRG000_D862
+	LDA <Player_YVel
+	BPL TestHit_FromLeft
 
-	LDY Player_Suit
-	BNE DoTop_Clip
-
-ClipTop_Small:
-	LDA #$10
-
-DoTop_Clip:
-	ADD <Player_Y
+	LDA Objects_BoundBottom, X
+	SUB Player_BoundTop
+	CMP #$04
+	BCS TestHit_FromLeft
 	STA <Temp_Var1
 
-	LDA <Objects_YZ, X
-	ADD #$10
-	SUB <Temp_Var1
-
-	CMP #$09
-	BCS DoWall_Clip
-
-	ADD <Player_Y
+	LDA <Player_Y
+	ADD <Temp_Var1
 	STA <Player_Y
 
 	LDA <Player_YHi
 	ADC #$00
 	STA <Player_YHi
-
-	LDA #$01
-	STA <Player_YVel
 	RTS
 
-DoWall_Clip:
-	LDA Objects_PlayerHitStat, X
-	AND #$02
-	BNE HitFrom_Right
+TestHit_FromLeft:
+	LDA HitTest_Result
+	AND #HITTEST_LEFT
+	BEQ HitFrom_Right
 
-	LDA <Player_XVel
-	BPL LeftClip_RTS
+	LDA Player_BoundRight
+	SUB Objects_BoundLeft, X
+	STA <Temp_Var1
 
-	LDA #$00
-	STA <Player_XVel
-
-	LDA <Objects_XZ, X
-	ADD #$0F
-
+	LDA <Player_X
+	SUB <Temp_Var1
 	STA <Player_X
 
-	LDA <Objects_XHiZ, X
-	ADC #$00
+	LDA <Player_XHi
+	SBC #$00
 	STA <Player_XHi
-
-LeftClip_RTS:
 	RTS
 
 HitFrom_Right:
-	LDA <Player_XVel
-	BMI RightClip_RTS
+	LDA HitTest_Result
+	AND #HITTEST_RIGHT
+	BEQ PlayerTestDone
+	
+	LDA Objects_BoundRight, X
+	SUB Player_BoundLeft
+	STA <Temp_Var1
 
-	LDA #$00
-	STA <Player_XVel
-
-
-	LDA <Objects_XZ, X
-	SUB #$0D
+	LDA <Player_X
+	ADD <Temp_Var1
 	STA <Player_X
 
-	LDA <Objects_XHiZ, X
-	SBC #$00
+	LDA <Player_XHi
+	ADC #$00
 	STA <Player_XHi
 
-RightClip_RTS:
+PlayerTestDone:
 	RTS
 
 Object_AttackXVel:

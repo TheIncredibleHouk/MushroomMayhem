@@ -35,7 +35,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word ObjInit_Waterfill	; Object $75 - OBJ_WATERFILLER
 	.word Object_MoveTowardsPlayer	; Object $76 - OBJ_POISONMUSHROOM
-	.word ObjInit_ParaTroopas	; Object $77 - OBJ_GREENCHEEP
+	.word ObjInit_SwimmingCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjInit_Troopa	; Object $7A - OBJ_PURPLETROOPA
@@ -80,7 +80,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_SwimmingCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjNorm_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjNorm_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
-	.word ObjNorm_RedTroopa	; Object $7A - OBJ_PURPLETROOPA
+	.word ObjNorm_PurpleTroopa	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjNorm_BlueShell		; Object $7B - OBJ_BLUESHELL
 	.word ObjNorm_DeliveryLakitu	; Object $7C - OBJ_HELPER
 	.word ObjNorm_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
@@ -109,35 +109,35 @@ ObjectGroup03_NormalJumpTable:
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ObjectGroup03_CollideJumpTable:
-	.word Object_AttackOrDefeat					; Object $6C - OBJ_GREENTROOPA
-	.word Object_AttackOrDefeat					; Object $6D - OBJ_REDTROOPA
-	.word OCSPECIAL_KILLCHANGETO | OBJ_GREENTROOPA	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.word OCSPECIAL_KILLCHANGETO | OBJ_REDTROOPA	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.word Object_AttackOrDefeat					; Object $70 - OBJ_BUZZYBEATLE
-	.word Object_AttackOrDefeat					; Object $71 - OBJ_SPINY
-	.word ObjHit_DoNothing					; Object $72 - OBJ_GOOMBA
+	.word Object_Hold					; Object $6C - OBJ_GREENTROOPA
+	.word Object_Hold					; Object $6D - OBJ_REDTROOPA
+	.word OCSPECIAL_KILLCHANGETO |OBJ_GREENTROOPA	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.word OCSPECIAL_KILLCHANGETO |OBJ_REDTROOPA	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.word Object_Hold					; Object $70 - OBJ_BUZZYBEATLE
+	.word Object_Hold					; Object $71 - OBJ_SPINY
+	.word $0000					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
-	.word Object_AttackOrDefeat	; Object $74 - OBJ_ZOMBIEGOOMBA
+	.word Object_Hold	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word $0000	; Object $75 - OBJ_WATERFILLER (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
-	.word ObjHit_DoNothing					; Object $76 - OBJ_POISONMUSHROOM
-	.word ObjHit_DoNothing					; Object $77 - OBJ_GREENCHEEP
-	.word ObjHit_DoNothing					; Object $78 - OBJ_BULLETBILL
-	.word ObjHit_DoNothing					; Object $79 - OBJ_BULLETBILLHOMING
-	.word Object_AttackOrDefeat					; Object $7A - OBJ_PURPLETROOPA
-	.word Player_GetHurt					; Object $7B - OBJ_BLUESHELL
+	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
+	.word $0000					; Object $77 - OBJ_GREENCHEEP
+	.word $0000					; Object $78 - OBJ_BULLETBILL
+	.word $0000					; Object $79 - OBJ_BULLETBILLHOMING
+	.word Object_Hold					; Object $7A - OBJ_PURPLETROOPA
+	.word $0000					; Object $7B - OBJ_BLUESHELL
 	.word $0000					; Object $7C - OBJ_HELPER
-	.word Object_AttackOrDefeat					; Object $7D - OBJ_PARAZOMBIEGOOMBA
-	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $7E - OBJ_BIGGREENHOPPER
+	.word $0000					; Object $7D - OBJ_PARAZOMBIEGOOMBA
+	.word $0000 | OBJ_PURPLETROOPA	; Object $7E - OBJ_BIGGREENHOPPER
 	.word $0000					; Object $7F - OBJ_BIGREDPIRANHA
-	.word OCSPECIAL_KILLCHANGETO | OBJ_PURPLETROOPA	; Object $80 - OBJ_FLYINGGREENPARATROOPA
-	.word OCSPECIAL_HIGHSCORE			; Object $81 - OBJ_HAMMERBRO
-	.word OCSPECIAL_HIGHSCORE			; Object $82 - OBJ_NINJABRO
-	.word OCSPECIAL_HIGHSCORE			; Object $83 - OBJ_LAKITU
+	.word $0000 | OBJ_PURPLETROOPA	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word $0000			; Object $81 - OBJ_HAMMERBRO
+	.word $0000			; Object $82 - OBJ_NINJABRO
+	.word $0000			; Object $83 - OBJ_LAKITU
 	.word $0000					; Object $84 - OBJ_SPINYEGG
 	.word $0000					; Object $85 - OBJ_BLUESPINY
-	.word OCSPECIAL_HIGHSCORE			; Object $86 - OBJ_ICEBRO
-	.word OCSPECIAL_HIGHSCORE			; Object $87 - OBJ_FIREBRO
-	.word OCSPECIAL_HIGHSCORE					; Object $88 - OBJ_PIRATEBRO
+	.word $0000			; Object $86 - OBJ_ICEBRO
+	.word $0000			; Object $87 - OBJ_FIREBRO
+	.word $0000					; Object $88 - OBJ_PIRATEBRO
 	.word $0000					; Object $89 - OBJ_CHAINCHOMP
 	.word $0000					; Object $8A - OBJ_THWOMP
 	.word $0000					; Object $8B - OBJ_HYPERTHWOMP
@@ -198,7 +198,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_TDOGRP1			; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $70 - OBJ_BUZZYBEATLE
 	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $71 - OBJ_SPINY
-	.byte  OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $72 - OBJ_GOOMBA
+	.byte $00	; Object $72 - OBJ_GOOMBA
 	.byte OA2_TDOGRP1			; Object $73 - OBJ_PARAGOOMBA
 	.byte OA2_TDOGRP1			; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $75 - OBJ_WATERFILLER
@@ -328,7 +328,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $73 - OBJ_PARAGOOMBA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte KILLACT_JUSTDRAW16X16	; Object $75 - OBJ_WATERFILLER
-	.byte KILLACT_POOFDEATH	; Object $76 - OBJ_POISONMUSHROOM
+	.byte KILLACT_NORMALANDKILLED	; Object $76 - OBJ_POISONMUSHROOM
 	.byte KILLACT_JUSTDRAW16X16	; Object $77 - OBJ_GREENCHEEP
 	.byte KILLACT_JUSTDRAW16X16	; Object $78 - OBJ_BULLETBILL
 	.byte KILLACT_JUSTDRAW16X16	; Object $79 - OBJ_BULLETBILLHOMING
@@ -498,20 +498,20 @@ ObjNorm_Waterfill1:
 	LDA <Objects_YZ, X
 	CLC
 	SBC Level_VertScroll
-	STA BrickBust_YUpr
+	STA Brick_DebrisYHi
 
 	; Brick bust lower Y
 	ADD #$08
-	STA BrickBust_YLwr
+	STA Brick_DebrisY
 
 	; Brick bust X
 	LDA <Objects_XZ, X
 	SUB <Horz_Scroll	
-	STA BrickBust_X
+	STA Brick_DebrisX
 
 	; reset brick bust X distance, no horizontal
 	LDA #$00
-	STA BrickBust_XDist
+	STA Brick_DebrisXDist
 	STA BrickBust_HEn
 
 	; Brick bust Y velocity
@@ -519,7 +519,7 @@ ObjNorm_Waterfill1:
 	STA BrickBust_YVel
 
 FillWater:
-	LDA Object_LevelTile
+	LDA Tile_LastValue
 	EOR #$01
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
@@ -689,7 +689,7 @@ NinjaPoof_Left:
 NinjaPoof_Adjust:
 	LDA #$40
 	STA Objects_SlowTimer, X
-	JSR Object_DetectTileOn
+	JSR Object_DetectTileCenter
 	LDA Objects_LastProp, X
 	AND #TILE_PROP_SOLID_ALL
 	BEQ NinjaPoof_Adjust1
@@ -735,7 +735,7 @@ ObjNorm_NinjaBro_1:
 ObjNorm_NinjaBro_2:
 
 	JSR Object_Move	 ; Do standard movement
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_A4B2	 ; If Ninja Bro has not hit ground, jump to PRG004_A4B2
 
@@ -788,14 +788,14 @@ NinjaBro_NoWalk:
 	BEQ PRG004_A4E7
 
 NinjaBro_WalkLeft:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_LEFTWALL
 	BNE NinjaBro_NoWalk
 	LDA #-$08	 ; A = -$08
 	BNE PRG004_A4E7	 ; Jump (technically always) to PRG004_A4E7
 
 NinjaBro_WalkRight:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_RIGHTWALL
 	BNE NinjaBro_NoWalk
 	LDA #$08	 ; A = $08
@@ -878,7 +878,7 @@ PRG004_A539:
 PRG004_A545;
 	STY <Objects_XVelZ,X	 ; Hammer Bros walk back and forth
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BNE PRG004_A551	 ; If Hammer Bro hit ground, jump to PRG004_A551
 
@@ -886,7 +886,7 @@ PRG004_A545;
 	BEQ PRG004_A587	 ; Jump (technically always) to PRG004_A587
 
 PRG004_A551:
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
 	BNE PRG004_A552
 	
@@ -943,7 +943,7 @@ PRG004_A587:
 PRG004_A593:
 	LDY #$3f	 ; Y = $3F
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_A59D	 ; If Hammer Bro did not hit floor, jump to PRG004_A59D
 
@@ -1602,7 +1602,7 @@ PRG004_A8C3:
 	LDA RandomN,X
 	BMI PRG004_A8DB	 ; 50/50 chance we jump to PRG004_A8DB
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_A8DB	 ; If Fire Bro has not hit floor, jump to PRG004_A8DB
 
@@ -1672,7 +1672,7 @@ PRG004_A913:
 PRG004_A91C:
 	JSR Object_Move	 ; Do standard movements
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_A92C	 ; If Fire Bro hasn't hit floor, jump PRG004_A92C (RTS)
 
@@ -1703,7 +1703,7 @@ PRG004_A935:
 	AND #$01
 	BNE PRG004_A957	 ; 50/50 chance we jump to PRG004_A957
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_A957	 ; If Fire Bro has not hit floor, jump to PRG004_A957
 
@@ -1805,7 +1805,7 @@ PRG004_A9AF:
 PRG004_A9B1:
 	JSR Object_Move	 ; Do standard movements
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_A9C0	 ; If Fire Bro has not hit floor, jump to PRG004_A9C0
 
@@ -1964,14 +1964,14 @@ ObjNorm_SpinyEggDud:
 	ROR <Objects_XVelZ,X
 
 PRG004_AC08:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$03
 	BEQ PRG004_AC11	 ; If Spiny Egg Dud did not hit a wall, jump to PRG004_AC11
 
 	JSR Object_Reverse	 ; Otherwise, turn around
 
 PRG004_AC11:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_AC43	 ; If Spiny Egg Dud has not hit floor, jump to PRG004_AC43
 
@@ -2012,7 +2012,7 @@ PRG004_AC41:
 	STA <Objects_XVelZ,X
 
 PRG004_AC43:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$08
 	BEQ PRG004_AC4D	 ; If egg has not hit ceiling, jump to PRG004_AC4D
 
@@ -2105,7 +2105,7 @@ PRG004_ACAC:
 	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped underneath
 	JSR Object_InteractWithPlayer
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG004_ACCF	 ; If spiny egg not hit ground, jump to PRG004_ACCF
 
@@ -2129,7 +2129,7 @@ PRG004_ACAC:
 	STA <Objects_YVelZ,X
 
 PRG004_ACCF:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$03
 	BEQ PRG004_ACD8	 ; If Spiny did not hit wall, jump to PRG004_ACD8
 
@@ -2231,7 +2231,7 @@ PRG004_AD29:
 	STA <Objects_YHiZ,X	 ; Restore Lakitu's Y Hi
 
 	; Reset Lakitu
-	JSR Level_PrepareNewObject
+	JSR Object_New
 
 	; Restore the Y/Hi values
 	PLA
@@ -2430,7 +2430,7 @@ Lakitu_TossEnemy:
 	LDA Laktiu_ResetTimes, Y
 	STA Objects_Timer,X
 
-	JSR Object_DetectTileOn
+	JSR Object_DetectTileCenter
 	LDA Objects_LastProp, X
 	CMP #TILE_PROP_SOLID_TOP
 	BCS Lakitu_TossEnemyRts 
@@ -2452,7 +2452,7 @@ PRG004_AE35:
 	TYA
 	TAX
 
-	JSR Level_PrepareNewObject	 ; Prepare new object
+	JSR Object_New	 ; Prepare new object
 
 	LDX <CurrentObjectIndexZ		 ; X = object slot index
 
@@ -2536,7 +2536,7 @@ ObjNorm_ParaGoomba1:
 	LDA Objects_Timer, X
 	BNE ObjNorm_ParaGoomba2
 
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ ObjNorm_ParaGoomba3
 
@@ -2556,7 +2556,8 @@ ObjNorm_ParaGoomba2:
 ObjNorm_ParaGoomba3:
 	LDA #$00
 	STA Objects_Data3, X
-	LDA  <Objects_CollisionDetectionZ, X
+
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BNE ObjNorm_ParaGoomba31
 
@@ -2663,10 +2664,10 @@ PRG004_AF65:
 
 ObjInit_ZombieGoomba:
 	LDA #$01
-	STA Objects_HitCount, X
+	STA Objects_Health, X
 
 	LDA #HIT_GROUND
-	STA Objects_PreviousCollisionDetection, X
+	STA Objects_PreviousTilesDetect, X
 	LDA Objects_Property, X
 	BNE ObjInit_ZombieGoomba1
 
@@ -2722,7 +2723,7 @@ Zombie_NoInfection:
 
 Zombie_NoInfection1:
 
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_CEILING
 	BEQ Zombie_Detect1
 
@@ -2730,7 +2731,7 @@ Zombie_NoInfection1:
 	JMP Zombie_Detect2
 
 Zombie_Detect1:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ Zombie_Detect2
 
@@ -2738,7 +2739,7 @@ Zombie_Detect1:
 
 Zombie_Detect2:
 
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ Zombie_Move
 
@@ -2748,11 +2749,11 @@ Zombie_Detect2:
 	LDA TempA
 	STA <Objects_XVelZ, X
 
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
 	BNE Zombie_Detect3
 
-	LDA Objects_CollisionDetectionZ, X
+	LDA Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ Zombie_Move
 
@@ -2804,8 +2805,8 @@ Zombie_InsideBlock:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Zombie_InsideBlock1
 
-	JSR Object_DetectTileOn
-	LDA Object_LevelTile
+	JSR Object_DetectTileCenter
+	LDA Tile_LastValue
 	AND #$3F
 	CMP #$01
 	BNE Zombie_InsideBlock0
@@ -2825,8 +2826,8 @@ Zombie_InsideBlock0:
 
 	JSR Zombie_Crumbles
 
-	JSR Object_DetectTileOn
-	LDA Object_LevelTile
+	JSR Object_DetectTileCenter
+	LDA Tile_LastValue
 	AND #$C0
 	ORA #$01
 	STA Block_UpdateValue
@@ -2865,15 +2866,15 @@ Zombie_InsideGround:
 	RTs
 
 Zombie_InsideGround1:
-	JSR Object_DetectTileOn
-	LDA Object_LevelTile
+	JSR Object_DetectTileCenter
+	LDA Tile_LastValue
 	AND #$01
 	BEQ Zombie_InsideGround2
 
 	LDA Block_NeedsUpdate
 	BNE Zombie_InsideGround2
 
-	LDA Object_LevelTile
+	LDA Tile_LastValue
 	AND #$FE
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
@@ -2898,28 +2899,28 @@ Zombie_Crumbles:
 	ADD #$08
 	CLC
 	SBC Level_VertScroll
-	STA BrickBust_YUpr
+	STA Brick_DebrisYHi
 
 	; Brick bust lower Y
 	ADD #$08
-	STA BrickBust_YLwr
+	STA Brick_DebrisY
 
 	; Brick bust X
 	LDA <Objects_XZ, X
 	SUB <Horz_Scroll	
-	STA BrickBust_X
+	STA Brick_DebrisX
 
 	; reset brick bust X distance, no horizontal
 	LDA #$00
-	STA BrickBust_XDist
+	STA Brick_DebrisXDist
 	STA BrickBust_HEn
 
 	; Brick bust Y velocity
 	LDA #-$06
 	STA BrickBust_YVel
 	
-	JSR Object_DetectTileOn
-	LDA Object_LevelTile
+	JSR Object_DetectTileCenter
+	LDA Tile_LastValue
 	AND #$FE
 	ORA #$01
 	STA Block_UpdateValue
@@ -2932,7 +2933,7 @@ ObjInit_ParaZombieGoomba:
 	LDA #$06
 	STA Objects_Property, X
 	LDA #$01
-	STA Objects_HitCount, X
+	STA Objects_Health, X
 	RTS
 
 ObjNorm_ParaZombieGoomba:
@@ -3037,8 +3038,6 @@ ParaZombieGoomba_Draw3:
 	RTS		 ; Return
 
 ObjNorm_JumpingCheepCheep:
-;	JSR Object_SetPaletteFromAttr	 ; Set palette for Cheep Cheep
-
 	LDA <Player_HaltGameZ
 	BNE PRG004_B0BA	 ; If gameplay is halted, jump to PRG004_B0BA
 
@@ -3075,6 +3074,16 @@ PRG004_B0CC:
 	JMP GroundTroop_DrawNormal	 ; Draw and don't come back!
 
 SwimCheep_CurrentFrame = Objects_Data1
+ObjInit_SwimmingCheep:
+	JSR InitPatrol
+
+	LDA #$F8
+	STA ChaseVel_LimitLo, X
+
+	LDA #$08
+	STA ChaseVel_LimitHi, X
+	
+	RTS
 
 ObjNorm_SwimmingCheep:
 	LDA <Player_HaltGameZ
@@ -3082,24 +3091,19 @@ ObjNorm_SwimmingCheep:
 
 	JSR Object_DeleteOffScreen
 	JSR DoPatrol
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTilesWallStops
-	JSR Object_FaceDirectionMoving
-
-	LDA Object_TileWallProp
-	BNE ObjNorm_SwimmingCheep1
-
-	JSR Object_HitWall
 
 ObjNorm_SwimmingCheep1:
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp, X
 	BNE ObjNorm_SwimmingCheep2
 
 	JSR Object_HitCeiling
 
 ObjNorm_SwimmingCheep2:
-	JSR Object_AttackOrDefeat
-
 	INC <SwimCheep_CurrentFrame,X	 ; Var5++
 
 	; Toggle frame 0/1
@@ -3184,7 +3188,7 @@ ObjNorm_MissileMarkC:
 
 ObjNorm_MissileMarkA1:
 	JSR Object_DetectTiles
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	BEQ DrawBullet
 
 	LDA #$00
@@ -3262,6 +3266,7 @@ ObjInit_SpikeCheep:
 
 ObjInit_Goomba:
 	JSR Object_MoveTowardsPlayer
+
 	LDA Objects_Property, X
 	BEQ ObjInit_Goomba1
 
@@ -3307,6 +3312,7 @@ ObjNorm_Goomba02:
 	JSR Object_InteractWithOtherObjects
 	BCS Goomba_DrawNoAnimate
 
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 	JSR Object_HandleBumpUnderneath
 
@@ -3334,7 +3340,7 @@ Goomba_DrawNoAnimate:
 	RTS
 
 Goomba_Death:
-	LDA Objects_HitCount, X
+	LDA Objects_Health, X
 	BPL Goomba_Death1
 	JMP Goomba_Draw
 	 
@@ -3401,6 +3407,7 @@ ObjNorm_FlyingTroopa:
 ObjNorm_FlyingTroopa0:
 	JSR DoPatrol
 	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTilesWallStops
 	JSR Object_AttackOrDefeat
@@ -3430,30 +3437,37 @@ ObjInit_Troopa:
 
 Koopa_CurrentFrame = Objects_Data1
 
+ObjNorm_PurpleTroopa:
+	JSR ObjNorm_RedTroopa
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BEQ ObjNorm_PurpleTroopa1
+
+	LDA #$FF
+	STA Explosion_Timer, X
+
+ObjNorm_PurpleTroopa1:
+	RTS
 ObjNorm_RedTroopa:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_Troopa1
 
-	LDA <Objects_YVelZ, X
-	BEQ Troopa_Normal
-
-Troopa_Normal:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-
 	JSR Object_InteractWithOtherObjects
 	BCS RedTroopa_Draw
 
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_HandleBumpUnderneath
-	JSR Object_FaceDirectionMoving
 
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
 	BEQ Troopa_Animate
 
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BNE Troopa_Animate
 
@@ -3462,6 +3476,8 @@ Troopa_Normal:
 
 Troopa_Animate:
 	INC <Koopa_CurrentFrame, X
+
+RedTroopa_Draw:
 	LDA <Koopa_CurrentFrame, X
 	LSR A
 	LSR A
@@ -3469,7 +3485,6 @@ Troopa_Animate:
 	AND #$01
 	STA Objects_Frame,X
 
-RedTroopa_Draw:
 	JMP Troopa_Draw
 
 ObjNorm_Troopa:
@@ -3481,12 +3496,13 @@ ObjNorm_Troopa0:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_InteractWithOtherObjects
 	BCS ObjNorm_Troopa1
 
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_HandleBumpUnderneath
 
 	INC <Koopa_CurrentFrame, X
 	LDA <Koopa_CurrentFrame, X
@@ -3504,11 +3520,21 @@ ObjNorm_PoisonMushroom:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PoisonMushroom1
 
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_PoisonMushroom0
+
+	LDA #$80
+	STA CompleteLevelTimer
+	JMP Object_PoofDie
+
+ObjNorm_PoisonMushroom0:
 	JSR Object_DeleteOffScreen
-	JSR Object_AttackOrDefeat
 	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_HandleBumpUnderneath
 
 ObjNorm_PoisonMushroom1:
 	JMP Object_ShakeAndDrawMirrored
@@ -3516,11 +3542,17 @@ ObjNorm_PoisonMushroom1:
 Bouncey_FlutterTime: = Objects_Data2
 
 ObjNorm_BouncyTroopa:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA <Player_HaltGameZ
+	BEQ ObjNorm_BouncyTroopa0
+
+	JMP Troopa_Draw
+
+ObjNorm_BouncyTroopa0:
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ ObjNorm_BouncyTroopa1
 
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
 	BNE ObjNorm_BouncyTroopa1
 
@@ -3583,15 +3615,8 @@ Troopa_FootByEvenOddFrame:
 	.byte $C7, $C9, $C7	; Even
 	.byte $F9, $FB, $F9	; Odd
 
-GroundTroop_Draw:
 Troopa_Draw:
-	
-	LDA Objects_State, X
-	CMP #OBJSTATE_NORMAL
-	BEQ Troopa_Draw1
-	RTS
 
-Troopa_Draw1:
 	LDA Object_SpriteRAM_Offset,X
 	ADD #$08
 	STA Object_SpriteRAM_Offset,X
@@ -3658,6 +3683,7 @@ PRG004_B520:
 	TAY
 
 	LDA Objects_ID,X
+
 	CMP #OBJ_PURPLETROOPA
 	BEQ PRG004_B55D
 
@@ -5793,7 +5819,7 @@ ObjNorm_BlueShell1:
 	STA Objects_Frame, X
 	JSR Object_ApplyYVel_NoGravity
 	JSR Object_DetectTiles
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	BEQ DrawBlueShell
 	BNE BlueShell_Expload
 
@@ -5952,16 +5978,16 @@ ThwompBreakBlock:
 	LDA #$81
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
-	LDA ObjTile_DetYLo
+	LDA Tile_DetectionY
 	AND #$F0
 	STA Block_ChangeY
-	LDA ObjTile_DetYHi
+	LDA Tile_DetectionYHi
 	STA Block_ChangeYHi
 	
-	LDA ObjTile_DetXLo
+	LDA Tile_DetectionX
 	AND #$F0
 	STA Block_ChangeX
-	LDA ObjTile_DetXHi
+	LDA Tile_DetectionXHi
 	STA Block_ChangeXHi
 
 	LDA Objects_SpritesHorizontallyOffScreen, X
@@ -5990,20 +6016,20 @@ ThwompBustBrick:
 	LDA Block_ChangeY
 	CLC
 	SBC Level_VertScroll
-	STA BrickBust_YUpr
+	STA Brick_DebrisYHi
 
 	; Brick bust lower Y
 	ADD #$08
-	STA BrickBust_YLwr
+	STA Brick_DebrisY
 
 	; Brick bust X
 	LDA Block_ChangeX
 	SUB <Horz_Scroll	
-	STA BrickBust_X
+	STA Brick_DebrisX
 
 	; reset brick bust X distance, no horizontal
 	LDA #$00
-	STA BrickBust_XDist
+	STA Brick_DebrisXDist
 	STA BrickBust_HEn
 
 	; Brick bust Y velocity

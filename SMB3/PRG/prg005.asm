@@ -541,7 +541,7 @@ PRG005_A283:
 
 	JSR Object_WorldDetectN1	 ; Detect against world
 
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	AND #$E0
 	CMP #TILE_PROP_WATER
 	BNE PRG005_A2C9	 	; If Podoboo has not hit the lava, jump to PRG005_A2C9
@@ -780,11 +780,11 @@ PumpkinFreeAttack:
 	JSR Object_Move
 	JSR Object_InteractWithTiles
 
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
 	BNE PumpkinFreeDraw
 
-	LDA Objects_CollisionDetectionZ, X
+	LDA Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ PumpkinFreeDraw
 
@@ -1360,7 +1360,7 @@ Rocky_Killed:
 	LDA Objects_Timer,X	  
 	BNE PRG005_AA96	 ; If timer not expired, jump to PRG005_AA96
 
-	INC Exp_Earned	 ; Get proper score award
+	
 	LDA Player_Equip
 	CMP #$09
 	BNE Dont_Coin_It10
@@ -1441,7 +1441,6 @@ PRG005_AACA:
 	ORA #SND_PLAYERKICK
 	STA Sound_QPlayer
 
-	INC Exp_Earned
 
 PRG005_AAE8:
 	RTS		 ; Return
@@ -1648,7 +1647,7 @@ PRG005_ABE2:
 	LDA #$00
 	STA <Objects_XVelZ,X
 
-	INC <Objects_CollisionDetectionZ,X	 ; DetStat++ (bad use of this var :P)
+	INC <Objects_TilesDetectZ,X	 ; DetStat++ (bad use of this var :P)
 
 PRG005_ABF5:
 	JSR Bolt_ToBoltCollide	; Bolt-to-bolt intersection response
@@ -1675,7 +1674,7 @@ PRG005_AC04:
 	LDA <Player_YVel
 	BMI PRG005_AC35		; If Player is moving upward, jump to PRG005_AC35 (RTS)
 
-	LDA <Objects_CollisionDetectionZ,X	; Bad use of this var
+	LDA <Objects_TilesDetectZ,X	; Bad use of this var
 	BNE PRG005_AC20	 	; If bolt hit end of thread, jump to PRG005_AC20
 
 	; Bolt moves to the right
@@ -3023,7 +3022,7 @@ PRG005_B9DB:
 	JMP PRG005_BA3D	 ; If no empty slots, jump to PRG005_BA3D
 
 PRG005_B9E6:
-	JSR Level_PrepareNewObject	 ; Set up new object
+	JSR Object_New	 ; Set up new object
 
 	; Set object Y/Hi by calculated values
 	LDA <Temp_Var9
@@ -3742,7 +3741,7 @@ PRG005_BE20:
 
 
 PRG005_BE26:
-	JSR Level_PrepareNewObject	 ; Prepare new object!
+	JSR Object_New	 ; Prepare new object!
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X	 ; Objects_State[X] = OBJSTATE_NORMAL (item alive, default state)
@@ -4192,10 +4191,10 @@ FreezieMove1:
 	JSR Object_InteractWithOtherObjects
 	BCS ObjNorm_Freezie1
 
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BNE Freezie_Die
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	AND #$F0
 	CMP #TILE_PROP_WATER
 	BEQ ObjNorm_Freezie1_0
@@ -4221,10 +4220,10 @@ ObjNorm_Freezie1_0:
 	ADC #$00
 	STA Block_ChangeYHi
 	
-	LDA ObjTile_DetXLo
+	LDA Tile_DetectionX
 	AND #$F0
 	STA Block_ChangeX
-	LDA ObjTile_DetXHi
+	LDA Tile_DetectionXHi
 	STA Block_ChangeXHi
 	LDA #$00
 	STA Objects_YVelZ, X

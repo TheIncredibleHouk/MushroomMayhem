@@ -217,7 +217,7 @@ IceFire_XVel:
 	.byte $D0, $30, $E8, $18
 
 IceFire_YVel:
-	.byte $10, $D0
+	.byte $10, $C0
 
 Throw_FireBall:
 	JSR SetProjectilePosition8x16
@@ -248,7 +248,7 @@ Throw_IceBall:
 
 	LDA #$00
 	STA SpecialObj_Var1, X
-	STA PlayerProj_YVel, X
+	STA SpecialObj_YVel, X
 	RTS
 
 Hammer_Vel:
@@ -303,7 +303,7 @@ Throw_NinjaStar1:
 	RTS		 ; Return
 
 Proj_BallPos:
-	.byte $02, $0E, $FE, $04
+	.byte $04, $0C, $FE, $04
 	.byte $00, $00, $FF, $00
 
 SetProjectilePosition16x16:
@@ -369,6 +369,7 @@ Player_Nothing
 	RTS
 
 SpecialObj_ObjectAttributes = Temp_Var16
+
 Player_FireBall:
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
@@ -376,7 +377,7 @@ Player_FireBall:
 
 	JSR PlayerProj_HitEnemies8x16
 	BCC Player_FireBallTiles
-	
+
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_FIREPROOF
 	BNE Player_FireBallNoKill
@@ -385,21 +386,26 @@ Player_FireBall:
 	JMP Player_ToPoofNoSound
 
 Player_FireBallNoKill:
+	LDA <SpecialObj_ObjectAttributes
+	AND #OAT_WEAPONSHELLPROOF
+	BNE Player_FireBallTiles
+
 	JMP Player_ToPoof
 
 Player_FireBallTiles:
 	JSR SpecialObj_DetectWorld8x16
+	JSR Player_FireTilesInteraction
 
 	LDA SpecialObj_YVel, X
 	BPL Player_FireBall1
 
-	LDA Object_TileProp
+	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_ALL
 	BCC Player_FireBall4
 	BCS Player_FireBall2
 
 Player_FireBall1:
-	LDA Object_TileProp
+	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_TOP
 	BCC Player_FireBall4
 
@@ -438,6 +444,38 @@ Player_FireBall5:
 	JSR SpecialObj_Draw8x16
 	RTS
 
+Player_FireTilesInteraction:
+	LDA Block_NeedsUpdate
+	BNE Player_FireTilesInteraction1
+
+	LDY #$07
+
+Player_FireTilesInteraction0:
+	LDA FireBallTransitions, Y
+	BEQ Fire_Empty
+
+	CMP Tile_LastValue
+	BEQ Player_FireTilesInteraction2
+
+Fire_Empty:
+	DEY
+	BPL Player_FireTilesInteraction0
+
+Player_FireTilesInteraction1:
+	RTS
+
+Player_FireTilesInteraction2:
+	EOR #$01
+	JSR Object_ChangeBlock
+	LDA Tile_DetectionX
+	AND #$F0
+	STA SpecialObj_X, X
+
+	LDA Tile_DetectionY
+	AND #$F0
+	STA SpecialObj_Y, X
+	JMP Player_ToPoofNoSound
+
 Player_IceBall:
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
@@ -445,7 +483,7 @@ Player_IceBall:
 
 	JSR PlayerProj_HitEnemies8x16
 	BCC Player_IceBallTiles
-	
+
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_ICEPROOF
 	BNE Player_IceBallNoKill
@@ -469,21 +507,27 @@ Player_IceBall:
 	JMP Player_ToPoofNoSound
 
 Player_IceBallNoKill:
+	
+	LDA <SpecialObj_ObjectAttributes
+	AND #OAT_WEAPONSHELLPROOF
+	BNE Player_IceBallTiles
+
 	JMP Player_ToPoof
 
 Player_IceBallTiles:
 	JSR SpecialObj_DetectWorld8x16
+	JSR Player_IceTilesInteraction
 
 	LDA SpecialObj_YVel, X
 	BPL Player_IceBall1
 
-	LDA Object_TileProp
+	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_ALL
 	BCC Player_IceBall4
 	BCS Player_IceBall2
 
 Player_IceBall1:
-	LDA Object_TileProp
+	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_TOP
 	BCC Player_IceBall4
 
@@ -522,16 +566,53 @@ Player_IceBall5:
 	JSR SpecialObj_Draw8x16
 	RTS
 
+Player_IceTilesInteraction:
+	LDA Block_NeedsUpdate
+	BNE Player_IceTilesInteraction1
+
+	LDY #$07
+
+Player_IceTilesInteraction0:
+	LDA IceBallTransitions, Y
+	BEQ Ice_Empty
+
+	CMP Tile_LastValue
+	BEQ Player_IceTilesInteraction2
+
+Ice_Empty:
+	DEY
+	BPL Player_IceTilesInteraction0
+
+Player_IceTilesInteraction1:
+	RTS
+
+Player_IceTilesInteraction2:
+	EOR #$01
+	JSR Object_ChangeBlock
+	LDA Tile_DetectionX
+	AND #$F0
+	STA SpecialObj_X, X
+
+	LDA Tile_DetectionY
+	AND #$F0
+	STA SpecialObj_Y, X
+	JMP Player_ToPoofNoSound
+
 Player_ToPoof:
 	LDA #SND_PLAYERBUMP
 	STA Sound_QPlayer
 
 Player_ToPoofNoSound:
+	LDA Player_StarInv
+	BNE Player_ToPoofNoSound1
+
 	LDA #PLAYER_POOF
 	STA SpecialObj_ID, X
 
 	LDA #$10
 	STA SpecialObj_Data, X
+
+Player_ToPoofNoSound1:
 	RTS
 
 Player_Hammer:
@@ -547,6 +628,7 @@ Player_Hammer:
 
 Player_HammerNoKill:
 	JSR SpecialObj_DetectWorld16x16
+	JSR Player_HammerTilesInteraction
 
 	LDA #$6D
 	STA <SpecialObj_Tile
@@ -562,6 +644,79 @@ Player_HammerNoKill:
 	JSR SpecialObj_Draw16x16
 	RTS
 
+Hammer_Tiles:
+	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_STONE), (TILE_PROP_SOLID_ALL | TILE_PROP_STONE), (TILE_ITEM_BRICK)
+
+Player_HammerTilesInteraction:
+	LDA Block_NeedsUpdate
+	BNE Player_HammerTilesInteraction1
+
+	LDY #$02
+
+Player_HammerTilesInteraction0:
+	LDA Hammer_Tiles, Y
+	BEQ Hammer_Empty
+
+	CMP Tile_LastProp
+	BEQ Player_HammerTilesInteraction2
+
+Hammer_Empty:
+	DEY
+	BPL Player_HammerTilesInteraction0
+
+Player_HammerTilesInteraction1:
+	RTS
+
+Player_HammerTilesInteraction2:
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	JSR Object_ChangeBlock
+	LDA Tile_DetectionX
+	AND #$F0
+	STA SpecialObj_X, X
+
+	LDA Tile_DetectionY
+	AND #$F0
+	STA SpecialObj_Y, X
+
+	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
+
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En
+
+	; Brick bust upper Y
+	LDA SpecialObj_Y, X
+	CLC
+	SBC Level_VertScroll
+	STA Brick_DebrisYHi
+
+	; Brick bust lower Y
+	ADD #$08
+	STA Brick_DebrisY
+
+	; Brick bust X
+	LDA SpecialObj_X, X
+	SUB <Horz_Scroll	
+	STA Brick_DebrisX
+
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA Brick_DebrisXDist
+	STA BrickBust_HEn
+
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel
+
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile
+
+	LDA #SPR_PAL3
+	STA BrickBust_Pal
+	JMP Player_ToPoofNoSound
+
 Player_NinjaStar:
 	JSR SObj_ApplyXYVels
 	JSR PlayerProj_HitEnemies16x16
@@ -569,7 +724,7 @@ Player_NinjaStar:
 
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_WEAPONSHELLPROOF
-	BNE Player_HammerNoKill
+	BNE Player_StarNoKill
 
 	JSR SpecialObj_AttackEnemy
 
@@ -648,72 +803,70 @@ Detect16x16:
 SpecialObj_DetectWorld16x16:
 	LDY #$00
 	LDA SpecialObj_YVel,X
-	BPL DW161
+	BMI DW161
 
 	INY
 
 DW161:
 	LDA SpecialObj_Y,X
 	ADD Detect16x16, Y
-	STA ObjTile_DetYLo
+	STA Tile_DetectionY
 
 	LDA SpecialObj_YHi,X
 	ADC #$00
-	STA ObjTile_DetYHi
+	STA Tile_DetectionYHi
 
 	LDY #$00
 	LDA SpecialObj_XVel,X
-	BPL DW162
+	BMI DW162
 
 	INY
 
 DW162:
 	LDA SpecialObj_X,X
 	ADD Detect16x16, Y
-	STA ObjTile_DetXLo
+	STA Tile_DetectionX
 
 	LDA SpecialObj_XHi,X
 	ADC #$00
-	STA ObjTile_DetXHi
+	STA Tile_DetectionXHi
 
-	JSR Object_DetectTileDirect
-	RTS
+	JMP Object_DetectTile
 Detect8x8:
 	.byte $00, $08, $04, $0C
 
 SpecialObj_DetectWorld8x16:
 	LDY #$00
 	LDA SpecialObj_YVel,X
-	BPL DW81
+	BMI DW81
 
 	INY
 
 DW81:
 	LDA SpecialObj_Y,X
 	ADD Detect8x8 + 2, Y
-	STA ObjTile_DetYLo
+	STA Tile_DetectionY
 
 	LDA SpecialObj_YHi,X
 	ADC #$00
-	STA ObjTile_DetYHi
+	STA Tile_DetectionYHi
 
 	LDY #$00
 	LDA SpecialObj_XVel,X
-	BPL DW82
+	BMI DW82
 
 	INY
 
 DW82:
 	LDA SpecialObj_X,X
 	ADD Detect8x8, Y
-	STA ObjTile_DetXLo
+	STA Tile_DetectionX
 
 	LDA SpecialObj_XHi,X
 	ADC #$00
-	STA ObjTile_DetXHi
+	STA Tile_DetectionXHi
 
-	JSR Object_DetectTileDirect
-	RTS
+	JMP Object_DetectTile
 
 SpecialObj_Delete:
 	
@@ -724,7 +877,10 @@ SpecialObj_Delete:
 	RTS
 
 SpecialObj_CheckForeground:
-	LDA CurrentTileProperty
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCS SpecialObj_CheckForeground1
+
 	AND #TILE_PROP_FOREGROUND
 	BEQ SpecialObj_CheckForeground1
 
@@ -866,68 +1022,68 @@ ProjXBound:
 
 PlayerProj_HitEnemies8x16:
 	LDA SpecialObj_X, X
-	STA Custom_BoundLeft
+	STA SpecialObj_BoundLeft
 
 	LDA SpecialObj_XHi, X
-	STA Custom_BoundLeftHi
+	STA SpecialObj_BoundLeftHi
 
-	LDA Custom_BoundLeft
+	LDA SpecialObj_BoundLeft
 	ADD #$08
-	STA Custom_BoundRight
+	STA SpecialObj_BoundRight
 
-	LDA Custom_BoundRightHi
+	LDA SpecialObj_BoundLeftHi
 	ADC #$00
-	STA Custom_BoundRightHi
+	STA SpecialObj_BoundRightHi
 
 	LDA SpecialObj_Y, X
 	ADD #$04
-	STA Custom_BoundTop
+	STA SpecialObj_BoundTop
 
 	LDA SpecialObj_YHi, X
 	ADC #$00
-	STA Custom_BoundTopHi
+	STA SpecialObj_BoundTopHi
 
-	LDA Custom_BoundTop
+	LDA SpecialObj_BoundTop
 	ADD #$08
-	STA Custom_BoundBottom
+	STA SpecialObj_BoundBottom
 
-	LDA Custom_BoundTopHi
+	LDA SpecialObj_BoundTopHi
 	ADC #$00
-	STA Custom_BoundBottomHi
+	STA SpecialObj_BoundBottomHi
 	
 	JMP PlayerProj_HitEnemies
 
 PlayerProj_HitEnemies16x16:
 
 	LDA SpecialObj_X, X
-	STA Custom_BoundLeft
+	STA SpecialObj_BoundLeft
 
 	LDA SpecialObj_XHi, X
-	STA Custom_BoundLeftHi
+	STA SpecialObj_BoundLeftHi
 
-	LDA Custom_BoundLeft
+	LDA SpecialObj_BoundLeft
 	ADD #$10
-	STA Custom_BoundRight
+	STA SpecialObj_BoundRight
 
-	LDA Custom_BoundRightHi
+	LDA SpecialObj_BoundRightHi
 	ADC #$00
-	STA Custom_BoundRightHi
+	STA SpecialObj_BoundRightHi
 
 	LDA SpecialObj_Y, X
 	ADD #$10
-	STA Custom_BoundTop
+	STA SpecialObj_BoundTop
 
 	LDA SpecialObj_YHi, X
 	ADC #$00
-	STA Custom_BoundTopHi
+	STA SpecialObj_BoundTopHi
 
-	LDA Custom_BoundTop
+	LDA SpecialObj_BoundTop
 	ADD #$10
-	STA Custom_BoundBottom
+	STA SpecialObj_BoundBottom
 
-	LDA Custom_BoundTopHi
+	LDA SpecialObj_BoundTopHi
 	ADC #$00
-	STA Custom_BoundBottomHi
+	STA SpecialObj_BoundBottomHi
 	
 	JMP PlayerProj_HitEnemies
 
@@ -947,10 +1103,7 @@ PlayerProj_HitEnemies1:
 	LDA Object_AttrFlags,X	
 	STA <SpecialObj_ObjectAttributes		; Object attribute flags -> Temp_Var1
 
-	TYA
-	TAX
-
-	JSR Object_DetectCustom	 ; See if Player Project hit an object and respond!
+	JSR SpecialObj_DetectObject	 ; See if Player Project hit an object and respond!
 	BCC PlayerProj_HitEnemies2
 	LDX <CurrentObjectIndexZ
 	RTS
@@ -967,9 +1120,9 @@ PlayerProj_HitEnemies2:
 
 SpecialObj_AttackEnemy:
 
-	LDA Objects_HitCount,Y
+	LDA Objects_Health,Y
 	SUB #$01
-	STA Objects_HitCount,Y
+	STA Objects_Health,Y
 	BMI ProjEnemyDead	 ; If enemy has no hits left, jump to PRG007_A6DD
 	
 	RTS		 ; Return
@@ -1602,7 +1755,7 @@ PRG007_ABE0:
 	INC BrickBust_YVel,X	 ; BrickBust_YVel++ (gravity)
 
 PRG007_ABED:
-	LDA BrickBust_YUpr,X
+	LDA Brick_DebrisYHi,X
 	PHA		 ; Save upper chunk Y
 
 	CLC		 ; Clear carry (no point?)
@@ -1614,10 +1767,10 @@ PRG007_ABED:
 	ADD BrickBust_YVel,X	 ; Apply brick bust Y velocity
 
 PRG007_ABFE:
-	STA BrickBust_YUpr,X	 ; -> upper chunk Y
+	STA Brick_DebrisYHi,X	 ; -> upper chunk Y
 
 	PLA		 ; Restore original Y
-	EOR BrickBust_YUpr,X
+	EOR Brick_DebrisYHi,X
 	BPL PRG007_AC1F	 ; If the sign hasn't changed, jump to PRG007_AC1F
 
 	; Sign changed; need to make sure the block bust debris didn't wrap
@@ -1630,7 +1783,7 @@ PRG007_ABFE:
 	SUB BrickBust_YVel,X	 ; Apply velocity in reverse
 
 PRG007_AC12:
-	EOR BrickBust_YUpr,X
+	EOR Brick_DebrisYHi,X
 	BPL PRG007_AC1F	 ; If the sign didn't change, jump to PRG007_AC1F
 
 	; Otherwise, toggle the upper chunk disable
@@ -1639,7 +1792,7 @@ PRG007_AC12:
 	STA BrickBust_HEn,X
 
 PRG007_AC1F:
-	LDA BrickBust_YLwr,X
+	LDA Brick_DebrisY,X
 	PHA		 ; Save lower chunk Y
 
 	CLC		 ; Clear carry (no point?)
@@ -1648,17 +1801,17 @@ PRG007_AC1F:
 	LDY <Player_HaltGameZ
 	BNE PRG007_AC36	 ; If gameplay is halted, jump to PRG007_AC36
 
-	INC BrickBust_XDist,X	 ; Increase the chunk separation
+	INC Brick_DebrisXDist,X	 ; Increase the chunk separation
 
 	ADD BrickBust_YVel,X	 ; Apply Y velocity
 
 	ADD #$02		; More impact on lower chunk
 PRG007_AC36:
-	STA BrickBust_YLwr,X
+	STA Brick_DebrisY,X
 
 	PLA		 ; Restore lower chunk Y
 
-	EOR BrickBust_YLwr,X
+	EOR Brick_DebrisY,X
 	BPL PRG007_AC5A	 ; If the sign hasn't changed, jump to PRG007_AC5A
 
 	; Sign changed; need to make sure the block bust debris didn't wrap
@@ -1672,7 +1825,7 @@ PRG007_AC36:
 	SUB #$02	 ; With the greater impact
 
 PRG007_AC4D:
-	EOR BrickBust_YLwr,X
+	EOR Brick_DebrisY,X
 	BPL PRG007_AC5A	 ; If sign didn't change, jump to PRG007_AC5A
 
 	; Otherwise, toggle the lower chunk disable
@@ -1683,9 +1836,9 @@ PRG007_AC4D:
 PRG007_AC5A:
 
 	; Scroll brick bust debris horizontally with screen
-	LDA BrickBust_X,X
+	LDA Brick_DebrisX,X
 	SUB Level_ScrollDiffH
-	STA BrickBust_X,X
+	STA Brick_DebrisX,X
 
 	TXA		 ; Keeps things interesting
 	EOR <Counter_1
@@ -1728,7 +1881,7 @@ PRG007_AC91:
 	BNE PRG007_ACA0	 ; If upper bust chunks are disabled, jump to PRG007_ACA0
 
 	; Otherwise set sprite Y for left and right uppers
-	LDA BrickBust_YUpr,X
+	LDA Brick_DebrisYHi,X
 	STA Sprite_RAM+$00,Y
 	STA Sprite_RAM+$04,Y
 
@@ -1738,7 +1891,7 @@ PRG007_ACA0:
 	BNE PRG007_ACAF	 ; If lower bust chunks are disabled, jump to PRG007_ACAF
 
 	; Otherwise set sprite Y for left and right lowers
-	LDA BrickBust_YLwr,X
+	LDA Brick_DebrisY,X
 	STA Sprite_RAM+$08,Y
 	STA Sprite_RAM+$0C,Y
 
@@ -1769,9 +1922,9 @@ PRG007_ACC7:
 	STA Sprite_RAM+$09,Y
 	STA Sprite_RAM+$0D,Y
 
-	LDA BrickBust_X,X
+	LDA Brick_DebrisX,X
 	PHA		 ; Save chunk X
-	ADD BrickBust_XDist,X	; Add the distance
+	ADD Brick_DebrisXDist,X	; Add the distance
 	ADD #$08	 	; +8
 	STA Sprite_RAM+$03,Y	; Set right upper chunk X
 	STA Sprite_RAM+$0B,Y	; Set right lower chunk X
@@ -1786,7 +1939,7 @@ PRG007_ACC7:
 
 PRG007_ACF2:
 	PLA		 ; Restore chunk X
-	SUB BrickBust_XDist,X	 ; Subtract the distance
+	SUB Brick_DebrisXDist,X	 ; Subtract the distance
 	STA Sprite_RAM+$07,Y	 ; Set left upper chunk X
 	STA Sprite_RAM+$0F,Y	 ; Set left lower chunk X
 
@@ -1835,14 +1988,14 @@ PRG007_AD27:
 	DEC BrickBust_HEn,X	 ; BrickBust_HEn-- (used as a counter here)
 
 PRG007_AD33:
-	LDA BrickBust_YUpr,X
+	LDA Brick_DebrisYHi,X
 
 	LDY Level_AScrlConfig
 	BNE PRG007_AD42	 ; If raster enabled, jump to PRG007_AD42
 
 	; Otherwise, just be screen-scroll relative
 	SUB Level_ScrollDiffV
-	STA BrickBust_YUpr,X
+	STA Brick_DebrisYHi,X
 
 PRG007_AD42:
 	CMP #208
@@ -1852,9 +2005,9 @@ PRG007_AD42:
 	BNE PRG007_AD54	 ; If raster effects enabled, jump to PRG007_AD54
 
 	; Scroll poof horizontally
-	LDA BrickBust_X,X
+	LDA Brick_DebrisX,X
 	SUB Level_ScrollDiffH
-	STA BrickBust_X,X
+	STA Brick_DebrisX,X
 
 PRG007_AD54:
 	CMP #240
@@ -1873,7 +2026,7 @@ PRG007_AD54:
 	BNE PRG007_ADA7	 ; If this sprite is not free, jump to PRG007_ADA7 (RTS)
 
 	; Set left sprite X
-	LDA BrickBust_X,X
+	LDA Brick_DebrisX,X
 	STA Sprite_RAM+$03,Y
 
 	; Set right sprite X
@@ -1881,7 +2034,7 @@ PRG007_AD54:
 	STA Sprite_RAM+$07,Y
 
 	; Set left/right sprite Y
-	LDA BrickBust_YUpr,X
+	LDA Brick_DebrisYHi,X
 	STA Sprite_RAM+$00,Y
 	STA Sprite_RAM+$04,Y
 
@@ -2845,9 +2998,9 @@ SObj_Egg3:
 
 	TYA
 	TAX
-	DEC Objects_HitCount,X
-	DEC Objects_HitCount,X
-	DEC Objects_HitCount,X
+	DEC Objects_Health,X
+	DEC Objects_Health,X
+	DEC Objects_Health,X
 	BPL SObj_EggRTS
 
 	LDX <CurrentObjectIndexZ
@@ -2870,10 +3023,6 @@ SObj_Egg4:
 	STA  Objects_State,Y
 	LDA #$F0
 	STA Objects_YVelZ,Y
-
-	INC Exp_Earned
-	INC Exp_Earned
-	INC Exp_Earned
 
 SObj_EggRTS:
 	RTS
@@ -3327,7 +3476,7 @@ SObj_Acid01:
 	JSR SObj_PlayerCollide
 	;JSR CheckAcidMelt
 
-	LDA CurrentTileProperty
+	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_TOP
 	BCC SObj_Acid2
 
@@ -3862,11 +4011,11 @@ PRG007_BC92:
 	LDA CannonFire_Y,X
 	SUB Level_VertScroll
 	ADD #$04
-	STA BrickBust_YUpr
+	STA Brick_DebrisYHi
 
 	; +8 to the other smoke
 	ADC #$08
-	STA BrickBust_YUpr+1
+	STA Brick_DebrisYHi+1
 
 	RTS		 ; Return
 
@@ -4360,14 +4509,14 @@ CannonFire_NoiseAndSmoke:
 	LDA CanonPoofXOffset, Y
 	ADD CannonFire_X,X
 	SUB <Horz_Scroll	; Make relative to horizontal scroll
-	STA BrickBust_X		; Set X
+	STA Brick_DebrisX		; Set X
 
 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 
 	LDA CannonFire_Y,X	 ; + Cannon Fire Y
 	SUB #$08
 	SUB Level_VertScroll	 ; Make relative to vertical scroll
-	STA BrickBust_YUpr	 ; Set Y
+	STA Brick_DebrisYHi	 ; Set Y
 
 	; Set poof counter
 	LDA #$1f
@@ -4535,7 +4684,7 @@ PRG007_BFCF:
 	RTS		 ; Return
 
 PRG007_BFDC:
-	JSR Level_PrepareNewObject	 ; Prepare this new object
+	JSR Object_New	 ; Prepare this new object
 
 	; Set to normal state
 	LDA #OBJSTATE_NORMAL
@@ -4559,7 +4708,6 @@ CheckTailSpin:
 	STA SpecialObj_YVel, X
 	JSR SObj_AddXVelFrac
 	JSR SObj_AddYVelFrac
-	INC Exp_Earned
 	PLA
 	PLA
 

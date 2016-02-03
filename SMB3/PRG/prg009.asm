@@ -44,7 +44,6 @@ AutoScroll_Do:
 
 	; Otherwise, halt timer
 	LDA #$80
-	STA Level_TimerEn
 
 PRG009_B916:
 	RTS		 ; Return
@@ -52,7 +51,6 @@ PRG009_B916:
 PRG009_B917:
 
 	; Ensure clock is not stopped (?)
-	STA Level_TimerEn
 
 	LDA Level_AScrlTimer
 	BEQ PRG009_B922	 ; If Level_AScrlTimer = 0, jump to PRG009_B922
@@ -277,7 +275,6 @@ PRG009_BBE9:
 
 	; (Carry is set by the CPY)
 	; Set bit 7 on Level_TimerEn, which disables level animations (specifically, the tank treads)
-	ROR Level_TimerEn
 
 PRG009_BBFB:
 

@@ -595,7 +595,7 @@ Beached_DrawNoAnimate:
 
 Beached_DoBounce:
 	LDY Objects_Property, X
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #$04
 	BEQ Beached_DoBounce1
 
@@ -603,7 +603,7 @@ Beached_DoBounce:
 	STA <Objects_YVelZ, X
 
 Beached_DoBounce1:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #$08
 	BEQ Beached_DoBounce2
 
@@ -617,7 +617,7 @@ Beached_CheckLava:
 	LDA Objects_Property, X
 	BEQ Beached_NoDryCheep
 
-	LDA Object_TileProp
+	LDA Tile_LastProp
 	AND #$0F
 	CMP #(TILE_PROP_WATER |TILE_PROP_HARMFUL)
 	BEQ Beached_NoDryCheep
@@ -1265,7 +1265,7 @@ PRG002_AAA6:
 Enemy_CollideWithWorld:
 	JSR Object_Move	 ; Do standard object movements
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$08
 	BEQ PRG002_AAB2	 ; If enemy has NOT hit ceiling, jump to PRG002_AAB2
 
@@ -1273,7 +1273,7 @@ Enemy_CollideWithWorld:
 	STA <Objects_YVelZ,X
 
 PRG002_AAB2:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$03
 	BEQ Object_HitFloorAlign	 ; If enemy has NOT hit walls, jump to Object_HitFloorAlign
 
@@ -1283,7 +1283,7 @@ PRG002_AAB2:
 	JSR Object_Reverse	 ; Otherwise, turn around
 
 Object_HitFloorAlign:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG002_AAA6	 ; If object has NOT hit ground, jump to PRG002_AAA6 (RTS)
 	JMP Object_HitGround	 ; Otherwise, align to ground and don't come back!
@@ -1356,7 +1356,7 @@ PRG002_AB60:
 	BNE Float_Do_Carry
 
 Float_Do_Fall:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #$04
 	BEQ Float_Do_Carry
 	LDA <Objects_YZ, X
@@ -1366,7 +1366,7 @@ Float_Do_Fall:
 	STA <Objects_YVelZ, X
 
 Float_Do_Carry:
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	CMP #TILE_ITEM_COIN
 	BCS No_Carry
 	AND #$0F
@@ -1569,7 +1569,7 @@ PRG002_AD31:
 PRG002_AD3F:
 	;JSR Object_SetXVelByFacingDir	 ; Set Spike's X velocity by his facing direction
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG002_AD80	 ; If Spike has not touched the ground, jump to PRG002_AD80
 
@@ -1634,7 +1634,7 @@ PRG002_AD88:
 
 PRG002_AD95:
 	JSR Object_Move	 ; Collide with world
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG002_AD96	 ; If object has NOT hit ground, jump to PRG002_AAA6 (RTS)
 	JSR Object_HitGround
@@ -1827,7 +1827,7 @@ ObjNorm_Snifit1:
 	STA Objects_XVelZ, X
 
 ObjNorm_Snifit2:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #(HIT_GROUND)
 	BEQ SnifitDontHop
 
@@ -1835,7 +1835,7 @@ ObjNorm_Snifit2:
 	AND #$1F
 	BEQ Snifit_Hop
 
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ SnifitDontHop
 
@@ -1845,7 +1845,7 @@ Snifit_Hop:
 	STA Objects_YVelZ, X
 
 SnifitDontHop:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ SnifitDontHop1
 	JSR Snifit_HitWall
@@ -1961,7 +1961,7 @@ Snifit_HitWall:
 	BEQ Snifit_HitWall1RTS
 	BPL Snifit_HitWall1
 
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_LEFTWALL
 	BEQ Snifit_HitWall1RTS
 
@@ -1972,7 +1972,7 @@ Snifit_HitWall:
 	RTS
 
 Snifit_HitWall1:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_RIGHTWALL
 	BEQ Snifit_HitWall1RTS
 	LDA <Objects_XZ, X
@@ -2078,7 +2078,7 @@ SparkHitDetection:
 	ASL A
 	ORA Objects_Data5, X
 	TAY
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND SparkDetects, Y  
 	BNE WallCeilGrndDet
 	LDA Objects_Data5, X	; neither corner was detected (no ground or wall) so we need to wrap around the tile
@@ -2329,7 +2329,7 @@ ObjNorm_Nipper0:
 	LDA <Objects_Data2, X
 	BNE PRG002_B1CD
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ ObjNorm_Nipper2
 
@@ -2350,7 +2350,7 @@ ObjNorm_Nipper0:
 	BNE PRG002_B1CC
 
 ObjNorm_Nipper2_0:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG002_B1CD	 ; If Nipper has not touched ground, jump to PRG002_B1CD
 
@@ -2363,7 +2363,7 @@ ObjNorm_Nipper2_2:
 
 ObjNorm_Nipper3:
 	LDY TempY
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG002_B1CD
 
@@ -4348,7 +4348,7 @@ ObjNorm_DiagonalPodobo01:
 	PLA 
 	STA Objects_YVelZ, X
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #(HIT_GROUND | HIT_CEILING)
 	BEQ ObjNorm_DiagonalPodobo1
 	LDA <Objects_YVelZ,X	 
@@ -4359,7 +4359,7 @@ ObjNorm_DiagonalPodobo01:
 	STA Objects_Orientation, X
 
 ObjNorm_DiagonalPodobo1:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ ObjNorm_DiagonalPodobo2
 	JSR Object_Reverse
@@ -4377,7 +4377,7 @@ ObjInit_Birdo:
 	LDA Birdo_ShootTimers, Y
 	STA Objects_Timer, X
 	LDA #$04
-	STA Objects_HitCount, X
+	STA Objects_Health, X
 	RTS
 
 Birdo_Walk:
@@ -4611,7 +4611,7 @@ ObjNorm_PacBoo4:
 	PLA
 	STA <Player_X
 
-	JSR Object_DetectTileOn
+	JSR Object_DetectTileCenter
 	LDA Objects_LastProp, X
 	CMP #TILE_PROP_ENEMY
 
@@ -4716,10 +4716,10 @@ PiranhaCheckOffScreen:
 
 	LDA TempA
 	BEQ PiranhaCheckOffScreen1
-	JSR Object_DetectTileOn
+	JSR Object_DetectTileCenter
 
 
-	LDA Object_LevelTile
+	LDA Tile_LastValue
 	EOR #$01
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
@@ -4824,9 +4824,9 @@ Piranha_CheckTiles2:
 	LDA #$80
 	STA Objects_Timer, X
 
-	JSR Object_DetectTileOn
+	JSR Object_DetectTileCenter
 
-	LDA Object_LevelTile
+	LDA Tile_LastValue
 	EOR #$01
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
@@ -4836,9 +4836,9 @@ Piranha_CheckTiles2:
 	RTS
 
 Piranha_SetVelocity:
-	JSR Object_DetectTileOn
+	JSR Object_DetectTileCenter
 
-	LDA Object_LevelTile
+	LDA Tile_LastValue
 	EOR #$01
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate

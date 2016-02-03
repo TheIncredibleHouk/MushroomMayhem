@@ -111,9 +111,9 @@ ObjectGroup02_NormalJumpTable:
 ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $48 - OBJ_NINJI
 	.word ObjHit_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
-	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
-	.word ObjHit_DoNothing	; Object $4A - OBJ_MAGICSTAR
+	.word Magic_StarCollect	; Object $4A - OBJ_MAGICSTAR
+	.word Magic_StarCollect	; Object $4A - OBJ_MAGICSTAR
+	.word Magic_StarCollect	; Object $4A - OBJ_MAGICSTAR
 	.word ObjHit_DoNothing	; Object $4D
 	.word ObjHit_DoNothing	; Object $4E
 	.word ObjHit_DoNothing	; Object $4F - OBJ_CHAINCHOMPFREE
@@ -473,6 +473,8 @@ ObjNorm_IceBlock:
 
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
+	JSR Object_DampenVelocity
+	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 
 	LDA <Objects_XVelZ, X
@@ -485,7 +487,7 @@ ObjNorm_IceBlock:
 
 	; if hit another object an held, it bursts
 	LDA Object_BeingHeld, X
-	BEQ IceBlock_NoBurst
+	BEQ IceBlock_Burst
 
 	LDA #$00
 	STA Player_IsHolding
@@ -495,28 +497,23 @@ IceBlock_NoBurst:
 	LDA Object_BeingHeld, X
 	BNE IceBlock_Draw
 
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
 IceBlock_TestBreak:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL | HIT_CEILING)
 	BEQ IceBlock_Draw
 	
 IceBlock_Burst:
-	LDA #$59
-	STA <Object_BurstTile
+	LDA <Objects_YZ, X
+	STA Debris_Y
 
-	LDA #SPR_PAL1
-	STA <Object_BurstPalette
+	LDA <Objects_XZ, X
+	STA Debris_X
 
-	JSR Object_Burst
+	JSR Common_MakeIce
 	JSR Object_TestTopBumpBlocks
-
-	LDA <Objects_XVelZ, X
-	EOR #$FF
-	ADD #$01
-	STA <Objects_XVelZ, X
-
 	JSR Object_TestSideBumpBlocks
 
 	JMP Object_SetDeadEmpty
@@ -568,10 +565,10 @@ Spintula_WaitRTS:
 	JMP Object_ShakeAndDrawMirrored
 
 Spintula_SpinDown:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BNE Spintula_SpinDownStop
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	AND #$E0
 	BNE Spintula_SpinDownStop
 	LDA Objects_YHiZ, X
@@ -628,7 +625,7 @@ Spintula_SpinUp:
 	LDA Objects_Timer, X
 	BNE Spintula_SpinUpRTS
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$08
 	BNE Spintula_SpinUpStop
 	LDA Objects_LastProp, X
@@ -754,7 +751,7 @@ PRG003_A3AA:
 
 	JSR Object_DetectTiles
 
-	LDA Object_TileProp
+	LDA Tile_LastProp
 	AND #TILE_PROP_SOLID_ALL
 	BEQ PRG003_A3D2
 
@@ -816,10 +813,10 @@ ObjNorm_SnowGuy:
 	JSR Object_InteractWithTiles
 	JSR Object_HandleBumpUnderneath
 	JSR Object_InteractWithPlayer
-	LDA <Objects_CollisionDetectionZ,X 
+	LDA <Objects_TilesDetectZ,X 
 	AND #$04
 	BEQ ObjNorm_SnowGuy1
-	LDA Objects_PreviousCollisionDetection,X 
+	LDA Objects_PreviousTilesDetect,X 
 	AND #$04
 	BNE ObjNorm_SnowGuy1
 
@@ -960,7 +957,7 @@ SnowGuyLift1:
 	JMP SnowGuyDraw
 
 SnowGuyWait:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ SnowGuyWait1
 	INC Objects_Data4, X
@@ -1053,10 +1050,10 @@ ObjNorm_VeggieGuy:
 	JSR Object_InteractWithTiles
 	JSR Object_HandleBumpUnderneath
 	JSR Object_InteractWithPlayer
-	LDA  <Objects_CollisionDetectionZ,X 
+	LDA  <Objects_TilesDetectZ,X 
 	AND #$04
 	BEQ ObjNorm_VeggieGuy1
-	LDA Objects_PreviousCollisionDetection,X 
+	LDA Objects_PreviousTilesDetect,X 
 	AND #$04
 	BNE ObjNorm_VeggieGuy1
 
@@ -1185,7 +1182,7 @@ VeggieGuyPull1:
 	JMP VeggieGuyDraw
 
 VeggieGuyWait:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ VeggieGuyWait1
 	INC Objects_Data4, X
@@ -1257,10 +1254,10 @@ ObjNorm_ShyGuy:
 	JSR Object_InteractWithTiles
 	JSR Object_HandleBumpUnderneath
 	JSR Object_InteractWithPlayer
-	LDA  <Objects_CollisionDetectionZ,X 
+	LDA  <Objects_TilesDetectZ,X 
 	AND #$04
 	BEQ ObjNorm_ShyGuy1
-	LDA Objects_PreviousCollisionDetection,X 
+	LDA Objects_PreviousTilesDetect,X 
 	AND #$04
 	BNE ObjNorm_ShyGuy1
 
@@ -1380,7 +1377,7 @@ ShyGuyRestore:
 	RTS
 
 ShyGuyGetBrick:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #$04
 	BEQ ShyGuyGetBrick2
 	LDY #$00
@@ -1398,7 +1395,7 @@ ShyGuyGetBrick1:
 ShyGuyGetBrick2:
 	LDA Block_UpdateValue
 	BNE ShyGuyGetBrick1
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	CMP #TILE_ITEM_COIN
 	BCC ShyGuyGetBrick1
 	AND #$0F
@@ -1696,7 +1693,7 @@ ObjNorm_TwirlingShell:
 	CMP #OBJ_BUZZYBEATLE
 	BNE PRG003_A59A	 ; If object has not become a Buzzle Beatle, jump to PRG003_A59A
 
-	JMP Object_SetShellState ; Set shell state and don't come back!
+	;JMP Object_SetShellState ; Set shell state and don't come back!
 
 PRG003_A59A:
 	LDY #$00	 ; Y = 0
@@ -1719,7 +1716,7 @@ PRG003_A5A3:
 
 	JSR Object_WorldDetectN1 ; Detect against world
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$08
 	BNE PRG003_A5CA	 ; If still detecting ceiling, jump to PRG003_A5CA
 
@@ -1766,7 +1763,7 @@ PRG003_A5DB:
 	STA <Objects_XVelZ,X
 
 PRG003_A5EF:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$03
 	BEQ PRG003_A5F8	 ; If object has not hit a wall, jump to PRG003_A5F8
 
@@ -1980,11 +1977,11 @@ PRG003_A6E8:
 
 BobOmb_WalkAround:
 	
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	AND #$04
 	BNE BobOmb_WalkAround1
 
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #$04
 	BEQ BobOmb_WalkAround1
 
@@ -2042,10 +2039,10 @@ PRG003_A75F:
 
 BobOmb_Unstable:
 
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	BNE BobOmb_Unstable1
 
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	BEQ BobOmb_Unstable1
 
 	JMP BobOmb_Explode
@@ -2100,7 +2097,7 @@ PRG003_A798:
 PRG003_A79F:
 	JSR Object_Move	 ; Do standard movements
 
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG003_A7CC	 ; If Bob-omb has not hit floor, jump to PRG003_A7CC
 
@@ -2137,7 +2134,7 @@ PRG003_A7B7:
 	STA <Objects_YVelZ,X	 ; Otherwise, bounce away
 
 PRG003_A7CC:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$03
 	BEQ PRG003_A7DC	 ; If Bob-omb did not hit a wall, jump to PRG003_A7DC
 
@@ -2325,7 +2322,6 @@ PRG003_A89D:
 	LDA Objects_Data3,X
 	INC Objects_Data3,X
 
-	INC Exp_Earned	 ; Get score for that
 
 Explosion_BumpBlocks:
 	LDA Objects_Timer,X
@@ -2334,22 +2330,22 @@ Explosion_BumpBlocks:
 
 	LDA <Objects_XZ, X
 	ADD ExplodeXOffsets + 8, Y
-	STA ObjTile_DetXLo
+	STA Tile_DetectionX
 
 	LDA <Objects_XHiZ, X
 	ADC ExplodeXOffsets, Y
-	STA ObjTile_DetXHi
+	STA Tile_DetectionXHi
 
 	LDA <Objects_YZ, X
 	ADD ExplodeYOffsets + 8, Y
-	STA ObjTile_DetYLo
+	STA Tile_DetectionY
 
 	LDA <Objects_YHiZ, X
 	ADC ExplodeYOffsets, Y
-	STA ObjTile_DetYHi
+	STA Tile_DetectionYHi
 
-	JSR Object_DetectTileDirect
-	LDA Object_TileProp
+	JSR Object_DetectTile
+	LDA Tile_LastProp
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
 	BEQ Switch_ToBrick
 
@@ -2358,15 +2354,9 @@ Explosion_BumpBlocks:
 
 Switch_ToBrick:
 	LDA #(TILE_PROP_ITEM | TILE_ITEM_BRICK)
-	STA Object_TileProp
+	STA Tile_LastProp
 
 Explosion_Bump:
-	LDA Object_TileProp
-	CMP #TILE_PROP_ITEM
-	BCC Explosion_BumpRTS
-
-	JSR Object_DirectBumpBlocks
-Explosion_BumpRTS:
 	RTS
 
 ExplodeXOffsets:
@@ -2399,41 +2389,41 @@ MagicStarOffset:
 	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
+	LDA <Player_HaltGameZ
+	BNE ObjNorm_MagicStar1
 
 	JSR Object_DeleteOffScreen	
+	JSR Object_CalcBoundBox
 	JSR MagicStar_Radar
 	JSR Magic_Star_Action
+	JSR Object_InteractWithPlayer
 
-	JSR Object_ShakeAndDrawMirrored
-	LDA <Player_HaltGameZ
-	BNE PRG003_A92D
+ObjNorm_MagicStar1:
+	JMP Object_ShakeAndDrawMirrored
 
-	JSR Object_WorldDetect8
-	
-	
-	JSR Object_HitTest
-	BCC PRG003_A92D	 ; If Player is not touching it, jump to PRG003_A92D
-
+Magic_StarCollect:
 	LDA Sound_QLevel1
 	ORA #SND_MAPBONUSAPPEAR
 	STA Sound_QMap
 	INC Magic_Stars
 
 	JSR GetLevelBit
+
 	STA <Temp_Var1
 	STY <Temp_Var2
-	LDA Objects_Data4, X
+
+	LDA Magic_StarIndicator, X
 	TAY
+
 	LDA <Temp_Var2
 	ADD MagicStarOffset, Y
 	TAY
+
 	LDA <Temp_Var1
 	ORA Magic_Stars_Collected1, Y
 	STA Magic_Stars_Collected1, Y
-	JMP Object_SetDeadEmpty
 
-PRG003_A92D:
-	RTS
+	JMP Object_SetDeadEmpty
 
 Magic_Star_Action:
 	LDA Objects_Property, X
@@ -2453,6 +2443,7 @@ MagicStar_CheckEnemies:
 CheckEnemies:
 	CPY <CurrentObjectIndexZ
 	BEQ NoCheck
+
 	LDA Objects_State, Y
 	CMP #OBJSTATE_KILLED
 	BCS NoCheck
@@ -2484,22 +2475,26 @@ MagicStar_CheckPSwitch1:
 
 MagicStar_NoFloat:
 	JSR Object_Move
-	JSR Object_InteractWithTiles
-	JMP Object_InteractWithOtherObjects
+	JSR Object_DetectTiles
+	JMP Object_InteractWithTiles
 
 MagicStar_CheckItemBlock:
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile
-	LDA Object_LevelTile
+	JSR Object_DetectTileCenter
+
+	LDA Tile_LastValue
 	AND #$3F
 	BNE MagicStar_CheckItemBlock1
+
 	LDA #$01
 	STA Objects_Property, X
+
 	LDA #$D0
 	STA Objects_YVelZ, X
+
 	LDA Objects_YZ, X
 	SUB #$10
 	STA Objects_YZ, X
+
 	LDA Objects_YHiZ, X
 	SBC #$00
 	STA Objects_YHiZ, X
@@ -2511,26 +2506,32 @@ MagicStar_CheckItemBlock1:
 	RTS
 
 MagicStar_CheckClearedBlock:
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
-	JSR Object_DetectTile
-	AND #$3F
-	BNE MagicStar_CheckItemBlock1
+	JSR Object_DetectTileCenter
+	
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCS MagicStar_CheckItemBlock1
+
 	LDA #$01
 	STA Objects_Property, X
 	RTS
 
 MagicStar_SpinnersActive:
-	LDY #$04
+	LDY #$02
 	LDX #$09
 
 NextSpinnerCheck:
 	LDA SpinnerBlockTimers, X
 	BEQ NextSpinnerCheck1
+
 	DEY
 	BPL NextSpinnerCheck1
+
 	LDX <CurrentObjectIndexZ
+
 	LDA #$01
 	STA Objects_Property, X
+
 	LDA #SND_LEVELUNK
 	STA Sound_QLevel1
 	RTS
@@ -2544,30 +2545,34 @@ NextSpinnerCheck1:
 
 
 
+Magic_StarIndicator = Objects_Data4
 ObjInit_MagicStar1:
 	LDA #$00
-	STA Objects_Data4, X
+	STA Magic_StarIndicator, X
 	JMP ObjInit_MagicStar
 
 ObjInit_MagicStar2:
 	LDA #$01
-	STA Objects_Data4, X
+	STA Magic_StarIndicator, X
 	JMP ObjInit_MagicStar
 
 ObjInit_MagicStar3:
 	LDA #$02
-	STA Objects_Data4, X
+	STA Magic_StarIndicator, X
 
 ObjInit_MagicStar:
 
 	JSR GetLevelBit
 	STA <Temp_Var1
 	STY <Temp_Var2
-	LDA Objects_Data4, X
+	
+	LDA Magic_StarIndicator, X
 	TAY
+
 	LDA <Temp_Var2
 	ADD MagicStarOffset, Y
 	TAY
+
 	LDA <Temp_Var1
 	AND Magic_Stars_Collected1, Y
 	BEQ Dont_Kill_Star
@@ -2582,6 +2587,7 @@ MagicStar_Radar:
 	LDA Player_Equip
 	SUB #ITEM_RADARNE
 	BMI MagicStar_RadarRTS
+
 	CMP #$09
 	BCS MagicStar_RadarRTS
 	LDA #$00
@@ -3068,7 +3074,7 @@ WillFreeMine:
 
 
 MineWaterSolid:
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	AND #TILE_PROP_SOLID_ALL
 	BEQ Mine_JustDraw
 	JMP MineDoExplode
@@ -3260,7 +3266,7 @@ Ninji_ThrowStar:
 	RTS		 ; Return
 
 Ninji_Fall:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #$04
 	BEQ Ninji_FallRTS
 	LDA #$60
@@ -3909,7 +3915,7 @@ PRG003_B7DD:
 	BNE PRG003_B7DE
 
 	LDA #$00
-	STA <Objects_CollisionDetectionZ, X
+	STA <Objects_TilesDetectZ, X
 
 	LDA Objects_LastProp, X
 	CMP #TILE_PROP_SOLID_ALL		= $C0 ;
@@ -3920,7 +3926,7 @@ PRG003_B7DD:
 	STA Objects_InWater, X
 
 PRG003_B7DE:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$03
 	BNE PRG003_B7EB	 ; If Blooper hit a wall, jump to PRG003_B7EB
 
@@ -3966,7 +3972,7 @@ PRG003_B810:
 	STA <Objects_YVelZ,X
 
 PRG003_B814:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$0c
 	BNE PRG003_B826	 ; If Blooper hit floor or ceiling, jump to PRG003_B826
 
@@ -4140,7 +4146,7 @@ PRG003_B8FE:
 
 	JSR Object_Move
 	JSR Object_AttackOrDefeat
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #$03
 	BEQ PRG003_B932
 
@@ -4149,13 +4155,13 @@ PRG003_B8FE:
 	STA  Objects_XVelZ, X
 
 PRG003_B932:
-	LDA  <Objects_CollisionDetectionZ, X
+	LDA  <Objects_TilesDetectZ, X
 	AND #$08
 	BEQ PRG003_B933
 	JSR Object_HitCeiling
 
 PRG003_B933:
-	LDA <Objects_CollisionDetectionZ,X
+	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ PRG003_B95A	 ; If chomp has not hit ground, jump to PRG003_B95A
 
@@ -4375,7 +4381,7 @@ PRG003_BA5C:
 	STA <Objects_XVelZ,X
 
 PRG003_BA72:
-	LDA Object_TileWallProp
+	LDA Object_HorzTileProp
 	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG003_BA73
 	JSR Object_ApplyXVel	 ; Apply X velocity
@@ -4414,7 +4420,7 @@ PRG003_BA73:
 	STA <Objects_YVelZ,X
 
 PRG003_BAA0:
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	CMP #TILE_PROP_CLIMBABLE
 	BNE PRG003_BAA1
 	JMP Object_ApplyYVel_NoGravity	 ; Apply Y velocity and don't come back!
@@ -5015,14 +5021,14 @@ ObjNorm_FireSnake1:
 	JSR Object_DetectTiles	 ; Detect against the world
 	JSR FireSnake_ChangeSolids
 
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #(HIT_RIGHTWALL | HIT_LEFTWALL)
 	BEQ PRG003_BD91
 
 	JSR Object_Reverse
 
 PRG003_BD91:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_CEILING
 	BEQ PRG003_BD91_2
 
@@ -5046,7 +5052,7 @@ PRG003_BDA8:
 	INC <Objects_YVelZ,X	 ; Fire Snake's light gravity
 
 PRG003_BDAA:
-	LDA <Objects_CollisionDetectionZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BNE PRG003_BDAA2
 
@@ -5057,7 +5063,7 @@ PRG003_BDAA2:
 	LDA #$00
 	STA Objects_XVelZ, X
 
-	LDA Objects_PreviousCollisionDetection, X
+	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
 	BNE PRG003_BDE7
 
@@ -5281,7 +5287,7 @@ FireSnake_ChangeSolids:
 	RTS
 
 FireSnake_ChangeSolids1:
-	LDA Object_TileFeetProp
+	LDA Object_VertTileProp
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
 	BNE FireSnake_ChangeSolids5
 
@@ -5321,7 +5327,7 @@ FireSnake_ChangeSolids3:
 	JMP FireSnake_ChangeSolids8
 
 FireSnake_ChangeSolids5:
-	LDA Object_TileWallProp
+	LDA Object_HorzTileProp
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
 	BNE FireSnake_ChangeSolids10
 	

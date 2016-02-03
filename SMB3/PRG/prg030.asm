@@ -2831,7 +2831,7 @@ GraphicsBuf_Prep_And_WaitVSync:	; 96E5
 
 	; Waiting for VBlank...
 PRG030_96FB:
-	;LDA #%00011110
+	LDA #%00011110
 	;STA $2001
 	LDA <VBlank_Tick
 	BPL PRG030_96FB	
@@ -2841,7 +2841,7 @@ PRG030_96FB:
 
 	CLI		 ; Enable further masked interrupts
 
-	;LDA #%00011111
+	LDA #%00011111
 	;STA $2001
 	RTS		 ; Return
 
@@ -4457,12 +4457,16 @@ PRG030_9E8E:
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_GetTileAndSlope_Normal
+; Player_GetTile
 ;
 ; Get tile and slope for given position and offset
 ; for non-vertical ("normal") levels
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_GetTileAndSlope_Normal:	; $9E9D
+Tile_X = Temp_Var16
+Tile_XHi = Temp_Var15
+Tile_Y = Temp_Var14
+Tile_YHi = Temp_Var13
+Player_GetTile:	; $9E9D
 
 	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
 	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
@@ -4503,10 +4507,10 @@ PRG030_9EC3:
 	TAY		 	; Y = current offset
 	LDA [Map_Tile_AddrL],Y	; Get tile here
 	JSR PSwitch_SubstTileAndAttr
-	STA <Level_Tile
+	STA Tile_LastValue
 	TAY
 	LDA TileProperties, Y
-	STA <Level_Tile_Prop
+	STA Tile_LastProp
 	RTS		 ; Return
 
 
@@ -4702,6 +4706,23 @@ BytesToDigits1:
 Check_For_Level_Exit:
 	RTS
 
+Double_Value:
+	PHA
+	AND #$80
+	STA <Temp_Var1
+	PLA
+	ASL A
+	ORA <Temp_Var1
+	RTS
+
+Half_Value:
+	PHA
+	AND #$80
+	STA <Temp_Var1
+	PLA
+	LSR A
+	ORA <Temp_Var1
+
 Reserve_Sprites:
 	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP
 
@@ -4766,6 +4787,8 @@ PRG000_C4A7:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
+
+	INC Coins_Earned
 
 	LDA #$01
 	STA CoinPUp_State,Y	; Set coin state to 1
@@ -5959,4 +5982,97 @@ Sprite_RAM_Clear1:
 GetPowerBadgeY:
 	LDA Player_Equip
 	CMP #BADGE_PMETER
+	RTS
+
+Debris_X = Temp_Var1
+Debris_Y = Temp_Var2
+
+Common_MakeBricks:
+	JSR Common_MakeDebris
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA #SPR_PAL3
+	STA BrickBust_Pal, Y
+	RTS
+
+Common_MakeIce:
+	JSR Common_MakeDebris
+	LDA #ICE_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA #SPR_PAL2
+	STA BrickBust_Pal, Y
+	RTS
+
+Common_MakeDebris:
+	LDA Sound_QLevel2
+	ORA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	LDY Brick_Index
+
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En, Y
+
+	; Brick bust upper Y
+	LDA Debris_Y
+	SBC Level_VertScroll
+	STA Brick_DebrisYHi, Y
+
+	; Brick bust lower Y
+	ADD #$08
+	STA Brick_DebrisY, Y
+
+	; Brick bust X
+	LDA Debris_X
+	SUB <Horz_Scroll	
+	STA Brick_DebrisX, Y
+
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA Brick_DebrisXDist, Y
+	STA BrickBust_HEn, Y
+
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel, Y
+
+	LDA Brick_Index
+	EOR #$01
+	STA Brick_Index
+	RTS
+
+Poof_X = Temp_Var1
+Poof_Y = Temp_Var2
+Poof_YHi = Temp_Var3
+
+Common_MakePoof:
+	LDY #$05
+
+Common_MakePoof1:
+	LDA SpecialObj_ID, Y
+	BEQ Common_MakePoof2
+
+	DEY
+	BPL Common_MakePoof1
+
+	RTS
+
+ Common_MakePoof2:
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID, Y
+
+	LDA #$20
+	STA SpecialObj_Data, Y
+
+	LDA <Poof_X
+	STA SpecialObj_X, Y
+
+	LDA <Poof_Y
+	STA SpecialObj_Y, Y
+
+	LDA <Poof_YHi
+	STA SpecialObj_YHi, Y
 	RTS

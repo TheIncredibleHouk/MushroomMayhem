@@ -875,7 +875,7 @@ PRG014_C8DB:
 ; LoadLevel_EndGoalDecoSquare
 ;
 ; As part of LoadLevel_EndGoal, adds the decoration and square
-; which contains the "card", as appropriate to the Level_TileSet
+; which contains the "card", as appropriate to the Level_Tileset
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End goal decoration and square (which contains the goal 'card')
 ; for different Level_Tilesets...
@@ -2300,7 +2300,7 @@ PRG014_D0A8:
 
 	; This loops middle blocks until it hits ground
 PRG014_D0C1:
-	JSR LoadLevel_TileMemNextRow	; Go to next row of tiles, directly beneath this one
+	JSR LoadTile_LastValueMemNextRow	; Go to next row of tiles, directly beneath this one
 	LDA [Map_Tile_AddrL],Y		; Get this tile from existing memory
 
 	; If grabbed tile is TILE1_GROUNDTM (ground top middle) or TILE1_GROUNDTL (ground top left), jump to PRG014_D0D8
@@ -2433,7 +2433,7 @@ PRG014_D14F:
 	; ** Generate right side shadow...
 
 PRG014_D151:
-	JSR LoadLevel_TileMemNextRow	; Go to next row
+	JSR LoadTile_LastValueMemNextRow	; Go to next row
 
 	LDA [Map_Tile_AddrL],Y	 ; Check this tile
 
@@ -2688,7 +2688,7 @@ PRG014_D26E:
 PRG014_D278:
 	LDA #TILE1_VINE	 
 	STA [Map_Tile_AddrL],Y		; Put a vine tile here
-	JSR LoadLevel_TileMemNextRow	; Go to next row
+	JSR LoadTile_LastValueMemNextRow	; Go to next row
 	JMP PRG014_D26E	 ; Jump to PRG014_D26E
 
 PRG014_D282:
@@ -3052,7 +3052,7 @@ PRG014_D3C0:
 	RTS		 ; Return
 
 
-LoadLevel_TileMemNextRow:
+LoadTile_LastValueMemNextRow:
 	; Y = TileAddr_Off
 
 	TYA	
