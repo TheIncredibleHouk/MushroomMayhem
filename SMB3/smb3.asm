@@ -1918,9 +1918,9 @@ OBJSTATE_FRESH		= 9 ;
 	Player_Microgoomba:	.ds 1	; Microgoomba stuck to Player
 	Objects_InWater:	.ds 5	; $06B7-$06BB Set when object is in water
 
-	SpecialObj_Var1:	.ds 8	; $06BD-$06C4 General purpose variable 1
+	SpecialObj_Data2:	.ds 8	; $06BD-$06C4 General purpose variable 1
 
-	SpecialObj_Data:	.ds 8	; $06C7-$06CE Special object "data" field, defined by object
+	SpecialObj_Data1:	.ds 8	; $06C7-$06CE Special object "data" field, defined by object
 	PlayerProj_Data:	.ds 2
 
 
@@ -2467,7 +2467,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	EventType:				.ds 1	; For e-switch levels
 	LeftRightInfection:		.ds 1	;
 	Yolked:					.ds 1	;
-	Frozen_State:			.ds 1	;
+	Player_Frozen:			.ds 1	;
 	Frozen_Frame:			.ds	1
 	PaletteEffect:			.ds 1
 	PreviousPaletteEFfect:	.ds 1
@@ -2720,6 +2720,12 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_XYCS:		.ds 8
 	Objects_XYCSPrev:	.ds 8
+	Objects_PlayerProjHit:	.ds 8
+
+HIT_FIREBALL	= 01
+HIT_ICEBALL		= 02
+HIT_HAMMER		= 04
+HIT_NINJASTAR	= 08
 	
 
 	Temp_VarNP0:		.ds 1	; A temporary not on page 0
@@ -2986,8 +2992,9 @@ SOBJ_VEGGIE	=	$02
 SOBJ_BOOMERANG		= $02	; Boomerangs
 SOBJ_ACID		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
 SOBJ_FIREBALL	= $04 	; Nipper fireball (falls)
-SOBJ_ICEBALL	= $05	; Piranha fireball
-SOBJ_MICROGOOMBA	= $06 	; Micro goombas
+SOBJ_POOF		= $05
+SOBJ_ICEBALL	= $06	; Piranha fireball
+SOBJ_MICROGOOMBA	= $00 	; Micro goombas
 SOBJ_NINJASTAR		= $07 	; Spike's or Patooie's spike ball
 SOBJ_EGG		= $08 	; Koopaling wand blast
 SOBJ_KURIBOSHOE		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
@@ -3000,7 +3007,7 @@ SOBJ_RECOVEREDWAND	= $10 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_BLOOPERKID		= $14 	; Blooper kid
-SOBJ_POOF		= $16 	; Poof
+SOBJ_POOF		=  $05 	; Poof
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
 ; Player's hammer/fireball
@@ -3446,12 +3453,12 @@ OAT_BOUNDBOX06		= %00000110
 OAT_BOUNDBOX07		= %00000111
 OAT_BOUNDBOX08		= %00001000
 OAT_BOUNDBOX09		= %00001001
-OAT_BOUNDBOX10		= %00001010
+BOUND16x32		= %00001010
 OAT_BOUNDBOX11		= %00001011
 OAT_BOUNDBOX12		= %00001100
 OAT_BOUNDBOX13		= %00001101
 OAT_BOUNDBOX14		= %00001110
-OAT_BOUNDBOX15		= %00001111
+BOUND48x48		= %00001111
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
 OAT_BOUNCEOFFOTHERS	= %00010000	; Turn away from other enemies if their paths collide

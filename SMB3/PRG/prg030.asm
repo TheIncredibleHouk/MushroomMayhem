@@ -5533,19 +5533,24 @@ NextCol:
 
 SetPlayerFrozen:
 	LDA #$08
-	STA Frozen_State
+	STA Player_Frozen
+
 	LDA #$00
 	STA Player_IsClimbing
+
 	LDA Frozen_Frame
 	BNE Keep_Going
+
 	LDA Player_Frame
 	STA Frozen_Frame
 
 Keep_Going:
 	LDA #$31
 	STA Palette_Buffer+$11
+
 	LDA #$30
 	STA Palette_Buffer+$12
+
 	LDA #$02
 	STA Palette_Buffer+$13
 	RTS
@@ -6065,7 +6070,7 @@ Common_MakePoof1:
 	STA SpecialObj_ID, Y
 
 	LDA #$20
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 
 	LDA <Poof_X
 	STA SpecialObj_X, Y

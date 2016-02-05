@@ -122,7 +122,7 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
 	.word $0000					; Object $78 - OBJ_BULLETBILL
-	.word $0000					; Object $79 - OBJ_BULLETBILLHOMING
+	.word Object_Explode					; Object $79 - OBJ_BULLETBILLHOMING
 	.word Object_Hold					; Object $7A - OBJ_PURPLETROOPA
 	.word $0000					; Object $7B - OBJ_BLUESHELL
 	.word $0000					; Object $7C - OBJ_HELPER
@@ -480,7 +480,7 @@ ObjNorm_Waterfill1:
 	LDA <Objects_XZ, X
 	AND #$0F
 	BNE ObjNorm_Waterfill_RTS
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	
 	JSR Object_DetectTile
 	CMP #TILE_PROP_SOLID_TOP
 	BCC FillWater
@@ -619,14 +619,14 @@ NinjaDodge_Poof1:
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID,Y
 
-	; SpecialObj_Data = $1F
+	; SpecialObj_Data1 = $1F
 	LDA #$1f
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID, Y
 	LDA #$20	 
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 	
 	LDA Objects_XZ, X
 	STA SpecialObj_X, Y
@@ -644,14 +644,14 @@ NinjaDodge_Poof1:
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID,Y
 
-	; SpecialObj_Data = $1F
+	; SpecialObj_Data1 = $1F
 	LDA #$1f
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID, Y
 	LDA #$20	 
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 	
 	LDA Objects_XZ, X
 	STA SpecialObj_X, Y
@@ -746,7 +746,7 @@ PRG004_A4B2:
 	AND #$0f
 	BNE PRG004_A4C1	 ; 1:16 ticks proceed, otherwise jump to PRG004_A4C1
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Face towards Player
 	LDA NinjaBro_FacePlayerFlip,Y
@@ -853,7 +853,7 @@ HammerBro_FacePlayerFlip:
 ObjNorm_HammerBro: 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Face Player
 	LDA HammerBro_FacePlayerFlip,Y
@@ -1050,7 +1050,7 @@ PRG004_A5F6:
 
 	STY <Temp_Var1		 ; Temp_Var1 = Special Object slot index
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA Hammer_XVel,Y	; Hammer towards Player X Vel
 	LDY <Temp_Var1		 ; Y = Special Object slot index
@@ -1092,18 +1092,18 @@ NinjaBro_ThrowNinjaStar:
 PRG004_A658:
 	STA SpecialObj_ID,Y	 ; Set Special Object ID
 
-	; Pushes Hammer Bro's object index into SpecialObj_Data upper 4 bits, sets lower 4 bits to $0F
+	; Pushes Hammer Bro's object index into SpecialObj_Data1 upper 4 bits, sets lower 4 bits to $0F
 	TXA
 	ASL A
 	ASL A
 	ASL A
 	ASL A
 	ORA #$0f
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 
-	; SpecialObj_Var1 = 0
+	; SpecialObj_Data2 = 0
 	LDA #$00
-	STA SpecialObj_Var1,Y
+	STA SpecialObj_Data2,Y
 
 	RTS		 ; Return
 ObjInit_Thwomp:
@@ -1150,7 +1150,7 @@ Thwomp_WaitForPlayer
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG004_A6A6	 ; If any sprite is off-screen, jump to PRG004_A6A6 (RTS)
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$24
@@ -1326,7 +1326,7 @@ ObjNorm_HyperThwomp:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG004_A78B
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$24
@@ -1549,7 +1549,7 @@ FireBro_FacePlayerFlip:	.byte SPR_HFLIP, $00
 ObjNorm_FireBro: 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Fire Bro faces Player
 	LDA FireBro_FacePlayerFlip,Y
@@ -1846,7 +1846,7 @@ FireBro_SpitFire:
 
 	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Spit fire towards Player!
 	STY TempY
@@ -1873,8 +1873,8 @@ Store_SObject:
 
 	; Data = 0
 	LDA #$00
-	STA SpecialObj_Var1, Y
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data2, Y
+	STA SpecialObj_Data1,Y
 
 	RTS		 ; Return
 
@@ -1909,7 +1909,7 @@ PirateBro_SpitCannon:
 
 	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	STY DAIZ_TEMP1
 	; Spit fire towards Player!
@@ -1929,7 +1929,7 @@ PirateBro_SpitCannon:
 
 	; Data = 0
 	LDA #$00
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 	RTS
 
 Giant_HVisBit:	.byte $20, $80	; Not horizontally flipped, horizontally flipped
@@ -1993,7 +1993,7 @@ PRG004_AC11:
 	NEG			; Negate (bounce)
 	STA <Objects_YVelZ,X	 ; Set as Y velocity
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Set towards Player
 	LDA SpinyEggDud_FlipTowardsPlayer,Y
@@ -2113,7 +2113,7 @@ PRG004_ACAC:
 	LDA #OBJ_SPINY
 	STA Objects_ID,X
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Face Player
 	LDA SpinyEgg_HatchFacePlayerFlip,Y
@@ -2264,7 +2264,7 @@ PRG004_AD59:
 PRG004_AD65:
 	JSR Object_AttackOrDefeat	 ; Do Player to Lakitu collision
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA Lakitu_Active
 	BNE PRG004_AD74	 ; If Lakitu is active, jump to PRG004_AD74
@@ -3132,8 +3132,9 @@ ObjNorm_BulletBill:
 	BNE PRG004_B1C2	 ; If gameplay is halted, jump to PRG004_B1C2
 
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
+	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat	 	; Player to Bullet Bill collision
-	JSR Object_ApplyXVel	 	; Apply X velocity
+	JSR Object_ApplyXVel	 	
 	JSR Object_ApplyYVel_NoGravity
 
 PRG004_B1C2:
@@ -3145,38 +3146,37 @@ ObjInit_MissileMark:
 	STA Sound_QLevel1
 	RTS
 
-MissileMarkFrames:
-	.byte $00, $00, $00, $00, $00, $00, $00, $00
-
+Missile_Flash = Objects_Data5
+Missile_HomingDisabled = Objects_Data3
 ObjNorm_MissileMark:
 	LDA <Player_HaltGameZ
 	BNE PRG004_B1C2	 ; If gameplay is halted, jump to PRG004_B1C2
 
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
-	JSR Object_AttackOrDefeat	 	; Player to Bullet Bill collision
 
-	LDA Objects_Data3, X
-	BNE ObjNorm_MissileMarkB0
-	INC Objects_Data5, X
-
-ObjNorm_MissileMarkB0:
-	LDA Objects_Data5, X
-	LSR A
-	LSR A
-	LSR A
-
-ObjNorm_MissileMarkB:
-	AND #$01
-	STA Objects_SpriteAttributes,X
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_ICEBALL
+	STA Missile_HomingDisabled, X
 
 	LDA Objects_Timer, X
 	BEQ ObjNorm_MissileMarkA
+	
+	LDA Objects_Timer, X
+	
+	LDA #$18
+	STA ChaseVel_LimitHi, X
+
+	LDA #$E8
+	STA ChaseVel_LimitLo, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
 	JMP DrawBullet
 	 
 ObjNorm_MissileMarkA:
-	LDA Objects_Data3, X
+	LDA Missile_HomingDisabled, X
 	BEQ ObjNorm_MissileMarkC
 
 	JSR Object_ApplyXVel
@@ -3184,20 +3184,32 @@ ObjNorm_MissileMarkA:
 	JMP ObjNorm_MissileMarkA1
 
 ObjNorm_MissileMarkC:
+	INC Missile_Flash, X
+
+	LDA Missile_Flash, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_SpriteAttributes,X
+
 	JSR Chase
 
 ObjNorm_MissileMarkA1:
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
 	JSR Object_DetectTiles
-	LDA  <Objects_TilesDetectZ, X
+	
+	LDA <Objects_TilesDetectZ, X
 	BEQ DrawBullet
 
-	LDA #$00
-	STA Objects_Frame, X
-	;JMP KoopaExpload
+	LDA #$01
+	STA Explosion_Timer, X
 
 DrawBullet:
 	LDA #$00
 	STA Objects_Orientation, X
+
 	LDA Objects_XVelZ, X
 	BMI DrawBullet1
 
@@ -3223,6 +3235,7 @@ DrawBullet2:
 ObjNorm_MissileMark1:
 	LDA #$02
 	STA <Temp_Var1
+
 	LDA Objects_YVelZ, X
 	BEQ ObjNorm_MissileMark2
 
@@ -3245,6 +3258,7 @@ ObjNorm_MissileMark2:
 
 	LDA Objects_YVelZ, X
 	BMI ObjNorm_MissileMark2_1
+
 	LDA #SPR_VFLIP
 	STA Objects_Orientation, X
 
@@ -3253,6 +3267,7 @@ ObjNorm_MissileMark2_1:
 	STA Objects_Frame, X
 	CMP #$02
 	BEQ ObjNorm_MissileMark3
+
 	LDA #$4F
 	STA PatTable_BankSel + 5
 
@@ -4268,7 +4283,7 @@ GiantPiranha_HideInPipe:
 	LDA Objects_Timer,X
 	BNE PRG004_B80F	 ; If timer not expired, jump to PRG004_B80F
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$18
@@ -4410,7 +4425,7 @@ PRG004_B8B0:
 	PHA
 
 	; Y Difference flag -> Temp_Var3
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 	STY <Temp_Var3
 
 	; Get absolute value of Temp_Var16 (Y difference) -> Temp_Var13
@@ -4421,7 +4436,7 @@ PRG004_B8C5:
 	STA <Temp_Var13
 
 	; X Difference flag -> Temp_Var4
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	STY <Temp_Var4
 
 	; Get absolute value of Temp_Var16 (X difference) -> Temp_Var14
@@ -4748,7 +4763,7 @@ PRG004_BA27:
 	LDA #$00
 	STA Objects_Timer,X
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA Chomp_FreeXVels, Y
 	STA Objects_XVelZ, X
 	LDA #$00
@@ -4816,7 +4831,7 @@ ChainChomp_ChooseLunge:
 	AND #$03
 	; ...??
 
-	JSR Object_QuickXDistanceFromPlayer	
+	JSR Object_XDistanceFromPlayer	
 
 	LDA <Temp_Var16
 	PHP		 ; Save CPU state
@@ -5027,7 +5042,7 @@ ChainChomp_LungeMask:	.byte $1f, $0f
 ChainChomp_XVel:	.byte $10, $20
 
 ChainChomp_Drop:
-	JSR Object_QuickXDistanceFromPlayer	 
+	JSR Object_XDistanceFromPlayer	 
 
 	LDA <Temp_Var16
 	ADC #$60
@@ -5539,7 +5554,7 @@ ChainChomp_DetectFree:
 	LDA Objects_Data13, X
 	STA Objects_XHiZ, X
 
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
+	
 	JSR Object_DetectTile
 	BNE ChainChomp_DetectFreeRTS
 	JSR ChainChomp_BreakFree
@@ -5598,7 +5613,7 @@ WaitForMario:
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID, Y
 	LDA #$20	 
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 	STA Objects_Timer, X
 	LDA #$00
 	STA Objects_Frame, X
@@ -5925,7 +5940,7 @@ BlueShell_Expload:
 	;JMP KoopaExpload
 	
 ThwompDetectLeftBlock:
-	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)
+	
 	LDA Objects_YVelZ, X
 	BPL ThwompDetectLeftBlock0
 
@@ -5950,7 +5965,7 @@ ThwompDetectLeftBlock1:
 	JMP ThwompBreakBlockRTS
 
 ThwompDetectRightBlock:
-	LDY #((SuperGiantOffsets1  - Object_TileDetectOffsets) + 2)
+	
 	LDA Objects_YVelZ, X
 	BPL ThwompDetectRightBlock0
 	INY

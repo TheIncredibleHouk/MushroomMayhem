@@ -1617,7 +1617,7 @@ CCBounce2:
 	JSR Object_ApplyY_With_Gravity
 	LDA <Objects_YVelZ, X
 	BMI CCBounceRTS
-	LDY #(SuperGiantOffsets1  - Object_TileDetectOffsets)
+	
 	INY
 	INY
 	JSR Object_DetectTile

@@ -3181,15 +3181,19 @@ PRG031_FEC3:
 	STA <Pad_Holding
 
 ChallengeRTS:
-	LDA Frozen_State
+	LDA Player_Frozen
 	BEQ FrozenRTS
+
 	LDA <Pad_Input
 	AND #PAD_A
 	BEQ Kill_Ctrls
-	DEC Frozen_State
+
+	DEC Player_Frozen
+
 	BEQ Unfreeze
 	LDA Player_InAir
 	BNE Kill_Ctrls
+
 	LDA #$F0
 	STA Player_InAir
 	STA <Player_YVel
@@ -3200,11 +3204,20 @@ Unfreeze:
 	CLC
 	ADC #$01
 	STA Player_QueueSuit
+
 	LDA #$00
 	STA Frozen_Frame
-	LDA #$17
-	STA Player_SuitLost
-	RTS
+
+	LDA <Player_X
+	STA <Debris_X
+
+	LDA Player_BoundBottom
+	SUB Player_BoundTop
+	LSR A
+	ADD Player_BoundTop
+	STA <Debris_Y
+
+	JMP Common_MakeIce
 
 Kill_Ctrls:
 	LDA <Pad_Input

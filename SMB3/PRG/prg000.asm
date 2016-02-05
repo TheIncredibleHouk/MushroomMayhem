@@ -26,131 +26,6 @@
 	;	   Tile $5F -- second table, index 0.  Etc...
 
 	; Objects detect using a specific offset from this list
-	; Which "group" they use is specified by the respective value in ObjectGroup_Attributes2
-Object_TileDetectOffsets:
-
-	; Y/X offset pairs
-
-	; For groups:
-	; Row 1: Object Y Velocity >= 0 (on ground or moving downward)
-	; Row 2: Object Y Velocity < 0 (moving upward)
-	; Row 3: Object X velocity < 0 (moving leftward) 
-	; Row 4: Object X velocity >= 0 (moving rightward)
-
-	; Group 0
-	;       Y    X
-	.byte $10, $03	; At feet
-	.byte $00, $03	; At head
-	.byte $0A, $01	; Wall to left
-	.byte $0A, $07	; Wall to right
-
-	; Group 1
-	; NOTE! See "ONLY HAPPENS WITH GROUP 1 ROW 1 AND SLOPES ENABLED"
-	; In a sloped level using this group, alternate offsets (below
-	; Group 12) are used for left/right wall detection!
-	;	        Y    X
-OTDO_G1R1:
-	.byte $10, $08	; At feet
-	.byte $00, $08	; At head
-	.byte $09, $00	; Wall to left
-	.byte $09, $0F	; Wall to right
-
-	; Group 2
-	;       Y    X
-	.byte $20, $08	; At feet
-	.byte $00, $08	; At head
-	.byte $15, $00	; Wall to left
-	.byte $15, $0F	; Wall to right
-
-	; Group 3
-	;       Y    X
-	.byte $0F, $08	; At feet
-	.byte $00, $08	; At head
-	.byte $08, $00	; Wall to left
-	.byte $08, $0F	; Wall to right
-
-	; Group 4
-	;       Y    X
-	.byte $10, $08	; At feet
-	.byte $00, $08	; At head
-	.byte $08, $01	; Wall to left
-	.byte $08, $0E	; Wall to right
-
-	; Group 5
-	;       Y    X
-	.byte $10, $0C	; At feet
-	.byte $00, $0C	; At head
-	.byte $0A, $01	; Wall to left
-	.byte $0A, $17	; Wall to right
-
-	; Group 6
-	;       Y    X
-	.byte $20, $0C	; At feet
-	.byte $00, $0C	; At head
-	.byte $11, $01	; Wall to left
-	.byte $11, $17	; Wall to right
-
-	; Group 7
-	;       Y    X
-	.byte $10, $08	; At feet
-	.byte $00, $08	; At head
-	.byte $08, $08	; Wall to left
-	.byte $08, $08	; Wall to right
-
-	; Group 8
-	;       Y    X
-	.byte $20, $08	; At feet
-	.byte $10, $08	; At head
-	.byte $18, $01	; Wall to left
-	.byte $18, $0E	; Wall to right
-
-	; Group 9
-	;       Y    X
-	.byte $10, $18	; At feet
-	.byte $00, $03	; At head
-Platform_Extended_Check:
-	.byte $08, $00	; Wall to left
-	.byte $08, $2F	; Wall to right
-
-	; Group 10
-	;       Y    X
-	.byte $10, $08	; At feet
-	.byte $00, $08	; At head
-	.byte $0A, $00	; Wall to left
-	.byte $0A, $1F	; Wall to right
-
-	; Group 11
-	;       Y    X
-SuperGiantOffsets1:
-	.byte $20, $08	; At feet
-	.byte $20, $18	; At head
-	.byte $00, $08	; At feet
-	.byte $00, $18	; At head
-
-	; Group 12
-	;       Y    X
-	.byte $30, $08	; At feet
-	.byte $00, $08	; At head
-	.byte $23, $01	; Wall to left
-	.byte $23, $0E	; Wall to right
-
-	; Alternate offsets used when object utilizes "Group 1" in sloped levels
-	; See "ONLY HAPPENS WITH GROUP 1 ROW 1 AND SLOPES ENABLED"
-	;       	Y    X
-OTDO_G1Alt:	.byte $02, $01	; Wall to left
-		.byte $02, $0E	; Wall to right
-
-	; Offsets used for detection of water tiles
-	;       	Y    X
-OTDO_Water:	.byte $04, $08
-
-OTDO_Explosion:
-	.byte $00, $00
-	.byte $00, $16
-	.byte $16, $00
-	.byte $16, $16
-
-	; Defines the "bounding box" 
 
 Object_BoundBox:
 	;    Left Right Top  Bot- offsets applied to sprite X/Y
@@ -164,12 +39,12 @@ Object_BoundBox:
 	.byte  2,  20,   2,  12	; 7
 	.byte  2,  43,  -2,  18	; 8
 	.byte  2,  20,   2,  28	; 9
-	.byte  2,  12,   2,  20	; A OAT_BOUNDBOX10 (16x32)
+	.byte  2,  13,   6,  27	; A BOUND16x32 (16x32)
 	.byte  0,  31,  -1,  14	; B
 	.byte  1,  14,  -2,  13	; C
 	.byte  4,  17,  10,  19	; D
 	.byte  4,   8,   5,  40	; E
-	.byte  2,  43,   2,  12	; F
+	.byte  2,  46,   2,  46	; F BOUND48x48
 
 Object_AttrFlags:
 	; Defines flags which set attributes of objects
@@ -244,7 +119,7 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX08 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	 | OAT_WEAPONSHELLPROOF; Object $44 - OBJ_WOODENPLATUNSTABLE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $45 - OBJ_PWING
 	.byte BOUND16x16	; Object $46 - OBJ_SNIFIT
-	.byte OAT_BOUNDBOX10 | OAT_ICEPROOF 	; Object $47 - OBJ_BIRDO
+	.byte BOUND16x32 | OAT_ICEPROOF 	; Object $47 - OBJ_BIRDO
 	.byte BOUND16x16	; Object $48 - OBJ_NINJI
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4A - OBJ_MAGICSTAR
@@ -253,7 +128,7 @@ Object_AttrFlags:
 	.byte BOUND8x16	; Object $4D
 	.byte BOUND8x16	; Object $4E
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF ; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF		; Object $50 - OBJ_BOBOMBEXPLODE
+	.byte BOUND48x48 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF		; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $51 - OBJ_ROTODISCDUAL
 	.byte BOUND16x16	; Object $52 - OBJ_SPINTULA
 	.byte BOUND16x16 | OAT_FIREPROOF	; Object $53 - OBJ_PODOBOOCEILING
@@ -335,22 +210,22 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF	; Object $9F - OBJ_PARABEETLE
 	.byte BOUND16x16		; Object $A0 - OBJ_PUMPKINFREE
 	.byte BOUND16x16		; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
-	.byte OAT_BOUNDBOX10	; Object $A2 - OBJ_REDPIRANHA
-	.byte OAT_BOUNDBOX10	; Object $A3 - OBJ_PIRANHA_TWOSHOT
-	.byte OAT_BOUNDBOX10		; Object $A4 - OBJ_PUMPKINPLANT
+	.byte BOUND16x32	; Object $A2 - OBJ_REDPIRANHA
+	.byte BOUND16x32	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.byte BOUND16x32		; Object $A4 - OBJ_PUMPKINPLANT
 	.byte BOUND16x16		; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
-	.byte OAT_BOUNDBOX10	; Object $A6 - OBJ_VENUSFIRETRAP
-	.byte OAT_BOUNDBOX10	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OAT_BOUNDBOX10	; Object $A8 - OBJ_UPARROW
-	.byte OAT_BOUNDBOX10	; Object $A9 - OBJ_MANYARROW
+	.byte BOUND16x32	; Object $A6 - OBJ_VENUSFIRETRAP
+	.byte BOUND16x32	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
+	.byte BOUND16x32	; Object $A8 - OBJ_UPARROW
+	.byte BOUND16x32	; Object $A9 - OBJ_MANYARROW
 	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AA - OBJ_AIRSHIPPROP
 	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AB
-	.byte OAT_BOUNDBOX15 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AC - OBJ_FIREJET_LEFT
+	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AC - OBJ_FIREJET_LEFT
 	.byte OAT_BOUNDBOX12	; Object $AD - OBJ_ROCKYWRENCH
 	.byte OAT_BOUNDBOX11 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AE - OBJ_BOLTLIFT
 	.byte OAT_BOUNDBOX05 | OAT_FIREPROOF	| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF; Object $AF - OBJ_ENEMYSUN
-	.byte OAT_BOUNDBOX13 | OAT_FIREPROOF	; Object $B0 - OBJ_BIGCANNONBALL
-	.byte OAT_BOUNDBOX15 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $B1 - OBJ_FIREJET_RIGHT
+	.byte BOUND8x16 | OAT_FIREPROOF	; Object $B0 - OBJ_BIGCANNONBALL
+	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $B1 - OBJ_FIREJET_RIGHT
 	.byte OAT_BOUNDBOX14 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
 	.byte BOUND16x16	; Object $B3
 
@@ -1544,6 +1419,7 @@ Object_KillOthers1:
 	CMP #OBJSTATE_NORMAL
 	BNE Object_KillOthers2
 
+
 	LDA Objects_ID,Y	 ; Y = this object's ID
 	TAX
 
@@ -1646,12 +1522,6 @@ Object_TopBumpBlocks:
 	JMP Object_BumpBlocks
 
 Object_DirectBumpBlocks:
-	LDA Tile_LastValue	; Store tile index detected
-	STA Tile_LastValue
-
-	LDA Tile_LastProp
-	STA Tile_LastProp
-
 	; Transfer tile detection 
 	LDA Tile_DetectionY
 	STA <Temp_Var14	
@@ -2245,7 +2115,7 @@ Object_HandleBumpUnderneath1:
 	LDA #-$30 
 	STA <Objects_YVelZ,X
  
-	JSR Object_QuickXDistanceFromPlayer	; Detect which side object is on versus Player 
+	JSR Object_XDistanceFromPlayer	; Detect which side object is on versus Player 
 
 	; Store proper X velocity
 	LDA PRG000_D16B,Y 
@@ -2271,10 +2141,20 @@ PRG000_D1C4:
 	RTS		 ; Return
 
 PRG000_D1C5:
+	LDA Player_StarInv
+	ORA Player_FireDash
+	BEQ PRG000_D1C6
+
+	LDY Objects_ID,X
+	LDA Object_AttrFlags, Y
+	AND #OAT_WEAPONSHELLPROOF
+	BEQ Object_Defeated
+	RTS
+
+PRG000_D1C6:
 	LDA Player_InWater
 	BNE Object_HurtPlayer
 
-	LDY ObjGroupRel_Idx
 	LDA ObjectGroup_Attributes3, Y
 	AND #OA3_NOTSTOMPABLE
 	BNE Object_HurtPlayer
@@ -2312,7 +2192,7 @@ Object_Defeated:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
-	JMP Object_MoveTowardsPlayer
+	JMP Object_MoveAwayFromPlayer
 
 
 Object_Defeated1:
@@ -2380,7 +2260,7 @@ Object_DeleteOffScreen:
 	BEQ Object_DeleteOffScreenRTS
 
 	JSR Object_XDistanceFromPlayer
-	CMP #$A0
+	CMP #$C0
 	BCS Object_Delete
 
 Object_DeleteOffScreenRTS:
@@ -2472,6 +2352,7 @@ Object_New:
 	STA <Objects_TilesDetectZ,X
 	STA Objects_PreviousTilesDetect,X
 	STA Objects_XYCS, X
+	STA Objects_PlayerProjHit, X
 
 	CPX #$06
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)
@@ -3491,6 +3372,12 @@ SpecialObj_DetectObject:
 	LDX TempX
 	RTS
 
+SpecialObj_DetectPlayer:
+	STX TempX
+	LDX #$09
+	JSR Object_DetectPlayer
+	LDX TempX
+	RTS
 
 Object_DetectPlayer:
 	LDY #$08
@@ -3659,11 +3546,9 @@ Object_DoCollision:
 ; $D9D3
 Player_GetHurt:
 
-	; If Player is...
 	LDA Player_FlashInv		; ... flashing invincible ...
 	ORA Boo_Mode_Timer		; ... or boo mode ...
-	ORA Player_StarInv		; ... invincible by star ...
-	ORA Player_SuitLost		; ... just lost a power-up suit ...
+	ORA Player_StarInv		; ... invincible by star 
 	ORA <Player_HaltGameZ		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
 	ORA Player_FireDash		;
@@ -3778,7 +3663,7 @@ Player_Die:
 	STA Boo_Mode_KillTimer
 	STA Level_PSwitchCnt
 	STA Frozen_Frame
-	STA Frozen_State
+	STA Player_Frozen
 	
 	LDA #$01
 	STA Player_QueueSuit	 ; Queue change to "small"
@@ -4140,25 +4025,57 @@ XDiff = Temp_Var14
 XDiffLeftRight = Temp_Var13
 
 Object_XDistanceFromPlayer:
-	
-	LDA Objects_BoundLeft, X
-	SUB Player_BoundLeft
-	STA <XDiff
+	LDA Objects_BoundRight, X
+	SUB Objects_BoundLeft, X
+	LSR A
+	ADD Objects_BoundLeft, X
+	STA <Temp_Var1
 
 	LDA Objects_BoundLeftHi, X
-	SBC Player_BoundLeftHi
+	ADC #$00
+	STA <Temp_Var2
+
+	LDA Player_BoundRight
+	SUB Player_BoundLeft
+	LSR A
+	ADD Player_BoundLeft
+	STA <Temp_Var3
+
+	LDA Player_BoundLeftHi
+	ADC #$00
+	STA <Temp_Var4
+
+	LDA <Temp_Var1
+	SUB <Temp_Var3
+	STA <XDiff
+
+	LDA <Temp_Var2
+	SBC <Temp_Var4
 	BMI Object_ToRight
 
-	LDA #$00
-	STA <XDiffLeftRight
-	TAY
+	CMP #$01
+	BNE Object_ToLeft1
+
+	LDA #$FF
+	STA <XDiff
+
+Object_ToLeft1:
+	LDY #$00
+	STY <XDiffLeftRight
 
 	LDA <XDiff
 	RTS
 
 Object_ToRight:
+	CMP #$FE
+	BNE Object_ToRight1
+
 	LDA #$01
-	STA <XDiffLeftRight
+	STA <XDiff
+
+Object_ToRight1:
+	LDY #$01
+	STY <XDiffLeftRight
 
 	LDA <XDiff
 	EOR #$FF
@@ -4169,77 +4086,63 @@ Object_ToRight:
 YDiff = Temp_Var14
 YDiffAboveBelow = Temp_Var13
 Object_YDistanceFromPlayer:
-	
-	LDA Objects_BoundRight, X
-	SUB Player_BoundRight, X
+	LDA Objects_BoundBottom, X
+	SUB Objects_BoundTop, X
+	LSR A
+	ADD Objects_BoundTop, X
+	STA <Temp_Var1
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA <Temp_Var2
+
+	LDA Player_BoundBottom
+	SUB Player_BoundTop
+	LSR A
+	ADD Player_BoundTop
+	STA <Temp_Var3
+
+	LDA Player_BoundTopHi
+	ADC #$00
+	STA <Temp_Var4
+
+	LDA <Temp_Var1
+	SUB <Temp_Var3
 	STA <YDiff
 
-	LDA Objects_BoundRightHi, X
-	SBC Objects_BoundRightHi, X
-	BMI Object_ToBelow
+	LDA <Temp_Var2
+	SBC <Temp_Var4
+	BMI Object_ToBottom
 
-	LDA #$00
-	STA <YDiffAboveBelow
-	TAY
+	CMP #$01
+	BNE Object_ToTop1
 
+	LDA #$FF
+	STA <YDiff
+
+Object_ToTop1:
+	LDY #$00
+	STY <YDiffAboveBelow
+	
 	LDA <YDiff
 	RTS
 
-Object_ToBelow:
+Object_ToBottom:
+	CMP #$FE
+	BNE Object_ToBottom1
+
 	LDA #$01
-	STA <YDiffAboveBelow
+	STA <YDiff
+
+Object_ToBottom1:
+	LDY #$01
+	STY <YDiffAboveBelow
 
 	LDA <YDiff
 	EOR #$FF
 	ADD #$01
 	STA <YDiff
 	RTS
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_QuickXDistanceFromPlayer
-;
-; For a given object slot in 'X'...
-; Returns: Temp_Var16 as pixel difference between Player and object X coordinates
-; 	   And 'Y' is set to 0 if Player is to the right of object, 1 if to the left
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $DD2C
-Object_QuickXDistanceFromPlayer:
-	LDA <Player_X
-	SUB <Objects_XZ,X
-	STA <Temp_Var16	 ; Temp_Var16 = difference between Player's X and object's X
-
-	LDY #$00	 ; Y = 0
-	LDA <Player_XHi	 
-	SBC <Objects_XHiZ,X
-	BPL PRG000_DD3C	 ; If Player's X Hi >= Object's X Hi, jump to PRG000_DD3C (RTS)
-
-	INY		 ; Otherwise Y = 1
-
-PRG000_DD3C:
-	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_QuickYDistanceFromPlayer
-;
-; For a given object slot in 'X'...
-; Returns: Temp_Var16 as pixel difference between Player and object Y coordinates
-; 	   And 'Y' is set to 0 if Player is lower than object, 1 if higher
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $DD3D
-Object_QuickYDistanceFromPlayer:
-	LDA <Player_Y
-	SUB <Objects_YZ,X
-	STA <Temp_Var16		 ; Temp_Var16 = difference between Player's Y and object's Y
-
-	LDY #$00	 ; Y = 0
-	LDA <Player_YHi	
-	SBC <Objects_YHiZ,X
-	BPL PRG000_DD4D	 ; If Player's Y Hi >= Object's Y Hi, jump to PRG000_DD4D (RTS)
-
-	INY		 ; Ohterwise Y = 1
-
-PRG000_DD4D:
-	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4622,140 +4525,7 @@ Object_FindEmpty2:
 ; Objects_TargetingXVal and Objects_TargetingYVal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_CalcHomingVels:
-	
-	LDA #$14
-	STA <Temp_Var2	 ; Temp_Var2 = $14
-	
-	; Backup 'X' and 'Y'
-	TXA
-	PHA
-	TYA
-	PHA
-
-	; Backup Player_Y
-	LDA <Player_Y
-	PHA
-
-	;CMP #$50
-	;BGE PRG001_B08F	 ; If Player_Y >= $50, jump to PRG001_B08F
-	;
-	;; Otherwise, force Player_Y = $50
-	;LDA #$50
-	;STA <Player_Y
-
-PRG001_B08F:
-	JSR Object_QuickYDistanceFromPlayer
-	STY <Temp_Var3		 ; Store above/below flag -> Temp_Var3
-
-	; Get absolute value of Temp_Var16 (Y difference between Player and Koopaling)
-	LDA <Temp_Var16	
-	BPL PRG001_B09B	 
-	JSR Negate	 
-PRG001_B09B:
-	STA <Temp_Var13		 ; -> Temp_Var13
-
-	JSR Object_QuickXDistanceFromPlayer
-	STY <Temp_Var4		 ; Store left/right of flag -> Temp_Var4
-
-	; Get absolute value of Temp_Var16 (X difference between Player and Koopaling)
-	LDA <Temp_Var16	
-	BPL PRG001_B0A9	
-	JSR Negate
-PRG001_B0A9:
-	STA <Temp_Var14		 ; -> Temp_Var14
-
-	LDY #$00	 ; Y = 0
-
-	LDA <Temp_Var14
-	CMP <Temp_Var13
-	BGE PRG001_B0BC	 ; If Temp_Var14 (Player vs Koopaling X diff) >= Temp_Var13 (Player vs Koopaling Y diff), jump to PRG001_B0BC
-
-	INY		 ; Y = 1
-
-	; Swap Temp_Var13 and Temp_Var14
-	PHA
-	LDA <Temp_Var13
-	STA <Temp_Var14
-	PLA
-	STA <Temp_Var13
-
-PRG001_B0BC:
-
-	; At this point, Temp_Var13 >= Temp_Var14, guaranteed
-
-	; What follows is some kind of algorithm that can "aim" a projectile
-	; towards a Player (e.g., Koopaling wand shots) but I'm not going to
-	; research the "why" at this time... it "just works"
-
-	LDA #$00
-	STA <Temp_Var12		; Temp_Var12 = 0
-	STA <Temp_Var1		; Temp_Var1 = 0
-	LDX <Temp_Var2		; X = Temp_Var2 (starts at $14)
-
-PRG001_B0C4:
-	LDA <Temp_Var12
-	ADD <Temp_Var13
-	CMP <Temp_Var14
-	BLT PRG001_B0D1		; If (Temp_Var12 + Temp_Var13) < Temp_Var14, jump to PRG001_B0D1
-
-	; Otherwise...
-	SBC <Temp_Var14		; Subtract Temp_Var14 from Temp_Var12
-	INC <Temp_Var1		; Temp_Var1++
-
-PRG001_B0D1:
-	STA <Temp_Var12 	; Update Temp_Var12
-	DEX		 	; X--
-	BNE PRG001_B0C4	 	; While X > 0, loop!
-
-	TYA
-	BEQ PRG001_B0E3	 ; If Y = 0, jump to PRG001_B0E3
-
-	; Swap Temp_Var1 and Temp_Var2
-	LDA <Temp_Var1
-	PHA		
-	LDA <Temp_Var2	
-	STA <Temp_Var1	
-	PLA		
-	STA <Temp_Var2	
-
-PRG001_B0E3:
-	LDA <Temp_Var1	
-	LDY <Temp_Var3	
-	BEQ PRG001_B0EE	
-
-	JSR Negate	
-	STA <Temp_Var1	
-
-PRG001_B0EE:
-	LDA <Temp_Var2	
-	LDY <Temp_Var4	
-	BEQ PRG001_B0F9	
-
-	JSR Negate	
-	STA <Temp_Var2	
-
-PRG001_B0F9:
-
-	; Restore Player_Y
-	PLA
-	STA <Player_Y
-
-	; Restore 'Y' and 'X'
-	PLA
-	TAY
-	PLA
-	TAX
-
-
-	; Temp_Var1 contains the "homing in" Y velocity
-	LDA <Temp_Var1
-	STA Objects_TargetingYVal,X
-
-	; Temp_Var2 contains the "homing in" X velocity
-	LDA <Temp_Var2
-	STA Objects_TargetingXVal,X
-
-	RTS		 ; Returns
+	RTS
 
 DoBossFights:
 	LDA PAGE_A000
@@ -5177,9 +4947,9 @@ ChaseTargeted:
 	BEQ Chase_Move
 
 ChaseDetermineX:	
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
-	CPY #$01
+	CPY #$00
 	BNE ChaseDetermineXRight
 
 	LDA <Objects_XVelZ,X
@@ -5199,9 +4969,9 @@ ChaseDetermineXRight:
 	STA <Objects_XVelZ,X	 ; Update Boo's X velocity
 
 Chase_DetermineY:
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 
-	CPY #$01
+	CPY #$00
 	BNE ChaseDetermineYUp
 
 	LDA <Objects_YVelZ,X
@@ -5226,7 +4996,7 @@ Chase_Move:
 
 	RTS
 
-FaceDirection: .byte SPR_HFLIP, $00
+FaceDirection: .byte $00, SPR_HFLIP
 
 Object_FaceDirectionMoving:
 	LDY #$00
@@ -5245,7 +5015,7 @@ Object_FaceDirectionMoving1:
 
 
 Object_FacePlayer:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 Object_FacePlayer1:
 	LDA Objects_Orientation, X
@@ -5254,6 +5024,7 @@ Object_FacePlayer1:
 	STA Objects_Orientation, X
 	RTS
 
+AwayFromPlayerSpeed: .byte -$08, $08
 TowardsPlayerSpeed:	.byte $08, -$08
 
 Object_FacePlayerOnLanding:
@@ -5275,6 +5046,12 @@ Object_FacePlayerOnLanding1:
 Object_MoveTowardsPlayer:
 	JSR Object_FacePlayer
 	LDA TowardsPlayerSpeed,Y
+	STA <Objects_XVelZ, X
+	RTS
+
+Object_MoveAwayFromPlayer:
+	JSR Object_FacePlayer
+	LDA AwayFromPlayerSpeed,Y
 	STA <Objects_XVelZ, X
 	RTS
 
@@ -5354,7 +5131,7 @@ CheckBlockLeft:
 Object_GetKilled:
 	INC Kill_Tally
 
-	LDA #$3
+	LDA #$40
 	STA Kill_Tally_Ticker
 
 	LDA Kill_Tally
@@ -5515,9 +5292,13 @@ Object_Explode:
 	STA Objects_State, X
 
 	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
+	BMI Object_Explode1
+
 	LDA Level_ObjectsSpawned,Y
 	AND #$7f
 	STA Level_ObjectsSpawned,Y
+
+Object_Explode1:
 	RTS
 
 Object_ChangeBlock:
@@ -5708,24 +5489,28 @@ Object_AttackYVel:
 	.byte $07, $06, $05, $05, $04, $03, $02, $02 
 	.byte $09, $08, $08, $08, $08, $07, $07, $06 ;
 
+
 Object_AimProjectileRandom:
 	LDA RandomN
 	AND #$3F
 	JMP Object_AimProjectile0
 
 Object_AimProjectile:
+	STY TempY
 	JSR Object_XDistanceFromPlayer
+	STY <Temp_Var5
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	STA <Temp_Var1
+	STA <Temp_Var10
 
 	JSR Object_YDistanceFromPlayer
+	STY <Temp_Var6
 	LSR A
 	AND #$F8
-	ORA <Temp_Var1
+	ORA <Temp_Var10
 	
 	CMP #$40
 	BCC Object_AimProjectile0 ; if we're out of range, fire blindly
@@ -5735,6 +5520,7 @@ Object_AimProjectile:
 
 Object_AimProjectile0:
 	TAX
+	LDY TempY
 	LDA Object_AttackXVel, X
 	STA SpecialObj_XVel, Y
 
@@ -5742,7 +5528,7 @@ Object_AimProjectile0:
 	STA SpecialObj_YVel, Y
 
 	LDX <CurrentObjectIndexZ
-	;LDA Objects_LeftRight, X
+	LDA <Temp_Var5
 	BEQ Object_AimProjectile1
 
 	LDA SpecialObj_XVel, Y
@@ -5751,7 +5537,7 @@ Object_AimProjectile0:
 	STA SpecialObj_XVel, Y
 
 Object_AimProjectile1:
-	;LDA Objects_AboveBelow, X
+	LDA <Temp_Var6
 	BNE Object_AimProjectile2
 
 	LDA SpecialObj_YVel, Y
@@ -5759,6 +5545,55 @@ Object_AimProjectile1:
 	ADD #$01
 	STA SpecialObj_YVel, Y
 
-Object_AimProjectile2:
-	
+Object_AimProjectile2:	
+	RTS
+
+Object_ShootFireBallStraight:
+	JSR Object_PrepProjectile8x8
+	BCC Object_ShootFireBallStraight1
+
+	LDA #SOBJ_FIREBALL
+	STA SpecialObj_ID, Y
+
+	LDA #$01
+	STA SpecialObj_Data1, Y
+	SEC
+
+Object_ShootFireBallStraight1:
+	RTS
+
+Object_PrepProjectile8x8:
+	JSR SpecialObject_FindEmpty
+	CPY #$FF
+	BNE Object_PrepProjectile8x81
+	CLC
+	RTS
+
+Proj_YOff = Temp_Var1
+Proj_XOff = Temp_Var2
+
+Object_PrepProjectile8x81:
+	LDA <Objects_XZ, X
+	SUB #$04
+	ADD <Proj_XOff
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA SpecialObj_XHi, Y
+
+	LDA <Objects_YZ, X
+	SUB #$08
+	ADD <Proj_YOff
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+	LDA #$00
+	STA SpecialObj_Data2, Y
+	STA SpecialObj_Data1, Y
+
+	SEC
 	RTS

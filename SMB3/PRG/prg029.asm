@@ -280,7 +280,8 @@ SPPF_Offsets:
 	.byte SPPF(PF38), SPPF(PF39), SPPF(PF3A), SPPF(PF3B), SPPF(PF3C), SPPF(PF3D), SPPF(PF3E), SPPF(PF3F)
 	.byte SPPF(PF40), SPPF(PF41), SPPF(PF42), SPPF(PF43), SPPF(PF44), SPPF(PF45), SPPF(PF46), SPPF(PF47)
 	.byte SPPF(PF48), SPPF(PF49), SPPF(PF4A), SPPF(PF4B), SPPF(PF4C), SPPF(PF4D), SPPF(PF4E), SPPF(PF4F)
-	.byte SPPF(PF50), SPPF2(PF51), SPPF2(PF52), SPPF2(PF53), SPPF2(PF54), SPPF2(PF55), SPPF2(PF56)
+	.byte SPPF(PF50), SPPF(PF51), SPPF(PF52), SPPF(PF53), SPPF(PF54)
+	;.byte SPPF(PF55), SPPF2(PF56)
 	
 	
 
@@ -391,7 +392,7 @@ Player_FramePageOff:
 	.byte 1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2	; 20 - 2F
 	.byte 2,  2,  2,  2,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3	; 30 - 3F
 	.byte 3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3	; 40 - 4F
-	.byte 3
+	.byte 3,  1,  1,  1,  1,  1,  1,  1,  1
 
 PRG029_CE88:
 	.byte -8, 10, -8, 18,  8, 10,  8, 18,  1,  9,  0,  8,  2, 10, -2, 6
@@ -415,7 +416,13 @@ RAINBOW_PAL_CYCLE:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
 	JSR Player_RainbowCycle
+	LDX Frozen_Frame
+	BNE Player_Draw1
+
+	JSR Player_FrameOverride
 	LDX <Player_Frame
+
+Player_Draw1:
 	LDA Player_FramePageOff,X
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
@@ -450,7 +457,7 @@ PRG029_CED7:
 	STA <Temp_Var1	 ; Store cycle tick into Temp_Var1 (0 if not invincible, sprite palette 0)
 
 	LDA Level_PipeMove
-	LDA Player_Behind
+	ORA Player_Behind
 	ORA Player_SandSink
 	BEQ PRG029_CF1E	 ; If Player is behind the scenes, jump to PRG029_CF1E
 
@@ -821,6 +828,7 @@ PRG029_D10E:
 
 
 PRG029_D13A:
+	JSR Player_RecoverOverrides
 	RTS		 ; Return
 
 ToadHouse_Item2Inventory:
@@ -2654,10 +2662,6 @@ Restore_Curr_Player_Pal:
 	STA (Player_Pal_Backup + $01)
 	RTS
 
-
-Player_FrameOverride:
-	RTS
-
 Player_RainbowCycle:
 	LDA Player_StarOff
 	BNE Player_RainbowCycle1
@@ -2695,20 +2699,46 @@ Player_RainbowCycle3:
 	JSR Restore_Curr_Player_Pal
 Player_RainbowCycle4:
 	RTS
-;	LDA Player_Grow
-;	BNE Not_Frozen
-;
-;	LDA Frozen_State
-;	BEQ Not_Frozen
-;
-;	LDA Frozen_Frame
-;	STA <Player_Frame
-;	RTS
-;
-;Not_Frozen:
-;	
-;	LDA Player_Shell
-;	BEQ Do_Frame
+
+Flip_Override = Temp_Var16
+Player_FrameOverride:
+	LDA Wall_Jump_Enabled
+	BEQ Player_FrameOverride1
+
+	LDA <Player_FlipBits
+	STA <Flip_Override
+
+	LDA #$30
+	STA <Player_Frame
+	RTS
+
+Player_FrameOverride1:
+	LDA Player_Shell
+	BEQ Player_FrameOverride2
+
+	LDA GameCounter
+	LSR A
+	LSR A
+	LSR A
+	AND #$03
+	ADD #$51
+	STA Debug_Snap
+	STA <Player_Frame
+	RTS
+
+Player_FrameOverride2:
+	RTS
+
+Player_RecoverOverrides:
+	LDA Wall_Jump_Enabled
+	BEQ Player_RecoverOverrides1
+
+	LDA <Flip_Override
+	STA <Player_FlipBits
+
+Player_RecoverOverrides1:
+	RTS
+;	BEQ Frame_Dash
 ;
 ;	LDX #$0E
 ;

@@ -534,6 +534,7 @@ ObjNorm_BeachedCheep:
 
 ObjNorm_BeachedCheep0:
 	JSR Object_DeleteOffScreen
+	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	
 	LDA Objects_Timer, X
@@ -671,7 +672,7 @@ DryCheep_DrawFlamesAndSmoke:
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID, Y
 	LDA #$20	 
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 	
 	LDA Objects_Data5, X
 	STA SpecialObj_X, Y
@@ -931,12 +932,12 @@ Phanto_Poof:
 	JSR SpecialObject_FindEmpty
 
 	LDA #$1f
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID, Y
 	LDA #$20	 
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 	
 	LDA Objects_XZ, X
 	STA SpecialObj_X, Y
@@ -1333,7 +1334,7 @@ PRG002_AB5E2:
 	JSR Object_Check_Water
 	LDA Objects_InWater, X
 	BNE PRG002_AB60
-	LDY #(Platform_Extended_Check - Object_TileDetectOffsets)
+	
 	INY
 	INY
 	JSR Object_DetectTile	; Get tile here	
@@ -1793,7 +1794,7 @@ ObjNorm_Snifit:
 	LDA Objects_Data3, X
 	BEQ ObjNorm_Snifit0
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 	CPY #$01
 	BNE ObjNorm_Snifit0
 
@@ -1900,7 +1901,7 @@ Snifit_Shoot1:
 	STA SpecialObj_ID,Y
 
 	LDA #$01
-	STA SpecialObj_Var1,Y
+	STA SpecialObj_Data2,Y
 
 	LDA <Objects_YZ, X
 	ADD #$02
@@ -1935,10 +1936,10 @@ Snifit_Shoot1:
 	STA SpecialObj_X, Y
 
 	LDA #$00
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 
 	LDA #$01
-	STA SpecialObj_Var1, Y
+	STA SpecialObj_Data2, Y
 	
 
 Snifit_ShootRTS:
@@ -4213,7 +4214,6 @@ SetBlockDirection:
 	RTS
 
 GetBlockPlatform:
-	LDY #(OTDO_Water - Object_TileDetectOffsets)
 	JSR Object_DetectTile
 	RTS
 

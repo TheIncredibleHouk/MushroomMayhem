@@ -760,7 +760,7 @@ ObjNorm_PumpkinFree1:
 	.word PumpkinFreeAttack
 
 PumpkinFreeWait:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA <Temp_Var16
 	BPL PumpkinFreeWait1
 	JSR Negate
@@ -857,7 +857,7 @@ Piranha_Velocities:
 	.byte $F0, $10
 
 Piranha_AttackProjectiles:
-	.byte $00, SOBJ_FIREBALL,  SOBJ_ICEBALL,  SOBJ_ACID
+	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_ACID
 
 Piranah_AttackNumbers:
 	.byte $00, $01, $01, $01
@@ -921,8 +921,9 @@ ObjNorm_Piranha:
 
 ObjNorm_Piranha1:
 	JSR Object_DeleteOffScreen
+	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-	JSR Object_XDistanceFromPlayer
+	
 	JSR Object_YDistanceFromPlayer
 
 	JSR Piranha_DoState
@@ -931,7 +932,7 @@ ObjNorm_Piranha1:
 	CMP #$02
 	BCC Piranha_Animate
 
-	;LDY Objects_LeftRight, X
+	JSR Object_XDistanceFromPlayer
 	
 	LDA Objects_Orientation, X
 	AND #~SPR_HFLIP
@@ -989,7 +990,7 @@ Piranha_HeadFlips:
 	.byte SPR_VFLIP, $00
 
 Piranha_DrawUpsideDown:
-	;LDY Objects_AboveBelow, X
+	JSR Object_YDistanceFromPlayer
 	LDA Piranha_HeadFlips, Y
 	STA TempA
 
@@ -1071,8 +1072,10 @@ Piranha_Attack:
 	LDA Piranha_AttacksLeft, X
 	BEQ Piranha_Attack2
 
-	LDY Objects_Property, X
-	STY <Temp_Var15
+	LDA Objects_Property, X
+	LSR A
+	STA <Temp_Var15
+	TAY
 
 	LDA Piranha_AttackProjectiles, Y
 	BEQ Piranha_Attack1
@@ -1081,7 +1084,24 @@ Piranha_Attack:
 	ORA Objects_SpritesHorizontallyOffScreen, X
 	BNE Piranha_Attack1
 
-	JSR SpecialObject_FindEmpty
+
+	
+	LDA #$08
+	STA <Proj_YOff
+
+	LDA Objects_Orientation, X
+	AND #SPR_VFLIP
+	BEQ Piranha_NoYOff
+
+	LDA #$18
+	STA <Proj_YOff
+
+Piranha_NoYOff:
+
+	LDA #$08
+	STA <Proj_XOff
+
+	JSR Object_PrepProjectile8x8
 	BCC Piranha_Attack1
 
 	JSR Piranha_Projectile
@@ -1099,7 +1119,6 @@ Piranha_Attack2:
 	RTS
 
 Piranha_Projectile:
-	LSR <Temp_Var15
 	LDX <Temp_Var15
 	LDA Piranha_AttackProjectiles, X
 	STA SpecialObj_ID,Y
@@ -1107,8 +1126,7 @@ Piranha_Projectile:
 	LDX <CurrentObjectIndexZ
 
 	LDA Piranha_AttackData, X
-	STA SpecialObj_Var1,Y
-
+	STA SpecialObj_Data1,Y
 
 	LDA #$00
 	STA <Temp_Var14
@@ -1117,22 +1135,14 @@ Piranha_Projectile:
 	AND #SPR_VFLIP
 	BEQ ShootProjectile
 
-	LDA #$10
-	STA <Temp_Var14
-
-ShootProjectile:
-	LDA <Objects_YZ, X
-	ADD <Temp_Var14
+	ADD #$10
 	STA SpecialObj_Y, Y
 
-	LDA <Objects_YHiZ, X
+	LDA SpecialObj_YHi, Y
 	ADC #$00
 	STA SpecialObj_YHi, Y
 
-	LDA <Objects_XZ, X
-	ADD #$04
-	STA SpecialObj_X, Y
-	
+ShootProjectile:
 	LDA #SND_PLAYERFIRE
 	ORA Sound_QPlayer
 	STA Sound_QPlayer
@@ -1155,7 +1165,7 @@ ObjInit_RockyWrench:
 	INC <Objects_Data1,X	 ; Var4 = 1 (keeps Rocky alive)
 
 Rocky_FacePlayer:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Set flip towards Player
 	LDA RockyWrench_FlipBits,Y
@@ -2139,7 +2149,7 @@ PRG005_B0E7:
 ParaBeetle_XVelTowardsPlayer:	.byte $08, -$08
 
 ObjInit_ParaBeetle:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Start out flying towards Player
 	LDA ParaBeetle_XVelTowardsPlayer,Y
@@ -3038,7 +3048,7 @@ PRG005_B9E6:
 
 	; Difference of Player vs object X Lo -> Temp_Var16
 	; Reg Y is set to 0 if Player is to the right of object, 1 if to the left
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA ObjLRFlags,Y
 	STA Objects_Orientation,X	 ; Set appropriate flag
@@ -4037,14 +4047,14 @@ P_PRG007_B827:
 	LDX <CurrentObjectIndexZ
 	LDA Objects_Data4, X
 	BEQ P_PRG007_B828
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 	TYA
 	ASL A
 	ADD Objects_Data5, X
 	TAY
 	LDA XKnockBacks, Y
 	STA <Player_XVel
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	TYA
 	ASL A
 	ADD Objects_Data5, X
@@ -4065,7 +4075,7 @@ FreezieDirection: .byte $10, $F0
 FreezieFlip: .byte SPR_HFLIP, $00
 
 ObjInit_Freezie:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA FreezieDirection, Y
 	STA <Objects_XVelZ,X
 	LDA FreezieFlip, Y
@@ -4246,7 +4256,7 @@ FreezieThrowPlayerX:
 
 ObjHit_Freezie:
 	JSR SetPlayerFrozen
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA FreezieThrowPlayerX, Y
 	STA <Player_XVel
 	LDA #$A0

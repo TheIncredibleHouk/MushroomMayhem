@@ -2043,7 +2043,7 @@ PRG008_AD2E:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_SwimV:
 	
-	LDA Frozen_State
+	LDA Player_Frozen
 	BNE PRG008_AD4C
 
 	LDA <Pad_Input		 
@@ -3675,6 +3675,9 @@ BumpBlock_Spinner:
 BumpBlock_Spinner1:
 	JSR Bumps_PowerUpBlock
 
+	LDA #$00
+	STA Bouncer_PowerUp, X
+
 	LDA #$02
 	STA Bouncer_Frame, X
 
@@ -5192,7 +5195,7 @@ Player_SuitChange7:
 	STX Player_FireDash
 
 Player_SuitChange8:
-	LDA Frozen_State
+	LDA Player_Frozen
 	BNE Player_SuitChange9
 
 	JSR Level_SetPlayerPUpPal ; Set power up's correct palette
@@ -5588,7 +5591,6 @@ Solid_SlickRTS:
 	RTS
 
 Solid_PSwitch:
-	STA Debug_Snap
 	LDA <TileXIndex
 	CMP #HEAD_FEET_LEFT_INDEX
 	BEQ Solid_PSwitch1

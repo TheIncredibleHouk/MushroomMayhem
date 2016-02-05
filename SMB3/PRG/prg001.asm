@@ -1868,7 +1868,7 @@ PRG001_BA1F:
 	EOR <Objects_XVelZ,X
 	BPL PRG001_BA4B	 ; If Bowser's velocity is moving away from Player, jump to PRG001_BA4B
 
-	JSR Object_QuickYDistanceFromPlayer	 
+	JSR Object_YDistanceFromPlayer	 
 
 	DEY		 ; Y--
 	BEQ PRG001_BA4B	 ; If Y was 1, jump to PRG001_BA4B
@@ -2622,7 +2622,7 @@ Bowser_CalcPlayersSide:
 	; +8 Bowser's X; calculation of which side the Player is on is offset
 	ADD #$08
 	STA <Objects_XZ,X
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Restore Bowser's X
 	PLA
@@ -3110,7 +3110,7 @@ ChompNoDelete:
 	LDA Objects_SpritesVerticallyOffScreen,X
 	BEQ DrawMiniChomp
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 	CPY #$01
 	BEQ ChompRTS
 
@@ -3128,7 +3128,6 @@ GiantChompStuff:
 	JSR Object_Move
 
 DoGCRoutine:
-	LDY #(SuperGiantOffsets1 - Object_TileDetectOffsets)
 	JSR Object_DetectTile
 	CMP #TILE_PROP_SOLID_ALL
 	BCC TryEatRightBlock
@@ -3136,7 +3135,7 @@ DoGCRoutine:
 	JMP ChompDoneEating
 
 TryEatRightBlock:
-	LDY #(SuperGiantOffsets1  - Object_TileDetectOffsets)
+
 	INY
 	INY
 	JSR Object_DetectTile
@@ -3158,7 +3157,7 @@ DrawChomp:
 	CMP #$02
 	BCC DoneGC
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 	CPY #$00
 	BEQ DoneGC
 
@@ -4225,7 +4224,7 @@ SnowThrowPlayerX:
 
 ObjHit_SnowBall:
 	JSR SetPlayerFrozen
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA SnowThrowPlayerX, Y
 	STA <Player_XVel
 	LDA #$A0
@@ -4411,7 +4410,7 @@ ObjNorm_IceFireFly3_1:
 	LDX <CurrentObjectIndexZ
 	LDA Objects_Data3, X
 	STA SpecialObj_ID,Y
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 
 ObjNorm_IceFireFly4:
 	LDX <CurrentObjectIndexZ

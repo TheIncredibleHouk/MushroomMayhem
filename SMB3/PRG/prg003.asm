@@ -551,7 +551,7 @@ ObjNorm_Spintula1:
 Spintula_Wait:
 	LDA Objects_Timer,X
 	BNE Spintula_WaitRTS
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA <Temp_Var16
 	BPL Spintula_Wait1
 	JSR Negate
@@ -769,7 +769,7 @@ ShyGuyDirection: .byte $08, $F8
 ShyGuyFlip: .byte SPR_HFLIP, $00
 
 ObjInit_VeggieGuy:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA ShyGuyDirection, Y
 	STA <Objects_XVelZ,X
 	LDA ShyGuyFlip, Y
@@ -786,7 +786,7 @@ ObjInit_VeggieGuy1:
 	RTS		 ; Return
 
 ObjInit_ShyGuy:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA ShyGuyDirection, Y
 	STA <Objects_XVelZ,X
 	LDA ShyGuyFlip, Y
@@ -1644,7 +1644,7 @@ PRG003_A54E:
 	STA SpecialObj_ID,Y	 ; Set appropriate ID
 
 	LDA #$ff
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 
 	LDX <CurrentObjectIndexZ		 ; X = object slot index
 
@@ -1655,7 +1655,7 @@ Twirler_InitXVel:	.byte $08, -$08
 Twirl_DropXVel: .byte $18, $E8
 
 ObjInit_Twirling:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Set twirler X velocity towards Player
 	LDA Twirler_InitXVel,Y
@@ -1738,7 +1738,7 @@ PRG003_A5CA:
 	STA Objects_Data3,X
 
 PRG003_A5CF:
-	JSR Object_QuickXDistanceFromPlayer	
+	JSR Object_XDistanceFromPlayer	
 
 	LDA <Temp_Var16
 	ADD #$30
@@ -1758,7 +1758,7 @@ PRG003_A5DB:
 	LDA ObjectGroup02_CollideJumpTable,Y
 	STA Objects_ID,X	 ; Change into the appropriate target object
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA Twirl_DropXVel, Y
 	STA <Objects_XVelZ,X
 
@@ -1924,7 +1924,7 @@ BobOmb_StartXVel:	.byte $08, -$08
 BobOmbExp_StartXVel:	.byte $10, -$10
 
 ObjInit_BobOmb:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Start Bob-omb moving towards Player
 	LDA BobOmb_StartXVel,Y
@@ -1985,7 +1985,7 @@ BobOmb_WalkAround:
 	AND #$04
 	BEQ BobOmb_WalkAround1
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; March toward Player
 	LDA BobOmbExp_StartXVel,Y
@@ -2204,6 +2204,13 @@ DrawEx:
 	JMP Object_SetDeadEmpty	 ; Otherwise, mark Bob-omb as Dead/Empty and don't come back!
 
 PRG003_A836:
+	AND #$03
+	BNE Explosion_NoKill
+
+	JSR Object_CalcBoundBox
+	JSR Object_KillOthers
+
+Explosion_NoKill:
 	JSR Object_CalcSpriteXY_NoHi
 
 	; Temp_Var16 = 5
@@ -2347,16 +2354,17 @@ Explosion_BumpBlocks:
 	JSR Object_DetectTile
 	LDA Tile_LastProp
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
-	BEQ Switch_ToBrick
+	BEQ Explosion_Bump
 
 	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_STONE)
-	BNE Explosion_Bump
+	BEQ Explosion_Bump
 
-Switch_ToBrick:
-	LDA #(TILE_PROP_ITEM | TILE_ITEM_BRICK)
-	STA Tile_LastProp
+	CMP #(TILE_PROP_ITEM)
+	BCS Explosion_Bump
+	RTS
 
 Explosion_Bump:
+	JSR Object_DirectBumpBlocks
 	RTS
 
 ExplodeXOffsets:
@@ -2618,10 +2626,10 @@ MagicStar_Radar2:
 MagicStar_RadarRTS:
 	RTS
 EWBitMap:
-	.byte $01, $02
+	.byte $02, $01
 
 NSBitMap:
-	.byte $08, $04
+	.byte $04, $08
 
 RadarMap:
 	.byte ITEM_RADAR, ITEM_RADARE, ITEM_RADARW, ITEM_RADAR
@@ -2656,7 +2664,7 @@ PRG003_AEF1:
 
 	; Data = 0
 	LDA #$00
-	STA SpecialObj_Data,X
+	STA SpecialObj_Data1,X
 
 	; Set Y velocity
 	LDA Star_Vel,Y
@@ -2871,14 +2879,14 @@ ObjNorm_WaterCurrent:
 	ORA <Player_HaltGameZ
 	BNE PRG003_B197	 ; If object falls off-screen or gameplay is halted, jump to PRG003_B197
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA <Temp_Var16
 	ADD #$08
 	CMP #$20
 	BGE PRG003_B18C	 ; If Player is not close enough, jump to PRG003_B18C
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 
 	LDA Objects_ID,X
 	CMP #OBJ_WATERCURRENTDOWNARD
@@ -2961,7 +2969,7 @@ Current_GenerateBubble:
 
 	; Data = 0
 	LDA #$00
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 
 	STY <Temp_Var1	 ; Special object index -> Temp_Var1
 
@@ -3062,7 +3070,7 @@ SetYMineUpVel:
 	JMP MineWaterSolid
 	
 CanFreeMine:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	LDA <Temp_Var16
 	BPL WillFreeMine
 	JSR Negate
@@ -3142,7 +3150,7 @@ ObjNorm_Ninji:
 	JSR Object_HandleBumpUnderneath
 	JSR Object_InteractWithPlayer
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA Ninji_Facing, Y
 	STA Objects_Orientation, X
@@ -3284,11 +3292,7 @@ NinjiIdleTimes:
 CheepCheepHopper_InitXVel:	.byte $0C, -$0C
 
 ObjInit_CheepCheepHopper:
-	JSR Object_QuickXDistanceFromPlayer
-
-	; Set hopper's initial X velocity
-	LDA CheepCheepHopper_InitXVel,Y
-	STA <Objects_XVelZ,X
+	JSR Object_MoveTowardsPlayer
 	RTS		 ; Return
 
 
@@ -3306,7 +3310,7 @@ ObjNorm_CheepCheepHopper:
 	LDA Objects_InWater,X
 	BEQ PRG003_B471	 	; If Cheep Cheep is NOT in water, jump to PRG003_B471
 
-	JSR Object_QuickXDistanceFromPlayer	
+	JSR Object_XDistanceFromPlayer	
 
 	LDY #-$30	 ; Y = -$30
 
@@ -3334,7 +3338,7 @@ PRG003_B47A:
 Tornado_InitXVel:	.byte $08, -$08
 
 ObjInit_Tornado:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Set initial X velocity towards Player
 	LDA Tornado_InitXVel,Y
@@ -3485,7 +3489,7 @@ PRG003_B5B3:
 	LDA #$00
 	STA <Player_XVel
 
-	JSR Object_QuickXDistanceFromPlayer	
+	JSR Object_XDistanceFromPlayer	
 
 	; Set a little plug-along value to the Player
 	LDA Tornado_PlayerXVelAdj,Y
@@ -3496,7 +3500,7 @@ PRG003_B5C2:
 
 
 PRG003_B5C3:
-	JSR Object_QuickXDistanceFromPlayer	
+	JSR Object_XDistanceFromPlayer	
 
 	; Palette select 0/1 depending on which side the particle is on
 	TYA
@@ -3897,7 +3901,7 @@ PRG003_B7CF:
 	JMP PRG003_B7D5	 ; Jump to PRG003_B7D5
 
 PRG003_B7D2:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 PRG003_B7D5
 	; Blooper faces Player
@@ -3950,7 +3954,7 @@ PRG003_B7EB:
 	SBC #$00	 ; Apply carry
 	STA <Player_YHi	
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 
 	; Restore Player Y/Hi
 	PLA
@@ -4047,10 +4051,10 @@ PRG003_B876:
 	STA SpecialObj_XVel,Y
 
 	LDA BlooperKid_Data,X
-	STA SpecialObj_Data,Y
+	STA SpecialObj_Data1,Y
 
 	LDA BlooperKid_UNKD,X
-	STA SpecialObj_Var1,Y
+	STA SpecialObj_Data2,Y
 
 	LDA #$ff
 	STA SpecialObj_Timer,Y
@@ -4175,7 +4179,7 @@ PRG003_B933:
 	LDA Chomp_JumpYVels,Y
 	STA <Objects_YVelZ,X
 
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	; Set X velocity in facing direction
 	LDA Chomp_XVels,Y
 	STA <Objects_XVelZ,X
@@ -4356,7 +4360,7 @@ PyrantulaMove:
 	STA Objects_Timer,X
 
 PRG003_BA4C:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	LDA Objects_Data3,X
 	BNE PRG003_BA5C	 ; If Var7 <> 0, jump to PRG003_BA5C
@@ -4399,7 +4403,7 @@ PRG003_BA73:
 	ADC #$00	 ; Apply carry
 	STA <Player_YHi	 ; Update Player's Y Hi
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 
 	PLA		 
 	STA <Player_YHi	; Restore Player's Y Hi
@@ -4802,7 +4806,7 @@ FireChomp_SpitFire:
 	STA SpecialObj_ID,Y
 
 	LDA #$01
-	STA SpecialObj_Var1,Y
+	STA SpecialObj_Data2,Y
 
 	; Calculate a flight path towards Player
 	LDA #$14
@@ -4835,7 +4839,7 @@ BoomBoom_CalcFlightPath:
 	TYA
 	PHA
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 	STY <Temp_Var3		 ; Store Y difference indicator -> Temp_Var3
 
 	; Get absolute value of Y difference
@@ -4845,7 +4849,7 @@ BoomBoom_CalcFlightPath:
 PRG003_BCAA:
 	STA <Temp_Var13		 ; -> Temp_Var13
  
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 	STY <Temp_Var4		 ; Store X difference indicator -> Temp_Var4
 
 	; Get absolute value of X difference
@@ -5124,7 +5128,7 @@ PRG003_BDE6_Divert2:
 	LDA FireSnake_JumpYVel,Y
 	STA <Objects_YVelZ,X
 
-	JSR Object_QuickYDistanceFromPlayer
+	JSR Object_YDistanceFromPlayer
 
 	CPY #$00
 	BNE PRG003_BDDB	; If Player is lower than Fire Snake, jump to PRG003_BDDB
@@ -5138,7 +5142,7 @@ PRG003_BDE6_Divert2:
 	STA Objects_Timer3,X
 
 PRG003_BDDB:
-	JSR Object_QuickXDistanceFromPlayer
+	JSR Object_XDistanceFromPlayer
 
 	; Set X velocity towards Player
 	LDA FireSnake_XVelTowardsPlayer,Y
@@ -5374,7 +5378,7 @@ FireSnake_ChangeSolids9:
 	LDA #SOBJ_POOF
 	STA SpecialObj_ID, Y
 	LDA #$20	 
-	STA SpecialObj_Data, Y
+	STA SpecialObj_Data1, Y
 	LDA Block_ChangeX
 	STA SpecialObj_X, Y
 	LDA Block_ChangeY
