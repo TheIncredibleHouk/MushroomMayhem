@@ -4722,6 +4722,7 @@ Half_Value:
 	PLA
 	LSR A
 	ORA <Temp_Var1
+	RTS
 
 Reserve_Sprites:
 	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP
@@ -5989,8 +5990,17 @@ GetPowerBadgeY:
 	CMP #BADGE_PMETER
 	RTS
 
-Debris_X = Temp_Var1
-Debris_Y = Temp_Var2
+Debris_X = Temp_Var7
+Debris_Y = Temp_Var8
+
+Common_MakeChains:
+	JSR Common_MakeDebris
+	LDA #CHAIN_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA #SPR_PAL1
+	STA BrickBust_Pal, Y
+	RTS
 
 Common_MakeBricks:
 	JSR Common_MakeDebris
@@ -6070,6 +6080,7 @@ Common_MakePoof1:
 	STA SpecialObj_ID, Y
 
 	LDA #$20
+	STA SpecialObj_Timer, Y
 	STA SpecialObj_Data1, Y
 
 	LDA <Poof_X

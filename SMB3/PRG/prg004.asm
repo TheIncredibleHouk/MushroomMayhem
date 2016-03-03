@@ -541,8 +541,8 @@ FillWater:
 
 ObjNorm_Waterfill_RTS:
 	JSR Object_ApplyXVel
-	JSR Object_ShakeAndDraw
-	LDA Object_SpriteRAM_Offset, X 
+	JSR Object_Draw
+	LDA Object_SpriteRAMOffset, X 
 	TAX
 	DEC Sprite_RAM, X
 	DEC Sprite_RAM + 4, X
@@ -1244,7 +1244,7 @@ Thwomp_Draw:
 	AND #$20
 	BNE PRG004_A737	 ; If sprite is not visible, jump to PRG004_A737
 
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; The right sprites appear +16 away from Thwomp's left
 	LDA <Objects_SpriteX,X
@@ -1528,7 +1528,7 @@ PRG004_A870:
 	AND #$01
 	STA Objects_Frame,X
 
-	JSR Object_FlipByXVel	 ; Flip based on horizontal travel direction
+	;JSR Object_FlipByXVel	 ; Flip based on horizontal travel direction
 	JMP GroundTroop_DrawNormal	 ; Draw and don't come back!
 
 ObjInit_FireBro:
@@ -2185,7 +2185,7 @@ ObjNorm_Lakitu:
 
 	JSR Object_DrawTallAndHFlip	 ; Draw Lakitu
 
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Flip Lakitu himself vertically
 	LDA #$83
@@ -2513,6 +2513,7 @@ PRG004_AE89:
 
 
 ObjInit_ParaGoomba:
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	LDA #$80
 	STA Objects_Timer, X
@@ -2605,7 +2606,7 @@ ObjNorm_ParaGoomba7:
 	JMP ParaGoomba_Draw
 
 ParaGoomba_Draw:
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Left wing
 	LDA Sprite_RAM+$00,Y
@@ -2980,7 +2981,7 @@ ObjNorm_ParaZombieGoomba1:
 	JSR Goomba_Draw
 
 ParaZombieGoomba_Draw:
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Left wing
 	LDA Sprite_RAM+$00,Y
@@ -3069,7 +3070,7 @@ PRG004_B0BD:
 PRG004_B0CC:
 	STA Objects_Frame,X	 ; Set object frame
 
-	JSR Object_FlipByXVel	 ; Apply X velocity
+	;JSR Object_FlipByXVel	 ; Apply X velocity
 
 	JMP GroundTroop_DrawNormal	 ; Draw and don't come back!
 
@@ -3115,7 +3116,7 @@ ObjNorm_SwimmingCheep2:
 	STA Objects_Frame,X
 
 Cheep_Draw:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 BulletBill_XAccel:	.byte $01, -$01
 BulletBill_XLimit:	.byte $18, -$18
@@ -3272,7 +3273,7 @@ ObjNorm_MissileMark2_1:
 	STA PatTable_BankSel + 5
 
 ObjNorm_MissileMark3:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 
 ObjInit_SpikeCheep:
@@ -3280,6 +3281,7 @@ ObjInit_SpikeCheep:
 	RTS		 ; Return
 
 ObjInit_Goomba:
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
 	LDA Objects_Property, X
@@ -3347,7 +3349,7 @@ Goomba_DrawNoAnimate:
 	EOR #SPR_HFLIP
 	STA Objects_Orientation, X
 
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	LDA Sprite_RAM + 2, Y
 	EOR #SPR_HFLIP
 	STA Sprite_RAM + 6, Y
@@ -3374,7 +3376,7 @@ Goomba_Death2:
 	STA <Objects_YVelZ, X
 	LDA #$00
 	STA Objects_Orientation, X
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 FlyingTroopa_StartX = Objects_Data6
 FlyingTroopa_StartXHi = Objects_Data7
@@ -3439,6 +3441,7 @@ ObjNorm_FlyingTroopa2:
 	JMP Troopa_Draw
 
 ObjInit_Troopa:
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	LDA <Objects_YZ, X
 	ADD #$10
@@ -3552,7 +3555,7 @@ ObjNorm_PoisonMushroom0:
 	JSR Object_InteractWithTiles
 
 ObjNorm_PoisonMushroom1:
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 Bouncey_FlutterTime: = Objects_Data2
 
@@ -3619,7 +3622,7 @@ ObjNorm_SpinyBuzzy:
 	STA Objects_Frame,X
 
 ObjNorm_SpinyBuzzy1:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 Troopa_YOffByFrame:
 	.byte $06, $05
@@ -3632,9 +3635,9 @@ Troopa_FootByEvenOddFrame:
 
 Troopa_Draw:
 
-	LDA Object_SpriteRAM_Offset,X
+	LDA Object_SpriteRAMOffset,X
 	ADD #$08
-	STA Object_SpriteRAM_Offset,X
+	STA Object_SpriteRAMOffset,X
 
 	LDY Objects_Frame,X	 ; Y = current frame
 
@@ -3746,7 +3749,7 @@ PRG004_B55D:
 
 	; Time for the left foot...
 
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	LDA Sprite_RAM+$00,Y
 	CMP #$f8
@@ -3929,7 +3932,7 @@ PRG004_B60D:
 ;	ADD Giant_HXOff,Y
 ;	STA <Temp_Var2	
 ;
-;	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+;	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 ;
 ;	; Set Sprite Xs
 ;	LDA <Temp_Var2
@@ -4005,7 +4008,7 @@ PRG004_B60D:
 ;	STY <Temp_Var4	 ; Temp_Var4 = 0 or 4 (which sprite to use)
 ;
 ;	TYA
-;	ADD Object_SpriteRAM_Offset,X	; Set base offset
+;	ADD Object_SpriteRAMOffset,X	; Set base offset
 ;
 ;	TAY
 ;	LDA Sprite_RAM+$00,Y
@@ -4035,7 +4038,7 @@ PRG004_B60D:
 ;
 ;	LDA <Temp_Var4	 
 ;	EOR #$04	 ; Use "other" sprite
-;	ADD Object_SpriteRAM_Offset,X	 ; Add base offset
+;	ADD Object_SpriteRAMOffset,X	 ; Add base offset
 ;	TAY		 ; -> 'Y'
 ;
 ;	; Palette select 3
@@ -4043,7 +4046,7 @@ PRG004_B60D:
 ;	ORA #SPR_PAL3
 ;	STA Sprite_RAM+$0A,Y
 ;
-;	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+;	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 ;
 ;	; Top of rear part of shell pattern
 ;	LDA #$91
@@ -4347,7 +4350,7 @@ PRG004_B849:
 	ADD Giant_HXOff,Y
 	STA <Temp_Var2
 
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Set Sprite Xs
 	LDA <Temp_Var2
@@ -4539,7 +4542,7 @@ PRG004_B938:
 
 	JSR Object_CalcSpriteXY_NoHi
 
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	LDA Objects_SpritesVerticallyOffScreen,X
 	LSR A
@@ -4658,843 +4661,706 @@ PRG004_B9B8:
 PRG004_B9BA:
 	RTS		 ; Return
 
+Chomp_Frame = Objects_Data1
+Chomp_Charges = Objects_Data2
+Chomp_PinX = Objects_Data3
+Chomp_PinY = Objects_Data4
+Chomp_Charging = Objects_Data5
+Chomp_CanCharge = Objects_Data6
+Chomp_XChainMax = Objects_Data7
+Chomp_YChainMax = Objects_Data8
+
 ObjInit_ChainChomp:
 
-	; Fill in all of the following with the Chain Chomp's starting X coordinate
+	; Fill in all of the following with the Chain Chomp's Pining X coordinate
 	LDA <Objects_XZ,X
-	STA Objects_Data11,X
-	STA ChainChomp_ChainX1,X
-	STA ChainChomp_ChainX2,X
-	STA ChainChomp_ChainX3,X
-	STA ChainChomp_ChainX4,X
+	ADD #$08
+	STA Chomp_PinX,X
+	SUB #$04
+	STA ChainChomp_ChainX1, X
+	STA ChainChomp_ChainX2, X
+	STA ChainChomp_ChainX3, X
+	STA ChainChomp_ChainX4, X
 
-	; Var10 = origin X - 44 (left limit)
-	SUB #44
-	STA Objects_Data8,X
-
-	; Var 11 = origin X + 44 (right limit)
-	ADD #88
-	STA Objects_Data9,X
-
-	; Fill in all of the following with the Chain Chomp's starting Y coordinate
 	LDA <Objects_YZ,X
-	STA Objects_Data12,X
-	STA ChainChomp_ChainY1,X
-	STA ChainChomp_ChainY2,X
-	STA ChainChomp_ChainY3,X
-	STA ChainChomp_ChainY4,X
+	ADD #$08
+	STA Chomp_PinY,X
+	SUB #$08
+	STA ChainChomp_ChainY1, X
+	STA ChainChomp_ChainY2, X
+	STA ChainChomp_ChainY3, X
+	STA ChainChomp_ChainY4, X
 
-	; Var12 = origin Y - 56 (upper limit)
-	SUB #56
-	STA Objects_Data10,X
+	LDA <Objects_YZ,X
+	SUB #$10
+	STA <Objects_YZ,X
 
-	; Var7 holds corresponding Y Hi
 	LDA <Objects_YHiZ,X
 	SBC #$00
-	STA Objects_Data3,X
+	STA <Objects_YHiZ,X
 
-	LDA Objects_XHiZ, X
-	STA Objects_Data13, X
+	JSR Object_MoveTowardsPlayerFast
 
-	LDA Objects_YHiZ, X
-	STA Objects_Data14, X
-
-	RTS		 ; Return
-
-ChainChomp_BreakFree:
-	LDY #$01	 ; Y = 1 (two buffer slots)
-PRG004_B9F9:
-	LDA Buffer_Occupied,Y
-	BEQ PRG004_BA02	 ; If this buffer is free, jump to PRG004_BA02
-
-	DEY		 ; Y--
-	BPL PRG004_B9F9	 ; While Y >= 0, loop!
-
-	RTS		 ; Return
-
-PRG004_BA02:
-
-	; Become a freed Chain Chomp!
-	LDA #OBJ_CHAINCHOMPFREE
-	STA Objects_ID,X
-
-	; Var7 = 4
 	LDA #$04
-	STA Objects_Data3,X
-
-	; Claim this buffer slot
-	LDA #$01
-	STA Buffer_Occupied,Y
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	; Temp_Var1 = Sprite Y
-	LDA <Objects_SpriteY,X
-	STA <Temp_Var1
-
-	; Temp_Var2 = Sprite X
-	LDA <Objects_SpriteX,X
-	STA <Temp_Var2	
-
-	TYA
-	STA Objects_Data6,X	 ; Var6 = buffer slot select
-
-	LSR A
-	ROR A
-	LSR A
-	LSR A	; A = $00 or $20 (offset into corresponding buffer)
-	TAX		 ; -> 'X'
-
-	; This loop loads up the X/Y buffers with the Chain Chomp's position
-	LDY #$1f	 ; Y = $1F (buffer space count)
-PRG004_BA27:
-	LDA <Temp_Var1
-	STA Object_BufferY,X
-	LDA <Temp_Var2
-	STA Object_BufferX,X
-
-	INX		 ; X++ (next buffer byte)
-	DEY		 ; Y-- (one less count)
-	BPL PRG004_BA27	 ; While Y >= 0, loop!
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	; Reset Timer
-	LDA #$00
-	STA Objects_Timer,X
-
-	JSR Object_XDistanceFromPlayer
-	LDA Chomp_FreeXVels, Y
-	STA Objects_XVelZ, X
-	LDA #$00
-	STA Objects_YVelZ, X
+	STA Chomp_Charges, X
 
 	RTS		 ; Return
 
-Chomp_FreeXVels: .byte -$20, $20
-ChainChomp_ChaseYVel:	.byte -$20, -$40, -$30, -$50
-ChainChomp_ChaseXVel:	.byte  $50,  $30,  $40,  $20
 
-ChainChomp_YDelta:	.byte  $03, $0D, $08, $0D
-ChainChomp_XDelta:	.byte  $0C, $0A, $0A, $08
+Chomp_ChargeTimers:
+	.byte $40, $60, $50, $70, $50, $40, $60, $60
 
-ObjNorm_ChainChomp:
-	JSR ChainChomp_Draw	 ; Draw Chain Chomp and his chain
+Chomp_ChargeXVel:
+	.byte $40, $38, $30, $28, $20, $40, $38, $30
 
-	LDA <Player_HaltGameZ
-	BNE PRG004_BAC8	 ; If gameplay is halted, jump to PRG004_BAC8 (RTS)
+Chomp_ChargeYVel:
+	.byte $FF, $F0, $E0, $D0, $C0, $00, $F0, $E0
 
-	JSR Object_DeleteOffScreen	 
-	JSR Object_AttackOrDefeat	 ; Do Player to Chain Chomp collision detection
-	JSR Object_FlipByXVel	 ; Flip based on travel direction
+Chomp_Restrain:
+	
+	LDA Chomp_XChainMax, X
+	BEQ RestrainY
 
-	INC Objects_Data3,X	 ; Var3++
-	INC <Objects_Data1,X	 ; Var4++
+	JSR MaxOutChainsX
+	LDA Chomp_Charging, X
+	BNE RestrainXCharging
 
-	; Toggle frame 0/1
-	LDA <Objects_Data1,X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
+	LDY #$00
+	LDA <Objects_XZ, X
+	SUB Chomp_PinX, X
+	BMI Chomp_Restrain1
 
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #$C0
-	CMP #$C0
-	BEQ ChompNoCheck
+	INY
 
-	JSR ChompRoutine
-	LDA RandomN
-	AND #$01
-	BNE ChompNoCheck
+Chomp_Restrain1:
+	LDA <Objects_XVelZ, X
+	BEQ Chomp_RestrainXRTS
 
-	JSR ChainChomp_DetectFree
+	AND #$80
+	CMP MaxChainVelCmp, Y
+	BNE Chomp_RestrainXRTS
 
-ChompNoCheck:
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+Chomp_RestrainXRTS:
 	RTS
 
-ChompRoutine:
-	LDA <Objects_Data2,X	 ; Var5 is internal state
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word ChainChomp_ChooseLunge
-	.word ChainChomp_DoMove
-	.word ChainChomp_Drop
-
-ChainChomp_ChooseLunge:
-	LDA Objects_Timer,X	 
-	BNE PRG004_BAC8	 ; If timer not expired, jump to PRG004_BAC8 (RTS)
-
-	LDA RandomN,X
-	AND #$03
-	; ...??
-
-	JSR Object_XDistanceFromPlayer	
-
-	LDA <Temp_Var16
-	PHP		 ; Save CPU state
-	BPL PRG004_BA8B	 ; If Player is to the right of Chain Chomp, jump to PRG004_BA8B
-
-	EOR #$ff	 ; Otherwise, sort of negate the difference (almost absolute value)
-
-PRG004_BA8B:
-	CMP #64
-	BLT PRG004_BA97	 ; If the distance < 64, jump to PRG004_BA97
-
-	LDA #63
-
-PRG004_BA97:
-
-	; Divide distance by 16
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-
-PRG004_BA9E:
-	STA Objects_TargetingXVal,X	 ; -> Objects_TargetingXVal
- 
-	TAY		
-	LDA ChainChomp_ChaseYVel,Y
-	STA <Objects_YVelZ,X	 ; Set Y Velocity
- 
-	LDA ChainChomp_ChaseXVel,Y
-	PLP		 ; Restore CPU state
-	BPL PRG004_BAB2	 ; If we inverted for Y, we must invert for X too, jump to PRG004_BAB2
-
-	NEG	; Negate (absolute value)
-
-PRG004_BAB2:
-	STA <Objects_XVelZ,X	 ; -> X velocity
-
-	; Timer = $28
-	LDA #$28
-	STA Objects_Timer,X
-
-	INC <Objects_Data2,X	 ; Var5++ (next internal state)
-
-	INC Objects_Data4,X	 ; Var1++
-
-PRG004_BAC8:
-
-	RTS		 ; Return
-
-
-ChainChomp_DoMove:
-	LDA Objects_Timer,X	 
-	BNE PRG004_BAEC	 ; If timer not expired, jump to PRG004_BAEC
-
-	LDA RandomN,X
-	AND #$3f
-	ORA #$20
-	STA Objects_Timer,X	 ; Set timer to $20 - $3F
-
-	INC <Objects_Data2,X	 ; Var5++ (next internal state)
-
-	; Halt vertical movement
+RestrainXCharging:
 	LDA #$00
-	STA <Objects_YVelZ,X
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
 
-	LDY #$08	 ; Y = 8
+RestrainY:
+	LDA Chomp_YChainMax, X
+	BEQ RestraintRTS
 
-	LDA <Objects_XZ,X
-	CMP Objects_Data11,X
-	BLT PRG004_BAE9	 ; If Chain Chomp X < starting X, jump to PRG004_BAE9
+	JSR MaxOutChainsY
 
-	LDY #-$08	 ; Otherwise, Y = -8
-
-PRG004_BAE9:
-	STY <Objects_XVelZ,X	 ; Update X velocity
-	RTS		 ; Return
-
-
-PRG004_BAEC:
-	LDA <Objects_XZ,X
-	CMP Objects_Data8,X
-	BLT PRG004_BB07	 ; If Chain Chomp is already at his left limit, jump to PRG004_BB07
-
-	CMP Objects_Data9,X
-	BGE PRG004_BB07	 ; If Chain Chomp is already at his right limit, jump to PRG004_BB07
-
-	LDA <Objects_YZ,X
-	CMP Objects_Data10,X
-	LDA <Objects_YHiZ,X
-	SBC Objects_Data3,X
-	BCC PRG004_BB07	 ; If Chain Chomp is above his upper limit, jump to PRG004_BB07
-
-	JMP ChainChomp_MoveChain	 ; Chain Chomp moves with his chain, and don't come back!
-
-PRG004_BB07:
-
-	; Var4 += 2
-	INC <Objects_Data1,X
-	INC <Objects_Data1,X
-
-	; Temp_Var4 = 4
-	LDA #$04
-	STA <Temp_Var4
-
-	LDA Objects_Data11,X	 	; Chain Chomp starting X
-	SUB <Objects_XZ,X		; Subtract current X (relative difference)
-	JSR Modulus_ByTempVar4		
-	ADD <Objects_XZ,X		; Add modulus result to Chain Chomp X
-	STA ChainChomp_ChainX1,X	; Set Chain link 1 X
-
-	ADC <Temp_Var1			; Apply same
-	STA ChainChomp_ChainX2,X	; Set Chain link 2 X
-
-	ADC <Temp_Var1			; Apply same
-	STA ChainChomp_ChainX3,X	; Set Chain link 3 X
-
-	ADC <Temp_Var1			; Apply same
-	STA ChainChomp_ChainX4,X	; Set Chain link 4 X
-
-	; Temp_Var4 = 5
-	LDA #$05
-	STA <Temp_Var4
-
-	LDA Objects_Data12,X	 	; Chain Chomp starting Y
-	SUB <Objects_YZ,X		; Subtract current Y (relative difference)
-	JSR Modulus_ByTempVar4		
-	ADD <Objects_YZ,X		; Add modulus result to Chain Chomp Y
-	STA ChainChomp_ChainY1,X	; Set Chain link 1 Y
-
-	ADC <Temp_Var1			; Apply same
-	STA ChainChomp_ChainY2,X	; Set Chain link 2 Y
-
-	ADC <Temp_Var1			; Apply same
-	STA ChainChomp_ChainY3,X	; Set Chain link 3 Y
-
-	ADC <Temp_Var1			; Apply same
-	STA ChainChomp_ChainY4,X	; Set Chain link 4 Y
-
-	LDA Object_SpriteRAM_Offset,X
-	ADD #$08	 ; A = Sprite_RAM offset + 8 (two sprites over)
-
-	LDY <Objects_YVelZ,X
-	TAX		 ; X = sprite RAM offset
-	CPY #-$30
-	BGE PRG004_BB61	 
-
-	; Change sprite Y instead of X
-	INX
-	INX
-	INX
-
-PRG004_BB61:
-	LDY #$03	 ; Y = 3
-
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-PRG004_BB67:
-	BCC PRG004_BB6C	 ; If carry set, jump to PRG004_BB6C (this actually ought to skip the loop, it ends up does nothing)
-
-	INC Sprite_RAM+$00,X	 ; Increment X or Y
-
-PRG004_BB6C:
-
-	; X += 4 (next sprite)
-	INX
-	INX
-	INX
-	INX
-
-	DEY		 ; Y--
-	BPL PRG004_BB67	 ; While Y >= 0, loop
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	RTS		 ; Return
-
-	; Essentially performs a modulus against the accumulator by Temp_Var4
-	; 'Y' stores the effective division result
-Modulus_ByTempVar4:
-	PHP		 ; Save CPU state
-	BPL PRG004_BB7E	 ; If input is positive, jump to PRG004_BB7E
-
-	NEG		; Otherwise, negate! (Absolute value)
-
-PRG004_BB7E:
-	LDY #$ff	 ; Y = $FF
-
-PRG004_BB80:
-	SBC <Temp_Var4	 ; Subtract Temp_Var4 from input
-
-	INY		 ; Y++
-	BCS PRG004_BB80	 ; If the value has not gone below zero, loop!
-
-	TYA		 ; Y -> A
-
-	PLP		 ; Restore CPU state
-	BPL PRG004_BB8E	 ; If input is positive, jump to PRG004_BB8E
-
-	NEG
-
-PRG004_BB8E:
-	STA <Temp_Var1		 ; Result -> Temp_Var1
-
-	RTS		 ; Return
-
-ChainChomp_LungeMask:	.byte $1f, $0f
-ChainChomp_XVel:	.byte $10, $20
-
-ChainChomp_Drop:
-	JSR Object_XDistanceFromPlayer	 
-
-	LDA <Temp_Var16
-	ADC #$60
-	CMP #$c0
-	LDY #$00	 ; Y = 0
-	BGE PRG004_BBB5	 ; If Player is too close, jump to PRG004_BBB5
-
-	INC <Objects_Data1,X	 ; Var4++
-
-	LDA Objects_Timer,X
-	BNE PRG004_BBB4	 ; If timer not expired, jump to PRG004_BBB4
+	LDA <Objects_YVelZ, X
+	BPL RestraintRTS
 
 	LDA #$00
-	STA Objects_Timer,X	 ; Reset timer
-	STA <Objects_Data2,X	 ; Return to initial internal state
-	STA Objects_TargetingYVal,X
-	RTS		 ; Return
+	STA <Objects_YVelZ, X
+	STA <Objects_XVelZ, X
 
-PRG004_BBB4:
-	INY		 ; Y = 1
+RestraintRTS:
+	RTS
 
-PRG004_BBB5:
-	STY <Temp_Var16	 ; Temp_Var16 = 0 or 1
+MaxChainVelCmp:
+	.byte $80, $00
 
-	JSR ChainChomp_MoveChain	 ; Chain Chomp moves with his chain, and don't come back!
+MaxOutChainsX:
+	LDY #$00
+	LDA <Objects_XZ, X
+	SUB Chomp_PinX, X
+	BMI MaxOutChainsX1
 
-	; Chain Chomp falls down
-	INC <Objects_YVelZ,X
-	INC <Objects_YVelZ,X
-	INC <Objects_YVelZ,X
+	INY
 
-	LDA Objects_TargetingYVal,X
-	BEQ PRG004_BBE2	 ; If PRG004_BBCC = 0, jump to PRG004_BBE2
+MaxOutChainsX1:
+	LDA ChainChomp_ChainX4, X
+	ADD ChainOffset, Y
 
-	; Temp_Var1 = Var14 (Chain Chomp's starting Y)
-	LDA Objects_Data12,X
-	STA <Temp_Var1
+	STA ChainChomp_ChainX3, X
+	ADD ChainOffset, Y
 
-	LDY #$03	 ; Y = 3 (4 chain links)
-PRG004_BBCC:
-	LDA ChainChomp_ChainY1,X
-	CMP <Temp_Var1
-	BGE PRG004_BBD8	
+	STA ChainChomp_ChainX2, X
+	ADD ChainOffset, Y
 
-	ADC #$02
-	STA ChainChomp_ChainY1,X
+	STA ChainChomp_ChainX1, X
+	JSR EvenOutYChains
 
-PRG004_BBD8:
+MaxOutChainsX2:
+	RTS
 
-	; Next chain link
-	INX
-	INX
-	INX
-	INX
-	INX
+MaxOutChainsY:
+	LDA ChainChomp_ChainY4, X
+	ADD ChainOffset
+	STA ChainChomp_ChainY3, X
+	ADD ChainOffset
+	STA ChainChomp_ChainY2, X
+	ADD ChainOffset
+	STA ChainChomp_ChainY1, X
+	JSR EvenOutXChains
+	RTS
 
-	DEY		 ; Y--
-	BPL PRG004_BBCC	 ; While Y >= 0, loop!
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-PRG004_BBE2:
-	LDA <Objects_YZ,X
-	CMP Objects_Data12,X
-	BLT PRG004_BC58	 ; If Chain Chomp is above the starting Y, jump to PRG004_BC58
-
-	; Objects_TargetingYVal = 1
-	LDA #$01
-	STA Objects_TargetingYVal,X
-
-	LDA <Objects_YVelZ,X
-	PHA		 ; Save Y Velocity
-
-	JSR Object_HitGround	 ; Align to ground
-
-	PLA		 ; Restore Y velocity
-	CMP #$28
-	BLT PRG004_BC02	 ; If Y Velocity < $28, jump to PRG004_BC02
-
-	; Chain Chomp Y Vel = -$18
-	LDA #-$18
-	STA <Objects_YVelZ,X
-
-	; Var3 = 0
-	LDA #$00
-	STA Objects_Data3,X
-
-PRG004_BC02:
-	LDA #$03	 ; A = 3
-
-	LDY <Temp_Var16	
-	BEQ PRG004_BC0A	; If PRG004_BC0A = 0, jump to PRG004_BC0A
-
-	LDA #$00	 ; A = 0
-
-PRG004_BC0A:
-	STA Objects_TargetingXVal,X	 ; Objects_TargetingXVal = 0 or 3
-
-	LDA Objects_Data3,X
-	AND ChainChomp_LungeMask,Y
-	BNE PRG004_BC29	 
-
-	LDA ChainChomp_XVel,Y
-	PHA		 ; Save value
-
-	LDA Objects_Data11,X
-	CMP <Objects_XZ,X
-	BGE PRG004_BC26	 ; If origin X >= Chain Chomp's X, jump to PRG004_BC26
-
-	PLA		 ; Restore value
-
-	; Negate
-	EOR #$ff
-	ADC #$01
-
-	PHA		 ; Save value (just because it runs into the PLA below)
-
-PRG004_BC26:
-	PLA		 ; Restore value
-	STA <Objects_XVelZ,X	 ; Set as X velocity
-
-PRG004_BC29:
-	LDA RandomN,X
-	AND #$d5
-	BNE PRG004_BC34	 ; Randomly jump to PRG004_BC34
-
-	; Stop horizontal movement
-	LDA #$00
-	STA <Objects_XVelZ,X
-
-PRG004_BC34:
-	LDA <Objects_XZ,X
-
-	LDY Objects_Orientation,X
-	BNE PRG004_BC42	 ; If Chain Chomp is flipped, jump to PRG004_BC42
-
-	CMP Objects_Data8,X
-	BLT PRG004_BC47	 ; If Chain Chomp X < left limit, jump to PRG004_BC47
-	BGE PRG004_BC58	 ; Otherwise, jump to PRG004_BC58 (RTS)
-
-PRG004_BC42:
-	CMP Objects_Data9,X
-	BLT PRG004_BC58	 ; If Chain Chomp X < right limit, jump to PRG004_BC58 (RTS)
-
-PRG004_BC47:
-	LDY <Temp_Var16	 ; Y = Temp_Var16
-
-	LDA ChainChomp_XVel,Y
-	BCC PRG004_BC53	 
-
-	NEG	; Negate!
-
-PRG004_BC53:
-	STA <Objects_XVelZ,X	 ; Set as X velocity
-	JSR ChainChomp_MoveChain	 ; Chain Chomp moves with his chain, and don't come back!
-
-PRG004_BC58:
-	RTS		 ; Return
-
-ChainChomp_Draw:
-	JSR GroundTroop_DrawNormal	 ; Draw Chain Chomp's head
-
-	CLC
-	TYA
-	ADC #$14
-	STA <Temp_Var14	 ; Temp_Var14 = ending sprite offset + $14 (5 more sprites inward)
-
-	; Temp_Var16 = 3
-	LDA #$03
-	STA <Temp_Var16
-
-PRG004_BC66:
-	LDA <Temp_Var16	
-	ASL A	
-	ASL A	
-	ADC <Temp_Var16
-	ADC <CurrentObjectIndexZ
-	TAY		 
-
-	; Temp_Var1 = Chain Chomp chain link Y made relative
-	LDA ChainChomp_ChainY1,Y
-	SUB Level_VertScroll
-	ADD #$04
-	STA <Temp_Var1
-
-	; Temp_Var2 = Chain Chomp 
-	LDA ChainChomp_ChainX1,Y
-	SUB <Horz_Scroll
-	ADD #$04
+EvenOutYChains:
+	LDA <Objects_YZ, X
+	ADD #$08
 	STA <Temp_Var2
 
-	JSR ChainChomp_LinkVisibleTest
-	BCS PRG004_BCB4	 ; If this link is not visible, jump to PRG004_BCB4
+	LDA ChainChomp_ChainY4, X
+	SUB <Temp_Var2
+	JSR Half_Value
+	JSR Half_Value
+	
+	STA <Temp_Var3
 
-	; Temp_Var14: Current chain sprite offset
-	LDA <Temp_Var14
-	TAY			; Sprite Offset -> 'Y'
-	SUB #$04
-	STA <Temp_Var14		 ; Temp_Var14 -= 4 (one sprite prior in memory)
-
-	; Chain Link Y
-	LDA <Temp_Var1
-	STA Sprite_RAM+$00,Y
-
-	; Chain Link X
 	LDA <Temp_Var2
-	STA Sprite_RAM+$03,Y
 
-	; Chain Link pattern
-	LDA #$75
-	STA Sprite_RAM+$01,Y
+	ADD <Temp_Var3
+	STA ChainChomp_ChainY1, X
 
-	LDA Objects_Data4,X
-	CMP #$2f
-	LDA #$03	 ; A = 3
-	BLT PRG004_BCB1	 ; If Var1 < $2F, jump to PRG004_BCB1
+	ADD <Temp_Var3
+	STA ChainChomp_ChainY2, X
 
-	LDA GameCounter
+	ADD <Temp_Var3
+	STA ChainChomp_ChainY3, X
+	RTS
+
+EvenOutXChains:
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Temp_Var2
+
+	LDA ChainChomp_ChainX4, X
+	SUB <Temp_Var2
+	JSR Half_Value
+	JSR Half_Value
+	
+	STA <Temp_Var3
+
+	LDA <Temp_Var2
+
+	ADD <Temp_Var3
+	STA ChainChomp_ChainX1, X
+
+	ADD <Temp_Var3
+	STA ChainChomp_ChainX2, X
+
+	ADD <Temp_Var3
+	STA ChainChomp_ChainX3, X
+	RTS
+
+ObjNorm_ChainChomp:
+
+	LDA <Player_HaltGameZ
+	BEQ ChompNorm
+
+	LDA Chomp_Charging, X
+	CMP #$02
+	BCS NoChainDraw
+
+	JSR Chomp_DrawChains
+
+NoChainDraw:
+	JMP Object_Draw
+
+ChompNorm:
+	LDA #$60
+	JSR Object_DeleteOffScreenRange
+
+	LDA Chomp_Charging, X
+	JSR DynJump
+
+	.word Chomp_BounceAround
+	.word Chomp_ChargeAtPlayer
+	.word Chomp_Free
+
+ChargeSignCheck:
+	.byte $00, $80
+
+Chomp_BounceAround:
+	JSR Object_Move
+	JSR Chomp_MoveChains
+	JSR Chomp_Restrain
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat	 
+	JSR Object_FaceDirectionMoving
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+
+	LDA Chomp_CanCharge, X
+	BEQ Chomp_NoCharge
+
+	JSR Object_XDistanceFromPlayer
+	CMP #$20
+	BCC Chomp_NoCharge
+
+	LDA <Objects_XZ, X
+	SUB Chomp_PinX, X
+	AND #$80
+	CMP ChargeSignCheck, Y
+	BNE Chomp_NoCharge
+
+	JSR Chomp_Charge
+	LDA #$00
+	STA Chomp_CanCharge, X
+	JMP ChompAnimate
+
+Chomp_NoCharge:
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ ChompAnimate
+
+	LDA #$01
+	STA Chomp_CanCharge, X
+
+	LDA #$E8
+	STA <Objects_YVelZ, X
+
+	LDA #$10
+	JSR Object_DetectTileAhead
+	CMP #TILE_PROP_SOLID_ALL
+	BCC NoBounceHigher
+
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+NoBounceHigher:
+	LDA <Objects_XVelZ, X
+	BNE ChompAnimate
+
+	JSR Object_MoveAwayFromPlayerFast
+
+ChompAnimate:
+	INC <Chomp_Frame, x
+	LDA <Chomp_Frame, x
 	LSR A
-	AND #$03	; Palette cycle 0-3
+	LSR A
 
-PRG004_BCB1:
-	STA Sprite_RAM+$02,Y	 ; Store attribute
+	LDY Chomp_Charging, X
+	BNE Chomp_NotFastAnim
 
-PRG004_BCB4:
-	DEC <Temp_Var16		; Temp_Var16--
-	BPL PRG004_BC66		; While Temp_Var16 >= 0, loop!
+	LSR A
 
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-	RTS		 ; Return
+Chomp_NotFastAnim:
+	AND #$01
+	STA Objects_Frame, X
+	JSR Chomp_DrawChains
+	JMP Object_Draw
 
-ChainChomp_MoveChain:
-	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
-	STA <Temp_Var1		 ; Store carry flag -> Temp_Var1
+Chomp_ChargeAtPlayer:
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+	JSR Chomp_MoveChains
+	JSR Chomp_Restrain
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat	 
+	JSR Object_FaceDirectionMoving
+	
+	LDA Objects_Timer, X
+	BNE Chomp_ChargeAtPlayer1
 
-	JSR Object_ApplyXVel	; Apply X velocity
-	STA <Temp_Var2		 ; Store carry flag -> Temp_var2
+	DEC Chomp_Charges, X
+	BEQ Chomp_GetFree
 
-	LDY Objects_TargetingXVal,X	 ; Y = Objects_TargetingXVal (0-3, CC's chosen direction)
+	LDA #$00
+	STA Chomp_Charging, X
+	STA <Objects_XVelZ, X
+	
+Chomp_ChargeAtPlayer1:
+	JMP ChompAnimate
 
-	LDA <Objects_XVelZ,X
-	BLS PRG004_BD22	 ; If Chain Chomp is moving to the left, jump to PRG004_BD22
+Chomp_GetFree:
+	JSR Object_MoveTowardsPlayerFast
 
-	; Chain Chomp moving rightward version...
+	LDA Chomp_PinX, X
+	SUB <Objects_XZ, X
 
-	LDA ChainChomp_ChainX1,X
-	ADD ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP <Objects_XZ,X
-	BGE PRG004_BD1F	 	; If chain is beyong Chain Chomp, jump to PRG004_BD1F
+	JSR Half_Value
+	ADD <Objects_XZ, X
+	STA <Debris_X
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainX1,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX1,X
+	LDA Chomp_PinY,  X
+	SUB <Objects_YZ, X
 
-	LDA ChainChomp_ChainX2,X
-	ADD ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP ChainChomp_ChainX1,X
-	BGE PRG004_BD1F	 	; If chain link is beyond previous chain link, jump to PRG004_BD1F
+	JSR Half_Value
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainX2,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX2,X
+	ADD <Objects_YZ,X
+	STA <Debris_Y
+	JSR Common_MakeChains
+	LDA #$02
+	STA Chomp_Charging, X
 
-	LDA ChainChomp_ChainX3,X
-	ADD ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP ChainChomp_ChainX2,X
-	BGE PRG004_BD1F	 	; If chain link is beyond previous chain link, jump to PRG004_BD1F
+	JMP ChompAnimate
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainX3,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX3,X
+Chomp_ChargeSign:
+	.byte $80, $00
 
-	LDA ChainChomp_ChainX4,X
-	ADD ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP ChainChomp_ChainX3,X
-	BGE PRG004_BD1F	 	; If chain link is beyond previous chain link, jump to PRG004_BD1F
+Chomp_Aim:
+	LDA RandomN
+	AND #$07
+	TAY
+	LDA Chomp_ChargeXVel, Y
+	STA <Objects_XVelZ, X
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainX4,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX4,X
+	LDA Chomp_ChargeYVel, Y
+	STA <Objects_YVelZ, X
 
-PRG004_BD1F:
-	JMP PRG004_BD75
+	JSR Object_XDistanceFromPlayer
+	CPY #$00
+	BNE Chomp_Aim1
 
-PRG004_BD22:
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
 
-	; Chain Chomp moving leftward version...
+Chomp_Aim1:
+	RTS
+	
+Chomp_Charge:
+	JSR Chomp_Aim
+	
+	LDA #$20
+	STA Objects_Timer, X
+	INC Chomp_Charging, X
+	RTS
 
-	LDA ChainChomp_ChainX1,X
-	SUB ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP <Objects_XZ,X
-	BLT PRG004_BD75	 	; If chain is beyong Chain Chomp, jump to PRG004_BD75
+ChainOffset:
+	.byte $F3, $0D
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainX1,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX1,X
+Chomp_MoveChains:
+	LDA #$00
+	STA Chomp_XChainMax, X
+	STA Chomp_YChainMax, X
 
-	LDA ChainChomp_ChainX2,X
-	SUB ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP ChainChomp_ChainX1,X
-	BLT PRG004_BD75	 	; If chain link is beyond previous chain link, jump to PRG004_BD75
+	LDA ChainChomp_ChainY4, X
+	SUB <Vert_Scroll
+	STA <Temp_Var1
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainX2,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX2,X
+	LDA ChainChomp_ChainY1, X
+	SUB <Vert_Scroll
+	SUB <Temp_Var1
+	BPL Chain1OK
+	
+	INC ChainChomp_ChainY1, X
+	INC ChainChomp_ChainY1, X
 
-	LDA ChainChomp_ChainX3,X
-	SUB ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP ChainChomp_ChainX2,X
-	BLT PRG004_BD75	 	; If chain link is beyond previous chain link, jump to PRG004_BD75
+Chain1OK:
+	LDA ChainChomp_ChainY2, X
+	SUB <Vert_Scroll
+	SUB <Temp_Var1
+	BPL Chain2OK
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainX3,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX3,X
+	INC ChainChomp_ChainY2, X
+	INC ChainChomp_ChainY2, X
 
-	LDA ChainChomp_ChainX4,X
-	SUB ChainChomp_XDelta,Y	; Add X Delta for direction
-	CMP ChainChomp_ChainX3,X
-	BLT PRG004_BD75	 	; If chain link is beyond previous chain link, jump to PRG004_BD75
-
-	; Apply velocity carry
-	LDA ChainChomp_ChainX4,X
-	ADD <Temp_Var2	
-	STA ChainChomp_ChainX4,X
- 
-
-PRG004_BD75:
-	LDA <Objects_YVelZ,X
-	BMI PRG004_BDCD	 ; If Chain Chomp is moving upward, jump to PRG004_BDCD
-
-	; Chain Chomp moving downward version...
-
-	LDA ChainChomp_ChainY1,X
-	ADD ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP <Objects_YZ,X
-	BGE PRG004_BDCC	 	; If chain is beyond Chain Chomp, jump to PRG004_BDCC (RTS)
-
-	; Apply velocity carry
-	LDA ChainChomp_ChainY1,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY1,X
-
-	LDA ChainChomp_ChainY2,X
-	ADD ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP ChainChomp_ChainY1,X
-	BGE PRG004_BDCC	 	; If chain is beyond Chain Chomp, jump to PRG004_BDCC (RTS)
-
-	; Apply velocity carry
-	LDA ChainChomp_ChainY2,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY2,X
-
-	LDA ChainChomp_ChainY3,X
-	ADD ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP ChainChomp_ChainY2,X
-	BGE PRG004_BDCC	 	; If chain is beyond Chain Chomp, jump to PRG004_BDCC (RTS)
-
-	; Apply velocity carry
-	LDA ChainChomp_ChainY3,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY3,X
-
-	LDA ChainChomp_ChainY4,X
-	ADD ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP ChainChomp_ChainY3,X
-	BGE PRG004_BDCC	 	; If chain is beyond Chain Chomp, jump to PRG004_BDCC (RTS)
-
-	; Apply velocity carry
-	LDA ChainChomp_ChainY4,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY4,X
-
-PRG004_BDCC:
-	RTS		 ; Return
+Chain2OK:
+	LDA ChainChomp_ChainY3, X
+	SUB <Vert_Scroll
+	SUB <Temp_Var1
+	BPL Chain3OK
 
 
-PRG004_BDCD:
+	INC ChainChomp_ChainY3, X
+	INC ChainChomp_ChainY3, X
 
-	; Chain Chomp moving upward version...
+Chain3OK:	
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Temp_Var1
 
-	LDA ChainChomp_ChainY1,X
-	SUB ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP <Objects_YZ,X
-	BLT PRG004_BE20	 	; If chain is beyond Chain Chomp, jump to PRG004_BE20 (RTS)
+	LDY #$00
+	LDA ChainChomp_ChainX1, X
+	ADD #$04
+	SUB <Temp_Var1
+	BPL CMVC1
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainY1,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY1,X
+	INY
 
-	LDA ChainChomp_ChainY2,X
-	SUB ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP ChainChomp_ChainY1,X
-	BLT PRG004_BE20	 	; If chain is beyond Chain Chomp, jump to PRG004_BE20 (RTS)
+CMVC1:
+	CMP ChainOffset + 1
+	BCC SetChain_YJumpCC
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainY2,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY2,X
+	CMP ChainOffset
+	BCS SetChain_YJumpCS
 
-	LDA ChainChomp_ChainY3,X
-	SUB ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP ChainChomp_ChainY2,X
-	BLT PRG004_BE20	 	; If chain is beyond Chain Chomp, jump to PRG004_BE20 (RTS)
+	ADD ChainOffset, Y
+	EOR #$FF
+	ADD #$01
+	ADD ChainChomp_ChainX1, X
+	STA ChainChomp_ChainX1, X
+	ADD #$04
+	STA <Temp_Var1
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainY3,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY3,X
+	LDY #$00
+	LDA ChainChomp_ChainX2, X
+	ADD #$04
+	SUB <Temp_Var1
+	BPL CMVC2
 
-	LDA ChainChomp_ChainY4,X
-	SUB ChainChomp_YDelta,Y	; Add Y Delta for direction
-	CMP ChainChomp_ChainY3,X
-	BLT PRG004_BE20	 	; If chain is beyond Chain Chomp, jump to PRG004_BE20 (RTS)
+	INY
 
-	; Apply velocity carry
-	LDA ChainChomp_ChainY4,X
-	ADD <Temp_Var1
-	STA ChainChomp_ChainY4,X
+CMVC2:
+	CMP ChainOffset + 1
 
-PRG004_BE20:
-	RTS		 ; Return
+SetChain_YJumpCC:
+	BCC SetChain_Y
 
+	CMP ChainOffset
 
-Object_FlipByXVel:
-	LDA Objects_Orientation,X	 
-	AND #~SPR_HFLIP	; Clear horizontal flip
+SetChain_YJumpCS:
+	BCS SetChain_Y
+	
+	ADD ChainOffset, Y
+	EOR #$FF
+	ADD #$01
+	ADD ChainChomp_ChainX2, X
+	STA ChainChomp_ChainX2, X
+	ADD #$04
+	STA <Temp_Var1
 
-	LDY <Objects_XVelZ,X
-	BEQ PRG004_BE31	 ; If not moving horizontally, jump to PRG004_BE31
-	BMI PRG004_BE2E	 ; If moving to the left, jump to PRG004_BE2E
+	LDY #$00
+	LDA ChainChomp_ChainX3, X
+	ADD #$04
+	SUB <Temp_Var1
+	BPL CMVC3
 
-	; Moving to the right
-	ORA #SPR_HFLIP	; Set horizontal flip
+	INY
 
-PRG004_BE2E:
-	; Moving to the left/right
-	STA Objects_Orientation,X	 ; Set flip bits
+CMVC3:
+	CMP ChainOffset + 1
+	BCC SetChain_Y
 
-PRG004_BE31:
-	RTS		 ; Return
+	CMP ChainOffset
+	BCS SetChain_Y
+	
+	ADD ChainOffset, Y
+	EOR #$FF
+	ADD #$01
+	ADD ChainChomp_ChainX3, X
+	STA ChainChomp_ChainX3, X
+	ADD #$04
+	STA <Temp_Var1
 
+	LDY #$00
+	LDA ChainChomp_ChainX4, X
+	ADD #$04
+	SUB <Temp_Var1
+	BPL CMVCMaxX
 
-	; Check if a chain link sprite is visible or not
-	; Carry set if not visible, cleared if it is visible
+	INY
+
+CMVCMaxX:
+	CMP ChainOffset + 1
+	BCC SetChain_Y
+
+	CMP ChainOffset
+	BCS SetChain_Y
+
+	ADD ChainOffset, Y
+
+	BEQ SetChain_Y
+
+	INC Chomp_XChainMax, X
+
+SetChain_Y:
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Temp_Var1
+
+	LDY #$00
+	LDA ChainChomp_ChainY1, X
+	ADD #$08
+	SUB <Temp_Var1
+	BPL CMVC4
+
+	INY
+
+CMVC4:
+	CMP ChainOffset + 1
+	BCC Chomp_MoveChains1CC
+
+	CMP ChainOffset
+	BCS Chomp_MoveChains1CS
+
+	ADD ChainOffset, Y
+	EOR #$FF
+	ADD #$01
+	ADD ChainChomp_ChainY1, X
+	STA ChainChomp_ChainY1, X
+	ADD #$08
+	STA <Temp_Var1
+
+	LDY #$00
+	LDA ChainChomp_ChainY2, X
+	ADD #$08
+	SUB <Temp_Var1
+	BPL CMVC5
+
+	INY
+
+CMVC5:
+
+	CMP ChainOffset + 1
+Chomp_MoveChains1CC:
+	BCC Chomp_MoveChains1
+
+	CMP ChainOffset
+Chomp_MoveChains1CS:
+	BCS Chomp_MoveChains1
+	
+	ADD ChainOffset, Y
+	EOR #$FF
+	ADD #$01
+	ADD ChainChomp_ChainY2, X
+	STA ChainChomp_ChainY2, X
+	ADD #$08
+	STA <Temp_Var1
+
+	LDY #$00
+	LDA ChainChomp_ChainY3, X
+	ADD #$08
+	SUB <Temp_Var1
+	BPL CMVC6
+
+	INY
+
+CMVC6:
+	CMP ChainOffset + 1
+	BCC Chomp_MoveChains1
+
+	CMP ChainOffset
+	BCS Chomp_MoveChains1
+	
+	ADD ChainOffset, Y
+	EOR #$FF
+	ADD #$01
+	ADD ChainChomp_ChainY3, X
+	STA ChainChomp_ChainY3, X
+
+	ADD #$08
+	STA <Temp_Var1
+
+	LDY #$00
+	LDA ChainChomp_ChainY4, X
+	ADD #$08
+	SUB <Temp_Var1
+	BPL CMVCMaxY
+
+	INY
+
+CMVCMaxY:
+	CMP ChainOffset + 1
+	BCC Chomp_MoveChains1
+
+	CMP ChainOffset
+	BCS Chomp_MoveChains1
+	
+	ADD ChainOffset, Y
+	BEQ Chomp_MoveChains1
+
+	INC Chomp_YChainMax, X
+
+Chomp_MoveChains1:
+	RTS
+
+Chomp_DrawChains:
+	LDY Object_SpriteRAMOffset, X
+	STY <Temp_Var4
+
+	LDA ChainChomp_ChainX1, X
+	SUB <Horz_Scroll
+	STA <Temp_Var2
+	
+
+	LDA ChainChomp_ChainY1, X
+	SUB <Vert_Scroll
+	STA <Temp_Var1
+
+	JSR ChainChomp_LinkVisibleTest
+	BCS CDC1
+
+	LDY <Temp_Var4
+	LDA <Temp_Var2
+	STA Sprite_RAMX + 8, Y
+	LDA <Temp_Var1
+	STA Sprite_RAMY + 8, Y
+
+CDC1:
+	LDA ChainChomp_ChainX2, X
+	SUB <Horz_Scroll
+	STA <Temp_Var2
+
+	LDA ChainChomp_ChainY2, X
+	SUB <Vert_Scroll
+	STA <Temp_Var1
+
+	JSR ChainChomp_LinkVisibleTest
+	BCS CDC2
+
+	LDY <Temp_Var4
+	LDA <Temp_Var2
+	STA Sprite_RAMX + 12, Y
+	LDA <Temp_Var1
+	STA Sprite_RAMY + 12, Y
+
+CDC2:
+	LDA ChainChomp_ChainX3, X
+	SUB <Horz_Scroll
+	STA <Temp_Var2
+
+	LDA ChainChomp_ChainY3, X
+	SUB <Vert_Scroll
+	STA <Temp_Var1
+
+	JSR ChainChomp_LinkVisibleTest
+	BCS CDC3
+	
+	LDY <Temp_Var4
+	LDA <Temp_Var2
+	STA Sprite_RAMX + 16, Y
+	LDA <Temp_Var1
+	STA Sprite_RAMY + 16, Y
+	
+CDC3:
+	LDA ChainChomp_ChainX4, X
+	SUB <Horz_Scroll
+	STA <Temp_Var2
+
+	LDA ChainChomp_ChainY4, X
+	SUB <Vert_Scroll
+	STA <Temp_Var1
+
+	JSR ChainChomp_LinkVisibleTest
+	BCS CDC4
+
+	LDY <Temp_Var4
+	LDA <Temp_Var2
+	STA Sprite_RAMX + 20, Y
+	LDA <Temp_Var1
+	STA Sprite_RAMY + 20, Y
+
+CDC4:
+	LDY <Temp_Var4
+	LDA #$BD
+	STA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 12, Y
+	STA Sprite_RAMTile + 16, Y
+	STA Sprite_RAMTile + 20, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr + 8, Y
+	STA Sprite_RAMAttr + 12, Y
+	STA Sprite_RAMAttr + 16, Y
+	STA Sprite_RAMAttr + 20, Y
+	RTS
+
 ChainChomp_LinkVisibleTest:
 
 	LDA Objects_SpritesVerticallyOffScreen,X
@@ -5530,45 +5396,42 @@ PRG004_BE54:
 	CLC		 ; Clear carry (link is visible)
 	RTS		 ; Return
 
-; Rest of ROM bank was empty
-
-ChainChomp_DetectFree:
-	LDA Objects_XZ, X
-	PHA
-	LDA Objects_XHiZ, X
-	PHA
-	LDA Objects_YZ, X
-	PHA
-	LDA Objects_YHiZ, X
-	PHA
-
-	LDA Objects_Data11, X
-	STA Objects_XZ, X
-
-	LDA Objects_Data12, X
-	STA Objects_YZ, X
-
-	LDA Objects_Data14, X
-	STA Objects_YHiZ, X
-	
-	LDA Objects_Data13, X
-	STA Objects_XHiZ, X
+Chomp_Free:
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat	 
+	JSR Object_FaceDirectionMoving
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
 
 	
-	JSR Object_DetectTile
-	BNE ChainChomp_DetectFreeRTS
-	JSR ChainChomp_BreakFree
 
-ChainChomp_DetectFreeRTS:
-	PLA
-	STA Objects_YHiZ, X
-	PLA
-	STA Objects_YZ, X
-	PLA
-	STA Objects_XHiZ, X
-	PLA
-	STA Objects_XZ, X
-	RTS
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ FreeNoBounce
+
+	JSR Object_MoveTowardsPlayerFast
+
+	LDA #$E8
+	STA <Objects_YVelZ, X
+
+	LDA #$10
+	JSR Object_DetectTileAhead
+	CMP #TILE_PROP_SOLID_ALL
+	BCC FreeNoBounce
+
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+FreeNoBounce:
+	INC <Chomp_Frame, x
+	LDA <Chomp_Frame, x
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+	JMP Object_Draw
 
 LakituMessage1:
 	.byte "THANK YOU FOR FREEING ME. "
@@ -5599,7 +5462,7 @@ WaitForMario:
 	AND #$01
 	ORA #$02
 	STA Objects_Frame, X
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 	JSR Object_HitTest
 	BCC WaitForMarioRTS
 	JSR SpecialObject_FindEmptyAbort
@@ -5842,10 +5705,10 @@ DrawBlueShell:
 	LDA Objects_Frame, X
 	CMP #$01
 	BNE DrawBlueShell0_1
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 DrawBlueShell0_1:
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 	
 DrawBlueShell0_2:
 	LDA Objects_Data5, X
@@ -5860,7 +5723,7 @@ DrawBlueShell0_2:
 	BEQ ObjNorm_BlueShellDraw2
 
 DrawBlueShell0:
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA Sprite_RAM+$00,Y
 	CMP #$f8
 	BEQ ObjNorm_BlueShellDraw1	 ; If sprite was found to be vertically off-screen, jump to PRG004_B55D

@@ -379,6 +379,7 @@ Player_FireBall:
 	JSR PlayerProj_HitEnemies
 	BCC Player_FireBallTiles
 
+Player_HitFire:
 	LDA #HIT_FIREBALL
 	STA Objects_PlayerProjHit, X
 
@@ -481,14 +482,23 @@ Player_FireTiles2:
 	JMP SpecialObj_ToPoofNoSound
 
 Player_IceBall:
+	LDA <Player_HaltGameZ
+	BEQ Player_IceBall0
+
+	JMP Player_IceBall5
+
+Player_IceBall0:
+
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
 	INC SpecialObj_YVel, X
 
 	JSR SpecialObj_CalcBounds8x16
+
 	JSR PlayerProj_HitEnemies
 	BCC Player_IceBallTiles
 
+Player_HitIce:
 	LDA #HIT_ICEBALL
 	STA Objects_PlayerProjHit, Y
 
@@ -501,6 +511,11 @@ Player_IceBall:
 	CMP #OBJSTATE_KILLED
 	BNE Player_IceBallNoKill
 
+	LDA Objects_NoIce, Y
+	BEQ Make_Ice
+	JMP SpecialObj_ToPoofNoSound
+
+Make_Ice:
 	LDA #OBJ_ICEBLOCK
 	STA Objects_ID, Y
 
@@ -618,12 +633,18 @@ SpecialObj_ToPoofNoSound:
 	STA SpecialObj_ID, X
 
 	LDA #$10
+	STA SpecialObj_Timer, X
+
+	LDA #$00
 	STA SpecialObj_Data1, X
 
 SpecialObj_ToPoofNoSound1:
 	RTS
 
 Player_Hammer:
+	LDA <Player_HaltGameZ
+	BNE Player_HammerDraw
+
 	JSR SObj_ApplyXYVelsWithGravity
 	JSR SpecialObj_CalcBounds16x16
 	JSR PlayerProj_HitEnemies
@@ -642,6 +663,7 @@ Player_HammerNoKill:
 	JSR SpecialObj_DetectWorld16x16
 	JSR Player_HammerTilesInteraction
 
+Player_HammerDraw:
 	LDA #$6D
 	STA <SpecialObj_Tile
 
@@ -730,6 +752,9 @@ Player_HammerTilesInteraction2:
 	JMP SpecialObj_ToPoofNoSound
 
 Player_NinjaStar:
+	LDA <Player_HaltGameZ
+	BNE Player_StarNoKill
+
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
 	JSR PlayerProj_HitEnemies
@@ -750,44 +775,68 @@ Player_StarNoKill:
 	STA <SpecialObj_Tile
 	STA <SpecialObj_Tile + 1
 
-	LDA SpecialObj_XVel, X
-	BPL NinjaStar_ThrowFlip
-
 	LDA #SPR_PAL3
 	STA <SpecialObj_Attributes
-
-	LDA #(SPR_PAL3 | SPR_VFLIP | SPR_HFLIP)
 	STA <SpecialObj_Attributes + 1
-	BNE NinjaStar_Throw
-
-NinjaStar_ThrowFlip:
-	
-	LDA #(SPR_PAL3 | SPR_HFLIP)
-	STA <SpecialObj_Attributes + 1
-
-	LDA #(SPR_PAL3 | SPR_VFLIP)
-	STA <SpecialObj_Attributes
-
-NinjaStar_Throw:
+	JSR SpecialObj_SetMirrorFlipped
 	JSR SpecialObj_CheckForeground
 	JSR SpecialObj_Draw16x16
 	RTS
 
+SpecialObj_SetMirrorFlipped:
+	LDA SpecialObj_XVel, X
+	BPL SpecialObj_SetMirrorFlipped1
+
+	LDA #(SPR_VFLIP | SPR_HFLIP)
+	ORA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+	BNE SpecialObj_SetMirrorFlipped2
+
+SpecialObj_SetMirrorFlipped1:
+	LDA <SpecialObj_Attributes + 1
+	ORA #(SPR_HFLIP)
+	STA <SpecialObj_Attributes + 1
+
+	LDA <SpecialObj_Attributes
+	ORA #(SPR_VFLIP)
+	STA <SpecialObj_Attributes
+
+SpecialObj_SetMirrorFlipped2:
+	RTS
+
 SpecialObj_Poof:
-	DEC SpecialObj_Data1, X
+	LDA <Player_HaltGameZ
+	BNE Poof_DoDraw
+
+	DEC SpecialObj_Timer, X
 	BEQ SpecialObj_Poof1
 
+Poof_DoDraw:
 	LDA SpecialObj_Data1, X
+	BEQ Poof_DrawNorm
+
+	LDA SpecialObj_Timer, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$03
+	TAY
+	JMP Poof_DrawTiles 
+
+Poof_DrawNorm:
+	LDA SpecialObj_Timer, X
 	LSR A
 	LSR A
 	AND #$03
 	TAY
 
+Poof_DrawTiles:
+
 	LDA Poof_Patterns, Y
 	STA <SpecialObj_Tile
 	STA <SpecialObj_Tile2
 
-	LDA SpecialObj_Data1, X
+	LDA SpecialObj_Timer, X
 	LSR A
 	LSR A
 	AND #$01
@@ -795,6 +844,7 @@ SpecialObj_Poof:
 
 	LDA #(SPR_PAL1)
 	STA SpecialObj_Attributes
+
 	LDA #(SPR_PAL1 | SPR_VFLIP | SPR_HFLIP)
 	STA SpecialObj_Attributes + 1
 	BNE SpecialObj_Poof0
@@ -802,6 +852,7 @@ SpecialObj_Poof:
 SpecialObj_PoofMirrored:
 	LDA #(SPR_PAL1 | SPR_VFLIP)
 	STA SpecialObj_Attributes
+
 	LDA #(SPR_PAL1 | SPR_HFLIP)
 	STA SpecialObj_Attributes + 1
 
@@ -814,16 +865,13 @@ SpecialObj_Poof1:
 	JMP SpecialObj_Delete
 
 Detect16x16:
-	.byte $00, $10
+	.byte $02, $0E
 
 SpecialObj_DetectWorld16x16:
-	LDY #$00
-	LDA SpecialObj_YVel,X
-	BMI DW161
+	LDA GameCounter
+	AND #$01
+	TAY
 
-	INY
-
-DW161:
 	LDA SpecialObj_Y,X
 	ADD Detect16x16, Y
 	STA Tile_DetectionY
@@ -832,13 +880,11 @@ DW161:
 	ADC #$00
 	STA Tile_DetectionYHi
 
-	LDY #$00
-	LDA SpecialObj_XVel,X
-	BMI DW162
+	LDA GameCounter
+	LSR A
+	AND #$01
+	TAY
 
-	INY
-
-DW162:
 	LDA SpecialObj_X,X
 	ADD Detect16x16, Y
 	STA Tile_DetectionX
@@ -848,6 +894,7 @@ DW162:
 	STA Tile_DetectionXHi
 
 	JMP Object_DetectTile
+
 Detect8x8:
 	.byte $00, $08, $04, $0C
 
@@ -888,8 +935,6 @@ SpecialObj_Delete:
 	
 	LDA #$00
 	STA SpecialObj_ID, X
-	PLA
-	PLA
 	RTS
 
 SpecialObj_CheckForeground:
@@ -1069,7 +1114,6 @@ SpecialObj_CalcBounds8x16:
 	RTS
 
 SpecialObj_CalcBounds16x16:
-
 	LDA SpecialObj_X, X
 	STA SpecialObj_BoundLeft
 
@@ -1077,23 +1121,21 @@ SpecialObj_CalcBounds16x16:
 	STA SpecialObj_BoundLeftHi
 
 	LDA SpecialObj_BoundLeft
-	ADD #$10
+	ADD #$0F
 	STA SpecialObj_BoundRight
 
-	LDA SpecialObj_BoundRightHi
+	LDA SpecialObj_BoundLeftHi
 	ADC #$00
 	STA SpecialObj_BoundRightHi
 
 	LDA SpecialObj_Y, X
-	ADD #$10
 	STA SpecialObj_BoundTop
 
 	LDA SpecialObj_YHi, X
-	ADC #$00
 	STA SpecialObj_BoundTopHi
 
 	LDA SpecialObj_BoundTop
-	ADD #$10
+	ADD #$0F
 	STA SpecialObj_BoundBottom
 
 	LDA SpecialObj_BoundTopHi
@@ -2241,13 +2283,13 @@ SpecialObj_UpdateAndDraw:
 	.word SObj_DoNothing	; 00: EMPTY / NOT USED (should never get here anyway)
 	.word SObj_Hammer	; 01: Hammer Bro hammer
 	.word SObj_Veggie	; 02: Boomerangs
-	.word SObj_Acid	; 03: 
+	.word Enemy_Acid	; 03: 
 	.word Enemy_FireBall	; 04: Nipper fireball
 	.word SpecialObj_Poof	; 05: Piranha fireball
 	.word Enemy_IceBall	; 06: Micro goombas
 	.word SOBJ_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word SObj_Egg	; 08: Koopaling wand blast
-	.word SObj_DoNothing	; 09: Lost Kuribo shoe
+	.word Enemy_AcidPool	; 09: Lost Kuribo shoe
 	.word SObj_Wrench	; 0A: Rocky's Wrench
 	.word SObj_Cannonball	; 0B: Cannonball
 	.word SObj_DoNothing	; 0C: Fire bro bouncing fireball
@@ -2328,7 +2370,7 @@ PRG007_B11F:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
 
 	; Brick debris chunk pattern
-	LDA SpecialObj_Var2,X
+	LDA SpecialObj_Data3,X
 	STA TempA
 	TAX
 	LDA DebrisPattern, X
@@ -2477,7 +2519,7 @@ SObj_LavaLotusFire:
 	JSR SObj_AddYVelFrac	 ; Apply Y Velocity
 
 PRG007_B2EE:
-	LDA SpecialObj_Var2,X
+	LDA SpecialObj_Data3,X
 	BNE PRG007_B2F6	 ; If Var2 <> 0 (fire still has life), jump to PRG007_B2F6
 
 	JMP SpecialObj_Remove	 ; Otherwise, remove it and don't come back!
@@ -2488,7 +2530,7 @@ PRG007_B2F6:
 
 	TXA		; A = special object slot index
 	ASL A		; * 2
-	ADC SpecialObj_Var2,X	; Add life counter
+	ADC SpecialObj_Data3,X	; Add life counter
 	AND #$02		; 0 or 2
 	BNE PRG007_B320	 ; 2 ticks on, 2 ticks off; jump to PRG007_B320 (fire flickers away) (RTS)
 
@@ -3153,7 +3195,7 @@ PRG007_B75A:
 	JSR Negate
 	STA SpecialObj_XVel,X
 
-	INC SpecialObj_Var2,X
+	INC SpecialObj_Data3,X
 
 PRG007_B76A:
 	JMP PRG007_B773	 ; Jump to PRG007_B773
@@ -3399,103 +3441,159 @@ PRG007_B8B7:
 
 	RTS		 ; Return
 	
-SObj_Acid:
+Enemy_Acid:
 	LDA <Player_HaltGameZ
-	BNE SObj_Acid2
+	BEQ Enemy_AcidNorm
 
-	INC SpecialObj_Data2, X
+	JMP Enemy_AcidDraw
+
+Enemy_AcidNorm:
 	LDA SpecialObj_Data2, X
-	AND #$01
-	BEQ SObj_Acid00
+	BEQ Normal_Acid
 
-	JSR SObj_AddXVelFrac
-	JMP SObj_Acid01
+	LDA SpecialObj_X, X
+	ADD #$07
+	STA Tile_DetectionX
 
-SObj_Acid00:
-	JSR SObj_ApplyXYVelsWithGravity
+	LDA SpecialObj_XHi, X
+	ADC #$00
+	STA Tile_DetectionXHi
 
-SObj_Acid01:
-	JSR SObj_PlayerCollide
-	;JSR CheckAcidMelt
+	LDA SpecialObj_Y, X
+	ADD #$0F
+	STA Tile_DetectionY
+
+	LDA SpecialObj_YHi, X
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+	AND #TILE_PROP_SOLID_TOP
+	BNE ToAcidPool
 
 	LDA Tile_LastProp
-	CMP #TILE_PROP_SOLID_TOP
-	BCC SObj_Acid2
+	AND #TILE_PROP_SOLID_ALL
+	BEQ ToAcidPoof
 
-SObj_Acid1:
-	LDX <CurrentObjectIndexZ
-	LDA #$06
+ToAcidPool:
+	LDA #SOBJ_ACIDPOOL
 	STA SpecialObj_ID, X
+
 	LDA SpecialObj_Y, X
 	AND #$F0
-	ORA #$06
+	ADD #$06
 	STA SpecialObj_Y, X
-	LDA #$80
-	STA SpecialObj_Data2, X
+
+	LDA SpecialObj_YHi, X
+	ADC #$00
+	STA SpecialObj_YHi, X
+
+	LDA #$60
+	STA SpecialObj_Data1, X
 	RTS
 
-SObj_Acid2:
-	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
-	BNE DrawVeggie1	 ; If object is on the same vertical screen (see Temp_Var14 calculation), jump to PRG007_B779
+ToAcidPoof:
+	JMP SpecialObj_ToPoofNoSound
 
-	JSR SObj_SetSpriteXYRelative
-	LDA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$04,Y
+Normal_Acid:
+	LDA SpecialObj_Data1, X
+	BNE Enemy_AcidNoGravity
 
-	LDA Sprite_RAM+$03,Y
-	ADD #$08
-	STA Sprite_RAM+$07,Y
+	JSR SObj_ApplyXYVelsWithGravity
+	JMP Enemy_AcidCalcBounds
 
-	LDA #SPR_PAL1
-	STA Sprite_RAM+$02,Y
-	ORA #(SPR_HFLIP | SPR_VFLIP)
-	STA Sprite_RAM+$06,Y
+Enemy_AcidNoGravity:
+	JSR SObj_ApplyXYVels
 
-	; Set upper sprite pattern
+Enemy_AcidCalcBounds:
+	JSR SpecialObj_CalcBounds16x16
+	JSR EnemyProj_HitPlayer
+	JSR SpecialObj_DetectWorld16x16
+	
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE Enemy_NotInteract
+
+	LDA Block_NeedsUpdate
+	BNE Enemy_NotInteract
+
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	JSR Object_ChangeBlock
+
+	LDA Block_DetectX
+	AND #$F0
+	STA SpecialObj_X, X
+
+	LDA Block_DetectXHi
+	STA SpecialObj_XHi, X
+
+	LDA Block_DetectY
+	AND #$F0
+	STA SpecialObj_Y, X
+
+	LDA Block_DetectYHi
+	STA SpecialObj_YHi, X
+	JMP SpecialObj_ToPoofNoSound
+
+Enemy_NotInteract:
+	LDA SpecialObj_YVel, X
+	BMI Enemy_AcidNotTop
+
+	LDA Tile_LastProp
+	AND #TILE_PROP_SOLID_TOP
+	BNE Enemy_AcidToPool
+
+Enemy_AcidNotTop:
+	LDA Tile_LastProp
+	AND #TILE_PROP_SOLID_ALL
+	BEQ Enemy_AcidDraw
+
+Enemy_AcidToPool:
+	INC SpecialObj_Data2, X
+
+Enemy_AcidDraw:
 	LDA #$4F
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
+	STA <SpecialObj_Tile
+	STA <SpecialObj_Tile + 1
 
-	JSR SObj_PlayerCollide
+	LDA #SPR_PAL2
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
 
-SObj_Acid3:
+	JSR SpecialObj_SetMirrorFlipped
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_Draw16x16
 	RTS
 
-SObj_AcidPool:
-	LDA <Player_HaltGameZ
-	BNE SObj_AcidPool1
+Enemy_AcidPool:
+	DEC SpecialObj_Data1, X
+	BNE Enemy_AcidPoolNorm
 
-	DEC SpecialObj_Data2, X
-	BEQ SObj_AcidPool3
+	JMP SpecialObj_ToPoofNoSound
 
-	JSR SObj_PlayerCollide
-
-SObj_AcidPool1:
-	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
-	JSR SObj_SetSpriteXYRelative
-	LDA Sprite_RAM,Y
-	STA Sprite_RAM + $04, Y
-	LDA Sprite_RAM + $03, Y
+Enemy_AcidPoolNorm:
+	JSR SpecialObj_CalcBounds16x16
+	LDA SpecialObj_BoundTop
 	ADD #$08
-	STA Sprite_RAM + $07, Y
+	STA SpecialObj_BoundTop
 
-	LDA #SPR_PAL1
-	STA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$06,Y
+	LDA SpecialObj_BoundTopHi
+	ADC #$00
+	STA SpecialObj_BoundTopHi
+
+	JSR EnemyProj_HitPlayer
 
 	LDA #$63
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
+	STA <SpecialObj_Tile
+	STA <SpecialObj_Tile + 1
 
-
-SObj_AcidPool2:
-	RTS
-
-SObj_AcidPool3:
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID, X
-	LDA #$1f
-	STA SpecialObj_Data1,X
+	LDA #SPR_PAL2
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_Draw16x16
 	RTS
 
 Enemy_FireBall:
@@ -3513,7 +3611,7 @@ Enemy_FireBall:
 Enemy_FireBallNoGravity:
 	JSR SObj_ApplyXYVels
 
-Enemy_FireBallCalcBounds
+Enemy_FireBallCalcBounds:
 	JSR SpecialObj_CalcBounds8x16
 	JSR EnemyProj_HitPlayer
 
@@ -3672,7 +3770,7 @@ SObj_GetSprRAMOffChkVScreen:
 
 PRG007_BAED:
 	LDA SObj_SprRAMBase-1,X
-	ADD Object_SpriteRAM_Offset-1,Y
+	ADD Object_SpriteRAMOffset-1,Y
 	TAY		 ; Y = Sprite RAM offset
 
 	CPX #$00
@@ -4310,28 +4408,19 @@ DetermineCannonVisibilty2:
 
 CFire_Platform:
 	LDA CannonFire_Timer, X
-	BNE CFire_Platform2
-	LDA CannonFire_Var, X
 	BNE CFire_Platform1
 
 	JSR Object_FindEmpty
 
 	LDY <CurrentObjectIndexZ
 
-	LDA #OBJ_WOODENPLATUNSTABLE
+	JSR Object_New
+
+	LDA #OBJ_PLATFORMUNSTABLE
 	STA Objects_ID,X
 
-	LDA #$00
-	STA Objects_Data2, X
-
-	LDA #$FC
-	STA Objects_Data5, X
-
-	LDA #$00
-	STA Objects_Frame, X
-
-	LDA #$03
-	STA Objects_Data4, X
+	LDA #$22
+	STA Objects_Timer2, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
@@ -4343,47 +4432,29 @@ CFire_Platform:
 	STA <Objects_XHiZ,X
 
 	LDA CannonFire_Y,Y
-	SUB #$01
 	STA <Objects_YZ,X
 
 	LDA CannonFire_YHi,Y
-	SBC #$00
 	STA <Objects_YHiZ,X
 
-	LDA #(SPR_PAL3 | SPR_BEHINDBG)
-	STA Objects_SpriteAttributes,X
-
-	TXA
-
-	STA CannonFire_Var, Y
-	LDA #$48
-	STA CannonFire_Timer2, Y
-	RTS
-
-CFire_Platform1:
-	LDA CannonFire_Timer2, X
-	BNE CFire_Platform2
-
-	LDA CannonFire_Var, X
-	TAY
-	LDA #$00
-	STA Objects_Data8, Y
-	STA CannonFire_Var, X
-	LDA #$18
-	STA Objects_Data5, Y
+	LDA #$F8
+	STA <Objects_YVelZ, X
 
 	LDA #SPR_PAL3
-	STA Objects_SpriteAttributes,Y
+	STA Objects_SpriteAttributes,X
+
+	TYA
+	TAX
 
 	LDY CannonFire_Property, X
 	LDA PlatformGenTimer, Y
 	STA CannonFire_Timer, X
 
-CFire_Platform2:
+CFire_Platform1:
 	RTS
 	
 PlatformGenTimer:
-	.byte $C0, $80, $20
+	.byte $A0
 
 PRG007_BE59:
 	STA <Temp_Var1
@@ -4685,12 +4756,7 @@ CheckTailSpin:
 	LDA Player_TailAttack
 	BEQ CheckTailSpin1
 
-	LDA SpecialObj_XVel, X
-	JSR Negate
-	STA SpecialObj_XVel, X
-	LDA SpecialObj_YVel, X
-	JSR Negate
-	STA SpecialObj_YVel, X
+	
 	JSR SObj_AddXVelFrac
 	JSR SObj_AddYVelFrac
 	PLA
@@ -4700,10 +4766,42 @@ CheckTailSpin1:
 	RTS	
 
 EnemyProj_HitPlayer:
+	LDA SpecialObj_HurtEnemies, X
+	BEQ HitPlayer
+
+	JSR PlayerProj_HitEnemies
+	BCC Enemy_NoKill
+
+	JMP Player_HitFire
+
+Enemy_NoKill:
+	RTS
+
+HitPlayer:
 	JSR SpecialObj_DetectPlayer
 	BCC EnemyProj_HitPlayer1
 
+	LDA Effective_Suit
+	CMP #$03
+	BNE NotTailHit
+
+	LDA Player_TailAttack
+	BEQ NotTailHit
+
+	LDA SpecialObj_XVel, X
+	EOR #$FF
+	STA SpecialObj_XVel, X
+
+	LDA SpecialObj_YVel, X
+	EOR #$FF
+	STA SpecialObj_YVel, X
+	INC SpecialObj_HurtEnemies, X
+	RTS
+
+NotTailHit:
+
 	LDA Player_StarInv
+	ORA Player_FireDash
 	BEQ EnemyProj_HitPlayer2
 
 	JMP SpecialObj_ToPoof
@@ -4718,9 +4816,36 @@ FreezeVel:
 	.byte $10, $F0
 
 EnemeyProj_FreezePlayer:
+	LDA SpecialObj_HurtEnemies, X
+	BEQ FreezePlayer
+
+	JSR PlayerProj_HitEnemies
+	BCC EnemeyProj_FreezePlayer3
+
+	JMP Player_HitIce
+
+FreezePlayer:
 	JSR SpecialObj_DetectPlayer
 	BCC EnemeyProj_FreezePlayer3
 
+	LDA Effective_Suit
+	CMP #$03
+	BNE Enemy_IceFreeze
+
+	LDA Player_TailAttack
+	BEQ Enemy_IceFreeze
+
+	LDA SpecialObj_XVel, X
+	EOR #$FF
+	STA SpecialObj_XVel, X
+
+	LDA SpecialObj_YVel, X
+	EOR #$FF
+	STA SpecialObj_YVel, X
+	INC SpecialObj_HurtEnemies, X
+	RTS
+
+Enemy_IceFreeze:
 	LDA Player_StarInv
 	BEQ EnemeyProj_FreezePlayer1
 
@@ -4742,6 +4867,5 @@ EnemeyProj_FreezePlayer2
 
 	JMP SetPlayerFrozen
 	
-
 EnemeyProj_FreezePlayer3:
 	RTS

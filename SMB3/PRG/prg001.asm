@@ -201,42 +201,42 @@ ObjectGroup00_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup00_Attributes2:
-	.byte OA2_TDOGRP0	; Object $00
-	.byte OA2_TDOGRP1	; Object $01
-	.byte OA2_TDOGRP1	; Object $02
-	.byte OA2_TDOGRP1	; Object $03
-	.byte OA2_TDOGRP2	; Object $04
-	.byte OA2_TDOGRP1	; Object $05
-	.byte OA2_TDOGRP1	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OA2_TDOGRP1	; Object $07 - OBJ_BRICK
-	.byte OA2_TDOGRP1	; Object $08 - OBJ_COIN
-	.byte OA2_TDOGRP1	; Object $09 - OBJ_BUBBLE
-	.byte OA2_TDOGRP1	; Object $0A
-	.byte OA2_TDOGRP1	; Object $0B - OBJ_POWERUP
-	.byte OA2_TDOGRP1	; Object $0C - OBJ_POWERUP_STARMAN
-	.byte OA2_TDOGRP1	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte OA2_TDOGRP1	; Object $0E - OBJ_HARDICE
-	.byte OA2_TDOGRP1	; Object $0F
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $10 OBJ_PIXIE
-	.byte OA2_TDOGRP1	; Object $11
-	.byte OA2_TDOGRP1	; Object $12
-	.byte OA2_TDOGRP1	; Object $13
-	.byte OA2_TDOGRP0	; Object $14
-	.byte OA2_TDOGRP0	; Object $15
-	.byte  OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $16
-	.byte OA2_TDOGRP1	; Object $17 - OBJ_NEGASTAR
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP12	; Object $18 - OBJ_BOSS_BOWSER
-	.byte OA2_TDOGRP1	; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.byte OA2_TDOGRP1	; Object $1A
-	.byte OA2_TDOGRP1	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.byte OA2_TDOGRP1	; Object $1C
-	.byte OA2_TDOGRP2	; Object $1D
-	.byte OA2_TDOGRP1	; Object $1E - OBJ_POWERUP_SUPERLEAF
-	.byte OA2_TDOGRP1	; Object $1F - OBJ_GROWINGVINE
-	.byte OA2_TDOGRP1	; Object $20
-	.byte OA2_TDOGRP1	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte OA2_TDOGRP1	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OA2_TDOGRP1	; Object $23 - OBJ_POWERUP_FOXLEAF
+	.byte 00	; Object $00
+	.byte 00	; Object $01
+	.byte 00	; Object $02
+	.byte 00	; Object $03
+	.byte 00	; Object $04
+	.byte 00	; Object $05
+	.byte 00	; Object $06 - OBJ_BOUNCEDOWNUP
+	.byte 00	; Object $07 - OBJ_BRICK
+	.byte 00	; Object $08 - OBJ_COIN
+	.byte 00	; Object $09 - OBJ_BUBBLE
+	.byte 00	; Object $0A
+	.byte 00	; Object $0B - OBJ_POWERUP
+	.byte 00	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte 00	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.byte 00	; Object $0E - OBJ_HARDICE
+	.byte 00	; Object $0F
+	.byte 0	; Object $10 OBJ_PIXIE
+	.byte 0; Object $11
+	.byte 0; Object $12
+	.byte 0; Object $13
+	.byte 0; Object $14
+	.byte 0; Object $15
+	.byte 0	; Object $16
+	.byte 0	; Object $17 - OBJ_NEGASTAR
+	.byte 0	; Object $18 - OBJ_BOSS_BOWSER
+	.byte 0	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.byte 0	; Object $1A
+	.byte 0	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.byte 0	; Object $1C
+	.byte 0	; Object $1D
+	.byte 0	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte 0	; Object $1F - OBJ_GROWINGVINE
+	.byte 0	; Object $20
+	.byte 0	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte 0	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.byte 0	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) third set attribute bits
@@ -267,7 +267,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $0E - OBJ_HARDICE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
 	.byte OA3_HALT_NORMALONLY 	; Object $10 OBJ_PIXIE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_SHELL 	; Object $11
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE  	; Object $14
@@ -428,6 +428,8 @@ ObjP13:
 ObjP16:
 	.byte $81, $83, $85, $87, $89, $89, $87, $85, $C1, $C3, $C5, $C7, $C9, $C9, $C7, $C5
 ObjP14:
+	.byte $99, $71, $9B, $71 
+
 ObjP15:
 ObjP17:
 	.byte $9F, $9F
@@ -516,7 +518,7 @@ Spring_2:
 	JSR Object_InteractWithTiles
 
 Spring_RTS:
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 SpringAnim:
 	LDY Spring_CurrentFrame, X
@@ -552,7 +554,7 @@ SpringAnim:
 SpringAnimRTS:
 	LDA Spring_CurrentFrame, X
 	STA Objects_Frame, X
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 ObjInit_Key:
 	RTS
@@ -564,50 +566,47 @@ ObjNorm_Key:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
+	JSR Object_DetectTiles
+	JSR CheckKeyAgainstLock
 
 	LDA Object_BeingHeld, X
-	BNE ObjNorm_Key1
-
+	BNE ObjNorm_KeyDraw
+	
 	JSR Object_DampenVelocity
-	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
-ObjNorm_Key1:
-	JSR CheckKeyAgainstLock
-	
 ObjNorm_KeyDraw:
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	RTS
 
 
 CheckKeyAgainstLock:
-	
-	LDA Objects_LastProp,X
-	CMP #TILE_PROP_SOLID_TOP
-	BCS RemainLocked
-
-	AND #$0F
+	LDA Object_BodyTileProp,X
 	CMP #TILE_PROP_LOCK
 	BNE RemainLocked
 
 	LDA Block_NeedsUpdate
 	BNE RemainLocked
 
-	LDA Objects_LastTile, X
+	LDA Object_BodyTileValue, X
 	EOR #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
+	JSR Object_ChangeBlock
 	
-	JSR SetObjectTileCoordAlignObj
+	LDA Block_DetectX
+	STA <Poof_X
 
-	LDA #OBJSTATE_POOFDEATH
-	LDX <CurrentObjectIndexZ
-	STA Objects_State, X
+	LDA Block_DetectY
+	STA <Poof_Y
 
-	LDA #$20
-	STA Objects_Timer,X
-	PLA
-	PLA
+	LDA Block_DetectYHi
+	STA <Poof_YHi
+
+	JSR Common_MakePoof
+	
+	LDA #$00
+	STA Player_IsHolding
+
+	JMP Object_Delete
 
 RemainLocked:
 	RTS
@@ -636,7 +635,7 @@ ObjNorm_NegaStar0:
 	JSR TakeMagic_Star
 
 ObjNorm_NegaStar01:
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 
 	LDA Objects_SpritesHorizontallyOffScreen,X 
 	ORA Objects_SpritesVerticallyOffScreen,X
@@ -649,7 +648,7 @@ ObjNorm_NegaStar01:
 
 	JSR BytesTo2Digits
 
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 
 	LDA Sprite_RAM, Y
 	ADD #$10
@@ -830,9 +829,11 @@ Produce_Key:
 
 Do_PowerUp:
 
+	LDA Bouncer_PowerUp, X
+	PHA
 	JSR Object_New
 
-	LDA Bouncer_PowerUp, X
+	PLA
 	STA PowerUp_Type, X
 
 	LDA #OBJ_POWERUP
@@ -860,7 +861,7 @@ Bouncer_Up:
 Bouncer_Draw:
 	LDA Bouncer_Frame, X
 	STA Objects_Frame, X
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 
 ObjInit_BubbleGenerator:
@@ -912,7 +913,7 @@ ObjNorm_Bubble:
 ObjNorm_Bubble1:
 	LDA Objects_Data4, X
 	STA Objects_Frame, X
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 BubbleNorm:
 	JSR Object_DetectTiles
@@ -934,8 +935,8 @@ BubbleNorm2:
 	JSR Object_InteractWithPlayer
 
 BubbleDraw:
-	JSR Object_ShakeAndDrawMirrored
-	LDY Object_SpriteRAM_Offset,X
+	JSR Object_DrawMirrored
+	LDY Object_SpriteRAMOffset,X
 	LDA Sprite_RAM +6, Y
 	ORA #SPR_VFLIP
 	STA Sprite_RAM +6, Y
@@ -1070,14 +1071,8 @@ ObjInit_PowerUp1:
 	STA Objects_Timer, X
 
 ObjInit_PowerUp2:
-	JSR Object_MoveTowardsPlayer
-
-	LDA <Objects_XVelZ, X
-	JSR Double_Value
-	EOR #$FF
-	ADD #$01
-
-	STA <Objects_XVelZ, X
+	JSR Object_CalcBoundBox
+	JSR Object_MoveAwayFromPlayer
 
 	LDA <Objects_XZ, X
 	STA PowerUp_StartX, X
@@ -1103,12 +1098,12 @@ ObjNorm_PowerUp:
 	JSR Object_ApplyY_With_Gravity
 	JSR PUp_DrawMaskSprite
 
-	LDA Object_SpriteRAM_Offset, X
+	LDA Object_SpriteRAMOffset, X
 	ADD #$08
-	STA Object_SpriteRAM_Offset, X
+	STA Object_SpriteRAMOffset, X
 
 ObjNorm_PowerUp0:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 ObjNorm_PowerUp1:
 
@@ -1135,7 +1130,7 @@ PUp_DrawMaskSprite:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PUp_DrawMaskSprite1	 ; If any sprite is off-screen, jump to PRG001_A937 (no masking sprite)
 
-	LDA Object_SpriteRAM_Offset, X
+	LDA Object_SpriteRAMOffset, X
 	TAY
 
 	LDA PowerUp_StartY,X
@@ -1255,7 +1250,7 @@ PUp_Mushroom:
 	JSR Object_InteractWithTiles
 
 PUp_Mushroom2:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 PUp_Flower:
 	JSR Object_ApplyY_With_Gravity
@@ -1267,7 +1262,7 @@ PUp_Flower:
 	JSR Object_InteractWithTiles
 
 PUp_Flower2:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 PUp_Bouncer:
 	JSR Object_Move
@@ -1285,7 +1280,7 @@ PUp_Bouncer:
 	STA <Objects_YVelZ, X
 
 PUp_Bouncer1:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 	; Values used by the leaf based on bounce direction
 
 Leaf_XVelByOsc:	.byte $02, -$02
@@ -1342,7 +1337,7 @@ PRG001_AC1F:
 	STA Objects_Orientation,X	 ; Set flip
 
 PRG001_AC22:
-	JMP Object_ShakeAndDraw	; Draw object and "shake awake" 
+	JMP Object_Draw; Draw object and "shake awake" 
 
 PUp_Star:
 	LDA Level_PSwitchCnt
@@ -1397,7 +1392,7 @@ PUp_VineBlock:
 	STA <Objects_YVelZ, X
 
 PUp_VineDraw:
-	JMP Object_ShakeAndDraw	; Draw object and "shake awake" 
+	JMP Object_Draw; Draw object and "shake awake" 
 	
 
 	; Basically this bumps the object up by 1 pixel...
@@ -1439,7 +1434,7 @@ DrawCoin:
 
 	JSR Object_ShakeAndCalcSprite
 	LDX <CurrentObjectIndexZ
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA #$49
 	STA Sprite_RAM + 1, Y
 	LDA #SPR_PAL3
@@ -2940,7 +2935,7 @@ ObjNorm_Weather:
 
 
 DoNextParticle0:
-	LDA Object_SpriteRAM_Offset, X
+	LDA Object_SpriteRAMOffset, X
 	STA TempX
 	LDY #$05
 
@@ -3062,6 +3057,7 @@ DontFlipParticle:
 	RTS
 	
 ChompPal: .byte SPR_PAL1, SPR_PAL0
+GiantChomp_IsAttacking = Objects_Data5
 
 ObjInit_GiantChomp:
 	LDA #$00
@@ -3073,29 +3069,90 @@ ObjInit_GiantChomp:
 	RTS
 
 ObjNorm_GiantChomp:
-	LDA <Player_HaltGameZ
-	BNE DrawChomp
+	LDA GiantChomp_IsAttacking, X
+	JSR DynJump
 
-	LDA #SND_BOOMERANG
+	.word MiniChomp
+	.word GiantChomp
+
+MiniChomp:
+	LDA Objects_Orientation,X
+	ORA #SPR_BEHINDBG
+	STA Objects_Orientation,X
+
+	LDA <Player_HaltGameZ
+	BNE DrawMiniChomp
+
+MiniChomp_Norm:
+	LDA Sound_QLevel2
+	ORA #SND_BOOMERANG
 	STA Sound_QLevel2
 
-	LDA <Counter_1
-	AND #$08
-	LSR A
-	LSR A
-	LSR A
-	STA Objects_Frame, X
+	JSR Object_ApplyYVel_NoGravity
+
+	LDA <Objects_SpriteY,X
+	CMP #$F0
+	BCC Mini_NotAttacking
+
+	INC GiantChomp_IsAttacking, X
+
+	JSR Object_CalcBoundBox
+	
+	LDA <Objects_YZ, X
+	SUB #$20
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
 
 	LDA Objects_Property, X
-	BEQ NoChompFlash
+	CMP #$01
+	BCC Mini_NotAttacking
 
-	LDA <Counter_1
+	JSR GCTargetPlayer
+
+Mini_NotAttacking:
+	LDA Objects_Property, X
+	CMP #$01
+	BCC NoChompFlash
+
+	LDA GameCounter
+	LSR A
+	LSR A
 	AND #$01
 	TAY
 	LDA ChompPal, Y
 	STA Objects_SpriteAttributes,X
 
 NoChompFlash:
+
+	LDA GameCounter
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+DrawMiniChomp:
+	JMP Object_Draw
+
+ChompBlock_Offset:
+	.byte $08, $18
+
+GiantChomp:
+	
+	LDA Objects_Orientation,X
+	AND #~SPR_BEHINDBG
+	STA Objects_Orientation,X
+
+	LDA <Player_HaltGameZ
+	BNE DrawChomp
+
+GiantChomp_Norm:
 	LDA Objects_Property, X
 	CMP #$02
 	BEQ ChompNoDelete
@@ -3103,139 +3160,136 @@ NoChompFlash:
 	JSR Object_DeleteOffScreen
 
 ChompNoDelete:
-	LDA Objects_Data5, X
-	BNE GiantChompStuff
-
-	JSR Object_ApplyYVel_NoGravity
-	LDA Objects_SpritesVerticallyOffScreen,X
-	BEQ DrawMiniChomp
-
-	JSR Object_YDistanceFromPlayer
-	CPY #$01
-	BEQ ChompRTS
-
-	INC Objects_Data5, X
-
-	LDA Objects_Property, X
-	BEQ ChompRTS
-
-	JSR GCTargetPlayer
-ChompRTS:
-	RTS
-
-GiantChompStuff:
-	JSR Object_AttackOrDefeat
 	JSR Object_Move
-
-DoGCRoutine:
-	JSR Object_DetectTile
-	CMP #TILE_PROP_SOLID_ALL
-	BCC TryEatRightBlock
-	JSR ChompEatBlock
-	JMP ChompDoneEating
-
-TryEatRightBlock:
-
-	INY
-	INY
-	JSR Object_DetectTile
-	CMP #TILE_PROP_SOLID_ALL
-	BCC ChompDoneEating 
-	JSR ChompEatBlock
-
-ChompDoneEating:
-DrawChomp:
-	LDA Objects_Data5, X
-	BEQ DrawMiniChomp
-	LDA #LOW(GiantChompFrames)
-	STA <Temp_Var10
-	LDA #HIGH(GiantChompFrames)
-	STA <Temp_Var11
-	JSR DrawGiantObject
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 
 	LDA Objects_Property, X
 	CMP #$02
-	BCC DoneGC
+	BNE ChompNoReset
 
-	JSR Object_YDistanceFromPlayer
-	CPY #$00
-	BEQ DoneGC
+	LDA <Objects_YHiZ, X
+	CMP #$01
+	BCC ChompNoReset
 
-	LDA Objects_SpritesVerticallyOffScreen, X
-	CMP #$03
-	BCC DoneGC
-	
-	JSR GCTargetPlayer
+	LDA <Objects_YZ, X
+	CMP #$B0
+	BCC ChompNoReset
+
+	LDA #$00
+	STA GiantChomp_IsAttacking, X
 	LDA #$D0
-	STA Objects_YVelZ, X
-	DEC Objects_Data5, X
+	STA <Objects_YVelZ, X
+	RTS
+
+ChompNoReset:
+
+	LDY #$00
+
+	LDA GameCounter
+	AND #$01
+	BNE ChompOtherBlock
+
+	INY
+
+ChompOtherBlock:
+	LDA Objects_BoundLeft, X
+	ADC ChompBlock_Offset, Y
+	STA Block_DetectX
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Block_DetectXHi
+
+	LDA Objects_BoundBottom, X
+	STA Block_DetectY
+
+	LDA Objects_BoundBottomHi, X
+	STA Block_DetectYHi
+
+	JSR Object_DetectTile
+	CMP #TILE_PROP_SOLID_ALL
+	BCC DrawChomp
+
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+
+	JSR Object_ChangeBlock
+	LDA Block_DetectX
+	STA <Debris_X
+
+	LDA Block_DetectY
+	STA <Debris_Y
+	JSR Common_MakeBricks
+	
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+DrawChomp:
+	LDA Objects_Property, X
+	CMP #$01
+	BCC NoChompFlash1
+
+	LDA GameCounter
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+	LDA ChompPal, Y
+	STA Objects_SpriteAttributes,X
+
+NoChompFlash1:
+	LDA GameCounter
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+	LDA #LOW(GiantChompFrames)
+	STA <Temp_Var10
+
+	LDA #HIGH(GiantChompFrames)
+	STA <Temp_Var11
+
+	JSR DrawGiantObject
 
 DoneGC:
 	RTS
 
-DrawMiniChomp:
-	JSR Object_ShakeAndCalcSprite
-	LDX <CurrentObjectIndexZ
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #$60
-	BNE DrawMiniChompRTS
-	LDA <Temp_Var1
-	STA Sprite_RAM , Y
-	LDA <Temp_Var2
-	ADD #$0C
-	STA Sprite_RAM + $03, Y
-	LDA Objects_SpriteAttributes,X
-	ORA #SPR_BEHINDBG
-	STA Sprite_RAM + $02, Y
-	LDA Objects_Frame, X
-	ASL A
-	ADD #$99
-	STA Sprite_RAM + $01, Y
-
-DrawMiniChompRTS:
-	RTS
+;DrawMiniChomp:
+;	JSR Object_ShakeAndCalcSprite
+;	LDX <CurrentObjectIndexZ
+;	LDA Objects_SpritesHorizontallyOffScreen, X
+;	AND #$60
+;	BNE DrawMiniChompRTS
+;	LDA <Temp_Var1
+;	STA Sprite_RAM , Y
+;	LDA <Temp_Var2
+;	ADD #$0C
+;	STA Sprite_RAM + $03, Y
+;	LDA Objects_SpriteAttributes,X
+;	ORA #SPR_BEHINDBG
+;	STA Sprite_RAM + $02, Y
+;	LDA Objects_Frame, X
+;	ASL A
+;	ADD #$99
+;	STA Sprite_RAM + $01, Y
+;
+;DrawMiniChompRTS:
+;	RTS
 
 GiantChompFrames:
 	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
 	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
-
-	
-ChompEatBlock:
-	LDA #$00
-	STA <Objects_YVelZ, X
-	LDA #$81
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
-	LDA Tile_DetectionY
-	AND #$F0
-	STA Block_ChangeY
-	LDA Tile_DetectionYHi
-	STA Block_ChangeYHi
-	
-	LDA Tile_DetectionX
-	AND #$F0
-	STA Block_ChangeX
-	LDA Tile_DetectionXHi
-	STA Block_ChangeXHi
-
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #$C0
-	BNE ChompEatBlockRTS
-
-	LDA Objects_SpritesVerticallyOffScreen, X
-	AND #$03
-	BNE ChompEatBlockRTS
-	JSR PRG001_BC6D
-	 
-ChompEatBlockRTS:
-	RTS
-
 
 GCTargets: .byte $00, $20, $40, $60, $80, $A0, $C0, $E0
 
 GCTargetPlayer:
 	LDA <Player_XVel
 	BPL GCTargetPlayerRight
+
 	JSR Negate
 	
 	AND #$38
@@ -3293,10 +3347,10 @@ Object_ToBrickBust:
 ObjNorm_BrickDraw:
 	LDA Objects_Frame, X
 	BNE ObjNorm_BrickDraw1
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 ObjNorm_BrickDraw1:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 ObjNorm_Boss:
 	JSR DoBossFights
@@ -3336,7 +3390,7 @@ ObjNorm_KeyPieces:
 	STA <Temp_Var2
 
 ObjNorm_KeyPieces1:
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA Objects_Data4, X
 	STA <Temp_Var5
 	LDA Objects_Property, X
@@ -3437,7 +3491,7 @@ ObjNormal_KeyPiece:
 	STA Objects_Frame, X
 
 DrawKeyPieceAnim:
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 
 	LDA Objects_Frame, X
 	AND #$03
@@ -3479,40 +3533,91 @@ SetKeyField:
 	JMP Object_SetDeadEmpty
 
 ObjInit_SpikeBall:
-	
 	RTS
 
-ObjNorm_SpikeBall:
-	
-	JSR Object_ShakeAndDrawMirrored
-	LDA <Player_HaltGameZ
-	BNE ObjNorm_SpikeBallRTS
+SpikeBall_Frame  = Objects_Data1
 
+ObjNorm_SpikeBall:
+	LDA <Player_HaltGameZ
+	BNE SpikeBall_Draw
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE SpikeBallNotKilled
+
+	JMP Object_BurstBricks
+
+SpikeBallNotKilled:
 	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_KillOthers
+	JSR Object_DetectTiles
 
-	LDX <CurrentObjectIndexZ
+	LDA <Objects_YVelZ, X
+	BMI Spike_BumpBottom
 
-	INC Objects_Data4, X
-	LDA Objects_Data4, X
+	JSR Object_TestBottomBumpBlocks
+	JMP Spike_BumpSides
+
+Spike_BumpBottom:
+	JSR Object_TestTopBumpBlocks
+
+Spike_BumpSides:
+	JSR Object_TestSideBumpBlocks
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ SpikeNoBounce
+
+	LDA Object_VertTileProp, X
+	CMP #TILE_ITEM_BRICK
+	BEQ SpikeNoBounce
+
+	LDA #$E0
+	STA Objects_YVelZ, X
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+SpikeNoBounce:
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ SpikeBall_Animate
+
+	LDA Object_HorzTileProp, X
+	CMP #TILE_ITEM_BRICK
+	BEQ SpikeBall_KeepGoing
+
+	JMP Object_BurstBricks
+
+SpikeBall_KeepGoing:
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+	JMP SpikeBall_Animate
+
+SpikeBall_Animate:
+	INC SpikeBall_Frame, X
+	LDA SpikeBall_Frame, X
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
-	JSR Object_Move
+
+SpikeBall_Draw:
+	JMP Object_DrawMirrored
+
+	LDX <CurrentObjectIndexZ
 
 	LDA <Objects_TilesDetectZ,X
 	AND #$04
 	BEQ SpikeNoBounce1
 
 	JSR Object_HitGround
-
-	LDA #$E0
-	STA Objects_YVelZ, X
-
-	LDA #SND_LEVELBABOOM
-	STA Sound_QLevel1
 
 SpikeNoBounce1:
 	
@@ -3571,7 +3676,7 @@ SpikeBusted:
 	JMP Object_ToBrickBust
 
 ObjNorm_SpikeBallRTS:
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 SpikeBrickBust:
 	LDA Block_NeedsUpdate
@@ -3736,7 +3841,7 @@ DrawTimer:
 	STA <Temp_Var1
 
 	LDX <CurrentObjectIndexZ
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 
 	LDX #$02
 
@@ -3809,7 +3914,7 @@ ObjNorm_Clock0:
 	STA Objects_Frame, X
 	
 ObjNorm_Clock1:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 ObjNorm_Clock2:
 	LDA <Player_HaltGameZ
@@ -3831,7 +3936,7 @@ ObjNorm_Clock2:
 	BEQ ObjNorm_Clock4
 
 ObjNorm_Clock3:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 ObjNorm_Clock4:
 	JMP Object_SetDeadEmpty
@@ -3923,7 +4028,7 @@ ObjInit_EaterBlock:
 
 ObjNorm_EaterBlock:
 
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 
 	LDA <Player_HaltGameZ
 	BEQ EaterMaker
@@ -4095,6 +4200,7 @@ ObjNorm_StarPiece:
 	LDA KPFrames, Y
 	STA Objects_Frame, X
 
+	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 	INC Objects_Data2, X
 	LDA Objects_Data2, X
@@ -4106,13 +4212,15 @@ ObjNorm_StarPiece:
 	STA Objects_Frame, X
 
 DrawStarPieceAnim:
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	LDA Objects_Frame, X
 	AND #$03
 	TAX
+
 	LDA KPFlips1, X
 	ORA Sprite_RAM + 2, Y
 	STA Sprite_RAM + 2, Y
+
 	LDA KPFlips2, X
 	ORA Sprite_RAM + 6, Y
 	STA Sprite_RAM + 6, Y
@@ -4178,7 +4286,7 @@ ObjNorm_HardIce1:
 	JMP Object_SetDeadEmpty
 
 ObjNorm_HardIce2:
-	JMP Object_ShakeAndDraw 
+	JMP Object_Draw 
 	
 
 ObjHit_HardIce:
@@ -4196,6 +4304,7 @@ ObjNorm_SnowBall:
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
+
 	BEQ ObjNorm_SnowBall1
 	JSR Object_Move
 	JSR Object_InteractWithTiles
@@ -4217,7 +4326,7 @@ ObjNorm_SnowBall2:
 	LSR A
 	LSR A
 	STA Objects_Frame, X
-	JMP Object_ShakeAndDraw 
+	JMP Object_Draw 
 
 SnowThrowPlayerX:
 	.byte $20, $E0
@@ -4414,7 +4523,7 @@ ObjNorm_IceFireFly3_1:
 
 ObjNorm_IceFireFly4:
 	LDX <CurrentObjectIndexZ
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 Fireball_Flips:
 	.byte $00, SPR_VFLIP
@@ -4438,7 +4547,7 @@ ObjNorm_BowserFireBall:
 	JSR Object_InteractWithPlayer
 
 ObjNorm_BowserFireBall1:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 CoinLock_CoinsRemaining = Objects_Data4
 CoinLock_BlocksRemaining = Objects_Data5
 
@@ -4541,7 +4650,7 @@ ObjNorm_CoinLock1:
 	STA PatTable_BankSel + 4, Y
 
 DrawCoinLock0:
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	LDA Objects_SpritesHorizontallyOffScreen,X 
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BEQ DrawCoinLock1

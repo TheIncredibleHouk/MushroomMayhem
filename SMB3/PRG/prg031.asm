@@ -3100,29 +3100,22 @@ SkipDestroy:
 ; This works since the return address is gobbled up by DynJump, so you will
 ; never return to the "JSR DynJump" line!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-DynJump:	; $FE99
-	ASL A		; A << 1 (turned into an index)
-	TAY		; Y = A
+DynJump:	
+	ASL A		
+	TAY		
 
-	; The old return address to this call is pulled and stored
-	; This will address the bytes that immediately followed the
-	; JSR instruction that put us here...
-	PLA			; Pull A
-	STA <Temp_Var1		; Temp_Var1 = pulled A
-	PLA			; Pull A
-	STA <Temp_Var2		; Temp_Var2 = pulled A
+	PLA		
+	STA <Temp_Var1	
+	PLA			
+	STA <Temp_Var2	
 
-	; REMEMBER: Since the return address was pulled, the next RTS that
-	; we happen to encounter will put us back to the call before the
-	; call that put us here at DynJump...
-
-	INY			; Need to increment Y (because the return address is at the last byte of the JSR)
-	LDA [Temp_Var1],Y	; Gets the byte here (address high)
-	STA <Temp_Var3		; Stored into Temp_Var3
-	INY		 	; Y++
-	LDA [Temp_Var1],Y	; Gets the byte here (address low)
-	STA <Temp_Var4		; Stores the byte into Temp_Var4
-	JMP [Temp_Var3]	 	; Jump to [Temp_Var4][Temp_Var3]
+	INY	
+	LDA [Temp_Var1],Y	
+	STA <Temp_Var3		
+	INY		 	
+	LDA [Temp_Var1],Y	
+	STA <Temp_Var4		
+	JMP [Temp_Var3]	 	
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

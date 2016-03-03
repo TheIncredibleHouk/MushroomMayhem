@@ -122,7 +122,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $52 - OBJ_SPINTULA
 	.word ObjHit_DoNothing	; Object $53 - OBJ_PODOBOOCEILING
 	.word ObjHit_DoNothing	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.word ObjHit_DoNothing	; Object $55 - OBJ_BOBOMB
+	.word Object_Hold	; Object $55 - OBJ_BOBOMB
 	.word ObjHit_DoNothing	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.word ObjHit_DoNothing	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.word ObjHit_DoNothing	; Object $58 - OBJ_PYRANTULA
@@ -332,7 +332,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $50 - OBJ_EXPLOSION
 	.byte KILLACT_STANDARD	; Object $51 - OBJ_ROTODISCDUAL
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $52 - OBJ_SPINTULA
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $53 - OBJ_PODOBOOCEILING
+	.byte KILLACT_POOFDEATH	; Object $53 - OBJ_PODOBOOCEILING
 	.byte KILLACT_STANDARD	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte KILLACT_JUSTDRAW16X16	; Object $55 - OBJ_BOBOMB
 	.byte KILLACT_POOFDEATH	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -402,7 +402,7 @@ ObjP66:
 	.byte $91, $93, $9D, $9F, $9D, $9F
 
 ObjP53:
-	.byte $8D, $8D
+	.byte $8D, $8D, $8F, $8F, $95, $95
 ObjP5C:
 	.byte $61, $61
 
@@ -519,7 +519,7 @@ IceBlock_Burst:
 	JMP Object_SetDeadEmpty
 
 IceBlock_Draw:
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 	LDA Sprite_RAM+$06, Y
 	ORA #SPR_VFLIP
 	STA Sprite_RAM+$06, Y
@@ -527,159 +527,188 @@ IceBlock_Draw:
 
 
 ObjInit_Spintula:
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
 	
+	LDA Object_VertTileValue, X
+	STA Spintula_DetectTile, X
+
+	EOR #$01
+	STA Spintula_DetectTile2, X
 	RTS		 ; Return
+
+Spintula_DetectTile = Objects_Data3
+Spintula_DetectTile2 = Objects_Data4
+Spintula_Action = Objects_Data5
+Spintula_Frame = Objects_Data6
+Spintula_Pause = Objects_Data7
 
 ObjNorm_Spintula:
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Spintula1
-	JMP Object_ShakeAndDrawMirrored	
+	
+	JMP Object_DrawMirrored	
 
 ObjNorm_Spintula1:
 	JSR Object_DeleteOffScreen
-	JSR Object_AttackOrDefeat
+	LDA Spintula_Pause, X
+	BNE ObjNorm_Spintula2
+
 	JSR Object_ApplyYVel_NoGravity
+
+ObjNorm_Spintula2:
+	LDA #$00
+	STA Spintula_Pause, X
+	
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
 
-	LDA Objects_Data4, X
+	LDA Spintula_Action, X
 	JSR DynJump
 	
 	.word Spintula_Wait
 	.word Spintula_SpinDown
+	.word Spintula_Wait2
 	.word Spintula_SpinUp
 
 Spintula_Wait:
 	LDA Objects_Timer,X
 	BNE Spintula_WaitRTS
+	
 	JSR Object_XDistanceFromPlayer
-	LDA <Temp_Var16
-	BPL Spintula_Wait1
-	JSR Negate
-
-Spintula_Wait1:
-	CMP #$30
+	CMP #$28
+	
 	BCS Spintula_WaitRTS
-	INC Objects_Data4, X
+	INC Spintula_Action, X
+	
+	LDA #$20
+	STA <Objects_YVelZ, X
 
 Spintula_WaitRTS:
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 Spintula_SpinDown:
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BNE Spintula_SpinDownStop
-	LDA Object_VertTileProp
-	AND #$E0
-	BNE Spintula_SpinDownStop
-	LDA Objects_YHiZ, X
-	BEQ Spintula_SpinDown1
-	LDA Objects_YZ, X
+	LDA <Objects_YHiZ, X
+	BEQ Spintula_GoDown
+
+	LDA <Objects_YZ, X
 	CMP #$A0
 	BCS Spintula_SpinDownStop
 
-Spintula_SpinDown1:
-	LDA #$20
-	STA <Objects_YVelZ, X
-	LDA <Counter_1
+Spintula_GoDown:
+	LDA Object_VertTileValue, X
+	CMP Spintula_DetectTile, X
+	BEQ Spintula_DrawWeb
+
+	CMP Spintula_DetectTile2, X
+	BNE Spintula_SpinDownStop
+
+Spintula_DrawWeb:
+	LDA <Objects_YZ, X
+	AND #$0F
+	BNE Spintual_DownDraw
+
+	LDA Block_NeedsUpdate
+	BEQ Spintual_DoDrawWeb
+	
+	INC Spintula_Pause, X
+	BNE Spintula_SpinDownRTS
+
+Spintual_DoDrawWeb:
+	LDA Object_BodyTileValue, X
+	EOR #$01
+	JSR Object_ChangeBlock
+	
+Spintual_DownDraw:
+	INC Spintula_Frame, X
+	LDA Spintula_Frame, X
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
-	LDA Objects_YZ, X
-	AND #$0F
-	BNE Spintula_SpinDownRTS
-	LDA Objects_LastProp, X
-	AND #$0F
-	CMP #TILE_PROP_CLIMBABLE
-	BEQ Spintula_SpinDownRTS
-	LDA Block_UpdateValue
-	BNE Spintula_StopDownVel
-
-	JSR SetObjectTileCoord
-	LDA Objects_LastTile, X
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_UpdateValue
-
+	
 Spintula_SpinDownRTS:
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 Spintula_SpinDownStop:
-	INC Objects_Data4, X
+	INC Spintula_Action, X
 
 	LDA #$20
 	STA Objects_Timer,X
-	LDA Objects_YZ, X
-	AND #$F0
-	SUB #$02
-	STA Objects_YZ, X
-	LDA Objects_YHiZ, X
-	SBC #$00
-	STA Objects_YHiZ, X
 
-Spintula_StopDownVel:
 	LDA #$00
 	STA <Objects_YVelZ, X
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
-Spintula_SpinUp:
+Spintula_Wait2:
 	LDA Objects_Timer, X
-	BNE Spintula_SpinUpRTS
+	BNE Spintula_Wait2Draw
 
-	LDA <Objects_TilesDetectZ,X
-	AND #$08
-	BNE Spintula_SpinUpStop
-	LDA Objects_LastProp, X
-	AND #$C0
-	BNE Spintula_SpinUpStop
-	LDA Objects_YHiZ, X
-	BMI Spintula_SpinUpStop
-
+	INC Spintula_Action, X
 	LDA #$F0
 	STA <Objects_YVelZ, X
-	LDA <Counter_1
+
+Spintula_Wait2Draw:
+	JMP Object_DrawMirrored
+
+Spintula_SpinUp:
+
+	LDA Object_VertTileValue, X
+	CMP Spintula_DetectTile, X
+	BEQ Spintula_DeleteWeb
+
+	CMP Spintula_DetectTile2, X
+	BNE Spintula_SpinUpStop
+
+Spintula_DeleteWeb:
+	LDA <Objects_YZ, X
+	AND #$0F
+	BNE Spintual_UpDraw
+
+	LDA Block_NeedsUpdate
+	BEQ Spintula_DoDeleteWeb
+
+	INC Spintula_Pause, X
+	BNE Spintula_SpinUpRTS
+
+Spintula_DoDeleteWeb:
+	LDA Object_BodyTileValue, X
+	EOR #$01
+
+	JSR Object_ChangeBlock
+	
+Spintual_UpDraw:
+	INC Spintula_Frame, X
+	LDA Spintula_Frame, X
+	LSR A
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
-	LDA Objects_YZ, X
-	AND #$0F
-	BNE Spintula_SpinUpRTS
-	LDA Block_UpdateValue
-	BNE Spintula_StopUpVel
-
-	LDA Objects_LastProp, X
-	CMP #TILE_PROP_CLIMBABLE
-	BNE Spintula_SpinUpRTS
-
-	JSR SetObjectTileCoord
-	LDA Objects_LastTile, X
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_UpdateValue
-
+	
 Spintula_SpinUpRTS:
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 Spintula_SpinUpStop:
-	LDA #$10
-	STA Objects_Timer,X
 	LDA #$00
-	STA Objects_Data4, X
-	LDA Objects_YZ, X
-	ADD #$08
-	AND #$F0
-	STA Objects_YZ, X
-	LDA Objects_YHiZ, X
-	ADC #$00
-	STA Objects_YHiZ, X
+	STA Spintula_Action, X
 
-Spintula_StopUpVel:
+	LDA #$20
+	STA Objects_Timer,X
+
 	LDA #$00
 	STA <Objects_YVelZ, X
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 CPodobo_YVel:
 	.byte $20, $E0
+
+CPodobo_Orientation:
+	.byte SPR_VFLIP, $00
+
+Podobo_StartY = Objects_Data3
+Podobo_StartYHi = Objects_Data4
+Podobo_Frame = Objects_Data5
 
 ObjInit_PodobooCeiling:
 	LDA Objects_Property, X
@@ -694,74 +723,90 @@ ObjInit_PodobooCeiling1:
 	AND #$02
 	LSR A
 	TAY
+
 	LDA CPodobo_YVel, Y
 	STA Objects_YVelZ, X
 
+	LDA CPodobo_Orientation, Y
+	STA Objects_Orientation,X
+
+	LDA #SPR_BEHINDBG
+	ORA Objects_SpriteAttributes, X
+	STA Objects_SpriteAttributes, X
+
 	; Store original Y/Hi into Var5/Var4
 	LDA <Objects_YZ,X
-	STA <Objects_Data2,X
+	STA Podobo_StartY,X
+
 	LDA <Objects_YHiZ,X
-	STA <Objects_Data1,X
+	STA Podobo_StartYHi,X
+
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA <Objects_XZ, X
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA <Objects_XHiZ, X
+
+	LDA #$01
+	STA Objects_NoIce, X
+	RTS
 
 ResetPipePodobo:
 	LDA #$20
 	STA Objects_Timer, X
-	LDA <Objects_Data2, X
+
+	LDA Podobo_StartY, X
 	STA <Objects_YZ, X
-	LDA <Objects_Data1, X
+
+	LDA Podobo_StartYHi, X
 	STA <Objects_YHiZ, X
 	RTS		 ; Return
 
 ObjNorm_PodobooCeiling:
 	LDA <Player_HaltGameZ
-	BNE PRG003_A3D5	 ; If gameplay halted, jump to PRG003_A3D5
+	BEQ ObjNorm_PodobooCeiling1
 
+	JMP Object_DrawMirrored
+
+ObjNorm_PodobooCeiling1:
+	LDA Objects_Timer, X
+	BEQ ObjNorm_PodobooCeiling2
+
+	RTS
+
+ObjNorm_PodobooCeiling2:
 	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat	 ; Handle Player collision with Podoboo
 
-	; Flip vertically based on velocity
-	LDA <Objects_YVelZ,X
-	EOR #SPR_VFLIP
-	AND #SPR_VFLIP
-	ORA #$20
-	STA Objects_Orientation,X
-
-	LDA <Counter_1
-	AND #$03
-	BNE PRG003_A3AA	 ; Proceed 1:4 ticks, otherwise jump to PRG003_A3AA
-
-	; Frame loop 0-2
-	INC Objects_Frame,X
-	LDY Objects_Frame,X
-	CPY #$03
-	BNE PRG003_A3AA
-
-	STA Objects_Frame,X	; Zero the frame
-
-PRG003_A3AA:
 	LDA <Objects_YZ, X
 	AND #$0F
-	BNE PRG003_A3D2
+	BNE Pipodobo_Animate
 
 	JSR Object_DetectTiles
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Pipodobo_Animate
 
-	LDA Tile_LastProp
-	AND #TILE_PROP_SOLID_ALL
-	BEQ PRG003_A3D2
+	JSR ResetPipePodobo
 
-	JMP ResetPipePodobo
+Pipodobo_Animate:
+	; Frame loop 0-2
+	INC Podobo_Frame, X
+	LDA Podobo_Frame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$03
+	CMP #$03
+	BCC Pipodobo_Frame
 
-PRG003_A3D2:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
+	LDA #$00
+	STA Podobo_Frame, X
 
-PRG003_A3D5:
-	JMP Object_ShakeAndDrawMirrored	 ; Draw Podoboo and don't come back!
+Pipodobo_Frame:
+	STA Objects_Frame, X
+	
+Pipodobo_Draw:
+	JMP Object_DrawMirrored	 ; Draw Podoboo and don't come back!
 
 BrickBustPowerUp: .byte OBJ_COIN, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_STARMAN, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_STARMAN, OBJ_POWERUP, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE, $00, $00, $00, OBJ_KEY
 Brick_StarManFlash: .byte $00, $00, $00, $00, $01, $00, $02, $00, $03, $00, $00, $00, $00, $00, $00, $00
@@ -853,14 +898,14 @@ SnowGuyDraw:
 	BEQ SnowGuyDrawMirrored
 	CMP #$06
 	BEQ SnowGuyDrawMirrored
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	JSR SnowGuyDrawSnowCarried
 
 SnowGuyDraw1:
 	RTS
 
 SnowGuyDrawMirrored:
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 	JSR SnowGuyDrawSnowCarried
 	RTS
 
@@ -868,7 +913,7 @@ SnowGuyDrawSnowCarried:
 	LDA Objects_Data5, X
 	BEQ SnowGuyDrawSnowCarried1
 	
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA #$95
 	STA Sprite_RAM + 9, Y
 	LDA #$97
@@ -1089,14 +1134,14 @@ VeggieGuyDraw:
 	BEQ VeggieGuyDrawMirrored
 	CMP #$06
 	BEQ VeggieGuyDrawMirrored
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	JSR VeggieGuyDrawVeggieCarried
 
 VeggieGuyDraw1:
 	RTS
 
 VeggieGuyDrawMirrored:
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 	JSR VeggieGuyDrawVeggieCarried
 	RTS
 
@@ -1104,7 +1149,7 @@ VeggieGuyDrawVeggieCarried:
 	LDA Objects_Data5, X
 	BEQ VeggieGuyDrawVeggieCarried1
 	
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA #$B3
 	STA Sprite_RAM + 9, Y
 	STA Sprite_RAM + 13, Y
@@ -1289,14 +1334,14 @@ ShyGuyDraw:
 	LDA Objects_Frame,X
 	CMP #$03
 	BEQ ShyGuyDrawMirrored
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	JSR ShyGuyDrawBrickCarried
 
 ShyGuyDraw1:
 	RTS
 
 ShyGuyDrawMirrored:
-	JSR Object_ShakeAndDrawMirrored
+	JSR Object_DrawMirrored
 	JSR ShyGuyDrawBrickCarried
 	RTS
 
@@ -1304,7 +1349,7 @@ ShyGuyDrawBrickCarried:
 	LDA Objects_Data5, X
 	BEQ ShyGuyDrawBrickCarried1
 	
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA #$67
 	STA Sprite_RAM + 9, Y
 	STA Sprite_RAM + 13, Y
@@ -1575,7 +1620,7 @@ PRG003_A4EA:
 	JSR BustBlock_Segment 	; Generate Ice block segment
 
 	LDA TempA
-	STA SpecialObj_Var2,Y
+	STA SpecialObj_Data3,Y
 
 PRG003_A4EB:
 	DEC <Temp_Var16		; Temp_Var16--
@@ -1787,7 +1832,7 @@ TwirlShell_Draw:
 	STA Objects_Orientation,X
 
 PRG003_A613:
-	JMP Object_ShakeAndDraw	 ; Draw shelled enemy and don't come back!
+	JMP Object_Draw ; Draw shelled enemy and don't come back!
 
 ObjInit_DonutLift: 
 	RTS		 ; Return
@@ -1817,7 +1862,7 @@ PRG003_A62D:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE PRG003_A64E	 ; If object falls off-screen at all, jump to PRG003_A64E (destroys it)
 
-	JSR Object_ShakeAndDraw		; Draw donut lift
+	JSR Object_Draw	; Draw donut lift
 
 	LDA <Player_HaltGameZ
 	BNE PRG003_A651	 ; If gameplay is halted, jump to PRG003_A651 (RTS)
@@ -1917,260 +1962,111 @@ DonutLift_ChangeBlock:
 
 	RTS		 ; Return
 
-	; Bob-omb's starting X velocity depending on where Player is
-BobOmb_StartXVel:	.byte $08, -$08
-
-	; Bob-omb's starting X velocity depending on where Player is
-BobOmbExp_StartXVel:	.byte $10, -$10
-
 ObjInit_BobOmb:
-	JSR Object_XDistanceFromPlayer
-
-	; Start Bob-omb moving towards Player
-	LDA BobOmb_StartXVel,Y
-	STA <Objects_XVelZ,X
-
+	JSR Object_MoveTowardsPlayer
 	RTS		 ; Return
+
+BobOmb_Frame = Objects_Data3
+BobOmb_Activated = Objects_Data4
+BobOmb_Unstable = Objects_Data5
 
 ObjNorm_BobOmb:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-
-	LDA <Objects_Data2,X
-	CMP #$02
-	BEQ PRG003_A6DD	 ; If Var5 = 2 (Exploding), jump to PRG003_A6DD
-
-	LDA Objects_Timer4, X
-	BEQ PRG003_A6DC
-
-	LDA <Counter_1
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoGravity
-	LDA #(SPR_PAL1 | SPR_BEHINDBG)
-	STA Objects_SpriteAttributes, X
-	JMP Object_ShakeAndDraw
-
-PRG003_A6DC:
-	JSR Object_ShakeAndDraw	 ; Normally draw Bob-omb (Except when exploding)
-
 	LDA <Player_HaltGameZ
-	BNE PRG003_A6E8	 ; If gameplay halted, jump to PRG003_A6E8 (RTS)
+	BEQ BobOmb_Norm
 
-	JSR Object_SetHFlipByXVel ; Set horizontal flip by travel direction
+	JMP Object_Draw
 
-PRG003_A6DD:
-	LDA <Objects_Data2,X
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word BobOmb_WalkAround		; 0: Unsquashed Bob-omb minding his own business
-	.word BobOmb_FlashToExplode	; 1: Squashed Bob-omb who then flashes and explodes
-	.word ObjNorm_Explosion	; 2: Do the explosion, kill things, etc.
-	.word BobOmb_Unstable
-
-PRG003_A6E8:
-	RTS		 ; Return
-
-BobOmb_WalkAround:
-	
-	LDA Objects_PreviousTilesDetect, X
-	AND #$04
-	BNE BobOmb_WalkAround1
-
-	LDA <Objects_TilesDetectZ, X
-	AND #$04
-	BEQ BobOmb_WalkAround1
-
-	JSR Object_XDistanceFromPlayer
-
-	; March toward Player
-	LDA BobOmbExp_StartXVel,Y
-	STA <Objects_XVelZ,X
-
-BobOmb_WalkAround1:
+BobOmb_Norm:
+	JSR Object_DeleteOffScreen	 
 	JSR Object_Move
-	JSR Object_InteractWithTiles	 ; Do standard movements
+	JSR Object_CalcBoundBox
 
-	LDA <Counter_1
+	LDA Explosion_Timer, X
+	ORA BobOmb_Unstable, X
+	BEQ BobOmb_Attack
+
+	JSR Object_DetectTiles
+	
+	LDA BobOmb_Unstable, X
+	BNE BobOmb_UnstableCheck
+
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithTiles
+	JSR Object_InteractWithPlayer
+	
+	LDA #$02
+	STA Objects_Frame, X
+	JMP BobOmb_Draw
+
+BobOmb_UnstableCheck:
+	JSR Object_InteractWithTiles
+	JSR Object_InteractWithPlayer
+
+	LDA Object_BeingHeld, X
+	BNE BobOmb_ShakeDraw
+
+	LDA Objects_PreviousTilesDetect,X
+	BNE BobOmb_ShakeDraw
+
+	LDA <Objects_TilesDetectZ,X
+	BEQ BobOmb_ShakeDraw
+
+	LDA #$01
+	STA Explosion_Timer, X
+	BNE BobOmb_ShakeDraw
+
+BobOmb_Attack:
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Object_AttackOrDefeat
+	
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE BobOmb_Animate
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA Objects_Property, X
+	BNE BobOmb_Unstabilize
+
+	LDA #$A0
+	STA Explosion_Timer, X
+	BNE BobOmb_Animate
+
+BobOmb_Unstabilize:
+	LDA #$02
+	STA Objects_Frame,X
+	INC BobOmb_Unstable, X
+	BNE BobOmb_Draw
+
+BobOmb_Animate:
+	INC BobOmb_Frame, X
+	LDA BobOmb_Frame, X
 	LSR A
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame,X
 
-PRG003_A739:
-	JSR Object_HandleBumpUnderneath
-	JSR Object_InteractWithPlayer
-	BCC PRG003_A75E	 ; If Bob-omb wasn't hit from underneath, jump to PRG003_A75E
+BobOmb_Draw:
+	JMP Object_Draw
 
-	LDA Objects_PlayerHitStat,X
-	BEQ PRG003_A75E	 ; If Player didn't touch Bob-omb, jump to PRG003_A75E (RTS)
+BobOmb_ShakeDraw:
+	INC BobOmb_Frame, X
+	JSR Object_Draw
 
+	LDA BobOmb_Frame, X
+	AND #$02
+	BEQ BobOmb_ShakeDraw1
 
-PRG003_A74B:
-	LDA Objects_Property, X
-	BEQ PRG003_A74D
-	INC <Objects_Data2,X
-	INC <Objects_Data2,X
+	LDA Object_SpriteRAMOffset, X
+	TAX
+	DEC Sprite_RAMY, X
+	DEC Sprite_RAMY + 4, X
 
-PRG003_A74D:
-	INC <Objects_Data2,X
-
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State, X
-	LDA #$ff
-	STA Objects_Timer,X
-
-	; Little bounce for the Player
-	LDA #-$30
-	STA <Player_YVel
-
-	JMP PRG003_A7FE	 ; Just do Bob-omb death
-
-PRG003_A75E:
-	RTS		 ; Return
-
-PRG003_A75F:
-	.byte $10, $20, $30, $40, $FC, $F8, $F4, $F0
-
-BobOmb_Unstable:
-
-	LDA Objects_PreviousTilesDetect, X
-	BNE BobOmb_Unstable1
-
-	LDA  <Objects_TilesDetectZ, X
-	BEQ BobOmb_Unstable1
-
-	JMP BobOmb_Explode
-
-BobOmb_Unstable1:
-	LDA #$FF
-	STA Objects_Timer, X
-
-BobOmb_FlashToExplode:
-	LDA Objects_Timer,X
-	BNE PRG003_A798	 ; If timer not expired, jump to PRG003_A798
-
-	; Timer expired...
-
-BobOmb_Explode:
-	; Var3 = 0
-	LDA #$00
-	STA Objects_Data3,X
-
-	; Set internal state to 2
-	LDA #$02
-	STA <Objects_Data2,X
-
-	; Reset timer to $28 (length of explosion)
-	LDA #$10
-	STA Objects_Timer,X
-
-	; Ba-boom
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	; Since Bob-omb is exploding, he no longer needs to enforce his pattern bank
-	INC Objects_DisPatChng,X
-
-SetRotatingColor:
-	LDA #$10
-	STA RotatingColor_Cnt
-
-	RTS		 ; Return
-
-
-PRG003_A798:
-
-	; Bob-omb's timer hasn't gone out yet...
-
-	CMP #$40
-	BGE PRG003_A79F	 ; If timer >= $40, jump to PRG003_A79F
- 
-	STA Objects_ColorCycle,X	 ; Otherwise, start flashing
-
-PRG003_A79F:
-	JSR Object_Move	 ; Do standard movements
-
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ PRG003_A7CC	 ; If Bob-omb has not hit floor, jump to PRG003_A7CC
-
-	; This whole block works to get the X velocity arithmetically divided by 2
-	LDA <Objects_XVelZ,X
-	PHP		 ; Save CPU state
-	; Get absolute value of X velocity
-	BPL PRG003_A7B0
-	JSR Negate
-
-PRG003_A7B0:
-	LSR A		 ; Divide by 2
-	PLP		 ; Restore CPU state
-	BPL PRG003_A7B7	 ; If the X velocity was positive, jump to PRG003_A7B7
-	JSR Negate	 ; Otherwise, make this negative again
-
-PRG003_A7B7:
-	STA <Objects_XVelZ,X	 ; X velocity now divided by 2
-
-	LDA <Objects_YVelZ,X
-	PHA		 ; Save Y velocity
-
-	JSR Object_HitGround	 ; Align to floor
-
-	PLA		 ; Restore Y velocity
-	BMI PRG003_A7CC	 ; If it's negative, jump to PRG003_A7CC
-
-	; Bob-omb was falling downward...
-	LSR A		; Divide by 2
-	JSR Negate	 ; Negate it (bounce back up)
-	CMP #$fc
-	BGE PRG003_A7CC	 ; If the velocity was small enough, then just stop
-
-	STA <Objects_YVelZ,X	 ; Otherwise, bounce away
-
-PRG003_A7CC:
-	LDA <Objects_TilesDetectZ,X
-	AND #$03
-	BEQ PRG003_A7DC	 ; If Bob-omb did not hit a wall, jump to PRG003_A7DC
-
-	JSR Object_Reverse
-PRG003_A7DC:
-	JSR Object_HitTest
-	BCC PRG003_A7F0	 ; If Player and Bob-omb didn't collide, jump to PRG003_A7F0 (RTS)
-
-	; Otherwise, set Bob-omb's state to 4 (Held, doesn't really make sense)
-	LDA #OBJSTATE_HELD
-	STA Objects_State,X
-
-PRG003_A7F0:
-	RTS		 ; Return
-
-BobOmb_Kill:
-	; Player bounces
-	LDA #-$30
-	STA <Player_YVel
-
-	; Set Bob-omb state to Killed
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X
-
-	; A little bounce from the Bob-omb
-	LDA #-$10
-	STA <Objects_YVelZ,X
-
-PRG003_A7FE:
-
-	; "Kick" noise
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERKICK
-	STA Sound_QPlayer
-
-	RTS		 ; Return
+BobOmb_ShakeDraw1:
+	RTS
 
 	; X and Y offsets for the exploding Bob-omb stars
 BombStars_XOff:	.byte -$04, $04, $08, $04, -$04, -$08, $00, $08, $08, $00, -$08, -$08
@@ -2267,7 +2163,7 @@ PRG003_A85C:
 	LDA <Temp_Var16
 	ASL A
 	ASL A		; A = Temp_Var16 * 4 (one sprite per star)
-	ADC Object_SpriteRAM_Offset,X	 ; Add the base Sprite_RAM offset
+	ADC Object_SpriteRAMOffset,X	 ; Add the base Sprite_RAM offset
 	TAY		 ; -> 'Y'
 
 	; Star Y
@@ -2352,16 +2248,28 @@ Explosion_BumpBlocks:
 	STA Tile_DetectionYHi
 
 	JSR Object_DetectTile
-	LDA Tile_LastProp
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
-	BEQ Explosion_Bump
 
+	STA Debug_Snap
+	LDA Tile_LastProp
 	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_STONE)
-	BEQ Explosion_Bump
+	BEQ Explosion_Bust
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BEQ Explosion_Bust 
+
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	BEQ Explosion_Bust
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BEQ Explosion_Bust
 
 	CMP #(TILE_PROP_ITEM)
 	BCS Explosion_Bump
 	RTS
+
+Explosion_Bust:
+	LDA #TILE_ITEM_BRICK
+	STA Tile_LastProp
 
 Explosion_Bump:
 	JSR Object_DirectBumpBlocks
@@ -2407,7 +2315,7 @@ ObjNorm_MagicStar:
 	JSR Object_InteractWithPlayer
 
 ObjNorm_MagicStar1:
-	JMP Object_ShakeAndDrawMirrored
+	JMP Object_DrawMirrored
 
 Magic_StarCollect:
 	LDA Sound_QLevel1
@@ -2817,7 +2725,7 @@ PRG003_AFB2:
 	STA <Objects_XZ,X
 
 PRG003_AFC9:
-	JSR Object_ShakeAndDraw	 ; Draw most of piranha
+	JSR Object_Draw ; Draw most of piranha
 
 	PLA		 ; Restore 'X'
 	STA <Objects_XZ,X	 ; -> 'X'
@@ -2837,7 +2745,7 @@ PRG003_AFDC:
 	ADD SidePiranha_EndSprXOff,Y
 	STA <Temp_Var2		 ; Temp_Var2 = Sprite X for piranha's remaining bit
 
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Set sprite X
 	LDA <Temp_Var2
@@ -3095,7 +3003,7 @@ Mine_JustDraw:
 	LDA Objects_SpritesVerticallyOffScreen, X
 	BNE NoMineDraw
 	
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 
 	LDA #$85
 	STA Sprite_RAM + 17, Y
@@ -3165,13 +3073,13 @@ ObjNorm_Ninji:
 	.word Ninji_Fall
 
 ObjNorm_NinjiDraw:
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	LDA Objects_Data4, X
 	CMP #02
 	BNE NinjiDrawStar2
 
 NinjiDrawStar:
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA #$B9
 	STA Sprite_RAM + 9, Y
 	STA Sprite_RAM + 13, Y
@@ -3292,6 +3200,7 @@ NinjiIdleTimes:
 CheepCheepHopper_InitXVel:	.byte $0C, -$0C
 
 ObjInit_CheepCheepHopper:
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	RTS		 ; Return
 
@@ -3299,7 +3208,7 @@ ObjInit_CheepCheepHopper:
 ObjNorm_CheepCheepHopper:
 	JSR Object_DeleteOffScreen	; Delete object if it falls too far off-screen
 	JSR Object_SetHFlipByXVel 	; Set horizontal flip by travel direction
-	JSR Object_ShakeAndDraw	 	; Draw Cheep Chep
+	JSR Object_Draw 	; Draw Cheep Chep
 
 	LDA <Player_HaltGameZ
 	BNE PRG003_B47A	 ; If gameplay is halted, jump to PRG003_B47A
@@ -3744,7 +3653,7 @@ PRG003_B6F3:
 	ASL A	; A *= 4 (next sprite over)
 
 	LDX <CurrentObjectIndexZ	 ; X = object slot index
-	ADD Object_SpriteRAM_Offset,X	 ; Base Sprite_RAM offset
+	ADD Object_SpriteRAMOffset,X	 ; Base Sprite_RAM offset
 
 	TAY		 ; Sprite_RAM offset -> 'Y'
 
@@ -3856,7 +3765,7 @@ ObjNorm_Blooper:
 	ORA #SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
 
-	JMP Object_ShakeAndDrawMirrored	 ; Otherwise, draw Blooper and don't come back!
+	JMP Object_DrawMirrored	 ; Otherwise, draw Blooper and don't come back!
 
 PRG003_B77B:
 	JSR Object_AttackOrDefeat	 ; Do Player to Blooper hit detection!
@@ -4009,7 +3918,7 @@ PRG003_B85F:
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
-	JMP Object_ShakeAndDrawMirrored	 ; Draw Blooper and don't come back!
+	JMP Object_DrawMirrored	 ; Draw Blooper and don't come back!
 
 BlooperKid_YVel:	.byte $F8, $08, $08, $F8
 BlooperKid_XVel:	.byte $08, $08, $F8, $F8
@@ -4300,7 +4209,7 @@ ObjNorm_Pyrantula:
 	LDA <Player_HaltGameZ
 	BEQ PRG003_B9D4	 ; If gameplay is not halted, jump to PRG003_B9D4
 
-	JMP Object_ShakeAndDrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!
+	JMP Object_DrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!
 
 PRG003_B9D4:
 	JSR Object_DeleteOffScreen
@@ -4328,7 +4237,7 @@ PRG003_BA08:
 	STA Objects_Frame,X
 
 PRG003_BA09:
-	JSR Object_ShakeAndDrawMirrored	
+	JSR Object_DrawMirrored	
 	JMP Object_AttackOrDefeat
 
 Enemy_DeleteIfOffAndDrawTail:
@@ -4528,7 +4437,7 @@ PRG003_BB17:
 	BNE PRG003_BB2A	 ; If this is not a Blooper w/ kids, jump to PRG003_BB2A
 
 PRG003_BB24:
-	JSR Object_ShakeAndDrawMirrored	 ; Draw object
+	JSR Object_DrawMirrored	 ; Draw object
 	JMP PRG003_BB36	 ; Jump to PRG003_BB36
 
 PRG003_BB2A:
@@ -4541,10 +4450,10 @@ PRG003_BB2A:
 	;BEQ PRG003_BB24	 ; If frame = 0, jump to PRG003_BB24
 
 PRG003_BB33:
-	JSR Object_ShakeAndDraw	 ; Draw object, not mirrored
+	JSR Object_Draw ; Draw object, not mirrored
 
 PRG003_BB36:
-	LDA Object_SpriteRAM_Offset,X
+	LDA Object_SpriteRAMOffset,X
 	ADD #$08
 	STA <Temp_Var5		 ; Temp_Var5 = Sprite_RAM offset two bytes over
 
@@ -4679,7 +4588,7 @@ PRG003_BBCC:
 
 	LDX <CurrentObjectIndexZ	 ; X = object slot index
 PRG003_BBD2:
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite_RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Copies attribute from one sprite to the other
 	LDA Sprite_RAM+$02,Y

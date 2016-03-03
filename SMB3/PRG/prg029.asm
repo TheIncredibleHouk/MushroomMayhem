@@ -268,7 +268,6 @@ M12ASegData23:
 	; But, for some reason, everything is off by 4?  The SPPF function below compensates for this, and 
 	; PRG029_CF1E loads from 4 bytes shy of the proper address.  Maybe this was a mistake?  
 SPPF .func ((\1 - SPPF_Table + 4) / 2)	; The offsets 
-SPPF2 .func ((\1 - SPPF_Table2 + 4) / 2)	; The offsets 
 SPPF_Offsets:
 	.byte SPPF(PF00), SPPF(PF01), SPPF(PF02), SPPF(PF03), SPPF(PF04), SPPF(PF05), SPPF(PF06), SPPF(PF07)
 	.byte SPPF(PF08), SPPF(PF09), SPPF(PF0A), SPPF(PF0B), SPPF(PF0C), SPPF(PF0D), SPPF(PF0E), SPPF(PF0F)
@@ -280,8 +279,8 @@ SPPF_Offsets:
 	.byte SPPF(PF38), SPPF(PF39), SPPF(PF3A), SPPF(PF3B), SPPF(PF3C), SPPF(PF3D), SPPF(PF3E), SPPF(PF3F)
 	.byte SPPF(PF40), SPPF(PF41), SPPF(PF42), SPPF(PF43), SPPF(PF44), SPPF(PF45), SPPF(PF46), SPPF(PF47)
 	.byte SPPF(PF48), SPPF(PF49), SPPF(PF4A), SPPF(PF4B), SPPF(PF4C), SPPF(PF4D), SPPF(PF4E), SPPF(PF4F)
-	.byte SPPF(PF50), SPPF(PF51), SPPF(PF52), SPPF(PF53), SPPF(PF54)
-	;.byte SPPF(PF55), SPPF2(PF56)
+	.byte SPPF(PF50), SPPF(PF00), SPPF(PF01), SPPF(PF02), SPPF(PF03), SPPF(PF04), SPPF(PF05), SPPF(PF06)
+	.byte SPPF(PF07)
 	
 	
 
@@ -392,7 +391,7 @@ Player_FramePageOff:
 	.byte 1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2	; 20 - 2F
 	.byte 2,  2,  2,  2,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3	; 30 - 3F
 	.byte 3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3	; 40 - 4F
-	.byte 3,  1,  1,  1,  1,  1,  1,  1,  1
+	.byte 3,  0,  0,  0,  0,  1,  1,  1,  1
 
 PRG029_CE88:
 	.byte -8, 10, -8, 18,  8, 10,  8, 18,  1,  9,  0,  8,  2, 10, -2, 6
@@ -420,6 +419,7 @@ Player_Draw:
 	BNE Player_Draw1
 
 	JSR Player_FrameOverride
+	
 	LDX <Player_Frame
 
 Player_Draw1:
@@ -467,11 +467,22 @@ PRG029_CED7:
 	STA <Temp_Var1
 
 PRG029_CF1E:
+	CPX #$51
+	BCC PRG029_CF1F
+	
+	LDA #LOW(SPPF_Table2-4)
+	STA <Player_SprWorkL
+	LDA #HIGH(SPPF_Table2-4)
+	STA <Player_SprWorkH
+	JMP PRG029_CF20
+
+PRG029_CF1F:
 	LDA #LOW(SPPF_Table-4)
 	STA <Player_SprWorkL
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
 
+PRG029_CF20:
 	; X = Player_Frame
 	LDA SPPF_Offsets,X	; Get offset value to sprite's pattern set
 	ASL A
@@ -1018,18 +1029,7 @@ PRG029_D238:
 
 	LDA Player_GrowFrames,X	 ; Get this grow frame
 	STA <Player_Frame	 ; Set as current frame
-	LDA <Player_Suit
-	BNE Big_Frame
-
-	LDA #$3E
-	STA Frozen_Frame
-	BNE Do_Draw_Plyer
-
-Big_Frame:
-	LDA #$0E
-	STA Frozen_Frame
-
-Do_Draw_Plyer:
+	
 	JSR Player_Draw		 ; Draw Player
 
 	; Changes the Sprite 1/4 VROM bank as appropriate
@@ -2702,6 +2702,7 @@ Player_RainbowCycle4:
 
 Flip_Override = Temp_Var16
 Player_FrameOverride:
+
 	LDA Wall_Jump_Enabled
 	BEQ Player_FrameOverride1
 
@@ -2718,15 +2719,22 @@ Player_FrameOverride1:
 
 	LDA GameCounter
 	LSR A
-	LSR A
-	LSR A
 	AND #$03
 	ADD #$51
-	STA Debug_Snap
 	STA <Player_Frame
 	RTS
 
 Player_FrameOverride2:
+	LDA Player_FireDash
+	BEQ Player_FrameOverride3
+
+	LDA GameCounter
+	LSR A
+	AND #$03
+	ADD #$55
+	STA <Player_Frame
+
+Player_FrameOverride3:
 	RTS
 
 Player_RecoverOverrides:
@@ -2738,28 +2746,3 @@ Player_RecoverOverrides:
 
 Player_RecoverOverrides1:
 	RTS
-;	BEQ Frame_Dash
-;
-;	LDX #$0E
-;
-;Do_Frame:
-;	LDA Wall_Jump_Enabled
-;	BEQ Try_Boo_Frames
-;
-;	LDX #$30			; #DAHRKDAIZ if wall jump enabled, we override the frame
-;	LDA <Player_FlipBits
-;	EOR #$40
-;	STA <Player_FlipBits
-;
-;	LDA Player_FireDash
-;	BEQ Normal_Player_Frames
-;
-;	LDA #$01
-;	BNE Normal_Player_Frames
-;	CLC
-;	RTS
-;
-;Normal_Player_Frames:
-;	LDX <Player_Frame
-;	SEC
-;	RTS

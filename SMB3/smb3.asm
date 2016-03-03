@@ -922,6 +922,11 @@ PLAYERSUIT_LAST		= PLAYERSUIT_HAMMER	; Marker for "last" suit (Debug cycler need
 ; Byte 3 - X coordinate
 Sprite_RAM:	.ds 256		; $0200 - $02FF; This is where sprite memory is stored locally prior to being DMA'ed
 
+Sprite_RAMX = Sprite_RAM + 3
+Sprite_RAMY = Sprite_RAM
+Sprite_RAMTile = Sprite_RAM + 1
+Sprite_RAMAttr = Sprite_RAM + 2
+
 ; Relevant flags
 SPR_PAL0	= %00000000
 SPR_PAL1	= %00000001
@@ -1287,34 +1292,42 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Objects_BoundLeft:	.ds 8
 	Player_BoundLeft:	.ds 1
 	SpecialObj_BoundLeft:	.ds 1
+	Tail_BoundLeft:	.ds 1
 
 	Objects_BoundLeftHi:.ds 8
 	Player_BoundLeftHi:	.ds 1
 	SpecialObj_BoundLeftHi:	.ds 1
+	Tail_BoundLeftHi:	.ds 1
 
 	Objects_BoundRight:	.ds 8
 	Player_BoundRight:	.ds 1
 	SpecialObj_BoundRight:	.ds 1
+	Tail_BoundRight:	.ds 1
 
 	Objects_BoundRightHi: .ds 8
 	Player_BoundRightHi:  .ds 1
 	SpecialObj_BoundRightHi:  .ds 1
+	Tail_BoundRightHi:	.ds 1
 
 	Objects_BoundBottom:	.ds 8
 	Player_BoundBottom:	.ds 1
 	SpecialObj_BoundBottom:	.ds 1
+	Tail_BoundBottom:		.ds 1
 
 	Objects_BoundBottomHi:.ds 8
 	Player_BoundBottomHi:	.ds 1
 	SpecialObj_BoundBottomHi:	.ds 1
+	Tail_BoundBottomHi:		.ds 1
 
 	Objects_BoundTop:	.ds 8
 	Player_BoundTop:	.ds 1
 	SpecialObj_BoundTop:	.ds 1
+	Tail_BoundTop:		.ds 1
 
 	Objects_BoundTopHi:.ds 8
 	Player_BoundTopHi:	.ds 1
 	SpecialObj_BoundTopHi:	.ds 1
+	Tail_BoundTopHi:	.ds 1
 
 	SpinnerBlocksReplace:.ds 10;
 	ObjectBump:			.ds 1
@@ -1752,12 +1765,12 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_SprOff:		.ds 1	; Player sprite offset (NOTE: Should be multiples of 4, otherwise bad unaligned stuff happens!)
 
 	; Strange gapping here; there's pretty much enough room for a couple more special objects
-	Object_SpriteRAM_Offset:		.ds 8	; $058F-$0596 Sprite_RAM offset by object
+	Object_SpriteRAMOffset:		.ds 8	; $058F-$0596 Sprite_RAM offset by object
 
-	SpecialObj_Var2:	.ds 8	; $0597-$059E General purpose variable 2
+	SpecialObj_Data3:	.ds 8	; $0597-$059E General purpose variable 2
 	PlayerProj_Var2:	.ds 2
 
-	SpecialObj_Var3:	.ds 8	; $05B5-$05BC General purpose variable 3
+	SpecialObj_HurtEnemies:	.ds 8	; $05B5-$05BC General purpose variable 3
 
 	SpecialObj_YVelFrac:	.ds 8	; $05A1-$05A8 Y velocity fractional accumulator
 	PlayerProj_YVelFrac:	.ds 2
@@ -1890,7 +1903,17 @@ OBJSTATE_FRESH		= 9 ;
 	; After Player would press 'A', this value is immediately set to 0.
 	; In the case of the odd/even game, if the Player "won", it is set to 5 or 6.
 	Bonus_DieCnt:		.ds 0
-	EnemyCount:			.ds 1
+
+ATTR_FIREPROOF		= %00000001
+ATTR_ICEPROOF		= %00000010
+ATTR_HAMMERPROOF	= %00000100
+ATTR_NINJAPROOF		= %00001000
+ATTR_STARPROOF		= %00010000
+ATTR_DASHPROOF		= %00100000
+ATTR_SHELLPROOF		= %01000000
+ATTR_BUMPOTHERS		= %10000000
+
+	Objects_Attributes: .ds 8
 
 
 	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
@@ -2695,29 +2718,31 @@ ABILITY_CHERRY_STAR = 5
 ; which of the two buffers is free, if any at all.  The object will hold onto it then.
 ; Because of this, objects which employ it must also be hardcoded to release it; see
 ; "Object_Delete" for the hardcoded list of objects which must release this resource...
-	Object_BufferX:		.ds 32*2	; $7C20-$7C3F / $7C40-$7C5F
-	Object_BufferY:		.ds 32*2	; $7C60-$7C7F / $7C80-$7C9F
+	Object_BufferX:		.ds 24	; $7C20-$7C3F / $7C40-$7C5F
+	Object_BufferY:		.ds 24	; $7C60-$7C7F / $7C80-$7C9F
 
+	Objects_NoIce:		.ds 5
 ; Variables used by Chain Chomps ONLY -- manages the chain links 
-	ChainChomp_ChainX1:	.ds 0	; $7CA0-$7CA4 Chain Link 1 X
-	ChainChomp_ChainX2:	.ds 0	; $7CA5-$7CA9 Chain Link 2 X
-	ChainChomp_ChainX3:	.ds 0	; $7CAA-$7CAE Chain Link 3 X
-	ChainChomp_ChainX4:	.ds 0	; $7CAF-$7CB4 Chain Link 4 X
+
+	ChainChomp_ChainX1:	.ds 5	; $7CA0-$7CA4 Chain Link 1 X
+	ChainChomp_ChainX2:	.ds 5	; $7CA5-$7CA9 Chain Link 2 X
+	ChainChomp_ChainX3:	.ds 5	; $7CAA-$7CAE Chain Link 3 X
+	ChainChomp_ChainX4:	.ds 5	; $7CAF-$7CB4 Chain Link 4 X
 							
-	ChainChomp_ChainY1:	.ds 0	; $7CB4-$7CB8 Chain Link 1 Y
-	ChainChomp_ChainY2:	.ds 0	; $7CB9-$7CBD Chain Link 2 Y
-	ChainChomp_ChainY3:	.ds 0	; $7CBE-$7CC2 Chain Link 3 Y
-	ChainChomp_ChainY4:	.ds 0	; $7CC3-$7CC8 Chain Link 4 Y
+	ChainChomp_ChainY1:	.ds 5	; $7CB4-$7CB8 Chain Link 1 Y
+	ChainChomp_ChainY2:	.ds 5	; $7CB9-$7CBD Chain Link 2 Y
+	ChainChomp_ChainY3:	.ds 5	; $7CBE-$7CC2 Chain Link 3 Y
+	ChainChomp_ChainY4:	.ds 5	; $7CC3-$7CC8 Chain Link 4 Y
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
 	
-	Objects_Data8:		.ds 8	; $7CC8-$7CCC Generic object variable 10
-	Objects_Data9:		.ds 8	; $7CCD-$7CD1 Generic object variable 11
-	Objects_Data10:		.ds 8	; $7CD2-$7CD6 Generic object variable 12
-	Objects_Data11:		.ds 8	; $7CD7-$7CDB Generic object variable 13
-	Objects_Data12:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data13:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data8:		.ds 5	; $7CC8-$7CCC Generic object variable 10
+	Objects_Data9:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
+	Objects_Data10:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
+	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
+	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_XYCS:		.ds 8
 	Objects_XYCSPrev:	.ds 8
 	Objects_PlayerProjHit:	.ds 8
@@ -2815,11 +2840,10 @@ AIR_INCREASE	= 3
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
 	Last_StatusBar_Mode: .ds 1;
-	Game_Coins:				.ds 7; over all coins collected
+	Game_Coins:				.ds 3; over all coins collected
 	Odometer:				.ds 3; over all distance traveled
-	Enemies_Defeated:		.ds 7; over all number of enemies defeated
 	Game_Timer:				.ds 6; over all time spent in the game
-	Old_Game_TimerSeconds:	.ds 1
+	Old_Game_TimerSeconds:	.ds 0
 	Top_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Bottom_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Odometer_Increase:		.ds 1; Indicates we need to increase the odometer
@@ -2975,6 +2999,7 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	BrickBust_Tile:		.ds 3
 	BrickBust_Pal:		.ds 3
 
+CHAIN_DEBRIS = $BD
 BRICK_DEBRIS = $4B
 ICE_DEBRIS = $59	;
 
@@ -2997,7 +3022,7 @@ SOBJ_ICEBALL	= $06	; Piranha fireball
 SOBJ_MICROGOOMBA	= $00 	; Micro goombas
 SOBJ_NINJASTAR		= $07 	; Spike's or Patooie's spike ball
 SOBJ_EGG		= $08 	; Koopaling wand blast
-SOBJ_KURIBOSHOE		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
+SOBJ_ACIDPOOL		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
 SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
@@ -3451,13 +3476,13 @@ OAT_BOUNDBOX04		= %00000100
 OAT_BOUNDBOX05		= %00000101
 OAT_BOUNDBOX06		= %00000110
 OAT_BOUNDBOX07		= %00000111
-OAT_BOUNDBOX08		= %00001000
+BOUND48x16		= %00001000
 OAT_BOUNDBOX09		= %00001001
 BOUND16x32		= %00001010
 OAT_BOUNDBOX11		= %00001011
 OAT_BOUNDBOX12		= %00001100
 OAT_BOUNDBOX13		= %00001101
-OAT_BOUNDBOX14		= %00001110
+BOUND32x32		= %00001110
 BOUND48x48		= %00001111
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
@@ -3487,8 +3512,21 @@ KILLACT_DRAWMOVENOHALT	= 8	; 8: Draw and do movements unless gameplay halted
 KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
 
 ; Object IDs
+OBJ_OSCILLATING_V = $00
+OBJ_OSCILLATING_H = $00
+OBJ_OSCILLATING_HS = $00
+OBJ_OSCILLATING_VS = $00
+OBJ_WOODENPLATFORMFLOAT = $00
+OBJ_BIGBERTHABIRTHER = $00
+OBJ_BIGBERTHA = $00
+OBJ_WOODENPLATFORMFALL = $00
+OBJ_WOODENPLATUNSTABLE = $00
+OBJ_WOODENPLATFORM = $00
+OBJ_CLOUDPLATFORM = $00
+OBJ_CLOUDPLATFORM_FAST = $00
 
 OBJ_SNOWBALL		= $02
+OBJ_SPIKEBALL		= $05
 OBJ_BOUNCEDOWNUP	= $06	; Down/up block bounce effect object
 OBJ_BRICK		= $07	; Hidden object that jumps you to the secret warp whistle in 1-3
 OBJ_WARPHIDE		= $00	;
@@ -3517,19 +3555,19 @@ OBJ_GROWINGVINE		= $1F	; Growing vine
 OBJ_POWERUP_ICEFLOWER	= $21	; Free mushroom card ????
 OBJ_POWERUP_PUMPKIN	= $22	; Free flower card ????
 OBJ_POWERUP_FOXLEAF	= $23	; Free star card ????
-OBJ_CLOUDPLATFORM_FAST = $00 ; 
-OBJ_PLATFORMHORZ	= $24	; Fast cloud platform
-OBJ_PIPEWAYCONTROLLER	= $25	; "Pipe Way" Controller (World Map pipe-to-pipe location setter)
+OBJ_PLATFORM_CLOCKOSC_FAST = $00 ; 
+OBJ_PLATFORM_HORZOSC	= $24	; Fast cloud platform
+OBJ_PLATFORM_VERTOSC	= $25	; "Pipe Way" Controller (World Map pipe-to-pipe location setter)
 OBJ_WOODENPLAT_RIDER	= $26	; Log that rides you to the right after stepping on it
-OBJ_OSCILLATING_H	= $27	; Horizontal oscillating log platform
-OBJ_OSCILLATING_V	= $28	; Vertical Oscillating log platform
+OBJ_PLATFORM_DIAG1OSC	= $27	; Horizontal oscillating log platform
+OBJ_PLATFORM_DIAG2OSC	= $28	; Vertical Oscillating log platform
 OBJ_SPIKE		= $29	; Spike (the spike ball barfer)
 OBJ_PATOOIE			= $00
 OBJ_SPARKRIGHT		= $2A	; Patooie
 OBJ_GOOMBAINSHOE	= $00 ;
 OBJ_RICOCHET_PODOBO	= $2B	; Goomba in Kuribo's Shoe (yes, I know Kuribo = Goomba, quiet)
-OBJ_CLOUDPLATFORM	= $2C	; Cloud platform
-OBJ_BIGBERTHA		= $2D	; Big Bertha that eats you
+OBJ_PLATFORM_CLOCKOSC	= $2C	; Cloud platform
+OBJ_PLATFORM_CCLOCKOSC		= $2D	; Big Bertha that eats you
 OBJ_PIRATEBOO	= $2E	; Invisible (until touched) lift that goes up to fixed position of Y/Hi = 64
 OBJ_BOO			= $2F	; Boo Diddly
 OBJ_HOTFOOT_SHY = $00
@@ -3540,16 +3578,16 @@ OBJ_BOOSTRETCH_FLIP	= $32	; "Stretch" Boo, upside-down
 OBJ_NIPPER		= $33 	; Stationary nipper plant
 OBJ_TOAD		= $34 	; Toad and his house message
 OBJ_TOADHOUSEITEM	= $35	; Item that pops out of a treasure box in a Toad House
-OBJ_WOODENPLATFORM	= $36	; Floating wooden platform
-OBJ_OSCILLATING_HS	= $37	; left/right short-oscillation log
-OBJ_OSCILLATING_VS	= $38	; Up/down short-oscillation log
+OBJ_PLATFORM_PATH	= $36	; Floating wooden platform
+OBJ_PLATFORM_DIAG1OSCS	= $37	; left/right short-oscillation log
+OBJ_PLATFORM_DIAG2OSCS	= $38	; Up/down short-oscillation log
 OBJ_NIPPERHOPPING	= $39 	; Hopping nipper plant
 OBJ_FALLINGPLATFORM	= $3A	; Falling donut lift type platform
 OBJ_CHARGINGCHEEPCHEEP = $00 ;
 OBJ_SPECTERCHEEP	= $3B 	; Charging, hopping cheep cheep
-OBJ_WOODENPLATFORMFALL	= $3C 	; Falling wooden platform
+OBJ_PLATFORM_PATHFOLLOW	= $3C 	; Falling wooden platform
 OBJ_NIPPERFIREBREATHER	= $3D	; Fire belching nipper plant
-OBJ_WOODENPLATFORMFLOAT	= $3E	; Floating (on water) log
+OBJ_PLATFORMFLOATS	= $3E	; Floating (on water) log
 OBJ_DRYBONES		= $3F	; Dry Bones
 OBJ_BUSTERBEATLE = $00 ;
 OBJ_GOLDENPIRANHAGROWER	= $40	; Buster Beatle
@@ -3559,7 +3597,7 @@ OBJ_CHEEPCHEEPPOOL2POOL	= $42	; Pool-to-pool-to-pool hopping cheep cheep
 OBJ_CHEEPCHEEPPOOL2POOL2 = $43 ;
 OBJ_FLAMINGCHEEP = $42 ;
 OBJ_BEACHEDCHEEP= $43	; Pool-to-pool hopping cheep cheep
-OBJ_WOODENPLATUNSTABLE	= $44	; Fall-after-touch log platform
+OBJ_PLATFORMUNSTABLE	= $44	; Fall-after-touch log platform
 OBJ_HOTFOOT = $00	;
 OBJ_PWING		= $45 	; Hot Foot (randomly walks and stops, doesn't care if you stare)
 OBJ_PIRANHASPIKEBALL	= $00
@@ -3597,7 +3635,7 @@ OBJ_ROTODISCDUALCCLOCK	= $60	; Dual Rotodisc, sync, counter-clockwise
 OBJ_BLOOPERWITHKIDS = $00
 OBJ_SKULLBLOOPER	= $61	; Blooper w/ kids
 OBJ_BLOOPER		= $62	; Blooper
-OBJ_BIGBERTHABIRTHER = $00 ;
+OBJ_PLATFORM_CCLOCKOSCBIRTHER = $00 ;
 OBJ_FLOATMINE	= $63	; Big Bertha with spit-out child
 OBJ_CHEEPCHEEPHOPPER	= $64	; Cheep Cheep water hopper
 OBJ_WATERCURRENTUPWARD	= $65	; upward current
@@ -3852,7 +3890,7 @@ OBJECT_FALL		= $03
 OBJECT_FALLINWATER	= $01
 OBJECT_MAXFALL		= $40
 OBJECT_MAXFALLINWATER	= $10
-OBJECT_MAXWATERUPWARD	= -$18
+OBJECT_MAXWATERUPWARD	= -$7F
 OBJECT_FALLRATE		= $03
 OBJECT_FALLRATEINWATER	= $01
 

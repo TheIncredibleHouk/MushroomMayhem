@@ -80,9 +80,6 @@ Player_DuckFrame:
 	; First value is for everything EXCEPT Raccoon power; value on right is for raccoon power
 	.byte PF_DUCK_NOTRACCOON,  PF_DUCK_RACCOON
 
-;Player_Shell_Mode_Frames:
-;	.byte $35, $3D, $31, $1D
-	
 	; The three sprite frames for when Player shoots a fireball/hammer
 Player_FireOnGround:	.byte PF_THROWONGROUND_BASE, PF_THROWONGROUND_BASE+3, PF_THROWONGROUND_BASE+2
 Player_FireInAir:	.byte PF_THROWINAIR_BASE, PF_THROWINAIR_BASE+1, PF_THROWINAIR_BASE+2
@@ -1209,6 +1206,8 @@ PRG008_A93D:
 	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
 
 PRG008_A940:
+	LDA #$00
+	STA Player_OnPlatform
 	JSR Player_CommonGroundAnims	 ; Perform common ground animation routines
 
 PRG008_A94C:
@@ -1952,8 +1951,10 @@ PRG008_ACC8:
 PRG008_ACCD:
 	TYA	
 	ADD <Player_YVel
+
 	LDX Boo_Mode_Timer
 	BNE Skip_YVel
+
 	LDX Player_FireDash
 	BNE Skip_YVel
 	STA <Player_YVel ; Player_YVel += Y
@@ -2582,6 +2583,13 @@ PRG008_AFAD:
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Koopa_Shell:
+	LDA <Player_XVel
+	CMP #$20
+	BCC RTSShell
+
+	CMP #$E0
+	BCS RTSShell
+
 	LDA <Player_InAir
 	BNE RTSShell
 
@@ -3494,24 +3502,15 @@ Player_TileInteractions2:
 Player_TileInteractions3:
 	RTS
 
-DoSpinnerBusts:
-	CMP #TILE_ITEM_COIN
-	BCC SpinnerBustRts
-	JSR Level_DoBumpBlocks
-	LDX TempX
-
-NoSpinnerKeepGoing:
-	LDA #$00
-
-SpinnerBustRts
-	RTS
-
 Level_DoBumpBlocks:
 	LDA Block_NeedsUpdate
 	BEQ DoBumps
 	RTS
 
 DoBumps:
+	LDA #$00 
+	STA ObjectBump
+
 	LDA Tile_LastProp
 	STA Bump_Prop
 
@@ -3532,7 +3531,7 @@ Bump_YHi	= Temp_Var13
 Bump_X		= Temp_Var16
 Bump_XHi	= Temp_Var15
 
-Tiles_BumpBlocks
+Tiles_BumpBlocks:
 	LDA Bump_Prop
 	AND #$0F
 	JSR DynJump
@@ -3609,7 +3608,7 @@ Bumps_PowerUpBlock2:
 	RTS
 
 BumpBlock_CheckMushroom:
-	LDY Player_Suit
+	LDY <Player_Suit
 	BNE BumpBlock_CheckMushroom1
 
 	LDA #POWERUP_MUSHROOM
@@ -3645,10 +3644,6 @@ BumpBlock_IceFlower:
 
 ;;;;;;;;;;;;
 BumpBlock_Pumpkin:
-	LDA #$00
-	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-	LDY #$09	 ; Y = 2 (spawn an ice flower) (index into PRG001 Bouncer_PUp)
-	JSR Do_PUp_Proper
 	RTS		 ; Return
 
 BumpBlock_Leaf:
@@ -3669,7 +3664,6 @@ BumpBlock_Star:
 BumpBlock_Spinner:
 	LDA Player_FireDash
 	BEQ BumpBlock_Spinner1
-
 	JMP  BumpBlock_Brick
 
 BumpBlock_Spinner1:
@@ -3720,8 +3714,8 @@ DoSpinner:
 	RTS
 
 BumpBlock_Brick:
-
 	LDA Player_Suit
+	ORA ObjectBump
 	BNE BumpBlock_Brick1
 
 	JSR Bumps_PowerUpBlock
@@ -3752,7 +3746,6 @@ BumpBlock_Brick1:
 	ORA #$01
 	
 	JSR Level_QueueChangeBlock
-	
 	RTS		 ; Return
 
 
@@ -3840,24 +3833,17 @@ Player_TailAttack_Offsets: ; (Y and X)
 	.byte 28, -6	; Player not horizontally flipped
 	.byte 28, 21	; Player horizontally flipped
 
-Player_ShellAttack_Offsets:
-	.byte 28, 0	; Player not horizontally flipped
-	.byte 28, 15; Player horizontally flipped
-
-Player_Shell_FlipFlip:
-	.byte $02, $00, $00
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_TailAttack_HitBlocks
 ;
 ; Short routine that handles the tail attack hitting blocks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_TailAttack_HitBlocks:
-     LDA Player_TailAttack
-     CMP #$09
-     BNE PRG008_B979        ; If Player_TailAttack <> 9, jump to PRG008_B979
+    LDA Player_TailAttack
+    CMP #$09
+    BNE PRG008_B979        ; If Player_TailAttack <> 9, jump to PRG008_B979
 
-Player_Shell_HitBlocks:
-    LDY #$00         ; Y = 0 (Player not flipped)
+	LDY #$00         ; Y = 0 (Player not flipped)
 
 	LDA <Player_FlipBits
 	BNE PRG008_B95F	 ; If Player is horizontally flipped, jump to PRG008_B95F
@@ -3867,6 +3853,7 @@ Player_Shell_HitBlocks:
 PRG008_B95F:
 	LDA Player_TailAttack_Offsets,Y
 	STA <Temp_Var10	 ; Temp_Var10 (Y offset)
+
 	LDA Player_TailAttack_Offsets+1,Y
 	STA <Temp_Var11	 ; Temp_Var11 (X offset)
 
@@ -3880,94 +3867,6 @@ Do_Tile_Attack:
 
 PRG008_B979:
 	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_DoSpecialTiles
-;
-; Handles special tiles unique to level styles:
-; Pipe logic, conveyors, spikes, muncher/jelectro, white block, 
-; quicksand, toad house treasure chests... 
-; Good place to put custom-by-Tileset tiles!
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-Player_DoSpecialTiles:
-	RTS
-
-PRG008_BD59:
-	;STX <Temp_Var2
-	;LDA Level_Tile_Prop_Head,X
-	;STA <Temp_Var3
-	;AND #$C0
-	;CMP #TILE_PROP_SOLID_BOTTOM
-	;BEQ PRG008_BE2E
-	;LDA <Temp_Var3
-	;CMP #TILE_ITEM_COIN
-	;BGE PRG008_BE2E
-	;AND #$0F
-	;STA <Temp_Var1
-	;LDA #TILE_PROP_MOVE_DOWN
-	;SEC
-	;SBC <Temp_Var1
-	;CMP #$04
-	;BGE PRG008_BD73
-	;TAY
-
-PushFull:
-	;JSR ApplyTileMove
-	;JMP PRG008_BE2E		; Jump to PRG008_BD73
-
-PRG008_BD73:
-;	LDA <Temp_Var1
-;	CMP #TILE_ITEM_COIN
-;	BCS PRG008_BDB1
-;	AND #$0F
-;	CMP #TILE_PROP_HARMFUL
-;	BNE PRG008_BDB1	
-; 
-;PRG008_BDA4:
-;	LDA <Temp_Var3
-;	CMP #TILE_PROP_SOLID_TOP
-;	BCC PRG008_BDAF
-;
-;PRG008_BDAE:
-;	JMP Player_GetHurt	 ; Get hurt!
-;
-;PRG008_BDAF:
-;	AND #TILE_PROP_WATER
-;	BEQ PRG008_BDAE
-;	;LDA Player_InWater
-;	;BEQ PRG008_BDB1
-;	LDA Effective_Suit
-;	CMP #$08
-;	BNE PRG008_BDAE
-;
-;PRG008_BDB1:
-;	; SLIPPERY, ICY GROUND LOGIC
-;	LDA Wall_Jump_Enabled
-;	BNE PRG008_BDB2
-;	LDA <Player_InAir
-;	BNE PRG008_BE2E	 ; If Player is in air, jump to PRG008_BE31
-;
-;PRG008_BDB2:
-;	;LDA <Temp_Var3
-;	;CMP #TILE_PROP_SOLID_TOP
-;	;BCC PRG008_BE2E
-;	;AND #$0F
-;	;CMP #TILE_PROP_SLICK
-;	;BNE PRG008_BE2E
-;	;
-;	;LDA #$02	 
-;	;STA Player_Slippery	 ; Player_Slippery = 2 (ground is REALLY slippery!)
-;
-;PRG008_BE2E:
-;	LDX <Temp_Var2
-;	DEX		 ; X--
-;	BPL PRG008_BD59	 ; While X >= 0, loop!
-;
-;PRG008_BE2F:
-;	RTS		 ; Return
 
 TileGround:	 .byte $00, $00, $10, $F0
 TileWaterX:	 .byte $00, $00, $20, $E0
@@ -4314,6 +4213,7 @@ PRG008_BFD3:
 	EOR #$FF
 	CLC
 	ADC #$01
+
 Dont_Flip:
 	CLC
 	ADC Odometer_Increase
@@ -4452,8 +4352,10 @@ Do_PUp_Proper:
 	LDA Player_Equip
 	CMP #BADGE_NOSHOORMS
 	BEQ PUp_RTS
+
 	LDA <Player_Suit
 	BNE PUp_RTS
+
 	LDY #$05
 PUp_RTS:
 	RTS
@@ -4790,6 +4692,7 @@ Player_DetectWall:
 
 Player_DetectWall1:
 	LDA Player_Shell
+	
 	BEQ Player_DetectWall2
 
 	LDA Sound_QPlayer 
@@ -4828,6 +4731,9 @@ Player_DetectWall2:
 
 	LDA Tile_LastProp
 	CMP #TILE_ITEM_BRICK
+	BEQ Player_DetectWallRTS
+
+	CMP #TILE_ITEM_SPINNER
 	BEQ Player_DetectWallRTS
 
 Player_DetectWall3:
@@ -5667,8 +5573,7 @@ Player_NextTile:
 	RTS
 
 
-Fox_DashDir: .byte $D0, $30
-Fox_DashFlip: .byte $40, $00
+Fox_DashDir: .byte $30, $D0 
 
 Fox_BurnMode:
 	LDA Player_FireDash			; we're already in fireball mode, let's continue doing velocity checks
@@ -5716,13 +5621,12 @@ Try_FireBall:					; not a fireball, so let's try it!
 	BNE ContinueDash
 
 ContinueDash:
+
 	LDY Player_Direction
+
 	LDA Fox_DashDir, Y
 	STA <Player_XVel
 	STA <Player_InAir
-
-	LDA Fox_DashFlip, Y
-	STA <Player_FlipBits
 
 	LDA #$00
 	STA <Player_YVel

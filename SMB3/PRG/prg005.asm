@@ -609,7 +609,7 @@ PRG005_A2DE:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 PRG005_A2E1:
-	JMP Object_ShakeAndDrawMirrored	 ; Draw Podoboo and don't come back!!
+	JMP Object_DrawMirrored	 ; Draw Podoboo and don't come back!!
 
 
 SpinyEgg_TowardsPlayer:	.byte $0A, -$0A
@@ -674,7 +674,7 @@ BigCannonBall_Draw:
 	LDA <Objects_SpriteY,X
 	STA <Temp_Var1
 
-	LDY Object_SpriteRAM_Offset,X	 ; Y = Sprite RAM offset
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite RAM offset
 
 	LDA Temp_VarNP0
 	BMI PRG005_A3F3	 ; If this sprite is horizontally off-screen, jump to PRG005_A3F3
@@ -816,7 +816,7 @@ PumpkinFreeDraw:
 	STA Objects_Frame, X
 
 PumpkinFreeDraw1:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 	
 PiranhaPals:
 	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL1, SPR_PAL1
@@ -968,7 +968,7 @@ Piranha_Draw:
 Piranha_Draw1:
 	JSR Object_Draw16x32Sprite
 	
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 
 	LDA Sprite_RAM + 10, Y
 	AND #(SPR_VFLIP | SPR_BEHINDBG)
@@ -994,7 +994,7 @@ Piranha_DrawUpsideDown:
 	LDA Piranha_HeadFlips, Y
 	STA TempA
 
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 
 	LDA Sprite_RAM + 2, Y
 	AND #~SPR_VFLIP
@@ -1084,8 +1084,6 @@ Piranha_Attack:
 	ORA Objects_SpritesHorizontallyOffScreen, X
 	BNE Piranha_Attack1
 
-
-	
 	LDA #$08
 	STA <Proj_YOff
 
@@ -1101,7 +1099,7 @@ Piranha_NoYOff:
 	LDA #$08
 	STA <Proj_XOff
 
-	JSR Object_PrepProjectile8x8
+	JSR Object_PrepProjectile
 	BCC Piranha_Attack1
 
 	JSR Piranha_Projectile
@@ -1128,21 +1126,6 @@ Piranha_Projectile:
 	LDA Piranha_AttackData, X
 	STA SpecialObj_Data1,Y
 
-	LDA #$00
-	STA <Temp_Var14
-
-	LDA Objects_Orientation, X
-	AND #SPR_VFLIP
-	BEQ ShootProjectile
-
-	ADD #$10
-	STA SpecialObj_Y, Y
-
-	LDA SpecialObj_YHi, Y
-	ADC #$00
-	STA SpecialObj_YHi, Y
-
-ShootProjectile:
 	LDA #SND_PLAYERFIRE
 	ORA Sound_QPlayer
 	STA Sound_QPlayer
@@ -1194,11 +1177,11 @@ PRG005_A9B1:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 	; Sprite RAM +8 (Two sprites over)
-	LDA Object_SpriteRAM_Offset,X
+	LDA Object_SpriteRAMOffset,X
 	ADD #$08
-	STA Object_SpriteRAM_Offset,X
+	STA Object_SpriteRAMOffset,X
 
-	JSR Object_ShakeAndDraw	 ; Draw Rocky
+	JSR Object_Draw ; Draw Rocky
 
 	LDA Objects_Frame,X
 	CMP #$01
@@ -1552,7 +1535,7 @@ PRG005_AB5D:	.byte $60, $70, $80, $90, $A0, $B0, $C0, $D0
 
 ObjNorm_BoltLift:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
-	JSR Object_ShakeAndDraw	 	; Draw left half of bolt lift
+	JSR Object_Draw 	; Draw left half of bolt lift
 
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	PHA		 ; Save horizontal visibility bits
@@ -1573,11 +1556,11 @@ ObjNorm_BoltLift:
 	STA <Objects_XHiZ,X 	; Apply carry
 
 	; Two sprites over
-	LDA Object_SpriteRAM_Offset,X
+	LDA Object_SpriteRAMOffset,X
 	ADD #$08
-	STA Object_SpriteRAM_Offset,X
+	STA Object_SpriteRAMOffset,X
 
-	JSR Object_ShakeAndDraw	 ; Draw right half of bolt lift
+	JSR Object_Draw ; Draw right half of bolt lift
 
 	; Restore XHi / X / horizontal visibility bits
 	PLA
@@ -2189,7 +2172,7 @@ PRG005_B105:
 	AND #$01
 	STA Objects_Frame,X
 
-	JSR Object_ShakeAndDraw	 ; Draw Parabeetle
+	JSR Object_Draw ; Draw Parabeetle
 
 	LDA <Player_HaltGameZ
 	BNE PRG005_B0F5	 ; If gameplay halted, jump to PRG005_B0F5 (RTS)
@@ -2430,7 +2413,7 @@ DrawPBar:
 	STA DAIZ_TEMP2
 	STA PBarHitTestY
 	JSR Object_CalcSpriteXY_NoHi
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	LDA Objects_Data4, X
 	TAX
 	LDA BarTiles, X
@@ -2504,7 +2487,7 @@ StoreXOffset:
 	
 	LDX <CurrentObjectIndexZ
 	LDA <Objects_SpriteY, X
-	LDY Object_SpriteRAM_Offset, X
+	LDY Object_SpriteRAMOffset, X
 	STA Sprite_RAM , Y
 	STA TempA
 	LDA #$03
@@ -3271,7 +3254,7 @@ LevelEvent_WoodPlatforms:
 	AND #$7f
 	BNE PRG005_BC41	 ; Only do anything every 127 ticks
 
-	LDA #OBJ_WOODENPLATFORM
+	LDA #OBJ_PLATFORM_PATH
 	JSR Level_CountNotDeadObjs
 	CPY #$03
 	BCS PRG005_BC41	 ; If there's already at least 3 wooden platforms, jump to PRG005_BC41 (RTS)
@@ -3300,8 +3283,8 @@ PRG005_BBF1:
 	BEQ PRG005_BC11	 ; If this object slot is "dead/empty", jump to PRG005_BC11
 
 	LDA Objects_ID,Y
-	CMP #OBJ_WOODENPLATFORM
-	BNE PRG005_BC11	 ; If this object slot is a OBJ_WOODENPLATFORM, jump to PRG005_BC11
+	CMP #OBJ_PLATFORM_PATH
+	BNE PRG005_BC11	 ; If this object slot is a OBJ_PLATFORM_PATH, jump to PRG005_BC11
 
 	; This check specifically prevents two platforms from appearing in the same place
 	LDA Objects_YZ,Y
@@ -3348,7 +3331,7 @@ PRG005_BC11:
 	STA Objects_SpriteAttributes,X
 
 	; Set wooden platform ID at last
-	LDA #OBJ_WOODENPLATFORM
+	LDA #OBJ_PLATFORM_PATH
 	STA Objects_ID,X
 
 PRG005_BC41:
@@ -4249,7 +4232,7 @@ ObjNorm_Freezie1:
 
 
 DrawFreezie:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 FreezieThrowPlayerX:
 	.byte $30, $D0
@@ -4302,7 +4285,7 @@ ObjNorm_Swoosh0:
 	JSR Object_DeleteOffScreen
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Swoosh1
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 ObjNorm_Swoosh1:
 
@@ -4347,7 +4330,7 @@ Swoosh_Idle:
 	STA Objects_Timer, X
 
 Swoosh_Idle0:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 Swoosh_BreathIn:
 	INC Objects_Data3, X
@@ -4396,7 +4379,7 @@ Swoosh_BreathIn1:
 	STA Objects_Timer, X
 
 Swoosh_BreathIn2:
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	LDA Sprite_RAM + 3, Y
 	SUB #$08
 	STA TempA
@@ -4442,7 +4425,7 @@ Swoosh_Hold:
 	INC Objects_Data4, X
 
 Swoosh_Hold1:
-	JMP Object_ShakeAndDraw
+	JMP Object_Draw
 
 Swoosh_BlowOut:
 	INC Objects_Data3, X
@@ -4491,7 +4474,7 @@ Swoosh_BlowOut1:
 	STA Objects_Timer, X
 
 Swoosh_BlowOut2:
-	JSR Object_ShakeAndDraw
+	JSR Object_Draw
 	LDA Sprite_RAM + 3, Y
 	SUB #$08
 	STA TempA

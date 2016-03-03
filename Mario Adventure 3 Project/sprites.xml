@@ -330,7 +330,7 @@
     <property>11 Blocks</property>
     <property>12 Blocks</property>
   </spritedefinition>
-  <spritedefinition id="26" width="03" height="01" name="Platform Generator" class="1" group="Platform">
+  <!--<spritedefinition id="26" width="03" height="01" name="Platform Generator" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -339,7 +339,7 @@
     <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="32" y="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite x="40" y="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="27" width="03" height="01" name="Platform Moves Diagonal 1" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
@@ -517,8 +517,8 @@
     <sprite x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="12" />
   </spritedefinition>
   <spritedefinition id="31" width="01" height="01" name="Phanto" class="2" group="Desert">
-    <sprite x="8" y="0" value="3C" palette="3" horizontalflip="true" verticalflip="false" table="13" />
-    <sprite x="0" y="0" value="3E" palette="3" horizontalflip="true" verticalflip="false" table="13" />
+    <sprite x="8" y="0" value="3C" palette="3" horizontalflip="true" verticalflip="false" table="37" />
+    <sprite x="0" y="0" value="3E" palette="3" horizontalflip="true" verticalflip="false" table="37" />
   </spritedefinition>
   <spritedefinition id="32" width="01" height="01" name="Upside Down Stretch" class="1" group="Unused">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
@@ -571,7 +571,7 @@
     <sprite x="0" y="-16" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="-16" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="3A" width="02" height="01" name="Platform Follows Wire" class="2" group="Desert">
+  <!--<spritedefinition id="3A" width="02" height="01" name="Platform Follows Wire" class="2" group="Desert">
     <sprite x="0" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="1C" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="16" y="0" value="1C" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -579,12 +579,12 @@
     <sprite x="32" y="0" value="1C" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="40" y="0" value="1E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="16" value="96" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="3B" width="01" height="01" name="Specter Cheep" class="3" group="Scary">
     <sprite x="0" y="0" value="3A" palette="1" horizontalflip="false" verticalflip="false" table="13" />
     <sprite x="8" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="3C" width="03" height="01" name="Platform Moves Follows Wire" class="1" group="Platform">
+  <!--<spritedefinition id="3C" width="03" height="01" name="Platform Moves Follows Wire" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -592,13 +592,13 @@
     <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="16" y="16" value="96" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-  </spritedefinition>
-  <spritedefinition id="3D" width="01" height="01" name="Fire Spitting Nipper Plant" class="2" group="Fire/Mine">
+  </spritedefinition>-->
+  <!--<spritedefinition id="3D" width="01" height="01" name="Fire Spitting Nipper Plant" class="2" group="Fire/Mine">
     <sprite x="0" y="0" value="28" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="0" y="-12" value="24" palette="1" horizontalflip="false" verticalflip="false" table="04" />
     <sprite x="-4" y="-16" value="26" palette="1" horizontalflip="false" verticalflip="false" table="04" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="3E" width="03" height="01" name="Platform - Detects Solids/Floats in Water and Lava" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
@@ -749,12 +749,12 @@
     <sprite x="20" y="-2" value="32" palette="1" horizontalflip="false" verticalflip="false" table="90" />
     <sprite x="12" y="16" value="32" palette="2" horizontalflip="false" verticalflip="false" table="90" />
   </spritedefinition>
-  <spritedefinition id="4F" width="01" height="01" name="Loose Chain Chomp" class="2" group="Chomps">
+  <!--<spritedefinition id="4F" width="01" height="01" name="Loose Chain Chomp" class="2" group="Chomps">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="16" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="90" />
     <sprite x="24" y="16" value="34" palette="1" horizontalflip="false" verticalflip="false" table="90" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="51" width="01" height="01" name="Double Roto Disc (Counter Clockwise)" class="2" group="Fortress">
     <sprite x="0" y="0" value="18" palette="3" horizontalflip="false" verticalflip="false" table="12" />
     <sprite x="8" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="12" />
@@ -1244,12 +1244,12 @@
     <sprite x="-4" y="12" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="4E" />
   </spritedefinition>
   <spritedefinition id="89" width="04" height="01" name="Chain Chomp" class="2" group="Chomps">
-    <sprite x="56" y="0" value="10" palette="1" horizontalflip="true" verticalflip="false" table="0E" />
-    <sprite x="48" y="0" value="12" palette="1" horizontalflip="true" verticalflip="false" table="0E" />
-    <sprite x="4" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="20" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="36" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="-64" y="0" value="29" palette="1" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="56" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
+    <sprite x="64" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
+    <sprite x="4" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
+    <sprite x="17" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
+    <sprite x="30" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
+    <sprite x="43" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
   </spritedefinition>
   <spritedefinition id="8A" width="02" height="02" name="Thwomp" class="2" group="Fortress">
     <sprite x="4" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="12" />
@@ -1388,18 +1388,18 @@
     <property>Upside Down/Does not change graphics bank</property>
     <property>Upside Down/Changes graphics bank</property>
   </spritedefinition>
-  <spritedefinition id="9F" width="01" height="01" name="Para Beetle" class="2" group="Chomps">
+  <!--<spritedefinition id="9F" width="01" height="01" name="Para Beetle" class="2" group="Chomps">
     <sprite x="0" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="A0" width="02" height="01" name="Pyrant'o'lantern" class="3" group="Scary">
     <sprite property="0" x="8" y="0" value="24" palette="3" horizontalflip="false" verticalflip="false" table="13" />
     <sprite property="0" x="16" y="0" value="26" palette="3" horizontalflip="false" verticalflip="false" table="13" />
   </spritedefinition>
-  <spritedefinition id="A1" width="02" height="01" name="Upside Down Possessed Piranha" class="2" group="Desert">
+  <!--<spritedefinition id="A1" width="02" height="01" name="Upside Down Possessed Piranha" class="2" group="Desert">
     <sprite x="8" y="0" value="20" palette="2" horizontalflip="false" verticalflip="true" table="13" />
     <sprite x="16" y="0" value="20" palette="2" horizontalflip="true" verticalflip="true" table="13" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="A2" width="02" height="02" name="Piranha Plant" class="3" group="Common">
     <sprite property="0" x="8" y="0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite property="0" x="16" y="0" value="20" palette="1" horizontalflip="true" verticalflip="false" table="4F" />
@@ -1566,7 +1566,7 @@
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
   </spritedefinition>
-  <spritedefinition id="AD" width="1" height="1" name="Rocky Wrench" class="2" group="Doom Ship">
+  <!--<spritedefinition id="AD" width="1" height="1" name="Rocky Wrench" class="2" group="Doom Ship">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="36" />
   </spritedefinition>
@@ -1575,7 +1575,7 @@
     <sprite x="8" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="16" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="24" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="36" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="AF" width="2" height="2" name="Sun &amp; Moon" class="2" group="Sun &amp; Moon">
     <sprite x="0" y="0" value="00" palette="3" horizontalflip="false" verticalflip="false" table="37" />
     <sprite x="8" y="0" value="02" palette="3" horizontalflip="false" verticalflip="false" table="37" />
@@ -1586,14 +1586,14 @@
     <sprite x="16" y="16" value="22" palette="3" horizontalflip="true" verticalflip="false" table="37" />
     <sprite x="24" y="16" value="20" palette="3" horizontalflip="true" verticalflip="false" table="37" />
   </spritedefinition>
-  <spritedefinition id="B0" width="2" height="2" name="Still Giant Cannon" class="2" group="Doom Ship">
+  <!--<spritedefinition id="B0" width="2" height="2" name="Still Giant Cannon" class="2" group="Doom Ship">
     <sprite x="0" y="8" value="22" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="8" y="0" value="24" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="16" y="0" value="26" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="24" y="8" value="30" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="8" y="16" value="24" palette="3" horizontalflip="false" verticalflip="true" table="36" />
     <sprite x="16" y="16" value="26" palette="3" horizontalflip="false" verticalflip="true" table="36" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="B1" width="03" height="01" name="Right Rocket Flame" class="1" group="Unused">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
@@ -1644,7 +1644,7 @@
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
   </spritedefinition>
-  <spritedefinition id="B9" width="03" height="01" name="Left Platform Generator" class="1" group="Platform">
+  <!--<spritedefinition id="B9" width="03" height="01" name="Left Platform Generator" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
     <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
@@ -1654,7 +1654,7 @@
     <sprite x="0" y="0" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="0" y="16" value="A8" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="16" value="AA" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="BB" width="01" height="01" name="Stop Generators" class="1" group="Global">
     <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
     <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
@@ -1691,12 +1691,12 @@
     <property>Down + Right</property>
     <property>Up + Right</property>
   </spritedefinition>
-  <spritedefinition id="BE" width="1" height="1" name="Rocky Wrench Generator" class="2" group="Doom Ship">
+  <!--<spritedefinition id="BE" width="1" height="1" name="Rocky Wrench Generator" class="2" group="Doom Ship">
     <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="0" y="16" value="A8" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="16" value="AA" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="BF" width="03" height="01" name="Platform Generator" class="1" group="Platform">
     <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
@@ -1743,7 +1743,7 @@
     <sprite x="8" y="0" value="2E" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="-8" y="0" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="C3" width="2" height="2" name="Left Shooting Giant Cannon" class="2" group="Doom Ship">
+  <!--<spritedefinition id="C3" width="2" height="2" name="Left Shooting Giant Cannon" class="2" group="Doom Ship">
     <sprite x="0" y="8" value="22" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="8" y="0" value="24" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="16" y="0" value="26" palette="3" horizontalflip="false" verticalflip="false" table="36" />
@@ -1751,7 +1751,7 @@
     <sprite x="8" y="16" value="24" palette="3" horizontalflip="false" verticalflip="true" table="36" />
     <sprite x="16" y="16" value="26" palette="3" horizontalflip="false" verticalflip="true" table="36" />
     <sprite x="-8" y="8" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="C4" width="1" height="1" name="Up/Left Shooting Cannon" class="2" group="Hammer Bros.">
     <sprite x="0" y="0" value="2C" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="8" y="0" value="2E" palette="3" horizontalflip="false" verticalflip="false" table="36" />
@@ -1805,7 +1805,7 @@
     <sprite x="8" y="0" value="2E" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="16" y="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="CD" width="2" height="2" name="Left Shooting Giant Cannon" class="2" group="Doom Ship">
+  <!--<spritedefinition id="CD" width="2" height="2" name="Left Shooting Giant Cannon" class="2" group="Doom Ship">
     <sprite x="0" y="8" value="22" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="8" y="0" value="24" palette="3" horizontalflip="false" verticalflip="false" table="36" />
     <sprite x="16" y="0" value="26" palette="3" horizontalflip="false" verticalflip="false" table="36" />
@@ -1813,7 +1813,7 @@
     <sprite x="8" y="16" value="24" palette="3" horizontalflip="false" verticalflip="true" table="36" />
     <sprite x="16" y="16" value="26" palette="3" horizontalflip="false" verticalflip="true" table="36" />
     <sprite x="32" y="8" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
-  </spritedefinition>
+  </spritedefinition>-->
   <spritedefinition id="CE" width="1" height="1" name="Bob-omb Generator" class="2" group="Fire/Mine">
     <sprite property="0,2,4,6" x="0" y="0" value="2A" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite property="0,2,4,6" x="8" y="0" value="2C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
