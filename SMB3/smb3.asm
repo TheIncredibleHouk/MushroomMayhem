@@ -1913,7 +1913,7 @@ ATTR_DASHPROOF		= %00100000
 ATTR_SHELLPROOF		= %01000000
 ATTR_BUMPOTHERS		= %10000000
 
-	Objects_Attributes: .ds 8
+	Objects_Stomped: .ds 8
 
 
 	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
@@ -1953,7 +1953,6 @@ ATTR_BUMPOTHERS		= %10000000
 	CannonFire_Var:		.ds 8	; $06DB-$06E2
 	CannonFire_Timer:	.ds 8	; $06E3-$06EA Cannon Fire timer, decrements to zero
 	CannonFire_Property: .ds 8;
-	Objects_QSandCtr:	.ds 8	; $06EB-$06F2 When enemy has fallen into quicksand, increments until $90 which deletes it
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0700
 .Bound_0700:	BoundCheck .Bound_0700, $0700, $06xx RAM
@@ -2718,8 +2717,8 @@ ABILITY_CHERRY_STAR = 5
 ; which of the two buffers is free, if any at all.  The object will hold onto it then.
 ; Because of this, objects which employ it must also be hardcoded to release it; see
 ; "Object_Delete" for the hardcoded list of objects which must release this resource...
-	Object_BufferX:		.ds 24	; $7C20-$7C3F / $7C40-$7C5F
-	Object_BufferY:		.ds 24	; $7C60-$7C7F / $7C80-$7C9F
+	Object_BufferX:		.ds 32	; $7C20-$7C3F / $7C40-$7C5F
+	Object_BufferY:		.ds 32	; $7C60-$7C7F / $7C80-$7C9F
 
 	Objects_NoIce:		.ds 5
 ; Variables used by Chain Chomps ONLY -- manages the chain links 
@@ -3104,6 +3103,7 @@ PLAYER_POOF			= 05
 	JustName:			.ds 1
 	LastHorzScroll:		.ds 1
 	LastHorzScrollHi:	.ds 1
+	ExtraData:			.ds 5
 
 	; Tile map property flags
 MAP_PROP_TRAVERSABLE	= $01
@@ -3473,7 +3473,7 @@ BOUND16x16		= %00000001
 BOUND16x24		= %00000010
 BOUND16x16BLOCK		= %00000011
 OAT_BOUNDBOX04		= %00000100
-OAT_BOUNDBOX05		= %00000101
+BOUND24x32		= %00000101
 OAT_BOUNDBOX06		= %00000110
 OAT_BOUNDBOX07		= %00000111
 BOUND48x16		= %00001000
@@ -3512,6 +3512,7 @@ KILLACT_DRAWMOVENOHALT	= 8	; 8: Draw and do movements unless gameplay halted
 KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
 
 ; Object IDs
+OBJ_NIPPERHOPPING = $00
 OBJ_OSCILLATING_V = $00
 OBJ_OSCILLATING_H = $00
 OBJ_OSCILLATING_HS = $00
@@ -3524,6 +3525,7 @@ OBJ_WOODENPLATUNSTABLE = $00
 OBJ_WOODENPLATFORM = $00
 OBJ_CLOUDPLATFORM = $00
 OBJ_CLOUDPLATFORM_FAST = $00
+OBJ_PODOBOOCEILING = $00
 
 OBJ_SNOWBALL		= $02
 OBJ_SPIKEBALL		= $05
@@ -3581,7 +3583,7 @@ OBJ_TOADHOUSEITEM	= $35	; Item that pops out of a treasure box in a Toad House
 OBJ_PLATFORM_PATH	= $36	; Floating wooden platform
 OBJ_PLATFORM_DIAG1OSCS	= $37	; left/right short-oscillation log
 OBJ_PLATFORM_DIAG2OSCS	= $38	; Up/down short-oscillation log
-OBJ_NIPPERHOPPING	= $39 	; Hopping nipper plant
+OBJ_PACBOOHOME	= $39 	; Hopping nipper plant
 OBJ_FALLINGPLATFORM	= $3A	; Falling donut lift type platform
 OBJ_CHARGINGCHEEPCHEEP = $00 ;
 OBJ_SPECTERCHEEP	= $3B 	; Charging, hopping cheep cheep
@@ -3616,7 +3618,7 @@ OBJ_EXPLOSION	= $50	; Ready-to-explode Bob-Omb
 OBJ_ROTODISCDUAL	= $51	; Dual Rotodisc, sync, clockwise
 OBJ_TREASUREBOX		= $00	;
 OBJ_SPINTULA		= $52	; Treasure box
-OBJ_PODOBOOCEILING	= $53	; Podoboo from ceiling
+OBJ_PIPEPODOBO	= $53	; Podoboo from ceiling
 OBJ_DONUTLIFTSHAKEFALL	= $54	; Donut lift shake and fall object
 OBJ_BOBOMB		= $55	; Bob-Omb
 OBJ_PIRANHASIDEWAYSLEFT	= $56	; Sideways left-facing red piranha

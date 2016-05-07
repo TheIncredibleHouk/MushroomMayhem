@@ -38,7 +38,7 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_DoNothing		; Object $9B
 	.word ObjInit_DoNothing		; Object $9C
 	.word ObjInit_FireJetUpward	; Object $9D - OBJ_FIREJET_UPWARD
-	.word ObjInit_Podoboo		; Object $9E - OBJ_PODOBOO
+	.word ObjInit_Podobo		; Object $9E - OBJ_Podobo
 	.word ObjInit_ParaBeetle	; Object $9F - OBJ_PARABEETLE
 	.word ObjInit_PumpkinFree	; Object $A0 - OBJ_PUMPKINFREE
 	.word ObjInit_DoNothing	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -80,7 +80,7 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_DoNothing		; Object $9B
 	.word ObjNorm_DoNothing		; Object $9C
 	.word ObjNorm_FireJet		; Object $9D - OBJ_FIREJET_UPWARD
-	.word ObjNorm_Podoboo		; Object $9E - OBJ_PODOBOO
+	.word ObjNorm_Podobo		; Object $9E - OBJ_Podobo
 	.word ObjNorm_ParaBeetle	; Object $9F - OBJ_PARABEETLE
 	.word ObjNorm_PumpkinFree		; Object $A0 - OBJ_PUMPKINFREE
 	.word ObjNorm_PumpkinFree		; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -123,7 +123,7 @@ ObjectGroup04_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $9B
 	.word ObjHit_DoNothing	; Object $9C
 	.word ObjHit_DoNothing	; Object $9D - OBJ_FIREJET_UPWARD
-	.word ObjHit_DoNothing	; Object $9E - OBJ_PODOBOO
+	.word ObjHit_DoNothing	; Object $9E - OBJ_Podobo
 	.word ObjHit_DoNothing	; Object $9F - OBJ_PARABEETLE
 	.word Player_GetHurt	; Object $A0 - OBJ_PUMPKINFREE
 	.word ObjHit_DoNothing	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -165,7 +165,7 @@ ObjectGroup04_Attributes:
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $9B
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $9C
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $9E - OBJ_PODOBOO
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $9E - OBJ_Podobo
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $9F - OBJ_PARABEETLE
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $A0 - OBJ_PUMPKINFREE
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -206,7 +206,7 @@ ObjectGroup04_Attributes2:
 	.byte OA2_TDOGRP0	; Object $9B
 	.byte OA2_TDOGRP0	; Object $9C
 	.byte OA2_TDOGRP0	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $9E - OBJ_PODOBOO
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $9E - OBJ_Podobo
 	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $9F - OBJ_PARABEETLE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A0 - OBJ_PUMPKINFREE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -247,7 +247,7 @@ ObjectGroup04_Attributes3:
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $9B
 	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $9C
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $9E - OBJ_PODOBOO
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $9E - OBJ_Podobo
 	.byte OA3_HALT_NORMALONLY 	; Object $9F - OBJ_PARABEETLE
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A0 - OBJ_PUMPKINFREE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -289,7 +289,7 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $9B
 	.byte OPTS_NOCHANGE	; Object $9C
 	.byte OPTS_SETPT6 | $37	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OPTS_NOCHANGE	; Object $9E - OBJ_PODOBOO
+	.byte OPTS_NOCHANGE	; Object $9E - OBJ_Podobo
 	.byte OPTS_SETPT5 | $0E	; Object $9F - OBJ_PARABEETLE
 	.byte OPTS_SETPT6 | $13	; Object $A0 - OBJ_PUMPKINFREE
 	.byte OPTS_SETPT5 | $13	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -331,7 +331,7 @@ ObjectGroup04_KillAction:
 	.byte KILLACT_STANDARD	; Object $9B
 	.byte KILLACT_STANDARD	; Object $9C
 	.byte KILLACT_STANDARD	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $9E - OBJ_PODOBOO
+	.byte KILLACT_POOFDEATH	; Object $9E - OBJ_Podobo
 	.byte KILLACT_JUSTDRAW16X16	; Object $9F - OBJ_PARABEETLE
 	.byte KILLACT_JUSTDRAW16X16	; Object $A0 - OBJ_PUMPKINFREE
 	.byte KILLACT_POOFDEATH	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -456,161 +456,123 @@ ObjPAA:
 ; Note to self: Remember, until the label!
 	.byte $A9, $71
 
-ObjInit_Podoboo:
+Podobo_Limit = Objects_Data3
+Podobo_LimitHi = Objects_Data4
+Podobo_Frame = Objects_Data1
+Podobo_Timer = Objects_Data5
+Podobo_Hiding = Objects_Data6
+
+ObjInit_Podobo:
 	LDA Objects_Property, X
-	BEQ ObjInit_Podoboo1
+	BEQ ObjInit_Podobo1
 
 	LDA #$0A
 	STA PatTable_BankSel+4
 
-ObjInit_Podoboo1:
-	; Var5 = Original Y
+ObjInit_Podobo1:
 	LDA <Objects_YZ,X
-	STA <Objects_Data2,X
+	ADD #$2A
+	STA Podobo_Limit,X
 
-	; Var4 = Original Y Hi
 	LDA <Objects_YHiZ,X
-	STA <Objects_Data1,X
+	ADC #$00
+	STA Podobo_LimitHi,X
 
+	LDA #$01
+	STA Objects_NoIce, X
 	RTS		 ; Return
 
-	; The higher Podoboo goes, the less velocity it has
-	;
-	; NOTE: Where it becomes positive, these are actual values
-	; sent into Timer3, and the Y velocity used is still -$80
-Podoboo_YVelByHeight:
-	.byte -$10, -$24, -$30, -$38, -$40, -$48, -$4E, -$54, -$5A, -$60, -$66, -$6A, -$6E, -$74, -$78, -$7C, -$80, $04, $08, $0C, $10, $14
-
-ObjNorm_Podoboo:
-	LDA Objects_Timer,X
-	BEQ PRG005_A259	 ; If timer expired, jump to PRG005_A259
-
-	; Objects_SpritesHorizontallyOffScreen = Timer (screwy way to make Podoboo invisible until timer expires)
-	STA Objects_SpritesHorizontallyOffScreen,X
-
-	CMP #$01
-	BNE PRG005_A258	 ; If timer <> 1, jump to PRG005_A258 (RTS)
-
-PRG005_A250:
-	JSR Object_DetermineHorizontallyOffScreen	; Determine ACTUAL horizontal visibility
-
-	; Podoboo splashes coming out of the lava
-	LDA #$13
-	JSR Podoboo_Splash
-
-PRG005_A258: 
-	RTS		 ; Return
-
-PRG005_A259:
+ObjNorm_Podobo:
 	LDA <Player_HaltGameZ
-	BEQ PRG005_A260	 ; If gameplay is not halted, jump to PRG005_A260
+	BEQ Podobo_Norm
 
-	JMP PRG005_A2E1	 ; Otherwise, jump to PRG005_A2E1
+	JMP Object_DrawMirrored
 
-PRG005_A260:
-	JSR Object_AttackOrDefeat	 ; Do Player to Podoboo collision
+Podobo_Norm:
+	
+	JSR Object_DeleteOffScreen
+	LDA Objects_Timer,X
+	BEQ Podobo_Move	 ; If timer expired, jump to PRG005_A259
 
-	LDA #$00	; A = $00 (no flip)
+Podobo_Hide:
+	RTS
 
-	LDY <Objects_YVelZ,X
-	BMI PRG005_A26B	 ; If Podobo is moving upward, jump to PRG005_A26B
+Podobo_Move:	
+	LDA <Objects_YVelZ, X
+	BPL Podobo_MoveGravity
 
-	LDA #SPR_VFLIP	 ; A = SPR_VFLIP (vertically flip)
+	LDA <Objects_YZ, X
+	SUB Podobo_Limit, X
 
-PRG005_A26B:
-	STA Objects_Orientation,X	 ; Set appropriate flip
+	LDA <Objects_YHiZ, X
+	SBC Podobo_LimitHi, X
+	BCC Podobo_MoveGravity
 
-	LDA <Counter_1
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+Podobo_MoveGravity:
+	JSR Object_Move
+
+Podobo_MoveDone:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
+
+	LDA <Objects_YZ, X
+	AND #$0F
+	CMP #$0B
+	BCC Podobo_Animate
+
+	LDA Object_BodyTileProp, X
+	CMP #(TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	BEQ Podobo_Pause
+
+	CMP #(TILE_PROP_FOREGROUND |TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	BNE Podobo_Animate
+
+Podobo_Pause:
+
+	LDA #$40
+	STA Objects_Timer, X
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+Podobo_Animate:
+	; Frame loop 0-2
+	INC Podobo_Frame, X
+	LDA Podobo_Frame, X
+	LSR A
+	LSR A
+	LSR A
 	AND #$03
-	BNE PRG005_A283	 ; 1:4 ticks proceed, otherwise, jump to PRG005_A283
-
-	; Cycle frame 0-2
-	INC Objects_Frame,X	; Frame++
-
-	LDA Objects_Frame,X
 	CMP #$03
-	BNE PRG005_A283	 ; If frame <> 3, jump to PRG005_A283
+	BCC Podobo_StoreFrame
 
-	; Reset frame to zero
 	LDA #$00
-	STA Objects_Frame,X
+	STA Podobo_Frame, X
 
-PRG005_A283:
-	LDA <Objects_YVelZ,X
-	BMI PRG005_A2C9	 ; If Podoboo is moving upward, jump to PRG005_A2C9
+Podobo_StoreFrame:
+	STA Objects_Frame, X
 
-	JSR Object_WorldDetectN1	 ; Detect against world
 
-	LDA Object_VertTileProp
-	AND #$E0
-	CMP #TILE_PROP_WATER
-	BNE PRG005_A2C9	 	; If Podoboo has not hit the lava, jump to PRG005_A2C9
+	LDA <Objects_YVelZ, X
+	BPL Podobo_Flip
 
-	LDA <Objects_YZ,X
-	SUB <Objects_Data2,X
-	STA <Temp_Var1
-	LDA <Objects_YHiZ,X
-	SBC <Objects_Data1,X
-	LSR A	
-	ROR <Temp_Var1
-	LDA <Temp_Var1
-	LSR A
-	LSR A
-	LSR A
-	TAY		 ; Y = Podoboo's relative height as an index
+	LDA #$00
+	STA Objects_Orientation, X
+	BEQ Podobo_Draw
 
-	LDA Podoboo_YVelByHeight,Y	 ; Get Y Velocity by height
-	BMI PRG005_A2AF	 ; If this is a negative value, jump to PRG005_A2AF
+Podobo_Flip:
 
-	STA Objects_Timer3,X	; Otherwise, the value actually goes into Timer3
-
-	LDA #-$80	 ; Use velocity of -$80
-
-PRG005_A2AF:
-	STA <Objects_YVelZ,X	 ; Set Podoboo's Y velocity
-
-	LDA <Objects_YZ,X
-	PHA		 ; Save Y
-	SBC #$04
-	STA <Objects_YZ,X ; Subtract 4 from Y
-
-	JSR PRG005_A250		; Splash and determine horizontal visibility
-
-	; Restore Y
-	PLA	
-	STA <Objects_YZ,X
-
-	LDA RandomN,X
-	AND #$3f
-	ORA #$40
-	STA Objects_Timer,X	 ; Set Podoboo's timer to $40 - $7F
-
-	RTS		 ; Return
-
-PRG005_A2C9:
-	JSR Object_ApplyYVel_NoGravity	; Apply Y velocity
-
-	LDA Objects_Timer3,X
-	BNE PRG005_A2DE	 ; If Timer3 not expired, jump to PRG005_A2DE
-
-	LDA <Objects_YVelZ,X
-	BMI PRG005_A2D9	 ; If Podoboo is moving upward, jump to PRG005_A2D9
-
-	CMP #$70
-	BGE PRG005_A2DE	 ; If Podoboo is falling >= $70, jump to PRG005_A2DE
-
-PRG005_A2D9:
-
-	; +2 to Podoboo's Y Velocity (Gravity)
-	ADD #$02
-	STA <Objects_YVelZ,X
-
-PRG005_A2DE:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-PRG005_A2E1:
-	JMP Object_DrawMirrored	 ; Draw Podoboo and don't come back!!
-
+	LDA #SPR_VFLIP
+	STA Objects_Orientation, X
+	BNE Podobo_Draw
+	
+Podobo_Draw:
+	JMP Object_DrawMirrored
 
 SpinyEgg_TowardsPlayer:	.byte $0A, -$0A
 
@@ -4292,7 +4254,7 @@ ObjNorm_Swoosh1:
 	LDA Objects_Property, X
 	AND #$01
 	BEQ ObjNorm_Swoosh2
-	JSR Chase
+	JSR Object_ChasePlayer
 	JSR Object_FacePlayer
 	TYA
 	EOR #$01

@@ -119,7 +119,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word Player_GetHurt	; Object $07 - OBJ_BRICK
 	.word ObjHit_Coin	; Object $08 - OBJ_COIN
-	.word BubblePop	; Object $09 - OBJ_BUBBLE
+	.word Bubble_Hit	; Object $09 - OBJ_BUBBLE
 	.word ObjHit_DoNothing	; Object $0A
 	.word PUp_Collect	; Object $0B - OBJ_POWERUP
 	.word ObjInit_DoNothing	; Object $0C - OBJ_POWERUP_STARMAN
@@ -136,7 +136,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $17 - OBJ_NEGASTAR
 	.word OCSPECIAL_HIGHSCORE; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjNorm_DoNothing	; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.word BubblePop	; Object $1A
+	.word ObjHit_DoNothing	; Object $1A
 	.word Object_SetDeadEmpty	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjHit_DoNothing	; Object $1C
 	.word ObjHit_DoNothing	; Object $1D
@@ -259,7 +259,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_COIN
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE 	; Object $09 - OBJ_BUBBLE
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE 	; Object $09 - OBJ_BUBBLE
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0B - OBJ_POWERUP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
@@ -446,7 +446,10 @@ ObjP04:	.byte $F5, $F7, $B5, $B7
 ObjP05:	.byte $95, $95, $97, $97
 ObjP06:	.byte $6B, $6B, $67, $67, $77, $77
 ObjP1B:	.byte $8B, $8D, $8F, $91, $89, $89, $91, $8F, $CB, $CD, $CF, $D1, $C9, $C9, $D1, $CF	; RAS: Not actually used, see BounceBlock_Tile
+
 ObjP09:	
+	.byte $A7, $A7, $A9, $A9, $AB, $AB, $8D, $8D, $8F, $8F, $91, $91
+
 ObjP1A: .byte $8D, $8D, $8F, $8F, $91, $91, $A7, $A7, $A9, $A9, $AB, $AB
 ObjP0A:	.byte $A9, $AB, $BD, $BF
 ObjP0C:	.byte $51, $53
@@ -865,116 +868,156 @@ Bouncer_Draw:
 
 
 ObjInit_BubbleGenerator:
-	LDA #$01
-	STA <Objects_Data1, X
+	RTS
 
 ObjInit_Bubble:
-	LDA #$01
-	STA ObjSplash_DisTimer, X
-	LDA #$03
-	STA Objects_Data4, X
 	LDA Objects_Property, X
-	BEQ ObjInit_BubbleRTS
+	BEQ Bubble_NoGraphics
 
+
+Bubble_NoRegen:
 	LDA #$1A
 	STA PatTable_BankSel + 4
-	LDA #$00
-	STA Objects_Data4, X
-	LDA #$08
-	STA Objects_SlowTimer, X
 
-ObjInit_BubbleRTS:
+Bubble_NoGraphics:
+	LDA <Objects_XZ, X
+	STA Bubble_RegenX, X
+
+	LDA <Objects_XHiZ, X
+	STA Bubble_RegenXHi, X
+
 	LDA <Objects_YZ, X
-	STA Objects_Data5, X
+	STA Bubble_RegenY, X
+
 	LDA <Objects_YHiZ, X
-	STA Objects_Data3, X
+	STA Bubble_RegenYHi, X
 	RTS		 ; Return
 
+Bubble_Action = Objects_Data2
+Bubble_GeneratorTimer = Objects_Data3
+Bubble_PopTimer = Objects_Data4
+Bubble_RegenX = Objects_Data5
+Bubble_RegenXHi = Objects_Data6
+Bubble_RegenY = Objects_Data7
+Bubble_RegenYHi = Objects_Data8
 
 ObjNorm_Bubble:
+	LDA Bubble_Action, X
+	JSR DynJump
+
+	.word Bubble_Float
+	.word Bubble_Pop
+	.word Bubble_Wait
+	.word Bubble_Regenerate
+
+Bubble_Float:
+	LDA <Player_HaltGameZ
+	BEQ Bubble_FloatNormal
+	JMP Draw_Bubble
+
+Bubble_FloatNormal:
 	JSR Object_DeleteOffScreen
 
-	LDA Objects_SlowTimer, X
-	BNE BubbleRTS
-
-	LDA Objects_Data4, X
-	CMP #$03
-	BEQ BubbleNorm
-	BCS BubblePop
-
-	LDA <Player_HaltGameZ
-	BNE BubbleDraw
-	
-	LDA <Counter_1
-	AND #$07
-	BNE ObjNorm_Bubble1
-	INC Objects_Data4, X
-
-ObjNorm_Bubble1:
-	LDA Objects_Data4, X
-	STA Objects_Frame, X
-	JMP Object_DrawMirrored
-
-BubbleNorm:
+	INC ReverseGravity
+	JSR Object_Move
+	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
-	LDA  <Objects_TilesDetectZ, X
-	AND #HIT_CEILING
-	BNE BubbleNorm2
-	LDA Objects_YVelZ, X
-	CMP #$F8
-	BEQ BubbleNorm1
-
-	DEC Objects_YVelZ, X
-
-BubbleNorm1:
-	JSR Object_ApplyYVel
-
-BubbleNorm2:
-	LDA #$03
-	STA Objects_Frame, X
+	JSR Object_InteractWithTiles
 	JSR Object_InteractWithPlayer
 
-BubbleDraw:
-	JSR Object_DrawMirrored
-	LDY Object_SpriteRAMOffset,X
-	LDA Sprite_RAM +6, Y
-	ORA #SPR_VFLIP
-	STA Sprite_RAM +6, Y
+	LDA Objects_InWater, X
+	BNE Draw_Bubble
 
-BubbleRTS:
+	INC Bubble_Action, X
+
+Draw_Bubble:
+	JSR Object_DrawMirrored
+
+	LDY Object_SpriteRAMOffset,X
+
+	LDA Sprite_RAMAttr + 4, Y
+	ORA #SPR_VFLIP
+	STA Sprite_RAMAttr + 4, Y
 	RTS		 ; Return
 
-BubblePop:
-	LDA Objects_Data4, X
-	STA Objects_Frame, X
-	CMP #$05
-	BEQ BubblePopped
-	LDA <Counter_1
-	AND #$07
-	BEQ BubblePopRTS
-	INC Objects_Data4, X
+Bubble_Hit:
 	LDA #$40
 	STA Air_Time
-
-BubblePopRTS:
-	BNE  BubbleDraw
+	INC Bubble_Action, X
 	RTS
 
-BubblePopped:
-	LDA <Objects_Data1, X
-	BEQ DestroyBubble
-	LDA Objects_Data5, X
-	STA Objects_YZ, X
-	LDA Objects_Data3, X
-	STA Objects_YHiZ, X
+Bubble_Pop:
+	INC Bubble_PopTimer, X
+	LDA Bubble_PopTimer, X
+	CMP #$0C
+	BNE Bubble_PopDraw
+
+	LDA Objects_Property, X
+	CMP #$02
+	BNE Bubble_PopDelete
+	
+	INC Bubble_Action, X
+	
+	LDA #$80
+	STA Objects_Timer, X
+
 	LDA #$00
-	STA Objects_Data4, X
-	LDA #$40
-	STA Objects_SlowTimer, X
+	STA Bubble_PopTimer, X
 	RTS
 
-DestroyBubble:
-	JMP Object_SetDeadAndNotSpawned
+Bubble_PopDelete:
+	JMP Object_Delete
+
+Bubble_PopDraw:
+	LSR A
+	LSR A
+	AND #$03
+	STA Objects_Frame, X
+	JMP Draw_Bubble
+
+Bubble_Wait:
+	LDA Objects_Timer, X
+	BNE Bubble_WaitRTS
+
+	INC Bubble_Action, X
+
+	LDA Bubble_RegenX, X
+	STA <Objects_XZ, X
+
+	LDA Bubble_RegenXHi, X
+	STA <Objects_XHiZ, X
+
+	LDA Bubble_RegenY, X
+	STA <Objects_YZ, X
+
+	LDA Bubble_RegenYHi, X
+	STA <Objects_YHiZ, X
+
+Bubble_WaitRTS:
+
+	RTS
+
+Bubble_Regenerate:
+	INC Bubble_GeneratorTimer, X
+	LDA Bubble_GeneratorTimer, X
+	CMP #$18
+	BNE Bubble_RegenerateDraw
+
+	LDA #$00
+	STA Bubble_Action, X
+	STA Bubble_GeneratorTimer, X
+	STA Objects_Frame, X
+	
+	JMP Draw_Bubble
+
+Bubble_RegenerateDraw:
+	LSR A
+	LSR A
+	LSR A
+	AND #$03
+	ADD #$03
+	STA Objects_Frame, X
+	JMP Object_DrawMirrored
 
 POWERUP_COIN		= 1
 POWERUP_MUSHROOM	= 2
@@ -4427,7 +4470,7 @@ ObjNorm_IceFireFly01:
 	LDA Objects_Data4, X
 	AND #$01
 	BEQ ObjNorm_IceFireFly0
-	JSR Chase
+	JSR Object_ChasePlayer
 
 ObjNorm_IceFireFly0:
 	LDA Objects_XZ, X

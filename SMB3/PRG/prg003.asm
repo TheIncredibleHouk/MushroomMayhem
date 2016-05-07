@@ -35,7 +35,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_Explosion	; Object $50 - OBJ_EXPLOSION
 	.word ObjInit_RotoDiscDualCCW	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjInit_Spintula	; Object $52 - OBJ_SPINTULA
-	.word ObjInit_PodobooCeiling	; Object $53 - OBJ_PODOBOOCEILING
+	.word ObjInit_PipePodobo	; Object $53 - OBJ_PIPEPODOBO
 	.word ObjInit_DonutLift		; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.word ObjInit_BobOmb		; Object $55 - OBJ_BOBOMB
 	.word ObjInit_PiranhaSidewaysL	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -73,11 +73,11 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_MagicStar		; Object $4C - OBJ_MAGICSTAR
 	.word ObjNorm_DoNothing	; Object $4D
 	.word ObjNorm_DoNothing		; Object $4E
-	.word ObjNorm_ChainChompFree	; Object $4F - OBJ_CHAINCHOMPFREE
+	.word ObjNorm_DoNothing	; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjNorm_Explosion		; Object $50 - OBJ_EXPLOSION
 	.word ObjNorm_RotoDiscDual	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjNorm_Spintula	; Object $52 - OBJ_SPINTULA
-	.word ObjNorm_PodobooCeiling	; Object $53 - OBJ_PODOBOOCEILING
+	.word ObjNorm_PipePodobo	; Object $53 - OBJ_PIPEPODOBO
 	.word ObjNorm_DonutLift		; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.word ObjNorm_BobOmb		; Object $55 - OBJ_BOBOMB
 	.word ObjNorm_PiranhaSideways	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -120,7 +120,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $50 - OBJ_EXPLOSION
 	.word ObjHit_DoNothing	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjHit_DoNothing	; Object $52 - OBJ_SPINTULA
-	.word ObjHit_DoNothing	; Object $53 - OBJ_PODOBOOCEILING
+	.word ObjHit_DoNothing	; Object $53 - OBJ_PIPEPODOBO
 	.word ObjHit_DoNothing	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.word Object_Hold	; Object $55 - OBJ_BOBOMB
 	.word ObjHit_DoNothing	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -162,7 +162,7 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $50 - OBJ_EXPLOSION
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $52 - OBJ_SPINTULA
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $53 - OBJ_PODOBOOCEILING
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $53 - OBJ_PIPEPODOBO
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $55 - OBJ_BOBOMB
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -203,7 +203,7 @@ ObjectGroup02_Attributes2:
 	.byte OA2_TDOGRP1	; Object $50 - OBJ_EXPLOSION
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $52 - OBJ_SPINTULA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $53 - OBJ_PODOBOOCEILING
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $53 - OBJ_PIPEPODOBO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte  OA2_TDOGRP1	; Object $55 - OBJ_BOBOMB
 	.byte OA2_TDOGRP0	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -245,7 +245,7 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY 	; Object $50 - OBJ_EXPLOSION
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OA3_HALT_NORMALONLY	; Object $52 - OBJ_SPINTULA
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $53 - OBJ_PODOBOOCEILING
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $53 - OBJ_PIPEPODOBO
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte OA3_HALT_NORMALONLY 	; Object $55 - OBJ_BOBOMB
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -287,7 +287,7 @@ ObjectGroup02_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $50 - OBJ_EXPLOSION
 	.byte OPTS_SETPT5 | $12	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OPTS_SETPT5 | $0A	; Object $52 - OBJ_SPINTULA
-	.byte OPTS_NOCHANGE	; Object $53 - OBJ_PODOBOOCEILING
+	.byte OPTS_NOCHANGE	; Object $53 - OBJ_PIPEPODOBO
 	.byte OPTS_SETPT5 | $0E	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte OPTS_SETPT5 | $0A	; Object $55 - OBJ_BOBOMB
 	.byte OPTS_SETPT5 | $5A	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
@@ -332,13 +332,13 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $50 - OBJ_EXPLOSION
 	.byte KILLACT_STANDARD	; Object $51 - OBJ_ROTODISCDUAL
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $52 - OBJ_SPINTULA
-	.byte KILLACT_POOFDEATH	; Object $53 - OBJ_PODOBOOCEILING
+	.byte KILLACT_POOFDEATH	; Object $53 - OBJ_PIPEPODOBO
 	.byte KILLACT_STANDARD	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte KILLACT_JUSTDRAW16X16	; Object $55 - OBJ_BOBOMB
+	.byte KILLACT_NORMALANDKILLED	; Object $55 - OBJ_BOBOMB
 	.byte KILLACT_POOFDEATH	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte KILLACT_POOFDEATH	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $58 - OBJ_PYRANTULA
-	.byte KILLACT_NORMALSTATE	; Object $59 - OBJ_FIRESNAKE
+	.byte KILLACT_POOFDEATH	; Object $59 - OBJ_FIRESNAKE
 	.byte KILLACT_STANDARD	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte KILLACT_STANDARD	; Object $5B - OBJ_ROTODISCCCLOCKWISE
 	.byte KILLACT_NORMALSTATE	; Object $5C - OBJ_ICEBLOCK
@@ -433,6 +433,7 @@ ObjP57:
 ObjP52:
 ObjP58:
 	.byte $A1, $A1, $A3, $A3, $A5, $A5
+
 ObjP59:
 	.byte $81, $83, $85, $87, $85, $87
 ObjP51:
@@ -700,34 +701,34 @@ Spintula_SpinUpStop:
 	STA <Objects_YVelZ, X
 	JMP Object_DrawMirrored
 
-CPodobo_YVel:
+PipePodobo_YVel:
 	.byte $20, $E0
 
-CPodobo_Orientation:
+PipePodobo_Orientation:
 	.byte SPR_VFLIP, $00
 
-Podobo_StartY = Objects_Data3
-Podobo_StartYHi = Objects_Data4
-Podobo_Frame = Objects_Data5
+PipePodobo_StartY = Objects_Data3
+PipePodobo_StartYHi = Objects_Data4
+PipePodobo_Frame = Objects_Data5
 
-ObjInit_PodobooCeiling:
+ObjInit_PipePodobo:
 	LDA Objects_Property, X
 	AND #$01
-	BEQ ObjInit_PodobooCeiling1
+	BEQ ObjInit_PipePodobo1
 
 	LDA #$0A
 	STA PatTable_BankSel+4
 
-ObjInit_PodobooCeiling1:
+ObjInit_PipePodobo1:
 	LDA Objects_Property, X
 	AND #$02
 	LSR A
 	TAY
 
-	LDA CPodobo_YVel, Y
+	LDA PipePodobo_YVel, Y
 	STA Objects_YVelZ, X
 
-	LDA CPodobo_Orientation, Y
+	LDA PipePodobo_Orientation, Y
 	STA Objects_Orientation,X
 
 	LDA #SPR_BEHINDBG
@@ -736,10 +737,10 @@ ObjInit_PodobooCeiling1:
 
 	; Store original Y/Hi into Var5/Var4
 	LDA <Objects_YZ,X
-	STA Podobo_StartY,X
+	STA PipePodobo_StartY,X
 
 	LDA <Objects_YHiZ,X
-	STA Podobo_StartYHi,X
+	STA PipePodobo_StartYHi,X
 
 	LDA <Objects_XZ, X
 	ADD #$08
@@ -753,59 +754,59 @@ ResetPipePodobo:
 	LDA #$20
 	STA Objects_Timer, X
 
-	LDA Podobo_StartY, X
+	LDA PipePodobo_StartY, X
 	STA <Objects_YZ, X
 
-	LDA Podobo_StartYHi, X
+	LDA PipePodobo_StartYHi, X
 	STA <Objects_YHiZ, X
 	RTS		 ; Return
 
-ObjNorm_PodobooCeiling:
+ObjNorm_PipePodobo:
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_PodobooCeiling1
+	BEQ ObjNorm_PipePodobo1
 
 	JMP Object_DrawMirrored
 
-ObjNorm_PodobooCeiling1:
+ObjNorm_PipePodobo1:
 	LDA Objects_Timer, X
-	BEQ ObjNorm_PodobooCeiling2
+	BEQ ObjNorm_PipePodobo2
 
 	RTS
 
-ObjNorm_PodobooCeiling2:
+ObjNorm_PipePodobo2:
 	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat	 ; Handle Player collision with Podoboo
 
 	LDA <Objects_YZ, X
 	AND #$0F
-	BNE Pipodobo_Animate
+	BNE PipePodobo_Animate
 
 	JSR Object_DetectTiles
 	LDA Object_BodyTileProp, X
 	CMP #TILE_PROP_SOLID_ALL
-	BCC Pipodobo_Animate
+	BCC PipePodobo_Animate
 
 	JSR ResetPipePodobo
 
-Pipodobo_Animate:
+PipePodobo_Animate:
 	; Frame loop 0-2
-	INC Podobo_Frame, X
-	LDA Podobo_Frame, X
+	INC PipePodobo_Frame, X
+	LDA PipePodobo_Frame, X
 	LSR A
 	LSR A
 	LSR A
 	AND #$03
 	CMP #$03
-	BCC Pipodobo_Frame
+	BCC PipePodobo_StoreFrame
 
 	LDA #$00
-	STA Podobo_Frame, X
+	STA PipePodobo_Frame, X
 
-Pipodobo_Frame:
+PipePodobo_StoreFrame:
 	STA Objects_Frame, X
 	
-Pipodobo_Draw:
+PipePodobo_Draw:
 	JMP Object_DrawMirrored	 ; Draw Podoboo and don't come back!
 
 BrickBustPowerUp: .byte OBJ_COIN, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_STARMAN, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP_STARMAN, OBJ_POWERUP, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE, $00, $00, $00, OBJ_KEY
@@ -1554,11 +1555,7 @@ ShyGuyWait:
 	BNE ShyGuyCarryBrick3
 
 ShyGuySurprise:
-	
-Object_CheckIfNormalState:
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	RTS		 ; Return
+	RTS
 
 
 BrickBust_MicroGoomba:
@@ -1969,17 +1966,136 @@ ObjInit_BobOmb:
 BobOmb_Frame = Objects_Data3
 BobOmb_Activated = Objects_Data4
 BobOmb_Unstable = Objects_Data5
+BobOmb_Action = Objects_Data1
+BobOmb_BehindTimer = Objects_Data2
 
 ObjNorm_BobOmb:
 	LDA <Player_HaltGameZ
-	BEQ BobOmb_Norm
+	BEQ BobOmb_DoAction
 
 	JMP Object_Draw
 
+BobOmb_DoAction:
+	
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+
+	BEQ BobOmb_Death
+
+	LDA BobOmb_Action, X
+	JSR DynJump
+
+	.word BobOmb_Norm
+	.word BobOmb_Left
+	.word BobOmb_Right
+	.word BobOmb_Raise
+	.word BobOmb_Drop
+
+BobOmb_Death:
+	LDA Objects_PlayerProjHit, X
+	CMP #HIT_FIREBALL
+	BNE BobOmb_Death1
+
+	LDA #$01
+	STA Explosion_Timer, X
+
+BobOmb_Death1:
+	JMP BobOmb_Draw
+
+BobOmb_Raise:
+	LDA Objects_Timer, X
+	BEQ BobOmb_PopOut
+
+	CMP #$20
+	BCC BobOmb_RaiseDone
+
+	LDA #$F0
+	STA <Objects_YVelZ, X
+	JSR Object_ApplyYVel_NoGravity
+	JMP BobOmb_Draw
+
+BobOmb_PopOut:
+	JSR Object_CalcBoundBox
+	JSR Object_MoveDirectionFacing
+	
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA BobOmb_Action, X
+
+	LDA #$08
+	STA BobOmb_BehindTimer, X
+
+BobOmb_RaiseDone:
+	JMP BobOmb_Draw
+
+BobOmb_Drop:
+	LDA Objects_Timer, X
+	BEQ BobOmb_DropDown
+
+	CMP #$20
+	BCC BobOmb_DropDone
+
+	LDA #$10
+	STA <Objects_YVelZ, X
+	JSR Object_ApplyYVel_NoGravity
+	JMP BobOmb_Draw
+
+BobOmb_DropDown:
+	JSR Object_CalcBoundBox
+	
+	LDA #$01
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA BobOmb_Action, X
+
+	LDA #$08
+	STA BobOmb_BehindTimer, X
+
+BobOmb_DropDone:
+	JMP BobOmb_Draw
+
+BobOmb_Left:
+	LDA Objects_Timer, X
+	CMP #$10
+	BEQ BobOmb_Out
+
+	LDA #$F8
+	STA <Objects_XVelZ, X
+	JSR Object_ApplyXVel
+	JMP BobOmb_Animate
+
+BobOmb_Right:
+	LDA Objects_Timer, X
+	BEQ BobOmb_Out
+
+	LDA #$08
+	STA <Objects_XVelZ, X
+	JSR Object_ApplyXVel
+
+	JMP BobOmb_Animate
+
+BobOmb_Out:
+	LDA #$00
+	STA BobOmb_Action, X
+	LDA #$08
+	STA BobOmb_BehindTimer, X
+	JMP BobOmb_Animate
+
 BobOmb_Norm:
+
 	JSR Object_DeleteOffScreen	 
 	JSR Object_Move
 	JSR Object_CalcBoundBox
+
+	LDA <Objects_XVelZ, X
+	BNE BobOmb_Norm1
+
+	JSR Object_FacePlayerOnLanding
+
+BobOmb_Norm1:
 
 	LDA Explosion_Timer, X
 	ORA BobOmb_Unstable, X
@@ -1996,11 +2112,12 @@ BobOmb_Norm:
 	
 	LDA #$02
 	STA Objects_Frame, X
-	JMP BobOmb_Draw
+	JMP Object_Draw
 
 BobOmb_UnstableCheck:
 	JSR Object_InteractWithTiles
 	JSR Object_InteractWithPlayer
+	JSR Object_RespondToTailAttack
 
 	LDA Object_BeingHeld, X
 	BNE BobOmb_ShakeDraw
@@ -2020,6 +2137,9 @@ BobOmb_Attack:
 	JSR Object_InteractWithTiles
 	JSR Object_AttackOrDefeat
 	
+	LDA Objects_Stomped, X
+	BEQ BobOmb_Animate
+
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE BobOmb_Animate
@@ -2050,6 +2170,24 @@ BobOmb_Animate:
 	STA Objects_Frame,X
 
 BobOmb_Draw:
+	LDA Objects_SpriteAttributes, X
+	AND #~SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA BobOmb_Action, X
+	ORA BobOmb_BehindTimer, X
+	BEQ BobOmb_NotBehind
+
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA BobOmb_BehindTimer, X
+	BEQ BobOmb_NotBehind
+
+	DEC BobOmb_BehindTimer, X
+
+BobOmb_NotBehind:
 	JMP Object_Draw
 
 BobOmb_ShakeDraw:
@@ -2249,7 +2387,6 @@ Explosion_BumpBlocks:
 
 	JSR Object_DetectTile
 
-	STA Debug_Snap
 	LDA Tile_LastProp
 	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_STONE)
 	BEQ Explosion_Bust
@@ -3741,11 +3878,6 @@ Blooper_FlipTowardsPlayer:
 
 ObjInit_BlooperWithKids:
 
-	; Var7 = 4 (kids left)
-	LDA #$04
-	STA Objects_Data3,X
-
-	JSR Object_InitTailBuffer	 ; Initialize tail buffer (if no buffer available, will be destroyed and won't come back)
 
 	RTS		 ; Return
 
@@ -4031,166 +4163,440 @@ PRG003_B8E9:
 	CLC		 ; Clear carry
 	RTS		 ; Return
 
-Chomp_JumpYVels:	.byte -$20, -$30
-Chomp_XVels:		.byte $20, -$20
+FireSnake_Frame = Objects_Data1
+FireSnake_CanJump = Objects_Data3
+FireSnake_BufferOffset = Objects_Data4
 
-ObjNorm_ChainChompFree:
-	JSR Object_CheckIfNormalState
-	BEQ PRG003_B8F7	 ; If in normal state, jump to PRG003_B8F7
+FireSnakeFlips:
+	.byte $00, SPR_HFLIP
 
-	JMP Tail_DrawAndHurtPlayer	 ; Otherwise, jump to Tail_DrawAndHurtPlayer
+FireSnake_Jumps:
+	.byte $E0, $E0, $D8, $C8, $BA, $B2, $A8, $A0, $98, $90, $8A, $8A, $8A, $8A, $8A, $8A
 
-PRG003_B8F7:
-	LDA <Player_HaltGameZ
-	BEQ PRG003_B8FE	 ; If gameplay is not halted, jump to PRG003_B8FE
-
-	JMP PRG003_BB17	 ; Jump to PRG003_BB17
-
-PRG003_B8FE:
-	JSR Object_SetHFlipByXVel ; Set horizontal flip by travel direction
-
-	; Toggle frame
-	LDA <Counter_1
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-	JSR Object_Move
-	JSR Object_AttackOrDefeat
-	LDA  <Objects_TilesDetectZ, X
-	AND #$03
-	BEQ PRG003_B932
-
-	LDA Objects_XVelZ, X
-	JSR Negate
-	STA  Objects_XVelZ, X
-
-PRG003_B932:
-	LDA  <Objects_TilesDetectZ, X
-	AND #$08
-	BEQ PRG003_B933
-	JSR Object_HitCeiling
-
-PRG003_B933:
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ PRG003_B95A	 ; If chomp has not hit ground, jump to PRG003_B95A
-
-	JSR Object_HitGround	 ; Align to floor
-
-	LDA RandomN,X
-	AND #$01
-	TAY		 ; Y = random 0 or 1
-
-	; Random jump velocity of two
-	LDA Chomp_JumpYVels,Y
-	STA <Objects_YVelZ,X
-
-	JSR Object_XDistanceFromPlayer
-	; Set X velocity in facing direction
-	LDA Chomp_XVels,Y
-	STA <Objects_XVelZ,X
-
-	LDA RandomN, X
-	AND #$02
-	BEQ PRG003_B95A
-	LDA <Objects_XVelZ, X
-	PHP
-	LSR A
-	PLP
-	BPL PRG003_B959
-	ORA #$80
-
-PRG003_B959:
-	STA <Objects_XVelZ, X
-	LDA <Objects_YVelZ, X
-	ASL A
-	STA <Objects_YVelZ, X
-
-PRG003_B95A:
-	
-	JMP Enemy_DeleteIfOffAndDrawTail	 ; Jump to Enemy_DeleteIfOffAndDrawTail
+FireSnake_BufferOffsets:
+	.byte 00, 16
 
 ObjInit_FireSnake:
-	JSR Object_InitTailBuffer	 ; Initialize tail buffer (if no buffer available, will be destroyed and won't come back)
+	JSR Object_InitBuffer
+	LDA FireSnake_BufferOffsets, Y
+	STA FireSnake_BufferOffset, X
+	TAY
 
-	; Set X velocity = 0
-	LDA #$00
-	STA <Objects_XVelZ,X
+	LDA #$0F
+	STA <Temp_Var1
+	
+FireSnake_InitLoop:
+	LDA <Objects_XZ, X
+	STA Object_BufferX, Y
 
-	BEQ PRG003_B96E	 ; Jump (technically always) to PRG003_B96E
+	LDA <Objects_YZ, X
+	STA Object_BufferY, Y
 
-ObjInit_Pyrantula:
-	; Var5 = random value 
-	LDA RandomN,X
-	STA <Objects_Data2,X
+	INY
+	DEC <Temp_Var1
+	BPL FireSnake_InitLoop
 
-PRG003_B96E:
-	; Var7 = 4
-	LDA #$04
-	STA Objects_Data3,X
-
-	RTS		 ; Return
-
-	; Initializes the buffer which holds "tail" X and Y coordinates
-Object_InitTailBuffer:
-	LDY #$01	 ; Y = 1
-PRG003_B976:
-	LDA Buffer_Occupied,Y
-	BEQ PRG003_B983	 ; If this buffer slot is empty, jump to PRG003_B983
-
-	DEY		 ; Y--
-	BPL PRG003_B976	 ; While Y >= 0, loop!
-
-	; Giving up...
-
-	; Do NOT return to caller
-	PLA
-	PLA
-	JMP Object_SetDeadAndNotSpawned	; Fire Chomp can't be created...
-
-PRG003_B983:
-	; Mark buffer slot as occupied
 	LDA #$01
-	STA Buffer_Occupied,Y
+	STA Objects_NoIce, X
+	RTS
 
-	JSR Object_CalcSpriteXY_NoHi
+ObjNorm_FireSnake:
+	LDA <Player_HaltGameZ
+	BEQ FireSnake_Norm	 ; If gameplay is NOT halted, jump to PRG003_BD95
 
-	; Sprite Y -> Temp_Var1
-	LDA <Objects_SpriteY,X
+	JMP FireSnake_Draw
+
+FireSnake_Norm:
+	JSR Object_Move
+	JSR FireSnake_MoveTail
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+
+	LDA Objects_Timer3, X
+	BEQ FireSnake_InteractTiles
+
+	LDA <Objects_YVelZ, X
+	BMI FireSnake_InteractTiles
+
+	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_SOLID_TOP
+	BNE FireSnake_InteractTiles
+
+	LDA <Objects_TilesDetectZ, X
+	AND #~HITTEST_BOTTOM
+	STA <Objects_TilesDetectZ, X
+
+FireSnake_InteractTiles:
+	JSR Object_InteractWithTiles
+
+	LDA FireSnake_CanJump, X
+	BEQ FireSnake_TryCanJump
+
+	LDA Objects_Timer, X
+	BNE FireSnake_Animate
+
+	JSR Object_YDistanceFromPlayer
+	LDA <YDiffAboveBelow
+	BEQ FireSnake_DetermineJump
+
+	LDA #$20
+	STA Objects_Timer3, X
+
+	LDY #$00
+	BEQ FireSnake_DoJump
+
+FireSnake_DetermineJump:
+	LDA <YDiff
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+	INY
+
+FireSnake_DoJump:
+	LDA FireSnake_Jumps, Y
+	STA <Objects_YVelZ, X
+
+	CPY #$00
+	BNE FireSnake_TowardsPlayer
+
+	LDA #$20
+	STA Objects_Timer3, X
+
+FireSnake_TowardsPlayer:
+
+	JSR Object_MoveTowardsPlayerFast
+	LDA #$00
+	STA FireSnake_CanJump, X
+
+	
+	JMP FireSnake_Animate
+
+FireSnake_TryCanJump:
+	LDA <Objects_TilesDetectZ, X
+	AND #HITTEST_BOTTOM
+	BEQ FireSnake_Animate
+
+	INC FireSnake_CanJump, X
+	LDA #$20
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+
+FireSnake_Animate:
+	INC FireSnake_Frame, X
+	LDA FireSnake_Frame, X
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	LDA FireSnake_Frame, X
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+	LDA Objects_Orientation, X
+	AND #~SPR_HFLIP
+
+	ORA FireSnakeFlips, Y
+	STA Objects_Orientation, X
+	JMP FireSnake_Draw
+
+FireSnake_MoveTail:
+	LDA #$0E
 	STA <Temp_Var1
 
-	; Sprite X -> Temp_Var2
-	LDA <Objects_SpriteX,X
-	STA <Temp_Var2
+	LDA FireSnake_BufferOffset, X
+	ADD #$0E
+	TAY
 
-	TYA		
-	STA Objects_Data6,X	 ; Store Buffer_Occupied slot index -> Var6
 
-	LSR A
-	ROR A
-	LSR A
-	LSR A	; A = $00 or $20
+MoveTail_Loop:
+	LDA Object_BufferX, Y
+	STA Object_BufferX + 1, Y
 
-	; Copy sprite X and Y into buffer space
-	TAX		 ; -> 'X'
-	LDY #$1f	 ; Y = $1F
-PRG003_B99E:
-	LDA <Temp_Var1
-	STA Object_BufferY,X
-	LDA <Temp_Var2
-	STA Object_BufferX,X
+	LDA Object_BufferY, Y
+	STA Object_BufferY + 1, Y
+	DEY
+	DEC <Temp_Var1
+	BPL MoveTail_Loop
 
-	INX		 ; X++
+	INY
+	LDA <Objects_XZ, X
+	STA Object_BufferX, Y
 
-	DEY		 ; Y--
-	BPL PRG003_B99E	 ; While Y >= 0, loop!
+	LDA <Objects_YZ, X
+	STA Object_BufferY, Y
+	RTS
 
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
+FireSnake_Draw:
+	JSR Object_Draw
 
-	RTS		 ; Return
+FireSnake_RAMOffset = Temp_Var15
+FireSnake_TailPartX = Temp_Var2
+FireSnake_TailPartY = Temp_Var1
+FireSnake_TailOffset = Temp_Var16
+
+FireSnake_DrawTail:
+	LDY Object_SpriteRAMOffset, X
+	STY <FireSnake_RAMOffset
+
+	LDA FireSnake_BufferOffset, X
+	STA <FireSnake_TailOffset
+	TAX
+	LDA Object_BufferX + 3, X
+	SUB <Horz_Scroll
+	ADD #$04
+	STA <FireSnake_TailPartX
+	
+
+	LDA Object_BufferY + 3, X
+	SUB <Vert_Scroll
+	STA <FireSnake_TailPartY
+
+	JSR Object_ParticleVisibleTest
+	BCS FSDT1
+
+	LDY <FireSnake_RAMOffset
+	LDA <FireSnake_TailPartX
+	STA Sprite_RAMX + 8, Y
+	LDA <FireSnake_TailPartY
+	STA Sprite_RAMY + 8, Y
+
+	LDA GameCounter
+	AND #$03
+	BNE FSDT1
+
+	LDA Sprite_RAMX + 8, Y
+	SUB Sprite_RAMX, Y
+	STA <FireSnake_TailPartX
+
+	LDA Sprite_RAMY + 8, Y
+	SUB Sprite_RAMY, Y
+	STA <FireSnake_TailPartY
+	JSR FireSnake_TailHitTest
+
+FSDT1:
+	LDX <FireSnake_TailOffset
+
+	LDA Object_BufferX + 7, X
+	SUB <Horz_Scroll
+	ADD #$04
+	STA <FireSnake_TailPartX
+	
+
+	LDA Object_BufferY + 7, X
+	SUB <Vert_Scroll
+	STA <FireSnake_TailPartY
+
+	JSR Object_ParticleVisibleTest
+	BCS FSDT2
+
+	LDY <FireSnake_RAMOffset
+	LDA <FireSnake_TailPartX
+	STA Sprite_RAMX + 12, Y
+	LDA <FireSnake_TailPartY
+	STA Sprite_RAMY + 12, Y
+
+	LDA GameCounter
+	AND #$03
+	CMP #$01
+	BNE FSDT2
+
+	LDA Sprite_RAMX + 12, Y
+	SUB Sprite_RAMX, Y
+	STA <FireSnake_TailPartX
+
+	LDA Sprite_RAMY + 12, Y
+	SUB Sprite_RAMY, Y
+	STA <FireSnake_TailPartY
+	JSR FireSnake_TailHitTest
+
+FSDT2:
+	LDX <FireSnake_TailOffset
+	LDA Object_BufferX + 11, X
+	SUB <Horz_Scroll
+	ADD #$04
+	STA <FireSnake_TailPartX
+	
+
+	LDA Object_BufferY + 11, X
+	SUB <Vert_Scroll
+	STA <FireSnake_TailPartY
+
+	JSR Object_ParticleVisibleTest
+	BCS FSDT3
+
+	LDY <FireSnake_RAMOffset
+	LDA <FireSnake_TailPartX
+	STA Sprite_RAMX + 16, Y
+	LDA <FireSnake_TailPartY
+	STA Sprite_RAMY + 16, Y
+
+	LDA GameCounter
+	AND #$03
+	CMP #$02
+	BNE FSDT3
+
+	LDA Sprite_RAMX + 16, Y
+	SUB Sprite_RAMX, Y
+	STA <FireSnake_TailPartX
+
+	LDA Sprite_RAMY + 16, Y
+	SUB Sprite_RAMY, Y
+	STA <FireSnake_TailPartY
+	JSR FireSnake_TailHitTest
+
+FSDT3:
+	LDA Object_BufferX + 15, X
+	SUB <Horz_Scroll
+	ADD #$04
+	STA <FireSnake_TailPartX
+	
+
+	LDA Object_BufferY + 15, X
+	SUB <Vert_Scroll
+	STA <FireSnake_TailPartY
+
+	JSR Object_ParticleVisibleTest
+	BCS FSDT4
+
+	LDY <FireSnake_RAMOffset
+	LDA <FireSnake_TailPartX
+	STA Sprite_RAMX + 20, Y
+	LDA <FireSnake_TailPartY
+	STA Sprite_RAMY + 20, Y
+
+	LDA GameCounter
+	AND #$03
+	CMP #$03
+	BNE FSDT4
+
+	LDA Sprite_RAMX + 20, Y
+	SUB Sprite_RAMX, Y
+	STA <FireSnake_TailPartX
+
+	LDA Sprite_RAMY + 20, Y
+	SUB Sprite_RAMY, Y
+	STA <FireSnake_TailPartY
+	JSR FireSnake_TailHitTest
+
+FSDT4:
+	LDY <FireSnake_RAMOffset
+
+	LDA #$89
+	STA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 12, Y
+
+	LDA #$8B
+	STA Sprite_RAMTile + 16, Y
+	STA Sprite_RAMTile + 20, Y
+
+	LDX <CurrentObjectIndexZ
+	LDA Objects_Frame, X
+	AND #$01
+	TAX
+
+	LDA FireSnake_TailFlips, X
+	STA Sprite_RAMAttr + 8, Y
+	STA Sprite_RAMAttr + 16, Y
+
+	TXA
+	EOR #$01
+	TAX
+
+	LDA FireSnake_TailFlips, X
+	STA Sprite_RAMAttr + 12, Y
+	STA Sprite_RAMAttr + 20, Y
+	RTS
+
+FireSnake_TailHitTest:
+	LDA <FireSnake_TailPartX
+	STA <Temp_Var10
+
+	LDA <FireSnake_TailPartY
+	STA <Temp_Var11
+
+	LDX <CurrentObjectIndexZ
+	LDA Objects_BoundLeft, X
+	STA <CalcParam1
+
+	LDA Objects_BoundLeftHi, X
+	STA <CalcParam1 + 1
+
+	LDA #$00
+	STA <CalcParam2 + 1
+
+	LDA <Temp_Var10
+	BPL TailHit_Add
+
+	EOR #$FF
+	ADD #$01
+	STA <CalcParam2
+	JSR Subtract2ByteValue
+	JMP TailHit_Bound
+
+TailHit_Add:
+	STA CalcParam2
+	JSR Add2ByteValue
+
+TailHit_Bound:
+	LDA <CalcResult
+	STA SpecialObj_BoundLeft
+	ADD #$08
+	STA SpecialObj_BoundRight
+
+	LDA <CalcResult + 1
+	STA SpecialObj_BoundLeftHi
+	ADC #$00
+	STA SpecialObj_BoundRightHi
+
+	LDA Objects_BoundTop, X
+	STA <CalcParam1
+
+	LDA Objects_BoundTopHi, X
+	STA <CalcParam1 + 1
+
+	LDA #$00
+	STA <CalcParam2 + 1
+
+	LDA <Temp_Var11
+	BPL TailHit_Add2
+
+	EOR #$FF
+	ADD #$01
+	STA CalcParam2
+	JSR Subtract2ByteValue
+	JMP TailHit_Bound2
+
+TailHit_Add2:
+	STA CalcParam2
+	JSR Add2ByteValue
+
+TailHit_Bound2:
+	LDA <CalcResult
+	STA SpecialObj_BoundTop
+	ADD #$10
+	STA SpecialObj_BoundBottom
+
+	LDA <CalcResult + 1
+	STA SpecialObj_BoundTopHi
+	ADC #$00
+	STA SpecialObj_BoundBottomHi
+	JSR SpecialObj_DetectPlayer
+	BCC TailHit_None
+
+	JSR Player_GetHurt
+
+TailHit_None:
+	RTS
+
+FireSnake_TailFlips:
+	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
 
 RotoDisc_VelAccels:
 	.byte $01, $FF, $01, $FF, $01, $FF, $01, $FF, $02, $FE, $02, $FE
@@ -4205,660 +4611,129 @@ PRG003_B9C6:
 	.byte $28, $D8, $28, $D8
 
 
+ObjInit_Pyrantula:
+	JSR InitPatrol_Chase
+	LDA #$40
+	STA Objects_Timer, X
+	RTS		
+
+Pyrantula_Frame = Objects_Data1
+Pyrantula_FireTimer = Objects_Data2
+
 ObjNorm_Pyrantula:
 	LDA <Player_HaltGameZ
-	BEQ PRG003_B9D4	 ; If gameplay is not halted, jump to PRG003_B9D4
+	BEQ Pyrantula_Normal
+	JMP Pyrantula_Draw	 ; If gameplay is not halted, jump to PRG003_B9D4
 
-	JMP Object_DrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!
+Pyrantula_Normal:
+	LDA Pyrantula_FireTimer, X
+	BNE Pyrantula_Shoot
 
-PRG003_B9D4:
-	JSR Object_DeleteOffScreen
-	LDA Objects_Timer,X
-	BEQ PRG003_BA08	 ; If timer expired, jump to PRG003_BA08
+	LDA Objects_Timer, X
+	BNE Pyrantula_Move
 
+	LDA #$20
+	STA Pyrantula_FireTimer, X
+
+Pyrantula_Move:
+	JSR Object_ChasePlayer
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	
+	LDA  Object_VertTileProp, X
+	CMP #TILE_PROP_CLIMBABLE
+	BEQ Pyrantula_VGo
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+	STA Objects_YVelFrac,X	
+
+Pyrantula_VGo:
+	LDA  Object_HorzTileProp, X
+	CMP #TILE_PROP_CLIMBABLE
+	BEQ Pyrantula_Animate
+
+	JSR Object_WallStop
+	JMP Pyrantula_Animate
+
+Pyrantula_Shoot:
 	CMP #$10
-	BNE PRG003_B9F2	 ; If timer <> $10, jump to PRG003_B9F2
+	BNE Pyrantula_ShootDraw
 
-PRG003_B9EF:
-	JSR FireChomp_SpitFire	 ; Spit fire towards Player
+	LDA #$06
+	STA <Proj_XOff 
 
-PRG003_B9F2:
+	LDA #$0C
+	STA <Proj_YOff
+
+	JSR Object_ShootFireBallStraight
+	JSR Object_AimProjectile
+
+	LDA SpecialObj_XVel, Y
+	JSR Double_Value
+	STA SpecialObj_XVel, Y
+
+	LDA SpecialObj_YVel, Y
+	JSR Double_Value
+	STA SpecialObj_YVel, Y
+
+Pyrantula_ShootDraw:
+	DEC Pyrantula_FireTimer, X
+	BEQ Pyrantual_Reset
 
 	LDA #$02
-	STA Objects_Frame,X
-	BNE PRG003_BA09
+	STA Objects_Frame, X
+	BNE Pyrantula_Draw
 
-PRG003_BA08:
-	JSR PyrantulaMove	 
-	LDA <Counter_1
+Pyrantual_Reset:
+	LDA #$40
+	STA Objects_Timer, X
+	BNE Pyrantula_Draw
+
+Pyrantula_Animate:
+	INC <Pyrantula_Frame, X
+
+	LDA <Pyrantula_Frame, X
 	LSR A
 	LSR A
 	AND #$01
-	STA Objects_Frame,X
 
-PRG003_BA09:
-	JSR Object_DrawMirrored	
-	JMP Object_AttackOrDefeat
+	STA Objects_Frame, X
 
-Enemy_DeleteIfOffAndDrawTail:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-	JMP Tail_DrawAndHurtPlayer	 ; Jump to Tail_DrawAndHurtPlayer
-
-FireChomp_XVelLimit:	.byte $0A, -$0A, $10, -$10
-FireChomp_XVelAccel:	.byte $01, -$01, $01, -$01
-
-FireChomp_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
-
-FireChomp_YVelLimit:	.byte $12, -$12
-FireChomp_YVelAccel:	.byte $01, -$01
-
-PyrantulaMove:
-	JSR Object_GetAttrAndMoveTiles
-
-	INC Objects_Data5,X	 ; Var2++
-
-	LDA Objects_Data5,X
-	AND #$3f
-	BNE PRG003_BA4C	 ; 128 ticks on, 128 ticks off; jump to PRG003_BA4C
-
-	LDA Objects_Data3,X
-	BEQ PRG003_BA4C	 ; If Var7 = 0, jump to PRG003_BA4C
-
-	; Timer = $20
-	LDA #$20
-	STA Objects_Timer,X
-
-PRG003_BA4C:
-	JSR Object_XDistanceFromPlayer
-
-	LDA Objects_Data3,X
-	BNE PRG003_BA5C	 ; If Var7 <> 0, jump to PRG003_BA5C
-
-	; Y += 2
-	INY
-	INY
-
-PRG003_BA5C:
-	INC Objects_Data3,X	 ; Var3++
-
-	LDA Objects_Data3,X
-	LSR A
-	BCC PRG003_BA72	 ; Every other tick, jump to PRG003_BA72
-
-	LDA <Objects_XVelZ,X
-	CMP FireChomp_XVelLimit,Y
-	BEQ PRG003_BA72	 ; If Fire Chomp's X velocity is at limit, jump to PRG003_BA72
-
-	; Otherwise, accelerate!
-	ADD FireChomp_XVelAccel,Y
-	STA <Objects_XVelZ,X
-
-PRG003_BA72:
-	LDA Object_HorzTileProp
-	CMP #TILE_PROP_CLIMBABLE
-	BNE PRG003_BA73
-	JSR Object_ApplyXVel	 ; Apply X velocity
-
-PRG003_BA73:
-	LDA <Player_Y
-	PHA		 ; Save Player's Y
-
-	ADD #$00	; Add ... zero?
-	STA <Player_Y	; Update Player's Y (pointless!)
-
-	LDA <Player_YHi
-	PHA		 ; Save Player's Y Hi
-
-	ADC #$00	 ; Apply carry
-	STA <Player_YHi	 ; Update Player's Y Hi
-
-	JSR Object_YDistanceFromPlayer
-
-	PLA		 
-	STA <Player_YHi	; Restore Player's Y Hi
-
-	PLA
-	STA <Player_Y	; Restore Player's Y
-
-	LDA Objects_Data3,X
-	LSR A
-	BCC PRG003_BAA0	 ; Every other count of Var3, jump to PRG003_BAA0
-
-	LDA <Objects_YVelZ,X
-	CMP FireChomp_YVelLimit,Y
-	BEQ PRG003_BAA0	 ; If Fire Chomp's Y velocity is at limit, jump to PRG003_BAA0
-
-	; Otherwise, accelerate!
-	ADD FireChomp_YVelAccel,Y
-	STA <Objects_YVelZ,X
-
-PRG003_BAA0:
-	LDA Object_VertTileProp
-	CMP #TILE_PROP_CLIMBABLE
-	BNE PRG003_BAA1
-	JMP Object_ApplyYVel_NoGravity	 ; Apply Y velocity and don't come back!
-
-PRG003_BAA1:
-	RTS
-	; Moves all tail segments based on screen scroll change
-TailEnemy_MoveTailWithScroll:
-
-	; Essentially shift Var6 left 5 places, so A = $00 or $20 (buffer offset)
-	LDA Objects_Data6,X
-	LSR A
-	ROR A
-	LSR A
-	LSR A
-
-	ADD #31		; +31
-	TAY		; -> 'Y'
-
-	LDX #$1f	 ; X = $1F (all buffer entries)
-PRG003_BAB0:
-	; Update X by scroll
-	LDA Object_BufferX,Y 
-	SUB Level_ScrollDiffH
-	STA Object_BufferX,Y
-
-	; Update Y by scroll
-	LDA Object_BufferY,Y
-	SUB Level_ScrollDiffV
-	STA Object_BufferY,Y
-
-	DEY		 ; Y-- (previous buffer)
-	DEX		 ; X-- (decrement counter)
-	BPL PRG003_BAB0	; While X >= 0, loop!
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-	RTS		 ; Return
-
-FireChompTail_Patterns:
-	.byte $65, $65, $65, $65
-
-FireChompTail_Attributes:
-	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1
-
-
-	; For objects which have "tails", like the Fire Snake, Blooper w/ kids, etc.
-Tail_DrawAndHurtPlayer:
-	JSR Object_DetermineHorizontallyOffScreen	 ; Determine is object is horizontally visible
-
-	; Essentially shift Var6 left 5 places, so A = $00 or $20 (buffer offset)
-	LDA Objects_Data6,X
-	LSR A
-	ROR A
-	LSR A
-	LSR A
-
-	PHA	; Save offset
-	TAY	; -> 'Y'
-
-	; Set buffer X
-	LDA <Objects_XZ,X
-	SUB <Horz_Scroll
-	ADD Level_ScrollDiffH
-	STA Object_BufferX,Y
-
-	; Set buffer Y
-	LDA <Objects_YZ,X
-	SUB Level_VertScroll
-	ADD Level_ScrollDiffV
-	STA Object_BufferY,Y
-
-	PLA		 ; Restore offset
-	ADD #$1e	 ; Add $1E (other end of the buffer)
-
-	TAY		 ; -> 'Y'
-
-	LDX #$1e	 ; X = $1E (going to work backward)
-PRG003_BAFF:
-	; Subtract and push down the line X
-	LDA Object_BufferX,Y 
-	SUB Level_ScrollDiffH
-	STA Object_BufferX+1,Y
-
-	; Subtract and push down the line Y
-	LDA Object_BufferY,Y
-	SUB Level_ScrollDiffV
-	STA Object_BufferY+1,Y
-
-	DEY		 ; Y-- (previous buffer byte)
-	DEX		 ; X-- (previous buffer count)
-	BPL PRG003_BAFF	 ; While X >= 0, loop!
-
-PRG003_BB17:
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	LDA Objects_ID,X
-	CMP #OBJ_VEGGIEGUY
-	BEQ PRG003_BB24	 ; If this is a Blooper who launches off kids, jump to PRG003_BB24
-
-	CMP #OBJ_SKULLBLOOPER
-	BNE PRG003_BB2A	 ; If this is not a Blooper w/ kids, jump to PRG003_BB2A
-
-PRG003_BB24:
-	JSR Object_DrawMirrored	 ; Draw object
-	JMP PRG003_BB36	 ; Jump to PRG003_BB36
-
-PRG003_BB2A:
-	CMP #OBJ_PYRANTULA
-	BEQ PRG003_BB24	 ; If this is not a Fire Chomp, jump to PRG003_BB33
-
-	; For a Fire Chomp....
-
-	;LDA Objects_Frame,X
-	;BEQ PRG003_BB24	 ; If frame = 0, jump to PRG003_BB24
-
-PRG003_BB33:
-	JSR Object_Draw ; Draw object, not mirrored
-
-PRG003_BB36:
-	LDA Object_SpriteRAMOffset,X
-	ADD #$08
-	STA <Temp_Var5		 ; Temp_Var5 = Sprite_RAM offset two bytes over
-
-	; Essentially shift Var6 left 5 places, so A = $00 or $20 (buffer offset)
-	LDA Objects_Data6,X
-	LSR A
-	ROR A
-	LSR A
-	LSR A
-
-	ADD #$07
-	STA <Temp_Var4		 ; Temp_Var4 = offset 7 bytes into the X/Y buffer
-
-	LDA Objects_Data3,X
-	BNE PRG003_BB52	 ; If Var7 <> 0, jump to PRG003_BB52
-
-	JMP PRG003_BBF5	 ; Jump to PRG003_BBF5
-
-PRG003_BB52:
-	STA <Temp_Var16		 ; Var7 -> Temp_Var16 (Tail length)
-
-
-	; TAIL DRAW / HURT LOGIC
-	; The following 
-
-PRG003_BB54:
-	LDY <Temp_Var4		 ; Y = offset into X/Y Buffer
-
-	; Temp_Var1 = Buffer Y @ Temp_Var4
-	LDA Object_BufferY,Y
-	STA <Temp_Var1	
-
-	; Temp_Var2 = Buffer X @ Temp_Var4 + 4
-	LDA Object_BufferX,Y
-	ADD #$04
-	STA <Temp_Var2
-
-	JSR Sprite_NoCarryIfVisible
-	BCS PRG003_BBE0	 ; If carry set, sprite is not visible, jump to PRG003_BBE0
-
-	LDY <Temp_Var5		 ; Y = Temp_Var5 (Sprite_RAM offset)
-
-	; Store Y and X into sprite RAM
-	LDA <Temp_Var1
-	STA Sprite_RAM+$00,Y
-	LDA <Temp_Var2
-	STA Sprite_RAM+$03,Y
-
-	LDA Objects_ID,X
-	CMP #OBJ_ROTODISCCLOCKWISE
-	BGE PRG003_BBBE	 ; Basically if a Blooper jump to PRG003_BBBE
-
-	; Fire Snake, Fire Chomp, or freed Chain Chomp
-
-	CMP #OBJ_PYRANTULA
-	BNE PRG003_BB9B	 ; If not a Fire Chomp, jump to PRG003_BB9B
-
-	; Fire Chomp only
-
-	LDA <Temp_Var16
-	ASL A
-	ADC GameCounter
-	LSR A
-	LSR A
-	AND #$03
-	TAX		 ; X = 0 to 3
-
-	LDA FireChompTail_Patterns,X
-	STA Sprite_RAM+$01,Y
-
-	LDA FireChompTail_Attributes,X
-	STA Sprite_RAM+$02,Y
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	JMP PRG003_BBDD	 ; Jump to PRG003_BBDD
-
-PRG003_BB9B:
-	CMP #OBJ_CHAINCHOMPFREE
-	BEQ PRG003_BBB2	 ; If a freed Chain Chomp, jump to PRG003_BBB2
-
-	; Fire snake
-
-	; Sets the carry
-	LDA GameCounter
-	LSR A
-	LSR A
-
-	; Something removed here
-	NOP
-	NOP
-
-	LDA #$8b	 ; A = $8B
-	BCC PRG003_BBAC	 ; 4 ticks on, 4 ticks off; jump to PRG003_BBAC
-
-	LDA #$89	 ; A = $89
-
-PRG003_BBAC:
-	STA Sprite_RAM+$01,Y	 ; Store pattern $89 or $8B
-
-	JMP PRG003_BBD2	 ; Jump to PRG003_BBD2
-
-PRG003_BBB2:
-
-	; Freed Chain Chomp 
-
-	; Chain link pattern
-	LDA #$BD
-	STA Sprite_RAM+$01,Y
-
-	; Palette select 3
-	LDA #SPR_PAL3
-	STA Sprite_RAM+$02,Y
-
-	BNE PRG003_BBE0	 ; Jump (technically always) to PRG003_BBE0
-
-PRG003_BBBE:
-	LDA <Temp_Var16
-	ASL A	
-	ADC GameCounter
-
-	LDX #$b5	 ; X = $B5
-
-	AND #$08
-	BNE PRG003_BBCC	 ; 8 ticks on, 8 ticks off; jump to PRG003_BBCC
-
-	LDX #$b7	 ; X = $B7
-
-PRG003_BBCC:
-	TXA		 ; Pattern -> 'X'
-	STA Sprite_RAM+$01,Y	 ; Set pattern
-
-	LDX <CurrentObjectIndexZ	 ; X = object slot index
-PRG003_BBD2:
-	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
-
-	; Copies attribute from one sprite to the other
-	LDA Sprite_RAM+$02,Y
-	LDY <Temp_Var5
-	STA Sprite_RAM+$02,Y
-
-PRG003_BBDD:
-	JSR Tail_CheckHurtPlayer	; Have the tail hurt the Player by touching it
-
-PRG003_BBE0:
-	LDA <Temp_Var4
-	ADD #$08
-	STA <Temp_Var4
-
-	LDA <Temp_Var5
-	ADD #$04
-	STA <Temp_Var5
-
-	DEC <Temp_Var16		 ; Temp_Var16-- (one less tail segment)
-
-	BEQ PRG003_BBF5	 ; If out of segments, jump to PRG003_BBF5
-	JMP PRG003_BB54	 ; Otherwise, loop!
-
-PRG003_BBF5:
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-	RTS		 ; Return
+Pyrantula_Draw:
+	JMP Object_DrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!
 
 RotoDiscSpin:
-	LDA <Objects_Data1,X
-	BEQ PRG003_BC6D		; If Var4 = 0, jump to PRG003_BC6D (RTS)
 
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
-
-	LDA <Objects_Data1,X
-	CMP #$01
-	BEQ PRG003_BC6D	 ; If Var4 = 1, jump to PRG003_BC6D
-
-	; Var4 > 1...
-
-	LSR A
-	TAY		 ; Y = Var4 / 2
-
-	INC Objects_Data3,X	; Var3++
-
-	LDA Objects_Data3,X	; A = Var3
-	AND PRG003_B9BB-1,Y	; -1 because Y will always be at least 1
-	BNE PRG003_BC6D	 	; If masking of Var3 is non-zero, jump to PRG003_BC6D (RTS)
-
-	LDA <Objects_Data1,X
-	SUB #$02
-	ASL A		; A = (Var4 - 2) << 1
-	AND #%11111100	; Keep all bits but the lower 2
-	PHA		; Save this value
-
-	ADD Objects_TargetingXVal,X
-	TAY		; -> 'Y'
-
-	LDA <Objects_Data1,X
-	AND #$01
-	BEQ PRG003_BC2A	 ; If Var4 bit 0 is not set, jump to PRG003_BC2A
-	INY		 ; Otherwise Y++
-PRG003_BC2A:
-
-	LDA <Objects_XVelZ,X
-	CMP RotoDisc_VelLimits,Y
-	BNE PRG003_BC3F	 ; If X velocity is not at its limit, jump to PRG003_BC3F
-
-	PHA		 ; Save X Vel
-
-	LDA Objects_TargetingXVal,X
-	EOR #$01
-	STA Objects_TargetingXVal,X
-
-	TYA
-	EOR #$01
-	TAY
-
-	PLA		 ; Restore X Vel
-
-PRG003_BC3F:
-	ADD RotoDisc_VelAccels,Y ; Accelerate
-	STA <Objects_XVelZ,X	 ; Update X Velocity
-
-	PLA		 ; Restore indexing value
-
-	ADD Objects_TargetingYVal,X
-	TAY		 ; -> 'Y'
-
-	LDA <Objects_Data1,X
-	AND #$01
-	BEQ PRG003_BC52	 ; If Var4 bit 0 is not set, jump to PRG003_BC52
-	INY		 ; Otherwise, Y++
-PRG003_BC52:
-
-	LDA <Objects_YVelZ,X
-	CMP RotoDisc_VelLimits,Y
-	BNE PRG003_BC67	 ; If Y velocity is not at its limit, jump to PRG003_BC67
-
-	PHA		 ; Save Y velocity
-
-	LDA Objects_TargetingYVal,X
-	EOR #$01
-	STA Objects_TargetingYVal,X
-
-	TYA
-	EOR #$01
-	TAY
-
-	PLA		 ; Restore Y velocity
-
-PRG003_BC67:
-	ADD RotoDisc_VelAccels,Y ; Accelerate
-	STA <Objects_YVelZ,X	 ; Update Y Velocity
-
-PRG003_BC6D:
 	RTS		 ; Return
 
 FireChomp_SpitFire:
-	JSR SpecialObject_FindEmptyAbort	 ; Find an empty special object slot or don't come back!
- 
-	; Fire Chomp's fireball
-	LDA #SOBJ_FIREBALL
-	STA SpecialObj_ID,Y
-
-	LDA #$01
-	STA SpecialObj_Data2,Y
-
-	; Calculate a flight path towards Player
-	LDA #$14
-	JSR BoomBoom_CalcFlightPath
-
-	; Send fireball along flight path
-	LDA <Temp_Var1
-	STA SpecialObj_YVel,Y
-	LDA <Temp_Var2
-	STA SpecialObj_XVel,Y
-
-	; Set coordinates as offset from Fire Chomp
-	LDA <Objects_XZ,X
-	ADD #$04
-	STA SpecialObj_X,Y
-	LDA <Objects_YZ,X
-	STA SpecialObj_Y,Y
-	LDA <Objects_YHiZ,X
-	STA SpecialObj_YHi,Y
-
-	RTS		 ; Return
 
 	; Calculates flying Boom Boom's path so he flies towards Player
 BoomBoom_CalcFlightPath:
-	STA <Temp_Var2	; Store input value -> Temp_Var2
 
-	; Backup 'X' and 'Y'
-	TXA
-	PHA
-	TYA
-	PHA
+ObjInit_RotoDiscDualCW:
 
-	JSR Object_YDistanceFromPlayer
-	STY <Temp_Var3		 ; Store Y difference indicator -> Temp_Var3
-
-	; Get absolute value of Y difference
-	LDA <Temp_Var16
-	BPL PRG003_BCAA
-	JSR Negate
-PRG003_BCAA:
-	STA <Temp_Var13		 ; -> Temp_Var13
- 
-	JSR Object_XDistanceFromPlayer
-	STY <Temp_Var4		 ; Store X difference indicator -> Temp_Var4
-
-	; Get absolute value of X difference
-	LDA <Temp_Var16
-	BPL PRG003_BCB8
-	JSR Negate
-PRG003_BCB8:
-	STA <Temp_Var14		 ; -> Temp_Var14
-
-	LDY #$00	 ; Y = 0
-	LDA <Temp_Var14	
-	CMP <Temp_Var13	
-	BGE PRG003_BCCB	 ; If Y difference >= X difference, jump to PRG003_BCCB
-
-	INY		 ; Y = 1
-
-	; Swap differences (so greater difference will be in Temp_Var14)
-	PHA
-	LDA <Temp_Var13
-	STA <Temp_Var14
-	PLA
-	STA <Temp_Var13
-
-PRG003_BCCB:
-	LDA #$00
-	STA <Temp_Var12	; Clear Temp_Var12
-	STA <Temp_Var1	; Clear Temp_Var1
-
-	LDX <Temp_Var2		 ; X = Temp_Var2 (original input value)
-
-PRG003_BCD3:
-	LDA <Temp_Var12
-	ADD <Temp_Var13		; A = Temp_Var12 + Temp_Var13 (the lesser difference)
-	CMP <Temp_Var14		
-	BLT PRG003_BCE0	 	; If (Temp_Var12 + Temp_Var13) < Temp_Var14 (the greater difference), jump to PRG003_BCE0
-
-	; If (Temp_Var12 + Temp_Var13) >= Temp_Var14
-
-	SBC <Temp_Var14		 ; Subtract total from Temp_Var14
-	INC <Temp_Var1		 ; Temp_Var1++
-
-PRG003_BCE0:
-	STA <Temp_Var12		 ; Update Temp_Var12 with the previous total
-	DEX		 	; X--
-	BNE PRG003_BCD3		; While X >= 0, loop!
-
-	TYA		 ; A = 0 or 1
-	BEQ PRG003_BCF2	 ; If zero (don't need to swap), jump to PRG003_BCF2
-
-	; Swap Temp_Var1 and Temp_Var2
-	LDA <Temp_Var1
-	PHA	
-	LDA <Temp_Var2
-	STA <Temp_Var1
-	PLA	
-	STA <Temp_Var2
-
-PRG003_BCF2:
-	LDA <Temp_Var1		 ; A = Temp_Var1
-
-	LDY <Temp_Var3		 ; Y = Temp_Var3 (Y difference indicator)
-	BEQ PRG003_BCFD	 	; If Player was lower than object, jump to PRG003_BCFD
-
-	; Otherwise, negate Temp_Var1
-	JSR Negate
-	STA <Temp_Var1
-
-PRG003_BCFD:
-	LDA <Temp_Var2		 ; A = Temp_Var2
-
-	LDY <Temp_Var4		 ; Y = Temp_Var4 (X difference indicator)
-	BEQ PRG003_BD08	 	; If Player was lower than object, jump to PRG003_BD08
-
-	; Otherwise, negate Temp_Var2
-	JSR Negate
-	STA <Temp_Var2
-
-PRG003_BD08:
-
-	; Restore 'Y' and 'X'
-	PLA
-	TAY
-	PLA
-	TAX 
-
+ObjInit_RotoDiscDualCCW:
 	RTS		 ; Return
 
-Tail_PlayerYOff:	.byte $12, $04	; Offset to Player Sprite Y for small/ducking, or not
-Tail_PlayerYLimit:	.byte $0E, $18	; Limit value
 
-	; For enemies with tails (e.g. Fire Snake, Fire Chomp, Blooper with Kids),
-	; checks if the Player has touched any part of their tail and should be hurt.
-Tail_CheckHurtPlayer:
-	LDA <Temp_Var16
-	ADD <Counter_1
-	LSR A
-	BCC PRG003_BD60	 ; Every other tick, jump to PRG003_BD60 (RTS)
+ObjNorm_RotoDiscDualOpp:
+	RTS		 ; Return
 
-	LDA Objects_Data4,X
-	BNE PRG003_BD60	 ; If Var1 <> 0, jump to PRG003_BD60 (RTS)
+ObjNorm_RotoDiscDualOpp2:
+	RTS		 ; Return
+
+ObjNorm_RotoDiscDual:
+	
+	RTS		 ; Return
+
+ObjNorm_RotoDisc:
+	RTS
+; Rest of ROM bank was empt
+
 
 PRG003_BD1E:
 	LDY #$00	 ; Y = 0
@@ -4902,460 +4777,6 @@ Player_HurtIfNotDieOffBehind:
 PRG003_BD60:
 	RTS		 ; Return
 
-FireSnake_XVelTowardsPlayer:	.byte $08, -$08
-
-FireSnake_FlipForTick:	.byte $00, $00, SPR_HFLIP, SPR_HFLIP
-FireSnake_FrameForTick:	.byte $00, $01, $00, $01
-
-FireSnake_JumpYVel:	.byte -$1A, -$20, -$26, -$2C, -$32, -$38, -$3E, -$44
-
-FireSnake_RandomTimer3Vals:	.byte $50, $70, $00, $70, $50, $00, $00, $00
-
-ObjNorm_FireSnake:
-	LDA GameCounter
-	LSR A
-	AND #$03
-	TAY		 ; Y = 0 to 3
-
-	; Set flip bit for this tick
-	LDA FireSnake_FlipForTick,Y
-	STA Objects_Orientation,X
-
-	; Set frame for this tick
-	LDA FireSnake_FrameForTick,Y
-	STA Objects_Frame,X
-
-	LDA <Player_HaltGameZ
-	BEQ ObjNorm_FireSnake1	 ; If gameplay is NOT halted, jump to PRG003_BD95
-
-	JMP PRG003_BB17	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
-
-ObjNorm_FireSnake1:
-	JSR Object_DetectTiles	 ; Detect against the world
-	JSR FireSnake_ChangeSolids
-
-	LDA <Objects_TilesDetectZ, X
-	AND #(HIT_RIGHTWALL | HIT_LEFTWALL)
-	BEQ PRG003_BD91
-
-	JSR Object_Reverse
-
-PRG003_BD91:
-	LDA <Objects_TilesDetectZ, X
-	AND #HIT_CEILING
-	BEQ PRG003_BD91_2
-
-	JSR Object_HitCeiling
-
-PRG003_BD91_2:
-	JSR TailEnemy_DoStandard	 ; Do standard tailed enemy states
-
-PRG003_BD95:
-
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoGravity
-
-	LDA <Objects_YVelZ,X
-	BMI PRG003_BDA8	 ; If Fire Snake is moving upward, jump to PRG003_BDA8
-
-	CMP #$18
-	BGE PRG003_BDAA	 ; If Fire Snake is moving at $18 downward, jump to PRG003_BDAA
-
-PRG003_BDA8:
-	INC <Objects_YVelZ,X	 ; Fire Snake's light gravity
-
-PRG003_BDAA:
-	LDA <Objects_TilesDetectZ, X
-	AND #HIT_GROUND
-	BNE PRG003_BDAA2
-
-	JMP Enemy_DeleteIfOffAndDrawTail
-
-PRG003_BDAA2:
-	JSR Object_HitGround	 ; Align Fire Snake to ground
-	LDA #$00
-	STA Objects_XVelZ, X
-
-	LDA Objects_PreviousTilesDetect, X
-	AND #HIT_GROUND
-	BNE PRG003_BDE7
-
-	LDA Block_UpdateValue
-	BNE PRG003_BDAB
-
-	LDA Objects_LastProp, X
-	CMP #TILE_PROP_SOLID_TOP
-	BCS PRG003_BDAB
-
-	AND #$0F
-	CMP #TILE_PROP_ENEMY
-	BNE PRG003_BDAB
-
-	LDA Block_UpdateValue
-	BNE PRG003_BDAB
-
-	JSR SetObjectTileCoord
-	LDA Objects_LastTile, X
-	JSR DrawEnemyTempBlock
-	BEQ PRG003_BDAB
-
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_UpdateValue 
-
-PRG003_BDAB:
-
-	LDA Objects_Property, X
-	BNE PRG003_BDE7
-
-	LDA #$15
-	STA Objects_Timer, X
-
-PRG003_BDE7:
-
-	LDA Objects_Timer,X
-	BNE PRG003_BDE6	 ; If timer not expired, jump to PRG003_BDE6
-
-	LDY #$00
-	LDA #$10
-	JSR Object_YDistanceFromPlayer
-	CMP #$80
-	BCS PRG003_BDE6_Divert2
-
-	CMP #$08
-	BCS PRG003_BDE6_Divert1
-
-	TAY
-	JMP PRG003_BDE6_Divert2
-
-
-PRG003_BDE6_Divert1:
-	LDY #$07
-
-PRG003_BDE6_Divert2:
-	; Fire Snake's random hop
-	LDA FireSnake_JumpYVel,Y
-	STA <Objects_YVelZ,X
-
-	JSR Object_YDistanceFromPlayer
-
-	CPY #$00
-	BNE PRG003_BDDB	; If Player is lower than Fire Snake, jump to PRG003_BDDB
-
-	LDA RandomN,X
-	AND #$07
-	TAY		 ; Y = 0 to 7, random
-
-	; Random timer 3 reload value
-	LDA FireSnake_RandomTimer3Vals,Y
-	STA Objects_Timer3,X
-
-PRG003_BDDB:
-	JSR Object_XDistanceFromPlayer
-
-	; Set X velocity towards Player
-	LDA FireSnake_XVelTowardsPlayer,Y
-	STA <Objects_XVelZ,X
-
-	JMP PRG003_BDE6	 ; Jump to PRG003_BDE6 (... right down below)
-
-PRG003_BDE6:
-	JMP Enemy_DeleteIfOffAndDrawTail	 ; Delete if off-screen, draw tail, and don't come back!
-
-PRG003_BDE9:
-	JSR Object_SetHFlipByXVel ; Set horizontal flip by travel direction
-
-TailEnemy_DoStandard:
-	LDA Objects_Data4,X
-	BEQ TailEnemy_InitOrHalt	 ; If Var1 = 0, jump to TailEnemy_InitOrHalt
-
-	LDY <Player_HaltGameZ
-	BEQ PRG003_BDFA	 ; If gameplay is not halted, jump to PRG003_BDFA
-
-	; Do not return to caller!
-	PLA
-	PLA
-
-	JMP PRG003_BB17	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
-
-PRG003_BDFA:
-	; Jump based on Var1
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word TailEnemy_InitOrHalt		; 0: Action to take initially or when gameplay is halted
-	.word TailEnemy_DrawAndWaitTimer2	; 1: Draws object and waits for timer 2 to expire; WILL NOT RETURN TO CALLER!
-	.word TailEnemy_DoDeath			; 2: Does "wiggle death" and draws tail; WILL NOT RETURN TO CALLER!
-
-TailEnemy_InitOrHalt:
-	JSR Object_CheckIfNormalState
-	BEQ PRG003_BE1D	 ; If in normal state, jump to PRG003_BE1D
-
-	; Not in normal state...
-
-	; Var1 = 1 (next internal state)
-	LDA #$01
-	STA Objects_Data4,X
-
-	LSR A
-	STA <Objects_XVelZ,X	; Stop horizontal velocity
-
-	; Color cycle!
-	LDA #$10
-	STA Objects_ColorCycle,X
-
-	; Timer2 = 8
-	LDA #$08
-	STA Objects_Timer2,X
-
-	RTS		 ; Return
-
-PRG003_BE1D:
-	LDA Objects_ID,X
-	CMP #OBJ_FIRESNAKE
-	BNE PRG003_BE27	 ; If this is NOT a Fire Snake, jump to PRG003_BE27
-
-	JMP Object_HandleBumpUnderneath	 ; Otherwise just handle getting bumped underneath and don't come back!
-
-PRG003_BE27:
-	JMP Object_AttackOrDefeat	 ; Handle full enemy-to-Player collision and don't come back!
-
-TailEnemy_DrawAndWaitTimer2:
-	LDA Objects_Timer2,X	 
-	BNE PRG003_BE37	 ; If timer2 is not expired, jump to PRG003_BE37
-
-	INC Objects_Data4,X	 ; Var1++ (next internal state)
-
-	; Timer2 = $FF
-	LDA #$ff
-	STA Objects_Timer2,X
-
-PRG003_BE37:
-	; Do NOT return to caller!
-	PLA
-	PLA
-
-	JMP Enemy_DeleteIfOffAndDrawTail	; Delete if off-screen, draw tail, and don't come back!
-
-PRG003_BE3A:
-	RTS		 ; Return
-
-TailEnemy_DoDeath:
-	LDA Objects_Timer2,X
-	BNE PRG003_BE52	 ; If timer 2 is not expired, jump to PRG003_BE52
-
-	; Timer 2 expired...
-
-	STA Objects_Data4,X	 ; Var1 = 0 (Return to initial internal state)
-
-	; Removes bit 7 (vertical flip)
-	ASL Objects_Orientation,X
-	LSR Objects_Orientation,X
-
-	; Little hop upward
-	LDA #-$10
-	STA <Objects_YVelZ,X
-
-	JMP PRG003_BE37	; Draw tail, Do NOT return to caller, and don't come back!
-
-
-PRG003_BE52:
-
-	; Sets vertical flip bit 7
-	ASL Objects_Orientation,X
-	SEC
-	ROR Objects_Orientation,X
-
-	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
-
-	LDA <Objects_YVelZ,X
-	BMI PRG003_BE67	 ; If enemy moving upward, jump to PRG003_BE67
-
-	CMP #$18
-	BGE PRG003_BE6B	 ; If enemy moving downward >= $18, jump to PRG003_BE6B
-
-PRG003_BE67:
-	; Apply gravity
-	INC <Objects_YVelZ,X
-	INC <Objects_YVelZ,X
-
-PRG003_BE6B:
-	LDY #$08	 ; Y = $08
-
-	LDA GameCounter
-	AND #$08
-	BEQ PRG003_BE76	 ; 8 ticks on, 8 ticks off; jump to PRG003_BE76
-
-	LDY #-$08	 ; Y = -$08
-
-PRG003_BE76:
-	STY <Objects_XVelZ,X	 ; Set X velocity as $08 or -$08
-
-	JMP PRG003_BE37	; Draw tail, Do NOT return to caller, and don't come back!
-
-FireSnake_ChangeSolids:
-	LDA Block_UpdateValue
-	BEQ FireSnake_ChangeSolids1
-	RTS
-
-FireSnake_ChangeSolids1:
-	LDA Object_VertTileProp
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
-	BNE FireSnake_ChangeSolids5
-
-	LDA Objects_YVelZ, X
-	BPL FireSnake_ChangeSolids2
-
-	LDA Objects_YZ, X
-	SUB #$08
-	AND #$F0
-	STA Block_ChangeY
-	LDA Objects_YHiZ, X
-	SBC #$00
-	STA Block_ChangeYHi
-	JMP FireSnake_ChangeSolids3
-
-FireSnake_ChangeSolids2:
-	LDA Objects_YZ, X
-	ADD #$10
-	AND #$F0
-	STA Block_ChangeY
-	LDA Objects_YHiZ, X
-	ADC #$00
-	STA Block_ChangeYHi
-
-FireSnake_ChangeSolids3:
-	LDA Objects_XZ, X
-	ADD #$08
-	AND #$F0
-	STA Block_ChangeX
-	LDA Objects_XHiZ, X
-	ADC #$00
-	STA Block_ChangeXHi
-	LDA Object_TileFeetValue
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_UpdateValue
-	JMP FireSnake_ChangeSolids8
-
-FireSnake_ChangeSolids5:
-	LDA Object_HorzTileProp
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
-	BNE FireSnake_ChangeSolids10
 	
-	LDA Objects_XVelZ, X
-	BPL FireSnake_ChangeSolids6
-
-	LDA Objects_XZ, X
-	SUB #$08
-	AND #$F0
-	STA Block_ChangeX
-	LDA Objects_XHiZ, X
-	SBC #$00
-	STA Block_ChangeXHi
-	JMP FireSnake_ChangeSolids7
-
-FireSnake_ChangeSolids6:
-	LDA Objects_XZ, X
-	ADD #$10
-	AND #$F0
-	STA Block_ChangeX
-	LDA Objects_XHiZ, X
-	ADC #$00
-	STA Block_ChangeXHi
-
-FireSnake_ChangeSolids7:
-	LDA Objects_YZ, X
-	ADD #$04
-	AND #$F0
-	STA Block_ChangeY
-	LDA Objects_YHiZ, X
-	ADC #$00
-	STA Block_ChangeYHi
-	LDA Object_TileWallValue
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_UpdateValue
-	
-FireSnake_ChangeSolids8:
-	JSR SpecialObject_FindEmpty
-	BMI FireSnake_ChangeSolids9
-
-FireSnake_ChangeSolids9:
-
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID, Y
-	LDA #$20	 
-	STA SpecialObj_Data1, Y
-	LDA Block_ChangeX
-	STA SpecialObj_X, Y
-	LDA Block_ChangeY
-	STA SpecialObj_Y, Y
-	LDA Block_ChangeYHi
-	STA SpecialObj_YHi, Y
-	
-FireSnake_ChangeSolids10:
-	RTS
-
-ObjInit_RotoDiscDualCW:
-	LDY #$03	 ; Y = 3
-	LDA PRG003_B9C6+1
-	BNE PRG003_BE87	 ; Jump (technically always) to PRG003_BE87
-
-ObjInit_RotoDiscDualCCW:
-	LDY #-$02	; Y = -$02
-
-	; Set initial Y velocity
-	LDA PRG003_B9C6
-
-PRG003_BE87:
-	STA <Objects_YVelZ,X
-	STY <Temp_Var1	 ; Temp_Var1 = -$02
-
-	LDA #$00
-	STA <Objects_XVelZ,X
-	STA Objects_XVelFrac,X
-	STA Objects_YVelFrac,X
-
-	LDA <Objects_XZ,X
-	STA Objects_Data11,X	
-	SUB #$30
-	STA <Objects_XZ,X
-
-	LDA <Objects_XHiZ,X
-	STA Objects_Data8,X
-
-	SBC #$00
-	STA <Objects_XHiZ,X
-
-	LDA <Objects_YZ,X
-	STA Objects_Data12,X
-
-	ADD <Temp_Var1	
-	STA <Objects_YZ,X
-
-	LDA #$00
-	LDY <Temp_Var1
-	BPL PRG003_BEBA
-	LDA #$ff
-PRG003_BEBA:
-	ADC <Objects_YHiZ,X
-	STA Objects_Data4,X
-
-	RTS		 ; Return
-
-
-ObjNorm_RotoDiscDualOpp:
-	RTS		 ; Return
-
-ObjNorm_RotoDiscDualOpp2:
-	RTS		 ; Return
-
-ObjNorm_RotoDiscDual:
-	
-	RTS		 ; Return
-
-ObjNorm_RotoDisc:
-	RTS
-; Rest of ROM bank was empt
+Tail_PlayerYOff:	.byte $12, $04	; Offset to Player Sprite Y for small/ducking, or not
+Tail_PlayerYLimit:	.byte $0E, $18	; Limit value

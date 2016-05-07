@@ -55,11 +55,11 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_FireBro	; Object $88 - OBJ_PIRATEBRO
 	.word ObjInit_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
 	.word ObjInit_Thwomp		; Object $8A - OBJ_THWOMP
-	.word ObjInit_HyperThwomp	; Object $8B - OBJ_HYPERTHWOMP
-	.word ObjInit_HyperThwomp	; Object $8C - OBJ_THWOMPRIGHTSLIDE
-	.word ObjInit_ThwompUDSlide	; Object $8D - OBJ_THWOMPUPDOWN
-	.word ObjInit_ThwompUDSlide	; Object $8E - OBJ_THWOMPDIAGONALUL
-	.word ObjInit_ThwompUDSlide	; Object $8F - OBJ_THWOMPDIAGONALDL
+	.word ObjInit_Thwomp	; Object $8B - OBJ_AngryTHWOMP
+	.word ObjInit_DoNothing	; Object $8C - OBJ_THWOMPRIGHTSLIDE
+	.word ObjInit_DoNothing	; Object $8D - OBJ_THWOMPUPDOWN
+	.word ObjInit_DoNothing	; Object $8E - OBJ_THWOMPDIAGONALUL
+	.word ObjInit_DoNothing	; Object $8F - OBJ_THWOMPDIAGONALDL
 
 
 	; Object group $03 (i.e. objects starting at ID $6C) State 2 jump table
@@ -97,8 +97,8 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_FireBro	; Object $88 - OBJ_PIRATEBRO
 	.word ObjNorm_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
 	.word ObjNorm_Thwomp		; Object $8A - OBJ_THWOMP
-	.word ObjNorm_HyperThwomp	; Object $8B - OBJ_HYPERTHWOMP
-	.word ObjNorm_HyperThwomp	; Object $8C - OBJ_THWOMPRIGHTSLIDE
+	.word ObjNorm_AngryThwomp	; Object $8B - OBJ_AngryTHWOMP
+	.word ObjNorm_AngryThwomp	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.word ObjNorm_ThwompVertical	; Object $8D - OBJ_THWOMPUPDOWN
 	.word ObjNorm_ThwompVertical	; Object $8E - OBJ_THWOMPDIAGONALUL
 	.word ObjNorm_ThwompVertical	; Object $8F - OBJ_THWOMPDIAGONALDL
@@ -140,7 +140,7 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $88 - OBJ_PIRATEBRO
 	.word $0000					; Object $89 - OBJ_CHAINCHOMP
 	.word $0000					; Object $8A - OBJ_THWOMP
-	.word $0000					; Object $8B - OBJ_HYPERTHWOMP
+	.word $0000					; Object $8B - OBJ_AngryTHWOMP
 	.word $0000					; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.word $0000					; Object $8D - OBJ_THWOMPUPDOWN
 	.word $0000					; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -182,7 +182,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $88 - OBJ_PIRATEBRO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $89 - OBJ_CHAINCHOMP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8A - OBJ_THWOMP
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8B - OBJ_HYPERTHWOMP
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8B - OBJ_AngryTHWOMP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -223,7 +223,7 @@ ObjectGroup03_Attributes2:
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $88 - OBJ_PIRATEBRO
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $89 - OBJ_CHAINCHOMP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $8A - OBJ_THWOMP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $8B - OBJ_HYPERTHWOMP
+	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $8B - OBJ_AngryTHWOMP
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -265,7 +265,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY 			; Object $88 - OBJ_PIRATEBRO
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $89 - OBJ_CHAINCHOMP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8A - OBJ_THWOMP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8B - OBJ_HYPERTHWOMP
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8B - OBJ_AngryTHWOMP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8D - OBJ_THWOMPUPDOWN
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8E - OBJ_THWOMPDIAGONALUL
@@ -307,7 +307,7 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT5 | $4E	; Object $88 - OBJ_PIRATEBRO
 	.byte OPTS_SETPT5 | $0E	; Object $89 - OBJ_CHAINCHOMP
 	.byte OPTS_SETPT5 | $12	; Object $8A - OBJ_THWOMP
-	.byte OPTS_SETPT5 | $12	; Object $8B - OBJ_HYPERTHWOMP
+	.byte OPTS_SETPT5 | $12	; Object $8B - OBJ_AngryTHWOMP
 	.byte OPTS_SETPT5 | $12	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OPTS_SETPT5 | $12	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte OPTS_SETPT5 | $12	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -349,7 +349,7 @@ ObjectGroup03_KillAction:
 	.byte KILLACT_JUSTDRAW16X32	; Object $88 - OBJ_PIRATEBRO
 	.byte KILLACT_JUSTDRAW16X16	; Object $89 - OBJ_CHAINCHOMP
 	.byte KILLACT_NORMALANDKILLED	; Object $8A - OBJ_THWOMP
-	.byte KILLACT_NORMALANDKILLED	; Object $8B - OBJ_HYPERTHWOMP
+	.byte KILLACT_NORMALANDKILLED	; Object $8B - OBJ_AngryTHWOMP
 	.byte KILLACT_NORMALANDKILLED	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte KILLACT_NORMALANDKILLED	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte KILLACT_NORMALANDKILLED	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -397,7 +397,11 @@ ObjP75:
 ObjP89:
 	.byte $91, $93, $9D, $9F, $9D, $9F
 ObjP8A:
+	.byte $99, $9B, $B9, $BB, $95, $97, $B5, $B7, $9D, $9F, $BD, $BF
+
 ObjP8B:
+	.byte $9D, $9F, $BD, $BF, $91, $93, $B1, $B3,  $91, $93, $B1, $B3
+
 ObjP8C:
 ObjP8D:
 ObjP8E:
@@ -455,8 +459,8 @@ ObjP86:
 ObjP87:
 	.byte $81, $83, $A5, $A7, $81, $83, $B5, $B7, $85, $87, $A5, $A7
 ObjP81:
-	.byte $B1, $B3, $B5, $B7, $B1, $B3, $A5, $A7, $BD, $BF, $B5, $B7, $BD, $BF, $A5, $A7
-	.byte $AD, $AF, $AD, $BF
+	.byte $B1, $B3, $B5, $B7, $B1, $B3, $A5, $A7
+	.byte $BD, $BF, $B5, $B7, $BD, $BF, $A5, $A7
 
 ObjP82:
 	.byte $95, $97, $B9, $BB, $95, $97, $A1, $A3, $99, $9B, $B9, $BB, $99, $9B, $A1, $A3
@@ -550,24 +554,7 @@ ObjNorm_Waterfill_RTS:
 
 	; A "hammer brother" object has special purpose when 
 	; Player has entered through a enemy battle object
-BattleEnemy_ByEnterID:
-	.byte $00		; 0: (Unused, standard level entry)
-	.byte $00		; 1: HELP (can't be "entered")
-	.byte $00		; 2: Airship (not our concern here)
-	.byte OBJ_HAMMERBRO	; 3: Hammer Bro battle
-	.byte OBJ_NINJABRO	; 4: Boomerang Bro battle
-	.byte OBJ_ICEBRO	; 5: Heavy Bro battle
-	.byte OBJ_FIREBRO	; 6: Fire Bro battle
-	.byte $00		; 7: World 7 Plant (not our concern here)
-	.byte $00		; 8: Unknown marching glitch object (interesting!)
-	.byte $00		; 9: N-Spade (not our concern)
 
-	; NOTE: No definition for $0A-$10 map objects... not our concern,
-	; sure, but still interesting that they went as far as they did.
-
-ObjInit_HammerBro:
-
-	RTS		 ; Return
 
 ObjInit_NinjaBro:
 	LDA #$10
@@ -721,7 +708,7 @@ ObjNorm_NinjaBro:
 ObjNorm_NinjaBro_0:
 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-	JSR EnemyBro_DrawAndHandleBump	 ; Draw Ninja Bro and handle getting bumped underneath
+	
 	LDA Objects_PlayerHitStat, X
 	BEQ ObjNorm_NinjaBro_1
 	JSR  NinjaDodge_KillOrPoof
@@ -843,224 +830,302 @@ PRG004_A506:
 PRG004_A51A:
 	RTS		 ; Return
 
-HammerBro_JumpYVel:	.byte -$30, $00, -$60
-HammerBro_TimerReload:	.byte $28, $00, $20
-PRG004_A522:	.byte $01, $00, $FF
+HammerBro_JumpYVel:	.byte -$60, -$30
+HammerBro_JumpWait: .byte $C0, $FF
+HammerBro_WaitTimers: .byte $18, $18, $30, $18
+HammerBro_CanFallThrough: .byte $00, $30
 
-HammerBro_FacePlayerFlip:
-	.byte SPR_HFLIP, $00
+HammerBro_Frame = Objects_Data1
+HammerBro_Action = Objects_Data2
+HammerBro_RangeLeft = Objects_Data3
+HammerBro_RangeRight = Objects_Data4
+HammerBro_ThrowHammerTimer = Objects_Data5
+HammerBro_HoldHammerTimer = Objects_Data6
+HammerBro_WalkDirection = Objects_Data7
+HammerBro_FallThrough = Objects_Data8
+
+
+ObjInit_HammerBro:
+	JSR Object_CalcBoundBox
+	JSR Object_MoveTowardsPlayer
+
+	LDA <Objects_XVelZ, X
+	STA HammerBro_WalkDirection, X
+
+	LDA <Objects_XZ, X
+	SUB #$10
+	STA HammerBro_RangeLeft, X
+
+	LDA <Objects_XZ, X
+	ADD #$10
+	STA HammerBro_RangeRight, X
+	RTS		 ; Return
 	
-ObjNorm_HammerBro: 
+ObjNorm_HammerBro:
+	LDA <Player_HaltGameZ
+	BEQ HammerBro_Norm
+
+	JMP Object_Draw16x32Sprite
+
+HammerBro_Norm:
+
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
-	JSR Object_XDistanceFromPlayer
+	LDA HammerBro_WalkDirection, X
+	STA <Objects_XVelZ, X
 
-	; Face Player
-	LDA HammerBro_FacePlayerFlip,Y
-	STA Objects_Orientation,X
-
-	LDA <Player_HaltGameZ
-	BEQ PRG004_A539	 ; If gameplay is halted, jump to PRG004_A539
-
-	JMP EnemyBro_DrawAndHandleBump	 ; Otherwise, jump to EnemyBro_DrawAndHandleBump
-
-PRG004_A539:
-	INC <Objects_Data2,X	 ; Var5++
-
-	LDY #$06	 ; Y = $06
-
-	LDA <Objects_Data2,X
-	AND #$40
-	BNE PRG004_A545	 ; 64 ticks on, 64 ticks off; jump to PRG004_A545
-
-	LDY #-$06	 ; Y = -$06
-
-PRG004_A545;
-	STY <Objects_XVelZ,X	 ; Hammer Bros walk back and forth
-
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BNE PRG004_A551	 ; If Hammer Bro hit ground, jump to PRG004_A551
-
-	STA <Objects_Data1,X	 ;  Var4 = 0
-	BEQ PRG004_A587	 ; Jump (technically always) to PRG004_A587
-
-PRG004_A551:
-	LDA Object_VertTileProp
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
-	BNE PRG004_A552
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
 	
-	LDA #$00
-	STA Objects_Timer2,X
+	LDA HammerBro_FallThrough, X
+	BEQ HammerBro_DetectTiles
 
-PRG004_A552:
-	LDA Objects_Timer2,X
-	BNE PRG004_A587	 ; If timer2 is not expired, jump to PRG004_A587
+	DEC HammerBro_FallThrough, X
+	JMP HammerBro_SkipTiles
 
-	INC <Objects_Data1,X	 ; Var4++
-	JSR Object_HitGround	 ; Align to ground
+HammerBro_DetectTiles:
+	LDA <Objects_TilesDetectZ, X
+	AND #~HIT_CEILING
+	STA <Objects_TilesDetectZ, X
 
-	LDA Objects_Timer3,X
-	BNE PRG004_A587	 ; if timer3 is not expired, jump to PRG004_A587
+	JSR Object_InteractWithTiles
 
-	LDA RandomN,X
-	AND #$3e
-	ADC #$c0
-	STA Objects_Timer3,X	 ; Timer3 = $C0 to $FF
+HammerBro_SkipTiles:
+	JSR Object_FacePlayer
+	JSR Object_HandleBumpUnderneath
+	JSR Object_AttackOrDefeat
 
-	LDY #$02	 ; Y = $02
+	LDA HammerBro_HoldHammerTimer, X
+	BEQ HammerBro_HotHolding
 
-	LDA <Objects_YZ,X
-	BMI PRG004_A57C	 ; If Hammer Bro is on the lower part of the screen, jump to PRG004_A57C
+	DEC HammerBro_HoldHammerTimer, X
+	BNE HammerBro_CheckJump
 
-	LDY #$00	 ; Y = 0
+	LDA RandomN + 1, X
+	AND #$03
+	TAY 
+	LDA HammerBro_WaitTimers, Y
+	STA HammerBro_ThrowHammerTimer, X
+	JSR HammerBro_ThrowHammer
+	
+HammerBro_HotHolding:
+	LDA HammerBro_ThrowHammerTimer, X
+	BNE HammerBro_DecHamTimer
 
+	LDA #$18
+	STA HammerBro_HoldHammerTimer, X
+	BNE HammerBro_CheckJump
+
+HammerBro_DecHamTimer:
+	DEC HammerBro_ThrowHammerTimer, X
+
+HammerBro_CheckJump:
+	LDA Objects_Timer, X
+	BNE HammerBro_NoJump
+
+	LDY #$00
+	LDA Objects_SpriteY, X
 	CMP #$30
-	BLT PRG004_A57C	 ; If Hammer Bro Y < $30, jump to PRG004_A57C
+	BCS HammerBro_NotTop
 
-	LDA RandomN,X
-	AND #$02
-	TAY		 ; Y = 0 or 2, random
+	INY
+	BNE HammerBro_DoJump
 
-PRG004_A57C:
-	; Jump!
-	LDA HammerBro_JumpYVel,Y
-	STA <Objects_YVelZ,X
+HammerBro_NotTop:
+	CMP #$70
+	BCS HammerBro_DoJump
 
-	; Timer2 reload
-	LDA HammerBro_TimerReload,Y
-	STA Objects_Timer2,X
+	LDA RandomN, X
+	AND #$01
+	TAY
 
-PRG004_A587:
-	JSR Object_Move	 ; Do standard movement
+HammerBro_DoJump:
+	LDA HammerBro_JumpYVel, Y
+	STA <Objects_YVelZ, X
 
-	LDA <Counter_1
-	AND #$07
-	BEQ PRG004_A593	 ; 1:8 ticks jump to PRG004_A593
+	LDA HammerBro_CanFallThrough, Y
+	STA HammerBro_FallThrough, X
 
-	INC Objects_Data6,X	 ; Var6++
-
-PRG004_A593:
-	LDY #$3f	 ; Y = $3F
-
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ PRG004_A59D	 ; If Hammer Bro did not hit floor, jump to PRG004_A59D
-
-	LDY #$1f	 ; Y = $1F
-
-PRG004_A59D:
-	TYA	
-
-	AND Objects_Data6,X	; Mask with 'Y'
-
-	CMP #$1f
-	BNE EnemyBro_DrawAndHandleBump	 ; If masked value <> $1F, jump to EnemyBro_DrawAndHandleBump
-
-	LDA Objects_Timer,X
-	BNE EnemyBro_DrawAndHandleBump	 ; If timer is not expired, jump to EnemyBro_DrawAndHandleBump
-
-	; Timer set to $0F
-	LDA #$0f
-	STA Objects_Timer,X
-
-	JSR HammerBro_ThrowHammer	 ; Throw Hammer at Player
-
-EnemyBro_DrawAndHandleBump:
-	LDY #$00	 ; Y = 0
-
-	LDA <Objects_Data1,X
+	LDA RandomN, X
 	AND #$10
-	BEQ PRG004_A5BB	 ; 16 ticks on, 16 ticks off; jump to PRG004_A5BB
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
 
-	INY		 ; Y = 1
+	LDA HammerBro_JumpWait, Y
+	STA Objects_Timer, X
 
-PRG004_A5BB:
-	LDA Objects_Timer,X
-	BEQ PRG004_A5C2	 ; If timer is expired, jump to PRG004_A5C2
 
-	; Y += 2
-	INY
-	INY
+HammerBro_NoJump:
 
-PRG004_A5C2:
+	LDA <Objects_XZ, X
+	CMP HammerBro_RangeLeft, X
+	BEQ HammerBro_TurnAround
 
-	; Set Frame 0-3
-	TYA
-	STA Objects_Frame,X
+	CMP HammerBro_RangeRight, X
+	BNE HammerBro_Animate
 
-	LDA <Objects_YZ,X
-	PHA		 ; Save Hammer Bro Y
- 
+HammerBro_TurnAround:
+	LDA HammerBro_WalkDirection, X
+	EOR #$FF
+	ADD #$01
+	STA HammerBro_WalkDirection, X
+
+HammerBro_Animate:
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ HammerBros_NoAnimate
+
+	INC HammerBro_Frame, X
+
+HammerBros_NoAnimate:
+	LDA HammerBro_Frame, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA <Temp_Var1
+
+	LDA HammerBro_HoldHammerTimer, X
+	BEQ HammerBros_FinishAnimate
+
+	LDA #$02
+	STA <Temp_Var2
+
+HammerBros_FinishAnimate:
+
+	LDA <Temp_Var1
+	ORA <Temp_Var2
+	STA Objects_Frame, X
+
+HammerBros_Draw:
+	LDA Object_SpriteRAMOffset, X
 	ADD #$08
-	STA <Objects_YZ,X ; Hammer Bro Y += 8
+	STA Object_SpriteRAMOffset, X
 
-	LDA <Objects_YHiZ,X
-	PHA		 ; Save Y Hi
+	JSR Object_Draw16x32Sprite
 
-	ADC #$00	 ; Apply carry
-	STA <Objects_YHiZ,X	 ; Update Y Hi
+	LDA HammerBro_HoldHammerTimer, X
+	BEQ HammerBros_Done
 
-	JSR Object_Draw16x32Sprite	 ; Draw Hammer Bro
+	JSR HammerBro_DrawHammer
 
-	PLA		 
-	STA <Objects_YHiZ,X	; Restore Y Hi
+HammerBros_Done:
+	RTS
 
-	PLA
-	STA <Objects_YZ,X	; Restore Y
+Hammer_XVel:	.byte -$12, $12
 
-	JSR Object_CalcSpriteXY_NoHi
+HammerXOffset:
+	.byte $08, $F8
+	.byte $00, $FF
 
-	JMP Object_HandleBumpUnderneath	 ; (Indirectly) Handle getting bumped underneath
+HammerTiles:
+	.byte $89, $8B, $8B, $89
 
+HammerFlip:
+	.byte SPR_PAL3 | $00, SPR_PAL3 | SPR_HFLIP
 
-Hammer_XVel:	.byte $12, -$12
+HammerBro_DrawHammer:
+
+	LDY #$00
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BEQ HammerBro_LeftSide
+
+	INY
+
+HammerBro_LeftSide:
+	LDA HammerXOffset, Y
+	STA <Temp_Var1
+
+	LDA HammerTiles, Y
+	STA <Temp_Var2
+
+	LDA HammerTiles + 2, Y
+	STA <Temp_Var3
+
+	LDA HammerFlip, Y
+	STA <Temp_Var4
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMX, Y
+	ADD <Temp_Var1
+	STA Sprite_RAMX - 8, Y
+	ADD #$08
+	STA Sprite_RAMX - 4, Y
+
+	LDA Sprite_RAMY, Y
+	SUB #$06
+	STA Sprite_RAMY - 8, Y
+	STA Sprite_RAMY - 4, Y
+
+	LDA <Temp_Var2
+	STA Sprite_RAMTile - 8, Y
+
+	LDA <Temp_Var3
+	STA Sprite_RAMTile - 4, Y
+
+	LDA <Temp_Var4
+	STA Sprite_RAMAttr - 8, Y
+	STA Sprite_RAMAttr - 4, Y
+
+	RTS		 ; Return
 
 HammerBro_ThrowHammer:
-	LDA Objects_SpritesHorizontallyOffScreen,X	 
-	BNE PRG004_A61B	 ; If any sprite is horizontally off-screen, jump to PRG004_A61B (RTS)
+	LDY #$00
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BEQ HammerBro_ThrowToRight
 
-	LDA Objects_SpritesVerticallyOffScreen,X	 
-	AND #$07
-	BNE PRG004_A61B
+	INY
 
-	LDY #$05	 ; Y = 5
-PRG004_A5ED:
-	LDA SpecialObj_ID,Y
-	BEQ PRG004_A5F6	 ; If this Special Object slot is empty, jump to PRG004_A5F6
+HammerBro_ThrowToRight:
+	STA Debug_Snap
+	
+	LDA HammerXOffset, Y
+	ADD <Objects_XZ, X
+	STA <Temp_Var14
 
-	DEY		 ; Y--
-	BPL PRG004_A5ED	 ; While Y >= 0, loop!
+	LDA <Objects_XHiZ, X
+	ADC HammerXOffset + 2, Y
+	STA <Temp_Var15
+	
+	LDA Hammer_XVel, Y
+	STA <Temp_Var16
 
-	RTS		 ; Return
+	JSR Object_PrepProjectile
+	BCC HammerBro_ThrowDone
 
-PRG004_A5F6:
+	LDA #SOBJ_HAMMER
+	STA SpecialObj_ID, Y
 
-	; Set Hammer X/Y at Hammer Bro's position
-	LDA <Objects_XZ,X
-	STA SpecialObj_X,Y
-	LDA <Objects_YZ,X
-	STA SpecialObj_Y,Y
-	LDA <Objects_YHiZ,X
-	STA SpecialObj_YHi,Y
+	LDA <Temp_Var16
+	STA SpecialObj_XVel, Y
 
-	; Hammer Y velocity = -$30
-	LDA #-$30
-	STA SpecialObj_YVel,Y
+	LDA #$C0
+	STA SpecialObj_YVel, Y
 
-	STY <Temp_Var1		 ; Temp_Var1 = Special Object slot index
+	LDA <Temp_Var14
+	STA SpecialObj_X, Y
 
-	JSR Object_XDistanceFromPlayer
+	LDA <Temp_Var15
+	STA SpecialObj_XHi, Y
 
-	LDA Hammer_XVel,Y	; Hammer towards Player X Vel
-	LDY <Temp_Var1		 ; Y = Special Object slot index
-	STA SpecialObj_XVel,Y	 ; Set X Velocity
+	LDA <Objects_YZ, X
+	SUB #$06
+	STA SpecialObj_Y, Y
 
-	LDA #SOBJ_HAMMER ; Hammer Bro hammer
-	BNE PRG004_A658	 ; Jump (technically always) to PRG004_A658
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA SpecialObj_YHi, Y
 
-PRG004_A61B:
-	RTS		 ; Return
+HammerBro_ThrowDone:
+	RTS
 
 NinjaStarTimers:
 	.byte $40, $80, $C0, $80, $40, $40, $80, $C0
@@ -1108,17 +1173,21 @@ PRG004_A658:
 	RTS		 ; Return
 ObjInit_Thwomp:
 
+	LDA #$10
+	STA Objects_Health, X
+
 	; Var4 = origin Y
-	LDA <Objects_YZ,X
-	STA <Objects_Data1,X
-	LDA #$03
-	STA Objects_Data6, X
+	LDA <Objects_YZ, X
+	STA Thwomp_StartY, X
+
+	LDA <Objects_YHiZ, X
+	STA Thwomp_StartYHi, X
 	
-Thwomp_Center:
 	; center the X
 	LDA <Objects_XZ,X
 	ADD #$04
 	STA <Objects_XZ,X
+
 	LDA <Objects_XHiZ,X
 	ADD #$00
 	STA <Objects_XHiZ,X
@@ -1127,263 +1196,287 @@ PRG004_A676:
 	RTS		 ; Return
 
 
+Thwomp_Action = Objects_Data1
+Thwomp_Ticker = Objects_Data2
+Thwomp_StartY = Objects_Data3
+Thwomp_StartYHi = Objects_Data4
+Thwomp_TilesDetected = Objects_Data5
+
+Thwomp_DetectXOffset:
+	.byte $05, $14
+
 ObjNorm_Thwomp:
-	JSR Thwomp_Draw	 ; Draw Thwomp; if not in normal state, we don't come back!
-
 	LDA <Player_HaltGameZ
-	BNE PRG004_A676	 ; If gameplay halted, jump to PRG004_A676 (RTS)
+	BEQ Thwomp_Normal
 
-	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
-	JSR Object_AttackOrDefeat	 	; Do Player to Thwomp collision
+	JMP Thwomp_Draw
 
-	LDA <Objects_Data2,X	 ; Var5 is internal state
+Thwomp_Normal:
+	JSR Object_DeleteOffScreen
+	
+	LDA <Thwomp_Action, X
 	JSR DynJump
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word Thwomp_WaitForPlayer
 	.word Thwomp_FallToGround
 	.word Thwomp_ReturnToOrigin
 
-Thwomp_WaitForPlayer
-	
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG004_A6A6	 ; If any sprite is off-screen, jump to PRG004_A6A6 (RTS)
-
+Thwomp_WaitForPlayer:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 	JSR Object_XDistanceFromPlayer
 
-	LDA <Temp_Var16
-	ADD #$24
+	LDY #$00
+	LDA <XDiff
 	CMP #$50
-	BGE PRG004_A6A6	 ; If Player is too far away, jump to PRG004_A6A6 (RTS)
+	BCS Thwomp_KeepFrame
 
-	INC <Objects_Data2,X	 ; Var5++ (next internal state)
+	INY
 
-	; Stop Thwomp's vertical movement
+Thwomp_KeepFrame:
+	TYA
+	STA Objects_Frame, X
+
+	LDA <XDiff
+	CMP #$20
+	BCS Thwomp_KeepWaiting
+
+	INC <Thwomp_Action, X
+
 	LDA #$00
-	STA <Objects_YVelZ,X
+	STA Thwomp_TilesDetected, X
 
-PRG004_A6A6:
-	RTS		 ; Return
+	LDA #$02
+	STA Objects_Frame, X
+
+Thwomp_KeepWaiting:
+	JMP Thwomp_Draw
 
 Thwomp_FallToGround:
-	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
- 
-	LDA <Objects_YVelZ,X
-	CMP #$70
-	BGE PRG004_A6B4	 ; If Thwomp is falling >= $70, jump to PRG004_A6B4
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 
-	; Thwomp fall Y Vel += 4
-	ADC #$04
-	STA <Objects_YVelZ,X
+	INC <Thwomp_Ticker, X
+	LDA <Thwomp_Ticker, X
+	AND #$01
+	TAY
 
-PRG004_A6B4:
-	LDA Objects_Data6, X
-	BEQ PRG004_A6B5
-	JMP ThwompDetectLeftBlock
+	LDA Objects_BoundLeft, X
+	ADD Thwomp_DetectXOffset, Y
+	STA Tile_DetectionX
 
-PRG004_A6B5:
-	JSR Object_HitGround	 ; Align to floor
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Tile_DetectionXHi
 
-	; Shake floor!
-	LDA #$18
+	LDA Objects_BoundBottom, X
+	STA Tile_DetectionY
+
+	LDA Objects_BoundBottomHi, X
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCC Thwomp_NoHit
+
+	JSR Object_HitGround
+
+	INC Thwomp_TilesDetected, X
+	LDA Thwomp_TilesDetected, X
+	CMP #$03
+	BCS Thwomp_DetectGrnd
+
+	LDA #$20
+	STA <Objects_YVelZ, X
+
+	LDA Tile_LastProp
+	CMP #TILE_ITEM_COIN
+	BCC Thwomp_NoBump
+
+	JSR Object_DirectBumpBlocks
+
+Thwomp_NoBump:
+	JMP Thwomp_Draw
+
+Thwomp_DetectGrnd:
+	LDA #$20
 	STA Level_Vibration
 
-	; Ba-bam! sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	; Set timer to $40
-	LDA #$40
-	STA Objects_Timer,X
-	LDA #$03
-	STA Objects_Data6, X
-
-	LDA #$10
+	LDA #$30
 	STA Objects_Timer, X
-	INC <Objects_Data2,X	 ; Var5++ (next internal state)
 
-PRG004_A6D4:
-	RTS		 ; Return
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	INC <Thwomp_Action, X
+
+Thwomp_NoHit:
+	JMP Thwomp_Draw
 
 Thwomp_ReturnToOrigin:
-	LDA Objects_Timer,X 
-	BNE PRG004_A6EC	 ; If timer is not expired, jump to PRG004_A6EC (RTS)
 
-	LDA <Objects_YZ,X
-	CMP <Objects_Data1,X
-	BNE PRG004_A6E5	 ; If Thwomp has not returned to his origin Y, jump to PRG004_A6E5
+	LDA Objects_Timer, X
+	BNE Thwomp_Draw
 
-	; Var5 = 0 (return to original internal state)
+	LDA #$01
+	STA Objects_Frame, X
+
+	LDA #$F8
+	STA <Objects_YVelZ, X
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_YZ, X
+	CMP Thwomp_StartY, X
+	BNE Thwomp_Draw
+
+	LDA <Objects_YHiZ, X
+	CMP Thwomp_StartYHi, X
+	BNE Thwomp_Draw
+
 	LDA #$00
-	STA <Objects_Data2,X
-
-	RTS		 ; Return
-
-PRG004_A6E5:
-	; Set Thwomp Y velocity to -$10
-	LDA #-$10
-	STA <Objects_YVelZ,X
-
-	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity
-
-PRG004_A6EC:
-	RTS		 ; Return
-
+	STA <Thwomp_Action, X
 
 Thwomp_Draw:
 
-	; Clear any flip
-	LDA #$00 
-	STA Objects_Orientation,X
-
 	JSR Object_Draw16x32Sprite	 ; Draw left 2/3 of Thwomp
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	AND #$20
-	BNE PRG004_A737	 ; If sprite is not visible, jump to PRG004_A737
 
 	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; The right sprites appear +16 away from Thwomp's left
-	LDA <Objects_SpriteX,X
-	ADD #16
-	STA Sprite_RAM+$13,Y
-	STA Sprite_RAM+$17,Y
+	LDA Sprite_RAMX, Y
+	ADD #$10
+	STA Sprite_RAMX + 16,Y
+	STA Sprite_RAMX + 20,Y
 
-	; Temp_Var1 = vertical visibility bits
-	LDA Objects_SpritesVerticallyOffScreen,X
-	STA <Temp_Var1	
-
-	LDA <Objects_SpriteY,X
-
-	LSR <Temp_Var1
-	BCS PRG004_A718	 ; If sprite is vertically off-screen, jump to PRG004_A718
-
-	STA Sprite_RAM+$10,Y	 ; Set upper Sprite Y
-
-PRG004_A718:
-	LSR <Temp_Var1
-	BCS PRG004_A722	 ; If sprite is vertically off-screen, jump to PRG004_A722
-
-	ADD #16
-	STA Sprite_RAM+$14,Y	 ; Set lower Sprite Y
-
-PRG004_A722:
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY + 16,Y
+	
+	LDA Sprite_RAMY + 12, Y
+	STA Sprite_RAMY + 20,Y
 
 	; Right sprite horizontally flipped
-	LDA Sprite_RAM+$02,Y
+	LDA Sprite_RAMAttr,Y
 	ORA #SPR_HFLIP
-	STA Sprite_RAM+$12,Y
-	STA Sprite_RAM+$16,Y
+	STA Sprite_RAMAttr + 16,Y
+	STA Sprite_RAMAttr + 20,Y
 
-	; Upper sprite pattern
-	LDA #$b1
-	STA Sprite_RAM+$11,Y
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
 
-	; Lower sprite pattern
-	LDA #$bb
-	STA Sprite_RAM+$15,Y
+	LDA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 20, Y
 
-PRG004_A737:
-	LDA Objects_State,X
-	CMP #OBJSTATE_NORMAL
-	BEQ PRG004_A740	 ; If Thwomp's state is Normal, jump to PRG004_A740 (RTS)
-
-	; If Thwomp is in normal state, don't return to caller!
-	PLA
-	PLA
-
-PRG004_A740:
+Thwomp_DrawRTS:
 	RTS		 ; Return
 
-ObjInit_HyperThwomp:
-	LDA Objects_Property, X
-	STA Objects_Data2, X
-	LDA #$03
-	STA Objects_Data6, X
-	JSR Thwomp_Center
-	RTS
 
-ObjNorm_HyperThwomp:
-	JSR Object_DeleteOffScreen
-	JSR Thwomp_Draw	 ; Draw Thwomp
-
-	LDA Objects_Timer, X
-	BNE PRG004_A78B
-
+ObjNorm_AngryThwomp:
 	LDA <Player_HaltGameZ
-	BNE PRG004_A78B	 ; If gameplay is halted, jump to PRG004_A78B (RTS)
+	BEQ AngryThwomp_Normal
 
-		 ; Delete if falls off-screen
-	JSR Object_AttackOrDefeat	 ; Do Player to Thwomp collision detection
-	
-	LDA Objects_YVelZ, X
-	BNE PRG004_A78A
+	JMP Thwomp_Draw
 
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG004_A78B
+AngryThwomp_Normal:
+	JSR Object_DeleteOffScreen
 
+	LDA <Thwomp_Action, X
+	AND #$03
+
+	JSR DynJump
+
+	.word Thwomp_FallToGround
+	.word AngryThwompWait
+	.word Thwomp_FallToCeiling
+	.word AngryThwompWait
+
+AngryThwompWait:
+	LDA Objects_Timer, X
+	BNE AngryThwompWaitRTS
+
+	JSR Object_CalcBoundBox
 	JSR Object_XDistanceFromPlayer
 
-	LDA <Temp_Var16
-	ADD #$24
-	CMP #$60
-	BGE PRG004_A78B
+	LDA <XDiff
+	CMP #$40
+	BCS AngryThwompWaitRTS
 
-PRG004_A78A:
-	LDA <Objects_Data2, X
-	BNE ObjThwomp_FallToCeiling
-	JSR Thwomp_FallToGround
+	INC <Thwomp_Action, X
+	LDA Objects_Frame, X
+	EOR #$01
+	STA Objects_Frame, X
 
-PRG004_A78B:
-	RTS		 ; Return
+	LDA #$00
+	STA Thwomp_TilesDetected, X
 
-ObjThwomp_FallToCeiling:
-	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
- 
-	LDA <Objects_YVelZ,X
-	BEQ FallAnyways
-	CMP #$90
-	BCC NoDecVel	 ; If Thwomp is falling >= $70, jump to PRG004_A6B4
+AngryThwompWaitRTS:
+	JMP Thwomp_Draw
 
-FallAnyways:
-	; Thwomp fall Y Vel += 4
-	SBC #$04
-	STA <Objects_YVelZ,X
 
-NoDecVel:
-	LDA Objects_Data6, X
-	BEQ ObjThwomp_FallToCeiling1
-	JMP ThwompDetectLeftBlock
+Thwomp_FallToCeiling:
+	INC ReverseGravity
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 
-ObjThwomp_FallToCeiling1:
+	INC <Thwomp_Ticker, X
+	LDA <Thwomp_Ticker, X
+	AND #$01
+	TAY
+
+	LDA Objects_BoundLeft, X
+	ADD Thwomp_DetectXOffset, Y
+	STA Tile_DetectionX
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	LDA Objects_BoundTop, X
+	STA Tile_DetectionY
+
+	LDA Objects_BoundTopHi, X
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCC AngryThwomp_NoHit
+
 	JSR Object_HitCeiling
-	LDA #$18
+
+	INC Thwomp_TilesDetected, X
+	LDA Thwomp_TilesDetected, X
+	CMP #$03
+	BCS AngryThwomp_DetectCeil
+
+	LDA #$E0
+	STA <Objects_YVelZ, X
+
+	LDA Tile_LastProp
+	CMP #TILE_ITEM_COIN
+	BCC AngryThwomp_NoBump
+
+	JSR Object_DirectBumpBlocks
+
+AngryThwomp_NoBump:
+	JMP Thwomp_Draw
+
+AngryThwomp_DetectCeil:
+	LDA #$20
 	STA Level_Vibration
 
-	; Ba-bam! sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	; Set timer to $40
-	LDA #$40
-	STA Objects_Timer,X
-	LDA #$03
-	STA Objects_Data6, X
-
-	LDA #$10
+	LDA #$30
 	STA Objects_Timer, X
-	DEC <Objects_Data2,X	 ; Var5++ (next internal state)
 
-EndQuickRise:
-	RTS		 ; Return
-	; Values for OBJ_THWOMPUPDOWN, OBJ_THWOMPDIAGONALUL, OBJ_THWOMPDIAGONALDL, respectively
-ObjInit_ThwompUDSlide:
-	RTS
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	INC <Thwomp_Action, X
+
+AngryThwomp_NoHit:
+	JMP Thwomp_Draw
 
 
 ObjNorm_ThwompVertical:
@@ -3194,7 +3287,7 @@ ObjNorm_MissileMarkC:
 	AND #$01
 	STA Objects_SpriteAttributes,X
 
-	JSR Chase
+	JSR Object_ChasePlayer
 
 ObjNorm_MissileMarkA1:
 	JSR Object_CalcBoundBox
@@ -5283,7 +5376,7 @@ Chomp_DrawChains:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR ChainChomp_LinkVisibleTest
+	JSR Object_ParticleVisibleTest
 	BCS CDC1
 
 	LDY <Temp_Var4
@@ -5301,7 +5394,7 @@ CDC1:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR ChainChomp_LinkVisibleTest
+	JSR Object_ParticleVisibleTest
 	BCS CDC2
 
 	LDY <Temp_Var4
@@ -5319,7 +5412,7 @@ CDC2:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR ChainChomp_LinkVisibleTest
+	JSR Object_ParticleVisibleTest
 	BCS CDC3
 	
 	LDY <Temp_Var4
@@ -5337,7 +5430,7 @@ CDC3:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR ChainChomp_LinkVisibleTest
+	JSR Object_ParticleVisibleTest
 	BCS CDC4
 
 	LDY <Temp_Var4
@@ -5360,41 +5453,6 @@ CDC4:
 	STA Sprite_RAMAttr + 16, Y
 	STA Sprite_RAMAttr + 20, Y
 	RTS
-
-ChainChomp_LinkVisibleTest:
-
-	LDA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG004_BE52	 ; If any sprite is vertically off-screen, jump to PRG004_BE52
-
-	LDA <Objects_SpriteY,X	
-	CMP #200
-	BGE PRG004_BE52	 ; If Sprite Y >= 200, jump to PRG004_BE52
-
-	LDY #$40	 ; Y = $40
-
-	LDA <Objects_SpriteX,X
-	BMI PRG004_BE45	 ; If on right half, jump to PRG004_BE45
-
-	LDY #$c0	 ; Y = $C0
-
-PRG004_BE45:
-	CPY <Temp_Var2
-	EOR Objects_SpritesHorizontallyOffScreen,X
-	BMI PRG004_BE50
-	BCC PRG004_BE52
-	BCS PRG004_BE54
-
-PRG004_BE50:
-	BCC PRG004_BE54
-
-PRG004_BE52:
-	SEC		 ; Set carry (link not visible)
-
-	RTS		 ; Return
-
-PRG004_BE54:
-	CLC		 ; Clear carry (link is visible)
-	RTS		 ; Return
 
 Chomp_Free:
 	JSR Object_Move
@@ -5587,7 +5645,7 @@ DeliveryLakituTrack:
 	LDA Objects_State + 5
 	BNE DeliveryLakituEscape
 
-	JSR Chase
+	JSR Object_ChasePlayer
 	JSR Object_HitTest
 	BCC DeliveryLakituTrack1
 	
@@ -5655,7 +5713,7 @@ ObjNorm_BlueShell_1:
 	LDA #$00
 	ADC #$00
 	STA ChaseTargetYHi
-	JSR ChaseTargeted
+	JSR Object_ChasePlayer
 	JSR Object_ApplyXVel
 	JMP DrawBlueShell
 
@@ -5802,115 +5860,3 @@ BlueShell_Expload:
 	STA Objects_YHiZ, X
 	;JMP KoopaExpload
 	
-ThwompDetectLeftBlock:
-	
-	LDA Objects_YVelZ, X
-	BPL ThwompDetectLeftBlock0
-
-	INY
-	INY
-	INY
-	INY
-
-ThwompDetectLeftBlock0:
-	JSR Object_DetectTile
-	CMP #TILE_ITEM_BRICK
-	BEQ ThwompDetectLeftBlock1
-
-	CMP #TILE_PROP_SOLID_TOP
-	BCC ThwompDetectRightBlock
-	LDA #$00
-	STA Objects_Data6, X
-	RTS
-
-ThwompDetectLeftBlock1:
-	JSR ThwompBreakBlock
-	JMP ThwompBreakBlockRTS
-
-ThwompDetectRightBlock:
-	
-	LDA Objects_YVelZ, X
-	BPL ThwompDetectRightBlock0
-	INY
-	INY
-	INY
-	INY
-
-ThwompDetectRightBlock0:
-	JSR Object_DetectTile
-	CMP #TILE_ITEM_BRICK
-	BEQ ThwompBreakBlock
-
-	CMP #TILE_PROP_SOLID_TOP
-	BCC ThwompBreakBlockRTS
-	LDA #$00
-	STA Objects_Data6, X
-	RTS
-
-ThwompBreakBlock:
-	DEC Objects_Data6, X
-	BEQ ThwompBreakBlockRTS
-
-	LDA #$00
-	STA <Objects_YVelZ, X
-	LDA #$81
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
-	LDA Tile_DetectionY
-	AND #$F0
-	STA Block_ChangeY
-	LDA Tile_DetectionYHi
-	STA Block_ChangeYHi
-	
-	LDA Tile_DetectionX
-	AND #$F0
-	STA Block_ChangeX
-	LDA Tile_DetectionXHi
-	STA Block_ChangeXHi
-
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #$C0
-	BNE ThwompBreakBlockRTS
-
-	LDA Objects_SpritesVerticallyOffScreen, X
-	AND #$03
-	BNE ThwompBreakBlockRTS
-	JSR ThwompBustBrick
-	 
-ThwompBreakBlockRTS:
-	RTS
-
-ThwompBustBrick:
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-
-	; Set the brick bust
-	LDA #$02
-	STA BrickBust_En
-
-	; Brick bust upper Y
-	LDA Block_ChangeY
-	CLC
-	SBC Level_VertScroll
-	STA Brick_DebrisYHi
-
-	; Brick bust lower Y
-	ADD #$08
-	STA Brick_DebrisY
-
-	; Brick bust X
-	LDA Block_ChangeX
-	SUB <Horz_Scroll	
-	STA Brick_DebrisX
-
-	; reset brick bust X distance, no horizontal
-	LDA #$00
-	STA Brick_DebrisXDist
-	STA BrickBust_HEn
-
-	; Brick bust Y velocity
-	LDA #-$06
-	STA BrickBust_YVel
-	RTS

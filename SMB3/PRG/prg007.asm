@@ -308,11 +308,11 @@ SetProjectilePosition16x16:
 
 	LDA <Player_X
 	ADD Proj_BallPos + 2, Y
-	STA SpecialObj_X,X
+	STA SpecialObj_X, X
 
 	LDA <Player_XHi
-	ADC #$00
-	STA SpecialObj_XHi + 10,X
+	ADC Proj_BallPos + 6, Y
+	STA SpecialObj_XHi,X
 	JMP SetProjectileYPos
 
 SetProjectilePosition8x16:
@@ -381,7 +381,7 @@ Player_FireBall:
 
 Player_HitFire:
 	LDA #HIT_FIREBALL
-	STA Objects_PlayerProjHit, X
+	STA Objects_PlayerProjHit, Y
 
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_FIREPROOF
@@ -655,7 +655,7 @@ Player_Hammer:
 	BNE Player_HammerNoKill
 
 	LDA #HIT_HAMMER
-	STA Objects_PlayerProjHit, X
+	STA Objects_PlayerProjHit, Y
 
 	JSR SpecialObj_AttackEnemy
 
@@ -765,7 +765,7 @@ Player_NinjaStar:
 	BNE Player_StarNoKill
 
 	LDA #HIT_NINJASTAR
-	STA Objects_PlayerProjHit, X
+	STA Objects_PlayerProjHit, Y
 
 	JSR SpecialObj_AttackEnemy
 
@@ -1034,8 +1034,12 @@ SpecialObj_Draw16x16:
 
 	LDA SpecialObj_Y,X
 	SUB Level_VertScroll
-	CMP #$F8
-	BCS SpecialObj_Draw16x16Delete
+	CMP #$C0
+	BCC SpecialObj_NotDelete
+	CMP #$D0
+	BCC SpecialObj_Draw16x16Delete
+
+SpecialObj_NotDelete:
 	STA <Temp_Var1
 	STA Sprite_RAM+$00,Y
 
@@ -2281,7 +2285,7 @@ SpecialObj_UpdateAndDraw:
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word SObj_DoNothing	; 00: EMPTY / NOT USED (should never get here anyway)
-	.word SObj_Hammer	; 01: Hammer Bro hammer
+	.word Enemy_Hammer	; 01: Hammer Bro hammer
 	.word SObj_Veggie	; 02: Boomerangs
 	.word Enemy_Acid	; 03: 
 	.word Enemy_FireBall	; 04: Nipper fireball
@@ -3092,164 +3096,6 @@ PRG007_B588:
 PRG007_B5B1:
 	RTS		 ; Return
 
-	; The hammer starting X is offset
-Hammer_XOff:
-	;  Not-HF HF  (HF = Horizontally flipped)
-	.byte  8, -8	; Non-Heavy Hammer hold offset
-	.byte  8, -8	; Non-Heavy Boomerang hold offset
-	.byte 16, -8	; Heavy Bro hold offset
-
-	; The hammer starting Y is offset
-Hammer_YOff:
-	;  Not-HF HF  (HF = Horizontally flipped)
-	.byte  3,  3	; Non-Heavy Hammer hold offset
-	.byte  3,  3	; Non-Heavy Boomerang hold offset
-	.byte -6, -6	; Heavy Bro hold offset
-
-SObjYOff_PlayerSize:	.byte 18, 10	; Small vs not small
-SObj_VLimit:	.byte $10, $16
-PRG007_B6E2:	.byte $00, $10
-
-SObj_Hammer:
-	LDA <Player_HaltGameZ
-	BEQ PRG007_B6EB	 ; If gameplay is not halted, jump to PRG007_B6EB
-
-	JMP PRG007_B773	 ; Otherwise, jump to PRG007_B773
-
-PRG007_B6EB:
-
-	; SpecialObj_Data1 special purposes:
-	; Bits 0-3: Decrement to zero
-	; Bits 4-7: While lower 4 bits not zero, references an object which, if not in normal state or off-screen, destroys this object
-
-	LDA SpecialObj_Data1,X
-	AND #%00001111	 ; Consider lowest 4 bits of SpecialObj_Data1
-	BEQ PRG007_B76D	 ; If zero, jump to PRG007_B76D
-
-PRG007_B6F2:
-	; Lowest 4 bits of SpecialObj_Data1 is non-zero
-
-	DEC SpecialObj_Data1,X	 ; SpecialObj_Data1-- (mainly to effect the lowest 4 bits)
-
-	LDA SpecialObj_Data1,X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY		 ; Y = the upper 4 bits (an object slot index)
-	STY <Temp_Var2	 ; -> Temp_Var2
-
-	LDA Objects_State,Y
-	CMP #OBJSTATE_NORMAL
-	BNE PRG007_B70D	 ; If this object is not in normal state, jump to PRG007_B70D
-
-	LDA Objects_SpritesHorizontallyOffScreen,Y
-	AND #%11000000
-	BEQ PRG007_B710	 ; If this sprite does not have its two left sprites off-screen, jump to PRG007_B710
-
-PRG007_B70D:
-
-	; Referenced object is not in normal state or it is off-screen; destroy special object
-	JMP SpecialObj_Remove
-
-PRG007_B710:
-	LDA Objects_Orientation,Y
-	AND #SPR_HFLIP
-	STA <Temp_Var3	 ; Catch the horizontal flip bit of the referenced object -> Temp_Var3
-
-	; Temp_Var1 = 0 to 1, based on whether object is horizontally flipped
-	ASL A
-	ASL A
-	ROL A
-	AND #$01
-	STA <Temp_Var1
-
-	; Set hammer starting X
-	LDA Objects_XZ,Y
-	LDY <Temp_Var1	
-	ADD Hammer_XOff,Y
-	STA SpecialObj_X,X
-
-	LDY <Temp_Var2		 ; Y = referenced object slot index
-
-	; Set hammer starting Y
-	LDA Objects_YZ,Y
-	CLC
-	LDY <Temp_Var1
-	ADC Hammer_YOff,Y
-	STA SpecialObj_Y,X
-
-	LDA #$00	; A = 0
-
-	LDY SpecialObj_XVel,X
-	BMI PRG007_B75A	 ; If hammer is traveling to the left, jump to PRG007_B75A
-
-	LDA #SPR_HFLIP	; A = SPR_HFLIP
-
-PRG007_B75A:
-	CMP <Temp_Var3
-	BEQ PRG007_B76A	 ; If hammer is flipped the same way as object, jump to PRG007_B76A
-
-	; Reverse X velocity
-	LDA SpecialObj_XVel,X
-	JSR Negate
-	STA SpecialObj_XVel,X
-
-	INC SpecialObj_Data3,X
-
-PRG007_B76A:
-	JMP PRG007_B773	 ; Jump to PRG007_B773
-
-PRG007_B76D:
-	INC SpecialObj_Data2,X	; SpecialObj_Data2++
-
-	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
-
-PRG007_B773:
-	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
-	BEQ PRG007_B779	 ; If object is on the same vertical screen (see Temp_Var14 calculation), jump to PRG007_B779
-
-	RTS		 ; Return
-
-PRG007_B779:
-	STY <Temp_Var2
-	
-	CMP #TILE_ITEM_BRICK
-	BNE PRG007_B78A
-
-PRG007_B789:
-	;JSR EnemyHammerBrickBust
-
-PRG007_B78A:
-	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
-	JSR Hammer_Draw	 ; Draw hammer
-	JMP PRG007_B7C5	 ; Jump to PRG007_B7C5
-
-PRG007_B798:
-	LDY <Temp_Var2	 ; Y = Sprite RAM Offset
-
-	; Set boomerang sprites attributes
-	LDA #SPR_PAL1
-	STA Sprite_RAM+$02,Y
-	ORA #(SPR_HFLIP | SPR_VFLIP)
-	STA Sprite_RAM+$06,Y
-
-PRG007_B7B5:
-
-	; Set boomerang sprites patterns
-	LDA #$4D
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
-	
-
-PRG007_B7C5:
-	LDX <CurrentObjectIndexZ	 ; X = special object slot index
-
-	JSR SObj_Draw16x16	 ; Draw Boomerang
-
-	LDA SpecialObj_Data1,X
-	AND #%00001111
-	BNE PRG007_B826	 ; If lower 4 bits are not zero, jump to PRG007_B826 (RTS)
 
 SObj_PlayerCollide:
 	; Player to Special Object collision logic...
@@ -3273,8 +3119,8 @@ PRG007_B7E4:
 	LDA SpecialObj_Y,X		; Special object Y
 	ADD #$08			; +8
 	SUB <Player_Y			; Subtract Player Y
-	SUB SObjYOff_PlayerSize,Y	; Subtract Player height offset
-	CMP SObj_VLimit,Y
+	;SUB SObjYOff_PlayerSize,Y	; Subtract Player height offset
+	;CMP SObj_VLimit,Y
 	BGE PRG007_B843	 	; If result >= SObj_VLimit, jump to PRG007_B843 (RTS)
 
 	LDA SpecialObj_X,X		; Special object X
@@ -3748,6 +3594,83 @@ Enemy_IceBall5:
 
 Poof_Patterns:	.byte $47, $45, $43, $41
 
+Enemy_Hammer:
+	LDA <Player_HaltGameZ
+	BNE Enemy_HammerDraw
+
+	JSR SObj_ApplyXYVelsWithGravity
+	JSR SpecialObj_CalcBounds16x16
+	JSR EnemyProj_HitPlayer
+	
+	JSR SpecialObj_DetectWorld16x16
+	JSR Player_HammerTilesInteraction
+
+Enemy_HammerDraw:
+	LDA #$6D
+	STA <SpecialObj_Tile
+
+	LDA #$6F
+	STA <SpecialObj_Tile + 1
+
+	LDA #SPR_PAL3
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection16x6
+	JSR SpecialObj_Draw16x16
+	RTS
+
+
+Enemy_HammerTilesInteraction2:
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	JSR Object_ChangeBlock
+	LDA Tile_DetectionX
+	AND #$F0
+	STA SpecialObj_X, X
+
+	LDA Tile_DetectionY
+	AND #$F0
+	STA SpecialObj_Y, X
+
+	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
+
+	; Set the brick bust
+	LDA #$02
+	STA BrickBust_En
+
+	; Brick bust upper Y
+	LDA SpecialObj_Y, X
+	CLC
+	SBC Level_VertScroll
+	STA Brick_DebrisYHi
+
+	; Brick bust lower Y
+	ADD #$08
+	STA Brick_DebrisY
+
+	; Brick bust X
+	LDA SpecialObj_X, X
+	SUB <Horz_Scroll	
+	STA Brick_DebrisX
+
+	; reset brick bust X distance, no horizontal
+	LDA #$00
+	STA Brick_DebrisXDist
+	STA BrickBust_HEn
+
+	; Brick bust Y velocity
+	LDA #-$06
+	STA BrickBust_YVel
+
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile
+
+	LDA #SPR_PAL3
+	STA BrickBust_Pal
+	JMP SpecialObj_ToPoofNoSound
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SObj_GetSprRAMOffChkVScreen
 ;
@@ -4071,7 +3994,7 @@ PRG007_BC92:
 	SBC #$00
 	STA <Objects_XHiZ,X
 
-	JSR PRG007_BD09		; Set attribute and make noise and smoke!
+	;JSR PRG007_BD09		; Set attribute and make noise and smoke!
 	JSR CannonFire_NoiseAndSmoke	 ; make more smoke!!
 
 	; +4 to this smoke though
@@ -4086,88 +4009,67 @@ PRG007_BC92:
 
 	RTS		 ; Return
 
+BobOmbXOffset:		.byte $00, $00, $08, $08
+BobOmbYOffset:		.byte $F8, $F8, $00, $00
 Cfire_Bobombs:
-
-	; Bob-omb cannons!
-
 	JSR PrepareNewObjectOrAbort
 
-	; It's a Bob-omb!!
+	LDY <CurrentObjectIndexZ	
+
 	LDA #OBJ_BOBOMB
 	STA Objects_ID,X
 
-	LDA #$0A
-	STA PatTable_BankSel+4
+	LDA #$28
+	STA Objects_Timer, X
 
-	; Bobomb's Timer3 = $80
-	LDA #$10
-	STA Objects_Timer4,X
+	LDA CannonFire_Property, Y
+	AND #$03
+	ADD #$01
+	STA BobOmb_Action, X
 
-	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire slot index
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
 
-	; Set Bob-omb's Y
+	LDA CannonFire_Property, Y
+	AND #$03
+	TAY
+	LDA BobOmbXOffset,Y
+	STA <Temp_Var1
+
+	LDA BobOmbYOffset,Y
+	STA <Temp_Var2
+
+	LDY <CurrentObjectIndexZ	
+
+	
 	LDA CannonFire_Y,Y
+	ADD <Temp_Var2
 	STA <Objects_YZ,X
+
 	LDA CannonFire_YHi,Y
 	STA <Objects_YHiZ,X
 
 	LDA CannonFire_X,Y
+	ADD <Temp_Var1
 	STA <Objects_XZ,X
 
 	LDA CannonFire_XHi,Y
 	STA <Objects_XHiZ,X
 
+	JSR Object_CalcBoundBox
+	JSR Object_FacePlayer
+
 	LDA CannonFire_Property, Y
+	AND #$04
 	LSR A
 	LSR A
-	AND #$01
 	STA Objects_Property, X
-	LDA CannonFire_Property, Y
-	AND #$03
-	TAY
 
-	LDA BobOmbXVelocity, Y
-	STA <Objects_XVelZ, X
-	LDA BobOmbYVelocity, Y
-	STA <Objects_YVelZ, X
-
-	LDA <Objects_XZ, X
-	ADD BobOmbXOffset,Y
-	STA <Objects_XZ, X
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA <Objects_XHiZ, X
-
-	LDA <Objects_YZ, X
-	SUB BobOmbYOffset,Y
-	STA <Objects_YZ, X
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Objects_YHiZ, X
-
-	LDY #$00
-	LDA <Objects_XVelZ, X
-	BMI Cfire_Bobombs1
-	INY
-
-Cfire_Bobombs1:
-	LDA BobOmbHFlip, Y
-	STA Objects_Orientation, X
-	LDA #$00
-	STA Objects_Data2, X
-
-
-PRG007_BD09:
 	LDA #$80
-	STA CannonFire_Timer, X
+	STA CannonFire_Timer, Y
 	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 	RTS
 
-BobOmbHFlip:	.byte $00, SPR_HFLIP
-BobOmbXVelocity:	.byte $F0, $10, $00, $00
-BobOmbYVelocity:	.byte $00, $00, $F0, $10
-BobOmbXOffset:		.byte $00, $00, $08, $08
-BobOmbYOffset:		.byte $02, $02, $00, $00
 Goomb_XVelocity:	.byte $E0, $20
 Goomb_YVelocity:    .byte $C0, $C0
 

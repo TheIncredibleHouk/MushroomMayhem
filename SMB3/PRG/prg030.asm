@@ -4585,6 +4585,12 @@ CalcParam1 = Temp_Var1
 CalcParam2 = Temp_Var4
 CalcResult = Temp_Var7
 
+Add2ByteValue:
+	LDA #$00
+	STA <CalcParam1 + 2
+	STA <CalcParam2 + 2
+
+
 Add3ByteValue:
 	LDA <CalcParam1
 	ADD <CalcParam2

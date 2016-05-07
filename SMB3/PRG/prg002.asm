@@ -45,7 +45,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_PlatformFollow	; Object $36 - OBJ_PLATFORM_PATH
 	.word ObjInit_DoNothing	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.word ObjInit_DoNothing	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.word ObjInit_NipperHopping	; Object $39 - OBJ_NIPPERHOPPING
+	.word ObjInit_DoNothing	; Object $39 - OBJ_PACBOOHOME
 	.word ObjInit_DoNothing	; Object $3A - OBJ_FALLINGPLATFORM
 	.word ObjInit_SpecterCheep	; Object $3B - OBJ_SPECTERCHEEP
 	.word ObjInit_DoNothing	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -87,7 +87,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_PlatformFollow	; Object $36 - OBJ_PLATFORM_PATH
 	.word ObjNorm_PlatformOscillate	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.word ObjNorm_PlatformOscillate	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.word ObjNorm_Nipper		; Object $39 - OBJ_NIPPERHOPPING
+	.word ObjNorm_PacBooHome		; Object $39 - OBJ_PACBOOHOME
 	.word ObjNorm_DoNothing	; Object $3A - OBJ_FALLINGPLATFORM
 	.word ObjNorm_SpecterCheep	; Object $3B - OBJ_SPECTERCHEEP
 	.word ObjNorm_PlatformUnstable	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -130,7 +130,7 @@ ObjectGroup01_CollideJumpTable:
 	.word Platform_PlayerStand		; Object $36 - OBJ_PLATFORM_PATH
 	.word Platform_PlayerStand		; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.word Platform_PlayerStand		; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.word Player_GetHurt		; Object $39 - OBJ_NIPPERHOPPING
+	.word ObjHit_DoNothing		; Object $39 - OBJ_PACBOOHOME
 	.word ObjHit_DoNothing		; Object $3A - OBJ_FALLINGPLATFORM
 	.word Player_GetHurt		; Object $3B - OBJ_SPECTERCHEEP
 	.word Platform_PlayerStand		; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -172,7 +172,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $36 - OBJ_PLATFORM_PATH
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $39 - OBJ_NIPPERHOPPING
+	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $39 - OBJ_PACBOOHOME
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3A - OBJ_FALLINGPLATFORM
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -220,7 +220,7 @@ ObjectGroup01_Attributes2:
 	.byte OA2_TDOGRP2	; Object $36 - OBJ_PLATFORM_PATH
 	.byte OA2_TDOGRP2	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte OA2_TDOGRP2	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte OA2_TDOGRP1	; Object $39 - OBJ_NIPPERHOPPING
+	.byte OA2_TDOGRP1	; Object $39 - OBJ_PACBOOHOME
 	.byte OA2_TDOGRP9	; Object $3A - OBJ_FALLINGPLATFORM
 	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OA2_TDOGRP9	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -253,7 +253,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2F - OBJ_BOO
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $30 - OBJ_PACBOO
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $30 - OBJ_PACBOO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $31 - OBJ_PHANTO
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $33 - OBJ_NIPPER
@@ -262,7 +262,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $36 - OBJ_PLATFORM_PATH
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $39 - OBJ_NIPPERHOPPING
+	.byte OA3_HALT_NORMALONLY  	; Object $39 - OBJ_PACBOOHOME
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3A - OBJ_FALLINGPLATFORM
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -295,7 +295,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
 	.byte $00	; Object $2E - OBJ_PIRATEBOO
 	.byte OPTS_SETPT5 | $37	; Object $2F - OBJ_BOO
-	.byte OPTS_SETPT5 | $12	; Object $30 - OBJ_PACBOO
+	.byte OPTS_SETPT5 | $37	; Object $30 - OBJ_PACBOO
 	.byte OPTS_SETPT5 | $37	; Object $31 - OBJ_PHANTO
 	.byte OPTS_SETPT5 | $12	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OPTS_SETPT5 | $37	; Object $33 - OBJ_NIPPER
@@ -304,7 +304,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $36 - OBJ_PLATFORM_PATH
 	.byte OPTS_NOCHANGE	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte OPTS_NOCHANGE	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte OPTS_SETPT5 | $0A	; Object $39 - OBJ_NIPPERHOPPING
+	.byte OPTS_NOCHANGE; Object $39 - OBJ_PACBOOHOME
 	.byte OPTS_SETPT6 | $13	; Object $3A - OBJ_FALLINGPLATFORM
 	.byte OPTS_SETPT6 | $13	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OPTS_NOCHANGE	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -346,7 +346,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $36 - OBJ_PLATFORM_PATH
 	.byte KILLACT_STANDARD	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte KILLACT_STANDARD	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte KILLACT_STANDARD	; Object $39 - OBJ_NIPPERHOPPING
+	.byte KILLACT_POOFDEATH	; Object $39 - OBJ_PACBOOHOME
 	.byte KILLACT_STANDARD	; Object $3A - OBJ_FALLINGPLATFORM
 	.byte KILLACT_POOFDEATH	; Object $3B - OBJ_SPECTERCHEEP
 	.byte KILLACT_STANDARD	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
@@ -404,8 +404,10 @@ ObjP2F:
 ObjP35:
 ObjP47:
 	.byte $81, $83, $89, $8B, $81, $83, $93, $95, $85, $87, $89, $8B, $85, $87, $93, $95
+
 ObjP30:
-	.byte $B9, $BF, $91, $93, $B5, $71
+	.byte $91, $93, $B1, $B3, $95, $97
+
 ObjP45:
 	.byte $BD, $BF
 ObjP31:
@@ -857,7 +859,7 @@ ObjNorm_PirateBoo:
 	TAY
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
-	JSR Chase
+	JSR Object_ChasePlayer
 	JSR Object_InteractWithPlayer	; Do collision test with Player and respond
 	JSR Fish_FixedYIfAppro	 	; Fix Boo Y for raster area
 	JMP Object_Draw 	; Draw and don't come back!
@@ -875,7 +877,7 @@ ObjNorm_Boo:
 	BEQ PRG002_AA46	 ; Jump (technically always) to PRG002_AA46
 
 PRG002_A8DE:
-	JSR Chase
+	JSR Object_ChasePlayer
 
 	LDA #$01	 ; A = 1 (frame 1, chase!)
 
@@ -976,7 +978,7 @@ Phanto_Chase:
 	LDA Object_BeingHeld + 5
 	BEQ Phanto_ChaseHover
 
-	JSR Chase
+	JSR Object_ChasePlayer
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JMP Object_Draw
@@ -1541,7 +1543,7 @@ ObjNorm_SpecterCheep:
 	AND #$01
 	BEQ ObjNorm_SpecterCheep1
 
-	JSR Chase
+	JSR Object_ChasePlayer
 
 ObjNorm_SpecterCheep1:
 	JMP Object_Draw
@@ -4396,134 +4398,175 @@ ObjNorm_BirdoDraw:
 	JSR Object_Draw16x32Sprite
 	RTS
 
+ObjNorm_PacBooHome:
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Objects_BoundLeft, X
+	ADD #$20
+	STA Objects_BoundRight, X
+
+	LDA <Objects_XHiZ, X
+	STA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+
+	LDA <Objects_YZ, X
+	STA Objects_BoundTop, X
+	ADD #$08
+	STA Objects_BoundBottom, X
+	ADD #$10
+
+	LDA <Objects_YHiZ, X
+	STA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+	RTS
+
+PacBoo_HomeLeft = Objects_Data3
+PacBoo_HomeLeftHi = Objects_Data4
+PacBoo_HomeTop = Objects_Data5
+PacBoo_HomeTopHi = Objects_Data6
+PacBoo_Action = Objects_Data7
+PacBoo_CurrentIndex = Objects_Data1
+
 ObjInit_PacBoo:
 	LDA <Objects_XZ,X
-	STA Objects_Data5, X
+	SUB #$10
+	STA PacBoo_HomeLeft, X
+
 	LDA <Objects_XHiZ,X
-	STA Objects_Data3, X
+	SBC #$00
+	STA PacBoo_HomeLeftHi, X
 
 	LDA <Objects_YZ,X
-	STA <Objects_Data1, X
+	STA PacBoo_HomeTop, X
+
 	LDA <Objects_YHiZ,X
-	STA Objects_Data2, X
-	RTS
+	STA PacBoo_HomeTopHi, X
+
+	JMP InitPatrol_Chase
 
 ObjNorm_PacBoo:
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_PacBoo1
+	BEQ PacBoo_Norm
 	
 	JMP Object_Draw
 
-ObjNorm_PacBoo1:
-	LDA Objects_State, X
-	CMP #OBJSTATE_KILLED
-	BEQ ObjNorm_PacBoo3
+PacBoo_Norm:
+	LDA PacBoo_Action, X
 
-	JSR Object_InteractWithPlayer
+	JSR DynJump
+	.word ChasePlayer
+	.word ChaseHome
+
+PacBoo_HomeVel:
+	.byte $FF, $01
+
+PacBoo_HomeVelMax:
+	.byte $F0, $10
+
+ChasePlayer:
 	LDA Player_StarInv
-	BEQ ObjNorm_PacBoo2
+	BNE FleePlayer
 
-	LDA #$01
-	STA Objects_Frame, X
-
-	JSR Chase
-	LDA <Objects_XVelZ, X
-	EOR #$FF
-	STA <Objects_XVelZ, X
-	LDA <Objects_YVelZ, X
-	EOR #$FF
-	STA <Objects_YVelZ, X
-
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel
-
-	LDA <Objects_XVelZ, X
-	EOR #$FF
-	STA <Objects_XVelZ, X
-
-	LDA <Objects_YVelZ, X
-	EOR #$FF
-	STA <Objects_YVelZ, X
-
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, X
-	JMP Object_Draw
-
-ObjNorm_PacBoo2:
-	LDA #$00
-	STA Objects_Frame, X
+	JSR Object_ChasePlayer
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
-
-	LDA RandomN, X
-	AND #$03
-	BNE ObjNorm_PacBoo21
-
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel
-	JMP Object_Draw
-
-ObjNorm_PacBoo21:
-	JSR Chase
-	JMP Object_Draw
 	
-ObjNorm_PacBoo3:
-	LDA Objects_Data4, X
-	BNE ObjNorm_PacBoo4
+	LDA #$00
+	STA Objects_Frame, X
+	JMP Object_Draw
 
-	INC Objects_Data4, X
+FleePlayer:
+	JSR Object_FleePlayer
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE PacBoo_FleeDraw
+
+	INC PacBoo_Action, X
 	LDA #$10
 	STA Player_HaltTick
 
-ObjNorm_PacBoo4:
-	LDA #$02
-	STA Objects_Frame, X
-
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
-
-	LDA <Player_X
-	PHA
-	LDA <Player_XHi
-	PHA
-	LDA <Player_Y
-	PHA
-	LDA <Player_YHi
-	PHA
-
-	LDA Objects_Data5, X
-	STA <Player_X
-	LDA Objects_Data3, X
-	STA <Player_XHi
-
-	LDA <Objects_Data1, X
-	STA <Player_Y
-	LDA Objects_Data2, X
-	STA <Player_YHi
-	JSR Chase
-	
-	PLA
-	STA <Player_YHi
-	PLA
-	STA <Player_Y
-	PLA
-	STA <Player_XHi
-	PLA
-	STA <Player_X
-
-	JSR Object_DetectTileCenter
-	LDA Objects_LastProp, X
-	CMP #TILE_PROP_ENEMY
-
-	BNE ObjNorm_PacBoo5
-
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
-	DEC Objects_Data4, X
 
-ObjNorm_PacBoo5:
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
+
+PacBoo_FleeDraw:
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+	
+	LDA #$01
+	STA Objects_Frame, X
+	JMP Object_Draw
+
+ChaseHome:
+	LDY #$04
+
+PacBoo_TryFindHome:
+	LDA Objects_ID, Y
+	CMP #OBJ_PACBOOHOME
+	BNE PacBoo_FindHome
+
+	TYA
+	STA PacBoo_CurrentIndex, X
+	JSR Object_XDistanceFromObject
+	LDY <XDiffLeftRight
+	
+	LDA <Objects_XVelZ, X
+	CMP PacBoo_HomeVelMax, Y
+	BEQ PacBoo_ChaseHomeY
+
+	ADD PacBoo_HomeVel, Y
+	STA <Objects_XVelZ, X
+
+PacBoo_ChaseHomeY:
+	LDY PacBoo_CurrentIndex, X
+	JSR Object_YDistanceFromObject
+	LDY <YDiffAboveBelow
+	
+	LDA <Objects_YVelZ, X
+	CMP PacBoo_HomeVelMax, Y
+	BEQ PacBoo_TouchingHome
+
+	ADD PacBoo_HomeVel, Y
+	STA <Objects_YVelZ, X
+	JMP PacBoo_TouchingHome
+
+PacBoo_FindHome:
+	DEY
+	BPL PacBoo_TryFindHome
+	BMI PacBoo_HomeDraw
+
+PacBoo_TouchingHome:
+	JSR Object_FaceDirectionMoving
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBox
+
+	LDY PacBoo_CurrentIndex, X
+	JSR Object_DetectObjects
+	BCC PacBoo_HomeDraw
+
+	LDA #$00
+	STA PacBoo_Action, X
+
+PacBoo_HomeDraw:
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	LDA #$02
+	STA Objects_Frame, X
 	JMP Object_Draw
 
 
