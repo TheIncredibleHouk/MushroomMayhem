@@ -6,7 +6,7 @@
     <pointer levelguid="0ec3e06c-8eb6-490b-855e-fad3ed63d439" exittype="1" xexit="189" yexit="25" xenter="177" yenter="23" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="11" y="16" value="65" item="0" property="2" />
+    <sprite x="11" y="16" value="65" item="0" property="0" />
     <sprite x="22" y="19" value="109" item="0" property="0" />
     <sprite x="81" y="11" value="74" item="0" property="0" />
     <sprite x="42" y="11" value="65" item="0" property="0" />
@@ -30,5 +30,5 @@
     <sprite x="236" y="7" value="76" item="0" property="4" />
     <sprite x="177" y="23" value="162" item="0" property="2" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

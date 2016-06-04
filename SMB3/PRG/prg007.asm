@@ -262,10 +262,10 @@ Throw_Hammer:
 	STA SpecialObj_YVel, X
 	RTS
 
-Ninja_YVel:
+PlayerNinja_YVel:
 	.byte $00, $30, $D0, $D0
 
-Ninja_XVel:
+PlayerNinja_XVel:
 	.byte $D0, $30, $00
 
 Throw_NinjaStar:
@@ -278,7 +278,7 @@ Throw_NinjaStar:
 	LSR A
 	TAY
 
-	LDA Ninja_YVel, Y
+	LDA PlayerNinja_YVel, Y
 	STA SpecialObj_YVel, X
 	BEQ Throw_NinjaStar1
 
@@ -295,7 +295,7 @@ Throw_NinjaStar:
 
 Throw_NinjaStar1:
 	LDY Player_Direction
-	LDA Ninja_XVel, Y
+	LDA PlayerNinja_XVel, Y
 	STA SpecialObj_XVel, X
 	RTS		 ; Return
 
@@ -470,7 +470,7 @@ SpecialObj_FireTiles1:
 	RTS
 
 Player_FireTiles2:
-	EOR #$01
+	ADD #$01
 	JSR Object_ChangeBlock
 	LDA Tile_DetectionX
 	AND #$F0
@@ -524,6 +524,12 @@ Make_Ice:
 
 	LDA #$00
 	STA Objects_Frame, Y
+	STA Objects_Orientation, Y
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, Y
+
+Ice_NoReverse:
 
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, Y
@@ -610,7 +616,7 @@ SpecialObj_IceTiles1:
 	RTS
 
 SpecialObj_IceTiles2:
-	EOR #$01
+	SUB #$01
 	JSR Object_ChangeBlock
 	LDA Tile_DetectionX
 	AND #$F0
@@ -714,41 +720,13 @@ Player_HammerTilesInteraction2:
 	AND #$F0
 	STA SpecialObj_Y, X
 
-	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-
-	; Set the brick bust
-	LDA #$02
-	STA BrickBust_En
-
-	; Brick bust upper Y
-	LDA SpecialObj_Y, X
-	CLC
-	SBC Level_VertScroll
-	STA Brick_DebrisYHi
-
-	; Brick bust lower Y
-	ADD #$08
-	STA Brick_DebrisY
-
-	; Brick bust X
 	LDA SpecialObj_X, X
-	SUB <Horz_Scroll	
-	STA Brick_DebrisX
+	STA Debris_X
 
-	; reset brick bust X distance, no horizontal
-	LDA #$00
-	STA Brick_DebrisXDist
-	STA BrickBust_HEn
+	LDA SpecialObj_Y, X
+	STA Debris_Y
+	JSR Common_MakeBricks
 
-	; Brick bust Y velocity
-	LDA #-$06
-	STA BrickBust_YVel
-
-	LDA #BRICK_DEBRIS
-	STA BrickBust_Tile
-
-	LDA #SPR_PAL3
-	STA BrickBust_Pal
 	JMP SpecialObj_ToPoofNoSound
 
 Player_NinjaStar:
@@ -1119,13 +1097,15 @@ SpecialObj_CalcBounds8x16:
 
 SpecialObj_CalcBounds16x16:
 	LDA SpecialObj_X, X
+	ADD #$02
 	STA SpecialObj_BoundLeft
 
 	LDA SpecialObj_XHi, X
+	ADC #$00
 	STA SpecialObj_BoundLeftHi
 
 	LDA SpecialObj_BoundLeft
-	ADD #$0F
+	ADD #$0D
 	STA SpecialObj_BoundRight
 
 	LDA SpecialObj_BoundLeftHi
@@ -1133,13 +1113,15 @@ SpecialObj_CalcBounds16x16:
 	STA SpecialObj_BoundRightHi
 
 	LDA SpecialObj_Y, X
+	ADD #$02
 	STA SpecialObj_BoundTop
 
 	LDA SpecialObj_YHi, X
+	ADC #$00
 	STA SpecialObj_BoundTopHi
 
 	LDA SpecialObj_BoundTop
-	ADD #$0F
+	ADD #$0D
 	STA SpecialObj_BoundBottom
 
 	LDA SpecialObj_BoundTopHi
@@ -1193,6 +1175,8 @@ ProjEnemyDead:
 	TYA
 	TAX
 	JSR Object_GetKilled
+	JSR Object_FlipFallAwayFromHit
+
 	LDX <CurrentObjectIndexZ
 
 	; Set object's velocity based on Player's velocity (sort of works)
@@ -1612,7 +1596,9 @@ PRG007_A978:
 ; Update and draw water surface splashes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Splash_UpdateAndDraw:
+	RTS
 	LDX #$02	 ; X = 2
+
 PRG007_A97B:
 	STX <CurrentObjectIndexZ	 ; -> Slot Index backup
 
@@ -1620,11 +1606,6 @@ PRG007_A97B:
 	BEQ PRG007_A9A0	 ; If no splash is active here, jump to PRG007_A9A0
 
 	LDA <Player_HaltGameZ
-
-	; This probably used to skip something if gameplay was halted, i.e. (BNE xxxx)
-	NOP
-	NOP
-
 	INC Splash_Counter,X	 ; Splash counter++
 
 	LDA <Counter_1
@@ -2016,10 +1997,17 @@ PRG007_AD09:
 
 	; Rotate the horizontal / vertical flips
 	LDA BrickBust_Pal, X
-	STA Sprite_RAM+$02,Y
 	STA Sprite_RAM+$06,Y
-	STA Sprite_RAM+$0A,Y
+
+	ORA #SPR_VFLIP
 	STA Sprite_RAM+$0E,Y
+
+	ORA #SPR_HFLIP
+	STA Sprite_RAM+$0A,Y
+
+	LDA BrickBust_Pal, X
+	ORA #SPR_HFLIP
+	STA Sprite_RAM+$02,Y
 
 	RTS		 ; Return
 
@@ -2286,16 +2274,16 @@ SpecialObj_UpdateAndDraw:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word SObj_DoNothing	; 00: EMPTY / NOT USED (should never get here anyway)
 	.word Enemy_Hammer	; 01: Hammer Bro hammer
-	.word SObj_Veggie	; 02: Boomerangs
+	.word Enemy_Veggie	; 02: Boomerangs
 	.word Enemy_Acid	; 03: 
 	.word Enemy_FireBall	; 04: Nipper fireball
 	.word SpecialObj_Poof	; 05: Piranha fireball
 	.word Enemy_IceBall	; 06: Micro goombas
-	.word SOBJ_NinjaStar	; 07: Spike/Patooie's spike ball
+	.word Enemy_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word SObj_Egg	; 08: Koopaling wand blast
 	.word Enemy_AcidPool	; 09: Lost Kuribo shoe
 	.word SObj_Wrench	; 0A: Rocky's Wrench
-	.word SObj_Cannonball	; 0B: Cannonball
+	.word Enemy_Cannonball	; 0B: Cannonball
 	.word SObj_DoNothing	; 0C: Fire bro bouncing fireball
 	.word SObj_ExplodeStar	; 0D: Explosion star
 	.word SOBJ_BUBBLE	; 0E: Bubble
@@ -2671,142 +2659,103 @@ PRG007_B39D:
 PRG007_B3A3:
 	RTS		 ; Return
 
-Cannonball_YOffset:	.byte 16, $00
-Cannonball_YDiffLimit:	.byte 16, 32
-
-SObj_Cannonball:
+Enemy_Cannonball:
 	LDA <Player_HaltGameZ
-	BNE PRG007_B3C2	 ; If gameplay halted, jump to PRG007_B3C2
+	BNE Enemy_CannonDraw
 
-	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
-	JSR SObj_OffsetYForRaster	 ; Offset the Y by raster effects, if any
+	LDA SpecialObj_Data3, X
+	BNE Cannonball_Norm
 
-	LDA SpecialObj_Data1,X
-	BNE PRG007_B3C2	 ; If data <> 0 (cannonball is stomped), jump to PRG007_B3C2
+	JSR SObj_ApplyXYVelsWithGravity
+	JMP Enemy_CannonDraw
 
-	; Otherwise, Y Vel -= 2 (??)
-	DEC SpecialObj_YVel,X
-	DEC SpecialObj_YVel,X
+Cannonball_Norm:
+	JSR SObj_ApplyXYVels
+	JSR SpecialObj_CalcBounds16x16
+	JSR EnemyProj_HitPlayer
+	
+	JSR SpecialObj_DetectWorld16x16
+	JSR CannonBall_TilesInteraction
 
-PRG007_B3C2:
-	JSR SObj_GetSprRAMOffChkVScreen
-	BNE PRG007_B3A3	 ; If cannonball is vertically off-screen, jump to PRG007_B3A3 (RTS)
-
-	JSR SObj_Draw16x16	; Prep cannonball sprites
-
-	; Set cannon ball sprite attributes
-	LDA #SPR_PAL3
-	STA Sprite_RAM+$02,Y
-	ORA #(SPR_HFLIP | SPR_VFLIP)
-	STA Sprite_RAM+$06,Y
-
-	; Set left and right cannonball patterns
+Enemy_CannonDraw:
 	LDA #$5B
-	STA Sprite_RAM+$05,Y
-	STA Sprite_RAM+$01,Y
+	STA <SpecialObj_Tile
 
-	LDA SpecialObj_Data1,X
-	ORA Player_IsDying
-	ORA Player_OffScreen
-	BNE PRG007_B445	 ; If cannonon ball is already stomped, Player is dying, or Player is off-screen, jump to PRG007_B445 (RTS)
+	LDA #$5B
+	STA <SpecialObj_Tile + 1
 
-	LDY #$00	 ; Y = 0 (Player is small or ducking)
+	LDA #SPR_PAL3
+	STA <SpecialObj_Attributes
 
-	LDA <Player_Suit
-	BEQ PRG007_B3F3		; If Player is small, jump to PRG007_B3F3
+	LDA #(SPR_PAL3 | SPR_VFLIP | SPR_HFLIP)
+	STA <SpecialObj_Attributes + 1
 
-	LDA Player_IsDucking
-	BNE PRG007_B3F3		; If Player is ducking, jump to PRG007_B3F3
-
-	INY		 ; Y = 1 (Player not small/ducking)
-
-PRG007_B3F3:
-	LDA SpecialObj_Y,X	; Cannonball Y
-	SUB <Player_Y		; Player Y
-	SUB Cannonball_YOffset,Y	; Offset
-	CMP Cannonball_YDiffLimit,Y
-	BGE PRG007_B445	 ; If Player is not close enough to top of cannonball, jump to PRG007_B445 (RTS)
-
-	LDA SpecialObj_X,X
-	ADD #$08	 ; Cannonball X + 8
-	SUB <Player_X	 ; Diff against Player X
-	CMP #20
-	BGE PRG007_B445	 ; If Player is not close enough horizontally to cannonball, jump to PRG007_B445 (RTS)
-
-	LDA Player_StarInv
-	BNE PRG007_B426	 ; If Player is invincible by Star Man, jump to PRG007_B426
-
-	LDA <Player_YVel
-	BMI PRG007_B442	 ; If Player is moving upward, jump to PRG007_B442
-
-	LDA SpecialObj_Y,X
-	SUB Level_VertScroll
-	SUB #19
-	CMP <Player_SpriteY
-	BLT PRG007_B442	 ; If Player is close enough to bottom of cannonball, jump to PRG007_B442
-
-PRG007_B426:
-
-	; Flag cannonball as stomped!
-	LDA #$01
-	STA SpecialObj_Data1,X
-
-	; Halt its movements
-	LDA #$00
-	STA SpecialObj_XVel,X
-	STA SpecialObj_YVel,X
-
-	; Player bounces off cannonball
-	LDA #-$30
-	STA <Player_YVel
-
-	; Cannonball kick sound
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERKICK
-	STA Sound_QPlayer
-
-	JMP PRG007_B446	 ; Jump to PRG007_B446
-
-PRG007_B442:
-	JMP PRG007_B805	 ; Jump to PRG007_B805 (remainder of Player hit checks)
-
-PRG007_B445:
-	RTS		 ; Return
-
-
-PRG007_B446:
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_Draw16x16
 	RTS
-;	;JSR Score_FindFreeSlot
-;
-;	; Set base score and add Kill_Tally
-;	LDA #$85		; Base 100 points; $80 just mixes up what sprite it uses
-;
-;PRG007_B44B:
-;
-;	STA Scores_Value,Y
-;
-;	; Set the score counter
-;	LDA #$30
-;	STA Scores_Counter,Y
-;
-;	LDA SpecialObj_Y,X
-;	SUB Level_VertScroll
-;	SBC #$06
-;	CMP #192
-;	BLT PRG007_B469	 ; If score Y < 192, jump to PRG007_B469
-;
-;	LDA #$05	 ; Otherwise, use Y = 5
-;
-;PRG007_B469:
-;	STA Scores_Y,Y	 ; Set score Y
-;
-;	; Set score X
-;	LDA SpecialObj_X,X
-;	SUB <Horz_Scroll
-;	STA Scores_X,Y
 
-	RTS		 ; Return
 
+CannonBall_TilesInteraction:
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC CannonBall_NotSolid
+
+	DEC SpecialObj_Data3, X
+	BNE CannonBall_NotSolid
+
+	LDA SpecialObj_XVel, X
+	JSR Half_Value
+	EOR #$FF
+	ADD #$01
+	STA SpecialObj_XVel, X
+
+	LDA #$00
+	STA SpecialObj_YVel, X
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+	RTS
+
+CannonBall_NotSolid:
+	LDA Block_NeedsUpdate
+	BNE CannonBall_TilesInteraction1
+
+	LDY #$02
+
+CannonBall_TilesInteraction0:
+	LDA Cannon_Tiles, Y
+	BEQ Cannon_Empty
+
+	CMP Tile_LastProp
+	BEQ CannonBall_TilesInteraction2
+
+Cannon_Empty:
+	DEY
+	BPL CannonBall_TilesInteraction0
+
+CannonBall_TilesInteraction1:
+	RTS
+
+Cannon_Tiles:
+	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_STONE), (TILE_PROP_SOLID_ALL | TILE_PROP_STONE), (TILE_ITEM_BRICK)
+
+CannonBall_TilesInteraction2:
+	LDA #$02
+	STA SpecialObj_Data3, X
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	JSR Object_ChangeBlock
+
+	LDA SpecialObj_X, X
+	AND #$F0
+	STA Debris_X
+
+	LDA SpecialObj_Y, X
+	AND #$F0
+	STA Debris_Y
+	JMP Common_MakeBricks
 
 SObj_OffsetYForRaster:
 	LDA Level_AScrlConfig
@@ -3066,35 +3015,28 @@ SObj_Draw16x16:
 	RTS		 ; Return
 
 
-SOBJ_NinjaStar:
+Enemy_NinjaStar:
 	LDA <Player_HaltGameZ
-	BNE PRG007_B588	 ; If gameplay is halted, jump to PRG007_B588
+	BNE Enemy_NinjaStarDraw
 
-PRG007_B585:
-	JSR SObj_AddXVelFrac	 ; Apply X velocity only
-	JSR SObj_AddYVelFrac
+	JSR SObj_ApplyXYVels
+	JSR SpecialObj_CalcBounds16x16
+	JSR EnemyProj_HitPlayer
+	
 
-PRG007_B588:
-	JSR SObj_GetSprRAMOffChkVScreen
+Enemy_NinjaStarDraw:
 
-	; Spike ball pattern
 	LDA #$4D
-	STA Sprite_RAM+$01,Y
-	LDA #$4D
-	STA Sprite_RAM+$05,Y
+	STA <SpecialObj_Tile
+	STA <SpecialObj_Tile + 1
 
-	JSR SObj_Draw16x16	 ; Draw spike ball
-
-	; Set spike ball left attributes
 	LDA #SPR_PAL3
-	STA Sprite_RAM+$02,Y
-	ORA #(SPR_HFLIP | SPR_VFLIP)
-	STA Sprite_RAM+$06,Y
-
-	JMP SObj_PlayerCollide	 ; Do Player to spike ball collision and don't come back!
-
-PRG007_B5B1:
-	RTS		 ; Return
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+	JSR SpecialObj_SetMirrorFlipped
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_Draw16x16
+	RTS
 
 
 SObj_PlayerCollide:
@@ -3148,7 +3090,7 @@ PRG007_B827:
 	CMP #SOBJ_ICEBALL
 	BNE PRG007_B836
 	JSR CheckTailSpin
-	JSR SetPlayerFrozen
+	JSR Enemy_FreezePlayer
 	LDA SpecialObj_XVel,X
 	STA <Player_XVel
 	JMP SpecialObj_Remove
@@ -3215,76 +3157,27 @@ PRG007_B84C:
 
 	RTS		 ; Return
 
-
-Hammer_Draw:
-	; Set upper and lower sprite 
-
-	LDA SpecialObj_XVel, X
-	BMI Hammer_Draw1
-
-	LDA #SPR_PAL1
-	STA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$06,Y
-
-	; Set upper sprite pattern
-	LDA #$6D
-	STA Sprite_RAM+$01,Y
-
-	; Set bottom sprite pattern
-	LDA #$6F
-	STA Sprite_RAM+$05,Y
-	BNE Hammer_Draw2
-
-Hammer_Draw1:
-
-	LDA #$6D
-	STA Sprite_RAM+$05,Y
-
-	; Set bottom sprite pattern
-	LDA #$6F
-	STA Sprite_RAM+$01,Y
-
-	LDA #(SPR_PAL1 | SPR_HFLIP)
-	STA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$06,Y
-
-Hammer_Draw2:
-	RTS		 ; Return
-
-SObj_Veggie:
-
+Enemy_Veggie:
 	LDA <Player_HaltGameZ
-	BNE DrawVeggie	 ; If gameplay is not halted, jump to PRG007_B8B7
+	BNE Enemy_VeggieDraw
 
-	JSR SObj_ApplyXYVelsWithGravity	
+	JSR SObj_ApplyXYVelsWithGravity
+	JSR SpecialObj_CalcBounds16x16
+	JSR EnemyProj_HitPlayer
 
-DrawVeggie:
-	JSR SObj_PlayerCollide
-	JSR SObj_GetSprRAMOffChkVScreen	 ; Get a sprite RAM offset
-	BNE DrawVeggie1	 ; If object is on the same vertical screen (see Temp_Var14 calculation), jump to PRG007_B779
-
-	JSR SObj_SetSpriteXYRelative
-
-	LDA Sprite_RAM, Y
-	STA Sprite_RAM + 4, Y
-	LDA Sprite_RAM +3, Y
-	ADD #$08
-	STA Sprite_RAM + 7, y
-
+Enemy_VeggieDraw:
 	LDA #$B3
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
+	STA <SpecialObj_Tile
+	STA <SpecialObj_Tile + 1
 
 	LDA #SPR_PAL2
-	STA Sprite_RAM + $02, Y
+	STA <SpecialObj_Attributes
+
 	ORA #SPR_HFLIP
-	STA Sprite_RAM + $06, Y
-
-DrawVeggie1:
-	RTS
-
-PRG007_B8B7:
-
+	STA <SpecialObj_Attributes + 1
+	
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_Draw16x16
 	RTS		 ; Return
 	
 Enemy_Acid:
@@ -3534,7 +3427,7 @@ Enemy_IceBallNoGravity:
 
 Enemy_IceBallCalcBounds
 	JSR SpecialObj_CalcBounds8x16
-	JSR EnemeyProj_FreezePlayer
+	JSR EnemeyProj_Enemy_FreezePlayer
 
 Enemy_IceBallTiles:
 	JSR SpecialObj_DetectWorld8x16
@@ -3634,41 +3527,13 @@ Enemy_HammerTilesInteraction2:
 	AND #$F0
 	STA SpecialObj_Y, X
 
-	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-
-	; Set the brick bust
-	LDA #$02
-	STA BrickBust_En
-
-	; Brick bust upper Y
-	LDA SpecialObj_Y, X
-	CLC
-	SBC Level_VertScroll
-	STA Brick_DebrisYHi
-
-	; Brick bust lower Y
-	ADD #$08
-	STA Brick_DebrisY
-
-	; Brick bust X
 	LDA SpecialObj_X, X
-	SUB <Horz_Scroll	
-	STA Brick_DebrisX
+	STA Debris_X
 
-	; reset brick bust X distance, no horizontal
-	LDA #$00
-	STA Brick_DebrisXDist
-	STA BrickBust_HEn
+	LDA SpecialObj_Y, X
+	STA Debris_Y
+	JSR Common_MakeBricks
 
-	; Brick bust Y velocity
-	LDA #-$06
-	STA BrickBust_YVel
-
-	LDA #BRICK_DEBRIS
-	STA BrickBust_Tile
-
-	LDA #SPR_PAL3
-	STA BrickBust_Pal
 	JMP SpecialObj_ToPoofNoSound
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4312,11 +4177,8 @@ CFire_Platform:
 	LDA CannonFire_Timer, X
 	BNE CFire_Platform1
 
-	JSR Object_FindEmpty
-
+	JSR Object_FindEmptyX
 	LDY <CurrentObjectIndexZ
-
-	JSR Object_New
 
 	LDA #OBJ_PLATFORMUNSTABLE
 	STA Objects_ID,X
@@ -4683,6 +4545,34 @@ HitPlayer:
 	JSR SpecialObj_DetectPlayer
 	BCC EnemyProj_HitPlayer1
 
+	LDA SpecialObj_Data3, X
+	BEQ SObj_CantStomp
+
+	LDA <HitTest_Result
+	AND #(HITTEST_BOTTOM)
+	BEQ SObj_CantStomp
+
+	LDA Player_BoundBottom
+	SUB SpecialObj_BoundTop
+	CMP #$08
+	BCS SObj_CantStomp
+
+	LDA #$00
+	STA SpecialObj_Data3, X
+	STA SpecialObj_YVel, X
+	STA SpecialObj_XVel, X
+
+	LDA #-$20
+	STA <Player_YVel
+	STA Player_InAir
+	INC Exp_Earned
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
+	RTS
+
+SObj_CantStomp:
 	LDA Effective_Suit
 	CMP #$03
 	BNE NotTailHit
@@ -4692,10 +4582,12 @@ HitPlayer:
 
 	LDA SpecialObj_XVel, X
 	EOR #$FF
+	ADD #$01
 	STA SpecialObj_XVel, X
 
 	LDA SpecialObj_YVel, X
 	EOR #$FF
+	ADD #$01
 	STA SpecialObj_YVel, X
 	INC SpecialObj_HurtEnemies, X
 	RTS
@@ -4717,18 +4609,18 @@ EnemyProj_HitPlayer1:
 FreezeVel:
 	.byte $10, $F0
 
-EnemeyProj_FreezePlayer:
+EnemeyProj_Enemy_FreezePlayer:
 	LDA SpecialObj_HurtEnemies, X
-	BEQ FreezePlayer
+	BEQ Enemy_FreezePlayer
 
 	JSR PlayerProj_HitEnemies
-	BCC EnemeyProj_FreezePlayer3
+	BCC EnemeyProj_Enemy_FreezePlayer3
 
 	JMP Player_HitIce
 
-FreezePlayer:
+Enemy_FreezePlayer:
 	JSR SpecialObj_DetectPlayer
-	BCC EnemeyProj_FreezePlayer3
+	BCC EnemeyProj_Enemy_FreezePlayer3
 
 	LDA Effective_Suit
 	CMP #$03
@@ -4749,25 +4641,25 @@ FreezePlayer:
 
 Enemy_IceFreeze:
 	LDA Player_StarInv
-	BEQ EnemeyProj_FreezePlayer1
+	BEQ EnemeyProj_Enemy_FreezePlayer1
 
 	JMP SpecialObj_ToPoof
 	
-EnemeyProj_FreezePlayer1:
+EnemeyProj_Enemy_FreezePlayer1:
 	LDY #$00
 	LDA SpecialObj_XVel, X
-	BPL EnemeyProj_FreezePlayer2
+	BPL EnemeyProj_Enemy_FreezePlayer2
 
 	INY
 
-EnemeyProj_FreezePlayer2
+EnemeyProj_Enemy_FreezePlayer2
 	LDA FreezeVel, Y
 	STA <Player_XVel
 
 	LDA #$00
 	STA SpecialObj_ID, X
 
-	JMP SetPlayerFrozen
+	JMP Enemy_FreezePlayer
 	
-EnemeyProj_FreezePlayer3:
+EnemeyProj_Enemy_FreezePlayer3:
 	RTS

@@ -1346,9 +1346,10 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	TrapSet:			.ds 1;
 	DayNightActive:		.ds 1;
 	LastPowerUp:		.ds 1;
-	ReverseGravity:		.ds 1
+	Reverse_Gravity:		.ds 1
 	NoGravity:			.ds 1;
 	Object_WallStops:	.ds 1;
+	Object_CeilingStops: .ds 1
 	Player_ForcedSlide:	.ds 1
 	Player_PrevXDirection:	ds 1
 	RhythmPlatformEnabed: .ds 1
@@ -1871,6 +1872,14 @@ TAIL_INDEX				= 6 ;
 	Tile_LastProp:		.ds 1
 
 	Objects_SpritesHorizontallyOffScreen:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
+
+SPRITE_0_INVISIBLE = $80
+SPRITE_1_INVISIBLE = $40
+SPRITE_2_INVISIBLE = $20
+SPRITE_3_INVISIBLE = $10
+SPRITE_4_INVISIBLE = $08
+SPRITE_5_INVISIBLE = $04
+
 	Objects_SpawnIdx:	.ds 8	; $0659-$0660 Holds the index into level data that this object was spawned from
 
 ; Objects_State
@@ -1884,6 +1893,7 @@ OBJSTATE_KILLED		= 6	; Killed (flipped over and falling off screen)
 OBJSTATE_SQUASHED	= 7	; Squashed (generally Goomba only)
 OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
 OBJSTATE_FRESH		= 9 ;
+OBJSTATE_NONE		= 10 ; used to keep a slot open
 	Objects_State:		.ds 8
 
 	Objects_Frame:		.ds 8	; $0669-$0670 "Frame" of object (see ObjectGroup_PatternSets)
@@ -1893,6 +1903,11 @@ OBJSTATE_FRESH		= 9 ;
 	Objects_Orientation:	.ds 8	; $0679-$0680 Applied sprite attributes for this object (usually just horizontal/vertical flip)
 
 	Objects_SpritesVerticallyOffScreen:	.ds 8	; $0681-$0688 Flags; Bits 3-0 set when each 8x16 sprite is vertically off-screen (top-to-bottom from MSb)
+SPRITE_0_INVISIBLE = $80
+SPRITE_1_INVISIBLE = $40
+SPRITE_2_INVISIBLE = $20
+SPRITE_3_INVISIBLE = $10
+
 	Objects_Data4:		.ds 8	; $0689-$0690 Generic variable 1 for objects
 	Objects_Data5:		.ds 8	; $0691-$0698 Generic variable 2 for objects
 

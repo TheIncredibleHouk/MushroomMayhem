@@ -513,6 +513,7 @@ BeachedCheep_VFlip: .byte $00, SPR_VFLIP, $00
 
 BeachedCheep_IsWaiting = Objects_Data3
 BeachedCheep_CurrentFrame = Objects_Data4
+BeachedCheep_NoWaterTimer = Objects_Data5
 
 BeachedCheep_GroundBounce: 
 	.byte $D0, $08, $D0
@@ -540,6 +541,9 @@ ObjNorm_BeachedCheep0:
 	LDA BeachedCheep_YVel, Y
 	STA <Objects_YVelZ, X
 
+	LDA #$10
+	STA BeachedCheep_NoWaterTimer, X
+
 Beached_Move:
 	
 	LDY Objects_Property, X
@@ -552,10 +556,9 @@ Beached_Move:
 	BNE Beached_Move1
 
 Beached_ReveseGravity:
-	INC ReverseGravity
+	INC Reverse_Gravity
 
 Beached_Move1:
-
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
@@ -563,6 +566,14 @@ Beached_Move1:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 	JSR Beached_DoBounce
+
+	LDA BeachedCheep_NoWaterTimer, X
+	BEQ Beached_WaterOk
+
+	DEC BeachedCheep_NoWaterTimer, X
+	JMP Beached_Draw
+
+Beached_WaterOk:
 	LDA Objects_InWater, X
 	BEQ Beached_Draw
 	
@@ -820,6 +831,7 @@ Bank2_HotFootHaltAction:
 
 
 ObjNorm_PWing:
+	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 	JMP Object_Draw
 
@@ -1425,7 +1437,7 @@ ObjNorm_PlatformFloat:
 ObjNorm_PlatformFloat1:
 
 	LDA Objects_InWater, X
-	STA ReverseGravity
+	STA Reverse_Gravity
 
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
@@ -1641,7 +1653,7 @@ SpikeThrow_XVel:
 	.byte $10, $F0
 
 SpikeThrowSpike:
-	JSR Object_FindEmpty
+	JSR Object_FindEmptyX
 	BCC Spike_Draw
 
 	LDY <CurrentObjectIndexZ
@@ -2948,7 +2960,7 @@ PRG002_B6F2:
 	; Draw Dry Bones
 	LDY #$01	 ; 32 pixels height for Object_DetermineVerticallyOffScreenY
 	JSR Object_DetermineVerticallyOffScreenY
-	JSR Object_Draw16x32Sprite
+	JSR Object_Draw16x32
 
 	; Restore Dry Bones' Y/Hi
 	PLA
@@ -4395,7 +4407,7 @@ ObjNorm_BirdoDraw:
 	AND #$01
 	ORA Objects_Data4, X
 	STA Objects_Frame, X
-	JSR Object_Draw16x32Sprite
+	JSR Object_Draw16x32
 	RTS
 
 ObjNorm_PacBooHome:
@@ -4568,200 +4580,240 @@ PacBoo_HomeDraw:
 	LDA #$02
 	STA Objects_Frame, X
 	JMP Object_Draw
+	
 
-
-GrowAttributes:
+Grower_DrawAttributes:
 	.byte $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP, SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, $00, $00
 
 
-PiranhaFrameFlip:
+Grower_DrawFlip:
 	.byte $02, $03, $00, $01
 
-PiranhaGrowXVel:
+Grower_XVel:
 	.byte $00, $20, $00, $E0
 
-PiranhaGrowYVel:
+Grower_YVel:
 	.byte $E0, $00, $20, $00
+
+
+Grower_Frame = Objects_Data1
+Grower_Direction = Objects_Data2
+Grower_StartX = Objects_Data3
+Grower_StartXHi = Objects_Data4
+Grower_StartY = Objects_Data5
+Grower_StartYHi = Objects_Data6
+Grower_TilePropDetect = Objects_Data7
+Grower_ReverseDraw = Objects_Data8
 
 ObjInit_PiranhaGrower:
 
 	; which direction to start in 0 = up, 1 = right, 2 = down, 3 = left
 	LDA Objects_Property, X
-	STA Objects_Data5, X 
+	STA <Grower_Direction, X 
 
-	 ; Objects_Data3 = current tile to check for (Toggle sbeten #TILE_PROP_ENEMY and #TILE_PROP_HARMFUL)
+	 ; Grower_StartYHi = current tile to check for (Toggle sbeten #TILE_PROP_ENEMY and #TILE_PROP_HARMFUL)
 	LDA #TILE_PROP_ENEMY
-	STA Objects_Data3, X
+	STA Grower_TilePropDetect, X
 
 	; back up original position
 	LDA Objects_XZ, X
-	STA <Objects_Data1, X
+	STA Grower_StartX, X
+	
 	LDA Objects_XHiZ, X
-	STA Objects_Data2, X
+	STA Grower_StartXHi, X
+	
 	LDA Objects_YZ, X
-	STA Objects_Data6, X
+	STA Grower_StartY, X
+	
 	LDA Objects_YHiZ, X
-	STA Objects_Data3, X
+	STA Grower_StartYHi, X
 	RTS
 
 ObjNorm_PiranhaGrower:
 	LDA <Player_HaltGameZ
-	BNE SkipHitDetect
+	BEQ Grower_Norm
+	
+	JMP Grower_Draw
 
-	INC Objects_Data4, X
-
+Grower_Norm:
 	LDA Objects_Timer, X
-	BNE SkipHitDetect
+	BEQ Grower_Move
+	
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Grower_Animate
+	JSR Grower_TimerToggle
+	RTS
 
-	JSR Object_DetectTiles	
+Grower_Move:
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel
+	JSR Object_CalcBoundBox
+	
 	LDA <Objects_XZ, X
 	ORA <Objects_YZ, X
 	AND #$0F
-	BNE ObjNorm_PiranhaGrower0
-	JSR Piranha_CheckTiles
-	BNE SkipHitDetect
-
-ObjNorm_PiranhaGrower0:
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel
-
-SkipHitDetect:
-	JSR PiranhaCheckTimer
-	JSR Object_InteractWithPlayer	
-	JSR DrawPiranhaGrow
-	RTS
-
-PiranhaCheckBeginning:
-	LDA <Objects_Data1, X
-	CMP Objects_XZ, X
-	BNE PiranhaCheckBeginning1
-
-	LDA Objects_Data2, X
-	CMP Objects_XHiZ, X
-	BNE PiranhaCheckBeginning1
-
-	LDA Objects_Data6, X
-	CMP Objects_YZ, X
-	BNE PiranhaCheckBeginning1
-
-	LDA Objects_Data3, X
-	CMP Objects_YHiZ, X
-	BNE PiranhaCheckBeginning1
-
-	JSR PiranhaCheckOffScreen
-
-PiranhaCheckBeginning1:
-	RTS
-
-PiranhaCheckOffScreen:
-	LDA #$01
-	STA TempA
+	BNE Grower_Animate
 	
-	JSR PiranahDeleteOffScreen
-
-	LDA TempA
-	BEQ PiranhaCheckOffScreen1
-	JSR Object_DetectTileCenter
-
-
-	LDA Tile_LastValue
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
+	JSR Grower_AtStart
+	BCC Grower_NoDelete
 	
-	JSR SetObjectTileCoordAlignObj
-	PLA
-	PLA
+	JSR Grower_CheckOffScreen
+	
+Grower_NoDelete:
 
-PiranhaCheckOffScreen1:
-	RTS
+	JSR Object_DetectTiles	
+	JSR Grower_InteractWithTiles
+	JSR Object_AttackOrDefeat
 
-PiranahDeleteOffScreen:
-	JSR Object_DeleteOffScreen
-	LDA #$00
-	STA TempA
-	RTS
-
-PiranhaCheckTimer:
-	LDA Objects_Timer, X
-	BEQ PiranhaCheckTimer1
-
-	JSR PiranhaCheckBeginning
-	LDA Objects_Timer, X
-	CMP #$01
-	BNE PiranhaCheckTimer1
-
-	LDA Objects_Data3, X
-	CMP #TILE_PROP_ENEMY
-	BEQ PiranhaCheckTimer0
-
-	LDA #TILE_PROP_ENEMY
-	STA Objects_Data3, X
-	RTS
-
-PiranhaCheckTimer0:
-	LDA #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
-	STA Objects_Data3, X
-
-PiranhaCheckTimer1:
-	RTS
-
-DrawPiranhaGrow:
-	LDA Objects_Data4, X
+Grower_Animate:
+	INC <Grower_Frame, X
+	
+	LDA Grower_Frame, X
 	AND #$08
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var1
-	LDA Objects_Data5, X
+	LDA Grower_Direction, X
+	EOR Grower_ReverseDraw, X
 	ASL A
 	STA <Temp_Var2
 	ORA <Temp_Var1
 	STA Objects_Frame, X
 
+Grower_Draw:
 	JSR Object_DrawAligned
 
-	LDA Objects_Data5, X
+	LDA Grower_Direction, X
+	EOR Grower_ReverseDraw, X
 	ASL A
 	TAX
-	LDA GrowAttributes, X
+	LDA Grower_DrawAttributes, X
 	ORA Sprite_RAM + 2, Y
 	STA Sprite_RAM + 2, Y
-	LDA GrowAttributes + 1, X
+	
+	LDA Grower_DrawAttributes + 1, X
 	ORA Sprite_RAM + 6, Y
 	STA Sprite_RAM + 6, Y
 	RTS
 
-Piranha_CheckTiles:
+Grower_AtStart:
+	LDA Grower_StartX, X
+	CMP Objects_XZ, X
+	BNE Grower_NotBeginning
 
-	LDA Block_NeedsUpdate
-	BEQ Piranha_CheckTiles2
+	LDA Grower_StartXHi, X
+	CMP Objects_XHiZ, X
+	BNE Grower_NotBeginning
 
-Piranha_CheckTiles1:
+	LDA Grower_StartY, X
+	CMP Objects_YZ, X
+	BNE Grower_NotBeginning
+
+	LDA Grower_StartYHi, X
+	CMP Objects_YHiZ, X
+	BNE Grower_NotBeginning
+	SEC
+	RTS
+	
+Grower_NotBeginning:
+	CLC
 	RTS
 
-Piranha_CheckTiles2:
+Grower_CheckOffScreen:
+	LDA #$01
+	STA TempA
+	
+	JSR Grower_DeleteOffScreen
+
+	LDA TempA
+	BEQ Grower_CheckOffScreen1
+	JSR Object_DetectTileCenter
+
+	LDA Block_NeedsUpdate
+	BNE Grower_CheckOffScreen1
+	
+	LDA Tile_LastValue
+	EOR #$01
+
+	JSR Object_ChangeBlock
+	PLA
+	PLA
+
+Grower_CheckOffScreen1:
+	RTS
+
+Grower_DeleteOffScreen:
+	JSR Object_DeleteOffScreen
+	LDA #$00
+	STA TempA
+	RTS
+
+Grower_TimerToggle:
+	LDA Objects_Timer, X
+	BEQ Grower_TimerToggle1
+
+	LDA Objects_Timer, X
+	CMP #$01
+	BNE Grower_TimerToggle1
+
+	LDA Grower_ReverseDraw, X
+	EOR #$02
+	STA Grower_ReverseDraw, X
+
+	LDA Grower_TilePropDetect, X
+	CMP #TILE_PROP_ENEMY
+	BEQ Grower_TimerToggle0
+
+	LDA #TILE_PROP_ENEMY
+	STA Grower_TilePropDetect, X
+	RTS
+
+Grower_TimerToggle0:
+	LDA #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	STA Grower_TilePropDetect, X
+
+Grower_TimerToggle1:
+	RTS
+
+
+
+Grower_InteractWithTiles:
+
+	LDA Block_NeedsUpdate
+	BEQ Grower_InteractWithTiles2
+
+Grower_InteractWithTiles1:
+	RTS
+
+Grower_InteractWithTiles2:
+	JSR Object_DetectTileCenter
+
+	LDA Tile_LastValue
+	EOR #$01
+	JSR Object_ChangeBlock
 
 	LDA #$00
 	STA <Temp_Var13
-	JSR CheckBlockAbove
-	CMP Objects_Data3, X
-	BEQ Piranha_SetVelocity
+	JSR Grower_DetectBlockAbove
+	CMP Grower_TilePropDetect, X
+	BEQ Grower_SetVelocity
 
 	INC <Temp_Var13
-	JSR CheckBlockRight
-	CMP Objects_Data3, X
-	BEQ Piranha_SetVelocity
+	JSR Grower_DetectBlockRight
+	CMP Grower_TilePropDetect, X
+	BEQ Grower_SetVelocity
 
 	INC <Temp_Var13
-	JSR CheckBlockBelow
-	CMP Objects_Data3, X
-	BEQ Piranha_SetVelocity
+	JSR Grower_DetectBlockBelow
+	CMP Grower_TilePropDetect, X
+	BEQ Grower_SetVelocity
 	
 	INC <Temp_Var13
-	JSR CheckBlockLeft
-	CMP Objects_Data3, X
-	BEQ Piranha_SetVelocity
+	JSR Grower_DetectBlockLeft
+	CMP Grower_TilePropDetect, X
+	BEQ Grower_SetVelocity
 	
 	LDA #$00
 	STA <Objects_XVelZ, X
@@ -4769,41 +4821,102 @@ Piranha_CheckTiles2:
 	LDA #$80
 	STA Objects_Timer, X
 
-	JSR Object_DetectTileCenter
-
-	LDA Tile_LastValue
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
-	
-	JSR SetObjectTileCoordAlignObj
-	LDA #$00
 	RTS
 
-Piranha_SetVelocity:
-	JSR Object_DetectTileCenter
-
-	LDA Tile_LastValue
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
+Grower_SetVelocity:
 	
-	JSR SetObjectTileCoordAlignObj
 	LDY <Temp_Var13
-	LDA PiranhaGrowXVel, Y
+	LDA Grower_XVel, Y
 	STA <Objects_XVelZ, X
-	LDA PiranhaGrowYVel, Y
+	
+	LDA Grower_YVel, Y
 	STA <Objects_YVelZ, X
+	
 	TYA
-	STA Objects_Data5, X
-	LDY Objects_Data3, X
+	STA Grower_Direction, X
+	LDY Grower_StartYHi, X
 	CPY #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
 	BNE DrawPiranhaGrow1
 
 	TAY
-	LDA PiranhaFrameFlip, Y 
-	STA Objects_Data5, X
+	LDA Grower_DrawFlip, Y 
+	STA Grower_Direction, X
 
 DrawPiranhaGrow1:
 	LDA #$00
+	RTS
+
+Grower_DetectBlockAbove:
+	LDA <Objects_YZ, X
+	SUB #$08
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	STA Tile_DetectionXHi
+	JSR Object_DetectTile
+	LDA Tile_LastProp
+	RTS
+
+Grower_DetectBlockBelow:
+	LDA <Objects_YZ, X
+	ADD #$18
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	STA Tile_DetectionXHi
+
+	JSR Object_DetectTile
+	LDA Tile_LastProp
+	RTS
+
+Grower_DetectBlockRight:
+	LDA <Objects_YZ, X
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	ADD #$18
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	JSR Object_DetectTile
+	LDA Tile_LastProp
+	RTS
+
+Grower_DetectBlockLeft:
+	LDA <Objects_YZ, X
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	SUB #$08
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA Tile_DetectionXHi
+
+	JSR Object_DetectTile
+	LDA Tile_LastProp
 	RTS

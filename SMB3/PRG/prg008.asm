@@ -132,134 +132,6 @@ Player_VibeDisableFrame:
 	.byte PF_WALKBIG_BASE+2	; Tanooki
 	.byte PF_WALKBIG_BASE+2		; Hammer
 
-	; Unused data?
-	.byte $FE, $02, $05, $FB, $01
-	.byte $02, $03, $00
-
-	; When Player hits water, splash!
-Player_WaterSplash:
-	LDA <Player_SpriteY
-	CMP #$b8
-	BGE PRG008_A111	 ; If sprite Y >= $B8, jump to PRG008_A111 (RTS)
-
-	LDA Splash_DisTimer
-	BNE PRG008_A0F9	 ; If Splash_DisTimer > 0 (Player splashes disabled), jump to PRG008_A0F9
-
-	STA <Temp_Var1	 ; Temp_Var1 = 0
-
-	LDA <Player_Suit
-	BEQ PRG008_A0C8	 ; If Player is small, jump to PRG008_A0C8
-
-	LDA Player_IsDucking
-	BEQ PRG008_A0CC	 ; If Player is not ducking, jump to PRG008_A0CC
-
-PRG008_A0C8:
-
-	; Player is small or ducking
-
-	LDA #10
-	STA <Temp_Var1	 ; Temp_Var1 = 10
-
-PRG008_A0CC:
-	LDA #$01
-	STA Splash_Counter	 ; Splash_Counter = 1 (begin splash)
-
-	LSR A
-	STA Splash_NoScrollY	 ; Splash_NoScrollY = 0 (splash Y is relative to screen scroll)
-
-	LDA Level_AScrlConfig
-	BEQ PRG008_A0E7	 ; If no auto scroll effects are occurring, jump to PRG008_A0E7
-
-	; Auto scroll effect active...
-
-	LDA <Player_SpriteY
-	CMP #136
-	BLT PRG008_A0E7	 ; If Player_SpriteY < 136, jump to PRG008_A0E7
-
-	LDA #147
-	STA Splash_NoScrollY	 ; Splash_NoScrollY = 147 (splash Y is not relative to screen scroll, appropriate for fixed water at bottom)
-
-	BNE PRG008_A0F1	 ; Jump (technically always) to PRG008_A0F1
-
-PRG008_A0E7:
-	LDA <Player_Y
-	ADD <Temp_Var1	; Y offset
-	AND #$F0	; align to grid
-
-PRG008_A0F1:
-	STA Splash_Y	 ; 147 or above formula -> Splash_Y 
-
-	LDA <Player_X
-	STA Splash_X	 ; Splash_X = Player_X
-
-PRG008_A0F9:
-	LDA <Player_YVel
-	BMI PRG008_A0FA
-	AND #$80
-	STA <Temp_Var1
-	LDA <Player_YVel
-	LSR A
-	ORA <Temp_Var1
-	LSR A
-	ORA <Temp_Var1
-	STA <Player_YVel
-
-PRG008_A0FA:
-	LDA <Player_XVel
-	AND #$80
-	STA <Temp_Var1
-	LDA <Player_XVel
-	LSR A
-	ORA <Temp_Var1
-	LSR A
-	ORA <Temp_Var1
-	STA <Player_XVel
-
-	; When Player hits water, a bubble is made
-
-	LDY #$02	 ; Y = 2 (all bubble slots)
-
-PRG008_A109:
-	LDA Bubble_Cnt,Y
-	BEQ PRG008_A118	 ; If this bubble slot is free, jump to PRG008_A118
-
-PRG008_A10E:
-	DEY		 ; Y--
-	BPL PRG008_A109	 ; While Y >= 0, loop!
-
-PRG008_A111:
-	RTS		 ; Return
-
-
-	; Y offsets
-SplashBubble_YOff:	.byte 16, 22, 19
-
-	; X offsets
-SplashBubble_XOff:	.byte  0,  4, 11
-
-PRG008_A118:
-	LDA RandomN,Y	 	; Get random number
-	ORA #$10
-	STA Bubble_Cnt,Y	; Store into bubble counter
-
-	; Set Bubble Y
-	LDA <Player_Y
-	ADC SplashBubble_YOff,Y
-	STA Bubble_Y,Y
-	LDA <Player_YHi
-	ADC #$00
-	STA Bubble_YHi,Y
-
-	; Set Bubble X
-	LDA <Player_X
-	ADC SplashBubble_XOff,Y
-	STA Bubble_X,Y
-	LDA <Player_XHi
-	ADC #$00
-	STA Bubble_XHi,Y
-
-	JMP PRG008_A10E	 ; Jump to PRG008_A10E
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_DoGameplay
@@ -3560,6 +3432,9 @@ Bumps_PowerUpBlock:
 Bumps_PowerUpBlock1:
 	LDA Objects_State, X
 	BEQ Bumps_PowerUpBlock2
+	INX
+	CPX #$08
+	BNE Bumps_PowerUpBlock1
 
 	PLA
 	PLA
@@ -4995,10 +4870,12 @@ PowBlock0:
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BNE PowBlock1
+
 	LDY Objects_ID,X	 ; Get object's ID -> Y
 	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
 	AND #OAT_WEAPONSHELLPROOF	 
 	BNE PowBlock1
+
 	JSR Object_PoofDie
 
 PowBlock1:
@@ -5390,7 +5267,7 @@ Player_BodyHeadTileInteract:
 	.word Tile_NoInteract	; TILE_PROP_TRAP			= $0A ;
 	.word BodyHead_Climb	; TILE_PROP_CLIMBABLE		= $0B ;
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
-	.word Body_Head	; TILE_PROP_DOOR					= $0D ;
+	.word BodyHead_Door	; TILE_PROP_DOOR					= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY			= $0E ;
 	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
@@ -5430,10 +5307,40 @@ Body_TreasureRTS:
 BodyHead_Climb:
 	RTS
 
-Body_Head:
+BodyHead_Door:
+	LDA <Pad_Input
+	AND #PAD_UP
+	BEQ Door_Done	 ; If Player is not pressing up in front of a door, jump to PRG008_A86C
+
+	LDA <Player_InAir
+	BNE Door_Done	 ; If Player is mid air, jump to PRG008_A86C
+
+	LDA <Player_X
+	ADD #$08
+	STA <Player_X
+
+	LDA <Player_XHi
+	ADC #$00
+	STA <Player_XHi
+
+	LDA <Player_X
+	AND #$F0	 ; Lock to nearest column (place directly in doorway)
+	STA <Player_X	 ; Update Player_X
+
+	LDA #$00
+	STA <Player_XVel
+
+	INC Level_JctCtl ; Set appropriate value to Level_JctCtl
+
+	LDA #$00
+	STA Level_PipeMove
+
+	JMP Do_Pointer_Effect
+
+Door_Done:
 	RTS
 
-Player_SolidTileInteract:
+Player_SolidTileInteract: 
 	LDA Tile_LastProp
 	AND #$0F
 
@@ -5754,20 +5661,28 @@ Player_HandleWater8:
 	LDA #-$34
 	STA <Player_YVel 
 
+	LDA #$00
+	STA <Temp_Var15
+
 Player_HandleWater9:
 	LDY #$00	 
-	STY Player_SwimCnt
-	BEQ Player_HandleWater11	 
+	STY Player_SwimCnt 
 
 Player_HandleWater10:
 	LDY <Temp_Var15
 	CPY Player_InWater
 	BEQ Player_HandleWater12	 
 
+	JSR Player_Splash
+
 Player_HandleWater11:
 	TYA
 	STA Player_InWater	
-	JSR Player_WaterSplash	
+	BEQ Player_HandleWater12
+
+	LDA #$00
+	STA <Player_YVel
+	STA <Player_XVel
 
 Player_HandleWater12:
 	LDA Player_InWater
@@ -5799,6 +5714,8 @@ PRG008_BC43:
 	.byte $08, $04, $04	; Offset applied to Player_X when: in air or level is sloped, Player is NOT small, Player is small
 
 Player_HandlePipe:
+	STA Debug_Snap
+	LDA <Player_Y
 	LDA <Player_InAir
 	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
 
@@ -6119,3 +6036,49 @@ Check_KillTally:
 
 Check_KillTally1:
 	RTS
+
+
+Player_Splash:
+	LDX #$05
+
+Player_FindSplash:
+	LDA Objects_State, X
+	BEQ Player_MakeSplash
+
+	INY
+	CPY #$08
+	BNE Player_FindSplash
+
+	RTS
+
+
+Player_MakeSplash:
+	LDA <Player_X
+	STA Objects_XZ, X
+
+	LDA <Player_XHi
+	STA Objects_XHiZ, X
+
+	LDA Player_BoundTop
+	SUB #$08
+	STA Objects_YZ, X
+
+	LDA Player_BoundTopHi
+	SBC #$00
+	STA Objects_YHiZ, X
+
+	LDA #$19
+	STA Objects_ID, X
+
+	LDA #$0B
+	STA Objects_Timer, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+	RTS		 ; Return

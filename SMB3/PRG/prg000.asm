@@ -50,7 +50,7 @@ Object_AttrFlags:
 	; Defines flags which set attributes of objects
 	.byte BOUND8x16	; Object $00
 	.byte BOUND16x24 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $01
-	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $02
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $02
 	.byte BOUND16x16BLOCK | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $03
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $04
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $05
@@ -112,7 +112,7 @@ Object_AttrFlags:
 	.byte BOUND16x16	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte BOUND48x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3E - OBJ_PLATFORMFLOATS
 	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF	; Object $3F - OBJ_DRYBONES
-	.byte BOUND16x16	; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF 	; Object $40 - OBJ_GOLDENPIRANHAGROWER
 	.byte BOUND16x16  	; Object $41 - OBJ_PIRANHAGROWER
 	.byte BOUND16x16 | OAT_FIREPROOF	; Object $42 - OBJ_DRYCHEEP
 	.byte BOUND16x16	; Object $43 - OBJ_BEACHEDCHEEP
@@ -145,9 +145,9 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5E - OBJ_ROTODISCDUALOPPOSE
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte BOUND16x16	; Object $61 - OBJ_SKULLBLOOPER
+	.byte BOUND16x16| OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $61 - OBJ_SKULLBLOOPER
 	.byte BOUND16x16	; Object $62 - OBJ_BLOOPER
-	.byte OAT_BOUNDBOX13 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $63 - OBJ_FLOATMINE
+	.byte BOUND16x16	; Object $63 - OBJ_FLOATMINE
 	.byte BOUND16x16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $66 - OBJ_WATERCURRENTUPWARD
@@ -327,6 +327,11 @@ Object_HitGround:
 	RTS		 ; Return
 
 Object_HitCeiling:
+
+	LDA #$00
+	STA <Objects_YVelZ,X	
+
+Object_HitCeilingNoStop:
 	LDA <Objects_YZ,X
 	ADD #$0F
 	AND #$f0
@@ -344,8 +349,6 @@ Object_HitCeiling:
 	SBC #$00
 	STA <Objects_YHiZ,X
 	
-	LDA #$00
-	STA <Objects_YVelZ,X	
 
 Object_HitCeiling0:
 	RTS
@@ -380,11 +383,6 @@ Object_DetectTiles:
 	RTS
 
 Object_DetectTiles1:
-	LDA ObjSplash_DisTimer,X
-	BEQ PRG000_C559	 ; If ObjSplash_DisTimer = 0, jump to PRG000_C559
-
-	DEC ObjSplash_DisTimer,X	 ; ObjSplash_DisTimer --
-
 PRG000_C559:
 
 	LDA #$00
@@ -736,70 +734,53 @@ PRG000_C834:
 
 	; When Object hits water, splash!
 Object_WaterSplash:
-	LDA #$02
+	LDX #$05
 
-Podoboo_Splash:
-	STA <Temp_Var1	 ; Temp_Var1 = 2
+FindSplash:
+	LDA Objects_State, X
+	BEQ MakeSplash
 
-	LDA ObjSplash_DisTimer,X
-	BNE PRG000_C914	 ; If splashes are disabled, jump to PRG000_C914 (RTS)
+	INX
+	CPX #$08
+	BNE FindSplash
 
-	LDA Objects_ID,X
-	CMP #OBJ_GROWINGVINE
-	BEQ PRG000_C914	 ; If object is a growing vine, jump to PRG000_C914 (RTS)
+	LDX <CurrentObjectIndexZ
+	RTS
 
-	LDA <Objects_YVelZ,X
-	BMI PRG000_C8BE	 ; If Object's Y velocity is negative (moving upward), jump to PRG000_C8BE
+Splash_Offsets:
+	.byte $00, $10
 
-	; If object is some kind of blooper, jump to PRG000_C914 (RTS)
-	LDA Objects_ID,X
-	CMP #OBJ_BLOOPER
-	BEQ PRG000_C914
-	CMP #OBJ_SKULLBLOOPER
-	BEQ PRG000_C914
+MakeSplash:
+	LDA Tile_DetectionX
+	STA <Objects_XZ, X
 
-	LDA TempA
-	BEQ PRG000_C8BE
+	LDA Tile_DetectionXHi
+	STA <Objects_XHiZ, X
+
+	LDA Tile_DetectionY
+	SUB Splash_Offsets, Y
+	STA <Objects_YZ, X
+
+	LDA Tile_DetectionYHi
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$19
+	STA Objects_ID, X
+
+	LDA #$0B
+	STA Objects_Timer, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
 
 	LDA #$00
-	STA <Objects_YVelZ,X	; Object's Y velocity is zeroed at impact of water
+	STA Objects_Orientation, X
 
-PRG000_C8BE:
-
-	; Basically looking not to do a splash effect if object is falling off-screen
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG000_C914	 ; If any sprites are off-screen, jump to PRG000_C914 (RTS)
-
-	LDY #$02	 ; Y = 2 (this is immediately overwritten and thus not used)
-
-	; Alternate between splash slot 1 and 2
-	INC Object_SplashAlt	 ; Object_SplashAlt++
-	LDA Object_SplashAlt
-	AND #$01	 ; Keep just bit 0
-	TAY		 ; -> 'Y'
-
-	INY		 ; Y = 1 or 2
-
-	LDA #$01	
-	STA Splash_Counter,Y	 ; Splash counter = 1 (begin splash)
-
-	LSR A		 
-	STA Splash_NoScrollY,Y	 ; Splash_NoScrollY = 0 (splash is relative to vertical scroll)
-
-	; Set appropriate splash Y
-	LDA <Objects_YZ,X
-	SUB #$04
-	AND #$f0
-	ADD <Temp_Var1
-	STA Splash_Y,Y
-
-	; Set appropriate splash X
-	LDA <Objects_XZ,X
-	STA Splash_X,Y
-
-PRG000_C914:
+	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -810,13 +791,6 @@ PRG000_C914:
 ; updates the timers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
-	LDA Splash_DisTimer
-	BEQ PRG000_C93A	 ; If Splash_DisTimer > 0, jump to PRG000_C92F
-
-	DEC Splash_DisTimer	 ; Splash_DisTimer--
-
-
-PRG000_C93A:
 	LDA Slow_Watch
 	BEQ PRG000_C93A1
 
@@ -1128,6 +1102,7 @@ PRG000_CA82:
 	.word ObjState_PoofDying		; 7 - Object was squashed (NOTE: Really only intended for Goomba/Giant Goomba)
 	.word ObjState_PoofDying	; 8 - "Poof" Dying
 	.word ObjState_Fresh
+	.word ObjNorm_DoNothing
 
 	; Patterns selected by "poof" death frame
 PoofDeath_Pats:
@@ -1245,6 +1220,7 @@ ObjState_Shelled:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
+	JSR Object_RespondToTailAttack
 	JSR Object_InteractWithPlayer
 	BCC ObjState_Shelled1
 
@@ -1255,19 +1231,24 @@ ObjState_Shelled:
 	STA Objects_State, X
 	JMP Object_GetKicked
 
-ObjState_Shelled0
-
+ObjState_Shelled0:
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_KillOthers
 	BCC ObjState_Shelled2
 
 	DEC Objects_Health, X
 	JSR Object_GetKilled
+	JSR Object_FlipFallAwayFromHit
 
 	TYA
 	TAX
 
 	DEC Objects_Health, X
+	
 	JSR Object_GetKilled
+	JSR Object_FlipFallAwayFromHit
+
 	JMP Object_DrawShelled
 
 ObjState_Shelled1:
@@ -1314,6 +1295,11 @@ Object_DrawShelled:
 	STA Objects_Frame,X
 	JSR Object_DrawMirrored	 ; Draw mirrored sprit
 	JSR Object_SetShakeAwakeTimer	 ; Set the "shake awake" timers
+
+	LDA Objects_ID, X
+	CMP #OBJ_BUZZYBEATLE
+	BCS PRG000_CBB3
+
 	JSR Object_Vibrate
 
 PRG000_CBB3:
@@ -1481,12 +1467,19 @@ Object_KillOthers1:
 
 	TYA
 	TAX
-	DEC Objects_Health, X
+	LDA #$FF
+	STA Objects_Health, X
 
 	JSR Object_GetKilled
-	
+	JSR Object_FlipFallAwayFromHit
 
 	LDX <CurrentObjectIndexZ
+	LDA #$FF
+	STA Objects_Health, X
+
+	JSR Object_GetKilled
+	JSR Object_FlipFallAwayFromHit
+
 	SEC
 	RTS
 
@@ -1715,7 +1708,7 @@ Object_GetKicked:
 
 	; Set object timer 2 to $10
 	LDA #$10
-	STA Objects_Timer2,X
+	STA Objects_Timer2, X
 
 	LDA #$00
 	STA Player_IsHolding
@@ -1745,6 +1738,7 @@ Object_GetKicked1:
 
 Object_GetKicked2_0:
 	ADD #$08
+	STA <Temp_Var16
 	BNE Object_GetKicked6
 
 Object_GetKicked2_1:
@@ -1756,6 +1750,7 @@ Object_GetKicked2_1:
 	RTS
 
 Object_GetKicked2:
+
 	LDA #OBJSTATE_KICKED
 	STA Objects_State, X
 
@@ -1777,16 +1772,20 @@ Object_GetKicked4:
 
 Object_GetKicked5:
 	LDA #$30
+	STA <Temp_Var16
 
 Object_GetKicked6:
-	
-	LDY <Player_FlipBits
-	BNE Object_GetKicked7
+	JSR Object_XDistanceFromPlayer
+	LDA <XDiffLeftRight
+	BEQ Object_GetKicked7
 
+	LDA <Temp_Var16
 	EOR #$FF
 	ADD #$01
+	STA <Temp_Var16
 
 Object_GetKicked7:
+	LDA <Temp_Var16
 	STA <Objects_XVelZ,X	 ; Set as object's X velocity
 	RTS
 
@@ -1948,7 +1947,7 @@ Object_DrawTallHFlipped:
 	JMP Object_DoKilledAction
 
 Object_Draw16x32Killed:
-	JSR Object_Draw16x32Sprite
+	JSR Object_Draw16x32
 	JMP Object_DoKilledAction
 
 Object_DrawMirroredKilled:
@@ -1972,6 +1971,9 @@ Object_MoveNotHalted:
 	BNE PRG000_D054	 ; If gameplay halted, jump to PRG000_D054 (RTS)
 
 	JSR Object_Move	 ; Perform standard object movements
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 
 PRG000_D054:
 	RTS		 ; Return
@@ -2013,9 +2015,9 @@ Object_Move:
 	LDY Objects_InWater,X
 	BEQ PRG000_D0A9	 	; If object is not in water, jump to PRG000_D0A9
 
-	LDY Objects_State,X	
-	CPY #OBJSTATE_NORMAL
-	BEQ PRG000_D0A9	 	; If object's state is Normal, jump to PRG000_D0A9
+	;LDY Objects_State,X	
+	;CPY #OBJSTATE_NORMAL
+	;BEQ PRG000_D0A9	 	; If object's state is Normal, jump to PRG000_D0A9
 
 	; This is basically an pseudo-ASR, a right shift preserving the sign
 	ASL A			; Bit 7 pushed into carry
@@ -2051,7 +2053,7 @@ PRG000_D0CA:
 	LDA NoGravity
 	BNE PRG000_D0DE
 
-	LDA ReverseGravity
+	LDA Reverse_Gravity
 	BNE PRG000_D0DF
 
 	LDA <Objects_YVelZ,X
@@ -2061,7 +2063,7 @@ PRG000_D0CA:
 	BMI PRG000_D0DE	 	; If Y velocity is negative, jump to PRG000_D0DE (RTS)
 
 	CMP Object_MaxFalls,Y
-	BLT PRG000_D0DE	 	; If object is not falling at the max rate, jump to PRG000_D0DE (RTS)
+	BCC PRG000_D0DE	 	; If object is not falling at the max rate, jump to PRG000_D0DE (RTS)
 
 	LDA Object_MaxFalls,Y
 	STA <Objects_YVelZ,X	; Cap fall at max rate
@@ -2073,7 +2075,7 @@ PRG000_D0DE:
 
 PRG000_D0DF:
 	LDA #$00
-	STA ReverseGravity
+	STA Reverse_Gravity
 
 	LDA <Objects_YVelZ,X
 	SUB Object_Gravity,Y
@@ -2116,15 +2118,20 @@ Object_ShellDoWakeUp:
 
 	DEC Objects_Health, X
 	JSR Object_GetKilled
-	RTS
+	JMP Object_FlipFall
 
 PRG000_D147: 
 
 	; Held object did NOT impact... (time to wake up!)
 
+	
 	; Set object state to Normal
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
 
 	JSR Object_MoveTowardsPlayer
 	PLA
@@ -2221,6 +2228,7 @@ Object_HandleBumpUnderneath1:
 Object_AttackOrDefeat:
 
 	LDA Objects_Timer2,X
+	ORA Object_BeingHeld, X
 	BNE PRG000_D1C4	 ; If timer 2 hasn't expired, jump to PRG000_D1C4 (RTS)
 
 	JSR Object_RespondToTailAttack
@@ -2231,7 +2239,6 @@ PRG000_D1C4:
 	RTS		 ; Return
 
 PRG000_D1C5:
-
 	LDA Player_StarInv
 	ORA Player_FireDash
 	ORA Player_Shell
@@ -2243,18 +2250,14 @@ PRG000_D1C5:
 	BNE Object_HurtPlayer
 	
 Object_GetsHurt:
-	DEC Objects_Health, X
-	JMP Object_GetKilled
+	JSR Object_GetKilled
+	JSR Object_FlipFallAwayFromHit
+
+Object_GetsHurt1:
+	SEC
+	RTS
 
 PRG000_D1C6:
-	LDA Player_Shell
-	BEQ NotShellAttack
-
-	LDA Object_AttrFlags, Y
-	AND #OAT_WEAPONSHELLPROOF
-	BEQ Object_GetsHurt
-
-NotShellAttack:
 	LDA Player_InWater
 	BNE Object_HurtPlayer
 
@@ -2274,7 +2277,9 @@ NotShellAttack:
 	
 
 Object_HurtPlayer:
-	JMP Player_GetHurt
+	JSR Player_GetHurt
+	SEC
+	RTS
 
 
 Object_Defeated:
@@ -2288,6 +2293,9 @@ Object_Defeated:
 	LDA ObjectGroup_CollideJumpTable, Y
 	STA Objects_ID, X
 	
+	LDA #$08
+	STA Objects_Timer2, X
+
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
@@ -2295,12 +2303,12 @@ Object_Defeated:
 	LDA #-$40
 	STA <Player_YVel
 	STA Player_InAir
-	JMP Object_MoveAwayFromPlayer
+	RTS
 
 
 Object_Defeated1:
 	JSR Object_GetKilled
-
+	
 	LDA #$00
 	STA <Objects_YVelZ,X
 	
@@ -2334,6 +2342,7 @@ ObjState_Initializing:
 
 ObjState_Fresh:
 	JSR Object_CalcBoundBox
+
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X	 	; Set object state to 2 (Normal run)
 	JSR Object_SetPaletteFromAttr	; Set object's palette
@@ -2368,26 +2377,65 @@ Object_DeleteOffScreenRange:
 Object_DeleteOffScreen:
 	LDA #$28
 	STA <DeleteRange
+
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
+	BEQ Object_DeleteOffScreenRTS
+
+	LDA <Objects_YHiZ, X
+	BEQ Object_NotTooLow
+
+	LDA <Objects_YZ, X
+	CMP #$C0
+	BCS Object_Delete
+
+Object_NotTooLow:
+	LDA Objects_SpritesHorizontallyOffScreen, X
 	BEQ Object_DeleteOffScreenRTS
 
 	JSR Object_XDistanceFromPlayer
 	CPY #$00
 	BEQ Object_DeleteOffScreen1
 
+	LDA Objects_BoundRight, X
+	STA <Temp_Var12
+
+	LDA Objects_BoundRightHi, X
+	STA <Temp_Var13
+
 	LDA <Horz_Scroll
-	SUB Objects_BoundRight, X
-	BMI Object_DeleteOffScreenRTS
-	CMP <DeleteRange
-	BCC Object_DeleteOffScreenRTS
-	JMP Object_Delete
+	STA <Temp_Var14
+
+	LDA <Horz_Scroll_Hi
+	STA <Temp_Var15
+
+	JMP Object_CheckOutOfRange
 
 Object_DeleteOffScreen1:
+
+	LDA <Horz_Scroll
+	STA <Temp_Var12
+
+	LDA <Horz_Scroll_Hi
+	ADD #$01
+	STA <Temp_Var13
+
 	LDA Objects_BoundLeft, X
-	SUB <Horz_Scroll
+	STA <Temp_Var14
+
+	LDA Objects_BoundLeftHi, X
+	STA <Temp_Var15
+
+Object_CheckOutOfRange:
+	LDA <Temp_Var14
+	SUB <Temp_Var12
+	STA <Temp_Var12
+
+	LDA <Temp_Var15
+	SBC <Temp_Var13
 	BMI Object_DeleteOffScreenRTS
 
+	LDA <Temp_Var12
 	CMP <DeleteRange
 	BCS Object_Delete
 
@@ -2395,10 +2443,6 @@ Object_DeleteOffScreenRTS:
 	RTS
 
 Object_Delete:
-	; Clear the occupation of the X/Y Buffer
-	; BUFFERFREE
-	;LDA #$00
-	;STA Buffer_Occupied,Y
 
 Object_SetDeadAndNotSpawned:
 	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
@@ -2464,6 +2508,7 @@ Object_New:
 	STA Objects_XYCSPrev, X
 
 	LDA #$00
+	STA Objects_NoIce, X
 	STA Objects_Stomped, X
 	STA <Objects_Data1, X
 	STA <Objects_Data2, X
@@ -2498,7 +2543,6 @@ Object_New:
 
 	; Clear some more variables (object slots 0 to 5 ONLY)
 	STA Objects_DisPatChng,X
-	STA ObjSplash_DisTimer,X
 	STA Objects_InWater,X
 
 PRG000_D4C8:
@@ -2563,7 +2607,7 @@ Object_DoHaltedAction:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word Bank2_HotFootHaltAction		; 0: Bank2/Hotfoot ONLY
 	.word Object_Draw	; 1: Standard draw
-	.word Object_Draw16x32Sprite		; 2: Draw tall sprite
+	.word Object_Draw16x32		; 2: Draw tall sprite
 	.word ObjHalt_DoNothing		; 3: Bank2/Spike ONLY
 	.word ObjHalt_DoNothing			; 4: Do nothing
 	.word ObjHalt_DoNothingNotNormal	; 5: If object is in "normal" state, do its normal routine, otherwise do nothing (COMMON)
@@ -2608,40 +2652,7 @@ Object_CalcSpriteXY_NoHi:
 
 ; $D564
 Fish_FixedY_ExceptHitFloor:
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BNE PRG000_D588	 ; If object has hit floor, jump to PRG000_D588
-
-; $D56A
-Fish_FixedYIfAppro:
-	LDA Level_AScrlConfig
-	BEQ PRG000_D588	 ; If no auto scroll effect active (assuming fixed height water level), jump to PRG000_D588 (RTS)
-
-	LDA Level_FreeVertScroll
-	CMP #$01
-	BEQ PRG000_D588	 ; If this level has free vertical scrolling, jump to PRG000_D588
-
-	LDY #$00	 ; Y = 0 (16-bit carry)
-
-	LDA Level_ScrollDiffV
-	BPL PRG000_D57E	 ; If desired vertical scroll is not negative, jump to PRG000_D57E
-
-	DEY 		; Y = $FF (16-bit carry)
-
-PRG000_D57E:
-
-	; In fixed-height, locked scrolling water levels, Big Bertha's
-	; Object_Y position offsets from the scroll position
-	ADD <Objects_YZ,X
-	STA <Objects_YZ,X
-	TYA
-	ADC <Objects_YHiZ,X
-	STA <Objects_YHiZ,X
-
-PRG000_D588:
-	RTS		 ; Return
-
-
+Fish_FixedYIfAppro:	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_ShakeAndCalcSprite
 ;
@@ -2787,7 +2798,7 @@ Object_DrawMirrored:
 
 ; $D601
 Object_DrawTallAndHFlip:
-	JSR Object_Draw16x32Sprite	 ; Draw tall sprite
+	JSR Object_Draw16x32	 ; Draw tall sprite
 
 	; Reverse sprites
 	LDA Sprite_RAM-$06,Y
@@ -2804,12 +2815,26 @@ Object_DrawTallAndHFlip:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_Draw16x32Sprite
+; Object_Draw16x32
 ;
 ; Used to draw 16x32 object sprites.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D618
-Object_Draw16x32Sprite:
+Object_Draw16x32Mirrored:
+	JSR Object_Draw16x32
+
+	LDY Object_SpriteRAMOffset,X
+
+	LDA Sprite_RAMAttr + 4, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 4, Y
+
+	LDA Sprite_RAMAttr + 12, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 12, Y
+	RTS
+
+Object_Draw16x32:
 	JSR Object_ShakeAndCalcSprite
 
 	LDX <CurrentObjectIndexZ	; X = object slot index
@@ -3041,18 +3066,6 @@ PRG000_D727:
 
 ; $D736
 Object_GetUnusedSprite:
-	LDX #$07
-
-Object_GetUnusedSprite1:
-	LDA Objects_State, X
-	BNE Object_GetUnusedSprite3
-
-	LDY Object_SpriteRAMOffset, X
-	BNE Object_GetUnusedSprite3
-
-Object_GetUnusedSprite2:
-	DEX
-	BPL Object_GetUnusedSprite1
 
 	LDY #$FC
 
@@ -3252,10 +3265,19 @@ Object_HitTest:
 
 ; $D83B
 Object_InteractWithPlayer:
+	LDA Objects_Timer2, X
+	BEQ Object_CheckInteraction
+
+	CLC
+	RTS
+
+
+Object_CheckInteraction:
 	LDA Object_BeingHeld, X
 	BEQ Object_InteractWithPlayer1
 	JSR Object_Hold
 	SEC
+
 	RTS
 
 Object_InteractWithPlayer1:
@@ -3960,12 +3982,13 @@ Object_RespondToTailAttack:
 	BNE Object_RespondToTailAttack2	 ; If tail attack counter <> $09, jump to PRG000_DB16 (RTS)
 
 Object_RespondToTailAttack1:
-	LDY Objects_State,X	; Y = object's current state
+	LDY Objects_State, X	; Y = object's current state
 
 	LDA Obj2Obj_EnByState,Y
 	BNE Object_RespondToTailAttack2	 ; If object is not hit tested in this state, jump to PRG000_DB16 (RTS)
 
 	LDY ObjGroupRel_Idx
+
 	LDA ObjectGroup_Attributes3,Y
 	AND #OA3_TAILATKIMMUNE
 	BNE Object_RespondToTailAttack2	 ; If OA3_TAILATKIMMUNE is SET (Object cannot be tail-attacked), jump to PRG000_DB16 (RTS)
@@ -3977,18 +4000,15 @@ Object_RespondToTailAttack1:
 	JSR Object_DetectTail
 	BCC Object_RespondToTailAttack2	 ; If Player and object are not intersecting, jump to PRG000_DB16 (RTS)
 
-
 	JSR Object_GetKilled
-	LDA #-$34
-	STA <Objects_YVelZ, X
+	JSR Object_FlipFallAwayFromHit
+
 	DEC Objects_Health, X
 	PLA
 	PLA
 
 Object_RespondToTailAttack2:
 	RTS
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ObjectToObject_HitTest
@@ -4232,6 +4252,7 @@ Object_ApplyXVel:
 	LDA Stop_Watch
 	BNE Object_ApplyXVel1
 	JSR Object_AddVelFrac
+
 Object_ApplyXVel1:
 	RTS		 ; Return
 
@@ -4261,6 +4282,7 @@ Object_AddVelFrac:
 	LSR A		 ; Whole part shifted down (integer)
 	CMP #%00001000	 ; Check the sign bit
 	BLT PRG000_DD19	 ; If the value was not negatively signed, jump to PRG000_DD19
+
 	ORA #%11110000	 ; Otherwise, apply a sign extension
 	DEY		 ; Y = $FF (negative high part)
 PRG000_DD19:
@@ -4524,15 +4546,19 @@ InWater:
 
 NotWater:
 	TYA
-	STA TempA
 	CMP Objects_InWater,X	
 	BEQ PRG000_C6FA	 	; If object is either still in water / out of water (hasn't changed), jump to PRG000_C6FA
 
-	;JSR Object_WaterSplash	 ; Hit water; splash!
+	JSR Object_WaterSplash	 ; Hit water; splash!
+	LDA Objects_InWater, X
+	BNE PRG000_C6FA
 
-	LDA TempA		 ; Restore underwater flag
+	LDA <Objects_YVelZ, X
+	JSR Half_Value
+	STA <Objects_YVelZ, X
 
 PRG000_C6FA:
+	TYA
 	STA Objects_InWater,X	 ; Set object's in-water flag
 	RTS
 
@@ -4583,77 +4609,11 @@ Object_TestSideBumpBlocks1:
 	RTS
 
 SetObjectTileCoordAlignObj:
-	SEC
-	BCS SOTC
 
 SetObjectTileCoord:
-	CLC
 
-SOTC:
-	LDX <CurrentObjectIndexZ
-	LDA Objects_LastTileYHi
-	STA Block_ChangeYHi
-	BCC SOTC2
-	STA <Objects_YHiZ,X
-
-SOTC2:
-	LDA Objects_LastTileY
-	AND #$f0
-	STA Block_ChangeY
-	BCC SOTC3
-	STA <Objects_YZ,X
-
-SOTC3:
-	LDA Objects_LastTileXHi
-	STA Block_ChangeXHi
-	BCC SOTC4
-	STA <Objects_XHiZ,X
-
-SOTC4:
-	LDA Objects_LastTileX
-	AND #$f0
-	STA Block_ChangeX
-	BCC SOTC5
-	STA <Objects_XZ,X
-
-SOTC5:
 	RTS
 
-DrawEnemyTempBlock:
-	STA TempA
-	STX TempX
-	LDX #$09
-
-FindFreeSpinnerE:
-	LDA SpinnerBlockTimers, X
-	BEQ DoSpinnerE
-	DEX
-	BPL FindFreeSpinnerE
-	LDX TempX
-	LDA #$00
-	RTS
-
-DoSpinnerE:
-	LDA TempA
-	STA SpinnerBlocksReplace, X
-	LDA #$FF
-	STA SpinnerBlockTimers, X
-
-	LDA Objects_LastTileY
-	STA SpinnerBlocksY,X	 ; Store into object slot
-
-	LDA Objects_LastTileYHi
-	STA SpinnerBlocksYHi,X ; Store Y Hi into object slot
-
-	LDA Objects_LastTileXHi
-	STA SpinnerBlocksXHi,X ; Store X Hi into object slot
-
-	LDA Objects_LastTileX
-	STA SpinnerBlocksX,X ; Store X Hi into object slot
-
-	LDX TempX
-	LDA TempY
-	RTS
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4689,7 +4649,14 @@ PRG001_A973:
 	AND #$08
 	BEQ PRG001_A993	 ; If object did NOT hit ceiling, jump to PRG001_A97C
 	
+	LDA Object_CeilingStops
+	BNE Ceiling_NoStop
+
 	JSR Object_HitCeiling
+	JMP PRG001_A993
+
+Ceiling_NoStop:
+	JSR Object_HitCeilingNoStop
 
 PRG001_A993:
 
@@ -4750,6 +4717,7 @@ Object_DoReverse:
 PRG001_A9B7:
 	LDA #$00
 	STA Object_WallStops
+	STA Object_CeilingStops
 	JSR Object_CheckForeground
 	RTS		 ; Return
 
@@ -4794,19 +4762,57 @@ SetSpriteFG5:
 	RTS
 
 
-Object_FindEmpty:
+Object_FindEmptyX:
 	LDX #$04
 
-Object_FindEmpty1:
+Object_FindEmptyX1:
 	LDA Objects_State,X
-	BEQ Object_FindEmpty2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
+	BEQ Object_FindEmptyX2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
 
 	DEX		 ; X--
-	BPL Object_FindEmpty1	 ; While X >= 0, loop!
+	BPL Object_FindEmptyX1	 ; While X >= 0, loop!
+	CLC
+
+	LDX <CurrentObjectIndexZ
+	RTS
+
+Object_FindEmptyX2:
+	JSR Object_New
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$FF
+	STA Objects_SpawnIdx, X
+
+	SEC
+	RTS
+
+Object_FindEmptyY:
+	LDY #$04
+
+Object_FindEmptyY1:
+	LDA Objects_State,Y
+	BEQ Object_FindEmptyY2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
+
+	DEY		 ; X--
+	BPL Object_FindEmptyY1	 ; While X >= 0, loop!
 	CLC
 	RTS
 
-Object_FindEmpty2:
+Object_FindEmptyY2:
+	TYA
+	TAX
+
+	JSR Object_New
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$FF
+	STA Objects_SpawnIdx, X
+
+	LDX <CurrentObjectIndexZ
 	SEC
 	RTS
 
@@ -4949,6 +4955,15 @@ DontDrawGiant:
 	RTS
 
 Object_InteractWithOtherObjects:
+	LDA Objects_State, X
+	AND #$FE
+	CMP #OBJSTATE_NORMAL
+	BEQ DetectObjects
+	CLC 
+	RTS
+
+DetectObjects:
+
 	LDY #$04
 
 DetectNextSprite:
@@ -5493,18 +5508,7 @@ Object_HitWall1:
 	STA Objects_XVelFrac,X	 
 	RTS
 
-CheckBlockAbove:
-	RTS
 
-CheckBlockBelow:
-	RTS
-
-CheckBlockRight:
-	
-	RTS
-
-CheckBlockLeft:
-	RTS
 
 Object_GetKilled:
 	INC Kill_Tally
@@ -5529,6 +5533,12 @@ Object_GetKilled:
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State, X
 
+	LDA #$01
+	STA Objects_Health, X
+
+	LDA #$10
+	STA Objects_Timer2, X
+
 	LDA #$ff
 	STA Objects_Timer3,X
 	RTS
@@ -5545,12 +5555,7 @@ KillEnemy:
 
 KillEnemy1:
 	; Set object Y velocity to -$40 (fly up after death)
-	LDA #-$34
-	STA <Objects_YVelZ,X
- 
-	LDA #$00
-	STA <Objects_XVelZ,X
-	RTS
+	JMP Object_FlipFall
 
 EnemyEnterXVel:	.byte $08, -$08
 
@@ -5571,6 +5576,7 @@ ObjInit_TowardsPlayer:
 Object_BeingHeld = Objects_Data14
 Object_Hold:
 	LDA Objects_Timer2, X
+	ORA Player_TailAttack
 	BNE Object_HoldRTS
 
 	LDA <Pad_Holding
@@ -5650,10 +5656,12 @@ Object_ReverseXVel:
 Object_DieInstead:	
 	LDA #$00
 	STA Player_IsHolding
-	DEC Objects_Health, X
+	LDA #$FF
+	STA Objects_Health, X
+	JSR Object_GetKilled
 	PLA
 	PLA
-	JMP Object_GetKilled
+	JMP Object_FlipFall
 
 Object_KickNotWall:
 Object_KickRTS:
@@ -6115,3 +6123,38 @@ PRG004_BE54:
 	TAX
 	CLC		 ; Clear carry (link is visible)
 	RTS		 ; Return
+
+
+Object_FlipFall:
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+	LDA Objects_Orientation, X
+	ORA #SPR_VFLIP
+	STA Objects_Orientation, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+	RTS
+
+Object_FlipFallAwayFromHit:
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+	LDA Objects_Orientation, X
+	ORA #SPR_VFLIP
+	STA Objects_Orientation, X
+
+	LDA <HitTest_Result
+	AND #HITTEST_RIGHT
+	BNE Object_FlipFallAwayFromHit1
+
+	LDA #$10
+	STA <Objects_XVelZ, X
+	RTS
+
+Object_FlipFallAwayFromHit1:
+	LDA #$F0
+	STA <Objects_XVelZ, X
+	RTS

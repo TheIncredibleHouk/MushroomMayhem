@@ -4776,6 +4776,8 @@ No_Release:
 
 
 
+Coin_X = Temp_Var2
+Coin_Y = Temp_Var1
 Produce_Coin:
 	LDY #$03	 ; Y = 3
 
@@ -4800,12 +4802,12 @@ PRG000_C4A7:
 	LDA #$01
 	STA CoinPUp_State,Y	; Set coin state to 1
 
-	LDA <Temp_Var1		; Get input Y
+	LDA <Coin_Y		; Get input Y
 	SUB Level_VertScroll	; Make relative to vertical scroll
 	SBC #24	 		; Subtract 24
 	STA CoinPUp_Y,Y	 	; Store as coin's Y
 
-	LDA <Temp_Var2		; Get input X
+	LDA <Coin_X		; Get input X
 	SUB <Horz_Scroll	; Make relative to horizontal scroll
 	STA CoinPUp_X,Y	 	; Store as coin's X
 
@@ -5538,7 +5540,7 @@ NextCol:
 	BNE IsBitSet
 	RTS
 
-SetPlayerFrozen:
+Player_Freeze:
 	LDA #$08
 	STA Player_Frozen
 

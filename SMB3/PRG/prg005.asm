@@ -619,7 +619,7 @@ BigCannonBall_Draw:
 	STA <Objects_XHiZ,X	 ; Update big cannon ball's X Hi
 
 	ASL Objects_SpritesHorizontallyOffScreen,X
-	JSR Object_Draw16x32Sprite	 ; Draw center of big cannon ball
+	JSR Object_Draw16x32	 ; Draw center of big cannon ball
 
 	; Restore X/Hi
 	PLA
@@ -928,7 +928,7 @@ Piranha_Draw:
 	STA Objects_Frame,X
 
 Piranha_Draw1:
-	JSR Object_Draw16x32Sprite
+	JSR Object_Draw16x32
 	
 	LDY Object_SpriteRAMOffset, X
 
@@ -4007,7 +4007,7 @@ P_PRG007_B827:
 	LDA YKnockBacks, Y
 	STA <Player_YVel 
 	STA <Player_InAir
-	JSR SetPlayerFrozen
+	JSR Player_Freeze
 	LDX <CurrentObjectIndexZ
 	PLA
 	PLA
@@ -4016,45 +4016,8 @@ P_PRG007_B827:
 P_PRG007_B828:
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
 
-FreezieDirection: .byte $10, $F0
-FreezieFlip: .byte SPR_HFLIP, $00
-
 ObjInit_Freezie:
-	JSR Object_XDistanceFromPlayer
-	LDA FreezieDirection, Y
-	STA <Objects_XVelZ,X
-	LDA FreezieFlip, Y
-	STA Objects_Orientation, X
 	LDA Objects_Property, X
-	BEQ ObjInit_Freezie2
-
-	CMP #$01
-	BNE ObjInit_Freezie0
-
-	LDA Objects_XZ, X
-	ADD #$08
-	STA Objects_XZ, X
-	LDA Objects_XHiZ, X
-	ADC #$00
-	STA Objects_XHiZ, X
-	JMP ObjInit_Freezie1
-
-ObjInit_Freezie0:
-	LDA Objects_YZ, X
-	SUB #$08
-	STA Objects_YZ, X
-	LDA Objects_YHiZ, X
-	SBC #$00
-	STA Objects_YHiZ, X
-
-ObjInit_Freezie1:
-	LDA #$01
-	STA Objects_Data5, X
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
-
-ObjInit_Freezie2:
 	RTS
 
 ObjNorm_Freezie:
@@ -4107,10 +4070,10 @@ FreezieWait1:
 
 FreezieWait2:
 	
-	LDA FreezieDirection, Y
+	;LDA FreezieDirection, Y
 	STA <Objects_XVelZ,X
 
-	LDA FreezieFlip, Y
+	;LDA FreezieFlip, Y
 	STA Objects_Orientation, X
 	DEC Objects_Data5, X
 	LDA #$10
@@ -4200,7 +4163,7 @@ FreezieThrowPlayerX:
 	.byte $30, $D0
 
 ObjHit_Freezie:
-	JSR SetPlayerFrozen
+	JSR Player_Freeze
 	JSR Object_XDistanceFromPlayer
 	LDA FreezieThrowPlayerX, Y
 	STA <Player_XVel
@@ -4514,7 +4477,7 @@ DrawToad:
 	LDA #SPR_BEHINDBG
 	ORA Objects_SpriteAttributes, X
 	STA Objects_SpriteAttributes, X
-	JSR Object_Draw16x32Sprite
+	JSR Object_Draw16x32
 	RTS
 
 BowserMessage1:

@@ -814,7 +814,7 @@
     <sprite x="24" y="64" value="16" palette="3" horizontalflip="false" verticalflip="false" table="1" />
     <sprite x="20" y="80" value="16" palette="3" horizontalflip="false" verticalflip="false" table="1" />
   </spritedefinition>
-  <spritedefinition id="61" width="01" height="01" name="Skull Blooper" class="2" group="Sea Enemies">
+  <spritedefinition id="61" width="01" height="01" name="Phatom Blooper" class="2" group="Sea Enemies">
     <sprite x="0" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="1A" />
     <sprite x="8" y="0" value="34" palette="1" horizontalflip="true" verticalflip="false" table="1A" />
   </spritedefinition>
@@ -870,14 +870,6 @@
     <sprite property="1" x="8" y="-16" value="16" palette="2" horizontalflip="false" verticalflip="false" table="0F" />
     <property>Starts without snowball in hand</property>
     <property>Starts with snowball in hand</property>
-  </spritedefinition>
-  <spritedefinition id="68" width="01" height="01" name="Upside Down Beetle" class="2" group="Spiny/Buzzy Beetle">
-    <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="true" table="0B" />
-    <sprite x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="true" table="0B" />
-  </spritedefinition>
-  <spritedefinition id="69" width="01" height="01" name="Upside Down Spiny" class="2" group="Spiny/Buzzy Beetle">
-    <sprite x="0" y="0" value="04" palette="1" horizontalflip="false" verticalflip="true" table="0B" />
-    <sprite x="8" y="0" value="06" palette="1" horizontalflip="false" verticalflip="true" table="0B" />
   </spritedefinition>
   <spritedefinition id="6A" width="01" height="01" name="Veggie Guy" class="2" group="Subcon">
     <sprite x="0" y="0" value="00" palette="2" horizontalflip="false" verticalflip="false" table="0F" />
@@ -948,16 +940,22 @@
     <property>Experimental</property>
   </spritedefinition>
   <spritedefinition id="70" width="01" height="01" name="Buzzy Beetle" class="2" group="Spiny/Buzzy Beetle">
-    <sprite x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite property="0" x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite property="0" x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite property="1" x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="true" table="0B" />
+    <sprite property="1" x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="true" table="0B" />
+    
     <property>Normal</property>
-    <property>Fast</property>
+    <property>Anti Gravity</property>
   </spritedefinition>
   <spritedefinition id="71" width="01" height="01" name="Spiny" class="2" group="Spiny/Buzzy Beetle">
-    <sprite x="0" y="0" value="04" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite x="8" y="0" value="06" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite property="0" x="0" y="0" value="04" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite property="0" x="8" y="0" value="06" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite property="1" x="0" y="0" value="04" palette="1" horizontalflip="false" verticalflip="true" table="0B" />
+    <sprite property="1" x="8" y="0" value="06" palette="1" horizontalflip="false" verticalflip="true" table="0B" />
+    
     <property>Normal</property>
-    <property>Fast</property>
+    <property>Ani Gravity</property>
   </spritedefinition>
   <spritedefinition id="72" width="01" height="01" name="Goomba" class="3" group="Common">
     <sprite property="0" x="0" y="0" value="18" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
@@ -1103,8 +1101,9 @@
   <spritedefinition id="83" width="01" height="02" name="Lakitu" class="2" group="Spiny/Buzzy Beetle">
     <sprite x="0" y="0" value="3C" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
     <sprite x="8" y="0" value="3C" palette="3" horizontalflip="true" verticalflip="false" table="0B" />
-    <sprite x="0" y="16" value="1E" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite x="8" y="16" value="1E" palette="1" horizontalflip="true" verticalflip="false" table="0B" />
+    <sprite x="-4" y="16" value="00" palette="1" horizontalflip="false" verticalflip="false" table="90" />
+    <sprite x="4" y="16" value="1E" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite x="12" y="16" value="00" palette="1" horizontalflip="true" verticalflip="false" table="90" />
 
     <property>Throws Spinies</property>
     <property>Throws Freezies</property>

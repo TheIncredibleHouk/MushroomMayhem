@@ -1073,6 +1073,7 @@ Level_PipeEnter:
 
 	; Init...
 
+	STA Debug_Snap
 	JSR Do_Pointer_Effect
 	LDA Level_PipeMove
 	AND #%00011100	 ; Examine just bits 2-4 (determines what the pipe will do)

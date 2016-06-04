@@ -50,7 +50,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $16 OBJ_KEYPIECE
 	.word ObjInit_DoNothing; Object $17 - OBJ_NEGASTAR
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
-	.word ObjNorm_DoNothing; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word Init_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_BubbleGenerator	; Object $1A that is a l
 	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_SendBack	; Object $1C
@@ -92,7 +92,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNormal_KeyPiece	; Object $16 OBJ_KEYPIECE
 	.word ObjNorm_NegaStar; Object $17 - OBJ_NEGASTAR
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
-	.word ObjNorm_DoNothing; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word Init_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Bubble	; Object $1A
 	.word ObjNorm_StarPiece	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjNorm_SendBack	; Object $1C
@@ -112,7 +112,7 @@ ObjectGroup00_NormalJumpTable:
 ObjectGroup00_CollideJumpTable:
 	.word Player_GetHurt	; Object $00
 	.word ObjHit_DoNothing	; Object $01
-	.word ObjHit_SnowBall	; Object $02
+	.word SnowBall_Hit	; Object $02
 	.word ObjHit_SolidBlock	; Object $03
 	.word ObjHit_DoNothing	; Object $04
 	.word Player_GetHurt	; Object $05
@@ -134,8 +134,8 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $15
 	.word ObjHit_KeyPiece	; Object $16
 	.word ObjHit_DoNothing	; Object $17 - OBJ_NEGASTAR
-	.word OCSPECIAL_HIGHSCORE; Object $18 - OBJ_BOSS_BOWSER
-	.word ObjNorm_DoNothing	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word ObjHit_DoNothing; Object $18 - OBJ_BOSS_BOWSER
+	.word ObjHit_DoNothing	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjHit_DoNothing	; Object $1A
 	.word Object_SetDeadEmpty	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjHit_DoNothing	; Object $1C
@@ -143,9 +143,9 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.word ObjHit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjHit_Clock	; Object $20
-	.word ObjHit_IceFlower	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.word ObjHit_Pumpkin	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.word ObjHit_FoxLeaf    ; Object $23 - OBJ_POWERUP_FOXLEAF
+	.word ObjHit_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjHit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.word ObjHit_DoNothing    ; Object $23 - OBJ_POWERUP_FOXLEAF
 
 	
 	; Object group $00 (i.e. objects starting at ID $00) attribute bits set 1 (OA1_* flags valid here)
@@ -336,12 +336,12 @@ ObjectGroup00_PatTableSel:
 ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $00
 	.byte KILLACT_STANDARD	; Object $01
-	.byte KILLACT_STANDARD	; Object $02
+	.byte KILLACT_NORMALANDKILLED	; Object $02
 	.byte KILLACT_STANDARD	; Object $03
 	.byte KILLACT_POOFDEATH	; Object $04
 	.byte KILLACT_POOFDEATH	; Object $05
 	.byte KILLACT_STANDARD	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte KILLACT_STANDARD	; Object $07 - OBJ_BRICK
+	.byte KILLACT_NORMALANDKILLED	; Object $07 - OBJ_BRICK
 	.byte KILLACT_STANDARD	; Object $08 - OBJ_COIN
 	.byte KILLACT_STANDARD	; Object $09 - OBJ_BUBBLE
 	.byte KILLACT_STANDARD	; Object $0A
@@ -441,7 +441,11 @@ ObjP20:
 	.byte $D7, $D9, $DB, $DD, $E1, $EB, $E3, $E1, $E3, $EB, $E5, $E1, $E5, $EB, $E7, $E1
 
 ObjP01:	.byte $F3, $F5, $F3, $F5, $BB, $BD, $BB, $BF
-ObjP02:	.byte $95, $97, $8D, $8F
+
+ObjP02:
+	.byte $95, $97
+	.byte $8D, $8F
+
 ObjP04:	.byte $F5, $F7, $B5, $B7
 ObjP05:	.byte $95, $95, $97, $97
 ObjP06:	.byte $6B, $6B, $67, $67, $77, $77
@@ -455,7 +459,11 @@ ObjP0A:	.byte $A9, $AB, $BD, $BF
 ObjP0C:	.byte $51, $53
 ObjP0B:	.byte $51, $53	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
 ObjP0D:	.byte $51, $53
-ObjP19:	.byte $51, $53
+ObjP19:
+	.byte $15, $15
+	.byte $13, $13
+	.byte $11, $11
+
 ObjP1C:	
 ObjP1E:	.byte $51, $53
 ObjP1F:	.byte $51, $53	; #DAHRKDAIZ - VINE
@@ -805,6 +813,7 @@ Produce_Item:
 Block_SwitchTile:
 	JSR Object_ChangeBlock
 
+Block_MakteItemAppear:
 	LDA Bouncer_PowerUp, X
 	BMI Produce_Key
 
@@ -918,7 +927,7 @@ Bubble_Float:
 Bubble_FloatNormal:
 	JSR Object_DeleteOffScreen
 
-	INC ReverseGravity
+	INC Reverse_Gravity
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
@@ -1060,42 +1069,7 @@ ObjInit_PUp2:
 	JMP ObjInit_PowerUp
 
 ObjInit_PowerUp:
-	CPX #$05
-	BCS ObjInit_PowerUp1
 
-	STX TempX
-
-	LDX #$05
-	JSR Object_New
-	
-	LDX TempX
-
-	LDA #OBJ_POWERUP
-	STA Objects_ID + 5
-
-	LDA PowerUp_Type, X
-	STA PowerUp_Type + 5
-	
-	LDA <Objects_XZ, X
-	STA <Objects_XZ + 5
-
-	LDA <Objects_XHiZ, X
-	STA <Objects_XHiZ + 5
-
-	LDA <Objects_YZ, X
-	STA <Objects_YZ + 5
-
-	LDA <Objects_YHiZ, X
-	STA <Objects_YHiZ + 5
-
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State, X
-
-	LDA #OBJSTATE_INIT
-	STA Objects_State + 5
-	RTS
-
-ObjInit_PowerUp1:
 	LDY PowerUp_Type, X
 
 	LDA PowerUp_Palette, Y
@@ -1131,8 +1105,15 @@ PowerUp_StartY = Objects_Data4
 
 ObjNorm_PowerUp:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_PowerUp0
+	BEQ PowerUp_Norm
 
+	LDA Object_SpriteRAMOffset, X
+	ADD #$08
+	STA Object_SpriteRAMOffset, X
+
+	JMP Object_Draw
+
+PowerUp_Norm:
 	JSR Object_DeleteOffScreen
 
 	LDA Objects_Timer, X
@@ -1457,95 +1438,10 @@ PRG001_AD37:
 
 
 ObjNorm_Coin:
-	LDA <Player_HaltGameZ
-	BNE DrawCoin
 
-	JSR Object_DeleteOffScreen
-	JSR Object_Move
-	JSR Object_DetectTiles
-	JSR Object_InteractWithPlayer
-
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ DrawCoin
-	JSR Object_HitGround
-
-DrawCoin:
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	ORA Objects_SpritesVerticallyOffScreen, X
-	BNE Coin_RTS
-
-	JSR Object_ShakeAndCalcSprite
-	LDX <CurrentObjectIndexZ
-	LDY Object_SpriteRAMOffset, X
-	LDA #$49
-	STA Sprite_RAM + 1, Y
-	LDA #SPR_PAL3
-	STA Sprite_RAM + 2, Y
-	LDA <Objects_SpriteY, X
-	STA Sprite_RAM, Y
-	LDA <Objects_SpriteX, X
-	STA Sprite_RAM + 3, Y
-	
-Coin_RTS:
 	RTS
 
 ObjHit_Coin:
-	INC Coins_Earned
-	LDA Sound_QLevel1
-	ORA #SND_LEVELCOIN
-	STA Sound_QLevel1
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State, X
-	RTS
-
-ObjHit_IceFlower:
-	JSR Try_PUp_Reserve
-	LDA Effective_Suit
-	CMP #$07 
-	BNE Do_Ice_Power
-	JMP PUp_GeneralCollect
-
-Do_Ice_Power:
-
-	LDA #$08
-	JMP Do_PUp_Pallete_Collect
-
-ObjHit_Pumpkin:
-	JSR Try_PUp_Reserve
-	LDA Effective_Suit
-	CMP #$0A
-	BNE Do_Boo_Power
-	JMP PUp_GeneralCollect
-
-Do_Boo_Power:
-	LDA #$0B
-	JMP Do_PUp_Poof_Collect
-
-ObjHit_FoxLeaf:
-	JSR Try_PUp_Reserve
-	LDA Effective_Suit
-	CMP #$08
-	BNE Do_Fox_Power
-	JMP PUp_GeneralCollect
-
-Do_Fox_Power:
-	LDA #$09
-	JMP Do_PUp_Poof_Collect
-
-	; This is a fairly general "march" function, but it is only 
-	; applied to one object here, the unused collectable card...
-
-PRG001_ADE2:
-	RTS
-
-	; Aligns object that impacts the ground onto the floor
-Object_HitGroundAlign:
-	LDA <Objects_TilesDetectZ,X 
-	AND #$04
-	BEQ PRG001_ADE2	 ; If object did not hit ground, jump to PRG001_ADE2 (RTS)
- 
-	JMP Object_HitGround	 ; Otherwise, jump to Object_HitGround
 
 Koopaling_Palettes:
 
@@ -3370,31 +3266,87 @@ GCTargetPlayerRight:
 ObjInit_Brick:
 	RTS
 
+Brick_PowerUp = Objects_Data1
+Brick_PowerUpMap:
+	.byte $00, POWERUP_COIN, POWERUP_FIREFLOWER, POWERUP_SUPERLEAF, POWERUP_ICEFLOWER, POWERUP_FROGSUIT, POWERUP_FOXLEAF, POWERUP_SHELL, POWERUP_MUSHROOM, POWERUP_HAMMERSUIT, POWERUP_NINJASHROOM, POWERUP_STAR, POWERUP_VINE, $00, $00, $00, $FF
+
 ObjNorm_Brick:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_BrickDraw
+	BEQ Brick_Norm
+
+	JMP Brick_Draw
+
+Brick_Norm:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ Brick_MakeItem
 
 	JSR Object_Move
-	JSR Object_InteractWithPlayer
+	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
+	JSR Object_AttackOrDefeat
+	JSR Object_KillOthers
+	BCS Brick_MakeItem
 
-	LDA <Objects_TilesDetectZ,X
-	BEQ ObjNorm_BrickDraw
+	LDA <Objects_TilesDetectZ, X
+	BNE Brick_MakeItem
 
-Object_ToBrickBust:
-	LDA #OBJ_STONEBLOCK
-	STA Objects_ID, X
-
-	RTS
-
-ObjNorm_BrickDraw:
-	LDA Objects_Frame, X
-	BNE ObjNorm_BrickDraw1
+Brick_Draw:
 	JMP Object_DrawMirrored
 
-ObjNorm_BrickDraw1:
-	JMP Object_Draw
+Brick_MakeItem:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE Brick_NoBurst
 
+	LDA <Objects_XZ, X
+	STA Debris_X
+
+	LDA <Objects_YZ, X
+	STA Debris_Y
+
+	JSR Common_MakeBricks
+
+Brick_NoBurst:
+	LDY Brick_PowerUp, X
+	LDA Brick_PowerUpMap, Y
+	BEQ Brick_Burst
+	BPL Brick_MakePower
+
+	JMP Produce_Key
+
+Brick_MakePower:
+
+	CMP #POWERUP_COIN
+	BEQ Brick_Coin
+
+	STA PowerUp_Type, X
+
+	LDA #OBJ_POWERUP
+	STA Objects_ID, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JMP ObjInit_PowerUp
+
+Brick_Burst:
+	JMP Object_Delete
+
+Brick_Coin:
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Coin_X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Coin_Y
+	JSR Produce_Coin
+	JMP Object_Delete
+	
 ObjNorm_Boss:
 	JSR DoBossFights
 	RTS
@@ -3573,7 +3525,7 @@ SetKeyField:
 	STA Sound_QMap	
 
 	LDX <CurrentObjectIndexZ
-	JMP Object_SetDeadEmpty
+	JMP Object_Delete
 
 ObjInit_SpikeBall:
 	RTS
@@ -3716,7 +3668,7 @@ SpikeBusted:
 	LDA #$00
 	STA Objects_Data2, X
 	STA Objects_Frame, X
-	JMP Object_ToBrickBust
+	;JMP Object_ToBrickBust
 
 ObjNorm_SpikeBallRTS:
 	JMP Object_DrawMirrored
@@ -3982,7 +3934,7 @@ ObjNorm_Clock3:
 	JMP Object_Draw
 
 ObjNorm_Clock4:
-	JMP Object_SetDeadEmpty
+	JMP Object_Delete
 
 ClockTimes:
 	.byte 5, 10, 15, 20, 25, 30
@@ -4326,7 +4278,7 @@ ObjNorm_HardIce1:
 	INC Block_NeedsUpdate
 	
 	JSR SetObjectTileCoordAlignObj
-	JMP Object_SetDeadEmpty
+	JMP Object_Delete
 
 ObjNorm_HardIce2:
 	JMP Object_Draw 
@@ -4341,50 +4293,83 @@ ObjHit_HardIce:
 ObjHit_HardIce1:
 	RTS
 
+SnowBall_Frame = Objects_Data1
+
 ObjNorm_SnowBall:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_SnowBall2
+	BEQ SnowBall_Norm
 
+	JMP SnowBall_Draw
+
+SnowBall_Norm:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
+	BNE SnowBall_Move
 
-	BEQ ObjNorm_SnowBall1
-	JSR Object_Move
-	JSR Object_InteractWithTiles
+	JSR SnowBall_Burst
+	JMP Object_Delete
+
+SnowBall_Move:
 	JSR Object_DeleteOffScreen
+	
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ SnowBall_Burst
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_FaceDirectionMoving
 	JSR Object_InteractWithPlayer
+	JSR Object_KillOthers
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
 
-	LDA Object_HorzTileProp
-	CMP #TILE_PROP_SOLID_ALL
-	BCC ObjNorm_SnowBall2
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BNE SnowBall_Burst
 
-ObjNorm_SnowBall1:
-	LDA #OBJ_ICEBLOCK
-	STA Objects_ID, X
-
-ObjNorm_SnowBall2:
-	INC Objects_Data4, X
-	LDA Objects_Data4, X
-	AND #$04
+SnowBall_Animate:
+	INC <SnowBall_Frame, X
+	LDA <SnowBall_Frame, X
 	LSR A
 	LSR A
+	AND #$01
 	STA Objects_Frame, X
-	JMP Object_Draw 
 
-SnowThrowPlayerX:
-	.byte $20, $E0
+SnowBall_Draw:
+	JMP Object_Draw
 
-ObjHit_SnowBall:
-	JSR SetPlayerFrozen
-	JSR Object_XDistanceFromPlayer
-	LDA SnowThrowPlayerX, Y
+SnowBall_Hit:
+	
+	JSR Player_Freeze
+
+	LDA <Objects_XVelZ, X
 	STA <Player_XVel
-	LDA #$A0
+
+	LDA #$D0
 	STA <Player_YVel
 	STA <Player_InAir
-	LDA #OBJ_ICEBLOCK
-	STA Objects_ID, X
-	RTS
+
+SnowBall_Burst:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE SnowBall_NoBurst
+
+	LDA <Objects_XZ, X
+	STA Debris_X
+
+	LDA <Objects_YZ, X
+	STA Debris_Y
+	
+	JSR Common_MakeDebris
+
+	LDA #$BF
+	STA BrickBust_Tile, Y
+
+SnowBall_NoBurst:
+	LDA #SPR_PAL2
+	STA BrickBust_Pal, Y
+	JMP Object_Delete
 
 IceFireFlyColors:
 	.byte SPR_PAL1, SPR_PAL2
@@ -4768,3 +4753,33 @@ ObjInit_ModifyPointers:
 
 PUp_GeneralCollect:
 	RTS
+
+Init_WaterSplash:
+
+WaterSplash_Frame = Objects_Data1
+Obj_WaterSplash:
+	LDA <Player_HaltGameZ
+	BEQ WaterSplash_Norm
+
+	JMP WaterSplash_Draw
+
+WaterSplash_Norm:
+	LDA <Objects_YZ, X
+	AND #$F0
+	STA <Objects_YZ, X
+
+	LDA Objects_Timer, X
+	BNE WaterSplash_Animate
+
+	JMP Object_Delete
+	
+WaterSplash_Animate:
+	LDA Objects_Timer, X
+	LSR A
+	LSR A
+
+	AND #$03
+	STA Objects_Frame, X
+
+WaterSplash_Draw:
+	JMP Object_DrawMirrored
