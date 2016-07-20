@@ -202,10 +202,13 @@ PointerFound:
 	LDA MapPointers, X
 	STA LevelLoadPointer
 	STA LevelNumber
+
 	LDA #$01
 	STA Level_Redraw
+
 	LDA #$00
 	STA Level_KeepObjects
+
 	LDA MapPointers+2,X
 	AND #$80
 	STA UseAltEntrance

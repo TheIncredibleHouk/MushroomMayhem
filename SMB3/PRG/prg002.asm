@@ -272,7 +272,7 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $40 - OBJ_GOLDENPIRANHAGROWER
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE	; Object $41 - OBJ_PIRANHAGROWER
 	.byte OA3_HALT_NORMALONLY 	; Object $42 - OBJ_FLAMINGCHEEP
-	.byte OA3_HALT_JUSTDRAW 	; Object $43 - OBJ_BEACHEDCHEEP
+	.byte OA3_HALT_JUSTDRAW | OA3_WINDAFFECTS 	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $44 - OBJ_PLATFORMUNSTABLE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $45 - OBJ_PWING
 	.byte OA3_HALT_JUSTDRAW 	; Object $46 - OBJ_SNIFIT
@@ -505,6 +505,10 @@ Buster_DrawHoldingIceBrick:
 
 ObjInit_BeachedCheep:
 	JSR Object_MoveTowardsPlayerFast
+	LDY Objects_Property, X
+	LDA BeachedCheep_VFlip, Y
+	ORA Objects_Orientation, X
+	STA Objects_Orientation, X
 	RTS
 	
 BeachedCheep_XVel: .byte $10, $F0
@@ -516,7 +520,7 @@ BeachedCheep_CurrentFrame = Objects_Data4
 BeachedCheep_NoWaterTimer = Objects_Data5
 
 BeachedCheep_GroundBounce: 
-	.byte $D0, $08, $D0
+	.byte $D0, $F8, $D0
 
 BeachedCheep_CeilingBounce: 
 	.byte $08, $30, $30
@@ -823,7 +827,7 @@ Entropy_BySlot:	.byte $13, $D7, $F9, $36, $7F
 
 ObjInit_HotFoot:
 	LDA Entropy_BySlot,X
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 
 
 Bank2_HotFootHaltAction:
@@ -943,7 +947,7 @@ Phanto_Wait:
 	CMP #OBJ_KEY
 	BNE Phanto_Wait_End
 
-	LDA Object_BeingHeld + 5
+	LDA Objects_BeingHeld + 5
 	BEQ Phanto_Wait_End
 
 	INC Phanto_Action, X
@@ -987,7 +991,7 @@ Phanto_Chase:
 	CMP #OBJ_KEY
 	BNE Phanto_Poof
 
-	LDA Object_BeingHeld + 5
+	LDA Objects_BeingHeld + 5
 	BEQ Phanto_ChaseHover
 
 	JSR Object_ChasePlayer
@@ -1811,7 +1815,6 @@ ObjNorm_Snifit:
 
 ObjNorm_Snifit0:
 
-	JSR Object_HandleBumpUnderneath	
 	JSR Object_InteractWithPlayer
 	JSR Object_DeleteOffScreen	 
 	JSR Object_Move
@@ -2199,7 +2202,7 @@ PRG002_AF96:
 	PHA		 ; Save Y
 
 	; Temporarily using object's Y/HI to calculate the spike ball's position
-	SUB <Objects_Data2,X
+	SUB Objects_Data2,X
 	STA <Objects_YZ,X
 	LDA <Objects_YHiZ,X
 	SBC #$00
@@ -2308,7 +2311,7 @@ ObjNorm_GoombaInShoe:
 	RTS		 ; Return
 
 ObjInit_NipperHopping:
-	INC <Objects_Data1,X	 ; Var4 = 1
+	INC Objects_Data1,X	 ; Var4 = 1
 	RTS		 ; Return
 
 
@@ -2337,12 +2340,12 @@ ObjNorm_Nipper0_1:
 	LDA DayNight
 	BNE PRG002_B1CC
 
-	LDA <Objects_Data2, X
+	LDA Objects_Data2, X
 	BNE ObjNorm_Nipper2_0
 
 ObjNorm_Nipper0:
 
-	LDA <Objects_Data2, X
+	LDA Objects_Data2, X
 	BNE PRG002_B1CD
 
 	LDA <Objects_TilesDetectZ,X
@@ -2362,7 +2365,7 @@ ObjNorm_Nipper0:
 
 	LDA NipperJump, Y
 	STA <Objects_YVelZ, X
-	STA <Objects_Data2, X
+	STA Objects_Data2, X
 	BNE PRG002_B1CC
 
 ObjNorm_Nipper2_0:
@@ -2371,7 +2374,7 @@ ObjNorm_Nipper2_0:
 	BEQ PRG002_B1CD	 ; If Nipper has not touched ground, jump to PRG002_B1CD
 
 	LDA #$00
-	STA <Objects_Data2, X
+	STA Objects_Data2, X
 	BEQ PRG002_B1CD
 
 ObjNorm_Nipper2:
@@ -2422,7 +2425,7 @@ NipperDetermineFrame:
 	RTS
 
 NipperDetermineFrame1:
-	LDA <Objects_Data2, X
+	LDA Objects_Data2, X
 	BNE NipperDetermineFrame2
 
 	LDA <Counter_1
@@ -2447,7 +2450,7 @@ NipperDetermineFrame3:
 
 ObjInit_Toad:
 	LDA Objects_Property,X		 ; Otherwise, Y = 1 
-	STA <Objects_Data2,X	 ; -> Objects_Data2 (which message Toad gives)
+	STA Objects_Data2,X	 ; -> Objects_Data2 (which message Toad gives)
 
 	; Toad is always on the lower screen space
 	LDA #$01
@@ -2515,7 +2518,7 @@ ObjNorm_Toad:
 
 
 Toad_Speak:
-	LDA <Objects_Data1,X	 ; Get current dialog state
+	LDA Objects_Data1,X	 ; Get current dialog state
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -2591,7 +2594,7 @@ PRG002_B2E3:
 
 	; Dialog box is complete
 
-	LDY <Objects_Data2,X	 ; Y = Objects_Data2
+	LDY Objects_Data2,X	 ; Y = Objects_Data2
 
 	; Toad's Var1 and Var2 store the current pointer to the text he's reciting
 	LDA ToadMsg_Low,Y
@@ -2609,7 +2612,7 @@ PRG002_B2E3:
 	LDA #$10
 	STA Objects_Timer,X
 
-	INC <Objects_Data1,X	 ; Objects_Data1 = 1 (next dialog state)
+	INC Objects_Data1,X	 ; Objects_Data1 = 1 (next dialog state)
 
 PRG002_B325:
 	RTS		 ; Return
@@ -2717,7 +2720,7 @@ PRG002_B4A1:
 	CMP #$a9
 	BNE PRG002_B4AC	 ; If we haven't reached the last character, jump to PRG002_B4AC
 
-	INC <Objects_Data1,X	 ; Objects_Data1 = 2 (next dialog state)
+	INC Objects_Data1,X	 ; Objects_Data1 = 2 (next dialog state)
 	LDA #$08
 	STA Pay_Toll_Timer
 
@@ -2885,7 +2888,7 @@ ObjNorm_DryBones0:
 ObjNorm_DryBones1:
 	JSR DryBones_Draw		 ; Draw Dry Bones
 	
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	BNE PRG002_B6B2	 ; If Var5 <> 0 (Dry Bones is crumpled), jump to PRG002_B6B2
 
 	JSR Object_InteractWithOtherObjects
@@ -2909,7 +2912,7 @@ PRG002_B6B2:
 	LDA Objects_Timer,X
 	BNE PRG002_B6D0	 ; If timer not expired, jump to PRG002_B6D0 (RTS)
 
-	DEC <Objects_Data2,X	 ; Var5--
+	DEC Objects_Data2,X	 ; Var5--
 	BNE PRG002_B6C2	 ; If Var5 <> 0 (still reassembling), jump to PRG002_B6C2
 
 	; Dry Bones gets back up and faces Player!
@@ -2921,7 +2924,7 @@ PRG002_B6C2:
 
 	; Reassembling Dry Bones
 
-	LDY <Objects_Data2,X	; Y = Var5 (0 = fully reassembled, hence -1 used below)
+	LDY Objects_Data2,X	; Y = Var5 (0 = fully reassembled, hence -1 used below)
 
 	LDA DryBones_ReassembleFrames-1,Y
 	STA Objects_Frame,X
@@ -3015,7 +3018,7 @@ PRG002_B71C:
 	TAY
 
 PRG002_B73C:
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	TAX		 ; X = Var5 (head bounce index)
 
 	; Apply bounce to his head after crumbling
@@ -3036,7 +3039,7 @@ PRG002_B73C:
 
 
 ObjHit_DryBones:
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	BNE PRG002_B77D	 ; If head bouncing, jump to PRG002_B77D (RTS)
 
 	; Head not bouncing yet
@@ -3047,7 +3050,7 @@ ObjHit_DryBones:
 
 	; Var5 = 9
 	LDA #$09
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 
 	; Dry Bones stop horizontal movement
 	LDA #$00
@@ -3151,7 +3154,7 @@ Decide_What_Next:
 	LDA Objects_Data2, X
 	TAY
 	LDA Next_Toad_Routine, Y
-	STA <Objects_Data1, X
+	STA Objects_Data1, X
 	RTS
 
 Do_Shop_Controls:
@@ -3555,10 +3558,13 @@ Do_Bank:
 	LDA <Pad_Input
 	AND #(PAD_UP | PAD_DOWN)
 	BNE Do_Small_Change
+
 	LDA <Pad_Holding
 	AND #(PAD_UP | PAD_DOWN)
 	BEQ Update_Action
+
 	INC SpinnerBlocksX + 5
+	
 	LDX SpinnerBlocksX + 5
 	CPX #$07
 	BNE Done_Bank
@@ -4609,7 +4615,7 @@ ObjInit_PiranhaGrower:
 
 	; which direction to start in 0 = up, 1 = right, 2 = down, 3 = left
 	LDA Objects_Property, X
-	STA <Grower_Direction, X 
+	STA Grower_Direction, X 
 
 	 ; Grower_StartYHi = current tile to check for (Toggle sbeten #TILE_PROP_ENEMY and #TILE_PROP_HARMFUL)
 	LDA #TILE_PROP_ENEMY
@@ -4667,7 +4673,7 @@ Grower_NoDelete:
 	JSR Object_AttackOrDefeat
 
 Grower_Animate:
-	INC <Grower_Frame, X
+	INC Grower_Frame, X
 	
 	LDA Grower_Frame, X
 	AND #$08

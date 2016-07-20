@@ -329,7 +329,7 @@ PRG024_A439:
 	STA Sprite_RAM+$60
 
 	; Temp_Var4 = CineKing_DialogState
-	LDA <CineKing_DialogState
+	;LDA <CineKing_DialogState
 	STA <Temp_Var4
 
 	; Temp_Var3 = $10
@@ -478,7 +478,7 @@ PRG024_A4FD:
 	AND #$03	
 	BNE PRG024_A519	 ; 3:4 ticks, jump to PRG024_A519
 
-	LDY <CineKing_Var	 ; Y = CineKing_Var (0/1 as spider walks up and down)
+	;LDY <CineKing_Var	 ; Y = CineKing_Var (0/1 as spider walks up and down)
 
 	; King spider moves up or down
 	LDA King_Y
@@ -491,7 +491,7 @@ PRG024_A4FD:
 	; Reverse direction
 	TYA
 	EOR #$01
-	STA <CineKing_Var
+	;STA <CineKing_Var
 
 PRG024_A519:
 	RTS		 ; Return
@@ -2139,6 +2139,8 @@ Title_PrepForWorldMap:
 	; World_Num = 0 (World 1)
 	LDA #$00
 	STA World_Num
+
+	INC Force_StatusBar_Init
 
 	LDA #$40
 	STA Air_Time

@@ -440,15 +440,6 @@ LevelJunction_PartialInit:
 	JSR Level_SetPlayerPUpPal  ; Set power up's correct palette
 	JSR PRG008_A27A		   ; Partial level initialization (basically continues after setting the power up)
 
-	LDA Level_AirshipCtl
-	BEQ PRG008_A379	 ; If Level_AirshipCtl = 0, jump to PRG008_A379
-
-	; While airship opening is occurring...
-	LDA #$00	
-	STA <Player_XVel		; Player_XVel = 0
-	STA Level_InitAction		; Level_InitAction = 0
-	JSR LevelInit_Airship_Board	; Board the airship
-
 PRG008_A379:
 	LDA Level_InitAction
 	CMP #$06
@@ -493,9 +484,6 @@ PRG008_A38E:
 	STA <Pipe_PlayerY
 	DEC <Pipe_PlayerY 	; Pipe_PlayerY = Player_Y aligned to nearest 16, minus 1
 
-	LDA Level_7Vertical
-	BNE PRG008_A3B6	 	; If level is vertical, jump to PRG008_A3B6
-	
 	; For non-vertical levels...
 	LDA <Vert_Scroll
 	STA Level_VertScroll	; Level_VertScroll = Vert_Scroll
@@ -535,8 +523,9 @@ Player_Update:
 
 	JSR Player_SuitChange
 	
-Player_Update1
+Player_Update1:
 	JSR Player_PitDeath
+	JSR Player_SetHolding
 
 Player_Update3:
 	; The following are always called, dead or alive...
@@ -554,17 +543,19 @@ Player_Update3:
 
 PRG008_A473:
 	JSR Player_RunMeterUpdate	 	; Update "Power Meter"
+	
 	LDA <Horz_Scroll
 	STA LastHorzScroll
+	
 	LDA <Horz_Scroll_Hi
 	STA LastHorzScrollHi
+
 	JSR Player_DoScrolling	 	; Scroll relative to Player against active rules
 	JSR SetLastScrollDirection
 	JSR Player_TailAttack_HitBlocks	; Do Tail attack against blocks
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
 	JSR Player_CheckForeground
 	JSR Player_HandlePipe
-	JSR CheckSpinners
 	JSR Check_KillTally
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
@@ -1013,6 +1004,14 @@ PRG008_A7AB:
 	JSR Player_GetHurt
 
 PRG008_A7AC:
+	LDA Player_ForcedSlide
+	BEQ PRG008_A7AC1
+
+	LDA <Player_X
+	AND #$0F
+	BNE PRG008_A7AD_2
+
+PRG008_A7AC1:
 	LDX #$00
 	LDA Level_Tile_Prop_Head
 	CMP #TILE_PROP_SOLID_ALL
@@ -1658,6 +1657,7 @@ Player_JumpFlyFlutter:
 Player_JumpFlyFlutter1:
 	LDA Wall_Jump_Enabled
 	BNE PRG008_AC30
+
 	LDA Player_AllowAirJump
 	BEQ PRG008_AC30	 ; If Player_AllowAirJump = 0, jump to PRG008_AC30
 
@@ -1747,14 +1747,16 @@ PRG008_AC73:
 
 	LDA Player_RootJumpVel	 	; Get initial jump velocity
 	SUB Player_SpeedJumpInc,X	; Subtract a tiny bit of boost at certain X Velocity speed levels
+	
 	LDY Wall_Jump_Enabled
 	BEQ Normal_Jump
-	LDA #$D0
 
+	LDA #$D0
 	STA Player_Flip
 
 Normal_Jump:
 	STA DAIZ_TEMP1
+
 	LDA Player_Equip
 	CMP #BADGE_JUMP
 	BNE Jump_Normal
@@ -2455,26 +2457,46 @@ PRG008_AFAD:
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Koopa_Shell:
-	LDA <Player_XVel
-	CMP #$20
-	BCC RTSShell
-
-	CMP #$E0
-	BCS RTSShell
-
-	LDA <Player_InAir
-	BNE RTSShell
-
 	LDA Effective_Suit
 	CMP #$05
-	BNE Kill_Shell
+	BNE Inc_PowerRTS
 
-	LDA <Player_XVel
-	BEQ NoShellRTS				; If XVel is not 0 and holding down, we're in shell mode
+	LDA Player_Shell
+	BEQ Try_Shell
 
 	LDA <Pad_Holding
 	AND #(PAD_DOWN)
-	BNE NoShellRTS
+	BEQ Kill_Shell
+
+	LDA Player_Power
+	BEQ Kill_Shell
+
+	LDA #$FC
+	STA Power_Change
+	RTS
+
+Try_Shell:
+	LDA <Player_XVel
+	CMP #$20
+	BCC Kill_Shell
+
+	CMP #$E0
+	BCS Kill_Shell
+
+	LDA <Player_InAir
+	BNE Kill_Shell
+
+	LDA <Pad_Holding
+	AND #(PAD_DOWN)
+	BEQ Kill_Shell
+
+	LDA Player_Power
+	CMP #$50
+	BCC Kill_Shell
+
+	LDA #$01
+	STA Player_Shell
+	RTS
 
 Kill_Shell:
 	LDA #$00
@@ -2482,7 +2504,15 @@ Kill_Shell:
 NoShellRTS:
 	STA Player_Shell
 
-RTSShell:
+Inc_Power:
+	LDA Player_Power
+	CMP #$50
+	BCS Inc_PowerRTS
+
+	LDA #$08
+	STA Power_Change
+
+Inc_PowerRTS:
 	RTS
 
 	; Player's climb "animation", which is really just flipping the sprite
@@ -3076,15 +3106,15 @@ PRG008_B2A2:
 TileAttrAndQuad_OffsFlat:
 	;     Yoff Xoff
 
-	; Not small or ducking moving downward - Left half
+	; Not small or ducking moving downward - right half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
 	.byte $20, $0B	; Ground right
-	.byte $1B, $0F	; In-front lower
-	.byte $0E, $0F	; In-front upper
+	.byte $1B, $0E	; In-front lower
+	.byte $0E, $0E	; In-front upper
 
-	; Not small or ducking moving downward - Right half
+	; Not small or ducking moving downward - left half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
@@ -3092,15 +3122,15 @@ TileAttrAndQuad_OffsFlat:
 	.byte $1B, $01	; In-front lower
 	.byte $0E, $01	; In-front upper
 
-	; Not small or ducking moving upward - Left half
+	; Not small or ducking moving upward - right half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
 	.byte $06, $08	; Ground left
 	.byte $06, $08	; Ground right
-	.byte $1B, $0F	; In-front lower
-	.byte $0E, $0F	; In-front upper
+	.byte $1B, $0E	; In-front lower
+	.byte $0E, $0E	; In-front upper
 
-	; Not small or ducking moving upward - Right half
+	; Not small or ducking moving upward - left half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
 	.byte $06, $08	; Ground left
@@ -3110,37 +3140,37 @@ TileAttrAndQuad_OffsFlat:
 
 
 TileAttrAndQuad_OffsFlat_Sm:
-	; Small or ducking moving downward - Left half
-	.byte $14, $08 ; head
+	; Small or ducking moving downward - right half
+	.byte $12, $08 ; head
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
 	.byte $20, $0B	; Ground right
-	.byte $1B, $0D	; In-front lower
-	.byte $14, $0D	; In-front upper
+	.byte $1B, $0E	; In-front lower
+	.byte $14, $0E	; In-front upper
 
-	; Small or ducking moving downward - Right half
-	.byte $14, $08 ; head
+	; Small or ducking moving downward - left half
+	.byte $12, $08 ; head
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
 	.byte $20, $0B	; Ground right
-	.byte $1B, $02	; In-front lower
-	.byte $14, $02	; In-front upper
+	.byte $1B, $01	; In-front lower
+	.byte $14, $01	; In-front upper
 
-	; Small or ducking moving upward - Left half
-	.byte $14, $08 ; head
+	; Small or ducking moving upward - right half
+	.byte $12, $08 ; head
 	.byte $18, $08  ; body
 	.byte $10, $08	; Ground left
 	.byte $10, $08	; Ground right
-	.byte $1B, $0D	; In-front lower
-	.byte $14, $0D	; In-front upper
+	.byte $1B, $0E	; In-front lower
+	.byte $14, $0E	; In-front upper
 
-	; Small or ducking moving upward - Right half
-	.byte $14, $08 ; head
+	; Small or ducking moving upward - left half
+	.byte $12, $08 ; head
 	.byte $18, $08  ; body
 	.byte $10, $08	; Ground left
 	.byte $10, $08	; Ground right
-	.byte $1B, $02	; In-front lower
-	.byte $14, $02	; In-front upper
+	.byte $1B, $01	; In-front lower
+	.byte $14, $01	; In-front upper
 
 	; If $01, this is treated as a "not floor" tile, which means to watch out
 	; for the Player to hit his head rather than track the sloped floor...
@@ -3243,7 +3273,7 @@ TileSolidOffset:
 ; Player_DetectSolids
 ;
 ; Handles Player's collision against solid tiles (wall and ground,
-; handles slopes and sliding on them too!)
+; handles slopes and sliding on them too!\
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DetectSolids:
 	LDA #$00
@@ -3259,6 +3289,41 @@ No_Detection:
 	RTS		 ; Return
 
 Player_DetectSolids1:
+	LDA <Player_XVel
+	ADD <Player_CarryXVel
+
+	LDY Player_InWater
+	BNE Player_NoWindFactor
+
+	ADD Wind
+
+Player_NoWindFactor:
+	STA <Player_EffectiveDirection
+
+;	LDA <Player_EffectiveDirection
+;	BNE Player_Moving
+;
+;	LDA <Player_FlipBits
+;	BNE Moving_Right
+;	BEQ Moving_Left
+;
+;Player_Moving:
+;	BMI Moving_Left
+;
+;Moving_Right:
+;	LDA #$01
+;	STA <Player_EffectiveDirection
+;	BNE DetectSolids
+;
+;Moving_Left
+;	LDA #$FF
+;	STA <Player_EffectiveDirection
+;
+DetectSolids:
+	LDA #$00
+	STA <Player_CarryXVel
+	STA <Player_CarryYVel
+
 	LDA #10
 
 	LDY <Player_Suit
@@ -3279,7 +3344,7 @@ PRG008_B4B2:
 PRG008_B4BD:
 	STA <TileYIndexBase
 
-	LDA <Player_XVel
+	LDA <Player_EffectiveDirection
 	BEQ PRG008_B4BE
 
 	BPL PRG008_B4C9
@@ -3287,9 +3352,10 @@ PRG008_B4BD:
 
 PRG008_B4BE:
 	LDA <Player_X
+	ADD #$08
 	AND #$0F
 	CMP #$08
-	BCC PRG008_B4C9	 ; If Player is on the left half of the tile, jump to PRG008_B4CA
+	BCS PRG008_B4C9	 ; If Player is on the left half of the tile, jump to PRG008_B4CA
 
 PRG008_B4BF:
 	; If on the right half, add 8 to index
@@ -3556,36 +3622,29 @@ BumpBlock_Spinner1:
 
 
 Tile_WriteTempChange:
-	LDX #$09
+	JSR Common_GetTempTile
+	BCC BumpBlock_SpinnerRTS
 
-FindFreeSpinner:
-	LDA SpinnerBlockTimers, X
-	BEQ DoSpinner
-	DEX
-	BPL FindFreeSpinner
-	LDX TempX
-
-NoSpinner:
-	RTS
-
-DoSpinner:
 	LDA Tile_LastValue
-	STA SpinnerBlocksReplace, X
+	STA SpinnerBlocksReplace, Y
 
-	LDA #$FF
-	STA SpinnerBlockTimers, X
+	LDA #$20
+	STA SpinnerBlocksTimers, Y
+	STA SpinnerBlocksActive, Y 
+
 	LDA Tile_Y
-	STA SpinnerBlocksY,X	 ; Store into object slot
+	STA SpinnerBlocksY, Y	 ; Store into object slot
 
 	LDA Tile_YHi
-	STA SpinnerBlocksYHi,X ; Store Y Hi into object slot
+	STA SpinnerBlocksYHi, Y ; Store Y Hi into object slot
 
 	LDA Tile_XHi	
-	STA SpinnerBlocksXHi,X ; Store X Hi into object slot
+	STA SpinnerBlocksXHi, Y; Store X Hi into object slot
 
 	LDA Tile_X
-	STA SpinnerBlocksX,X ; Store X Hi into object slot
+	STA SpinnerBlocksX, Y ; Store X Hi into object slot
 
+BumpBlock_SpinnerRTS:
 	RTS
 
 BumpBlock_Brick:
@@ -3600,7 +3659,7 @@ BumpBlock_Brick:
 	LDA #$00
 	STA Bouncer_PowerUp, X
 
-	LDA Tile_LastValue
+	LDA ActualTile_LastValue
 	STA Bouncer_ReplaceTile, X
 	RTS
 
@@ -3618,9 +3677,35 @@ BumpBlock_Brick1:
 
 	LDA Tile_LastValue
 	AND #$C0
-	ORA #$01
+	ORA #$00
 	
 	JSR Level_QueueChangeBlock
+	JSR Common_GetTempTile
+	BCC BumpBlock_SpinnerRTS
+
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	STA SpinnerBlocksReplace, Y
+
+	LDA #$02
+	STA SpinnerBlocksTimers, Y
+	STA SpinnerBlocksActive, Y 
+
+	LDA Tile_Y
+	STA SpinnerBlocksY, Y	 ; Store into object slot
+
+	LDA Tile_YHi
+	STA SpinnerBlocksYHi, Y ; Store Y Hi into object slot
+
+	LDA Tile_XHi	
+	STA SpinnerBlocksXHi, Y; Store X Hi into object slot
+
+	LDA Tile_X
+	STA SpinnerBlocksX, Y ; Store X Hi into object slot
+
+
+Bump_BrickRTS:
 	RTS		 ; Return
 
 
@@ -3637,7 +3722,6 @@ BumpBlock_NinjaShroom:
 	RTS		 ; Return
 
 BumpBlock_Key:
-
 	JSR Bumps_PowerUpBlock
 	LDA #$80
 	STA Bouncer_PowerUp, X
@@ -3685,7 +3769,7 @@ BumpBlock_PSwitch:
 	STA Tile_YHi
 
 	JSR Player_GetTile
-	INY
+	DEY
 	TYA
 	JSR Level_QueueChangeBlock
 
@@ -3743,98 +3827,111 @@ Do_Tile_Attack:
 PRG008_B979:
 	RTS		 ; Return
 
-TileGround:	 .byte $00, $00, $10, $F0
-TileWaterX:	 .byte $00, $00, $20, $E0
-TileWaterY:	 .byte $01, $FE, $00, $00
-TileWall:	 .byte $08, $F8, $00, $00
-TileAirX:	 .byte $00, $00, $18, $D8
-TileAirY:	 .byte $18, $D8, $00, $00
+Tile_MoveTable_XCarry:
+	;	   L    R    U    D
+	.byte $00, $00, $00, $00 ; X Air
+	.byte $F8, $00, $00, $00 ; X Water
+	.byte $00, $00, $00, $00 ; X Ground
+	.byte $00, $00, $00, $00 ; X Wall
+
+Tile_MoveTable_XVel:
+	;	   L    R    U    D
+	.byte $00, $00, $00, $00 ; X Air
+	.byte $00, $00, $00, $00 ; X Water
+	.byte $00, $00, $00, $00 ; X Ground
+	.byte $00, $00, $00, $00 ; X Wall
+
+Tile_MoveTable_YCarry:
+	.byte $00, $00, $00, $00 ; Y Air
+	.byte $00, $00, $00, $10 ; Y Water
+	.byte $00, $00, $00, $00 ; Y Ground
+	.byte $00, $00, $00, $00 ; Y Wall
+
+
+Tile_MoveTable_YVel:
+	.byte $00, $00, $00, $00 ; Y Air
+	.byte $00, $00, $FE, $00 ; Y Water
+	.byte $00, $00, $00, $00 ; Y Ground
+	.byte $00, $00, $00, $00 ; Y Wall
+
+
+Tile_MoveTable_Offset:
+	.byte $FF, $00, $02, $02, $03, $FF
+
+Move_Offset = Temp_Var1
 
 ApplyTileMove:
+
 	LDA Tile_LastProp
 	AND #$0F
-	STA <Temp_Var1
-	LDA #TILE_PROP_MOVE_DOWN
-	SUB <Temp_Var1
-	TAY
-	CPX #$03
-	BEQ ApplyTileMove1
-	CPX #$02
-	BNE ApplyTileMove2
+	SUB #$03
+	STA <Move_Offset
 
-ApplyTileMove1:
-	LDA <Player_InAir
-	ORA Player_InWater
-	BNE ApplyTileMove1_1
-	LDA TileGround, Y
-	STA Player_CarryXVel 
-
-ApplyTileMove1_1:
-	LDA #$00
-	RTS
-
-ApplyTileMove2:
 	CPX #$01
-	BNE ApplyTileMove3
+	BNE Try_Ground_Move
+
 	LDA Player_InWater
-	BEQ ApplyTileMove3
+	BEQ Apply_Move
+
 	LDA Effective_Suit
 	CMP #$04
-	BEQ ApplyTileMove2_1
+	BEQ Apply_Move_RTS
 
-	LDA TileWaterX, Y
-	BEQ ApplyTileMove2_0
-	STA Player_XVel
+	LDA #$04
+	ADD <Move_Offset
+	STA <Move_Offset
+	JMP Apply_Move
 
-ApplyTileMove2_0:
-	LDA Player_IsHolding
-	BNE ApplyTileMove2_1
-	LDA Player_YVel
-	ADD TileWaterY, Y
-	STA Player_YVel
-	
+Try_Ground_Move:
+	CPX #$02
+	BEQ Do_Ground_Move
 
-ApplyTileMove2_1:
-	LDA #$01
-	STA Player_InAir
-	LDA #$00
-	RTS
+	CPX #$03
+	BNE Try_Wall_Move
 
-ApplyTileMove3:
-	CPX #$05
-	BEQ ApplyTileMove4
+Do_Ground_Move:
+	LDA #$08
+	ADD <Move_Offset
+	STA <Move_Offset
+	JMP Apply_Move
+
+Try_Wall_Move:
 	CPX #$04
-	BNE ApplyTileMove5
+	BNE Apply_Move_RTS
 
-ApplyTileMove4:
-	LDA Wall_Jump_Enabled
-	BEQ ApplyTileMove5
-	LDA TileWall, Y
-	STA Player_CarryYVel
-	LDA #$00
-	STA Player_YVel
+	LDA #$0C
+	ADD <Move_Offset
+	STA <Move_Offset
 
-ApplyTileMove5:
-	CPX #$01
-	BEQ ApplyTileMove5_1
-	CPX #$00
-	BNE ApplyTileMove6
-	LDA Player_InWater
-	BNE ApplyTileMove6
+Apply_Move:
+	LDX <Move_Offset
 
-ApplyTileMove5_1:
-	LDA TileAirX, Y
-	BEQ ApplyTileMove5_2
+	LDA Tile_MoveTable_XCarry, X
+	BEQ Apply_Move1
+	STA <Player_CarryXVel
+
+Apply_Move1:
+	LDA Tile_MoveTable_XVel, X
+	BEQ Apply_Move2
 	STA <Player_XVel
 
-ApplyTileMove5_2:
-	LDA TileAirY, Y
-	BEQ ApplyTileMove6
-	STA <Player_YVel
-	STA <Player_InAir
+Apply_Move2:
+	LDA Tile_MoveTable_YCarry, X
+	BEQ Apply_Move3
+	STA <Player_CarryYVel
+	INC <Player_InAir
 
-ApplyTileMove6:
-	LDA #$00
+Apply_Move3:
+	LDA Player_IsHolding
+	BNE Apply_Move_RTS
+
+	LDA Tile_MoveTable_YVel, X
+	BEQ Apply_Move_RTS
+	ADD <Player_YVel
+	STA <Player_YVel
+	INC <Player_InAir
+
+Apply_Move_RTS:
 	RTS
 
 PipeMove_SetPlayerFrame:
@@ -3904,8 +4001,8 @@ PRG008_BF65:
 	CPX #$06	
 	BNE PRG008_BF71	 ; If not a downward pipe, jump to PRG008_BF71
 
-	LDY <Player_Suit
-	BEQ PRG008_BF75	 ; If Player is small, jump to PRG008_BF75
+;	LDY <Player_Suit
+;	BEQ PRG008_BF75	 ; If Player is small, jump to PRG008_BF75
 
 PRG008_BF71:
 	ADD PipeEnter_XYOffs+1,X ; Add appropriate Y offset
@@ -4098,9 +4195,6 @@ Dont_Flip:
 	STY Player_PrevXDirection
 
 No_Odo_Increase:
-	LDA #$00
-	STA <Player_CarryXVel, X
-	
 	RTS		 ; Return
 
 
@@ -4136,7 +4230,8 @@ Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 	BNE CheckAirChange
 	RTS
 
-AirTicker: .byte $07, $0A
+AirTicker: .byte $09, $0F
+
 CheckAirChange:
 	LDA Air_Time
 	BPL Change_Air
@@ -4156,6 +4251,7 @@ Change_Air:
 NotMaxAir:
 	STA TempA
 	INC Air_Time_Frac
+
 	LDA Air_Time_Frac
 	LDY #$00
 	LDX Player_Equip
@@ -4169,10 +4265,12 @@ NotMaxAir1:
 
 	LDA #$00
 	STA Air_Time_Frac
+
 	LDA TempA
 	STA Air_Time
 	CMP #$10
 	BGE NoChange
+
 	LDA Sound_QLevel1
 	ORA #SND_LEVELTAILWAG
 	STA Sound_QLevel1
@@ -4278,25 +4376,23 @@ NotSmallMario:
 	STX <Player_Y
 	LDA #$01
 	STA <Player_YHi
+
 	INC Level_JctCtl
 	INC Level_KeepObjects
 	PLA
 	PLA
 
 	LDX #$07
-	LDA #$00
-
+	
 ClearSprite:
-	LDY Objects_State, X
-	CPY #OBJSTATE_HELD
-	BEQ NextSprite
+	LDA Objects_Global, X
+	BNE NextSprite
 
-	LDY Objects_ID, X
-	CPY Global_Object
-	BEQ NextSprite
-
+	LDA #$00
 	STA Objects_State, X
+
 	LDY Objects_SpawnIdx,X	
+
 	LDA Level_ObjectsSpawned,Y
 	AND #$7f
 	STA Level_ObjectsSpawned,Y
@@ -4321,52 +4417,17 @@ CheckPlayer_YLow:
 	LDX <Player_XHi
 	DEX
 	STX <Player_XHi
+
 	LDA #$00
 	STA <Player_Y
 	STA <Player_YHi
+
 	INC Level_JctCtl
 	PLA
 	PLA
 
 NotYLo:
 	RTS
-
-CheckSpinners:
-	LDX #$09
-
-CheckCurrentSpinners
-	LDA SpinnerBlockTimers, X
-	BEQ NextSpinner
-
-	DEC SpinnerBlockTimers, X
-	BNE NextSpinner
-
-	LDA Block_NeedsUpdate
-	BNE SkipSpinner
-
-	LDA SpinnerBlocksX, X
-	STA Temp_Var16
-
-	LDA SpinnerBlocksXHi, X
-	STA <Temp_Var15
-	 
-	LDA SpinnerBlocksY, X
-	STA <Temp_Var14
-
-	LDA SpinnerBlocksYHi, X
-	STA <Temp_Var13
-
-	LDA SpinnerBlocksReplace, X
-	JSR Level_QueueChangeBlock
-
-NextSpinner:
-	DEX
-	BNE CheckCurrentSpinners
-	RTS
-
-SkipSpinner:
-	INC SpinnerBlockTimers, X
-	JMP NextSpinner
 
 CheckForLevelEnding:
 	LDA CompleteLevelTimer
@@ -4412,10 +4473,13 @@ EndLevel:
 CoinsEarnedBuffer:
 	LDA Coins_Earned_Buffer
 	BEQ CoinsEarnedBufferRTS
+
 	LDA <Counter_1
 	AND #$01
 	BNE CoinsEarnedBufferRTS
+
 	DEC Coins_Earned_Buffer
+
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
@@ -4558,16 +4622,15 @@ Debug_CodeRTS:
 
 Player_DetectWall:
 	LDA Player_ForcedSlide
-	BNE Player_DetectWallRTS
+	BNE Player_DetectWallRTS0
 
 	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_ALL
-	BCC Player_DetectWallRTS
+	BCC Player_DetectWallRTS0
 
 
 Player_DetectWall1:
 	LDA Player_Shell
-	
 	BEQ Player_DetectWall2
 
 	LDA Sound_QPlayer 
@@ -4612,33 +4675,66 @@ Player_DetectWall2:
 	BEQ Player_DetectWallRTS
 
 Player_DetectWall3:
-	JSR Player_KillDash
+	JSR Player_DetectWall4
+	JMP Player_KillDash
+
+Player_DetectWallRTS0:
 	RTS
 
 Player_DetectWall4:
-	LDY <TileYIndexBase
-	LDA #$10
-	SUB TileAttrAndQuad_OffsFlat + 1, Y
-	STA TempA
+	
+	LDA Tile_DetectionX
+	AND #$0F
+	CMP #$08
+	BCS Hit_LeftWall
+	
+	STA <Temp_Var1
+
 	LDA <Player_X
-	AND #$F0
-	ORA TempA
+	SUB <Temp_Var1
 	STA <Player_X
+
+	LDA <Player_XHi
+	SBC #$00
+	STA <Player_XHi
+	
+	JMP Wall_Hit
+
+Hit_LeftWall:
+	LDA #$10
+	SUB Tile_DetectionX
+	AND #$0F
+	STA <Temp_Var1
+
+	LDA <Player_X
+	ADD <Temp_Var1
+	STA <Player_X
+
+	LDA <Player_XHi
+	ADC #$00
+	STA <Player_XHi
+
+Wall_Hit:
+	LDA <Player_XVel
+	EOR <Player_EffectiveDirection
+	BMI Wall_NoHit
 
 	LDA #$00
 	STA <Player_XVel
-	LDA Player_FireDash
-	BEQ Wall_NoDash
 
-Wall_NoDash:
+Wall_NoHit:
 	JSR Player_CheckWallJump
 
 Player_DetectWallRTS:
 	RTS
 
-WallClingXVel: .byte $FF, $01
+WallClingXVel: .byte $00, $01, $FF
+			   .byte $00, $00, $FF
 
 Player_CheckWallJump:
+	LDA Player_InWater
+	BNE No_Wall_Jump
+
 	LDA Effective_Suit
 	CMP #$0B
 	BNE No_Wall_Jump
@@ -4659,8 +4755,15 @@ Player_CheckWallJump:
 	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
 
 	LDX TempA
+	LDA <Player_X
+	ADD WallClingXVel, X
+	STA <Player_X
+
+	LDA <Player_XHi
+	ADC WallClingXVel + 3, X
+	STA <Player_XHi
+
 	LDA WallClingXVel, X
-	STA <Player_XVel
 	STA Wall_Jump_Enabled
 
 	LDA #$00
@@ -4668,15 +4771,20 @@ Player_CheckWallJump:
 
 	LDA <Player_YVel
 	LDX Player_Slippery
-	BNE No_Wall_Jump
+	BNE Wall_Jump_Done
 
 	CLC
-	SBC #$20			; slow down decent during wall jump mode
+	SBC #$20			; slow down decsent during wall jump mode
 
 	BMI No_Wall_Jump
 	STA <Player_YVel
 
+Wall_Jump_Done:
+	SEC
+	RTS
+
 No_Wall_Jump:
+CLC
 	RTS
 
 ;	LDA Player_Shell
@@ -5044,6 +5152,14 @@ Player_DetectCeiling1_1:
 
 Player_HitBlocks:
 	JSR Level_DoBumpBlocks
+	
+	LDA Bouncer_PowerUp + 5
+	ORA Bouncer_PowerUp + 6
+	ORA Bouncer_PowerUp + 7
+	BNE Player_HitBlocks1
+
+
+Player_HitBlocks1:
 	RTS		 ; Return
 
 Player_DetectCeiling2:
@@ -5287,12 +5403,12 @@ Body_Treasure:
 	LDA Tile_Y
 	AND #$F0
 	SUB #$08
-	STA <Temp_Var1
+	STA Coin_Y
 
-	LDA Tile_X, X
+	LDA Tile_X
 	AND #$F0
 	ORA #$04
-	STA <Temp_Var2
+	STA Coin_X
 
 	JSR Produce_Coin
 
@@ -5308,6 +5424,12 @@ BodyHead_Climb:
 	RTS
 
 BodyHead_Door:
+	CPX #$01
+	BNE Door_Done 
+
+	LDA Player_IsHolding
+	BNE Door_Done
+
 	LDA <Pad_Input
 	AND #PAD_UP
 	BEQ Door_Done	 ; If Player is not pressing up in front of a door, jump to PRG008_A86C
@@ -5544,11 +5666,12 @@ ContinueDash:
 Fox_BurnModeRTS:
 	RTS
 
-
-BounceBack:
-	.byte $00, $20, $00, $E0, $00
-
+Bounce_Direction
+	.byte $20, $E0
+	.byte $02, $FE
+	.byte $00, $FF
 Player_KillDash:
+	
 	LDA #$10			; if we reach here, we hit a wall, shake the ground!
 	STA Level_Vibration	; Level_Vibration = $10 (little shake effect)
 
@@ -5557,9 +5680,22 @@ Player_KillDash:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-	LDX Player_FireDash
-	LDA BounceBack, X	; if we're hitting a wall, we have some recoil
+	LDY #$00
+	LDA <Player_FlipBits
+	BNE Player_BounceLeft
+
+	INY
+Player_BounceLeft:
+	LDA Bounce_Direction, Y
 	STA <Player_XVel
+
+	LDA <Player_X
+	ADD Bounce_Direction + 2, Y
+	STA <Player_X
+
+	LDA <Player_XHi
+	ADC Bounce_Direction + 4, Y
+	STA <Player_XHi
 
 Player_KillDash_NoFX:
 	LDA #$00			; kills burn mode completely
@@ -5674,15 +5810,16 @@ Player_HandleWater10:
 	BEQ Player_HandleWater12	 
 
 	JSR Player_Splash
+	LDY <Temp_Var15
 
 Player_HandleWater11:
 	TYA
 	STA Player_InWater	
 	BEQ Player_HandleWater12
 
-	LDA #$00
+	LDY <Player_YVel
+	BMI Player_HandleWater12
 	STA <Player_YVel
-	STA <Player_XVel
 
 Player_HandleWater12:
 	LDA Player_InWater
@@ -5714,12 +5851,11 @@ PRG008_BC43:
 	.byte $08, $04, $04	; Offset applied to Player_X when: in air or level is sloped, Player is NOT small, Player is small
 
 Player_HandlePipe:
-	STA Debug_Snap
 	LDA <Player_Y
 	LDA <Player_InAir
 	BNE PRG008_BCAA	 	; If Player is mid air, jump to PRG008_BCAA
 
-	LDA Level_Tile_Prop_Wall_Upper	 ; Get tile near head...
+	LDA Level_Tile_Prop_Wall_Lower	 ; Get tile near head...
 	CMP #TILE_PROP_SOLID_TOP
 	BGE PRG008_BC79
 	JMP PRG008_BCAA
@@ -6051,7 +6187,6 @@ Player_FindSplash:
 
 	RTS
 
-
 Player_MakeSplash:
 	LDA <Player_X
 	STA Objects_XZ, X
@@ -6082,3 +6217,16 @@ Player_MakeSplash:
 	LDA #$00
 	STA Objects_Orientation, X
 	RTS		 ; Return
+
+Player_SetHolding:
+	
+	LDA Objects_BeingHeld
+	ORA Objects_BeingHeld + 1
+	ORA Objects_BeingHeld + 2
+	ORA Objects_BeingHeld + 3
+	ORA Objects_BeingHeld + 4
+	ORA Objects_BeingHeld + 5
+	ORA Objects_BeingHeld + 6
+	ORA Objects_BeingHeld + 7
+	STA Player_IsHolding
+	RTS

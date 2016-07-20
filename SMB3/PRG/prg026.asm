@@ -2193,6 +2193,15 @@ StatusBar_UpdTemplate:
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Update:
+	LDA Force_StatusBar_Init
+	BEQ NoForced_Init
+
+	LDA #$00
+	STA Force_StatusBar_Init
+	BEQ Init_StatusBar
+
+NoForced_Init:
+
 	LDA StatusBar_Mode
 	CMP #$80
 	BNE StatusBar_DoUpdates
@@ -2211,8 +2220,10 @@ StatusBar_DoUpdates:
 	LDA StatusBar_Mode
 	EOR #$FF
 	STA StatusBar_Mode
+
+Init_StatusBar:
 	JSR Initialize_Status_Bar
-	BNE AttemptUpdate
+	JMP AttemptUpdate
 
 No_Switch:
 	LDA StatusBar_Mode
@@ -2353,6 +2364,8 @@ Initialize_Status_Bar:
 	JSR StatusBar_DrawStarsCollected
 	JSR StatusBar_DrawDayNightMeter
 	JSR StatusBar_DrawReserve
+	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
 	RTS
 
 Init_Bar_2:
@@ -2367,6 +2380,8 @@ Init_Bar_2:
 	JSR StatusBar_DrawOdometer
 	JSR StatusBar_DrawTimer
 	JSR StatusBar_DrawLevelName
+	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
 	RTS
 
 StatusBar_Template:
@@ -3067,4 +3082,49 @@ StatusBar_DrawLevelName1:
 	INC Bottom_Needs_Redraw
 	LDA #$00
 	STA Force_LeveNameUpdate
+	RTS
+
+Process_Spinners:
+	LDA GameCounter
+	AND #$07
+	TAX
+
+Process_SpinnersNext:
+	LDA SpinnerBlocksActive, X
+	BEQ SpinnerRTS
+
+	DEC SpinnerBlocksTimers, X
+	BNE SpinnerRTS
+	
+	LDA Block_NeedsUpdate
+	BNE Process_ReverseSpinner
+
+	LDA #$80
+	STA Block_NeedsUpdate
+
+	LDA SpinnerBlocksX, X
+	AND #$F0
+	STA Block_ChangeX
+
+	LDA SpinnerBlocksXHi, X
+	STA Block_ChangeXHi
+	 
+	LDA SpinnerBlocksY, X
+	AND #$F0
+	STA Block_ChangeY
+
+	LDA SpinnerBlocksYHi, X
+	STA Block_ChangeYHi
+
+	LDA SpinnerBlocksReplace, X
+	STA Block_UpdateValue
+
+	LDA #$00
+	STA SpinnerBlocksActive, X
+
+SpinnerRTS:
+	RTS
+
+Process_ReverseSpinner:
+	INC SpinnerBlocksTimers, X
 	RTS

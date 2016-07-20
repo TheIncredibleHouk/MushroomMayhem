@@ -624,6 +624,9 @@ PRG030_857E:
 
 	JSR Map_Reload_with_Completions	 	; Load map and set already completed levels
 
+	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
+
 	LDA Inventory_Open	
 	BNE PRG012_85CE		; If Inventory is open, jump to PRG012_85CE
 
@@ -679,21 +682,6 @@ PRG030_8617:
 	DEY		 ; Y--
 	BPL PRG030_8617	 ; While Y >= 0, loop!
 
-	LDA World_8_Dark
-	BEQ PRG030_8625	 	; If World_8_Dark = 0 (not doing the effect), jump to PRG030_8625
-
-	JSR Map_W8DarknessFill	; Fill in the entire screen with black
-
-PRG030_8625:
-	LDA World_Num	 
-	CMP #$08
-	BNE PRG030_8634	 ; If World_Num <> 8 (World 9 / Warp Zone), jump to PRG030_8634
-
-	LDA #$2b	
-	JSR Video_Do_Update	 ; Print the "WELCOME TO WARP ZONE" banner
-	JSR PRGROM_Change_A000	 ; Fix bank A000
-
-PRG030_8634:
 	LDY Player_Current	 ; Y = Player_Current
 	LDA Map_Prev_XOff,Y	 ; Get player's previous X offset (low byte)
 	STA <Horz_Scroll	 ; Set the scroll to that
@@ -1181,6 +1169,7 @@ PRG030_897B:
 	LDA #$00	
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 	STA LeftRightInfection
+	STA Player_IsHolding
 
 	JSR LevelLoad			; Load the level layout data!
 	JSR ClearBlockedAreas
@@ -1189,11 +1178,19 @@ PRG030_897B:
 	LDX #$09
 
 CancelSpinners:
-	STA SpinnerBlockTimers, X
+	STA SpinnerBlocksTimers, X
 	STA SpinnerBlocksX, X
 	DEX
 	BPL CancelSpinners
 
+	STA Objects_BeingHeld
+	STA Objects_BeingHeld + 1
+	STA Objects_BeingHeld + 2
+	STA Objects_BeingHeld + 3
+	STA Objects_BeingHeld + 4
+	STA Objects_BeingHeld + 5
+	STA Objects_BeingHeld + 6
+	STA Objects_BeingHeld + 7
 
 	; Scroll_Cols2Upd = 32 (full dirty scroll update sweep)
 	LDA #32
@@ -1729,8 +1726,8 @@ PRG030_8EE7:
 	; pop-up coins, Special Objects, Cannon Fires, Player Projectiles,
 	; and, last but not least (well, maybe least), "shell kill flashes"!
 	JSR Gameplay_UpdateAndDrawMisc
-
 	JSR DrawStarsBackground
+
 	LDA Level_HAutoScroll
 	BEQ PRG030_8F31	 ; If Auto Horizontal Scrolling is NOT active, jump to PRG030_8F31
 
@@ -1824,6 +1821,7 @@ PRG030_8F42:
 	BNE PRG030_8F7D	 ; If InvFlip_Counter <> 0 (flipping open Inventory), jump to PRG030_8F7D
 
 	JSR StatusBar_Update	; Just update values on the status bar
+	JSR Process_Spinners
 
 	LDA Inventory_Open
 	BEQ PRG030_8F85	 ; If Inventory is not open, jump to PRG030_8F85
@@ -2176,6 +2174,9 @@ PRG030_9185:
 	JSR PRGROM_Change_A000
 
 	JSR Map_Reload_with_Completions	 ; Load map and set already completed levels
+
+	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
 
 	LDX Player_Current	 ; X = Player_Current
 
@@ -3002,6 +3003,7 @@ LevelLoadQuick:
 
 	LDA LevelLoadPointer
 	STA <Temp_Var1
+
 	LDA #$00
 	STA <Temp_Var2
 	CLC
@@ -3123,16 +3125,20 @@ Skip_Normal_Gfx2:
 Set_Level_Exit_Action:
     LDA ForcedSwitch 
 	BNE Level_Exit_Set
+
 	LDA Player_XExit
 	AND #$F0
+
 	LDX Level_PipeExitDir
 	BEQ NoXOffset
+
 	CPX #$03
 	BCS NoXOffset
 	ORA #$08
 
 NoXOffset:
 	STA <Player_X
+
 	LDA Player_XExit
 	AND #$0F
 	STA <Player_XHi
@@ -3203,10 +3209,13 @@ Not_Lvl_Jct:
 
 DontOffsetX:
 	STA <Player_X
+
 	LDY #$05
+
 	LDA [Temp_Var14], Y
 	AND #$0F
 	STA <Player_YHi
+
 	LDA [Temp_Var14], Y
 	AND #$F0
 	STA <Player_Y
@@ -3569,7 +3578,7 @@ CopyPSwitchTiles:
 Randomize:
 	LDX #$00	
 	LDY #$09	
-	LDA Random_Pool	
+	LDA Random_Pool
 	AND #$02	
 	STA <Temp_Var1	
 	LDA RandomN	
@@ -4473,6 +4482,7 @@ Player_GetTile:	; $9E9D
 
 	; Clear slope array
 	LDA <Temp_Var16
+	STA Tile_DetectionX
 	LSR A
 	LSR A
 	LSR A
@@ -4506,6 +4516,8 @@ PRG030_9EC3:
 
 	TAY		 	; Y = current offset
 	LDA [Map_Tile_AddrL],Y	; Get tile here
+	STA ActualTile_LastValue
+
 	JSR PSwitch_SubstTileAndAttr
 	STA Tile_LastValue
 	TAY
@@ -4797,7 +4809,7 @@ PRG000_C4A7:
 	ORA #SND_LEVELCOIN
 	STA Sound_QLevel1
 
-	INC Coins_Earned
+	INC Coins_Earned_Buffer
 
 	LDA #$01
 	STA CoinPUp_State,Y	; Set coin state to 1
@@ -4824,6 +4836,7 @@ PRG000_C4A7:
 Do_Wall_Jump:
 	LDA Wall_Jump_Enabled
 	BPL Jump_Right
+
 	LDA #$20
 	BNE Do_Jump_Off
 
@@ -5364,21 +5377,28 @@ UsePointer:
 	LDA Pointers + 5, X
 	AND #$80	; does this pointer exit the level?
 	BEQ LevelJction
+
 	LDA Pointers, X
 	STA World_Num
+
 	LDA Pointers + 3, X
 	AND #$0F
 	STA Map_Entered_XHi
 	STA Map_Prev_XHi
+
 	LDA Pointers + 3, X
 	AND #$F0
 	STA Map_Entered_X
+
 	AND #$80
 	STA Map_Prev_XOff
+
 	LDA Pointers + 4, X
 	AND #$F0
 	STA Map_Entered_Y
+
 	INC Level_ExitToMap
+
 	LDA #$00
 	STA Level_PipeMove
 	STA Map_ReturnStatus
@@ -5386,24 +5406,31 @@ UsePointer:
 	RTS
 
 LevelJction:
+	
 	LDA LevelLoadPointer
 	STA PreviousLevel
+
 	LDA Pointers, X
 	STA LevelLoadPointer
+
 	LDA Pointers + 3, X
 	STA Player_XExit
+
 	LDA Pointers + 4, X
 	STA Player_YExit
 
 	LDA Pointers + 5, X
 	AND #$40
 	STA Level_Redraw
+
 	LDA Pointers + 5, X
 	AND #$20
 	STA Level_KeepObjects
+
 	LDA Pointers + 5, X
 	AND #$10
 	STA Weather_Disabled
+
 	LDA Pointers + 5, X
 	AND #$0F
 	STA Level_PipeExitDir	 ; Store into Level_PipeExitDir
@@ -5759,117 +5786,6 @@ ObjInit_Stars1:
 	BPL ObjInit_Stars1
 	RTS
 
-DrawStarsBackground:
-	
-	LDA WeatherActive
-	BNE DrawStarsBackground01
-
-	LDA DayNightActive
-	BNE DrawParallaxBackground
-
-DrawStarsBackground01:
-	RTS
-
-DrawParallaxBackground:
-	LDA DayNight
-	BNE DrawStarsBackground1
-
-
-DrawSkyBackground1:
-	LDA <Counter_1
-	AND #$3F
-	BNE DrawSkyBackground2
-	INC Weather_XPos
-	INC Weather_XPos + 1
-	INC Weather_XPos + 2
-	INC Weather_XPos + 3
-	INC Weather_XPos + 4
-	INC Weather_XPos + 5
-
-DrawSkyBackground2:
-	LDX #$05
-	LDY #$F8
-	LDA <Vert_Scroll
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var1
-	LDA <Horz_Scroll
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var2
-	LDA <Horz_Scroll_Hi
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ORA <Temp_Var2
-	STA <Temp_Var2
-
-DrawClouds0:
-	JSR FindUnusedSprite
-	LDA #(SPR_PAL1 | SPR_BEHINDBG)
-	STA Sprite_RAM + 2, Y
-	LDA #$75
-	STA Sprite_RAM + 1, Y
-	
-	LDA Weather_YPos, X
-	SUB <Temp_Var1
-	STA Sprite_RAM, Y
-	
-	LDA Weather_XPos, X
-	SUB <Temp_Var2
-	STA Sprite_RAM +3, Y
-	DEX
-	BPL DrawClouds0
-	RTS
-
-
-DrawStarsBackground1:
-	LDY #$F8
-	LDX #$05
-	LDA <Vert_Scroll
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var1
-	LDA <Horz_Scroll
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var2
-	LDA <Horz_Scroll_Hi
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ORA <Temp_Var2
-	STA <Temp_Var2
-
-DrawStars0:
-	JSR FindUnusedSprite
-	TXA
-	AND #$03
-	ORA #SPR_BEHINDBG
-	STA Sprite_RAM + 2, Y
-	LDA #$5D
-	STA Sprite_RAM + 1, Y
-
-	LDA StarYPositions, X
-	SUB <Temp_Var1
-	STA Sprite_RAM, Y
-	
-	LDA StarXPositions, X
-	SUB <Temp_Var2
-	STA Sprite_RAM +3, Y
-	DEX
-	BPL DrawStars0
-	RTS
 
 FindUnusedSprite:
 	LDA Sprite_RAM, Y
@@ -6099,4 +6015,21 @@ Common_MakePoof1:
 
 	LDA <Poof_YHi
 	STA SpecialObj_YHi, Y
+	RTS
+
+Common_GetTempTile:
+	LDY #$07
+
+Common_FindTempTile:
+	LDA SpinnerBlocksActive, Y
+	BEQ Common_TempTileFound
+
+	DEY
+	BPL Common_FindTempTile
+
+	SEC
+	RTS
+
+Common_TempTileFound:
+	SEC
 	RTS

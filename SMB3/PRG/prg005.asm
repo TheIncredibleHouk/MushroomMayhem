@@ -831,18 +831,24 @@ ObjInit_Pumpkin:
 	RTS
 
 ObjInit_Piranha:
+	LDA #$03
+	STA Piranha_CurrentState, X
 
 	LDA #$02
 	STA Piranha_AttackData, X
+
+	LDA Objects_Property, X
+	LSR A
+	TAY
+
+	LDA Piranah_AttackNumbers, Y
+	STA Piranha_AttackCount, X
 
 	LDA Objects_Property, X
 	AND #$01
 	TAY
 	LDA Piranha_Velocities, Y
 	STA <Objects_YVelZ, X
-
-	LDA Piranah_AttackNumbers, X
-	STA Piranha_AttackCount, X
 
 	LDA Piranha_Orientation, Y
 	STA Objects_Orientation, X
@@ -869,6 +875,8 @@ ObjInit_Piranha1:
 	LDA <Objects_YHiZ, X
 	SBC #$00
 	STA <Objects_YHiZ, X
+
+	INC Piranha_CurrentFrame, X
 	RTS
 
 ObjNorm_Pumpkin:
@@ -1107,7 +1115,7 @@ ShootProjectile2:
 	RTS
 
 ObjInit_RockyWrench:
-	INC <Objects_Data1,X	 ; Var4 = 1 (keeps Rocky alive)
+	INC Objects_Data1,X	 ; Var4 = 1 (keeps Rocky alive)
 
 Rocky_FacePlayer:
 	JSR Object_XDistanceFromPlayer
@@ -1188,7 +1196,7 @@ PRG005_A9F7:
 
 	JSR Rocky_KillOrStandOn	 ; Kill Rocky or stand on top of him
 
-	LDA <Objects_Data2,X	 ; Var5 is internal state
+	LDA Objects_Data2,X	 ; Var5 is internal state
 
 	JSR DynJump
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!! 
@@ -1222,9 +1230,9 @@ Rocky_WaitTimer:
 	LDA Objects_Timer,X
 	BNE PRG005_AA38	 ; If timer not expired, jump to PRG005_AA38 (RTS)
 
-	INC <Objects_Data2,X	 ; Var5++ (next internal state)
+	INC Objects_Data2,X	 ; Var5++ (next internal state)
 
-	LDY <Objects_Data2,X	 
+	LDY Objects_Data2,X	 
 	LDA Rocky_TimerReload,Y	 ; Load timer value by internal state
 	STA Objects_Timer,X	 ; Set timer
 
@@ -1277,7 +1285,7 @@ Rocky_DieOrWaitRevive:
 	LDA Objects_Timer,X	  
 	BNE PRG005_AA7F	 ; If timer not expired, jump to PRG005_AA7F
 
-	LDA <Objects_Data1,X
+	LDA Objects_Data1,X
 	BNE PRG005_AA75	 ; If Var4 <> 0 (Rocky will come back, otherwise he's gone forever), jump to PRG005_AA75
 
 	; Set Rocky's state to Dead/Empty
@@ -1289,7 +1297,7 @@ Rocky_DieOrWaitRevive:
 PRG005_AA75:
 	; Go back to initial internal state
 	LDA #$00
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 
 	; Set timer to $40
 	LDA #$40
@@ -1343,11 +1351,10 @@ PRG005_AA96:
 	RTS		 ; Return
 
 Rocky_KillOrStandOn:
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	CMP #$06
 	BEQ PRG005_AAE8	 ; If Var5 = 6, jump to PRG005_AAE8 (RTS)
 
-	JSR Object_HandleBumpUnderneath
 	JSR Object_InteractWithPlayer
 
 	LDA Objects_PlayerHitStat,X
@@ -1381,7 +1388,7 @@ PRG005_AACA:
 
 	; Var5 = 6
 	LDA #$06
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 
 	; Timer = $0C
 	LDA #$0c
@@ -1567,7 +1574,7 @@ PRG005_ABC0:
 	STA Objects_Frame,X	; -> Frame
 
 PRG005_ABC9:
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	BEQ PRG005_ABD0	 ; If Var5 = 0, jump to PRG005_ABD0
 
 	JMP PRG005_AC57	 ; Jump to PRG005_AC57 (indirect to Object_Move)
@@ -1594,7 +1601,7 @@ PRG005_ABE2:
 	JSR Bolt_CheckOnThread	 ; Checks if bolt is on thread tile; if not, Var5 = 1
 
 	JSR Object_WorldDetectN1
-	LDA Object_TileWallValue
+	;LDA Object_TileWallValue
 	CMP #TILE10_BOLT_H
 	BNE PRG005_ABF5	 	; If bolt has not hit thread end tile, jump to PRG005_ABF5
 
@@ -1730,7 +1737,7 @@ PRG005_AC6B:
 	PLA
 	STA <Objects_XZ,X
 
-	LDA Object_TileWallValue
+	;LDA Object_TileWallValue
 	CMP #TILE10_BOLT_H
 	BEQ PRG005_AC93	 ; If bolt lift has hit a thread end tile, jump to PRG005_AC93
 
@@ -1738,7 +1745,7 @@ PRG005_AC6B:
 	BEQ PRG005_AC93	 ; If bolt lift is running along the thread, jump to PRG005_AC93
 
 	; Bolt is run into the end
-	INC <Objects_Data2,X	 ; Var5 = 1
+	INC Objects_Data2,X	 ; Var5 = 1
 
 PRG005_AC93:
 	RTS		 ; Return
@@ -2522,10 +2529,10 @@ ObjNorm_Dimmer:
 	LDA <Counter_1
 	AND #$03
 	BNE FadeOutDone
-	LDY #$09
+	LDY #$07
 
 DimmerFindBlocks:
-	LDA SpinnerBlockTimers, Y
+	LDA SpinnerBlocksActive, Y
 	BNE Dimmer_FadeIn
 	DEY
 	BPL DimmerFindBlocks
@@ -3017,7 +3024,7 @@ PRG005_B9E6:
 	STA <Objects_YVelZ,X	 ; Set appropriate Y velocity
 
 	LDA Spawn3Var4,Y
-	STA <Objects_Data1,X	 ; Set initial var 4 value
+	STA Objects_Data1,X	 ; Set initial var 4 value
 
 	INC Objects_InWater,X	 ; Set object as in water
 
@@ -3349,7 +3356,7 @@ LevelEvent_CloudsinBG:
 
 	; Var 5 = FloatingCloud_Var5[Y]
 	LDA FloatingCloud_Var5,Y
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 
 	; Set cloud's X velocity
 	LDA FloatingCloud_XVel,Y
@@ -3771,10 +3778,15 @@ PRG005_BE67:
 	STA WeatherActive
 	STA Level_ScrollDiffV
 
+	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
+
 	LDX Level_KeepObjects
 	BNE PRG005_BE91
+
 	; Clear Level_ObjectsSpawned (nothing spawned)
 	LDY #$2f	 ; Y = $2F
+
 PRG005_BE90:
 	STA Level_ObjectsSpawned,Y
 	DEY		 ; Y--
@@ -3852,12 +3864,12 @@ PRG005_BEFD:
 	LDX #$07	 ; X = 7
 
 PRG005_BF001:
-	LDA Objects_ID, X
-	CMP Global_Object
-	BEQ PRG005_BF01
-
 	LDA Level_KeepObjects
 	BEQ PRG005_BF002
+
+	LDA Objects_Global, X
+	BNE PRG005_BF01
+
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BNE PRG005_BF002
@@ -4125,7 +4137,7 @@ ObjNorm_Freezie1_0:
 	LDA Block_NeedsUpdate
 	BNE ObjNorm_Freezie1
 
-	LDA Object_TileFeetValue
+	LDA Object_VertTileValue, X
 	EOR #$01
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
@@ -4221,7 +4233,7 @@ ObjNorm_Swoosh1:
 	JSR Object_FacePlayer
 	TYA
 	EOR #$01
-	STA <Objects_Data1, X
+	STA Objects_Data1, X
 
 ObjNorm_Swoosh2:
 	LDA Objects_Data4, X
@@ -4244,7 +4256,7 @@ Swoosh_Idle:
 	JSR Object_FacePlayer
 	TYA
 	EOR #$01
-	STA <Objects_Data1, X
+	STA Objects_Data1, X
 
 	LDA Objects_Timer, X
 	BNE Swoosh_Idle0
@@ -4285,7 +4297,7 @@ Swoosh_BreathIn_2:
 	CMP #$03
 	BCS Swoosh_BreathIn1
 	TYA
-	CMP <Objects_Data1, X
+	CMP Objects_Data1, X
 	BNE Swoosh_BreathIn1
 
 	LDA Objects_SpritesVerticallyOffScreen, X
@@ -4377,7 +4389,7 @@ Swoosh_BlowOut_2:
 	BCS Swoosh_BlowOut1
 
 	TYA
-	CMP <Objects_Data1, X
+	CMP Objects_Data1, X
 	BNE Swoosh_BlowOut1
 
 	LDA Objects_SpritesVerticallyOffScreen, X

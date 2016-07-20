@@ -63,7 +63,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0E - OBJ_HARDICE
-	.byte BOUND8x16	; Object $0F
+	.byte BOUND8x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0F
 	.byte BOUND16x16	; Object $10 OBJ_PIXIE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $11
 	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
@@ -166,7 +166,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $73 - OBJ_PARAGOOMBA
 	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS 	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $75 - OBJ_WATERFILLER
-	.byte BOUND16x16 | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
 	.byte BOUND16x16	; Object $77 - OBJ_GREENCHEEP
 	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF	; Object $78 - OBJ_BULLETBILL
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF	; Object $79 - OBJ_BULLETBILLHOMING
@@ -405,7 +405,7 @@ DetectedWall:
 
 	LDA #$01		; A = 1
 
-	LDY <Objects_XVelZ,X
+	LDY Objects_EffectiveXVel,X
 	BPL PRG000_C580	 ; If object's X velocity >= 0 (still or moving rightward), jump to PRG000_C580
 
 	; Negative X vel...
@@ -446,7 +446,7 @@ PRG000_C5A9:
 PRG000_C5B4:
 	LDA Objects_BoundBottom, X
 	AND #$0F
-	CMP #$05
+	CMP #$07
 	BCS PRG000_C65C
 
 	; Flag object as "hit ground"
@@ -487,7 +487,7 @@ PRG000_C714:
 	TYA
 	STA Object_VertTileValue, X
 
-	LDA <Objects_XVelZ,X
+	LDA Objects_EffectiveXVel,X
 	BMI PRG000_C797	 ; If object's X velocity < 0 (moving leftward), jump to PRG000_C797
 
 	JSR Object_DetectTileRightEdge
@@ -1222,9 +1222,14 @@ ObjState_Shelled:
 	JSR Object_CalcBoundBox	
 	JSR Object_RespondToTailAttack
 	JSR Object_InteractWithPlayer
+
+	PHP
+	JSR Object_DetectTiles
+	PLP
+
 	BCC ObjState_Shelled1
 
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BNE ObjState_Shelled0
 
 	LDA #OBJSTATE_KICKED
@@ -1232,20 +1237,18 @@ ObjState_Shelled:
 	JMP Object_GetKicked
 
 ObjState_Shelled0:
-	JSR Object_DetectTiles
+	
 	JSR Object_CheckForeground
+	JSR Object_CalcBoundBoxForced	
 	JSR Object_KillOthers
 	BCC ObjState_Shelled2
 
-	DEC Objects_Health, X
-	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
+	LDA #$FF
+	STA Objects_Health, X
 
-	TYA
-	TAX
+	LDA #$00
+	STA Objects_BeingHeld, X
 
-	DEC Objects_Health, X
-	
 	JSR Object_GetKilled
 	JSR Object_FlipFallAwayFromHit
 
@@ -1255,7 +1258,6 @@ ObjState_Shelled1:
 	JSR Object_InteractWithOtherObjects
 	BCS ObjState_Shelled2
 
-	JSR Object_DetectTiles
 	JSR Object_DampenVelocity
 	JSR Object_InteractWithTiles
 	JSR Object_TestTopBumpBlocks
@@ -1467,6 +1469,7 @@ Object_KillOthers1:
 
 	TYA
 	TAX
+
 	LDA #$FF
 	STA Objects_Health, X
 
@@ -1474,11 +1477,6 @@ Object_KillOthers1:
 	JSR Object_FlipFallAwayFromHit
 
 	LDX <CurrentObjectIndexZ
-	LDA #$FF
-	STA Objects_Health, X
-
-	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
 
 	SEC
 	RTS
@@ -1512,7 +1510,7 @@ BrickBust_MoveOver:
 
 	LDA BrickBust_YVel
 	STA BrickBust_YVel+1
-
+	
 	LDA Brick_DebrisXDist
 	STA Brick_DebrisXDist+1
 
@@ -1607,7 +1605,7 @@ Object_DirectBumpBlocks:
 	JMP Object_BumpBlocks
 
 Object_SideBumpBlocks:
-	LDA Object_TileWallValue, X
+	LDA Object_HorzTileValue, X
 	STA Tile_LastValue
 
 	LDA Object_HorzTileProp, X
@@ -1710,9 +1708,6 @@ Object_GetKicked:
 	LDA #$10
 	STA Objects_Timer2, X
 
-	LDA #$00
-	STA Player_IsHolding
-
 	LDA <Pad_Holding
 	AND #(PAD_UP)
 	BEQ Object_GetKicked1
@@ -1792,7 +1787,13 @@ Object_GetKicked7:
 Object_PositionHeld:
 	LDA Level_PipeMove
 	BEQ PRG000_CEFD	 ; If Player is NOT moving through pipes, jump to PRG000_CEFD
+	BPL Held_NotBehind
 
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+Held_NotBehind:
 	LDY #$0a	 ; Y = 10
 	BNE PRG000_CF1A	 ; Jump (technically always) to PRG000_CF1A
 
@@ -2106,19 +2107,27 @@ ObjectHeld_WakeUpDir:	.byte $40, $00
 Object_ShellDoWakeUp:
 
 	; Object is not a Bob-omb and not an Ice Block... 
-
 	LDA Objects_Timer3,X 
 	BNE PRG000_D15A	 ; If timer 3 is not expired, jump to PRG000_D15A (RTS) 
 
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BEQ PRG000_D147	 ; If object is not currently being held, jump to PRG000_D147
+
+	
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCS Objbect_DieNow
 
 	LDA <Objects_TilesDetectZ,X 
 	BEQ PRG000_D147	 ; If held object did not impact anything, jump to PRG000_D147 
 
-	DEC Objects_Health, X
-	JSR Object_GetKilled
-	JMP Object_FlipFall
+Objbect_DieNow:
+	LDA #$FF
+	STA Objects_Health, X
+	PLA
+	PLA
+	JMP Object_GetKilled
+	;JMP Object_FlipFall
 
 PRG000_D147: 
 
@@ -2128,6 +2137,9 @@ PRG000_D147:
 	; Set object state to Normal
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
+
+	LDA #$00
+	STA Objects_BeingHeld, X
 
 	LDA Objects_Orientation, X
 	AND #~SPR_VFLIP
@@ -2196,7 +2208,7 @@ Object_FaceMovement1:
 ; $D16D
 Object_HandleBumpUnderneath:
 	
-	LDA Object_TileFeetValue 
+	LDA Object_VertTileValue, X 
 	BEQ Object_HandleBumpUnderneath0
 
 	AND #$3F
@@ -2208,27 +2220,26 @@ Object_HandleBumpUnderneath0:
 	; Object detected a block bump tile (object got bumped)
 
 Object_HandleBumpUnderneath1:
-	; Set Y Vel to -$30 (bounce dead)
-	LDA #-$30 
-	STA <Objects_YVelZ,X
- 
-	JSR Object_XDistanceFromPlayer	; Detect which side object is on versus Player 
-
-	; Store proper X velocity
-	LDA PRG000_D16B,Y 
-	STA <Objects_XVelZ,X
-
-	; Vertically flip object 
-	LDA #SPR_VFLIP
-	STA Objects_Orientation,X
+	JSR Object_IsHammerNinjaShellProof
+	BNE Object_HandleBumpUnderneath2
 
 	JSR Object_Defeated
+	LDA Objects_State, X
+	CMP #OBJSTATE_SHELLED
+	BEQ Object_HandleBumpUnderneath2
+
+	LDA #$FF
+	STA Objects_Health, X
+	JSR Object_GetKilled
+
+Object_HandleBumpUnderneath2:
+	JSR Object_FlipFallAwayFromPlayer
 	RTS
 
 Object_AttackOrDefeat:
 
 	LDA Objects_Timer2,X
-	ORA Object_BeingHeld, X
+	ORA Objects_BeingHeld, X
 	BNE PRG000_D1C4	 ; If timer 2 hasn't expired, jump to PRG000_D1C4 (RTS)
 
 	JSR Object_RespondToTailAttack
@@ -2239,22 +2250,8 @@ PRG000_D1C4:
 	RTS		 ; Return
 
 PRG000_D1C5:
-	LDA Player_StarInv
-	ORA Player_FireDash
-	ORA Player_Shell
-	BEQ PRG000_D1C6
-
-	LDY Objects_ID,X
-	LDA Object_AttrFlags, Y
-	AND #OAT_WEAPONSHELLPROOF
-	BNE Object_HurtPlayer
-	
-Object_GetsHurt:
-	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
-
-Object_GetsHurt1:
-	SEC
+	JSR Object_DetermineContactKill
+	BCC PRG000_D1C6
 	RTS
 
 PRG000_D1C6:
@@ -2283,30 +2280,9 @@ Object_HurtPlayer:
 
 
 Object_Defeated:
-	LDA ObjGroupRel_Idx
-	ASL A
-	TAY
-	LDA ObjectGroup_CollideJumpTable + 1, Y
-	CMP #$08
-	BNE Object_Defeated1
+	JSR Object_DetermineChange
+	BCS Object_DefeatedRTS
 
-	LDA ObjectGroup_CollideJumpTable, Y
-	STA Objects_ID, X
-	
-	LDA #$08
-	STA Objects_Timer2, X
-
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERSWIM
-	STA Sound_QPlayer
-
-	LDA #-$40
-	STA <Player_YVel
-	STA Player_InAir
-	RTS
-
-
-Object_Defeated1:
 	JSR Object_GetKilled
 	
 	LDA #$00
@@ -2322,13 +2298,40 @@ Object_Defeated1:
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
+
+Object_DefeatedRTS:
 	RTS
 
-Object_HoldKickOrHurtPlayer:
-	RTS		 ; Return
+Object_DetermineChange:
+	LDA ObjGroupRel_Idx
+	ASL A
+	TAY
+	LDA ObjectGroup_CollideJumpTable + 1, Y
+	CMP #$08
+	BEQ Object_DoChange
+
+	CLC
+	RTS
+
+Object_DoChange:
+	LDA ObjectGroup_CollideJumpTable, Y
+	STA Objects_ID, X
+	
+	LDA #$08
+	STA Objects_Timer2, X
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERSWIM
+	STA Sound_QPlayer
+
+	LDA #-$40
+	STA <Player_YVel
+	STA Player_InAir
+	SEC
+	RTS
 
 	; A very popular RTS @ $D3A0
-ObjState_DeadEmpty:
+ObjState_DeadEmpty:	
 ObjInit_DoNothing:
 ObjNorm_DoNothing:
 ObjHit_DoNothing:
@@ -2384,10 +2387,11 @@ Object_DeleteOffScreen:
 
 	LDA <Objects_YHiZ, X
 	BEQ Object_NotTooLow
+	BMI Object_NotTooLow
 
 	LDA <Objects_YZ, X
 	CMP #$C0
-	BCS Object_Delete
+	BCS Object_SetDeadAndNotSpawned
 
 Object_NotTooLow:
 	LDA Objects_SpritesHorizontallyOffScreen, X
@@ -2437,12 +2441,12 @@ Object_CheckOutOfRange:
 
 	LDA <Temp_Var12
 	CMP <DeleteRange
-	BCS Object_Delete
+	BCS Object_SetDeadAndNotSpawned
 
 Object_DeleteOffScreenRTS:
 	RTS
 
-Object_Delete:
+
 
 Object_SetDeadAndNotSpawned:
 	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
@@ -2453,12 +2457,14 @@ Object_SetDeadAndNotSpawned:
 	AND #$7f
 	STA Level_ObjectsSpawned,Y
 
+Object_Delete:
 Object_SetDeadEmpty: 
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X
 
 	LDA #$00
 	STA Objects_ID,X
+	STA Objects_BeingHeld, X
 
 PRG000_D463:
 	RTS		 ; Return
@@ -2508,10 +2514,11 @@ Object_New:
 	STA Objects_XYCSPrev, X
 
 	LDA #$00
+	STA Objects_Global, X
 	STA Objects_NoIce, X
 	STA Objects_Stomped, X
-	STA <Objects_Data1, X
-	STA <Objects_Data2, X
+	STA Objects_Data1, X
+	STA Objects_Data2, X
 	STA Objects_Data3,X
 	STA Objects_Data4,X
 	STA Objects_Data5,X
@@ -2546,8 +2553,6 @@ Object_New:
 	STA Objects_InWater,X
 
 PRG000_D4C8:
-	CPX #$05
-	BGE PRG000_D506	 ; If using slot index >= 5, jump to PRG000_D506 (skip variables available only to slots 0 to 4)
 
 	; Clear even more variables (object slots 0 to 4 [major objects] ONLY!!)
 	STA Objects_PlayerHitStat,X
@@ -2558,6 +2563,10 @@ PRG000_D4C8:
 	STA Objects_Data12,X
 	STA Objects_Data13,X
 	STA Objects_Data14,X
+
+		CPX #$05
+	BGE PRG000_D506	 ; If using slot index >= 5, jump to PRG000_D506 (skip variables available only to slots 0 to 4)
+
 	STA Objects_TargetingXVal,X
 	STA Objects_TargetingYVal,X
 	STA Objects_Health,X
@@ -3273,7 +3282,7 @@ Object_InteractWithPlayer:
 
 
 Object_CheckInteraction:
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BEQ Object_InteractWithPlayer1
 	JSR Object_Hold
 	SEC
@@ -3282,12 +3291,13 @@ Object_CheckInteraction:
 
 Object_InteractWithPlayer1:
 	JSR Object_DetectPlayer
-	BCC PRG000_D929
+	BCC No_Collission
+
 	JSR Object_DoCollision ; Otherwise...
 
 	SEC		 ; Set carry
 	LDA HitTest_Result
-PRG000_D929:
+No_Collission:
 	RTS		 ; Return
 
 PRG000_D834:
@@ -3411,6 +3421,7 @@ Object_CalcBoundBox:
 	BNE Object_CalcBoundBox1
 	RTS
 
+Object_CalcBoundBoxForced:
 Object_CalcBoundBox1:
 	LDA BossBoundBox
 	BNE CustomBoundBox
@@ -3465,34 +3476,6 @@ CustomBoundBox:
 	; Temp_Var7 - bottom of bounding box
 	; Temp_Var8 - offset to top bounding box
 ; $D955
-Object_CalcBoundBox2:	; Same as Object_CalcBoundBox in spirit, just different outputs, used for object-to-object collision
-	; X is object's slot
-	; Y is group relative object index
-
-	LDY Objects_ID,X	 ; Get this object's ID -> Y
-	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
-	AND #OAT_BOUNDBOXMASK	 ; Mask off the bounding box
-	ASL A		 
-	ASL A		 ; Shift left 2
-	TAY		 ; -> Y (selected bounding box for this object)
-
-	; Calculate upper left of bounding box and lower right offsets
-	LDA <Objects_SpriteX,X
-	ADD Object_BoundBox,Y	
-	STA <Temp_Var3		 ; Temp_Var3 object's sprite X with offset
-
-	LDA <Objects_SpriteY,X
-	ADD Object_BoundBox+2,Y	
-	STA <Temp_Var7		 ; Temp_Var7 object's sprite Y with offset
-
-	LDA Object_BoundBox+1,Y
-	STA <Temp_Var4		 ; Temp_Var4 has the right offset
-
-	LDA Object_BoundBox+3,Y	
-	STA <Temp_Var8		 ; Temp_Var8 has the bottom offset
-
-	RTS		 ; Return
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ObjectObject_Intersect
@@ -3927,6 +3910,7 @@ PRG000_DA7A:
 ; changes to small, etc.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Die:
+	
 	; Queue death song
 	LDA Sound_QMusic1
 	ORA #MUS1_PLAYERDEATH
@@ -3963,11 +3947,6 @@ PRG000_DAAE:
 
 	RTS		 ; Return
 
-
-	; X velocities as appropriate based on which direction 
-	; Player was when he killed the enemy
-EnemyKill_XVels:	.byte -$08, $08
-
 	; Tail attack X offset, based on Player's facing direction
 
 Object_RespondToTailAttack:
@@ -4000,10 +3979,20 @@ Object_RespondToTailAttack1:
 	JSR Object_DetectTail
 	BCC Object_RespondToTailAttack2	 ; If Player and object are not intersecting, jump to PRG000_DB16 (RTS)
 
+	JSR Object_DetermineChange
 	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
+	
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Object_StillNotKilled
 
-	DEC Objects_Health, X
+	LDA #$FF
+	STA Objects_Health, X
+
+Object_StillNotKilled:
+	JSR Object_FlipFallAwayFromPlayer
+
+Object_TailNotKilled:
 	PLA
 	PLA
 
@@ -4035,97 +4024,6 @@ Obj2Obj_EnByState:
 	.byte $01	; State 8: Dying
 
 	; $DBF8
-ObjectToObject_HitTest:
-	LDA #$00
-	STA HitTestOnly
-	LDA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG000_DC54	 ; If any sprites are vertically off-screen, jump to PRG000_DC54
-
-	; No sprites are vertically off-screen...
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	AND #%11000000
-	CMP #%11000000
-	BEQ PRG000_DC54	 ; If both of the end sprite are horizontally off-screen, jump to PRG000_DC54
-
-	JSR Object_CalcBoundBox2	; Calculate THIS object's bounding box
-
-PRG000_DC09:
-	LDX #$04	 ; X = 4
-
-PRG000_DC0B:
-	CPX <CurrentObjectIndexZ
-	BEQ PRG000_DC51	 ; If this object slot is the current object, jump to PRG000_DC51 (don't do anything to self)
-
-	LDY Objects_State,X
-	LDA Obj2Obj_EnByState,Y
-	BNE PRG000_DC51	 ; If the state this object is in does not do object-to-object detection, jump to PRG000_DC51 (do nothing)
-
-	LDA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG000_DC51	 ; If sprites are vertically off-screen, jump to PRG000_DC51 (do nothing)
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	AND #%11000000	
-	CMP #%11000000	
-	BEQ PRG000_DC51	 ; If two sprites are horizontally off-screen, jump to PRG000_DC51 (do nothing)
-
-	;JSR Object_CalcBoundBox	 ; Calculate OTHER object's bounding box
-	JSR ObjectObject_Intersect	 ; Returns carry SET if object and OTHER object intersected
-	BCC PRG000_DC51	 	; If object did NOT intersect the OTHER object, jump to PRG000_DC51 (do nothing)
-
-	LDA HitTestOnly
-	BEQ PRG000_DC0C
-	TXA
-	TAY
-	RTS
-
-PRG000_DC0C:
-	; These two objects have collided...!
-
-	LDY <CurrentObjectIndexZ	 ; Y = object slot index
-
-	LDA <Objects_XZ,X
-	SUB Objects_XZ,Y		; Difference between the object and the OTHER object's X
-	PHA		 	; Save the difference
-
-	LDA <Objects_XHiZ,X
-	SBC Objects_XHiZ,Y	 ; Difference between the object and the OTHER object's X Hi
-	STA <Temp_Var1		 ; -> Temp_Var1
-
-	PLA		 ; Restore the lower X difference
-
-	; Don't quite understand the logic, but this determines if the 
-	; objects are actually on the same screen instead of just
-	; seeming to due to the low accuracy of sprite coordinates
-	ADC #$80	
-	LDA <Temp_Var1	
-	ADC #$00	
-	BNE PRG000_DC51	 ; If the objects did not actually collide, jump to PRG000_DC51 (do nothing)
-
-	SEC		 ; Object's collided!  Set carry!
-
-	LDY Objects_ID,X	 ; Y = OTHER object's ID
-
-	LDA Object_AttrFlags,Y
-	AND #OAT_WEAPONSHELLPROOF
-	BEQ PRG000_DC57	 ; If this object is NOT a "Hit-Not-Kill" type, jump to PRG000_DC57
-
-PRG000_DC51:
-	DEX		 ; X--
-	BPL PRG000_DC0B	 ; While X >= 0, loop!
-
-PRG000_DC54:
-	CLC		 ; Clear carry (collided with no other object)
-	BCC PRG000_DC5C	 ; Jump (technically always) to PRG000_DC5C
-
-PRG000_DC57:
-	TXA		 
-	TAY		 ; Index of the OTHER object that this object collided with -> 'Y'
-	LDA Objects_ID,Y	 ; A = the ID of the OTHER object
-
-PRG000_DC5C:
-	LDX <CurrentObjectIndexZ	 ; Restore 'X' as the object slot index
-	RTS		 ; Return
 
 
 	; This changes a tile based on Temp_Var13-16 coordinates:
@@ -4233,6 +4131,7 @@ Object_ApplyYVel_NoGravity:
 
 	LDA Stop_Watch
 	BNE Object_ApplyYVel_NoGravity1
+
 	JSR Object_AddVelFrac	 ; Apply the velocity to the object's position
 
 		 ; Restore X as Object slot index
@@ -4251,7 +4150,17 @@ Object_ApplyYVel_NoGravity1:
 Object_ApplyXVel:
 	LDA Stop_Watch
 	BNE Object_ApplyXVel1
+	
+	JSR Object_ApplyWindEffect
+	LDA <Objects_XVelZ, X
+	PHA
+
+	LDA Objects_EffectiveXVel, X
+	STA <Objects_XVelZ, X
 	JSR Object_AddVelFrac
+
+	PLA
+	STA <Objects_XVelZ, X
 
 Object_ApplyXVel1:
 	RTS		 ; Return
@@ -4591,6 +4500,7 @@ Object_TestBottomBumpBlocks1:
 	RTS
 
 Object_TestSideBumpBlocks:
+	STA Debug_Snap
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Object_TestSideBumpBlocks1
@@ -4637,6 +4547,12 @@ Object_InteractWithTiles:
 	RTS
 
 Object_InteractWithTiles1:
+	LDA <Objects_XVelZ, X
+	BNE Object_InteractWithTiles2
+
+	INC Object_WallStops
+
+Object_InteractWithTiles2:
 	LDA <Objects_TilesDetectZ,X
 	TAY		 ; Object detection status -> 'Y'
 	AND #$04	 
@@ -4671,7 +4587,7 @@ PRG001_A993:
 
 
 Object_WallStop:
-	LDA <Objects_XVelZ, X
+	LDA Objects_EffectiveXVel, X
 	BEQ PRG001_A9B7
 	BPL Object_HitRightWall
 
@@ -4686,7 +4602,7 @@ Object_WallStop:
 	ADC #$00
 	STA <Objects_XHiZ, X
 
-	LDA #$FF
+	LDA #$00
 	STA <Objects_XVelZ, X
 	JMP PRG001_A9B7
 
@@ -4707,7 +4623,7 @@ Object_HitRightWall:
 	SBC #$00
 	STA <Objects_XHiZ, X
 
-	LDA #$01
+	LDA #$00
 	STA <Objects_XVelZ, X
 	JMP PRG001_A9B7
 
@@ -4719,6 +4635,7 @@ PRG001_A9B7:
 	STA Object_WallStops
 	STA Object_CeilingStops
 	JSR Object_CheckForeground
+	JSR Object_HandleBumpUnderneath
 	RTS		 ; Return
 
 Object_CheckForeground:
@@ -5064,10 +4981,10 @@ InitPatrolHorizontal:
 	RTS
 
 InitPatrolVertical:
-	LDA #$FF
+	LDA #$01
 	STA Patrol_YVelocityChange, X
 
-	LDA #$F0
+	LDA #$10
 	STA Patrol_YAccelLimit, X
 	RTS
 
@@ -5533,7 +5450,7 @@ Object_GetKilled:
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State, X
 
-	LDA #$01
+	LDA #$00
 	STA Objects_Health, X
 
 	LDA #$10
@@ -5547,11 +5464,8 @@ KillEnemy:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BEQ KillEnemy1
-
-	LDA #$00
-	STA Player_IsHolding
 
 KillEnemy1:
 	; Set object Y velocity to -$40 (fly up after death)
@@ -5573,25 +5487,31 @@ ObjInit_TowardsPlayer:
 	RTS		 ; Return
 
 
-Object_BeingHeld = Objects_Data14
+Objects_BeingHeld = Objects_Data14
 Object_Hold:
 	LDA Objects_Timer2, X
-	ORA Player_TailAttack
 	BNE Object_HoldRTS
 
+	JSR Object_DetermineContactKill
+	BCC Can_Hold
+	CLC
+	PLA
+	PLA
+	RTS
+
+Can_Hold:
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Object_Kick
 
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BNE Object_HoldRTS0
 
 	LDA Player_IsHolding
 	BNE Object_HoldRTS
 
 	LDA #$01
-	STA Player_IsHolding
-	STA Object_BeingHeld, X
+	STA Objects_BeingHeld, X
 
 	LDA Player_FlipBits
 	STA Objects_Orientation,X
@@ -5607,12 +5527,11 @@ Object_XPreventStuck:
 	.byte $00, $FF
 
 Object_Kick:
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BEQ Object_KickRTS
 
 	LDA #$00
-	STA Object_BeingHeld, X
-	STA Player_IsHolding
+	STA Objects_BeingHeld, X
 	JSR Object_GetKicked
 	
 	LDA <Objects_YVelZ, X
@@ -5654,8 +5573,6 @@ Object_ReverseXVel:
 	RTS
 
 Object_DieInstead:	
-	LDA #$00
-	STA Player_IsHolding
 	LDA #$FF
 	STA Objects_Health, X
 	JSR Object_GetKilled
@@ -6138,6 +6055,17 @@ Object_FlipFall:
 	STA <Objects_XVelZ, X
 	RTS
 
+Object_FlipFallAwayFromPlayer:
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+	LDA Objects_Orientation, X
+	ORA #SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JMP Object_MoveAwayFromPlayer
+
 Object_FlipFallAwayFromHit:
 	LDA #$D0
 	STA <Objects_YVelZ, X
@@ -6157,4 +6085,54 @@ Object_FlipFallAwayFromHit:
 Object_FlipFallAwayFromHit1:
 	LDA #$F0
 	STA <Objects_XVelZ, X
+	RTS
+
+Object_DetermineContactKill:
+	LDA Player_StarInv
+	ORA Player_FireDash
+	ORA Player_Shell
+	BEQ Object_NotHurt
+
+	LDY Objects_ID,X
+	LDA Object_AttrFlags, Y
+	AND #OAT_WEAPONSHELLPROOF
+	BNE Object_NotHurt
+	
+Object_GetsHurt:
+	LDA #$FF
+	STA Objects_Health, X
+	JSR Object_GetKilled
+	JSR Object_FlipFallAwayFromHit
+
+	SEC
+	RTS
+
+Object_NotHurt:
+	CLC
+	RTS
+
+Object_ApplyWindEffect:
+	LDY ObjGroupRel_Idx
+	
+	LDA Wind
+	BEQ Object_NoWind
+
+	LDA Objects_InWater, X
+	BNE Object_NoWind
+
+	LDA ObjectGroup_Attributes3, Y
+	AND #OA3_WINDAFFECTS
+	BEQ Object_NoWind
+
+	LDA Wind
+	JSR Half_Value
+	ADD <Objects_XVelZ, X
+	STA Objects_EffectiveXVel, X
+	SEC
+	RTS
+
+Object_NoWind:
+	LDA <Objects_XVelZ, X
+	STA Objects_EffectiveXVel, X
+	CLC
 	RTS

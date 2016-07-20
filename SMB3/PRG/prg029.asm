@@ -798,6 +798,7 @@ PRG029_D0E1:
 	SUB <Horz_Scroll
 	STA Sprite_RAM+$03
 	STA Sprite_RAM+$07
+
 	ADD #$08
 	STA Sprite_RAM+$0B
 	STA Sprite_RAM+$0F
@@ -808,7 +809,9 @@ PRG029_D0E1:
 	PHA
 	CMP #$f0
 	BLT PRG029_D10E
+
 	LDA #$00	
+
 PRG029_D10E:
 	STA Sprite_RAM+$00
 	STA Sprite_RAM+$08
@@ -817,14 +820,8 @@ PRG029_D10E:
 	STA Sprite_RAM+$04
 	STA Sprite_RAM+$0C
 
-
-	; The pattern doesn't really matter so long as it is opaque
-	; since the masking sprite is not intended to be visible
-	; (not that certain glitches or ill behavior don't reveal
-	; it once in a while)
-
 	; Uses pattern $77 ("metal block" from used up [?], should be completely opaque)
-	LDA #$77
+	LDA #$6B
 	STA Sprite_RAM+$01
 	STA Sprite_RAM+$05
 	STA Sprite_RAM+$09
@@ -1073,7 +1070,6 @@ Level_PipeEnter:
 
 	; Init...
 
-	STA Debug_Snap
 	JSR Do_Pointer_Effect
 	LDA Level_PipeMove
 	AND #%00011100	 ; Examine just bits 2-4 (determines what the pipe will do)
@@ -2709,6 +2705,9 @@ Player_FrameOverride:
 
 	LDA <Player_FlipBits
 	STA <Flip_Override
+	EOR #SPR_HFLIP
+	STA <Player_FlipBits
+	
 
 	LDA #$30
 	STA <Player_Frame

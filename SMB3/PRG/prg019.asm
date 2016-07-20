@@ -1500,7 +1500,7 @@ CCSwim2:
 	TAY
 	LDA CCSwimY, Y
 	STA Objects_YZ, X
-	DEC <Objects_Data1, X
+	DEC Objects_Data1, X
 	BNE CCSwim2_2
 	LDA #$07
 	STA Objects_Data4, X
@@ -1518,7 +1518,7 @@ CCSwim2_2:
 	LDA #OBJ_BUBBLE
 	STA Objects_ID, X
 	LDA #$00
-	STA <Objects_Data1, X
+	STA Objects_Data1, X
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 	LDA #$F8
@@ -1704,7 +1704,7 @@ CCFlood3:
 	LDA #$06
 	STA Objects_Data4, X
 	LDA Objects_Data5, X
-	STA <Objects_Data1, X
+	STA Objects_Data1, X
 	JMP CCFlood
 
 CCDrain3:

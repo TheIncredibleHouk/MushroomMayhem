@@ -772,13 +772,7 @@ PAD_RIGHT	= $01
 	Player_XHi:		.ds 1	; Player X Hi 
 	Objects_XHiZ:		.ds 8	; $76-$7D Other object's X Hi positions
 
-				.ds 1	; $7E unused
-
-	; Reuse of $7F
-CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text versus the dialog box itself
-
-; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
-	Objects_Data1:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
+				.ds 6	; $7E unused
 
 	; Pipe_PlayerX/Y variables in use when traveling through pipes
 	Pipe_PlayerX:		.ds 1	; Stores Player's X when they went into pipe (non-transit)
@@ -786,20 +780,16 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 
 	.org $84	; NOTE, the following two are also $84/$85
 	; Otherwise, they are replaced with a lookup address
-	Level_GndLUT_Addr:	.ds 2
-
-				.ds 1	; $86 unused
+	Level_GndLUT_Addr:	.ds 3
 
 	Player_YHi:		.ds 1	; Player Y Hi
 	Objects_YHiZ:		.ds 8	; $88-$8F Other object's Y Hi positions
 	Player_X:		.ds 1	; Player X
 	Objects_XZ:		.ds 8	; $91-$98 Other object's X positions
 
-				.ds 1	; $99 unused
+				.ds 9	; $99 unused
 	; Reuse of $9A
 	CineKing_Var:		; General variable
-
-	Objects_Data2:		.ds 8	; $9A-$A1 Generic variable 5 for objects
 	Player_Y:		.ds 1	; Player Y
 	Objects_YZ:		.ds 8	; $A3-$A9 Other object's Y positions
 
@@ -878,6 +868,8 @@ PLAYERSUIT_LAST		= PLAYERSUIT_HAMMER	; Marker for "last" suit (Debug cycler need
 
 	; ASSEMBLER BOUNDARY CHECK, END OF CONTEXT @ $F4
 .BoundZP_Game:	BoundCheck .BoundZP_Game, $F4, Zero Page Gameplay Context
+
+	Player_EffectiveDirection: .ds 1
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1329,7 +1321,6 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	SpecialObj_BoundTopHi:	.ds 1
 	Tail_BoundTopHi:	.ds 1
 
-	SpinnerBlocksReplace:.ds 10;
 	ObjectBump:			.ds 1
 	BlockedLevel:		.ds 1
 	CompleteLevelTimer:	.ds 1
@@ -1835,8 +1826,8 @@ TAIL_INDEX				= 6 ;
 	Level_Tile_Prop_Body:	.ds 1
 	Level_Tile_Prop_Floor_Ceiling_Left:	.ds 1	; Tile at Player's feet left
 	Level_Tile_Prop_Floor_Ceiling_Right:	.ds 1	; Tile at Player's feet right
-	Level_Tile_Prop_Wall_Upper:	.ds 1	; Tile "in front" of Player ("lower", at feet)
 	Level_Tile_Prop_Wall_Lower:	.ds 1	; Tile "in front" of Player ("upper", at face)
+	Level_Tile_Prop_Wall_Upper:	.ds 1	; Tile "in front" of Player ("lower", at feet)
 	Level_Tile_Whack:	.ds 1	; Tile last hit by tail attack or shell
 
 	; Level_Tile_Slope: Slope of tile for each of the positions above (first byte also used by objects)
@@ -1868,6 +1859,7 @@ TAIL_INDEX				= 6 ;
 	Object_HorzTileValue:	.ds 8
 	Object_BodyTileProp:	.ds 8
 	Object_BodyTileValue:	.ds 8
+	ActualTile_LastValue:	.ds 1
 	Tile_LastValue:		.ds 1
 	Tile_LastProp:		.ds 1
 
@@ -1903,10 +1895,15 @@ OBJSTATE_NONE		= 10 ; used to keep a slot open
 	Objects_Orientation:	.ds 8	; $0679-$0680 Applied sprite attributes for this object (usually just horizontal/vertical flip)
 
 	Objects_SpritesVerticallyOffScreen:	.ds 8	; $0681-$0688 Flags; Bits 3-0 set when each 8x16 sprite is vertically off-screen (top-to-bottom from MSb)
-SPRITE_0_INVISIBLE = $80
-SPRITE_1_INVISIBLE = $40
-SPRITE_2_INVISIBLE = $20
-SPRITE_3_INVISIBLE = $10
+SPRITE_0_HINVISIBLE = $80
+SPRITE_1_HINVISIBLE = $40
+SPRITE_2_HINVISIBLE = $20
+SPRITE_3_HINVISIBLE = $10
+
+SPRITE_0_VINVISIBLE = $01
+SPRITE_1_VINVISIBLE = $02
+SPRITE_2_VINVISIBLE = $04
+SPRITE_3_VINVISIBLE = $08
 
 	Objects_Data4:		.ds 8	; $0689-$0690 Generic variable 1 for objects
 	Objects_Data5:		.ds 8	; $0691-$0698 Generic variable 2 for objects
@@ -2510,11 +2507,13 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	PreviousPaletteEFfect:	.ds 1
 	EffectCounter:			.ds 1
 	HitTestOnly:			.ds 1
-	SpinnerBlockTimers:	.ds 10;
-	SpinnerBlocksX:		.ds 10;
-	SpinnerBlocksXHi:	.ds 10;
-	SpinnerBlocksY:		.ds 10;
-	SpinnerBlocksYHi:	.ds 10;
+	SpinnerBlocksActive:	.ds 8;
+	SpinnerBlocksTimers:	.ds 8;
+	SpinnerBlocksX:			.ds 8;
+	SpinnerBlocksXHi:		.ds 8;
+	SpinnerBlocksY:			.ds 8;
+	SpinnerBlocksYHi:		.ds 8;
+	SpinnerBlocksReplace:	.ds 8
 
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
@@ -2750,16 +2749,17 @@ ABILITY_CHERRY_STAR = 5
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
 	
-	Objects_Data8:		.ds 5	; $7CC8-$7CCC Generic object variable 10
-	Objects_Data9:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
-	Objects_Data10:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
-	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
-	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data8:		.ds 8	; $7CC8-$7CCC Generic object variable 10
+	Objects_Data9:		.ds 8	; $7CCD-$7CD1 Generic object variable 11
+	Objects_Data10:		.ds 8	; $7CD2-$7CD6 Generic object variable 12
+	Objects_Data11:		.ds 8	; $7CD7-$7CDB Generic object variable 13
+	Objects_Data12:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data13:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_XYCS:		.ds 8
 	Objects_XYCSPrev:	.ds 8
 	Objects_PlayerProjHit:	.ds 8
+	Objects_EffectiveXVel: .ds 8
 
 HIT_FIREBALL	= 01
 HIT_ICEBALL		= 02
@@ -2857,7 +2857,8 @@ AIR_INCREASE	= 3
 	Game_Coins:				.ds 3; over all coins collected
 	Odometer:				.ds 3; over all distance traveled
 	Game_Timer:				.ds 6; over all time spent in the game
-	Old_Game_TimerSeconds:	.ds 0
+	Old_Game_TimerSeconds:	.ds 1
+	Force_StatusBar_Init: .ds 1
 	Top_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Bottom_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Odometer_Increase:		.ds 1; Indicates we need to increase the odometer
@@ -2974,9 +2975,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	;	Bits 4 - 6: 0 to 7, selects start position from LevelJct_YLHStarts and sets proper vertical with LevelJct_VertStarts
 	;	Bit      7: If set, entering in vertical mode (for "dirty" refresh purposes)
 
-	Object_TileFeetValue:	.ds 0	; ? Difference against Object_VertTileProp?
-	Object_TileWallValue:	.ds 0	; ? Difference against Object_HorzTileProp?
-
 	Tile_DetectionYHi:		.ds 1	; Object tile detect Y Hi
 	Tile_DetectionY:		.ds 1	; Object tile detect Y Lo
 	Tile_DetectionXHi:		.ds 1	; Object tile detect X Hi
@@ -3058,6 +3056,8 @@ PLAYER_POOF			= 05
 
 	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
 
+	Objects_Data1:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
+	Objects_Data2:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
 	Objects_Data3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
 
 	SpecialObj_XHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
@@ -3112,7 +3112,7 @@ PLAYER_POOF			= 05
 	TempX:				.ds 1
 	TempY:				.ds 1
 	TempA:				.ds 1;
-	Global_Object:		.ds 1
+	Objects_Global:		.ds 8
 	JustTileFlag:		.ds 1
 	AlignSpriteFlag:	.ds 1
 	JustName:			.ds 1
@@ -3474,7 +3474,7 @@ OA3_HALT_BUSTERSPECIAL	= %00001101	; 13: Bank2/Buster Beatle ONLY
 OA3_HALT_PIRANHASPECIAL	= %00001110	; 14: Bank2/Piranha Spike Ball ONLY
 OA3_HALT_MASK		= %00001111	; Not intended for use in attribute table, readability/traceability only
 
-OA3_SQUASH		= %00010000	; Enemy should "squash" (state 7) not "shell" (state 3), or "killed" (state 6) in case of statue/Kuribo's shoe stomp; requires OA2_NOTSHELLED to be NOT SET
+OA3_WINDAFFECTS		= %00010000	; Enemy should "squash" (state 7) not "shell" (state 3), or "killed" (state 6) in case of statue/Kuribo's shoe stomp; requires OA2_NOTSHELLED to be NOT SET
 OA3_NOTSTOMPABLE	= %00100000	; If the Player tries to stomp this enemy, he will be HURT!  (E.g. Spikey enemy)
 OA3_SHELL		= %01000000	; The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
 OA3_TAILATKIMMUNE	= %10000000	; Object cannot be Raccoon tail attacked

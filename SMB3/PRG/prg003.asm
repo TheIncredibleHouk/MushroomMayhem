@@ -356,7 +356,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte KILLACT_JUSTDRAW16X16	; Object $6A - OBJ_VEGGIEGUY
-	.byte KILLACT_JUSTDRAW16X16	; Object $6B - OBJ_SHYGUY
+	.byte KILLACT_NORMALANDKILLED	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) pattern index starts
@@ -496,35 +496,34 @@ ObjNorm_IceBlock:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 
 	LDA <Objects_XVelZ, X
 	ORA <Objects_XVelZ, X
-	ORA Object_BeingHeld, X
+	ORA Objects_BeingHeld, X
 	BEQ IceBlock_NoBurst
 
 	JSR Object_KillOthers
 	BCC IceBlock_NoBurst
 
 	; if hit another object an held, it bursts
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BEQ IceBlock_Burst
 
-	LDA #$00
-	STA Player_IsHolding
-	BEQ IceBlock_Burst
+	JMP IceBlock_Burst
 
 IceBlock_NoBurst:
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BNE IceBlock_Draw
 
-	JSR Object_DetectTiles
+	
 	JSR Object_DampenVelocity
-	JSR Object_InteractWithTiles
 
 IceBlock_TestBreak:
 	LDA <Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL | HIT_CEILING)
-	BEQ IceBlock_Draw
+	BEQ IceBlock_TileInteract
 	
 IceBlock_Burst:
 	LDA <Objects_YZ, X
@@ -538,6 +537,9 @@ IceBlock_Burst:
 	JSR Object_TestSideBumpBlocks
 
 	JMP Object_SetDeadEmpty
+
+IceBlock_TileInteract:
+	JSR Object_InteractWithTiles
 
 IceBlock_Draw:
 	JSR Object_DrawMirrored
@@ -605,6 +607,7 @@ Spintula_Wait:
 	
 	LDA #$20
 	STA <Objects_YVelZ, X
+	STA Spintula_Pause, X
 
 Spintula_WaitRTS:
 	JMP Object_DrawMirrored
@@ -638,7 +641,7 @@ Spintula_DrawWeb:
 
 Spintual_DoDrawWeb:
 	LDA Object_BodyTileValue, X
-	EOR #$01
+	ORA #$01
 	JSR Object_ChangeBlock
 	
 Spintual_DownDraw:
@@ -694,7 +697,7 @@ Spintula_DeleteWeb:
 
 Spintula_DoDeleteWeb:
 	LDA Object_BodyTileValue, X
-	EOR #$01
+	AND #$FE
 
 	JSR Object_ChangeBlock
 	
@@ -857,16 +860,15 @@ SnowGuy_Norm:
 	JSR SnowGuy_GrabSnow
 	JSR SnowGuy_ThrowSnow
 	JSR Object_AttackOrDefeat
-	JSR Object_HandleBumpUnderneath
 
 SnowGuy_Animate:
-	INC <SnowGuy_Frame, X
+	INC SnowGuy_Frame, X
 	LDY #$00
 
 	LDA SnowGuy_DiggingSnow, X
 	BNE SnowGuy_Draw
 	
-	LDA <SnowGuy_Holding, X
+	LDA SnowGuy_Holding, X
 	BEQ SnowGuy_NoArms
 
 	INY
@@ -876,7 +878,7 @@ SnowGuy_NoArms:
 	ASL A
 	STA <Temp_Var1
 
-	LDA <SnowGuy_Frame, X
+	LDA SnowGuy_Frame, X
 	LSR A
 	LSR A
 	LSR A
@@ -915,7 +917,7 @@ SnowGuy_DrawSnow:
 	BEQ SnowGuy_SnowSprites
 
 SnowGuy_SnowNotForced:
-	LDA <SnowGuy_Holding, X
+	LDA SnowGuy_Holding, X
 	BEQ SnowGuy_DrawDone
 
 SnowGuy_SnowSprites:
@@ -924,7 +926,7 @@ SnowGuy_SnowSprites:
 	STA <Temp_Var16
 
 	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #SPRITE_0_INVISIBLE
+	AND #SPRITE_0_HINVISIBLE
 	BNE SnowGuy_DrawRight
 
 
@@ -964,7 +966,7 @@ SnowGuy_DrawDone:
 	RTS
 
 SnowGuy_FindSnow:
-	LDA <SnowGuy_Holding, X
+	LDA SnowGuy_Holding, X
 	BNE SnowGuy_FindSnowDone
 
 	LDA SnowGuy_DiggingSnow, X
@@ -998,7 +1000,7 @@ SnowGuy_GrabSnow:
 	BNE SnowGuy_KeepDigging
 	
 	LDA #$01
-	STA <SnowGuy_Holding, X
+	STA SnowGuy_Holding, X
 	
 	LDA #$E0
 	STA <Objects_YVelZ, X
@@ -1032,7 +1034,7 @@ SnowGuy_ThrowSnow:
 	LDA <Objects_YVelZ, X
 	BNE SnowGuy_ThrowSnowDone
 
-	LDA <SnowGuy_Holding, X
+	LDA SnowGuy_Holding, X
 	BEQ SnowGuy_ThrowSnowDone
 
 	JSR Object_XDistanceFromPlayer
@@ -1114,16 +1116,15 @@ VeggieGuy_Norm:
 	JSR VeggieGuy_GrabVeggie
 	JSR VeggieGuy_ThrowVeggie
 	JSR Object_AttackOrDefeat
-	JSR Object_HandleBumpUnderneath
 
 VeggieGuy_Animate:
-	INC <VeggieGuy_Frame, X
+	INC VeggieGuy_Frame, X
 	LDY #$00
 
 	LDA VeggieGuy_PullingVeggie, X
 	BNE VeggieGuy_Draw
 	
-	LDA <VeggieGuy_Holding, X
+	LDA VeggieGuy_Holding, X
 	BEQ VeggieGuy_NoArms
 
 	INY
@@ -1133,7 +1134,7 @@ VeggieGuy_NoArms:
 	ASL A
 	STA <Temp_Var1
 
-	LDA <VeggieGuy_Frame, X
+	LDA VeggieGuy_Frame, X
 	LSR A
 	LSR A
 	LSR A
@@ -1165,7 +1166,7 @@ VeggieGuy_DrawNorm:
 
 VeggieGuy_DrawVeggie:
 
-	LDA <VeggieGuy_Holding, X
+	LDA VeggieGuy_Holding, X
 	BEQ VeggieGuy_DrawDone
 
 VeggieGuy_VeggieSprites:
@@ -1174,7 +1175,7 @@ VeggieGuy_VeggieSprites:
 	STA <Temp_Var16
 
 	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #SPRITE_0_INVISIBLE
+	AND #SPRITE_0_HINVISIBLE
 	BNE VeggieGuy_DrawRight
 
 
@@ -1214,7 +1215,7 @@ VeggieGuy_DrawDone:
 	RTS
 
 VeggieGuy_FindVeggie:
-	LDA <VeggieGuy_Holding, X
+	LDA VeggieGuy_Holding, X
 	BNE VeggieGuy_FindVeggieDone
 
 	LDA VeggieGuy_PullingVeggie, X
@@ -1261,7 +1262,7 @@ VeggieGuy_GrabVeggie:
 VeggieGuy_Pluck:
 	
 	LDA #$01
-	STA <VeggieGuy_Holding, X
+	STA VeggieGuy_Holding, X
 	
 	LDA #$E0
 	STA <Objects_YVelZ, X
@@ -1302,7 +1303,7 @@ VeggieGuy_ThrowVeggie:
 	LDA <Objects_YVelZ, X
 	BNE VeggieGuy_ThrowVeggieDone
 
-	LDA <VeggieGuy_Holding, X
+	LDA VeggieGuy_Holding, X
 	BEQ VeggieGuy_ThrowVeggieDone
 
 	JSR Object_XDistanceFromPlayer
@@ -1365,6 +1366,21 @@ ObjNorm_ShyGuy:
 	JMP ShyGuy_Draw
 
 ShyGuy_Norm:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ShGuy_Alive
+
+	LDA ShyGuy_Holding, X
+	BEQ ShyGuy_DeadRTS
+
+	JSR ShyGuy_ThrowBlockForced
+	LDA #$00
+	STA Objects_XVelZ, Y
+
+ShyGuy_DeadRTS:
+	JMP Object_Draw
+
+ShGuy_Alive:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox
@@ -1375,13 +1391,12 @@ ShyGuy_Norm:
 	JSR ShyGuy_GrabBlock
 	JSR ShyGuy_ThrowBlock
 	JSR Object_AttackOrDefeat
-	JSR Object_HandleBumpUnderneath
 
 ShyGuy_Animate:
-	INC <ShyGuy_Frame, X
+	INC ShyGuy_Frame, X
 	LDY #$00
 
-	LDA <ShyGuy_Holding, X
+	LDA ShyGuy_Holding, X
 	BEQ ShyGuy_NoArms
 
 	INY
@@ -1391,7 +1406,7 @@ ShyGuy_NoArms:
 	ASL A
 	STA <Temp_Var1
 
-	LDA <ShyGuy_Frame, X
+	LDA ShyGuy_Frame, X
 	LSR A
 	LSR A
 	LSR A
@@ -1410,7 +1425,7 @@ ShyGuy_Draw:
 
 ShyGuy_GroundAnim:
 	JSR Object_Draw
-	LDA <ShyGuy_Holding, X
+	LDA ShyGuy_Holding, X
 	BEQ ShyGuy_DrawDone
 
 	
@@ -1418,8 +1433,12 @@ ShyGuy_GroundAnim:
 	ADD <Temp_Var16
 	STA <Temp_Var16
 
+	LDA Objects_SpritesVerticallyOffScreen, X
+	AND #SPRITE_0_VINVISIBLE
+	BNE ShyGuy_DrawDone
+
 	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #SPRITE_0_INVISIBLE
+	AND #SPRITE_0_HINVISIBLE
 	BNE ShyGuy_DrawRight
 
 
@@ -1462,7 +1481,7 @@ ShyGuy_ScanAbove:
 	.byte $48, $38, $28, $18, $08
 
 ShyGuy_FindBlock:
-	LDA <ShyGuy_Holding, X
+	LDA ShyGuy_Holding, X
 	BNE ShyGuy_FindBlockDone
 
 	LDA <Objects_XZ, X
@@ -1526,7 +1545,7 @@ ShyGuy_GrabBlock:
 
 	AND #$0F
 	ADD #$01
-	STA <ShyGuy_Holding, X
+	STA ShyGuy_Holding, X
 
 	LDA <Objects_XZ, X
 	ADD #$08
@@ -1541,10 +1560,9 @@ ShyGuy_GrabBlock:
 	STA Tile_DetectionY
 
 	LDA <Objects_YHiZ, X
-	ADC #$00
+	SBC #$00
 	STA Tile_DetectionYHi
 
-	
 	LDA Tile_LastValue
 	AND #$C0
 	ORA #$01
@@ -1559,14 +1577,15 @@ ShyGuy_ThrowBlock:
 	AND #HIT_GROUND
 	BEQ ShyGuy_ThrowBlockDone
 
-	LDA <ShyGuy_Holding, X
+	LDA ShyGuy_Holding, X
 	BEQ ShyGuy_ThrowBlockDone
 
 	JSR Object_XDistanceFromPlayer
 	LDA <XDiff
-	CMP #$50
+	CMP #$40
 	BCS ShyGuy_ThrowBlockDone
 
+ShyGuy_ThrowBlockForced:
 	JSR Object_FindEmptyY
 	BCC ShyGuy_ThrowBlockDone
 
@@ -1593,10 +1612,10 @@ ShyGuy_ThrowBlock:
 	SBC #$00
 	STA Objects_YHiZ, Y
 
-	LDA #$E8
+	LDA #$D8
 	STA Objects_YVelZ, Y
 
-	LDA #$D0
+	LDA #$E0
 	STA Objects_XVelZ, Y
 
 	LDA Objects_Orientation, X
@@ -1785,7 +1804,6 @@ ObjNorm_TwirlingShell:
 	LDA <Player_HaltGameZ
 	BNE PRG003_A5EF	 ; If gameplay halted, jump to PRG003_A5EF
 
-	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped from underneath
 	JSR Object_InteractWithPlayer
 
 	LDA Objects_ID,X
@@ -1941,7 +1959,7 @@ PRG003_A651:
 	RTS		 ; Return
 
 PRG003_A652:
-	DEC <Objects_Data2,X	 ; Var5--
+	DEC Objects_Data2,X	 ; Var5--
 	BNE PRG003_A65A	 	; If Var5 > 0, jump to PRG003_A65A
 
 	INC Objects_Data3,X	 ; Var7++
@@ -1984,6 +2002,7 @@ PRG003_A67C:
 	LDA <Objects_YZ,X
 	SUB #31
 	STA <Player_Y
+
 	LDA <Objects_YHiZ,X
 	SBC #$00
 	STA <Player_YHi
@@ -2176,7 +2195,7 @@ BobOmb_UnstableCheck:
 	JSR Object_InteractWithPlayer
 	JSR Object_RespondToTailAttack
 
-	LDA Object_BeingHeld, X
+	LDA Objects_BeingHeld, X
 	BNE BobOmb_ShakeDraw
 
 	LDA Objects_PreviousTilesDetect,X
@@ -2286,7 +2305,7 @@ ObjNorm_Explosion:
 	LDA <Player_HaltGameZ
 	BNE DrawEx	 ; If gameplay is halted, jump to PRG003_A82E
 
-	INC <Explosion_Offset,X	 ; Otherwise, Var4++
+	INC Explosion_Offset,X	 ; Otherwise, Var4++
 
 DrawEx:
 	LDA Objects_Timer,X
@@ -2318,7 +2337,7 @@ PRG003_A83D:
 	ADD #$04
 	STA <Temp_Var2
 
-	LDA <Objects_Data1,X
+	LDA Objects_Data1,X
 	LSR A		 ; Var4 / 2
 	PHA		 ; Save value
 
@@ -2386,40 +2405,7 @@ PRG003_A89D:
 	DEC <Temp_Var16	 ; Temp_Var16--
 	BPL PRG003_A83D	 ; While Temp_Var16 >= 0, loop!
 
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE Explosion_BumpBlocks	 ; If any part of the exploding Bob-omb has fallen off-screen, jump to Explosion_BumpBlocks
-
-	JSR BobOmb_CalcULOffXY	; (large bounding box for explosion)
-
-	; Temp_Var13 = 0
-	LDA #$00
-	STA <Temp_Var13
-
-	JSR PRG000_DC09	 ; Object-to-object collision test sans visibility check and bounding box calculation
-	BCC Explosion_BumpBlocks	 ; If there hasn't been a collision, jump to Explosion_BumpBlocks (RTS)
-
-	; "Kick" sound
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERKICK
-	STA Sound_QPlayer
-
-	; Set object to state Killed
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,Y
-
-	; Killed object bounces up a bit
-	LDA #-$30
-	STA Objects_YVelZ,Y
-
-	; Halt horizontal movement
-	LDA #$00
-	STA Objects_XVelZ,Y
-
-	; Var3 works as a kill counter for things killed by the explosion
-	LDA Objects_Data3,X
-	INC Objects_Data3,X
-
+	JSR Object_KillOthers
 
 Explosion_BumpBlocks:
 	LDA Objects_Timer,X
@@ -2499,16 +2485,14 @@ MagicStarOffset:
 	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
-	LDA <Player_HaltGameZ
-	BNE ObjNorm_MagicStar1
 
 	JSR Object_DeleteOffScreen	
 	JSR Object_CalcBoundBox
-	JSR MagicStar_Radar
 	JSR Magic_Star_Action
 	JSR Object_InteractWithPlayer
 
-ObjNorm_MagicStar1:
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JMP Object_DrawMirrored
 
 Magic_StarCollect:
@@ -2584,8 +2568,14 @@ MagicStar_CheckPSwitch1:
 	JMP Object_InteractWithTiles
 
 MagicStar_NoFloat:
+	LDA <Player_HaltGameZ
+	BNE MagicStar_NoMove
+
 	JSR Object_Move
+	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
+
+MagicStar_NoMove:
 	JMP Object_InteractWithTiles
 
 MagicStar_CheckItemBlock:
@@ -2628,10 +2618,10 @@ MagicStar_CheckClearedBlock:
 
 MagicStar_SpinnersActive:
 	LDY #$02
-	LDX #$09
+	LDX #$07
 
 NextSpinnerCheck:
-	LDA SpinnerBlockTimers, X
+	LDA SpinnerBlocksActive, X
 	BEQ NextSpinnerCheck1
 
 	DEY
@@ -2804,7 +2794,7 @@ ObjInit_PiranhaSidewaysL:
 	; Start X + 1 over
 	LDA <Objects_XZ,X
 	ADD #$01
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 
 	; Start Y + 7 over
 	LDA <Objects_YZ,X
@@ -2834,7 +2824,7 @@ PRG003_AF60:
 	STA Objects_Frame,X	 ; Update frame
 
 	; Perform the state action of Var4 (0-3)
-	LDA <Objects_Data1,X
+	LDA Objects_Data1,X
 	AND #$03
 	JSR DynJump
 
@@ -2845,7 +2835,7 @@ PRG003_AF60:
 	.word SidePiranha_Receed	; Piranha goes back into pipe
 
 SidePiranha_Emerge:
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	SUB #25
 	CMP <Objects_XZ,X
 	BGE PRG003_AF95	 ; If (Var5 - 25) >= Piranha's X, jump to PRG003_AF95
@@ -2856,7 +2846,7 @@ SidePiranha_Emerge:
 SidePiranha_Receed:
 	LDA <Objects_XZ,X
 	ADD #$01
-	CMP <Objects_Data2,X
+	CMP Objects_Data2,X
 	BGE PRG003_AF95	 ; If piranha's X >= Var5, jump to PRG003_AF95
 
 	LDA #$10	; Rightward moving piranha
@@ -2871,7 +2861,7 @@ SidePiranha_Chomp:
 	BNE PRG003_AFA4	 ; If timer not expired, jump to PRG003_AFA4 (RTS)
 
 PRG003_AF95:
-	INC <Objects_Data1,X	 ; Var4++ (next internal state)
+	INC Objects_Data1,X	 ; Var4++ (next internal state)
 
 	; Reset timer to $38
 	LDA #$38
@@ -3046,9 +3036,9 @@ PRG003_B186:
 	STA <Player_InAir
 
 PRG003_B18C:
-	INC <Objects_Data2,X	 ; Var5++
+	INC Objects_Data2,X	 ; Var5++
 
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	AND #$0f
 	BNE PRG003_B197	 ; 1:16 ticks proceed, otherwise jump to PRG003_B197
 
@@ -3208,7 +3198,7 @@ FloatMine_Draw:
 	BNE FloatMine_DrawDone
 
 	LDA Objects_SpritesVerticallyOffScreen,X
-	AND #SPRITE_0_INVISIBLE
+	AND #SPRITE_0_VINVISIBLE
 	BNE FloatMineDraw1
 
 	LDA Objects_SpriteX, X
@@ -3301,12 +3291,11 @@ ObjNorm_Ninji:
 	JMP Ninji_Draw
 
 Ninji_Norm:
-	JSR Object_DeleteOffScreen 	
+	JSR Object_DeleteOffScreen 
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_HandleBumpUnderneath
 	JSR Object_AttackOrDefeat
 	
 	LDA <Objects_TilesDetectZ, X
@@ -3319,11 +3308,11 @@ Ninji_Grounded:
 	JSR Ninji_DoAction
 
 Ninji_Animate:
-	LDA <Ninji_Action, X
+	LDA Ninji_Action, X
 	BNE Ninji_Draw
 
-	INC <Ninji_Frame, X
-	LDA <Ninji_Frame, X
+	INC Ninji_Frame, X
+	LDA Ninji_Frame, X
 	LSR A
 	LSR A
 	LSR A
@@ -3336,8 +3325,12 @@ Ninji_Draw:
 	LDA Ninji_HoldStar, X
 	BEQ Ninji_DrawStar2
 
+	LDA Objects_SpritesVerticallyOffScreen,X
+	AND #SPRITE_0_VINVISIBLE
+	BNE Ninji_DrawStar2
+
 	LDA Objects_SpritesHorizontallyOffScreen,X
-	AND #SPRITE_0_INVISIBLE
+	AND #SPRITE_0_HINVISIBLE
 	BNE Ninji_DrawStar1
 
 	LDA Objects_SpriteX, X
@@ -3376,7 +3369,7 @@ Ninji_DrawStar2:
 	RTS
 
 Ninji_DoAction:
-	LDA <Ninji_Action, X
+	LDA Ninji_Action, X
 	JSR DynJump
 
 	.word Ninji_Idle
@@ -3391,7 +3384,7 @@ Ninji_Idle:
 	LDA Objects_Timer, X
 	BNE Ninji_IdleDone
 
-	INC <Ninji_Action, X
+	INC Ninji_Action, X
 	
 	LDA RandomN, X
 	AND #$03
@@ -3411,7 +3404,7 @@ Ninji_Jump:
 	LDA <Objects_YVelZ, X
 	BMI Ninji_JumpDone
 
-	INC <Ninji_Action, X
+	INC Ninji_Action, X
 
 	LDA #$08
 	STA Objects_Timer, X
@@ -3426,7 +3419,7 @@ Ninji_Hover:
 	LDA Objects_Timer, X
 	BNE Ninji_HoverDone
 
-	INC <Ninji_Action, X
+	INC Ninji_Action, X
 
 Ninji_HoverDone:
 	RTS
@@ -3471,7 +3464,7 @@ Ninji_ThrowStar:
 	STA SpecialObj_YVel, Y
 
 Ninji_ThrowDone:
-	INC <Ninji_Action, X
+	INC Ninji_Action, X
 	LDA #$00
 	STA Objects_Frame, X
 	RTS		 ; Return
@@ -3485,7 +3478,7 @@ Ninji_Fall:
 	STA Objects_Timer, X
 	
 	LDA #$00
-	STA <Ninji_Action, X
+	STA Ninji_Action, X
 	STA Objects_Frame, X
 
 Ninji_FallDone:
@@ -3552,7 +3545,7 @@ ObjInit_Tornado:
 
 	; Var4 = $A5
 	LDA #$a5
-	STA <Objects_Data1,X
+	STA Objects_Data1,X
 
 	RTS		 ; Return
 
@@ -3591,7 +3584,7 @@ ObjNorm_Tornado:
 	JSR Object_ApplyXVel	 ; Apply X velocity
 
 PRG003_B534:
-	LDY <Objects_Data1,X	 ; Y = Var4
+	LDY Objects_Data1,X	 ; Y = Var4
 	BNE PRG003_B53B	 ; If Var4 <> 0, jump to PRG003_B53B
 
 	JMP Object_Delete	 ; Delete object and don't come back!
@@ -3601,7 +3594,7 @@ PRG003_B53B:
 	AND #$01
 	BNE PRG003_B543	 ; Every other tick, jump to PRG003_B543
 
-	DEC <Objects_Data1,X	 ; Var4--
+	DEC Objects_Data1,X	 ; Var4--
 
 PRG003_B543:
 	CPY #$40
@@ -3629,7 +3622,7 @@ PRG003_B551:
 	LDA Tornado_MaskOffset,Y
 
 PRG003_B55D:
-	STA <Objects_Data2,X	 ; -> Var5
+	STA Objects_Data2,X	 ; -> Var5
 
 	STA <Temp_Var15		 ; -> Temp_Var15
 
@@ -4256,7 +4249,7 @@ PhantomBlooper_Draw:
 ;PRG003_B77B:
 ;	JSR Object_AttackOrDefeat	 ; Do Player to Blooper hit detection!
 ;
-;	LDA <Objects_Data2,X
+;	LDA Objects_Data2,X
 ;	AND #$01
 ;	TAY		 ; Y = 0 or 1
 ;
@@ -4267,7 +4260,7 @@ PhantomBlooper_Draw:
 ;	CMP Blooper_YVelLimit,Y
 ;	BNE PRG003_B7B6	 ; If Blooper is not at his velocity limit, jump to PRG003_B7B6
 ;
-;	INC <Objects_Data2,X	 ; Otherwise, Var5++
+;	INC Objects_Data2,X	 ; Otherwise, Var5++
 ;
 ;PRG003_B7B6:
 ;	LDA <Objects_YVelZ,X
@@ -4999,9 +4992,9 @@ Pyrantual_Reset:
 	BNE Pyrantula_Draw
 
 Pyrantula_Animate:
-	INC <Pyrantula_Frame, X
+	INC Pyrantula_Frame, X
 
-	LDA <Pyrantula_Frame, X
+	LDA Pyrantula_Frame, X
 	LSR A
 	LSR A
 	AND #$01

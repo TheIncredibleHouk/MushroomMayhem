@@ -34,7 +34,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_ParaGoomba	; Object $73 - OBJ_PARAGOOMBA
 	.word ObjInit_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word ObjInit_Waterfill	; Object $75 - OBJ_WATERFILLER
-	.word Object_MoveTowardsPlayer	; Object $76 - OBJ_POISONMUSHROOM
+	.word ObjInit_PoisonMushroom	; Object $76 - OBJ_POISONMUSHROOM
 	.word ObjInit_SwimmingCheep	; Object $77 - OBJ_GREENCHEEP
 	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
@@ -234,15 +234,15 @@ ObjectGroup03_Attributes2:
 
 	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
 ObjectGroup03_Attributes3:
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6C - OBJ_GREENTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6D - OBJ_REDTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6E - OBJ_PARATROOPAGREENHOP
+	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS | OA3_SHELL 			; Object $6C - OBJ_GREENTROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS | OA3_SHELL 			; Object $6D - OBJ_REDTROOPA
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL | OA3_WINDAFFECTS			; Object $6E - OBJ_PARATROOPAGREENHOP
 	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $70 - OBJ_BUZZYBEATLE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_SHELL 	; Object $71 - OBJ_SPINY
-	.byte OA3_HALT_NORMALONLY 				; Object $72 - OBJ_GOOMBA
-	.byte OA3_HALT_NORMALONLY 				; Object $73 - OBJ_PARAGOOMBA
-	.byte OA3_HALT_NORMALONLY				; Object $74 - OBJ_ZOMBIEGOOMBA
+	.byte OA3_HALT_NORMALONLY | OA3_SHELL | OA3_WINDAFFECTS			; Object $70 - OBJ_BUZZYBEATLE
+	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_WINDAFFECTS | OA3_SHELL 	; Object $71 - OBJ_SPINY
+	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS				; Object $72 - OBJ_GOOMBA
+	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $73 - OBJ_PARAGOOMBA
+	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE			; Object $75 - OBJ_WATERFILLER
 	.byte OA3_HALT_NORMALONLY 					; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
@@ -655,7 +655,6 @@ NinjaBro_OnGround:
 
 NinjaBro_BeenOnGround:
 	JSR Object_FacePlayer
-	JSR Object_HandleBumpUnderneath
 	JSR Object_AttackOrDefeat
 
 	LDA NinjaBro_HoldStarTimer, X
@@ -983,7 +982,6 @@ HammerBro_DetectTiles:
 
 HammerBro_SkipTiles:
 	JSR Object_FacePlayer
-	JSR Object_HandleBumpUnderneath
 	JSR Object_AttackOrDefeat
 
 	LDA HammerBro_HoldHammerTimer, X
@@ -1288,7 +1286,6 @@ FireIcePirateBro_Norm:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 	JSR Object_FacePlayer
-	JSR Object_HandleBumpUnderneath
 	JSR Object_AttackOrDefeat
 
 	LDA FireIcePirateBro_OpenMouthTimer, X
@@ -1547,7 +1544,7 @@ ObjNorm_Thwomp:
 Thwomp_Normal:
 	JSR Object_DeleteOffScreen
 	
-	LDA <Thwomp_Action, X
+	LDA Thwomp_Action, X
 	JSR DynJump
 
 	.word Thwomp_WaitForPlayer
@@ -1574,7 +1571,7 @@ Thwomp_KeepFrame:
 	CMP #$20
 	BCS Thwomp_KeepWaiting
 
-	INC <Thwomp_Action, X
+	INC Thwomp_Action, X
 
 	LDA #$00
 	STA Thwomp_TilesDetected, X
@@ -1590,8 +1587,8 @@ Thwomp_FallToGround:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
-	INC <Thwomp_Ticker, X
-	LDA <Thwomp_Ticker, X
+	INC Thwomp_Ticker, X
+	LDA Thwomp_Ticker, X
 	AND #$01
 	TAY
 
@@ -1642,7 +1639,7 @@ Thwomp_DetectGrnd:
 
 	LDA #SND_LEVELBABOOM
 	STA Sound_QLevel1
-	INC <Thwomp_Action, X
+	INC Thwomp_Action, X
 
 Thwomp_NoHit:
 	JMP Thwomp_Draw
@@ -1670,7 +1667,7 @@ Thwomp_ReturnToOrigin:
 	BNE Thwomp_Draw
 
 	LDA #$00
-	STA <Thwomp_Action, X
+	STA Thwomp_Action, X
 
 Thwomp_Draw:
 
@@ -1684,7 +1681,7 @@ Thwomp_Draw:
 	BNE Thwomp_DrawRTS
 
 	LDA Objects_SpritesVerticallyOffScreen,X
-	AND #SPRITE_0_INVISIBLE
+	AND #SPRITE_0_VINVISIBLE
 	BNE Thwomp_Draw1
 
 	LDA Objects_SpriteX, X
@@ -1736,7 +1733,7 @@ ObjNorm_AngryThwomp:
 AngryThwomp_Normal:
 	JSR Object_DeleteOffScreen
 
-	LDA <Thwomp_Action, X
+	LDA Thwomp_Action, X
 	AND #$03
 
 	JSR DynJump
@@ -1757,7 +1754,7 @@ AngryThwompWait:
 	CMP #$40
 	BCS AngryThwompWaitRTS
 
-	INC <Thwomp_Action, X
+	INC Thwomp_Action, X
 	LDA Objects_Frame, X
 	EOR #$01
 	STA Objects_Frame, X
@@ -1775,8 +1772,8 @@ Thwomp_FallToCeiling:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
-	INC <Thwomp_Ticker, X
-	LDA <Thwomp_Ticker, X
+	INC Thwomp_Ticker, X
+	LDA Thwomp_Ticker, X
 	AND #$01
 	TAY
 
@@ -1827,7 +1824,7 @@ AngryThwomp_DetectCeil:
 
 	LDA #SND_LEVELBABOOM
 	STA Sound_QLevel1
-	INC <Thwomp_Action, X
+	INC Thwomp_Action, X
 
 AngryThwomp_NoHit:
 	JMP Thwomp_Draw
@@ -1842,7 +1839,7 @@ ObjNorm_ThwompVertical:
 ;	JSR Object_DeleteOffScreen_N2	 ; Delete if Thwomp falls off-screen
 ;	JSR Object_AttackOrDefeat	 ; Do Player to Thwomp collision
 ;
-;	LDA <Objects_Data2,X	 ; Var5 is internal state
+;	LDA Objects_Data2,X	 ; Var5 is internal state
 ;	AND #$03	 	; Limit 0-3
 ;
 ;	JSR DynJump
@@ -1869,7 +1866,7 @@ ObjNorm_ThwompVertical:
 ;	JSR Negate
 ;	STA <Objects_YVelZ,X
 ;
-;	INC <Objects_Data2,X	 ; Var5++ (next internal state)
+;	INC Objects_Data2,X	 ; Var5++ (next internal state)
 ;
 ;	; Set timer to $80
 ;	LDA #$80
@@ -1882,7 +1879,7 @@ ObjNorm_ThwompVertical:
 ;	LDA Objects_Timer,X
 ;	BNE PRG004_A82B	 ; If timer not expired, jump to PRG004_A82B
 ;
-;	INC <Objects_Data2,X	 ; Var5++
+;	INC Objects_Data2,X	 ; Var5++
 ;
 ;	; Set timer to $3C
 ;	LDA #$3c
@@ -2102,7 +2099,7 @@ Lakitu_Norm:
 	JMP Lakitu_Draw
 
 Lakitu_DoAction:
-	LDA <Lakitu_Action, X
+	LDA Lakitu_Action, X
 	JSR DynJump
 
 	.word Lakitu_Wait
@@ -2175,7 +2172,7 @@ Lakitu_Wait:
 	LDA Objects_Timer, X
 	BNE Lakitu_WaitDone
 
-	INC <Lakitu_Action, X
+	INC Lakitu_Action, X
 
 Lakitu_WaitDone:
 	RTS
@@ -2186,7 +2183,7 @@ Lakitu_Lower:
 	CPY #$10
 	BCC Lakitu_LowerDone
 
-	INC <Lakitu_Action, X
+	INC Lakitu_Action, X
 
 Lakitu_LowerDone:
 	RTS
@@ -2215,7 +2212,7 @@ Lakitu_GetEnemy:
 	LDA <Temp_Var2
 	STA Objects_Property, Y
 
-	INC <Lakitu_Action, X
+	INC Lakitu_Action, X
 
 Lakitu_GetEnemyDone:
 	RTS
@@ -2226,7 +2223,7 @@ Lakitu_RaiseEnemy:
 	CMP #$0C
 	BCC Lakitu_RaiseEnemyDone
 
-	INC <Lakitu_Action, X
+	INC Lakitu_Action, X
 	LDA #$01
 	STA Objects_Frame, X
 
@@ -2237,7 +2234,7 @@ Lakitu_Raise:
 	DEC Lakitu_BodyOffset, X
 	BNE Lakitu_RaiseDone
 
-	INC <Lakitu_Action, X
+	INC Lakitu_Action, X
 
 	LDA RandomN, X
 	AND #$03
@@ -2320,7 +2317,7 @@ Lakitu_Reset:
 	STA Lakitu_EnemyOffset, X
 	STA Lakitu_BodyOffset, X
 	STA Lakitu_MadePoof, X
-	STA <Lakitu_Action, X
+	STA Lakitu_Action, X
 	STA Objects_Frame, X
 
 	LDA #$FF
@@ -2400,7 +2397,7 @@ Lakitu_Draw2:
 	STA Sprite_RAMX, Y
 	
 	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #SPRITE_0_INVISIBLE
+	AND #SPRITE_0_HINVISIBLE
 	BNE Lakitu_Draw3
 
 	LDA Sprite_RAMY + 4, Y
@@ -2697,7 +2694,7 @@ Zombie_NoInfection:
 	BCC Zombie_NoInfection1
 
 	LDA #$00
-	STA <Objects_Data2, X
+	STA Objects_Data2, X
 
 Zombie_NoInfection1:
 
@@ -2761,7 +2758,6 @@ Zombie_Move:
 	RTS
 
 Zombie_Move1:
-	JSR Object_HandleBumpUnderneath
 	JMP Goomba_Draw
 
 Zombie_Interact:
@@ -3019,7 +3015,7 @@ ObjNorm_JumpingCheepCheep:
 	LDA <Player_HaltGameZ
 	BNE PRG004_B0BA	 ; If gameplay is halted, jump to PRG004_B0BA
 
-	INC <Objects_Data2,X	 ; Var5++
+	INC Objects_Data2,X	 ; Var5++
 
 	JSR Object_ApplyXVel	 	; Apply X velocity
 	JSR Object_ApplyYVel_NoGravity	; Apply Y velocity
@@ -3033,7 +3029,7 @@ PRG004_B0BA:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 PRG004_B0BD:
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	LSR A
 	LSR A
 	LSR A
@@ -3052,28 +3048,57 @@ PRG004_B0CC:
 	JMP GroundTroop_DrawNormal	 ; Draw and don't come back!
 
 SwimCheep_CurrentFrame = Objects_Data1
+SwimCheep_StartX = Objects_Data2
+SwimCheep_StartXHi = Objects_Data3
+SwimCheep_StartY = Objects_Data4
+SwimCheep_StartYHi = Objects_Data5
+
 ObjInit_SwimmingCheep:
 	JSR InitPatrol
+
+	LDA <Objects_XZ, X
+	STA SwimCheep_StartX, X
+
+
+	LDA Objects_Property, X
+	CMP #$06
+	BNE ObjInit_SwimmingCheepRTS
 
 	LDA #$F8
 	STA ChaseVel_LimitLo, X
 
 	LDA #$08
 	STA ChaseVel_LimitHi, X
-	
+
+ObjInit_SwimmingCheepRTS:
 	RTS
 
 ObjNorm_SwimmingCheep:
 	LDA <Player_HaltGameZ
 	BNE Cheep_Draw
 
+	LDA Objects_Property, X
+	CMP #$06
+	BEQ SwimmingCheep_CheckDelete
+
+	LDA <Objects_XZ, X
+	CMP SwimCheep_StartX, X
+	BNE SwimmingCheep_NoDelete
+
+SwimmingCheep_CheckDelete:
 	JSR Object_DeleteOffScreen
+
+SwimmingCheep_NoDelete:
 	JSR DoPatrol
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTilesWallStops
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Property, X
+	CMP #$06
+	BNE ObjNorm_SwimmingCheep2
 
 ObjNorm_SwimmingCheep1:
 	LDA Object_VertTileProp, X
@@ -3082,10 +3107,10 @@ ObjNorm_SwimmingCheep1:
 	JSR Object_HitCeiling
 
 ObjNorm_SwimmingCheep2:
-	INC <SwimCheep_CurrentFrame,X	 ; Var5++
+	INC SwimCheep_CurrentFrame,X	 ; Var5++
 
 	; Toggle frame 0/1
-	LDA <SwimCheep_CurrentFrame,X
+	LDA SwimCheep_CurrentFrame,X
 	LSR A
 	LSR A
 	LSR A
@@ -3308,7 +3333,6 @@ ObjNorm_Goomba02:
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_HandleBumpUnderneath
 
 Goomba_Draw:
 	INC Goomba_CurrentFrame, X
@@ -3358,7 +3382,6 @@ Goomba_Death2:
 	JMP Object_DrawMirrored
 
 FlyingTroopa_StartX = Objects_Data6
-FlyingTroopa_StartXHi = Objects_Data7
 
 ObjInit_ParaTroopas:
 	LDA <Objects_YZ, X
@@ -3369,35 +3392,38 @@ ObjInit_ParaTroopas:
 	ADC #$00
 	STA <Objects_YHiZ, X
 
-	LDA #$20 
-	STA Objects_Data8, X
-	STA Objects_Data9, X
-
 	LDA Objects_Property, X
 	AND #$FE
 	CMP #$04
 	BNE ObjInit_ParaTroopas1
 
 	LDA <Objects_YZ, X
-	ADD #$30
+	SUB #$40
 	STA <Objects_YZ, X
 
 	LDA <Objects_YHiZ, X
-	ADC #$00
+	SBC #$00
 	STA <Objects_YHiZ, X
 
 ObjInit_ParaTroopas1:
 	LDA <Objects_XZ, X
 	STA FlyingTroopa_StartX, X
 
-	LDA <Objects_XHiZ, X
-	STA FlyingTroopa_StartXHi, X
 	JMP InitPatrol
 
 ObjNorm_FlyingTroopa:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_FlyingTroopa2
 
+	LDA Objects_Property, X
+	CMP #$06
+	BEQ FlyingTroopa_CheckDelete
+
+	LDA <Objects_XZ, X
+	CMP FlyingTroopa_StartX, X
+	BNE ObjNorm_FlyingTroopa0
+
+FlyingTroopa_CheckDelete:
 	JSR Object_DeleteOffScreen
 
 ObjNorm_FlyingTroopa0:
@@ -3408,8 +3434,8 @@ ObjNorm_FlyingTroopa0:
 	JSR Object_InteractWithTilesWallStops
 	JSR Object_AttackOrDefeat
 
-	INC <Koopa_CurrentFrame,X
-	LDA <Koopa_CurrentFrame,X
+	INC Koopa_CurrentFrame,X
+	LDA Koopa_CurrentFrame,X
 	LSR A
 	LSR A
 	LSR A
@@ -3445,6 +3471,7 @@ ObjNorm_PurpleTroopa:
 
 ObjNorm_PurpleTroopa1:
 	RTS
+
 ObjNorm_RedTroopa:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_Troopa1
@@ -3472,10 +3499,10 @@ ObjNorm_RedTroopa:
 	JSR Object_ApplyXVel
 
 Troopa_Animate:
-	INC <Koopa_CurrentFrame, X
+	INC Koopa_CurrentFrame, X
 
 RedTroopa_Draw:
-	LDA <Koopa_CurrentFrame, X
+	LDA Koopa_CurrentFrame, X
 	LSR A
 	LSR A
 	LSR A
@@ -3501,8 +3528,8 @@ ObjNorm_Troopa0:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
-	INC <Koopa_CurrentFrame, X
-	LDA <Koopa_CurrentFrame, X
+	INC Koopa_CurrentFrame, X
+	LDA Koopa_CurrentFrame, X
 	LSR A
 	LSR A
 	LSR A
@@ -3512,6 +3539,11 @@ ObjNorm_Troopa0:
 ObjNorm_Troopa1:
 	JMP Troopa_Draw
 
+ObjInit_PoisonMushroom:
+	JSR Object_MoveTowardsPlayer
+	LDA #$01
+	STA Objects_NoIce, X
+	RTS
 
 ObjNorm_PoisonMushroom:
 	LDA <Player_HaltGameZ
@@ -3554,7 +3586,7 @@ ObjNorm_BouncyTroopa0:
 	BNE ObjNorm_BouncyTroopa1
 
 	LDA #$00
-	STA <Bouncey_FlutterTime, X
+	STA Bouncey_FlutterTime, X
 	LDA #$C0
 	STA Objects_YVelZ, X
 	BNE ObjNorm_BouncyTroopa2
@@ -3566,11 +3598,11 @@ ObjNorm_BouncyTroopa1:
 	LDA <Objects_YVelZ, X
 	BMI ObjNorm_BouncyTroopa2
 
-	LDA <Bouncey_FlutterTime, X
+	LDA Bouncey_FlutterTime, X
 	CMP #$10
 	BCS ObjNorm_BouncyTroopa2
 
-	INC <Bouncey_FlutterTime, X
+	INC Bouncey_FlutterTime, X
 	LDA #$00
 	STA Objects_YVelZ, X
 
@@ -3636,8 +3668,8 @@ Buzzy_NoDrop:
 	JSR Object_AttackOrDefeat
 	JSR Object_FaceDirectionMoving
 
-	INC <Buzzy_Frame, X
-	LDA <Buzzy_Frame, X
+	INC Buzzy_Frame, X
+	LDA Buzzy_Frame, X
 	LSR A
 	LSR A
 	LSR A
@@ -3703,8 +3735,8 @@ Spiny_NoDrop:
 	JSR Object_AttackOrDefeat
 	JSR Object_FaceDirectionMoving
 
-	INC <Spiny_Frame, X
-	LDA <Spiny_Frame, X
+	INC Spiny_Frame, X
+	LDA Spiny_Frame, X
 	LSR A
 	LSR A
 	LSR A
@@ -3817,7 +3849,7 @@ DrawWings:
 	LDA #$CD
 	STA <Temp_Var1
 
-	LDA <Koopa_CurrentFrame,X
+	LDA Koopa_CurrentFrame,X
 	ADC #$02
 	AND #$04
 	BEQ PRG004_B548	 ; 4 ticks on, 4 ticks off; jump to PRG004_B548
@@ -3925,7 +3957,7 @@ GiantEnemy_Draw:
 	STA <Temp_Var1	 ; Temp_Var1 = flip bits sans horizontal flip
 
 	; Set horizontal flip only if Var5 bit 2 is set
-	LDA <Objects_Data2,X
+	LDA Objects_Data2,X
 	AND #$04
 	ASL A	
 	ASL A	
@@ -4252,7 +4284,7 @@ PRG004_B75A:
 
 	; Var5 = original Y
 	LDA <Objects_YZ,X
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 	
 	; Objects_TargetingYVal = $21
 	TYA
@@ -4273,7 +4305,7 @@ GiantPiranha_TimerReloads:
 ObjNorm_BigPiranha:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
-	LDA <Objects_Data1,X
+	LDA Objects_Data1,X
 	AND #$03
 	BNE PRG004_B78C	 ; If (Var4 & 3) <> 0 (internal state 0 means Piranha is fully retracted), jump to PRG004_B78C
 
@@ -4302,7 +4334,7 @@ PRG004_B79D:
 
 	INC Objects_Data3,X	 ; Var3++
 
-	LDA <Objects_Data1,X
+	LDA Objects_Data1,X
 	AND #$03	; Keep internal state counter 0-3
 
 	JSR DynJump
@@ -4319,7 +4351,7 @@ GiantPiranha_Emerge:
 	; Var5 = original Y 
 	; Var7 = original Y Hi
 
-	LDA <Objects_Data2,X		; Original Y
+	LDA Objects_Data2,X		; Original Y
 	SUB Objects_TargetingYVal,X	; subtract TargetingYVal
 	PHA				; Save it
 
@@ -4347,7 +4379,7 @@ GiantPiranha_Retract:
 
 	PLA		 ; Restore Y + 1
 
-	CMP <Objects_Data2,X
+	CMP Objects_Data2,X
 	LDA <Temp_Var1	
 	SBC Objects_Data3,X
 	BCS PRG004_B7F0	 ; Basically if Giant Piranha is at his Y and Y Hi origin, jump to PRG004_B7F0
@@ -4366,9 +4398,9 @@ GiantPiranha_Chomp:
 	BNE PRG004_B80F	 ; If timer not expired, jump to PRG004_B80F
 
 PRG004_B7F0:
-	INC <Objects_Data1,X	 ; Var4++ (next internal state)
+	INC Objects_Data1,X	 ; Var4++ (next internal state)
 
-	LDA <Objects_Data1,X
+	LDA Objects_Data1,X
 	AND #$03
 	TAY		 ; Y = 0 to 3, based on internal state
 
@@ -4801,8 +4833,8 @@ NoBounceHigher:
 	JSR Object_MoveAwayFromPlayerFast
 
 ChompAnimate:
-	INC <Chomp_Frame, x
-	LDA <Chomp_Frame, x
+	INC Chomp_Frame, x
+	LDA Chomp_Frame, x
 	LSR A
 	LSR A
 
@@ -5253,8 +5285,8 @@ Chomp_Free:
 	STA <Objects_YVelZ, X
 
 FreeNoBounce:
-	INC <Chomp_Frame, x
-	LDA <Chomp_Frame, x
+	INC Chomp_Frame, x
+	LDA Chomp_Frame, x
 	LSR A
 	LSR A
 	LSR A
@@ -5344,13 +5376,17 @@ DisplayLakituText:
 
 	LDA Last_StatusBar_Mode
 	STA StatusBar_Mode
+
 	LDA #$80
 	STA Last_StatusBar_Mode
+
 	INC Objects_Data4, X
+
 	LDY Objects_Property, X
 	LDA Effective_Suit
 	CMP PowerUpChecks, Y
 	BEQ DisplayLakituText1
+
 	LDA #$03
 	STA Objects_Data4, X
 
@@ -5470,7 +5506,6 @@ ObjNorm_BlueShell:
 	LDA <Player_HaltGameZ
 	BNE DrawBlueShell
 
-	JSR Object_HandleBumpUnderneath
 	JSR Object_InteractWithPlayer
 	INC Objects_Data4, X
 

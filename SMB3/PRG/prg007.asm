@@ -2921,7 +2921,7 @@ SObj_Egg3:
 	
 	INC HitTestOnly
 
-	JSR PRG000_DC09
+	;JSR PRG000_DC09
 	LDX TempX
 	STX <CurrentObjectIndexZ
 	BCC SObj_EggRTS	 ; If object has not hit another object, jump to PRG000_CD46
@@ -4362,7 +4362,7 @@ CFire_RockyWrench:
 
 	; Var5 = 0
 	LDA #$00
-	STA <Objects_Data2,X
+	STA Objects_Data2,X
 
 	; Set Rocky's timer to $28
 	LDA #$28
@@ -4662,4 +4662,124 @@ EnemeyProj_Enemy_FreezePlayer2
 	JMP Enemy_FreezePlayer
 	
 EnemeyProj_Enemy_FreezePlayer3:
+	RTS
+
+
+DrawStarsBackground:
+	
+	LDA WeatherActive
+	BNE DrawStarsBackground01
+
+	LDA DayNightActive
+	BNE DrawParallaxBackground
+
+DrawStarsBackground01:
+	RTS
+
+DrawParallaxBackground:
+	LDA DayNight
+	BNE DrawStarsBackground1
+
+
+DrawSkyBackground1:
+	LDA <Counter_1
+	AND #$3F
+	BNE DrawSkyBackground2
+	INC Weather_XPos
+	INC Weather_XPos + 1
+	INC Weather_XPos + 2
+	INC Weather_XPos + 3
+	INC Weather_XPos + 4
+	INC Weather_XPos + 5
+
+DrawSkyBackground2:
+	LDX #$05
+	LDY #$F8
+	LDA <Vert_Scroll
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var2
+	LDA <Horz_Scroll_Hi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var2
+	STA <Temp_Var2
+
+DrawClouds0:
+	JSR FindUnusedSprite
+	LDA #(SPR_PAL1 | SPR_BEHINDBG)
+	STA Sprite_RAM + 2, Y
+	LDA #$75
+	STA Sprite_RAM + 1, Y
+	
+	LDA Weather_YPos, X
+	SUB <Temp_Var1
+	STA Sprite_RAM, Y
+	
+	LDA Weather_XPos, X
+	SUB <Temp_Var2
+	STA Sprite_RAM +3, Y
+	DEX
+	BPL DrawClouds0
+	RTS
+
+DrawStarsBackground1:
+	LDY #$F8
+	LDX #$05
+	LDA <Vert_Scroll
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+	LDA <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var2
+	LDA <Horz_Scroll_Hi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var2
+	STA <Temp_Var2
+
+DrawStars0:
+	JSR FindUnusedSprite
+	TXA
+	AND #$03
+	ORA #SPR_BEHINDBG
+	STA Sprite_RAM + 2, Y
+	LDA #$5D
+	STA Sprite_RAM + 1, Y
+
+	LDA StarYPositions, X
+	SUB <Temp_Var1
+	STA Sprite_RAM, Y
+	
+	LDA StarXPositions, X
+	SUB <Temp_Var2
+	STA Sprite_RAM +3, Y
+	DEX
+	BPL DrawStars0
+	RTS
+
+Projectile_TempChange:
+	LDA ProjectileToSpinners
+	BEQ Projectile_TempChangeRTS
+
+
+Projectile_TempChangeRTS:
 	RTS

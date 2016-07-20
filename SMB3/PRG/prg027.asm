@@ -261,7 +261,7 @@ PRG027_A181:
 	AND #$18
 	BEQ PRG027_A1A7	 ; Periodically jump to PRG027_A1A7 (RTS)
 
-	LDY <CineKing_Var	 ; Y = CineKing_Var (item included with letter)
+	;LDY <CineKing_Var	 ; Y = CineKing_Var (item included with letter)
 
 	; Flash included item
 	LDA Letter_ItemPat_L-1,Y
@@ -322,7 +322,7 @@ PRG027_A1D5:
 Letter_GiveIncludedItem:
 	LDY World_Num			; Y = World_Num
 	LDA LetterItem_ByWorld,Y	; Get item included with letter for this world
-	STA <CineKing_Var		 ; -> CineKing_Var
+	;STA <CineKing_Var		 ; -> CineKing_Var
 
 	BEQ PRG027_A1FA	 ; If no item is to be given (World 7 letter only), jump to PRG027_A1FA (RTS)
 
@@ -346,7 +346,7 @@ PRG027_A1EC:
 PRG027_A1F5:
 
 	; Give item included with letter
-	LDA <CineKing_Var
+	;LDA <CineKing_Var
 	STA Inventory_Items,Y
 
 PRG027_A1FA:
@@ -611,7 +611,7 @@ PRG027_A4F5:
 
 	LDA #$00
 	STA ToadTalk_CPos	; ToadTalk_CPos = 0
-	STA <CineKing_Var		; CineKing_Var = 0
+	;STA <CineKing_Var		; CineKing_Var = 0
 
 	; CineKing_Timer2 = $FF
 	LDA #$ff
