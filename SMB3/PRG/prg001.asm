@@ -1160,7 +1160,6 @@ ObjNorm_PowerUp:
 	JMP Object_Draw
 
 PowerUp_Norm:
-	JSR Object_DeleteOffScreen
 
 	LDA Objects_Timer, X
 	BEQ ObjNorm_PowerUp1
@@ -1239,14 +1238,13 @@ PUp_Queue:
 
 PUp_Collect:
 	LDA #OBJSTATE_DEADEMPTY
-	LDX <CurrentObjectIndexZ
 	STA Objects_State, X
 
 	LDA PowerUp_Type, X
 	CMP #$01
 	BNE PUp_Collect2
 
-	LDY Effective_Suit
+	LDY Player_EffectiveSuit
 	BEQ PUp_Collect2
 
 PUp_Collect1:
@@ -1258,7 +1256,7 @@ PUp_Collect1:
 
 PUp_Collect2:
 	TAY
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP PUp_Compare, Y
 	BEQ PUp_Collect1
 
@@ -1311,6 +1309,7 @@ PUp_Poof:
 	RTS
 
 PUp_Mushroom:
+	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
@@ -1319,10 +1318,16 @@ PUp_Mushroom:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
 PUp_Mushroom2:
 	JMP Object_Draw
 
 PUp_Flower:
+
+	JSR Object_DeleteOffScreen
 	JSR Object_ApplyY_With_Gravity
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
@@ -1330,6 +1335,10 @@ PUp_Flower:
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
 
 PUp_Flower2:
 	JMP Object_Draw
@@ -1342,6 +1351,11 @@ PUp_Bouncer:
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
 	LDA <Objects_TilesDetectZ,X
 	AND #HITTEST_BOTTOM
 	BEQ PUp_Bouncer1
@@ -1362,6 +1376,7 @@ PRG001_ABD1:
 Leaf_OscData = Objects_Data5
 
 PUp_Leaf:
+	JSR Object_DeleteOffScreen
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 	BCS PRG001_AC22
@@ -1393,6 +1408,7 @@ PRG001_AC07:
 
 	JSR Object_ApplyXVel	 ; Apply X Velocity
 	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
+	JSR Object_XYCheckSum
 
 PRG001_AC15:
 	LDA #SPR_HFLIP	 ; A = SPR_HFLIP (horizontal flip)
@@ -1410,6 +1426,7 @@ PRG001_AC22:
 	JMP Object_Draw; Draw object and "shake awake" 
 
 PUp_Star:
+	JSR Object_DeleteOffScreen
 	LDA Level_PSwitchCnt
 	BNE PRG001_A810	 ; If P-Switch is active, jump to PRG001_A810
 
@@ -1426,6 +1443,9 @@ PRG001_A810:
 	RTS
 
 PUp_Vine:
+	LDA <Objects_YHiZ, X
+	BMI PUp_Delete
+
 	LDA <Objects_XZ, X
 	AND #$F0
 	STA <Objects_XZ, X
@@ -1454,6 +1474,7 @@ PUp_Detect:
 	CMP #TILE_PROP_SOLID_TOP
 	BCC PUp_VineBlock
 
+PUp_Delete:
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State, X
 	RTS
@@ -1645,7 +1666,7 @@ PRG001_B928:
 Bowser_DoMovements:
 	JSR Bowser_HandleIfDead	 ; Handle Bowser if he got killed
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #%00011111
 	ORA Bowser_Counter1
 	BNE PRG001_B948	 ; If Bowser Counter 1 > 0 and except every 32nd tick, jump to PRG001_B948
@@ -2808,7 +2829,7 @@ Try_PUp_Reserve:
 	LDA Player_Equip
 	CMP #$07
 	BNE Cant_Reserve
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	STA PowerUp_Reserve
 Cant_Reserve:
 	RTS
@@ -2921,6 +2942,7 @@ ObjNorm_Weather:
 No_Wind:
 	LDA <Vert_Scroll
 	STA <Temp_Var7
+
 	LDA <Horz_Scroll
 	STA <Temp_Var8
 
@@ -2929,12 +2951,15 @@ No_Wind:
 	BNE DoNextParticle0
 
 	INC Objects_Data5, X
+
 	LDA Objects_Data5, X
 	AND #$01
 	BNE DoNextParticle0
+
 	LDA <Temp_Var7
 	ADD #$80
 	STA <Temp_Var7
+
 	LDA <Temp_Var8
 	ADD #$80
 	STA <Temp_Var8
@@ -2947,7 +2972,9 @@ DoNextParticle0:
 
 DoNextParticle:
 	JSR MoveSingleParticle
+
 	LDX TempX
+
 	JSR DrawSingleParticle
 	LDA TempX
 	ADD #$04
@@ -3031,6 +3058,7 @@ DoNotReverse:
 	LDA RandomN + 3
 	AND #$01
 	STA TempA
+
 	LDA Objects_Data4, X
 	ASL A
 	ORA TempA
@@ -3045,11 +3073,10 @@ RainPattern:
 DrawSingleParticle:
 
 	LDA Weather_YPos, Y
-	;SUB <Temp_Var7
 	STA Sprite_RAM, X
 
 	LDA Weather_XPos, Y
-	;SUB <Temp_Var8
+	SUB <Temp_Var8
 	STA Sprite_RAM + 3, X
 
 	LDA Weather_Pattern, Y
@@ -3132,7 +3159,7 @@ Mini_NotAttacking:
 	CMP #$01
 	BCC NoChompFlash
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	LSR A
 	AND #$01
@@ -3142,7 +3169,7 @@ Mini_NotAttacking:
 
 NoChompFlash:
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$08
 	LSR A
 	LSR A
@@ -3198,7 +3225,7 @@ ChompNoReset:
 
 	LDY #$00
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$01
 	BNE ChompOtherBlock
 
@@ -3243,7 +3270,7 @@ DrawChomp:
 	CMP #$01
 	BCC NoChompFlash1
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	LSR A
 	AND #$01
@@ -3252,7 +3279,7 @@ DrawChomp:
 	STA Objects_SpriteAttributes,X
 
 NoChompFlash1:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$08
 	LSR A
 	LSR A
@@ -4313,76 +4340,82 @@ DrawStarPieceAnim:
 	RTS
 
 ObjInit_HardIce:
-	LDA #$00
-	STA Objects_XVelZ, X
-	STA Objects_Orientation, X
-	LDA Objects_XZ, X
-	ADD #$08
-	AND #$F0
-	STA Objects_XZ, X
+
 	LDA #$20
 	STA Objects_Timer, X
 	RTS
 
+HardIce_HitCount = Objects_Data1
+HardIce_CanHitTimer = Objects_Data2
+
 ObjNorm_HardIce:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_HardIce2
+	BEQ HardIce_NoXVel
+	
+	JMP Object_Draw
 
-ObjNorm_HardIce_0:
+HardIce_NoXVel
+	LDA #$00
+	STA Objects_XVelZ, X
+	STA Objects_Orientation, X
+	
+	LDA Objects_XZ, X
+	ADD #$08
+	AND #$F0
+	STA Objects_XZ, X
+
+	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox
-	JSR Object_DetectTiles
-	JSR Object_InteractWithTiles
-	JSR Object_DeleteOffScreen
 	JSR Object_InteractWithPlayer
+	JSR Object_DetectTiles
 
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
-	BEQ ObjNorm_HardIce2
+	BEQ HardIce_Draw
 
-	JSR Object_KillOthers
-	LDA Objects_Data4, X
-	BNE ObjNorm_HardIce1
+	LDA Object_BodyTileProp, X
+	CMP #(TILE_PROP_ENEMY)
+	BNE HardIce_Burst
 
-	INC Objects_Data4, X
-	LDA Tile_LastProp
-	CMP #TILE_PROP_ENEMY
-	BEQ ObjNorm_HardIce1_0
+	JSR Object_HitGround
 
-ObjNorm_HardIce1_1:
-	LDA #OBJ_ICEBLOCK
-	STA Objects_ID, X
-	RTS
+	LDA HardIce_HitCount, X
+	BNE HardIce_ChangeBlock 
 
-ObjNorm_HardIce1_0:
-	LDA #$F0
-	STA Objects_YVelZ, X
-	BNE ObjNorm_HardIce2
-
-ObjNorm_HardIce1:
-	LDA Block_NeedsUpdate
-	BNE ObjNorm_HardIce2
-
-	LDA Tile_LastValue
-	EOR #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
+	INC HardIce_HitCount, X
 	
-	JSR SetObjectTileCoordAlignObj
-	JMP Object_Delete
+	LDA #$F0
+	STA <Objects_YVelZ, X
+	BNE HardIce_Draw
 
-ObjNorm_HardIce2:
+
+HardIce_ChangeBlock:
+
+	LDA Object_BodyTileValue, X
+	EOR #$01
+
+	JSR Object_ChangeBlock
+	JSR Object_Delete
+
+HardIce_Draw:
 	JMP Object_Draw 
 	
+HardIce_Burst:
+	JMP Object_BurstIce
 
 ObjHit_HardIce:
-	LDA Objects_Data4, X
-	BNE ObjHit_HardIce1
-	LDA #OBJ_ICEBLOCK
-	STA Objects_ID, X
+	LDA HitTest_Result
+	CMP #$0A
+	BNE HardIce_HitBlock
 
-ObjHit_HardIce1:
-	RTS
+	JSR Object_XDistanceFromPlayer
+	LDA <XDiff
+	CMP #$0A
+	BCC HardIce_Burst
+
+HardIce_HitBlock:
+	JMP ObjHit_SolidBlock
 
 SnowBall_Frame = Objects_Data1
 

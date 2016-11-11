@@ -3,7 +3,7 @@
   <pointers />
   <spritedata>
     <sprite x="7" y="19" value="124" item="0" property="2" />
-    <sprite x="0" y="26" value="113" item="0" property="0" />
+    <sprite x="0" y="26" value="78" item="0" property="0" />
     <sprite x="17" y="8" value="114" item="0" property="0" />
     <sprite x="24" y="8" value="114" item="0" property="1" />
     <sprite x="37" y="6" value="144" item="0" property="2" />
@@ -33,5 +33,5 @@
     <sprite x="169" y="2" value="145" item="0" property="0" />
     <sprite x="176" y="2" value="145" item="0" property="0" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Selection" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
+  <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
 </level>

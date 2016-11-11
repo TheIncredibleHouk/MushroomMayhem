@@ -125,8 +125,8 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4A - OBJ_MAGICSTAR
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4B - OBJ_MAGICSTAR
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4C - OBJ_MAGICSTAR
-	.byte BOUND8x16	; Object $4D
-	.byte BOUND8x16	; Object $4E
+	.byte BOUND8x16	|  OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF ; Object $4D
+	.byte BOUND8x16	|  OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF ; Object $4E
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF ; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte BOUND48x48 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF		; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $51 - OBJ_ROTODISCDUAL
@@ -1144,7 +1144,7 @@ PRG000_CAAE:
 	STA Sprite_RAM+$05,Y
 
 	; Set the attributes
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	LSR A
 	ROR A
@@ -1408,7 +1408,7 @@ ObjState_Kicked1:
 	JSR Object_InteractWithTiles
 	
 DrawKickedShell:
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A	
 	AND #$03
 	TAY		 ; Y = 0 to 3, by counter
@@ -2327,6 +2327,11 @@ Object_DoChange:
 	LDA #-$40
 	STA <Player_YVel
 	STA Player_InAir
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+	JSR Object_MoveTowardsPlayer
 	SEC
 	RTS
 
@@ -4500,7 +4505,6 @@ Object_TestBottomBumpBlocks1:
 	RTS
 
 Object_TestSideBumpBlocks:
-	STA Debug_Snap
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BNE Object_TestSideBumpBlocks1
@@ -5100,7 +5104,7 @@ PatrolBackForth:
 
 
 PatrolBackForth_Accel:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	BNE PatrolBackForth_Move
 
@@ -5141,7 +5145,7 @@ PatrolUpDown:
 
 
 PatrolUpDown_Accel:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	BNE PatrolUpDown_Move
 
@@ -5166,7 +5170,7 @@ Object_ChasePlayer:
 	LDA Objects_InWater, X
 	BEQ ChaseDetermineX
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	BEQ Chase_Move
 
@@ -5224,7 +5228,7 @@ Object_FleePlayer:
 	LDA Objects_InWater, X
 	BEQ FleeDetermineX
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	BEQ Flee_Move
 
@@ -5691,10 +5695,9 @@ Object_Burst:
 
 	LDA <Object_BurstPalette
 	STA BrickBust_Pal
-	JMP Object_Delete
 
 Object_Burst1:
-	RTS		 ; Return
+	JMP Object_Delete
 
 ObjHit_SolidBlock:
 	LDA HitTest_Result
@@ -6135,4 +6138,19 @@ Object_NoWind:
 	LDA <Objects_XVelZ, X
 	STA Objects_EffectiveXVel, X
 	CLC
+	RTS
+
+Object_EdgeMarch:
+	LDA Objects_PreviousTilesDetect, X
+	AND #HIT_GROUND
+	BEQ Object_EdgeMarchRTS
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BNE Object_EdgeMarchRTS
+
+	JSR Object_Reverse
+	JSR Object_ApplyXVel
+
+Object_EdgeMarchRTS:
 	RTS

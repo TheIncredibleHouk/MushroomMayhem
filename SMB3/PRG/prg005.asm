@@ -43,7 +43,7 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_PumpkinFree	; Object $A0 - OBJ_PUMPKINFREE
 	.word ObjInit_DoNothing	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.word ObjInit_Piranha	; Object $A2 - OBJ_PIRANHA
-	.word ObjInit_Piranha	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.word ObjInit_Piranha_TwoShot	; Object $A3 - OBJ_PIRANHA_TWOSHOT
 	.word ObjInit_Pumpkin	; Object $A4 - OBJ_PUMPKINPLANT
 	.word ObjInit_DoNothing	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.word ObjInit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
@@ -87,11 +87,11 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_Piranha		; Object $A2 - OBJ_REDPIRANHA
 	.word ObjNorm_Piranha		; Object $A3 - OBJ_PIRANHA_TWOSHOT
 	.word ObjNorm_Pumpkin		; Object $A4 - OBJ_PUMPKINPLANT
-	.word ObjNorm_Piranha		; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
-	.word ObjNorm_Piranha		; Object $A6 - OBJ_VENUSFIRETRAP
-	.word ObjNorm_Piranha		; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjNorm_Piranha	; Object $A8 - OBJ_ACIDTRAP
-	.word ObjNorm_Piranha	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.word ObjNorm_DoNothing		; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
+	.word ObjNorm_DoNothing		; Object $A6 - OBJ_VENUSFIRETRAP
+	.word ObjNorm_DoNothing		; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
+	.word ObjNorm_DoNothing	; Object $A8 - OBJ_ACIDTRAP
+	.word ObjNorm_DoNothing	; Object $A9 - OBJ_ACIDTRAP_CEIL
 	.word ObjNorm_DoNothing	; Object $AA - OBJ_AIRSHIPPROP
 	.word FireJetLR_SpriteVisibleTest	; Object $AB (this call doesn't make any sense!!)
 	.word ObjNorm_FireJet		; Object $AC - OBJ_FIREJET_LEFT
@@ -393,7 +393,14 @@ ObjP90:
 ObjP91:
 	.byte $AD, $AF, $B1, $AF, $B5, $B7, $AD, $B3
 ObjP92:
-	.byte $A1, $A3, $A5, $A7, $81, $83, $85, $87, $85, $87, $81, $83, $A1, $A3, $A9, $AB
+	.byte $A1, $A3
+	.byte $A5, $A7
+	.byte $81, $83
+	.byte $85, $87
+	.byte $85, $87
+	.byte $81, $83
+	.byte $A1, $A3
+	.byte $A9, $AB
 
 ObjP93:
 	.byte $81, $83, $A1, $A3, $85, $87, $A5, $A7
@@ -830,6 +837,12 @@ ObjInit_Pumpkin:
 	STA <Objects_XZ, X
 	RTS
 
+ObjInit_Piranha_TwoShot:
+	JSR ObjInit_Piranha
+
+	INC Piranha_AttackCount, X
+	RTS
+
 ObjInit_Piranha:
 	LDA #$03
 	STA Piranha_CurrentState, X
@@ -1039,6 +1052,7 @@ Piranha_Attack:
 	CMP #$20
 	BNE Piranha_Attack2
 
+	STA Debug_Snap
 	LDA Piranha_AttacksLeft, X
 	BEQ Piranha_Attack2
 
@@ -1073,6 +1087,14 @@ Piranha_NoYOff:
 	BCC Piranha_Attack1
 
 	JSR Piranha_Projectile
+	DEC Piranha_AttacksLeft, X
+	BEQ Piranha_NoMoreAttacks
+
+	LDA #$50
+	STA Objects_Timer, X
+	RTS
+
+Piranha_NoMoreAttacks:
 	LDA #$20
 	STA Objects_Timer, X
 	RTS
@@ -1111,7 +1133,6 @@ ShootProjectile1:
 	JSR Object_AimProjectileRandom
 
 ShootProjectile2:
-	DEC Piranha_AttacksLeft, X
 	RTS
 
 ObjInit_RockyWrench:
@@ -1470,7 +1491,7 @@ PRG005_AB22:
 Rocky_Draw:
 	LDY #$02	 ; Y = 2
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$10
 	BEQ PRG005_AB43	 ; 16 ticks on, 16 ticks off; jump to PRG005_AB43
 
@@ -3219,7 +3240,7 @@ WoodenPlatform_XVel:
 	.byte -$04, -$08, -$06, -$08
 
 LevelEvent_WoodPlatforms:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$7f
 	BNE PRG005_BC41	 ; Only do anything every 127 ticks
 
@@ -3310,7 +3331,7 @@ FloatingCloud_Var5:	.byte $00, $01, $02, $01
 FloatingCloud_XVel:	.byte $10, $12, $14, $12
 
 LevelEvent_CloudsinBG:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	BNE PRG005_BCA2
 	INC LevelEvent_Cnt
@@ -3456,7 +3477,7 @@ BB8WayAttr:
 	.byte $00, $00, $00, $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP, $00
 
 LevelEvent_8WayBulletBills:	
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$7f	 ; Cap 0 - 31
 	BNE PRG005_BD53	 ; If not zero, jump to PRG005_BD53 (RTS)
 
@@ -3864,11 +3885,11 @@ PRG005_BEFD:
 	LDX #$07	 ; X = 7
 
 PRG005_BF001:
-	LDA Level_KeepObjects
-	BEQ PRG005_BF002
-
 	LDA Objects_Global, X
 	BNE PRG005_BF01
+
+	LDA Level_KeepObjects
+	BEQ PRG005_BF002
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
@@ -4030,180 +4051,230 @@ P_PRG007_B828:
 
 ObjInit_Freezie:
 	LDA Objects_Property, X
+	BNE Freezie_NotMoving
+
+	LDA #$01
+	STA Freezie_State, X
+
+	JSR Object_MoveTowardsPlayer
 	RTS
+
+Freezie_NotMoving:
+	CMP #$01
+	BNE Freezie_HorzontalPipe
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+	RTS
+
+Freezie_HorzontalPipe:
+	LDA <Objects_YZ, X
+	SUB #$06
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+	RTS
+
+Freezie_Frame = Objects_Data1
+Freezie_State = Objects_Data2
+Freezie_NoYVel = Objects_Timer
+Freezie_NoImpact = Objects_Data3
 
 ObjNorm_Freezie:
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_Freezie01
+	BEQ Freezie_Norm
 
-	JMP DrawFreezie
+	LDA Freezie_State, X
+	BNE Freezie_JustDraw
 
-ObjNorm_Freezie01:
+	RTS
+
+Freezie_JustDraw:
+	JMP Freezie_Draw
+
+Freezie_Norm:
+
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BNE ObjNorm_Freezie0
-	JMP Freezie_DieSpawned
+	BNE Freezie_DoAction
 
-ObjNorm_Freezie0:
+	JMP Freezie_Die
+
+Freezie_DoAction:
 	JSR Object_DeleteOffScreen
-	JSR Object_InteractWithPlayer
-	LDA Objects_Data5, X
+	LDA Freezie_State, X
 	JSR DynJump
 
-	.word FreezieMove
-	.word FreezieWait
+	.word Freezie_Wait
+	.word Freezie_Move
 
-
-FreezieWait:
-	LDA #$10
+Freezie_Wait:
+	JSR Object_CalcBoundBox
 	JSR Object_XDistanceFromPlayer
-	CMP #$05
-	BCS FreezieWait3
+	
+	CMP #$28
+	BCC Freezie_ComeOut
 
+	RTS
+
+Freezie_ComeOut:
 	LDA Objects_Property, X
-	CMP #$01
-	BNE FreezieWait1
+	JSR DynJump
 
+	.word Freezie_PopOut
+	.word Freezie_PopOut
+	.word Freezie_SlideRight
+	.word Freezie_SlideLeft
+
+Freezie_PopOut:
 	LDA #$C0
 	STA Objects_YVelZ, X
-	TYA
-	EOR #$01
-	TAY
-	JMP FreezieWait2
-
-FreezieWait1:
-	AND #$01
-	STA TempA
-	TYA
-	EOR #$01
-	TAY
-	CPY TempA
-	BNE FreezieWait3
-
-FreezieWait2:
 	
-	;LDA FreezieDirection, Y
-	STA <Objects_XVelZ,X
-
-	;LDA FreezieFlip, Y
-	STA Objects_Orientation, X
-	DEC Objects_Data5, X
+	JSR	Object_MoveTowardsPlayer
+	
 	LDA #$10
-	STA Objects_Timer, X
+	STA Freezie_NoImpact, X
 
-FreezieWait3:
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
-	JMP DrawFreezie
+	INC Freezie_State, X
+	RTS
 
-FreezieMove:
-	LDA Objects_Timer, X
-	BEQ FreezieMove1
-	LDA Objects_Property, X
-	CMP #$01
-	BEQ FreezieMove0
+Freezie_SlideLeft:
+	LDA #$F8
+	BNE Freezie_SetMove
 
-	LDA #$01
+Freezie_SlideRight:
+	LDA #$08
+
+Freezie_SetMove:
+	STA <Objects_XVelZ, X
+	
+	LDA #$20
+	STA Freezie_NoImpact, X
+
+	LDA #$20
+	STA Freezie_NoYVel,X
+	INC Freezie_State, X
+	RTS
+
+Freezie_Move:
+	LDA Freezie_NoYVel, X
 	STA NoGravity
 
 FreezieMove0:
 	JSR Object_Move
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
-	JMP DrawFreezie
-
-
-FreezieMove1:
-	JSR Object_Move
-	JSR Object_InteractWithTiles
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
 	JSR Object_InteractWithOtherObjects
-	BCS ObjNorm_Freezie1
+	JSR Object_InteractWithPlayer
+	
+	JSR Object_DetectTiles
 
-	LDA  <Objects_TilesDetectZ, X
-	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
-	BNE Freezie_Die
-	LDA Object_VertTileProp
+	LDA Freezie_NoImpact, X
+	BEQ Freezie_DetectWorld
+
+	DEC Freezie_NoImpact, X
+	BNE Freezie_Animate
+
+Freezie_DetectWorld:
+	JSR Object_InteractWithTiles
+	
+	LDA Object_VertTileProp, X
 	AND #$F0
 	CMP #TILE_PROP_WATER
-	BEQ ObjNorm_Freezie1_0
+	BEQ Freezie_FreezeWater
 
 	CMP #(TILE_PROP_WATER | TILE_PROP_FOREGROUND)
-	BNE ObjNorm_Freezie1
+	BNE Freezie_CheckImpact
 
-ObjNorm_Freezie1_0:
+Freezie_FreezeWater:
+	
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Block_DetectX
 
-	LDA Block_NeedsUpdate
-	BNE ObjNorm_Freezie1
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Block_DetectXHi
 
+	LDA <Objects_YZ, X
+	ADD #$18
+	STA Block_DetectY
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Block_DetectYHi
+	
 	LDA Object_VertTileValue, X
 	EOR #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
 
-	LDA Objects_YZ, X
-	ADD #$10
-	AND #$F0
-	STA Block_ChangeY
-	LDA Objects_YHiZ, X
-	ADC #$00
-	STA Block_ChangeYHi
+	JSR Object_ChangeBlock
+	JSR Object_HitGround
+	 
+Freezie_CheckImpact:
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL | HIT_CEILING)
+	BEQ Freezie_Animate
+
+	JMP Freezie_Die
+
+Freezie_Animate:
+	INC Freezie_Frame, X
 	
-	LDA Tile_DetectionX
-	AND #$F0
-	STA Block_ChangeX
-	LDA Tile_DetectionXHi
-	STA Block_ChangeXHi
-	LDA #$00
-	STA Objects_YVelZ, X
-
-ObjNorm_Freezie1:
-	INC Objects_Data4, X
-	LDA Objects_Data4, X
+	LDA Freezie_Frame, X
 	LSR A
 	LSR A 
 	LSR A
 	AND #$03
 	STA Objects_Frame, X
 
+Freezie_Draw:
+	LDA Freezie_NoImpact, X
+	BEQ Freezie_NoBehindBg
 
-DrawFreezie:
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+Freezie_NoBehindBg:
 	JMP Object_Draw
 
 FreezieThrowPlayerX:
-	.byte $30, $D0
+	.byte $E0, $20
 
 ObjHit_Freezie:
 	JSR Player_Freeze
 	JSR Object_XDistanceFromPlayer
+	
 	LDA FreezieThrowPlayerX, Y
 	STA <Player_XVel
+	
 	LDA #$A0
 	STA <Player_YVel
 	STA <Player_InAir
 
 Freezie_Die:
 	LDY Objects_SpawnIdx,X
+	
 	LDA Level_ObjectsSpawned,Y
-	AND #$7f
+	AND #$7F
 	STA Level_ObjectsSpawned,Y
-
-Freezie_DieSpawned:
-	LDA #OBJ_ICEBLOCK
-	STA Objects_ID, X
-	RTS
+	
+	JMP Object_BurstIce
 
 ObjInit_Swoosh:
 	LDA #$60
-	STA Objects_SlowTimer, X
+	STA Objects_Timer, X
 	RTS
 
+
 Swoosh_Pull:
-	.byte $10, $F0
+	.byte $01, $FF
 
 Swoosh_Push:
-	.byte $E0, $20
+	.byte $FD, $03
 
 Swoosh_Particles1:
 	.byte $89, $8B, $8D, $8F
@@ -4211,244 +4282,276 @@ Swoosh_Particles1:
 Swoosh_Particles2:
 	.byte $8F, $8D, $8B, $89
 
-ObjNorm_Swoosh:
-	LDA Objects_State, X
-	CMP #OBJSTATE_KILLED
-	BNE ObjNorm_Swoosh0
-	JMP Object_SetDeadAndNotSpawned
+Swoosh_Times:
+	.byte $40, $60, $80, $A0
 
-ObjNorm_Swoosh0:
-	
-	JSR Object_DeleteOffScreen
+Swoosh_Frame = Objects_Data1
+Swoosh_Action = Objects_Data2
+Swoosh_Ticker = Objects_Data3
+Swoosh_Direction = Objects_Data4
+
+ObjNorm_Swoosh:
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_Swoosh1
+	BEQ Swoosh_Normal
+
 	JMP Object_Draw
 
-ObjNorm_Swoosh1:
+Swoosh_Normal:
+	INC Swoosh_Ticker, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_DeleteOffScreen
+	JSR Object_RespondToTailAttack
+	JSR Object_DetectPlayer
+
+	BCC Swoosh_Normal1	 ; If collision occurred, jump to PRG000_D1C5
+
+	JSR Object_DetermineContactKill
+
+Swoosh_Normal1:
+
+	LDA Swoosh_Action, X
+	CMP #$03
+	BEQ Swoosh_NoChase
+
+	JSR Object_FacePlayer
+	
+	LDY #$00
+	
+	LDA Objects_Orientation, X
+	BEQ Swoosh_StoreDirection
+
+	INY
+
+Swoosh_StoreDirection:
+	TYA
+	STA Swoosh_Direction, X
 
 	LDA Objects_Property, X
 	AND #$01
-	BEQ ObjNorm_Swoosh2
-	JSR Object_ChasePlayer
-	JSR Object_FacePlayer
-	TYA
-	EOR #$01
-	STA Objects_Data1, X
+	BEQ Swoosh_NoChase
+	
+Swoosh_NoChase:
 
-ObjNorm_Swoosh2:
-	LDA Objects_Data4, X
+	LDA Swoosh_Action, X
 	JSR DynJump
 
 	.word Swoosh_Idle
 	.word Swoosh_BreathIn
 	.word Swoosh_Hold
-	.word Swoosh_BlowOut
+	.word Swoosh_BreatheOut
 
 Swoosh_Idle:
-	INC Objects_Data3, X
-	LDA Objects_Data3, X
+	INC Swoosh_Frame, X
+
+	LDA Swoosh_Frame, X
 	AND #$08
 	LSR A
 	LSR A
 	LSR A
 	STA Objects_Frame, X
 
-	JSR Object_FacePlayer
-	TYA
-	EOR #$01
-	STA Objects_Data1, X
-
 	LDA Objects_Timer, X
-	BNE Swoosh_Idle0
-	INC Objects_Data4, X
+	BNE Swoosh_IdleDone
+
 	LDA #$00
-	STA Objects_Data3, X
-	LDA #$20
+	STA Objects_Frame, X
+	INC Swoosh_Action, X
+
+	LDA #$40
 	STA Objects_Timer, X
 
-Swoosh_Idle0:
+Swoosh_IdleDone:
 	JMP Object_Draw
 
 Swoosh_BreathIn:
-	INC Objects_Data3, X
-	LDA Objects_Data3, X
-	CMP #$40
-	BCS Swoosh_BreathIn_1
-	AND #$20
+	
+	JSR Object_YDistanceFromPlayer
+	CMP #$30
+	BCS Swoosh_SuckTimer
+
+Swoosh_SuckIn2:
+	JSR Object_XDistanceFromPlayer
+	
+	CMP #$10
+	BCC Swoosh_SuckTimer
+
+	CMP #$50
+	BCS Swoosh_SuckTimer
+
+	TYA
+	CMP Swoosh_Direction, X
+	BNE Swoosh_SuckTimer
+
+	LDA <Player_XVel
+	ADD Swoosh_Pull, Y
+	STA <Player_XVel
+
+Swoosh_SuckTimer:
+	LDA Objects_Timer, X
+	BNE Swoosh_SuckDraw
+	
+	INC Swoosh_Action, X
+	
+	LDA #$20
+	STA Objects_Timer, X
+	JMP Object_Draw
+
+Swoosh_SuckDraw:
+	LDA #$40
+	SUB Objects_Timer, X
+	
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	LSR A
+
 	ORA #$02
 	STA Objects_Frame, X
 
-Swoosh_BreathIn_1:
-	LDA #$10
-	JSR Object_YDistanceFromPlayer
-	CMP #$03
-	BCS Swoosh_BreathIn1
-
-Swoosh_BreathIn_2:
-	LDA #$10
-	JSR Object_XDistanceFromPlayer
-	CMP #$00
-	BEQ Swoosh_BreathIn1
-	CMP #$03
-	BCS Swoosh_BreathIn1
-	TYA
-	CMP Objects_Data1, X
-	BNE Swoosh_BreathIn1
-
-	LDA Objects_SpritesVerticallyOffScreen, X
-	BNE Swoosh_BreathIn1
-
-	LDA Swoosh_Pull, Y
-	STA Player_CarryXVel
-
-Swoosh_BreathIn1:
-	LDA Objects_Timer, X
-	BNE Swoosh_BreathIn2
-	INC Objects_Data4, X
-	LDA #$00
-	STA Objects_Data3, X
-	LDA #$20
-	STA Objects_Timer, X
-
-Swoosh_BreathIn2:
 	JSR Object_Draw
-	LDA Sprite_RAM + 3, Y
-	SUB #$08
-	STA TempA
+
+	LDA #$F8
+	STA <Temp_Var1
+
 	LDA Objects_Orientation, X
-	BEQ Swoosh_BreathIn3
+	BEQ Swoosh_SuckDraw1
 
-	LDA TempA
-	ADD #$18
-	STA TempA
-	BCS Swoosh_BreathIn4
-	SEC
+	LDA #$10
+	STA <Temp_Var1
 
-Swoosh_BreathIn3:
-	BCC Swoosh_BreathIn4
-	LDA TempA
-	STA Sprite_RAM + 11, Y
+Swoosh_SuckDraw1:
+	LDA Sprite_RAMX, Y
+	ADD <Temp_Var1
+	STA Sprite_RAMX + 8, Y
 
 	LDA #SPR_PAL1
 	ORA Objects_Orientation, X
-	STA Sprite_RAM + 10, Y
+	STA Sprite_RAMAttr + 8, Y
 
-	LDA Objects_Data3, X
+	LDA Swoosh_Ticker, X
 	AND #$0C
+	
 	LSR A
 	LSR A
 	TAX
-	LDA Swoosh_Particles1, X
-	STA Sprite_RAM + 9, Y
-	
-	LDA Sprite_RAM, Y
-	STA Sprite_RAM + 8, Y
 
-Swoosh_BreathIn4:
+	LDA Swoosh_Particles1, X
+	STA Sprite_RAMTile + 8, Y
+	
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY + 8, Y
+
 	RTS
 
 Swoosh_Hold:
 	LDA Objects_Timer, X
-	BNE Swoosh_Hold1
+	BNE Swoosh_HoldDone
+	
 	LDA #$20
 	STA Objects_Timer, X
+
 	LDA #SND_LEVELAIRSHIP
 	STA Sound_QLevel2
-	INC Objects_Data4, X
 
-Swoosh_Hold1:
+	INC Swoosh_Action, X
+
+Swoosh_HoldDone:
 	JMP Object_Draw
 
-Swoosh_BlowOut:
-	INC Objects_Data3, X
-	LDA Objects_Data3, X
-	CMP #$20
-	BCS Swoosh_BlowOut_1
-	AND #$18
-	LSR A
-	LSR A
-	LSR A 
-	ORA #$04
-	STA Objects_Frame, X
 
-Swoosh_BlowOut_1:
-	LDA #$10
+Swoosh_BreatheOut:
+	LDA Swoosh_Ticker, X
+	AND #$01
+	BEQ Swoosh_BlowTimer
+
 	JSR Object_YDistanceFromPlayer
-	CMP #$03
-	BCS Swoosh_BlowOut1
+	CMP #$30
+	BCS Swoosh_BlowTimer
 
-Swoosh_BlowOut_2:
-	LDA #$10
 	JSR Object_XDistanceFromPlayer
-	CMP #$05
-	BCS Swoosh_BlowOut1
+
+	CMP #$70
+	BCS Swoosh_BlowTimer
 
 	TYA
-	CMP Objects_Data1, X
-	BNE Swoosh_BlowOut1
+	CMP Swoosh_Direction, X
+	BNE Swoosh_BlowTimer
+	
+	LDA <Player_XVel
+	CMP #$3C
+	BCC Swoos_AddPush
 
-	LDA Objects_SpritesVerticallyOffScreen, X
-	BNE Swoosh_BlowOut1
+	CMP #$C4
+	BCC Swoosh_BlowTimer
 
-	LDA Swoosh_Push, Y
-	STA Player_CarryXVel
+Swoos_AddPush:
+	ADD Swoosh_Push, Y
+	STA <Player_XVel
 
-Swoosh_BlowOut1:
+Swoosh_BlowTimer:
 	LDA Objects_Timer, X
-	BNE Swoosh_BlowOut2
+	BNE Swoosh_BlowDraw
+	
 	LDA #$00
-	STA Objects_Data3, X
-	STA Objects_Data4, X
+	STA Swoosh_Action, X
+	
 	LDA RandomN
 	AND #$03
 	TAY
-	LDA WooshTimes, Y
+	
+	LDA Swoosh_Times, Y
 	STA Objects_Timer, X
 
-Swoosh_BlowOut2:
+	JMP Object_Draw
+
+Swoosh_BlowDraw:
+	LDA #$40
+	SUB Objects_Timer, X
+	
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+
+	ORA #$04
+	STA Objects_Frame, X
+
 	JSR Object_Draw
-	LDA Sprite_RAM + 3, Y
-	SUB #$08
-	STA TempA
+
+	LDA #$F8
+	STA <Temp_Var1
+
 	LDA Objects_Orientation, X
-	BEQ Swoosh_BlowOut3
+	BEQ Swoosh_BlowDraw1
 
-	LDA TempA
-	ADD #$18
-	STA TempA
-	BCS Swoosh_BlowOut4
-	SEC
+	LDA #$10
+	STA <Temp_Var1
 
-Swoosh_BlowOut3:
-	BCC Swoosh_BlowOut4
-	LDA TempA
-	STA Sprite_RAM + 11, Y
+Swoosh_BlowDraw1:
+	LDA Sprite_RAMX, Y
+	ADD <Temp_Var1
+	STA Sprite_RAMX + 8, Y
 
 	LDA #SPR_PAL1
 	ORA Objects_Orientation, X
-	STA Sprite_RAM + 10, Y
+	STA Sprite_RAMAttr + 8, Y
 
-	LDA Objects_Data3, X
+	LDA Swoosh_Ticker, X
 	AND #$0C
+	
 	LSR A
 	LSR A
 	TAX
+
 	LDA Swoosh_Particles2, X
-	STA Sprite_RAM + 9, Y
+	STA Sprite_RAMTile + 8, Y
 	
-	LDA Sprite_RAM, Y
-	STA Sprite_RAM + 8, Y
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY + 8, Y
 
-Swoosh_BlowOut4:
 	RTS
-
-WooshTimes:
-	.byte $40, $60, $80, $A0
 
 ObjInit_IntroSequence:
 	LDA #$FF
@@ -4625,10 +4728,10 @@ ToadFollow0:
 	LDA <Player_XVel
 	STA <Objects_XVelZ, X
 	JSR Object_ApplyXVel
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	BEQ ToadFollow2
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$0B
 	BEQ ToadFollow3
 

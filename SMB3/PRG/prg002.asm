@@ -56,7 +56,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_PiranhaGrower		; Object $41 - OBJ_PIRANHAGROWER
 	.word ObjInit_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
-	.word ObjInit_DoNothing	; Object $44 - OBJ_PLATFORMUNSTABLE
+	.word ObjInit_PlatformUnstable	; Object $44 - OBJ_PLATFORMUNSTABLE
 	.word ObjInit_DoNothing		; Object $45 - OBJ_PWING
 	.word ObjInit_Snifit	; Object $46 - OBJ_SNIFIT
 	.word ObjInit_Birdo		; Object $47 - OBJ_BIRDO
@@ -1104,6 +1104,7 @@ PlatformTimers:
 Platform_StartX = Objects_Data3
 Platform_StartXHi = Objects_Data4
 Platform_SteppedOn = Objects_Data5
+Platform_MadeContact = Objects_Data6
 
 ObjInit_PlatformCommon:
 	LDA Objects_XZ, X
@@ -1157,10 +1158,14 @@ ObjNorm_PlatformOscillate:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PlatformOscillate1	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
 
-	JSR DoPatrol
 	JSR Object_CalcBoundBox
-	JSR Platform_OffsetTop
+	
+	LDA #$00
+	STA Platform_MadeContact, X
+
 	JSR Object_InteractWithPlayer
+	JSR DoPatrol
+	JSR Platform_ContactCheck
 
 	LDA <Objects_XZ, X
 	CMP Platform_StartX, X
@@ -1185,33 +1190,17 @@ ObjInit_WoodenPlat:
 ObjInit_PlatformFollow:
 	RTS
 
-Platform_OffsetTop:
-	LDA Objects_XYCS, X
-	CMP Objects_XYCSPrev, X
-	BNE Platform_OffsetTop1
-	RTS
-
-Platform_OffsetTop1:
-
-	LDA Objects_BoundTop, X
-	SUB #$01
-	STA Objects_BoundTop, X
-
-	LDA Objects_BoundTopHi, X
-	SBC #$00
-	STA Objects_BoundTopHi, X
-	RTS
-
 ObjNorm_PlatformFollow:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PlatformFollow1	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
 
 	JSR Object_DeleteOffScreen
+
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity	
-	JSR Object_CalcBoundBox
-	JSR Platform_OffsetTop
-	JSR Object_InteractWithPlayer
+	JSR Platform_ContactCheck
 
 	LDA <Objects_XZ, X
 	ORA <Objects_YZ, X
@@ -1237,7 +1226,12 @@ ObjNorm_PlatformFollow1:
 
 
 Platform_Index = Objects_Data1
+Platform_Ticker = Objects_Data2
+Platform_Regen = Objects_Data6
 Platform_NotBehind = Objects_Data7
+Platform_MaxFall = Objects_Data8
+Platform_StartY = Objects_Data9
+Platform_StartYHi = Objects_Data10
 
 Platform_XOffsets:
 	.byte $28, $18, $08, $18
@@ -1297,55 +1291,133 @@ Platform_SetVel:
 	STA <Objects_YVelZ, X
 	RTS
 
+ObjInit_PlatformUnstable:
+	LDA #$20
+	STA Platform_MaxFall, X
+	STA Platform_Regen, X
+	STA Platform_NotBehind, X
+
+	LDA <Objects_YZ, X
+	STA Platform_StartY, X
+
+	LDA <Objects_YHiZ, X
+	STA Platform_StartYHi, X
+	RTS
+
 ObjNorm_PlatformUnstable:
+
 	LDA <Player_HaltGameZ
-	BNE PlatformUnstableDraw
+	BNE Unstable_Draw
 
 	JSR Object_DeleteOffScreen
-	
-	LDA Objects_Timer2, X
-	BEQ Platform_UnstableNorm
-
-	JSR Object_ApplyYVel
-
-	LDA Objects_Timer2, X
-	CMP #$01
-	BNE Platform_NoMove
-
-	LDA Objects_SpriteAttributes, X
-	AND #~SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
-
-	INC Platform_SteppedOn, X
-	INC Platform_NotBehind, X
-
-Platform_UnstableNorm:
-	LDA Platform_SteppedOn, X
-	BEQ Platform_NoMove
-
-Platform_MoveUp:
-	JSR Object_ApplyYVel
-
-	LDA #$10
-	CMP <Objects_YVelZ, X
-	BCS Platform_NoMove
-
-	STA  <Objects_YVelZ, X
-
-Platform_NoMove:
+	JSR Unstable_CheckRegen
 	JSR Object_CalcBoundBox
-	JSR Object_InteractWithPlayer
+	
+	LDA #$00
+	STA Platform_MadeContact, X
 
-PlatformUnstableDraw:
+	JSR Object_InteractWithPlayer
+	JSR Unstable_Move
+	;JSR Unstable_CheckMaxFall
+	JSR Platform_ContactCheck
+
+Unstable_Draw:
 	LDA Platform_NotBehind, X
-	BNE PlatformUnstableDraw1
+	BNE Unstable_Draw1
 
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
 
-PlatformUnstableDraw1:
+Unstable_Draw1:
 	JMP Platform_Draw
+
+Unstable_Move:
+	LDA Platform_SteppedOn, X
+	BEQ Unstable_MoveRTS
+
+	LDA Objects_SpriteAttributes, X
+	AND #~SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA #$01
+	STA Platform_SteppedOn, X
+
+	JSR Object_ApplyYVel
+
+	LDA <Objects_YVelZ,X
+	CMP #$20
+	BCS Unstable_MoveRTS
+
+	ADD #$01
+	STA <Objects_YVelZ,X
+
+Unstable_MoveRTS:
+	RTS
+
+Unstable_CheckSteppedOn:
+	LDA Platform_SteppedOn, X
+	BEQ Unstable_CheckSteppedOnRTS
+
+	INC Platform_Ticker, X
+	LDA Platform_Ticker, X
+	AND #$01
+	BEQ Unstable_CheckSteppedOnRTS
+
+	JSR Object_Move
+
+Unstable_CheckSteppedOnRTS:
+	RTS
+
+Unstable_CheckRegen:
+	LDA Objects_Timer, X
+	BEQ Unstable_CheckFallTooFar
+
+	LDA #$00
+	STA Platform_SteppedOn, X
+	STA <Objects_YVelZ, X
+	
+	LDA Platform_StartY, X
+	STA <Objects_YZ, X
+
+	LDA Platform_StartYHi, X
+	STA <Objects_YHiZ, X
+	PLA
+	PLA
+	RTS
+
+Unstable_CheckFallTooFar:
+	LDA <Objects_YHiZ, X
+	BEQ Unstable_CheckFallTooFarRTS
+	BMI Unstable_CheckFallTooFarRTS
+
+	LDA <Objects_YZ, X
+	CMP #$B0
+	BCC Unstable_CheckFallTooFarRTS
+
+	LDA #$60
+	STA Objects_Timer, X
+
+Unstable_CheckFallTooFarRTS:
+	RTS
+
+;Unstable_CheckMaxFall:
+;	LDA <Objects_YVelZ, X
+;	CMP Platform_MaxFall, X
+;	BCC Unstable_CheckMaxFallRTS
+;
+;	LDA Platform_MaxFall, X
+;	STA <Objects_YVelZ, X
+;
+;Unstable_CheckMaxFallRTS:
+;	RTS
+
+Unstable_CheckContact:
+	LDA Platform_MadeContact, X
+	BEQ Unstable_CheckContactRTS
+
+Unstable_CheckContactRTS:
+	RTS
 
 PlatformGenDelay:
 	.byte $00, $20
@@ -1370,10 +1442,13 @@ ObjInit_WoodenPlatFallGen1:
 Reset_WoodenPlatFallGen:
 	LDA #$60
 	STA Objects_Timer, X
+
 	LDA Objects_Data4, X
 	STA <Objects_YZ, X
+
 	LDA Objects_Data5, X
 	STA <Objects_YHiZ, X
+
 	LDA #00
 	STA Objects_Data3, X
 	RTS
@@ -1444,10 +1519,10 @@ ObjNorm_PlatformFloat1:
 	STA Reverse_Gravity
 
 	JSR Object_DeleteOffScreen
-	JSR Object_Move
 	JSR Object_CalcBoundBox
-	JSR Platform_OffsetTop
 	JSR Object_InteractWithPlayer
+	JSR Object_Move
+	JSR Platform_ContactCheck
 
 	LDA Objects_BoundLeft, X
 	ADD #$08
@@ -2212,7 +2287,7 @@ PRG002_AF96:
 	JSR Object_DetermineVerticallyOffScreenY	 ; Determine visibility of spike ball sprites
 	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite data for spike ball
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	AND #$03
 	TAX		 ; X = 0 to 3, based on timer
@@ -2232,7 +2307,7 @@ PRG002_AF96:
 	JSR Object_Draw16x16Sprite
 
 	; Set spike ball vertical flip periodically
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	LSR A
 	LSR A
@@ -2742,39 +2817,87 @@ ObjNorm_ToadHouseItem:
 Platform_Draw:
 	LDA #$00
 	STA Objects_Orientation, X
-	JSR Object_ShakeAndCalcSprite
-	JSR Object_Draw24x16Sprite	 ; Draw wide sprite
-
-	LDX <CurrentObjectIndexZ
-	JSR Object_ShakeAndCalcSprite
-
-	LDA <Temp_Var7
-	ADD #$0C
-	STA <Temp_Var7
-	ASL <Temp_Var8
-	ASL <Temp_Var8
-	ASL <Temp_Var8
-
-	JSR Object_Draw24x16Sprite	 ; Draw wide sprite
 	
-	LDX <CurrentObjectIndexZ
-	LDY Object_SpriteRAMOffset,X
-	
-	LDA Sprite_RAM + 6, Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM + 6, Y
-	STA Sprite_RAM + 14, Y
-	STA Sprite_RAM + 22, Y
-	
-	LDA Sprite_RAM + 15, Y
+	LDA Objects_SpritesVerticallyOffScreen,X
+	BEQ Platform_DoDraw
+
+	RTS
+
+Platform_DoDraw:
+	JSR Object_DrawMirrored
+
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_2_HINVISIBLE
+	BNE Platform_Draw1
+
+	LDA <Objects_SpriteX, X
+	ADD #$10
+	STA Sprite_RAMX + 8, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 8, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 8, Y
+
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 8, Y
+
+Platform_Draw1:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_3_HINVISIBLE
+	BNE Platform_Draw2
+
+	LDA <Objects_SpriteX, X
 	ADD #$18
-	STA Sprite_RAM + 15, Y
-	ADD #$08
-	STA Sprite_RAM + 19, Y
-	ADD #$08
-	STA Sprite_RAM + 23, Y
-	
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
+	STA Sprite_RAMX + 12, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 12, Y
+
+	LDA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr + 12, Y
+
+	LDA Sprite_RAMTile + 4, Y
+	STA Sprite_RAMTile + 12, Y
+
+Platform_Draw2:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_4_HINVISIBLE
+	BNE Platform_Draw3
+
+	LDA <Objects_SpriteX, X
+	ADD #$20
+	STA Sprite_RAMX + 16, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 16, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 16, Y
+
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
+
+Platform_Draw3:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_5_HINVISIBLE
+	BNE Platform_Draw4
+
+	LDA <Objects_SpriteX, X
+	ADD #$28
+	STA Sprite_RAMX + 20, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 20, Y
+
+	LDA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr + 20, Y
+
+	LDA Sprite_RAMTile + 4, Y
+	STA Sprite_RAMTile + 20, Y
+
+Platform_Draw4:
 	RTS		 ; Return
 
 ObjNorm_NipperFireBreathe:
@@ -3073,14 +3196,13 @@ PRG002_B77D:
 PRG002_B77E:
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
 
-	; Performs collision tests against platform and enables Player
-	; to stand on the platform, hit head off platform, etc.
-	; Carry set if carrying collision occurred
-
 Platform_Offset:
 	.byte $00, $01
 
 Platform_PlayerStand:
+	LDA <Player_YVel
+	BMI Platform_PlayerStand1
+
 	LDA HitTest_Result
 	AND #HITTEST_BOTTOM
 	BEQ Platform_PlayerStand1
@@ -3090,25 +3212,26 @@ Platform_PlayerStand:
 	CMP #$04
 	BCS Platform_PlayerStand1
 
-	LDY <Player_YVel
-	BMI Platform_PlayerStand1
+	LDA #$01
+	STA Platform_SteppedOn, X
+	STA Platform_MadeContact, X
 
-	STA <Temp_Var1
+Platform_PlayerStand1:	
+	RTS
 
-	LDY #$00
-	LDA <Objects_YVelZ,X
+Platform_PlayerOffset:
+	.byte $01, $00
+	.byte $00, $00
 
-	BMI Platform_NoOffset
-
-	INY
-
- Platform_NoOffset:
-	LDA <Player_Y
-	ADD Platform_Offset, Y
-	SUB <Temp_Var1
+Platform_ContactCheck:
+	LDA Platform_MadeContact, X
+	BEQ Platform_CheckRTS
+	
+	LDA <Objects_YZ,X	 
+	SUB #30
 	STA <Player_Y
 
-	LDA <Player_YHi
+	LDA <Objects_YHiZ,X
 	SBC #$00
 	STA <Player_YHi
 
@@ -3118,21 +3241,8 @@ Platform_PlayerStand:
 
 	LDA <Objects_XVelZ, X
 	STA Player_CarryXVel
-
-	LDA Objects_XVelFrac,X
-	STA Player_XVelFrac,X
-
-	LDA <Objects_YVelZ,X
-	STA Player_CarryYVel
-
-	LDA Objects_YVelFrac,X
-	STA Player_YVelFrac,X
-
-	LDA #$01
-	STA Platform_SteppedOn, X
-	STA Player_OnPlatform
-
-Platform_PlayerStand1:	
+	
+Platform_CheckRTS:
 	RTS
 
 PRG002_BABD:
@@ -4201,6 +4311,7 @@ Take_Badge:
 	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
 	RTS
+
 Ricochet_Direction = Objects_Data4
 
 Diagonal_PodoboInitXVel:

@@ -1346,7 +1346,8 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	RhythmPlatformEnabed: .ds 1
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;
-	DPad_RhythmControl: .ds 1;
+	RhythmCounter: .ds 1;
+	DPad_RhythmControl: .ds 1
 
 ; $0461-$0462 are reserved for use by the sound/music engine
 ; These ought to be moved into the greater range to spare this area...
@@ -1666,7 +1667,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Block_NeedsUpdate:	.ds 1	; When non-zero, queues a "change tile" event
 	Block_UpdateValue:	.ds 1	;
 	Block_WasUpdated:	.ds 1
-	GameCounter:	.ds 1	; A counter which continuously increments unless something is "stopping" the action
+	Game_Counter:		.ds 1	; A counter which continuously increments unless something is "stopping" the action
+	Game_Counter_NoStop:	.ds 1
 	Level_Event:		.ds 1	; Check "LevelEvent_Do" for values; 0 means nothing
 	Level_PSwitchCnt:	.ds 1	; When non-zero, P-Switch is active (init @ $80); counts down to zero and restarts music
 
@@ -1826,8 +1828,8 @@ TAIL_INDEX				= 6 ;
 	Level_Tile_Prop_Body:	.ds 1
 	Level_Tile_Prop_Floor_Ceiling_Left:	.ds 1	; Tile at Player's feet left
 	Level_Tile_Prop_Floor_Ceiling_Right:	.ds 1	; Tile at Player's feet right
-	Level_Tile_Prop_Wall_Lower:	.ds 1	; Tile "in front" of Player ("upper", at face)
 	Level_Tile_Prop_Wall_Upper:	.ds 1	; Tile "in front" of Player ("lower", at feet)
+	Level_Tile_Prop_Wall_Lower:	.ds 1	; Tile "in front" of Player ("upper", at face)
 	Level_Tile_Whack:	.ds 1	; Tile last hit by tail attack or shell
 
 	; Level_Tile_Slope: Slope of tile for each of the positions above (first byte also used by objects)
@@ -1862,6 +1864,7 @@ TAIL_INDEX				= 6 ;
 	ActualTile_LastValue:	.ds 1
 	Tile_LastValue:		.ds 1
 	Tile_LastProp:		.ds 1
+	Brick_Bump:			.ds 1
 
 	Objects_SpritesHorizontallyOffScreen:	.ds 8	; $0651-$0658 Flags; Bits 7-2 set when each 8x16 sprite is horizontally off-screen (left-to-right from MSb)
 
@@ -1899,6 +1902,8 @@ SPRITE_0_HINVISIBLE = $80
 SPRITE_1_HINVISIBLE = $40
 SPRITE_2_HINVISIBLE = $20
 SPRITE_3_HINVISIBLE = $10
+SPRITE_4_HINVISIBLE = $08
+SPRITE_5_HINVISIBLE = $04
 
 SPRITE_0_VINVISIBLE = $01
 SPRITE_1_VINVISIBLE = $02
@@ -2637,7 +2642,7 @@ CFIRE_LASER		= $15	; Laser fire
 									; Frog				Frog
 									; Koopa/Tanooki		Boo
 									; Hammer/Sledge		Ninja
-	Effective_Suit:			ds 1
+	Player_EffectiveSuit:			ds 1
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
 	DAIZ_TEMP4:			.ds 1	;

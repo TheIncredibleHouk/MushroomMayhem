@@ -30,7 +30,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
 	.word ObjInit_DoNothing	; Object $4D
-	.word ObjInit_DoNothing		; Object $4E
+	.word RhythmPlatformsInit		; Object $4E
 	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjInit_Explosion	; Object $50 - OBJ_EXPLOSION
 	.word ObjInit_RotoDiscDualCCW	; Object $51 - OBJ_ROTODISCDUAL
@@ -72,8 +72,8 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_MagicStar		; Object $4B - OBJ_MAGICSTAR
 	.word ObjNorm_MagicStar		; Object $4C - OBJ_MAGICSTAR
 	.word ObjNorm_DoNothing	; Object $4D
-	.word ObjNorm_DoNothing		; Object $4E
-	.word ObjNorm_DoNothing	; Object $4F - OBJ_CHAINCHOMPFREE
+	.word RhythmPlatforms		; Object $4E
+	.word DPad_ControlTiles	; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjNorm_Explosion		; Object $50 - OBJ_EXPLOSION
 	.word ObjNorm_RotoDiscDual	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjNorm_Spintula	; Object $52 - OBJ_SPINTULA
@@ -467,10 +467,10 @@ ObjP67:
 
 
 ObjP6A:
-	.byte $81, $83
 	.byte $85, $87
-	.byte $81, $B5
+	.byte $81, $83
 	.byte $85, $B7
+	.byte $81, $B5
 	.byte $BB, $BB
 	.byte $B1, $B1
 
@@ -484,6 +484,9 @@ ObjP6B:
 ObjInit_IceBlock:
 	RTS
 
+IceBlock_Kicked = Objects_Data1
+IceBlock_PrevHold = Objects_Data2
+
 ObjNorm_IceBlock:
 	LDA <Player_HaltGameZ
 	BNE IceBlock_Draw
@@ -495,12 +498,27 @@ ObjNorm_IceBlock:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox
+
+	LDA Objects_BeingHeld, X
+	STA IceBlock_PrevHold, X
+	
 	JSR Object_InteractWithPlayer
+
+	LDA IceBlock_PrevHold, X
+	BEQ IceBlock_DetectTiles
+
+	CMP Objects_BeingHeld, X
+	BEQ IceBlock_DetectTiles
+
+	LDA #$01
+	STA IceBlock_Kicked, X
+
+IceBlock_DetectTiles:
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 
 	LDA <Objects_XVelZ, X
-	ORA <Objects_XVelZ, X
+	ORA <Objects_YVelZ, X
 	ORA Objects_BeingHeld, X
 	BEQ IceBlock_NoBurst
 
@@ -517,8 +535,11 @@ IceBlock_NoBurst:
 	LDA Objects_BeingHeld, X
 	BNE IceBlock_Draw
 
-	
+	LDA IceBlock_Kicked, X
+	BNE IceBlock_TestBreak
+
 	JSR Object_DampenVelocity
+	JMP IceBlock_TileInteract
 
 IceBlock_TestBreak:
 	LDA <Objects_TilesDetectZ, X
@@ -841,6 +862,9 @@ SnowGuy_ForceDrawSnow =  Objects_Data4
 ObjInit_SnowGuy:
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
+
+	LDA Objects_Property, X
+	STA SnowGuy_Holding, X
 	RTS		 ; Return
 
 ObjNorm_SnowGuy:
@@ -936,11 +960,13 @@ SnowGuy_SnowSprites:
 	LDA Objects_SpriteX, X
 	STA Sprite_RAMX + 8, Y
 
-	LDA Objects_SpriteY, X
+	LDA Sprite_RAMY, Y
 	SUB <Temp_Var16
 	STA Sprite_RAMY + 8, Y
 
-	LDA #SPR_PAL2
+	LDA Sprite_RAMAttr, Y
+	AND #SPR_BEHINDBG
+	ORA #SPR_PAL2
 	STA Sprite_RAMAttr + 8, Y
 
 SnowGuy_DrawRight:
@@ -955,11 +981,13 @@ SnowGuy_DrawRight:
 	ADD #$08
 	STA Sprite_RAMX + 12, Y
 
-	LDA Objects_SpriteY, X
+	LDA Sprite_RAMY, Y
 	SUB <Temp_Var16
 	STA Sprite_RAMY + 12, Y
 
-	LDA #SPR_PAL2
+	LDA Sprite_RAMAttr, Y
+	AND #SPR_BEHINDBG
+	ORA #SPR_PAL2
 	STA Sprite_RAMAttr + 12, Y
 
 SnowGuy_DrawDone:
@@ -1119,10 +1147,12 @@ VeggieGuy_Norm:
 
 VeggieGuy_Animate:
 	INC VeggieGuy_Frame, X
+
+VeggieGuy_Draw:
 	LDY #$00
 
 	LDA VeggieGuy_PullingVeggie, X
-	BNE VeggieGuy_Draw
+	BNE VeggieGuy_DoDraw
 	
 	LDA VeggieGuy_Holding, X
 	BEQ VeggieGuy_NoArms
@@ -1143,7 +1173,7 @@ VeggieGuy_NoArms:
 	ORA <Temp_Var1
 	STA Objects_Frame, X
 
-VeggieGuy_Draw:
+VeggieGuy_DoDraw:
 	LDA <Objects_YVelZ, X
 	BPL VeggieGuy_GroundAnim
 
@@ -1174,10 +1204,13 @@ VeggieGuy_VeggieSprites:
 	ADD <Temp_Var16
 	STA <Temp_Var16
 
+	LDA Objects_SpritesVerticallyOffScreen, X
+	AND #SPRITE_0_VINVISIBLE
+	BNE VeggieGuy_DrawDone
+
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	AND #SPRITE_0_HINVISIBLE
 	BNE VeggieGuy_DrawRight
-
 
 	LDA #$B3
 	STA Sprite_RAMTile + 8, Y
@@ -1308,7 +1341,13 @@ VeggieGuy_ThrowVeggie:
 
 	JSR Object_XDistanceFromPlayer
 	LDA <XDiff
-	CMP #$50
+	CMP #$30
+	BCS VeggieGuy_ThrowVeggieDone
+
+	JSR Object_YDistanceFromPlayer
+
+	LDA <YDiff
+	CMP #$20
 	BCS VeggieGuy_ThrowVeggieDone
 
 	JSR Object_PrepProjectile
@@ -1332,7 +1371,7 @@ VeggieGuy_ThrowVeggie:
 	SBC #$00
 	STA SpecialObj_YHi, Y
 
-	LDA #$E0
+	LDA #$E8
 	STA SpecialObj_YVel, Y
 
 	LDA #$E0
@@ -4666,7 +4705,7 @@ FireSnake_DrawTail:
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 8, Y
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	BNE FSDT1
 
@@ -4701,7 +4740,7 @@ FSDT1:
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 12, Y
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	CMP #$01
 	BNE FSDT2
@@ -4736,7 +4775,7 @@ FSDT2:
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 16, Y
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	CMP #$02
 	BNE FSDT3
@@ -4770,7 +4809,7 @@ FSDT3:
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 20, Y
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$03
 	CMP #$03
 	BNE FSDT4
@@ -5079,3 +5118,220 @@ PRG003_BD60:
 	
 Tail_PlayerYOff:	.byte $12, $04	; Offset to Player Sprite Y for small/ducking, or not
 Tail_PlayerYLimit:	.byte $0E, $18	; Limit value
+
+
+DPad_ControlTiles:
+	LDA <Player_HaltGameZ
+	BNE DPad_ControlTiles4
+
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ DPad_ControlTiles1
+
+	LDA #$01
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles1:
+	LDA <Pad_Holding
+	AND #PAD_LEFT
+	BEQ DPad_ControlTiles2
+
+	LDA #$02
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles2:
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ DPad_ControlTiles3
+
+	LDA #$03
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles3:
+	LDA <Pad_Holding
+	AND #PAD_RIGHT
+	BEQ DPad_ControlTiles4
+
+	LDA #$00
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles4:
+	RTS
+
+RhythmPlatforming:
+RhythmGraphics:
+	.byte $60, $62, $64, $66
+
+RhythmSet1:
+	.byte $00, $5F, $90, $82, $00, $00, $00, $00, $80, $5F, $00
+
+RhythmSet2:
+	.byte $00, $18, $23, $1E, $00, $00, $00, $00, $20, $18, $00
+
+RhythmSet3:
+	.byte $00, $03, $00, $FE, $00, $00, $00, $00, $04, $03, $00
+
+
+RhythmPlatformsInit:
+	LDA Game_Counter_NoStop
+	STA RhythmCounter
+	RTS
+
+RhythmPlatformsReset:
+	STA RhythmMusic
+
+	LDA #$00
+	STA RhythmKeeper
+	STA RhythmKeeper + 1
+	STA RhythmKeeper + 2
+	STA RhythmKeeper + 4
+
+RhythmPlatforms:
+	LDX #$00
+	LDA SndCur_Music2
+	BEQ RhythmPlatforms0
+
+	LDY RhythmMusic
+	BNE DoNotStoreRhythmMusic
+
+	STA RhythmMusic
+
+DoNotStoreRhythmMusic:
+	CMP RhythmMusic
+	BNE RhythmPlatformsReset
+
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+
+	LDA Game_Counter_NoStop
+	SUB RhythmCounter
+	STA <Temp_Var1
+
+	LDA Game_Counter_NoStop
+	STA RhythmCounter
+
+	LDA RhythmSet1, X
+	BEQ RhythmPlatforms0
+
+	LDA RhythmKeeper
+	CMP RhythmSet1, X
+	BEQ RhythmPlatforms1
+
+	LDA RhythmKeeper
+	ADD <Temp_Var1
+	STA RhythmKeeper
+
+RhythmPlatforms0:
+	RTS
+
+RhythmPlatforms1:
+	LDA RhythmKeeper + 1
+	CMP RhythmSet2, X
+	BEQ RhythmPlatforms2
+
+	LDA RhythmKeeper + 1
+	ADD <Temp_Var1
+	STA RhythmKeeper + 1
+	RTS
+
+RhythmPlatforms2:
+	LDA RhythmKeeper + 2
+	CMP #$03
+	BEQ RhythmPlatforms3
+
+	LDA #SND_LEVELBLIP
+	STA Sound_QLevel1
+
+	LDA RhythmKeeper + 2
+	ADD <Temp_Var1
+	STA RhythmKeeper + 2
+	
+	LDA #$00
+	STA RhythmKeeper + 1
+	RTS
+	
+RhythmPlatforms3:
+	LDA #SND_MAPINVENTORYFLIP
+	STA Sound_QMap
+
+	LDA #$00
+	STA RhythmKeeper + 1
+	STA RhythmKeeper + 2
+
+	LDA RhythmSet3, X
+	STA RhythmKeeper
+	
+	LDA RhythmKeeper + 3
+	ADD <Temp_Var1
+	STA RhythmKeeper + 3
+
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+
+	LDA RhythmGraphics, Y
+	STA PatTable_BankSel
+
+	LDA #$00
+	STA TileProperties + $02
+	STA TileProperties + $42
+	STA TileProperties + $82
+	STA TileProperties + $C2
+
+	LDA #$02
+
+RhythmPlatforms4:
+	CPY #$00
+	BEQ RhythmPlatforms5
+
+	ADD #$40
+	DEY
+	BPL RhythmPlatforms4 
+
+RhythmPlatforms5:
+	TAY
+	
+	LDA #TILE_PROP_SOLID_ALL
+	STA TileProperties, Y
+
+	LDA TileProperties + $53
+	STA TileProperties + $03
+
+	LDA TileProperties + $83
+	STA TileProperties + $53
+
+	LDA TileProperties + $D3
+	STA TileProperties + $83
+
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+
+	LDA RhythmCurrents, Y
+	STA TileProperties + $D3
+	RTS
+
+RhythmCurrents:
+	.byte TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP, TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN
+
+DPadTiles:
+	.byte TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN, TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP
+
+UpdateRhythmTiles:
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+
+	LDA RhythmGraphics, Y
+	STA PatTable_BankSel
+
+	LDA DPadTiles, Y
+	STA TileProperties + $57
+	RTS

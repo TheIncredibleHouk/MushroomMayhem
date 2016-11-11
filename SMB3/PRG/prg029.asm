@@ -426,7 +426,7 @@ Player_Draw1:
 	LDA Player_FramePageOff,X
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
-	LDY Effective_Suit
+	LDY Player_EffectiveSuit
 	LDA Player_PUpRootPage,Y ; Get VROM root page for this power up
 	ADD <Temp_Var1		 ; Add appropriate offset to the VROM base for the animation frame
 
@@ -2666,6 +2666,10 @@ Player_RainbowCycle:
 	LDA Player_StarInv
 	BEQ Player_RainbowCycle3
 
+	LDA Game_Counter
+	AND #$01
+	BEQ Player_RainbowCycle1
+
 	DEC Player_StarInv
 	CMP #32
 	BNE Player_RainbowCycle1	 ; If Player_StarInv <> 32, jump to PRG029_CF05
@@ -2717,7 +2721,7 @@ Player_FrameOverride1:
 	LDA Player_Shell
 	BEQ Player_FrameOverride2
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	AND #$03
 	ADD #$51
@@ -2728,7 +2732,7 @@ Player_FrameOverride2:
 	LDA Player_FireDash
 	BEQ Player_FrameOverride3
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	AND #$03
 	ADD #$55

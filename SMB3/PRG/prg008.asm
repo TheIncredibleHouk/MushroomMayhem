@@ -142,6 +142,7 @@ Player_VibeDisableFrame:
 ; objects; this is handled elsewhere...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoGameplay:
+	INC Game_Counter_NoStop
 	LDY Level_Tileset
 	DEY
 	STY Level_TilesetIdx
@@ -194,7 +195,7 @@ NoTransition:
 
 GameIsHalted:
 	JSR Player_Refresh
-	INC GameCounter	; As long as none of the above is happening, continue the "no stop" counter...
+	INC Game_Counter	; As long as none of the above is happening, continue the "no stop" counter...
 
 PRG008_A1C1:
 	; Decrement several adjacent counters!
@@ -616,7 +617,7 @@ Player_RunMeterUpdate:
 
 	DEY			 
 	STY Player_FlyTime ; Player_FlyTime--
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$03
 	BNE PRG008_A4D5
 
@@ -732,7 +733,7 @@ CheckInfection:
 	BNE Skipped_Palette
 
 Normal_Palette:
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 
 Skipped_Palette:
 	TAY
@@ -929,7 +930,7 @@ Player_Control:
 PRG008_A6D2:
 
 	; Remove horizontal velocity and cancel controller inputs
-	LDA #$00	
+	LDA #$00
 	STA <Player_XVel
 	STA <Pad_Holding
 	STA <Pad_Input	
@@ -1420,6 +1421,7 @@ GndMov_Tanooki:
 Swim_Tanooki:	
 	LDA Player_InWater
 	BEQ Dont_Kill_Shell
+	
 	LDA #$00
 	STA Player_Shell
 
@@ -1446,6 +1448,7 @@ Move_Kuribo:
 
 Player_GroundHControl:
 
+	
 	LDA Player_Shell
 	ORA Player_FireDash
 	BEQ Player_GroundHControl1
@@ -1650,11 +1653,7 @@ PRG008_AC22:
 	.byte $D0, $CE, $CC, $CA, $CA, $CA
 
 Player_JumpFlyFlutter:
-	;LDA Player_ForcedSlide
-	; Player_JumpFlyFlutter1
-	;RTS
 
-Player_JumpFlyFlutter1:
 	LDA Wall_Jump_Enabled
 	BNE PRG008_AC30
 
@@ -1717,10 +1716,12 @@ STORE_SMALL_JUMP:
 	LDA Player_IsHolding
 	BNE PRG008_AC6C	 ; If Player is holding something, jump to PRG008_AC6C
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	BEQ PRG008_AC6C
+
 	CMP #$03
 	BEQ PRG008_AC6C
+
 	CMP #$08
 	BEQ PRG008_AC6C
 
@@ -1841,7 +1842,7 @@ Skip_YVel:
 
 PRG008_ACD9:
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$03
 	BNE PRG008_ACEF	 	; If this power up does not have flight, jump to PRG008_ACEF
 
@@ -2457,12 +2458,15 @@ PRG008_AFAD:
 ; Change into or maintain Tanooki statue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Koopa_Shell:
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$05
 	BNE Inc_PowerRTS
 
 	LDA Player_Shell
 	BEQ Try_Shell
+
+	LDA <Player_InAir
+	BNE Inc_PowerRTS
 
 	LDA <Pad_Holding
 	AND #(PAD_DOWN)
@@ -2484,7 +2488,7 @@ Try_Shell:
 	BCS Kill_Shell
 
 	LDA <Player_InAir
-	BNE Kill_Shell
+	BNE Inc_PowerRTS
 
 	LDA <Pad_Holding
 	AND #(PAD_DOWN)
@@ -3107,36 +3111,36 @@ TileAttrAndQuad_OffsFlat:
 	;     Yoff Xoff
 
 	; Not small or ducking moving downward - right half
-	.byte $0A, $08 ; head
-	.byte $18, $08  ; body
-	.byte $20, $04	; Ground left
-	.byte $20, $0B	; Ground right
-	.byte $1B, $0E	; In-front lower
-	.byte $0E, $0E	; In-front upper
+	.byte $0A, $08  ; 00 head
+	.byte $18, $08  ; 02 body
+	.byte $20, $04	; 04 Ground left
+	.byte $20, $0B	; 06 Ground right
+	.byte $0E, $0E	; 08 In-front upper
+	.byte $1B, $0E	; 0A In-front lower
 
 	; Not small or ducking moving downward - left half
-	.byte $0A, $08 ; head
-	.byte $18, $08  ; body
-	.byte $20, $04	; Ground left
-	.byte $20, $0B	; Ground right
-	.byte $1B, $01	; In-front lower
-	.byte $0E, $01	; In-front upper
+	.byte $0A, $08  ; 0C head
+	.byte $18, $08  ; 0E body
+	.byte $20, $04	; 10 Ground left
+	.byte $20, $0B	; 12 Ground right
+	.byte $0E, $01	; 14 In-front upper
+	.byte $1B, $01	; 16 In-front lower
 
 	; Not small or ducking moving upward - right half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
 	.byte $06, $08	; Ground left
 	.byte $06, $08	; Ground right
-	.byte $1B, $0E	; In-front lower
 	.byte $0E, $0E	; In-front upper
+	.byte $1B, $0E	; In-front lower
 
 	; Not small or ducking moving upward - left half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
 	.byte $06, $08	; Ground left
 	.byte $06, $08	; Ground right
-	.byte $1B, $01	; In-front lower
 	.byte $0E, $01	; In-front upper
+	.byte $1B, $01	; In-front lower
 
 
 TileAttrAndQuad_OffsFlat_Sm:
@@ -3145,32 +3149,32 @@ TileAttrAndQuad_OffsFlat_Sm:
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
 	.byte $20, $0B	; Ground right
-	.byte $1B, $0E	; In-front lower
 	.byte $14, $0E	; In-front upper
+	.byte $1B, $0E	; In-front lower
 
 	; Small or ducking moving downward - left half
 	.byte $12, $08 ; head
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
 	.byte $20, $0B	; Ground right
-	.byte $1B, $01	; In-front lower
 	.byte $14, $01	; In-front upper
+	.byte $1B, $01	; In-front lower
 
 	; Small or ducking moving upward - right half
 	.byte $12, $08 ; head
 	.byte $18, $08  ; body
 	.byte $10, $08	; Ground left
 	.byte $10, $08	; Ground right
-	.byte $1B, $0E	; In-front lower
 	.byte $14, $0E	; In-front upper
+	.byte $1B, $0E	; In-front lower
 
 	; Small or ducking moving upward - left half
 	.byte $12, $08 ; head
 	.byte $18, $08  ; body
 	.byte $10, $08	; Ground left
 	.byte $10, $08	; Ground right
-	.byte $1B, $01	; In-front lower
 	.byte $14, $01	; In-front upper
+	.byte $1B, $01	; In-front lower
 
 	; If $01, this is treated as a "not floor" tile, which means to watch out
 	; for the Player to hit his head rather than track the sloped floor...
@@ -3320,10 +3324,6 @@ Player_NoWindFactor:
 ;	STA <Player_EffectiveDirection
 ;
 DetectSolids:
-	LDA #$00
-	STA <Player_CarryXVel
-	STA <Player_CarryYVel
-
 	LDA #10
 
 	LDY <Player_Suit
@@ -3492,6 +3492,37 @@ BumpBlock_JumpTable:
 	.word BumpBlock_Spinner
 	.word BumpBlock_Key
 	
+Bumps_CheckExistingPowerUps:
+	LDX #$05
+
+Bumps_CheckNextExisting:
+	LDA Objects_State, X
+	BEQ Bump_NotPowerUp
+
+	LDA Objects_ID, X
+	CMP #OBJ_BOUNCEDOWNUP
+	BNE Bump_CheckObjPowerUp
+
+	LDA Bouncer_PowerUp, X
+	CMP #POWERUP_MUSHROOM
+	BCC Bump_NotPowerUp
+
+Bump_IsPowerUp:
+	PLA
+	PLA
+	RTS
+
+Bump_CheckObjPowerUp:
+	CMP #OBJ_POWERUP
+	BEQ Bump_IsPowerUp
+
+Bump_NotPowerUp:
+	INX
+	CPX #$08
+	BNE Bumps_CheckNextExisting
+	RTS
+
+
 Bumps_PowerUpBlock:
 	LDX #$05
 
@@ -3565,6 +3596,7 @@ BumpBlock_Coin:
 	RTS		 ; Return
 
 BumpBlock_Flower:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_FIREFLOWER
 	JSR BumpBlock_CheckMushroom
@@ -3578,6 +3610,7 @@ BumpBlock_None:
 
 ; #DAHRKDAIZE ICE_FLOWER
 BumpBlock_IceFlower:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_ICEFLOWER
 	JSR BumpBlock_CheckMushroom
@@ -3588,15 +3621,17 @@ BumpBlock_Pumpkin:
 	RTS		 ; Return
 
 BumpBlock_Leaf:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_SUPERLEAF
 	JSR BumpBlock_CheckMushroom
 	RTS		 ; Return
 
 BumpBlock_Star:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_STAR
-	JSR BumpBlock_CheckMushroom
+	STA Bouncer_PowerUp, X
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3677,45 +3712,23 @@ BumpBlock_Brick1:
 
 	LDA Tile_LastValue
 	AND #$C0
-	ORA #$00
+	ORA #$01
 	
 	JSR Level_QueueChangeBlock
-	JSR Common_GetTempTile
-	BCC BumpBlock_SpinnerRTS
-
-	LDA Tile_LastValue
-	AND #$C0
-	ORA #$01
-	STA SpinnerBlocksReplace, Y
-
-	LDA #$02
-	STA SpinnerBlocksTimers, Y
-	STA SpinnerBlocksActive, Y 
-
-	LDA Tile_Y
-	STA SpinnerBlocksY, Y	 ; Store into object slot
-
-	LDA Tile_YHi
-	STA SpinnerBlocksYHi, Y ; Store Y Hi into object slot
-
-	LDA Tile_XHi	
-	STA SpinnerBlocksXHi, Y; Store X Hi into object slot
-
-	LDA Tile_X
-	STA SpinnerBlocksX, Y ; Store X Hi into object slot
-
-
+	
 Bump_BrickRTS:
 	RTS		 ; Return
 
 
 BumpBlock_Vine:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_VINE
 	STA Bouncer_PowerUp, X
 	RTS		 ; Return
 
 BumpBlock_NinjaShroom:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_NINJASHROOM
 	JSR BumpBlock_CheckMushroom
@@ -3728,12 +3741,14 @@ BumpBlock_Key:
 	RTS		 ; Return
 
 BumpBlock_FoxLeaf:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_FOXLEAF
 	JSR BumpBlock_CheckMushroom
 	RTS		 ; Return
 
 BumpBlock_Frog:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_FROGSUIT
 	JSR BumpBlock_CheckMushroom
@@ -3741,6 +3756,7 @@ BumpBlock_Frog:
 
 
 BumpBlock_Koopa:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_SHELL
 	JSR BumpBlock_CheckMushroom
@@ -3748,6 +3764,7 @@ BumpBlock_Koopa:
 
 
 BumpBlock_Sledge:
+	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_HAMMERSUIT
 	JSR BumpBlock_CheckMushroom
@@ -3873,7 +3890,7 @@ ApplyTileMove:
 	LDA Player_InWater
 	BEQ Apply_Move
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$04
 	BEQ Apply_Move_RTS
 
@@ -4190,11 +4207,15 @@ Dont_Flip:
 	CLC
 	ADC Odometer_Increase
 	STA Odometer_Increase
+	
 	LDA Player_ForcedSlide
 	BNE No_Odo_Increase
+
 	STY Player_PrevXDirection
 
 No_Odo_Increase:
+	LDA #$00
+	STA <Player_CarryXVel, X
 	RTS		 ; Return
 
 
@@ -4384,10 +4405,7 @@ NotSmallMario:
 
 	LDX #$07
 	
-ClearSprite:
-	LDA Objects_Global, X
-	BNE NextSprite
-
+ClearSprite
 	LDA #$00
 	STA Objects_State, X
 
@@ -4441,10 +4459,13 @@ StartCountDown:
 	BNE NoCountDown
 
 	JSR DestroyAllEnemies
+	
 	LDA #$00
 	STA <Player_XVel
+	
 	LDA #MUS1_BOSSVICTORY
 	STA Sound_QMusic1
+	
 	DEC CompleteLevelTimer
 	RTS
 
@@ -4600,7 +4621,7 @@ Debug_Code:
 	AND #PAD_SELECT
 	BEQ Debug_CodeRTS
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$08
 	BEQ Debug_Code0
 
@@ -4652,6 +4673,7 @@ Player_DetectWall1_1:
 	EOR #$FF
 	ADD #$01
 	STA <Player_XVel
+	
 	JSR Player_ApplyXVelocity
 
 Player_DetectWall1_2:
@@ -4735,7 +4757,7 @@ Player_CheckWallJump:
 	LDA Player_InWater
 	BNE No_Wall_Jump
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$0B
 	BNE No_Wall_Jump
 
@@ -4755,6 +4777,7 @@ Player_CheckWallJump:
 	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
 
 	LDX TempA
+
 	LDA <Player_X
 	ADD WallClingXVel, X
 	STA <Player_X
@@ -4769,10 +4792,11 @@ Player_CheckWallJump:
 	LDA #$00
 	STA Player_Flip
 
-	LDA <Player_YVel
-	LDX Player_Slippery
-	BNE Wall_Jump_Done
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SLICK)
+	BEQ Wall_Jump_Done
 
+	LDA <Player_YVel
 	CLC
 	SBC #$20			; slow down decsent during wall jump mode
 
@@ -5007,6 +5031,7 @@ StarManItem:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1
+
 	LDA Sound_QMusic2
 	ORA #MUS2A_INVINCIBILITY
 	STA Sound_QMusic2
@@ -5057,7 +5082,7 @@ Player_SuitChange3:
 	STY Power_Change
 
 Player_SuitChange4:
-	STA Effective_Suit
+	STA Player_EffectiveSuit
 	CMP #$08 
 	BCC Player_SuitChange5
 
@@ -5073,7 +5098,7 @@ Player_SuitChange6:
 	TAY	
 	DEY		 ; Y = Player_QueueSuit - 1
 	STY <Player_Suit ; Store into Player_Suit
-	DEC Effective_Suit
+	DEC Player_EffectiveSuit
 
 Player_SuitChange7:
 	LDX #$00
@@ -5095,6 +5120,9 @@ Player_SuitChange9:
 	RTS
 
 Player_DetectCeiling:
+	LDA Player_ForcedSlide
+	BNE Player_HitBlocks1
+
 	LDA Level_Tile_Prop_Floor_Ceiling_Left
 	CMP #TILE_PROP_SOLID_BOTTOM
 	BCS Player_DetectCeiling1
@@ -5192,6 +5220,7 @@ Player_DetectFloor1:
 	LDA <Player_Y
 	AND #$F0
 	STA <Player_Y
+
 	LDA #$00	 
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVel  ; Halt Player vertically
@@ -5250,7 +5279,7 @@ Player_DetermineAir:
 	LDA Top_Of_Water
 	BNE Player_AirChanges1
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$04
 	BEQ Player_AirChanges1
 
@@ -5310,7 +5339,7 @@ Bg_HurtPlayer:
 	CMP #TILE_PROP_WATER
 	BCC Bg_HurtPlayer1
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$08
 	BEQ Bg_HurtPlayer2
 
@@ -5832,7 +5861,7 @@ Player_HandleWater12:
 	LDA #$17
 	STA Player_SuitLost
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	ADD #$01
 	STA Player_QueueSuit
 
@@ -5858,16 +5887,18 @@ Player_HandlePipe:
 	LDA Level_Tile_Prop_Wall_Lower	 ; Get tile near head...
 	CMP #TILE_PROP_SOLID_TOP
 	BGE PRG008_BC79
+
 	JMP PRG008_BCAA
 
 PRG008_BC79:
-	AND #$0F
-	CMP #TILE_PROP_HPIPE_BOTTOM
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HPIPE_BOTTOM)
 	BEQ PRG008_BC7A
+
 	JMP PRG008_BCAA
 
 PRG008_BC7A:
 	LDX #$00
+
 	LDA <Player_X
 	AND #$0f	
 	CMP #$08	
@@ -5921,8 +5952,10 @@ PRG008_BCC4:
 	STX <Temp_Var3		 ; Store pipe mode -> Temp_Var3
 	CMP #TILE_ITEM_COIN
 	BGE Player_HandlePipeRTS
+
 	AND #$0F
 	STA <Temp_Var1
+
 	LDA #TILE_PROP_VPIPE_RIGHT
 	SEC
 	SBC <Temp_Var1

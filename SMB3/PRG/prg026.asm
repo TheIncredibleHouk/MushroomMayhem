@@ -3085,7 +3085,7 @@ StatusBar_DrawLevelName1:
 	RTS
 
 Process_Spinners:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$07
 	TAX
 

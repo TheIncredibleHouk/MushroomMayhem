@@ -40,7 +40,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjInit_Troopa	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjInit_BlueShell	; Object $7B - OBJ_BLUESHELL
-	.word ObjInit_DeliveryLakitu	; Object $7C - OBJ_HELPER
+	.word ObjInit_Larry	; Object $7C - OBJ_HELPER
 	.word ObjInit_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.word ObjInit_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
@@ -82,7 +82,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
 	.word ObjNorm_PurpleTroopa	; Object $7A - OBJ_PURPLETROOPA
 	.word ObjNorm_BlueShell		; Object $7B - OBJ_BLUESHELL
-	.word ObjNorm_DeliveryLakitu	; Object $7C - OBJ_HELPER
+	.word ObjNorm_Larry	; Object $7C - OBJ_HELPER
 	.word ObjNorm_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.word ObjNorm_GroundTroop	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
@@ -125,7 +125,7 @@ ObjectGroup03_CollideJumpTable:
 	.word Object_Explode					; Object $79 - OBJ_BULLETBILLHOMING
 	.word Object_Hold					; Object $7A - OBJ_PURPLETROOPA
 	.word $0000					; Object $7B - OBJ_BLUESHELL
-	.word $0000					; Object $7C - OBJ_HELPER
+	.word Larry_InteractWithPlayer		; Object $7C - OBJ_HELPER
 	.word $0000					; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.word $0000 | OBJ_PURPLETROOPA	; Object $7E - OBJ_BIGGREENHOPPER
 	.word $0000					; Object $7F - OBJ_BIGREDPIRANHA
@@ -416,7 +416,11 @@ ObjP7B:
 ObjP7E:
 	.byte $8D, $8F, $93, $95, $99, $8F, $9B, $9D, $B1, $B3, $B5, $B7
 ObjP7C:
-	.byte $9F, $9F, $87, $89, $AB, $AB, $A9, $A9
+	.byte $A9, $A9
+	.byte $AB, $AB
+	.byte $9F, $41, $BD, $BD
+	.byte $9F, $41, $9D, $9D
+
 ObjP6C:
 ObjP6D:
 ObjP6E:
@@ -1450,9 +1454,19 @@ FireIcePirateBro_SpitRight:
 	LDA FireIcePirateBro_Projectile, X
 	STA SpecialObj_ID, Y
 
+	CMP #SOBJ_ICEBALL
+	BNE FireIcePirateBro_SpitNorm
+
+	LDA <Temp_Var16
+	JSR Half_Value
+	STA SpecialObj_XVel, Y
+	BNE FireIcePirateBro_SetYVel
+	
+FireIcePirateBro_SpitNorm:
 	LDA <Temp_Var16
 	STA SpecialObj_XVel, Y
 
+FireIcePirateBro_SetYVel:
 	LDA #$FE
 	STA SpecialObj_YVel, Y
 
@@ -2028,7 +2042,24 @@ Lakitu_GraphicsTables:
 	.byte $0B
 
 ObjInit_Lakitu:
+	STX <Temp_Var1
 
+	LDY #$04
+
+Lakitu_CheckSame:
+	CPY <Temp_Var1
+	BEQ Lakitu_CheckNextSlot
+
+	LDA Objects_ID, Y
+	CMP #OBJ_LAKITU
+	BNE Lakitu_CheckNextSlot
+
+	JMP Object_Delete
+
+Lakitu_CheckNextSlot:
+	DEY
+	BPL Lakitu_CheckSame
+	
 	LDY Objects_Property, X
 	LDA Lakitu_GraphicsTables, Y
 	STA PatTable_BankSel + 4
@@ -2082,7 +2113,17 @@ Lakitu_Do:
 	JMP Lakitu_Draw
 
 Lakitu_Norm:
+	LDA Game_Counter
+	AND #$03
+	BNE Lakitu_Chase
+
+	JSR Object_Move
+	JMP Lakitu_CalcBoundBox
+
+Lakitu_Chase:
 	JSR Object_ChasePlayer
+
+Lakitu_CalcBoundBox:
 	JSR Object_CalcBoundBox
 
 	LDA <Vert_Scroll
@@ -2130,7 +2171,14 @@ Lakitu_Die:
 
 	INC Lakitu_MadePoof, X
 
-Lakitu_NoPoof
+	LDA Lakitu_EnemySlot, X
+	BMI Lakitu_NoPoof
+
+	TAY
+	LDA #$00
+	STA Objects_State, Y
+
+Lakitu_NoPoof:
 	JSR Object_Move
 
 	LDA <Objects_YHiZ, X
@@ -2417,22 +2465,22 @@ Lakitu_DrawDone:
 	RTS
 
 Lakitu_EnemyToss:
-	.byte OBJ_SPINYEGG, OBJ_BOBOMB
+	.byte OBJ_SPINYEGG, OBJ_FREEZIE, OBJ_HARDICE
 
 Lakitu_EnemyFrameLeft:
-	.byte $99
+	.byte $99, $B1, $99
 
 Lakitu_EnemyFrameLeftAttr:
-	.byte SPR_PAL1
+	.byte SPR_PAL1, SPR_PAL2, SPR_PAL2
 
 Lakitu_EnemyFrameRight:
-	.byte $99
+	.byte $99, $B3, $9B
 
 Lakitu_EnemyProperty:
-	.byte $00
+	.byte $00, $00, $00
 
 Lakitu_EnemyFrameRightAttr:
-	.byte SPR_PAL1 | SPR_HFLIP | SPR_VFLIP
+	.byte SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL2, SPR_PAL2
 
 Lakitu_DrawEnemy:
 	LDA Lakitu_EnemyOffset, X
@@ -2859,48 +2907,48 @@ Zombie_InsideGround2
 	RTS
 
 Zombie_Crumbles:
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-
-	; Set the brick bust
-	LDA #$02
-	STA BrickBust_En
-
-	; Brick bust upper Y
-	LDA <Objects_YZ, X
-	ADD #$08
-	CLC
-	SBC Level_VertScroll
-	STA Brick_DebrisYHi
-
-	; Brick bust lower Y
-	ADD #$08
-	STA Brick_DebrisY
-
-	; Brick bust X
-	LDA <Objects_XZ, X
-	SUB <Horz_Scroll	
-	STA Brick_DebrisX
-
-	; reset brick bust X distance, no horizontal
-	LDA #$00
-	STA Brick_DebrisXDist
-	STA BrickBust_HEn
-
-	; Brick bust Y velocity
-	LDA #-$06
-	STA BrickBust_YVel
-	
-	JSR Object_DetectTileCenter
-	LDA Tile_LastValue
-	AND #$FE
-	ORA #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
-
-	JSR SetObjectTileCoordAlignObj
+;	LDA #SND_LEVELCRUMBLE
+;	STA Sound_QLevel2
+;
+;	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
+;
+;	; Set the brick bust
+;	LDA #$02
+;	STA BrickBust_En
+;
+;	; Brick bust upper Y
+;	LDA <Objects_YZ, X
+;	ADD #$08
+;	CLC
+;	SBC Level_VertScroll
+;	STA Brick_DebrisYHi
+;
+;	; Brick bust lower Y
+;	ADD #$08
+;	STA Brick_DebrisY
+;
+;	; Brick bust X
+;	LDA <Objects_XZ, X
+;	SUB <Horz_Scroll	
+;	STA Brick_DebrisX
+;
+;	; reset brick bust X distance, no horizontal
+;	LDA #$00
+;	STA Brick_DebrisXDist
+;	STA BrickBust_HEn
+;
+;	; Brick bust Y velocity
+;	LDA #-$06
+;	STA BrickBust_YVel
+;	
+;	JSR Object_DetectTileCenter
+;	LDA Tile_LastValue
+;	AND #$FE
+;	ORA #$01
+;	STA Block_UpdateValue
+;	INC Block_NeedsUpdate
+;
+;	JSR SetObjectTileCoordAlignObj
 	RTS
 
 ObjInit_ParaZombieGoomba:
@@ -3011,42 +3059,6 @@ ParaZombieGoomba_Draw3:
 
 	RTS		 ; Return
 
-ObjNorm_JumpingCheepCheep:
-	LDA <Player_HaltGameZ
-	BNE PRG004_B0BA	 ; If gameplay is halted, jump to PRG004_B0BA
-
-	INC Objects_Data2,X	 ; Var5++
-
-	JSR Object_ApplyXVel	 	; Apply X velocity
-	JSR Object_ApplyYVel_NoGravity	; Apply Y velocity
-	JSR Object_WorldDetectN1	; Detect against world
-
-	INC <Objects_YVelZ,X	 ; YVel++
-
-	JSR Object_AttackOrDefeat	 ; Player to Cheep Cheep collision
-
-PRG004_B0BA:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-PRG004_B0BD:
-	LDA Objects_Data2,X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01	 ; A = 0 or 1
-
-	LDY Objects_Data4,X
-	BEQ PRG004_B0CC	 ; If Var1 = 0, jump to PRG004_B0CC
-
-	ADD #$03	 ; A = 3 or 4
-
-PRG004_B0CC:
-	STA Objects_Frame,X	 ; Set object frame
-
-	;JSR Object_FlipByXVel	 ; Apply X velocity
-
-	JMP GroundTroop_DrawNormal	 ; Draw and don't come back!
-
 SwimCheep_CurrentFrame = Objects_Data1
 SwimCheep_StartX = Objects_Data2
 SwimCheep_StartXHi = Objects_Data3
@@ -3107,6 +3119,12 @@ ObjNorm_SwimmingCheep1:
 	JSR Object_HitCeiling
 
 ObjNorm_SwimmingCheep2:
+	LDA Object_HorzTileProp, X
+	BNE ObjNorm_SwimmingCheep3
+
+	JSR Object_HitWall
+
+ObjNorm_SwimmingCheep3:
 	INC SwimCheep_CurrentFrame,X	 ; Var5++
 
 	; Toggle frame 0/1
@@ -3486,17 +3504,7 @@ ObjNorm_RedTroopa:
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-
-	LDA Objects_PreviousTilesDetect, X
-	AND #HIT_GROUND
-	BEQ Troopa_Animate
-
-	LDA <Objects_TilesDetectZ, X
-	AND #HIT_GROUND
-	BNE Troopa_Animate
-
-	JSR Object_Reverse
-	JSR Object_ApplyXVel
+	JSR Object_EdgeMarch
 
 Troopa_Animate:
 	INC Koopa_CurrentFrame, X
@@ -3577,6 +3585,13 @@ ObjNorm_BouncyTroopa:
 	JMP Troopa_Draw
 
 ObjNorm_BouncyTroopa0:
+	LDA Objects_InWater, X
+	BEQ Bouncy_NotWater
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+Bouncy_NotWater:
 	LDA  <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ ObjNorm_BouncyTroopa1
@@ -3587,6 +3602,7 @@ ObjNorm_BouncyTroopa0:
 
 	LDA #$00
 	STA Bouncey_FlutterTime, X
+
 	LDA #$C0
 	STA Objects_YVelZ, X
 	BNE ObjNorm_BouncyTroopa2
@@ -3684,6 +3700,15 @@ Spiny_Frame = Objects_Data1
 ObjInit_Spiny:
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
+
+	LDA Objects_Property, X
+	CMP #$02
+	BNE ObjInit_SpinyRTS
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+ObjInit_SpinyRTS:
 	RTS
 	
 ObjNorm_Spiny:
@@ -3696,6 +3721,7 @@ Spiny_Norm:
 	JSR Object_DeleteOffScreen
 
 	LDA Objects_Property, X
+	AND #$01
 	BEQ Spiny_NormGravity
 
 	INC Reverse_Gravity
@@ -3708,6 +3734,7 @@ Spiny_NormGravity:
 	JSR Object_CalcBoundBox
 
 	LDA Objects_Property, X
+	AND #$01
 	BEQ Spiny_NoDrop
 
 	JSR Object_XDistanceFromPlayer
@@ -3731,6 +3758,14 @@ Spiny_NormGravity:
 Spiny_NoDrop:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+
+	LDA Objects_Property, X
+	CMP #$02
+	BNE Spiny_NoEdgeMarch
+
+	JSR Object_EdgeMarch
+	
+Spiny_NoEdgeMarch:
 	JSR Object_InteractWithOtherObjects
 	JSR Object_AttackOrDefeat
 	JSR Object_FaceDirectionMoving
@@ -3944,95 +3979,7 @@ PRG004_B5A3:
 	RTS		 ; Return
 
 GiantEnemy_Draw:
-	LDA Objects_ID,X
-	CMP #OBJ_HELPER
-	BNE PRG004_B5D6	 ; If this is not a Giant Goomba, jump to PRG004_B5D6
 
-	; Giant Goomba only...
-
-	LDA Objects_Orientation,X
-	PHA		 ; Save flip bits
-
-	AND #~SPR_HFLIP
-	STA <Temp_Var1	 ; Temp_Var1 = flip bits sans horizontal flip
-
-	; Set horizontal flip only if Var5 bit 2 is set
-	LDA Objects_Data2,X
-	AND #$04
-	ASL A	
-	ASL A	
-	ASL A	
-	ASL A	
-	ORA <Temp_Var1
-	STA Objects_Orientation,X
-
-	JSR PRG004_B5D6 	; Otherwise, draw like any other
-
-	PLA
-	STA Objects_Orientation,X	; Restore flip bits
-
-	RTS		 ; Return
-
-PRG004_B5D6:
-
-	; Save X/Hi and Y
-	LDA <Objects_XZ,X
-	PHA
-	LDA <Objects_XHiZ,X
-	PHA
-	LDA <Objects_YZ,X
-	PHA
-
-	CLC	
-
-	LDY Objects_Orientation,X
-	BMI PRG004_B5E7	 ; If vertically flipped, jump to PRG004_B5E7
-
-	ADC #$08	 ; Otherwise, add 8
-
-PRG004_B5E7:
-	STA <Objects_YZ,X ; -> Y
-
-	LDA <Objects_YHiZ,X
-	PHA		 ; Save Y Hi
-
-	ADC #$00
-	STA <Objects_YHiZ,X	 ; Apply carry
-
-	; Temp_VarNP0 = sprite horizontal visibility bits
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	STA Temp_VarNP0
-
-	LDA Objects_Orientation,X
-	AND #SPR_HFLIP
-	BEQ PRG004_B60D	 ; If not horizontally flipped, jump to PRG004_B60D
-
-	ASL Objects_SpritesHorizontallyOffScreen,X
-
-	; Add 8 to X
-	LDA <Objects_XZ,X
-	ADD #$08
-	STA <Objects_XZ,X
-	LDA <Objects_XHiZ,X
-	ADC #$00
-	STA <Objects_XHiZ,X
-
-PRG004_B60D:
-	JSR Object_Draw16x32	 ; Draw left 2/3 of Giant Enemy
-
-	; Restore Y/Hi and X/Hi
-	PLA
-	STA <Objects_YHiZ,X
-	PLA
-	STA <Objects_YZ,X
-	PLA
-	STA <Objects_XHiZ,X
-	PLA
-	STA <Objects_XZ,X
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	LDY #$00	 ; Y = 0
 ;
 ;	LDA Objects_Orientation,X
 ;	AND #SPR_HFLIP
@@ -4270,161 +4217,9 @@ PRG004_B60D:
 ;	RTS		 ; Return
 
 ObjInit_GiantDRYPIRANHA:
-	LDA #4		; A = 4
-	BNE PRG004_B75A	; Jump (technically always) to PRG004_B75A
-
 ObjInit_GiantRedPiranha:
-	LDA #12	 	; A = 12
-
-PRG004_B75A:
-	ADD <Objects_XZ,X
-	STA <Objects_XZ,X	; Set centering X
-
-	LDY #$21	 ; Y = $21
-
-	; Var5 = original Y
-	LDA <Objects_YZ,X
-	STA Objects_Data2,X
-	
-	; Objects_TargetingYVal = $21
-	TYA
-	STA Objects_TargetingYVal,X
-
-	; Var7 = original Y Hi
-	LDA <Objects_YHiZ,X
-	STA Objects_Data3,X
-
-	; Set priority
-	LDA #SPR_BEHINDBG
-	STA Objects_Orientation,X
-	RTS		 ; Return
-
-GiantPiranha_TimerReloads:
-	.byte $30, $30, $30, $30
-
 ObjNorm_BigPiranha:
-	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
-	LDA Objects_Data1,X
-	AND #$03
-	BNE PRG004_B78C	 ; If (Var4 & 3) <> 0 (internal state 0 means Piranha is fully retracted), jump to PRG004_B78C
-
-	; Set all sprites as horizontally off-screen (piranha is fully retracted in pipe)
-	LDA #$ff
-	STA Objects_SpritesHorizontallyOffScreen,X
-
-	JMP PRG004_B79D	 ; Jump to PRG004_B79D
-
-PRG004_B78C:
-
-	; Toggle frame 0/1
-	LDA GameCounter
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-	JSR GiantPiranha_Draw	 ; Draw the giant piranha
-	JSR Object_AttackOrDefeat	 ; Player to piranha collision
-
-PRG004_B79D:
-	LDA <Player_HaltGameZ
-	BNE PRG004_B7FD	 ; If gameplay is halted, jump to PRG004_B7FD (RTS)
-
-	INC Objects_Data3,X	 ; Var3++
-
-	LDA Objects_Data1,X
-	AND #$03	; Keep internal state counter 0-3
-
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word GiantPiranha_HideInPipe	; 0: Retracted in pipe
-	.word GiantPiranha_Emerge	; 1: Emerging
-	.word GiantPiranha_Chomp	; 2: Chomp
-	.word GiantPiranha_Retract	; 3: Retract
-
-GiantPiranha_Emerge:
-
-	; Objects_TargetingYVal = $21
-	; Var5 = original Y 
-	; Var7 = original Y Hi
-
-	LDA Objects_Data2,X		; Original Y
-	SUB Objects_TargetingYVal,X	; subtract TargetingYVal
-	PHA				; Save it
-
-	LDA Objects_Data3,X
-	SBC #$00
-	STA <Temp_Var1			; Temp_Var1 = Original Y Hi, carry applied
-
-	PLA		 ; Restore the Original Y difference
-	CMP <Objects_YZ,X
-	LDA <Temp_Var1
-	SBC <Objects_YHiZ,X
-	BCS PRG004_B7F0	 ; Basically if Giant Piranha is at his Y and Y Hi highest point, jump to PRG004_B7F0
-
-	LDA #-$10	 ; A = -$10
-	BNE PRG004_B7E6	 ; Jump (technically always) to PRG004_B7E6
-
-GiantPiranha_Retract:
-	LDA <Objects_YZ,X
-	ADD #$01
-	PHA		 ; Save Y + 1
-
-	LDA <Objects_YHiZ,X
-	ADC #$00
-	STA <Temp_Var1	 ; Temp_Var1 = carry applied to Y Hi
-
-	PLA		 ; Restore Y + 1
-
-	CMP Objects_Data2,X
-	LDA <Temp_Var1	
-	SBC Objects_Data3,X
-	BCS PRG004_B7F0	 ; Basically if Giant Piranha is at his Y and Y Hi origin, jump to PRG004_B7F0
-
-	LDA #$10	 ; A = $10
-
-PRG004_B7E6:
-
-	; Giant Piranha is not fully extended/retracted...
-
-	STA <Objects_YVelZ,X	 ; Set Y velocity as appropriate
-	JMP Object_ApplyYVel_NoGravity	 ; Apply Y velocity and don't come back!!
-
-GiantPiranha_Chomp:
-	LDA Objects_Timer,X
-	BNE PRG004_B80F	 ; If timer not expired, jump to PRG004_B80F
-
-PRG004_B7F0:
-	INC Objects_Data1,X	 ; Var4++ (next internal state)
-
-	LDA Objects_Data1,X
-	AND #$03
-	TAY		 ; Y = 0 to 3, based on internal state
-
-	LDA GiantPiranha_TimerReloads,Y	 ; Get timer reload value for this state
-	STA Objects_Timer,X	 ; Reload timer
-
-PRG004_B7FD:
-	RTS		 ; Return
-
-GiantPiranha_HideInPipe:
-	LDA Objects_Timer,X
-	BNE PRG004_B80F	 ; If timer not expired, jump to PRG004_B80F
-
-	JSR Object_XDistanceFromPlayer
-
-	LDA <Temp_Var16
-	ADD #$18
-	CMP #$31
-	BGE PRG004_B7F0	 ; If Player is not too close, jump to PRG004_B7F0
-
-PRG004_B80F:
-	RTS		 ; Return
-
-GiantPiranha_Draw:
+	RTS
 
 GroundTroop_DrawNormal:
 	LDY #$00	; Y = 0 (Sprite Y offset)
@@ -5294,204 +5089,6 @@ FreeNoBounce:
 	STA Objects_Frame, X
 	JMP Object_Draw
 
-LakituMessage1:
-	.byte "THANK YOU FOR FREEING ME. "
-
-LakituMessage2:
-	.byte "I WILL HELP YOU IN RETURN."
-
-ObjInit_DeliveryLakitu:
-	LDA #$9D
-	STA Objects_Data8, X
-	RTS
-
-ObjNorm_DeliveryLakitu:
-	LDA Objects_Data4, X
-	JSR DynJump
-
-	.word WaitForMario
-	.word DisplayLakituText
-	.word DeliveryLakituFlyAway
-	.word DeliveryLakituTrack
-	.word DeliveryLakituWait
-
-WaitForMario:
-	LDA <Counter_1
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	ORA #$02
-	STA Objects_Frame, X
-	JSR Object_DrawMirrored
-	JSR Object_HitTest
-	BCC WaitForMarioRTS
-	JSR SpecialObject_FindEmptyAbort
-	INC Objects_Data4, X
-	LDA <Objects_XZ, X
-	STA SpecialObj_X, Y
-	LDA <Objects_YZ, X
-	STA SpecialObj_Y, Y
-	LDA <Objects_YHiZ,X
-	STA SpecialObj_YHi,Y
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID, Y
-	LDA #$20	 
-	STA SpecialObj_Data1, Y
-	STA Objects_Timer, X
-	LDA #$00
-	STA Objects_Frame, X
-
-	LDA #$40
-	STA Objects_SlowTimer, X
-
-	LDA #$80
-	STA StatusBar_Mode
-
-	LDX #$8C
-	STX Status_Bar_Top
-	INX
-	STX Status_Bar_Top + 1
-	LDX #$9C
-	STX Status_Bar_Bottom
-	INX
-	STX Status_Bar_Bottom + 1
-	LDX #$00
-
-NextLakituLetter:
-	LDA LakituMessage1, X
-	STA Status_Bar_Top + 2, X
-	LDA LakituMessage2, X
-	STA Status_Bar_Bottom + 2, X
-	INX
-	CPX #26
-	BNE NextLakituLetter
-
-WaitForMarioRTS:
-	RTS
-
-DisplayLakituText:
-	LDA Objects_SlowTimer, X
-	BNE DisplayLakituText1
-
-	LDA Last_StatusBar_Mode
-	STA StatusBar_Mode
-
-	LDA #$80
-	STA Last_StatusBar_Mode
-
-	INC Objects_Data4, X
-
-	LDY Objects_Property, X
-	LDA Effective_Suit
-	CMP PowerUpChecks, Y
-	BEQ DisplayLakituText1
-
-	LDA #$03
-	STA Objects_Data4, X
-
-DisplayLakituText1:
-	;JSR DrawLakitu
-	LDA #$01
-	STA Player_HaltTick
-	RTS
-
-DeliveryLakituFlyAway:
-	LDA Objects_YHiZ, X
-	BPL DeliveryLakituFlyAway1
-
-	LDA #$04
-	STA Objects_Data4, X
-	LDA #$00
-	STA <Objects_YVelZ, X
-	RTS
-	
-DeliveryLakituFlyAway1:
-	INC Reverse_Gravity
-	JSR Object_Move
-	;JSR DrawLakitu
-	RTS
-
-PowerUpChecks:
-	.byte $02, $0B, $05, $04
-
-PowerUpDeliveries:
-	.byte OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN
-
-PowerUpDeliveriesFlash:
-	.byte 00, 00, 02, 01
-
-DeliveryLakituWait:
-	LDY Objects_Property, X
-	LDA Effective_Suit
-	CMP PowerUpChecks, Y
-	BEQ DeliveryLakituWait1
-	LDA #$03
-	STA Objects_Data4, X
-	LDA <Player_X
-	STA <Objects_XZ, X
-	LDA <Player_XHi
-	ADD #$01
-	STA <Objects_XHiZ, X
-	LDA <Player_Y
-	STA <Objects_YZ, X
-	LDA <Player_YHi
-	STA <Objects_YHiZ, X
-
-DeliveryLakituWait1:
-	RTS
-
-DeliveryLakituTrack:
-	LDY Objects_Property, X
-	LDA <Player_HaltGameZ
-	BNE DeliveryLakituTrack1
-	LDA Effective_Suit
-	CMP PowerUpChecks, Y
-	BEQ DeliveryLakituEscape
-
-	LDA Objects_State + 5
-	BNE DeliveryLakituEscape
-
-	JSR Object_ChasePlayer
-	JSR Object_HitTest
-	BCC DeliveryLakituTrack1
-	
-	LDA Objects_State + 5
-	BNE DeliveryLakituTrack1
-
-	LDA #$01
-	STA PowerUp_Reserve
-	
-	LDA #OBJSTATE_INIT
-	STA Objects_State + 5
-	
-	LDY Objects_Property, X
-	LDA PowerUpDeliveries, Y
-	STA Objects_ID + 5
-	STA PowerUp_NoRaise
-
-	LDA PowerUpDeliveriesFlash, Y
-	STA PUp_StarManFlash
-
-	LDA <Objects_XZ, X
-	STA <Objects_XZ + 5
-	LDA <Objects_XHiZ, X
-	STA <Objects_XHiZ + 5
-	LDA <Objects_YZ, X
-	SUB #$10
-	STA <Objects_YZ + 5
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Objects_YHiZ + 5
-	
-DeliveryLakituEscape:
-	LDA #$02
-	STA Objects_Data4, X
-
-DeliveryLakituTrack1:
-	;JSR DrawLakitu
-	RTS
-
 BlueShellExplosionTimers:
 	.byte $40, $80, $C0, $FF
 
@@ -5640,4 +5237,467 @@ ObjNorm_BlueShellDraw2:
 BlueShell_Expload:
 	INC Explosion_Timer, X
 	RTS
+
+ObjInit_Larry:
+
+	LDA #$20
+	STA ChaseVel_LimitHi, X
+
+	LDA #$E0
+	STA ChaseVel_LimitLo, X
+
+	JSR Object_CalcBoundBox
+
+	LDA #$FF
+	STA Larry_ItemSlot, X 
+	RTS		 ; Return
+
 	
+Larry_Message1:
+	.byte "THANK YOU FOR FREEING ME. "
+
+Larry_Message2:
+	.byte "I WILL HELP YOU IN RETURN."
+
+Larry_Frame = Objects_Data1
+Larry_Action = Objects_Data2
+Larry_BodyOffset = Objects_Data3
+Larry_ItemSlot = Objects_Data4
+Larry_ItemOffset = Objects_Data5
+
+ObjNorm_Larry:
+	LDA <Player_HaltGameZ
+	BEQ Larry_DoAction
+
+	JMP Larry_Draw
+
+Larry_DoAction:
+	LDA Larry_Action, X
+	JSR DynJump
+
+	.word Larry_InBag
+	.word Larry_Talk
+	.word Larry_WaitOffScreen
+	.word Larry_FindPlayer
+	.word Larry_ThrowItem
+	.word Larry_FleePlayer
+
+Larry_ItemToss:
+	.byte POWERUP_FIREFLOWER, POWERUP_NINJASHROOM, POWERUP_SHELL, POWERUP_FROGSUIT
+
+Larry_SuitHelp:
+	.byte $02, $0B, $05, $04
+
+Larry_InBag:
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+
+	INC Larry_Frame, X
+
+	LDA Larry_Frame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+	
+	JMP Larry_Draw
+
+Larry_RemoveBag:
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA <Objects_YHiZ, X
+	STA <Poof_YHi
+	
+	JSR Common_MakePoof
+
+	LDA #$01
+	STA Objects_Frame, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	;LDA Last_StatusBar_Mode
+	;STA StatusBar_Mode
+	;
+	;LDA #$80
+	;STA Last_StatusBar_Mode
+	;
+	;LDA #$80
+	;STA StatusBar_Mode
+	;
+	;LDX #$8C
+	;STX Status_Bar_Top
+	;
+	;LDA #$40
+	;STA Objects_SlowTimer, X
+	;
+	;INX
+	;STX Status_Bar_Top + 1
+	;
+	;LDX #$9C
+	;STX Status_Bar_Bottom
+	;
+	;INX
+	;STX Status_Bar_Bottom + 1
+	;
+	;LDA #SPR_PAL2
+	;STA Objects_SpriteAttributes, X
+	;
+	;LDX #$00
+
+Larry_NextLetter:
+	;LDA Larry_Message1, X
+	;STA Status_Bar_Top + 2, X
+	;
+	;LDA Larry_Message2, X
+	;STA Status_Bar_Bottom + 2, X
+	;
+	;INX
+	;CPX #26
+	;BNE Larry_NextLetter
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$40
+	STA Objects_SlowTimer, X
+	INC Larry_Action, X
+
+	PLA
+	PLA
+	JMP Larry_Draw
+
+Larry_Talk:
+	LDA Objects_SlowTimer, X
+	BNE Larry_TalkDraw
+
+	LDY Objects_Property, X
+
+	LDA Player_EffectiveSuit
+	CMP Larry_SuitHelp, Y
+	BNE Larry_Prepare
+
+	LDA #$05
+	STA Larry_Action, X
+
+Larry_TalkDraw:
+	JMP Larry_Draw
+
+Larry_WaitOffScreen:
+	LDY Objects_Property, X
+
+	LDA Player_EffectiveSuit
+	CMP Larry_SuitHelp, Y
+	BNE Larry_Prepare
+
+	LDA <Player_X
+	STA <Objects_XZ, X
+
+	LDA <Player_XHi
+	STA <Objects_XHiZ, X
+
+
+	LDA #$20
+	STA <Objects_YZ, X
+
+	LDA #$FF
+	STA <Objects_YHiZ, X
+
+	RTS
+
+Larry_Prepare:
+	LDA Objects_Property, X
+	TAY
+
+	LDA Larry_ItemToss, Y
+	STA <Temp_Var1
+
+	JSR Check_ExistingPowerUps
+	BCS Larry_WaitOffScreenRTS
+
+	LDY #$05
+
+Larry_FindSlot:
+	
+	LDA Objects_State,Y
+	BEQ Larry_ItemSlotFound
+
+	INY
+	CPY #$08
+	BNE Larry_FindSlot
+	RTS
+
+Larry_ItemSlotFound:
+	TYA
+	STA Larry_ItemSlot, X
+
+	LDA #OBJ_POWERUP
+	STA Objects_ID, Y	
+
+	LDA <Temp_Var1
+	STA PowerUp_Type, Y
+
+	LDA #OBJSTATE_NONE
+	STA Objects_State, Y
+
+	LDA #$03
+	STA Larry_Action, X
+
+	LDA #$02
+	STA Objects_Frame, X
+	JMP Larry_Draw
+
+Larry_WaitOffScreenRTS:
+	RTS
+
+Larry_FindPlayer:
+	JSR Object_ChasePlayer
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	JMP Larry_Draw
+
+Larry_InteractWithPlayer:
+	LDA Larry_Action, X
+	BNE Larry_ThrowItem
+
+	JMP Larry_RemoveBag
+
+Larry_ThrowItem:
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	SUB #$08
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCS Larry_ThrowItemDone
+
+	LDY Larry_ItemSlot, X
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA <Objects_XZ, X
+	STA Objects_XZ, Y
+
+	LDA <Objects_XHiZ, X
+	STA Objects_XHiZ, Y
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA Objects_YZ, Y
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA Objects_YHiZ, Y
+
+	LDA #$00
+	STA Objects_YVelZ, Y
+
+	LDA <Objects_XVelZ, X
+	STA Objects_XVelZ, Y
+
+	INC Larry_Action, X
+
+	LDA #$FF
+	STA Larry_ItemSlot, X
+
+	LDA #$01
+	STA Objects_Frame, X
+
+Larry_ThrowItemDone:
+	JMP Larry_Draw
+
+Larry_FleePlayer:
+	JSR Object_FleePlayer
+	JSR Object_CalcBoundBox
+	JSR Object_XDistanceFromPlayer
+	
+	LDA <XDiff
+	CMP #$C0
+	BCC Larry_FleeDraw
+
+	LDA #$02
+	STA Larry_Action, X
+
+Larry_FleeDraw:
+	JMP Larry_Draw
+
+Larry_Draw:
+	LDA Larry_Action, X
+	BNE Larry_DrawFull
+
+	JMP Object_DrawMirrored
+
+Larry_DrawFull:
+	LDA <Objects_SpriteY, X
+	ADD #$10
+	STA <Objects_SpriteY, X
+
+	LDA Object_SpriteRAMOffset, X
+	ADD #$04
+	STA Object_SpriteRAMOffset, X
+	JSR Object_Draw16x32Mirrored
+
+	LDA Sprite_RAMY, Y
+	STA <Temp_Var1
+
+	LDA Sprite_RAMY + 8, Y
+	STA Sprite_RAMY, Y
+
+	LDA <Temp_Var1
+	ADD Larry_BodyOffset, X
+	BCS Larry_Draw_A
+	STA Sprite_RAMY + 8, Y
+
+Larry_Draw_A:
+	LDA Sprite_RAMY + 4, Y
+	STA <Temp_Var1
+
+	LDA Sprite_RAMY + 12, Y
+	STA Sprite_RAMY + 4, Y
+
+	LDA <Temp_Var1
+	ADD Larry_BodyOffset, X
+	BCS Larry_Draw0
+	STA Sprite_RAMY + 12, Y
+
+Larry_Draw0:
+	LDA Sprite_RAMX, Y
+	ADD #$04
+	BCS Larry_Draw1
+	STA Sprite_RAMX, Y
+
+Larry_Draw1:
+	LDA Sprite_RAMX + 4, Y
+	ADD #$04
+	BCS Larry_Draw2
+
+	STA Sprite_RAMX + 4, Y
+
+Larry_Draw2:
+	LDA Sprite_RAMAttr, Y
+	AND #~SPR_PAL3
+	ORA #SPR_PAL1
+	STA Sprite_RAMAttr, Y
+
+	LDA Sprite_RAMAttr + 4, Y
+	AND #~SPR_PAL3
+	ORA #SPR_PAL1
+	STA Sprite_RAMAttr+ 4, Y
+
+	TYA
+	SUB #$04
+	TAY
+
+	LDA #$41
+	STA Sprite_RAMTile, Y
+
+	LDA Objects_SpriteX, X
+	SUB #$04
+	BCC Larry_Draw3
+	STA Sprite_RAMX, Y
+	
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_0_HINVISIBLE
+	BNE Larry_Draw3
+
+	LDA Sprite_RAMY + 4, Y
+	STA Sprite_RAMY, Y
+
+
+	LDA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr, Y
+
+Larry_Draw3:
+	LDA Larry_ItemSlot, X
+	BMI Larry_DrawDone
+
+	JSR Larry_DrawItem
+
+Larry_DrawDone:
+	RTS
+
+Larry_ItemFrameLeftAttr:
+	.byte SPR_PAL2
+
+Larry_ItemFrameRightAttr:
+	.byte SPR_PAL2
+
+Larry_ItemPattern:
+	.byte $04, $20, $10, $0C
+
+Larry_DrawItem:
+	LDA #$0E
+	STA <Temp_Var1
+
+	LDA Objects_Property, X
+	TAX
+	
+	LDA Larry_ItemPattern,X
+	STA SprAnimOffset
+
+	LDA Sprite_RAMY + 12, Y
+	CMP #$F8
+	BEQ Larry_Item1
+
+	SUB <Temp_Var1
+	STA Sprite_RAMY + 20, Y
+
+Larry_Item1:
+	STA <Temp_Var3
+
+	LDA #$51
+	STA Sprite_RAMTile + 20, Y
+
+	LDA Larry_ItemFrameLeftAttr, X
+	STA Sprite_RAMAttr + 20, Y
+
+	LDA Sprite_RAMX + 12, Y
+	STA Sprite_RAMX + 20, Y
+	ADD #$08
+	STA <Temp_Var2
+
+Larry_UnusedSprite:
+	JSR Object_GetUnusedSprite
+
+	LDA Objects_Property, X
+	TAX
+
+	LDA <Temp_Var3
+	CMP #$F8
+	BEQ Larry_DrawItemDone
+	STA Sprite_RAMY, Y
+
+	LDA #$53
+	STA Sprite_RAMTile, Y
+
+	LDA Larry_ItemFrameRightAttr, X
+	STA Sprite_RAMAttr, Y
+
+	LDA <Temp_Var2
+	STA Sprite_RAMX, Y
+
+Larry_DrawItemDone:
+	RTS

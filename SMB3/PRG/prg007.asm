@@ -173,7 +173,7 @@ Player_Projectiles:
 	.byte $00, $00, PLAYER_FIREBALL, $00, $00, $00, PLAYER_HAMMER, PLAYER_ICEBALL, $00, $00, $00, PLAYER_NINJASTAR
 
 PlayerProj_ThrowWeapon:
-	LDY Effective_Suit
+	LDY Player_EffectiveSuit
 	LDA Player_Projectiles, Y
 	BNE PlayerProj_ThrowWeapon1
 
@@ -519,12 +519,13 @@ Make_Ice:
 	LDA #OBJ_ICEBLOCK
 	STA Objects_ID, Y
 
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
 
 	LDA #$00
 	STA Objects_Frame, Y
 	STA Objects_Orientation, Y
+	STA IceBlock_Kicked, Y
 
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, Y
@@ -846,7 +847,7 @@ Detect16x16:
 	.byte $02, $0E
 
 SpecialObj_DetectWorld16x16:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$01
 	TAY
 
@@ -858,7 +859,7 @@ SpecialObj_DetectWorld16x16:
 	ADC #$00
 	STA Tile_DetectionYHi
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	AND #$01
 	TAY
@@ -1537,7 +1538,7 @@ Bubble_XOff:		.byte $00, $01, $00, -$01
 Bubble_SprRAMOff:	.byte $10, $14, $0C, $FF, $10, $14, $0C
 
 Bubble_Draw:
-	LDA GameCounter
+	LDA Game_Counter
 	AND #%00001100
 	LSR A	
 	LSR A	
@@ -1738,7 +1739,7 @@ Draw_SpreadAndColorful:
 	ORA #SPR_HFLIP
 	STA Sprite_RAM+$02,Y
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #$02
 	BNE PRG007_AA4C	 ; 2 ticks on, 2 ticks off; jump to PRG007_AA4C (RTS)
 
@@ -2086,7 +2087,7 @@ PRG007_AD54:
 	STA Sprite_RAM+$00,Y
 	STA Sprite_RAM+$04,Y
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	LSR A
 	LSR A
@@ -2376,7 +2377,7 @@ PRG007_B11F:
 	; Temp_Var1 = SPR_PAL3
 
 	; Rotating effect
-	LDA GameCounter
+	LDA Game_Counter
 	ASL A
 	ASL A
 	ASL A
@@ -2485,7 +2486,7 @@ PRG007_B1C3:
 	STA Sprite_RAM+$01,Y
 
 	; Apply cycling palette attribute
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	LSR A
 	NOP
@@ -2531,7 +2532,7 @@ PRG007_B303:
 
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	LSR A
 	LSR A	; 8 ticks on/off
@@ -2599,7 +2600,7 @@ PRG007_B352:
 	DEC SpecialObj_YHi,X	 ; Apply carry
 PRG007_B364:
 
-	LDA GameCounter
+	LDA Game_Counter
 	AND #%00001100
 	LSR A
 	LSR A
@@ -2809,7 +2810,7 @@ PRG007_B4AF:
 	AND #$80
 	STA <Temp_Var1
 
-	LDA GameCounter
+	LDA Game_Counter
 	LSR A
 	ADD <CurrentObjectIndexZ
 	AND #$03
@@ -3089,10 +3090,13 @@ PRG007_B827:
 	LDA SpecialObj_ID, X
 	CMP #SOBJ_ICEBALL
 	BNE PRG007_B836
+
 	JSR CheckTailSpin
 	JSR Enemy_FreezePlayer
+
 	LDA SpecialObj_XVel,X
 	STA <Player_XVel
+
 	JMP SpecialObj_Remove
 
 PRG007_B836:
@@ -4201,18 +4205,19 @@ CFire_Platform:
 	LDA CannonFire_YHi,Y
 	STA <Objects_YHiZ,X
 
+	LDA #$10
+	STA Platform_MaxFall, X
+
 	LDA #$F8
 	STA <Objects_YVelZ, X
 
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes,X
 
-	TYA
-	TAX
+	LDA #$A0
+	STA CannonFire_Timer, Y
 
-	LDY CannonFire_Property, X
-	LDA PlatformGenTimer, Y
-	STA CannonFire_Timer, X
+	JSR Object_CalcBoundBox
 
 CFire_Platform1:
 	RTS
@@ -4513,7 +4518,7 @@ PRG007_BFDC:
 	RTS		 ; Return
 
 CheckTailSpin:
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$03
 	BNE CheckTailSpin1
 
@@ -4573,7 +4578,7 @@ HitPlayer:
 	RTS
 
 SObj_CantStomp:
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$03
 	BNE NotTailHit
 
@@ -4622,7 +4627,7 @@ Enemy_FreezePlayer:
 	JSR SpecialObj_DetectPlayer
 	BCC EnemeyProj_Enemy_FreezePlayer3
 
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	CMP #$03
 	BNE Enemy_IceFreeze
 
@@ -4641,6 +4646,7 @@ Enemy_FreezePlayer:
 
 Enemy_IceFreeze:
 	LDA Player_StarInv
+	ORA Player_FireDash
 	BEQ EnemeyProj_Enemy_FreezePlayer1
 
 	JMP SpecialObj_ToPoof
@@ -4659,7 +4665,7 @@ EnemeyProj_Enemy_FreezePlayer2
 	LDA #$00
 	STA SpecialObj_ID, X
 
-	JMP Enemy_FreezePlayer
+	JMP Player_Freeze
 	
 EnemeyProj_Enemy_FreezePlayer3:
 	RTS

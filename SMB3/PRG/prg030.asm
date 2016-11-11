@@ -1764,7 +1764,7 @@ PRG030_8F31:
 
 PRG030_8F31_2:
 	; Transfer Player's current power up to the World Map counterpart
-	LDA Effective_Suit
+	LDA Player_EffectiveSuit
 	BNE PRG030_8F32
 
 	LDX Player_Level
@@ -3285,10 +3285,6 @@ HorzNotLocked:
 	LDA [Temp_Var14],Y
 	AND #$40
 	STA ProjectileToSpinners
-
-	LDA [Temp_Var14],Y
-	AND #$20
-	STA RhythmPlatformEnabed
 
 	LDA [Temp_Var14],Y
 	AND #$10
@@ -5591,174 +5587,6 @@ Keep_Going:
 	STA Palette_Buffer+$13
 	RTS
 
-DPad_ControlTiles:
-	LDA <Player_HaltGameZ
-	BNE DPad_ControlTiles4
-
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ DPad_ControlTiles1
-
-	LDA #$01
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles1:
-	LDA <Pad_Holding
-	AND #PAD_LEFT
-	BEQ DPad_ControlTiles2
-
-	LDA #$02
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles2:
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ DPad_ControlTiles3
-
-	LDA #$03
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles3:
-	LDA <Pad_Holding
-	AND #PAD_RIGHT
-	BEQ DPad_ControlTiles4
-
-	LDA #$00
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles4:
-	RTS
-
-RhythmPlatforming:
-RhythmGraphics:
-	.byte $60, $62, $64, $66
-
-RhythmSet1:
-	.byte $00, $5F, $90, $82, $00, $00, $00, $00, $80, $5F, $00
-
-RhythmSet2:
-	.byte $00, $18, $23, $1E, $00, $00, $00, $00, $20, $18, $00
-
-RhythmSet3:
-	.byte $00, $03, $00, $FE, $00, $00, $00, $00, $04, $03, $00
-
-RhythmPlatformsReset:
-	STA RhythmMusic
-	LDA #$00
-	STA RhythmKeeper
-	STA RhythmKeeper + 1
-	STA RhythmKeeper + 2
-	STA RhythmKeeper + 4
-
-RhythmPlatforms:
-	LDX #$00
-	LDA SndCur_Music2
-	BEQ RhythmPlatforms0
-	LDY RhythmMusic
-	BNE DoNotStoreRhythmMusic
-	STA RhythmMusic
-
-DoNotStoreRhythmMusic:
-	CMP RhythmMusic
-	BNE RhythmPlatformsReset
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX
-	LDA RhythmSet1, X
-	BEQ RhythmPlatforms0
-	LDA RhythmKeeper
-	CMP RhythmSet1, X
-	BEQ RhythmPlatforms1
-	INC RhythmKeeper
-
-RhythmPlatforms0:
-	RTS
-
-RhythmPlatforms1:
-	LDA RhythmKeeper + 1
-	CMP RhythmSet2, X
-	BEQ RhythmPlatforms2
-	INC RhythmKeeper + 1
-	RTS
-
-RhythmPlatforms2:
-	LDA RhythmKeeper + 2
-	CMP #$03
-	BEQ RhythmPlatforms3
-	LDA #SND_LEVELBLIP
-	STA Sound_QLevel1
-	INC RhythmKeeper + 2
-	LDA #$00
-	STA RhythmKeeper + 1
-	RTS
-	
-RhythmPlatforms3:
-	LDA #SND_MAPINVENTORYFLIP
-	STA Sound_QMap
-
-	LDA #$00
-	STA RhythmKeeper + 1
-	STA RhythmKeeper + 2
-	LDA RhythmSet3, X
-	STA RhythmKeeper
-	INC RhythmKeeper + 3
-	LDA RhythmKeeper + 3
-	AND #$03
-	TAY
-	LDA RhythmGraphics, Y
-	STA PatTable_BankSel
-	LDA #$00
-	STA TileProperties + $02
-	STA TileProperties + $42
-	STA TileProperties + $82
-	STA TileProperties + $C2
-	LDA #$02
-
-RhythmPlatforms4:
-	CPY #$00
-	BEQ RhythmPlatforms5
-	ADD #$40
-	DEY
-	BPL RhythmPlatforms4 
-
-RhythmPlatforms5:
-	TAY
-	LDA #TILE_PROP_SOLID_ALL
-	STA TileProperties, Y
-	LDA TileProperties + $53
-	STA TileProperties + $03
-	LDA TileProperties + $83
-	STA TileProperties + $53
-	LDA TileProperties + $D3
-	STA TileProperties + $83
-	LDA RhythmKeeper + 3
-	AND #$03
-	TAY
-	LDA RhythmCurrents, Y
-	STA TileProperties + $D3
-	RTS
-
-RhythmCurrents:
-	.byte TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP, TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN
-
-DPadTiles:
-	.byte TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN, TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP
-
-UpdateRhythmTiles:
-	LDA RhythmKeeper + 3
-	AND #$03
-	TAY
-	LDA RhythmGraphics, Y
-	STA PatTable_BankSel
-	LDA DPadTiles, Y
-	STA TileProperties + $57
-	RTS
 
 StarXPositions:
 	.byte $00, $54, $A8, $2A, $7E, $D2
@@ -6032,4 +5860,27 @@ Common_FindTempTile:
 
 Common_TempTileFound:
 	SEC
+	RTS
+
+Check_ExistingPowerUps:
+	LDY #$05
+
+PUpCheck_ContinueChecking:
+	LDA Objects_ID, Y
+	CMP #OBJ_POWERUP
+	BNE PUpCheck_MoveAlong
+
+	LDA Objects_State, Y
+	CMP #OBJSTATE_NORMAL
+	BNE PUpCheck_MoveAlong
+
+	SEC
+	RTS
+
+PUpCheck_MoveAlong:
+	INY
+	CPY #$08
+	BNE PUpCheck_ContinueChecking
+
+	CLC
 	RTS
