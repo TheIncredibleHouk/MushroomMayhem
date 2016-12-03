@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<music>
+  <track value="0" name="None" />
+  <track value="1" name="Grass Land" />
+  <track value="2" name="Desert Land" />
+  <track value="3" name="Water Land" />
+  <track value="4" name="Giant land" />
+  <track value="5" name="Sky Land" />
+  <track value="6" name="Ice Land" />
+  <track value="7" name="Pipe Land" />
+  <track value="8" name="Dark Land" />
+  <track value="9" name="Clouds" />
+  <track value="A" name="Invinicible" />
+  <track value="B" name="Warp Whistle" />
+  <track value="C" name="Music Box" />
+  <track value="D" name="Falling In the Sky" />
+  <track value="E" name="Bonus Game" />
+  <track value="F" name="Princess Saved/End Credits" />
+  <track value="10" name="Plains" />
+  <track value="20" name="Underground" />
+  <track value="30" name="Water" />
+  <track value="40" name="Fortress" />
+  <track value="50" name="Boss Battle" />
+  <track value="60" name="Air Ship" />
+  <track value="70" name="Hammer Bros." />
+  <track value="80" name="P-Switch" />
+  <track value="90" name="Hilly" />
+  <track value="A0" name="P-Switch" />
+  <track value="B0" name="Bowser Fight" />
+</music>

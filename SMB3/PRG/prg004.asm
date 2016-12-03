@@ -192,42 +192,42 @@ ObjectGroup03_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup03_Attributes2:
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $6C - OBJ_GREENTROOPA
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $6D - OBJ_REDTROOPA
-	.byte OA2_TDOGRP1			; Object $6E - OBJ_PARATROOPAGREENHOP
-	.byte OA2_TDOGRP1			; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $70 - OBJ_BUZZYBEATLE
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $71 - OBJ_SPINY
+	.byte $00	; Object $6C - OBJ_GREENTROOPA
+	.byte $00	; Object $6D - OBJ_REDTROOPA
+	.byte $00	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.byte $00	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.byte $00	; Object $70 - OBJ_BUZZYBEATLE
+	.byte $00	; Object $71 - OBJ_SPINY
 	.byte $00	; Object $72 - OBJ_GOOMBA
-	.byte OA2_TDOGRP1			; Object $73 - OBJ_PARAGOOMBA
-	.byte OA2_TDOGRP1			; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $75 - OBJ_WATERFILLER
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $76 - OBJ_POISONMUSHROOM
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $77 - OBJ_GREENCHEEP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $78 - OBJ_BULLETBILL
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $7A - OBJ_PURPLETROOPA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $7B - OBJ_BLUESHELL
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $7C - OBJ_HELPER
-	.byte OA2_TDOGRP1	; Object $7D - OBJ_PARAZOMBIEGOOMBA
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP2	; Object $7E - OBJ_BIGGREENHOPPER
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $7F - OBJ_BIGREDPIRANHA
-	.byte OA2_TDOGRP1	; Object $80 - OBJ_FLYINGGREENPARATROOPA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $81 - OBJ_HAMMERBRO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $82 - OBJ_NINJABRO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $83 - OBJ_LAKITU
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $84 - OBJ_SPINYEGG
-	.byte OA2_GNDPLAYERMOD | OA2_TDOGRP1	; Object $85 - OBJ_BLUESPINY
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $86 - OBJ_ICEBRO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $87 - OBJ_FIREBRO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $88 - OBJ_PIRATEBRO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $89 - OBJ_CHAINCHOMP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $8A - OBJ_THWOMP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $8B - OBJ_AngryTHWOMP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8C - OBJ_THWOMPRIGHTSLIDE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8D - OBJ_THWOMPUPDOWN
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8E - OBJ_THWOMPDIAGONALUL
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2	; Object $8F - OBJ_THWOMPDIAGONALDL
+	.byte $00	; Object $73 - OBJ_PARAGOOMBA
+	.byte $00	; Object $74 - OBJ_ZOMBIEGOOMBA
+	.byte $00	; Object $75 - OBJ_WATERFILLER
+	.byte OA2_STOMP_KICKSND  	; Object $76 - OBJ_POISONMUSHROOM
+	.byte $00  	; Object $77 - OBJ_GREENCHEEP
+	.byte $00  	; Object $78 - OBJ_BULLETBILL
+	.byte $00  	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte $00  	; Object $7A - OBJ_PURPLETROOPA
+	.byte $00  	; Object $7B - OBJ_BLUESHELL
+	.byte $00  	; Object $7C - OBJ_HELPER
+	.byte $00	; Object $7D - OBJ_PARAZOMBIEGOOMBA
+	.byte $00  	; Object $7E - OBJ_BIGGREENHOPPER
+	.byte $00  	; Object $7F - OBJ_BIGREDPIRANHA
+	.byte $00	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.byte $00  	; Object $81 - OBJ_HAMMERBRO
+	.byte $00  	; Object $82 - OBJ_NINJABRO
+	.byte $00  	; Object $83 - OBJ_LAKITU
+	.byte $00  	; Object $84 - OBJ_SPINYEGG
+	.byte $00  	; Object $85 - OBJ_BLUESPINY
+	.byte $00  	; Object $86 - OBJ_ICEBRO
+	.byte $00  	; Object $87 - OBJ_FIREBRO
+	.byte $00  	; Object $88 - OBJ_PIRATEBRO
+	.byte $00  	; Object $89 - OBJ_CHAINCHOMP
+	.byte $00  	; Object $8A - OBJ_THWOMP
+	.byte $00  	; Object $8B - OBJ_AngryTHWOMP
+	.byte $00  	; Object $8C - OBJ_THWOMPRIGHTSLIDE
+	.byte $00  	; Object $8D - OBJ_THWOMPUPDOWN
+	.byte $00  	; Object $8E - OBJ_THWOMPDIAGONALUL
+	.byte $00  	; Object $8F - OBJ_THWOMPDIAGONALDL
 
 
 	; Object group $03 (i.e. objects starting at ID $6C) third set attribute bits
@@ -244,7 +244,7 @@ ObjectGroup03_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $73 - OBJ_PARAGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE			; Object $75 - OBJ_WATERFILLER
-	.byte OA3_HALT_NORMALONLY 					; Object $76 - OBJ_POISONMUSHROOM
+	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
 	.byte OA3_HALT_NORMALONLY 					; Object $78 - OBJ_BULLETBILL
 	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
@@ -3563,6 +3563,9 @@ ObjNorm_PoisonMushroom:
 
 	LDA #$80
 	STA CompleteLevelTimer
+
+	JSR DestroyAllEnemies
+
 	JMP Object_PoofDie
 
 ObjNorm_PoisonMushroom0:
@@ -3572,6 +3575,7 @@ ObjNorm_PoisonMushroom0:
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	JSR Object_InteractWithOtherObjects
 
 ObjNorm_PoisonMushroom1:
 	JMP Object_DrawMirrored

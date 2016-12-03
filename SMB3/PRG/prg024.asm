@@ -2169,11 +2169,14 @@ Title_PrepForWorldMap:
 	LDA #$01
 	STA World_Map_Power	 ; Mario starts as small on world map
 	STA Total_Players	 ; Total_Players should be 1/2, not 0/1
+
 	INC <Title_State	 ; Next title state...
+	
 	LDA #$4B
 	STA BrickBust_Tile
 	STA BrickBust_Tile+1
 	STA BrickBust_Tile+2
+
 	LDA #SPR_PAL3
 	STA BrickBust_Pal
 	STA BrickBust_Pal+1

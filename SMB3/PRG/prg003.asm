@@ -30,7 +30,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
 	.word ObjInit_DoNothing	; Object $4D
-	.word RhythmPlatformsInit		; Object $4E
+	.word ObjInit_DoNothing		; Object $4E
 	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjInit_Explosion	; Object $50 - OBJ_EXPLOSION
 	.word ObjInit_RotoDiscDualCCW	; Object $51 - OBJ_ROTODISCDUAL
@@ -192,42 +192,42 @@ ObjectGroup02_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup02_Attributes2:
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $48 - OBJ_NINJI
-	.byte OA2_TDOGRP0	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4A - OBJ_MAGICSTAR
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4B - OBJ_MAGICSTAR
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4C - OBJ_MAGICSTAR
-	.byte OA2_TDOGRP0	; Object $4D
-	.byte OA2_TDOGRP0	; Object $4E
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OA2_TDOGRP1	; Object $50 - OBJ_EXPLOSION
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $52 - OBJ_SPINTULA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $53 - OBJ_PIPEPODOBO
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte  OA2_TDOGRP1	; Object $55 - OBJ_BOBOMB
-	.byte OA2_TDOGRP0	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
-	.byte OA2_TDOGRP0	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1		; Object $58 - OBJ_PYRANTULA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $59 - OBJ_FIRESNAKE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $5A - OBJ_ROTODISCCLOCKWISE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.byte OA2_TDOGRP1	; Object $5C - OBJ_ICEBLOCK
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $5D - OBJ_STONEBLOCK
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $5E - OBJ_ROTODISCDUALOPPOSE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $61 - OBJ_SKULLBLOOPER
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $62 - OBJ_BLOOPER
-	.byte OA2_NOSHELLORSQUASH | OA3_TAILATKIMMUNE | OA2_TDOGRP1	; Object $63 - OBJ_FLOATMINE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $64 - OBJ_CHEEPCHEEPHOPPER
-	.byte OA2_TDOGRP0	; Object $65 - OBJ_WATERCURRENTUPWARD
-	.byte OA2_TDOGRP0	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $67 - OBJ_SNOWGUY
-	.byte OA2_TDOGRP1	; Object $68 - OBJ_TWIRLINGBUZZY
-	.byte OA2_TDOGRP1	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6A - OBJ_VEGGIEGUY
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $6B - OBJ_SHYGUY
+	.byte $00 	; Object $48 - OBJ_NINJI
+	.byte $00	; Object $49 - OBJ_FLOATINGBGCLOUD
+	.byte $00  	; Object $4A - OBJ_MAGICSTAR
+	.byte $00  	; Object $4B - OBJ_MAGICSTAR
+	.byte $00  	; Object $4C - OBJ_MAGICSTAR
+	.byte $00	; Object $4D
+	.byte $00	; Object $4E
+	.byte $00  	; Object $4F - OBJ_CHAINCHOMPFREE
+	.byte $00	; Object $50 - OBJ_EXPLOSION
+	.byte $00  	; Object $51 - OBJ_ROTODISCDUAL
+	.byte $00  	; Object $52 - OBJ_SPINTULA
+	.byte $00  	; Object $53 - OBJ_PIPEPODOBO
+	.byte $00  	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
+	.byte $00 	; Object $55 - OBJ_BOBOMB
+	.byte $00	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
+	.byte $00	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
+	.byte $00	; Object $58 - OBJ_PYRANTULA
+	.byte $00  	; Object $59 - OBJ_FIRESNAKE
+	.byte $00  	; Object $5A - OBJ_ROTODISCCLOCKWISE
+	.byte $00  	; Object $5B - OBJ_ROTODISCCCLOCKWISE
+	.byte $00	; Object $5C - OBJ_ICEBLOCK
+	.byte $00  	; Object $5D - OBJ_STONEBLOCK
+	.byte $00  	; Object $5E - OBJ_ROTODISCDUALOPPOSE
+	.byte $00  	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
+	.byte $00  	; Object $60 - OBJ_ROTODISCDUALCCLOCK
+	.byte $00  	; Object $61 - OBJ_SKULLBLOOPER
+	.byte $00  	; Object $62 - OBJ_BLOOPER
+	.byte $00  	; Object $63 - OBJ_FLOATMINE
+	.byte $00  	; Object $64 - OBJ_CHEEPCHEEPHOPPER
+	.byte $00	; Object $65 - OBJ_WATERCURRENTUPWARD
+	.byte $00	; Object $66 - OBJ_WATERCURRENTDOWNARD
+	.byte $00  	; Object $67 - OBJ_SNOWGUY
+	.byte $00	; Object $68 - OBJ_TWIRLINGBUZZY
+	.byte $00	; Object $69 - OBJ_TWIRLINGSPINY
+	.byte $00  	; Object $6A - OBJ_VEGGIEGUY
+	.byte $00  	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) third set attribute bits
@@ -5118,220 +5118,3 @@ PRG003_BD60:
 	
 Tail_PlayerYOff:	.byte $12, $04	; Offset to Player Sprite Y for small/ducking, or not
 Tail_PlayerYLimit:	.byte $0E, $18	; Limit value
-
-
-DPad_ControlTiles:
-	LDA <Player_HaltGameZ
-	BNE DPad_ControlTiles4
-
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ DPad_ControlTiles1
-
-	LDA #$01
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles1:
-	LDA <Pad_Holding
-	AND #PAD_LEFT
-	BEQ DPad_ControlTiles2
-
-	LDA #$02
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles2:
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ DPad_ControlTiles3
-
-	LDA #$03
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles3:
-	LDA <Pad_Holding
-	AND #PAD_RIGHT
-	BEQ DPad_ControlTiles4
-
-	LDA #$00
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles4:
-	RTS
-
-RhythmPlatforming:
-RhythmGraphics:
-	.byte $60, $62, $64, $66
-
-RhythmSet1:
-	.byte $00, $5F, $90, $82, $00, $00, $00, $00, $80, $5F, $00
-
-RhythmSet2:
-	.byte $00, $18, $23, $1E, $00, $00, $00, $00, $20, $18, $00
-
-RhythmSet3:
-	.byte $00, $03, $00, $FE, $00, $00, $00, $00, $04, $03, $00
-
-
-RhythmPlatformsInit:
-	LDA Game_Counter_NoStop
-	STA RhythmCounter
-	RTS
-
-RhythmPlatformsReset:
-	STA RhythmMusic
-
-	LDA #$00
-	STA RhythmKeeper
-	STA RhythmKeeper + 1
-	STA RhythmKeeper + 2
-	STA RhythmKeeper + 4
-
-RhythmPlatforms:
-	LDX #$00
-	LDA SndCur_Music2
-	BEQ RhythmPlatforms0
-
-	LDY RhythmMusic
-	BNE DoNotStoreRhythmMusic
-
-	STA RhythmMusic
-
-DoNotStoreRhythmMusic:
-	CMP RhythmMusic
-	BNE RhythmPlatformsReset
-
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX
-
-	LDA Game_Counter_NoStop
-	SUB RhythmCounter
-	STA <Temp_Var1
-
-	LDA Game_Counter_NoStop
-	STA RhythmCounter
-
-	LDA RhythmSet1, X
-	BEQ RhythmPlatforms0
-
-	LDA RhythmKeeper
-	CMP RhythmSet1, X
-	BEQ RhythmPlatforms1
-
-	LDA RhythmKeeper
-	ADD <Temp_Var1
-	STA RhythmKeeper
-
-RhythmPlatforms0:
-	RTS
-
-RhythmPlatforms1:
-	LDA RhythmKeeper + 1
-	CMP RhythmSet2, X
-	BEQ RhythmPlatforms2
-
-	LDA RhythmKeeper + 1
-	ADD <Temp_Var1
-	STA RhythmKeeper + 1
-	RTS
-
-RhythmPlatforms2:
-	LDA RhythmKeeper + 2
-	CMP #$03
-	BEQ RhythmPlatforms3
-
-	LDA #SND_LEVELBLIP
-	STA Sound_QLevel1
-
-	LDA RhythmKeeper + 2
-	ADD <Temp_Var1
-	STA RhythmKeeper + 2
-	
-	LDA #$00
-	STA RhythmKeeper + 1
-	RTS
-	
-RhythmPlatforms3:
-	LDA #SND_MAPINVENTORYFLIP
-	STA Sound_QMap
-
-	LDA #$00
-	STA RhythmKeeper + 1
-	STA RhythmKeeper + 2
-
-	LDA RhythmSet3, X
-	STA RhythmKeeper
-	
-	LDA RhythmKeeper + 3
-	ADD <Temp_Var1
-	STA RhythmKeeper + 3
-
-	LDA RhythmKeeper + 3
-	AND #$03
-	TAY
-
-	LDA RhythmGraphics, Y
-	STA PatTable_BankSel
-
-	LDA #$00
-	STA TileProperties + $02
-	STA TileProperties + $42
-	STA TileProperties + $82
-	STA TileProperties + $C2
-
-	LDA #$02
-
-RhythmPlatforms4:
-	CPY #$00
-	BEQ RhythmPlatforms5
-
-	ADD #$40
-	DEY
-	BPL RhythmPlatforms4 
-
-RhythmPlatforms5:
-	TAY
-	
-	LDA #TILE_PROP_SOLID_ALL
-	STA TileProperties, Y
-
-	LDA TileProperties + $53
-	STA TileProperties + $03
-
-	LDA TileProperties + $83
-	STA TileProperties + $53
-
-	LDA TileProperties + $D3
-	STA TileProperties + $83
-
-	LDA RhythmKeeper + 3
-	AND #$03
-	TAY
-
-	LDA RhythmCurrents, Y
-	STA TileProperties + $D3
-	RTS
-
-RhythmCurrents:
-	.byte TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP, TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN
-
-DPadTiles:
-	.byte TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN, TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP
-
-UpdateRhythmTiles:
-	LDA RhythmKeeper + 3
-	AND #$03
-	TAY
-
-	LDA RhythmGraphics, Y
-	STA PatTable_BankSel
-
-	LDA DPadTiles, Y
-	STA TileProperties + $57
-	RTS

@@ -544,6 +544,7 @@ Player_Update3:
 
 PRG008_A473:
 	JSR Player_RunMeterUpdate	 	; Update "Power Meter"
+	JSR Player_UpdateRunPower
 	
 	LDA <Horz_Scroll
 	STA LastHorzScroll
@@ -617,6 +618,7 @@ Player_RunMeterUpdate:
 
 	DEY			 
 	STY Player_FlyTime ; Player_FlyTime--
+
 	LDA Player_EffectiveSuit
 	CMP #$03
 	BNE PRG008_A4D5
@@ -691,6 +693,42 @@ PRG008_A523:
 	RTS		 ; Return
 
 
+Player_UpdateRunPower:
+	LDA Player_FlyTime
+	BNE Player_UpdateRunPowerRTS
+
+	LDA Player_EffectiveSuit
+	CMP #$03
+	BNE Player_UpdateRunPowerRTS
+
+	LDY #$00
+
+	LDA Player_RunMeter
+	BEQ RunMeter_StoreEmpty
+	
+RunMeter_NextBit:
+	LSR A
+	BCC RunMeter_Store
+
+	INY
+	BNE RunMeter_NextBit
+
+RunMeter_Store:
+	TYA
+	
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+
+	TAY
+	DEY
+
+RunMeter_StoreEmpty:
+	STY Player_Power
+
+Player_UpdateRunPowerRTS:
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_SetPlayerPUpPal
 ;
@@ -4457,8 +4495,6 @@ CheckForLevelEnding:
 StartCountDown:
 	LDA <Player_InAir
 	BNE NoCountDown
-
-	JSR DestroyAllEnemies
 	
 	LDA #$00
 	STA <Player_XVel
@@ -4675,8 +4711,12 @@ Player_DetectWall1_1:
 	STA <Player_XVel
 	
 	JSR Player_ApplyXVelocity
+	RTS
 
 Player_DetectWall1_2:
+	LDA Sound_QPlayer 
+	EOR #SND_PLAYERBUMP 
+	STA Sound_QPlayer
 	RTS
 
 Player_DetectWall2:
@@ -5262,6 +5302,8 @@ Player_PitDeath:
 Player_PitDeath1:
 	JSR Player_Die	 ; Begin death sequence
 
+	LDA #$00
+	STA Player_EffectiveSuit
 	; This jumps the initial part of the death sequence
 	LDA #$c0
 	STA Event_Countdown ; Event_Countdown = $C0
@@ -5638,8 +5680,7 @@ Fox_BurnMode:
 	BEQ Try_FireBall
 
 	LDA Player_InWater			; if we're a fireball and hit water, kill it		
-	ORA Player_SandSink
-	BNE Player_KillDash_NoFX
+ 	BNE Player_KillDash_NoFX
 
 	LDA <Pad_Holding
 	AND #PAD_B
@@ -5659,6 +5700,8 @@ Try_FireBall:					; not a fireball, so let's try it!
 	BNE Fox_BurnModeRTS		; can't go into burning mode in sand or water
 
 	LDA Player_TailAttack
+	BEQ Fox_BurnModeRTS
+
 	CMP #$12
 	BCS Fox_BurnModeRTS
 		
@@ -5695,10 +5738,6 @@ ContinueDash:
 Fox_BurnModeRTS:
 	RTS
 
-Bounce_Direction
-	.byte $20, $E0
-	.byte $02, $FE
-	.byte $00, $FF
 Player_KillDash:
 	
 	LDA #$10			; if we reach here, we hit a wall, shake the ground!
@@ -5740,6 +5779,11 @@ Player_KillDash_NoFX:
 	EOR #$40
 	STA <Player_FlipBits
 	RTS
+
+Bounce_Direction
+	.byte $20, $E0
+	.byte $02, $FE
+	.byte $00, $FF
 
 Player_HandleWater:
 	
@@ -6049,6 +6093,9 @@ Player_HandleClimbing2:
 	LDA Player_IsClimbing
 	BNE Player_DoClimbing
 
+	LDA <Player_YVel
+	BMI Player_NotClimbing
+
 	LDA <Pad_Holding
 	AND #(PAD_UP | PAD_DOWN)
 	BEQ Player_NotClimbing
@@ -6128,7 +6175,7 @@ Player_PoisonMode:
 	BNE Continue_Poison_Mode
 
 	LDA Player_Power
-	CMP #$50
+	CMP #$60
 	BNE Cant_Poison_Mode
 
 	LDA <Pad_Holding
@@ -6163,7 +6210,7 @@ Continue_Poison_Mode:
 	RTS
 
 Stop_Poison_Mode:
-	LDA #$06
+	LDA #$08
 	STA Power_Change
 	STA Player_StarInv
 

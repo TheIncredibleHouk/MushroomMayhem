@@ -192,42 +192,42 @@ ObjectGroup04_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup04_Attributes2:
-	.byte OA2_TDOGRP0	; Object $90 - OBJ_FIREICEBAR
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $91 - OBJ_FREEZIE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $92 - OBJ_SWOOSH
-	.byte OA2_TDOGRP0	; Object $93 - OBJ_INTRO
-	.byte OA2_TDOGRP0	; Object $94 - OBJ_BIGQBLOCK_3UP
-	.byte OA2_TDOGRP0	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
-	.byte OA2_TDOGRP0	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
-	.byte OA2_TDOGRP0	; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
-	.byte OA2_TDOGRP0	; Object $98 - OBJ_BIGQBLOCK_TANOOKI
-	.byte OA2_TDOGRP0	; Object $99 - OBJ_BIGQBLOCK_FROG
-	.byte OA2_TDOGRP0	; Object $9A - OBJ_BIGQBLOCK_HAMMER
-	.byte OA2_TDOGRP0	; Object $9B
-	.byte OA2_TDOGRP0	; Object $9C
-	.byte OA2_TDOGRP0	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $9E - OBJ_Podobo
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $9F - OBJ_PARABEETLE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A0 - OBJ_PUMPKINFREE
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A2 - OBJ_REDPIRANHA
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A3 - OBJ_PIRANHA_TWOSHOT
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A4 - OBJ_PUMPKINPLANT
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A6 - OBJ_VENUSFIRETRAP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A8 - OBJ_ACIDTRAP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $A9 - OBJ_ACIDTRAP_CEIL
-	.byte OA2_TDOGRP0	; Object $AA - OBJ_AIRSHIPPROP
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $AB
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $AC - OBJ_FIREJET_LEFT
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $AD - OBJ_ROCKYWRENCH
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP10	; Object $AE - OBJ_BOLTLIFT
-	.byte OA2_STOMPDONTCARE | OA2_TDOGRP1	; Object $AF - OBJ_ENEMYSUN
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP0	; Object $B0 - OBJ_BIGCANNONBALL
-	.byte OA2_TDOGRP0	; Object $B1 - OBJ_FIREJET_RIGHT
-	.byte OA2_TDOGRP0	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.byte OA2_TDOGRP11	; Object $B3
+	.byte $00	; Object $90 - OBJ_FIREICEBAR
+	.byte $00 	; Object $91 - OBJ_FREEZIE
+	.byte $00 	; Object $92 - OBJ_SWOOSH
+	.byte $00	; Object $93 - OBJ_INTRO
+	.byte $00	; Object $94 - OBJ_BIGQBLOCK_3UP
+	.byte $00	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
+	.byte $00	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
+	.byte $00	; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
+	.byte $00	; Object $98 - OBJ_BIGQBLOCK_TANOOKI
+	.byte $00	; Object $99 - OBJ_BIGQBLOCK_FROG
+	.byte $00	; Object $9A - OBJ_BIGQBLOCK_HAMMER
+	.byte $00	; Object $9B
+	.byte $00	; Object $9C
+	.byte $00	; Object $9D - OBJ_FIREJET_UPWARD
+	.byte $00   ; Object $9E - OBJ_Podobo
+	.byte $00 	; Object $9F - OBJ_PARABEETLE
+	.byte $00 	; Object $A0 - OBJ_PUMPKINFREE
+	.byte $00 	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
+	.byte $00 	; Object $A2 - OBJ_REDPIRANHA
+	.byte $00 	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.byte $00 	; Object $A4 - OBJ_PUMPKINPLANT
+	.byte $00 	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
+	.byte $00 	; Object $A6 - OBJ_VENUSFIRETRAP
+	.byte $00 	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
+	.byte $00 	; Object $A8 - OBJ_ACIDTRAP
+	.byte $00 	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.byte $00	; Object $AA - OBJ_AIRSHIPPROP
+	.byte $00 	; Object $AB
+	.byte $00 	; Object $AC - OBJ_FIREJET_LEFT
+	.byte $00 	; Object $AD - OBJ_ROCKYWRENCH
+	.byte $00	; Object $AE - OBJ_BOLTLIFT
+	.byte $00 	; Object $AF - OBJ_ENEMYSUN
+	.byte $00 	; Object $B0 - OBJ_BIGCANNONBALL
+	.byte $00	; Object $B1 - OBJ_FIREJET_RIGHT
+	.byte $00	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
+	.byte $00	; Object $B3
 
 	; Object group $04 (i.e. objects starting at ID $90) third set attribute bits
 
@@ -1052,7 +1052,6 @@ Piranha_Attack:
 	CMP #$20
 	BNE Piranha_Attack2
 
-	STA Debug_Snap
 	LDA Piranha_AttacksLeft, X
 	BEQ Piranha_Attack2
 

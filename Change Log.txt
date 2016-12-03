@@ -1,0 +1,15 @@
+Change Log:
+
+11-30-2016
+
+-Game mechanics
+	-Modified the climbing so if you're jumping up, you won't "catch" a climbable tile until your upward velocity hits its peak.
+	 This makes it easier to jump up while climbing and jump off of climbable tiles.
+	 
+-Hunting Underground
+	-Modified start of level to include a section blocked by a single brick. That path leads to a cherry.
+	-Modified tile properties so the tops of water freeze with ice balls.
+	
+11-28-2016
+-Stacks of Enemies
+	-Made the first pipe blocked by bricks enterable and leading to a new secret area.

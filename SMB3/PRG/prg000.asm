@@ -115,7 +115,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF 	; Object $40 - OBJ_GOLDENPIRANHAGROWER
 	.byte BOUND16x16  	; Object $41 - OBJ_PIRANHAGROWER
 	.byte BOUND16x16 | OAT_FIREPROOF	; Object $42 - OBJ_DRYCHEEP
-	.byte BOUND16x16	; Object $43 - OBJ_BEACHEDCHEEP
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte BOUND48x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	 | OAT_WEAPONSHELLPROOF; Object $44 - OBJ_PLATFORMUNSTABLE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $45 - OBJ_PWING
 	.byte BOUND16x16	; Object $46 - OBJ_SNIFIT
@@ -1224,10 +1224,15 @@ ObjState_Shelled:
 	JSR Object_InteractWithPlayer
 
 	PHP
+
 	JSR Object_DetectTiles
 	PLP
 
 	BCC ObjState_Shelled1
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ ObjState_Shelled3
 
 	LDA Objects_BeingHeld, X
 	BNE ObjState_Shelled0
@@ -1255,6 +1260,10 @@ ObjState_Shelled0:
 	JMP Object_DrawShelled
 
 ObjState_Shelled1:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ ObjState_Shelled3
+
 	JSR Object_InteractWithOtherObjects
 	BCS ObjState_Shelled2
 
@@ -1406,6 +1415,13 @@ ObjState_Kicked1:
 	BCS DrawKickedShell
 
 	JSR Object_InteractWithTiles
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_CEILING | HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ DrawKickedShell
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
 	
 DrawKickedShell:
 	LDA Game_Counter
@@ -1473,6 +1489,7 @@ Object_KillOthers1:
 	LDA #$FF
 	STA Objects_Health, X
 
+	JSR Object_KickSound
 	JSR Object_GetKilled
 	JSR Object_FlipFallAwayFromHit
 
@@ -1696,9 +1713,7 @@ Object_GetKicked:
 	LDA #$00
 	STA <Objects_YVelZ, X
 
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERKICK
-	STA Sound_QPlayer
+	JSR Object_KickSound
 
 	; Have Player do kick frame
 	LDA #$0c
@@ -2237,7 +2252,6 @@ Object_HandleBumpUnderneath2:
 	RTS
 
 Object_AttackOrDefeat:
-
 	LDA Objects_Timer2,X
 	ORA Objects_BeingHeld, X
 	BNE PRG000_D1C4	 ; If timer 2 hasn't expired, jump to PRG000_D1C4 (RTS)
@@ -2295,12 +2309,20 @@ Object_Defeated:
 	LDA #$01
 	STA Objects_Stomped, X
 	
+	LDY ObjGroupRel_Idx
+	LDA ObjectGroup01_Attributes2, Y
+	AND #OA2_STOMP_KICKSND
+	BNE Object_DefeatKickSnd
+
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
 
 Object_DefeatedRTS:
 	RTS
+
+Object_DefeatKickSnd:
+	JMP Object_KickSound
 
 Object_DetermineChange:
 	LDA ObjGroupRel_Idx
@@ -3285,7 +3307,6 @@ Object_InteractWithPlayer:
 	CLC
 	RTS
 
-
 Object_CheckInteraction:
 	LDA Objects_BeingHeld, X
 	BEQ Object_InteractWithPlayer1
@@ -3379,7 +3400,7 @@ PRG000_DB26:
 
 	LDA Player_BoundRight
 	STA Tail_BoundLeft
-	ADD #$09
+	ADD #$0B
 	STA Tail_BoundRight
 
 	LDA Tail_BoundLeftHi
@@ -3393,7 +3414,7 @@ PRG000_DB2F:
 
 	LDA Player_BoundLeft
 	STA Tail_BoundRight
-	SUB #$09
+	SUB #$0B
 	STA Tail_BoundLeft
 
 	LDA Tail_BoundRightHi
@@ -3899,60 +3920,12 @@ PRG000_DA6D:
 	LDA #$00
 	STA Player_Flip	 ; Player not somersaulting
 
-	BEQ PRG000_DAAE	 ; Jump (technically always) to PRG000_DAAE (cosmetic bugfix?)
-
 	RTS		 ; Return
 
 PRG000_DA7A:
 	LDX <CurrentObjectIndexZ	 ; X = CurrentObjectIndexZ
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_Die
-;
-; Simple and to the point: Starts the death song,
-; resets a bunch of variables that get in the way,
-; changes to small, etc.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_Die:
-	
-	; Queue death song
-	LDA Sound_QMusic1
-	ORA #MUS1_PLAYERDEATH
-	STA Sound_QMusic1
-
-	; Clear a bunch of stuff at time of death
-	LDA #$00
-	STA <Player_XVel
-	STA <Obj01_Flag	
-	STA Player_Flip	
-	STA Player_FlashInv
-	STA Player_StarInv
-	STA Player_Shell
-	STA Player_FireDash
-	STA Boo_Mode_Timer
-	STA Boo_Mode_KillTimer
-	STA Level_PSwitchCnt
-	STA Frozen_Frame
-	STA Player_Frozen
-	
-	LDA #$01
-	STA Player_QueueSuit	 ; Queue change to "small"
-
-	LDA #-64
-	STA <Player_YVel ; Player_YVel = -64
-
-	LDA #$30	 
-	STA Event_Countdown ; Event_Countdown = $30 (ticks until dropped back to map)
-
-	LDA #$01
-	STA <Player_IsDying	 ; Player_IsDying = 1
-
-PRG000_DAAE:
-
-	RTS		 ; Return
-
-	; Tail attack X offset, based on Player's facing direction
+	JMP Player_Die
 
 Object_RespondToTailAttack:
 
@@ -3984,6 +3957,10 @@ Object_RespondToTailAttack1:
 	JSR Object_DetectTail
 	BCC Object_RespondToTailAttack2	 ; If Player and object are not intersecting, jump to PRG000_DB16 (RTS)
 
+	LDA #$00
+	STA Objects_BeingHeld, X
+
+	JSR Object_KickSound
 	JSR Object_DetermineChange
 	JSR Object_GetKilled
 	
@@ -4087,13 +4064,6 @@ PRG000_DC91:
 ; carry flag is set if the difference was negative.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $DCA2 
-Object_CalcCoarseXDiff:
-	RTS
-	
-	RTS		 ; Return
-
-Object_CalcCoarseYDiff:
-	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_CalcCoarseYDiff
 ;
@@ -5456,6 +5426,7 @@ Object_GetKilled:
 
 	LDA #$00
 	STA Objects_Health, X
+	STA Objects_BeingHeld, X
 
 	LDA #$10
 	STA Objects_Timer2, X
@@ -5522,8 +5493,11 @@ Can_Hold:
 
 Object_HoldRTS0:
 	JSR Object_PositionHeld
+	SEC
+	RTS
 
 Object_HoldRTS:
+	CLC
 	RTS
 
 Object_XPreventStuck:
@@ -5555,11 +5529,9 @@ Object_KickSame:
 
 Object_KickSame1:
 	JSR Object_DetectTilesForced
-
-	LDA <Objects_TilesDetectZ,X
-	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
-	BEQ Object_KickNotWall
-
+	LDA Object_BodyTileProp, X
+	AND #(TILE_PROP_SOLID_ALL)
+	BEQ Object_KickRTS
 
 Object_ReverseXVel:
 	LDA Objects_State, X
@@ -5580,9 +5552,12 @@ Object_DieInstead:
 	LDA #$FF
 	STA Objects_Health, X
 	JSR Object_GetKilled
+	JSR Object_FlipFall
+
 	PLA
 	PLA
-	JMP Object_FlipFall
+	SEC
+	RTS
 
 Object_KickNotWall:
 Object_KickRTS:
@@ -6106,6 +6081,7 @@ Object_GetsHurt:
 	STA Objects_Health, X
 	JSR Object_GetKilled
 	JSR Object_FlipFallAwayFromHit
+	JSR Object_KickSound
 
 	SEC
 	RTS
@@ -6153,4 +6129,10 @@ Object_EdgeMarch:
 	JSR Object_ApplyXVel
 
 Object_EdgeMarchRTS:
+	RTS
+
+Object_KickSound:
+	LDA Sound_QPlayer 
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
 	RTS

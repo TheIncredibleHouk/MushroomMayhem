@@ -2079,7 +2079,7 @@ Border_BottomCorners:	.byte $B2, $B3, $FF	; Lower left corner, lower right corne
 VBorder_Offset:
 	.byte $01, $1E, $1F
 
-
+	  
 Map_DoVBorders:
 	LDA Map_DrawPanState
 	CMP #$02
@@ -2087,6 +2087,7 @@ Map_DoVBorders:
 
 	LDY #(PRG010_CB6B_End - PRG010_CB6B - 1)
 PRG010_CB8D:
+
 	LDA PRG010_CB6B,Y	 ; Get graphics buffer command byte
 	STA Graphics_Buffer,Y	 ; Store into graphics buffer
 

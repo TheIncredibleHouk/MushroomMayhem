@@ -199,42 +199,42 @@ ObjectGroup01_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup01_Attributes2:
-	.byte OA2_TDOGRP1	; Object $24 - OBJ_PLATFORM_HORZOSC
-	.byte OA2_TDOGRP2	; Object $25
-	.byte OA2_TDOGRP2	; Object $26 - OBJ_WOODENPLAT_RIDER
-	.byte OA2_TDOGRP2	; Object $27 - OBJ_PLATFORM_DIAG1OSC
-	.byte OA2_TDOGRP2	; Object $28 - OBJ_PLATFORM_DIAG2OSC
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $29 - OBJ_SPIKE
-	.byte OA2_TDOGRP1	; Object $2A - OBJ_SPARKRIGHT
-	.byte OA2_TDOGRP1	; Object $2B - OBJ_RICOCHET_PODOBO
-	.byte OA2_TDOGRP2	; Object $2C - OBJ_PLATFORM_CLOCKOSC
-	.byte OA2_TDOGRP2	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.byte OA2_TDOGRP1	; Object $2E - OBJ_PIRATEBOO
-	.byte OA2_TDOGRP1	; Object $2F - OBJ_BOO
-	.byte OA2_TDOGRP1	; Object $30 - OBJ_PACBOO
-	.byte OA2_TDOGRP1	; Object $31 - OBJ_PHANTO
-	.byte OA2_TDOGRP1	; Object $32 - OBJ_PHANTO_FLIP
-	.byte OA2_TDOGRP1	; Object $33 - OBJ_NIPPER
-	.byte OA2_TDOGRP2	; Object $34 - OBJ_TOAD
-	.byte OA2_TDOGRP0	; Object $35 - OBJ_TOADHOUSEITEM
-	.byte OA2_TDOGRP2	; Object $36 - OBJ_PLATFORM_PATH
-	.byte OA2_TDOGRP2	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
-	.byte OA2_TDOGRP2	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte OA2_TDOGRP1	; Object $39 - OBJ_PACBOOHOME
-	.byte OA2_TDOGRP9	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $3B - OBJ_SPECTERCHEEP
-	.byte OA2_TDOGRP9	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $3D - OBJ_NIPPERFIREBREATHER
-	.byte OA2_TDOGRP9	; Object $3E - OBJ_PLATFORMFLOATS
-	.byte OA2_TDOGRP1	; Object $3F - OBJ_DRYBONES
-	.byte OA2_TDOGRP1	; Object $40 - OBJ_GOLDENPIRANHAGROWER
-	.byte OA2_TDOGRP1	; Object $41 - OBJ_PIRANHAGROWER
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $42 - OBJ_FLAMINGCHEEP
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $43 - OBJ_BEACHEDCHEEP
-	.byte OA2_TDOGRP9	; Object $44 - OBJ_PLATFORMUNSTABLE
-	.byte OA2_TDOGRP1	; Object $45 - OBJ_PWING
-	.byte  OA2_NOSHELLORSQUASH | OA2_TDOGRP1	; Object $46 - OBJ_SNIFIT
-	.byte OA2_NOSHELLORSQUASH | OA2_TDOGRP2		; Object $47 - OBJ_BIRDO
+	.byte $00	; Object $24 - OBJ_PLATFORM_HORZOSC
+	.byte $00	; Object $25
+	.byte $00	; Object $26 - OBJ_WOODENPLAT_RIDER
+	.byte $00	; Object $27 - OBJ_PLATFORM_DIAG1OSC
+	.byte $00	; Object $28 - OBJ_PLATFORM_DIAG2OSC
+	.byte $00 	; Object $29 - OBJ_SPIKE
+	.byte $00	; Object $2A - OBJ_SPARKRIGHT
+	.byte $00	; Object $2B - OBJ_RICOCHET_PODOBO
+	.byte $00	; Object $2C - OBJ_PLATFORM_CLOCKOSC
+	.byte $00	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
+	.byte $00	; Object $2E - OBJ_PIRATEBOO
+	.byte $00	; Object $2F - OBJ_BOO
+	.byte $00	; Object $30 - OBJ_PACBOO
+	.byte $00	; Object $31 - OBJ_PHANTO
+	.byte $00	; Object $32 - OBJ_PHANTO_FLIP
+	.byte $00	; Object $33 - OBJ_NIPPER
+	.byte $00	; Object $34 - OBJ_TOAD
+	.byte $00	; Object $35 - OBJ_TOADHOUSEITEM
+	.byte $00	; Object $36 - OBJ_PLATFORM_PATH
+	.byte $00	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
+	.byte $00	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
+	.byte $00	; Object $39 - OBJ_PACBOOHOME
+	.byte $00	; Object $3A - OBJ_FALLINGPLATFORM
+	.byte $00 	; Object $3B - OBJ_SPECTERCHEEP
+	.byte $00	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
+	.byte $00 	; Object $3D - OBJ_NIPPERFIREBREATHER
+	.byte $00	; Object $3E - OBJ_PLATFORMFLOATS
+	.byte $00	; Object $3F - OBJ_DRYBONES
+	.byte $00	; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.byte $00	; Object $41 - OBJ_PIRANHAGROWER
+	.byte $00 	; Object $42 - OBJ_FLAMINGCHEEP
+	.byte OA2_STOMP_KICKSND	; Object $43 - OBJ_BEACHEDCHEEP
+	.byte $00	; Object $44 - OBJ_PLATFORMUNSTABLE
+	.byte $00	; Object $45 - OBJ_PWING
+	.byte $00	; Object $46 - OBJ_SNIFIT
+	.byte $00	; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) third set attribute bits
@@ -2552,8 +2552,6 @@ PRG002_B23D:
 	.byte $08, $04, $02, $01
 
 ObjNorm_Toad:
-
-	JSR Object_CalcCoarseXDiff
 	STA Objects_Orientation,X
  
 	LDA #$01
@@ -2904,9 +2902,6 @@ ObjNorm_NipperFireBreathe:
 	JSR Enemy_CollideWithWorld	; Collide with world
 	JSR Object_DeleteOrDraw	 	; Delete if Nipper off-screen or draw it
 	JSR Object_InteractWithPlayer	; Do collision test with Player and respond
-
-	JSR Object_CalcCoarseXDiff
-	STA Objects_Orientation,X	 ; Set flip towards Player
  
 	LDA <Counter_1
 	LSR A	
@@ -2947,8 +2942,6 @@ ObjNorm_NipperFireBreathe:
 
 PRG002_B61F:
 	STY <Temp_Var1		 ; Temp_Var1 = $10 or -$10, based on which side Player is on
-
-	JSR Object_CalcCoarseYDiff
 
 	LDA <Temp_Var15
 	ADD #$20

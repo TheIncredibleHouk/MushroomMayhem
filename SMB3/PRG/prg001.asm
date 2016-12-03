@@ -201,42 +201,42 @@ ObjectGroup00_Attributes:
 
 	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
 ObjectGroup00_Attributes2:
-	.byte 00	; Object $00
-	.byte 00	; Object $01
-	.byte 00	; Object $02
-	.byte 00	; Object $03
-	.byte 00	; Object $04
-	.byte 00	; Object $05
-	.byte 00	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte 00	; Object $07 - OBJ_BRICK
-	.byte 00	; Object $08 - OBJ_COIN
-	.byte 00	; Object $09 - OBJ_BUBBLE
-	.byte 00	; Object $0A
-	.byte 00	; Object $0B - OBJ_POWERUP
-	.byte 00	; Object $0C - OBJ_POWERUP_STARMAN
-	.byte 00	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte 00	; Object $0E - OBJ_HARDICE
-	.byte 00	; Object $0F
-	.byte 0	; Object $10 OBJ_PIXIE
-	.byte 0; Object $11
-	.byte 0; Object $12
-	.byte 0; Object $13
-	.byte 0; Object $14
-	.byte 0; Object $15
-	.byte 0	; Object $16
-	.byte 0	; Object $17 - OBJ_NEGASTAR
-	.byte 0	; Object $18 - OBJ_BOSS_BOWSER
-	.byte 0	; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.byte 0	; Object $1A
-	.byte 0	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.byte 0	; Object $1C
-	.byte 0	; Object $1D
-	.byte 0	; Object $1E - OBJ_POWERUP_SUPERLEAF
-	.byte 0	; Object $1F - OBJ_GROWINGVINE
-	.byte 0	; Object $20
-	.byte 0	; Object $21 - OBJ_POWERUP_ICEFLOWER
-	.byte 0	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte 0	; Object $23 - OBJ_POWERUP_FOXLEAF
+	.byte $00	; Object $00
+	.byte $00	; Object $01
+	.byte $00	; Object $02
+	.byte $00	; Object $03
+	.byte $00	; Object $04
+	.byte $00	; Object $05
+	.byte $00	; Object $06 - OBJ_BOUNCEDOWNUP
+	.byte $00	; Object $07 - OBJ_BRICK
+	.byte $00	; Object $08 - OBJ_COIN
+	.byte $00	; Object $09 - OBJ_BUBBLE
+	.byte $00	; Object $0A
+	.byte $00	; Object $0B - OBJ_POWERUP
+	.byte $00	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte $00	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.byte $00	; Object $0E - OBJ_HARDICE
+	.byte $00	; Object $0F
+	.byte $00	; Object $10 OBJ_PIXIE
+	.byte $00	; Object $11
+	.byte $00	; Object $12
+	.byte $00	; Object $13
+	.byte $00	; Object $14
+	.byte $00	; Object $15
+	.byte $00	; Object $16
+	.byte $00	; Object $17 - OBJ_NEGASTAR
+	.byte $00	; Object $18 - OBJ_BOSS_BOWSER
+	.byte $00	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.byte $00	; Object $1A
+	.byte $00	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.byte $00	; Object $1C
+	.byte $00	; Object $1D
+	.byte $00	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte $00	; Object $1F - OBJ_GROWINGVINE
+	.byte $00	; Object $20
+	.byte $00	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte $00	; Object $22 - OBJ_POWERUP_PUMPKIN
+	.byte $00	; Object $23 - OBJ_POWERUP_FOXLEAF
 
 
 	; Object group $00 (i.e. objects starting at ID $00) third set attribute bits
@@ -512,9 +512,6 @@ ObjNorm_Spring:
 
 	BCC Spring_2
 
-	LDA Objects_BeingHeld, X
-	BNE Spring_RTS
-
 	LDA Spring_LastInteract, X
 	AND #(HITTEST_BOTTOM)
 	BEQ Spring_2
@@ -522,6 +519,9 @@ ObjNorm_Spring:
 	LDA <Player_YVel
 	BEQ Spring_2
 	BMI Spring_2
+
+	LDA #$00
+	STA Objects_BeingHeld, X
 
 	LDA #$02
 	STA Objects_Timer, X
@@ -532,6 +532,9 @@ ObjNorm_Spring:
 	BEQ SpringAnim
 
 Spring_2:
+	LDA Objects_BeingHeld, X
+	BNE Spring_RTS
+
 	JSR Object_DampenVelocity
 	JSR Object_InteractWithTiles
 
@@ -892,6 +895,7 @@ Do_PowerUp:
 	STA Objects_ID, X
 
 	INC PowerUp_Raise, X
+
 	JMP ObjInit_PowerUp
 
 Bouncer_Delete:
@@ -1118,6 +1122,20 @@ ObjInit_PowerUp:
 
 	LDY PowerUp_Type, X
 
+	CPY #POWERUP_VINE
+	BEQ PowerUp_VineSndFX
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELRISE
+	STA Sound_QLevel1
+	BEQ PowerUp_Init
+
+PowerUp_VineSndFX:
+	LDA Sound_QLevel1
+	ORA #SND_LEVELVINE
+	STA Sound_QLevel1
+
+PowerUp_Init:
 	LDA PowerUp_Palette, Y
 	STA Objects_SpriteAttributes, X
 
@@ -1443,9 +1461,6 @@ PRG001_A810:
 	RTS
 
 PUp_Vine:
-	LDA <Objects_YHiZ, X
-	BMI PUp_Delete
-
 	LDA <Objects_XZ, X
 	AND #$F0
 	STA <Objects_XZ, X
@@ -1458,6 +1473,9 @@ PUp_Vine:
 	AND #$0F
 	CMP #$0F
 	BNE PUp_VineDraw
+
+	LDA <Objects_YHiZ, X
+	BMI PUp_Delete
 
 	LDA Block_NeedsUpdate
 	BEQ PUp_Detect
@@ -3104,7 +3122,7 @@ ObjInit_GiantChomp:
 	STA Objects_Data5, X
 
 	LDA #$D0
-	STA Objects_YVelZ, X
+	STA <Objects_YVelZ, X
 	RTS
 
 ObjNorm_GiantChomp:
@@ -3684,7 +3702,7 @@ Spike_BumpSides:
 	BEQ SpikeNoBounce
 
 	LDA #$E0
-	STA Objects_YVelZ, X
+	STA <Objects_YVelZ, X
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM

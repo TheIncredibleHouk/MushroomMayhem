@@ -1344,6 +1344,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Player_ForcedSlide:	.ds 1
 	Player_PrevXDirection:	ds 1
 	RhythmPlatformEnabed: .ds 1
+	RhythmPlatformInitiated: .ds 1
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;
 	RhythmCounter: .ds 1;
@@ -3426,28 +3427,10 @@ OA1_LOWPRIORITY	= %10000000
 
 ; Object Attributes Set 2 Flags
 
-OA2_NOSHELLORSQUASH	= %00000001	; Enemy does not go into shell (state 3) or squash (state 7) states when stomped on
-OA2_GNDPLAYERMOD	= %00000010	; "Grounded Player Mod"; Subtly modifies Player detection response; see comments in PRG000_D205
-OA2_STOMPDONTCARE	= %00000100	; Object "doesn't care" about being stomped (indifferent, not same as OA3_NOTSTOMPABLE)
-OA2_USE16BITX		= %00001000	; When applying X velocity, calculate "X Hi" position (applies to vertical levels only; if not set, Object_XHi will be fixed at zero)
-
-
-; This selects what X/Y offsets are used by an object to detect a tile
-; For tile detection groups, see Object_TileDetectOffsets in PRG000
-OA2_TDOGRP0		= %00000000	; Use "Group 0" tile detection offsets
-OA2_TDOGRP1		= %00010000	; Use "Group 1" tile detection offsets
-OA2_TDOGRP2		= %00100000	; Use "Group 2" tile detection offsets
-OA2_TDOGRP3		= %00110000	; Use "Group 3" tile detection offsets
-OA2_TDOGRP4		= %01000000	; Use "Group 4" tile detection offsets
-OA2_TDOGRP5		= %01010000	; Use "Group 5" tile detection offsets
-OA2_TDOGRP6		= %01100000	; Use "Group 6" tile detection offsets
-OA2_TDOGRP7		= %01110000	; Use "Group 7" tile detection offsets
-OA2_TDOGRP8		= %10000000	; Use "Group 8" tile detection offsets
-OA2_TDOGRP9		= %10010000	; Use "Group 9" tile detection offsets
-OA2_TDOGRP10		= %10100000	; Use "Group 10" tile detection offsets
-OA2_TDOGRP11		= %10110000	; Use "Group 11" tile detection offsets
-OA2_TDOGRP12		= %11000000	; Use "Group 12" tile detection offsets
-OA2_TDOGRPMASK		= %11110000	; Not intended for use in attribute table, readability/traceability only
+	= %00000001	; Enemy does not go into shell (state 3) or squash (state 7) states when stomped on
+	= %00000010	; "Grounded Player Mod"; Subtly modifies Player detection response; see comments in PRG000_D205
+	= %00000100	; Object "doesn't care" about being stomped (indifferent, not same as OA3_NOTSTOMPABLE)
+OA2_STOMP_KICKSND	= %00001000	; When applying X velocity, calculate "X Hi" position (applies to vertical levels only; if not set, Object_XHi will be fixed at zero)
 
 ; Object Attributes Set 3 Flags
 

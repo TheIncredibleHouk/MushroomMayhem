@@ -317,16 +317,16 @@ Video_DoStatusBarHM:
 ;Video_YouGotCardH:
 ;	vaddr $22C7
 ;	.byte $13
-;	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
+;	;       Y    O    U         G    O    T         A         C    A    R    D                   |
 ;	.byte $0D, $0E, $0A, $FC, $06, $0E, $09, $FC, $00, $FC, $05, $00, $02, $07, $FC, $26, $FE, $FE, $27
 ;	vaddr $22B6
 ;	.byte $04 ;  _    _    _   _
-;	;           |               |
+;	;                      |
 ;	.byte      $20, $21, $21, $22
 ;
 ;	vaddr $22F6
 ;	.byte $04
-;	;       |              |
+;	;                 |
 ;	.byte $26, $FE, $FE, $27
 ;
 ;	vaddr $2316
@@ -345,17 +345,17 @@ Video_DoStatusBarHM:
 ;Video_YouGotCard:
 ;	vaddr $28E7
 ;	.byte $13
-;	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
+;	;       Y    O    U         G    O    T         A         C    A    R    D                   |
 ;	.byte $8D, $8E, $8A, $FC, $86, $8E, $89, $FC, $80, $FC, $85, $80, $82, $87, $FC, $A6, $FE, $FE, $A7
 ;
 ;	vaddr $28D6
 ;	.byte $04 ;  _    _    _   _
-;	;           |               |
+;	;                      |
 ;	.byte      $A0, $A1, $A1, $A2
 ;
 ;	vaddr $2916
 ;	.byte $04
-;	;       |              |
+;	;                 |
 ;	.byte $A6, $FE, $FE, $A7
 ;
 ;	vaddr $2936
@@ -1567,14 +1567,14 @@ PRG030_8E4F:
 
 	LDA Level_PauseFlag
 	BNE Graphics_Anim
-	;LDA DPad_RhythmControl
-	;BEQ PRG030_8E50
-	;JSR DPad_ControlTiles
+	LDA DPad_RhythmControl
+	BEQ PRG030_8E50
+	JSR DPad_ControlTiles
 
 PRG030_8E50:
-	;LDA RhythmPlatformEnabed
-	;BEQ Graphics_Anim	
-	;JSR RhythmPlatforms
+	LDA RhythmPlatformEnabed
+	BEQ Graphics_Anim	
+	JSR RhythmPlatforms
 
 Graphics_Anim:
 	LDA <Player_HaltGameZ
@@ -1770,6 +1770,7 @@ PRG030_8F31_2:
 	LDX Player_Level
 	CPX #ABILITY_RESURRECT
 	BCC PRG030_8F32
+
 	LDA Map_ReturnStatus
 	BEQ PRG030_8F32
 
@@ -3289,7 +3290,10 @@ HorzNotLocked:
 	LDA [Temp_Var14],Y
 	AND #$10
 	STA DPad_RhythmControl
-	;set weather type
+
+	LDA [Temp_Var14],Y
+	AND #$20
+	STA RhythmPlatformEnabed
 
 	LDX #$01
 
@@ -5884,3 +5888,209 @@ PUpCheck_MoveAlong:
 
 	CLC
 	RTS
+
+
+DPad_ControlTiles:
+	LDA <Player_HaltGameZ
+	BNE DPad_ControlTiles4
+
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ DPad_ControlTiles1
+
+	LDA #$01
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles1:
+	LDA <Pad_Holding
+	AND #PAD_LEFT
+	BEQ DPad_ControlTiles2
+
+	LDA #$02
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles2:
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ DPad_ControlTiles3
+
+	LDA #$03
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles3:
+	LDA <Pad_Holding
+	AND #PAD_RIGHT
+	BEQ DPad_ControlTiles4
+
+	LDA #$00
+	STA RhythmKeeper + 3
+	JMP UpdateRhythmTiles
+
+DPad_ControlTiles4:
+	RTS
+
+RhythmPlatforming:
+RhythmGraphics:
+	.byte $60, $62, $64, $66
+
+RhythmSet1:
+	.byte $00, $5F, $90, $82, $00, $00, $00, $00, $80, $5F, $00
+
+RhythmSet2:
+	.byte $00, $18, $23, $1E, $00, $00, $00, $00, $20, $18, $00
+
+RhythmSet3:
+	.byte $00, $03, $00, $FE, $00, $00, $00, $00, $04, $03, $00
+
+RhythmPlatformsReset:
+	STA RhythmMusic
+	LDA #$00
+	STA RhythmKeeper
+	STA RhythmKeeper + 1
+	STA RhythmKeeper + 2
+	STA RhythmKeeper + 4
+
+RhythmPlatforms:
+	LDX #$00
+	LDA SndCur_Music2
+	BEQ RhythmPlatforms0
+	LDY RhythmMusic
+	BNE DoNotStoreRhythmMusic
+	STA RhythmMusic
+
+DoNotStoreRhythmMusic:
+	CMP RhythmMusic
+	BNE RhythmPlatformsReset
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	LDA RhythmSet1, X
+	BEQ RhythmPlatforms0
+	LDA RhythmKeeper
+	CMP RhythmSet1, X
+	BEQ RhythmPlatforms1
+	INC RhythmKeeper
+
+RhythmPlatforms0:
+	RTS
+
+RhythmPlatforms1:
+	LDA RhythmKeeper + 1
+	CMP RhythmSet2, X
+	BEQ RhythmPlatforms2
+	INC RhythmKeeper + 1
+	RTS
+
+RhythmPlatforms2:
+	LDA RhythmKeeper + 2
+	CMP #$03
+	BEQ RhythmPlatforms3
+	LDA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	INC RhythmKeeper + 2
+	LDA #$00
+	STA RhythmKeeper + 1
+	RTS
+	
+RhythmPlatforms3:
+	LDA #SND_MAPINVENTORYFLIP
+	STA Sound_QMap
+
+	LDA #$00
+	STA RhythmKeeper + 1
+	STA RhythmKeeper + 2
+	LDA RhythmSet3, X
+	STA RhythmKeeper
+	INC RhythmKeeper + 3
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+	LDA RhythmGraphics, Y
+	STA PatTable_BankSel
+	LDA #$00
+	STA TileProperties + $02
+	STA TileProperties + $42
+	STA TileProperties + $82
+	STA TileProperties + $C2
+	LDA #$02
+
+RhythmPlatforms4:
+	CPY #$00
+	BEQ RhythmPlatforms5
+	ADD #$40
+	DEY
+	BPL RhythmPlatforms4 
+
+RhythmPlatforms5:
+	TAY
+	LDA #TILE_PROP_SOLID_ALL
+	STA TileProperties, Y
+	LDA TileProperties + $53
+	STA TileProperties + $03
+	LDA TileProperties + $83
+	STA TileProperties + $53
+	LDA TileProperties + $D3
+	STA TileProperties + $83
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+	LDA RhythmCurrents, Y
+	STA TileProperties + $D3
+	RTS
+
+RhythmCurrents:
+	.byte TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP, TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN
+
+DPadTiles:
+	.byte TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN, TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP
+
+UpdateRhythmTiles:
+	LDA RhythmKeeper + 3
+	AND #$03
+	TAY
+	LDA RhythmGraphics, Y
+	STA PatTable_BankSel
+	LDA DPadTiles, Y
+	STA TileProperties + $57
+	RTS
+
+Player_Die:
+	
+	; Queue death song
+	LDA Sound_QMusic1
+	ORA #MUS1_PLAYERDEATH
+	STA Sound_QMusic1
+
+	; Clear a bunch of stuff at time of death
+	LDA #$00
+	STA <Player_XVel
+	STA <Obj01_Flag	
+	STA Player_Flip	
+	STA Player_FlashInv
+	STA Player_StarInv
+	STA Player_Shell
+	STA Player_FireDash
+	STA Boo_Mode_Timer
+	STA Boo_Mode_KillTimer
+	STA Level_PSwitchCnt
+	STA Frozen_Frame
+	STA Player_Frozen
+	
+	LDA #$01
+	STA Player_QueueSuit	 ; Queue change to "small"
+
+	LDA #-64
+	STA <Player_YVel ; Player_YVel = -64
+
+	LDA #$30	 
+	STA Event_Countdown ; Event_Countdown = $30 (ticks until dropped back to map)
+
+	LDA #$01
+	STA <Player_IsDying	 ; Player_IsDying = 1
+
+	RTS		 ; Return

@@ -159,7 +159,7 @@ Flip_TopBarInv:
 Flip_MidTItems:	
 	vaddr $2B20
 
-	;                 |    W    O   R   LD   [x]
+	;                 W    O   R   LD   [x]
 	.byte  32, $FC, $90, $FE
 	.byte  "ITEMS "
 
@@ -176,7 +176,7 @@ Flip_MidTItems:
 Flip_MidBItems:	
 	vaddr $2B40
 
-	;                 |    < M >     x  [ Lives]
+	;                 < M >     x  [ Lives]
 	.byte  32, $FC, $90, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 	; Bottom of items start rendering here (replaced at runtime)

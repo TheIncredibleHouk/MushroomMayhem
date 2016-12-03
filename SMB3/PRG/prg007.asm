@@ -695,38 +695,22 @@ Player_HammerTilesInteraction:
 	LDY #$02
 
 Player_HammerTilesInteraction0:
-	LDA Hammer_Tiles, Y
-	BEQ Hammer_Empty
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_STONE) 
+	BNE Hammer_NotStone
 
-	CMP Tile_LastProp
-	BEQ Player_HammerTilesInteraction2
+	LDA #(TILE_PROP_ITEM | TILE_ITEM_BRICK)
+	STA Tile_LastProp
 
-Hammer_Empty:
-	DEY
-	BPL Player_HammerTilesInteraction0
+Hammer_NotStone:
+	CMP #TILE_PROP_ITEM
+	BCS Player_HammerTilesInteraction2
 
 Player_HammerTilesInteraction1:
 	RTS
 
 Player_HammerTilesInteraction2:
-	LDA Tile_LastValue
-	AND #$C0
-	ORA #$01
-	JSR Object_ChangeBlock
-	LDA Tile_DetectionX
-	AND #$F0
-	STA SpecialObj_X, X
-
-	LDA Tile_DetectionY
-	AND #$F0
-	STA SpecialObj_Y, X
-
-	LDA SpecialObj_X, X
-	STA Debris_X
-
-	LDA SpecialObj_Y, X
-	STA Debris_Y
-	JSR Common_MakeBricks
+	JSR Object_DirectBumpBlocks
 
 	JMP SpecialObj_ToPoofNoSound
 
