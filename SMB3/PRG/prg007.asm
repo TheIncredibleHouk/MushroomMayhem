@@ -472,6 +472,10 @@ SpecialObj_FireTiles1:
 Player_FireTiles2:
 	ADD #$01
 	JSR Object_ChangeBlock
+
+	LDA SpecialObj_Data3, X
+	BNE SpecialObj_FireTiles1
+
 	LDA Tile_DetectionX
 	AND #$F0
 	STA SpecialObj_X, X
@@ -619,6 +623,10 @@ SpecialObj_IceTiles1:
 SpecialObj_IceTiles2:
 	SUB #$01
 	JSR Object_ChangeBlock
+
+	LDA SpecialObj_Data3, X
+	BNE SpecialObj_IceTiles1
+
 	LDA Tile_DetectionX
 	AND #$F0
 	STA SpecialObj_X, X
@@ -626,6 +634,7 @@ SpecialObj_IceTiles2:
 	LDA Tile_DetectionY
 	AND #$F0
 	STA SpecialObj_Y, X
+
 	JMP SpecialObj_ToPoofNoSound
 
 SpecialObj_ToPoof:
@@ -2280,6 +2289,7 @@ SpecialObj_UpdateAndDraw:
 	.word SObj_BlooperKid	; 14: Blooper kid
 	.word SObj_DoNothing	; 15: Laser
 	.word SpecialObj_Poof		; 16: Poof
+	.word SObj_DoNothing	; 17 placeholder
 
 PUpCoin_Patterns:	.byte $49, $4F, $4D, $4F
 PUpCoin_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
@@ -3327,6 +3337,9 @@ Enemy_FireBall:
 	LDA <Player_HaltGameZ
 	BNE Enemy_FireBall5
 
+	LDA SpecialObj_Data3, X
+	BNE Enemy_FireBallCalcBounds
+
 	LDA SpecialObj_Data1, X
 	BNE Enemy_FireBallNoGravity
 
@@ -3345,6 +3358,9 @@ Enemy_FireBallCalcBounds:
 Enemy_FireBallTiles:
 	JSR SpecialObj_DetectWorld8x16
 	JSR SpecialObj_FireTiles
+
+	LDA SpecialObj_Data3, X
+	BNE Enemy_FireBall5
 
 	LDA SpecialObj_YVel, X
 	BPL Enemy_FireBall1
@@ -3423,6 +3439,9 @@ Enemy_IceBallTiles:
 
 	LDA SpecialObj_YVel, X
 	BPL Enemy_IceBall1
+
+	LDA SpecialObj_Data3, X
+	BNE Enemy_IceBall5
 
 	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_ALL

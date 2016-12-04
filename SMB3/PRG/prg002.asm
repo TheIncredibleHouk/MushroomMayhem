@@ -875,9 +875,11 @@ ObjNorm_PirateBoo:
 	TAY
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
+	
 	JSR Object_ChasePlayer
 	JSR Object_InteractWithPlayer	; Do collision test with Player and respond
 	JSR Fish_FixedYIfAppro	 	; Fix Boo Y for raster area
+
 	JMP Object_Draw 	; Draw and don't come back!
 	
 ObjNorm_Boo:

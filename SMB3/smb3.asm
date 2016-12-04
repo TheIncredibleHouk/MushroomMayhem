@@ -3051,6 +3051,7 @@ SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_BLOOPERKID		= $14 	; Blooper kid
 SOBJ_POOF		=  $05 	; Poof
+SOBJ_PLACEHOLDER = $15
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
 ; Player's hammer/fireball

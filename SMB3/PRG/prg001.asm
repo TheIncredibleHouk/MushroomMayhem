@@ -217,7 +217,7 @@ ObjectGroup00_Attributes2:
 	.byte $00	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte $00	; Object $0E - OBJ_HARDICE
 	.byte $00	; Object $0F
-	.byte $00	; Object $10 OBJ_PIXIE
+	.byte OA2_STOMP_KICKSND	; Object $10 OBJ_PIXIE
 	.byte $00	; Object $11
 	.byte $00	; Object $12
 	.byte $00	; Object $13
@@ -4513,188 +4513,297 @@ SnowBall_NoBurst:
 	STA BrickBust_Pal, Y
 	JMP Object_Delete
 
-IceFireFlyColors:
-	.byte SPR_PAL1, SPR_PAL2
-
 IceFireFlyProjectiles:
 	.byte SOBJ_FIREBALL, SOBJ_ICEBALL
 
 IceFlyRotationX:
-	.byte 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2, 0
+	.byte 0, 2, 5, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 24, 24
+	.byte 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2
+	.byte 0, -2, -5, -7, -9, -11, -13, -15, -17, -19, -20, -21, -22, -23, -24, -24
+	.byte -24, -24, -24, -23, -22, -21, -20, -19, -17, -15, -13, -11, -9, -7, -5, -2
 
 IceFlyRotationY:
-	.byte -2, -5, -7, -9, -11, -13, -15, -17, -19, -20, -21, -22, -23, -24, -24, -24, -24, -24, -24, -23, -22, -21, -20, -19, -17, -15, -13, -11, -9, -7, -5, -2, 0, 2, 5, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 24, 24, 24, 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2, 0
+	.byte 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2
+	.byte 0, -2, -5, -7, -9, -11, -13, -15, -17, -19, -20, -21, -22, -23, -24, -24
+	.byte -24, -24, -24, -23, -22, -21, -20, -19, -17, -15, -13, -11, -9, -7, -5, -2
+	.byte 0, 2, 5, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 24, 24
 
 IceFlyRotationVel:
    .byte -$20, $20
 
+IceFireFly_Frame = Objects_Data3
+IceFireFly_ProjectileSlot = Objects_Data1
+IceFireFly_ProjectileTicks = Objects_Data4
+IceFireFly_ProjectileID = Objects_Data5
+
+IceFireFly_Palettes:
+	.byte SPR_PAL1, SPR_PAL2
+
 ObjInit_IceFireFly:
+	LDA #$FF
+	STA IceFireFly_ProjectileSlot, X
+	
 	LDY Objects_Property, X
 	LDA IceFireFlyProjectiles, Y
-	STA Objects_Data3, X
-	LDA IceFireFlyColors, Y
+	STA IceFireFly_ProjectileID, X
+	
+	LDA IceFireFly_Palettes, Y
 	STA Objects_SpriteAttributes, X
-	LDA #$00
-	STA Objects_SpritesHorizontallyOffScreen, X
-	STA Objects_SpritesVerticallyOffScreen, X
-	JSR SpecialObject_FindEmptyAbort
+
+	JSR InitPatrol_Chase
+
+	JSR Object_PrepProjectile
+	BCC ObjInit_IceFireFlyRTS
+
 	TYA
-	STA Objects_Data5, X
-	LDA Objects_Data3, X
-	STA SpecialObj_ID,Y
-	LDA #$02
-	STA SpecialObj_YHi, Y
+	STA IceFireFly_ProjectileSlot, X
+
+	LDA #SOBJ_PLACEHOLDER
+	STA SpecialObj_ID, Y
+	STA SpecialObj_Data1, Y
+	STA SpecialObj_Data3, Y
+	
+	LDX <CurrentObjectIndexZ
+
+ObjInit_IceFireFlyRTS:
 	RTS
 
+
 ObjNorm_IceFireFly:
+
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_IceFireFly00
-	JMP ObjNorm_IceFireFly0
+	BEQ IceFireFly_Normal
+		
+	JMP IceFireFly_Draw
 
-ObjNorm_IceFireFly00:
+IceFireFly_Normal:
 	LDA Objects_State, X
-	CMP #OBJSTATE_KILLED
-	BNE ObjNorm_IceFireFly01
+	CMP #OBJSTATE_NORMAL
+	BEQ IceFireFly_DoNormal
 
-	LDA Objects_Data5, X
-	TAY
-	LDA SpecialObj_ID, Y
-	BNE ObjNorm_IceFireFly02
+	JSR IceFireFly_DestroyProjectiles
+	JMP IceFireFly_Draw
 
-	JMP ObjNorm_IceFireFly4
-
-ObjNorm_IceFireFly02:
-	LDX <CurrentObjectIndexZ
-	LDA Objects_Data4, X
-	AND #$20
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAX
-	LDA IceFlyRotationVel, X
-	STA <Temp_Var1
-	LDX <CurrentObjectIndexZ
-	LDA Objects_Data5, X
-	TAY
-	LDA <Temp_Var1
-	STA SpecialObj_XVel, Y
-	JMP ObjNorm_IceFireFly4
-
-ObjNorm_IceFireFly01:
+IceFireFly_DoNormal:
+	JSR Object_DeleteOffScreen
 	
-	INC Objects_Data4, X
-	LDA Objects_Data4, X
+	JSR Object_ChasePlayer
+	JSR Object_CalcBoundBox
+	JSR Object_FaceDirectionMoving
+	JSR Object_AttackOrDefeat
+	
+	INC IceFireFly_Frame, X
+	LDA IceFireFly_Frame, X
 	AND #$0C
 	LSR A
 	LSR A
 	STA Objects_Frame, X
+	JSR Object_Draw
+	JSR IceFireFly_MoveProjectiles
+	RTS
 
-	JSR Object_DeleteOffScreen
-	JSR Object_AttackOrDefeat
-
-	LDA Objects_Data4, X
-	AND #$01
-	BEQ ObjNorm_IceFireFly0
-	JSR Object_ChasePlayer
-
-ObjNorm_IceFireFly0:
-	LDA Objects_XZ, X
-	ADD #$04
-	STA <Temp_Var13
-	LDA Objects_XHiZ, X
-	ADC #$00
-	STA <Temp_Var14
-	LDA Objects_YZ, X
-	STA <Temp_Var15
-	LDA Objects_YHiZ, X
-	STA <Temp_Var16
-
-	LDA Objects_Data5, X
-	TAY
-	LDA Objects_Data4, X
-	AND #$3F
-	TAX
-	LDA IceFlyRotationX, X
-	BPL ObjNorm_IceFireFly1
-
-	EOR #$FF
-	ADD #$01
-	STA <Temp_Var12
-	LDA <Temp_Var13
-	SUB <Temp_Var12
-	STA SpecialObj_X, Y
-	LDA <Temp_Var14
-	SBC #$00
-	STA <Temp_Var14
-	JMP ObjNorm_IceFireFly2
-
-ObjNorm_IceFireFly1:
-	ADD <Temp_Var13
-	STA SpecialObj_X, Y
-	LDA <Temp_Var14
-	ADC #$00
-	STA <Temp_Var14
-
-ObjNorm_IceFireFly2:
-	LDA SpecialObj_X, Y
-	CMP <Horz_Scroll
-	LDA <Temp_Var14
-	SBC <Horz_Scroll_Hi
-	BNE ObjNorm_IceFireFly2_1
-
-	LDA SpecialObj_X, Y
-	CMP <Horz_Scroll
-	LDA <Temp_Var14
-	SBC <Horz_Scroll_Hi
-	BEQ ObjNorm_IceFireFly2_2
-
-ObjNorm_IceFireFly2_1
-	LDA #$C0
-	STA SpecialObj_Y, Y
-	LDA #$01
-	STA SpecialObj_YHi, Y
-	BNE ObjNorm_IceFireFly4
-	
-ObjNorm_IceFireFly2_2:
-	LDA IceFlyRotationY, X
-	BPL ObjNorm_IceFireFly3
-
-	EOR #$FF
-	ADD #$01
-	STA <Temp_Var12
-	LDA <Temp_Var15
-	SUB <Temp_Var12
-	STA SpecialObj_Y, Y
-
-	LDA <Temp_Var16
-	SBC #$00
-	STA SpecialObj_YHi, Y
-	JMP ObjNorm_IceFireFly3_1
-
-ObjNorm_IceFireFly3:
-	ADD <Temp_Var15
-	STA SpecialObj_Y, Y
-
-	LDA #$00
-	STA SpecialObj_XVel, Y
-	STA SpecialObj_YVel, Y
-
-	LDA <Temp_Var16
-	ADC #$00
-	STA SpecialObj_YHi, Y
-
-ObjNorm_IceFireFly3_1:
-	LDX <CurrentObjectIndexZ
-	LDA Objects_Data3, X
-	STA SpecialObj_ID,Y
-	STA SpecialObj_Data1, Y
-
-ObjNorm_IceFireFly4:
-	LDX <CurrentObjectIndexZ
+IceFireFly_Draw:
 	JMP Object_Draw
 
+IceFireFly_MoveProjectiles:
+	INC IceFireFly_ProjectileTicks, X
+
+	LDY IceFireFly_ProjectileSlot, X
+	BMI IceFireFly_MoveProjectilesRTS
+ 
+	LDA #$00
+	STA SpecialObj_HurtEnemies, Y
+
+	LDA IceFireFly_ProjectileTicks, X
+	AND #$3F
+
+	TAY
+	
+	LDA Object_SpriteRAMOffset,X
+	TAX
+
+	JSR IceFireFly_DetermineProjectileVisibility
+	BCC IceFireFly_ClearFirstProjectile
+
+	JSR IceFireFly_CalcXYPosition
+
+	LDY IceFireFly_ProjectileSlot, X
+	JSR IceFireFly_SetXYPosition
+
+	RTS
+
+IceFireFly_ClearFirstProjectile:
+	LDX <CurrentObjectIndexZ
+
+	LDY IceFireFly_ProjectileSlot, X
+	JSR IceFireFly_ClearProjectile
+
+IceFireFly_MoveProjectilesRTS:
+	RTS
+
+IceFireFly_DetermineProjectileVisibility:
+
+	LDA IceFlyRotationX, Y
+	STA <Temp_Var1
+	BMI Projectile_NegativeXOffset
+
+	LDA Sprite_RAMX, X
+	ADD #$04
+	BCS IceFireFly_NotVisible
+
+	ADC IceFlyRotationX, Y
+	BCS IceFireFly_NotVisible
+	BCC Projectile_DetermineYVisibility
+
+Projectile_NegativeXOffset:
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var1
+
+	LDA Sprite_RAMX, X
+	ADD #$04
+	SUB <Temp_Var1
+	BCC IceFireFly_NotVisible
+
+Projectile_DetermineYVisibility:
+	LDA IceFlyRotationY, Y
+	STA <Temp_Var1
+	BMI Projectile_NegativeYOffset
+
+	LDA Sprite_RAMY, X
+	CMP #$F8
+	BEQ IceFireFly_NotVisible
+
+	ADD #$08
+	BCS IceFireFly_NotVisible
+
+	ADC IceFlyRotationY, Y
+	BCS IceFireFly_NotVisible
+	BCC IceFireFly_Visible
+
+Projectile_NegativeYOffset:
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var1
+
+	LDA Sprite_RAMY, X
+	CMP #$F8
+	BEQ IceFireFly_NotVisible
+
+	SUB <Temp_Var1
+	BCC IceFireFly_NotVisible
+	
+IceFireFly_Visible
+	SEC
+	RTS
+
+IceFireFly_NotVisible:
+	CLC
+	RTS
+
+IceFireFly_ClearProjectile:
+	LDA #$FF
+	STA SpecialObj_XHi, Y
+	STA SpecialObj_YHi, Y
+	RTs
+
+IceFireFly_CalcXYPosition:
+	LDX <CurrentObjectIndexZ
+
+	LDA IceFlyRotationX, Y
+	STA <Temp_Var1
+	BMI IceFireFly_CalcXNegative
+
+	LDA <Objects_XZ, X
+	ADD #$04
+	ADC IceFlyRotationX, Y
+	STA <Temp_Var1
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Temp_Var2
+	JMP IceFireFly_CalcY
+
+IceFireFly_CalcXNegative:
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var1
+
+	LDA <Objects_XZ, X
+	ADD #$04
+	SUB <Temp_Var1
+	STA <Temp_Var1
+
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA <Temp_Var2
+	
+IceFireFly_CalcY:
+	LDA IceFlyRotationY, Y
+	STA <Temp_Var3
+	BMI IceFireFly_CalcYNegative
+
+	LDA <Objects_YZ, X
+	ADC IceFlyRotationY, Y
+	STA <Temp_Var3
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Temp_Var4
+	RTS
+
+IceFireFly_CalcYNegative:
+	EOR #$FF
+	ADD #$01
+	STA <Temp_Var3
+
+	LDA <Objects_YZ, X
+	SUB <Temp_Var3
+	STA <Temp_Var3
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Temp_Var4
+	RTS
+
+IceFireFly_SetXYPosition:
+
+	LDA <Temp_Var1
+	STA SpecialObj_X, Y
+	
+	LDA <Temp_Var2
+	STA SpecialObj_XHi, Y
+
+	LDA <Temp_Var3
+	STA Debug_Snap
+	STA SpecialObj_Y, Y
+	
+	LDA <Temp_Var4
+	STA SpecialObj_YHi, Y
+
+	LDA IceFireFly_ProjectileID, X
+	STA SpecialObj_ID, Y
+	RTS
+
+
+IceFireFly_DestroyProjectiles:
+	LDY IceFireFly_ProjectileSlot, X
+	BMI IceFireFly_DestroyProjectilesRTS
+
+	LDA #PLAYER_POOF
+	STA SpecialObj_ID, Y
+
+	LDA #$10
+	STA SpecialObj_Timer, Y
+
+	LDA #$00
+	STA SpecialObj_Data1, Y
+
+	LDA #$FF
+	STA IceFireFly_ProjectileSlot, X
+
+IceFireFly_DestroyProjectilesRTS:
+	RTS
 Fireball_Flips:
 	.byte $00, SPR_VFLIP
 
@@ -4718,6 +4827,7 @@ ObjNorm_BowserFireBall:
 
 ObjNorm_BowserFireBall1:
 	JMP Object_Draw
+
 CoinLock_CoinsRemaining = Objects_Data4
 CoinLock_BlocksRemaining = Objects_Data5
 

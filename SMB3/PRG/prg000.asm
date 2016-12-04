@@ -274,10 +274,13 @@ PRG000_C451:
 
 SpecialObject_FindEmpty:
 	LDY #$05
+
+SpecialObject_FindEmptyNext:
 	LDA SpecialObj_ID,Y
 	BEQ PRG000_C457	 ; If object slot is dead/empty, jump to PRG000_C454 
+
 	DEY		 ; Y--
-	BPL SpecialObject_FindEmptyAbortY	 ; While Y >= 0, loop!
+	BPL SpecialObject_FindEmptyNext	 ; While Y >= 0, loop!
 
 PRG000_C456:
 	CLC
@@ -5963,10 +5966,6 @@ Object_PrepProjectile1:
 	LDA <Objects_YHiZ, X
 	ADC #$00
 	STA SpecialObj_YHi, Y
-
-	LDA #$00
-	STA SpecialObj_Data2, Y
-	STA SpecialObj_Data1, Y
 
 	SEC
 	RTS
