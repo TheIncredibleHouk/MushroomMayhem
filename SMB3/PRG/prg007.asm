@@ -2476,7 +2476,7 @@ PRG007_B1C3:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
 
 	; Set Explosion Star pattern
-	LDA #$73
+	LDA #$71
 	STA Sprite_RAM+$01,Y
 
 	; Apply cycling palette attribute
@@ -2658,7 +2658,7 @@ Enemy_Cannonball:
 	LDA <Player_HaltGameZ
 	BNE Enemy_CannonDraw
 
-	LDA SpecialObj_Data3, X
+	LDA SpecialObj_Stompable, X
 	BNE Cannonball_Norm
 
 	JSR SObj_ApplyXYVelsWithGravity
@@ -2695,7 +2695,7 @@ CannonBall_TilesInteraction:
 	CMP #TILE_PROP_SOLID_ALL
 	BCC CannonBall_NotSolid
 
-	DEC SpecialObj_Data3, X
+	DEC SpecialObj_Stompable, X
 	BNE CannonBall_NotSolid
 
 	LDA SpecialObj_XVel, X
@@ -2737,7 +2737,8 @@ Cannon_Tiles:
 
 CannonBall_TilesInteraction2:
 	LDA #$02
-	STA SpecialObj_Data3, X
+	STA SpecialObj_Stompable, X
+
 	LDA Tile_LastValue
 	AND #$C0
 	ORA #$01
@@ -3417,6 +3418,9 @@ Enemy_FireBall5:
 Enemy_IceBall:
 	LDA <Player_HaltGameZ
 	BNE Enemy_IceBall5
+
+	LDA SpecialObj_Data3, X
+	BNE Enemy_IceBallCalcBounds
 
 	LDA SpecialObj_Data1, X
 	BNE Enemy_IceBallNoGravity
@@ -4553,7 +4557,7 @@ HitPlayer:
 	JSR SpecialObj_DetectPlayer
 	BCC EnemyProj_HitPlayer1
 
-	LDA SpecialObj_Data3, X
+	LDA SpecialObj_Stompable, X
 	BEQ SObj_CantStomp
 
 	LDA <HitTest_Result
@@ -4566,7 +4570,7 @@ HitPlayer:
 	BCS SObj_CantStomp
 
 	LDA #$00
-	STA SpecialObj_Data3, X
+	STA SpecialObj_Stompable, X
 	STA SpecialObj_YVel, X
 	STA SpecialObj_XVel, X
 
@@ -4614,8 +4618,11 @@ EnemyProj_HitPlayer2:
 EnemyProj_HitPlayer1:
 	RTS
 
-FreezeVel:
-	.byte $10, $F0
+FreezeXVel:
+	.byte $00, $20, $E0, $E0
+
+FreezeYVel:
+	.byte $00, $20, $E0, $E0
 
 EnemeyProj_Enemy_FreezePlayer:
 	LDA SpecialObj_HurtEnemies, X
@@ -4627,6 +4634,9 @@ EnemeyProj_Enemy_FreezePlayer:
 	JMP Player_HitIce
 
 Enemy_FreezePlayer:
+	LDA Player_Frozen
+	BNE Enemy_IcePoofAway
+
 	JSR SpecialObj_DetectPlayer
 	BCC EnemeyProj_Enemy_FreezePlayer3
 
@@ -4652,18 +4662,25 @@ Enemy_IceFreeze:
 	ORA Player_FireDash
 	BEQ EnemeyProj_Enemy_FreezePlayer1
 
+Enemy_IcePoofAway:
 	JMP SpecialObj_ToPoof
 	
 EnemeyProj_Enemy_FreezePlayer1:
-	LDY #$00
-	LDA SpecialObj_XVel, X
-	BPL EnemeyProj_Enemy_FreezePlayer2
-
-	INY
-
-EnemeyProj_Enemy_FreezePlayer2
-	LDA FreezeVel, Y
+	LDA HitTest_Result
+	AND #$03
+	TAY
+	
+	LDA FreezeXVel, Y
 	STA <Player_XVel
+
+	LDA HitTest_Result
+	LSR A
+	LSR A
+	AND #$03
+	TAY
+	
+	LDA FreezeYVel, Y
+	STA <Player_YVel
 
 	LDA #$00
 	STA SpecialObj_ID, X

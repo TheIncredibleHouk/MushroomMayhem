@@ -1732,7 +1732,7 @@ PRG003_A4EA:
 	JSR BustBlock_Segment 	; Generate Ice block segment
 
 	LDA TempA
-	STA SpecialObj_Data3,Y
+	STA SpecialObj_Stompable,Y
 
 PRG003_A4EB:
 	DEC <Temp_Var16		; Temp_Var16--
@@ -2428,7 +2428,7 @@ PRG003_A85C:
 	STA Sprite_RAM+$03,Y
 
 	; Star pattern
-	LDA #$73
+	LDA #$17
 	STA Sprite_RAM+$01,Y
 
 	LDA <Counter_1

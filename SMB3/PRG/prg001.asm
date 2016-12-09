@@ -457,7 +457,11 @@ ObjP09:
 ObjP1A: .byte $8D, $8D, $8F, $8F, $91, $91, $A7, $A7, $A9, $A9, $AB, $AB
 ObjP0A:	.byte $A9, $AB, $BD, $BF
 ObjP0C:	.byte $51, $53
-ObjP0B:	.byte $51, $53	; #DAHRKDAIZ changed 1Up to use a "Ninja Mushroom" sprite instead, separate from regular mushroom
+
+ObjP0B:
+	.byte $51, $53	
+	.byte $73, $73
+
 ObjP0D:	.byte $51, $53
 ObjP19:
 	.byte $15, $15
@@ -487,8 +491,14 @@ Spring_Jump_Height:
 Spring_Player_YOffsets:
 	.byte $20, $1C, $17, $1C
 
+
+Spring_CurrentX = Objects_Data1
+Spring_CurrentXHi = Objects_Data2
+Spring_CurrentY = Objects_Data3
+Spring_CurrentYHi = Objects_Data4
 Spring_CurrentFrame = Objects_Data5
 Spring_LastInteract = Objects_Data6
+
 ObjNorm_Spring:
 	LDA <Player_HaltGameZ
 	BNE Spring_RTS
@@ -500,6 +510,7 @@ ObjNorm_Spring:
 	LDA Spring_CurrentFrame, X
 	BNE SpringAnim
 
+	JSR Spring_PositionBackup
 	JSR Object_InteractWithPlayer
 	STA Spring_LastInteract, X
 	
@@ -520,16 +531,21 @@ ObjNorm_Spring:
 	BEQ Spring_2
 	BMI Spring_2
 
+	JSR Spring_PositionRestore
+
 	LDA #$00
 	STA Objects_BeingHeld, X
+	STA <Objects_YVelZ, X
+	STA <Objects_XVelZ, X
 
 	LDA #$02
 	STA Objects_Timer, X
+
+	LDA #$10
+	STA Objects_Timer2, X
 	
 	LDA #$03
 	STA Spring_CurrentFrame, X
-
-	BEQ SpringAnim
 
 Spring_2:
 	LDA Objects_BeingHeld, X
@@ -543,6 +559,7 @@ Spring_RTS:
 
 SpringAnim:
 	LDY Spring_CurrentFrame, X
+
 	LDA Objects_YZ, X
 	SUB Spring_Player_YOffsets, Y
 	STA <Player_Y
@@ -565,6 +582,7 @@ SpringAnim:
 
 	; once the spring's animation is done, throw the player in the air
 	LDY Objects_Property, X
+
 	LDA Spring_Jump_Height, Y
 	STA <Player_YVel
 	STA <Player_InAir
@@ -576,6 +594,34 @@ SpringAnimRTS:
 	LDA Spring_CurrentFrame, X
 	STA Objects_Frame, X
 	JMP Object_DrawMirrored
+
+Spring_PositionBackup:
+	LDA <Objects_XZ, X
+	STA Spring_CurrentX, X
+
+	LDA <Objects_XHiZ, X
+	STA Spring_CurrentXHi, X
+
+	LDA <Objects_YZ, X
+	STA Spring_CurrentY, X
+
+	LDA <Objects_YHiZ, X
+	STA Spring_CurrentYHi, X
+	RTS
+
+Spring_PositionRestore:
+	LDA Spring_CurrentX, X
+	STA <Objects_XZ, X
+
+	LDA Spring_CurrentXHi, X
+	STA <Objects_XHiZ, X
+
+	LDA Spring_CurrentY, X
+	STA <Objects_YZ, X
+
+	LDA Spring_CurrentYHi, X
+	STA <Objects_YHiZ, X
+	RTS
 
 ObjInit_Key:
 	RTS
@@ -1095,10 +1141,10 @@ PowerUp_Palette:
 	.byte SPR_PAL0, SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL1, SPR_PAL2
 
 PowerUp_YVelocities:
-	.byte $00, $00, $D0, $D0, $C0, $D0, $D0, $D0, $D0, $C0, $B0, $D0, $DC
+	.byte $00, $00, $D0, $D0, $C0, $D0, $D0, $D0, $D0, $C0, $B0, $D0, $D0
 
 PowerUp_AnimOff:
-	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $2C
+	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $FF
 
 PowerUp_Timers:
 	.byte $00, $00, $06, $06, $1C, $1C, $06, $1C, $06, $1C, $08, $1C, $0A
@@ -1143,8 +1189,11 @@ PowerUp_Init:
 	STA <Objects_YVelZ, X
 
 	LDA PowerUp_AnimOff, Y
+	BMI Skip_SprAnimOffset
+
 	STA SprAnimOffset
 
+Skip_SprAnimOffset:
 	LDA PowerUp_Raise, X
 	BEQ ObjInit_PowerUp2
 
@@ -1168,6 +1217,7 @@ PowerUp_StartX = Objects_Data3
 PowerUp_StartY = Objects_Data4
 
 ObjNorm_PowerUp:
+
 	LDA <Player_HaltGameZ
 	BEQ PowerUp_Norm
 
@@ -1175,6 +1225,14 @@ ObjNorm_PowerUp:
 	ADD #$08
 	STA Object_SpriteRAMOffset, X
 
+	LDA PowerUp_Type, X
+	CMP #POWERUP_VINE
+
+	BNE PowerUp_NotVine
+
+	JMP PUp_VineDraw
+
+PowerUp_NotVine:
 	JMP Object_Draw
 
 PowerUp_Norm:
@@ -1190,6 +1248,14 @@ PowerUp_Norm:
 	STA Object_SpriteRAMOffset, X
 
 ObjNorm_PowerUp0:
+	LDA PowerUp_Type, X
+	CMP #POWERUP_VINE
+
+	BNE PowerUp_NotVine2
+
+	JMP PUp_VineDraw
+
+PowerUp_NotVine2:
 	JMP Object_Draw
 
 ObjNorm_PowerUp1:
@@ -1460,7 +1526,33 @@ PRG001_A810:
 	STA Player_StarInv
 	RTS
 
+Vine_TouchedGround = Objects_Data5
+
 PUp_Vine:
+	LDA Vine_TouchedGround, X
+	BNE Vine_Grow
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	LDA <Objects_XZ, X
+	AND #$F0
+	STA <Objects_XZ, X
+
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ PUp_VineDraw
+
+	INC Vine_TouchedGround, X
+	JMP PUp_VineDraw
+
+Vine_Grow:
 	LDA <Objects_XZ, X
 	AND #$F0
 	STA <Objects_XZ, X
@@ -1505,7 +1597,10 @@ PUp_VineBlock:
 	STA <Objects_YVelZ, X
 
 PUp_VineDraw:
-	JMP Object_Draw; Draw object and "shake awake" 
+	LDA #$01
+	STA Objects_Frame, X
+
+	JMP Object_DrawMirrored
 	
 
 	; Basically this bumps the object up by 1 pixel...
@@ -3883,9 +3978,7 @@ ObjNorm_SendBack:
 	
 	LDA #$00
 	STA LevelVertJct
-	STA <Player_XVel
-	STA <Player_YVel
-	
+
 	LDA #$F0
 	SUB <Player_X
 	STA <Player_X
@@ -4578,10 +4671,21 @@ ObjNorm_IceFireFly:
 
 IceFireFly_Normal:
 	LDA Objects_State, X
-	CMP #OBJSTATE_NORMAL
-	BEQ IceFireFly_DoNormal
+	CMP #OBJSTATE_KILLED
+	BNE IceFireFly_DoNormal
 
 	JSR IceFireFly_DestroyProjectiles
+
+	LDA <Objects_YHiZ, X
+	BEQ IceFireFly_Dead
+
+	LDA <Objects_YZ, X
+	CMP #$B0
+	BCC IceFireFly_Dead
+
+	JMP Object_SetDeadAndNotSpawned
+
+IceFireFly_Dead:
 	JMP IceFireFly_Draw
 
 IceFireFly_DoNormal:
@@ -4694,10 +4798,12 @@ Projectile_NegativeYOffset:
 	BCC IceFireFly_NotVisible
 	
 IceFireFly_Visible
+	LDX <CurrentObjectIndexZ
 	SEC
 	RTS
 
 IceFireFly_NotVisible:
+	LDX <CurrentObjectIndexZ
 	CLC
 	RTS
 
@@ -4705,6 +4811,9 @@ IceFireFly_ClearProjectile:
 	LDA #$FF
 	STA SpecialObj_XHi, Y
 	STA SpecialObj_YHi, Y
+
+	LDA #SOBJ_PLACEHOLDER
+	STA SpecialObj_ID, Y
 	RTs
 
 IceFireFly_CalcXYPosition:
@@ -4775,7 +4884,6 @@ IceFireFly_SetXYPosition:
 	STA SpecialObj_XHi, Y
 
 	LDA <Temp_Var3
-	STA Debug_Snap
 	STA SpecialObj_Y, Y
 	
 	LDA <Temp_Var4
@@ -4783,6 +4891,8 @@ IceFireFly_SetXYPosition:
 
 	LDA IceFireFly_ProjectileID, X
 	STA SpecialObj_ID, Y
+	STA SpecialObj_Data3, Y
+	STA SpecialObj_AllowOffScreen, Y
 	RTS
 
 

@@ -1763,7 +1763,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Object_SpriteRAMOffset:		.ds 8	; $058F-$0596 Sprite_RAM offset by object
 
 	SpecialObj_Data3:	.ds 8	; $0597-$059E General purpose variable 2
-	PlayerProj_Var2:	.ds 2
+	SpecialObj_Stompable:	.ds 8	; $0597-$059E General purpose variable 2
+	SpecialObj_AllowOffScreen:	.ds 8	; $0597-$059E General purpose variable 2
 
 	SpecialObj_HurtEnemies:	.ds 8	; $05B5-$05BC General purpose variable 3
 
@@ -2643,6 +2644,16 @@ CFIRE_LASER		= $15	; Laser fire
 									; Frog				Frog
 									; Koopa/Tanooki		Boo
 									; Hammer/Sledge		Ninja
+MARIO_BIG		= 01
+MARIO_FIRE		= 02
+MARIO_RACCOON	= 03
+MARIO_FROG		= 04
+MARIO_KOOPA		= 05
+MARIO_HAMMER	= 06
+MARIO_ICE		= 07
+MARIO_NINJA		= 09
+MARIO_FOX		= 08
+
 	Player_EffectiveSuit:			ds 1
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables

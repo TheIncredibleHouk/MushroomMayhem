@@ -809,6 +809,7 @@ Piranha_AttackCount	= Objects_Data4
 Piranha_AttacksLeft	= Objects_Data5
 Piranha_AttackData = Objects_Data6
 Piranha_StateTimer = Objects_Timer
+Piranha_YHiBackup = Objects_Data7
 
 Piranha_YVel:
 	.byte $F8, $08
@@ -888,6 +889,7 @@ ObjInit_Piranha1:
 	LDA <Objects_YHiZ, X
 	SBC #$00
 	STA <Objects_YHiZ, X
+	STA Piranha_YHiBackup, X
 
 	INC Piranha_CurrentFrame, X
 	RTS
@@ -1002,6 +1004,17 @@ Piranha_DoState:
 	.word Piranha_Wait
 
 Piranha_Wait:
+	LDA Piranha_YHiBackup, X
+	BPL Piranha_NoDisplace
+
+
+	LDA <Objects_YHiZ, X
+	STA Piranha_YHiBackup, X
+
+	LDA #$FE
+	STA <Objects_YHiZ, X
+
+Piranha_NoDisplace:
 	LDA Objects_Timer, X
 	BNE Piranha_Wait2
 
@@ -1016,8 +1029,15 @@ Piranha_Wait:
 Piranha_Wait1:
 	LDA #$00
 	STA Piranha_CurrentState, X
+
 	LDA #$20
 	STA Objects_Timer, X
+
+	LDA Piranha_YHiBackup, X
+	STA <Objects_YHiZ, X
+
+	LDA #$FF
+	STA Piranha_YHiBackup, X
 
 Piranha_Wait2:
 	RTS

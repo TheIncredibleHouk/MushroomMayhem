@@ -2880,6 +2880,7 @@ Platform_Draw2:
 	STA Sprite_RAMTile + 16, Y
 
 Platform_Draw3:
+	
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #SPRITE_5_HINVISIBLE
 	BNE Platform_Draw4

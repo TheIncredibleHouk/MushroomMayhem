@@ -3200,6 +3200,10 @@ Unfreeze:
 
 	LDA #$00
 	STA Frozen_Frame
+	STA Player_Frozen
+
+	LDA #$71
+	STA Player_FlashInv
 
 	LDA <Player_X
 	STA <Debris_X

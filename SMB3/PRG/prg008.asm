@@ -1485,7 +1485,6 @@ Move_Kuribo:
 	; Table of values that have to do with Player_UphillSpeedIdx override
 
 Player_GroundHControl:
-
 	
 	LDA Player_Shell
 	ORA Player_FireDash
@@ -2821,12 +2820,13 @@ PRG008_B126:
 	RTS
 
 PRG008_B127:
-	LDA LevelVertJct
-	BEQ PRG008_B12F	 ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
+    LDA LevelVertJct
+    BEQ PRG008_B12F     ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
 
-	JMP PRG008_B1CE	 ; Otherwise, jump to PRG008_B1CE
+    JMP PRG008_B1CE     ; Otherwise, jump to PRG008_B1CE
 
 PRG008_B12F:
+
 	LDY Level_AScrlConfig
 	BEQ PRG008_B150	 ; If no raster effects, jump to PRG008_B150
 	BMI PRG008_B150	 ; If ASCONFIG_HDISABLE is set, jump to PRG008_B150
@@ -2936,6 +2936,7 @@ PRG008_B1BD:
 
 PRG008_B1CE:
 	LDA <Player_SpriteX
+	BEQ PRG008_B208
 
 	LDY <Player_XVel
 	BMI PRG008_B1DD	 ; If Player X velocity < 0 (moving leftward), jump to PRG008_B1DD
@@ -3545,14 +3546,52 @@ Bumps_CheckNextExisting:
 	CMP #POWERUP_MUSHROOM
 	BCC Bump_NotPowerUp
 
+	CMP #POWERUP_VINE
+	BCS Bump_NotPowerUp
+
 Bump_IsPowerUp:
-	PLA
-	PLA
+	LDA <Objects_XZ, X
+	STA Poof_X
+
+	LDA <Objects_YZ, X
+	STA Poof_Y
+
+	LDA <Objects_YHiZ, X
+	STA Poof_YHi
+
+	JSR Common_MakePoof
+
+	LDA #$00
+	STA Bouncer_PowerUp, X
+	RTS
+
+Object_IsPowerUp:
+	LDA <Objects_XZ, X
+	STA Poof_X
+
+	LDA <Objects_YZ, X
+	STA Poof_Y
+
+	LDA <Objects_YHiZ, X
+	STA Poof_YHi
+
+	JSR Common_MakePoof
+
+	LDA #$00
+	STA Objects_ID, X
+	STA Objects_State, X
 	RTS
 
 Bump_CheckObjPowerUp:
 	CMP #OBJ_POWERUP
-	BEQ Bump_IsPowerUp
+	BNE Bump_NotPowerUp
+
+	LDA PowerUp_Type, X
+	CMP #POWERUP_COIN
+	BCC Bump_NotPowerUp
+
+	CMP #POWERUP_VINE
+	BCC Object_IsPowerUp
 
 Bump_NotPowerUp:
 	INX
@@ -3759,7 +3798,6 @@ Bump_BrickRTS:
 
 
 BumpBlock_Vine:
-	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_VINE
 	STA Bouncer_PowerUp, X
@@ -4296,7 +4334,8 @@ CheckAirChange:
 	BPL Change_Air
 
 Air_Kill:
-	JMP Player_Die
+	JSR Player_Die
+	JMP Level_SetPlayerPUpPal
 
 Change_Air:
 	ADD Air_Change
@@ -4508,6 +4547,7 @@ StartCountDown:
 DoCountDown:
 	LDA #$FF
 	STA Player_HaltTick
+
 	LDA <Counter_1
 	AND #$01
 	BNE NoCountDown
@@ -5107,10 +5147,12 @@ Player_SuitChange1:
 Player_SuitChange2:
 	; Suit queue
 	AND #$0f
+	
 	LDY #$00
 	STY LeftRightInfection
 	STY Player_Power
 	STY Power_Change
+
 	CMP #$05
 	BEQ Player_SuitChange3
 
@@ -5679,9 +5721,19 @@ Fox_BurnMode:
 	LDA Player_FireDash			; we're already in fireball mode, let's continue doing velocity checks
 	BEQ Try_FireBall
 
-	LDA Player_InWater			; if we're a fireball and hit water, kill it		
- 	BNE Player_KillDash_NoFX
+	LDA Player_EffectiveSuit
+	CMP #MARIO_FOX
+	BEQ Fox_BurnModeCont
+	
+	JMP Player_KillDash_NoFX
 
+Fox_BurnModeCont:
+	LDA Player_InWater			; if we're a fireball and hit water, kill it		
+	BEQ Fox_BurnModeCont1
+ 	
+	JMP Player_KillDash_NoFX
+
+Fox_BurnModeCont1:
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Player_KillDash_NoFX
@@ -5692,6 +5744,9 @@ Fox_BurnMode:
 	JMP ContinueDash
 
 Try_FireBall:					; not a fireball, so let's try it!
+	LDA Player_EffectiveSuit
+	CMP #MARIO_FOX
+	BNE Fox_BurnModeRTS
 
 	LDA Player_Power
 	BEQ Fox_BurnModeRTS

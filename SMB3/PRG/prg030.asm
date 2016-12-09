@@ -317,16 +317,16 @@ Video_DoStatusBarHM:
 ;Video_YouGotCardH:
 ;	vaddr $22C7
 ;	.byte $13
-;	;       Y    O    U         G    O    T         A         C    A    R    D                   |
+;	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
 ;	.byte $0D, $0E, $0A, $FC, $06, $0E, $09, $FC, $00, $FC, $05, $00, $02, $07, $FC, $26, $FE, $FE, $27
 ;	vaddr $22B6
 ;	.byte $04 ;  _    _    _   _
-;	;                      |
+;	;           |               |
 ;	.byte      $20, $21, $21, $22
 ;
 ;	vaddr $22F6
 ;	.byte $04
-;	;                 |
+;	;       |              |
 ;	.byte $26, $FE, $FE, $27
 ;
 ;	vaddr $2316
@@ -345,17 +345,17 @@ Video_DoStatusBarHM:
 ;Video_YouGotCard:
 ;	vaddr $28E7
 ;	.byte $13
-;	;       Y    O    U         G    O    T         A         C    A    R    D                   |
+;	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
 ;	.byte $8D, $8E, $8A, $FC, $86, $8E, $89, $FC, $80, $FC, $85, $80, $82, $87, $FC, $A6, $FE, $FE, $A7
 ;
 ;	vaddr $28D6
 ;	.byte $04 ;  _    _    _   _
-;	;                      |
+;	;           |               |
 ;	.byte      $A0, $A1, $A1, $A2
 ;
 ;	vaddr $2916
 ;	.byte $04
-;	;                 |
+;	;       |              |
 ;	.byte $A6, $FE, $FE, $A7
 ;
 ;	vaddr $2936
@@ -1599,6 +1599,7 @@ Graphics_Anim2:
 	TXA
 	AND #$03
 	TAX
+
 	LDA SPR_Anim, X
 	ADD SprAnimOffset
 	STA PatTable_BankSel+3
@@ -3125,8 +3126,14 @@ Skip_Normal_Gfx2:
 
 Set_Level_Exit_Action:
     LDA ForcedSwitch 
-	BNE Level_Exit_Set
+	BEQ Set_LevelPosition
 
+	LDA #$01
+	STA Player_HaltTick
+
+	JMP Level_Exit_Set
+
+Set_LevelPosition:
 	LDA Player_XExit
 	AND #$F0
 
@@ -3152,6 +3159,7 @@ NoXOffset:
 	STA Player_YHi
 
 Level_Exit_Set:
+	
 	; Load level size/width
 	LDY #$03
 	LDA [Temp_Var14], Y
@@ -3205,6 +3213,7 @@ Not_Lvl_Jct:
 	LDA [Temp_Var14], Y	
 	AND #$0F
 	STA <Player_XHi
+
 	LDA [Temp_Var14], Y
 	AND #$F0
 
@@ -5568,6 +5577,12 @@ NextCol:
 	RTS
 
 Player_Freeze:
+	LDA Player_Frozen
+	BEQ Player_FreezeNow
+	RTS
+
+Player_FreezeNow:
+	STA Debug_Snap
 	LDA #$08
 	STA Player_Frozen
 
@@ -6080,7 +6095,8 @@ Player_Die:
 	STA Level_PSwitchCnt
 	STA Frozen_Frame
 	STA Player_Frozen
-	
+	STA Player_EffectiveSuit
+
 	LDA #$01
 	STA Player_QueueSuit	 ; Queue change to "small"
 

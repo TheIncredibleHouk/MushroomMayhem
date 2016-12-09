@@ -1498,7 +1498,7 @@ FireIcePirateBro_SetYVel:
 	STA SpecialObj_YVel, Y
 
 	LDA #$02
-	STA SpecialObj_Data3, Y
+	STA SpecialObj_Stompable, Y
 	
 	LDA SpecialObj_Y, Y
 	SUB #$02
@@ -2727,6 +2727,7 @@ ObjNorm_ZombieGoomba1:
 
 	LDA #$01
 	STA LeftRightInfection
+	
 	LDA #$71
 	STA Player_FlashInv
 	BNE Zombie_NoInfection
@@ -3734,6 +3735,7 @@ Spiny_Norm:
 	STA Objects_Orientation, X
 
 Spiny_NormGravity:
+	JSR Object_MoveDirectionFacing
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 

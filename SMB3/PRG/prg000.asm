@@ -66,7 +66,7 @@ Object_AttrFlags:
 	.byte BOUND8x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0F
 	.byte BOUND16x16	; Object $10 OBJ_PIXIE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $11
-	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
+	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
 	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $13
 	.byte BOUND32x32 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF 	; Object $14
 	.byte OAT_BOUNDBOX09 | OAT_ICEPROOF | OAT_FIREPROOF	; Object $15
@@ -273,6 +273,7 @@ PRG000_C451:
 	RTS
 
 SpecialObject_FindEmpty:
+
 	LDY #$05
 
 SpecialObject_FindEmptyNext:
@@ -1858,7 +1859,7 @@ PRG000_CF1F:
 	LDY <Player_Suit
 	BNE PRG000_CF3D	 ; If Player is not small, jump to PRG000_CF3D
 
-	LDA #$0f	; Otherwise, A = $0F
+	LDA #$0E	; Otherwise, A = $0F
 
 PRG000_CF3D:
 	STA TempA		 ; Save 'A'
@@ -3144,8 +3145,8 @@ Object_Widths:
 	.byte 16	; 2
 	.byte 24	; 3
 	.byte 32	; 4
-	.byte 48	; 5
-	.byte 64	; 6
+	.byte 40	; 5
+	.byte 48	; 6
 
 	; Respective bit to set per width checked
 Object_WidthFlags:
@@ -3155,7 +3156,7 @@ Object_WidthFlags:
 	.byte %00010000	; 3
 	.byte %00001000	; 4
 	.byte %00000100	; 5
-	.byte %00000010	; 5
+	.byte %00000010	; 6
 
 ; $D79E
 Object_DetermineHorizontallyOffScreen:
@@ -3839,7 +3840,6 @@ Object_DoCollision:
 
 ; $D9D3
 Player_GetHurt:
-
 	LDA Player_FlashInv		; ... flashing invincible ...
 	ORA Boo_Mode_Timer		; ... or boo mode ...
 	ORA Player_StarInv		; ... invincible by star 
@@ -3855,6 +3855,12 @@ PRG000_D9B7:
 ; $D9EC
 
 PRG000_DA15:
+	LDA Player_Frozen
+	BEQ Player_NotFrozen
+
+	JSR Unfreeze
+
+Player_NotFrozen:
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
@@ -5947,7 +5953,8 @@ Object_PrepProjectile1:
 	STA SpecialObj_HurtEnemies, Y
 	STA SpecialObj_Data1, Y
 	STA SpecialObj_Data2, Y
-	STA SpecialObj_Data3, Y
+	STA SpecialObj_Data3
+	STA SpecialObj_Stompable, Y
 
 	LDA <Objects_XZ, X
 	SUB #$04
