@@ -4185,17 +4185,17 @@ DetermineCannonVisibilty2:
 	RTS		 ; Return
 
 CFire_Platform:
+
 	LDA CannonFire_Timer, X
 	BNE CFire_Platform1
 
 	JSR Object_FindEmptyX
+	BCC CFire_Platform1
+
 	LDY <CurrentObjectIndexZ
 
 	LDA #OBJ_PLATFORMUNSTABLE
 	STA Objects_ID,X
-
-	LDA #$22
-	STA Objects_Timer2, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
@@ -4214,6 +4214,10 @@ CFire_Platform:
 
 	LDA #$10
 	STA Platform_MaxFall, X
+	STA PlatformUnstable_NoRegen, X
+
+	LDA #$24
+	STA PlatformUnstable_MoveTimer, X
 
 	LDA #$F8
 	STA <Objects_YVelZ, X

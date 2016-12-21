@@ -572,6 +572,10 @@ SpringAnim:
 	STA <Player_YVel
 	STA <Player_InAir
 
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
+
 	LDA Objects_Timer, X
 	BNE SpringAnimRTS
 	

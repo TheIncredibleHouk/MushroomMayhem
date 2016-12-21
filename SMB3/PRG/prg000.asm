@@ -5953,7 +5953,7 @@ Object_PrepProjectile1:
 	STA SpecialObj_HurtEnemies, Y
 	STA SpecialObj_Data1, Y
 	STA SpecialObj_Data2, Y
-	STA SpecialObj_Data3
+	STA SpecialObj_Data3, Y
 	STA SpecialObj_Stompable, Y
 
 	LDA <Objects_XZ, X

@@ -1293,6 +1293,8 @@ Platform_SetVel:
 	STA <Objects_YVelZ, X
 	RTS
 
+PlatformUnstable_MoveTimer = Objects_Data11
+PlatformUnstable_NoRegen = Objects_Data12
 ObjInit_PlatformUnstable:
 	LDA #$20
 	STA Platform_MaxFall, X
@@ -1307,10 +1309,10 @@ ObjInit_PlatformUnstable:
 	RTS
 
 ObjNorm_PlatformUnstable:
-
 	LDA <Player_HaltGameZ
 	BNE Unstable_Draw
 
+	STA Debug_Snap
 	JSR Object_DeleteOffScreen
 	JSR Unstable_CheckRegen
 	JSR Object_CalcBoundBox
@@ -1320,38 +1322,52 @@ ObjNorm_PlatformUnstable:
 
 	JSR Object_InteractWithPlayer
 	JSR Unstable_Move
-	;JSR Unstable_CheckMaxFall
 	JSR Platform_ContactCheck
 
 Unstable_Draw:
 	LDA Platform_NotBehind, X
 	BNE Unstable_Draw1
 
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
-
 Unstable_Draw1:
 	JMP Platform_Draw
 
 Unstable_Move:
-	LDA Platform_SteppedOn, X
-	BEQ Unstable_MoveRTS
+	LDA PlatformUnstable_MoveTimer, X
+	BEQ Unstable_MoveNormal
 
+	DEC PlatformUnstable_MoveTimer, X
+	BNE Unstablve_MoveContant
+
+	INC Platform_SteppedOn, X
+	
 	LDA Objects_SpriteAttributes, X
 	AND #~SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
+	
+	JSR Object_ApplyYVel_NoGravity
+	RTS
 
-	LDA #$01
-	STA Platform_SteppedOn, X
+Unstablve_MoveContant:
+	JSR Object_ApplyYVel_NoGravity
 
-	JSR Object_ApplyYVel
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+	RTS
+
+Unstable_MoveNormal:
+
+	LDA Platform_SteppedOn, X
+	BEQ Unstable_MoveRTS
+
+	JSR Object_Move
 
 	LDA <Objects_YVelZ,X
+	BMI Unstable_MoveRTS
 	CMP #$20
-	BCS Unstable_MoveRTS
+	BCC Unstable_MoveRTS
 
-	ADD #$01
+	LDA #$20
 	STA <Objects_YVelZ,X
 
 Unstable_MoveRTS:
@@ -1389,6 +1405,9 @@ Unstable_CheckRegen:
 	RTS
 
 Unstable_CheckFallTooFar:
+	LDA PlatformUnstable_NoRegen, X
+	BNE Unstable_CheckFallTooFarRTS
+
 	LDA <Objects_YHiZ, X
 	BEQ Unstable_CheckFallTooFarRTS
 	BMI Unstable_CheckFallTooFarRTS
@@ -1402,17 +1421,6 @@ Unstable_CheckFallTooFar:
 
 Unstable_CheckFallTooFarRTS:
 	RTS
-
-;Unstable_CheckMaxFall:
-;	LDA <Objects_YVelZ, X
-;	CMP Platform_MaxFall, X
-;	BCC Unstable_CheckMaxFallRTS
-;
-;	LDA Platform_MaxFall, X
-;	STA <Objects_YVelZ, X
-;
-;Unstable_CheckMaxFallRTS:
-;	RTS
 
 Unstable_CheckContact:
 	LDA Platform_MadeContact, X

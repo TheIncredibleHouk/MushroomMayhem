@@ -5582,7 +5582,6 @@ Player_Freeze:
 	RTS
 
 Player_FreezeNow:
-	STA Debug_Snap
 	LDA #$08
 	STA Player_Frozen
 

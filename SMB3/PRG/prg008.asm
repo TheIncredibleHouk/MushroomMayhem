@@ -1793,18 +1793,29 @@ PRG008_AC73:
 	STA Player_Flip
 
 Normal_Jump:
-	STA DAIZ_TEMP1
+	STA <Temp_Var1
 
 	LDA Player_Equip
 	CMP #BADGE_JUMP
 	BNE Jump_Normal
-	LDA DAIZ_TEMP1
+
+	LDA <Temp_Var1
 	SEC
 	SBC #$06
-	STA DAIZ_TEMP1
+	STA <Temp_Var1
 
 Jump_Normal:
-	LDA DAIZ_TEMP1
+
+	LDA Player_EffectiveSuit
+	CMP #MARIO_FROG
+	BNE Jump_NotFrog
+
+	LDA <Temp_Var1
+	SUB #$08
+	STA <Temp_Var1
+
+Jump_NotFrog:
+	LDA <Temp_Var1
 	STA <Player_YVel		; -> Y velocity
 
 	LDA #$01
@@ -3343,25 +3354,6 @@ Player_DetectSolids1:
 Player_NoWindFactor:
 	STA <Player_EffectiveDirection
 
-;	LDA <Player_EffectiveDirection
-;	BNE Player_Moving
-;
-;	LDA <Player_FlipBits
-;	BNE Moving_Right
-;	BEQ Moving_Left
-;
-;Player_Moving:
-;	BMI Moving_Left
-;
-;Moving_Right:
-;	LDA #$01
-;	STA <Player_EffectiveDirection
-;	BNE DetectSolids
-;
-;Moving_Left
-;	LDA #$FF
-;	STA <Player_EffectiveDirection
-;
 DetectSolids:
 	LDA #10
 
@@ -3429,6 +3421,9 @@ Player_DetectSolids5:
 	LDA <Player_YVel
 	BPL Player_DetectSolids2	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
 	
+	LDA #$01
+	STA <Player_InAir
+
 	JSR Player_NextTile	
 	JSR Player_NextTile	
 
@@ -3439,7 +3434,6 @@ Player_DetectSolids2:
 	JSR Player_NextTile	
 	JSR Player_NextTile	
 	JSR Player_DetectFloor
-	
 
 Player_DetectSolids3:
 	JSR Player_NextTile
@@ -5276,6 +5270,7 @@ Player_DetectCeiling2:
 	RTS
 
 Player_DetectFloor:
+
 	LDA Level_Tile_Prop_Floor_Ceiling_Right
 	AND #$F0
 	CMP #TILE_PROP_SOLID_TOP
@@ -5307,6 +5302,9 @@ Player_DetectFloor1:
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVel  ; Halt Player vertically
 
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
 	RTS
 
 Player_DetectFloor2:
@@ -5588,7 +5586,7 @@ Player_SolidTileInteract:
 	.word ApplyTileMove		; TILE_PROP_MOVE_RIGHT	= $04
 	.word ApplyTileMove		; TILE_PROP_MOVE_UP		= $05
 	.word ApplyTileMove		; TILE_PROP_MOVE_DOWN	= $06
-	.word Tile_NoInteract	; TILE_PROP_UNSTABLE	= $07
+	.word Solid_ThinIce	; TILE_PROP_THIN_ICE	= $07
 	.word Tile_NoInteract	; TILE_PROP_VPIPE_LEFT	= $08
 	.word Tile_NoInteract	; TILE_PROP_VPIPE_RIGHT	= $09
 	.word Tile_NoInteract	; TILE_PROP_HPIPE_BOTTOM= $0A
@@ -5600,25 +5598,21 @@ Player_SolidTileInteract:
 
 
 Solid_Slick:
-	LDA <Player_YVel
-	BNE Solid_Slick1
-
 	LDA #$02
 	STA Player_Slippery
 	RTS
 
-Solid_Slick1:
-	BPL Solid_SlickRTS
-
-	LDA Player_InWater
-	BEQ Solid_SlickRTS
-
+Solid_ThinIce:
 	LDX <TileXIndex
 	CPX #HEAD_WALL_INDEX
-	BCS Solid_SlickRTS
+	BCS Solid_ThinIceRTS
+	
+	LDA <Player_YVel
+	BPL Solid_ThinIceGround
 
+Solid_ThinBreakIce:
 	LDA Block_NeedsUpdate
-	BNE Solid_SlickRTS
+	BNE Solid_ThinIceRTS
 
 	LDA Tile_X
 	AND #$F0
@@ -5635,8 +5629,16 @@ Solid_Slick1:
 	EOR #$01
 	JSR Level_QueueChangeBlock
 
-Solid_SlickRTS:
+Solid_ThinIceRTS:
 	RTS
+
+Solid_ThinIceGround:
+	LDA #$02
+	STA Player_Slippery
+
+	LDA Player_IsHolding
+	BEQ Solid_ThinIceRTS
+	JMP Solid_ThinBreakIce
 
 Solid_PSwitch:
 	LDA <TileXIndex
@@ -6168,7 +6170,12 @@ Player_DoClimbing1:
 	LDA #$01
 	STA Player_IsClimbing
 
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
+
 	LDA #$00
+	STA Player_Flip
 	STA <Player_XVel
 	STA <Player_YVel
 
@@ -6230,7 +6237,7 @@ Player_PoisonMode:
 	BNE Continue_Poison_Mode
 
 	LDA Player_Power
-	CMP #$60
+	CMP #$50
 	BNE Cant_Poison_Mode
 
 	LDA <Pad_Holding
