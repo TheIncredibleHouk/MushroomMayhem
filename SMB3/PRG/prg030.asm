@@ -1157,7 +1157,7 @@ PRG030_891A:
 	; Clears $80 bytes starting at Player_XHi ($75, gameplay context)
 	LDY #$80	 ; Y = $80
 	LDA #$00	 ; A = 0
-	STA LevelVertJct	 ; LevelVertJct = 0 
+	STA Level_HorzScrollLock	 ; Level_HorzScrollLock = 0 
 PRG030_8975: 
 	STA Player_XHi,Y
 	DEY		 ; Y--
@@ -3082,7 +3082,7 @@ JustName2:
 
 NormalLoading:
 
-	LDA LevelVertJct
+	LDA Level_HorzScrollLock
 	BEQ NotJctBQ
 
 SkipLevelLoad:
@@ -3268,13 +3268,15 @@ Skip_Time_Set:
 	LDA [Temp_Var14],Y
 	AND #$03
 	STA Level_FreeVertScroll
+
 	LDX #$00
 	CMP #$03
 	BNE HorzNotLocked
+
 	INX
 
 HorzNotLocked:
-	STX LevelVertJct
+	STX Level_HorzScrollLock
 	LDA [Temp_Var14],Y
 	AND #$F0
 	LSR A
@@ -5076,6 +5078,7 @@ DynHScroll:
 	LSR A
 	LSR A
 	STA <Horz_Scroll_Hi
+	
 	LDA DAIZ_TEMP1
 	AND #$0F
 	ASL A
@@ -5083,12 +5086,15 @@ DynHScroll:
 	ASL A
 	ASL A
 	STA <Horz_Scroll
+	
 	LDA <Player_X
 	AND #$0F
 	ORA <Horz_Scroll
 	STA <Horz_Scroll
-	LDA LevelVertJct
+	
+	LDA Level_HorzScrollLock
 	BEQ Update_Columns
+
 	LDA #$00
 	STA <Horz_Scroll
 	LDA <Player_XHi
@@ -5373,8 +5379,8 @@ NextPointer:
 Do_Pointer_Effect:
 	JSR Find_Applicable_Pointer	 ; Initialize level junction
 
-	LDA #$00
-	STA LevelVertJct
+	;LDA #$00
+	;STA Level_HorzScrollLock
 
 	LDA <Temp_Var1
 	BPL UsePointer
@@ -5451,6 +5457,7 @@ LevelJction:
 	LDA <Player_X
 	AND #$f0
 	STA <Player_X
+
 Skip_Line_Up:
 	RTS
 

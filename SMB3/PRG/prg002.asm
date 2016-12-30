@@ -1312,7 +1312,6 @@ ObjNorm_PlatformUnstable:
 	LDA <Player_HaltGameZ
 	BNE Unstable_Draw
 
-	STA Debug_Snap
 	JSR Object_DeleteOffScreen
 	JSR Unstable_CheckRegen
 	JSR Object_CalcBoundBox
@@ -1325,6 +1324,11 @@ ObjNorm_PlatformUnstable:
 	JSR Platform_ContactCheck
 
 Unstable_Draw:
+	LDA Objects_Timer, X  
+	BEQ Unstable_DrawNorm
+	RTS
+
+Unstable_DrawNorm:
 	LDA Platform_NotBehind, X
 	BNE Unstable_Draw1
 
@@ -1388,7 +1392,7 @@ Unstable_CheckSteppedOnRTS:
 	RTS
 
 Unstable_CheckRegen:
-	LDA Objects_Timer, X
+	LDA Objects_Timer, X  
 	BEQ Unstable_CheckFallTooFar
 
 	LDA #$00

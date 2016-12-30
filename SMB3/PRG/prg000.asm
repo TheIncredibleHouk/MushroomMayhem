@@ -133,7 +133,7 @@ Object_AttrFlags:
 	.byte BOUND16x16	; Object $52 - OBJ_SPINTULA
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $53 - OBJ_PIPEPODOBO
 	.byte OAT_BOUNDBOX12 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $54
-	.byte BOUND16x16  | OAT_ICEPROOF	; Object $55 - OBJ_BOBOMB
+	.byte BOUND16x16  | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $55 - OBJ_BOBOMB
 	.byte OAT_BOUNDBOX07	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OAT_BOUNDBOX07	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte BOUND16x16	; Object $58 - OBJ_FIRECHOMP
@@ -2180,7 +2180,9 @@ PRG000_D15A:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D15B 
 Object_Reverse:
-	LDA <Objects_XVelZ,X	 
+	LDA <Objects_XVelZ,X
+	BEQ  Object_FlipFaceRTS
+
 	JSR Negate
 	STA <Objects_XVelZ,X	 ; Negate object's X velocity
 
@@ -2199,6 +2201,7 @@ Object_FlipFace:
 	EOR #SPR_HFLIP
 	STA Objects_Orientation,X	 ; Flip left/right flag
 
+Object_FlipFaceRTS:
 	RTS		 ; Return
 
 PRG000_D16B:	.byte -$08, $08
@@ -2481,6 +2484,7 @@ Object_DeleteOffScreenRTS:
 
 Object_SetDeadAndNotSpawned:
 	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
+	BEQ Object_SetDeadEmpty
 	BMI Object_SetDeadEmpty	 ; If object is spawned, jump to Object_SetDeadEmpty
 
 	; Clear object spawn flag

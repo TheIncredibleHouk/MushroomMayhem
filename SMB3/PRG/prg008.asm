@@ -2831,7 +2831,7 @@ PRG008_B126:
 	RTS
 
 PRG008_B127:
-    LDA LevelVertJct
+    LDA Level_HorzScrollLock
     BEQ PRG008_B12F     ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
 
     JMP PRG008_B1CE     ; Otherwise, jump to PRG008_B1CE
@@ -6019,7 +6019,7 @@ PRG008_BC92:
 
 	LDY #$01	 ; Y = 1 
 
-	LDA LevelVertJct	
+	LDA Level_HorzScrollLock	
 	BEQ PRG008_BCA4	 ; If not currently junctioning, jump to PRG008_BCA4
 
 	DEY		 ; Y = 0 

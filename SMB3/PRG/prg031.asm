@@ -3068,18 +3068,33 @@ DestroyAllEnemies:
 KeepDestroying:
 	LDA Objects_ID,X
 	BEQ SkipDestroy
+
 	LDA Objects_State,X
 	BEQ SkipDestroy
+
 	LDA #OBJSTATE_POOFDEATH
 	STA Objects_State,X
+
 	LDA #$1f
 	STA Objects_Timer,X
 
 SkipDestroy:
 	DEX
 	BPL KeepDestroying
+
+	LDX #$07
+
 	LDA #$00
+
+Destroy_Timers:
+	STA CannonFire_ID, X
+
+	DEX
+	BPL Destroy_Timers
+
 	STA Level_Event
+
+	LDX <CurrentObjectIndexZ
 	RTS
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

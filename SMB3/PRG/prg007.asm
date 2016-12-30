@@ -520,6 +520,9 @@ Player_HitIce:
 	JMP SpecialObj_ToPoofNoSound
 
 Make_Ice:
+	LDA #$00
+	STA Objects_SpawnIdx,Y
+
 	LDA #OBJ_ICEBLOCK
 	STA Objects_ID, Y
 
@@ -705,7 +708,7 @@ Player_HammerTilesInteraction:
 
 Player_HammerTilesInteraction0:
 	LDA Tile_LastProp
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_STONE) 
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE) 
 	BNE Hammer_NotStone
 
 	LDA #(TILE_PROP_ITEM | TILE_ITEM_BRICK)
@@ -3888,6 +3891,15 @@ PRG007_BC92:
 BobOmbXOffset:		.byte $00, $00, $08, $08
 BobOmbYOffset:		.byte $F8, $F8, $00, $00
 Cfire_Bobombs:
+	LDA #OBJ_BOBOMB
+	STA <Object_Check
+
+	JSR CheckObjectsOfType
+
+	LDA <Num_Objects
+	CMP #$03
+	BCS BobOmbGeneratorRTS
+
 	JSR PrepareNewObjectOrAbort
 
 	LDY <CurrentObjectIndexZ	
@@ -3941,9 +3953,11 @@ Cfire_Bobombs:
 	LSR A
 	STA Objects_Property, X
 
-	LDA #$80
+	LDA #$A0
 	STA CannonFire_Timer, Y
 	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
+
+BobOmbGeneratorRTS:
 	RTS
 
 Goomb_XVelocity:	.byte $E0, $20
@@ -4216,10 +4230,10 @@ CFire_Platform:
 	STA Platform_MaxFall, X
 	STA PlatformUnstable_NoRegen, X
 
-	LDA #$24
+	LDA #$4A
 	STA PlatformUnstable_MoveTimer, X
 
-	LDA #$F8
+	LDA #$FC
 	STA <Objects_YVelZ, X
 
 	LDA #SPR_PAL3
@@ -4527,6 +4541,30 @@ PRG007_BFDC:
 	STA Objects_State,X
 
 	RTS		 ; Return
+
+Num_Objects = Temp_Var1
+Object_Check = Temp_Var2
+
+CheckObjectsOfType:
+	LDA #$00
+	STA <Num_Objects
+
+	LDX #$04
+
+CheckNextObject:
+	LDA Objects_State, X
+	BEQ NotObject_Checking
+
+	LDA Objects_ID, X
+	CMP <Object_Check
+	BNE NotObject_Checking
+
+	INC <Num_Objects
+
+NotObject_Checking:
+	DEX
+	BPL CheckNextObject
+	RTS
 
 CheckTailSpin:
 	LDA Player_EffectiveSuit

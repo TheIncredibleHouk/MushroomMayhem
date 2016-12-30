@@ -1571,8 +1571,13 @@ Vine_Grow:
 	BNE PUp_VineDraw
 
 	LDA <Objects_YHiZ, X
-	BMI PUp_Delete
+	BPL Vine_NoDelete
 
+	LDA <Objects_YZ, X
+	CMP #$F0
+	BCC PUp_Delete
+
+Vine_NoDelete:
 	LDA Block_NeedsUpdate
 	BEQ PUp_Detect
 
@@ -1759,7 +1764,7 @@ Bowser_WaitForPlayer:
 	LDA #MUS2B_BOWSER
 	STA Sound_QMusic2
 
-	INC LevelVertJct	 ; LevelVertJct = 1 (set like in a Big Question block area, i.e. no horizontal scrolling)
+	INC Level_HorzScrollLock	 ; Level_HorzScrollLock = 1 (set like in a Big Question block area, i.e. no horizontal scrolling)
 
 	; Lock vertical scroll
 	LDA #$02
@@ -3981,7 +3986,7 @@ ObjNorm_SendBack:
 	INC ForcedSwitch
 	
 	LDA #$00
-	STA LevelVertJct
+	STA Level_HorzScrollLock
 
 	LDA #$F0
 	SUB <Player_X

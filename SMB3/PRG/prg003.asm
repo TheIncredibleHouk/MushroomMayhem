@@ -557,7 +557,7 @@ IceBlock_Burst:
 	JSR Object_TestTopBumpBlocks
 	JSR Object_TestSideBumpBlocks
 
-	JMP Object_SetDeadEmpty
+	JMP Object_SetDeadAndNotSpawned
 
 IceBlock_TileInteract:
 	JSR Object_InteractWithTiles
@@ -2203,6 +2203,7 @@ BobOmb_Norm:
 
 	JSR Object_DeleteOffScreen	 
 	JSR Object_Move
+	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 
 	LDA <Objects_XVelZ, X
@@ -2250,6 +2251,7 @@ BobOmb_UnstableCheck:
 BobOmb_Attack:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	JSR Object_InteractWithOtherObjects
 	JSR Object_AttackOrDefeat
 	
 	LDA Objects_Stomped, X
@@ -2261,6 +2263,11 @@ BobOmb_Attack:
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
+
+	STA Debug_Snap
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
 
 	LDA Objects_Property, X
 	BNE BobOmb_Unstabilize
