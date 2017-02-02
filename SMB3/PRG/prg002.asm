@@ -1528,14 +1528,21 @@ ObjNorm_PlatformFloat:
 	JMP PlatformFloat1
 
 ObjNorm_PlatformFloat1:
+	JSR Object_DeleteOffScreen
 
 	LDA Objects_InWater, X
-	STA Reverse_Gravity
+	BEQ Platform_NoFloat
 
-	JSR Object_DeleteOffScreen
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+Platform_NoFloat:
+	LDA #$00
+	STA Platform_MadeContact, X
+
+	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
-	JSR Object_Move
 	JSR Platform_ContactCheck
 
 	LDA Objects_BoundLeft, X
@@ -3022,7 +3029,7 @@ ObjNorm_DryBones1:
 	LDA Objects_Data2,X
 	BNE PRG002_B6B2	 ; If Var5 <> 0 (Dry Bones is crumpled), jump to PRG002_B6B2
 
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	
 	INC Objects_Data5,X
 	LDA Objects_Data5,X

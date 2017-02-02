@@ -954,6 +954,7 @@ PRG008_A6A9:
 Player_Control:
 	LDA #$00
 	STA Top_Of_Water
+
 	LDA <Player_FlipBits
 	STA Player_FlipBits_OLD
 
@@ -2018,17 +2019,6 @@ PRG008_AD5C:
 	LDA <Player_YVel
 	BPL PRG008_AD75	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG008_AD75
 
-	LDY Player_AboveTop
-	BPL PRG008_AD73	 ; If Player is not above top of screen, jump to PRG008_AD73
-
-	LDY Player_SpriteY
-	CPY #-8	 
-	BGE PRG008_AD73	 ; If Player sprite is a bit high up, jump to PRG008_AD73
-
-	ADD #$10
-	STA <Player_YVel ; Player_YVel += $10
-
-PRG008_AD73:
 	LDY #PLAYER_SWIMSTART_YVEL	 ; Y = PLAYER_SWIMSTART_YVEL
 
 PRG008_AD75:
@@ -3355,6 +3345,10 @@ Player_NoWindFactor:
 	STA <Player_EffectiveDirection
 
 DetectSolids:
+	LDA #$00
+	STA <Player_CarryXVel
+	STA <Player_CarryYVel
+
 	LDA #10
 
 	LDY <Player_Suit
@@ -4189,26 +4183,32 @@ PRG008_BFAC:
 Player_ApplyVelocity:
 	; X may specify offset to YVel, or else be zero
 	LDA <Player_XVel,X	; Get velocity
-
+	STA <Temp_Var1
+	
 	CPX #$00
 	BNE No_Weather_Vel
 
-	LDY Player_InWater
-	BNE No_Weather_Vel
+	LDA Player_EffectiveSuit
+	CMP #$04
+	BNE Check_WeatherOther
 
-	; X Velocity only
-	LDY Level_PipeMove
-	BNE No_Weather_Vel
-
-	LDY Player_OnPlatform
-	BNE No_Weather_Vel
-
-	LDY Wind
+	LDA <Player_InAir
 	BEQ No_Weather_Vel
 
-	ADD Wind
+Check_WeatherOther:
+	LDA Player_InWater
+	ORA Level_PipeMove
+	ORA Player_OnPlatform
+	BNE No_Weather_Vel
+
+	LDA Wind
+	BEQ No_Weather_Vel
+
+	ADD <Temp_Var1
+	STA <Temp_Var1
 
 No_Weather_Vel:
+	LDA <Temp_Var1
 	ADD <Player_CarryXVel, X
 
 PRG008_BFBF:
@@ -4279,13 +4279,13 @@ Dont_Flip:
 	STA Odometer_Increase
 	
 	LDA Player_ForcedSlide
+	ORA Player_Shell
 	BNE No_Odo_Increase
 
 	STY Player_PrevXDirection
 
 No_Odo_Increase:
-	LDA #$00
-	STA <Player_CarryXVel, X
+
 	RTS		 ; Return
 
 
@@ -4670,6 +4670,7 @@ Player_Events:
 	PHA
 	LDA #$0E
 	STA PAGE_C000
+
 	JSR PRGROM_Change_C000 
 	JSR HandleLevelEvent
 	PLA 
@@ -5535,6 +5536,7 @@ BodyHead_Climb:
 	RTS
 
 BodyHead_Door:
+
 	CPX #$01
 	BNE Door_Done 
 
@@ -5675,7 +5677,7 @@ Solid_ESwitch:
 	CMP #HEAD_FEET_LEFT_INDEX
 	BEQ Solid_ESwitch1
 
-	CMP HEAD_FEET_RIGHT_INDEX
+	CMP #HEAD_FEET_RIGHT_INDEX
 	BNE Solid_ESwitchRTS
 
 Solid_ESwitch1:
@@ -5689,6 +5691,8 @@ Solid_ESwitch1:
 	
 	LDA #$08
 	STA Level_Vibration
+
+	JMP Player_ToggleBlock
 
 Solid_ESwitchRTS:
 	RTS
@@ -5844,6 +5848,7 @@ Bounce_Direction
 
 Player_HandleWater:
 	
+
 	LDA Level_Tile_Prop_Head
 	JSR Level_CheckIfTileUnderwater
 

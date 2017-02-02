@@ -467,7 +467,8 @@ Podobo_Limit = Objects_Data3
 Podobo_LimitHi = Objects_Data4
 Podobo_Frame = Objects_Data1
 Podobo_Timer = Objects_Data5
-Podobo_Hiding = Objects_Data6
+Podobo_BridgeBreak = Objects_Data6
+Podobo_Hiding = Objects_Data7
 
 ObjInit_Podobo:
 	LDA Objects_Property, X
@@ -487,13 +488,55 @@ ObjInit_Podobo1:
 
 	LDA #$01
 	STA Objects_NoIce, X
+
+	LDA <Objects_XZ, X
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	STA Tile_DetectionYHi
+
+Podob_NextTileCheck:
+	LDA Tile_DetectionY
+	ADD #$10
+	STA Tile_DetectionY
+
+	LDA Tile_DetectionYHi
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+	AND #TILE_PROP_WATER
+	BEQ Podob_NextTileCheck
+
+	LDA Tile_DetectionY
+	STA <Objects_YZ, X
+
+	LDA Tile_DetectionYHi
+	STA <Objects_YHiZ, X
+
+	LDA #$40
+	STA Objects_Timer, X
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+	STA Podobo_Hiding, X
+
+	LDA #$01
+	STA Objects_InWater, X
+
 	RTS		 ; Return
 
 ObjNorm_Podobo:
 	LDA <Player_HaltGameZ
 	BEQ Podobo_Norm
 
-	JMP Object_DrawMirrored
+	JMP Podobo_Draw
 
 Podobo_Norm:
 	
@@ -504,7 +547,18 @@ Podobo_Norm:
 Podobo_Hide:
 	RTS
 
-Podobo_Move:	
+Podobo_Move:
+	LDA Podobo_Hiding, X
+	BEQ Podobo_KeepMoving
+
+	JSR Object_XDistanceFromPlayer
+	CMP #$40
+	BCS Podobo_MoveDone
+	
+	LDA #$00
+	STA Podobo_Hiding, X
+
+Podobo_KeepMoving:		
 	LDA <Objects_YVelZ, X
 	BPL Podobo_MoveGravity
 
@@ -527,6 +581,23 @@ Podobo_MoveDone:
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 
+	LDA Object_VertTileProp, X
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	BEQ Podobo_DoBridgeBreak
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE Podobo_NoBridgeBreak
+
+Podobo_DoBridgeBreak:
+	LDA #$03
+	STA Podobo_BridgeBreak, X
+
+Podobo_NoBridgeBreak:
+	JSR Podobo_BreakBridges
+
+	LDA <Objects_YVelZ, X
+	BMI Podobo_Animate
+
 	LDA <Objects_YZ, X
 	AND #$0F
 	CMP #$0B
@@ -546,6 +617,7 @@ Podobo_Pause:
 
 	LDA #$C0
 	STA <Objects_YVelZ, X
+	STA Podobo_Hiding, X
 
 Podobo_Animate:
 	; Frame loop 0-2
@@ -579,7 +651,66 @@ Podobo_Flip:
 	BNE Podobo_Draw
 	
 Podobo_Draw:
+	LDA Objects_Timer, X
+	ORA Podobo_Hiding, X
+	BEQ Podobo_Draw1
+
+	RTS
+
+Podobo_Draw1:
 	JMP Object_DrawMirrored
+
+Podobo_BridgeOffsets:
+	.byte $00, $18, $F8, $08
+	.byte $00, $00, $FF, $00
+
+Podobo_BreakBridges:
+	LDY Podobo_BridgeBreak, X
+	BEQ Podobo_BreakBridgesRTS
+
+	LDA Block_NeedsUpdate
+	BNE Podobo_BreakBridgesRTS
+
+	DEC Podobo_BridgeBreak, X
+
+	LDA <Objects_XZ , X
+	ADD Podobo_BridgeOffsets, Y
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ , X
+	ADC Podobo_BridgeOffsets + 4, Y
+	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	BNE Podobo_BreakBridgesRTS
+
+	TYA
+	AND #$C0
+	ORA #$3F
+	
+	JSR Object_ChangeBlock
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Podobo_BreakBridgesRTS
+
+	LDA Tile_DetectionX
+	STA Debris_X
+
+	LDA Tile_DetectionY
+	STA Debris_Y
+
+	JSR Common_MakeBricks
+
+Podobo_BreakBridgesRTS:
+	RTS
 
 SpinyEgg_TowardsPlayer:	.byte $0A, -$0A
 
@@ -2001,7 +2132,7 @@ DrawSunMoon1:
 	LDA #HIGH(ObjPAF)
 	STA <Temp_Var11
 
-	JMP DrawGiantObjectMirrored
+	JMP Object_DrawGiantMirrored
 
 ToNightEnemies:
 	LDX #$04
@@ -2811,7 +2942,7 @@ PRG005_B8F3:
 	SBC #OBJ_CFIRE_BULLETBILL	 ; Zero base it
 	ADD #$01	 ; +1 (because zero means "empty/unused" in Cannon Fire)
 	STY TempY
-	JSR CannonFire_Init	 ; Initialize the Cannon Fire
+	JSR ObjectGenerator_Init	 ; Initialize the Cannon Fire
 
 	JMP PRG005_B863	 ; Jump to PRG005_B863 (next object)
 
@@ -3096,42 +3227,42 @@ PRG005_BA3D:
 
 	RTS		 ; Return
 
-CannonFire_Init:
+ObjectGenerator_Init:
 	STA <Temp_Var16	 ; Store index value (1+)
 	STX TempX
 	TXA		 ; -> 'X
 	PHA		 ; Save it too
 
 
-	LDA CannonFire_ID+7
+	LDA ObjectGenerator_ID+7
 	PHA		 ; Backup last Cannon Fire ID
 
-	LDA CannonFire_Parent+7
+	LDA ObjectGenerator_Parent+7
 	PHA		 ; Backup last Cannon Fire parent index
 
 	; Move over all current Cannon Fires
 	LDX #$06	 ; X = 6
 PRG005_BA54:
-	LDA CannonFire_ID,X
-	STA CannonFire_ID+1,X
-	LDA CannonFire_YHi,X
-	STA CannonFire_YHi+1,X
-	LDA CannonFire_Y,X	
-	STA CannonFire_Y+1,X	
-	LDA CannonFire_XHi,X	
-	STA CannonFire_XHi+1,X	
-	LDA CannonFire_X,X	
-	STA CannonFire_X+1,X	
-	LDA CannonFire_Parent,X	
-	STA CannonFire_Parent+1,X	
-	LDA CannonFire_Timer,X	
-	STA CannonFire_Timer+1,X	
-	LDA CannonFire_Var,X	
-	STA CannonFire_Var+1,X	
-	LDA CannonFire_Timer2,X	
-	STA CannonFire_Timer2+1,X	
-	LDA CannonFire_Property,X	
-	STA CannonFire_Property+1,X	
+	LDA ObjectGenerator_ID,X
+	STA ObjectGenerator_ID+1,X
+	LDA ObjectGenerator_YHi,X
+	STA ObjectGenerator_YHi+1,X
+	LDA ObjectGenerator_Y,X	
+	STA ObjectGenerator_Y+1,X	
+	LDA ObjectGenerator_XHi,X	
+	STA ObjectGenerator_XHi+1,X	
+	LDA ObjectGenerator_X,X	
+	STA ObjectGenerator_X+1,X	
+	LDA ObjectGenerator_Parent,X	
+	STA ObjectGenerator_Parent+1,X	
+	LDA ObjectGenerator_Timer,X	
+	STA ObjectGenerator_Timer+1,X	
+	LDA ObjectGenerator_Var,X	
+	STA ObjectGenerator_Var+1,X	
+	LDA ObjectGenerator_Timer2,X	
+	STA ObjectGenerator_Timer2+1,X	
+	LDA ObjectGenerator_Property,X	
+	STA ObjectGenerator_Property+1,X	
 
 	DEX		 ; X--
 	BPL PRG005_BA54	 ; While X >= 0, loop
@@ -3148,7 +3279,7 @@ PRG005_BA54:
 	STA Level_ObjectsSpawned,X
 
 PRG005_BA9A:
-	; Upper 4 bits shifted right -> CannonFire_YHi (high Y)
+	; Upper 4 bits shifted right -> ObjectGenerator_YHi (high Y)
 	STY TempY
 	LDA Level_Objects+1,Y	 ; Get object row
 	AND #$10	 
@@ -3156,26 +3287,26 @@ PRG005_BA9A:
 	LSR A		 
 	LSR A		 
 	LSR A		 
-	STA CannonFire_YHi
+	STA ObjectGenerator_YHi
 
-	; Upper 4 bits shifted left -> CannonFire_Y (low Y)
+	; Upper 4 bits shifted left -> ObjectGenerator_Y (low Y)
 	LDA Level_Objects+1,Y	 ; Get object row
 	AND #$0f	
 	ASL A		
 	ASL A		
 	ASL A		
 	ASL A		
-	STA CannonFire_Y
+	STA ObjectGenerator_Y
 
 	LDA <Temp_Var7	
-	STA CannonFire_XHi	 ; CannonFire_XHi = (pixel high X of object)
+	STA ObjectGenerator_XHi	 ; ObjectGenerator_XHi = (pixel high X of object)
 
 	LDA <Temp_Var1	
-	STA CannonFire_X	 ; CannonFire_X = (pixel X position of object)
+	STA ObjectGenerator_X	 ; ObjectGenerator_X = (pixel X position of object)
 
 	LDA #$00
-	STA CannonFire_Var	; Clear Cannon Fire variable
-	STA CannonFire_Timer2	; Clear Cannon Fire timer 2
+	STA ObjectGenerator_Var	; Clear Cannon Fire variable
+	STA ObjectGenerator_Timer2	; Clear Cannon Fire timer 2
 
 	LDA #$60
 
@@ -3187,10 +3318,10 @@ PRG005_BA9A:
 	LDA #$00	 ; Otherwise, A = 0
 
 PRG005_BACE:
-	STA CannonFire_Timer	 ; CannonFire_Timer = $00 or $60, depending on whether we're a 4-Way cannon
+	STA ObjectGenerator_Timer	 ; ObjectGenerator_Timer = $00 or $60, depending on whether we're a 4-Way cannon
 
 	LDX <Temp_Var2		 ; Restore object index
-	STX CannonFire_Parent	 ; CannonFire_Parent = Temp_Var2
+	STX ObjectGenerator_Parent	 ; ObjectGenerator_Parent = Temp_Var2
 
 	; Mark this object as spawned
 	LDA Level_ObjectsSpawned,X
@@ -3198,7 +3329,7 @@ PRG005_BACE:
 	STA Level_ObjectsSpawned,X
 
 	LDA <Temp_Var16	
-	STA CannonFire_ID
+	STA ObjectGenerator_ID
 
 	TXA
 	TAY
@@ -3213,7 +3344,7 @@ PRG005_BACE:
 	LSR A
 	LSR A
 	LSR A
-	STA CannonFire_Property
+	STA ObjectGenerator_Property
 	RTS		 ; Return
 
 Level_ObjectsSpawnByScrollV:
@@ -3774,7 +3905,7 @@ PRG005_BE37:
 
 	LDX Level_KeepObjects
 	BNE PRG005_BE41
-	STA CannonFire_ID,Y
+	STA ObjectGenerator_ID,Y
 
 PRG005_BE41:
 	CPY #$05
@@ -3787,7 +3918,6 @@ PRG005_BE4B:
 	BGE PRG005_BE67	 	; If Y > 3, jump to PRG005_BE67
 
 	STA Bubble_Cnt,Y	; Clear any water bubbles
-	STA Splash_Counter,Y	; Clear any water splashes
 	STA BrickBust_En,Y	; Clear any brick busting effects
 
 	CPY #$02
@@ -4186,7 +4316,7 @@ FreezieMove0:
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	JSR Object_InteractWithPlayer
 	
 	JSR Object_DetectTiles

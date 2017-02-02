@@ -1386,400 +1386,597 @@ BossFight:
 	LDA Objects_Property, X
 	JSR DynJump
 
-	.word CollosalCheep
+	.word Colossal_Cheep
 
-GiantCheepPatterns:
-	.byte $8D, $8F, $91, $93, $AD, $AF, $B1, $B3
-	.byte $8D, $8F, $95, $97, $AD, $AF, $B5, $B7
+Colossal_CheepSprites:
+	.byte $95, $97, $99, $9B, $B5, $B7, $B9, $BB
+	.byte $95, $97, $9D, $9F, $B5, $B7, $BD, $BF
 
-CollosalCheep:
-	
-	LDA <Counter_1
-	AND #$08
-	LSR A
-	LSR A
-	LSR A
-	STA Objects_Frame, X
+Colossal_CheepPassesNeeded:
+	.byte $01, $02, $01, $03
+
+Colossal_CheepJumpChances:
+	.byte $00, $00, $00, $01, $00, $00, $01, $00
+	.byte $01, $00, $00, $00, $01, $00, $00, $01
+
+Colossal_CheepFrames = Objects_Data1
+Colossal_CheepAction = Objects_Data2
+Colossal_CheepThresholdChecked = Objects_Data3
+Colossal_CheepHealth = Objects_Data4
+Colossal_CheepPasses = Objects_Data5
+Colossal_CheepWaterLevel = Objects_Data6
+
+Colossal_Cheep:
 	LDA <Player_HaltGameZ
-	BNE DrawGiantCheep
-	JSR DrawGiantCheep
-	LDA Objects_Data5, X
-	CMP #$03
-	BCS CCNoMove
-	JSR Object_ApplyXVel
+	BEQ Colossal_CheepNorm
 
-CCNoMove:
-	LDA Objects_SlowTimer, X
-	BEQ CollosalCheepDoAction
-	RTS
+	JMP Colossal_CheepDraw
 
-CollosalCheepDoAction:
-	LDA Objects_State, X
-	CMP #OBJSTATE_KILLED
-	BEQ CollosalCheepDoAction1
-	LDA #OAT_BOUNDBOX04
-	STA BossBoundBox
-	JSR Object_HitTest
-	BCC CollosalCheepDoAction1
-	JSR Player_GetHurt
-
-CollosalCheepDoAction1:
-
-	LDA Objects_Data4, X
+Colossal_CheepNorm:
+	LDA Colossal_CheepAction, X
 	JSR DynJump
 
-	.word CCSwim
-	.word CCJump
-	.word CCBounce
-	.word CCFlood1
-	.word CCFlood2
-	.word CCFlood3
-	.word CCSwim2
-	.word CCDrain1
-	.word CCDrain2
-	.word CCDrain3
-	.word CCExplode
-	.word CCEnd
+	.word Colossal_CheepInit
+	.word Colossal_CheepSwim
+	.word Colossal_CheepBounce
+	.word Colossal_CheepHit
+	.word Colossal_CheepDie
+	.word Colossal_FloodRoom
+	.word Colossal_SwimFlooded
+	.word Colossal_CheepDrainRoom
+	.word Colossal_CheepReset
 
-
-DrawGiantCheep:
-	LDA #$1B
-	STA PatTable_BankSel + 4
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
-	LDA Objects_State, X
-	CMP #OBJSTATE_KILLED
-	BNE DrawGiantCheep1
-	LDA <Counter_1
-	AND #$04
-	BEQ DrawGiantCheep1
-	LDA #SPR_PAL3
-	STA Objects_SpriteAttributes, X
-
-DrawGiantCheep1:
-	LDA #LOW(GiantCheepPatterns)
-	STA <Temp_Var10
-	LDA #HIGH(GiantCheepPatterns)
-	STA <Temp_Var11
-	LDA #SPR_BEHINDBG
-	ORA Objects_SpriteAttributes, X
-	STA Objects_SpriteAttributes, X
-	JSR DrawGiantObject
-	RTS
-
-CCXPositions:
-	.byte $C0, $10
-	.byte $FF, $01
-
-CCVelocities:
-	.byte $20, $E0
-
-CCTimers:
-	.byte $68, $18
-
-CCNextAction:
-	.byte $01, $02
-
-CCJumpNoJump:
-	.byte $01, $00, $01, $01, $01, $00, $01, $01, $00
-
-CCHFlip:
-	.byte SPR_HFLIP, $00
-
-CCSwimY:
-	.byte $90, $82, $74, $66, $48, $3A, $2C, $1E 
-
-CCSwim2:
-	JSR CCSwim
-	LDA #$06
-	STA Objects_Data4, X
-	LDA #$68
-	STA Objects_SlowTimer, X
-	LDA RandomN + 3
-	AND #$07
-	TAY
-	LDA CCSwimY, Y
-	STA Objects_YZ, X
-	DEC Objects_Data1, X
-	BNE CCSwim2_2
-	LDA #$07
-	STA Objects_Data4, X
-
-CCSwim2_2:	
-	JSR Object_FindEmptyX
-	LDA RandomN + 2
-	STA Objects_XZ, X
-	LDA #$00
-	STA Objects_XHiZ, X
-	STA Objects_YHiZ, X
-	STA Objects_Data4, X
-	LDA #$90
-	STA Objects_YZ, X
-	LDA #OBJ_BUBBLE
-	STA Objects_ID, X
-	LDA #$00
-	STA Objects_Data1, X
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
-	LDA #$F8
-	STA <Objects_YVelZ, X
-	RTS
-	
-CCSwim:
-	LDA Objects_State, X
-	CMP #OBJSTATE_KILLED
-	BNE CCSwim1
-	LDA #$03
-	STA Objects_Data4, X
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
-	INC Objects_Data5, X
-	LDA #$20
-	STA Objects_SlowTimer, X
-	LDX #$03
-	JSR KeepDestroying
-	RTS
-
-
-CCSwim1:
-	LDA RandomN
-	AND #$01
-	TAY
-	LDA CCXPositions, Y
+Colossal_CheepInit:
+	LDA #$D8
 	STA <Objects_XZ, X
-	LDA CCXPositions + 2, Y
-	STA <Objects_XHiZ, X
-	LDA CCVelocities, Y
+
+	LDA #$FF
+	STA <Objects_XZ, X
+
+	LDA #$20
 	STA <Objects_XVelZ, X
-	LDA CCHFlip, Y
-	STA Objects_Orientation, X
+
+	INC Colossal_CheepAction, X
+
+	JMP Colossal_CheepResetPasses
+
+Colossal_CheepJumpThreshold:
+	.byte $E0, $10
+
+Colossal_CheepXVel:
+	.byte $E0, $20
+
+Colossal_CheepSwim:
+	LDA #$A8
+	STA <Objects_YZ, X
+
 	LDA #$00
 	STA <Objects_YHiZ, X
-	LDA #$98
-	STA <Objects_YZ, X
-	LDA RandomN
-	AND #$30
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	TAY
-	LDA CCJumpNoJump, Y
-	TAY
-	LDA CCTimers, Y
-	STA Objects_SlowTimer, X
-	TYA
-	STA Objects_Data4, X
-	LDA #$00
-	STA Objects_Data3, X
-	RTS
 
-CCJump:
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	JSR Object_ApplyXVel
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+
+	JSR Object_CheckOffScreen
+	BCC Keep_Swimming
+
+	LDA #$00
+	STA Colossal_CheepThresholdChecked, X
+
+	JSR Object_XDistanceFromPlayer
+	LDY <XDiffLeftRight
+
+	DEC Colossal_CheepPasses, X
+
+	LDA Colossal_CheepXVel, Y
+	STA <Objects_XVelZ, X
+	BNE CC_NoJump
+
+Keep_Swimming:
+	LDY #$00
+	
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BEQ CC_CheckThreshold
+
+	INY
+
+CC_CheckThreshold:
+	LDA Colossal_CheepThresholdChecked, X
+	BNE CC_NoJump
+
+	LDA <Objects_XZ, X
+	AND #$F0
+	CMP Colossal_CheepJumpThreshold, Y
+	BNE CC_NoJump
+
+	LDA #$01
+	STA Colossal_CheepThresholdChecked, X
+
+	LDA RandomN
+	AND #$07
+	TAY
+
+	LDA Colossal_CheepJumpChances, Y
+	BNE CC_NoJump
+
 	LDA #$B0
 	STA <Objects_YVelZ, X
-	LDA #$02
-	STA Objects_Data4, X
-	RTS
 
-CCBounce:
-	LDA Objects_Data5, X
-	CMP #$02
-	BNE CCBounce1
+	LDA #$02
+	STA Colossal_CheepAction, X
+
+CC_NoJump:
+	JMP Colossal_CheepAnimate
+
+Colossal_CheepBounce:
+	JSR Object_FaceDirectionMoving
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectPlayer
+	BCC CC_NoHurtPlayer
+
+	JSR Object_HurtPlayer
+
+CC_NoHurtPlayer:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BNE CCBounce1
-	LDA #$0A
-	STA Objects_Data4, X
-	LDA #$40
-	STA Objects_SlowTimer, X
-	INC Objects_Data5, X
-	LDX #$03
-	JSR KeepDestroying
-	RTS
+	BNE CC_CheckBounce
 
-CCBounce1:
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	CMP #$F0
-	BNE CCBounce2
-	LDA #$10
-	STA Objects_SlowTimer, X
+	LDA Objects_PlayerProjHit, X
+	BEQ CC_HurtByShell
+
 	LDA #$00
-	STA Objects_Data4, X
-	RTS
+	STA Objects_PlayerProjHit, X
 
-CCObjects:
-	.byte OBJ_BRICK, OBJ_GREENTROOPA, OBJ_POWERUP_MUSHROOM, OBJ_GREENTROOPA, OBJ_BRICK, OBJ_GREENTROOPA, OBJ_POWERUP_MUSHROOM, OBJ_GREENTROOPA
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
 
-CCObjectsY:
-	.byte $F0, $A0, $50, $10
+	JMP CC_CheckBounce
 
-CCBounce2:
-	JSR Object_ApplyY_With_Gravity
-	LDA <Objects_YVelZ, X
-	BMI CCBounceRTS
+CC_HurtByShell:
 	
-	INY
-	INY
-	JSR Object_DetectTile
-	AND #TILE_PROP_SOLID_TOP
-	BEQ CCBounceRTS
+	JSR DestroyAllEnemies
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	INC Colossal_CheepHealth, X
+	LDA Colossal_CheepHealth, X
+	CMP #$03
+	BNE CC_GoBackwards
+
+	JSR DestroyAllEnemies
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	LDA #$04
+	STA Colossal_CheepAction, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JMP Colossal_CheepDraw
+
+CC_GoBackwards:
+
+	LDA #$03
+	STA Colossal_CheepAction, X
+	BNE CC_NoSkyBounce
+
+CC_CheckBounce:
+
+	JSR Object_CheckOffScreen
+	BCC CC_CheckFloor
+
+	LDA #$01
+	STA Colossal_CheepAction, X
+
+	JSR Object_XDistanceFromPlayer
+	LDY <XDiffLeftRight
+
+	LDA Colossal_CheepXVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA RandomN
+	AND #$03
+	BNE CC_NoSkyBounce
+
+	LDA #$00
+	STA <Objects_YZ, X
+	STA <Objects_YHiZ, X
+
+	LDA #$02
+	STA Colossal_CheepAction, X
+
+CC_NoSkyBounce:
+	JMP CC_AnimateNorm
+
+CC_CheckFloor:
+	JSR Object_DetectTiles
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ CC_KeepBouncing
+
+	JSR Object_HitGround
+
+	LDA #$20
+	STA Level_Vibration
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
 
 	LDA #$C0
 	STA <Objects_YVelZ, X
+	
+	LDA Colossal_CheepPasses, X
+	BPL CC_KeepBouncing
 
-	LDA #$18
-	STA Level_Vibration
+	LDA Colossal_CheepHealth, X
+	STA <Temp_Var10
 
-	; Ba-bam! sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
+CC_MakeObjects:
+	JSR CC_MakeObject
+	DEC <Temp_Var10
+	BPL CC_MakeObjects
 
-	LDA Objects_Data3, X
-	BNE CCBounceRTS
-	INC Objects_Data3, X
+	JSR Colossal_CheepResetPasses
 
-	LDA Objects_Data5, X
-	STA <Temp_Var3
+CC_KeepBouncing:
+	JMP Colossal_CheepAnimate
 
-CCAnother_Object:
-	LDY <Temp_Var3
-	LDA RandomN, Y
-	STA <Temp_Var1
-	LDA RandomN + 4, Y
-	AND #$07
-	STA <Temp_Var2
+Colosssal_Objects:
+	.byte OBJ_GREENTROOPA, OBJ_GOOMBA, OBJ_POWERUP, OBJ_GREENTROOPA, OBJ_GOOMBA, OBJ_GREENTROOPA, OBJ_POWERUP, OBJ_GOOMBA
+
+Colosssal_ObjectsData:
+	.byte $00, $00, POWERUP_MUSHROOM, $00, $00, $00, POWERUP_MUSHROOM, $00
+
+Colosssal_ObjectsPal:
+	.byte $02, $03, $01, $02, $03, $02, $01, $03
+
+Colosssal_ObjectsX:
+	.byte $40, $C0, $70, $90
+	.byte $78, $98, $48, $C8
+	.byte $80, $30, $D0, $50
+	.byte $10, $40, $C0, $F0
+
+CC_MakeObject:
 	JSR Object_FindEmptyX
-	TXA
+	BCC CC_MakeObjectRTS
+
+	LDA RandomN, X
+	AND #$07
 	TAY
-	LDA <Temp_Var1
-	AND #$F0
-	STA Objects_XZ, Y
-	LDA #$00
-	STA Objects_XHiZ, Y
 
-	LDA #OBJSTATE_INIT
-	STA Objects_State,Y
+	LDA Colosssal_Objects, Y
+	STA Objects_ID, X
 
-	LDX <Temp_Var3
-	LDA CCObjectsY, X
-	STA Objects_YZ, Y
-	LDA #$FF
-	STA Objects_YHiZ, Y
-
-	LDX <Temp_Var2
-	LDA CCObjects ,X
-	STA Objects_ID, Y
-	STA From_Reserve
-	DEC <Temp_Var3
-	BPL CCAnother_Object
-
-CCBounceRTS:
-	RTS
-
-
-CCXFloodOffset:
-	.byte $FC, $F8, $F4, $FC, $F8, $F4, $FC, $F8, $F4
-
-CCYFloodStages:
-	.byte $80, $70, $60, $50, $40, $30, $20, $10, $00
-
-CCDrain1:
-CCFlood1:
-	LDA #$00
-	STA <Temp_Var1
-	INC Objects_Data4, X
-	JMP CCFlood
-
-CCDrain2:
-CCFlood2:
-	LDA #$03
-	STA <Temp_Var1
-	INC Objects_Data4, X
-	JMP CCFlood
-
-CCFlood3:
-	LDA #$06
-	STA <Temp_Var1
-	LDA #$06
-	STA Objects_Data4, X
-	LDA Objects_Data5, X
+	LDA Colosssal_ObjectsData, Y
 	STA Objects_Data1, X
-	JMP CCFlood
 
-CCDrain3:
-	LDA #$06
-	STA <Temp_Var1
+	LDA #$FF
+	STA <Objects_YHiZ, X
+
+	LDA #$E0
+	STA <Objects_YZ, X
+
 	LDA #$00
-	STA Objects_Data4, X
-	JMP CCFlood
+	STA <Objects_XHiZ, X
 
-CCFlood:
-	LDA #$02
-	STA <Temp_Var2
+	LDA Colosssal_ObjectsPal, Y
+	STA Objects_SpriteAttributes, X
+
+	STX <Temp_Var1
+
+	LDA RandomN
+	AND #$30
+	ASL A
+	ASL A
+	
+	ORA <Temp_Var1
 	LDY <Temp_Var1
 
-CreateFlood:
-	JSR Object_FindEmptyX
-	LDA #OBJ_WATERFILLER
-	STA Objects_ID, X
+	LDA Colosssal_ObjectsX, Y
+	STA <Objects_XZ, X
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_MoveTowardsPlayer
+
+	LDX <CurrentObjectIndexZ
+
+CC_MakeObjectRTS:
+	RTS
+
+Colosssal_CheepFlash:
+	.byte SPR_PAL1, SPR_PAL3
+
+Colossal_CheepHit:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, X
-	LDA #$40
-	STA <Objects_XVelZ, X
-	LDA CCYFloodStages, Y
-	STA <Objects_YZ, X
-	LDA #$00
-	STA <Objects_YHiZ, X 
-	STA Objects_Orientation, X
-	STA Objects_Data4, X
-	STA Objects_Frame, X
-	LDA #$FF
-	STA <Objects_XHiZ, X
-	LDA CCXFloodOffset, Y
-	STA <Objects_XZ, X
-	INY
-	DEC <Temp_Var2
-	BPL CreateFlood
-	LDA #$28
-	LDX <CurrentObjectIndexZ
-	STA Objects_SlowTimer, X
-	LDA #SND_LEVELAIRSHIP
-	ORA Sound_QLevel2
-	STA Sound_QLevel2
-	RTS
 
-CCExplode:
-	JSR Object_FindEmptyX
-	TXA
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	
+	LDA Game_Counter
+	LSR A
+	LSR A
+	AND #$01
 	TAY
-	LDX <CurrentObjectIndexZ
-	LDA #OBJ_BOBOMBEXPLODE
-	STA Objects_ID, Y
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State, Y
-	LDA Objects_XZ, X
-	ADD #$08
-	STA Objects_XZ, Y
-	LDA Objects_XHiZ, X
-	ADC #$00
-	STA Objects_XHiZ, Y
-	LDA Objects_YZ, X
-	ADD #$08
-	STA Objects_YZ, Y
-	LDA Objects_YHiZ, X
-	ADC #$00
-	STA Objects_YHiZ, Y
-	LDA #20
-	STA Objects_SlowTimer, X
-	LDA #$02
-	STA Objects_XHiZ, X
-	INC Objects_Data4, X
-	RTS
+	
+	LDA Colosssal_CheepFlash, Y
+	STA Objects_SpriteAttributes, X
 
-CCEnd:
+	JSR Object_CheckOffScreen
+	BCC CC_KeepMovingBack
+
+	LDA #$05
+	STA Colossal_CheepAction, X
+
+CC_KeepMovingBack:
+	JMP CC_CheckFloor
+
+Colossal_CheepDie:
+	LDA Objects_Timer, X
+	BEQ CC_Die
+
+	LDA Game_Counter
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Colosssal_CheepFlash, Y
+	STA Objects_SpriteAttributes, X
+	JMP CC_AnimateNorm
+
+CC_Die:
 	LDA #$80
 	STA CompleteLevelTimer
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	JMP Object_Explode
+
+WaterFill_XOffsets:
+	.byte $FC, $F8, $F4
+	.byte $FC, $F8, $F4
+	.byte $FC, $F8, $F4
+
+WaterFill_YOffsets:
+	.byte $7F, $6F, $5F
+	.byte $4F, $3F, $2F
+	.byte $1F, $0F, $00
+
+Colossal_FloodRoom:
+	LDA Objects_Timer, X
+	BNE CCNo_Water
+
+	LDA  Colossal_CheepWaterLevel, X
+	CMP #$09
+	BCC Create_Water
+
+	INC Colossal_CheepAction, X
+	
+	LDA Colossal_CheepHealth, X
+	STA Colossal_CheepPasses, X
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	
+	JSR Double_Value
+
+	STA <Objects_XVelZ, X
+
+	JSR Colossal_CheepReposition
+
+	LDA #$00
+	STA Colossal_CheepWaterLevel, X
+
+CCNo_Water:
 	RTS
+
+Create_Water:
+	LDA #$03
+	STA <Temp_Var10
+
+More_Water:
+	LDY Colossal_CheepWaterLevel, X
+	JSR Object_FindEmptyX
+
+	LDA #OBJ_WATERFILLER
+	STA Objects_ID, X
+
+	LDA WaterFill_XOffsets, Y
+	STA <Objects_XZ, X
+
+	LDA #$FF
+	STA <Objects_XHiZ, X
+
+	LDA WaterFill_YOffsets, Y
+	STA <Objects_YZ, X
+
+	LDA #00
+	STA <Objects_YHiZ, X
+
+	LDA #$40
+	STA <Objects_XVelZ, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	LDA #SPR_HFLIP
+	STA Objects_Orientation, X
+
+	LDX <CurrentObjectIndexZ
+
+	INC Colossal_CheepWaterLevel, X
+	DEC <Temp_Var10
+	BNE More_Water
+
+	LDA #$50
+	STA Objects_Timer, X
+	RTS
+
+Colossal_CheepYOffsets:
+	.byte $08, $28, $48, $68
+
+Colossal_CheepReposition:
+	LDA RandomN, X
+	AND #$03
+	TAY
+
+	LDA Colossal_CheepYOffsets, Y
+	STA <Objects_YZ, X
+	
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	LDA Colossal_CheepAction, X
+	CMP #$07
+	BCS CC_NoBubble
+
+	JSR Colossal_CheepMakeBubble
+
+CC_NoBubble:
+	RTS
+
+Colossal_SwimFlooded:
+	JSR Object_ApplyXVel
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_AttackOrDefeat
+
+	JSR Object_CheckOffScreen
+	BCC CC_FloodKeepSwimming
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+	DEC Colossal_CheepPasses, X
+	BNE CC_SwimAgain
+
+	INC Colossal_CheepAction, X
+	JSR DestroyAllEnemies
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	RTS
+
+CC_SwimAgain:
+	JSR Colossal_CheepReposition
+
+CC_FloodKeepSwimming:
+	JMP Colossal_CheepAnimate
+
+Colossal_CheepDrainRoom:
+	JMP Colossal_FloodRoom
+
+Colossal_CheepReset:
+	LDA #$01
+	STA Colossal_CheepAction, X
+
+	JMP Colossal_CheepResetPasses
+
+Colossal_CheepResetPasses:
+	LDA RandomN, X
+	AND #$03
+	TAY 
+
+	LDA Colossal_CheepPassesNeeded, Y
+	STA Colossal_CheepPasses, X
+	RTS
+
+Colossal_CheepBubbleX:
+	.byte $28, $48, $68, $88
+
+Colossal_CheepMakeBubble:
+	JSR Object_FindEmptyX
+
+	LDA RandomN, X
+	AND #$03
+	TAY
+
+	LDA #OBJ_BUBBLE
+	STA Objects_ID, X
+
+	LDA #$03
+	STA Bubble_Action, X
+
+	LDA Colossal_CheepBubbleX, Y
+	STA <Objects_XZ, X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+	STA <Objects_YHiZ, X
+	STA Objects_Property, X
+
+	LDA #$80
+	STA <Objects_YZ, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	LDX <CurrentObjectIndexZ
+	RTS
+	
+Colossal_CheepAnimate:
+	INC Colossal_CheepFrames, X
+	
+	LDA <Objects_YVelZ, X
+	BPL CC_AnimateNorm
+
+	LDA Colossal_CheepFrames, X
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	JMP Colossal_CheepDraw
+
+CC_AnimateNorm:
+	LDA Colossal_CheepFrames, X
+	
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+Colossal_CheepDraw:
+	LDA #LOW(Colossal_CheepSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Colossal_CheepSprites)
+	STA <Giant_TilesHi
+
+	LDA #$1B
+	STA PatTable_BankSel + 4
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JSR Object_CheckForeground
+	JMP Object_DrawGiant

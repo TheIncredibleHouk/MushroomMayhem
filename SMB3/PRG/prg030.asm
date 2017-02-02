@@ -1567,13 +1567,16 @@ PRG030_8E4F:
 
 	LDA Level_PauseFlag
 	BNE Graphics_Anim
+	
 	LDA DPad_RhythmControl
 	BEQ PRG030_8E50
+
 	JSR DPad_ControlTiles
 
 PRG030_8E50:
 	LDA RhythmPlatformEnabed
 	BEQ Graphics_Anim	
+
 	JSR RhythmPlatforms
 
 Graphics_Anim:
@@ -1639,6 +1642,7 @@ PRG030_8E79:
 
 	; Copy in the P A U S E sprites
 	LDY #(PAUSE_Sprites_End - PAUSE_Sprites - 1)
+
 PRG030_8E9D:
 	LDA PAUSE_Sprites,Y
 	STA Sprite_RAM+$00,Y
@@ -3322,7 +3326,13 @@ SetDNActive:
 
 	; load misc data
 	LDA [Temp_Var14], Y
-	STA MiscValue1
+	STA EventType
+
+	LDA #$00
+	STA HandleLevelEvent
+	STA EventSwitch
+	STA EventVar
+
 	LDY #$0B
 	LDA [Temp_Var14], Y
 	STA MiscValue2
@@ -5378,17 +5388,18 @@ NextPointer:
 
 Do_Pointer_Effect:
 	JSR Find_Applicable_Pointer	 ; Initialize level junction
-
-	;LDA #$00
-	;STA Level_HorzScrollLock
-
+	
 	LDA <Temp_Var1
 	BPL UsePointer
+
 	LDA #$14
 	STA Level_PipeMove
 	RTS		; No pointer found, abort abort!
 
 UsePointer:
+	LDA #$00
+	STA Level_HorzScrollLock
+
 	LDA Pointers + 5, X
 	AND #$80	; does this pointer exit the level?
 	BEQ LevelJction
@@ -5781,6 +5792,7 @@ Common_MakeChains:
 
 Common_MakeBricks:
 	JSR Common_MakeDebris
+
 	LDA #BRICK_DEBRIS
 	STA BrickBust_Tile, Y
 
@@ -5952,7 +5964,7 @@ DPad_ControlTiles3:
 
 DPad_ControlTiles4:
 	RTS
-
+	
 RhythmPlatforming:
 RhythmGraphics:
 	.byte $60, $62, $64, $66
@@ -5968,6 +5980,7 @@ RhythmSet3:
 
 RhythmPlatformsReset:
 	STA RhythmMusic
+
 	LDA #$00
 	STA RhythmKeeper
 	STA RhythmKeeper + 1
@@ -5976,25 +5989,32 @@ RhythmPlatformsReset:
 
 RhythmPlatforms:
 	LDX #$00
+
 	LDA SndCur_Music2
 	BEQ RhythmPlatforms0
+
 	LDY RhythmMusic
 	BNE DoNotStoreRhythmMusic
+
 	STA RhythmMusic
 
 DoNotStoreRhythmMusic:
 	CMP RhythmMusic
 	BNE RhythmPlatformsReset
+
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	TAX
+
 	LDA RhythmSet1, X
 	BEQ RhythmPlatforms0
+
 	LDA RhythmKeeper
 	CMP RhythmSet1, X
 	BEQ RhythmPlatforms1
+
 	INC RhythmKeeper
 
 RhythmPlatforms0:
@@ -6004,6 +6024,7 @@ RhythmPlatforms1:
 	LDA RhythmKeeper + 1
 	CMP RhythmSet2, X
 	BEQ RhythmPlatforms2
+
 	INC RhythmKeeper + 1
 	RTS
 
@@ -6011,9 +6032,11 @@ RhythmPlatforms2:
 	LDA RhythmKeeper + 2
 	CMP #$03
 	BEQ RhythmPlatforms3
+
 	LDA #SND_LEVELBLIP
 	STA Sound_QLevel1
 	INC RhythmKeeper + 2
+
 	LDA #$00
 	STA RhythmKeeper + 1
 	RTS
@@ -6025,43 +6048,33 @@ RhythmPlatforms3:
 	LDA #$00
 	STA RhythmKeeper + 1
 	STA RhythmKeeper + 2
+
 	LDA RhythmSet3, X
 	STA RhythmKeeper
+
 	INC RhythmKeeper + 3
+
 	LDA RhythmKeeper + 3
-	AND #$03
+	AND #$01
 	TAY
+
 	LDA RhythmGraphics, Y
 	STA PatTable_BankSel
-	LDA #$00
-	STA TileProperties + $02
-	STA TileProperties + $42
-	STA TileProperties + $82
-	STA TileProperties + $C2
-	LDA #$02
 
-RhythmPlatforms4:
-	CPY #$00
-	BEQ RhythmPlatforms5
-	ADD #$40
-	DEY
-	BPL RhythmPlatforms4 
+	LDX #$0F
+	
+RhythmSwitchPlatforms:
+	LDA TileProperties + $B0, X
+	STA <Temp_Var1
 
-RhythmPlatforms5:
-	TAY
-	LDA #TILE_PROP_SOLID_ALL
-	STA TileProperties, Y
-	LDA TileProperties + $53
-	STA TileProperties + $03
-	LDA TileProperties + $83
-	STA TileProperties + $53
-	LDA TileProperties + $D3
-	STA TileProperties + $83
-	LDA RhythmKeeper + 3
-	AND #$03
-	TAY
-	LDA RhythmCurrents, Y
-	STA TileProperties + $D3
+	LDA TileProperties + $F0, X
+	STA TileProperties + $B0, X
+
+	LDA <Temp_Var1
+	STA TileProperties + $F0, X
+
+	DEX
+	BPL RhythmSwitchPlatforms
 	RTS
 
 RhythmCurrents:
@@ -6076,6 +6089,7 @@ UpdateRhythmTiles:
 	TAY
 	LDA RhythmGraphics, Y
 	STA PatTable_BankSel
+
 	LDA DPadTiles, Y
 	STA TileProperties + $57
 	RTS

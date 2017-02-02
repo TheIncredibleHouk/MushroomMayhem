@@ -4682,7 +4682,8 @@ PRG014_DFCC:
 
 
 HandleLevelEvent:
-	LDA MiscValue1
+
+	LDA EventType
 	JSR DynJump
 
 	.word NoEvent
@@ -4697,17 +4698,25 @@ FFLevelsY:	.byte $17, $16, $15, $14, $13, $12, $11, $10
 FloodFloor:
 	LDA #$01
 	STA Player_VibeDisable
+	
 	LDA Objects_State
 	BNE FloodFloorRTS
 
 	LDA #OBJ_WATERFILLER
 	STA Objects_ID
+
 	LDA #OBJSTATE_INIT
 	STA Objects_State
+
 	LDA #$A0
-	STA Objects_XZ
+	STA <Objects_XZ
+
 	LDA #$00
-	STA Objects_XHiZ
+	STA <Objects_XHiZ
+
+	LDA #$04
+	STA <Objects_XVelZ
+
 	LDA FFLevelsY, X
 	AND #$F0
 	LSR A
@@ -4715,6 +4724,7 @@ FloodFloor:
 	LSR A
 	LSR A
 	STA Objects_YHiZ
+
 	LDA FFLevelsY, X
 	AND #$0F
 	ASL A
@@ -4722,6 +4732,7 @@ FloodFloor:
 	ASL A
 	ASL A
 	STA Objects_YZ
+
 	INC EventVar
 
 FloodFloorRTS:
@@ -4730,17 +4741,21 @@ FloodFloorRTS:
 FloodFloor1:
 	LDA #$01
 	STA BossLevelData
+
 	LDX EventVar
 	CPX #$08
 	BEQ FloodFloorEnd
+
 	JMP FloodFloor
 
 FloodFloor2:
 	LDA #$02
 	STA BossLevelData
+
 	LDA EventVar
 	CMP #$08
 	BEQ FloodFloorEnd
+
 	ADD #$08
 	TAX
 	JMP FloodFloor

@@ -1048,6 +1048,7 @@ LevelJctBQ_Tileset:	.byte 14, 14, 14, 14, 14, 14, 14, 14	; All use "Underground 
 HandleLevelJunction:
 	; Fades out the screen
 	JSR Palette_PrepareFadeOut	 ; Prepare
+
 PRG026_A936:
 	JSR GraphicsBuf_Prep_And_WaitVSync	; Wait VSync
 	JSR Palette_DoFadeOut	; Fade

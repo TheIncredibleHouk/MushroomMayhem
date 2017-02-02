@@ -2841,7 +2841,7 @@
   <set leveltype="0B">
     <block value="00">Background</block>
     <block value="01">Background</block>
-    <block value="02">Cleared Coin</block>
+    <block value="02">Background</block>
     <block value="03">Cleared Coin</block>
     <block value="04">Cleared Coin</block>
     <block value="05">Cleared Coin</block>
@@ -2899,13 +2899,13 @@
     <block value="39">Cleared Coin</block>
     <block value="3A">Cleared Coin</block>
     <block value="3B">Cleared Coin</block>
-    <block value="3C">Cleared Coin</block>
-    <block value="3D">Cleared Coin</block>
+    <block value="3C"></block>
+    <block value="3D"></block>
     <block value="3E">Cleared Coin</block>
-    <block value="3F">Empty ? Block</block>
+    <block value="3F">Cleared Coin</block>
     <block value="40">Background</block>
     <block value="41">Background</block>
-    <block value="42">Cleared Coin</block>
+    <block value="42">Background</block>
     <block value="43">Cleared Coin</block>
     <block value="44">Cleared Coin</block>
     <block value="45">Cleared Coin</block>
@@ -2919,7 +2919,7 @@
     <block value="4D">Cleared Coin</block>
     <block value="4E">Cleared Coin</block>
     <block value="4F">Cleared Coin</block>
-    <block value="50"></block>
+    <block value="50">Cleared Coin</block>
     <block value="51">Cleared Coin</block>
     <block value="52">Cleared Coin</block>
     <block value="53">Cleared Coin</block>
@@ -2949,7 +2949,7 @@
     <block value="6B">Cleared Coin</block>
     <block value="6C">Cleared Coin</block>
     <block value="6D">Cleared Coin</block>
-    <block value="6E"></block>
+    <block value="6E">Cleared Coin</block>
     <block value="6F">Cleared Coin</block>
     <block value="70">Cleared Coin</block>
     <block value="71">Cleared Coin</block>
@@ -2969,7 +2969,7 @@
     <block value="7F">Empty ? Block</block>
     <block value="80">Background</block>
     <block value="81">Background</block>
-    <block value="82">Cleared Coin</block>
+    <block value="82">Background</block>
     <block value="83">Cleared Coin</block>
     <block value="84">Cleared Coin</block>
     <block value="85">Cleared Coin</block>
@@ -3030,10 +3030,10 @@
     <block value="BC">Cleared Coin</block>
     <block value="BD">Cleared Coin</block>
     <block value="BE">Cleared Coin</block>
-    <block value="BF">Empty ? Block</block>
+    <block value="BF">Cleared Coin</block>
     <block value="C0">Background</block>
     <block value="C1">Background</block>
-    <block value="C2">Cleared Coin</block>
+    <block value="C2">Background</block>
     <block value="C3">Cleared Coin</block>
     <block value="C4">Cleared Coin</block>
     <block value="C5">Cleared Coin</block>
@@ -3047,8 +3047,8 @@
     <block value="CD">Cleared Coin</block>
     <block value="CE">Cleared Coin</block>
     <block value="CF">Cleared Coin</block>
-    <block value="D0"></block>
-    <block value="D1"></block>
+    <block value="D0">Cleared Coin</block>
+    <block value="D1">Cleared Coin</block>
     <block value="D2"></block>
     <block value="D3">Cleared Coin</block>
     <block value="D4">Cleared Coin</block>
@@ -3063,8 +3063,8 @@
     <block value="DD">Cleared Coin</block>
     <block value="DE">Cleared Coin</block>
     <block value="DF">Cleared Coin</block>
-    <block value="E0"></block>
-    <block value="E1"></block>
+    <block value="E0">Cleared Coin</block>
+    <block value="E1">Cleared Coin</block>
     <block value="E2">Cleared Coin</block>
     <block value="E3">Cleared Coin</block>
     <block value="E4">Cleared Coin</block>
@@ -3094,7 +3094,7 @@
     <block value="FC">Cleared Coin</block>
     <block value="FD">Cleared Coin</block>
     <block value="FE">Cleared Coin</block>
-    <block value="FF">Empty ? Block</block>
+    <block value="FF">Cleared Coin</block>
   </set>
   <set leveltype="0C">
     <block value="00"></block>

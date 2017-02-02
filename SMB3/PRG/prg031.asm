@@ -3087,7 +3087,7 @@ SkipDestroy:
 	LDA #$00
 
 Destroy_Timers:
-	STA CannonFire_ID, X
+	STA ObjectGenerator_ID, X
 
 	DEX
 	BPL Destroy_Timers

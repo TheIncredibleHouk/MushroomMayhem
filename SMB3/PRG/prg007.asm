@@ -151,7 +151,7 @@ Gameplay_UpdateAndDrawMisc:
 	JSR BrickBusts_DrawAndUpdate	 ; Draw and update brick bust effects
 	JSR CoinPUps_DrawAndUpdate	 ; Update and draw coins that have popped out of boxes
 	JSR SpecialObjs_UpdateAndDraw	 ; Update and draw Special objects
-	JSR CannonFire_UpdateAndDraw	 ; Update and draw the Cannon Fires
+	JSR ObjectGenerator_UpdateAndDraw	 ; Update and draw the Cannon Fires
 	JSR PlayerProjs_UpdateAndDraw	 ; Update and draw Player's weapon projectiles
 	
 	LDA Player_HaltTick	; If Player is not halted ...
@@ -1216,191 +1216,6 @@ SwimBubble_XOff:
 	.byte $05, $05	; Up frog swim
 
 Player_WaterOrWaterfallVizFX:
-PRG007_A783:
-	LDY <Player_HaltGameZ
-	BNE PRG007_A7F0	 ; If gameplay halted, jump to PRG007_A7F0 (RTS)
-
-	LDA Player_InWater
-	BEQ PRG007_A7F0	 ; If Player is not underwater, jump to PRG007_A7F0 (RTS)
-
-	; Otherwise, clear kill tally (Being underwater also resets your chain stomping)
-	STY Kill_Tally
-
-	CMP #$01
-	BEQ PRG007_A7F1	 ; If Player_InWater = 1 (water, not waterfall), jump to PRG007_A7F1
-
-	; Player's in a waterfall!
-
-	LDA <Player_YVel
-	CMP #$3c
-	BGS PRG007_A7A2	 ; If Player's Y velocity >= $3C, jump to PRG007_A7A2
-
-	INC <Player_YVel ; Player_YVel++
-
-	LDA <Counter_1
-	LSR A	
-	BCC PRG007_A7A2	 ; Every other tick, jump to PRG007_A7A2
-
-	INC <Player_YVel ; Player_YVel++
-
-PRG007_A7A2:
-	JSR Object_GetUnusedSprite
-	BEQ PRG007_A7F0	 ; If no free sprite, jump to PRG007_A7F0 (RTS)
-
-	LDA Player_OffScreen
-	BNE PRG007_A7F0	 ; If Player is off-screen, jump to PRG007_A7F0 (RTS)
-
-	; Patterns for "splashing" effect seen above Player's head
-	LDA #$47
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
-
-	LDA <Counter_1
-	LSR A
-	AND #$03
-	ADD #$05	; Value of 5 to 8
-
-	LDX Player_IsDucking
-	BNE PRG007_A7C6	 ; If Player is ducking, jump to PRG007_A7C6
-
-	LDX Player_Suit
-	BNE PRG007_A7C9	 ; If Player is not small, jump to PRG007_A7C9
-
-PRG007_A7C6:
-	ADD #10		 ; Small or ducking, +10 (15 to 18)
-
-PRG007_A7C9:
-	STA <Temp_Var1	 ; -> Temp_Var1
-
-	LDX <CurrentObjectIndexZ	 ; Restore 'X' as slot index
-
-	; Sprite "splashing" effect Y
-	LDA <Player_SpriteY
-	ADD <Temp_Var1
-	SUB #10
-	STA Sprite_RAM+$00,Y
-	STA Sprite_RAM+$04,Y
-
-	; Sprite "splashing" effect X
-	LDA <Player_SpriteX
-	STA Sprite_RAM+$03,Y
-	ADD #$08
-	STA Sprite_RAM+$07,Y
-
-	LDA <Counter_1
-	AND #$03
-	SUB #$02	 ; A = -2 to 1 (spread value)
-
-	JSR Draw_SpreadAndColorful	 ; Spreads out the two sprites and rotates the color palette
-
-PRG007_A7F0:
-	RTS		 ; Return
-
-
-PRG007_A7F1:
-
-	; Player's in regular old water
-
-	LDY #$7f	 ; Y = $7F ("slow" mask value for idle underwater player)
-
-	LDA <Pad_Holding
-	AND #(PAD_A | PAD_LEFT | PAD_RIGHT)
-	BEQ PRG007_A7FB	 ; If Player is not pressing A, LEFT, or RIGHT (swim controls), jump to PRG007_A7FB
-
-	LDY #$3f	 ; Y = $3F ("fast" mask value for idle underwater player)
-
-PRG007_A7FB:
-	TYA		 ; Mask -> 'Y'
-	AND <Counter_1
-	BNE PRG007_A80C	 ; Periodically jump to PRG007_A80C (RTS)
-
-	; CurrentObjectIndexZ = 2
-	LDX #$02
-PRG007_A802:
-	STX <CurrentObjectIndexZ
-
-	LDA Bubble_Cnt,X
-	BEQ PRG007_A80D	 ; If this bubble slot is empty, jump to PRG007_A80D
-
-	DEX		 ; X--
-	BPL PRG007_A802	 ; While X >= 0, loop!
-
-PRG007_A80C:
-	RTS		 ; Return
-
-
-PRG007_A80D:
-	LDA RandomN
-	ORA #$10
-	STA Bubble_Cnt,X ; Set random value -> Bubble_Cnt
-
-	LDY #$00	 ; Y = 0
-
-	LDA <Player_Frame
-	CMP #PF_FROGSWIM_UPBASE
-	BLT PRG007_A835	 ; If Player is not within the low end range of frog suit swim frames, jump to PRG007_A835
-
-	LDY #$03	 ; Otherwise, Y = 3 (pending this might be the "up" frame)
-
-	CMP #PF_FROGHOP_BASE
-	BLT PRG007_A835	 ; If frame < PF_FROGHOP_BASE (if true, then absolutely the "up" swim frame), jump to PRG007_A835
-
-	LDY #$00	 ; Otherwise, Y = 0
-
-	CMP #PF_FROGSWIM_IDLEBASE
-	BLT PRG007_A835	 ; If not possibly just the "idling" frog frames, jump to PRG007_A835
-
-	INY		 ; Otherwise, Y = 1 (idle or left/right frog swim)
-
-	CMP #PF_FROGSWIM_LRBASE+2
-	BLT PRG007_A835	 ; Not a down swimming frame, jump to PRG007_A835
-
-	INY		 ; Otherwise, Y = 2 (down frog swim)
-
-	CMP #(PF_FROGSWIM_DOWNBASE+3)	; This is actually 1 passed the end of frog suit swim frames
-	BLT PRG007_A835	 ; If within range of the last frog suit swim frame, jump to PRG007_A835
-
-	LDY #$00	 ; Otherwise, Y = 0
-
-PRG007_A835:
-
-	; Y *= 2
-	TYA
-	ASL A
-	TAY
-
-	BIT <Player_FlipBits
-	BVC PRG007_A83D	 ; If Player is not horizontally flipped, jump to PRG007_A83D
-
-	INY		 ; Otherwise, Y++
-
-PRG007_A83D:
-	LDA #$00	; A = 0
-
-	LDX <Player_Suit
-	BNE PRG007_A845	 ; If Player is not small, jump to PRG007_A845
- 
-	LDA #$08	 ; Otherwise, A = 8
-
-PRG007_A845:
-	LDX <CurrentObjectIndexZ	 ; X = slot backup
-
-	; Set Bubble Y
-	ADD <Player_Y
-	ADC SwimBubble_YOff,Y
-	STA Bubble_Y,X
-	LDA <Player_YHi
-	ADC #$00
-	STA Bubble_YHi,X
-
-	; Set Bubble X
-	LDA <Player_X
-	ADD SwimBubble_XOff,Y
-	STA Bubble_X,X
-	LDA <Player_XHi
-	ADC #$00
-	STA Bubble_XHi,X
-
 	RTS		 ; Return
 
 
@@ -1427,106 +1242,7 @@ PRG007_A874:
 
 
 Bubble_UpdateAndDraw:
-	LDA <Player_HaltGameZ		 
-	BEQ PRG007_A87F	 ; If gameplay is not halted, juimp to PRG007_A89A
-
-	JMP PRG007_A89A	 ; Otherwise, jump to PRG007_A89A
-
-PRG007_A87F:
-	INC Bubble_Cnt,X ; Bubble counter increment
-
-	; Fix bit 7 on bubble counter
-	LDA Bubble_Cnt,X
-	ORA #$80
-	STA Bubble_Cnt,X
-
-	AND #%00110000
-	BEQ PRG007_A89A	 ; Periodically jump to PRG007_A89A
-
-	DEC Bubble_Y,X	 ; Bubble Y --
-
-	LDY Bubble_Y,X
-	INY	
-	BNE PRG007_A89A	 ; If no carry, jump to PRG007_A89A
-	DEC Bubble_YHi,X ; Apply carry
-
-PRG007_A89A:
-	LDA Level_7Vertical
-	BEQ PRG007_A8BF	 ; If this level is not vertical, jump to PRG007_A8F0
-
-	; Vertical level...
-
-	LDA Bubble_Y,X
-	ADD #10		; Bubble Y + 10
-	AND #$f0
-	STA <Temp_Var3	; Temp_Var3 = bubble row (offset into tile memory)
-
-	LDA Bubble_YHi,X
-	ADC #HIGH(Tile_Mem)
-	STA <Temp_Var2	; Temp_Var2 = bubble high offset into tile memory
-
-	; Create row/column offset into tile memory for current screen of bubble -> Temp_var1
-	LDA Bubble_X,X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var3
-	STA <Temp_Var1
-
-	LDY #$00	 ; Y = 0 (not using the offset like non-vertical does)
-	BEQ PRG007_A8F0	 ; Jump (technically always) to PRG007_A8F0
-
-PRG007_A8BF:
-	LDA Bubble_Y,X
-	ADD #10		 ; Bubble Y + 10
-	AND #$f0
-	STA <Temp_Var3	 ; Temp_Var3 = bubble row (offset into tile memory)
-
-	LDA Bubble_YHi,X
-	ADC #$00	 ; Apply carry
-	PHA		 ; Save it
-
-	; Temp_Var5 = bubble X
-	LDA Bubble_X,X
-	STA <Temp_Var5
-
-	LDA Bubble_XHi,X
-	ASL A		 ; 2 bytes per screen
-	TAY		 ; Y = offset into Tile_Mem_Addr
-
-	LDA Tile_Mem_Addr,Y
-	STA <Temp_Var1	 ; Temp_Var1 = low byte of this screen's tile memory address
-
-	PLA		 ; Restore Bubble's Y Hi
-	AND #$01	 ; Only 0/1 valid for non-vertical
-	ADD Tile_Mem_Addr+1,Y	 ; Add to high byte of address
-	STA <Temp_Var2	 ; -> Temp_Var2
-
-	; Create row/column offset -> Temp_Var3
-	LDA <Temp_Var5
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	ORA <Temp_Var3
-
-	TAY		 ; Y = this offset
-
-PRG007_A8F0:
-	LDA [Temp_Var1],Y ; Get the tile the bubble detects
-	STA <Temp_Var2	 ; -> Temp_Var2
-	AND #TILE_PROP_ITEM
-	CMP #TILE_PROP_ITEM
-	BNE PRG007_A91E
-	AND #TILE_PROP_WATER
-	BNE Bubble_Draw	 ; If this tile is still considered underwater, jump to Bubble_Draw 
-
-PRG007_A91E:
-
-	; Remove this bubble
-	LDA #$00
-	STA Bubble_Cnt,X
+	RTS
 
 	RTS		 ; Return
 
@@ -1534,56 +1250,7 @@ Bubble_XOff:		.byte $00, $01, $00, -$01
 Bubble_SprRAMOff:	.byte $10, $14, $0C, $FF, $10, $14, $0C
 
 Bubble_Draw:
-	LDA Game_Counter
-	AND #%00001100
-	LSR A	
-	LSR A	
-	TAY		 ; Y = 0 to 3
 
-	; Temp_Var1 = bubble's X offset
-	LDA Bubble_XOff,Y
-	STA <Temp_Var1
-
-	LDA <Counter_1
-	AND #%00000011
-	ADC <CurrentObjectIndexZ 	
-	TAY		 ; Y = (0 to 3) + bubble's index
-
-	LDA Bubble_SprRAMOff,Y
-	BMI PRG007_A978	 ; If we hit the $FF value in Bubble_SprRAMOff, jump to PRG007_A978 (RTS)
-
-	TAY		 ; -> 'Y'
-
-	LDA Sprite_RAM+$00,Y
-	CMP #$f8
-	BNE PRG007_A978	 ; If this sprite is not free, jump to PRG007_A978 (RTS)
-
-	; Bubble Y
-	LDA Bubble_Y,X
-	SUB Level_VertScroll
-	STA Sprite_RAM+$00,Y
-
-	CMP #200
-	BGE PRG007_A91E	 ; If this bubble's sprite Y >= 200, jump to PRG007_A91E (destroy bubble)
-
-	; Bubble X
-	LDA Bubble_X,X
-	ADD <Temp_Var1
-	SUB <Horz_Scroll
-	STA Sprite_RAM+$03,Y
-
-	CMP #248
-	BCS PRG007_A91E	 ; If this bubble's X >= 248, jump  to PRG007_A91E (destroy bubble)
-
-	; Bubble's pattern
-	LDA #$17
-	STA Sprite_RAM+$01,Y
-
-	; Bubble's attributes
-	LDA #SPR_PAL1
-	STA Sprite_RAM+$02,Y
-
-PRG007_A978:
 	RTS		 ; Return
 
 
@@ -1599,7 +1266,7 @@ Splash_UpdateAndDraw:
 PRG007_A97B:
 	STX <CurrentObjectIndexZ	 ; -> Slot Index backup
 
-	LDA Splash_Counter,X
+	LDA #$00
 	BEQ PRG007_A9A0	 ; If no splash is active here, jump to PRG007_A9A0
 
 	LDA <Player_HaltGameZ
@@ -1609,10 +1276,10 @@ PRG007_A97B:
 	LSR A
 	BCC PRG007_A991	 ; Every other tick, jump to PRG007_A991
 
-	INC Splash_Counter,X	 ; Splash counter++
+	
 
 PRG007_A991:
-	LDA Splash_Counter,X
+	LDA #$00
 	CMP #$30
 	BLT PRG007_A99D	 ; If splash counter < $30, jump to PRG007_A99D
 
@@ -1682,7 +1349,7 @@ PRG007_A9D5:
 	LDA #(SPR_PAL1 | SPR_HFLIP)
 	STA Sprite_RAM+$06,Y
 
-	LDA Splash_Counter,X
+	LDA #$00
 	LSR A
 	LSR A
 	LSR A
@@ -1708,7 +1375,7 @@ PRG007_A9D5:
 	INC Splash_Y,X	 ; Splash_Y++
 
 PRG007_AA10:
-	LDA Splash_Counter,X
+	LDA #$00
 	SUB #24
 	LSR A	
 	LSR A	
@@ -3694,11 +3361,11 @@ PRG007_BB60:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; CannonFire_UpdateAndDraw
+; ObjectGenerator_UpdateAndDraw
 ;
 ; Updates and draws the Cannon Fires
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-CannonFire_UpdateAndDraw:
+ObjectGenerator_UpdateAndDraw:
 	LDA <Player_HaltGameZ		 
 	ORA EndCard_Flag
 	BNE PRG007_BB80	 ; If gameplay halted or end level card grabbed, jump to PRG007_BB80 (RTS)
@@ -3707,7 +3374,7 @@ CannonFire_UpdateAndDraw:
 PRG007_BB78:
 	STX <CurrentObjectIndexZ	 ; Update index backup
 
-	JSR CannonFire_DrawAndUpdate	; Draw and Update Cannon Fire
+	JSR ObjectGenerator_DrawAndUpdate	; Draw and Update Cannon Fire
 
 	DEX		 ; X--
 	BPL PRG007_BB78	; While X >= 0, loop!
@@ -3716,181 +3383,82 @@ PRG007_BB80:
 	RTS		 ; Return
 
 
-CannonFire_DrawAndUpdate:
-	LDA CannonFire_ID,X
+ObjectGenerator_DrawAndUpdate:
+
+	LDA ObjectGenerator_ID,X
 	BEQ PRG007_BB80	 ; If this slot is unused/empty, jump to PRG007_BB80 (RTS)
 
 	PHA		 ; Save ID
 
-	; Update CannonFire_Timer
-	LDA CannonFire_Timer,X
-	BEQ PRG007_BB8F	 ; If CannonFire_Timer = 0, jump to CannonFire_Timer
-	DEC CannonFire_Timer,X	 ; CannonFire_Timer--
+	; Update ObjectGenerator_Timer
+	LDA ObjectGenerator_Timer,X
+	BEQ PRG007_BB8F	 ; If ObjectGenerator_Timer = 0, jump to ObjectGenerator_Timer
+
+	DEC ObjectGenerator_Timer,X	 ; ObjectGenerator_Timer--
 	BNE PRG007_BB8F
 
-	LDA MiscValue1
+	LDA EventType
 	AND #$80
 	BEQ PRG007_BB8F
+
 	LDA TrapSet
 	BNE PRG007_BB8F
-	INC CannonFire_Timer,X
+
+	INC ObjectGenerator_Timer,X
 
 PRG007_BB8F:
 
-	; Update CannonFire_Timer2
-	LDA CannonFire_Timer2,X
+	; Update ObjectGenerator_Timer2
+	LDA ObjectGenerator_Timer2,X
 	BEQ PRG007_BB97
-	DEC CannonFire_Timer2,X
+	DEC ObjectGenerator_Timer2,X
 
 PRG007_BB97:
 	PLA		 ; Restore ID
 	STA TempA
 	JSR DetermineCannonVisibilty
+	
 	LDA TempA
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word PRG007_BB80	; 00: Unused (would never get here anyway)
-	.word CFire_BulletBill	; 01: Bullet Bill cannon
-	.word CFire_BulletBill	; 02: Missile Bill (homing Bullet Bill)
-	.word Cfire_Bobombs	; 03: Creates Rocky Wrench
-	.word CFire_Platform	; 04: 4-way cannon
-	.word CFire_GoombaPipe	; 05: Goomba pipe (left output)
-	.word CFire_ShellCannon	; 06: Goomba pipe (right output)
-	.word CFire_Cannonball 	; 07: Fires cannonballs horizontally left
-	.word CFire_Cannonball	; 08: Fires BIG cannonballs horizontally left
-	.word CFire_Cannonball	; 09: Fires cannonballs diagonally, upper left
-	.word CFire_Cannonball	; 0A: Fires cannonballs diagonally, upper right
-	.word CFire_Cannonball	; 0B: Fires cannonballs diagonally, lower left
-	.word CFire_Cannonball	; 0C: Fires cannonballs diagonally, lower right
-	.word CFire_Cannonball	; 0D:
-	.word CFire_Cannonball	; 0E: 
-	.word CFire_Cannonball 	; 0F: 
-	.word CFire_Cannonball	; 10:
-	.word CFire_Cannonball	; 11: Fires cannonballs horizontally right
-	.word CFire_Cannonball	; 12: Fires BIG cannonballs horizontally right
-	.word CFire_Cannonball	; 13: Launches fused Bob-ombs to the left
-	.word CFire_Cannonball	; 14: Launches fused Bob-ombs to the right
+	.word PRG007_BB80	;
+	.word ObjectGen_BulletBill	; 
+	.word ObjectGen_BulletBill	; 
+	.word ObjectGen_Cannonball 	; 
+	.word ObjectGen_Platform	;
+	.word ObjectGen_Enemy ; 
+	.word ObjectGen_ShellCannon	; #C1
+	.word ObjectGen_Goombas	; #C2
+	.word ObjectGen_Cannonball 	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball 	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Bobombs	; #CE
+	.word ObjectGen_Cannonball	; 
+	.word ObjectGen_Cannonball	; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Laser code removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-CFire_Cannonball:
-
-	LDA CannonFire_Timer,X
-	BNE PRG007_BC5B	 ; If timer not expired, jump to PRG007_BC5B (RTS)
-
-	LDA CannonFire_X,X
-	CMP <Horz_Scroll
-	LDA CannonFire_XHi,X
-	SBC <Horz_Scroll_Hi
-	BNE PRG007_BC5B	 ; If Cannon Fire is off-screen left, jump to PRG007_BC5B (RTS)
-
-	LDA CannonFire_X,X
-	SUB <Horz_Scroll
-	CMP #240
-	BGE PRG007_BC5B	 ; If Cannon Fire is off-screen right, jump to PRG007_BC5B (RTS)
-
-	; Reload timer = $87
-	LDA #$87
-	STA CannonFire_Timer,X
-
-	; Temp_Var1 = this particular Cannon Fire ID
-	LDA CannonFire_ID,X
-	STA <Temp_Var1
-
-	CMP #CFIRE_HRBIGCANNON
-	BEQ PRG007_BC4B	 ; If this is the right-shooting BIG Cannon, jump to PRG007_BC4B
-
-	CMP #CFIRE_HLBIGCANNON
-	BNE PRG007_BC4E	 ; If this is NOT the left-shooting BIG Cannon, jump to PRG007_BC4E
-
-PRG007_BC4B:
-	JMP PRG007_BC5C	 ; For all BIG Cannons, jump to PRG007_BC5C
-
-PRG007_BC4E:
-	CMP #CFIRE_LBOBOMBS
-	BLT PRG007_BC55	 ; If this is not one of the Bob-omb cannons, jump to PRG007_BC55
-
-	JMP Cfire_Bobombs	 ; For all Bob-omb cannons, jump to PRG007_BCB4
-
-PRG007_BC55: 
-	ADD #(Cannons_CPXOff - CannonPoof_XOffs - CFIRE_HLCANNON)	; Offset to proper array index for this Cannon Fire
-	JMP PRG007_BE59	 ; Jump to PRG007_BE59 (fire cannonball!)
-
-PRG007_BC5B:
-	RTS		 ; Return
-
-
-PRG007_BC5C:
-
-	; Left/right BIG Cannons
-
-	JSR PrepareNewObjectOrAbort	; Get me an object slot or don't come back!
-
-	; This is a BIG Cannon Ball!
-	LDA #OBJ_BIGCANNONBALL
-	STA Objects_ID,X
-
-	LDY <CurrentObjectIndexZ	; Y = Cannon Fire slot index
-
-	; Set BIG Cannon Ball Y
-	LDA CannonFire_Y,Y
-	STA <Objects_YZ,X
-	LDA CannonFire_YHi,Y
-	STA <Objects_YHiZ,X
-
-	LDA <Temp_Var1
-	CMP #CFIRE_HRCANNON
-
-	LDA #$30	 ; A = $30
-	LDY #$12	 ; Y = $12
-
-	BGE PRG007_BC81	 ; Basically if this is the right-shooting BIG Cannon, jump to PRG007_BC81
-
-	LDY #$09	 ; Y = $09
-	LDA #-$30	 ; A = -$30
-
-PRG007_BC81:
-	STY <Temp_Var1	 ; Temp_Var1 = $12 (if right-shooting) or $09 (if left-shooting)
-
-	STA <Objects_XVelZ,X	 ; X velocity = -$30 or $30, depending on direction
-
-	EOR #$80	 ; Invert the sign bit
-
-	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire slot index
-
-	ASL A		 ; Inverted sign bit -> carry
-
-	; Set BIG Cannon Ball X
-	LDA CannonFire_X,Y
-	BCS PRG007_BC92	 ; If right-shooting, jump to PRG007_BC92
-	SUB #16		; -16 for left-shooting
-
-PRG007_BC92:
-	STA <Objects_XZ,X
-	LDA CannonFire_XHi,Y
-	SBC #$00
-	STA <Objects_XHiZ,X
-
-	;JSR PRG007_BD09		; Set attribute and make noise and smoke!
-	JSR CannonFire_NoiseAndSmoke	 ; make more smoke!!
-
-	; +4 to this smoke though
-	LDA CannonFire_Y,X
-	SUB Level_VertScroll
-	ADD #$04
-	STA Brick_DebrisYHi
-
-	; +8 to the other smoke
-	ADC #$08
-	STA Brick_DebrisYHi+1
+ObjectGen_Cannonball:
 
 	RTS		 ; Return
 
 BobOmbXOffset:		.byte $00, $00, $08, $08
 BobOmbYOffset:		.byte $F8, $F8, $00, $00
-Cfire_Bobombs:
+
+ObjectGen_Bobombs:
+	LDA ObjectGenerator_Timer, X
+	BNE BobOmbGeneratorRTS
+
 	LDA #OBJ_BOBOMB
 	STA <Object_Check
 
@@ -3909,8 +3477,9 @@ Cfire_Bobombs:
 
 	LDA #$28
 	STA Objects_Timer, X
+	STA Objects_NoExp, X
 
-	LDA CannonFire_Property, Y
+	LDA ObjectGenerator_Property, Y
 	AND #$03
 	ADD #$01
 	STA BobOmb_Action, X
@@ -3918,7 +3487,7 @@ Cfire_Bobombs:
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
 
-	LDA CannonFire_Property, Y
+	LDA ObjectGenerator_Property, Y
 	AND #$03
 	TAY
 	LDA BobOmbXOffset,Y
@@ -3930,34 +3499,111 @@ Cfire_Bobombs:
 	LDY <CurrentObjectIndexZ	
 
 	
-	LDA CannonFire_Y,Y
+	LDA ObjectGenerator_Y,Y
 	ADD <Temp_Var2
 	STA <Objects_YZ,X
 
-	LDA CannonFire_YHi,Y
+	LDA ObjectGenerator_YHi,Y
 	STA <Objects_YHiZ,X
 
-	LDA CannonFire_X,Y
+	LDA ObjectGenerator_X,Y
 	ADD <Temp_Var1
 	STA <Objects_XZ,X
 
-	LDA CannonFire_XHi,Y
+	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
 
 	JSR Object_CalcBoundBox
 	JSR Object_FacePlayer
 
-	LDA CannonFire_Property, Y
+	LDA ObjectGenerator_Property, Y
 	AND #$04
 	LSR A
 	LSR A
 	STA Objects_Property, X
 
-	LDA #$A0
-	STA CannonFire_Timer, Y
+	LDA #$C0
+	STA ObjectGenerator_Timer, Y
 	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 
 BobOmbGeneratorRTS:
+	RTS
+
+
+GoombaXOffset:		.byte $00, $00, $08, $08
+GoombaYOffset:		.byte $F8, $F8, $00, $00
+ObjectGen_Goombas:
+	LDA ObjectGenerator_Timer, X
+	BNE GoombaGeneratorRTS
+
+	LDA #OBJ_GOOMBA
+	STA <Object_Check
+
+	JSR CheckObjectsOfType
+
+	LDA <Num_Objects
+	CMP #$03
+	BCS GoombaGeneratorRTS
+
+	JSR PrepareNewObjectOrAbort
+
+	LDY <CurrentObjectIndexZ	
+
+	LDA #OBJ_GOOMBA
+	STA Objects_ID,X
+
+	LDA #$28
+	STA Objects_Timer, X
+	STA Objects_NoExp, X
+
+	LDA ObjectGenerator_Property, Y
+	AND #$03
+	ADD #$01
+	STA Goomba_Action, X
+
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+
+	LDA ObjectGenerator_Property, Y
+	AND #$03
+	TAY
+	LDA GoombaXOffset,Y
+	STA <Temp_Var1
+
+	LDA GoombaYOffset,Y
+	STA <Temp_Var2
+
+	LDY <CurrentObjectIndexZ	
+	
+	LDA ObjectGenerator_Y,Y
+	ADD <Temp_Var2
+	STA <Objects_YZ,X
+
+	LDA ObjectGenerator_YHi,Y
+	STA <Objects_YHiZ,X
+
+	LDA ObjectGenerator_X,Y
+	ADD <Temp_Var1
+	STA <Objects_XZ,X
+
+	LDA ObjectGenerator_XHi,Y
+	STA <Objects_XHiZ,X
+
+	JSR Object_CalcBoundBox
+	JSR Object_FacePlayer
+
+	LDA ObjectGenerator_Property, Y
+	AND #$04
+	LSR A
+	LSR A
+	STA Objects_Property, X
+
+	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
+
+	LDA #$C0
+	STA ObjectGenerator_Timer, Y
+
+GoombaGeneratorRTS:
 	RTS
 
 Goomb_XVelocity:	.byte $E0, $20
@@ -3975,8 +3621,8 @@ EnemyCannonDirection:
 EnemyCannonColor:
 	.byte SPR_PAL3, SPR_PAL1
 
-CFire_GoombaPipe:
-	LDA CannonFire_Timer,X
+ObjectGen_Enemy:
+	LDA ObjectGenerator_Timer,X
 	BNE PRG007_BD7A	 ; If timer not expired, jump to PRG007_BD7A (RTS)
 
 	LDA Kill_Tally
@@ -3988,29 +3634,29 @@ CFire_GoombaPipe:
 
 	; Set timer to $70
 	LDA #$70
-	STA CannonFire_Timer,X	; (only used here, then it goes back to 'X' anyway)
+	STA ObjectGenerator_Timer,X	; (only used here, then it goes back to 'X' anyway)
 
-	INC CannonFire_Var,X	 ; CannonFire_Var++
+	INC ObjectGenerator_Var,X	 ; ObjectGenerator_Var++
 
-	LDA CannonFire_Var,X
+	LDA ObjectGenerator_Var,X
 	AND #$03
 	BEQ PRG007_BD7A	 ; 1:4 ticks proceed, otherwise jump to PRG007_BD7A (RTS)
 
 	JSR PrepareNewObjectOrAbort	 ; Prepare me a Goomba!
 
 	; Set Goomba X
-	LDA CannonFire_X,Y
+	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
-	LDA CannonFire_XHi,Y
+	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
-	LDA CannonFire_Y,Y
+	LDA ObjectGenerator_Y,Y
 	STA <Objects_YZ,X
-	LDA CannonFire_YHi,Y
+	LDA ObjectGenerator_YHi,Y
 	STA <Objects_YHiZ,X
 
 PRG007_BD49:
 	; set the motion of the goomba as it "pops" out of the pipe
-	LDA CannonFire_Property, Y
+	LDA ObjectGenerator_Property, Y
 	AND #$01
 	TAY
 	LDA EnemyCannonDirection, Y
@@ -4020,7 +3666,7 @@ PRG007_BD49:
 	LDA Goomb_XVelocity, Y
 	STA <Objects_XVelZ, X
 
-	LDA CannonFire_Property, Y
+	LDA ObjectGenerator_Property, Y
 	LSR A
 	TAY
 	; It's a Goomba
@@ -4038,12 +3684,12 @@ PRG007_BD49:
 	STA Objects_Property, X
 
 	LDX <CurrentObjectIndexZ
-	LDA CannonFire_Property, X
+	LDA ObjectGenerator_Property, X
 	AND #$01
 	TAY
 	
 	
-	JSR CannonFire_NoiseAndSmoke
+	JSR ObjectGenerator_NoiseAndSmoke
 
 PRG007_BD78:
 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
@@ -4052,39 +3698,39 @@ PRG007_BD7A:
 	RTS		 ; Return
 
 
-CFire_ShellCannon:
-	LDA CannonFire_Timer,X
-	BNE CFire_ShellCannon1	 ; If timer not expired, jump to PRG007_BD7A (RTS)
+ObjectGen_ShellCannon:
+	LDA ObjectGenerator_Timer,X
+	BNE ObjectGen_ShellCannon1	 ; If timer not expired, jump to PRG007_BD7A (RTS)
 
 	LDA Kill_Tally
 	CMP #$03
-	BCS CFire_ShellCannon1
+	BCS ObjectGen_ShellCannon1
 
 	TXA
 	TAY
 	; Set timer to $70
 	LDA #$70
-	STA CannonFire_Timer,X	; (only used here, then it goes back to 'X' anyway)
+	STA ObjectGenerator_Timer,X	; (only used here, then it goes back to 'X' anyway)
 
-	INC CannonFire_Var,X	 ; CannonFire_Var++
+	INC ObjectGenerator_Var,X	 ; ObjectGenerator_Var++
 
-	LDA CannonFire_Var,X
+	LDA ObjectGenerator_Var,X
 	AND #$03
-	BEQ CFire_ShellCannon1	 ; 1:4 ticks proceed, otherwise jump to PRG007_BD7A (RTS)
+	BEQ ObjectGen_ShellCannon1	 ; 1:4 ticks proceed, otherwise jump to PRG007_BD7A (RTS)
 
 	JSR PrepareNewObjectOrAbort	 ; Prepare me a Goomba!
 
 	; Set Goomba X
-	LDA CannonFire_X,Y
+	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
-	LDA CannonFire_XHi,Y
+	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
-	LDA CannonFire_Y,Y
+	LDA ObjectGenerator_Y,Y
 	STA <Objects_YZ,X
-	LDA CannonFire_YHi,Y
+	LDA ObjectGenerator_YHi,Y
 	STA <Objects_YHiZ,X
 	; set the motion of the goomba as it "pops" out of the pipe
-	LDA CannonFire_Property, Y
+	LDA ObjectGenerator_Property, Y
 	TAY
 	LDA Goomb_YVelocity, Y
 	STA <Objects_YVelZ, X
@@ -4106,13 +3752,13 @@ CFire_ShellCannon:
 	STA Objects_SpriteAttributes,X
 
 	LDX <CurrentObjectIndexZ
-	LDA CannonFire_Property, X
+	LDA ObjectGenerator_Property, X
 	AND #$01
 	TAY
 	
-	JSR CannonFire_NoiseAndSmoke
+	JSR ObjectGenerator_NoiseAndSmoke
 
-CFire_ShellCannon1:
+ObjectGen_ShellCannon1:
 	RTS		 ; Return
 
 PRG007_BD82:
@@ -4131,18 +3777,18 @@ CannonPoof_XOffs:
 FourWay_CPXOff:	.byte $08, $18, $1C, $18, $08, $F8, $F4, $F8
 
 Cannons_CPXOff:
-	.byte -$0C	; CFIRE_ULCANNON
-	.byte -$0C	; CFIRE_URCANNON
-	.byte -$08	; CFIRE_LLCANNON
-	.byte  $08	; CFIRE_LRCANNON
-	.byte -$08	; CFIRE_HLCANNON2
-	.byte  $08	; CFIRE_ULCANNON2
-	.byte  $00	; CFIRE_URCANNON2
-	.byte  $00	; CFIRE_LLCANNON2
-	.byte  $00	; CFIRE_HRCANNON
+	.byte -$0C	; ObjectGen_ULCANNON
+	.byte -$0C	; ObjectGen_URCANNON
+	.byte -$08	; ObjectGen_LLCANNON
+	.byte  $08	; ObjectGen_LRCANNON
+	.byte -$08	; ObjectGen_HLCANNON2
+	.byte  $08	; ObjectGen_ULCANNON2
+	.byte  $00	; ObjectGen_URCANNON2
+	.byte  $00	; ObjectGen_LLCANNON2
+	.byte  $00	; ObjectGen_HRCANNON
 	.byte  $00	; Not used?
-	.byte  $0C	; CFIRE_LBOBOMBS
-	.byte  $0C	; CFIRE_RBOBOMBS
+	.byte  $0C	; ObjectGen_LBOBOMBS
+	.byte  $0C	; ObjectGen_RBOBOMBS
 
 
 Bill_CPXOff:	.byte $0C, -$0C		; Bullet/Missile Bill
@@ -4151,18 +3797,18 @@ CannonPoof_YOffs:
 FourWay_CPYOff:	.byte $F3, $F7, $07, $17, $1B, $17, $07, $F7
 
 Cannons_CPYOff:
-	.byte  $00	; CFIRE_ULCANNON
-	.byte  $08	; CFIRE_URCANNON
-	.byte -$08	; CFIRE_LLCANNON
-	.byte -$08	; CFIRE_LRCANNON
-	.byte  $08	; CFIRE_HLCANNON2
-	.byte  $08	; CFIRE_ULCANNON2
-	.byte  $00	; CFIRE_URCANNON2
-	.byte  $00	; CFIRE_LLCANNON2
-	.byte  $00	; CFIRE_HRCANNON
+	.byte  $00	; ObjectGen_ULCANNON
+	.byte  $08	; ObjectGen_URCANNON
+	.byte -$08	; ObjectGen_LLCANNON
+	.byte -$08	; ObjectGen_LRCANNON
+	.byte  $08	; ObjectGen_HLCANNON2
+	.byte  $08	; ObjectGen_ULCANNON2
+	.byte  $00	; ObjectGen_URCANNON2
+	.byte  $00	; ObjectGen_LLCANNON2
+	.byte  $00	; ObjectGen_HRCANNON
 	.byte  $00	; Not used?
-	.byte  $00	; CFIRE_LBOBOMBS
-	.byte  $00	; CFIRE_RBOBOMBS
+	.byte  $00	; ObjectGen_LBOBOMBS
+	.byte  $00	; ObjectGen_RBOBOMBS
 
 Bill_CPYOff:	.byte $00, $00		; Bullet/Missile Bill
 
@@ -4173,11 +3819,11 @@ DetermineCannonVisibilty:
 	LDY #$01
 
 DetermineCannonVisibilty1:
-	LDA CannonFire_X,X
+	LDA ObjectGenerator_X,X
 	ADD CannonWidths,Y
 	STA <Temp_Var15		; Temp_Var15 = object's X + ??
 
-	LDA CannonFire_XHi,X
+	LDA ObjectGenerator_XHi,X
 	ADC #$00	 
 	STA <Temp_Var16		; Temp_Var16 = Object's X Hi with carry applied
 
@@ -4198,13 +3844,13 @@ DetermineCannonVisibilty2:
 
 	RTS		 ; Return
 
-CFire_Platform:
+ObjectGen_Platform:
 
-	LDA CannonFire_Timer, X
-	BNE CFire_Platform1
+	LDA ObjectGenerator_Timer, X
+	BNE ObjectGen_Platform1
 
 	JSR Object_FindEmptyX
-	BCC CFire_Platform1
+	BCC ObjectGen_Platform1
 
 	LDY <CurrentObjectIndexZ
 
@@ -4214,16 +3860,16 @@ CFire_Platform:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
 
-	LDA CannonFire_X,Y
+	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
 
-	LDA CannonFire_XHi,Y
+	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
 
-	LDA CannonFire_Y,Y
+	LDA ObjectGenerator_Y,Y
 	STA <Objects_YZ,X
 
-	LDA CannonFire_YHi,Y
+	LDA ObjectGenerator_YHi,Y
 	STA <Objects_YHiZ,X
 
 	LDA #$10
@@ -4240,11 +3886,11 @@ CFire_Platform:
 	STA Objects_SpriteAttributes,X
 
 	LDA #$A0
-	STA CannonFire_Timer, Y
+	STA ObjectGenerator_Timer, Y
 
 	JSR Object_CalcBoundBox
 
-CFire_Platform1:
+ObjectGen_Platform1:
 	RTS
 	
 PlatformGenTimer:
@@ -4273,7 +3919,7 @@ PRG007_BE69:
 	STA SpecialObj_ID,Y
 
 	; Set cannonball X
-	LDA CannonFire_X,X
+	LDA ObjectGenerator_X,X
 	CLC
 	LDX <Temp_Var1		; X = 0 to 7
 	ADC CannonPoof_XOffs,X
@@ -4301,9 +3947,9 @@ PRG007_BE69:
 PRG007_BE91:
 	CLC
 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
-	ADC CannonFire_Y,X
+	ADC ObjectGenerator_Y,X
 	STA SpecialObj_Y,Y
-	LDA CannonFire_YHi,X
+	LDA ObjectGenerator_YHi,X
 	ADC <Temp_Var3		; 16-bit sign extension
 	STA SpecialObj_YHi,Y	
 
@@ -4311,14 +3957,14 @@ PRG007_BE91:
 	LDA #$00
 	STA SpecialObj_Data1,Y
 
-	JMP CannonFire_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
+	JMP ObjectGenerator_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
 
 PRG007_BEAA:
 	RTS		 ; Return
 
 	; Produces the smoke resulting from cannon fire; specify X/Y offset
 	; from Cannon Fire's position by Temp_Var1 which indexes CannonPoof_X/YOffs 
-CannonFire_NoiseAndSmoke:
+ObjectGenerator_NoiseAndSmoke:
 	LDX <CurrentObjectIndexZ
 
 	; Cannon firing noise
@@ -4326,9 +3972,9 @@ CannonFire_NoiseAndSmoke:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-	LDA CannonFire_Y,X
+	LDA ObjectGenerator_Y,X
 	CMP Level_VertScroll
-	LDA CannonFire_YHi,X
+	LDA ObjectGenerator_YHi,X
 	SBC Level_VertScrollH
 	BNE CannonPoofRTS		; If Cannon Fire has fallen off screen vertically, jump to PRG007_BF28 (RTS)
 
@@ -4339,13 +3985,13 @@ CannonFire_NoiseAndSmoke:
 	STA BrickBust_En
 
 	LDA CanonPoofXOffset, Y
-	ADD CannonFire_X,X
+	ADD ObjectGenerator_X,X
 	SUB <Horz_Scroll	; Make relative to horizontal scroll
 	STA Brick_DebrisX		; Set X
 
 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 
-	LDA CannonFire_Y,X	 ; + Cannon Fire Y
+	LDA ObjectGenerator_Y,X	 ; + Cannon Fire Y
 	SUB #$08
 	SUB Level_VertScroll	 ; Make relative to vertical scroll
 	STA Brick_DebrisYHi	 ; Set Y
@@ -4360,13 +4006,13 @@ CannonPoofRTS:
 
 Rocky_InitAttr:	.byte SPR_HFLIP | SPR_BEHINDBG, SPR_BEHINDBG
 
-CFire_RockyWrench:
-	LDA CannonFire_Timer,X
+ObjectGen_RockyWrench:
+	LDA ObjectGenerator_Timer,X
 	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
 
 	; Reset cannon timer to $C0
 	LDA #$c0
-	STA CannonFire_Timer,X
+	STA ObjectGenerator_Timer,X
 
 	JSR PrepareNewObjectOrAbort	; Get me a slot for Rocky Wrench or don't come back!
 
@@ -4377,17 +4023,17 @@ CFire_RockyWrench:
 	STA Objects_ID,X
 
 	; Start at Cannon Fire Y - 6
-	LDA CannonFire_Y,Y
+	LDA ObjectGenerator_Y,Y
 	SUB #$06
 	STA <Objects_YZ,X
-	LDA CannonFire_YHi,Y
+	LDA ObjectGenerator_YHi,Y
 	SBC #$00
 	STA <Objects_YHiZ,X
 
 	; Set Rocky's X to Cannon Fire's X
-	LDA CannonFire_XHi,Y
+	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
-	LDA CannonFire_X,Y
+	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
 
 	; Var5 = 0
@@ -4414,10 +4060,11 @@ PRG007_BF28:
 				  
 Bill_XVel:	.byte -$18, $18, $00, $18, $18, $00, -$18, -$18
 Bill_YVel:	.byte $00, $00, $18, $18, -$18, -$18, -$18, $18
+
 CanonTimers: .byte $20, $40, $60, $40, $20, $80, $40, $60
-CFire_BulletBill:
+ObjectGen_BulletBill:
 	
-	LDA CannonFire_Timer,X
+	LDA ObjectGenerator_Timer,X
 	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
 
 	; Reset Cannon Fire timer to $80-$9F, random
@@ -4425,16 +4072,16 @@ CFire_BulletBill:
 	AND #$07
 	TAY
 	LDA CanonTimers, Y
-	STA CannonFire_Timer,X
+	STA ObjectGenerator_Timer,X
 
-	LDA CannonFire_X,X
+	LDA ObjectGenerator_X,X
 	SUB <Horz_Scroll
 	ADD #16
 	CMP #32
 	BLT PRG007_BF28		; If Cannon Fire X + 16 is less than 32 pixels from screen edge, jump to PRG007_BF28 (RTS)
 
 	LDA <Player_X
-	SBC CannonFire_X,X
+	SBC ObjectGenerator_X,X
 	ADD #17
 	CMP #34
 	BLT PRG007_BF28		; If Player is standing on Bullet Bill cannon, jump to PRG007_BF28 (RTS)
@@ -4443,9 +4090,10 @@ CFire_BulletBill:
 
 	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire object slot
 
-	LDA CannonFire_Property, Y
+	LDA ObjectGenerator_Property, Y
 	TAY
-	LDA CannonFire_ID,Y
+
+	LDA ObjectGenerator_ID,Y
 	LSR A		; Selects which Bill type
 
 	LDA #OBJ_BULLETBILL
@@ -4464,32 +4112,32 @@ PRG007_BF80:
 	STA Objects_SpriteAttributes,X
 
 	; Set Bill's Y
-	LDA CannonFire_Y,Y
+	LDA ObjectGenerator_Y,Y
 	SUB #$01
 	STA <Objects_YZ,X
 
-	LDA CannonFire_YHi,Y
+	LDA ObjectGenerator_YHi,Y
 	SBC #$00
 	STA <Objects_YHiZ,X
 
 	; Set Bill's X
-	LDA CannonFire_XHi,Y
+	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
 
-	LDA CannonFire_X,Y
+	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
 	STA Objects_Data11,X	; original X hold
 
-	LDA CannonFire_Property,Y
+	LDA ObjectGenerator_Property,Y
 	TAY
 	BNE PRG007_BF81
 
-	LDA CannonFire_X, Y
+	LDA ObjectGenerator_X, Y
 	STA Objects_BoundLeft + 9
 	ADD #$10
 	STA Objects_BoundRight + 9
 
-	LDA CannonFire_XHi, Y
+	LDA ObjectGenerator_XHi, Y
 	STA Objects_BoundLeftHi + 9
 	ADC #$00
 	STA Objects_BoundRightHi + 9
@@ -4509,7 +4157,7 @@ PRG007_BF81:
 
 	LDY <CurrentObjectIndexZ	; X = Cannon Fire slot index
 
-	JSR CannonFire_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
+	JSR ObjectGenerator_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
 
 	RTS		 ; Return
 

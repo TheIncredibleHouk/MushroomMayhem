@@ -1345,9 +1345,10 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Player_PrevXDirection:	ds 1
 	RhythmPlatformEnabed: .ds 1
 	RhythmPlatformInitiated: .ds 1
+	RhythmKeeperCounter: .ds 1;
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;
-	RhythmCounter: .ds 1;
+	RhythmCounter:	    .ds 1;
 	DPad_RhythmControl: .ds 1
 
 ; $0461-$0462 are reserved for use by the sound/music engine
@@ -1621,15 +1622,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Block_ChangeYHi:	.ds 3	; Player Y High value when block change was queued
 	Block_ChangeY:	.ds 3	; Player Y Low value when block change was queued
 
-	; the block "bounce" that occurs after hitting ? block, music note block, etc.
-	Level_BlkBump_Pos:	.ds 2	; $052C-$052D Block bump effect slot "position" (from 10 down, "position" of bounce)
-	Level_BlkBump:		.ds 3	; $052E-$0530 Block bump effect slot (use Block_NeedsUpdate value, or 0 for inactive)
-	Level_BlkBump_XHi:	.ds 3	; $0531-$0533 Block bump slot X Hi
-	Level_BlkBump_XLo:	.ds 3	; $0534-$0536 Block bump slot X Lo
-	Level_BlkBump_YHi:	.ds 3	; $0537-$0539 Block bump slot Y Hi
-	Level_BlkBump_YLo:	.ds 3	; $053A-$053C Block bump slot Y Lo
-	Level_BlkFinish:	.ds 1
-
+	Objects_NoExp:	.ds 8;
 	; The alternate vertical scrolls are used so that raster effects can be properly implemented!
 	Level_VertScrollH:	.ds 1	; Alternate VertScroll_Hi used by engine, adjusted before being sent to Vert_Scroll_Hi
 	Level_VertScroll:	.ds 1	; Alternate VertScroll used by engine, adjusted before being sent to Vert_Scroll
@@ -1969,9 +1962,9 @@ ATTR_BUMPOTHERS		= %10000000
 	SpecialObj_Timer:	.ds 8	; $06D1-$06D8 "Timer" values; automatically decrements to zero
 
 
-	CannonFire_Var:		.ds 8	; $06DB-$06E2
-	CannonFire_Timer:	.ds 8	; $06E3-$06EA Cannon Fire timer, decrements to zero
-	CannonFire_Property: .ds 8;
+	ObjectGenerator_Var:		.ds 8	; $06DB-$06E2
+	ObjectGenerator_Timer:	.ds 8	; $06E3-$06EA Cannon Fire timer, decrements to zero
+	ObjectGenerator_Property: .ds 8;
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0700
 .Bound_0700:	BoundCheck .Bound_0700, $0700, $06xx RAM
@@ -2600,12 +2593,12 @@ CFIRE_LBOBOMBS		= $13	; Launches fused Bob-ombs to the left
 CFIRE_RBOBOMBS		= $14	; Launches fused Bob-ombs to the right
 CFIRE_LASER		= $15	; Laser fire
 
-	CannonFire_ID:		.ds 8	; $7A15-$7A1C ID of the cannon fire
-	CannonFire_YHi:		.ds 8	; $7A1D-$7A24 Cannon fire Y Hi
-	CannonFire_Y:		.ds 8	; $7A25-$7A2C Cannon fire Y
-	CannonFire_XHi:		.ds 8	; $7A2D-$7A34 Cannon fire X Hi
-	CannonFire_X:		.ds 8	; $7A35-$7A3C Cannon fire X
-	CannonFire_Parent:	.ds 8	; $7A3D-$7A44 Tie back to level object index of "parent" object
+	ObjectGenerator_ID:		.ds 8	; $7A15-$7A1C ID of the cannon fire
+	ObjectGenerator_YHi:		.ds 8	; $7A1D-$7A24 Cannon fire Y Hi
+	ObjectGenerator_Y:		.ds 8	; $7A25-$7A2C Cannon fire Y
+	ObjectGenerator_XHi:		.ds 8	; $7A2D-$7A34 Cannon fire X Hi
+	ObjectGenerator_X:		.ds 8	; $7A35-$7A3C Cannon fire X
+	ObjectGenerator_Parent:	.ds 8	; $7A3D-$7A44 Tie back to level object index of "parent" object
 
 	Splash_DisTimer:	.ds 1	; Player water splashes are disabled until decrements to zero; set when Player hits any bounce block
 
@@ -2615,7 +2608,7 @@ CFIRE_LASER		= $15	; Laser fire
 ; NOTE!! These object vars are OBJECT SLOT 0 - 5 ONLY!
 	ObjSplash_DisTimer:	.ds 6	; $7A4F-$7A54 Object water/lava splashes are disabled until decrements to zero
 
-	CannonFire_Timer2:	.ds 8	; $7A57-$7A5E Cannon Fire timer (decrements to zero)
+	ObjectGenerator_Timer2:	.ds 8	; $7A57-$7A5E Cannon Fire timer (decrements to zero)
 
 	Roulette_Unused7A5F:	.ds 1	; Unused value in Roulette game
 	Roulette_Unused7A5F_Delta:.ds 1	; Delta value added to Roulette_Unused7A5F
@@ -2997,25 +2990,22 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	Tile_DetectionXHi:		.ds 1	; Object tile detect X Hi
 	Tile_DetectionX:		.ds 1	; Object tile detect X Lo
 
+	Tile_CenterDetectionYHi:		.ds 1	; Object tile detect Y Hi
+	Tile_CenterDetectionY:		.ds 1	; Object tile detect Y Lo
+	Tile_CenterDetectionXHi:		.ds 1	; Object tile detect X Hi
+	Tile_CenterDetectionX:		.ds 1	; Object tile detect X Lo
+
 	Bubble_Cnt:		.ds 3	; $7F7A-$7F7C Bubble counter value (0 = no bubble)
 
 ; NOTE: Object_WatrHit* values are set only once, then WatrHit_IsSetFlag latches
 ; and they will never update again; seems it is leftover debug code or maybe
 ; an unused feature (that an object could respond to a splashdown)
-	WatrHit_IsSetFlag:	.ds 1	; Set when Object_WatrHit* values are stored (but never cleared, so only once!)
-	Bubble_YHi:		.ds 3	; $7F7E-$7F80 Water Bubble Y Hi
-	Object_WatrHitYHi:	.ds 1	; Y Hi of object that just hit water
-	Bubble_Y:		.ds 3	; $7F82-$7F84 Water Bubble Y
-	Object_WatrHitY:	.ds 1	; Y of object that just hit water
-	Bubble_XHi:		.ds 3	; $7F86-$7F88 Water Bubble X Hi
-	Object_WatrHitXHi:	.ds 1	; X Hi of object that just hit water
-	Bubble_X:		.ds 3	; $7F8A-$7F8C Water Bubble X
-	Object_WatrHitX:	.ds 1	; X of object that just hit water
 
-	Splash_Counter:		.ds 3	; $7F8E-$7F90 Water splash counter
-	Splash_Y:		.ds 3	; $7F91-$7F93 Water splash X
-	Splash_X:		.ds 3	; $7F94-$7F96 Water splash Y
-	Splash_NoScrollY:	.ds 3	; $7F97-$7F99 If set, flags this water splash to not display sprite Y as relative to screen scroll
+
+	Splash_Counter:		.ds 0	; $7F8E-$7F90 Water splash counter
+	Splash_Y:			.ds 0	; $7F91-$7F93 Water splash X
+	Splash_X:			.ds 0	; $7F94-$7F96 Water splash Y
+	Splash_NoScrollY:	.ds 0	; $7F97-$7F99 If set, flags this water splash to not display sprite Y as relative to screen scroll
 
 	Brick_Index:		.ds 1
 	BrickBust_En:		.ds 3	; $7F9A-$7F9C Brick bust "Enable" (0 = disable, 2 = brick debris, anything else = "poof" away)
@@ -3122,7 +3112,6 @@ PLAYER_POOF			= 05
 	Magic_Stars_Collected3:	.ds 16
 	Levels_Complete: .ds 16	;
 	StarLevel:			.ds 1
-	MiscValue1:			.ds 1
 	MiscValue2:			.ds 1
 	MiscValue3:			.ds 1
 	KoopaKidType:		.ds 1
@@ -3501,7 +3490,7 @@ BOUND32x32		= %00001110
 BOUND48x48		= %00001111
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
-OAT_BOUNCEOFFOTHERS	= %00010000	; Turn away from other enemies if their paths collide
+OAT_INTERACTWITHOBJECTS	= %00010000	; Turn away from other enemies if their paths collide
 OAT_ICEPROOF		= %00100000	; Object is immune to Player's weapon (i.e. fireballs/hammers)
 OAT_FIREPROOF	= %01000000	; Object is immune to Player's fireballs
 OAT_WEAPONSHELLPROOF		= %10000000	; Object will run collision routine instead of standard "Kick"-sound/100 points/OBJSTATE_KILLED [i.e. object not killed by being rammed with held object]

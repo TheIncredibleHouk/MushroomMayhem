@@ -66,9 +66,9 @@ Object_AttrFlags:
 	.byte BOUND8x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0F
 	.byte BOUND16x16	; Object $10 OBJ_PIXIE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $11
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
 	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $13
-	.byte BOUND32x32 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF 	; Object $14
+	.byte BOUND32x32 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF 	; Object $14 OBJ_GIANTCHOMP
 	.byte OAT_BOUNDBOX09 | OAT_ICEPROOF | OAT_FIREPROOF	; Object $15
 	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $16
 	.byte BOUND16x16  | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $17 - OBJ_WINGS
@@ -100,7 +100,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF; Object $31 - OBJ_PHANTO
 	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF ; Object $32 - OBJ_PHANTO_FLIP
 	.byte BOUND16x16	; Object $33 - OBJ_NIPPER
-	.byte BOUND16x24 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $34 - OBJ_TOAD
+	.byte BOUND16x24 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $34 - OBJ_TOAD
 	.byte BOUND8x16	; Object $35 - OBJ_TOADHOUSEITEM
 	.byte BOUND48x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $36 - OBJ_PLATFORM_PATH
 	.byte BOUND48x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
@@ -111,12 +111,12 @@ Object_AttrFlags:
 	.byte BOUND48x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.byte BOUND16x16	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte BOUND48x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $3E - OBJ_PLATFORMFLOATS
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF	; Object $3F - OBJ_DRYBONES
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS | OAT_FIREPROOF	; Object $3F - OBJ_DRYBONES
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF 	; Object $40 - OBJ_GOLDENPIRANHAGROWER
 	.byte BOUND16x16  	; Object $41 - OBJ_PIRANHAGROWER
 	.byte BOUND16x16 | OAT_FIREPROOF	; Object $42 - OBJ_DRYCHEEP
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $43 - OBJ_BEACHEDCHEEP
-	.byte BOUND48x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	 | OAT_WEAPONSHELLPROOF; Object $44 - OBJ_PLATFORMUNSTABLE
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $43 - OBJ_BEACHEDCHEEP
+	.byte BOUND48x16 | OAT_ICEPROOF | OAT_FIREPROOF	 | OAT_WEAPONSHELLPROOF; Object $44 - OBJ_PLATFORMUNSTABLE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $45 - OBJ_PWING
 	.byte BOUND16x16	; Object $46 - OBJ_SNIFIT
 	.byte BOUND16x32 | OAT_ICEPROOF 	; Object $47 - OBJ_BIRDO
@@ -124,16 +124,16 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4A - OBJ_MAGICSTAR
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4B - OBJ_MAGICSTAR
-	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4C - OBJ_MAGICSTAR
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF 	; Object $4C - OBJ_MAGICSTAR
 	.byte BOUND8x16	|  OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF ; Object $4D
 	.byte BOUND8x16	|  OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF ; Object $4E
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF ; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte BOUND48x48 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF		; Object $50 - OBJ_BOBOMBEXPLODE
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $51 - OBJ_ROTODISCDUAL
 	.byte BOUND16x16	; Object $52 - OBJ_SPINTULA
-	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $53 - OBJ_PIPEPODOBO
+	.byte BOUND16x16 | OAT_FIREPROOF 	; Object $53 - OBJ_PIPEPODOBO
 	.byte OAT_BOUNDBOX12 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $54
-	.byte BOUND16x16  | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $55 - OBJ_BOBOMB
+	.byte BOUND16x16  | OAT_ICEPROOF | OAT_INTERACTWITHOBJECTS; Object $55 - OBJ_BOBOMB
 	.byte OAT_BOUNDBOX07	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte OAT_BOUNDBOX07	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte BOUND16x16	; Object $58 - OBJ_FIRECHOMP
@@ -150,38 +150,38 @@ Object_AttrFlags:
 	.byte BOUND16x16	; Object $63 - OBJ_FLOATMINE
 	.byte BOUND16x16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $65 - OBJ_WATERCURRENTUPWARD
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $66 - OBJ_WATERCURRENTUPWARD
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $66 - OBJ_WATERCURRENTUPWARD
 	.byte BOUND16x16	; Object $67 - OBJ_SNOWGUY
 	.byte BOUND16x16 | OAT_FIREPROOF	; Object $68 - OBJ_TWIRLINGBUZZY
 	.byte BOUND16x16	; Object $69 - OBJ_TWIRLINGSPINY
 	.byte BOUND16x16	; Object $6A - OBJ_VEGGIEGUY
 	.byte BOUND16x16	; Object $6B - OBJ_SHYGUY
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6C - OBJ_GREENTROOPA
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6D - OBJ_REDTROOPA
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS | OAT_FIREPROOF	; Object $70 - OBJ_BUZZYBEATLE
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $71 - OBJ_SPINY
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $72 - OBJ_GOOMBA
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $73 - OBJ_PARAGOOMBA
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS 	; Object $74 - OBJ_ZOMBIEGOOMBA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $6C - OBJ_GREENTROOPA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $6D - OBJ_REDTROOPA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS | OAT_FIREPROOF	; Object $70 - OBJ_BUZZYBEATLE
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $71 - OBJ_SPINY
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $72 - OBJ_GOOMBA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $73 - OBJ_PARAGOOMBA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS 	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $75 - OBJ_WATERFILLER
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $76 - OBJ_POISONMUSHROOM
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $76 - OBJ_POISONMUSHROOM
 	.byte BOUND16x16	; Object $77 - OBJ_GREENCHEEP
 	.byte BOUND16x16 | OAT_FIREPROOF	| OAT_ICEPROOF	; Object $78 - OBJ_BULLETBILL
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $7A - OBJ_PURPLETROOPA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $7A - OBJ_PURPLETROOPA
 	.byte BOUND16x16	; Object $7B - OBJ_BLUESHELL
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $7C - OBJ_HELPER
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS 	; Object $7D - OBJ_PARAZOMBIEGOOMBA
-	.byte OAT_BOUNDBOX13 | OAT_BOUNCEOFFOTHERS	; Object $7E - OBJ_BIGGREENHOPPER
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS 	; Object $7D - OBJ_PARAZOMBIEGOOMBA
+	.byte OAT_BOUNDBOX13 | OAT_INTERACTWITHOBJECTS	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte OAT_BOUNDBOX13	; Object $7F - OBJ_BIGREDPIRANHA
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.byte BOUND16x24	; Object $81 - OBJ_HAMMERBRO
 	.byte BOUND16x24	; Object $82 - OBJ_NINJABRO
 	.byte BOUND16x16 | OAT_ICEPROOF	; Object $83 - OBJ_LAKITU
 	.byte BOUND16x16	; Object $84 - OBJ_SPINYEGG
-	.byte BOUND16x16 | OAT_BOUNCEOFFOTHERS	; Object $85 - OBJ_BLUESPINY
+	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS	; Object $85 - OBJ_BLUESPINY
 	.byte BOUND16x24	; Object $86 - OBJ_ICEBRO
 	.byte BOUND16x24	; Object $87 - OBJ_FIREBRO
 	.byte BOUND16x24	; Object $88 - OBJ_PIRATEBRO
@@ -191,9 +191,9 @@ Object_AttrFlags:
 	.byte BOUND24x32 | OAT_FIREPROOF	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte BOUND24x32 | OAT_FIREPROOF	; Object $8D - OBJ_THWOMPUPDOWN
 	.byte BOUND24x32 | OAT_FIREPROOF	; Object $8E - OBJ_THWOMPDIAGONALUL
-	.byte BOUND24x32 | OAT_BOUNCEOFFOTHERS	; Object $8F - OBJ_THWOMPDIAGONALDL
+	.byte BOUND24x32 | OAT_INTERACTWITHOBJECTS	; Object $8F - OBJ_THWOMPDIAGONALDL
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $90 - OBJ_FIREICEBAR
-	.byte BOUND16x16 | OAT_ICEPROOF | OAT_BOUNCEOFFOTHERS	; Object $91 - OBJ_FREEZIE
+	.byte BOUND16x16 | OAT_ICEPROOF | OAT_INTERACTWITHOBJECTS	; Object $91 - OBJ_FREEZIE
 	.byte BOUND16x16 | OAT_ICEPROOF 	; Object $92 - OBJ_SWOOSH
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $93 - OBJ_INTRO
 	.byte OAT_BOUNDBOX06 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $94 - OBJ_BIGQBLOCK_3UP
@@ -530,10 +530,12 @@ Object_DetectTileCenter:
 	LDA Objects_BoundLeft, X
 	ADD <Temp_Var1
 	STA Tile_DetectionX
+	STA Tile_CenterDetectionX
 
 	LDA Objects_BoundLeftHi, X
 	ADC #$00
 	STA Tile_DetectionXHi
+	STA Tile_CenterDetectionXHi
 
 	LDA Objects_BoundBottom, X
 	SUB Objects_BoundTop, X
@@ -543,10 +545,12 @@ Object_DetectTileCenter:
 	LDA Objects_BoundTop, X
 	ADD <Temp_Var1
 	STA Tile_DetectionY
+	STA Tile_CenterDetectionY
 
 	LDA Objects_BoundTopHi, X
 	ADC #$00
 	STA Tile_DetectionYHi
+	STA Tile_CenterDetectionYHi
 	JMP Object_DetectTile
 
 Object_DetectTileRightEdge:
@@ -968,43 +972,6 @@ PRG000_C9F6:
 	STA Player_Flip
 
 PRG000_C9FB:
-	LDA Block_NeedsUpdate
-	BNE PRG000_CA33	 ; If a change tile event is called for, jump to PRG000_CA33
-
-	; Check each block bump slot to see if it needs to occur
-	LDY #$00
-	LDA Level_BlkBump,Y
-	BNE PRG000_CA13
-
-	INY	
-	LDA Level_BlkBump,Y
-	BNE PRG000_CA13
-
-	INY	
-	LDA Level_BlkBump,Y
-	BEQ PRG000_CA33	
-
-PRG000_CA13:
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate	 ; Set the block bump change event
-
-	; Set relevant parameters
-	LDA Level_BlkBump_XHi,Y
-	STA Block_ChangeXHi
-
-	LDA Level_BlkBump_XLo,Y
-	STA Block_ChangeX
-
-	LDA Level_BlkBump_YHi,Y
-	STA Block_ChangeYHi
-
-	LDA Level_BlkBump_YLo,Y
-	STA Block_ChangeY
-
-	; Clear this block bump!
-	LDA #$00
-	STA Level_BlkBump,Y
-
 PRG000_CA33:
 	LDA Level_JctCtl
 	BEQ PRG000_CA40	 ; If no level junction is occurring, jump to PRG000_CA40
@@ -1268,7 +1235,7 @@ ObjState_Shelled1:
 	CMP #OBJSTATE_KILLED
 	BEQ ObjState_Shelled3
 
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	BCS ObjState_Shelled2
 
 	JSR Object_DampenVelocity
@@ -1775,6 +1742,9 @@ Object_GetKicked3:
 	LDA <Pad_Holding
 	AND #PAD_DOWN
 	BEQ Object_GetKicked4
+	
+	LDA #$10
+	STA <Objects_YVelZ, X
 
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State, X
@@ -2396,6 +2366,7 @@ ObjState_Fresh:
 	JMP [Temp_Var1]	 ; Dynamically jump to object's init routine 
 
 	; Set object's palette value
+
 ; $D3BC
 Object_SetPaletteFromAttr:
 	LDY ObjGroupRel_Idx	 	; Y = object's relative group index
@@ -2407,17 +2378,47 @@ Object_SetPaletteFromAttr:
 
 
 	; $D3E0
+
+Object_DeleteInPit:
+	LDA <Objects_YHiZ, X
+	BEQ Object_DeleteInPitRTS
+	BMI Object_DeleteInPitRTS
+
+	LDA <Objects_YZ, X
+	CMP #$C0
+	BCS Object_SetDeadAndNotSpawned
+
+Object_DeleteInPitRTS:
+	RTS
+
 DeleteRange = Temp_Var16
 Object_DeleteOffScreenRange:
 	STA DeleteRange
+	
+	JSR Object_CheckOffScreen
+	BCC Object_DeleteOffScreenRangeRTS
+
+	JMP Object_SetDeadAndNotSpawned
+
+Object_DeleteOffScreenRangeRTS:
+	RTS
 
 Object_DeleteOffScreen:
+	JSR Object_CheckOffScreen
+	BCC Object_DeleteOffScreenRTS
+
+	JMP Object_SetDeadAndNotSpawned
+
+Object_DeleteOffScreenRTS:
+	RTS
+
+Object_CheckOffScreen:
 	LDA #$28
 	STA <DeleteRange
 
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
-	BEQ Object_DeleteOffScreenRTS
+	BEQ Object_NotOffScreen
 
 	LDA <Objects_YHiZ, X
 	BEQ Object_NotTooLow
@@ -2425,11 +2426,11 @@ Object_DeleteOffScreen:
 
 	LDA <Objects_YZ, X
 	CMP #$C0
-	BCS Object_SetDeadAndNotSpawned
+	BCS Object_IsOffScreen
 
 Object_NotTooLow:
 	LDA Objects_SpritesHorizontallyOffScreen, X
-	BEQ Object_DeleteOffScreenRTS
+	BEQ Object_NotOffScreen
 
 	JSR Object_XDistanceFromPlayer
 	CPY #$00
@@ -2471,13 +2472,18 @@ Object_CheckOutOfRange:
 
 	LDA <Temp_Var15
 	SBC <Temp_Var13
-	BMI Object_DeleteOffScreenRTS
+	BMI Object_NotOffScreen
 
 	LDA <Temp_Var12
 	CMP <DeleteRange
-	BCS Object_SetDeadAndNotSpawned
+	BCS Object_IsOffScreen
 
-Object_DeleteOffScreenRTS:
+Object_NotOffScreen:
+	CLC
+	RTS
+
+Object_IsOffScreen:
+	SEC
 	RTS
 
 
@@ -2579,6 +2585,7 @@ Object_New:
 	STA Objects_BoundTopHi, X
 	STA Objects_BoundBottom, X
 	STA Objects_BoundBottomHi, X
+	STA Objects_NoExp, X
 
 	CPX #$06
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)
@@ -3165,6 +3172,7 @@ Object_WidthFlags:
 ; $D79E
 Object_DetermineHorizontallyOffScreen:
 	LDY ObjGroupRel_Idx	 	; Y = object group relative index
+	
 	LDA ObjectGroup_Attributes,Y	; Get object's attributes
 	AND #OA1_WIDTHMASK	 ; Keep only bits 4-6
 	LSR A		 
@@ -4335,44 +4343,6 @@ Negate:
 	RTS		 ; Return
 
 	; Initializes a "block bump" effect, if one of the 2 slots is open...
-BlockBump_Init:
-	LDY #$00	 ; Y = 0
-	LDA Level_BlkBump,Y
-	BEQ PRG000_DDB2	 ; If block bump slot 1 is empty, jump to PRG000_DDB2
-
-	INY		 ; Y = 1
-	LDA Level_BlkBump,Y	 
-	BNE PRG000_DDCB	 ; If block bump slot 2 is not empty, jump to PRG000_DDCB (RTS)
-
-PRG000_DDB2:
-	LDA <Temp_Var12	
-	STA Level_BlkBump,Y	 ; Store tile-behind effect
-	AND #$C0
-	ORA #$3F
-	STA Level_BlkFinish
-
-	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
-	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
-
-	LDA <Temp_Var15	
-	STA Level_BlkBump_XHi,Y
-
-	LDA <Temp_Var16
-	STA Level_BlkBump_XLo,Y
-
-	LDA <Temp_Var13
-	STA Level_BlkBump_YHi,Y
-
-	LDA <Temp_Var14
-	STA Level_BlkBump_YLo,Y
-
-PRG000_DDCB:
-	RTS		 ; Return
-
-	; This sets up the "pop out" item you get when you open a treasure box
-ToadHouse_GiveItem:
-
-	RTS		 ; Return
 
 
 ASHIM .func \1-AScroll_Movement-1
@@ -4420,8 +4390,11 @@ Object_Check_Water:
 	BNE Object_Check_Water1
 
 Object_Check_Water0:
-	LDA #OBJSTATE_POOFDEATH
+	LDA #OBJSTATE_KILLED
 	STA Objects_State, X
+
+	LDA #$00
+	STA Objects_Health, X
 
 	LDA #$1f
 	STA Objects_Timer,X
@@ -4751,14 +4724,17 @@ GiantYFrame:
 GiantFlipOffset:
 	.byte $03, $01, $FF, $FD, $03, $01, $FF, $FD
 
-DrawGiantObjectMirrored:
+Object_DrawGiantMirrored:
 	LDA #$01
-	BNE DrawGiantObject1
+	BNE Object_DrawGiant1
 
-DrawGiantObject:
+Giant_TilesLow = Temp_Var10
+Giant_TilesHi = Temp_Var11
+
+Object_DrawGiant:
 	LDA #$00
 
-DrawGiantObject1
+Object_DrawGiant1
 	STA <Temp_Var12
 
 	JSR Object_CalcSpriteXY_NoHi
@@ -4784,9 +4760,11 @@ DrawNextGiant:
 	JSR DrawGiantSprite
 	INC <Temp_Var6
 	INC <Temp_Var2
+
 	LDA Object_SpriteRAMOffset, X
 	ADD #$04
 	STA Object_SpriteRAMOffset, X
+
 	LDA <Temp_Var2
 	CMP #$08
 	BNE DrawNextGiant
@@ -4804,11 +4782,10 @@ DrawGiantSprite:
 	TAY
 
 DrawGiantSprite1:
-	LDA [Temp_Var10], Y
+	LDA [Giant_TilesLow], Y
 	STA <Temp_Var3
 	LDY <Temp_Var2
 	LDX <CurrentObjectIndexZ
-
 	
 	LDA GiantXFrame, Y
 	ADD Objects_SpriteX,X
@@ -4858,12 +4835,22 @@ LetsDrawGiant:
 DontDrawGiant:
 	RTS
 
-Object_InteractWithOtherObjects:
+Interact_Toggle:
+	.byte $00, $01, $00, $01, $00, $01, $00, $01
+
+Object_InteractWithObjects:
+	LDA Game_Counter
+	AND #$01
+	CMP Interact_Toggle, X
+	BNE Object_InteractWithObjectsSkip
+
 	LDA Objects_State, X
 	AND #$FE
 	CMP #OBJSTATE_NORMAL
 	BEQ DetectObjects
-	CLC 
+
+Object_InteractWithObjectsSkip:
+	CLC
 	RTS
 
 DetectObjects:
@@ -4883,7 +4870,7 @@ DetectNextSprite:
 	TAX
 
 	LDA Object_AttrFlags,X
-	AND #OAT_BOUNCEOFFOTHERS
+	AND #OAT_INTERACTWITHOBJECTS
 	BEQ GoNextSprite
 
 	LDX <CurrentObjectIndexZ
@@ -4911,6 +4898,9 @@ Object_Carry:
 
 	LDA Objects_XVelZ, Y
 	STA <Objects_XVelZ, X
+
+	LDA Objects_XVelFrac,Y
+	STA Objects_XVelFrac,X
 
 	LDA #$00
 	STA <Objects_YVelZ, X
@@ -5283,6 +5273,7 @@ Object_MoveDirectionFacing1:
 
 Object_FaceDirectionMoving:
 	LDY #$00
+
 	LDA <Objects_XVelZ, X
 	BEQ Object_FaceDirectionMoving2
 	BMI Object_FaceDirectionMoving1
@@ -5415,6 +5406,9 @@ Object_HitWall1:
 
 
 Object_GetKilled:
+	LDA Objects_NoExp, X
+	BNE Object_KilledNoExp
+
 	INC Kill_Tally
 
 	LDA #$40
@@ -5426,6 +5420,7 @@ Object_GetKilled:
 
 	JSR Reap_Coin
 
+Object_KilledNoExp:
 	LDA Objects_Health, X
 	BMI KillEnemy
 
@@ -5577,6 +5572,10 @@ Object_KickRTS:
 	RTS
 
 Object_Explode:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BEQ Object_Explode1
+
 	LDA #OBJ_EXPLOSION
 	STA Objects_ID, X
 

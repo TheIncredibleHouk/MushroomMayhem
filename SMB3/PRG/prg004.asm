@@ -55,7 +55,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_PirateBro	; Object $88 - OBJ_PIRATEBRO
 	.word ObjInit_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
 	.word ObjInit_Thwomp		; Object $8A - OBJ_THWOMP
-	.word ObjInit_Thwomp	; Object $8B - OBJ_AngryTHWOMP
+	.word ObjInit_AngryThwomp	; Object $8B - OBJ_AngryTHWOMP
 	.word ObjInit_DoNothing	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.word ObjInit_DoNothing	; Object $8D - OBJ_THWOMPUPDOWN
 	.word ObjInit_DoNothing	; Object $8E - OBJ_THWOMPDIAGONALUL
@@ -481,88 +481,75 @@ ObjInit_Waterfill:
 	STA Objects_XVelZ, X
 	RTS
 
-ObjNorm_Waterfill:
-	LDA <Objects_XHiZ, X
-	BEQ ObjNorm_Waterfill1
-	BMI ObjNorm_Waterfill_RTS
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State, X
-	RTS
+WaterFill_Ticks = Objects_Data1
 
-ObjNorm_Waterfill1:
+WaterFill_Flip:
+	.byte $00, SPR_VFLIP
+
+ObjNorm_Waterfill:
+	LDA <Player_HaltGameZ
+	BNE FillWater_Draw
+
+WaterFill_Norm:
+	
+	JSR Object_DeleteOffScreen
+	JSR Object_FaceDirectionMoving
+	JSR Object_ApplyXVel
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
+
+	STY <Temp_Var1
+
+	CMP #TILE_PROP_SOLID_ALL
+	BCC FillWater_DrawWater
+
+	LDA Objects_XZ, X
+	AND #$F0
+	ORA #$08
+	STA Debris_X
+
+	LDA Objects_YZ, X
+	AND #$F0
+	ORA #$08
+	STA Debris_Y
+
+	JSR Common_MakeBricks
+
+	LDA #SPR_PAL2
+	STA BrickBust_Pal, Y
+	
+	LDA <Temp_Var1
+	SUB #$01
+	JSR Object_ChangeBlock
+
+	JMP FillWater_Animate
+
+FillWater_DrawWater:
 	LDA <Objects_XZ, X
 	AND #$0F
-	BNE ObjNorm_Waterfill_RTS
-	
-	JSR Object_DetectTile
-	CMP #TILE_PROP_SOLID_TOP
-	BCC FillWater
+	BNE FillWater_Animate
 
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-
-	; Set the brick bust
-	LDA #$02
-	STA BrickBust_En
-
-	; Brick bust upper Y
-	LDA <Objects_YZ, X
-	CLC
-	SBC Level_VertScroll
-	STA Brick_DebrisYHi
-
-	; Brick bust lower Y
-	ADD #$08
-	STA Brick_DebrisY
-
-	; Brick bust X
-	LDA <Objects_XZ, X
-	SUB <Horz_Scroll	
-	STA Brick_DebrisX
-
-	; reset brick bust X distance, no horizontal
-	LDA #$00
-	STA Brick_DebrisXDist
-	STA BrickBust_HEn
-
-	; Brick bust Y velocity
-	LDA #-$06
-	STA BrickBust_YVel
-
-FillWater:
-	LDA Tile_LastValue
+	LDA <Temp_Var1
 	EOR #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
 
-	; Set all of the block change coordinates to remove the ice brick
-	LDA <Objects_YHiZ,X
-	STA Block_ChangeYHi
+	JSR Object_ChangeBlock
 
-	LDA <Objects_YZ,X
-	AND #$f0
-	STA Block_ChangeY
+FillWater_Animate:
+	INC WaterFill_Ticks, X
+	
+	LDA WaterFill_Ticks, X
+	AND #$03
+	
+	LSR A
 
-	LDA <Objects_XHiZ,X
-	STA Block_ChangeXHi
+	TAY
+	
+	LDA Objects_Orientation, X
+	ORA WaterFill_Flip, Y
+	STA Objects_Orientation, X
 
-	LDA <Objects_XZ,X
-	AND #$f0
-	STA Block_ChangeX
-
-ObjNorm_Waterfill_RTS:
-	JSR Object_ApplyXVel
-	JSR Object_Draw
-	LDA Object_SpriteRAMOffset, X 
-	TAX
-	DEC Sprite_RAM, X
-	DEC Sprite_RAM + 4, X
-	RTS
-
-	; A "hammer brother" object has special purpose when 
-	; Player has entered through a enemy battle object
+FillWater_Draw:
+	JMP Object_Draw
 
 
 NinjaBro_JumpYVel:	.byte -$60, -$30
@@ -1566,8 +1553,13 @@ Thwomp_Normal:
 	.word Thwomp_ReturnToOrigin
 
 Thwomp_WaitForPlayer:
+	LDA Objects_SpritesVerticallyOffScreen,X
+	CMP #(SPRITE_0_VINVISIBLE | SPRITE_1_VINVISIBLE)
+
+	BEQ Thwomp_KeepWaiting
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
+
 	JSR Object_XDistanceFromPlayer
 
 	LDY #$00
@@ -1621,6 +1613,7 @@ Thwomp_FallToGround:
 	STA Tile_DetectionYHi
 
 	JSR Object_DetectTile
+
 	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_TOP
 	BCC Thwomp_NoHit
@@ -1659,6 +1652,8 @@ Thwomp_NoHit:
 	JMP Thwomp_Draw
 
 Thwomp_ReturnToOrigin:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
 
 	LDA Objects_Timer, X
 	BNE Thwomp_Draw
@@ -1669,8 +1664,6 @@ Thwomp_ReturnToOrigin:
 	LDA #$F8
 	STA <Objects_YVelZ, X
 	JSR Object_Move
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
 
 	LDA <Objects_YZ, X
 	CMP Thwomp_StartY, X
@@ -1715,7 +1708,7 @@ Thwomp_Draw:
 
 Thwomp_Draw1:
 	LDA Objects_SpritesVerticallyOffScreen,X
-	AND #SPRITE_1_INVISIBLE
+	AND #SPRITE_1_VINVISIBLE
 	BNE Thwomp_DrawRTS
 
 	LDA Objects_SpriteX, X
@@ -1737,6 +1730,17 @@ Thwomp_Draw1:
 Thwomp_DrawRTS:
 	RTS		 ; Return
 
+ObjInit_AngryThwomp:
+	LDA #$03
+	STA Thwomp_Action, X
+
+	LDA <Objects_XZ, X
+	ADD #$04
+	STA <Objects_XZ, X
+
+	LDA #$01
+	STA Objects_Frame, X
+	RTS
 
 ObjNorm_AngryThwomp:
 	LDA <Player_HaltGameZ
@@ -1758,10 +1762,17 @@ AngryThwomp_Normal:
 	.word AngryThwompWait
 
 AngryThwompWait:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
 	LDA Objects_Timer, X
 	BNE AngryThwompWaitRTS
 
-	JSR Object_CalcBoundBox
+	
+	LDA Objects_SpritesVerticallyOffScreen,X
+	CMP #(SPRITE_0_VINVISIBLE | SPRITE_1_VINVISIBLE)
+	BEQ AngryThwompWaitRTS
+
 	JSR Object_XDistanceFromPlayer
 
 	LDA <XDiff
@@ -2253,6 +2264,7 @@ Lakitu_GetEnemy:
 
 	LDA #OBJSTATE_NONE
 	STA Objects_State, Y
+	STA Objects_NoExp, Y
 
 	LDA <Temp_Var1
 	STA Objects_ID, Y	
@@ -2574,7 +2586,7 @@ ObjNorm_ParaGoomba2:
 
 	LDA #$04
 	STA Objects_Data3, X
-	JMP ParaGoomba_Draw
+	JMP ParaGoomba_Animate
 
 ObjNorm_ParaGoomba3:
 	LDA #$00
@@ -2588,7 +2600,7 @@ ObjNorm_ParaGoomba3:
 	STA Objects_Data3, X
 
 ObjNorm_ParaGoomba31:
-	JMP ParaGoomba_Draw
+	JMP ParaGoomba_Animate
 
 ObjNorm_ParaGoomba4:
 	INC Objects_Data3, X
@@ -2601,7 +2613,7 @@ ObjNorm_ParaGoomba41:
 	LDA #$F0
 	STA <Objects_YVelZ, X
 
-	JMP ParaGoomba_Draw
+	JMP ParaGoomba_Animate
 
 ObjNorm_ParaGoomba5:
 	LDY DayNight
@@ -2612,7 +2624,7 @@ ObjNorm_ParaGoomba5:
 
 	LDA #$00
 	STA <Objects_YVelZ, X
-	JMP ParaGoomba_Draw
+	JMP ParaGoomba_Animate
 
 ObjNorm_ParaGoomba51:
 	LDA #$00
@@ -2622,12 +2634,12 @@ ObjNorm_ParaGoomba51:
 	STA Objects_Timer, X
 
 ObjNorm_ParaGoomba6:
-	JMP ParaGoomba_Draw
+	JMP ParaGoomba_Animate
 
 ObjNorm_ParaGoomba7:
-	JMP ParaGoomba_Draw
+	JMP ParaGoomba_Animate
 
-ParaGoomba_Draw:
+ParaGoomba_Animate:
 	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Left wing
@@ -2705,7 +2717,7 @@ ObjNorm_ZombieGoomba:
 
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_ZombieGoomba0
-	JMP Goomba_Draw	 ; If gameplay is not halted, jump to PRG004_AF7D
+	JMP Goomba_Animate	 ; If gameplay is not halted, jump to PRG004_AF7D
 
 ObjNorm_ZombieGoomba0:
 	LDA Objects_Data5, X
@@ -2739,7 +2751,7 @@ Zombie_NoInfection:
 	JSR Object_FacePlayerOnLanding
 	JSR Object_Move
 
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	BCC Zombie_NoInfection1
 
 	LDA #$00
@@ -2807,7 +2819,7 @@ Zombie_Move:
 	RTS
 
 Zombie_Move1:
-	JMP Goomba_Draw
+	JMP Goomba_Animate
 
 Zombie_Interact:
 
@@ -2978,7 +2990,7 @@ ObjNorm_ParaZombieGoomba0:
 ObjNorm_ParaZombieGoomba01:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 
 	JSR Object_HitTest
 	BCC ObjNorm_ParaZombieGoomba1
@@ -3000,30 +3012,30 @@ ObjNorm_ParaZombieGoomba2:
 	JSR Player_GetHurt
 
 ObjNorm_ParaZombieGoomba1:
-	JSR Goomba_Draw
+	JSR Goomba_Animate
 
-ParaZombieGoomba_Draw:
+ParaZombieGoomba_Animate:
 	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	; Left wing
 	LDA Sprite_RAM+$00,Y
 	CMP #$f8
-	BEQ ParaZombieGoomba_Draw1	 ; If this sprite is vertically off-screen, jump to PRG004_AF31
+	BEQ ParaZombieGoomba_Animate1	 ; If this sprite is vertically off-screen, jump to PRG004_AF31
 
 	SUB #08
 	STA Sprite_RAM+$08,Y
 
-ParaZombieGoomba_Draw1:
+ParaZombieGoomba_Animate1:
 
 	; Right wing
 	LDA Sprite_RAM+$04,Y
 	CMP #$f8
-	BEQ ParaZombieGoomba_Draw2	 ; If this sprite is vertically off-screen, jump to PRG004_AF3E
+	BEQ ParaZombieGoomba_Animate2	 ; If this sprite is vertically off-screen, jump to PRG004_AF3E
 
 	SUB #08
 	STA Sprite_RAM+$0C,Y
 
-ParaZombieGoomba_Draw2:
+ParaZombieGoomba_Animate2:
 
 	; Left wing sprite X
 	LDA Sprite_RAM+$03,Y
@@ -3047,11 +3059,11 @@ ParaZombieGoomba_Draw2:
 
 	LDX #$ED	 ; X = $CD (Wing up pattern)
 	AND #$04	 
-	BNE ParaZombieGoomba_Draw3	 ; 8 ticks on, 8 ticks off; jump to PRG004_AF65
+	BNE ParaZombieGoomba_Animate3	 ; 8 ticks on, 8 ticks off; jump to PRG004_AF65
 
 	LDX #$Ef	 ; X = $CF (Wing down pattern)
 
-ParaZombieGoomba_Draw3:
+ParaZombieGoomba_Animate3:
 	TXA		 
 	STA Sprite_RAM+$09,Y	 ; Store left wing pattern
 	STA Sprite_RAM+$0D,Y	 ; Store right wing pattern
@@ -3314,20 +3326,125 @@ ObjInit_Goomba:
 ObjInit_Goomba1:
 	RTS
 
-
-Goomba_CurrentFrame = Objects_Data1
-Goomba_DeathTimer = Objects_Data2
+Goomba_Action = Objects_Data1
+Goomba_CurrentFrame = Objects_Data2
+Goomba_DeathTimer = Objects_Data3
+Goomba_BehindTimer = Objects_Data4
 
 ObjNorm_Goomba:
 	LDA <Player_HaltGameZ
-	BNE Goomba_DrawNoAnimate
+	BEQ Goomba_DoAction
+	JMP Goomba_Draw
 
+Goomba_DoAction:
+
+	LDA Goomba_Action, X
+	JSR DynJump
+
+	.word Goomba_Norm
+	.word Goomba_Left
+	.word Goomba_Right
+	.word Goomba_Raise
+	.word Goomba_Drop
+
+Goomba_Raise:
+	LDA Objects_Timer, X
+	BEQ Goomba_PopOut
+
+	CMP #$20
+	BCC Goomba_RaiseDone
+
+	LDA #$F0
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+	JMP Goomba_Animate
+
+Goomba_PopOut:
+	JSR Object_CalcBoundBox
+	JSR Object_MoveTowardsPlayer
+	
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Goomba_Action, X
+
+	LDA #$08
+	STA Goomba_BehindTimer, X
+
+Goomba_RaiseDone:
+	JMP Goomba_Animate
+
+Goomba_Drop:
+	LDA Objects_Timer, X
+	BEQ Goomba_DropDown
+
+	CMP #$20
+	BCC Goomba_DropDone
+
+	LDA #$10
+	STA <Objects_YVelZ, X
+	JSR Object_ApplyYVel_NoGravity
+	JMP Goomba_Animate
+
+Goomba_DropDown:
+	JSR Object_CalcBoundBox
+	
+	LDA #$01
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Goomba_Action, X
+
+	LDA #$08
+	STA Goomba_BehindTimer, X
+
+Goomba_DropDone:
+	JMP Goomba_Animate
+
+Goomba_Left:
+	LDA Objects_Timer, X
+	CMP #$10
+	BEQ Goomba_Out
+
+	LDA #$F8
+	STA <Objects_XVelZ, X
+	JSR Object_ApplyXVel
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JMP Goomba_Animate
+
+Goomba_Right:
+	LDA Objects_Timer, X
+	CMP #$0A
+	BEQ Goomba_Out
+
+	LDA #$08
+	STA <Objects_XVelZ, X
+	JSR Object_ApplyXVel
+
+	LDA #SPR_HFLIP
+	STA Objects_Orientation, X
+
+	JMP Goomba_Animate
+
+Goomba_Out:
+	LDA #$00
+	STA Goomba_Action, X
+	LDA #$08
+	STA Goomba_BehindTimer, X
+	JMP Goomba_Animate
+
+Goomba_Norm:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 
 	BNE ObjNorm_Goomba0
 	JMP Goomba_Death
-
+	
 ObjNorm_Goomba0:
 	JSR Object_DeleteOffScreen
 	LDA DayNight
@@ -3347,13 +3464,13 @@ ObjNorm_Goomba02:
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
-	JSR Object_InteractWithOtherObjects
-	BCS Goomba_DrawNoAnimate
+	JSR Object_InteractWithObjects
+	BCS Goomba_Draw
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
-Goomba_Draw:
+Goomba_Animate:
 	INC Goomba_CurrentFrame, X
 	LDA Goomba_CurrentFrame, X
 	LSR A
@@ -3363,7 +3480,21 @@ Goomba_Draw:
 	STA Objects_Frame,X
 
 ObjNorm_Goomba4:
-Goomba_DrawNoAnimate:
+Goomba_Draw:
+	LDA Goomba_Action, X
+	ORA Goomba_BehindTimer, X
+	BEQ Goomba_NotBehind
+
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA Goomba_BehindTimer, X
+	BEQ Goomba_NotBehind
+
+	DEC Goomba_BehindTimer, X
+
+Goomba_NotBehind:
 	LDA Objects_Orientation, X
 	ORA #SPR_HFLIP
 	EOR #SPR_HFLIP
@@ -3500,7 +3631,7 @@ ObjNorm_RedTroopa:
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	BCS RedTroopa_Draw
 
 	JSR Object_DetectTiles
@@ -3531,7 +3662,7 @@ ObjNorm_Troopa0:
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	BCS ObjNorm_Troopa1
 
 	JSR Object_DetectTiles
@@ -3576,7 +3707,7 @@ ObjNorm_PoisonMushroom0:
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 
 ObjNorm_PoisonMushroom1:
 	JMP Object_DrawMirrored
@@ -3685,7 +3816,7 @@ Buzzy_NormGravity:
 Buzzy_NoDrop:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	JSR Object_AttackOrDefeat
 	JSR Object_FaceDirectionMoving
 
@@ -3772,7 +3903,7 @@ Spiny_NoDrop:
 	JSR Object_EdgeMarch
 	
 Spiny_NoEdgeMarch:
-	JSR Object_InteractWithOtherObjects
+	JSR Object_InteractWithObjects
 	JSR Object_AttackOrDefeat
 	JSR Object_FaceDirectionMoving
 

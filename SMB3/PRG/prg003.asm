@@ -510,6 +510,10 @@ ObjNorm_IceBlock:
 	CMP Objects_BeingHeld, X
 	BEQ IceBlock_DetectTiles
 
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BNE IceBlock_DetectTiles
+
 	LDA #$01
 	STA IceBlock_Kicked, X
 
@@ -754,6 +758,7 @@ PipePodobo_Orientation:
 PipePodobo_StartY = Objects_Data3
 PipePodobo_StartYHi = Objects_Data4
 PipePodobo_Frame = Objects_Data5
+PipePodobo_Hidden = Objects_Data6
 
 ObjInit_PipePodobo:
 	LDA Objects_Property, X
@@ -812,6 +817,7 @@ ObjNorm_PipePodobo:
 	JMP Object_DrawMirrored
 
 ObjNorm_PipePodobo1:
+	JSR Object_DeleteOffScreen
 	LDA Objects_Timer, X
 	BEQ ObjNorm_PipePodobo2
 
@@ -851,6 +857,12 @@ PipePodobo_StoreFrame:
 	STA Objects_Frame, X
 	
 PipePodobo_Draw:
+	LDA Objects_Timer, X
+	BEQ PipePodobo_DrawAnyway
+
+	RTS
+
+PipePodobo_DrawAnyway:
 	JMP Object_DrawMirrored	 ; Draw Podoboo and don't come back!
 
 
@@ -2078,11 +2090,11 @@ ObjInit_BobOmb:
 	JSR Object_MoveTowardsPlayer
 	RTS		 ; Return
 
+BobOmb_Action = Objects_Data1
+BobOmb_BehindTimer = Objects_Data2
 BobOmb_Frame = Objects_Data3
 BobOmb_Activated = Objects_Data4
 BobOmb_Unstable = Objects_Data5
-BobOmb_Action = Objects_Data1
-BobOmb_BehindTimer = Objects_Data2
 
 ObjNorm_BobOmb:
 	LDA <Player_HaltGameZ
@@ -2107,12 +2119,16 @@ BobOmb_DoAction:
 	.word BobOmb_Drop
 
 BobOmb_Death:
+
 	LDA Objects_PlayerProjHit, X
 	CMP #HIT_FIREBALL
 	BNE BobOmb_Death1
 
 	LDA #$01
 	STA Explosion_Timer, X
+
+	LDA #OBJSTATE_NORMAL
+	STA  Objects_State, X
 
 BobOmb_Death1:
 	JMP BobOmb_Draw
@@ -2180,6 +2196,10 @@ BobOmb_Left:
 	LDA #$F8
 	STA <Objects_XVelZ, X
 	JSR Object_ApplyXVel
+
+	LDA #$00
+	STA Objects_Orientation, X
+
 	JMP BobOmb_Animate
 
 BobOmb_Right:
@@ -2189,6 +2209,9 @@ BobOmb_Right:
 	LDA #$08
 	STA <Objects_XVelZ, X
 	JSR Object_ApplyXVel
+
+	LDA #SPR_HFLIP
+	STA Objects_Orientation, X
 
 	JMP BobOmb_Animate
 
@@ -2225,6 +2248,7 @@ BobOmb_Norm1:
 	JSR Object_DampenVelocity
 	JSR Object_InteractWithTiles
 	JSR Object_InteractWithPlayer
+	JSR Object_InteractWithObjects
 	
 	LDA #$02
 	STA Objects_Frame, X
@@ -2236,8 +2260,11 @@ BobOmb_UnstableCheck:
 	JSR Object_RespondToTailAttack
 
 	LDA Objects_BeingHeld, X
-	BNE BobOmb_ShakeDraw
+	BEQ BobOmb_Normal
+	
+	JMP BobOmb_ShakeDraw
 
+BobOmb_Normal:
 	LDA Objects_PreviousTilesDetect,X
 	BNE BobOmb_ShakeDraw
 
@@ -2251,20 +2278,18 @@ BobOmb_UnstableCheck:
 BobOmb_Attack:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_InteractWithOtherObjects
 	JSR Object_AttackOrDefeat
 	
 	LDA Objects_Stomped, X
-	BEQ BobOmb_Animate
+	BEQ BobOmb_InteractOthers
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BNE BobOmb_Animate
+	BNE BobOmb_InteractOthers
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	STA Debug_Snap
 	LDA Objects_Orientation, X
 	AND #~SPR_VFLIP
 	STA Objects_Orientation, X
@@ -2274,7 +2299,7 @@ BobOmb_Attack:
 
 	LDA #$A0
 	STA Explosion_Timer, X
-	BNE BobOmb_Animate
+	BNE BobOmb_InteractOthers
 
 BobOmb_Unstabilize:
 	LDA #$02
@@ -2282,6 +2307,7 @@ BobOmb_Unstabilize:
 	INC BobOmb_Unstable, X
 	BNE BobOmb_Draw
 
+BobOmb_InteractOthers:
 BobOmb_Animate:
 	INC BobOmb_Frame, X
 	LDA BobOmb_Frame, X
@@ -2292,9 +2318,6 @@ BobOmb_Animate:
 	STA Objects_Frame,X
 
 BobOmb_Draw:
-	LDA Objects_SpriteAttributes, X
-	AND #~SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
 
 	LDA BobOmb_Action, X
 	ORA BobOmb_BehindTimer, X
@@ -2364,7 +2387,14 @@ PRG003_A836:
 	BNE Explosion_NoKill
 
 	JSR Object_CalcBoundBox
+	
+	LDA Kill_Tally
+	PHA
+
 	JSR Object_KillOthers
+
+	PLA
+	STA Kill_Tally
 
 Explosion_NoKill:
 	JSR Object_CalcSpriteXY_NoHi

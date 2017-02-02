@@ -639,6 +639,7 @@ ObjNorm_Key:
 	JMP Object_Draw
 
 Key_Norm:
+	JSR Object_DeleteInPit
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
@@ -665,20 +666,16 @@ CheckKeyAgainstLock:
 	LDA Block_NeedsUpdate
 	BNE RemainLocked
 
-	LDA <Objects_XZ, X
-	ADD #$07
+	LDA Tile_CenterDetectionX
 	STA Block_DetectX
 
-	LDA <Objects_XHiZ, X
-	ADC #$00
+	LDA Tile_CenterDetectionXHi
 	STA Block_DetectXHi
 
-	LDA <Objects_YZ, X
-	ADD #$08      
+	LDA Tile_CenterDetectionY
 	STA Block_DetectY
 
-	LDA <Objects_YHiZ, X
-	ADC #$00
+	LDA Tile_CenterDetectionYHi
 	STA Block_DetectYHi
 
 	LDA Object_BodyTileValue, X
@@ -1011,6 +1008,7 @@ Bubble_RegenY = Objects_Data7
 Bubble_RegenYHi = Objects_Data8
 
 ObjNorm_Bubble:
+	STA Debug_Snap
 	LDA Bubble_Action, X
 	JSR DynJump
 
@@ -1374,6 +1372,14 @@ PUp_Grow:
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1
 
+	LDA Player_EffectiveSuit
+	BEQ PUp_Grow1
+	
+	LDA #$00
+	STA Player_QueueSuit
+	RTS
+
+PUp_Grow1:
 	LDA #$2f
 	STA Player_Grow
 	RTS
@@ -1543,7 +1549,10 @@ PUp_Vine:
 	AND #$F0
 	STA <Objects_XZ, X
 
+	LDA Block_NeedsUpdate
+	BNE PUp_VineDraw
 
+PUp_Move:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
@@ -1578,14 +1587,6 @@ Vine_Grow:
 	BCC PUp_Delete
 
 Vine_NoDelete:
-	LDA Block_NeedsUpdate
-	BEQ PUp_Detect
-
-	LDA #$00
-	STA <Objects_YVelZ, X
-	BEQ PUp_VineDraw
-
-PUp_Detect:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
 
@@ -1601,7 +1602,9 @@ PUp_Delete:
 PUp_VineBlock:
 	LDA Tile_LastValue
 	EOR #$01
+
 	JSR Object_ChangeBlock
+
 	LDA #$F0
 	STA <Objects_YVelZ, X
 
@@ -3409,12 +3412,12 @@ NoChompFlash1:
 	STA Objects_Frame, X
 
 	LDA #LOW(GiantChompFrames)
-	STA <Temp_Var10
+	STA <Giant_TilesLow
 
 	LDA #HIGH(GiantChompFrames)
-	STA <Temp_Var11
+	STA <Giant_TilesHi
 
-	JSR DrawGiantObject
+	JSR Object_DrawGiant
 
 DoneGC:
 	RTS

@@ -96,7 +96,7 @@
     <property>Ninjashroom</property>
     <property>Super Star</property>
     <property>Vine</property>
-    
+
   </spritedefinition>
   <!--
   <spritedefinition id="0C" width="01" height="01" name="Starman" class="1" group="Global">
@@ -174,14 +174,14 @@
     <property>Chasing and Targeting</property>
   </spritedefinition>
   <spritedefinition id="15" width="01" height="01" name="Boss Fight" class="2" group="Boss">
-    <sprite property="0" x="0" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="8" y="0" value="0E" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="16" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="24" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="0" y="16" value="2C" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="8" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="16" y="16" value="30" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="24" y="16" value="32" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="0" y="0" value="14" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="8" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="16" y="0" value="18" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="24" y="0" value="1A" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="0" y="16" value="34" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="8" y="16" value="36" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="16" y="16" value="38" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="24" y="16" value="3A" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
     <property>Colossal Cheep</property>
   </spritedefinition>
   <spritedefinition id="16" width="01" height="01" name="Key Piece" class="1" group="Global">
@@ -930,7 +930,7 @@
     <sprite x="0" y="26" value="06" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite x="8" y="26" value="08" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite x="8" y="2" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
-    
+
     <sprite property="0" x="-136" y="16" value="8C" palette="-1" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite property="0" x="16" y="16" value="8C" palette="-1" horizontalflip="false" verticalflip="true" table="-1" />
 
@@ -974,14 +974,14 @@
     <property>Circle Counter Clockwise</property>
     <property>Circle Clockwise</property>
     <property>Chase</property>
-    
+
   </spritedefinition>
   <spritedefinition id="70" width="01" height="01" name="Buzzy Beetle" class="2" group="Spiny/Buzzy Beetle">
     <sprite property="0" x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
     <sprite property="0" x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
     <sprite property="1" x="0" y="0" value="10" palette="3" horizontalflip="false" verticalflip="true" table="0B" />
     <sprite property="1" x="8" y="0" value="12" palette="3" horizontalflip="false" verticalflip="true" table="0B" />
-    
+
     <property>Normal</property>
     <property>Anti Gravity</property>
   </spritedefinition>
@@ -992,7 +992,7 @@
     <sprite property="1" x="8" y="0" value="06" palette="1" horizontalflip="false" verticalflip="true" table="0B" />
     <sprite property="2" x="0" y="0" value="04" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
     <sprite property="2" x="8" y="0" value="06" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
-    
+
     <property>Normal</property>
     <property>Anti Gravity</property>
     <property>Avoids Edge</property>
@@ -1003,7 +1003,7 @@
 
     <sprite property="1" x="0" y="0" value="18" palette="3" horizontalflip="false" verticalflip="true" table="4F" />
     <sprite property="1" x="8" y="0" value="1A" palette="3" horizontalflip="true" verticalflip="true" table="4F" />
-    
+
     <property>Normal</property>
     <property>Upside Down</property>
   </spritedefinition>
@@ -1106,7 +1106,7 @@
   <spritedefinition id="7C" width="01" height="01" name="Larry" class="2" group="Spiny/Buzzy Beetle">
     <sprite x="0" y="0" value="28" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
     <sprite x="8" y="0" value="28" palette="3" horizontalflip="true" verticalflip="false" table="0B" />
-    
+
 
     <property>Fire Power Helper</property>
     <property>Ninja Power Helper</property>
@@ -1420,12 +1420,12 @@
     <sprite property="3" x="16" y="0" value="22" palette="2" horizontalflip="true" verticalflip="false" table="13" />
     <sprite property="3" x="8" y="16" value="30" palette="3" horizontalflip="false" verticalflip="true" table="13" />
     <sprite property="3" x="16" y="16" value="32" palette="3" horizontalflip="false" verticalflip="true" table="13" />
-    
+
     <property>Normal Pumpkin</property>
     <property>Upside Down Normal Pumpkin</property>
     <property>Fire Spitting Pumpkin</property>
     <property>Upside Down Fire Spitting Pumpkin</property>
-    
+
   </spritedefinition>
 
   <spritedefinition id="A5" width="02" height="02" name="Upside Down Pluto Ice Trap" class="1" group="Unused">
@@ -1638,10 +1638,14 @@
     <property>Left</property>
     <property>Right</property>
   </spritedefinition>
-  <spritedefinition id="C2" width="1" height="1" name="Left Shooting Cannon" class="2" group="Hammer Bros.">
-    <sprite x="0" y="0" value="2C" palette="3" horizontalflip="false" verticalflip="false" table="36" />
-    <sprite x="8" y="0" value="2E" palette="3" horizontalflip="false" verticalflip="false" table="36" />
-    <sprite x="-8" y="0" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
+  <spritedefinition id="C2" width="1" height="1" name="Goomba Generator" class="3" group="Common">
+    <sprite property="0,1,2,3" x="0" y="0" value="18" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="0,1,2,3" x="8" y="0" value="1A" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
+
+    <property>Goomba Left</property>
+    <property>Goomba Right</property>
+    <property>Goomba Up</property>
+    <property>Goomba Down</property>
   </spritedefinition>
   <!--<spritedefinition id="C3" width="2" height="2" name="Left Shooting Giant Cannon" class="2" group="Doom Ship">
     <sprite x="0" y="8" value="22" palette="3" horizontalflip="false" verticalflip="false" table="36" />
@@ -1719,16 +1723,16 @@
     <sprite property="0,2,4,6" x="8" y="0" value="2C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite property="1,3,5,7" x="8" y="0" value="2A" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
     <sprite property="1,3,5,7" x="0" y="0" value="2C" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
-    <property>Left</property>
-    <property>Right</property>
-    <property>Up</property>
-    <property>Down</property>
-    <property>Left Unstable</property>
-    <property>Right Unstable</property>
-    <property>Up Unstable</property>
-    <property>Down Unstable</property>
-    <!--<sprite x="8" y="16" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="16" y="16" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />-->
+
+    <property>Bob-omb Left</property>
+    <property>Bob-omb Right</property>
+    <property>Bob-omb Up</property>
+    <property>Bob-omb Down</property>
+
+    <property>Bob-omb Left Unstable</property>
+    <property>Bob-omb Right Unstable</property>
+    <property>Bob-omb Up Unstable</property>
+    <property>Bob-omb Down Unstable</property>
   </spritedefinition>
   <!--<spritedefinition id="CF" width="2" height="1" name="Bob-omb Generator (Up)" class="2" group="Spiny/Buzzy Beetle">
     <sprite x="8" y="0" value="1C" palette="3" horizontalflip="false" verticalflip="false" table="36" />
