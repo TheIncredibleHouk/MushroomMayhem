@@ -55,7 +55,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_SendBack	; Object $1C
 	.word ObjInit_Timer	; Object $1D
-	.word ObjInit_DoNothing	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.word ObjInit_DoNothing	; Object $1E - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_DoNothing	; Object $20
 	.word ObjNorm_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
@@ -79,8 +79,8 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Bubble	; Object $09 - OBJ_BUBBLE
 	.word ObjNorm_DoNothing	; Object $0A OBJ_BULLY
 	.word ObjNorm_PowerUp; Object $0B - OBJ_POWERUP
-	.word ObjInit_DoNothing; Object $0C - OBJ_POWERUP_STARMAN
-	.word ObjInit_DoNothing	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.word ObjNorm_DoNothing ; Object $0C - OBJ_ESWITCH
+	.word ObjNorm_DoNothing	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjNorm_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjNorm_Weather	; Object $0F
 	.word ObjNorm_IceFireFly	; Object $10 - OBJ_PIXIE
@@ -97,7 +97,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_StarPiece	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjNorm_SendBack	; Object $1C
 	.word ObjNorm_Timer	; Object $1D
-	.word ObjInit_DoNothing	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.word Obj_ESwitch	; Object $1E - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjNorm_Clock	; Object $20
 	.word ObjInit_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
@@ -122,7 +122,7 @@ ObjectGroup00_CollideJumpTable:
 	.word Bubble_Hit	; Object $09 - OBJ_BUBBLE
 	.word ObjHit_DoNothing	; Object $0A
 	.word PUp_Collect	; Object $0B - OBJ_POWERUP
-	.word ObjInit_DoNothing	; Object $0C - OBJ_POWERUP_STARMAN
+	.word ObjHit_DoNothing	; Object $0C - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.word ObjHit_HardIce	; Object $0E - OBJ_HARDICE
 	.word ObjHit_DoNothing	; Object $0F
@@ -140,10 +140,10 @@ ObjectGroup00_CollideJumpTable:
 	.word Object_SetDeadEmpty	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjHit_DoNothing	; Object $1C
 	.word ObjHit_DoNothing	; Object $1D
-	.word ObjHit_DoNothing	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.word ObjHit_DoNothing	; Object $1E - OBJ_ESWITCH
 	.word ObjHit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjHit_Clock	; Object $20
-	.word ObjHit_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjNorm_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.word ObjHit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjHit_DoNothing    ; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -164,7 +164,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $09 - OBJ_BUBBLE
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A- OBJ_BULLY
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_ESWITCH
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0E - OBJ_HARDICE
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0F - 
@@ -182,10 +182,10 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1C
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_HEIGHT16	; Object $1D
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1E - OBJ_ESWITCH
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1F - OBJ_GROWINGVINE
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $20
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -213,7 +213,7 @@ ObjectGroup00_Attributes2:
 	.byte $00	; Object $09 - OBJ_BUBBLE
 	.byte $00	; Object $0A
 	.byte $00	; Object $0B - OBJ_POWERUP
-	.byte $00	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte $00	; Object $0C - OBJ_ESWITCH
 	.byte $00	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte $00	; Object $0E - OBJ_HARDICE
 	.byte $00	; Object $0F
@@ -231,7 +231,7 @@ ObjectGroup00_Attributes2:
 	.byte $00	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte $00	; Object $1C
 	.byte $00	; Object $1D
-	.byte $00	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte $00	; Object $1E - OBJ_ESWITCH
 	.byte $00	; Object $1F - OBJ_GROWINGVINE
 	.byte $00	; Object $20
 	.byte $00	; Object $21 - OBJ_POWERUP_ICEFLOWER
@@ -262,7 +262,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE 	; Object $09 - OBJ_BUBBLE
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_WINDAFFECTS	; Object $0B - OBJ_POWERUP
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_ESWITCH
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $0E - OBJ_HARDICE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
@@ -280,10 +280,10 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $1C
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $1D
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1E - OBJ_ESWITCH
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $1F - OBJ_GROWINGVINE
 	.byte  OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $20
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte OA3_HALT_NORMALONLY 	; Object $21 - OBJ_POWERUP_ICEFLOWER
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -304,7 +304,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $09 - OBJ_BUBBLE
 	.byte OPTS_NOCHANGE	; Object $0A - OBJ_BULLY
 	.byte OPTS_NOCHANGE	; Object $0B - OBJ_POWERUP
-	.byte OPTS_NOCHANGE	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte OPTS_NOCHANGE	; Object $0C - OBJ_ESWITCH
 	.byte OPTS_NOCHANGE	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OPTS_SETPT5 | $0F	; Object $0E - OBJ_HARDICE
 	.byte OPTS_NOCHANGE	; Object $0F
@@ -322,7 +322,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OPTS_NOCHANGE	; Object $1C
 	.byte OPTS_NOCHANGE	; Object $1D
-	.byte OPTS_NOCHANGE	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte OPTS_NOCHANGE	; Object $1E - OBJ_ESWITCH
 	.byte OPTS_NOCHANGE	; Object $1F - OBJ_GROWINGVINE
 	.byte OPTS_NOCHANGE 	; Object $20
 	.byte OPTS_NOCHANGE	; Object $21 - OBJ_POWERUP_ICEFLOWER
@@ -346,7 +346,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $09 - OBJ_BUBBLE
 	.byte KILLACT_STANDARD	; Object $0A
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0B - OBJ_POWERUP
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte KILLACT_STANDARD	; Object $0C - OBJ_ESWITCH
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte KILLACT_NORMALANDKILLED	; Object $0E - OBJ_HARDICE
 	.byte KILLACT_STANDARD	; Object $0F
@@ -364,7 +364,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte KILLACT_STANDARD	; Object $1C
 	.byte KILLACT_STANDARD	; Object $1D
-	.byte KILLACT_STANDARD	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte KILLACT_STANDARD	; Object $1E - OBJ_ESWITCH
 	.byte KILLACT_STANDARD	; Object $1F - OBJ_GROWINGVINE
 	.byte KILLACT_STANDARD	; Object $20
 	.byte KILLACT_STANDARD	; Object $21 - OBJ_POWERUP_ICEFLOWER
@@ -456,7 +456,7 @@ ObjP09:
 
 ObjP1A: .byte $8D, $8D, $8F, $8F, $91, $91, $A7, $A7, $A9, $A9, $AB, $AB
 ObjP0A:	.byte $A9, $AB, $BD, $BF
-ObjP0C:	.byte $51, $53
+ObjP0C:
 
 ObjP0B:
 	.byte $51, $53	
@@ -469,7 +469,10 @@ ObjP19:
 	.byte $11, $11
 
 ObjP1C:	
-ObjP1E:	.byte $51, $53
+ObjP1E:	
+	.byte $B9, $BB
+	.byte $F9, $FB
+
 ObjP1F:	.byte $51, $53	; #DAHRKDAIZ - VINE
 ObjP21:	.byte $51, $53
 ObjP22:	.byte $51, $53 ; #DAHRKDAIZ - PUMPKIN
@@ -630,6 +633,12 @@ Spring_PositionRestore:
 ObjInit_Key:
 	RTS
 
+Key_Reappear = Objects_Data1
+Key_ReappearX = Objects_Data3
+Key_ReappearXHi = Objects_Data4
+Key_ReappearY = Objects_Data5
+Key_ReappearYHi = Objects_Data6
+
 ObjNorm_Key:
 	LDA <Player_HaltGameZ
 	BEQ Key_Norm
@@ -638,8 +647,40 @@ ObjNorm_Key:
 	JSR Object_InteractWithPlayer
 	JMP Object_Draw
 
-Key_Norm:
+Key_Norm
+
 	JSR Object_DeleteInPit
+	BCC Key_Move
+
+	LDA Key_Reappear, X
+	BEQ Key_Move
+
+	LDA Key_ReappearX, X
+	STA <Objects_XZ, X
+
+	LDA Key_ReappearXHi, X
+	STA <Objects_XHiZ, X
+
+	LDA Key_ReappearY, X
+	STA <Objects_YZ, X
+
+	LDA Key_ReappearYHi, X
+	STA <Objects_YHiZ, X
+	
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
+	
+	LDA Level_ObjectsSpawned,Y
+	ORA #$80
+	STA Level_ObjectsSpawned,Y
+
+	LDA #OBJ_KEY
+	STA Objects_ID, X
+	RTS
+
+Key_Move:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
@@ -1008,7 +1049,7 @@ Bubble_RegenY = Objects_Data7
 Bubble_RegenYHi = Objects_Data8
 
 ObjNorm_Bubble:
-	STA Debug_Snap
+
 	LDA Bubble_Action, X
 	JSR DynJump
 
@@ -3666,22 +3707,28 @@ NextCheck:
 
 	LDA <Player_X
 	STA <Objects_XZ, X
+	STA Key_ReappearX, X
 	STA <Poof_X
 
 	LDA <Player_XHi
 	STA <Objects_XHiZ, X
+	STA Key_ReappearXHi, X
 
 	LDA <Player_Y
 	ADD #$10
 	STA <Objects_YZ, X
+	STA Key_ReappearY, X
 	STA <Poof_Y
 
 	LDA <Player_YHi
 	ADC #$00
 	STA <Objects_YHiZ, X
+	STA Key_ReappearYHi, X
+
+	LDA #$01
+	STA Key_Reappear, X
 
 	JMP Common_MakePoof
-	
 
 KeyPieceRTS:
 	RTS
@@ -4221,6 +4268,8 @@ BlockEater_StartYHi = Objects_Data4
 BlockEater_DirectionIndex = Objects_Data5
 BlockEater_TileDetectValue = Objects_Data6
 BlockEater_BlockIndexCheck = Objects_Data7
+BlockEater_Init = Objects_Data8
+
 BlockEater_XVelocity: .byte $00, $08, $00, $F8
 BlockEater_YVelocity: .byte $F8, $00, $08, $00
 
@@ -4243,13 +4292,9 @@ ObjInit_EaterBlock:
 	STA BlockEater_TileDetectValue, X
 
 	LDA <Objects_YZ, X
-	SUB #$01
-	STA <Objects_YZ, X
 	STA BlockEater_StartY, X
 
 	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Objects_YHiZ, X
 	STA BlockEater_StartYHi, X
 
 	LDA <Objects_XZ, X
@@ -4257,11 +4302,22 @@ ObjInit_EaterBlock:
 
 	LDA <Objects_XHiZ, X
 	STA BlockEater_StartXHi, X
-	RTS
+
+	LDA #$FF
+	STA BlockEater_BlockIndexCheck, X
+
+	JMP EaterMaker_CheckBlockToggle
 
 ObjNorm_EaterBlock:
-
 	JSR Object_DrawMirrored
+
+	TYA
+	TAX
+
+	DEC Sprite_RAMY, X
+	DEC Sprite_RAMY + 4, X
+
+	LDX <CurrentObjectIndexZ
 
 	LDA <Player_HaltGameZ
 	BEQ EaterMaker
@@ -4306,16 +4362,24 @@ EaterMaker1:
 	STA Objects_BoundLeftHi, X
 
 	LDA Objects_BoundTop, X
-	SUB #$01
+	SUB #$02
 	STA Objects_BoundTop, X
 
 	LDA Objects_BoundTopHi, X
 	SBC #$00
 	STA Objects_BoundTopHi, X
 
-	JSR Object_InteractWithPlayer	
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
+	JSR Object_InteractWithPlayer
+
+	LDA <Objects_XVelZ, X
+	ORA <Objects_YVelZ, X
+	BNE EaterMaker_CheckBlockToggle
+
+	JSR EaterMaker_SetVel
+
+EaterMaker_CheckBlockToggle:
 
 	LDA <Objects_XZ, X
 	AND #$0F
@@ -4323,7 +4387,6 @@ EaterMaker1:
 
 	LDA <Objects_YZ, X
 	AND #$0F
-	CMP #$0F
 	BNE EaterMaker_RTS1
 
 	LDA Block_NeedsUpdate
@@ -4388,16 +4451,30 @@ EaterMark_Reverse:
 	LDA BlockEater_TileDetectValue, X
 	EOR #$01
 	STA BlockEater_TileDetectValue, X
-	RTS
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+	LDA <Objects_YVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_YVelZ, X
+
+	JMP EaterMaker_Halt
 
 EaterMaker_SetVel:
 	
 	LDY BlockEater_BlockIndexCheck, X
+	BMI EaterMaker_NormalSpeed
+
 	LDA BlockEater_XVelocity, Y
 	STA <Objects_XVelZ, X
 
 	LDA BlockEater_YVelocity, Y
 	STA <Objects_YVelZ, X
+
 	LDA Objects_Property, X
 	AND #$02
 	BEQ EaterMaker_NormalSpeed
@@ -4405,6 +4482,7 @@ EaterMaker_SetVel:
 	LDA <Objects_XVelZ, X
 	AND #$80
 	STA TempA
+
 	LDA <Objects_XVelZ, X
 	ASL A
 	ORA TempA
@@ -4413,6 +4491,7 @@ EaterMaker_SetVel:
 	LDA <Objects_YVelZ, X
 	AND #$80
 	STA TempA
+
 	LDA <Objects_YVelZ, X
 	ASL A
 	ORA TempA
@@ -4974,7 +5053,7 @@ ObjInit_CoinLock:
 
 Coin_Unlock:
 	LDA Block_NeedsUpdate
-	BNE Coin_UnlockRTS
+	BNE Coin_UnlockRTS 
 
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
@@ -4985,6 +5064,7 @@ Coin_Unlock:
 	JSR Object_ChangeBlock
 	
 	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE Coin_Unlock0
 
 	LDA <Objects_XZ, X
@@ -5160,3 +5240,42 @@ WaterSplash_Animate:
 
 WaterSplash_Draw:
 	JMP Object_DrawMirrored
+
+Obj_ESwitch:
+	LDA Objects_Property, Y
+	JSR DynJump
+
+	.word ESwitch_Lock
+
+ESwitch_Lock:
+	LDA EventSwitch
+	BEQ ESwitch_LockDraw
+
+	LDA <Player_HaltGameZ
+	BNE ESwitch_LockDraw
+
+	LDA CoinLock_BlocksRemaining, X
+	CMP #$02
+	BNE ESwitch_NoResetLock
+
+	LDA #$00
+	STA EventSwitch
+	
+ESwitch_NoResetLock:
+	JMP Coin_Unlock
+
+ESwitch_LockDraw:
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+
+	TYA
+	STA Objects_Frame, X
+
+	JMP Object_Draw
+
+ESwitch_NoUnlock:
+	RTS

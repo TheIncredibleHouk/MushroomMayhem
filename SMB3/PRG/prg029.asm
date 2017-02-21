@@ -456,8 +456,7 @@ PRG029_CED7:
 	LDA #$00
 	STA <Temp_Var1	 ; Store cycle tick into Temp_Var1 (0 if not invincible, sprite palette 0)
 
-	LDA Level_PipeMove
-	ORA Player_Behind
+	LDA Player_Behind
 	ORA Player_SandSink
 	BEQ PRG029_CF1E	 ; If Player is behind the scenes, jump to PRG029_CF1E
 

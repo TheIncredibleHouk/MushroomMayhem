@@ -32,7 +32,7 @@ Object_BoundBox:
 	.byte  1,   6,   1,   15	; 8x16  BOUND8x16
 	.byte  1,  14,   1,   16	; 16x16 BOUND16x16
 	.byte  1,  14,   1,   23	; 16x24 BOUND16x24
-	.byte  0,  16,   0,  16	;  ; solid block (16x16) BOUND16x16BLOCK
+	.byte  0,  16,   1,  16	;  ; solid block (16x16) BOUND16x16BLOCK
 	.byte  8,  24,   8,  30	; (BOSS)
 	.byte  2,  22,   2,  30	; BOUND24x32
 	.byte  2,  2,  -2,  34	; 6
@@ -60,7 +60,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $09 - OBJ_BUBBLE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0A
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0B - OBJ_POWERUP
-	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0C - OBJ_ESWITCH
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0E - OBJ_HARDICE
 	.byte BOUND8x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0F
@@ -78,7 +78,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte BOUND16x16	; Object $1C
 	.byte BOUND8x16 | OAT_WEAPONSHELLPROOF	; Object $1D
-	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1E - OBJ_ESWITCH
 	.byte BOUND8x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1F - OBJ_GROWINGVINE
 	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $20
 	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $21 - OBJ_POWERUP_ICEFLOWER
@@ -90,7 +90,7 @@ Object_AttrFlags:
 	.byte BOUND48x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.byte BOUND48x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.byte BOUND16x16	; Object $29 - OBJ_SPIKE
-	.byte BOUND16x16BLOCK | OAT_FIREPROOF	; Object $2A - OBJ_SPARKRIGHT
+	.byte BOUND16x16BLOCK | OAT_FIREPROOF	; Object $2A - OBJ_SPARK
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte BOUND48x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte BOUND48x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -392,7 +392,7 @@ PRG000_C559:
 	LDA #$00
 	STA <Objects_TilesDetectZ,X	; Clear Object's detection status
 
-	JSR Object_GetAttrAndMoveTiles	 ; Fill in values for Object_VertTileProp/Quad and Object_HorzTileProp/Quad
+	JSR Object_GetTiles	 ; Fill in values for Object_VertTileProp/Quad and Object_HorzTileProp/Quad
 
 	LDA Object_HorzTileProp, X	; A = detected tile index
 	AND #$F0
@@ -462,19 +462,26 @@ PRG000_C65C:
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_GetAttrAndMoveTiles
+; Object_GetTiles
 ;
 ; Gets tiles for an object based on its attribute settings and
 ; current state of movement.  Handles entering/leaving water.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Object_GetAttrAndMoveTiles:
+Object_GetTiles:
 	JSR Object_DetectTileCenter	; Get tile here
 
 	STA Object_BodyTileProp, X
 	TYA
 	STA Object_BodyTileValue, X
 	
+	LDA Object_DisableWater
+	BNE Object_GetRestTiles
+
 	JSR Object_Check_Water
+
+Object_GetRestTiles:
+	LDA #$00
+	STA Object_DisableWater
 
 	LDA <Objects_YVelZ,X
 	BMI PRG000_C713	 ; If object Y velocity is >= 0 (stopped or moving downward), jump to PRG000_C713
@@ -992,7 +999,6 @@ ObjectID_BaseVals:
 ; Do whatever is required by the current Objects_State value
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_DoStateAction:
-	
 	LDA Objects_State,X
 	BEQ PRG000_CA40	 ; If this object is "dead/empty", jump to PRG000_CA40
 
@@ -2005,10 +2011,6 @@ Object_Move:
 	LDY Objects_InWater,X
 	BEQ PRG000_D0A9	 	; If object is not in water, jump to PRG000_D0A9
 
-	;LDY Objects_State,X	
-	;CPY #OBJSTATE_NORMAL
-	;BEQ PRG000_D0A9	 	; If object's state is Normal, jump to PRG000_D0A9
-
 	; This is basically an pseudo-ASR, a right shift preserving the sign
 	ASL A			; Bit 7 pushed into carry
 	ROR <Objects_XVelZ,X	; X velocity rotated right (divided by 2) and proper sign of bit 7 in place
@@ -2506,6 +2508,8 @@ Object_SetDeadEmpty:
 	LDA #$00
 	STA Objects_ID,X
 	STA Objects_BeingHeld, X
+
+	SEC
 
 PRG000_D463:
 	RTS		 ; Return
@@ -4478,12 +4482,6 @@ Object_TestSideBumpBlocks1:
 	CLC
 	RTS
 
-SetObjectTileCoordAlignObj:
-
-SetObjectTileCoord:
-
-	RTS
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5321,6 +5319,7 @@ Object_FacePlayerOnLanding1:
 
 Object_MoveTowardsPlayerFast:
 	JSR Object_FacePlayer
+
 	LDA TowardsPlayerSpeed + 2,Y
 	STA <Objects_XVelZ, X
 	RTS
@@ -5786,6 +5785,7 @@ Object_AttackXVel:
 	.byte $03, $07, $09, $0A, $0B, $0C, $0C, $0C
 	.byte $02, $06, $08, $0A, $0B, $0B, $0C, $0C
 	.byte $02, $05, $07, $09, $0A, $0B, $0B, $0C
+	.byte $02, $05, $07, $09, $0A, $0B, $0B, $0C
 
 
 Object_AttackYVel:
@@ -5795,6 +5795,7 @@ Object_AttackYVel:
 	.byte $0C, $0A, $08, $06, $05, $04, $04, $03
 	.byte $0D, $0B, $09, $07, $06, $05, $05, $04
 	.byte $0D, $0B, $0A, $08, $07, $06, $05, $05
+	.byte $0D, $0C, $0A, $09, $08, $07, $06, $05
 	.byte $0D, $0C, $0A, $09, $08, $07, $06, $05
 
 

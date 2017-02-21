@@ -173,10 +173,14 @@ Player_Projectiles:
 	.byte $00, $00, PLAYER_FIREBALL, $00, $00, $00, PLAYER_HAMMER, PLAYER_ICEBALL, $00, $00, $00, PLAYER_NINJASTAR
 
 PlayerProj_ThrowWeapon:
+	LDA Wall_Jump_Enabled
+	BNE PlayerProj_None
+
 	LDY Player_EffectiveSuit
 	LDA Player_Projectiles, Y
 	BNE PlayerProj_ThrowWeapon1
 
+PlayerProj_None:
 	RTS
 PlayerProj_ThrowWeapon1:
 	TAY
@@ -697,9 +701,6 @@ Player_HammerDraw:
 	JSR SpecialObj_Draw16x16
 	RTS
 
-Hammer_Tiles:
-	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_STONE), (TILE_PROP_SOLID_ALL | TILE_PROP_STONE), (TILE_ITEM_BRICK)
-
 Player_HammerTilesInteraction:
 	LDA Block_NeedsUpdate
 	BNE Player_HammerTilesInteraction1
@@ -732,17 +733,34 @@ Player_NinjaStar:
 
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
+	JSR SpecialObj_DetectWorld16x16
+	
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCS Player_StarPoof
+
 	JSR PlayerProj_HitEnemies
 	BCC Player_StarNoKill
 
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_WEAPONSHELLPROOF
-	BNE Player_StarNoKill
+	BNE Player_StarPoof
 
 	LDA #HIT_NINJASTAR
 	STA Objects_PlayerProjHit, Y
 
 	JSR SpecialObj_AttackEnemy
+
+
+Player_StarPoof:
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,X
+
+	; SpecialObj_Data1 = $1F
+
+	LDA #$08
+	STA SpecialObj_Timer, X
+	RTS
 
 Player_StarNoKill:
 
@@ -2687,8 +2705,24 @@ Enemy_NinjaStar:
 
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
-	JSR EnemyProj_HitPlayer
+	JSR SpecialObj_DetectWorld16x16
 	
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCS Enemy_StarPoof
+	
+	JSR EnemyProj_HitPlayer
+	BCC Enemy_NinjaStarDraw
+
+Enemy_StarPoof:
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,X
+
+	; SpecialObj_Data1 = $1F
+
+	LDA #$08
+	STA SpecialObj_Timer, X
+	RTS
 
 Enemy_NinjaStarDraw:
 

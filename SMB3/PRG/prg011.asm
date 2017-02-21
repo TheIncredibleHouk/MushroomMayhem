@@ -759,7 +759,6 @@ PRG011_A5AA:
 PRG011_A5DC:
 	RTS		 ; Return
 
-
 GameOver_TwirlToStart:
 	LDX Player_Current	 
 

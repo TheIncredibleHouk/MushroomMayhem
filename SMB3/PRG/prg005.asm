@@ -941,12 +941,13 @@ Piranha_AttacksLeft	= Objects_Data5
 Piranha_AttackData = Objects_Data6
 Piranha_StateTimer = Objects_Timer
 Piranha_YHiBackup = Objects_Data7
+Piranha_DrawStem = Objects_Data2
 
 Piranha_YVel:
 	.byte $F8, $08
 	
 Piranha_Orientation:
-	.byte SPR_BEHINDBG, SPR_VFLIP | SPR_BEHINDBG
+	.byte 00, SPR_VFLIP 
 
 Piranha_Palettes:
 	.byte SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL1
@@ -1087,7 +1088,7 @@ Piranha_Draw1:
 	LDY Object_SpriteRAMOffset, X
 
 	LDA Sprite_RAM + 10, Y
-	AND #(SPR_VFLIP | SPR_BEHINDBG)
+	AND #(SPR_VFLIP)
 	ORA #SPR_PAL2
 	STA Sprite_RAM + 10, Y
 	ORA #SPR_HFLIP
@@ -1161,6 +1162,9 @@ Piranha_Wait1:
 	LDA #$00
 	STA Piranha_CurrentState, X
 
+	LDA #$00
+	STA Piranha_DrawStem, X
+
 	LDA #$20
 	STA Objects_Timer, X
 
@@ -1173,7 +1177,7 @@ Piranha_Wait1:
 Piranha_Wait2:
 	RTS
 
-Piranha_Move:	
+Piranha_Move:
 	JSR Object_ApplyYVel_NoGravity
 
 	LDA Objects_Timer, X
@@ -1191,9 +1195,37 @@ Piranha_Move:
 
 	LDA Piranha_AttackCount, X
 	STA Piranha_AttacksLeft, X
+	RTS
 
 Piranha_Move1:
+	LDA <Objects_YVelZ, X
+	BPL Piranha_Move3
+
+	LDA <Objects_YZ, X
+	AND #$0E
+	CMP #$0E
+	BNE Piranha_Move2
+
+	LDA Piranha_DrawStem, X
+	EOR #$01
+	STA Piranha_DrawStem, X
+
+Piranha_Move2:
 	RTS
+
+Piranha_Move3:
+	LDA <Objects_YZ, X
+	AND #$0F
+	CMP #$0F
+	BNE Piranha_Move4
+
+	LDA Piranha_DrawStem, X
+	EOR #$01
+	STA Piranha_DrawStem, X
+
+Piranha_Move4:
+	RTS
+
 
 Piranha_Attack:
 
@@ -1247,6 +1279,9 @@ Piranha_NoYOff:
 Piranha_NoMoreAttacks:
 	LDA #$20
 	STA Objects_Timer, X
+
+	LDA #$01
+	STA Piranha_DrawStem, X
 	RTS
 
 Piranha_Attack1:

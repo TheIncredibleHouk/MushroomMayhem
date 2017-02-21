@@ -30,7 +30,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_WoodenPlatDiagonal1	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.word ObjInit_WoodenPlatDiagonal2	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.word ObjInit_Spike	; Object $29 - OBJ_SPIKE
-	.word ObjInit_Spark		; Object $2A - OBJ_SPARKRIGHT
+	.word ObjInit_Spark		; Object $2A - OBJ_SPARK
 	.word ObjInit_DiagonalPodobo		; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjInit_WoodenPlatCCW	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.word ObjInit_WoodenPlatCW	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -72,7 +72,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_PlatformOscillate	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.word ObjNorm_PlatformOscillate	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.word ObjNorm_Spike		; Object $29 - OBJ_SPIKE
-	.word ObjNorm_Spark		; Object $2A - OBJ_SPARKRIGHT
+	.word ObjNorm_Spark		; Object $2A - OBJ_SPARK
 	.word ObjNorm_DiagonalPodobo	; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjNorm_PlatformOscillate		; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.word ObjNorm_PlatformOscillate		; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -115,7 +115,7 @@ ObjectGroup01_CollideJumpTable:
 	.word Platform_PlayerStand		; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.word Platform_PlayerStand		; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.word ObjHit_DoNothing		; Object $29 - OBJ_SPIKE
-	.word Player_GetHurt		; Object $2A - OBJ_SPARKRIGHT
+	.word Player_GetHurt		; Object $2A - OBJ_SPARK
 	.word Player_GetHurt	; Object $2B - OBJ_RICOCHET_PODOBO
 	.word Platform_PlayerStand		; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.word Platform_PlayerStand		; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -157,7 +157,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $29 - OBJ_SPIKE
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2A - OBJ_SPARKRIGHT
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2A - OBJ_SPARK
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -205,7 +205,7 @@ ObjectGroup01_Attributes2:
 	.byte $00	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.byte $00	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.byte $00 	; Object $29 - OBJ_SPIKE
-	.byte $00	; Object $2A - OBJ_SPARKRIGHT
+	.byte $00	; Object $2A - OBJ_SPARK
 	.byte $00	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte $00	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte $00	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -247,8 +247,8 @@ ObjectGroup01_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.byte OA3_HALT_JUSTDRAW 	; Object $29 - OBJ_SPIKE
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE 	; Object $2A - OBJ_SPARKRIGHT
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE 	; Object $2B - OBJ_RICOCHET_PODOBO
+	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $2A - OBJ_SPARK
+	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
@@ -289,7 +289,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.byte OPTS_NOCHANGE	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.byte OPTS_SETPT5 | $0E	; Object $29 - OBJ_SPIKE
-	.byte OPTS_SETPT5 | $0A	; Object $2A - OBJ_SPARKRIGHT
+	.byte OPTS_SETPT5 | $0A	; Object $2A - OBJ_SPARK
 	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OPTS_NOCHANGE	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte OPTS_NOCHANGE	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -331,7 +331,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.byte KILLACT_STANDARD	; Object $28 - OBJ_PLATFORM_DIAG2OSC
 	.byte KILLACT_STANDARD	; Object $29 - OBJ_SPIKE
-	.byte KILLACT_STANDARD	; Object $2A - OBJ_SPARKRIGHT
+	.byte KILLACT_STANDARD	; Object $2A - OBJ_SPARK
 	.byte KILLACT_POOFDEATH	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte KILLACT_STANDARD	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -2088,17 +2088,22 @@ Snifit_HitWall1:
 
 Snifit_HitWall1RTS:
 	RTS
+Spark_Direction = Objects_Data2
+Spark_Speed = Objects_Data3
+Spark_HitDetect = Objects_Data4
 
 ObjInit_Spark:
 	LDA Objects_Property, X
 	AND #$01
-	STA Objects_Data4, X
+	STA Spark_Direction, X
+
 	LDA Objects_Property, X
 	AND #$FE
 	LSR A
-	STA Objects_Data3, X
+	STA Spark_Speed, X
+
 	LDA #$00
-	STA Objects_Data5, X
+	STA Spark_HitDetect, X
 	RTS
 
 ; this basically detects certain corners based on current movement direction
@@ -2110,7 +2115,7 @@ SparkYVel:
 	.byte $10, $10, $F0, $F0
 	.byte $10, $10, $F0, $F0
 
-SparkXVeL:
+SparkXVel:
 	.byte $10, $F0, $F0, $10
 	.byte $F0, $10, $10, $F0
 
@@ -2118,20 +2123,12 @@ ObjNorm_Spark:
 	LDA <Player_HaltGameZ
 	BEQ SparkNorm
 
-	JMP Object_DrawMirrored
+	JMP Spark_Draw
 
 SparkNorm:
 	JSR Object_DeleteOffScreen
-	
-	LDA <Counter_1
-	AND #$04
-	LSR A
-	LSR A
-	STA Objects_Frame, X
 
-	JSR Object_DrawMirrored
-
-	LDA Objects_Data3, X
+	LDA Spark_Speed, X
 	STA TempA
 
 ObjNorm_Spark1:
@@ -2139,32 +2136,44 @@ ObjNorm_Spark1:
 	DEC TempA
 	BPL ObjNorm_Spark1
 
-	JMP Object_AttackOrDefeat
+	JSR Object_AttackOrDefeat
+	JMP Spark_Animate
 
 Spark_Move:
-	LDA Objects_Data4, X
+	LDA Spark_Direction, X
 	ASL A
 	ASL A
-	ORA Objects_Data5, X
+	ORA Spark_HitDetect, X
 	TAY
-	LDA SparkXVeL, Y
+
+	LDA SparkXVel, Y
 	STA <Objects_XVelZ, X
+	STA Objects_EffectiveXVel,X
+
 	LDA SparkYVel, Y
 	STA <Objects_YVelZ, X
+
 	TYA
 	AND #$01			; only odd numbered states move vertically, even move horzontally
 	BNE NoSparkXVel
+
 	LDA <Objects_YZ, X
 	AND #$0F
 	BNE ApplySparkX
+
 	JSR Object_ApplyYVel_NoGravity
 
 ApplySparkX:
 	JSR Object_ApplyXVel
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
+
 	LDA <Objects_XZ, X
 	AND #$0F
 	CMP #$0F
 	BEQ SparkHitDetection
+
 	CMP #$01
 	BEQ SparkHitDetection
 	BNE KeepGoing
@@ -2173,232 +2182,64 @@ NoSparkXVel:
 	LDA <Objects_XZ, X
 	AND #$0F
 	BNE ApplySparkY
+
 	JSR Object_ApplyXVel
 
 ApplySparkY:
 	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
+
 	LDA <Objects_YZ, X
 	AND #$0F
 	CMP #$0F
 	BEQ SparkHitDetection
+
 	CMP #$01
 	BEQ SparkHitDetection
 	BNE KeepGoing
 
 SparkHitDetection:
-	JSR Object_CalcBoundBox
-	JSR Object_DetectTiles
-	LDA Objects_Data4, X		; var1 = 0 -> clockwise movement, var1 = 1 -> counter clockwise
+	LDA Spark_Direction, X		; var1 = 0 -> clockwise movement, var1 = 1 -> counter clockwise
 	ASL A
 	ASL A
-	ORA Objects_Data5, X
+	ORA Spark_HitDetect, X
 	TAY
+
 	LDA <Objects_TilesDetectZ, X
 	AND SparkDetects, Y  
 	BNE WallCeilGrndDet
-	LDA Objects_Data5, X	; neither corner was detected (no ground or wall) so we need to wrap around the tile
+
+	LDA Spark_HitDetect, X	; neither corner was detected (no ground or wall) so we need to wrap around the tile
 	ADD #$01
 	AND #$03
-	STA Objects_Data5, X
+	STA Spark_HitDetect, X
 	RTS
 
 WallCeilGrndDet:
 	CMP SparkDetects, Y
 	BNE KeepGoing
-	LDA Objects_Data5, X		; both corners were detected, we need to crawl against the tile
+	
+	LDA Spark_HitDetect, X		; both corners were detected, we need to crawl against the tile
 	SUB #$01
 	AND #$03
-	STA Objects_Data5, X
+	STA Spark_HitDetect, X
 
 KeepGoing:						; if we only detected one ground or wall we keep going in the same direction
 	RTS
 
+Spark_Animate:
+	LDA <Counter_1
+	AND #$04
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+Spark_Draw:
+	JMP Object_DrawMirrored
 
 Bank2_PiranhaSpikeHaltAction:
-	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite data
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	LDA Objects_ID,X
-	CMP #OBJ_SNIFIT
-	BEQ PRG002_AF46	 ; If this is just the piranha with the spike ball rather than a true Patooie, jump to PRG002_AF46
-
-	; Temp_Var1 += 6
-	LDA <Temp_Var1
-	ADD #$06
-	STA <Temp_Var1
-
-PRG002_AF46:
-	LDX <Temp_Var6	 ; X = object's starting tiles
-
-	LDA <Temp_Var3
-	BPL PRG002_AF4F	 ; If object is not vertically flipped, jump to PRG002_AF4F
-
-	JSR PatooiePiranha_StartTileX	 ; Get correct starting sprite tile
-
-PRG002_AF4F:
-	JSR Object_Draw16x16Sprite	 ; Draw sprite
-
-	LSR <Temp_Var5	; Shifting out next vertical visibility bit
-
-	; Sprite Y += 16 for lower half
-	LDA <Temp_Var1
-	ADD #16
-	STA <Temp_Var1
-
-	; 'Y' += 8 (two sprite index over)
-	TYA
-	ADD #$08
-	TAY
-
-	LDX <Temp_Var6	 ; X = starting tiles index
-
-	LDA <Temp_Var3
-	BMI PRG002_AF69	 ; If vertically flipped, jump to PRG002_AF69
-	JSR PatooiePiranha_StartTileX	 ; Otherwise, get correct starting tile again
-PRG002_AF69:
-	JSR Object_Draw16x16Sprite	 ; Draw lower half
-
-	LDA <Temp_Var3
-	BMI PRG002_AF72	 ; If vertically flipped, jump to PRG002_AF72
-
-	LDY <Temp_Var7		 ; Y = original Sprite_RAM offset
-
-PRG002_AF72:
-	; Sets attributes and mirrors piranha sprites
-	LDA <Temp_Var3	; Get object attributes
-	AND #~(SPR_HFLIP | $03)	 ; Keep everything except the horizontal flip and the palette select
-	ORA #SPR_PAL1	 ; Force palette select 1
-	STA Sprite_RAM+$02,Y	 ; Set attributes
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$06,Y	 ; Set other half of piranha
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	LDA Objects_ID,X	
-	CMP #OBJ_SNIFIT
-	BNE PRG002_AF96	 ; If this is Patooie, jump to PRG002_AF96
-
-	; Piranha needs his body mirrored
-	LDA Sprite_RAM+$0A,Y
-	AND #~SPR_HFLIP
-	STA Sprite_RAM+$0A,Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+$0E,Y
-
-PRG002_AF96:
-	LDA Objects_State,X
-	CMP #OBJSTATE_KILLED
-	BEQ PRG002_B01A	 ; If this piranha/Patooie state is Killed, jump to PRG002_B01A
-
-	LDA <Objects_YHiZ,X
-	PHA		 ; Save Y Hi
-
-	LDA <Objects_YZ,X
-	PHA		 ; Save Y
-
-	; Temporarily using object's Y/HI to calculate the spike ball's position
-	SUB Objects_Data2,X
-	STA <Objects_YZ,X
-	LDA <Objects_YHiZ,X
-	SBC #$00
-	STA <Objects_YHiZ,X
-
-	LDY #$00	 ; Y = 0 (height of 16)
-	JSR Object_DetermineVerticallyOffScreenY	 ; Determine visibility of spike ball sprites
-	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite data for spike ball
-
-	LDA Game_Counter
-	LSR A
-	AND #$03
-	TAX		 ; X = 0 to 3, based on timer
-
-	; Cause the spike ball to jiggle slightly (Temp_Var2 is X)
-	LDA <Temp_Var2
-	;ADD Patooie_BallXJiggle,X
-	STA <Temp_Var2
-
-	; Jump Sprite_RAM offset ahead 16 (four sprites, get passed Patooie/Piranha)
-	TYA	
-	ADD #16	
-	TAY	
-
-	; Draw sprite
-	LDX #(SpikeBall_Patterns - ObjectGroup01_PatternSets)	 ; Offset to patterns for spike ball
-	JSR Object_Draw16x16Sprite
-
-	; Set spike ball vertical flip periodically
-	LDA Game_Counter
-	LSR A
-	LSR A
-	LSR A
-	ROR A
-	AND #SPR_VFLIP	; Toggled vertical flip
-	ORA #SPR_PAL2	; Set palette select 2
-	STA Sprite_RAM+$02,Y
-	EOR #$c0	; Invert vertical flip and apply horizontal flip
-	STA Sprite_RAM+$06,Y
-
-	LDX <CurrentObjectIndexZ	 ; X = object slot index
-
-	LDA Objects_State,X
-	CMP #OBJSTATE_KILLED
-	BEQ PRG002_B00E	 ; If Patooie/Piranha's state is Killed, jump to PRG002_B00E
-
-	LDA <Player_HaltGameZ
-	BNE PRG002_B00E	 ; If gameplay is halted, jump to PRG002_B00E
-
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG002_B00E	 ; If any sprites of the spike ball are off-screen, jump to PRG002_B00E
-
-	LDA Objects_ID,X
-	PHA		 ; Save piranha/Patooie iID
-
-	; Temporarily switch and masquerade as a OBJ_FLAMINGCHEEP
-	; NOTE: This really just needs to be a 16x16 sized object so we
-	; can "cheat" and use Object_HitTest on a "special object"
-	LDA #OBJ_FLAMINGCHEEP
-	STA Objects_ID,X
-
-	JSR Object_HitTest
-	BCC PRG002_B00A	 ; If Player did NOT hit spike ball, jump to PRG002_B00A
-
-	LDA Player_StarInv
-	BNE PRG002_B00A	 ; If Player is Starman invincible, jump to PRG002_B00A
-
-	JSR Object_DoCollision ; Do the collision routine
-
-PRG002_B00A:
-	; Restore the object ID
-	PLA
-	STA Objects_ID,X
-
-PRG002_B00E:
-	; Restore the Y/Hi
-	PLA
-	STA <Objects_YZ,X
-	PLA
-	STA <Objects_YHiZ,X
-
-	JSR Object_DetermineVerticallyOffScreen	 ; Restore true vertical visibility for this Patooie/piranha
-	JSR Object_CalcSpriteXY_NoHi	 ; Calculate the true sprite positions
-
-PRG002_B01A:
-	;JMP PRG002_B196		; Jump to PRG002_B196 (set pattern bank $4F)
-
-	; Get the correct starting sprite tile based on whether this is
-	; a true Patooie or just the piranha pretending to be one
-PatooiePiranha_StartTileX:
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	LDA Objects_ID,X	 ; Get object ID
-
-	LDX #(ObjP2A - ObjectGroup01_PatternSets + $06)	 ; If Patooie
-	CMP #OBJ_SPARKRIGHT
-	BEQ PRG002_B02A	 ; If this is Patooie, jump to PRG002_B02A (RTS)
-	LDX #(ObjP46 - ObjectGroup01_PatternSets + $08)	 ; If the piranha with spike ball
-PRG002_B02A:
 	RTS		 ; Return
 
 
@@ -4350,6 +4191,8 @@ ObjInit_DiagonalPodobo:
 
 	LDA Diagonal_PodoboSpriteFlips, Y
 	STA Objects_Orientation, X
+
+	INC Objects_NoIce, X
 	RTS
 
 ObjNorm_DiagonalPodobo:
@@ -4375,11 +4218,13 @@ ObjNorm_DiagonalPodobo01:
 	LSR A
 	STA Objects_Frame, X
 
+	INC Object_DisableWater
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
 	
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 
 	LDA <Objects_TilesDetectZ,X
 	AND #(HIT_GROUND | HIT_CEILING)

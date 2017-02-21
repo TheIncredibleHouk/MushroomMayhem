@@ -503,14 +503,16 @@ WaterFill_Norm:
 	CMP #TILE_PROP_SOLID_ALL
 	BCC FillWater_DrawWater
 
+	LDA <Objects_XZ, X
+	AND #$0F
+	BNE FillWater_Animate
+
 	LDA Objects_XZ, X
 	AND #$F0
-	ORA #$08
 	STA Debris_X
 
 	LDA Objects_YZ, X
 	AND #$F0
-	ORA #$08
 	STA Debris_Y
 
 	JSR Common_MakeBricks
@@ -520,6 +522,7 @@ WaterFill_Norm:
 	
 	LDA <Temp_Var1
 	SUB #$01
+
 	JSR Object_ChangeBlock
 
 	JMP FillWater_Animate
@@ -912,7 +915,7 @@ NinjaBro_ThrowDone:
 
 HammerBro_JumpYVel:	.byte -$60, -$30
 HammerBro_JumpWait: .byte $C0, $FF
-HammerBro_WaitTimers: .byte $18, $18, $30, $18
+HammerBro_WaitTimers: .byte $18, $18, $60, $18
 HammerBro_CanFallThrough: .byte $00, $30
 
 HammerBro_Frame = Objects_Data1
@@ -924,6 +927,9 @@ HammerBro_HoldHammerTimer = Objects_Data6
 HammerBro_WalkDirection = Objects_Data7
 HammerBro_FallThrough = Objects_Data8
 
+
+HammerBro_ThrowTimes:
+	.byte $18, $18, $18, $30
 
 ObjInit_HammerBro:
 	JSR Object_CalcBoundBox
@@ -1003,8 +1009,30 @@ HammerBro_CheckJump:
 	LDA Objects_Timer, X
 	BNE HammerBro_NoJump
 
+	LDA Objects_BoundBottom, X
+	ADD #$14
+	STA Tile_DetectionY
+
+	LDA Objects_BoundBottomHi, X
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	ADD #$07
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	JSR Object_DetectTile
+	
 	LDY #$00
+	CMP #TILE_PROP_SOLID_ALL
+	BCS HammerBro_NotTop
+
 	LDA Objects_SpriteY, X
+
 	CMP #$30
 	BCS HammerBro_NotTop
 
@@ -2673,12 +2701,17 @@ PRG004_AF3E:
 	STA Sprite_RAM+$0F,Y
 
 	; Left wing attribute
-	LDA #(SPR_HFLIP | SPR_PAL1)
+	LDA Objects_SpriteAttributes
+	AND #SPR_BEHINDBG
+	ORA #SPR_PAL1
+	STA Sprite_RAM+$0E,Y
+
+	ORA #SPR_HFLIP
 	STA Sprite_RAM+$0A,Y
 
 	; Right wing attribute
-	LDA #SPR_PAL1
-	STA Sprite_RAM+$0E,Y
+	
+	
 
 	LDA Objects_Data3,X
 
@@ -2868,7 +2901,6 @@ Zombie_InsideBlock0:
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
 	
-	JSR SetObjectTileCoordAlignObj
 	LDA #$01
 	STA Objects_Data5, X
 	LDA #$E0
@@ -2913,8 +2945,6 @@ Zombie_InsideGround1:
 	AND #$FE
 	STA Block_UpdateValue
 	INC Block_NeedsUpdate
-	
-	JSR SetObjectTileCoordAlignObj
 
 Zombie_InsideGround2
 	RTS
@@ -3616,7 +3646,7 @@ ObjNorm_PurpleTroopa:
 	CMP #OBJSTATE_NORMAL
 	BEQ ObjNorm_PurpleTroopa1
 
-	LDA #$FF
+	LDA #$BF
 	STA Explosion_Timer, X
 
 ObjNorm_PurpleTroopa1:
@@ -5230,143 +5260,143 @@ BlueShellExplosionTimers:
 	.byte $40, $80, $C0, $FF
 
 ObjInit_BlueShell:
-	LDA Objects_Property, X
-	TAY
-	LDA BlueShellExplosionTimers, Y
-	STA Objects_SlowTimer, X
+;	LDA Objects_Property, X
+;	TAY
+;	LDA BlueShellExplosionTimers, Y
+;	STA Objects_SlowTimer, X
 	RTS
 
 ObjNorm_BlueShell:
-	LDA <Player_HaltGameZ
-	BNE DrawBlueShell
-
-	JSR Object_InteractWithPlayer
-	INC Objects_Data4, X
-
-	LDA Objects_SlowTimer, X
-	BEQ ObjNorm_BlueShell0
-
-ObjNorm_BlueShell_1:
-	LDA Level_VertScroll
-	ADD #$10
-	STA ChaseTargetY
-	LDA #$00
-	ADC #$00
-	STA ChaseTargetYHi
-	JSR Object_ChasePlayer
-	JSR Object_ApplyXVel
-	JMP DrawBlueShell
-
-ObjNorm_BlueShell0:
-	LDA Objects_Data5, X
-	BNE ObjNorm_BlueShellDive1
-
-	JSR Object_XDistanceFromPlayer
-	CMP #$01
-	BNE ObjNorm_BlueShell_1
-
-	CPY #$00
-	BNE ObjNorm_BlueShell01
-
-	LDY <Player_XVel
-	BPL ObjNorm_BlueShell_1
-	BMI ObjNorm_BlueShellDive
-
-ObjNorm_BlueShell01:
-	LDY <Player_XVel
-	BMI ObjNorm_BlueShell_1 
-
-ObjNorm_BlueShellDive:
-	INC Objects_Data5, X
-
-ObjNorm_BlueShellDive1:
-
-	LDA Objects_YVelZ, X
-	AND #$F0
-	CMP #$70
-	BEQ ObjNorm_BlueShell1
-	LDA Objects_YVelZ, X
-	ADD #$04
-	STA Objects_YVelZ, X
-	
-
-ObjNorm_BlueShell1:
-	LDA #$01
-	STA Objects_Frame, X
-	JSR Object_ApplyYVel_NoGravity
-	JSR Object_DetectTiles
-	LDA  <Objects_TilesDetectZ, X
-	BEQ DrawBlueShell
-	BNE BlueShell_Expload
-
-DrawBlueShell:
-	LDA Objects_Frame, X
-	CMP #$01
-	BNE DrawBlueShell0_1
-	JMP Object_Draw
-
-DrawBlueShell0_1:
-	JSR Object_DrawMirrored
-	
-DrawBlueShell0_2:
-	LDA Objects_Data5, X
-	BNE ObjNorm_BlueShellDraw2
-
-	LDA Objects_SlowTimer, X
-	CMP #$10
-	BCS DrawBlueShell0
-
-	LDA Objects_Data4, X
-	AND #$02
-	BEQ ObjNorm_BlueShellDraw2
-
-DrawBlueShell0:
-	LDY Object_SpriteRAMOffset, X
-	LDA Sprite_RAM+$00,Y
-	CMP #$f8
-	BEQ ObjNorm_BlueShellDraw1	 ; If sprite was found to be vertically off-screen, jump to PRG004_B55D
-
-	; The wing sprite is Y-8 from the body
-	SUB #$08
-	STA Sprite_RAM+08,Y
-
-	; Temp_Var1 = $CD (pattern for wing up)
-	LDA #$CD
-	STA <Temp_Var1
-
-	
-	LDA Objects_Data4, X
-	AND #$04
-	BEQ ObjNorm_BlueShellDraw0	 ; 4 ticks on, 4 ticks off; jump to PRG004_B548
-
-	; Temp_Var1 = $CF (pattern for wing down)
-	LDA #$CF
-	STA <Temp_Var1 
-
-ObjNorm_BlueShellDraw0:
-
-	; Set correct wing pattern
-	LDA <Temp_Var1
-	STA Sprite_RAM+9,Y
-
-	; Copy Sprite X
-	LDA #$0C
-	STA <Temp_Var1
-
-	LDA Objects_Orientation, X
-	BEQ  ObjNorm_BlueShellDraw1
-
-	LDA #$FC
-	STA <Temp_Var1
-
-ObjNorm_BlueShellDraw1:
-	LDA Sprite_RAM+03,Y
-	ADD <Temp_Var1
-	STA Sprite_RAM+11,Y
-
-	LDA #SPR_PAL1
-	ORA Objects_Orientation, X
-	STA Sprite_RAM+10,Y	 ; Set wing attribute
+;	LDA <Player_HaltGameZ
+;	BNE DrawBlueShell
+;
+;	JSR Object_InteractWithPlayer
+;	INC Objects_Data4, X
+;
+;	LDA Objects_SlowTimer, X
+;	BEQ ObjNorm_BlueShell0
+;
+;ObjNorm_BlueShell_1:
+;	LDA Level_VertScroll
+;	ADD #$10
+;	STA ChaseTargetY
+;	LDA #$00
+;	ADC #$00
+;	STA ChaseTargetYHi
+;	JSR Object_ChasePlayer
+;	JSR Object_ApplyXVel
+;	JMP DrawBlueShell
+;
+;ObjNorm_BlueShell0:
+;	LDA Objects_Data5, X
+;	BNE ObjNorm_BlueShellDive1
+;
+;	JSR Object_XDistanceFromPlayer
+;	CMP #$01
+;	BNE ObjNorm_BlueShell_1
+;
+;	CPY #$00
+;	BNE ObjNorm_BlueShell01
+;
+;	LDY <Player_XVel
+;	BPL ObjNorm_BlueShell_1
+;	BMI ObjNorm_BlueShellDive
+;
+;ObjNorm_BlueShell01:
+;	LDY <Player_XVel
+;	BMI ObjNorm_BlueShell_1 
+;
+;ObjNorm_BlueShellDive:
+;	INC Objects_Data5, X
+;
+;ObjNorm_BlueShellDive1:
+;
+;	LDA Objects_YVelZ, X
+;	AND #$F0
+;	CMP #$70
+;	BEQ ObjNorm_BlueShell1
+;	LDA Objects_YVelZ, X
+;	ADD #$04
+;	STA Objects_YVelZ, X
+;	
+;
+;ObjNorm_BlueShell1:
+;	LDA #$01
+;	STA Objects_Frame, X
+;	JSR Object_ApplyYVel_NoGravity
+;	JSR Object_DetectTiles
+;	LDA  <Objects_TilesDetectZ, X
+;	BEQ DrawBlueShell
+;	BNE BlueShell_Expload
+;
+;DrawBlueShell:
+;	LDA Objects_Frame, X
+;	CMP #$01
+;	BNE DrawBlueShell0_1
+;	JMP Object_Draw
+;
+;DrawBlueShell0_1:
+;	JSR Object_DrawMirrored
+;	
+;DrawBlueShell0_2:
+;	LDA Objects_Data5, X
+;	BNE ObjNorm_BlueShellDraw2
+;
+;	LDA Objects_SlowTimer, X
+;	CMP #$10
+;	BCS DrawBlueShell0
+;
+;	LDA Objects_Data4, X
+;	AND #$02
+;	BEQ ObjNorm_BlueShellDraw2
+;
+;DrawBlueShell0:
+;	LDY Object_SpriteRAMOffset, X
+;	LDA Sprite_RAM+$00,Y
+;	CMP #$f8
+;	BEQ ObjNorm_BlueShellDraw1	 ; If sprite was found to be vertically off-screen, jump to PRG004_B55D
+;
+;	; The wing sprite is Y-8 from the body
+;	SUB #$08
+;	STA Sprite_RAM+08,Y
+;
+;	; Temp_Var1 = $CD (pattern for wing up)
+;	LDA #$CD
+;	STA <Temp_Var1
+;
+;	
+;	LDA Objects_Data4, X
+;	AND #$04
+;	BEQ ObjNorm_BlueShellDraw0	 ; 4 ticks on, 4 ticks off; jump to PRG004_B548
+;
+;	; Temp_Var1 = $CF (pattern for wing down)
+;	LDA #$CF
+;	STA <Temp_Var1 
+;
+;ObjNorm_BlueShellDraw0:
+;
+;	; Set correct wing pattern
+;	LDA <Temp_Var1
+;	STA Sprite_RAM+9,Y
+;
+;	; Copy Sprite X
+;	LDA #$0C
+;	STA <Temp_Var1
+;
+;	LDA Objects_Orientation, X
+;	BEQ  ObjNorm_BlueShellDraw1
+;
+;	LDA #$FC
+;	STA <Temp_Var1
+;
+;ObjNorm_BlueShellDraw1:
+;	LDA Sprite_RAM+03,Y
+;	ADD <Temp_Var1
+;	STA Sprite_RAM+11,Y
+;
+;	LDA #SPR_PAL1
+;	ORA Objects_Orientation, X
+;	STA Sprite_RAM+10,Y	 ; Set wing attribute
 
 ObjNorm_BlueShellDraw2:
 	RTS
@@ -5387,6 +5417,9 @@ ObjInit_Larry:
 
 	LDA #$FF
 	STA Larry_ItemSlot, X 
+
+	LDA #$01
+	STA Objects_Global, X
 	RTS		 ; Return
 
 	
@@ -5455,7 +5488,7 @@ Larry_RemoveBag:
 	LDA #$01
 	STA Objects_Frame, X
 
-	LDA #SPR_PAL2
+	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
 
 	;LDA Last_StatusBar_Mode
@@ -5777,10 +5810,10 @@ Larry_DrawDone:
 	RTS
 
 Larry_ItemFrameLeftAttr:
-	.byte SPR_PAL2
+	.byte SPR_PAL2, SPR_PAL1
 
 Larry_ItemFrameRightAttr:
-	.byte SPR_PAL2
+	.byte SPR_PAL2, SPR_PAL1
 
 Larry_ItemPattern:
 	.byte $04, $20, $10, $0C

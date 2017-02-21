@@ -4689,8 +4689,10 @@ HandleLevelEvent:
 	.word NoEvent
 	.word FloodFloor1
 	.word FloodFloor2
+	.word LetEnemyHandle
 
 NoEvent:
+LetEnemyHandle:
 	RTS
 
 FFLevelsY:	.byte $17, $16, $15, $14, $13, $12, $11, $10
@@ -4708,7 +4710,7 @@ FloodFloor:
 	LDA #OBJSTATE_INIT
 	STA Objects_State
 
-	LDA #$A0
+	LDA #$9C
 	STA <Objects_XZ
 
 	LDA #$00

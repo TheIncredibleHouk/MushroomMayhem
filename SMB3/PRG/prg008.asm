@@ -1021,6 +1021,9 @@ PRG008_A71C:
 	STA Player_IsDucking	; Player_IsDucking = 0
 
 PRG008_A72B:
+	LDA Player_ForcedSlide
+	BNE PRG008_A736
+
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)
 	CMP #PAD_DOWN
@@ -2723,6 +2726,9 @@ PRG008_B0C5:
 ; Animate tail attack
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_TailAttackAnim:
+	LDA Player_ForcedSlide
+	BNE PRG008_B109
+
 	LDA <Pad_Holding
 	AND #PAD_DOWN
 	BNE PRG008_B109	 ; If Player is holding down, jump to PRG008_B109
@@ -2766,7 +2772,7 @@ PRG008_B0F3:
 	; Flips player at particular times
 
 	LDA Player_TailAttack
-	CMP #$0b
+	CMP #$0B
 	BEQ PRG008_B103
 
 	CMP #$03
@@ -3718,31 +3724,7 @@ BumpBlock_Spinner1:
 
 	LDA Tile_LastValue
 	ORA #$01
-	STA Bouncer_ReplaceTile, X
-
-
-Tile_WriteTempChange:
-	JSR Common_GetTempTile
-	BCC BumpBlock_SpinnerRTS
-
-	LDA Tile_LastValue
-	STA SpinnerBlocksReplace, Y
-
-	LDA #$20
-	STA SpinnerBlocksTimers, Y
-	STA SpinnerBlocksActive, Y 
-
-	LDA Tile_Y
-	STA SpinnerBlocksY, Y	 ; Store into object slot
-
-	LDA Tile_YHi
-	STA SpinnerBlocksYHi, Y ; Store Y Hi into object slot
-
-	LDA Tile_XHi	
-	STA SpinnerBlocksXHi, Y; Store X Hi into object slot
-
-	LDA Tile_X
-	STA SpinnerBlocksX, Y ; Store X Hi into object slot
+	JMP Tile_WriteTempChange
 
 BumpBlock_SpinnerRTS:
 	RTS
@@ -3912,7 +3894,7 @@ Tile_MoveTable_XCarry:
 	;	   L    R    U    D
 	.byte $00, $00, $00, $00 ; X Air
 	.byte $F8, $00, $00, $00 ; X Water
-	.byte $00, $00, $00, $00 ; X Ground
+	.byte $F8, $08, $00, $00 ; X Ground
 	.byte $00, $00, $00, $00 ; X Wall
 
 Tile_MoveTable_XVel:
@@ -3926,14 +3908,14 @@ Tile_MoveTable_YCarry:
 	.byte $00, $00, $00, $00 ; Y Air
 	.byte $00, $00, $00, $10 ; Y Water
 	.byte $00, $00, $00, $00 ; Y Ground
-	.byte $00, $00, $00, $00 ; Y Wall
+	.byte $00, $00, $E8, $F8 ; Y Wall
 
 
 Tile_MoveTable_YVel:
 	.byte $00, $00, $00, $00 ; Y Air
 	.byte $00, $00, $FE, $00 ; Y Water
 	.byte $00, $00, $00, $00 ; Y Ground
-	.byte $00, $00, $00, $00 ; Y Wall
+	.byte $00, $00, $01, $00 ; Y Wall
 
 
 Tile_MoveTable_Offset:
@@ -3980,6 +3962,9 @@ Try_Wall_Move:
 	CPX #$04
 	BNE Apply_Move_RTS
 
+	LDA Wall_Jump_Enabled
+	BEQ Apply_Move_RTS
+
 	LDA #$0C
 	ADD <Move_Offset
 	STA <Move_Offset
@@ -3994,13 +3979,18 @@ Apply_Move:
 Apply_Move1:
 	LDA Tile_MoveTable_XVel, X
 	BEQ Apply_Move2
+
 	STA <Player_XVel
 
 Apply_Move2:
 	LDA Tile_MoveTable_YCarry, X
 	BEQ Apply_Move3
+
 	STA <Player_CarryYVel
 	INC <Player_InAir
+
+	LDA #$00
+	STA Objects_YVelFrac,X
 
 Apply_Move3:
 	LDA Player_IsHolding
@@ -4008,6 +3998,7 @@ Apply_Move3:
 
 	LDA Tile_MoveTable_YVel, X
 	BEQ Apply_Move_RTS
+
 	ADD <Player_YVel
 	STA <Player_YVel
 	INC <Player_InAir
@@ -4405,8 +4396,10 @@ Do_PowerChange1:
 Do_PowerChange2:
 	CMP #$50
 	BCC Do_PowerChange3
+	
 	LDA #$00
 	STA Power_Change
+
 	LDA #$50
 
 Do_PowerChange3:
@@ -4779,7 +4772,9 @@ Player_DetectWallRTS0:
 	RTS
 
 Player_DetectWall4:
-	
+	LDA Player_ForcedSlide
+	BNE Player_DetectWallRTS
+
 	LDA Tile_DetectionX
 	AND #$0F
 	CMP #$08
@@ -4839,6 +4834,9 @@ Player_CheckWallJump:
 	LDA Player_IsHolding
 	ORA Player_IsClimbing
 	BNE No_Wall_Jump
+
+	LDA <Player_YHi
+	BMI No_Wall_Jump
 
 	LDA <Player_YVel
 	BMI No_Wall_Jump
@@ -5415,7 +5413,7 @@ Player_BgTileInteract:
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
 	.word Tile_NoInteract	; TILE_PROP_DOOR			= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY		= $0E ;
-	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+	.word Bg_PowerCoin	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Bg_HurtPlayer:
 	LDA Tile_LastProp
@@ -5454,7 +5452,6 @@ Bg_CoinRTS:
 	RTS
 
 Bg_Cherry:
-
 	LDA Block_NeedsUpdate
 	BNE Bg_CherryRTS
 
@@ -5467,11 +5464,30 @@ Bg_Cherry:
 	STA Sound_QLevel1
 
 	INC Cherries
+
 	LDA #$00
 	STA Tile_LastProp
 	JMP Player_ToggleBlock
 
 Bg_CherryRTS:
+	RTS
+
+Bg_PowerCoin:
+	LDA Block_NeedsUpdate
+	BNE Bg_PowerCoinRTS
+
+	LDA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+	LDA #$50
+	STA Player_Power
+	
+	LDA #$00
+	STA Tile_LastProp
+
+	JMP Player_ToggleBlock
+
+Bg_PowerCoinRTS:
 	RTS
 
 
@@ -5497,7 +5513,7 @@ Player_BodyHeadTileInteract:
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
 	.word BodyHead_Door	; TILE_PROP_DOOR					= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY			= $0E ;
-	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+	.word Bg_PowerCoin	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Body_Treasure:
 	LDX <TileXIndex
@@ -5730,7 +5746,6 @@ Fox_BurnMode:
 	LDA Player_EffectiveSuit
 	CMP #MARIO_FOX
 	BEQ Fox_BurnModeCont
-	
 	JMP Player_KillDash_NoFX
 
 Fox_BurnModeCont:

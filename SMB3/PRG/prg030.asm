@@ -400,7 +400,7 @@ Suit_Anim:
 	.byte $03, $04, $05
 
 SPR_PowerUps:
-	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, $FF, $FF, $FF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP, OBJ_POWERUP_FOXLEAF, OBJ_POWERUP_STARMAN, OBJ_GROWINGVINE
+	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_ESWITCH, $FF, $FF, $FF, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP, OBJ_POWERUP_FOXLEAF, OBJ_ESWITCH, OBJ_GROWINGVINE
 
 PAUSE_Sprites:
 	.byte $58, $F1, $03, $60	; P
@@ -1334,211 +1334,6 @@ PRG030_8CB8:
 
 PRG030_8CD1:
 	STX Update_Select	 ; Set Update_Select as appropriate
-
-	LDA Level_Tileset
-	CMP #15	 
-	BEQ PRG030_8CDE	 ; If Level_Tileset = 15 (bonus game intro), jump to PRG030_8CDE
-	JMP PRG030_8DCB	 ; Jump to PRG030_8DCB
-
-PRG030_8CDE:
-	; Bonus game intro 
-
-	LDA #$04
-	STA BonusText_CharPause	; BonusText_CharPause = $04
-	STA Bonus_UnusedFlag	; Bonus_UnusedFlag = $04
-
-	; Set text VRAM pointer to $28C5
-	LDA #$28
-	STA BonusText_VH
-	LDA #$c5
-	STA BonusText_VL
-
-	LDA #$2b
-	STA ToadTalk_VH
-	STA PatTable_BankSel+4	 ; Load host graphics
-
-	LDA #$35
-	STA ToadTalk_VL
-
-	; BonusDie_YVel = -$60
-	LDA #-$60
-	STA <BonusDie_YVel
-
-	; Set the die to Y = $78, X = $78
-	LDA #$78
-	STA <BonusDie_Y
-	STA <BonusDie_X
-	
-	; Queue the bonus music
-	LDA #MUS2A_BONUSGAME
-	STA Level_MusicQueue
-
-	; The Bonus Game Loop begins here...
-
-BonusGame_Loop:
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for VSync
-
-	LDA SndCur_Map
-	AND #SND_MAPENTERLEVEL
-	BNE PRG030_8D23	 ; If the "entering" sound is still playing, jump to PRG030_8D23
-
-	LDA Level_MusicQueue
-	BEQ PRG030_8D23	 ; If nothing is in the music queue, jump to PRG030_8D23
-
-	; Start the queued music
-	STA Sound_QMusic2
-
-	; Clear the music queue
-	LDA #$00
-	STA Level_MusicQueue
-
-PRG030_8D23:
-	;JSR BonusGame_Do	 ; Run the Bonus Game
-	;JSR StatusBar_Fill_Exp ; Update score
-
-	LDA <Level_ExitToMap
-	BEQ BonusGame_Loop	 ; If Level_ExitToMap = 0, loop!!
-
-	; Exiting the Bonus Game loop...
-
-	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
-	STA PPU_CTL1	 	
-	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
-
-	LDA Bonus_GameType
-	CMP #BONUS_UNUSED_DDDD
-	BNE PRG030_8D43	 ; If Bonus_GameType <> BONUS_UNUSED_DDDD (??!), jump to PRG030_8D43
-
-	; BONUS_UNUSED_DDDD (??!) only...
-
-	; Set Bonus_DDDD = 1 (??)
-	LDA #$01
-	STA Bonus_DDDD
-
-	JMP PRG030_8D4A	 ; Jump to PRG030_8D4A
-
-PRG030_8D43:
-	CMP #BONUS_UNUSED_2RETURN
-	BNE PRG030_8D4A	 ; If Bonus_GameType <> BONUS_UNUSED_2RETURN (??!), jump to PRG030_8D4A
-
-	; BONUS_UNUSED_2RETURN (??!) only...
-
-	JSR Bonus_Return2_SetMapPos	; Change Player's map position and mark them as having died??
-
-PRG030_8D4A:
-	; BonusText_CPos = 0
-	LDA #$00
-	STA BonusText_CPos
-	STA Bonus_UnusedFlag	 ; Bonus_UnusedFlag = 0
-
-	; Set page @ A000 to 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	JSR Palette_FadeOut	 		; Fade out
-
-	LDA #%00011000
-	STA <PPU_CTL2_Copy	; Show BG+Sprites
-
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for vertical sync
-
-	LDA #$00
-	STA PPU_CTL2	 ; Most importantly, hide sprites/bg
-
-	; NOTE: This jumps to PRG030_8DC3, which returns to World Map, if the die is face value 1.
-	; Seems like the die face logic for jumping to "Roulette" / "Card" is not implemented.
-	LDA Bonus_DieCnt
-	BEQ PRG030_8DC3	 ; If Bonus_DieCnt = 0 (Face value 1), jump to PRG030_8DC3
-
-	LDY #$00	 ; Level tileset 0 (World Map)
-
-	LDA Bonus_GameType
-	CMP #BONUS_SPADE
-	BNE PRG030_8D85	 ; If Bonus_GameType <> BONUS_SPADE, jump to PRG030_8D85
-
-	; Select palettes
-	LDA #$01
-	STA PalSel_Tile_Colors
-	LDA #$09
-	STA PalSel_Obj_Colors
-
-	LDY #16		; Level tileset 16 (Spade)
-
-	BNE PRG030_8D95	 ; Jump (technically always) to PRG030_8D95
-
-PRG030_8D85:
-	CMP #BONUS_NSPADE
-	BNE PRG030_8D95	 ; If Bonus_GameType <> BONUS_NSPADE, jump to PRG030_8D95
-
-	; Select palettes
-	LDA #$02
-	STA PalSel_Tile_Colors
-	LDA #$0a
-	STA PalSel_Obj_Colors
-
-	LDY #17		; Level tileset 17 (N-Spade)
-
-PRG030_8D95:
-	STY Level_Tileset	; Update Level_Tileset
-	STY Level_BG_Page1_2	; Use proper BG patterns
-
-	CPY #$00
-	BEQ PRG030_8DC3	 ; If tileset = 0 (exit back to world map :(), jump to PRG030_8DC3
-
-
-	; About to enter Spade / N-Spade game!
-
-	; Stop Update_Select activity temporarily
-	INC UpdSel_Disable
-
-	; A little cleanup loop...
-
-	; Clears page 0 addresses $00-$FD, excluding $69-$74 (?)
-
-	LDY #$fd	 ; Y = $FD
-	LDA #$00	 ; A = 0
-PRG030_BDA6:
-	STA Temp_Var1,Y	 ; Clear this byte
-
-PRG030_BDA9:
-	DEY		 ; Y--
-
-	CPY #World_Map_Y
-	BGE PRG030_8DB2	 ; If Y >= World_Map_Y, jump to PRG030_8DB2
-
-	; Range between $69-$74 is not cleared ... mainly protecting sound engine I think
-
-	CPY #Video_Upd_AddrL
-	BGE PRG030_BDA9	 ; If Y >= Video_Upd_AddrL, jump to PRG030_BDA9
-PRG030_8DB2: 
-	CPY #$ff
-	BNE PRG030_BDA6	 ; If Y <> $FF (underflow), loop!
-
-
-	; Clears memory $0400-$04CF (mainly Bonus game cleanup)
-	LDY #$cf	 ; Y = $CF
-PRG030_8DB8:
-	STA Roulette_Pos,Y	; Clear this byte
-
-	DEY		 ; Y--
-	CPY #$ff
-	BNE PRG030_8DB8	 ; If Y <> $FF (underflow), loop!
-
-	JMP PRG030_897B	 ; Jump to PRG030_897B
-
-PRG030_8DC3:
-
-	; Exiting to world map...
-
-	; Bonus_DieCnt = 0
-	LDA #$00
-	STA Bonus_DieCnt
-
-	JMP PRG030_8FA8	; Jump to PRG030_8FA8 (proceed back to World Map)
-
-PRG030_8DCB:
-	; LEVEL MAIN LOOP BEGIN!
 
 Level_MainLoop:
 	JSR GraphicsBuf_Prep_And_WaitVSync
@@ -4764,7 +4559,7 @@ Half_Value:
 	RTS
 
 Reserve_Sprites:
-	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_POWERUP_SUPERLEAF, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_STARMAN, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP
+	.byte OBJ_POWERUP_MUSHROOM, OBJ_POWERUP_FIREFLOWER, OBJ_ESWITCH, OBJ_ESWITCH, OBJ_ESWITCH, OBJ_ESWITCH, OBJ_POWERUP_ICEFLOWER, OBJ_POWERUP_FOXLEAF, $00, OBJ_POWERUP_PUMPKIN, OBJ_POWERUP
 
 Reserve_Flash:
 	.byte $00, $00, $00, $01, $02, $03, $00, $00, $00, $00, $00
@@ -6130,3 +5925,32 @@ Player_Die:
 	STA <Player_IsDying	 ; Player_IsDying = 1
 
 	RTS		 ; Return
+
+Tile_WriteTempChange:
+	STA Bouncer_ReplaceTile, X
+
+	JSR Common_GetTempTile
+	BCC Tile_WriteTempChangeRTS
+
+	LDA Tile_LastValue
+	STA SpinnerBlocksReplace, Y
+
+	LDA #$20
+	STA SpinnerBlocksTimers, Y
+	STA SpinnerBlocksActive, Y 
+
+	LDA Tile_Y
+	STA SpinnerBlocksY, Y	 ; Store into object slot
+
+	LDA Tile_YHi
+	STA SpinnerBlocksYHi, Y ; Store Y Hi into object slot
+
+	LDA Tile_XHi	
+	STA SpinnerBlocksXHi, Y; Store X Hi into object slot
+
+	LDA Tile_X
+	STA SpinnerBlocksX, Y ; Store X Hi into object slot
+	SEC
+
+Tile_WriteTempChangeRTS:
+	RTS

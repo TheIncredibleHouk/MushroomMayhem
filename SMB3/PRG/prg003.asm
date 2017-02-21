@@ -338,7 +338,7 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_POOFDEATH	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte KILLACT_POOFDEATH	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $58 - OBJ_PYRANTULA
-	.byte KILLACT_POOFDEATH	; Object $59 - OBJ_FIRESNAKE
+	.byte KILLACT_NORMALSTATE	; Object $59 - OBJ_FIRESNAKE
 	.byte KILLACT_STANDARD	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte KILLACT_STANDARD	; Object $5B - OBJ_ROTODISCCCLOCKWISE
 	.byte KILLACT_NORMALSTATE	; Object $5C - OBJ_ICEBLOCK
@@ -578,7 +578,7 @@ ObjInit_Spintula:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	
-	LDA Object_VertTileValue, X
+	LDA Object_BodyTileValue, X
 	STA Spintula_DetectTile, X
 
 	EOR #$01
@@ -1712,16 +1712,21 @@ PRG003_A4E9:
 	BEQ PRG003_A4E92
 
 	STA Objects_ID + 5
+	
 	LDA Objects_Data3, X
 	STA PUp_StarManFlash
+	
 	LDA #OBJSTATE_INIT
 	STA Objects_State + 5
+	
 	LDA #$C0
 	STA <Objects_YVelZ + 5
 	STA PowerUp_NoRaise
+	
 	LDY #$10
 	LDA <Objects_XVelZ, X
 	BPL PRG003_A4E91
+	
 	LDY #$F0
 
 PRG003_A4E91:
@@ -4541,6 +4546,8 @@ PRG003_B8E9:
 FireSnake_Frame = Objects_Data1
 FireSnake_CanJump = Objects_Data3
 FireSnake_BufferOffset = Objects_Data4
+FireSnake_Ticker = Objects_Data5
+FireSnake_MakeFire = Objects_Data6
 
 FireSnakeFlips:
 	.byte $00, SPR_HFLIP
@@ -4553,6 +4560,7 @@ FireSnake_BufferOffsets:
 
 ObjInit_FireSnake:
 	JSR Object_InitBuffer
+
 	LDA FireSnake_BufferOffsets, Y
 	STA FireSnake_BufferOffset, X
 	TAY
@@ -4573,16 +4581,57 @@ FireSnake_InitLoop:
 
 	LDA #$01
 	STA Objects_NoIce, X
-	RTS
+	JMP Object_CalcBoundBox
 
 ObjNorm_FireSnake:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE FireSnake_NotDead
+
+	LDY FireSnake_BufferOffset, X
+	
+	LDA #$00
+	STA Buffer_Occupied, Y
+
+	LDY Objects_SpawnIdx, X
+
+	LDA Level_ObjectsSpawned, Y
+	AND #$7f
+	STA Level_ObjectsSpawned, Y
+
+	JMP Object_PoofDie
+
+FireSnake_NotDead:
 	LDA <Player_HaltGameZ
 	BEQ FireSnake_Norm	 ; If gameplay is NOT halted, jump to PRG003_BD95
 
 	JMP FireSnake_Draw
 
 FireSnake_Norm:
+	INC FireSnake_Ticker, X
+
+	LDA #$40
+	JSR Object_DeleteOffScreenRange
+	
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BEQ FireSnake_Move
+
+	LDA #$00
+	STA Buffer_Occupied, Y
+
+FireSnake_Move:
 	JSR Object_Move
+
+	LDA <Objects_YVelZ, X
+	CMP #$18
+	BMI FireSnake_Move1
+	BCC FireSnake_Move1
+
+	LDA #$20
+	STA <Objects_YVelZ, X
+
+FireSnake_Move1:
 	JSR FireSnake_MoveTail
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
@@ -4604,7 +4653,53 @@ FireSnake_Norm:
 
 FireSnake_InteractTiles:
 	JSR Object_InteractWithTiles
+	JSR FireSnake_MeltIce
 
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ FireSnake_NoFire
+
+	LDA <Objects_XVelZ, X
+	BEQ FireSnake_NoFire
+
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_ENEMY
+	BNE FireSnake_NoFire
+
+	LDA <Objects_XZ, X
+	ADD #$07
+	STA Block_DetectX
+	STA Tile_X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Block_DetectXHi
+	STA Tile_XHi
+
+	LDA <Objects_YZ, X
+	ADD #$07
+	STA Block_DetectY
+	STA Tile_Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Block_DetectYHi
+	STA Tile_YHi
+
+	LDA Object_BodyTileValue, X
+	STA Tile_LastValue
+
+	JSR Tile_WriteTempChange
+	BCC FireSnake_NoFire
+
+	LDX <CurrentObjectIndexZ
+
+	LDA Tile_LastValue
+	EOR #$01
+	JSR Object_ChangeBlock
+
+FireSnake_NoFire:
+	LDA Object_VertTileProp
 	LDA FireSnake_CanJump, X
 	BEQ FireSnake_TryCanJump
 
@@ -4619,7 +4714,6 @@ FireSnake_InteractTiles:
 	STA Objects_Timer3, X
 
 	LDY #$00
-	BEQ FireSnake_DoJump
 
 FireSnake_DetermineJump:
 	LDA <YDiff
@@ -4628,9 +4722,12 @@ FireSnake_DetermineJump:
 	LSR A
 	LSR A
 	TAY
+
 	INY
 
 FireSnake_DoJump:
+	INC FireSnake_MakeFire, X
+
 	LDA FireSnake_Jumps, Y
 	STA <Objects_YVelZ, X
 
@@ -4643,13 +4740,14 @@ FireSnake_DoJump:
 FireSnake_TowardsPlayer:
 
 	JSR Object_MoveTowardsPlayerFast
+
 	LDA #$00
 	STA FireSnake_CanJump, X
 
-	
 	JMP FireSnake_Animate
 
 FireSnake_TryCanJump:
+
 	LDA <Objects_TilesDetectZ, X
 	AND #HITTEST_BOTTOM
 	BEQ FireSnake_Animate
@@ -4660,7 +4758,6 @@ FireSnake_TryCanJump:
 
 	LDA #$00
 	STA <Objects_XVelZ, X
-
 
 FireSnake_Animate:
 	INC FireSnake_Frame, X
@@ -4682,6 +4779,11 @@ FireSnake_Animate:
 	JMP FireSnake_Draw
 
 FireSnake_MoveTail:
+	LDA FireSnake_Ticker, X
+	AND #$01
+	BNE MoveTail_RTS
+
+
 	LDA #$0E
 	STA <Temp_Var1
 
@@ -4691,6 +4793,7 @@ FireSnake_MoveTail:
 
 
 MoveTail_Loop:
+
 	LDA Object_BufferX, Y
 	STA Object_BufferX + 1, Y
 
@@ -4706,6 +4809,8 @@ MoveTail_Loop:
 
 	LDA <Objects_YZ, X
 	STA Object_BufferY, Y
+
+MoveTail_RTS:
 	RTS
 
 FireSnake_Draw:
@@ -4717,6 +4822,7 @@ FireSnake_TailPartY = Temp_Var1
 FireSnake_TailOffset = Temp_Var16
 
 FireSnake_DrawTail:
+
 	LDY Object_SpriteRAMOffset, X
 	STY <FireSnake_RAMOffset
 
@@ -4973,18 +5079,115 @@ TailHit_None:
 FireSnake_TailFlips:
 	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
 
+FireSnake_HitOffset:
+	.byte $13, $FD
+	.byte $00, $FF
+
+FireSnake_MeltIce:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE FireSnake_NoMeltIce
+
+	LDA Block_NeedsUpdate
+	BEQ FireSnake_MeltIceGo
+
+FireSnake_NoMeltIce:
+	RTS
+
+FireSnake_MeltIceGo:
+	LDA Object_VertTileProp, X
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SLICK)
+	BNE FireSnake_DetectIceHorz
+
+	LDY #$00
+
+	LDA <Objects_TilesDetectZ,X
+	AND #HIT_GROUND
+	BNE FireSnake_MeltIceVert
+
+	INY
+
+FireSnake_MeltIceVert:
+	LDA <Objects_YZ, X
+	ADD FireSnake_HitOffset, Y
+	STA Block_DetectY
+	
+	AND #$F0
+	STA <Poof_Y
+
+	LDA <Objects_YHiZ, X
+	ADC FireSnake_HitOffset + 2, Y
+	STA Block_DetectYHi
+
+	AND #$F0
+	STA <Poof_YHi
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Block_DetectX
+	AND #$F0
+	STA <Poof_X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Block_DetectXHi
+
+	JSR Common_MakePoof
+
+	LDA Object_VertTileValue, X
+	EOR #$01
+	JMP Object_ChangeBlock
+
+FireSnake_DetectIceHorz:
+
+	LDA Object_HorzTileProp, X
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SLICK)
+	BNE FireSnake_MeltIceRTS
+
+	LDY #$00
+
+	LDA <Objects_TilesDetectZ,X
+	AND #HIT_RIGHTWALL
+	BNE FireSnake_MeltIceHorz
+
+	INY
+
+FireSnake_MeltIceHorz:
+	LDA <Objects_XZ, X
+	ADD FireSnake_HitOffset, Y
+	STA Block_DetectX
+	
+	AND #$F0
+	STA <Poof_X
+
+	LDA <Objects_XHiZ, X
+	ADC FireSnake_HitOffset + 2, Y
+	STA Block_DetectXHi
+
+	LDA <Objects_YZ, X
+	ADD #$07
+	STA Block_DetectY
+	
+	AND #$F0
+	STA <Poof_Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Block_DetectYHi
+
+	AND #$F0
+	STA <Poof_YHi
+
+	JSR Common_MakePoof
+
+	LDA Object_HorzTileValue, X
+	EOR #$01
+	JMP Object_ChangeBlock
+
+FireSnake_MeltIceRTS:
+	RTS
+
 RotoDisc_VelAccels:
-	.byte $01, $FF, $01, $FF, $01, $FF, $01, $FF, $02, $FE, $02, $FE
-
-PRG003_B9BB:
-	.byte $00, $03, $01
-
-RotoDisc_VelLimits:
-	.byte $10, $F0, $10, $F0, $10, $F0, $10, $F0
-
-PRG003_B9C6:
-	.byte $28, $D8, $28, $D8
-
 
 ObjInit_Pyrantula:
 	JSR InitPatrol_Chase

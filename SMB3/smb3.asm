@@ -1951,6 +1951,7 @@ ATTR_BUMPOTHERS		= %10000000
 
 	Player_UphillSpeedIdx:		; Override when Player_UphillFlag is set (shared with Player_Microgoomba)
 	Player_Microgoomba:	.ds 1	; Microgoomba stuck to Player
+	Object_DisableWater: .ds 1
 	Objects_InWater:	.ds 5	; $06B7-$06BB Set when object is in water
 
 	SpecialObj_Data2:	.ds 8	; $06BD-$06C4 General purpose variable 1
@@ -3540,9 +3541,8 @@ OBJ_PSWITCHDOOR = $00	;
 OBJ_COIN		= $08	; Door that appears under influence of P-Switch
 OBJ_AIRSHIPANCHOR	= $00	; Airship anchor
 OBJ_BUBBLE			= $09;
-OBJ_BULLY			= $0A	;
+OBJ_BOSSPOINTERS			= $0A	;
 OBJ_POWERUP		= $0B	; Ninja Mushroom
-OBJ_POWERUP_STARMAN	= $0C	; Starman (primarily, but also the super suits -- Tanooki, Frog, Hammer)
 OBJ_POWERUP_MUSHROOM	= $0D 	; Super Mushroom
 OBJ_BOSS_KOOPALING	= $00 ;
 OBJ_HARDICE	= $0E 	; Koopaling (as appropriate to current world)
@@ -3556,7 +3556,7 @@ OBJ_NEGASTAR		= $17	; Spiny cheep
 OBJ_BOSS_BOWSER		= $18 	; King Bowser
 OBJ_POWERUP_FIREFLOWER	= $19	; Fire flower
 OBJ_BOUNCELEFTRIGHT	= $1B	; Left/right block bounce effect object
-OBJ_POWERUP_SUPERLEAF	= $1E	; Falling super leaf
+OBJ_ESWITCH	= $1E	; ESwitch Event
 OBJ_GROWINGVINE		= $1F	; Growing vine
 OBJ_POWERUP_ICEFLOWER	= $21	; Free mushroom card ????
 OBJ_POWERUP_PUMPKIN	= $22	; Free flower card ????
@@ -3569,7 +3569,7 @@ OBJ_PLATFORM_DIAG1OSC	= $27	; Horizontal oscillating log platform
 OBJ_PLATFORM_DIAG2OSC	= $28	; Vertical Oscillating log platform
 OBJ_SPIKE		= $29	; Spike (the spike ball barfer)
 OBJ_PATOOIE			= $00
-OBJ_SPARKRIGHT		= $2A	; Patooie
+OBJ_SPARK		= $2A	; Patooie
 OBJ_GOOMBAINSHOE	= $00 ;
 OBJ_RICOCHET_PODOBO	= $2B	; Goomba in Kuribo's Shoe (yes, I know Kuribo = Goomba, quiet)
 OBJ_PLATFORM_CLOCKOSC	= $2C	; Cloud platform
