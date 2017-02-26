@@ -213,14 +213,14 @@ ObjectGroup03_Attributes2:
 	.byte $00  	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte $00  	; Object $7F - OBJ_BIGREDPIRANHA
 	.byte $00	; Object $80 - OBJ_FLYINGGREENPARATROOPA
-	.byte $00  	; Object $81 - OBJ_HAMMERBRO
-	.byte $00  	; Object $82 - OBJ_NINJABRO
+	.byte OA2_STOMP_KICKSND	  	; Object $81 - OBJ_HAMMERBRO
+	.byte OA2_STOMP_KICKSND	  	; Object $82 - OBJ_NINJABRO
 	.byte $00  	; Object $83 - OBJ_LAKITU
 	.byte $00  	; Object $84 - OBJ_SPINYEGG
 	.byte $00  	; Object $85 - OBJ_BLUESPINY
-	.byte $00  	; Object $86 - OBJ_ICEBRO
-	.byte $00  	; Object $87 - OBJ_FIREBRO
-	.byte $00  	; Object $88 - OBJ_PIRATEBRO
+	.byte OA2_STOMP_KICKSND	  	; Object $86 - OBJ_ICEBRO
+	.byte OA2_STOMP_KICKSND	  	; Object $87 - OBJ_FIREBRO
+	.byte OA2_STOMP_KICKSND	  	; Object $88 - OBJ_PIRATEBRO
 	.byte $00  	; Object $89 - OBJ_CHAINCHOMP
 	.byte $00  	; Object $8A - OBJ_THWOMP
 	.byte $00  	; Object $8B - OBJ_AngryTHWOMP
@@ -945,6 +945,9 @@ ObjInit_HammerBro:
 	LDA <Objects_XZ, X
 	ADD #$10
 	STA HammerBro_RangeRight, X
+
+	LDA #$02
+	STA Objects_Health, X
 	RTS		 ; Return
 	
 ObjNorm_HammerBro:
@@ -1271,6 +1274,9 @@ ObjInit_FireBro:
 
 	LDA #SOBJ_FIREBALL
 	STA FireIcePirateBro_Projectile, X
+
+	LDA #$02
+	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjInit_IceBro:
@@ -1278,6 +1284,9 @@ ObjInit_IceBro:
 
 	LDA #SOBJ_ICEBALL
 	STA FireIcePirateBro_Projectile, X
+
+	LDA #$02
+	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjInit_PirateBro:
@@ -1285,6 +1294,9 @@ ObjInit_PirateBro:
 
 	LDA #SOBJ_CANNONBALL
 	STA FireIcePirateBro_Projectile, X
+	
+	LDA #$02
+	STA Objects_Health, X
 	RTS		 ; Return
 	
 ObjNorm_FireBro:
@@ -1551,6 +1563,9 @@ ObjInit_Thwomp:
 	ADD #$00
 	STA <Objects_XHiZ,X
 
+	LDA #$05
+	STA Objects_Health, X
+
 PRG004_A676:
 	RTS		 ; Return
 
@@ -1571,6 +1586,39 @@ ObjNorm_Thwomp:
 	JMP Thwomp_Draw
 
 Thwomp_Normal:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Thwomp_DoAction
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Debris_X
+
+	LDA <Objects_YZ, X
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA Objects_SpriteAttributes, X
+	STA BrickBust_Pal, Y
+	
+	LDA <Objects_XZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA Objects_SpriteAttributes, X
+	STA BrickBust_Pal, Y
+	JMP Object_Delete
+
+Thwomp_DoAction:
 	JSR Object_DeleteOffScreen
 	
 	LDA Thwomp_Action, X
@@ -1768,6 +1816,9 @@ ObjInit_AngryThwomp:
 
 	LDA #$01
 	STA Objects_Frame, X
+
+	LDA #$05
+	STA Objects_Health, X
 	RTS
 
 ObjNorm_AngryThwomp:
@@ -1777,6 +1828,40 @@ ObjNorm_AngryThwomp:
 	JMP Thwomp_Draw
 
 AngryThwomp_Normal:
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE AngryThwomp_DoAction
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Debris_X
+
+	LDA <Objects_YZ, X
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA Objects_SpriteAttributes, X
+	STA BrickBust_Pal, Y
+	
+	LDA <Objects_XZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA Objects_SpriteAttributes, X
+	STA BrickBust_Pal, Y
+	JMP Object_Delete
+
+AngryThwomp_DoAction:
 	JSR Object_DeleteOffScreen
 
 	LDA Thwomp_Action, X
@@ -3585,6 +3670,9 @@ ObjInit_ParaTroopas:
 	SBC #$00
 	STA <Objects_YHiZ, X
 
+	LDA #$01
+	STA Objects_Health, X
+
 ObjInit_ParaTroopas1:
 	LDA <Objects_XZ, X
 	STA FlyingTroopa_StartX, X
@@ -3635,6 +3723,9 @@ ObjInit_Troopa:
 	LDA <Objects_YHiZ, X
 	ADC #$00
 	STA <Objects_YHiZ, X
+
+	LDA #$01
+	STA Objects_Health, X
 	RTS
 
 

@@ -3899,7 +3899,7 @@ Tile_MoveTable_XCarry:
 
 Tile_MoveTable_XVel:
 	;	   L    R    U    D
-	.byte $00, $00, $00, $00 ; X Air
+	.byte $D0, $30, $00, $00 ; X Air
 	.byte $00, $00, $00, $00 ; X Water
 	.byte $00, $00, $00, $00 ; X Ground
 	.byte $00, $00, $00, $00 ; X Wall
@@ -3912,7 +3912,7 @@ Tile_MoveTable_YCarry:
 
 
 Tile_MoveTable_YVel:
-	.byte $00, $00, $00, $00 ; Y Air
+	.byte $00, $00, $E0, $20 ; Y Air
 	.byte $00, $00, $FE, $00 ; Y Water
 	.byte $00, $00, $00, $00 ; Y Ground
 	.byte $00, $00, $01, $00 ; Y Wall
@@ -3993,12 +3993,20 @@ Apply_Move2:
 	STA Objects_YVelFrac,X
 
 Apply_Move3:
-	LDA Player_IsHolding
-	BNE Apply_Move_RTS
 
 	LDA Tile_MoveTable_YVel, X
 	BEQ Apply_Move_RTS
 
+	CPX #$05
+	BCC Apply_Move4
+
+	CPX #$09
+	BCS Apply_Move4
+
+	LDY Player_IsHolding
+	BNE Apply_Move_RTS
+
+Apply_Move4:
 	ADD <Player_YVel
 	STA <Player_YVel
 	INC <Player_InAir
@@ -4288,13 +4296,21 @@ No_Odo_Increase:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_ApplyYVelocity:
 	LDA <Player_YVel
-	BMI PRG008_BFF9	 ; If Player_YVel < 0, jump to PRG008_BFF9
+	BMI Player_CapYVel	 ; If Player_YVel < 0, jump to PRG008_BFF9
 
 	CMP #FALLRATE_MAX
 	BLS PRG008_BFF9	 ; If Player_YVelo < FALLRATE_MAX, jump to PRG008_BFF9
 
 	; Cap Y velocity at FALLRATE_MAX
 	LDA #FALLRATE_MAX
+	STA <Player_YVel ; Player_YVel = FALLRATE_MAX
+	JMP PRG008_BFF9
+
+Player_CapYVel:
+	CMP #$A8
+	BCS PRG008_BFF9
+
+	LDA #$A8
 	STA <Player_YVel ; Player_YVel = FALLRATE_MAX
 
 PRG008_BFF9:
@@ -5622,6 +5638,9 @@ Solid_Slick:
 
 Solid_ThinIce:
 	LDX <TileXIndex
+	CPX #HEAD_FEET_LEFT_INDEX
+	BCC Solid_ThinBreakIce
+
 	CPX #HEAD_WALL_INDEX
 	BCS Solid_ThinIceRTS
 	

@@ -505,7 +505,15 @@ Buster_DrawHoldingIceBrick:
 
 ObjInit_BeachedCheep:
 	JSR Object_MoveTowardsPlayerFast
+
 	LDY Objects_Property, X
+	CPY #$02
+	BNE ObjInit_BeachedCheep1
+
+	LDA #$10
+	STA <Objects_YVelZ, X
+
+ObjInit_BeachedCheep1:
 	LDA BeachedCheep_VFlip, Y
 	ORA Objects_Orientation, X
 	STA Objects_Orientation, X
@@ -4193,6 +4201,9 @@ ObjInit_DiagonalPodobo:
 	STA Objects_Orientation, X
 
 	INC Objects_NoIce, X
+
+	LDA #$04
+	STA Objects_Health, X
 	RTS
 
 ObjNorm_DiagonalPodobo:
@@ -4226,10 +4237,21 @@ ObjNorm_DiagonalPodobo01:
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 
+	LDA <Objects_YZ, X
+	AND #$0F
+	BNE Podobo_RichocetCheck
+
+	LDA Object_BodyTileProp, X
+	AND #TILE_PROP_WATER
+	BNE Podobo_Richocet
+
+Podobo_RichocetCheck:
 	LDA <Objects_TilesDetectZ,X
 	AND #(HIT_GROUND | HIT_CEILING)
 	BEQ ObjNorm_DiagonalPodobo1
 	
+
+Podobo_Richocet:
 	LDA <Objects_YVelZ,X	 
 	
 	EOR #$FF

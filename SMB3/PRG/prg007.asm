@@ -387,6 +387,9 @@ Player_HitFire:
 	LDA #HIT_FIREBALL
 	STA Objects_PlayerProjHit, Y
 
+	LDA #$01
+	STA Proj_Attack
+
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_FIREPROOF
 	BNE Player_FireBallNoKill
@@ -509,6 +512,9 @@ Player_IceBall0:
 Player_HitIce:
 	LDA #HIT_ICEBALL
 	STA Objects_PlayerProjHit, Y
+
+	LDA #$01
+	STA Proj_Attack
 
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_ICEPROOF
@@ -670,6 +676,7 @@ Player_Hammer:
 
 	JSR SObj_ApplyXYVelsWithGravity
 	JSR SpecialObj_CalcBounds16x16
+	
 	JSR PlayerProj_HitEnemies
 	BCC Player_HammerNoKill
 
@@ -680,7 +687,22 @@ Player_Hammer:
 	LDA #HIT_HAMMER
 	STA Objects_PlayerProjHit, Y
 
+	LDA #$02
+	STA Proj_Attack
+
 	JSR SpecialObj_AttackEnemy
+
+
+Player_HammerPoof:
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,X
+
+	; SpecialObj_Data1 = $1F
+
+	LDA #$08
+	STA SpecialObj_Timer, X
+	RTS
+
 
 Player_HammerNoKill:
 	JSR SpecialObj_DetectWorld16x16
@@ -733,21 +755,18 @@ Player_NinjaStar:
 
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
-	JSR SpecialObj_DetectWorld16x16
-	
-	LDA Tile_LastProp
-	CMP #TILE_PROP_SOLID_TOP
-	BCS Player_StarPoof
-
 	JSR PlayerProj_HitEnemies
 	BCC Player_StarNoKill
 
 	LDA <SpecialObj_ObjectAttributes
 	AND #OAT_WEAPONSHELLPROOF
-	BNE Player_StarPoof
+	BNE Player_StarNoKill
 
 	LDA #HIT_NINJASTAR
 	STA Objects_PlayerProjHit, Y
+
+	LDA #$01
+	STA Proj_Attack
 
 	JSR SpecialObj_AttackEnemy
 
@@ -1176,13 +1195,15 @@ PlayerProj_HitEnemies2:
 	; A Y range per bounding box index
 
 SpecialObj_AttackEnemy:
-
 	LDA Objects_Health,Y
-	SUB #$01
+	SUB Proj_Attack
 	STA Objects_Health,Y
 	BMI ProjEnemyDead	 ; If enemy has no hits left, jump to PRG007_A6DD
 	
-	RTS		 ; Return
+	JSR SpecialObj_ToPoof
+	LDA #SND_PLAYERKICK
+	STA Sound_QPlayer
+	RTS
 
 
 ProjEnemyDead:
@@ -3550,12 +3571,15 @@ ObjectGen_Bobombs:
 	JSR Object_CalcBoundBox
 	JSR Object_FacePlayer
 
+	LDY <CurrentObjectIndexZ
+
 	LDA ObjectGenerator_Property, Y
 	AND #$04
 	LSR A
 	LSR A
 	STA Objects_Property, X
 
+	STA Debug_Snap
 	LDA #$C0
 	STA ObjectGenerator_Timer, Y
 	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index

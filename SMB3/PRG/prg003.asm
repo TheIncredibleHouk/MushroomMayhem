@@ -202,10 +202,10 @@ ObjectGroup02_Attributes2:
 	.byte $00  	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte $00	; Object $50 - OBJ_EXPLOSION
 	.byte $00  	; Object $51 - OBJ_ROTODISCDUAL
-	.byte $00  	; Object $52 - OBJ_SPINTULA
+	.byte OA2_STOMP_KICKSND  	; Object $52 - OBJ_SPINTULA
 	.byte $00  	; Object $53 - OBJ_PIPEPODOBO
 	.byte $00  	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte $00 	; Object $55 - OBJ_BOBOMB
+	.byte OA2_STOMP_KICKSND 	; Object $55 - OBJ_BOBOMB
 	.byte $00	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte $00	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte $00	; Object $58 - OBJ_PYRANTULA
@@ -244,7 +244,7 @@ ObjectGroup02_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OA3_HALT_NORMALONLY 	; Object $50 - OBJ_EXPLOSION
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OA3_HALT_NORMALONLY	; Object $52 - OBJ_SPINTULA
+	.byte OA3_HALT_NORMALONLY  	; Object $52 - OBJ_SPINTULA
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $53 - OBJ_PIPEPODOBO
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
 	.byte OA3_HALT_NORMALONLY 	; Object $55 - OBJ_BOBOMB
@@ -877,6 +877,9 @@ ObjInit_SnowGuy:
 
 	LDA Objects_Property, X
 	STA SnowGuy_Holding, X
+
+	LDA #$01
+	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjNorm_SnowGuy:
@@ -1137,6 +1140,9 @@ VeggieGuy_PullingVeggie = Objects_Data3
 ObjInit_VeggieGuy:
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
+
+	LDA #$01
+	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjNorm_VeggieGuy:
@@ -1408,6 +1414,9 @@ ShyGuy_Holding = Objects_Data2
 ObjInit_ShyGuy:
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
+
+	LDA #$01
+	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjNorm_ShyGuy:

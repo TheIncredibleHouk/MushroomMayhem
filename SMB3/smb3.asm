@@ -2788,6 +2788,7 @@ HIT_NINJASTAR	= 08
 	Player_VibeDisable:	.ds 1	; While greater than zero, Player is unable to move (from impact of heavy fellow)
 	Player_TwisterSpin:	.ds 1	; While greater than zero, Player is twirling from sand twister
 
+	Proj_Attack:		.ds 1
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
 	Objects_Health:	.ds 5	; $7CF6-$7CFA Somewhat uncommon "HP" used generally for bosses only (e.g. they take so many fireballs)
 

@@ -4413,10 +4413,13 @@ EaterMaker_CheckBlockToggle:
 	JSR Object_ChangeBlock
 	
 	LDA #$03
-	STA BlockEater_BlockIndexCheck, X
+	STA <Temp_Var10
 
 EaterMaker_CheckBlocks:
-	LDY BlockEater_BlockIndexCheck, X
+	LDA BlockEater_BlockIndexCheck, X
+	AND #$03
+	TAY
+
 	LDA BlockCheck_XOffsets, Y
 	ADD <Objects_XZ, X
 	STA Block_DetectX
@@ -4432,13 +4435,21 @@ EaterMaker_CheckBlocks:
 	LDA BlockCheck_YOffsets + 4, Y
 	ADC <Objects_YHiZ, X
 	STA Block_DetectYHi
+	
+	TYA
+	PHA
 
 	JSR Object_DetectTile
+	
+	PLA
+	TAY
+
 	LDA Tile_LastValue
 	CMP BlockEater_TileDetectValue, X
 	BEQ EaterMaker_SetVel
 
 	DEC BlockEater_BlockIndexCheck, X
+	DEC <Temp_Var10
 	BPL EaterMaker_CheckBlocks
 
 	LDA Objects_Property, X
@@ -4448,6 +4459,9 @@ EaterMaker_CheckBlocks:
 	JMP Object_PoofDie
 
 EaterMark_Reverse:
+	TYA
+	STA BlockEater_BlockIndexCheck, X
+
 	LDA BlockEater_TileDetectValue, X
 	EOR #$01
 	STA BlockEater_TileDetectValue, X
@@ -4465,7 +4479,9 @@ EaterMark_Reverse:
 	JMP EaterMaker_Halt
 
 EaterMaker_SetVel:
-	
+	TYA
+	STA BlockEater_BlockIndexCheck, X
+
 	LDY BlockEater_BlockIndexCheck, X
 	BMI EaterMaker_NormalSpeed
 

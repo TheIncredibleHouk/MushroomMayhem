@@ -470,7 +470,22 @@ Podobo_Timer = Objects_Data5
 Podobo_BridgeBreak = Objects_Data6
 Podobo_Hiding = Objects_Data7
 
+Podobo_TileCheck:
+	.byte $10, $F0
+	.byte $00, $FF
+
+Podobo_HeightLimits:
+	.byte $2A, $D6
+	.byte $00, $FF
+
+Podobo_JumpYVel:
+	.byte $C0, $40
+
 ObjInit_Podobo:
+
+	LDA #$04
+	STA Objects_Health, X
+
 	LDA Objects_Property, X
 	BEQ ObjInit_Podobo1
 
@@ -478,12 +493,21 @@ ObjInit_Podobo:
 	STA PatTable_BankSel+4
 
 ObjInit_Podobo1:
+	LDY #$00
+
+	LDA Objects_Property, X
+	AND #$02
+	BEQ ObjInit_Podobo2
+
+	INY
+
+ObjInit_Podobo2:
 	LDA <Objects_YZ,X
-	ADD #$2A
+	ADD Podobo_HeightLimits, Y
 	STA Podobo_Limit,X
 
 	LDA <Objects_YHiZ,X
-	ADC #$00
+	ADC Podobo_HeightLimits + 2, Y
 	STA Podobo_LimitHi,X
 
 	LDA #$01
@@ -501,13 +525,19 @@ ObjInit_Podobo1:
 	LDA <Objects_YHiZ, X
 	STA Tile_DetectionYHi
 
+	LDA Objects_Property, X
+	AND #$02
+	LSR A
+	STA TempA
+
 Podob_NextTileCheck:
+	LDY TempA
 	LDA Tile_DetectionY
-	ADD #$10
+	ADD Podobo_TileCheck, Y
 	STA Tile_DetectionY
 
 	LDA Tile_DetectionYHi
-	ADC #$00
+	ADC Podobo_TileCheck + 2, Y
 	STA Tile_DetectionYHi
 
 	JSR Object_DetectTile
@@ -523,7 +553,7 @@ Podob_NextTileCheck:
 	LDA #$40
 	STA Objects_Timer, X
 
-	LDA #$C0
+	LDA Podobo_JumpYVel, Y
 	STA <Objects_YVelZ, X
 	STA Podobo_Hiding, X
 
@@ -540,7 +570,8 @@ ObjNorm_Podobo:
 
 Podobo_Norm:
 	
-	JSR Object_DeleteOffScreen
+	JSR Object_DeleteOffScreenRange
+
 	LDA Objects_Timer,X
 	BEQ Podobo_Move	 ; If timer expired, jump to PRG005_A259
 
@@ -552,13 +583,17 @@ Podobo_Move:
 	BEQ Podobo_KeepMoving
 
 	JSR Object_XDistanceFromPlayer
-	CMP #$40
+	CMP #$60
 	BCS Podobo_MoveDone
 	
 	LDA #$00
 	STA Podobo_Hiding, X
 
-Podobo_KeepMoving:		
+Podobo_KeepMoving:
+	LDA Objects_Property, X
+	AND #$02
+	BNE Podobo_ReverseMove
+
 	LDA <Objects_YVelZ, X
 	BPL Podobo_MoveGravity
 
@@ -570,6 +605,23 @@ Podobo_KeepMoving:
 	BCC Podobo_MoveGravity
 
 	LDA #$C0
+	STA <Objects_YVelZ, X
+	BNE Podobo_MoveGravity
+
+Podobo_ReverseMove:
+	INC Reverse_Gravity
+
+	LDA <Objects_YVelZ, X
+	BMI Podobo_MoveGravity
+
+	LDA <Objects_YZ, X
+	SUB Podobo_Limit, X
+
+	LDA <Objects_YHiZ, X
+	SBC Podobo_LimitHi, X
+	BCS Podobo_MoveGravity
+
+	LDA #$40
 	STA <Objects_YVelZ, X
 
 Podobo_MoveGravity:
@@ -595,6 +647,20 @@ Podobo_DoBridgeBreak:
 Podobo_NoBridgeBreak:
 	JSR Podobo_BreakBridges
 
+	LDA Objects_Property, X
+	AND #$02
+	BEQ Podobo_CheckLavaNorm
+
+	LDA <Objects_YVelZ, X
+	BPL Podobo_Animate
+
+	LDA <Objects_YZ, X
+	AND #$0F
+	CMP #$05
+	BCS Podobo_Animate
+	BCC Podobo_CheckLava
+
+Podobo_CheckLavaNorm:
 	LDA <Objects_YVelZ, X
 	BMI Podobo_Animate
 
@@ -603,6 +669,7 @@ Podobo_NoBridgeBreak:
 	CMP #$0B
 	BCC Podobo_Animate
 
+Podobo_CheckLava:
 	LDA Object_BodyTileProp, X
 	CMP #(TILE_PROP_WATER | TILE_PROP_HARMFUL)
 	BEQ Podobo_Pause
@@ -615,7 +682,16 @@ Podobo_Pause:
 	LDA #$40
 	STA Objects_Timer, X
 
-	LDA #$C0
+	LDY #$00
+
+	LDA Objects_Property, X
+	AND #$02
+	BEQ Podobo_NextYVel
+
+	INY
+
+Podobo_NextYVel:
+	LDA Podobo_JumpYVel, Y
 	STA <Objects_YVelZ, X
 	STA Podobo_Hiding, X
 
@@ -947,7 +1023,7 @@ Piranha_YVel:
 	.byte $F8, $08
 	
 Piranha_Orientation:
-	.byte 00, SPR_VFLIP 
+	.byte SPR_BEHINDBG, SPR_VFLIP | SPR_BEHINDBG
 
 Piranha_Palettes:
 	.byte SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL1
@@ -1088,7 +1164,7 @@ Piranha_Draw1:
 	LDY Object_SpriteRAMOffset, X
 
 	LDA Sprite_RAM + 10, Y
-	AND #(SPR_VFLIP)
+	AND #(SPR_VFLIP | SPR_BEHINDBG)
 	ORA #SPR_PAL2
 	STA Sprite_RAM + 10, Y
 	ORA #SPR_HFLIP
@@ -4446,6 +4522,9 @@ Freezie_Die:
 	AND #$7F
 	STA Level_ObjectsSpawned,Y
 	
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
 	JMP Object_BurstIce
 
 ObjInit_Swoosh:

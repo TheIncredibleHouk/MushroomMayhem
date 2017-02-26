@@ -206,7 +206,7 @@ Object_AttrFlags:
 	.byte BOUND8x16	; Object $9B
 	.byte BOUND8x16	; Object $9C
 	.byte BOUND32x32 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte BOUND16x16 | OAT_FIREPROOF	; Object $9E - OBJ_PODOBOO
+	.byte BOUND16x16 | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $9E - OBJ_PODOBOO
 	.byte BOUND16x16 | OAT_FIREPROOF	; Object $9F - OBJ_PARABEETLE
 	.byte BOUND16x16		; Object $A0 - OBJ_PUMPKINFREE
 	.byte BOUND16x16		; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
@@ -5713,6 +5713,9 @@ HitFrom_Top:
 	STA <Player_YVel
 	STA Player_InAir
 
+	LDA <Objects_YVelZ, X
+	STA Player_CarryYVel
+
 HitFrom_Top1:
 	RTS
 
@@ -5737,6 +5740,9 @@ TestHit_FromBelow:
 	LDA <Player_YHi
 	ADC #$00
 	STA <Player_YHi
+
+	LDA <Objects_YVelZ, X
+	STA Player_CarryYVel
 	RTS
 
 TestHit_FromLeft:
