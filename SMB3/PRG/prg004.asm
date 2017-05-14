@@ -3987,6 +3987,7 @@ Spiny_Norm:
 	STA Objects_Orientation, X
 
 Spiny_NormGravity:
+	STA Debug_Snap - 1
 	JSR Object_MoveDirectionFacing
 	JSR Object_Move
 	JSR Object_CalcBoundBox

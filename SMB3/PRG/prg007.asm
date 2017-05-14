@@ -3579,7 +3579,6 @@ ObjectGen_Bobombs:
 	LSR A
 	STA Objects_Property, X
 
-	STA Debug_Snap
 	LDA #$C0
 	STA ObjectGenerator_Timer, Y
 	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index

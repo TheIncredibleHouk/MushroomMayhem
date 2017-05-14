@@ -6141,6 +6141,7 @@ Object_EdgeMarch:
 	AND #HIT_GROUND
 	BNE Object_EdgeMarchRTS
 
+	STA Debug_Snap
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
 

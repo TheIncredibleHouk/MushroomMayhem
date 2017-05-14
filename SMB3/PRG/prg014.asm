@@ -4690,6 +4690,7 @@ HandleLevelEvent:
 	.word FloodFloor1
 	.word FloodFloor2
 	.word LetEnemyHandle
+	.word ColorSwitch
 
 NoEvent:
 LetEnemyHandle:
@@ -4767,5 +4768,57 @@ FloodFloorEnd:
 	STA Player_VibeDisable
 	STA EventSwitch
 	RTS
-; Rest of ROM bank was empty...
 
+
+Color_SwitchTables:
+	.byte $60, $62, $64, $66
+
+ColorSwitch:
+	LDA EventSwitch
+	BEQ ColorSwitchRTS
+
+	AND #$C0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA Color_SwitchTables, Y
+	STA PatTable_BankSel
+
+	LDA #$00
+	STA TileProperties + $37
+	STA TileProperties + $77
+	STA TileProperties + $B7
+	STA TileProperties + $F7
+
+	LDA #(TILE_PROP_SOLID_TOP | TILE_PROP_ESWITCH)
+	STA TileProperties + $38
+	STA TileProperties + $39
+	STA TileProperties + $78
+	STA TileProperties + $79
+	STA TileProperties + $B8
+	STA TileProperties + $B9
+	STA TileProperties + $F8
+	STA TileProperties + $F9
+	
+	LDA EventSwitch
+	AND #$C0
+
+	ORA #$37
+
+	TAY
+
+	LDA #TILE_PROP_SOLID_ALL
+	STA TileProperties, Y
+
+	LDA #$00
+	STA TileProperties + 1, Y
+	STA TileProperties + 2, Y
+	STA EventSwitch
+
+ColorSwitchRTS:
+	RTS

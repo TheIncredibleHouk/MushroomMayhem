@@ -5678,6 +5678,9 @@ Solid_ThinIceGround:
 	JMP Solid_ThinBreakIce
 
 Solid_PSwitch:
+	LDA <Player_YVel
+	BNE Solid_PSwitchRTS
+
 	LDA <TileXIndex
 	CMP #HEAD_FEET_LEFT_INDEX
 	BEQ Solid_PSwitch1
@@ -5692,6 +5695,7 @@ Solid_PSwitch1:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
+
 	LDA #$80	 
 	STA Level_PSwitchCnt	 ; Level_PSwitchCnt = $80 (duration of switch)
 
@@ -5719,7 +5723,9 @@ Solid_ESwitch1:
 	LDA Block_NeedsUpdate
 	BNE Solid_ESwitchRTS
 
-	INC EventSwitch
+	LDA Tile_LastValue
+	STA EventSwitch
+
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1

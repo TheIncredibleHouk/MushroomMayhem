@@ -2898,7 +2898,7 @@
     <block value="38">Cleared Coin</block>
     <block value="39">Cleared Coin</block>
     <block value="3A">Cleared Coin</block>
-    <block value="3B">Cleared Coin</block>
+    <block value="3B"></block>
     <block value="3C"></block>
     <block value="3D"></block>
     <block value="3E">Cleared Coin</block>
@@ -2948,7 +2948,7 @@
     <block value="6A">Cleared Coin</block>
     <block value="6B">Cleared Coin</block>
     <block value="6C">Cleared Coin</block>
-    <block value="6D">Cleared Coin</block>
+    <block value="6D">Background</block>
     <block value="6E">Cleared Coin</block>
     <block value="6F">Cleared Coin</block>
     <block value="70">Cleared Coin</block>

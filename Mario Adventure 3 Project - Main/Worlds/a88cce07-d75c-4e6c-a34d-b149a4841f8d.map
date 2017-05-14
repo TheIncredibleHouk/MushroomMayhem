@@ -24,6 +24,7 @@
     <pointer levelguid="73be4ac1-4c4c-49cb-a07d-c64d2fdebde9" x="11" y="21" altentrance="false" />
     <pointer levelguid="7ccc9f5f-e01e-4097-a487-711beda97a72" x="13" y="21" altentrance="false" />
     <pointer levelguid="68614364-831a-4129-b8eb-fb277ee5c8fb" x="15" y="21" altentrance="false" />
+    <pointer levelguid="66c646c0-9b8d-435d-95c5-499ef7774e5b" x="23" y="19" altentrance="false" />
   </pointers>
   <spritedata />
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
