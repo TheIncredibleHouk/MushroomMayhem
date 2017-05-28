@@ -644,9 +644,15 @@ ObjInit_DryCheep:
 
 	LDA <Objects_YHiZ, X
 	STA DryCheep_PoofYHi, X
+
+	LDA Objects_Property, X
+	STA DryCheep_Burning, X
+
+	LDA #$01
+	STA Objects_Health, X
 	RTS
 
-DryCheep_Burning = Objects_Data3
+DryCheep_Burning = Objects_Data2
 DryCheep_PoofX = Objects_Data3
 DryCheep_PoofY = Objects_Data4
 DryCheep_PoofYHi = Objects_Data5
@@ -663,6 +669,24 @@ ObjNorm_DryCheep:
 ObjNorm_DryCheep0:
 	JSR Object_DeleteOffScreen
 	
+	LDA Objects_PlayerProjHit, X
+	BEQ Dry_NotHit
+
+	CMP #HIT_ICEBALL
+	BNE Dry_NotHit
+
+	STA Debug_Snap
+	LDA DryCheep_Burning, X
+	BEQ Dry_NotHit
+
+Dry_RemoveBurn:
+	LDA #$00
+	STA DryCheep_Burning, X
+	STA Objects_PlayerProjHit, X
+	
+	INC Objects_Health, X
+
+Dry_NotHit:
 	LDA Objects_Timer, X
 	BNE Dry_InWater
 	
@@ -713,7 +737,6 @@ Dry_DrawNoAnimate:
 	JMP DryCheep_DrawFlamesAndSmoke
 
 Dry_InWater:
-	JSR Object_FacePlayer
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JMP DryCheep_DrawFlamesAndSmoke
@@ -751,11 +774,16 @@ DryCheep_DrawFlamesAndSmoke:
 	JSR Object_Draw
 	
 	LDA DryCheep_Burning, X
-	BEQ DryCheep_DrawFlamesAndSmoke2
+	BNE DryCheep_MakeFlamePoof
+	RTS
 
+DryCheep_MakeFlamePoof:
 	LDA Sprite_RAM,Y
 	SUB #$08
 	STA Sprite_RAM+8,Y
+
+	LDA Sprite_RAM + 4,Y
+	SUB #$08
 	STA Sprite_RAM+12,Y
 
 	LDA Sprite_RAM+3,Y
@@ -797,6 +825,10 @@ DryCheep_DrawFlamesAndSmoke:
 	LDA Objects_InWater, X
 	BNE DryCheep_DrawFlamesAndSmoke2
 
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE DryCheep_SkipPoof
+
 	LDA <Objects_XZ, X
 	STA <Poof_X
 
@@ -808,6 +840,7 @@ DryCheep_DrawFlamesAndSmoke:
 
 	JSR Common_MakePoof
 
+DryCheep_SkipPoof:
 	LDA DryCheep_PoofTime
 	STA DryCheep_PoofTimer, X
 
@@ -1587,7 +1620,11 @@ Platform_CheckNext:
 	STA Tile_DetectionYHi
 
 	JSR Object_DetectTile
+	AND #$F0
 	CMP #TILE_PROP_SOLID_TOP
+	BEQ Platform_HitGrnd
+
+	CMP #TILE_PROP_SOLID_ALL
 	BCS Platform_HitGrnd
 
 	LDA <Temp_Var15

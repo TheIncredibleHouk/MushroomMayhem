@@ -2976,20 +2976,6 @@ PRG005_B873:
 	STA <Temp_Var1		 ; Backup pixel X position -> Temp_Var1
 
 	LDA Level_Objects-1,Y	 ; Get object ID
-	CMP #OBJ_TOADANDKING
-	BNE PRG005_B89C	 	; If object ID <> OBJ_TOADANDKING, jump to PRG005_B89C
-
-	INC Cine_ToadKing	; OBJ_TOADANDKING initializes the cinematic
-	BNE PRG005_B8BE	 	; Jump (technically always) to PRG005_B8BE (mark self as spawned so it never re-triggers)
-
-PRG005_B89C:
-	CMP #OBJ_BONUSCONTROLLER
-	BNE PRG005_B8B3	 	; If object ID <> OBJ_BONUSCONTROLLER, jump to PRG005_B8B3
-
-	LDA Level_Objects+1,Y	 ; Get object row
-	BPL PRG005_B8BE	 ; Jump (technically always) to PRG005_B8BE (mark self as spawned so it never re-triggers)
-
-PRG005_B8B3:
 	CMP #OBJ_AUTOSCROLL
 	BNE PRG005_B8CB	 ; If object ID <> OBJ_AUTOSCROLL, jump to PRG005_B8CB
 
@@ -3012,39 +2998,12 @@ PRG005_B8BE:
 
 PRG005_B8CB:
 	LDA Level_Objects-1,Y	 ; Get object ID
-	CMP #OBJ_TREASURESET
-	BNE PRG005_B8DB	 ; If object ID <> OBJ_TREASURESET, jump to PRG005_B8DB
-
-	; Set Level_TreasureItem by what row it was placed on
-	LDA Level_Objects+1,Y	 ; Get object row
-	STA Level_TreasureItem 	; Level_TreasureItem = row
-	JMP PRG005_B8BE	 	; Jump to PRG005_B8BE (mark self as spawned so it never re-triggers)
-
-PRG005_B8DB:
 
 	CMP #OBJ_8WAYBULLETBILLS
 	BLT PRG005_B909	 ; If object ID < OBJ_8WAYBULLETBILLS, jump to PRG005_B909
 
 	; All object IDs higher than OBJ_8WAYBULLETBILLS are handled specially:
 
-	CMP #OBJ_SPAWN3GREENTROOPAS
-	BNE PRG005_B8E9	 ; If object ID <> OBJ_SPAWN3GREENTROOPAS, jump to PRG005_B8E9
-
-	; OBJ_SPAWN3GREENTROOPAS specific...
-
-	JSR Spawn3TroopsOrCheeps	 ; Spawn up to 3 hopping green paratroopas
-	JMP PRG005_B863	 ; Jump to PRG005_B863 (next object)
-
-PRG005_B8E9:
-	CMP #OBJ_SPAWN3ORANGECHEEPS
-	BNE PRG005_B8F3	 ; If object ID <> OBJ_SPAWN3ORANGECHEEPS, jump to PRG005_B8F3
-
-	; OBJ_SPAWN3ORANGECHEEPS specific ...
-
-	JSR Spawn3TroopsOrCheeps	 ; Spawn up to 3 "lost" orange cheep cheeps
-	JMP PRG005_B863	 ; Jump to PRG005_B863 (next object)
-
-PRG005_B8F3:
 	CMP #OBJ_CFIRE_BULLETBILL
 	BLT PRG005_B902	 ; If object ID < OBJ_CFIRE_BULLETBILL, jump to PRG005_B902
 

@@ -427,8 +427,8 @@ PRG000_C584:
 PRG000_C59A:
 
 	LDA Object_VertTileProp, X
-	AND #TILE_PROP_SOLID_BOTTOM
-	BEQ PRG000_C5A8	 
+	CMP #TILE_PROP_SOLID_ALL
+	BCC PRG000_C5A8	 
 
 PRG000_C5A2:
 	; Flag ceiling impact
@@ -443,8 +443,12 @@ PRG000_C5A9:
 
 	; Object moving downwards (floor detection)
 	LDA Object_VertTileProp, X
-	AND #TILE_PROP_SOLID_TOP
-	BNE PRG000_C5B4	 ; If tile is within range of the starting solid tile, jump to PRG000_C5B4
+	AND #$F0
+	CMP #TILE_PROP_SOLID_TOP
+	BEQ PRG000_C5B4
+
+	CMP #TILE_PROP_SOLID_ALL
+	BCS PRG000_C5B4
 	RTS
 
 PRG000_C5B4:
@@ -1382,7 +1386,7 @@ ObjState_Kicked:
 
 ObjState_Kicked1:
 	JSR Object_DeleteOffScreen
-	JSR Object_Move	 
+	JSR Object_Move
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
 	JSR Object_KillOthers
@@ -2495,10 +2499,7 @@ Object_SetDeadAndNotSpawned:
 	BEQ Object_SetDeadEmpty
 	BMI Object_SetDeadEmpty	 ; If object is spawned, jump to Object_SetDeadEmpty
 
-	; Clear object spawn flag
-	LDA Level_ObjectsSpawned,Y
-	AND #$7f
-	STA Level_ObjectsSpawned,Y
+	JSR Object_Respawn
 
 Object_Delete:
 Object_SetDeadEmpty: 
@@ -4029,55 +4030,6 @@ Obj2Obj_EnByState:
 	.byte $01	; State 6: Killed
 	.byte $01	; State 7: Squashed
 	.byte $01	; State 8: Dying
-
-	; $DBF8
-
-
-	; This changes a tile based on Temp_Var13-16 coordinates:
-	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
-	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
-Level_ChangeTile_ByTempVars:
-
-	PHA		 ; Save 'A'
-	
-PRG000_DC7B:
-	LDA <Temp_Var15
-	ASL A		
-	TAY		 ; Y = Temp_Var15 (X Hi) shifted left 1 (2 bytes index per screen for Tile_Mem_Addr)
-
-	; Set tile grid modify address
-	LDA Tile_Mem_Addr,Y
-	STA <Temp_Var1	
-	LDA Tile_Mem_Addr+1,Y
-	STA <Temp_Var2
-
-	LDA <Temp_Var13	
-	BEQ PRG000_DC8F	 ; If Y Hi = 0, jump to PRG000_DC8F
-
-	INC <Temp_Var2	 ; Otherwise, offset to lower screen area
-
-PRG000_DC8F:
-	LDA <Temp_Var14	 ; A = Y lo
-
-PRG000_DC91:
-	AND #$f0
-	STA <Temp_Var3	; Tile aligned "low" (makes row)
-
-	LDA <Temp_Var16
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A	
-	ORA <Temp_Var3	; Makes column
-
-	TAY		 ; Y = offset to specific tile
-
-	PLA		 ; Restore 'A' (tile index)
-
-	STA [Temp_Var1],Y ; Change tile as appropriate
-
-	RTS		 ; Return
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_CalcCoarseXDiff
@@ -6141,7 +6093,6 @@ Object_EdgeMarch:
 	AND #HIT_GROUND
 	BNE Object_EdgeMarchRTS
 
-	STA Debug_Snap
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
 
