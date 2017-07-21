@@ -407,7 +407,11 @@ Player_FireBallNoKill:
 Player_FireBallTiles:
 	JSR SpecialObj_DetectWorld8x16
 	JSR SpecialObj_FireTiles
+	BCC Player_FireballNoHitIce
 
+	JMP SpecialObj_ToPoofNoSound
+
+Player_FireballNoHitIce:
 	LDA SpecialObj_YVel, X
 	BPL Player_FireBall1
 
@@ -474,6 +478,7 @@ Fire_Empty:
 	BPL SpecialObj_FireTiles0
 
 SpecialObj_FireTiles1:
+	CLC
 	RTS
 
 Player_FireTiles2:
@@ -481,7 +486,7 @@ Player_FireTiles2:
 	JSR Object_ChangeBlock
 
 	LDA SpecialObj_Data3, X
-	BNE SpecialObj_FireTiles1
+	BNE SpecialObj_FireTiles2
 
 	LDA Tile_DetectionX
 	AND #$F0
@@ -490,7 +495,10 @@ Player_FireTiles2:
 	LDA Tile_DetectionY
 	AND #$F0
 	STA SpecialObj_Y, X
-	JMP SpecialObj_ToPoofNoSound
+
+SpecialObj_FireTiles2:
+	SEC
+	RTS
 
 Player_IceBall:
 	LDA <Player_HaltGameZ
@@ -612,6 +620,7 @@ Player_IceBall5:
 	JSR SpecialObj_CheckDirection
 	JSR SpecialObj_Draw8x16
 	RTS
+
 
 SpecialObj_IceTiles:
 	LDA Block_NeedsUpdate
@@ -972,6 +981,7 @@ SpecialObj_CheckDirection16x6:
 	LDA SpecialObj_XVel, X
 	BMI SpecialObj_CheckDirection16x61
 
+SpecialObj_Flip:
 	LDA <SpecialObj_Attributes
 	EOR #SPR_HFLIP
 	STA <SpecialObj_Attributes
@@ -1131,7 +1141,7 @@ SpecialObj_CalcBounds8x16:
 
 SpecialObj_CalcBounds16x16:
 	LDA SpecialObj_X, X
-	ADD #$02
+	ADD #$04
 	STA SpecialObj_BoundLeft
 
 	LDA SpecialObj_XHi, X
@@ -1139,7 +1149,7 @@ SpecialObj_CalcBounds16x16:
 	STA SpecialObj_BoundLeftHi
 
 	LDA SpecialObj_BoundLeft
-	ADD #$0D
+	ADD #$0B
 	STA SpecialObj_BoundRight
 
 	LDA SpecialObj_BoundLeftHi
@@ -1147,7 +1157,7 @@ SpecialObj_CalcBounds16x16:
 	STA SpecialObj_BoundRightHi
 
 	LDA SpecialObj_Y, X
-	ADD #$02
+	ADD #$04
 	STA SpecialObj_BoundTop
 
 	LDA SpecialObj_YHi, X
@@ -1155,7 +1165,7 @@ SpecialObj_CalcBounds16x16:
 	STA SpecialObj_BoundTopHi
 
 	LDA SpecialObj_BoundTop
-	ADD #$0D
+	ADD #$0B
 	STA SpecialObj_BoundBottom
 
 	LDA SpecialObj_BoundTopHi
@@ -1983,9 +1993,9 @@ SpecialObj_UpdateAndDraw:
 	.word SpecialObj_Poof	; 05: Piranha fireball
 	.word Enemy_IceBall	; 06: Micro goombas
 	.word Enemy_NinjaStar	; 07: Spike/Patooie's spike ball
-	.word SObj_Egg	; 08: Koopaling wand blast
+	.word Enemy_Egg	; 08: Koopaling wand blast
 	.word Enemy_AcidPool	; 09: Lost Kuribo shoe
-	.word SObj_Wrench	; 0A: Rocky's Wrench
+	.word Enemy_BigFireball	; 0A: Rocky's Wrench
 	.word Enemy_Cannonball	; 0B: Cannonball
 	.word SObj_DoNothing	; 0C: Fire bro bouncing fireball
 	.word SObj_ExplodeStar	; 0D: Explosion star
@@ -2552,121 +2562,146 @@ PRG007_B4EB:
 	; meaning when they added the "American" rule of returning to "super"
 	; state, it didn't have the suit sprite graphics available!
 
-LostShoe_Pattern:	.byte $A9, $AB	; 0
-			.byte $39, $39	; 1
-			.byte $3B, $3B	; 2
-			.byte $3D, $3D	; 3
-LostShoe_Attribute:	.byte $02, $01, $01, $01
+Egg_HitWall = SpecialObj_Data1
+
+Enemy_Egg:
+	LDA <Player_HaltGameZ
+	BNE Enemy_EggDraw
+
+	LDA Egg_HitWall, X
+	BEQ Egg_Normal
+
+	JSR SObj_ApplyXYVelsWithGravity
+	JMP Enemy_EggDraw
+
+Egg_Normal:
+	JSR SObj_ApplyXYVels
+	JSR SpecialObj_CalcBounds16x16
+	JSR SpecialObj_DetectWorld16x16
 	
-SObj_Egg:
-	LDA Player_HaltGameZ
-	BNE SObj_Egg0
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Egg_NotHitWall
 
-	JSR SObj_AddXVelFrac
-	JSR SObj_PlayerCollide 
-
-SObj_Egg0:
-	JSR SObj_GetSprRAMOffChkVScreen
-	JSR SObj_SetSpriteXYRelative	
-
-	LDX <CurrentObjectIndexZ
-	LDA #$97
-	STA Sprite_RAM + 1, Y
-	LDA #$99
-	STA Sprite_RAM + 5, Y
-
-	LDA Sprite_RAM , Y
-	STA Sprite_RAM + 4, Y
-
-	LDA Sprite_RAM +3 , Y
-	ADD #$08
-	BCS SObj_Egg1
-	STA Sprite_RAM + 7, Y
-
-SObj_Egg1:
-	LDA #SPR_PAL1
-	STA Sprite_RAM + 2, Y
-	STA Sprite_RAM + 6, Y
-
+	INC Egg_HitWall, X
+	
 	LDA SpecialObj_XVel, X
-	BMI SObj_Egg2
+	EOR #$FF
+	ADD #$01
+	JSR Half_Value
+
+	STA SpecialObj_XVel, X
+
+Egg_NotHitWall:
+	JSR Enemy_ProjYolk
+
+Enemy_EggDraw:
+
+	LDA #$97
+	STA <SpecialObj_Tile
 
 	LDA #$99
-	STA Sprite_RAM + 1, Y
-	LDA #$97
-	STA Sprite_RAM + 5, Y
-	LDA #(SPR_PAL1 | SPR_HFLIP)
-	STA Sprite_RAM + 2, Y
-	STA Sprite_RAM + 6, Y
+	STA <SpecialObj_Tile + 1
 
-SObj_Egg2:
-	LDA SpecialObj_Timer,X
-	BNE SObj_EggRTS
+	LDA #SPR_PAL1
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
 
-SObj_Egg3:
-	LDX #$04
-	LDA Sprite_RAM + 3, Y
-	ADD Object_BoundBox,X
-	STA <Temp_Var3		 ; Temp_Var3 object's sprite X with offset
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection16x6
 
-	LDA Sprite_RAM, Y
-	ADD Object_BoundBox+2,X
-	STA <Temp_Var7		 ; Temp_Var7 object's sprite Y with offset
+	LDA Egg_HitWall, X
+	BEQ Enemey_EggDraw1
 
-	LDA Object_BoundBox+1,X
-	STA <Temp_Var4		 ; Temp_Var4 has the right offset
+	JSR SpecialObj_Flip
 
-	LDA Object_BoundBox+3,X	
-	STA <Temp_Var8		 ; Temp_Var8 has the bottom offset
+Enemey_EggDraw1:
+	JSR SpecialObj_Draw16x16
+	RTS
+
+
+Enemy_BigFireballAnimate = SpecialObj_Data1
+Enemy_BigFireballAttr:
+	.byte SPR_PAL1, (SPR_PAL1 | SPR_VFLIP)
+
+Enemy_BigFireball:
+	LDA <Player_HaltGameZ
+	BNE Enemy_BigFireballDraw
+
+	JSR SObj_ApplyXYVels
+	JSR SpecialObj_CalcBounds16x16
+	JSR SpecialObj_DetectWorld16x16
+	BCS Fireball_NotHitWall
 	
-	LDX <CurrentObjectIndexZ
-	STX TempX
-	LDA #$FF
-	STA <CurrentObjectIndexZ
-	
-	INC HitTestOnly
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Fireball_NotHitWall
 
-	;JSR PRG000_DC09
-	LDX TempX
-	STX <CurrentObjectIndexZ
-	BCC SObj_EggRTS	 ; If object has not hit another object, jump to PRG000_CD46
 
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,X
+	LDA SpecialObj_X, X
+	PHA
 
-	; SpecialObj_Data1 = $1F
-	LDA #$1f
-	STA SpecialObj_Data1,X
+	LDA SpecialObj_Y, X
+	PHA
 
-	TYA
-	TAX
-	DEC Objects_Health,X
-	DEC Objects_Health,X
-	DEC Objects_Health,X
-	BPL SObj_EggRTS
+	JSR SpecialObj_FireTiles
+	BCS Fireball_HitIce
 
-	LDX <CurrentObjectIndexZ
-	; Play object-to-object collision sound 
-	LDA Sound_QPlayer 
-	ORA #SND_PLAYERKICK 
-	STA Sound_QPlayer
- 
-	; Knock object in same general direction as the kicked shell object
-	LDA SpecialObj_XVel,X 
-	ASL A 
-	LDA #$10	 ; A = $10
-	BCC SObj_Egg4 
-	LDA #$F0	 ; A = -$10
+	PLA
+	PLA
+	JMP SpecialObj_ToPoofNoSound
 
-SObj_Egg4: 
-	STA Objects_XVelZ,Y
+Fireball_HitIce:
+	PLA
+	STA SpecialObj_Y, X
 
-	LDA #OBJSTATE_KILLED
-	STA  Objects_State,Y
-	LDA #$F0
-	STA Objects_YVelZ,Y
+	PLA
+	STA SpecialObj_X, X
 
-SObj_EggRTS:
+	JSR SpecialObject_FindEmpty
+	BCC Fireball_NotHitWall
+
+	LDA Tile_DetectionX
+	AND #$F0
+	STA SpecialObj_X, Y
+
+	LDA Tile_DetectionY
+	AND #$F0
+	STA SpecialObj_Y, Y
+
+	LDA #PLAYER_POOF
+	STA SpecialObj_ID, Y
+
+	LDA #$10
+	STA SpecialObj_Timer, Y
+
+	LDA #$00
+	STA SpecialObj_Data1, Y
+
+Fireball_NotHitWall:
+	JSR EnemyProj_HitPlayer
+	INC Enemy_BigFireballAnimate, X
+
+Enemy_BigFireballDraw:
+	LDA Enemy_BigFireballAnimate, X
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA #$A1
+	STA <SpecialObj_Tile
+
+	LDA #$A3
+	STA <SpecialObj_Tile + 1
+
+	LDA Enemy_BigFireballAttr, Y
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection16x6
+	JSR SpecialObj_Draw16x16
 	RTS
 
 
@@ -2679,7 +2714,7 @@ SObj_KuriboShoe:
 	TAX		 ; SpecialObj_Data1 -> 'X' (NOTE: Will always be zero in US version, see notes at LostShoe_Pattern)
 
 	; Set left sprite attribute
-	LDA LostShoe_Attribute,X
+	
 	STA Sprite_RAM+$02,Y
 
 	CPX #$00
@@ -2696,11 +2731,10 @@ PRG007_B54F:
 	TAX
 
 	; Pattern for left fly off sprite
-	LDA LostShoe_Pattern,X
+
 	STA Sprite_RAM+$01,Y
 
 	; Pattern for right fly off sprite
-	LDA LostShoe_Pattern+1,X
 	STA Sprite_RAM+$05,Y
 
 	LDX <CurrentObjectIndexZ	; X = special object slot index
@@ -2761,95 +2795,6 @@ Enemy_NinjaStarDraw:
 
 
 SObj_PlayerCollide:
-	; Player to Special Object collision logic...
-
-	TXA		 ; object slot index -> 'A'
-	ADD <Counter_1	 ; Keep it interesting
-	LSR A
-	BCC PRG007_B826	 ; Every other tick, jump to PRG007_B826 (RTS)
-
-	LDY #$00	 ; Y = 0 (small/ducking)
-
-	LDA <Player_Suit
-	BEQ PRG007_B7E4	 ; If Player is small, jump to PRG007_B7E4
-
-	LDA Player_IsDucking
-	BNE PRG007_B7E4	 ; If Player is ducking, jump to PRG007_B7E4
-
-	INY		 ; Y = 1 (otherwise)
-
-PRG007_B7E4:
-	LDA SpecialObj_Y,X		; Special object Y
-	ADD #$08			; +8
-	SUB <Player_Y			; Subtract Player Y
-	;SUB SObjYOff_PlayerSize,Y	; Subtract Player height offset
-	;CMP SObj_VLimit,Y
-	BGE PRG007_B843	 	; If result >= SObj_VLimit, jump to PRG007_B843 (RTS)
-
-	LDA SpecialObj_X,X		; Special object X
-	ADD #$06			; +6
-	SUB <Player_X			; Subtract Player X
-	SBC #$00			; Carry?
-	CMP #16
-	BGE PRG007_B843	 	; If result >= 16, jump to PRG007_B843 (RTS)
-
-PRG007_B805:
-	LDA Player_FlashInv	; If Player is flashing from being hit ...
-	ORA <Player_HaltGameZ	; ... if gameplay is halted ...
-	ORA Player_IsDying	; ... Player is dying ...
-	ORA Player_OffScreen	; ... Player is off-screen ...
-	ORA <Temp_Var14		; ... or special object is not vertically on-screen ...
-	BNE PRG007_B843	 	; ... jump to Player_Behind_En (RTS)
-	BEQ PRG007_B827
-
-PRG007_B826:
-	RTS		 ; Return
-
-
-PRG007_B827:	
-	LDA SpecialObj_ID, X
-	CMP #SOBJ_ICEBALL
-	BNE PRG007_B836
-
-	JSR CheckTailSpin
-	JSR Enemy_FreezePlayer
-
-	LDA SpecialObj_XVel,X
-	STA <Player_XVel
-
-	JMP SpecialObj_Remove
-
-PRG007_B836:
-	LDA Player_StarInv
-	BNE PRG007_B844	 ; If Player is Star Man invincible, jump to PRG007_B844
-	
-	JSR CheckTailSpin
-	LDA SpecialObj_ID, X
-	CMP #SOBJ_EGG
-	BEQ YolkPlayer
-	
-PRG007_B837:
-	JMP Player_GetHurt	 ; Hurt Player and don't come back!
-
-YolkPlayer:
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,X
-
-	; SpecialObj_Data1 = $1F
-	LDA #$1f
-	STA SpecialObj_Data1,X
-
-	LDA Yolked
-	BNE PRG007_B837
-	LDA #$17
-	STA Player_SuitLost
-	LDA #$80
-	STA Player_QueueSuit
-
-	LDA #$FF
-	STA Yolked
-
-YolkPlayer1:
 	RTS
 
 SpecialObj_Remove:
@@ -3084,7 +3029,11 @@ Enemy_FireBallCalcBounds:
 Enemy_FireBallTiles:
 	JSR SpecialObj_DetectWorld8x16
 	JSR SpecialObj_FireTiles
+	BCC Enemy_FireBallNoIce
 
+	JMP SpecialObj_ToPoofNoSound
+
+Enemy_FireBallNoIce:
 	LDA SpecialObj_Data3, X
 	BNE Enemy_FireBall5
 
@@ -3508,7 +3457,9 @@ ObjectGen_Cannonball:
 	RTS		 ; Return
 
 BobOmbXOffset:		.byte $00, $00, $08, $08
+
 BobOmbYOffset:		.byte $F8, $F8, $00, $00
+					.byte $FF, $FF, $00, $00
 
 ObjectGen_Bobombs:
 	LDA ObjectGenerator_Timer, X
@@ -3551,6 +3502,9 @@ ObjectGen_Bobombs:
 	LDA BobOmbYOffset,Y
 	STA <Temp_Var2
 
+	LDA BobOmbYOffset + 4,Y
+	STA <Temp_Var3
+
 	LDY <CurrentObjectIndexZ	
 
 	
@@ -3559,6 +3513,7 @@ ObjectGen_Bobombs:
 	STA <Objects_YZ,X
 
 	LDA ObjectGenerator_YHi,Y
+	ADC <Temp_Var3
 	STA <Objects_YHiZ,X
 
 	LDA ObjectGenerator_X,Y
@@ -4437,6 +4392,56 @@ EnemeyProj_Enemy_FreezePlayer1:
 EnemeyProj_Enemy_FreezePlayer3:
 	RTS
 
+Enemy_ProjYolk:
+	LDA SpecialObj_HurtEnemies, X
+	BEQ Enemy_YolkPlayer
+
+	LDA #$02
+	STA Proj_Attack
+
+	JSR PlayerProj_HitEnemies
+	BCC Enemy_YolkPlayerRTS
+
+	JMP SpecialObj_AttackEnemy
+
+Enemy_YolkPlayer:
+	JSR SpecialObj_DetectPlayer
+	BCC Enemy_YolkPlayerRTS
+
+	LDA Player_TailAttack
+	BEQ Enemy_YolkPlayer1
+
+	LDA SpecialObj_XVel, X
+	EOR #$FF
+	ADD #$01
+	STA SpecialObj_XVel, X
+
+	INC SpecialObj_HurtEnemies, X
+	RTS
+
+Enemy_YolkPlayer1:
+	LDA Player_Yolked
+	BNE Enemy_YolkPlayer2
+
+	LDA #$17
+	STA Player_SuitLost
+
+	LDA #$80
+	STA Player_QueueSuit
+
+	LDA #$71
+	STA Player_FlashInv	 ; Player_FlashInv = $71
+
+	LDA #$FF
+	STA Player_Yolked
+	JMP SpecialObj_ToPoof
+
+Enemy_YolkPlayerRTS:
+	RTS
+
+Enemy_YolkPlayer2:
+	JMP Player_GetHurt
+	
 
 DrawStarsBackground:
 	

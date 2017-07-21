@@ -4691,6 +4691,8 @@ HandleLevelEvent:
 	.word FloodFloor2
 	.word LetEnemyHandle
 	.word ColorSwitch
+	.word Snow_Event
+	.word Fireball_Event
 
 NoEvent:
 LetEnemyHandle:
@@ -4822,3 +4824,225 @@ ColorSwitch:
 
 ColorSwitchRTS:
 	RTS
+
+Snow_Event:
+	LDA EventVar
+	BNE Snow_Event1
+
+	LDA <Player_XHi
+
+	JSR DynJump
+	
+	.word Snow_EventLeftInit
+	.word Snow_EventRightInit
+
+Snow_Event1:
+	JMP Snow_EventMove
+
+Snow_EventLeftXStart:
+	.byte $C0, $F0, $D0, $F8, $D8
+
+Snow_EventRightXStart:
+	.byte $40, $10, $30, $08, $38
+
+Snow_EventLeftXVel:
+	.byte $FB, $FC, $FB, $FD, $FC, $FB
+
+Snow_EventRightXVel:
+	.byte $05, $04, $05, $03, $04, $05
+
+Snow_EventLeftColumns:
+	.byte $F0, $E0, $D0, $C0, $B0, $A0, $90, $80, $70, $60, $50, $40, $30, $20, $10, $00
+
+Snow_EventRightColumns:
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+
+Snow_EventYStart:
+	.byte $02, $07, $13, $15, $21, $2B
+
+Snow_EventPatterns:
+	.byte $55, $55, $5F, $55, $5F, $5F
+
+Snow_EventDrawTicker = Objects_Data1
+Snow_EventDoDraw = Objects_Data2
+Snow_EventColumnsXHi = Objects_Data3
+Snow_EventChangeColumns = Objects_Data4
+
+Snow_EventLeftInit:
+	LDY #$05
+	
+Snow_EventLeftInitNext:
+	LDA Snow_EventLeftXStart, Y
+	STA Weather_XPos, Y
+
+	LDA Snow_EventYStart, Y
+	STA Weather_YPos, Y
+
+	LDA #$00
+	STA Weather_YVel, Y
+
+	LDA Snow_EventLeftXVel, Y
+	STA Weather_XVel, Y
+
+	DEY
+	BPL Snow_EventLeftInitNext
+
+	LDY #$0F
+
+Snow_EventStoreColumnsLeft:
+	LDA Snow_EventLeftColumns, Y
+	STA Snow_EventChangeColumns, Y
+	DEY
+	BPL Snow_EventStoreColumnsLeft
+
+	INC EventVar
+	
+	LDA #$00
+	STA EventTicker
+	STA Snow_EventDrawTicker
+	STA Snow_EventColumnsXHi
+
+	LDA #$01
+	STA Snow_EventDoDraw
+	RTS
+
+Snow_EventRightInit:
+	LDY #$05
+	
+Snow_EventRightInitNext:
+	LDA Snow_EventRightXStart, Y
+	STA Weather_XPos, Y
+
+	LDA Snow_EventYStart, Y
+	STA Weather_YPos, Y
+
+	LDA #$00
+	STA Weather_YVel, Y
+
+	LDA Snow_EventRightXVel, Y
+	STA Weather_XVel, Y
+
+	DEY
+	BPL Snow_EventRightInitNext
+
+	LDY #$0F
+
+Snow_EventStoreColumnsRight:
+	LDA Snow_EventRightColumns, Y
+	STA Snow_EventChangeColumns, Y
+	DEY
+	BPL Snow_EventStoreColumnsRight
+
+	INC EventVar
+	
+	LDA #$00
+	STA EventTicker
+	STA Snow_EventDrawTicker
+
+	LDA #$01
+	STA Snow_EventDoDraw
+	STA Snow_EventColumnsXHi
+	RTS
+
+Snow_EventMove:
+	LDX #$05
+	LDY Object_SpriteRAMOffset
+
+Snow_MoveNext:
+	LDA Weather_XPos, X
+	ADD Weather_XVel, X
+	STA Weather_XPos, X
+	STA Sprite_RAMX, Y
+
+	LDA Weather_YPos, X
+	STA Sprite_RAMY, Y
+
+	LDA Snow_EventPatterns, X
+	STA Sprite_RAMTile, Y
+
+	LDA #(SPR_PAL1 | SPR_BEHINDBG)
+	STA Sprite_RAMAttr, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	DEX
+	BPL Snow_MoveNext
+
+	LDA Snow_EventDoDraw
+	BEQ Snow_MoveNextRTS
+
+	LDA #$01
+	STA Player_VibeDisable
+
+	LDA Block_NeedsUpdate
+	BNE Snow_MoveNextRTS
+
+	LDA Snow_EventDrawTicker
+	AND #$07
+	BNE Snow_EventIncTicker
+
+	
+	LDA Snow_EventDrawTicker
+	AND #$78
+	LSR A
+	LSR A
+	LSR A
+
+	TAY
+	LDA Snow_EventChangeColumns, Y
+	STA Block_ChangeX
+	STA Poof_X
+
+	LDA Snow_EventColumnsXHi
+	STA Block_ChangeXHi
+
+	LDA #$90
+	STA Block_ChangeY
+	STA Poof_Y
+
+	LDA #$01
+	STA Block_ChangeYHi
+	STA Poof_YHi
+
+	LDA #$06
+	STA Block_UpdateValue
+	STA Block_NeedsUpdate
+
+	JSR Common_MakePoof
+
+Snow_EventIncTicker:
+	INC Snow_EventDrawTicker
+
+	BPL Snow_MoveNextRTS
+
+	LDA #$00
+	STA Snow_EventDoDraw
+
+Snow_MoveNextRTS:
+	RTS
+
+Fireball_Event:
+	LDA #$01
+	STA Player_VibeDisable
+
+	LDA Event_Var
+	JSR DynJump
+
+	.word Fireball_EventInit
+	.word Fireball_EventShoot
+	.word Fireball_EventFlash
+	.word Fireball_EventUnflash
+
+Fireball_EventTimer = Objects_Data1
+
+Fireball_EventInit:
+	LDA #$FF
+	STA Fireball_EventTimer
+
+	INC Event_Var
+	RTS
+
+Fireball_EventShoot:

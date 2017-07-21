@@ -3260,7 +3260,7 @@ InfectionSwap2:
 	STA <Pad_Holding
 
 InfectionRTS:
-	LDA Yolked
+	LDA Player_Yolked
 	BEQ YolkedRTS
 
 	LDA <Pad_Holding

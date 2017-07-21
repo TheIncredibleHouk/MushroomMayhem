@@ -758,7 +758,7 @@ PowerUp_Palettes:
 
 ; #DAHRKDAIZ if we're i special suit mode, we jump farther into the table.
 Level_SetPlayerPUpPal:
-	LDA Yolked
+	LDA Player_Yolked
 	BEQ CheckInfection
 
 	LDA #$0D
@@ -4261,13 +4261,16 @@ PRG008_BFD3:
 	STA <Player_XHi,X
 	CPX #$00
 	BNE No_Odo_Increase
+
 	LDY #$00
 	LDA Previous_X
 	SEC
 	SBC Player_X
 	BEQ No_Odo_Increase
 	BPL Dont_Flip
+
 	INY
+
 	EOR #$FF
 	CLC
 	ADC #$01
@@ -6001,7 +6004,7 @@ Player_HandleWater12:
 	BEQ Player_HandleWaterRTS
 
 	LDA LeftRightInfection
-	ORA Yolked
+	ORA Player_Yolked
 	BEQ Player_HandleWaterRTS
 
 	LDA #$17
@@ -6013,7 +6016,7 @@ Player_HandleWater12:
 
 	LDA #$00
 	STA LeftRightInfection
-	STA Yolked
+	STA Player_Yolked
 
 Player_HandleWaterRTS:
 	RTS

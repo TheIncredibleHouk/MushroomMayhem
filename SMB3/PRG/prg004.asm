@@ -181,7 +181,7 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $87 - OBJ_FIREBRO
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $88 - OBJ_PIRATEBRO
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $89 - OBJ_CHAINCHOMP
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8A - OBJ_THWOMP
+	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8A - OBJ_THWOMP
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8B - OBJ_AngryTHWOMP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8C - OBJ_THWOMPRIGHTSLIDE
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8D - OBJ_THWOMPUPDOWN
@@ -1616,7 +1616,7 @@ Thwomp_Normal:
 
 	LDA Objects_SpriteAttributes, X
 	STA BrickBust_Pal, Y
-	JMP Object_Delete
+	JMP Object_SetDeadAndNotSpawned
 
 Thwomp_DoAction:
 	JSR Object_DeleteOffScreen
@@ -1705,6 +1705,13 @@ Thwomp_FallToGround:
 	STA <Objects_YVelZ, X
 
 	LDA Tile_LastProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE Thwomp_CheckBlock
+
+	LDA #TILE_ITEM_BRICK
+	STA Tile_LastProp
+
+Thwomp_CheckBlock:
 	CMP #TILE_ITEM_COIN
 	BCC Thwomp_NoBump
 
@@ -1737,7 +1744,7 @@ Thwomp_ReturnToOrigin:
 	LDA #$01
 	STA Objects_Frame, X
 
-	LDA #$F8
+	LDA #$F0
 	STA <Objects_YVelZ, X
 	JSR Object_Move
 
@@ -3987,7 +3994,6 @@ Spiny_Norm:
 	STA Objects_Orientation, X
 
 Spiny_NormGravity:
-	STA Debug_Snap - 1
 	JSR Object_MoveDirectionFacing
 	JSR Object_Move
 	JSR Object_CalcBoundBox

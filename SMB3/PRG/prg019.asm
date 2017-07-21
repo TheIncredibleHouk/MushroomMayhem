@@ -1436,6 +1436,9 @@ Colossal_CheepInit:
 	LDA #$20
 	STA <Objects_XVelZ, X
 
+	LDA #$00
+	STA Colossal_CheepHealth, X
+
 	INC Colossal_CheepAction, X
 
 	JMP Colossal_CheepResetPasses

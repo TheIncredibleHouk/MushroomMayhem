@@ -40,7 +40,7 @@ Object_BoundBox:
 	.byte  2,  45,  0,  16	; 8 BOUND48x16
 	.byte  2,  20,   2,  28	; 9
 	.byte  2,  13,   6,  27	; A BOUND16x32 (16x32)
-	.byte  0,  31,  -1,  14	; B
+	.byte  2,  13,   1,  32	; A BOUND16x32TALL (16x32)
 	.byte  1,  14,  -2,  13	; C
 	.byte  0,  47,  0,  15	; D 
 	.byte  4,  27,   2,  28	; E BOUND32x32
@@ -81,7 +81,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1E - OBJ_ESWITCH
 	.byte BOUND8x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $1F - OBJ_GROWINGVINE
 	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $20
-	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $21 - OBJECT_ICESPIKE
 	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte BOUND16x16 | OAT_FIREPROOF| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $23 - OBJ_POWERUP_FOXLEAF
 	.byte  BOUND48x16 | OAT_ICEPROOF | OAT_FIREPROOF | OAT_WEAPONSHELLPROOF	; Object $24 - OBJ_PLATFORM_HORZOSC
@@ -119,7 +119,7 @@ Object_AttrFlags:
 	.byte BOUND48x16 | OAT_ICEPROOF | OAT_FIREPROOF	 | OAT_WEAPONSHELLPROOF; Object $44 - OBJ_PLATFORMUNSTABLE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $45 - OBJ_PWING
 	.byte BOUND16x16	; Object $46 - OBJ_SNIFIT
-	.byte BOUND16x32 | OAT_ICEPROOF 	; Object $47 - OBJ_BIRDO
+	.byte BOUND16x32TALL | OAT_ICEPROOF 	; Object $47 - OBJ_BIRDO
 	.byte BOUND16x16	; Object $48 - OBJ_NINJI
 	.byte BOUND16x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $4A - OBJ_MAGICSTAR
@@ -222,7 +222,7 @@ Object_AttrFlags:
 	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AB
 	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AC - OBJ_FIREJET_LEFT
 	.byte OAT_BOUNDBOX12	; Object $AD - OBJ_ROCKYWRENCH
-	.byte OAT_BOUNDBOX11 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AE - OBJ_BOLTLIFT
+	.byte BOUND16x32TALL | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $AE - OBJ_BOLTLIFT
 	.byte BOUND24x32 | OAT_FIREPROOF	| OAT_ICEPROOF | OAT_WEAPONSHELLPROOF; Object $AF - OBJ_ENEMYSUN
 	.byte BOUND8x16 | OAT_FIREPROOF	; Object $B0 - OBJ_BIGCANNONBALL
 	.byte BOUND8x16 | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $B1 - OBJ_FIREJET_RIGHT
@@ -1467,15 +1467,17 @@ Object_KillOthers1:
 	TYA
 	TAX
 
-	LDA #$FF
+	LDA Objects_Health, X
+	SUB #$02
 	STA Objects_Health, X
+	BPL Object_KillOthers3
 
 	JSR Object_KickSound
 	JSR Object_GetKilled
 	JSR Object_FlipFallAwayFromHit
 
+Object_KillOthers3:
 	LDX <CurrentObjectIndexZ
-
 	SEC
 	RTS
 
@@ -1485,7 +1487,7 @@ Object_KillOthers2:
 
 	CLC
 	LDX <CurrentObjectIndexZ
-	RTS
+	RTS	
 	
 	; Kicked shell object animation frames and flips
 ObjShell_AnimFlipBits:	.byte $00, $00, $00, $40
@@ -2496,7 +2498,6 @@ Object_IsOffScreen:
 
 Object_SetDeadAndNotSpawned:
 	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
-	BEQ Object_SetDeadEmpty
 	BMI Object_SetDeadEmpty	 ; If object is spawned, jump to Object_SetDeadEmpty
 
 	JSR Object_Respawn

@@ -1269,7 +1269,14 @@ Piranha_Move:
 	LDA #$40
 	STA Objects_Timer, X
 
-	LDA Piranha_AttackCount, X
+	LDY #$00
+	LDA DayNight
+	BNE Piranha_JustOne
+
+	INY
+
+Piranha_JustOne:
+	LDA Piranah_AttackNumbers, Y
 	STA Piranha_AttacksLeft, X
 	RTS
 
@@ -1383,17 +1390,8 @@ Piranha_Projectile:
 	ORA Sound_QPlayer
 	STA Sound_QPlayer
 
-	LDA Palette_Buffer + $10 
-	CMP #$0F
-	BEQ ShootProjectile1 ; if dark, we aim blindly
-
 	JSR Object_AimProjectile
-	JMP ShootProjectile2
 
-ShootProjectile1:
-	JSR Object_AimProjectileRandom
-
-ShootProjectile2:
 	RTS
 
 ObjInit_RockyWrench:
@@ -2633,11 +2631,14 @@ RadialTableY:
 
 ObjNorm_ProjectileBarCW:
 	JSR Object_DeleteOffScreen
+
 	LDA <Player_HaltGameZ
 	BNE DoBarBar
+
 	LDA Objects_Property, X
 	AND #$01
 	BEQ DecBar
+
 	INC Objects_Data3, X
 	JMP DoBarBar
 

@@ -941,9 +941,9 @@ SPR_VFLIP	= %10000000
 	TileChng_VRAM_H:	.ds 1	; High part of VRAM address to change
 	TileChng_VRAM_L:	.ds 1	; Low part of VRAM address to change
 	TileChng_Pats:		.ds 4	; $036E-$0371 The four patterns required to change a tile (for Block_NeedsUpdate)
+	TileChng_ColorUpdate: .ds 1 ;
 	Level_SizeOrig:		.ds 1	; Holds original size (width or height) of level (in screens)
 	Level_PipeExitDir:	.ds 1	; Direction Player is going to exit from a pipe (1 = Up, 2 = Down, 3 = Right, 4 = Left, 5 = In-level Transit)
-	Level_7VertCopy:	.ds 1	; Just seems to be an unmaintained copy of Level_7Vertical from level load, but that's it
 	Level_PipeNotExit:	.ds 1	; If set, pipes do NOT exit to map (i.e. as in pipe junctions)
 	Level_PauseFlag:	.ds 1	; Set to 0 when not paused, or 1 when paused
 	Level_SkipStatusBarUpd:	.ds 1	; When set, skips updating the status bar for one frame (priority graphics buffer changes I think)
@@ -1908,7 +1908,7 @@ SPRITE_3_VINVISIBLE = $08
 	Objects_Data4:		.ds 8	; $0689-$0690 Generic variable 1 for objects
 	Objects_Data5:		.ds 8	; $0691-$0698 Generic variable 2 for objects
 
-	BossBoundBox:		.ds 1	; Absolutely no idea, it is set once in one place and never used again... MAY be lost bonus game related?
+	BossBoundBox:		.ds 1
 
 	; UNUSED Bonus Game Die counter
 	; While the die is rotating, just used as a counter 0 to 3 to time the rolling animation.
@@ -2499,9 +2499,10 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Ignore_Vel_Stop:		.ds	1	;
 	EventSwitch:			.ds 1	; For e-switch levels
 	EventVar:				.ds 1
+	EventTicker:			.ds 1
 	EventType:				.ds 1	; For e-switch levels
 	LeftRightInfection:		.ds 1	;
-	Yolked:					.ds 1	;
+	Player_Yolked:					.ds 1	;
 	Player_Frozen:			.ds 1	;
 	Frozen_Frame:			.ds	1
 	PaletteEffect:			.ds 1
@@ -3044,6 +3045,7 @@ SOBJ_MICROGOOMBA	= $00 	; Micro goombas
 SOBJ_NINJASTAR		= $07 	; Spike's or Patooie's spike ball
 SOBJ_EGG		= $08 	; Koopaling wand blast
 SOBJ_ACIDPOOL		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
+SOBJ_BIGFIREBALL		= $0A 	; Rocky's Wrench
 SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
@@ -3485,7 +3487,7 @@ OAT_BOUNDBOX07		= %00000111
 BOUND48x16		= %00001000
 OAT_BOUNDBOX09		= %00001001
 BOUND16x32		= %00001010
-OAT_BOUNDBOX11		= %00001011
+BOUND16x32TALL		= %00001011
 OAT_BOUNDBOX12		= %00001100
 OAT_BOUNDBOX13		= %00001101
 BOUND32x32		= %00001110
@@ -3559,7 +3561,8 @@ OBJ_POWERUP_FIREFLOWER	= $19	; Fire flower
 OBJ_BOUNCELEFTRIGHT	= $1B	; Left/right block bounce effect object
 OBJ_ESWITCH	= $1E	; ESwitch Event
 OBJ_GROWINGVINE		= $1F	; Growing vine
-OBJ_POWERUP_ICEFLOWER	= $21	; Free mushroom card ????
+OBJ_POWERUP_ICEFLOWER = $00
+OBJECT_ICESPIKE	= $21	; Free mushroom card ????
 OBJ_POWERUP_PUMPKIN	= $22	; Free flower card ????
 OBJ_POWERUP_FOXLEAF	= $23	; Free star card ????
 OBJ_PLATFORM_CLOCKOSC_FAST = $00 ; 

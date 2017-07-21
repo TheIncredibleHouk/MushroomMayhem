@@ -2111,6 +2111,11 @@ BobOmb_Activated = Objects_Data4
 BobOmb_Unstable = Objects_Data5
 
 ObjNorm_BobOmb:
+	LDA Objects_XZ, X
+	LDA Objects_XHiZ, X
+	LDA Objects_YZ, X
+	LDA Objects_YHiZ, X
+
 	LDA <Player_HaltGameZ
 	BEQ BobOmb_DoAction
 

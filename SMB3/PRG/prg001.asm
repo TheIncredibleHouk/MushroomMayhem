@@ -58,7 +58,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $1E - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_DoNothing	; Object $20
-	.word ObjNorm_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjNorm_DoNothing	; Object $21 - OBJECT_ICESPIKE
 	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -100,7 +100,7 @@ ObjectGroup00_NormalJumpTable:
 	.word Obj_ESwitch	; Object $1E - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjNorm_Clock	; Object $20
-	.word ObjInit_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word ObjNorm_IceSpike	; Object $21 - OBJECT_ICESPIKE
 	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -143,7 +143,7 @@ ObjectGroup00_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $1E - OBJ_ESWITCH
 	.word ObjHit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjHit_Clock	; Object $20
-	.word ObjNorm_DoNothing	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.word Player_GetHurt	; Object $21 - OBJECT_ICESPIKE
 	.word ObjHit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjHit_DoNothing    ; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -185,7 +185,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1E - OBJ_ESWITCH
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1F - OBJ_GROWINGVINE
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $20
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJ_POWERUP_ICEFLOWER #DAHRKDAIZ
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $21 - OBJECT_ICESPIKE #DAHRKDAIZ
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -234,7 +234,7 @@ ObjectGroup00_Attributes2:
 	.byte $00	; Object $1E - OBJ_ESWITCH
 	.byte $00	; Object $1F - OBJ_GROWINGVINE
 	.byte $00	; Object $20
-	.byte $00	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte $00	; Object $21 - OBJECT_ICESPIKE
 	.byte $00	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte $00	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -267,7 +267,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $0E - OBJ_HARDICE
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
 	.byte OA3_HALT_NORMALONLY 	; Object $10 OBJ_PIXIE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $11
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_WINDAFFECTS	; Object $11
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_WINDAFFECTS 	; Object $12
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE  	; Object $14
@@ -282,8 +282,8 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $1D
 	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1E - OBJ_ESWITCH
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $1F - OBJ_GROWINGVINE
-	.byte  OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $20
-	.byte OA3_HALT_NORMALONLY 	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $20
+	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $21 - OBJECT_ICESPIKE
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -325,7 +325,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_NOCHANGE	; Object $1E - OBJ_ESWITCH
 	.byte OPTS_NOCHANGE	; Object $1F - OBJ_GROWINGVINE
 	.byte OPTS_NOCHANGE 	; Object $20
-	.byte OPTS_NOCHANGE	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte OPTS_SETPT5 | $12	; Object $21 - OBJECT_ICESPIKE
 	.byte OPTS_NOCHANGE	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte OPTS_NOCHANGE	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -367,7 +367,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $1E - OBJ_ESWITCH
 	.byte KILLACT_STANDARD	; Object $1F - OBJ_GROWINGVINE
 	.byte KILLACT_STANDARD	; Object $20
-	.byte KILLACT_STANDARD	; Object $21 - OBJ_POWERUP_ICEFLOWER
+	.byte KILLACT_NORMALSTATE	; Object $21 - OBJECT_ICESPIKE
 	.byte KILLACT_STANDARD	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.byte KILLACT_STANDARD	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -474,7 +474,7 @@ ObjP1E:
 	.byte $F9, $FB
 
 ObjP1F:	.byte $51, $53	; #DAHRKDAIZ - VINE
-ObjP21:	.byte $51, $53
+ObjP21:	.byte $AF, $AF
 ObjP22:	.byte $51, $53 ; #DAHRKDAIZ - PUMPKIN
 ObjP23:	.byte $51, $53	; #DAHRKDAIZ - GOLD LEAF
 ObjP08:	.byte $BB, $BB, $FB, $F9, $FB, $F9, $FF, $FD, $DA, $DA
@@ -1595,6 +1595,12 @@ PUp_Vine:
 
 PUp_Move:
 	JSR Object_Move
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	AND #$F0
+	STA <Objects_XZ, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
@@ -1607,9 +1613,6 @@ PUp_Move:
 	JMP PUp_VineDraw
 
 Vine_Grow:
-	LDA <Objects_XZ, X
-	AND #$F0
-	STA <Objects_XZ, X
 
 	LDA #$F0
 	STA <Objects_YVelZ, X
@@ -3030,6 +3033,8 @@ Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
 Sand_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 
+Weather_Type = Objects_Data4
+Weather_Ticker = Objects_Data5
 
 DeleteWeather:
 	LDA Objects_State, Y
@@ -3039,13 +3044,13 @@ DeleteWeather:
 
 ObjInit_Weather:
 	LDA Objects_Property, X
-	STA Objects_Data4, X
-	STX TempX
+	STA Weather_Type, X
 	LDY #$04
 
 ObjInit_Weather1:
-	CPY TempX
+	CPY <CurrentObjectIndexZ
 	BEQ ObjInit_Weather2
+
 	LDA Objects_ID, Y
 	CMP #$0F
 	BEQ DeleteWeather
@@ -3056,30 +3061,35 @@ ObjInit_Weather2:
 
 	LDY #$05
 
-KeepRandomizing:
 	LDA Objects_YZ, X
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	STA <Temp_Var1
+	STA <Temp_Var2
 
 	LDA Objects_XZ, X
 	AND #$10
 	BNE DontReverseWind
 
-	LDA <Temp_Var1
+	LDA <Temp_Var2
 	EOR #$FF
 	ADD #$01
-	STA <Temp_Var1
+	STA <Temp_Var2
 	
 DontReverseWind:
-	LDA <Temp_Var1
+	LDA <Temp_Var2
 	STA Wind_Speed, X
+	
+	JSR Half_Value
+	JSR Half_Value
+	
+	STA Wind_ExtraVel, X
 
 	LDA #$01
 	STA WeatherActive
 
+KeepRandomizing:
 	JSR Randomize_Weather
 
 	LDA RandomN
@@ -3091,6 +3101,8 @@ DontReverseWind1:
 	RTS
 
 Wind_Speed = Objects_Data1
+Wind_ExtraVel = Objects_Data10
+Wind_ExtraVelCarry = Objects_Data11
 
 ObjNorm_Weather:
 	LDA Weather_Disabled
@@ -3112,13 +3124,13 @@ No_Wind:
 	LDA <Horz_Scroll
 	STA <Temp_Var8
 
-	LDA Objects_Property, X
+	LDA Objects_Property, X 
 	CMP #$02
 	BNE DoNextParticle0
 
-	INC Objects_Data5, X
+	INC Weather_Ticker, X
 
-	LDA Objects_Data5, X
+	LDA Weather_Ticker, X
 	AND #$01
 	BNE DoNextParticle0
 
@@ -3137,6 +3149,7 @@ DoNextParticle0:
 	LDY #$05
 
 DoNextParticle:
+	LDX <CurrentObjectIndexZ
 	JSR MoveSingleParticle
 
 	LDX TempX
@@ -3147,12 +3160,13 @@ DoNextParticle:
 	STA TempX
 	DEY
 	BPL DoNextParticle
-	LDX <CurrentObjectIndexZ
 	RTS
 
 MoveSingleParticle:	
+
 	LDA Weather_XPos, Y
 	ADD Weather_XVel, Y
+	;ADD Wind_ExtraVel, X
 	STA Weather_XPos, Y
 
 	LDA Weather_YPos, Y
@@ -3170,6 +3184,7 @@ MoveSingleParticle1:
 Randomize_Weather:
 	STY TempY
 	JSR Randomize
+
 	LDY TempY
 	LDX <CurrentObjectIndexZ
 	LDA RandomN
@@ -3182,34 +3197,34 @@ Randomize_Weather:
 	AND #$07
 	STA TempA
 
-	LDA Objects_Data4, X
+	LDA Weather_Type, X
 	ASL A
 	ASL A
 	ASL A
 	ORA TempA
-
-RainVel1:
 	TAY
 
-	LDA Rain_XVel, Y
 	LDY TempY
+
+	LDA Rain_XVel, Y
 	STA Weather_XVel, Y
 
 	LDA RandomN + 2
 	AND #$07
 	STA TempA
 
-	LDA Objects_Data4, X
+	LDA Weather_Type, X
 	ASL A
 	ASL A
 	ASL A
 	ORA TempA
 
-RainVel2:
 	TAY
+
 	LDA Rain_YVel, Y
 	LDY TempY
 	STA Weather_YVel, Y
+
 	LDA Objects_XZ, X
 	AND #$10
 	BNE DoNotReverse
@@ -3225,7 +3240,7 @@ DoNotReverse:
 	AND #$01
 	STA TempA
 
-	LDA Objects_Data4, X
+	LDA Weather_Type, X
 	ASL A
 	ORA TempA
 
@@ -3250,8 +3265,10 @@ DrawSingleParticle:
 
 	LDA #$02
 	STA TempA
+
 	LDA Weather_XVel, Y
 	BMI DontFlipParticle
+
 	LDA #SPR_HFLIP
 	ORA TempA
 	STA TempA
@@ -5295,3 +5312,79 @@ ESwitch_LockDraw:
 
 ESwitch_NoUnlock:
 	RTS
+
+ObjInit_IceSpike:
+	RTS
+
+IceSpike_Action = Objects_Data1
+
+ObjNorm_IceSpike:
+	LDA Objects_ID, X
+	LDA <Player_HaltGameZ
+	BEQ IceSpike_Normal
+
+	JMP Object_DrawAligned
+	
+IceSpike_Normal:
+	JSR Object_DeleteOffScreen
+	LDA IceSpike_Action, X
+	JSR DynJump
+
+	.word IceSpike_Wait
+	.word IceSpike_Shake
+	.word IceSpike_Fall
+
+IceSpike_Wait:
+	JSR Object_CalcBoundBox
+	JSR Object_XDistanceFromPlayer
+	LDA <XDiff
+	CMP #$31
+	BCS IceSpike_NoShake
+
+	JSR Object_YDistanceFromPlayer
+	LDA <YDiffAboveBelow
+	BEQ IceSpike_NoShake
+
+	INC IceSpike_Action, X
+
+	LDA #$20
+	STA Objects_Timer, X
+
+IceSpike_NoShake:
+	JSR Object_InteractWithPlayer
+	JMP Object_DrawAligned
+
+IceSpike_Shake:
+	LDA Objects_Timer, X
+	BNE IceSpike_KeepShaking
+
+	INC IceSpike_Action, X
+
+IceSpike_KeepShaking:
+	AND #$01
+	STA <Temp_Var1
+
+	LDA <Objects_XZ, X
+	AND #$FE
+	ORA <Temp_Var1
+	STA <Objects_XZ, X
+	STA <Objects_XZ, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	JMP Object_DrawAligned
+
+IceSpike_Fall:
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	JSR Object_DetectTiles
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ IceSpike_NoBurst
+
+	JSR Object_BurstIce
+
+IceSpike_NoBurst:
+	JMP Object_DrawAligned

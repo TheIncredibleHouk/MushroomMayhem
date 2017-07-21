@@ -144,7 +144,7 @@ ObjectGroup01_CollideJumpTable:
 	.word Platform_PlayerStand		; Object $44 - OBJ_PLATFORMUNSTABLE
 	.word ObjHit_PWing		; Object $45 - OBJ_PWING
 	.word ObjHit_DoNothing		; Object $46 - OBJ_SNIFIT
-	.word Player_GetHurt		; Object $47 - OBJ_BIRDO
+	.word Birdo_HurtOrStand		; Object $47 - OBJ_BIRDO
 
 	
 	; Object group $01 (i.e. objects starting at ID $24) attribute bits set 1 (OA1_* flags valid here)
@@ -360,7 +360,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_PLATFORMUNSTABLE
 	.byte KILLACT_POOFDEATH	; Object $45 - OBJ_PWING
 	.byte KILLACT_STANDARD	; Object $46 - OBJ_SNIFIT
-	.byte KILLACT_JUSTDRAW16X32	; Object $47 - OBJ_BIRDO
+	.byte KILLACT_NORMALANDKILLED	; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) pattern index starts
@@ -403,7 +403,12 @@ ObjP2F:
 
 ObjP35:
 ObjP47:
-	.byte $81, $83, $89, $8B, $81, $83, $93, $95, $85, $87, $89, $8B, $85, $87, $93, $95
+	.byte $81, $83, $89, $8B
+	.byte $81, $83, $93, $95
+	.byte $85, $87, $89, $8B
+	.byte $85, $87, $93, $95
+	.byte $9D, $9F, $89, $8B
+	.byte $9D, $9F, $93, $95
 
 ObjP30:
 	.byte $91, $93, $B1, $B3, $95, $97
@@ -675,7 +680,6 @@ ObjNorm_DryCheep0:
 	CMP #HIT_ICEBALL
 	BNE Dry_NotHit
 
-	STA Debug_Snap
 	LDA DryCheep_Burning, X
 	BEQ Dry_NotHit
 
@@ -1201,7 +1205,7 @@ ObjNorm_PlatformOscillate:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PlatformOscillate1	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
 
-	JSR Object_CalcBoundBox
+	JSR Object_CalcBoundBoxForced
 	
 	LDA #$00
 	STA Platform_MadeContact, X
@@ -1239,6 +1243,9 @@ ObjNorm_PlatformFollow:
 
 	JSR Object_DeleteOffScreen
 
+	LDA #$00
+	STA Platform_MadeContact, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 	JSR Object_ApplyXVel
@@ -1265,6 +1272,7 @@ ObjNorm_PlatformFollow1:
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
+
 	JMP Platform_Draw
 
 
@@ -1290,6 +1298,7 @@ Platform_YVel:
 	.byte $00, $8, $00, $F8
 
 Platform_FollowBlocks:
+	STA Debug_Snap
 	LDA #$03
 	STA Platform_Index, X
 
@@ -2212,6 +2221,8 @@ ApplySparkX:
 	JSR Object_ApplyXVel
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
+
+	LDA Objects_TilesDetectZ, X
 	JSR Object_CheckForeground
 
 	LDA <Objects_XZ, X
@@ -2234,11 +2245,13 @@ ApplySparkY:
 	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
+
+	LDA Objects_TilesDetectZ, X
 	JSR Object_CheckForeground
 
 	LDA <Objects_YZ, X
 	AND #$0F
-	CMP #$0F
+	CMP #$0E
 	BEQ SparkHitDetection
 
 	CMP #$01
@@ -4322,21 +4335,44 @@ ObjNorm_DiagonalPodobo2:
 ObjNorm_DiagonalPodoboEnd:
 	JMP Object_Draw
 
+Birdo_WalkTicker = Objects_Data1
+Birdo_Pause = Objects_Data2
+Birdo_HurtTimer = Objects_Data3
+Birdo_PrevHealth = Objects_Data4
+Birdo_PalState = Objects_Data5
+Birdo_TickIndex = Objects_Data6
+
+Birdo_FireBallYVel:
+	.byte $00, $03, $06, $09
+	.byte $00, $FD, $FA, $F7
+
+Birdo_Pal:
+	.byte SPR_PAL1, SPR_PAL2
+
 ObjInit_Birdo:
 	LDA RandomN
 	AND #$03
 	TAY
+
 	LDA Birdo_ShootTimers, Y
 	STA Objects_Timer, X
+
 	LDA #$04
 	STA Objects_Health, X
+	STA Birdo_PrevHealth, X
+
+	LDY Objects_Property, X
+	LDA Birdo_Pal, Y
+	STA Objects_SpriteAttributes, X
+	STA Birdo_PalState, X
 	RTS
 
 Birdo_Walk:
 	.byte $00, $0C, $00, $F4
+	.byte $01, $01, $FF, $FF
 
 Birdo_EggShoot:
-	.byte $20, $E0
+	.byte $E0, $20
 
 Birdo_ShootTimers:
 	.byte $80, $C0, $A0, $E0
@@ -4344,59 +4380,108 @@ Birdo_ShootTimers:
 ObjNorm_Birdo:
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Birdo1
-	JMP ObjNorm_BirdoDraw
+	JMP Birdo_Draw
 
 ObjNorm_Birdo1:
-	JSR Object_DeleteOffScreen
-	JSR Object_FacePlayer
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_Birdo2
 	
-	LDA Objects_Data4, X
+	JMP Object_Draw16x32
+
+ObjNorm_Birdo2:
+	JSR Object_DeleteOffScreen
+
+	LDA Objects_Health, X
+	CMP Birdo_PrevHealth, X
+	BEQ Birdo_NotHit
+
+	LDA Birdo_HurtTimer, X
+	BEQ Birdo_Hit
+	
+	LDA Birdo_PrevHealth, X
+	STA Objects_Health, X
+	JMP Birdo_NotHit
+
+Birdo_Hit:
+	LDA Objects_Health, X
+	STA Birdo_PrevHealth, X
+	
+	LDA #$1F
+	STA Birdo_HurtTimer, X
+	STA Objects_Timer2, X
+
+Birdo_NotHit:
+	LDA Birdo_HurtTimer, X
+	BEQ Birdo_CheckPause
+
+	DEC Birdo_HurtTimer, X
+	JMP ObjNorm_BirdoDraw
+
+Birdo_CheckPause:
+	LDA Birdo_Pause, X
 	BNE Birdo_PauseShoot
 
 Birdo_Waltz:
-	INC Objects_Data5, X
-	LDA Objects_Data5, X
+	INC Birdo_WalkTicker, X
+	LDA Birdo_WalkTicker, X
 	AND #$C0
 	CLC
 	ROL A
 	ROL A
 	ROL A
 	TAY
+
+	STA Birdo_TickIndex, X
+
 	LDA Birdo_Walk, Y
 	STA Objects_XVelZ, X 
 
 	LDA Objects_Timer, X
-	BNE Birdo_Norm
+	BEQ Birdo_ResetTimer
 	
+	JMP Birdo_Norm
+	
+Birdo_ResetTimer:
 	LDA #$20
 	STA Objects_Timer, X
 
 	LDA #$00
 	STA Objects_XVelZ, X
+
 	LDA #$02
-	STA Objects_Data4, X
-	BNE Birdo_Norm
+	STA Birdo_Pause, X
+	JMP Birdo_Norm
 
 Birdo_PauseShoot:
 	LDA Objects_Timer, X
 	BNE Birdo_TryShoot
+
 	LDA RandomN
 	AND #$03
 	TAY
+
 	LDA Birdo_ShootTimers, Y
 	STA Objects_Timer, X
+
 	LDA #$00
-	STA Objects_Data4, X
+	STA Birdo_Pause, X
 
 Birdo_TryShoot:
 	CMP #$08
 	BNE Birdo_Norm
 
 	LDA Objects_SpritesVerticallyOffScreen,X
-	AND #$80
 	ORA Objects_SpritesHorizontallyOffScreen,X
 	BNE Birdo_Norm
 
+	LDY #$00
+	LDA Objects_Orientation, X
+	BEQ Birdo_EggNoFlip
+	
+	INY
+
+Birdo_EggNoFlip:
 	LDA Birdo_EggShoot, Y
 	STA <Temp_Var16
 
@@ -4404,17 +4489,46 @@ Birdo_TryShoot:
 	CPY #$FF
 	BEQ Birdo_Norm
 
+	LDA #$00
+	STA SpecialObj_YVel,Y
+
+	LDA Objects_Property, X
+	BEQ Birdo_ShootEgg
+	 
+	LDA RandomN
+	AND #$07
+	TAX
+
+	LDA Birdo_FireBallYVel, X
+	STA SpecialObj_YVel,Y
+
+	LDX <CurrentObjectIndexZ
+
+	LDA #SOBJ_BIGFIREBALL
+	BNE Birdo_Shoot
+
+Birdo_ShootEgg:
 	LDA #SOBJ_EGG
+
+Birdo_Shoot:
 	STA SpecialObj_ID,Y
 
 	LDA #$10
 	STA SpecialObj_Timer,Y
 
+	LDA #$00
+	STA SpecialObj_HurtEnemies, Y
+	
+	STA Egg_HitWall, Y
+
 	LDA <Objects_XZ,X
 	STA SpecialObj_X,Y
 
+	LDA <Objects_XHiZ,X
+	STA SpecialObj_XHi,Y
+
 	LDA <Objects_YZ,X
-	ADD #$02
+	ADD #$00
 	STA SpecialObj_Y,Y
 
 	LDA <Objects_YHiZ, X
@@ -4427,24 +4541,98 @@ Birdo_TryShoot:
 	LDA RandomN
 	AND #$01
 	BNE Birdo_Norm
+
 	LDA #$28
 	STA Objects_Timer, X
 
-
 Birdo_Norm:
-	JSR Object_InteractWithPlayer
 	JSR Object_Move
+	JSR Object_CalcBoundBoxForced
+
+	
+	LDY Birdo_TickIndex, X
+	LDA Birdo_Walk + 4,Y
+	STA Objects_EffectiveXVel, X
+
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ Birdo_InteractPlayer
+
+	LDA Birdo_WalkTicker, X
+	ADD #$40
+	AND #$C0
+	STA Birdo_WalkTicker, X
+
+Birdo_InteractPlayer:
+	JSR Object_FacePlayer
+	JSR Object_InteractWithPlayer
 
 ObjNorm_BirdoDraw:
 	LDA <Objects_XZ, X
 	LSR A
 	LSR A
 	AND #$01
-	ORA Objects_Data4, X
+	ORA Birdo_Pause, X
 	STA Objects_Frame, X
-	JSR Object_Draw16x32
+
+	LDA Birdo_HurtTimer, X
+	BEQ Birdo_Draw
+
+	EOR #$02
+	AND #$02
+	BEQ Birdo_Flash
+
+	LDA Birdo_PalState, X
+
+Birdo_Flash:
+	STA Objects_SpriteAttributes, X
+
+	LDA Objects_Frame, X
+	AND #$01
+	ORA #$04
+	STA Objects_Frame, X
+	JMP Object_Draw16x32
+
+Birdo_Draw:
+	JMP Object_Draw16x32
+
+Birdo_HurtOrStand:
+	LDA HitTest_Result
+	AND #HITTEST_BOTTOM
+	BEQ Birdo_Hurt
+
+	LDA <Player_YVel
+	BMI Birdo_StandRTS
+
+	LDA Player_BoundBottom
+	SUB Objects_BoundTop, X
+	CMP #$04
+	BCS Birdo_Hurt
+	
+	LDA <Objects_YZ,X	 
+	SUB #$1D
+	STA <Player_Y
+
+	LDA <Objects_YHiZ,X
+	SBC #$00
+	STA <Player_YHi
+
+	LDA #$00
+	STA Player_InAir
+	STA PlayerProj_YVelFrac
+	STA <Player_YVel
+
+	LDA <Objects_XVelZ, X
+	STA Player_CarryXVel
+	
+Birdo_StandRTS:
 	RTS
+
+Birdo_Hurt:	
+	JMP Player_GetHurt
 
 ObjNorm_PacBooHome:
 	LDA <Objects_XZ, X

@@ -2154,6 +2154,7 @@ TileChng_VRAMCommit:
 	; Commit the top two patterns
 	LDA TileChng_Pats
 	STA PPU_VRAM_DATA
+
 	LDA TileChng_Pats+1
 	STA PPU_VRAM_DATA
 
@@ -2166,6 +2167,7 @@ TileChng_VRAMCommit:
 	; Commit the lower two patterns
 	LDA TileChng_Pats+2
 	STA PPU_VRAM_DATA
+
 	LDA TileChng_Pats+3
 	STA PPU_VRAM_DATA
 
