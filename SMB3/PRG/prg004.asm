@@ -26,7 +26,7 @@
 ObjectGroup03_InitJumpTable:
 	.word ObjInit_Troopa	; Object $6C - OBJ_GREENTROOPA
 	.word ObjInit_Troopa	; Object $6D - OBJ_REDTROOPA
-	.word Object_MoveTowardsPlayer	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.word ObjInit_Troopa	; Object $6E - OBJ_PARATROOPAGREENHOP
 	.word ObjInit_ParaTroopas	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word ObjInit_BuzzyBeetle	; Object $70 - OBJ_BUZZYBEATLE
 	.word ObjInit_Spiny	; Object $71 - OBJ_SPINY
@@ -479,7 +479,8 @@ ObjP82:
 ObjInit_Waterfill:
 	LDA #$40
 	STA Objects_XVelZ, X
-	RTS
+	
+	JMP Object_NoInteractions
 
 WaterFill_Ticks = Objects_Data1
 
@@ -2037,10 +2038,6 @@ ObjNorm_ThwompVertical:
 ;PRG004_A831:
 	RTS		 ; Return
 
-OrangeCheep_Accel:	.byte $01, $FF
-OrangeCheep_Limit:	.byte $10, $F0
-
-ObjNorm_OrangeCheep:
 
 Pirate_CannonX:
 	.byte $30, -$30
@@ -2092,9 +2089,6 @@ PirateBro_SpitCannon:
 	LDA #$00
 	STA SpecialObj_Data1,Y
 	RTS
-
-Giant_HVisBit:	.byte $20, $80	; Not horizontally flipped, horizontally flipped
-Giant_HXOff:	.byte $10, $00	; Not horizontally flipped, horizontally flipped
 
 SpinyEggDud_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
 
@@ -2667,6 +2661,9 @@ Lakitu_DrawEnemyDone:
 	
 
 ObjInit_ParaGoomba:
+	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_WeaponAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	LDA #$80
@@ -2823,7 +2820,10 @@ PRG004_AF65:
 	RTS		 ; Return
 
 ObjInit_ZombieGoomba:
-	LDA #$01
+	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_WeaponAttr, X
+
+	LDA #$05
 	STA Objects_Health, X
 
 	LDA #HIT_GROUND
@@ -3279,6 +3279,12 @@ BulletBill_XLimit:	.byte $18, -$18
 BulletBill_FlipBits:	.byte SPR_HFLIP, $00
 
 ObjInit_BulletBill:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
 	LDA #$02
 	STA Objects_Frame, X
 	RTS
@@ -3297,6 +3303,9 @@ PRG004_B1C2:
 	JMP DrawBullet
 
 ObjInit_MissileMark:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF)
+	STA Objects_WeaponAttr, X
+
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
@@ -3436,6 +3445,9 @@ ObjInit_SpikeCheep:
 	RTS		 ; Return
 
 ObjInit_Goomba:
+	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -3721,6 +3733,9 @@ ObjNorm_FlyingTroopa2:
 	JMP Troopa_Draw
 
 ObjInit_Troopa:
+	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	LDA <Objects_YZ, X
@@ -3808,9 +3823,10 @@ ObjNorm_Troopa1:
 	JMP Troopa_Draw
 
 ObjInit_PoisonMushroom:
+	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+
 	JSR Object_MoveTowardsPlayer
-	LDA #$01
-	STA Objects_NoIce, X
+
 	RTS
 
 ObjNorm_PoisonMushroom:
@@ -3895,73 +3911,28 @@ ObjNorm_GroundTroop:
 Buzzy_Frame = Objects_Data1
 
 ObjInit_BuzzyBeetle:
+	LDA #(ATTR_FIREPROOF)
+	STA Objects_WeaponAttr, X
+	
+	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	RTS
 	
 ObjNorm_BuzzyBeetle:
-	LDA <Player_HaltGameZ
-	BEQ Buzzy_Norm
-
-	JMP Buzzy_Draw
-
-Buzzy_Norm:
-	JSR Object_DeleteOffScreen
-
-	LDA Objects_Property, X
-	BEQ Buzzy_NormGravity
-
-	INC Reverse_Gravity
-	LDA Objects_Orientation, X
-	ORA #SPR_VFLIP
-	STA Objects_Orientation, X
-
-Buzzy_NormGravity:
-	JSR Object_Move
-	JSR Object_CalcBoundBox
-
-	LDA Objects_Property, X
-	BEQ Buzzy_NoDrop
-
-	JSR Object_XDistanceFromPlayer
-	
-	LDA <XDiff
-	CMP #$30
-	BCS Buzzy_NoDrop
-
-	LDA #OBJSTATE_KICKED
-	STA Objects_State, X
-
-	JSR Object_MoveTowardsPlayer
-
-	LDA <Objects_XVelZ, X
-	JSR Double_Value
-	STA <Objects_XVelZ, X
-
-	LDA #$00
-	STA Objects_Property, X
-
-Buzzy_NoDrop:
-	JSR Object_DetectTiles
-	JSR Object_InteractWithTiles
-	JSR Object_InteractWithObjects
-	JSR Object_AttackOrDefeat
-	JSR Object_FaceDirectionMoving
-
-	INC Buzzy_Frame, X
-	LDA Buzzy_Frame, X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame, X
-
-Buzzy_Draw:
-	JMP Object_Draw
+	JMP ObjNorm_Spiny
 
 Spiny_Frame = Objects_Data1
 
 ObjInit_Spiny:
+	LDA #(ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+	
+	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -4485,9 +4456,6 @@ ObjInit_GiantDRYPIRANHA:
 ObjInit_GiantRedPiranha:
 ObjNorm_BigPiranha:
 	RTS
-
-GroundTroop_DrawNormal:
-	LDY #$00	; Y = 0 (Sprite Y offset)
 
 GroundTroop_DrawOffsetInY:
 	LDA #$00	; A = 0 (draw non-mirrored sprite)
@@ -5504,6 +5472,7 @@ BlueShell_Expload:
 	RTS
 
 ObjInit_Larry:
+	JSR Object_NoInteractions
 
 	LDA #$20
 	STA ChaseVel_LimitHi, X

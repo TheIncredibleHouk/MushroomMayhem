@@ -173,16 +173,27 @@
     <property>Targeting</property>
     <property>Chasing and Targeting</property>
   </spritedefinition>
-  <spritedefinition id="15" width="01" height="01" name="Boss Fight" class="2" group="Boss">
-    <sprite property="0" x="0" y="0" value="14" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="8" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="16" y="0" value="18" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="24" y="0" value="1A" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="0" y="16" value="34" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="8" y="16" value="36" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="16" y="16" value="38" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
-    <sprite property="0" x="24" y="16" value="3A" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+  <spritedefinition id="15" width="02" height="02" name="Boss Fight" class="2" group="Boss">
+    <sprite property="0" x="0" y="0" value="00" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="8" y="0" value="02" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="16" y="0" value="04" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="24" y="0" value="06" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="0" y="16" value="10" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="8" y="16" value="12" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="16" y="16" value="14" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    <sprite property="0" x="24" y="16" value="16" palette="1" horizontalflip="false" verticalflip="false" table="1B" />
+    
+    <sprite property="1" x="0" y="0" value="08" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+    <sprite property="1" x="8" y="0" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+    <sprite property="1" x="16" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+    <sprite property="1" x="24" y="0" value="0E" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+    <sprite property="1" x="0" y="16" value="28" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+    <sprite property="1" x="8" y="16" value="2A" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+    <sprite property="1" x="16" y="16" value="2C" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+    <sprite property="1" x="24" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="58" />
+      
     <property>Colossal Cheep</property>
+    <property>Giant Piranha</property>
   </spritedefinition>
   <spritedefinition id="16" width="01" height="01" name="Key Piece" class="1" group="Global">
     <sprite x="0" y="0" value="00" palette="3" horizontalflip="false" verticalflip="false" table="4D" />

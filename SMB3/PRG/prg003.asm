@@ -482,6 +482,11 @@ ObjP6B:
 	.byte $B1, $B1
 
 ObjInit_IceBlock:
+	LDA #ATTR_ICEPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
 	RTS
 
 IceBlock_Kicked = Objects_Data1
@@ -526,7 +531,7 @@ IceBlock_DetectTiles:
 	ORA Objects_BeingHeld, X
 	BEQ IceBlock_NoBurst
 
-	JSR Object_KillOthers
+	JSR Shell_KillOthers
 	BCC IceBlock_NoBurst
 
 	; if hit another object an held, it bursts
@@ -575,6 +580,9 @@ IceBlock_Draw:
 
 
 ObjInit_Spintula:
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	
@@ -761,6 +769,12 @@ PipePodobo_Frame = Objects_Data5
 PipePodobo_Hidden = Objects_Data6
 
 ObjInit_PipePodobo:
+	LDA #(ATTR_FIREPROOF | ATTR_HAMMERPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_NOICE )
+	STA Objects_BehaviorAttr, X
+
 	LDA Objects_Property, X
 	AND #$01
 	BEQ ObjInit_PipePodobo1
@@ -795,8 +809,6 @@ ObjInit_PipePodobo1:
 	ADD #$08
 	STA <Objects_XZ, X
 
-	LDA #$01
-	STA Objects_NoIce, X
 	RTS
 
 ResetPipePodobo:
@@ -1412,6 +1424,9 @@ ShyGuy_Frame = Objects_Data1
 ShyGuy_Holding = Objects_Data2
 
 ObjInit_ShyGuy:
+	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -2101,6 +2116,12 @@ DonutLift_ChangeBlock:
 	RTS		 ; Return
 
 ObjInit_BobOmb:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_MoveTowardsPlayer
 	RTS		 ; Return
 
@@ -2377,6 +2398,8 @@ BombStars_YOff:	.byte -$08, -$08, $00, $08, $08, $00, $08, $04, -$04, -$08, -$04
 Explosion_Offset = Objects_Data1
 
 ObjInit_Explosion:
+	JSR Object_NoInteractions
+
 	LDA #$18
 	STA Objects_Timer,X
 
@@ -2410,7 +2433,7 @@ PRG003_A836:
 	LDA Kill_Tally
 	PHA
 
-	JSR Object_KillOthers
+	JSR Explosion_KillOthers
 
 	PLA
 	STA Kill_Tally
@@ -2756,8 +2779,9 @@ ObjInit_MagicStar3:
 	STA Magic_StarIndicator, X
 
 ObjInit_MagicStar:
-
+	JSR Object_NoInteractions
 	JSR GetLevelBit
+
 	STA <Temp_Var1
 	STY <Temp_Var2
 	
@@ -3205,12 +3229,15 @@ FloatMine_BobMode = Objects_Data2
 FloatMine_BobDirection = Objects_Data3
 
 ObjInit_FloatMine:
+	LDA #(ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_NOICE | ATTR_WINDAFFECTS)
+	STA Objects_BehaviorAttr, X
+
 	LDA <Objects_XZ, X
 	SUB #$04
 	STA <Objects_XZ, X
-
-	LDA #$01
-	STA Objects_NoIce, X
 
 	LDA Objects_Property, X
 	STA FloatMine_Triggered, X
@@ -3371,6 +3398,9 @@ FloatMine_Expload:
 	RTS
 
 ObjInit_Ninji:
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
 	LDA #$20
 	STA Objects_Timer, X
 	RTS
@@ -4573,6 +4603,12 @@ FireSnake_BufferOffsets:
 	.byte 00, 16
 
 ObjInit_FireSnake:
+	LDA #(ATTR_FIREPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_NOICE | ATTR_WINDAFFECTS)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_InitBuffer
 
 	LDA FireSnake_BufferOffsets, Y
@@ -4593,8 +4629,6 @@ FireSnake_InitLoop:
 	DEC <Temp_Var1
 	BPL FireSnake_InitLoop
 
-	LDA #$01
-	STA Objects_NoIce, X
 	JMP Object_CalcBoundBox
 
 ObjNorm_FireSnake:
@@ -5204,6 +5238,9 @@ FireSnake_MeltIceRTS:
 RotoDisc_VelAccels:
 
 ObjInit_Pyrantula:
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
 	JSR InitPatrol_Chase
 	LDA #$40
 	STA Objects_Timer, X

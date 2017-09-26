@@ -391,17 +391,16 @@ Player_HitFire:
 	STA Proj_Attack
 
 	LDA <SpecialObj_ObjectAttributes
-	AND #OAT_FIREPROOF
+	CMP #ATTR_ALLWEAPONPROOF
+	BEQ Player_FireBallTiles
+
+	AND #ATTR_FIREPROOF
 	BNE Player_FireBallNoKill
 
 	JSR SpecialObj_AttackEnemy
 	JMP SpecialObj_ToPoofNoSound
 
 Player_FireBallNoKill:
-	LDA <SpecialObj_ObjectAttributes
-	AND #OAT_WEAPONSHELLPROOF
-	BNE Player_FireBallTiles
-
 	JMP SpecialObj_ToPoof
 
 Player_FireBallTiles:
@@ -525,7 +524,10 @@ Player_HitIce:
 	STA Proj_Attack
 
 	LDA <SpecialObj_ObjectAttributes
-	AND #OAT_ICEPROOF
+	CMP #ATTR_ALLWEAPONPROOF
+	BEQ Player_IceBallTiles
+
+	AND #ATTR_ICEPROOF
 	BNE Player_IceBallNoKill
 
 	JSR SpecialObj_AttackEnemy
@@ -533,7 +535,8 @@ Player_HitIce:
 	CMP #OBJSTATE_KILLED
 	BNE Player_IceBallNoKill
 
-	LDA Objects_NoIce, Y
+	LDA Objects_BehaviorAttr, Y
+	AND #ATTR_NOICE
 	BEQ Make_Ice
 	JMP SpecialObj_ToPoofNoSound
 
@@ -562,10 +565,6 @@ Ice_NoReverse:
 	JMP SpecialObj_ToPoofNoSound
 
 Player_IceBallNoKill:
-	
-	LDA <SpecialObj_ObjectAttributes
-	AND #OAT_WEAPONSHELLPROOF
-	BNE Player_IceBallTiles
 
 	JMP SpecialObj_ToPoof
 
@@ -690,8 +689,11 @@ Player_Hammer:
 	BCC Player_HammerNoKill
 
 	LDA <SpecialObj_ObjectAttributes
-	AND #OAT_WEAPONSHELLPROOF
-	BNE Player_HammerNoKill
+	CMP #ATTR_ALLWEAPONPROOF
+	BEQ Player_HammerNoKill
+
+	AND #ATTR_HAMMERPROOF
+	BNE Player_HammerPoof
 
 	LDA #HIT_HAMMER
 	STA Objects_PlayerProjHit, Y
@@ -768,8 +770,11 @@ Player_NinjaStar:
 	BCC Player_StarNoKill
 
 	LDA <SpecialObj_ObjectAttributes
-	AND #OAT_WEAPONSHELLPROOF
-	BNE Player_StarNoKill
+	CMP #ATTR_ALLWEAPONPROOF
+	BEQ Player_StarNoKill
+
+	AND #ATTR_NINJAPROOF
+	BNE Player_StarPoof
 
 	LDA #HIT_NINJASTAR
 	STA Objects_PlayerProjHit, Y
@@ -1185,8 +1190,7 @@ PlayerProj_HitEnemies1:
 	LDA Obj2Obj_EnByState,X
 	BNE PlayerProj_HitEnemies2	 ; If this state does not support object-to-object (object-to-Projectile), jump to PRG007_A667 (Forget it!)
 
-	LDX Objects_ID,Y	; X = object's ID
-	LDA Object_AttrFlags,X	
+	LDA Objects_WeaponAttr,Y
 	STA <SpecialObj_ObjectAttributes		; Object attribute flags -> Temp_Var1
 
 	JSR SpecialObj_DetectObject	 ; See if Player Project hit an object and respond!

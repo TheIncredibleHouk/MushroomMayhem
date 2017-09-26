@@ -27,10 +27,10 @@
 ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $00
 	.word ObjInit_DoNothing	; Object $01
-	.word ObjInit_DoNothing	; Object $02
+	.word ObjInit_SnowBall	; Object $02
 	.word ObjInit_EaterBlock	; Object $03
 	.word ObjInit_CoinLock	; Object $04
-	.word ObjInit_DoNothing	; Object $05
+	.word ObjInit_SpikeBall	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
 	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
 	.word ObjInit_Coin	; Object $08 - OBJ_COIN
@@ -50,14 +50,14 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $16 OBJ_KEYPIECE
 	.word ObjInit_DoNothing; Object $17 - OBJ_NEGASTAR
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
-	.word Init_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word ObjInit_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_BubbleGenerator	; Object $1A that is a l
 	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_SendBack	; Object $1C
 	.word ObjInit_Timer	; Object $1D
-	.word ObjInit_DoNothing	; Object $1E - OBJ_ESWITCH
+	.word ObjInit_ESwitch	; Object $1E - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
-	.word ObjInit_DoNothing	; Object $20
+	.word ObjInit_Clock	; Object $20
 	.word ObjNorm_DoNothing	; Object $21 - OBJECT_ICESPIKE
 	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_FOXLEAF
@@ -92,12 +92,12 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNormal_KeyPiece	; Object $16 OBJ_KEYPIECE
 	.word ObjNorm_NegaStar; Object $17 - OBJ_NEGASTAR
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
-	.word Init_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.word ObjNorm_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjNorm_Bubble	; Object $1A
 	.word ObjNorm_StarPiece	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjNorm_SendBack	; Object $1C
 	.word ObjNorm_Timer	; Object $1D
-	.word Obj_ESwitch	; Object $1E - OBJ_ESWITCH
+	.word ObjNorm_ESwitch	; Object $1E - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjNorm_Clock	; Object $20
 	.word ObjNorm_IceSpike	; Object $21 - OBJECT_ICESPIKE
@@ -255,7 +255,7 @@ ObjectGroup00_Attributes3:
 	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE	; Object $02
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $03
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $04
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $05
+	.byte OA3_HALT_NORMALONLY  	; Object $05
 	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
 	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_COIN
@@ -339,7 +339,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_NORMALANDKILLED	; Object $02
 	.byte KILLACT_STANDARD	; Object $03
 	.byte KILLACT_POOFDEATH	; Object $04
-	.byte KILLACT_POOFDEATH	; Object $05
+	.byte KILLACT_NORMALANDKILLED	; Object $05
 	.byte KILLACT_STANDARD	; Object $06 - OBJ_BOUNCEDOWNUP
 	.byte KILLACT_NORMALANDKILLED	; Object $07 - OBJ_BRICK
 	.byte KILLACT_STANDARD	; Object $08 - OBJ_COIN
@@ -484,8 +484,12 @@ SpringPals: .byte SPR_PAL1, SPR_PAL2, SPR_PAL3
 ObjInit_Spring:
 	; difficult strengths of spring 0 = normal, 1 = stronger, 2 = strongest
 	LDY Objects_Property, X
+	
 	LDA SpringPals, Y
 	STA Objects_SpriteAttributes,X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
 	RTS
 
 Spring_Jump_Height:
@@ -631,6 +635,11 @@ Spring_PositionRestore:
 	RTS
 
 ObjInit_Key:
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_EXPLOSIONPROOF | ATTR_BUMPNOKILL )
+	STA Objects_BehaviorAttr, X
 	RTS
 
 Key_Reappear = Objects_Data1
@@ -647,7 +656,7 @@ ObjNorm_Key:
 	JSR Object_InteractWithPlayer
 	JMP Object_Draw
 
-Key_Norm
+Key_Norm:
 
 	JSR Object_DeleteInPit
 	BCC Key_Move
@@ -683,6 +692,7 @@ Key_Norm
 Key_Move:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
+	JSR Object_InteractWithObjects
 	JSR Object_InteractWithPlayer
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
@@ -745,6 +755,12 @@ ObjInit_NegaStar:
 	; Objects_Data4 is just a timer for taking stars
 	LDA #$FF
 	STA Objects_Data4,X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_EXPLOSIONPROOF | ATTR_BUMPNOKILL )
+	STA Objects_BehaviorAttr, X
 	RTS
 
 ObjNorm_NegaStar:
@@ -862,8 +878,10 @@ ObjInit_BounceDU:
 	RTS
 
 Bouncer_Initialize:
+	JSR Object_NoInteractions
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
+
 	LDA Tile_LastValue
 	AND #$C0
 	
@@ -1009,9 +1027,11 @@ Bouncer_Draw:
 
 
 ObjInit_BubbleGenerator:
-	RTS
+	JMP Object_NoInteractions
 
 ObjInit_Bubble:
+	JSR Object_NoInteractions
+
 	LDA Objects_Property, X
 	BEQ Bubble_NoGraphics
 
@@ -1194,6 +1214,7 @@ PowerUp_Timers:
 
 
 ObjInit_PUp1:
+	
 	LDA #OBJ_POWERUP
 	STA Objects_ID, X
 
@@ -1208,6 +1229,7 @@ ObjInit_PUp2:
 	JMP ObjInit_PowerUp
 
 ObjInit_PowerUp:
+	JSR Object_NoInteractions
 
 	LDY PowerUp_Type, X
 
@@ -2994,37 +3016,6 @@ Bowser_DoorAppear:
 
 ; Rest of ROM bank was empty
 
-Try_PUp_Reserve:
-	LDA Player_Equip
-	CMP #$07
-	BNE Cant_Reserve
-	LDA Player_EffectiveSuit
-	STA PowerUp_Reserve
-Cant_Reserve:
-	RTS
-
-Do_PUp_Poof_Collect:
-	STA Player_QueueSuit
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
-	LDA #$17
-	STA Player_SuitLost
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State + 5
-	RTS
-
-Do_PUp_Pallete_Collect:
-	STA Player_QueueSuit
-	LDA #$1f
-	STA Player_StarOff
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State + 5
-	RTS
-
 Weather_Patterns: .byte $7B, $7B, $55, $5F, $5D, $5D 
 Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
@@ -3043,6 +3034,8 @@ DeleteWeather:
 	JMP Object_Delete
 
 ObjInit_Weather:
+	JSR Object_NoInteractions
+
 	LDA Objects_Property, X
 	STA Weather_Type, X
 	LDY #$04
@@ -3282,6 +3275,12 @@ ChompPal: .byte SPR_PAL1, SPR_PAL0
 GiantChomp_IsAttacking = Objects_Data5
 
 ObjInit_GiantChomp:
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
 	LDA #$00
 	STA Objects_Data4, X
 	STA Objects_Data5, X
@@ -3547,6 +3546,8 @@ GCTargetPlayerRight:
 	RTS
 
 ObjInit_Brick:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
 	RTS
 
 Brick_PowerUp = Objects_Data1
@@ -3568,7 +3569,7 @@ Brick_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_AttackOrDefeat
-	JSR Object_KillOthers
+	JSR Shell_KillOthers
 	BCS Brick_MakeItem
 
 	LDA <Objects_TilesDetectZ, X
@@ -3830,6 +3831,11 @@ SetKeyField:
 	JMP Object_SetDeadEmpty
 
 ObjInit_SpikeBall:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
 	RTS
 
 SpikeBall_Frame  = Objects_Data1
@@ -3849,7 +3855,7 @@ SpikeBallNotKilled:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-	JSR Object_KillOthers
+	JSR Shell_KillOthers
 	JSR Object_DetectTiles
 
 	LDA <Objects_YVelZ, X
@@ -4042,7 +4048,8 @@ SpikeBrickBustRTS:
 ObjInit_SendBack:
 	LDA #$C0
 	STA Objects_SlowTimer, X
-	RTS
+	
+	JMP Object_NoInteractions
 
 ObjNorm_SendBack:
 	LDA Objects_SlowTimer, X
@@ -4079,7 +4086,8 @@ ObjInit_Timer:
 	STA Objects_Data5, X
 
 	INC Objects_Global, X
-	RTS
+	
+	JMP Object_NoInteractions
 
 ObjNorm_Timer:
 	LDA Objects_Data2, X
@@ -4173,6 +4181,9 @@ Clock_Frame = Objects_Data4
 
 Clock_FrameOffsets:
 	.byte $00, $08
+
+ObjInit_Clock:
+	JMP Object_NoInteractions
 
 ObjNorm_Clock:
 	JSR Object_DeleteOffScreen
@@ -4302,6 +4313,7 @@ BlockCheck_YOffsets:
 	
 
 ObjInit_EaterBlock:
+	JSR Object_NoInteractions
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
 	
@@ -4578,6 +4590,10 @@ ObjInit_HardIce:
 
 	LDA #$20
 	STA Objects_Timer, X
+
+	LDA #(ATTR_ICEPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
 	RTS
 
 HardIce_HitCount = Objects_Data1
@@ -4589,7 +4605,7 @@ ObjNorm_HardIce:
 	
 	JMP Object_Draw
 
-HardIce_NoXVel
+HardIce_NoXVel:
 	LDA #$00
 	STA Objects_XVelZ, X
 	STA Objects_Orientation, X
@@ -4654,6 +4670,11 @@ HardIce_HitBlock:
 
 SnowBall_Frame = Objects_Data1
 
+ObjInit_SnowBall:
+	LDA #(ATTR_ICEPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+	RTS
+
 ObjNorm_SnowBall:
 	LDA <Player_HaltGameZ
 	BEQ SnowBall_Norm
@@ -4679,7 +4700,7 @@ SnowBall_Move:
 	JSR Object_CalcBoundBox
 	JSR Object_FaceDirectionMoving
 	JSR Object_InteractWithPlayer
-	JSR Object_KillOthers
+	JSR Shell_KillOthers
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
@@ -4756,13 +4777,22 @@ IceFireFly_ProjectileID = Objects_Data5
 IceFireFly_Palettes:
 	.byte SPR_PAL1, SPR_PAL2
 
+IceFireFly_WeaponAttr:
+	.byte ATTR_FIREPROOF, ATTR_ICEPROOF
+
 ObjInit_IceFireFly:
 	LDA #$FF
 	STA IceFireFly_ProjectileSlot, X
+
+	LDA #ATTR_STOMPKICKSOUND
+	STA Objects_BehaviorAttr, X
 	
 	LDY Objects_Property, X
 	LDA IceFireFlyProjectiles, Y
 	STA IceFireFly_ProjectileID, X
+
+	LDA IceFireFly_WeaponAttr, Y
+	STA Objects_WeaponAttr, X
 	
 	LDA IceFireFly_Palettes, Y
 	STA Objects_SpriteAttributes, X
@@ -5231,12 +5261,17 @@ PointerDataOffset:
 	.byte 0, 6, 12, 18, 24
 
 ObjInit_ModifyPointers:
+	JSR Object_NoInteractions
+
 	LDA Objects_Property, X
 	TAY
+
 	LDA BossLevelData, Y
 	TAY
+
 	LDA PointerDataOffset, Y
 	TAY
+
 	LDA Pointers, Y
 	STA Pointers
 	RTS
@@ -5244,10 +5279,12 @@ ObjInit_ModifyPointers:
 PUp_GeneralCollect:
 	RTS
 
-Init_WaterSplash:
-
+ObjInit_WaterSplash:
+	JMP Object_NoInteractions
+	
 WaterSplash_Frame = Objects_Data1
-Obj_WaterSplash:
+
+ObjNorm_WaterSplash:
 	LDA <Player_HaltGameZ
 	BEQ WaterSplash_Norm
 
@@ -5274,7 +5311,10 @@ WaterSplash_Animate:
 WaterSplash_Draw:
 	JMP Object_DrawMirrored
 
-Obj_ESwitch:
+ObjInit_ESwitch:
+	JMP Object_NoInteractions
+
+ObjNorm_ESwitch:
 	LDA Objects_Property, Y
 	JSR DynJump
 
@@ -5314,19 +5354,32 @@ ESwitch_NoUnlock:
 	RTS
 
 ObjInit_IceSpike:
+	LDA #(ATTR_ICEPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #ATTR_SHELLPROOF
+	STA Objects_BehaviorAttr, X
 	RTS
 
 IceSpike_Action = Objects_Data1
 
 ObjNorm_IceSpike:
-	LDA Objects_ID, X
+	
 	LDA <Player_HaltGameZ
 	BEQ IceSpike_Normal
 
 	JMP Object_DrawAligned
 	
 IceSpike_Normal:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE IceSpike_NotDead
+
+	JMP Object_BurstIce
+
+IceSpike_NotDead:
 	JSR Object_DeleteOffScreen
+
 	LDA IceSpike_Action, X
 	JSR DynJump
 

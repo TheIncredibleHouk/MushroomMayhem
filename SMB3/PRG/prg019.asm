@@ -1387,6 +1387,7 @@ BossFight:
 	JSR DynJump
 
 	.word Colossal_Cheep
+	.word Giant_Piranha
 
 Colossal_CheepSprites:
 	.byte $95, $97, $99, $9B, $B5, $B7, $B9, $BB
@@ -1438,6 +1439,9 @@ Colossal_CheepInit:
 
 	LDA #$00
 	STA Colossal_CheepHealth, X
+
+	LDA #$04
+	STA Objects_Health, X
 
 	INC Colossal_CheepAction, X
 
@@ -1529,12 +1533,6 @@ CC_NoHurtPlayer:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE CC_CheckBounce
-
-	LDA Objects_PlayerProjHit, X
-	BEQ CC_HurtByShell
-
-	LDA #$00
-	STA Objects_PlayerProjHit, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
@@ -1983,3 +1981,71 @@ Colossal_CheepDraw:
 
 	JSR Object_CheckForeground
 	JMP Object_DrawGiant
+
+Giant_PiranhaSprites:
+	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
+	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
+
+Giant_PiranhaAction = Objects_Data1
+Giant_PiranhaFrames = Objects_Data2
+Giant_PiranhaAttackTicker = Objects_Data3
+
+Giant_Piranha:
+	LDA <Player_HaltGameZ
+	BEQ Giant_PiranhaNorm
+
+	JMP Giant_PiranhaDraw
+
+Giant_PiranhaAnimate:
+	INC Giant_PiranhaFrames, X
+	LDA Giant_PiranhaFrames, X
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
+
+Giant_PiranhaDraw:
+	LDA #LOW(Giant_PiranhaSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Giant_PiranhaSprites)
+	STA <Giant_TilesHi
+
+	LDA #$58
+	STA PatTable_BankSel + 4
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JSR Object_CheckForeground
+	JMP Object_DrawGiant
+
+Giant_PiranhaNorm:
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+	JMP Giant_PiranhaAnimate
+
+	LDA Giant_PiranhaAction, X
+	JSR DynJump
+
+	.word Giant_PiranhaInit
+	.word Giant_PiranhaMove
+	.word Giant_PiranhaAttackUp
+
+Giant_PiranhaInit:
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+	INC Giant_PiranhaAction, X
+	RTS
+
+Giant_PiranhaMove:
+	
+
+Giant_PiranhaAttackUp:
+	JSR Object_ApplyYVel
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles	
+	JSR Object_AttackOrDefeat

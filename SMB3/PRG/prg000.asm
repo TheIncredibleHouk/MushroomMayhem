@@ -63,7 +63,7 @@ Object_AttrFlags:
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0C - OBJ_ESWITCH
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0E - OBJ_HARDICE
-	.byte BOUND8x16 | OAT_FIREPROOF | OAT_ICEPROOF| OAT_WEAPONSHELLPROOF	; Object $0F
+	.byte BOUND8x16 	; Object $0F
 	.byte BOUND16x16	; Object $10 OBJ_PIXIE
 	.byte BOUND16x16 | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $11
 	.byte BOUND16x16 | OAT_INTERACTWITHOBJECTS | OAT_FIREPROOF | OAT_ICEPROOF | OAT_WEAPONSHELLPROOF	; Object $12
@@ -1226,7 +1226,7 @@ ObjState_Shelled0:
 	
 	JSR Object_CheckForeground
 	JSR Object_CalcBoundBoxForced	
-	JSR Object_KillOthers
+	JSR Shell_KillOthers
 	BCC ObjState_Shelled2
 
 	LDA #$FF
@@ -1389,7 +1389,7 @@ ObjState_Kicked1:
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
-	JSR Object_KillOthers
+	JSR Shell_KillOthers
 	JSR Object_DetectTiles
 	JSR Object_TestTopBumpBlocks
 	JSR Object_TestSideBumpBlocks
@@ -1439,6 +1439,17 @@ ObjectKill_NoScore:
 	LDA #-$30
 	STA <Objects_YVelZ,X
 	RTS		 ; Return
+	
+Kill_TypeCheck = Temp_Var16
+
+Shell_KillOthers:
+	LDA #ATTR_SHELLPROOF
+	STA <Kill_TypeCheck
+	BNE Object_KillOthers
+
+Explosion_KillOthers:
+	LDA #ATTR_EXPLOSIONPROOF
+	STA <Kill_TypeCheck
 
 Object_KillOthers:
 	LDY #$04
@@ -1452,12 +1463,8 @@ Object_KillOthers1:
 	CMP #OBJSTATE_NORMAL
 	BNE Object_KillOthers2
 
-
-	LDA Objects_ID,Y	 ; Y = this object's ID
-	TAX
-
-	LDA Object_AttrFlags,X
-	AND #OAT_WEAPONSHELLPROOF
+	LDA Objects_BehaviorAttr, Y
+	AND <Kill_TypeCheck
 	BNE Object_KillOthers2
 
 	LDX <CurrentObjectIndexZ
@@ -2220,8 +2227,9 @@ Object_HandleBumpUnderneath0:
 	; Object detected a block bump tile (object got bumped)
 
 Object_HandleBumpUnderneath1:
-	JSR Object_IsHammerNinjaShellProof
-	BNE Object_HandleBumpUnderneath2
+	LDA Objects_BehaviorAttr, X
+	AND #ATTR_BUMPNOKILL
+	BNE Object_HandleBumpUnderneath3
 
 	JSR Object_Defeated
 	LDA Objects_State, X
@@ -2233,8 +2241,10 @@ Object_HandleBumpUnderneath1:
 	JSR Object_GetKilled
 
 Object_HandleBumpUnderneath2:
-	JSR Object_FlipFallAwayFromPlayer
-	RTS
+	JMP Object_FlipFallAwayFromPlayer
+
+Object_HandleBumpUnderneath3:
+	JMP Object_FallAwayFromPlayer
 
 Object_AttackOrDefeat:
 	LDA Objects_Timer2,X
@@ -2257,9 +2267,8 @@ PRG000_D1C6:
 	LDA Player_InWater
 	BNE Object_HurtPlayer
 
-	LDY ObjGroupRel_Idx
-	LDA ObjectGroup_Attributes3, Y
-	AND #OA3_NOTSTOMPABLE
+	LDA Objects_WeaponAttr, X
+	AND #ATTR_STOMPPROOF
 	BNE Object_HurtPlayer
 
 	LDA <HitTest_Result
@@ -2294,9 +2303,8 @@ Object_Defeated:
 	LDA #$01
 	STA Objects_Stomped, X
 	
-	LDY ObjGroupRel_Idx
-	LDA ObjectGroup01_Attributes2, Y
-	AND #OA2_STOMP_KICKSND
+	LDA Objects_BehaviorAttr, X
+	AND #ATTR_STOMPKICKSOUND
 	BNE Object_DefeatKickSnd
 
 	LDA Sound_QPlayer
@@ -2562,7 +2570,8 @@ Object_New:
 
 	LDA #$00
 	STA Objects_Global, X
-	STA Objects_NoIce, X
+	STA Objects_WeaponAttr, X
+	STA Objects_BehaviorAttr, X
 	STA Objects_Stomped, X
 	STA Objects_Data1, X
 	STA Objects_Data2, X
@@ -3971,10 +3980,8 @@ Object_RespondToTailAttack1:
 	LDA Obj2Obj_EnByState,Y
 	BNE Object_RespondToTailAttack2	 ; If object is not hit tested in this state, jump to PRG000_DB16 (RTS)
 
-	LDY ObjGroupRel_Idx
-
-	LDA ObjectGroup_Attributes3,Y
-	AND #OA3_TAILATKIMMUNE
+	LDA Objects_WeaponAttr,X
+	AND #ATTR_TAILPROOF
 	BNE Object_RespondToTailAttack2	 ; If OA3_TAILATKIMMUNE is SET (Object cannot be tail-attacked), jump to PRG000_DB16 (RTS)
 
 	LDA Objects_SpritesHorizontallyOffScreen,X
@@ -4335,8 +4342,8 @@ AScroll_HorizontalInitMove:
 Object_Check_Water:
 	LDY Objects_ID,X
 
-	LDA Object_AttrFlags,Y	
-	AND #OAT_FIREPROOF
+	LDA Objects_WeaponAttr,X
+	AND #ATTR_FIREPROOF
 	BNE Object_Check_Water1
 
 	LDA Object_BodyTileProp, X
@@ -4790,11 +4797,6 @@ Interact_Toggle:
 	.byte $00, $01, $00, $01, $00, $01, $00, $01
 
 Object_InteractWithObjects:
-	LDA Game_Counter
-	AND #$01
-	CMP Interact_Toggle, X
-	BNE Object_InteractWithObjectsSkip
-
 	LDA Objects_State, X
 	AND #$FE
 	CMP #OBJSTATE_NORMAL
@@ -4817,11 +4819,8 @@ DetectNextSprite:
 	CMP #OBJSTATE_NORMAL
 	BNE GoNextSprite
 
-	LDA Objects_ID,Y	 ; Y = this object's ID
-	TAX
-
-	LDA Object_AttrFlags,X
-	AND #OAT_INTERACTWITHOBJECTS
+	LDA Objects_BehaviorAttr,Y
+	AND #ATTR_CARRYANDBUMP
 	BEQ GoNextSprite
 
 	LDX <CurrentObjectIndexZ
@@ -4838,9 +4837,11 @@ DetectNextSprite:
 	BCS GoNextSprite
 	
 Object_Carry:
-	STA TempA
-	LDA <Objects_YZ, X
-	SUB TempA
+	LDA Objects_YVelZ, X
+	BMI GoNextSprite
+
+	LDA Objects_BoundTop, Y
+	SUB #$10
 	STA <Objects_YZ, X
 
 	LDA <Objects_YHiZ, X
@@ -5376,9 +5377,9 @@ Object_KilledNoExp:
 	LDA Objects_Health, X
 	BMI KillEnemy
 
-	LDY ObjGroupRel_Idx
-	LDA ObjectGroup_Attributes3, Y
-	AND #OA3_SHELL
+	STA Debug_Snap
+	LDA Objects_BehaviorAttr, X
+	AND #ATTR_HASSHELL
 	BEQ KillEnemy
 
 	LDA #OBJSTATE_SHELLED
@@ -5941,9 +5942,8 @@ Object_PrepProjectile1:
 	RTS
 
 Object_IsHammerNinjaShellProof:
-	LDY Objects_ID,X
-	LDA Object_AttrFlags, Y
-	AND #OAT_WEAPONSHELLPROOF
+	LDA Objects_WeaponAttr, X
+	AND #ATTR_SHELLPROOF
 	RTS
 
 
@@ -6004,12 +6004,13 @@ Object_FlipFall:
 
 Object_FlipFallAwayFromPlayer:
 
-	LDA #$C0
-	STA <Objects_YVelZ, X
-
 	LDA Objects_Orientation, X
 	ORA #SPR_VFLIP
 	STA Objects_Orientation, X
+
+Object_FallAwayFromPlayer:
+	LDA #$C0
+	STA <Objects_YVelZ, X
 
 	JMP Object_MoveAwayFromPlayer
 
@@ -6036,13 +6037,29 @@ Object_FlipFallAwayFromHit1:
 
 Object_DetermineContactKill:
 	LDA Player_StarInv
-	ORA Player_FireDash
-	ORA Player_Shell
+	BEQ Check_FireDash
+
+	LDA Objects_WeaponAttr, X
+	AND #ATTR_INVINCIBLE
+	BEQ Object_GetsHurt
+	BNE Object_NotHurt
+
+Check_FireDash:
+	LDA Player_FireDash
+	BEQ Check_ShellAttack
+
+	LDA Objects_WeaponAttr, X
+	AND #ATTR_DASHPROOF
+	BEQ Object_GetsHurt
+	BNE Object_NotHurt
+
+Check_ShellAttack:
+	LDA Player_Shell
 	BEQ Object_NotHurt
 
-	LDY Objects_ID,X
-	LDA Object_AttrFlags, Y
-	AND #OAT_WEAPONSHELLPROOF
+	LDA Objects_BehaviorAttr, X
+	AND #ATTR_SHELLPROOF
+	BEQ Object_GetsHurt
 	BNE Object_NotHurt
 	
 Object_GetsHurt:
@@ -6060,16 +6077,14 @@ Object_NotHurt:
 	RTS
 
 Object_ApplyWindEffect:
-	LDY ObjGroupRel_Idx
-	
 	LDA Wind
 	BEQ Object_NoWind
 
 	LDA Objects_InWater, X
 	BNE Object_NoWind
 
-	LDA ObjectGroup_Attributes3, Y
-	AND #OA3_WINDAFFECTS
+	LDA Objects_BehaviorAttr, X
+	AND #ATTR_WINDAFFECTS
 	BEQ Object_NoWind
 
 	LDA Wind
@@ -6104,4 +6119,12 @@ Object_KickSound:
 	LDA Sound_QPlayer 
 	ORA #SND_PLAYERKICK
 	STA Sound_QPlayer
+	RTS
+
+Object_NoInteractions:
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
 	RTS

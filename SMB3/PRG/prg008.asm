@@ -5095,9 +5095,8 @@ PowBlock0:
 	CMP #OBJSTATE_NORMAL
 	BNE PowBlock1
 
-	LDY Objects_ID,X	 ; Get object's ID -> Y
-	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
-	AND #OAT_WEAPONSHELLPROOF	 
+	LDA Objects_WeaponAttr, X	 ; Get this object's attribute flags
+	AND #ATTR_SHELLPROOF	 
 	BNE PowBlock1
 
 	JSR Object_PoofDie

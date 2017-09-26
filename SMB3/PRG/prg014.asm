@@ -16,27 +16,6 @@
 ;
 ; Entry point for loading level layout data for Level_Tileset = 18
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LevelLoad_TS18:
-	; Clear tiles to black
-	LDY #$00	 ; Y = 0
-PRG014_C40A:
-	LDA #TILE18_BLACK
-	JSR Tile_Mem_ClearB
-	JSR Tile_Mem_ClearA
-
-	CPY #$f0
-	BNE PRG014_C40A
-
-	; Set the brick foor
-	LDY #$d0	 ; Y = $D0
-PRG014_C418:
-	LDA #TILE18_BRICKFLOOR
-	JSR Tile_Mem_ClearA
-
-	CPY #$f0
-	BNE PRG014_C418
-
-	JMP LevelLoad	; Begin actual level loading!
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -50,68 +29,6 @@ PRG014_C424:
 	.byte 0, 15, 30, 45, 60, 75, 90, 105
 
 LoadLevel_Generator_TS18:
-	LDA <Temp_Var15
-	AND #%11100000
-	LSR A		
-	LSR A		
-	LSR A		
-	LSR A		
-	LSR A		
-	TAX		 	; X = upper 3 bits of Temp_Var15 (0-7) (selects a multiple of 15 as the base)
-
-	LDA LL_ShapeDef
-	LSR A	
-	LSR A	
-	LSR A	
-	LSR A			; A = upper 4 bits of LL_ShapeDef shifted down
-	ADD PRG014_C424,X	; Add multiple of 15
-	TAX
-	DEX
-	TXA		 ; A = ((LL_ShapeDef >> 4) + PRG023_A419[X]) - 1
-
-	; PRG014_C424 provides values reserved for expansion...
-
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word LoadLevel_VsBrickTiles	;  0 - Place a run of brick tiles
-	.word LoadLevel_VsBounceBlocks	;  1 - Place a run of bounce block tiles
-	.word LoadLevel_VsDiamondBlocks	;  2 - Place a run of [UNUSED] SMB1-ish diamond tiles
-	.word LoadLevel_VsCoins		;  3 - UNUSED; Places regular SMB3 coins and employs the coin tracking (Level_BlockGrabHitMem)
-	.word LoadLevel_VsLadder	;  4 - Place a vertical run of ladder tiles
-	.word $0000	;  5 - N/A
-	.word $0000	;  6 - N/A
-	.word $0000	;  7 - N/A
-	.word $0000	;  8 - N/A
-	.word $0000	;  9 - N/A
-	.word $0000	; 10 - N/A
-	.word $0000	; 11 - N/A
-	.word $0000	; 12 - N/A
-	.word $0000	; 13 - N/A
-	.word $0000	; 14 - N/A
-	.word $0000	; 15 - N/A
-	.word $0000	; 16 - N/A
-	.word $0000	; 17 - N/A
-	.word $0000	; 18 - N/A
-	.word $0000	; 19 - N/A
-	.word $0000	; 20 - N/A
-	.word $0000	; 21 - N/A
-	.word $0000	; 22 - N/A
-	.word $0000	; 23 - N/A
-
-	; NOTE: These are stock, I'm not sure which are used or which work correctly.
-	; Of course, little 2P Vs Mario/Luigi don't have code to actually use these
-	; like the pipes they represent...
-	.word LoadLevel_VGroundPipeRun		; 24 - Vertical ground pipe 1 (alt level)
-	.word LoadLevel_VGroundPipeRun		; 25 - Vertical ground pipe 2 (Big [?] area)
-	.word LoadLevel_VGroundPipeRun		; 26 - Vertical ground pipe 3 (no entrance)
-	.word LoadLevel_VCeilingPipeRun		; 27 - Vertical ceiling pipe 1 (alt level)
-	.word LoadLevel_VCeilingPipeRun		; 28 - Vertical ceiling pipe 2 (no entrance)
-	.word LoadLevel_HRightWallPipeRun	; 29 - Horizontal right-hand wall pipe (alt level)
-	.word LoadLevel_HRightWallPipeRun	; 30 - Horizontal right-hand wall pipe (no entrance)
-	.word LoadLevel_HLeftWallPipeRun	; 31 - Horizontal left-hand wall pipe (alt level)
-	.word LoadLevel_HLeftWallPipeRun	; 32 - Horizontal left-hand wall pipe (no entrance)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LeveLoad_FixedSizeGen_TS18
@@ -121,530 +38,35 @@ LoadLevel_Generator_TS18:
 ; complex ones exist in here as well)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LeveLoad_FixedSizeGen_TS18:
-	; It is verified before calling this function that all of
-	; the upper 4 bits of LL_ShapeDef are ZERO
-
-	; So the upper 3 bits of Temp_Var15 serve as the most significant bits
-	; to a value where LL_ShapeDef provide the 4 least significant bits
-
-	LDA <Temp_Var15
-	AND #%11100000
-	LSR A		
-	ADD LL_ShapeDef	
-	TAX		 	; Resultant index is put into 'X'
-	JSR DynJump	 
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word LoadLevel_VsLeftPipes	;  0 - Left side of screen pipes that appear in the "typical" levels
-	.word LoadLevel_VsRightPipes	;  1 - Right side of screen pipes that appear in the "typical" levels
-	.word LoadLevel_VsQBlock	;  2 - [?] block from the ladder climbing game
-	.word LoadLevel_VsStatusBar	;  3 - Tiles that make up the status bar
+	
 
 Vs_Battlefields:
 
 
 LoadLevel_VsBrickTiles:
-	LDX #$00	; X = 0 (place brick tiles)
-	JMP PRG014_C580	 ; Jump to PRG014_C580
 
 LoadLevel_VsBounceBlocks:
-	LDX #$01	; X = 1 (place bounce block tiles)
-	JMP PRG014_C580	 ; Jump to PRG014_C580
-
-PRG014_C57B:
-	.byte TILE18_BRICKFLOOR, TILE18_BOUNCEBLOCK, TILE18_DIAMOND
 
 LoadLevel_VsDiamondBlocks:
-	LDX #$02	; X = 2 (place SMB1-ish diamond tiles)
-
-PRG014_C580:
-
-	; Temp_Var1 = run length of tiles
-	LDA LL_ShapeDef
-	AND #$0f
-	STA <Temp_Var1
-
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-PRG014_C58A:
-	LDA PRG014_C57B,X	 ; Get tile
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	INY		 ; Y++ (next column)
-
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BPL PRG014_C58A	 ; While Temp_Var1 >= 0, loop
-
-	RTS		 ; Return
-
-
 LoadLevel_VsLadder:
-	; Run -> 'X'
-	LDA LL_ShapeDef
-	AND #$0f
-	TAX
-
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-PRG014_C59E:
-	LDA #TILE18_LADDER
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	; +16 bytes to next row
-	TYA
-	ADD #16
-	TAY
-
-	DEX		 ; X--
-	BPL PRG014_C59E	 ; While X >= 0, loop
-
-	RTS		 ; Return
-
 LoadLevel_VsLeftPipes:
-	LDX #$00	 ; X = 0 (left pipe offset)
-	JMP PRG014_C5BA	 ; Jump to PRG014_C5BA
-
-PRG014_C5B0:
-	; Left pipe
-	.byte $81, $80
-	.byte $83, $82
-
-	; Right pipe
-	.byte $80, $81
-	.byte $82, $83
-
 LoadLevel_VsRightPipes:
-	LDX #$04	 ; X = 4 (right pipe offset)
-
-PRG014_C5BA:
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-PRG014_C5BD:
-	LDA PRG014_C5B0,X	 ; PRG014_C5BD 
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	INY		 ; Y++ (next column)
-	INX		 ; X++ (next tile)
-
-	TXA
-	AND #$01
-	BNE PRG014_C5BD	 ; Every other tile, jump to PRG014_C5BD
-
-	LDA TileAddr_Off
-	ADD #16		; +16 to next row
-	TAY		 ; -> 'Y'
-
-	TXA
-	AND #$03
-	BNE PRG014_C5BD	 ; If haven't done 4 tiles yet, jump to PRG014_C5BD
-
-	RTS		 ; Return
-
 LoadLevel_VsQBlock:
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-
-	LDA #TILE18_QBLOCK
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	RTS		 ; Return
-
 Vs_StatusBarTiles:
-	.byte TILE18_MSTATUS_UL, TILE18_STATUS_UM, TILE18_STATUS_UM, TILE18_STATUS_UM, TILE18_MSTATUS_UR, TILE18_LSTATUS_UL, TILE18_STATUS_UM, TILE18_STATUS_UM, TILE18_STATUS_UM, TILE18_LSTATUS_UR
-	.byte TILE18_MSTATUS_LL, TILE18_MSTATUS_LML, TILE18_STATUS_LM, TILE18_STATUS_LM, TILE18_MSTATUS_LR, TILE18_LSTATUS_LL, TILE18_LSTATUS_LML, TILE18_STATUS_LM, TILE18_STATUS_LM, TILE18_LSTATUS_LR
 Vs_StatusBarTiles_End
 
 LoadLevel_VsStatusBar:
-	LDX #$00		; X = 0
-
-PRG014_C5F4:
-	LDY TileAddr_Off	; Y = TileAddr_Off
-
-	; Temp_Var1 = tiles per row - 1
-	LDA #(((Vs_StatusBarTiles_End - Vs_StatusBarTiles) / 2) - 1)
-	STA <Temp_Var1
-
-PRG014_C5FB:
-	LDA Vs_StatusBarTiles,X
-	STA [Map_Tile_AddrL],Y
-
-	INY		 ; Y++
-	INX		 ; X++
-
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BPL PRG014_C5FB	 ; While Temp_Var1 >= 0, loop
-
-	; Go to next row
-	LDA TileAddr_Off
-	ADD #16
-	STA TileAddr_Off
-
-	CPX #(Vs_StatusBarTiles_End - Vs_StatusBarTiles)
-	BNE PRG014_C5F4	 ; If we have another row to do, loop!
-
-	RTS		 ; Return
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_Door1
-;
-; Puts 2 TILEA_DOORTOP tiles, stacked vertically
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Door1:
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDA #(TILEA_DOORTOP	+ $40)
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	; Move to next row by adding 16 to tile offset
-	TYA		 
-	ADD #16
-	TAY		 
-	LDA <Map_Tile_AddrH
-	ADC #$00	 
-	STA <Map_Tile_AddrH
-
-	LDA #(TILEA_DOORBOTTOM	+ $40)
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_Door2
-;
-; Puts 2 TILEA_DOORBOTTOM tiles, stacked vertically
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_Door2:
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-	LDA #TILEA_DOORTOP
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	; Move to next row by adding 16 to tile offset
-	TYA		 
-	ADD #16
-	TAY		 
-	LDA <Map_Tile_AddrH
-	ADC #$00	 
-	STA <Map_Tile_AddrH
-
-	LDA #TILEA_DOORBOTTOM
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-	RTS		 ; Return
-	
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_VGroundPipeRun
-;
-; Generates a vertical pipe which runs into the ground (i.e. 
-; no visible bottom is applied)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_VertPipe:
-	.byte TILE1_PIPETB1_L, TILE1_PIPETB1_R	; alt level
-	.byte TILE1_PIPETB3_L, TILE1_PIPETB3_R	; Big [?] area
-	.byte TILE1_PIPETB2_L, TILE1_PIPETB2_R	; not enterable
-
 LL_VertPipeTransit:
-	.byte TILE1_PIPETB4_L, TILE1_PIPETB4_R	; within level transit
-
 LL_VertPipe4:
-	.byte TILE3_PIPETB5_L, TILE3_PIPETB5_R	; exits to common end area
-	
 LoadLevel_VGroundPipeRun:
-
-	; Backup original Map_Tile_AddrL/H to Temp_Var1/2
-	LDA <Map_Tile_AddrL
-	STA <Temp_Var1	
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var2	
-
-	LDA LL_ShapeDef
-	SUB #$90	
-	AND #$f0	
-	LSR A		
-	LSR A		
-	LSR A		
-	TAX		 	; X = index to pipe (so relative index * 2 I think)
-
-	LDA LL_ShapeDef
-	AND #$0f	
-	STA <Temp_Var3		; Temp_Var3 = lower 4 bits of LL_ShapeDef (height of run)
-
-	LDY TileAddr_Off	; Y = TileAddr_Off
-
-	LDA LL_VertPipe,X	 ; Get this pipe tile
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-	JSR LoadLevel_NextColumn ; Next column
-
-	LDA LL_VertPipe+1,X	 ; Get pipe's right-hand tile
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-	JMP PRG014_C688	 	 ; Jump to PRG014_C688
-
-PRG014_C67A:
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-
-	LDA #TILE1_PIPEVL
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	JSR LoadLevel_NextColumn ; Next column
-
-	LDA #TILE1_PIPEVR
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-PRG014_C688:
-
-	; Restore backup Map_Tile_Addr
-	LDA <Temp_Var1	
-	STA <Map_Tile_AddrL
-	LDA <Temp_Var2	
-	STA <Map_Tile_AddrH
-
-	; Go to next row by adding 16 bytes
-	LDA TileAddr_Off
-	ADD #16
-	STA TileAddr_Off
-	LDA <Map_Tile_AddrH
-	ADC #$00	 
-	STA <Map_Tile_AddrH
-	STA <Temp_Var2		 ; Update backup Map_Tile_AddrH
-
-	DEC <Temp_Var3		 ; Temp_Var3--
-	BPL PRG014_C67A	 	 ; While Temp_Var3 >= 0, loop!
-
-	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_VCeilingPipeRun
-;
-; Generates a vertical pipe which runs into the ceiling (i.e. 
-; no visible top is applied)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_VCeilingPipeRun:
-	LDA LL_ShapeDef
-	PHA		; Save LL_ShapeDef
-	SUB #$c0	
-	AND #$f0	
-	LSR A		
-	LSR A		
-	LSR A		
-	TAX		 	; X = index to pipe (so relative index * 2 I think)
-
-	PLA		 	; Restore LL_ShapeDef
-	AND #$0f	 
-	STA <Temp_Var3		; Temp_Var3 = lower 4 bits of LL_ShapeDef (length of run)
-
-PRG014_C6B8:
-	; Backup Map_Tile_AddrL/H into Temp_Var1/2
-	LDA <Map_Tile_AddrL
-	STA <Temp_Var1	
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var2	
-
-PRG014_C6C0:
-	LDY TileAddr_Off	; Y = TileAddr_off
-
-	; Store left/right top of pipe into tile mem
-	LDA #TILE1_PIPEVL
-	STA [Map_Tile_AddrL],Y
-	JSR LoadLevel_NextColumn ; Next column
-	LDA #TILE1_PIPEVR	 
-	STA [Map_Tile_AddrL],Y	 
-
-	; Restore Map_Tile_Addr from backup
-	LDA <Temp_Var1
-	STA <Map_Tile_AddrL
-	LDA <Temp_Var2	
-	STA <Map_Tile_AddrH
-
-	; Move to next row by adding 16 bytes to Map_Tile_Addr
-	LDA TileAddr_Off
-	ADD #16
-	STA TileAddr_Off
-	LDA <Map_Tile_AddrH
-	ADC #$00	 
-	STA <Map_Tile_AddrH
-	STA <Temp_Var2		 ; Update Map_Tile_AddrH backup
-
-	DEC <Temp_Var3		; Temp_Var3--
-	BNE PRG014_C6C0	 	; While Temp_Var3 > 0, loop!
-
-	; Bottom of pipe
-	LDY TileAddr_Off	
-	LDA LL_VertPipe,X	
-	STA [Map_Tile_AddrL],Y	
-	JSR LoadLevel_NextColumn ; Next column
-	LDA LL_VertPipe+1,X	
-	STA [Map_Tile_AddrL],Y	
-
-	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_VTransitPipeRun
-;
-; Generates a vertical in-level transit style pipe
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_VTransitPipeRun:
-	; Backup Map_Tile_AddrL/H into Temp_Var1/2
-	LDA <Map_Tile_AddrL
-	STA <Temp_Var1	
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var2	
-
-	LDX #(LL_VertPipeTransit - LL_VertPipe)	; X is set to index of in-level transit pipe tile
-
-	LDA LL_ShapeDef
-	AND #$0f	
-	STA <Temp_Var3		; Temp_Var3 = lower 4 bits of LL_ShapeDef (height of run)
-
-	LDY TileAddr_Off	; Y = TileAddr_Off
-	LDA [Map_Tile_AddrL],Y	; Get tile here
-	CMP LL_VertPipe,X	; Is the in-level transit pipe tile?
-	BEQ PRG014_C727	 	; If so, jump to PRG014_C735
-
-	; The current tile is NOT an in-level transit pipe tile
-	; ... but it is now!
-	LDA LL_VertPipe,X	 
-	STA [Map_Tile_AddrL],Y	 
-	JSR LoadLevel_NextColumn
-	LDA LL_VertPipe+1,X	
-	STA [Map_Tile_AddrL],Y	
-	JMP PRG014_C735	 	; Jump to PRG014_C735
-
-PRG014_C727:
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-
-	; Place center column of pipe here
-	LDA #TILE1_PIPEVL
-	STA [Map_Tile_AddrL],Y
-	JSR LoadLevel_NextColumn
-	LDA #TILE1_PIPEVR	
-	STA [Map_Tile_AddrL],Y	
-
-PRG014_C735:
-	; Restore Map_Tile_Addr from backup
-	LDA <Temp_Var1	
-	STA <Map_Tile_AddrL
-	LDA <Temp_Var2		
-	STA <Map_Tile_AddrH
-
-	; Go to next row by adding 16 to Map_Tile_Addr
-	LDA TileAddr_Off
-	ADD #16
-	STA TileAddr_Off
-	LDA <Map_Tile_AddrH
-	ADC #$00	
-	STA <Map_Tile_AddrH
-	STA <Temp_Var2		 ; Update backup of Map_Tile_AddrH
-
-	DEC <Temp_Var3		; Temp_Var3--
-	BNE PRG014_C727	 	; While Temp_Var3 > 0, loop!
-
-	LDY TileAddr_Off	 ; Y = TileAddr_Off
-
-	; Store other end of in-level transit vertical pipe here
-	LDA LL_VertPipe,X	
-	STA [Map_Tile_AddrL],Y	
-	JSR LoadLevel_NextColumn
-	LDA LL_VertPipe+1,X	
-	STA [Map_Tile_AddrL],Y	
-
-	RTS		 ; Return
-
 LoadLevel_VGroundPipe5Run:
-	LDX #(LL_VertPipe4 - LL_VertPipe)	; Level_Tileset 3 or 14 (Hills or underground styles) have a fourth pipe
-
-	LDA LL_ShapeDef
-	AND #$0f	 
-	STA <Temp_Var3	 ; Temp_Var3 = lower 4 bits of LL_ShapeDef (height of pipe)
-	JMP PRG014_C6B8	 ; Jump to PRG014_C6B8, which continues with the rest of LoadLevel_VCeilingPipeRun
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_HRightWallPipeRun
-;
-; Generates a horizontal pipe which runs into a righthand wall
-; (i.e. no visible right edge is applied)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LL_HorzPipe:
-	.byte TILE1_PIPEH_T, TILE1_PIPEH_T, TILE1_PIPEH_T
-	.byte TILE1_PIPEH1_B, TILE1_PIPEH2_B, TILE5_PIPEH3_B
-
 LoadLevel_HRightWallPipeRun:
-	LDA LL_ShapeDef
-	SUB #$e0	
-	LSR A		
-	LSR A		
-	LSR A		
-	LSR A		
-	TAX		; X = relative index by pipe type (0-2)
-
-PRG014_C780:
-	; Backup Map_Tile_AddrL/H into Temp_Var1/2
-	LDA <Map_Tile_AddrL
-	STA <Temp_Var1	
-	LDA <Map_Tile_AddrH
-	STA <Temp_Var2	
-
-	LDA LL_ShapeDef
-	AND #$0f	
-	STA <Temp_Var3	; Temp_Var3 = lower 4 bits of LL_ShapeDef (width of run)
-
-	LDY TileAddr_Off	; Y = TileAddr_Off
-
-	; Do top of horizontal pipe
-	LDA LL_HorzPipe,X	 ; Get top left edge of pipe
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-	JMP PRG014_C79E	 	; Jump to PRG014_C79E
-
-PRG014_C79A:
-	LDA #TILE1_PIPEHT	 ; Pipe horizontal middle top
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-PRG014_C79E:
-	JSR LoadLevel_NextColumn ; Next column
-
-	DEC <Temp_Var3		; Temp_Var3--
-	BPL PRG014_C79A	 	; While Temp_Var3 >= 0, loop!
-
-	; Restore Map_Tile_Addr backup
-	LDA <Temp_Var1		
-	STA <Map_Tile_AddrL	
-	LDA <Temp_Var2		
-	STA <Map_Tile_AddrH	
-
-	; Go to next row by adding 16 to tile offset
-	LDA TileAddr_Off
-	ADD #16
-	STA TileAddr_Off
-	TAY		
-	LDA <Map_Tile_AddrH
-	ADC #$00	
-	STA <Map_Tile_AddrH
-	STA <Temp_Var2		; Update Map_Tile_AddrH backup
-
-	LDA LL_ShapeDef
-	AND #$0f	
-	STA <Temp_Var3		; Temp_Var3 = lower 4 bits of LL_ShapeDef (width of run)
-
-	; Do bottom of horizontal pipe
-	LDA LL_HorzPipe+3,X	 ; Get bottom left edge of pipe
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-	JMP PRG014_C7D2	 	; Jump to PRG014_C7D2
-
-PRG014_C7CE:
-	LDA #TILE1_PIPEHB	 ; Pipe horizontal middle bottom
-	STA [Map_Tile_AddrL],Y	 ; Store into tile mem
-
-PRG014_C7D2:
-	JSR LoadLevel_NextColumn ; Next column
-	DEC <Temp_Var3		 ; Temp_Var3--
-	BPL PRG014_C7CE	 	; While Temp_Var3 >= 0, loop!
-
-	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LoadLevel_HLeftWallPipeRun
-;
-; Generates a horizontal pipe which runs into a lefthand wall
-; (i.e. no visible left edge is applied)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_HLeftWallPipeRun:
 	; Backup Map_Tile_AddrL/H into Temp_Var1/2
 	LDA <Map_Tile_AddrL
@@ -721,7 +143,7 @@ PRG014_C828:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoadLevel_HRightWallPipeRun3:	; $C839
 	LDX #$02	 ; Force Horizontal Pipe 3
-	JMP PRG014_C780	 ; Jump to PRG014_C780
+	
 
 
 	; UNUSED: 2P Vs doesn't use regular SMB3 coins and certainly doesn't need to track them
@@ -5024,16 +4446,17 @@ Snow_EventIncTicker:
 Snow_MoveNextRTS:
 	RTS
 
-Fireball_Event:
+Fireball_Event
 	LDA #$01
 	STA Player_VibeDisable
 
-	LDA Event_Var
+	LDA EventVar
 	JSR DynJump
 
 	.word Fireball_EventInit
 	.word Fireball_EventShoot
 	.word Fireball_EventFlash
+	.word Fireball_ClearTiles
 	.word Fireball_EventUnflash
 
 Fireball_EventTimer = Objects_Data1
@@ -5042,7 +4465,210 @@ Fireball_EventInit:
 	LDA #$FF
 	STA Fireball_EventTimer
 
-	INC Event_Var
+	INC EventVar
 	RTS
 
+Fireball_EventY:
+	.byte $00, $08, $10, $18, $20, $28, $30, $24
+
+
+Fireball_EventYVel:
+	.byte $00, $F4, $00, $04
+
+Fireball_XWrite:
+	.byte $80, $90, $A0, $B0, $C0, $D0, $E0, $F0
+	.byte $80, $90, $A0, $B0, $C0, $D0, $E0, $F0
+	.byte $80, $90, $A0, $B0, $C0, $D0, $E0, $F0
+	.byte $80, $90, $A0, $B0, $C0, $D0, $E0, $F0
+
+Fireball_YWrite:
+	.byte $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $10, $10, $10, $10, $10, $10, $10, $10
+	.byte $20, $20, $20, $20, $20, $20, $20, $20
+	.byte $30, $30, $30, $30, $30, $30, $30, $30
+			
 Fireball_EventShoot:
+	LDA Fireball_EventTimer
+	AND #$0F
+	BNE Fireball_Timer
+
+	LDA RandomN
+	AND #$07
+	TAY
+
+	LDA Fireball_EventY, Y
+	STA <Temp_Var14
+
+	LDA RandomN
+	AND #$30
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA Fireball_EventYVel, Y
+	STA <Temp_Var16
+
+	LDY #$05
+
+Fireball_FindEmpty:
+	LDA SpecialObj_ID,Y
+	BEQ Fireball_EmptyFound	 ; If object slot is dead/empty, jump to PRG000_C454 
+
+	DEY		 ; Y--
+	BPL Fireball_FindEmpty	 ; While Y >= 0, loop!
+	BMI Fireball_Noshoot
+
+Fireball_EmptyFound:
+	LDA #$00
+	STA SpecialObj_YVel,Y
+
+	LDA #$20
+	STA SpecialObj_XVel,Y
+
+	LDA <Temp_Var14
+	STA SpecialObj_Y,Y
+
+	LDA #$01
+	STA SpecialObj_YHi,Y
+
+	LDA #$2C
+	STA SpecialObj_X,Y
+
+	LDA #$00
+	STA SpecialObj_XHi,Y
+
+	LDA #SOBJ_BIGFIREBALL
+	STA SpecialObj_ID, Y
+
+	LDA #$0F
+	STA SpecialObj_Timer,Y
+	BNE Fireball_Timer
+
+Fireball_Noshoot:
+	RTS
+
+Fireball_Timer:
+	DEC Fireball_EventTimer
+	BEQ Fireball_DoFlash
+	RTS
+
+Fireball_DoFlash:
+	INC EventVar
+	RTS
+
+Fireball_EventFlash:
+	
+	LDA Fireball_EventTimer
+	CMP #$20
+	BCC Fireball_MaskPal
+
+	INC EventVar
+	LDA #$00
+	STA Fireball_EventTimer
+	RTS
+	
+Fireball_MaskPal:
+
+	AND #$18
+	ASL A
+	STA <Temp_Var1
+
+	LDY #$0F
+
+Fireball_WhiteOut:
+	LDA MasterPal_Data, Y
+	ADD <Temp_Var1
+	CMP #$3F
+	BCC Fireball_NotMaxPal
+
+	LDA #$30
+
+Fireball_NotMaxPal:
+	STA Palette_Buffer, Y
+
+	CPY #$00
+	BNE Fireball_NotBG
+
+	STA Palette_Buffer + $10
+
+Fireball_NotBG:
+	DEY
+	BPL Fireball_WhiteOut
+
+	INC Fireball_EventTimer
+	RTS
+
+Fireball_ClearTiles:
+	LDA Block_NeedsUpdate
+	BNE Fireball_NoWrite
+
+	LDA Fireball_EventTimer
+	CMP #$20
+	BCC Fireball_MaskWrite
+
+	INC EventVar
+	LDA #$3F
+	STA Fireball_EventTimer
+	RTS
+
+Fireball_MaskWrite:
+	TAY
+
+	INC Fireball_EventTimer
+
+	LDA Fireball_XWrite, Y
+	STA Block_ChangeX
+
+	LDA #$00
+	STA Block_ChangeXHi
+
+	LDA Fireball_YWrite, Y
+	STA Block_ChangeY
+
+	LDA #$01
+	STA Block_ChangeYHi
+
+	LDA #$01
+	STA Block_UpdateValue
+	STA Block_NeedsUpdate
+
+Fireball_NoWrite:
+	RTS
+
+Fireball_EventUnflash:
+	LDA Fireball_EventTimer
+	AND #$30
+	STA <Temp_Var1
+
+	LDY #$0F
+
+Fireball_ReturnPal:
+	LDA MasterPal_Data, Y
+	ADD <Temp_Var1
+	CMP #$3F
+	BCC Fireball_NotMaxPal2
+
+	LDA #$30
+
+Fireball_NotMaxPal2:
+	STA Palette_Buffer, Y
+
+	CPY #$00
+	BNE Fireball_NextPal
+
+	STA Palette_Buffer + $10
+
+Fireball_NextPal:
+	DEY
+	BPL Fireball_ReturnPal
+
+	DEC Fireball_EventTimer
+	BNE Fireball_ReturnPalRTS
+
+	LDA #$00
+	STA EventType
+
+Fireball_ReturnPalRTS:
+	RTS

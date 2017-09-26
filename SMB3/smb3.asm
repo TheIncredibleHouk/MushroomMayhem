@@ -1915,16 +1915,6 @@ SPRITE_3_VINVISIBLE = $08
 	; After Player would press 'A', this value is immediately set to 0.
 	; In the case of the odd/even game, if the Player "won", it is set to 5 or 6.
 	Bonus_DieCnt:		.ds 0
-
-ATTR_FIREPROOF		= %00000001
-ATTR_ICEPROOF		= %00000010
-ATTR_HAMMERPROOF	= %00000100
-ATTR_NINJAPROOF		= %00001000
-ATTR_STARPROOF		= %00010000
-ATTR_DASHPROOF		= %00100000
-ATTR_SHELLPROOF		= %01000000
-ATTR_BUMPOTHERS		= %10000000
-
 	Objects_Stomped: .ds 8
 
 
@@ -2745,8 +2735,6 @@ ABILITY_CHERRY_STAR = 5
 ; "Object_Delete" for the hardcoded list of objects which must release this resource...
 	Object_BufferX:		.ds 32	; $7C20-$7C3F / $7C40-$7C5F
 	Object_BufferY:		.ds 32	; $7C60-$7C7F / $7C80-$7C9F
-
-	Objects_NoIce:		.ds 5
 ; Variables used by Chain Chomps ONLY -- manages the chain links 
 
 	ChainChomp_ChainX1:	.ds 5	; $7CA0-$7CA4 Chain Link 1 X
@@ -2768,6 +2756,32 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data12:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+
+ATTR_FIREPROOF		= %00000001
+ATTR_ICEPROOF		= %00000010
+ATTR_HAMMERPROOF	= %00000100
+ATTR_NINJAPROOF		= %00001000
+ATTR_TAILPROOF		= %00010000
+ATTR_DASHPROOF		= %00100000
+ATTR_STOMPPROOF		= %01000000
+ATTR_INVINCIBLE		= %10000000
+ATTR_PROJECTILEPROOF = (ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_HAMMERPROOF)
+ATT_ATTACKPROOF = (ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+ATTR_ALLWEAPONPROOF	= %11111111
+
+	Objects_WeaponAttr: .ds 8
+
+ATTR_EXPLOSIONPROOF		= %00000001
+ATTR_SHELLPROOF			= %00000010
+ATTR_NOICE				= %00000100 ; *
+ATTR_STOMPKICKSOUND		= %00001000 ; *
+ATTR_WINDAFFECTS		= %00010000
+ATTR_HASSHELL			= %00100000 ; *
+ATTR_CARRYANDBUMP		= %01000000
+ATTR_BUMPNOKILL			= %10000000
+
+	Objects_BehaviorAttr: .ds 8
+
 	Objects_XYCS:		.ds 8
 	Objects_XYCSPrev:	.ds 8
 	Objects_PlayerProjHit:	.ds 8

@@ -9,8 +9,8 @@
     <pointer levelguid="e96e7d58-5b21-47b3-9d71-2e0cd473786d" x="23" y="17" altentrance="false" />
     <pointer levelguid="d57bcadf-a390-4a0a-8a3b-5d223ddc0068" x="19" y="17" altentrance="false" />
     <pointer levelguid="f0a489a9-7d86-4eaa-8b6b-25d37638e662" x="21" y="17" altentrance="false" />
-    <pointer levelguid="cfcc0470-b205-448b-9246-3dd44dce3830" x="7" y="17" altentrance="false" />
-    <pointer levelguid="9d188c37-2589-400a-a742-ed3feea907d1" x="25" y="17" altentrance="false" />
+    <pointer levelguid="069edf8f-a326-43de-80c2-f647b8e7b4aa" x="7" y="17" altentrance="false" />
+    <pointer levelguid="63773480-3fc7-4967-87e0-e790a3154044" x="25" y="17" altentrance="false" />
     <pointer levelguid="76a75f19-0eb9-45c1-8b94-3f72327e072b" x="7" y="19" altentrance="false" />
     <pointer levelguid="96c012f4-46a6-4090-a837-41455948ce4b" x="9" y="19" altentrance="false" />
     <pointer levelguid="8997fbb7-40f8-40c0-8a34-7f5c976f5d74" x="11" y="19" altentrance="false" />
@@ -28,7 +28,7 @@
     <pointer levelguid="d7ebddd8-1579-459a-98d4-add28a9efe9d" x="17" y="21" altentrance="false" />
     <pointer levelguid="d3538842-3aaa-44c7-83da-b4b6742ca6d2" x="19" y="21" altentrance="false" />
     <pointer levelguid="4682d759-a06e-4856-93da-d632f280b778" x="21" y="21" altentrance="false" />
-    <pointer levelguid="deae9b28-696b-4d4a-b892-b7d4edb5589c" x="25" y="19" altentrance="false" />
+    <pointer levelguid="4a7b88cc-cb17-46e8-b5b5-383a8bdaa0d5" x="25" y="19" altentrance="false" />
     <pointer levelguid="069edf8f-a326-43de-80c2-f647b8e7b4aa" x="7" y="23" altentrance="false" />
   </pointers>
   <spritedata />

@@ -510,9 +510,6 @@ ObjInit_Podobo2:
 	ADC Podobo_HeightLimits + 2, Y
 	STA Podobo_LimitHi,X
 
-	LDA #$01
-	STA Objects_NoIce, X
-
 	LDA <Objects_XZ, X
 	STA Tile_DetectionX
 

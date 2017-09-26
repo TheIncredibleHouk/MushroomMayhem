@@ -34,8 +34,8 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DiagonalPodobo		; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjInit_WoodenPlatCCW	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.word ObjInit_WoodenPlatCW	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.word ObjInit_DoNothing	; Object $2E - OBJ_PIRATEBOO
-	.word ObjInit_DoNothing		; Object $2F - OBJ_BOO
+	.word ObjInit_Boo	; Object $2E - OBJ_PIRATEBOO
+	.word ObjInit_Boo		; Object $2F - OBJ_BOO
 	.word ObjInit_PacBoo	; Object $30 - OBJ_PACBOO
 	.word ObjInit_Phanto		; Object $31 - OBJ_PHANTO
 	.word ObjInit_PhantoFlip	; Object $32 - OBJ_PHANTO_FLIP
@@ -51,13 +51,13 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.word ObjInit_DoNothing		; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjInit_DoNothing	; Object $3E - OBJ_PLATFORMFLOATS
-	.word ObjInit_TowardsPlayer	; Object $3F - OBJ_DRYBONES
+	.word ObjInit_DryBones	; Object $3F - OBJ_DRYBONES
 	.word ObjInit_PiranhaGrower	; Object $40 - OBJ_GOLDENPIRANHAGROWER
-	.word ObjInit_PiranhaGrower		; Object $41 - OBJ_PIRANHAGROWER
+	.word ObjInit_GoldenPiranhaGrower		; Object $41 - OBJ_PIRANHAGROWER
 	.word ObjInit_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_PlatformUnstable	; Object $44 - OBJ_PLATFORMUNSTABLE
-	.word ObjInit_DoNothing		; Object $45 - OBJ_PWING
+	.word ObjInit_PWing		; Object $45 - OBJ_PWING
 	.word ObjInit_Snifit	; Object $46 - OBJ_SNIFIT
 	.word ObjInit_Birdo		; Object $47 - OBJ_BIRDO
 
@@ -509,6 +509,9 @@ Buster_DrawHoldingIceBrick:
 	RTS		 ; Return
 
 ObjInit_BeachedCheep:
+	LDA #(ATTR_CARRYANDBUMP | ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_MoveTowardsPlayerFast
 
 	LDY Objects_Property, X
@@ -639,6 +642,9 @@ Beached_DoBounce2:
 
 
 ObjInit_DryCheep:
+	LDA #ATTR_STOMPKICKSOUND
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_MoveTowardsPlayerFast
 	
 	LDA <Objects_XZ, X
@@ -674,6 +680,18 @@ ObjNorm_DryCheep:
 ObjNorm_DryCheep0:
 	JSR Object_DeleteOffScreen
 	
+	LDA DryCheep_Burning, X
+	BNE Dry_WeaponAttr
+
+	LDA #(ATTR_FIREPROOF)
+	STA Objects_WeaponAttr, X
+	BEQ Dry_CheckIce
+
+Dry_WeaponAttr:
+	LDA #(ATTR_FIREPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF | ATTR_NOICE)
+	STA Objects_WeaponAttr, X
+
+Dry_CheckIce:
 	LDA Objects_PlayerProjHit, X
 	BEQ Dry_NotHit
 
@@ -706,13 +724,6 @@ Dry_Move:
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
-	
-	LDA DryCheep_Burning, X
-	BEQ Dry_Attack
-
-	JSR Object_InteractWithPlayer
-
-Dry_Attack:
 	JSR Object_AttackOrDefeat
 
 Dry_Normal:
@@ -878,6 +889,8 @@ ObjInit_HotFoot:
 Bank2_HotFootHaltAction:
 	RTS		 ; Return
 
+ObjInit_PWing:
+	JMP Object_NoInteractions
 
 ObjNorm_PWing:
 	JSR Object_CalcBoundBox
@@ -898,6 +911,15 @@ ObjHit_PWing:
 	STA Objects_State, X
 	RTS
 
+ObjInit_Boo:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
+	RTS
+
 Boo_CheckPlayerSight:
 	LDA DayNight
 	BNE PRG002_A8CC
@@ -913,11 +935,14 @@ ObjNorm_PirateBoo:
 	LDA LastPatTab_Sel
 	AND #$01
 	STA Objects_Frame, X
+
 	LDA #$00
 	STA <Temp_Var10
+
 	LDA LastPatTab_Sel
 	EOR #$01
 	TAY
+
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
 	
@@ -927,29 +952,60 @@ ObjNorm_PirateBoo:
 
 	JMP Object_Draw 	; Draw and don't come back!
 	
+Boo_PlayerCheck:
+	.byte $00, SPR_HFLIP
+
+Boo_Speeds:
+	.byte $F0, $E0
+	.byte $10, $20
+
 ObjNorm_Boo:
-	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
-	JSR Boo_CheckPlayerSight
-	BCS PRG002_A8DE	 ; If carry set, it's time to start chasing Player!  Jump to PRG002_A8DE
+	LDA <Player_HaltGameZ
+	BNE Boo_Draw
 
-	; Otherwise, Boo just sits still
-	LDA #$00
-	STA <Objects_XVelZ,X
-	STA <Objects_YVelZ,X
+	JSR Object_DeleteOffScreen
 
-	BEQ PRG002_AA46	 ; Jump (technically always) to PRG002_AA46
+	LDY #$00
+	LDA DayNight
+	BEQ Boo_SetLimits
 
-PRG002_A8DE:
+	INY
+
+Boo_SetLimits:
+	LDA Boo_Speeds, Y
+	STA ChaseVel_LimitLo, X
+
+	LDA Boo_Speeds + 2, Y
+	STA ChaseVel_LimitHi, X
+
+	JSR Object_FacePlayer
+	JSR Object_CalcBoundBox	
+	JSR Object_AttackOrDefeat
+	JSR Object_XDistanceFromObject
+	
+	LDA DayNight
+	BNE Boo_Chase
+
+	LDA Boo_PlayerCheck, Y
+	CMP <Player_FlipBits
+	BNE Boo_Still
+
+Boo_Chase:
 	JSR Object_ChasePlayer
 
-	LDA #$01	 ; A = 1 (frame 1, chase!)
+	LDA #$01
+	STA Objects_Frame, X
+	BNE Boo_Draw
 
-PRG002_AA46:
-	STA Objects_Frame,X	 ; Update Boo's frame
+Boo_Still:
+	LDA #$00
+	STA Objects_Frame, X
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
 
-	JSR Object_InteractWithPlayer	; Do collision test with Player and respond
-	JSR Fish_FixedYIfAppro	 	; Fix Boo Y for raster area
-
+Boo_Draw:
+	JMP Object_Draw
+	
 Object_DeleteOrDraw:
 	JMP Object_Draw 	; Draw and don't come back!
 
@@ -957,7 +1013,9 @@ Stretch_XVelStart:	.byte -$10, $10
 FacePlayer_FlipBitsStart:	.byte $00, SPR_HFLIP, $00	; Boo uses an off-by-1 index here, hence the other $00
 
 ObjInit_Phanto:
-	JSR InitPatrol_Chase
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
 	LDA #$E0
 	STA ChaseVel_LimitLo, X
 
@@ -989,12 +1047,29 @@ ObjNorm_Phanto1:
 	.word Phanto_Wake
 	.word Phanto_Chase
 
-Phanto_Wait:
-	LDA Objects_ID + 5
-	CMP #OBJ_KEY
-	BNE Phanto_Wait_End
+Phanto_FindKey:
+	LDY #07
 
-	LDA Objects_BeingHeld + 5
+Pahnto_KeyLooking:
+	LDA Objects_ID, Y
+	CMP #OBJ_KEY
+	BEQ Pahnto_KeyFound
+
+	DEY
+	BPL Pahnto_KeyLooking
+	CLC
+	RTS
+
+Pahnto_KeyFound:
+	SEC
+	RTS
+
+Phanto_Wait:
+	JSR Phanto_FindKey
+	BCC Phanto_Wait_End
+
+Phanto_KeyHeld:
+	LDA Objects_BeingHeld, Y
 	BEQ Phanto_Wait_End
 
 	INC Phanto_Action, X
@@ -1034,16 +1109,20 @@ Phanto_Wake_End:
 	RTS
 
 Phanto_Chase:
-	LDA Objects_ID + 5
+	JSR Phanto_FindKey
+	BCC Phanto_ChaseHover
+
+	LDA Objects_ID, Y
 	CMP #OBJ_KEY
 	BNE Phanto_Poof
 
-	LDA Objects_BeingHeld + 5
+	LDA Objects_BeingHeld, Y
 	BEQ Phanto_ChaseHover
 
 	JSR Object_ChasePlayer
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
+
 	JMP Object_Draw
 
 Phanto_HoverVel:
@@ -1154,6 +1233,7 @@ Platform_SteppedOn = Objects_Data5
 Platform_MadeContact = Objects_Data6
 
 ObjInit_PlatformCommon:
+	JSR Object_NoInteractions
 	LDA Objects_XZ, X
 	STA Platform_StartX, X
 
@@ -1298,7 +1378,6 @@ Platform_YVel:
 	.byte $00, $8, $00, $F8
 
 Platform_FollowBlocks:
-	STA Debug_Snap
 	LDA #$03
 	STA Platform_Index, X
 
@@ -1686,6 +1765,12 @@ PlatformFloat1:
 	JMP Platform_Draw
 
 ObjInit_SpecterCheep:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
 	LDA #$20 
 	STA Objects_Data8, X
 	STA Objects_Data9, X
@@ -1731,6 +1816,9 @@ Spike_YOff:
 	.byte $F0, $EE, $F0, $F0, $F0, $F0
 
 ObjInit_Spike:
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
 	LDA #$40
 	STA Objects_Timer, X
 	RTS
@@ -1815,12 +1903,8 @@ SpikeThrowSpike:
 	LDA #OBJ_SPIKEBALL
 	STA Objects_ID, X
 
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
-
-
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
 
 	LDA Objects_YZ, Y
 	SUB #$12
@@ -1837,7 +1921,6 @@ SpikeThrowSpike:
 	STA <Objects_XHiZ, X
 
 	
-
 	LDA #$00
 	STA <Temp_Var1
 
@@ -1848,6 +1931,7 @@ SpikeThrowSpike:
 
 SpikeThrow2:
 	LDY <Temp_Var1
+
 	LDA SpikeThrow_XVel, Y
 	STA <Objects_XVelZ, X
 
@@ -2147,6 +2231,12 @@ Spark_Speed = Objects_Data3
 Spark_HitDetect = Objects_Data4
 
 ObjInit_Spark:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #$02
+	STA Objects_Health, X
+
 	LDA Objects_Property, X
 	AND #$01
 	STA Spark_Direction, X
@@ -2317,60 +2407,6 @@ NipperMove:
 	.byte $10, $F0
 
 ObjNorm_Nipper:
-	LDA <Player_HaltGameZ
-	BEQ ObjNorm_Nipper0_1
-
-	JMP PRG002_B1CE
-
-ObjNorm_Nipper0_1:
-	JSR Object_Move
-	JSR Object_InteractWithTiles
-
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	AND #$02	 
-	TAY		 ; Y = 0 or 2
-
-	LDA DayNight
-	BNE PRG002_B1CC
-
-	LDA Objects_Data2, X
-	BNE ObjNorm_Nipper2_0
-
-ObjNorm_Nipper0:
-
-	LDA Objects_Data2, X
-	BNE PRG002_B1CD
-
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ ObjNorm_Nipper2
-
-	JSR Object_XDistanceFromPlayer
-	STY TempY
-	CMP #$00
-	BNE ObjNorm_Nipper2
-
-	LDA #$10
-	JSR Object_YDistanceFromPlayer
-	CPY #$01
-	BNE ObjNorm_Nipper2
-	TAY
-
-	LDA NipperJump, Y
-	STA <Objects_YVelZ, X
-	STA Objects_Data2, X
-	BNE PRG002_B1CC
-
-ObjNorm_Nipper2_0:
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ PRG002_B1CD	 ; If Nipper has not touched ground, jump to PRG002_B1CD
-
-	LDA #$00
-	STA Objects_Data2, X
-	BEQ PRG002_B1CD
 
 ObjNorm_Nipper2:
 ObjNorm_Nipper2_2:
@@ -2742,7 +2778,10 @@ Platform_Draw:
 	RTS
 
 Platform_DoDraw:
+	INC <Objects_YZ, X
 	JSR Object_DrawMirrored
+
+	DEC <Objects_YZ, X
 
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #SPRITE_2_HINVISIBLE
@@ -2820,91 +2859,22 @@ Platform_Draw4:
 	RTS		 ; Return
 
 ObjNorm_NipperFireBreathe:
-	JSR Enemy_CollideWithWorld	; Collide with world
-	JSR Object_DeleteOrDraw	 	; Delete if Nipper off-screen or draw it
-	JSR Object_InteractWithPlayer	; Do collision test with Player and respond
- 
-	LDA <Counter_1
-	LSR A	
-	LSR A	
-	LSR A	
-	AND #$01
-	STA Objects_Frame,X	 ; Nipper just smacks his lips
+	
 
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG002_B65A	 ; If any of Nipper's sprites are not visible, jump to PRG002_B65A (RTS)
+ObjInit_DryBones:
+	JSR ObjInit_TowardsPlayer
 
-	LDA <Counter_1
-	AND #$a0
-	BNE PRG002_B65A	; Fire breather only does things in a limited window; otherwise, jump to PRG002_B65A (RTS)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_TAILPROOF)
+	STA Objects_WeaponAttr, X
 
-	; Fire breather frame!
-	LDA #$02
-	STA Objects_Frame,X
+	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
 
-	LDA <Counter_1
-	AND #$07
-	BNE PRG002_B65A	 ; Only do anything 1:8 ticks, otherwise jump to PRG002_B65A (RTS)
-
-	; Set 'Y' to $10 or -$10 based on which side Player is on
-	LDA <Temp_Var15
-	TAY	
-	ADD #$10
-	CMP #$20
-	BLT PRG002_B61F
-
-	LDY #$10	 ; Y = $10
-
-	LDA <Temp_Var15
-	BPL PRG002_B61F
-
-	LDY #-$10	 ; Y = -$10
-
-PRG002_B61F:
-	STY <Temp_Var1		 ; Temp_Var1 = $10 or -$10, based on which side Player is on
-
-	LDA <Temp_Var15
-	ADD #$20
-	CMP #$40
-	BGE PRG002_B65A	 	; If Player is too high above Nipper, jump to PRG002_B65A (RTS)
-
-	JSR SpecialObject_FindEmptyAbort	 ; Find an empty special object slot if on-screen (or don't come back!)
-
-	; Nipper fireball ID
-	;LDA #SOBJ_NIPPERFIREBALL
-	STA SpecialObj_ID,Y
-
-	; Nipper fireball X
-	LDA <Objects_XZ,X
-	ADD #$04
-	STA SpecialObj_X,Y
-
-	; Nipper fireball Y
-	LDA <Objects_YZ,X
-	STA SpecialObj_Y,Y
-	LDA <Objects_YHiZ,X
-	STA SpecialObj_YHi,Y
-
-	; Nipper fireball X velocity
-	LDA <Temp_Var1
-	ASL A		
-	JSR Negate	
-	STA SpecialObj_XVel,Y
-
-	; Nipper fireball Y velocity
-	LDA #-$40
-	SUB <Temp_Var15
-	STA SpecialObj_YVel,Y
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-PRG002_B65A:
-	RTS		 ; Return
-
+	RTS
 	; While Dry Bones is reassembling, provides frame and timer values
 DryBones_ReassembleFrames:	.byte $01, $02, $03, $03, $03, $03, $03, $02
 DryBones_ReassembleTimers:	.byte $10, $0A, $06, $06, $06, $06, $FF, $0A
+
+; #REDO
 	
 ObjNorm_DryBones:
 	LDA Objects_State,X	  
@@ -3171,6 +3141,7 @@ PRG002_BABD:
 
 Next_Toad_Routine: .byte  $03, $04, $05
 
+; #REDO
 Toad_Do_Nothing:
 	RTS
 
@@ -4037,6 +4008,7 @@ Check_OverFlow_Badge:
 	BNE Next_Badge_Please
 	LDA #$00
 	STA Item_Shop_Window, X
+
 Next_Badge_Please:
 	DEX
 	BPL Check_OverFlow_Badge
@@ -4238,6 +4210,12 @@ Diagonal_PodoboSpriteFlips:
 	.byte SPR_VFLIP, $00, SPR_HFLIP, SPR_VFLIP | SPR_HFLIP
 
 ObjInit_DiagonalPodobo:
+	LDA #(ATTR_FIREPROOF | ATTR_HAMMERPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_NOICE )
+	STA Objects_BehaviorAttr, X
+
 	LDA Objects_Property, X
 	TAY
 
@@ -4250,9 +4228,7 @@ ObjInit_DiagonalPodobo:
 	LDA Diagonal_PodoboSpriteFlips, Y
 	STA Objects_Orientation, X
 
-	INC Objects_NoIce, X
-
-	LDA #$04
+	LDA #$01
 	STA Objects_Health, X
 	RTS
 
@@ -4350,6 +4326,9 @@ Birdo_Pal:
 	.byte SPR_PAL1, SPR_PAL2
 
 ObjInit_Birdo:
+	LDA #(ATTR_NOICE | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
 	LDA RandomN
 	AND #$03
 	TAY
@@ -4635,6 +4614,7 @@ Birdo_Hurt:
 	JMP Player_GetHurt
 
 ObjNorm_PacBooHome:
+	
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA Objects_BoundLeft, X
@@ -4666,6 +4646,12 @@ PacBoo_Action = Objects_Data7
 PacBoo_CurrentIndex = Objects_Data1
 
 ObjInit_PacBoo:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
 	LDA <Objects_XZ,X
 	SUB #$10
 	STA PacBoo_HomeLeft, X
@@ -4829,11 +4815,29 @@ Grower_StartYHi = Objects_Data6
 Grower_TilePropDetect = Objects_Data7
 Grower_ReverseDraw = Objects_Data8
 
-ObjInit_PiranhaGrower:
+Grower_WeaponAttributes:
+	.byte ATTR_STOMPPROOF, ATTR_ALLWEAPONPROOF
 
+Grower_BehaviorAttributes:
+	.byte 0, ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF
+
+ObjInit_GoldenPiranhaGrower:
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+	BNE ObjInit_PiranhaGrowerCommon
+
+ObjInit_PiranhaGrower:
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+
+ObjInit_PiranhaGrowerCommon:	
 	; which direction to start in 0 = up, 1 = right, 2 = down, 3 = left
 	LDA Objects_Property, X
-	STA Grower_Direction, X 
+	STA Grower_Direction, X
+
 
 	 ; Grower_StartYHi = current tile to check for (Toggle sbeten #TILE_PROP_ENEMY and #TILE_PROP_HARMFUL)
 	LDA #TILE_PROP_ENEMY
