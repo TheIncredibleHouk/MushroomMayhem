@@ -3201,6 +3201,9 @@ SwimCheep_StartY = Objects_Data4
 SwimCheep_StartYHi = Objects_Data5
 
 ObjInit_SwimmingCheep:
+	LDA #(ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
 	JSR InitPatrol
 
 	LDA <Objects_XZ, X

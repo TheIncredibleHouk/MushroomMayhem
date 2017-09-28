@@ -1989,12 +1989,176 @@ Giant_PiranhaSprites:
 Giant_PiranhaAction = Objects_Data1
 Giant_PiranhaFrames = Objects_Data2
 Giant_PiranhaAttackTicker = Objects_Data3
+Giant_PiranhaTicker = Objects_Data4
 
 Giant_Piranha:
 	LDA <Player_HaltGameZ
 	BEQ Giant_PiranhaNorm
 
 	JMP Giant_PiranhaDraw
+
+Giant_PiranhaNorm:
+	LDA Giant_PiranhaAction, X
+	JSR DynJump
+
+	.word Giant_PiranhaInit
+	.word Giant_WaitUnder
+	.word Giant_PiranhaAttackUp
+	.word Giant_PiranhaAttackDown
+
+Giant_PiranhaInit:
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+	
+	LDA #$C0
+	STA <Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
+
+	LDA #$10
+	STA ChaseVel_LimitHi, X
+
+	LDA #$04
+	STA Objects_Health, X
+
+	INC Giant_PiranhaAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+	RTS
+
+Giant_WaitUnder:
+	LDA Objects_Timer, X
+	BNE Giant_WaitUnder1
+
+	INC Giant_PiranhaAction, X
+
+	LDA Player_X
+	AND #$F0
+
+	STA <Objects_XZ, X
+
+Giant_WaitUnder1:
+	RTS
+
+Giant_PiranhaAttackUp:
+	STA Debug_Snap
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_YZ, X
+	CMP #$90
+	BCS Giant_PiranhaAttackUpRTS
+
+	LDA #$40
+	STA Objects_Timer, X
+	INC Giant_PiranhaAction, X
+
+Giant_PiranhaAttackUpRTS:
+	JMP Giant_PiranhaAnimate
+
+Giant_PiranhaBurstBlocks:
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Tile_DetectX
+
+	LDA #$00
+	STA Tile_DetectXHi
+
+
+Giant_PiranhaAttackDown:
+	LDA Objects_Timer, X
+	BNE Giant_PiranhaAttackDownRTS
+
+	LDA #$40
+	STA <Objects_YVelZ, X
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_YZ, X
+	CMP #$C0
+	BCC Giant_PiranhaAttackDownRTS
+
+	LDA #$01
+	STA  Giant_PiranhaAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+Giant_PiranhaAttackDownRTS:
+	JMP Giant_PiranhaAnimate
+
+;
+;	INC Thwomp_Ticker, X
+;	LDA Thwomp_Ticker, X
+;	AND #$01
+;	TAY
+;
+;	LDA Objects_BoundLeft, X
+;	ADD Thwomp_DetectXOffset, Y
+;	STA Tile_DetectionX
+;
+;	LDA Objects_BoundLeftHi, X
+;	ADC #$00
+;	STA Tile_DetectionXHi
+;
+;	LDA Objects_BoundTop, X
+;	STA Tile_DetectionY
+;
+;	LDA Objects_BoundTopHi, X
+;	STA Tile_DetectionYHi
+;
+;	JSR Object_DetectTile
+;	LDA Tile_LastProp
+;	CMP #TILE_PROP_SOLID_TOP
+;	BCC AngryThwomp_NoHit
+;
+;	JSR Object_HitCeiling
+;
+;	INC Thwomp_TilesDetected, X
+;	LDA Thwomp_TilesDetected, X
+;	CMP #$03
+;	BCS AngryThwomp_DetectCeil
+;
+;	LDA #$E0
+;	STA <Objects_YVelZ, X
+;
+;	LDA Tile_LastProp
+;	CMP #TILE_ITEM_COIN
+;	BCC AngryThwomp_NoBump
+;
+;	JSR Object_DirectBumpBlocks
+;
+;AngryThwomp_NoBump:
+;	JMP Thwomp_Draw
+;
+;AngryThwomp_DetectCeil:
+;	LDA #$20
+;	STA Level_Vibration
+;
+;	LDA #$30
+;	STA Objects_Timer, X
+;
+;	LDA #SND_LEVELBABOOM
+;	STA Sound_QLevel1
+;	INC Thwomp_Action, X
+;	RTS
 
 Giant_PiranhaAnimate:
 	INC Giant_PiranhaFrames, X
@@ -2019,33 +2183,4 @@ Giant_PiranhaDraw:
 	AND #~SPR_VFLIP
 	STA Objects_Orientation, X
 
-	JSR Object_CheckForeground
 	JMP Object_DrawGiant
-
-Giant_PiranhaNorm:
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
-	JMP Giant_PiranhaAnimate
-
-	LDA Giant_PiranhaAction, X
-	JSR DynJump
-
-	.word Giant_PiranhaInit
-	.word Giant_PiranhaMove
-	.word Giant_PiranhaAttackUp
-
-Giant_PiranhaInit:
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
-	INC Giant_PiranhaAction, X
-	RTS
-
-Giant_PiranhaMove:
-	
-
-Giant_PiranhaAttackUp:
-	JSR Object_ApplyYVel
-	JSR Object_FaceDirectionMoving
-	JSR Object_CalcBoundBox
-	JSR Object_DetectTiles	
-	JSR Object_AttackOrDefeat

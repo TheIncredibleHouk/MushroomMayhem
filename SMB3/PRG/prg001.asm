@@ -483,6 +483,12 @@ SpringPals: .byte SPR_PAL1, SPR_PAL2, SPR_PAL3
 
 ObjInit_Spring:
 	; difficult strengths of spring 0 = normal, 1 = stronger, 2 = strongest
+	LDA #(ATTR_INVINCIBLE)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_BUMPNOKILL | ATTR_WINDAFFECTS | ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
 	LDY Objects_Property, X
 	
 	LDA SpringPals, Y

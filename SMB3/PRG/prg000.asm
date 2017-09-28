@@ -2231,7 +2231,20 @@ Object_HandleBumpUnderneath1:
 	AND #ATTR_BUMPNOKILL
 	BNE Object_HandleBumpUnderneath3
 
+	LDA <Player_YVel
+	PHA
+
+	LDA Player_InAir
+	PHA
+
 	JSR Object_Defeated
+
+	PLA
+	STA Player_InAir
+
+	PLA
+	STA <Player_YVel
+
 	LDA Objects_State, X
 	CMP #OBJSTATE_SHELLED
 	BEQ Object_HandleBumpUnderneath2
@@ -2285,7 +2298,6 @@ Object_HurtPlayer:
 	JSR Player_GetHurt
 	SEC
 	RTS
-
 
 Object_Defeated:
 	JSR Object_DetermineChange
@@ -5377,7 +5389,6 @@ Object_KilledNoExp:
 	LDA Objects_Health, X
 	BMI KillEnemy
 
-	STA Debug_Snap
 	LDA Objects_BehaviorAttr, X
 	AND #ATTR_HASSHELL
 	BEQ KillEnemy
