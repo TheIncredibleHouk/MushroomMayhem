@@ -99,9 +99,9 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_Thwomp		; Object $8A - OBJ_THWOMP
 	.word ObjNorm_AngryThwomp	; Object $8B - OBJ_AngryTHWOMP
 	.word ObjNorm_AngryThwomp	; Object $8C - OBJ_THWOMPRIGHTSLIDE
-	.word ObjNorm_ThwompVertical	; Object $8D - OBJ_THWOMPUPDOWN
-	.word ObjNorm_ThwompVertical	; Object $8E - OBJ_THWOMPDIAGONALUL
-	.word ObjNorm_ThwompVertical	; Object $8F - OBJ_THWOMPDIAGONALDL
+	.word ObjNorm_DoNothing	; Object $8D - OBJ_THWOMPUPDOWN
+	.word ObjNorm_DoNothing	; Object $8E - OBJ_THWOMPDIAGONALUL
+	.word ObjNorm_DoNothing	; Object $8F - OBJ_THWOMPDIAGONALDL
 
 
 	; Object group $03 (i.e. objects starting at ID $6C) Collision routine jump table (if calling Object_HitTestRespond;
@@ -118,7 +118,7 @@ ObjectGroup03_CollideJumpTable:
 	.word $0000					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
 	.word Object_Hold	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.word $0000	; Object $75 - OBJ_WATERFILLER (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
+	.word $0000	; Object $75 -  (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
 	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
 	.word $0000					; Object $78 - OBJ_BULLETBILL
@@ -158,9 +158,9 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $70 - OBJ_BUZZYBEATLE
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $71 - OBJ_SPINY
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $72 - OBJ_GOOMBA
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $73 - OBJ_PARAGOOMBA
+	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $73 - OBJ_PARAGOOMBA
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $75 - OBJ_WATERFILLER
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $75 - 
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $76 - OBJ_POISONMUSHROOM
 	.byte OA1_PAL2  | OA1_HEIGHT32 | OA1_WIDTH16	; Object $77 - OBJ_GREENCHEEP
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $78 - OBJ_BULLETBILL
@@ -188,90 +188,6 @@ ObjectGroup03_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8E - OBJ_THWOMPDIAGONALUL
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $8F - OBJ_THWOMPDIAGONALDL
 
-	; Object group $03 (i.e. objects starting at ID $6C) second set attribute bits
-
-	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
-ObjectGroup03_Attributes2:
-	.byte $00	; Object $6C - OBJ_GREENTROOPA
-	.byte $00	; Object $6D - OBJ_REDTROOPA
-	.byte $00	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.byte $00	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte $00	; Object $70 - OBJ_BUZZYBEATLE
-	.byte $00	; Object $71 - OBJ_SPINY
-	.byte $00	; Object $72 - OBJ_GOOMBA
-	.byte $00	; Object $73 - OBJ_PARAGOOMBA
-	.byte $00	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte $00	; Object $75 - OBJ_WATERFILLER
-	.byte OA2_STOMP_KICKSND  	; Object $76 - OBJ_POISONMUSHROOM
-	.byte $00  	; Object $77 - OBJ_GREENCHEEP
-	.byte $00  	; Object $78 - OBJ_BULLETBILL
-	.byte $00  	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte $00  	; Object $7A - OBJ_PURPLETROOPA
-	.byte $00  	; Object $7B - OBJ_BLUESHELL
-	.byte $00  	; Object $7C - OBJ_HELPER
-	.byte $00	; Object $7D - OBJ_PARAZOMBIEGOOMBA
-	.byte $00  	; Object $7E - OBJ_BIGGREENHOPPER
-	.byte $00  	; Object $7F - OBJ_BIGREDPIRANHA
-	.byte $00	; Object $80 - OBJ_FLYINGGREENPARATROOPA
-	.byte OA2_STOMP_KICKSND	  	; Object $81 - OBJ_HAMMERBRO
-	.byte OA2_STOMP_KICKSND	  	; Object $82 - OBJ_NINJABRO
-	.byte $00  	; Object $83 - OBJ_LAKITU
-	.byte $00  	; Object $84 - OBJ_SPINYEGG
-	.byte $00  	; Object $85 - OBJ_BLUESPINY
-	.byte OA2_STOMP_KICKSND	  	; Object $86 - OBJ_ICEBRO
-	.byte OA2_STOMP_KICKSND	  	; Object $87 - OBJ_FIREBRO
-	.byte OA2_STOMP_KICKSND	  	; Object $88 - OBJ_PIRATEBRO
-	.byte $00  	; Object $89 - OBJ_CHAINCHOMP
-	.byte $00  	; Object $8A - OBJ_THWOMP
-	.byte $00  	; Object $8B - OBJ_AngryTHWOMP
-	.byte $00  	; Object $8C - OBJ_THWOMPRIGHTSLIDE
-	.byte $00  	; Object $8D - OBJ_THWOMPUPDOWN
-	.byte $00  	; Object $8E - OBJ_THWOMPDIAGONALUL
-	.byte $00  	; Object $8F - OBJ_THWOMPDIAGONALDL
-
-
-	; Object group $03 (i.e. objects starting at ID $6C) third set attribute bits
-
-	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
-ObjectGroup03_Attributes3:
-	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS | OA3_SHELL 			; Object $6C - OBJ_GREENTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS | OA3_SHELL 			; Object $6D - OBJ_REDTROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL | OA3_WINDAFFECTS			; Object $6E - OBJ_PARATROOPAGREENHOP
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL | OA3_WINDAFFECTS			; Object $70 - OBJ_BUZZYBEATLE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_WINDAFFECTS | OA3_SHELL 	; Object $71 - OBJ_SPINY
-	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS				; Object $72 - OBJ_GOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $73 - OBJ_PARAGOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE			; Object $75 - OBJ_WATERFILLER
-	.byte OA3_HALT_NORMALONLY | OA3_WINDAFFECTS					; Object $76 - OBJ_POISONMUSHROOM
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $77 - OBJ_GREENCHEEP
-	.byte OA3_HALT_NORMALONLY 					; Object $78 - OBJ_BULLETBILL
-	.byte OA3_HALT_NORMALONLY 					; Object $79 - OBJ_BULLETBILLHOMING
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $7A - OBJ_PURPLETROOPA
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7B - OBJ_BLUESHELL
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 				; Object $7C - OBJ_HELPER
-	.byte OA3_HALT_NORMALONLY 	; Object $7D - OBJ_PARAZOMBIEGOOMBA
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $7E - OBJ_BIGGREENHOPPER
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $7F - OBJ_BIGREDPIRANHA
-	.byte OA3_HALT_NORMALONLY | OA3_SHELL 			; Object $80 - OBJ_FLYINGGREENPARATROOPA
-	.byte OA3_HALT_NORMALONLY 					; Object $81 - OBJ_HAMMERBRO
-	.byte OA3_HALT_NORMALONLY 					; Object $82 - OBJ_NINJABRO
-	.byte OA3_HALT_NORMALONLY 					; Object $83 - OBJ_LAKITU
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 			; Object $84 - OBJ_SPINYEGG
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_SHELL 			; Object $85 - OBJ_BLUESPINY
-	.byte OA3_HALT_NORMALONLY 					; Object $86 - OBJ_ICEBRO
-	.byte OA3_HALT_NORMALONLY 					; Object $87 - OBJ_FIREBRO
-	.byte OA3_HALT_NORMALONLY 			; Object $88 - OBJ_PIRATEBRO
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $89 - OBJ_CHAINCHOMP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8A - OBJ_THWOMP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8B - OBJ_AngryTHWOMP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8C - OBJ_THWOMPRIGHTSLIDE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8D - OBJ_THWOMPUPDOWN
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8E - OBJ_THWOMPDIAGONALUL
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE ;Object $8F - OBJ_THWOMPDIAGONALDL
-
-
 	; Object group $03 (i.e. objects starting at ID $6C) Pattern Table Select
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
@@ -285,11 +201,11 @@ ObjectGroup03_PatTableSel:
 	.byte OPTS_SETPT6 | $4F	; Object $72 - OBJ_GOOMBA
 	.byte OPTS_SETPT6 | $4F	; Object $73 - OBJ_PARAGOOMBA
 	.byte OPTS_SETPT6 | $13	; Object $74 - OBJ_ZOMBIEGOOMBA
-	.byte OPTS_SETPT5 | $12	; Object $75 - OBJ_WATERFILLER
+	.byte OPTS_SETPT5 | $12	; Object $75 - 
 	.byte OPTS_NOCHANGE; Object $76 - OBJ_POISONMUSHROOM
 	.byte OPTS_SETPT6 | $4F	; Object $77 - OBJ_GREENCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $78 - OBJ_BULLETBILL
-	.byte OPTS_SETPT5 | $4C	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte OPTS_SETPT6 | $4F	; Object $79 - OBJ_BULLETBILLHOMING
 	.byte OPTS_SETPT6 | $4F	; Object $7A - OBJ_PURPLETROOPA
 	.byte OPTS_SETPT5 | $0B	; Object $7B - OBJ_BLUESHELL
 	.byte OPTS_NOCHANGE	; Object $7C - OBJ_HELPER
@@ -390,7 +306,6 @@ ObjectGroup03_PatternStarts:
 ObjectGroup03_PatternSets:
 	; (End restricted alignment space)
 
-	JMP GiantEnemy_Draw	; The special exception as noted above!!
 ObjP75:
 	.byte $81, $83
 
@@ -442,7 +357,12 @@ ObjP7D:
 
 ObjP78:
 ObjP79:
-	.byte $BD, $BF, $B9, $BB, $DD, $DF, $B5, $B7
+	.byte $DD, $DF
+	.byte $00, $00
+	.byte $DD, $DF
+	.byte $BD, $BF
+	.byte $B9, $BB
+	.byte $B5, $B7
 
 ObjP76:
 	.byte $79, $79, $79, $79, $79, $79
@@ -476,84 +396,6 @@ ObjP82:
 	.byte $95, $97, $A1, $A3, $95, $97, $B9, $BB
 	.byte $99, $9B, $A1, $A3, $99, $9B, $B9, $BB
 
-ObjInit_Waterfill:
-	LDA #$40
-	STA Objects_XVelZ, X
-	
-	JMP Object_NoInteractions
-
-WaterFill_Ticks = Objects_Data1
-
-WaterFill_Flip:
-	.byte $00, SPR_VFLIP
-
-ObjNorm_Waterfill:
-	LDA <Player_HaltGameZ
-	BNE FillWater_Draw
-
-WaterFill_Norm:
-	
-	JSR Object_DeleteOffScreen
-	JSR Object_FaceDirectionMoving
-	JSR Object_ApplyXVel
-	JSR Object_CalcBoundBoxForced
-	JSR Object_DetectTileCenter
-
-	STY <Temp_Var1
-
-	CMP #TILE_PROP_SOLID_ALL
-	BCC FillWater_DrawWater
-
-	LDA <Objects_XZ, X
-	AND #$0F
-	BNE FillWater_Animate
-
-	LDA Objects_XZ, X
-	AND #$F0
-	STA Debris_X
-
-	LDA Objects_YZ, X
-	AND #$F0
-	STA Debris_Y
-
-	JSR Common_MakeBricks
-
-	LDA #SPR_PAL2
-	STA BrickBust_Pal, Y
-	
-	LDA <Temp_Var1
-	SUB #$01
-
-	JSR Object_ChangeBlock
-
-	JMP FillWater_Animate
-
-FillWater_DrawWater:
-	LDA <Objects_XZ, X
-	AND #$0F
-	BNE FillWater_Animate
-
-	LDA <Temp_Var1
-	EOR #$01
-
-	JSR Object_ChangeBlock
-
-FillWater_Animate:
-	INC WaterFill_Ticks, X
-	
-	LDA WaterFill_Ticks, X
-	AND #$03
-	
-	LSR A
-
-	TAY
-	
-	LDA Objects_Orientation, X
-	ORA WaterFill_Flip, Y
-	STA Objects_Orientation, X
-
-FillWater_Draw:
-	JMP Object_Draw
 
 
 NinjaBro_JumpYVel:	.byte -$60, -$30
@@ -572,6 +414,9 @@ NinjaBro_FallThrough = Objects_Data8
 NinjaBro_WalkDirectionBackup = Objects_Data9
 
 ObjInit_NinjaBro:
+	LDA #BOUND16x24
+	STA Objects_BoundBox, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -933,6 +778,9 @@ HammerBro_ThrowTimes:
 	.byte $18, $18, $18, $30
 
 ObjInit_HammerBro:
+	LDA #BOUND16x24
+	STA Objects_BoundBox, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -1259,6 +1107,9 @@ FireIcePirateBro_WalkDirectionBackup = Objects_Data9
 FireIcePirateBro_Projectile = Objects_Data10
 
 ObjInit_FireBro:
+	LDA #BOUND16x24
+	STA Objects_BoundBox, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -1281,6 +1132,9 @@ ObjInit_FireBro:
 	RTS		 ; Return
 
 ObjInit_IceBro:
+	LDA #BOUND16x24
+	STA Objects_BoundBox, X
+
 	JSR ObjInit_FireBro
 
 	LDA #SOBJ_ICEBALL
@@ -1291,6 +1145,9 @@ ObjInit_IceBro:
 	RTS		 ; Return
 
 ObjInit_PirateBro:
+	LDA #BOUND16x24
+	STA Objects_BoundBox, X
+
 	JSR ObjInit_FireBro
 
 	LDA #SOBJ_CANNONBALL
@@ -1525,7 +1382,7 @@ FireIcePirateBro_SetYVel:
 	LDA #$00
 	STA SpecialObj_YVel, Y
 
-	LDA #$02
+	LDA #$01
 	STA SpecialObj_Stompable, Y
 	
 	LDA SpecialObj_Y, Y
@@ -1544,6 +1401,8 @@ FireIcePirateBro_ShootDone:
 	RTS
 
 ObjInit_Thwomp:
+	LDA #BOUND24x32
+	STA Objects_BoundBox, X
 
 	LDA #$10
 	STA Objects_Health, X
@@ -1815,6 +1674,9 @@ Thwomp_DrawRTS:
 	RTS		 ; Return
 
 ObjInit_AngryThwomp:
+	LDA #BOUND24x32
+	STA Objects_BoundBox, X
+
 	LDA #$03
 	STA Thwomp_Action, X
 
@@ -1975,127 +1837,6 @@ AngryThwomp_DetectCeil:
 AngryThwomp_NoHit:
 	JMP Thwomp_Draw
 
-
-ObjNorm_ThwompVertical:
-;	JSR Thwomp_Draw		; Draw Thwomp
-;	 
-;	LDA <Player_HaltGameZ
-;	BNE PRG004_A831	 ; If gameplay is halted, jump to PRG004_A831 (RTS)
-;
-;	JSR Object_DeleteOffScreen_N2	 ; Delete if Thwomp falls off-screen
-;	JSR Object_AttackOrDefeat	 ; Do Player to Thwomp collision
-;
-;	LDA Objects_Data2,X	 ; Var5 is internal state
-;	AND #$03	 	; Limit 0-3
-;
-;	JSR DynJump
-;
-;	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-;	.word ThwompVert_Reverse
-;	.word ThwompVert_Slide
-;	.word ThwompVert_Reverse
-;	.word ThwompVert_Slide
-;
-;ThwompVert_Reverse:
-;	LDA Objects_Timer,X
-;	BNE PRG004_A81E	 ; If timer not expired, jump to PRG004_A81E (RTS)
-;
-;	; Thwomp turns around...
-;
-;	; Negate X velocity
-;	LDA <Objects_XVelZ,X
-;	JSR Negate
-;	STA <Objects_XVelZ,X
-;
-;	; Negate Y velocity
-;	LDA <Objects_YVelZ,X
-;	JSR Negate
-;	STA <Objects_YVelZ,X
-;
-;	INC Objects_Data2,X	 ; Var5++ (next internal state)
-;
-;	; Set timer to $80
-;	LDA #$80
-;	STA Objects_Timer,X
-;
-;PRG004_A81E:
-;	RTS		 ; Return
-;
-;ThwompVert_Slide:
-;	LDA Objects_Timer,X
-;	BNE PRG004_A82B	 ; If timer not expired, jump to PRG004_A82B
-;
-;	INC Objects_Data2,X	 ; Var5++
-;
-;	; Set timer to $3C
-;	LDA #$3c
-;	STA Objects_Timer,X
-;
-;PRG004_A82B:
-;	JSR Object_ApplyXVel	 	; Apply X velocity
-;	JSR Object_ApplyYVel_NoGravity	; Apply Y velocity
-;
-;PRG004_A831:
-	RTS		 ; Return
-
-
-Pirate_CannonX:
-	.byte $30, -$30
-
-Pirate_CannonxPos:
-	.byte $00, -$08
-
-PirateBro_SpitCannon:
-	JSR SpecialObject_FindEmptyAbort	; Find an empty special object slot or don't come back
-
-	; Fireball sound!
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	; Fireball at Y + 3
-	LDA <Objects_YZ,X
-	ADD #$0B
-	STA SpecialObj_Y,Y
-	LDA <Objects_YHiZ,X
-	ADC #$00
-	STA SpecialObj_YHi,Y
-
-	; Fireball Y Vel
-	LDA #$00
-	STA SpecialObj_YVel,Y
-
-	STY <Temp_Var1		 ; Special object slot index -> Temp_Var1
-
-	JSR Object_XDistanceFromPlayer
-
-	STY DAIZ_TEMP1
-	; Spit fire towards Player!
-	LDA Pirate_CannonX,Y
-	LDY <Temp_Var1		; Y = special object slot
-	STA SpecialObj_XVel,Y
-
-	LDY DAIZ_TEMP1
-	LDA <Objects_XZ,X
-	ADD Pirate_CannonxPos, Y
-	LDY <Temp_Var1
-	STA SpecialObj_X,Y
-	
-
-	LDA #SOBJ_CANNONBALL
-	STA SpecialObj_ID,Y
-
-	; Data = 0
-	LDA #$00
-	STA SpecialObj_Data1,Y
-	RTS
-
-SpinyEggDud_FlipTowardsPlayer:	.byte SPR_HFLIP, $00
-
-ObjNorm_SpinyEggDud:
-
-	RTS		 ; Return
-
 SpinyEgg_HatchFacePlayerFlip:	.byte SPR_HFLIP, $00
 
 SpinyEgg_Frame = Objects_Data1
@@ -2167,6 +1908,9 @@ Lakitu_GraphicsTables:
 	.byte $0B
 
 ObjInit_Lakitu:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	STX <Temp_Var1
 
 	LDY #$04
@@ -2661,8 +2405,11 @@ Lakitu_DrawEnemyDone:
 	
 
 ObjInit_ParaGoomba:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
-	STA Objects_WeaponAttr, X
+	STA Objects_BehaviorAttr, X
 
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
@@ -2820,6 +2567,9 @@ PRG004_AF65:
 	RTS		 ; Return
 
 ObjInit_ZombieGoomba:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_WeaponAttr, X
 
@@ -3087,8 +2837,12 @@ Zombie_Crumbles:
 	RTS
 
 ObjInit_ParaZombieGoomba:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #$06
 	STA Objects_Property, X
+
 	LDA #$01
 	STA Objects_Health, X
 	RTS
@@ -3201,6 +2955,9 @@ SwimCheep_StartY = Objects_Data4
 SwimCheep_StartYHi = Objects_Data5
 
 ObjInit_SwimmingCheep:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -3276,12 +3033,16 @@ ObjNorm_SwimmingCheep3:
 Cheep_Draw:
 	JMP Object_Draw
 
-BulletBill_XAccel:	.byte $01, -$01
-BulletBill_XLimit:	.byte $18, -$18
+BulletBill_Frame:
+	.byte $00, $00, $03, $04, $04, $03, $05, $05
 
-BulletBill_FlipBits:	.byte SPR_HFLIP, $00
+BulletBill_Orientation:
+	.byte $00, SPR_HFLIP, $00, $00, SPR_HFLIP, SPR_VFLIP, $00, SPR_HFLIP
 
 ObjInit_BulletBill:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -3294,8 +3055,10 @@ ObjInit_BulletBill:
 
 ObjNorm_BulletBill:
 	LDA <Player_HaltGameZ
-	BNE PRG004_B1C2	 ; If gameplay is halted, jump to PRG004_B1C2
+	BEQ BulletBill_Norm
+	JMP Bullet_Draw	 ; If gameplay is halted, jump to PRG004_B1C2
 
+BulletBill_Norm:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat	 	; Player to Bullet Bill collision
@@ -3303,9 +3066,12 @@ ObjNorm_BulletBill:
 	JSR Object_ApplyYVel_NoGravity
 
 PRG004_B1C2:
-	JMP DrawBullet
+	JMP Bullet_Animate
 
 ObjInit_MissileMark:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -3316,10 +3082,13 @@ ObjInit_MissileMark:
 
 Missile_Flash = Objects_Data5
 Missile_HomingDisabled = Objects_Data3
+
 ObjNorm_MissileMark:
 	LDA <Player_HaltGameZ
-	BNE PRG004_B1C2	 ; If gameplay is halted, jump to PRG004_B1C2
+	BEQ MissileMark_Norm
+	JMP Bullet_Draw	 ; If gameplay is halted, jump to PRG004_B1C2
 
+MissileMark_Norm:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 
 	LDA Objects_PlayerProjHit, X
@@ -3341,7 +3110,7 @@ ObjNorm_MissileMark:
 	JSR Object_AttackOrDefeat
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
-	JMP DrawBullet
+	JMP Bullet_Animate
 	 
 ObjNorm_MissileMarkA:
 	LDA Missile_HomingDisabled, X
@@ -3369,77 +3138,52 @@ ObjNorm_MissileMarkA1:
 	JSR Object_DetectTiles
 	
 	LDA <Objects_TilesDetectZ, X
-	BEQ DrawBullet
+	BEQ Bullet_Animate
 
 	LDA #$01
 	STA Explosion_Timer, X
 
-DrawBullet:
-	LDA #$00
-	STA Objects_Orientation, X
+Bullet_Animate:
+	LDY #$00
+	
+	LDA <Objects_YVelZ, X
+	BNE Bullet_AnimateVertical
 
-	LDA Objects_XVelZ, X
-	BMI DrawBullet1
+	LDA <Objects_XVelZ, X
+	BMI Bullet_FrameOrientation
+	
+	INY
+	BNE Bullet_FrameOrientation
 
-	LDA #SPR_HFLIP
-	STA Objects_Orientation, X
+Bullet_AnimateVertical:
+	LDA #$4C
+	STA PatTable_BankSel + 4
 
-DrawBullet1:
-	LDA Objects_XVelZ, X
-	BEQ DrawBullet2
+	LDY #$02
+	
+	LDA <Objects_YVelZ, X
+	BMI Bullet_AnimateVerticalAngle
+	
+	LDY #$05
 
-	CMP #$02
-	BCC DrawBullet2
+Bullet_AnimateVerticalAngle:
+	LDA <Objects_XVelZ, X
+	BEQ Bullet_FrameOrientation
 
-	CMP #$FE
-	BCS DrawBullet2
-	BCC ObjNorm_MissileMark1
+	INY
+	LDA <Objects_XVelZ, X
+	BMI Bullet_FrameOrientation
 
-DrawBullet2:
-	LDA #$00
-	STA <Temp_Var1
-	BEQ ObjNorm_MissileMark2
+	INY
 
-ObjNorm_MissileMark1:
-	LDA #$02
-	STA <Temp_Var1
-
-	LDA Objects_YVelZ, X
-	BEQ ObjNorm_MissileMark2
-
-	CMP #$08
-	BCC ObjNorm_MissileMark2
-
-	CMP #$F8
-	BCS ObjNorm_MissileMark2
-	AND #$80
-	EOR #$80
-	ROL A
-	ROL A
-	ROL A
-	ORA #$01
-	STA <Temp_Var1
-
-ObjNorm_MissileMark2:
-	LDA Objects_Frame, X
-	BNE ObjNorm_MissileMark2_1
-
-	LDA Objects_YVelZ, X
-	BMI ObjNorm_MissileMark2_1
-
-	LDA #SPR_VFLIP
-	STA Objects_Orientation, X
-
-ObjNorm_MissileMark2_1:
-	LDA <Temp_Var1
+Bullet_FrameOrientation:
+	LDA BulletBill_Frame, Y
 	STA Objects_Frame, X
-	CMP #$02
-	BEQ ObjNorm_MissileMark3
 
-	LDA #$4F
-	STA PatTable_BankSel + 5
+	LDA BulletBill_Orientation, Y
+	STA Objects_Orientation, X
 
-ObjNorm_MissileMark3:
+Bullet_Draw:
 	JMP Object_Draw
 
 
@@ -3448,6 +3192,9 @@ ObjInit_SpikeCheep:
 	RTS		 ; Return
 
 ObjInit_Goomba:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
@@ -3571,6 +3318,7 @@ Goomba_Right:
 Goomba_Out:
 	LDA #$00
 	STA Goomba_Action, X
+
 	LDA #$08
 	STA Goomba_BehindTimer, X
 	JMP Goomba_Animate
@@ -3584,6 +3332,30 @@ Goomba_Norm:
 	
 ObjNorm_Goomba0:
 	JSR Object_DeleteOffScreen
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ ObjNorm_Goomba1
+
+	LDA <Objects_XVelZ, X
+	CMP #$08
+	BCC ObjNorm_Goomba1
+
+	CMP #$F8
+	BCS ObjNorm_Goomba1
+
+	LDA <Objects_XVelZ, X
+	BMI Goomba_CapMovement
+
+	LDA #$08
+	STA <Objects_XVelZ, X
+	BNE ObjNorm_Goomba02
+
+Goomba_CapMovement:
+	LDA #$F8
+	STA <Objects_XVelZ, X
+	BNE ObjNorm_Goomba02
+
 	LDA DayNight
 	BNE ObjNorm_Goomba1
 
@@ -3594,7 +3366,6 @@ ObjNorm_Goomba1:
 	LDA Objects_Property, X
 	BEQ ObjNorm_Goomba02
 
-	LDA #$01
 	STA Reverse_Gravity
 
 ObjNorm_Goomba02:
@@ -3671,6 +3442,12 @@ Goomba_Death2:
 FlyingTroopa_StartX = Objects_Data6
 
 ObjInit_ParaTroopas:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	LDA <Objects_YZ, X
 	ADD #$10
 	STA <Objects_YZ, X
@@ -3736,6 +3513,9 @@ ObjNorm_FlyingTroopa2:
 	JMP Troopa_Draw
 
 ObjInit_Troopa:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
@@ -3758,6 +3538,7 @@ Koopa_CurrentFrame = Objects_Data1
 
 ObjNorm_PurpleTroopa:
 	JSR ObjNorm_RedTroopa
+
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BEQ ObjNorm_PurpleTroopa1
@@ -3814,6 +3595,7 @@ ObjNorm_Troopa0:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
+
 	INC Koopa_CurrentFrame, X
 	LDA Koopa_CurrentFrame, X
 	LSR A
@@ -3825,17 +3607,51 @@ ObjNorm_Troopa0:
 ObjNorm_Troopa1:
 	JMP Troopa_Draw
 
+PoisonMushroom_Action = Objects_Data1
+
 ObjInit_PoisonMushroom:
-	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
 
 	JSR Object_MoveTowardsPlayer
 
+	LDA Objects_Property, X
+	CMP #$01
+	BNE ObjInit_PoisonMushroomRTS
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_ITEM
+	BCS ObjInit_PoisonMushroomRTS
+
+	LDA Objects_YZ, X
+	SUB #$10
+	STA Objects_YZ, X
+
+	LDA Objects_YHiZ, X
+	SBC #$00
+	STA Objects_YHiZ, X
+
+	LDA #$00
+	STA Objects_Property, X
+
+ObjInit_PoisonMushroomRTS:
 	RTS
 
 ObjNorm_PoisonMushroom:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PoisonMushroom1
 
+	LDA Objects_Property, X
+	BEQ PoisonMush_CheckState
+	RTS
+
+PoisonMush_CheckState:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE ObjNorm_PoisonMushroom0
@@ -3849,15 +3665,58 @@ ObjNorm_PoisonMushroom:
 
 ObjNorm_PoisonMushroom0:
 	JSR Object_DeleteOffScreen
+
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word PoisonMushroom_Normal
+	.word PoisonMushroom_InsideBlock
+
+PoisonMushroom_Normal:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
 	JSR Object_InteractWithObjects
 
 ObjNorm_PoisonMushroom1:
 	JMP Object_DrawMirrored
+
+PoisonMushroom_InsideBlock:
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_ITEM
+	BCS PoisonMushroom_InsideBlockRTS
+
+	JSR Object_MoveTowardsPlayer	
+
+	LDA #$00
+	STA Objects_Property, X
+
+	LDA <Objects_YZ, X
+	SUB #$02
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #SND_LEVELRISE
+	STA Sound_QLevel1
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+	
+PoisonMushroom_InsideBlockRTS:
+	RTS
 
 Bouncey_FlutterTime: = Objects_Data2
 
@@ -3914,6 +3773,9 @@ ObjNorm_GroundTroop:
 Buzzy_Frame = Objects_Data1
 
 ObjInit_BuzzyBeetle:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF)
 	STA Objects_WeaponAttr, X
 	
@@ -3930,6 +3792,9 @@ ObjNorm_BuzzyBeetle:
 Spiny_Frame = Objects_Data1
 
 ObjInit_Spiny:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 	
@@ -4599,7 +4464,10 @@ Chomp_YChainMax = Objects_Data8
 
 ObjInit_ChainChomp:
 
-	; Fill in all of the following with the Chain Chomp's Pining X coordinate
+	; Fill in all f the following with the Chain Chomp's Pining X coordinate
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA <Objects_XZ,X
 	ADD #$08
 	STA Chomp_PinX,X
@@ -4608,7 +4476,7 @@ ObjInit_ChainChomp:
 	STA ChainChomp_ChainX2, X
 	STA ChainChomp_ChainX3, X
 	STA ChainChomp_ChainX4, X
-
+	
 	LDA <Objects_YZ,X
 	ADD #$08
 	STA Chomp_PinY,X
@@ -4617,20 +4485,20 @@ ObjInit_ChainChomp:
 	STA ChainChomp_ChainY2, X
 	STA ChainChomp_ChainY3, X
 	STA ChainChomp_ChainY4, X
-
+	
 	LDA <Objects_YZ,X
 	SUB #$10
 	STA <Objects_YZ,X
-
+	
 	LDA <Objects_YHiZ,X
 	SBC #$00
 	STA <Objects_YHiZ,X
-
+	
 	JSR Object_MoveTowardsPlayerFast
-
+	
 	LDA #$04
 	STA Chomp_Charges, X
-
+	
 	RTS		 ; Return
 
 
@@ -4819,20 +4687,20 @@ Chomp_BounceAround:
 	JSR Object_FaceDirectionMoving
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-
+	
 	LDA Chomp_CanCharge, X
 	BEQ Chomp_NoCharge
-
+	
 	JSR Object_XDistanceFromPlayer
 	CMP #$20
 	BCC Chomp_NoCharge
-
+	
 	LDA <Objects_XZ, X
 	SUB Chomp_PinX, X
 	AND #$80
 	CMP ChargeSignCheck, Y
 	BNE Chomp_NoCharge
-
+	
 	JSR Chomp_Charge
 	LDA #$00
 	STA Chomp_CanCharge, X
@@ -5475,6 +5343,9 @@ BlueShell_Expload:
 	RTS
 
 ObjInit_Larry:
+	LDA #BOUND16x32
+	STA Objects_BoundBox, X
+
 	JSR Object_NoInteractions
 
 	LDA #$20
@@ -5490,6 +5361,9 @@ ObjInit_Larry:
 
 	LDA #$01
 	STA Objects_Global, X
+
+	LDA #$0B
+	STA PatTable_BankSel + 4
 	RTS		 ; Return
 
 	
@@ -5561,46 +5435,6 @@ Larry_RemoveBag:
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
 
-	;LDA Last_StatusBar_Mode
-	;STA StatusBar_Mode
-	;
-	;LDA #$80
-	;STA Last_StatusBar_Mode
-	;
-	;LDA #$80
-	;STA StatusBar_Mode
-	;
-	;LDX #$8C
-	;STX Status_Bar_Top
-	;
-	;LDA #$40
-	;STA Objects_SlowTimer, X
-	;
-	;INX
-	;STX Status_Bar_Top + 1
-	;
-	;LDX #$9C
-	;STX Status_Bar_Bottom
-	;
-	;INX
-	;STX Status_Bar_Bottom + 1
-	;
-	;LDA #SPR_PAL2
-	;STA Objects_SpriteAttributes, X
-	;
-	;LDX #$00
-
-Larry_NextLetter:
-	;LDA Larry_Message1, X
-	;STA Status_Bar_Top + 2, X
-	;
-	;LDA Larry_Message2, X
-	;STA Status_Bar_Bottom + 2, X
-	;
-	;INX
-	;CPX #26
-	;BNE Larry_NextLetter
-
 	LDA <Objects_YZ, X
 	SUB #$10
 	STA <Objects_YZ, X
@@ -5609,7 +5443,7 @@ Larry_NextLetter:
 	SBC #$00
 	STA <Objects_YHiZ, X
 
-	LDA #$40
+	LDA #$00
 	STA Objects_SlowTimer, X
 	INC Larry_Action, X
 
@@ -5631,6 +5465,8 @@ Larry_Talk:
 	STA Larry_Action, X
 
 Larry_TalkDraw:
+	LDA #$01
+	STA Objects_Frame, X
 	JMP Larry_Draw
 
 Larry_WaitOffScreen:
@@ -5880,10 +5716,10 @@ Larry_DrawDone:
 	RTS
 
 Larry_ItemFrameLeftAttr:
-	.byte SPR_PAL2, SPR_PAL1
+	.byte SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2
 
 Larry_ItemFrameRightAttr:
-	.byte SPR_PAL2, SPR_PAL1
+	.byte SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2
 
 Larry_ItemPattern:
 	.byte $04, $20, $10, $0C
@@ -5933,6 +5769,7 @@ Larry_UnusedSprite:
 	LDA #$53
 	STA Sprite_RAMTile, Y
 
+	STA Debug_Snap
 	LDA Larry_ItemFrameRightAttr, X
 	STA Sprite_RAMAttr, Y
 

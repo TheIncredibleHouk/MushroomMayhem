@@ -117,7 +117,7 @@ ObjectGroup02_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $4D
 	.word ObjHit_DoNothing	; Object $4E
 	.word ObjHit_DoNothing	; Object $4F - OBJ_CHAINCHOMPFREE
-	.word ObjHit_DoNothing	; Object $50 - OBJ_EXPLOSION
+	.word Object_HurtPlayer	; Object $50 - OBJ_EXPLOSION
 	.word ObjHit_DoNothing	; Object $51 - OBJ_ROTODISCDUAL
 	.word ObjHit_DoNothing	; Object $52 - OBJ_SPINTULA
 	.word ObjHit_DoNothing	; Object $53 - OBJ_PIPEPODOBO
@@ -178,7 +178,7 @@ ObjectGroup02_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $61 - OBJ_SKULLBLOOPER
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $62 - OBJ_BLOOPER
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $63 - OBJ_FLOATMINE
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48	; Object $63 - OBJ_FLOATMINE
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $66 - OBJ_WATERCURRENTDOWNARD
@@ -190,89 +190,7 @@ ObjectGroup02_Attributes:
 
 	; Object group $02 (i.e. objects starting at ID $48) second set attribute bits
 
-	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
-ObjectGroup02_Attributes2:
-	.byte $00 	; Object $48 - OBJ_NINJI
-	.byte $00	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte $00  	; Object $4A - OBJ_MAGICSTAR
-	.byte $00  	; Object $4B - OBJ_MAGICSTAR
-	.byte $00  	; Object $4C - OBJ_MAGICSTAR
-	.byte $00	; Object $4D
-	.byte $00	; Object $4E
-	.byte $00  	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte $00	; Object $50 - OBJ_EXPLOSION
-	.byte $00  	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OA2_STOMP_KICKSND  	; Object $52 - OBJ_SPINTULA
-	.byte $00  	; Object $53 - OBJ_PIPEPODOBO
-	.byte $00  	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte OA2_STOMP_KICKSND 	; Object $55 - OBJ_BOBOMB
-	.byte $00	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
-	.byte $00	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
-	.byte $00	; Object $58 - OBJ_PYRANTULA
-	.byte $00  	; Object $59 - OBJ_FIRESNAKE
-	.byte $00  	; Object $5A - OBJ_ROTODISCCLOCKWISE
-	.byte $00  	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.byte $00	; Object $5C - OBJ_ICEBLOCK
-	.byte $00  	; Object $5D - OBJ_STONEBLOCK
-	.byte $00  	; Object $5E - OBJ_ROTODISCDUALOPPOSE
-	.byte $00  	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
-	.byte $00  	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte $00  	; Object $61 - OBJ_SKULLBLOOPER
-	.byte $00  	; Object $62 - OBJ_BLOOPER
-	.byte $00  	; Object $63 - OBJ_FLOATMINE
-	.byte $00  	; Object $64 - OBJ_CHEEPCHEEPHOPPER
-	.byte $00	; Object $65 - OBJ_WATERCURRENTUPWARD
-	.byte $00	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte $00  	; Object $67 - OBJ_SNOWGUY
-	.byte $00	; Object $68 - OBJ_TWIRLINGBUZZY
-	.byte $00	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte $00  	; Object $6A - OBJ_VEGGIEGUY
-	.byte $00  	; Object $6B - OBJ_SHYGUY
-
-
 	; Object group $02 (i.e. objects starting at ID $48) third set attribute bits
-
-	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
-ObjectGroup02_Attributes3:
-	.byte OA3_HALT_NORMALONLY  	; Object $48 - OBJ_NINJI
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $49 - OBJ_FLOATINGBGCLOUD
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4A - OBJ_MAGICSTAR
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4B - OBJ_MAGICSTAR
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $4C - OBJ_MAGICSTAR
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $4D
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $4E
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $4F - OBJ_CHAINCHOMPFREE
-	.byte OA3_HALT_NORMALONLY 	; Object $50 - OBJ_EXPLOSION
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $51 - OBJ_ROTODISCDUAL
-	.byte OA3_HALT_NORMALONLY  	; Object $52 - OBJ_SPINTULA
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $53 - OBJ_PIPEPODOBO
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte OA3_HALT_NORMALONLY 	; Object $55 - OBJ_BOBOMB
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
-	.byte OA3_HALT_NORMALONLY 	; Object $58 - OBJ_PYRANTULA
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $59 - OBJ_FIRESNAKE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $5A - OBJ_ROTODISCCLOCKWISE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.byte OA3_HALT_NORMALONLY	; Object $5C - OBJ_ICEBLOCK
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $5D - OBJ_STONEBLOCK
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $5E - OBJ_ROTODISCDUALOPPOSE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $60 - OBJ_ROTODISCDUALCCLOCK
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE 	; Object $61 - OBJ_SKULLBLOOPER
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $62 - OBJ_BLOOPER
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $63 - OBJ_FLOATMINE
-	.byte OA3_HALT_NORMALONLY 	; Object $64 - OBJ_CHEEPCHEEPHOPPER
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $65 - OBJ_WATERCURRENTUPWARD
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte OA3_HALT_NORMALONLY	; Object $67 - OBJ_SNOWGUY
-	.byte OA3_HALT_NORMALONLY 	; Object $68 - OBJ_TWIRLINGBUZZY
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte OA3_HALT_NORMALONLY 	; Object $6A - OBJ_VEGGIEGUY
-	.byte OA3_HALT_NORMALONLY 	; Object $6B - OBJ_SHYGUY
-
-
-	; Object group $02 (i.e. objects starting at ID $48) Pattern Table Select
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup02_PatTableSel:
@@ -482,6 +400,9 @@ ObjP6B:
 	.byte $B1, $B1
 
 ObjInit_IceBlock:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #ATTR_ICEPROOF
 	STA Objects_WeaponAttr, X
 
@@ -580,6 +501,9 @@ IceBlock_Draw:
 
 
 ObjInit_Spintula:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
@@ -769,11 +693,17 @@ PipePodobo_Frame = Objects_Data5
 PipePodobo_Hidden = Objects_Data6
 
 ObjInit_PipePodobo:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_HAMMERPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_SHELLPROOF | ATTR_NOICE )
 	STA Objects_BehaviorAttr, X
+
+	LDA #$01
+	STA Objects_Health, X
 
 	LDA Objects_Property, X
 	AND #$01
@@ -1424,6 +1354,9 @@ ShyGuy_Frame = Objects_Data1
 ShyGuy_Holding = Objects_Data2
 
 ObjInit_ShyGuy:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
@@ -2116,6 +2049,9 @@ DonutLift_ChangeBlock:
 	RTS		 ; Return
 
 ObjInit_BobOmb:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -2398,6 +2334,9 @@ BombStars_YOff:	.byte -$08, -$08, $00, $08, $08, $00, $08, $04, -$04, -$08, -$04
 Explosion_Offset = Objects_Data1
 
 ObjInit_Explosion:
+	LDA #BOUND48x48
+	STA Objects_BoundBox, X
+
 	JSR Object_NoInteractions
 
 	LDA #$18
@@ -2425,18 +2364,10 @@ DrawEx:
 	JMP Object_SetDeadEmpty	 ; Otherwise, mark Bob-omb as Dead/Empty and don't come back!
 
 PRG003_A836:
-	AND #$03
-	BNE Explosion_NoKill
 
-	JSR Object_CalcBoundBox
-	
-	LDA Kill_Tally
-	PHA
-
+	JSR Explosion_CalcBoundBox
 	JSR Explosion_KillOthers
-
-	PLA
-	STA Kill_Tally
+	JSR Object_InteractWithPlayer
 
 Explosion_NoKill:
 	JSR Object_CalcSpriteXY_NoHi
@@ -2517,13 +2448,9 @@ PRG003_A85C:
 	AND #$03	 ; Palette select 0 to 3
 	STA Sprite_RAM+$02,Y	 ; Set attributes
 
-	JSR PRG003_BD1E	 ; Uses part of the "Tail" hurt code, checks if Player has been hit by explosion
-
 PRG003_A89D:
 	DEC <Temp_Var16	 ; Temp_Var16--
 	BPL PRG003_A83D	 ; While Temp_Var16 >= 0, loop!
-
-	JSR Object_KillOthers
 
 Explosion_BumpBlocks:
 	LDA Objects_Timer,X
@@ -2563,6 +2490,8 @@ Explosion_BumpBlocks:
 
 	CMP #(TILE_PROP_ITEM)
 	BCS Explosion_Bump
+
+Explosion_BumpRTS:
 	RTS
 
 Explosion_Bust:
@@ -2571,6 +2500,40 @@ Explosion_Bust:
 
 Explosion_Bump:
 	JSR Object_DirectBumpBlocks
+	RTS
+
+Explosion_CalcBoundBox:
+	LDA <Objects_XZ, X
+	SUB #$18
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD #$30
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+	
+	LDA <Objects_YZ, X
+	SUB #$18
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA Objects_BoundTopHi, X
+
+	LDA Objects_BoundTop, X
+	ADD #$30
+	STA Objects_BoundBottom, X
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
 	RTS
 
 ExplodeXOffsets:
@@ -2710,7 +2673,7 @@ MagicStar_CheckItemBlock:
 	STA Objects_YVelZ, X
 
 	LDA Objects_YZ, X
-	SUB #$10
+	SUB #$12
 	STA Objects_YZ, X
 
 	LDA Objects_YHiZ, X
@@ -2779,6 +2742,9 @@ ObjInit_MagicStar3:
 	STA Magic_StarIndicator, X
 
 ObjInit_MagicStar:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	JSR Object_NoInteractions
 	JSR GetLevelBit
 
@@ -3224,26 +3190,57 @@ PRG003_B1D7:
 	RTS		 ; Return
 
 
-FloatMine_Triggered = Objects_Data1
-FloatMine_BobMode = Objects_Data2
-FloatMine_BobDirection = Objects_Data3
+FloatMine_Action = Objects_Data1
 
 ObjInit_FloatMine:
-	LDA #(ATTR_STOMPPROOF)
-	STA Objects_WeaponAttr, X
+	JSR Object_NoInteractions
 
-	LDA #(ATTR_NOICE | ATTR_WINDAFFECTS)
-	STA Objects_BehaviorAttr, X
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
 	LDA <Objects_XZ, X
 	SUB #$04
 	STA <Objects_XZ, X
 
-	LDA Objects_Property, X
-	STA FloatMine_Triggered, X
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA <Objects_XHiZ, X
 
-ObjInit_FloatMine0:
+	LDA Objects_Property, X
+	STA FloatMine_Action, X
+
+	CMP #$02
+	BCS InitMineMove_Pattern
 	RTS
+
+InitMineMove_Pattern:
+	LDA #$10
+	STA Patrol_ResetTimer, X
+
+	LDA <Objects_XZ, X
+	SUB #$01
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	SUB #$01
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDA Objects_Property, X
+	SUB #$02
+	JSR DynJump
+
+	.word InitPatrolHorizontal
+	.word InitPatrolVertical
+	.word InitCircleCCW
+	.word InitCircleCW
 
 ObjNorm_FloatMine:
 	LDA <Player_HaltGameZ
@@ -3261,10 +3258,34 @@ FloatMine_NotDead:
 	JSR Object_DeleteOffScreen
 
 	JSR FloatMine_CalcBoundBox
+	LDA FloatMine_Action, X
+	JSR DynJump
 	
-	LDA FloatMine_Triggered, X
-	BEQ FloatMine_NoMoveYet
+	.word FloatMine_Chained
+	.word FloatMine_Unchained
+	.word FloatMine_PatternMove
+	.word FloatMine_PatternMove
+	.word FloatMine_PatternMove
+	.word FloatMine_PatternMove
 
+FloatMine_PatternMove:
+	JSR FloatMine_DoPatternMove
+	JSR FloatMine_DoPatternMove
+	JSR FloatMine_DoPatternMove
+	JSR FloatMine_DoPatternMove
+	JMP FloatMine_Chained
+
+FloatMine_DoPatternMove:
+	LDA FloatMine_Action, X
+	SUB #$02
+	JSR DynJump
+
+	.word PatrolBackForth
+	.word PatrolUpDown
+	.word PatrolDiagonal
+	.word PatrolDiagonal
+
+FloatMine_Unchained
 	LDA Objects_InWater, X
 	BEQ FloatMine_Bob
 
@@ -3281,7 +3302,7 @@ FloatMine_Bob:
 FloatMine_Move:
 	JSR Object_Move
 
-FloatMine_NoMoveYet:
+FloatMine_Chained:
 	JSR Object_InteractWithPlayer
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
@@ -3292,7 +3313,7 @@ FloatMine_NoMoveYet:
 	JSR FloatMine_Expload
 
 FloatMine_NoExplodeYet:
-	LDA FloatMine_Triggered, X
+	LDA FloatMine_Action, X
 	BNE FloatMine_Draw
 
 	JSR Object_XDistanceFromPlayer
@@ -3305,58 +3326,63 @@ FloatMine_NoExplodeYet:
 	CMP #$30
 	BCS FloatMine_Draw
 
-	INC FloatMine_Triggered, X
+	INC FloatMine_Action, X
 
 FloatMine_Draw:
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
+	LDA #$00
+	STA Objects_Orientation, X
+
 	JSR Object_Draw16x32
 
 	LDY Object_SpriteRAMOffset,X
-	
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	AND #SPRITE_2_INVISIBLE
-	BNE FloatMine_DrawDone
 
-	LDA Objects_SpritesVerticallyOffScreen,X
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_2_HINVISIBLE
+	BNE Mine_BottomTile
+
+	LDA Objects_SpritesVerticallyOffScreen, X
 	AND #SPRITE_0_VINVISIBLE
-	BNE FloatMineDraw1
+	BNE Mine_BottomTile
 
 	LDA Objects_SpriteX, X
 	ADD #$10
-	STA Sprite_RAMX + 16,Y
+	STA Sprite_RAMX + 16, Y
 
-	LDA Objects_SpriteY, X
-	STA Sprite_RAMY + 16,Y
-
-	LDA Sprite_RAMAttr,Y
-	STA Sprite_RAMAttr + 16,Y
-
-	LDA #$85
+	LDA Sprite_RAMTile, Y
 	STA Sprite_RAMTile + 16, Y
 
+	LDA Objects_SpriteY, X
+	STA Sprite_RAMY + 16, Y
 
-FloatMineDraw1:
-	LDA Objects_SpritesVerticallyOffScreen,X
-	AND #SPRITE_1_INVISIBLE
-	BNE FloatMine_DrawDone
+	LDA Sprite_RAMAttr, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 16, Y
+
+Mine_BottomTile:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_2_HINVISIBLE
+	BNE Mine_DrawRTS
+
+	LDA Objects_SpritesVerticallyOffScreen, X
+	AND #SPRITE_1_VINVISIBLE
+	BNE Mine_DrawRTS
 
 	LDA Objects_SpriteX, X
 	ADD #$10
-	STA Sprite_RAMX + 20,Y
+	STA Sprite_RAMX + 20, Y
+
+	LDA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 20, Y
 
 	LDA Objects_SpriteY, X
 	ADD #$10
-	STA Sprite_RAMY + 20,Y
+	STA Sprite_RAMY + 20, Y
 
-	LDA Sprite_RAMAttr,Y
-	STA Sprite_RAMAttr + 20,Y
+	LDA Sprite_RAMAttr + 8, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 20, Y
 
-	LDA #$A5
-	STA Sprite_RAMTile + 20, Y
-
-FloatMine_DrawDone:
+Mine_DrawRTS:
 	RTS
 
 FloatMine_CalcBoundBox:
@@ -3398,6 +3424,11 @@ FloatMine_Expload:
 	RTS
 
 ObjInit_Ninji:
+	LDA Objects_State, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
@@ -4148,6 +4179,8 @@ Blooper_XVelPropel:
 	.byte $E4, $1C
 
 ObjInit_Blooper:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	RTS		 ; Return
 
 
@@ -4259,6 +4292,9 @@ PhantomBlooper_XVelPropel:
 	.byte $EC, $14
 
 ObjInit_PhantomBlooper:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	RTS		 ; Return
 
 ObjNorm_PhantomBlooper:
@@ -4359,176 +4395,6 @@ PhantomBlooper_Draw:
 	ORA #SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
 	JMP Object_DrawMirrored
-;
-;	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-;
-;	LDA <Player_HaltGameZ
-;	BEQ PRG003_B77B	 ; If gameplay is not halted, jump to PRG003_B77B
-;
-;	LDA Objects_SpriteAttributes, X
-;	ORA #SPR_BEHINDBG
-;	STA Objects_SpriteAttributes, X
-;
-;	JMP	 ; Otherwise, draw Blooper and don't come back!
-;
-;PRG003_B77B:
-;	JSR Object_AttackOrDefeat	 ; Do Player to Blooper hit detection!
-;
-;	LDA Objects_Data2,X
-;	AND #$01
-;	TAY		 ; Y = 0 or 1
-;
-;	LDA <Objects_YVelZ,X
-;	ADD Blooper_YVelAccel,Y
-;	STA <Objects_YVelZ,X
-;
-;	CMP Blooper_YVelLimit,Y
-;	BNE PRG003_B7B6	 ; If Blooper is not at his velocity limit, jump to PRG003_B7B6
-;
-;	INC Objects_Data2,X	 ; Otherwise, Var5++
-;
-;PRG003_B7B6:
-;	LDA <Objects_YVelZ,X
-;
-;	LDY Objects_Orientation,X
-;	BEQ PRG003_B7C0	 ; If Blooper is not flipped, jump to PRG003_B7C0
-;
-;	JSR Negate	 ; Otherwise, negate Y velocity
-;
-;PRG003_B7C0:
-;	LDY <Objects_YVelZ,X
-;	BMI PRG003_B7DD	 ; If Bloope is moving upward, jump to PRG003_B7DD
-;
-;	TXA
-;	LSR A
-;	BCC PRG003_B7D2	 ; If Blooper is an "even" slot, jump to PRG003_B7D2
-;
-;	LDY #$00	 ; Y = 0
-;
-;	LDA <Player_FlipBits
-;	BNE PRG003_B7CF	 ; If Blooper is flipped, jump to PRG003_B7CF
-;
-;	INY		 ; Y = 1
-;
-;PRG003_B7CF:
-;	JMP PRG003_B7D5	 ; Jump to PRG003_B7D5
-;
-;PRG003_B7D2:
-;	JSR Object_XDistanceFromPlayer
-;
-;PRG003_B7D5
-;	; Blooper faces Player
-;	LDA Blooper_FlipTowardsPlayer,Y
-;	STA Objects_Orientation,X
-;
-;	LDA #$00	 ; A = 0
-;
-;PRG003_B7DD:
-;	STA <Objects_XVelZ,X	 ; Update X Velocity
-;
-;	JSR Object_DetectTiles	 ; Detect against world
-;	LDA Objects_ID, X
-;	CMP #OBJ_SKULLBLOOPER
-;	BNE PRG003_B7DE
-;
-;	LDA #$00
-;	STA <Objects_TilesDetectZ, X
-;
-;	LDA Objects_LastProp, X
-;	CMP #TILE_PROP_SOLID_ALL		= $C0 ;
-;
-;	BEQ PRG003_B7DE
-;
-;	LDA #$01
-;	STA Objects_InWater, X
-;
-;PRG003_B7DE:
-;	LDA <Objects_TilesDetectZ,X
-;	AND #$03
-;	BNE PRG003_B7EB	 ; If Blooper hit a wall, jump to PRG003_B7EB
-;
-;	JSR Object_ApplyXVel	 ; Otherwise, apply X Velocity
-;
-;PRG003_B7EB:
-;	LDA <Objects_YVelZ,X
-;	PHA		 ; Save Y velocity
-;
-;	CMP #$08
-;	BLS PRG003_B814	 ; If Y velocity < $08, jump to PRG003_B814
-;
-;	LDA <Player_Y	
-;	PHA		 ; Save Player's Y
-;
-;	SBC #23
-;	STA <Player_Y	 ; Subtract 23 from Player's Y
-;
-;	LDA <Player_YHi
-;	PHA		 ; Save Player Y Hi
-;	SBC #$00	 ; Apply carry
-;	STA <Player_YHi	
-;
-;	JSR Object_YDistanceFromPlayer
-;
-;	; Restore Player Y/Hi
-;	PLA
-;	STA <Player_YHi
-;	PLA
-;	STA <Player_Y
-;
-;	DEY		 ; Y--
-;	BEQ PRG003_B810	 ; If Y = 0, jump to PRG003_B810
-;
-;	PLA		 ; Restore Y velocity
-;
-;	LDA #$08
-;	PHA		 ; Save 8 instead
-;
-;PRG003_B810:
-;	; Set velocity to $08
-;	LDA #$08
-;	STA <Objects_YVelZ,X
-;
-;PRG003_B814:
-;	LDA <Objects_TilesDetectZ,X
-;	AND #$0c
-;	BNE PRG003_B826	 ; If Blooper hit floor or ceiling, jump to PRG003_B826
-;
-;	LDA <Objects_YVelZ,X
-;	BPL PRG003_B823	 ; If Blooper is not moving upward, jump to PRG003_B823
-;
-;	LDA Objects_InWater,X
-;	BEQ PRG003_B826	 ; If Blooper is not in water, jump to PRG003_B826
-;
-;PRG003_B823:
-;	JSR Object_ApplyYVel_NoGravity	 ; Apply Y Velocity
-;
-;PRG003_B826:
-;	PLA		 ; Restore Y Velocity
-;	STA <Objects_YVelZ,X	 ; Update Y Veocity
-;
-;	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-;
-;	LDA #$01	; A = 1
-;
-;	LDY <Objects_YVelZ,X
-;	BPL PRG003_B833	 ; If Blooper is not moving upward, jump to PRG003_B833
-;
-;	LSR A		; A = 0
-;
-;PRG003_B833:
-;	STA Objects_Frame,X	 ; Set frame based on movement
-;
-;PRG003_B85F:
-;	LDA Objects_SpriteAttributes, X
-;	ORA #SPR_BEHINDBG
-;	STA Objects_SpriteAttributes, X
-;	JMP Object_DrawMirrored	 ; Draw Blooper and don't come back!
-;
-;BlooperKid_YVel:	.byte $F8, $08, $08, $F8
-;BlooperKid_XVel:	.byte $08, $08, $F8, $F8
-;BlooperKid_Data:	.byte $00, $00, $01, $01
-;BlooperKid_UNKD:	.byte $00, $01, $01, $00
-
 
 Object_SetHFlipByXVel:
 	; Clear horizontal flip
@@ -4603,6 +4469,9 @@ FireSnake_BufferOffsets:
 	.byte 00, 16
 
 ObjInit_FireSnake:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -5238,6 +5107,9 @@ FireSnake_MeltIceRTS:
 RotoDisc_VelAccels:
 
 ObjInit_Pyrantula:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
@@ -5409,3 +5281,4 @@ PRG003_BD60:
 	
 Tail_PlayerYOff:	.byte $12, $04	; Offset to Player Sprite Y for small/ducking, or not
 Tail_PlayerYLimit:	.byte $0E, $18	; Limit value
+

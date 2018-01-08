@@ -46,19 +46,19 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_Spring	; Object $12 OBJ_SPRING
 	.word ObjInit_KeyPieces	; Object $13 OBJ_KEYPIECES
 	.word ObjInit_GiantChomp	; Object $14 OBJ_GIANTCHOMP
-	.word ObjInit_DoNothing	; Object $15 
-	.word ObjInit_DoNothing	; Object $16 OBJ_KEYPIECE
+	.word ObjInit_Waterfill	; Object $15 OBJ_WATERFILL
+	.word ObjInit_KeyPiece	; Object $16 OBJ_KEYPIECE
 	.word ObjInit_DoNothing; Object $17 - OBJ_NEGASTAR
 	.word ObjInit_Bowser	; Object $18 - OBJ_BOSS_BOWSER
 	.word ObjInit_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.word ObjInit_BubbleGenerator	; Object $1A that is a l
-	.word ObjInit_DoNothing	; Object $1B - OBJ_BOUNCELEFTRIGHT
+	.word ObjInit_StarPiece	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.word ObjInit_SendBack	; Object $1C
 	.word ObjInit_Timer	; Object $1D
 	.word ObjInit_ESwitch	; Object $1E - OBJ_ESWITCH
 	.word ObjInit_DoNothing	; Object $1F - OBJ_GROWINGVINE
 	.word ObjInit_Clock	; Object $20
-	.word ObjNorm_DoNothing	; Object $21 - OBJECT_ICESPIKE
+	.word ObjInit_IceSpike	; Object $21 - OBJECT_ICESPIKE
 	.word ObjInit_DoNothing	; Object $22 - OBJ_POWERUP_PUMPKIN
 	.word ObjInit_DoNothing	; Object $23 - OBJ_POWERUP_FOXLEAF
 
@@ -88,7 +88,7 @@ ObjectGroup00_NormalJumpTable:
 	.word ObjNorm_Spring	; Object $12
 	.word ObjNorm_KeyPieces	; Object $13 
 	.word ObjNorm_GiantChomp	; Object $14 OBJ_GIANTCHOMP
-	.word ObjNorm_Boss	; Object $15 OBJ_BOSS
+	.word ObjNorm_Waterfill	; Object $15 OBJ_BOSS
 	.word ObjNormal_KeyPiece	; Object $16 OBJ_KEYPIECE
 	.word ObjNorm_NegaStar; Object $17 - OBJ_NEGASTAR
 	.word ObjNorm_Bowser	; Object $18 - OBJ_BOSS_BOWSER
@@ -131,7 +131,7 @@ ObjectGroup00_CollideJumpTable:
 	.word Object_Hold	; Object $12
 	.word ObjHit_DoNothing	; Object $13
 	.word ObjHit_DoNothing	; Object $14 OBJ_GIANTCHOMP
-	.word ObjHit_DoNothing	; Object $15
+	.word ObjHit_DoNothing	; Object $15 OBJ_WATERFILLER
 	.word ObjHit_KeyPiece	; Object $16
 	.word ObjHit_DoNothing	; Object $17 - OBJ_NEGASTAR
 	.word ObjHit_DoNothing; Object $18 - OBJ_BOSS_BOWSER
@@ -173,7 +173,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $12 OBJ_REDPRING
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $13 OBJ_GREENSPRING
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $14 OBJ_GIANTCHOMP
-	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $15
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $15 OBJ_WATERFILLER
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $16
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $17 - OBJ_NEGASTAR
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH32	; Object $18 - OBJ_BOSS_BOWSER
@@ -199,96 +199,6 @@ ObjectGroup00_Attributes:
 	;	Bits 3: Object uses 16-bit X value (otherwise, Object_XHi will be zeroed)
 	;	Bits 4-7: Pick root tile detection group offset (from Object_TileDetectOffsets)
 
-	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
-ObjectGroup00_Attributes2:
-	.byte $00	; Object $00
-	.byte $00	; Object $01
-	.byte $00	; Object $02
-	.byte $00	; Object $03
-	.byte $00	; Object $04
-	.byte $00	; Object $05
-	.byte $00	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte $00	; Object $07 - OBJ_BRICK
-	.byte $00	; Object $08 - OBJ_COIN
-	.byte $00	; Object $09 - OBJ_BUBBLE
-	.byte $00	; Object $0A
-	.byte $00	; Object $0B - OBJ_POWERUP
-	.byte $00	; Object $0C - OBJ_ESWITCH
-	.byte $00	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte $00	; Object $0E - OBJ_HARDICE
-	.byte $00	; Object $0F
-	.byte OA2_STOMP_KICKSND	; Object $10 OBJ_PIXIE
-	.byte $00	; Object $11
-	.byte $00	; Object $12
-	.byte $00	; Object $13
-	.byte $00	; Object $14
-	.byte $00	; Object $15
-	.byte $00	; Object $16
-	.byte $00	; Object $17 - OBJ_NEGASTAR
-	.byte $00	; Object $18 - OBJ_BOSS_BOWSER
-	.byte $00	; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.byte $00	; Object $1A
-	.byte $00	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.byte $00	; Object $1C
-	.byte $00	; Object $1D
-	.byte $00	; Object $1E - OBJ_ESWITCH
-	.byte $00	; Object $1F - OBJ_GROWINGVINE
-	.byte $00	; Object $20
-	.byte $00	; Object $21 - OBJECT_ICESPIKE
-	.byte $00	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte $00	; Object $23 - OBJ_POWERUP_FOXLEAF
-
-
-	; Object group $00 (i.e. objects starting at ID $00) third set attribute bits
-
-	; Attribute bits for objects:
-	;	Bits 0-3: Determines what to do when gameplay halted (see Object_DoHaltedAction, most common is 5 / 0101)
-	
-	;	Bit 5: Object is NOT stompable (e.g. a spikey enemy, HURTS PLAYER, not same as attr 2 bit 2 which is just indifferent)
-	;	Bit 6: The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
-	;	Bit 7: If set, object cannot be tail attacked
-
-	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
-ObjectGroup00_Attributes3:
-	.byte OA3_HALT_NORMALONLY 	; Object $00
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $01
-	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE	; Object $02
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $03
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $04
-	.byte OA3_HALT_NORMALONLY  	; Object $05
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $06 - OBJ_BOUNCEDOWNUP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $07 - OBJ_BRICK
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $08 - OBJ_COIN
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE 	; Object $09 - OBJ_BUBBLE
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $0A
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_WINDAFFECTS	; Object $0B - OBJ_POWERUP
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0C - OBJ_ESWITCH
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $0D - OBJ_POWERUP_MUSHROOM
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $0E - OBJ_HARDICE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $0F
-	.byte OA3_HALT_NORMALONLY 	; Object $10 OBJ_PIXIE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_WINDAFFECTS	; Object $11
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_WINDAFFECTS 	; Object $12
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE  	; Object $13
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE  	; Object $14
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $15
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $16
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $17 - OBJ_NEGASTAR
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $18 - OBJ_BOSS_BOWSER
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE |OA3_NOTSTOMPABLE	; Object $19 - OBJ_POWERUP_FIREFLOWER
-	.byte OA3_HALT_JUSTDRAW 	; Object $1A
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $1B - OBJ_BOUNCELEFTRIGHT
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $1C
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $1D
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $1E - OBJ_ESWITCH
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $1F - OBJ_GROWINGVINE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $20
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $21 - OBJECT_ICESPIKE
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $22 - OBJ_POWERUP_PUMPKIN
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE	; Object $23 - OBJ_POWERUP_FOXLEAF
-
-
-	; Object group $00 (i.e. objects starting at ID $00) Pattern Table Select
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup00_PatTableSel:
@@ -313,7 +223,7 @@ ObjectGroup00_PatTableSel:
 	.byte OPTS_SETPT6 | $4F		; Object $12
 	.byte OPTS_NOCHANGE	; Object $13
 	.byte OPTS_SETPT5 | $0E	; Object $14
-	.byte OPTS_NOCHANGE	; Object $15
+	.byte OPTS_SETPT5 | $12	; Object $15 OBJ_WATERFILLER
 	.byte OPTS_NOCHANGE	; Object $16
 	.byte OPTS_SETPT5 | $4D	; Object $17 - OBJ_NEGASTAR
 	.byte OPTS_SETPT5 | $3A	; Object $18 - OBJ_BOSS_BOWSER
@@ -355,7 +265,7 @@ ObjectGroup00_KillAction:
 	.byte KILLACT_STANDARD	; Object $12
 	.byte KILLACT_STANDARD	; Object $13
 	.byte KILLACT_STANDARD	; Object $14
-	.byte KILLACT_NORMALSTATE	; Object $15
+	.byte KILLACT_JUSTDRAW16X16	; Object $15
 	.byte KILLACT_STANDARD	; Object $16
 	.byte KILLACT_POOFDEATH	; Object $17 - OBJ_NEGASTAR
 	.byte KILLACT_NORMALSTATE	; Object $18 - OBJ_BOSS_BOWSER
@@ -431,6 +341,8 @@ ObjP14:
 	.byte $99, $71, $9B, $71 
 
 ObjP15:
+	.byte $81, $83
+
 ObjP17:
 	.byte $9F, $9F
 
@@ -456,7 +368,9 @@ ObjP09:
 
 ObjP1A: .byte $8D, $8D, $8F, $8F, $91, $91, $A7, $A7, $A9, $A9, $AB, $AB
 ObjP0A:	.byte $A9, $AB, $BD, $BF
+
 ObjP0C:
+	.byte $81, $83
 
 ObjP0B:
 	.byte $51, $53	
@@ -482,7 +396,9 @@ ObjP08:	.byte $BB, $BB, $FB, $F9, $FB, $F9, $FF, $FD, $DA, $DA
 SpringPals: .byte SPR_PAL1, SPR_PAL2, SPR_PAL3
 
 ObjInit_Spring:
-	; difficult strengths of spring 0 = normal, 1 = stronger, 2 = strongest
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_INVINCIBLE)
 	STA Objects_WeaponAttr, X
 
@@ -641,6 +557,9 @@ Spring_PositionRestore:
 	RTS
 
 ObjInit_Key:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #ATTR_ALLWEAPONPROOF
 	STA Objects_WeaponAttr, X
 
@@ -878,6 +797,9 @@ TakeMagic_Star1:
 	RTS
 
 ObjInit_BounceDU: 
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA Block_NeedsUpdate
 	BEQ Bouncer_Initialize
 
@@ -978,6 +900,7 @@ Block_MakteItemAppear1:
 Produce_Key:
 
 	JSR Object_New
+	JSR Object_NoInteractions
 	
 	LDA <Objects_YZ, X
 	SUB #$10
@@ -998,6 +921,7 @@ Do_PowerUp:
 
 	LDA Bouncer_PowerUp, X
 	PHA
+
 	JSR Object_New
 
 	PLA
@@ -1033,10 +957,16 @@ Bouncer_Draw:
 
 
 ObjInit_BubbleGenerator:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	JMP Object_NoInteractions
 
 ObjInit_Bubble:
 	JSR Object_NoInteractions
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
 	LDA Objects_Property, X
 	BEQ Bubble_NoGraphics
@@ -1236,6 +1166,9 @@ ObjInit_PUp2:
 
 ObjInit_PowerUp:
 	JSR Object_NoInteractions
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
 	LDY PowerUp_Type, X
 
@@ -1689,8 +1622,11 @@ PUp_VineDraw:
 
 	; Basically this bumps the object up by 1 pixel...
 ObjInit_Coin:
-	LDA #$00
-	STA PowerUp_NoRaise
+	JSR Object_NoInteractions
+
+	LDA #BOUND8x16
+	STA Objects_BoundBox, X
+
  	RTS		 ; Return
 
 ObjInit_WarpHide:
@@ -1706,7 +1642,7 @@ PRG001_AD37:
 
 
 ObjNorm_Coin:
-
+	
 	RTS
 
 ObjHit_Coin:
@@ -3037,7 +2973,8 @@ DeleteWeather:
 	LDA Objects_State, Y
 	CMP #OBJSTATE_NORMAL
 	BNE ObjInit_Weather2
-	JMP Object_Delete
+
+	JMP Object_SetDeadAndNotSpawned
 
 ObjInit_Weather:
 	JSR Object_NoInteractions
@@ -3281,6 +3218,9 @@ ChompPal: .byte SPR_PAL1, SPR_PAL0
 GiantChomp_IsAttacking = Objects_Data5
 
 ObjInit_GiantChomp:
+	LDA #BOUND32x32
+	STA Objects_BoundBox, X
+
 	LDA #ATTR_ALLWEAPONPROOF
 	STA Objects_WeaponAttr, X
 
@@ -3554,6 +3494,9 @@ GCTargetPlayerRight:
 ObjInit_Brick:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	RTS
 
 Brick_PowerUp = Objects_Data1
@@ -3766,6 +3709,14 @@ KPFlips1:
 KPFlips2:
 	.byte $00, $00, SPR_HFLIP, SPR_HFLIP
 
+ObjInit_KeyPiece:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	JSR Object_NoInteractions
+	RTS
+
+
 ObjNormal_KeyPiece:
 	LDA <Player_HaltGameZ
 	BNE DrawKeyPieceAnim
@@ -3842,6 +3793,9 @@ ObjInit_SpikeBall:
 
 	LDA #(ATTR_SHELLPROOF | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	RTS
 
 SpikeBall_Frame  = Objects_Data1
@@ -4189,6 +4143,9 @@ Clock_FrameOffsets:
 	.byte $00, $08
 
 ObjInit_Clock:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	JMP Object_NoInteractions
 
 ObjNorm_Clock:
@@ -4320,6 +4277,10 @@ BlockCheck_YOffsets:
 
 ObjInit_EaterBlock:
 	JSR Object_NoInteractions
+
+	LDA #BOUND16x16BLOCK
+	STA Objects_BoundBox, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
 	
@@ -4551,6 +4512,12 @@ EaterMaker_SetVel:
 EaterMaker_NormalSpeed:
 	RTS
 
+ObjInit_StarPiece:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	JMP Object_NoInteractions
+
 ObjNorm_StarPiece:
 	LDA <Player_HaltGameZ
 	BNE DrawStarPieceAnim
@@ -4596,6 +4563,9 @@ ObjInit_HardIce:
 
 	LDA #$20
 	STA Objects_Timer, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
 	LDA #(ATTR_ICEPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
@@ -4679,6 +4649,9 @@ SnowBall_Frame = Objects_Data1
 ObjInit_SnowBall:
 	LDA #(ATTR_ICEPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	RTS
 
 ObjNorm_SnowBall:
@@ -4787,6 +4760,9 @@ IceFireFly_WeaponAttr:
 	.byte ATTR_FIREPROOF, ATTR_ICEPROOF
 
 ObjInit_IceFireFly:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #$FF
 	STA IceFireFly_ProjectileSlot, X
 
@@ -5105,6 +5081,7 @@ CoinLocks:
 	.byte $0A, $19, $32, $32, $32, $32, $32, $63
 
 ObjInit_CoinLock:
+	
 	LDA <Objects_YZ, X
 	ADD #$04
 	STA <Objects_YZ, X
@@ -5118,7 +5095,7 @@ ObjInit_CoinLock:
 	STA CoinLock_CoinsRemaining, X
 
 	INC Objects_Global, X
-	RTS
+	JMP Object_NoInteractions 
 
 Coin_Unlock:
 	LDA Block_NeedsUpdate
@@ -5365,6 +5342,9 @@ ObjInit_IceSpike:
 
 	LDA #ATTR_SHELLPROOF
 	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND8x16
+	STA Objects_BoundBox, X
 	RTS
 
 IceSpike_Action = Objects_Data1
@@ -5447,3 +5427,85 @@ IceSpike_Fall:
 
 IceSpike_NoBurst:
 	JMP Object_DrawAligned
+
+ObjInit_Waterfill:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #$40
+	STA Objects_XVelZ, X
+	
+	JMP Object_NoInteractions
+
+WaterFill_Ticks = Objects_Data1
+
+WaterFill_Flip:
+	.byte $00, SPR_VFLIP
+
+ObjNorm_Waterfill:
+	LDA <Player_HaltGameZ
+	BNE FillWater_Draw
+
+WaterFill_Norm:
+	
+	JSR Object_DeleteOffScreen
+	JSR Object_FaceDirectionMoving
+	JSR Object_ApplyXVel
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
+
+	STY <Temp_Var1
+
+	CMP #TILE_PROP_SOLID_ALL
+	BCC FillWater_DrawWater
+
+	LDA <Objects_XZ, X
+	AND #$0F
+	BNE FillWater_Animate
+
+	LDA Objects_XZ, X
+	AND #$F0
+	STA Debris_X
+
+	LDA Objects_YZ, X
+	AND #$F0
+	STA Debris_Y
+
+	JSR Common_MakeBricks
+
+	LDA #SPR_PAL2
+	STA BrickBust_Pal, Y
+	
+	LDA <Temp_Var1
+	SUB #$01
+
+	JSR Object_ChangeBlock
+
+	JMP FillWater_Animate
+
+FillWater_DrawWater:
+	LDA <Objects_XZ, X
+	AND #$0F
+	BNE FillWater_Animate
+
+	LDA <Temp_Var1
+	EOR #$01
+
+	JSR Object_ChangeBlock
+
+FillWater_Animate:
+	INC WaterFill_Ticks, X
+	
+	LDA WaterFill_Ticks, X
+	AND #$03
+	
+	LSR A
+
+	TAY
+	
+	LDA Objects_Orientation, X
+	ORA WaterFill_Flip, Y
+	STA Objects_Orientation, X
+
+FillWater_Draw:
+	JMP Object_Draw

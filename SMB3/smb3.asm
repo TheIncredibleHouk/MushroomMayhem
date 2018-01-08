@@ -864,7 +864,7 @@ PLAYERSUIT_LAST		= PLAYERSUIT_HAMMER	; Marker for "last" suit (Debug cycler need
 
 				.ds 1	; $F2 unused
 
-	Obj01_Flag:		.ds 1	; Not sure what Obj01 is!! This blocks its left/right handler logic.
+	LevelSpawn_IndexZ:		.ds 1	; Not sure what Obj01 is!! This blocks its left/right handler logic.
 
 	; ASSEMBLER BOUNDARY CHECK, END OF CONTEXT @ $F4
 .BoundZP_Game:	BoundCheck .BoundZP_Game, $F4, Zero Page Gameplay Context
@@ -2781,7 +2781,7 @@ ATTR_CARRYANDBUMP		= %01000000
 ATTR_BUMPNOKILL			= %10000000
 
 	Objects_BehaviorAttr: .ds 8
-
+	Objects_BoundBox:	.ds 8
 	Objects_XYCS:		.ds 8
 	Objects_XYCSPrev:	.ds 8
 	Objects_PlayerProjHit:	.ds 8
@@ -3276,13 +3276,10 @@ ObjectGroup_InitJumpTable	= $A000
 ObjectGroup_NormalJumpTable	= $A048
 ObjectGroup_CollideJumpTable	= $A090
 ObjectGroup_Attributes		= $A0D8
-ObjectGroup_Attributes2		= $A0FC
-ObjectGroup_Attributes3		= $A120
-ObjectGroup_PatTableSel		= $A144
-ObjectGroup_KillAction		= $A168
-ObjectGroup_PatternStarts	= $A18C
-
-ObjectGroup_PatternSets		= $A1B0
+ObjectGroup_PatTableSel		= $A0FC
+ObjectGroup_KillAction		= $A120
+ObjectGroup_PatternStarts	= $A144
+ObjectGroup_PatternSets		= $A168
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; GAME CONSTANTS
@@ -3490,22 +3487,22 @@ OA3_TAILATKIMMUNE	= %10000000	; Object cannot be Raccoon tail attacked
 ; Object Attribute Common Flags
 
 ; Selects a bounding box from Object_BoundBox
-BOUND8x16		= %00000000
-BOUND16x16		= %00000001
-BOUND16x24		= %00000010
-BOUND16x16BLOCK		= %00000011
-OAT_BOUNDBOX04		= %00000100
-BOUND24x32		= %00000101
-OAT_BOUNDBOX06		= %00000110
-OAT_BOUNDBOX07		= %00000111
-BOUND48x16		= %00001000
-OAT_BOUNDBOX09		= %00001001
-BOUND16x32		= %00001010
-BOUND16x32TALL		= %00001011
-OAT_BOUNDBOX12		= %00001100
-OAT_BOUNDBOX13		= %00001101
-BOUND32x32		= %00001110
-BOUND48x48		= %00001111
+BOUND8x16			= $00
+BOUND16x16			= $01
+BOUND16x24			= $02
+BOUND16x16BLOCK		= $03
+OAT_BOUNDBOX04		= $04
+BOUND24x32			= $05
+OAT_BOUNDBOX06		= $06
+OAT_BOUNDBOX07		= $07
+BOUND48x16			= $08
+OAT_BOUNDBOX09		= $09
+BOUND16x32			= $0A
+BOUND16x32TALL		= $0B
+OAT_BOUNDBOX12		= $0C
+OAT_BOUNDBOX13		= $0D
+BOUND32x32			= $0E
+BOUND48x48			= $0F
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only
 
 OAT_INTERACTWITHOBJECTS	= %00010000	; Turn away from other enemies if their paths collide

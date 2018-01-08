@@ -5896,7 +5896,6 @@ Player_Die:
 	; Clear a bunch of stuff at time of death
 	LDA #$00
 	STA <Player_XVel
-	STA <Obj01_Flag	
 	STA Player_Flip	
 	STA Player_FlashInv
 	STA Player_StarInv

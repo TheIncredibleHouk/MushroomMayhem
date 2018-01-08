@@ -2614,7 +2614,7 @@
     <block value="1E">Background</block>
     <block value="1F">Background</block>
     <block value="20">Background</block>
-    <block value="21">Background</block>
+    <block value="21">Cleared Coin</block>
     <block value="22">Background</block>
     <block value="23">Background</block>
     <block value="24">Background</block>
@@ -2646,7 +2646,7 @@
     <block value="3E">Background</block>
     <block value="3F">Empty ? Block</block>
     <block value="40">Background</block>
-    <block value="41">Cleared Coin</block>
+    <block value="41"></block>
     <block value="42">P-Switch Stomped</block>
     <block value="43">Background</block>
     <block value="44">Background</block>
@@ -2678,7 +2678,7 @@
     <block value="5E">Background</block>
     <block value="5F">Background</block>
     <block value="60">Background</block>
-    <block value="61">Background</block>
+    <block value="61">Cleared Coin</block>
     <block value="62">Background</block>
     <block value="63">Background</block>
     <block value="64">Background</block>

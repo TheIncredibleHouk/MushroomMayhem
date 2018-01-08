@@ -182,6 +182,7 @@ PlayerProj_ThrowWeapon:
 
 PlayerProj_None:
 	RTS
+
 PlayerProj_ThrowWeapon1:
 	TAY
 	LDX #$09
@@ -554,6 +555,7 @@ Make_Ice:
 	STA Objects_Frame, Y
 	STA Objects_Orientation, Y
 	STA IceBlock_Kicked, Y
+	STA Explosion_Timer, Y
 
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, Y
@@ -2414,32 +2416,25 @@ Enemy_CannonDraw:
 
 
 CannonBall_TilesInteraction:
-	LDA Tile_LastProp
-	CMP #TILE_PROP_SOLID_ALL
-	BCC CannonBall_NotSolid
+	LDA SpecialObj_Timer, X
+	BEQ CannonBall_TilesInteractioNoTime
 
-	DEC SpecialObj_Stompable, X
-	BNE CannonBall_NotSolid
-
-	LDA SpecialObj_XVel, X
-	JSR Half_Value
-	EOR #$FF
-	ADD #$01
-	STA SpecialObj_XVel, X
-
-	LDA #$00
-	STA SpecialObj_YVel, X
-
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERBUMP
-	STA Sound_QPlayer
+	DEC SpecialObj_Timer, X
 	RTS
 
-CannonBall_NotSolid:
+CannonBall_TilesInteractioNoTime:
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCS CannonBall_Solid
+
+CannonBall_TilesInteractionRTS:
+	RTS
+
+CannonBall_Solid:
 	LDA Block_NeedsUpdate
 	BNE CannonBall_TilesInteraction1
 
-	LDY #$02
+	LDY #$03
 
 CannonBall_TilesInteraction0:
 	LDA Cannon_Tiles, Y
@@ -2452,16 +2447,27 @@ Cannon_Empty:
 	DEY
 	BPL CannonBall_TilesInteraction0
 
+	LDA SpecialObj_XVel, X
+	JSR Half_Value
+	EOR #$FF
+	ADD #$01
+	STA SpecialObj_XVel, X
+
+	LDA #$00
+	STA SpecialObj_YVel, X
+	STA SpecialObj_Stompable, X
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+
 CannonBall_TilesInteraction1:
 	RTS
 
 Cannon_Tiles:
-	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_STONE), (TILE_PROP_SOLID_ALL | TILE_PROP_STONE), (TILE_ITEM_BRICK)
+	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_STONE), (TILE_PROP_SOLID_ALL | TILE_PROP_STONE), (TILE_ITEM_BRICK), (TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
 
 CannonBall_TilesInteraction2:
-	LDA #$02
-	STA SpecialObj_Stompable, X
-
 	LDA Tile_LastValue
 	AND #$C0
 	ORA #$01
@@ -2908,16 +2914,7 @@ ToAcidPoof:
 	JMP SpecialObj_ToPoofNoSound
 
 Normal_Acid:
-	LDA SpecialObj_Data1, X
-	BNE Enemy_AcidNoGravity
-
-	JSR SObj_ApplyXYVelsWithGravity
-	JMP Enemy_AcidCalcBounds
-
-Enemy_AcidNoGravity:
 	JSR SObj_ApplyXYVels
-
-Enemy_AcidCalcBounds:
 	JSR SpecialObj_CalcBounds16x16
 	JSR EnemyProj_HitPlayer
 	JSR SpecialObj_DetectWorld16x16
@@ -3004,6 +3001,7 @@ Enemy_AcidPoolNorm:
 	LDA #SPR_PAL2
 	STA <SpecialObj_Attributes
 	STA <SpecialObj_Attributes + 1
+
 	JSR SpecialObj_CheckForeground
 	JSR SpecialObj_Draw16x16
 	RTS
@@ -3384,6 +3382,7 @@ PRG007_BB78:
 
 	JSR ObjectGenerator_DrawAndUpdate	; Draw and Update Cannon Fire
 
+	LDX <CurrentObjectIndexZ
 	DEX		 ; X--
 	BPL PRG007_BB78	; While X >= 0, loop!
 
@@ -3395,8 +3394,6 @@ ObjectGenerator_DrawAndUpdate:
 
 	LDA ObjectGenerator_ID,X
 	BEQ PRG007_BB80	 ; If this slot is unused/empty, jump to PRG007_BB80 (RTS)
-
-	PHA		 ; Save ID
 
 	; Update ObjectGenerator_Timer
 	LDA ObjectGenerator_Timer,X
@@ -3416,17 +3413,15 @@ ObjectGenerator_DrawAndUpdate:
 
 PRG007_BB8F:
 
-	; Update ObjectGenerator_Timer2
+	JSR DetermineCannonVisibilty
+
 	LDA ObjectGenerator_Timer2,X
 	BEQ PRG007_BB97
 	DEC ObjectGenerator_Timer2,X
 
 PRG007_BB97:
-	PLA		 ; Restore ID
-	STA TempA
-	JSR DetermineCannonVisibilty
 	
-	LDA TempA
+	LDA ObjectGenerator_ID, X
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -3456,8 +3451,154 @@ PRG007_BB97:
 ; #DAHRKDAIZ - Laser code removed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-ObjectGen_Cannonball:
+ObjectGenerator_DeleteOffScreen:
+	
+	LDA ObjectGenerator_X, X
+	SUB <Player_X
+	STA <Temp_Var1
 
+	LDA ObjectGenerator_XHi, X
+	SBC <Player_XHi
+	BMI Generator_RightDelete
+
+	LDA <Temp_Var1
+	CMP #$A0
+	BCS Generator_Delete
+	RTS
+
+Generator_RightDelete:
+	LDA <Temp_Var1
+	CMP #$61
+	BCS ObjectGenerator_DeleteRTS
+
+Generator_Delete:
+	LDA #$00
+	STA ObjectGenerator_ID, X
+
+	LDY ObjectGenerator_Parent, X
+
+	LDA Level_ObjectsSpawned,Y
+	AND #$7F
+	STA Level_ObjectsSpawned,Y
+	PLA
+	PLA
+
+ObjectGenerator_DeleteRTS:
+	RTS
+
+CannonBall_XOffset:
+	.byte $F4, $F0, $F8, $00, $0C, $10, $0C, $00
+	.byte $FF, $FF, $FF, $00, $00, $00, $00, $00
+
+CannonBall_YOffset:
+	.byte $F8, $00, $08, $08, $08, $00, $F8, $F8
+	.byte $FF, $00, $00, $00, $00, $00, $FF, $FF
+
+CannonBall_XVel:
+	.byte $F0, $E8, $F0, $00, $10, $18, $10, $00
+
+CannonBall_YVel:
+	.byte $F0, $00, $10, $10, $10, $00, $F0, $F0
+
+CannonBall_PoofX:
+	.byte $F8, $F8, $F8, $00, $08, $08, $08, $00
+
+CannonBall_PoofY:
+	.byte $F8, $00, $0C, $08, $08, $00, $F8, $F8
+
+ObjectGen_Cannonball:
+	LDA ObjectGenerator_Timer, X
+	CMP #$60
+	BCC ObjectGen_Cannonball1
+	JMP ObjectGen_CannonballRTS
+
+ObjectGen_Cannonball1:
+	LDA ObjectGenerator_Timer, X
+	BEQ ObjectGen_Cannonball2
+	
+	JMP ObjectGen_CannonballRTS
+
+ObjectGen_Cannonball2:
+	LDA ObjectGenerator_Var, X
+	AND #$03
+	CMP #$03
+	BEQ ObjectGen_CannonballReset
+
+	JSR Object_PrepProjectile
+
+	LDA #SOBJ_CANNONBALL
+	STA SpecialObj_ID,Y
+	
+	LDA ObjectGenerator_X, X
+	STA <Temp_Var1
+
+	LDA ObjectGenerator_XHi, X
+	STA <Temp_Var2
+
+	LDA ObjectGenerator_Y, X
+	STA <Temp_Var3
+
+	LDA ObjectGenerator_YHi, X
+	STA <Temp_Var4
+
+	LDA ObjectGenerator_Property, X
+	TAX
+
+	LDA <Temp_Var1
+	ADD CannonBall_XOffset, X
+	STA SpecialObj_X, Y
+
+	LDA <Temp_Var2
+	ADC CannonBall_XOffset + 8, X
+	STA SpecialObj_XHi, Y
+
+	LDA <Temp_Var3
+	ADD CannonBall_YOffset, X
+	STA SpecialObj_Y, Y
+
+	LDA <Temp_Var4
+	ADC CannonBall_YOffset + 8, X
+	STA SpecialObj_YHi, Y
+	
+	LDA CannonBall_XVel, X
+	STA SpecialObj_XVel, Y
+
+	LDA CannonBall_YVel, X
+	STA SpecialObj_YVel, Y
+
+	LDA #$01
+	STA SpecialObj_Stompable, Y
+
+	LDA #$08
+	STA SpecialObj_Timer, Y
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA <Temp_Var1
+	ADD CannonBall_PoofX, X
+	STA <Poof_X
+
+	LDA <Temp_Var3
+	ADD CannonBall_PoofY, X
+	STA <Poof_Y
+
+	LDA <Temp_Var4
+	ADC #$00
+	STA <Poof_YHi
+
+	JSR Common_MakePoof
+
+ObjectGen_CannonballReset:
+	LDX <CurrentObjectIndexZ
+
+	LDA #$60
+	STA ObjectGenerator_Timer, X
+
+	INC ObjectGenerator_Var, X
+
+ObjectGen_CannonballRTS:
 	RTS		 ; Return
 
 BobOmbXOffset:		.byte $00, $00, $08, $08
@@ -3475,7 +3616,7 @@ ObjectGen_Bobombs:
 	JSR CheckObjectsOfType
 
 	LDA <Num_Objects
-	CMP #$03
+	CMP #$02
 	BCS BobOmbGeneratorRTS
 
 	JSR PrepareNewObjectOrAbort
@@ -3622,31 +3763,26 @@ ObjectGen_Goombas:
 GoombaGeneratorRTS:
 	RTS
 
-Goomb_XVelocity:	.byte $E0, $20
-Goomb_YVelocity:    .byte $C0, $C0
+Goomb_XVelocity:	.byte $E0, $20, $E0, $20
+Goomb_YVelocity:    .byte $C0, $C0, $C0, $C0
 
 CanonPoofXOffset:
-	.byte $FA, $06
+	.byte $FA, $06, $FA, $F6
 
 EnemyCannonType:
-	.byte OBJ_GOOMBA, OBJ_BEACHEDCHEEP
+	.byte OBJ_GOOMBA, OBJ_GOOMBA, OBJ_BEACHEDCHEEP,  OBJ_BEACHEDCHEEP
+
 
 EnemyCannonDirection:
-	.byte $00, SPR_HFLIP
+	.byte $00, SPR_HFLIP, $00, SPR_HFLIP
 
 EnemyCannonColor:
-	.byte SPR_PAL3, SPR_PAL1
+	.byte SPR_PAL3, SPR_PAL3, SPR_PAL1, SPR_PAL1
 
 ObjectGen_Enemy:
+	
 	LDA ObjectGenerator_Timer,X
-	BNE PRG007_BD7A	 ; If timer not expired, jump to PRG007_BD7A (RTS)
-
-	LDA Kill_Tally
-	CMP #$03
-	BCS PRG007_BD7A
-
-	TXA
-	TAY
+	BNE ObjectGen_EnemyRTS	 ; If timer not expired, jump to PRG007_BD7A (RTS)
 
 	; Set timer to $70
 	LDA #$70
@@ -3656,41 +3792,51 @@ ObjectGen_Enemy:
 
 	LDA ObjectGenerator_Var,X
 	AND #$03
-	BEQ PRG007_BD7A	 ; 1:4 ticks proceed, otherwise jump to PRG007_BD7A (RTS)
+	BEQ ObjectGen_EnemyRTS	 ; 1:4 ticks proceed, otherwise jump to PRG007_BD7A (RTS)
+
+	TXA
+	TAY
 
 	JSR PrepareNewObjectOrAbort	 ; Prepare me a Goomba!
 
 	; Set Goomba X
 	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
+
 	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
+
 	LDA ObjectGenerator_Y,Y
+	SUB #$02
 	STA <Objects_YZ,X
+
 	LDA ObjectGenerator_YHi,Y
+	SBC #$00
 	STA <Objects_YHiZ,X
 
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JSR Object_CalcBoundBox
+
 PRG007_BD49:
-	; set the motion of the goomba as it "pops" out of the pipe
+	STY TempY
+
 	LDA ObjectGenerator_Property, Y
-	AND #$01
 	TAY
+
 	LDA EnemyCannonDirection, Y
 	STA Objects_Orientation, X
+	
 	LDA Goomb_YVelocity, Y
 	STA <Objects_YVelZ, X
+
 	LDA Goomb_XVelocity, Y
 	STA <Objects_XVelZ, X
 
-	LDA ObjectGenerator_Property, Y
-	LSR A
-	TAY
-	; It's a Goomba
 	LDA EnemyCannonType, Y
 	STA Objects_ID,X
-
-	LDA #$10
-	STA Objects_Data4, X
+	STA Objects_NoExp, X
 
 	; Set Goomba's color
 	LDA EnemyCannonColor, Y
@@ -3699,18 +3845,18 @@ PRG007_BD49:
 	LDA #$00
 	STA Objects_Property, X
 
-	LDX <CurrentObjectIndexZ
-	LDA ObjectGenerator_Property, X
-	AND #$01
-	TAY
-	
+	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
+	LDA #$00
+	STA Objects_Health, X
 	
 	JSR ObjectGenerator_NoiseAndSmoke
 
 PRG007_BD78:
 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 
-PRG007_BD7A:
+ObjectGen_EnemyRTS:
 	RTS		 ; Return
 
 
@@ -3739,17 +3885,22 @@ ObjectGen_ShellCannon:
 	; Set Goomba X
 	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
+
 	LDA ObjectGenerator_XHi,Y
 	STA <Objects_XHiZ,X
+
 	LDA ObjectGenerator_Y,Y
 	STA <Objects_YZ,X
+
 	LDA ObjectGenerator_YHi,Y
 	STA <Objects_YHiZ,X
-	; set the motion of the goomba as it "pops" out of the pipe
+
 	LDA ObjectGenerator_Property, Y
 	TAY
+
 	LDA Goomb_YVelocity, Y
 	STA <Objects_YVelZ, X
+
 	LDA Goomb_XVelocity, Y
 	STA <Objects_XVelZ, X
 
@@ -3760,8 +3911,11 @@ ObjectGen_ShellCannon:
 	LDA #OBJSTATE_KICKED
 	STA Objects_State, X
 
-	LDA #$60
-	STA Objects_Timer3, X
+	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
+	LDA #$BF
+	STA Explosion_Timer, X
 
 	; Set Goomba's color
 	LDA #SPR_PAL1
@@ -3829,14 +3983,11 @@ Cannons_CPYOff:
 Bill_CPYOff:	.byte $00, $00		; Bullet/Missile Bill
 
 CannonWidths: .byte $00, $08
-DetermineCannonVisibilty:
-	LDA #$01
-	STA <Temp_Var1
-	LDY #$01
 
-DetermineCannonVisibilty1:
+DetermineCannonVisibilty:
+	
 	LDA ObjectGenerator_X,X
-	ADD CannonWidths,Y
+	ADD #$10
 	STA <Temp_Var15		; Temp_Var15 = object's X + ??
 
 	LDA ObjectGenerator_XHi,X
@@ -3847,17 +3998,32 @@ DetermineCannonVisibilty1:
 	CMP <Horz_Scroll
 	LDA <Temp_Var16	
 	SBC <Horz_Scroll_Hi
-	BEQ DetermineCannonVisibilty2	 ; If sprite is not horizontally off-screen, jump to PRG000_D7DE
-	DEC <Temp_Var1
-	BPL DetermineCannonVisibilty2
+	BEQ CannonVerticalVisibility
+	
 	PLA
 	PLA
+
 	RTS
 
-DetermineCannonVisibilty2:
-	DEY		 ; Y--
-	BPL DetermineCannonVisibilty1	 ; While Y >= 0, loop
+CannonVerticalVisibility:
+	LDA ObjectGenerator_Y,X
+	ADD #$10
+	STA <Temp_Var15		; Temp_Var15 = object's X + ??
 
+	LDA ObjectGenerator_YHi,X
+	ADC #$00	 
+	STA <Temp_Var16		; Temp_Var16 = Object's X Hi with carry applied
+
+	LDA <Temp_Var15
+	CMP <Vert_Scroll
+	LDA <Temp_Var16	
+	SBC <Vert_Scroll_Hi
+	BEQ CannonVerticalVisibilityRTS
+
+	PLA
+	PLA
+
+CannonVerticalVisibilityRTS:
 	RTS		 ; Return
 
 ObjectGen_Platform:
@@ -4074,10 +4240,23 @@ ObjectGen_RockyWrench:
 PRG007_BF28:
 	RTS		 ; Return
 				  
-Bill_XVel:	.byte -$18, $18, $00, $18, $18, $00, -$18, -$18
-Bill_YVel:	.byte $00, $00, $18, $18, -$18, -$18, -$18, $18
+Bill_XVel:
+	.byte -$18, $18, $00, -$18, -$18, $00, $18, $18
 
-CanonTimers: .byte $20, $40, $60, $40, $20, $80, $40, $60
+Bill_YVel:
+	.byte $00, $00, -$18, -$18, $18, $18, $18, -$18
+
+Bill_XOffset:
+	.byte $F4, $0C, $00, $F4, $F4, $00, $0C, $0C
+	.byte $FF, $00, $00, $FF, $FF, $00, $00, $00
+
+Bill_YOffset:
+	.byte $FF, $FF, $F4, $F4, $0C, $0C, $0C, $F4
+	.byte $FF, $FF, $FF, $FF, $00, $00, $00, $FF
+
+CanonTimers:
+	.byte $60, $80, $A0, $80, $60, $C0, $80, $A0
+
 ObjectGen_BulletBill:
 	
 	LDA ObjectGenerator_Timer,X
@@ -4090,24 +4269,21 @@ ObjectGen_BulletBill:
 	LDA CanonTimers, Y
 	STA ObjectGenerator_Timer,X
 
-	LDA ObjectGenerator_X,X
-	SUB <Horz_Scroll
-	ADD #16
-	CMP #32
-	BLT PRG007_BF28		; If Cannon Fire X + 16 is less than 32 pixels from screen edge, jump to PRG007_BF28 (RTS)
-
-	LDA <Player_X
-	SBC ObjectGenerator_X,X
-	ADD #17
-	CMP #34
-	BLT PRG007_BF28		; If Player is standing on Bullet Bill cannon, jump to PRG007_BF28 (RTS)
-
 	JSR PrepareNewObjectOrAbort
 
 	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire object slot
 
-	LDA ObjectGenerator_Property, Y
-	TAY
+	LDA ObjectGenerator_X, Y
+	STA <Objects_XZ, X
+
+	LDA ObjectGenerator_XHi, Y
+	STA <Objects_XHiZ, X
+
+	LDA ObjectGenerator_Y, Y
+	STA <Objects_YZ, X
+
+	LDA ObjectGenerator_YHi, Y
+	STA <Objects_YHiZ, X
 
 	LDA ObjectGenerator_ID,Y
 	LSR A		; Selects which Bill type
@@ -4118,62 +4294,64 @@ ObjectGen_BulletBill:
 
 	LDA #$50
 	STA Objects_Timer, X
+
 	LDA #OBJ_BULLETBILLHOMING
 
 PRG007_BF80:
 	STA Objects_ID,X	 ; Store Bill's ID
 
-	; Set Bill's palette
-	LDA #SPR_PAL3
-	STA Objects_SpriteAttributes,X
-
-	; Set Bill's Y
-	LDA ObjectGenerator_Y,Y
-	SUB #$01
-	STA <Objects_YZ,X
-
-	LDA ObjectGenerator_YHi,Y
-	SBC #$00
-	STA <Objects_YHiZ,X
-
-	; Set Bill's X
-	LDA ObjectGenerator_XHi,Y
-	STA <Objects_XHiZ,X
-
-	LDA ObjectGenerator_X,Y
-	STA <Objects_XZ,X
-	STA Objects_Data11,X	; original X hold
-
 	LDA ObjectGenerator_Property,Y
 	TAY
 	BNE PRG007_BF81
 
-	LDA ObjectGenerator_X, Y
-	STA Objects_BoundLeft + 9
-	ADD #$10
-	STA Objects_BoundRight + 9
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
-	LDA ObjectGenerator_XHi, Y
-	STA Objects_BoundLeftHi + 9
-	ADC #$00
-	STA Objects_BoundRightHi + 9
-
-	STX TempX
-	LDX #$09
+	JSR Object_CalcBoundBoxForced
 	JSR Object_XDistanceFromPlayer
+	
+	LDA <XDiff
+	CMP #$10
+	BCS Make_Bullet
 
-	LDX TempX
+	JMP Object_Delete
+
+Make_Bullet:
+	LDY <XDiffLeftRight
+
 PRG007_BF81:
-	; Bill fires towards Player
+
 	LDA Bill_XVel,Y
 	STA <Objects_XVelZ,X
 
 	LDA Bill_YVel, Y
 	STA <Objects_YVelZ, X
 
-	LDY <CurrentObjectIndexZ	; X = Cannon Fire slot index
+	LDA <Objects_XZ, X
+	ADD Bill_XOffset,Y
+	STA <Objects_XZ, X
+	STA <Poof_X
 
-	JSR ObjectGenerator_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
+	LDA <Objects_XHiZ, X
+	ADC Bill_XOffset + 8,Y
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	ADD Bill_YOffset,Y
+	STA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA <Objects_YHiZ, X
+	ADC Bill_YOffset + 8,Y
+	STA <Objects_YHiZ, X
+	STA <Poof_YHi
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+	STA Objects_NoExp, X
+
+
+	JSR Common_MakePoof	 ; Play cannon fire noise and make smoke
 
 	RTS		 ; Return
 

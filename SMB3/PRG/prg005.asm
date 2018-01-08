@@ -186,92 +186,7 @@ ObjectGroup04_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $B0 - OBJ_BIGCANNONBALL
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $B1 - OBJ_FIREJET_RIGHT
 	.byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $B3
-
-	; Object group $04 (i.e. objects starting at ID $90) second set attribute bits
-
-	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
-ObjectGroup04_Attributes2:
-	.byte $00	; Object $90 - OBJ_FIREICEBAR
-	.byte $00 	; Object $91 - OBJ_FREEZIE
-	.byte $00 	; Object $92 - OBJ_SWOOSH
-	.byte $00	; Object $93 - OBJ_INTRO
-	.byte $00	; Object $94 - OBJ_BIGQBLOCK_3UP
-	.byte $00	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
-	.byte $00	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
-	.byte $00	; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
-	.byte $00	; Object $98 - OBJ_BIGQBLOCK_TANOOKI
-	.byte $00	; Object $99 - OBJ_BIGQBLOCK_FROG
-	.byte $00	; Object $9A - OBJ_BIGQBLOCK_HAMMER
-	.byte $00	; Object $9B
-	.byte $00	; Object $9C
-	.byte $00	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte $00   ; Object $9E - OBJ_Podobo
-	.byte $00 	; Object $9F - OBJ_PARABEETLE
-	.byte $00 	; Object $A0 - OBJ_PUMPKINFREE
-	.byte $00 	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
-	.byte $00 	; Object $A2 - OBJ_REDPIRANHA
-	.byte $00 	; Object $A3 - OBJ_PIRANHA_TWOSHOT
-	.byte $00 	; Object $A4 - OBJ_PUMPKINPLANT
-	.byte $00 	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
-	.byte $00 	; Object $A6 - OBJ_VENUSFIRETRAP
-	.byte $00 	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte $00 	; Object $A8 - OBJ_ACIDTRAP
-	.byte $00 	; Object $A9 - OBJ_ACIDTRAP_CEIL
-	.byte $00	; Object $AA - OBJ_AIRSHIPPROP
-	.byte $00 	; Object $AB
-	.byte $00 	; Object $AC - OBJ_FIREJET_LEFT
-	.byte $00 	; Object $AD - OBJ_ROCKYWRENCH
-	.byte $00	; Object $AE - OBJ_BOLTLIFT
-	.byte $00 	; Object $AF - OBJ_ENEMYSUN
-	.byte $00 	; Object $B0 - OBJ_BIGCANNONBALL
-	.byte $00	; Object $B1 - OBJ_FIREJET_RIGHT
-	.byte $00	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.byte $00	; Object $B3
-
-	; Object group $04 (i.e. objects starting at ID $90) third set attribute bits
-
-	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
-ObjectGroup04_Attributes3:
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $90 - OBJ_FIREICEBAR
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $91 - OBJ_FREEZIE
-	.byte OA3_HALT_NORMALONLY	; Object $92 - OBJ_SWOOSH
-	.byte OA3_HALT_NORMALONLY 	; Object $93 - OBJ_INTRO
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $94 - OBJ_BIGQBLOCK_3UP
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $98 - OBJ_BIGQBLOCK_TANOOKI
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $99 - OBJ_BIGQBLOCK_FROG
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $9A - OBJ_BIGQBLOCK_HAMMER
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $9B
-	.byte OA3_HALT_HOTFOOTSPECIAL 	; Object $9C
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $9D - OBJ_FIREJET_UPWARD
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $9E - OBJ_Podobo
-	.byte OA3_HALT_NORMALONLY 	; Object $9F - OBJ_PARABEETLE
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A0 - OBJ_PUMPKINFREE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A2 - OBJ_REDPIRANHA
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A3 - OBJ_PIRANHA_TWOSHOT
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A4 - OBJ_PUMPKINPLANT
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A6 - OBJ_VENUSFIRETRAP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE	; Object $A8 - OBJ_ACIDTRAP
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE	; Object $A9 - OBJ_ACIDTRAP_CEIL
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $AA - OBJ_AIRSHIPPROP
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $AB
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $AC - OBJ_FIREJET_LEFT
-	.byte OA3_HALT_NORMALONLY 	; Object $AD - OBJ_ROCKYWRENCH
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $AE - OBJ_BOLTLIFT
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $AF - OBJ_ENEMYSUN
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $B0 - OBJ_BIGCANNONBALL
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $B1 - OBJ_FIREJET_RIGHT
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $B3
-
-
-	; Object group $04 (i.e. objects starting at ID $90) Pattern Table Select
+	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $B
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup04_PatTableSel:
@@ -482,8 +397,16 @@ Podobo_JumpYVel:
 	.byte $C0, $40
 
 ObjInit_Podobo:
+	LDA #(ATTR_FIREPROOF | ATTR_HAMMERPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
 
-	LDA #$04
+	LDA #(ATTR_SHELLPROOF | ATTR_NOICE )
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #$01
 	STA Objects_Health, X
 
 	LDA Objects_Property, X
@@ -910,6 +833,15 @@ PumpkinFreeXSpeeds:
 	.byte $10, $F0
 
 ObjInit_PumpkinFree:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #(ATTR_ICEPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA <Objects_XZ, X
@@ -1038,6 +970,12 @@ Piranah_AttackNumbers:
 	.byte $00, $01, $01, $01
 
 ObjInit_Pumpkin:
+	LDA #BOUND16x32
+	STA Objects_BoundBox, X
+
+	LDA #ATTR_ICEPROOF
+	STA Objects_WeaponAttr, X
+
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA <Objects_XZ, X
@@ -1050,6 +988,12 @@ ObjInit_Piranha_TwoShot:
 	RTS
 
 ObjInit_Piranha:
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #BOUND16x32
+	STA Objects_BoundBox, X
+
 	LDA #$03
 	STA Piranha_CurrentState, X
 
@@ -1103,14 +1047,20 @@ ObjNorm_Pumpkin:
 	JMP ObjNorm_Piranha
 
 ObjNorm_Piranha:
-
+	
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Piranha1
 
 	JMP Piranha_Draw
 
 ObjNorm_Piranha1:
+	LDA Piranha_CurrentState, X
+	CMP #$03
+	BCS Piranha_SkipOffScreen
+
 	JSR Object_DeleteOffScreen
+
+Piranha_SkipOffScreen:	
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	
@@ -1389,6 +1339,7 @@ Piranha_Projectile:
 
 	JSR Object_AimProjectile
 
+Piranha_ProjectileRTS:
 	RTS
 
 ObjInit_RockyWrench:
@@ -2960,6 +2911,7 @@ PRG005_B873:
 	CMP #$00	 
 	BMI PRG005_B863	 ; If this object is already currently spawned, jump to PRG005_B863 (skip to next object)
 
+	STX <LevelSpawn_IndexZ
 	LDA Level_Objects,Y	 ; Get object column
 	ASL A		 
 	ASL A		 
@@ -3011,6 +2963,7 @@ PRG005_B8CB:
 	ADD #$01	 ; +1 (because zero means "empty/unused" in Cannon Fire)
 	STY TempY
 	JSR ObjectGenerator_Init	 ; Initialize the Cannon Fire
+	LDX <LevelSpawn_IndexZ
 
 	JMP PRG005_B863	 ; Jump to PRG005_B863 (next object)
 
@@ -3297,65 +3250,30 @@ PRG005_BA3D:
 
 ObjectGenerator_Init:
 	STA <Temp_Var16	 ; Store index value (1+)
-	STX TempX
-	TXA		 ; -> 'X
-	PHA		 ; Save it too
+	STY TempY
 
+	LDX #$07
 
-	LDA ObjectGenerator_ID+7
-	PHA		 ; Backup last Cannon Fire ID
+Find_EmptyGenerator:
+	LDA ObjectGenerator_ID, X
+	BEQ Found_EmptyGenerator
 
-	LDA ObjectGenerator_Parent+7
-	PHA		 ; Backup last Cannon Fire parent index
+	DEX
+	BPL Find_EmptyGenerator
 
-	; Move over all current Cannon Fires
-	LDX #$06	 ; X = 6
-PRG005_BA54:
-	LDA ObjectGenerator_ID,X
-	STA ObjectGenerator_ID+1,X
-	LDA ObjectGenerator_YHi,X
-	STA ObjectGenerator_YHi+1,X
-	LDA ObjectGenerator_Y,X	
-	STA ObjectGenerator_Y+1,X	
-	LDA ObjectGenerator_XHi,X	
-	STA ObjectGenerator_XHi+1,X	
-	LDA ObjectGenerator_X,X	
-	STA ObjectGenerator_X+1,X	
-	LDA ObjectGenerator_Parent,X	
-	STA ObjectGenerator_Parent+1,X	
-	LDA ObjectGenerator_Timer,X	
-	STA ObjectGenerator_Timer+1,X	
-	LDA ObjectGenerator_Var,X	
-	STA ObjectGenerator_Var+1,X	
-	LDA ObjectGenerator_Timer2,X	
-	STA ObjectGenerator_Timer2+1,X	
-	LDA ObjectGenerator_Property,X	
-	STA ObjectGenerator_Property+1,X	
+	RTS
 
-	DEX		 ; X--
-	BPL PRG005_BA54	 ; While X >= 0, loop
-
-	PLA		 ; Restore last Cannon Fire Parent index
-	TAX		 ; -> 'X'
-
-	PLA		 ; Restore last Cannon Fire ID
-	BEQ PRG005_BA9A	 ; If last Cannon Fire ID = 0 (this slot was not previously in use), jump to PRG005_BA9A
-
-	; Mark the parent creator object as NOT spawned since this cannon fire slot is being overwritten
-	LDA Level_ObjectsSpawned,X
-	AND #$7f
-	STA Level_ObjectsSpawned,X
-
-PRG005_BA9A:
+Found_EmptyGenerator:
 	; Upper 4 bits shifted right -> ObjectGenerator_YHi (high Y)
 	STY TempY
+
 	LDA Level_Objects+1,Y	 ; Get object row
 	AND #$10	 
 	LSR A		 
 	LSR A		 
 	LSR A		 
 	LSR A		 
-	STA ObjectGenerator_YHi
+	STA ObjectGenerator_YHi, X
 
 	; Upper 4 bits shifted left -> ObjectGenerator_Y (low Y)
 	LDA Level_Objects+1,Y	 ; Get object row
@@ -3364,47 +3282,24 @@ PRG005_BA9A:
 	ASL A		
 	ASL A		
 	ASL A		
-	STA ObjectGenerator_Y
+	STA ObjectGenerator_Y, X
 
 	LDA <Temp_Var7	
-	STA ObjectGenerator_XHi	 ; ObjectGenerator_XHi = (pixel high X of object)
+	STA ObjectGenerator_XHi, X	 ; ObjectGenerator_XHi = (pixel high X of object)
 
 	LDA <Temp_Var1	
-	STA ObjectGenerator_X	 ; ObjectGenerator_X = (pixel X position of object)
+	STA ObjectGenerator_X, X	 ; ObjectGenerator_X = (pixel X position of object)
 
 	LDA #$00
-	STA ObjectGenerator_Var	; Clear Cannon Fire variable
-	STA ObjectGenerator_Timer2	; Clear Cannon Fire timer 2
+	STA ObjectGenerator_Var, X	; Clear Cannon Fire variable
+	STA ObjectGenerator_Timer2, X	; Clear Cannon Fire timer 2
 
-	LDA #$60
-
-	LDX <Temp_Var16	 ; X = Temp_Var16 (ID of Cannon Fire)
-
-	CPX #CFIRE_4WAY
-	BNE PRG005_BACE	 ; If X <> 4, jump to PRG005_BACE
-
-	LDA #$00	 ; Otherwise, A = 0
-
-PRG005_BACE:
-	STA ObjectGenerator_Timer	 ; ObjectGenerator_Timer = $00 or $60, depending on whether we're a 4-Way cannon
-
-	LDX <Temp_Var2		 ; Restore object index
-	STX ObjectGenerator_Parent	 ; ObjectGenerator_Parent = Temp_Var2
-
-	; Mark this object as spawned
-	LDA Level_ObjectsSpawned,X
-	ORA #$80	
-	STA Level_ObjectsSpawned,X
+	LDA #$10
+	STA ObjectGenerator_Timer, X	 ; ObjectGenerator_Timer = $00 or $60, depending on whether we're a 4-Way cannon
 
 	LDA <Temp_Var16	
-	STA ObjectGenerator_ID
-
-	TXA
-	TAY
-
-	PLA		 ; Restore input index value
-	TAX		 ; -> 'X'
-	LDY TempY
+	STA ObjectGenerator_ID, X
+	
 	LDA Level_Objects+1,Y
 	AND #$E0
 	LSR A
@@ -3412,7 +3307,19 @@ PRG005_BACE:
 	LSR A
 	LSR A
 	LSR A
-	STA ObjectGenerator_Property
+	STA ObjectGenerator_Property, X
+
+	LDY <LevelSpawn_IndexZ
+
+	LDA Level_ObjectsSpawned,Y
+	ORA #$80	
+	STA Level_ObjectsSpawned,Y
+
+	LDA <LevelSpawn_IndexZ
+	STA ObjectGenerator_Parent, X
+
+	LDY TempY
+	
 	RTS		 ; Return
 
 Level_ObjectsSpawnByScrollV:
@@ -4267,6 +4174,15 @@ P_PRG007_B828:
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
 
 ObjInit_Freezie:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #ATTR_ICEPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	LDA Objects_Property, X
 	BNE Freezie_NotMoving
 
@@ -4485,6 +4401,15 @@ Freezie_Die:
 	JMP Object_BurstIce
 
 ObjInit_Swoosh:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #(ATTR_PROJECTILEPROOF)
+	STA Objects_WeaponAttr
+
+	LDA #ATTR_BUMPNOKILL
+	STA Objects_BoundBox, X
+
 	LDA #$60
 	STA Objects_Timer, X
 	RTS
@@ -5072,3 +4997,4 @@ ToadBye1:
 	CPX #$1C
 	BNE ToadBye1
 	RTS
+

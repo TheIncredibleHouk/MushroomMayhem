@@ -190,96 +190,8 @@ ObjectGroup01_Attributes:
 
 	; Object group $01 (i.e. objects starting at ID $24) second set attribute bits
 
-	; Attribute bits for objects:
-	;	Bits 0: If set, object is NOT a "shelled" enemy
-	;	Bits 1: Subtly modifies Player detection response; see comments in PRG000_D205
-	;	Bits 2: If set, object doesn't respond if stomped (indifferent, not same as attr 3, bit 5 which leads to hurting player)
-	;	Bits 3: Object uses 16-bit X value (otherwise, Object_XHi will be zeroed)
-	;	Bits 4-7: Pick root tile detection group offset (from Object_TileDetectOffsets)
-
-	.org ObjectGroup_Attributes2	; <-- help enforce this table *here*
-ObjectGroup01_Attributes2:
-	.byte $00	; Object $24 - OBJ_PLATFORM_HORZOSC
-	.byte $00	; Object $25
-	.byte $00	; Object $26 - OBJ_WOODENPLAT_RIDER
-	.byte $00	; Object $27 - OBJ_PLATFORM_DIAG1OSC
-	.byte $00	; Object $28 - OBJ_PLATFORM_DIAG2OSC
-	.byte $00 	; Object $29 - OBJ_SPIKE
-	.byte $00	; Object $2A - OBJ_SPARK
-	.byte $00	; Object $2B - OBJ_RICOCHET_PODOBO
-	.byte $00	; Object $2C - OBJ_PLATFORM_CLOCKOSC
-	.byte $00	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.byte $00	; Object $2E - OBJ_PIRATEBOO
-	.byte $00	; Object $2F - OBJ_BOO
-	.byte $00	; Object $30 - OBJ_PACBOO
-	.byte $00	; Object $31 - OBJ_PHANTO
-	.byte $00	; Object $32 - OBJ_PHANTO_FLIP
-	.byte $00	; Object $33 - OBJ_NIPPER
-	.byte $00	; Object $34 - OBJ_TOAD
-	.byte $00	; Object $35 - OBJ_TOADHOUSEITEM
-	.byte $00	; Object $36 - OBJ_PLATFORM_PATH
-	.byte $00	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
-	.byte $00	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte $00	; Object $39 - OBJ_PACBOOHOME
-	.byte $00	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte $00 	; Object $3B - OBJ_SPECTERCHEEP
-	.byte $00	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
-	.byte $00 	; Object $3D - OBJ_NIPPERFIREBREATHER
-	.byte $00	; Object $3E - OBJ_PLATFORMFLOATS
-	.byte $00	; Object $3F - OBJ_DRYBONES
-	.byte $00	; Object $40 - OBJ_GOLDENPIRANHAGROWER
-	.byte $00	; Object $41 - OBJ_PIRANHAGROWER
-	.byte $00 	; Object $42 - OBJ_FLAMINGCHEEP
-	.byte OA2_STOMP_KICKSND	; Object $43 - OBJ_BEACHEDCHEEP
-	.byte $00	; Object $44 - OBJ_PLATFORMUNSTABLE
-	.byte $00	; Object $45 - OBJ_PWING
-	.byte $00	; Object $46 - OBJ_SNIFIT
-	.byte $00	; Object $47 - OBJ_BIRDO
-
 
 	; Object group $01 (i.e. objects starting at ID $24) third set attribute bits
-
-	.org ObjectGroup_Attributes3	; <-- help enforce this table *here*
-ObjectGroup01_Attributes3:
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $24 - OBJ_PLATFORM_HORZOSC
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $25
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $26 - OBJ_WOODENPLAT_RIDER
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $27 - OBJ_PLATFORM_DIAG1OSC
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $28 - OBJ_PLATFORM_DIAG2OSC
-	.byte OA3_HALT_JUSTDRAW 	; Object $29 - OBJ_SPIKE
-	.byte OA3_HALT_JUSTDRAWMIRROR | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $2A - OBJ_SPARK
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE 	; Object $2B - OBJ_RICOCHET_PODOBO
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $2C - OBJ_PLATFORM_CLOCKOSC
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE 	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2E - OBJ_PIRATEBOO
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $2F - OBJ_BOO
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $30 - OBJ_PACBOO
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE | OA3_NOTSTOMPABLE	; Object $31 - OBJ_PHANTO
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $32 - OBJ_PHANTO_FLIP
-	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $33 - OBJ_NIPPER
-	.byte OA3_HALT_JUSTDRAWTALL | OA3_TAILATKIMMUNE	; Object $34 - OBJ_TOAD
-	.byte OA3_HALT_HOTFOOTSPECIAL | OA3_TAILATKIMMUNE	; Object $35 - OBJ_TOADHOUSEITEM
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $36 - OBJ_PLATFORM_PATH
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
-	.byte OA3_HALT_NORMALONLY  	; Object $39 - OBJ_PACBOOHOME
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3A - OBJ_FALLINGPLATFORM
-	.byte OA3_HALT_JUSTDRAW | OA3_TAILATKIMMUNE	; Object $3B - OBJ_SPECTERCHEEP
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
-	.byte OA3_HALT_JUSTDRAW | OA3_NOTSTOMPABLE 	; Object $3D - OBJ_NIPPERFIREBREATHER
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $3E - OBJ_PLATFORMFLOATS
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE | OA3_TAILATKIMMUNE	; Object $3F - OBJ_DRYBONES
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE 	; Object $40 - OBJ_GOLDENPIRANHAGROWER
-	.byte OA3_HALT_NORMALONLY | OA3_NOTSTOMPABLE	; Object $41 - OBJ_PIRANHAGROWER
-	.byte OA3_HALT_NORMALONLY 	; Object $42 - OBJ_FLAMINGCHEEP
-	.byte OA3_HALT_JUSTDRAW | OA3_WINDAFFECTS 	; Object $43 - OBJ_BEACHEDCHEEP
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $44 - OBJ_PLATFORMUNSTABLE
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $45 - OBJ_PWING
-	.byte OA3_HALT_JUSTDRAW 	; Object $46 - OBJ_SNIFIT
-	.byte OA3_HALT_NORMALONLY | OA3_TAILATKIMMUNE	; Object $47 - OBJ_BIRDO
-
-
-	; Object group $01 (i.e. objects starting at ID $24) Pattern Table Select
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ObjectGroup01_PatTableSel:
@@ -479,36 +391,14 @@ ObjP40:
 ObjP41:
 	.byte $B3, $B3, $B5, $B5, $B9, $B7, $BF, $BB, $B3, $B3, $B5, $B5, $B7, $B9, $BB, $BF
 
-	; Carry is set if gameplay not halted and object not dead
-CarryClearIfAliveAndNoHalt:
-	LDA Objects_State,X	  
-	CMP #OBJSTATE_KILLED	; Carry is clear unless state >= OBJSTATE_KILLED
-	BEQ PRG002_A4C5	 ; If object state is Dying, jump to PRG002_A4C5
-
-	CLC		 ; Clear carry (if any state other than OBJSTATE_KILLED)
-
-	LDA <Player_HaltGameZ
-	BEQ PRG002_A4C5	 ; If gameplay is not halted, jump to PRG002_A4C5
-
-	SEC		 ; Set carry
-
-PRG002_A4C5:
-	RTS		 ; Return
-
-Buster_XVel:	.byte -$10, $10
-
 ObjInit_BusterBeatle:
-	RTS		 ; Return
-
-
 ObjNorm_BusterBeatle:
 	RTS		 ; Return
 
-
-Buster_DrawHoldingIceBrick:
-	RTS		 ; Return
-
 ObjInit_BeachedCheep:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_CARRYANDBUMP | ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
@@ -642,6 +532,9 @@ Beached_DoBounce2:
 
 
 ObjInit_DryCheep:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #ATTR_STOMPKICKSOUND
 	STA Objects_BehaviorAttr, X
 
@@ -890,6 +783,9 @@ Bank2_HotFootHaltAction:
 	RTS		 ; Return
 
 ObjInit_PWing:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	JMP Object_NoInteractions
 
 ObjNorm_PWing:
@@ -918,6 +814,8 @@ ObjInit_Boo:
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
 	STA Objects_BehaviorAttr, X
 
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	RTS
 
 Boo_CheckPlayerSight:
@@ -1015,6 +913,9 @@ FacePlayer_FlipBitsStart:	.byte $00, SPR_HFLIP, $00	; Boo uses an off-by-1 index
 ObjInit_Phanto:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
 	LDA #$E0
 	STA ChaseVel_LimitLo, X
@@ -1233,7 +1134,11 @@ Platform_SteppedOn = Objects_Data5
 Platform_MadeContact = Objects_Data6
 
 ObjInit_PlatformCommon:
+	LDA #BOUND48x16
+	STA Objects_BoundBox, X
+
 	JSR Object_NoInteractions
+
 	LDA Objects_XZ, X
 	STA Platform_StartX, X
 
@@ -1246,9 +1151,12 @@ ObjInit_PlatformCommon:
 	RTS
 
 ObjInit_WoodenPlatHorz:
+	
 	JSR ObjInit_PlatformCommon
+	
 	LDA #$00
 	STA Objects_Property, X
+
 	JMP InitPatrol_NoTimers
 
 ObjInit_WoodenPlatVert:
@@ -1315,7 +1223,7 @@ ObjInit_WoodenPlat:
 	RTS		 ; Return
 
 ObjInit_PlatformFollow:
-	RTS
+	JMP ObjInit_PlatformCommon
 
 ObjNorm_PlatformFollow:
 	LDA <Player_HaltGameZ
@@ -1425,6 +1333,11 @@ Platform_SetVel:
 PlatformUnstable_MoveTimer = Objects_Data11
 PlatformUnstable_NoRegen = Objects_Data12
 ObjInit_PlatformUnstable:
+	LDA #BOUND48x16
+	STA Objects_BoundBox, X
+
+	JSR Object_NoInteractions
+
 	LDA #$20
 	STA Platform_MaxFall, X
 	STA Platform_Regen, X
@@ -1765,6 +1678,9 @@ PlatformFloat1:
 	JMP Platform_Draw
 
 ObjInit_SpecterCheep:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -1818,6 +1734,9 @@ Spike_YOff:
 ObjInit_Spike:
 	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
 	LDA #$40
 	STA Objects_Timer, X
@@ -2022,6 +1941,9 @@ PRG002_AE28:
 	RTS		 ; Return
 
 ObjInit_Snifit:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA #$80
 	STA Objects_Timer, X
 	RTS
@@ -2231,6 +2153,9 @@ Spark_Speed = Objects_Data3
 Spark_HitDetect = Objects_Data4
 
 ObjInit_Spark:
+	LDA #BOUND16x16BLOCK
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -2480,6 +2405,9 @@ NipperDetermineFrame3:
 	
 
 ObjInit_Toad:
+	LDA #BOUND16x24
+	STA Objects_BoundBox, X
+
 	LDA Objects_Property,X		 ; Otherwise, Y = 1 
 	STA Objects_Data2,X	 ; -> Objects_Data2 (which message Toad gives)
 
@@ -2862,6 +2790,9 @@ ObjNorm_NipperFireBreathe:
 	
 
 ObjInit_DryBones:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	JSR ObjInit_TowardsPlayer
 
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_TAILPROOF)
@@ -4216,6 +4147,9 @@ ObjInit_DiagonalPodobo:
 	LDA #(ATTR_SHELLPROOF | ATTR_NOICE )
 	STA Objects_BehaviorAttr, X
 
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA Objects_Property, X
 	TAY
 
@@ -4326,6 +4260,9 @@ Birdo_Pal:
 	.byte SPR_PAL1, SPR_PAL2
 
 ObjInit_Birdo:
+	LDA #BOUND16x32TALL
+	STA Objects_BoundBox, X
+
 	LDA #(ATTR_NOICE | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
@@ -4835,6 +4772,9 @@ ObjInit_PiranhaGrower:
 
 ObjInit_PiranhaGrowerCommon:	
 	; which direction to start in 0 = up, 1 = right, 2 = down, 3 = left
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	LDA Objects_Property, X
 	STA Grower_Direction, X
 
@@ -5148,3 +5088,4 @@ Grower_DetectBlockLeft:
 	JSR Object_DetectTile
 	LDA Tile_LastProp
 	RTS
+
