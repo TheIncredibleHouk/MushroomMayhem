@@ -342,7 +342,13 @@ ObjP6E:
 ObjP6F:
 ObjP80:
 ObjP7A:
-	.byte $CB, $C5, $C3, $C5, $FD, $FD, $FD, $FD, $FD, $FD, $D1, $D1, $D3, $D5
+	.byte $CB, $C5
+	.byte $C3, $C5
+	.byte $FD, $FD
+	.byte $FD, $FD
+	.byte $FD, $FD
+	.byte $D1, $D1
+	.byte $D3, $D5
 ObjP70:
 	.byte $95, $97, $91, $93, $9B, $9B, $9B, $9B, $A1, $A1, $9B, $9B, $A3, $A5
 ObjP71:
@@ -1401,6 +1407,12 @@ FireIcePirateBro_ShootDone:
 	RTS
 
 ObjInit_Thwomp:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
 	LDA #BOUND24x32
 	STA Objects_BoundBox, X
 
@@ -1479,6 +1491,7 @@ Thwomp_Normal:
 	JMP Object_SetDeadAndNotSpawned
 
 Thwomp_DoAction:
+	STA Debug_Snap
 	JSR Object_DeleteOffScreen
 	
 	LDA Thwomp_Action, X
@@ -1905,7 +1918,7 @@ SpinyEgg_FlipRight:
 	RTS
 
 Lakitu_GraphicsTables:
-	.byte $0B
+	.byte $0B, $0B, $0B, $1A
 
 ObjInit_Lakitu:
 	LDA #BOUND16x16
@@ -1938,6 +1951,9 @@ Lakitu_CheckNextSlot:
 
 	LDA #$E0
 	STA ChaseVel_LimitLo, X
+
+	LDA #(ATTR_NOICE)
+	STA Objects_BehaviorAttr, X
 
 	JSR Object_CalcBoundBox
 
@@ -2335,22 +2351,22 @@ Lakitu_DrawDone:
 	RTS
 
 Lakitu_EnemyToss:
-	.byte OBJ_SPINYEGG, OBJ_FREEZIE, OBJ_HARDICE
+	.byte OBJ_SPINYEGG, OBJ_FREEZIE, OBJ_HARDICE, OBJ_LIGHTNINGBOLT
 
 Lakitu_EnemyFrameLeft:
-	.byte $99, $B1, $99
+	.byte $99, $B1, $99, $99
 
 Lakitu_EnemyFrameLeftAttr:
-	.byte SPR_PAL1, SPR_PAL2, SPR_PAL2
+	.byte SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 Lakitu_EnemyFrameRight:
-	.byte $99, $B3, $9B
+	.byte $99, $B3, $9B, $9B
 
 Lakitu_EnemyProperty:
-	.byte $00, $00, $00
+	.byte $00, $00, $00, $00
 
 Lakitu_EnemyFrameRightAttr:
-	.byte SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL2, SPR_PAL2
+	.byte SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 Lakitu_DrawEnemy:
 	LDA Lakitu_EnemyOffset, X
@@ -3095,6 +3111,14 @@ MissileMark_Norm:
 	AND #HIT_ICEBALL
 	STA Missile_HomingDisabled, X
 
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_FIREBALL
+	BEQ MissieMark_NotHit
+
+	JSR Object_Explode
+
+MissieMark_NotHit:
+
 	LDA Objects_Timer, X
 	BEQ ObjNorm_MissileMarkA
 	
@@ -3199,8 +3223,13 @@ ObjInit_Goomba:
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_CalcBoundBox
+
+	LDA <Objects_XVelZ, X
+	BNE GoombaInit_NoMove
+
 	JSR Object_MoveTowardsPlayer
 
+GoombaInit_NoMove:
 	LDA Objects_Property, X
 	BEQ ObjInit_Goomba1
 
@@ -3617,41 +3646,12 @@ ObjInit_PoisonMushroom:
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_MoveTowardsPlayer
-
-	LDA Objects_Property, X
-	CMP #$01
-	BNE ObjInit_PoisonMushroomRTS
-
-	JSR Object_CalcBoundBox
-	JSR Object_DetectTiles
-
-	LDA Object_BodyTileProp, X
-	CMP #TILE_PROP_ITEM
-	BCS ObjInit_PoisonMushroomRTS
-
-	LDA Objects_YZ, X
-	SUB #$10
-	STA Objects_YZ, X
-
-	LDA Objects_YHiZ, X
-	SBC #$00
-	STA Objects_YHiZ, X
-
-	LDA #$00
-	STA Objects_Property, X
-
-ObjInit_PoisonMushroomRTS:
 	RTS
 
 ObjNorm_PoisonMushroom:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PoisonMushroom1
 
-	LDA Objects_Property, X
-	BEQ PoisonMush_CheckState
-	RTS
-
-PoisonMush_CheckState:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE ObjNorm_PoisonMushroom0
@@ -3691,7 +3691,7 @@ ObjNorm_PoisonMushroom1:
 PoisonMushroom_InsideBlock:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
-
+	
 	LDA Object_BodyTileProp, X
 	CMP #TILE_PROP_ITEM
 	BCS PoisonMushroom_InsideBlockRTS
@@ -5769,7 +5769,6 @@ Larry_UnusedSprite:
 	LDA #$53
 	STA Sprite_RAMTile, Y
 
-	STA Debug_Snap
 	LDA Larry_ItemFrameRightAttr, X
 	STA Sprite_RAMAttr, Y
 

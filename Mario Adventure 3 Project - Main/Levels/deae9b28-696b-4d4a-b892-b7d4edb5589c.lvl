@@ -12,7 +12,7 @@
     <sprite x="48" y="13" value="144" item="0" property="3" />
     <sprite x="56" y="12" value="162" item="0" property="4" />
     <sprite x="68" y="25" value="162" item="0" property="4" />
-    <sprite x="2" y="8" value="15" item="0" property="0" />
+    <sprite x="2" y="8" value="15" item="0" property="1" />
     <sprite x="6" y="17" value="33" item="0" property="0" />
     <sprite x="44" y="8" value="33" item="0" property="0" />
     <sprite x="69" y="8" value="33" item="0" property="0" />
@@ -31,5 +31,5 @@
     <sprite x="174" y="7" value="144" item="0" property="3" />
     <sprite x="177" y="7" value="144" item="0" property="2" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

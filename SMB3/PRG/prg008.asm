@@ -531,9 +531,9 @@ Player_Update1:
 Player_Update3:
 	; The following are always called, dead or alive...
 
+
 	JSR Debug_Code
 	JSR Player_DrawAndDoActions29	; Draw Player and perform reactions to various things (coin heaven, pipes, etc lots more)
-	
 
 	LDA #$04
 	STA Air_Change
@@ -1050,9 +1050,9 @@ PRG008_A7AC:
 	LDA Player_ForcedSlide
 	BEQ PRG008_A7AC1
 
-	LDA <Player_X
-	AND #$0F
-	BNE PRG008_A7AD_2
+	;LDA <Player_X
+	;AND #$0F
+	;BNE PRG008_A7AD_2
 
 PRG008_A7AC1:
 	LDX #$00
@@ -1694,6 +1694,8 @@ PRG008_AC22:
 	.byte $D0, $CE, $CC, $CA, $CA, $CA
 
 Player_JumpFlyFlutter:
+	LDA #$00
+	STA <Player_Jumped
 
 	LDA Wall_Jump_Enabled
 	BNE PRG008_AC30
@@ -1824,6 +1826,7 @@ Jump_NotFrog:
 
 	LDA #$01
 	STA <Player_InAir ; Flag Player as mid air
+	STA <Player_Jumped
 
 	LDA #$00	
 	STA Player_WagCount	 ; Player_WagCount = 0
@@ -3444,10 +3447,8 @@ Player_DetectSolids3:
 	; Handle all common special tiles (ice blocks, P-Switches, bump blocks, etc.)
 	; Does not include things like instant-kill lava tiles...
 Player_TileInteractions:
-	AND #$0F
-	BEQ Player_TileInteractions3
-
 	LDA Tile_LastProp
+	AND #$F0
 	CMP #TILE_PROP_SOLID_BOTTOM
 	BEQ Player_TileInteractions3
 
@@ -3503,6 +3504,7 @@ Bump_X		= Temp_Var16
 Bump_XHi	= Temp_Var15
 
 Tiles_BumpBlocks:
+
 	LDA Bump_Prop
 	AND #$0F
 	JSR DynJump
@@ -3724,6 +3726,8 @@ BumpBlock_Spinner1:
 
 	LDA Tile_LastValue
 	ORA #$01
+	STA Bouncer_ReplaceTile, X
+
 	JMP Tile_WriteTempChange
 
 BumpBlock_SpinnerRTS:
@@ -3816,7 +3820,7 @@ BumpBlock_Sledge:
 	JSR BumpBlock_CheckMushroom
 	RTS
 
-BumpBlock_PSwitch:
+BumpBlock_PSwitch:      
 
 	LDA Block_NeedsUpdate
 	BNE BumpBlock_PSwitch1
@@ -5287,6 +5291,8 @@ Player_DetectCeiling2:
 	RTS
 
 Player_DetectFloor:
+	LDA <Player_YVel
+	BMI Player_DetectFloorRTS
 
 	LDA Level_Tile_Prop_Floor_Ceiling_Right
 	AND #$F0
@@ -5322,6 +5328,8 @@ Player_DetectFloor1:
 	LDA <Player_FlipBits
 	AND #~SPR_VFLIP
 	STA <Player_FlipBits
+
+Player_DetectFloorRTS:
 	RTS
 
 Player_DetectFloor2:
@@ -5612,10 +5620,9 @@ Door_Done:
 Player_SolidTileInteract: 
 	LDA Tile_LastProp
 	AND #$0F
-
 	JSR DynJump
 
-	.word Tile_NoInteract	;
+	.word Solid_CheckBump	;
 	.word Player_GetHurt	; TILE_PROP_HARMFUL		= $01
 	.word Solid_Slick		; TILE_PROP_SLICK		= $02
 	.word ApplyTileMove		; TILE_PROP_MOVE_LEFT	= $03
@@ -5632,7 +5639,21 @@ Player_SolidTileInteract:
 	.word Solid_PSwitch		; TILE_PROP_PSWITCH		= $0E
 	.word Solid_ESwitch		; TILE_PROP_ESWITCH		= $0F
 
+Solid_CheckBump:
+	LDA Tile_LastValue
+	AND #$3F
+	BNE Solid_CheckBumpRTS
 
+	LDA <Player_InAir
+	BNE Solid_CheckBumpRTS
+
+	LDA #$D0
+	STA <Player_YVel
+	STA <Player_InAir
+	RTS
+
+Solid_CheckBumpRTS:
+	RTS
 Solid_Slick:
 	LDA #$02
 	STA Player_Slippery

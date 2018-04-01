@@ -405,7 +405,7 @@ Player_FireBallNoKill:
 	JMP SpecialObj_ToPoof
 
 Player_FireBallTiles:
-	JSR SpecialObj_DetectWorld8x16
+	JSR SpecialObj_DetectWorld8x8
 	JSR SpecialObj_FireTiles
 	BCC Player_FireballNoHitIce
 
@@ -482,8 +482,15 @@ SpecialObj_FireTiles1:
 	RTS
 
 Player_FireTiles2:
+	PHA
 	ADD #$01
+	
 	JSR Object_ChangeBlock
+	
+	PLA
+	STA Tile_LastValue
+
+	JSR Projectile_TempChange
 
 	LDA SpecialObj_Data3, X
 	BNE SpecialObj_FireTiles2
@@ -571,7 +578,7 @@ Player_IceBallNoKill:
 	JMP SpecialObj_ToPoof
 
 Player_IceBallTiles:
-	JSR SpecialObj_DetectWorld8x16
+	JSR SpecialObj_DetectWorld8x8
 	JSR SpecialObj_IceTiles
 
 	LDA SpecialObj_YVel, X
@@ -646,6 +653,7 @@ SpecialObj_IceTiles1:
 SpecialObj_IceTiles2:
 	SUB #$01
 	JSR Object_ChangeBlock
+	JSR Projectile_TempChange
 
 	LDA SpecialObj_Data3, X
 	BNE SpecialObj_IceTiles1
@@ -732,7 +740,7 @@ Player_HammerDraw:
 	STA <SpecialObj_Attributes
 	STA <SpecialObj_Attributes + 1
 	JSR SpecialObj_CheckForeground
-	JSR SpecialObj_CheckDirection16x6
+	JSR SpecialObj_CheckDirection16x16
 	JSR SpecialObj_Draw16x16
 	RTS
 
@@ -899,19 +907,7 @@ SpecialObj_DetectWorld16x16:
 	LDA Game_Counter
 	AND #$01
 	TAY
-
-	LDA SpecialObj_Y,X
-	ADD Detect16x16, Y
-	STA Tile_DetectionY
-
-	LDA SpecialObj_YHi,X
-	ADC #$00
-	STA Tile_DetectionYHi
-
-	LDA Game_Counter
-	LSR A
-	AND #$01
-	TAY
+	STA <Temp_Var16
 
 	LDA SpecialObj_X,X
 	ADD Detect16x16, Y
@@ -921,12 +917,27 @@ SpecialObj_DetectWorld16x16:
 	ADC #$00
 	STA Tile_DetectionXHi
 
+	LDA Game_Counter
+	AND #$02
+	ORA <Temp_Var16
+	STA <Temp_Var16
+	LSR A
+	TAY
+
+	LDA SpecialObj_Y,X
+	ADD Detect16x16, Y
+	STA Tile_DetectionY
+
+	LDA SpecialObj_YHi,X
+	ADC #$00
+	STA Tile_DetectionYHi
+
 	JMP Object_DetectTile
 
 Detect8x8:
 	.byte $00, $08, $04, $0C
 
-SpecialObj_DetectWorld8x16:
+SpecialObj_DetectWorld8x8:
 	LDY #$00
 	LDA SpecialObj_YVel,X
 	BMI DW81
@@ -984,9 +995,9 @@ SpecialObj_CheckForeground:
 SpecialObj_CheckForeground1:
 	RTS
 
-SpecialObj_CheckDirection16x6:
+SpecialObj_CheckDirection16x16:
 	LDA SpecialObj_XVel, X
-	BMI SpecialObj_CheckDirection16x61
+	BMI SpecialObj_CheckDirection16x161
 
 SpecialObj_Flip:
 	LDA <SpecialObj_Attributes
@@ -1006,7 +1017,7 @@ SpecialObj_Flip:
 	PLA
 	STA  <SpecialObj_Tile + 1
 
-SpecialObj_CheckDirection16x61:
+SpecialObj_CheckDirection16x161:
 	RTS
 
 SpecialObj_CheckDirection:
@@ -1959,7 +1970,7 @@ SObj_CheckHitSolid:
 	; Flag Blooper Kid as out of water until determined otherwise
 
 	; Temp_Var6 = special object Y + 12
-	JSR SpecialObj_DetectWorld8x16
+	JSR SpecialObj_DetectWorld8x8
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2003,7 +2014,7 @@ SpecialObj_UpdateAndDraw:
 	.word Enemy_AcidPool	; 09: Lost Kuribo shoe
 	.word Enemy_BigFireball	; 0A: Rocky's Wrench
 	.word Enemy_Cannonball	; 0B: Cannonball
-	.word SObj_DoNothing	; 0C: Fire bro bouncing fireball
+	.word Enemy_LightningBolt	; 0C: Fire bro bouncing fireball
 	.word SObj_ExplodeStar	; 0D: Explosion star
 	.word SOBJ_BUBBLE	; 0E: Bubble
 	.word SObj_LavaLotusFire; 0F: Lava Lotus fire
@@ -2482,27 +2493,95 @@ CannonBall_TilesInteraction2:
 	STA Debris_Y
 	JMP Common_MakeBricks
 
+Enemy_LightningBolt:
+	LDA <Player_HaltGameZ
+	BNE Enemy_LightningBoltDraw
+
+	JSR SObj_ApplyXYVels
+	JSR SpecialObj_CalcBounds16x16
+	JSR EnemyProj_HitPlayer
+
+	JSR PlayerProj_HitEnemies
+	BCC Enemey_LightningWorld
+
+	LDA <SpecialObj_ObjectAttributes
+	CMP #ATTR_ALLWEAPONPROOF
+	BEQ Enemey_LightningWorld
+
+	LDA #$10
+	STA Proj_Attack
+	JSR SpecialObj_AttackEnemy
+
+Enemey_LightningWorld:
+	JSR SpecialObj_DetectWorld16x16
+
+	LDA <Temp_Var16
+	CMP #$02
+	BCS Enemy_LightngingBoltGrnd
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Enemy_LightningBoltDraw
+
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE Enemy_LightningBoltPoof
+
+	LDA Tile_LastValue
+	ADD #$01
+	JSR Object_ChangeBlock
+
+	LDA SpecialObj_X, X
+	STA Debris_X
+
+	LDA SpecialObj_Y, X
+	STA Debris_Y
+	JSR Common_MakeBricks
+
+	JMP Enemy_LightningBoltDraw
+
+Enemy_LightngingBoltGrnd:
+	
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCS Enemy_LightningBoltDraw
+
+Enemy_LightningBoltPoof:
+	LDA #SOBJ_POOF
+	STA SpecialObj_ID,X
+
+	LDA #$08
+	STA SpecialObj_Timer, X
+	RTS
+
+LightningBolt_Tiles:
+	.byte $AD, $AF, $95, $97
+
+Enemy_LightningBoltDraw:
+
+	LDA SpecialObj_Data1, X
+	AND #$02
+	TAY
+
+	INC SpecialObj_Data1, X
+
+	LDA LightningBolt_Tiles, Y
+	STA <SpecialObj_Tile
+
+	LDA LightningBolt_Tiles + 1, Y
+	STA <SpecialObj_Tile + 1
+
+	LDA #SPR_PAL3
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection16x16
+	JSR SpecialObj_Draw16x16
+	RTS
+
 SObj_OffsetYForRaster:
-	LDA Level_AScrlConfig
-	BEQ PRG007_B491	 ; If there's no raster effect going on, jump to PRG007_B491 (RTS)
-
-	LDY #$00	 ; Y = $00 (16-bit sign extension)
-
-	LDA Level_ScrollDiffV
-	BPL PRG007_B483	 ; If vertical scroll difference is not negative, jump to PRG007_B483
-
-	DEY		 ; Otherwise, Y = $FF (16-bit sign extension)
-
-PRG007_B483:
-	ADD SpecialObj_Y,X
-	STA SpecialObj_Y,X	; Apply raster offset to Special Object Y
-
-	TYA
-
-	ADC SpecialObj_YHi,X
-	STA SpecialObj_YHi,X	; Apply sign extension/carry
-
-PRG007_B491:
+	
 	RTS		 ; Return
 
 Wrench_Patterns:	.byte $A1, $95, $9F, $95
@@ -2618,7 +2697,7 @@ Enemy_EggDraw:
 	STA <SpecialObj_Attributes + 1
 
 	JSR SpecialObj_CheckForeground
-	JSR SpecialObj_CheckDirection16x6
+	JSR SpecialObj_CheckDirection16x16
 
 	LDA Egg_HitWall, X
 	BEQ Enemey_EggDraw1
@@ -2710,7 +2789,7 @@ Enemy_BigFireballDraw:
 	STA <SpecialObj_Attributes + 1
 
 	JSR SpecialObj_CheckForeground
-	JSR SpecialObj_CheckDirection16x6
+	JSR SpecialObj_CheckDirection16x16
 	JSR SpecialObj_Draw16x16
 	RTS
 
@@ -3029,7 +3108,7 @@ Enemy_FireBallCalcBounds:
 	JSR EnemyProj_HitPlayer
 
 Enemy_FireBallTiles:
-	JSR SpecialObj_DetectWorld8x16
+	JSR SpecialObj_DetectWorld8x8
 	JSR SpecialObj_FireTiles
 	BCC Enemy_FireBallNoIce
 
@@ -3114,7 +3193,7 @@ Enemy_IceBallCalcBounds
 	JSR EnemeyProj_Enemy_FreezePlayer
 
 Enemy_IceBallTiles:
-	JSR SpecialObj_DetectWorld8x16
+	JSR SpecialObj_DetectWorld8x8
 	JSR SpecialObj_IceTiles
 
 	LDA SpecialObj_YVel, X
@@ -3196,7 +3275,7 @@ Enemy_HammerDraw:
 	STA <SpecialObj_Attributes
 	STA <SpecialObj_Attributes + 1
 	JSR SpecialObj_CheckForeground
-	JSR SpecialObj_CheckDirection16x6
+	JSR SpecialObj_CheckDirection16x16
 	JSR SpecialObj_Draw16x16
 	RTS
 
@@ -3403,8 +3482,8 @@ ObjectGenerator_DrawAndUpdate:
 	BNE PRG007_BB8F
 
 	LDA EventType
-	AND #$80
-	BEQ PRG007_BB8F
+	CMP #EVENT_LASER_TRAPS
+	BNE PRG007_BB8F
 
 	LDA TrapSet
 	BNE PRG007_BB8F
@@ -3495,10 +3574,10 @@ CannonBall_YOffset:
 	.byte $FF, $00, $00, $00, $00, $00, $FF, $FF
 
 CannonBall_XVel:
-	.byte $F0, $E8, $F0, $00, $10, $18, $10, $00
+	.byte $F0, $E0, $F0, $00, $10, $20, $10, $00
 
 CannonBall_YVel:
-	.byte $F0, $00, $10, $10, $10, $00, $F0, $F0
+	.byte $F0, $00, $10, $20, $10, $00, $F0, $E0
 
 CannonBall_PoofX:
 	.byte $F8, $F8, $F8, $00, $08, $08, $08, $00
@@ -3508,17 +3587,17 @@ CannonBall_PoofY:
 
 ObjectGen_Cannonball:
 	LDA ObjectGenerator_Timer, X
-	CMP #$60
-	BCC ObjectGen_Cannonball1
-	JMP ObjectGen_CannonballRTS
-
-ObjectGen_Cannonball1:
-	LDA ObjectGenerator_Timer, X
 	BEQ ObjectGen_Cannonball2
-	
-	JMP ObjectGen_CannonballRTS
+	RTS
 
 ObjectGen_Cannonball2:
+	LDA ObjectGenerator_Visibility, X
+	CMP #(GENERATOR_VVISIBLE | GENERATOR_HVISIBLE)
+	BEQ Cannonball_Make
+	RTS
+
+Cannonball_Make:
+
 	LDA ObjectGenerator_Var, X
 	AND #$03
 	CMP #$03
@@ -3608,8 +3687,16 @@ BobOmbYOffset:		.byte $F8, $F8, $00, $00
 
 ObjectGen_Bobombs:
 	LDA ObjectGenerator_Timer, X
-	BNE BobOmbGeneratorRTS
+	BNE BobOmbGeneratorRTS0
 
+	LDA ObjectGenerator_Visibility, X
+	CMP #(GENERATOR_HVISIBLE)
+	BNE BobOmbGen_Make
+
+BobOmbGeneratorRTS0:
+	RTS
+
+BobOmbGen_Make:
 	LDA #OBJ_BOBOMB
 	STA <Object_Check
 
@@ -3693,6 +3780,13 @@ ObjectGen_Goombas:
 	LDA ObjectGenerator_Timer, X
 	BNE GoombaGeneratorRTS
 
+	LDA ObjectGenerator_Visibility, X
+	AND #GENERATOR_HVISIBLE
+	BNE GoombaGen_Make
+	RTS
+
+GoombaGen_Make:
+
 	LDA #OBJ_GOOMBA
 	STA <Object_Check
 
@@ -3772,6 +3866,8 @@ CanonPoofXOffset:
 EnemyCannonType:
 	.byte OBJ_GOOMBA, OBJ_GOOMBA, OBJ_BEACHEDCHEEP,  OBJ_BEACHEDCHEEP
 
+EnemyCannon_XOffset:
+	.byte $F8, $08, $F8, $08
 
 EnemyCannonDirection:
 	.byte $00, SPR_HFLIP, $00, SPR_HFLIP
@@ -3782,8 +3878,31 @@ EnemyCannonColor:
 ObjectGen_Enemy:
 	
 	LDA ObjectGenerator_Timer,X
-	BNE ObjectGen_EnemyRTS	 ; If timer not expired, jump to PRG007_BD7A (RTS)
+	BNE GenEnemy_RTS	 ; If timer not expired, jump to PRG007_BD7A (RTS)
 
+	LDA ObjectGenerator_Visibility, X
+	AND #GENERATOR_HVISIBLE
+	BNE GenEnemy_Make
+	RTS
+
+GenEnemy_Make:
+	LDA ObjectGenerator_Property, X
+	TAY
+
+	LDA EnemyCannonType, Y
+	STA <Object_Check
+
+	JSR CheckObjectsOfType
+
+	LDA <Num_Objects
+	CMP #$02
+	BCC GenEmemy_MakeMore
+
+GenEnemy_RTS:
+	RTS
+
+GenEmemy_MakeMore:
+	LDX <CurrentObjectIndexZ
 	; Set timer to $70
 	LDA #$70
 	STA ObjectGenerator_Timer,X	; (only used here, then it goes back to 'X' anyway)
@@ -3814,7 +3933,7 @@ ObjectGen_Enemy:
 	SBC #$00
 	STA <Objects_YHiZ,X
 
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
 
 	JSR Object_CalcBoundBox
@@ -3864,6 +3983,14 @@ ObjectGen_ShellCannon:
 	LDA ObjectGenerator_Timer,X
 	BNE ObjectGen_ShellCannon1	 ; If timer not expired, jump to PRG007_BD7A (RTS)
 
+	LDA ObjectGenerator_Visibility, X
+	AND #GENERATOR_HVISIBLE
+	BNE ShellCannnon_Make
+	RTS
+
+ShellCannnon_Make:
+	LDX <CurrentObjectIndexZ	
+
 	LDA Kill_Tally
 	CMP #$03
 	BCS ObjectGen_ShellCannon1
@@ -3904,12 +4031,14 @@ ObjectGen_ShellCannon:
 	LDA Goomb_XVelocity, Y
 	STA <Objects_XVelZ, X
 
-	; It's a Goomba
 	LDA #OBJ_PURPLETROOPA
 	STA Objects_ID,X
 
 	LDA #OBJSTATE_KICKED
 	STA Objects_State, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
 	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
@@ -3986,6 +4115,9 @@ CannonWidths: .byte $00, $08
 
 DetermineCannonVisibilty:
 	
+	LDA #$00
+	STA ObjectGenerator_Visibility, X
+
 	LDA ObjectGenerator_X,X
 	ADD #$10
 	STA <Temp_Var15		; Temp_Var15 = object's X + ??
@@ -3998,13 +4130,12 @@ DetermineCannonVisibilty:
 	CMP <Horz_Scroll
 	LDA <Temp_Var16	
 	SBC <Horz_Scroll_Hi
-	BEQ CannonVerticalVisibility
+	BNE CannonVerticalVisibility
 	
-	PLA
-	PLA
+	LDA #GENERATOR_HVISIBLE
+	STA ObjectGenerator_Visibility, X
 
-	RTS
-
+	
 CannonVerticalVisibility:
 	LDA ObjectGenerator_Y,X
 	ADD #$10
@@ -4018,10 +4149,11 @@ CannonVerticalVisibility:
 	CMP <Vert_Scroll
 	LDA <Temp_Var16	
 	SBC <Vert_Scroll_Hi
-	BEQ CannonVerticalVisibilityRTS
+	BNE CannonVerticalVisibilityRTS
 
-	PLA
-	PLA
+	LDA ObjectGenerator_Visibility, X
+	ORA #GENERATOR_VVISIBLE
+	STA ObjectGenerator_Visibility, X
 
 CannonVerticalVisibilityRTS:
 	RTS		 ; Return
@@ -4241,10 +4373,10 @@ PRG007_BF28:
 	RTS		 ; Return
 				  
 Bill_XVel:
-	.byte -$18, $18, $00, -$18, -$18, $00, $18, $18
+	.byte -$18, $18, $00, -$16, -$16, $00, $16, $16
 
 Bill_YVel:
-	.byte $00, $00, -$18, -$18, $18, $18, $18, -$18
+	.byte $00, $00, -$18, -$16, $16, $18, $16, -$16
 
 Bill_XOffset:
 	.byte $F4, $0C, $00, $F4, $F4, $00, $0C, $0C
@@ -4262,6 +4394,12 @@ ObjectGen_BulletBill:
 	LDA ObjectGenerator_Timer,X
 	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
 
+	LDA ObjectGenerator_Visibility, X
+	AND #GENERATOR_HVISIBLE
+	BNE BulletBillGen_Make
+	RTS
+
+BulletBillGen_Make:
 	; Reset Cannon Fire timer to $80-$9F, random
 	LDA RandomN,X
 	AND #$07
@@ -4292,7 +4430,7 @@ ObjectGen_BulletBill:
 
 	BCS PRG007_BF80	 ; If carry set, jump to PRG007_BF80
 
-	LDA #$50
+	LDA #$40
 	STA Objects_Timer, X
 
 	LDA #OBJ_BULLETBILLHOMING
@@ -4350,9 +4488,13 @@ PRG007_BF81:
 	STA Objects_State, X
 	STA Objects_NoExp, X
 
+	LDA ObjectGenerator_Visibility, X
+	AND #GENERATOR_VVISIBLE
+	BEQ Make_BulletRTS
 
 	JSR Common_MakePoof	 ; Play cannon fire noise and make smoke
 
+Make_BulletRTS:
 	RTS		 ; Return
 
 
@@ -4379,7 +4521,7 @@ PRG007_BFDC:
 	JSR Object_New	 ; Prepare this new object
 
 	; Set to normal state
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State,X
 
 	RTS		 ; Return
@@ -4740,6 +4882,8 @@ Projectile_TempChange:
 	LDA ProjectileToSpinners
 	BEQ Projectile_TempChangeRTS
 
+	
+	JSR Tile_WriteTempChange
 
 Projectile_TempChangeRTS:
 	RTS

@@ -519,9 +519,11 @@
     <property>9 Blocks</property>
     <property>10 Blocks</property>
   </spritedefinition>
-  <spritedefinition id="2E" width="01" height="01" name="Pirate Boo" class="1" group="Global">
-    <sprite x="0" y="0" value="38" palette="1" horizontalflip="false" verticalflip="false" table="4D" />
-    <sprite x="8" y="0" value="3A" palette="1" horizontalflip="false" verticalflip="false" table="4D" />
+  <spritedefinition id="2E" width="01" height="01" name="Pirate Boo" class="2" group="Ghosts">
+    <sprite x="0" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="36" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <property>Normal</property>
+    <property>Behind Background</property>
   </spritedefinition>
   <spritedefinition id="2F" width="01" height="01" name="Boo" class="2" group="Ghosts">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="37" />
@@ -751,6 +753,7 @@
     <property>Hidden inside item block.</property>
     <property>Hidden inside stone or brick block.</property>
     <property>Appears with 5 block changes</property>
+    <property>Does not disappear off screen</property>
   </spritedefinition>
   <spritedefinition id="4B" width="01" height="01" name="Magic Star #2" class="1" group="Global">
     <sprite x="0" y="0" value="3E" palette="3" horizontalflip="false" verticalflip="false" table="90" />
@@ -762,6 +765,7 @@
     <property>Hidden inside item block.</property>
     <property>Hidden inside stone or brick block.</property>
     <property>Appears with 5 block changes</property>
+    <property>Does not disappear off screen</property>
   </spritedefinition>
   <spritedefinition id="4C" width="01" height="01" name="Magic Star #3" class="1" group="Global">
     <sprite x="0" y="0" value="3E" palette="3" horizontalflip="false" verticalflip="false" table="90" />
@@ -773,17 +777,18 @@
     <property>Hidden inside item block.</property>
     <property>Hidden inside stone or brick block.</property>
     <property>Appears with 5 block changes</property>
+    <property>Does not disappear off screen</property>
   </spritedefinition>
-  <spritedefinition id="4D" width="01" height="01" name="Trap Set Explosion" class="1" group="Global">
-    <sprite x="4" y="-16" value="32" palette="3" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="-12" y="-2" value="32" palette="2" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="-4" y="16" value="32" palette="1" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="20" y="-2" value="32" palette="1" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="12" y="16" value="32" palette="2" horizontalflip="false" verticalflip="false" table="90" />
+  <spritedefinition id="4D" width="01" height="01" name="Jump Controller" class="1" group="Global">
+    <sprite x="0" y="0" value="84" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="8" y="0" value="86" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <property>3 Jumps</property>
+    <property>2 Jumps</property>
+    <property>1 Jumps</property>
   </spritedefinition>
   <spritedefinition id="4E" width="01" height="01" name="Rhythm Blocks" class="1" group="Global">
-    <sprite x="0" y="0" value="84" palette="3" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="8" y="0" value="86" palette="2" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="0" y="0" value="84" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="8" y="0" value="86" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
   <spritedefinition id="4F" width="01" height="01" name="DPad Blocks" class="1" group="Global">
     <sprite x="0" y="0" value="84" palette="3" horizontalflip="false" verticalflip="false" table="-1" />
@@ -1191,7 +1196,7 @@
     <property>Throws Spinies</property>
     <property>Throws Freezies</property>
     <property>Throws Hard Ice</property>
-    <property>Throws Unstable Bob-ombs</property>
+    <property>Throws Lightning Bolts</property>
   </spritedefinition>
   <spritedefinition id="84" width="1" height="1" name="Hatching Spiny Egg" class="2" group="Spiny/Buzzy Beetle">
     <sprite x="0" y="0" value="18" palette="1" horizontalflip="false" verticalflip="false" table="0B" />
@@ -1560,11 +1565,9 @@
     <sprite x="0" y="16" value="A8" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="8" y="16" value="AA" palette="-1" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>
-  <spritedefinition id="B6" width="01" height="01" name="Lakitu Boundary" class="1" group="Global">
-    <sprite x="0" y="0" value="FC" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
-    <sprite x="8" y="0" value="FE" palette="2" horizontalflip="false" verticalflip="false" table="FF" />
-    <sprite x="0" y="0" value="C8" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
-    <sprite x="8" y="0" value="CA" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
+  <spritedefinition id="B6" width="01" height="01" name="Cheep Cheep Generator" class="3" group="Common">
+    <sprite property="0" x="0" y="0" value="26" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="0" x="8" y="0" value="28" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
   </spritedefinition>
   <!--<spritedefinition id="B7" width="01" height="01" name="Earthquake/Stone Generator" class="2" group="Fire/Mine">
     <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="0A" />

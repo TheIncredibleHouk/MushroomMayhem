@@ -29,7 +29,7 @@ ObjectGroup02_InitJumpTable:
 	.word ObjInit_MagicStar1	; Object $4A - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
 	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
-	.word ObjInit_DoNothing	; Object $4D
+	.word ObjInit_JumpControl	; Object $4D
 	.word ObjInit_DoNothing		; Object $4E
 	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjInit_Explosion	; Object $50 - OBJ_EXPLOSION
@@ -71,7 +71,7 @@ ObjectGroup02_NormalJumpTable:
 	.word ObjNorm_MagicStar	; Object $4A - OBJ_MAGICSTAR
 	.word ObjNorm_MagicStar		; Object $4B - OBJ_MAGICSTAR
 	.word ObjNorm_MagicStar		; Object $4C - OBJ_MAGICSTAR
-	.word ObjNorm_DoNothing	; Object $4D
+	.word ObjNorm_JumpControl	; Object $4D
 	.word RhythmPlatforms		; Object $4E
 	.word DPad_ControlTiles	; Object $4F - OBJ_CHAINCHOMPFREE
 	.word ObjNorm_Explosion		; Object $50 - OBJ_EXPLOSION
@@ -114,7 +114,7 @@ ObjectGroup02_CollideJumpTable:
 	.word Magic_StarCollect	; Object $4A - OBJ_MAGICSTAR
 	.word Magic_StarCollect	; Object $4A - OBJ_MAGICSTAR
 	.word Magic_StarCollect	; Object $4A - OBJ_MAGICSTAR
-	.word ObjHit_DoNothing	; Object $4D
+	.word ObjHit_DoNothing; Object $4D
 	.word ObjHit_DoNothing	; Object $4E
 	.word ObjHit_DoNothing	; Object $4F - OBJ_CHAINCHOMPFREE
 	.word Object_HurtPlayer	; Object $50 - OBJ_EXPLOSION
@@ -2068,11 +2068,6 @@ BobOmb_Activated = Objects_Data4
 BobOmb_Unstable = Objects_Data5
 
 ObjNorm_BobOmb:
-	LDA Objects_XZ, X
-	LDA Objects_XHiZ, X
-	LDA Objects_YZ, X
-	LDA Objects_YHiZ, X
-
 	LDA <Player_HaltGameZ
 	BEQ BobOmb_DoAction
 
@@ -2194,6 +2189,7 @@ BobOmb_Right:
 BobOmb_Out:
 	LDA #$00
 	STA BobOmb_Action, X
+
 	LDA #$08
 	STA BobOmb_BehindTimer, X
 	JMP BobOmb_Animate
@@ -2562,12 +2558,19 @@ BobOmb_CalcULOffXY:
 	STA <Temp_Var8
 
 	RTS		 ; Return
+
 MagicStarOffset:
 	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
+	LDA Objects_Property, X
+	CMP #$07
+	BEQ MagicStar_NoDelete
 
 	JSR Object_DeleteOffScreen	
+
+MagicStar_NoDelete:
+
 	JSR Object_CalcBoundBox
 	JSR Magic_Star_Action
 	JSR Object_InteractWithPlayer
@@ -2611,6 +2614,7 @@ Magic_Star_Action:
 	.word MagicStar_CheckItemBlock
 	.word MagicStar_CheckClearedBlock
 	.word MagicStar_SpinnersActive
+	.word MagicStar_NoFloat
 
 MagicStar_CheckEnemies:
 	LDY #$04
@@ -2630,8 +2634,7 @@ NoCheck:
 	DEY
 	BPL CheckEnemies
 
-	LDA #$01
-	STA Objects_Property, X
+	JMP MagicStar_NoFloat
 
 Check_Done:
 	PLA
@@ -2647,7 +2650,6 @@ MagicStar_CheckPSwitch:
 
 MagicStar_CheckPSwitch1:
 	JMP Object_InteractWithTiles
-
 MagicStar_NoFloat:
 	LDA <Player_HaltGameZ
 	BNE MagicStar_NoMove
@@ -3193,10 +3195,14 @@ PRG003_B1D7:
 FloatMine_Action = Objects_Data1
 
 ObjInit_FloatMine:
-	JSR Object_NoInteractions
+	LDA #(ATTR_NOICE)
+	STA Objects_BehaviorAttr, X
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA #$01
+	STA ObjSplash_Disabled, X
 
 	LDA <Objects_XZ, X
 	SUB #$04
@@ -3267,11 +3273,14 @@ FloatMine_NotDead:
 	.word FloatMine_PatternMove
 	.word FloatMine_PatternMove
 	.word FloatMine_PatternMove
+	.word FloatMine_PatternMoveOnce
 
 FloatMine_PatternMove:
 	JSR FloatMine_DoPatternMove
 	JSR FloatMine_DoPatternMove
 	JSR FloatMine_DoPatternMove
+
+FloatMine_PatternMoveOnce:
 	JSR FloatMine_DoPatternMove
 	JMP FloatMine_Chained
 
@@ -3284,20 +3293,19 @@ FloatMine_DoPatternMove:
 	.word PatrolUpDown
 	.word PatrolDiagonal
 	.word PatrolDiagonal
+	.word PatrolUpDown
 
-FloatMine_Unchained
-	LDA Objects_InWater, X
-	BEQ FloatMine_Bob
+FloatMine_Unchained:
 
-	INC Reverse_Gravity
-	JMP FloatMine_Move
+    INC Reverse_Gravity
+    JMP FloatMine_Move
 
 FloatMine_Bob:
-	LDA <Objects_YVelZ, X
-	BPL FloatMine_Move
+    LDA <Objects_YVelZ, X
+    BPL FloatMine_Move
 
-	LDA #$00
-	STA <Objects_YVelZ, X
+    LDA #$04
+    STA <Objects_YVelZ, X
 
 FloatMine_Move:
 	JSR Object_Move
@@ -3307,9 +3315,39 @@ FloatMine_Chained:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
+	LDA FloatMine_Action, X
+	CMP #$02
+	BCS FloatMine_NormMove
+
+	LDA Objects_InWater, X
+	BNE FloatMine_NormMove
+	
+	LDA #$01
+	STA Patrol_YVelocityChange, X
+
+	LDA <Objects_YZ, X
+	AND #$F0
+	ORA #$04
+	STA <Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+	LDA #$04
+	STA Patrol_ResetTimer, X
+	STA Patrol_YAccelLimit, X
+
+	LDA #$06
+	STA FloatMine_Action, X
+
+FloatMine_NormMove:
+	LDA TrapSet
+	BNE FloatMine_Explode
+
 	LDA <Objects_TilesDetectZ, X
 	BEQ FloatMine_NoExplodeYet
 
+FloatMine_Explode:
 	JSR FloatMine_Expload
 
 FloatMine_NoExplodeYet:
@@ -3322,6 +3360,7 @@ FloatMine_NoExplodeYet:
 	BCS FloatMine_Draw
 
 	JSR Object_YDistanceFromPlayer
+
 	LDA <YDiff
 	CMP #$30
 	BCS FloatMine_Draw
@@ -3329,7 +3368,7 @@ FloatMine_NoExplodeYet:
 	INC FloatMine_Action, X
 
 FloatMine_Draw:
-	LDA #$00
+	LDA #SPR_BEHINDBG
 	STA Objects_Orientation, X
 
 	JSR Object_Draw16x32
@@ -3420,6 +3459,8 @@ FloatMine_CalcBoundBox:
 	RTS
 
 FloatMine_Expload:
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
 	INC Explosion_Timer, X
 	RTS
 
@@ -5282,3 +5323,85 @@ PRG003_BD60:
 Tail_PlayerYOff:	.byte $12, $04	; Offset to Player Sprite Y for small/ducking, or not
 Tail_PlayerYLimit:	.byte $0E, $18	; Limit value
 
+
+JumpControl_Allowed:
+	.byte $03, $02, $01
+
+JumpControl_TilesProps:
+	.byte $00, TILE_PROP_SOLID_ALL, TILE_PROP_SOLID_ALL, TILE_PROP_SOLID_ALL
+
+JumpControl_SwitchProps:
+	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_ESWITCH), $00, $00, $00
+
+JumpControl_PatternTables:
+	.byte $66, $64, $62, $60
+
+JumpControl_Remaining = Objects_Data1
+
+ObjInit_JumpControl:
+	LDY Objects_Property, X
+
+	LDA JumpControl_Allowed, Y
+	STA JumpControl_Remaining, X
+
+	LDY JumpControl_Remaining, X
+	
+	LDA JumpControl_PatternTables, Y
+	STA PatTable_BankSel
+
+	LDA JumpControl_TilesProps, Y
+	STA TileProperties + $70
+
+	LDA #$00
+	STA EventSwitch
+	STA TileProperties + $E2
+	STA TileProperties + $E3
+	JMP Object_NoInteractions
+
+
+ObjNorm_JumpControl:
+	LDA JumpControl_Remaining, X
+	BNE JumpControl_CheckJump
+	
+	LDA EventSwitch
+	BEQ JumpControl_RTS
+
+	LDY Objects_Property, X
+
+	LDA JumpControl_Allowed, Y
+	STA JumpControl_Remaining, X
+
+	LDY JumpControl_Remaining, X
+	
+	LDA JumpControl_PatternTables, Y
+	STA PatTable_BankSel
+
+	LDA JumpControl_TilesProps, Y
+	STA TileProperties + $70
+
+	LDA #$00
+	STA EventSwitch
+	STA TileProperties + $E2
+	STA TileProperties + $E3
+	RTS
+
+JumpControl_CheckJump:
+	LDA <Player_Jumped
+	BEQ JumpControl_RTS
+
+	DEC JumpControl_Remaining, X
+	
+	LDY JumpControl_Remaining, X
+	
+	LDA JumpControl_PatternTables, Y
+	STA PatTable_BankSel
+
+	LDA JumpControl_TilesProps, Y
+	STA TileProperties + $70
+
+	LDA JumpControl_SwitchProps, Y
+	STA TileProperties + $E2
+	STA TileProperties + $E3
+
+JumpControl_RTS:
+	RTS

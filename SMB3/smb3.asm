@@ -833,7 +833,7 @@ HIT_CEILING =		8
 	Level_TileOff:		.ds 1	; Tile mem offset
 	Level_Tile:		.ds 1	; Temporary holding point for a detected tile index
 	Level_Tile_Prop:		.ds 1
-	Player_Slopes:		.ds 1	; for sloped levels only (3 bytes allocated, but only one actually used)
+	Player_Jumped:		.ds 1	; for sloped levels only (3 bytes allocated, but only one actually used)
 				; *NOTE: Code at PRG030_9EDB clears Player_Slopes+1 and Player_Slopes+2, but these are never used!
 	Player_OnPlatform:	.ds 1
 
@@ -1956,6 +1956,10 @@ SPRITE_3_VINVISIBLE = $08
 	ObjectGenerator_Var:		.ds 8	; $06DB-$06E2
 	ObjectGenerator_Timer:	.ds 8	; $06E3-$06EA Cannon Fire timer, decrements to zero
 	ObjectGenerator_Property: .ds 8;
+	ObjectGenerator_Visibility: .ds 8;
+
+GENERATOR_HVISIBLE = 01;
+GENERATOR_VVISIBLE = 02;
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0700
 .Bound_0700:	BoundCheck .Bound_0700, $0700, $06xx RAM
@@ -2490,6 +2494,16 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	EventSwitch:			.ds 1	; For e-switch levels
 	EventVar:				.ds 1
 	EventTicker:			.ds 1
+
+EVENT_FLOOD_FLOOR1			= $01
+EVENT_FLOOD_FLOOR2			= $02
+EVENT_ENEMY_HANDLES			= $03
+EVENT_COLOR_SWITCH			= $04
+EVENT_SNOW					= $05
+EVENT_FIREBALLS				= $06
+EVENT_8WAY_BULLETS			= $80
+EVENT_LASER_TRAPS			= $81
+EVENT_JUMP_LIMITS			= $82
 	EventType:				.ds 1	; For e-switch levels
 	LeftRightInfection:		.ds 1	;
 	Player_Yolked:					.ds 1	;
@@ -2598,7 +2612,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Objects_DisPatChng:	.ds 6	; $7A49-$7A4E If set, this object no longer enforces a pattern bank change
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 5 ONLY!
-	ObjSplash_DisTimer:	.ds 6	; $7A4F-$7A54 Object water/lava splashes are disabled until decrements to zero
+	ObjSplash_Disabled:	.ds 8	; $7A4F-$7A54 Object water/lava splashes are disabled until decrements to zero
 
 	ObjectGenerator_Timer2:	.ds 8	; $7A57-$7A5E Cannon Fire timer (decrements to zero)
 
@@ -2794,7 +2808,8 @@ HIT_NINJASTAR	= 08
 	
 
 	Temp_VarNP0:		.ds 1	; A temporary not on page 0
-
+	Last_EventGen:		.ds 1
+	Level_EventTimer:	.ds 1	;
 	Lakitu_Active:		.ds 1	; Set while a Lakitu is active; keeps Lakitu "alive" even if off-screen etc.
 
 	LevelEvent_Cnt:		.ds 1	; General purpose counter used by a couple LevelEvents
@@ -3062,6 +3077,7 @@ SOBJ_ACIDPOOL		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese ori
 SOBJ_BIGFIREBALL		= $0A 	; Rocky's Wrench
 SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
+SOBJ_LIGHTNINGBOLT  = $0C
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
 SOBJ_BUBBLE		= $00 	; Bubble
 SOBJ_LAVALOTUSFIRE	= $0F	; Lava Lotus fire
@@ -3193,6 +3209,7 @@ TILE_PROP_THIN_ICE		= $07 ;
 TILE_PROP_VPIPE_LEFT	= $08 ;
 TILE_PROP_VPIPE_RIGHT	= $09 ;
 TILE_PROP_HPIPE_BOTTOM	= $0A ;
+TILE_PROP_LOCKBLOCK		= $0B ;
 TILE_PROP_ENEMYSOLID	= $0C ;
 TILE_PROP_STONE			= $0D ;
 TILE_PROP_PSWITCH		= $0E ;
@@ -3598,12 +3615,14 @@ OBJ_PHANTO		= $31	; "Stretch" Boo, upright
 OBJ_BOOSTRETCH_FLIP	= $32	; "Stretch" Boo, upside-down
 OBJ_NIPPER		= $33 	; Stationary nipper plant
 OBJ_TOAD		= $34 	; Toad and his house message
-OBJ_TOADHOUSEITEM	= $35	; Item that pops out of a treasure box in a Toad House
+OBJ_TOADHOUSEITEM	= $00 ;
+OBJ_LIGHTNINGBOLT	= $35	; Item that pops out of a treasure box in a Toad House
 OBJ_PLATFORM_PATH	= $36	; Floating wooden platform
 OBJ_PLATFORM_DIAG1OSCS	= $37	; left/right short-oscillation log
 OBJ_PLATFORM_DIAG2OSCS	= $38	; Up/down short-oscillation log
 OBJ_PACBOOHOME	= $39 	; Hopping nipper plant
-OBJ_FALLINGPLATFORM	= $3A	; Falling donut lift type platform
+OBJ_FALLINGPLATFORM = $00 ;
+OBJ_JUMPCONTROL	= $3A	; Falling donut lift type platform
 OBJ_CHARGINGCHEEPCHEEP = $00 ;
 OBJ_SPECTERCHEEP	= $3B 	; Charging, hopping cheep cheep
 OBJ_PLATFORM_PATHFOLLOW	= $3C 	; Falling wooden platform

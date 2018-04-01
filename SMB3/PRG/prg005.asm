@@ -2508,19 +2508,26 @@ PRG005_B1B4:
 
 
 ObjInit_ProjBar:
+	LDA #BOUND8x16
+	STA Objects_BoundBox, X
+	
 	LDA Objects_XZ, X
 	ADD #$04
 	STA Objects_XZ, X
+
 	LDA Objects_Property, X
 	AND #$01
 	STA Objects_Data5, X
+
 	LDA Objects_Property, X
 	LSR A
 	AND #01
 	STA Objects_Data4, X
+
 	LDA Objects_Property, X
 	AND #$04
 	BEQ Init_ProjBarRTS
+	
 	LDA #$40
 	STA Objects_Data3, X
 
@@ -2578,6 +2585,7 @@ RadialTableY:
 	.byte 01, 03, 04, 06
 
 ObjNorm_ProjectileBarCW:
+	JSR Object_CalcBoundBox
 	JSR Object_DeleteOffScreen
 
 	LDA <Player_HaltGameZ
@@ -2754,7 +2762,8 @@ ObjNorm_ProjectileBarCCW:
 ObjInit_Dimmer:
 	LDA #$00
 	STA Objects_Data4, X
-	RTS		 ; Return
+
+	JMP Object_NoInteractions
 
 ObjNorm_Dimmer:
 	LDA <Counter_1
@@ -2795,17 +2804,17 @@ Dimmer_Fade:
 	ASL A
 	ASL A
 	STA TempA
-	LDY #$0B
+	LDY #$0F
 
 Dimmer_Fade2:
-	LDA MasterPal_Data+4,Y	; Get this color
+	LDA MasterPal_Data,Y	; Get this color
 	SUB TempA	 	; Subtract 16 from it
 	BPL Dimmer_Fade3	 	; If we didn't go below zero, jump to PRG026_AC55
 
 	LDA #$0f	 	; Otherwise, set it to safe minimum
 
 Dimmer_Fade3:
-	STA Palette_Buffer+4,Y	; Update palette color
+	STA Palette_Buffer,Y	; Update palette color
 	DEY		 	; Y--
 	BPL Dimmer_Fade2	 	; While Y >= 0, loop!
 
@@ -3331,7 +3340,7 @@ Level_ObjectsSpawnByScrollV:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LevelEvent_Do:
 	LDA Level_Event	
-	BEQ PRG005_BBBF	 ; If no level event, jump to PRG005_BBBF (RTS)
+	BEQ LevelEvent_DoRTS	 ; If no level event, jump to PRG005_BBBF (RTS)
 	JSR DynJump	 ; Dynamic jump based on Level_Event... 
 	
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!! 
@@ -3339,19 +3348,106 @@ LevelEvent_Do:
 	.word LevelEvent_DoNothing	; 0 - Do nothing (not used!)
 	.word LevelEvent_8WayBulletBills	; 1 - Cheep Cheep attack
 	.word LevelEvent_ProduceMines	; 2 - Spike Cheeps float by
-	.word LevelEvent_LakituFlee	; 3 - Clears Lakitu_Active which causes an active Lakitu to flee / be removed
+	.word LevelEvent_GenerateCheepCheeps	; 
 	.word LevelEvent_Earthquake	; 4 - Green and red parabeetles flyby!
 	.word LevelEvent_CloudsinBG	; 5 - Floating clouds in background float by
 	.word LevelEvent_WoodPlatforms	; 6 - Random wooden platforms 
 	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
 	.word LevelEvent_Cancel		; 8 - Does nothing but clear Level_Event
 
-LevelEvent_LakituFlee:
+LevelEvent_DoRTS:
+	RTS
 
-	; Clears Lakitu_Active
+CheepCheepXOffsets:
+	.byte $E8, $F8, $08, $18, $E8, $F8, $08, $18
+
+CheepCheepXHiOffsets
+	.byte $FF, $FF, $00, $00, $00, $00, $01, $01
+
+CheepCheepXVelocity:
+	.byte $19, $16, $13, $10, $F0, $ED, $EA, $E7
+
+CheepCheepTimers:
+	.byte $80, $60, $80, $A0, $80, $60, $A0, $E0
+
+LevelEvent_GenerateCheepCheeps:
+	LDA Level_EventTimer
+	BEQ GenerateCheepCheep
+
+	DEC Level_EventTimer
+	RTS
+
+GenerateCheepCheep:
+	LDA RandomN + 1
+	AND #$07
+	TAY
+
+	LDA CheepCheepTimers, Y
+	STA Level_EventTimer
+
 
 	LDA #$00
-	STA Lakitu_Active
+	STA <Temp_Var1
+
+	LDY #$04
+
+CheepCheep_EnemyCount:
+	LDA Objects_ID, Y
+	LDA Objects_State, Y
+	BEQ EnemyCount_NoInc
+
+	INC <Temp_Var1
+
+EnemyCount_NoInc:
+	DEY
+	BPL CheepCheep_EnemyCount
+
+	LDA <Temp_Var1
+	CMP #$03
+	BCS GenerateCheepCheepRTS
+
+	LDA RandomN
+	AND #$07
+	TAY
+
+	JSR Object_FindEmptyX
+	BCC GenerateCheepCheepRTS
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA #OBJ_BEACHEDCHEEP
+	STA Objects_ID,X
+
+
+	LDA <Horz_Scroll
+	ADD CheepCheepXOffsets, Y
+	STA <Objects_XZ,X
+
+	LDA <Horz_Scroll_Hi
+	ADC CheepCheepXHiOffsets, Y
+	STA <Objects_XHiZ,X
+
+	LDA <Vert_Scroll
+	ADD #$B0
+	STA <Objects_YZ, X
+
+	LDA <Vert_Scroll_Hi
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	LDA CheepCheepXVelocity, Y
+	STA <Objects_XVelZ, X
+
+	LDA #$90
+	STA <Objects_YVelZ, X
+	STA Objects_NoExp, X
+
+	LDA #$03
+	STA Objects_Property, X
+
+GenerateCheepCheepRTS:
+	RTS
 
 LevelEvent_Cancel:
 	LDA #$00
@@ -3584,10 +3680,10 @@ PRG005_BCF4:
 
 
 BB8WayXVels:
-	.byte -$16, -$20, -$16, $00, $22, $20, $22, $00
+	.byte -$16, -$20, -$16, $00, $16, $20,  $16, $00
 
 BB8WayYVels:
-	.byte -$16, $00, $16, $20, $16, $00, -$16, -$20
+	.byte -$16,  $00,  $16, $18, $16, $00, -$16, -$18
 
 BB8WayXOffset:
 	.byte $F8, $F8, $F8, $80, $00, $00, $00, $80
@@ -3595,25 +3691,58 @@ BB8WayXOffset:
 BB8WayYOffset:
 	.byte $C0, $60, $00, $00, $00, $60, $C0, $C0
 
-BB8WayFrame:
-	.byte $04, $00, $01, $03, $01, $00, $04, $05
-
-BB8WayAttr:
-	.byte $00, $00, $00, $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP, $00
+BB8Way_Timers:
+	.byte $80, $60, $80, $A0
 
 LevelEvent_8WayBulletBills:	
-	LDA Game_Counter
-	AND #$7f	 ; Cap 0 - 31
-	BNE PRG005_BD53	 ; If not zero, jump to PRG005_BD53 (RTS)
+	LDA Level_EventTimer
+	BEQ EightWay_Fire
+
+	DEC Level_EventTimer
+	RTS
+
+EightWay_Fire:
+	LDA EventType
+	CMP #EVENT_8WAY_BULLETS
+	BNE EightWar_CanFire
+
+	LDA TrapSet
+	BEQ EightWay_RTS
+
+EightWar_CanFire:
+	LDA RandomN
+	AND #$C0
+	
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+
+	TAX
+
+	LDA BB8Way_Timers, X
+	STA Level_EventTimer
 
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
-	; Set the Cheep Cheep's object ID
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
 	LDA #OBJ_BULLETBILL
 	STA Objects_ID,X
 
 	LDA RandomN
 	AND #$07
+
+	CMP Last_EventGen
+	BNE EightWay_NotSame
+	ADD #$04
+	AND #$07
+	
+EightWay_NotSame:
+	STA Last_EventGen
 	TAY
 
 	LDA Level_VertScroll
@@ -3640,23 +3769,13 @@ LevelEvent_8WayBulletBills:
 	LDA BB8WayYVels, Y
 	STA <Objects_YVelZ,X	 ; Set Y velocity = -$48
 
-	LDA BB8WayFrame, Y
-	STA Objects_Frame, X
-
-	LDA BB8WayAttr, Y
-	STA Objects_Orientation,X
-
-	LDA #$02
-	STA Objects_SpriteAttributes,X
-
-	LDA #$4C
-	STA PatTable_BankSel+4
-
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-PRG005_BD53:
+	STA Objects_NoExp, X
+
+EightWay_RTS:
 	RTS		 ; Return
 
 	; The Spike Cheeps appear on the left or right side of the screen (respective)

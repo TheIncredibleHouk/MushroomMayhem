@@ -738,7 +738,7 @@ PRG010_C413:
 	CMP #$0d	 
 	BNE PRG010_C46B	 	; If Map_Operation <> $D (Normal), jump to PRG010_C46B
 
-	LDA <Pad_Input
+	LDA #$00;<Pad_Input
 	AND #PAD_B	
 	BEQ PRG010_C46B		; If Player is NOT pressing B, jump to PRG010_C46B
 

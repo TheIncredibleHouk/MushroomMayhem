@@ -1232,7 +1232,7 @@ DrawKickedShell:
 	TAY		 ; Y = 0 to 3, by counter
 
 	LDA Objects_Orientation,X
-	AND #SPR_HFLIP		; Keep all FlipBits except horizontal flips
+	AND #~SPR_HFLIP
 	ORA ObjShell_AnimFlipBits,Y	 
 	STA Objects_Orientation,X	 ; Apply flip as appropriate
 
@@ -2452,6 +2452,7 @@ Object_New:
 	STA Objects_BoundBottomHi, X
 	STA Objects_NoExp, X
 	STA Objects_BoundBox, X
+	STA ObjSplash_Disabled, X
 	DEC Objects_BoundBox, X
 
 	CPX #$06
@@ -2507,7 +2508,7 @@ Object_DoNormal:
 ; $D554
 Object_CalcSpriteXY_NoHi:
 	LDA <Objects_YZ,X
-	SUB Level_VertScroll
+	SUB Vert_Scroll
 	STA <Objects_SpriteY,X
 
 	LDA <Objects_XZ,X
@@ -2541,7 +2542,7 @@ Fish_FixedYIfAppro:
 ; $D589
 Object_ShakeAndCalcSprite:
 	LDA <Objects_YZ,X	; Get object's Y
-	SUB Level_VertScroll	; Make relative
+	SUB Vert_Scroll	; Make relative
 	STA <Objects_SpriteY,X	; Store as sprite Y
 	STA <Temp_Var1		; Also -> Temp_Var1
 
@@ -3082,11 +3083,11 @@ PRG000_D7FE:
 
 PRG000_D809:
 	LDA <Temp_Var2		
-	SUB Level_VertScroll
+	SUB Vert_Scroll
 	STA <Temp_Var4		 ; Temp_Var4 = screen-relative Y
 
 	LDA <Temp_Var1		
-	SBC Level_VertScrollH	
+	SBC Vert_Scroll_Hi	
 	BNE PRG000_D81E	 ; If relative position is off-screen, jump to PRG000_D81E
 
 	; Otherwise...
@@ -4192,6 +4193,9 @@ NotWater:
 	CMP Objects_InWater,X	
 	BEQ PRG000_C6FA	 	; If object is either still in water / out of water (hasn't changed), jump to PRG000_C6FA
 
+	LDA ObjSplash_Disabled, X
+	BNE PRG000_C6FA
+
 	JSR Object_WaterSplash	 ; Hit water; splash!
 	LDA Objects_InWater, X
 	BNE PRG000_C6FA
@@ -4363,6 +4367,7 @@ PRG001_A9B7:
 	STA Object_CeilingStops
 	JSR Object_CheckForeground
 	JSR Object_HandleBumpUnderneath
+	
 	RTS		 ; Return
 
 Object_CheckForeground:
@@ -5417,7 +5422,7 @@ Object_Burst:
 	; Brick bust upper Y
 	LDA <Objects_YZ, X
 	CLC
-	SBC Level_VertScroll
+	SBC Vert_Scroll
 	STA Brick_DebrisYHi
 
 	; Brick bust lower Y

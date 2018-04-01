@@ -338,7 +338,7 @@ ObjP13:
 ObjP16:
 	.byte $81, $83, $85, $87, $89, $89, $87, $85, $C1, $C3, $C5, $C7, $C9, $C9, $C7, $C5
 ObjP14:
-	.byte $99, $71, $9B, $71 
+	.byte $99, $5C, $9B, $5C
 
 ObjP15:
 	.byte $81, $83
@@ -499,7 +499,7 @@ SpringAnim:
 	
 	LDA #$00
 	STA <Player_YVel
-	STA <Player_InAir
+
 
 	LDA <Player_FlipBits
 	AND #~SPR_VFLIP
@@ -519,6 +519,7 @@ SpringAnim:
 	LDA Spring_Jump_Height, Y
 	STA <Player_YVel
 	STA <Player_InAir
+
 	
 	LDA #$E0
 	STA <Objects_YVelZ, X
@@ -636,9 +637,13 @@ ObjNorm_KeyHeld:
 
 CheckKeyAgainstLock:
 	LDA Object_BodyTileProp,X
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_LOCKBLOCK)
+	BEQ CheckKeyAgainstLockUnlock
+
 	CMP #TILE_PROP_LOCK
 	BNE RemainLocked
 
+CheckKeyAgainstLockUnlock:
 	LDA Block_NeedsUpdate
 	BNE RemainLocked
 
@@ -915,7 +920,7 @@ Produce_Key:
 
 	LDA #OBJ_KEY
 	STA Objects_ID, X
-	RTS
+	JMP ObjInit_Key
 
 Do_PowerUp:
 
@@ -1666,20 +1671,20 @@ ObjInit_Bowser:
 Bowser_HeadBounceXVel:	.byte $10, -$10
 
 ObjNorm_Bowser:
-
-	; Set Bowser's pattern table selections
-	LDA #$3a
-	STA PatTable_BankSel+4
-	LDA #$3b
-	STA PatTable_BankSel+5
-
-	LDA <Player_HaltGameZ
-	BNE PRG001_B8D3	 ; If gameplay is halted, jump to PRG001_B8D3
-
-	LDA Bowser_Counter1
-	BEQ PRG001_B8A1	 ; If Bowser_Counter1 = 0, jump to PRG001_B8A1
-
-	DEC Bowser_Counter1	 ; Bowser_Counter1--
+;
+;; Set Bowser's pattern table selections
+;LDA #$3a
+;STA PatTable_BankSel+4
+;LDA #$3b
+;STA PatTable_BankSel+5
+;
+;LDA <Player_HaltGameZ
+;BNE PRG001_B8D3	 ; If gameplay is halted, jump to PRG001_B8D3
+;
+;LDA Bowser_Counter1
+;BEQ PRG001_B8A1	 ; If Bowser_Counter1 = 0, jump to PRG001_B8A1
+;
+;DEC Bowser_Counter1	 ; Bowser_Counter1--
 
 PRG001_B8A1:
 	LDA Bowser_Counter2
@@ -3102,7 +3107,7 @@ MoveSingleParticle:
 
 	LDA Weather_XPos, Y
 	ADD Weather_XVel, Y
-	;ADD Wind_ExtraVel, X
+	ADD Wind_ExtraVel, X
 	STA Weather_XPos, Y
 
 	LDA Weather_YPos, Y
@@ -3214,41 +3219,73 @@ DontFlipParticle:
 	STA Sprite_RAM + 2, X
 	RTS
 	
-ChompPal: .byte SPR_PAL1, SPR_PAL0
-GiantChomp_IsAttacking = Objects_Data5
+GiantChomp_Palette:
+	.byte SPR_PAL1, SPR_PAL0
+
+GiantChomp_Action = Objects_Data1
+GiantChomp_AnimTicks = Objects_Data2
 
 ObjInit_GiantChomp:
 	LDA #BOUND32x32
 	STA Objects_BoundBox, X
 
-	LDA #ATTR_ALLWEAPONPROOF
+	LDA #ATT_ATTACKPROOF
 	STA Objects_WeaponAttr, X
 
-	LDA #(ATTR_SHELLPROOF)
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
-	LDA #$00
-	STA Objects_Data4, X
-	STA Objects_Data5, X
+	LDA <Objects_XZ, X
+	ADD #$0C
+	STA <Objects_XZ, X
 
-	LDA #$D0
-	STA <Objects_YVelZ, X
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Objects_XHiZ, X
+
+	LDA <Vert_Scroll
+	ADD #$0B
+	STA <Objects_YZ, X
+
+	LDA <Vert_Scroll_Hi
+	STA <Objects_YHiZ, X
 	RTS
 
 ObjNorm_GiantChomp:
-	LDA GiantChomp_IsAttacking, X
+	LDA GiantChomp_Action, X
 	JSR DynJump
 
-	.word MiniChomp
-	.word GiantChomp
+	.word GiantChomp_Wait
+	.word GiantChomp_BgSoar
+	.word GiantChomp_Attack
+	
+GiantChomp_Wait:
+	JSR Object_CalcBoundBox
+	JSR Object_XDistanceFromPlayer
 
-MiniChomp:
-	LDA Objects_Orientation,X
-	ORA #SPR_BEHINDBG
-	STA Objects_Orientation,X
+	LDA <XDiff
+	CMP #$30
+	BCS WaitChompRTS
+	
+	INC GiantChomp_Action, X
 
+	LDA <Objects_YZ,X
+	SUB #$10
+	STA <Objects_YZ,X
+
+	LDA <Objects_YHiZ,X
+	SBC #$00
+	STA <Objects_YHiZ,X
+
+	LDA #$B0
+	STA <Objects_YVelZ, X
+
+WaitChompRTS:
+	RTS
+
+GiantChomp_BgSoar:
 	LDA <Player_HaltGameZ
-	BNE DrawMiniChomp
+	BNE MiniChomp_Draw
 
 MiniChomp_Norm:
 	LDA Sound_QLevel2
@@ -3256,112 +3293,120 @@ MiniChomp_Norm:
 	STA Sound_QLevel2
 
 	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBox
+	JSR Object_YDistanceFromPlayer
 
-	LDA <Objects_SpriteY,X
+	LDA <YDiffAboveBelow
+	BEQ MiniChomp_Draw
+
+	LDA <Objects_SpriteY, X
 	CMP #$F0
 	BCC Mini_NotAttacking
 
-	INC GiantChomp_IsAttacking, X
+	INC GiantChomp_Action, X
 
-	JSR Object_CalcBoundBox
-	
-	LDA <Objects_YZ, X
-	SUB #$20
-	STA <Objects_YZ, X
-
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Objects_YHiZ, X
-
-	LDA #$00
+	LDA #$20
 	STA <Objects_YVelZ, X
 
-	LDA Objects_Property, X
-	CMP #$01
-	BCC Mini_NotAttacking
+	LDA <Objects_XZ, X
+	SUB #$0C
+	STA <Objects_XZ, X
 
-	JSR GCTargetPlayer
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA <Objects_XHiZ, X
+
+	;LDA Objects_Property, X
+	;CMP #$01
+	;BCC Mini_NotAttacking
+
+	;JSR GCTargetPlayer
 
 Mini_NotAttacking:
-	LDA Objects_Property, X
-	CMP #$01
-	BCC NoChompFlash
+	;LDA Objects_Property, X
+	;CMP #$01
+	;BCC NoChompFlash
 
-	LDA Game_Counter
-	LSR A
-	LSR A
-	AND #$01
-	TAY
-	LDA ChompPal, Y
-	STA Objects_SpriteAttributes,X
+	;LDA Game_Counter
+	;LSR A
+	;LSR A
+	;AND #$01
+	;TAY
+	;LDA GiantChomp_Pal, Y
+	;STA Objects_SpriteAttributes,X
 
-NoChompFlash:
-
-	LDA Game_Counter
+MiniChomp_Animate:
+	INC GiantChomp_AnimTicks, X
+	LDA GiantChomp_AnimTicks, X
 	AND #$08
 	LSR A
 	LSR A
 	LSR A
 	STA Objects_Frame, X
 
-DrawMiniChomp:
+MiniChomp_Draw:
 	JMP Object_Draw
 
-ChompBlock_Offset:
+GiantChompDetect_Offset:
 	.byte $08, $18
 
-GiantChomp:
-	
-	LDA Objects_Orientation,X
-	AND #~SPR_BEHINDBG
-	STA Objects_Orientation,X
+GiantChomp_Pal:
+	.byte SPR_PAL2, SPR_PAL0
+
+GiantChomp_Attack:
+	LDA <Player_HaltGameZ
+	BEQ GiantChomp_Attack1
+	JMP GiantChomp_Draw
+
+GiantChomp_Attack1:
 
 	LDA <Player_HaltGameZ
-	BNE DrawChomp
+	BNE GiantChomp_Animate
 
 GiantChomp_Norm:
 	LDA Objects_Property, X
 	CMP #$02
-	BEQ ChompNoDelete
+	BEQ GiantChomp_NoDelete
 
 	JSR Object_DeleteOffScreen
 
-ChompNoDelete:
+GiantChomp_NoDelete:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
 	LDA Objects_Property, X
 	CMP #$02
-	BNE ChompNoReset
+	BNE GiantChomp_NoReset
 
 	LDA <Objects_YHiZ, X
 	CMP #$01
-	BCC ChompNoReset
+	BCC GiantChomp_NoReset
 
 	LDA <Objects_YZ, X
 	CMP #$B0
-	BCC ChompNoReset
+	BCC GiantChomp_NoReset
 
 	LDA #$00
-	STA GiantChomp_IsAttacking, X
+	STA GiantChomp_Action, X
+
 	LDA #$D0
 	STA <Objects_YVelZ, X
 	RTS
 
-ChompNoReset:
+GiantChomp_NoReset:
 
 	LDY #$00
 
 	LDA Game_Counter
 	AND #$01
-	BNE ChompOtherBlock
+	BNE GiantChomp_OtherBlock
 
 	INY
 
-ChompOtherBlock:
+GiantChomp_OtherBlock:
 	LDA Objects_BoundLeft, X
-	ADC ChompBlock_Offset, Y
+	ADC GiantChompDetect_Offset, Y
 	STA Block_DetectX
 
 	LDA Objects_BoundLeftHi, X
@@ -3376,7 +3421,7 @@ ChompOtherBlock:
 
 	JSR Object_DetectTile
 	CMP #TILE_PROP_SOLID_ALL
-	BCC DrawChomp
+	BCC GiantChomp_Animate
 
 	LDA Tile_LastValue
 	AND #$C0
@@ -3393,26 +3438,31 @@ ChompOtherBlock:
 	LDA #$00
 	STA <Objects_YVelZ, X
 
-DrawChomp:
+GiantChomp_Animate:
 	LDA Objects_Property, X
 	CMP #$01
-	BCC NoChompFlash1
+	BCC GiantChomp_NoFlash
 
 	LDA Game_Counter
 	LSR A
 	LSR A
 	AND #$01
 	TAY
-	LDA ChompPal, Y
+	LDA GiantChomp_Pal, Y
 	STA Objects_SpriteAttributes,X
 
-NoChompFlash1:
+GiantChomp_NoFlash:
 	LDA Game_Counter
 	AND #$08
 	LSR A
 	LSR A
 	LSR A
 	STA Objects_Frame, X
+
+GiantChomp_Draw:
+	LDA Objects_Orientation,X
+	AND #~SPR_BEHINDBG
+	STA Objects_Orientation,X
 
 	LDA #LOW(GiantChompFrames)
 	STA <Giant_TilesLow
@@ -3422,7 +3472,7 @@ NoChompFlash1:
 
 	JSR Object_DrawGiant
 
-DoneGC:
+GiantChomp_RTS:
 	RTS
 
 ;DrawMiniChomp:
@@ -3459,19 +3509,20 @@ GCTargetPlayer:
 
 	JSR Negate
 	
-	AND #$38
-	LSR A
-	LSR A
-	LSR A
-	TAY
-	LDA <Player_X
-	SUB GCTargets, Y
-	AND #$F0
-	STA <Objects_XZ, X
+	;AND #$38
+	;LSR A
+	;LSR A
+	;LSR A
+	;TAY
+	;LDA <Player_X
+	; SUB GCTargets, Y
+	;AND #$F0
+	;STA <Objects_XZ, X
 
-	LDA <Player_XHi
-	SBC #$00
-	STA <Objects_XHiZ, X
+
+	;LDA <Player_XHi
+	;SBC #$00
+	;STA <Objects_XHiZ, X
 
 	RTS
 
@@ -5095,6 +5146,9 @@ ObjInit_CoinLock:
 	STA CoinLock_CoinsRemaining, X
 
 	INC Objects_Global, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	JMP Object_NoInteractions 
 
 Coin_Unlock:
@@ -5171,7 +5225,6 @@ ObjNorm_CoinLock1:
 	LDA LastPatTab_Sel
 	AND #$01
 	STA Objects_Frame, X
-
 
 	LDA LastPatTab_Sel
 	EOR #$01
@@ -5295,6 +5348,8 @@ WaterSplash_Draw:
 	JMP Object_DrawMirrored
 
 ObjInit_ESwitch:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	JMP Object_NoInteractions
 
 ObjNorm_ESwitch:
@@ -5509,3 +5564,4 @@ FillWater_Animate:
 
 FillWater_Draw:
 	JMP Object_Draw
+

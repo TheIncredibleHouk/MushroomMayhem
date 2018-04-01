@@ -1179,6 +1179,7 @@ PRG030_897B:
 
 CancelSpinners:
 	STA SpinnerBlocksTimers, X
+	STA SpinnerBlocksActive, X
 	STA SpinnerBlocksX, X
 	DEX
 	BPL CancelSpinners
@@ -5923,8 +5924,6 @@ Player_Die:
 	RTS		 ; Return
 
 Tile_WriteTempChange:
-	STA Bouncer_ReplaceTile, X
-
 	JSR Common_GetTempTile
 	BCC Tile_WriteTempChangeRTS
 
@@ -5933,19 +5932,22 @@ Tile_WriteTempChange:
 
 	LDA #$20
 	STA SpinnerBlocksTimers, Y
+	
+	LDA #$01
 	STA SpinnerBlocksActive, Y 
 
-	LDA Tile_Y
+	LDA Block_ChangeY
 	STA SpinnerBlocksY, Y	 ; Store into object slot
 
-	LDA Tile_YHi
+	LDA Block_ChangeYHi
 	STA SpinnerBlocksYHi, Y ; Store Y Hi into object slot
 
-	LDA Tile_XHi	
+	LDA Block_ChangeX
+	STA SpinnerBlocksX, Y ; Store X Hi into object slot
+
+	LDA Block_ChangeXHi	
 	STA SpinnerBlocksXHi, Y; Store X Hi into object slot
 
-	LDA Tile_X
-	STA SpinnerBlocksX, Y ; Store X Hi into object slot
 	SEC
 
 Tile_WriteTempChangeRTS:

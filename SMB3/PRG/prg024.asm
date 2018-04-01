@@ -2186,7 +2186,7 @@ Title_PrepForWorldMap:
 	LDX #$00
 
 Title_PrepForWorldMap1:
-	STA Inventory_Items, X
+	;STA Inventory_Items, X
 	INX
 	CPX #$10
 	BNE Title_PrepForWorldMap1

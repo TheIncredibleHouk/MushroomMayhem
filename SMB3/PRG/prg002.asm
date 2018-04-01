@@ -34,19 +34,19 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DiagonalPodobo		; Object $2B - OBJ_RICOCHET_PODOBO
 	.word ObjInit_WoodenPlatCCW	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.word ObjInit_WoodenPlatCW	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.word ObjInit_Boo	; Object $2E - OBJ_PIRATEBOO
+	.word ObjInit_PirateBoo	; Object $2E - OBJ_PIRATEBOO
 	.word ObjInit_Boo		; Object $2F - OBJ_BOO
 	.word ObjInit_PacBoo	; Object $30 - OBJ_PACBOO
 	.word ObjInit_Phanto		; Object $31 - OBJ_PHANTO
 	.word ObjInit_PhantoFlip	; Object $32 - OBJ_PHANTO_FLIP
 	.word ObjInit_DoNothing		; Object $33 - OBJ_NIPPER
 	.word ObjInit_Toad		; Object $34 - OBJ_TOAD
-	.word ObjInit_DoNothing		; Object $35 - OBJ_TOADHOUSEITEM
+	.word ObjInit_Lightning		; Object $35 - OBJ_LIGHTNINGBOLT
 	.word ObjInit_PlatformFollow	; Object $36 - OBJ_PLATFORM_PATH
 	.word ObjInit_DoNothing	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.word ObjInit_DoNothing	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
 	.word ObjInit_DoNothing	; Object $39 - OBJ_PACBOOHOME
-	.word ObjInit_DoNothing	; Object $3A - OBJ_FALLINGPLATFORM
+	.word ObjInit_DoNothing	; Object $3A - OBJ_JUMPCONTROL
 	.word ObjInit_SpecterCheep	; Object $3B - OBJ_SPECTERCHEEP
 	.word ObjInit_DoNothing	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.word ObjInit_DoNothing		; Object $3D - OBJ_NIPPERFIREBREATHER
@@ -83,12 +83,12 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_Phanto		; Object $32 - OBJ_PHANTO_FLIP
 	.word ObjNorm_Nipper		; Object $33 - OBJ_NIPPER
 	.word ObjNorm_Toad		; Object $34 - OBJ_TOAD
-	.word ObjNorm_ToadHouseItem	; Object $35 - OBJ_TOADHOUSEITEM
+	.word ObjNorm_Lightning	; Object $35 - OBJ_LIGHTNINGBOLT
 	.word ObjNorm_PlatformFollow	; Object $36 - OBJ_PLATFORM_PATH
 	.word ObjNorm_PlatformOscillate	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.word ObjNorm_PlatformOscillate	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
 	.word ObjNorm_PacBooHome		; Object $39 - OBJ_PACBOOHOME
-	.word ObjNorm_DoNothing	; Object $3A - OBJ_FALLINGPLATFORM
+	.word ObjNorm_DoNothing	; Object $3A - OBJ_JUMPCONTROL
 	.word ObjNorm_SpecterCheep	; Object $3B - OBJ_SPECTERCHEEP
 	.word ObjNorm_PlatformUnstable	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.word ObjNorm_NipperFireBreathe	; Object $3D - OBJ_NIPPERFIREBREATHER
@@ -119,19 +119,19 @@ ObjectGroup01_CollideJumpTable:
 	.word Player_GetHurt	; Object $2B - OBJ_RICOCHET_PODOBO
 	.word Platform_PlayerStand		; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.word Platform_PlayerStand		; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.word Player_Take_Coins		; Object $2E - OBJ_PIRATEBOO
+	.word PirateBoo_TakeCoins		; Object $2E - OBJ_PIRATEBOO
 	.word Player_GetHurt		; Object $2F - OBJ_BOO
 	.word Player_GetHurt		; Object $30 - OBJ_PACBOO
 	.word Player_GetHurt		; Object $31 - OBJ_PHANTO
 	.word Player_GetHurt		; Object $32 - OBJ_PHANTO_FLIP
 	.word Player_GetHurt		; Object $33 - OBJ_NIPPER
 	.word ObjHit_DoNothing		; Object $34 - OBJ_TOAD
-	.word ObjHit_DoNothing		; Object $35 - OBJ_TOADHOUSEITEM
+	.word Player_GetHurt		; Object $35 - OBJ_LIGHTNINGBOLT
 	.word Platform_PlayerStand		; Object $36 - OBJ_PLATFORM_PATH
 	.word Platform_PlayerStand		; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.word Platform_PlayerStand		; Object $38 - OBJ_PLATFORM_DIAG2OSCS
 	.word ObjHit_DoNothing		; Object $39 - OBJ_PACBOOHOME
-	.word ObjHit_DoNothing		; Object $3A - OBJ_FALLINGPLATFORM
+	.word ObjHit_DoNothing		; Object $3A - OBJ_JUMPCONTROL
 	.word Player_GetHurt		; Object $3B - OBJ_SPECTERCHEEP
 	.word Platform_PlayerStand		; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.word Player_GetHurt		; Object $3D - OBJ_NIPPERFIREBREATHER
@@ -168,12 +168,12 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $33 - OBJ_NIPPER
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $34 - OBJ_TOAD
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $35 - OBJ_TOADHOUSEITEM
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $35 - OBJ_LIGHTNINGBOLT
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $36 - OBJ_PLATFORM_PATH
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $39 - OBJ_PACBOOHOME
-	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3A - OBJ_FALLINGPLATFORM
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3A - OBJ_JUMPCONTROL
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3D - OBJ_NIPPERFIREBREATHER
@@ -205,19 +205,19 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT5 | $0A	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte OPTS_NOCHANGE	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte OPTS_NOCHANGE	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.byte $00	; Object $2E - OBJ_PIRATEBOO
+	.byte OPTS_SETPT5 | $37	; Object $2E - OBJ_PIRATEBOO
 	.byte OPTS_SETPT5 | $37	; Object $2F - OBJ_BOO
 	.byte OPTS_SETPT5 | $37	; Object $30 - OBJ_PACBOO
 	.byte OPTS_SETPT5 | $37	; Object $31 - OBJ_PHANTO
 	.byte OPTS_SETPT5 | $12	; Object $32 - OBJ_PHANTO_FLIP
 	.byte OPTS_SETPT5 | $37	; Object $33 - OBJ_NIPPER
 	.byte OPTS_SETPT5 | $37	; Object $34 - OBJ_TOAD
-	.byte OPTS_SETPT5 | $05	; Object $35 - OBJ_TOADHOUSEITEM
+	.byte OPTS_SETPT5 | $1A	; Object $35 - OBJ_LIGHTNINGBOLT
 	.byte OPTS_NOCHANGE	; Object $36 - OBJ_PLATFORM_PATH
 	.byte OPTS_NOCHANGE	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte OPTS_NOCHANGE	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
 	.byte OPTS_NOCHANGE; Object $39 - OBJ_PACBOOHOME
-	.byte OPTS_SETPT6 | $13	; Object $3A - OBJ_FALLINGPLATFORM
+	.byte OPTS_SETPT6 | $13	; Object $3A - OBJ_JUMPCONTROL
 	.byte OPTS_SETPT6 | $13	; Object $3B - OBJ_SPECTERCHEEP
 	.byte OPTS_NOCHANGE	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.byte OPTS_SETPT5 | $0A	; Object $3D - OBJ_NIPPERFIREBREATHER
@@ -247,19 +247,19 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_POOFDEATH	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte KILLACT_STANDARD	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-	.byte KILLACT_STANDARD	; Object $2E - OBJ_PIRATEBOO
-	.byte KILLACT_STANDARD	; Object $2F - OBJ_BOO
+	.byte KILLACT_POOFDEATH	; Object $2E - OBJ_PIRATEBOO
+	.byte KILLACT_POOFDEATH	; Object $2F - OBJ_BOO
 	.byte KILLACT_NORMALSTATE	; Object $30 - OBJ_PACBOO
 	.byte KILLACT_POOFDEATH	; Object $31 - OBJ_PHANTO
 	.byte KILLACT_POOFDEATH	; Object $32 - OBJ_PHANTO_FLIP
 	.byte KILLACT_STANDARD	; Object $33 - OBJ_NIPPER
 	.byte KILLACT_STANDARD	; Object $34 - OBJ_TOAD
-	.byte KILLACT_STANDARD	; Object $35 - OBJ_TOADHOUSEITEM
+	.byte KILLACT_STANDARD	; Object $35 - OBJ_LIGHTNINGBOLT
 	.byte KILLACT_STANDARD	; Object $36 - OBJ_PLATFORM_PATH
 	.byte KILLACT_STANDARD	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte KILLACT_STANDARD	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
 	.byte KILLACT_POOFDEATH	; Object $39 - OBJ_PACBOOHOME
-	.byte KILLACT_STANDARD	; Object $3A - OBJ_FALLINGPLATFORM
+	.byte KILLACT_STANDARD	; Object $3A - OBJ_JUMPCONTROL
 	.byte KILLACT_POOFDEATH	; Object $3B - OBJ_SPECTERCHEEP
 	.byte KILLACT_STANDARD	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.byte KILLACT_STANDARD	; Object $3D - OBJ_NIPPERFIREBREATHER
@@ -314,6 +314,9 @@ ObjP2F:
 	.byte $B1, $B3, $91, $93
 
 ObjP35:
+	.byte $99, $9B
+	.byte $95, $97, $AD, $AF, $95, $97
+
 ObjP47:
 	.byte $81, $83, $89, $8B
 	.byte $81, $83, $93, $95
@@ -384,8 +387,9 @@ ObjP43:
 
 ObjP3A:
 	.byte $71, $E1, $E3, $E1, $E3, $71
+
 ObjP2E:
-	.byte $F9, $FB, $B9, $BB
+	.byte $B5, $B7
 
 ObjP40:
 ObjP41:
@@ -399,11 +403,18 @@ ObjInit_BeachedCheep:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
+	LDA <Objects_YVelZ, X
+	BNE BeachedCheep_Prop
+
 	LDA #(ATTR_CARRYANDBUMP | ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_MoveTowardsPlayerFast
 
+BeachedCheep_Prop:
 	LDY Objects_Property, X
 	CPY #$02
 	BNE ObjInit_BeachedCheep1
@@ -419,7 +430,7 @@ ObjInit_BeachedCheep1:
 	
 BeachedCheep_XVel: .byte $10, $F0
 BeachedCheep_YVel: .byte $A0, $60
-BeachedCheep_VFlip: .byte $00, SPR_VFLIP, $00
+BeachedCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00
 
 BeachedCheep_IsWaiting = Objects_Data3
 BeachedCheep_CurrentFrame = Objects_Data4
@@ -433,14 +444,17 @@ BeachedCheep_CeilingBounce:
 
 ObjNorm_BeachedCheep:
 	LDA <Player_HaltGameZ
-	BNE Beached_DrawNoAnimate
+	BEQ ObjNorm_BeachedCheep0
+	JMP Beached_DrawNoAnimate
 
 ObjNorm_BeachedCheep0:
 	JSR Object_DeleteOffScreen
 	
 	LDA Objects_Timer, X
-	BNE Beached_InWater
+	BEQ Beached_NoTimer
+	JMP Beached_InWater
 	
+Beached_NoTimer:
 	LDA Objects_InWater, X
 	BEQ Beached_Move
 
@@ -459,6 +473,9 @@ Beached_Move:
 	LDY Objects_Property, X
 	BEQ Beached_Move1
 
+	CPY #$03
+	BEQ Beached_Move1
+
 	CPY #$01
 	BEQ Beached_ReveseGravity
 
@@ -474,9 +491,28 @@ Beached_Move1:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
+
+	LDA Objects_Property, X
+	CMP #$03
+	BNE Beached_InteractTiles
+
+	LDA <Objects_YVelZ, X
+	BMI Beached_NoDetect
+
+	LDA #$00
+	STA Objects_Property, X
+
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Beached_InteractTiles
+
+	JMP Object_PoofDie
+
+Beached_InteractTiles:
 	JSR Object_InteractWithTiles
 	JSR Beached_DoBounce
 
+Beached_NoDetect:
 	LDA BeachedCheep_NoWaterTimer, X
 	BEQ Beached_WaterOk
 
@@ -796,13 +832,17 @@ ObjNorm_PWing:
 ObjHit_PWing:
 	LDA #$FF
 	STA Player_FlyTime
+
 	LDA #$04
 	STA Player_QueueSuit
+
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOOF
 	STA Sound_QLevel1
+
 	LDA #$17
 	STA Player_SuitLost
+
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State, X
 	RTS
@@ -816,6 +856,7 @@ ObjInit_Boo:
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
 	RTS
 
 Boo_CheckPlayerSight:
@@ -829,26 +870,58 @@ PRG002_A8CC:
 	SEC
 	RTS		 ; Return
 
+
+PirateBoo_CoinTimer = Objects_Data1
+
+ObjInit_PirateBoo:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #$E8
+	STA ChaseVel_LimitLo, X
+
+	LDA #$18
+	STA ChaseVel_LimitHi, X
+
+	LDA Objects_Property, X
+	BEQ PriateBoo_InitRTS
+
+	LDA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+PriateBoo_InitRTS:
+	RTS
+
 ObjNorm_PirateBoo:
-	LDA LastPatTab_Sel
-	AND #$01
-	STA Objects_Frame, X
+	LDA <Player_HaltGameZ
+	BNE PirateBoo_Draw
 
-	LDA #$00
-	STA <Temp_Var10
-
-	LDA LastPatTab_Sel
-	EOR #$01
-	TAY
-
-	LDA #$4D
-	STA PatTable_BankSel + 4, Y
-	
+	JSR Object_CalcBoundBox
 	JSR Object_ChasePlayer
-	JSR Object_InteractWithPlayer	; Do collision test with Player and respond
-	JSR Fish_FixedYIfAppro	 	; Fix Boo Y for raster area
+	JSR Object_FaceDirectionMoving
+	JSR Object_InteractWithPlayer	
 
-	JMP Object_Draw 	; Draw and don't come back!
+PirateBoo_Draw:
+	JMP Object_Draw 	
+
+PirateBoo_TakeCoins:
+	INC PirateBoo_CoinTimer, X
+	LDA PirateBoo_CoinTimer, X
+	AND #$03
+	BNE PirateBoo_Draw
+
+	INC Coins_Lost
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	STA Force_Coin_Update
+	BNE PirateBoo_Draw
 	
 Boo_PlayerCheck:
 	.byte $00, SPR_HFLIP
@@ -903,12 +976,6 @@ Boo_Still:
 
 Boo_Draw:
 	JMP Object_Draw
-	
-Object_DeleteOrDraw:
-	JMP Object_Draw 	; Draw and don't come back!
-
-Stretch_XVelStart:	.byte -$10, $10
-FacePlayer_FlipBitsStart:	.byte $00, SPR_HFLIP, $00	; Boo uses an off-by-1 index here, hence the other $00
 
 ObjInit_Phanto:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
@@ -1516,34 +1583,6 @@ ObjNorm_WoodenPlatFallGen:
 PRG002_AAA6:
 	RTS
 
-Enemy_CollideWithWorld:
-	JSR Object_Move	 ; Do standard object movements
-
-	LDA <Objects_TilesDetectZ,X
-	AND #$08
-	BEQ PRG002_AAB2	 ; If enemy has NOT hit ceiling, jump to PRG002_AAB2
-
-	; Otherwise, hit off ceiling
-	STA <Objects_YVelZ,X
-
-PRG002_AAB2:
-	LDA <Objects_TilesDetectZ,X
-	AND #$03
-	BEQ Object_HitFloorAlign	 ; If enemy has NOT hit walls, jump to Object_HitFloorAlign
-
-	LDA <Objects_XVelZ,X
-	BEQ Object_HitFloorAlign	 ; If object is not moving horizontally, jump to Object_HitFloorAlign
-
-	JSR Object_Reverse	 ; Otherwise, turn around
-
-Object_HitFloorAlign:
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ PRG002_AAA6	 ; If object has NOT hit ground, jump to PRG002_AAA6 (RTS)
-	JMP Object_HitGround	 ; Otherwise, align to ground and don't come back!
-
-	; Timers set per direction (long and short, respectively)
-
 ObjInit_FloatWoodenPlat:
 	LDA Level_AScrlConfig
 	BEQ PRG002_AB35	 ; If no raster, jump to PRG002_AB35 (RTS)
@@ -1559,8 +1598,6 @@ ObjInit_FloatWoodenPlat:
 	STA <Objects_YHiZ,X
 
 PRG002_AB35:
-	LDA #$01
-	STA ObjSplash_DisTimer, X
 	RTS		 ; Return
 
 ObjNorm_PlatformFloat:
@@ -2313,23 +2350,14 @@ Spark_Draw:
 	JMP Object_DrawMirrored
 
 Bank2_PiranhaSpikeHaltAction:
-	RTS		 ; Return
-
 
 ObjNorm_GoombaInShoe:
 
-	RTS		 ; Return
-
 ObjInit_NipperHopping:
-	INC Objects_Data1,X	 ; Var4 = 1
-	RTS		 ; Return
-
 
 NipperJump:
-	.byte $D0, $CA, $BC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC, $AC
 
 NipperMove:
-	.byte $10, $F0
 
 ObjNorm_Nipper:
 
@@ -2337,72 +2365,8 @@ ObjNorm_Nipper2:
 ObjNorm_Nipper2_2:
 
 ObjNorm_Nipper3:
-	LDY TempY
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ PRG002_B1CD
-
-	JSR Object_FacePlayer
-	LDA NipperMove, Y
-	STA <Objects_XVelZ, X
-
-	LDA #$F0
-	STA <Objects_YVelZ, X
-	BNE PRG002_B1CD
-
-PRG002_B1CC:
-	LDA #$00
-	STA <Objects_XVelZ, X
-
-PRG002_B1CD:
-	JSR NipperDetermineFrame
-	STA Objects_Frame,X	 ; Set frame
-
-PRG002_B1CE:
-	JSR Object_DeleteOffScreen
-	JSR Object_Draw ; Delete if falls off-screen, otherwise draw
-	JMP Object_InteractWithPlayer	 ; Do collision test with Player and respond
-
-
-NipperDetermineFrame:
-	LDA DayNight
-	BEQ NipperDetermineFrame1
-
-	LDA <Counter_1
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	ORA #$04
 	
-	RTS
-
 NipperDetermineFrame1:
-	LDA Objects_Data2, X
-	BNE NipperDetermineFrame2
-
-	LDA <Counter_1
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	
-	RTS
-
-NipperDetermineFrame2:
-	LDA Objects_YVelZ, X
-	BPL NipperDetermineFrame3
-
-	LDA #$02
-	RTS
-
-NipperDetermineFrame3:
-	LDA #$03
-	RTS
-	
 
 ObjInit_Toad:
 	LDA #BOUND16x24
@@ -2691,9 +2655,6 @@ PRG002_B4AC:
 	STA Objects_Timer,X
 
 PRG002_B4B1:
-	RTS		 ; Return
-
-ObjNorm_ToadHouseItem:
 	RTS		 ; Return
 
 Platform_Draw:
@@ -3797,7 +3758,6 @@ SNPC:
 
 
 Player_Take_Coins:
-	STX DAIZ_TEMP1
 	LDA <Counter_1
 	AND #$03
 	BNE No_More_Coins
@@ -4583,151 +4543,16 @@ PacBoo_Action = Objects_Data7
 PacBoo_CurrentIndex = Objects_Data1
 
 ObjInit_PacBoo:
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
-	STA Objects_WeaponAttr, X
-
-	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
-	STA Objects_BehaviorAttr, X
-
-	LDA <Objects_XZ,X
-	SUB #$10
-	STA PacBoo_HomeLeft, X
-
-	LDA <Objects_XHiZ,X
-	SBC #$00
-	STA PacBoo_HomeLeftHi, X
-
-	LDA <Objects_YZ,X
-	STA PacBoo_HomeTop, X
-
-	LDA <Objects_YHiZ,X
-	STA PacBoo_HomeTopHi, X
-
-	JMP InitPatrol_Chase
 
 ObjNorm_PacBoo:
-	LDA <Player_HaltGameZ
-	BEQ PacBoo_Norm
 	
-	JMP Object_Draw
 
 PacBoo_Norm:
-	LDA PacBoo_Action, X
-
-	JSR DynJump
-	.word ChasePlayer
-	.word ChaseHome
+	
 
 PacBoo_HomeVel:
-	.byte $FF, $01
-
 PacBoo_HomeVelMax:
-	.byte $F0, $10
 
-ChasePlayer:
-	LDA Player_StarInv
-	BNE FleePlayer
-
-	JSR Object_ChasePlayer
-	JSR Object_FaceDirectionMoving
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
-
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
-	
-	LDA #$00
-	STA Objects_Frame, X
-	JMP Object_Draw
-
-FleePlayer:
-	JSR Object_FleePlayer
-	JSR Object_FaceDirectionMoving
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
-
-	LDA Objects_State, X
-	CMP #OBJSTATE_KILLED
-	BNE PacBoo_FleeDraw
-
-	INC PacBoo_Action, X
-	LDA #$10
-	STA Player_HaltTick
-
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
-
-	LDA #$00
-	STA <Objects_XVelZ, X
-	STA <Objects_YVelZ, X
-
-PacBoo_FleeDraw:
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, X
-	
-	LDA #$01
-	STA Objects_Frame, X
-	JMP Object_Draw
-
-ChaseHome:
-	LDY #$04
-
-PacBoo_TryFindHome:
-	LDA Objects_ID, Y
-	CMP #OBJ_PACBOOHOME
-	BNE PacBoo_FindHome
-
-	TYA
-	STA PacBoo_CurrentIndex, X
-	JSR Object_XDistanceFromObject
-	LDY <XDiffLeftRight
-	
-	LDA <Objects_XVelZ, X
-	CMP PacBoo_HomeVelMax, Y
-	BEQ PacBoo_ChaseHomeY
-
-	ADD PacBoo_HomeVel, Y
-	STA <Objects_XVelZ, X
-
-PacBoo_ChaseHomeY:
-	LDY PacBoo_CurrentIndex, X
-	JSR Object_YDistanceFromObject
-	LDY <YDiffAboveBelow
-	
-	LDA <Objects_YVelZ, X
-	CMP PacBoo_HomeVelMax, Y
-	BEQ PacBoo_TouchingHome
-
-	ADD PacBoo_HomeVel, Y
-	STA <Objects_YVelZ, X
-	JMP PacBoo_TouchingHome
-
-PacBoo_FindHome:
-	DEY
-	BPL PacBoo_TryFindHome
-	BMI PacBoo_HomeDraw
-
-PacBoo_TouchingHome:
-	JSR Object_FaceDirectionMoving
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoGravity
-	JSR Object_CalcBoundBox
-
-	LDY PacBoo_CurrentIndex, X
-	JSR Object_DetectObjects
-	BCC PacBoo_HomeDraw
-
-	LDA #$00
-	STA PacBoo_Action, X
-
-PacBoo_HomeDraw:
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, X
-
-	LDA #$02
-	STA Objects_Frame, X
-	JMP Object_Draw
-	
 
 Grower_DrawAttributes:
 	.byte $00, SPR_HFLIP, SPR_HFLIP, SPR_HFLIP, SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, $00, $00
@@ -5089,3 +4914,181 @@ Grower_DetectBlockLeft:
 	LDA Tile_LastProp
 	RTS
 
+
+Lightning_Action = Objects_Data1
+Lightning_WaterColor = Objects_Data2
+
+
+ObjInit_Lightning:
+	JSR Object_NoInteractions
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	RTS
+
+ObjNorm_Lightning;
+	LDA Lightning_Action, X
+	JSR DynJump
+
+	.word Lightning_Fall
+	.word Lightning_Electricuting
+	
+Lightning_Fall:
+	LDA <Player_HaltGameZ
+	BEQ Lightning_Normal
+	JMP Lightning_Draw
+
+Lightning_Normal:
+	JSR Object_DeleteOffScreen
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	LDA #$30
+	STA <Objects_YVelZ, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_Move
+	JSR Object_DetectTiles
+	JSR Object_InteractWithPlayer
+
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE Lightning_GroundCheck
+
+	LDA Object_VertTileProp, X
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BNE Lightning_GroundCheck
+
+	LDA Objects_BoundBottom, X
+	STA Block_DetectY
+	AND #$F0
+	STA Debris_Y
+
+	LDA Objects_BoundBottomHi, X
+	STA Block_DetectYHi
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Block_DetectX
+	AND #$F0
+	STA Debris_X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Block_DetectXHi
+
+	LDA Object_VertTileValue, X
+	ADD #$01
+	JSR Object_ChangeBlock
+
+	JSR Common_MakeBricks
+	JMP Lightning_Draw
+
+Lightning_GroundCheck:
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Lightning_CheckWater
+
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesVerticallyOffScreen,X
+	BNE Lightning_Poof
+
+	LDA <Objects_YZ, X
+	AND #$F0
+	ORA #$06
+	STA <Objects_YZ, X
+
+	JSR Object_PrepProjectile
+	
+	LDA #SOBJ_LIGHTNINGBOLT
+	STA SpecialObj_ID, Y
+
+	LDA #$C0
+	STA SpecialObj_XVel,Y
+
+	LDA <Objects_XZ, X
+	STA SpecialObj_X,Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi,Y
+
+	LDA <Objects_YZ, X
+	STA SpecialObj_Y,Y
+
+	LDA <Objects_YHiZ, X
+	STA SpecialObj_YHi,Y
+
+	JSR Object_PrepProjectile
+	
+	LDA #SOBJ_LIGHTNINGBOLT
+	STA SpecialObj_ID, Y
+
+	LDA #$30
+	STA SpecialObj_XVel,Y
+
+	LDA <Objects_XZ, X
+	STA SpecialObj_X,Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi,Y
+
+	LDA <Objects_YZ, X
+	STA SpecialObj_Y,Y
+
+	LDA <Objects_YHiZ, X
+	STA SpecialObj_YHi,Y
+
+	LDA #$02
+	STA SpecialObj_Data1, Y
+
+Lightning_Poof:
+	JMP Object_PoofDie
+
+Lightning_CheckWater:
+	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_WATER
+	BEQ Lightning_Electricute
+
+	CMP #(TILE_PROP_WATER | TILE_PROP_FOREGROUND)
+	BNE Lightning_Draw
+
+Lightning_Electricute:
+	LDA #$01
+	STA Lightning_Action, X
+	
+	LDA #$20
+	STA Objects_Timer, X
+
+	LDA Palette_Buffer + $0F
+	STA Lightning_WaterColor, X
+	
+Lightning_Draw:
+	JSR Object_Draw
+
+Lightning_RTS:
+	RTS
+
+Lightning_Electricuting:
+	LDA Objects_Timer, X
+	BNE Lightning_Flash
+
+	JMP Object_Delete
+
+Lightning_Flash:
+	AND #$02
+	BNE Lightning_FlashWhite
+
+	LDA Lightning_WaterColor, X
+	STA Palette_Buffer + $0F
+	BNE Lightning_PlayerHurt
+
+Lightning_FlashWhite:
+	LDA #$30
+	STA Palette_Buffer + $0F
+
+Lightning_PlayerHurt:
+	LDA Player_InWater
+	BEQ Lightning_RTS
+
+	JSR Player_GetHurt
+	RTS
