@@ -239,24 +239,24 @@ ObjectGroup02_PatTableSel:
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup02_KillAction:
-	.byte KILLACT_JUSTDRAW16X16	; Object $48 - OBJ_NINJI
+	.byte KILLACT_POOFDEATH	; Object $48 - OBJ_NINJI
 	.byte KILLACT_STANDARD	; Object $49 - OBJ_FLOATINGBGCLOUD
 	.byte KILLACT_STANDARD	; Object $4A - OBJ_MAGICSTAR
 	.byte KILLACT_STANDARD	; Object $4B - OBJ_MAGICSTAR
 	.byte KILLACT_STANDARD	; Object $4C - OBJ_MAGICSTAR
 	.byte KILLACT_STANDARD	; Object $4D
 	.byte KILLACT_STANDARD	; Object $4E
-	.byte KILLACT_NORMALANDKILLED	; Object $4F - OBJ_CHAINCHOMPFREE
+	.byte KILLACT_POOFDEATH	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte KILLACT_JUSTDRAW16X16	; Object $50 - OBJ_EXPLOSION
 	.byte KILLACT_STANDARD	; Object $51 - OBJ_ROTODISCDUAL
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $52 - OBJ_SPINTULA
+	.byte KILLACT_POOFDEATH	; Object $52 - OBJ_SPINTULA
 	.byte KILLACT_POOFDEATH	; Object $53 - OBJ_PIPEPODOBO
 	.byte KILLACT_STANDARD	; Object $54 - OBJ_DONUTLIFTSHAKEFALL
-	.byte KILLACT_NORMALANDKILLED	; Object $55 - OBJ_BOBOMB
+	.byte KILLACT_POOFDEATH	; Object $55 - OBJ_BOBOMB
 	.byte KILLACT_POOFDEATH	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
 	.byte KILLACT_POOFDEATH	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $58 - OBJ_PYRANTULA
-	.byte KILLACT_NORMALSTATE	; Object $59 - OBJ_FIRESNAKE
+	.byte KILLACT_POOFDEATH	; Object $58 - OBJ_PYRANTULA
+	.byte KILLACT_POOFDEATH	; Object $59 - OBJ_FIRESNAKE
 	.byte KILLACT_STANDARD	; Object $5A - OBJ_ROTODISCCLOCKWISE
 	.byte KILLACT_STANDARD	; Object $5B - OBJ_ROTODISCCCLOCKWISE
 	.byte KILLACT_NORMALSTATE	; Object $5C - OBJ_ICEBLOCK
@@ -265,16 +265,16 @@ ObjectGroup02_KillAction:
 	.byte KILLACT_STANDARD	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
 	.byte KILLACT_STANDARD	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $61 - OBJ_SKULLBLOOPER
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $62 - OBJ_BLOOPER
+	.byte KILLACT_POOFDEATH	; Object $62 - OBJ_BLOOPER
 	.byte KILLACT_NORMALSTATE	; Object $63 - OBJ_FLOATMINE
-	.byte KILLACT_JUSTDRAW16X16	; Object $64 - OBJ_CHEEPCHEEPHOPPER
+	.byte KILLACT_POOFDEATH	; Object $64 - OBJ_CHEEPCHEEPHOPPER
 	.byte KILLACT_STANDARD	; Object $65 - OBJ_WATERCURRENTUPWARD
 	.byte KILLACT_STANDARD	; Object $66 - OBJ_WATERCURRENTDOWNARD
-	.byte KILLACT_JUSTDRAW16X16	; Object $67 - OBJ_SNOWGUY
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $68 - OBJ_TWIRLINGBUZZY
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $69 - OBJ_TWIRLINGSPINY
-	.byte KILLACT_JUSTDRAW16X16	; Object $6A - OBJ_VEGGIEGUY
-	.byte KILLACT_NORMALANDKILLED	; Object $6B - OBJ_SHYGUY
+	.byte KILLACT_POOFDEATH	; Object $67 - OBJ_SNOWGUY
+	.byte KILLACT_POOFDEATH	; Object $68 - OBJ_TWIRLINGBUZZY
+	.byte KILLACT_POOFDEATH	; Object $69 - OBJ_TWIRLINGSPINY
+	.byte KILLACT_POOFDEATH	; Object $6A - OBJ_VEGGIEGUY
+	.byte KILLACT_POOFDEATH	; Object $6B - OBJ_SHYGUY
 
 
 	; Object group $02 (i.e. objects starting at ID $48) pattern index starts
@@ -2252,7 +2252,8 @@ BobOmb_Attack:
 	JSR Object_InteractWithTiles
 	JSR Object_AttackOrDefeat
 	
-	LDA Objects_Stomped, X
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_STOMPED
 	BEQ BobOmb_InteractOthers
 
 	LDA Objects_State, X
@@ -2330,6 +2331,9 @@ BombStars_YOff:	.byte -$08, -$08, $00, $08, $08, $00, $08, $04, -$04, -$08, -$04
 Explosion_Offset = Objects_Data1
 
 ObjInit_Explosion:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND48x48
 	STA Objects_BoundBox, X
 
@@ -2577,6 +2581,7 @@ MagicStar_NoDelete:
 
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
+
 	JMP Object_DrawMirrored
 
 Magic_StarCollect:
@@ -2634,6 +2639,15 @@ NoCheck:
 	DEY
 	BPL CheckEnemies
 
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+	JSR Common_MakePoof
+
+	LDA #$01
+	STA Objects_Property, X
 	JMP MagicStar_NoFloat
 
 Check_Done:
@@ -2726,9 +2740,8 @@ NextSpinnerCheck1:
 	PLA
 	RTS
 
-
-
 Magic_StarIndicator = Objects_Data4
+
 ObjInit_MagicStar1:
 	LDA #$00
 	STA Magic_StarIndicator, X
@@ -3195,6 +3208,9 @@ PRG003_B1D7:
 FloatMine_Action = Objects_Data1
 
 ObjInit_FloatMine:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+	
 	LDA #(ATTR_NOICE)
 	STA Objects_BehaviorAttr, X
 
@@ -3465,6 +3481,9 @@ FloatMine_Expload:
 	RTS
 
 ObjInit_Ninji:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA Objects_State, X
 
 	LDA #BOUND16x16

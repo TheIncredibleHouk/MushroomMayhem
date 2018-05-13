@@ -3322,10 +3322,13 @@ Read_Joypad_Loop:
 IntReset:
 	SEI		 ; Disable maskable interrupts
 	CLD		 ; Clear decimal (no BCD math, not there should be anyway)
+	
 	LDA #$00	 ; 
 	STA PPU_CTL2	 ; Most likely mainly to make BG and SPRITES invisible
+	
 	LDA #$08	 ; 
 	STA PPU_CTL1	 ; Sprites in Pattern Table 2
+
 	LDX #$02	 ; X = 2
 
 VBlank_Wait_Loop:

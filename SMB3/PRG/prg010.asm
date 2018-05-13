@@ -3955,12 +3955,14 @@ DrawMapSkyBackground1:
 
 DrawMapSkyBackground2:
 	LDX #$05
-	LDY #$F8
+
+	LDY #$E8
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var2
+
 	LDA <Horz_Scroll_Hi
 	ASL A
 	ASL A
@@ -3971,12 +3973,18 @@ DrawMapSkyBackground2:
 	STA <Temp_Var2
 
 DrawMapClouds0:
-	JSR FindUnusedSprite
+	INY 
+	INY 
+	INY 
+	INY 
+
 	LDA Weather_XPos, X
 	SUB <Temp_Var2
 	CMP #$10
+
 	BCC DrawMapClouds1
 	CMP #$E8
+
 	BCS DrawMapClouds1
 	STA Sprite_RAM +3, Y
 
@@ -4009,6 +4017,7 @@ DrawMapStarsBackground1:
 	LSR A
 	LSR A
 	STA TempA
+	
 	LDA <Horz_Scroll_Hi
 	ASL A
 	ASL A
@@ -4017,11 +4026,15 @@ DrawMapStarsBackground1:
 	ASL A
 	ORA TempA
 	STA TempA
-	LDY #$F8
+	LDY #$E8
 	LDX #$05
 
 DrawMapStars0:
-	JSR FindUnusedSprite
+	INY 
+	INY 
+	INY 
+	INY 
+	
 	LDA StarXPositions, X
 	SUB TempA
 	CMP #$10

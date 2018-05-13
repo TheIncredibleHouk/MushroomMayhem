@@ -1231,6 +1231,9 @@
     <sprite x="17" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="30" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="43" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="0E" />
+
+    <property>Chained</property>
+    <property>Free</property>
   </spritedefinition>
   <spritedefinition id="8A" width="02" height="02" name="Thwomp" class="2" group="Fortress">
     <sprite x="4" y="0" value="14" palette="3" horizontalflip="false" verticalflip="false" table="12" />

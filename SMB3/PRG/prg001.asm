@@ -28,7 +28,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $00
 	.word ObjInit_DoNothing	; Object $01
 	.word ObjInit_SnowBall	; Object $02
-	.word ObjInit_EaterBlock	; Object $03
+	.word ObjInit_EaterBlock	; Object $03 
 	.word ObjInit_CoinLock	; Object $04
 	.word ObjInit_SpikeBall	; Object $05
 	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
@@ -1172,6 +1172,9 @@ ObjInit_PUp2:
 ObjInit_PowerUp:
 	JSR Object_NoInteractions
 
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -1179,6 +1182,7 @@ ObjInit_PowerUp:
 
 	CPY #POWERUP_VINE
 	BEQ PowerUp_VineSndFX
+
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELRISE
@@ -1229,10 +1233,6 @@ ObjNorm_PowerUp:
 
 	LDA <Player_HaltGameZ
 	BEQ PowerUp_Norm
-
-	LDA Object_SpriteRAMOffset, X
-	ADD #$08
-	STA Object_SpriteRAMOffset, X
 
 	LDA PowerUp_Type, X
 	CMP #POWERUP_VINE
@@ -2982,6 +2982,9 @@ DeleteWeather:
 	JMP Object_SetDeadAndNotSpawned
 
 ObjInit_Weather:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	JSR Object_NoInteractions
 
 	LDA Objects_Property, X
@@ -3225,7 +3228,14 @@ GiantChomp_Palette:
 GiantChomp_Action = Objects_Data1
 GiantChomp_AnimTicks = Objects_Data2
 
+GiantChomp_Offsets:
+	.byte $E0, $C0
+	.byte $FF, $00
+
 ObjInit_GiantChomp:
+	LDA #$08
+	STA Objects_SpritesRequested,X 
+	
 	LDA #BOUND32x32
 	STA Objects_BoundBox, X
 
@@ -3234,21 +3244,6 @@ ObjInit_GiantChomp:
 
 	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
-
-	LDA <Objects_XZ, X
-	ADD #$0C
-	STA <Objects_XZ, X
-
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA <Objects_XHiZ, X
-
-	LDA <Vert_Scroll
-	ADD #$0B
-	STA <Objects_YZ, X
-
-	LDA <Vert_Scroll_Hi
-	STA <Objects_YHiZ, X
 	RTS
 
 ObjNorm_GiantChomp:
@@ -3256,7 +3251,6 @@ ObjNorm_GiantChomp:
 	JSR DynJump
 
 	.word GiantChomp_Wait
-	.word GiantChomp_BgSoar
 	.word GiantChomp_Attack
 	
 GiantChomp_Wait:
@@ -3268,90 +3262,38 @@ GiantChomp_Wait:
 	BCS WaitChompRTS
 	
 	INC GiantChomp_Action, X
+	
+	LDY Objects_Property, X
 
-	LDA <Objects_YZ,X
-	SUB #$10
-	STA <Objects_YZ,X
-
-	LDA <Objects_YHiZ,X
-	SBC #$00
-	STA <Objects_YHiZ,X
-
-	LDA #$B0
+	LDA #$40
 	STA <Objects_YVelZ, X
+
+	LDA <Vert_Scroll
+	ADD GiantChomp_Offsets, Y
+	STA <Objects_YZ, X
+
+	LDA <Vert_Scroll_Hi
+	ADC GiantChomp_Offsets + 2, Y
+	STA <Objects_YHiZ, X
+
+	LDA GiantChomp_Orientation, Y
+	STA Objects_Orientation, X
 
 WaitChompRTS:
 	RTS
 
-GiantChomp_BgSoar:
-	LDA <Player_HaltGameZ
-	BNE MiniChomp_Draw
+GiantChompDetect_XOffset:
+	.byte $08, $18, $08, $18
 
-MiniChomp_Norm:
-	LDA Sound_QLevel2
-	ORA #SND_BOOMERANG
-	STA Sound_QLevel2
-
-	JSR Object_ApplyYVel_NoGravity
-	JSR Object_CalcBoundBox
-	JSR Object_YDistanceFromPlayer
-
-	LDA <YDiffAboveBelow
-	BEQ MiniChomp_Draw
-
-	LDA <Objects_SpriteY, X
-	CMP #$F0
-	BCC Mini_NotAttacking
-
-	INC GiantChomp_Action, X
-
-	LDA #$20
-	STA <Objects_YVelZ, X
-
-	LDA <Objects_XZ, X
-	SUB #$0C
-	STA <Objects_XZ, X
-
-	LDA <Objects_XHiZ, X
-	SBC #$00
-	STA <Objects_XHiZ, X
-
-	;LDA Objects_Property, X
-	;CMP #$01
-	;BCC Mini_NotAttacking
-
-	;JSR GCTargetPlayer
-
-Mini_NotAttacking:
-	;LDA Objects_Property, X
-	;CMP #$01
-	;BCC NoChompFlash
-
-	;LDA Game_Counter
-	;LSR A
-	;LSR A
-	;AND #$01
-	;TAY
-	;LDA GiantChomp_Pal, Y
-	;STA Objects_SpriteAttributes,X
-
-MiniChomp_Animate:
-	INC GiantChomp_AnimTicks, X
-	LDA GiantChomp_AnimTicks, X
-	AND #$08
-	LSR A
-	LSR A
-	LSR A
-	STA Objects_Frame, X
-
-MiniChomp_Draw:
-	JMP Object_Draw
-
-GiantChompDetect_Offset:
-	.byte $08, $18
+GiantChompDetect_YOffset:
+	.byte $1C, $1C, $04, $04
 
 GiantChomp_Pal:
 	.byte SPR_PAL2, SPR_PAL0
+
+
+GiantChomp_Orientation:
+	.byte $00, SPR_VFLIP	
 
 GiantChomp_Attack:
 	LDA <Player_HaltGameZ
@@ -3359,9 +3301,12 @@ GiantChomp_Attack:
 	JMP GiantChomp_Draw
 
 GiantChomp_Attack1:
-
 	LDA <Player_HaltGameZ
-	BNE GiantChomp_Animate
+	BEQ GiantChomp_Attack2
+	
+	JMP GiantChomp_Draw
+
+GiantChomp_Attack2:
 
 GiantChomp_Norm:
 	LDA Objects_Property, X
@@ -3371,32 +3316,21 @@ GiantChomp_Norm:
 	JSR Object_DeleteOffScreen
 
 GiantChomp_NoDelete:
+	LDA Objects_Property, X
+	STA Reverse_Gravity
+
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
+	LDA #ATTR_EXPLOSIONPROOF
+	STA <Kill_TypeCheck
+	JSR Object_KillOthers
+
+
 	LDA Objects_Property, X
-	CMP #$02
-	BNE GiantChomp_NoReset
-
-	LDA <Objects_YHiZ, X
-	CMP #$01
-	BCC GiantChomp_NoReset
-
-	LDA <Objects_YZ, X
-	CMP #$B0
-	BCC GiantChomp_NoReset
-
-	LDA #$00
-	STA GiantChomp_Action, X
-
-	LDA #$D0
-	STA <Objects_YVelZ, X
-	RTS
-
-GiantChomp_NoReset:
-
-	LDY #$00
+	ASL A
+	TAY
 
 	LDA Game_Counter
 	AND #$01
@@ -3406,17 +3340,19 @@ GiantChomp_NoReset:
 
 GiantChomp_OtherBlock:
 	LDA Objects_BoundLeft, X
-	ADC GiantChompDetect_Offset, Y
+	ADC GiantChompDetect_XOffset, Y
 	STA Block_DetectX
 
 	LDA Objects_BoundLeftHi, X
 	ADC #$00
 	STA Block_DetectXHi
 
-	LDA Objects_BoundBottom, X
+	LDA Objects_BoundTop, X
+	ADD GiantChompDetect_YOffset, Y
 	STA Block_DetectY
 
-	LDA Objects_BoundBottomHi, X
+	LDA Objects_BoundTopHi, X
+	ADC #$00
 	STA Block_DetectYHi
 
 	JSR Object_DetectTile
@@ -3428,6 +3364,14 @@ GiantChomp_OtherBlock:
 	ORA #$01
 
 	JSR Object_ChangeBlock
+
+	LDA Sound_QLevel2
+	ORA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
+	LDA Objects_SpritesVerticallyOffScreen, X
+	BNE GiantChomp_SlowFall
+
 	LDA Block_DetectX
 	STA <Debris_X
 
@@ -3435,23 +3379,11 @@ GiantChomp_OtherBlock:
 	STA <Debris_Y
 	JSR Common_MakeBricks
 	
+GiantChomp_SlowFall:
 	LDA #$00
 	STA <Objects_YVelZ, X
 
 GiantChomp_Animate:
-	LDA Objects_Property, X
-	CMP #$01
-	BCC GiantChomp_NoFlash
-
-	LDA Game_Counter
-	LSR A
-	LSR A
-	AND #$01
-	TAY
-	LDA GiantChomp_Pal, Y
-	STA Objects_SpriteAttributes,X
-
-GiantChomp_NoFlash:
 	LDA Game_Counter
 	AND #$08
 	LSR A
@@ -3460,10 +3392,6 @@ GiantChomp_NoFlash:
 	STA Objects_Frame, X
 
 GiantChomp_Draw:
-	LDA Objects_Orientation,X
-	AND #~SPR_BEHINDBG
-	STA Objects_Orientation,X
-
 	LDA #LOW(GiantChompFrames)
 	STA <Giant_TilesLow
 
@@ -3527,19 +3455,19 @@ GCTargetPlayer:
 	RTS
 
 GCTargetPlayerRight:
-	AND #$31
-	LSR A
-	LSR A
-	LSR A
-	TAY
-	LDA <Player_X
-	ADD GCTargets, Y
-	AND #$F0
-	STA <Objects_XZ, X
+	;AND #$31
+	;LSR A
+	;LSR A
+	;LSR A
+	;TAY
+	;LDA <Player_X
+	;ADD GCTargets, Y
+	;AND #$F0
+	;STA <Objects_XZ, X
 
-	LDA <Player_XHi
-	ADC #$00
-	STA <Objects_XHiZ, X
+	;LDA <Player_XHi
+	;ADC #$00
+	;STA <Objects_XHiZ, X
 	RTS
 
 ObjInit_Brick:
@@ -3642,6 +3570,9 @@ KeyPieceXOffset:
 	.byte $10, $18, $20, $28, $30
 
 ObjInit_KeyPieces:
+	LDA #$05
+	STA Objects_SpritesRequested,X
+
 	LDA #$FF
 	STA Objects_YHiZ, X
 	INC Objects_Global, X
@@ -3839,7 +3770,7 @@ SetKeyField:
 	JMP Object_SetDeadEmpty
 
 ObjInit_SpikeBall:
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_DASHPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_SHELLPROOF | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL)
@@ -3849,27 +3780,31 @@ ObjInit_SpikeBall:
 	STA Objects_BoundBox, X
 	RTS
 
+
 SpikeBall_Frame  = Objects_Data1
 
 ObjNorm_SpikeBall:
-	LDA <Player_HaltGameZ
-	BNE SpikeBall_Draw
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE SpikeBallNotKilled
 
-	JMP Object_BurstBricks
+	JMP SpikeBall_Burst
 
 SpikeBallNotKilled:
+	LDA <Player_HaltGameZ
+	BNE SpikeBall_Draw
+	
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Shell_KillOthers
 	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 
 	LDA <Objects_YVelZ, X
+	
 	BMI Spike_BumpBottom
 
 	JSR Object_TestBottomBumpBlocks
@@ -3905,7 +3840,7 @@ SpikeNoBounce:
 	CMP #TILE_ITEM_BRICK
 	BEQ SpikeBall_KeepGoing
 
-	JMP Object_BurstBricks
+	JMP SpikeBall_Burst
 
 SpikeBall_KeepGoing:
 	LDA <Objects_XVelZ, X
@@ -3925,136 +3860,13 @@ SpikeBall_Animate:
 SpikeBall_Draw:
 	JMP Object_DrawMirrored
 
-	LDX <CurrentObjectIndexZ
+SpikeBall_Burst:
+	LDA #$99
+	STA Object_BurstTile
 
-	LDA <Objects_TilesDetectZ,X
-	AND #$04
-	BEQ SpikeNoBounce1
-
-	JSR Object_HitGround
-
-SpikeNoBounce1:
-	
-	LDA <Objects_TilesDetectZ, x
-	AND #$04
-	BEQ TrySideBlock
-
-SpikeNoBounce2:
-	LDA Object_VertTileProp
-	CMP #TILE_ITEM_BRICK
-	BNE TrySideBlock
-
-	;LDA Object_TileFeetValue
-	STA <Temp_Var3
-	LDA #$08
-	STA <Temp_Var1
-
-	LDA #$10
-	STA <Temp_Var2
-	JMP SpikeBrickBust
-
-TrySideBlock:
-	LDA <Objects_TilesDetectZ, x
-	AND #$03
-	BEQ ObjNorm_SpikeBallRTS
-
-	LDA Object_HorzTileProp
-	CMP #TILE_ITEM_BRICK
-	BNE SpikeBusted
-
-	LDA #$08
-	STA <Temp_Var2
-
-	LDA Object_HorzTileValue, X
-	STA <Temp_Var3
-
-	LDA Objects_XVelZ, X
-	BMI TrySideBlock1
-
-	LDA #$10
-	STA <Temp_Var1
-	BNE TrySideBlock2
-
-TrySideBlock1:	
-
-	LDA #$00
-	STA <Temp_Var1
-
-TrySideBlock2:
-	JMP SpikeBrickBust
-
-SpikeBusted:
-	LDA #$00
-	STA Objects_Data2, X
-	STA Objects_Frame, X
-	;JMP Object_ToBrickBust
-
-ObjNorm_SpikeBallRTS:
-	JMP Object_DrawMirrored
-
-SpikeBrickBust:
-	LDA Block_NeedsUpdate
-	BNE SpikeBrickBustRTS
-
-	LDA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
-
-	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-
-	; Set the brick bust
-	LDA #$02
-	STA BrickBust_En
-
-	; Brick bust upper Y
-	LDA <Objects_YZ, X
-	ADD <Temp_Var2
-	CLC
-	SBC Level_VertScroll
-	STA Brick_DebrisYHi
-
-	; Brick bust lower Y
-	ADD #$08
-	STA Brick_DebrisY
-
-	; Brick bust X
-	LDA <Objects_XZ, X
-	ADD <Temp_Var1
-	SUB <Horz_Scroll	
-	STA Brick_DebrisX
-
-	; reset brick bust X distance, no horizontal
-	LDA #$00
-	STA Brick_DebrisXDist
-	STA BrickBust_HEn
-
-	; Brick bust Y velocity
-	LDA #-$06
-	STA BrickBust_YVel
-
-	LDA <Temp_Var3
-	AND #$C0
-	ORA #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
-
-	LDA <Objects_YZ,X
-	ADD <Temp_Var2
-	AND #$f0
-	STA Block_ChangeY
-	LDA <Objects_YHiZ,X
-	ADC #$00
-	STA Block_ChangeYHi
-
-	LDA <Objects_XZ,X
-	ADD <Temp_Var1
-	AND #$f0
-	STA Block_ChangeX
-	LDA <Objects_XHiZ,X
-	ADC #$00
-	STA Block_ChangeXHi
-
-SpikeBrickBustRTS:
-	RTS
+	LDA #SPR_PAL1
+	STA Object_BurstPalette
+	JMP Object_Burst
 
 ObjInit_SendBack:
 	LDA #$C0
@@ -4087,6 +3899,9 @@ TimerStartTimes:
 	.byte 30, 100
 
 ObjInit_Timer:
+	LDA #$03
+	STA Objects_SpritesRequested, X
+
 	LDA Objects_Property, X
 	TAY
 
@@ -4811,6 +4626,9 @@ IceFireFly_WeaponAttr:
 	.byte ATTR_FIREPROOF, ATTR_ICEPROOF
 
 ObjInit_IceFireFly:
+	LDA #$04
+	STA Objects_SpritesRequested,X
+	
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -5133,6 +4951,9 @@ CoinLocks:
 
 ObjInit_CoinLock:
 	
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA <Objects_YZ, X
 	ADD #$04
 	STA <Objects_YZ, X
@@ -5348,6 +5169,9 @@ WaterSplash_Draw:
 	JMP Object_DrawMirrored
 
 ObjInit_ESwitch:
+	LDA #$05
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 	JMP Object_NoInteractions

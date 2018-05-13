@@ -415,6 +415,7 @@ RAINBOW_PAL_CYCLE:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
 	JSR Player_RainbowCycle
+
 	LDX Frozen_Frame
 	BNE Player_Draw1
 
@@ -427,6 +428,7 @@ Player_Draw1:
 	STA <Temp_Var1		 ; Get VROM page offset for this animation frame -> Temp_Var1
 
 	LDY Player_EffectiveSuit
+	
 	LDA Player_PUpRootPage,Y ; Get VROM root page for this power up
 	ADD <Temp_Var1		 ; Add appropriate offset to the VROM base for the animation frame
 
@@ -471,13 +473,16 @@ PRG029_CF1E:
 	
 	LDA #LOW(SPPF_Table2-4)
 	STA <Player_SprWorkL
+
 	LDA #HIGH(SPPF_Table2-4)
 	STA <Player_SprWorkH
+
 	JMP PRG029_CF20
 
 PRG029_CF1F:
 	LDA #LOW(SPPF_Table-4)
 	STA <Player_SprWorkL
+
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH
 
@@ -1793,6 +1798,7 @@ PRG029_D73B:
 
 	LDY #$06	 ; Y = 6 (seven sprites for T I M E - U P)
 	LDX Player_SprOff	 ; Starting from Player's sprite offset
+
 PRG029_D74A:
 	LDA <Pipe_PlayerX
 	STA Sprite_RAM+$00,X
@@ -2600,10 +2606,12 @@ Rainbow_Palette_Cycle:
 	CLC
 
 	LDA RAINBOW_PAL_CYCLE, X
-	STA (Palette_Buffer + $13)
-	ADC #$10
 	STA (Palette_Buffer + $11)
+
 	ADC #$20
+	STA (Palette_Buffer + $13)
+
+	ADC #$10
 	STA (Palette_Buffer + $12)
 	RTS
 

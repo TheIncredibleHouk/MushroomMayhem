@@ -59,7 +59,7 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_BigCannonBall	; Object $B0 - OBJ_BIGCANNONBALL
 	.word ObjInit_FireJetRight	; Object $B1 - OBJ_FIREJET_RIGHT
 	.word ObjInit_FireJetUpsideDown	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.word ObjInit_ObjB3		; Object $B3 
+	.word ObjInit_Stars		; Object $B3 
 
 
 	; Object group $04 (i.e. objects starting at ID $90) State 2 jump table
@@ -101,7 +101,7 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_BigCannonBall	; Object $B0 - OBJ_BIGCANNONBALL
 	.word ObjNorm_FireJet		; Object $B1 - OBJ_FIREJET_RIGHT
 	.word ObjNorm_FireJet		; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.word ObjNorm_ObjB3		; Object $B3
+	.word ObjNorm_Stars		; Object $B3
 
 
 	; Object group $04 (i.e. objects starting at ID $90) Collision routine jump table (if calling Object_InteractWithPlayer;
@@ -225,7 +225,7 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_SETPT5 | $36	; Object $B0 - OBJ_BIGCANNONBALL
 	.byte OPTS_SETPT6 | $37	; Object $B1 - OBJ_FIREJET_RIGHT
 	.byte OPTS_SETPT6 | $37	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.byte OPTS_SETPT5 | $0B	; Object $B3
+	.byte OPTS_SETPT5 | $00	; Object $B3
 
 
 	; Object group $04 (i.e. objects starting at ID $90) "Kill Action"
@@ -267,7 +267,7 @@ ObjectGroup04_KillAction:
 	.byte KILLACT_NORMALANDKILLED	; Object $B0 - OBJ_BIGCANNONBALL
 	.byte KILLACT_STANDARD	; Object $B1 - OBJ_FIREJET_RIGHT
 	.byte KILLACT_STANDARD	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
-	.byte KILLACT_NORMALANDKILLED	; Object $B3
+	.byte KILLACT_NORMALSTATE	; Object $B3
 
 
 	; Object group $04 (i.e. objects starting at ID $90) pattern index starts
@@ -710,11 +710,114 @@ Podobo_BreakBridgesRTS:
 
 SpinyEgg_TowardsPlayer:	.byte $0A, -$0A
 
-ObjInit_ObjB3:
 
+ObjInit_Stars:
+	JSR Object_NoInteractions
+	
+	LDA #$04
+	STA Objects_SpritesRequested,X
+
+	LDA #BOUND8x16
+	STA Objects_BoundBox, X
+
+	LDA #$10
+	STA Objects_Timer2,X
 	RTS		 ; Return
 
-ObjNorm_ObjB3:
+Stars_Timer = Objects_Data1
+
+ObjNorm_Stars:
+	LDA <Player_HaltGameZ
+	BNE  StarsDraw
+	
+StarsDraw:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BEQ StarsDraw1
+
+	RTS
+
+StarsDraw1:
+	JSR Object_ShakeAndCalcSprite
+	
+	LDX <CurrentObjectIndexZ
+	LDA Stars_Timer, X
+	CMP #$10
+	BCC Stars_KeepDrawing
+
+	JMP Object_Delete
+
+Stars_KeepDrawing:
+	STA <Temp_Var1
+	
+	INC Stars_Timer, X
+
+	LDA #$17
+	STA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 4, Y
+	STA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 12, Y
+
+	LDA Objects_SpriteAttributes, X
+	AND #SPR_PAL3
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr + 8, Y
+	STA Sprite_RAMAttr + 12, Y
+	
+	LDA Objects_SpriteX, X
+	SUB <Temp_Var1
+	BCC Stars_Star2
+	
+	STA Sprite_RAMX, Y 
+
+	LDA Objects_SpriteY, X
+	SUB <Temp_Var1
+	BCC Stars_Star2
+
+	STA Sprite_RAMY, Y
+
+Stars_Star2:
+	LDA Objects_SpriteX, X
+	ADD <Temp_Var1
+	BCS Stars_Star3
+	
+	STA Sprite_RAMX + 4, Y
+
+	LDA Objects_SpriteY, X
+	SUB <Temp_Var1
+	BCC Stars_Star3
+
+	STA Sprite_RAMY + 4, Y
+
+Stars_Star3:
+	LDA Objects_SpriteX, X
+	SUB <Temp_Var1
+	BCC Stars_Star4
+	
+	STA Sprite_RAMX + 8, Y
+
+	LDA Objects_SpriteY, X
+	ADD <Temp_Var1
+	BCS Stars_Star4
+
+	STA Sprite_RAMY + 8, Y
+
+Stars_Star4:
+	LDA Objects_SpriteX, X
+	ADD <Temp_Var1
+	BCS StarsDrawRTS
+	
+	STA Sprite_RAMX + 12, Y
+
+	LDA Objects_SpriteY, X
+	ADD <Temp_Var1
+	BCS StarsDrawRTS
+
+	STA Sprite_RAMY + 12, Y
+
+StarsDrawRTS:
+	RTS
 
 ObjInit_BigCannonBall:
 	RTS		 ; Return
@@ -988,6 +1091,9 @@ ObjInit_Piranha_TwoShot:
 	RTS
 
 ObjInit_Piranha:
+	LDA #$06
+	STA Objects_SpritesRequested,X
+
 	LDA #ATTR_STOMPPROOF
 	STA Objects_WeaponAttr, X
 
@@ -999,6 +1105,7 @@ ObjInit_Piranha:
 
 	LDA #$02
 	STA Piranha_AttackData, X
+	STA Objects_ExpPoints, X
 
 	LDA Objects_Property, X
 	LSR A
@@ -1106,14 +1213,16 @@ Piranha_Draw:
 	STA Objects_Frame,X
 
 Piranha_Draw1:
+
 	JSR Object_Draw16x32
-	
+
 	LDY Object_SpriteRAMOffset, X
 
 	LDA Sprite_RAM + 10, Y
 	AND #(SPR_VFLIP | SPR_BEHINDBG)
 	ORA #SPR_PAL2
 	STA Sprite_RAM + 10, Y
+	
 	ORA #SPR_HFLIP
 	STA Sprite_RAM + 14, Y
 	
@@ -1124,12 +1233,35 @@ Piranha_Draw1:
 	LDA Sprite_RAM + 6, Y
 	ORA #SPR_HFLIP
 	STA Sprite_RAM + 6, Y
+
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BEQ Piranha_DrawRTS
+
+	LDA Sprite_RAM + 6, Y
+	EOR #SPR_HFLIP
+	STA Sprite_RAM + 6, Y
+
+	LDA Sprite_RAMX, Y
+	PHA
+
+	LDA Sprite_RAMX+4, Y
+	STA Sprite_RAMX, Y
+
+	PLA
+	STA Sprite_RAMX+4, Y
+
+Piranha_DrawRTS:
 	RTS
 
 Piranha_HeadFlips:
 	.byte SPR_VFLIP, $00
 
 Piranha_DrawUpsideDown:
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BEQ Piranha_DrawRTS
+
 	JSR Object_YDistanceFromPlayer
 	LDA Piranha_HeadFlips, Y
 	STA TempA
@@ -2204,8 +2336,6 @@ ToNightEnemies1:
 	CMP #OBJSTATE_KILLED
 	BCS ToNightEnemies4
 
-	CMP #OBJSTATE_HELD
-	BCC ToNightEnemies3
 
 ToNightEnemies2:
 	LDA #OBJSTATE_POOFDEATH

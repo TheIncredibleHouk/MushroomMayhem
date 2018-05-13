@@ -376,6 +376,10 @@ Player_FireBall:
 	LDA <Player_HaltGameZ
 	BNE Player_FireBall5
 
+	LDA Player_EffectiveSuit
+	CMP #MARIO_FIRE
+	BNE Player_FireBallNoKill
+
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
 	INC SpecialObj_YVel, X
@@ -384,12 +388,12 @@ Player_FireBall:
 	JSR PlayerProj_HitEnemies
 	BCC Player_FireBallTiles
 
+	LDA #$01
+	STA Proj_Attack
+
 Player_HitFire:
 	LDA #HIT_FIREBALL
 	STA Objects_PlayerProjHit, Y
-
-	LDA #$01
-	STA Proj_Attack
 
 	LDA <SpecialObj_ObjectAttributes
 	CMP #ATTR_ALLWEAPONPROOF
@@ -450,11 +454,12 @@ Player_FireBall4:
 	STA SpecialObj_Data2, X
 
 Player_FireBall5:
-	LDA #$65
+	LDA #$63
 	STA <SpecialObj_Tile
 
 	LDA #SPR_PAL0
 	STA <SpecialObj_Attributes
+	
 	JSR SpecialObj_CheckForeground
 	JSR SpecialObj_CheckDirection
 	JSR SpecialObj_Draw8x16
@@ -514,6 +519,9 @@ Player_IceBall:
 	JMP Player_IceBall5
 
 Player_IceBall0:
+	LDA Player_EffectiveSuit
+	CMP #MARIO_ICE
+	BNE Player_IceBallNoKill
 
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
@@ -549,28 +557,17 @@ Player_HitIce:
 	JMP SpecialObj_ToPoofNoSound
 
 Make_Ice:
+	LDA #OBJSTATE_FROZEN
+	STA Objects_State,Y
+	
 	LDA #$00
-	STA Objects_SpawnIdx,Y
-
-	LDA #OBJ_ICEBLOCK
-	STA Objects_ID, Y
-
-	LDA #OBJSTATE_FRESH
-	STA Objects_State, Y
-
-	LDA #$00
-	STA Objects_Frame, Y
-	STA Objects_Orientation, Y
-	STA IceBlock_Kicked, Y
 	STA Explosion_Timer, Y
 
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, Y
+	TYA
+	TAX
 
-Ice_NoReverse:
-
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, Y
+	JSR Object_FallAwayFromPlayer
+	LDX <CurrentObjectIndexZ
 	JMP SpecialObj_ToPoofNoSound
 
 Player_IceBallNoKill:
@@ -692,6 +689,10 @@ Player_Hammer:
 	LDA <Player_HaltGameZ
 	BNE Player_HammerDraw
 
+	LDA Player_EffectiveSuit
+	CMP #MARIO_HAMMER
+	BNE Player_HammerPoof
+
 	JSR SObj_ApplyXYVelsWithGravity
 	JSR SpecialObj_CalcBounds16x16
 	
@@ -774,6 +775,10 @@ Player_NinjaStar:
 	LDA <Player_HaltGameZ
 	BNE Player_StarNoKill
 
+	LDA Player_EffectiveSuit
+	CMP #MARIO_NINJA
+	BNE Player_StarPoof
+
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
 	JSR PlayerProj_HitEnemies
@@ -789,7 +794,7 @@ Player_NinjaStar:
 	LDA #HIT_NINJASTAR
 	STA Objects_PlayerProjHit, Y
 
-	LDA #$01
+	LDA #$02
 	STA Proj_Attack
 
 	JSR SpecialObj_AttackEnemy
@@ -1222,6 +1227,9 @@ PlayerProj_HitEnemies2:
 	; A Y range per bounding box index
 
 SpecialObj_AttackEnemy:
+	LDA Objects_Timer2, X
+	BNE SpecialObj_AttackEnemyRTS
+
 	LDA Objects_Health,Y
 	SUB Proj_Attack
 	STA Objects_Health,Y
@@ -1230,6 +1238,8 @@ SpecialObj_AttackEnemy:
 	JSR SpecialObj_ToPoof
 	LDA #SND_PLAYERKICK
 	STA Sound_QPlayer
+
+SpecialObj_AttackEnemyRTS:
 	RTS
 
 
@@ -1237,8 +1247,11 @@ ProjEnemyDead:
 	
 	TYA
 	TAX
+	STA Debug_Snap
 	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
+
+	TXA
+	TAY
 
 	LDX <CurrentObjectIndexZ
 
@@ -1502,8 +1515,8 @@ PRG007_ABC7:
 PRG007_ABCF:
 	RTS		 ; Return
 
-BrickBust_SprRAMOff:	.byte $08, $18	; Four sprites required here
-BrickPoof_SprRAMOff:	.byte $08, $10	; Only two sprites required here
+BrickBust_SprRAMOff:	.byte $C8, $D8	; Four sprites required here
+BrickPoof_SprRAMOff:	.byte $C8, $D0	; Only two sprites required here
 
 	; Draw and update the specific brick bust
 BrickBust_DrawAndUpdate:
@@ -2768,6 +2781,9 @@ Fireball_HitIce:
 	STA SpecialObj_Data1, Y
 
 Fireball_NotHitWall:
+	LDA #$02
+	STA Proj_Attack
+
 	JSR EnemyProj_HitPlayer
 	INC Enemy_BigFireballAnimate, X
 
@@ -2850,10 +2866,6 @@ Enemy_NinjaStar:
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
 	JSR SpecialObj_DetectWorld16x16
-	
-	LDA Tile_LastProp
-	CMP #TILE_PROP_SOLID_TOP
-	BCS Enemy_StarPoof
 	
 	JSR EnemyProj_HitPlayer
 	BCC Enemy_NinjaStarDraw
@@ -3991,10 +4003,6 @@ ObjectGen_ShellCannon:
 ShellCannnon_Make:
 	LDX <CurrentObjectIndexZ	
 
-	LDA Kill_Tally
-	CMP #$03
-	BCS ObjectGen_ShellCannon1
-
 	TXA
 	TAY
 	; Set timer to $70
@@ -4045,6 +4053,7 @@ ShellCannnon_Make:
 
 	LDA #$BF
 	STA Explosion_Timer, X
+	STA Objects_NoExp, X
 
 	; Set Goomba's color
 	LDA #SPR_PAL1
@@ -4796,18 +4805,21 @@ DrawSkyBackground1:
 
 DrawSkyBackground2:
 	LDX #$05
-	LDY #$F8
+	LDY #$E4
+	
 	LDA <Vert_Scroll
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var1
+
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var2
+
 	LDA <Horz_Scroll_Hi
 	ASL A
 	ASL A
@@ -4818,7 +4830,11 @@ DrawSkyBackground2:
 	STA <Temp_Var2
 
 DrawClouds0:
-	JSR FindUnusedSprite
+	INY 
+	INY 
+	INY 
+	INY 
+	
 	LDA #(SPR_PAL1 | SPR_BEHINDBG)
 	STA Sprite_RAM + 2, Y
 	LDA #$75
@@ -4836,19 +4852,22 @@ DrawClouds0:
 	RTS
 
 DrawStarsBackground1:
-	LDY #$F8
+	LDY #$E4
 	LDX #$05
+	
 	LDA <Vert_Scroll
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var1
+	
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var2
+	
 	LDA <Horz_Scroll_Hi
 	ASL A
 	ASL A
@@ -4859,7 +4878,10 @@ DrawStarsBackground1:
 	STA <Temp_Var2
 
 DrawStars0:
-	JSR FindUnusedSprite
+	INY 
+	INY 
+	INY 
+	INY 
 	TXA
 	AND #$03
 	ORA #SPR_BEHINDBG
@@ -4886,4 +4908,15 @@ Projectile_TempChange:
 	JSR Tile_WriteTempChange
 
 Projectile_TempChangeRTS:
+	RTS
+
+FindUnusedSprite:
+	LDY Sprite_FreeRAM
+	BEQ FindUnusedSpriteRTS
+
+	LDA Sprite_FreeRAM
+	ADD #$04
+	STA Sprite_FreeRAM
+
+FindUnusedSpriteRTS:
 	RTS

@@ -492,7 +492,7 @@ PAD_RIGHT	= $01
 	Vert_Scroll:		.ds 1	; Vertical scroll of name table; typically at $EF (239, basically showing the bottom half)
 	Horz_Scroll:		.ds 1	; Horizontal scroll of name table
 
-				.ds 1	; $FE unused
+	Player_OnObject:    .ds 1	; $FE unused
 
 	PPU_CTL1_Copy:		.ds 1	; Holds PPU_CTL1 register data 
 
@@ -842,7 +842,7 @@ HIT_CEILING =		8
 
 	Player_XStart:		.ds 1	; Set to Player's original starting X position (also used to check if level has initialized)
 
-						.ds 1	; $EC unused
+	       				.ds 1	; $EC unused
 
 ; Player_Suit -- Player's active powerup (see also: Player_QueueSuit)
 PLAYERSUIT_SMALL	= 0
@@ -869,8 +869,7 @@ PLAYERSUIT_LAST		= PLAYERSUIT_HAMMER	; Marker for "last" suit (Debug cycler need
 	; ASSEMBLER BOUNDARY CHECK, END OF CONTEXT @ $F4
 .BoundZP_Game:	BoundCheck .BoundZP_Game, $F4, Zero Page Gameplay Context
 
-	Player_EffectiveDirection: .ds 1
-
+	Player_EffectiveDirection: 	.ds 1
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $1xx LOW STACK VARIABLES
@@ -1877,13 +1876,13 @@ OBJSTATE_DEADEMPTY	= 0	; Dead/Empty
 OBJSTATE_INIT		= 1	; Init
 OBJSTATE_NORMAL		= 2	; Normal (typical operation)
 OBJSTATE_SHELLED	= 3	; Shelled (shelled enemy post-stomp)
-OBJSTATE_HELD		= 4	; Held (held by Player)
-OBJSTATE_KICKED		= 5	; Kicked (kicked by Player / spinning shell)
-OBJSTATE_KILLED		= 6	; Killed (flipped over and falling off screen)
-OBJSTATE_SQUASHED	= 7	; Squashed (generally Goomba only)
-OBJSTATE_POOFDEATH	= 8	; "Poof" Death (e.g. Piranha death)
-OBJSTATE_FRESH		= 9 ;
-OBJSTATE_NONE		= 10 ; used to keep a slot open
+OBJSTATE_KICKED		= 4	; Kicked (kicked by Player / spinning shell)
+OBJSTATE_KILLED		= 5	; Killed (flipped over and falling off screen)
+OBJSTATE_POOFDEATH	= 6	; "Poof" Death (e.g. Piranha death)
+OBJSTATE_FRESH		= 7 ;
+OBJSTATE_FROZEN		= 8
+OBJSTATE_NONE		= 9 ; used to keep a slot open
+
 	Objects_State:		.ds 8
 
 	Objects_Frame:		.ds 8	; $0669-$0670 "Frame" of object (see ObjectGroup_PatternSets)
@@ -1915,11 +1914,10 @@ SPRITE_3_VINVISIBLE = $08
 	; After Player would press 'A', this value is immediately set to 0.
 	; In the case of the odd/even game, if the Player "won", it is set to 5 or 6.
 	Bonus_DieCnt:		.ds 0
-	Objects_Stomped: .ds 8
+	Objects_ExpPoints: .ds 8
 
 
 	Exp_Earned:		.ds 1	; $069C-$069D (16-bit value) A "buffer" of score earned to be added to your total, total score stored in Player_Experience
-	Exp_Doubler:	.ds 1
 						.ds 1	;
 	Objects_Property:		.ds 5
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
@@ -2609,7 +2607,7 @@ CFIRE_LASER		= $15	; Laser fire
 	Splash_DisTimer:	.ds 1	; Player water splashes are disabled until decrements to zero; set when Player hits any bounce block
 
 ; NOTE!! Objects_DisPatChng for OBJECT SLOT 0 - 5 ONLY!
-	Objects_DisPatChng:	.ds 6	; $7A49-$7A4E If set, this object no longer enforces a pattern bank change
+	Objects_FrozenKicked:	.ds 6	; $7A49-$7A4E If set, this object no longer enforces a pattern bank change
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 5 ONLY!
 	ObjSplash_Disabled:	.ds 8	; $7A4F-$7A54 Object water/lava splashes are disabled until decrements to zero
@@ -2628,7 +2626,7 @@ CFIRE_LASER		= $15	; Laser fire
 	CoinShip_CoinGlowIdx:	.ds 1	; Coin Ship only: Glowing coins palette color index
 	CoinShip_CoinGlowCnt:	.ds 1	; Coin Ship only: Glowing coins palette color counter
 
-	SObjBlooperKid_OutOfWater:.ds 8	; $7A68-$7A6F Blooper kid only; if set, Blooper Kid is trying to go out of water
+	SObjBlooperKid_OutOfWater:.ds 0	; $7A68-$7A6F Blooper kid only; if set, Blooper Kid is trying to go out of water
 
 	DAIZ_TEMP1:		.ds 1	; #DAHRKDAIZ $7A70 USED for temprorary in variables
 
@@ -2650,7 +2648,7 @@ MARIO_FROG		= 04
 MARIO_KOOPA		= 05
 MARIO_HAMMER	= 06
 MARIO_ICE		= 07
-MARIO_NINJA		= 09
+MARIO_NINJA		= 11
 MARIO_FOX		= 08
 
 	Player_EffectiveSuit:			ds 1
@@ -2800,11 +2798,15 @@ ATTR_BUMPNOKILL			= %10000000
 	Objects_XYCSPrev:	.ds 8
 	Objects_PlayerProjHit:	.ds 8
 	Objects_EffectiveXVel: .ds 8
+	Objects_SpritesRequested: .ds 8
+	Objects_Regen: .ds 8
 
 HIT_FIREBALL	= 01
 HIT_ICEBALL		= 02
 HIT_HAMMER		= 04
 HIT_NINJASTAR	= 08
+HIT_TAIL		= 10
+HIT_STOMPED		= 20
 	
 
 	Temp_VarNP0:		.ds 1	; A temporary not on page 0
@@ -2819,6 +2821,7 @@ HIT_NINJASTAR	= 08
 	Player_TwisterSpin:	.ds 1	; While greater than zero, Player is twirling from sand twister
 
 	Proj_Attack:		.ds 1
+	Sprite_FreeRAM:		.ds 1
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
 	Objects_Health:	.ds 5	; $7CF6-$7CFA Somewhat uncommon "HP" used generally for bosses only (e.g. they take so many fireballs)
 
@@ -2883,8 +2886,8 @@ AIR_INCREASE	= 3
 
 	Pal_Data:		.ds 32	; $7DDE-$7DFD Holds an entire bg/sprite palette (this is the MASTER palette, what fades target, and others may source for "original" colors!)
 
-	Level_AltLayout:	.ds 2	; $7DFE-$7DFF Pointer to level's "alternate" layout (when you go into bonus pipe, etc.)
-	Level_AltObjects:	.ds 2	; $7E00-$7E01 Pointer to level's "alternate" object set (when you go into bonus pipe, etc.)
+	Level_AltLayout:	.ds 0	; $7DFE-$7DFF Pointer to level's "alternate" layout (when you go into bonus pipe, etc.)
+	Level_AltObjects:	.ds 0	; $7E00-$7E01 Pointer to level's "alternate" object set (when you go into bonus pipe, etc.)
 
 	; #DAHRKDAIZ RAM
 	Status_Bar_Top:		.ds 28		; Tiles to display at the top of the status bar
@@ -3543,6 +3546,7 @@ KILLACT_JUSTDRAW16X32	= 3	; 3: Draw tall sprite
 KILLACT_JUSTDRAWTALLFLIP= 4	; 4: Draw tall object horizontally flipped
 KILLACT_NORMALANDKILLED	= 5	; 5: Do "Normal" state and killed action (sinking/vert flip)
 KILLACT_GIANTKILLED	= 6	; 6: Giant enemy death
+KILLACT_STARDEATH	= 6
 KILLACT_POOFDEATH	= 7	; 7: Do "poof" dying state while killed
 KILLACT_DRAWMOVENOHALT	= 8	; 8: Draw and do movements unless gameplay halted
 KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
@@ -3778,7 +3782,7 @@ OBJ_ENEMYSUN		= $AF	; Enemy sun
 OBJ_BIGCANNONBALL	= $B0	; BIG cannon ball
 OBJ_FIREJET_RIGHT	= $B1	; right fire jet
 OBJ_FIREJET_UPSIDEDOWN	= $B2	; upside down fire jet
-
+OBJ_STARS = $B3
 ; NOTE: Starting here, all object IDs are now handled specially (see PRG005_B8DB or just before PRG005_BB5F)
 OBJ_CHEEPCHEEPBEGIN	= $00;
 OBJ_8WAYBULLETBILLS = $B4	; (Level_Event = 1) Begins swarm of cheep cheeps

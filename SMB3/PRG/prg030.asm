@@ -5406,13 +5406,13 @@ Player_FreezeNow:
 	STA Frozen_Frame
 
 Keep_Going:
-	LDA #$31
+	LDA #$02
 	STA Palette_Buffer+$11
 
-	LDA #$30
+	LDA #$21
 	STA Palette_Buffer+$12
 
-	LDA #$02
+	LDA #$30
 	STA Palette_Buffer+$13
 	RTS
 
@@ -5441,22 +5441,6 @@ ObjInit_Stars1:
 	STA Weather_YPos, Y
 	DEY
 	BPL ObjInit_Stars1
-	RTS
-
-
-FindUnusedSprite:
-	LDA Sprite_RAM, Y
-	CMP #$F8
-	BEQ FindUnusedSprite1
-	DEY
-	DEY
-	DEY
-	DEY
-	BNE FindUnusedSprite
-	PLA
-	PLA
-
-FindUnusedSprite1:
 	RTS
 	
 FindCompletedLevels:
@@ -5553,17 +5537,24 @@ MarkCompletedLevels3:
 	STA [Map_Tile_AddrL],Y
 	RTS
 
+Sprite_RAM_Clear_NotWeather:
+	LDY #$E4
+	LDA #$F8
+	BNE Sprite_RAM_Clear1
+
 Sprite_RAM_Clear:	; $FD84
-	LDA #$f8	 	; A = $F8 
-	LDY #$00
+	LDA #$F8	 	; A = $F8 
+	LDY #$FC
 
 Sprite_RAM_Clear1:
-	STA Sprite_RAM, Y
-	INY
-	INY
-	INY
-	INY
+	STA Sprite_RAMY, Y
+	DEY
+	DEY
+	DEY
+	DEY
 	BNE Sprite_RAM_Clear1
+
+	STA Sprite_RAMY, Y
 	RTS
 
 GetPowerBadgeY:

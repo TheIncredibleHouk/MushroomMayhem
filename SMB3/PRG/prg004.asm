@@ -48,7 +48,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjInit_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
-	.word ObjInit_DoNothing	; Object $84 - OBJ_SPINYEGG
+	.word ObjInit_SpinyEgg	; Object $84 - OBJ_SPINYEGG
 	.word Object_MoveTowardsPlayer	; Object $85 - OBJ_BLUESPINY
 	.word ObjInit_IceBro		; Object $86 - OBJ_ICEBRO
 	.word ObjInit_FireBro		; Object $87 - OBJ_FIREBRO
@@ -84,14 +84,14 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_BlueShell		; Object $7B - OBJ_BLUESHELL
 	.word ObjNorm_Larry	; Object $7C - OBJ_HELPER
 	.word ObjNorm_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
-	.word ObjNorm_GroundTroop	; Object $7E - OBJ_BIGGREENHOPPER
+	.word ObjNorm_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
 	.word ObjNorm_FlyingTroopa	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjNorm_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjNorm_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjNorm_Lakitu		; Object $83 - OBJ_LAKITU
 	.word ObjNorm_SpinyEgg		; Object $84 - OBJ_SPINYEGG
-	.word ObjNorm_GroundTroop	; Object $85 - OBJ_BLUESPINY
+	.word ObjNorm_DoNothing	; Object $85 - OBJ_BLUESPINY
 	.word ObjNorm_FireBro		; Object $86 - OBJ_ICEBRO
 	.word ObjNorm_FireBro		; Object $87 - OBJ_FIREBRO
 	.word ObjNorm_FireBro	; Object $88 - OBJ_PIRATEBRO
@@ -234,36 +234,36 @@ ObjectGroup03_PatTableSel:
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ObjectGroup03_KillAction:
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $6C - OBJ_GREENTROOPA
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $6D - OBJ_REDTROOPA
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $6F - OBJ_FLYINGREDPARATROOPA
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $70 - OBJ_BUZZYBEATLE
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $71 - OBJ_SPINY
-	.byte KILLACT_NORMALANDKILLED	; Object $72 - OBJ_GOOMBA
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $73 - OBJ_PARAGOOMBA
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $74 - OBJ_ZOMBIEGOOMBA
+	.byte KILLACT_POOFDEATH	; Object $6C - OBJ_GREENTROOPA
+	.byte KILLACT_POOFDEATH	; Object $6D - OBJ_REDTROOPA
+	.byte KILLACT_POOFDEATH	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.byte KILLACT_POOFDEATH	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.byte KILLACT_POOFDEATH	; Object $70 - OBJ_BUZZYBEATLE
+	.byte KILLACT_POOFDEATH	; Object $71 - OBJ_SPINY
+	.byte KILLACT_POOFDEATH	; Object $72 - OBJ_GOOMBA
+	.byte KILLACT_POOFDEATH	; Object $73 - OBJ_PARAGOOMBA
+	.byte KILLACT_POOFDEATH	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.byte KILLACT_JUSTDRAW16X16	; Object $75 - OBJ_WATERFILLER
 	.byte KILLACT_NORMALANDKILLED	; Object $76 - OBJ_POISONMUSHROOM
-	.byte KILLACT_JUSTDRAW16X16	; Object $77 - OBJ_GREENCHEEP
-	.byte KILLACT_JUSTDRAW16X16	; Object $78 - OBJ_BULLETBILL
-	.byte KILLACT_JUSTDRAW16X16	; Object $79 - OBJ_BULLETBILLHOMING
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $7A - OBJ_PURPLETROOPA
+	.byte KILLACT_POOFDEATH	; Object $77 - OBJ_GREENCHEEP
+	.byte KILLACT_POOFDEATH	; Object $78 - OBJ_BULLETBILL
+	.byte KILLACT_POOFDEATH	; Object $79 - OBJ_BULLETBILLHOMING
+	.byte KILLACT_POOFDEATH	; Object $7A - OBJ_PURPLETROOPA
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $7B - OBJ_BLUESHELL
 	.byte KILLACT_JUSTDRAW16X16	; Object $7C - OBJ_HELPER
-	.byte KILLACT_JUSTDRAWMIRROR		; Object $7D - OBJ_PARAZOMBIEGOOMBA
+	.byte KILLACT_POOFDEATH		; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.byte KILLACT_GIANTKILLED	; Object $7E - OBJ_BIGGREENHOPPER
 	.byte KILLACT_POOFDEATH		; Object $7F - OBJ_BIGREDPIRANHA
-	.byte KILLACT_JUSTDRAWMIRROR	; Object $80 - OBJ_FLYINGGREENPARATROOPA
-	.byte KILLACT_JUSTDRAW16X32	; Object $81 - OBJ_HAMMERBRO
-	.byte KILLACT_JUSTDRAW16X32	; Object $82 - OBJ_NINJABRO
+	.byte KILLACT_POOFDEATH	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.byte KILLACT_POOFDEATH	; Object $81 - OBJ_HAMMERBRO
+	.byte KILLACT_POOFDEATH	; Object $82 - OBJ_NINJABRO
 	.byte KILLACT_NORMALSTATE	; Object $83 - OBJ_LAKITU
-	.byte KILLACT_JUSTDRAW16X16	; Object $84 - OBJ_SPINYEGG
+	.byte KILLACT_POOFDEATH	; Object $84 - OBJ_SPINYEGG
 	.byte KILLACT_JUSTDRAWMIRROR	; Object $85 - OBJ_BLUESPINY
-	.byte KILLACT_JUSTDRAW16X32	; Object $86 - OBJ_ICEBRO
-	.byte KILLACT_JUSTDRAW16X32	; Object $87 - OBJ_FIREBRO
-	.byte KILLACT_JUSTDRAW16X32	; Object $88 - OBJ_PIRATEBRO
-	.byte KILLACT_JUSTDRAW16X16	; Object $89 - OBJ_CHAINCHOMP
+	.byte KILLACT_POOFDEATH	; Object $86 - OBJ_ICEBRO
+	.byte KILLACT_POOFDEATH	; Object $87 - OBJ_FIREBRO
+	.byte KILLACT_POOFDEATH	; Object $88 - OBJ_PIRATEBRO
+	.byte KILLACT_POOFDEATH	; Object $89 - OBJ_CHAINCHOMP
 	.byte KILLACT_NORMALANDKILLED	; Object $8A - OBJ_THWOMP
 	.byte KILLACT_NORMALANDKILLED	; Object $8B - OBJ_AngryTHWOMP
 	.byte KILLACT_NORMALANDKILLED	; Object $8C - OBJ_THWOMPRIGHTSLIDE
@@ -317,7 +317,6 @@ ObjP8C:
 ObjP8D:
 ObjP8E:
 ObjP8F:
-	.byte $99, $9B, $B9, $BB, $95, $97, $B5, $B7, $9D, $9F, $BD, $BF
 
 ObjP8B:
 	.byte $9D, $9F, $BD, $BF, $91, $93, $B1, $B3,  $91, $93, $B1, $B3
@@ -420,6 +419,9 @@ NinjaBro_FallThrough = Objects_Data8
 NinjaBro_WalkDirectionBackup = Objects_Data9
 
 ObjInit_NinjaBro:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x24
 	STA Objects_BoundBox, X
 
@@ -442,11 +444,15 @@ ObjNorm_NinjaBro:
 	LDA <Player_HaltGameZ
 	BEQ NinjaBro_Norm
 
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BEQ NinjaBros_HaltDraw
+
 	LDA <Objects_TilesDetectZ,X
 	AND #HIT_GROUND
 	BEQ NinjaBro_HaltNoDraw
 
-
+NinjaBros_HaltDraw:
 	JMP NinjaBros_Draw
 
 NinjaBro_HaltNoDraw:
@@ -512,6 +518,7 @@ NinjaBro_BeenOnGround:
 	LDA RandomN + 1, X
 	AND #$03
 	TAY 
+	
 	LDA NinjaBro_WaitTimers, Y
 	STA NinjaBro_ThrowStarTimer, X
 	JSR NinjaBro_ThrowStar
@@ -531,24 +538,7 @@ NinjaBro_CheckJump:
 	LDA Objects_Timer, X
 	BNE NinjaBro_NoJump
 
-	LDY #$00
-	LDA Objects_SpriteY, X
-	CMP #$30
-	BCS NinjaBro_NotTop
-
-	INY
-	BNE NinjaBro_DoJump
-
-NinjaBro_NotTop:
-	CMP #$70
-	BCS NinjaBro_DoJump
-
-	LDA RandomN, X
-	AND #$08
-	LSR A
-	LSR A
-	LSR A
-	TAY
+	JSR Bro_CheckTop
 
 NinjaBro_DoJump:
 	LDA NinjaBro_JumpYVel, Y
@@ -632,6 +622,10 @@ NinjaBros_Draw:
 	BEQ NinjaBros_Done
 
 	JSR NinjaBro_DrawStar
+
+	LDA Object_SpriteRAMOffset, X
+	SUB #$08
+	STA Object_SpriteRAMOffset, X
 
 NinjaBros_Done:
 	RTS
@@ -764,6 +758,49 @@ NinjaBro_ThrowLeft:
 NinjaBro_ThrowDone:
 	RTS
 
+Bro_CheckTop:
+	LDA Objects_BoundBottom, X
+	ADD #$14
+	STA Tile_DetectionY
+
+	LDA Objects_BoundBottomHi, X
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	ADD #$07
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	JSR Object_DetectTile
+	
+	LDY #$00
+	CMP #TILE_PROP_SOLID_ALL
+	BCS Bro_NotTop
+
+	LDA Objects_SpriteY, X
+
+	CMP #$30
+	BCS Bro_NotTop
+ 
+	INY
+	BNE Bro_RTS
+
+Bro_NotTop:
+	CMP #$70
+	BCS Bro_RTS
+
+	LDA RandomN, X
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	TAY
+Bro_RTS:
+	RTS
 
 HammerBro_JumpYVel:	.byte -$60, -$30
 HammerBro_JumpWait: .byte $C0, $FF
@@ -784,6 +821,9 @@ HammerBro_ThrowTimes:
 	.byte $18, $18, $18, $30
 
 ObjInit_HammerBro:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x24
 	STA Objects_BoundBox, X
 
@@ -867,43 +907,7 @@ HammerBro_CheckJump:
 	LDA Objects_Timer, X
 	BNE HammerBro_NoJump
 
-	LDA Objects_BoundBottom, X
-	ADD #$14
-	STA Tile_DetectionY
-
-	LDA Objects_BoundBottomHi, X
-	ADC #$00
-	STA Tile_DetectionYHi
-
-	LDA <Objects_XZ, X
-	ADD #$07
-	STA Tile_DetectionX
-
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA Tile_DetectionXHi
-
-	JSR Object_DetectTile
-	
-	LDY #$00
-	CMP #TILE_PROP_SOLID_ALL
-	BCS HammerBro_NotTop
-
-	LDA Objects_SpriteY, X
-
-	CMP #$30
-	BCS HammerBro_NotTop
-
-	INY
-	BNE HammerBro_DoJump
-
-HammerBro_NotTop:
-	CMP #$70
-	BCS HammerBro_DoJump
-
-	LDA RandomN, X
-	AND #$01
-	TAY
+	JSR Bro_CheckTop
 
 HammerBro_DoJump:
 	LDA HammerBro_JumpYVel, Y
@@ -981,6 +985,10 @@ HammerBros_Draw:
 	BEQ HammerBros_Done
 
 	JSR HammerBro_DrawHammer
+
+	LDA Object_SpriteRAMOffset, X
+	SUB #$08
+	STA Object_SpriteRAMOffset, X
 
 HammerBros_Done:
 	RTS
@@ -1113,6 +1121,9 @@ FireIcePirateBro_WalkDirectionBackup = Objects_Data9
 FireIcePirateBro_Projectile = Objects_Data10
 
 ObjInit_FireBro:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x24
 	STA Objects_BoundBox, X
 
@@ -1138,6 +1149,9 @@ ObjInit_FireBro:
 	RTS		 ; Return
 
 ObjInit_IceBro:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x24
 	STA Objects_BoundBox, X
 
@@ -1151,6 +1165,9 @@ ObjInit_IceBro:
 	RTS		 ; Return
 
 ObjInit_PirateBro:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x24
 	STA Objects_BoundBox, X
 
@@ -1407,6 +1424,9 @@ FireIcePirateBro_ShootDone:
 	RTS
 
 ObjInit_Thwomp:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -1491,7 +1511,6 @@ Thwomp_Normal:
 	JMP Object_SetDeadAndNotSpawned
 
 Thwomp_DoAction:
-	STA Debug_Snap
 	JSR Object_DeleteOffScreen
 	
 	LDA Thwomp_Action, X
@@ -1687,6 +1706,9 @@ Thwomp_DrawRTS:
 	RTS		 ; Return
 
 ObjInit_AngryThwomp:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND24x32
 	STA Objects_BoundBox, X
 
@@ -1853,6 +1875,22 @@ AngryThwomp_NoHit:
 SpinyEgg_HatchFacePlayerFlip:	.byte SPR_HFLIP, $00
 
 SpinyEgg_Frame = Objects_Data1
+
+ObjInit_SpinyEgg:
+	LDA #(ATTR_WINDAFFECTS)
+	STA Objects_BehaviorAttr, X
+	
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #$02
+	STA Objects_Health, X
+
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	RTS
+
 ObjNorm_SpinyEgg:
 	LDA <Player_HaltGameZ
 	BEQ SpinyEgg_Norm
@@ -1891,6 +1929,10 @@ SpinyEgg_Norm:
 SpinEgg_NoBurst:
 	LDA #OBJ_SPINY
 	STA Objects_ID, X
+
+	LDA #(ATTR_HASSHELL | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_MoveTowardsPlayer
 
 SpinyEgg_Animate:
@@ -1921,6 +1963,9 @@ Lakitu_GraphicsTables:
 	.byte $0B, $0B, $0B, $1A
 
 ObjInit_Lakitu:
+	LDA #$07
+	STA Objects_SpritesRequested, X
+	
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -2037,7 +2082,7 @@ Lakitu_DoAction:
 
 Lakitu_Die:
 	LDA <Player_HaltGameZ
-	BNE Laktiu_DieDone
+	BNE Lakitu_DieDone
 
 	LDA Lakitu_MadePoof, X
 	BNE Lakitu_NoPoof
@@ -2067,11 +2112,11 @@ Lakitu_NoPoof:
 	JSR Object_Move
 
 	LDA <Objects_YHiZ, X
-	BEQ Laktiu_DieDone
+	BEQ Lakitu_DieDone
 
 	LDA <Objects_YZ, X
 	CMP #$B0
-	BCC Laktiu_DieDone
+	BCC Lakitu_DieDone
 
 	LDA #$FF
 	STA Objects_SlowTimer, X
@@ -2091,7 +2136,7 @@ Lakitu_NoPoof:
 
 	RTS
 
-Laktiu_DieDone:
+Lakitu_DieDone:
 	LDA #$01
 	STA Objects_Frame, X
 
@@ -2216,7 +2261,7 @@ Lakitu_Aim:
 	BCS Lakitu_AimDone
 
 	LDY Lakitu_EnemySlot, X
-	LDA #OBJSTATE_FRESH
+	LDA #OBJSTATE_INIT
 	STA Objects_State, Y
 
 	LDA <Objects_XZ, X
@@ -2262,13 +2307,14 @@ Lakitu_AimDone:
 	RTS
 
 Lakitu_Draw:
+	LDA Object_SpriteRAMOffset, X
+	ADD #$04
+	STA Object_SpriteRAMOffset, X
+
 	LDA <Objects_SpriteY, X
 	ADD #$10
 	STA <Objects_SpriteY, X
 
-	LDA Object_SpriteRAMOffset, X
-	ADD #$04
-	STA Object_SpriteRAMOffset, X
 	JSR Object_Draw16x32Mirrored
 
 	LDA Sprite_RAMY, Y
@@ -2348,6 +2394,10 @@ Lakitu_Draw3:
 	JSR Lakitu_DrawEnemy
 
 Lakitu_DrawDone:
+	LDA Object_SpriteRAMOffset, X
+	SUB #$04
+	STA Object_SpriteRAMOffset, X
+
 	RTS
 
 Lakitu_EnemyToss:
@@ -2396,25 +2446,22 @@ Lakitu_Enemy1:
 	ADD #$08
 	STA <Temp_Var2
 
-Lakitu_UnusedSprite:
-	JSR Object_GetUnusedSprite
-
 	LDA Objects_Property, X
 	TAX
 
 	LDA <Temp_Var3
 	CMP #$F8
 	BEQ Lakitu_DrawEnemyDone
-	STA Sprite_RAMY, Y
+	STA Sprite_RAMY + 24, Y
 
 	LDA Lakitu_EnemyFrameRight, X
-	STA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 24, Y
 
 	LDA Lakitu_EnemyFrameRightAttr, X
-	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 24, Y
 
 	LDA <Temp_Var2
-	STA Sprite_RAMX, Y
+	STA Sprite_RAMX + 24, Y
 
 Lakitu_DrawEnemyDone:
 	RTS
@@ -2424,8 +2471,14 @@ ObjInit_ParaGoomba:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
+	LDA #$02
+	STA Objects_ExpPoints, X
+
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
+
+	LDA #$04
+	STA Objects_SpritesRequested, X
 
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
@@ -2974,6 +3027,9 @@ ObjInit_SwimmingCheep:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
+	LDA #$02
+	STA Objects_ExpPoints, X
+
 	LDA #(ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -3067,6 +3123,9 @@ ObjInit_BulletBill:
 
 	LDA #$02
 	STA Objects_Frame, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 	RTS
 
 ObjNorm_BulletBill:
@@ -3094,6 +3153,9 @@ ObjInit_MissileMark:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
+
+	LDA #$03
+	STA Objects_ExpPoints, X
 	RTS
 
 Missile_Flash = Objects_Data5
@@ -3218,6 +3280,8 @@ ObjInit_SpikeCheep:
 ObjInit_Goomba:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	INC Objects_ExpPoints, X
 
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
@@ -3471,8 +3535,17 @@ Goomba_Death2:
 FlyingTroopa_StartX = Objects_Data6
 
 ObjInit_ParaTroopas:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA #$01
+	STA Objects_Health, X
+
+	LDA #$02
+	STA Objects_ExpPoints, X
 
 	LDA #(ATTR_WINDAFFECTS | ATTR_HASSHELL | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
@@ -3497,9 +3570,6 @@ ObjInit_ParaTroopas:
 	LDA <Objects_YHiZ, X
 	SBC #$00
 	STA <Objects_YHiZ, X
-
-	LDA #$01
-	STA Objects_Health, X
 
 ObjInit_ParaTroopas1:
 	LDA <Objects_XZ, X
@@ -3542,6 +3612,9 @@ ObjNorm_FlyingTroopa2:
 	JMP Troopa_Draw
 
 ObjInit_Troopa:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -3560,6 +3633,9 @@ ObjInit_Troopa:
 
 	LDA #$01
 	STA Objects_Health, X
+
+	LDA #$02
+	STA Objects_ExpPoints, X
 	RTS
 
 
@@ -3714,8 +3790,10 @@ PoisonMushroom_InsideBlock:
 
 	LDA #$C0
 	STA <Objects_YVelZ, X
-	
+
 PoisonMushroom_InsideBlockRTS:
+	LDA #$04
+	STA Objects_Timer2, X
 	RTS
 
 Bouncey_FlutterTime: = Objects_Data2
@@ -3766,9 +3844,6 @@ ObjNorm_BouncyTroopa1:
 
 ObjNorm_BouncyTroopa2:
 	JMP ObjNorm_Troopa
-
-ObjNorm_GroundTroop:
-	RTS
 
 Buzzy_Frame = Objects_Data1
 
@@ -3895,13 +3970,15 @@ Troopa_FootByEvenOddFrame:
 	.byte $F9, $FB, $F9	; Odd
 
 Troopa_Draw:
-	LDA Objects_State, X
-	CMP #OBJSTATE_NORMAL
-	BEQ Troopa_DoDraw
+	LDA Objects_Frame, X
+	CMP #$02
+	BCC Troopa_DoDraw
 
-	RTS
+	LDA #$02
+	STA Objects_Frame, X
+	JMP Object_DrawMirrored
 
-Troopa_DoDraw:
+Troopa_DoDraw: 
 	LDA Object_SpriteRAMOffset,X
 	ADD #$08
 	STA Object_SpriteRAMOffset,X
@@ -4015,7 +4092,6 @@ PRG004_B548:
 PRG004_B55D:
 
 	; Time for the left foot...
-
 	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
 
 	LDA Sprite_RAM+$00,Y
@@ -4080,6 +4156,10 @@ PRG004_B5A3:
 	STA Sprite_RAM+$0D,Y
 
 	LDX <CurrentObjectIndexZ	 ; X = object slot index
+
+	LDA Object_SpriteRAMOffset, X
+	SUB #$08
+	STA Object_SpriteRAMOffset, X
 	RTS		 ; Return
 
 GiantEnemy_Draw:
@@ -4463,10 +4543,29 @@ Chomp_XChainMax = Objects_Data7
 Chomp_YChainMax = Objects_Data8
 
 ObjInit_ChainChomp:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
+	LDA #$04
+	STA Objects_Health, X
+
+	LDA Objects_Property, X
+	BEQ ChainChomp_NotCharging
+
+	LDA #$02
+	STA Chomp_Charging, X
+
+ChainChomp_NotCharging:
 
 	; Fill in all f the following with the Chain Chomp's Pining X coordinate
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_STOMPPROOF | ATTR_NINJAPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #ATTR_BUMPNOKILL
+	STA Objects_BehaviorAttr, X
 
 	LDA <Objects_XZ,X
 	ADD #$08
@@ -5193,156 +5292,18 @@ FreeNoBounce:
 	STA Objects_Frame, X
 	JMP Object_Draw
 
-BlueShellExplosionTimers:
-	.byte $40, $80, $C0, $FF
-
 ObjInit_BlueShell:
 ;	LDA Objects_Property, X
 ;	TAY
 ;	LDA BlueShellExplosionTimers, Y
 ;	STA Objects_SlowTimer, X
-	RTS
 
 ObjNorm_BlueShell:
-;	LDA <Player_HaltGameZ
-;	BNE DrawBlueShell
-;
-;	JSR Object_InteractWithPlayer
-;	INC Objects_Data4, X
-;
-;	LDA Objects_SlowTimer, X
-;	BEQ ObjNorm_BlueShell0
-;
-;ObjNorm_BlueShell_1:
-;	LDA Level_VertScroll
-;	ADD #$10
-;	STA ChaseTargetY
-;	LDA #$00
-;	ADC #$00
-;	STA ChaseTargetYHi
-;	JSR Object_ChasePlayer
-;	JSR Object_ApplyXVel
-;	JMP DrawBlueShell
-;
-;ObjNorm_BlueShell0:
-;	LDA Objects_Data5, X
-;	BNE ObjNorm_BlueShellDive1
-;
-;	JSR Object_XDistanceFromPlayer
-;	CMP #$01
-;	BNE ObjNorm_BlueShell_1
-;
-;	CPY #$00
-;	BNE ObjNorm_BlueShell01
-;
-;	LDY <Player_XVel
-;	BPL ObjNorm_BlueShell_1
-;	BMI ObjNorm_BlueShellDive
-;
-;ObjNorm_BlueShell01:
-;	LDY <Player_XVel
-;	BMI ObjNorm_BlueShell_1 
-;
-;ObjNorm_BlueShellDive:
-;	INC Objects_Data5, X
-;
-;ObjNorm_BlueShellDive1:
-;
-;	LDA Objects_YVelZ, X
-;	AND #$F0
-;	CMP #$70
-;	BEQ ObjNorm_BlueShell1
-;	LDA Objects_YVelZ, X
-;	ADD #$04
-;	STA Objects_YVelZ, X
-;	
-;
-;ObjNorm_BlueShell1:
-;	LDA #$01
-;	STA Objects_Frame, X
-;	JSR Object_ApplyYVel_NoGravity
-;	JSR Object_DetectTiles
-;	LDA  <Objects_TilesDetectZ, X
-;	BEQ DrawBlueShell
-;	BNE BlueShell_Expload
-;
-;DrawBlueShell:
-;	LDA Objects_Frame, X
-;	CMP #$01
-;	BNE DrawBlueShell0_1
-;	JMP Object_Draw
-;
-;DrawBlueShell0_1:
-;	JSR Object_DrawMirrored
-;	
-;DrawBlueShell0_2:
-;	LDA Objects_Data5, X
-;	BNE ObjNorm_BlueShellDraw2
-;
-;	LDA Objects_SlowTimer, X
-;	CMP #$10
-;	BCS DrawBlueShell0
-;
-;	LDA Objects_Data4, X
-;	AND #$02
-;	BEQ ObjNorm_BlueShellDraw2
-;
-;DrawBlueShell0:
-;	LDY Object_SpriteRAMOffset, X
-;	LDA Sprite_RAM+$00,Y
-;	CMP #$f8
-;	BEQ ObjNorm_BlueShellDraw1	 ; If sprite was found to be vertically off-screen, jump to PRG004_B55D
-;
-;	; The wing sprite is Y-8 from the body
-;	SUB #$08
-;	STA Sprite_RAM+08,Y
-;
-;	; Temp_Var1 = $CD (pattern for wing up)
-;	LDA #$CD
-;	STA <Temp_Var1
-;
-;	
-;	LDA Objects_Data4, X
-;	AND #$04
-;	BEQ ObjNorm_BlueShellDraw0	 ; 4 ticks on, 4 ticks off; jump to PRG004_B548
-;
-;	; Temp_Var1 = $CF (pattern for wing down)
-;	LDA #$CF
-;	STA <Temp_Var1 
-;
-;ObjNorm_BlueShellDraw0:
-;
-;	; Set correct wing pattern
-;	LDA <Temp_Var1
-;	STA Sprite_RAM+9,Y
-;
-;	; Copy Sprite X
-;	LDA #$0C
-;	STA <Temp_Var1
-;
-;	LDA Objects_Orientation, X
-;	BEQ  ObjNorm_BlueShellDraw1
-;
-;	LDA #$FC
-;	STA <Temp_Var1
-;
-;ObjNorm_BlueShellDraw1:
-;	LDA Sprite_RAM+03,Y
-;	ADD <Temp_Var1
-;	STA Sprite_RAM+11,Y
-;
-;	LDA #SPR_PAL1
-;	ORA Objects_Orientation, X
-;	STA Sprite_RAM+10,Y	 ; Set wing attribute
-
-ObjNorm_BlueShellDraw2:
-	RTS
-
-BlueShell_Expload:
-	INC Explosion_Timer, X
-	RTS
 
 ObjInit_Larry:
+	LDA #$07
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x32
 	STA Objects_BoundBox, X
 
@@ -5366,13 +5327,6 @@ ObjInit_Larry:
 	STA PatTable_BankSel + 4
 	RTS		 ; Return
 
-	
-Larry_Message1:
-	.byte "THANK YOU FOR FREEING ME. "
-
-Larry_Message2:
-	.byte "I WILL HELP YOU IN RETURN."
-
 Larry_Frame = Objects_Data1
 Larry_Action = Objects_Data2
 Larry_BodyOffset = Objects_Data3
@@ -5390,7 +5344,6 @@ Larry_DoAction:
 	JSR DynJump
 
 	.word Larry_InBag
-	.word Larry_Talk
 	.word Larry_WaitOffScreen
 	.word Larry_FindPlayer
 	.word Larry_ThrowItem
@@ -5445,28 +5398,10 @@ Larry_RemoveBag:
 
 	LDA #$00
 	STA Objects_SlowTimer, X
-	INC Larry_Action, X
 
-	PLA
-	PLA
-	JMP Larry_Draw
-
-Larry_Talk:
-	LDA Objects_SlowTimer, X
-	BNE Larry_TalkDraw
-
-	LDY Objects_Property, X
-
-	LDA Player_EffectiveSuit
-	CMP Larry_SuitHelp, Y
-	BNE Larry_Prepare
-
-	LDA #$05
+	LDA #$02
 	STA Larry_Action, X
 
-Larry_TalkDraw:
-	LDA #$01
-	STA Objects_Frame, X
 	JMP Larry_Draw
 
 Larry_WaitOffScreen:
@@ -5713,6 +5648,9 @@ Larry_Draw3:
 	JSR Larry_DrawItem
 
 Larry_DrawDone:
+	LDA Object_SpriteRAMOffset, X
+	SUB #$04
+	STA Object_SpriteRAMOffset, X
 	RTS
 
 Larry_ItemFrameLeftAttr:
@@ -5756,7 +5694,10 @@ Larry_Item1:
 	STA <Temp_Var2
 
 Larry_UnusedSprite:
-	JSR Object_GetUnusedSprite
+	INY
+	INY
+	INY
+	INY
 
 	LDA Objects_Property, X
 	TAX

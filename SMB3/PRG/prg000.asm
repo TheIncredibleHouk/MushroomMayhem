@@ -39,24 +39,13 @@ Object_BoundBox:
 	.byte  2,  20,   2,  12	; 7
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
 	.byte  2,  20,   2,  28	; 9
-	.byte  2,  13,   6,  27	; A BOUND16x32 (16x32)
+	.byte  2,  13,   1,  32	; A BOUND16x32 (16x32)
 	.byte  2,  13,   1,  32	; A BOUND16x32TALL (16x32)
 	.byte  1,  14,  -2,  13	; C
 	.byte  0,  47,   0,  15	; D 
 	.byte  4,  27,   2,  28	; E BOUND32x32
 	.byte  4,  44,   4,  40	; F BOUND48x48
-	
-	; Offsets into Sprite_RAM used by objects
-SprRamOffsets:
-	; The specified Sprite_RAM offset is calculated by object's index
-	; added to Counter_7to0 (i.e. a value 0 to 7) so as to evenly
-	; distribute the drawing of objects over available sprites and
-	; help cope with the sprites-per-scanline drawing limits.
-	;
-	; Basically, on different frames, different objects will have 
-	; different sprite priority, so while there may be flicker, at 
-	; least everything is somewhat visible
-	.byte $40, $E8, $58, $D0, $70, $B8, $88, $A0, $40, $E8, $58, $D0, $70, $B8, $88
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SpecialObject_FindEmptyAbort
@@ -517,6 +506,16 @@ TileYFine:
 	AND #$F0
 	STA Tile_DetectionY
 
+	LDA Tile_DetectionXHi
+	BPL TileXFine
+
+	LDA #$00
+	STA Tile_DetectionXHi
+
+	LDA #$00
+	STA Tile_DetectionX
+
+TileXFine:
 	LDA Tile_DetectionX
 	AND #$F0
 	STA Tile_DetectionX
@@ -602,7 +601,10 @@ MakeSplash:
 	STA Objects_Timer, X
 
 	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
+	STA Objects_State, X 
+
+	LDA #$02
+	STA Objects_SpritesRequested, X
 
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, X
@@ -621,6 +623,11 @@ MakeSplash:
 ; updates the timers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
+	JSR Objects_AssignSprites
+
+	LDA #$00
+	STA Player_OnObject
+
 	LDA Slow_Watch
 	BEQ PRG000_C93A1
 
@@ -751,14 +758,6 @@ PRG000_C9B3:
 	DEC Objects_Timer3,X	 ; Every 4 ticks, decrement Objects_Timer3
 
 PRG000_C9B6:
-	LDA Counter_7to0
-	AND #$07
-	ADD <CurrentObjectIndexZ
-	TAY		 ; -> 'Y' (anywhere from 0 to 14)
-
-	LDA SprRamOffsets,Y
-	STA Object_SpriteRAMOffset,X	 ; Store this object's Sprite_RAM offset
-
 	JSR Object_DoStateAction 	; Do whatever's required by this object by its current state
 	LDX <CurrentObjectIndexZ
 
@@ -816,15 +815,11 @@ Object_DoStateAction:
 	LDA Objects_State,X
 	BEQ PRG000_CA40	 ; If this object is "dead/empty", jump to PRG000_CA40
 
-	CMP #$08
-	BEQ PRG000_CA81	 ; If this object's state = 8 ("Poof" Dying), jump to PRG000_CA81
-
 	LDY #$04	 ; Y = 4
 
 	; Try to locate the group that this object ID belongs to
 	; Groups are defined by ObjectID_BaseVals, every 36 values.
 PRG000_CA51:
-	
 	LDA Objects_ID,X	; Get object ID
 	CMP ObjectID_BaseVals,Y	; Compare to this base value
 	BGE PRG000_CA5C	 ; If this object ID >= the base value, jump to PRG000_CA5C
@@ -887,70 +882,173 @@ PRG000_CA82:
 	.word ObjState_Initializing	; 1 - Initializing
 	.word ObjState_Normal		; 2 - Normal operation
 	.word ObjState_Shelled		; 3 - Shelled
-	.word ObjState_Held		; 4 - Held by Player
-	.word ObjState_Kicked		; 5 - Kicked
-	.word ObjState_Killed		; 6 - Killed
-	.word ObjState_PoofDying		; 7 - Object was squashed (NOTE: Really only intended for Goomba/Giant Goomba)
-	.word ObjState_PoofDying	; 8 - "Poof" Dying
-	.word ObjState_Fresh
-	.word ObjNorm_DoNothing
-
-	; Patterns selected by "poof" death frame
-PoofDeath_Pats:
-	.byte $47, $45, $41, $43
+	.word ObjState_Kicked		; 4 - Kicked
+	.word ObjState_Killed		; 5 - Killed
+	.word ObjState_PoofDying	; 6 - Object was squashed (NOTE: Really only intended for Goomba/Giant Goomba)
+	.word ObjState_Fresh		; 7
+	.word ObjState_Frozen		; 8
+	.word ObjState_DeadEmpty	; 9
 
 ObjState_PoofDying:
-	LDA Objects_Timer,X
-	BNE PRG000_CAAE	 ; If object timer is not expired, jump to PRG000_CAAE
+	LDA #OBJ_STARS
+	STA Objects_ID, X
 
-	JMP PRG000_D068	 ; Jump to PRG000_D068 (Object_SetDeadEmpty)
+	LDA #$00
+	STA Stars_Timer, X
 
-PRG000_CAAE:
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG000_CAF0	 ; If any sprite is off-screen, jump to PRG000_CAF0 (RTS)
+	JSR Object_NoInteractions
+	
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
 
-	; Set the "poof" pixel positions
-	JSR Object_CalcSpriteXY_NoHi
-	LDY Object_SpriteRAMOffset,X
-
-	LDA <Objects_SpriteY,X
-	STA Sprite_RAM+$00,Y	
-	STA Sprite_RAM+$04,Y	
-
-	LDA <Objects_SpriteX,X	
-	STA Sprite_RAM+$03,Y	
-	ADD #$08	 
-	STA Sprite_RAM+$07,Y
-
-	LDA Objects_Timer,X
+	LDA Objects_BoundRight, X
+	SUB Objects_BoundLeft, X
 	LSR A
+	SUB #$04
+	BCS Star_StoreLeft
+
+	DEC <Temp_Var1
+
+Star_StoreLeft:
+	ADD Objects_BoundLeft, X
+	STA <Objects_XZ, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC <Temp_Var1
+	STA <Objects_XHiZ, X
+ 
+	LDA Objects_BoundBottom, X
+	SUB Objects_BoundTop, X
 	LSR A
-	LSR A
-	TAX		 ; X = "poof" frame
+	SUB #$08
+	BCS Star_StoreTop
 
-	; Set "poof" death patterns
-	LDA PoofDeath_Pats,X
-	STA Sprite_RAM+$01,Y
-	STA Sprite_RAM+$05,Y
+	DEC <Temp_Var2
 
-	; Set the attributes
-	LDA Game_Counter
-	LSR A
-	LSR A
-	ROR A
-	AND #$80
-	ORA #$01
-	STA Sprite_RAM+$02,Y
+Star_StoreTop:
+	ADD Objects_BoundTop, X
+	STA <Objects_YZ, X
 
-	EOR #$c0
-	STA Sprite_RAM+$06,Y
+	LDA Objects_BoundTopHi, X
+	ADC <Temp_Var2
+	STA <Objects_YHiZ, X
+	
+	LDA #$04
+	STA Objects_SpritesRequested,X
 
-	LDX <CurrentObjectIndexZ	 ; X = object slot index
+	LDA #BOUND8x16
+	STA Objects_BoundBox, X
 
-PRG000_CAF0:
-	RTS		 ; Return
+	LDA #OBJSTATE_KILLED
+	STA Objects_State, X
+	RTS
 
+ObjState_Frozen:
+	LDA #(ATTR_WINDAFFECTS  | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+	LDA <Player_HaltGameZ
+	BNE Frozen_Draw
+
+	LDA Player_EffectiveSuit
+	CMP #MARIO_ICE
+	BNE Frozen_Die
+
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+
+	LDA Objects_XVelZ, X
+	ORA Objects_BeingHeld, X
+	BEQ Frozen_NotKilledOthers
+	
+	JSR Shell_KillOthers
+	BCC Frozen_NotKilledOthers
+
+	LDA Objects_BeingHeld, X
+	BEQ Frozen_NotKilledOthers
+
+	JMP Frozen_Die
+
+Frozen_NotKilledOthers:
+	JSR Object_DetectPlayer
+	BCC Frozen_DetectTiles
+
+Frozen_Carry:
+	JSR Object_Hold
+	BCS Frozen_DoDraw
+
+	LDA Objects_FrozenKicked, X
+	BNE Frozen_DetectTiles
+
+	JSR ObjHit_SolidBlock
+ 	BCS Frozen_DetectTiles
+	
+Frozen_Kick:
+	JSR Object_GetKicked
+
+Frozen_DetectTiles:
+	JSR Object_DetectTiles
+ 
+Frozen_CheckKicked:
+	LDA Objects_FrozenKicked, X
+	BNE Frozen_NotDampen
+
+	JSR Object_DampenVelocity
+
+Frozen_NotDampen:
+	LDA Objects_FrozenKicked, X
+	BEQ Frozen_InteractTiles
+
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL | HITTEST_TOP)
+	BEQ Frozen_InteractTiles
+	
+	JSR Object_TestTopBumpBlocks
+	JSR Object_TestSideBumpBlocks
+	
+	JMP Frozen_Die
+
+Frozen_InteractTiles:
+	JSR Object_InteractWithTiles
+
+Frozen_DoDraw:
+	JMP Frozen_Draw
+	
+Frozen_Die:
+	JSR Object_EarnExp
+	JMP Object_BurstIce
+
+Frozen_Draw:
+	LDA <Player_HaltGameZ
+	PHA
+	
+	LDA #$01
+	STA <Player_HaltGameZ
+	JSR ObjState_Normal
+	PLA
+	STA <Player_HaltGameZ
+
+	LDX <CurrentObjectIndexZ
+	
+	LDA Objects_SpritesRequested, X
+	STA <Temp_Var1
+	DEC <Temp_Var1
+	
+Frozen_ClearPal:
+	LDA <Temp_Var1
+	ASL A
+	ASL A
+	ADD Object_SpriteRAMOffset, X
+	TAY
+
+	LDA Sprite_RAMAttr, Y
+	AND #~SPR_PAL3
+	STA Sprite_RAMAttr, Y
+	DEC <Temp_Var1
+	BPL Frozen_ClearPal
+	RTS
 	; In units of $10 ticks by timer 3...
 PRG000_CAF1:
 	.byte %00000010, %00000010, %00000100, %00001000, %00010000, %00010000
@@ -1024,11 +1122,12 @@ ObjState_Shelled:
 	CMP #OBJSTATE_KILLED
 	BEQ ObjState_Shelled3
 
+	CMP #OBJSTATE_SHELLED
+	BNE ObjState_Shelled0
+
 	LDA Objects_BeingHeld, X
 	BNE ObjState_Shelled0
 
-	LDA #OBJSTATE_KICKED
-	STA Objects_State, X
 	JMP Object_GetKicked
 
 ObjState_Shelled0:
@@ -1202,11 +1301,14 @@ ObjState_Kicked1:
 	LDA #$FF
 	STA Objects_Health, X
 
+	LDA Objects_ExpPoints, X
+	ASL A
+	STA Objects_ExpPoints, X
+
 	LDA #$00
 	STA Objects_BeingHeld, X
 
 	JSR Object_GetKilled
-	JSR Object_FlipFall
 
 	JMP Object_DrawShelled
 
@@ -1273,6 +1375,9 @@ Object_KillOthers1:
 
 	LDA Objects_State, Y
 	BEQ Object_KillOthers2
+
+	CMP #OBJSTATE_KILLED
+	BEQ Object_KillOthers2
 	
 	CMP #OBJSTATE_KICKED
 	BNE Kill_NotKicked
@@ -1280,8 +1385,8 @@ Object_KillOthers1:
 	INC <Kill_WasKicked
 
 Kill_NotKicked:
-	CMP #OBJSTATE_KILLED
-	BCS Object_KillOthers2
+	LDA Objects_Timer2, Y
+	BNE Object_KillOthers2
 
 	LDA Objects_BehaviorAttr, Y
 	AND <Kill_TypeCheck
@@ -1291,14 +1396,11 @@ Kill_NotKicked:
 	JSR Object_DetectObjects
 	BCC Object_KillOthers2
 
-
 	TYA
 	TAX
 
-	LDA Objects_Health, X
-	SUB #$02
+	LDA #$FF
 	STA Objects_Health, X
-	BPL Object_KillOthers3
 
 	JSR Object_KickSound
 	JSR Object_GetKilled
@@ -1534,83 +1636,79 @@ Object_GetKicked:
 	LDA #$10
 	STA Objects_Timer2, X
 
+Object_GetKicked1:
+	LDA #$00
+	STA <Objects_YVelZ,X
+	STA Objects_BeingHeld, X
+
 	LDA <Pad_Holding
-	AND #(PAD_UP)
-	BEQ Object_GetKicked1
+	AND #PAD_DOWN
+	BNE Object_NotKickState
+
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ Object_SetKickedState
 
 	LDA #$B0
 	STA <Objects_YVelZ,X
 
-Object_GetKicked1:
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ Object_GetKicked3
-
 	LDA <Player_XVel
-	BEQ Object_GetKicked2_1
+	BEQ Object_NotKickState
+
+Object_SetKickedState:
+	INC Objects_FrozenKicked, X
+	
+	LDA Objects_State, X
+	CMP #OBJSTATE_SHELLED
+	BNE Object_NotKickState
 
 	LDA #OBJSTATE_KICKED
 	STA Objects_State, X
 
+Object_NotKickState:
+
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ Kicked_FindXVel
+
 	LDA <Player_XVel
-	BPL Object_GetKicked2_0
-	EOR #$FF
-	ADD #$01
+	BEQ Kicked_SetUpXVel
 
-Object_GetKicked2_0:
-	ADD #$08
-	STA <Temp_Var16
-	BNE Object_GetKicked6
+	LDA <Player_XVel
+	CMP #$30
+	BCC Kicked_CalcXVel
 
-Object_GetKicked2_1:
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State, X
+	CMP #$D0
+	BCC Kicked_FindXVel
 
-	LDA #$00
+Kicked_CalcXVel:
+	LDY Player_FlipBits
+	BNE Kicked_UpXVelAdd
+
+	SUB #$04
+	BNE Kicked_SetUpXVel
+
+Kicked_UpXVelAdd:
+	ADD #$04
+
+Kicked_SetUpXVel:
 	STA <Objects_XVelZ, X
 	RTS
 
-Object_GetKicked2:
-
-	LDA #OBJSTATE_KICKED
-	STA Objects_State, X
-
-	LDA <Objects_XVelZ, X
-	BNE Object_GetKicked6
-
-Object_GetKicked3:
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ Object_GetKicked4
-	
-	LDA #$10
-	STA <Objects_YVelZ, X
-
-	LDA #OBJSTATE_SHELLED
-	STA Objects_State, X
-	BNE Object_GetKicked5
-
-Object_GetKicked4:
-	LDA #OBJSTATE_KICKED
-	STA Objects_State, X
-
-Object_GetKicked5:
+Kicked_FindXVel:
 	LDA #$30
-	STA <Temp_Var16
 
-Object_GetKicked6:
-	JSR Object_XDistanceFromPlayer
-	LDA <XDiffLeftRight
-	BEQ Object_GetKicked7
+	LDY Player_FlipBits
+	BNE Kicked_DownXVel
 
-	LDA <Temp_Var16
 	EOR #$FF
 	ADD #$01
-	STA <Temp_Var16
 
-Object_GetKicked7:
-	LDA <Temp_Var16
-	STA <Objects_XVelZ,X	 ; Set as object's X velocity
+Kicked_DownXVel:
+	STA <Objects_XVelZ, X
+	RTS
+
+Kicked_FindRelVel:
 	RTS
 
 Object_PositionHeld:
@@ -1650,7 +1748,7 @@ PRG000_CF04:
 PRG000_CF1A:
 
 	; Set object to occupy Sprite_RAM offset $10
-	LDA #$10
+	LDA #$00
 	STA Object_SpriteRAMOffset,X
 
 PRG000_CF1F:
@@ -1664,34 +1762,18 @@ PRG000_CF1F:
 	ADC ObjectHoldXHiOff,Y
 	STA <Objects_XHiZ,X	
 
-	LDA #$0d	; A = $0D
+	LDA Objects_BoundBottom, X
+	SUB Objects_BoundTop, X
+	ADD #$04
+	STA <Temp_Var1
+	
+	LDA Player_BoundBottom
+	SUB <Temp_Var1
+	STA <Objects_YZ, X
 
-	LDY <Player_Suit
-	BNE PRG000_CF3D	 ; If Player is not small, jump to PRG000_CF3D
-
-	LDA #$0E	; Otherwise, A = $0F
-
-PRG000_CF3D:
-	STA TempA		 ; Save 'A'
-
-	; Set Y offset to object being held
-	ADD <Player_Y
-	STA <Objects_YZ,X
-
-	LDY #$00	 ; Y = 0
-
-	LDA TempA
-
-	BPL PRG000_CF49	 ; If A >= 0 (negative when object was giant), jump to PRG000_CF49
-
-	DEY		 ; Y = -1
-
-PRG000_CF49:
-	TYA		 ; A = 0 or -1
-
-	; Apply carry
-	ADC <Player_YHi
-	STA <Objects_YHiZ,X
+	LDA Player_BoundBottomHi
+	SBC #$00
+	STA <Objects_YHiZ, X
 
 	LDA <Player_YVel
 	STA <Objects_YVelZ, X
@@ -2074,10 +2156,8 @@ Object_HandleBumpUnderneath1:
 	JSR Object_GetKilled
 
 Object_HandleBumpUnderneath2:
-	JMP Object_FlipFallAwayFromPlayer
-
 Object_HandleBumpUnderneath3:
-	JMP Object_FallAwayFromPlayer
+	JMP Object_FallAwayFromPlayer 
 
 Object_AttackOrDefeat:
 	LDA Objects_Timer2,X
@@ -2111,7 +2191,7 @@ PRG000_D1C6:
 	LDA Player_BoundBottom
 	SUB Objects_BoundTop, X
 	CMP #$08
-	BCC Object_Defeated
+	BCC Object_Stomped
 	
 
 Object_HurtPlayer:
@@ -2119,29 +2199,21 @@ Object_HurtPlayer:
 	SEC
 	RTS
 
+Object_Stomped:
+	LDA #HIT_STOMPED
+	STA Objects_PlayerProjHit, X
+
 Object_Defeated:
 	JSR Object_DetermineChange
 	BCS Object_DefeatedRTS
 
 	JSR Object_GetKilled
 	
-	LDA #$00
-	STA <Objects_YVelZ,X
-	
 	LDA #-$40
 	STA <Player_YVel
 	STA Player_InAir
-
-	LDA #$01
-	STA Objects_Stomped, X
 	
-	LDA Objects_BehaviorAttr, X
-	AND #ATTR_STOMPKICKSOUND
-	BNE Object_DefeatKickSnd
-
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERSWIM
-	STA Sound_QPlayer
+	JMP Object_DefeatKickSnd
 
 Object_DefeatedRTS:
 	RTS
@@ -2153,6 +2225,7 @@ Object_DetermineChange:
 	LDA ObjGroupRel_Idx
 	ASL A
 	TAY
+
 	LDA ObjectGroup_CollideJumpTable + 1, Y
 	CMP #$08
 	BEQ Object_DoChange
@@ -2171,18 +2244,23 @@ Object_DoChange:
 	ORA #SND_PLAYERSWIM
 	STA Sound_QPlayer
 
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_STOMPED
+	BEQ Change_NotStomped
+
 	LDA #-$40
 	STA <Player_YVel
 	STA Player_InAir
 
 	LDA #$00
 	STA <Objects_YVelZ, X
+	STA Objects_PlayerProjHit, X
 
 	JSR Object_MoveTowardsPlayer
 
-	LDA #OBJSTATE_INIT
-	STA Objects_State, X
+	JSR Object_MoveTowardsPlayer
 
+Change_NotStomped:
 	SEC
 	RTS
 
@@ -2422,7 +2500,6 @@ Object_New:
 	STA Objects_Global, X
 	STA Objects_WeaponAttr, X
 	STA Objects_BehaviorAttr, X
-	STA Objects_Stomped, X
 	STA Objects_Data1, X
 	STA Objects_Data2, X
 	STA Objects_Data3,X
@@ -2451,6 +2528,7 @@ Object_New:
 	STA Objects_BoundBottom, X
 	STA Objects_BoundBottomHi, X
 	STA Objects_NoExp, X
+	STA Objects_Regen, X
 	STA Objects_BoundBox, X
 	STA ObjSplash_Disabled, X
 	DEC Objects_BoundBox, X
@@ -2459,7 +2537,7 @@ Object_New:
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)
 
 	; Clear some more variables (object slots 0 to 5 ONLY)
-	STA Objects_DisPatChng,X
+	STA Objects_FrozenKicked,X
 	STA Objects_InWater,X
 
 PRG000_D4C8:
@@ -2474,13 +2552,15 @@ PRG000_D4C8:
 	STA Objects_Data13,X
 	STA Objects_Data14,X
 
-		CPX #$05
+	CPX #$05
 	BGE PRG000_D506	 ; If using slot index >= 5, jump to PRG000_D506 (skip variables available only to slots 0 to 4)
 
 	STA Objects_Health,X
 	STA Explosion_Timer, X
 
 PRG000_D506:
+	LDA #$02
+	STA Objects_SpritesRequested, X
 	RTS		 ; Return
 
 
@@ -2666,18 +2746,6 @@ Object_DrawMirrored:
 
 ; $D601
 Object_DrawTallAndHFlip:
-	JSR Object_Draw16x32	 ; Draw tall sprite
-
-	; Reverse sprites
-	LDA Sprite_RAM-$06,Y
-	AND #%10111111
-	STA Sprite_RAM-$06,Y
-
-	STA Sprite_RAM+$02,Y
-	ORA #$40
-	STA Sprite_RAM-$02,Y
-
-	STA Sprite_RAM+$06,Y
 
 	RTS		 ; Return
 
@@ -2935,25 +3003,14 @@ PRG000_D727:
 ; $D736
 Object_GetUnusedSprite:
 
-	LDY #$FC
+	LDY Sprite_FreeRAM
+	BEQ Object_GetUnusedSpriteRTS
 
-Object_GetUnusedSprite3:
-	LDA Sprite_RAM, Y
-	CMP #$F8
-	BEQ Object_GetUnusedSprite4
+	LDA Sprite_FreeRAM
+	ADD #$04
+	STA Sprite_FreeRAM
 
-	DEY
-	DEY
-	DEY
-	DEY
-	BNE Object_GetUnusedSprite3
-
-	PLA
-	PLA
-
-Object_GetUnusedSprite4:
-	STY <Temp_Var7
-	LDX <CurrentObjectIndexZ
+Object_GetUnusedSpriteRTS:
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3797,19 +3854,21 @@ Object_RespondToTailAttack1:
 	LDA #$00
 	STA Objects_BeingHeld, X
 
+	LDA Objects_PlayerProjHit, X
+	ORA #HIT_TAIL
+	STA Objects_PlayerProjHit, X
+
 	JSR Object_KickSound
 	JSR Object_DetermineChange
 	JSR Object_GetKilled
 	
+	
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BNE Object_StillNotKilled
+	BNE Object_TailNotKilled
 
 	LDA #$FF
 	STA Objects_Health, X
-
-Object_StillNotKilled:
-	JSR Object_FlipFallAwayFromPlayer
 
 Object_TailNotKilled:
 	PLA
@@ -4502,8 +4561,12 @@ Object_DrawGiantMirrored:
 
 Giant_TilesLow = Temp_Var10
 Giant_TilesHi = Temp_Var11
+Giant_SpriteOffset = Temp_Var7
 
 Object_DrawGiant:
+	LDA Object_SpriteRAMOffset, X
+	STA <Giant_SpriteOffset
+
 	LDA #$00
 
 Object_DrawGiant1
@@ -4533,15 +4596,15 @@ DrawNextGiant:
 	INC <Temp_Var6
 	INC <Temp_Var2
 
-	LDA Object_SpriteRAMOffset, X
+	LDA <Giant_SpriteOffset
 	ADD #$04
-	STA Object_SpriteRAMOffset, X
+	STA <Giant_SpriteOffset
 
 	LDA <Temp_Var2
 	CMP #$08
 	BNE DrawNextGiant
 
-	RTS
+	JMP DrawGiant_CheckVert
 
 DrawGiantSprite:
 	LDY <Temp_Var6
@@ -4572,23 +4635,17 @@ DrawGiantSprite1:
 	AND <Temp_Var1
 	BNE DontDrawGiant
 
-	LDA <Temp_Var2
-	CMP #$06
-	BCS GetExtendedSprite
-	LDY Object_SpriteRAMOffset, X
-	JMP LetsDrawGiant
-
-GetExtendedSprite:
-	JSR Object_GetUnusedSprite
-	
-LetsDrawGiant:
+	LDY <Giant_SpriteOffset
 	LDA <Temp_Var5
 	STA Sprite_RAM, Y
+
 	LDA <Temp_Var3
 	STA Sprite_RAM + 1, Y
+
 	LDA Objects_SpriteAttributes,X
 	ORA Objects_Orientation,X
 	STA Sprite_RAM + 2, Y
+
 	LDA <Temp_Var4
 	STA Sprite_RAM + 3, Y
 
@@ -4603,12 +4660,33 @@ LetsDrawGiant:
 	LDA Sprite_RAM + 2, Y
 	ORA #SPR_HFLIP
 	STA Sprite_RAM + 2, Y
+
+DrawGiant_CheckVert:
+	LDX <CurrentObjectIndexZ
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Objects_Orientation, X
+	AND #SPR_VFLIP
+	BEQ DontDrawGiant
+
+	LDA Sprite_RAMY + 16, Y
+	PHA
+
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY + 16, Y
+	STA Sprite_RAMY + 20, Y
+	STA Sprite_RAMY + 24, Y
+	STA Sprite_RAMY + 28, Y
+
+	PLA
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY + 4, Y
+	STA Sprite_RAMY + 8, Y
+	STA Sprite_RAMY + 12, Y
 	
 DontDrawGiant:
 	RTS
 
-Interact_Toggle:
-	.byte $00, $01, $00, $01, $00, $01, $00, $01
 
 Object_InteractWithObjects:
 	LDA Objects_State, X
@@ -4629,10 +4707,14 @@ DetectNextSprite:
 	BEQ GoNextSprite
 
 	LDA Objects_State, Y
+	CMP #OBJSTATE_FROZEN
+	BEQ Detect_ThisObject
+
 	AND #$FE
 	CMP #OBJSTATE_NORMAL
 	BNE GoNextSprite
 
+Detect_ThisObject:
 	LDA Objects_BehaviorAttr,Y
 	AND #ATTR_CARRYANDBUMP
 	BEQ GoNextSprite
@@ -5165,29 +5247,31 @@ Object_HitWall1:
 	LDA <Objects_XZ, X
 	AND #$F0
 	STA <Objects_XZ, X
+	
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA Objects_XVelFrac,X	 
 	RTS
 
 
-
-Object_GetKilled:
+Object_EarnExp:
 	LDA Objects_NoExp, X
-	BNE Object_KilledNoExp
-
-	INC Kill_Tally
+	BNE Object_EarnExpRTS
 
 	LDA #$40
 	STA Kill_Tally_Ticker
 
-	LDA Kill_Tally
-	ADD Exp_Earned
+	LDA Objects_ExpPoints, X
+	ADD Kill_Tally
+	STA Kill_Tally
 	STA Exp_Earned
 
 	JSR Reap_Coin
 
-Object_KilledNoExp:
+Object_EarnExpRTS:
+	RTS
+
+Object_GetKilled:
 	LDA Objects_Health, X
 	BMI KillEnemy
 
@@ -5207,18 +5291,48 @@ Object_KilledNoExp:
 
 	LDA #$ff
 	STA Objects_Timer3,X
+
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_TAIL
+	BEQ ObjectNoFlipped
+
+	LDA #$00
+	STA Objects_PlayerProjHit, X
+	JSR Object_FlipFallAwayFromPlayer
+
+ObjectNoFlipped:	
 	RTS
 
 KillEnemy:
+	JSR Object_EarnExp
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BNE Kill_NotFrozen
+
+	JSR Object_BurstIce
+	JMP Kill_CheckRespawn
+
+Kill_NotFrozen:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
+	LDA #$20
+	STA Objects_Timer2, X
+
+Kill_CheckRespawn:
+	LDA Objects_Regen, X
+	BEQ Kill_NoRespawn
+
+	JSR Object_Respawn
+
+Kill_NoRespawn:
 	LDA Objects_BeingHeld, X
 	BEQ KillEnemy1
 
 KillEnemy1:
 	; Set object Y velocity to -$40 (fly up after death)
-	JMP Object_FlipFall
+	RTS
 
 EnemyEnterXVel:	.byte $08, -$08
 
@@ -5282,36 +5396,22 @@ Object_Kick:
 	LDA Objects_BeingHeld, X
 	BEQ Object_KickRTS
 
-	LDA #$00
-	STA Objects_BeingHeld, X
 	JSR Object_GetKicked
-	
-	LDA <Objects_YVelZ, X
-	BNE Object_KickSame
-
-	LDA #$F8
-	STA <Objects_YVelZ, X
-	
-Object_KickSame:
-	LDY ObjGroupRel_Idx
-	LDA Objects_BehaviorAttr, X
-	AND #ATTR_HASSHELL
-	BNE Object_KickSame1
-
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
-
-Object_KickSame1:
 	JSR Object_DetectTilesForced
+
 	LDA Object_BodyTileProp, X
 	AND #(TILE_PROP_SOLID_ALL)
 	BEQ Object_KickRTS
 
 Object_ReverseXVel:
 	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BEQ Do_Reverse
+	
 	CMP #OBJSTATE_NORMAL
 	BNE Object_DieInstead
 
+Do_Reverse:
 	LDY Player_Direction
 	LDA <Objects_XZ, X
 	ADD Object_XPreventStuck, Y
@@ -5326,7 +5426,6 @@ Object_DieInstead:
 	LDA #$FF
 	STA Objects_Health, X
 	JSR Object_GetKilled
-	JSR Object_FlipFall
 
 	PLA
 	PLA
@@ -5483,7 +5582,11 @@ HitFrom_Top:
 	LDA <Objects_YVelZ, X
 	STA Player_CarryYVel
 
+	LDA #$01
+	STA Player_OnObject
+
 HitFrom_Top1:
+	SEC
 	RTS
 
 TestHit_FromBelow:
@@ -5510,6 +5613,7 @@ TestHit_FromBelow:
 
 	LDA <Objects_YVelZ, X
 	STA Player_CarryYVel
+	CLC
 	RTS
 
 TestHit_FromLeft:
@@ -5528,6 +5632,7 @@ TestHit_FromLeft:
 	LDA <Player_XHi
 	SBC #$00
 	STA <Player_XHi
+	CLC
 	RTS
 
 HitFrom_Right:
@@ -5548,6 +5653,7 @@ HitFrom_Right:
 	STA <Player_XHi
 
 PlayerTestDone:
+	CLC
 	RTS
 
 Object_AttackXVel:
@@ -5803,16 +5909,6 @@ PRG004_BE54:
 
 
 Object_FlipFall:
-
-	LDA #$C0
-	STA <Objects_YVelZ, X
-
-	LDA Objects_Orientation, X
-	ORA #SPR_VFLIP
-	STA Objects_Orientation, X
-
-	LDA #$00
-	STA <Objects_XVelZ, X
 	RTS
 
 Object_FlipFallAwayFromPlayer:
@@ -5879,7 +5975,6 @@ Object_GetsHurt:
 	LDA #$FF
 	STA Objects_Health, X
 	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
 	JSR Object_KickSound
 
 	SEC
@@ -5940,4 +6035,39 @@ Object_NoInteractions:
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
+	RTS
+
+Objects_AssignSprites:
+	LDA #$30
+	STA <Temp_Var1
+
+	LDA Counter_7to0
+	STA <Temp_Var2
+	
+	LDY #$07
+
+DistributeSprites:
+	LDA <Temp_Var2
+	AND #$07
+	TAX
+
+	LDA Objects_State, X
+	BEQ DistributeNextSprite
+
+	LDA <Temp_Var1
+	STA Object_SpriteRAMOffset, X
+	
+	LDA Objects_SpritesRequested, X
+	ASL A
+	ASL A
+	ADD <Temp_Var1
+	STA <Temp_Var1
+
+DistributeNextSprite:	
+	INC <Temp_Var2
+	DEY 
+	BPL DistributeSprites
+
+	LDA <Temp_Var1
+	STA Sprite_FreeRAM
 	RTS

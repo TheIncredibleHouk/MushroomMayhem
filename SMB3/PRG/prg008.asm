@@ -11,23 +11,6 @@
 ; This source file last updated: 2012-03-05 22:51:55.464428532 -0600
 ; Distribution package date: Fri Apr  6 23:46:16 UTC 2012
 ;---------------------------------------------------------------------------
-Level_TilesetIdx_ByTileset:
-	; Basically Level_TilesetIdx is just Level_Tileset - 1
-	.byte $FF	;  0 Map (UNUSED)
-	.byte $00	;  1 Plains style
-	.byte $01	;  2 Mini Fortress style
-	.byte $02	;  3 Hills style
-	.byte $03	;  4 High-Up style
-	.byte $04	;  5 pipe world plant infestation
-	.byte $05	;  6 water world
-	.byte $06	;  7 Toad House
-	.byte $07	;  8 Vertical pipe maze
-	.byte $08	;  9 desert levels
-	.byte $09	; 10 Airship
-	.byte $0A	; 11 Giant World
-	.byte $0B	; 12 Ice level
-	.byte $0C	; 13 Sky level
-	.byte $0D	; 14 Underground
 
 	; Defines 4 frames of animation to use while Player walks
 Player_WalkFramesByPUp:
@@ -153,7 +136,7 @@ Player_DoGameplay:
 	; NOTE: If a partial initialization occurred (above),
 	; it will NOT return here!  It will be back up at PRG030...
 
-	JSR Sprite_RAM_Clear
+	JSR Sprite_RAM_Clear_NotWeather
 	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 
 	; If Player is...
@@ -288,8 +271,6 @@ MapPowersToSuit:
 ; If level has not yet initialized, this does so, otherwise it
 ; simply exits and does nothing...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Level_XStarts:
-	.byte $18, $70, $D8, $80
 
 Level_Initialize:
 	LDA <Player_XStart	
@@ -300,7 +281,7 @@ Level_Initialize:
 PRG008_A242:
 	STA Level_ObjectsInitialized ; Set Level_ObjectsInitialized = 0 (trigger scene-change reset)
 
-	LDA #$28
+	LDA #$18
 	STA Player_SprOff ; Player sprite rooted at offset $28
 
 
@@ -308,22 +289,29 @@ PRG008_A242:
 	LDX World_Map_Power
 	INX
 	STX Player_QueueSuit 
+
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled
+
 	LDA #$FF
 	STA CompleteLevelTimer
 
 	LDA Player_Coins
 	STA Previous_Coins
+
 	LDA Player_Coins+1
 	STA Previous_Coins+1
+
 	LDA Player_Coins+2
 	STA Previous_Coins+2
+
 	LDA Player_Coins+3
 	STA Previous_Coins+3
+
 	LDA Cherries
 	STA Previous_Cherries
+
 	LDA Magic_Stars
 	STA Previous_Stars
 
@@ -737,20 +725,20 @@ Player_UpdateRunPowerRTS:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Palette colors per power up level -- first byte is never used!
 PowerUp_Palettes:
-	.byte $00, $16, $36, $0F	; 0 - Mario default palette
-	.byte $00, $16, $36, $0F	; 1 - #DAHRKDAIZ SUPER MARIO
-	.byte $00, $30, $36, $06	; 2 - Fire Flower
-	.byte $00, $16, $36, $0F	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
-	.byte $00, $28, $36, $0F	; 4 - Frog Suit
-	.byte $00, $19, $36, $0F	; 5 - #DAHRKDAIZ Koopa Suit
-	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
-	.byte $00, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
-	.byte $00, $27, $36, $06	; 8 - #DAHRKDAIZ Fire Fox Mario
-	.byte $00, $30, $31, $01	; 9 - Unused
-	.byte $00, $25, $36, $0F	; A - #DAHRKDAIZ Boo Mario
-	.byte $00, $36, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
-	.byte $00, $0B, $2B, $0F	; infected
-	.byte $00, $28, $30, $27	; yolked
+	.byte $00, $0F, $16, $36	; 0 - Mario default palette
+	.byte $00, $0F, $16, $36	; 1 - #DAHRKDAIZ SUPER MARIO
+	.byte $00, $06, $30, $36	; 2 - Fire Flower
+	.byte $00, $0F, $16, $36	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
+	.byte $00, $0F, $28, $36	; 4 - Frog Suit
+	.byte $00, $0F, $19, $36	; 5 - #DAHRKDAIZ Koopa Suit
+	.byte $00, $0F, $30, $27	; 6 - Hammer Suit
+	.byte $00, $01, $30, $31	; 7 - #DAHRKDAIZ Ice Mario
+	.byte $00, $06, $27, $36	; 8 - #DAHRKDAIZ Fire Fox Mario
+	.byte $00, $01, $30, $31	; 9 - Unused
+	.byte $00, $0F, $25, $36	; A - #DAHRKDAIZ Boo Mario
+	.byte $00, $0F, $36, $36	; B - #DAHRKDAIZ Ninja Mario
+	.byte $00, $0F, $0B, $2B	; infected
+	.byte $00, $27, $28, $30	; yolked
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; #DAHRKDAIZ - Suit pallete code removed
@@ -3317,6 +3305,7 @@ PRG008_B42E:
 
 
 PRG008_B43F:
+
 	LDY <Temp_Var10	 ; Y = Player_YVel
 	RTS		 ; Return
 
@@ -3424,6 +3413,9 @@ Player_DetectSolids5:
 	LDA <Player_YVel
 	BPL Player_DetectSolids2	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
 	
+	LDA Player_OnObject
+	BNE Player_DetectSolids2
+
 	LDA #$01
 	STA <Player_InAir
 
@@ -3631,6 +3623,10 @@ Bumps_PowerUpBlock2:
 	STA Sound_QPlayer
 
 	JSR Object_New
+	
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #OBJ_BOUNCEDOWNUP 
 	STA Objects_ID, X
 
@@ -3727,6 +3723,18 @@ BumpBlock_Spinner1:
 	LDA Tile_LastValue
 	ORA #$01
 	STA Bouncer_ReplaceTile, X
+
+	LDA Bump_X
+	STA Block_ChangeX
+
+	LDA Bump_XHi
+	STA Block_ChangeXHi
+
+	LDA Bump_Y
+	STA Block_ChangeY
+
+	LDA Bump_YHi
+	STA Block_ChangeYHi
 
 	JMP Tile_WriteTempChange
 
@@ -4607,9 +4615,9 @@ NoEffect:
 	RTS
 
 RainbowEffectColors:
+	.byte $01, $03, $05, $07, $08, $09, $0A, $0B, $0C, $01, $03, $05, $07, $08, $09
 	.byte $31, $33, $35, $37, $38, $39, $3A, $3B, $3C, $31, $33, $35, $37, $38, $39
 	.byte $21, $23, $25, $27, $28, $29, $2A, $2B, $2C, $21, $23, $25, $27, $28, $29
-	.byte $01, $03, $05, $07, $08, $09, $0A, $0B, $0C, $01, $03, $05, $07, $08, $09
 
 RainbowWithMovement:
 	LDA <Counter_1
@@ -5200,7 +5208,6 @@ Player_SuitChange6:
 Player_SuitChange7:
 	LDX #$00
 	STX Player_QueueSuit	  ; Clear Player_QueueSuit
-	STX Exp_Doubler
 	STX Player_Shell
 	STX Boo_Mode_Timer
 	STX Boo_Mode_KillTimer
@@ -5333,6 +5340,9 @@ Player_DetectFloorRTS:
 	RTS
 
 Player_DetectFloor2:
+	LDA <Player_OnObject
+	BNE Player_DetectFloorRTS
+
 	LDA #$01
 	STA <Player_InAir
 	RTS
@@ -5640,20 +5650,30 @@ Player_SolidTileInteract:
 	.word Solid_ESwitch		; TILE_PROP_ESWITCH		= $0F
 
 Solid_CheckBump:
+
+	LDX <TileXIndex
+	CPX #HEAD_FEET_LEFT_INDEX
+	BEQ Solid_CheckBump1
+
+	CPX #HEAD_FEET_RIGHT_INDEX
+	BNE Solid_CheckBumpRTS
+
+Solid_CheckBump1:
 	LDA Tile_LastValue
 	AND #$3F
 	BNE Solid_CheckBumpRTS
 
+	
 	LDA <Player_InAir
 	BNE Solid_CheckBumpRTS
 
 	LDA #$D0
 	STA <Player_YVel
 	STA <Player_InAir
-	RTS
 
 Solid_CheckBumpRTS:
 	RTS
+
 Solid_Slick:
 	LDA #$02
 	STA Player_Slippery
@@ -6420,6 +6440,9 @@ Player_MakeSplash:
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
+
+	LDA #$02
+	STA Objects_SpritesRequested, X
 
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, X

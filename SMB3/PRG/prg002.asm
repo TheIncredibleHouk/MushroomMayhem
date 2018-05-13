@@ -242,8 +242,8 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $26 - OBJ_WOODENPLAT_RIDER
 	.byte KILLACT_STANDARD	; Object $27 - OBJ_PLATFORM_DIAG1OSC
 	.byte KILLACT_STANDARD	; Object $28 - OBJ_PLATFORM_DIAG2OSC
-	.byte KILLACT_STANDARD	; Object $29 - OBJ_SPIKE
-	.byte KILLACT_STANDARD	; Object $2A - OBJ_SPARK
+	.byte KILLACT_NORMALSTATE	; Object $29 - OBJ_SPIKE
+	.byte KILLACT_POOFDEATH	; Object $2A - OBJ_SPARK
 	.byte KILLACT_POOFDEATH	; Object $2B - OBJ_RICOCHET_PODOBO
 	.byte KILLACT_STANDARD	; Object $2C - OBJ_PLATFORM_CLOCKOSC
 	.byte KILLACT_STANDARD	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
@@ -254,7 +254,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_POOFDEATH	; Object $32 - OBJ_PHANTO_FLIP
 	.byte KILLACT_STANDARD	; Object $33 - OBJ_NIPPER
 	.byte KILLACT_STANDARD	; Object $34 - OBJ_TOAD
-	.byte KILLACT_STANDARD	; Object $35 - OBJ_LIGHTNINGBOLT
+	.byte KILLACT_POOFDEATH	; Object $35 - OBJ_LIGHTNINGBOLT
 	.byte KILLACT_STANDARD	; Object $36 - OBJ_PLATFORM_PATH
 	.byte KILLACT_STANDARD	; Object $37 - OBJ_PLATFORM_DIAG1OSCS
 	.byte KILLACT_STANDARD	; Object $38 - OBJ_PLATFORM_DIAG2OSCS
@@ -264,15 +264,15 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.byte KILLACT_STANDARD	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte KILLACT_STANDARD	; Object $3E - OBJ_PLATFORMFLOATS
-	.byte KILLACT_NORMALANDKILLED	; Object $3F - OBJ_DRYBONES
+	.byte KILLACT_POOFDEATH	; Object $3F - OBJ_DRYBONES
 	.byte KILLACT_POOFDEATH	; Object $40 - OBJ_GOLDENPIRANHAGROWER
 	.byte KILLACT_POOFDEATH	; Object $41 - OBJ_PIRANHAGROWER
-	.byte KILLACT_JUSTDRAW16X16	; Object $42 - OBJ_FLAMINGCHEEP
-	.byte KILLACT_JUSTDRAW16X16	; Object $43 - OBJ_BEACHEDCHEEP
+	.byte KILLACT_POOFDEATH	; Object $42 - OBJ_FLAMINGCHEEP
+	.byte KILLACT_POOFDEATH	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_PLATFORMUNSTABLE
 	.byte KILLACT_POOFDEATH	; Object $45 - OBJ_PWING
-	.byte KILLACT_STANDARD	; Object $46 - OBJ_SNIFIT
-	.byte KILLACT_NORMALANDKILLED	; Object $47 - OBJ_BIRDO
+	.byte KILLACT_POOFDEATH	; Object $46 - OBJ_SNIFIT
+	.byte KILLACT_POOFDEATH	; Object $47 - OBJ_BIRDO
 
 
 	; Object group $01 (i.e. objects starting at ID $24) pattern index starts
@@ -568,6 +568,9 @@ Beached_DoBounce2:
 
 
 ObjInit_DryCheep:
+	LDA #$04
+	STA Objects_SpritesRequested,X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -808,14 +811,7 @@ DryCheep_DrawFlamesAndSmoke2:
 Flame_Frames:
 	.byte $81, $83, $85, $87
 
-Entropy_BySlot:	.byte $13, $D7, $F9, $36, $7F
-
 ObjInit_HotFoot:
-	LDA Entropy_BySlot,X
-	STA Objects_Data2,X
-
-
-Bank2_HotFootHaltAction:
 	RTS		 ; Return
 
 ObjInit_PWing:
@@ -1178,17 +1174,6 @@ Phanto_Poof:
 	JMP Object_Delete
 
 ObjInit_InvisibleLift:
-
-	; Object appears 11 pixels below placement
-	LDA <Objects_YZ,X
-	ADD #11
-	STA <Objects_YZ,X
-	BCC PRG002_A9C1	
-	INC <Objects_YHiZ,X
-PRG002_A9C1:
-
-	RTS		 ; Return
-
 ObjNorm_InvisibleLift:
 	RTS
 
@@ -1201,6 +1186,9 @@ Platform_SteppedOn = Objects_Data5
 Platform_MadeContact = Objects_Data6
 
 ObjInit_PlatformCommon:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND48x16
 	STA Objects_BoundBox, X
 
@@ -1756,11 +1744,6 @@ Spike_Frames:
 	.byte $04, $04, $04, $04, $04, $02, $02, $03, $03, $03, $03, $02, $02, $02, $02
 
 Spike_XOff:
-Spike_XOffLeft:
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $FF, $FE, $FD, $FC
-
-Spike_XOffRight:
 	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.byte $00, $00, $01, $02, $03, $04
 
@@ -1769,6 +1752,12 @@ Spike_YOff:
 	.byte $F0, $EE, $F0, $F0, $F0, $F0
 
 ObjInit_Spike:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	LDA #ATTR_ICEPROOF
+	STA Objects_WeaponAttr, X
+	
 	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
@@ -1777,6 +1766,10 @@ ObjInit_Spike:
 
 	LDA #$40
 	STA Objects_Timer, X
+	STA Objects_Regen, X
+
+	LDA #$02
+	STA Objects_ExpPoints, X
 	RTS
 
 Spike_Action = Objects_Data3
@@ -1784,6 +1777,31 @@ Spike_Frame = Objects_Data4
 Spike_BallOffset = Objects_Data5
 
 ObjNorm_Spike:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Spike_Norm1
+	
+	LDA Spike_Action, X
+	BEQ Spike_Die
+
+	LDA <Objects_XZ, X
+	STA Debris_X
+
+	LDA <Objects_YZ, X
+	STA Debris_Y
+
+	JSR Common_MakeDebris
+
+	LDA #$99
+	STA BrickBust_Tile, Y
+
+	LDA #SPR_PAL1
+	STA BrickBust_Pal, Y
+	
+Spike_Die:
+	JMP ObjState_PoofDying
+
+Spike_Norm1:
 	LDA <Player_HaltGameZ
 	BEQ Spike_Norm
 	JMP Spike_Draw
@@ -1791,6 +1809,7 @@ ObjNorm_Spike:
 Spike_Norm:
 	JSR Object_DeleteOffScreen
 	JSR Object_CalcBoundBox
+	JSR Object_FacePlayer
 	JSR Object_AttackOrDefeat
 
 	LDA Spike_Action, X
@@ -1801,8 +1820,6 @@ Spike_Norm:
 	.word SpikeThrowSpike
 
 SpikeWait:
-	JSR Object_FacePlayer
-
 	LDA #$00
 	STA Objects_Frame, X
 
@@ -1815,6 +1832,7 @@ SpikeWait:
 	STA Objects_Timer, X
 
 SpikeWait1:
+	LDA Object_SpriteRAMOffset,X
 	JMP Spike_Draw
 
 SpikeOpenMouth:
@@ -1848,9 +1866,16 @@ SpikeOpenMouth1:
 	JMP Spike_Draw
 	
 SpikeThrow_XVel:
-	.byte $10, $F0
+	.byte $10, $18
+
+SpikeThrow_YVel:
+	.byte $D0, $C0
 
 SpikeThrowSpike:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	ORA Objects_SpritesHorizontallyOffScreen,X
+	BNE Spike_Draw
+
 	JSR Object_FindEmptyX
 	BCC Spike_Draw
 
@@ -1877,21 +1902,34 @@ SpikeThrowSpike:
 	STA <Objects_XHiZ, X
 
 	
-	LDA #$00
-	STA <Temp_Var1
-
-	LDA Objects_Orientation, Y
-	BNE SpikeThrow2
-
-	INC <Temp_Var1
-
-SpikeThrow2:
-	LDY <Temp_Var1
+	LDA RandomN, X
+	AND #$01
+	TAY
 
 	LDA SpikeThrow_XVel, Y
 	STA <Objects_XVelZ, X
 
-	LDA #$D0
+	LDY CurrentObjectIndexZ
+
+	LDA Objects_Orientation, Y
+	AND #SPR_HFLIP
+	BNE Spike_BallNoFlip
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+Spike_BallNoFlip:
+	LDA RandomN, X
+	AND #$10
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA SpikeThrow_YVel, Y
 	STA <Objects_YVelZ, X
 
 	JSR Object_CalcBoundBox
@@ -1907,9 +1945,9 @@ SpikeThrow2:
 
 Spike_Draw:
 	JSR Object_Draw
+	
 	LDA Spike_Action, X
-	CMP #$01
-	BNE Spike_Draw1
+	BEQ Spike_Draw1
 
 	LDY Object_SpriteRAMOffset, X
 
@@ -1926,15 +1964,6 @@ Spike_Draw:
 	LDA Spike_BallOffset, X
 	LSR A
 	STA <Temp_Var1
-	TAX
-
-	LDA Sprite_RAMY, Y
-	ADD Spike_YOff, X
-	STA Sprite_RAMY + 8, Y
-
-	LDA Sprite_RAMY, Y
-	ADD Spike_YOff, X
-	STA Sprite_RAMY + 12, Y
 
 	LDX <CurrentObjectIndexZ
 	LDA Objects_Orientation, X
@@ -1943,39 +1972,52 @@ Spike_Draw:
 	LDX <Temp_Var1
 
 	LDA Sprite_RAMX, Y
-	ADD Spike_XOffLeft, X
-	STA Sprite_RAMX + 8, Y
+	SUB Spike_XOff, X
+ 	BCC Spike_BallUnderflow2
 
+	STA Sprite_RAMX + 8, Y
+	
+	LDA Sprite_RAMY, Y
+	ADD Spike_YOff, X
+	STA Sprite_RAMY + 8, Y
+
+	LDA Sprite_RAMX + 8, Y
 	ADD #$08
+	BCS Spike_BallUnderflow2
+	
 	STA Sprite_RAMX + 12, Y
+
+	LDA Sprite_RAMY, Y
+	ADD Spike_YOff, X
+	STA Sprite_RAMY + 12, Y
+
+Spike_BallUnderflow2:
 	RTS
 
 Spike_BallRight:
 	LDX <Temp_Var1
 
 	LDA Sprite_RAMX, Y
-	ADD Spike_XOffRight, X
+	ADD Spike_XOff, X
+	BCS Spike_Draw1
 	STA Sprite_RAMX + 8, Y
 
+	LDA Sprite_RAMY, Y
+	ADD Spike_YOff, X
+	STA Sprite_RAMY + 8, Y
+
+	LDA Sprite_RAMX + 8, Y
 	ADD #$08
+	BCS Spike_Draw1
+	
 	STA Sprite_RAMX + 12, Y
 
+	LDA Sprite_RAMY, Y
+	ADD Spike_YOff, X
+	STA Sprite_RAMY + 12, Y
 Spike_Draw1:
 	RTS
 
-	; Sets X velocity by facing flip direction
-Object_SetXVelByFacingDir:
-	LDA Objects_Orientation,X
-	ASL A
-	ASL A	; If HFlip is set, pushed into carry
-
-	LDA #$08
-	BCS PRG002_AE28
-	LDA #-$08
-PRG002_AE28:
-	STA <Objects_XVelZ,X
-
-	RTS		 ; Return
 
 ObjInit_Snifit:
 	LDA #BOUND16x16
@@ -4220,8 +4262,14 @@ Birdo_Pal:
 	.byte SPR_PAL1, SPR_PAL2
 
 ObjInit_Birdo:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x32TALL
 	STA Objects_BoundBox, X
+
+	LDA #(ATTR_ICEPROOF)
+	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_NOICE | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
@@ -4233,11 +4281,15 @@ ObjInit_Birdo:
 	LDA Birdo_ShootTimers, Y
 	STA Objects_Timer, X
 
+	LDA #$08
+	STA Objects_ExpPoints, X
+
 	LDA #$04
 	STA Objects_Health, X
 	STA Birdo_PrevHealth, X
 
 	LDY Objects_Property, X
+
 	LDA Birdo_Pal, Y
 	STA Objects_SpriteAttributes, X
 	STA Birdo_PalState, X
