@@ -814,6 +814,9 @@ SnowGuy_DiggingSnow = Objects_Data3
 SnowGuy_ForceDrawSnow =  Objects_Data4
 
 ObjInit_SnowGuy:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -1080,6 +1083,9 @@ VeggieGuy_Holding = Objects_Data2
 VeggieGuy_PullingVeggie = Objects_Data3
 
 ObjInit_VeggieGuy:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+	
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -1354,6 +1360,9 @@ ShyGuy_Frame = Objects_Data1
 ShyGuy_Holding = Objects_Data2
 
 ObjInit_ShyGuy:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 

@@ -607,7 +607,7 @@ Player_IceBall3:
 	LDA SpecialObj_YVel, X
 	BMI Player_IceBall5
 
-	LDA #-$50
+	LDA #-$4C
 	STA SpecialObj_YVel, X
 	BNE Player_IceBall5
 
@@ -1208,6 +1208,9 @@ PlayerProj_HitEnemies1:
 	LDA Obj2Obj_EnByState,X
 	BNE PlayerProj_HitEnemies2	 ; If this state does not support object-to-object (object-to-Projectile), jump to PRG007_A667 (Forget it!)
 
+	LDA Objects_Timer2, X
+	BNE PlayerProj_HitEnemies2
+
 	LDA Objects_WeaponAttr,Y
 	STA <SpecialObj_ObjectAttributes		; Object attribute flags -> Temp_Var1
 
@@ -1247,7 +1250,6 @@ ProjEnemyDead:
 	
 	TYA
 	TAX
-	STA Debug_Snap
 	JSR Object_GetKilled
 
 	TXA
@@ -1258,6 +1260,7 @@ ProjEnemyDead:
 	; Set object's velocity based on Player's velocity (sort of works)
 	LDA SpecialObj_XVel,X
 	BMI ProjEnemyDead_Left
+
 
 	LDA #$0C
 	BNE ProjEnemyDead_XVel
@@ -2784,6 +2787,9 @@ Fireball_NotHitWall:
 	LDA #$02
 	STA Proj_Attack
 
+	LDA #$01
+	STA Proj_Attack
+
 	JSR EnemyProj_HitPlayer
 	INC Enemy_BigFireballAnimate, X
 
@@ -2866,6 +2872,9 @@ Enemy_NinjaStar:
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
 	JSR SpecialObj_DetectWorld16x16
+	
+	LDA #$02
+	STA Proj_Attack
 	
 	JSR EnemyProj_HitPlayer
 	BCC Enemy_NinjaStarDraw
@@ -3102,7 +3111,7 @@ Enemy_FireBall:
 	BNE Enemy_FireBall5
 
 	LDA SpecialObj_Data3, X
-	BNE Enemy_FireBallCalcBounds
+	BNE Enemy_FireBallNoGravity
 
 	LDA SpecialObj_Data1, X
 	BNE Enemy_FireBallNoGravity
@@ -3202,6 +3211,10 @@ Enemy_IceBallNoGravity:
 
 Enemy_IceBallCalcBounds
 	JSR SpecialObj_CalcBounds8x16
+	
+	LDA #$01
+	STA Proj_Attack
+
 	JSR EnemeyProj_Enemy_FreezePlayer
 
 Enemy_IceBallTiles:
@@ -3271,6 +3284,9 @@ Enemy_Hammer:
 
 	JSR SObj_ApplyXYVelsWithGravity
 	JSR SpecialObj_CalcBounds16x16
+
+	LDA #$02
+	STA Proj_Attack
 	JSR EnemyProj_HitPlayer
 	
 	JSR SpecialObj_DetectWorld16x16
@@ -4496,6 +4512,9 @@ PRG007_BF81:
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
 	STA Objects_NoExp, X
+
+	LDA #$02
+	STA Objects_SpritesRequested, X
 
 	LDA ObjectGenerator_Visibility, X
 	AND #GENERATOR_VVISIBLE

@@ -57,7 +57,7 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_PlatformUnstable	; Object $44 - OBJ_PLATFORMUNSTABLE
-	.word ObjInit_PWing		; Object $45 - OBJ_PWING
+	.word ObjInit_DoNothing		; Object $45 - OBJ_PWING
 	.word ObjInit_Snifit	; Object $46 - OBJ_SNIFIT
 	.word ObjInit_Birdo		; Object $47 - OBJ_BIRDO
 
@@ -99,7 +99,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjNorm_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjNorm_PlatformUnstable	; Object $44 - OBJ_PLATFORMUNSTABLE
-	.word ObjNorm_PWing		; Object $45 - OBJ_PWING
+	.word ObjNorm_DoNothing		; Object $45 - OBJ_PWING
 	.word ObjNorm_Snifit	; Object $46 - OBJ_SNIFIT
 	.word ObjNorm_Birdo	; Object $47 - OBJ_BIRDO
 
@@ -142,7 +142,7 @@ ObjectGroup01_CollideJumpTable:
 	.word Player_GetHurt		; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjHit_DoNothing		; Object $43 - OBJ_BEACHEDCHEEP
 	.word Platform_PlayerStand		; Object $44 - OBJ_PLATFORMUNSTABLE
-	.word ObjHit_PWing		; Object $45 - OBJ_PWING
+	.word ObjHit_DoNothing		; Object $45 - OBJ_PWING
 	.word ObjHit_DoNothing		; Object $46 - OBJ_SNIFIT
 	.word Birdo_HurtOrStand		; Object $47 - OBJ_BIRDO
 
@@ -374,7 +374,8 @@ ObjP2A:
 ObjP2B:
 	.byte $B1, $B3, $B5, $B7, $B9, $BB
 ObjP46:
-	.byte $A9, $AB, $89, $AB, $AD, $AF, $8B, $AF
+	.byte $A9, $AB
+	.byte $AD, $AF
 
 ObjP3B:
 	.byte $FB, $FD, $71, $71, $FB, $FD, $71, $71, $FB, $FF, $71, $71, $FB, $FF, $71, $71
@@ -820,28 +821,6 @@ ObjInit_PWing:
 
 	JMP Object_NoInteractions
 
-ObjNorm_PWing:
-	JSR Object_CalcBoundBox
-	JSR Object_InteractWithPlayer
-	JMP Object_Draw
-
-ObjHit_PWing:
-	LDA #$FF
-	STA Player_FlyTime
-
-	LDA #$04
-	STA Player_QueueSuit
-
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
-	STA Sound_QLevel1
-
-	LDA #$17
-	STA Player_SuitLost
-
-	LDA #OBJSTATE_DEADEMPTY
-	STA Objects_State, X
-	RTS
 
 ObjInit_Boo:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
@@ -1390,6 +1369,9 @@ PlatformUnstable_NoRegen = Objects_Data12
 ObjInit_PlatformUnstable:
 	LDA #BOUND48x16
 	STA Objects_BoundBox, X
+
+	LDA #$06
+	STA Objects_SpritesRequested, X
 
 	JSR Object_NoInteractions
 
@@ -2023,210 +2005,194 @@ ObjInit_Snifit:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #$80
+	LDA #$02
+	STA Objects_Health, X
+
+	LDA #$40
 	STA Objects_Timer, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_FacePlayer
+
+	LDA Objects_Property, X
+	BNE Snifit_InitRTS
+
+	JSR Object_MoveTowardsPlayer
+
+Snifit_InitRTS:
 	RTS
 
-SnifitDirection:
-	.byte $08, $F8
+Snifit_Frame = Objects_Data1
+Snifit_Action = Objects_Data2
+Snifit_ShotsLeft = Objects_Data3
+Snifit_ShootTimer = Objects_Data4
+
+Snifit_Shots:
+	.byte $03, $02, $01, $04, $02, $01, $02, $03
 
 ObjNorm_Snifit:
 	LDA <Player_HaltGameZ
-	BNE DrawSnifit
+	BEQ Snifit_Norm
+	JMP Snifit_Draw
 
-	LDA #$00
-	STA Objects_Data5, X
-	LDA Objects_Data3, X
-	BEQ ObjNorm_Snifit0
-
-	JSR Object_YDistanceFromPlayer
-	CPY #$01
-	BNE ObjNorm_Snifit0
-
-	LDA <Temp_Var16
-	CMP #$E0
-	BCS ObjNorm_Snifit0
-	INC Objects_Data5, X
-
-ObjNorm_Snifit0:
-
-	JSR Object_InteractWithPlayer
-	JSR Object_DeleteOffScreen	 
+Snifit_Norm:
+	JSR Object_DeleteOffScreen
 	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_FacePlayer
-	TYA
-	STA Objects_Data2, X
-	LDA Objects_Data3, X
-	BEQ ObjNorm_Snifit1
+	JSR Object_AttackOrDefeat
+
+	LDA Snifit_Action, X
+	JSR DynJump
+
+	.word Snifit_March
+	.word Snifit_Shoot
+
+Snifit_March:
+	LDA Objects_Timer, X
+	BNE Snifit_MarchDone
+
+	LDA #$10
+	STA Snifit_ShootTimer, X
+	INC Snifit_Action, X
 
 	LDA #$00
 	STA Objects_XVelZ, X
-	BEQ ObjNorm_Snifit2
-
-ObjNorm_Snifit1:
-	LDA Objects_Property, X
-	BNE ObjNorm_Snifit2
-
-	LDA SnifitDirection, Y
-	STA Objects_XVelZ, X
-
-ObjNorm_Snifit2:
-	LDA  <Objects_TilesDetectZ, X
-	AND #(HIT_GROUND)
-	BEQ SnifitDontHop
 
 	LDA RandomN
-	AND #$1F
-	BEQ Snifit_Hop
+	AND #$07
+	TAY
 
-	LDA  <Objects_TilesDetectZ, X
-	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
-	BEQ SnifitDontHop
+	LDA Snifit_Shots, Y
+	STA Snifit_ShotsLeft, X
 
-Snifit_Hop:
+Snifit_MarchDone:
+	JMP Snifit_Animate
 
-	LDA #$D4
-	STA Objects_YVelZ, X
+Snifit_ShootXVel:
+	.byte $18, $E8
 
-SnifitDontHop:
-	LDA  <Objects_TilesDetectZ, X
-	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
-	BEQ SnifitDontHop1
-	JSR Snifit_HitWall
+Snifit_WalkTimer:
+	.byte $40, $60, $50, $40
 
-SnifitDontHop1:
-	JSR Snifit_Shoot
-
-DrawSnifit:
-	LDA Objects_XVelZ, X
-	ORA Objects_Property, X
-	BEQ DrawSnifit1
-
-	INC Objects_Data4, X
-
-DrawSnifit1:
-	LDA Objects_Data4, X
-	LSR A
-	LSR A
-	AND #$02
-	ORA Objects_Data5, X
-	STA Objects_Frame, X
-	JMP Object_Draw
-
+Snifit_Draw2:
+	JMP Snifit_Draw
+	
 Snifit_Shoot:
-	LDA Objects_Timer, X
-	BNE Snifit_ShootRTS
+	LDA Snifit_ShootTimer, X
+	BEQ Snifit_DoShot
 
-	LDA Objects_Data3, X
-	CMP #$03
-	BNE Snifit_Shoot1
+	DEC Snifit_ShootTimer, X
+ 	BNE Snifit_Draw2
+
+	LDA Snifit_ShotsLeft, X
+	BEQ Snifit_Draw2
+
+	LDA RandomN
+	AND #$01
+	BNE Snifit_Draw2
+	
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+	BNE Snifit_Draw2
+
+Snifit_DoShot:
+	JSR Object_FacePlayer
+	LDA Snifit_ShotsLeft, X
+	BNE Snifit_CheckYVel
 
 	LDA #$00
-	STA Objects_Data3, X
+	STA Snifit_Action, X
+
 	LDA RandomN
 	AND #$03
-	TAY
-	LDA SnifitShootTimers, Y
+	TAY 
+	
+	LDA Snifit_WalkTimer, Y
 	STA Objects_Timer, X
-	RTS
 
-Snifit_Shoot1:
-	INC Objects_Data3, X
-	JSR SpecialObject_FindEmpty
-	TYA
-	BMI Snifit_ShootRTS
+	LDA Objects_Property, X
+	BEQ Snifit_ShootFacePlayer
+	JMP Snifit_Draw
 
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #$C0
-	BNE Snifit_ShootRTS
+Snifit_ShootFacePlayer:
+	JSR Object_MoveTowardsPlayer
+	JMP Snifit_Draw
+
+Snifit_CheckYVel:
+	LDA <Objects_YVelZ, X
+	BMI Snifit_ShootDone
+
+	LDA Objects_SpritesVerticallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	BNE Snifit_FireballNoFlip
+
+	JSR Object_PrepProjectile
+	BCC Snifit_ShootDone
 
 	LDA #SOBJ_FIREBALL
-	STA SpecialObj_ID,Y
+	STA SpecialObj_ID, Y
 
 	LDA #$01
-	STA SpecialObj_Data2,Y
+	STA SpecialObj_Data1, Y
+	STA SpecialObj_Data3, Y
+
+	LDA #$E8
+	STA SpecialObj_XVel, Y
+
+	LDA #$00
+	STA SpecialObj_YVel, Y
+
+	LDA <Objects_XZ, X
+	ADD #$04
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi, Y
 
 	LDA <Objects_YZ, X
-	ADD #$02
 	STA SpecialObj_Y, Y
 
 	LDA <Objects_YHiZ, X
-	ADC #$00
 	STA SpecialObj_YHi, Y
 
-	LDA Objects_Data2, X
-	TAX
+	LDA Objects_Orientation, X
+	BEQ Snifit_FireballNoFlip
 
-	LDA SnifitShootXVel, X
+	LDA #$18
 	STA SpecialObj_XVel, Y
-	LDA SnifitShootOffset, X
-	STA <Temp_Var1
 
-	LDX <CurrentObjectIndexZ
+Snifit_FireballNoFlip:
+	DEC Snifit_ShotsLeft, X
 
-	LDA Objects_Data5, X
-	TAX
-	LDA SnifitShootYVel, X
-	STA SpecialObj_YVel, Y
+	LDA #$30
+	STA Snifit_ShootTimer, X
 
-	LDX <CurrentObjectIndexZ
+Snifit_ShootDone:
+	JMP Snifit_Draw
 
-	LDA #$10
-	STA Objects_Timer, X
+Snifit_Animate:
+	LDA Objects_Property, X
+	BNE Snifit_AnimateAnyway
 
-	LDA <Objects_XZ, X
-	ADD <Temp_Var1
-	STA SpecialObj_X, Y
-
-	LDA #$00
-	STA SpecialObj_Data1, Y
-
-	LDA #$01
-	STA SpecialObj_Data2, Y
-	
-
-Snifit_ShootRTS:
-	RTS
-
-SnifitShootTimers:
-	.byte $40, $80, $40, $C0
-
-SnifitShootOffset:
-	.byte $0B, $01
-
-SnifitShootXVel:
-	.byte $18, $E8
-
-SnifitShootYVel:
-	.byte $00, $E8
-
-Snifit_HitWall:
 	LDA <Objects_XVelZ, X
-	BEQ Snifit_HitWall1RTS
-	BPL Snifit_HitWall1
+	BEQ Snifit_Draw
 
-	LDA  <Objects_TilesDetectZ, X
-	AND #HIT_LEFTWALL
-	BEQ Snifit_HitWall1RTS
+Snifit_AnimateAnyway:
+	INC Snifit_Frame, X
 
-	LDA <Objects_XZ, X
-	AND #$F0
-	ORA #$0E
-	STA <Objects_XZ, X
-	RTS
+	LDA Snifit_Frame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
 
-Snifit_HitWall1:
-	LDA  <Objects_TilesDetectZ, X
-	AND #HIT_RIGHTWALL
-	BEQ Snifit_HitWall1RTS
-	LDA <Objects_XZ, X
-	AND #$F0
-	ORA #$02
-	STA <Objects_XZ, X
+Snifit_Draw:
+	JMP Object_Draw
 
-Snifit_HitWall1RTS:
-	RTS
 Spark_Direction = Objects_Data2
 Spark_Speed = Objects_Data3
 Spark_HitDetect = Objects_Data4
@@ -2389,6 +2355,7 @@ Spark_Animate:
 	STA Objects_Frame, X
 
 Spark_Draw:
+	LDA Object_SpriteRAMOffset, X
 	JMP Object_DrawMirrored
 
 Bank2_PiranhaSpikeHaltAction:

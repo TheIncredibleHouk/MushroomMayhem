@@ -1527,8 +1527,12 @@ PRG030_8EE7:
 	; pop-up coins, Special Objects, Cannon Fires, Player Projectiles,
 	; and, last but not least (well, maybe least), "shell kill flashes"!
 	JSR Gameplay_UpdateAndDrawMisc
+	LDA Scroll_Updated
+	BNE Game_NoBackgroundUpdate
+
 	JSR DrawStarsBackground
 
+Game_NoBackgroundUpdate:
 	LDA Level_HAutoScroll
 	BEQ PRG030_8F31	 ; If Auto Horizontal Scrolling is NOT active, jump to PRG030_8F31
 
@@ -3393,15 +3397,18 @@ CopyPSwitchTiles:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Randomize:
 	LDX #$00	
-	LDY #$09	
+	LDY #$09
+
 	LDA Random_Pool
 	AND #$02	
 	STA <Temp_Var1	
+
 	LDA RandomN	
 	AND #$02	
 	EOR <Temp_Var1	
 	CLC		
 	BEQ PRG030_999A	
+
 	SEC		
 PRG030_999A:
 	ROR Random_Pool,X
@@ -3646,7 +3653,11 @@ PRG030_9B66:
 ; changes in Horz_Scroll
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Scroll_Update:
+	LDA #$00
+	STA Scroll_Updated
+
 	LDX <Scroll_LastDir	; X = Scroll_LastDir
+
 	LDA <Horz_Scroll	; A = Horz_Scroll
 	AND #$f8		; Only caring about every 8 pixels (for valid comparison to Scroll_RightUpd)
 	CMP <Scroll_RightUpd,X	; Compared to whichever update applies to the last scroll
@@ -3688,7 +3699,8 @@ PRG030_9B9B:
 
 	LDA <Scroll_LastDir
 	EOR #$01	 
-	TAX		 
+	TAX
+
 	LDA #$FF
 	STA <Scroll_RightUpd,X	 ; Store $FF on the other side
 
@@ -3698,6 +3710,8 @@ PRG030_9BA9:
 	LDA Scroll_UpdAttrFlag	
 	BEQ PRG030_9BB1	 	; If Scroll_UpdAttrFlag is not set (not time to update attributes), jump to PRG030_9BB1 (RTS)
 
+	LDA #$01
+	STA Scroll_Updated
 	JSR Scroll_Do_AttrColumn ; Otherwise, Render a column of attributes...
 
 PRG030_9BB1:
@@ -3728,6 +3742,7 @@ PRG030_9BD3:	.byte $00, $01
 Scroll_DoColumn:
 	; Set proper Page @ A000 for tile layout data
 	LDY Level_Tileset
+
 	LDA TileLayoutPage_ByTileset,Y	
 	STA PAGE_A000	 
 	JSR PRGROM_Change_A000
@@ -5676,7 +5691,7 @@ Common_FindTempTile:
 	DEY
 	BPL Common_FindTempTile
 
-	SEC
+	CLC
 	RTS
 
 Common_TempTileFound:
@@ -5940,6 +5955,8 @@ Tile_WriteTempChange:
 	STA SpinnerBlocksXHi, Y; Store X Hi into object slot
 
 	SEC
+	RTS
 
 Tile_WriteTempChangeRTS:
+	CLC
 	RTS

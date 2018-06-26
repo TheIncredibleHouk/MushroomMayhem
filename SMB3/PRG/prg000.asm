@@ -949,8 +949,11 @@ ObjState_Frozen:
 	STA Objects_BehaviorAttr, X
 
 	LDA <Player_HaltGameZ
-	BNE Frozen_Draw
+	BEQ Frozen_Normal
 
+	JMP Frozen_Draw
+
+Frozen_Normal:
 	LDA Player_EffectiveSuit
 	CMP #MARIO_ICE
 	BNE Frozen_Die
@@ -975,20 +978,27 @@ Frozen_NotKilledOthers:
 	JSR Object_DetectPlayer
 	BCC Frozen_DetectTiles
 
+	LDA Objects_BeingHeld, X
+	BNE Frozen_Carry
+
+Frozen_PlayerStand:
+	JSR ObjHit_SolidStand
+ 	BCC Frozen_Carry
+	BCS Frozen_InteractTiles
+
+	LDA Objects_XVelZ, X
+	STA Player_CarryXVel
+
+	LDA Objects_YVelZ, X
+	STA Player_CarryYVel
+
 Frozen_Carry:
-	JSR Object_Hold
+	JSR Object_Hold	
 	BCS Frozen_DoDraw
 
-	LDA Objects_FrozenKicked, X
-	BNE Frozen_DetectTiles
-
-	JSR ObjHit_SolidBlock
- 	BCS Frozen_DetectTiles
-	
-Frozen_Kick:
 	JSR Object_GetKicked
 
-Frozen_DetectTiles:
+Frozen_DetectTiles
 	JSR Object_DetectTiles
  
 Frozen_CheckKicked:
@@ -1854,16 +1864,10 @@ Object_DrawAndMoveNotHalt:
 	JMP Object_MoveNotHalted
 
 Object_DrawTallHFlipped:
-	JSR Object_DrawTallAndHFlip
-	JMP Object_DoKilledAction
 
 Object_Draw16x32Killed:
-	JSR Object_Draw16x32
-	JMP Object_DoKilledAction
 
 Object_DrawMirroredKilled:
-	JSR Object_DrawMirrored
-	JMP Object_DoKilledAction
 
 Object_CalcAndDrawKilled:
 	JSR Object_Draw
@@ -1873,18 +1877,18 @@ Object_DoKilledAction:
 	; Dead object, not sinking in quicksand
 
 	; Vertically flip
-	LDA Objects_Orientation,X
-	ORA #SPR_VFLIP
-	STA Objects_Orientation,X
+	;LDA Objects_Orientation,X
+	;ORA #SPR_VFLIP
+	;STA Objects_Orientation,X
 
 Object_MoveNotHalted:
-	LDA <Player_HaltGameZ
-	BNE PRG000_D054	 ; If gameplay halted, jump to PRG000_D054 (RTS)
+	;LDA <Player_HaltGameZ
+	;BNE PRG000_D054	 ; If gameplay halted, jump to PRG000_D054 (RTS)
 
-	JSR Object_Move	 ; Perform standard object movements
-	JSR Object_CalcBoundBox
-	JSR Object_DetectTiles
-	JSR Object_CheckForeground
+	;JSR Object_Move	 ; Perform standard object movements
+	;JSR Object_CalcBoundBox
+	;JSR Object_DetectTiles
+	;JSR Object_CheckForeground
 
 PRG000_D054:
 	RTS		 ; Return
@@ -3212,7 +3216,7 @@ Object_InteractWithPlayer1:
 	JSR Object_DoCollision ; Otherwise...
 
 	SEC		 ; Set carry
-	LDA HitTest_Result
+	LDA <HitTest_Result
 No_Collission:
 	RTS		 ; Return
 
@@ -5352,6 +5356,9 @@ ObjInit_TowardsPlayer:
 
 Objects_BeingHeld = Objects_Data14
 Object_Hold:
+	LDA Player_Shell
+	BNE Object_HoldRTS
+
 	LDA Objects_Timer2, X
 	BNE Object_HoldRTS
 
@@ -5375,6 +5382,7 @@ Can_Hold:
 
 	LDA #$01
 	STA Objects_BeingHeld, X
+	STA Player_IsHolding
 
 	LDA Player_FlipBits
 	STA Objects_Orientation,X
@@ -5393,6 +5401,9 @@ Object_XPreventStuck:
 	.byte $00, $FF
 
 Object_Kick:
+	LDA Player_Shell
+	BNE Object_KickRTS
+
 	LDA Objects_BeingHeld, X
 	BEQ Object_KickRTS
 
@@ -5551,8 +5562,23 @@ Object_Burst:
 Object_Burst1:
 	JMP Object_Delete
 
+Solid_Walls = Temp_Var8
+
+ObjHit_SolidStand:
+	LDA #$00
+	STA <Solid_Walls
+
+	LDA <HitTest_Result
+	AND #HITTEST_BOTTOM
+	BNE HitFrom_Top
+	CLC
+	RTS
+
 ObjHit_SolidBlock:
-	LDA HitTest_Result
+	LDA #$01
+	STA <Solid_Walls
+
+	LDA <HitTest_Result
 	AND #HITTEST_BOTTOM
 	BEQ TestHit_FromBelow
 
@@ -5590,7 +5616,7 @@ HitFrom_Top1:
 	RTS
 
 TestHit_FromBelow:
-	LDA HitTest_Result
+	LDA <HitTest_Result
 	AND #HITTEST_TOP
 	BEQ TestHit_FromLeft
 
@@ -5617,7 +5643,10 @@ TestHit_FromBelow:
 	RTS
 
 TestHit_FromLeft:
-	LDA HitTest_Result
+	LDA <Solid_Walls
+	BEQ PlayerTestDone
+
+	LDA <HitTest_Result
 	AND #HITTEST_LEFT
 	BEQ HitFrom_Right
 
@@ -5636,7 +5665,7 @@ TestHit_FromLeft:
 	RTS
 
 HitFrom_Right:
-	LDA HitTest_Result
+	LDA <HitTest_Result
 	AND #HITTEST_RIGHT
 	BEQ PlayerTestDone
 	
@@ -6041,7 +6070,7 @@ Objects_AssignSprites:
 	LDA #$30
 	STA <Temp_Var1
 
-	LDA Counter_7to0
+	LDA #$00;Game_Counter
 	STA <Temp_Var2
 	
 	LDY #$07

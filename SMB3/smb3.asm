@@ -2822,6 +2822,7 @@ HIT_STOMPED		= 20
 
 	Proj_Attack:		.ds 1
 	Sprite_FreeRAM:		.ds 1
+	Scroll_Updated:		.ds 1
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
 	Objects_Health:	.ds 5	; $7CF6-$7CFA Somewhat uncommon "HP" used generally for bosses only (e.g. they take so many fireballs)
 
@@ -3763,7 +3764,7 @@ OBJ_PUMPKINFREE_FLIPPED= $A1	; upside down short pipe muncher
 OBJ_REDPIRANHA = $00 ;
 OBJ_REDPIRANHA_FLIPPED = $00;
 OBJ_PIRANHA		= $A2	; tall pipe muncher
-OBJ_PIRANHA_TWOSHOT	= $A3	; upside down tall pipe muncher
+OBJ_PIRANHA_AGGRESSIVE	= $A3	; upside down tall pipe muncher
 OBJ_GREENPIRANHA_FIRE	 = $00
 OBJ_PUMPKINPLANT	= $A4	; short green fire plant
 OBJ_GREENPIRANHA_FIREC = $00

@@ -681,8 +681,14 @@ PRG008_A523:
 	RTS		 ; Return
 
 
+Player_FullMeter:
+	LDA #$50
+	STA Player_Power
+	RTS
+
 Player_UpdateRunPower:
 	LDA Player_FlyTime
+	BMI Player_FullMeter
 	BNE Player_UpdateRunPowerRTS
 
 	LDA Player_EffectiveSuit
@@ -1129,6 +1135,7 @@ PRG008_A956:
 	; (ground movement, swimming, Kuribo's shoe)
 	LDA PowerUpMovement_JumpTable,Y
 	STA <Temp_Var1
+	
 	LDA PowerUpMovement_JumpTable+1,Y
 	STA <Temp_Var2
 
@@ -1853,9 +1860,6 @@ PRG008_ACB3:
 	CMP #-$20
 	BGS PRG008_ACC8	 ; If Player's Y velocity >= -$20, jump to PRG008_ACC8
 
-	LDA Player_mGoomba
-	BNE PRG008_ACCD	 ; If Player has got a microgoomba stuck to him, jump to PRG008_ACCD
-
 	LDA <Pad_Holding
 	BPL PRG008_ACC8	 ; If Player is NOT pressing 'A', jump to PRG008_ACC8
 
@@ -1863,8 +1867,6 @@ PRG008_ACB3:
 	BNE PRG008_ACCD	 ; Jump (technically always) to PRG008_ACCD
 
 PRG008_ACC8:
-	LDA #$00
-	STA Player_mGoomba ; Player_mGoomba = 0
 
 PRG008_ACCD:
 	TYA	
@@ -2529,7 +2531,10 @@ Try_Shell:
 	LDA Player_Power
 	CMP #$50
 	BCC Kill_Shell
-
+	
+	LDA Player_IsHolding
+	BNE Kill_Shell
+	
 	LDA #$01
 	STA Player_Shell
 	RTS
@@ -3712,17 +3717,6 @@ BumpBlock_Spinner:
 	JMP  BumpBlock_Brick
 
 BumpBlock_Spinner1:
-	JSR Bumps_PowerUpBlock
-
-	LDA #$00
-	STA Bouncer_PowerUp, X
-
-	LDA #$02
-	STA Bouncer_Frame, X
-
-	LDA Tile_LastValue
-	ORA #$01
-	STA Bouncer_ReplaceTile, X
 
 	LDA Bump_X
 	STA Block_ChangeX
@@ -3736,7 +3730,20 @@ BumpBlock_Spinner1:
 	LDA Bump_YHi
 	STA Block_ChangeYHi
 
-	JMP Tile_WriteTempChange
+	JSR Tile_WriteTempChange
+	BCC BumpBlock_SpinnerRTS
+	
+	JSR Bumps_PowerUpBlock
+	
+	LDA Tile_LastValue
+	ORA #$01
+	STA Bouncer_ReplaceTile, X
+
+	LDA #$00
+	STA Bouncer_PowerUp, X
+
+	LDA #$02
+	STA Bouncer_Frame, X
 
 BumpBlock_SpinnerRTS:
 	RTS
@@ -3918,7 +3925,7 @@ Tile_MoveTable_XVel:
 
 Tile_MoveTable_YCarry:
 	.byte $00, $00, $00, $00 ; Y Air
-	.byte $00, $00, $00, $10 ; Y Water
+	.byte $00, $00, $00, $0C ; Y Water
 	.byte $00, $00, $00, $00 ; Y Ground
 	.byte $00, $00, $E8, $F8 ; Y Wall
 
@@ -4501,6 +4508,9 @@ NotSmallMario:
 	LDX #$07
 	
 ClearSprite
+	LDA Objects_Global, X
+	BNE NextSprite
+
 	LDA #$00
 	STA Objects_State, X
 
@@ -4520,9 +4530,11 @@ NotYHi:
 CheckPlayer_YLow:
 	LDA <Player_XHi
 	BEQ NotYLo
+
 	LDA <Player_YHi
 	CMP #$01
 	BNE NotYLo
+	
 	LDA <Player_Y
 	CMP #$A8
 	BCC NotYLo
@@ -4545,6 +4557,7 @@ NotYLo:
 CheckForLevelEnding:
 	LDA CompleteLevelTimer
 	BPL DoCountDown
+
 	CMP #$80
 	BEQ StartCountDown
 	RTS
@@ -4578,8 +4591,10 @@ NoCountDown:
 EndLevel:
 	LDA #$00
 	STA Map_ReturnStatus
+
 	LDA #$01
 	STA Level_ExitToMap
+
 	JSR GetLevelBit
 	ORA Levels_Complete, Y
 	STA Levels_Complete, Y
@@ -4604,65 +4619,6 @@ CoinsEarnedBufferRTS:
 	RTS
 
 DoPaletteEffect:
-	LDA PaletteEffect
-	JSR DynJump
-
-	.word NoEffect
-	.word RainbowWithMovement
-	.word NoEffect
-
-NoEffect:
-	RTS
-
-RainbowEffectColors:
-	.byte $01, $03, $05, $07, $08, $09, $0A, $0B, $0C, $01, $03, $05, $07, $08, $09
-	.byte $31, $33, $35, $37, $38, $39, $3A, $3B, $3C, $31, $33, $35, $37, $38, $39
-	.byte $21, $23, $25, $27, $28, $29, $2A, $2B, $2C, $21, $23, $25, $27, $28, $29
-
-RainbowWithMovement:
-	LDA <Counter_1
-	AND #$07
-	BNE NoEffectChange
-
-	INC EffectCounter
-
-	LDA EffectCounter
-	CMP #$09
-	BNE DontClearCounter
-
-	LDA #$00
-	STA EffectCounter
-
-DontClearCounter:
-	LDX EffectCounter
-	LDA RainbowEffectColors, X
-	STA Palette_Buffer + 06
-
-	LDA RainbowEffectColors + 15, X
-	STA Palette_Buffer + 7
-
-	LDA RainbowEffectColors + 30, X
-	STA Palette_Buffer + 5
-
-	LDA RainbowEffectColors + 3, X
-	STA Palette_Buffer + 10
-
-	LDA RainbowEffectColors + 18, X
-	STA Palette_Buffer + 11
-
-	LDA RainbowEffectColors + 33, X
-	STA Palette_Buffer + 9
-
-	LDA RainbowEffectColors + 6, X
-	STA Palette_Buffer + 14
-
-	LDA RainbowEffectColors + 21, X
-	STA Palette_Buffer + 15
-
-	LDA RainbowEffectColors + 36, X
-	STA Palette_Buffer + 13
-
-NoEffectChange:
 	RTS
 
 PlayerRainbow:

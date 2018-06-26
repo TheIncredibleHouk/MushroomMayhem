@@ -43,7 +43,7 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_PumpkinFree	; Object $A0 - OBJ_PUMPKINFREE
 	.word ObjInit_DoNothing	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.word ObjInit_Piranha	; Object $A2 - OBJ_PIRANHA
-	.word ObjInit_Piranha_TwoShot	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.word ObjInit_Piranha_Aggressive	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
 	.word ObjInit_Pumpkin	; Object $A4 - OBJ_PUMPKINPLANT
 	.word ObjInit_DoNothing	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.word ObjInit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
@@ -85,7 +85,7 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_PumpkinFree		; Object $A0 - OBJ_PUMPKINFREE
 	.word ObjNorm_PumpkinFree		; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.word ObjNorm_Piranha		; Object $A2 - OBJ_REDPIRANHA
-	.word ObjNorm_Piranha		; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.word ObjNorm_Piranha		; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
 	.word ObjNorm_Pumpkin		; Object $A4 - OBJ_PUMPKINPLANT
 	.word ObjNorm_DoNothing		; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.word ObjNorm_DoNothing		; Object $A6 - OBJ_VENUSFIRETRAP
@@ -128,7 +128,7 @@ ObjectGroup04_CollideJumpTable:
 	.word Player_GetHurt	; Object $A0 - OBJ_PUMPKINFREE
 	.word ObjHit_DoNothing	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.word ObjHit_DoNothing	; Object $A2 - OBJ_REDPIRANHA
-	.word ObjHit_DoNothing	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.word ObjHit_DoNothing	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
 	.word ObjHit_DoNothing	; Object $A4 - OBJ_PUMPKINPLANT
 	.word ObjHit_DoNothing	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.word ObjHit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
@@ -170,7 +170,7 @@ ObjectGroup04_Attributes:
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $A0 - OBJ_PUMPKINFREE
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A2 - OBJ_REDPIRANHA
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A4 - OBJ_PUMPKINPLANT
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A6 - OBJ_VENUSFIRETRAP
@@ -209,7 +209,7 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_SETPT6 | $13	; Object $A0 - OBJ_PUMPKINFREE
 	.byte OPTS_SETPT5 | $13	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.byte OPTS_SETPT6 | $4F	; Object $A2 - OBJ_REDPIRANHA
-	.byte OPTS_SETPT6 | $4F	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.byte OPTS_SETPT6 | $4F	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
 	.byte OPTS_SETPT6 | $13	; Object $A4 - OBJ_PUMPKINPLANT
 	.byte OPTS_SETPT6 | $4F	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.byte OPTS_SETPT6 | $4F	; Object $A6 - OBJ_VENUSFIRETRAP
@@ -251,7 +251,7 @@ ObjectGroup04_KillAction:
 	.byte KILLACT_JUSTDRAW16X16	; Object $A0 - OBJ_PUMPKINFREE
 	.byte KILLACT_POOFDEATH	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.byte KILLACT_POOFDEATH	; Object $A2 - OBJ_REDPIRANHA
-	.byte KILLACT_POOFDEATH	; Object $A3 - OBJ_PIRANHA_TWOSHOT
+	.byte KILLACT_POOFDEATH	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
 	.byte KILLACT_NORMALANDKILLED	; Object $A4 - OBJ_PUMPKINPLANT
 	.byte KILLACT_POOFDEATH	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.byte KILLACT_POOFDEATH	; Object $A6 - OBJ_VENUSFIRETRAP
@@ -1044,7 +1044,6 @@ RockyWrench_FlipBits:	.byte $60, $20
 
 Piranha_CurrentFrame = Objects_Data1
 Piranha_CurrentState = Objects_Data3
-Piranha_AttackCount	= Objects_Data4
 Piranha_AttacksLeft	= Objects_Data5
 Piranha_AttackData = Objects_Data6
 Piranha_StateTimer = Objects_Timer
@@ -1084,10 +1083,11 @@ ObjInit_Pumpkin:
 	STA <Objects_XZ, X
 	RTS
 
-ObjInit_Piranha_TwoShot:
+ObjInit_Piranha_Aggressive:
 	JSR ObjInit_Piranha
 
-	INC Piranha_AttackCount, X
+	LDA #$03
+	STA Objects_Health, X
 	RTS
 
 ObjInit_Piranha:
@@ -1110,9 +1110,6 @@ ObjInit_Piranha:
 	LDA Objects_Property, X
 	LSR A
 	TAY
-
-	LDA Piranah_AttackNumbers, Y
-	STA Piranha_AttackCount, X
 
 	LDA Objects_Property, X
 	AND #$01
@@ -1216,11 +1213,23 @@ Piranha_Draw1:
 
 	JSR Object_Draw16x32
 
+	LDA #SPR_PAL2
+	STA <Temp_Var1
+
+	LDA Objects_ID, X
+	CMP #OBJ_PIRANHA_AGGRESSIVE
+	BNE Piranha_GreenVine
+
+	LDA #SPR_PAL3
+	STA <Temp_Var1
+
+Piranha_GreenVine:
 	LDY Object_SpriteRAMOffset, X
 
 	LDA Sprite_RAM + 10, Y
 	AND #(SPR_VFLIP | SPR_BEHINDBG)
-	ORA #SPR_PAL2
+
+	ORA <Temp_Var1
 	STA Sprite_RAM + 10, Y
 	
 	ORA #SPR_HFLIP
@@ -1348,15 +1357,22 @@ Piranha_Move:
 	LDA #$40
 	STA Objects_Timer, X
 
-	LDY #$00
-	LDA DayNight
-	BNE Piranha_JustOne
+	LDA Objects_ID, X
+	CMP #OBJ_PIRANHA_AGGRESSIVE
+	BNE Piranha_GetAttacks
 
-	INY
+	LDA #$FF
+	BNE Piranha_SetAttacks
 
-Piranha_JustOne:
-	LDA Piranah_AttackNumbers, Y
+Piranha_GetAttacks:
+	LDA Objects_Property, X
+	LDA Piranah_AttackNumbers, X
+
+Piranha_SetAttacks:	
 	STA Piranha_AttacksLeft, X
+
+	LDA Objects_ID, X
+	CMP #OBJ_PIRANHA_AGGRESSIVE
 	RTS
 
 Piranha_Move1:

@@ -1967,11 +1967,15 @@ Scroll_Commit_Column:
 
 	LDA Scroll_ToVRAMHi	; A = Scroll_ToVRAMHi
 	BEQ PRG026_B354	 	; If Scroll_ToVRAMHi = 0, jump to PRG030_B354
+
 	LDX #$00	 	; X = 0
+
 	LDA Scroll_ToVRAMHi	; A = Scroll_ToVRAMHi
 	STA PPU_VRAM_ADDR	; Write as high byte to VRAM address
+
 	LDA Scroll_LastCol8	
 	STA PPU_VRAM_ADDR	; Low byte is Scroll_LastCol8
+	
 	LDA <PPU_CTL1_Copy	; Get the PPU_CTL1
 	ORA #$04	 	; Use vertical update mode
 	STA PPU_CTL1	 	; Set PPU_CTL1
@@ -2211,7 +2215,6 @@ NoForced_Init:
 	RTS
 
 StatusBar_DoUpdates:
-
 	LDA <Pad_Input
 	AND #PAD_SELECT
 	BEQ No_Switch

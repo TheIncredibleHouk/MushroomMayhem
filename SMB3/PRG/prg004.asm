@@ -27,7 +27,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_Troopa	; Object $6C - OBJ_GREENTROOPA
 	.word ObjInit_Troopa	; Object $6D - OBJ_REDTROOPA
 	.word ObjInit_Troopa	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.word ObjInit_ParaTroopas	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.word ObjInit_ParaTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word ObjInit_BuzzyBeetle	; Object $70 - OBJ_BUZZYBEATLE
 	.word ObjInit_Spiny	; Object $71 - OBJ_SPINY
 	.word ObjInit_Goomba	; Object $72 - OBJ_GOOMBA
@@ -44,7 +44,7 @@ ObjectGroup03_InitJumpTable:
 	.word ObjInit_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.word ObjInit_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjInit_GiantRedPiranha	; Object $7F - OBJ_BIGREDPIRANHA
-	.word ObjInit_ParaTroopas	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word ObjInit_ParaTroopa	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjInit_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
@@ -69,7 +69,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_Troopa	; Object $6C - OBJ_GREENTROOPA
 	.word ObjNorm_RedTroopa		; Object $6D - OBJ_REDTROOPA
 	.word ObjNorm_BouncyTroopa	; Object $6E - OBJ_PARATROOPAGREENHOP
-	.word ObjNorm_FlyingTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
+	.word ObjNorm_ParaTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word ObjNorm_BuzzyBeetle	; Object $70 - OBJ_BUZZYBEATLE
 	.word ObjNorm_Spiny	; Object $71 - OBJ_SPINY
 	.word ObjNorm_Goomba	; Object $72 - OBJ_GOOMBA
@@ -86,7 +86,7 @@ ObjectGroup03_NormalJumpTable:
 	.word ObjNorm_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
 	.word ObjNorm_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
 	.word ObjNorm_BigPiranha	; Object $7F - OBJ_BIGREDPIRANHA
-	.word ObjNorm_FlyingTroopa	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+	.word ObjNorm_ParaTroopa	; Object $80 - OBJ_FLYINGGREENPARATROOPA
 	.word ObjNorm_HammerBro		; Object $81 - OBJ_HAMMERBRO
 	.word ObjNorm_NinjaBro	; Object $82 - OBJ_NINJABRO
 	.word ObjNorm_Lakitu		; Object $83 - OBJ_LAKITU
@@ -325,15 +325,13 @@ ObjP7F:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF
 
 ObjP7B:
-	.byte $AD, $AD, $AF, $B1, $AD, $AD
 
 ObjP7E:
-	.byte $8D, $8F, $93, $95, $99, $8F, $9B, $9D, $B1, $B3, $B5, $B7
 ObjP7C:
 	.byte $A9, $A9
 	.byte $AB, $AB
-	.byte $9F, $41, $BD, $BD
-	.byte $9F, $41, $9D, $9D
+	.byte $BD, $BD, $9F, $41 
+	.byte $9D, $9D, $9F, $41
 
 ObjP6C:
 ObjP6D:
@@ -341,13 +339,13 @@ ObjP6E:
 ObjP6F:
 ObjP80:
 ObjP7A:
-	.byte $CB, $C5
-	.byte $C3, $C5
-	.byte $FD, $FD
-	.byte $FD, $FD
-	.byte $FD, $FD
-	.byte $D1, $D1
-	.byte $D3, $D5
+	.byte $C3, $C5, $C7, $C9
+	.byte $FD, $FD, $FD, $FD
+	.byte $FD, $FD, $D1, $D1
+	.byte $D3, $D5, $D5, $D3
+	.byte $CB, $C5, $F9, $FB
+	
+
 ObjP70:
 	.byte $95, $97, $91, $93, $9B, $9B, $9B, $9B, $A1, $A1, $9B, $9B, $A3, $A5
 ObjP71:
@@ -376,7 +374,6 @@ ObjP77:
 ObjP84:
 	.byte $99, $99, $BB, $BB, $81, $83
 ObjP85:
-	.byte $81, $83, $85, $87, $89, $89, $89, $89, $89, $89, $8F, $8F, $8B, $8D
 
 ObjP83:
 	.byte $9F, $41, $BD, $BD
@@ -395,7 +392,7 @@ ObjP87:
 
 ObjP81:
 	.byte $B1, $B3, $B5, $B7, $B1, $B3, $A5, $A7
-	.byte $BD, $BF, $B5, $B7, $BD, $BF, $A5, $A7
+	.byte $AD, $AF, $B5, $B7, $AD, $AF, $A5, $A7
 
 ObjP82:
 	.byte $95, $97, $A1, $A3, $95, $97, $B9, $BB
@@ -422,6 +419,9 @@ ObjInit_NinjaBro:
 	LDA #$06
 	STA Objects_SpritesRequested, X
 
+	LDA #$03
+	STA Objects_Health, X
+
 	LDA #BOUND16x24
 	STA Objects_BoundBox, X
 
@@ -436,8 +436,14 @@ ObjInit_NinjaBro:
 	STA NinjaBro_RangeLeft, X
 
 	LDA <Objects_XZ, X
-	ADD #$10
+	ADD #$10 
 	STA NinjaBro_RangeRight, X
+
+	LDA #$20
+	STA NinjaBro_ThrowStarTimer, X
+
+	LDA #$40
+	STA Objects_Timer, X
 	RTS		 ; Return
 	
 ObjNorm_NinjaBro:
@@ -519,7 +525,16 @@ NinjaBro_BeenOnGround:
 	AND #$03
 	TAY 
 	
+	LDA Objects_Property, X
+	BEQ NinjaBrow_StarWait
+
+	LDA #$10
+	BEQ NinjaBrow_StarWait1
+
+NinjaBrow_StarWait:
 	LDA NinjaBro_WaitTimers, Y
+
+NinjaBrow_StarWait1:
 	STA NinjaBro_ThrowStarTimer, X
 	JSR NinjaBro_ThrowStar
 	
@@ -536,6 +551,8 @@ NinjaBro_DecHamTimer:
 
 NinjaBro_CheckJump:
 	LDA Objects_Timer, X
+	BNE NinjaBro_NoJump
+	LDA Objects_Property, X
 	BNE NinjaBro_NoJump
 
 	JSR Bro_CheckTop
@@ -619,10 +636,11 @@ NinjaBros_Draw:
 	JSR Object_Draw16x32
 
 	LDA NinjaBro_HoldStarTimer, X
-	BEQ NinjaBros_Done
+	BEQ NinjaBros_DrawDone
 
 	JSR NinjaBro_DrawStar
 
+NinjaBros_DrawDone:
 	LDA Object_SpriteRAMOffset, X
 	SUB #$08
 	STA Object_SpriteRAMOffset, X
@@ -3532,9 +3550,9 @@ Goomba_Death2:
 	STA Objects_Orientation, X
 	JMP Object_DrawMirrored
 
-FlyingTroopa_StartX = Objects_Data6
+ParaTroopa_StartX = Objects_Data6
 
-ObjInit_ParaTroopas:
+ObjInit_ParaTroopa:
 	LDA #$06
 	STA Objects_SpritesRequested, X
 
@@ -3561,7 +3579,7 @@ ObjInit_ParaTroopas:
 	LDA Objects_Property, X
 	AND #$FE
 	CMP #$04
-	BNE ObjInit_ParaTroopas1
+	BNE ObjInit_ParaTroopa1
 
 	LDA <Objects_YZ, X
 	SUB #$40
@@ -3571,28 +3589,31 @@ ObjInit_ParaTroopas:
 	SBC #$00
 	STA <Objects_YHiZ, X
 
-ObjInit_ParaTroopas1:
+ObjInit_ParaTroopa1:
 	LDA <Objects_XZ, X
-	STA FlyingTroopa_StartX, X
+	STA ParaTroopa_StartX, X
 
 	JMP InitPatrol
 
-ObjNorm_FlyingTroopa:
+ObjNorm_ParaTroopa:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_FlyingTroopa2
+	BEQ ParaTroopa_Norm
+	
+	JMP ParaTroopa_Draw
 
+ParaTroopa_Norm:
 	LDA Objects_Property, X
 	CMP #$06
-	BEQ FlyingTroopa_CheckDelete
+	BEQ ParaTroopa_CheckDelete
 
 	LDA <Objects_XZ, X
-	CMP FlyingTroopa_StartX, X
-	BNE ObjNorm_FlyingTroopa0
+	CMP ParaTroopa_StartX, X
+	BNE ObjNorm_ParaTroopa0
 
-FlyingTroopa_CheckDelete:
+ParaTroopa_CheckDelete:
 	JSR Object_DeleteOffScreen
 
-ObjNorm_FlyingTroopa0:
+ObjNorm_ParaTroopa0:
 	JSR DoPatrol
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
@@ -3600,19 +3621,11 @@ ObjNorm_FlyingTroopa0:
 	JSR Object_InteractWithTilesWallStops
 	JSR Object_AttackOrDefeat
 
-	INC Koopa_CurrentFrame,X
-	LDA Koopa_CurrentFrame,X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-ObjNorm_FlyingTroopa2:
-	JMP Troopa_Draw
+ObjNorm_ParaTroopa2:
+	JMP ParaTroopa_Animate
 
 ObjInit_Troopa:
-	LDA #$06
+	LDA #$05
 	STA Objects_SpritesRequested, X
 
 	LDA #BOUND16x16
@@ -3640,54 +3653,50 @@ ObjInit_Troopa:
 
 
 Koopa_CurrentFrame = Objects_Data1
+Troopa_FrameOffset = Objects_Data2
+Troopa_WingFrame = Objects_Data3
 
 ObjNorm_PurpleTroopa:
 	JSR ObjNorm_RedTroopa
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
-	BEQ ObjNorm_PurpleTroopa1
+	BEQ PurpleTroopaRTS
 
 	LDA #$BF
 	STA Explosion_Timer, X
 
-ObjNorm_PurpleTroopa1:
+PurpleTroopaRTS:
 	RTS
 
 ObjNorm_RedTroopa:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_Troopa1
+	BEQ RedTroopa_Norm
+	JMP Troopa_Draw
 
+RedTroopa_Norm:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_InteractWithObjects
-	BCS RedTroopa_Draw
+	BCS RedTroopa_Animate
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 	JSR Object_EdgeMarch
 
-Troopa_Animate:
-	INC Koopa_CurrentFrame, X
-
-RedTroopa_Draw:
-	LDA Koopa_CurrentFrame, X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-	JMP Troopa_Draw
+RedTroopa_Animate:
+	JMP Troopa_Animate
 
 ObjNorm_Troopa:
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_Troopa1
+	BEQ Troopa_Norm
+	
+	JMP Troopa_Draw
 
-ObjNorm_Troopa0:
+Troopa_Norm:
 	
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
@@ -3695,22 +3704,13 @@ ObjNorm_Troopa0:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_InteractWithObjects
-	BCS ObjNorm_Troopa1
+	BCS Troopa_NoTiles
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-
-
-	INC Koopa_CurrentFrame, X
-	LDA Koopa_CurrentFrame, X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame,X
-
-ObjNorm_Troopa1:
-	JMP Troopa_Draw
+	
+Troopa_NoTiles:
+	JMP Troopa_Animate
 
 PoisonMushroom_Action = Objects_Data1
 
@@ -3796,13 +3796,20 @@ PoisonMushroom_InsideBlockRTS:
 	STA Objects_Timer2, X
 	RTS
 
+ObjInit_BouncyTroopa:
+	JSR ObjInit_Troopa
+	
+	LDA #$06
+	STA Objects_SpritesRequested, X
+	RTS
+
 Bouncey_FlutterTime: = Objects_Data2
 
 ObjNorm_BouncyTroopa:
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_BouncyTroopa0
 
-	JMP Troopa_Draw
+	JMP ParaTroopa_Draw
 
 ObjNorm_BouncyTroopa0:
 	LDA Objects_InWater, X
@@ -3843,7 +3850,20 @@ ObjNorm_BouncyTroopa1:
 	STA Objects_YVelZ, X
 
 ObjNorm_BouncyTroopa2:
-	JMP ObjNorm_Troopa
+	
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_InteractWithObjects
+	BCS ObjNorm_BouncyTroopa3
+
+	JSR Object_DetectTiles
+	
+	
+ObjNorm_BouncyTroopa3:
+	JMP ParaTroopa_Animate
 
 Buzzy_Frame = Objects_Data1
 
@@ -3960,577 +3980,134 @@ Spiny_NoEdgeMarch:
 Spiny_Draw:
 	JMP Object_Draw
 
-Troopa_YOffByFrame:
+Troopa_DrawYOff:
+	.byte $00
+
+ParaTroopa_Animate:
+	JSR Troopa_Animate
+
+ParaTroopa_Draw:
+	LDA Object_SpriteRAMOffset, X
+	ADD #$04
+	STA Object_SpriteRAMOffset, X
+
+	JSR Troopa_Draw
+
+	LDA Troopa_WingFrame, X
+	TAX
+
+	LDA Sprite_RAMY, Y
+	SUB Troopa_WingYOffset, X
+	STA Sprite_RAMY-4, Y
+
+	LDA Troopa_WingFrames, X
+	STA Sprite_RAMTile-4, Y
+
+	LDA Sprite_RAMAttr, Y
+	AND #~SPR_PAL3
+	ORA #SPR_PAL1
+	STA Sprite_RAMAttr - 4, Y
+
+	CMP #SPR_HFLIP
+	BCS Troopa_WingFlipped
+
+	LDA Sprite_RAMX , Y
+	ADD #$08
+	STA Sprite_RAMX - 4, Y
+	RTS
+
+Troopa_WingFlipped:
+	LDA Sprite_RAMX, Y
+	STA Sprite_RAMX - 4, Y
+	RTS
+
+Troopa_WingYOffset:
+	.byte $07, $06
+
+
+Troopa_WingFrames:
+	.byte $CD, $CF
+
+Troopa_YOffset:
 	.byte $06, $05
 
-	; Basically select first and second column if the frame is even and the
-	; second and third if the frame is odd for the foot sprite patterns.
-Troopa_FootByEvenOddFrame:
-	.byte $C7, $C9, $C7	; Even
-	.byte $F9, $FB, $F9	; Odd
+Troopa_Frames:
+	.byte $00, $04
+
+Troopa_Animate:
+	INC Koopa_CurrentFrame, X
+	
+	LDA Koopa_CurrentFrame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	TAY	
+
+	LDA Troopa_Frames, Y
+	STA Objects_Frame,X
+
+	LDA Troopa_YOffset, Y
+	STA Troopa_FrameOffset, X
+
+	TYA
+	STA Troopa_WingFrame, X
 
 Troopa_Draw:
-	LDA Objects_Frame, X
-	CMP #$02
-	BCC Troopa_DoDraw
+	LDA <Objects_YZ, X
+	PHA
+	SUB Troopa_FrameOffset, X
+	STA <Objects_YZ, X
 
-	LDA #$02
-	STA Objects_Frame, X
-	JMP Object_DrawMirrored
+	JSR Object_Draw16x32
+	
+	PLA
+	STA <Objects_YZ, X
 
-Troopa_DoDraw: 
-	LDA Object_SpriteRAMOffset,X
-	ADD #$08
-	STA Object_SpriteRAMOffset,X
+	LDY Object_SpriteRAMOffset, X
 
-	LDY Objects_Frame,X	 ; Y = current frame
+	LDA Sprite_RAMY, Y
+	SUB #$10
+	STA Sprite_RAMY + 16, Y
 
-	LDA Troopa_YOffByFrame,Y
-	TAY		 ; Sprite Y offset -> 'Y'
+	LDA #$C1
+	STA Sprite_RAMTile + 16, Y
 
-	; For the following GroundTroop_DrawOffsetInY call:
-	; This draws the troopa's "middle", which incidentally includes
-	; the head (minus the top), although the simplicity of the function 
-	; will set the attributes wrong on the head (wrong palette) which
-	; will be corrected below...
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BNE Troopa_ColorFixFlip
 
-	JSR GroundTroop_DrawOffsetInY	 ; Draw with specified offset
+	LDA Sprite_RAMX, Y
+	STA Sprite_RAMX + 16, Y
 
-	; Temp_Var2 = FlipBits
-	LDA Objects_Orientation,X
-	STA <Temp_Var2
+	LDA Sprite_RAMAttr, Y
+	ORA #SPR_PAL3
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr+8, Y
+	STA Sprite_RAMAttr+12, Y
+	STA Sprite_RAMAttr+16, Y
+	RTS
+	
+Troopa_ColorFixFlip:	
+	LDY Object_SpriteRAMOffset, X
 
-	BEQ PRG004_B4FB	 ; If not flipped (i.e. horizontal), jump to PRG004_B4FB
+	LDA Sprite_RAMX + 4, Y
+	STA Sprite_RAMX + 16, Y
 
-	; Y += 4 (next sprite, deciding which sprite to place the head on)
-	INY
-	INY
-	INY
-	INY
-
-PRG004_B4FB:
-
-	; Starting here, we begin the process of drawing the tip of the head,
-	; correcting the lower head's attribute, and drawing the feet...
-
-	LDA Sprite_RAM+$00,Y
-	CMP #$f8
-	BEQ PRG004_B520	 ; If this sprite is vertically off-screen, jump to PRG004_B520
-
-	; We use -8 Sprite_RAM offsets here because of the initial +8 before...
-
-	; -16 to get to tip of head
-	SUB #16
-	STA Sprite_RAM-$08,Y	 ; Store sprite Y
-
-	; Tip of Troopa's head pattern
-	LDA #$c1
-	STA Sprite_RAM-$07,Y
-
-	; Copy the same X coordinate
-	LDA Sprite_RAM+$03,Y
-	STA Sprite_RAM-$05,Y
-
-	LDA Sprite_RAM+$02,Y
-	AND #~$03	 ; Clear old palette select
-	ORA #SPR_PAL3	 ; Set correct palette select
-	STA Sprite_RAM-$06,Y	 ; Set on upper head
-	STA Sprite_RAM+$02,Y	 ; Set on lower head
-
-PRG004_B520:
-
-	; Sprite on opposite side of whatever we just put the head on
-	TYA
-	EOR #$04
-	TAY
-
-	LDA Objects_ID,X
-
-	CMP #OBJ_PURPLETROOPA
-	BEQ PRG004_B55D
-
-	CMP #OBJ_PARATROOPAGREENHOP
-	BLT PRG004_B55D	 ; If this is not a paratroopa, jump to PRG004_B55D
-
-DrawWings:
-	LDA Sprite_RAM+$00,Y
-	CMP #$f8
-	BEQ PRG004_B55D	 ; If sprite was found to be vertically off-screen, jump to PRG004_B55D
-
-	; The wing sprite is Y-8 from the body
-	SUB #$08
-	STA Sprite_RAM-$08,Y
-
-	; Temp_Var1 = $CD (pattern for wing up)
-	LDA #$CD
-	STA <Temp_Var1
-
-	LDA Koopa_CurrentFrame,X
-	ADC #$02
-	AND #$04
-	BEQ PRG004_B548	 ; 4 ticks on, 4 ticks off; jump to PRG004_B548
-
-	; Temp_Var1 = $CF (pattern for wing down)
-	LDA #$CF
-	STA <Temp_Var1 
-
-PRG004_B548:
-
-	; Set correct wing pattern
-	LDA <Temp_Var1
-	STA Sprite_RAM-$07,Y
-
-	; Copy Sprite X
-	LDA Sprite_RAM+$03,Y
-	STA Sprite_RAM-$05,Y
-
-	LDA Sprite_RAM+$02,Y
-	AND #~$03	 ; Clear old palette select
-	ORA #SPR_PAL1	 ; Use proper palette select for wing
-	STA Sprite_RAM-$06,Y	 ; Set wing attribute
-
-PRG004_B55D:
-
-	; Time for the left foot...
-	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
-
-	LDA Sprite_RAM+$00,Y
-	CMP #$f8
-	BEQ PRG004_B56D	 ; If left bottom of troopa is off-screen, jump to PRG004_B56D
-
-	; Left foot appears at Sprite Y + 16
-	ADD #16
-	STA Sprite_RAM+$08,Y
-
-PRG004_B56D:
-	LDA Sprite_RAM+$04,Y
-	CMP #$f8
-	BEQ PRG004_B57A	 ; If right bottom of troopa is off-screen, jump to PRG004_B57A
-
-	; Right foot appears at Sprite Y + 16
-	ADD #16
-	STA Sprite_RAM+$0C,Y
-
-PRG004_B57A:
-	; Copy Sprite X for left foot
-	LDA Sprite_RAM+$03,Y
-	STA Sprite_RAM+$0B,Y
-
-	; Copy Sprite X for right foot
-	LDA Sprite_RAM+$07,Y
-	STA Sprite_RAM+$0F,Y
-
-	LDA Sprite_RAM+$02,Y
-	AND #~$03	 ; Clear old palette select
-	ORA #SPR_PAL3	 ; Set correct palette select
-
-	STA Sprite_RAM+$0A,Y	 ; Set left foot attribute
-	STA Sprite_RAM+$0E,Y	 ; Set right foot attribute
-
-	LDA Objects_Frame,X
-
-	LDX #$00	 ; X = 0
-
-	LSR A
-	BCC PRG004_B59E	 ; On even frames, jump to PRG004_B59E
-
-	; On odd frames, X = 3
-	INX
-	INX
-	INX
-
-PRG004_B59E:
-	LDA <Temp_Var2
-	BEQ PRG004_B5A3	 ; If not flipped (horizontally), jump to PRG004_B5A3
-
-	INX		 ; Otherwise, X++
-
-PRG004_B5A3:
-
-	; Left foot pattern
-	LDA Troopa_FootByEvenOddFrame,X
-	STA Sprite_RAM+$09,Y
-
-	; Right foot pattern
-	LDA Troopa_FootByEvenOddFrame+1,X
-	STA Sprite_RAM+$0D,Y
-
-	LDX <CurrentObjectIndexZ	 ; X = object slot index
-
-	LDA Object_SpriteRAMOffset, X
-	SUB #$08
-	STA Object_SpriteRAMOffset, X
-	RTS		 ; Return
+	LDA Sprite_RAMAttr + 4, Y
+	ORA #SPR_PAL3
+	STA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr+8, Y
+	STA Sprite_RAMAttr+12, Y
+	STA Sprite_RAMAttr+16, Y
+	RTS
 
 GiantEnemy_Draw:
-
-;
-;	LDA Objects_Orientation,X
-;	AND #SPR_HFLIP
-;	BEQ PRG004_B629	 ; If not horizontally flipped, jump to PRG004_B629
-;
-;	INY		 ; Y = 1
-;
-;PRG004_B629:
-;	LDA Temp_VarNP0	
-;	AND Giant_HVisBit,Y
-;	BNE PRG004_B68A	 ; If sprite is not visible, jump to PRG004_B68A
-;
-;	SEC	; Carry set if Timer4 is expired
-;
-;	LDA Objects_Timer4,X
-;	BEQ PRG004_B638	 ; If Timer4 is expired, jump to PRG004_B638
-;
-;	LSR A	; Otherwise, set carry by timer
-;
-;PRG004_B638:
-;
-;	; Temp_Var2 = Sprite X
-;	LDA <Objects_SpriteX,X
-;	SBC #$00
-;	ADD Giant_HXOff,Y
-;	STA <Temp_Var2	
-;
-;	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
-;
-;	; Set Sprite Xs
-;	LDA <Temp_Var2
-;	STA Sprite_RAM+$13,Y
-;	STA Sprite_RAM+$17,Y
-;
-;	; Vertical visibilty -> Temp_Var1
-;	LDA Objects_SpritesVerticallyOffScreen,X
-;	STA <Temp_Var1	
-;
-;	LDA <Objects_SpriteY,X	
-;	ADD #$08
-;	LSR <Temp_Var1
-;	BCS PRG004_B65E	 ; If this sprite is vertically off-screen, jump to PRG004_B65E
-;
-;	STA Sprite_RAM+$10,Y	 ; Otherwise, set Sprite Y
-;
-;PRG004_B65E:
-;	LSR <Temp_Var1
-;	BCS PRG004_B668	 ; If this sprite is vertically off-screen, jump to PRG004_B668
-;
-;	ADD #16			; Lower sprite is +16 Y
-;	STA Sprite_RAM+$14,Y	 ; Set lower Sprite Y
-;
-;PRG004_B668:
-;
-;	; Copy attributes
-;	LDA Sprite_RAM+$02,Y
-;	STA Sprite_RAM+$12,Y
-;	STA Sprite_RAM+$16,Y
-;
-;	LDA Objects_Orientation,X
-;	BPL PRG004_B68A	 ; If not vertically flipped, jump to PRG004_B68A
-;
-;	; Otherwise, swap Sprite Ys
-;	LDA Sprite_RAM+$10,Y
-;	PHA
-;	LDA Sprite_RAM+$14,Y
-;	SUB #$08
-;	STA Sprite_RAM+$10,Y
-;	PLA
-;	SUB #$08
-;	STA Sprite_RAM+$14,Y
-;
-;PRG004_B68A:
-;	LDA Objects_ID,X
-;	CMP #OBJ_HELPER
-;	BNE PRG004_B694	 ; If this is not a Giant Goomba, jump to PRG004_B694
-;
-;	JMP PRG004_B719	 ; Jump to PRG004_B719
-;
-;PRG004_B694:
-;
-;	; The only other Giant Enemy that uses this routine at this point are the Giant Troopas,
-;	; so from here on out it's Giant Troopa code. 
-;
-;	LDA Objects_State,X
-;	CMP #OBJSTATE_NORMAL
-;	BEQ PRG004_B69E	 ; If Giant Troopa's state is Normal, jump to PRG004_B69E
-;
-;	JMP PRG004_B73E	 ; Jump to PRG004_B73E
-;
-;PRG004_B69E:
-;	LDY #$00	 ; Y = 0
-;
-;	LDA Objects_Orientation,X
-;	AND #SPR_HFLIP
-;	BEQ PRG004_B6A9	 ; If Giant Troopa is not horizontally flipped, jump to PRG004_B6A9
-;
-;	LDY #$04	 ; Y = 4
-;
-;PRG004_B6A9:
-;	STY <Temp_Var4	 ; Temp_Var4 = 0 or 4 (which sprite to use)
-;
-;	TYA
-;	ADD Object_SpriteRAMOffset,X	; Set base offset
-;
-;	TAY
-;	LDA Sprite_RAM+$00,Y
-;
-;	CMP #$f8
-;	BEQ PRG004_B6BE	 ; If sprite vertically not visible, jump to PRG004_B6BE
-;
-;	SUB #$08
-;	STA Sprite_RAM+$00,Y
-;
-;PRG004_B6BE:
-;	LDA Sprite_RAM+$08,Y
-;
-;	CMP #$f8
-;	BEQ PRG004_B6CB	 ; If sprite vertically not visible, jump to PRG004_B6CB
-;
-;	SUB #$08
-;	STA Sprite_RAM+$08,Y
-;
-;PRG004_B6CB:
-;
-;	; Palette select 3
-;	LDA Sprite_RAM+$02,Y
-;	ORA #SPR_PAL3
-;	STA Sprite_RAM+$02,Y
-;	STA Sprite_RAM+$0A,Y
-;
-;	LDA <Temp_Var4	 
-;	EOR #$04	 ; Use "other" sprite
-;	ADD Object_SpriteRAMOffset,X	 ; Add base offset
-;	TAY		 ; -> 'Y'
-;
-;	; Palette select 3
-;	LDA Sprite_RAM+$0A,Y
-;	ORA #SPR_PAL3
-;	STA Sprite_RAM+$0A,Y
-;
-;	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
-;
-;	; Top of rear part of shell pattern
-;	LDA #$91
-;	STA Sprite_RAM+$11,Y
-;
-;	LDA Objects_Frame,X
-;	LSR A
-;
-;	LDA #$9f	 ; Foot pattern for odd frames
-;
-;	BCS PRG004_B6F9	 ; If odd frame, jump to PRG004_B6F9
-;
-;	LDA #$97	 ; Foot pattern for even frames
-;
-;PRG004_B6F9:
-;	STA Sprite_RAM+$15,Y	 ; Store proper foot pattern
-;
-;	LDA Objects_ID,X
-;	CMP #OBJ_BIGGREENHOPPER
-;	BLT PRG004_B710	 ; If this is not a Giant Paratroopa, jump to PRG004_B710
-;
-;	LDA Objects_Frame,X
-;	LSR A
-;
-;	LDA #$b9	 ; Wing up pattern
-;
-;	BCC PRG004_B70D	 ; If even frame, jump to PRG004_B70D
-;
-;	LDA #$bb	 ; Wing down pattern
-;
-;PRG004_B70D:
-;	STA Sprite_RAM+$11,Y	 ; Set proper wing pattern
-;
-;PRG004_B710:
-;
-;	; Palette select 3
-;	LDA Sprite_RAM+$16,Y
-;	ORA #SPR_PAL3
-;	STA Sprite_RAM+$16,Y
-;
-;	RTS		 ; Return
-;
-;PRG004_B719:
-;
-;	; Giant Goomba only...
-;
-;	LDA Objects_State,X
-;	CMP #OBJSTATE_SQUASHED
-;	BEQ PRG004_B72B	 ; If Giant Goomba is in state Squashed (Giant Goomba Only), jump to PRG004_B72B
-;
-;	; Otherwise, use standard Goomba patterns
-;
-;	LDA #$85
-;	STA Sprite_RAM+$11,Y
-;	LDA #$8b
-;	STA Sprite_RAM+$15,Y
-;
-;	RTS		 ; Return
-;
-;PRG004_B72B:
-;
-;	; Giant Goomba is squashed
-;
-;	; Squashed goomba patterns
-;	LDA #$71
-;	STA Sprite_RAM+$11,Y
-;	LDA #$bd
-;	STA Sprite_RAM+$15,Y
-;
-;	; Mirror sprite
-;	LDA Sprite_RAM+$16,Y
-;	EOR #SPR_HFLIP
-;	STA Sprite_RAM+$16,Y
-;
-;	RTS		 ; Return
-;
-;PRG004_B73E:
-;
-;	; Giant Troopa is non-normal state...
-;
-;	; Shell patterns
-;	LDA #$b1
-;	STA Sprite_RAM+$11,Y
-;	LDA #$b5
-;	STA Sprite_RAM+$15,Y
-;
-;	; Mirror the shell
-;	LDA Sprite_RAM+$12,Y
-;	EOR #SPR_HFLIP
-;	STA Sprite_RAM+$12,Y
-;	STA Sprite_RAM+$16,Y
-;
-;	RTS		 ; Return
 
 ObjInit_GiantDRYPIRANHA:
 ObjInit_GiantRedPiranha:
 ObjNorm_BigPiranha:
-	RTS
 
-GroundTroop_DrawOffsetInY:
-	LDA #$00	; A = 0 (draw non-mirrored sprite)
-
-PRG004_B938:
-	STA <Temp_Var9		 ; Temp_Var9 = $00 (non-mirrored sprite) or SPR_VFLIP (mirrored sprite), depending on entry
-	STY <Temp_Var1		 ; Temp_Var1 = Sprite Y offset
-
-	JSR Object_CalcSpriteXY_NoHi
-
-	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
-
-	LDA Objects_SpritesVerticallyOffScreen,X
-	LSR A
-	BCC SkipPRG004_B9BA	 	; If this sprite is vertically off-screen, jump to PRG004_B9BA (RTS)
-	RTS
-
-SkipPRG004_B9BA
-	; Temp_Var3 = horizontal visibility bits
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	STA <Temp_Var3
-
-	LDA <Objects_SpriteY,X
-	SUB <Temp_Var1
-
-	ASL <Temp_Var3
-	BCS PRG004_B959	 ; If this sprite is horizontally off-screen, jump to PRG004_B959
-
-	STA Sprite_RAM+$00,Y	 ; Otherwise, set Sprite Y
-
-PRG004_B959:
-	ASL <Temp_Var3
-	BCS PRG004_B960	 ; If this sprite is horizontally off-screen, jump to PRG004_B960
-
-	STA Sprite_RAM+$04,Y	 ; Otherwise, set Sprite Y
-
-
-	; The following block appears to be unused
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-PRG004_B960:
-	SEC		; Set carry??
-
-	LDA Objects_Timer4,X
-	BEQ PRG004_B96D	 ; If timer 4 is expired, jump to PRG004_B96D
-
-	CMP #$40
-	BLT PRG004_B96C	 ; If timer 4 < $40, jump to PRG004_B96C
-
-	; Timer 4 >= $40...
-
-	LSR A
-	LSR A		 ; Divide timer4 by 4
-
-PRG004_B96C:
-	LSR A		 ; Divide timer4 by 2
-
-PRG004_B96D:
-	; No one cares about the accumulator value or the carry flag...
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-	; Set left sprite X
-	LDA <Objects_SpriteX,X
-	STA Sprite_RAM+$03,Y
-
-	; Set right sprite X
-	ADD #$08
-	STA Sprite_RAM+$07,Y
-
-	; Temp_Var1 = current flip bits
-	LDA Objects_Orientation,X
-	STA <Temp_Var1
-	ORA Objects_SpriteAttributes,X	 ; OR in the sprite attributes
-	STA DAIZ_TEMP1
-	LDA DAIZ_TEMP1
-
-	ASL <Temp_Var9
-	BCC PRG004_B986	 ; If Temp_Var9 was assigned to $00 at start, we jump to PRG004_B986
-
-	AND #~SPR_HFLIP	 ; Clear horizontal flip if Temp_Var9 was $80 at start
-
-PRG004_B986:
-	STA Sprite_RAM+$02,Y	 ; Set left sprite attribute
-
-	BCC PRG004_B98D	 ; If Temp_Var9 was assigned to $00 at start, we jump to PRG004_B98D
-
-	ORA #SPR_HFLIP	 ; Set horizontal flip if Temp_Var9 was $80 at start
-
-PRG004_B98D:
-	STA Sprite_RAM+$06,Y	 ; Set right sprite attribute
-
-	LDA Objects_Frame,X
-	LDX ObjGroupRel_Idx	 ; X = object group relative index
-
-	ASL A		 ; Multiply frame by 2
-
-	ADD ObjectGroup03_PatternStarts,X	; Add in the base pattern set index
-
-	TAX		 ; Frame * 2 + Pattern Start -> 'X'
-
-	LDA ObjectGroup03_PatternSets,X	 ; Get the appropriate pattern for this frame
-
-	BIT <Temp_Var1
-	BVS PRG004_B9AF	 ; If horizontally flipped, jump to PRG004_B9AF
-
-	; Store left sprite pattern
-	STA Sprite_RAM+$01,Y
-
-	LDA ObjectGroup03_PatternSets+1,X ; Get the next pattern
-
-	; Store right sprite pattern
-	STA Sprite_RAM+$05,Y
-
-	JMP PRG004_B9B8	 ; Jump to PRG004_B9B8
-
-PRG004_B9AF:
-	; Store right sprite pattern
-	STA Sprite_RAM+$05,Y
-
-	LDA ObjectGroup03_PatternSets+1,X ; Get the next pattern
-
-	; Store left sprite pattern
-	STA Sprite_RAM+$01,Y
-
-PRG004_B9B8:
-	LDX <CurrentObjectIndexZ	 ; X = object slot index
-
-PRG004_B9BA:
 	RTS		 ; Return
 
 Chomp_Frame = Objects_Data1
@@ -4545,6 +4122,9 @@ Chomp_YChainMax = Objects_Data8
 ObjInit_ChainChomp:
 	LDA #$06
 	STA Objects_SpritesRequested, X
+
+	LDA #$03
+	STA Objects_ExpPoints, X
 
 	LDA #$04
 	STA Objects_Health, X
@@ -4561,7 +4141,7 @@ ChainChomp_NotCharging:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_STOMPPROOF | ATTR_NINJAPROOF)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_STOMPPROOF | ATTR_TAILPROOF |  ATTR_NINJAPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #ATTR_BUMPNOKILL
@@ -5350,10 +4930,10 @@ Larry_DoAction:
 	.word Larry_FleePlayer
 
 Larry_ItemToss:
-	.byte POWERUP_FIREFLOWER, POWERUP_NINJASHROOM, POWERUP_SHELL, POWERUP_FROGSUIT
+	.byte POWERUP_FIREFLOWER, POWERUP_NINJASHROOM, POWERUP_SHELL, POWERUP_FROGSUIT, POWERUP_PWING
 
 Larry_SuitHelp:
-	.byte $02, $0B, $05, $04
+	.byte $02, $0B, $05, $04, $03
 
 Larry_InBag:
 	JSR Object_CalcBoundBox
@@ -5399,10 +4979,13 @@ Larry_RemoveBag:
 	LDA #$00
 	STA Objects_SlowTimer, X
 
+	
 	LDA #$02
 	STA Larry_Action, X
 
-	JMP Larry_Draw
+
+	JSR Larry_Prepare
+	RTS
 
 Larry_WaitOffScreen:
 	LDY Objects_Property, X
@@ -5461,7 +5044,7 @@ Larry_ItemSlotFound:
 	LDA #OBJSTATE_NONE
 	STA Objects_State, Y
 
-	LDA #$03
+	LDA #$02
 	STA Larry_Action, X
 
 	LDA #$02
@@ -5475,6 +5058,7 @@ Larry_FindPlayer:
 	JSR Object_ChasePlayer
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
+	
 	JMP Larry_Draw
 
 Larry_InteractWithPlayer:
@@ -5549,7 +5133,7 @@ Larry_FleePlayer:
 	CMP #$C0
 	BCC Larry_FleeDraw
 
-	LDA #$02
+	LDA #$01
 	STA Larry_Action, X
 
 Larry_FleeDraw:
@@ -5562,107 +5146,50 @@ Larry_Draw:
 	JMP Object_DrawMirrored
 
 Larry_DrawFull:
-	LDA <Objects_SpriteY, X
-	ADD #$10
-	STA <Objects_SpriteY, X
-
-	LDA Object_SpriteRAMOffset, X
-	ADD #$04
-	STA Object_SpriteRAMOffset, X
 	JSR Object_Draw16x32Mirrored
 
-	LDA Sprite_RAMY, Y
-	STA <Temp_Var1
+	LDY Object_SpriteRAMOffset, X
 
-	LDA Sprite_RAMY + 8, Y
-	STA Sprite_RAMY, Y
+	LDA Sprite_RAMX + 8, Y
+	ADD #$04
+	STA Sprite_RAMX + 8, Y
 
-	LDA <Temp_Var1
-	ADD Larry_BodyOffset, X
-	BCS Larry_Draw_A
-	STA Sprite_RAMY + 8, Y
-
-Larry_Draw_A:
-	LDA Sprite_RAMY + 4, Y
-	STA <Temp_Var1
-
-	LDA Sprite_RAMY + 12, Y
-	STA Sprite_RAMY + 4, Y
-
-	LDA <Temp_Var1
-	ADD Larry_BodyOffset, X
-	BCS Larry_Draw0
-	STA Sprite_RAMY + 12, Y
-
-Larry_Draw0:
+	LDA Sprite_RAMX + 12, Y
+	ADD #$04
+	STA Sprite_RAMX + 12, Y
+	
 	LDA Sprite_RAMX, Y
-	ADD #$04
-	BCS Larry_Draw1
-	STA Sprite_RAMX, Y
-
-Larry_Draw1:
-	LDA Sprite_RAMX + 4, Y
-	ADD #$04
-	BCS Larry_Draw2
-
-	STA Sprite_RAMX + 4, Y
-
-Larry_Draw2:
-	LDA Sprite_RAMAttr, Y
-	AND #~SPR_PAL3
-	ORA #SPR_PAL1
-	STA Sprite_RAMAttr, Y
-
-	LDA Sprite_RAMAttr + 4, Y
-	AND #~SPR_PAL3
-	ORA #SPR_PAL1
-	STA Sprite_RAMAttr+ 4, Y
-
-	TYA
 	SUB #$04
-	TAY
+	STA Sprite_RAMX + 16, Y
+	
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 16, Y
 
 	LDA #$41
-	STA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
 
-	LDA Objects_SpriteX, X
-	SUB #$04
-	BCC Larry_Draw3
-	STA Sprite_RAMX, Y
+	LDA Sprite_RAMY + 8, Y
+	STA Sprite_RAMY + 16, Y
 	
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	AND #SPRITE_0_HINVISIBLE
-	BNE Larry_Draw3
-
-	LDA Sprite_RAMY + 4, Y
-	STA Sprite_RAMY, Y
-
-
-	LDA Sprite_RAMAttr + 4, Y
-	STA Sprite_RAMAttr, Y
-
-Larry_Draw3:
 	LDA Larry_ItemSlot, X
 	BMI Larry_DrawDone
 
 	JSR Larry_DrawItem
 
 Larry_DrawDone:
-	LDA Object_SpriteRAMOffset, X
-	SUB #$04
-	STA Object_SpriteRAMOffset, X
 	RTS
 
 Larry_ItemFrameLeftAttr:
-	.byte SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2
+	.byte SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 Larry_ItemFrameRightAttr:
-	.byte SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2
+	.byte SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 Larry_ItemPattern:
-	.byte $04, $20, $10, $0C
+	.byte $04, $20, $10, $0C, $2C
 
 Larry_DrawItem:
+	
 	LDA #$0E
 	STA <Temp_Var1
 
@@ -5672,7 +5199,7 @@ Larry_DrawItem:
 	LDA Larry_ItemPattern,X
 	STA SprAnimOffset
 
-	LDA Sprite_RAMY + 12, Y
+	LDA Sprite_RAMY, Y
 	CMP #$F8
 	BEQ Larry_Item1
 
@@ -5688,33 +5215,29 @@ Larry_Item1:
 	LDA Larry_ItemFrameLeftAttr, X
 	STA Sprite_RAMAttr + 20, Y
 
-	LDA Sprite_RAMX + 12, Y
+	LDA Sprite_RAMX, Y
 	STA Sprite_RAMX + 20, Y
 	ADD #$08
 	STA <Temp_Var2
 
-Larry_UnusedSprite:
-	INY
-	INY
-	INY
-	INY
-
+	LDX <CurrentObjectIndexZ
 	LDA Objects_Property, X
 	TAX
 
 	LDA <Temp_Var3
 	CMP #$F8
 	BEQ Larry_DrawItemDone
-	STA Sprite_RAMY, Y
+
+	STA Sprite_RAMY + 24, Y
 
 	LDA #$53
-	STA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 24, Y
 
 	LDA Larry_ItemFrameRightAttr, X
-	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 24, Y
 
 	LDA <Temp_Var2
-	STA Sprite_RAMX, Y
+	STA Sprite_RAMX + 24, Y
 
 Larry_DrawItemDone:
 	RTS
