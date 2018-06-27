@@ -1399,44 +1399,44 @@
     <property>Acid Spitting Piranha</property>
     <property>Upside Down Acid Spitting Piranha</property>
   </spritedefinition>
-  <spritedefinition id="A3" width="02" height="02" name="Piranha (Fires Two)" class="3" group="Common">
+  <spritedefinition id="A3" width="02" height="02" name="Piranha (Aggressive)" class="3" group="Common">
     <sprite property="0" x="8" y="0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite property="0" x="16" y="0" value="20" palette="1" horizontalflip="true" verticalflip="false" table="4F" />
-    <sprite property="0" x="8" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="0" x="16" y="16" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+    <sprite property="0" x="8" y="16" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="0" x="16" y="16" value="22" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
 
-    <sprite property="1" x="8" y="0" value="22" palette="2" horizontalflip="false" verticalflip="true" table="4F" />
-    <sprite property="1" x="16" y="0" value="22" palette="2" horizontalflip="true" verticalflip="true" table="4F" />
+    <sprite property="1" x="8" y="0" value="22" palette="3" horizontalflip="false" verticalflip="true" table="4F" />
+    <sprite property="1" x="16" y="0" value="22" palette="3" horizontalflip="true" verticalflip="true" table="4F" />
     <sprite property="1" x="8" y="16" value="20" palette="1" horizontalflip="false" verticalflip="true" table="4F" />
     <sprite property="1" x="16" y="16" value="20" palette="1" horizontalflip="true" verticalflip="true" table="4F" />
 
     <sprite property="2" x="8" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite property="2" x="16" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="2" x="8" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="2" x="16" y="16" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+    <sprite property="2" x="8" y="16" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="2" x="16" y="16" value="22" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
 
-    <sprite property="3" x="8" y="0" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="3" x="16" y="0" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+    <sprite property="3" x="8" y="0" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="3" x="16" y="0" value="22" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
     <sprite property="3" x="8" y="16" value="30" palette="1" horizontalflip="false" verticalflip="true" table="4F" />
     <sprite property="3" x="16" y="16" value="32" palette="1" horizontalflip="false" verticalflip="true" table="4F" />
 
     <sprite property="4" x="8" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite property="4" x="16" y="0" value="32" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="4" x="8" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="4" x="16" y="16" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+    <sprite property="4" x="8" y="16" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="4" x="16" y="16" value="22" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
 
-    <sprite property="5" x="8" y="0" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="5" x="16" y="0" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+    <sprite property="5" x="8" y="0" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="5" x="16" y="0" value="22" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
     <sprite property="5" x="8" y="16" value="30" palette="2" horizontalflip="false" verticalflip="true" table="4F" />
     <sprite property="5" x="16" y="16" value="32" palette="2" horizontalflip="false" verticalflip="true" table="4F" />
 
     <sprite property="6" x="8" y="0" value="30" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
     <sprite property="6" x="16" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="6" x="8" y="16" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="6" x="16" y="16" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+    <sprite property="6" x="8" y="16" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="6" x="16" y="16" value="22" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
 
-    <sprite property="7" x="8" y="0" value="22" palette="2" horizontalflip="false" verticalflip="false" table="4F" />
-    <sprite property="7" x="16" y="0" value="22" palette="2" horizontalflip="true" verticalflip="false" table="4F" />
+    <sprite property="7" x="8" y="0" value="22" palette="3" horizontalflip="false" verticalflip="false" table="4F" />
+    <sprite property="7" x="16" y="0" value="22" palette="3" horizontalflip="true" verticalflip="false" table="4F" />
     <sprite property="7" x="8" y="16" value="30" palette="1" horizontalflip="false" verticalflip="true" table="4F" />
     <sprite property="7" x="16" y="16" value="32" palette="1" horizontalflip="false" verticalflip="true" table="4F" />
 
