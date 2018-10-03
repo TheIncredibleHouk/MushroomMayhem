@@ -404,7 +404,7 @@ PRG009_BC7C:
 	STA Level_AScrlVVel
 
 	; Level_AScrlTimer = 4
-	LDA #$04
+	LDA #$0C
 	STA Level_AScrlTimer
 
 	RTS		 ; Return

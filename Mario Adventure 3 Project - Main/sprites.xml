@@ -651,33 +651,20 @@
     <sprite x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="0A" />
   </spritedefinition>-->
-  <spritedefinition id="40" width="01" height="01" name="Golden Piranha Grower" class="2" group="Spiny/Buzzy Beetle">
-    <sprite property="0" x="0" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite property="0" x="8" y="0" value="32" palette="3" horizontalflip="true" verticalflip="false" table="0B" />
-    <sprite property="1" x="0" y="0" value="38" palette="3" horizontalflip="true" verticalflip="false" table="0B" />
-    <sprite property="1" x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="0B" />
-    <sprite property="2" x="0" y="0" value="32" palette="3" horizontalflip="false" verticalflip="true" table="0B" />
-    <sprite property="2" x="8" y="0" value="32" palette="3" horizontalflip="true" verticalflip="true" table="0B" />
-    <sprite property="3" x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite property="3" x="8" y="0" value="38" palette="3" horizontalflip="false" verticalflip="false" table="0B" />
-    <property>Starts Up</property>
-    <property>Starts Right</property>
-    <property>Starts Down</property>
-    <property>Starts Left</property>
+  <spritedefinition id="40" width="02" height="01" name="Pipe Elevator" class="2" group="Spiny/Buzzy Beetle">
+    <sprite x="0" y="0" value="2E" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite x="8" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite x="16" y="0" value="32" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite x="24" y="0" value="34" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
+
+    <property>Upward Pipe Moving Down</property>
+    <property>Upward Pipe Moving Up</property>
+    <property>Downard Pipe Moving Down</property>
+    <property>Downard Pipe Moving Up</property>
   </spritedefinition>
   <spritedefinition id="41" width="01" height="01" name="Piranha Grower" class="2" group="Spiny/Buzzy Beetle">
-    <sprite property="0" x="0" y="0" value="32" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite property="0" x="8" y="0" value="32" palette="2" horizontalflip="true" verticalflip="false" table="0B" />
-    <sprite property="1" x="0" y="0" value="38" palette="2" horizontalflip="true" verticalflip="false" table="0B" />
-    <sprite property="1" x="8" y="0" value="36" palette="2" horizontalflip="true" verticalflip="false" table="0B" />
-    <sprite property="2" x="0" y="0" value="32" palette="2" horizontalflip="false" verticalflip="true" table="0B" />
-    <sprite property="2" x="8" y="0" value="32" palette="2" horizontalflip="true" verticalflip="true" table="0B" />
-    <sprite property="3" x="0" y="0" value="36" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
-    <sprite property="3" x="8" y="0" value="38" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
-    <property>Starts Up</property>
-    <property>Starts Right</property>
-    <property>Starts Down</property>
-    <property>Starts Left</property>
+    <sprite property="0" x="0" y="0" value="36" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
+    <sprite property="0" x="8" y="0" value="38" palette="2" horizontalflip="false" verticalflip="false" table="0B" />
   </spritedefinition>
   <spritedefinition id="42" width="01" height="01" name="Dry Cheep" class="2" group="Fire/Mine">
     <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="0A" />

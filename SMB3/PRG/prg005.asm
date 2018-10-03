@@ -1084,11 +1084,7 @@ ObjInit_Pumpkin:
 	RTS
 
 ObjInit_Piranha_Aggressive:
-	JSR ObjInit_Piranha
-
-	LDA #$03
-	STA Objects_Health, X
-	RTS
+	JMP ObjInit_Piranha
 
 ObjInit_Piranha:
 	LDA #$06
@@ -1371,8 +1367,6 @@ Piranha_GetAttacks:
 Piranha_SetAttacks:	
 	STA Piranha_AttacksLeft, X
 
-	LDA Objects_ID, X
-	CMP #OBJ_PIRANHA_AGGRESSIVE
 	RTS
 
 Piranha_Move1:
@@ -1426,7 +1420,7 @@ Piranha_Attack:
 
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
-	BNE Piranha_Attack1
+	BNE Piranha_AttackReset
 
 	LDA #$08
 	STA <Proj_YOff
@@ -1450,6 +1444,7 @@ Piranha_NoYOff:
 	DEC Piranha_AttacksLeft, X
 	BEQ Piranha_NoMoreAttacks
 
+Piranha_AttackReset:	
 	LDA #$50
 	STA Objects_Timer, X
 	RTS
@@ -1463,6 +1458,10 @@ Piranha_NoMoreAttacks:
 	RTS
 
 Piranha_Attack1:
+	LDA Objects_ID, X
+	CMP #OBJ_PIRANHA_AGGRESSIVE
+	BEQ Piranha_Attack2
+
 	LDA #$20
 	STA Objects_Timer, X
 	
@@ -5263,3 +5262,5 @@ ToadBye1:
 	BNE ToadBye1
 	RTS
 
+ObjInit_SpikeBallChain:
+	RTS

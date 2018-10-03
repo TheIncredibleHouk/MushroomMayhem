@@ -432,7 +432,8 @@ ObjNorm_Spring:
 	LDA <Player_HaltGameZ
 	BNE Spring_RTS
 
-	JSR Object_DeleteOffScreen
+	LDA #$40
+	JSR Object_DeleteOffScreenRange
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	
@@ -657,9 +658,8 @@ Key_Move:
 	LDA Objects_BeingHeld, X
 	BNE Key_NoDetecttiles
 
-	JSR Object_DetectTiles
-
 Key_NoDetecttiles:
+	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 	JSR Key_DoUnlocks
 	BCS ObjNorm_KeyHeldRTS

@@ -6,7 +6,7 @@
     <pointer levelguid="0ec3e06c-8eb6-490b-855e-fad3ed63d439" exittype="1" xexit="189" yexit="25" xenter="177" yenter="23" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="11" y="16" value="65" item="0" property="0" />
+    <sprite x="11" y="16" value="65" item="0" property="2" />
     <sprite x="22" y="19" value="109" item="0" property="0" />
     <sprite x="81" y="11" value="74" item="0" property="0" />
     <sprite x="42" y="11" value="65" item="0" property="0" />

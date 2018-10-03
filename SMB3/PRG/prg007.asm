@@ -3126,6 +3126,9 @@ Enemy_FireBallNoGravity:
 
 Enemy_FireBallCalcBounds:
 	JSR SpecialObj_CalcBounds8x16
+
+	LDA #$01
+	STA Proj_Attack
 	JSR EnemyProj_HitPlayer
 
 Enemy_FireBallTiles:

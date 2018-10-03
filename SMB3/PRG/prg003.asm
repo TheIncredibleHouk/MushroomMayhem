@@ -5212,7 +5212,7 @@ Pyrantula_Move:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 	
-	LDA  Object_VertTileProp, X
+	LDA Object_VertTileProp, X
 	CMP #TILE_PROP_CLIMBABLE
 	BEQ Pyrantula_VGo
 
@@ -5221,6 +5221,7 @@ Pyrantula_Move:
 	STA Objects_YVelFrac,X	
 
 Pyrantula_VGo:
+
 	LDA  Object_HorzTileProp, X
 	CMP #TILE_PROP_CLIMBABLE
 	BEQ Pyrantula_Animate
@@ -5229,7 +5230,15 @@ Pyrantula_VGo:
 	JMP Pyrantula_Animate
 
 Pyrantula_Shoot:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Pyrantula_FireTimer, X
 	CMP #$10
+	BNE Pyrantula_ShootDraw
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE Pyrantula_ShootDraw
 
 	LDA #$06

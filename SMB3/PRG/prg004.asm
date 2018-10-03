@@ -419,7 +419,7 @@ ObjInit_NinjaBro:
 	LDA #$06
 	STA Objects_SpritesRequested, X
 
-	LDA #$03
+	LDA #$02
 	STA Objects_Health, X
 
 	LDA #BOUND16x24
@@ -683,7 +683,7 @@ NinjaBro_DrawStar:
 
 	LDY #$00
 	LDA Objects_Orientation, X
-	AND #SPR_HFLIP
+	AND #(SPR_HFLIP)
 	BEQ NinjaBro_LeftSide
 
 	INY
@@ -713,10 +713,12 @@ NinjaBro_LeftSide:
 	STA Sprite_RAMTile - 8, Y
 	STA Sprite_RAMTile - 4, Y
 
-	LDA #SPR_PAL3
+	LDA Sprite_RAMAttr, Y
+	AND #SPR_BEHINDBG
+	ORA #SPR_PAL3
 	STA Sprite_RAMAttr - 8, Y
 
-	LDA #(SPR_PAL3 | SPR_VFLIP | SPR_HFLIP)
+	EOR #(SPR_VFLIP | SPR_HFLIP)
 	STA Sprite_RAMAttr - 4, Y
 
 	RTS		 ; Return
@@ -2083,6 +2085,8 @@ Lakitu_CalcBoundBox:
 	STA <Objects_YHiZ, X
 
 	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_AttackOrDefeat
 	JSR Lakitu_DoAction
 	JMP Lakitu_Draw
@@ -2456,7 +2460,9 @@ Lakitu_Enemy1:
 	LDA Lakitu_EnemyFrameLeft, X
 	STA Sprite_RAMTile + 20, Y
 
-	LDA Lakitu_EnemyFrameLeftAttr, X
+	LDA Objects_SpriteAttributes, X
+	AND #SPR_BEHINDBG
+	ORA Lakitu_EnemyFrameLeftAttr, X
 	STA Sprite_RAMAttr + 20, Y
 
 	LDA Sprite_RAMX + 12, Y
@@ -2475,7 +2481,9 @@ Lakitu_Enemy1:
 	LDA Lakitu_EnemyFrameRight, X
 	STA Sprite_RAMTile + 24, Y
 
-	LDA Lakitu_EnemyFrameRightAttr, X
+	LDA Objects_SpriteAttributes, X
+	AND #SPR_BEHINDBG
+	ORA Lakitu_EnemyFrameRightAttr, X
 	STA Sprite_RAMAttr + 24, Y
 
 	LDA <Temp_Var2
@@ -2624,7 +2632,7 @@ PRG004_AF3E:
 	STA Sprite_RAM+$0F,Y
 
 	; Left wing attribute
-	LDA Objects_SpriteAttributes
+	LDA Objects_SpriteAttributes, X
 	AND #SPR_BEHINDBG
 	ORA #SPR_PAL1
 	STA Sprite_RAM+$0E,Y
@@ -3155,6 +3163,8 @@ BulletBill_Norm:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat	 	; Player to Bullet Bill collision
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_ApplyXVel	 	
 	JSR Object_ApplyYVel_NoGravity
 
@@ -3212,6 +3222,8 @@ MissieMark_NotHit:
 
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
 	JMP Bullet_Animate
@@ -5000,11 +5012,12 @@ Larry_WaitOffScreen:
 	LDA <Player_XHi
 	STA <Objects_XHiZ, X
 
-
-	LDA #$20
+	LDA <Vert_Scroll
+	SUB #$20
 	STA <Objects_YZ, X
 
-	LDA #$FF
+	LDA <Vert_Scroll_Hi
+	SBC #$00
 	STA <Objects_YHiZ, X
 
 	RTS

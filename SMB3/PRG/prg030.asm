@@ -5438,6 +5438,9 @@ StarXPositions:
 StarYPositions:
 	.byte $01, $22, $13, $0C, $29, $1B
 
+StarYPostions2:
+	.byte $20, $43, $69, $86, $A7, $CE
+
 StarPals:
 	.byte SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL2, SPR_PAL3
 
@@ -5450,9 +5453,19 @@ ObjInit_Stars1:
 	ADD StarXPositions, Y
 	STA Weather_XPos, Y
 
+	LDA PaletteEffect
+	CMP #$03
+	BNE Normal_WeatherParticle
+
+	LDA StarYPostions2, Y
+	BNE Store_WeatherParticle
+
+Normal_WeatherParticle:
 	LDA RandomN + 6, Y
 	AND #$0F
 	ADD StarYPositions, Y
+
+Store_WeatherParticle:
 	STA Weather_YPos, Y
 	DEY
 	BPL ObjInit_Stars1

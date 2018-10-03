@@ -869,7 +869,8 @@ PLAYERSUIT_LAST		= PLAYERSUIT_HAMMER	; Marker for "last" suit (Debug cycler need
 	; ASSEMBLER BOUNDARY CHECK, END OF CONTEXT @ $F4
 .BoundZP_Game:	BoundCheck .BoundZP_Game, $F4, Zero Page Gameplay Context
 
-	Player_EffectiveDirection: 	.ds 1
+	Player_EffXVel: 	.ds 1
+	Player_EffYVel:		.ds 1
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $1xx LOW STACK VARIABLES
@@ -3514,7 +3515,7 @@ BOUND16x24			= $02
 BOUND16x16BLOCK		= $03
 OAT_BOUNDBOX04		= $04
 BOUND24x32			= $05
-OAT_BOUNDBOX06		= $06
+BOUND32x16BLOCK		= $06
 OAT_BOUNDBOX07		= $07
 BOUND48x16			= $08
 OAT_BOUNDBOX09		= $09
@@ -3635,7 +3636,7 @@ OBJ_NIPPERFIREBREATHER	= $3D	; Fire belching nipper plant
 OBJ_PLATFORMFLOATS	= $3E	; Floating (on water) log
 OBJ_DRYBONES		= $3F	; Dry Bones
 OBJ_BUSTERBEATLE = $00 ;
-OBJ_GOLDENPIRANHAGROWER	= $40	; Buster Beatle
+OBJ_PIPEBLOCK	= $40	; Buster Beatle
 OBJ_ENDLEVELCARD = $00	;
 OBJ_PIRANHAGROWER	= $41	; End-of-level card
 OBJ_CHEEPCHEEPPOOL2POOL	= $42	; Pool-to-pool-to-pool hopping cheep cheep

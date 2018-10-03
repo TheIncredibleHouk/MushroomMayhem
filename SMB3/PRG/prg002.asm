@@ -52,8 +52,8 @@ ObjectGroup01_InitJumpTable:
 	.word ObjInit_DoNothing		; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjInit_DoNothing	; Object $3E - OBJ_PLATFORMFLOATS
 	.word ObjInit_DryBones	; Object $3F - OBJ_DRYBONES
-	.word ObjInit_PiranhaGrower	; Object $40 - OBJ_GOLDENPIRANHAGROWER
-	.word ObjInit_GoldenPiranhaGrower		; Object $41 - OBJ_PIRANHAGROWER
+	.word ObjInit_PipeBlock	; Object $40 - OBJ_PIPEBLOCK
+	.word ObjInit_PiranhaGrower		; Object $41 - OBJ_PIRANHAGROWER
 	.word ObjInit_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
 	.word ObjInit_PlatformUnstable	; Object $44 - OBJ_PLATFORMUNSTABLE
@@ -94,7 +94,7 @@ ObjectGroup01_NormalJumpTable:
 	.word ObjNorm_NipperFireBreathe	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word ObjNorm_PlatformFloat	; Object $3E - OBJ_PLATFORMFLOATS
 	.word ObjNorm_DryBones		; Object $3F - OBJ_DRYBONES
-	.word ObjNorm_PiranhaGrower	; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.word ObjNorm_PipeBlock	; Object $40 - OBJ_PIPEBLOCK
 	.word ObjNorm_PiranhaGrower	; Object $41 - OBJ_PIRANHAGROWER
 	.word ObjNorm_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjNorm_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
@@ -137,7 +137,7 @@ ObjectGroup01_CollideJumpTable:
 	.word Player_GetHurt		; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word Platform_PlayerStand		; Object $3E - OBJ_PLATFORMFLOATS
 	.word ObjHit_DryBones		; Object $3F - OBJ_DRYBONES
-	.word Player_GetHurt		; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.word ObjHit_SolidBlock		; Object $40 - OBJ_PIPEBLOCK
 	.word Player_GetHurt	; Object $41 - OBJ_PIRANHAGROWER
 	.word Player_GetHurt		; Object $42 - OBJ_FLAMINGCHEEP
 	.word ObjHit_DoNothing		; Object $43 - OBJ_BEACHEDCHEEP
@@ -179,7 +179,7 @@ ObjectGroup01_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $3E - OBJ_PLATFORMFLOATS
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $3F - OBJ_DRYBONES
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $40 - OBJ_PIPEBLOCK
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $41 - OBJ_PIRANHAGROWER
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $43 - OBJ_BEACHEDCHEEP
@@ -223,7 +223,7 @@ ObjectGroup01_PatTableSel:
 	.byte OPTS_SETPT5 | $0A	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte OPTS_NOCHANGE; Object $3E - OBJ_PLATFORMFLOATS
 	.byte OPTS_SETPT6 | $13	; Object $3F - OBJ_DRYBONES
-	.byte OPTS_SETPT5 | $0B	; Object $40 - OBJ_GOLDENPIRANHAGROWER
+	.byte OPTS_SETPT5 | $0B	; Object $40 - OBJ_PIPEBLOCK
 	.byte OPTS_SETPT5 | $0B	; Object $41 - OBJ_PIRANHAGROWER
 	.byte OPTS_SETPT5 | $0A	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte OPTS_SETPT6 | $4F	; Object $43 - OBJ_BEACHEDCHEEP
@@ -265,8 +265,8 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_STANDARD	; Object $3D - OBJ_NIPPERFIREBREATHER
 	.byte KILLACT_STANDARD	; Object $3E - OBJ_PLATFORMFLOATS
 	.byte KILLACT_POOFDEATH	; Object $3F - OBJ_DRYBONES
-	.byte KILLACT_POOFDEATH	; Object $40 - OBJ_GOLDENPIRANHAGROWER
-	.byte KILLACT_POOFDEATH	; Object $41 - OBJ_PIRANHAGROWER
+	.byte KILLACT_NORMALANDKILLED	; Object $40 - OBJ_PIPEBLOCK
+	.byte KILLACT_NORMALANDKILLED	; Object $41 - OBJ_PIRANHAGROWER
 	.byte KILLACT_POOFDEATH	; Object $42 - OBJ_FLAMINGCHEEP
 	.byte KILLACT_POOFDEATH	; Object $43 - OBJ_BEACHEDCHEEP
 	.byte KILLACT_STANDARD	; Object $44 - OBJ_PLATFORMUNSTABLE
@@ -393,8 +393,10 @@ ObjP2E:
 	.byte $B5, $B7
 
 ObjP40:
+	.byte $AF, $B1, $B3, $B5
+
 ObjP41:
-	.byte $B3, $B3, $B5, $B5, $B9, $B7, $BF, $BB, $B3, $B3, $B5, $B5, $B7, $B9, $BB, $BF
+	.byte $E1, $E1, $E5, $E5, $B9, $B7, $BF, $BB, $B3, $B3, $B5, $B5, $B7, $B9, $BB, $BF
 
 ObjInit_BusterBeatle:
 ObjNorm_BusterBeatle:
@@ -807,8 +809,6 @@ DryCheep_DrawFlamesAndSmoke1:
 DryCheep_DrawFlamesAndSmoke2:
 	RTS
 
-	; Different "entropy" values by the object's slot -- keeps things random looking
-
 Flame_Frames:
 	.byte $81, $83, $85, $87
 
@@ -975,7 +975,6 @@ ObjInit_PhantoFlip:
 Phanto_ChaseTimer = Objects_Data3
 Phanto_Action = Objects_Data4
 Phanto_Shaker = Objects_Data5
-
 
 ObjNorm_Phanto:
 	LDA <Player_HaltGameZ
@@ -1554,18 +1553,6 @@ PRG002_AAA6:
 	RTS
 
 ObjInit_FloatWoodenPlat:
-	LDA Level_AScrlConfig
-	BEQ PRG002_AB35	 ; If no raster, jump to PRG002_AB35 (RTS)
-
-	; If raster active (assuming a level with constant water level)...
-
-	; Set fixed position at water level (vertical scroll +148)
-	LDA Level_VertScroll
-	ADD #148
-	STA <Objects_YZ,X
-	LDA Level_VertScrollH
-	ADC #$00		; Apply carry
-	STA <Objects_YHiZ,X
 
 PRG002_AB35:
 	RTS		 ; Return
@@ -2378,72 +2365,68 @@ ObjNorm_Nipper3:
 NipperDetermineFrame1:
 
 ObjInit_Toad:
-	LDA #BOUND16x24
-	STA Objects_BoundBox, X
+	;LDA #BOUND16x24
+	;STA Objects_BoundBox, X
 
-	LDA Objects_Property,X		 ; Otherwise, Y = 1 
-	STA Objects_Data2,X	 ; -> Objects_Data2 (which message Toad gives)
+	;LDA Objects_Property,X		 ; Otherwise, Y = 1 
+	;STA Objects_Data2,X	 ; -> Objects_Data2 (which message Toad gives)
 
 	; Toad is always on the lower screen space
-	LDA #$01
-	STA <Objects_YHiZ,X
+	;LDA #$01
+	;STA <Objects_YHiZ,X
 
 	; Halt the Player
-	LDA #$ff
-	STA Player_HaltTick
+	;LDA #$ff
+	;STA Player_HaltTick
 
-	LDA #$00
-	STA <Map_UseItem	; Clear item usage flag
-	STA Player_Behind	; Player is not behind anything
-	STA ToadTalk_CPos	; Clear the Toad character position counter
+	;LDA #$00
+	;STA <Map_UseItem	; Clear item usage flag
+	;STA Player_Behind	; Player is not behind anything
+	;STA ToadTalk_CPos	; Clear the Toad character position counter
 
 	; Set the starting VRAM addresses
-	LDA #$28
-	STA ToadTalk_VH
-	LDA #$c8
-	STA ToadTalk_VL
 
 	RTS		 ; Return
 
 PRG002_B23D:
-	.byte $08, $04, $02, $01
+	.byte $08;, $04, $02, $01
 
 ObjNorm_Toad:
-	STA Objects_Orientation,X
- 
-	LDA #$01
-	STA Player_HaltTick
-	LDA #$00
-	STA Tile_Anim_Enabled
-
-	; Do Toad's dialog message
-	LDA Objects_Data4, X
-	LSR A
-	AND #$01
-	STA Objects_Frame, X
-	JSR Object_Draw
-	
-	LDA Sprite_RAM,Y
-	STA Sprite_RAM+8,Y
-	LDA Sprite_RAM+4,Y
-	STA Sprite_RAM+12,Y
-
-	LDA Sprite_RAM+3,Y
-	STA Sprite_RAM+11,Y
-	LDA Sprite_RAM+7,Y
-	STA Sprite_RAM+15,Y
-
-	LDA Objects_Orientation,X
-	ORA #SPR_PAL1
-	STA Sprite_RAM+10,Y
-	STA Sprite_RAM+14,Y
-
-	LDA #$A9
-	STA Sprite_RAM+9,Y
-	LDA #$AB
-	STA Sprite_RAM+13,Y
-
-	JSR Toad_Speak
+	;STA Objects_Orientation,X
+ ;
+	;LDA #$01
+	;STA Player_HaltTick
+	;LDA #$00
+	;STA Tile_Anim_Enabled
+;
+	;; Do Toad's dialog message
+	;LDA Objects_Data4, X
+	;LSR A
+	;AND #$01
+	;STA Objects_Frame, X
+	;JSR Object_Draw
+	;
+	;LDA Sprite_RAM,Y
+	;STA Sprite_RAM+8,Y
+	;LDA Sprite_RAM+4,Y
+	;STA Sprite_RAM+12,Y
+;
+	;LDA Sprite_RAM+3,Y
+	;STA Sprite_RAM+11,Y
+	;LDA Sprite_RAM+7,Y
+	;STA Sprite_RAM+15,Y
+;
+	;LDA Objects_Orientation,X
+	;ORA #SPR_PAL1
+	;STA Sprite_RAM+10,Y
+	;STA Sprite_RAM+14,Y
+;
+	;LDA #$A9
+	;STA Sprite_RAM+9,Y
+	;LDA #$AB
+	;STA Sprite_RAM+13,Y
+;
+	;JSR Toad_Speak
 	RTS
 
 
@@ -2459,110 +2442,110 @@ Toad_Speak:
 	.word Bank_Toad		; 7
 	.word Do_BadgeShop_Controls
 
-TDiagBox_R1:	.byte $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65
-TDiagBox_R2:	.byte $65, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
-TDiagBox_R3:	.byte $65, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
+TDiagBox_R1:	.byte $65;, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65
+TDiagBox_R2:	.byte $65;, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
+TDiagBox_R3:	.byte $65;, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
 
 TDiagBox_RowOffs:
-	.byte (TDiagBox_R1 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
-	.byte (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R3 - TDiagBox_R1)
+	.byte (TDiagBox_R1 - TDiagBox_R1);, (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
+	.byte (TDiagBox_R2 - TDiagBox_R1);, (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R3 - TDiagBox_R1)
 
 TDiagBox_RowOffs_End
 
 Toad_DrawDiagBox:
-	LDX Graphics_BufCnt	 ; X = current graphics buffer counter
-
-	; Store the current VRAM address into the buffer
-	LDA ToadTalk_VH
-	STA Graphics_Buffer,X
-	LDA ToadTalk_VL
-	STA Graphics_Buffer+1,X
-
-	; Store the next row address (+32 bytes to next row)
-	ADD #$20	; 32 bytes to next row
-	STA ToadTalk_VL
-	BCC PRG002_B2D5
-	INC ToadTalk_VH	 ; Apply carry
+	;LDX Graphics_BufCnt	 ; X = current graphics buffer counter
+;
+	;; Store the current VRAM address into the buffer
+	;LDA ToadTalk_VH
+	;STA Graphics_Buffer,X
+	;LDA ToadTalk_VL
+	;STA Graphics_Buffer+1,X
+;
+	;; Store the next row address (+32 bytes to next row)
+	;ADD #$20	; 32 bytes to next row
+	;STA ToadTalk_VL
+	;BCC PRG002_B2D5
+	;INC ToadTalk_VH	 ; Apply carry
 PRG002_B2D5:
 
-	LDA #(TDiagBox_R2 - TDiagBox_R1)	; run count per row
-	STA Graphics_Buffer+2,X
-	STA <Temp_Var1		 ; -> Temp_Var1
-
-	LDY ToadTalk_CPos	 ; Y = current dialog box row
-	LDA TDiagBox_RowOffs,Y
-	TAY		 	; Y = offset to this row index
+	;LDA #(TDiagBox_R2 - TDiagBox_R1)	; run count per row
+	;STA Graphics_Buffer+2,X
+	;STA <Temp_Var1		 ; -> Temp_Var1
+;
+	;LDY ToadTalk_CPos	 ; Y = current dialog box row
+	;LDA TDiagBox_RowOffs,Y
+	;TAY		 	; Y = offset to this row index
 
 PRG002_B2E3:
 	; Store next pattern in dialog box
-	LDA TDiagBox_R1,Y
-	STA Graphics_Buffer+3,X
-
-	INY		 ; Y++ (next pattern for dialog box)
-	INX		 ; X++ (next index in graphics buffer)
-
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BNE PRG002_B2E3	 ; While Temp_Var1 > 0, loop!
-
-	; Insert terminator
-	LDA #$00
-	STA Graphics_Buffer+3,X
-
-	; X += 3
-	INX
-	INX
-	INX
-	STX Graphics_BufCnt
-
-	LDX <CurrentObjectIndexZ	 ; X = object slot index
-
-	INC ToadTalk_CPos	 ; Next row
-
-	LDA ToadTalk_CPos
-	CMP #(TDiagBox_RowOffs_End - TDiagBox_RowOffs)
-	BLT PRG002_B325	 ; If row count < 8, jump to PRG002_B325 (RTS)
-
-	; Dialog box is complete
-
-	LDY Objects_Data2,X	 ; Y = Objects_Data2
-
-	; Toad's Var1 and Var2 store the current pointer to the text he's reciting
-	LDA ToadMsg_Low,Y
-	STA Objects_Data4,X
-	LDA ToadMsg_High,Y
-	STA Objects_Data5,X
-
-	; Reset the VRAM address for the dialog text
-	LDA #$28
-	STA ToadTalk_VH
-	LDA #$e9
-	STA ToadTalk_VL
-
-	; Toad's timer = $10
-	LDA #$10
-	STA Objects_Timer,X
-
-	INC Objects_Data1,X	 ; Objects_Data1 = 1 (next dialog state)
+	;LDA TDiagBox_R1,Y
+	;STA Graphics_Buffer+3,X
+;
+	;INY		 ; Y++ (next pattern for dialog box)
+	;INX		 ; X++ (next index in graphics buffer)
+;
+	;DEC <Temp_Var1	 ; Temp_Var1--
+	;BNE PRG002_B2E3	 ; While Temp_Var1 > 0, loop!
+;
+	;; Insert terminator
+	;LDA #$00
+	;STA Graphics_Buffer+3,X
+;
+	;; X += 3
+	;INX
+	;INX
+	;INX
+	;STX Graphics_BufCnt
+;
+	;LDX <CurrentObjectIndexZ	 ; X = object slot index
+;
+	;INC ToadTalk_CPos	 ; Next row
+;
+	;LDA ToadTalk_CPos
+	;CMP #(TDiagBox_RowOffs_End - TDiagBox_RowOffs)
+	;BLT PRG002_B325	 ; If row count < 8, jump to PRG002_B325 (RTS)
+;
+	;; Dialog box is complete
+;
+	;LDY Objects_Data2,X	 ; Y = Objects_Data2
+;
+	;; Toad's Var1 and Var2 store the current pointer to the text he's reciting
+	;LDA ToadMsg_Low,Y
+	;STA Objects_Data4,X
+	;LDA ToadMsg_High,Y
+	;STA Objects_Data5,X
+;
+	;; Reset the VRAM address for the dialog text
+	;LDA #$28
+	;STA ToadTalk_VH
+	;LDA #$e9
+	;STA ToadTalk_VL
+;
+	;; Toad's timer = $10
+	;LDA #$10
+	;STA Objects_Timer,X
+;
+	;INC Objects_Data1,X	 ; Objects_Data1 = 1 (next dialog state)
 
 PRG002_B325:
 	RTS		 ; Return
 	
 ToadMsg_Shop:
-	.byte "WELCOME TO THE "
-	.byte "SHOP. USE LEFT "
-	.byte "AND RIGHT TO   "
-	.byte "BROWSE, A TO   "
-	.byte "BUY, B TO LEAVE"
-	.byte "THE SHOP.      "
+	;.byte "WELCOME TO THE "
+	;.byte "SHOP. USE LEFT "
+	;.byte "AND RIGHT TO   "
+	;.byte "BROWSE, A TO   "
+	;.byte "BUY, B TO LEAVE"
+	;.byte "THE SHOP.      "
 
 	
 ToadMsg_Bank:
-	.byte "USE UP AND DOWN"
-	.byte "TO SET AMOUNT. "
-	.byte "LEFT AND RIGHT "
-	.byte "TO SET ACTION. "
-	.byte "A TO ACCEPT.   "
-	.byte "B TO LEAVE.    "
+	;.byte "USE UP AND DOWN"
+	;.byte "TO SET AMOUNT. "
+	;.byte "LEFT AND RIGHT "
+	;.byte "TO SET ACTION. "
+	;.byte "A TO ACCEPT.   "
+	;.byte "B TO LEAVE.    "
 
 ToadMsg_Badge:
 	.byte "NEED A BADGE? I"
@@ -2581,27 +2564,28 @@ ToadMsg_High:	.byte HIGH(ToadMsg_Shop), HIGH(ToadMsg_Bank), HIGH(ToadMsg_Badge)
 
 
 Toad_DoToadText:
-	LDA Objects_Timer,X
-	BEQ DoNextLetter
-	JMP PRG002_B4B1	 ; If timer not expired, jump to PRG002_B4B1
+	;LDA Objects_Timer,X
+	;BEQ DoNextLetter
+	;JMP PRG002_B4B1	 ; If timer not expired, jump to PRG002_B4B1
 
 DoNextLetter:
 
 	; Store address of text -> Temp_Var1/2
-	LDA Objects_Data4,X
-	STA <Temp_Var1
-	LDA Objects_Data5,X
-	STA <Temp_Var2
-
-	INC Objects_Data4,X	; Next character
-	BNE PRG002_B451
-	INC Objects_Data5,X	; Apply carry
+;	LDA Objects_Data4,X
+;	STA <Temp_Var1
+;	LDA Objects_Data5,X
+;	STA <Temp_Var2
+;
+;	INC Objects_Data4,X	; Next character
+;	BNE PRG002_B451
+;	INC Objects_Data5,X	; Apply carry
 PRG002_B451:
 
 	LDY #$00	 	; Y = 0
 	LDA [Temp_Var1],Y	; Get character here
 	TAY		 	; -> 'Y'
 	CPY #$20
+
 	BEQ PRG002_B468	 	; If this is a "space", jump to PRG002_B468
 
 	; Play "blip" sound every other letter
@@ -4603,25 +4587,21 @@ Grower_BehaviorAttributes:
 	.byte 0, ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF
 
 ObjInit_GoldenPiranhaGrower:
-	LDA #ATTR_ALLWEAPONPROOF
-	STA Objects_WeaponAttr, X
-
-	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
-	STA Objects_BehaviorAttr, X
-	BNE ObjInit_PiranhaGrowerCommon
-
 ObjInit_PiranhaGrower:
 	LDA #ATTR_STOMPPROOF
 	STA Objects_WeaponAttr, X
 
 ObjInit_PiranhaGrowerCommon:	
 	; which direction to start in 0 = up, 1 = right, 2 = down, 3 = left
+
+	LDA #ATTR_NOICE
+	STA Objects_BehaviorAttr, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
 	LDA Objects_Property, X
 	STA Grower_Direction, X
-
 
 	 ; Grower_StartYHi = current tile to check for (Toggle sbeten #TILE_PROP_ENEMY and #TILE_PROP_HARMFUL)
 	LDA #TILE_PROP_ENEMY
@@ -4648,6 +4628,21 @@ ObjNorm_PiranhaGrower:
 	JMP Grower_Draw
 
 Grower_Norm:
+	LDA Objects_PlayerProjHit, X
+	BEQ Grower_NotHit
+
+	LDA #$00
+	STA Objects_Timer2, X
+	STA Objects_PlayerProjHit, X
+
+Grower_NotHit:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Grower_Normal
+
+	JMP Grower_Retract
+	
+Grower_Normal:
 	LDA Objects_Timer, X
 	BEQ Grower_Move
 	
@@ -4669,7 +4664,7 @@ Grower_Move:
 	
 	JSR Grower_AtStart
 	BCC Grower_NoDelete
-	
+
 	JSR Grower_CheckOffScreen
 	
 Grower_NoDelete:
@@ -4763,6 +4758,8 @@ Grower_DeleteOffScreen:
 	RTS
 
 Grower_TimerToggle:
+	LDX <CurrentObjectIndexZ
+
 	LDA Objects_Timer, X
 	BEQ Grower_TimerToggle1
 
@@ -4789,14 +4786,14 @@ Grower_TimerToggle0:
 Grower_TimerToggle1:
 	RTS
 
-
-
 Grower_InteractWithTiles:
-
 	LDA Block_NeedsUpdate
 	BEQ Grower_InteractWithTiles2
 
 Grower_InteractWithTiles1:
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
 	RTS
 
 Grower_InteractWithTiles2:
@@ -4830,13 +4827,13 @@ Grower_InteractWithTiles2:
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA <Objects_YVelZ, X
+
 	LDA #$80
 	STA Objects_Timer, X
 
 	RTS
 
 Grower_SetVelocity:
-	
 	LDY <Temp_Var13
 	LDA Grower_XVel, Y
 	STA <Objects_XVelZ, X
@@ -4872,7 +4869,9 @@ Grower_DetectBlockAbove:
 
 	LDA <Objects_XHiZ, X
 	STA Tile_DetectionXHi
+
 	JSR Object_DetectTile
+
 	LDA Tile_LastProp
 	RTS
 
@@ -4933,6 +4932,73 @@ Grower_DetectBlockLeft:
 	LDA Tile_LastProp
 	RTS
 
+Grower_Retract:
+
+	JSR Object_CalcBoundBox
+
+Grower_KeepRetracting:
+	LDA Block_NeedsUpdate
+	BNE Grower_RetractRTS
+
+	LDA Objects_Timer2, X
+	BNE Grower_RetractRTS
+	
+	JSR Object_DetectTileCenter
+
+	LDA Tile_LastValue
+	AND #$FE
+	JSR Object_ChangeBlock
+	
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Grower_NoPoof
+
+	LDA <Objects_XZ, X
+	AND #$F0
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	AND #$F0
+	STA <Poof_Y
+	JSR Common_MakePoof
+
+Grower_NoPoof:	
+	JSR Grower_DetectBlockAbove
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	BEQ Grower_SetPosition
+
+	JSR Grower_DetectBlockRight
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	BEQ Grower_SetPosition
+
+	JSR Grower_DetectBlockBelow
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	BEQ Grower_SetPosition
+
+	JSR Grower_DetectBlockLeft
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	BEQ Grower_SetPosition
+
+	JMP Object_Delete
+
+Grower_SetPosition:	
+	LDA Tile_DetectionX
+	STA <Objects_XZ, X
+
+	LDA Tile_DetectionXHi
+	STA <Objects_XHiZ, X
+
+	LDA Tile_DetectionY
+	STA <Objects_YZ, X
+
+	LDA Tile_DetectionYHi
+	STA <Objects_YHiZ, X
+
+	LDA #$08
+	STA Objects_Timer2, X
+	
+Grower_RetractRTS:
+	RTS	
 
 Lightning_Action = Objects_Data1
 Lightning_WaterColor = Objects_Data2
@@ -5110,4 +5176,269 @@ Lightning_PlayerHurt:
 	BEQ Lightning_RTS
 
 	JSR Player_GetHurt
+	RTS
+
+ObjInit_PipeBlock:
+	LDA #BOUND32x16BLOCK
+	STA Objects_BoundBox, X
+	
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	LDA <Objects_YZ, X
+	SUB #$01
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$10
+	STA Objects_Timer, X
+
+	LDA Objects_Property, X
+	STA PipeBlock_State, X
+	TAY
+
+	LDA PipeBlock_YVelFrac, Y
+	STA Objects_YVelFrac, X
+
+	LDA <Objects_YZ, X
+	STA PipeBlock_StartY, X
+
+	LDA <Objects_YHiZ, X
+	STA PipeBlock_StartYHi, X
+	
+	JMP Object_NoInteractions
+
+PipeBlock_State = Objects_Data1
+PipeBlock_ChangeRightQueue = Objects_Data2
+PipeBlock_DisableMove = Objects_Data3
+PipeBlock_StartY = Objects_Data4
+PipeBlock_StartYHi = Objects_Data5
+
+PipeBlock_YVel:
+	.byte $08, $F8, $08, $F8
+
+ObjNorm_PipeBlock:
+	LDA <Player_HaltGameZ
+	BEQ PipeBlock_Norm
+
+	JMP PipeBlock_Draw
+
+PipeBlock_Norm:
+
+	LDA <Objects_YZ, X
+	CMP PipeBlock_StartY, X
+	BNE PipeBlock_NoDelete
+
+	LDA <Objects_YHiZ, X
+	CMP PipeBlock_StartYHi, X
+	BNE PipeBlock_NoDelete
+
+	JSR Object_DeleteOffScreen	
+
+PipeBlock_NoDelete:
+	JSR PipeBlock_MatchPalette
+	JSR Object_CalcBoundBox
+	JSR Object_KillOthers
+	JSR Object_InteractWithPlayer
+
+	LDA Objects_Timer, X
+	ORA PipeBlock_DisableMove, X
+	BNE PipeBlock_Stall
+
+	LDY PipeBlock_State, X
+
+	LDA PipeBlock_YVel, Y
+	STA Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+
+PipeBlock_Stall:	
+	LDA PipeBlock_ChangeRightQueue, X
+	BNE PipeBlock_CheckByPass
+
+	LDA Objects_Timer, X
+	BNE PipeBlock_DoDraw
+	
+PipeBlock_CheckByPass:	
+	JSR PipeBlock_CheckBlocks
+
+PipeBlock_DoDraw:
+	JMP PipeBlock_Draw
+
+PipeBlock_YCheck:
+	.byte $18, $F8, $18, $F8
+	.byte $00, $FF, $00, $FF
+
+PipeBlock_YVelFrac:
+	.byte $00, $80, $00, $80
+
+PipeBlock_PropCheck:
+	.byte TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID
+	.byte TILE_PROP_ENEMY
+	.byte TILE_PROP_ENEMY
+	.byte TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID
+
+PipeBlock_CheckBlocks:
+	LDA Block_NeedsUpdate
+	BEQ PipeBlock_DoCheck
+
+	LDA #$01
+	STA PipeBlock_DisableMove, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+	RTS
+
+PipeBlock_DoCheck:
+	STA PipeBlock_DisableMove, X
+
+	LDA PipeBlock_ChangeRightQueue, X
+	BEQ PipeBlock_NotQueued
+	JMP PipeBlock_ChangeBlockRight
+
+PipeBlock_NotQueued:
+	LDY PipeBlock_State, X
+	
+	LDA <Objects_YZ, X
+	AND #$0F
+	CMP #$0F
+	BNE PipeBlock_CheckBlocksRTS
+
+	LDA <Objects_YZ, X
+	ADD PipeBlock_YCheck, Y
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	ADC PipeBlock_YCheck + 4, Y
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	STA Tile_DetectionXHi	
+
+	JSR Object_DetectTile
+	LDY PipeBlock_State, X
+	CMP PipeBlock_PropCheck, Y
+	BNE PipeBlock_ChangeDirection
+
+	JSR PipeBlock_ChangeBlockLeft
+	INC PipeBlock_ChangeRightQueue, X
+	JMP PipeBlock_CheckBlocksRTS
+
+PipeBlock_ChangeDirection:
+	LDA PipeBlock_State, X
+	EOR #$01
+	STA PipeBlock_State, X
+
+	LDA #$20
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+	JSR PipeBlock_ChangeBlockLeft
+	INC PipeBlock_ChangeRightQueue, X
+
+	LDY PipeBlock_State, X
+	LDA PipeBlock_YVelFrac, Y
+	STA Objects_YVelFrac, X 
+	STA Debug_Snap
+
+PipeBlock_CheckBlocksRTS:
+	RTS
+
+PipeBlock_ChangeBlockLeft:
+	LDA <Objects_XZ, X
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	STA Tile_DetectionXHi
+
+PipeBlock_ChangeBlock:
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+	TYA
+	EOR #$01
+	JSR Object_ChangeBlock
+	
+	RTS
+
+PipeBlock_ChangeBlockRight:
+	LDA #$00
+	STA PipeBlock_ChangeRightQueue, X
+
+	LDA <Objects_XZ, X
+	ADD #$10
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	JMP PipeBlock_ChangeBlock
+
+
+PipeBlock_Draw:
+	JSR Object_Draw
+
+	LDA ObjP40 + 2
+	STA Sprite_RAMTile + 8, Y
+
+	LDA ObjP40 + 3
+	STA Sprite_RAMTile + 12, Y
+
+	LDA Sprite_RAMAttr , Y
+	STA Sprite_RAMAttr + 8, Y
+	STA Sprite_RAMAttr + 12, Y
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_2_HINVISIBLE
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE PipeBlock_Draw1
+
+	LDA Objects_SpriteX , X
+	ADD #$10
+	STA Sprite_RAMX + 8, Y
+
+	LDA Objects_SpriteY, X
+	STA Sprite_RAMY + 8, Y
+	
+
+PipeBlock_Draw1:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_3_HINVISIBLE
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE PipeBlock_DrawRTS
+	
+	LDA Objects_SpriteX , X
+	ADD #$18
+	STA Sprite_RAMX + 12, Y
+
+	LDA Objects_SpriteY, X 
+	STA Sprite_RAMY + 12, Y
+
+PipeBlock_DrawRTS:	
+	RTS
+
+PipeBlock_MatchPalette:
+	LDA Pal_Data + 10
+	STA Pal_Data + 26
+	STA Palette_Buffer + 26
+
+	LDA Pal_Data + 11
+	STA Pal_Data + 27
+	STA Palette_Buffer + 27
 	RTS

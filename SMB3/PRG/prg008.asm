@@ -174,7 +174,6 @@ NotNight:
 	JSR DoDayTransition
 
 NoTransition:
-	JSR DoPaletteEffect
 
 GameIsHalted:
 	JSR Player_Refresh
@@ -1096,26 +1095,25 @@ PRG008_A928:
 
 	STY Player_MoveLR	; Set Player_MoveLR appropriately
  
-	LDA <Player_InAir
-	BEQ PRG008_A940	 ; If Player is not mid air, jump to PRG008_A940
+	;LDA <Player_InAir
+	;BEQ PRG008_A940	 ; If Player is not mid air, jump to PRG008_A940
 
-	LDA <Player_YHi
-	BPL PRG008_A93D	 ; If Player is on the upper half of the screen, jump to PRG008_A93D
+	;LDA <Player_YHi
+	;BPL PRG008_A93D	 ; If Player is on the upper half of the screen, jump to PRG008_A93D
 
 	; Player is mid air, lower half of screen...
 
-	LDA <Player_Y
-	BMI PRG008_A93D	 ; If Player is beneath the half point of the lower screen, jump to PRG008_A93D
+	;LDA <Player_Y
+	;BMI PRG008_A93D	 ; If Player is beneath the half point of the lower screen, jump to PRG008_A93D
 
-	LDA <Player_YVel
-	BMI PRG008_A940	 ; If Player is moving upward, jump to PRG008_A940
+	;LDA <Player_YVel
+	;BMI PRG008_A940	 ; If Player is moving upward, jump to PRG008_A940
 
-PRG008_A93D:
+;PRG008_A93D:
 	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
 
 PRG008_A940:
 	LDA #$00
-	STA Player_OnPlatform
 	JSR Player_CommonGroundAnims	 ; Perform common ground animation routines
 
 PRG008_A94C:
@@ -3336,6 +3334,10 @@ No_Detection:
 	RTS		 ; Return
 
 Player_DetectSolids1:
+	LDA <Player_YVel
+	ADD <Player_CarryYVel
+	STA <Player_EffYVel
+
 	LDA <Player_XVel
 	ADD <Player_CarryXVel
 
@@ -3345,13 +3347,9 @@ Player_DetectSolids1:
 	ADD Wind
 
 Player_NoWindFactor:
-	STA <Player_EffectiveDirection
+	STA <Player_EffXVel
 
 DetectSolids:
-	LDA #$00
-	STA <Player_CarryXVel
-	STA <Player_CarryYVel
-
 	LDA #10
 
 	LDY <Player_Suit
@@ -3372,7 +3370,7 @@ PRG008_B4B2:
 PRG008_B4BD:
 	STA <TileYIndexBase
 
-	LDA <Player_EffectiveDirection
+	LDA <Player_EffXVel
 	BEQ PRG008_B4BE
 
 	BPL PRG008_B4C9
@@ -3415,7 +3413,7 @@ PRG008_B4CB:
 
 Player_DetectSolids5:
 
-	LDA <Player_YVel
+	LDA <Player_EffYVel
 	BPL Player_DetectSolids2	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
 	
 	LDA Player_OnObject
@@ -4192,7 +4190,6 @@ PRG008_BFAC:
 	BLS Player_ApplyVelocity ; If we haven't hit the PLAYER_MAXSPEED yet, apply it!
 	STY <Player_XVel	 ; Otherwise, cap at max speed!
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_ApplyVelocity
 ;
@@ -4307,6 +4304,8 @@ Dont_Flip:
 
 No_Odo_Increase:
 
+	LDA #$00
+	STA <Player_CarryXVel, X
 	RTS		 ; Return
 
 
@@ -4795,7 +4794,7 @@ Hit_LeftWall:
 
 Wall_Hit:
 	LDA <Player_XVel
-	EOR <Player_EffectiveDirection
+	EOR <Player_EffXVel
 	BMI Wall_NoHit
 
 	LDA #$00
@@ -5274,11 +5273,13 @@ Player_DetectFloor:
 	BCC Player_DetectFloor2
 
 Player_DetectFloor1:
+
 	LDA <Player_Y
 	SEC
 	AND #$0F
 	CMP #$06
 	BGE Player_DetectFloor2
+
 
 	LDA <Player_Y
 	AND #$F0
@@ -5304,6 +5305,15 @@ Player_DetectFloor2:
 	RTS
 
 Player_PitDeath:
+	LDA <Player_SpriteX
+	BEQ Player_CheckPit
+
+	CMP #$04
+	BCS Player_CheckPit
+
+	JMP Player_Die
+
+Player_CheckPit:
 	LDA <Player_YHi
 	BEQ Player_PitDeath2
 	BMI Player_PitDeath2
@@ -5589,7 +5599,7 @@ Player_SolidTileInteract:
 	JSR DynJump
 
 	.word Solid_CheckBump	;
-	.word Player_GetHurt	; TILE_PROP_HARMFUL		= $01
+	.word Solid_CheckHurt	; TILE_PROP_HARMFUL		= $01
 	.word Solid_Slick		; TILE_PROP_SLICK		= $02
 	.word ApplyTileMove		; TILE_PROP_MOVE_LEFT	= $03
 	.word ApplyTileMove		; TILE_PROP_MOVE_RIGHT	= $04
@@ -5630,6 +5640,33 @@ Solid_CheckBump1:
 Solid_CheckBumpRTS:
 	RTS
 
+Solid_CheckHurt:
+	LDA Player_Shell
+	BEQ Solid_GetHurt
+
+	LDA <Player_YVel
+	BMI Solid_GetHurt
+
+	LDX <TileXIndex
+	CPX #HEAD_FEET_LEFT_INDEX
+	BEQ  Solid_HurtBump
+
+	CPX #HEAD_FEET_RIGHT_INDEX
+	BNE Solid_GetHurt
+
+Solid_HurtBump:
+	LDA #$D0
+	STA <Player_YVel
+	STA <Player_InAir
+
+	LDA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+	INC Player_FlashInv
+	RTS
+
+Solid_GetHurt:
+	JMP Player_GetHurt
+
 Solid_Slick:
 	LDA #$02
 	STA Player_Slippery
@@ -5662,7 +5699,7 @@ Solid_ThinBreakIce:
 	JSR Common_MakeIce
 	
 	LDA Tile_LastValue
-	EOR #$01
+	SUB #$01
 	JSR Level_QueueChangeBlock
 
 Solid_ThinIceRTS:

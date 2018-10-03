@@ -35,7 +35,7 @@ Object_BoundBox:
 	.byte  0,  16,   1,  16	;  ; solid block (16x16) BOUND16x16BLOCK
 	.byte  8,  24,   8,  30	; (BOSS)
 	.byte  2,  22,   2,  30	; BOUND24x32
-	.byte  2,   2,  -2,  34	; 6
+	.byte  0,  32,  0,  16	; BOUND32x16BLOCK
 	.byte  2,  20,   2,  12	; 7
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
 	.byte  2,  20,   2,  28	; 9
@@ -991,6 +991,9 @@ Frozen_PlayerStand:
 
 	LDA Objects_YVelZ, X
 	STA Player_CarryYVel
+
+	LDA #$01
+	STA <Player_OnObject
 
 Frozen_Carry:
 	JSR Object_Hold	
@@ -2345,6 +2348,9 @@ Object_DeleteOffScreen:
 	LDA Objects_BoundBox, X
 	BMI Object_DeleteOffScreenRTS
 
+	LDA #$28
+	STA <DeleteRange
+
 	JSR Object_CheckOffScreen
 	BCC Object_DeleteOffScreenRTS
 
@@ -2354,8 +2360,6 @@ Object_DeleteOffScreenRTS:
 	RTS
 
 Object_CheckOffScreen:
-	LDA #$28
-	STA <DeleteRange
 
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
@@ -3613,14 +3617,14 @@ ODORight:
 	BNE ODOBottom
 
 ODOHorzIntersect:
-	LDA Objects_BoundLeft, Y ; smaller object
+	LDA Objects_BoundLeft, Y
 	SUB Objects_BoundLeft, X
 	
-	LDA Objects_BoundLeftHi, Y  ; smaller object
+	LDA Objects_BoundLeftHi, Y
 	SBC Objects_BoundLeftHi, X
 	BMI ODOBottom
 
-	LDA Objects_BoundRight, X  ; smaller object
+	LDA Objects_BoundRight, X
 	SUB Objects_BoundRight, Y
 	
 	LDA Objects_BoundRightHi, X
@@ -3724,15 +3728,16 @@ Object_DoCollision:
 
 	; Get address from ObjectGroup_CollideJumpTable...
 	LDA ObjectGroup_CollideJumpTable,Y
-	STA <Temp_Var1	
+	STA <Temp_Var1
+
 	LDA ObjectGroup_CollideJumpTable+1,Y
 	STA <Temp_Var2	
+
 	JMP [Temp_Var1]	 ; Jump to the acquired address!
 
 ; $D9D3
 Player_GetHurt:
 	LDA Player_FlashInv		; ... flashing invincible ...
-	ORA Boo_Mode_Timer		; ... or boo mode ...
 	ORA Player_StarInv		; ... invincible by star 
 	ORA <Player_HaltGameZ		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
@@ -5321,7 +5326,7 @@ Kill_NotFrozen:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
-	LDA #$20
+	LDA #$10
 	STA Objects_Timer2, X
 
 Kill_CheckRespawn:
@@ -5373,6 +5378,7 @@ Can_Hold:
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Object_Kick
+Koopa
 
 	LDA Objects_BeingHeld, X
 	BNE Object_HoldRTS0
@@ -5585,7 +5591,7 @@ ObjHit_SolidBlock:
 HitFrom_Top:
 	LDA Player_BoundBottom
 	SUB Objects_BoundTop, X
-	CMP #$04
+	CMP #$05
 	BCS TestHit_FromLeft
 
 	LDY <Player_YVel
@@ -5602,14 +5608,16 @@ HitFrom_Top:
 	STA <Player_YHi
 
 	LDA #$00
-	STA <Player_YVel
 	STA Player_InAir
+	STA <Player_YVel
+
+	LDA Objects_YVelFrac, X
+	STA Player_YVelFrac
 
 	LDA <Objects_YVelZ, X
-	STA Player_CarryYVel
+	STA <Player_CarryYVel
 
-	LDA #$01
-	STA Player_OnObject
+	INC <Player_OnObject
 
 HitFrom_Top1:
 	SEC
@@ -5625,7 +5633,7 @@ TestHit_FromBelow:
 
 	LDA Objects_BoundBottom, X
 	SUB Player_BoundTop
-	CMP #$04
+	CMP #$0F
 	BCS TestHit_FromLeft
 	STA <Temp_Var1
 
@@ -5637,8 +5645,8 @@ TestHit_FromBelow:
 	ADC #$00
 	STA <Player_YHi
 
-	LDA <Objects_YVelZ, X
-	STA Player_CarryYVel
+	LDA #$10
+	STA <Player_YVel
 	CLC
 	RTS
 
