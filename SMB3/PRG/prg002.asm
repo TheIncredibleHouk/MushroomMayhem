@@ -136,7 +136,7 @@ ObjectGroup01_CollideJumpTable:
 	.word Platform_PlayerStand		; Object $3C - OBJ_PLATFORM_PATHFOLLOW
 	.word Player_GetHurt		; Object $3D - OBJ_NIPPERFIREBREATHER
 	.word Platform_PlayerStand		; Object $3E - OBJ_PLATFORMFLOATS
-	.word ObjHit_DryBones		; Object $3F - OBJ_DRYBONES
+	.word Player_GetHurt		; Object $3F - OBJ_DRYBONES
 	.word ObjHit_SolidBlock		; Object $40 - OBJ_PIPEBLOCK
 	.word Player_GetHurt	; Object $41 - OBJ_PIRANHAGROWER
 	.word Player_GetHurt		; Object $42 - OBJ_FLAMINGCHEEP
@@ -360,7 +360,10 @@ ObjP3D:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB
 
 ObjP3F:
-	.byte $C1, $C3, $C5, $C7, $C9, $CB, $CD, $CF, $D1, $D3, $D5, $F9, $DD, $DF
+	.byte $C1, $C3, $C5, $C7
+	.byte $C9, $CB, $CD, $CF
+	.byte $71, $D1, $D3, $D5
+	.byte $71, $71, $DD, $DF
 	
 	; Spike's / Patooie's spike ball patterns are actually here
 SpikeBall_Patterns:
@@ -663,6 +666,16 @@ Dry_Move:
 
 Dry_Normal:
 	JSR Object_DetectTiles
+
+	LDA Objects_Property, X
+	CMP #$03
+	BNE DryCheep_Tiles
+
+	LDA <Objects_TilesDetectZ,X
+	AND #~HIT_GROUND
+	STA <Objects_TilesDetectZ,X
+
+DryCheep_Tiles:	
 	JSR Object_InteractWithTiles
 	JSR Dry_DoBounce
 	LDA Objects_InWater, X
@@ -927,7 +940,6 @@ Boo_SetLimits:
 	JSR Object_FacePlayer
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
-	JSR Object_XDistanceFromObject
 	
 	LDA DayNight
 	BNE Boo_Chase
@@ -1162,6 +1174,7 @@ Platform_StartX = Objects_Data3
 Platform_StartXHi = Objects_Data4
 Platform_SteppedOn = Objects_Data5
 Platform_MadeContact = Objects_Data6
+Platform_Fall = Objects_Data7
 
 ObjInit_PlatformCommon:
 	LDA #$06
@@ -1172,11 +1185,19 @@ ObjInit_PlatformCommon:
 
 	JSR Object_NoInteractions
 
-	LDA Objects_XZ, X
+	LDA <Objects_XZ, X
 	STA Platform_StartX, X
 
-	LDA Objects_XHiZ, X
+	LDA <Objects_XHiZ, X
 	STA Platform_StartXHi, X
+
+	LDA <Objects_YZ, X
+	SUB #$02
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
 
 	LDY Objects_Property, X
 	LDA PlatformTimers, Y
@@ -1262,31 +1283,46 @@ ObjNorm_PlatformFollow:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PlatformFollow1	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
 
-	JSR Object_DeleteOffScreen
+	JSR PlatformFollow_CheckOffScreen
 
 	LDA #$00
 	STA Platform_MadeContact, X
 
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
+
+	LDA Platform_SteppedOn, X
+	BEQ PlatformFollow_NoMove
+
+	LDA Platform_Fall, X
+	BEQ PlatformFollow_MoveNormal
+
+	JSR Object_ApplyY_With_Gravity
+	JMP PlatformFollow_NoMove
+
+PlatformFollow_MoveNormal:
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity	
+
+PlatformFollow_NoMove:
 	JSR Platform_ContactCheck
 
+	LDA Platform_SteppedOn, X
+	BEQ ObjNorm_PlatformFollow1
+	
 	LDA <Objects_XZ, X
-	ORA <Objects_YZ, X
 	AND #$0F
 	BNE ObjNorm_PlatformFollow1
 
-	LDA Block_NeedsUpdate
-	BEQ DoFollow
+	LDA <Objects_YZ, X
+	AND #$0F
+	CMP #$0E
+	BNE ObjNorm_PlatformFollow1
 
-	LDA #$00
-	STA <Objects_XVelZ, X
-	STA <Objects_YVelZ, X
-	BEQ ObjNorm_PlatformFollow1
+	LDA Objects_XVelFrac, X
+	ORA Objects_YVelFrac, X
+	BNE ObjNorm_PlatformFollow1
 
-DoFollow:
 	JSR Platform_FollowBlocks
 
 ObjNorm_PlatformFollow1:
@@ -1296,6 +1332,14 @@ ObjNorm_PlatformFollow1:
 
 	JMP Platform_Draw
 
+PlatformFollow_CheckOffScreen:
+	JSR Object_DeleteOffScreen
+	
+	LDY Objects_SpawnIdx,X
+	LDA Level_ObjectsSpawned,Y
+	ORA #$80
+	STA Level_ObjectsSpawned,Y
+	RTS
 
 Platform_Index = Objects_Data1
 Platform_Ticker = Objects_Data2
@@ -1316,9 +1360,12 @@ Platform_XVel:
 	.byte $08, $00, $F8, $00
 
 Platform_YVel:
-	.byte $00, $8, $00, $F8
+	.byte $00, $08, $00, $F8
 
 Platform_FollowBlocks:
+	LDA #$00
+	STA Platform_Fall, X
+
 	LDA #$03
 	STA Platform_Index, X
 
@@ -1346,7 +1393,12 @@ Platform_CheckBlocks:
 
 	DEC Platform_Index, X
 	BPL Platform_CheckBlocks
+	
+	LDA #$01
+	STA Platform_Fall, X
 
+	LDA #$00
+	STA <Objects_XVelZ, X
 	RTS
 
 Platform_SetVel:
@@ -2548,12 +2600,12 @@ ToadMsg_Bank:
 	;.byte "B TO LEAVE.    "
 
 ToadMsg_Badge:
-	.byte "NEED A BADGE? I"
-	.byte "ONLY ACCEPT    "
-	.byte "CHERRIES. PRESS"
-	.byte "LEFT AND RIGHT "
-	.byte "TO BROWSE, A TO"
-	.byte "TAKE, B TO EXIT"
+	;.byte "NEED A BADGE? I"
+	;.byte "ONLY ACCEPT    "
+	;.byte "CHERRIES. PRESS"
+	;.byte "LEFT AND RIGHT "
+	;.byte "TO BROWSE, A TO"
+	;.byte "TAKE, B TO EXIT"
 
 	; Pointer table to Toad's three messages
 	; Warp Whistle
@@ -2747,226 +2799,245 @@ ObjInit_DryBones:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	JSR ObjInit_TowardsPlayer
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$08
+	STA Objects_Timer, X
+
+	JSR Object_MoveTowardsPlayer
 
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_TAILPROOF)
 	STA Objects_WeaponAttr, X
 
-	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
-
+	LDA #$04
+	STA Objects_SpritesRequested, X
 	RTS
-	; While Dry Bones is reassembling, provides frame and timer values
-DryBones_ReassembleFrames:	.byte $01, $02, $03, $03, $03, $03, $03, $02
-DryBones_ReassembleTimers:	.byte $10, $0A, $06, $06, $06, $06, $FF, $0A
 
-; #REDO
-	
+DryBones_Frames = Objects_Data1
+
+DryBones_CrumbleFrames:
+	.byte $02, $03, $03, $03, $03, $03, $03, $03
+	.byte $03, $03, $03, $03, $03, $03, $03, $02
+
+DryBones_PoofX:
+	.byte $F8, $10
+
 ObjNorm_DryBones:
-	LDA Objects_State,X	  
-	CMP #OBJSTATE_KILLED	
-	BEQ ObjNorm_DryBones2	
-
 	LDA <Player_HaltGameZ
-	BNE ObjNorm_DryBones2	 ; If gameplay is not halted, jump to PRG002_A4C5
+	BEQ DryBones_Norm
 
-ObjNorm_DryBones0:
+	JMP DryBones_Draw
 
+DryBones_Norm:	
 	JSR Object_DeleteOffScreen
+
+	LDA Objects_Timer2, X
+	CMP #$0F
+	BNE DryBones_NoPoof
+
+	LDY #$00
+
+	LDA Objects_Orientation, X
+	BEQ DryBones_MakePoof
+
+	INY
+
+DryBones_MakePoof:
+	LDA <Objects_XZ, X
+	ADD DryBones_PoofX, Y
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA Poof_Y
+	JSR Common_MakePoof
+
+DryBones_NoPoof:
+	LDA Objects_Timer2, X
+	CMP #$01
+	BNE DryBones_DoMove
+
+	JSR Object_MoveTowardsPlayer
+
+DryBones_DoMove:	
 	JSR Object_Move
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_InteractWithPlayer
-	BCS ObjNorm_DryBones2
+	JSR Object_AttackOrDefeat
 
-ObjNorm_DryBones1:
-	JSR DryBones_Draw		 ; Draw Dry Bones
-	
-	LDA Objects_Data2,X
-	BNE PRG002_B6B2	 ; If Var5 <> 0 (Dry Bones is crumpled), jump to PRG002_B6B2
+	LDA Objects_Timer, X
+	BNE DryBones_Animate
 
-	JSR Object_InteractWithObjects
+	LDA Objects_PreviousTilesDetect, X
+	AND #HIT_GROUND
+	BNE DryBones_CheckStomped
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BNE DryBones_Fall
+
+DryBones_CheckStomped:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE DryBones_Animate
+
+DryBones_Fall:
+	JSR DryBones_Crumble
 	
-	INC Objects_Data5,X
-	LDA Objects_Data5,X
+DryBones_Animate:
+	LDA Objects_Timer2, X
+	BEQ DryBones_AnimateWalk
+
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA DryBones_CrumbleFrames, Y
+	STA Objects_Frame,X
+
+	BNE DryBones_Draw
+
+DryBones_AnimateWalk:
+	INC DryBones_Frames,X
+	LDA DryBones_Frames,X
 	LSR A
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame,X
-
-ObjNorm_DryBones2:
-	JSR DryBones_Draw
-	RTS
-
-PRG002_B6B2:
-
-	; Crumpled Dry Bones...
-
-	LDA Objects_Timer,X
-	BNE PRG002_B6D0	 ; If timer not expired, jump to PRG002_B6D0 (RTS)
-
-	DEC Objects_Data2,X	 ; Var5--
-	BNE PRG002_B6C2	 ; If Var5 <> 0 (still reassembling), jump to PRG002_B6C2
-
-	; Dry Bones gets back up and faces Player!
-	JSR ObjInit_TowardsPlayer
-
-	RTS		 ; Return
-
-PRG002_B6C2:
-
-	; Reassembling Dry Bones
-
-	LDY Objects_Data2,X	; Y = Var5 (0 = fully reassembled, hence -1 used below)
-
-	LDA DryBones_ReassembleFrames-1,Y
-	STA Objects_Frame,X
-
-	LDA DryBones_ReassembleTimers-1,Y
-	STA Objects_Timer,X
-
-PRG002_B6D0:
-	RTS		 ; Return
-
-	; Patterns used when Dry Bones is crumbling
-DryBones_CrumblePats:	.byte (ObjP3F - ObjectGroup01_PatternSets + $08), (ObjP3F - ObjectGroup01_PatternSets + $0B)
-	; Little head bounce when crumbled
-DryBones_HeadYOff:	.byte 0, 0, 0, -1, -2, -1, 0, 0, 0
+	JMP DryBones_Draw
 
 DryBones_Draw:
-	LDA Objects_Frame,X
+	LDA Objects_Frame, X
 	CMP #$02
-	BGE PRG002_B706	 ; If Dry Bones' frame >= 2 (crumbling), jump to PRG002_B706
+	BCC DryBones_DrawStanding
 
-	; Frame 0 or 1
-
-	; Save Dry Bones' Y/Hi
-	LDA <Objects_YHiZ,X
-	PHA		
-	LDA <Objects_YZ,X
-	PHA		
-
-	; Subtract 16 from Dry Bones' Y position
-	SUB #16
-	STA <Objects_YZ,X
-	BCS PRG002_B6F2
-	DEC <Objects_YHiZ,X
-PRG002_B6F2:
-
-	; Draw Dry Bones
-	LDY #$01	 ; 32 pixels height for Object_DetermineVerticallyOffScreenY
-	JSR Object_DetermineVerticallyOffScreenY
-	JSR Object_Draw16x32
-
-	; Restore Dry Bones' Y/Hi
-	PLA
-	STA <Objects_YZ,X
-	PLA
-	STA <Objects_YHiZ,X
-
-	JSR Object_DetermineVerticallyOffScreen
-	JMP Object_CalcSpriteXY_NoHi	 ; Calculate sprite X/Y and don't come back!
-
-PRG002_B706:
-
-	; Frame >= 2 (crumbling)...
-
-	LDA Objects_Orientation,X
-	ASL A
-	ASL A	; Sets carry if horizontally flipped
-
-	; Save Dry Bones' X/Hi
-	LDA <Objects_XHiZ,X
-	PHA
-	LDA <Objects_XZ,X
-	PHA
-
-	BCS PRG002_B71C	 ; If Dry Bones is horizontally flipped, jump to PRG002_B71C
-
-	; Subtract 8 from Dry Bones' X position
-	SUB #$08
-	STA <Objects_XZ,X
-	BCS PRG002_B71C
-	DEC <Objects_XHiZ,X
-PRG002_B71C:
-
-	LDY #$02	 ; Select width = 24 for Object_DetermineHorizontallyOffScreenY
-	JSR Object_DetermineHorizontallyOffScreenY	 ; Determine horizontal visibility
-	JSR Object_ShakeAndCalcSprite	 ; Calculate sprite X/Y
-
-	LDX <CurrentObjectIndexZ	 	 ; X = object slot index
-	LDY Objects_Frame,X	 	 ; Y = Dry Bones' frame
-
-	LDX DryBones_CrumblePats-2,Y	 ; X = pattern start for this frame of Dry Bones (-2 because we start crumbling at frame 2)
-	LDY <Temp_Var7			 ; Y = Sprite_RAM offset
-	JSR Object_Draw24x16Sprite	 ; Draw wide sprite (crumbled Dry Bones)
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-	BIT <Temp_Var3
-	BVC PRG002_B73C	 	; If Dry Bones is not horizontally flipped, jump to PRG002_B73C
-
-	; Otherwise, 'Y' += 8 (two sprites over)
-	TYA
-	ADD #$08
-	TAY
-
-PRG002_B73C:
-	LDA Objects_Data2,X
-	TAX		 ; X = Var5 (head bounce index)
-
-	; Apply bounce to his head after crumbling
-	LDA Sprite_RAM+$00,Y
-	ADD DryBones_HeadYOff,X	
-	STA Sprite_RAM+$00,Y
-
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
-
-	; Restore Dry Bones' X/Hi
-	PLA
-	STA <Objects_XZ,X
-	PLA
-	STA <Objects_XHiZ,X
-
-	JSR Object_DetermineHorizontallyOffScreen	 ; Determine horizontal visibility of Dry Bones' sprites
-	JMP Object_CalcSpriteXY_NoHi	 ; Calculate Sprite X/Y and don't come back!
-
-
-ObjHit_DryBones:
-	LDA Objects_Data2,X
-	BNE PRG002_B77D	 ; If head bouncing, jump to PRG002_B77D (RTS)
-
-	; Head not bouncing yet
-
-	LDA <Temp_Var12
-	LSR A
-	BCC PRG002_B77E	 ; If not hit by Player jumping on head, jump to PRG002_B77E (Player_GetHurt)
-
-	; Var5 = 9
-	LDA #$09
-	STA Objects_Data2,X
-
-	; Dry Bones stop horizontal movement
 	LDA #$00
-	STA <Objects_XVelZ,X
+	STA <Temp_Var9
+	
+	LDA Objects_Timer2, X
+	CMP #$30
+	BCS DryBones_CheckDirection
 
-	; Bounce Player
-	LDA #-$40
-	STA <Player_YVel
+	CMP #$10
+	BCC DryBones_CheckDirection
 
-	; Crumble sound
-	LDA Sound_QLevel2
-	ORA #SND_LEVELCRUMBLE
-	STA Sound_QLevel2
+	LSR A
+	AND #$01
+	STA <Temp_Var9
 
-	INC Kill_Tally
+DryBones_CheckDirection:
+	LDA Objects_Orientation, X
+	BNE DryBones_LyingRight
+	
+	LDA #$10
+	ORA <Temp_Var9
+	STA <Temp_Var9
+	
+DryBones_LyingRight:
+	LDA <Objects_XZ, X
+	SUB <Temp_Var9
+	STA <Objects_XZ, X
 
-PRG002_B77D:
-	RTS		 ; Return
+	JSR Object_Draw32x16
 
-PRG002_B77E:
-	JMP Player_GetHurt	 ; Hurt Player and don't come back!
+	LDA <Objects_XZ, X
+	ADD <Temp_Var9
+	STA <Objects_XZ, X
+	RTS
 
-Platform_Offset:
-	.byte $00, $01
+DryBones_DrawStanding:
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA <Objects_YZ, X
+	
+	JSR Object_Draw16x32
+	
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Objects_YZ, X
+	RTS
+
+DryBones_SkullOff:
+	.byte $F4, $0C
+	.byte $FF, $00
+
+DryBones_SkullXVel:
+	.byte $F0, $10
+
+DryBones_Crumble:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	ORA Objects_Timer2, X
+	BNE DryBones_CrumbleRTS
+
+	LDA #$F2
+	STA Objects_Timer2, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	LDY #$00
+
+	LDA Objects_Orientation, X
+	BEQ DryBones_SkullPrep
+
+	INY
+
+DryBones_SkullPrep:
+	LDA DryBones_SkullXVel, Y
+	STA <Temp_Var14
+
+	LDA DryBones_SkullOff, Y
+	STA <Temp_Var15
+
+	LDA DryBones_SkullOff + 2, Y
+	STA <Temp_Var16
+
+	JSR Object_PrepProjectile
+	
+	LDA #SOBJ_SKULL
+	STA SpecialObj_ID, Y
+
+	LDA <Objects_XZ, X
+	ADD <Temp_Var15
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	ADC <Temp_Var16
+	STA SpecialObj_XHi, Y
+
+	LDA <Temp_Var14
+	STA SpecialObj_XVel, Y
+
+	LDA <Objects_YZ, X
+	ADD #$04
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+	LDA #$E2
+	STA SpecialObj_Timer, Y
+
+	LDA #$00
+	STA SpecialObj_YVel, Y
+
+DryBones_CrumbleRTS:
+	RTS
 
 Platform_PlayerStand:
 	LDA <Player_YVel
@@ -3374,19 +3445,19 @@ Store_New_Coin:
 	RTS
 
 Bank_Toad:
-	LDA #$02
-	STA Player_HaltTick
-	LDA Shop_Mode_Initialized
-	JSR DynJump
+	;LDA #$02
+	;STA Player_HaltTick
+	;LDA Shop_Mode_Initialized
+	;JSR DynJump
 	
 	.word Bank_Init1
 	.word Bank_Init2
 	.word Do_Bank
 
 WithdrawDepositFrames:
-	.byte $2E, $6A, $0E, $00, $01, $01, $01, $01, $02, $00, $01, $01, $01, $01, $01, $01, $02
-	.byte $2E, $8A, $0E, $10, $7E, $7E, $7E, $7E, $12, $10, $7E, $7E, $7E, $7E, $7E, $7E, $12
-	.byte $2E, $AA, $0E, $20, $21, $21, $21, $21, $22, $20, $21, $21, $21, $21, $21, $21, $22
+	;.byte $2E, $6A, $0E, $00, $01, $01, $01, $01, $02, $00, $01, $01, $01, $01, $01, $01, $02
+	;.byte $2E, $8A, $0E, $10, $7E, $7E, $7E, $7E, $12, $10, $7E, $7E, $7E, $7E, $7E, $7E, $12
+	;.byte $2E, $AA, $0E, $20, $21, $21, $21, $21, $22, $20, $21, $21, $21, $21, $21, $21, $22
 
 ActionFrames:
 	.byte $2E, $0A, $0E, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $02
@@ -5348,7 +5419,6 @@ PipeBlock_ChangeDirection:
 	LDY PipeBlock_State, X
 	LDA PipeBlock_YVelFrac, Y
 	STA Objects_YVelFrac, X 
-	STA Debug_Snap
 
 PipeBlock_CheckBlocksRTS:
 	RTS

@@ -2021,19 +2021,19 @@ SpecialObj_UpdateAndDraw:
 	.word SObj_DoNothing	; 00: EMPTY / NOT USED (should never get here anyway)
 	.word Enemy_Hammer	; 01: Hammer Bro hammer
 	.word Enemy_Veggie	; 02: Boomerangs
-	.word Enemy_Acid	; 03: 
+	.word Enemy_Oil	; 03: 
 	.word Enemy_FireBall	; 04: Nipper fireball
 	.word SpecialObj_Poof	; 05: Piranha fireball
 	.word Enemy_IceBall	; 06: Micro goombas
 	.word Enemy_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word Enemy_Egg	; 08: Koopaling wand blast
-	.word Enemy_AcidPool	; 09: Lost Kuribo shoe
+	.word Enemy_OilPool	; 09: Lost Kuribo shoe
 	.word Enemy_BigFireball	; 0A: Rocky's Wrench
 	.word Enemy_Cannonball	; 0B: Cannonball
 	.word Enemy_LightningBolt	; 0C: Fire bro bouncing fireball
 	.word SObj_ExplodeStar	; 0D: Explosion star
 	.word SOBJ_BUBBLE	; 0E: Bubble
-	.word SObj_LavaLotusFire; 0F: Lava Lotus fire
+	.word Enemy_ProjSkull; 0F: Lava Lotus fire
 	.word SObj_Wand		; 10: Recovered wand
 	.word SObj_CoinOrDebris	; 11: Popped out coin
 	.word SObj_DoNothing	; 12: Fire Chomp's fire
@@ -2042,6 +2042,21 @@ SpecialObj_UpdateAndDraw:
 	.word SObj_DoNothing	; 15: Laser
 	.word SpecialObj_Poof		; 16: Poof
 	.word SObj_DoNothing	; 17 placeholder
+
+
+SpecialObj_DetectObject:
+	STX TempX
+	LDX #$09
+	JSR Object_DetectObjects
+	LDX TempX
+	RTS
+
+SpecialObj_DetectPlayer:
+	STX TempX
+	LDX #$09
+	JSR Object_DetectPlayer
+	LDX TempX
+	RTS
 
 PUpCoin_Patterns:	.byte $49, $4F, $4D, $4F
 PUpCoin_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
@@ -2959,64 +2974,16 @@ Enemy_VeggieDraw:
 	JSR SpecialObj_Draw16x16
 	RTS		 ; Return
 	
-Enemy_Acid:
+Enemy_Oil:
 	LDA <Player_HaltGameZ
-	BEQ Enemy_AcidNorm
+	BEQ Enemy_OilNorm
 
-	JMP Enemy_AcidDraw
+	JMP Enemy_OilDraw
 
-Enemy_AcidNorm:
-	LDA SpecialObj_Data2, X
-	BEQ Normal_Acid
-
-	LDA SpecialObj_X, X
-	ADD #$07
-	STA Tile_DetectionX
-
-	LDA SpecialObj_XHi, X
-	ADC #$00
-	STA Tile_DetectionXHi
-
-	LDA SpecialObj_Y, X
-	ADD #$0F
-	STA Tile_DetectionY
-
-	LDA SpecialObj_YHi, X
-	ADC #$00
-	STA Tile_DetectionYHi
-
-	JSR Object_DetectTile
-	AND #TILE_PROP_SOLID_TOP
-	BNE ToAcidPool
-
-	LDA Tile_LastProp
-	AND #TILE_PROP_SOLID_ALL
-	BEQ ToAcidPoof
-
-ToAcidPool:
-	LDA #SOBJ_ACIDPOOL
-	STA SpecialObj_ID, X
-
-	LDA SpecialObj_Y, X
-	AND #$F0
-	ADD #$06
-	STA SpecialObj_Y, X
-
-	LDA SpecialObj_YHi, X
-	ADC #$00
-	STA SpecialObj_YHi, X
-
-	LDA #$60
-	STA SpecialObj_Data1, X
-	RTS
-
-ToAcidPoof:
-	JMP SpecialObj_ToPoofNoSound
-
-Normal_Acid:
+Enemy_OilNorm:
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
-	JSR EnemyProj_HitPlayer
+	JSR Enemy_OilPlayer
 	JSR SpecialObj_DetectWorld16x16
 	
 	LDA Tile_LastProp
@@ -3027,42 +2994,28 @@ Normal_Acid:
 	BNE Enemy_NotInteract
 
 	LDA Tile_LastValue
-	AND #$C0
-	ORA #$01
+	EOR #$01
 	JSR Object_ChangeBlock
 
-	LDA Block_DetectX
-	AND #$F0
-	STA SpecialObj_X, X
-
-	LDA Block_DetectXHi
-	STA SpecialObj_XHi, X
-
-	LDA Block_DetectY
-	AND #$F0
-	STA SpecialObj_Y, X
-
-	LDA Block_DetectYHi
-	STA SpecialObj_YHi, X
-	JMP SpecialObj_ToPoofNoSound
+	JMP SpecialObj_Delete
 
 Enemy_NotInteract:
 	LDA SpecialObj_YVel, X
-	BMI Enemy_AcidNotTop
+	BMI Enemy_OilNotTop
 
 	LDA Tile_LastProp
 	AND #TILE_PROP_SOLID_TOP
-	BNE Enemy_AcidToPool
+	BNE Enemy_OilToPool
 
-Enemy_AcidNotTop:
+Enemy_OilNotTop:
 	LDA Tile_LastProp
 	AND #TILE_PROP_SOLID_ALL
-	BEQ Enemy_AcidDraw
+	BEQ Enemy_OilDraw
 
-Enemy_AcidToPool:
+Enemy_OilToPool:
 	INC SpecialObj_Data2, X
 
-Enemy_AcidDraw:
+Enemy_OilDraw:
 	LDA #$4F
 	STA <SpecialObj_Tile
 	STA <SpecialObj_Tile + 1
@@ -3076,13 +3029,13 @@ Enemy_AcidDraw:
 	JSR SpecialObj_Draw16x16
 	RTS
 
-Enemy_AcidPool:
+Enemy_OilPool:
 	DEC SpecialObj_Data1, X
-	BNE Enemy_AcidPoolNorm
+	BNE Enemy_OilPoolNorm
 
 	JMP SpecialObj_ToPoofNoSound
 
-Enemy_AcidPoolNorm:
+Enemy_OilPoolNorm:
 	JSR SpecialObj_CalcBounds16x16
 	LDA SpecialObj_BoundTop
 	ADD #$08
@@ -3212,7 +3165,7 @@ Enemy_IceBall:
 Enemy_IceBallNoGravity:
 	JSR SObj_ApplyXYVels
 
-Enemy_IceBallCalcBounds
+Enemy_IceBallCalcBounds:
 	JSR SpecialObj_CalcBounds8x16
 	
 	LDA #$01
@@ -4796,7 +4749,272 @@ Enemy_YolkPlayerRTS:
 
 Enemy_YolkPlayer2:
 	JMP Player_GetHurt
+
+Enemy_ProjOil:
+	LDA SpecialObj_HurtEnemies, X
+	BEQ Enemy_OilPlayer
+
+	LDA #$02
+	STA Proj_Attack
+
+	JSR PlayerProj_HitEnemies
+	BCC Enemy_OilPlayerRTS
+
+	JMP SpecialObj_AttackEnemy
+
+Enemy_OilPlayer:
+	JSR SpecialObj_DetectPlayer
+	BCC Enemy_OilPlayerRTS
+
+	LDA Player_TailAttack
+	BEQ Enemy_OilPlayer1
+
+	LDA SpecialObj_XVel, X
+	EOR #$FF
+	ADD #$01
+	STA SpecialObj_XVel, X
+
+	INC SpecialObj_HurtEnemies, X
+	RTS
+
+Enemy_OilPlayer1:
+	LDA Player_Oiled
+	BNE Enemy_OilPlayer2
+
+	LDA #$17
+	STA Player_SuitLost
+
+	LDA #$80
+	STA Player_QueueSuit
+
+	LDA #$71
+	STA Player_FlashInv	 ; Player_FlashInv = $71
+
+	LDA #$FF
+	STA Player_Oiled
+	JMP SpecialObj_ToPoof
+
+Enemy_OilPlayerRTS:
+	RTS
+
+Enemy_OilPlayer2:
+	JMP Player_GetHurt	
+
+ProjSkull_Frames:
+	.byte $F9, $FD
+	.byte $FB, $FF
+
+Enemy_ProjSkull:
+	LDA <Player_HaltGameZ
+	BNE Enemy_SkullAnimate
+
+	JSR SpecObj_ChasePlayer
+	JSR SpecialObj_CalcBounds16x16
+	JSR EnemyProj_HitPlayer
+
+	DEC SpecialObj_Timer, X
+
+Enemy_SkullAnimate:
+	LDA SpecialObj_Timer, X
+	BNE Enemy_SkullDraw
+
+	JMP SpecialObj_ToPoof
+
+Enemy_SkullDraw:
+	LSR A
+	LSR A
+	AND #$01
+
+	TAY
+
+	LDA ProjSkull_Frames, Y
+	STA <SpecialObj_Tile
+
+	LDA ProjSkull_Frames + 2, Y
+	STA <SpecialObj_Tile + 1
+
+	LDA #SPR_PAL2
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection16x16
+	JSR SpecialObj_Draw16x16
+	RTS		 ; Return
 	
+
+SpecObj_ChasePlayer:
+	JSR SpecObj_ChasePlayerX
+	JMP SpecObj_ChasePlayerY
+	
+SpecObj_ChasePlayerX:
+	JSR SpecObj_XDistanceFromPlayer
+	CPY #$00
+	BNE SpecObj_ChaseDetermineXRight
+
+	LDA SpecialObj_XVel,X
+	CMP #$F0
+	BEQ SpecObj_ChasePlayerXRTS	 
+
+	ADD #$FF	 
+	STA SpecialObj_XVel,X	 ; Update Boo's X velocity
+	JMP SpecObj_ChasePlayerXRTS
+
+SpecObj_ChaseDetermineXRight:
+	LDA SpecialObj_XVel,X
+	CMP #$10
+	BEQ SpecObj_ChasePlayerXRTS	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+
+	ADD #$01	 ; Boo accelerates!
+	STA SpecialObj_XVel,X	 ; Update Boo's X velocity
+
+SpecObj_ChasePlayerXRTS:
+	RTS
+
+SpecObj_ChasePlayerY:
+	JSR SpecObj_YDistanceFromPlayer
+
+	CPY #$00
+	BNE SpecObj_ChaseDetermineYUp
+
+	LDA SpecialObj_YVel,X
+	CMP #$F0
+	BEQ SpecObj_ChaseMove	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+
+	ADD #$FF	 ; Boo accelerates!
+	STA SpecialObj_YVel,X	 ; Update Boo's X velocity
+	JMP SpecObj_ChaseMove
+
+SpecObj_ChaseDetermineYUp:
+	LDA SpecialObj_YVel,X
+	CMP #$10
+	BEQ SpecObj_ChaseMove	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+
+	ADD #$01	 ; Boo accelerates!
+	STA SpecialObj_YVel,X	 ; Update Boo's X velocity
+
+SpecObj_ChaseMove:
+	JMP SObj_ApplyXYVels	 ; Apply X velocity
+
+
+SpecObj_XDistanceFromPlayer:
+	LDA SpecialObj_X, X
+	ADD #$08
+	STA <Temp_Var1
+
+	LDA SpecialObj_XHi, X
+	ADC #$00
+	STA <Temp_Var2
+
+	LDA <Player_X
+	ADD #$08
+	STA <Temp_Var3
+
+	LDA <Player_XHi
+	ADC #$00
+	STA <Temp_Var4
+
+	LDA <Temp_Var1
+	SUB <Temp_Var3
+	STA <XDiff
+
+	LDA <Temp_Var2
+	SBC <Temp_Var4
+	BMI SpecialObjToRight_O
+
+	CMP #$01
+	BNE SpecialObjToLeft1_O
+
+	LDA #$FF
+	STA <XDiff
+
+SpecialObjToLeft1_O:
+	LDY #$00
+	STY <XDiffLeftRight
+
+	LDA <XDiff
+	RTS
+
+SpecialObjToRight_O:
+	CMP #$FE
+	BNE SpecialObjToRight1_O
+
+	LDA #$01
+	STA <XDiff
+
+SpecialObjToRight1_O:
+	LDY #$01
+	STY <XDiffLeftRight
+
+	LDA <XDiff
+	EOR #$FF
+	ADD #$01
+	STA <XDiff
+	RTS
+
+SpecObj_YDistanceFromPlayer:
+	LDA SpecialObj_Y, X
+	ADD #$08
+	STA <Temp_Var1
+
+	LDA SpecialObj_YHi, X
+	ADC #$00
+	STA <Temp_Var2
+
+	LDA Player_BoundBottom
+	SUB Player_BoundTop
+	LSR A
+	ADD Player_BoundTop
+	STA <Temp_Var3
+
+	LDA Player_BoundTopHi
+	ADC #$00
+	STA <Temp_Var4
+
+	LDA <Temp_Var1
+	SUB <Temp_Var3
+	STA <YDiff
+
+	LDA <Temp_Var2
+	SBC <Temp_Var4
+	BMI SpecialObjToBottom_O
+
+	CMP #$01
+	BNE SpecialObjToTop1_O
+
+	LDA #$FF
+	STA <YDiff
+
+SpecialObjToTop1_O:
+	LDY #$00
+	STY <YDiffAboveBelow
+	
+	LDA <YDiff
+	RTS
+
+SpecialObjToBottom_O:
+	CMP #$FE
+	BNE SpecialObjToBottom1_O
+
+	LDA #$01
+	STA <YDiff
+
+SpecialObjToBottom1_O:
+	LDY #$01
+	STY <YDiffAboveBelow
+
+	LDA <YDiff
+	BEQ SpecialObjToBottom1_O1
+
+	EOR #$FF
+	ADD #$01
+	STA <YDiff
+	RTS
+
+SpecialObjToBottom1_O1:
+	LDA #$FF
+	STA <YDiff
+	RTS
 
 DrawStarsBackground:
 	

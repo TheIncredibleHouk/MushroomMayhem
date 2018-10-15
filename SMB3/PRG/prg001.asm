@@ -4780,7 +4780,6 @@ CoinLocks:
 	.byte $0A, $19, $32, $32, $32, $32, $32, $63
 
 ObjInit_CoinLock:
-	
 	LDA #$04
 	STA Objects_SpritesRequested, X
 

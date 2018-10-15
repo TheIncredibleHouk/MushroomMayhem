@@ -125,8 +125,8 @@ Object_HitGround:
 	STA <Objects_YHiZ, X
 
 	LDA #$00
-	STA <Objects_YVelZ,X	 ; Halt vertical movement
-	STA Objects_YVelFrac,X	 
+	STA <Objects_YVelZ, X	 ; Halt vertical movement
+	STA Objects_YVelFrac, X	 
 
 	RTS		 ; Return
 
@@ -625,28 +625,6 @@ MakeSplash:
 Objects_HandleScrollAndUpdate:
 	JSR Objects_AssignSprites
 
-	LDA #$00
-	STA Player_OnObject
-
-	LDA Slow_Watch
-	BEQ PRG000_C93A1
-
-	LDA <Counter_1
-	AND #$01
-	BNE PRG000_C93B
-	DEC Slow_Watch
-
-PRG000_C93A1:
-	LDA Stop_Watch
-	BEQ PRG000_C93B
-
-	LDA <Counter_1
-	AND #$01
-	BEQ PRG000_C93B
-
-	DEC Stop_Watch
-
-PRG000_C93B:
 	LDA <Player_IsDying
 	CMP #$03
 	BNE PRG000_C948	 ; If Player is NOT dying due to TIME UP, jump to PRG000_C948
@@ -669,6 +647,7 @@ PRG000_C949:
 PRG000_C973:
 	LDA #$00
 	STA <CurrentObjectIndexZ
+	STA Player_OnObject
 
 PRG000_C975:
 	LDX <CurrentObjectIndexZ	 ; Backup current object index -> CurrentObjectIndexZ
@@ -984,16 +963,10 @@ Frozen_NotKilledOthers:
 Frozen_PlayerStand:
 	JSR ObjHit_SolidStand
  	BCC Frozen_Carry
-	BCS Frozen_InteractTiles
 
 	LDA Objects_XVelZ, X
 	STA Player_CarryXVel
-
-	LDA Objects_YVelZ, X
-	STA Player_CarryYVel
-
-	LDA #$01
-	STA <Player_OnObject
+	JMP Frozen_DetectTiles
 
 Frozen_Carry:
 	JSR Object_Hold	
@@ -1313,10 +1286,6 @@ ObjState_Kicked1:
 
 	LDA #$FF
 	STA Objects_Health, X
-
-	LDA Objects_ExpPoints, X
-	ASL A
-	STA Objects_ExpPoints, X
 
 	LDA #$00
 	STA Objects_BeingHeld, X
@@ -1863,8 +1832,6 @@ Object_PoofDie:
 	RTS		 ; Return
 
 Object_DrawAndMoveNotHalt:
-	JSR Object_Draw
-	JMP Object_MoveNotHalted
 
 Object_DrawTallHFlipped:
 
@@ -1873,7 +1840,6 @@ Object_Draw16x32Killed:
 Object_DrawMirroredKilled:
 
 Object_CalcAndDrawKilled:
-	JSR Object_Draw
 
 	; If object was killed by sinking in quicksand or just killed, do this...
 Object_DoKilledAction:
@@ -1967,6 +1933,10 @@ PRG000_D0CA:
 	LDA NoGravity
 	BNE PRG000_D0DE
 
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BNE PRG000_D0DE
+	
 	LDA Reverse_Gravity
 	BNE PRG000_D0DF
 
@@ -2483,6 +2453,7 @@ Object_FreeBuffer:
 
 Object_Respawn:
 	LDY Objects_SpawnIdx,X
+
 	LDA Level_ObjectsSpawned,Y
 	AND #$7f
 	STA Level_ObjectsSpawned,Y
@@ -2520,6 +2491,8 @@ Object_New:
 	STA Objects_Timer2,X
 	STA <Objects_XVelZ,X
 	STA <Objects_YVelZ,X
+	STA Objects_XVelFrac,X 
+	STA Objects_YVelFrac,X 
 	STA Objects_Orientation,X
 	STA Objects_Frame,X	
 	STA Objects_ColorCycle,X
@@ -2569,6 +2542,9 @@ PRG000_D4C8:
 PRG000_D506:
 	LDA #$02
 	STA Objects_SpritesRequested, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 	RTS		 ; Return
 
 
@@ -2789,6 +2765,7 @@ Object_Draw16x32:
 	STA <Temp_Var6	 ; Temp_Var6 += object's frame
 	TAX
 
+
 	JSR Object_Draw16x16Sprite	 
 	INC <Temp_Var6
 	INC <Temp_Var6
@@ -2812,16 +2789,23 @@ Object_Draw16x32:
 
 	LDY Object_SpriteRAMOffset, X
 
-	LDA Sprite_RAM, Y
+	LDA Sprite_RAMY, Y
 	PHA
-
-	LDA Sprite_RAM + 8, Y
-	STA Sprite_RAM, Y
-	STA Sprite_RAM + 4, Y
+	
+	LDA Sprite_RAMY + 8, Y
+	STA Sprite_RAMY, Y
 
 	PLA
-	STA Sprite_RAM + 8, Y
-	STA Sprite_RAM + 12, Y
+	STA Sprite_RAMY + 8, Y
+
+	LDA Sprite_RAMY + 4, Y
+	PHA
+	
+	LDA Sprite_RAMY + 12, Y
+	STA Sprite_RAMY + 4, Y
+
+	PLA
+	STA Sprite_RAMY + 12, Y
 
 PRG000_D63F:
 	RTS		 ; Return
@@ -2832,20 +2816,62 @@ PRG000_D63F:
 ;
 ; Draws a wide 48x16 object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Object_DrawWide:
+Object_Draw32x16:
 	JSR Object_ShakeAndCalcSprite
 
-	LDX <CurrentObjectIndexZ	; X = object's slot index
+	LDX <CurrentObjectIndexZ	; X = object slot index
 
-	; Calculate offset into the ObjectGroup_PatternSets table
- 
 	LDA Objects_Frame,X
+	ASL A		 
 	ADD <Temp_Var6	
-	STA <Temp_Var6		; Temp_Var6 += object's frame
-	TAX		 	; -> 'X'
-	JSR Object_Draw24x16Sprite	; Draw wide sprite
+	STA <Temp_Var6	 ; Temp_Var6 += object's frame
+	TAX
 
-	LDX <CurrentObjectIndexZ	 ; X = object's slot index
+	JSR Object_Draw16x16Sprite
+	
+	INC <Temp_Var6
+	INC <Temp_Var6
+	LDX <Temp_Var6
+
+	LDA #$10
+	ADD <Temp_Var2	 ; Sprite X
+	STA <Temp_Var2	 ; Temp_Var1 += 16
+
+	LDA <Temp_Var7
+	ADD #$08
+	STA <Temp_Var7
+
+	LDY <Temp_Var7
+
+	JSR Object_Draw16x16Sprite	 
+
+	LDA <Temp_Var3	 ; Objects_Orientation
+	AND #SPR_HFLIP
+	BEQ Object_Draw32x16RTS	
+
+	LDX <CurrentObjectIndexZ
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA Sprite_RAMTile + 4, Y
+	PHA 
+
+	LDA Sprite_RAMTile, Y
+	PHA 
+
+	LDA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile, Y
+
+	LDA Sprite_RAMTile + 12, Y
+	STA Sprite_RAMTile + 4, Y
+
+	PLA 
+	STA Sprite_RAMTile + 8, Y
+
+	PLA 
+	STA Sprite_RAMTile + 12, Y
+	
+Object_Draw32x16RTS:
+	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
 
 
@@ -3437,137 +3463,124 @@ Object_DetectTail:
 	LDY #$0A
 	JMP Object_DetectObjects
 
-SpecialObj_DetectObject:
-	STX TempX
-	LDX #$09
-	JSR Object_DetectObjects
-	LDX TempX
-	RTS
 
-SpecialObj_DetectPlayer:
-	STX TempX
-	LDX #$09
-	JSR Object_DetectPlayer
-	LDX TempX
-	RTS
+;Object_XDistanceFromObject:
+	;LDA Objects_BoundRight, X
+	;SUB Objects_BoundLeft, X
+	;LSR A
+	;ADD Objects_BoundLeft, X
+	;STA <Temp_Var1
 
-Object_XDistanceFromObject:
-	LDA Objects_BoundRight, X
-	SUB Objects_BoundLeft, X
-	LSR A
-	ADD Objects_BoundLeft, X
-	STA <Temp_Var1
+	;LDA Objects_BoundLeftHi, X
+	;ADC #$00
+	;STA <Temp_Var2
 
-	LDA Objects_BoundLeftHi, X
-	ADC #$00
-	STA <Temp_Var2
+	;LDA Objects_BoundRight, Y 
+	;SUB Objects_BoundLeft, Y 
+	;LSR A
+	;ADD Objects_BoundLeft, Y 
+	;STA <Temp_Var3
 
-	LDA Objects_BoundRight, Y 
-	SUB Objects_BoundLeft, Y 
-	LSR A
-	ADD Objects_BoundLeft, Y 
-	STA <Temp_Var3
+	;LDA Objects_BoundLeftHi, Y 
+	;ADC #$00
+	;STA <Temp_Var4
 
-	LDA Objects_BoundLeftHi, Y 
-	ADC #$00
-	STA <Temp_Var4
+	;LDA <Temp_Var1
+	;SUB <Temp_Var3
+	;STA <XDiff
 
-	LDA <Temp_Var1
-	SUB <Temp_Var3
-	STA <XDiff
+	;LDA <Temp_Var2
+	;SBC <Temp_Var4
+	;BMI Object_ToRight
 
-	LDA <Temp_Var2
-	SBC <Temp_Var4
-	BMI Object_ToRight
+	;CMP #$01
+	;BNE Object_ToLeft1
 
-	CMP #$01
-	BNE Object_ToLeft1
-
-	LDA #$FF
-	STA <XDiff
+	;LDA #$FF
+	;STA <XDiff
 
 Object_ToLeft1:
-	LDY #$00
-	STY <XDiffLeftRight
+	;LDY #$00
+	;STY <XDiffLeftRight
 
-	LDA <XDiff
-	RTS
+	;LDA <XDiff
+	;RTS
 
 Object_ToRight:
-	CMP #$FE
-	BNE Object_ToRight1
+	;CMP #$FE
+	;BNE Object_ToRight1
 
-	LDA #$01
-	STA <XDiff
+	;LDA #$01
+	;STA <XDiff
 
 Object_ToRight1:
-	LDY #$01
-	STY <XDiffLeftRight
+	;LDY #$01
+	;STY <XDiffLeftRight
 
-	LDA <XDiff
-	EOR #$FF
-	ADD #$01
-	STA <XDiff
-	RTS
+	;LDA <XDiff
+	;EOR #$FF
+	;ADD #$01
+	;STA <XDiff
+	;RTS
 
-Object_YDistanceFromObject:
-	LDA Objects_BoundBottom, X
-	SUB Objects_BoundTop, X
-	LSR A
-	ADD Objects_BoundTop, X
-	STA <Temp_Var1
+;Object_YDistanceFromObject:
+	;LDA Objects_BoundBottom, X
+	;SUB Objects_BoundTop, X
+	;LSR A
+	;ADD Objects_BoundTop, X
+	;STA <Temp_Var1
 
-	LDA Objects_BoundTopHi, X
-	ADC #$00
-	STA <Temp_Var2
+	;LDA Objects_BoundTopHi, X
+	;ADC #$00
+	;STA <Temp_Var2
 
-	LDA Objects_BoundBottom, Y
-	SUB Objects_BoundTop, Y
-	LSR A
-	ADD Objects_BoundTop, Y
-	STA <Temp_Var3
+	;LDA Objects_BoundBottom, Y
+	;SUB Objects_BoundTop, Y
+	;LSR A
+	;ADD Objects_BoundTop, Y
+	;STA <Temp_Var3
 
-	LDA Objects_BoundTopHi, Y
-	ADC #$00
-	STA <Temp_Var4
+	;LDA Objects_BoundTopHi, Y
+	;ADC #$00
+	;STA <Temp_Var4
 
-	LDA <Temp_Var1
-	SUB <Temp_Var3
-	STA <YDiff
+	;LDA <Temp_Var1
+	;SUB <Temp_Var3
+	;STA <YDiff
 
-	LDA <Temp_Var2
-	SBC <Temp_Var4
-	BMI Object_ToBottom
+	;LDA <Temp_Var2
+	;SBC <Temp_Var4
+	;BMI Object_ToBottom
 
-	CMP #$01
-	BNE Object_ToTop1
+	;CMP #$01
+	;BNE Object_ToTop1
 
-	LDA #$FF
-	STA <YDiff
+	;LDA #$FF
+	;STA <YDiff
 
 Object_ToTop1:
-	LDY #$00
-	STY <YDiffAboveBelow
+	;LDY #$00
+	;STY <YDiffAboveBelow
 	
-	LDA <YDiff
-	RTS
+	;LDA <YDiff
+	;RTS
 
 Object_ToBottom:
-	CMP #$FE
-	BNE Object_ToBottom1
+	;CMP #$FE
+	;BNE Object_ToBottom1
 
-	LDA #$01
-	STA <YDiff
+	;LDA #$01
+	;STA <YDiff
 
 Object_ToBottom1:
-	LDY #$01
-	STY <YDiffAboveBelow
+	;LDY #$01
+	;STY <YDiffAboveBelow
 
-	LDA <YDiff
-	EOR #$FF
-	ADD #$01
-	STA <YDiff
-	RTS
+	;LDA <YDiff
+	;EOR #$FF
+	;ADD #$01
+	;STA <YDiff
+	;RTS
 
 Object_DetectPlayer:
 	LDY #$08
@@ -4997,6 +5010,10 @@ PatrolUpDown_Move:
 	RTS
 
 Object_ChasePlayer:
+	JSR Object_ChasePlayerX
+	JMP Object_ChasePlayerY
+	
+Object_ChasePlayerX:
 	LDA Objects_InWater, X
 	BEQ ChaseDetermineX
 
@@ -5012,21 +5029,24 @@ ChaseDetermineX:
 
 	LDA <Objects_XVelZ,X
 	CMP ChaseVel_LimitLo,X	
-	BEQ Chase_DetermineY	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+	BEQ Object_ChasePlayerXRTS	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
 
 	ADD #$FF	 ; Boo accelerates!
 	STA <Objects_XVelZ,X	 ; Update Boo's X velocity
-	JMP Chase_DetermineY
+	JMP Object_ChasePlayerXRTS
 
 ChaseDetermineXRight:
 	LDA <Objects_XVelZ,X
 	CMP ChaseVel_LimitHi,X	
-	BEQ Chase_DetermineY	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+	BEQ Object_ChasePlayerXRTS	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
 
 	ADD #$01	 ; Boo accelerates!
 	STA <Objects_XVelZ,X	 ; Update Boo's X velocity
 
-Chase_DetermineY:
+Object_ChasePlayerXRTS:
+	RTS
+
+Object_ChasePlayerY:
 	JSR Object_YDistanceFromPlayer
 
 	CPY #$00
@@ -5208,10 +5228,12 @@ Reap_Coin:
 	BNE Reap_Coin1
 
 	INC Coins_Earned ; One more coin earned
+
 	LDA Objects_YZ, X
 	CLC
 	ADC #$08
 	STA <Temp_Var1
+
 	LDA Objects_XZ, X
 	STA <Temp_Var2
 	JSR Produce_Coin
@@ -5225,10 +5247,12 @@ Reap_CoinY:
 	BNE Reap_CoinY1
 
 	INC Coins_Earned ; One more coin earned
+
 	LDA Objects_YZ, Y
 	CLC
 	ADC #$08
 	STA <Temp_Var1
+
 	LDA Objects_XZ, Y
 	STA <Temp_Var2
 	JSR Produce_Coin
@@ -5244,9 +5268,11 @@ Object_HitWall:
 	ADD #$08
 	AND #$F0
 	STA <Objects_XZ, X
+
 	LDA <Objects_XHiZ, X
 	ADC #$00
 	STA <Objects_XHiZ, X
+
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA Objects_XVelFrac,X	 
@@ -5267,11 +5293,18 @@ Object_EarnExp:
 	LDA Objects_NoExp, X
 	BNE Object_EarnExpRTS
 
-	LDA #$40
+	LDA #$30
 	STA Kill_Tally_Ticker
 
 	LDA Objects_ExpPoints, X
+	LDY Player_EffectiveSuit
+	BNE Add_KillyTally
+
+	ADD Objects_ExpPoints, X
+
+Add_KillyTally:	
 	ADD Kill_Tally
+
 	STA Kill_Tally
 	STA Exp_Earned
 
@@ -5294,9 +5327,6 @@ Object_GetKilled:
 	LDA #$00
 	STA Objects_Health, X
 	STA Objects_BeingHeld, X
-
-	LDA #$10
-	STA Objects_Timer2, X
 
 	LDA #$ff
 	STA Objects_Timer3,X
@@ -5326,9 +5356,6 @@ Kill_NotFrozen:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
 
-	LDA #$10
-	STA Objects_Timer2, X
-
 Kill_CheckRespawn:
 	LDA Objects_Regen, X
 	BEQ Kill_NoRespawn
@@ -5342,21 +5369,6 @@ Kill_NoRespawn:
 KillEnemy1:
 	; Set object Y velocity to -$40 (fly up after death)
 	RTS
-
-EnemyEnterXVel:	.byte $08, -$08
-
-
-
-ObjInit_TowardsPlayer:
-
-	; Get last scroll direction so we know which way to face
-	JSR Object_FacePlayer
-
-	; Enemy charges at Player the same
-	LDA EnemyEnterXVel,Y
-	STA <Objects_XVelZ,X
-
-	RTS		 ; Return
 
 
 Objects_BeingHeld = Objects_Data14
@@ -5378,7 +5390,6 @@ Can_Hold:
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Object_Kick
-Koopa
 
 	LDA Objects_BeingHeld, X
 	BNE Object_HoldRTS0
@@ -5591,7 +5602,7 @@ ObjHit_SolidBlock:
 HitFrom_Top:
 	LDA Player_BoundBottom
 	SUB Objects_BoundTop, X
-	CMP #$05
+	CMP #$07
 	BCS TestHit_FromLeft
 
 	LDY <Player_YVel

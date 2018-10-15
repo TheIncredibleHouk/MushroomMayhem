@@ -48,8 +48,8 @@ ObjectGroup04_InitJumpTable:
 	.word ObjInit_DoNothing	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.word ObjInit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
 	.word ObjInit_DoNothing	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjInit_DoNothing		; Object $A8 - OBJ_ACIDTRAP
-	.word ObjInit_DoNothing		; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.word ObjInit_DoNothing		; Object $A8 - OBJ_OilTRAP
+	.word ObjInit_DoNothing		; Object $A9 - OBJ_OilTRAP_CEIL
 	.word ObjInit_DoNothing		; Object $AA - OBJ_AIRSHIPPROP
 	.word ObjInit_FireJetRight	; Object $AB (doesn't really work, and the "normal" routine is even weirder)
 	.word ObjInit_FireJetLeft	; Object $AC - OBJ_FIREJET_LEFT
@@ -90,8 +90,8 @@ ObjectGroup04_NormalJumpTable:
 	.word ObjNorm_DoNothing		; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.word ObjNorm_DoNothing		; Object $A6 - OBJ_VENUSFIRETRAP
 	.word ObjNorm_DoNothing		; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjNorm_DoNothing	; Object $A8 - OBJ_ACIDTRAP
-	.word ObjNorm_DoNothing	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.word ObjNorm_DoNothing	; Object $A8 - OBJ_OilTRAP
+	.word ObjNorm_DoNothing	; Object $A9 - OBJ_OilTRAP_CEIL
 	.word ObjNorm_DoNothing	; Object $AA - OBJ_AIRSHIPPROP
 	.word FireJetLR_SpriteVisibleTest	; Object $AB (this call doesn't make any sense!!)
 	.word ObjNorm_FireJet		; Object $AC - OBJ_FIREJET_LEFT
@@ -133,8 +133,8 @@ ObjectGroup04_CollideJumpTable:
 	.word ObjHit_DoNothing	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.word ObjHit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
 	.word ObjHit_DoNothing	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.word ObjHit_DoNothing	; Object $A8 - OBJ_ACIDTRAP
-	.word ObjHit_DoNothing	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.word ObjHit_DoNothing	; Object $A8 - OBJ_OilTRAP
+	.word ObjHit_DoNothing	; Object $A9 - OBJ_OilTRAP_CEIL
 	.word ObjHit_DoNothing	; Object $AA - OBJ_AIRSHIPPROP
 	.word ObjHit_DoNothing	; Object $AB
 	.word ObjHit_DoNothing	; Object $AC - OBJ_FIREJET_LEFT
@@ -175,8 +175,8 @@ ObjectGroup04_Attributes:
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A8 - OBJ_ACIDTRAP
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A8 - OBJ_OilTRAP
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $A9 - OBJ_OilTRAP_CEIL
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $AA - OBJ_AIRSHIPPROP
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32	; Object $AB
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH48	; Object $AC - OBJ_FIREJET_LEFT
@@ -214,8 +214,8 @@ ObjectGroup04_PatTableSel:
 	.byte OPTS_SETPT6 | $4F	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.byte OPTS_SETPT6 | $4F	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte OPTS_SETPT6 | $4F	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte OPTS_SETPT6 | $4F	; Object $A8 - OBJ_ACIDTRAP
-	.byte OPTS_SETPT6 | $4F	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.byte OPTS_SETPT6 | $4F	; Object $A8 - OBJ_OilTRAP
+	.byte OPTS_SETPT6 | $4F	; Object $A9 - OBJ_OilTRAP_CEIL
 	.byte OPTS_SETPT5 | $36	; Object $AA - OBJ_AIRSHIPPROP
 	.byte OPTS_SETPT5 | $36	; Object $AB
 	.byte OPTS_SETPT6 | $37	; Object $AC - OBJ_FIREJET_LEFT
@@ -248,7 +248,7 @@ ObjectGroup04_KillAction:
 	.byte KILLACT_STANDARD	; Object $9D - OBJ_FIREJET_UPWARD
 	.byte KILLACT_POOFDEATH	; Object $9E - OBJ_Podobo
 	.byte KILLACT_JUSTDRAW16X16	; Object $9F - OBJ_PARABEETLE
-	.byte KILLACT_JUSTDRAW16X16	; Object $A0 - OBJ_PUMPKINFREE
+	.byte KILLACT_POOFDEATH	; Object $A0 - OBJ_PUMPKINFREE
 	.byte KILLACT_POOFDEATH	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
 	.byte KILLACT_POOFDEATH	; Object $A2 - OBJ_REDPIRANHA
 	.byte KILLACT_POOFDEATH	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
@@ -256,8 +256,8 @@ ObjectGroup04_KillAction:
 	.byte KILLACT_POOFDEATH	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
 	.byte KILLACT_POOFDEATH	; Object $A6 - OBJ_VENUSFIRETRAP
 	.byte KILLACT_POOFDEATH	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
-	.byte KILLACT_POOFDEATH	; Object $A8 - OBJ_ACIDTRAP
-	.byte KILLACT_POOFDEATH	; Object $A9 - OBJ_ACIDTRAP_CEIL
+	.byte KILLACT_POOFDEATH	; Object $A8 - OBJ_OilTRAP
+	.byte KILLACT_POOFDEATH	; Object $A9 - OBJ_OilTRAP_CEIL
 	.byte KILLACT_STANDARD	; Object $AA - OBJ_AIRSHIPPROP
 	.byte KILLACT_STANDARD	; Object $AB
 	.byte KILLACT_STANDARD	; Object $AC - OBJ_FIREJET_LEFT
@@ -351,8 +351,8 @@ ObjPA3:
 	.byte $F1, $F3, $E3, $E3, $F5, $F7, $E3, $E3
 
 ObjPA4:
-	.byte $E5, $E7, $E3, $E3, $E9, $EB, $E3, $E3, $E5, $E7, $71, $71, $E9, $EB, $71, $71
-	.byte $F1, $F3, $E3, $E3, $F5, $F7, $E3, $E3, $F1, $F3, $71, $71, $F5, $F7, $71, $71
+	.byte $E5, $E7, $E3, $E3, $E9, $EB, $E3, $E3
+	.byte $F1, $F3, $E3, $E3, $F5, $F7, $E3, $E3
 
 ObjPA5:
 ObjPA6:
@@ -932,102 +932,108 @@ ObjInit_FireJetUpsideDown:
 ObjNorm_FireJet:
 	RTS		 ; Return
 
-PumpkinFreeXSpeeds:
-	.byte $10, $F0
+PumpkinFree_Action = Objects_Data1
+PumpkinFree_Frames = Objects_Data2
 
 ObjInit_PumpkinFree:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_ICEPROOF)
-	STA Objects_WeaponAttr, X
-
-	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	LDA #(ATTR_WINDAFFECTS)
 	STA Objects_BehaviorAttr, X
 
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA <Objects_XZ, X
-	RTS
+
+	JMP Object_CalcBoundBox
 
 ObjNorm_PumpkinFree:
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_PumpkinFree1
-	LDA Objects_Data6, X
-	BNE PumpkinFreeDraw1
-	RTS
-	JMP PumpkinFreeDraw1
+	BEQ PumpkinFree_Norm
+	
+	JMP PumpkinFree_Draw
 
-ObjNorm_PumpkinFree1:
-	JSR Object_DeleteOffScreen
-	JSR Object_InteractWithPlayer
-	LDA Objects_Data6, X
+PumpkinFree_Norm:
+
+	LDA PumpkinFree_Action, X
 	JSR DynJump
 
-	.word PumpkinFreeWait
-	.word PumpkinFreeAttack
+	.word PumpkinFree_Wait
+	.word PumpkinFree_Attack
 
-PumpkinFreeWait:
+PumpkinFree_Wait:
+	JSR Object_DeleteOffScreen
 	JSR Object_XDistanceFromPlayer
-	LDA <Temp_Var16
-	BPL PumpkinFreeWait1
-	JSR Negate
-
-PumpkinFreeWait1:
+	
 	CMP #$28
-	BCS PumpkinFreeWaitRTS
+	BCS PumpkinFree_WaitRTS
 
-	LDA #$B0
+	LDA #$20
+	STA Objects_Timer, X
+
+	LDA #$C0
 	STA <Objects_YVelZ, X
-	INC Objects_Data6, X
 
-PumpkinFreeWaitRTS:
+	INC PumpkinFree_Action, X
+
+PumpkinFree_WaitRTS:
 	RTS
 
-PumpkinFreeAttack:
+PumpkinFree_Attack:
+	JSR Object_DeleteOffScreen
 	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE PumpkinFree_Animate
+
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
 	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
-	BNE PumpkinFreeDraw
+	BNE PumpkinFree_Animate
 
 	LDA Objects_TilesDetectZ, X
 	AND #HIT_GROUND
-	BEQ PumpkinFreeDraw
+	BEQ PumpkinFree_Animate
 
-	LDA <Objects_XVelZ, X
-	BNE PumpkinFreeAttack1
+	JSR Object_MoveTowardsPlayerFast
 
-	JSR Object_FacePlayer
-	LDA PumpkinFreeXSpeeds, Y
-	STA <Objects_XVelZ, X
-
-PumpkinFreeAttack1:
 	LDA #$C0
 	STA <Objects_YVelZ, X
 	
-PumpkinFreeDraw:
-	INC Objects_Data4, X
-	LDA Objects_Data4, X
+PumpkinFree_Animate:
+	INC PumpkinFree_Frames, X
+	LDA PumpkinFree_Frames, X
 	LSR A
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
 
+PumpkinFree_Draw:
 	LDA <Objects_XVelZ, X
-	BNE PumpkinFreeDraw1
+	BNE PumpkinFree_DrawNorm
 
 	LDA Objects_Frame, X
 	ORA #$02
 	STA Objects_Frame, X
 
-PumpkinFreeDraw1:
+	LDA Objects_Orientation, X
+	ORA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+
 	JMP Object_Draw
-	
-PiranhaPals:
-	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL1, SPR_PAL1
+
+PumpkinFree_DrawNorm:
+	LDA Objects_Orientation, X
+	AND #~SPR_BEHINDBG
+	STA Objects_Orientation, X
+
+	JMP Object_Draw
 
 
 FireJetLR_SpriteVisibleTest:
@@ -1038,17 +1044,13 @@ ObjInit_FireJetLeft:
 ObjInit_FireJetRight:
 	RTS		 ; Return
 
-RockyWrench_FlipBits:	.byte $60, $20
-
-
-
 Piranha_CurrentFrame = Objects_Data1
 Piranha_CurrentState = Objects_Data3
 Piranha_AttacksLeft	= Objects_Data5
 Piranha_AttackData = Objects_Data6
 Piranha_StateTimer = Objects_Timer
 Piranha_YHiBackup = Objects_Data7
-Piranha_DrawStem = Objects_Data2
+Plant_DrawStem = Objects_Data2
 
 Piranha_YVel:
 	.byte $F8, $08
@@ -1058,6 +1060,7 @@ Piranha_Orientation:
 
 Piranha_Palettes:
 	.byte SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL1
+	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3, SPR_PAL3
 
 Piranha_Facing:
 	.byte $00, SPR_HFLIP
@@ -1066,21 +1069,25 @@ Piranha_Velocities:
 	.byte $F0, $10
 
 Piranha_AttackProjectiles:
-	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_ACID
+	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_OIL
+	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_OIL
 
 Piranah_AttackNumbers:
-	.byte $00, $01, $01, $01
+	.byte $00, $00, $01, $01, $01, $01, $01, $01
+	.byte $00, $00, $03, $03
 
 ObjInit_Pumpkin:
-	LDA #BOUND16x32
-	STA Objects_BoundBox, X
+	LDA Objects_Property, X
+	ORA #$08
+	STA Objects_Property, X
 
-	LDA #ATTR_ICEPROOF
-	STA Objects_WeaponAttr, X
+	JSR ObjInit_Piranha
 
-	LDA <Objects_XZ, X
-	ADD #$08
-	STA <Objects_XZ, X
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+
+	LDA #$00
+	STA Piranha_AttackData, X
 	RTS
 
 ObjInit_Piranha_Aggressive:
@@ -1144,23 +1151,46 @@ ObjInit_Piranha1:
 	RTS
 
 ObjNorm_Pumpkin:
-	JMP ObjNorm_Piranha
+	JSR ObjNorm_Piranha
+	
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_PumpkinRTS
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	LDA #OBJ_PUMPKINFREE
+	STA Objects_ID, X
+
+	LDA #$01
+	STA PumpkinFree_Action, X
+
+	LDA #$00
+	STA Objects_Timer, X
+	STA <Objects_XVelZ, X
+
+	LDA #$E0
+	STA <Objects_YVelZ, X
+
+ObjNorm_PumpkinRTS:
+	RTS	
 
 ObjNorm_Piranha:
 	
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Piranha1
 
-	JMP Piranha_Draw
+	JMP Plant_Draw
 
 ObjNorm_Piranha1:
-	LDA Piranha_CurrentState, X
-	CMP #$03
-	BCS Piranha_SkipOffScreen
-
 	JSR Object_DeleteOffScreen
-
-Piranha_SkipOffScreen:	
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	
@@ -1185,7 +1215,7 @@ Piranha_SkipOffScreen:
 
 	LDA #$03
 	STA Piranha_CurrentFrame, X
-	BNE Piranha_Draw1
+	BNE Plant_Draw1
 
 Piranha_Animate:
 	INC Piranha_CurrentFrame, X
@@ -1196,16 +1226,17 @@ Piranha_Animate:
 	AND #$01
 	STA Objects_Frame,X
 
-Piranha_Draw:
+Plant_Draw:
 	LDA Objects_Property, X
+	AND #$0F
 	CMP #$02
-	BCC Piranha_Draw1
+	BCC Plant_Draw1
 
 	LDA Objects_Frame,X
 	ORA #$02
 	STA Objects_Frame,X
 
-Piranha_Draw1:
+Plant_Draw1:
 
 	JSR Object_Draw16x32
 
@@ -1230,10 +1261,10 @@ Piranha_GreenVine:
 	
 	ORA #SPR_HFLIP
 	STA Sprite_RAM + 14, Y
-	
+
 	LDA Objects_Property, X
 	CMP #$02
-	BCS Piranha_DrawUpsideDown
+	BCS Plant_DrawUpsideDown
 
 	LDA Sprite_RAM + 6, Y
 	ORA #SPR_HFLIP
@@ -1241,7 +1272,7 @@ Piranha_GreenVine:
 
 	LDA Objects_Orientation, X
 	AND #SPR_HFLIP
-	BEQ Piranha_DrawRTS
+	BEQ Plant_DrawRTS
 
 	LDA Sprite_RAM + 6, Y
 	EOR #SPR_HFLIP
@@ -1256,16 +1287,20 @@ Piranha_GreenVine:
 	PLA
 	STA Sprite_RAMX+4, Y
 
-Piranha_DrawRTS:
+Plant_DrawRTS:
 	RTS
 
 Piranha_HeadFlips:
 	.byte SPR_VFLIP, $00
 
-Piranha_DrawUpsideDown:
+Plant_DrawUpsideDown:
 	LDA Objects_State, X
 	CMP #OBJSTATE_FROZEN
-	BEQ Piranha_DrawRTS
+	BEQ Plant_DrawRTS
+
+	LDA Objects_ID, X
+	CMP #OBJ_PUMPKINPLANT
+	BEQ Plant_DrawRTS
 
 	JSR Object_YDistanceFromPlayer
 	LDA Piranha_HeadFlips, Y
@@ -1283,7 +1318,7 @@ Piranha_DrawUpsideDown:
 	ORA TempA
 	STA Sprite_RAM + 6, Y
 
-Piranha_DrawUpsideDown1:
+Plant_DrawUpsideDown1:
 	RTS
 
 Piranha_DoState:
@@ -1323,7 +1358,7 @@ Piranha_Wait1:
 	STA Piranha_CurrentState, X
 
 	LDA #$00
-	STA Piranha_DrawStem, X
+	STA Plant_DrawStem, X
 
 	LDA #$20
 	STA Objects_Timer, X
@@ -1361,8 +1396,8 @@ Piranha_Move:
 	BNE Piranha_SetAttacks
 
 Piranha_GetAttacks:
-	LDA Objects_Property, X
-	LDA Piranah_AttackNumbers, X
+	LDY Objects_Property, X
+	LDA Piranah_AttackNumbers, Y
 
 Piranha_SetAttacks:	
 	STA Piranha_AttacksLeft, X
@@ -1378,9 +1413,9 @@ Piranha_Move1:
 	CMP #$0E
 	BNE Piranha_Move2
 
-	LDA Piranha_DrawStem, X
+	LDA Plant_DrawStem, X
 	EOR #$01
-	STA Piranha_DrawStem, X
+	STA Plant_DrawStem, X
 
 Piranha_Move2:
 	RTS
@@ -1391,16 +1426,15 @@ Piranha_Move3:
 	CMP #$0F
 	BNE Piranha_Move4
 
-	LDA Piranha_DrawStem, X
+	LDA Plant_DrawStem, X
 	EOR #$01
-	STA Piranha_DrawStem, X
+	STA Plant_DrawStem, X
 
 Piranha_Move4:
 	RTS
 
 
 Piranha_Attack:
-
 	LDA Objects_Timer, X
 	BEQ Piranha_Attack1
 
@@ -1454,7 +1488,7 @@ Piranha_NoMoreAttacks:
 	STA Objects_Timer, X
 
 	LDA #$01
-	STA Piranha_DrawStem, X
+	STA Plant_DrawStem, X
 	RTS
 
 Piranha_Attack1:
@@ -1470,10 +1504,13 @@ Piranha_Attack1:
 Piranha_Attack2:
 	RTS
 
+Pumpkin_AttackXVeloc:
+	.byte  $20, $E0
+
 Piranha_Projectile:
 	LDX <Temp_Var15
 	LDA Piranha_AttackProjectiles, X
-	STA SpecialObj_ID,Y
+	STA SpecialObj_ID, Y
 
 	LDX <CurrentObjectIndexZ
 
@@ -1484,6 +1521,33 @@ Piranha_Projectile:
 	ORA Sound_QPlayer
 	STA Sound_QPlayer
 
+	LDA Objects_Property, X
+	CMP #$08
+	BCC Piranha_FireStraight
+
+	TYA
+	PHA
+
+	LDY #$00
+
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BNE Pumpkin_FireRight
+
+	INY
+
+Pumpkin_FireRight:
+	PLA
+	TAX
+	LDA Pumpkin_AttackXVeloc, Y
+	STA SpecialObj_XVel, X
+
+	LDA #$E0
+	STA SpecialObj_YVel, X
+	LDX <CurrentObjectIndexZ
+	RTS
+
+Piranha_FireStraight:	
 	JSR Object_AimProjectile
 
 Piranha_ProjectileRTS:
@@ -1496,8 +1560,8 @@ Rocky_FacePlayer:
 	JSR Object_XDistanceFromPlayer
 
 	; Set flip towards Player
-	LDA RockyWrench_FlipBits,Y
-	STA Objects_Orientation,X	
+	;LDA RockyWrench_FlipBits,Y
+	;STA Objects_Orientation,X	
 
 	RTS		 ; Return
 
@@ -3057,6 +3121,7 @@ PRG005_B872:
 	RTS		 ; Return
 
 PRG005_B873:
+	STA Debug_Snap - 1
 	LDA Level_Objects-1,Y	 ; Get object ID (we're aligned by column, hence -1)
 	CMP #$ff	 
 	BEQ PRG005_B872	 ; If this is the terminator, jump to PRG005_B872 (RTS)
@@ -3132,6 +3197,7 @@ PRG005_B909:
 	LDX #$04	 ; X = 4
 
 PRG005_B913:
+
 	LDA Objects_State,X	
 	BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
 	DEX		 ; X--
@@ -3143,6 +3209,7 @@ PRG005_B91E:
 	; Set object X
 	LDA <Temp_Var1
 	STA <Objects_XZ,X
+
 	LDA <Temp_Var7
 	STA <Objects_XHiZ,X
 
@@ -3184,6 +3251,7 @@ PRG005_B91E:
 
 	LDY <Temp_Var2			; Object index -> 'Y'
 
+	STA Debug_Snap
 	; Mark this object as spawned
 	LDA Level_ObjectsSpawned,Y
 	ORA #$80
@@ -3964,16 +4032,20 @@ LevelEvent_ProduceMines2:
 	; Set Spike Cheep's object ID
 	LDA #OBJ_FLOATMINE
 	STA Objects_ID,X
+	
 	LDA #$01
 	STA Objects_SpriteAttributes, X
 	STA Objects_Data4, X
 
 	LDA <Player_XHi
 	STA Objects_XHiZ, X
+	
 	LDA #$01
 	STA Objects_Data4,X	; var 1 = 1
+	
 	LDA #$A8
 	STA Objects_YZ, X
+	
 	LDA #$01
 	STA Objects_YHiZ, X
 	STA Objects_Data4, X
@@ -4989,28 +5061,28 @@ Messages:
 
 
 DrawToad:
-	LDA <Objects_XZ, X
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame, X
+	;LDA <Objects_XZ, X
+	;LSR A
+	;LSR A
+	;AND #$01
+	;STA Objects_Frame, X
 	
-	JSR Object_FaceMovement
-	JSR Object_ShakeAndCalcSprite
-	LDX <CurrentObjectIndexZ
-	LDA #SPR_BEHINDBG
-	ORA Objects_SpriteAttributes, X
-	STA Objects_SpriteAttributes, X
-	JSR Object_Draw16x32
+	;JSR Object_FaceMovement
+	;JSR Object_ShakeAndCalcSprite
+	;LDX <CurrentObjectIndexZ
+	;LDA #SPR_BEHINDBG
+	;ORA Objects_SpriteAttributes, X
+	;STA Objects_SpriteAttributes, X
+	;JSR Object_Draw16x32
 	RTS
 
 BowserMessage1:
-	.byte $8E, $8F
-	.byte " TRICKED YOU, MARIO! YOU  "
+	;.byte $8E, $8F
+	;.byte " TRICKED YOU, MARIO! YOU  "
 
 BowserMessage2:
-	.byte $9E, $9F
-	.byte " WILL NEVER ESCAPE ME NOW!"
+	;.byte $9E, $9F
+	;.byte " WILL NEVER ESCAPE ME NOW!"
 
 DrawBowserMessage:
 	LDA #$01
@@ -5245,21 +5317,21 @@ ToadBye:
 
 
 ToadBye0:
-	LDA #$01
-	STA Player_HaltTick 
-	LDA #$80
-	STA StatusBar_Mode
-	STA Last_StatusBar_Mode
-	LDX #$00
+	;LDA #$01
+	;STA Player_HaltTick 
+	;LDA #$80
+	;STA StatusBar_Mode
+	;STA Last_StatusBar_Mode
+	;LDX #$00
 
 ToadBye1:
-	LDA ToadByeMsg1, X
-	STA Status_Bar_Top , X
-	LDA ToadByeMsg2, X
-	STA Status_Bar_Bottom , X
-	INX
-	CPX #$1C
-	BNE ToadBye1
+	;LDA ToadByeMsg1, X
+	;STA Status_Bar_Top , X
+	;LDA ToadByeMsg2, X
+	;STA Status_Bar_Bottom , X
+	;INX
+	;CPX #$1C
+	;BNE ToadBye1
 	RTS
 
 ObjInit_SpikeBallChain:

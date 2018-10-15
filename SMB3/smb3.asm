@@ -2505,7 +2505,8 @@ EVENT_LASER_TRAPS			= $81
 EVENT_JUMP_LIMITS			= $82
 	EventType:				.ds 1	; For e-switch levels
 	LeftRightInfection:		.ds 1	;
-	Player_Yolked:					.ds 1	;
+	Player_Yolked:			.ds 1	;
+	Player_Oiled:			.ds 1	;
 	Player_Frozen:			.ds 1	;
 	Frozen_Frame:			.ds	1
 	PaletteEffect:			.ds 1
@@ -3071,21 +3072,22 @@ ICE_DEBRIS = $59	;
 SOBJ_HAMMER		= $01	; Hammer Bro hammer
 SOBJ_VEGGIE	=	$02
 SOBJ_BOOMERANG		= $02	; Boomerangs
-SOBJ_ACID		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
+SOBJ_OIL		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
 SOBJ_FIREBALL	= $04 	; Nipper fireball (falls)
 SOBJ_POOF		= $05
 SOBJ_ICEBALL	= $06	; Piranha fireball
 SOBJ_MICROGOOMBA	= $00 	; Micro goombas
 SOBJ_NINJASTAR		= $07 	; Spike's or Patooie's spike ball
 SOBJ_EGG		= $08 	; Koopaling wand blast
-SOBJ_ACIDPOOL		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
+SOBJ_OILPOOL		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
 SOBJ_BIGFIREBALL		= $0A 	; Rocky's Wrench
 SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
 SOBJ_LIGHTNINGBOLT  = $0C
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
 SOBJ_BUBBLE		= $00 	; Bubble
-SOBJ_LAVALOTUSFIRE	= $0F	; Lava Lotus fire
+SOBJ_SKULL	= $0F	; Lava Lotus fire
+SOBJ_LAVALOTUSFIRE	= $00
 SOBJ_RECOVEREDWAND	= $10 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
@@ -3773,9 +3775,9 @@ OBJ_PUMPKINPLANT_HOPPER	= $A5	; short, upside down, green fire plant
 OBJ_VENUSFIRETRAP	= $A6	; Tall red fire plant
 OBJ_VENUSFIRETRAP_CEIL	= $A7	; upside down tall fire plant
 OBJ_ARROWONE		= $00
-OBJ_ACIDTRAP		= $A8	; One direction arrow platform in motion
+OBJ_OilTRAP		= $A8	; One direction arrow platform in motion
 OBJ_ARROWANY		= $00
-OBJ_ACIDTRAP_CEIL		= $A9	; Changeable direction arrow platform in motion
+OBJ_OilTRAP_CEIL		= $A9	; Changeable direction arrow platform in motion
 OBJ_AIRSHIPPROP		= $AA	; Airship Propellar
 OBJ_FIREJET_LEFT	= $AC	; Left fire jet
 OBJ_ROCKYWRENCH		= $AD	; Rocky wrench (red)

@@ -26,7 +26,7 @@
 ObjectGroup03_InitJumpTable:
 	.word ObjInit_Troopa	; Object $6C - OBJ_GREENTROOPA
 	.word ObjInit_Troopa	; Object $6D - OBJ_REDTROOPA
-	.word ObjInit_Troopa	; Object $6E - OBJ_PARATROOPAGREENHOP
+	.word ObjInit_BouncyTroopa	; Object $6E - OBJ_PARATROOPAGREENHOP
 	.word ObjInit_ParaTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
 	.word ObjInit_BuzzyBeetle	; Object $70 - OBJ_BUZZYBEATLE
 	.word ObjInit_Spiny	; Object $71 - OBJ_SPINY
@@ -117,7 +117,7 @@ ObjectGroup03_CollideJumpTable:
 	.word Object_Hold					; Object $71 - OBJ_SPINY
 	.word $0000					; Object $72 - OBJ_GOOMBA
 	.word OCSPECIAL_KILLCHANGETO | OBJ_GOOMBA	; Object $73 - OBJ_PARAGOOMBA
-	.word Object_Hold	; Object $74 - OBJ_ZOMBIEGOOMBA
+	.word ZombieGoomba_Infect	; Object $74 - OBJ_ZOMBIEGOOMBA
 	.word $0000	; Object $75 -  (OCSPECIAL_KILLCHANGETO must be a mistake, but interesting!)
 	.word $0000					; Object $76 - OBJ_POISONMUSHROOM
 	.word $0000					; Object $77 - OBJ_GREENCHEEP
@@ -2283,7 +2283,7 @@ Lakitu_Aim:
 	BCS Lakitu_AimDone
 
 	LDY Lakitu_EnemySlot, X
-	LDA #OBJSTATE_INIT
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
 
 	LDA <Objects_XZ, X
@@ -2661,49 +2661,115 @@ PRG004_AF65:
 
 	RTS		 ; Return
 
+ZombieGoomba_CurrentFrame  = Objects_Data1
+
 ObjInit_ZombieGoomba:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
-	STA Objects_WeaponAttr, X
+	LDA #(ATTR_BUMPNOKILL | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
 
-	LDA #$05
+	LDA #$02
 	STA Objects_Health, X
 
-	LDA #HIT_GROUND
-	STA Objects_PreviousTilesDetect, X
-	LDA Objects_Property, X
-	BNE ObjInit_ZombieGoomba1
 
-	LDA #$00
-	STA Objects_Data5, X
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
 
-ObjInit_ZombieGoomba1:
-	JMP Object_MoveTowardsPlayer
-	
+	LDA #$10
+	STA ChaseVel_LimitHi, X
+
+ObjInit_ZombieGoombaRTS:
+	RTS
+
 ObjNorm_ZombieGoomba:
-	JSR Object_DeleteOffScreen	; Delete if off-screen
+	LDA Objects_Property, X
+	JSR DynJump
 
+	.word ZombieGoomba_Norm
+	.word ZombieGoomba_Hide
+
+ZombieGoomba_Norm:
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_ZombieGoomba0
-	JMP Goomba_Animate	 ; If gameplay is not halted, jump to PRG004_AF7D
+	BEQ ZombieGoomba_DoNorm
 
-ObjNorm_ZombieGoomba0:
-	LDA Objects_Data5, X
-	BEQ ObjNorm_ZombieGoomba1
-	JMP Zombie_Wait
+	JMP Object_DrawMirrored
 
-ObjNorm_ZombieGoomba1:
+ZombieGoomba_DoNorm:
+	JSR Object_DeleteOffScreen
+	JSR Object_ChasePlayerX
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	JSR Object_InteractWithObjects
+
+	LDA Objects_Timer, X
+	BNE ZombieGoomba_Chase
+
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTilesWallStops
+
+ZombieGoomba_Chase:	
+	JSR Object_YDistanceFromPlayer
 	
-	JSR Object_HitTest
-	BCC Zombie_NoInfection
+	LDA <YDiffAboveBelow
+	ORA <Objects_YVelZ, X
+	BNE ZombieGoomba_CheckWater
+
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ ZombieGoomba_CheckLanding
+
+	LDA #$DE
+	STA <Objects_YVelZ, X
+	BNE ZombieGoomba_CheckWater
+
+ZombieGoomba_CheckLanding:
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_GROUND)
+	BEQ ZombieGoomba_CheckWater
+
+	JSR Object_MoveTowardsPlayerFast
+
+ZombieGoomba_CheckWater:
+	LDA Objects_InWater,X
+	BEQ ZombieGoomba_Animate
+
+	JMP Object_PoofDie
+
+ZombieGoomba_Animate:
+	INC ZombieGoomba_CurrentFrame, X
+	LDA ZombieGoomba_CurrentFrame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+
+ZombieGoomba_Draw:
+	JMP Object_DrawMirrored
+
+ZombieGoomba_JumpBlocks:
+	LDA <Objects_TilesDetectZ, X
+	AND Objects_PreviousTilesDetect, X
+	AND #$04
+	BNE ZombieGoomba_JumpBlocksRTS
+
+ZombieGoomba_JumpBlocksRTS:
+	RTS	
+
+ZombieGoomba_Infect:
+	LDA Player_FlashInv
+	ORA Player_StarInv
+	BNE ZombieGoomba_HurtRTS
 
 	LDA LeftRightInfection
-	BNE DontPoofInfect
+	BNE ZombieGoomba_Hurt
 
 	LDA #$17
 	STA Player_SuitLost
+
 	LDA #$80
 	STA Player_QueueSuit
 
@@ -2712,223 +2778,53 @@ ObjNorm_ZombieGoomba1:
 	
 	LDA #$71
 	STA Player_FlashInv
-	BNE Zombie_NoInfection
+	RTS
 
-DontPoofInfect:
+ZombieGoomba_Hurt:
 	JSR Player_GetHurt
 
-Zombie_NoInfection:
-	JSR Object_FacePlayerOnLanding
-	JSR Object_Move
+ZombieGoomba_HurtRTS:
+	RTS
 
-	JSR Object_InteractWithObjects
-	BCC Zombie_NoInfection1
+ZombieGoomba_Hide:
+	JSR Object_DeleteOffScreen
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	AND #$F0
+	BEQ ZombieGoomba_PopOut
+	
+	JSR Object_XDistanceFromPlayer
+	CMP #$30
+	BCS ZombieGoomba_HideRTS
 
+	LDA Block_NeedsUpdate
+	BNE ZombieGoomba_HideRTS
+
+	LDA <Objects_XZ, X
+	STA <Debris_X
+
+	LDA <Objects_YZ, X
+	STA <Debris_Y
+	
+	JSR Common_MakeBricks
+
+	
+	LDA Tile_LastValue
+	ADD #$01
+	
+	JSR Object_ChangeBlock
+
+ZombieGoomba_PopOut:
 	LDA #$00
-	STA Objects_Data2, X
+	STA Objects_Property, X
 
-Zombie_NoInfection1:
-
-	LDA <Objects_TilesDetectZ, X
-	AND #HIT_CEILING
-	BEQ Zombie_Detect1
-
-	JSR Object_HitCeiling
-	JMP Zombie_Detect2
-
-Zombie_Detect1:
-	LDA <Objects_TilesDetectZ, X
-	AND #HIT_GROUND
-	BEQ Zombie_Detect2
-
-	JSR Object_HitGround
-
-Zombie_Detect2:
-
-	LDA <Objects_TilesDetectZ, X
-	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
-	BEQ Zombie_Move
-
-	LDA <Objects_XVelZ, X
-	STA TempA
-	JSR Object_HitWall
-	LDA TempA
-	STA <Objects_XVelZ, X
-
-	LDA Objects_PreviousTilesDetect, X
-	AND #HIT_GROUND
-	BNE Zombie_Detect3
-
-	LDA Objects_TilesDetectZ, X
-	AND #HIT_GROUND
-	BEQ Zombie_Move
-
-	JSR Object_Reverse
-	JMP Zombie_Move
-
-Zombie_Detect3:
-	LDA DayNight
-	BNE Zombie_Detect4
-
-	LDA #$D4
-	BNE Zombie_Detect5
-
-Zombie_Detect4:
-	LDA #$C8
-
-Zombie_Detect5:
+	LDA #$C0
 	STA <Objects_YVelZ, X
 
-Zombie_Move:
-	LDA Objects_InWater,X
-	BEQ Zombie_Move1
-	LDA #OBJSTATE_POOFDEATH
-	STA Objects_State, X
-	LDA #$1f
-	STA Objects_Timer,X
-	RTS
+	LDA #$20
+	STA Objects_Timer, X
 
-Zombie_Move1:
-	JMP Goomba_Animate
-
-Zombie_Interact:
-
-Zombie_Wait:
-	LDA Objects_Property, X
-	JSR DynJump
-
-	.word ObjNorm_DoNothing
-	.word Zombie_InsideBlock
-	.word Zombie_InsideGround
-
-
-Zombie_CheckDistances:
-	.byte $D0, $28
-
-Zombie_InsideBlock:
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE Zombie_InsideBlock1
-
-	JSR Object_DetectTileCenter
-	LDA Tile_LastValue
-	AND #$3F
-	CMP #$01
-	BNE Zombie_InsideBlock0
-	LDA #$00
-	STA Objects_Data5, X
-	RTS
-
-Zombie_InsideBlock0:
-
-	LDA #$10
-	JSR Object_XDistanceFromPlayer
-	CMP #$03
-	BCS Zombie_InsideBlock1
-
-	LDA Block_NeedsUpdate   
-	BNE Zombie_InsideBlock1
-
-	JSR Zombie_Crumbles
-
-	JSR Object_DetectTileCenter
-	LDA Tile_LastValue
-	AND #$C0
-	ORA #$01
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
-	
-	LDA #$01
-	STA Objects_Data5, X
-	LDA #$E0
-	STA Objects_YVelZ, X
-	LDA #$00
-	STA Objects_XVelZ, X
-
-Zombie_InsideBlock1:
-	RTS
-
-Zombie_InsideGround:
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE Zombie_InsideGround2
-
-	LDA #$10
-	JSR Object_XDistanceFromPlayer
-	CMP #$03
-	BCS Zombie_InsideGround1
-
-	LDA Block_NeedsUpdate
-	BNE Zombie_InsideGround1
-
-	JSR Zombie_Crumbles
-	LDA #$C0
-	STA Objects_YVelZ, X
-	LDA #$00
-	STA Objects_XVelZ, X
-	STA Objects_Data5, X
-	RTs
-
-Zombie_InsideGround1:
-	JSR Object_DetectTileCenter
-	LDA Tile_LastValue
-	AND #$01
-	BEQ Zombie_InsideGround2
-
-	LDA Block_NeedsUpdate
-	BNE Zombie_InsideGround2
-
-	LDA Tile_LastValue
-	AND #$FE
-	STA Block_UpdateValue
-	INC Block_NeedsUpdate
-
-Zombie_InsideGround2
-	RTS
-
-Zombie_Crumbles:
-;	LDA #SND_LEVELCRUMBLE
-;	STA Sound_QLevel2
-;
-;	JSR BrickBust_MoveOver	 ; Copy the bust values over (mainly because Bowser uses both)
-;
-;	; Set the brick bust
-;	LDA #$02
-;	STA BrickBust_En
-;
-;	; Brick bust upper Y
-;	LDA <Objects_YZ, X
-;	ADD #$08
-;	CLC
-;	SBC Level_VertScroll
-;	STA Brick_DebrisYHi
-;
-;	; Brick bust lower Y
-;	ADD #$08
-;	STA Brick_DebrisY
-;
-;	; Brick bust X
-;	LDA <Objects_XZ, X
-;	SUB <Horz_Scroll	
-;	STA Brick_DebrisX
-;
-;	; reset brick bust X distance, no horizontal
-;	LDA #$00
-;	STA Brick_DebrisXDist
-;	STA BrickBust_HEn
-;
-;	; Brick bust Y velocity
-;	LDA #-$06
-;	STA BrickBust_YVel
-;	
-;	JSR Object_DetectTileCenter
-;	LDA Tile_LastValue
-;	AND #$FE
-;	ORA #$01
-;	STA Block_UpdateValue
-;	INC Block_NeedsUpdate
-;
-;	JSR SetObjectTileCoordAlignObj
+ZombieGoomba_HideRTS:
 	RTS
 
 ObjInit_ParaZombieGoomba:
@@ -2976,6 +2872,7 @@ ObjNorm_ParaZombieGoomba01:
 
 	LDA #$01
 	STA LeftRightInfection
+
 	LDA #$71
 	STA Player_FlashInv
 
@@ -3150,8 +3047,6 @@ ObjInit_BulletBill:
 	LDA #$02
 	STA Objects_Frame, X
 
-	LDA #$01
-	STA Objects_ExpPoints, X
 	RTS
 
 ObjNorm_BulletBill:
@@ -3311,8 +3206,6 @@ ObjInit_Goomba:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	INC Objects_ExpPoints, X
-
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
@@ -3337,6 +3230,9 @@ Goomba_Action = Objects_Data1
 Goomba_CurrentFrame = Objects_Data2
 Goomba_DeathTimer = Objects_Data3
 Goomba_BehindTimer = Objects_Data4
+
+Goomba_CappedMovement:
+	.byte $08, $F8
 
 ObjNorm_Goomba:
 	LDA <Player_HaltGameZ
@@ -3458,40 +3354,39 @@ ObjNorm_Goomba0:
 
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
-	BEQ ObjNorm_Goomba1
+	BEQ Goomba_MovementCapped
 
+	LDY #$00
+	
 	LDA <Objects_XVelZ, X
+	BPL Goomba_CheckSpeed
+
+	INY
+
+Goomba_CheckSpeed:	
 	CMP #$08
-	BCC ObjNorm_Goomba1
+	BCC Goomba_MovementCapped
 
 	CMP #$F8
-	BCS ObjNorm_Goomba1
+	BCS Goomba_MovementCapped
 
-	LDA <Objects_XVelZ, X
-	BMI Goomba_CapMovement
+	LDA Goomba_CappedMovement, Y
+	STA <Objects_YVelZ, X
 
-	LDA #$08
-	STA <Objects_XVelZ, X
-	BNE ObjNorm_Goomba02
-
-Goomba_CapMovement:
-	LDA #$F8
-	STA <Objects_XVelZ, X
-	BNE ObjNorm_Goomba02
-
+Goomba_MovementCapped:
 	LDA DayNight
 	BNE ObjNorm_Goomba1
 
 	JSR Object_FacePlayerOnLanding
 
 ObjNorm_Goomba1:
-
 	LDA Objects_Property, X
 	BEQ ObjNorm_Goomba02
 
 	STA Reverse_Gravity
 
 ObjNorm_Goomba02:
+
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
@@ -3510,7 +3405,6 @@ Goomba_Animate:
 	AND #$01
 	STA Objects_Frame,X
 
-ObjNorm_Goomba4:
 Goomba_Draw:
 	LDA Goomba_Action, X
 	ORA Goomba_BehindTimer, X
@@ -3630,7 +3524,7 @@ ObjNorm_ParaTroopa0:
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
-	JSR Object_InteractWithTilesWallStops
+	JSR Object_InteractWithTiles
 	JSR Object_AttackOrDefeat
 
 ObjNorm_ParaTroopa2:
@@ -3730,7 +3624,7 @@ ObjInit_PoisonMushroom:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
+	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_MoveTowardsPlayer
@@ -3815,7 +3709,7 @@ ObjInit_BouncyTroopa:
 	STA Objects_SpritesRequested, X
 	RTS
 
-Bouncey_FlutterTime: = Objects_Data2
+Bouncey_FlutterTime: = Objects_Data9
 
 ObjNorm_BouncyTroopa:
 	LDA <Player_HaltGameZ
@@ -3872,7 +3766,7 @@ ObjNorm_BouncyTroopa2:
 	BCS ObjNorm_BouncyTroopa3
 
 	JSR Object_DetectTiles
-	
+	JSR Object_InteractWithTiles
 	
 ObjNorm_BouncyTroopa3:
 	JMP ParaTroopa_Animate
@@ -3996,21 +3890,24 @@ Troopa_DrawYOff:
 	.byte $00
 
 ParaTroopa_Animate:
+	LDA Object_SpriteRAMOffset, X
+	ADD #$04
+	STA Object_SpriteRAMOffset, X
 	JSR Troopa_Animate
+	JMP ParaTroopa_DrawWing
 
 ParaTroopa_Draw:
 	LDA Object_SpriteRAMOffset, X
 	ADD #$04
 	STA Object_SpriteRAMOffset, X
-
 	JSR Troopa_Draw
+	JMP ParaTroopa_DrawWing
+
+ParaTroopa_DrawWing:	
 
 	LDA Troopa_WingFrame, X
 	TAX
 
-	LDA Sprite_RAMY, Y
-	SUB Troopa_WingYOffset, X
-	STA Sprite_RAMY-4, Y
 
 	LDA Troopa_WingFrames, X
 	STA Sprite_RAMTile-4, Y
@@ -4023,12 +3920,20 @@ ParaTroopa_Draw:
 	CMP #SPR_HFLIP
 	BCS Troopa_WingFlipped
 
+	LDA Sprite_RAMY + 4, Y
+	SUB Troopa_WingYOffset, X
+	STA Sprite_RAMY - 4, Y
+
 	LDA Sprite_RAMX , Y
 	ADD #$08
 	STA Sprite_RAMX - 4, Y
 	RTS
 
 Troopa_WingFlipped:
+	LDA Sprite_RAMY, Y
+	SUB Troopa_WingYOffset, X
+	STA Sprite_RAMY - 4, Y
+
 	LDA Sprite_RAMX, Y
 	STA Sprite_RAMX - 4, Y
 	RTS
@@ -4054,6 +3959,7 @@ Troopa_Animate:
 	LSR A
 	LSR A
 	AND #$01
+	STA Troopa_WingFrame, X
 	TAY	
 
 	LDA Troopa_Frames, Y
@@ -4061,26 +3967,20 @@ Troopa_Animate:
 
 	LDA Troopa_YOffset, Y
 	STA Troopa_FrameOffset, X
-
-	TYA
-	STA Troopa_WingFrame, X
+	
 
 Troopa_Draw:
 	LDA <Objects_YZ, X
-	PHA
-	SUB Troopa_FrameOffset, X
+	SUB Troopa_FrameOffset, X	
 	STA <Objects_YZ, X
 
 	JSR Object_Draw16x32
-	
-	PLA
+
+	LDA <Objects_YZ, X
+	ADD Troopa_FrameOffset, X	
 	STA <Objects_YZ, X
 
 	LDY Object_SpriteRAMOffset, X
-
-	LDA Sprite_RAMY, Y
-	SUB #$10
-	STA Sprite_RAMY + 16, Y
 
 	LDA #$C1
 	STA Sprite_RAMTile + 16, Y
@@ -4092,6 +3992,10 @@ Troopa_Draw:
 	LDA Sprite_RAMX, Y
 	STA Sprite_RAMX + 16, Y
 
+	LDA Sprite_RAMY, Y
+	SUB #$10
+	STA Sprite_RAMY + 16, Y
+
 	LDA Sprite_RAMAttr, Y
 	ORA #SPR_PAL3
 	STA Sprite_RAMAttr, Y
@@ -4101,7 +4005,9 @@ Troopa_Draw:
 	RTS
 	
 Troopa_ColorFixFlip:	
-	LDY Object_SpriteRAMOffset, X
+	LDA Sprite_RAMY + 4, Y
+	SUB #$10
+	STA Sprite_RAMY + 16, Y
 
 	LDA Sprite_RAMX + 4, Y
 	STA Sprite_RAMX + 16, Y

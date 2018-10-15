@@ -545,7 +545,7 @@ PRG008_A473:
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
 	JSR Player_CheckForeground
 	JSR Player_HandlePipe
-	JSR Check_KillTally
+	JSR Check_Timers
 	JSR Player_DoVibration		; Shake the screen when required to do so!
 	JSR Player_SetSpecialFrames	; Set special Player frames
 	JSR Player_Draw29	 	; ... and if you get through all that, draw the Player!!
@@ -3327,6 +3327,14 @@ Player_DetectSolids:
 	STA TrapSet
 	STA Wall_Jump_Enabled
 
+	LDA Player_Oiled
+	BEQ Player_CheckPipeMove
+
+	LDA #$02
+	STA Player_Slippery
+
+
+Player_CheckPipeMove:
 	LDA Level_PipeMove
 	BEQ Player_DetectSolids1	 ; If not going through a pipe, jump to PRG008_B47E
 
@@ -3734,7 +3742,7 @@ BumpBlock_Spinner1:
 	JSR Bumps_PowerUpBlock
 	
 	LDA Tile_LastValue
-	ORA #$01
+	EOR #$01
 	STA Bouncer_ReplaceTile, X
 
 	LDA #$00
@@ -4682,7 +4690,7 @@ Debug_Code:
 	BMI Debug_Code1
 
 Debug_Code0:
-	LDA #$09
+	LDA #$0A
 
 Debug_Code1:
 	ADD #$02
@@ -5096,6 +5104,7 @@ StarManItem:
 	; Player_StarInv = $E0
 	LDA #$e0
 	STA Player_StarInv
+	
 	LDA Player_Equip
 	CMP #ITEM_STAR2
 	BNE StarManItem1
@@ -5699,7 +5708,7 @@ Solid_ThinBreakIce:
 	JSR Common_MakeIce
 	
 	LDA Tile_LastValue
-	SUB #$01
+	ADD #$01
 	JSR Level_QueueChangeBlock
 
 Solid_ThinIceRTS:
@@ -6362,9 +6371,7 @@ Stop_Poison_Mode:
 	RTS
 
 Player_CheckForeground:
-	LDA #$00
-	STA Player_Behind
-
+	
 	LDX #$05
 
 Player_CheckForeground1:
@@ -6375,25 +6382,55 @@ Player_CheckForeground1:
 	AND #(TILE_PROP_FOREGROUND)
 	BEQ Player_CheckForeground2
 
-	INC Player_Behind
+	LDA #$01
+	STA Player_Behind
 	RTS
 
 Player_CheckForeground2:
 	DEX
 	BPL Player_CheckForeground1
-	RTS
 
-Check_KillTally:
-	LDA Kill_Tally_Ticker
-	BEQ Check_KillTally1
-
-	DEC Kill_Tally_Ticker
-	BNE Check_KillTally1
+	LDA Level_Tile_Prop_Body
+	AND #(TILE_PROP_SOLID_TOP)
+	BNE Player_CheckForegroundRTS
 
 	LDA #$00
-	STA Kill_Tally
+	STA Player_Behind
 
-Check_KillTally1:
+Player_CheckForegroundRTS:	
+	RTS
+
+Check_Timers:
+	LDA Kill_Tally_Ticker
+	BNE Killy_TallyTick
+
+	STA Kill_Tally
+	BEQ Check_SlowWatch
+
+Killy_TallyTick:	
+	DEC Kill_Tally_Ticker
+
+Check_SlowWatch:
+	LDA Slow_Watch
+	BEQ Check_StopWatch
+
+	LDA <Counter_1
+	AND #$01
+	BNE Check_StopWatch
+
+	DEC Slow_Watch
+
+Check_StopWatch:
+	LDA Stop_Watch
+	BEQ Check_TimersRTS
+
+	LDA <Counter_1
+	AND #$01
+	BEQ Check_TimersRTS
+
+	DEC Stop_Watch
+
+Check_TimersRTS:	
 	RTS
 
 
