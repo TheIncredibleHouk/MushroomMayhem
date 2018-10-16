@@ -1044,6 +1044,7 @@ PRG000_CAF1:
 ObjWakeUp_FeetYOff:	.byte 10, -10
 
 Object_DampenVelocity:
+	
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ Object_DampenVelocityRTS
@@ -2303,6 +2304,7 @@ Object_DeleteInPitRTS:
 	RTS
 
 DeleteRange = Temp_Var16
+
 Object_DeleteOffScreenRange:
 	STA DeleteRange
 	

@@ -3121,7 +3121,6 @@ PRG005_B872:
 	RTS		 ; Return
 
 PRG005_B873:
-	STA Debug_Snap - 1
 	LDA Level_Objects-1,Y	 ; Get object ID (we're aligned by column, hence -1)
 	CMP #$ff	 
 	BEQ PRG005_B872	 ; If this is the terminator, jump to PRG005_B872 (RTS)
@@ -3251,7 +3250,6 @@ PRG005_B91E:
 
 	LDY <Temp_Var2			; Object index -> 'Y'
 
-	STA Debug_Snap
 	; Mark this object as spawned
 	LDA Level_ObjectsSpawned,Y
 	ORA #$80

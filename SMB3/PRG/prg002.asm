@@ -2810,9 +2810,13 @@ ObjInit_DryBones:
 	LDA #$08
 	STA Objects_Timer, X
 
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_TAILPROOF)
+	LDA #(ATTR_BUMPNOKILL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+	
+	LDA #(ATTR_FIREPROOF | ATTR_TAILPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #$04
@@ -2870,6 +2874,7 @@ DryBones_DoMove:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	JSR Object_InteractWithObjects
 	JSR Object_AttackOrDefeat
 
 	LDA Objects_Timer, X

@@ -195,10 +195,14 @@ PRG008_A1E6:
 
 	LDA Level_PSwitchCnt
 	BEQ PRG008_A20C	 ; If Level_PSwitchCnt = 0 (P-Switch not active), jump to PRG008_A20C
+	
 	CMP #$FF
 	BEQ PRG008_A20C
+
 	CMP #$01
 	BNE PRG008_A203	 ; If Level_PSwitchCnt <> 1, jump to PRG008_A203
+
+	STA Block_WasUpdated
 
 	LDY #$0A	 ; Y = $0A (Invincibility song)
 
@@ -5129,6 +5133,7 @@ Player_SuitChange:
 
 Player_SuitChange1:
 	INC Player_InWater	; Set "in water" flag
+	
 	BNE Player_SuitChange7	 	; Jump (technically always) to PRG008_A3F2
 
 Player_SuitChange2:
@@ -6030,6 +6035,15 @@ Player_HandleWater10:
 	BEQ Player_HandleWater12	 
 
 	JSR Player_Splash
+
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BNE Player_HandleWater10_A
+
+	LDA #$00
+	STA <Player_XVel
+
+Player_HandleWater10_A:
 	LDY <Temp_Var15
 
 Player_HandleWater11:

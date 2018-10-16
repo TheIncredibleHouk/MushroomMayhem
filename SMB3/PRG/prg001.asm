@@ -573,6 +573,7 @@ ObjInit_Key:
 
 	LDA #$FF
 	STA Key_AdjacentChecks, X
+	STA Key_Reappear, X
 
 	LDY Objects_Property, X
 	BEQ Init_KeyRTS
