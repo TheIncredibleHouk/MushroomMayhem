@@ -3092,6 +3092,26 @@ Destroy_Timers:
 	DEX
 	BPL Destroy_Timers
 
+	LDX #$07
+
+Destroy_Projectiles:
+	LDA SpecialObj_ID, X
+	BEQ Destroy_Projectiles1
+
+	
+	LDA #PLAYER_POOF
+	STA SpecialObj_ID, X
+
+	LDA #$10
+	STA SpecialObj_Timer, X
+
+	LDA #$00
+	STA SpecialObj_Data1, X
+
+Destroy_Projectiles1:
+	DEX
+	BPL Destroy_Projectiles
+
 	STA Level_Event
 
 	LDX <CurrentObjectIndexZ

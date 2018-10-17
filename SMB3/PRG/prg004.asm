@@ -3631,8 +3631,6 @@ ObjInit_PoisonMushroom:
 	RTS
 
 ObjNorm_PoisonMushroom:
-	LDA <Player_HaltGameZ
-	BNE ObjNorm_PoisonMushroom1
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
@@ -3655,6 +3653,9 @@ ObjNorm_PoisonMushroom0:
 	.word PoisonMushroom_InsideBlock
 
 PoisonMushroom_Normal:
+	LDA <Player_HaltGameZ
+	BNE PoisonMushroom_Draw
+
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
@@ -3667,10 +3668,13 @@ PoisonMushroom_Normal:
 
 	JSR Object_InteractWithObjects
 
-ObjNorm_PoisonMushroom1:
+PoisonMushroom_Draw:
 	JMP Object_DrawMirrored
 
 PoisonMushroom_InsideBlock:
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	
@@ -3696,6 +3700,9 @@ PoisonMushroom_InsideBlock:
 
 	LDA #$C0
 	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Objects_WeaponAttr, X
 
 PoisonMushroom_InsideBlockRTS:
 	LDA #$04

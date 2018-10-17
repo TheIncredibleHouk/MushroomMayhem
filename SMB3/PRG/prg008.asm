@@ -1072,9 +1072,16 @@ PRG008_A906:
 	LDA #$00
 	STA Player_Direction
 
+	LDA <Player_XVel
+	BEQ Player_CheckFacing
+	BMI PRG008_A916
+	BPL Player_FaceLeft
+
+Player_CheckFacing:	
 	LDA <Player_FlipBits
 	BEQ PRG008_A916
 
+Player_FaceLeft:
 	INC Player_Direction
 
 PRG008_A916:

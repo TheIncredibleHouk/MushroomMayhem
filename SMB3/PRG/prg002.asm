@@ -250,7 +250,7 @@ ObjectGroup01_KillAction:
 	.byte KILLACT_POOFDEATH	; Object $2E - OBJ_PIRATEBOO
 	.byte KILLACT_POOFDEATH	; Object $2F - OBJ_BOO
 	.byte KILLACT_NORMALSTATE	; Object $30 - OBJ_PACBOO
-	.byte KILLACT_POOFDEATH	; Object $31 - OBJ_PHANTO
+	.byte KILLACT_NORMALSTATE	; Object $31 - OBJ_PHANTO
 	.byte KILLACT_POOFDEATH	; Object $32 - OBJ_PHANTO_FLIP
 	.byte KILLACT_STANDARD	; Object $33 - OBJ_NIPPER
 	.byte KILLACT_STANDARD	; Object $34 - OBJ_TOAD
@@ -965,18 +965,11 @@ Boo_Draw:
 	JMP Object_Draw
 
 ObjInit_Phanto:
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
-	STA Objects_WeaponAttr, X
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #$E0
-	STA ChaseVel_LimitLo, X
-
-	LDA #$20
-	STA ChaseVel_LimitHi, X
-	RTS		 ; Return
+	JMP Object_NoInteractions
 
 ObjInit_PhantoFlip:
 
@@ -991,7 +984,8 @@ Phanto_Shaker = Objects_Data5
 ObjNorm_Phanto:
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Phanto1
-	JMP Object_Draw
+	
+	JMP Phanto_Draw
 
 ObjNorm_Phanto1:
 	LDA Phanto_Action, X
@@ -1000,21 +994,27 @@ ObjNorm_Phanto1:
 	.word Phanto_Wait
 	.word Phanto_Wake
 	.word Phanto_Chase
+	.word Phanto_Hover
 
 Phanto_FindKey:
 	LDY #07
 
-Pahnto_KeyLooking:
+Phanto_KeyLooking:
 	LDA Objects_ID, Y
 	CMP #OBJ_KEY
-	BEQ Pahnto_KeyFound
+	BEQ Phanto_KeyFound
 
 	DEY
-	BPL Pahnto_KeyLooking
+	BPL Phanto_KeyLooking
+
+Phanto_KeyNotFound:
 	CLC
 	RTS
 
-Pahnto_KeyFound:
+Phanto_KeyFound:
+	LDA Objects_BeingHeld, Y
+	BEQ Phanto_KeyNotFound
+
 	SEC
 	RTS
 
@@ -1022,11 +1022,8 @@ Phanto_Wait:
 	JSR Phanto_FindKey
 	BCC Phanto_Wait_End
 
-Phanto_KeyHeld:
-	LDA Objects_BeingHeld, Y
-	BEQ Phanto_Wait_End
-
 	INC Phanto_Action, X
+
 	LDA #$40
 	STA Objects_Timer, X
 
@@ -1038,9 +1035,14 @@ Phanto_Wake:
 	BNE Phanto_Wake1
 
 	INC Phanto_Action, X
+	
+	LDA #(ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
 
 Phanto_Wake1:
 	JSR Object_Draw
+
+	INC Phanto_Shaker, X
 	LDA Phanto_Shaker, X
 	AND #$08
 	BNE Phanto_Wake2
@@ -1052,119 +1054,123 @@ Phanto_Wake2:
 	LDA Phanto_Shaker, X
 	AND #$01
 	BNE Phanto_Wake_End
+	
 	TYA
 	TAX
-	INC  Sprite_RAM+$03,X
-	INC  Sprite_RAM+$07,X
+	
+	INC  Sprite_RAMX, X
+	INC  Sprite_RAMX + 4,X
 
 Phanto_Wake_End:
-	LDX <CurrentObjectIndexZ
-	INC Phanto_Shaker, X
 	RTS
 
 Phanto_Chase:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Phanto_ChaseNormal
+
+	JSR Phanto_Poof
+	
+	LDA #$FF
+	STA Objects_Timer, X
+	
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	RTS
+
+Phanto_ChaseNormal:	
 	JSR Phanto_FindKey
-	BCC Phanto_ChaseHover
+	BCS Phanto_ChaseHover
 
-	LDA Objects_ID, Y
-	CMP #OBJ_KEY
-	BNE Phanto_Poof
-
-	LDA Objects_BeingHeld, Y
-	BEQ Phanto_ChaseHover
-
-	JSR Object_ChasePlayer
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
-
-	JMP Object_Draw
-
-Phanto_HoverVel:
-	.byte $01, $FF
-
-Phanto_HorzLimit:
-	.byte $30, $D0
-
-Phanto_VertLimit:
-	.byte $08, $F8
+	JMP Phanto_Poof
 
 Phanto_ChaseHover:
-	LDY #$00
-	LDA <Horz_Scroll
-	ADD #$78
-	STA <Temp_Var1
+	LDA #$D0
+	STA ChaseVel_LimitLo, X
 
-	LDA <Horz_Scroll_Hi
-	ADC #$00
-	STA <Temp_Var2
+	LDA #$30
+	STA ChaseVel_LimitHi, X
 
-	LDA <Temp_Var1
-	SUB <Objects_XZ, X
+	JSR Object_ChasePlayerX
 
-	LDA <Temp_Var2
-	SBC <Objects_XHiZ, X
-	BPL Hover1
-	INY
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
 
-Hover1:
-	LDA <Objects_XVelZ, X
-	CMP Phanto_HorzLimit, Y
-	BEQ Hover2
+	LDA #$10
+	STA ChaseVel_LimitHi, X
+	
+	JSR Object_ChasePlayerY
 
-	ADD Phanto_HoverVel, Y
-
-	STA <Objects_XVelZ, X
-
-Hover2:
-	LDY #$00
-
-	LDA <Vert_Scroll
-	ADD #$10
-	STA <Temp_Var1
-
-	LDA <Vert_Scroll_Hi
-	ADC #$00
-	STA <Temp_Var2
-
-	LDA <Temp_Var1
-	SUB <Objects_YZ, X
-
-	LDA <Temp_Var2
-	SBC <Objects_YHiZ, X
-	BPL Hover3
-	INY
-
-Hover3:
-	LDA <Objects_YVelZ, X
-	CMP Phanto_VertLimit, Y
-	BEQ Hover4
-
-	ADD Phanto_HoverVel, Y
-
-	STA <Objects_YVelZ, X
-
-Hover4:
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
+
+Phanto_Draw:
+	LDA #$00
+	STA Objects_Frame, X
+
 	JMP Object_Draw
 
 Phanto_Poof:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Phanto_SetHover
+
 	LDA <Objects_XZ, X
 	STA Poof_X
 
 	LDA <Objects_YZ, X
 	STA Poof_Y
-	
-	LDA <Objects_YHiZ, X
-	STA Poof_YHi
+
+	LDA #$FF
+	STA <Objects_YHiZ, X
 	
 	JSR Common_MakePoof
-	JMP Object_Delete
 
-ObjInit_InvisibleLift:
-ObjNorm_InvisibleLift:
+Phanto_SetHover:
+	LDA #$03
+	STA Phanto_Action, X
+	RTS
+
+Phanto_HoverStartX:
+	.byte $20, $E0
+
+Phanto_Hover:
+	LDA Objects_Timer, X
+	BNE Phanto_HoverRTS
+
+	JSR Phanto_FindKey
+	BCC Phanto_HoverRTS
+
+	LDY Player_Direction
+
+	LDA <Horz_Scroll
+	ADD Phanto_HoverStartX, Y
+	STA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Horz_Scroll_Hi
+	ADC #$00
+	STA <Objects_XHiZ, X
+
+	STA Debug_Snap
+	LDA <Vert_Scroll
+	ADD #$80
+	STA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA <Vert_Scroll_Hi
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
+
+	LDA #$02
+	STA Phanto_Action, X
+	JMP Common_MakePoof
+
+Phanto_HoverRTS:
 	RTS
 
 PlatformTimers:
@@ -1262,6 +1268,7 @@ ObjNorm_PlatformOscillate:
 
 	LDA <Objects_XHiZ, X
 	CMP Platform_StartXHi, X
+
 	BNE ObjNorm_PlatformOscillate1
 
 
@@ -2441,7 +2448,7 @@ ObjInit_Toad:
 	RTS		 ; Return
 
 PRG002_B23D:
-	.byte $08;, $04, $02, $01
+	;.byte $08;, $04, $02, $01
 
 ObjNorm_Toad:
 	;STA Objects_Orientation,X
@@ -2483,24 +2490,24 @@ ObjNorm_Toad:
 
 
 Toad_Speak:
-	LDA Objects_Data1,X	 ; Get current dialog state
-	JSR DynJump
+	;LDA Objects_Data1,X	 ; Get current dialog state
+	;JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word Toad_DrawDiagBox		; 0
-	.word Toad_DoToadText		; 1
-	.word Decide_What_Next		; 2
-	.word Do_Shop_Controls		; 6
-	.word Bank_Toad		; 7
-	.word Do_BadgeShop_Controls
+	;.word Toad_DrawDiagBox		; 0
+	;.word Toad_DoToadText		; 1
+	;.word Decide_What_Next		; 2
+	;.word Do_Shop_Controls		; 6
+	;.word Bank_Toad		; 7
+	;.word Do_BadgeShop_Controls
 
-TDiagBox_R1:	.byte $65;, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65
-TDiagBox_R2:	.byte $65;, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
-TDiagBox_R3:	.byte $65;, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
+TDiagBox_R1:	;.byte $65;, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65, $65
+TDiagBox_R2:	;.byte $65;, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
+TDiagBox_R3:	;.byte $65;, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $65
 
 TDiagBox_RowOffs:
-	.byte (TDiagBox_R1 - TDiagBox_R1);, (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
-	.byte (TDiagBox_R2 - TDiagBox_R1);, (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R3 - TDiagBox_R1)
+	;.byte (TDiagBox_R1 - TDiagBox_R1);, (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1)
+	;.byte (TDiagBox_R2 - TDiagBox_R1);, (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R2 - TDiagBox_R1), (TDiagBox_R3 - TDiagBox_R1)
 
 TDiagBox_RowOffs_End
 
@@ -2611,8 +2618,8 @@ ToadMsg_Badge:
 	; Warp Whistle
 	; Standard
 	; Anchor/P-Wing
-ToadMsg_Low:	.byte LOW(ToadMsg_Shop), LOW(ToadMsg_Bank), LOW(ToadMsg_Badge)
-ToadMsg_High:	.byte HIGH(ToadMsg_Shop), HIGH(ToadMsg_Bank), HIGH(ToadMsg_Badge)
+ToadMsg_Low:	;.byte LOW(ToadMsg_Shop), LOW(ToadMsg_Bank), LOW(ToadMsg_Badge)
+ToadMsg_High:	;.byte HIGH(ToadMsg_Shop), HIGH(ToadMsg_Bank), HIGH(ToadMsg_Badge)
 
 
 Toad_DoToadText:
@@ -2633,71 +2640,71 @@ DoNextLetter:
 ;	INC Objects_Data5,X	; Apply carry
 PRG002_B451:
 
-	LDY #$00	 	; Y = 0
-	LDA [Temp_Var1],Y	; Get character here
-	TAY		 	; -> 'Y'
-	CPY #$20
+	;LDY #$00	 	; Y = 0
+	;LDA [Temp_Var1],Y	; Get character here
+	;TAY		 	; -> 'Y'
+	;CPY #$20
 
-	BEQ PRG002_B468	 	; If this is a "space", jump to PRG002_B468
+	;BEQ PRG002_B468	 	; If this is a "space", jump to PRG002_B468
 
 	; Play "blip" sound every other letter
-	LDA ToadTalk_VL
-	LSR A
-	BCC PRG002_B468
+	;LDA ToadTalk_VL
+	;LSR A
+	;BCC PRG002_B468
 
 	; Play text "blip" sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP
-	STA Sound_QLevel1
+	;LDA Sound_QLevel1
+	;ORA #SND_LEVELBLIP
+	;STA Sound_QLevel1
 
 PRG002_B468:
-	TYA
+	;TYA
 
-	LDY Graphics_BufCnt	 ; Y = graphics buffer counter
-	STA Graphics_Buffer+3,Y	 ; Store into buffer
+	;LDY Graphics_BufCnt	 ; Y = graphics buffer counter
+	;STA Graphics_Buffer+3,Y	 ; Store into buffer
 
 	; Insert one character into graphics buffer
-	LDA ToadTalk_VH
-	STA Graphics_Buffer,Y	; address high
-	LDA #$01	 
-	STA Graphics_Buffer+2,Y	; run length
-	LSR A
-	STA Graphics_Buffer+4,Y	; terminator
-	TYA
-	ADD #$04
-	STA Graphics_BufCnt	; count
-	LDA ToadTalk_VL
-	STA Graphics_Buffer+1,Y	; address low
+	;LDA ToadTalk_VH
+	;STA Graphics_Buffer,Y	; address high
+	;LDA #$01	 
+	;STA Graphics_Buffer+2,Y	; run length
+	;LSR A
+	;STA Graphics_Buffer+4,Y	; terminator
+	;TYA
+	;ADD #$04
+	;STA Graphics_BufCnt	; count
+	;LDA ToadTalk_VL
+	;STA Graphics_Buffer+1,Y	; address low
 
-	INC ToadTalk_VL	 ; Next VRAM byte
-	AND #$1f	 	; Get current column
-	CMP #$17
-	BNE PRG002_B4AC	 	; If we're not in column 23, jump to PRG024_A25B
+	;INC ToadTalk_VL	 ; Next VRAM byte
+	;AND #$1f	 	; Get current column
+	;CMP #$17
+	;BNE PRG002_B4AC	 	; If we're not in column 23, jump to PRG024_A25B
 
 	; Line break!
 
-	LDA ToadTalk_VL
-	ADC #$10		; Add enough bytes to get to next row
-	STA ToadTalk_VL
-	BCC PRG002_B4A1
-	INC ToadTalk_VH	; Apply carry
+	;LDA ToadTalk_VL
+	;ADC #$10		; Add enough bytes to get to next row
+	;STA ToadTalk_VL
+	;BCC PRG002_B4A1
+	;INC ToadTalk_VH	; Apply carry
 PRG002_B4A1:
 
-	CMP #$a9
-	BNE PRG002_B4AC	 ; If we haven't reached the last character, jump to PRG002_B4AC
+	;CMP #$a9
+	;BNE PRG002_B4AC	 ; If we haven't reached the last character, jump to PRG002_B4AC
 
-	INC Objects_Data1,X	 ; Objects_Data1 = 2 (next dialog state)
-	LDA #$08
-	STA Pay_Toll_Timer
+	;INC Objects_Data1,X	 ; Objects_Data1 = 2 (next dialog state)
+	;LDA #$08
+	;STA Pay_Toll_Timer
 
-	LDA #$00
-	STA ToadTalk_CPos
+	;LDA #$00
+	;STA ToadTalk_CPos
 
 PRG002_B4AC:
 
 	; Set timer to $04
-	LDA #$04
-	STA Objects_Timer,X
+	;LDA #$04
+	;STA Objects_Timer,X
 
 PRG002_B4B1:
 	RTS		 ; Return
@@ -2815,7 +2822,7 @@ ObjInit_DryBones:
 
 	LDA #(ATTR_BUMPNOKILL | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
-	
+
 	LDA #(ATTR_FIREPROOF | ATTR_TAILPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -2867,6 +2874,9 @@ DryBones_NoPoof:
 	BNE DryBones_DoMove
 
 	JSR Object_MoveTowardsPlayer
+
+	LDA #(ATTR_BUMPNOKILL | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
 
 DryBones_DoMove:	
 	JSR Object_Move
@@ -2993,6 +3003,9 @@ DryBones_Crumble:
 
 	LDA #$00
 	STA <Objects_XVelZ, X
+
+	LDA #ATTR_BUMPNOKILL
+	STA Objects_BehaviorAttr, X
 
 	LDY #$00
 

@@ -6091,7 +6091,7 @@ Objects_AssignSprites:
 	LDA #$30
 	STA <Temp_Var1
 
-	LDA #$00;Game_Counter
+	LDA Game_Counter
 	STA <Temp_Var2
 	
 	LDY #$07
