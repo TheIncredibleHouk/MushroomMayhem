@@ -1494,7 +1494,6 @@ PRG031_F4B3:
 PRG031_F4BD: 
 	CMP #$40	 ; 
 	BNE PRG031_F4C4	 ; If Update_Select <> $40 (Spade Game), jump to PRG031_F4C4
-	JMP UpdSel_Roulette	 ; Otherwise, jump to UpdSel_Roulette
 
 PRG031_F4C4:
 	CMP #$00	 ; 

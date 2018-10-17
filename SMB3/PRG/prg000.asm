@@ -4548,25 +4548,20 @@ Object_FindEmptyY2:
 	SEC
 	RTS
 
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_CalcHomingVels
-;
-; How an 8-bit CPU can calculate aiming projectiles
-; towards the Player!  Returns values in respective
-; Objects_TargetingXVal and Objects_TargetingYVal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Object_CalcHomingVels:
-	RTS
-
 DoBossFights:
 	LDA PAGE_A000
 	PHA
-	LDA #$13
+
+	LDA #13
+
 	STA PAGE_A000
+
 	JSR PRGROM_Change_A000
 	JSR BossFight
+
 	PLA 
 	STA PAGE_A000
+
 	JSR PRGROM_Change_A000 
 	RTS
 

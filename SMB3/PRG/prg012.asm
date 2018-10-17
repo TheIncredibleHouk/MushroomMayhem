@@ -140,23 +140,6 @@ Map_Object_ColorSets:
 			; I placed this here to insure maps don't move. Critical #DAHRKDAIZ
 	.org $A598
 Map_Tile_Layouts:
-	; This points to the layout data for each world's map tile layout
-	.word W1_Map_Layout, W2_Map_Layout, W3_Map_Layout, W4_Map_Layout, W5_Map_Layout
-	.word W6_Map_Layout, W7_Map_Layout, W8_Map_Layout, W9_Map_Layout
-
-
-	; Each world's layout; very simple data, specifies a linear list of tile bytes.
-	; Every 144 bytes form a 16x9 single screen of world map.
-	; The stream is terminated by $FF
-W1_Map_Layout:	.include "PRG/maps/World1L"
-W2_Map_Layout:	.include "PRG/maps/World2L"
-W3_Map_Layout:	.include "PRG/maps/World3L"
-W4_Map_Layout:	.include "PRG/maps/World4L"
-W5_Map_Layout:	.include "PRG/maps/World5L"
-W6_Map_Layout:	.include "PRG/maps/World6L"
-W7_Map_Layout:	.include "PRG/maps/World7L"
-W8_Map_Layout:	.include "PRG/maps/World8L"
-W9_Map_Layout:	.include "PRG/maps/World9L"
 
 ; FIXME: Anybody want to claim this? Is this part of the above?
 ; $B0F3
@@ -222,17 +205,8 @@ PointerNotFound:
 	RTS		 ; Return
 
 KingsRoomLayout_ByWorld:
-	.word KNG1L	; World 1
-	.word KNG2L	; World 2
-	.word KNG3L	; World 3
-	.word KNG4L	; World 4
-	.word KNG5L	; World 5
-	.word KNG6L	; World 6
-	.word KNG7L	; World 7
-	.word KNG1L	; World 8 (??)
 
 KingsRoomObjLayout:
-	.word Empty_ObjLayout
 
 
 PRG012_B262:
@@ -261,24 +235,9 @@ PRG012_B262:
 
 	; Airship jump addresses for the map object version
 Airship_Layouts:
-	.word W1AirshipL
-	.word W2AirshipL
-	.word W3AirshipL
-	.word W4AirshipL
-	.word W5AirshipL
-	.word W6AirshipL
-	.word W7AirshipL
-	.word W8AirshipL
+
 
 Airship_Objects:
-	.word W1AirshipO
-	.word W2AirshipO
-	.word W3AirshipO
-	.word W4AirshipO
-	.word W5AirshipO
-	.word W6AirshipO
-	.word W7AirshipO
-	.word W8AirshipO
 
 
 MO_Airship:
@@ -316,44 +275,12 @@ MO_Unused:
 	RTS		 ; Return
 
 MO_NSpade:
-	; Level_Tileset = 15 (Bonus game intro)
-	LDA #15
-	STA Level_Tileset
-
-	; Bonus_GameType = 2 (N-Spade)
-	LDA #$02
-	STA Bonus_GameType
-
-	LDY #$00
-	STY Bonus_KTPrize	; !!
-	STY Bonus_GameHost	; Standard Toad Host
-
-
-	; NOTE: This was probably going to vary by game type, 
-	; but in final version, Y = 0 (see PRG022 for more)
-
-	; Bonus game layout
-	LDA Bonus_LayoutData,Y
-	STA <Level_LayPtr_AddrL
-	LDA Bonus_LayoutData+1,Y
-	STA <Level_LayPtr_AddrH	
-
-	; World_EnterState = 3
-	LDA #$03
-	STA World_EnterState
+	
 
 	RTS		 ; Return
 
 	; White Toad House layouts
 ToadShop_Layouts:
-	.word TOAD_SpecL
-	.word TOAD_SpecL
-	.word TOAD_SpecL
-	.word TOAD_SpecL
-	.word TOAD_SpecL
-	.word TOAD_SpecL
-	.word TOAD_SpecL
-	.word TOAD_SpecL
 
 	; White Toad House configuration
 	; NOTE: This is NOT actually an object layout pointer (which is always fixed in Toad Houses), 
@@ -393,25 +320,10 @@ MO_Shop:
 
 	; Possibly thinking of having per-world coin ships?
 CoinShip_Layouts:
-	.word CoinShipL
-	.word CoinShipL
-	.word CoinShipL
-	.word CoinShipL
-	.word CoinShipL
-	.word CoinShipL
-	.word CoinShipL
-	.word CoinShipL
+	
 
 CoinShip_Objects:
-	.word CoinShipO
-	.word CoinShipO
-	.word CoinShipO
-	.word CoinShipO
-	.word CoinShipO
-	.word CoinShipO
-	.word CoinShipO
-	.word CoinShipO
-
+	
 MO_CoinShip:
 	LDA World_Num	; Get world number
 	ASL A		 ; Turn into 2-byte index
@@ -438,119 +350,10 @@ MO_CoinShip:
 
 	; Wonder what this might have been?
 	; Just goes to World 7-5 underground now...
-UnusedMapObj_Layout:	.word W705_UnderL
-UnusedMapObj_Objects:	.word W705_UnderO
 
 MO_UnusedMapObj:
 
-	; Set the layout
-	LDA UnusedMapObj_Layout
-	STA <Level_LayPtr_AddrL
-	LDA UnusedMapObj_Layout+1
-	STA <Level_LayPtr_AddrH
-
-	; Set the objects
-	LDA UnusedMapObj_Objects
-	STA <Level_ObjPtr_AddrL
-	LDA UnusedMapObj_Objects+1
-	STA <Level_ObjPtr_AddrH
-
-	; Level_Tileset = 1 (Plains style)
-	LDA #$01
-	STA Level_Tileset
-
 	RTS		 ; Return
-
-
-PRG012_B384:
-	; Level_Tileset = 15 (Bonus Game intro!)
-
-	; Copy Player map data into "Entered" vars
-	LDY Player_Current
-	LDA World_Map_Y,Y
-	STA Map_Entered_Y,Y
-	LDA World_Map_XHi,Y
-	STA Map_Entered_XHi,Y
-	LDA World_Map_X,Y	
-	STA Map_Entered_X,Y	
-	LDA Map_UnusedPlayerVal2,Y	
-	STA Map_Previous_UnusedPVal2,Y	
-
-	LDA #15
-	STA Level_Tileset	 ; Re-affirming Level_Tileset = 15?
-
-	LDY <Temp_Var16		 ; Index of level entered
-
-	; Set Bonus_GameType (always 1 in actual game)
-	LDA [Temp_Var5],Y
-	STA Bonus_GameType
-
-	; Set Bonus_KTPrize (always irrelevant in actual game)
-	LDA [Temp_Var7],Y
-	STA Bonus_KTPrize
-
-	INY		 ; Y++
-
-	; Set Bonus_GameHost (always 0 in actual game)
-	LDA [Temp_Var5],Y
-	STA Bonus_GameHost
-
-	LDA [Temp_Var7],Y
-	ASL A
-	TAY		 ; -> 'Y'
-
-	LDA Bonus_LayoutData,Y
-	STA <Level_LayPtr_AddrL
-	LDA Bonus_LayoutData+1,Y
-	STA <Level_LayPtr_AddrH
-
-	; World_EnterState = 3
-	LDA #$03
-	STA World_EnterState
-
-	RTS		 ; Return
-
-
-
-	; Each of these has an entry PER WORLD (0-8, Worlds 1-9)
-
-	; This table specifies a lookup for the world that supplies an initial
-	; offset value for the following table based on the "XHi" position the
-	; Player was on the map.  Obviously for many worlds there is no valid
-	; offset value on some of the higher map screens...
-
-Map_ByXHi_InitIndex:
-	.word W1_InitIndex, W2_InitIndex, W3_InitIndex, W4_InitIndex, W5_InitIndex, W6_InitIndex, W7_InitIndex, W8_InitIndex, W9_InitIndex
-
-	; This table is initially indexed by the initial offset supplied by Map_ByXHi_InitIndex 
-	; and provides a series of map row locations (upper 4 bits) and level tileset (lower 4 bits)
-Map_ByRowType:
-	.word W1_ByRowType, W2_ByRowType, W3_ByRowType, W4_ByRowType, W5_ByRowType, W6_ByRowType, W7_ByRowType, W8_ByRowType, W9_ByRowType
-
-	; This table just maps the column positions of enterable level tiles
-Map_ByScrCol:
-	.word W1_ByScrCol, W2_ByScrCol, W3_ByScrCol, W4_ByScrCol, W5_ByScrCol, W6_ByScrCol, W7_ByScrCol, W8_ByScrCol, W9_ByScrCol
-
-	; This table maps the relevant object layout pointers for the levels
-Map_ObjSets:
-	.word W1_ObjSets, W2_ObjSets, W3_ObjSets, W4_ObjSets, W5_ObjSets, W6_ObjSets, W7_ObjSets, W8_ObjSets, W9_ObjSets
-
-	; This tbale maps the relevant level layout pointers for the levels
-Map_LevelLayouts:
-	.word W1_LevelLayout, W2_LevelLayout, W3_LevelLayout, W4_LevelLayout, W5_LevelLayout, W6_LevelLayout, W7_LevelLayout, W8_LevelLayout, W9_LevelLayout
-
-	; "Structure" data files -- contains data that links levels to
-	; their layout and objects by the rows and columns 
-	.include "PRG/maps/World1S"
-	.include "PRG/maps/World2S"
-	.include "PRG/maps/World3S"
-	.include "PRG/maps/World4S"
-	.include "PRG/maps/World5S"
-	.include "PRG/maps/World6S"
-	.include "PRG/maps/World7S"
-	.include "PRG/maps/World8S"
-	.include "PRG/maps/World9S"
-
 
 ; FIXME: Anybody want to claim this??
 ; $BC54

@@ -1,115 +1,805 @@
-; Super Mario Bros. 3 Full Disassembly by Southbird 2012
-; For more info, see http://www.sonicepoch.com/sm3mix/
+BossFight:
+	
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word Colossal_Cheep
+	.word Giant_Piranha
+
+Colossal_CheepSprites:
+	.byte $95, $97, $99, $9B, $B5, $B7, $B9, $BB
+	.byte $95, $97, $9D, $9F, $B5, $B7, $BD, $BF
+
+Colossal_CheepPassesNeeded:
+	.byte $01, $02, $01, $03
+
+Colossal_CheepJumpChances:
+	.byte $00, $00, $00, $01, $00, $00, $01, $00
+	.byte $01, $00, $00, $00, $01, $00, $00, $01
+
+Colossal_CheepFrames = Objects_Data1
+Colossal_CheepAction = Objects_Data2
+Colossal_CheepThresholdChecked = Objects_Data3
+Colossal_CheepHealth = Objects_Data4
+Colossal_CheepPasses = Objects_Data5
+Colossal_CheepWaterLevel = Objects_Data6
+
+Colossal_Cheep:
+	LDA <Player_HaltGameZ
+	BEQ Colossal_CheepNorm
+
+	JMP Colossal_CheepDraw
+
+Colossal_CheepNorm:
+	LDA Colossal_CheepAction, X
+	JSR DynJump
+
+	.word Colossal_CheepInit
+	.word Colossal_CheepSwim
+	.word Colossal_CheepBounce
+	.word Colossal_CheepHit
+	.word Colossal_CheepDie
+	.word Colossal_FloodRoom
+	.word Colossal_SwimFlooded
+	.word Colossal_CheepDrainRoom
+	.word Colossal_CheepReset
+
+Colossal_CheepInit:
+	LDA #$D8
+	STA <Objects_XZ, X
+
+	LDA #$FF
+	STA <Objects_XZ, X
+
+	LDA #$20
+	STA <Objects_XVelZ, X
+
+	LDA #$00
+	STA Colossal_CheepHealth, X
+
+	LDA #$04
+	STA Objects_Health, X
+
+	INC Colossal_CheepAction, X
+
+	LDA #OAT_BOUNDBOX09
+	STA Objects_BoundBox, X
+
+	JMP Colossal_CheepResetPasses
+
+Colossal_CheepJumpThreshold:
+	.byte $E0, $10
+
+Colossal_CheepXVel:
+	.byte $E0, $20
+
+Colossal_CheepSwim:
+	LDA #$A8
+	STA <Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	JSR Object_ApplyXVel
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+
+	JSR Object_CheckOffScreen
+	BCC Keep_Swimming
+
+	LDA #$00
+	STA Colossal_CheepThresholdChecked, X
+
+	JSR Object_XDistanceFromPlayer
+	LDY <XDiffLeftRight
+
+	DEC Colossal_CheepPasses, X
+
+	LDA Colossal_CheepXVel, Y
+	STA <Objects_XVelZ, X
+	BNE CC_NoJump
+
+Keep_Swimming:
+	LDY #$00
+	
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BEQ CC_CheckThreshold
+
+	INY
+
+CC_CheckThreshold:
+	LDA Colossal_CheepThresholdChecked, X
+	BNE CC_NoJump
+
+	LDA <Objects_XZ, X
+	AND #$F0
+	CMP Colossal_CheepJumpThreshold, Y
+	BNE CC_NoJump
+
+	LDA #$01
+	STA Colossal_CheepThresholdChecked, X
+
+	LDA RandomN
+	AND #$07
+	TAY
+
+	LDA Colossal_CheepJumpChances, Y
+	BNE CC_NoJump
+
+	LDA #$B0
+	STA <Objects_YVelZ, X
+
+	LDA #$02
+	STA Colossal_CheepAction, X
+
+CC_NoJump:
+	JMP Colossal_CheepAnimate
+
+Colossal_CheepBounce:
+	JSR Object_FaceDirectionMoving
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectPlayer
+	BCC CC_NoHurtPlayer
+
+	JSR Object_HurtPlayer
+
+CC_NoHurtPlayer:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE CC_CheckBounce
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JMP CC_CheckBounce
+
+CC_HurtByShell:
+	
+	JSR DestroyAllEnemies
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	INC Colossal_CheepHealth, X
+	LDA Colossal_CheepHealth, X
+	CMP #$03
+	BNE CC_GoBackwards
+
+	JSR DestroyAllEnemies
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	LDA #$04
+	STA Colossal_CheepAction, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JMP Colossal_CheepDraw
+
+CC_GoBackwards:
+
+	LDA #$03
+	STA Colossal_CheepAction, X
+	BNE CC_NoSkyBounce
+
+CC_CheckBounce:
+
+	JSR Object_CheckOffScreen
+	BCC CC_CheckFloor
+
+	LDA #$01
+	STA Colossal_CheepAction, X
+
+	JSR Object_XDistanceFromPlayer
+	LDY <XDiffLeftRight
+
+	LDA Colossal_CheepXVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA RandomN
+	AND #$03
+	BNE CC_NoSkyBounce
+
+	LDA #$00
+	STA <Objects_YZ, X
+	STA <Objects_YHiZ, X
+
+	LDA #$02
+	STA Colossal_CheepAction, X
+
+CC_NoSkyBounce:
+	JMP CC_AnimateNorm
+
+CC_CheckFloor:
+	JSR Object_DetectTiles
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ CC_KeepBouncing
+
+	JSR Object_HitGround
+
+	LDA #$20
+	STA Level_Vibration
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+	
+	LDA Colossal_CheepPasses, X
+	BPL CC_KeepBouncing
+
+	LDA Colossal_CheepHealth, X
+	STA <Temp_Var10
+
+CC_MakeObjects:
+	JSR CC_MakeObject
+	DEC <Temp_Var10
+	BPL CC_MakeObjects
+
+	JSR Colossal_CheepResetPasses
+
+CC_KeepBouncing:
+	JMP Colossal_CheepAnimate
+
+Colosssal_Objects:
+	.byte OBJ_GREENTROOPA, OBJ_GOOMBA, OBJ_POWERUP, OBJ_GREENTROOPA, OBJ_GOOMBA, OBJ_GREENTROOPA, OBJ_POWERUP, OBJ_GOOMBA
+
+Colosssal_ObjectsData:
+	.byte $00, $00, POWERUP_MUSHROOM, $00, $00, $00, POWERUP_MUSHROOM, $00
+
+Colosssal_ObjectsPal:
+	.byte $02, $03, $01, $02, $03, $02, $01, $03
+
+Colosssal_ObjectsX:
+	.byte $40, $C0, $70, $90
+	.byte $78, $98, $48, $C8
+	.byte $80, $30, $D0, $50
+	.byte $10, $40, $C0, $F0
+
+CC_MakeObject:
+	JSR Object_FindEmptyX
+	BCC CC_MakeObjectRTS
+
+	LDA RandomN, X
+	AND #$07
+	TAY
+
+	LDA Colosssal_Objects, Y
+	STA Objects_ID, X
+
+	LDA Colosssal_ObjectsData, Y
+	STA Objects_Data1, X
+
+	LDA #$FF
+	STA <Objects_YHiZ, X
+
+	LDA #$E0
+	STA <Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+
+	LDA Colosssal_ObjectsPal, Y
+	STA Objects_SpriteAttributes, X
+
+	STX <Temp_Var1
+
+	LDA RandomN
+	AND #$30
+	ASL A
+	ASL A
+	
+	ORA <Temp_Var1
+	LDY <Temp_Var1
+
+	LDA Colosssal_ObjectsX, Y
+	STA <Objects_XZ, X
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_MoveTowardsPlayer
+
+	LDX <CurrentObjectIndexZ
+
+CC_MakeObjectRTS:
+	RTS
+
+Colosssal_CheepFlash:
+	.byte SPR_PAL1, SPR_PAL3
+
+Colossal_CheepHit:
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	
+	LDA Game_Counter
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+	
+	LDA Colosssal_CheepFlash, Y
+	STA Objects_SpriteAttributes, X
+
+	JSR Object_CheckOffScreen
+	BCC CC_KeepMovingBack
+
+	LDA #$05
+	STA Colossal_CheepAction, X
+
+CC_KeepMovingBack:
+	JMP CC_CheckFloor
+
+Colossal_CheepDie:
+	LDA Objects_Timer, X
+	BEQ CC_Die
+
+	LDA Game_Counter
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Colosssal_CheepFlash, Y
+	STA Objects_SpriteAttributes, X
+	JMP CC_AnimateNorm
+
+CC_Die:
+	LDA #$80
+	STA CompleteLevelTimer
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	JMP Object_Explode
+
+WaterFill_XOffsets:
+	.byte $FC, $F8, $F4
+	.byte $FC, $F8, $F4
+	.byte $FC, $F8, $F4
+
+WaterFill_YOffsets:
+	.byte $7F, $6F, $5F
+	.byte $4F, $3F, $2F
+	.byte $1F, $0F, $00
+
+Colossal_FloodRoom:
+	LDA Objects_Timer, X
+	BNE CCNo_Water
+
+	LDA  Colossal_CheepWaterLevel, X
+	CMP #$09
+	BCC Create_Water
+
+	INC Colossal_CheepAction, X
+	
+	LDA Colossal_CheepHealth, X
+	STA Colossal_CheepPasses, X
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	
+	JSR Double_Value
+
+	STA <Objects_XVelZ, X
+
+	JSR Colossal_CheepReposition
+
+	LDA #$00
+	STA Colossal_CheepWaterLevel, X
+
+CCNo_Water:
+	RTS
+
+Create_Water:
+	LDA #$03
+	STA <Temp_Var10
+
+More_Water:
+	LDY Colossal_CheepWaterLevel, X
+	JSR Object_FindEmptyX
+
+	LDA #OBJ_WATERFILLER
+	STA Objects_ID, X
+
+	LDA WaterFill_XOffsets, Y
+	STA <Objects_XZ, X
+
+	LDA #$FF
+	STA <Objects_XHiZ, X
+
+	LDA WaterFill_YOffsets, Y
+	STA <Objects_YZ, X
+
+	LDA #00
+	STA <Objects_YHiZ, X
+
+	LDA #$40
+	STA <Objects_XVelZ, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	LDA #SPR_HFLIP
+	STA Objects_Orientation, X
+
+	LDX <CurrentObjectIndexZ
+
+	INC Colossal_CheepWaterLevel, X
+	DEC <Temp_Var10
+	BNE More_Water
+
+	LDA #$50
+	STA Objects_Timer, X
+	RTS
+
+Colossal_CheepYOffsets:
+	.byte $08, $28, $48, $68
+
+Colossal_CheepReposition:
+	LDA RandomN, X
+	AND #$03
+	TAY
+
+	LDA Colossal_CheepYOffsets, Y
+	STA <Objects_YZ, X
+	
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	LDA Colossal_CheepAction, X
+	CMP #$07
+	BCS CC_NoBubble
+
+	JSR Colossal_CheepMakeBubble
+
+CC_NoBubble:
+	RTS
+
+Colossal_SwimFlooded:
+	JSR Object_ApplyXVel
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_AttackOrDefeat
+
+	JSR Object_CheckOffScreen
+	BCC CC_FloodKeepSwimming
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_XVelZ, X
+
+	DEC Colossal_CheepPasses, X
+	BNE CC_SwimAgain
+
+	INC Colossal_CheepAction, X
+	JSR DestroyAllEnemies
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	RTS
+
+CC_SwimAgain:
+	JSR Colossal_CheepReposition
+
+CC_FloodKeepSwimming:
+	JMP Colossal_CheepAnimate
+
+Colossal_CheepDrainRoom:
+	JMP Colossal_FloodRoom
+
+Colossal_CheepReset:
+	LDA #$01
+	STA Colossal_CheepAction, X
+
+	JMP Colossal_CheepResetPasses
+
+Colossal_CheepResetPasses:
+	LDA RandomN, X
+	AND #$03
+	TAY 
+
+	LDA Colossal_CheepPassesNeeded, Y
+	STA Colossal_CheepPasses, X
+	RTS
+
+Colossal_CheepBubbleX:
+	.byte $28, $48, $68, $88
+
+Colossal_CheepMakeBubble:
+	JSR Object_FindEmptyX
+
+	LDA RandomN, X
+	AND #$03
+	TAY
+
+	LDA #OBJ_BUBBLE
+	STA Objects_ID, X
+
+	LDA #$03
+	STA Bubble_Action, X
+
+	LDA Colossal_CheepBubbleX, Y
+	STA <Objects_XZ, X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+	STA <Objects_YHiZ, X
+	STA Objects_Property, X
+
+	LDA #$80
+	STA <Objects_YZ, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	LDX <CurrentObjectIndexZ
+	RTS
+	
+Colossal_CheepAnimate:
+	INC Colossal_CheepFrames, X
+	
+	LDA <Objects_YVelZ, X
+	BPL CC_AnimateNorm
+
+	LDA Colossal_CheepFrames, X
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	JMP Colossal_CheepDraw
+
+CC_AnimateNorm:
+	LDA Colossal_CheepFrames, X
+	
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+Colossal_CheepDraw:
+	LDA #LOW(Colossal_CheepSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Colossal_CheepSprites)
+	STA <Giant_TilesHi
+
+	LDA #$1B
+	STA PatTable_BankSel + 4
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JSR Object_CheckForeground
+	JMP Object_DrawGiant
+
+Giant_PiranhaSprites:
+	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
+	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
+
+Giant_PiranhaAction = Objects_Data1
+Giant_PiranhaFrames = Objects_Data2
+Giant_PiranhaAttackTicker = Objects_Data3
+Giant_PiranhaTicker = Objects_Data4
+
+Giant_Piranha:
+	LDA <Player_HaltGameZ
+	BEQ Giant_PiranhaNorm
+
+	JMP Giant_PiranhaDraw
+
+Giant_PiranhaNorm:
+	LDA Giant_PiranhaAction, X
+	JSR DynJump
+
+	.word Giant_PiranhaInit
+	.word Giant_WaitUnder
+	.word Giant_PiranhaAttackUp
+	.word Giant_PiranhaAttackDown
+
+Giant_PiranhaInit:
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+	
+	LDA #$C0
+	STA <Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
+
+	LDA #$10
+	STA ChaseVel_LimitHi, X
+
+	LDA #$04
+	STA Objects_Health, X
+
+	INC Giant_PiranhaAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+	RTS
+
+Giant_WaitUnder:
+	LDA Objects_Timer, X
+	BNE Giant_WaitUnder1
+
+	INC Giant_PiranhaAction, X
+
+	LDA Player_X
+	AND #$F0
+
+	STA <Objects_XZ, X
+
+Giant_WaitUnder1:
+	RTS
+
+Giant_PiranhaAttackUp:
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_YZ, X
+	CMP #$90
+	BCS Giant_PiranhaAttackUpRTS
+
+	LDA #$40
+	STA Objects_Timer, X
+	INC Giant_PiranhaAction, X
+
+Giant_PiranhaAttackUpRTS:
+	JMP Giant_PiranhaAnimate
+
+Giant_PiranhaBurstBlocks:
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Block_DetectX
+
+	LDA #$00
+	STA Block_DetectXHi
+
+
+Giant_PiranhaAttackDown:
+	LDA Objects_Timer, X
+	BNE Giant_PiranhaAttackDownRTS
+
+	LDA #$40
+	STA <Objects_YVelZ, X
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_YZ, X
+	CMP #$C0
+	BCC Giant_PiranhaAttackDownRTS
+
+	LDA #$01
+	STA  Giant_PiranhaAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+Giant_PiranhaAttackDownRTS:
+	JMP Giant_PiranhaAnimate
+
 ;
-; PLEASE INCLUDE A CREDIT TO THE SOUTHBIRD DISASSEMBLY
-; AND THE ABOVE LINK SOMEWHERE IN YOUR WORKS :)
+;	INC Thwomp_Ticker, X
+;	LDA Thwomp_Ticker, X
+;	AND #$01
+;	TAY
 ;
-; Original disassembler source generated by DCC6502 version v1.4
-; (With labels, comments, and some syntax corrections for nesasm by Southbird)
-; For more info about DCC6502, e-mail veilleux@ameth.org
+;	LDA Objects_BoundLeft, X
+;	ADD Thwomp_DetectXOffset, Y
+;	STA Tile_DetectionX
 ;
-; This source file last updated: 2012-01-04 18:58:32.468868255 -0600
-; Distribution package date: Fri Apr  6 23:46:16 UTC 2012
-;---------------------------------------------------------------------------
-Tile_Layout_TS14:
-	; This defines the individual 8x8 blocks used to construct one of the tiles
-	; Referenced by Address_Per_Tileset, addressed by Level_Tileset
-	; Stored by upper left, then lower left, then upper right, then lower right
+;	LDA Objects_BoundLeftHi, X
+;	ADC #$00
+;	STA Tile_DetectionXHi
+;
+;	LDA Objects_BoundTop, X
+;	STA Tile_DetectionY
+;
+;	LDA Objects_BoundTopHi, X
+;	STA Tile_DetectionYHi
+;
+;	JSR Object_DetectTile
+;	LDA Tile_LastProp
+;	CMP #TILE_PROP_SOLID_TOP
+;	BCC AngryThwomp_NoHit
+;
+;	JSR Object_HitCeiling
+;
+;	INC Thwomp_TilesDetected, X
+;	LDA Thwomp_TilesDetected, X
+;	CMP #$03
+;	BCS AngryThwomp_DetectCeil
+;
+;	LDA #$E0
+;	STA <Objects_YVelZ, X
+;
+;	LDA Tile_LastProp
+;	CMP #TILE_ITEM_COIN
+;	BCC AngryThwomp_NoBump
+;
+;	JSR Object_DirectBumpBlocks
+;
+;AngryThwomp_NoBump:
+;	JMP Thwomp_Draw
+;
+;AngryThwomp_DetectCeil:
+;	LDA #$20
+;	STA Level_Vibration
+;
+;	LDA #$30
+;	STA Objects_Timer, X
+;
+;	LDA #SND_LEVELBABOOM
+;	STA Sound_QLevel1
+;	INC Thwomp_Action, X
+;	RTS
 
-	; Remember that palette is determined by the upper 2 bits of a TILE (not the PATTERN)
-	; I.e. tiles starting at index $00, $40, $80, $C0 are each on that respective palette
+Giant_PiranhaAnimate:
+	INC Giant_PiranhaFrames, X
+	LDA Giant_PiranhaFrames, X
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	STA Objects_Frame, X
 
-	; Upper left 8x8 pattern per tile
-	.byte $FC, $4E, $FE, $05, $05, $E8, $FF, $58, $FF, $FF, $5D, $5F, $FE, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $48, $4A, $26, $FC, $FC, $FC, $FC, $FC, $42, $FC, $33, $32, $05 ; Tiles $10 - $1F
-	.byte $58, $05, $05, $5D, $5F, $FE, $4E, $42, $FE, $48, $4A, $FE, $39, $FF, $B8, $B8 ; Tiles $20 - $2F
-	.byte $B8, $B8, $BC, $44, $34, $4E, $4C, $4C, $FD, $FD, $FE, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DC, $05, $FE, $FE, $05, $05, $05, $05, $60, $D5, $B2, $FF, $FF, $FF, $FF, $FF ; Tiles $40 - $4F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $D8 ; Tiles $50 - $5F
-	.byte $98, $98, $98, $98, $98, $98, $92, $B4, $B4, $B4, $B4, $B4, $B4, $B4, $B4, $B4 ; Tiles $60 - $6F
-	.byte $B4, $B8, $C0, $C0, $C0, $C0, $A4, $EC, $E4, $C0, $D5, $B2, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $05, $50, $54, $54, $50, $C4, $05, $7E, $7E, $04, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $80 - $8F
-	.byte $68, $6A, $78, $7A, $6E, $FE, $6E, $FE, $FE, $05, $0E, $02, $05, $18, $1A, $05 ; Tiles $90 - $9F
-	.byte $04, $77, $1C, $77, $77, $1E, $77, $10, $12, $0E, $77, $77, $12, $8C, $8E, $8C ; Tiles $A0 - $AF
-	.byte $8E, $8C, $8E, $8C, $8E, $75, $75, $67, $4D, $65, $39, $AE, $B8, $8C, $8E, $77 ; Tiles $B0 - $BF
-	.byte $76, $05, $3C, $FE, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $B3, $CC, $FC, $C5, $C7, $D4, $FE, $FC ; Tiles $D0 - $DF
-	.byte $AA, $AB, $FE, $2C, $20, $FE, $28, $2A, $FE, $30, $77, $24, $77, $77, $26, $3B ; Tiles $E0 - $EF
-	.byte $60, $D7, $E0, $FF, $77, $72, $38, $2C, $77, $77, $38, $77, $FE, $FF, $FF, $FF ; Tiles $F0 - $FF
+Giant_PiranhaDraw:
+	LDA #LOW(Giant_PiranhaSprites)
+	STA <Giant_TilesLow
 
-	; Lower left 8x8 pattern per tile
-	.byte $FC, $4F, $FE, $06, $D6, $E9, $FF, $FD, $5B, $FF, $FF, $FF, $46, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $24, $FC, $26, $FC, $FC, $33, $45, $FC, $42, $FC, $FC, $FC, $06 ; Tiles $10 - $1F
-	.byte $FD, $5B, $06, $06, $06, $40, $4C, $4C, $48, $4C, $4C, $4A, $4C, $FF, $B9, $B9 ; Tiles $20 - $2F
-	.byte $B9, $B9, $BD, $34, $34, $4C, $4C, $4C, $FD, $4C, $FE, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DD, $06, $FE, $FE, $06, $06, $06, $06, $61, $B2, $B2, $FF, $FF, $FF, $FF, $FF ; Tiles $40 - $4F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $D9 ; Tiles $50 - $5F
-	.byte $99, $99, $99, $99, $99, $99, $93, $B5, $B5, $B5, $B5, $B5, $B5, $B5, $B5, $B5 ; Tiles $60 - $6F
-	.byte $B5, $B9, $C1, $C1, $C1, $C1, $A5, $ED, $E4, $C1, $B2, $B2, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $06, $51, $55, $55, $51, $C4, $06, $FE, $FE, $76, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $80 - $8F
-	.byte $6C, $FE, $7C, $FE, $6E, $FE, $6E, $FE, $FE, $00, $77, $77, $18, $77, $77, $1A ; Tiles $90 - $9F
-	.byte $06, $0A, $06, $1C, $1E, $06, $0C, $13, $13, $77, $77, $77, $16, $35, $9E, $35 ; Tiles $A0 - $AF
-	.byte $9E, $35, $9E, $35, $9E, $76, $76, $74, $64, $66, $39, $AE, $B9, $35, $9E, $0C ; Tiles $B0 - $BF
-	.byte $76, $06, $FE, $FE, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $E6, $CD, $CD, $CD, $FE, $FE, $FE, $FE, $FE ; Tiles $D0 - $DF
-	.byte $AB, $AB, $22, $77, $77, $28, $77, $77, $2A, $FE, $32, $FE, $24, $26, $FE, $77 ; Tiles $E0 - $EF
-	.byte $61, $FF, $E1, $FF, $2E, $3A, $3A, $77, $77, $77, $7E, $2E, $FE, $FF, $FF, $FF ; Tiles $F0 - $FF
+	LDA #HIGH(Giant_PiranhaSprites)
+	STA <Giant_TilesHi
 
-	; Upper right 8x8 pattern per tile	
-	.byte $FC, $FC, $FE, $07, $07, $EA, $FF, $59, $FF, $5C, $5E, $FF, $FE, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $49, $4B, $FC, $27, $FC, $FC, $FC, $42, $FC, $40, $33, $FC, $07 ; Tiles $10 - $1F
-	.byte $59, $07, $5C, $5E, $07, $40, $4F, $FE, $FE, $49, $4B, $FE, $39, $FF, $BA, $BA ; Tiles $20 - $2F
-	.byte $BA, $BA, $BE, $4F, $4C, $45, $36, $4C, $FD, $4C, $FE, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DE, $07, $FE, $FE, $07, $07, $07, $07, $62, $D5, $B2, $FF, $FF, $FF, $FF, $FF ; Tiles $40 - $4F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $DA ; Tiles $50 - $5F
-	.byte $9A, $9A, $9A, $9A, $9A, $9A, $CA, $B6, $B6, $B6, $B6, $B6, $B6, $B6, $B6, $B6 ; Tiles $60 - $6F
-	.byte $B6, $BA, $C2, $C2, $C2, $C2, $A6, $EE, $E5, $C2, $D5, $B2, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $07, $52, $52, $56, $56, $C6, $07, $7F, $3E, $7E, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $80 - $8F
-	.byte $69, $6B, $79, $7B, $FE, $6F, $FE, $6F, $FE, $01, $0F, $07, $07, $19, $1B, $07 ; Tiles $90 - $9F
-	.byte $77, $0B, $1D, $77, $77, $1F, $77, $0F, $77, $11, $14, $77, $77, $8D, $8F, $8D ; Tiles $A0 - $AF
-	.byte $8F, $8D, $8F, $8D, $8F, $41, $41, $3E, $4D, $65, $AD, $3B, $BA, $8D, $8F, $14 ; Tiles $B0 - $BF
-	.byte $76, $07, $3C, $FE, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $B3, $CE, $FC, $C5, $C7, $D4, $FE, $FC ; Tiles $D0 - $DF
-	.byte $AA, $AB, $23, $2D, $FE, $FE, $29, $2B, $FE, $77, $33, $25, $77, $77, $27, $3B ; Tiles $E0 - $EF
-	.byte $62, $D7, $E2, $FF, $77, $2D, $77, $73, $70, $77, $77, $70, $FE, $FF, $FF, $FF ; Tiles $F0 - $FF
+	LDA #$58
+	STA PatTable_BankSel + 4
 
-	; Lower right 8x8 pattern per tile
-	.byte $FC, $FC, $FE, $08, $D6, $EB, $5A, $FF, $FF, $FF, $FF, $FF, $47, $FF, $FF, $FF ; Tiles $00 - $0F
-	.byte $FF, $FF, $FF, $FC, $25, $FC, $27, $44, $33, $FC, $42, $FC, $FC, $FC, $FC, $5A ; Tiles $10 - $1F
-	.byte $FD, $08, $08, $08, $08, $4C, $4C, $42, $49, $4C, $4C, $4B, $4C, $FF, $BB, $BB ; Tiles $20 - $2F
-	.byte $BB, $BB, $BF, $4C, $4C, $36, $36, $4C, $FD, $FE, $FE, $FF, $FF, $FF, $FF, $FF ; Tiles $30 - $3F
-	.byte $DF, $08, $FE, $FE, $08, $08, $08, $08, $63, $B2, $B2, $FF, $FF, $FF, $FF, $FF ; Tiles $40 - $4F
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $DB ; Tiles $50 - $5F
-	.byte $9B, $9B, $9B, $9B, $9B, $9B, $CB, $B7, $B7, $B7, $B7, $B7, $B7, $B7, $B7, $B7 ; Tiles $60 - $6F
-	.byte $B7, $BB, $C3, $C3, $C3, $C3, $A7, $EF, $E5, $C3, $B2, $B2, $FF, $FF, $FF, $FF ; Tiles $70 - $7F
-	.byte $08, $53, $53, $57, $57, $C6, $08, $FE, $3F, $FE, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $80 - $8F
-	.byte $FE, $6D, $FE, $7D, $FE, $6F, $FE, $6F, $FE, $77, $77, $03, $19, $77, $77, $1B ; Tiles $90 - $9F
-	.byte $09, $08, $08, $1D, $1F, $08, $0D, $77, $77, $15, $15, $77, $0D, $9D, $37, $9D ; Tiles $A0 - $AF
-	.byte $37, $9D, $37, $9D, $37, $43, $43, $3F, $64, $66, $AD, $3B, $BB, $9D, $37, $17 ; Tiles $B0 - $BF
-	.byte $76, $08, $FE, $FE, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; Tiles $C0 - $CF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $E7, $CF, $CF, $CF, $FE, $FE, $FE, $FE, $FE ; Tiles $D0 - $DF
-	.byte $AB, $AB, $77, $77, $21, $29, $77, $77, $2B, $31, $FE, $FE, $25, $27, $FE, $77 ; Tiles $E0 - $EF
-	.byte $63, $FF, $E3, $FF, $2F, $77, $77, $71, $71, $77, $2F, $7F, $FE, $FF, $FF, $FF ; Tiles $F0 - $FF
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
 
-	; Broken into another file for ease of integration in NoDice editor
-	.include "PRG/levels/Under.asm"
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;; BEGIN UNUSED PLAINS COPY DATA ;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; The following are copied fragments from PRG015 ... THEY DO NOT BELONG HERE
-; They won't load correctly (if at all) under this bank anyway...
-; My guess... massive copy/paste error? :D
-
-	; This is (errorenously) the tail end of 1-1
-	.byte $80, $28, $6E, $80, $29, $6A, $80, $11, $67, $E4, $37, $64
-	.byte $40, $37, $68, $40, $38, $63, $41, $38, $68, $41, $39, $62, $42, $39, $68, $42
-	.byte $19, $6C, $92, $26, $71, $80, $28, $73, $80, $17, $76, $01, $38, $70, $A1, $37
-	.byte $74, $A2, $37, $7C, $12, $37, $7F, $0D, $38, $7B, $14, $39, $7A, $15, $27, $8D
-	.byte $9B, $33, $8D, $41, $37, $8D, $A2, $37, $8D, $41, $11, $88, $32, $17, $86, $22
-	.byte $39, $80, $10, $38, $83, $10, $39, $83, $11, $E8, $42, $80, $1A, $8B, $A2, $12
-	.byte $91, $E2, $38, $91, $A1, $12, $94, $02, $40, $9B, $09, $FF
-
-
-; Rest of ROM bank was empty
+	JMP Object_DrawGiant

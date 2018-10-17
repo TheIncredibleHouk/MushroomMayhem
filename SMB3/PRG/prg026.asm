@@ -1031,10 +1031,6 @@ PRG026_A8FF:
 	RTS		 	; Return!
 
 	; Per-world Big [?] block areas
-LevelJctBQ_Layout:	.word BigQBlock1L, BigQBlock2L, BigQBlock3L, BigQBlock4L, BigQBlock5L, BigQBlock6L, BigQBlock7L, BigQBlock8L
-LevelJctBQ_Objects:	.word BigQBlock1O, BigQBlock2O, BigQBlock3O, BigQBlock4O, BigQBlock5O, BigQBlock6O, BigQBlock7O, BigQBlock8O
-LevelJctBQ_Tileset:	.byte 14, 14, 14, 14, 14, 14, 14, 14	; All use "Underground (14)" style
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; HandleLevelJunction

@@ -67,13 +67,13 @@ Video_Upd_Table: ; $803E
 	.word $A06F		; $04 - ???
 	.word Video_DoStatusBarHM; $05 - status bar appropriate for horizontal mirroring
 	.word Video_DoPalUpd	; $06 - Updates palettes per values in the $07BE+ Palette_* vars; used during fade in/out routines
-	.word Video_RoulBordAttr; $07 - Roulette sliders border and attribute settings
-	.word Bonus_InstBoxTop	; $08 - Top of Bonus Game instruction box
-	.word Bonus_InstBoxLine1; $09 - First line of Bonus Game instruction box
-	.word Bonus_InstBoxLine2; $0A - Second line of Bonus Game instruction box
-	.word Bonus_InstBoxLine3; $0B - Third line of Bonus Game instruction box
-	.word Bonus_InstBoxBot	; $0C - Bottom of Bonus Game instruction box
-	.word Video_NSpadeBG	; $0D - N-Spade candy striping background
+	;.word Video_RoulBordAttr; $07 - Roulette sliders border and attribute settings
+	;.word Bonus_InstBoxTop	; $08 - Top of Bonus Game instruction box
+	;.word Bonus_InstBoxLine1; $09 - First line of Bonus Game instruction box
+	;.word Bonus_InstBoxLine2; $0A - Second line of Bonus Game instruction box
+	;.word Bonus_InstBoxLine3; $0B - Third line of Bonus Game instruction box
+	;.word Bonus_InstBoxBot	; $0C - Bottom of Bonus Game instruction box
+	;.word Video_NSpadeBG	; $0D - N-Spade candy striping background
 	;.word Video_DoWXMario00	; $0E - "World X" Intro, Mario (horizontal scroll at $00)
 	;.word Video_DoWXLuigi00	; $0F - "World X" Intro, Luigi (horizontal scroll at $00)
 	;.word Video_DoWXMario80	; $10 - "World X" Intro, Mario (horizontal scroll at $80)
