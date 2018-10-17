@@ -4666,7 +4666,7 @@ Player_Events:
 
 	LDA PAGE_C000
 	PHA
-	LDA #$0E
+	LDA #13
 	STA PAGE_C000
 
 	JSR PRGROM_Change_C000 
