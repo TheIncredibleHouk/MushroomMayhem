@@ -634,7 +634,7 @@ PRG000_C948:
 
 PRG000_C949:
 	; Set page @ A000 to 5
-	LDA #$05
+	LDA #19
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
