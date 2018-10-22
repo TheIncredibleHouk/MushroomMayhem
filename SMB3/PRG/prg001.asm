@@ -2581,8 +2581,8 @@ IceFireFly_DestroyProjectilesRTS:
 ;	2 - Only opens key blocks of the 2nd palette
 ;	3 - Only opens key blocks of the 3rd palette
 ;***********************************************************************************
-;	A key item that can be carried and switches a tile that has the "LOCK" property on it.
-;   If the key is generated and goes off screen, it will reappear at it's spawn point.
+;	A key item that can be carried and toggles a tile that has the "LOCK" property on it.
+;   If the key is generated and goes off screen, it will reappear at its spawn point.
 ;***********************************************************************************
 
 
