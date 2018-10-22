@@ -1778,24 +1778,33 @@ SetDNActive1:
 
 	LDA PAGE_C000
 	STA DAIZ_TEMP1
-	LDA #$15
+
+	LDA #20
 	STA PAGE_C000
+
 	JSR PRGROM_Change_C000
+
 	LDA #$00
 	STA <Temp_Var2
+
 	LDA PaletteIndex
 	STA <Temp_Var1
 	CLC
 	ROL <Temp_Var1
 	ROL <Temp_Var2
+
 	ROL <Temp_Var1
 	ROL <Temp_Var2
+
 	ROL <Temp_Var1
 	ROL <Temp_Var2
+
 	ROL <Temp_Var1
 	ROL <Temp_Var2
+
 	ROL <Temp_Var1
 	ROL <Temp_Var2
+
 	LDA <Temp_Var2
 	CLC
 	ADC #$C0

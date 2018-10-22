@@ -3297,13 +3297,13 @@ TILE_ITEM_SPINNER	= $FE
 ; These lookup table addresses are common, even though their banks are not,
 ; and so I define these constants for lack of a better solution:
 ObjectGroup_InitJumpTable	= $A000
-ObjectGroup_NormalJumpTable	= $A048
-ObjectGroup_CollideJumpTable	= $A090
-ObjectGroup_Attributes		= $A0D8
-ObjectGroup_PatTableSel		= $A0FC
-ObjectGroup_KillAction		= $A120
-ObjectGroup_PatternStarts	= $A144
-ObjectGroup_PatternSets		= $A168
+ObjectGroup_NormalJumpTable	= $A028
+ObjectGroup_CollideJumpTable	= $A050
+ObjectGroup_Attributes		= $A078
+ObjectGroup_PatTableSel		= $A08C
+ObjectGroup_KillAction		= $A0A0
+ObjectGroup_PatternStarts	= $A0C8
+ObjectGroup_PatternSets		= $A0F0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; GAME CONSTANTS

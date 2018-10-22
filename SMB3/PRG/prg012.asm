@@ -2,21 +2,25 @@ Map_PrepareLevel:
 	LDA World_Map_X
 	ORA World_Map_XHi
 	STA DAIZ_TEMP1
+
 	LDA World_Map_Y
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA DAIZ_TEMP2
+
 	LDX #$00
 
 NextPointerSearch:
 	LDA DAIZ_TEMP1
 	CMP MapPointers+1, X
 	BNE PointerNotFound
+
 	LDA DAIZ_TEMP2
 	CMP MapPointers+2,X
 	BEQ PointerFound
+	
 	ORA #$80
 	CMP MapPointers+2,X
 	BNE PointerNotFound

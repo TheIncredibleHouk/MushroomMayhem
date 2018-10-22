@@ -782,8 +782,10 @@ PRG000_CA40:
 
 	; Breaks up every 36 object IDs to make smaller jump tables
 ObjectID_BaseVals:
-	.byte $00, $24, $48, $6C, $90
+	.byte 00, 20, 40, 60, 80, 100, 120, 140, 160
 
+ObjectID_CodeBank:
+	.byte 01, 02, 03, 04, 05, 14, 15, 16, 17
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_DoStateAction
@@ -794,7 +796,7 @@ Object_DoStateAction:
 	LDA Objects_State,X
 	BEQ PRG000_CA40	 ; If this object is "dead/empty", jump to PRG000_CA40
 
-	LDY #$04	 ; Y = 4
+	LDY #$08	 ; Y = 4
 
 	; Try to locate the group that this object ID belongs to
 	; Groups are defined by ObjectID_BaseVals, every 36 values.
@@ -809,28 +811,22 @@ PRG000_CA51:
 	BNE PRG000_CA51	 ; If Y > 0, loop!
 
 PRG000_CA5C:
-
-	; Y contains index to the base value for this group of object IDs
-	; A contains the object's ID
-
-	INY		 ; Y++
-	SUB ObjectID_BaseVals-1,Y ; Subtract next group's ID to make this object's ID relative to group
+	SUB ObjectID_BaseVals,Y ; Subtract next group's ID to make this object's ID relative to group
 
 	STA ObjGroupRel_Idx ; Set ObjGroupRel_Idx to this group-relative index value
 
-	; Y is now a value of 1 to 5, and that value dictates the page 
-	; where this object's code can be found...
-	STY PAGE_A000	 ; Set new page
-	TAY		; Object group-relative index -> 'Y'
+	LDA ObjectID_CodeBank, Y
+	STA PAGE_A000	 ; Set new page
+
+	LDY ObjGroupRel_Idx		; Object group-relative index -> 'Y'
 		 
+
 	JSR PRGROM_Change_A000	 ; Set page @ A000 to appropriate object page...
 
 	; Object's can request a particular pattern set to be available to them.
 	; They may set either the fifth or sixth bank of CHRROM, which is specified
 	; by bit 7.  
 
-	LDX #$00	 ; X = 0 (fifth CHRROM bank)
-	STX BossBoundBox
 	LDA ObjectGroup_PatTableSel,Y	 ; Load CHRROM bank request for this object, if any
 	BEQ PRG000_CA7F	 ; If CHRROM bank request is zero, no change, jump to PRG000_CA7F
 	BPL PRG000_CA7A	 ; If CHRROM bank request does not have bit 7 set, jump to PRG000_CA7A
@@ -3419,6 +3415,9 @@ CustomBoundBox:
 	LDA <Objects_YHiZ, X
 	ADC #$00
 	STA Objects_BoundBottomHi, X
+
+	LDA #$00	 ; X = 0 (fifth CHRROM bank)
+	STA BossBoundBox
 	RTS		 ; Return
 
 

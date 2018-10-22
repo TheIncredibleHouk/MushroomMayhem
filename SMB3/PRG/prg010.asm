@@ -2239,7 +2239,7 @@ Scroll_ColumnLOff:	.byte $00, $0F, $00
 
 Map_PanRight:
 	; Switch to page 12 @ A000 (for map tile 8x8 layout data)
-	LDA #$0F
+	LDA #21
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -3039,7 +3039,7 @@ PRG010_D16F:
 	CMP #$01	
 	BLT PRG010_D179	 ; If Map_Operation < 1, jump to PRG010_D179
 
-	LDA #$0B
+	LDA #11
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JSR MapObjects_UpdateDrawEnter	; Update all objects, draw them, enter them

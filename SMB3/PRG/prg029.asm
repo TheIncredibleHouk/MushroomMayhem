@@ -1972,6 +1972,7 @@ PRG029_DC36:
 	; Set address in tile memory to Map_Tile_AddrL/H
 	LDA Tile_Mem_Addr,X
 	STA <Map_Tile_AddrL
+	
 	LDA Tile_Mem_Addr+1,X
 	STA <Map_Tile_AddrH
 
@@ -2035,21 +2036,21 @@ PRG029_DC7D:
 
 Map16_ByTileSet:
 	; A000 page selected per-Level_Tileset...
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
+	.byte $16
+	.byte $16
+	.byte $16
+	.byte $16
+	.byte $16
+	.byte $16
+	.byte $16
+	.byte $16
+	.byte $17
+	.byte $17
+	.byte $17
+	.byte $17
+	.byte $17
+	.byte $17
+	.byte $17
 
 Map16_OffsetByTileset:
 	; Defines the 8x8 blocks to build a particular 16x16 "tile"
@@ -2070,9 +2071,7 @@ Map16_OffsetByTileset:
 	.word $B400
 	.word $B800
 	.word $BC00
-	.word $A000
-	.word $A400
-	.word $A800
+	
 
 Map16Offsets:
 	
@@ -2082,14 +2081,20 @@ TileChng_OneTile:
 	LDY Level_Tileset
 	LDA TileLayoutPage_ByTileset,Y	
 	STA PAGE_A000	 
+	
 	JSR PRGROM_Change_A000
+
 	LDA Level_Tileset
 	STA <Temp_Var14
+
 	ASL <Temp_Var14
+
 	LDY <Temp_Var14
+
 	LDA Map16_OffsetByTileset, Y
 	STA <Temp_Var14
 	INY
+
 	LDA Map16_OffsetByTileset, Y
 	STA <Temp_Var15
 	LDY <Temp_Var5	 ; Y = Temp_Var5 (row/column offset value)

@@ -1144,6 +1144,7 @@ PRG030_891A:
 	; Set bank C000 to page 22 and A000 to page 12
 	LDA #22
 	STA PAGE_C000
+
 	LDA #12
 	STA PAGE_A000
 	JSR PRGROM_Change_Both2
@@ -2795,7 +2796,7 @@ LevelLoad:	; $97B7
 	STA Level_Jct_VS
 
 LevelLoadQuick:
-	LDA #$12
+	LDA #$6
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -2807,39 +2808,49 @@ LevelLoadQuick:
 	; TTTT TTTT = tile set
 	
 
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
+
 	LDA LevelLoadPointer
+	CLC
+	ROL A
+	ROL <Temp_Var2
+	
+	ROL A
+	ROL <Temp_Var2
+
 	STA <Temp_Var1
 
-	LDA #$00
+	LDA <Temp_Var2
+	ADD #$BC
 	STA <Temp_Var2
-	CLC
-	ROL <Temp_Var1 
-	ROL <Temp_Var2
-	ROL <Temp_Var1 
-	ROL <Temp_Var2
-	LDA #$A0
-	CLC
-	ADC <Temp_Var2
-	STA <Temp_Var2
+
 	LDY #$00
 	LDA [Temp_Var1],Y
 	STA <Temp_Var3	; bank
+
 	INY
+
 	LDA [Temp_Var1],Y
 	STA <Temp_Var14  ; lo address
+
 	INY
+
 	LDA [Temp_Var1],Y
 	STA <Temp_Var15  ; hi address
 	INY
 
 	LDA JustName
-	BNE  JustName1
+	BNE JustName1
 
 	LDA [Temp_Var1],Y
 	STA Level_Tileset
 	STA Level_TilesetIdx
 	DEC Level_TilesetIdx
+
 	STY TempY
+
 	JSR LoadTileProperties
 	JSR LoadTransitions
 	LDY TempY
@@ -3330,10 +3341,12 @@ LoadTileProperties:
 	
 	LDA #$00
 	STA <Temp_Var7
+
 	LDA Level_Tileset
 	ADD #$A0
 	STA <Temp_Var8
-	LDA #$16			; switch to the tile properties table
+
+	LDA #6			; switch to the tile properties table
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	LDY #$00
@@ -3346,16 +3359,41 @@ CopyTileProps:
 	RTS
 
 LoadTransitions:
+	STA Debug_Snap
 	LDA #$00
 	STA <Temp_Var7 
-	LDA Level_Tileset
-	ADD #$A0
 	STA <Temp_Var8
-	LDA #$17
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
 	
+	LDA Level_Tileset
+	
+	CLC
+
+	ROL A
+	ROL <Temp_Var8
+
+	ROL A
+	ROL <Temp_Var8
+
+	ROL A
+	ROL <Temp_Var8
+
+	ROL A
+	ROL <Temp_Var8
+
+	ROL A
+	ROL <Temp_Var8
+
+	ROL A
+	ROL <Temp_Var8
+
+	STA <Temp_Var7
+
+	LDA <Temp_Var8
+	ADD #$B0
+	STA <Temp_Var8
+
 	LDY #$00
+
 CopyAll:
 	LDA [Temp_Var7], Y
 	STA FireBallTransitions, Y
@@ -3479,21 +3517,21 @@ PRG030_9AA5:
 
 TileLayoutPage_ByTileset:
 	; A000 page selected per-Level_Tileset...
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $0F
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
+	.byte 21
+	.byte 21
+	.byte 21
+	.byte 21
+	.byte 21
+	.byte 21
+	.byte 21
+	.byte 21
+	.byte 22
+	.byte 22
+	.byte 22
+	.byte 22
+	.byte 22
+	.byte 22
+	.byte 22
 
 	; THESE VALUES ARE WRONG!  Appears that they were not maintained?
 	; It doesn't matter because these specialized cases go where they need to anyway!
@@ -4972,52 +5010,75 @@ PRG012_A4C9:
 	; Temp_Var1/2 will form an address pointing at the beginning of this world's map tile layout...
 	LDA PAGE_A000
 	STA DAIZ_TEMP2
+
 	LDA PAGE_C000	
 	STA DAIZ_TEMP3
-	LDA #$11
+
+	LDA #6
 	STA PAGE_A000
+
 	JSR PRGROM_Change_A000
+
 	LDA World_Num
 	ASL A
 	ASL A
 	TAX
-	LDA $A000, X
+
+	
+	LDA $B800, X
 	STA PAGE_A000
 	STA PAGE_C000
 	INC PAGE_C000
+
 	INX
-	LDA $A000, X
+
+	LDA $B800, X
 	STA <Temp_Var1
+
 	INX
-	LDA $A000, X
+
+	LDA $B800, X
 	STA <Temp_Var2
+
 	LDY #$00
+
 	JSR PRGROM_Change_A000
 	JSR PRGROM_Change_C000
+
 	LDA [Temp_Var1], Y
 	STA PatTable_BankSel + 1
+
 	INY
+
 	LDA [Temp_Var1], Y
 	STA PaletteIndex
+
 	INY
+
 	LDA [Temp_Var1], Y
 	STA Sound_QMusic2
+
 	INY
+
 	LDA [Temp_Var1], Y
 	ASL A
 	ASL A
 	ASL A
 	ASL A
 	STA WorldWidth
+	
 	INY
+
 	LDA [Temp_Var1], Y
 	STA <Temp_Var15
 	STA <Temp_Var14
+
 	LDA #$05
 	CLC
 	ADC <Temp_Var1
 	STA <Temp_Var1
 	BCC NoIncVar2Map
+
 	INC <Temp_Var2
 
 NoIncVar2Map:
@@ -5035,23 +5096,34 @@ Clear_MapPointers:
 CopyMapPointers:
 	LDA [Temp_Var1], Y
 	STA MapPointers, X
+
 	INX
+
+	
 	JSR Next_World_Byte
 	LDA [Temp_Var1], Y
 	STA MapPointers, X
+
 	INX
+
 	JSR Next_World_Byte
+
 	LDA [Temp_Var1], Y
 	STA MapPointers, X
+
 	INX
+
 	JSR Next_World_Byte
+
 	DEC <Temp_Var15
 	BNE CopyMapPointers
+	
 	LDA #$FF
 	STA MapPointers, X
 
 	LDA PAGE_A000
 	PHA
+
 	JSR LoadTileProperties
 	PLA
 	STA PAGE_A000
@@ -5064,9 +5136,12 @@ PRG012_A498:
 	LDA [Temp_Var1],Y	; Get byte from tile layout
 	CMP #$ff	 
 	BEQ PRG012_A4C1	 	; If it's $FF (terminator), jump to PRG012_A4C1
+
 	STA DAIZ_TEMP2
 	STY TempY
+
 	JSR Try_Replace_Tile
+
 	LDY TempY
 	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
 	INY		 	; Y++
@@ -5104,7 +5179,9 @@ PRG012_A4C1:
 
 	LDA DAIZ_TEMP2
 	STA PAGE_A000
+
 	JSR PRGROM_Change_A000
+	
 	LDA DAIZ_TEMP3
 	STA PAGE_C000
 	JSR PRGROM_Change_C000
