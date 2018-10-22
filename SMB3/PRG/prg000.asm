@@ -826,7 +826,8 @@ PRG000_CA5C:
 	; Object's can request a particular pattern set to be available to them.
 	; They may set either the fifth or sixth bank of CHRROM, which is specified
 	; by bit 7.  
-
+	LDX #$00
+	
 	LDA ObjectGroup_PatTableSel,Y	 ; Load CHRROM bank request for this object, if any
 	BEQ PRG000_CA7F	 ; If CHRROM bank request is zero, no change, jump to PRG000_CA7F
 	BPL PRG000_CA7A	 ; If CHRROM bank request does not have bit 7 set, jump to PRG000_CA7A
@@ -2287,6 +2288,7 @@ Object_SetPaletteFromAttr:
 	; $D3E0
 
 Object_DeleteInPit:
+	STA Debug_Snap
 	LDA <Objects_YHiZ, X
 	BEQ Object_DeleteInPitRTS
 	BMI Object_DeleteInPitRTS

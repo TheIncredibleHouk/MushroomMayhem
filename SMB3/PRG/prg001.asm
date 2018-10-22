@@ -2569,6 +2569,23 @@ IceFireFly_DestroyProjectiles:
 IceFireFly_DestroyProjectilesRTS:
 	RTS
 
+;***********************************************************************************
+; Key
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+; PROPERTIES
+;	0 - Opens any door/key block
+;	1 - Only opens key blocks of the 1st palette
+;	2 - Only opens key blocks of the 2nd palette
+;	3 - Only opens key blocks of the 3rd palette
+;***********************************************************************************
+;	A key item that can be carried and switches a tile that has the "LOCK" property on it.
+;   If the key is generated and goes off screen, it will reappear at it's spawn point.
+;***********************************************************************************
+
+
 Key_Pals:
 	.byte SPR_PAL3, SPR_PAL1, SPR_PAL2, SPR_PAL3
 
@@ -2582,9 +2599,20 @@ ObjInit_Key:
 	LDA #(ATTR_SHELLPROOF | ATTR_EXPLOSIONPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
+	LDA <Objects_XZ, X
+	STA Key_ReappearX, X
+
+	LDA <Objects_XHiZ, X
+	STA Key_ReappearXHi, X
+
+	LDA <Objects_YZ, X
+	STA Key_ReappearY, X
+
+	LDA <Objects_YHiZ, X
+	STA Key_ReappearYHi, X
+
 	LDA #$FF
 	STA Key_AdjacentChecks, X
-	STA Key_Reappear, X
 
 	LDY Objects_Property, X
 	BEQ Init_KeyRTS
@@ -2644,6 +2672,10 @@ Key_NoOffscreenDelete:
 
 	LDA Key_ReappearYHi, X
 	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
 	
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X

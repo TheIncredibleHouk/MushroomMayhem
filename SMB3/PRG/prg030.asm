@@ -3359,7 +3359,6 @@ CopyTileProps:
 	RTS
 
 LoadTransitions:
-	STA Debug_Snap
 	LDA #$00
 	STA <Temp_Var7 
 	STA <Temp_Var8
