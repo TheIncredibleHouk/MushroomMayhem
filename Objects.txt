@@ -1,0 +1,119 @@
+Object remapping:
+
+	
+	
+	
+	----------------
+	
+	
+	--------------------
+	
+	
+	
+	
+	.word ObjInit_PirateBoo	; Object $2E - OBJ_PIRATEBOO
+	
+	.word ObjInit_DoNothing	; Object $30 - OBJ_PACBOO
+	
+	.word ObjInit_PhantoFlip	; Object $32 - OBJ_PHANTO_FLIP
+	.word ObjInit_DoNothing		; Object $33 - OBJ_NIPPER
+	.word ObjInit_Toad		; Object $34 - OBJ_TOAD
+	-----------------------
+	.word ObjInit_DoNothing		; Object $45 - OBJ_PWING
+	
+	
+	
+	.word ObjInit_DoNothing	; Object $49 - OBJ_FLOATINGBGCLOUD
+	.word ObjInit_DoNothing		; Object $4E
+	.word ObjInit_DoNothing		; Object $4F - OBJ_CHAINCHOMPFREE
+	-----------------------
+	
+	.word ObjInit_DoNothing	; Object $51 - OBJ_ROTODISCDUAL
+	
+	.word ObjInit_DoNothing		; Object $54 - OBJ_DONUTLIFTSHAKEFALL
+	
+	.word ObjInit_DoNothing	; Object $56 - OBJ_PIRANHASIDEWAYSLEFT
+	.word ObjInit_DoNothing	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
+	
+	
+	.word ObjInit_DoNothing	; Object $5A - OBJ_ROTODISCCLOCKWISE
+	.word ObjInit_DoNothing	; Object $5B - OBJ_ROTODISCCCLOCKWISE
+	
+	.word ObjInit_DoNothing		; Object $5D - OBJ_STONEBLOCK
+	.word ObjInit_DoNothing	; Object $5E - OBJ_ROTODISCDUALOPPOSE
+	.word ObjInit_DoNothing	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
+	.word ObjInit_DoNothing	; Object $60 - OBJ_ROTODISCDUALCCLOCK
+	.word ObjInit_PhantomBlooper	; Object $61 - OBJ_SKULLBLOOPER
+	.word ObjInit_Blooper		; Object $62 - OBJ_BLOOPER
+	
+	-------------------------
+	.word ObjInit_DoNothing	; Object $64 - OBJ_CHEEPCHEEPHOPPER
+	.word ObjInit_DoNothing	; Object $65 - OBJ_WATERCURRENTUPWARD
+	.word ObjInit_DoNothing	; Object $66 - OBJ_WATERCURRENTDOWNARD
+	
+	.word ObjInit_DoNothing		; Object $68 - OBJ_TWIRLINGBUZZY
+	.word ObjInit_DoNothing		; Object $69 - OBJ_TWIRLINGSPINY
+	
+	
+	
+
+	
+	
+	.word ObjInit_DoNothing	; Object $75 - OBJ_WATERFILLER
+	
+	
+	------------------------
+	
+	
+	.word ObjInit_DoNothing	; Object $7B - OBJ_BLUESHELL
+	
+	.word ObjInit_ParaZombieGoomba	; Object $7D - OBJ_PARAZOMBIEGOOMBA
+	.word ObjInit_DoNothing	; Object $7E - OBJ_BIGGREENHOPPER
+	.word ObjInit_DoNothing	; Object $7F - OBJ_BIGPurplePIRANHA
+	.word ObjInit_DoNothing	; Object $80 - OBJ_FLYINGGREENPARATROOPA
+
+
+	.word ObjInit_DoNothing	; Object $85 - OBJ_BLUESPINY
+	
+	
+
+	-----------------------
+	.word ObjInit_DoNothing	; Object $8C - OBJ_THWOMPRIGHTSLIDE
+	.word ObjInit_DoNothing	; Object $8D - OBJ_THWOMPUPDOWN
+	.word ObjInit_DoNothing	; Object $8E - OBJ_THWOMPDIAGONALUL
+	.word ObjInit_DoNothing	; Object $8F - OBJ_THWOMPDIAGONALDL
+	
+	
+	.word ObjInit_IntroSequence	; Object $93 - OBJ_INTRO
+	
+	.word ObjInit_DoNothing		; Object $95 - OBJ_BIGQBLOCK_MUSHROOM
+	.word ObjInit_DoNothing		; Object $96 - OBJ_BIGQBLOCK_FIREFLOWER
+	.word ObjInit_DoNothing		; Object $97 - OBJ_BIGQBLOCK_SUPERLEAF
+	.word ObjInit_DoNothing		; Object $98 - OBJ_BIGQBLOCK_TANOOKI
+	.word ObjInit_DoNothing		; Object $99 - OBJ_BIGQBLOCK_FROG
+	.word ObjInit_DoNothing		; Object $9A - OBJ_BIGQBLOCK_HAMMER
+	.word ObjInit_DoNothing		; Object $9B
+	.word ObjInit_DoNothing		; Object $9C
+	.word ObjInit_DoNothing	; Object $9D - OBJ_FIREJET_UPWARD
+	
+	.word ObjInit_DoNothing	; Object $9F - OBJ_PARABEETLE
+	------------------------
+	
+	.word ObjInit_DoNothing	; Object $A1 - OBJ_PUMPKINFREE_FLIPPED
+	
+	
+	.word ObjInit_DoNothing	; Object $A5 - OBJ_PUMPKINPLANT_HOPPER
+	.word ObjInit_DoNothing	; Object $A6 - OBJ_VENUSFIRETRAP
+	.word ObjInit_DoNothing	; Object $A7 - OBJ_VENUSFIRETRAP_CEIL
+	.word ObjInit_DoNothing		; Object $A8 - OBJ_OilTRAP
+	.word ObjInit_DoNothing		; Object $A9 - OBJ_OilTRAP_CEIL
+	.word ObjInit_DoNothing		; Object $AA - OBJ_AIRSHIPPROP
+	.word ObjInit_DoNothing	; Object $AB (doesn't really work, and the "normal" routine is even weirder)
+	.word ObjInit_DoNothing	; Object $AC - OBJ_FIREJET_LEFT
+	.word ObjInit_DoNothing	; Object $AD - OBJ_ROCKYWRENCH
+	.word ObjInit_DoNothing		; Object $AE - OBJ_BOLTLIFT
+	
+	.word ObjInit_DoNothing	; Object $B0 - OBJ_BIGCANNONBALL
+	.word ObjInit_DoNothing	; Object $B1 - OBJ_FIREJET_RIGHT
+	.word ObjInit_DoNothing	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
+	

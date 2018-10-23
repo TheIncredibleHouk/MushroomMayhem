@@ -1,0 +1,20 @@
+78	.word ObjInit_Spike	; Object $29 - OBJ_SPIKE
+79	.word ObjInit_SpikeBall	; Object $05
+7A	.word ObjInit_ChainChomp	; Object $89 - OBJ_CHAINCHOMP
+7B	.word ObjInit_GiantChomp	; Object $14 OBJ_GIANTCHOMP
+7C	.word ObjInit_Thwomp		; Object $8A - OBJ_THWOMP
+7D	.word ObjInit_AngryThwomp	; Object $8B - OBJ_AngryTHWOMP
+7E	.word ObjInit_Boo		; Object $2F - OBJ_BOO
+7F	.word ObjInit_ProjBar	; Object $90 - OBJ_FIREICEBAR
+80	.word ObjInit_Sun		; Object $AF - OBJ_ENEMYSUN
+81	.word ObjInit_Podobo		; Object $9E - OBJ_Podobo
+82	.word ObjInit_PipePodobo	; Object $53 - OBJ_PIPEPODOBO
+83	.word ObjInit_DiagonalPodobo		; Object $2B - OBJ_RICOCHET_PODOBO
+84
+85
+86
+87
+88
+89
+8A
+8B

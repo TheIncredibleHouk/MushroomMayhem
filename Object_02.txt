@@ -1,0 +1,20 @@
+14	.word ObjInit_Waterfill	; Object $15 OBJ_WATERFILL
+15	.word ObjInit_WaterSplash; Object $19 - OBJ_POWERUP_FIREFLOWER
+16	.word ObjInit_IceSpike	; Object $21 - OBJECT_ICESPIKE
+17	.word ObjInit_Lightning		; Object $35 - OBJ_LIGHTNINGBOLT
+18	.word ObjInit_Stars		; Object $B3 
+19	.word ObjInit_Explosion	; Object $50 - OBJ_EXPLOSION
+1A	.word ObjInit_Dimmer		; Object $94 - OBJ_DIMMER
+1B	.word ObjInit_JumpControl	; Object $4D
+1C	.word ObjInit_Weather	; Object $0F - OBJ_RAIN
+1D	.word ObjInit_KeyPieceCollection	; Object $13 OBJ_KEYPIECES
+1E	.word ObjInit_KeyPiece	; Object $16 OBJ_KEYPIECE
+1F	.word ObjInit_Timer	; Object $1D
+20	.word ObjInit_Clock	; Object $20
+21
+22
+23
+24
+25
+26
+27

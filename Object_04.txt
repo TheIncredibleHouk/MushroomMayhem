@@ -1,0 +1,20 @@
+3C	.word ObjInit_Goomba	; Object $72 - OBJ_GOOMBA
+3D	.word ObjInit_ParaGoomba	; Object $73 - OBJ_PARAGOOMBA
+3E	.word ObjInit_Troopa	; Object $6C - OBJ_GREENTROOPA
+3F	.word ObjInit_Troopa	; Object $6D - OBJ_REDTROOPA
+40	.word ObjInit_PurpleTroopa	; Object $7A - OBJ_PURPLETROOPA
+41	.word ObjInit_BouncyTroopa	; Object $6E - OBJ_PARATROOPAGREENHOP
+42	.word ObjInit_ParaTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
+43	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
+44	.word ObjInit_SwimmingCheep	; Object $77 - OBJ_GREENCHEEP
+45	.word ObjInit_Piranha	; Object $A2 - OBJ_PIRANHA
+46	.word ObjInit_Piranha_Aggressive	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
+47	.word ObjInit_ZombieGoomba	; Object $74 - OBJ_ZOMBIEGOOMBA
+48	.word ObjInit_DryBones	; Object $3F - OBJ_DRYBONES
+49	.word ObjInit_Pumpkin	; Object $A4 - OBJ_PUMPKINPLANT
+4A	.word ObjInit_PumpkinFree	; Object $A0 - OBJ_PUMPKINFREE
+4B	.word ObjInit_DryCheep	; Object $42 - OBJ_FLAMINGCHEEP
+4C	.word ObjInit_PiranhaGrower		; Object $41 - OBJ_PIRANHAGROWER
+4D
+4E
+4F

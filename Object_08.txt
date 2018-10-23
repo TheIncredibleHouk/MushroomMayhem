@@ -1,0 +1,20 @@
+8C	.word ObjInit_HammerBro		; Object $81 - OBJ_HAMMERBRO
+8D	.word ObjInit_NinjaBro	; Object $82 - OBJ_NINJABRO
+8E	.word ObjInit_IceBro		; Object $86 - OBJ_ICEBRO
+8F	.word ObjInit_FireBro		; Object $87 - OBJ_FIREBRO
+90	.word ObjInit_PirateBro	; Object $88 - OBJ_PIRATEBRO
+91	.word ObjInit_Spintula	; Object $52 - OBJ_SPINTULA
+92	.word ObjInit_Pyrantula		; Object $58 - OBJ_PYRANTULA
+93
+94
+95
+96
+97
+98
+99
+9A
+9B
+9C
+9D
+9E
+9F

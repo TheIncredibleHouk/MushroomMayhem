@@ -1,0 +1,20 @@
+00
+01	.word ObjInit_CoinLock	; Object $04
+02	.word ObjInit_BounceDU	; Object $06 - OBJ_BOUNCEDOWNUP
+03	.word ObjInit_Bubble	; Object $09 - OBJ_BUBBLE
+04	.word ObjInit_PowerUp	; Object $0B - OBJ_POWERUP
+05	.word ObjInit_PUp1; Object $0C - OBJ_POWERUP_INIT1
+06	.word ObjInit_PUp2	; Object $0D - OBJ_POWERUP_MUSHROOM
+07	.word ObjInit_ModifyPointers	; Object $0A - OBJ_BULLY
+08	.word ObjInit_Key	; Object $11 OBJ_KEY
+09	.word ObjInit_Spring	; Object $12 OBJ_SPRING
+0A	.word ObjInit_MagicStar1	; Object $4A - OBJ_MAGICSTAR
+0B	.word ObjInit_MagicStar2	; Object $4B - OBJ_MAGICSTAR
+0C	.word ObjInit_MagicStar3	; Object $4C - OBJ_MAGICSTAR
+0D	.word ObjInit_NegaStar; Object $17 - OBJ_NEGASTAR
+0E	.word ObjInit_StarPiece	; Object $1B - OBJ_BOUNCELEFTRIGHT
+0F	.word ObjInit_SendBack	; Object $1C
+10	.word ObjInit_ESwitch	; Object $1E - OBJ_ESWITCH
+11	.word ObjInit_IceBlock		; Object $5C - OBJ_ICEBLOCK
+12	.word ObjInit_PoisonMushroom	; Object $76 - OBJ_POISONMUSHROOM
+13

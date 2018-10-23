@@ -1,0 +1,20 @@
+50	.word ObjInit_ShyGuy		; Object $67 - OBJ_SNOWGUY
+51	.word ObjInit_Brick	; Object $07 - OBJ_BRICK
+52	.word ObjInit_VeggieGuy	; Object $6A - OBJ_VEGGIEGUY
+53	.word ObjInit_SnowGuy	; Object $6B - OBJ_SHYGUY
+54	.word ObjInit_SnowBall	; Object $02
+55	.word ObjInit_Snifit	; Object $46 - OBJ_SNIFIT
+56	.word ObjInit_Ninji	; Object $48 - OBJ_NINJI
+57	.word ObjInit_Birdo		; Object $47 - OBJ_BIRDO
+58	.word ObjInit_Phanto		; Object $31 - OBJ_PHANTO
+59	.word ObjInit_Spark		; Object $2A - OBJ_SPARK
+5A	.word ObjInit_BobOmb		; Object $55 - OBJ_BOBOMB
+5B	.word ObjInit_FloatMine	; Object $63 - OBJ_FLOATMINE
+5C
+5D
+5E
+5F
+60
+61
+62
+63
