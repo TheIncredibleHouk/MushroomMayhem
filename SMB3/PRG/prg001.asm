@@ -20,7 +20,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjInit_IceFireFly; Object $10 - OBJ_PIXIE
 	.word ObjInit_Key	; Object $11 OBJ_KEY
 	.word ObjInit_Spring	; Object $12 OBJ_SPRING
-	.word ObjInit_KeyPieces	; Object $13 OBJ_KEYPIECES
+	.word ObjInit_KeyPieceCollection	; Object $13 OBJ_KEYPIECES
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
@@ -43,7 +43,7 @@ ObjectGroup00_InitJumpTable:
 	.word ObjNorm_IceFireFly	; Object $10 - OBJ_PIXIE
 	.word ObjNorm_Key	; Object $11
 	.word ObjNorm_Spring	; Object $12
-	.word ObjNorm_KeyPieces	; Object $13 
+	.word ObjNorm_KeyPieceCollection	; Object $13 
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -3065,7 +3065,7 @@ KeyPieceGet:
 KeyPieceXOffset:
 	.byte $10, $18, $20, $28, $30
 
-ObjInit_KeyPieces:
+ObjInit_KeyPieceCollection:
 	LDA #$05
 	STA Objects_SpritesRequested,X
 
@@ -3074,7 +3074,7 @@ ObjInit_KeyPieces:
 	INC Objects_Global, X
 	RTS
 
-ObjNorm_KeyPieces:
+ObjNorm_KeyPieceCollection:
 	LDA #$93
 	STA <Temp_Var1
 
@@ -3088,7 +3088,7 @@ ObjNorm_KeyPieces:
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
 	CPY #$00
-	BEQ ObjNorm_KeyPieces1
+	BEQ ObjNorm_KeyPieceCollection1
 
 	LDA <Temp_Var1
 	ADD #$40
@@ -3098,7 +3098,7 @@ ObjNorm_KeyPieces:
 	ADD #$40
 	STA <Temp_Var2
 
-ObjNorm_KeyPieces1:
+ObjNorm_KeyPieceCollection1:
 	LDY Object_SpriteRAMOffset, X
 	LDA Objects_Data4, X
 	STA <Temp_Var5

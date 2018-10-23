@@ -2288,7 +2288,6 @@ Object_SetPaletteFromAttr:
 	; $D3E0
 
 Object_DeleteInPit:
-	STA Debug_Snap
 	LDA <Objects_YHiZ, X
 	BEQ Object_DeleteInPitRTS
 	BMI Object_DeleteInPitRTS
