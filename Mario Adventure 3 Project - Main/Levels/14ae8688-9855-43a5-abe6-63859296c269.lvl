@@ -14,8 +14,7 @@
     <sprite x="157" y="17" value="111" item="0" property="5" />
     <sprite x="169" y="13" value="111" item="0" property="6" />
     <sprite x="183" y="23" value="67" item="0" property="0" />
-    <sprite x="7" y="21" value="17" item="0" property="1" />
-    <sprite x="9" y="21" value="17" item="0" property="2" />
+    <sprite x="8" y="18" value="19" item="0" property="3" />
   </spritedata>
   <settings showgrid="true" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
