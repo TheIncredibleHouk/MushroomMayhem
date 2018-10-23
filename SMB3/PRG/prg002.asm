@@ -387,7 +387,7 @@ GiantChomp_RTS:
 
 GiantChompFrames:
 	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
-	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $A
+	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
 
 ObjInit_Waterfill:
 	LDA #BOUND16x16
@@ -480,15 +480,22 @@ ObjInit_KeyPiece:
 
 ObjNormal_KeyPiece:
 	LDA <Player_HaltGameZ
-	BNE DrawKeyPieceAnim
+	BNE KeyPiece_Draw
 
-	LDA LastPatTab_Sel
+	STA Debug_Snap
+	LDY LastPatTab_Sel
+	LDA PatTable_BankSel + 4, Y
+	CMP #$4D
+	BEQ KeyPiece_PTableFine
+
+	TYA
 	EOR #$01
 	TAY
 
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
 
+KeyPiece_PTableFine:
 	LDA KPFrames, Y
 	STA Objects_Frame, X
 
@@ -496,6 +503,7 @@ ObjNormal_KeyPiece:
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 
+KeyPiece_Animate:
 	INC Objects_Data2, X
 
 	LDA Objects_Data2, X
@@ -506,7 +514,7 @@ ObjNormal_KeyPiece:
 	ORA Objects_Frame, X
 	STA Objects_Frame, X
 
-DrawKeyPieceAnim:
+KeyPiece_Draw:
 	JSR Object_Draw
 
 	LDA Objects_Frame, X
