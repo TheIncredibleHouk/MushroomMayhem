@@ -178,9 +178,7 @@
     <sprite x="8" y="16" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="16" y="16" value="2C" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
     <sprite x="24" y="16" value="2E" palette="2" horizontalflip="false" verticalflip="false" table="0E" />
-    <property>Normal</property>
-    <property>Targeting</property>
-    <property>Chasing and Targeting</property>
+
   </spritedefinition>
   <spritedefinition id="15" width="02" height="02" name="Boss Fight" class="2" group="Boss">
     <sprite property="0" x="0" y="0" value="00" palette="1" horizontalflip="false" verticalflip="false" table="1B" />

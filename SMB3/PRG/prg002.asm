@@ -203,12 +203,26 @@ ObjP26:
 ObjP27:
 	.byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
 
-	
-GiantChomp_Palette:
-	.byte SPR_PAL1, SPR_PAL0
+;***********************************************************************************
+; Giant Chomp
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+;	This enemy waits for Mario to be within 48 pixels between its midpoint and Mario's midpoint.
+;	Then this enemy falls straight down, breaking any solid block it comes in contact with.
+;	When it hits a solid object, it resets it's velocity to 0 and continues to fall
+;***********************************************************************************	
 
 GiantChomp_Action = Objects_Data1
 GiantChomp_AnimTicks = Objects_Data2
+
+GiantChomp_Palette:
+	.byte SPR_PAL1, SPR_PAL0
+
+GiantChompFrames:
+	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
+	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $A
 
 GiantChomp_Offsets:
 	.byte $E0, $C0
@@ -279,16 +293,8 @@ GiantChomp_Orientation:
 
 GiantChomp_Attack:
 	LDA <Player_HaltGameZ
-	BEQ GiantChomp_Attack1
+	BEQ GiantChomp_Norm
 	JMP GiantChomp_Draw
-
-GiantChomp_Attack1:
-	LDA <Player_HaltGameZ
-	BEQ GiantChomp_Attack2
-	
-	JMP GiantChomp_Draw
-
-GiantChomp_Attack2:
 
 GiantChomp_Norm:
 	LDA Objects_Property, X
@@ -385,9 +391,15 @@ GiantChomp_Draw:
 GiantChomp_RTS:
 	RTS
 
-GiantChompFrames:
-	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
-	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $A
+
+;***********************************************************************************
+; Water Filler
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+;	This object moves quickly to the right, toggling the tile it's currently on every 16 pixels.
+;***********************************************************************************	
 
 ObjInit_Waterfill:
 	LDA #BOUND16x16
@@ -471,6 +483,26 @@ FillWater_Animate:
 FillWater_Draw:
 	JMP Object_Draw
 
+;***********************************************************************************
+; Key Piece
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+; PROPERTIES:
+; 	0 - Fills key piece collection slot #1
+; 	1 - Fills key piece collection slot #2
+; 	2 - Fills key piece collection slot #3
+; 	3 - Fills key piece collection slot #4
+; 	4 - Fills key piece collection slot #5
+; 	5 - Fills key piece collection slot #6
+; 	6 - Fills key piece collection slot #7
+;***********************************************************************************
+; 	This object remains stationary and watch for contact with Mario. Once touched,
+;	this object searches for the key collection object and fills in it's inidcated slot
+; 	in the collection.
+;***********************************************************************************	
+
 ObjInit_KeyPiece:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
@@ -547,6 +579,19 @@ SetKeyField:
 
 	LDX <CurrentObjectIndexZ
 	JMP Object_SetDeadEmpty
+;***********************************************************************************
+; Negative Star
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+; PROPERTIES:
+;	Each property indicates a unique lock.
+;***********************************************************************************
+; 	This sits upon a solid block. Once Mario is close to it, currently selected stars
+;	will deminish one at a time, lowering the number of stars needed to remove the block.
+;	Once this reaches to 0, the solid blocks it currently resides on poofs away permanently.
+;***********************************************************************************	
 
 ObjInit_NegaStar:
 	; Objects_Data4 is just a timer for taking stars
@@ -668,7 +713,14 @@ TakeMagic_Star1:
 	STA Objects_Data5,X
 	RTS
 
-
+;***********************************************************************************
+; Water Splash
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+; 	An oject that just represents the splash animation when an object goes in and out of water
+;***********************************************************************************	
 ObjInit_WaterSplash:
 	JMP Object_NoInteractions
 	
@@ -701,6 +753,24 @@ WaterSplash_Animate:
 WaterSplash_Draw:
 	JMP Object_DrawMirrored
 
+;***********************************************************************************
+; Star Piece
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+; 	0 - Fills key piece collection slot #1
+; 	1 - Fills key piece collection slot #2
+; 	2 - Fills key piece collection slot #3
+; 	3 - Fills key piece collection slot #4
+; 	4 - Fills key piece collection slot #5
+; 	5 - Fills key piece collection slot #6
+; 	6 - Fills key piece collection slot #7
+;***********************************************************************************
+; 	This object remains stationary and watch for contact with Mario. Once touched,
+;	this object searches for the key collection object and fills in it's inidcated slot
+; 	in the collection.
+;***********************************************************************************	
 ObjInit_StarPiece:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X

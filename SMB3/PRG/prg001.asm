@@ -2863,6 +2863,21 @@ RemainLocked:
 Key_FindNewBlock:
 	RTS
 
+;***********************************************************************************
+; Spring
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+; PROPERTIES
+;	0 - Red spring - small boost
+;	1 - Green spring - large boost
+;	2 - Gold spring - extra large boost
+;***********************************************************************************
+;	An object that can be carried. Once Mario lands on it, the spring will send him
+;	up in the air.
+;***********************************************************************************
+
 ObjInit_Spring:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
@@ -3027,7 +3042,23 @@ Spring_PositionRestore:
 	RTS
 
 
-
+;***********************************************************************************
+; Key Piece Collection
+;***********************************************************************************
+; IMMUNITIES:
+;		All
+;***********************************************************************************
+; PROPERTIES
+;	0 - 1 piece needed
+;	1 - 2 pieces needed
+;	2 - 3 pieces needed
+;	3 - 4 pieces needed
+;	4 - 5 pieces needed
+;***********************************************************************************
+;	This is an indicator for a number of key coins to collect. Once you've collected the
+;	indicated number, a key is produced. The indicator fo number of pieces needed is displayed
+;	in the upper left hand corner.
+;***********************************************************************************
 KeyPieceGet:
 	.byte $01, $02, $04, $08, $10
 
