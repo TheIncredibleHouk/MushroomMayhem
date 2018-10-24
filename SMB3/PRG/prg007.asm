@@ -3704,7 +3704,7 @@ BobOmbGen_Make:
 	LDA ObjectGenerator_Property, Y
 	AND #$03
 	ADD #$01
-	STA BobOmb_Action, X
+	;STA BobOmb_Action, X
 
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
@@ -3794,7 +3794,7 @@ GoombaGen_Make:
 	LDA ObjectGenerator_Property, Y
 	AND #$03
 	ADD #$01
-	STA Goomba_Action, X
+	;STA Goomba_Action, X
 
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes, X
@@ -4168,11 +4168,11 @@ ObjectGen_Platform:
 	STA <Objects_YHiZ,X
 
 	LDA #$10
-	STA Platform_MaxFall, X
-	STA PlatformUnstable_NoRegen, X
+	;STA Platform_MaxFall, X
+	;STA PlatformUnstable_NoRegen, X
 
 	LDA #$4A
-	STA PlatformUnstable_MoveTimer, X
+	;STA PlatformUnstable_MoveTimer, X
 
 	LDA #$FC
 	STA <Objects_YVelZ, X

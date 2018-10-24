@@ -870,7 +870,7 @@ ObjState_PoofDying:
 	STA Objects_ID, X
 
 	LDA #$00
-	STA Stars_Timer, X
+	;STA Stars_Timer, X
 
 	JSR Object_NoInteractions
 	

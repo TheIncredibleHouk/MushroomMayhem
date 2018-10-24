@@ -3556,6 +3556,7 @@ KILLACT_DRAWMOVENOHALT	= 8	; 8: Draw and do movements unless gameplay halted
 KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
 
 ; Object IDs
+OBJ_COINLOCK = $01
 OBJ_NIPPERHOPPING = $00
 OBJ_OSCILLATING_V = $00
 OBJ_OSCILLATING_H = $00
