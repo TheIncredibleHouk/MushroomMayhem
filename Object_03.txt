@@ -1,14 +1,14 @@
-28	.word ObjInit_WoodenPlatHorz	; Object $24 - OBJ_PLATFORM_HORZOSC
-29	.word ObjInit_WoodenPlatVert	; Object $25 - OBJ_PLATFORM_VERTOSC
-2A	.word ObjInit_WoodenPlatFallGen	; Object $26 - OBJ_WOODENPLAT_RIDER
-2B	.word ObjInit_WoodenPlatDiagonal1	; Object $27 - OBJ_PLATFORM_DIAG1OSC
-2C	.word ObjInit_WoodenPlatCopyDiagonal2	; Object $28 - OBJ_PLATFORM_DIAG2OSC
-2E	.word ObjInit_WoodenPlatCopyCCW	; Object $2C - OBJ_PLATFORM_CLOCKOSC
-2D	.word ObjInit_WoodenPlatCopyCW	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
-2F	.word ObjInit_PlatformCopyFollow	; Object $36 - OBJ_PLATFORM_PATH
-30	.word ObjInit_PlatformUnstable	; Object $44 - OBJ_PLATFORMUNSTABLE
-31	.word ObjInit_EaterBlock	; Object $03 
-32	.word ObjInit_PipeBlock	; Object $40 - OBJ_PIPEBLOCK
+28	.word 	; Object $24 - OBJ_PLATFORM_HORZOSC
+29	.word 	; Object $25 - OBJ_PLATFORM_VERTOSC
+2A	.word 	; Object $26 - OBJ_WOODENPLAT_RIDER
+2B	.word 	; Object $27 - OBJ_PLATFORM_DIAG1OSC
+2C	.word 	; Object $28 - OBJ_PLATFORM_DIAG2OSC
+2E	.word 	; Object $2C - OBJ_PLATFORM_CLOCKOSC
+2D	.word 	; Object $2D - OBJ_PLATFORM_CCLOCKOSC
+2F	.word 	; Object $36 - OBJ_PLATFORM_PATH
+30	.word	; Object $44 - OBJ_PLATFORMUNSTABLE
+31	.word 	; Object $03 
+32	.word 	; Object $40 - OBJ_PIPEBLOCK
 33
 34	
 35
