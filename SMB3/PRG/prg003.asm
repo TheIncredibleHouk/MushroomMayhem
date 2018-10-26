@@ -24,6 +24,15 @@ OBJ_PIPEBLOCK       = $32
     .word ObjInit_WoodenPlatFallGen ; Object $30
     .word ObjInit_SnakeBlock        ; Object $31
     .word ObjInit_PipeBlock         ; Object $32
+	.word ObjInit_DoNothing			; Object $33
+	.word ObjInit_DoNothing			; Object $34
+	.word ObjInit_DoNothing			; Object $35
+	.word ObjInit_DoNothing			; Object $36
+	.word ObjInit_DoNothing			; Object $37
+	.word ObjInit_DoNothing			; Object $38
+	.word ObjInit_DoNothing			; Object $39
+	.word ObjInit_DoNothing			; Object $3A
+	.word ObjInit_DoNothing			; Object $3B
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
@@ -38,6 +47,15 @@ OBJ_PIPEBLOCK       = $32
     .word ObjNorm_WoodenPlatFallGen ; Object $30
     .word ObjNorm_SnakeBlock        ; Object $31
     .word ObjNorm_PipeBlock         ; Object $32
+	.word ObjNorm_DoNothing			; Object $33
+	.word ObjNorm_DoNothing			; Object $34
+	.word ObjNorm_DoNothing			; Object $35
+	.word ObjNorm_DoNothing			; Object $36
+	.word ObjNorm_DoNothing			; Object $37
+	.word ObjNorm_DoNothing			; Object $38
+	.word ObjNorm_DoNothing			; Object $39
+	.word ObjNorm_DoNothing			; Object $3A
+	.word ObjNorm_DoNothing			; Object $3B
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -51,8 +69,18 @@ OBJ_PIPEBLOCK       = $32
     .word Platform_PlayerStand	    ; Object $2E
     .word Platform_PlayerStand	    ; Object $2F
     .word ObjHit_DoNothing          ; Object $30
-    .word ObjHit_SolidBlock         ; Object $31
-    .word ObjHit_SolidBlock	        ; Object $32
+    .word ObjHit_DoNothing          ; Object $31
+    .word ObjHit_DoNothing	        ; Object $32
+	.word ObjHit_DoNothing	        ; Object $33
+	.word ObjHit_DoNothing	        ; Object $34
+	.word ObjHit_DoNothing	        ; Object $35
+	.word ObjHit_DoNothing	        ; Object $36
+	.word ObjHit_DoNothing	        ; Object $37
+	.word ObjHit_DoNothing	        ; Object $38
+	.word ObjHit_DoNothing	        ; Object $39
+	.word ObjHit_DoNothing	        ; Object $3A
+	.word ObjHit_DoNothing	        ; Object $3B
+
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ;****************************** OBJECT PALETTE/SIZE ******************************
@@ -68,6 +96,15 @@ OBJ_PIPEBLOCK       = $32
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $30
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $31
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32  ; Object $32
+	.byte $00									 ; Object $33
+	.byte $00									 ; Object $34
+	.byte $00									 ; Object $35
+	.byte $00									 ; Object $36
+	.byte $00									 ; Object $37
+	.byte $00									 ; Object $38
+	.byte $00									 ; Object $39
+	.byte $00									 ; Object $3A
+	.byte $00									 ; Object $3B
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -82,6 +119,16 @@ OBJ_PIPEBLOCK       = $32
     .byte OPTS_NOCHANGE         ; Object $30
     .byte OPTS_NOCHANGE         ; Object $31
     .byte OPTS_SETPT5 | $0B	    ; Object $32
+	.byte OPTS_NOCHANGE         ; Object $33
+	.byte OPTS_NOCHANGE         ; Object $34
+	.byte OPTS_NOCHANGE         ; Object $35
+	.byte OPTS_NOCHANGE         ; Object $36
+	.byte OPTS_NOCHANGE         ; Object $37
+	.byte OPTS_NOCHANGE         ; Object $38
+	.byte OPTS_NOCHANGE         ; Object $39
+	.byte OPTS_NOCHANGE         ; Object $3A
+	.byte OPTS_NOCHANGE         ; Object $3B
+
 	
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
@@ -96,17 +143,28 @@ OBJ_PIPEBLOCK       = $32
     .byte KILLACT_POOFDEATH		; Object $30
     .byte KILLACT_POOFDEATH		; Object $31
     .byte KILLACT_NORMALANDKILLED ; Object $32
+	.byte KILLACT_POOFDEATH		; Object $33
+	.byte KILLACT_POOFDEATH		; Object $34
+	.byte KILLACT_POOFDEATH		; Object $35
+	.byte KILLACT_POOFDEATH		; Object $36
+	.byte KILLACT_POOFDEATH		; Object $37
+	.byte KILLACT_POOFDEATH		; Object $38
+	.byte KILLACT_POOFDEATH		; Object $39
+	.byte KILLACT_POOFDEATH		; Object $3A
+	.byte KILLACT_POOFDEATH		; Object $3B
 
-OG2_POff .func (\1 - ObjectGroup02_PatternSets)
+OG3_POff .func (\1 - ObjectGroup03_PatternSets)
 
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG2_POff(ObjP28), OG2_POff(ObjP29), OG2_POff(ObjP2A), OG2_POff(Obj2B)
-    .byte OG2_POff(ObjP2C), OG2_POff(ObjP2D), OG2_POff(ObjP2E), OG2_POff(Obj2F)
-    .byte OG2_POff(ObjP30), OG2_POff(ObjP31), OG2_POff(ObjP32), OG2_POff(Obj33)
-    .byte OG2_POff(ObjP34), OG2_POff(ObjP35), OG2_POff(ObjP36), OG2_POff(Obj37)
-    .byte OG2_POff(ObjP38), OG2_POff(ObjP39), OG2_POff(ObjP3A), OG2_POff(Obj3B)
+	.byte OG3_POff(ObjP28), OG3_POff(ObjP29), OG3_POff(ObjP2A), OG3_POff(Obj2B)
+    .byte OG3_POff(ObjP2C), OG3_POff(ObjP2D), OG3_POff(ObjP2E), OG3_POff(Obj2F)
+    .byte OG3_POff(ObjP30), OG3_POff(ObjP31), OG3_POff(ObjP32), OG3_POff(Obj33)
+    .byte OG3_POff(ObjP34), OG3_POff(ObjP35), OG3_POff(ObjP36), OG3_POff(Obj37)
+    .byte OG3_POff(ObjP38), OG3_POff(ObjP39), OG3_POff(ObjP3A), OG3_POff(Obj3B)
+
+ObjectGroup03_PatternSets:
 
 ObjP28:
 ObjP29:

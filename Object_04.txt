@@ -1,11 +1,11 @@
-3C	.word ObjInit_Goomba	; Object $72 - OBJ_GOOMBA
-3D	.word ObjInit_ParaGoomba	; Object $73 - OBJ_PARAGOOMBA
-3E	.word ObjInit_Troopa	; Object $6C - OBJ_GREENTROOPA
-3F	.word ObjInit_Troopa	; Object $6D - OBJ_REDTROOPA
-40	.word ObjInit_PurpleTroopa	; Object $7A - OBJ_PURPLETROOPA
-41	.word ObjInit_BouncyTroopa	; Object $6E - OBJ_PARATROOPAGREENHOP
-42	.word ObjInit_ParaTroopa	; Object $6F - OBJ_FLYINGREDPARATROOPA
-43	.word ObjInit_BeachedCheep	; Object $43 - OBJ_BEACHEDCHEEP
+3C	.word 	; Object $72 - OBJ_GOOMBA
+3D	.word 	; Object $73 - OBJ_PARAGOOMBA
+3E	.word 	; Object $6C - OBJ_GREENTROOPA
+3F	.word 	; Object $6D - OBJ_REDTROOPA
+40	.word 	; Object $7A - OBJ_PURPLETROOPA
+41	.word 	; Object $6E - OBJ_PARATROOPAGREENHOP
+42	.word 	; Object $6F - OBJ_FLYINGREDPARATROOPA
+43	.word 	; Object $43 - OBJ_BEACHEDCHEEP
 44	.word ObjInit_SwimmingCheep	; Object $77 - OBJ_GREENCHEEP
 45	.word ObjInit_Piranha	; Object $A2 - OBJ_PIRANHA
 46	.word ObjInit_Piranha_Aggressive	; Object $A3 - OBJ_PIRANHA_AGGRESSIVE
