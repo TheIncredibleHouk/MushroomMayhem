@@ -207,6 +207,34 @@ Platform_MaxFall = Objects_Data10
 Platform_StartY = Objects_Data11
 Platform_StartYHi = Objects_Data12
 
+ObjInit_PlatformCommon:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
+	LDA #BOUND48x16
+	STA Objects_BoundBox, X
+
+	JSR Object_NoInteractions
+
+	LDA <Objects_XZ, X
+	STA Platform_StartX, X
+
+	LDA <Objects_XHiZ, X
+	STA Platform_StartXHi, X
+
+	LDA <Objects_YZ, X
+	SUB #$02
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDY Objects_Property, X
+	LDA PlatformTimers, Y
+	STA Patrol_ResetTimer, X
+	RTS
+
 ObjInit_WoodenPlatHorz:
 	JSR ObjInit_PlatformCommon
 	

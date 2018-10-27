@@ -1,15 +1,15 @@
-64	.word ObjInit_Lakitu		; Object $83 - OBJ_LAKITU
-65	.word ObjInit_Larry	; Object $7C - OBJ_HELPER
-66	.word ObjInit_Spiny	; Object $71 - OBJ_SPINY
-67	.word ObjInit_SpinyEgg	; Object $84 - OBJ_SPINYEGG
-68	.word ObjInit_BuzzyBeetle	; Object $70 - OBJ_BUZZYBEATLE
-69	.word ObjInit_BulletBill	; Object $78 - OBJ_BULLETBILL
-6A	.word ObjInit_MissileMark	; Object $79 - OBJ_BULLETBILLHOMING
-6B	.word ObjInit_HardIce	; Object $0E - OBJ_HARDICE
-6C	.word ObjInit_FireSnake		; Object $59 - OBJ_FIRESNAKE
-6D	.word ObjInit_Freezie	; Object $91 - OBJ_FREEZIE
-6E	.word ObjInit_Swoosh	; Object $92 - OBJ_SWOOSH
-6F	.word ObjInit_IceFireFly; Object $10 - OBJ_PIXIE
+64	.word 		; Object $83 - OBJ_LAKITU
+65	.word 	; Object $7C - OBJ_HELPER
+66	.word 	; Object $71 - OBJ_SPINY
+67	.word 	; Object $84 - OBJ_SPINYEGG
+68	.word 	; Object $70 - OBJ_BUZZYBEATLE
+69	.word 	; Object $78 - OBJ_BULLETBILL
+6A	.word 	; Object $79 - OBJ_BULLETBILLHOMING
+6B	.word 	; Object $0E - OBJ_HARDICE
+6C	.word 		; Object $59 - OBJ_FIRESNAKE
+6D	.word 	; Object $91 - OBJ_FREEZIE
+6E	.word 	; Object $92 - OBJ_SWOOSH
+6F	.word ; Object $10 - OBJ_PIXIE
 70
 71
 72

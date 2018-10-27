@@ -662,6 +662,88 @@ Dimmer_Fade3:
 	RTS    
 
 
+JumpControl_Allowed:
+	.byte $03, $02, $01
+
+JumpControl_TilesProps:
+	.byte $00, TILE_PROP_SOLID_ALL, TILE_PROP_SOLID_ALL, TILE_PROP_SOLID_ALL
+
+JumpControl_SwitchProps:
+	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_ESWITCH), $00, $00, $00
+
+JumpControl_PatternTables:
+	.byte $66, $64, $62, $60
+
+JumpControl_Remaining = Objects_Data1
+
+ObjInit_JumpControl:
+	LDY Objects_Property, X
+
+	LDA JumpControl_Allowed, Y
+	STA JumpControl_Remaining, X
+
+	LDY JumpControl_Remaining, X
+	
+	LDA JumpControl_PatternTables, Y
+	STA PatTable_BankSel
+
+	LDA JumpControl_TilesProps, Y
+	STA TileProperties + $70
+
+	LDA #$00
+	STA EventSwitch
+	STA TileProperties + $E2
+	STA TileProperties + $E3
+	JMP Object_NoInteractions
+
+
+ObjNorm_JumpControl:
+	LDA JumpControl_Remaining, X
+	BNE JumpControl_CheckJump
+	
+	LDA EventSwitch
+	BEQ JumpControl_RTS
+
+	LDY Objects_Property, X
+
+	LDA JumpControl_Allowed, Y
+	STA JumpControl_Remaining, X
+
+	LDY JumpControl_Remaining, X
+	
+	LDA JumpControl_PatternTables, Y
+	STA PatTable_BankSel
+
+	LDA JumpControl_TilesProps, Y
+	STA TileProperties + $70
+
+	LDA #$00
+	STA EventSwitch
+	STA TileProperties + $E2
+	STA TileProperties + $E3
+	RTS
+
+JumpControl_CheckJump:
+	LDA <Player_Jumped
+	BEQ JumpControl_RTS
+
+	DEC JumpControl_Remaining, X
+	
+	LDY JumpControl_Remaining, X
+	
+	LDA JumpControl_PatternTables, Y
+	STA PatTable_BankSel
+
+	LDA JumpControl_TilesProps, Y
+	STA TileProperties + $70
+
+	LDA JumpControl_SwitchProps, Y
+	STA TileProperties + $E2
+	STA TileProperties + $E3
+
+JumpControl_RTS:
+	RTS		
+
 ;***********************************************************************************
 ; WEATHER
 ;***********************************************************************************
@@ -1585,3 +1667,261 @@ Stars_Star4:
 
 StarsDrawRTS:
 	RTS		    
+
+
+	; X and Y offsets for the exploding Bob-omb stars
+BombStars_XOff:	.byte -$04, $04, $08, $04, -$04, -$08, $00, $08, $08, $00, -$08, -$08
+BombStars_YOff:	.byte -$08, -$08, $00, $08, $08, $00, $08, $04, -$04, -$08, -$04, $04
+
+Explosion_Offset = Objects_Data1
+
+ObjInit_Explosion:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
+	LDA #BOUND48x48
+	STA Objects_BoundBox, X
+
+	JSR Object_NoInteractions
+
+	LDA #$18
+	STA Objects_Timer,X
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA RotatingColor_Cnt
+	RTS		 ; Return
+
+ObjNorm_Explosion:
+	
+	LDA <Player_HaltGameZ
+	BNE DrawEx	 ; If gameplay is halted, jump to PRG003_A82E
+
+	INC Explosion_Offset,X	 ; Otherwise, Var4++
+
+DrawEx:
+	LDA Objects_Timer,X
+	BNE PRG003_A836	 ; If timer has not expired, jump to PRG003_A836
+
+	JMP Object_SetDeadEmpty	 ; Otherwise, mark Bob-omb as Dead/Empty and don't come back!
+
+PRG003_A836:
+
+	JSR Explosion_CalcBoundBox
+	JSR Explosion_KillOthers
+	JSR Object_InteractWithPlayer
+
+Explosion_NoKill:
+	JSR Object_CalcSpriteXY_NoHi
+
+	; Temp_Var16 = 5
+	LDA #$05
+	STA <Temp_Var16
+
+PRG003_A83D:
+	; Temp_Var1 = Bob-omb's sprite Y
+	LDA <Objects_SpriteY,X
+	STA <Temp_Var1	
+
+	; Temp_Var2 = Bob-omb's sprite X + 4
+	LDA <Objects_SpriteX,X
+	ADD #$04
+	STA <Temp_Var2
+
+	LDA Objects_Data1,X
+	LSR A		 ; Var4 / 2
+	PHA		 ; Save value
+
+	; Temp_Var3 = 0 to 3, depending on Var4 / 2
+	AND #$03
+	STA <Temp_Var3
+
+	LDX <Temp_Var16	 ; X = Temp_Var16
+
+	PLA		 ; Restore Var4 / 2
+
+	AND #$04	 ; Mask 0-3
+	BEQ PRG003_A85C	 ; If result is zero, jump to PRG003_A85C
+
+	; Otherwise, X += 6
+	TXA
+	ADD #$06
+	TAX
+
+PRG003_A85C:
+	LDA <Temp_Var1
+	ADD BombStars_YOff,X
+	STA <Temp_Var1
+
+	LDA <Temp_Var2
+	ADD BombStars_XOff,X
+	STA <Temp_Var2
+
+	DEC <Temp_Var3	 ; Temp_Var3--
+	BPL PRG003_A85C	 ; While Temp_Var3 >= 0, loop!
+
+	LDX <CurrentObjectIndexZ		 ; X = object slot index
+
+	JSR Sprite_NoCarryIfVisible
+	BCS PRG003_A89D	 ; If this star is not visible, jump to PRG003_A89D
+
+	LDA <Temp_Var16
+	ASL A
+	ASL A		; A = Temp_Var16 * 4 (one sprite per star)
+	ADC Object_SpriteRAMOffset,X	 ; Add the base Sprite_RAM offset
+	TAY		 ; -> 'Y'
+
+	; Star Y
+	LDA <Temp_Var1
+	STA Sprite_RAM+$00,Y
+
+	; Star X
+	LDA <Temp_Var2
+	STA Sprite_RAM+$03,Y
+
+	; Star pattern
+	LDA #$17
+	STA Sprite_RAM+$01,Y
+
+	LDA <Counter_1
+	LSR A	
+	LSR A	
+	ADD <CurrentObjectIndexZ
+	AND #$03	 ; Palette select 0 to 3
+	STA Sprite_RAM+$02,Y	 ; Set attributes
+
+PRG003_A89D:
+	DEC <Temp_Var16	 ; Temp_Var16--
+	BPL PRG003_A83D	 ; While Temp_Var16 >= 0, loop!
+
+Explosion_BumpBlocks:
+	LDA Objects_Timer,X
+	AND #$07
+	TAY
+
+	LDA <Objects_XZ, X
+	ADD ExplodeXOffsets + 8, Y
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC ExplodeXOffsets, Y
+	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	ADD ExplodeYOffsets + 8, Y
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	ADC ExplodeYOffsets, Y
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_STONE)
+	BEQ Explosion_Bust
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BEQ Explosion_Bust 
+
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	BEQ Explosion_Bust
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BEQ Explosion_Bust
+
+	CMP #(TILE_PROP_ITEM)
+	BCS Explosion_Bump
+
+Explosion_BumpRTS:
+	RTS
+
+Explosion_Bust:
+	LDA #TILE_ITEM_BRICK
+	STA Tile_LastProp
+
+Explosion_Bump:
+	JSR Object_DirectBumpBlocks
+	RTS
+
+Explosion_CalcBoundBox:
+	LDA <Objects_XZ, X
+	SUB #$18
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD #$30
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+	
+	LDA <Objects_YZ, X
+	SUB #$18
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA Objects_BoundTopHi, X
+
+	LDA Objects_BoundTop, X
+	ADD #$30
+	STA Objects_BoundBottom, X
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+	RTS
+
+ExplodeXOffsets:
+	.byte $FF, $00, $00, $FF, $00, $FF, $00, $00
+	.byte $F8, $08, $18, $F8, $18, $F8, $08, $18
+
+ExplodeYOffsets
+	.byte $FF, $FF, $FF, $00, $00, $00, $00, $00
+	.byte $F8, $F8, $F8, $08, $08, $18, $18, $18
+
+Sprite_NoCarryIfVisible:
+	LDA Objects_SpritesVerticallyOffScreen,X	 
+	BNE PRG003_B8E7	 ; If any of the sprites are vertically off-screen, jump to PRG003_B8E7
+
+	LDA <Objects_SpriteY,X
+	CMP #208
+	BGE PRG003_B8E7	 ; If sprite Y >= 208, jump to PRG003_B8E7
+
+	LDY #$40	 ; Y = $40
+
+	LDA <Objects_SpriteX,X
+	BMI PRG003_B8DA	 ; If sprite X >= $80, jump to PRG003_B8DA
+
+	LDY #$C0	 ; Y = $C0
+
+PRG003_B8DA:
+	CPY <Temp_Var2	 ; Compare $40 or $C0 to input X value
+
+	EOR Objects_SpritesVerticallyOffScreen,X
+
+	BMI PRG003_B8E5	 ; If there are inappropriate horizontally off-screen sprites (??) jump to PRG003_B8E5
+
+	BLT PRG003_B8E7	 ; If input X value < 'Y', jump to PRG003_B8E7 (carry clear, but will set carry)
+	BGE PRG003_B8E9	 ; If input X value >= 'Y', jump to PRG003_B8E9 (carry set, but will be clear)
+
+PRG003_B8E5:
+	BLT PRG003_B8E9	 ; If input X value < 'Y', jump to PRG003_B8E9 (carry clear)
+
+PRG003_B8E7:
+	SEC		 ; Set carry
+	RTS		 ; Return
+
+PRG003_B8E9:
+	CLC		 ; Clear carry
+	RTS		 ; Return
+    
