@@ -8,13 +8,13 @@
     <pointer levelguid="04a6cfde-b3c5-4695-81c5-dda10c212a97" exittype="0" xexit="235" yexit="10" xenter="228" yenter="9" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="70" y="12" value="28" item="0" property="0" />
-    <sprite x="119" y="15" value="28" item="0" property="0" />
-    <sprite x="177" y="1" value="28" item="0" property="0" />
-    <sprite x="185" y="7" value="76" item="0" property="0" />
-    <sprite x="224" y="0" value="28" item="0" property="0" />
-    <sprite x="234" y="10" value="118" item="0" property="0" />
-    <sprite x="1" y="12" value="28" item="0" property="0" />
+    <sprite x="70" y="12" value="11" item="0" property="0" replaced="true" />
+    <sprite x="119" y="15" value="11" item="0" property="0" replaced="true" />
+    <sprite x="177" y="1" value="11" item="0" property="0" replaced="true" />
+    <sprite x="185" y="7" value="14" item="0" property="0" replaced="true" />
+    <sprite x="224" y="0" value="11" item="0" property="0" replaced="true" />
+    <sprite x="234" y="10" value="18" item="0" property="0" replaced="true" />
+    <sprite x="1" y="12" value="11" item="0" property="0" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

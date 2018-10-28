@@ -290,142 +290,6 @@ PRG005_B98E:
 	RTS		 ; Return
 
 
-ObjLRFlags:	.byte SPR_HFLIP, $00	; If Player is to right of object vs left, stored into Objects_Orientation
-
-Spawn3XOff:	.byte -32, 32	; X Lo offsets
-Spawn3XHiOff:	.byte $FF, $00	; Sign extension
-
-Spawn3YVels:	.byte 11, -5, -11	; Y velocities
-Spawn3Var4:	.byte  1,  1,   0	; Initial value for Var 4
-
-	; Spawns up to 3 hopping green paratroopas or the school of lost orange cheep cheeps
-Spawn3TroopsOrCheeps:
-	STA Temp_VarNP0  ; Backup object ID
-
-	TXA		 
-	PHA		 ; Save object index
-	TYA		 
-	PHA		 ; Save Level_Objects offset
-
-	; Changing object row value into a 16-bit Y value
-
-	; Upper 4 bits shifted right -> Temp_Var9 (high Y)
-	LDA Level_Objects+1,Y	; Get object row
-	AND #$10
- 	LSR A
-	LSR A
-	LSR A
-	LSR A	
-	STA <Temp_Var9		 ; -> Temp_Var9 
-
-	; Lower 4 bits shifted left -> Temp_Var10 (low Y)
-	LDA Level_Objects+1,Y	 ; Get object row
-	AND #$0f
-	ASL A	
-	ASL A	
-	ASL A
-	ASL A
-	STA <Temp_Var10		 ; -> Temp_Var10
-
-	LDA <Temp_Var7		
-	STA <Temp_Var11		 ; Temp_Var11 = Temp_Var7 (pixel high X of object)
-
-	LDA <Temp_Var1		 
-	STA <Temp_Var12		 ; Temp_Var12 = Temp_Var1 (pixel X position of object)
-
-	LDX <Temp_Var2		 ; Restore object index -> 'X'
-
-	; Mark object as already spawned
-	LDA Level_ObjectsSpawned,X
-	ORA #$80
-	STA Level_ObjectsSpawned,X
-
-	; Spawning up to 3 of orange cheep cheeps or green hopping paratroopas
-	LDA #$02
-	STA <Temp_Var13		; Temp_Var13 = 2
-
-PRG005_B9D9:
-	LDX #$04	; X = 4
-
-PRG005_B9DB:
-	LDA Objects_State,X	
-	BEQ PRG005_B9E6	 ; If this object slot is "dead/empty", jump to PRG005_B9E6
-	DEX		 ; X--
-	BPL PRG005_B9DB	 ; While X >= 0, loop!
-	JMP PRG005_BA3D	 ; If no empty slots, jump to PRG005_BA3D
-
-PRG005_B9E6:
-	JSR Object_New	 ; Set up new object
-
-	; Set object Y/Hi by calculated values
-	LDA <Temp_Var9
-	STA <Objects_YHiZ,X
-	LDA <Temp_Var10	
-	STA <Objects_YZ,X
-
-	; Set object X/Hi
-	LDA <Temp_Var12	
-	STA <Objects_XZ,X
-	LDA <Temp_Var11	
-	STA <Objects_XHiZ,X
-
-	; Difference of Player vs object X Lo -> Temp_Var16
-	; Reg Y is set to 0 if Player is to the right of object, 1 if to the left
-	JSR Object_XDistanceFromPlayer
-
-	LDA ObjLRFlags,Y
-	STA Objects_Orientation,X	 ; Set appropriate flag
-
-	LDA <Temp_Var12
-	ADD Spawn3XOff,Y
-	STA <Temp_Var12		; Temp_Var12 += Spawn3XOff[Y]
-	LDA <Temp_Var11
-	ADC Spawn3XHiOff,Y	
-	STA <Temp_Var11		; related sign extension
-
-	LDA Temp_VarNP0		; Get object ID back
-	CMP #OBJ_SPAWN3GREENTROOPAS	
-	BEQ PRG005_BA2B	 	; If object ID = OBJ_SPAWN3GREENTROOPAS, jump to PRG005_BA2B
-
-	; OBJ_SPAWN3ORANGECHEEPS specific...
-
-	LDY <Temp_Var13		 ; 0 - 2, loop counter
-
-	LDA Spawn3YVels,Y	 
-	STA <Objects_YVelZ,X	 ; Set appropriate Y velocity
-
-	LDA Spawn3Var4,Y
-	STA Objects_Data1,X	 ; Set initial var 4 value
-
-	INC Objects_InWater,X	 ; Set object as in water
-
-	LDA #$00   ; #OBJ_PIRATEBRO	 ; A = OBJ_PIRATEBRO
-	BNE PRG005_BA2D	 ; Jump (technically always) to PRG005_BA2D
-
-PRG005_BA2B:
-	LDA #OBJ_PARATROOPAGREENHOP	 ; A = OBJ_PARATROOPAGREENHOP
-
-PRG005_BA2D:
-	STA Objects_ID,X	 ; Set object ID
-
-	; Set state to OBJSTATE_NORMAL
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State,X
-
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes,X	; Force palette 2
-
-PRG005_BA3D:
-	DEC <Temp_Var13	 ; Temp_Var13--
-	BPL PRG005_B9D9	 ; While Temp_Var13 >= 0, loop!
-
-	PLA
-	TAY		 ; Restore Level_Objects offset
-
-	PLA
-	TAX		 ; Restore object index
-
-	RTS		 ; Return
 
 ObjectGenerator_Init:
 	STA <Temp_Var16	 ; Store index value (1+)
@@ -586,7 +450,7 @@ EnemyCount_NoInc:
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
 
-	LDA #OBJ_BEACHEDCHEEP
+	LDA #OBJ_JUMPINGCHEEP
 	STA Objects_ID,X
 
 
@@ -635,7 +499,7 @@ LevelEvent_WoodPlatforms:
 	AND #$7f
 	BNE PRG005_BC41	 ; Only do anything every 127 ticks
 
-	LDA #OBJ_PLATFORM_PATH
+	;LDA #OBJ_PLATFORM_PATH
 	JSR Level_CountNotDeadObjs
 	CPY #$03
 	BCS PRG005_BC41	 ; If there's already at least 3 wooden platforms, jump to PRG005_BC41 (RTS)
@@ -664,7 +528,7 @@ PRG005_BBF1:
 	BEQ PRG005_BC11	 ; If this object slot is "dead/empty", jump to PRG005_BC11
 
 	LDA Objects_ID,Y
-	CMP #OBJ_PLATFORM_PATH
+	;CMP #OBJ_PLATFORM_PATH
 	BNE PRG005_BC11	 ; If this object slot is a OBJ_PLATFORM_PATH, jump to PRG005_BC11
 
 	; This check specifically prevents two platforms from appearing in the same place
@@ -712,7 +576,7 @@ PRG005_BC11:
 	STA Objects_SpriteAttributes,X
 
 	; Set wooden platform ID at last
-	LDA #OBJ_PLATFORM_PATH
+	;LDA #OBJ_PLATFORM_PATH
 	STA Objects_ID,X
 
 PRG005_BC41:
@@ -733,7 +597,7 @@ LevelEvent_CloudsinBG:
 	LDA #$00
 	STA LevelEvent_Cnt	 ; LevelEvent_Cnt = 0
 
-	LDA #OBJ_FLOATINGBGCLOUD
+	;LDA #OBJ_FLOATINGBGCLOUD
 	JSR Level_CountNotDeadObjs
 	CPY #$02
 	BGE PRG005_BCA2	 ; If there at least 2 clouds already, jump to PRG005_BCA2
@@ -741,7 +605,7 @@ LevelEvent_CloudsinBG:
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
 	; Store floating cloud's ID
-	LDA #OBJ_FLOATINGBGCLOUD
+	;LDA #OBJ_FLOATINGBGCLOUD
 	STA Objects_ID,X
 
 	; Set floating cloud's Y position (screen scroll + 48 + (Random 0 to 127))

@@ -5,12 +5,12 @@
     <pointer levelguid="645b2239-1a1b-4cbf-9262-49b0cb7f313e" exittype="0" xexit="165" yexit="4" xenter="40" yenter="24" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="14" y="3" value="92" item="0" property="0" />
-    <sprite x="8" y="3" value="76" item="0" property="2" />
-    <sprite x="2" y="25" value="27" item="0" property="0" />
-    <sprite x="7" y="25" value="27" item="0" property="0" />
-    <sprite x="12" y="25" value="27" item="0" property="0" />
-    <sprite x="40" y="1" value="75" item="0" property="1" />
+    <sprite x="14" y="3" value="17" item="0" property="0" replaced="true" />
+    <sprite x="8" y="3" value="14" item="0" property="2" replaced="true" />
+    <sprite x="2" y="25" value="16" item="0" property="0" replaced="true" />
+    <sprite x="7" y="25" value="16" item="0" property="0" replaced="true" />
+    <sprite x="12" y="25" value="16" item="0" property="0" replaced="true" />
+    <sprite x="40" y="1" value="13" item="0" property="1" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Outline" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

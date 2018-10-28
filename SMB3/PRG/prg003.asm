@@ -206,7 +206,12 @@ Platform_NotBehind = Objects_Data9
 Platform_MaxFall = Objects_Data10
 Platform_StartY = Objects_Data11
 Platform_StartYHi = Objects_Data12
+PlatformUnstable_MoveTimer = Objects_Data13
+PlatformUnstable_NoRegen = Objects_Data14
 
+PlatformTimers:
+	.byte $01, $11, $21, $31, $41, $51, $61, $71
+	
 ObjInit_PlatformCommon:
 	LDA #$06
 	STA Objects_SpritesRequested, X
@@ -271,7 +276,7 @@ ObjInit_WoodenPlatCCW:
 	JSR ObjInit_PlatformCommon
 	LDA #$04
 	STA Objects_Property, X
-	JMP InitPatrol_NoTimers    
+	JMP InitPatrol_NoTimers   
 
 
 ObjNorm_PlatformOscillate:
@@ -398,6 +403,26 @@ Platform_Draw4:
 Platform_PlayerOffset:
 	.byte $01, $00
 	.byte $00, $00
+
+Platform_PlayerStand:
+	LDA <Player_YVel
+	BMI Platform_PlayerStand1
+
+	LDA HitTest_Result
+	AND #HITTEST_BOTTOM
+	BEQ Platform_PlayerStand1
+
+	LDA Player_BoundBottom
+	SUB Objects_BoundTop, X
+	CMP #$04
+	BCS Platform_PlayerStand1
+
+	LDA #$01
+	STA Platform_SteppedOn, X
+	STA Platform_MadeContact, X
+
+Platform_PlayerStand1:	
+	RTS	
 
 Platform_ContactCheck:
 	LDA Platform_MadeContact, X

@@ -3,7 +3,7 @@
 	; 
 
 OBJ_WATERSPLASH     = $14    
-OBJ_WATERFILL 		= $15
+OBJ_WATERFILLER		= $15
 OBJ_TIMER           = $16
 OBJ_CLOCK           = $17
 OBJ_DIMMER          = $18
@@ -11,7 +11,7 @@ OBJ_JUMPCONTROL     = $19
 OBJ_WEATHER         = $1A
 OBJ_KEYPIECECOLLECTION       = $1B
 OBJ_KEYPIECES       = $1C
-OBJ_LIGHTNING       = $1D
+OBJ_LIGHTNINGBOLT       = $1D
 OBJ_ICESPIKE        = $1E
 OBJ_STARS           = $1F
 OBJ_EXPLOSION      = $20
@@ -156,7 +156,6 @@ OBJ_EXPLOSION      = $20
 OG2_POff .func (\1 - ObjectGroup02_PatternSets)
 
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
-
 	; Index by object group relative index (ObjGroupRel_Idx)
 	.byte OG2_POff(ObjP14), OG2_POff(ObjP15), OG2_POff(ObjP16), OG2_POff(Obj17)
     .byte OG2_POff(ObjP18), OG2_POff(ObjP19), OG2_POff(ObjP1A), OG2_POff(Obj1B)
@@ -164,8 +163,9 @@ OG2_POff .func (\1 - ObjectGroup02_PatternSets)
     .byte OG2_POff(ObjP20), OG2_POff(ObjP21), OG2_POff(ObjP22), OG2_POff(Obj23)
     .byte OG2_POff(ObjP24), OG2_POff(ObjP25), OG2_POff(ObjP26), OG2_POff(Obj27)
 
-ObjectGroup02_PatternSets:
+	.org ObjectGroup_PatternSets
 
+ObjectGroup02_PatternSets:
 ObjP16:
 ObjP18:
 ObjP19:

@@ -4,32 +4,32 @@
     <pointer levelguid="05b44437-5e5d-4a2b-9dca-9af711eee83c" exittype="1" xexit="120" yexit="24" xenter="101" yenter="11" exitslevel="false" world="0" redraw="false" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="8" y="18" value="116" item="0" property="0" />
-    <sprite x="36" y="17" value="164" item="0" property="2" />
-    <sprite x="55" y="20" value="116" item="0" property="0" />
-    <sprite x="79" y="17" value="164" item="0" property="2" />
-    <sprite x="101" y="11" value="164" item="0" property="3" />
-    <sprite x="102" y="17" value="75" item="0" property="4" />
-    <sprite x="117" y="19" value="116" item="0" property="0" />
-    <sprite x="117" y="15" value="116" item="0" property="0" />
-    <sprite x="128" y="8" value="164" item="0" property="2" />
-    <sprite x="180" y="21" value="116" item="0" property="0" />
-    <sprite x="182" y="21" value="116" item="0" property="0" />
-    <sprite x="148" y="11" value="76" item="0" property="4" />
-    <sprite x="210" y="9" value="116" item="0" property="0" />
-    <sprite x="236" y="25" value="116" item="0" property="0" />
-    <sprite x="223" y="17" value="118" item="0" property="1" />
-    <sprite x="96" y="3" value="82" item="0" property="0" />
-    <sprite x="27" y="20" value="116" item="0" property="0" />
-    <sprite x="153" y="7" value="164" item="0" property="2" />
-    <sprite x="158" y="8" value="164" item="0" property="2" />
-    <sprite x="212" y="16" value="164" item="0" property="3" />
-    <sprite x="144" y="4" value="82" item="0" property="0" />
-    <sprite x="74" y="3" value="82" item="0" property="0" />
-    <sprite x="64" y="11" value="74" item="0" property="0" />
-    <sprite x="220" y="12" value="164" item="0" property="2" />
-    <sprite x="181" y="25" value="76" item="0" property="0" />
-    <sprite x="65" y="15" value="164" item="0" property="3" />
+    <sprite x="8" y="18" value="71" item="0" property="0" replaced="true" />
+    <sprite x="36" y="17" value="73" item="0" property="2" replaced="true" />
+    <sprite x="55" y="20" value="71" item="0" property="0" replaced="true" />
+    <sprite x="79" y="17" value="73" item="0" property="2" replaced="true" />
+    <sprite x="101" y="11" value="73" item="0" property="3" replaced="true" />
+    <sprite x="102" y="17" value="13" item="0" property="4" replaced="true" />
+    <sprite x="117" y="19" value="71" item="0" property="0" replaced="true" />
+    <sprite x="117" y="15" value="71" item="0" property="0" replaced="true" />
+    <sprite x="128" y="8" value="73" item="0" property="2" replaced="true" />
+    <sprite x="180" y="21" value="71" item="0" property="0" replaced="true" />
+    <sprite x="182" y="21" value="71" item="0" property="0" replaced="true" />
+    <sprite x="148" y="11" value="14" item="0" property="4" replaced="true" />
+    <sprite x="210" y="9" value="71" item="0" property="0" replaced="true" />
+    <sprite x="236" y="25" value="71" item="0" property="0" replaced="true" />
+    <sprite x="223" y="17" value="18" item="0" property="1" replaced="true" />
+    <sprite x="96" y="3" value="145" item="0" property="0" replaced="true" />
+    <sprite x="27" y="20" value="71" item="0" property="0" replaced="true" />
+    <sprite x="153" y="7" value="73" item="0" property="2" replaced="true" />
+    <sprite x="158" y="8" value="73" item="0" property="2" replaced="true" />
+    <sprite x="212" y="16" value="73" item="0" property="3" replaced="true" />
+    <sprite x="144" y="4" value="145" item="0" property="0" replaced="true" />
+    <sprite x="74" y="3" value="145" item="0" property="0" replaced="true" />
+    <sprite x="64" y="11" value="12" item="0" property="0" replaced="true" />
+    <sprite x="220" y="12" value="73" item="0" property="2" replaced="true" />
+    <sprite x="181" y="25" value="14" item="0" property="0" replaced="true" />
+    <sprite x="65" y="15" value="73" item="0" property="3" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Replace" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

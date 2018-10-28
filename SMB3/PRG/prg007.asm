@@ -3848,7 +3848,7 @@ CanonPoofXOffset:
 	.byte $FA, $06, $FA, $F6
 
 EnemyCannonType:
-	.byte OBJ_GOOMBA, OBJ_GOOMBA, OBJ_BEACHEDCHEEP,  OBJ_BEACHEDCHEEP
+	.byte OBJ_GOOMBA, OBJ_GOOMBA, OBJ_JUMPINGCHEEP,  OBJ_JUMPINGCHEEP
 
 EnemyCannon_XOffset:
 	.byte $F8, $08, $F8, $08
@@ -4314,7 +4314,7 @@ ObjectGen_RockyWrench:
 	LDY <CurrentObjectIndexZ	; Y = Cannon Fire slot index
 
 	; This is a Rocky Wrench
-	LDA #OBJ_ROCKYWRENCH
+	;LDA #OBJ_ROCKYWRENCH
 	STA Objects_ID,X
 
 	; Start at Cannon Fire Y - 6
@@ -4414,7 +4414,7 @@ BulletBillGen_Make:
 	LDA #$40
 	STA Objects_Timer, X
 
-	LDA #OBJ_BULLETBILLHOMING
+	LDA #OBJ_MISSILEMARK
 
 PRG007_BF80:
 	STA Objects_ID,X	 ; Store Bill's ID

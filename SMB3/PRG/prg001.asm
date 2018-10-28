@@ -4,10 +4,12 @@
 OBJ_POWERUP 		= $01
 OBJ_BOUNCEDOWNUP 	= $04
 OBJ_COINLOCK	 	= $05
-OBJ_ESWITCH			= $06
+OBJ_ELOCK			= $06
 OBJ_BUBBLE			= $07
 OBJ_KEY				= $08
 OBJ_SPRING			= $09
+OBJ_POINTERMOD 		= $0A
+OBJ_SENDBACK 		= $0B
 OBJ_MAGICSTAR_1		= $0C
 OBJ_MAGICSTAR_2		= $0D
 OBJ_MAGICSTAR_3		= $0E
@@ -15,6 +17,7 @@ OBJ_NEGASTAR		= $0F
 OBJ_STARPIECE		= $10
 OBJ_ICEBLOCK		= $11
 OBJ_POISONMUSHROOM 	= $12
+OBJ_BOSS			= $13
 
 	.word ObjInit_DoNothing	; Object $00
 	.word ObjInit_PowerUp	; Object $01 - OBJ_POWERUP
@@ -22,7 +25,7 @@ OBJ_POISONMUSHROOM 	= $12
 	.word ObjInit_PUp2		; Object $03 - OBJ_POWERUP_MUSHROOM
 	.word ObjInit_BounceDU	; Object $04 - OBJ_BOUNCEDOWNUP
 	.word ObjInit_CoinLock	; Object $05
-	.word ObjInit_ESwitch	; Object $06
+	.word ObjInit_ELock	; Object $06
 	.word ObjInit_Bubble	; Object $07
 	.word ObjInit_Key		; Object $08
 	.word ObjInit_Spring	; Object $09
@@ -45,7 +48,7 @@ OBJ_POISONMUSHROOM 	= $12
 	.word ObjNorm_DoNothing	; Object $03
 	.word ObjNorm_BounceDU  ; Object $04
 	.word ObjNorm_CoinLock	; Object $05
-	.word ObjNorm_ESwitch	; Object $06
+	.word ObjNorm_ELock	; Object $06
 	.word ObjNorm_Bubble	; Object $07
 	.word ObjNorm_Key		; Object $08
 	.word ObjNorm_Spring	; Object $09
@@ -163,6 +166,8 @@ OG1_POff .func (\1 - ObjectGroup01_PatternSets)
 	.byte OG1_POff(ObjP0C), OG1_POff(ObjP0D), OG1_POff(ObjP0E), OG1_POff(ObjP0F)
 	.byte OG1_POff(ObjP10), OG1_POff(ObjP11), OG1_POff(ObjP12), OG1_POff(ObjP13)
 
+	.org ObjectGroup_PatternSets
+	
 ObjectGroup01_PatternSets:
 
 ObjP00:
@@ -1123,7 +1128,7 @@ DrawCoinLock1:
 ;***********************************************************************************
 ; 	This object will remove 3 vertical blocks once an event switch has been activated.
 ;***********************************************************************************	
-ObjInit_ESwitch:
+ObjInit_ELock:
 	LDA #$05
 	STA Objects_SpritesRequested, X
 
@@ -1131,30 +1136,30 @@ ObjInit_ESwitch:
 	STA Objects_BoundBox, X
 	JMP Object_NoInteractions
 
-ObjNorm_ESwitch:
+ObjNorm_ELock:
 	LDA Objects_Property, Y
 	JSR DynJump
 
-	.word ESwitch_Lock
+	.word ELock_Lock
 
-ESwitch_Lock:
+ELock_Lock:
 	LDA EventSwitch
-	BEQ ESwitch_LockDraw
+	BEQ ELock_LockDraw
 
 	LDA <Player_HaltGameZ
-	BNE ESwitch_LockDraw
+	BNE ELock_LockDraw
 
 	LDA CoinLock_BlocksRemaining, X
 	CMP #$02
-	BNE ESwitch_NoResetLock
+	BNE ELock_NoResetLock
 
 	LDA #$00
 	STA EventSwitch
 	
-ESwitch_NoResetLock:
+ELock_NoResetLock:
 	JMP Coin_Unlock
 
-ESwitch_LockDraw:
+ELock_LockDraw:
 	LDA LastPatTab_Sel
 	EOR #$01
 	TAY
@@ -1167,7 +1172,7 @@ ESwitch_LockDraw:
 
 	JMP Object_Draw
 
-ESwitch_NoUnlock:
+ELock_NoUnlock:
 	RTS
 	
 

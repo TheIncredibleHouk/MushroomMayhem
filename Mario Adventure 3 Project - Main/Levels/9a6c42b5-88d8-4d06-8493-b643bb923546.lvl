@@ -4,19 +4,19 @@
     <pointer levelguid="d51c828d-e91f-4f14-87cc-681630d7eb5e" exittype="1" xexit="25" yexit="12" xenter="64" yenter="24" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="64" y="15" value="4" item="0" property="2" />
-    <sprite x="76" y="21" value="99" item="0" property="0" />
-    <sprite x="80" y="13" value="99" item="0" property="0" />
-    <sprite x="70" y="12" value="99" item="0" property="0" />
-    <sprite x="90" y="7" value="99" item="0" property="2" />
-    <sprite x="101" y="8" value="99" item="0" property="3" />
-    <sprite x="110" y="6" value="99" item="0" property="4" />
-    <sprite x="124" y="6" value="99" item="0" property="5" />
-    <sprite x="111" y="24" value="99" item="0" property="0" />
-    <sprite x="100" y="24" value="99" item="0" property="0" />
-    <sprite x="87" y="26" value="99" item="0" property="1" />
-    <sprite x="5" y="24" value="74" item="0" property="0" />
-    <sprite x="141" y="16" value="75" item="0" property="0" />
+    <sprite x="64" y="15" value="5" item="0" property="2" replaced="true" />
+    <sprite x="76" y="21" value="91" item="0" property="0" replaced="true" />
+    <sprite x="80" y="13" value="91" item="0" property="0" replaced="true" />
+    <sprite x="70" y="12" value="91" item="0" property="0" replaced="true" />
+    <sprite x="90" y="7" value="91" item="0" property="2" replaced="true" />
+    <sprite x="101" y="8" value="91" item="0" property="3" replaced="true" />
+    <sprite x="110" y="6" value="91" item="0" property="4" replaced="true" />
+    <sprite x="124" y="6" value="91" item="0" property="5" replaced="true" />
+    <sprite x="111" y="24" value="91" item="0" property="0" replaced="true" />
+    <sprite x="100" y="24" value="91" item="0" property="0" replaced="true" />
+    <sprite x="87" y="26" value="91" item="0" property="1" replaced="true" />
+    <sprite x="5" y="24" value="12" item="0" property="0" replaced="true" />
+    <sprite x="141" y="16" value="13" item="0" property="0" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="true" blockproperties="false" showstart="false" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

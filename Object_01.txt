@@ -18,3 +18,4 @@
 11	.word		; Object $5C - OBJ_ICEBLOCK
 12	.word 	; Object $76 - OBJ_POISONMUSHROOM
 13  .word ObjInit_DoNothing	
+14 

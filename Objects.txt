@@ -372,7 +372,7 @@ OG2_POff .func (\1 - ObjectGroup02_PatternSets)
 
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 ;****************************** OBJECT FRAME TABLE ******************************
-    .org ObjectGroup_PatternSets	; <-- help enforce this table *here*
+    .org ccls	; <-- help enforce this table *here*
     .byte OG2_POff(ObjP14), OG2_POff(ObjP15), OG2_POff(ObjP16), OG2_POff(ObjP17)
 	.byte OG2_POff(ObjP18), OG2_POff(ObjP19), OG2_POff(ObjP1A), OG2_POff(ObjP1B)
 	.byte OG2_POff(ObjP1C), OG2_POff(ObjP1D), OG2_POff(ObjP1E), OG2_POff(ObjP1F)

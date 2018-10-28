@@ -7,9 +7,9 @@
     <pointer levelguid="00000000-0000-0000-0000-000000000000" exittype="0" xexit="5" yexit="4" xenter="1" yenter="20" exitslevel="true" world="0" redraw="false" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="0" y="0" value="15" item="0" property="0" />
-    <sprite x="23" y="7" value="23" item="0" property="0" />
-    <sprite x="21" y="5" value="10" item="0" property="0" />
+    <sprite x="0" y="0" value="26" item="0" property="0" replaced="true" />
+    <sprite x="23" y="7" value="15" item="0" property="0" replaced="true" />
+    <sprite x="21" y="5" value="10" item="0" property="0" replaced="false" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Outline" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

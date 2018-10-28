@@ -4,7 +4,7 @@
     <pointer levelguid="698f0ae0-07f8-4936-ab36-bc34202f8d50" exittype="2" xexit="114" yexit="5" xenter="9" yenter="20" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="10" y="24" value="76" item="0" property="0" />
+    <sprite x="10" y="24" value="14" item="0" property="0" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Fill" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

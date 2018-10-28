@@ -16,19 +16,19 @@ OBJ_PYRANTULA           = $92
     .word ObjInit_PirateBro ; Object $90
     .word ObjInit_Spintula ; Object $91
     .word ObjInit_Pyrantula ; Object $92
-    .word  ; Object $93
-    .word  ; Object $94
-    .word  ; Object $95
-    .word  ; Object $96
-    .word  ; Object $97
-    .word  ; Object $98
-    .word  ; Object $99
-    .word  ; Object $9A
-    .word  ; Object $9B
-    .word  ; Object $9C
-    .word  ; Object $9D
-    .word  ; Object $9E
-    .word  ; Object $9F
+    .word ObjInit_DoNothing ; Object $93
+    .word ObjInit_DoNothing ; Object $94
+    .word ObjInit_DoNothing ; Object $95
+    .word ObjInit_DoNothing ; Object $96
+    .word ObjInit_DoNothing ; Object $97
+    .word ObjInit_DoNothing ; Object $98
+    .word ObjInit_DoNothing ; Object $99
+    .word ObjInit_DoNothing ; Object $9A
+    .word ObjInit_DoNothing ; Object $9B
+    .word ObjInit_DoNothing ; Object $9C
+    .word ObjInit_DoNothing ; Object $9D
+    .word ObjInit_DoNothing ; Object $9E
+    .word ObjInit_DoNothing ; Object $9F
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
@@ -39,19 +39,19 @@ OBJ_PYRANTULA           = $92
     .word ObjNorm_FireIcePirateBro ; Object $90
     .word ObjNorm_Spintula ; Object $91
     .word ObjNorm_Pyrantula ; Object $92
-    .word  ; Object $93
-    .word  ; Object $94
-    .word  ; Object $95
-    .word  ; Object $96
-    .word  ; Object $97
-    .word  ; Object $98
-    .word  ; Object $99
-    .word  ; Object $9A
-    .word  ; Object $9B
-    .word  ; Object $9C
-    .word  ; Object $9D
-    .word  ; Object $9E
-    .word  ; Object $9F
+    .word ObjNorm_DoNothing ; Object $93
+    .word ObjNorm_DoNothing ; Object $94
+    .word ObjNorm_DoNothing ; Object $95
+    .word ObjNorm_DoNothing ; Object $96
+    .word ObjNorm_DoNothing ; Object $97
+    .word ObjNorm_DoNothing ; Object $98
+    .word ObjNorm_DoNothing ; Object $99
+    .word ObjNorm_DoNothing ; Object $9A
+    .word ObjNorm_DoNothing ; Object $9B
+    .word ObjNorm_DoNothing ; Object $9C
+    .word ObjNorm_DoNothing ; Object $9D
+    .word ObjNorm_DoNothing ; Object $9E
+    .word ObjNorm_DoNothing ; Object $9F
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -63,18 +63,18 @@ OBJ_PYRANTULA           = $92
     .word Player_GetHurt ; Object $91
     .word Player_GetHurt ; Object $92
     .word Player_GetHurt ; Object $93
-    .word  ; Object $94
-    .word  ; Object $95
-    .word  ; Object $96
-    .word  ; Object $97
-    .word  ; Object $98
-    .word  ; Object $99
-    .word  ; Object $9A
-    .word  ; Object $9B
-    .word  ; Object $9C
-    .word  ; Object $9D
-    .word  ; Object $9E
-    .word  ; Object $9F
+    .word ObjHit_DoNothing ; Object $94
+    .word ObjHit_DoNothing ; Object $95
+    .word ObjHit_DoNothing ; Object $96
+    .word ObjHit_DoNothing ; Object $97
+    .word ObjHit_DoNothing ; Object $98
+    .word ObjHit_DoNothing ; Object $99
+    .word ObjHit_DoNothing ; Object $9A
+    .word ObjHit_DoNothing ; Object $9B
+    .word ObjHit_DoNothing ; Object $9C
+    .word ObjHit_DoNothing ; Object $9D
+    .word ObjHit_DoNothing ; Object $9E
+    .word ObjHit_DoNothing ; Object $9F
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ;****************************** OBJECT PALETTE/SIZE ******************************
@@ -85,19 +85,19 @@ OBJ_PYRANTULA           = $92
     .byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $90
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $91
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $92
-    .byte  ; Object $93
-    .byte  ; Object $94
-    .byte  ; Object $95
-    .byte  ; Object $96
-    .byte  ; Object $97
-    .byte  ; Object $98
-    .byte  ; Object $99
-    .byte  ; Object $9A
-    .byte  ; Object $9B
-    .byte  ; Object $9C
-    .byte  ; Object $9D
-    .byte  ; Object $9E
-    .byte  ; Object $9F
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $93
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $94
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $95
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $96
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $97
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $98
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $99
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9A
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9B
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9C
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9D
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9E
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9F
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -108,19 +108,19 @@ OBJ_PYRANTULA           = $92
     .byte OPTS_SETPT5 | $4E ; Object $90
     .byte OPTS_SETPT5 | $0A ; Object $91
     .byte OPTS_SETPT5 | $0A ; Object $92
-    .byte  ; Object $93
-    .byte  ; Object $94
-    .byte  ; Object $95
-    .byte  ; Object $96
-    .byte  ; Object $97
-    .byte  ; Object $98
-    .byte  ; Object $99
-    .byte  ; Object $9A
-    .byte  ; Object $9B
-    .byte  ; Object $9C
-    .byte  ; Object $9D
-    .byte  ; Object $9E
-    .byte  ; Object $9F
+    .byte OPTS_NOCHANGE ; Object $93
+    .byte OPTS_NOCHANGE ; Object $94
+    .byte OPTS_NOCHANGE ; Object $95
+    .byte OPTS_NOCHANGE ; Object $96
+    .byte OPTS_NOCHANGE ; Object $97
+    .byte OPTS_NOCHANGE ; Object $98
+    .byte OPTS_NOCHANGE ; Object $99
+    .byte OPTS_NOCHANGE ; Object $9A
+    .byte OPTS_NOCHANGE ; Object $9B
+    .byte OPTS_NOCHANGE ; Object $9C
+    .byte OPTS_NOCHANGE ; Object $9D
+    .byte OPTS_NOCHANGE ; Object $9E
+    .byte OPTS_NOCHANGE ; Object $9F
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
@@ -148,7 +148,7 @@ OBJ_PYRANTULA           = $92
 OG8_POff .func (\1 - ObjectGroup08_PatternSets)
 
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
-
+	
 	; Index by object group relative index (ObjGroupRel_Idx)
 	.byte OG8_POff(ObjP8C), OG8_POff(ObjP8D), OG8_POff(ObjP8E), OG8_POff(Obj8F)
     .byte OG8_POff(ObjP90), OG8_POff(ObjP91), OG8_POff(ObjP92), OG8_POff(Obj93)
@@ -157,6 +157,8 @@ OG8_POff .func (\1 - ObjectGroup08_PatternSets)
     .byte OG8_POff(ObjP9C), OG8_POff(ObjP9D), OG8_POff(ObjP9E), OG8_POff(Obj9F)
 
 ObjectGroup08_PatternSets:
+	
+	.org ObjectGroup_PatternSets
 
 ObjP8C:
     .byte $B1, $B3, $B5, $B7, $B1, $B3, $A5, $A7

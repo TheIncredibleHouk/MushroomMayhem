@@ -26,7 +26,7 @@ OBJ_GREENPIRANHA	= $4C
 	.word ObjInit_PurpleTroopa ; Object $40
 	.word ObjInit_BouncyTroopa ; Object $41
 	.word ObjInit_ParaTroopa ; Object $42
-	.word ObjInit_BeachedCheep  Object $43
+	.word ObjInit_JumpingCheep ; Object $43
 	.word ObjInit_SwimmingCheep ; Object $44
 	.word ObjInit_Piranha ; Object $45
 	.word ObjInit_Piranha_Aggressive; Object $46
@@ -50,7 +50,7 @@ OBJ_GREENPIRANHA	= $4C
 	.word ObjNorm_PurpleTroopa ; Object $40
 	.word ObjNorm_BouncyTroopa ; Object $41
 	.word ObjNorm_ParaTroopa ; Object $42
-	.word ObjNorm_BeachedCheep ; Object $43
+	.word ObjNorm_JumpingCheep ; Object $43
 	.word ObjNorm_SwimmingCheep ; Object $44
 	.word ObjNorm_Piranha ; Object $45
 	.word ObjNorm_Piranha; Object $46
@@ -1117,7 +1117,7 @@ ParaTroopa_WingFlipped:
 	RTS
 
 
-ObjInit_BeachedCheep:
+ObjInit_JumpingCheep:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -1125,85 +1125,85 @@ ObjInit_BeachedCheep:
 	STA Objects_BehaviorAttr, X
 
 	LDA <Objects_YVelZ, X
-	BNE BeachedCheep_Prop
+	BNE JumpingCheep_Prop
 
 	LDA #(ATTR_CARRYANDBUMP | ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_MoveTowardsPlayerFast
 
-BeachedCheep_Prop:
+JumpingCheep_Prop:
 	LDY Objects_Property, X
 	CPY #$02
-	BNE ObjInit_BeachedCheep1
+	BNE ObjInit_JumpingCheep1
 
 	LDA #$10
 	STA <Objects_YVelZ, X
 
-ObjInit_BeachedCheep1:
-	LDA BeachedCheep_VFlip, Y
+ObjInit_JumpingCheep1:
+	LDA JumpingCheep_VFlip, Y
 	ORA Objects_Orientation, X
 	STA Objects_Orientation, X
 	RTS
 	
-BeachedCheep_XVel: .byte $10, $F0
-BeachedCheep_YVel: .byte $A0, $60
-BeachedCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00
+JumpingCheep_XVel: .byte $10, $F0
+JumpingCheep_YVel: .byte $A0, $60
+JumpingCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00
 
-BeachedCheep_IsWaiting = Objects_Data3
-BeachedCheep_CurrentFrame = Objects_Data4
-BeachedCheep_NoWaterTimer = Objects_Data5
+JumpingCheep_IsWaiting = Objects_Data3
+JumpingCheep_CurrentFrame = Objects_Data4
+JumpingCheep_NoWaterTimer = Objects_Data5
 
-BeachedCheep_GroundBounce: 
+JumpingCheep_GroundBounce: 
 	.byte $D0, $F8, $D0
 
-BeachedCheep_CeilingBounce: 
+JumpingCheep_CeilingBounce: 
 	.byte $08, $30, $30
 
-ObjNorm_BeachedCheep:
+ObjNorm_JumpingCheep:
 	LDA <Player_HaltGameZ
-	BEQ ObjNorm_BeachedCheep0
-	JMP Beached_DrawNoAnimate
+	BEQ ObjNorm_JumpingCheep0
+	JMP Jumping_DrawNoAnimate
 
-ObjNorm_BeachedCheep0:
+ObjNorm_JumpingCheep0:
 	JSR Object_DeleteOffScreen
 	
 	LDA Objects_Timer, X
-	BEQ Beached_NoTimer
-	JMP Beached_InWater
+	BEQ Jumping_NoTimer
+	JMP Jumping_InWater
 	
-Beached_NoTimer:
+Jumping_NoTimer:
 	LDA Objects_InWater, X
-	BEQ Beached_Move
+	BEQ Jumping_Move
 
 	JSR Object_MoveTowardsPlayerFast
 	
 	LDY Objects_Property, X
 
-	LDA BeachedCheep_YVel, Y
+	LDA JumpingCheep_YVel, Y
 	STA <Objects_YVelZ, X
 
 	LDA #$10
-	STA BeachedCheep_NoWaterTimer, X
+	STA JumpingCheep_NoWaterTimer, X
 
-Beached_Move:
+Jumping_Move:
 	
 	LDY Objects_Property, X
-	BEQ Beached_Move1
+	BEQ Jumping_Move1
 
 	CPY #$03
-	BEQ Beached_Move1
+	BEQ Jumping_Move1
 
 	CPY #$01
-	BEQ Beached_ReveseGravity
+	BEQ Jumping_ReveseGravity
 
 	INC NoGravity
-	BNE Beached_Move1
+	BNE Jumping_Move1
 
-Beached_ReveseGravity:
+Jumping_ReveseGravity:
 	INC Reverse_Gravity
 
-Beached_Move1:
+Jumping_Move1:
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
@@ -1212,79 +1212,166 @@ Beached_Move1:
 
 	LDA Objects_Property, X
 	CMP #$03
-	BNE Beached_InteractTiles
+	BNE Jumping_InteractTiles
 
 	LDA <Objects_YVelZ, X
-	BMI Beached_NoDetect
+	BMI Jumping_NoDetect
 
 	LDA #$00
 	STA Objects_Property, X
 
 	LDA Object_BodyTileProp, X
 	CMP #TILE_PROP_SOLID_ALL
-	BCC Beached_InteractTiles
+	BCC Jumping_InteractTiles
 
 	JMP Object_PoofDie
 
-Beached_InteractTiles:
+Jumping_InteractTiles:
 	JSR Object_InteractWithTiles
-	JSR Beached_DoBounce
+	JSR Jumping_DoBounce
 
-Beached_NoDetect:
-	LDA BeachedCheep_NoWaterTimer, X
-	BEQ Beached_WaterOk
+Jumping_NoDetect:
+	LDA JumpingCheep_NoWaterTimer, X
+	BEQ Jumping_WaterOk
 
-	DEC BeachedCheep_NoWaterTimer, X
-	JMP Beached_Draw
+	DEC JumpingCheep_NoWaterTimer, X
+	JMP Jumping_Draw
 
-Beached_WaterOk:
+Jumping_WaterOk:
 	LDA Objects_InWater, X
-	BEQ Beached_Draw
+	BEQ Jumping_Draw
 	
-Beached_SetTimer:
+Jumping_SetTimer:
 	LDA #$20
 	STA Objects_Timer, X
 	JSR Object_FacePlayer
 
-Beached_Draw:
-	INC BeachedCheep_CurrentFrame,X
-	LDA BeachedCheep_CurrentFrame,X
+Jumping_Draw:
+	INC JumpingCheep_CurrentFrame,X
+	LDA JumpingCheep_CurrentFrame,X
 	LSR A
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame,X
 
-Beached_DrawNoAnimate:
+Jumping_DrawNoAnimate:
 	JMP Object_Draw
 
-Beached_InWater:
+Jumping_InWater:
 	JSR Object_FacePlayer
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JMP Object_Draw
 
-Beached_DoBounce:
+Jumping_DoBounce:
 	LDY Objects_Property, X
 	LDA <Objects_TilesDetectZ, X
 	AND #$04
-	BEQ Beached_DoBounce1
+	BEQ Jumping_DoBounce1
 
-	LDA BeachedCheep_GroundBounce, Y
+	LDA JumpingCheep_GroundBounce, Y
 	STA <Objects_YVelZ, X
 
-Beached_DoBounce1:
+Jumping_DoBounce1:
 	LDA  <Objects_TilesDetectZ, X
 	AND #$08
-	BEQ Beached_DoBounce2
+	BEQ Jumping_DoBounce2
 
-	LDA BeachedCheep_CeilingBounce, Y
+	LDA JumpingCheep_CeilingBounce, Y
 	STA <Objects_YVelZ, X
 
-Beached_DoBounce2:
+Jumping_DoBounce2:
 	RTS	
 
 
+SwimCheep_CurrentFrame = Objects_Data1
+SwimCheep_StartX = Objects_Data2
+SwimCheep_StartXHi = Objects_Data3
+SwimCheep_StartY = Objects_Data4
+SwimCheep_StartYHi = Objects_Data5
+
+ObjInit_SwimmingCheep:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #$02
+	STA Objects_ExpPoints, X
+
+	LDA #(ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	JSR InitPatrol
+
+	LDA <Objects_XZ, X
+	STA SwimCheep_StartX, X
+
+
+	LDA Objects_Property, X
+	CMP #$06
+	BNE ObjInit_SwimmingCheepRTS
+
+	LDA #$F8
+	STA ChaseVel_LimitLo, X
+
+	LDA #$08
+	STA ChaseVel_LimitHi, X
+
+ObjInit_SwimmingCheepRTS:
+	RTS
+
+ObjNorm_SwimmingCheep:
+	LDA <Player_HaltGameZ
+	BNE Cheep_Draw
+
+	LDA Objects_Property, X
+	CMP #$06
+	BEQ SwimmingCheep_CheckDelete
+
+	LDA <Objects_XZ, X
+	CMP SwimCheep_StartX, X
+	BNE SwimmingCheep_NoDelete
+
+SwimmingCheep_CheckDelete:
+	JSR Object_DeleteOffScreen
+
+SwimmingCheep_NoDelete:
+	JSR DoPatrol
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTilesWallStops
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Property, X
+	CMP #$06
+	BNE ObjNorm_SwimmingCheep2
+
+ObjNorm_SwimmingCheep1:
+	LDA Object_VertTileProp, X
+	BNE ObjNorm_SwimmingCheep2
+
+	JSR Object_HitCeiling
+
+ObjNorm_SwimmingCheep2:
+	LDA Object_HorzTileProp, X
+	BNE ObjNorm_SwimmingCheep3
+
+	JSR Object_HitWall
+
+ObjNorm_SwimmingCheep3:
+	INC SwimCheep_CurrentFrame,X	 ; Var5++
+
+	; Toggle frame 0/1
+	LDA SwimCheep_CurrentFrame,X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+
+Cheep_Draw:
+	JMP Object_Draw	
 
 ObjInit_Piranha:
 	LDA #$06
@@ -1441,7 +1528,7 @@ Plant_Draw1:
 	STA <Temp_Var1
 
 	LDA Objects_ID, X
-	CMP #OBJ_PIRANHA_AGGRESSIVE
+	CMP #OBJ_PIRANHAPLANTGOLD
 	BNE Piranha_GreenVine
 
 	LDA #SPR_PAL3
@@ -1496,7 +1583,7 @@ Plant_DrawUpsideDown:
 	BEQ Plant_DrawRTS
 
 	LDA Objects_ID, X
-	CMP #OBJ_PUMPKINPLANT
+	CMP #OBJ_PIRUMPKIN
 	BEQ Plant_DrawRTS
 
 	JSR Object_YDistanceFromPlayer
@@ -1586,7 +1673,7 @@ Piranha_Move:
 	STA Objects_Timer, X
 
 	LDA Objects_ID, X
-	CMP #OBJ_PIRANHA_AGGRESSIVE
+	CMP #OBJ_PIRANHAPLANTGOLD
 	BNE Piranha_GetAttacks
 
 	LDA #$FF
@@ -1690,7 +1777,7 @@ Piranha_NoMoreAttacks:
 
 Piranha_Attack1:
 	LDA Objects_ID, X
-	CMP #OBJ_PIRANHA_AGGRESSIVE
+	CMP #OBJ_PIRANHAPLANTGOLD
 	BEQ Piranha_Attack2
 
 	LDA #$20
@@ -2208,7 +2295,7 @@ ObjNorm_Pumpkin:
 	LDA #$00
 	STA Objects_Orientation, X
 
-	LDA #OBJ_PUMPKINFREE
+	LDA #OBJ_PIRUMPKINHEAD
 	STA Objects_ID, X
 
 	LDA #$01
@@ -2415,7 +2502,7 @@ Dry_NotHit:
 
 	JSR Object_MoveTowardsPlayerFast
 
-	LDA BeachedCheep_YVel
+	LDA JumpingCheep_YVel
 	STA <Objects_YVelZ, X
 
 Dry_Move:
@@ -2448,8 +2535,8 @@ Dry_SetTimer:
 	JSR Object_FacePlayer
 
 Dry_Draw:
-	INC BeachedCheep_CurrentFrame,X
-	LDA BeachedCheep_CurrentFrame,X
+	INC JumpingCheep_CurrentFrame,X
+	LDA JumpingCheep_CurrentFrame,X
 	LSR A
 	LSR A
 	LSR A
@@ -2469,7 +2556,7 @@ Dry_DoBounce:
 	AND #$04
 	BEQ Dry_DoBounce1
 
-	LDA BeachedCheep_GroundBounce
+	LDA JumpingCheep_GroundBounce
 	STA <Objects_YVelZ, X
 
 Dry_DoBounce1:

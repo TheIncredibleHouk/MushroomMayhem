@@ -5,9 +5,9 @@
     <pointer levelguid="1079adc5-8f63-46ab-9e53-d10e6eb10723" exittype="1" xexit="174" yexit="24" xenter="36" yenter="9" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="60" y="18" value="118" item="0" property="1" />
-    <sprite x="11" y="21" value="114" item="0" property="0" />
-    <sprite x="32" y="5" value="76" item="0" property="0" />
+    <sprite x="60" y="18" value="18" item="0" property="1" replaced="true" />
+    <sprite x="11" y="21" value="60" item="0" property="0" replaced="true" />
+    <sprite x="32" y="5" value="14" item="0" property="0" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.7" propertytransparency="0.75" showpointers="true" />
 </level>

@@ -4,10 +4,10 @@
     <pointer levelguid="15b60511-3ccd-4a9d-95a1-4fd7108a90d6" exittype="0" xexit="200" yexit="8" xenter="57" yenter="12" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="5" y="24" value="27" item="0" property="0" />
-    <sprite x="22" y="21" value="27" item="0" property="0" />
-    <sprite x="57" y="9" value="76" item="0" property="0" />
-    <sprite x="42" y="12" value="27" item="0" property="0" />
+    <sprite x="5" y="24" value="16" item="0" property="0" replaced="true" />
+    <sprite x="22" y="21" value="16" item="0" property="0" replaced="true" />
+    <sprite x="57" y="9" value="14" item="0" property="0" replaced="true" />
+    <sprite x="42" y="12" value="16" item="0" property="0" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>

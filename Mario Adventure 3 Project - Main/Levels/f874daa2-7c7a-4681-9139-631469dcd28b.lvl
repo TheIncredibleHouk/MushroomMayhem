@@ -5,11 +5,11 @@
     <pointer levelguid="45130f0a-3282-499b-8e04-66572d044135" exittype="1" xexit="206" yexit="25" xenter="78" yenter="25" exitslevel="false" world="0" redraw="true" keepobjects="false" disableweather="false" />
   </pointers>
   <spritedata>
-    <sprite x="86" y="24" value="189" item="0" property="0" />
-    <sprite x="71" y="24" value="189" item="0" property="0" />
-    <sprite x="74" y="25" value="189" item="0" property="2" />
-    <sprite x="83" y="25" value="189" item="0" property="2" />
-    <sprite x="79" y="24" value="76" item="0" property="2" />
+    <sprite x="86" y="24" value="189" item="0" property="0" replaced="false" />
+    <sprite x="71" y="24" value="189" item="0" property="0" replaced="false" />
+    <sprite x="74" y="25" value="189" item="0" property="2" replaced="false" />
+    <sprite x="83" y="25" value="189" item="0" property="2" replaced="false" />
+    <sprite x="79" y="24" value="14" item="0" property="2" replaced="true" />
   </spritedata>
   <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
