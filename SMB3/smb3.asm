@@ -3302,8 +3302,8 @@ ObjectGroup_CollideJumpTable	= $A050
 ObjectGroup_Attributes		= $A078
 ObjectGroup_PatTableSel		= $A08C
 ObjectGroup_KillAction		= $A0A0
-ObjectGroup_PatternStarts	= $A0C8
-ObjectGroup_PatternSets		= $A0F0
+ObjectGroup_PatternStarts	= $A0B4
+ObjectGroup_PatternSets		= $A0C8
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; GAME CONSTANTS

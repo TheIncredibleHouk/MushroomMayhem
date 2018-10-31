@@ -7,7 +7,7 @@ OBJ_VEGGIEGUY       = $52
 OBJ_SNOWGUY         = $53
 OBJ_SNOWBALL        = $54
 OBJ_SNIFIT          = $55
-OBJ_NINJI           = $56
+OBJ_NINJI           = $5
 OBJ_BIRDO           = $57
 OBJ_PHANTO          = $58
 OBJ_SPARK           = $59
@@ -157,11 +157,11 @@ OG5_POff .func (\1 - ObjectGroup05_PatternSets)
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG5_POff(ObjP50), OG5_POff(ObjP51), OG5_POff(ObjP52), OG5_POff(Obj53)
-    .byte OG5_POff(ObjP54), OG5_POff(ObjP55), OG5_POff(ObjP56), OG5_POff(Obj57)
-    .byte OG5_POff(ObjP58), OG5_POff(ObjP59), OG5_POff(ObjP5A), OG5_POff(Obj5B)
-    .byte OG5_POff(ObjP5C), OG5_POff(ObjP5D), OG5_POff(ObjP5E), OG5_POff(Obj5F)
-    .byte OG5_POff(ObjP60), OG5_POff(ObjP61), OG5_POff(ObjP62), OG5_POff(Obj63)
+	.byte OG5_POff(ObjP50), OG5_POff(ObjP51), OG5_POff(ObjP52), OG5_POff(ObjP53)
+    .byte OG5_POff(ObjP54), OG5_POff(ObjP55), OG5_POff(ObjP56), OG5_POff(ObjP57)
+    .byte OG5_POff(ObjP58), OG5_POff(ObjP59), OG5_POff(ObjP5A), OG5_POff(ObjP5B)
+    .byte OG5_POff(ObjP5C), OG5_POff(ObjP5D), OG5_POff(ObjP5E), OG5_POff(ObjP5F)
+    .byte OG5_POff(ObjP60), OG5_POff(ObjP61), OG5_POff(ObjP62), OG5_POff(ObjP63)
 
 ObjectGroup05_PatternSets:    
 
@@ -486,6 +486,12 @@ ShyGuy_ThrowBlockForced:
 	LDA #OBJ_BRICK
 	STA Objects_ID, Y
 
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, Y
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, Y
+
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes, Y
 
@@ -596,13 +602,9 @@ Brick_MakePower:
 	LDA #OBJ_POWERUP
 	STA Objects_ID, X
 
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
-	
-	LDA #$00
-	STA Objects_Orientation, X
-
-	JMP ObjInit_PowerUp
+	RTS
 
 Brick_Burst:
 	JMP Object_Delete
@@ -627,6 +629,9 @@ VeggieGuy_PullingVeggie = Objects_Data3
 ObjInit_VeggieGuy:
 	LDA #$04
 	STA Objects_SpritesRequested, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
@@ -909,6 +914,9 @@ ObjInit_SnowGuy:
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
@@ -1147,6 +1155,12 @@ SnowGuy_ThrowSnow:
 
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, Y
+
+	LDA #(ATTR_ICEPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, Y
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, Y
 	
 	LDA #$E8
 	STA Objects_XVelZ, Y
@@ -2169,7 +2183,7 @@ Phanto_SetHover:
 	RTS
 
 Phanto_HoverStartX:
-	.byte $20, $E0
+	.byte $E0, $20
 
 Phanto_Hover:
 	LDA Objects_Timer, X
@@ -2178,8 +2192,19 @@ Phanto_Hover:
 	JSR Phanto_FindKey
 	BCC Phanto_HoverRTS
 
+	LDY #$00
+	LDA <Player_XVel
+	BEQ Phanto_Facing
+	BPL Phanto_Reappear
+
+	INY
+	BNE Phanto_Reappear
+
+Phanto_Facing:
 	LDY Player_Direction
 
+
+Phanto_Reappear:
 	LDA <Horz_Scroll
 	ADD Phanto_HoverStartX, Y
 	STA <Objects_XZ, X
@@ -2389,6 +2414,7 @@ ObjInit_BobOmb:
 	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	RTS		 ; Return
 
@@ -2608,6 +2634,10 @@ BobOmb_Attack:
 BobOmb_Unstabilize:
 	LDA #$02
 	STA Objects_Frame,X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
 	INC BobOmb_Unstable, X
 	BNE BobOmb_Draw
 
@@ -2654,20 +2684,6 @@ BobOmb_ShakeDraw:
 
 BobOmb_ShakeDraw1:
 	RTS    
-
-ObjInit_Pyrantula:
-	LDA #BOUND16x16
-	STA Objects_BoundBox, X
-
-	LDA #(ATTR_STOMPKICKSOUND)
-	STA Objects_BehaviorAttr, X
-
-	JSR InitPatrol_Chase
-	LDA #$40
-	STA Objects_Timer, X
-	RTS		
-            
-
 
 FloatMine_Action = Objects_Data1
 

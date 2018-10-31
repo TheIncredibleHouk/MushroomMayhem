@@ -155,11 +155,11 @@ OG6_POff .func (\1 - ObjectGroup06_PatternSets)
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG6_POff(ObjP64), OG6_POff(ObjP65), OG6_POff(ObjP66), OG6_POff(Obj67)
-    .byte OG6_POff(ObjP68), OG6_POff(ObjP69), OG6_POff(ObjP6A), OG6_POff(Obj6B)
-    .byte OG6_POff(ObjP6C), OG6_POff(ObjP6D), OG6_POff(ObjP6E), OG6_POff(Obj6F)
-    .byte OG6_POff(ObjP70), OG6_POff(ObjP71), OG6_POff(ObjP72), OG6_POff(Obj73)
-    .byte OG6_POff(ObjP74), OG6_POff(ObjP75), OG6_POff(ObjP76), OG6_POff(Obj77)
+	.byte OG6_POff(ObjP64), OG6_POff(ObjP65), OG6_POff(ObjP66), OG6_POff(ObjP67)
+    .byte OG6_POff(ObjP68), OG6_POff(ObjP69), OG6_POff(ObjP6A), OG6_POff(ObjP6B)
+    .byte OG6_POff(ObjP6C), OG6_POff(ObjP6D), OG6_POff(ObjP6E), OG6_POff(ObjP6F)
+    .byte OG6_POff(ObjP70), OG6_POff(ObjP71), OG6_POff(ObjP72), OG6_POff(ObjP73)
+    .byte OG6_POff(ObjP74), OG6_POff(ObjP75), OG6_POff(ObjP76), OG6_POff(ObjP77)
 
 ObjectGroup06_PatternSets:
 
@@ -433,6 +433,12 @@ Lakitu_LowerDone:
 	RTS
 
 Lakitu_GetEnemy:
+	JSR Lakitu_CheckObjCount
+
+	LDA <Lakitu_ObjectCount
+	CMP #$04
+	BCS Lakitu_GetEnemyDone
+
 	LDA Objects_Property, X
 	TAY
 	LDA Lakitu_EnemyToss, Y
@@ -443,6 +449,7 @@ Lakitu_GetEnemy:
 
 	JSR Object_FindEmptyY
 	BCC Lakitu_GetEnemyDone
+
 
 	TYA
 	STA Lakitu_EnemySlot, X
@@ -490,6 +497,27 @@ Lakitu_Raise:
 Lakitu_RaiseDone:
 	RTS
 
+Lakitu_ObjectCount = Temp_Var1
+
+Lakitu_CheckObjCount:
+	LDY Objects_Property, X
+
+	LDY #$04
+
+	LDA #$00
+	STA <Lakitu_ObjectCount
+
+Lakitu_CheckNextObj:
+	LDA Objects_State, Y
+	BEQ Lakitu_NextObj
+
+	INC <Lakitu_ObjectCount
+
+Lakitu_NextObj:
+	DEY
+	BPL Lakitu_CheckNextObj
+	RTS
+
 Lakitu_AimTimers:
 	.byte $20, $40, $40, $10
 
@@ -499,8 +527,10 @@ Lakitu_WaitTimers:
 
 Lakitu_Aim:
 	LDA Objects_Timer, X
-	BNE Lakitu_AimDone
+	BEQ Lakitu_AimAnyway
+	RTS
 
+Lakitu_AimAnyway:	
 	LDA <Objects_XZ, X
 	AND #$0F
 	BNE Lakitu_AimDone
@@ -544,7 +574,7 @@ Lakitu_Aim:
 	SBC #$00
 	STA Objects_YHiZ, Y
 
-	LDA #$00
+	LDA #$F0
 	STA Objects_YVelZ, Y
 
 	LDA <Objects_XVelZ, X
@@ -714,9 +744,6 @@ Lakitu_Enemy1:
 	ADD #$08
 	STA <Temp_Var2
 
-	LDA Objects_Property, X
-	TAX
-
 	LDA <Temp_Var3
 	CMP #$F8
 	BEQ Lakitu_DrawEnemyDone
@@ -735,9 +762,6 @@ Lakitu_Enemy1:
 
 Lakitu_DrawEnemyDone:
 	RTS    
-
-
-
 
 ObjInit_Larry:
 	LDA #$07
@@ -1852,16 +1876,16 @@ MoveTail_Loop:
 MoveTail_RTS:
 	RTS
 
-FireSnake_Draw:
-	JSR Object_Draw
 
 FireSnake_RAMOffset = Temp_Var15
 FireSnake_TailPartX = Temp_Var2
 FireSnake_TailPartY = Temp_Var1
 FireSnake_TailOffset = Temp_Var16
 
-FireSnake_DrawTail:
+FireSnake_Draw:
+	JSR Object_Draw
 
+FireSnake_DrawTail:
 	LDY Object_SpriteRAMOffset, X
 	STY <FireSnake_RAMOffset
 
@@ -2107,13 +2131,20 @@ TailHit_Bound2:
 	STA SpecialObj_BoundTopHi
 	ADC #$00
 	STA SpecialObj_BoundBottomHi
-	JSR SpecialObj_DetectPlayer
+	
+	JSR TailPiece_DetectPlayer
 	BCC TailHit_None
-
 	JSR Player_GetHurt
 
 TailHit_None:
 	RTS
+
+TailPiece_DetectPlayer:
+	STX TempX
+	LDX #$09
+	JSR Object_DetectPlayer
+	LDX TempX
+	RTS	
 
 FireSnake_TailFlips:
 	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
@@ -2244,6 +2275,7 @@ ObjInit_Freezie:
 	LDA #$01
 	STA Freezie_State, X
 
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	RTS
 

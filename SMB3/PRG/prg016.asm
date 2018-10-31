@@ -150,15 +150,15 @@ OG8_POff .func (\1 - ObjectGroup08_PatternSets)
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 	
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG8_POff(ObjP8C), OG8_POff(ObjP8D), OG8_POff(ObjP8E), OG8_POff(Obj8F)
-    .byte OG8_POff(ObjP90), OG8_POff(ObjP91), OG8_POff(ObjP92), OG8_POff(Obj93)
-    .byte OG8_POff(ObjP94), OG8_POff(ObjP95), OG8_POff(ObjP96), OG8_POff(Obj97)
-    .byte OG8_POff(ObjP98), OG8_POff(ObjP99), OG8_POff(ObjP9A), OG8_POff(Obj9B)
-    .byte OG8_POff(ObjP9C), OG8_POff(ObjP9D), OG8_POff(ObjP9E), OG8_POff(Obj9F)
+	.byte OG8_POff(ObjP8C), OG8_POff(ObjP8D), OG8_POff(ObjP8E), OG8_POff(ObjP8F)
+    .byte OG8_POff(ObjP90), OG8_POff(ObjP91), OG8_POff(ObjP92), OG8_POff(ObjP93)
+    .byte OG8_POff(ObjP94), OG8_POff(ObjP95), OG8_POff(ObjP96), OG8_POff(ObjP97)
+    .byte OG8_POff(ObjP98), OG8_POff(ObjP99), OG8_POff(ObjP9A), OG8_POff(ObjP9B)
+    .byte OG8_POff(ObjP9C), OG8_POff(ObjP9D), OG8_POff(ObjP9E), OG8_POff(ObjP9F)
+
+	.org ObjectGroup_PatternSets
 
 ObjectGroup08_PatternSets:
-	
-	.org ObjectGroup_PatternSets
 
 ObjP8C:
     .byte $B1, $B3, $B5, $B7, $B1, $B3, $A5, $A7
@@ -169,20 +169,19 @@ ObjP8D:
 	.byte $99, $9B, $A1, $A3, $99, $9B, $B9, $BB
 
 ObjP8E:
+ObjP8F:
     .byte $81, $83, $B5, $B7, $81, $83, $A5, $A7
 	.byte $85, $87, $B5, $B7, $85, $87, $A5, $A7
 
-ObjP8F:
+ObjP90:
     .byte $8D, $8F, $B5, $B7, $8D, $8F, $A5, $A7
 	.byte $91, $93, $B5, $B7, $91, $93, $A5, $A7
 
-ObjP90:
-    .byte $8D, $8D, $8F, $8F, $95, $95
-
 ObjP91:
+ObjP92:
     .byte $A1, $A1, $A3, $A3, $A5, $A5
     
-ObjP92:
+
 ObjP93:
 ObjP94:
 ObjP95:
@@ -1437,3 +1436,116 @@ Spintula_SpinUpStop:
 	LDA #$00
 	STA <Objects_YVelZ, X
 	JMP Object_DrawMirrored    
+
+
+ObjInit_Pyrantula:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
+	JSR InitPatrol_Chase
+	LDA #$40
+	STA Objects_Timer, X
+	RTS		
+
+Pyrantula_Frame = Objects_Data1
+Pyrantula_FireTimer = Objects_Data2
+
+ObjNorm_Pyrantula:
+	LDA <Player_HaltGameZ
+	BEQ Pyrantula_Normal
+	JMP Pyrantula_Draw	 ; If gameplay is not halted, jump to PRG003_B9D4
+
+Pyrantula_Normal:
+	JSR Object_DeleteOffScreen
+	
+	LDA Pyrantula_FireTimer, X
+	BNE Pyrantula_Shoot
+
+	LDA Objects_Timer, X
+	BNE Pyrantula_Move
+
+	LDA #$20
+	STA Pyrantula_FireTimer, X
+
+Pyrantula_Move:
+	JSR Object_ChasePlayer
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	
+	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_CLIMBABLE
+	BEQ Pyrantula_VGo
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+	STA Objects_YVelFrac,X	
+
+Pyrantula_VGo:
+
+	LDA  Object_HorzTileProp, X
+	CMP #TILE_PROP_CLIMBABLE
+	BEQ Pyrantula_Animate
+
+	JSR Object_WallStop
+	JMP Pyrantula_Animate
+
+Pyrantula_Shoot:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Pyrantula_FireTimer, X
+	CMP #$10
+	BNE Pyrantula_ShootDraw
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Pyrantula_ShootDraw
+
+	LDA #$06
+	STA <Proj_XOff 
+
+	LDA #$0C
+	STA <Proj_YOff
+
+	JSR Object_ShootFireBallStraight
+	JSR Object_AimProjectile
+
+	LDA SpecialObj_XVel, Y
+	JSR Double_Value
+	STA SpecialObj_XVel, Y
+
+	LDA SpecialObj_YVel, Y
+	JSR Double_Value
+	STA SpecialObj_YVel, Y
+
+Pyrantula_ShootDraw:
+	DEC Pyrantula_FireTimer, X
+	BEQ Pyrantual_Reset
+
+	LDA #$02
+	STA Objects_Frame, X
+	BNE Pyrantula_Draw
+
+Pyrantual_Reset:
+	LDA #$40
+	STA Objects_Timer, X
+	BNE Pyrantula_Draw
+
+Pyrantula_Animate:
+	INC Pyrantula_Frame, X
+
+	LDA Pyrantula_Frame, X
+	LSR A
+	LSR A
+	AND #$01
+
+	STA Objects_Frame, X
+
+Pyrantula_Draw:
+	JMP Object_DrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!    
+	

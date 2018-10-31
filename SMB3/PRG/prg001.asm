@@ -152,7 +152,7 @@ OBJ_BOSS			= $13
 	.byte KILLACT_POOFDEATH		; Object $0F
 	.byte KILLACT_POOFDEATH		; Object $10
 	.byte KILLACT_NORMALSTATE	; Object $11
-	.byte KILLACT_POOFDEATH		; Object $12
+	.byte KILLACT_NORMALSTATE		; Object $12
 	.byte KILLACT_POOFDEATH		; Object $13
 
 OG1_POff .func (\1 - ObjectGroup01_PatternSets)
@@ -167,7 +167,7 @@ OG1_POff .func (\1 - ObjectGroup01_PatternSets)
 	.byte OG1_POff(ObjP10), OG1_POff(ObjP11), OG1_POff(ObjP12), OG1_POff(ObjP13)
 
 	.org ObjectGroup_PatternSets
-	
+
 ObjectGroup01_PatternSets:
 
 ObjP00:
@@ -271,8 +271,6 @@ ObjInit_PUp2:
 ObjInit_PowerUp:
 	JSR Object_NoInteractions
 
-	LDA #$04
-	STA Objects_SpritesRequested, X
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
@@ -1214,9 +1212,13 @@ Bubble_NoGraphics:
 	STA Bubble_RegenXHi, X
 
 	LDA <Objects_YZ, X
+	SUB #$02
+	STA <Objects_YZ, X
 	STA Bubble_RegenY, X
 
 	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
 	STA Bubble_RegenYHi, X
 
 	JSR Object_CalcBoundBox
@@ -1378,7 +1380,7 @@ ObjInit_Key:
 	LDA #ATTR_ALLWEAPONPROOF
 	STA Objects_WeaponAttr, X
 
-	LDA #(ATTR_SHELLPROOF | ATTR_EXPLOSIONPROOF | ATTR_BUMPNOKILL)
+	LDA #(ATTR_SHELLPROOF | ATTR_EXPLOSIONPROOF | ATTR_BUMPNOKILL | ATTR_WINDAFFECTS)
 	STA Objects_BehaviorAttr, X
 
 	LDA <Objects_XZ, X
@@ -1431,12 +1433,6 @@ Key_NormRTS:
 	RTS
 
 Key_Norm:
-	LDA Key_Reappear, X
-	BNE Key_NoOffscreenDelete
-
-	JSR Object_DeleteOffScreen
-	
-Key_NoOffscreenDelete:
 	JSR Object_DeleteInPit
 	BCC Key_Move
 
@@ -2045,9 +2041,11 @@ MagicStar_NoMove:
 MagicStar_CheckItemBlock:
 	JSR Object_DetectTileCenter
 
-	LDA Tile_LastValue
-	AND #$3F
-	BNE MagicStar_CheckItemBlock1
+	STA Debug_Snap
+	LDA Tile_LastProp
+	AND #$F0
+	CMP #TILE_PROP_ITEM
+	BEQ MagicStar_CheckItemBlock1
 
 	LDA #$01
 	STA Objects_Property, X
@@ -2067,7 +2065,7 @@ MagicStar_CheckItemBlock:
 MagicStar_CheckItemBlock1:
 	PLA
 	PLA
-	RTS
+	RTS	
 
 MagicStar_CheckClearedBlock:
 	JSR Object_DetectTileCenter
@@ -2306,6 +2304,15 @@ TakeMagic_Star1:
 ;	this object searches for the key collection object and fills in it's inidcated slot
 ; 	in the collection.
 ;***********************************************************************************	
+SPFrames:
+	.byte $00, $04
+
+SPFlips1:
+	.byte $00, $00, $00, SPR_HFLIP
+
+SPFlips2:
+	.byte $00, $00, SPR_HFLIP, SPR_HFLIP
+
 ObjInit_StarPiece:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
@@ -2319,9 +2326,11 @@ ObjNorm_StarPiece:
 	LDA LastPatTab_Sel
 	EOR #$01
 	TAY
+
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
-	LDA KPFrames, Y
+
+	LDA SPFrames, Y
 	STA Objects_Frame, X
 
 	JSR Object_CalcBoundBox
@@ -2344,11 +2353,11 @@ DrawStarPieceAnim:
 	AND #$03
 	TAX
 
-	LDA KPFlips1, X
+	LDA SPFlips1, X
 	ORA Sprite_RAM + 2, Y
 	STA Sprite_RAM + 2, Y
 
-	LDA KPFlips2, X
+	LDA SPFlips2, X
 	ORA Sprite_RAM + 6, Y
 	STA Sprite_RAM + 6, Y
 	RTS
@@ -2546,103 +2555,4 @@ PoisonMushroom_InsideBlockRTS:
 	LDA #$04
 	STA Objects_Timer2, X
 	RTS
-	
-
-
-Pyrantula_Frame = Objects_Data1
-Pyrantula_FireTimer = Objects_Data2
-
-ObjNorm_Pyrantula:
-	LDA <Player_HaltGameZ
-	BEQ Pyrantula_Normal
-	JMP Pyrantula_Draw	 ; If gameplay is not halted, jump to PRG003_B9D4
-
-Pyrantula_Normal:
-	LDA Pyrantula_FireTimer, X
-	BNE Pyrantula_Shoot
-
-	LDA Objects_Timer, X
-	BNE Pyrantula_Move
-
-	LDA #$20
-	STA Pyrantula_FireTimer, X
-
-Pyrantula_Move:
-	JSR Object_ChasePlayer
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
-	JSR Object_DetectTiles
-	JSR Object_InteractWithTiles
-	
-	LDA Object_VertTileProp, X
-	CMP #TILE_PROP_CLIMBABLE
-	BEQ Pyrantula_VGo
-
-	LDA #$00
-	STA <Objects_YVelZ, X
-	STA Objects_YVelFrac,X	
-
-Pyrantula_VGo:
-
-	LDA  Object_HorzTileProp, X
-	CMP #TILE_PROP_CLIMBABLE
-	BEQ Pyrantula_Animate
-
-	JSR Object_WallStop
-	JMP Pyrantula_Animate
-
-Pyrantula_Shoot:
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
-
-	LDA Pyrantula_FireTimer, X
-	CMP #$10
-	BNE Pyrantula_ShootDraw
-
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	ORA Objects_SpritesVerticallyOffScreen, X
-	BNE Pyrantula_ShootDraw
-
-	LDA #$06
-	STA <Proj_XOff 
-
-	LDA #$0C
-	STA <Proj_YOff
-
-	JSR Object_ShootFireBallStraight
-	JSR Object_AimProjectile
-
-	LDA SpecialObj_XVel, Y
-	JSR Double_Value
-	STA SpecialObj_XVel, Y
-
-	LDA SpecialObj_YVel, Y
-	JSR Double_Value
-	STA SpecialObj_YVel, Y
-
-Pyrantula_ShootDraw:
-	DEC Pyrantula_FireTimer, X
-	BEQ Pyrantual_Reset
-
-	LDA #$02
-	STA Objects_Frame, X
-	BNE Pyrantula_Draw
-
-Pyrantual_Reset:
-	LDA #$40
-	STA Objects_Timer, X
-	BNE Pyrantula_Draw
-
-Pyrantula_Animate:
-	INC Pyrantula_Frame, X
-
-	LDA Pyrantula_Frame, X
-	LSR A
-	LSR A
-	AND #$01
-
-	STA Objects_Frame, X
-
-Pyrantula_Draw:
-	JMP Object_DrawMirrored	 ; Jump (indirectly) to PRG003_BB17 (draws enemy) and don't come back!    
 	

@@ -155,11 +155,11 @@ OG7_POff .func (\1 - ObjectGroup07_PatternSets)
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG7_POff(ObjP78), OG7_POff(ObjP79), OG7_POff(ObjP7A), OG7_POff(Obj7B)
-    .byte OG7_POff(ObjP7C), OG7_POff(ObjP7D), OG7_POff(ObjP7E), OG7_POff(Obj7F)
-    .byte OG7_POff(ObjP80), OG7_POff(ObjP81), OG7_POff(ObjP82), OG7_POff(Obj83)
-    .byte OG7_POff(ObjP84), OG7_POff(ObjP85), OG7_POff(ObjP86), OG7_POff(Obj87)
-    .byte OG7_POff(ObjP88), OG7_POff(ObjP89), OG7_POff(ObjP8A), OG7_POff(Obj8B)
+	.byte OG7_POff(ObjP78), OG7_POff(ObjP79), OG7_POff(ObjP7A), OG7_POff(ObjP7B)
+    .byte OG7_POff(ObjP7C), OG7_POff(ObjP7D), OG7_POff(ObjP7E), OG7_POff(ObjP7F)
+    .byte OG7_POff(ObjP80), OG7_POff(ObjP81), OG7_POff(ObjP82), OG7_POff(ObjP83)
+    .byte OG7_POff(ObjP84), OG7_POff(ObjP85), OG7_POff(ObjP86), OG7_POff(ObjP87)
+    .byte OG7_POff(ObjP88), OG7_POff(ObjP89), OG7_POff(ObjP8A), OG7_POff(ObjP8B)
 
 ObjectGroup07_PatternSets:
 
@@ -174,8 +174,12 @@ ObjP7A:
 
 ObjP7B:
 ObjP7C:
-ObjP7D:
-    .byte $9D, $9F, $BD, $BF, $91, $93, $B1, $B3,  $91, $93, $B1, $B3
+    .byte $99, $9B, $B9, $BB
+	.byte $95, $97, $B5, $B7
+
+ObjP7D:	
+	.byte $9D, $9F, $BD, $BF
+	.byte $91, $93, $B1, $B3
 
 ObjP7E:
     .byte $B1, $B3, $91, $93
@@ -2545,7 +2549,7 @@ ObjNorm_Podobo:
 
 Podobo_Norm:
 	
-	JSR Object_DeleteOffScreenRange
+	JSR Object_DeleteOffScreen
 
 	LDA Objects_Timer,X
 	BEQ Podobo_Move	 ; If timer expired, jump to PRG005_A259
@@ -2558,7 +2562,7 @@ Podobo_Move:
 	BEQ Podobo_KeepMoving
 
 	JSR Object_XDistanceFromPlayer
-	CMP #$60
+	CMP #$40
 	BCS Podobo_MoveDone
 	
 	LDA #$00
@@ -2744,7 +2748,7 @@ Podobo_BreakBridges:
 
 	TYA
 	AND #$C0
-	ORA #$3F
+	ORA #$01
 	
 	JSR Object_ChangeBlock
 

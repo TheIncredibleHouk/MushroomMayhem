@@ -594,7 +594,7 @@ MakeSplash:
 	SBC #$00
 	STA <Objects_YHiZ, X
 
-	LDA #$19
+	LDA #OBJ_WATERSPLASH
 	STA Objects_ID, X
 
 	LDA #$0B
@@ -870,7 +870,7 @@ ObjState_PoofDying:
 	STA Objects_ID, X
 
 	LDA #$00
-	;STA Stars_Timer, X
+	STA Stars_Timer, X
 
 	JSR Object_NoInteractions
 	
@@ -2643,7 +2643,7 @@ PRG000_D5A0:
 	AND #$03	 
 	BPL PRG000_D5BF	 	; Jump (technically always) to PRG000_D5BF
 
-PRG000_D5BC:
+PRG000_D5BC:	
 	LDA Objects_SpriteAttributes,X	; Otherwise, just get the normal attributes
 
 PRG000_D5BF:
@@ -4923,6 +4923,7 @@ DoPatrol:
 	.word Object_ChasePlayer
 
 PatrolDiagonal:
+
 	JSR PatrolUpDown
 
 PatrolBackForth:
@@ -4948,8 +4949,7 @@ PatrolBackForth_Accel:
 	AND #$03
 	BNE PatrolBackForth_Move
 
-	LDA Patrol_XVelocityChange,X
-	ADD <Objects_XVelZ,X
+	LDA <Objects_XVelZ,X
 	CMP Patrol_XAccelLimit, X
 	BNE PatrolBackForth_SetVel
 
@@ -4959,6 +4959,7 @@ PatrolBackForth_Reset:
 	LDA Patrol_XAccelLimit, X
 
 PatrolBackForth_SetVel:
+	ADD Patrol_XVelocityChange,X
 	STA <Objects_XVelZ,X
 
 PatrolBackForth_Move:
@@ -4989,8 +4990,7 @@ PatrolUpDown_Accel:
 	AND #$03
 	BNE PatrolUpDown_Move
 
-	LDA Patrol_YVelocityChange,X
-	ADD <Objects_YVelZ,X
+	LDA <Objects_YVelZ,X
 	CMP Patrol_YAccelLimit, X
 	BNE PatrolUpDown_SetVel
 
@@ -5000,6 +5000,7 @@ PatrolUpDown_Reset:
 	LDA Patrol_YAccelLimit, X
 
 PatrolUpDown_SetVel:
+	ADD Patrol_YVelocityChange,X
 	STA <Objects_YVelZ,X
 
 PatrolUpDown_Move:

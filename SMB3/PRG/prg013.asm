@@ -1,3 +1,5 @@
+	.org $C000
+
 HandleLevelEvent:
 
 	LDA EventType

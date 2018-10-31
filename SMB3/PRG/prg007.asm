@@ -2440,10 +2440,10 @@ Cannonball_Norm:
 	JSR CannonBall_TilesInteraction
 
 Enemy_CannonDraw:
-	LDA #$5B
+	LDA #$AB
 	STA <SpecialObj_Tile
 
-	LDA #$5B
+	LDA #$AB
 	STA <SpecialObj_Tile + 1
 
 	LDA #SPR_PAL3
@@ -3704,7 +3704,7 @@ BobOmbGen_Make:
 	LDA ObjectGenerator_Property, Y
 	AND #$03
 	ADD #$01
-	;STA BobOmb_Action, X
+	STA BobOmb_Action, X
 
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
@@ -3794,7 +3794,7 @@ GoombaGen_Make:
 	LDA ObjectGenerator_Property, Y
 	AND #$03
 	ADD #$01
-	;STA Goomba_Action, X
+	STA Goomba_Action, X
 
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes, X
@@ -3873,6 +3873,7 @@ GenEnemy_Make:
 	LDA ObjectGenerator_Property, X
 	TAY
 
+	
 	LDA EnemyCannonType, Y
 	STA <Object_Check
 
@@ -3925,6 +3926,7 @@ GenEmemy_MakeMore:
 PRG007_BD49:
 	STY TempY
 
+	LDY <CurrentObjectIndexZ
 	LDA ObjectGenerator_Property, Y
 	TAY
 
@@ -3941,15 +3943,8 @@ PRG007_BD49:
 	STA Objects_ID,X
 	STA Objects_NoExp, X
 
-	; Set Goomba's color
-	LDA EnemyCannonColor, Y
-	STA Objects_SpriteAttributes,X
-
 	LDA #$00
 	STA Objects_Property, X
-
-	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
-	STA Objects_BehaviorAttr, X
 
 	LDA #$00
 	STA Objects_Health, X
@@ -4109,6 +4104,7 @@ DetermineCannonVisibilty:
 
 	LDA <Temp_Var15
 	CMP <Horz_Scroll
+
 	LDA <Temp_Var16	
 	SBC <Horz_Scroll_Hi
 	BNE CannonVerticalVisibility
@@ -4128,6 +4124,7 @@ CannonVerticalVisibility:
 
 	LDA <Temp_Var15
 	CMP <Vert_Scroll
+
 	LDA <Temp_Var16	
 	SBC <Vert_Scroll_Hi
 	BNE CannonVerticalVisibilityRTS
@@ -4152,8 +4149,16 @@ ObjectGen_Platform:
 	LDA #OBJ_PLATFORMUNSTABLE
 	STA Objects_ID,X
 
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X
+
+	LDA #BOUND48x16
+	STA Objects_BoundBox, X
+
+	JSR Object_NoInteractions
 
 	LDA ObjectGenerator_X,Y
 	STA <Objects_XZ,X
@@ -4168,11 +4173,11 @@ ObjectGen_Platform:
 	STA <Objects_YHiZ,X
 
 	LDA #$10
-	;STA Platform_MaxFall, X
-	;STA PlatformUnstable_NoRegen, X
+	STA Platform_MaxFall, X
+	STA PlatformUnstable_NoRegen, X
 
 	LDA #$4A
-	;STA PlatformUnstable_MoveTimer, X
+	STA PlatformUnstable_MoveTimer, X
 
 	LDA #$FC
 	STA <Objects_YVelZ, X
@@ -4463,7 +4468,6 @@ PRG007_BF81:
 	LDA <Objects_YHiZ, X
 	ADC Bill_YOffset + 8,Y
 	STA <Objects_YHiZ, X
-	STA <Poof_YHi
 
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
@@ -4473,8 +4477,8 @@ PRG007_BF81:
 	STA Objects_SpritesRequested, X
 
 	LDA ObjectGenerator_Visibility, X
-	AND #GENERATOR_VVISIBLE
-	BEQ Make_BulletRTS
+	AND #(GENERATOR_VVISIBLE | GENERATOR_HVISIBLE)
+	BNE Make_BulletRTS
 
 	JSR Common_MakePoof	 ; Play cannon fire noise and make smoke
 

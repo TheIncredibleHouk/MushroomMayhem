@@ -156,16 +156,18 @@ OBJ_EXPLOSION      = $20
 OG2_POff .func (\1 - ObjectGroup02_PatternSets)
 
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
+
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG2_POff(ObjP14), OG2_POff(ObjP15), OG2_POff(ObjP16), OG2_POff(Obj17)
-    .byte OG2_POff(ObjP18), OG2_POff(ObjP19), OG2_POff(ObjP1A), OG2_POff(Obj1B)
-    .byte OG2_POff(ObjP1C), OG2_POff(ObjP1D), OG2_POff(ObjP1E), OG2_POff(Obj1F)
-    .byte OG2_POff(ObjP20), OG2_POff(ObjP21), OG2_POff(ObjP22), OG2_POff(Obj23)
-    .byte OG2_POff(ObjP24), OG2_POff(ObjP25), OG2_POff(ObjP26), OG2_POff(Obj27)
+	.byte OG2_POff(ObjP14), OG2_POff(ObjP15), OG2_POff(ObjP16), OG2_POff(ObjP17)
+    .byte OG2_POff(ObjP18), OG2_POff(ObjP19), OG2_POff(ObjP1A), OG2_POff(ObjP1B)
+    .byte OG2_POff(ObjP1C), OG2_POff(ObjP1D), OG2_POff(ObjP1E), OG2_POff(ObjP1F)
+    .byte OG2_POff(ObjP20), OG2_POff(ObjP21), OG2_POff(ObjP22), OG2_POff(ObjP23)
+    .byte OG2_POff(ObjP24), OG2_POff(ObjP25), OG2_POff(ObjP26), OG2_POff(ObjP27)
 
 	.org ObjectGroup_PatternSets
-
+	
 ObjectGroup02_PatternSets:
+
 ObjP16:
 ObjP18:
 ObjP19:
@@ -186,6 +188,20 @@ ObjP15:
 ObjP17:
     .byte $97, $99
     .byte $9B, $9D
+	.byte $A1, $AB
+	.byte $A3, $A1
+	.byte $A3, $AB
+	.byte $A5, $A1
+	.byte $A5, $AB
+	.byte $A7, $A1
+	.byte $D7, $D9
+	.byte $DB, $DD
+	.byte $E1, $EB
+	.byte $E3, $E1
+	.byte $E3, $EB
+	.byte $E5, $E1
+	.byte $E5, $EB
+	.byte $E7, $E1
     
 ObjP1C:
     .byte $81, $83, $85, $87, $89, $89, $87, $85, $C1, $C3, $C5, $C7, $C9, $C9, $C7, $C5
@@ -355,6 +371,10 @@ FillWater_Draw:
 TimerStartTimes:
 	.byte 30, 100
 
+Timer_Remaining = Objects_Data1
+Timer_WarningPlayed = Objects_Data2
+Timer_Delayed = Objects_Data3
+
 ObjInit_Timer:
 	LDA #$03
 	STA Objects_SpritesRequested, X
@@ -363,36 +383,37 @@ ObjInit_Timer:
 	TAY
 
 	LDA TimerStartTimes, Y
-	STA Objects_Data4, X
+	STA Timer_Remaining, X
 
 	LDA #$B0
-	STA Objects_Data5, X
+	STA Timer_Delayed, X
 
 	INC Objects_Global, X
 	
 	JMP Object_NoInteractions
 
 ObjNorm_Timer:
-	LDA Objects_Data2, X
+	LDA Timer_WarningPlayed, X
 	BNE ObjNorm_Timer0
 
 	LDA #MUS1_TIMEWARNING	 
 	STA Sound_QMusic1
-	INC Objects_Data2, X
+	INC Timer_WarningPlayed, X
 
 ObjNorm_Timer0:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_Timer1
 
-	LDA Objects_Data4, X
+	LDA Timer_Remaining, X
 	BEQ ObjNorm_Timer2
 
-	DEC Objects_Data5, X
+	DEC Timer_Delayed, X
 	BNE ObjNorm_Timer1
 
-	DEC Objects_Data4, X
+	DEC Timer_Remaining, X
+
 	LDA #$2D
-	STA Objects_Data5, X
+	STA Timer_Delayed, X
 
 ObjNorm_Timer1:
 	JSR DrawTimer
@@ -405,6 +426,9 @@ ObjNorm_Timer2:
 Timer_XOffset:
 	.byte $20, $18, $10
 
+Timer_NumOffset:
+	.byte $00, $40		
+
 DrawTimer:
 	LDA LastPatTab_Sel
 	EOR #$01
@@ -413,7 +437,7 @@ DrawTimer:
 	LDA #$4D
 	STA PatTable_BankSel + 4, Y
 
-	LDA Objects_Data4, X
+	LDA Timer_Remaining, X
 	STA DigitsParam
 
 	LDA #$00
@@ -425,7 +449,7 @@ DrawTimer:
 	EOR #$01
 	TAX
 
-	LDA Lock_NumOffset, X
+	LDA Timer_NumOffset, X
 	STA <Temp_Var1
 
 	LDX <CurrentObjectIndexZ
@@ -475,6 +499,7 @@ DrawTimer1:
 ;***********************************************************************************
 ; 	Once Mario touches this object, a number of seconds are added to the timer object.
 ;***********************************************************************************	
+
 Clock_Collected = Objects_Data3
 Clock_Frame = Objects_Data4
 
@@ -555,11 +580,12 @@ ClockTimes:
 	.byte 5, 10, 15, 20, 25, 30
 
 ObjHit_Clock:
+
 	LDY #$04
 
 ObjHit_Clock1:
 	LDA Objects_ID, Y
-	CMP #$1D
+	CMP #OBJ_TIMER
 	BEQ ObjHit_Clock2
 
 	DEY
@@ -570,8 +596,8 @@ ObjHit_Clock2:
 	LDA Objects_Property, X
 	TAX
 	LDA ClockTimes, X
-	ADD Objects_Data4, Y
-	STA Objects_Data4, Y
+	ADD Timer_Remaining, Y
+	STA Timer_Remaining, Y
 
 	LDX <CurrentObjectIndexZ
 
@@ -1131,6 +1157,15 @@ NextCheck:
 	LDA #$00
 	STA Objects_Property, X
 
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_EXPLOSIONPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
 	LDA <Player_X
 	STA <Objects_XZ, X
 	STA Key_ReappearX, X
@@ -1153,6 +1188,9 @@ NextCheck:
 
 	LDA #$01
 	STA Key_Reappear, X
+
+	LDA #$FF
+	STA Key_AdjacentChecks, X
 
 	JMP Common_MakePoof
 
@@ -1200,7 +1238,6 @@ ObjNormal_KeyPiece:
 	LDA <Player_HaltGameZ
 	BNE KeyPiece_Draw
 
-	STA Debug_Snap
 	LDY LastPatTab_Sel
 	LDA PatTable_BankSel + 4, Y
 	CMP #$4D
@@ -1253,7 +1290,7 @@ ObjHit_KeyPiece:
 
 FindKeyTracker:
 	LDA Objects_ID,Y
-	CMP #OBJ_KEYPIECES
+	CMP #OBJ_KEYPIECECOLLECTION
 	BEQ SetKeyField
 
 	DEY
@@ -1578,7 +1615,10 @@ Stars_Timer = Objects_Data1
 ObjNorm_Stars:
 	LDA <Player_HaltGameZ
 	BNE  StarsDraw
-	
+
+StarsAnimate:
+	INC Stars_Timer, X
+
 StarsDraw:
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X
@@ -1599,7 +1639,7 @@ StarsDraw1:
 Stars_KeepDrawing:
 	STA <Temp_Var1
 	
-	INC Stars_Timer, X
+
 
 	LDA #$17
 	STA Sprite_RAMTile, Y

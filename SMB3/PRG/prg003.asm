@@ -9,7 +9,7 @@ OBJ_PLATFORMCW      = $2C
 OBJ_PLATFORMCCW     = $2D
 OBJ_PLATFORMPATH    = $2E
 OBJ_PLATFORMUNSTABLE = $2F
-OBJ_PLATFORMGEN     = $30
+
 OBJ_SNAKEBLOCK      = $31
 OBJ_PIPEBLOCK       = $32
 
@@ -21,7 +21,7 @@ OBJ_PIPEBLOCK       = $32
     .word ObjInit_WoodenPlatCCW     ; Object $2D
     .word ObjInit_PlatformFollow    ; Object $2E
     .word ObjInit_PlatformUnstable  ; Object $2F
-    .word ObjInit_WoodenPlatFallGen ; Object $30
+    .word ObjInit_DoNothing ; Object $30
     .word ObjInit_SnakeBlock        ; Object $31
     .word ObjInit_PipeBlock         ; Object $32
 	.word ObjInit_DoNothing			; Object $33
@@ -44,7 +44,7 @@ OBJ_PIPEBLOCK       = $32
     .word ObjNorm_PlatformOscillate   ; Object $2D
     .word ObjNorm_PlatformFollow   ; Object $2E
     .word ObjNorm_PlatformUnstable  ; Object $2F
-    .word ObjNorm_WoodenPlatFallGen ; Object $30
+    .word ObjNorm_DoNothing ; Object $30
     .word ObjNorm_SnakeBlock        ; Object $31
     .word ObjNorm_PipeBlock         ; Object $32
 	.word ObjNorm_DoNothing			; Object $33
@@ -65,13 +65,12 @@ OBJ_PIPEBLOCK       = $32
     .word Platform_PlayerStand	    ; Object $2B
     .word Platform_PlayerStand	    ; Object $2C
     .word Platform_PlayerStand	    ; Object $2D
-    .word Platform_PlayerStand	    ; Object $2D
     .word Platform_PlayerStand	    ; Object $2E
     .word Platform_PlayerStand	    ; Object $2F
-    .word ObjHit_DoNothing          ; Object $30
-    .word ObjHit_DoNothing          ; Object $31
-    .word ObjHit_DoNothing	        ; Object $32
-	.word ObjHit_DoNothing	        ; Object $33
+    .word ObjHit_DoNothing	    ; Object $30
+    .word ObjHit_SolidBlock          ; Object $31
+    .word ObjHit_SolidBlock         ; Object $32
+    .word ObjHit_DoNothing	        ; Object $33
 	.word ObjHit_DoNothing	        ; Object $34
 	.word ObjHit_DoNothing	        ; Object $35
 	.word ObjHit_DoNothing	        ; Object $36
@@ -86,7 +85,6 @@ OBJ_PIPEBLOCK       = $32
 ;****************************** OBJECT PALETTE/SIZE ******************************
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $28
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $29
-    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $2A
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $2A
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $2B
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $2C
@@ -158,11 +156,11 @@ OG3_POff .func (\1 - ObjectGroup03_PatternSets)
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG3_POff(ObjP28), OG3_POff(ObjP29), OG3_POff(ObjP2A), OG3_POff(Obj2B)
-    .byte OG3_POff(ObjP2C), OG3_POff(ObjP2D), OG3_POff(ObjP2E), OG3_POff(Obj2F)
-    .byte OG3_POff(ObjP30), OG3_POff(ObjP31), OG3_POff(ObjP32), OG3_POff(Obj33)
-    .byte OG3_POff(ObjP34), OG3_POff(ObjP35), OG3_POff(ObjP36), OG3_POff(Obj37)
-    .byte OG3_POff(ObjP38), OG3_POff(ObjP39), OG3_POff(ObjP3A), OG3_POff(Obj3B)
+	.byte OG3_POff(ObjP28), OG3_POff(ObjP29), OG3_POff(ObjP2A), OG3_POff(ObjP2B)
+    .byte OG3_POff(ObjP2C), OG3_POff(ObjP2D), OG3_POff(ObjP2E), OG3_POff(ObjP2F)
+    .byte OG3_POff(ObjP30), OG3_POff(ObjP31), OG3_POff(ObjP32), OG3_POff(ObjP33)
+    .byte OG3_POff(ObjP34), OG3_POff(ObjP35), OG3_POff(ObjP36), OG3_POff(ObjP37)
+    .byte OG3_POff(ObjP38), OG3_POff(ObjP39), OG3_POff(ObjP3A), OG3_POff(ObjP3B)
 
 ObjectGroup03_PatternSets:
 
@@ -175,7 +173,7 @@ ObjP2D:
 ObjP2E:
 ObjP2F:
 ObjP30:
-    .byte $A1, $A3, $AD, $AF, $A5, $A7, $A9, $AB
+    .byte $5B, $5B, $5B, $5B, $5B, $5B
 
 ObjP31:
     .byte $77, $77
@@ -196,22 +194,23 @@ ObjP3B:
 
 Platform_Index = Objects_Data1
 Platform_Ticker = Objects_Data2
+Platform_Regen = Objects_Data6
+Platform_NotBehind = Objects_Data7
+Platform_MaxFall = Objects_Data8
+Platform_StartY = Objects_Data9
+Platform_StartYHi = Objects_Data10
+PlatformUnstable_MoveTimer = Objects_Data11
+PlatformUnstable_NoRegen = Objects_Data12
+
 Platform_StartX = Objects_Data3
 Platform_StartXHi = Objects_Data4
 Platform_SteppedOn = Objects_Data5
 Platform_MadeContact = Objects_Data6
-Platform_Regen = Objects_Data7
-Platform_Fall = Objects_Data8
-Platform_NotBehind = Objects_Data9
-Platform_MaxFall = Objects_Data10
-Platform_StartY = Objects_Data11
-Platform_StartYHi = Objects_Data12
-PlatformUnstable_MoveTimer = Objects_Data13
-PlatformUnstable_NoRegen = Objects_Data14
+Platform_Fall = Objects_Data7
 
 PlatformTimers:
 	.byte $01, $11, $21, $31, $41, $51, $61, $71
-	
+
 ObjInit_PlatformCommon:
 	LDA #$06
 	STA Objects_SpritesRequested, X
@@ -513,6 +512,59 @@ PlatformFollow_CheckOffScreen:
 	STA Level_ObjectsSpawned,Y
 	RTS
 
+Platform_FollowBlocks:
+	LDA #$00
+	STA Platform_Fall, X
+
+	LDA #$03
+	STA Platform_Index, X
+
+Platform_CheckBlocks:
+	LDY Platform_Index, X
+	LDA Platform_XOffsets, Y
+	ADD <Objects_XZ, X
+	STA Block_DetectX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Block_DetectXHi
+
+	LDA Platform_YOffsets, Y
+	ADD <Objects_YZ, X
+	STA Block_DetectY
+
+	LDA Platform_YOffsets + 4, Y
+	ADC <Objects_YHiZ, X
+	STA Block_DetectYHi
+
+	JSR Object_DetectTile
+	CMP #TILE_PROP_ENEMY
+	BEQ Platform_SetVel
+
+	DEC Platform_Index, X
+	BPL Platform_CheckBlocks
+	
+	LDA #$01
+	STA Platform_Fall, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+	RTS
+
+Platform_SetVel:
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	JSR Object_ChangeBlock
+
+	LDY Platform_Index, X
+	LDA Platform_XVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA Platform_YVel, Y
+	STA <Objects_YVelZ, X
+	RTS    	
+
 Platform_XOffsets:
 	.byte $28, $18, $08, $18
 
@@ -573,7 +625,7 @@ Unstable_DrawNorm:
 	BNE Unstable_Draw1
 
 Unstable_Draw1:
-	JMP Platform_DrawCopy
+	JMP Platform_Draw
 
 Unstable_Move:
 	LDA PlatformUnstable_MoveTimer, X
@@ -671,49 +723,7 @@ Unstable_CheckContact:
 	BEQ Unstable_CheckContactRTS
 
 Unstable_CheckContactRTS:
-	RTS    
-
-
-PlatformGenDelay:
-	.byte $00, $20  
-
-ObjInit_WoodenPlatFallGen:
-	LDY Objects_Property, X
-	
-    LDA PlatformGenDelay, Y
-	STA Objects_Timer, X
-	
-    LDA #$FC
-	STA <Objects_YVelZ, X
-	
-    LDA Objects_SpriteAttributes,X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes,X
-
-ObjInit_WoodenPlatFallGen1:
-	LDA <Objects_YZ, X
-	STA Objects_Data4, X
-	
-    LDA <Objects_YHiZ, X
-	STA Objects_Data5, X
-	RTS
-
-Reset_WoodenPlatFallGen:
-	LDA #$60
-	STA Objects_Timer, X
-
-	LDA Objects_Data4, X
-	STA <Objects_YZ, X
-
-	LDA Objects_Data5, X
-	STA <Objects_YHiZ, X
-
-	LDA #00
-	STA Objects_Data3, X
-	RTS
-
-ObjNorm_WoodenPlatFallGen:
-	RTS		 ; Return        
+	RTS     
 
 
 ;***********************************************************************************
@@ -785,6 +795,9 @@ ObjInit_SnakeBlock:
 	LDA #$FF
 	STA SnakeBlock_BlockIndexCheck, X
 
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+
 	JMP SnakeBlock_CheckBlockToggle
 
 ObjNorm_SnakeBlock:
@@ -816,7 +829,11 @@ SnakeBlock_Normal:
 	JSR Object_DeleteOffScreen
 
 SnakeBlock1:
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+
 	JSR Object_CalcBoundBox
+
 
 	LDA Objects_BoundLeft, X
 	SUB #$01
@@ -834,8 +851,6 @@ SnakeBlock1:
 	SBC #$00
 	STA Objects_BoundTopHi, X
 
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoGravity
 	JSR Object_InteractWithPlayer
 	JSR SnakeBlock_Draw
 
@@ -1198,10 +1213,10 @@ PipeBlock_ChangeBlockRight:
 PipeBlock_Draw:
 	JSR Object_Draw
 
-	LDA ObjP40 + 2
+	LDA ObjP32 + 2
 	STA Sprite_RAMTile + 8, Y
 
-	LDA ObjP40 + 3
+	LDA ObjP32 + 3
 	STA Sprite_RAMTile + 12, Y
 
 	LDA Sprite_RAMAttr , Y

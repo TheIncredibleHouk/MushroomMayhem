@@ -3513,14 +3513,6 @@ PRG030_9AA5:
 
 TileLayoutPage_ByTileset:
 	; A000 page selected per-Level_Tileset...
-	.byte 21
-	.byte 21
-	.byte 21
-	.byte 21
-	.byte 21
-	.byte 21
-	.byte 21
-	.byte 21
 	.byte 22
 	.byte 22
 	.byte 22
@@ -3528,6 +3520,14 @@ TileLayoutPage_ByTileset:
 	.byte 22
 	.byte 22
 	.byte 22
+	.byte 22
+	.byte 23
+	.byte 23
+	.byte 23
+	.byte 23
+	.byte 23
+	.byte 23
+	.byte 23
 
 	; THESE VALUES ARE WRONG!  Appears that they were not maintained?
 	; It doesn't matter because these specialized cases go where they need to anyway!

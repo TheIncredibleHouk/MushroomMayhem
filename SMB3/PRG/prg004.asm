@@ -161,11 +161,11 @@ OG4_POff .func (\1 - ObjectGroup04_PatternSets)
 	.org ObjectGroup_PatternStarts	; <-- help enforce this table *here*
 
 	; Index by object group relative index (ObjGroupRel_Idx)
-	.byte OG4_POff(ObjP3C), OG4_POff(ObjP3D), OG4_POff(ObjP3E), OG4_POff(Obj3F)
-	.byte OG4_POff(ObjP40), OG4_POff(ObjP41), OG4_POff(ObjP42), OG4_POff(Obj41)
-	.byte OG4_POff(ObjP44), OG4_POff(ObjP45), OG4_POff(ObjP46), OG4_POff(Obj47)
-	.byte OG4_POff(ObjP48), OG4_POff(ObjP49), OG4_POff(ObjP4A), OG4_POff(Obj4B)
-	.byte OG4_POff(ObjP4C), OG4_POff(ObjP4D), OG4_POff(ObjP4E), OG4_POff(Obj4F)
+	.byte OG4_POff(ObjP3C), OG4_POff(ObjP3D), OG4_POff(ObjP3E), OG4_POff(ObjP3F)
+	.byte OG4_POff(ObjP40), OG4_POff(ObjP41), OG4_POff(ObjP42), OG4_POff(ObjP43)
+	.byte OG4_POff(ObjP44), OG4_POff(ObjP45), OG4_POff(ObjP46), OG4_POff(ObjP47)
+	.byte OG4_POff(ObjP48), OG4_POff(ObjP49), OG4_POff(ObjP4A), OG4_POff(ObjP4B)
+	.byte OG4_POff(ObjP4C), OG4_POff(ObjP4D), OG4_POff(ObjP4E), OG4_POff(ObjP4F)
 
 ObjectGroup04_PatternSets:
 
@@ -185,8 +185,6 @@ ObjP42:
 	.byte $CB, $C5, $F9, $FB
 
 ObjP43:
-	.byte $E7, $E9, $E7, $EF
-
 ObjP44:
 	.byte $E7, $E9, $E7, $EF
 
@@ -196,7 +194,8 @@ ObjP46:
 	.byte $F1, $F3, $E3, $E3, $F5, $F7, $E3, $E3
 
 ObjP47:
-	.byte $81, $83
+	.byte $D9, $DB
+	.byte $DB, $D9
 
 ObjP48:
 	.byte $C1, $C3, $C5, $C7
@@ -215,7 +214,14 @@ ObjP4B:
 	.byte $91, $93, $91, $9B, $91, $9B 
 
 ObjP4C:
-	.byte $E1, $E1, $E5, $E5, $B9, $B7, $BF, $BB, $B3, $B3, $B5, $B5, $B7, $B9, $BB, $BF   
+	.byte $E1, $E1
+	.byte $E5, $E5
+	.byte $B9, $B7
+	.byte $BF, $BB
+	.byte $E1, $E1
+	.byte $E5, $E5
+	.byte $B7, $B9
+	.byte $BB, $BF
 
 ObjP4D:
 ObjP4E:
@@ -256,6 +262,7 @@ Goomba_CappedMovement:
 	.byte $08, $F8
 
 ObjNorm_Goomba:
+	
 	LDA <Player_HaltGameZ
 	BEQ Goomba_DoAction
 	JMP Goomba_Draw
@@ -842,6 +849,18 @@ PurpleTroopa_Norm:
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_SHELLED
+	BNE PurpleTroopa_OtherObjects
+
+	LDA Explosion_Timer, X
+	BNE PurpleTroopa_OtherObjects
+
+	LDA #$C0
+	STA Explosion_Timer, X
+
+PurpleTroopa_OtherObjects:	
 	JSR Object_InteractWithObjects
 	BCS PurpleTroopa_Animate
 
@@ -941,7 +960,7 @@ ObjNorm_BouncyTroopa0:
 	STA <Objects_YVelZ, X
 
 Bouncy_NotWater:
-	LDA  <Objects_TilesDetectZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ ObjNorm_BouncyTroopa1
 
@@ -986,8 +1005,6 @@ ObjNorm_BouncyTroopa2:
 	
 ObjNorm_BouncyTroopa3:
 	JMP ParaTroopa_Animate
-
-
 
 ParaTroopa_StartX = Objects_Data6
 
@@ -1073,15 +1090,14 @@ ParaTroopa_Animate:
 	LDA Object_SpriteRAMOffset, X
 	ADD #$04
 	STA Object_SpriteRAMOffset, X
-	
+	JSR Troopa_Animate
 	JMP ParaTroopa_DrawWing
 
 ParaTroopa_Draw:
 	LDA Object_SpriteRAMOffset, X
 	ADD #$04
 	STA Object_SpriteRAMOffset, X
-	JSR Troopa_Animate
-	JMP ParaTroopa_DrawWing
+	JSR Troopa_Draw
 
 ParaTroopa_DrawWing:	
 	LDA ParaTroopa_WingFrame, X
@@ -1615,17 +1631,6 @@ Piranha_DoState:
 	.word Piranha_Wait
 
 Piranha_Wait:
-	LDA Piranha_YHiBackup, X
-	BPL Piranha_NoDisplace
-
-
-	LDA <Objects_YHiZ, X
-	STA Piranha_YHiBackup, X
-
-	LDA #$FE
-	STA <Objects_YHiZ, X
-
-Piranha_NoDisplace:
 	LDA Objects_Timer, X
 	BNE Piranha_Wait2
 
@@ -1646,12 +1651,6 @@ Piranha_Wait1:
 
 	LDA #$20
 	STA Objects_Timer, X
-
-	LDA Piranha_YHiBackup, X
-	STA <Objects_YHiZ, X
-
-	LDA #$FF
-	STA Piranha_YHiBackup, X
 
 Piranha_Wait2:
 	RTS
@@ -1765,6 +1764,7 @@ Piranha_NoYOff:
 Piranha_AttackReset:	
 	LDA #$50
 	STA Objects_Timer, X
+	STA Objects_Timer2, X
 	RTS
 
 Piranha_NoMoreAttacks:
@@ -2319,6 +2319,9 @@ ObjInit_PumpkinFree:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+
 	LDA #(ATTR_WINDAFFECTS)
 	STA Objects_BehaviorAttr, X
 
@@ -2427,6 +2430,7 @@ ObjInit_DryCheep:
 	LDA #ATTR_STOMPKICKSOUND
 	STA Objects_BehaviorAttr, X
 
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayerFast
 	
 	LDA <Objects_XZ, X
@@ -2459,18 +2463,21 @@ Flame_Frames:
 	.byte $81, $83, $85, $87	
 
 ObjNorm_DryCheep:
+	
 	LDA <Player_HaltGameZ
-	BNE Dry_DrawNoAnimate
+	BEQ ObjNorm_DryCheep0
+
+	JMP Dry_DrawNoAnimate
 
 ObjNorm_DryCheep0:
 	JSR Object_DeleteOffScreen
-	
+
 	LDA DryCheep_Burning, X
 	BNE Dry_WeaponAttr
 
 	LDA #(ATTR_FIREPROOF)
 	STA Objects_WeaponAttr, X
-	BEQ Dry_CheckIce
+	BNE Dry_CheckIce
 
 Dry_WeaponAttr:
 	LDA #(ATTR_FIREPROOF | ATTR_TAILPROOF | ATTR_STOMPPROOF | ATTR_NOICE)

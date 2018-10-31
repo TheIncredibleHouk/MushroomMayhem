@@ -13,8 +13,8 @@
     <sprite x="67" y="8" value="26" item="0" property="1" replaced="true" />
     <sprite x="66" y="10" value="41" item="0" property="7" replaced="true" />
     <sprite x="88" y="14" value="42" item="0" property="4" replaced="true" />
-    <sprite x="94" y="11" value="33" item="0" property="0" replaced="false" />
-    <sprite x="95" y="11" value="33" item="0" property="0" replaced="false" />
+    <sprite x="94" y="11" value="30" item="0" property="0" replaced="true" />
+    <sprite x="95" y="11" value="30" item="0" property="0" replaced="true" />
     <sprite x="99" y="8" value="124" item="0" property="0" replaced="true" />
     <sprite x="118" y="11" value="124" item="0" property="0" replaced="true" />
     <sprite x="131" y="6" value="40" item="0" property="5" replaced="true" />

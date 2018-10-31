@@ -6,8 +6,8 @@
   <spritedata>
     <sprite x="20" y="23" value="82" item="0" property="0" replaced="true" />
     <sprite x="37" y="15" value="47" item="0" property="0" replaced="true" />
-    <sprite x="27" y="20" value="80" item="0" property="0" replaced="true" />
-    <sprite x="47" y="23" value="80" item="0" property="0" replaced="true" />
+    <sprite x="27" y="20" value="82" item="0" property="0" replaced="true" />
+    <sprite x="47" y="23" value="82" item="0" property="0" replaced="true" />
     <sprite x="56" y="20" value="82" item="0" property="0" replaced="true" />
     <sprite x="68" y="24" value="67" item="0" property="0" replaced="false" />
     <sprite x="73" y="19" value="47" item="0" property="0" replaced="true" />
@@ -15,9 +15,6 @@
     <sprite x="78" y="13" value="47" item="0" property="0" replaced="true" />
     <sprite x="96" y="13" value="82" item="0" property="0" replaced="true" />
     <sprite x="94" y="16" value="12" item="0" property="0" replaced="true" />
-    <sprite x="110" y="16" value="48" item="0" property="0" replaced="true" />
-    <sprite x="116" y="16" value="48" item="0" property="0" replaced="true" />
-    <sprite x="122" y="16" value="48" item="0" property="0" replaced="true" />
     <sprite x="130" y="13" value="80" item="0" property="0" replaced="true" />
     <sprite x="139" y="16" value="82" item="0" property="0" replaced="true" />
     <sprite x="148" y="17" value="63" item="0" property="0" replaced="true" />
@@ -32,5 +29,5 @@
     <sprite x="236" y="8" value="82" item="0" property="0" replaced="true" />
     <sprite x="193" y="11" value="48" item="0" property="0" replaced="true" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
