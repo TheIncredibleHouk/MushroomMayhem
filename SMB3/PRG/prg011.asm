@@ -3151,7 +3151,6 @@ Map_SpriteRAM_Offset:
 
 
 MapObjects_UpdateDrawEnter:
-	JSR Rainbow_Palette_Cycle_Sprites2
 	JSR Map_Object_Do_All	 ; Runs update code for all map objects
 	JSR FX_World_8_Darkness	 ; Performs / updates the World 8 darkness effect, if active
 
@@ -4437,28 +4436,3 @@ Map_DoAnimations:	; $BC29
 	LDA Map_AnimCHRROM,Y	; Get the correct CHRROM page
 	STA PatTable_BankSel	  	; Put it to use
 	RTS		  ; Return!
-
-; Rest of ROM bank was empty
-
-RAINBOW_PAL_CYCLE2: .byte $01, $03, $05, $06, $07, $09, $0A, $0C ; #DAHRKDAIZ
-
-Rainbow_Palette_Cycle_Sprites2:
-	LDA Counter_1;
-	LSR A
-	LSR A
-	AND #$07
-	TAX
-	CLC
-	LDA RAINBOW_PAL_CYCLE2, X
-	;STA (Palette_Buffer + $15)
-	STA (Palette_Buffer + $19)
-	;STA (Palette_Buffer + $1D)
-	ADC #$10
-	;STA (Palette_Buffer + $17)
-	STA (Palette_Buffer + $1B)
-	;STA (Palette_Buffer + $1F)
-	ADC #$20
-	;STA (Palette_Buffer + $16)
-	STA (Palette_Buffer + $1A)
-	;STA (Palette_Buffer + $1E)
-	RTS

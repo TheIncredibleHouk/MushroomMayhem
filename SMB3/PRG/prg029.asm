@@ -404,7 +404,7 @@ Player_PUpRootPage:
 	.byte			  $54,  $2C,   $00 , $24 ,  $28				
 
 RAINBOW_PAL_CYCLE:
-	.byte $01, $03, $05, $06, $07, $09, $0A, $0C ; #DAHRKDAIZ
+	.byte $01, $03, $05, $06, $07, $09, $0A, $0C ; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_Draw
 ;
@@ -2595,7 +2595,6 @@ PRG029_DF4C:
 
 	RTS		 ; Return
 
-	; Palette data for the "glowing coin" effect
 PRG029_DFA4:
 	.byte $3C, $0F, $36, $27	; 0
 	.byte $3C, $0F, $36, $17	; 4
@@ -2620,28 +2619,6 @@ Rainbow_Palette_Cycle:
 	STA (Palette_Buffer + $12)
 	RTS
 
-Rainbow_Palette_Cycle_Sprites:
-	LDA Counter_1;
-	LSR A
-	LSR A
-	AND #$07
-	TAX
-	CLC
-	LDA RAINBOW_PAL_CYCLE, X
-	STA (Palette_Buffer + $15)
-	STA (Palette_Buffer + $19)
-	STA (Palette_Buffer + $1D)
-	ADC #$10
-	STA (Palette_Buffer + $17)
-	STA (Palette_Buffer + $1B)
-	STA (Palette_Buffer + $1F)
-	ADC #$20
-	STA (Palette_Buffer + $16)
-	STA (Palette_Buffer + $1A)
-	STA (Palette_Buffer + $1E)
-	RTS
-
-; #DAHRKDAIZ - Backs the current player palette up during the rainbow cycle
 Backup_Curr_Player_Pal:
 	
 	LDA (Palette_Buffer + $11)
@@ -2654,7 +2631,6 @@ Backup_Curr_Player_Pal:
 	STA (Player_Pal_Backup+ $02)
 	RTS
 
-; #DAHRKDAIZ - Restores the current player palette up after the rainbow cycle
 Restore_Curr_Player_Pal:
 	LDA Player_Pal_Backup
 	STA (Palette_Buffer + $11)

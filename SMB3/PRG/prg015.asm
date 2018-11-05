@@ -13,6 +13,7 @@ OBJ_FIREICEBAR      = $80
 OBJ_PODOBO          = $81
 OBJ_PIPEPODOBO      = $82
 OBJ_PODOBO_X        = $83
+OBJ_PEEKABOO 		= $84
 
     .word ObjInit_Spike ; Object $78
     .word ObjInit_SpikeBall ; Object $79
@@ -26,7 +27,7 @@ OBJ_PODOBO_X        = $83
     .word ObjInit_Podobo ; Object $81
     .word ObjInit_PipePodobo ; Object $82
     .word ObjInit_DiagonalPodobo ; Object $83
-    .word ObjInit_DoNothing ; Object $84
+    .word ObjInit_PeekaBoo ; Object $84
     .word ObjInit_DoNothing ; Object $85
     .word ObjInit_DoNothing ; Object $86
     .word ObjInit_DoNothing ; Object $87
@@ -49,7 +50,7 @@ OBJ_PODOBO_X        = $83
     .word ObjNorm_Podobo ; Object $81
     .word ObjNorm_PipePodobo ; Object $82
     .word ObjNorm_DiagonalPodobo ; Object $83
-    .word ObjNorm_DoNothing ; Object $84
+    .word ObjNorm_PeekaBoo ; Object $84
     .word ObjNorm_DoNothing ; Object $85
     .word ObjNorm_DoNothing ; Object $86
     .word ObjNorm_DoNothing ; Object $87
@@ -72,7 +73,7 @@ OBJ_PODOBO_X        = $83
     .word Player_GetHurt ; Object $81
     .word Player_GetHurt ; Object $82
     .word Player_GetHurt ; Object $83
-    .word ObjHit_DoNothing ; Object $84
+    .word ObjHit_Peekaboo ; Object $84
     .word ObjHit_DoNothing ; Object $85
     .word ObjHit_DoNothing ; Object $86
     .word ObjHit_DoNothing ; Object $87
@@ -94,8 +95,8 @@ OBJ_PODOBO_X        = $83
     .byte OA1_PAL1 | OA1_WIDTH8 | OA1_WIDTH8 ; Object $80
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $81
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $82
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $83
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
+    .byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $83
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
@@ -118,7 +119,7 @@ OBJ_PODOBO_X        = $83
     .byte OPTS_NOCHANGE ; Object $81
     .byte OPTS_NOCHANGE ; Object $82
     .byte OPTS_SETPT5 | $0A ; Object $83
-    .byte OPTS_NOCHANGE ; Object $84
+    .byte OPTS_SETPT5 | $37 ; Object $84
     .byte OPTS_NOCHANGE ; Object $85
     .byte OPTS_NOCHANGE ; Object $86
     .byte OPTS_NOCHANGE ; Object $87
@@ -141,7 +142,7 @@ OBJ_PODOBO_X        = $83
     .byte KILLACT_POOFDEATH ; Object $81
     .byte KILLACT_POOFDEATH ; Object $82
     .byte KILLACT_POOFDEATH ; Object $83
-    .byte KILLACT_POOFDEATH ; Object $84
+    .byte KILLACT_NORMALSTATE ; Object $84
     .byte KILLACT_POOFDEATH ; Object $85
     .byte KILLACT_POOFDEATH ; Object $86
     .byte KILLACT_POOFDEATH ; Object $87
@@ -182,7 +183,8 @@ ObjP7D:
 	.byte $91, $93, $B1, $B3
 
 ObjP7E:
-    .byte $B1, $B3, $91, $93
+    .byte $9D, $9F
+	.byte $91, $93
 
 ObjP7F:
     .byte $B5, $B7
@@ -198,6 +200,11 @@ ObjP83:
     .byte $B1, $B3, $B5, $B7, $B9, $BB
 
 ObjP84:
+	.byte $B1, $B3
+	.byte $B5, $B5
+	.byte $B5, $B5
+	.byte $B7, $B7
+
 ObjP85:
 ObjP86:
 ObjP87:
@@ -1379,7 +1386,7 @@ ObjInit_GiantChomp:
 	LDA #BOUND32x32
 	STA Objects_BoundBox, X
 
-	LDA #ATT_ATTACKPROOF
+	LDA #ATTR_ATTACKPROOF
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
@@ -1987,11 +1994,13 @@ AngryThwomp_DetectCeil:
 AngryThwomp_NoHit:
 	JMP Thwomp_Draw    	
 
-
-
+Boo_Chasing = Objects_Data1
     
+Boo_PlayerCheck:
+	.byte $00, $01
+
 ObjInit_Boo:
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
+	LDA #(ATTR_ATTACKPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
@@ -2000,25 +2009,12 @@ ObjInit_Boo:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	RTS
+	LDA #$10
+	STA ChaseVel_LimitHi, X
 
-Boo_CheckPlayerSight:
-	LDA DayNight
-	BNE PRG002_A8CC
-	JSR Object_FacePlayer
-	CLC
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
 	RTS
-	    
-PRG002_A8CC:
-	SEC
-	RTS		 ; Return
-	
-Boo_PlayerCheck:
-	.byte $00, SPR_HFLIP
-
-Boo_Speeds:
-	.byte $F0, $E0
-	.byte $10, $20
 
 ObjNorm_Boo:
 	LDA <Player_HaltGameZ
@@ -2026,44 +2022,57 @@ ObjNorm_Boo:
 
 	JSR Object_DeleteOffScreen
 
-	LDY #$00
-	LDA DayNight
-	BEQ Boo_SetLimits
-
-	INY
-
-Boo_SetLimits:
-	LDA Boo_Speeds, Y
-	STA ChaseVel_LimitLo, X
-
-	LDA Boo_Speeds + 2, Y
-	STA ChaseVel_LimitHi, X
-
 	JSR Object_FacePlayer
-	JSR Object_CalcBoundBox	
-	JSR Object_AttackOrDefeat
+
+	JSR Object_XDistanceFromPlayer
 	
-	LDA DayNight
-	BNE Boo_Chase
+	LDY <XDiffLeftRight
 
-	LDA Boo_PlayerCheck, Y
-	CMP <Player_FlipBits
-	BNE Boo_Still
-
-Boo_Chase:
-	JSR Object_ChasePlayer
+	LDA Player_Direction
+	CMP Boo_PlayerCheck, Y
+	BNE Boo_NoChase
 
 	LDA #$01
-	STA Objects_Frame, X
-	BNE Boo_Draw
+	BNE Boo_CheckChase
 
-Boo_Still:
+Boo_NoChase:
 	LDA #$00
-	STA Objects_Frame, X
+
+Boo_CheckChase:	
+	CMP Boo_Chasing, X
+	BEQ Boo_SetChase
+
+	PHA
+	
+	LDA #$00
 	STA <Objects_XVelZ, X
 	STA <Objects_YVelZ, X
+	
+	PLA
+
+Boo_SetChase:
+	STA Boo_Chasing, X
+	CMP #$00
+	BEQ Boo_Interact
+
+	JSR Object_ChasePlayer
+
+Boo_Interact:
+	JSR Object_CalcBoundBox	
+	JSR Object_AttackOrDefeat
 
 Boo_Draw:
+	LDA Boo_Chasing, X
+	BNE Boo_SetFrame
+
+	LDA Game_Counter
+	AND #$01
+	BEQ Boo_SetFrame
+	RTS
+
+Boo_SetFrame:	
+	STA Objects_Frame, X
+
 	JMP Object_Draw
 
 PirateBoo_CoinTimer = Objects_Data1
@@ -2089,6 +2098,7 @@ ObjInit_PirateBoo:
 
 	LDA #SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
+
 PriateBoo_InitRTS:
 	RTS
 
@@ -3012,3 +3022,203 @@ ObjNorm_DiagonalPodobo2:
 
 ObjNorm_DiagonalPodoboEnd:
 	JMP Object_Draw         
+
+PeekaBoo_Action = Objects_Data1
+PeekaBoo_Frames = Objects_Data2
+PeekaBoo_AttackDirection = Objects_Data3
+PeekaBoo_InverseTimer = Objects_Data4
+
+PeekaBoo_HideTimers:
+	.byte $40, $60, $80, $A0
+
+PeekaBoo_RaiseLower:
+	.byte $F0, $10	
+
+PeekaBoo_Timers:
+	.byte $10, $0F	
+
+PeekaBoo_SpriteOrientation:
+	.byte SPR_BEHINDBG | SPR_PAL1, SPR_BEHINDBG | SPR_PAL1 | SPR_VFLIP	
+
+ObjInit_PeekaBoo:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #ATTR_ATTACKPROOF
+	STA Objects_WeaponAttr, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_MoveTowardsPlayerFast
+
+	LDA RandomN
+	AND #$03
+	TAY
+
+	LDA PeekaBoo_HideTimers, Y
+	STA Objects_Timer, X
+	RTS
+
+ObjNorm_PeekaBoo:
+	STA Debug_Snap
+
+	LDA <Player_HaltGameZ
+	BEQ PeekbaBoo_Normal
+
+	LDA PeekaBoo_Action, X
+	BNE PeekaBoo_HaltDrawMirrored
+
+	JMP Object_Draw
+
+PeekaBoo_HaltDrawMirrored:
+	JMP Object_DrawMirrored
+
+PeekbaBoo_Normal:
+	JSR Object_DeleteOffScreen
+
+	LDA PeekaBoo_Action, X
+	JSR DynJump
+
+	.word Peekaboo_Chase
+	.word PeekaBoo_Raise
+	.word PeekaBoo_Attack
+	.word PeekaBoo_Lower
+
+
+Peekaboo_Chase:
+	JSR Object_ApplyXVel
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+
+	LDA Object_BodyTileValue, X
+	AND #$3F
+	BEQ Peekaboo_Defeat
+
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCS Peekaboo_NotDefeated
+
+Peekaboo_Defeat:
+	JMP Object_PoofDie
+	
+Peekaboo_NotDefeated:	
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BNE Peekaboo_Fine
+
+	LDA <Objects_XVelZ, X
+	EOR #$FF
+	STA <Objects_XVelZ, X
+	
+Peekaboo_Fine:	
+	JSR Object_YDistanceFromPlayer
+	
+	LDA <YDiffAboveBelow
+	STA PeekaBoo_AttackDirection, X
+
+	LDA Objects_Timer, X
+	BNE PeekaBoo_KeepChase
+
+	LDY PeekaBoo_AttackDirection, X
+
+	LDA PeekaBoo_RaiseLower, Y
+	STA <Objects_YVelZ, X
+
+	LDA PeekaBoo_SpriteOrientation, Y
+	STA Objects_SpriteAttributes, X
+
+	INC PeekaBoo_Action, X
+
+	LDA PeekaBoo_Timers, Y
+	STA Objects_Timer, X
+	STA PeekaBoo_InverseTimer, X
+	RTS
+
+PeekaBoo_KeepChase:	
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	LDA #$00
+	STA Objects_Frame, X
+
+	JMP Object_Draw
+
+
+PeekaBoo_Raise:
+	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE PeekaBoo_RaiseDraw
+
+	INC PeekaBoo_Action, X
+
+	LDA #$20
+	STA Objects_Timer, X
+
+PeekaBoo_RaiseDraw:	
+
+	LDA #$01
+	STA Objects_Frame, X
+	JMP Object_DrawMirrored
+
+PeekaBoo_Attack:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE PeekaBoo_AttackAnimate
+
+	INC PeekaBoo_Action, X
+
+	LDA PeekaBoo_InverseTimer, X
+	STA Objects_Timer, X
+
+	LDA <Objects_YVelZ, X
+	EOR #$FF
+	ADD #$01
+	STA <Objects_YVelZ, X
+
+PeekaBoo_AttackAnimate:
+	INC PeekaBoo_Frames, X
+	
+	LDA PeekaBoo_Frames, X
+	
+	LSR A
+	LSR A
+	LSR A
+
+	AND #$01
+	ORA #$02
+	STA Objects_Frame, X
+
+	JMP Object_DrawMirrored
+
+PeekaBoo_Lower:
+
+	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE PeekaBoo_LowerDraw
+
+	LDA #$00
+	STA PeekaBoo_Action, X
+
+	LDA RandomN
+	AND #$03
+	TAY
+
+	LDA PeekaBoo_HideTimers, X
+	STA Objects_Timer, X
+	RTS
+
+PeekaBoo_LowerDraw:	
+	LDA #$01
+	STA Objects_Frame, X
+	JMP Object_DrawMirrored
+
+ObjHit_Peekaboo:
+	RTS	

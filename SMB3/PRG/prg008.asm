@@ -127,8 +127,6 @@ Player_VibeDisableFrame:
 Player_DoGameplay:
 	INC Game_Counter_NoStop
 	LDY Level_Tileset
-	DEY
-	STY Level_TilesetIdx
 
 	JSR Level_Initialize	 ; Initialize level if needed
 	JSR LevelJunction_PartialInit	 
@@ -341,6 +339,7 @@ PRG008_A29E:
 	LDA <Vert_Scroll_Hi
 	STA Level_VertScrollH	; Level_VertScrollH = Vert_Scroll_Hi
 
+LevelInit_DoNothing:
 	RTS		 ; Return
 
 
@@ -351,7 +350,7 @@ PRG008_A29E:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_InitAction_JumpTable:
 	.word LevelInit_DoNothing	; 0 - Do nothing
-	.word LevelInit_StartSliding	; 1 - Start level sliding (if able by power-up)
+	.word LevelInit_DoNothing	; 1 - Start level sliding (if able by power-up)
 	.word LevelInit_PipeExitTop	; 2 - Start by exiting top of pipe
 	.word LevelInit_PipeExitBottom	; 3 - Start by exiting bottom of pipe
 	.word LevelInit_PipeExitRight	; 4 - Start by exiting right of pipe
@@ -373,11 +372,6 @@ Level_InitAction_Do:
 
 	JMP [Temp_Var1]		; Jump appropriately...
 
-
-LevelInit_StartSliding:
-	; #DAHRKDAIZ Start Sliding code removed.
-LevelInit_DoNothing:
-	RTS		 ; Return
 
 LevelInit_PipeExitTop:
 	LDA #$83	 ; A = $83 (sets Level_PipeMove)
@@ -735,25 +729,20 @@ Player_UpdateRunPowerRTS:
 	; Palette colors per power up level -- first byte is never used!
 PowerUp_Palettes:
 	.byte $00, $0F, $16, $36	; 0 - Mario default palette
-	.byte $00, $0F, $16, $36	; 1 - #DAHRKDAIZ SUPER MARIO
+	.byte $00, $0F, $16, $36	; 1 - Mario default palette
 	.byte $00, $06, $30, $36	; 2 - Fire Flower
 	.byte $00, $0F, $16, $36	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
 	.byte $00, $0F, $28, $36	; 4 - Frog Suit
-	.byte $00, $0F, $19, $36	; 5 - #DAHRKDAIZ Koopa Suit
+	.byte $00, $0F, $19, $36	; 5 - Koopa Suit
 	.byte $00, $0F, $30, $27	; 6 - Hammer Suit
-	.byte $00, $01, $30, $31	; 7 - #DAHRKDAIZ Ice Mario
-	.byte $00, $06, $27, $36	; 8 - #DAHRKDAIZ Fire Fox Mario
+	.byte $00, $01, $30, $31	; 7 - Ice Mario
+	.byte $00, $06, $27, $36	; 8 - Fire Fox Mario
 	.byte $00, $01, $30, $31	; 9 - Unused
-	.byte $00, $0F, $25, $36	; A - #DAHRKDAIZ Boo Mario
-	.byte $00, $0F, $36, $36	; B - #DAHRKDAIZ Ninja Mario
+	.byte $00, $0F, $25, $36	; A - Boo Mario
+	.byte $00, $0F, $36, $36	; B - Ninja Mario
 	.byte $00, $0F, $0B, $2B	; infected
 	.byte $00, $27, $28, $30	; yolked
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Suit pallete code removed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; #DAHRKDAIZ if we're i special suit mode, we jump farther into the table.
 Level_SetPlayerPUpPal:
 	LDA Player_Yolked
 	BEQ CheckInfection
@@ -891,9 +880,6 @@ Player_SomersaultFlipBits:
 
 	; Bit which must be set in FloatLevel_PlayerWaterStat to override 
 	; system and assume that we're underwater no matter what tile detected
-FloatLevel_StatCheck:
-	.byte $40, $80
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_CheckIfTileUnderwater
@@ -1163,9 +1149,6 @@ PowerUpMovement_JumpTable:
 	.word Swim_Frog		; 4 - Frog
 	.word Swim_Tanooki	; 5 - Tanooki
 	.word Swim_FireHammer	; 6 - Hammer
-
-	; Kuribo's shoe
-	.word Move_Kuribo
 
 GndMov_Small:
 	JSR Player_GroundHControl ; Do Player left/right input control
@@ -1471,21 +1454,6 @@ Dont_Kill_Shell:
 	JSR Player_SwimAnim ; Do Player swim animations
 	RTS		 ; Return
 
-; #DAHRKDAIZ Commenting out Kuribo code
-Move_Kuribo:
-	RTS
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Kuribo shoe related code removed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_GroundHControl
-;
-; Routine to control based on Player's left/right pad input (not
-; underwater); configures walking/running
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; Table of values that have to do with Player_UphillSpeedIdx override
-
 Player_GroundHControl:
 	
 	LDA Player_Shell
@@ -1728,15 +1696,14 @@ Jump_Over_PRG008_AC9E:
 	JMP PRG008_AC9E	 ; If Player is mid air, jump to PRG008_AC9E
 
 PRG008_AC41:
-	; #DAHRKDAIZ modified to push the player "off" the wall when doing a wall jump
+
 	JSR Do_Wall_Jump
 
 DIRECT_TO_JUMP:
-	; Play jump sound
-	; #DAHRKDAIZ modified to play the "small jump" from SMB1 for small Mario
 
 	LDA <Player_Suit
 	BNE STORE_BIG_JUMP
+
 	LDA #SND_SMALLJUMP
 	BNE STORE_SMALL_JUMP
 
@@ -1845,7 +1812,7 @@ PRG008_AC9E:
 	LDA <Player_InAir
 	BNE PRG008_ACB3		; If Player is mid air, jump to PRG008_ACB3
 
-	LDY <Player_Suit		; #DAHRKDAIZ hacked, only Racoon Mario can fly
+	LDY <Player_Suit		
 	CPY #$03	
 	BEQ PRG008_AD1A	 	; If power up has flight ability, jump to PRG008_AD1A
 
@@ -3692,8 +3659,6 @@ BumpBlock_None:
 	RTS		 ; Return
 
 
-
-; #DAHRKDAIZE ICE_FLOWER
 BumpBlock_IceFlower:
 	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
@@ -3719,9 +3684,6 @@ BumpBlock_Star:
 	STA Bouncer_PowerUp, X
 	RTS		 ; Return
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Code removed for Starman continuation block
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BumpBlock_Spinner:
 	LDA Player_FireDash
 	BEQ BumpBlock_Spinner1
@@ -4226,7 +4188,6 @@ Player_ApplyVelocity:
 Check_WeatherOther:
 	LDA Player_InWater
 	ORA Level_PipeMove
-	ORA Player_OnPlatform
 	BNE No_Weather_Vel
 
 	LDA Wind
@@ -4353,10 +4314,6 @@ PRG008_BFF9:
 
 	RTS		 ; Return
 
-; Rest of ROM bank was empty
-	
-	; #DAHRKDAIZ - custom code created to decrease air meter while swimming
-	; if frog suit or top of water, increase air.
 Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 	LDA Air_Change
 	BNE CheckAirChange

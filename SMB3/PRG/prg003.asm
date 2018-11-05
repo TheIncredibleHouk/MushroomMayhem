@@ -413,7 +413,7 @@ Platform_PlayerStand:
 
 	LDA Player_BoundBottom
 	SUB Objects_BoundTop, X
-	CMP #$04
+	CMP #$06
 	BCS Platform_PlayerStand1
 
 	LDA #$01

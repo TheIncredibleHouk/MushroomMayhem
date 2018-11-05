@@ -1482,7 +1482,6 @@ Key_Move:
 
 Key_NoDetecttiles:
 	JSR Object_DetectTiles
-	JSR Object_CheckForeground
 	JSR Key_DoUnlocks
 	BCS ObjNorm_KeyHeldRTS
 
@@ -1560,7 +1559,6 @@ Key_NextBlock:
 
 Key_UnlockBlocks:
 	JSR Key_CheckUnlock
-	BCC Key_DoUnlocksRTS
 
 Key_DoUnlocksRTS:
 	RTS
@@ -2041,7 +2039,6 @@ MagicStar_NoMove:
 MagicStar_CheckItemBlock:
 	JSR Object_DetectTileCenter
 
-	STA Debug_Snap
 	LDA Tile_LastProp
 	AND #$F0
 	CMP #TILE_PROP_ITEM

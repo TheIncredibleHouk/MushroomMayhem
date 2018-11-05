@@ -2599,7 +2599,7 @@ PRG010_CE78:
 	EOR #$01	 	
 	TAY		 	; Y = Player_Current ^ 1 (i.e. the OTHER Player)
 
-	LDA #$00				; #DAHRKDAIZ hacked, no 2P mode
+	LDA #$00				
 	CMP #$ff	 
 	BEQ PRG010_CEBF	 	; If the other Player is dead, jump to PRG010_CEBF
 
@@ -2624,7 +2624,6 @@ PRG010_CEA7:
 	LDX #$00
 
 PRG010_CEA8:
-	STX Mushroom_Already_Defeated
 	LDA #$10
 	STA Map_Operation	; Map_Operation = $10 (begin "enter level" effect)
 

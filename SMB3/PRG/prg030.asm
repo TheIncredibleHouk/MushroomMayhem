@@ -1116,7 +1116,6 @@ PRG030_88C8:
 	STA <Scroll_ColumnL
 	STA <Scroll_LastDir
 
-	;# DAHRKDAIZ RESET STUFFS ON LEVELS
 	STA Shop_Mode_Initialized
 	STA Coins_ThisLevel	 ; Clear "coins earned this level" counter
 	STA Map_BonusCoinsReqd	 ; Clear the "coins required for bonus"
@@ -2270,9 +2269,6 @@ PRG030_933E:
 	LDX Player_Current	 ; X = Player_Current
 	JMP PRG030_879B	 ; Jump to PRG030_879B
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - 2P vs code removed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SetPages_ByTileset
@@ -2498,9 +2494,6 @@ Map_Calc_NT2Addr_By_XY:
 	RTS		 ; Return
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ unused bonus game remvoed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 BoxOut_PutPatternInStrip:
 	JSR BoxOut_CalcOffsets	 ; Calculate offset to tile
@@ -2843,8 +2836,6 @@ LevelLoadQuick:
 
 	LDA [Temp_Var1],Y
 	STA Level_Tileset
-	STA Level_TilesetIdx
-	DEC Level_TilesetIdx
 
 	STY TempY
 
@@ -5637,24 +5628,76 @@ MarkCompletedLevels3:
 	STA [Map_Tile_AddrL],Y
 	RTS
 
-Sprite_RAM_Clear_NotWeather:
-	LDY #$E4
-	LDA #$F8
-	BNE Sprite_RAM_Clear1
-
 Sprite_RAM_Clear:	; $FD84
-	LDA #$F8	 	; A = $F8 
-	LDY #$FC
 
-Sprite_RAM_Clear1:
-	STA Sprite_RAMY, Y
-	DEY
-	DEY
-	DEY
-	DEY
-	BNE Sprite_RAM_Clear1
+	LDA #$F8	
+	STA Sprite_RAMY + $FC
+	STA Sprite_RAMY + $F8
+	STA Sprite_RAMY + $F4
+	STA Sprite_RAMY + $F0
+	STA Sprite_RAMY + $EC
+	STA Sprite_RAMY + $E8
 
-	STA Sprite_RAMY, Y
+Sprite_RAM_Clear_NotWeather:
+	LDA #$F8
+	STA Sprite_RAMY + $E4
+	STA Sprite_RAMY + $E0
+	STA Sprite_RAMY + $DC
+	STA Sprite_RAMY + $D8
+	STA Sprite_RAMY + $D4
+	STA Sprite_RAMY + $D0
+	STA Sprite_RAMY + $CC
+	STA Sprite_RAMY + $C8
+	STA Sprite_RAMY + $C4
+	STA Sprite_RAMY + $C0
+	STA Sprite_RAMY + $BC
+	STA Sprite_RAMY + $B8
+	STA Sprite_RAMY + $B4
+	STA Sprite_RAMY + $B0
+	STA Sprite_RAMY + $AC
+	STA Sprite_RAMY + $A8
+	STA Sprite_RAMY + $A4
+	STA Sprite_RAMY + $A0
+	STA Sprite_RAMY + $9C
+	STA Sprite_RAMY + $98
+	STA Sprite_RAMY + $94
+	STA Sprite_RAMY + $90
+	STA Sprite_RAMY + $8C
+	STA Sprite_RAMY + $88
+	STA Sprite_RAMY + $84
+	STA Sprite_RAMY + $80
+	STA Sprite_RAMY + $7C
+	STA Sprite_RAMY + $78
+	STA Sprite_RAMY + $74
+	STA Sprite_RAMY + $70
+	STA Sprite_RAMY + $6C
+	STA Sprite_RAMY + $68
+	STA Sprite_RAMY + $64
+	STA Sprite_RAMY + $60
+	STA Sprite_RAMY + $5C
+	STA Sprite_RAMY + $58
+	STA Sprite_RAMY + $54
+	STA Sprite_RAMY + $50
+	STA Sprite_RAMY + $4C
+	STA Sprite_RAMY + $48
+	STA Sprite_RAMY + $44
+	STA Sprite_RAMY + $40
+	STA Sprite_RAMY + $3C
+	STA Sprite_RAMY + $38
+	STA Sprite_RAMY + $34
+	STA Sprite_RAMY + $30
+	STA Sprite_RAMY + $2C
+	STA Sprite_RAMY + $28
+	STA Sprite_RAMY + $24
+	STA Sprite_RAMY + $20
+	STA Sprite_RAMY + $1C
+	STA Sprite_RAMY + $18
+	STA Sprite_RAMY + $14
+	STA Sprite_RAMY + $10
+	STA Sprite_RAMY + $C
+	STA Sprite_RAMY + 8
+	STA Sprite_RAMY + 4
+	STA Sprite_RAMY + 0
 	RTS
 
 GetPowerBadgeY:

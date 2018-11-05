@@ -2233,8 +2233,6 @@ Object_DoChange:
 
 	JSR Object_MoveTowardsPlayer
 
-	JSR Object_MoveTowardsPlayer
-
 Change_NotStomped:
 	SEC
 	RTS
@@ -4405,7 +4403,7 @@ Object_WallStop:
 	BEQ PRG001_A9B7
 	BPL Object_HitRightWall
 
-	LDA Tile_DetectionX
+	LDA Objects_BoundLeft, X
 	AND #$F0
 	ORA #$0F
 	SUB Objects_BoundLeft, X
@@ -4421,7 +4419,7 @@ Object_WallStop:
 	JMP PRG001_A9B7
 
 Object_HitRightWall:
-	LDA Tile_DetectionX
+	LDA Objects_BoundRight, X
 	AND #$F0
 	STA <Temp_Var1
 	

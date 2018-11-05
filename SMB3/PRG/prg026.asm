@@ -1843,36 +1843,6 @@ PRG026_AF9C:
 	RTS		 ; Return
 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_Fill_Coins
-;
-; Fills the StatusBar_CoinsL/H values with tiles representing
-; the current coins held by the player; also applies the
-; Coins_Earned value to the active total and issues 1-ups
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-StatusBar_Fill_Coins:
-
-; #DAHRKDAIZ rewritten to account for 2 byte coins, up to 9999 coins
-StatusBar_Debug:
-	RTS
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_Fill_World
-;
-; Simply puts the correct world number in the status bar
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-; FIXME: Anybody want to claim this?
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; StatusBar_Fill_PowerMT
-;
-; Fills the StatusBar_PMT array with tiles representing
-; the current "charge" of the power meter in the status bar
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ; Video_Misc_Updates
 ;
@@ -2278,12 +2248,15 @@ UpdatePalette1:
 	RTS
 
 Do_Top:
-	; #DAHRKDAIZ render top
+	
 	LDX Graphics_BufCnt
+
 	LDA #$2B
 	STA Graphics_Buffer, X
+
 	LDA #$22
 	STA Graphics_Buffer + 1, X
+
 	LDA #$1C
 	STA Graphics_Buffer + 2, X
 	LDY #$00
@@ -2291,12 +2264,16 @@ Do_Top:
 Status_Top_Loop:
 	LDA Status_Bar_Top,Y	; Get next byte from StatusBar_UpdTemplate
 	STA Graphics_Buffer + 3,X		; Store it into the graphics buffer
+
 	INY				; Y++
 	INX				; X++
+
 	CPY #$1C
 	BNE Status_Top_Loop	 		
+
 	LDA #$00
 	STA Graphics_Buffer + 3, X
+
 	LDA Graphics_BufCnt
 	CLC
 	ADC #$1F
@@ -2306,7 +2283,7 @@ Status_Top_Loop:
 	STA Top_Needs_Redraw
 	RTS
 
-	; #DAHRKDAIZ render bottom
+	
 Do_Bottom:
 	
 	LDX Graphics_BufCnt
@@ -2477,9 +2454,10 @@ StatusBar_DrawAir:
 	TAX
 	BEQ Paritial_Air
 
-Full_Air_Loop:				; #DAHRKDAIZ fill parts that display as full 8 pixels
+Full_Air_Loop:				
 	LDA #$E9
 	STA Status_Bar_Top + 9, Y
+	
 	INY
 	DEX
 	BNE Full_Air_Loop

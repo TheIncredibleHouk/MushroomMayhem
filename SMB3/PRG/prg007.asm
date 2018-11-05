@@ -2061,9 +2061,6 @@ SpecialObj_DetectPlayer:
 PUpCoin_Patterns:	.byte $49, $4F, $4D, $4F
 PUpCoin_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - LASER code removed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PRG007_B058:
 	RTS		 ; Return
 
@@ -3510,9 +3507,6 @@ PRG007_BB97:
 	.word ObjectGen_Bobombs	; #CE
 	.word ObjectGen_Cannonball	; 
 	.word ObjectGen_Cannonball	; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; #DAHRKDAIZ - Laser code removed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ObjectGenerator_DeleteOffScreen:
 	
