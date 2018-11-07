@@ -6410,10 +6410,10 @@ Check_TimersRTS:
 
 
 Player_Splash:
-	LDX #$05
+	LDY #$05
 
 Player_FindSplash:
-	LDA Objects_State, X
+	LDA Objects_State, Y
 	BEQ Player_MakeSplash
 
 	INY

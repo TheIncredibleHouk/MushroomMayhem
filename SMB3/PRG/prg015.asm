@@ -952,9 +952,6 @@ Chomp_GetFree:
 
 	JMP ChompAnimate
 
-Chomp_ChargeSign:
-	.byte $80, $00
-
 Chomp_Aim:
 	LDA RandomN
 	AND #$07
@@ -1995,6 +1992,7 @@ AngryThwomp_NoHit:
 	JMP Thwomp_Draw    	
 
 Boo_Chasing = Objects_Data1
+Boo_ChaseTicks = Objects_Data2
     
 Boo_PlayerCheck:
 	.byte $00, $01
@@ -2021,9 +2019,7 @@ ObjNorm_Boo:
 	BNE Boo_Draw
 
 	JSR Object_DeleteOffScreen
-
 	JSR Object_FacePlayer
-
 	JSR Object_XDistanceFromPlayer
 	
 	LDY <XDiffLeftRight
@@ -2047,6 +2043,7 @@ Boo_CheckChase:
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA <Objects_YVelZ, X
+	STA Boo_ChaseTicks, X
 	
 	PLA
 
@@ -2055,6 +2052,13 @@ Boo_SetChase:
 	CMP #$00
 	BEQ Boo_Interact
 
+	INC Boo_ChaseTicks, X
+	
+	LDA Boo_ChaseTicks, X
+	CMP #$08
+	BCC Boo_Interact
+
+	DEC Boo_ChaseTicks, X
 	JSR Object_ChasePlayer
 
 Boo_Interact:
@@ -2572,7 +2576,7 @@ Podobo_Move:
 	BEQ Podobo_KeepMoving
 
 	JSR Object_XDistanceFromPlayer
-	CMP #$40
+	CMP #$60
 	BCS Podobo_MoveDone
 	
 	LDA #$00
@@ -3029,7 +3033,7 @@ PeekaBoo_AttackDirection = Objects_Data3
 PeekaBoo_InverseTimer = Objects_Data4
 
 PeekaBoo_HideTimers:
-	.byte $40, $60, $80, $A0
+	.byte $20, $40, $60, $80, $40, $20, $40, $60
 
 PeekaBoo_RaiseLower:
 	.byte $F0, $10	
@@ -3051,7 +3055,7 @@ ObjInit_PeekaBoo:
 	JSR Object_MoveTowardsPlayerFast
 
 	LDA RandomN
-	AND #$03
+	AND #$07
 	TAY
 
 	LDA PeekaBoo_HideTimers, Y
@@ -3208,10 +3212,10 @@ PeekaBoo_Lower:
 	STA PeekaBoo_Action, X
 
 	LDA RandomN
-	AND #$03
+	AND #$07
 	TAY
 
-	LDA PeekaBoo_HideTimers, X
+	LDA PeekaBoo_HideTimers, Y
 	STA Objects_Timer, X
 	RTS
 
