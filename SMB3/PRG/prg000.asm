@@ -4245,16 +4245,7 @@ Object_Check_Water:
 	BNE Object_Check_Water1
 
 Object_Check_Water0:
-	LDA #OBJSTATE_KILLED
-	STA Objects_State, X
-
-	LDA #$00
-	STA Objects_Health, X
-
-	LDA #$1f
-	STA Objects_Timer,X
-	RTS
-
+	JMP Object_PoofDie
 
 Object_Check_Water1:
 	LDY #$00
