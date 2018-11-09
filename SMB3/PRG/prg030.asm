@@ -2873,7 +2873,7 @@ JustName2:
 	STA LevelName, X
 	INY
 	INX
-	CPX #$28
+	CPX #28
 	BNE JustName2
 	PLA
 	STA PAGE_C000
@@ -2928,6 +2928,8 @@ Skip_Normal_Gfx2:
 	JMP Level_Exit_Set
 
 Set_Level_Exit_Action:
+	STA Debug_Snap
+
     LDA ForcedSwitch 
 	BEQ Set_LevelPosition
 

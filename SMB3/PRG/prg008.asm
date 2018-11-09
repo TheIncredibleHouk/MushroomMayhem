@@ -6424,36 +6424,36 @@ Player_FindSplash:
 
 Player_MakeSplash:
 	LDA <Player_X
-	STA Objects_XZ, X
+	STA Objects_XZ, Y
 
 	LDA <Player_XHi
-	STA Objects_XHiZ, X
+	STA Objects_XHiZ, Y
 
 	LDA Player_BoundTop
 	SUB #$08
-	STA Objects_YZ, X
+	STA Objects_YZ, Y
 
 	LDA Player_BoundTopHi
 	SBC #$00
-	STA Objects_YHiZ, X
+	STA Objects_YHiZ, Y
 
 	LDA #OBJ_WATERSPLASH
-	STA Objects_ID, X
+	STA Objects_ID, Y
 
 	LDA #$0B
-	STA Objects_Timer, X
+	STA Objects_Timer, Y
 
 	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
+	STA Objects_State, Y
 
 	LDA #$02
-	STA Objects_SpritesRequested, X
+	STA Objects_SpritesRequested, Y
 
 	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, X
+	STA Objects_SpriteAttributes, Y
 
 	LDA #$00
-	STA Objects_Orientation, X
+	STA Objects_Orientation, Y
 	RTS		 ; Return
 
 Player_SetHolding:

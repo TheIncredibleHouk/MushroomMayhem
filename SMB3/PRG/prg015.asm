@@ -2055,7 +2055,7 @@ Boo_SetChase:
 	INC Boo_ChaseTicks, X
 	
 	LDA Boo_ChaseTicks, X
-	CMP #$08
+	CMP #$10
 	BCC Boo_Interact
 
 	DEC Boo_ChaseTicks, X
@@ -3033,7 +3033,7 @@ PeekaBoo_AttackDirection = Objects_Data3
 PeekaBoo_InverseTimer = Objects_Data4
 
 PeekaBoo_HideTimers:
-	.byte $20, $40, $60, $80, $40, $20, $40, $60
+	.byte $40, $40, $60, $80, $40, $20, $40, $60
 
 PeekaBoo_RaiseLower:
 	.byte $F0, $10	
@@ -3063,7 +3063,6 @@ ObjInit_PeekaBoo:
 	RTS
 
 ObjNorm_PeekaBoo:
-	STA Debug_Snap
 
 	LDA <Player_HaltGameZ
 	BEQ PeekbaBoo_Normal

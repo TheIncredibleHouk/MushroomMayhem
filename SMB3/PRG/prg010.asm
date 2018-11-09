@@ -3856,7 +3856,7 @@ FindLevelInfo10:
  	BCC FindLevelInfo1
 	LDA #$FF
 	STA LevelNumber
-	LDY #$27
+	LDY #27
 	LDA #$FE
 
 FindLevelInfo11:
