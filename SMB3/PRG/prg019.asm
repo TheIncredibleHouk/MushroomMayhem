@@ -1161,13 +1161,33 @@ PRG005_BEF8:
 	JMP PRG005_BEB6	 ; Jump to PRG005_BEB6
 
 	; Clear all object states
+
+Check_GlobalHeld:
+	LDA Objects_BeingHeld, X
+	BEQ PRG005_BF01
+
+	LDA <Player_X
+	STA <Objects_XZ, X
+
+	LDA <Player_XHi
+	STA <Objects_XHiZ, X
+
+	LDA <Player_Y
+	STA <Objects_YZ, X
+
+	LDA <Player_YHi
+	STA <Objects_YHiZ, X
+	JMP PRG005_BF01
+
 PRG005_BEFC:
 PRG005_BEFD:
 	LDX #$07	 ; X = 7
 
 PRG005_BF001:
+	STA Debug_Snap
+	LDA Objects_ID, X
 	LDA Objects_Global, X
-	BNE PRG005_BF01
+	BNE Check_GlobalHeld
 
 	LDA Level_KeepObjects
 	BEQ PRG005_BF002

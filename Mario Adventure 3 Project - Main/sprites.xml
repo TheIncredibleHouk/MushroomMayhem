@@ -1114,6 +1114,48 @@
     <sprite x="0" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="37" />
     <sprite x="8" y="0" value="34" palette="1" horizontalflip="true" verticalflip="false" table="37" />
   </spritedefinition>
+  <spritedefinition id="85" width="01" height="01" name="Coo Boo" class="2" group="Ghosts">
+    <sprite x="0" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+
+    <property>Horizontal Pattern</property>
+    <property>Vertical Pattern</property>
+    <property>Diagonal Pattern 1</property>
+    <property>Diagonal Pattern 2</property>
+    <property>Circle Counter Clockwise</property>
+    <property>Circle Clockwise</property>
+    <property>Chase</property>
+  </spritedefinition>
+  <spritedefinition id="86" width="01" height="02" name="Coo Boo" class="2" group="Ghosts">
+    <sprite x="0" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="16" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+
+    <property>Horizontal Pattern</property>
+    <property>Vertical Pattern</property>
+    <property>Diagonal Pattern 1</property>
+    <property>Diagonal Pattern 2</property>
+    <property>Circle Counter Clockwise</property>
+    <property>Circle Clockwise</property>
+    <property>Chase</property>
+  </spritedefinition>
+  <spritedefinition id="87" width="01" height="03" name="Coo Boo" class="2" group="Ghosts">
+    <sprite x="0" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="16" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="32" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="32" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+
+    <property>Horizontal Pattern</property>
+    <property>Vertical Pattern</property>
+    <property>Diagonal Pattern 1</property>
+    <property>Diagonal Pattern 2</property>
+    <property>Circle Counter Clockwise</property>
+    <property>Circle Clockwise</property>
+    <property>Chase</property>
+  </spritedefinition>
   <spritedefinition id="8C" width="01" height="02" name="Hammer Bros." class="2" group="Hammer Bros.">
     <sprite x="0" y="8" value="2C" palette="3" horizontalflip="false" verticalflip="false" table="4E" />
     <sprite x="8" y="8" value="2E" palette="3" horizontalflip="false" verticalflip="false" table="4E" />

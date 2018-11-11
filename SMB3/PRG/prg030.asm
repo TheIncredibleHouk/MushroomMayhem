@@ -1181,14 +1181,14 @@ CancelSpinners:
 	DEX
 	BPL CancelSpinners
 
-	STA Objects_BeingHeld
-	STA Objects_BeingHeld + 1
-	STA Objects_BeingHeld + 2
-	STA Objects_BeingHeld + 3
-	STA Objects_BeingHeld + 4
-	STA Objects_BeingHeld + 5
-	STA Objects_BeingHeld + 6
-	STA Objects_BeingHeld + 7
+	;STA Objects_BeingHeld
+	;STA Objects_BeingHeld + 1
+	;STA Objects_BeingHeld + 2
+	;STA Objects_BeingHeld + 3
+	;STA Objects_BeingHeld + 4
+	;STA Objects_BeingHeld + 5
+	;STA Objects_BeingHeld + 6
+	;STA Objects_BeingHeld + 7
 
 	; Scroll_Cols2Upd = 32 (full dirty scroll update sweep)
 	LDA #32
@@ -2928,8 +2928,6 @@ Skip_Normal_Gfx2:
 	JMP Level_Exit_Set
 
 Set_Level_Exit_Action:
-	STA Debug_Snap
-
     LDA ForcedSwitch 
 	BEQ Set_LevelPosition
 

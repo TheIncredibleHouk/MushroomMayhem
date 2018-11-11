@@ -1397,6 +1397,7 @@ ObjInit_Key:
 
 	LDA #$FF
 	STA Key_AdjacentChecks, X
+	STA Objects_Global, X
 
 	LDY Objects_Property, X
 	BEQ Init_KeyRTS
@@ -1425,6 +1426,9 @@ ObjNorm_Key:
 	LDA Key_AdjacentChecks, X
 	BPL Key_NormRTS
 
+	LDA #$01
+	STA Objects_Global, X
+	
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 	JMP Object_Draw

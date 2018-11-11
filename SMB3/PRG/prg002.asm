@@ -1256,6 +1256,8 @@ KeyPiece_PTableFine:
 
 	JSR Object_DeleteOffScreen
 	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_InteractWithPlayer
 
 KeyPiece_Animate:

@@ -288,7 +288,7 @@ ObjNorm_PlatformOscillate:
 	STA Platform_MadeContact, X
 
 	JSR Object_InteractWithPlayer
-	JSR DoPatrol
+	JSR Object_MovePattern
 	JSR Platform_ContactCheck
 
 	LDA <Objects_XZ, X

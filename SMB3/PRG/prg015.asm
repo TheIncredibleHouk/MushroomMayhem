@@ -14,6 +14,9 @@ OBJ_PODOBO          = $81
 OBJ_PIPEPODOBO      = $82
 OBJ_PODOBO_X        = $83
 OBJ_PEEKABOO 		= $84
+OBJ_COOBOO			= $85
+OBJ_COOBOOX2		= $86
+OBJ_COOBOOX3		= $87
 
     .word ObjInit_Spike ; Object $78
     .word ObjInit_SpikeBall ; Object $79
@@ -28,9 +31,9 @@ OBJ_PEEKABOO 		= $84
     .word ObjInit_PipePodobo ; Object $82
     .word ObjInit_DiagonalPodobo ; Object $83
     .word ObjInit_PeekaBoo ; Object $84
-    .word ObjInit_DoNothing ; Object $85
-    .word ObjInit_DoNothing ; Object $86
-    .word ObjInit_DoNothing ; Object $87
+    .word ObjInit_CooBoo ; Object $85
+    .word ObjInit_CooBooX2 ; Object $86
+    .word ObjInit_CooBooX3 ; Object $87
     .word ObjInit_DoNothing ; Object $88
     .word ObjInit_DoNothing ; Object $89
     .word ObjInit_DoNothing ; Object $8A
@@ -51,9 +54,9 @@ OBJ_PEEKABOO 		= $84
     .word ObjNorm_PipePodobo ; Object $82
     .word ObjNorm_DiagonalPodobo ; Object $83
     .word ObjNorm_PeekaBoo ; Object $84
-    .word ObjNorm_DoNothing ; Object $85
-    .word ObjNorm_DoNothing ; Object $86
-    .word ObjNorm_DoNothing ; Object $87
+    .word ObjNorm_CooBoo ; Object $85
+    .word ObjNorm_CooBoo ; Object $86
+    .word ObjNorm_CooBoo ; Object $87
     .word ObjNorm_DoNothing ; Object $88
     .word ObjNorm_DoNothing ; Object $89
     .word ObjNorm_DoNothing ; Object $8A
@@ -73,10 +76,10 @@ OBJ_PEEKABOO 		= $84
     .word Player_GetHurt ; Object $81
     .word Player_GetHurt ; Object $82
     .word Player_GetHurt ; Object $83
-    .word ObjHit_Peekaboo ; Object $84
-    .word ObjHit_DoNothing ; Object $85
-    .word ObjHit_DoNothing ; Object $86
-    .word ObjHit_DoNothing ; Object $87
+    .word Player_GetHurt ; Object $84
+    .word Player_GetHurt ; Object $85
+    .word Player_GetHurt ; Object $86
+    .word Player_GetHurt ; Object $87
     .word ObjHit_DoNothing ; Object $88
     .word ObjHit_DoNothing ; Object $89
     .word ObjHit_DoNothing ; Object $8A
@@ -90,16 +93,16 @@ OBJ_PEEKABOO 		= $84
     .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32 ; Object $7B
     .byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7C
     .byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7D
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7E
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7F
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7E
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7F
     .byte OA1_PAL1 | OA1_WIDTH8 | OA1_WIDTH8 ; Object $80
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $81
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $82
     .byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $83
-    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $89
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8A
@@ -120,9 +123,9 @@ OBJ_PEEKABOO 		= $84
     .byte OPTS_NOCHANGE ; Object $82
     .byte OPTS_SETPT5 | $0A ; Object $83
     .byte OPTS_SETPT5 | $37 ; Object $84
-    .byte OPTS_NOCHANGE ; Object $85
-    .byte OPTS_NOCHANGE ; Object $86
-    .byte OPTS_NOCHANGE ; Object $87
+    .byte OPTS_SETPT5 | $37 ; Object $85
+    .byte OPTS_SETPT5 | $37 ; Object $86
+    .byte OPTS_SETPT5 | $37 ; Object $87
     .byte OPTS_NOCHANGE ; Object $88
     .byte OPTS_NOCHANGE ; Object $89
     .byte OPTS_NOCHANGE ; Object $8A
@@ -143,8 +146,8 @@ OBJ_PEEKABOO 		= $84
     .byte KILLACT_POOFDEATH ; Object $82
     .byte KILLACT_POOFDEATH ; Object $83
     .byte KILLACT_NORMALSTATE ; Object $84
-    .byte KILLACT_POOFDEATH ; Object $85
-    .byte KILLACT_POOFDEATH ; Object $86
+    .byte KILLACT_NORMALSTATE ; Object $85
+    .byte KILLACT_NORMALSTATE ; Object $86
     .byte KILLACT_POOFDEATH ; Object $87
     .byte KILLACT_POOFDEATH ; Object $88
     .byte KILLACT_POOFDEATH ; Object $89
@@ -208,6 +211,11 @@ ObjP84:
 ObjP85:
 ObjP86:
 ObjP87:
+	.byte $97, $AF
+	.byte $97, $AF
+	.byte $97, $AF
+
+
 ObjP88:
 ObjP89:
 ObjP8A:
@@ -1998,7 +2006,7 @@ Boo_PlayerCheck:
 	.byte $00, $01
 
 ObjInit_Boo:
-	LDA #(ATTR_ATTACKPROOF)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
@@ -2015,6 +2023,17 @@ ObjInit_Boo:
 	RTS
 
 ObjNorm_Boo:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Boo_NotDead
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	
+	LDA #$FF
+	STA Objects_Timer, X
+
+Boo_NotDead:
 	LDA <Player_HaltGameZ
 	BNE Boo_Draw
 
@@ -2063,6 +2082,8 @@ Boo_SetChase:
 
 Boo_Interact:
 	JSR Object_CalcBoundBox	
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_AttackOrDefeat
 
 Boo_Draw:
@@ -2082,7 +2103,7 @@ Boo_SetFrame:
 PirateBoo_CoinTimer = Objects_Data1
 
 ObjInit_PirateBoo:
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF | ATTR_STOMPPROOF)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
@@ -2107,6 +2128,17 @@ PriateBoo_InitRTS:
 	RTS
 
 ObjNorm_PirateBoo:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE PirateBoo_NotDead
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	
+	LDA #$FF
+	STA Objects_Timer, X
+
+PirateBoo_NotDead:
 	LDA <Player_HaltGameZ
 	BNE PirateBoo_Draw
 
@@ -3042,13 +3074,13 @@ PeekaBoo_Timers:
 	.byte $10, $0F	
 
 PeekaBoo_SpriteOrientation:
-	.byte SPR_BEHINDBG | SPR_PAL1, SPR_BEHINDBG | SPR_PAL1 | SPR_VFLIP	
+	.byte SPR_BEHINDBG | SPR_PAL2, SPR_BEHINDBG | SPR_PAL2 | SPR_VFLIP	
 
 ObjInit_PeekaBoo:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #ATTR_ATTACKPROOF
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
 	JSR Object_CalcBoundBox
@@ -3223,5 +3255,71 @@ PeekaBoo_LowerDraw:
 	STA Objects_Frame, X
 	JMP Object_DrawMirrored
 
-ObjHit_Peekaboo:
-	RTS	
+
+CooBoo_PatternHoz:
+	.byte $00
+	
+ObjInit_CooBoo:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+ObjInit_CommonCooBoo:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
+	LDA #$21
+	STA Patrol_ResetTimer, X
+
+	JMP InitPatrol_NoTimers
+
+ObjInit_CooBooX2
+	LDA #BOUND16x32
+	STA Objects_BoundBox, X
+
+	LDA #$04
+	STA Objects_SpritesRequested, X
+	
+	JMP ObjInit_CommonCooBoo
+
+ObjInit_CooBooX3
+	LDA #BOUND16x48
+	STA Objects_BoundBox, X
+
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
+	JMP ObjInit_CommonCooBoo
+
+ObjNorm_CooBoo:
+	LDA <Player_HaltGameZ
+	BEQ CooBoo_Norm
+	JMP CooBoo_Draw
+
+CooBoo_Norm:
+
+	LDA #$80
+	JSR Object_DeleteOffScreenRange
+
+	JSR Object_MovePattern
+	JSR Object_MovePattern
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+CooBoo_Draw:
+	LDA Objects_BoundBox, X
+	CMP #BOUND16x16
+	BNE CooBoo_Draw16x32
+
+	JMP Object_Draw
+
+CooBoo_Draw16x32:
+	CMP #BOUND16x32
+	BNE CooBoo_Draw16x48
+
+	JMP Object_Draw16x32
+
+CooBoo_Draw16x48:
+	JMP Object_Draw16x48

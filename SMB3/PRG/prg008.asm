@@ -4477,8 +4477,9 @@ NotSmallMario:
 	LDX #$07
 	
 ClearSprite
+	STA Debug_Snap
 	LDA Objects_Global, X
-	BNE NextSprite
+	BNE Check_GlobalHold
 
 	LDA #$00
 	STA Objects_State, X
@@ -4495,6 +4496,23 @@ NextSprite:
 
 NotYHi:
 	RTS
+
+Check_GlobalHold:
+	LDA Objects_BeingHeld, X
+	BEQ NextSprite
+
+	LDA <Player_X
+	STA <Objects_XZ, X
+
+	LDA <Player_XHi
+	STA <Objects_XHiZ, X
+
+	LDA <Player_Y
+	STA <Objects_YZ, X
+
+	LDA <Player_YHi
+	STA <Objects_YHiZ, X
+	JMP NextSprite
 
 CheckPlayer_YLow:
 	LDA <Player_XHi
@@ -5531,8 +5549,12 @@ BodyHead_Door:
 	BNE Door_Done 
 
 	LDA Player_IsHolding
+	BEQ Door_PadUp
+	
+	CMP #OBJ_KEY
 	BNE Door_Done
 
+Door_PadUp:
 	LDA <Pad_Input
 	AND #PAD_UP
 	BEQ Door_Done	 ; If Player is not pressing up in front of a door, jump to PRG008_A86C
@@ -6457,7 +6479,6 @@ Player_MakeSplash:
 	RTS		 ; Return
 
 Player_SetHolding:
-	
 	LDA Objects_BeingHeld
 	ORA Objects_BeingHeld + 1
 	ORA Objects_BeingHeld + 2

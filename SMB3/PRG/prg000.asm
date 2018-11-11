@@ -39,9 +39,9 @@ Object_BoundBox:
 	.byte  2,  20,   2,  12	; 7
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
 	.byte  2,  20,   2,  28	; 9
-	.byte  2,  13,   1,  32	; A BOUND16x32 (16x32)
-	.byte  2,  13,   1,  32	; A BOUND16x32TALL (16x32)
-	.byte  1,  14,  -2,  13	; C
+	.byte  1,  14,   1,  32	; A BOUND16x32 (16x32)
+	.byte  1,  14,   1,  32	; A BOUND16x32TALL (16x32)
+	.byte  1,  14,   1,  38	; C BOUND16x48
 	.byte  0,  47,   0,  15	; D 
 	.byte  4,  27,   2,  28	; E BOUND32x32
 	.byte  4,  44,   4,  40	; F BOUND48x48
@@ -2690,6 +2690,8 @@ Object_Draw:
 
 Object_Draw1:
 	JSR Object_ShakeAndCalcSprite
+	
+Object_Draw16x16:	
 	JSR Object_Draw16x16Sprite
 
 	LDA AlignSpriteFlag
@@ -2807,6 +2809,51 @@ Object_Draw16x32:
 PRG000_D63F:
 	RTS		 ; Return
 
+Object_Draw16x48:
+	JSR Object_ShakeAndCalcSprite
+
+	LDX <CurrentObjectIndexZ	; X = object slot index
+
+	LDA Objects_Frame,X
+	ASL A		 
+	ADD <Temp_Var6	
+	STA <Temp_Var6	 ; Temp_Var6 += object's frame
+	TAX
+
+
+	JSR Object_Draw16x16Sprite	 
+	INC <Temp_Var6
+	INC <Temp_Var6
+	LDX <Temp_Var6
+
+	LDA #$10
+	ADD <Temp_Var1	 ; Sprite Y
+	STA <Temp_Var1	 ; Temp_Var1 += 16
+
+	LDA <Temp_Var7
+	ADD #$08
+	STA <Temp_Var7
+
+	LDY <Temp_Var7
+
+	JSR Object_Draw16x16Sprite	 
+
+	INC <Temp_Var6
+	INC <Temp_Var6
+	LDX <Temp_Var6
+
+	LDA #$10
+	ADD <Temp_Var1	 ; Sprite Y
+	STA <Temp_Var1	 ; Temp_Var1 += 16
+
+	LDA <Temp_Var7
+	ADD #$08
+	STA <Temp_Var7
+
+	LDY <Temp_Var7
+
+	JSR Object_Draw16x16Sprite
+	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_DrawWide
@@ -4899,7 +4946,7 @@ Patrol_ResetTimer = Objects_Data13
 ChaseVel_LimitLo = Objects_Data10
 ChaseVel_LimitHi = Objects_Data11
 
-DoPatrol:
+Object_MovePattern:
 	LDA Objects_Property, X
 
 	JSR DynJump
@@ -5384,7 +5431,7 @@ Can_Hold:
 	LDA Player_IsHolding
 	BNE Object_HoldRTS
 
-	LDA #$01
+	LDA Objects_ID, X
 	STA Objects_BeingHeld, X
 	STA Player_IsHolding
 

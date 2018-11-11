@@ -1070,7 +1070,7 @@ ParaTroopa_CheckDelete:
 	JSR Object_DeleteOffScreen
 
 ObjNorm_ParaTroopa0:
-	JSR DoPatrol
+	JSR Object_MovePattern
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
@@ -1352,7 +1352,7 @@ SwimmingCheep_CheckDelete:
 	JSR Object_DeleteOffScreen
 
 SwimmingCheep_NoDelete:
-	JSR DoPatrol
+	JSR Object_MovePattern
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
