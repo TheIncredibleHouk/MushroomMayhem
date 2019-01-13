@@ -15,6 +15,8 @@ OBJ_LIGHTNINGBOLT       = $1D
 OBJ_ICESPIKE        = $1E
 OBJ_STARS           = $1F
 OBJ_EXPLOSION      = $20
+OBJ_MARIO_BLACK	   = $21
+OBJ_BLOCKFLIP	   = $22
 
     .word ObjInit_WaterSplash   ; Object $14
 	.word ObjInit_Waterfill	; Object $15
@@ -30,7 +32,7 @@ OBJ_EXPLOSION      = $20
     .word ObjInit_Stars     ; Object $1F
     .word ObjInit_Explosion ; Object $20
     .word ObjInit_DoNothing ; Object $21
-    .word ObjInit_DoNothing ; Object $22
+    .word ObjInit_BlockFlip ; Object $22
     .word ObjInit_DoNothing ; Object $23
     .word ObjInit_DoNothing ; Object $24
     .word ObjInit_DoNothing ; Object $25
@@ -52,8 +54,8 @@ OBJ_EXPLOSION      = $20
     .word ObjNorm_IceSpike      ; Object $1E
     .word ObjNorm_Stars         ; Object $1F
     .word ObjNorm_Explosion     ; Object $20
-    .word ObjNorm_DoNothing     ; Object $21
-    .word ObjNorm_DoNothing     ; Object $22
+    .word ObjNorm_MarioBlack     ; Object $21
+    .word ObjNorm_BlockFlip     ; Object $22
     .word ObjNorm_DoNothing     ; Object $23
     .word ObjNorm_DoNothing     ; Object $24
     .word ObjNorm_DoNothing     ; Object $25
@@ -132,16 +134,16 @@ OBJ_EXPLOSION      = $20
 	
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
-	.byte KILLACT_POOFDEATH		; Object $14
-    .byte KILLACT_POOFDEATH		; Object $15
-    .byte KILLACT_POOFDEATH     ; Object $16
-    .byte KILLACT_POOFDEATH     ; Object $17
-    .byte KILLACT_POOFDEATH     ; Object $18
-    .byte KILLACT_POOFDEATH     ; Object $19
+	.byte KILLACT_STARDEATH		; Object $14
+    .byte KILLACT_STARDEATH		; Object $15
+    .byte KILLACT_STARDEATH     ; Object $16
+    .byte KILLACT_STARDEATH     ; Object $17
+    .byte KILLACT_STARDEATH     ; Object $18
+    .byte KILLACT_STARDEATH     ; Object $19
     .byte KILLACT_NORMALANDKILLED     ; Object $1A
     .byte KILLACT_NORMALANDKILLED     ; Object $1B
     .byte KILLACT_NORMALANDKILLED     ; Object $1C
-    .byte KILLACT_POOFDEATH     ; Object $1D
+    .byte KILLACT_STARDEATH     ; Object $1D
     .byte KILLACT_NORMALSTATE   ; Object $1E
     .byte KILLACT_NORMALSTATE   ; Object $1F
     .byte KILLACT_NORMALSTATE   ; Object $20
@@ -1152,7 +1154,7 @@ NextCheck:
 
 	LDA #OBJ_KEY
 	STA Objects_ID, X
-	INC Objects_Global, X
+	STA Objects_Global, X
 
 	LDA #$00
 	STA Objects_Property, X
@@ -1967,3 +1969,118 @@ PRG003_B8E9:
 	CLC		 ; Clear carry
 	RTS		 ; Return
     
+ObjNorm_MarioBlack:
+	LDA #$0F
+	STA Palette_Buffer + 17
+	STA Palette_Buffer + 18
+	STA Palette_Buffer + 19
+	RTS
+
+	
+Block_CheckIndex = Objects_Data1
+Block_XDistances:
+	.byte $08, $18, $28, $08
+
+ObjInit_BlockFlip:
+	STX <Temp_Var1
+	
+	LDY #$04
+
+BlockFlip_CheckNext:	
+	CPY <Temp_Var1
+	BEQ BlockFlip_NextCheck
+
+	LDA Objects_ID, Y
+	CMP #OBJ_MARIO_BLACK
+	BNE BlockFlip_NextCheck
+
+	JSR Object_Delete
+	RTS
+
+BlockFlip_NextCheck:
+	DEY
+	BPL BlockFlip_CheckNext
+
+	LDA #BOUND16x48
+	STA Objects_BoundBox, X
+	RTS
+
+ObjNorm_BlockFlip:
+	JSR Object_CalcBoundBox
+	JSR Object_DeleteOffScreen
+
+	
+	LDA Block_NeedsUpdate
+	BNE BlockFlip_RTS
+
+	LDA Block_CheckIndex, X
+	AND #$03
+	TAY
+
+	LDA <Objects_XZ, X
+	ADD Block_XDistances, Y
+	STA Block_DetectX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Block_DetectXHi
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA Block_DetectY
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Block_DetectYHi
+	
+	JSR Object_DetectTile
+
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_STONE | TILE_PROP_SOLID_ALL)
+	BNE BlockFlip_Next
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA Block_DetectY
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA Block_DetectYHi
+
+	JSR Object_DetectTile
+
+	LDA Tile_LastProp
+	CMP #$00
+	BNE BlockFlip_Next
+
+	LDA Block_DetectY
+	ADD #$10
+	STA Block_DetectY
+
+	LDA Block_DetectYHi
+	ADC #$00
+	STA Block_DetectYHi
+
+	JSR Object_DetectTile
+
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	STA Tile_LastValue
+
+	JSR Object_ChangeBlock
+
+	LDA Block_DetectX
+	STA Debris_X
+
+	LDA Block_DetectY
+	STA Debris_Y
+	
+	JSR Common_MakeBricks
+
+BlockFlip_Next:
+	INC Block_CheckIndex, X
+	
+BlockFlip_RTS:
+	RTS
+

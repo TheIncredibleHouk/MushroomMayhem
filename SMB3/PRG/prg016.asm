@@ -124,26 +124,26 @@ OBJ_PYRANTULA           = $92
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
-	.byte KILLACT_POOFDEATH ; Object $8C
-    .byte KILLACT_POOFDEATH ; Object $8D
-    .byte KILLACT_POOFDEATH ; Object $8E
-    .byte KILLACT_POOFDEATH ; Object $8F
-    .byte KILLACT_POOFDEATH ; Object $90
-    .byte KILLACT_POOFDEATH ; Object $91
-    .byte KILLACT_POOFDEATH ; Object $92
-    .byte KILLACT_POOFDEATH ; Object $93
-    .byte KILLACT_POOFDEATH ; Object $94
-    .byte KILLACT_POOFDEATH ; Object $95
-    .byte KILLACT_POOFDEATH ; Object $96
-    .byte KILLACT_POOFDEATH ; Object $97
-    .byte KILLACT_POOFDEATH ; Object $98
-    .byte KILLACT_POOFDEATH ; Object $99
-    .byte KILLACT_POOFDEATH ; Object $9A
-    .byte KILLACT_POOFDEATH ; Object $9B
-    .byte KILLACT_POOFDEATH ; Object $9C
-    .byte KILLACT_POOFDEATH ; Object $9D
-    .byte KILLACT_POOFDEATH ; Object $9E
-    .byte KILLACT_POOFDEATH ; Object $9F
+	.byte KILLACT_STARDEATH ; Object $8C
+    .byte KILLACT_STARDEATH ; Object $8D
+    .byte KILLACT_STARDEATH ; Object $8E
+    .byte KILLACT_STARDEATH ; Object $8F
+    .byte KILLACT_STARDEATH ; Object $90
+    .byte KILLACT_STARDEATH ; Object $91
+    .byte KILLACT_STARDEATH ; Object $92
+    .byte KILLACT_STARDEATH ; Object $93
+    .byte KILLACT_STARDEATH ; Object $94
+    .byte KILLACT_STARDEATH ; Object $95
+    .byte KILLACT_STARDEATH ; Object $96
+    .byte KILLACT_STARDEATH ; Object $97
+    .byte KILLACT_STARDEATH ; Object $98
+    .byte KILLACT_STARDEATH ; Object $99
+    .byte KILLACT_STARDEATH ; Object $9A
+    .byte KILLACT_STARDEATH ; Object $9B
+    .byte KILLACT_STARDEATH ; Object $9C
+    .byte KILLACT_STARDEATH ; Object $9D
+    .byte KILLACT_STARDEATH ; Object $9E
+    .byte KILLACT_STARDEATH ; Object $9F
 
 OG8_POff .func (\1 - ObjectGroup08_PatternSets)
 

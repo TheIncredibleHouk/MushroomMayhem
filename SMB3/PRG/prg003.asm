@@ -130,26 +130,26 @@ OBJ_PIPEBLOCK       = $32
 	
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
-	.byte KILLACT_POOFDEATH		; Object $28
-    .byte KILLACT_POOFDEATH		; Object $29
-    .byte KILLACT_POOFDEATH		; Object $2A
-    .byte KILLACT_POOFDEATH		; Object $2B
-    .byte KILLACT_POOFDEATH		; Object $2C
-    .byte KILLACT_POOFDEATH		; Object $2D
-    .byte KILLACT_POOFDEATH		; Object $2E
-    .byte KILLACT_POOFDEATH		; Object $2F
-    .byte KILLACT_POOFDEATH		; Object $30
-    .byte KILLACT_POOFDEATH		; Object $31
+	.byte KILLACT_STARDEATH		; Object $28
+    .byte KILLACT_STARDEATH		; Object $29
+    .byte KILLACT_STARDEATH		; Object $2A
+    .byte KILLACT_STARDEATH		; Object $2B
+    .byte KILLACT_STARDEATH		; Object $2C
+    .byte KILLACT_STARDEATH		; Object $2D
+    .byte KILLACT_STARDEATH		; Object $2E
+    .byte KILLACT_STARDEATH		; Object $2F
+    .byte KILLACT_STARDEATH		; Object $30
+    .byte KILLACT_STARDEATH		; Object $31
     .byte KILLACT_NORMALANDKILLED ; Object $32
-	.byte KILLACT_POOFDEATH		; Object $33
-	.byte KILLACT_POOFDEATH		; Object $34
-	.byte KILLACT_POOFDEATH		; Object $35
-	.byte KILLACT_POOFDEATH		; Object $36
-	.byte KILLACT_POOFDEATH		; Object $37
-	.byte KILLACT_POOFDEATH		; Object $38
-	.byte KILLACT_POOFDEATH		; Object $39
-	.byte KILLACT_POOFDEATH		; Object $3A
-	.byte KILLACT_POOFDEATH		; Object $3B
+	.byte KILLACT_STARDEATH		; Object $33
+	.byte KILLACT_STARDEATH		; Object $34
+	.byte KILLACT_STARDEATH		; Object $35
+	.byte KILLACT_STARDEATH		; Object $36
+	.byte KILLACT_STARDEATH		; Object $37
+	.byte KILLACT_STARDEATH		; Object $38
+	.byte KILLACT_STARDEATH		; Object $39
+	.byte KILLACT_STARDEATH		; Object $3A
+	.byte KILLACT_STARDEATH		; Object $3B
 
 OG3_POff .func (\1 - ObjectGroup03_PatternSets)
 
@@ -173,7 +173,7 @@ ObjP2D:
 ObjP2E:
 ObjP2F:
 ObjP30:
-    .byte $5B, $5B, $5B, $5B, $5B, $5B
+    .byte $57, $4F, $4F, $4F, $4F, $5B
 
 ObjP31:
     .byte $77, $77
@@ -313,6 +313,10 @@ ObjNorm_PlatformOscillate1:
 Platform_Draw:
 	LDA #$00
 	STA Objects_Orientation, X
+	JMP Object_Draw48x16
+
+	LDA #$00
+	STA Objects_Orientation, X
 	
 	LDA Objects_SpritesVerticallyOffScreen,X
 	BEQ Platform_DoDraw
@@ -320,7 +324,7 @@ Platform_Draw:
 
 Platform_DoDraw:
 	INC <Objects_YZ, X
-	JSR Object_DrawMirrored
+	JSR Object_Draw
 
 	DEC <Objects_YZ, X
 

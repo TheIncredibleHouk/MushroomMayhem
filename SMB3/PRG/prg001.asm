@@ -2,7 +2,7 @@
 ;****************************** OBJECT INITIALIZATION ******************************
 	; 
 OBJ_POWERUP 		= $01
-OBJ_BOUNCEDOWNUP 	= $04
+OBJ_ITEMBLOCK 	= $04
 OBJ_COINLOCK	 	= $05
 OBJ_ELOCK			= $06
 OBJ_BUBBLE			= $07
@@ -23,7 +23,7 @@ OBJ_BOSS			= $13
 	.word ObjInit_PowerUp	; Object $01 - OBJ_POWERUP
 	.word ObjInit_PUp1		; Object $02 - OBJ_POWERUP_INIT1
 	.word ObjInit_PUp2		; Object $03 - OBJ_POWERUP_MUSHROOM
-	.word ObjInit_BounceDU	; Object $04 - OBJ_BOUNCEDOWNUP
+	.word ObjInit_ItemBlock	; Object $04 - OBJ_ITEMBLOCK
 	.word ObjInit_CoinLock	; Object $05
 	.word ObjInit_ELock	; Object $06
 	.word ObjInit_Bubble	; Object $07
@@ -46,7 +46,7 @@ OBJ_BOSS			= $13
 	.word ObjNorm_PowerUp	; Object $01
 	.word ObjNorm_DoNothing	; Object $02
 	.word ObjNorm_DoNothing	; Object $03
-	.word ObjNorm_BounceDU  ; Object $04
+	.word ObjNorm_ItemBlock  ; Object $04
 	.word ObjNorm_CoinLock	; Object $05
 	.word ObjNorm_ELock	; Object $06
 	.word ObjNorm_Bubble	; Object $07
@@ -134,26 +134,26 @@ OBJ_BOSS			= $13
 	
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
-	.byte KILLACT_POOFDEATH		; Object $00
-	.byte KILLACT_POOFDEATH		; Object $01
-	.byte KILLACT_POOFDEATH		; Object $02
-	.byte KILLACT_POOFDEATH		; Object $03
-	.byte KILLACT_POOFDEATH		; Object $04
-	.byte KILLACT_POOFDEATH		; Object $05
-	.byte KILLACT_POOFDEATH		; Object $06
-	.byte KILLACT_POOFDEATH		; Object $07
-	.byte KILLACT_POOFDEATH		; Object $08
-	.byte KILLACT_POOFDEATH		; Object $09
-	.byte KILLACT_POOFDEATH		; Object $0A
-	.byte KILLACT_POOFDEATH		; Object $0B
-	.byte KILLACT_POOFDEATH		; Object $0C
-	.byte KILLACT_POOFDEATH		; Object $0D
-	.byte KILLACT_POOFDEATH		; Object $0E
-	.byte KILLACT_POOFDEATH		; Object $0F
-	.byte KILLACT_POOFDEATH		; Object $10
+	.byte KILLACT_STARDEATH		; Object $00
+	.byte KILLACT_STARDEATH		; Object $01
+	.byte KILLACT_STARDEATH		; Object $02
+	.byte KILLACT_STARDEATH		; Object $03
+	.byte KILLACT_STARDEATH		; Object $04
+	.byte KILLACT_STARDEATH		; Object $05
+	.byte KILLACT_STARDEATH		; Object $06
+	.byte KILLACT_STARDEATH		; Object $07
+	.byte KILLACT_STARDEATH		; Object $08
+	.byte KILLACT_STARDEATH		; Object $09
+	.byte KILLACT_STARDEATH		; Object $0A
+	.byte KILLACT_STARDEATH		; Object $0B
+	.byte KILLACT_STARDEATH		; Object $0C
+	.byte KILLACT_STARDEATH		; Object $0D
+	.byte KILLACT_STARDEATH		; Object $0E
+	.byte KILLACT_STARDEATH		; Object $0F
+	.byte KILLACT_STARDEATH		; Object $10
 	.byte KILLACT_NORMALSTATE	; Object $11
 	.byte KILLACT_NORMALSTATE		; Object $12
-	.byte KILLACT_POOFDEATH		; Object $13
+	.byte KILLACT_STARDEATH		; Object $13
 
 OG1_POff .func (\1 - ObjectGroup01_PatternSets)
 
@@ -295,6 +295,9 @@ PowerUp_Init:
 	LDA PowerUp_Palette, Y
 	STA Objects_SpriteAttributes, X
 
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA PowerUp_YVelocities, Y
 	STA <Objects_YVelZ, X
 
@@ -374,13 +377,13 @@ ObjNorm_PowerUp1:
 	.word PUp_Mushroom
 	.word PUp_Flower
 	.word PUp_Leaf
-	.word PUp_Bouncer
+	.word PUp_ItemBlock
 	.word PUp_Mushroom
-	.word PUp_Bouncer
+	.word PUp_ItemBlock
 	.word PUp_Flower
 	.word PUp_Leaf
 	.word PUp_Mushroom
-	.word PUp_Bouncer
+	.word PUp_ItemBlock
 	.word PUp_Vine
 	.word Pup_PWing
 
@@ -545,11 +548,11 @@ PUp_Flower:
 PUp_Flower2:
 	JMP Object_Draw
 
-PUp_Bouncer:
+PUp_ItemBlock:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
-	BCS PUp_Bouncer1
+	BCS PUp_ItemBlock1
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
@@ -560,12 +563,12 @@ PUp_Bouncer:
 
 	LDA <Objects_TilesDetectZ,X
 	AND #HITTEST_BOTTOM
-	BEQ PUp_Bouncer1
+	BEQ PUp_ItemBlock1
 
 	LDA #$C0
 	STA <Objects_YVelZ, X
 
-PUp_Bouncer1:
+PUp_ItemBlock1:
 	JMP Object_Draw
 	; Values used by the leaf based on bounce direction
 
@@ -768,16 +771,16 @@ PUp_CollectPWing:
 ;	with a background tile and moves up quickly and back down. Once it comes back down
 ;	an empty item block tile is replaced and an item is produced.
 ;***********************************************************************************
-ObjInit_BounceDU: 
+ObjInit_ItemBlock: 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
 	LDA Block_NeedsUpdate
-	BEQ Bouncer_Initialize
+	BEQ ItemBlock_Initialize
 
 	RTS
 
-Bouncer_Initialize:
+ItemBlock_Initialize:
 	JSR Object_NoInteractions
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
@@ -788,18 +791,18 @@ Bouncer_Initialize:
 	JSR Object_ChangeBlock
 
 	LDA #$06
-	STA Bouncer_UpTimer, X
+	STA ItemBlock_UpTimer, X
 
 	LDA #$05
-	STA Bouncer_DownTimer, X
+	STA ItemBlock_DownTimer, X
 
-	INC Bouncer_Initialized, X
+	INC ItemBlock_Initialized, X
 
-	LDA Bouncer_PowerUp, X
-	BEQ ObjInit_BounceDU2
+	LDA ItemBlock_PowerUp, X
+	BEQ ObjInit_ItemBlock2
 
 	CMP #POWERUP_MUSHROOM
-	BCS ObjInit_BounceDU2
+	BCS ObjInit_ItemBlock2
 
 	LDA Objects_YZ, X
 	ADD #$08
@@ -811,34 +814,34 @@ Bouncer_Initialize:
 
 	JMP Produce_Coin
 
-ObjInit_BounceDU2:
+ObjInit_ItemBlock2:
 	RTS
 
-Bouncer_UpTimer = Objects_Data1
-Bouncer_DownTimer = Objects_Data2
-Bouncer_PowerUp = Objects_Data3
-Bouncer_Frame = Objects_Data4
-Bouncer_ReplaceTile = Objects_Data5
-Bouncer_Initialized = Objects_Data6
+ItemBlock_UpTimer = Objects_Data1
+ItemBlock_DownTimer = Objects_Data2
+ItemBlock_PowerUp = Objects_Data3
+ItemBlock_Frame = Objects_Data4
+ItemBlock_ReplaceTile = Objects_Data5
+ItemBlock_Initialized = Objects_Data6
 
-ObjNorm_BounceDU:
-	LDA Bouncer_Initialized, X
-	BNE Bouncer_IsInitialized
+ObjNorm_ItemBlock:
+	LDA ItemBlock_Initialized, X
+	BNE ItemBlock_IsInitialized
 
-	JMP Bouncer_Initialize
+	JMP ItemBlock_Initialize
 
-Bouncer_IsInitialized:
+ItemBlock_IsInitialized:
 	LDA <Player_HaltGameZ
-	BEQ Bouncer_Normal
+	BEQ ItemBlock_Normal
 
-	JMP Bouncer_Draw
+	JMP ItemBlock_Draw
 
-Bouncer_Normal:
-	LDA Bouncer_UpTimer, X
-	BNE Bouncer_Up
+ItemBlock_Normal:
+	LDA ItemBlock_UpTimer, X
+	BNE ItemBlock_Up
 
-	LDA Bouncer_DownTimer, X
-	BNE Bouncer_Down
+	LDA ItemBlock_DownTimer, X
+	BNE ItemBlock_Down
 
 	LDA Block_NeedsUpdate
 	BEQ Produce_Item
@@ -848,7 +851,7 @@ Produce_Item:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
 
-	LDA Bouncer_ReplaceTile, X
+	LDA ItemBlock_ReplaceTile, X
 	BNE Block_SwitchTile	
 
 	LDA Tile_LastValue
@@ -859,13 +862,13 @@ Block_SwitchTile:
 	JSR Object_ChangeBlock
 
 Block_MakteItemAppear:
-	LDA Bouncer_PowerUp, X
+	LDA ItemBlock_PowerUp, X
 	BMI Produce_Key
 	BNE Block_MakteItemAppear1
 
 Block_MakteItemAppear1:
 	CMP #POWERUP_MUSHROOM
-	BCC Bouncer_Delete
+	BCC ItemBlock_Delete
 	JMP Do_PowerUp
 
 Produce_Key:
@@ -886,6 +889,7 @@ Produce_Key:
 
 	LDA #OBJ_KEY
 	STA Objects_ID, X
+	STA Objects_Global, X
 
 	LDA #$00
 	STA Objects_Property, X
@@ -893,7 +897,7 @@ Produce_Key:
 
 Do_PowerUp:
 
-	LDA Bouncer_PowerUp, X
+	LDA ItemBlock_PowerUp, X
 	PHA
 
 	JSR Object_New
@@ -908,24 +912,24 @@ Do_PowerUp:
 
 	JMP ObjInit_PowerUp
 
-Bouncer_Delete:
+ItemBlock_Delete:
 	JMP Object_Delete
 
-Bouncer_Down:
-	DEC Bouncer_DownTimer, X
+ItemBlock_Down:
+	DEC ItemBlock_DownTimer, X
 	LDA #$20
 	STA <Objects_YVelZ, X
 	JSR Object_ApplyYVel_NoGravity
-	JMP Bouncer_Draw
+	JMP ItemBlock_Draw
 
-Bouncer_Up:
-	DEC Bouncer_UpTimer, X
+ItemBlock_Up:
+	DEC ItemBlock_UpTimer, X
 	LDA #$E0
 	STA <Objects_YVelZ, X
 	JSR Object_ApplyYVel_NoGravity
 
-Bouncer_Draw:
-	LDA Bouncer_Frame, X
+ItemBlock_Draw:
+	LDA ItemBlock_Frame, X
 	STA Objects_Frame, X
 	JMP Object_DrawMirrored	
 
@@ -961,6 +965,27 @@ Lock_NumOffset:
 	.byte $00, $40	
 
 ObjInit_CoinLock:
+	STX <Temp_Var1
+	LDY #$04
+
+CoinLock_CheckExist:
+	CPY	<Temp_Var1
+	BEQ CoinLock_KeepCheck
+
+	LDA Objects_ID, Y
+	CMP #OBJ_COINLOCK
+	BEQ CoinLock_Delete
+
+CoinLock_KeepCheck:
+	DEY
+	BPL CoinLock_CheckExist
+	BMI CoinLock_Init
+
+CoinLock_Delete:
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State, Y
+
+CoinLock_Init:
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
@@ -990,8 +1015,7 @@ Coin_Unlock:
 	JSR Object_DetectTileCenter
 	
 	LDA Tile_LastValue
-	AND #$C0
-	ORA #$01
+	EOR #$01
 	JSR Object_ChangeBlock
 	
 	LDA Objects_SpritesHorizontallyOffScreen, X
@@ -1371,7 +1395,7 @@ Bubble_RegenerateDraw:
 
 
 Key_Pals:
-	.byte SPR_PAL3, SPR_PAL1, SPR_PAL2, SPR_PAL3
+	.byte SPR_PAL3, SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL3
 
 ObjInit_Key:
 	LDA #BOUND16x16
@@ -1400,6 +1424,15 @@ ObjInit_Key:
 	STA Objects_Global, X
 
 	LDY Objects_Property, X
+	CPY #$04
+	BNE Set_KeyColor
+
+	LDA #$00
+	STA Objects_Global, X
+	STA Objects_Property, X
+
+Set_KeyColor:	
+	LDY Objects_Property, X
 	BEQ Init_KeyRTS
 
 	LDA Key_Pals, Y
@@ -1425,9 +1458,6 @@ ObjNorm_Key:
 
 	LDA Key_AdjacentChecks, X
 	BPL Key_NormRTS
-
-	LDA #$01
-	STA Objects_Global, X
 	
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
@@ -1470,6 +1500,7 @@ Key_Norm:
 
 	LDA #OBJ_KEY
 	STA Objects_ID, X
+	STA Objects_Global
 
 	RTS
 
@@ -2475,6 +2506,7 @@ ObjInit_PoisonMushroom:
 	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	RTS
 

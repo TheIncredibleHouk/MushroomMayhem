@@ -3071,11 +3071,7 @@ KeepDestroying:
 	LDA Objects_State,X
 	BEQ SkipDestroy
 
-	LDA #OBJSTATE_POOFDEATH
-	STA Objects_State,X
-
-	LDA #$1f
-	STA Objects_Timer,X
+	JSR Object_StarBurstDeath
 
 SkipDestroy:
 	DEX

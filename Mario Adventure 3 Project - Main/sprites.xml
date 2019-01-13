@@ -74,8 +74,8 @@
     <property>Regenerates</property>
   </spritedefinition>
 <spritedefinition id="08" width="01" height="01" name="Key" class="1" group="Global">
-    <sprite property="0,3" x="0" y="0" value="28" palette="3" horizontalflip="false" verticalflip="false" table="94" />
-    <sprite property="0,3" x="8" y="0" value="3C" palette="3" horizontalflip="false" verticalflip="false" table="94" />
+    <sprite property="0,3,4" x="0" y="0" value="28" palette="3" horizontalflip="false" verticalflip="false" table="94" />
+    <sprite property="0,3,4" x="8" y="0" value="3C" palette="3" horizontalflip="false" verticalflip="false" table="94" />
     <sprite property="1" x="0" y="0" value="28" palette="1" horizontalflip="false" verticalflip="false" table="94" />
     <sprite property="1" x="8" y="0" value="3C" palette="1" horizontalflip="false" verticalflip="false" table="94" />
     <sprite property="2" x="0" y="0" value="28" palette="2" horizontalflip="false" verticalflip="false" table="94" />
@@ -85,6 +85,7 @@
     <property>Unlock Palette 1</property>
     <property>Unlock Palette 2</property>
     <property>Unlock Palette 3</property>
+    <property>Unlocks All - Not Global</property>
   </spritedefinition>
 <spritedefinition id="9" width="01" height="01" name="Spring" class="3" group="Common">
     <sprite x="0" y="0" property="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="4F" />
@@ -254,17 +255,29 @@
     <property>Key #4</property>
     <property>Key #5</property>
   </spritedefinition>
-    <spritedefinition id="1E" width="01" height="01" name="Ice Spike" class="2" group="Fortress">
+  <spritedefinition id="1E" width="01" height="01" name="Ice Spike" class="2" group="Fortress">
     <sprite x="0" y="0" value="2E" palette="3" horizontalflip="false" verticalflip="false" table="12" />
     <sprite x="8" y="0" value="2E" palette="3" horizontalflip="false" verticalflip="false" table="12" />
   </spritedefinition>
+  <spritedefinition id="21" width="01" height="01" name="Force Mario Black" class="1" group="Global">
+    <sprite x="0" y="0" value="84" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="8" y="0" value="86" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+  </spritedefinition>
+  <spritedefinition id="22" width="03" height="01" name="Toggle Blocks" class="1" group="Global">
+    <sprite x="0" y="0" value="84" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="8" y="0" value="86" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="16" y="0" value="84" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="24" y="0" value="86" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="32" y="0" value="84" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+    <sprite x="40" y="0" value="86" palette="0" horizontalflip="false" verticalflip="false" table="-1" />
+  </spritedefinition>
  <spritedefinition id="28" width="03" height="01" name="Platform Moves Left/Right" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="48" y="0" value="8C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="-72" y="0" property="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite x="-88" y="0" property="1" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
@@ -284,12 +297,12 @@
     <property>11 Blocks</property>
   </spritedefinition>
   <spritedefinition id="29" width="03" height="01" name="Platform Moves Up/Down" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="16" y="-8" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="24" y="-8" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="16" property="0" y="80" value="8E" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
@@ -318,12 +331,12 @@
     <property>12 Blocks</property>
   </spritedefinition>
   <spritedefinition id="2A" width="03" height="01" name="Platform Moves Diagonal 1" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="32" y="-16" value="C2" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite x="40" y="-16" value="C0" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite x="-64" y="80" property="0" value="C0" palette="-3" horizontalflip="false" verticalflip="true" table="-1" />
@@ -352,12 +365,12 @@
     <property>11 Blocks</property>
   </spritedefinition>
   <spritedefinition id="2B" width="03" height="01" name="Platform Moves Diagonal 2" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="32" y="16" value="C2" palette="-3" horizontalflip="true" verticalflip="true" table="-1" />
     <sprite x="40" y="16" value="C0" palette="-3" horizontalflip="true" verticalflip="true" table="-1" />
     <sprite x="-64" y="-80" property="0" value="C0" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
@@ -386,12 +399,12 @@
     <property>11 Blocks</property>
   </spritedefinition> 
   <spritedefinition id="2C" width="03" height="01" name="Platform Moves Clockwise" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="16" y="-8" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="24" y="-8" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="16" property="0" y="48" value="8E" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
@@ -420,12 +433,12 @@
     <property>10 Blocks</property>
   </spritedefinition>  
  <spritedefinition id="2D" width="03" height="01" name="Platform Moves Counter Clockwise" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="16" y="-8" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="24" y="-8" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="16" property="0" y="48" value="8E" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
@@ -454,23 +467,23 @@
     <property>10 Blocks</property>
   </spritedefinition>
   <spritedefinition id="2E" width="03" height="01" name="Platform Follows Path" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
 
     <property>Starts off up or right</property>
     <property>Starts off down or left</property>
   </spritedefinition> 
   <spritedefinition id="2F" width="03" height="01" name="Platform Falls When Touched" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="16" y="0" value="9A" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
     <sprite x="24" y="0" value="9C" palette="-3" horizontalflip="false" verticalflip="false" table="-1" />
   </spritedefinition>   
@@ -1035,12 +1048,12 @@
     <sprite x="20" y="16" value="34" palette="1" horizontalflip="true" verticalflip="false" table="12" />
   </spritedefinition>
   <spritedefinition id="7E" width="01" height="01" name="Boo" class="2" group="Ghosts">
-    <sprite x="0" y="0" value="10" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="0" value="12" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="0" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="37" />
   </spritedefinition> 
   <spritedefinition id="7F" width="01" height="01" name="Pirate Boo" class="2" group="Ghosts">
-    <sprite x="0" y="0" value="34" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="0" value="36" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="0" value="30" palette="3" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="32" palette="3" horizontalflip="false" verticalflip="false" table="37" />
     <property>Normal</property>
     <property>Behind Background</property>
   </spritedefinition>
@@ -1078,7 +1091,7 @@
     <property>Clockwise Ice (Starts Left Side)</property>
     <property>Counterclockwise Ice (Starts Left Side)</property>
   </spritedefinition>
-  <spritedefinition id="81" width="01" height="01" name="Podoboo" class="2" group="Fire/Mine">
+  <spritedefinition id="81" width="01" height="01" name="Podobo" class="2" group="Fire/Mine">
     <sprite x="0" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
     <sprite x="8" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="false" table="0A" />
     <property>Does not change graphics bank</property>
@@ -1086,7 +1099,7 @@
     <property>Upside Down/Does not change graphics bank</property>
     <property>Upside Down/Changes graphics bank</property>
   </spritedefinition>
-  <spritedefinition id="82" width="02" height="01" name="Pipe Podoboo" class="2" group="Fire/Mine">
+  <spritedefinition id="82" width="02" height="01" name="Pipe Podobo" class="2" group="Fire/Mine">
     <sprite property="0,1" x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="true" table="0A" />
     <sprite property="0,1" x="16" y="0" value="0C" palette="1" horizontalflip="true" verticalflip="true" table="0A" />
     <sprite property="2,3" x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="0A" />
@@ -1115,8 +1128,8 @@
     <sprite x="8" y="0" value="34" palette="1" horizontalflip="true" verticalflip="false" table="37" />
   </spritedefinition>
   <spritedefinition id="85" width="01" height="01" name="Coo Boo" class="2" group="Ghosts">
-    <sprite x="0" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="37" />
 
     <property>Horizontal Pattern</property>
     <property>Vertical Pattern</property>
@@ -1127,10 +1140,10 @@
     <property>Chase</property>
   </spritedefinition>
   <spritedefinition id="86" width="01" height="02" name="Coo Boo" class="2" group="Ghosts">
-    <sprite x="0" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="0" y="16" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="16" value="32" palette="1" horizontalflip="false" verticalflip="false" table="37" />
 
     <property>Horizontal Pattern</property>
     <property>Vertical Pattern</property>
@@ -1141,12 +1154,12 @@
     <property>Chase</property>
   </spritedefinition>
   <spritedefinition id="87" width="01" height="03" name="Coo Boo" class="2" group="Ghosts">
-    <sprite x="0" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="0" y="16" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="0" y="32" value="16" palette="1" horizontalflip="false" verticalflip="false" table="37" />
-    <sprite x="8" y="32" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="0" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="32" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="16" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="16" value="32" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="0" y="32" value="2E" palette="1" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="32" value="32" palette="1" horizontalflip="false" verticalflip="false" table="37" />
 
     <property>Horizontal Pattern</property>
     <property>Vertical Pattern</property>
@@ -1155,6 +1168,15 @@
     <property>Circle Counter Clockwise</property>
     <property>Circle Clockwise</property>
     <property>Chase</property>
+  </spritedefinition>
+  <spritedefinition id="88" width="01" height="01" name="Phasm" class="2" group="Ghosts">
+    <sprite x="0" y="0" value="08" palette="2" horizontalflip="false" verticalflip="false" table="37" />
+    <sprite x="8" y="0" value="08" palette="2" horizontalflip="true" verticalflip="false" table="37" />
+
+    <property>Pattern 1</property>
+    <property>Pattern 2</property>
+    <property>Pattern 3</property>
+    <property>Pattern 4</property>
   </spritedefinition>
   <spritedefinition id="8C" width="01" height="02" name="Hammer Bros." class="2" group="Hammer Bros.">
     <sprite x="0" y="8" value="2C" palette="3" horizontalflip="false" verticalflip="false" table="4E" />
@@ -1297,12 +1319,12 @@
     <property>Up</property>
   </spritedefinition>
   <spritedefinition id="BF" width="03" height="01" name="Platform Generator" class="1" group="Platform">
-    <sprite x="0" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="8" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="16" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="24" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
-    <sprite x="32" y="0" value="36" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
-    <sprite x="40" y="0" value="36" palette="3" horizontalflip="true" verticalflip="false" table="B0" />
+    <sprite x="0" y="0" value="16" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="8" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="16" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="24" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="32" y="0" value="0E" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
+    <sprite x="40" y="0" value="1A" palette="3" horizontalflip="false" verticalflip="false" table="B0" />
     <sprite x="32" y="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
     <sprite x="40" y="0" value="8C" palette="-3" horizontalflip="true" verticalflip="false" table="-1" />
     <property>Slow Generator</property>

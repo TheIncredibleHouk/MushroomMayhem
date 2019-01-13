@@ -1349,7 +1349,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;
 	RhythmCounter:	    .ds 1;
-	DPad_RhythmControl: .ds 1
+	TreasureBox_Disabled: .ds 1
 
 ; $0461-$0462 are reserved for use by the sound/music engine
 ; These ought to be moved into the greater range to spare this area...
@@ -1879,10 +1879,9 @@ OBJSTATE_NORMAL		= 2	; Normal (typical operation)
 OBJSTATE_SHELLED	= 3	; Shelled (shelled enemy post-stomp)
 OBJSTATE_KICKED		= 4	; Kicked (kicked by Player / spinning shell)
 OBJSTATE_KILLED		= 5	; Killed (flipped over and falling off screen)
-OBJSTATE_POOFDEATH	= 6	; "Poof" Death (e.g. Piranha death)
-OBJSTATE_FRESH		= 7 ;
-OBJSTATE_FROZEN		= 8
-OBJSTATE_NONE		= 9 ; used to keep a slot open
+OBJSTATE_FRESH		= 6 ;
+OBJSTATE_FROZEN		= 7
+OBJSTATE_NONE		= 8 ; used to keep a slot open
 
 	Objects_State:		.ds 8
 

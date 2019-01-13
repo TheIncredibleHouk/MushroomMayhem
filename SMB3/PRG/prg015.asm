@@ -17,6 +17,7 @@ OBJ_PEEKABOO 		= $84
 OBJ_COOBOO			= $85
 OBJ_COOBOOX2		= $86
 OBJ_COOBOOX3		= $87
+OBJ_PHASM			= $88
 
     .word ObjInit_Spike ; Object $78
     .word ObjInit_SpikeBall ; Object $79
@@ -34,7 +35,7 @@ OBJ_COOBOOX3		= $87
     .word ObjInit_CooBoo ; Object $85
     .word ObjInit_CooBooX2 ; Object $86
     .word ObjInit_CooBooX3 ; Object $87
-    .word ObjInit_DoNothing ; Object $88
+    .word ObjInit_Phasm ; Object $88
     .word ObjInit_DoNothing ; Object $89
     .word ObjInit_DoNothing ; Object $8A
     .word ObjInit_DoNothing ; Object $8B
@@ -57,7 +58,7 @@ OBJ_COOBOOX3		= $87
     .word ObjNorm_CooBoo ; Object $85
     .word ObjNorm_CooBoo ; Object $86
     .word ObjNorm_CooBoo ; Object $87
-    .word ObjNorm_DoNothing ; Object $88
+    .word ObjNorm_Phasm ; Object $88
     .word ObjNorm_DoNothing ; Object $89
     .word ObjNorm_DoNothing ; Object $8A
     .word ObjNorm_DoNothing ; Object $8B
@@ -93,17 +94,17 @@ OBJ_COOBOOX3		= $87
     .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32 ; Object $7B
     .byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7C
     .byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7D
-    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7E
-    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7F
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7E
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7F
     .byte OA1_PAL1 | OA1_WIDTH8 | OA1_WIDTH8 ; Object $80
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $81
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $82
     .byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $83
-    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
-    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $89
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8A
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8B
@@ -126,7 +127,7 @@ OBJ_COOBOOX3		= $87
     .byte OPTS_SETPT5 | $37 ; Object $85
     .byte OPTS_SETPT5 | $37 ; Object $86
     .byte OPTS_SETPT5 | $37 ; Object $87
-    .byte OPTS_NOCHANGE ; Object $88
+    .byte OPTS_SETPT5 | $37 ; Object $88
     .byte OPTS_NOCHANGE ; Object $89
     .byte OPTS_NOCHANGE ; Object $8A
     .byte OPTS_NOCHANGE ; Object $8B
@@ -134,25 +135,25 @@ OBJ_COOBOOX3		= $87
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
 	.byte KILLACT_NORMALSTATE ; Object $78
-    .byte KILLACT_POOFDEATH ; Object $79
-    .byte KILLACT_POOFDEATH ; Object $7A
-    .byte KILLACT_POOFDEATH ; Object $7B
+    .byte KILLACT_STARDEATH ; Object $79
+    .byte KILLACT_STARDEATH ; Object $7A
+    .byte KILLACT_STARDEATH ; Object $7B
     .byte KILLACT_NORMALSTATE ; Object $7C
     .byte KILLACT_NORMALSTATE ; Object $7D
-    .byte KILLACT_POOFDEATH ; Object $7E
-    .byte KILLACT_POOFDEATH ; Object $7F
-    .byte KILLACT_POOFDEATH ; Object $80
-    .byte KILLACT_POOFDEATH ; Object $81
-    .byte KILLACT_POOFDEATH ; Object $82
-    .byte KILLACT_POOFDEATH ; Object $83
+    .byte KILLACT_NORMALSTATE ; Object $7E
+    .byte KILLACT_STARDEATH ; Object $7F
+    .byte KILLACT_STARDEATH ; Object $80
+    .byte KILLACT_STARDEATH ; Object $81
+    .byte KILLACT_STARDEATH ; Object $82
+    .byte KILLACT_STARDEATH ; Object $83
     .byte KILLACT_NORMALSTATE ; Object $84
     .byte KILLACT_NORMALSTATE ; Object $85
     .byte KILLACT_NORMALSTATE ; Object $86
-    .byte KILLACT_POOFDEATH ; Object $87
-    .byte KILLACT_POOFDEATH ; Object $88
-    .byte KILLACT_POOFDEATH ; Object $89
-    .byte KILLACT_POOFDEATH ; Object $8A
-    .byte KILLACT_POOFDEATH ; Object $8B
+    .byte KILLACT_STARDEATH ; Object $87
+    .byte KILLACT_STARDEATH ; Object $88
+    .byte KILLACT_STARDEATH ; Object $89
+    .byte KILLACT_STARDEATH ; Object $8A
+    .byte KILLACT_STARDEATH ; Object $8B
 
 OG7_POff .func (\1 - ObjectGroup07_PatternSets)
 
@@ -187,10 +188,10 @@ ObjP7D:
 
 ObjP7E:
     .byte $9D, $9F
-	.byte $91, $93
+	.byte $8B, $8D
 
 ObjP7F:
-    .byte $B5, $B7
+    .byte $B1, $B3
 
 ObjP80:
 ObjP81:
@@ -211,12 +212,19 @@ ObjP84:
 ObjP85:
 ObjP86:
 ObjP87:
-	.byte $97, $AF
-	.byte $97, $AF
-	.byte $97, $AF
+	.byte $AF, $B3
+	.byte $AF, $B3
+	.byte $AF, $B3
 
 
 ObjP88:
+	.byte $89, $89
+	.byte $87, $87
+	.byte $85, $85
+	.byte $83, $83
+	.byte $81, $81
+	.byte $83, $83
+
 ObjP89:
 ObjP8A:
 ObjP8B:
@@ -278,7 +286,7 @@ ObjNorm_Spike:
 	STA BrickBust_Pal, Y
 	
 Spike_Die:
-	JMP ObjState_PoofDying
+	JMP Object_StarBurstDeath
 
 Spike_Norm1:
 	LDA <Player_HaltGameZ
@@ -1723,8 +1731,12 @@ Thwomp_FallToGround:
 
 	LDA Tile_LastProp
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	BEQ Thwomp_Burst
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
 	BNE Thwomp_CheckBlock
 
+Thwomp_Burst:
 	LDA #TILE_ITEM_BRICK
 	STA Tile_LastProp
 
@@ -2023,15 +2035,42 @@ ObjInit_Boo:
 	RTS
 
 ObjNorm_Boo:
+	LDA Objects_Timer, X
+	BEQ Boo_CheckDead
+
+	CMP #$01
+	BNE Boo_TempDead
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	JSR Common_MakePoof
+
+Boo_TempDead:
+	RTS	
+
+Boo_CheckDead:	
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE Boo_NotDead
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	JSR Common_MakePoof
 	
-	LDA #$FF
+	LDA #$7F
 	STA Objects_Timer, X
+	RTS
 
 Boo_NotDead:
 	LDA <Player_HaltGameZ
@@ -2082,6 +2121,7 @@ Boo_SetChase:
 
 Boo_Interact:
 	JSR Object_CalcBoundBox	
+	INC Object_DisableWater
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 	JSR Object_AttackOrDefeat
@@ -2153,7 +2193,7 @@ PirateBoo_Draw:
 PirateBoo_TakeCoins:
 	INC PirateBoo_CoinTimer, X
 	LDA PirateBoo_CoinTimer, X
-	AND #$03
+	AND #$07
 	BNE PirateBoo_Draw
 
 	INC Coins_Lost
@@ -3270,8 +3310,16 @@ ObjInit_CommonCooBoo:
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
 	STA Objects_BehaviorAttr, X
 
-	LDA #$21
+	LDA #$1C
 	STA Patrol_ResetTimer, X
+
+	LDA <Objects_XZ, X
+	SUB #$04
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	SBC #$00
+	STA <Objects_XHiZ, X
 
 	JMP InitPatrol_NoTimers
 
@@ -3323,3 +3371,229 @@ CooBoo_Draw16x32:
 
 CooBoo_Draw16x48:
 	JMP Object_Draw16x48
+
+Phasm_Action = Objects_Data1
+Phasm_AnimTicks = Objects_Data2
+Phasm_LocationIndex = Objects_Data3
+Phasm_OriginX = Objects_Data4
+Phasm_OriginXHi = Objects_Data5
+Phasm_OriginY = Objects_Data6
+Phasm_OriginYHi = Objects_Data7
+
+Phasm_XLocations:
+	.byte $C0, $40, $C0, $40, $C0, $40, $C0, $40
+	.byte $00, $10, $00, $10, $00, $10, $00, $10
+	.byte $00, $40, $00, $40, $00, $40, $00, $40
+	.byte $00, $C0, $00, $C0, $00, $C0, $00, $C0
+
+Phasm_YLocations:
+	.byte $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $C0, $E0, $00, $20, $C0, $E0, $00, $20
+	.byte $00, $00, $00, $00, $00, $00, $00, $00
+	.byte $00, $00, $00, $00, $00, $00, $00, $00
+
+ObjInit_Phasm:
+	LDA <Objects_XZ, X
+	STA Phasm_OriginX, X
+
+	LDA <Objects_XHiZ, X
+	STA Phasm_OriginXHi, X
+
+	LDA <Objects_YZ, X
+	STA Phasm_OriginY, X
+
+	LDA <Objects_YHiZ, X
+	STA Phasm_OriginYHi, X
+
+	JSR Phasm_SetLocation
+
+	LDA #$20
+	STA Objects_Timer, X
+
+	JMP Object_NoInteractions
+
+ObjNorm_Phasm:
+	LDA Phasm_Action, X
+	JSR DynJump
+
+	.word Phasm_Wait
+	.word Phasm_PhaseIn
+	.word Phasm_Attack
+	.word Phasm_PhaseOut
+
+Phasm_Wait:
+	LDA Objects_Timer, X
+	BNE Phasm_WaitRTS
+
+	INC Phasm_Action, X
+
+	LDA #$0F
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA Phasm_AnimTicks, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+Phasm_WaitRTS:
+	RTS	
+
+Phasm_PhaseIn:
+	LDA <Player_HaltGameZ
+	BEQ Phasm_PhaseInNorm
+
+	JMP Phasm_Draw
+
+Phasm_PhaseInNorm:
+	LDA Objects_Timer, X
+	BNE Phasm_PhaseInAnimate
+
+	INC Phasm_Action, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	JSR Object_CalcBoundBox
+	JMP Phasm_Draw
+
+Phasm_PhaseInAnimate:
+	INC Phasm_AnimTicks, X
+	
+	LDA Phasm_AnimTicks, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	JMP Phasm_Draw
+
+Phasm_Attack:
+	LDA <Player_HaltGameZ
+	BNE Phasm_AttackDraw
+
+	LDA #$C0
+	JSR Object_DeleteOffScreenRange
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE Phasm_AttackAnimate
+
+	INC Phasm_Action, X
+
+	LDA #$0F
+	STA Objects_Timer, X
+
+	LDA #$0F
+	STA Phasm_AnimTicks, X
+	JMP Phasm_Draw
+
+Phasm_AttackAnimate:
+	INC Phasm_AnimTicks, X
+	LDA Phasm_AnimTicks, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$03
+	ADD #$02
+	STA Objects_Frame, X
+
+Phasm_AttackDraw:	
+	JMP Phasm_Draw
+
+Phasm_PhaseOut:
+	LDA <Player_HaltGameZ
+	BEQ Phasm_PhaseOutNorm
+
+	JMP Phasm_Draw
+
+Phasm_PhaseOutNorm:
+	LDA Objects_Timer, X
+	BNE Phasm_PhaseOutAnimate
+
+	INC Phasm_LocationIndex, X
+
+	LDA #$00
+	STA Phasm_Action, X
+
+
+	LDA #$20
+	STA Objects_Timer, X
+
+	JSR Object_CalcBoundBox
+
+Phasm_SetLocation:
+	LDA Objects_Property, X
+	ASL A
+	ASL A
+	ASL A
+	STA <Temp_Var5
+	
+	LDA Phasm_LocationIndex, X
+	AND #$07
+	STA Phasm_LocationIndex, X
+	ADD <Temp_Var5
+
+	TAY
+	
+	LDA #$00
+	STA <Temp_Var2
+	STA <Temp_Var4
+
+	LDA Phasm_XLocations, Y
+	BPL Phasm_NotNegX
+
+	PHA
+
+	LDA #$FF
+	STA <Temp_Var2
+
+	PLA 
+
+Phasm_NotNegX:
+	STA <Temp_Var1
+	LDA Phasm_YLocations, Y
+	BPL Phasm_NotNegY
+
+	PHA
+	LDA #$FF
+	STA <Temp_Var4
+
+	PLA
+
+Phasm_NotNegY:	
+	STA <Temp_Var3
+
+	LDA Phasm_OriginX, X
+	ADD <Temp_Var1
+	STA <Objects_XZ, X
+
+	LDA Phasm_OriginXHi, X
+	ADC <Temp_Var2
+	STA <Objects_XHiZ, X
+
+	LDA Phasm_OriginY, X
+	ADD <Temp_Var3
+	STA <Objects_YZ, X
+
+	LDA Phasm_OriginYHi, X
+	ADC <Temp_Var4
+	STA <Objects_YHiZ, X
+	RTS
+
+Phasm_PhaseOutAnimate:
+	DEC Phasm_AnimTicks, X
+	
+	LDA Phasm_AnimTicks, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	JMP Phasm_Draw
+
+Phasm_Draw:
+	JMP Object_DrawMirrored

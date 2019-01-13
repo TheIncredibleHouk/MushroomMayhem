@@ -129,26 +129,26 @@ OBJ_PIXIE    		= $6F
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
-	.byte KILLACT_POOFDEATH ; Object $64
-    .byte KILLACT_POOFDEATH ; Object $65
-    .byte KILLACT_POOFDEATH ; Object $66
-    .byte KILLACT_POOFDEATH ; Object $67
-    .byte KILLACT_POOFDEATH ; Object $68
-    .byte KILLACT_POOFDEATH ; Object $69
-    .byte KILLACT_POOFDEATH ; Object $6A
-    .byte KILLACT_POOFDEATH ; Object $6B
-    .byte KILLACT_POOFDEATH ; Object $6C
-    .byte KILLACT_POOFDEATH ; Object $6D
-    .byte KILLACT_POOFDEATH ; Object $6E
+	.byte KILLACT_STARDEATH ; Object $64
+    .byte KILLACT_STARDEATH ; Object $65
+    .byte KILLACT_STARDEATH ; Object $66
+    .byte KILLACT_STARDEATH ; Object $67
+    .byte KILLACT_STARDEATH ; Object $68
+    .byte KILLACT_STARDEATH ; Object $69
+    .byte KILLACT_STARDEATH ; Object $6A
+    .byte KILLACT_STARDEATH ; Object $6B
+    .byte KILLACT_STARDEATH ; Object $6C
+    .byte KILLACT_NORMALANDKILLED ; Object $6D
+    .byte KILLACT_STARDEATH ; Object $6E
     .byte KILLACT_NORMALANDKILLED ; Object $6F
-    .byte KILLACT_POOFDEATH ; Object $70
-    .byte KILLACT_POOFDEATH ; Object $71
-    .byte KILLACT_POOFDEATH ; Object $72
-    .byte KILLACT_POOFDEATH ; Object $73
-    .byte KILLACT_POOFDEATH ; Object $74
-    .byte KILLACT_POOFDEATH ; Object $75
-    .byte KILLACT_POOFDEATH ; Object $76
-    .byte KILLACT_POOFDEATH ; Object $77
+    .byte KILLACT_STARDEATH ; Object $70
+    .byte KILLACT_STARDEATH ; Object $71
+    .byte KILLACT_STARDEATH ; Object $72
+    .byte KILLACT_STARDEATH ; Object $73
+    .byte KILLACT_STARDEATH ; Object $74
+    .byte KILLACT_STARDEATH ; Object $75
+    .byte KILLACT_STARDEATH ; Object $76
+    .byte KILLACT_STARDEATH ; Object $77
 
 OG6_POff .func (\1 - ObjectGroup06_PatternSets)
 

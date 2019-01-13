@@ -135,26 +135,26 @@ OBJ_GREENPIRANHA	= $4C
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
-	.byte KILLACT_POOFDEATH		; Object $3C
-	.byte KILLACT_POOFDEATH 	; Object $3D
-	.byte KILLACT_POOFDEATH 	; Object $3E
-	.byte KILLACT_POOFDEATH 	; Object $3F
-	.byte KILLACT_POOFDEATH 	; Object $40
-	.byte KILLACT_POOFDEATH 	; Object $41
-	.byte KILLACT_POOFDEATH 	; Object $42
-	.byte KILLACT_POOFDEATH 	; Object $43
-	.byte KILLACT_POOFDEATH 	; Object $44
-	.byte KILLACT_POOFDEATH 	; Object $45
-	.byte KILLACT_POOFDEATH 	; Object $46
-	.byte KILLACT_POOFDEATH 	; Object $47
-	.byte KILLACT_POOFDEATH 	; Object $48
+	.byte KILLACT_STARDEATH		; Object $3C
+	.byte KILLACT_STARDEATH 	; Object $3D
+	.byte KILLACT_STARDEATH 	; Object $3E
+	.byte KILLACT_STARDEATH 	; Object $3F
+	.byte KILLACT_STARDEATH 	; Object $40
+	.byte KILLACT_STARDEATH 	; Object $41
+	.byte KILLACT_STARDEATH 	; Object $42
+	.byte KILLACT_STARDEATH 	; Object $43
+	.byte KILLACT_STARDEATH 	; Object $44
+	.byte KILLACT_STARDEATH 	; Object $45
+	.byte KILLACT_STARDEATH 	; Object $46
+	.byte KILLACT_STARDEATH 	; Object $47
+	.byte KILLACT_STARDEATH 	; Object $48
 	.byte KILLACT_NORMALANDKILLED 	; Object $49
-	.byte KILLACT_POOFDEATH 	; Object $4A
-	.byte KILLACT_POOFDEATH 	; Object $4B
+	.byte KILLACT_STARDEATH 	; Object $4A
+	.byte KILLACT_STARDEATH 	; Object $4B
 	.byte KILLACT_NORMALANDKILLED 	; Object $4C
-	.byte KILLACT_POOFDEATH 	; Object $4D
-	.byte KILLACT_POOFDEATH 	; Object $4E
-	.byte KILLACT_POOFDEATH 	; Object $4F
+	.byte KILLACT_STARDEATH 	; Object $4D
+	.byte KILLACT_STARDEATH 	; Object $4E
+	.byte KILLACT_STARDEATH 	; Object $4F
 
 OG4_POff .func (\1 - ObjectGroup04_PatternSets)
 

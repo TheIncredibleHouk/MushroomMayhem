@@ -1235,14 +1235,25 @@ GndMov_Frog:
 	JMP PRG008_AA1E	 ; Jump to PRG008_AA1E
 
 PRG008_AA00:
+	LDA Player_RunMeter
+	CMP #$60
+	BCC Player_RunMeterNoCap
+
+	LDA #$60
+	STA Player_RunMeter
+
+Player_RunMeterNoCap:	
 	LDA Player_FrogHopCnt
 	BNE PRG008_AA1A	 ; If Player_FrogHopCnt <> 0, jump to PRG008_AA1A
 
-	STA <Player_XVel	; Player_XVel = 0
 	LDA <Pad_Holding	
 	AND #(PAD_LEFT | PAD_RIGHT)
+	BNE Player_KeepHopping
+
+	STA <Player_XVel
 	BEQ PRG008_AA1A	 ; If Player is not pressing left/right, jump to PRG008_AA1A
 
+Player_KeepHopping:
 	; Play frog hop sound
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERFROG
@@ -3510,10 +3521,10 @@ Bumps_CheckNextExisting:
 	BEQ Bump_NotPowerUp
 
 	LDA Objects_ID, X
-	CMP #OBJ_BOUNCEDOWNUP
+	CMP #OBJ_ITEMBLOCK
 	BNE Bump_CheckObjPowerUp
 
-	LDA Bouncer_PowerUp, X
+	LDA ItemBlock_PowerUp, X
 	CMP #POWERUP_MUSHROOM
 	BCC Bump_NotPowerUp
 
@@ -3533,7 +3544,7 @@ Bump_IsPowerUp:
 	JSR Common_MakePoof
 
 	LDA #$00
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 	RTS
 
 Object_IsPowerUp:
@@ -3610,7 +3621,7 @@ Bumps_PowerUpBlock2:
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
-	LDA #OBJ_BOUNCEDOWNUP 
+	LDA #OBJ_ITEMBLOCK 
 	STA Objects_ID, X
 
 	LDA #OBJSTATE_FRESH
@@ -3638,13 +3649,13 @@ BumpBlock_CheckMushroom:
 	LDA #POWERUP_MUSHROOM
 
 BumpBlock_CheckMushroom1:
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 	RTS
 
 BumpBlock_Coin:
 	JSR Bumps_CoinBlock
 	LDA #POWERUP_COIN
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 	RTS		 ; Return
 
 BumpBlock_Flower:
@@ -3655,7 +3666,7 @@ BumpBlock_Flower:
 	RTS
 
 BumpBlock_None:
-	LDY #$01		; Y = 1 (spawn .. nothing?) (index into PRG001 Bouncer_PUp)
+	LDY #$01		; Y = 1 (spawn .. nothing?) (index into PRG001 ItemBlock_PUp)
 	RTS		 ; Return
 
 
@@ -3681,7 +3692,7 @@ BumpBlock_Star:
 	JSR Bumps_CheckExistingPowerUps
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_STAR
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 	RTS		 ; Return
 
 BumpBlock_Spinner:
@@ -3710,13 +3721,13 @@ BumpBlock_Spinner1:
 	
 	LDA Tile_LastValue
 	EOR #$01
-	STA Bouncer_ReplaceTile, X
+	STA ItemBlock_ReplaceTile, X
 
 	LDA #$00
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 
 	LDA #$02
-	STA Bouncer_Frame, X
+	STA ItemBlock_Frame, X
 
 BumpBlock_SpinnerRTS:
 	RTS
@@ -3728,13 +3739,13 @@ BumpBlock_Brick:
 
 	JSR Bumps_PowerUpBlock
 	LDA #$01
-	STA Bouncer_Frame, X
+	STA ItemBlock_Frame, X
 
 	LDA #$00
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 
 	LDA ActualTile_LastValue
-	STA Bouncer_ReplaceTile, X
+	STA ItemBlock_ReplaceTile, X
 	RTS
 
 BumpBlock_Brick1:
@@ -3762,7 +3773,7 @@ Bump_BrickRTS:
 BumpBlock_Vine:
 	JSR Bumps_PowerUpBlock
 	LDA #POWERUP_VINE
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 	RTS		 ; Return
 
 BumpBlock_NinjaShroom:
@@ -3775,7 +3786,7 @@ BumpBlock_NinjaShroom:
 BumpBlock_Key:
 	JSR Bumps_PowerUpBlock
 	LDA #$80
-	STA Bouncer_PowerUp, X
+	STA ItemBlock_PowerUp, X
 	RTS		 ; Return
 
 BumpBlock_FoxLeaf:
@@ -4319,7 +4330,7 @@ Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 	BNE CheckAirChange
 	RTS
 
-AirTicker: .byte $09, $0F
+AirTicker: .byte $0B, $12
 
 CheckAirChange:
 	LDA Air_Time
@@ -4477,7 +4488,6 @@ NotSmallMario:
 	LDX #$07
 	
 ClearSprite
-	STA Debug_Snap
 	LDA Objects_Global, X
 	BNE Check_GlobalHold
 
@@ -5230,9 +5240,9 @@ Player_DetectCeiling1_1:
 Player_HitBlocks:
 	JSR Level_DoBumpBlocks
 	
-	LDA Bouncer_PowerUp + 5
-	ORA Bouncer_PowerUp + 6
-	ORA Bouncer_PowerUp + 7
+	LDA ItemBlock_PowerUp + 5
+	ORA ItemBlock_PowerUp + 6
+	ORA ItemBlock_PowerUp + 7
 	BNE Player_HitBlocks1
 
 
@@ -5508,6 +5518,10 @@ Player_BodyHeadTileInteract:
 	.word Bg_PowerCoin	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Body_Treasure:
+	STA Debug_Snap
+	LDA TreasureBox_Disabled
+	BNE Body_TreasureRTS
+
 	LDX <TileXIndex
 	CPX #BODY_INDEX
 	BNE Body_TreasureRTS
@@ -5518,7 +5532,6 @@ Body_Treasure:
 
 	LDA Block_NeedsUpdate
 	BNE Body_TreasureRTS
-
 	
 	LDA Tile_Y
 	AND #$F0
@@ -5532,7 +5545,7 @@ Body_Treasure:
 
 	JSR Produce_Coin
 
-	LDA #$09
+	LDA #$04
 	ADD Coins_Earned_Buffer
 	STA Coins_Earned_Buffer
 	JMP Player_ToggleBlock

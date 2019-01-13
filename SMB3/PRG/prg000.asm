@@ -859,66 +859,12 @@ PRG000_CA82:
 	.word ObjState_Normal		; 2 - Normal operation
 	.word ObjState_Shelled		; 3 - Shelled
 	.word ObjState_Kicked		; 4 - Kicked
-	.word ObjState_Killed		; 5 - Killed
-	.word ObjState_PoofDying	; 6 - Object was squashed (NOTE: Really only intended for Goomba/Giant Goomba)
-	.word ObjState_Fresh		; 7
-	.word ObjState_Frozen		; 8
-	.word ObjState_DeadEmpty	; 9
-
-ObjState_PoofDying:
-	LDA #OBJ_STARS
-	STA Objects_ID, X
-
-	LDA #$00
-	STA Stars_Timer, X
-
-	JSR Object_NoInteractions
+	.word ObjState_Killed		; 5 - Killed 
+	.word ObjState_Fresh		; 6
+	.word ObjState_Frozen		; 7
+	.word ObjState_DeadEmpty	; 8
 	
-	LDA #$00
-	STA <Temp_Var1
-	STA <Temp_Var2
-
-	LDA Objects_BoundRight, X
-	SUB Objects_BoundLeft, X
-	LSR A
-	SUB #$04
-	BCS Star_StoreLeft
-
-	DEC <Temp_Var1
-
-Star_StoreLeft:
-	ADD Objects_BoundLeft, X
-	STA <Objects_XZ, X
-
-	LDA Objects_BoundLeftHi, X
-	ADC <Temp_Var1
-	STA <Objects_XHiZ, X
- 
-	LDA Objects_BoundBottom, X
-	SUB Objects_BoundTop, X
-	LSR A
-	SUB #$08
-	BCS Star_StoreTop
-
-	DEC <Temp_Var2
-
-Star_StoreTop:
-	ADD Objects_BoundTop, X
-	STA <Objects_YZ, X
-
-	LDA Objects_BoundTopHi, X
-	ADC <Temp_Var2
-	STA <Objects_YHiZ, X
 	
-	LDA #$04
-	STA Objects_SpritesRequested,X
-
-	LDA #BOUND8x16
-	STA Objects_BoundBox, X
-
-	LDA #OBJSTATE_KILLED
-	STA Objects_State, X
-	RTS
 
 ObjState_Frozen:
 	LDA #(ATTR_WINDAFFECTS  | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
@@ -1782,13 +1728,6 @@ ObjState_Killed:
 	CPX #$05	 
 	BGE Object_DoKillAction	 ; If object slot >= 5 (i.e. not a "general" objects), jump to Object_DoKillAction (i.e. do NOT set frame 2)
 
-	PHA		 ; Save kill action
-
-	LDA #$02	 
-	STA Objects_Frame,X	 ; Set frame to 2
-
-	PLA		 ; Restore kill action
-
 	; Do the kill action
 Object_DoKillAction:
 	JSR DynJump
@@ -1800,7 +1739,7 @@ Object_DoKillAction:
 	.word Object_Draw16x32Killed	; 3: Draw tall sprite
 	.word Object_DrawTallHFlipped	; 4: Draw tall object horizontally flipped
 	.word Object_NormalAndKilled	; 5: Do "Normal" state and killed action (sinking/vert flip)
-	.word Object_GiantKilled	; 6: Giant enemy death
+	.word Object_StarBurstDeath	; 6: Giant enemy death
 	.word Object_PoofDie		; 7: Do "poof" dying state while killed
 	.word Object_DrawAndMoveNotHalt	; 8: Draw and do movements unless gameplay halted
 	.word Object_NormalWhileKilled	; 9: Just do "Normal" state while killed
@@ -1815,19 +1754,79 @@ Object_NormalAndKilled:
 Object_NormalWhileKilled:
 	JMP Object_DoNormal
 
-Object_GiantKilled:
+Object_StarBurstDeath:
+	LDA #OBJ_STARS
+	STA Objects_ID, X
+
+	LDA #$00
+	STA Stars_Timer, X
+
+	JSR Object_NoInteractions
+	
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
+
+	LDA Objects_BoundRight, X
+	SUB Objects_BoundLeft, X
+	LSR A
+	SUB #$04
+	BCS Star_StoreLeft
+
+	DEC <Temp_Var1
+
+Star_StoreLeft:
+	ADD Objects_BoundLeft, X
+	STA <Objects_XZ, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC <Temp_Var1
+	STA <Objects_XHiZ, X
+ 
+	LDA Objects_BoundBottom, X
+	SUB Objects_BoundTop, X
+	LSR A
+	SUB #$08
+	BCS Star_StoreTop
+
+	DEC <Temp_Var2
+
+Star_StoreTop:
+	ADD Objects_BoundTop, X
+	STA <Objects_YZ, X
+
+	LDA Objects_BoundTopHi, X
+	ADC <Temp_Var2
+	STA <Objects_YHiZ, X
+	
+	LDA #$04
+	STA Objects_SpritesRequested,X
+
+	LDA #BOUND8x16
+	STA Objects_BoundBox, X
+
+	LDA #OBJSTATE_KILLED
+	STA Objects_State, X
+	RTS
 
 Object_PoofDie:
-	; Set object state to 8 ("Poof" Dying)
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State, X
 
-	LDA #OBJSTATE_POOFDEATH
-	STA Objects_State,X
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Object_PoofDieRTS
 
-	; Set timer to $1F 
-	LDA #$1f
-	STA Objects_Timer,X
+	LDA <Objects_YZ, X
+	STA <Poof_Y
 
-	RTS		 ; Return
+	LDA <Objects_XZ, X
+	STA <Poof_X
+	
+	JSR Common_MakePoof
+
+Object_PoofDieRTS:
+	RTS	
 
 Object_DrawAndMoveNotHalt:
 
@@ -2860,7 +2859,7 @@ Object_Draw16x48:
 ;
 ; Draws a wide 48x16 object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Object_Draw32x16:
+Object_Draw48x16:
 	JSR Object_ShakeAndCalcSprite
 
 	LDX <CurrentObjectIndexZ	; X = object slot index
@@ -2885,6 +2884,39 @@ Object_Draw32x16:
 	ADD #$08
 	STA <Temp_Var7
 
+	ASL <Temp_Var8
+
+	LDY <Temp_Var7
+	JMP Continue32x16_Draw
+
+Object_Draw32x16:
+	JSR Object_ShakeAndCalcSprite
+
+	LDX <CurrentObjectIndexZ	; X = object slot index
+
+	LDA Objects_Frame,X
+	ASL A		 
+	ADD <Temp_Var6	
+	STA <Temp_Var6	 ; Temp_Var6 += object's frame
+	TAX
+
+Continue32x16_Draw:
+	JSR Object_Draw16x16Sprite
+	
+	INC <Temp_Var6
+	INC <Temp_Var6
+	LDX <Temp_Var6
+
+	LDA #$10
+	ADD <Temp_Var2	 ; Sprite X
+	STA <Temp_Var2	 ; Temp_Var1 += 16
+
+	LDA <Temp_Var7
+	ADD #$08
+	STA <Temp_Var7
+
+	ASL <Temp_Var8
+	
 	LDY <Temp_Var7
 
 	JSR Object_Draw16x16Sprite	 
@@ -2917,7 +2949,6 @@ Object_Draw32x16:
 Object_Draw32x16RTS:
 	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
-
 
 VisMask:
 	.byte $81, $41, $21, $11, $82, $42, $22, $12
@@ -2989,12 +3020,6 @@ PRG000_D6C6:
 	RTS		 ; Return
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_Draw24x16Sprite
-;
-; Used to draw 48x16 object sprites.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $D6C7
 Object_Draw24x16Sprite:
 	LDY <Temp_Var7
 	LDA <Temp_Var5	; Check sprite vertical visibility

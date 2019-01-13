@@ -1184,7 +1184,6 @@ PRG005_BEFD:
 	LDX #$07	 ; X = 7
 
 PRG005_BF001:
-	STA Debug_Snap
 	LDA Objects_ID, X
 	LDA Objects_Global, X
 	BNE Check_GlobalHeld

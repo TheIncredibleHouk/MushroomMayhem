@@ -1361,7 +1361,7 @@ PRG030_8E4F:
 	LDA Level_PauseFlag
 	BNE Graphics_Anim
 	
-	LDA DPad_RhythmControl
+	LDA TreasureBox_Disabled
 	BEQ PRG030_8E50
 
 	JSR DPad_ControlTiles
@@ -3103,7 +3103,7 @@ HorzNotLocked:
 
 	LDA [Temp_Var14],Y
 	AND #$10
-	STA DPad_RhythmControl
+	STA TreasureBox_Disabled
 
 	LDA [Temp_Var14],Y
 	AND #$20
@@ -3177,8 +3177,6 @@ LoadPointer:
 	BNE Pointer_LoadLoop
 
 Pointers_Done:
-	LDA Level_Redraw
-	BEQ Skip_Level_Loading
 	TYA
 	CLC
 	ADC <Temp_Var14
@@ -3235,7 +3233,12 @@ RepeatTile:
 	LDA [Temp_Var14], Y
 
 RepeatTileLoop:
+	LDX Level_Redraw
+	BEQ SkipRepeat
+
 	STA [Temp_Var8],Y
+
+SkipRepeat:	
 	JSR NextTileByte
 	DEC <Temp_Var10
 	BPL RepeatTileLoop
@@ -3281,8 +3284,13 @@ RepeatPatternToLevel:
 	LDX #$00
 
 DrawPattern:
+	LDA Level_Redraw
+	BEQ SkipDrawPattern
+
 	LDA Level_Objects, X
 	STA [Temp_Var8], Y
+
+SkipDrawPattern:	
 	JSR NextTileByte
 	INX
 	CPX <Temp_Var12
@@ -3300,8 +3308,13 @@ WriteRaw:
 
 WriteRawLoop:
 	JSR NextLevelByte
+	LDA Level_Redraw
+	BEQ SkipWriteRaw
+	
 	LDA [Temp_Var14], Y
 	STA [Temp_Var8], Y
+
+SkipWriteRaw:	
 	JSR NextTileByte
 	DEC <Temp_Var11
 	BNE WriteRawLoop

@@ -131,26 +131,26 @@ OBJ_FLOATMINE       = $5B
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
-	.byte KILLACT_POOFDEATH ; Object $50
+	.byte KILLACT_STARDEATH ; Object $50
 	.byte KILLACT_NORMALANDKILLED ; Object $51
-	.byte KILLACT_POOFDEATH ; Object $52
-	.byte KILLACT_POOFDEATH ; Object $53
+	.byte KILLACT_STARDEATH ; Object $52
+	.byte KILLACT_STARDEATH ; Object $53
 	.byte KILLACT_NORMALANDKILLED ; Object $54
-	.byte KILLACT_POOFDEATH ; Object $55
-	.byte KILLACT_POOFDEATH ; Object $56
-	.byte KILLACT_POOFDEATH ; Object $57
+	.byte KILLACT_STARDEATH ; Object $55
+	.byte KILLACT_STARDEATH ; Object $56
+	.byte KILLACT_STARDEATH ; Object $57
 	.byte KILLACT_NORMALSTATE ; Object $58
-	.byte KILLACT_POOFDEATH ; Object $59
-	.byte KILLACT_POOFDEATH ; Object $5A
-	.byte KILLACT_POOFDEATH ; Object $5B
-	.byte KILLACT_POOFDEATH ; Object $5C
-	.byte KILLACT_POOFDEATH ; Object $5D
-	.byte KILLACT_POOFDEATH ; Object $5E
-	.byte KILLACT_POOFDEATH ; Object $5F
-	.byte KILLACT_POOFDEATH ; Object $60
-	.byte KILLACT_POOFDEATH ; Object $61
-	.byte KILLACT_POOFDEATH ; Object $62
-	.byte KILLACT_POOFDEATH ; Object $63
+	.byte KILLACT_STARDEATH ; Object $59
+	.byte KILLACT_STARDEATH ; Object $5A
+	.byte KILLACT_STARDEATH ; Object $5B
+	.byte KILLACT_STARDEATH ; Object $5C
+	.byte KILLACT_STARDEATH ; Object $5D
+	.byte KILLACT_STARDEATH ; Object $5E
+	.byte KILLACT_STARDEATH ; Object $5F
+	.byte KILLACT_STARDEATH ; Object $60
+	.byte KILLACT_STARDEATH ; Object $61
+	.byte KILLACT_STARDEATH ; Object $62
+	.byte KILLACT_STARDEATH ; Object $63
 
 OG5_POff .func (\1 - ObjectGroup05_PatternSets)
 
