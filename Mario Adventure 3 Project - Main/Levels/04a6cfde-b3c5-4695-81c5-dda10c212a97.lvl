@@ -33,5 +33,5 @@
     <sprite x="187" y="22" value="80" item="0" property="0" replaced="true" />
     <sprite x="171" y="20" value="60" item="0" property="0" replaced="true" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Selection" editmode="Pointers" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.7" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Selection" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.7" propertytransparency="0.75" showpointers="true" />
 </level>

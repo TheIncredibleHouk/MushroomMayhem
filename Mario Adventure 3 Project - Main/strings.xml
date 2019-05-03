@@ -3871,9 +3871,9 @@
     <block value="FF"></block>
   </set>
   <set leveltype="0F">
-    <block value="00">Background</block>
-    <block value="01">Cleared Coin</block>
-    <block value="02">P-Switch Stomped</block>
+    <block value="00"></block>
+    <block value="01"></block>
+    <block value="02"></block>
     <block value="03"></block>
     <block value="04"></block>
     <block value="05"></block>
@@ -3935,11 +3935,11 @@
     <block value="3D"></block>
     <block value="3E"></block>
     <block value="3F"></block>
-    <block value="40">Background</block>
-    <block value="41">Cleared Coin</block>
-    <block value="42">P-Switch Stomped</block>
+    <block value="40"></block>
+    <block value="41"></block>
+    <block value="42"></block>
     <block value="43"></block>
-    <block value="44">Frozen Coin</block>
+    <block value="44"></block>
     <block value="45"></block>
     <block value="46"></block>
     <block value="47"></block>
@@ -3998,10 +3998,10 @@
     <block value="7C"></block>
     <block value="7D"></block>
     <block value="7E"></block>
-    <block value="7F">Empty ? Block</block>
-    <block value="80">Background</block>
-    <block value="81">Cleared Coin</block>
-    <block value="82">P-Switch Stomped</block>
+    <block value="7F"></block>
+    <block value="80"></block>
+    <block value="81"></block>
+    <block value="82"></block>
     <block value="83"></block>
     <block value="84"></block>
     <block value="85"></block>
@@ -4062,10 +4062,10 @@
     <block value="BC"></block>
     <block value="BD"></block>
     <block value="BE"></block>
-    <block value="BF">Empty ? Block</block>
-    <block value="C0">Background</block>
-    <block value="C1">Water Fill</block>
-    <block value="C2">P-Switch Stomped</block>
+    <block value="BF"></block>
+    <block value="C0"></block>
+    <block value="C1"></block>
+    <block value="C2"></block>
     <block value="C3"></block>
     <block value="C4"></block>
     <block value="C5"></block>
@@ -4078,7 +4078,7 @@
     <block value="CC"></block>
     <block value="CD"></block>
     <block value="CE"></block>
-    <block value="CF">P-Switch</block>
+    <block value="CF"></block>
     <block value="D0"></block>
     <block value="D1"></block>
     <block value="D2"></block>
@@ -4125,7 +4125,7 @@
     <block value="FB"></block>
     <block value="FC"></block>
     <block value="FD"></block>
-    <block value="FE">P-Switch</block>
-    <block value="FF">Empty ? Block</block>
+    <block value="FE"></block>
+    <block value="FF"></block>
   </set>
 </strings>
