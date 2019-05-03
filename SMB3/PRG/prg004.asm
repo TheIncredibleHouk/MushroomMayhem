@@ -18,6 +18,7 @@ OBJ_PIRUMPKIN		= $49
 OBJ_PIRUMPKINHEAD	= $4A
 OBJ_DRYCHEEP		= $4B
 OBJ_GREENPIRANHA	= $4C
+OBJ_PARAPIRANHA		= $4D
 
     .word ObjInit_Goomba    ; Object $3C
 	.word ObjInit_ParaGoomba ; Object $3D
@@ -36,7 +37,7 @@ OBJ_GREENPIRANHA	= $4C
 	.word ObjInit_PumpkinFree ; Object $4A
 	.word ObjInit_DryCheep ; Object $4B
 	.word ObjInit_PiranhaGrower ; Object $4C
-	.word ObjInit_DoNothing ; Object $4D
+	.word ObjInit_ParaPiranha ; Object $4D
 	.word ObjInit_DoNothing ; Object $4E
 	.word ObjInit_DoNothing ; Object $4F
 
@@ -60,7 +61,7 @@ OBJ_GREENPIRANHA	= $4C
 	.word ObjNorm_PumpkinFree ; Object $4A
 	.word ObjNorm_DryCheep ; Object $4B
 	.word ObjNorm_PiranhaGrower ; Object $4C
-	.word ObjNorm_DoNothing ; Object $4D
+	.word ObjNorm_ParaPiranha ; Object $4D
 	.word ObjNorm_DoNothing ; Object $4E
 	.word ObjNorm_DoNothing ; Object $4F
 
@@ -83,7 +84,7 @@ OBJ_GREENPIRANHA	= $4C
 	.word Player_GetHurt ; Object $4A
 	.word Player_GetHurt ; Object $4B
 	.word Player_GetHurt ; Object $4C
-	.word ObjHit_DoNothing ; Object $4D
+	.word Player_GetHurt ; Object $4D
 	.word ObjHit_DoNothing ; Object $4E
 	.word ObjHit_DoNothing ; Object $4F
 
@@ -106,7 +107,7 @@ OBJ_GREENPIRANHA	= $4C
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4A
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4B
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4C
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4D
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4E
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4F
 
@@ -129,7 +130,7 @@ OBJ_GREENPIRANHA	= $4C
 	.byte OPTS_SETPT6 | $13 ; Object $4A
 	.byte OPTS_SETPT5 | $0A ; Object $4B
 	.byte OPTS_SETPT5 | $0B ; Object $4C
-	.byte OPTS_NOCHANGE ; Object $4D
+	.byte OPTS_SETPT6 | $4F ; Object $4D
 	.byte OPTS_NOCHANGE ; Object $4E
 	.byte OPTS_NOCHANGE ; Object $4F
 
@@ -224,10 +225,11 @@ ObjP4C:
 	.byte $BB, $BF
 
 ObjP4D:
+	.byte $E1, $E1
+	.byte $E5, $E5
+
 ObjP4E:
 ObjP4F:
-
-
 
 ObjInit_Goomba:
 	LDA #BOUND16x16
@@ -313,6 +315,9 @@ Goomba_Drop:
 
 	CMP #$20
 	BCC Goomba_DropDone
+
+	LDA #$00
+	STA <Objects_XVelZ, X
 
 	LDA #$10
 	STA <Objects_YVelZ, X
@@ -537,13 +542,13 @@ ObjNorm_ParaGoomba2:
 
 	LDA #$04
 	STA Objects_Data3, X
-	JMP ParaGoomba_Animate
+	JMP ParaGoomba_AnimateWings
 
 ObjNorm_ParaGoomba3:
 	LDA #$00
 	STA Objects_Data3, X
 
-	LDA  <Objects_TilesDetectZ, X
+	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BNE ObjNorm_ParaGoomba31
 
@@ -551,7 +556,7 @@ ObjNorm_ParaGoomba3:
 	STA Objects_Data3, X
 
 ObjNorm_ParaGoomba31:
-	JMP ParaGoomba_Animate
+	JMP ParaGoomba_AnimateWings
 
 ObjNorm_ParaGoomba4:
 	INC Objects_Data3, X
@@ -564,7 +569,7 @@ ObjNorm_ParaGoomba41:
 	LDA #$F0
 	STA <Objects_YVelZ, X
 
-	JMP ParaGoomba_Animate
+	JMP ParaGoomba_AnimateWings
 
 ObjNorm_ParaGoomba5:
 	LDY DayNight
@@ -575,7 +580,7 @@ ObjNorm_ParaGoomba5:
 
 	LDA #$00
 	STA <Objects_YVelZ, X
-	JMP ParaGoomba_Animate
+	JMP ParaGoomba_AnimateWings
 
 ObjNorm_ParaGoomba51:
 	LDA #$00
@@ -585,45 +590,38 @@ ObjNorm_ParaGoomba51:
 	STA Objects_Timer, X
 
 ObjNorm_ParaGoomba6:
-	JMP ParaGoomba_Animate
+	JMP ParaGoomba_AnimateWings
 
 ObjNorm_ParaGoomba7:
-	JMP ParaGoomba_Animate
+	JMP ParaGoomba_AnimateWings
 
-ParaGoomba_Animate:
-	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
-
-	; Left wing
-	LDA Sprite_RAM+$00,Y
+ParaGoomba_AnimateWings:
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA Sprite_RAM+$00, Y
 	CMP #$f8
-	BEQ PRG004_AF31	 ; If this sprite is vertically off-screen, jump to PRG004_AF31
+	BEQ PRG004_AF31	 
 
 	SUB #10
-	STA Sprite_RAM+$08,Y
+	STA Sprite_RAM+$08, Y
 
 PRG004_AF31:
-
-	; Right wing
-	LDA Sprite_RAM+$04,Y
+	LDA Sprite_RAM+$04, Y
 	CMP #$f8
-	BEQ PRG004_AF3E	 ; If this sprite is vertically off-screen, jump to PRG004_AF3E
+	BEQ PRG004_AF3E	
 
 	SUB #10
 	STA Sprite_RAM+$0C,Y
 
 PRG004_AF3E:
-
-	; Left wing sprite X
 	LDA Sprite_RAM+$03,Y
 	SUB #$02
 	STA Sprite_RAM+$0B,Y
 
-	; Right wing sprite X
 	LDA Sprite_RAM+$07,Y
 	ADD #$02
 	STA Sprite_RAM+$0F,Y
 
-	; Left wing attribute
 	LDA Objects_SpriteAttributes, X
 	AND #SPR_BEHINDBG
 	ORA #SPR_PAL1
@@ -632,27 +630,23 @@ PRG004_AF3E:
 	ORA #SPR_HFLIP
 	STA Sprite_RAM+$0A,Y
 
-	; Right wing attribute
-	
-	
 
 	LDA Objects_Data3,X
 
-	LDX #$cd	 ; X = $CD (Wing up pattern)
+	LDX #$CD
 	AND #$04	 
-	BNE PRG004_AF65	 ; 8 ticks on, 8 ticks off; jump to PRG004_AF65
+	BNE PRG004_AF65	
 
-	LDX #$cf	 ; X = $CF (Wing down pattern)
+	LDX #$cf
 
 PRG004_AF65:
 	TXA		 
-	STA Sprite_RAM+$09,Y	 ; Store left wing pattern
-	STA Sprite_RAM+$0D,Y	 ; Store right wing pattern
+	STA Sprite_RAM+$09,Y	
+	STA Sprite_RAM+$0D,Y	
 
-	LDX <CurrentObjectIndexZ		 ; X = object slot index
+	LDX <CurrentObjectIndexZ
 
-	RTS		 ; Return
-
+	RTS	
 
 ObjInit_Troopa:
 	LDA #$05
@@ -703,7 +697,6 @@ Troopa_Norm:
 
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-	JSR Object_EdgeMarch
 	JMP Troopa_Animate
 
 Troopa_Frames:
@@ -789,11 +782,11 @@ ObjNorm_RedTroopa:
 	LDA <Player_HaltGameZ
 	BEQ RedTroopa_Norm
 	JMP Troopa_Draw
-
+.
 RedTroopa_Norm:
 	JSR Object_DeleteOffScreen
-	JSR Object_Move
 	JSR Object_FaceDirectionMoving
+	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_InteractWithObjects
@@ -1479,7 +1472,7 @@ Piranha_AttackProjectiles:
 	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_OIL
 
 Piranah_AttackNumbers:
-	.byte $00, $00, $01, $01, $01, $01, $01, $01
+	.byte $00, $00, $01, $01, $01, $01, $02, $02
 	.byte $00, $00, $03, $03
 
 ObjNorm_Piranha:
@@ -1848,6 +1841,9 @@ ObjInit_ZombieGoomba:
 	LDA #(ATTR_BUMPNOKILL | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+
 	LDA #$02
 	STA Objects_Health, X
 
@@ -1939,7 +1935,6 @@ ZombieGoomba_JumpBlocksRTS:
 
 ZombieGoomba_Infect:
 	LDA Player_FlashInv
-	ORA Player_StarInv
 	BNE ZombieGoomba_HurtRTS
 
 	LDA LeftRightInfection
@@ -1956,7 +1951,7 @@ ZombieGoomba_Infect:
 	
 	LDA #$71
 	STA Player_FlashInv
-	RTS
+	JMP Object_AttackOrDefeat
 
 ZombieGoomba_Hurt:
 	JSR Player_GetHurt
@@ -1966,6 +1961,11 @@ ZombieGoomba_HurtRTS:
 
 ZombieGoomba_Hide:
 	JSR Object_DeleteOffScreen
+	
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE ZombieGoomba_HideRTS
+
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
 	AND #$F0
@@ -1986,10 +1986,20 @@ ZombieGoomba_Hide:
 	
 	JSR Common_MakeBricks
 
-	
+	LDA Tile_LastProp
+	CMP #TILE_PROP_ITEM
+	BCC ZombieGoomba_ToggleTile
+
+	LDA Tile_LastValue
+	AND #$C0
+	ORA #$01
+	BNE ZombieGoomba_ChangeBlock
+
+ZombieGoomba_ToggleTile:
 	LDA Tile_LastValue
 	ADD #$01
 	
+ZombieGoomba_ChangeBlock:	
 	JSR Object_ChangeBlock
 
 ZombieGoomba_PopOut:
@@ -2314,6 +2324,24 @@ ObjNorm_PumpkinRTS:
 
 PumpkinFree_Action = Objects_Data1
 PumpkinFree_Frames = Objects_Data2
+PumpkinFree_PlayerXDist = Objects_Data3
+PumpkinFree_PlayerYDist = Objects_Data4
+PumpkinFree_PlayerYDir = Objects_Data5
+
+Pumpkin_PlayerDetectX:
+	.byte $28, $28
+
+Pumpkin_PlayerDetectY:
+	.byte $28, $50	
+
+Pumpkin_PlayerDetectYDir:
+	.byte $00, $01
+
+Pumpkin_EjectTimer:
+	.byte $20, $08
+
+Pumpkin_EjectVel:
+	.byte $C0, $20
 
 ObjInit_PumpkinFree:
 	LDA #BOUND16x16
@@ -2328,6 +2356,17 @@ ObjInit_PumpkinFree:
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA <Objects_XZ, X
+
+	LDY Objects_Property, X
+	
+	LDA Pumpkin_PlayerDetectX, Y
+	STA PumpkinFree_PlayerXDist, X
+
+	LDA Pumpkin_PlayerDetectY, Y
+	STA PumpkinFree_PlayerYDist, X
+
+	LDA Pumpkin_PlayerDetectYDir, Y
+	STA PumpkinFree_PlayerYDir, X
 
 	JMP Object_CalcBoundBox
 
@@ -2349,13 +2388,19 @@ PumpkinFree_Wait:
 	JSR Object_DeleteOffScreen
 	JSR Object_XDistanceFromPlayer
 	
-	CMP #$28
+	CMP PumpkinFree_PlayerXDist, X
 	BCS PumpkinFree_WaitRTS
 
-	LDA #$20
+	JSR Object_YDistanceFromPlayer
+	CMP #$30
+	BCS PumpkinFree_WaitRTS
+
+	LDY Objects_Property, X
+	
+	LDA Pumpkin_EjectTimer, Y
 	STA Objects_Timer, X
 
-	LDA #$C0
+	LDA Pumpkin_EjectVel, Y
 	STA <Objects_YVelZ, X
 
 	INC PumpkinFree_Action, X
@@ -2406,6 +2451,7 @@ PumpkinFree_Draw:
 	STA Objects_Frame, X
 
 	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
 	ORA #SPR_BEHINDBG
 	STA Objects_Orientation, X
 
@@ -3119,3 +3165,236 @@ Grower_SetPosition:
 Grower_RetractRTS:
 	RTS	
 	
+ParaPiranha_Ticks = Objects_Data1
+ParaPiranha_Action = Objects_Data2
+ParaPiranha_WingTicks = Objects_Data3
+ParaPiranha_StartY = Objects_Data4
+ParaPiranha_WingYOffset = Objects_Data5
+
+ParaPiranha_WingYOffsets:
+	.byte $FC, $04
+
+ObjInit_ParaPiranha:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+
+	LDA <Objects_YZ, X
+	STA ParaPiranha_StartY, X
+
+	LDY Objects_Property, X
+	BEQ ParaPirinha_SetWingOffset
+
+	LDA #SPR_VFLIP
+	STA Objects_Orientation, X
+
+ParaPirinha_SetWingOffset:	
+	LDA ParaPiranha_WingYOffsets, Y
+	STA ParaPiranha_WingYOffset, X
+	RTS
+
+ObjNorm_ParaPiranha:
+	LDA <Player_HaltGameZ
+	BEQ ParaPiranha_Norm
+
+	JMP ParaPiranah_Draw
+
+ParaPiranha_Norm:
+	JSR Object_DeleteOffScreen
+	
+	LDA ParaPiranha_Action, X
+	JSR DynJump
+
+	.word ParaPiranha_Wait
+	.word ParaPiranha_Attack
+
+ParaPiranha_AttackYVel:
+	.byte $C8, $38
+
+ParaPiranha_Wait:
+	LDA Objects_Timer, X
+	BNE ParaPiranha_WaitRTS
+
+	JSR Object_CalcBoundBox
+	JSR Object_XDistanceFromPlayer
+	CMP #$30
+	BCS ParaPiranha_WaitRTS
+
+	LDA #$01
+	STA ParaPiranha_Action, X
+
+	LDY Objects_Property, X
+	LDA ParaPiranha_AttackYVel, Y
+	STA <Objects_YVelZ, X
+
+	LDA #$0F
+	STA Objects_Timer, X
+
+ParaPiranha_WaitRTS:	
+	RTS
+
+ParaPiranha_Attack:
+	LDA Objects_Property, X
+	STA Reverse_Gravity
+
+	LDA Objects_InWater, X
+	PHA
+
+	LDA #$01
+	STA Objects_InWater, X
+
+	JSR Object_Move
+
+	PLA 
+	STA Objects_InWater, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+
+	LDA Objects_Property, X
+	BNE ParaPirana_CheckGround
+
+	LDA <Objects_YVelZ, X
+	BPL ParaPiranha_CheckStart
+
+	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCC ParaPiranha_CheckStart
+
+	JSR Object_HitCeiling
+	JMP ParaPiranha_CheckStart
+
+ParaPirana_CheckGround:
+	LDA <Objects_YVelZ, X
+	BEQ ParaPiranha_CheckStart
+	BMI ParaPiranha_CheckStart
+
+	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCC ParaPiranha_CheckStart
+
+	JSR Object_HitGround
+	LDA #$FF
+	STA <Objects_YVelZ, X
+
+ParaPiranha_CheckStart:	
+	LDA <Objects_YZ, X
+	CMP ParaPiranha_StartY, X
+	BNE ParaPiranha_Animate
+
+	LDA #$00
+	STA ParaPiranha_Action, X
+
+	LDA #$60
+	STA Objects_Timer, X
+
+	LDA Objects_Property, X
+	RTS
+	
+ParaPiranha_Animate:
+	INC ParaPiranha_Ticks, X
+
+	LDA ParaPiranha_Ticks, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	LDA <Objects_YVelZ, X
+	BMI ParaPiranha_AnimateWings
+
+	LDA #$01
+	STA ParaPiranha_WingTicks, X
+	BNE ParaPiranah_Draw
+
+ParaPiranha_AnimateWings:
+	LDA ParaPiranha_Ticks, X
+	LSR A
+	LSR A
+	AND #$01
+	STA ParaPiranha_WingTicks, X	
+	
+ParaPiranah_Draw:
+	LDA Objects_SpriteAttributes, X
+	AND #~SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA Objects_Timer, X
+	BNE ParaPiranha_Behind
+
+	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCC ParaPiranha_DoDraw
+
+ParaPiranha_Behind:
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+ParaPiranha_DoDraw:
+	JSR Object_DrawMirrored
+
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA Sprite_RAM+$00, Y
+	CMP #$f8
+	BEQ ParaPiranhaw_AnimateWings1	 
+
+	ADD ParaPiranha_WingYOffset, X
+	STA Sprite_RAM+$08, Y
+
+ParaPiranhaw_AnimateWings1:
+	LDA Sprite_RAM+$04, Y
+	CMP #$f8
+	BEQ ParaPiranhaw_AnimateWings2	
+
+	ADD ParaPiranha_WingYOffset, X
+	STA Sprite_RAM+$0C,Y
+
+ParaPiranhaw_AnimateWings2:
+	LDA Sprite_RAM+$03,Y
+	SUB #$05
+	STA Sprite_RAM+$0B,Y
+
+	LDA Sprite_RAM+$07,Y
+	ADD #$05
+	STA Sprite_RAM+$0F,Y
+
+	LDA Objects_SpriteAttributes, X
+	ORA Objects_Orientation, X
+	AND #(SPR_BEHINDBG | SPR_VFLIP)
+	ORA #SPR_PAL1
+	
+	STA Sprite_RAM+$0E,Y
+
+	ORA #SPR_HFLIP
+	STA Sprite_RAM+$0A,Y
+
+
+	LDA ParaPiranha_WingTicks,X
+
+	LDX #$CD
+	AND #$01
+	BNE ParaPiranhaw_AnimateWings3	
+
+	LDX #$CF
+
+ParaPiranhaw_AnimateWings3:
+	TXA		 
+	STA Sprite_RAM+$09,Y	
+	STA Sprite_RAM+$0D,Y	
+
+	LDX <CurrentObjectIndexZ
+
+	RTS		

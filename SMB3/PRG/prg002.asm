@@ -11,12 +11,16 @@ OBJ_JUMPCONTROL     = $19
 OBJ_WEATHER         = $1A
 OBJ_KEYPIECECOLLECTION       = $1B
 OBJ_KEYPIECES       = $1C
-OBJ_LIGHTNINGBOLT       = $1D
+OBJ_LIGHTNINGBOLT   = $1D
 OBJ_ICESPIKE        = $1E
 OBJ_STARS           = $1F
 OBJ_EXPLOSION      = $20
 OBJ_MARIO_BLACK	   = $21
 OBJ_BLOCKFLIP	   = $22
+OBJ_BRIDGEBUILD    = $23
+OBJ_BLOCKSWITCHER  = $24
+OBJ_MUSHROOMBLOCK	= $25
+OBJ_MAGNET			= $26
 
     .word ObjInit_WaterSplash   ; Object $14
 	.word ObjInit_Waterfill	; Object $15
@@ -31,12 +35,12 @@ OBJ_BLOCKFLIP	   = $22
     .word ObjInit_IceSpike  ; Object $1E
     .word ObjInit_Stars     ; Object $1F
     .word ObjInit_Explosion ; Object $20
-    .word ObjInit_DoNothing ; Object $21
-    .word ObjInit_BlockFlip ; Object $22
+    .word ObjInit_MarioBlack ; Object $21
+    .word ObjInit_BridgeBuild ; Object $22
     .word ObjInit_DoNothing ; Object $23
-    .word ObjInit_DoNothing ; Object $24
-    .word ObjInit_DoNothing ; Object $25
-    .word ObjInit_DoNothing ; Object $26
+    .word ObjInit_BlockSwitcher ; Object $24
+    .word ObjInit_MushroomBlock ; Object $25
+    .word ObjInit_Magnet ; Object $26
     .word ObjInit_DoNothing ; Object $27
 	
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
@@ -57,9 +61,9 @@ OBJ_BLOCKFLIP	   = $22
     .word ObjNorm_MarioBlack     ; Object $21
     .word ObjNorm_BlockFlip     ; Object $22
     .word ObjNorm_DoNothing     ; Object $23
-    .word ObjNorm_DoNothing     ; Object $24
-    .word ObjNorm_DoNothing     ; Object $25
-    .word ObjNorm_DoNothing     ; Object $26
+    .word ObjNorm_BlockSwitcher     ; Object $24
+    .word ObjNorm_MushroomBlock     ; Object $25
+    .word ObjNorm_Magnet     ; Object $26
     .word ObjNorm_DoNothing     ; Object $27
 
 
@@ -105,8 +109,8 @@ OBJ_BLOCKFLIP	   = $22
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $22
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $23
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $24
-    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $25
-    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $26
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $25
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $26
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $27
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
@@ -129,7 +133,7 @@ OBJ_BLOCKFLIP	   = $22
     .byte OPTS_NOCHANGE	        ; Object $23
     .byte OPTS_NOCHANGE	        ; Object $24
     .byte OPTS_NOCHANGE	        ; Object $25
-    .byte OPTS_NOCHANGE	        ; Object $26
+    .byte OPTS_SETPT5 | $36	        ; Object $26
     .byte OPTS_NOCHANGE	        ; Object $27
 	
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
@@ -151,7 +155,7 @@ OBJ_BLOCKFLIP	   = $22
     .byte KILLACT_NORMALSTATE   ; Object $22
     .byte KILLACT_NORMALSTATE   ; Object $23
     .byte KILLACT_NORMALSTATE   ; Object $24
-    .byte KILLACT_NORMALSTATE   ; Object $25
+    .byte KILLACT_STARDEATH   ; Object $25
     .byte KILLACT_NORMALSTATE   ; Object $26
     .byte KILLACT_NORMALSTATE   ; Object $27
 
@@ -182,6 +186,9 @@ ObjP14:
     .byte $15, $15
 	.byte $13, $13
 	.byte $11, $11
+	.byte $81, $81
+	.byte $83, $83
+	.byte $85, $85
     
 ObjP15:
     .byte $81, $83
@@ -220,7 +227,11 @@ ObjP22:
 ObjP23:
 ObjP24:
 ObjP25:
+	.byte $71, $71
+	
 ObjP26:
+	.byte $87, $89
+
 ObjP27:
 
 ;***********************************************************************************
@@ -232,9 +243,12 @@ ObjP27:
 ; 	An oject that just represents the splash animation when an object goes in and out of water
 ;***********************************************************************************	
 ObjInit_WaterSplash:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	JMP Object_NoInteractions
 	
 WaterSplash_Frame = Objects_Data1
+WaterSplash_IsOil = Objects_Data2
 
 ObjNorm_WaterSplash:
 	LDA <Player_HaltGameZ
@@ -258,6 +272,13 @@ WaterSplash_Animate:
 	LSR A
 
 	AND #$03
+	STA Objects_Frame, X
+
+	LDA WaterSplash_IsOil, X
+	BEQ WaterSplash_Draw
+
+	LDA Objects_Frame, X
+	ADD #$03
 	STA Objects_Frame, X
 
 WaterSplash_Draw:
@@ -460,7 +481,7 @@ DrawTimer:
 	LDX #$02
 
 DrawTimer1:
-	LDA #$10
+	LDA #$08
 	STA Sprite_RAMY, Y
 
 	LDA #SPR_PAL2
@@ -793,7 +814,7 @@ Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Sand_XVel: .byte $06, $07, $0A, $09, $06, $08, $08, $08
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
-Snow_YVel: .byte $01, $01, $01, $01, $02, $02, $02, $02
+Snow_YVel: .byte $02, $03, $02, $02, $03, $02, $02, $04
 Sand_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
 
 Weather_Type = Objects_Data4
@@ -821,7 +842,7 @@ ObjInit_Weather1:
 	BEQ ObjInit_Weather2
 
 	LDA Objects_ID, Y
-	CMP #$0F
+	CMP #OBJ_WEATHER
 	BEQ DeleteWeather
 
 ObjInit_Weather2:
@@ -973,9 +994,9 @@ Randomize_Weather:
 	ORA TempA
 	TAY
 
-	LDY TempY
-
 	LDA Rain_XVel, Y
+	
+	LDY TempY
 	STA Weather_XVel, Y
 
 	LDA RandomN + 2
@@ -1968,20 +1989,8 @@ PRG003_B8E7:
 PRG003_B8E9:
 	CLC		 ; Clear carry
 	RTS		 ; Return
-    
-ObjNorm_MarioBlack:
-	LDA #$0F
-	STA Palette_Buffer + 17
-	STA Palette_Buffer + 18
-	STA Palette_Buffer + 19
-	RTS
 
-	
-Block_CheckIndex = Objects_Data1
-Block_XDistances:
-	.byte $08, $18, $28, $08
-
-ObjInit_BlockFlip:
+ObjInit_MarioBlack:
 	STX <Temp_Var1
 	
 	LDY #$04
@@ -1995,6 +2004,20 @@ BlockFlip_CheckNext:
 	BNE BlockFlip_NextCheck
 
 	JSR Object_Delete
+
+ObjNorm_MarioBlack:
+	LDA #$0F
+	STA Palette_Buffer + 17
+	STA Palette_Buffer + 18
+	STA Palette_Buffer + 19
+	RTS
+
+	
+Block_CheckIndex = Objects_Data1
+Block_XDistances:
+	.byte $08, $18, $28, $08
+
+ObjInit_BlockFlip:
 	RTS
 
 BlockFlip_NextCheck:
@@ -2009,7 +2032,6 @@ ObjNorm_BlockFlip:
 	JSR Object_CalcBoundBox
 	JSR Object_DeleteOffScreen
 
-	
 	LDA Block_NeedsUpdate
 	BNE BlockFlip_RTS
 
@@ -2084,3 +2106,342 @@ BlockFlip_Next:
 BlockFlip_RTS:
 	RTS
 
+BridgeBuild_Activated = Objects_Data1
+BridgeBuild_DirectionX:
+	.byte $10, $F0, $00, $00
+
+BridgeBuild_DirectionY:	
+	.byte $00, $00, $10, $F0
+
+ObjInit_BridgeBuild:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	RTS
+
+ObjNorm_BridgeBuild:
+	LDA BridgeBuild_Activated, X
+	BNE BridgeBuild_BuildIt
+
+	LDA EventSwitch
+	BEQ BridgeBuild_NotActive
+
+	INC BridgeBuild_Activated, X
+	RTS
+
+BridgeBuild_NotActive:
+	JSR Object_CalcBoundBox
+	JSR Object_DeleteOffScreen
+	RTS
+
+BridgeBuild_BuildIt:
+	LDA #$10
+	STA <Objects_XVelZ, X
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+
+	LDA <Objects_XVelZ, X
+	ORA <Objects_YVelZ, X
+	AND #$0F
+	BNE BridgeBuild_BuildItRTS
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_ENEMY
+	BEQ BridgeBuild_Toggle
+
+	JMP Object_Delete
+
+BridgeBuild_Toggle:
+	LDA Tile_LastValue
+	EOR #$01
+	
+	JSR Object_ChangeBlock
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	JSR Common_MakePoof
+
+BridgeBuild_BuildItRTS:
+	RTS	
+
+BlockSwitch_TilePropsB:
+	.byte $00, TILE_PROP_SOLID_ALL,  TILE_PROP_SOLID_ALL,  TILE_PROP_SOLID_ALL
+	.byte TILE_PROP_SOLID_ALL, $00,  TILE_PROP_SOLID_ALL,  TILE_PROP_SOLID_ALL
+	.byte TILE_PROP_SOLID_ALL, TILE_PROP_SOLID_ALL, $00, TILE_PROP_SOLID_ALL
+	.byte TILE_PROP_SOLID_ALL, TILE_PROP_SOLID_ALL, TILE_PROP_SOLID_ALL, $00
+
+BlockSwitch_TilePropsA:
+	.byte TILE_PROP_SOLID_ALL, $00, $00, $00
+	.byte $00, TILE_PROP_SOLID_ALL, $00, $00
+	.byte $00, $00, TILE_PROP_SOLID_ALL, $00
+	.byte $00, $00, $00, TILE_PROP_SOLID_ALL
+
+BlockSwitch_Tiles:
+	.byte $60, $62, $64, $66
+
+BlockSwitch_Timers:
+	.byte $80, $60, $30
+
+BlockSwitch_Timer = Objects_Data1
+BlockSwitch_Index = Objects_Data2
+
+ObjInit_BlockSwitcher:
+	RTS
+
+ObjNorm_BlockSwitcher:
+	LDA <Player_HaltGameZ
+	BEQ BlockSwitcher_Norm
+
+	RTS
+
+BlockSwitcher_Norm:	
+	
+	INC BlockSwitch_Timer, X
+	
+	LDY Objects_Property, X
+	LDA BlockSwitch_Timer, X
+	CMP BlockSwitch_Timers, Y
+	BCC BlockSwitcher_RTS
+
+	LDA #$00
+	STA BlockSwitch_Timer, X
+
+	INC BlockSwitch_Index, X
+
+	LDA BlockSwitch_Index, X
+	AND #$03
+	TAY
+
+	LDA BlockSwitch_Tiles, Y
+	STA PatTable_BankSel
+
+	LDA BlockSwitch_TilePropsA, Y
+	STA TileProperties + $88
+
+	LDA BlockSwitch_TilePropsA + 4, Y
+	STA TileProperties + $89
+
+	LDA BlockSwitch_TilePropsA + 8, Y
+	STA TileProperties + $8A
+
+	LDA BlockSwitch_TilePropsA + 12, Y
+	STA TileProperties + $8B
+
+	LDA BlockSwitch_TilePropsB, Y
+	STA TileProperties + $C8
+
+	LDA BlockSwitch_TilePropsB + 4, Y
+	STA TileProperties + $C9
+
+	LDA BlockSwitch_TilePropsB + 8, Y
+	STA TileProperties + $CA
+
+	LDA BlockSwitch_TilePropsB + 12, Y
+	STA TileProperties + $CB	
+
+BlockSwitcher_RTS:
+	RTS		
+
+MushroomBlock_SkipXVel:
+	.byte $FE, $02
+
+MushroomBlock_Bounces = Objects_Data1	
+
+ObjInit_MushroomBlock:
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	RTS
+
+ObjNorm_MushroomBlock:
+	LDA <Player_HaltGameZ
+	BEQ MushroomBlock_Normal
+
+	JMP MushroomBlock_Draw
+
+MushroomBlock_Normal:
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	
+	JSR Shell_KillOthers
+
+	LDA Objects_Timer2, X
+	BNE MushroomBlock_DetectTiles
+
+	JSR Object_DetectPlayer
+	BCC MushroomBlock_DetectTiles
+
+	LDA Objects_BeingHeld, X
+	BNE MushroomBlock_Carry
+
+	JSR ObjHit_SolidStand
+ 	BCC MushroomBlock_Carry
+
+	LDA Objects_XVelZ, X
+	STA Player_CarryXVel
+	JMP MushroomBlock_DetectTiles
+
+MushroomBlock_Carry:
+	JSR Object_Hold	
+	BCS MushroomBlock_Draw
+
+	JSR Object_GetKicked
+
+	LDA #$10
+	STA Objects_Timer2, X
+
+	LDA #$00
+	STA MushroomBlock_Bounces, X
+
+MushroomBlock_DetectTiles
+	JSR Object_DetectTiles
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithTiles
+
+	LDA MushroomBlock_Bounces, X
+	CMP #$02
+	BCS MushroomBlock_Snap
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ MushroomBlock_Draw
+
+	INC MushroomBlock_Bounces, X
+
+MushroomBlock_Snap:
+	
+	LDA <Objects_XZ, X
+	ADD #$07
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_ENEMY
+	BNE MushroomBlock_Draw
+
+	LDA Object_BodyTileValue, X
+	EOR #$01
+	JSR Object_ChangeBlock
+	JMP Object_Delete
+
+MushroomBlock_Draw:
+	JMP Object_DrawMirrored
+
+Magnet_Stuck = Objects_Data1
+
+ObjInit_Magnet:
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	RTs
+
+ObjNorm_Magnet:
+	LDA <Player_HaltGameZ
+	BEQ Magnent_Normal
+
+	JMP Magnent_Draw
+
+Magnent_Normal:
+	JSR Object_DeleteOffScreen
+
+	LDA Magnet_Stuck, X
+	BNE Magnet_NoMove
+
+	JSR Object_Move
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+
+Magnet_NoMove:
+	LDA Objects_Timer2, X
+	BNE Magnent_DetectTiles
+
+	JSR Object_DetectPlayer
+	BCC Magnent_DetectTiles
+
+	LDA Objects_BeingHeld, X
+	BNE Magnent_Carry
+
+	JSR ObjHit_SolidStand
+ 	BCC Magnent_Carry
+
+	LDA Objects_XVelZ, X
+	STA Player_CarryXVel
+	JMP Magnent_DetectTiles
+
+Magnent_Carry:
+	LDA #$00
+	STA Magnet_Stuck, X
+
+	JSR Object_Hold	
+	BCS Magnent_Draw
+
+	JSR Object_GetKicked
+
+	LDA #$10
+	STA Objects_Timer2, X
+
+Magnent_DetectTiles:
+	JSR Object_DetectTiles
+	JSR Object_DampenVelocity
+
+	
+	LDA Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ Magnet_TileInteract
+
+	LDA Object_HorzTileProp, X
+	CMP #(TILE_PROP_ENEMYSOLID | TILE_PROP_SOLID_ALL)
+	BNE Magnet_TileInteract
+
+	INC Magnet_Stuck, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	AND #$F0
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Objects_XHiZ, X
+
+	JMP Magnent_Draw
+	
+Magnet_TileInteract:
+	JSR Object_InteractWithTiles
+
+Magnent_Draw:
+	JMP Object_Draw

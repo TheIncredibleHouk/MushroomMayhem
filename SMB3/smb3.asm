@@ -2656,7 +2656,7 @@ MARIO_FOX		= 08
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
 	DAIZ_TEMP4:			.ds 1	;
-	Invincible_Enemies: .ds	1	; Indicates the enemies are invincible
+	MushroomBlocks_Enabled: .ds	1	; Indicates the enemies are invincible
 	ProjectileToSpinners: ds 1	;
 	Pay_Toll_Timer:		.ds 1	; Used timer for paying tolls on Hammer Bros on map
 	Deduct_Coin_Timer:	.ds 1	; Used timer for deducting necessary coins on Hammer Bros. Map
@@ -3033,7 +3033,8 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	Tile_CenterDetectionXHi:		.ds 1	; Object tile detect X Hi
 	Tile_CenterDetectionX:		.ds 1	; Object tile detect X Lo
 
-	Bubble_Cnt:		.ds 3	; $7F7A-$7F7C Bubble counter value (0 = no bubble)
+	Splash_IsOil:			.ds 1
+	;Bubble_Cnt:		.ds 3	; $7F7A-$7F7C Bubble counter value (0 = no bubble)
 
 ; NOTE: Object_WatrHit* values are set only once, then WatrHit_IsSetFlag latches
 ; and they will never update again; seems it is leftover debug code or maybe
@@ -3058,7 +3059,8 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 
 CHAIN_DEBRIS = $BD
 BRICK_DEBRIS = $4B
-ICE_DEBRIS = $59	;
+ICE_DEBRIS = $59
+OIL_DEBRIS = $61
 
 	TileAnimSet:		.ds 1
 
@@ -3079,7 +3081,7 @@ SOBJ_ICEBALL	= $06	; Piranha fireball
 SOBJ_MICROGOOMBA	= $00 	; Micro goombas
 SOBJ_NINJASTAR		= $07 	; Spike's or Patooie's spike ball
 SOBJ_EGG		= $08 	; Koopaling wand blast
-SOBJ_OILPOOL		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
+SOBJ_OILOOZE		= $09 	; Lost Kuribo shoe that "flies off" (NOTE: In Japanese original, this also featured super suits)
 SOBJ_BIGFIREBALL		= $0A 	; Rocky's Wrench
 SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball

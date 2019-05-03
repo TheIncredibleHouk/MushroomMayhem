@@ -384,7 +384,7 @@ LevelEvent_Do:
 	.word LevelEvent_ProduceMines	; 2 - Spike Cheeps float by
 	.word LevelEvent_GenerateCheepCheeps	; 
 	.word LevelEvent_Earthquake	; 4 - Green and red parabeetles flyby!
-	.word LevelEvent_CloudsinBG	; 5 - Floating clouds in background float by
+	.word LevelEvent_BooWaves	; 5 - Floating clouds in background float by
 	.word LevelEvent_WoodPlatforms	; 6 - Random wooden platforms 
 	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
 	.word LevelEvent_Cancel		; 8 - Does nothing but clear Level_Event
@@ -582,65 +582,36 @@ PRG005_BC11:
 PRG005_BC41:
 	RTS		 ; Return
 
-FloatingCloud_Var5:	.byte $00, $01, $02, $01
-FloatingCloud_XVel:	.byte $10, $12, $14, $12
+LevelEvent_BooWaves:
+	LDA Level_EventTimer
+	BEQ BooWave_Generate	 
+	
+	DEC Level_EventTimer
+	RTS
 
-LevelEvent_CloudsinBG:
-	LDA Game_Counter
-	AND #$03
-	BNE PRG005_BCA2
-	INC LevelEvent_Cnt
-	LDA LevelEvent_Cnt
-	CMP #$c0
-	BNE PRG005_BCA2	 ; Only do something every 768 ticks
+BooWave_Generate:
+	LDA #OBJ_BOOWAVE
+	STA <Object_Check
 
-	LDA #$00
-	STA LevelEvent_Cnt	 ; LevelEvent_Cnt = 0
+	JSR CheckObjectsOfType2
 
-	;LDA #OBJ_FLOATINGBGCLOUD
-	JSR Level_CountNotDeadObjs
-	CPY #$02
-	BGE PRG005_BCA2	 ; If there at least 2 clouds already, jump to PRG005_BCA2
+	LDA <Num_Objects
+	CMP #$02
+	BCS BooWave_GenerateRTS
 
-	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
+	JSR Level_SpawnObj
 
-	; Store floating cloud's ID
-	;LDA #OBJ_FLOATINGBGCLOUD
-	STA Objects_ID,X
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
 
-	; Set floating cloud's Y position (screen scroll + 48 + (Random 0 to 127))
-	LDA RandomN,X
-	AND #$7f
-	ADD #$30
-	ADD Level_VertScroll
-	STA <Objects_YZ,X
-	LDA <Vert_Scroll_Hi
-	ADC #$00
-	STA <Objects_YHiZ,X
+	LDA #OBJ_BOOWAVE
+	STA Objects_ID,X	 
 
-	; Set starting X position
-	LDA <Horz_Scroll
-	SUB #$20
-	STA <Objects_XZ,X
-	LDA <Horz_Scroll_Hi
-	SBC #$00
-	STA <Objects_XHiZ,X
+	LDA #$DF
+	STA Level_EventTimer
 
-	LDA RandomN,X
-	AND #$03
-	TAY	; Y = random 0 to 3
-
-	; Var 5 = FloatingCloud_Var5[Y]
-	LDA FloatingCloud_Var5,Y
-	STA Objects_Data2,X
-
-	; Set cloud's X velocity
-	LDA FloatingCloud_XVel,Y
-	STA <Objects_XVelZ,X
-
-PRG005_BCA2:
-	RTS		 ; Return
-
+BooWave_GenerateRTS:
+	RTS	
 
 LevelEvent_TreasureBox:
 
@@ -1049,7 +1020,7 @@ PRG005_BE4B:
 	BEQ PRG005_BE64	 	; If Y = 3, jump to PRG005_BE64
 	BGE PRG005_BE67	 	; If Y > 3, jump to PRG005_BE67
 
-	STA Bubble_Cnt,Y	; Clear any water bubbles
+	;STA Bubble_Cnt,Y	; Clear any water bubbles
 	STA BrickBust_En,Y	; Clear any brick busting effects
 
 	CPY #$02
@@ -1277,4 +1248,24 @@ PRG005_BF55:
 
 	RTS		 ; Return
 
+CheckObjectsOfType2:
+	LDA #$00
+	STA <Num_Objects
+
+	LDX #$04
+
+CheckNextObject2:
+	LDA Objects_State, X
+	BEQ NotObject_Checking2
+
+	LDA Objects_ID, X
+	CMP <Object_Check
+	BNE NotObject_Checking2
+
+	INC <Num_Objects
+
+NotObject_Checking2:
+	DEX
+	BPL CheckNextObject2
+	RTS
 ; Rest of ROM bank was empty...

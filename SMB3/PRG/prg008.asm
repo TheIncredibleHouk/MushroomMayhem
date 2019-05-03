@@ -88,11 +88,6 @@ Player_HoldingFrames:
 	.byte PF_HOLDBIG_BASE, PF_HOLDBIG_BASE+1, PF_HOLDBIG_BASE+2, PF_HOLDBIG_BASE+1	; Player is not small
 	.byte PF_HOLDSMALL_BASE, PF_HOLDSMALL_BASE+1, PF_HOLDSMALL_BASE, PF_HOLDSMALL_BASE+1	; Player is small
 
-Player_TwisterSpinFrames:
-	.byte PF_SPINSMALLORFROG_BASE+12, PF_SPINSMALLORFROG_BASE, PF_SPINSMALLORFROG_BASE+12, PF_SPINSMALLORFROG_BASE	; small or frog
-	.byte PF_SPINSLIDESUITS_BASE+10, PF_SPINSLIDESUITS_BASE, PF_SPINSLIDESUITS_BASE+10, PF_SPINSLIDESUITS_BASE+1	; suits that slide
-	.byte PF_SPINOTHER_BASE, PF_SPINOTHER_BASE+2, PF_SPINOTHER_BASE, PF_SPINOTHER_BASE+3	; otherwise
-
 	; Airship "caught anchor" frame or general vine climbing
 Player_ClimbFrame:
 	.byte PF_CLIMB_SMALL	; Small
@@ -742,8 +737,16 @@ PowerUp_Palettes:
 	.byte $00, $0F, $36, $36	; B - Ninja Mario
 	.byte $00, $0F, $0B, $2B	; infected
 	.byte $00, $27, $28, $30	; yolked
+	.byte $00, $0F, $0F, $03	; yolked
 
 Level_SetPlayerPUpPal:
+	LDA Player_Oiled
+	BEQ CheckYolked
+
+	LDA #$0E
+	BNE Skipped_Palette
+
+CheckYolked:	
 	LDA Player_Yolked
 	BEQ CheckInfection
 
@@ -753,6 +756,7 @@ Level_SetPlayerPUpPal:
 CheckInfection:
 	LDA LeftRightInfection
 	BEQ Normal_Palette
+
 	LDA #$0C
 	BNE Skipped_Palette
 
@@ -896,12 +900,6 @@ Player_SomersaultFlipBits:
 ; otherwise tested if the tile is in the "solid floor" region!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_CheckIfTileUnderwater:
-	; X = 0 or 1
-
-	LDY #$01
-	STY <Temp_Var15	 ; Temp_Var15 = 1 (Indicates underwater)
-
-	; UNDERWATER OVERRIDE (for "floating" levels that have fixed water at the bottom)
 
 	AND #$F0
 	CMP #$C0
@@ -1055,6 +1053,26 @@ PRG008_A7AD_2:
 PRG008_A906:
 	JSR Player_ApplyXVelocity	 ; Apply Player's X Velocity
 
+
+	LDA <Player_YVel
+	ADD <Player_CarryYVel
+	STA <Player_EffYVel
+
+	LDA <Player_XVel
+	ADD <Player_CarryXVel
+
+	LDY Player_InWater
+	BNE Player_NoWindFactor
+
+	ADD Wind
+
+Player_NoWindFactor:
+	STA <Player_EffXVel
+	
+	LDA #$00
+	STA <Player_CarryXVel
+	STA <Player_CarryYVel
+	
 	LDA #$00
 	STA Player_Direction
 
@@ -1853,9 +1871,6 @@ PRG008_ACCD:
 	TYA	
 	ADD <Player_YVel
 
-	LDX Boo_Mode_Timer
-	BNE Skip_YVel
-
 	LDX Player_FireDash
 	BNE Skip_YVel
 	STA <Player_YVel ; Player_YVel += Y
@@ -2263,8 +2278,6 @@ PRG008_AEBE:
 PRG008_AEC0:
 	RTS		 ; Return
 
-TwisterSpin_FlipBits:	.byte $00, $40
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_SetSpecialFrames
 ;
@@ -2278,6 +2291,7 @@ Player_SetSpecialFrames:
 	LDA <Player_XVel
 	BPL PRG008_AECA
 	JSR Negate
+
 PRG008_AECA:
 
 	CMP #$37
@@ -2406,55 +2420,6 @@ PRG008_AF64:
 	DEC Player_Kick	 ; PRG008_AF64--
 
 PRG008_AF69:
-	LDA Player_TwisterSpin
-	BEQ PRG008_AFA1	 ; If Player is NOT twirling, jump to PRG008_AFA1
-
-	DEC Player_TwisterSpin	 ; Player_TwisterSpin--
-
-	LDY #$00	; Y = 0 (base index for small or frog)
-
-	LDA <Player_Suit
-	BEQ PRG008_AF87	 ; If Player is small, jump to PRG008_AF87
-
-	CMP #$04
-	BEQ PRG008_AF85	 ; If Player is Frog, jump to PRG008_AF85
-
-	LDY #$04	 ; Y = 4 (base index all suits that can slide on slopes)
-
-	TAX		 ; Power up -> 'X'
-
-	LDA Player_Shell
-	BNE PRG008_AF85
-
-	LDA PowerUp_Ability,X
-	AND #$01	 
-	BEQ PRG008_AF87	 ; If able to slide on slopes, jump to PRG008_AF87
-
-PRG008_AF85:
-	LDY #$08	 ; Y = 8 (base value otherwise)
-
-PRG008_AF87:
-	STY <Temp_Var1	 ; Temp_Var1 = 0, 4, or 8
-
-	LDA <Counter_1
-	AND #$0c	 ; Cap value 0 - 11
-	LSR A		 
-	LSR A		 ; >> 2 (0 - 3)
-	PHA		 ; Save it
-
-	LSR A		 ; Shift down one more time
-	TAY		 ; -> 'Y'
-	LDA TwisterSpin_FlipBits,Y ; Get appropriate flip bits
-	STA <Player_FlipBits	  ; ... and set them!
-
-	PLA		 ; Restore (0 - 2)
-
-	ADD <Temp_Var1	 ; Add base index
-	TAY		 ; -> 'Y'
-
-	LDA Player_TwisterSpinFrames,Y	 ; Get appropriate spin frame
-	STA <Player_Frame		 ; Update Player frame!
-
 PRG008_AFA1:
 	LDA Player_VibeDisable
 	BEQ PRG008_AFAD	 ; If Player is not "vibrationally disabled", jump to PRG008_AFAD
@@ -3325,21 +3290,6 @@ No_Detection:
 	RTS		 ; Return
 
 Player_DetectSolids1:
-	LDA <Player_YVel
-	ADD <Player_CarryYVel
-	STA <Player_EffYVel
-
-	LDA <Player_XVel
-	ADD <Player_CarryXVel
-
-	LDY Player_InWater
-	BNE Player_NoWindFactor
-
-	ADD Wind
-
-Player_NoWindFactor:
-	STA <Player_EffXVel
-
 DetectSolids:
 	LDA #10
 
@@ -3362,8 +3312,12 @@ PRG008_B4BD:
 	STA <TileYIndexBase
 
 	LDA <Player_EffXVel
-	BEQ PRG008_B4BE
+	BNE PRG008_B4BE_2
 
+	LDA Player_Direction
+	BEQ PRG008_B4BF
+
+PRG008_B4BE_2:
 	BPL PRG008_B4C9
 	BMI PRG008_B4BF
 
@@ -3896,7 +3850,7 @@ PRG008_B979:
 Tile_MoveTable_XCarry:
 	;	   L    R    U    D
 	.byte $00, $00, $00, $00 ; X Air
-	.byte $F8, $00, $00, $00 ; X Water
+	.byte $F0, $10, $00, $00 ; X Water
 	.byte $F8, $08, $00, $00 ; X Ground
 	.byte $00, $00, $00, $00 ; X Wall
 
@@ -3936,8 +3890,12 @@ ApplyTileMove:
 	CPX #$01
 	BNE Try_Ground_Move
 
+	LDA Tile_LastProp
+	CMP #TILE_PROP_WATER
+	BCC Apply_Move
+	
 	LDA Player_InWater
-	BEQ Apply_Move
+	BEQ Apply_Move_RTS
 
 	LDA Player_EffectiveSuit
 	CMP #$04
@@ -4288,9 +4246,6 @@ Dont_Flip:
 	STY Player_PrevXDirection
 
 No_Odo_Increase:
-
-	LDA #$00
-	STA <Player_CarryXVel, X
 	RTS		 ; Return
 
 
@@ -5084,26 +5039,26 @@ PowBlock2:
 	RTS
 
 StarManItem:
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
+	;LDA Sound_QLevel1
+	;ORA #SND_LEVELPOWER
+	;STA Sound_QLevel1
 
-	LDA Sound_QMusic2
-	ORA #MUS2A_INVINCIBILITY
-	STA Sound_QMusic2
+	;LDA Sound_QMusic2
+	;ORA #MUS2A_INVINCIBILITY
+	;STA Sound_QMusic2
 	; Player_StarInv = $E0
-	LDA #$e0
-	STA Player_StarInv
+	;LDA #$e0
+	;STA Player_StarInv
 	
-	LDA Player_Equip
-	CMP #ITEM_STAR2
-	BNE StarManItem1
-	DEC Player_Equip
+	;LDA Player_Equip
+	;CMP #ITEM_STAR2
+	;BNE StarManItem1
+	;DEC Player_Equip
 	RTS
 
 StarManItem1:
-	LDA #$00
-	STA Player_Equip
+	;LDA #$00
+	;STA Player_Equip
 	RTS
 
 
@@ -5164,8 +5119,6 @@ Player_SuitChange7:
 	LDX #$00
 	STX Player_QueueSuit	  ; Clear Player_QueueSuit
 	STX Player_Shell
-	STX Boo_Mode_Timer
-	STX Boo_Mode_KillTimer
 	STX Poison_Mode
 	STX Player_FireDash
 
@@ -5206,6 +5159,11 @@ Player_DetectCeiling1_1:
 	SUB TileAttrAndQuad_OffsFlat - 4, Y
 	STA TempA
 
+	LDA Player_BoundTop
+	AND #$0F
+	CMP #$08
+	BCS Player_DetectCeiling2
+	
 	LDA <Player_Y
 	AND #$F0
 	ADD TempA
@@ -5238,6 +5196,7 @@ Player_DetectCeiling1_1:
 	BNE Player_DetectCeiling2
 
 Player_HitBlocks:
+	
 	JSR Level_DoBumpBlocks
 	
 	LDA ItemBlock_PowerUp + 5
@@ -5518,7 +5477,6 @@ Player_BodyHeadTileInteract:
 	.word Bg_PowerCoin	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Body_Treasure:
-	STA Debug_Snap
 	LDA TreasureBox_Disabled
 	BNE Body_TreasureRTS
 
@@ -5572,9 +5530,13 @@ Door_PadUp:
 	AND #PAD_UP
 	BEQ Door_Done	 ; If Player is not pressing up in front of a door, jump to PRG008_A86C
 
+	LDA Player_OnPlatform
+	BNE Door_PlayerStanding
+
 	LDA <Player_InAir
 	BNE Door_Done	 ; If Player is mid air, jump to PRG008_A86C
 
+Door_PlayerStanding:
 	LDA <Player_X
 	ADD #$08
 	STA <Player_X
@@ -5617,13 +5579,12 @@ Player_SolidTileInteract:
 	.word Tile_NoInteract	; TILE_PROP_VPIPE_RIGHT	= $09
 	.word Tile_NoInteract	; TILE_PROP_HPIPE_BOTTOM= $0A
 	.word Tile_NoInteract	; TILE_PROP_CLIMBABLE	= $0B
-	.word Tile_NoInteract	; TILE_PROP_ENEMYSOLID	= $0C
+	.word Solid_MushroomBlock	; TILE_PROP_ENEMYSOLID	= $0C
 	.word Tile_NoInteract	; TILE_PROP_STONE		= $0D
 	.word Solid_PSwitch		; TILE_PROP_PSWITCH		= $0E
 	.word Solid_ESwitch		; TILE_PROP_ESWITCH		= $0F
 
 Solid_CheckBump:
-
 	LDX <TileXIndex
 	CPX #HEAD_FEET_LEFT_INDEX
 	BEQ Solid_CheckBump1
@@ -5719,6 +5680,65 @@ Solid_ThinIceGround:
 	LDA Player_IsHolding
 	BEQ Solid_ThinIceRTS
 	JMP Solid_ThinBreakIce
+
+Solid_MushroomBlock:
+
+	LDA MushroomBlocks_Enabled
+	BEQ Solid_MushroomBlockRTS
+	
+	LDA <Player_InAir
+	BNE Solid_MushroomBlockRTS
+
+	LDA <TileXIndex
+	CMP #HEAD_FEET_LEFT_INDEX
+	BEQ Solid_MushroomBlockGrab
+
+	CMP #HEAD_FEET_RIGHT_INDEX
+	BNE Solid_MushroomBlockRTS
+
+Solid_MushroomBlockGrab:
+	LDA Block_NeedsUpdate
+	BNE Solid_MushroomBlockRTS
+
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Solid_MushroomBlockRTS
+
+	LDX #$02
+
+Solid_MushroomBlockNext:	
+	LDA Objects_State + 5, X
+	BEQ Solid_MushroomBlockMake
+
+	DEX
+	BPL Solid_MushroomBlockNext
+	BMI Solid_MushroomBlockRTS
+
+Solid_MushroomBlockMake:
+	LDA #OBJ_MUSHROOMBLOCK
+	STA Objects_ID + 5, X
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State + 5, X
+
+	LDA <Player_X
+	STA <Objects_XZ + 5, X
+
+	LDA <Player_XHi
+	STA <Objects_XHiZ + 5, X
+
+	LDA <Player_Y
+	ADD #$08
+	STA <Objects_YZ + 5, X
+
+	LDA <Player_YHi
+	ADC #$00
+	STA <Objects_YHiZ + 5, X
+
+	JMP Player_ToggleBlock
+
+Solid_MushroomBlockRTS:
+	RTS	
 
 Solid_PSwitch:
 	LDA <Player_YVel
@@ -6057,6 +6077,7 @@ Player_HandleWater12:
 
 	LDA LeftRightInfection
 	ORA Player_Yolked
+	ORA Player_Oiled
 	BEQ Player_HandleWaterRTS
 
 	LDA #$17
@@ -6069,6 +6090,7 @@ Player_HandleWater12:
 	LDA #$00
 	STA LeftRightInfection
 	STA Player_Yolked
+	STA Player_Oiled
 
 Player_HandleWaterRTS:
 	RTS
@@ -6489,6 +6511,7 @@ Player_MakeSplash:
 
 	LDA #$00
 	STA Objects_Orientation, Y
+	STA WaterSplash_IsOil, Y
 	RTS		 ; Return
 
 Player_SetHolding:

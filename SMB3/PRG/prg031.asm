@@ -3281,6 +3281,7 @@ InfectionRTS:
 	LDA <Pad_Holding
 	AND #(~PAD_B)
 	STA <Pad_Holding
+	
 	LDA <Pad_Input
 	AND #(~PAD_B)
 	STA <Pad_Input

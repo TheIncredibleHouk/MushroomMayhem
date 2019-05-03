@@ -1360,11 +1360,6 @@ PRG030_8E4F:
 
 	LDA Level_PauseFlag
 	BNE Graphics_Anim
-	
-	LDA TreasureBox_Disabled
-	BEQ PRG030_8E50
-
-	JSR DPad_ControlTiles
 
 PRG030_8E50:
 	LDA RhythmPlatformEnabed
@@ -3095,7 +3090,7 @@ HorzNotLocked:
 	; set invincible enemies
 	LDA [Temp_Var14],Y
 	AND #$80
-	STA Invincible_Enemies
+	STA MushroomBlocks_Enabled
 	
 	LDA [Temp_Var14],Y
 	AND #$40
@@ -4711,6 +4706,7 @@ Jump_Right:
 
 Do_Jump_Off:
 	STA <Player_XVel
+	STA <Player_EffXVel
 	RTS
 
 DoNightTransition:
@@ -5723,6 +5719,7 @@ Debris_Y = Temp_Var8
 
 Common_MakeChains:
 	JSR Common_MakeDebris
+	
 	LDA #CHAIN_DEBRIS
 	STA BrickBust_Tile, Y
 

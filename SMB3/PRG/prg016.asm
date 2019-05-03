@@ -1445,10 +1445,15 @@ ObjInit_Pyrantula:
 	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
-	JSR InitPatrol_Chase
+	LDA #$08
+	STA ChaseVel_LimitHi, X
+
+	LDA #$F8
+	STA ChaseVel_LimitLo, X
+
 	LDA #$40
 	STA Objects_Timer, X
-	RTS		
+	RTS
 
 Pyrantula_Frame = Objects_Data1
 Pyrantula_FireTimer = Objects_Data2
@@ -1456,7 +1461,7 @@ Pyrantula_FireTimer = Objects_Data2
 ObjNorm_Pyrantula:
 	LDA <Player_HaltGameZ
 	BEQ Pyrantula_Normal
-	JMP Pyrantula_Draw	 ; If gameplay is not halted, jump to PRG003_B9D4
+	JMP Pyrantula_Draw	 
 
 Pyrantula_Normal:
 	JSR Object_DeleteOffScreen
@@ -1471,23 +1476,29 @@ Pyrantula_Normal:
 	STA Pyrantula_FireTimer, X
 
 Pyrantula_Move:
-	JSR Object_ChasePlayer
 	JSR Object_CalcBoundBox
+	JSR Object_ChasePlayer
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
-	JSR Object_InteractWithTiles
+	JSR Object_InteractWithTilesWallStops
 	
 	LDA Object_VertTileProp, X
 	CMP #TILE_PROP_CLIMBABLE
 	BEQ Pyrantula_VGo
 
-	LDA #$00
-	STA <Objects_YVelZ, X
-	STA Objects_YVelFrac,X	
+	LDA <Objects_YVelZ, X
+	BPL Pyrantula_VStop
+
+	JSR Object_HitCeiling
+	JMP Pyrantula_VGo
+
+Pyrantula_VStop:
+	JSR Object_HitGround
+
 
 Pyrantula_VGo:
 
-	LDA  Object_HorzTileProp, X
+	LDA Object_HorzTileProp, X
 	CMP #TILE_PROP_CLIMBABLE
 	BEQ Pyrantula_Animate
 

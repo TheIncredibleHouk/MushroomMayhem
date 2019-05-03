@@ -9,9 +9,11 @@ OBJ_PLATFORMCW      = $2C
 OBJ_PLATFORMCCW     = $2D
 OBJ_PLATFORMPATH    = $2E
 OBJ_PLATFORMUNSTABLE = $2F
-
+OBJ_PLATFORMPULLEY = $30
 OBJ_SNAKEBLOCK      = $31
 OBJ_PIPEBLOCK       = $32
+OBJ_PLATFORMSWING   = $33
+
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
 	.word ObjInit_WoodenPlatVert    ; Object $29
@@ -21,10 +23,10 @@ OBJ_PIPEBLOCK       = $32
     .word ObjInit_WoodenPlatCCW     ; Object $2D
     .word ObjInit_PlatformFollow    ; Object $2E
     .word ObjInit_PlatformUnstable  ; Object $2F
-    .word ObjInit_DoNothing ; Object $30
+    .word ObjInit_PlatformCommon ; Object $30
     .word ObjInit_SnakeBlock        ; Object $31
     .word ObjInit_PipeBlock         ; Object $32
-	.word ObjInit_DoNothing			; Object $33
+	.word ObjInit_PlatformSwing			; Object $33
 	.word ObjInit_DoNothing			; Object $34
 	.word ObjInit_DoNothing			; Object $35
 	.word ObjInit_DoNothing			; Object $36
@@ -44,10 +46,10 @@ OBJ_PIPEBLOCK       = $32
     .word ObjNorm_PlatformOscillate   ; Object $2D
     .word ObjNorm_PlatformFollow   ; Object $2E
     .word ObjNorm_PlatformUnstable  ; Object $2F
-    .word ObjNorm_DoNothing ; Object $30
+    .word ObjNorm_PlatformPulley ; Object $30
     .word ObjNorm_SnakeBlock        ; Object $31
     .word ObjNorm_PipeBlock         ; Object $32
-	.word ObjNorm_DoNothing			; Object $33
+	.word ObjNorm_PlatformSwing			; Object $33
 	.word ObjNorm_DoNothing			; Object $34
 	.word ObjNorm_DoNothing			; Object $35
 	.word ObjNorm_DoNothing			; Object $36
@@ -67,10 +69,10 @@ OBJ_PIPEBLOCK       = $32
     .word Platform_PlayerStand	    ; Object $2D
     .word Platform_PlayerStand	    ; Object $2E
     .word Platform_PlayerStand	    ; Object $2F
-    .word ObjHit_DoNothing	    ; Object $30
+    .word Platform_PlayerStand	    ; Object $30
     .word ObjHit_SolidBlock          ; Object $31
     .word ObjHit_SolidBlock         ; Object $32
-    .word ObjHit_DoNothing	        ; Object $33
+    .word Platform_PlayerStand	        ; Object $33
 	.word ObjHit_DoNothing	        ; Object $34
 	.word ObjHit_DoNothing	        ; Object $35
 	.word ObjHit_DoNothing	        ; Object $36
@@ -94,7 +96,7 @@ OBJ_PIPEBLOCK       = $32
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $30
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $31
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32  ; Object $32
-	.byte $00									 ; Object $33
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $33
 	.byte $00									 ; Object $34
 	.byte $00									 ; Object $35
 	.byte $00									 ; Object $36
@@ -117,7 +119,7 @@ OBJ_PIPEBLOCK       = $32
     .byte OPTS_NOCHANGE         ; Object $30
     .byte OPTS_NOCHANGE         ; Object $31
     .byte OPTS_SETPT5 | $0B	    ; Object $32
-	.byte OPTS_NOCHANGE         ; Object $33
+	.byte OPTS_SETPT5 | $36	    ; Object $33
 	.byte OPTS_NOCHANGE         ; Object $34
 	.byte OPTS_NOCHANGE         ; Object $35
 	.byte OPTS_NOCHANGE         ; Object $36
@@ -173,7 +175,8 @@ ObjP2D:
 ObjP2E:
 ObjP2F:
 ObjP30:
-    .byte $57, $4F, $4F, $4F, $4F, $5B
+ObjP33:
+    .byte $61, $61, $61, $61, $61, $61
 
 ObjP31:
     .byte $77, $77
@@ -181,7 +184,6 @@ ObjP31:
 ObjP32:
     .byte $AF, $B1, $B3, $B5
 
-ObjP33:
 ObjP34:
 ObjP35:
 ObjP36:
@@ -304,17 +306,10 @@ ObjNorm_PlatformOscillate:
 	JSR Object_DeleteOffScreen
 
 ObjNorm_PlatformOscillate1:
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
 	JMP Platform_Draw
 
 
 Platform_Draw:
-	LDA #$00
-	STA Objects_Orientation, X
-	JMP Object_Draw48x16
-
 	LDA #$00
 	STA Objects_Orientation, X
 	
@@ -323,10 +318,8 @@ Platform_Draw:
 	RTS
 
 Platform_DoDraw:
-	INC <Objects_YZ, X
-	JSR Object_Draw
-
-	DEC <Objects_YZ, X
+	
+	JSR Object_DrawMirrored
 
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #SPRITE_2_HINVISIBLE
@@ -421,6 +414,7 @@ Platform_PlayerStand:
 	BCS Platform_PlayerStand1
 
 	LDA #$01
+	STA Player_OnPlatform
 	STA Platform_SteppedOn, X
 	STA Platform_MadeContact, X
 
@@ -501,9 +495,6 @@ PlatformFollow_NoMove:
 	JSR Platform_FollowBlocks
 
 ObjNorm_PlatformFollow1:
-	LDA Objects_SpriteAttributes, X
-	ORA #SPR_BEHINDBG
-	STA Objects_SpriteAttributes, X
 
 	JMP Platform_Draw
 
@@ -671,20 +662,6 @@ Unstable_MoveNormal:
 	STA <Objects_YVelZ,X
 
 Unstable_MoveRTS:
-	RTS
-
-Unstable_CheckSteppedOn:
-	LDA Platform_SteppedOn, X
-	BEQ Unstable_CheckSteppedOnRTS
-
-	INC Platform_Ticker, X
-	LDA Platform_Ticker, X
-	AND #$01
-	BEQ Unstable_CheckSteppedOnRTS
-
-	JSR Object_Move
-
-Unstable_CheckSteppedOnRTS:
 	RTS
 
 Unstable_CheckRegen:
@@ -1265,3 +1242,384 @@ PipeBlock_MatchPalette:
 	STA Pal_Data + 27
 	STA Palette_Buffer + 27
 	RTS    
+
+ObjInit_PlatformPulley:
+	
+
+ObjNorm_PlatformPulley:
+
+	LDA <Player_HaltGameZ
+	BEQ Pulley_Norm
+	
+	JMP Pulley_Draw
+
+Pulley_Norm:
+	JSR Object_DeleteOffScreen
+
+	LDA Objects_Property, X
+	BEQ Pulley_Weight
+
+	JSR Object_Move
+	JMP Pulley_NoMove
+
+Pulley_Weight:
+	LDA <Objects_YZ, X
+	AND #$0F
+	CMP #$0F
+	BNE Pulley_Move
+
+	LDA Block_NeedsUpdate
+	BNE Pulley_NoMove
+
+	JSR Object_DetectTileCenter
+	
+	LDA Tile_LastProp
+	CMP #TILE_PROP_ENEMY
+	BNE Pulley_Fall
+
+	LDA <Objects_YVelZ, X
+	BMI Pulley_MovingUp
+
+	LDA Tile_LastValue
+	ORA #$01
+	JMP Pulley_UpdateBlock
+
+Pulley_Fall:
+	INC Objects_Property, X
+	JMP Pulley_Move
+
+Pulley_MovingUp:
+	LDA Tile_LastValue
+	AND #$FE
+
+Pulley_UpdateBlock:
+	JSR Object_ChangeBlock
+
+Pulley_Move:
+	JSR Object_ApplyYVel_NoGravity
+
+Pulley_NoMove:	
+	JSR Object_CalcBoundBox
+	
+	LDA Objects_Property, X
+	BNE Pulley_NoYVel
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+Pulley_NoYVel:
+	LDA #$00
+	STA Platform_MadeContact, X
+
+	JSR Object_InteractWithPlayer
+	JSR Platform_ContactCheck
+
+	LDA Platform_MadeContact, X
+	BEQ Pulley_Draw
+
+	LDA Objects_Property, X
+	BNE Pulley_FindSibling
+
+	LDA #$08
+	STA <Objects_YVelZ, X
+
+Pulley_FindSibling:
+	LDY #$04
+
+Pulley_FindBuddy:
+	CPY <CurrentObjectIndexZ
+	BEQ Pulley_NextObject
+
+	LDA Objects_ID, Y
+	CMP #OBJ_PLATFORMPULLEY
+	BNE Pulley_NextObject
+
+	LDA Objects_Property, X
+	BEQ Pully_SiblingUp
+
+	LDA Objects_Property, Y
+	BNE Pulley_Draw
+
+	
+	LDA #$01
+	STA Objects_Property, Y
+
+Pully_SiblingUp:	
+	LDA #$F8
+	STA Objects_YVelZ, Y
+
+Pulley_NextObject:
+	DEY
+	BPL Pulley_FindBuddy
+
+Pulley_Draw:
+	JMP Platform_Draw
+
+PlatformSwing_Ticker = Objects_Data8
+SwingAnchor_X = Objects_Data9
+SwingAnchor_XHi = Objects_Data10
+SwingAnchor_Y = Objects_Data11
+SwingAnchor_YHi = Objects_Data12
+
+PlatformSwing_YVel:
+	.byte $01, $02, $04, $08, $10, $14, $18, $1A
+	.byte $1A, $18, $14, $10, $08, $04, $02, $01
+	.byte -$01, -$02, -$04, -$08, -$10, -$14, -$18, -$1A
+	.byte -$1A, -$18, -$14, -$10, -$08, -$04, -$02, -$01
+
+PlatformSwing_XVel:	
+	.byte   $00, -$00, -$00, -$04, -$08, -$0A, -$0C, -$0E
+	.byte  -$10, -$12, -$14, -$16, -$18, -$1A, -$1C, -$1E
+	.byte  -$20, -$1E, -$1C, -$1A, -$18, -$16, -$14, -$12
+	.byte  -$10, -$0E, -$0C, -$0A, -$08, -$04, -$00, -$00
+	.byte  $00, $00, $00, $04, $08, $0A, $0C, $0E
+	.byte  $10, $12, $14, $16, $18, $1A, $1C, $1E
+	.byte  $20, $1E, $1C, $1A, $18, $16, $14, $12
+	.byte  $10, $0E, $0C, $0A, $08, $04, $00, $00
+
+PlatformSwing_Timers:
+	.byte $00, $00
+	
+PlatformSwing_TickerType:
+	.byte $FF, $7F
+
+PlatformSwing_AnchorXOff:
+	.byte -$28, $58
+	.byte $FF, $00
+
+ObjInit_PlatformSwing:
+	JSR ObjInit_PlatformCommon
+
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
+	STA Debug_Snap
+	LDY Objects_Property, X
+	
+	LDA PlatformSwing_TickerType, Y
+	STA PlatformSwing_Ticker, X
+
+	LDA <Objects_XZ, X
+	ADD PlatformSwing_AnchorXOff, Y
+	STA SwingAnchor_X, X
+
+	LDA <Objects_XHiZ, X
+	ADC PlatformSwing_AnchorXOff + 2, Y
+	STA SwingAnchor_XHi, X
+
+	LDA <Objects_YZ, X
+	SUB #$20
+	STA SwingAnchor_Y, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA SwingAnchor_YHi, X	
+
+	LDA PlatformSwing_Timers, Y
+	STA Objects_Timer, X
+	RTS
+
+ObjNorm_PlatformSwing:
+	LDA <Player_HaltGameZ
+	BEQ Swing_Normal
+	JMP Swing_Draw
+
+Swing_Normal:
+	LDA <Objects_XZ, X
+	CMP Platform_StartX, X
+	BNE Swing_Move
+
+	LDA <Objects_XHiZ, X
+	CMP Platform_StartXHi, X
+	BNE Swing_Move
+
+	JSR Object_DeleteOffScreen
+
+Swing_Move:
+	LDA Objects_Timer, X
+	BNE Swing_Interact
+
+	INC PlatformSwing_Ticker, X
+	LDA PlatformSwing_Ticker, X	
+
+	LSR A
+	LSR A
+	AND #$1F
+	TAY
+
+	LDA PlatformSwing_YVel, Y
+	STA <Objects_YVelZ, X
+
+	
+	LDA PlatformSwing_Ticker, X
+	LSR A
+	LSR A
+	AND #$3F
+	TAY
+
+	LDA PlatformSwing_XVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA PlatformSwing_XVel, Y
+	STA <Objects_XVelZ, X
+
+Swing_Interact:
+	JSR Object_CalcBoundBoxForced
+
+	LDA #$00
+	STA Platform_MadeContact, X
+
+	JSR Object_InteractWithPlayer
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel
+	JSR Platform_ContactCheck
+
+Swing_Draw:
+	JSR Platform_Draw
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA <Objects_XZ, X
+	ADD #$18
+	STA <Point_MidX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Point_MidXHi
+
+	LDA <Point_MidX
+	SUB SwingAnchor_X, X
+	
+	PHA
+
+	LDA <Point_MidXHi
+	SBC SwingAnchor_XHi, X
+	STA <Temp_Var2
+
+	PLA
+	JSR Half_Value
+
+	ADD SwingAnchor_X, X
+	STA <Point_X
+
+	LDA SwingAnchor_XHi, X
+	ADC <Temp_Var2
+	STA <Point_XHi
+
+	LDA <Objects_YZ, X
+	SUB SwingAnchor_Y, X
+	
+	PHA
+
+	LDA <Objects_YHiZ, X
+	SBC SwingAnchor_YHi, X
+	STA <Temp_Var2
+
+	PLA
+	JSR Half_Value
+
+	ADD SwingAnchor_Y, X
+	STA <Point_Y
+
+	LDA <Temp_Var2
+	ADC SwingAnchor_YHi, X
+	STA <Point_YHi
+	
+	LDA <Point_X
+	SUB #$04
+	STA <Point_X
+
+	LDA <Point_XHi
+	SBC #$00
+	STA <Point_XHi
+
+	LDA <Point_Y
+	SUB #$04
+	STA <Point_Y
+
+	LDA <Point_YHi
+	SBC #$00
+	STA <Point_YHi
+
+	JSR CheckPoint_OffScreen
+	BCC Swing_DrawAttach
+
+	LDA <Point_RelativeX
+	STA Sprite_RAMX + 28, Y
+
+	LDA <Point_RelativeY
+	STA Sprite_RAMY + 28, Y
+
+	LDA #$A5
+	STA Sprite_RAMTile + 28, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr + 28, Y
+
+Swing_DrawAttach:
+	LDA <Point_MidX
+	SUB #$04
+	STA <Point_X
+
+	LDA <Point_MidXHi
+	SBC #$00
+	STA <Point_XHi
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA <Point_Y
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Point_YHi
+
+	JSR CheckPoint_OffScreen
+	BCC Swing_DrawRTS
+
+	LDA <Point_RelativeX
+	STA Sprite_RAMX + 32, Y
+
+	LDA <Point_RelativeY
+	STA Sprite_RAMY + 32, Y
+
+	LDA #$A7
+	STA Sprite_RAMTile + 32, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr + 32, Y
+
+Swing_DrawRTS:	
+	RTS
+
+Point_MidX = Temp_Var8
+Point_MidXHi = Temp_Var9
+Point_X = Temp_Var10
+Point_XHi = Temp_Var11
+Point_Y = Temp_Var12
+Point_YHi = Temp_Var13
+Point_RelativeX = Temp_Var14
+Point_RelativeY = Temp_Var15
+
+CheckPoint_OffScreen:
+	LDA <Point_X
+	SUB <Horz_Scroll
+	STA <Point_RelativeX
+
+	LDA <Point_XHi
+	SBC <Horz_Scroll_Hi
+	BNE Point_OffScreen
+
+	LDA <Point_Y
+	SUB <Vert_Scroll
+	STA <Point_RelativeY
+
+	LDA <Point_YHi
+	SBC <Vert_Scroll_Hi
+	BNE Point_OffScreen
+
+	SEC
+	RTS
+
+Point_OffScreen:
+	CLC
+	RTS	

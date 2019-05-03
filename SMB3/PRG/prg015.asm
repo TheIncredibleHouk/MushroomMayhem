@@ -14,10 +14,12 @@ OBJ_PODOBO          = $81
 OBJ_PIPEPODOBO      = $82
 OBJ_PODOBO_X        = $83
 OBJ_PEEKABOO 		= $84
-OBJ_COOBOO			= $85
-OBJ_COOBOOX2		= $86
-OBJ_COOBOOX3		= $87
+OBJ_POLTERGUY		= $85
+OBJ_SPECTER			= $86
+OBJ_POLTERGUYX3		= $87
 OBJ_PHASM			= $88
+OBJ_BOOWAVE			= $89
+OBJ_POKEY			= $8A
 
     .word ObjInit_Spike ; Object $78
     .word ObjInit_SpikeBall ; Object $79
@@ -32,12 +34,12 @@ OBJ_PHASM			= $88
     .word ObjInit_PipePodobo ; Object $82
     .word ObjInit_DiagonalPodobo ; Object $83
     .word ObjInit_PeekaBoo ; Object $84
-    .word ObjInit_CooBoo ; Object $85
-    .word ObjInit_CooBooX2 ; Object $86
-    .word ObjInit_CooBooX3 ; Object $87
+    .word ObjInit_PolterGuy ; Object $85
+    .word ObjInit_Specter ; Object $86
+    .word ObjInit_DoNothing ; Object $87
     .word ObjInit_Phasm ; Object $88
-    .word ObjInit_DoNothing ; Object $89
-    .word ObjInit_DoNothing ; Object $8A
+    .word ObjInit_BooWave ; Object $89
+    .word ObjInit_Pokey ; Object $8A
     .word ObjInit_DoNothing ; Object $8B
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
@@ -55,12 +57,12 @@ OBJ_PHASM			= $88
     .word ObjNorm_PipePodobo ; Object $82
     .word ObjNorm_DiagonalPodobo ; Object $83
     .word ObjNorm_PeekaBoo ; Object $84
-    .word ObjNorm_CooBoo ; Object $85
-    .word ObjNorm_CooBoo ; Object $86
-    .word ObjNorm_CooBoo ; Object $87
+    .word ObjNorm_PolterGuy ; Object $85
+    .word ObjNorm_Specter ; Object $86
+    .word ObjNorm_DoNothing ; Object $87
     .word ObjNorm_Phasm ; Object $88
-    .word ObjNorm_DoNothing ; Object $89
-    .word ObjNorm_DoNothing ; Object $8A
+    .word ObjNorm_BooWave ; Object $89
+    .word ObjNorm_Pokey ; Object $8A
     .word ObjNorm_DoNothing ; Object $8B
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
@@ -102,12 +104,12 @@ OBJ_PHASM			= $88
     .byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $83
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
-    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $89
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8A
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8B
+    .byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $8B
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -125,11 +127,11 @@ OBJ_PHASM			= $88
     .byte OPTS_SETPT5 | $0A ; Object $83
     .byte OPTS_SETPT5 | $37 ; Object $84
     .byte OPTS_SETPT5 | $37 ; Object $85
-    .byte OPTS_SETPT5 | $37 ; Object $86
+    .byte OPTS_SETPT6 | $13 ; Object $86
     .byte OPTS_SETPT5 | $37 ; Object $87
     .byte OPTS_SETPT5 | $37 ; Object $88
-    .byte OPTS_NOCHANGE ; Object $89
-    .byte OPTS_NOCHANGE ; Object $8A
+    .byte OPTS_SETPT5 | $37 ; Object $89
+    .byte OPTS_SETPT5 | $37 ; Object $8A
     .byte OPTS_NOCHANGE ; Object $8B
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
@@ -148,10 +150,10 @@ OBJ_PHASM			= $88
     .byte KILLACT_STARDEATH ; Object $83
     .byte KILLACT_NORMALSTATE ; Object $84
     .byte KILLACT_NORMALSTATE ; Object $85
-    .byte KILLACT_NORMALSTATE ; Object $86
+    .byte KILLACT_STARDEATH ; Object $86
     .byte KILLACT_STARDEATH ; Object $87
     .byte KILLACT_STARDEATH ; Object $88
-    .byte KILLACT_STARDEATH ; Object $89
+    .byte KILLACT_NORMALSTATE ; Object $89
     .byte KILLACT_STARDEATH ; Object $8A
     .byte KILLACT_STARDEATH ; Object $8B
 
@@ -188,6 +190,8 @@ ObjP7D:
 
 ObjP7E:
     .byte $9D, $9F
+
+ObjP89:
 	.byte $8B, $8D
 
 ObjP7F:
@@ -210,11 +214,15 @@ ObjP84:
 	.byte $B7, $B7
 
 ObjP85:
+	.byte $AF, $B3
+	.byte $AF, $B3
+	.byte $AF, $B3
+
 ObjP86:
+	.byte $ED, $ED
+	.byte $EF, $EF
+
 ObjP87:
-	.byte $AF, $B3
-	.byte $AF, $B3
-	.byte $AF, $B3
 
 
 ObjP88:
@@ -225,8 +233,12 @@ ObjP88:
 	.byte $81, $81
 	.byte $83, $83
 
-ObjP89:
 ObjP8A:
+	.byte $99, $9B
+	.byte $B9, $BB
+	.byte $B9, $BB
+	.byte $B9, $BB
+
 ObjP8B:
 
 
@@ -3296,14 +3308,20 @@ PeekaBoo_LowerDraw:
 	JMP Object_DrawMirrored
 
 
-CooBoo_PatternHoz:
+PolterGuy_PatternHoz:
 	.byte $00
+
+PolterGuy_StartDirection:
+	.byte $FF, $01	
+
+PolterGuy_StartSpeed:
+	.byte $F0, $10	
 	
-ObjInit_CooBoo:
+ObjInit_PolterGuy:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-ObjInit_CommonCooBoo:
+ObjInit_CommonPolterGuy:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -3321,56 +3339,113 @@ ObjInit_CommonCooBoo:
 	SBC #$00
 	STA <Objects_XHiZ, X
 
-	JMP InitPatrol_NoTimers
-
-ObjInit_CooBooX2
-	LDA #BOUND16x32
-	STA Objects_BoundBox, X
-
-	LDA #$04
-	STA Objects_SpritesRequested, X
+	JSR InitPatrol_NoTimers
 	
-	JMP ObjInit_CommonCooBoo
+	LDA #$01
+	STA Patrol_YVelocityChange, X
 
-ObjInit_CooBooX3
-	LDA #BOUND16x48
-	STA Objects_BoundBox, X
+	LDA #$08
+	STA Patrol_YAccelLimit, X
 
-	LDA #$06
-	STA Objects_SpritesRequested, X
+	LDY Objects_Property, X
 
-	JMP ObjInit_CommonCooBoo
+	LDA PolterGuy_StartDirection, Y
+	STA Patrol_XVelocityChange, X
 
-ObjNorm_CooBoo:
+	LDA PolterGuy_StartSpeed, Y
+	STA Patrol_XAccelLimit, X
+
+	LDA RandomN
+	AND #$7F
+	STA Objects_Timer, X
+	RTS
+
+ObjNorm_PolterGuy:
 	LDA <Player_HaltGameZ
-	BEQ CooBoo_Norm
-	JMP CooBoo_Draw
+	BEQ PolterGuy_Norm
+	JMP PolterGuy_Draw
 
-CooBoo_Norm:
+PolterGuy_Norm:
 
 	LDA #$80
 	JSR Object_DeleteOffScreenRange
 
-	JSR Object_MovePattern
-	JSR Object_MovePattern
+	JSR PatrolDiagonal
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
-CooBoo_Draw:
-	LDA Objects_BoundBox, X
-	CMP #BOUND16x16
-	BNE CooBoo_Draw16x32
-
+PolterGuy_Draw:
 	JMP Object_Draw
 
-CooBoo_Draw16x32:
-	CMP #BOUND16x32
-	BNE CooBoo_Draw16x48
+ObjInit_Specter:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 
-	JMP Object_Draw16x32
+	LDA #$01
+	STA ObjSplash_Disabled, X
+	RTS
 
-CooBoo_Draw16x48:
-	JMP Object_Draw16x48
+ObjNorm_Specter:
+	LDA <Player_HaltGameZ
+	BEQ Specter_Norm
+	JMP Specter_Draw
+
+Specter_Norm:	
+	JSR Object_DeleteOffScreen
+
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTilesWallStops
+
+	LDA Objects_Timer, X
+	BNE Specter_Move
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BNE Specter_MoveUp
+
+	JSR Object_YDistanceFromPlayer
+
+	CPY #$00
+	BEQ Specter_MoveUp
+
+	LDA #$40
+	STA Objects_Timer, X
+	BNE Specter_Move
+
+Specter_MoveUp:
+	LDA #$40
+	STA Objects_Timer, X
+
+	LDA #$D8
+	STA <Objects_YVelZ, X
+
+	JSR Object_MoveTowardsPlayer
+
+Specter_Move:
+	LDA #$01
+	STA Objects_InWater, X
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyY_With_Gravity
+
+	LDA #$00
+	STA Objects_InWater, X
+	
+Specter_Animate:
+	LDY #$00
+	LDA <Objects_YVelZ, X
+	BMI Specter_SetFrame
+
+	INY
+
+Specter_SetFrame:
+	TYA
+	STA Objects_Frame, X
+
+Specter_Draw:
+	JMP Object_DrawMirrored
 
 Phasm_Action = Objects_Data1
 Phasm_AnimTicks = Objects_Data2
@@ -3597,3 +3672,72 @@ Phasm_PhaseOutAnimate:
 
 Phasm_Draw:
 	JMP Object_DrawMirrored
+
+BooWave_XStart:
+	.byte $E0, $20
+	.byte $FF, $01
+
+ObjInit_BooWave:
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	JSR InitPatrolVertical
+
+	LDA #$08
+	STA Patrol_ResetTimer, X
+
+	LDY #$00
+
+	LDA Player_EffXVel
+	BMI BooWave_SetSide
+
+	INY
+
+BooWave_SetSide:
+	LDA <Horz_Scroll
+	ADD BooWave_XStart, Y
+	STA <Objects_XZ, X
+
+	LDA <Horz_Scroll_Hi
+	ADC BooWave_XStart + 2, Y
+	STA <Objects_XHiZ, X
+
+	LDA <Player_Y
+	SUB #$20
+	STA <Objects_YZ, X
+
+	LDA <Player_YHi
+	SBC #$00
+	STA <Objects_YHiZ, X 
+
+	JSR Object_CalcBoundBox
+	JSR Object_MoveTowardsPlayerFast
+
+	RTS
+
+ObjNorm_BooWave:
+	LDA <Player_HaltGameZ
+	BNE BooWave_Draw
+
+	JSR Object_DeleteOffScreen
+	JSR Object_FaceDirectionMoving
+	JSR Object_ApplyXVel
+	JSR PatrolUpDown
+	JSR PatrolUpDown
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+BooWave_Draw:
+	JMP Object_Draw
+
+ObjInit_Pokey:
+
+	RTS
+
+ObjNorm_Pokey:
+	RTS

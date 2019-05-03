@@ -562,6 +562,9 @@ PRG000_C834:
 
 
 	; When Object hits water, splash!
+Object_OilSplash:
+	INC Splash_IsOil
+	
 Object_WaterSplash:
 	LDX #$05
 
@@ -572,6 +575,9 @@ FindSplash:
 	INX
 	CPX #$08
 	BNE FindSplash
+
+	LDA #$00
+	STA Splash_IsOil
 
 	LDX <CurrentObjectIndexZ
 	RTS
@@ -609,8 +615,12 @@ MakeSplash:
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, X
 
+	LDA Splash_IsOil
+	STA WaterSplash_IsOil, X
+
 	LDA #$00
 	STA Objects_Orientation, X
+	STA Splash_IsOil
 
 	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
@@ -882,7 +892,7 @@ Frozen_Normal:
 
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
-	JSR Object_CalcBoundBox
+	JSR Object_CalcBoundBoxForced
 
 	LDA Objects_XVelZ, X
 	ORA Objects_BeingHeld, X
@@ -1933,7 +1943,7 @@ PRG000_D0CA:
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BNE PRG000_D0DE
-	
+
 	LDA Reverse_Gravity
 	BNE PRG000_D0DF
 
@@ -5461,6 +5471,12 @@ Can_Hold:
 	STA Player_IsHolding
 
 	LDA Player_FlipBits
+	AND #SPR_HFLIP
+	STA <Temp_Var1
+
+	LDA Objects_Orientation,X
+	AND #~SPR_HFLIP
+	ORA <Temp_Var1
 	STA Objects_Orientation,X
 
 Object_HoldRTS0:

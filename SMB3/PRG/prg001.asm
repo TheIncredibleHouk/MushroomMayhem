@@ -250,7 +250,7 @@ PowerUp_AnimOff:
 	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $FF, $2C
 
 PowerUp_Timers:
-	.byte $00, $00, $06, $06, $1C, $1C, $06, $1C, $06, $1C, $08, $1C, $0A, $06
+	.byte $00, $00, $02, $02, $1C, $1C, $02, $1C, $02, $1C, $08, $1C, $0A, $02
 
 
 ObjInit_PUp1:
@@ -270,7 +270,6 @@ ObjInit_PUp2:
 
 ObjInit_PowerUp:
 	JSR Object_NoInteractions
-
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
@@ -1094,11 +1093,14 @@ DrawCoinLock0:
 	ORA Objects_SpritesVerticallyOffScreen,X
 	BEQ DrawCoinLock1
 
-	LDA #$08
-	STA Sprite_RAM, Y
-	STA Sprite_RAM+3, Y
-	STA Sprite_RAM+4, Y
 	LDA #$10
+	STA Sprite_RAM, Y
+	STA Sprite_RAM+4, Y
+
+	LDA #$10
+	STA Sprite_RAM+3, Y
+	
+	LDA #$18
 	STA Sprite_RAM+7, Y
 
 
@@ -2588,4 +2590,3 @@ PoisonMushroom_InsideBlockRTS:
 	LDA #$04
 	STA Objects_Timer2, X
 	RTS
-	

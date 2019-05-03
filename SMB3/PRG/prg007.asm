@@ -906,7 +906,7 @@ SpecialObj_Poof1:
 	JMP SpecialObj_Delete
 
 Detect16x16:
-	.byte $02, $0E
+	.byte $06, $0A
 
 SpecialObj_DetectWorld16x16:
 	LDA Game_Counter
@@ -1172,7 +1172,7 @@ SpecialObj_CalcBounds16x16:
 	STA SpecialObj_BoundLeftHi
 
 	LDA SpecialObj_BoundLeft
-	ADD #$0B
+	ADD #$0A
 	STA SpecialObj_BoundRight
 
 	LDA SpecialObj_BoundLeftHi
@@ -1311,7 +1311,7 @@ Bubbles_UpdateAndDraw:
 PRG007_A86A:
 	STX <CurrentObjectIndexZ	 ; -> Slot index backup
 
-	LDA Bubble_Cnt,X
+	;LDA Bubble_Cnt,X
 	BEQ PRG007_A874	 ; If this bubble slot is not in use, jump to PRG007_A874
 
 	JSR Bubble_UpdateAndDraw	 ; Update and draw this bubble
@@ -2011,7 +2011,7 @@ SObj_DoNothing:
 PRG007_AF23:
 	RTS		 ; Return
 
-SpecialObj_UpdateAndDraw:
+SpecialObj_UpdateAndDraw:	
 	
 	LDA SpecialObj_ID,X
 
@@ -2027,7 +2027,7 @@ SpecialObj_UpdateAndDraw:
 	.word Enemy_IceBall	; 06: Micro goombas
 	.word Enemy_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word Enemy_Egg	; 08: Koopaling wand blast
-	.word Enemy_OilPool	; 09: Lost Kuribo shoe
+	.word Enemy_OilOoze	; 09: Lost Kuribo shoe
 	.word Enemy_BigFireball	; 0A: Rocky's Wrench
 	.word Enemy_Cannonball	; 0B: Cannonball
 	.word Enemy_LightningBolt	; 0C: Fire bro bouncing fireball
@@ -2736,6 +2736,72 @@ Enemey_EggDraw1:
 	JSR SpecialObj_Draw16x16
 	RTS
 
+OilOoze_Frames:
+	.byte $A1, $A3, $A3, $A3
+
+Enemy_OilOoze:
+	LDA <Player_HaltGameZ
+	BNE Enemy_OilOozeDraw
+
+	LDA SpecialObj_Data2, X
+	BNE Oil_Change
+
+	INC SpecialObj_Data1, X
+
+	LDA SpecialObj_Data1, X
+	CMP #$08
+	BCC Enemy_OilOozeDraw
+
+Oil_Change:
+	JSR SpecialObj_CalcBounds16x16
+	JSR SpecialObj_DetectWorld16x16
+
+	LDA Block_NeedsUpdate
+	BNE Enemy_OilOozeDraw
+
+	LDA Tile_LastValue
+	ADD #$01
+
+	JSR Object_ChangeBlock
+	
+	LDA SpecialObj_Data2, X
+	BEQ Oil_DelayDelete
+
+	JMP SpecialObj_Delete
+
+Oil_DelayDelete:
+	INC SpecialObj_Data2, X
+
+	LDA SpecialObj_Y, X
+	SUB #$10
+	STA SpecialObj_Y, X
+
+	LDA SpecialObj_YHi, X
+	SBC #$00
+	STA SpecialObj_YHi, X
+	RTS
+	
+
+Enemy_OilOozeDraw:
+	LDA SpecialObj_Data1, X
+	
+	LSR A
+	LSR A
+
+	AND #$03
+	TAY
+
+	LDA OilOoze_Frames, Y
+	STA <SpecialObj_Tile
+	STA <SpecialObj_Tile + 1
+
+	LDA #SPR_PAL1
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+
+	JSR SpecialObj_CheckDirection16x16
+	JSR SpecialObj_Draw16x16
+	RTS
 
 Enemy_BigFireballAnimate = SpecialObj_Data1
 Enemy_BigFireballAttr:
@@ -2979,38 +3045,45 @@ Enemy_Oil:
 
 Enemy_OilNorm:
 	JSR SObj_ApplyXYVels
+	JSR SObj_ApplyXYVels
+
 	JSR SpecialObj_CalcBounds16x16
 	JSR Enemy_OilPlayer
 	JSR SpecialObj_DetectWorld16x16
-	
-	LDA Tile_LastProp
+
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
-	BNE Enemy_NotInteract
+	BNE Enemy_OilSolid
 
-	LDA Block_NeedsUpdate
-	BNE Enemy_NotInteract
+	LDA #SOBJ_OILOOZE
+	STA SpecialObj_ID, X
 
-	LDA Tile_LastValue
-	EOR #$01
-	JSR Object_ChangeBlock
+	LDA #$00
+	STA SpecialObj_Data1, X
 
-	JMP SpecialObj_Delete
+	LDA Tile_DetectionX
+	STA SpecialObj_X, X
+
+	LDA Tile_DetectionXHi
+	STA SpecialObj_XHi, X
+
+	LDA Tile_DetectionY
+	STA SpecialObj_Y, X
+
+	LDA Tile_DetectionYHi
+	STA SpecialObj_YHi, X
+	RTS
+
+Enemy_OilSolid:
+	CMP #TILE_PROP_SOLID_ALL
+	BCS Enemy_OilSplash
 
 Enemy_NotInteract:
 	LDA SpecialObj_YVel, X
-	BMI Enemy_OilNotTop
+	BMI Enemy_OilDraw
 
 	LDA Tile_LastProp
-	AND #TILE_PROP_SOLID_TOP
-	BNE Enemy_OilToPool
-
-Enemy_OilNotTop:
-	LDA Tile_LastProp
-	AND #TILE_PROP_SOLID_ALL
-	BEQ Enemy_OilDraw
-
-Enemy_OilToPool:
-	INC SpecialObj_Data2, X
+	CMP #TILE_PROP_SOLID_TOP
+	BCS Enemy_OilSplash
 
 Enemy_OilDraw:
 	LDA #$4F
@@ -3026,36 +3099,22 @@ Enemy_OilDraw:
 	JSR SpecialObj_Draw16x16
 	RTS
 
-Enemy_OilPool:
-	DEC SpecialObj_Data1, X
-	BNE Enemy_OilPoolNorm
+Enemy_OilSplash:
 
-	JMP SpecialObj_ToPoofNoSound
+	LDA Tile_DetectionY
+	SUB #$10
+	STA Tile_DetectionY
 
-Enemy_OilPoolNorm:
-	JSR SpecialObj_CalcBounds16x16
-	LDA SpecialObj_BoundTop
-	ADD #$08
-	STA SpecialObj_BoundTop
+	LDA Tile_DetectionYHi
+	SBC #$00
+	STA Tile_DetectionYHi
+	
+	LDY #$00
+	JSR Object_OilSplash
 
-	LDA SpecialObj_BoundTopHi
-	ADC #$00
-	STA SpecialObj_BoundTopHi
-
-	JSR EnemyProj_HitPlayer
-
-	LDA #$63
-	STA <SpecialObj_Tile
-	STA <SpecialObj_Tile + 1
-
-	LDA #SPR_PAL2
-	STA <SpecialObj_Attributes
-	STA <SpecialObj_Attributes + 1
-
-	JSR SpecialObj_CheckForeground
-	JSR SpecialObj_Draw16x16
-	RTS
-
+	
+	JMP SpecialObj_Delete
+	
 Enemy_FireBall:
 	LDA <Player_HaltGameZ
 	BNE Enemy_FireBall5
@@ -3493,7 +3552,7 @@ PRG007_BB97:
 	.word ObjectGen_Enemy ; 
 	.word ObjectGen_ShellCannon	; #C1
 	.word ObjectGen_Goombas	; #C2
-	.word ObjectGen_Cannonball 	; 
+	.word ObjectGen_Cannonball ; 	#C3
 	.word ObjectGen_Cannonball	; 
 	.word ObjectGen_Cannonball	; 
 	.word ObjectGen_Cannonball	; 
@@ -4029,6 +4088,7 @@ ShellCannnon_Make:
 
 ObjectGen_ShellCannon1:
 	RTS		 ; Return
+
 
 PRG007_BD82:
 	.byte $00, $08, $10, $18, $20, $28, $30, $38
@@ -4790,7 +4850,7 @@ Enemy_OilPlayer1:
 
 	LDA #$FF
 	STA Player_Oiled
-	JMP SpecialObj_ToPoof
+	JMP Enemy_OilSplash
 
 Enemy_OilPlayerRTS:
 	RTS
