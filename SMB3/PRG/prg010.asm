@@ -3895,7 +3895,7 @@ UpdateLevel:
 	INX
 
 UpdateLevelA1:
-	STX Status_Bar_Bottom + 15
+	STX Status_Bar_Top + 15
 	LDX #$D6
 	PLA
 	PHA
@@ -3904,7 +3904,7 @@ UpdateLevelA1:
 	INX
 
 UpdateLevelA2:
-	STX Status_Bar_Bottom + 16
+	STX Status_Bar_Top + 16
 	LDX #$D6
 	PLA
 	AND Magic_Stars_Collected3, Y
@@ -3912,12 +3912,12 @@ UpdateLevelA2:
 	INX
 
 UpdateLevelA3:
-	STX Status_Bar_Bottom + 17
+	STX Status_Bar_Top + 17
 	RTS
 
 UpdateLevel1:
 	LDA LevelName, Y
-	STA Status_Bar_Bottom, Y
+	STA Status_Bar_Top, Y
 	INY
 	CPY #28
 	BNE UpdateLevel1

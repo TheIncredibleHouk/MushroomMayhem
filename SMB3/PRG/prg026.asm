@@ -2315,8 +2315,8 @@ Status_Bottom_Loop:
 
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $D7, $30, $30, $30, $FE, $D5, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
-	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $FE, $30, $30, $30, $FE, $FE, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
+	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $30, $30, $30, $FE, $FE, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
+	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
 
 Initial_Bar_Display2:
 	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $20, $20, $20, $20, $20, $F0, $F0, $F0, $F0, $F0, $F0, $F0
@@ -2515,16 +2515,16 @@ StatusBar_DrawStars:
 
 	LDA <DigitsResult + 2
 	ORA #$30
-	STA Status_Bar_Top + 15
+	STA Status_Bar_Bottom + 15
 
 	LDA <DigitsResult + 1
 	ORA #$30
-	STA Status_Bar_Top + 16
+	STA Status_Bar_Bottom + 16
 
 	LDA <DigitsResult
 	ORA #$30
-	STA Status_Bar_Top + 17
-	INC Top_Needs_Redraw
+	STA Status_Bar_Bottom + 17
+	INC Bottom_Needs_Redraw
 	RTS
 	
 ;--------------------------------------
@@ -2550,14 +2550,14 @@ StatusBar_DrawCherries:
 
 	LDA <DigitsResult
 	ORA #$30
-	STA Status_Bar_Top + 21
+	STA Status_Bar_Bottom + 21
 	
 	LDA <DigitsResult + 1
 	ORA #$30
-	STA Status_Bar_Top + 20
+	STA Status_Bar_Bottom + 20
 
 StatusBar_DrawCherries1:
-	INC Top_Needs_Redraw
+	INC Bottom_Needs_Redraw
 	RTS
 	
 ;-----------------------------------
@@ -2762,7 +2762,7 @@ StatusBar_DrawStarsCollected:
 	INX
 
 StatusBar_DrawStars1:
-	STX Status_Bar_Bottom + 15
+	STX Status_Bar_Top + 15
 	LDX #$D6
 	PLA
 	PHA
@@ -2771,7 +2771,7 @@ StatusBar_DrawStars1:
 	INX
 
 StatusBar_DrawStars2:
-	STX Status_Bar_Bottom + 16
+	STX Status_Bar_Top + 16
 	LDX #$D6
 	PLA
 	AND Magic_Stars_Collected3, Y
@@ -2779,8 +2779,8 @@ StatusBar_DrawStars2:
 	INX
 
 StatusBar_DrawStars3:
-	STX Status_Bar_Bottom + 17
-	INC Bottom_Needs_Redraw
+	STX Status_Bar_Top + 17
+	INC Top_Needs_Redraw
 	RTS
 ;--------------------------------------
 
@@ -2813,18 +2813,18 @@ StatusBar_DrawDayNightMeter:
 
 StatusBar_DrawDayNightMeter1:
 	LDA DayNightIcon, X
-	STA Status_Bar_Bottom + 19
+	STA Status_Bar_Top + 19
 	
 	LDA DayNightTicker
 	ASL A
 	TAX
 	
 	LDA DayNightTiles, X
-	STA Status_Bar_Bottom + 20
+	STA Status_Bar_Top + 20
 	
 	LDA DayNightTiles + 1,X
-	STA Status_Bar_Bottom + 21
-	INC Bottom_Needs_Redraw
+	STA Status_Bar_Top + 21
+	INC Top_Needs_Redraw
 	RTS
 ;--------------------------------------
 BadgeTiles:
@@ -2959,7 +2959,6 @@ Game_UpdateTimer1:
 	RTS
 	
 StatusBar_DrawTimer:
-	
 	LDA Game_Timer
 	ORA #$30
 	STA Status_Bar_Top + 10

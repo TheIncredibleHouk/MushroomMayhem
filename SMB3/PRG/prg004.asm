@@ -1440,7 +1440,15 @@ ObjInit_Piranha1:
 	RTS
 
 ObjInit_Piranha_Aggressive:
-	JMP ObjInit_Piranha
+	JSR ObjInit_Piranha
+	
+	LDA #$01
+	STA Piranha_CurrentState, X
+
+	LDA Objects_Orientation, X
+	AND #~SPR_BEHINDBG
+	STA Objects_Orientation, X
+	RTS
 
 
 Piranha_CurrentFrame = Objects_Data1

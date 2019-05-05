@@ -1816,6 +1816,7 @@ SetDNActive1:
 PRG027_B85E:
 	LDA [Temp_Var1],Y
 	STA Pal_Data,Y	
+	
 	CPY #$10
 	BCS SkipMasterBackup
 	STA MasterPal_Data, X
@@ -1857,33 +1858,6 @@ No_Darken:
 	STA Pal_Data+20
 	STA Pal_Data+24
 	STA Pal_Data+28
-
-	LDA Level_Tileset
-	CMP #15	 
-	BNE PRG027_B8C3	 	; If Level_Tileset <> 15 (Bonus Game intro), jump to PRG027_B8C3
-
-	; Level_Tileset = 15... (the intro to the bonus games)
-	LDA Player_Current
-	ASL A		 
-	ASL A		 
-	ASL A		 
-	TAY		 ; Y = Player_Current << 3
-
-	; This loop copies in the correct palette for the Player
-	; meeting with the bonus game host (Toad ... typically)
-	LDX #$00	 ; X = 0
-PRG027_B8B4:
-	LDA BonusGame_PlayerPal,Y
-	STA Pal_Data+4,X	 
-	INY		 ; Y++
-	INX		 ; X++
-	CPX #$08
-	BNE PRG027_B8B4	 ; While X <> 8, loop!
-	JMP PRG027_B8F9	 ; (RTS)
-
-PRG027_B8C3:
-	CMP #$0f	 	; 
-	BGE PRG027_B8F9	 	; For all Level_Tileset values greater than $0F, don't do this next patch!
 
 
 	; The following patches in the correct palette for the

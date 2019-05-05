@@ -3665,6 +3665,13 @@ Object_ToBottom1:
 	;RTS
 
 Object_DetectPlayer:
+	LDA Objects_BeingHeld, X
+	BEQ Object_DoDetectPlayer
+
+	SEC
+	RTS
+
+Object_DoDetectPlayer:	
 	LDY #$08
 
 Object_DetectObjects:

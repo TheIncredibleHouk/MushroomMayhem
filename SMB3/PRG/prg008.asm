@@ -3789,8 +3789,7 @@ BumpBlock_PSwitch:
 	STA Tile_YHi
 
 	JSR Player_GetTile
-	DEY
-	TYA
+	EOR #$01
 	JSR Level_QueueChangeBlock
 
 	LDA Tile_Y

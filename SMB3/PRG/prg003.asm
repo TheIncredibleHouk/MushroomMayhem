@@ -418,7 +418,10 @@ Platform_PlayerStand:
 	STA Platform_SteppedOn, X
 	STA Platform_MadeContact, X
 
-Platform_PlayerStand1:	
+	LDA <Objects_YVelZ, X
+	BPL Platform_PlayerStand1
+	
+Platform_PlayerStand1:
 	RTS	
 
 Platform_ContactCheck:
@@ -1393,7 +1396,6 @@ ObjInit_PlatformSwing:
 	LDA #$08
 	STA Objects_SpritesRequested, X
 
-	STA Debug_Snap
 	LDY Objects_Property, X
 	
 	LDA PlatformSwing_TickerType, Y
@@ -1545,16 +1547,16 @@ Swing_Draw:
 	BCC Swing_DrawAttach
 
 	LDA <Point_RelativeX
-	STA Sprite_RAMX + 28, Y
+	STA Sprite_RAMX + 24, Y
 
 	LDA <Point_RelativeY
-	STA Sprite_RAMY + 28, Y
+	STA Sprite_RAMY + 24, Y
 
 	LDA #$A5
-	STA Sprite_RAMTile + 28, Y
+	STA Sprite_RAMTile + 24, Y
 
 	LDA #SPR_PAL1
-	STA Sprite_RAMAttr + 28, Y
+	STA Sprite_RAMAttr + 24, Y
 
 Swing_DrawAttach:
 	LDA <Point_MidX
@@ -1577,16 +1579,16 @@ Swing_DrawAttach:
 	BCC Swing_DrawRTS
 
 	LDA <Point_RelativeX
-	STA Sprite_RAMX + 32, Y
+	STA Sprite_RAMX + 28, Y
 
 	LDA <Point_RelativeY
-	STA Sprite_RAMY + 32, Y
+	STA Sprite_RAMY + 28, Y
 
 	LDA #$A7
-	STA Sprite_RAMTile + 32, Y
+	STA Sprite_RAMTile + 28, Y
 
 	LDA #SPR_PAL1
-	STA Sprite_RAMAttr + 32, Y
+	STA Sprite_RAMAttr + 28, Y
 
 Swing_DrawRTS:	
 	RTS

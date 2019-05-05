@@ -36,8 +36,8 @@ OBJ_MAGNET			= $26
     .word ObjInit_Stars     ; Object $1F
     .word ObjInit_Explosion ; Object $20
     .word ObjInit_MarioBlack ; Object $21
-    .word ObjInit_BridgeBuild ; Object $22
-    .word ObjInit_DoNothing ; Object $23
+    .word ObjInit_BlockFlip ; Object $22
+    .word ObjInit_BridgeBuild ; Object $23
     .word ObjInit_BlockSwitcher ; Object $24
     .word ObjInit_MushroomBlock ; Object $25
     .word ObjInit_Magnet ; Object $26
@@ -60,7 +60,7 @@ OBJ_MAGNET			= $26
     .word ObjNorm_Explosion     ; Object $20
     .word ObjNorm_MarioBlack     ; Object $21
     .word ObjNorm_BlockFlip     ; Object $22
-    .word ObjNorm_DoNothing     ; Object $23
+    .word ObjNorm_BridgeBuild     ; Object $23
     .word ObjNorm_BlockSwitcher     ; Object $24
     .word ObjNorm_MushroomBlock     ; Object $25
     .word ObjNorm_Magnet     ; Object $26
@@ -2107,58 +2107,119 @@ BlockFlip_RTS:
 	RTS
 
 BridgeBuild_Activated = Objects_Data1
+BridgeBuild_CheckOffset = Objects_Data2
+BridgeBuild_BlockCheck = Objects_Data3
+
 BridgeBuild_DirectionX:
 	.byte $10, $F0, $00, $00
 
 BridgeBuild_DirectionY:	
 	.byte $00, $00, $10, $F0
 
+	
 ObjInit_BridgeBuild:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
+	
+	TYA
+	STA BridgeBuild_BlockCheck, X
 	RTS
 
 ObjNorm_BridgeBuild:
 	LDA BridgeBuild_Activated, X
-	BNE BridgeBuild_BuildIt
+	BEQ BridgeBuild_Wait
 
-	LDA EventSwitch
-	BEQ BridgeBuild_NotActive
+	JMP BridgeBuild_Build
 
-	INC BridgeBuild_Activated, X
-	RTS
-
-BridgeBuild_NotActive:
-	JSR Object_CalcBoundBox
+BridgeBuild_Wait:
 	JSR Object_DeleteOffScreen
-	RTS
 
-BridgeBuild_BuildIt:
-	LDA #$10
-	STA <Objects_XVelZ, X
-
-	JSR Object_ApplyXVel
-	JSR Object_ApplyYVel_NoGravity
-
-	LDA <Objects_XVelZ, X
-	ORA <Objects_YVelZ, X
-	AND #$0F
-	BNE BridgeBuild_BuildItRTS
-
-	JSR Object_CalcBoundBox
+	JSR Object_CalcBoundBoxForced
 	JSR Object_DetectTileCenter
 
-	LDA Tile_LastProp
-	CMP #TILE_PROP_ENEMY
-	BEQ BridgeBuild_Toggle
+	TYA
+	CMP BridgeBuild_BlockCheck, X
+	BEQ BridgeBuild_RTS
+
+	INC BridgeBuild_Activated, X
+
+BridgeBuild_RTS:
+	RTS	
+
+BridgeBuild_XOffsets:
+	.byte $10, $00, $F0, $00
+	.byte $00, $00, $FF, $00
+
+BridgeBuild_YOffsets:
+	.byte $00, $10, $00, $F0
+	.byte $00, $00, $00, $FF
+
+BridgeBuild_Build:
+	LDA Objects_Timer, X
+	BNE BridgeBuild_RTS
+
+	LDA Block_NeedsUpdate
+	BNE BridgeBuild_RTS
+
+	LDA #$03
+	STA BridgeBuild_CheckOffset, X
+
+BridgeBuild_Next:
+	LDY BridgeBuild_CheckOffset, X
+	LDA <Objects_XZ, X
+	ADD BridgeBuild_XOffsets, Y
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC BridgeBuild_XOffsets + 4, Y
+	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	ADD BridgeBuild_YOffsets, Y
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	ADC BridgeBuild_YOffsets + 4, Y
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+
+	TYA
+	CMP BridgeBuild_BlockCheck, X
+	BEQ BridgeBuild_Change
+
+	DEC BridgeBuild_CheckOffset, X
+	BPL BridgeBuild_Next
 
 	JMP Object_Delete
+	RTS
 
-BridgeBuild_Toggle:
-	LDA Tile_LastValue
+BridgeBuild_Change:
 	EOR #$01
-	
+
 	JSR Object_ChangeBlock
+
+	LDA Tile_DetectionX
+	STA <Objects_XZ, X
+
+	LDA Tile_DetectionXHi
+	STA <Objects_XHiZ, X
+
+	LDA Tile_DetectionY
+	STA <Objects_YZ, X
+
+	LDA Tile_DetectionYHi
+	STA <Objects_YHiZ, X
+
+	LDA #$08
+	STA Objects_Timer, X
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE BridgeBuild_ChangeRTS	
 
 	LDA <Objects_XZ, X
 	STA <Poof_X
@@ -2168,8 +2229,8 @@ BridgeBuild_Toggle:
 
 	JSR Common_MakePoof
 
-BridgeBuild_BuildItRTS:
-	RTS	
+BridgeBuild_ChangeRTS:
+	RTS
 
 BlockSwitch_TilePropsB:
 	.byte $00, TILE_PROP_SOLID_ALL,  TILE_PROP_SOLID_ALL,  TILE_PROP_SOLID_ALL
@@ -2353,6 +2414,13 @@ MushroomBlock_Draw:
 	JMP Object_DrawMirrored
 
 Magnet_Stuck = Objects_Data1
+Magnet_InsideBlock = Objects_Data2
+
+Magnet_OrigX	= Objects_Data3
+Magnet_OrigXHi  = Objects_Data4
+Magnet_OrigY	= Objects_Data5
+Magnet_OrigYHi	= Objects_Data6
+Magnet_Timer	= Objects_SlowTimer
 
 ObjInit_Magnet:
 	LDA #ATTR_ALLWEAPONPROOF
@@ -2363,17 +2431,87 @@ ObjInit_Magnet:
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
-	RTs
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_ITEM
+	BCC Magnet_InBlock
+
+	INC Magnet_InsideBlock, X
+	BNE ObjInit_MagnetRTS
+
+Magnet_InBlock:	
+	CMP #TILE_PROP_SOLID_ALL
+	BCC ObjInit_MagnetRTS
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+ObjInit_MagnetRTS:
+	LDA <Objects_XZ, X
+	STA Magnet_OrigX, X
+
+	LDA <Objects_XHiZ, X
+	STA Magnet_OrigXHi, X
+
+	LDA <Objects_YZ, X
+	STA Magnet_OrigY, X
+
+	LDA <Objects_YHiZ, X
+	STA Magnet_OrigYHi, X
+	RTS
 
 ObjNorm_Magnet:
 	LDA <Player_HaltGameZ
-	BEQ Magnent_Normal
+	BEQ Magnet_Normal
 
-	JMP Magnent_Draw
+	JMP Magnet_Draw
 
-Magnent_Normal:
-	JSR Object_DeleteOffScreen
+Magnet_Normal:
+	LDA #$40
+	JSR Object_DeleteOffScreenRange
 
+	LDA Magnet_InsideBlock, X
+	BEQ Magnet_DoNorm
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
+
+	LDA <Objects_YZ, X
+	LDA <Objects_YHiZ, X
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_ITEM
+	BCC Magnet_PopUp
+	
+	JMP Magnet_Draw
+
+Magnet_PopUp:
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Magnet_InsideBlock, X
+
+	LDA Magnet_OrigY, X
+	SUB #$10
+	STA Magnet_OrigY, X
+
+	LDA Magnet_OrigYHi, X
+	SBC #$10
+	STA Magnet_OrigYHi, X
+
+	JSR Object_Move
+	RTS
+
+Magnet_DoNorm:	
 	LDA Magnet_Stuck, X
 	BNE Magnet_NoMove
 
@@ -2383,37 +2521,48 @@ Magnent_Normal:
 
 Magnet_NoMove:
 	LDA Objects_Timer2, X
-	BNE Magnent_DetectTiles
+	BNE Magnet_DetectTiles
 
 	JSR Object_DetectPlayer
-	BCC Magnent_DetectTiles
+	BCC Magnet_DetectTiles
 
 	LDA Objects_BeingHeld, X
-	BNE Magnent_Carry
+	BNE Magnet_Carry
 
 	JSR ObjHit_SolidStand
- 	BCC Magnent_Carry
+ 	BCC Magnet_Carry
+
+	LDA #$FF
+	STA Objects_SlowTimer, X
 
 	LDA Objects_XVelZ, X
 	STA Player_CarryXVel
-	JMP Magnent_DetectTiles
+	JMP Magnet_DetectTiles
 
-Magnent_Carry:
+Magnet_Carry:
 	LDA #$00
 	STA Magnet_Stuck, X
 
+	LDA #$00
+	STA Objects_SlowTimer, X
+
 	JSR Object_Hold	
-	BCS Magnent_Draw
+	BCS Magnet_Draw
 
 	JSR Object_GetKicked
+
+	LDA #$FF
+	STA Objects_SlowTimer, X
 
 	LDA #$10
 	STA Objects_Timer2, X
 
-Magnent_DetectTiles:
+Magnet_DetectTiles:
+	LDA Magnet_Stuck, X
+	BNE Magnet_Draw
+
 	JSR Object_DetectTiles
 	JSR Object_DampenVelocity
-
 	
 	LDA Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
@@ -2438,10 +2587,63 @@ Magnent_DetectTiles:
 	ADC #$00
 	STA <Objects_XHiZ, X
 
-	JMP Magnent_Draw
+	JMP Magnet_Draw
 	
 Magnet_TileInteract:
 	JSR Object_InteractWithTiles
 
-Magnent_Draw:
+Magnet_Draw:
+	LDA Magnet_InsideBlock, X
+	BNE Magnet_RTS
+
+	LDA Magnet_Timer, X
+	BEQ Magnet_NormalDraw
+
+	CMP #$20
+	BCS Magnet_NormalDraw
+
+	CMP #$01
+	BNE Magnet_Flash
+
+	JSR Magnet_Reset
+	RTS
+
+Magnet_Flash:	
+	AND #$01
+	BNE Magnet_RTS
+
+Magnet_NormalDraw:
 	JMP Object_Draw
+
+Magnet_RTS:	
+	RTS	
+
+Magnet_Reset:
+	LDA Objects_SpritesVerticallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	BNE Magnet_SetPosition
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	JSR Common_MakePoof
+
+Magnet_SetPosition:
+	LDA Magnet_OrigX, X
+	STA <Objects_XZ, X	
+
+	LDA Magnet_OrigXHi, X
+	STA <Objects_XHiZ, X
+
+	LDA Magnet_OrigY, X
+	STA <Objects_YZ, X
+
+	LDA Magnet_OrigYHi, X
+	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA Magnet_Stuck, X
+	RTS
