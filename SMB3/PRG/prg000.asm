@@ -871,8 +871,9 @@ PRG000_CA82:
 	.word ObjState_Kicked		; 4 - Kicked
 	.word ObjState_Killed		; 5 - Killed 
 	.word ObjState_Fresh		; 6
-	.word ObjState_Frozen		; 7
-	.word ObjState_DeadEmpty	; 8
+	.word ObjState_DeadEmpty	; 7
+	.word ObjState_Frozen		; 8
+	.word ObjState_Frozen		; 9
 	
 	
 
@@ -886,10 +887,15 @@ ObjState_Frozen:
 	JMP Frozen_Draw
 
 Frozen_Normal:
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN2
+	BEQ Frozen_Anyway
+
 	LDA Player_EffectiveSuit
 	CMP #MARIO_ICE
 	BNE Frozen_Die
 
+Frozen_Anyway:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBoxForced
@@ -965,7 +971,25 @@ Frozen_Draw:
 	
 	LDA #$01
 	STA <Player_HaltGameZ
+
+	LDA Objects_Kicked, X
+	BEQ Frozen_NotKicked
+	
+	LDY #$00
+	JSR Kicked_DrawNoAnimate
+	JMP Frozen_DrawNormal
+
+Frozen_NotKicked:
+	LDA Objects_Shelled, X
+	BEQ Frozen_NotShelled
+
+	JSR Object_DrawShelled
+	JMP Frozen_DrawNormal
+
+Frozen_NotShelled:
 	JSR ObjState_Normal
+
+Frozen_DrawNormal:	
 	PLA
 	STA <Player_HaltGameZ
 
@@ -975,6 +999,16 @@ Frozen_Draw:
 	STA <Temp_Var1
 	DEC <Temp_Var1
 	
+	LDA #$00
+	STA <Temp_Var2
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN2
+	BNE Frozen_ClearPal
+
+	LDA #SPR_PAL2
+	STA <Temp_Var2
+
 Frozen_ClearPal:
 	LDA <Temp_Var1
 	ASL A
@@ -984,7 +1018,9 @@ Frozen_ClearPal:
 
 	LDA Sprite_RAMAttr, Y
 	AND #~SPR_PAL3
+	ORA <Temp_Var2
 	STA Sprite_RAMAttr, Y
+
 	DEC <Temp_Var1
 	BPL Frozen_ClearPal
 	RTS
@@ -1045,6 +1081,8 @@ Object_DampenVelocityRTS:
 ObjState_Shelled:
 	LDA <Player_HaltGameZ	 
 	BNE ObjState_Shelled3	 ; If gameplay is halted, jump to PRG000_CB5B
+
+	INC Objects_Shelled, X
 
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
@@ -1228,6 +1266,8 @@ ObjState_Kicked:
 	JMP DrawKickedShell	 ; Jump to PRG000_CD46 
 
 ObjState_Kicked1:
+	INC Objects_Kicked, X
+
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
@@ -1255,6 +1295,8 @@ ObjState_Kicked2:
 	BCS DrawKickedShell
 
 	JSR Object_InteractWithTiles
+
+Kicked_NotAir:
 	LDA <Objects_TilesDetectZ, X
 	AND #(HIT_CEILING | HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ DrawKickedShell
@@ -1269,6 +1311,7 @@ DrawKickedShell:
 	AND #$03
 	TAY		 ; Y = 0 to 3, by counter
 
+Kicked_DrawNoAnimate:
 	LDA Objects_Orientation,X
 	AND #~SPR_HFLIP
 	ORA ObjShell_AnimFlipBits,Y	 
@@ -1277,6 +1320,8 @@ DrawKickedShell:
 	; Set animation frame as appropriate
 	LDA ObjShell_AnimFrame,Y
 	STA Objects_Frame,X
+
+	LDA Objects_Frame,X
 	TYA
 	AND #$01
 	BNE DrawKickedShell1	 ; Every other tick, jump to PRG000_CD74
@@ -1343,6 +1388,9 @@ Kill_NotKicked:
 	JSR Object_FlipFallAwayFromHit
 
 Object_KillOthers3:
+	TXA
+	TAY
+
 	LDX <CurrentObjectIndexZ
 	SEC
 	RTS
@@ -1352,6 +1400,9 @@ Object_KillOthers2:
 	BPL Object_KillOthers1
 
 	CLC
+
+	TXA
+	TAY
 	LDX <CurrentObjectIndexZ
 	RTS	
 	
@@ -1539,12 +1590,7 @@ Object_BumpBlocks:
 	RTS		 ; Return
 
 
-	; X velocities depending on kick direction, added to by half of Player's X velocity
-ObjectKickXVelMoving:	.byte -$30, $30
-
-	; Set appropriate flip bits based on object's relative position to Player
-PlayerKickFlipBits:	.byte $00, $40
-
+	; X velocities depending on kick direction, added to by half of Player's X velocit
 	; X velocities depending on kick direction
 	; Different X and X Hi offsets applied to object being held by Player
 	; Changes whether not doing anything special, in pipe, etc.
@@ -2557,6 +2603,10 @@ PRG000_D506:
 	; Called for an object in state 2 to do its "normal" routine
 ObjState_Normal:
 Object_DoNormal:
+	LDA #$00
+	STA Objects_Kicked, X
+	STA Objects_Shelled, X
+
 	LDA ObjGroupRel_Idx
 	ASL A		 
 	TAY		 ; Y = object's group relative index * 2 (2 byte index for jump table)
@@ -3110,8 +3160,6 @@ PRG000_D726:
 	; Selection table for the 5/1... doesn't seem like the
 	; values actually mean anything, it just checks > 5?
 	; Kept in Temp_Var9 anyway...
-PRG000_D727:
-	.byte $00, $01, $02, $03, $04, $05, $03, $07, $00, $01, $02, $03, $04, $05, $02
 
 ; $D736
 Object_GetUnusedSprite:
@@ -3281,26 +3329,6 @@ PRG000_D82B:
 	RTS		 ; Return
 
 	
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_HitTest
-; Object_InteractWithPlayer
-;
-; Tests if Player has collided with another object
-; If using "Object_InteractWithPlayer", then if the Player has touched
-; the object, it will call appropriate ObjectGroup_CollideJumpTable
-; routine after a successful intersection.
-;
-; In any case, carry is set if there was a collision, or clear
-; if the Player did not collide with the object!
-;
-; X is object's slot
-; Y is group relative object index
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $D836
-Object_HitTest:
-	RTS
 
 ; $D83B
 Object_InteractWithPlayer:
@@ -3891,22 +3919,6 @@ PRG000_DA4E:
 	LDA <Player_Suit
 	BEQ PRG000_DA7A	 ; If Player is small, jump to PRG000_DA7A (gonna die!!)
 
-	LDA Player_Equip
-	SUB #ITEM_HEART1
-	BMI PRG000_DA4F
-	CMP #$03
-	BCS PRG000_DA4F
-	CMP #$00
-	BEQ PRG000_DA4F1
-	DEC Player_Equip
-	JMP PRG000_DA50
-	
-PRG000_DA4F1:
-	LDA #$00
-	STA Player_Equip
-	BEQ PRG000_DA50
-
-PRG000_DA4F:
 	LDA #$02
 	STA Player_QueueSuit	 ; Return to Big
 
@@ -4085,6 +4097,7 @@ Object_ApplyXVel:
 	BNE Object_ApplyXVel1
 	
 	JSR Object_ApplyWindEffect
+	JSR Object_CheckConveyors
 	LDA <Objects_XVelZ, X
 	PHA
 
@@ -4292,29 +4305,7 @@ Negate:
 ASHIM .func \1-AScroll_Movement-1
 	; This is the initial movement table for horizontal auto scroll levels, minus 1
 	; Level_AScrlLimitSel selects which entry to use, which sets Level_AScrlVar (the actual index value)
-AScroll_HorizontalInitMove:
-	.byte ASHIM(ASM_World_36_14)	;  0 World 3-6 / 1-4
-	.byte ASHIM(ASM_W3_Airship)	;  1 World 3 Airship
-	.byte ASHIM(ASM_World_62)	;  2 World 6-2
-	.byte ASHIM(ASM_W5_Airship)	;  3 World 5 Airship
-	.byte ASHIM(ASM_UNK4)		;  4
-	.byte ASHIM(ASM_W4Airship)	;  5 World 4 Airship
-	.byte ASHIM(ASM_W6Airship)	;  6 World 6 Airship
-	.byte ASHIM(ASM_World_56)	;  7 World 5-6
-	.byte ASHIM(ASM_UNK8)		;  8
-	.byte ASHIM(ASM_UNK9)		;  9 
-	.byte ASHIM(ASM_World_67)	;  A World 6-7
-	.byte ASHIM(ASM_W1Airship)	;  B World 1 Airship
-	.byte ASHIM(ASM_W7Airship)	;  C World 7 Airship
-	.byte ASHIM(ASM_W8Airship)	;  D World 8 Airship
-	.byte ASHIM(ASM_W8Battleship)	;  E World 8 Battleship
-	.byte ASHIM(ASM_World_74)	;  F World 7-4
-	.byte ASHIM(ASM_W1CoinHeaven)		; 10
-	.byte ASHIM(ASM_CoinShip)	; 11 Coin Ship
-	.byte ASHIM(ASM_UNK12)		; 12 
-	.byte ASHIM(ASM_World8Tank1)	; 13 World 8 Tank 1
-	.byte ASHIM(ASM_World8Tank2)	; 14 World 8 Tank 2
-	.byte ASHIM(ASM_Terminator)	; 15 ** Terminator Only (because it seeks ahead to see the terminating movement index)
+
 
 
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
@@ -4528,8 +4519,54 @@ PRG001_A9B7:
 	STA Object_CeilingStops
 	JSR Object_CheckForeground
 	JSR Object_HandleBumpUnderneath
+	JSR Object_CheckConveyors
 	
 	RTS		 ; Return
+
+Conveyer_Effect:
+	.byte $F0, $10
+	.byte $FF, $00
+
+Conveyer_EffectMin:
+	.byte $04, $FC
+
+Object_CheckConveyors:
+	LDA <Objects_YVelZ, X
+	BMI Object_CheckConveyorsRTS
+
+	LDY #$00
+
+	LDA Object_VertTileProp, X
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_MOVE_LEFT)
+	BEQ Object_ConveryAffected
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_MOVE_RIGHT)
+	BNE Object_CheckConveyorsRTS
+	INY
+
+Object_ConveryAffected:	
+	LDA <Objects_XVelZ, X
+	STA <Temp_Var1
+
+	ADD Conveyer_Effect, Y
+
+	STA <Temp_Var2
+	EOR <Temp_Var1
+	BPL Apply_ConveyorAffect
+
+	LDA <Objects_XVelZ, X
+	BEQ Apply_ConveyorAffect
+
+	LDA Conveyer_EffectMin, Y
+	STA <Temp_Var2
+
+Apply_ConveyorAffect:	
+	
+	LDA <Temp_Var2
+	STA Objects_EffectiveXVel, X
+
+Object_CheckConveyorsRTS:
+	RTS	
 
 Object_CheckForeground:
 	LDA Objects_SpriteAttributes, X
@@ -4805,7 +4842,7 @@ DetectNextSprite:
 
 	LDA Objects_State, Y
 	CMP #OBJSTATE_FROZEN
-	BEQ Detect_ThisObject
+	BCS Detect_ThisObject
 
 	AND #$FE
 	CMP #OBJSTATE_NORMAL
@@ -4842,7 +4879,7 @@ Object_Carry:
 	STA <Objects_YHiZ, X
 
 	LDA Objects_XVelZ, Y
-	STA <Objects_XVelZ, X
+	STA Objects_EffectiveXVel, X
 
 	LDA Objects_XVelFrac,Y
 	STA Objects_XVelFrac,X
@@ -5423,7 +5460,11 @@ KillEnemy:
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_FROZEN
-	BNE Kill_NotFrozen
+	BCC Kill_NotFrozen
+
+	LDA <Kill_TypeCheck
+	CMP #ATTR_ICEPROOF
+	BEQ KillEnemy1
 
 	JSR Object_BurstIce
 	JMP Kill_CheckRespawn
@@ -5516,7 +5557,7 @@ Object_Kick:
 Object_ReverseXVel:
 	LDA Objects_State, X
 	CMP #OBJSTATE_FROZEN
-	BEQ Do_Reverse
+	BCS Do_Reverse
 	
 	CMP #OBJSTATE_NORMAL
 	BNE Object_DieInstead
@@ -5994,48 +6035,6 @@ Object_IsHammerNinjaShellProof:
 	LDA Objects_WeaponAttr, X
 	AND #ATTR_SHELLPROOF
 	RTS
-
-
-Object_ParticleVisibleTest:
-	TXA
-	PHA
-	LDX <CurrentObjectIndexZ
-	LDA Objects_SpritesVerticallyOffScreen,X
-	BNE PRG004_BE52	 ; If any sprite is vertically off-screen, jump to PRG004_BE52
-
-	LDA <Objects_SpriteY,X	
-	CMP #200
-	BGE PRG004_BE52	 ; If Sprite Y >= 200, jump to PRG004_BE52
-
-	LDY #$40	 ; Y = $40
-
-	LDA <Objects_SpriteX,X
-	BMI PRG004_BE45	 ; If on right half, jump to PRG004_BE45
-
-	LDY #$c0	 ; Y = $C0
-
-PRG004_BE45:
-	CPY <Temp_Var2
-	EOR Objects_SpritesHorizontallyOffScreen,X
-	BMI PRG004_BE50
-	BCC PRG004_BE52
-	BCS PRG004_BE54
-
-PRG004_BE50:
-	BCC PRG004_BE54
-
-PRG004_BE52:
-	PLA
-	TAX
-	SEC		 ; Set carry (link not visible)
-
-	RTS		 ; Return
-
-PRG004_BE54:
-	PLA
-	TAX
-	CLC		 ; Clear carry (link is visible)
-	RTS		 ; Return
 
 
 Object_FlipFall:

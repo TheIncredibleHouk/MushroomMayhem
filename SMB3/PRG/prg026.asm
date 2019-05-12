@@ -2221,6 +2221,9 @@ UpdateMode2:
 AttemptUpdate:
 	INC Status_Bar_Render_Toggle
 
+	LDA Map_DrawPanState
+	BNE AttemptUpdate1
+
 	LDA Status_Bar_Render_Toggle
 	AND #$01
 	BNE UpdatePalette

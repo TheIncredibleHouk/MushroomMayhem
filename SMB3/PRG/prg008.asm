@@ -55,9 +55,6 @@ Player_TailAttackFrames:
 	.byte PF_TAILATKINAIR_BASE, PF_TAILATKINAIR_BASE-5, PF_TAILATKINAIR_BASE, PF_TAILATKINAIR_BASE-4, PF_TAILATKINAIR_BASE	; In air
 
 	; Frames for when Player is in Kuribo's shoe
-Player_KuriboFrame:
-	.byte PF_KURIBO_SMALL, PF_KURIBO_BIG	; First value is for small, the other for everything else
-
 	; Player duck frame
 Player_DuckFrame:
 	; First value is for everything EXCEPT Raccoon power; value on right is for raccoon power
@@ -258,9 +255,6 @@ PChg_C000_To_0:
 	STA PAGE_C000
 	JMP PRGROM_Change_C000
 
-
-MapPowersToSuit:
-	.byte $01, $02, $03, $08, $04, $09, $05, $06, $0B, $07, $0C
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_Initialize
 ; 
@@ -3182,14 +3176,6 @@ Player_GetTileAndSlope:
 	STA Temp_VarNP0 ; Temp_VarNP0 = 0
 
 	LDA <Player_YHi
-	BPL PRG008_B3F8
-
-	LDA #$00
-	STA <Temp_Var13
-	STA <Temp_Var14
-	BEQ PRG008_B406
-
-PRG008_B3F8:
 	STA <Temp_Var13	 ; Temp_Var13 = Player_YHi
 
 	LDA <Temp_Var10	 ; Temp_Var10 is the Y offset 
@@ -3201,24 +3187,6 @@ PRG008_B3F8:
 	INC <Temp_Var13	 ; Apply carry to Temp_Var13
 
 PRG008_B406:
-	LDA <Temp_Var13
-	BEQ PRG008_B419	 ; If Temp_Var13 (high byte / carry) = 0, jump to PRG008_B419
-
-	; When carry exists..
-
-	CMP #$01
-	BNE PRG008_B414	 ; If Temp_Var13 <> 1, jump to PRG008_B414
-
-	LDA <Temp_Var14
-	CMP #$b0	
-	BLT PRG008_B419	 ; If Temp_Var14 < $B0, jump to PRG008_B419
-
-PRG008_B414:
-	LDA #$A8
-	STA <Temp_Var14
-
-
-PRG008_B419:
 	LDA <Player_XHi
 	STA <Temp_Var15	 ; Temp_Var15 = Player_XHi
 
@@ -3774,7 +3742,6 @@ BumpBlock_Sledge:
 	RTS
 
 BumpBlock_PSwitch:      
-
 	LDA Block_NeedsUpdate
 	BNE BumpBlock_PSwitch1
 
@@ -3789,6 +3756,7 @@ BumpBlock_PSwitch:
 	STA Tile_YHi
 
 	JSR Player_GetTile
+	TYA
 	EOR #$01
 	JSR Level_QueueChangeBlock
 
@@ -3850,7 +3818,7 @@ Tile_MoveTable_XCarry:
 	;	   L    R    U    D
 	.byte $00, $00, $00, $00 ; X Air
 	.byte $F0, $10, $00, $00 ; X Water
-	.byte $F8, $08, $00, $00 ; X Ground
+	.byte $F0, $10, $00, $00 ; X Ground
 	.byte $00, $00, $00, $00 ; X Wall
 
 Tile_MoveTable_XVel:
@@ -3913,6 +3881,9 @@ Try_Ground_Move:
 	BNE Try_Wall_Move
 
 Do_Ground_Move:
+	LDA Player_FireDash
+	BNE Apply_Move_RTS
+
 	LDA #$08
 	ADD <Move_Offset
 	STA <Move_Offset

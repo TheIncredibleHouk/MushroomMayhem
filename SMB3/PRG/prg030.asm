@@ -4341,7 +4341,25 @@ Player_GetTile:	; $9E9D
 
 	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
 	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
+	LDA <Tile_YHi
+	BPL Tile_YNotUnderFlow
 
+	LDA #$00
+	STA <Tile_YHi
+	STA <Tile_Y
+
+Tile_YNotUnderFlow:	
+	CMP #$01
+	BCC Tile_YNotOverFlow
+
+	LDA <Tile_Y
+	CMP #$B0
+	BCC Tile_YNotOverFlow
+
+	LDA #$A8
+	STA <Tile_Y
+
+Tile_YNotOverFlow:	
 	; Clear slope array
 	LDA <Temp_Var16
 	STA Tile_DetectionX
@@ -5476,6 +5494,8 @@ NextCol:
 
 Player_Freeze:
 	LDA Player_Frozen
+	ORA Player_FlashInv
+	ORA Player_StarInv
 	BEQ Player_FreezeNow
 	RTS
 

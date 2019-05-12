@@ -556,7 +556,7 @@ ObjNorm_NinjaBro:
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_FROZEN
-	BEQ NinjaBros_HaltDraw
+	BCS NinjaBros_HaltDraw
 
 	LDA <Objects_TilesDetectZ,X
 	AND #HIT_GROUND

@@ -1262,7 +1262,7 @@ Chomp_DrawChains:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR Object_ParticleVisibleTest
+	JSR Object_ParticleVisibleTestC
 	BCS CDC1
 
 	LDY <Temp_Var4
@@ -1280,7 +1280,7 @@ CDC1:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR Object_ParticleVisibleTest
+	JSR Object_ParticleVisibleTestC
 	BCS CDC2
 
 	LDY <Temp_Var4
@@ -1298,7 +1298,7 @@ CDC2:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR Object_ParticleVisibleTest
+	JSR Object_ParticleVisibleTestC
 	BCS CDC3
 	
 	LDY <Temp_Var4
@@ -1316,7 +1316,7 @@ CDC3:
 	SUB <Vert_Scroll
 	STA <Temp_Var1
 
-	JSR Object_ParticleVisibleTest
+	JSR Object_ParticleVisibleTestC
 	BCS CDC4
 
 	LDY <Temp_Var4
@@ -3741,3 +3741,44 @@ ObjInit_Pokey:
 
 ObjNorm_Pokey:
 	RTS
+
+Object_ParticleVisibleTestC:
+	TXA
+	PHA
+	LDX <CurrentObjectIndexZ
+	LDA Objects_SpritesVerticallyOffScreen,X
+	BNE PRG004_BE52C	 ; If any sprite is vertically off-screen, jump to PRG004_BE52
+
+	LDA <Objects_SpriteY,X	
+	CMP #200
+	BGE PRG004_BE52C	 ; If Sprite Y >= 200, jump to PRG004_BE52
+
+	LDY #$40	 ; Y = $40
+
+	LDA <Objects_SpriteX,X
+	BMI PRG004_BE45C	 ; If on right half, jump to PRG004_BE45
+
+	LDY #$c0	 ; Y = $C0
+
+PRG004_BE45C:
+	CPY <Temp_Var2
+	EOR Objects_SpritesHorizontallyOffScreen,X
+	BMI PRG004_BE50C
+	BCC PRG004_BE52C
+	BCS PRG004_BE54C
+
+PRG004_BE50C:
+	BCC PRG004_BE54C
+
+PRG004_BE52C:
+	PLA
+	TAX
+	SEC		 ; Set carry (link not visible)
+
+	RTS		 ; Return
+
+PRG004_BE54C:
+	PLA
+	TAX
+	CLC		 ; Clear carry (link is visible)
+	RTS		 ; Return	

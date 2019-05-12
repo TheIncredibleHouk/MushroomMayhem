@@ -160,11 +160,7 @@
     <sprite x="0" y="0" value="0A" palette="3" horizontalflip="false" verticalflip="false" table="4D" />
     <sprite x="8" y="0" value="0C" palette="3" horizontalflip="false" verticalflip="false" table="4D" />
   </spritedefinition>
-   <spritedefinition id="11" width="01" height="01" name="Ice Block" class="1" group="Global">
-    <sprite x="0" y="-0" value="20" palette="1" horizontalflip="false" verticalflip="false" table="90" />
-    <sprite x="8" y="-0" value="20" palette="1" horizontalflip="true" verticalflip="true" table="90" />
-  </spritedefinition>
-  <spritedefinition id="12" width="01" height="01" name="Poison Mushroom" class="1" group="Global">
+  <spritedefinition id="12" width="01" height="01" name="Malice Mushroom" class="1" group="Global">
     <sprite x="0" y="0" value="38" palette="1" horizontalflip="false" verticalflip="false" table="90" />
     <sprite x="8" y="0" value="38" palette="1" horizontalflip="true" verticalflip="false" table="90" />
 
@@ -1071,6 +1067,50 @@
     <sprite property="1" x="8" y="0" value="12" palette="2" horizontalflip="false" verticalflip="false" table="33" />
     <property>Starts Fire</property>
     <property>Starts Ice</property>
+  </spritedefinition>  
+  <spritedefinition id="70" width="01" height="03" name="Flame Thrower" class="2" group="Industrial">
+    <sprite property="0" x="0" y="32" value="16" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+    <sprite property="0" x="8" y="32" value="18" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+    <sprite property="0" x="0" y="21" value="12" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+    <sprite property="0" x="8" y="21" value="14" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+    <sprite property="0" x="0" y="10" value="0E" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+    <sprite property="0" x="8" y="10" value="10" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+    <sprite property="0" x="0" y="0" value="0A" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+    <sprite property="0" x="8" y="0" value="0C" palette="1" horizontalflip="false" verticalflip="true" table="36" />
+
+    <sprite property="1" x="0" y="0" value="16" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="0" value="18" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="0" y="10" value="12" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="10" value="14" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="0" y="21" value="0E" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="21" value="10" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="0" y="32" value="0A" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="32" value="0C" palette="1" horizontalflip="false" verticalflip="false" table="36" />
+
+    <property>Down</property>
+    <property>Up</property>
+  </spritedefinition>
+ <spritedefinition id="71" width="01" height="03" name="Frost Thrower" class="2" group="Industrial">
+    <sprite property="0" x="0" y="32" value="36" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="0" x="8" y="32" value="38" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="0" x="0" y="21" value="32" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="0" x="8" y="21" value="34" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="0" x="0" y="10" value="2E" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="0" x="8" y="10" value="30" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="0" x="0" y="0" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="0" x="8" y="0" value="2C" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    
+    <sprite property="1" x="0" y="0" value="36" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="0" value="38" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="0" y="10" value="32" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="10" value="34" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="0" y="21" value="2E" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="21" value="30" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="0" y="32" value="2A" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+    <sprite property="1" x="8" y="32" value="2C" palette="2" horizontalflip="false" verticalflip="false" table="36" />
+
+    <property>Down</property>
+    <property>Up</property>
   </spritedefinition>  
  <spritedefinition id="78" width="01" height="01" name="Spike" class="2" group="Chomps">
     <sprite x="0" y="0" value="30" palette="2" horizontalflip="false" verticalflip="false" table="0E" />

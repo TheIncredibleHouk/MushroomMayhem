@@ -224,6 +224,30 @@ PRG009_BBAC:
 PRG009_BBB3:
 	RTS		 ; Return
 
+AScroll_HorizontalInitMove:
+	.byte ASHIM(ASM_World_36_14)	;  0 World 3-6 / 1-4
+	.byte ASHIM(ASM_W3_Airship)	;  1 World 3 Airship
+	.byte ASHIM(ASM_World_62)	;  2 World 6-2
+	.byte ASHIM(ASM_W5_Airship)	;  3 World 5 Airship
+	.byte ASHIM(ASM_UNK4)		;  4
+	.byte ASHIM(ASM_W4Airship)	;  5 World 4 Airship
+	.byte ASHIM(ASM_W6Airship)	;  6 World 6 Airship
+	.byte ASHIM(ASM_World_56)	;  7 World 5-6
+	.byte ASHIM(ASM_UNK8)		;  8
+	.byte ASHIM(ASM_UNK9)		;  9 
+	.byte ASHIM(ASM_World_67)	;  A World 6-7
+	.byte ASHIM(ASM_W1Airship)	;  B World 1 Airship
+	.byte ASHIM(ASM_W7Airship)	;  C World 7 Airship
+	.byte ASHIM(ASM_W8Airship)	;  D World 8 Airship
+	.byte ASHIM(ASM_W8Battleship)	;  E World 8 Battleship
+	.byte ASHIM(ASM_World_74)	;  F World 7-4
+	.byte ASHIM(ASM_W1CoinHeaven)		; 10
+	.byte ASHIM(ASM_CoinShip)	; 11 Coin Ship
+	.byte ASHIM(ASM_UNK12)		; 12 
+	.byte ASHIM(ASM_World8Tank1)	; 13 World 8 Tank 1
+	.byte ASHIM(ASM_World8Tank2)	; 14 World 8 Tank 2
+	.byte ASHIM(ASM_Terminator)	; 15 ** Terminator Only (because it seeks ahead to see the terminating movement index)
+	
 
 AutoScroll_Horizontal:
 	LDX #$00	; X = 0 

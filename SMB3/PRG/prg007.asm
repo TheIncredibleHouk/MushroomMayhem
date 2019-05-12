@@ -2032,9 +2032,9 @@ SpecialObj_UpdateAndDraw:
 	.word Enemy_Cannonball	; 0B: Cannonball
 	.word Enemy_LightningBolt	; 0C: Fire bro bouncing fireball
 	.word SObj_ExplodeStar	; 0D: Explosion star
-	.word SOBJ_BUBBLE	; 0E: Bubble
+	.word Enemy_Flame	; 0E: Bubble
 	.word Enemy_ProjSkull; 0F: Lava Lotus fire
-	.word SObj_Wand		; 10: Recovered wand
+	.word Enemy_Frost		; 10: Recovered wand
 	.word SObj_CoinOrDebris	; 11: Popped out coin
 	.word SObj_DoNothing	; 12: Fire Chomp's fire
 	.word SObj_CoinOrDebris	; 13: Brick debris (e.g. from Piledriver Microgoomba)
@@ -2261,8 +2261,153 @@ PRG007_B1DD:
 PRG007_B1DE:
 	JMP SpecialObj_Remove	 ; Remove special object and don't come back!
 
-SObj_Wand:
-	RTS		 ; Return
+EnemyFlame_Frames:
+	.byte $97, $99, $93, $95, $8F, $91, $8B, $8D
+	.byte $D7, $D9, $D3, $D5, $CF, $D1, $CB, $CD
+
+Flame_FrameTimer = SpecialObj_Data1
+Flame_Attributes:
+	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
+
+Enemy_Flame:
+	LDA <Player_HaltGameZ
+	BNE Flame_NoTimer
+
+	LDA SpecialObj_Data2, X
+	ADD SpecialObj_Y, X
+	STA SpecialObj_Y, X
+
+	DEC SpecialObj_Timer, X
+
+Flame_NoTimer:
+	LDA SpecialObj_Timer, X
+	BEQ Enemy_FlameDelete
+
+	LSR A
+	LSR A
+	AND #$06
+
+	TAY
+
+	LDA PatTable_BankSel + 5
+	CMP #$36
+	BNE Flame_UpperTable
+
+	TYA
+	ADD #$08
+	TAY
+
+Flame_UpperTable:
+	LDA EnemyFlame_Frames, Y
+	STA <SpecialObj_Tile
+
+	LDA EnemyFlame_Frames + 1, Y
+	STA <SpecialObj_Tile2
+	STA <SpecialObj_Attributes
+	
+	LDA #SPR_PAL1
+
+	LDY SpecialObj_Data2, X
+	BMI Flame_SetAttr
+
+	LDA #(SPR_PAL1 | SPR_VFLIP)
+
+Flame_SetAttr:
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes2
+
+	LDA SpecialObj_Timer, X
+	AND #$01
+	STA SpecialObj_XVel, X
+
+	LDA SpecialObj_Timer, X
+	AND #$01
+	BNE Flame_NoFlip
+
+	JSR SpecialObj_Flip
+
+Flame_NoFlip:	
+	JSR SpecialObj_Draw16x16
+	RTS
+
+Enemy_FlameDelete:
+	JMP SpecialObj_Delete
+
+
+EnemyFrost_Frames:
+	.byte  $B7, $B9, $B3, $B5, $AF, $B1, $AB, $AD
+	.byte  $F7, $F9, $F3, $F5, $EF, $F1, $EB, $ED
+
+Frost_FrameTimer = SpecialObj_Data1
+
+Frost_Attributes:
+	.byte SPR_PAL1, SPR_PAL1 | SPR_HFLIP
+
+Enemy_Frost:
+	LDA <Player_HaltGameZ
+	BNE Frost_NoTimer
+
+	LDA SpecialObj_Data2, X
+	ADD SpecialObj_Y, X
+	STA SpecialObj_Y, X
+
+	DEC SpecialObj_Timer, X
+
+Frost_NoTimer:
+	LDA SpecialObj_Timer, X
+	BEQ Enemy_FrostDelete
+
+	
+	LSR A
+	LSR A
+	AND #$06
+
+	TAY
+	
+	LDA PatTable_BankSel + 5
+	CMP #$36
+	BNE Frost_UpperTable
+
+	TYA
+	ADD #$08
+	TAY
+
+Frost_UpperTable:
+	LDA EnemyFrost_Frames, Y
+	STA <SpecialObj_Tile
+
+	LDA EnemyFrost_Frames + 1, Y
+	STA <SpecialObj_Tile2
+	
+	LDA #SPR_PAL2
+
+	LDY SpecialObj_Data2, X
+	BMI Frost_SetAttr
+
+	LDA #(SPR_PAL2 | SPR_VFLIP)
+
+Frost_SetAttr:
+
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes2
+
+	LDA SpecialObj_Timer, X
+	AND #$01
+	STA SpecialObj_XVel, X
+
+	LDA SpecialObj_Timer, X
+	AND #$01
+	BNE Frost_NoFlip
+
+	JSR SpecialObj_Flip
+
+Frost_NoFlip:	
+	JSR SpecialObj_Draw16x16
+	RTS
+
+Enemy_FrostDelete:
+	JMP SpecialObj_Delete
+
 
 SObj_LavaLotusFire:
 
@@ -3534,10 +3679,6 @@ PRG007_BB8F:
 
 	JSR DetermineCannonVisibilty
 
-	LDA ObjectGenerator_Timer2,X
-	BEQ PRG007_BB97
-	DEC ObjectGenerator_Timer2,X
-
 PRG007_BB97:
 	
 	LDA ObjectGenerator_ID, X
@@ -3776,6 +3917,8 @@ BobOmbGen_Make:
 
 	LDY <CurrentObjectIndexZ	
 
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
 	
 	LDA ObjectGenerator_Y,Y
 	ADD <Temp_Var2
@@ -3818,7 +3961,6 @@ ObjectGen_Goombas:
 	BNE GoombaGeneratorRTS
 
 	LDA ObjectGenerator_Visibility, X
-	AND #GENERATOR_HVISIBLE
 	BNE GoombaGen_Make
 	RTS
 

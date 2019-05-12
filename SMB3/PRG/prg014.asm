@@ -13,6 +13,8 @@ OBJ_FIRESNAKE  		= $6C
 OBJ_FREEZIE    		= $6D
 OBJ_SWOOSH    		= $6E
 OBJ_PIXIE    		= $6F
+OBJ_FIREBLAST		= $70
+OBJ_ICEBLAST		= $71
 
     .word ObjInit_Lakitu ; Object $64
     .word ObjInit_Larry ; Object $65
@@ -26,8 +28,8 @@ OBJ_PIXIE    		= $6F
     .word ObjInit_Freezie ; Object $6D
     .word ObjInit_Swoosh ; Object $6E
     .word ObjInit_IceFireFly ; Object $6F
-    .word ObjInit_DoNothing ; Object $70
-    .word ObjInit_DoNothing ; Object $71
+    .word ObjInit_FireBlast ; Object $70
+    .word ObjInit_FrostBlast ; Object $71
     .word ObjInit_DoNothing ; Object $72
     .word ObjInit_DoNothing ; Object $73
     .word ObjInit_DoNothing ; Object $74
@@ -49,8 +51,8 @@ OBJ_PIXIE    		= $6F
     .word ObjNorm_Freezie ; Object $6D
     .word ObjNorm_Swoosh ; Object $6E
     .word ObjNorm_IceFireFly ; Object $6F
-    .word ObjNorm_DoNothing ; Object $70
-    .word ObjNorm_DoNothing ; Object $71
+    .word ObjNorm_FireBlast ; Object $70
+    .word ObjNorm_FrostBlast ; Object $71
     .word ObjNorm_DoNothing ; Object $72
     .word ObjNorm_DoNothing ; Object $73
     .word ObjNorm_DoNothing ; Object $74
@@ -72,8 +74,8 @@ OBJ_PIXIE    		= $6F
     .word ObjHit_Freezie ; Object $6D
     .word ObjHit_DoNothing ; Object $6E
     .word Player_GetHurt ; Object $6F
-    .word ObjHit_DoNothing ; Object $70
-    .word ObjHit_DoNothing ; Object $71
+    .word Player_GetHurt ; Object $70
+    .word Player_Freeze ; Object $71
     .word ObjHit_DoNothing ; Object $72
     .word ObjHit_DoNothing ; Object $73
     .word ObjHit_DoNothing ; Object $74
@@ -2256,8 +2258,6 @@ FireSnake_MeltIceHorz:
 
 FireSnake_MeltIceRTS:
 	RTS    
-    
-
 
 ObjInit_Freezie:
 	LDA #BOUND16x16
@@ -3119,3 +3119,309 @@ IceFireFly_DestroyProjectiles:
 
 IceFireFly_DestroyProjectilesRTS:
 	RTS    
+
+Object_ParticleVisibleTest:
+	TXA
+	PHA
+	LDX <CurrentObjectIndexZ
+	LDA Objects_SpritesVerticallyOffScreen,X
+	BNE PRG004_BE52	 ; If any sprite is vertically off-screen, jump to PRG004_BE52
+
+	LDA <Objects_SpriteY,X	
+	CMP #200
+	BGE PRG004_BE52	 ; If Sprite Y >= 200, jump to PRG004_BE52
+
+	LDY #$40	 ; Y = $40
+
+	LDA <Objects_SpriteX,X
+	BMI PRG004_BE45	 ; If on right half, jump to PRG004_BE45
+
+	LDY #$c0	 ; Y = $C0
+
+PRG004_BE45:
+	CPY <Temp_Var2
+	EOR Objects_SpritesHorizontallyOffScreen,X
+	BMI PRG004_BE50
+	BCC PRG004_BE52
+	BCS PRG004_BE54
+
+PRG004_BE50:
+	BCC PRG004_BE54
+
+PRG004_BE52:
+	PLA
+	TAX
+	SEC		 ; Set carry (link not visible)
+
+	RTS		 ; Return
+
+PRG004_BE54:
+	PLA
+	TAX
+	CLC		 ; Clear carry (link is visible)
+	RTS		 ; Return	
+
+FrostFlame_SetPatternTable:
+	LDY LastPatTab_Sel
+	LDA PatTable_BankSel + 4, Y
+	CMP #$36
+	BEQ FrostFlame_SetPatternTableRTS
+
+	TYA
+	EOR #$01
+	TAY
+
+	LDA #$36
+	STA PatTable_BankSel + 4, Y
+
+FrostFlame_SetPatternTableRTS:
+	RTS
+
+FrostFlame_Direction:
+	.byte $01, $FF
+
+Flame_Offset:
+	.byte $04, $18
+
+FireBlast_Count = Objects_Data1
+
+ObjInit_FireBlast:
+	JSR Object_NoInteractions
+
+	LDA #BOUND16x48
+	STA Objects_BoundBox, X
+
+	LDA #$01
+	STA Objects_SlowTimer, X
+
+	RTS
+
+ObjNorm_FireBlast:
+	LDA <Player_HaltGameZ
+	BEQ Flames_Normal
+	
+	JMP FireBlast_RTS
+
+Flames_Normal:
+	JSR Object_DeleteOffScreen
+	JSR FrostFlame_SetPatternTable
+
+	LDA Objects_SlowTimer, X
+	CMP #$01
+	BNE Flame_NoSound
+
+	LDA #SND_LEVELFLAME
+	STA Sound_QLevel2
+
+Flame_NoSound:
+	BCS FireBlast_RTS
+
+	JSR Object_CalcBoundBoxForced
+
+	LDA Player_EffectiveSuit
+	CMP #MARIO_FOX
+	BEQ Flames_NoHurt
+
+	JSR Object_InteractWithPlayer
+
+Flames_NoHurt:	
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Flames_NoKill
+
+	LDA #ATTR_FIREPROOF
+	STA <Kill_TypeCheck
+	JSR Object_KillOthers
+
+Flames_NoKill:
+	LDA Objects_Timer, X
+	BNE FireBlast_RTS
+
+	INC FireBlast_Count, X
+	LDA FireBlast_Count, X
+	CMP #$10
+	BNE FireBlast_MakeFlame
+
+	LDA #$3F
+	STA Objects_SlowTimer, X
+
+	LDA #$00
+	STA FireBlast_Count, X
+
+FireBlast_MakeFlame:
+	LDA #$08
+	STA Objects_Timer, X
+
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE FireBlast_RTS
+
+	LDY Objects_Property, X
+	LDA Flame_Offset, Y
+	STA <Temp_Var1
+
+	JSR Object_PrepProjectile
+	BCC FireBlast_RTS
+
+	LDA #SOBJ_FLAME
+	STA SpecialObj_ID, Y
+
+	LDA #$1F
+	STA SpecialObj_Timer, Y
+
+	LDA <Objects_YZ, X
+	ADD <Temp_Var1
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+	LDA <Objects_XZ, X
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi, Y
+
+	LDA Objects_Property, X
+	TAX
+	
+	LDA FrostFlame_Direction, X
+	STA SpecialObj_Data2, Y
+
+	LDX <CurrentObjectIndexZ
+
+FireBlast_RTS:
+	RTS
+
+Frost_Offset:
+	.byte $04, $18
+
+FrostBlast_Count = Objects_Data1
+
+ObjInit_FrostBlast:
+	JSR Object_NoInteractions
+
+	LDA #BOUND16x48
+	STA Objects_BoundBox, X
+
+	LDA #$01
+	STA Objects_SlowTimer, X
+
+	JSR Object_NoInteractions
+	RTS
+
+ObjNorm_FrostBlast:
+	LDA <Player_HaltGameZ
+	BNE FrostBlast_RTS
+
+	JSR Object_DeleteOffScreen
+	JSR FrostFlame_SetPatternTable
+	
+	LDA Objects_SlowTimer, X
+	BNE FrostBlast_RTS
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_InteractWithPlayer
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE FrostBlast_NoFreeze
+
+	JSR Frost_FreezeObjects
+
+FrostBlast_NoFreeze:	
+	LDA Objects_Timer, X
+	BNE FrostBlast_RTS
+
+	INC FrostBlast_Count, X
+	LDA FrostBlast_Count, X
+	CMP #$10
+	BNE FrostBlast_MakeFlame
+
+	LDA #$3F
+	STA Objects_SlowTimer, X
+
+	LDA #$00
+	STA FrostBlast_Count, X
+
+FrostBlast_MakeFlame:
+	LDA #$08
+	STA Objects_Timer, X
+	
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE FireBlast_RTS
+
+	LDY Objects_Property, X
+	LDA Frost_Offset, Y
+	STA <Temp_Var1
+	
+	JSR Object_PrepProjectile
+	BCC FrostBlast_RTS
+
+	LDA #SOBJ_FROST
+	STA SpecialObj_ID, Y
+
+	LDA #$1F
+	STA SpecialObj_Timer, Y
+
+	LDA <Objects_YZ, X
+	ADD <Temp_Var1
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+	LDA <Objects_XZ, X
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi, Y
+
+	LDA Objects_Property, X
+	TAX
+	
+	LDA FrostFlame_Direction, X
+	STA SpecialObj_Data2, Y
+
+	LDX <CurrentObjectIndexZ
+
+FrostBlast_RTS:
+	RTS
+
+Frost_FreezeObjects:
+	LDY #$04
+
+Check_NextObject:
+	CPY <CurrentObjectIndexZ
+	BEQ Check_FindObject
+
+	LDA Objects_State, Y
+	BEQ Check_FindObject
+
+	CMP #OBJSTATE_KILLED
+	BEQ Check_FindObject
+
+	LDA Objects_BehaviorAttr, Y
+	AND #ATTR_ICEPROOF
+	BNE Check_FindObject
+
+	LDX <CurrentObjectIndexZ
+	
+	JSR Object_DetectObjects
+	BCC Check_FindObject
+
+	LDA #OBJSTATE_FROZEN2
+	STA Objects_State,Y
+	
+	LDA #$00
+	STA Explosion_Timer, Y
+
+Check_FindObject:
+	DEY
+	BPL	Check_NextObject
+	RTS

@@ -761,6 +761,7 @@ PRG010_C43C:
 
 PRG010_C447:
 	LDY <Scroll_LastDir
+	
 	LDA <Horz_Scroll
 	ADD Map_ScrollDeltaX,Y
 	STA <Horz_Scroll	 ; Horz_Scroll += Map_ScrollDeltaX[Y] (scroll in proper direction by delta amount)
@@ -772,7 +773,7 @@ PRG010_C447:
 
 	JSR Scroll_Update_Ranges	; Update Scroll column values
 	JSR Scroll_Update	 	; Render new column of tiles if needed
-	JSR Scroll_Map_SpriteBorder	; Keep up the map's sprite border
+	
 
 	DEC Map_Pan_Count
 	DEC Map_Pan_Count 	; Map_Pan_Count -= 2
@@ -826,6 +827,8 @@ PRG010_C4A9:
 
 Map_DoOperation:
 	JSR DrawMapBackground
+	JSR Scroll_Map_SpriteBorder	; Keep up the map's sprite border
+
 	LDA Map_Operation
 	JSR DynJump	 
 
@@ -1921,23 +1924,26 @@ Map_DrawAndPan:
 	.word Map_PanLeft	; 6 - Pan map to the left
 	
 PRG010_CAA0:
-	.byte $00, $0E
+	.byte $00, $0E, $00
 
 Map_Do_Borders:
 	LDX <Map_ScrollOddEven	; X = Map_ScrollOddEven
+	
 	LDA <Scroll_ColumnL	; A = Scroll_ColumnL
 	ADD PRG010_CAA0,X	; Add a value based on the value of Map_ScrollOddEven (0 for not entering, 1 for entering; 2 was used in Japanese version only showing the level)
+
 	PHA			; Save A
 	AND #$f0	 	; Screen only
+
 	LSR A		 
 	LSR A		 
 	LSR A		 	; A >> 2 screen index
 	TAY		 	; Y = A
+
 	LDA Tile_Mem_Addr,Y	; Beginning of tiles we're going to modify
 	ADD #$f0	 	; Add $f0 to it??
-
-	; Store address into [<Map_Tile_AddrH][Map_Tile_AddrL]
 	STA <Map_Tile_AddrL
+
 	LDA Tile_Mem_Addr+1,Y
 	ADC #$00	 	; if any overflow from the addition
 	STA <Map_Tile_AddrH	
@@ -1945,17 +1951,24 @@ Map_Do_Borders:
 	PLA		 	; Restore A (Screen_ColumnL + value)
 	AND #$0f	 	; Screen-relative column index 
 	STA <Temp_Var5	 	; Store that to Temp_Var5
+
 	LDX #$00	 	; X = 0
+
 	LDA <Map_ScrollOddEven	; A = Map_ScrollOddEven
 	AND #$01	 	; Check if entering
 	BEQ PRG010_CACF	 	; If NOT entering, jump to PRG010_CACF
+
 	LDX #$06	 	; Otherwise, X = 6
+
 PRG010_CACF:
 	LDY <Temp_Var5		; Y = Temp_Var5 (screen-relative column index)
+
 	LDA [Map_Tile_AddrL],Y	; Get tile
 	AND #$c0	 	; Only keep its upper 2 bits ($00, $40, $80, $C0)
 	STA <Temp_Var1		; Store this into Temp_Var1
+
 	INY		 	; Y++
+
 	LDA [Map_Tile_AddrL],Y	; Get the next tile
 	AND #$c0	 	; Only keep its upper 2 bits ($00, $40, $80, $C0)
 	STA <Temp_Var2		; Store this into Temp_Var2
@@ -1967,7 +1980,9 @@ PRG010_CACF:
 	LDA [Map_Tile_AddrL],Y	; Get this tile
 	AND #$c0	 	; Only keep its upper 2 bits ($00, $40, $80, $C0)
 	STA <Temp_Var3		; Store this into Temp_Var3
+
 	INY		 	; Y++
+
 	LDA [Map_Tile_AddrL],Y	; Get this tile
 	AND #$c0	 	; Only keep its upper 2 bits ($00, $40, $80, $C0)
 	STA <Temp_Var4		; Store this into Temp_Var4
@@ -2009,10 +2024,13 @@ PRG010_CACF:
 PRG010_CB1E:
 	JMP Scroll_Map_SpriteBorder	 ; Draw the sprite version of the border
 
-Border_VAttrMask:	.byte $CC, $CC, $CC, $CC, $CC, $CC
-			.byte $33, $33, $33, $33, $33, $33
-Border_VAttrs:		.byte $00, $00, $00, $00, $00, $00	; Attributes along left vertical border
-			.byte $00, $00, $00, $00, $00, $00	; Attributes along right vertical border
+Border_VAttrMask:
+	.byte $CC, $CC, $CC, $CC, $CC, $CC
+	.byte $33, $33, $33, $33, $33, $33
+
+Border_VAttrs:
+	.byte $00, $00, $00, $00, $00, $00	; Attributes along left vertical border
+	.byte $00, $00, $00, $00, $00, $00	; Attributes along right vertical border
 
 PRG010_CB39:
 	vaddr $2BC0
@@ -2105,6 +2123,7 @@ PRG010_CB8D:
 
 	LDY #$02	 ; Y = 2
 	LDX #$00	 ; X = 0
+
 PRG010_CBA6:
 	LDA Graphics_Buffer+1,X
 	EOR <Temp_Var1
@@ -2226,7 +2245,6 @@ PRG030_CC3C:
 	JMP Scroll_Map_SpriteBorder	 ; Draw sprite border and don't come back
 
 Map_PanInit:
-
 	; Map_ScrollOddEven = 0
 	LDA #$00
 	STA <Map_ScrollOddEven
@@ -2239,7 +2257,7 @@ Scroll_ColumnLOff:	.byte $00, $0F, $00
 
 Map_PanRight:
 	; Switch to page 12 @ A000 (for map tile 8x8 layout data)
-	LDA #21
+	LDA #22
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -2258,6 +2276,7 @@ Map_PanRight:
 	; Set Map_Tile_AddrL/H 
 	LDA Tile_Mem_Addr,Y
 	STA <Map_Tile_AddrL
+
 	LDA Tile_Mem_Addr+1,Y
 	STA <Map_Tile_AddrH
 
@@ -2277,6 +2296,7 @@ PRG010_CC7A:
 	; Get pointer to tile layout -> Temp_Var15/16
 	LDA TileLayout_ByTileset,Y
 	STA <Temp_Var15
+
 	LDA TileLayout_ByTileset+1,Y
 	STA <Temp_Var16
 
@@ -2353,6 +2373,7 @@ PRG010_CCD7:
 	JMP Scroll_Map_SpriteBorder	 ; Draw map sprite border and don't come back
 
 Map_PanLeft:
+	
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
@@ -2369,6 +2390,7 @@ Map_PanLeft:
 
 	LDX #$31	 ; X = $31
 PRG010_CCF7:
+	
 	LDA PRG010_CB39,X	 ; Get graphics buffer command byte
 	STA Graphics_Buffer,Y	 ; Store into graphics buffer
 
@@ -3955,7 +3977,7 @@ DrawMapSkyBackground1:
 DrawMapSkyBackground2:
 	LDX #$05
 
-	LDY #$E8
+	LDY #$C0
 	LDA <Horz_Scroll
 	LSR A
 	LSR A

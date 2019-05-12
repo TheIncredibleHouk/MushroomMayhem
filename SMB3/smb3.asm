@@ -1880,8 +1880,9 @@ OBJSTATE_SHELLED	= 3	; Shelled (shelled enemy post-stomp)
 OBJSTATE_KICKED		= 4	; Kicked (kicked by Player / spinning shell)
 OBJSTATE_KILLED		= 5	; Killed (flipped over and falling off screen)
 OBJSTATE_FRESH		= 6 ;
-OBJSTATE_FROZEN		= 7
-OBJSTATE_NONE		= 8 ; used to keep a slot open
+OBJSTATE_NONE		= 7 ; used to keep a slot open
+OBJSTATE_FROZEN		= 8
+OBJSTATE_FROZEN2	= 9
 
 	Objects_State:		.ds 8
 
@@ -2615,14 +2616,6 @@ CFIRE_LASER		= $15	; Laser fire
 
 	ObjectGenerator_Timer2:	.ds 8	; $7A57-$7A5E Cannon Fire timer (decrements to zero)
 
-	Roulette_Unused7A5F:	.ds 1	; Unused value in Roulette game
-	Roulette_Unused7A5F_Delta:.ds 1	; Delta value added to Roulette_Unused7A5F
-
-	Bowser_TileValues:		.ds 2	; $7A61-$7A62 Bowser's detected tiles (to determine what to break)
-	Bowser_TileProps:	.ds 2
-	Bowser_Counter1:	.ds 1	; A counter used by Bowser, decrements to zero
-	Bowser_Counter2:	.ds 1	; A counter used by Bowser, decrements to zero 
-	Bowser_Counter3:	.ds 1	; A counter used by Bowser, random setting, decrements to zero
 
 	CoinShip_CoinGlowIdx:	.ds 1	; Coin Ship only: Glowing coins palette color index
 	CoinShip_CoinGlowCnt:	.ds 1	; Coin Ship only: Glowing coins palette color counter
@@ -2655,16 +2648,12 @@ MARIO_FOX		= 08
 	Player_EffectiveSuit:			ds 1
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
-	DAIZ_TEMP4:			.ds 1	;
 	MushroomBlocks_Enabled: .ds	1	; Indicates the enemies are invincible
 	ProjectileToSpinners: ds 1	;
 	Pay_Toll_Timer:		.ds 1	; Used timer for paying tolls on Hammer Bros on map
 	Deduct_Coin_Timer:	.ds 1	; Used timer for deducting necessary coins on Hammer Bros. Map
 	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
-	Coins_To_Deduct:	.ds 1	; Indicates the number of coins to deduct during toll payments
-	TollPaid:			.ds 1	; Indicates whether the toll was paid (1 was paid, 0 was not paid)
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
-	Virus:				.ds 1	;
 	Old_World_Map_Tile:	.ds	1	;
 
 ITEM_STOP1  = 1
@@ -2769,6 +2758,8 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data12:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Kicked:		.ds 5
+	Objects_Shelled:	.ds 5
 
 ATTR_FIREPROOF		= %00000001
 ATTR_ICEPROOF		= %00000010
@@ -2814,7 +2805,6 @@ HIT_STOMPED		= 20
 	Temp_VarNP0:		.ds 1	; A temporary not on page 0
 	Last_EventGen:		.ds 1
 	Level_EventTimer:	.ds 1	;
-	Lakitu_Active:		.ds 1	; Set while a Lakitu is active; keeps Lakitu "alive" even if off-screen etc.
 
 	LevelEvent_Cnt:		.ds 1	; General purpose counter used by a couple LevelEvents
 	Vert_Scroll_Off:	.ds 1	; Vertical scroll offset, used for "vibration" effects
@@ -3088,9 +3078,11 @@ SOBJ_CANNONBALL		= $0B 	; Cannonball
 SOBJ_LIGHTNINGBOLT  = $0C
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
 SOBJ_BUBBLE		= $00 	; Bubble
+SOBJ_FLAME			= $0E
 SOBJ_SKULL	= $0F	; Lava Lotus fire
 SOBJ_LAVALOTUSFIRE	= $00
-SOBJ_RECOVEREDWAND	= $10 	; Recovered wand
+SOBJ_FROST			= $10
+SOBJ_RECOVEREDWAND	= $00 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_BLOOPERKID		= $14 	; Blooper kid
@@ -3153,7 +3145,7 @@ PLAYER_POOF			= 05
 	Magic_Stars_Collected1: .ds 16 ;
 	Magic_Stars_Collected2:	.ds 16
 	Magic_Stars_Collected3:	.ds 16
-	Levels_Complete: .ds 16	;
+	Levels_Complete:    .ds 16	;
 	StarLevel:			.ds 1
 	MiscValue2:			.ds 1
 	MiscValue3:			.ds 1

@@ -515,6 +515,9 @@ ObjNorm_ParaGoomba:
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BEQ ObjNorm_ParaGoomba1
+	
+	CMP #OBJSTATE_FROZEN
+	BCS ObjNorm_ParaGoomba1
 	RTS
 
 ObjNorm_ParaGoomba1:
@@ -586,6 +589,7 @@ ObjNorm_ParaGoomba51:
 	LDA #$00
 	STA Objects_Data5, X
 	STA Objects_Data3, X
+
 	LDA #$80
 	STA Objects_Timer, X
 
@@ -1442,8 +1446,9 @@ ObjInit_Piranha1:
 ObjInit_Piranha_Aggressive:
 	JSR ObjInit_Piranha
 	
-	LDA #$01
-	STA Piranha_CurrentState, X
+	LDA #$00
+	STA Objects_Timer, X
+	STA <Objects_YVelZ, X
 
 	LDA Objects_Orientation, X
 	AND #~SPR_BEHINDBG
@@ -1597,7 +1602,7 @@ Piranha_HeadFlips:
 Plant_DrawUpsideDown:
 	LDA Objects_State, X
 	CMP #OBJSTATE_FROZEN
-	BEQ Plant_DrawRTS
+	BCS Plant_DrawRTS
 
 	LDA Objects_ID, X
 	CMP #OBJ_PIRUMPKIN
@@ -1762,10 +1767,19 @@ Piranha_NoYOff:
 	DEC Piranha_AttacksLeft, X
 	BEQ Piranha_NoMoreAttacks
 
-Piranha_AttackReset:	
+Piranha_AttackReset:
+	LDA Objects_ID, X
+	CMP #OBJ_PIRANHAPLANTGOLD
+	BNE Piranha_NormTimer
+
+	LDA #$70
+	BNE Piranha_SetTimer
+
+Piranha_NormTimer:	
 	LDA #$50
+
+Piranha_SetTimer:
 	STA Objects_Timer, X
-	STA Objects_Timer2, X
 	RTS
 
 Piranha_NoMoreAttacks:
