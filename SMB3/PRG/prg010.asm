@@ -3939,10 +3939,12 @@ UpdateLevelA3:
 
 UpdateLevel1:
 	LDA LevelName, Y
-	STA Status_Bar_Top, Y
+	STA Status_Bar_Bottom, Y
 	INY
 	CPY #28
 	BNE UpdateLevel1
+
+	INC Bottom_Needs_Redraw
 	RTS
 
 

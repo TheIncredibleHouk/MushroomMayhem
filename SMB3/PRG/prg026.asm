@@ -2251,7 +2251,7 @@ UpdatePalette1:
 	RTS
 
 Do_Top:
-	
+	STA Debug_Snap
 	LDX Graphics_BufCnt
 
 	LDA #$2B
@@ -2288,7 +2288,7 @@ Status_Top_Loop:
 
 	
 Do_Bottom:
-	
+	STA Debug_Snap
 	LDX Graphics_BufCnt
 	LDA #$2B
 	STA Graphics_Buffer, X
