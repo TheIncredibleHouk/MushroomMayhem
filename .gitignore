@@ -9,3 +9,4 @@ bin/
 Backup/
 obj/
 *.fns
+Documentation/node_modules/
