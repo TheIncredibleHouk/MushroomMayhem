@@ -4316,7 +4316,7 @@ PRG011_BB7B:
 	LDY <World_Map_Y,X	; Y = Player's Y coordinate
 	LDX #$01	 	; X = 1
 
-	JSR Map_W8DarknessUpdate	; Update darkness around Player
+	;JSR Map_W8DarknessUpdate	; Update darkness around Player
 
 	INC World_8_Dark	; World_8_Dark++
 
@@ -4353,7 +4353,7 @@ PRG011_BBAC:
 	PLA		 ; A = Player's map X
 
 	; Update darkness around Player
-	JSR Map_W8DarknessUpdate
+	;JSR Map_W8DarknessUpdate
 
 PRG011_BBBB:
 	LDY #(W8D_CircSprs_Unaligned - W8D_CircSprs)
@@ -4436,3 +4436,217 @@ Map_DoAnimations:	; $BC29
 	LDA Map_AnimCHRROM,Y	; Get the correct CHRROM page
 	STA PatTable_BankSel	  	; Put it to use
 	RTS		  ; Return!
+
+; ### RELOCATE THIS CODE!	
+FindCompletedLevels:
+	LDX #$00
+
+FindCompletedLevels3:
+	LDA MapPointers, X
+	CMP #$FF
+	BNE FindCompletedLevels0
+	RTS
+
+FindCompletedLevels0:
+	STA LevelNumber
+	JSR GetLevelBit
+	AND Levels_Complete, Y
+	BEQ FindCompletedLevels1
+
+	LDA MapPointers + 1, X
+	AND #$0F
+	STA Block_ChangeXHi
+
+	LDA MapPointers + 1, X
+	AND #$F0
+	STA Block_ChangeX
+
+	LDA MapPointers + 2, X
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	SUB #$10
+	STA Block_ChangeY
+
+	LDA #$01
+	STA Block_ChangeYHi
+	STX TempX
+
+	JSR MarkCompletedLevels
+	JSR MarkRoadsPassable
+	
+	LDX TempX
+
+FindCompletedLevels1:
+	INX
+	INX
+	INX
+
+	JMP FindCompletedLevels3
+
+MarkCompletedLevels:
+	JSR GetMapTile
+
+	EOR #$01
+	STA [Map_Tile_AddrL],Y
+	RTS
+
+GetMapTile:
+	LDA Block_ChangeXHi
+	ASL A
+	TAX	
+
+	LDA Tile_Mem_Addr,X
+	STA <Map_Tile_AddrL
+
+	LDA Tile_Mem_Addr+1,X
+	STA <Map_Tile_AddrH
+
+	LDA #$00
+	STA <Temp_Var7
+
+	LDA Block_ChangeYHi
+	BEQ MarkCompletedLevels1	
+
+	INC <Map_Tile_AddrH	
+
+MarkCompletedLevels1:
+
+	LDA Block_ChangeY
+	AND #$f0
+	STA <Temp_Var6
+
+	LDA Block_ChangeX
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ORA <Temp_Var6
+	STA <Temp_Var5
+
+	LDA Block_ChangeYHi
+	BNE MarkCompletedLevels2	
+	LDA Block_ChangeY
+	AND #$f0
+	CMP #$f0
+	BNE MarkCompletedLevels3	 
+
+MarkCompletedLevels2:
+	LDA Block_ChangeY
+	ADD #$10
+	STA <Temp_Var6
+
+	LDA #$01
+	STA <Temp_Var7
+
+MarkCompletedLevels3:
+	LDY <Temp_Var5
+
+	LDA [Map_Tile_AddrL],Y
+	RTS	
+
+MarkRoadsPassable:
+	LDA Block_ChangeX
+	SUB #$10
+	STA Block_ChangeX
+
+	LDA Block_ChangeXHi
+	SBC #$00
+	STA Block_ChangeXHi
+
+	JSR GetMapTile
+	TAX
+	LDA TileProperties, X
+	CMP #MAP_PROP_BLOCKEDROAD
+	BNE MapsRoadsAbove
+
+	TXA
+	EOR #$01
+	STA [Map_Tile_AddrL],Y
+
+MapsRoadsAbove:
+	LDA Block_ChangeX
+	ADD #$10
+	STA Block_ChangeX
+
+	LDA Block_ChangeXHi
+	ADC #$00
+	STA Block_ChangeXHi
+
+	LDA Block_ChangeY
+	SUB #$10
+	STA Block_ChangeY
+
+	LDA Block_ChangeYHi
+	SBC #$00
+	STA Block_ChangeYHi
+
+	JSR GetMapTile
+	TAX
+	LDA TileProperties, X
+	CMP #MAP_PROP_BLOCKEDROAD
+	BNE MapsRoadsRight
+
+	TXA
+	EOR #$01
+	STA [Map_Tile_AddrL],Y
+
+MapsRoadsRight:
+	STA Debug_Snap
+	LDA Block_ChangeX
+	ADD #$10
+	STA Block_ChangeX
+
+	LDA Block_ChangeXHi
+	ADC #$00
+	STA Block_ChangeXHi
+
+	LDA Block_ChangeY
+	ADD #$10
+	STA Block_ChangeY
+
+	LDA Block_ChangeYHi
+	ADC #$00
+	STA Block_ChangeYHi
+
+	JSR GetMapTile
+	TAX
+	LDA TileProperties, X
+	CMP #MAP_PROP_BLOCKEDROAD
+	BNE MapsRoadsBelow
+
+	TXA
+	EOR #$01
+	STA [Map_Tile_AddrL],Y
+
+MapsRoadsBelow:
+	LDA Block_ChangeX
+	SUB #$10
+	STA Block_ChangeX
+
+	LDA Block_ChangeXHi
+	SBC #$00
+	STA Block_ChangeXHi
+
+	LDA Block_ChangeY
+	ADD #$10
+	STA Block_ChangeY
+
+	LDA Block_ChangeYHi
+	ADC #$00
+	STA Block_ChangeYHi
+
+	JSR GetMapTile
+	TAX
+	LDA TileProperties, X
+	CMP #MAP_PROP_BLOCKEDROAD
+	BNE MapRoadsRTS
+
+	TXA
+	EOR #$01
+	STA [Map_Tile_AddrL],Y
+
+MapRoadsRTS:
+	RTS

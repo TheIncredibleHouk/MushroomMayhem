@@ -7,16 +7,12 @@ const Enemy = ({enemy}) => {
         <div className="enemy-name">
             {enemy.name}
         </div>
-        <div className="enemy-icon">
-            <img src={enemy.image} />
-        </div>
-        <div className="enemy-mario">
-            <img src={enemy.example} />
-        </div>
         <div className="enemy-description">
             {enemy.description}
         </div>
-        
+        <div className="enemy-icon">
+            <img src={enemy.image} />
+        </div>
     </EnemyStyles>
 };
 

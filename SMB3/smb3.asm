@@ -3163,9 +3163,11 @@ PLAYER_POOF			= 05
 	ExtraData:			.ds 5
 
 	; Tile map property flags
+MAP_PROP_BOUNDARY		= $00
 MAP_PROP_TRAVERSABLE	= $01
 MAP_PROP_ENTERABLE		= $02
 MAP_PROP_COMPLETABLE	= $03
+MAP_PROP_BLOCKEDROAD	= $04
 	; Tile Property Flags
 	; TSWF XXXX
 	; T - Top Solid

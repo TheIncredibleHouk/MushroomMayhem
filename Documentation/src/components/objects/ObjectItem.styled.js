@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const ObjectItemStyles = styled.div`
-    border: 5px solid #000000;
+    border: 5px solid #10a802;
     border-radius: 5px;
     border-top: 0;
     display: inline-block;
@@ -11,7 +11,7 @@ const ObjectItemStyles = styled.div`
     width: 266px;
 
     .object-name {
-        background-color: #d82800;
+        background-color: #10a802;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
         color: #FFFFFF;
@@ -28,10 +28,9 @@ const ObjectItemStyles = styled.div`
 
     .object-description {
         font-size: 16px;
-        padding-left: 5px;
-        padding-right: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
         padding-top: 5px;
-        text-indent: 10px;
     }
 
     .object-icon {

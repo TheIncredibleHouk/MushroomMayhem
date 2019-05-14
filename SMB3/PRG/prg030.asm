@@ -67,52 +67,7 @@ Video_Upd_Table: ; $803E
 	.word $A06F		; $04 - ???
 	.word Video_DoStatusBarHM; $05 - status bar appropriate for horizontal mirroring
 	.word Video_DoPalUpd	; $06 - Updates palettes per values in the $07BE+ Palette_* vars; used during fade in/out routines
-	;.word Video_RoulBordAttr; $07 - Roulette sliders border and attribute settings
-	;.word Bonus_InstBoxTop	; $08 - Top of Bonus Game instruction box
-	;.word Bonus_InstBoxLine1; $09 - First line of Bonus Game instruction box
-	;.word Bonus_InstBoxLine2; $0A - Second line of Bonus Game instruction box
-	;.word Bonus_InstBoxLine3; $0B - Third line of Bonus Game instruction box
-	;.word Bonus_InstBoxBot	; $0C - Bottom of Bonus Game instruction box
-	;.word Video_NSpadeBG	; $0D - N-Spade candy striping background
-	;.word Video_DoWXMario00	; $0E - "World X" Intro, Mario (horizontal scroll at $00)
-	;.word Video_DoWXLuigi00	; $0F - "World X" Intro, Luigi (horizontal scroll at $00)
-	;.word Video_DoWXMario80	; $10 - "World X" Intro, Mario (horizontal scroll at $80)
-	;.word Video_DoWXLuigi80	; $11 - "World X" Intro, Luigi (horizontal scroll at $80)
-	;.word Video_DoGameOver00; $12 - "GAME OVER" Box (horizontal scroll at $00)
-	;.word Video_DoGameOver80; $13 - "GAME OVER" Box (horizontal scroll at $80)
-	;.word Video_Blackout	; $14 - Blacks out 3 colors, used during end-level triple card match; not sure what for?
-	;.word Video_3CMMushTop	; $15 - End Level Triple Card Match: Mushroom top
-	;.word Video_3CMFlowTop	; $16 - End Level Triple Card Match: Flower top
-	;.word Video_3CMStarTop	; $17 - End Level Triple Card Match: Star top
-	;.word Video_3CMMushLeft	; $18 - End Level Triple Card Match: Mushroom left spot
-	;.word Video_3CMFlowDiag	; $19 - End Level Triple Card Match: Flower inner diagonal
-	;.word Video_3CMStarTip	; $1A - End Level Triple Card Match: Star eyes and tips
-	;.word Video_3CMMushMid	; $1B - End Level Triple Card Match: Mushroom eyes and middle
-	;.word Video_3CMFlowMid	; $1C - End Level Triple Card Match: Flower middle
-	;.word Video_3CMStarSide	; $1D - End Level Triple Card Match: Star left/right sides
-	;.word Video_3CMMushRight; $1E - End Level Triple Card Match: Mushroom right spot
-	;.word Video_3CMFlowStem	; $1F - End Level Triple Card Match: Flower stem
-	;.word Video_3CMStarBot1	; $20 - End Level Triple Card Match: Star near bottom
-	;.word Video_3CMMushBot	; $21 - End Level Triple Card Match: Mushroom bottom
-	;.word Video_3CMFlowBot	; $22 - End Level Triple Card Match: Flower bottom
-	;.word Video_3CMStarBot2	; $23 - End Level Triple Card Match: Star bottom
-	;.word Video_3CMAppear1	; $24 - End Level Triple Card Match: Make big shape appear attribute change 1
-	;.word Video_3CMAppear2	; $25 - End Level Triple Card Match: Alters palette
-	;.word Video_3CMAppear3	; $26 - End Level Triple Card Match: Make big shape appear attribute change 2
-	;.word Video_3CMAppear4	; $27 - End Level Triple Card Match: Make big shape appear attribute change 3
-	;.word Video_3CMAppear5	; $28 - End Level Triple Card Match: Make big shape appear attribute change 4
-	;.word Video_3CMAppear6	; $29 - End Level Triple Card Match: Make big shape appear attribute change 5
-	;.word Video_3CMAppear7	; $2A - End Level Triple Card Match: Make big shape appear attribute change 6
-	;.word Video_DoW2WZ	; $2B - "WELCOME TO WARP ZONE" banner
-	;.word Video_YouGotCardH	; $2C - "YOU GOT A CARD" (and the card space) [for the End Level Triple Card Match]
-	;.word Video_CourseClear	; $2D - "COURSE CLEAR"
-	;.word Video_YouGotCard	; $2E - "YOU GOT A CARD" (and the card space) [for the End Level otherwise]
 
-	; The status bar comes in three identical versions with different VRAM start addresses
-	; Might as well make a macro out of that, eh?
-
-	; NOTE!! If you want to edit the status bar, you should also sync up
-	; with the "flip" data in PRG026 as noted below...
 StatusBar	.macro
 
 	; Sync next three with PRG026 Flip_TopBarCards
@@ -167,205 +122,6 @@ Video_DoStatusBar:
 Video_DoStatusBarHM:
 	StatusBar $2300
 
-;Video_3CMStarTop:
-;	vaddr $208F
-;	.byte VU_REPEAT | $02, $A9
-;	vaddr $20AE
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	vaddr $20B1
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	vaddr $20ED
-;	.byte $01, $A9
-;	vaddr $20F2
-;	.byte $01, $A9
-;	vaddr $2108
-;	.byte VU_REPEAT | $06, $A9
-;	vaddr $2112
-;	.byte VU_REPEAT | $06, $A9
-;	.byte $00	; Terminator
-;
-;Video_3CMStarTip:
-;	vaddr $2128
-;	.byte $01, $A9
-;	vaddr $2137
-;	.byte $01, $A9
-;	vaddr $2149
-;	.byte $01, $A9
-;	vaddr $214E
-;	.byte VU_VERT | VU_REPEAT | $03, $A9
-;	vaddr $2151
-;	.byte VU_VERT | VU_REPEAT | $03, $A9
-;	vaddr $2156
-;	.byte $01, $A9
-;	.byte $00	; Terminator
-;
-;Video_3CMStarSide:
-;	vaddr $216A
-;	.byte $01, $A9
-;	vaddr $2175
-;	.byte $01, $A9
-;	vaddr $218B
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	vaddr $2194
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	vaddr $21CA
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	vaddr $21D5
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	.byte $00	; Terminator
-;
-;Video_3CMStarBot1:
-;	vaddr $2209
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	vaddr $220F
-;	.byte VU_REPEAT | $42, $A9
-;	vaddr $2216
-;	.byte VU_VERT | VU_REPEAT | $02, $A9
-;	vaddr $222D
-;	.byte VU_REPEAT | $02, $A9
-;	vaddr $2231
-;	.byte VU_REPEAT | $02, $A9
-;	.byte $00	; Terminator
-;
-;Video_3CMStarBot2:
-;	vaddr $2248
-;	.byte $05, $A9, $FC, $FC, $A9, $A9
-;	vaddr $2253
-;	.byte $05, $A9, $A9, $FC, $FC, $A9
-;	vaddr $2268
-;	.byte VU_REPEAT | $03, $A9
-;	vaddr $2275
-;	.byte VU_REPEAT | $03, $A9
-;	.byte $00	; Terminator
-;
-;Video_3CMAppear1:
-;	vaddr $23CA
-;	.byte VU_REPEAT | $04, $FF
-;	vaddr $23D2
-;	.byte VU_REPEAT | $04, $FF
-;	vaddr $23DA
-;	.byte VU_REPEAT | $04, $FF
-;	vaddr $23E2
-;	.byte VU_REPEAT | $04, $FF
-;	.byte $00	; Terminator
-;
-;Video_3CMAppear3:
-;	vaddr $23D3
-;	.byte $02, $BF, $EF
-;	vaddr $23DB
-;	.byte $02, $FB, $FE
-;	.byte $00	; Terminator
-;	
-;Video_3CMAppear4:
-;	vaddr $23D3
-;	.byte $02, $6A, $9A
-;	vaddr $23DB
-;	.byte $02, $A6, $A9
-;	.byte $00	; Terminator
-;
-;Video_3CMAppear5:
-;	vaddr $23CA
-;	.byte $04, $BF, $AF, $AF, $EF
-;	vaddr $23D2
-;	.byte $04, $BB, $55, $55, $EE
-;	vaddr $23DA
-;	.byte $04, $BB, $55, $55, $EE
-;	vaddr $23E2
-;	.byte $04, $FB, $FA, $FA, $FE
-;	.byte $00	; Terminator
-;
-;Video_3CMAppear6:
-;	vaddr $23CA
-;	.byte $04, $7F, $5F, $5F, $DF
-;	vaddr $23D2
-;	.byte $04, $77, $55, $55, $DD
-;	vaddr $23DA
-;	.byte $04, $77, $55, $55, $DD
-;	vaddr $23E2
-;	.byte $04, $F7, $F5, $F5, $FD
-;	.byte $00	; Terminator
-;
-;Video_3CMAppear7:
-;	vaddr $23CA
-;	.byte VU_REPEAT | $04, $55
-;	vaddr $23D2
-;	.byte VU_REPEAT | $04, $55
-;	vaddr $23DA
-;	.byte VU_REPEAT | $04, $55
-;	vaddr $23E2
-;	.byte VU_REPEAT | $04, $55
-;	.byte $00	; Terminator
-;
-;	; Blacks out a little bit of the palette during end level triple-card match sequecnce
-;Video_Blackout:
-;	vaddr $3F0D
-;	.byte VU_REPEAT | $03, $0F, $00
-;
-;
-;Video_3CMAppear2:
-;	vaddr $3F05
-;	.byte $03
-;
-;EndLevelCard_PalData:
-;	.byte $0F, $30, $3C
-;	vaddr $3F09
-;	.byte $03, $0F, $10, $2C
-;	vaddr $3F0D
-;	.byte VU_REPEAT | $03, $0F
-;	.byte $00	; Terminator
-;
-;Video_YouGotCardH:
-;	vaddr $22C7
-;	.byte $13
-;	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
-;	.byte $0D, $0E, $0A, $FC, $06, $0E, $09, $FC, $00, $FC, $05, $00, $02, $07, $FC, $26, $FE, $FE, $27
-;	vaddr $22B6
-;	.byte $04 ;  _    _    _   _
-;	;           |               |
-;	.byte      $20, $21, $21, $22
-;
-;	vaddr $22F6
-;	.byte $04
-;	;       |              |
-;	.byte $26, $FE, $FE, $27
-;
-;	vaddr $2316
-;	.byte $04
-;	;      |_    _    _   _|
-;	.byte $28, $24, $24, $25
-;
-;	.byte $00	; Terminator
-;
-;Video_CourseClear:
-;	vaddr $2889
-;	.byte $0E
-;	;       C    O    U    R    S    E         C    L    E    A    R         !
-;	.byte $85, $8E, $8A, $82, $83, $84, $FC, $85, $8B, $84, $80, $82, $FC, $9B, $00
-;
-;Video_YouGotCard:
-;	vaddr $28E7
-;	.byte $13
-;	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
-;	.byte $8D, $8E, $8A, $FC, $86, $8E, $89, $FC, $80, $FC, $85, $80, $82, $87, $FC, $A6, $FE, $FE, $A7
-;
-;	vaddr $28D6
-;	.byte $04 ;  _    _    _   _
-;	;           |               |
-;	.byte      $A0, $A1, $A1, $A2
-;
-;	vaddr $2916
-;	.byte $04
-;	;       |              |
-;	.byte $A6, $FE, $FE, $A7
-;
-;	vaddr $2936
-;	.byte $04
-;	;      |_    _    _   _|
-;	.byte $A8, $A4, $A4, $A5
-;	.byte $00	; Terminator
-;
-;	.byte $AF, $11
-;
 Map_Y_Starts:
 	; Map Y start positions, World 1-8 (X is always $20)
 	.byte $40, $A0, $A0, $40, $80, $60, $30, $50
@@ -405,6 +161,7 @@ PAUSE_Sprites:
 	.byte $58, $F9, $03, $80	; U
 	.byte $58, $FD, $03, $90	; S
 	.byte $58, $FF, $03, $A0	; E
+
 PAUSE_Sprites_End
 
 	; The BGM per world (see also World_BGM_Restore in PRG010)
@@ -468,8 +225,10 @@ PRG030_845A:
 	JSR Sprite_RAM_Clear	 
 	JSR Scroll_PPU_Reset	 
 	JSR Reset_PPU_Clear_Nametables
+	
 	LDA #$01
 	STA Last_StatusBar_Mode
+
 	; Load title screen graphics
 	LDA #$78
 	STA PatTable_BankSel
@@ -573,6 +332,7 @@ PRG030_8552:
 	; Set Player's X position
 	LDA Map_Entered_XHi,X
 	STA <World_Map_XHi,X
+
 	LDA Map_Entered_X,X
 	STA <World_Map_X,X
 
@@ -727,7 +487,7 @@ PRG030_8676:
 	TXA		 	; A = X ($0E/$0F, $10/$11)
 	JSR Video_Do_Update	; Do the World X intro box!
 
-	JSR Map_ConfigWorldIntro	; Apply the world number and lives count
+	;JSR Map_ConfigWorldIntro	; Apply the world number and lives count
 
 	; Push the buffered update
 	LDA #$00
@@ -800,7 +560,6 @@ PRG030_86F9:
 	STA PAGE_A000
 	JSR PRGROM_Change_A000	
 
-	JSR World5_Sky_AddCloudDeco	 ; World 5 sky area gets an extra cloud sprite (strange?)
 	JSR WorldMap_UpdateAndDraw	 ; Update and draw map graphics
 	JMP WorldMap_Loop	 	; Loop back around...
 
@@ -2039,13 +1798,6 @@ PRG030_91D1:
 
 	JSR Scroll_Dirty_Update 	; Do a full draw of the map tiles
 
-	LDA World_8_Dark
-	BEQ PRG030_9214	 	; If World_8_Dark = 0 (not doing the effect), jump to PRG030_9214
-
-	JSR Map_W8DarknessFill	; Fill in the entire screen with black
-
-PRG030_9214:
-
 	LDY Player_Current	 ; Y =  Player_Current
 
 	LDA Map_Prev_XOff,Y
@@ -2085,8 +1837,6 @@ PRG030_924B:
 	TXA		 ; A = X
 	JSR Video_Do_Update	 ; Draw up the Game Over! box
 
-	JSR GameOver_PatchPlayerName	 ; Add MARIO/LUIGI to gameover box
-
 	LDA #$00		 ; A = 0 (Graphics buffer push)
 	JSR Video_Do_Update	 ; Push through what's in graphics buffer
 
@@ -2118,7 +1868,6 @@ PRG030_927E:
 	JSR GraphicsBuf_Prep_And_WaitVSync	; This is probably just using it to VSync
 	JSR Sprite_RAM_Clear	 		; Clear sprites!
 	JSR GameOver_Loop	 		; Do Gameover stuff
-	JSR World5_Sky_AddCloudDeco	 	; World 5 sky area gets an extra cloud sprite (strange?)
 
 	LDA GameOver_State
 
@@ -2341,6 +2090,7 @@ BoxOut_InitVAddrL3:	.byte $6D, $2D, $2D, $6D, $6D
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Map_Clear_EntTranMem:
 	LDY #$1c	 ; Y = $1C
+
 PRG030_9555:
 	LDA #$00	 ; A = 0
 	STA Map_EntTran_VLHalf,Y
@@ -5180,6 +4930,7 @@ PRG012_A498:
 	LDA <Map_Tile_AddrL
 	ADD #$b0	
 	STA <Map_Tile_AddrL
+
 	LDA <Map_Tile_AddrH
 	ADC #$01
 	STA <Map_Tile_AddrH
@@ -5190,15 +4941,22 @@ PRG012_A4C1:
 
 	; This places the tiles along the bottom (lower horizontal border)
 
+	LDA #11
+	STA PAGE_A000
+	
+	JSR PRGROM_Change_A000
+	
+	JSR FindCompletedLevels
+	
 	LDA DAIZ_TEMP2
 	STA PAGE_A000
 
 	JSR PRGROM_Change_A000
-	
+
 	LDA DAIZ_TEMP3
 	STA PAGE_C000
 	JSR PRGROM_Change_C000
-	JSR FindCompletedLevels
+
 	LDX #$00
 	RTS		 ; Return
 
@@ -5562,100 +5320,7 @@ Store_WeatherParticle:
 	DEY
 	BPL ObjInit_Stars1
 	RTS
-	
-FindCompletedLevels:
-	LDX #$00
 
-FindCompletedLevels3:
-	LDA MapPointers, X
-	CMP #$FF
-	BNE FindCompletedLevels0
-	RTS
-
-FindCompletedLevels0:
-	STA LevelNumber
-	JSR GetLevelBit
-	AND Levels_Complete, Y
-	BEQ FindCompletedLevels1
-	LDA MapPointers + 1, X
-	AND #$0F
-	STA Block_ChangeXHi
-	LDA MapPointers + 1, X
-	AND #$F0
-	STA Block_ChangeX
-
-	LDA MapPointers + 2, X
-	AND #$0F
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	SUB #$10
-	STA Block_ChangeY
-	LDA #$01
-	STA Block_ChangeYHi
-	STX TempX
-	JSR MarkCompletedLevels
-	LDX TempX
-
-FindCompletedLevels1:
-	INX
-	INX
-	INX
-	JMP FindCompletedLevels3
-
-
-MarkCompletedLevels:
-	LDA Block_ChangeXHi
-	ASL A
-	TAX	
-	LDA Tile_Mem_Addr,X
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1,X
-	STA <Map_Tile_AddrH
-
-	LDA #$00
-	STA <Temp_Var7
-
-	LDA Block_ChangeYHi
-	BEQ MarkCompletedLevels1	
-
-	INC <Map_Tile_AddrH	
-
-MarkCompletedLevels1:
-
-	LDA Block_ChangeY
-	AND #$f0
-	STA <Temp_Var6
-	LDA Block_ChangeX
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ORA <Temp_Var6
-	STA <Temp_Var5
-
-	LDA Block_ChangeYHi
-	BNE MarkCompletedLevels2	
-	LDA Block_ChangeY
-	AND #$f0
-	CMP #$f0
-	BNE MarkCompletedLevels3	 
-
-MarkCompletedLevels2:
-	LDA Block_ChangeY
-	ADD #$10
-	STA <Temp_Var6
-
-	LDA #$01
-	STA <Temp_Var7
-
-MarkCompletedLevels3:
-	LDY <Temp_Var5
-	LDA [Map_Tile_AddrL],Y
-	EOR #$01
-	STA [Map_Tile_AddrL],Y
-	RTS
 
 Sprite_RAM_Clear:	; $FD84
 

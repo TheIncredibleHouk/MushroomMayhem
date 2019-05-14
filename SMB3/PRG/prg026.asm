@@ -732,10 +732,13 @@ InvItem_SetColor:
 	ASL A
 	ASL A
 	TAX		 	; A = Current inventory item selected
+
 	LDA InvItem_Pal + 1,X	; Get the color that will be used for this item
 	STA Palette_Buffer+$15	; Store it into the palette buffer
+
 	LDA InvItem_Pal + 2,X	; Get the color that will be used for this item
 	STA Palette_Buffer+$16	; Store it into the palette buffer
+
 	LDA InvItem_Pal + 3,X	; Get the color that will be used for this item
 	STA Palette_Buffer+$17	; Store it into the palette buffer 
 
@@ -765,6 +768,7 @@ Inv_UseItem_Powerup1:
 	DEC Inventory_Items, X
 	LDA Inv_Item_Map, X
 	STA Player_Equip
+
 	LDA #$14	 
 	STA Map_Powerup_Poof	 	; Map_Powerup_Poof = $14
 	LDX Player_Current	 	; X = Player_Current
@@ -772,6 +776,7 @@ Inv_UseItem_Powerup1:
 	; Target "Map Poof" on active Player
 	LDA <World_Map_Y,X
 	STA <MapPoof_Y	
+
 	LDA <World_Map_X,X
 	STA <MapPoof_X	
 	RTS
@@ -2251,7 +2256,6 @@ UpdatePalette1:
 	RTS
 
 Do_Top:
-	STA Debug_Snap
 	LDX Graphics_BufCnt
 
 	LDA #$2B
@@ -2288,7 +2292,6 @@ Status_Top_Loop:
 
 	
 Do_Bottom:
-	STA Debug_Snap
 	LDX Graphics_BufCnt
 	LDA #$2B
 	STA Graphics_Buffer, X

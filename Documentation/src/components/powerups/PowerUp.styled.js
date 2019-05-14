@@ -10,9 +10,9 @@ const PowerUpStyles = styled.div`
     width: 878px;
 
     .powerup-name {
-        background-color: #000000;
+        background-color: #5fa0ff;
         border-top-right-radius: 5px;
-        color: #ffdc55;
+        color: #ffffff;
         font-weight: bold;
         font-size: 20px;
         padding-bottom: 5px;

@@ -4,6 +4,7 @@
   <spritedata>
     <sprite x="9" y="17" value="88" item="0" property="0" replaced="true" />
     <sprite x="9" y="23" value="8" item="0" property="0" replaced="true" />
+    <sprite x="6" y="23" value="18" item="0" property="0" replaced="false" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Rectangle" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="false" />
 </level>
