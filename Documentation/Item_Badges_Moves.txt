@@ -1,29 +1,30 @@
 Badges:
 ----------------------------
-Damage Shield
 No Mushrooms
-Jump Higher
 1.5x Air
-1.5 P Meter
-Coin Reaper
+Jump higher
+Walk on spikes
+Starman summon
+Star Radar
 
 Items
 ----------------------------
-Stop Watch
-Slow Motion
+2-Health Meter
+3-Health Meter
+Slow Enemies
+Stop Enemies
 Pow Block
-Star Radar
-Secret Radar
 Pit Catch
-Health Bar
-Projectile Protection
+Impervious to being frozen
+Impervious to being yolked
+Impervious to being zombified
+Impervious to being oiled
 
 Moves
 ----------------------------
-Direction Projectiles
-Throw Shells Up/Down
+Sustain a hit (Power -> Mushroom)
 Item Reserve
-Power Up Special Move
-
-Keys
-----------------------------
+Longer invulnerability
+Item Reserve
+Extended P-Meter
+Extra Projectile
