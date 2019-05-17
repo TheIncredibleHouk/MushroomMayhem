@@ -4637,7 +4637,7 @@ MapsRoadsBelow:
 	LDA Block_ChangeYHi
 	ADC #$00
 	STA Block_ChangeYHi
-
+ 
 	JSR GetMapTile
 	TAX
 	LDA TileProperties, X

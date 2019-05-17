@@ -562,7 +562,6 @@ Brick_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_AttackOrDefeat
-	JSR Shell_KillOthers
 	BCS Brick_MakeItem
 
 	LDA <Objects_TilesDetectZ, X
@@ -590,7 +589,15 @@ Brick_NoBurst:
 	BEQ Brick_Burst
 	BPL Brick_MakePower
 
-	JMP Produce_Key
+	LDA #OBJ_KEY
+	STA Objects_ID, X
+
+	LDA #$00
+	STA Objects_Property, X
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
+	RTS
 
 Brick_MakePower:
 

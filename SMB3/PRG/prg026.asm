@@ -2152,15 +2152,6 @@ TileChng_VRAMCommit:
 
 	RTS		 ; Return
 
-; Same format as data from Video_Upd_Table in PRG030, check there for details
-; This is used as a template, but actual values will be overwritten below...
-StatusBar_UpdTemplate:
-	vaddr $2B28
-	.byte $0C, $EF, $EF, $EF, $EF, $EF, $EF, $AE, $AF, $FE, $EC, $F0, $F0
-	vaddr $2B45
-	.byte $0F, $FE, $F0, $FE, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $FE, $ED, $F0, $F0, $F0
-	.byte $00 ; Terminator
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; StatusBar_Update
 ;

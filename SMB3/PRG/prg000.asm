@@ -4879,7 +4879,7 @@ Object_Carry:
 	STA <Objects_YHiZ, X
 
 	LDA Objects_XVelZ, Y
-	STA Objects_EffectiveXVel, X
+	STA Objects_XVelZ, X
 
 	LDA Objects_XVelFrac,Y
 	STA Objects_XVelFrac,X
