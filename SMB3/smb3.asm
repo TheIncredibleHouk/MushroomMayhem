@@ -782,7 +782,7 @@ PAD_RIGHT	= $01
 	; Otherwise, they are replaced with a lookup address
 	Level_GndLUT_Addr:	.ds 3
 
-	Player_YHi:		.ds 1	; Player Y Hi
+	Player_YHiZ:		.ds 1	; Player Y Hi
 	Objects_YHiZ:		.ds 8	; $88-$8F Other object's Y Hi positions
 	Player_X:		.ds 1	; Player X
 	Objects_XZ:		.ds 8	; $91-$98 Other object's X positions
@@ -790,7 +790,7 @@ PAD_RIGHT	= $01
 				.ds 9	; $99 unused
 	; Reuse of $9A
 	CineKing_Var:		; General variable
-	Player_Y:		.ds 1	; Player Y
+	Player_YZ:		.ds 1	; Player Y
 	Objects_YZ:		.ds 8	; $A3-$A9 Other object's Y positions
 
 	Player_SpriteX:		.ds 1	; Player's sprite X
@@ -806,7 +806,7 @@ PAD_RIGHT	= $01
 	Player_HaltGameZ:	.ds 1	; Player is halting game (e.g. dying, shrinking/growing, etc.)
 
 	; WARNING: The distance between Player/Objects_XVelZ and Player/Objects_YVelZ must be same as Player/Objects_X/YVelFrac!
-	Player_YVel:		.ds 1	; Player's Y Velocity (negative values upward)
+	Player_YVelZ:		.ds 1	; Player's Y Velocity (negative values upward)
 	Objects_YVelZ:		.ds 8	; $D0-$D7 Other object's Y velocities
 	Player_CarryYVel:	.ds 1
 	Player_InAir:		.ds 1	; When set, Player is in the air
@@ -966,8 +966,9 @@ SPR_VFLIP	= %10000000
 	Map_StarsDeltaY:	.ds 1	; Delta the stars move in Y to reach the Player (always positive, code figures direction)
 						.ds 16	; $03CB-$03DA unused
 
-	Map_Stars_PRelX:	.ds 1	; During world intro, screen relative position of Player X
-	Map_Stars_PRelY:	.ds 1	; During world intro, screen relative position of Player Y
+	Map_Stars_PRelX:	.ds 0	; During world intro, screen relative position of Player X
+	Map_Stars_PRelY:	.ds 0	; During world intro, screen relative position of Player Y
+	Pause_Menu:			.ds 1
 	Player_RunMeter:		.ds 1	; >>>>>>[P] charge level ($7F max)
 	Player_Power:		.ds 1
 	Old_Player_Power:	.ds 1
@@ -1135,12 +1136,12 @@ UPDATERASTER_32PIXSHOWSPR= $80	; If NOT set, hides sprites that fall beneath the
 	.org $0400	; $0400-$04CF (except $0461 and $0462, see "$04xx RAM SOUND/MUSIC ENGINE") is available for this context-dependent situation
 	; WARNING: $0400-$04CF gets cleared at end of bonus game!
 
-	Roulette_Pos:		.ds 3	; $0400-$0402 horizontal position of each row
-	Roulette_PosHi:		.ds 3	; $0403-$0405 Hi part of Roulette_Pos
-	Roulette_ShapeLock:	.ds 3	; $0406-$0408 Locked position of each row (0 = Mushroom, 1 = Flower, 2 = Mushroom, 3 = Star)
-	Roulette_ConfigRun:	.ds 1	; 0 = Configuring, 1 = Running
-	Roulette_ConfigState:	.ds 1	; Early configuration state
-	Roulette_RunState:	.ds 1	; Running state of game
+	Roulette_Pos:		.ds 0	; $0400-$0402 horizontal position of each row
+	Roulette_PosHi:		.ds 0	; $0403-$0405 Hi part of Roulette_Pos
+	Roulette_ShapeLock:	.ds 0	; $0406-$0408 Locked position of each row (0 = Mushroom, 1 = Flower, 2 = Mushroom, 3 = Star)
+	Roulette_ConfigRun:	.ds 0	; 0 = Configuring, 1 = Running
+	Roulette_ConfigState:	.ds 0	; Early configuration state
+	Roulette_RunState:	.ds 0	; Running state of game
 
 	; NOTE: Watch the reuse here...
 	Roulette_StopState:		; $040C-$040E Current "state" of each row while it is coming to a stop (1+)
@@ -1345,10 +1346,8 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Player_PrevXDirection:	ds 1
 	RhythmPlatformEnabed: .ds 1
 	RhythmPlatformInitiated: .ds 1
-	RhythmKeeperCounter: .ds 1;
 	RhythmKeeper:		.ds 5;
 	RhythmMusic:		.ds 1;
-	RhythmCounter:	    .ds 1;
 	TreasureBox_Disabled: .ds 1
 
 ; $0461-$0462 are reserved for use by the sound/music engine
@@ -1617,10 +1616,10 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Objects_Timer2:		.ds 8	; $0520-$0527 "Timer" values; automatically decrements to zero 
 
 	; All the Level_BlockChgX/Y values are aligned to nearest 16 (i.e. tile coordinate)
-	Block_ChangeXHi:	.ds 3	; Player X High value when block change was queued
-	Block_ChangeX:	.ds 3	; Player X Low value when block change was queued
-	Block_ChangeYHi:	.ds 3	; Player Y High value when block change was queued
-	Block_ChangeY:	.ds 3	; Player Y Low value when block change was queued
+	Block_ChangeXHi:	.ds 1	; Player X High value when block change was queued
+	Block_ChangeX:	.ds 1	; Player X Low value when block change was queued
+	Block_ChangeYHi:	.ds 1	; Player Y High value when block change was queued
+	Block_ChangeY:	.ds 1	; Player Y Low value when block change was queued
 
 	Objects_NoExp:	.ds 8;
 	; The alternate vertical scrolls are used so that raster effects can be properly implemented!
@@ -1630,7 +1629,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_AboveTop:	.ds 1	; If Player is above top of level, this is $FF (-1), otherwise it is zero
 
 	Level_InitAction:		; AT LEVEL INITIALIZATION ONLY: Performs a specific initialization routine (NOTE: Shared with Player_Slide)
-	Player_Slide:		.ds 1	; Positive values sliding forward, negative values sliding backward; directly sets Player_XVel
+	Player_Slide:		.ds 1	; Positive values sliding forward, negative values sliding backward; directly sets Vel
 
 	Player_UphillFlag:	.ds 1	; When set, Player is walking uphill, and uses speed index value at Player_UphillSpeedIdx
 	Player_Flip:		.ds 1	; Invincibility Somersault is used when set; only works in air, reset on ground
@@ -1666,7 +1665,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Level_Event:		.ds 1	; Check "LevelEvent_Do" for values; 0 means nothing
 	Level_PSwitchCnt:	.ds 1	; When non-zero, P-Switch is active (init @ $80); counts down to zero and restarts music
 
-	Player_SlideRate:	.ds 1	; While Player is sliding, this is added to X Velocity (does not persist, however)
+	Player_TailDirection:	.ds 1	; While Player is sliding, this is added to X Velocity (does not persist, however)
 
 	Player_IsClimbing:	.ds 1	; Set when Player is climing vine
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
@@ -2026,11 +2025,14 @@ GENERATOR_VVISIBLE = 02;
 	Map_Intro_Tick:		.ds 1	; Counts down to zero while displaying the "World X" intro
 
 
-	Previous_Coins:		.ds 4
+	Previous_Coins:		.ds 3
 	Previous_Cherries:	.ds 1
 	Previous_Stars:		.ds 2
+	Previous_Stars_Collected1: .ds 1
+	Previous_Stars_Collected2: .ds 1
+	Previous_Stars_Collected3: .ds 1
+	Previous_Map_Level: .ds 1
 	Map_ReturnStatus:	.ds 1	; When 0, level panel is cleared; otherwise, Player is considered to have died (decrements life!)
-	MaxPower_Tick:		.ds 1	; When Player has maximum "power" charge, this counts for the flashing [P]
 
 	; Each byte of PatTable_BankSel sets the VROM available at
 	; 0000 (first half BG), 0800 (second half BG, typ animated), 
@@ -2520,11 +2522,10 @@ EVENT_JUMP_LIMITS			= $82
 	SpinnerBlocksY:			.ds 8;
 	SpinnerBlocksYHi:		.ds 8;
 	SpinnerBlocksReplace:	.ds 8
+	SpinnerBlocksPoof:		.ds 8
 
 	; Auto scroll effect variables -- everything to do with screens that aren't scrolling in the normal way
 	; NOTE: Post-airship cinematic scene with Toad and King ONLY uses $7A01-$7A11 MMC3 SRAM (from Level_AScrlSelect to Level_AScrlHVelCarry)
-
-	AScroll_Anchor:		.ds 1	; Used as starting point for $7A00-$7A14 clear, but never actually used in Auto-Scroll
 
 	Level_AScrlSelect:	.ds 1	; Selects auto scroll routine to use (see PRG009_B922)
 
@@ -2650,8 +2651,6 @@ MARIO_FOX		= 08
 	DAIZ_TEMP3:			.ds 1   ; #DAHRKDAIZ $7A75 USED for temprorary in variables
 	MushroomBlocks_Enabled: .ds	1	; Indicates the enemies are invincible
 	ProjectileToSpinners: ds 1	;
-	Pay_Toll_Timer:		.ds 1	; Used timer for paying tolls on Hammer Bros on map
-	Deduct_Coin_Timer:	.ds 1	; Used timer for deducting necessary coins on Hammer Bros. Map
 	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Old_World_Map_Tile:	.ds	1	;
@@ -3051,6 +3050,7 @@ CHAIN_DEBRIS = $BD
 BRICK_DEBRIS = $4B
 ICE_DEBRIS = $59
 OIL_DEBRIS = $61
+BARREL_DEBRIS = $9D
 
 	TileAnimSet:		.ds 1
 
@@ -3084,8 +3084,10 @@ SOBJ_LAVALOTUSFIRE	= $00
 SOBJ_FROST			= $10
 SOBJ_RECOVEREDWAND	= $00 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
+SOBJ_BARREL			= $12   ;
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
-SOBJ_BLOOPERKID		= $14 	; Blooper kid
+SOBJ_FIREBLOB		= $14 	; Blooper kid
+SOBJ_SPINYEGG		= $15
 SOBJ_POOF		=  $05 	; Poof
 SOBJ_PLACEHOLDER = $15
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
@@ -3247,7 +3249,7 @@ TILE_ITEM_SPINNER	= $FE
 	PreviousLevel:		.ds 1
 	ForcedSwitch:       .ds 1
 	NegaStars:			.ds 8
-	BossLevelData:		.ds 8
+	BossLevel_CheckPoint:		.ds 8
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3454,7 +3456,6 @@ OA1_WIDTH48		= %01100000	; Object is 48 pixels wide
 OA1_WIDTH64		= %01110000	; Object is 64 pixels wide
 OA1_WIDTHMASK		= %01110000	; Not intended for use in attribute table, readability/traceability only
 
-OA1_LOWPRIORITY	= %10000000
 
 
 ; Object Attributes Set 2 Flags
@@ -3510,7 +3511,7 @@ BOUND16x16BLOCK		= $03
 OAT_BOUNDBOX04		= $04
 BOUND24x32			= $05
 BOUND32x16BLOCK		= $06
-OAT_BOUNDBOX07		= $07
+BOUND16x28			= $07
 BOUND48x16			= $08
 OAT_BOUNDBOX09		= $09
 BOUND16x32			= $0A

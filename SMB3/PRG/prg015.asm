@@ -16,7 +16,7 @@ OBJ_PODOBO_X        = $83
 OBJ_PEEKABOO 		= $84
 OBJ_POLTERGUY		= $85
 OBJ_SPECTER			= $86
-OBJ_POLTERGUYX3		= $87
+OBJ_MISSILE			= $87
 OBJ_PHASM			= $88
 OBJ_BOOWAVE			= $89
 OBJ_POKEY			= $8A
@@ -36,7 +36,7 @@ OBJ_POKEY			= $8A
     .word ObjInit_PeekaBoo ; Object $84
     .word ObjInit_PolterGuy ; Object $85
     .word ObjInit_Specter ; Object $86
-    .word ObjInit_DoNothing ; Object $87
+    .word ObjInit_Missile ; Object $87
     .word ObjInit_Phasm ; Object $88
     .word ObjInit_BooWave ; Object $89
     .word ObjInit_Pokey ; Object $8A
@@ -59,7 +59,7 @@ OBJ_POKEY			= $8A
     .word ObjNorm_PeekaBoo ; Object $84
     .word ObjNorm_PolterGuy ; Object $85
     .word ObjNorm_Specter ; Object $86
-    .word ObjNorm_DoNothing ; Object $87
+    .word ObjNorm_Missile ; Object $87
     .word ObjNorm_Phasm ; Object $88
     .word ObjNorm_BooWave ; Object $89
     .word ObjNorm_Pokey ; Object $8A
@@ -82,7 +82,7 @@ OBJ_POKEY			= $8A
     .word Player_GetHurt ; Object $84
     .word Player_GetHurt ; Object $85
     .word Player_GetHurt ; Object $86
-    .word Player_GetHurt ; Object $87
+    .word Object_Explode ; Object $87
     .word ObjHit_DoNothing ; Object $88
     .word ObjHit_DoNothing ; Object $89
     .word ObjHit_DoNothing ; Object $8A
@@ -94,18 +94,18 @@ OBJ_POKEY			= $8A
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $79
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7A
     .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32 ; Object $7B
-    .byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7C
+    .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7C
     .byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7D
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7E
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7F
     .byte OA1_PAL1 | OA1_WIDTH8 | OA1_WIDTH8 ; Object $80
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $81
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $82
-    .byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $83
+    .byte OA1_PAL1 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $83
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $84
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
-    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $89
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8A
@@ -128,7 +128,7 @@ OBJ_POKEY			= $8A
     .byte OPTS_SETPT5 | $37 ; Object $84
     .byte OPTS_SETPT5 | $37 ; Object $85
     .byte OPTS_SETPT6 | $13 ; Object $86
-    .byte OPTS_SETPT5 | $37 ; Object $87
+    .byte OPTS_NOCHANGE ; Object $87
     .byte OPTS_SETPT5 | $37 ; Object $88
     .byte OPTS_SETPT5 | $37 ; Object $89
     .byte OPTS_SETPT5 | $37 ; Object $8A
@@ -192,7 +192,7 @@ ObjP7E:
     .byte $9D, $9F
 
 ObjP89:
-	.byte $8B, $8D
+	.byte $99, $9B
 
 ObjP7F:
     .byte $B1, $B3
@@ -201,8 +201,6 @@ ObjP80:
 ObjP81:
 ObjP82:
     .byte $8D, $8D, $8F, $8F, $95, $95
-
-
 
 ObjP83:
     .byte $B1, $B3, $B5, $B7, $B9, $BB
@@ -214,16 +212,15 @@ ObjP84:
 	.byte $B7, $B7
 
 ObjP85:
-	.byte $AF, $B3
-	.byte $AF, $B3
-	.byte $AF, $B3
+	.byte $B9, $BB
+	.byte $B5, $B7
 
 ObjP86:
 	.byte $ED, $ED
 	.byte $EF, $EF
 
 ObjP87:
-
+	.byte $B3, $B3
 
 ObjP88:
 	.byte $89, $89
@@ -645,7 +642,6 @@ ObjInit_ChainChomp:
 
 ChainChomp_NotCharging:
 
-	; Fill in all f the following with the Chain Chomp's Pining X coordinate
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -1860,6 +1856,12 @@ ObjInit_AngryThwomp:
 	LDA #$06
 	STA Objects_SpritesRequested, X
 
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
 	LDA #BOUND24x32
 	STA Objects_BoundBox, X
 
@@ -1937,10 +1939,9 @@ AngryThwompWait:
 	LDA Objects_Timer, X
 	BNE AngryThwompWaitRTS
 
-	
 	LDA Objects_SpritesVerticallyOffScreen,X
-	CMP #(SPRITE_0_VINVISIBLE | SPRITE_1_VINVISIBLE)
-	BEQ AngryThwompWaitRTS
+	AND #(SPRITE_1_VINVISIBLE)
+	BNE AngryThwompWaitRTS
 
 	JSR Object_XDistanceFromPlayer
 
@@ -2220,6 +2221,11 @@ PirateBoo_TakeCoins:
 ObjInit_ProjBar:
 	LDA #BOUND8x16
 	STA Objects_BoundBox, X
+
+	JSR Object_NoInteractions
+
+	LDA #$05
+	STA Objects_SpritesRequested, X
 	
 	LDA Objects_XZ, X
 	ADD #$04
@@ -2481,7 +2487,7 @@ ProjectileBarCollide:
 P_PRG007_B7E4:
 	LDA PBarHitTestY,X		; Special object Y
 	ADD #$08			; +8
-	SUB <Player_Y			; Subtract Player Y
+	SUB <Player_YZ			; Subtract Player Y
 	SUB PObjYOff_PlayerSize,Y	; Subtract Player height offset
 	CMP PObj_VLimit,Y
 	BGE P_PRG007_B826	 	; If result >= SObj_VLimit, jump to PRG007_B843 (RTS)
@@ -2522,7 +2528,7 @@ P_PRG007_B827:
 	ADD Objects_Data5, X
 	TAY
 	LDA YKnockBacks, Y
-	STA <Player_YVel 
+	STA <Player_YVelZ 
 	STA <Player_InAir
 	JSR Player_Freeze
 	LDX <CurrentObjectIndexZ
@@ -3317,11 +3323,12 @@ PolterGuy_StartDirection:
 PolterGuy_StartSpeed:
 	.byte $F0, $10	
 	
+PolterGuy_HasBomb = Objects_Data1
+
 ObjInit_PolterGuy:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-ObjInit_CommonPolterGuy:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -3347,7 +3354,9 @@ ObjInit_CommonPolterGuy:
 	LDA #$08
 	STA Patrol_YAccelLimit, X
 
-	LDY Objects_Property, X
+	LDA Objects_Property, X
+	AND #$01
+	TAY
 
 	LDA PolterGuy_StartDirection, Y
 	STA Patrol_XVelocityChange, X
@@ -3358,7 +3367,16 @@ ObjInit_CommonPolterGuy:
 	LDA RandomN
 	AND #$7F
 	STA Objects_Timer, X
+
+	LDA Objects_Property, X
+	AND #$02
+	LSR A
+	STA PolterGuy_HasBomb, X
+
 	RTS
+
+Polter_MissileDrop:
+	.byte $00, $08
 
 ObjNorm_PolterGuy:
 	LDA <Player_HaltGameZ
@@ -3367,14 +3385,64 @@ ObjNorm_PolterGuy:
 
 PolterGuy_Norm:
 
-	LDA #$80
+	LDA #$40
 	JSR Object_DeleteOffScreenRange
-
 	JSR PatrolDiagonal
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
+	
+	LDA PolterGuy_HasBomb, X
+	BEQ PolterGuy_Draw
+
+	JSR Object_XDistanceFromPlayer
+	CMP #$20
+	BCS PolterGuy_Draw
+
+	JSR Object_YDistanceFromPlayer
+	LDA <YDiffAboveBelow
+	BEQ PolterGuy_Draw
+
+	JSR Object_FindEmptyY
+	BCC PolterGuy_Draw
+
+	LDA #$00
+	STA PolterGuy_HasBomb, X
+
+	LDA #OBJ_MISSILE
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, Y
+
+	LDA #$10
+	STA Objects_Timer2, X
+
+	LDA <Objects_XZ, X
+	STA Objects_XZ, Y
+
+	LDA <Objects_XHiZ, X
+	STA Objects_XHiZ, Y
+
+	LDA <Objects_YZ, X
+	STA Objects_YZ, Y
+
+	LDA <Objects_YHiZ, X
+	STA Objects_YHiZ, Y
+
+	LDA Objects_Orientation, X
+	BEQ PolterGuy_Draw
+
+	LDA Objects_XZ, Y
+	ADD #$08
+	STA Objects_XZ, Y
+
+	LDA Objects_XHiZ, Y
+	ADC #$00
+	STA Objects_XHiZ, Y
 
 PolterGuy_Draw:
+	LDA PolterGuy_HasBomb, X
+	STA Objects_Frame, X
 	JMP Object_Draw
 
 ObjInit_Specter:
@@ -3446,6 +3514,43 @@ Specter_SetFrame:
 
 Specter_Draw:
 	JMP Object_DrawMirrored
+
+ObjInit_Missile:
+	LDA #BOUND8x16
+	STA Objects_BoundBox, X
+	RTS
+
+ObjNorm_Missile:
+	LDA <Player_HaltGameZ
+	BNE Missile_Draw
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE	Missile_NoExplode
+
+	JMP Object_Explode
+
+Missile_NoExplode:	
+	JSR Object_DeleteOffScreen
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithPlayer
+
+	LDA <Objects_TilesDetectZ, X
+	BEQ Missile_Draw
+
+	JMP Object_Explode
+
+Missile_Draw:
+	JSR Object_Draw
+
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA #$FF
+	STA Sprite_RAMY + 4, Y
+	RTS
 
 Phasm_Action = Objects_Data1
 Phasm_AnimTicks = Objects_Data2
@@ -3707,11 +3812,11 @@ BooWave_SetSide:
 	ADC BooWave_XStart + 2, Y
 	STA <Objects_XHiZ, X
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	SUB #$20
 	STA <Objects_YZ, X
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	SBC #$00
 	STA <Objects_YHiZ, X 
 

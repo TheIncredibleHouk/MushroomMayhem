@@ -241,12 +241,12 @@ Map_DoOperation:
 	JSR DynJump	 
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word MO_WorldXIntro	; 0 - "World X" Intro (the box, erasing it, and the stars)
+	.word MO_SwitchToMO_D	; 0 - "World X" Intro (the box, erasing it, and the stars)
 	.word MO_SwitchToMO_D	; 1 - Just switches to Map_Operation = $D
-	.word MO_SkidToPrev	; 2 - "Skid" backwards from death (short distance, same map screen)
-	.word MO_SkidToPrevAfar	; 3 - "Skid" backwards from death, from far away (different map screen); this skids from the far end...
-	.word MO_SkidAfarPrep	; 4 - Prepare to finish skid from afar
-	.word MO_SkidAfarFinish	; 5 - Finish the far away skidding
+	.word MO_SwitchToMO_D	; 2 - "Skid" backwards from death (short distance, same map screen)
+	.word MO_SwitchToMO_D	; 3 - "Skid" backwards from death, from far away (different map screen); this skids from the far end...
+	.word MO_SwitchToMO_D	; 4 - Prepare to finish skid from afar
+	.word MO_SwitchToMO_D	; 5 - Finish the far away skidding
 	.word MO_Wait14Ticks	; 6 - Loads 14 ticks and wait for it
 	.word MO_DoLevelClear	; 7 - Do level completion effect
 	.word MO_DoFortressFX	; 8 - If any Poof-then-Fortress effect (e.g. busting a lock) to do, do it!
@@ -263,6 +263,7 @@ Map_DoOperation:
 World5_Sky_CloudDeco:
 	; Sprite data of a single cloud over the lower world
 	.byte $30, $7D, $03, $48, $30, $7F, $03, $50, $30, $A3, $03, $58, $30, $A5, $03, $60
+
 World5_Sky_CloudDeco_End
 
 World5_Sky_AddCloudDeco:
@@ -1284,7 +1285,7 @@ PRG010_CA60:
 
 	LDX Player_Current	 ; X = Player_Current
 
-	LDA #$01
+	LDA #$00
 	STA Map_Player_SkidBack,X
 
 	; Map_Operation = $0F
@@ -2951,7 +2952,9 @@ Try_Ability_Change:
 	LDA Player_Equip
 	;CMP Player_Level
 	BCS Reset_Ability
+	
 	INC Player_Equip
+
 	LDA Player_Equip 
 	STA Player_Equip
 	RTS
@@ -2963,9 +2966,11 @@ Ability_RTS:
 	RTS
 
 FindLevelInfo:
+	
 	LDA World_Map_X
 	ORA World_Map_XHi
 	STA DAIZ_TEMP1
+
 	LDA World_Map_Y
 	LSR A
 	LSR A
@@ -2978,19 +2983,27 @@ FindLevelInfo1:
 	LDA DAIZ_TEMP1
 	CMP MapPointers, Y
 	BNE FindLevelInfo10
+
 	INY
+
 	LDA DAIZ_TEMP2
 	CMP MapPointers, Y
 	BEQ FindLevelInfo2
+	
+	BNE FindLevelInfoSkip
 
 FindLevelInfo10:
 	INY
+
+FindLevelInfoSkip:
 	INY
 	INY
 	CPY #$40
  	BCC FindLevelInfo1
+
 	LDA #$FF
 	STA LevelNumber
+
 	LDY #27
 	LDA #$FE
 
@@ -3014,6 +3027,8 @@ FindLevelInfo2:
 	
 	LDA #$00
 	STA JustName
+
+UpdateLevelRTS:	
 	RTS
 
 UpdateLevel:
@@ -3022,8 +3037,14 @@ UpdateLevel:
 	BNE UpdateLevel1
 
 	LDA LevelNumber
+	CMP Previous_Map_Level
+	BEQ UpdateLevelRTS
+
+	STA Previous_Map_Level
+	
 	JSR GetLevelBit
 	PHA
+	
 	LDX #$D6
 	AND Magic_Stars_Collected1, Y
 	BEQ UpdateLevelA1
@@ -3048,6 +3069,7 @@ UpdateLevelA2:
 
 UpdateLevelA3:
 	STX Status_Bar_Top + 17
+	INC Top_Needs_Redraw
 	RTS
 
 UpdateLevel1:

@@ -13,7 +13,8 @@ OBJ_PLATFORMPULLEY = $30
 OBJ_SNAKEBLOCK      = $31
 OBJ_PIPEBLOCK       = $32
 OBJ_PLATFORMSWING   = $33
-
+OBJ_WEIGHT			= $34
+OBJ_CHECKPOINT		= $35
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
 	.word ObjInit_WoodenPlatVert    ; Object $29
@@ -27,8 +28,8 @@ OBJ_PLATFORMSWING   = $33
     .word ObjInit_SnakeBlock        ; Object $31
     .word ObjInit_PipeBlock         ; Object $32
 	.word ObjInit_PlatformSwing			; Object $33
-	.word ObjInit_DoNothing			; Object $34
-	.word ObjInit_DoNothing			; Object $35
+	.word ObjInit_Weight			; Object $34
+	.word ObjInit_CheckPoint			; Object $35
 	.word ObjInit_DoNothing			; Object $36
 	.word ObjInit_DoNothing			; Object $37
 	.word ObjInit_DoNothing			; Object $38
@@ -50,8 +51,8 @@ OBJ_PLATFORMSWING   = $33
     .word ObjNorm_SnakeBlock        ; Object $31
     .word ObjNorm_PipeBlock         ; Object $32
 	.word ObjNorm_PlatformSwing			; Object $33
-	.word ObjNorm_DoNothing			; Object $34
-	.word ObjNorm_DoNothing			; Object $35
+	.word ObjNorm_Weight			; Object $34
+	.word ObjNorm_CheckPoint			; Object $35
 	.word ObjNorm_DoNothing			; Object $36
 	.word ObjNorm_DoNothing			; Object $37
 	.word ObjNorm_DoNothing			; Object $38
@@ -97,7 +98,7 @@ OBJ_PLATFORMSWING   = $33
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $31
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32  ; Object $32
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $33
-	.byte $00									 ; Object $34
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $34
 	.byte $00									 ; Object $35
 	.byte $00									 ; Object $36
 	.byte $00									 ; Object $37
@@ -116,11 +117,11 @@ OBJ_PLATFORMSWING   = $33
     .byte OPTS_NOCHANGE         ; Object $2D
     .byte OPTS_NOCHANGE         ; Object $2E
     .byte OPTS_NOCHANGE         ; Object $2F
-    .byte OPTS_NOCHANGE         ; Object $30
+    .byte OPTS_SETPT5 | $4E         ; Object $30
     .byte OPTS_NOCHANGE         ; Object $31
     .byte OPTS_SETPT5 | $0B	    ; Object $32
 	.byte OPTS_SETPT5 | $36	    ; Object $33
-	.byte OPTS_NOCHANGE         ; Object $34
+	.byte OPTS_SETPT5 | $0B     ; Object $34
 	.byte OPTS_NOCHANGE         ; Object $35
 	.byte OPTS_NOCHANGE         ; Object $36
 	.byte OPTS_NOCHANGE         ; Object $37
@@ -145,7 +146,7 @@ OBJ_PLATFORMSWING   = $33
     .byte KILLACT_NORMALANDKILLED ; Object $32
 	.byte KILLACT_STARDEATH		; Object $33
 	.byte KILLACT_STARDEATH		; Object $34
-	.byte KILLACT_STARDEATH		; Object $35
+	.byte KILLACT_NORMALANDKILLED		; Object $35
 	.byte KILLACT_STARDEATH		; Object $36
 	.byte KILLACT_STARDEATH		; Object $37
 	.byte KILLACT_STARDEATH		; Object $38
@@ -174,9 +175,12 @@ ObjP2C:
 ObjP2D:    
 ObjP2E:
 ObjP2F:
-ObjP30:
 ObjP33:
     .byte $61, $61, $61, $61, $61, $61
+	.byte $89, $8B, $8B, $8B, $8B, $89
+	
+ObjP30:	
+	.byte $61, $61, $9F, $9F, $61, $61
 
 ObjP31:
     .byte $77, $77
@@ -185,6 +189,8 @@ ObjP32:
     .byte $AF, $B1, $B3, $B5
 
 ObjP34:
+	.byte $AD, $AD
+
 ObjP35:
 ObjP36:
 ObjP37:
@@ -319,7 +325,8 @@ Platform_Draw:
 
 Platform_DoDraw:
 	
-	JSR Object_DrawMirrored
+	JSR Object_Draw48x16
+	RTS
 
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	AND #SPRITE_2_HINVISIBLE
@@ -401,7 +408,7 @@ Platform_PlayerOffset:
 	.byte $00, $00
 
 Platform_PlayerStand:
-	LDA <Player_YVel
+	LDA <Player_YVelZ
 	BMI Platform_PlayerStand1
 
 	LDA HitTest_Result
@@ -430,14 +437,14 @@ Platform_ContactCheck:
 	
 	LDA <Objects_YZ,X	 
 	SUB #30
-	STA <Player_Y
+	STA <Player_YZ
 
 	LDA <Objects_YHiZ,X
 	SBC #$00
-	STA <Player_YHi
+	STA <Player_YHiZ
 
 	LDA #$00
-	STA <Player_YVel
+	STA <Player_YVelZ
 	STA Player_InAir
 
 	LDA <Objects_XVelZ, X
@@ -623,6 +630,34 @@ Unstable_DrawNorm:
 	BNE Unstable_Draw1
 
 Unstable_Draw1:
+	LDA Objects_Property, X
+	BEQ Draw_NormPlatform
+
+	STA Objects_Frame, X
+	
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	LDA PlatformUnstable_MoveTimer, X
+	BEQ Platform_DrawAlternate
+
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+
+Platform_DrawAlternate:
+	JSR Object_Draw48x16
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMAttr + 20, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 20, Y
+	RTS
+
+Draw_NormPlatform:	
 	JMP Platform_Draw
 
 Unstable_Move:
@@ -708,7 +743,6 @@ Unstable_CheckContact:
 
 Unstable_CheckContactRTS:
 	RTS     
-
 
 ;***********************************************************************************
 ; BLOCK SnakeBlock/MAKER
@@ -1246,9 +1280,6 @@ PipeBlock_MatchPalette:
 	STA Palette_Buffer + 27
 	RTS    
 
-ObjInit_PlatformPulley:
-	
-
 ObjNorm_PlatformPulley:
 
 	LDA <Player_HaltGameZ
@@ -1257,8 +1288,6 @@ ObjNorm_PlatformPulley:
 	JMP Pulley_Draw
 
 Pulley_Norm:
-	JSR Object_DeleteOffScreen
-
 	LDA Objects_Property, X
 	BEQ Pulley_Weight
 
@@ -1356,7 +1385,14 @@ Pulley_NextObject:
 	BPL Pulley_FindBuddy
 
 Pulley_Draw:
-	JMP Platform_Draw
+	JSR Platform_Draw
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMAttr + 12, Y
+	ORA #(SPR_HFLIP)
+	STA Sprite_RAMAttr + 12, Y
+	RTS
 
 PlatformSwing_Ticker = Objects_Data8
 SwingAnchor_X = Objects_Data9
@@ -1593,35 +1629,207 @@ Swing_DrawAttach:
 Swing_DrawRTS:	
 	RTS
 
-Point_MidX = Temp_Var8
-Point_MidXHi = Temp_Var9
-Point_X = Temp_Var10
-Point_XHi = Temp_Var11
-Point_Y = Temp_Var12
-Point_YHi = Temp_Var13
-Point_RelativeX = Temp_Var14
-Point_RelativeY = Temp_Var15
 
-CheckPoint_OffScreen:
-	LDA <Point_X
-	SUB <Horz_Scroll
-	STA <Point_RelativeX
+Weight_OrigX	= Objects_Data3
+Weight_OrigXHi  = Objects_Data4
+Weight_OrigY	= Objects_Data5
+Weight_OrigYHi	= Objects_Data6
+Weight_Timer	= Objects_SlowTimer
 
-	LDA <Point_XHi
-	SBC <Horz_Scroll_Hi
-	BNE Point_OffScreen
+ObjInit_Weight:
+	LDY #$04
+	
+Weight_CheckLoop:	
+	CPY CurrentObjectIndexZ
+	BEQ Weight_CheckNext
+	
+	LDA Objects_ID, Y
+	CMP #OBJ_WEIGHT
+	BNE Weight_CheckNext
 
-	LDA <Point_Y
-	SUB <Vert_Scroll
-	STA <Point_RelativeY
+	LDA <Objects_XZ, X
+	STA Weight_OrigX, Y
 
-	LDA <Point_YHi
-	SBC <Vert_Scroll_Hi
-	BNE Point_OffScreen
+	LDA <Objects_XHiZ, X
+	STA Weight_OrigXHi, Y
 
-	SEC
+	LDA <Objects_YZ, X
+	STA Weight_OrigY, Y
+
+	LDA <Objects_YHiZ, X
+	STA Weight_OrigYHi, Y
+
+	JSR Object_Respawn
+	JMP Object_Delete
+
+Weight_CheckNext:
+	DEY
+	BPL Weight_CheckLoop
+
+	JSR Object_NoInteractions
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	
+	LDA <Objects_XZ, X
+	STA Weight_OrigX, X
+
+	LDA <Objects_XHiZ, X
+	STA Weight_OrigXHi, X
+
+	LDA <Objects_YZ, X
+	STA Weight_OrigY, X
+
+	LDA <Objects_YHiZ, X
+	STA Weight_OrigYHi, X
 	RTS
 
-Point_OffScreen:
-	CLC
+ObjNorm_Weight:
+	LDA <Player_HaltGameZ
+	BEQ Weight_Normal
+
+	JMP Weight_Draw
+
+Weight_Normal:
+	LDA <Objects_YHiZ, X
+	BEQ Weight_Normal1
+
+	LDA <Objects_YZ, X
+	CMP #$B0
+	BCC Weight_Normal1
+
+	JMP Weight_Reset
+
+Weight_Normal1:	
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
+
+Weight_NoMove:
+	LDA Objects_Timer2, X
+	BNE Weight_DetectTiles
+
+	JSR Object_DetectPlayer
+	BCC Weight_DetectTiles
+
+	LDA #$00
+	STA Objects_SlowTimer, X
+
+	JSR Object_Hold	
+	BCS Weight_Draw
+
+	LDA #$7F
+	STA Objects_SlowTimer, X
+
+	LDA #$10
+	STA Objects_Timer2, X
+
+Weight_DetectTiles:
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithTilesWallStops
+
+Weight_Draw:
+	LDA Weight_Timer, X
+	BEQ Weight_NormalDraw
+
+	CMP #$20
+	BCS Weight_NormalDraw
+
+	CMP #$01
+	BNE Weight_Flash
+
+	JSR Weight_Reset
+	RTS
+
+Weight_Flash:	
+	AND #$01
+	BNE Weight_RTS
+
+Weight_NormalDraw:
+	JMP Object_DrawMirrored
+
+Weight_RTS:	
 	RTS	
+
+Weight_Reset:
+	LDA Objects_SpritesVerticallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	BNE Weight_SetPosition
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	JSR Common_MakePoof
+
+Weight_SetPosition:
+	LDA Weight_OrigX, X
+	STA <Objects_XZ, X	
+
+	LDA Weight_OrigXHi, X
+	STA <Objects_XHiZ, X
+
+	LDA Weight_OrigY, X
+	STA <Objects_YZ, X
+
+	LDA Weight_OrigYHi, X
+	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA Objects_Timer2, X
+	RTS
+
+ObjInit_CheckPoint:
+	JSR Object_NoInteractions
+
+
+	RTS
+
+ObjNorm_CheckPoint:
+	JSR Object_DeleteOffScreen
+
+		; Calculate upper left of bounding box and lower right offsets
+	LDA <Objects_XZ,X
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_BoundLeftHi, X
+
+	LDA <Objects_XZ, X
+	ADD #$10
+	STA Objects_BoundRight, X
+	
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+
+	LDA <Objects_YZ,X
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	STA Objects_BoundTopHi, X
+
+	LDA <Objects_YZ,X
+	ADD #$A0
+	STA Objects_BoundBottom, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+
+	JSR Object_DetectPlayer
+	BCC ObjNorm_CheckPointRTS
+
+	LDA Objects_Property, X
+	ADD #$01
+	LDY World_Num
+	STA BossLevel_CheckPoint, Y
+
+ObjNorm_CheckPointRTS:
+	RTS

@@ -247,7 +247,6 @@ PRG005_B964:
 	LDY #$14	 ; Y = $14
 	LDA #$00	 ; A = 0
 PRG005_B969:
-	STA AScroll_Anchor-1,Y	 ; Clear this auto scroll variable
 	DEY		 ; Y--
 	BNE PRG005_B969	 ; While Y <> 0, loop!
 
@@ -298,6 +297,7 @@ ObjectGenerator_Init:
 	LDX #$07
 
 Find_EmptyGenerator:
+	
 	LDA ObjectGenerator_ID, X
 	BEQ Found_EmptyGenerator
 
@@ -1143,10 +1143,10 @@ Check_GlobalHeld:
 	LDA <Player_XHi
 	STA <Objects_XHiZ, X
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	STA <Objects_YZ, X
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	STA <Objects_YHiZ, X
 	JMP PRG005_BF01
 
@@ -1171,6 +1171,7 @@ PRG005_BF001:
 PRG005_BF002:
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X	 ; Clear object state
+	STA Objects_BeingHeld, X
 
 PRG005_BF01:
 	DEX		 ; X--

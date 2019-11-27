@@ -93,7 +93,7 @@ OBJ_MAGNET			= $26
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ;****************************** OBJECT PALETTE/SIZE ******************************
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $14
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $15
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $15
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $16
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $17
     .byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $18
@@ -132,7 +132,7 @@ OBJ_MAGNET			= $26
     .byte OPTS_NOCHANGE	        ; Object $22
     .byte OPTS_NOCHANGE	        ; Object $23
     .byte OPTS_NOCHANGE	        ; Object $24
-    .byte OPTS_NOCHANGE	        ; Object $25
+    .byte OPTS_SETPT6 | $4F	        ; Object $25
     .byte OPTS_SETPT5 | $36	        ; Object $26
     .byte OPTS_NOCHANGE	        ; Object $27
 	
@@ -186,9 +186,9 @@ ObjP14:
     .byte $15, $15
 	.byte $13, $13
 	.byte $11, $11
-	.byte $81, $81
-	.byte $83, $83
 	.byte $85, $85
+	.byte $83, $83
+	.byte $81, $81
     
 ObjP15:
     .byte $81, $83
@@ -227,7 +227,7 @@ ObjP22:
 ObjP23:
 ObjP24:
 ObjP25:
-	.byte $71, $71
+	.byte $EB, $EB
 	
 ObjP26:
 	.byte $87, $89
@@ -243,8 +243,8 @@ ObjP27:
 ; 	An oject that just represents the splash animation when an object goes in and out of water
 ;***********************************************************************************	
 ObjInit_WaterSplash:
-	LDA #BOUND16x16
-	STA Objects_BoundBox, X
+	
+
 	JMP Object_NoInteractions
 	
 WaterSplash_Frame = Objects_Data1
@@ -257,10 +257,21 @@ ObjNorm_WaterSplash:
 	JMP WaterSplash_Draw
 
 WaterSplash_Norm:
-	LDA <Objects_YZ, X
-	AND #$F0
-	STA <Objects_YZ, X
+	LDA Objects_Timer, X
+	CMP #$09
+	BCC WaterSplash_KeepSplashing
+	
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
 
+	CMP #(TILE_PROP_SOLID_ALL)
+	BCC WaterSplash_KeepSplashing
+
+	JMP Object_PoofDie
+
+WaterSplash_KeepSplashing:
 	LDA Objects_Timer, X
 	BNE WaterSplash_Animate
 
@@ -399,7 +410,7 @@ Timer_WarningPlayed = Objects_Data2
 Timer_Delayed = Objects_Data3
 
 ObjInit_Timer:
-	LDA #$03
+	LDA #$04
 	STA Objects_SpritesRequested, X
 
 	LDA Objects_Property, X
@@ -478,23 +489,36 @@ DrawTimer:
 	LDX <CurrentObjectIndexZ
 	LDY Object_SpriteRAMOffset, X
 
-	LDX #$02
+	LDA #$BD
+	ADD <Temp_Var1
+	STA Sprite_RAMTile, Y
 
-DrawTimer1:
-	LDA #$08
+	LDA #$18
 	STA Sprite_RAMY, Y
 
 	LDA #SPR_PAL2
 	STA Sprite_RAMAttr, Y
 
-	LDA Timer_XOffset, X
+	LDA #$08
 	STA Sprite_RAMX, Y
+
+	LDX #$02
+
+DrawTimer1:
+	LDA #$18
+	STA Sprite_RAMY+4, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr+4, Y
+
+	LDA Timer_XOffset, X
+	STA Sprite_RAMX+4, Y
 
 	LDA <DigitsResult, X
 	ASL A
 	ADD #$A1
 	ADD <Temp_Var1
-	STA Sprite_RAMTile, Y
+	STA Sprite_RAMTile+4, Y
 
 	INY
 	INY
@@ -895,6 +919,7 @@ Wind_ExtraVel = Objects_Data10
 Wind_ExtraVelCarry = Objects_Data11
 
 ObjNorm_Weather:
+
 	LDA Weather_Disabled
 	BNE DontReverseWind1
 
@@ -918,10 +943,14 @@ No_Wind:
 	CMP #$02
 	BNE DoNextParticle0
 
+	LDA <Player_HaltGameZ
+	BNE Weather_SkipTicker
 	INC Weather_Ticker, X
 
+Weather_SkipTicker:
 	LDA Weather_Ticker, X
 	AND #$01
+
 	BNE DoNextParticle0
 
 	LDA <Temp_Var7
@@ -1197,13 +1226,13 @@ NextCheck:
 	STA <Objects_XHiZ, X
 	STA Key_ReappearXHi, X
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	ADD #$10
 	STA <Objects_YZ, X
 	STA Key_ReappearY, X
 	STA <Poof_Y
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	ADC #$00
 	STA <Objects_YHiZ, X
 	STA Key_ReappearYHi, X
@@ -1644,13 +1673,6 @@ StarsAnimate:
 	INC Stars_Timer, X
 
 StarsDraw:
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	ORA Objects_SpritesVerticallyOffScreen, X
-	BEQ StarsDraw1
-
-	RTS
-
-StarsDraw1:
 	JSR Object_ShakeAndCalcSprite
 	
 	LDX <CurrentObjectIndexZ
@@ -1663,8 +1685,6 @@ StarsDraw1:
 Stars_KeepDrawing:
 	STA <Temp_Var1
 	
-
-
 	LDA #$17
 	STA Sprite_RAMTile, Y
 	STA Sprite_RAMTile + 4, Y
@@ -2120,12 +2140,21 @@ ObjInit_BridgeBuild:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
 	JSR Object_CalcBoundBoxForced
 	JSR Object_DetectTileCenter
 	
 	TYA
 	STA BridgeBuild_BlockCheck, X
-	RTS
+	
+	JMP Object_NoInteractions
 
 ObjNorm_BridgeBuild:
 	LDA BridgeBuild_Activated, X
@@ -2309,10 +2338,13 @@ BlockSwitcher_Norm:
 BlockSwitcher_RTS:
 	RTS		
 
+MushroomBlock_CanSolidify = Objects_Data1
+
 MushroomBlock_SkipXVel:
 	.byte $FE, $02
 
-MushroomBlock_Bounces = Objects_Data1	
+MushroomBlock_Flip:
+	.byte $00, SPR_HFLIP
 
 ObjInit_MushroomBlock:
 	LDA #ATTR_ALLWEAPONPROOF
@@ -2332,16 +2364,15 @@ ObjNorm_MushroomBlock:
 	JMP MushroomBlock_Draw
 
 MushroomBlock_Normal:
+	LDA #$01
+	STA MushroomBlock_CanSolidify, X
+
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	
 	JSR Shell_KillOthers
-
-	LDA Objects_Timer2, X
-	BNE MushroomBlock_DetectTiles
-
 	JSR Object_DetectPlayer
 	BCC MushroomBlock_DetectTiles
 
@@ -2356,34 +2387,42 @@ MushroomBlock_Normal:
 	JMP MushroomBlock_DetectTiles
 
 MushroomBlock_Carry:
+	LDA #$00
+	STA MushroomBlock_CanSolidify, X
+
+	LDA Objects_Timer2, X
+	BNE MushroomBlock_DetectTiles
+
 	JSR Object_Hold	
-	BCS MushroomBlock_Draw
+	BCC MushroomBlock_Kicked
 
-	JSR Object_GetKicked
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
+	JMP MushroomBlock_Draw
 
+MushroomBlock_Kicked:	
 	LDA #$10
 	STA Objects_Timer2, X
-
-	LDA #$00
-	STA MushroomBlock_Bounces, X
 
 MushroomBlock_DetectTiles
 	JSR Object_DetectTiles
 	JSR Object_DampenVelocity
-	JSR Object_InteractWithTiles
-
-	LDA MushroomBlock_Bounces, X
-	CMP #$02
-	BCS MushroomBlock_Snap
+	JSR Object_InteractWithTilesWallStops
 
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ MushroomBlock_Draw
 
-	INC MushroomBlock_Bounces, X
+	LDA <Objects_YVelZ, X
+	BNE MushroomBlock_Draw
 
 MushroomBlock_Snap:
-	
+	LDA MushroomBlock_CanSolidify, X
+	BEQ MushroomBlock_Draw
+
+	LDA Block_NeedsUpdate
+	BNE MushroomBlock_Draw
+
 	LDA <Objects_XZ, X
 	ADD #$07
 	STA Tile_DetectionX
@@ -2425,7 +2464,7 @@ ObjInit_Magnet:
 	LDA #ATTR_ALLWEAPONPROOF
 	STA Objects_WeaponAttr, X
 
-	LDA #(ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
+	LDA #(ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL | ATTR_SHELLPROOF)
 	STA Objects_BehaviorAttr, X
 
 	LDA #BOUND16x16
@@ -2589,7 +2628,7 @@ Magnet_DetectTiles:
 	JMP Magnet_Draw
 	
 Magnet_TileInteract:
-	JSR Object_InteractWithTiles
+	JSR Object_InteractWithTilesWallStops
 
 Magnet_Draw:
 	LDA Magnet_InsideBlock, X

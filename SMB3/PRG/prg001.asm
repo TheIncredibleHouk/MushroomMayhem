@@ -61,7 +61,7 @@ OBJ_BOSS			= $13
 	.word ObjNorm_StarPiece ; Object $10
 	.word ObjNorm_IceBlock	; Object $11
 	.word ObjNorm_PoisonMushroom ; Object $12
-	.word ObjNorm_DoNothing	; Object $13	
+	.word Obj_Boss	; Object $13	
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -81,7 +81,7 @@ OBJ_BOSS			= $13
 	.word Magic_StarCollect	; Object $0D
 	.word Magic_StarCollect	; Object $0E
 	.word ObjHit_DoNothing	; Object $0F
-	.word Object_SetDeadEmpty ; Object $10
+	.word StarCoin_Collect ; Object $10
 	.word Object_Hold		; Object $11
 	.word Player_GetHurt	; Object $12
 	.word ObjHit_DoNothing	; Object $13	
@@ -107,7 +107,7 @@ OBJ_BOSS			= $13
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $10
 	.byte OA1_PAL2 | OA1_WIDTH16 | OA1_WIDTH16	; Object $11
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $12
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $13	
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $13	
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -153,7 +153,7 @@ OBJ_BOSS			= $13
 	.byte KILLACT_STARDEATH		; Object $10
 	.byte KILLACT_NORMALSTATE	; Object $11
 	.byte KILLACT_NORMALSTATE		; Object $12
-	.byte KILLACT_STARDEATH		; Object $13
+	.byte KILLACT_NORMALSTATE		; Object $13
 
 OG1_POff .func (\1 - ObjectGroup01_PatternSets)
 
@@ -250,7 +250,7 @@ PowerUp_AnimOff:
 	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $FF, $2C
 
 PowerUp_Timers:
-	.byte $00, $00, $02, $02, $1C, $1C, $02, $1C, $02, $1C, $08, $1C, $0A, $02
+	.byte $00, $00, $08, $08, $1C, $1C, $08, $1C, $08, $1C, $08, $1C, $0A, $08
 
 
 ObjInit_PUp1:
@@ -344,16 +344,11 @@ PowerUp_NotVine:
 	JMP Object_Draw
 
 PowerUp_Norm:
-
 	LDA Objects_Timer, X
 	BEQ ObjNorm_PowerUp1
 
 	JSR Object_ApplyY_With_Gravity
 	JSR PUp_DrawMaskSprite
-
-	LDA Object_SpriteRAMOffset, X
-	ADD #$08
-	STA Object_SpriteRAMOffset, X
 
 ObjNorm_PowerUp0:
 	LDA PowerUp_Type, X
@@ -401,24 +396,28 @@ PUp_DrawMaskSprite:
 	SUB Level_VertScroll	; Calc relative to vertical scroll
 
 	; Set for both sprite halves Y
-	STA Sprite_RAM,Y
-	STA Sprite_RAM+4,Y
+	STA Sprite_RAMY,Y
+	STA Sprite_RAMY+4,Y
 
 	; Masking tile
 	LDA #$67
-	STA Sprite_RAM+1,Y
-	STA Sprite_RAM+5,Y
+	STA Sprite_RAMTile,Y
+	STA Sprite_RAMTile+4,Y
 
 	; Set sprite priority
-	LDA #%00100000
-	STA Sprite_RAM+2,Y
-	STA Sprite_RAM+6,Y
+	LDA #SPR_BEHINDBG
+	STA Sprite_RAMAttr,Y
+	STA Sprite_RAMAttr+4,Y
 
 	; Set sprite X's side by side
 	LDA Objects_SpriteX,X
-	STA Sprite_RAM+3,Y
+	STA Sprite_RAMX,Y
 	ADD #$08
-	STA Sprite_RAM+7,Y
+	STA Sprite_RAMX+4,Y
+
+	LDA Object_SpriteRAMOffset, X
+	ADD #$08
+	STA Object_SpriteRAMOffset, X
 
 PUp_DrawMaskSprite1:
 	RTS
@@ -780,6 +779,9 @@ ObjInit_ItemBlock:
 	RTS
 
 ItemBlock_Initialize:
+	LDA Block_NeedsUpdate
+	BNE ObjInit_ItemBlock2
+
 	JSR Object_NoInteractions
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
@@ -1526,7 +1528,7 @@ Key_NoDetecttiles:
 	BNE ObjNorm_KeyHeld
 	
 	JSR Object_DampenVelocity
-	JSR Object_InteractWithTiles
+	JSR Object_InteractWithTilesWallStops
 	JMP Object_Draw
 
 ObjNorm_KeyHeld:
@@ -1617,11 +1619,14 @@ Key_CheckUnlock:
 
 Key_CheckDoorLock:
 	CMP #TILE_PROP_LOCK
-	BEQ Key_UnlockBlock
+	BEQ Key_UnlockBlockDelete
 
 Key_NoUnlocks:
 	CLC
 	RTS
+
+Key_UnlockBlockDelete:
+	JSR Object_Delete
 
 Key_UnlockBlock:
 	LDA #$00
@@ -1701,7 +1706,7 @@ ObjInit_Spring:
 	LDA #(ATTR_INVINCIBLE)
 	STA Objects_WeaponAttr, X
 
-	LDA #(ATTR_BUMPNOKILL | ATTR_WINDAFFECTS | ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	LDA #(ATTR_BUMPNOKILL  | ATTR_WINDAFFECTS | ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
 	STA Objects_BehaviorAttr, X
 
 	LDY Objects_Property, X
@@ -1731,7 +1736,7 @@ ObjNorm_Spring:
 	LDA <Player_HaltGameZ
 	BNE Spring_RTS
 
-	LDA #$40
+	LDA #$20
 	JSR Object_DeleteOffScreenRange
 	JSR Object_Move
 	JSR Object_CalcBoundBox
@@ -1756,7 +1761,7 @@ ObjNorm_Spring:
 	AND #(HITTEST_BOTTOM)
 	BEQ Spring_2
 
-	LDA <Player_YVel
+	LDA <Player_YVelZ
 	BEQ Spring_2
 	BMI Spring_2
 
@@ -1781,7 +1786,7 @@ Spring_2:
 	BNE Spring_RTS
 
 	JSR Object_DampenVelocity
-	JSR Object_InteractWithTiles
+	JSR Object_InteractWithTilesWallStops
 
 Spring_RTS:
 	JMP Object_DrawMirrored
@@ -1791,14 +1796,14 @@ SpringAnim:
 
 	LDA Objects_YZ, X
 	SUB Spring_Player_YOffsets, Y
-	STA <Player_Y
+	STA <Player_YZ
 	
 	LDA <Objects_YHiZ, X
 	SBC #$00
-	STA <Player_YHi
+	STA <Player_YHiZ
 	
 	LDA #$00
-	STA <Player_YVel
+	STA <Player_YVelZ
 
 
 	LDA <Player_FlipBits
@@ -1817,7 +1822,7 @@ SpringAnim:
 	LDY Objects_Property, X
 
 	LDA Spring_Jump_Height, Y
-	STA <Player_YVel
+	STA <Player_YVelZ
 	STA <Player_InAir
 
 	
@@ -1860,22 +1865,21 @@ Spring_PositionRestore:
 
 
 PointerDataOffset:
-	.byte 0, 6, 12, 18, 24
+	.byte $06, $0C, $12, $18
 
 ObjInit_ModifyPointers:
 	JSR Object_NoInteractions
 
-	LDA Objects_Property, X
-	TAY
+	LDY World_Num
 
-	LDA BossLevelData, Y
+	LDA BossLevel_CheckPoint, Y
 	TAY
 
 	LDA PointerDataOffset, Y
 	TAY
 
 	LDA Pointers, Y
-	STA Pointers
+	STA Pointers + 6
 	RTS		
 
 
@@ -2011,30 +2015,32 @@ Magic_Star_Action:
 
 	.word ObjNorm_DoNothing
 	.word MagicStar_NoFloat
-	.word MagicStar_CheckEnemies
+	.word MagicStar_CheckCoins
 	.word MagicStar_CheckPSwitch
 	.word MagicStar_CheckItemBlock
 	.word MagicStar_CheckClearedBlock
 	.word MagicStar_SpinnersActive
 	.word MagicStar_NoFloat
 
-MagicStar_CheckEnemies:
+MagicStar_CheckCoins:
 	LDY #$04
 
 CheckEnemies:
 	CPY <CurrentObjectIndexZ
 	BEQ NoCheck
 
-	LDA Objects_State, Y
-	CMP #OBJSTATE_KILLED
-	BCS NoCheck
+	LDA Objects_ID, Y
+	CMP #OBJ_STARPIECE
+	BEQ Check_Done
 
-	CMP #OBJSTATE_DEADEMPTY
-	BNE Check_Done
 
 NoCheck:
 	DEY
 	BPL CheckEnemies
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Magic_StarNoPoof
 
 	LDA <Objects_XZ, X
 	STA <Poof_X
@@ -2043,6 +2049,7 @@ NoCheck:
 	STA <Poof_Y
 	JSR Common_MakePoof
 
+Magic_StarNoPoof:
 	LDA #$01
 	STA Objects_Property, X
 	JMP MagicStar_NoFloat
@@ -2396,6 +2403,11 @@ DrawStarPieceAnim:
 	STA Sprite_RAM + 6, Y
 	RTS
 
+StarCoin_Collect:
+	LDA #SND_MAPINVENTORYFLIP	 
+	STA Sound_QMap	
+	JMP Object_SetDeadEmpty	
+
 
 ObjInit_IceBlock:
 	LDA #BOUND16x16
@@ -2554,6 +2566,12 @@ PoisonMushroom_Draw:
 	JMP Object_DrawMirrored
 
 PoisonMushroom_InsideBlock:
+	LDA #$08
+	STA Objects_Timer2, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL | ATTR_EXPLOSIONPROOF)
+	STA Objects_BehaviorAttr, X
+
 	LDA #ATTR_ALLWEAPONPROOF
 	STA Objects_WeaponAttr, X
 
@@ -2585,6 +2603,9 @@ PoisonMushroom_InsideBlock:
 
 	LDA #$00
 	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
 
 PoisonMushroom_InsideBlockRTS:
 	LDA #$04

@@ -438,11 +438,11 @@ Player_Draw1:
 	SUB <Horz_Scroll
 	STA <Player_SpriteX	 ; Player_SpriteX = Player_X - Horz_Scroll
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	SUB Level_VertScroll
 	STA <Player_SpriteY	; Player_SpriteY = Player_Y - Level_VertScroll
 
-	LDA <Player_YHi	
+	LDA <Player_YHiZ	
 	SBC Level_VertScrollH
 	STA Player_AboveTop	 ; Player_Above top calculated if Player is off top of screen
 
@@ -646,7 +646,7 @@ PRG029_D01D:
 	LDA <Player_InAir
 	BEQ PRG029_D036	 ; If Player is not mid-air, jump to PRG029_D036
 
-	LDA <Player_YVel
+	LDA <Player_YVelZ
 	BPL PRG029_D029	 ; If Player is falling, jump to PRG029_D029
 
 	EOR #$ff	 ; Otherwise negate it (sort of)
@@ -971,7 +971,7 @@ Player_DrawAndDoActions:
 	LDA Level_AScrlConfig
 	BEQ PRG029_D1CD	 		; If Level_AScrlConfig = 0 (no auto scroll going on), jump to PRG029_D1CD
 
-	JSR AutoScroll_CalcPlayerY	; Adjust Player_Y and Player_YHi for auto scroll
+	JSR AutoScroll_CalcPlayerY	; Adjust Player_Y and Player_YHiZ for auto scroll
 
 PRG029_D1CD:
 	RTS		 ; Return
@@ -1161,8 +1161,8 @@ PRG029_D3CB:
 
 	LDA Player_SprOff
 
-	LDX <Player_YVel
-	BPL PRG029_D3DF	 ; If Player_YVel >= 0 (going down), jump to PRG029_D3DF
+	LDX <Player_YVelZ
+	BPL PRG029_D3DF	 ; If Player_YVelZ >= 0 (going down), jump to PRG029_D3DF
 
 	ADD #$0c	 ; Remove other half of Player
 
@@ -1275,7 +1275,7 @@ Pipe_Move_Down:
 	STA <Player_InAir 	; Flag Player as being mid-air (going to fall out the bottom)
 
 	LDA #$30
-	STA <Player_YVel 	; Player_YVel = $30 
+	STA <Player_YVelZ 	; Player_YVelZ = $30 
 
 	JSR Player_ApplyYVelocity ; Apply Player's Y velocity
 	JSR PipeMove_UpDown	 ; Move through pipe vertically
@@ -1289,7 +1289,7 @@ Pipe_Move_Down:
 	STA <Player_XVel	; Not horizontally moving, period
 
 	LDA #$38
-	STA <Player_YVel	; Player_IsDucking = $38 (fall out the bottom)
+	STA <Player_YVelZ	; Player_IsDucking = $38 (fall out the bottom)
 
 PRG029_D50E:
 	RTS		 ; Return
@@ -1386,8 +1386,8 @@ Pipe_Transit:
 
 	LDA #-2		 ; A = -2 (scroll upward)
 	LDX #$01	 ; X = 1
-	LDY <Player_YVel ; Y = Player_YVel
-	BMI PRG029_D56F	 ; If Player_YVel < 0, jump to PRG029_D56F
+	LDY <Player_YVelZ ; Y = Player_YVel
+	BMI PRG029_D56F	 ; If Player_YVelZ < 0, jump to PRG029_D56F
 
 	; If Player_Vel >= 0...
 	LDA #$02	 ; A = 2 (scroll downward)
@@ -1400,8 +1400,8 @@ PRG029_D56F:
 	STA <Vert_Scroll 	; Vert_Scroll += A
 	STA Level_VertScroll	; Level_VertScroll += A
 
-	LDY <Player_YVel	; Y = Player_YVel
-	BPL PRG029_D584	 	; If Player_YVel >= 0, jump to PRG029_D584
+	LDY <Player_YVelZ	; Y = Player_YVel
+	BPL PRG029_D584	 	; If Player_YVelZ >= 0, jump to PRG029_D584
 
 	BCS PRG029_D59B	 	; If carry occurred from addition to Vert_Scroll, jump to PRG029_D59B
 
@@ -1425,8 +1425,8 @@ PRG029_D58A:
 	LDA #$01
 	STA Level_PipeExitDir	 ; Level_PipeExitDir = 1 (exiting up)
 
-	LDY <Player_YVel
-	BMI PRG029_D598	 	; If Player_YVel < 0, jump to PRG029_D598
+	LDY <Player_YVelZ
+	BMI PRG029_D598	 	; If Player_YVelZ < 0, jump to PRG029_D598
 
 	INC Level_PipeExitDir	 ; Otherwise, Level_PipeExitDir = 2 (exiting down)
 
@@ -1461,17 +1461,17 @@ PRG029_D5B7:
 
 	; Player was going up
 
-	DEC <Player_YHi	 ; Player_YHi--
+	DEC <Player_YHiZ	 ; Player_YHiZ--
 	LDA #-16	 ; A = 16
 
 PRG029_D5B8:
-	ADD <Player_Y	
+	ADD <Player_YZ	
 	AND #$f0	
-	STA <Player_Y	 ; Player_Y = (Player_Y + A) & $F0  (tile-aligned move)
+	STA <Player_YZ	 ; Player_Y = (Player_Y + A) & $F0  (tile-aligned move)
 
 	BCC PRG029_D5C3	 ; If no carry, jump to PRG029_D5C3
 
-	INC <Player_YHi	 ; Otherwise, apply carry
+	INC <Player_YHiZ	 ; Otherwise, apply carry
 
 PRG029_D5C3:
 	RTS		 ; Return
@@ -1510,7 +1510,7 @@ PRG029_D5DC:
 
 	; Direction is down or up
 
-	LDX #(Player_Y - Player_X)	; Index Player's Y instead
+	LDX #(Player_YZ - Player_X)	; Index Player's Y instead
 
 	LDA PipeTransit_YDelta,Y	; Get delta
 	BPL PRG029_D5FD	 		; If it's not negative, jump to PRG029_D5FD
@@ -1583,7 +1583,7 @@ PRG029_D63F:
 	STA <Vert_Scroll
 	STY <Vert_Scroll_Hi
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	SUB Level_VertScroll
 	STA <Player_SpriteY	 ; Player_SpriteY = relative Y position
 
@@ -1823,8 +1823,8 @@ PRG029_D74A:
 
 PRG029_D768:
 	; Player gravity while dying
-	INC <Player_YVel
-	INC <Player_YVel ; Player_YVel += 2
+	INC <Player_YVelZ
+	INC <Player_YVelZ ; Player_YVelZ += 2
 
 	LDX #$00	 ; X = 0 (?)
 
@@ -1850,8 +1850,8 @@ PipeMove_LeftRight:
 	JSR Player_ApplyXVelocity 	; Apply Player's X velocity
 
 	; A little "step up" into the pipe
-	DEC <Player_Y
-	DEC <Player_Y	 ; Player_Y -= 2
+	DEC <Player_YZ
+	DEC <Player_YZ	 ; Player_Y -= 2
 
 	LDA <Counter_1
 	AND #$0c	
@@ -1862,8 +1862,8 @@ PipeMove_LeftRight:
 	JSR PRG029_D47E	 ; Do walking animation and draw Player
 
 	; Undo "step up"
-	INC <Player_Y
-	INC <Player_Y	 ; Player_Y += 2
+	INC <Player_YZ
+	INC <Player_YZ	 ; Player_Y += 2
 
 	RTS		 ; Return
 
@@ -1875,7 +1875,7 @@ PipeMove_UpDown:
 	TAY		 ; Y = 0 (down) or 1 (up)
 
 	LDA PipeMove_YVel,Y	 	; Get appropriate Y velocity
-	STA <Player_YVel	 	; Set it!
+	STA <Player_YVelZ	 	; Set it!
 
 	JSR Player_ApplyYVelocity	; Apply Player's Y velocity
 
@@ -1886,7 +1886,7 @@ Player_StopMovement:
 	LDA #$00
 	STA Level_PipeMove	; Not moving through a pipe
 	STA <Player_XVel	; Player stopped horizontall
-	STA <Player_YVel	; Player stopped vertically
+	STA <Player_YVelZ	; Player stopped vertically
 	STA <Player_InAir	; Not mid-air
 	RTS		 ; Return
 

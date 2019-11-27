@@ -15,6 +15,7 @@ OBJ_SWOOSH    		= $6E
 OBJ_PIXIE    		= $6F
 OBJ_FIREBLAST		= $70
 OBJ_ICEBLAST		= $71
+OBJ_LAKITUWINDOW	= $72
 
     .word ObjInit_Lakitu ; Object $64
     .word ObjInit_Larry ; Object $65
@@ -30,7 +31,7 @@ OBJ_ICEBLAST		= $71
     .word ObjInit_IceFireFly ; Object $6F
     .word ObjInit_FireBlast ; Object $70
     .word ObjInit_FrostBlast ; Object $71
-    .word ObjInit_DoNothing ; Object $72
+    .word ObjInit_LakituWindow ; Object $72
     .word ObjInit_DoNothing ; Object $73
     .word ObjInit_DoNothing ; Object $74
     .word ObjInit_DoNothing ; Object $75
@@ -53,7 +54,7 @@ OBJ_ICEBLAST		= $71
     .word ObjNorm_IceFireFly ; Object $6F
     .word ObjNorm_FireBlast ; Object $70
     .word ObjNorm_FrostBlast ; Object $71
-    .word ObjNorm_DoNothing ; Object $72
+    .word ObjNorm_LakituWindow ; Object $72
     .word ObjNorm_DoNothing ; Object $73
     .word ObjNorm_DoNothing ; Object $74
     .word ObjNorm_DoNothing ; Object $75
@@ -76,7 +77,7 @@ OBJ_ICEBLAST		= $71
     .word Player_GetHurt ; Object $6F
     .word Player_GetHurt ; Object $70
     .word Player_Freeze ; Object $71
-    .word ObjHit_DoNothing ; Object $72
+    .word Player_GetHurt ; Object $72
     .word ObjHit_DoNothing ; Object $73
     .word ObjHit_DoNothing ; Object $74
     .word ObjHit_DoNothing ; Object $75
@@ -99,7 +100,7 @@ OBJ_ICEBLAST		= $71
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $6F
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $70
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $71
-    .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $72
+    .byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $72
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $73
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $74
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $75
@@ -122,7 +123,7 @@ OBJ_ICEBLAST		= $71
     .byte OPTS_SETPT5 | $33 ; Object $6F
     .byte OPTS_NOCHANGE ; Object $70
     .byte OPTS_NOCHANGE ; Object $71
-    .byte OPTS_NOCHANGE ; Object $72
+    .byte OPTS_SETPT5 | $0B ; Object $72
     .byte OPTS_NOCHANGE ; Object $73
     .byte OPTS_NOCHANGE ; Object $74
     .byte OPTS_NOCHANGE ; Object $75
@@ -139,7 +140,7 @@ OBJ_ICEBLAST		= $71
     .byte KILLACT_STARDEATH ; Object $69
     .byte KILLACT_STARDEATH ; Object $6A
     .byte KILLACT_STARDEATH ; Object $6B
-    .byte KILLACT_STARDEATH ; Object $6C
+    .byte KILLACT_NORMALANDKILLED ; Object $6C
     .byte KILLACT_NORMALANDKILLED ; Object $6D
     .byte KILLACT_STARDEATH ; Object $6E
     .byte KILLACT_NORMALANDKILLED ; Object $6F
@@ -218,6 +219,9 @@ ObjP6F:
 ObjP70:
 ObjP71:
 ObjP72:
+    .byte $6B, $6B, $BD, $BD
+	.byte $6B, $6B, $9D, $9D
+
 ObjP73:
 ObjP74:
 ObjP75:
@@ -320,8 +324,6 @@ Lakitu_Chase:
 	JSR Object_ChasePlayer
 
 Lakitu_CalcBoundBox:
-	JSR Object_CalcBoundBox
-
 	LDA <Vert_Scroll
 	ADD #$14
 	STA <Objects_YZ, X
@@ -343,7 +345,6 @@ Lakitu_DoAction:
 
 	.word Lakitu_Wait
 	.word Lakitu_Lower
-	.word Lakitu_GetEnemy
 	.word Lakitu_RaiseEnemy
 	.word Lakitu_Raise
 	.word Lakitu_Aim
@@ -530,6 +531,7 @@ Lakitu_WaitTimers:
 Lakitu_Aim:
 	LDA Objects_Timer, X
 	BEQ Lakitu_AimAnyway
+
 	RTS
 
 Lakitu_AimAnyway:	
@@ -1600,18 +1602,22 @@ ObjHit_HardIce:
 HardIce_HitBlock:
 	JMP ObjHit_SolidBlock
 
-
 FireSnake_Frame = Objects_Data1
-FireSnake_CanJump = Objects_Data3
-FireSnake_BufferOffset = Objects_Data4
-FireSnake_Ticker = Objects_Data5
-FireSnake_MakeFire = Objects_Data6
+FireSnake_LowJumpCount = Objects_Data2
+FireSnake_BufferOffset = Objects_Data3
+FireSnake_Ticker = Objects_Data4
+FireSnake_MakeFire = Objects_Data5
+FireSnake_XCharge = Objects_Data6
+FireSnake_YCharge = Objects_Data7
+
+FiresSnake_Charge:
+	.byte $E8, $18, $C0, $40
 
 FireSnakeFlips:
 	.byte $00, SPR_HFLIP
 
 FireSnake_Jumps:
-	.byte $E0, $E0, $D8, $C8, $BA, $B2, $A8, $A0, $98, $90, $8A, $8A, $8A, $8A, $8A, $8A
+	.byte $E0, $D8, $C8, $BA, $B2, $A8, $A0, $98, $90, $8A, $8A, $8A, $8A, $8A, $8A, $8A
 
 FireSnake_BufferOffsets:
 	.byte 00, 16
@@ -1619,6 +1625,9 @@ FireSnake_BufferOffsets:
 ObjInit_FireSnake:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA #$06
+	STA Objects_SpritesRequested, X
 
 	LDA #(ATTR_FIREPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
@@ -1686,73 +1695,76 @@ FireSnake_Norm:
 	STA Buffer_Occupied, Y
 
 FireSnake_Move:
+	LDA Objects_Timer, X
+	BEQ FireSnake_NoCharge
+
+	CMP #$01
+	BNE FireSnake_NoCharge
+
+	LDA FireSnake_XCharge, X
+	STA <Objects_XVelZ, X
+
+	LDA FireSnake_YCharge, X
+	STA <Objects_YVelZ, X
+	BNE FireSnake_NoMove
+
+FireSnake_NoCharge:
+	LDA FireSnake_Ticker, X
+	AND #$01
+	BNE FireSnake_NoMove
+
 	JSR Object_Move
 
+FireSnake_NoMove:
 	LDA <Objects_YVelZ, X
 	CMP #$18
-	BMI FireSnake_Move1
-	BCC FireSnake_Move1
+	BMI FireSnake_NoYVelCap
+	BCC FireSnake_NoYVelCap
 
 	LDA #$20
 	STA <Objects_YVelZ, X
 
-FireSnake_Move1:
+FireSnake_NoYVelCap:
+	
 	JSR FireSnake_MoveTail
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-	JSR Object_DetectTiles
-
-	LDA Objects_Timer3, X
-	BEQ FireSnake_InteractTiles
-
-	LDA <Objects_YVelZ, X
-	BMI FireSnake_InteractTiles
-
-	LDA Object_VertTileProp, X
-	CMP #TILE_PROP_SOLID_TOP
-	BNE FireSnake_InteractTiles
-
-	LDA <Objects_TilesDetectZ, X
-	AND #~HITTEST_BOTTOM
-	STA <Objects_TilesDetectZ, X
-
-FireSnake_InteractTiles:
+	JSR Object_DetectTiles	
 	JSR Object_InteractWithTiles
 	JSR FireSnake_MeltIce
 
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
-	BEQ FireSnake_NoFire
+	BNE FireSnake_CheckTiles
 
-	LDA <Objects_XVelZ, X
-	BEQ FireSnake_NoFire
+	LDA #$00
+	STA Objects_Timer, X
+	JMP FireSnake_Animate
+	
+FireSnake_CheckTiles:
+	LDA <Objects_YVelZ, X
+	BPL FireSnake_MovingDown
+	JMP FireSnake_Animate
 
-	LDA Object_BodyTileProp, X
+FireSnake_MovingDown:
+	LDA Objects_Timer, X
+	BNE FireSnake_Animate
+
+	JSR Object_DetectTileCenter
 	CMP #TILE_PROP_ENEMY
 	BNE FireSnake_NoFire
 
-	LDA <Objects_XZ, X
-	ADD #$07
-	STA Block_DetectX
-	STA Tile_X
+	LDA Tile_DetectionX
+	STA Block_ChangeX
 
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA Block_DetectXHi
-	STA Tile_XHi
+	LDA Tile_DetectionXHi
+	STA Block_ChangeXHi
 
-	LDA <Objects_YZ, X
-	ADD #$07
-	STA Block_DetectY
-	STA Tile_Y
+	LDA Tile_DetectionY
+	STA Block_ChangeY
 
-	LDA <Objects_YHiZ, X
-	ADC #$00
-	STA Block_DetectYHi
-	STA Tile_YHi
-
-	LDA Object_BodyTileValue, X
-	STA Tile_LastValue
+	LDA Tile_DetectionYHi
+	STA Block_ChangeYHi
 
 	JSR Tile_WriteTempChange
 	BCC FireSnake_NoFire
@@ -1764,65 +1776,49 @@ FireSnake_InteractTiles:
 	JSR Object_ChangeBlock
 
 FireSnake_NoFire:
-	LDA Object_VertTileProp
-	LDA FireSnake_CanJump, X
-	BEQ FireSnake_TryCanJump
-
-	LDA Objects_Timer, X
-	BNE FireSnake_Animate
-
 	JSR Object_YDistanceFromPlayer
-	LDA <YDiffAboveBelow
+	
+	LDA <YDiff
+
+	LDY <YDiffAboveBelow
 	BEQ FireSnake_DetermineJump
 
-	LDA #$20
-	STA Objects_Timer3, X
-
-	LDY #$00
+	LDA #$00
+	BEQ FireSnake_DoJump
 
 FireSnake_DetermineJump:
-	LDA <YDiff
 	LSR A
 	LSR A
 	LSR A
 	LSR A
+
 	TAY
 
-	INY
-
 FireSnake_DoJump:
-	INC FireSnake_MakeFire, X
-
 	LDA FireSnake_Jumps, Y
-	STA <Objects_YVelZ, X
+	STA FireSnake_YCharge, X
 
-	CPY #$00
-	BNE FireSnake_TowardsPlayer
-
-	LDA #$20
-	STA Objects_Timer3, X
-
-FireSnake_TowardsPlayer:
-
-	JSR Object_MoveTowardsPlayerFast
-
-	LDA #$00
-	STA FireSnake_CanJump, X
-
-	JMP FireSnake_Animate
-
-FireSnake_TryCanJump:
-
-	LDA <Objects_TilesDetectZ, X
-	AND #HITTEST_BOTTOM
-	BEQ FireSnake_Animate
-
-	INC FireSnake_CanJump, X
 	LDA #$20
 	STA Objects_Timer, X
 
 	LDA #$00
 	STA <Objects_XVelZ, X
+
+	JSR Object_XDistanceFromPlayer
+
+	LDA <XDiff
+	CMP #$50
+	BCC FireSnake_Charge
+	
+	LDA #$40
+	STA Objects_Timer, X
+
+	INY 
+	INY
+
+FireSnake_Charge:
+	LDA FiresSnake_Charge, Y
+	STA FireSnake_XCharge, X
 
 FireSnake_Animate:
 	INC FireSnake_Frame, X
@@ -1879,6 +1875,7 @@ MoveTail_RTS:
 	RTS
 
 
+
 FireSnake_RAMOffset = Temp_Var15
 FireSnake_TailPartX = Temp_Var2
 FireSnake_TailPartY = Temp_Var1
@@ -1910,6 +1907,7 @@ FireSnake_DrawTail:
 	LDY <FireSnake_RAMOffset
 	LDA <FireSnake_TailPartX
 	STA Sprite_RAMX + 8, Y
+
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 8, Y
 
@@ -1933,7 +1931,6 @@ FSDT1:
 	SUB <Horz_Scroll
 	ADD #$04
 	STA <FireSnake_TailPartX
-	
 
 	LDA Object_BufferY + 7, X
 	SUB <Vert_Scroll
@@ -1945,6 +1942,7 @@ FSDT1:
 	LDY <FireSnake_RAMOffset
 	LDA <FireSnake_TailPartX
 	STA Sprite_RAMX + 12, Y
+
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 12, Y
 
@@ -1980,6 +1978,7 @@ FSDT2:
 	LDY <FireSnake_RAMOffset
 	LDA <FireSnake_TailPartX
 	STA Sprite_RAMX + 16, Y
+	
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 16, Y
 
@@ -2043,11 +2042,16 @@ FSDT4:
 	STA Sprite_RAMTile + 20, Y
 
 	LDX <CurrentObjectIndexZ
+	
+	LDA Objects_SpriteAttributes, X
+	STA <Temp_Var1
+
 	LDA Objects_Frame, X
 	AND #$01
 	TAX
 
 	LDA FireSnake_TailFlips, X
+	ORA <Temp_Var1
 	STA Sprite_RAMAttr + 8, Y
 	STA Sprite_RAMAttr + 16, Y
 
@@ -2056,6 +2060,7 @@ FSDT4:
 	TAX
 
 	LDA FireSnake_TailFlips, X
+	ORA <Temp_Var1
 	STA Sprite_RAMAttr + 12, Y
 	STA Sprite_RAMAttr + 20, Y
 	RTS
@@ -2472,7 +2477,7 @@ ObjHit_Freezie:
 	STA <Player_XVel
 	
 	LDA #$A0
-	STA <Player_YVel
+	STA <Player_YVelZ
 	STA <Player_InAir
 
 Freezie_Die:
@@ -3424,4 +3429,280 @@ Check_NextObject:
 Check_FindObject:
 	DEY
 	BPL	Check_NextObject
+	RTS
+
+ObjInit_LakituWindow:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDY Objects_Property, X
+
+	LDA #(ATTR_NOICE)
+	STA Objects_BehaviorAttr, X
+
+	JSR Object_CalcBoundBox
+
+	LDA <Objects_YZ, X
+	SUB #$03
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+	RTS		 ; Return
+
+
+LakituWindow_Frame = Objects_Data1
+LakituWindow_Action = Objects_Data2
+LakituWindow_BodyOffset = Objects_Data3
+LakituWindow_EnemyOffset = Objects_Data5
+LakituWindow_MadePoof = Objects_Data6
+LakituWindow_SleepTime = Objects_Data7
+
+ObjNorm_LakituWindow:
+	LDA <Player_HaltGameZ
+	BEQ LakituWindow_Norm
+
+	JMP LakituWindow_Draw
+
+LakituWindow_Norm:
+	JSR Object_DeleteOffScreen
+	JSR Object_CalcBoundBox
+	JSR Object_CheckForeground
+	JSR Object_AttackOrDefeat
+	JSR LakituWindow_DoAction
+	JMP LakituWindow_Draw
+
+LakituWindow_DoAction:
+	LDA LakituWindow_Action, X
+	JSR DynJump
+
+	.word LakituWindow_Wait
+	.word LakituWindow_Lower
+	.word LakituWindow_RaiseEnemy
+	.word LakituWindow_Raise
+	.word LakituWindow_Aim
+
+LakituWindow_Wait:
+	LDA Objects_Timer, X
+	BNE LakituWindow_WaitDone
+
+	INC LakituWindow_Action, X
+
+LakituWindow_WaitDone:
+	RTS
+
+LakituWindow_Lower:
+	INC LakituWindow_BodyOffset, X
+	LDY LakituWindow_BodyOffset, X
+	CPY #$10
+	BCC LakituWindow_LowerDone
+
+	INC LakituWindow_Action, X
+
+LakituWindow_LowerDone:
+	RTS
+
+LakituWindow_RaiseEnemy:
+	INC LakituWindow_EnemyOffset, X
+	LDA LakituWindow_EnemyOffset, X
+	CMP #$0C
+	BCC LakituWindow_RaiseEnemyDone
+
+	INC LakituWindow_Action, X
+	LDA #$01
+	STA Objects_Frame, X
+
+LakituWindow_RaiseEnemyDone:
+	RTS
+
+LakituWindow_Raise:
+	DEC LakituWindow_BodyOffset, X
+	BNE LakituWindow_RaiseDone
+
+	INC LakituWindow_Action, X
+
+	LDA RandomN, X
+	AND #$03
+	TAY
+	LDA LakituWindow_AimTimers, Y
+	STA Objects_Timer, X
+
+LakituWindow_RaiseDone:
+	RTS
+
+LakituWindow_AimTimers:
+	.byte $20, $40, $40, $10
+
+
+LakituWindow_WaitTimers:
+	.byte $40, $40, $60, $30
+
+LakituWindow_Aim:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE LakituWindow_AimRTS
+
+	LDA Objects_Timer, X
+	BEQ LakituWindow_AimAnyway
+
+LakituWindow_AimRTS:	
+	RTS
+
+LakituWindow_AimAnyway:	
+	
+	JSR Object_PrepProjectile	
+	BCC LakituWindow_AimDone
+	
+	LDA #SOBJ_SPINYEGG
+	STA SpecialObj_ID,Y
+
+	LDA <Objects_XZ, X
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi, Y
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA SpecialObj_YHi, Y
+
+	JSR Object_AimProjectile
+
+	LDA SpecialObj_XVel, Y
+	JSR Double_Value
+	STA SpecialObj_XVel, Y
+
+	LDA SpecialObj_YVel, Y
+	JSR Double_Value
+	STA SpecialObj_YVel, Y
+
+LakituWindow_Reset:
+	LDA RandomN, X
+	AND #$03
+	TAY
+	LDA LakituWindow_WaitTimers, Y
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA LakituWindow_EnemyOffset, X
+	STA LakituWindow_BodyOffset, X
+	STA LakituWindow_MadePoof, X
+	STA LakituWindow_Action, X
+	STA Objects_Frame, X
+
+LakituWindow_AimDone:
+	RTS
+
+LakituWindow_Draw:
+	LDA <Objects_SpriteY, X
+	ADD #$10
+	STA <Objects_SpriteY, X
+
+	JSR Object_Draw16x32Mirrored
+
+	LDA Sprite_RAMY, Y
+	STA <Temp_Var1
+
+	LDA Sprite_RAMY + 8, Y
+	STA Sprite_RAMY, Y
+
+	LDA <Temp_Var1
+	ADD LakituWindow_BodyOffset, X
+	BCS LakituWindow_Draw_A
+	STA Sprite_RAMY + 8, Y
+
+LakituWindow_Draw_A:
+	LDA Sprite_RAMY + 4, Y
+	STA <Temp_Var1
+
+	LDA Sprite_RAMY + 12, Y
+	STA Sprite_RAMY + 4, Y
+
+	LDA <Temp_Var1
+	ADD LakituWindow_BodyOffset, X
+	BCS LakituWindow_Draw0
+	STA Sprite_RAMY + 12, Y
+
+LakituWindow_Draw0:
+	JSR LakituWindow_HideMask
+
+	LDA #SPR_BEHINDBG
+	STA Sprite_RAMAttr, Y
+
+	LDA #SPR_BEHINDBG
+	STA Sprite_RAMAttr+ 4, Y
+
+	LDA LakituWindow_Action, X
+	CMP #$02
+	BCC LakituWindow_DrawDone
+
+	JSR LakituWindow_DrawEnemy
+
+LakituWindow_DrawDone:
+	RTS
+
+LakituWindow_DrawEnemy:
+	LDA LakituWindow_EnemyOffset, X
+	STA <Temp_Var1
+
+	LDA Sprite_RAMY + 8, Y
+	CMP #$F8
+	BEQ LakituWindow_Enemy1
+
+	SUB <Temp_Var1
+	STA Sprite_RAMY + 16, Y
+
+LakituWindow_Enemy1:
+	STA <Temp_Var3
+
+	LDA #$99
+	STA Sprite_RAMTile + 16, Y
+
+	LDA Objects_SpriteAttributes, X
+	AND #SPR_BEHINDBG
+	ORA #SPR_PAL2
+	STA Sprite_RAMAttr + 16, Y
+
+	LDA Sprite_RAMX, Y
+	STA Sprite_RAMX + 16, Y
+
+	LDA Sprite_RAMY + 4, Y
+	CMP #$F8
+	BEQ LakituWindow_DrawEnemyDone
+	STA Sprite_RAMY + 20, Y
+
+	LDA #$99
+	STA Sprite_RAMTile + 20, Y
+
+	LDA Objects_SpriteAttributes, X
+	AND #SPR_BEHINDBG
+	ORA #(SPR_PAL2 | SPR_HFLIP | SPR_VFLIP)
+	STA Sprite_RAMAttr + 20, Y
+
+	LDA Sprite_RAMX + 4, Y
+	STA Sprite_RAMX + 20, Y
+
+LakituWindow_DrawEnemyDone:
+	RTS
+
+LakituWindow_HideMask:
+	LDA LakituWindow_Action, X
+	BEQ LakituWindow_DoHide
+
+	CMP #$05
+	BNE LakituWindow_HideMaskRTS
+
+LakituWindow_DoHide:	 
+	LDA #$F8
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY + 4, Y
+
+LakituWindow_HideMaskRTS:
 	RTS

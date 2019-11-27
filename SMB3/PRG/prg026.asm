@@ -2626,10 +2626,14 @@ StatusBar_DrawExperience1:
 ;--------------------------------------
 Game_UpdateCoins:
 	LDA Coins_Earned
+	ORA Force_Coin_Update
 	BNE Game_UpdateCoins0
 	RTS
 	
 Game_UpdateCoins0:
+	LDA #$00
+	STA Force_Coin_Update
+
 	LDA Player_Coins
 	STA <CalcParam1
 
@@ -2959,6 +2963,7 @@ StatusBar_DrawTimer:
 	LDA Game_Timer
 	ORA #$30
 	STA Status_Bar_Top + 10
+	
 	LDA Game_Timer + 1
 	ORA #$30
 	STA Status_Bar_Top + 11
@@ -2966,6 +2971,7 @@ StatusBar_DrawTimer:
 	LDA Game_Timer + 2
 	ORA #$30
 	STA Status_Bar_Top + 13
+	
 	LDA Game_Timer + 3
 	ORA #$30
 	STA Status_Bar_Top + 14
@@ -2973,6 +2979,7 @@ StatusBar_DrawTimer:
 	LDA Game_Timer + 4
 	ORA #$30
 	STA Status_Bar_Top + 16
+	
 	LDA Game_Timer + 5
 	ORA #$30
 	STA Status_Bar_Top + 17
@@ -3044,7 +3051,6 @@ Game_UpdateLevelName1:
 	RTS
 	
 StatusBar_DrawLevelName:
-
 	LDX #$00
 
 StatusBar_DrawLevelName1:
@@ -3081,24 +3087,40 @@ Process_SpinnersNext:
 	LDA SpinnerBlocksX, X
 	AND #$F0
 	STA Block_ChangeX
+	STA <Poof_X
+	STA <Point_X
 
 	LDA SpinnerBlocksXHi, X
 	STA Block_ChangeXHi
+	STA <Point_XHi
 	 
 	LDA SpinnerBlocksY, X
 	AND #$F0
 	STA Block_ChangeY
+	STA <Poof_Y
+	STA <Point_Y
 
 	LDA SpinnerBlocksYHi, X
 	STA Block_ChangeYHi
+	STA <Point_YHi
 
 	LDA SpinnerBlocksReplace, X
 	STA Block_UpdateValue
 
+	LDA SpinnerBlocksPoof, X
+	BEQ SpinnerReset
+
+	JSR CheckPoint_OffScreen
+	BCC SpinnerReset
+
+	JSR Common_MakePoof
+
+SpinnerReset:
 	LDA #$00
 	STA SpinnerBlocksActive, X
+	STA SpinnerBlocksPoof, X
 
-SpinnerRTS:
+SpinnerRTS:	
 	RTS
 
 Process_ReverseSpinner:

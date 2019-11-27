@@ -20,17 +20,18 @@ class App extends React.Component {
     render() {
         return <div>
             <div style={{display: 'flex', margin: "auto", flexWrap: "wrap", width: "918px"}}>
-                {EnemyList.map(e => {
-                    return <Enemy enemy={e} />
+                {PowerUpList.map(p => {
+                    return <PowerUp powerUp={p} />
                 })}
 
                 {ObjectList.map(o => {
                     return <ObjectItem objectItem={o} />
                 })}
 
-                {PowerUpList.map(p => {
-                    return <PowerUp powerUp={p} />
+                {EnemyList.map(e => {
+                    return <Enemy enemy={e} />
                 })}
+
             </div>
             
         </div>;

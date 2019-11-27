@@ -36,7 +36,7 @@ Object_BoundBox:
 	.byte  8,  24,   8,  30	; (BOSS)
 	.byte  2,  22,   2,  30	; BOUND24x32
 	.byte  0,  32,  0,  16	; BOUND32x16BLOCK
-	.byte  2,  20,   2,  12	; 7
+	.byte  1,  14,   4,   26; 16x28 BOUND16x28
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
 	.byte  2,  20,   2,  28	; 9
 	.byte  1,  14,   1,  32	; A BOUND16x32 (16x32)
@@ -304,7 +304,13 @@ PRG000_C714:
 
 	LDA Objects_EffectiveXVel,X
 	BMI PRG000_C797	 ; If object's X velocity < 0 (moving leftward), jump to PRG000_C797
+	BNE Object_DoRightTile
 
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BEQ PRG000_C797
+
+Object_DoRightTile:	
 	JSR Object_DetectTileRightEdge
 	JMP PRG000_C798
 
@@ -563,9 +569,15 @@ PRG000_C834:
 
 	; When Object hits water, splash!
 Object_OilSplash:
-	INC Splash_IsOil
+	LDA #$01
+	STA Splash_IsOil
+	JMP Object_WaterSplashNorm
 	
 Object_WaterSplash:
+	LDA #$00
+	STA Splash_IsOil
+
+Object_WaterSplashNorm:
 	LDX #$05
 
 FindSplash:
@@ -576,14 +588,14 @@ FindSplash:
 	CPX #$08
 	BNE FindSplash
 
-	LDA #$00
-	STA Splash_IsOil
-
 	LDX <CurrentObjectIndexZ
 	RTS
 
 Splash_Offsets:
-	.byte $00, $10
+	.byte $00, $1E
+
+Splash_Orientations:
+	.byte $00, SPR_VFLIP	
 
 MakeSplash:
 	LDA Tile_DetectionX
@@ -593,21 +605,21 @@ MakeSplash:
 	STA <Objects_XHiZ, X
 
 	LDA Tile_DetectionY
-	SUB Splash_Offsets, Y
+	ADD Splash_Offsets, Y
 	STA <Objects_YZ, X
 
 	LDA Tile_DetectionYHi
-	SBC #$00
+	ADC #$00
 	STA <Objects_YHiZ, X
 
 	LDA #OBJ_WATERSPLASH
 	STA Objects_ID, X
 
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X 
+	
 	LDA #$0B
 	STA Objects_Timer, X
-
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X 
 
 	LDA #$02
 	STA Objects_SpritesRequested, X
@@ -618,9 +630,8 @@ MakeSplash:
 	LDA Splash_IsOil
 	STA WaterSplash_IsOil, X
 
-	LDA #$00
+	LDA Splash_Orientations, Y
 	STA Objects_Orientation, X
-	STA Splash_IsOil
 
 	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
@@ -765,23 +776,6 @@ PRG000_C9D2:
 	JMP PRG000_C975	 ; While X >= 0, loop!
 
 PRG000_C9E5:
-	LDA Player_Flip
-	BEQ PRG000_C9FB	 ; If Player is NOT somersaulting, jump to PRG000_C9FB
-
-	LDA Player_InWater
-	BNE PRG000_C9F6	 ; If Player is in water or sinking in sand, jump to PRG000_C9F6
-
-	LDA <Player_InAir
-	BNE PRG000_C9FB	 ; If Player is mid-air, jump to PRG000_C9FB
-
-PRG000_C9F6:
-	; A would-be somersaulting Player is either in water or sand, 
-	; or is not mid-air; disable it!
-	LDA #$00
-	STA Player_Flip
-
-PRG000_C9FB:
-PRG000_CA33:
 	LDA Level_JctCtl
 	BEQ PRG000_CA40	 ; If no level junction is occurring, jump to PRG000_CA40
 
@@ -881,21 +875,23 @@ ObjState_Frozen:
 	LDA #(ATTR_WINDAFFECTS  | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
+	LDA #(ATTR_ICEPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN2
+	BEQ Frozen_Normal
+
+	LDA Player_EffectiveSuit
+	CMP #MARIO_ICE
+	BNE Frozen_Die
+
 	LDA <Player_HaltGameZ
 	BEQ Frozen_Normal
 
 	JMP Frozen_Draw
 
 Frozen_Normal:
-	LDA Objects_State, X
-	CMP #OBJSTATE_FROZEN2
-	BEQ Frozen_Anyway
-
-	LDA Player_EffectiveSuit
-	CMP #MARIO_ICE
-	BNE Frozen_Die
-
-Frozen_Anyway:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBoxForced
@@ -907,12 +903,12 @@ Frozen_Anyway:
 	JSR Shell_KillOthers
 	BCC Frozen_NotKilledOthers
 
-	LDA Objects_BeingHeld, X
-	BEQ Frozen_NotKilledOthers
-
 	JMP Frozen_Die
 
 Frozen_NotKilledOthers:
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
+
 	JSR Object_DetectPlayer
 	BCC Frozen_DetectTiles
 
@@ -934,9 +930,6 @@ Frozen_Carry:
 	JSR Object_GetKicked
 
 Frozen_DetectTiles
-	JSR Object_DetectTiles
- 
-Frozen_CheckKicked:
 	LDA Objects_FrozenKicked, X
 	BNE Frozen_NotDampen
 
@@ -1294,6 +1287,19 @@ ObjState_Kicked2:
 	JSR Object_TestSideBumpBlocks
 	BCS DrawKickedShell
 
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BNE Kicked_NotCliff
+
+	LDA Objects_PreviousTilesDetect, X
+	AND #HIT_GROUND
+	BEQ Kicked_NotCliff
+
+	LDA #$10
+	STA <Objects_YVelZ, X
+
+Kicked_NotCliff:
+
 	JSR Object_InteractWithTiles
 
 Kicked_NotAir:
@@ -1366,9 +1372,6 @@ Object_KillOthers1:
 	INC <Kill_WasKicked
 
 Kill_NotKicked:
-	LDA Objects_Timer2, Y
-	BNE Object_KillOthers2
-
 	LDA Objects_BehaviorAttr, Y
 	AND <Kill_TypeCheck
 	BNE Object_KillOthers2
@@ -1561,7 +1564,6 @@ Object_SideBumpBlocks1:
 
 Object_BumpBlocks:
 	; Backup current PAGE_A000 bank
-	INC Object_BlockAttack
 	LDA PAGE_A000
 	PHA	
 
@@ -1597,16 +1599,38 @@ Object_BumpBlocks:
 ObjectHoldXOff:		.byte $0B, -$0B, $04, -$04, $04, $0B, -$13, $04, -$08, $04, $00
 ObjectHoldXHiOff:	.byte $00,  $FF, $00,  $FF, $00, $00,  $FF, $00,  $FF, $00, $00
 
-	; Object-to-object hit resultant X velocity
-ObjectToObject_HitXVel:	.byte -$08, $08
-
-ObjState_Held:
-
-	RTS
+Object_DropXOffset:
+	.byte $03, $FD, $00, $FF
 
 Object_GetKicked:
+	LDA #$10
+	STA Objects_Timer2, X
+
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ Object_WillGetKicked
+
 	LDA #$00
 	STA <Objects_YVelZ, X
+	STA Objects_BeingHeld, X
+
+	LDY #$00
+	LDA <Player_FlipBits
+	BNE Object_DropRight
+
+	INY
+
+Object_DropRight:
+	LDA <Objects_XZ, X
+	ADD Object_DropXOffset, Y
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC Object_DropXOffset + 2, Y
+	STA <Objects_XHiZ, X
+	RTS
+
+Object_WillGetKicked:
 
 	JSR Object_KickSound
 
@@ -1614,18 +1638,10 @@ Object_GetKicked:
 	LDA #$0c
 	STA Player_Kick
 
-	; Set object timer 2 to $10
-	LDA #$10
-	STA Objects_Timer2, X
-
 Object_GetKicked1:
 	LDA #$00
 	STA <Objects_YVelZ,X
 	STA Objects_BeingHeld, X
-
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BNE Object_NotKickState
 
 	LDA <Pad_Holding
 	AND #PAD_UP
@@ -1757,7 +1773,7 @@ PRG000_CF1F:
 	SBC #$00
 	STA <Objects_YHiZ, X
 
-	LDA <Player_YVel
+	LDA <Player_YVelZ
 	STA <Objects_YVelZ, X
 
 	LDA <Player_XVel
@@ -1765,7 +1781,11 @@ PRG000_CF1F:
 
 	LDA Objects_Orientation, X
 	AND #~(SPR_HFLIP)
-	ORA <Player_FlipBits
+	STA <Temp_Var1
+
+	LDA <Player_FlipBits
+	AND #SPR_HFLIP
+	ORA <Temp_Var1
 	STA Objects_Orientation, X
 
 PRG000_CF98:
@@ -2163,7 +2183,7 @@ Object_HandleBumpUnderneath1:
 	AND #ATTR_BUMPNOKILL
 	BNE Object_HandleBumpUnderneath3
 
-	LDA <Player_YVel
+	LDA <Player_YVelZ
 	PHA
 
 	LDA Player_InAir
@@ -2175,7 +2195,7 @@ Object_HandleBumpUnderneath1:
 	STA Player_InAir
 
 	PLA
-	STA <Player_YVel
+	STA <Player_YVelZ
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_SHELLED
@@ -2240,16 +2260,14 @@ Object_Defeated:
 	JSR Object_GetKilled
 	
 	LDA #-$40
-	STA <Player_YVel
+	STA <Player_YVelZ
 	STA Player_InAir
 	
-	JMP Object_DefeatKickSnd
+	JMP Object_DefeatSound
 
 Object_DefeatedRTS:
 	RTS
 
-Object_DefeatKickSnd:
-	JMP Object_KickSound
 
 Object_DetermineChange:
 	LDA ObjGroupRel_Idx
@@ -2279,7 +2297,7 @@ Object_DoChange:
 	BEQ Change_NotStomped
 
 	LDA #-$40
-	STA <Player_YVel
+	STA <Player_YVelZ
 	STA Player_InAir
 
 	LDA #$00
@@ -2398,7 +2416,7 @@ Object_CheckOffScreen:
 
 Object_IsTooHigh:
 	LDA <Objects_YZ, X
-	CMP #$E0
+	CMP #$A0
 	BCC Object_IsOffScreen
 
 Object_NotTooLow:
@@ -2541,6 +2559,7 @@ Object_New:
 	STA <Objects_SpriteX,X
 	STA Objects_Timer,X
 	STA Objects_Timer2,X
+	STA Objects_SlowTimer,X
 	STA <Objects_XVelZ,X
 	STA <Objects_YVelZ,X
 	STA Objects_XVelFrac,X 
@@ -2603,10 +2622,14 @@ PRG000_D506:
 	; Called for an object in state 2 to do its "normal" routine
 ObjState_Normal:
 Object_DoNormal:
+	CPX #$05
+	BCS No_KickShellClear
+
 	LDA #$00
 	STA Objects_Kicked, X
 	STA Objects_Shelled, X
 
+No_KickShellClear:
 	LDA ObjGroupRel_Idx
 	ASL A		 
 	TAY		 ; Y = object's group relative index * 2 (2 byte index for jump table)
@@ -2731,9 +2754,6 @@ PRG000_D5BF:
 	TAY		 	; -> 'Y' 
 
 	RTS		 ; Return
-
-PRG000_D5E3:
-	.byte $08, $04, $02, $01
 
 	; Object "shaking awake" and draw its sprite
 ; $D5E7
@@ -2920,13 +2940,24 @@ Object_Draw16x48:
 ; Draws a wide 48x16 object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_Draw48x16:
+	STA Debug_Snap
 	JSR Object_ShakeAndCalcSprite
 
 	LDX <CurrentObjectIndexZ	; X = object slot index
 
 	LDA Objects_Frame,X
-	ASL A		 
-	ADD <Temp_Var6	
+	TAX
+	LDA #$00
+
+AddFrame48x16:
+	DEX
+	BMI SetFrame48x16
+
+	ADD #$06
+	BNE AddFrame48x16
+	
+SetFrame48x16:
+	ADD <Temp_Var6
 	STA <Temp_Var6	 ; Temp_Var6 += object's frame
 	TAX
 
@@ -2944,6 +2975,7 @@ Object_Draw48x16:
 	ADD #$08
 	STA <Temp_Var7
 
+	ASL <Temp_Var8
 	ASL <Temp_Var8
 
 	LDY <Temp_Var7
@@ -2975,6 +3007,7 @@ Continue32x16_Draw:
 	ADD #$08
 	STA <Temp_Var7
 
+	ASL <Temp_Var8
 	ASL <Temp_Var8
 	
 	LDY <Temp_Var7
@@ -3241,6 +3274,7 @@ PRG000_D7BD:
 
 	LDA <Temp_Var15
 	CMP <Horz_Scroll
+
 	LDA <Temp_Var16	
 	SBC <Horz_Scroll_Hi
 	BEQ PRG000_D7DE	 ; If sprite is not horizontally off-screen, jump to PRG000_D7DE
@@ -3395,19 +3429,19 @@ Player_CalcBoundBox2:
 	ADC #$00
 	STA Player_BoundRightHi
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	ADD Player_BoundBox+2,Y	
 	STA Player_BoundTop
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	ADC #$00
 	STA Player_BoundTopHi
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	ADD Player_BoundBox+3,Y	
 	STA Player_BoundBottom
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	ADC #$00
 	STA Player_BoundBottomHi
 
@@ -3482,12 +3516,7 @@ Object_CalcBoundBoxRTS:
 
 Object_CalcBoundBoxForced:
 Object_CalcBoundBox1:
-	LDA BossBoundBox
-	BNE CustomBoundBox
-
 	LDA Objects_BoundBox, X	 ; Get this object's attribute flags
-
-CustomBoundBox:
 	ASL A
 	ASL A
 	TAY		 ; -> Y (selected bounding box for this object)
@@ -3525,8 +3554,6 @@ CustomBoundBox:
 	ADC #$00
 	STA Objects_BoundBottomHi, X
 
-	LDA #$00	 ; X = 0 (fifth CHRROM bank)
-	STA BossBoundBox
 	RTS		 ; Return
 
 
@@ -3699,6 +3726,7 @@ Object_DetectPlayer:
 	SEC
 	RTS
 
+Object_SpecialDetectPlayer:
 Object_DoDetectPlayer:	
 	LDY #$08
 
@@ -3960,9 +3988,6 @@ Object_RespondToTailAttack:
 Object_RespondToTailAttack1:
 	LDY Objects_State, X	; Y = object's current state
 
-	LDA Obj2Obj_EnByState,Y
-	BNE Object_RespondToTailAttack2	 ; If object is not hit tested in this state, jump to PRG000_DB16 (RTS)
-
 	LDA Objects_WeaponAttr,X
 	AND #ATTR_TAILPROOF
 	BNE Object_RespondToTailAttack2	 ; If OA3_TAILATKIMMUNE is SET (Object cannot be tail-attacked), jump to PRG000_DB16 (RTS)
@@ -4013,16 +4038,6 @@ Object_RespondToTailAttack2:
 ;  'A' = ObjectID of the collided-with object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Enable object-to-object by state (0 = Enabled, 1 = Disabled)
-Obj2Obj_EnByState:
-	.byte $01	; State 0: Dead/Empty
-	.byte $01	; State 1: Initializing
-	.byte $00	; State 2: Normal
-	.byte $00	; State 3: Shelled
-	.byte $00	; State 4: Held
-	.byte $00	; State 5: Kicked
-	.byte $01	; State 6: Killed
-	.byte $01	; State 7: Squashed
-	.byte $01	; State 8: Dying
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_CalcCoarseXDiff
@@ -4311,8 +4326,6 @@ ASHIM .func \1-AScroll_Movement-1
 	; This routine is a much more simplified version of the water check. It basically checks the tile based on
 	; the water flag for the tile rather than all these range comparisons
 Object_Check_Water:
-	LDY Objects_ID,X
-
 	LDA Objects_WeaponAttr,X
 	AND #ATTR_FIREPROOF
 	BNE Object_Check_Water1
@@ -4427,6 +4440,9 @@ Object_InteractWithTiles:
 	LDA Objects_XYCS, X
 	CMP Objects_XYCSPrev, X
 	BNE Object_InteractWithTiles1
+
+	LDA #$00
+	STA Object_WallStops
 	RTS
 
 Object_InteractWithTiles1:
@@ -4475,10 +4491,10 @@ Object_WallStop:
 	BPL Object_HitRightWall
 
 	LDA Objects_BoundLeft, X
-	AND #$F0
-	ORA #$0F
-	SUB Objects_BoundLeft, X
-	ADD Objects_BoundLeft, X
+	EOR #$FF
+	ADD #$01
+	AND #$0F
+	ADD <Objects_XZ, X
 	STA <Objects_XZ, X
 
 	LDA <Objects_XHiZ, X
@@ -4491,13 +4507,9 @@ Object_WallStop:
 
 Object_HitRightWall:
 	LDA Objects_BoundRight, X
-	AND #$F0
+	AND #$0F
 	STA <Temp_Var1
 	
-	LDA Objects_BoundRight, X
-	SUB <Temp_Var1
-	STA <Temp_Var1
-
 	LDA <Objects_XZ, X
 	SUB <Temp_Var1
 	STA <Objects_XZ, X
@@ -4663,22 +4675,11 @@ Object_FindEmptyY2:
 	SEC
 	RTS
 
-DoBossFights:
-	LDA PAGE_A000
-	PHA
-
-	LDA #13
-
+Obj_Boss:
+	LDA #17
 	STA PAGE_A000
-
 	JSR PRGROM_Change_A000
-	JSR BossFight
-
-	PLA 
-	STA PAGE_A000
-
-	JSR PRGROM_Change_A000 
-	RTS
+	JMP ObjNorm_Boss	
 
 GiantXFrame:
 	.byte $00, $08, $10, $18, $00, $08, $10, $18
@@ -4874,7 +4875,7 @@ Object_Carry:
 	SUB #$10
 	STA <Objects_YZ, X
 
-	LDA <Objects_YHiZ, X
+	LDA Objects_BoundTopHi, Y
 	SBC #$00
 	STA <Objects_YHiZ, X
 
@@ -4904,11 +4905,13 @@ Objects_BumpOff:
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
 	JSR Object_ApplyXVel
+	JSR Object_CalcBoundBox
 
 	LDX <CurrentObjectIndexZ
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
 	JSR Object_ApplyXVel
+	JSR Object_CalcBoundBox
 
 Objects_BumpOff1:
 	CLC
@@ -5427,6 +5430,13 @@ Object_EarnExpRTS:
 	RTS
 
 Object_GetKilled:
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BCC Object_KilledNormal
+
+	JMP Frozen_Die
+
+Object_KilledNormal:	
 	LDA Objects_Health, X
 	BMI KillEnemy
 
@@ -5493,9 +5503,6 @@ Object_Hold:
 	LDA Player_Shell
 	BNE Object_HoldRTS
 
-	LDA Objects_Timer2, X
-	BNE Object_HoldRTS
-
 	JSR Object_DetermineContactKill
 	BCC Can_Hold
 	CLC
@@ -5518,6 +5525,9 @@ Can_Hold:
 	STA Objects_BeingHeld, X
 	STA Player_IsHolding
 
+	LDA #$00
+	STA Player_Flip
+
 	LDA Player_FlipBits
 	AND #SPR_HFLIP
 	STA <Temp_Var1
@@ -5537,7 +5547,7 @@ Object_HoldRTS:
 	RTS
 
 Object_XPreventStuck:
-	.byte $08, $F8
+	.byte $0C, $F4
 	.byte $00, $FF
 
 Object_Kick:
@@ -5550,9 +5560,13 @@ Object_Kick:
 	JSR Object_GetKicked
 	JSR Object_DetectTilesForced
 
+	LDA Object_HorzTileProp, X
+	CMP #(TILE_PROP_SOLID_ALL)
+	BCS Object_ReverseXVel
+
 	LDA Object_BodyTileProp, X
-	AND #(TILE_PROP_SOLID_ALL)
-	BEQ Object_KickRTS
+	CMP #(TILE_PROP_SOLID_ALL)
+	BCC Object_KickRTS
 
 Object_ReverseXVel:
 	LDA Objects_State, X
@@ -5565,7 +5579,7 @@ Object_ReverseXVel:
 Do_Reverse:
 	LDY Player_Direction
 	LDA <Objects_XZ, X
-	ADD Object_XPreventStuck, Y
+	ADD Object_XPreventStuck, Y 
 	STA <Objects_XZ, X
 
 	LDA <Objects_XHiZ, X
@@ -5728,22 +5742,22 @@ HitFrom_Top:
 	CMP #$07
 	BCS TestHit_FromLeft
 
-	LDY <Player_YVel
+	LDY <Player_YVelZ
 	BMI HitFrom_Top1
 
 	STA <Temp_Var1
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	SUB <Temp_Var1
-	STA <Player_Y
+	STA <Player_YZ
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	SBC #$00
-	STA <Player_YHi
+	STA <Player_YHiZ
 
 	LDA #$00
 	STA Player_InAir
-	STA <Player_YVel
+	STA <Player_YVelZ
 
 	LDA Objects_YVelFrac, X
 	STA Player_YVelFrac
@@ -5762,7 +5776,7 @@ TestHit_FromBelow:
 	AND #HITTEST_TOP
 	BEQ TestHit_FromLeft
 
-	LDA <Player_YVel
+	LDA <Player_YVelZ
 	BPL TestHit_FromLeft
 
 	LDA Objects_BoundBottom, X
@@ -5771,16 +5785,16 @@ TestHit_FromBelow:
 	BCS TestHit_FromLeft
 	STA <Temp_Var1
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	ADD <Temp_Var1
-	STA <Player_Y
+	STA <Player_YZ
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	ADC #$00
-	STA <Player_YHi
+	STA <Player_YHiZ
 
 	LDA #$10
-	STA <Player_YVel
+	STA <Player_YVelZ
 	CLC
 	RTS
 
@@ -5914,69 +5928,69 @@ Object_AimProjectile1:
 Object_AimProjectile2:	
 	RTS
 
-Object_AimObjectRandom:
-	STY TempY
-	JSR Object_XDistanceFromPlayer
-	STY <Temp_Var5
+;Object_AimObjectRandom:
+;	STY TempY
+;	JSR Object_XDistanceFromPlayer
+;	STY <Temp_Var5
 
-	JSR Object_YDistanceFromPlayer
-	STY <Temp_Var6
+;	JSR Object_YDistanceFromPlayer
+;	STY <Temp_Var6
 
-	LDA RandomN
-	AND #$3F
-	JMP Object_AimObject0
+;	LDA RandomN
+;	AND #$3F
+;	JMP Object_AimObject0
 
-Object_AimObject:
-	STY TempY
-	JSR Object_XDistanceFromPlayer
-	STY <Temp_Var5
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var10
+;Object_AimObject:
+;	STY TempY
+;	JSR Object_XDistanceFromPlayer
+;	STY <Temp_Var5
+;	LSR A
+;	LSR A
+;	LSR A
+;	LSR A
+;	LSR A
+;	STA <Temp_Var10
 
-	JSR Object_YDistanceFromPlayer
-	STY <Temp_Var6
-	LSR A
-	AND #$F8
-	ORA <Temp_Var10
+;	JSR Object_YDistanceFromPlayer
+;	STY <Temp_Var6
+;	LSR A
+;	AND #$F8
+;	ORA <Temp_Var10
 	
-	CMP #$40
-	BCC Object_AimObject0 ; if we're out of range, fire blindly
+;	CMP #$40
+;	BCC Object_AimObject0 ; if we're out of range, fire blindly
 
-	LDA RandomN
-	AND #$3F
+;	LDA RandomN
+;	AND #$3F
 
-Object_AimObject0:
-	TAY
+;Object_AimObject0:
+;	TAY
 	
-	LDA Object_AttackXVel, Y
-	STA <Objects_XVelZ, X
+;	LDA Object_AttackXVel, Y
+;	STA <Objects_XVelZ, X
 
-	LDA Object_AttackYVel, Y
-	STA <Objects_YVelZ, X
+;	LDA Object_AttackYVel, Y
+;	STA <Objects_YVelZ, X
 
-	LDA <Temp_Var5
-	BNE Object_AimObject1
+;	LDA <Temp_Var5
+;	BNE Object_AimObject1
 
-	LDA <Objects_XVelZ, X
-	EOR #$FF
-	ADD #$01
-	STA <Objects_XVelZ, X
+;	LDA <Objects_XVelZ, X
+;	EOR #$FF
+;	ADD #$01
+;	STA <Objects_XVelZ, X
 
-Object_AimObject1:
-	LDA <Temp_Var6
-	BNE Object_AimObject2
+;Object_AimObject1:
+;	LDA <Temp_Var6
+;	BNE Object_AimObject2
 
-	LDA <Objects_YVelZ, X
-	EOR #$FF
-	ADD #$01
-	STA <Objects_YVelZ, X
+;	LDA <Objects_YVelZ, X
+;	EOR #$FF
+;	ADD #$01
+;	STA <Objects_YVelZ, X
 
-Object_AimObject2:	
-	RTS
+;Object_AimObject2:	
+;	RTS
 
 Object_ShootFireBallStraight:
 	JSR Object_PrepProjectile
@@ -6009,6 +6023,7 @@ Object_PrepProjectile1:
 	STA SpecialObj_Data2, Y
 	STA SpecialObj_Data3, Y
 	STA SpecialObj_Stompable, Y
+	STA SpecialObj_Timer, Y
 
 	LDA <Objects_XZ, X
 	SUB #$04
@@ -6103,6 +6118,7 @@ Check_ShellAttack:
 Object_GetsHurt:
 	LDA #$FF
 	STA Objects_Health, X
+	
 	JSR Object_GetKilled
 	JSR Object_KickSound
 
@@ -6138,6 +6154,9 @@ Object_NoWind:
 	RTS
 
 Object_EdgeMarch:
+	LDA <Objects_XVelZ, X
+	BEQ Object_EdgeMarchRTS
+
 	LDA Objects_PreviousTilesDetect, X
 	AND #HIT_GROUND
 	BEQ Object_EdgeMarchRTS
@@ -6152,9 +6171,24 @@ Object_EdgeMarch:
 Object_EdgeMarchRTS:
 	RTS
 
+Defeat_Sounds:
+	.byte SND_PLAYERSWIM, SND_PLAYERKICK
+
 Object_KickSound:
+	LDY #$01
+	BNE Object_MakeSound
+
+Object_DefeatSound:
+	LDY #$00
+	LDA Objects_BehaviorAttr, X
+	AND #ATTR_STOMPKICKSOUND
+	BEQ Object_MakeSound
+
+	INY
+
+Object_MakeSound:
 	LDA Sound_QPlayer 
-	ORA #SND_PLAYERKICK
+	ORA Defeat_Sounds, Y
 	STA Sound_QPlayer
 	RTS
 
@@ -6164,39 +6198,4 @@ Object_NoInteractions:
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
-	RTS
-
-Objects_AssignSprites:
-	LDA #$30
-	STA <Temp_Var1
-
-	LDA Game_Counter
-	STA <Temp_Var2
-	
-	LDY #$07
-
-DistributeSprites:
-	LDA <Temp_Var2
-	AND #$07
-	TAX
-
-	LDA Objects_State, X
-	BEQ DistributeNextSprite
-
-	LDA <Temp_Var1
-	STA Object_SpriteRAMOffset, X
-	
-	LDA Objects_SpritesRequested, X
-	ASL A
-	ASL A
-	ADD <Temp_Var1
-	STA <Temp_Var1
-
-DistributeNextSprite:	
-	INC <Temp_Var2
-	DEY 
-	BPL DistributeSprites
-
-	LDA <Temp_Var1
-	STA Sprite_FreeRAM
 	RTS

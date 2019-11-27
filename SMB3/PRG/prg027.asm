@@ -66,18 +66,17 @@ TAndK_Init:
 	STA ToadTalk_CPos
 
 	; Set Player to top of screen
-	STA <Player_Y
+	STA <Player_YZ
 
 	; Clear auto scroll variables
 	LDY #$14	 ; Y = $14
 PRG027_A052:
-	STA AScroll_Anchor-1,Y	 ; Clear this auto scroll variable
 	DEY		 ; Y--
 	BNE PRG027_A052	 ; While Y <> 0, loop!
 
 	; Set Player as above the screen
 	LDA #$ff
-	STA <Player_YHi
+	STA <Player_YHiZ
 
 	; Player_X = 112
 	LDA #112
@@ -227,7 +226,6 @@ PRG027_A151:
 	STA Sound_QMusic1
 
 PRG027_A166:
-	JSR Letter_PaletteKludge	 ; Not sure what this is for; sets up the graphics buffer to patch a single palette color?
 
 PRG027_A169:
 	LDA <Pad_Input
@@ -1036,23 +1034,23 @@ PlayerStand_Frame:
 TAndK_PlayerFallLandDraw:
 	LDY <Player_Suit	; Y = Player's suit
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	CMP #128
 	BLT PRG027_A749	 ; If Player Y < 128, jump to PRG027_A749
 
 	; Player Y > 128...
 
-	LDX <Player_YHi	
+	LDX <Player_YHiZ	
 	BEQ PRG027_A75B	 ; If Player is vertically on-screen, jump to PRG027_A75B
 
 PRG027_A749:
 
 	; +4 to Player Y
 	ADD #$04
-	STA <Player_Y
+	STA <Player_YZ
 
 	BCC PRG027_A752	 ; If no carry, jump to PRG027_A752
-	INC <Player_YHi		 ; Apply carry
+	INC <Player_YHiZ		 ; Apply carry
 PRG027_A752:
 	INC CineKing_Timer2	 ; CineKing_Timer2++
 
@@ -1742,18 +1740,18 @@ InitPals_Per_MapPUp:
 	; Note that the first byte is never actually used.
 	; Also note this should agree with Map_PostJC_PUpPP1/2 in PRG010
 	; See also PRG027 InitPals_Per_MapPUp
-	.byte $FF, $16, $36, $0F	; 0 - Mario default palette
-	.byte $FF, $16, $36, $0F	; 1 - #DAHRKDAIZ SUPER MARIO
-	.byte $FF, $30, $36, $06	; 2 - Fire Flower
-	.byte $FF, $16, $36, $0F	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
-	.byte $FF, $28, $36, $0F	; 4 - Frog Suit
-	.byte $FF, $19, $36, $0F	; 5 - #DAHRKDAIZ Koopa Suit
-	.byte $FF, $30, $27, $0F	; 6 - Hammer Suit
-	.byte $FF, $30, $31, $01	; 7 - #DAHRKDAIZ Ice Mario
-	.byte $FF, $27, $36, $06	; 8 - #DAHRKDAIZ Fire Fox Mario
-	.byte $FF, $30, $31, $01	; 9 - Unused
-	.byte $FF, $06, $30, $0F	; A - #DAHRKDAIZ Boo Mario
-	.byte $FF, $36, $36, $0F	; B - #DAHRKDAIZ Ninja Mario
+	.byte $FF,  $0F, $16, $36	; 0 - Mario default palette
+	.byte $FF,  $0F, $16, $36	; 1 - #DAHRKDAIZ SUPER MARIO
+	.byte $FF,  $06, $30, $36	; 2 - Fire Flower
+	.byte $FF,  $0F, $16, $36	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
+	.byte $FF,  $0F, $28, $36	; 4 - Frog Suit
+	.byte $FF,  $0F, $19, $36	; 5 - #DAHRKDAIZ Koopa Suit
+	.byte $FF,  $0F, $30, $27	; 6 - Hammer Suit
+	.byte $FF,  $01, $30, $31	; 7 - #DAHRKDAIZ Ice Mario
+	.byte $FF,  $06, $27, $36	; 8 - #DAHRKDAIZ Fire Fox Mario
+	.byte $FF,  $01, $30, $31	; 9 - Unused
+	.byte $FF,  $0F, $06, $30	; A - #DAHRKDAIZ Boo Mario
+	.byte $FF,  $0F, $36, $36	; B - #DAHRKDAIZ Ninja Mario
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Setup_PalData

@@ -7,13 +7,13 @@ OBJ_VEGGIEGUY       = $52
 OBJ_SNOWGUY         = $53
 OBJ_SNOWBALL        = $54
 OBJ_SNIFIT          = $55
-OBJ_NINJI           = $5
+OBJ_NINJI           = $56
 OBJ_BIRDO           = $57
 OBJ_PHANTO          = $58
 OBJ_SPARK           = $59
 OBJ_BOBOMB          = $5A
 OBJ_FLOATMINE       = $5B
-
+OBJ_PANSER			= $5C
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51
@@ -27,7 +27,7 @@ OBJ_FLOATMINE       = $5B
     .word ObjInit_Spark ; Object $59
     .word ObjInit_BobOmb ; Object $5A
     .word ObjInit_FloatMine ; Object $5B
-    .word ObjInit_DoNothing ; Object $5C
+    .word ObjInit_Panser ; Object $5C
     .word ObjInit_DoNothing ; Object $5D
     .word ObjInit_DoNothing ; Object $5E
     .word ObjInit_DoNothing ; Object $5F
@@ -51,7 +51,7 @@ OBJ_FLOATMINE       = $5B
 	.word ObjNorm_Spark ; Object $59
 	.word ObjNorm_BobOmb ; Object $5A
 	.word ObjNorm_FloatMine ; Object $5B
-	.word ObjNorm_DoNothing ; Object $5C
+	.word ObjNorm_Panser ; Object $5C
 	.word ObjNorm_DoNothing ; Object $5D
 	.word ObjNorm_DoNothing ; Object $5E
 	.word ObjNorm_DoNothing ; Object $5F
@@ -74,7 +74,7 @@ OBJ_FLOATMINE       = $5B
 	.word Player_GetHurt ; Object $59
 	.word Object_Hold ; Object $5A
 	.word FloatMine_Expload ; Object $5B
-	.word ObjHit_DoNothing ; Object $5C
+	.word Player_GetHurt ; Object $5C
 	.word ObjHit_DoNothing ; Object $5D
 	.word ObjHit_DoNothing ; Object $5E
 	.word ObjHit_DoNothing ; Object $5F
@@ -97,7 +97,7 @@ OBJ_FLOATMINE       = $5B
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $59
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5A
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $5B
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5C
+	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $5C
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5E
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5F
@@ -120,7 +120,7 @@ OBJ_FLOATMINE       = $5B
 	.byte OPTS_SETPT5 | $0A ; Object $59
 	.byte OPTS_SETPT5 | $0A ; Object $5A
 	.byte OPTS_SETPT5 | $1A ; Object $5B
-	.byte OPTS_NOCHANGE ; Object $5C
+	.byte OPTS_SETPT5 | $7E; Object $5C
 	.byte OPTS_NOCHANGE ; Object $5D
 	.byte OPTS_NOCHANGE ; Object $5E
 	.byte OPTS_NOCHANGE ; Object $5F
@@ -224,6 +224,9 @@ ObjP5B:
     .byte $81, $83, $A1, $A3   
 
 ObjP5C:
+	.byte $81, $81, $A1, $A3 ; walk frame 1 petals closed
+	.byte $83, $83, $A1, $A3 ; walk frame 1 petals opened
+
 ObjP5D:
 ObjP5E:
 ObjP5F:
@@ -243,17 +246,24 @@ ObjInit_ShyGuy:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
+	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
-
-	LDA #$01
-	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjNorm_ShyGuy:
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BNE ShyGuy_NotFrozen
+
+	LDA ShyGuy_Holding, X
+	BEQ ShyGuy_NotFrozen
+
+	JSR ShyGuy_ThrowBlockForced
+
+ShyGuy_NotFrozen:	
 	LDA <Player_HaltGameZ
 	BEQ ShyGuy_Norm
 	
@@ -280,6 +290,7 @@ ShGuy_Alive:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	JSR Object_InteractWithObjects
 	JSR Object_FacePlayerOnLanding
 	JSR ShyGuy_FindBlock
 	JSR ShyGuy_GrabBlock
@@ -310,6 +321,10 @@ ShyGuy_NoArms:
 	STA Objects_Frame, X
 
 ShyGuy_Draw:
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BEQ ShyGuy_GroundAnim
+	
 	LDA <Objects_YVelZ, X
 	BPL ShyGuy_GroundAnim
 
@@ -617,6 +632,10 @@ Brick_Burst:
 	JMP Object_Delete
 
 Brick_Coin:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Brick_NoCoin
+	
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA <Coin_X
@@ -624,6 +643,14 @@ Brick_Coin:
 	LDA <Objects_YZ, X
 	ADD #$08
 	STA <Coin_Y
+	JMP Brick_MakeCoin
+
+Brick_NoCoin:	
+	LDA #$FF
+	STA <Coin_X
+	STA <Coin_Y
+
+Brick_MakeCoin:	
 	JSR Produce_Coin
 	JMP Object_Delete
     
@@ -639,15 +666,27 @@ ObjInit_VeggieGuy:
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
 	
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
-	LDA #$01
-	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjNorm_VeggieGuy:
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BNE VeggieGuy_NotFrozenVeggie
+
+	LDA VeggieGuy_Holding, X
+	BEQ VeggieGuy_NotFrozenVeggie
+
+	JSR VeggieGuy_ThrowVeggieForced
+	JMP VeggieGuy_Draw
+
+VeggieGuy_NotFrozenVeggie:	
 	LDA <Player_HaltGameZ
 	BEQ VeggieGuy_Norm
 	
@@ -659,6 +698,8 @@ VeggieGuy_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	JSR Object_EdgeMarch
+	JSR Object_InteractWithObjects
 	JSR Object_FacePlayerOnLanding
 	JSR VeggieGuy_FindVeggie
 	JSR VeggieGuy_GrabVeggie
@@ -694,6 +735,10 @@ VeggieGuy_NoArms:
 	STA Objects_Frame, X
 
 VeggieGuy_DoDraw:
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BEQ VeggieGuy_GroundAnim
+
 	LDA <Objects_YVelZ, X
 	BPL VeggieGuy_GroundAnim
 
@@ -870,6 +915,7 @@ VeggieGuy_ThrowVeggie:
 	CMP #$20
 	BCS VeggieGuy_ThrowVeggieDone
 
+VeggieGuy_ThrowVeggieForced:
 	JSR Object_PrepProjectile
 	BCC VeggieGuy_ThrowVeggieDone
 	
@@ -907,6 +953,14 @@ VeggieGuy_ClearHolding:
 	LDA #$00
 	STA VeggieGuy_Holding, X
 
+	LDA Objects_State, X
+	CMP #OBJSTATE_FROZEN
+	BNE VeggieGuy_ThrowVeggieDone
+
+	LDA #$00
+	STA SpecialObj_XVel, Y
+	STA SpecialObj_YVel, Y
+
 VeggieGuy_ThrowVeggieDone:
 	RTS
     
@@ -924,14 +978,15 @@ ObjInit_SnowGuy:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
+	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP | ATTR_CARRYANDBUMP)
+	STA Objects_BehaviorAttr, X
+
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 
 	LDA Objects_Property, X
 	STA SnowGuy_Holding, X
 
-	LDA #$01
-	STA Objects_Health, X
 	RTS		 ; Return
 
 ObjNorm_SnowGuy:
@@ -946,6 +1001,7 @@ SnowGuy_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	JSR Object_InteractWithObjects
 	JSR Object_FacePlayerOnLanding
 	JSR SnowGuy_FindSnow
 	JSR SnowGuy_GrabSnow
@@ -1263,7 +1319,7 @@ SnowBall_Hit:
 	STA <Player_XVel
 
 	LDA #$D0
-	STA <Player_YVel
+	STA <Player_YVelZ
 	STA <Player_InAir
 
 SnowBall_Burst:
@@ -1991,7 +2047,7 @@ Birdo_HurtOrStand:
 	AND #HITTEST_BOTTOM
 	BEQ Birdo_Hurt
 
-	LDA <Player_YVel
+	LDA <Player_YVelZ
 	BMI Birdo_StandRTS
 
 	LDA Player_BoundBottom
@@ -2001,16 +2057,16 @@ Birdo_HurtOrStand:
 	
 	LDA <Objects_YZ,X	 
 	SUB #$1D
-	STA <Player_Y
+	STA <Player_YZ
 
 	LDA <Objects_YHiZ,X
 	SBC #$00
-	STA <Player_YHi
+	STA <Player_YHiZ
 
 	LDA #$00
 	STA Player_InAir
 	STA PlayerProj_YVelFrac
-	STA <Player_YVel
+	STA <Player_YVelZ
 
 	LDA <Objects_XVelZ, X
 	STA Player_CarryXVel
@@ -2582,7 +2638,7 @@ BobOmb_Norm1:
 	BNE BobOmb_UnstableCheck
 
 	JSR Object_DampenVelocity
-	JSR Object_InteractWithTiles
+	JSR Object_InteractWithTilesWallStops
 	JSR Object_InteractWithPlayer
 	JSR Object_InteractWithObjects
 	
@@ -2967,3 +3023,189 @@ FloatMine_Expload:
 	INC Explosion_Timer, X
 	RTS    	
 	
+ObjInit_Panser:
+	LDA #BOUND16x28
+	STA Objects_BoundBox, X
+
+	LDA #ATTR_STOMPPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #ATTR_WINDAFFECTS
+	STA Objects_BehaviorAttr, X
+
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_MoveTowardsPlayer
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	INC Objects_Regen, x
+
+	JMP Panser_Reset
+
+Panser_AnimateTicks = Objects_Data1
+Panser_WalkTimer	= Objects_SlowTimer
+Panser_FireTimer	= Objects_Data3
+Panser_FireCounter	= Objects_Data4
+
+Panswer_AnimateFlips:
+	.byte $00, SPR_HFLIP
+
+ObjNorm_Panser:
+	LDA <Player_HaltGameZ
+	BEQ Panser_Normal
+
+	JMP Panser_Draw
+
+Panser_Normal:
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Object_AttackOrDefeat
+
+	LDA Panser_WalkTimer, X
+	BNE Panswer_FacePlayerCheck
+
+	JSR Panser_SpitFire
+
+Panswer_FacePlayerCheck:	
+	LDA Objects_Timer, X
+	BNE Panser_Animate
+
+	JSR Object_MoveTowardsPlayer
+
+	LDA #$80
+	STA Objects_Timer, X
+
+Panser_Animate:
+	INC Panser_AnimateTicks, X
+	
+	LDA Panser_AnimateTicks, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Panswer_AnimateFlips, Y
+	STA Objects_Orientation, X
+
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA Panser_WalkTimer, X
+	BNE Panser_Draw
+
+	INC Objects_Frame, X
+
+Panser_Draw:
+	JSR Object_Draw16x32
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Objects_Orientation, X
+	BNE Panser_LeftPetal
+
+; Flip right petal
+	LDA Sprite_RAMAttr + 4, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 4, Y
+	BNE Panser_GreenStem
+
+; Flip left petal:
+Panser_LeftPetal:
+	LDA Sprite_RAMAttr, Y
+	AND #~SPR_HFLIP
+	STA Sprite_RAMAttr, Y
+
+; Turn stem green
+Panser_GreenStem:
+	LDA Sprite_RAMAttr + 8, Y
+	AND #~SPR_PAL3
+	ORA #SPR_PAL2
+	STA Sprite_RAMAttr + 8, Y
+
+	LDA Sprite_RAMAttr + 12, Y
+	AND #~SPR_PAL3
+	ORA #SPR_PAL2
+	STA Sprite_RAMAttr + 12, Y
+
+Panser_DrawRTS:
+	RTS	
+
+Panser_Reset:
+	LDA #$20
+	STA Panser_WalkTimer, X
+
+	LDA #$30
+	STA Panser_FireTimer, X
+
+	LDA Objects_Property, X
+	BEQ Panser_RandomFire
+
+	LDA #$80
+	BNE Panser_InfiniteFire
+
+Panser_RandomFire:
+	LDA RandomN
+	AND #$03
+
+Panser_InfiniteFire:	
+	STA Panser_FireCounter, X
+	RTS	
+
+Panser_SpitFire:
+	DEC Panser_FireTimer, X
+	
+	LDA Panser_FireTimer, X
+	BEQ Panser_Reset
+
+	CMP #$18
+	BNE Panser_SpitFireRTS
+	
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Panser_NoFire
+
+	JSR SpecialObject_FindEmpty
+	BCC Panser_NoFire
+
+	JSR Object_PrepProjectile
+
+	LDA #SOBJ_FIREBLOB
+	STA SpecialObj_ID, Y
+
+	LDA #$01
+	STA SpecialObj_Data1, Y
+
+	LDA <Objects_XZ, X
+	ADD #$04
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA SpecialObj_XHi, Y
+
+	LDA <Objects_YZ, X
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	STA SpecialObj_YHi, Y
+
+	LDA #$A4
+	STA SpecialObj_YVel, Y
+
+Panser_NoFire:
+	DEC Panser_FireCounter, X
+	BMI Panser_SpitFireRTS
+
+	LDA #$50
+	STA Panser_FireTimer, X
+
+Panser_SpitFireRTS:
+	RTS

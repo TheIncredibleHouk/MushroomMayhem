@@ -445,11 +445,11 @@ AScroll_MovePlayer:
 
 	; World 8 tanks only...
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	CMP #$01
 	BNE PRG009_BCBC	 ; If Player is not low, jump to PRG009_BCBC
 
-	LDA <Player_Y
+	LDA <Player_YZ
 	CMP #112
 	BGE PRG009_BCBD	 ; If Player Y >= 112, jump to PRG009_BCBD
 
@@ -695,11 +695,11 @@ PRG009_BDD0:
 	LDA #18	 ; A = 18
 
 PRG009_BDDB:
-	ADC <Player_Y	; Offset to Player's feet
+	ADC <Player_YZ	; Offset to Player's feet
 	AND #$f0	; Align to tile grid
 	STA <Temp_Var9  ; -> Temp_Var9
 
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	ADC #$00	; Apply carry
 	AND #$01	; 0/1 only valid values in non-vertical level
 	STA <Temp_Var3	; -> Temp_Var3

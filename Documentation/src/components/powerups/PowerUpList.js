@@ -31,7 +31,7 @@ const PowerUpList = [
     },
     {
         name: "Fire Flower",
-        description: "Turns Mario in Fire Mario! Pressing B will throw a fireball. Holding Up and pressing B will lob the fireball upwards.\nFireballs can melt some frozen blocks and extengish small fires.",
+        description: "Turns Mario in Fire Mario! Pressing B will throw a fireball. Holding Up and pressing B will lob the fireball upwards.\nFireballs can melt some frozen blocks and create small fires.",
         image: FireFlower,
         example: FireFlowerExample
     },
@@ -49,7 +49,7 @@ const PowerUpList = [
     },
     {
         name: "Koopa Suit",
-        description: "Turns Mario into Koopa Mario! While moving at a high enough speed, pressing Down will cause Mario to go into a spinning shell. This can harm enemies, active blocks and bounce off harmful spikes and Munchers!",
+        description: "Turns Mario into Koopa Mario! While moving at a high enough speed, pressing Down will cause Mario to go into a spinning shell. This can harm enemies, activate blocks and bounce off harmful spikes and Munchers!",
         image: KoopaShell,
         example: KoopaShellExample
     },
@@ -61,7 +61,7 @@ const PowerUpList = [
     },
     {
         name: "Ice Flower",
-        description: "Turns Mario into Ice Mario! Pressing B will throw an iceball. Iceballs can freeze some blocks and also freeze enemies. Frozen enemies can be stood up, picked up and kicked. Iceballs will also freeze the surface of water!",
+        description: "Turns Mario into Ice Mario! Pressing B will throw an iceball. Iceballs can freeze some blocks and also freeze enemies. Frozen enemies can be stood on, picked up and kicked. Iceballs will also freeze the surface of water!",
         image: IceFlower,
         example: IceFlowerExample
     },
@@ -73,7 +73,7 @@ const PowerUpList = [
     },
     {
         name: "Ninja Mushroom",
-        description: "Turns Mario into Ninja Mario! Pressing B will throw a shuriken, which can be thrown in 7 directions. While in the air, pressing against the wall will cause Mario to slide down it slowly. Pressing B while sliding will perform a wall jump!",
+        description: "Turns Mario into Ninja Mario! Pressing B will throw a shuriken, which can be thrown in 7 directions. While in the air, pressing against the wall will cause Mario to slide down it slowly. Pressing A while sliding will perform a wall jump!",
         image: NinjaMushroom,
         example: NinjaMushroomExample
     },

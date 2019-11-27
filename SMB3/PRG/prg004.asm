@@ -407,9 +407,13 @@ Goomba_CheckSpeed:
 	STA <Objects_YVelZ, X
 
 Goomba_MovementCapped:
+	LDA <Objects_XVelZ, X
+	BEQ Goomba_FacePlayer
+
 	LDA DayNight
 	BNE ObjNorm_Goomba1
 
+Goomba_FacePlayer:
 	JSR Object_FacePlayerOnLanding
 
 ObjNorm_Goomba1:
@@ -510,8 +514,44 @@ ObjInit_ParaGoomba:
 	RTS
 
 ObjNorm_ParaGoomba:
-	JSR ObjNorm_Goomba
+	LDA <Player_HaltGameZ
+	BNE ParaGoomba_Draw
 
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Object_InteractWithObjects
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ ParaGoomba_DoFly
+
+	LDA Objects_PreviousTilesDetect, X
+	AND #HIT_GROUND
+	BNE ParaGoomba_DoFly
+
+	JSR Object_MoveTowardsPlayer
+
+ParaGoomba_DoFly:	
+	JSR ParaGoomba_Fly
+
+ParaGoomba_Animate:	
+	INC Goomba_CurrentFrame, X
+	LDA Goomba_CurrentFrame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+
+ParaGoomba_Draw:
+	JSR Object_DrawMirrored
+	JMP ParaGoomba_AnimateWings
+
+ParaGoomba_Fly:
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BEQ ObjNorm_ParaGoomba1
@@ -562,13 +602,13 @@ ObjNorm_ParaGoomba31:
 	JMP ParaGoomba_AnimateWings
 
 ObjNorm_ParaGoomba4:
+	
 	INC Objects_Data3, X
 	LDA Objects_Data3, X
 	CMP #$30
 	BCS ObjNorm_ParaGoomba5
 
 ObjNorm_ParaGoomba41:
-
 	LDA #$F0
 	STA <Objects_YVelZ, X
 
@@ -683,12 +723,118 @@ ObjInit_Troopa:
 Troopa_CurrentFrame = Objects_Data1
 Troopa_FrameOffset = Objects_Data2
 ParaTroopa_WingFrame = Objects_Data3
-
+Troopa_Action = Objects_Data4
+Troopa_BehindTimer = Objects_Data5
 
 ObjNorm_GreenTroopa:
 	LDA <Player_HaltGameZ
-	BEQ Troopa_Norm
+	BEQ Troopa_DoAction
 	JMP Troopa_Draw
+
+Troopa_DoAction:
+	LDA Troopa_Action, X
+	
+	JSR DynJump
+	
+	.word Troopa_Norm
+	.word Troopa_Left
+	.word Troopa_Right
+	.word Troopa_Raise
+	.word Troopa_Drop
+
+Troopa_Raise:
+	LDA Objects_Timer, X
+	BEQ Troopa_PopOut
+
+	CMP #$20
+	BCC Troopa_RaiseDone
+
+	LDA #$F0
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+	JMP Troopa_Animate
+
+Troopa_PopOut:
+	JSR Object_CalcBoundBox
+	JSR Object_MoveTowardsPlayer
+	
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Troopa_Action, X
+
+	LDA #$08
+	STA Troopa_BehindTimer, X
+
+Troopa_RaiseDone:
+	JMP Troopa_Animate
+
+Troopa_Drop:
+	LDA Objects_Timer, X
+	BEQ Troopa_DropDown
+
+	CMP #$28
+	BCC Troopa_DropDone
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	LDA #$10
+	STA <Objects_YVelZ, X
+	JSR Object_ApplyYVel_NoGravity
+	JMP Troopa_Animate
+
+Troopa_DropDown:
+	JSR Object_CalcBoundBox
+	
+	JSR Object_MoveTowardsPlayer
+
+	LDA #$00
+	STA Troopa_Action, X
+
+	LDA #$08
+	STA Troopa_BehindTimer, X
+
+Troopa_DropDone:
+	JMP Troopa_Animate
+
+Troopa_Left:
+	LDA Objects_Timer, X
+	CMP #$10
+	BEQ Troopa_Out
+
+	LDA #$F8
+	STA <Objects_XVelZ, X
+	JSR Object_ApplyXVel
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JMP Troopa_Animate
+
+Troopa_Right:
+	LDA Objects_Timer, X
+	CMP #$0A
+	BEQ Troopa_Out
+
+	LDA #$08
+	STA <Objects_XVelZ, X
+	JSR Object_ApplyXVel
+
+	LDA #SPR_HFLIP
+	STA Objects_Orientation, X
+
+	JMP Troopa_Animate
+
+Troopa_Out:
+	LDA #$00
+	STA Troopa_Action, X
+
+	LDA #$08
+	STA Troopa_BehindTimer, X
+	JMP Troopa_Animate
 
 Troopa_Norm:
 	JSR Object_DeleteOffScreen
@@ -731,6 +877,20 @@ Troopa_Animate:
 	
 
 Troopa_Draw:
+	LDA Troopa_Action, X
+	ORA Troopa_BehindTimer, X
+	BEQ Troopa_NotBehind
+
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA Troopa_BehindTimer, X
+	BEQ Troopa_NotBehind
+
+	DEC Troopa_BehindTimer, X
+
+Troopa_NotBehind:
 	LDA <Objects_YZ, X
 	SUB Troopa_FrameOffset, X	
 	STA <Objects_YZ, X
@@ -1143,6 +1303,7 @@ ObjInit_JumpingCheep:
 	LDA #(ATTR_CARRYANDBUMP | ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
+	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayerFast
 
 JumpingCheep_Prop:
@@ -1221,6 +1382,7 @@ Jumping_Move1:
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
+
 	JSR Object_DetectTiles
 
 	LDA Objects_Property, X
@@ -1324,10 +1486,10 @@ ObjInit_SwimmingCheep:
 	CMP #$06
 	BNE ObjInit_SwimmingCheepRTS
 
-	LDA #$F8
+	LDA #$F9
 	STA ChaseVel_LimitLo, X
 
-	LDA #$08
+	LDA #$07
 	STA ChaseVel_LimitHi, X
 
 ObjInit_SwimmingCheepRTS:
@@ -1361,14 +1523,32 @@ SwimmingCheep_NoDelete:
 	BNE ObjNorm_SwimmingCheep2
 
 ObjNorm_SwimmingCheep1:
-	LDA Object_VertTileProp, X
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_GROUND | HIT_CEILING)
 	BNE ObjNorm_SwimmingCheep2
+
+	LDA Object_VertTileProp, X
+	AND #$F0
+	CMP #TILE_PROP_WATER
+	BEQ ObjNorm_SwimmingCheep2
+
+	CMP #(TILE_PROP_WATER | TILE_PROP_FOREGROUND)
+	BEQ ObjNorm_SwimmingCheep2
 
 	JSR Object_HitCeiling
 
 ObjNorm_SwimmingCheep2:
-	LDA Object_HorzTileProp, X
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BNE ObjNorm_SwimmingCheep3
+
+	LDA Object_HorzTileProp, X
+	AND #$F0
+	CMP #TILE_PROP_WATER
+	BEQ ObjNorm_SwimmingCheep3
+
+	CMP #(TILE_PROP_WATER | TILE_PROP_FOREGROUND)
+	BEQ ObjNorm_SwimmingCheep3
 
 	JSR Object_HitWall
 
@@ -3348,6 +3528,11 @@ ParaPiranha_AnimateWings:
 	STA ParaPiranha_WingTicks, X	
 	
 ParaPiranah_Draw:
+	LDA ParaPiranha_Action, X
+	BNE ParaPiranha_DrawAnyway
+	RTS
+
+ParaPiranha_DrawAnyway:	
 	LDA Objects_SpriteAttributes, X
 	AND #~SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X

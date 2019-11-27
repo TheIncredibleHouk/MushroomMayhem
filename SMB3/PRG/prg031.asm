@@ -3219,7 +3219,7 @@ ChallengeRTS:
 
 	LDA #$F0
 	STA Player_InAir
-	STA <Player_YVel
+	STA <Player_YVelZ
 	BNE Kill_Ctrls
 
 Unfreeze:

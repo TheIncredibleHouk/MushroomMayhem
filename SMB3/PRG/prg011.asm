@@ -4422,6 +4422,10 @@ PRG011_BC00:
 ; that occur on the world maps.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+Map_Y_Starts:
+	; Map Y start positions, World 1-8 (X is always $20)
+	.byte $40, $A0, $A0, $40, $80, $60, $30, $50
+
 Map_AnimCHRROM:
 	; This sets the CHRROM page in use per animation frame (common to all worlds)
 	.byte $70, $72, $74, $76
@@ -4594,7 +4598,6 @@ MapsRoadsAbove:
 	STA [Map_Tile_AddrL],Y
 
 MapsRoadsRight:
-	STA Debug_Snap
 	LDA Block_ChangeX
 	ADD #$10
 	STA Block_ChangeX

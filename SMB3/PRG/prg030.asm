@@ -122,14 +122,7 @@ Video_DoStatusBar:
 Video_DoStatusBarHM:
 	StatusBar $2300
 
-Map_Y_Starts:
-	; Map Y start positions, World 1-8 (X is always $20)
-	.byte $40, $A0, $A0, $40, $80, $60, $30, $50
 
-	; A clear pattern set by Level_Tileset (for use with Clear_Nametable_Short)
-
-
-	.byte $AB, $83, $C6, $83, $CD, $83
 
 	; This single byte is used in plant infestation levels to load the animation counter
 
@@ -155,20 +148,14 @@ SPR_Anim:
 Suit_Anim:
 	.byte $03, $04, $05
 
-PAUSE_Sprites:
-	.byte $58, $F1, $03, $60	; P
-	.byte $58, $F5, $03, $70	; A
-	.byte $58, $F9, $03, $80	; U
-	.byte $58, $FD, $03, $90	; S
-	.byte $58, $FF, $03, $A0	; E
+PAUSE_ResumeSprites:
+	.byte $C1, $C3, $C5, $C7, $C9, $CB, $CD, $CF
+	.byte $C1, $D1, $D3, $D5, $D7, $D9, $DB, $CF
 
-PAUSE_Sprites_End
+PAUSE_ExitSprites:
+	.byte $E1, $F1, $F3, $F5, $F7, $F9, $FB, $EF
+	.byte $E1, $E3, $E5, $E7, $E9, $EB, $ED, $EF
 
-	; The BGM per world (see also World_BGM_Restore in PRG010)
-World_BGM:	
-	.byte MUS2A_WORLD1, MUS2A_WORLD2, MUS2A_WORLD3, MUS2A_WORLD4
-	.byte MUS2A_WORLD5, MUS2A_WORLD6, MUS2A_WORLD7, MUS2A_WORLD8
-	.byte MUS2A_WARPWHISTLE
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; IntReset_Part2
@@ -914,6 +901,7 @@ PRG030_891A:
 	LDY #$80	 ; Y = $80
 	LDA #$00	 ; A = 0
 	STA Level_HorzScrollLock	 ; Level_HorzScrollLock = 0 
+
 PRG030_8975: 
 	STA Player_XHi,Y
 	DEY		 ; Y--
@@ -929,7 +917,7 @@ PRG030_897B:
 
 	JSR LevelLoad			; Load the level layout data!
 	JSR ClearBlockedAreas
-	JSR Fill_Tile_AttrTable_ByTileset	; Load tile attribute tiles by the tileset
+	
 	LDA #$00
 	LDX #$09
 
@@ -937,17 +925,9 @@ CancelSpinners:
 	STA SpinnerBlocksTimers, X
 	STA SpinnerBlocksActive, X
 	STA SpinnerBlocksX, X
+	STA SpinnerBlocksPoof, X
 	DEX
 	BPL CancelSpinners
-
-	;STA Objects_BeingHeld
-	;STA Objects_BeingHeld + 1
-	;STA Objects_BeingHeld + 2
-	;STA Objects_BeingHeld + 3
-	;STA Objects_BeingHeld + 4
-	;STA Objects_BeingHeld + 5
-	;STA Objects_BeingHeld + 6
-	;STA Objects_BeingHeld + 7
 
 	; Scroll_Cols2Upd = 32 (full dirty scroll update sweep)
 	LDA #32
@@ -1120,12 +1100,6 @@ PRG030_8E4F:
 	LDA Level_PauseFlag
 	BNE Graphics_Anim
 
-PRG030_8E50:
-	LDA RhythmPlatformEnabed
-	BEQ Graphics_Anim	
-
-	JSR RhythmPlatforms
-
 Graphics_Anim:
 	LDA <Player_HaltGameZ
 	BNE PRG030_8E5D
@@ -1172,6 +1146,17 @@ PRG030_8E5D:
  
 	BNE PRG030_8E76	 ; If game is now paused, jump to PRG030_8E76
 
+	LDA Pause_Menu
+	BEQ Pause_NoExit
+
+	STA <Level_ExitToMap
+	STA Map_ReturnStatus
+
+	LDA #$00
+	STA Pause_Menu
+	BEQ PRG030_8E79
+
+Pause_NoExit:
 	LDX #PAUSE_RESUMEMUSIC	 ; for Sound_QPause, resume sound
 
 PRG030_8E76:
@@ -1179,22 +1164,69 @@ PRG030_8E76:
 
 PRG030_8E79:
 	LDA Level_PauseFlag
-	BEQ PRG030_8EAD	 	; If not paused, jump to PRG030_8EAD
+	BNE Pause_DoMenu
+	JMP PRG030_8EAD	 	; If not paused, jump to PRG030_8EAD
 
+Pause_DoMenu:
 	; When game is paused...
 	LDA #$32
 	STA PatTable_BankSel+5	; Set patterns needed for P A U S E sprites
 
+	LDA Pad_Input
+	AND #PAD_SELECT
+	BEQ Pause_SelectNotPressed
+
+	LDA #SND_MAPPATHMOVE	 
+	STA Sound_QMap	 
+	
+	LDA Pause_Menu
+	EOR #$01
+	STA Pause_Menu
+
+Pause_SelectNotPressed:	
 	JSR Sprite_RAM_Clear	 ; Clear other sprites
 
-	; Copy in the P A U S E sprites
-	LDY #(PAUSE_Sprites_End - PAUSE_Sprites - 1)
+	LDA #$60
+	STA <Temp_Var1
 
-PRG030_8E9D:
-	LDA PAUSE_Sprites,Y
-	STA Sprite_RAM+$00,Y
-	DEY		 ; Y--
-	BPL PRG030_8E9D	 ; While Y >= 0, loop!
+	LDA Pause_Menu
+	ASL A
+	ASL A
+	ASL A
+	TAX
+
+	LDY #$00
+
+Next_ResumeSprite:
+	LDA PAUSE_ResumeSprites, X
+	STA Sprite_RAMTile, Y
+
+	LDA PAUSE_ExitSprites, X
+	STA Sprite_RAMTile + 4, Y
+	
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 4, Y
+
+	LDA #$50
+	STA Sprite_RAMY, Y	
+
+	LDA #$60
+	STA Sprite_RAMY + 4, Y
+
+	LDA <Temp_Var1
+	STA Sprite_RAMX, Y
+	STA Sprite_RAMX + 4, Y
+	ADD #$08
+	STA <Temp_Var1
+
+	TYA
+	ADD #$08
+	TAY
+	INX
+
+	CPY #$40
+	BNE Next_ResumeSprite
 
 	; Updates palette
 	LDA #$06	 
@@ -1298,25 +1330,46 @@ PRG030_8F31:
 	LDA <Level_ExitToMap
 	BEQ PRG030_8F42	 ; If Level_ExitToMap flag is not set, jump to PRG030_8F42
 
-
 	LDA Map_ReturnStatus
 	BEQ PRG030_8F31_2
 
 	LDA Previous_Coins
 	STA Player_Coins
+
 	LDA Previous_Coins+1
 	STA Player_Coins+1
+
 	LDA Previous_Coins+2
 	STA Player_Coins+2
-	LDA Previous_Coins+3
-	STA Player_Coins+3
+
 	LDA Previous_Cherries
 	STA Cherries
+
 	LDA Previous_Stars
 	STA Magic_Stars
+
 	LDA Previous_Stars+1
 	STA Magic_Stars+1
-	INC Force_Coin_Update
+
+	JSR GetLevelBit
+	
+	LDA Previous_Stars_Collected1
+	STA Magic_Stars_Collected1, Y
+	
+	LDA Previous_Stars_Collected2
+	STA Magic_Stars_Collected2, Y
+	
+	LDA Previous_Stars_Collected3
+	STA Magic_Stars_Collected3, Y
+
+	LDA <Player_IsDying
+	BNE Player_DyingNoSuit
+
+	LDA World_Map_Power
+	STA Player_EffectiveSuit
+	
+Player_DyingNoSuit:	
+	INC Force_StatusBar_Init
 
 PRG030_8F31_2:
 	; Transfer Player's current power up to the World Map counterpart
@@ -1598,7 +1651,7 @@ PRG030_90C4:
 	BNE PRG030_910C	 ; If Player died, jump to PRG030_910C
 
 	; Player did not die...
-
+	JMP PRG030_9128
 	; Toad House and bonuses jump to PRG030_9128
 	LDA Level_Tileset
 	CMP #15
@@ -1651,7 +1704,7 @@ PRG030_910C:
 	LDX Player_Current	 ; X = Player_Current
 
 	; Skid backward
-	LDA #$01
+	LDA #$00
 	STA Map_Player_SkidBack,X
 
 	LDA Map_PlayerLost2PVs
@@ -2020,6 +2073,7 @@ PRG030_933E:
 ; This routine uses sets both A000 and C000 pages based on the active Level_Tileset
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SetPages_ByTileset:	; $94BB
+
 	LDY Level_Tileset	 	; Y = Level_Tileset
 
 	; Change A000 and C000 pages based on Page_A/C000_List
@@ -2066,9 +2120,6 @@ PRG030_94EE:
 	; Jump into SetPages_ByTileset to "correct" the tables back
 	; (mainly A000)
 	JMP SetPages_ByTileset
-
-Fill_Tile_AttrTable_ByTileset:
-	RTS			; Return
 
 	; This LUTs are for the unused-in-US-release "Box out" effect when a level starts
 	
@@ -2701,10 +2752,10 @@ NoXOffset:
 
 	LDA Player_YExit
 	AND #$F0
-	STA <Player_Y
+	STA <Player_YZ
 	LDA Player_YExit
 	AND #$0F
-	STA Player_YHi
+	STA Player_YHiZ
 
 Level_Exit_Set:
 	
@@ -2772,11 +2823,11 @@ DontOffsetX:
 
 	LDA [Temp_Var14], Y
 	AND #$0F
-	STA <Player_YHi
+	STA <Player_YHiZ
 
 	LDA [Temp_Var14], Y
 	AND #$F0
-	STA <Player_Y
+	STA <Player_YZ
 
 Skip_Level_Position:
 	LDY #$06
@@ -4057,13 +4108,13 @@ PRG030_9E6C:
 	; Translates the Player position into appropriate "high" value
 	; as Vertical describes it ($0(00), $0(F0), $1(E0), ...)
 LevelJct_GetVScreenH:
-	; Y = Player_YHi
+	; Y = Player_YHiZ
 	; A = Player_Y
 
 	CPY #$00
 	BLS PRG030_9E8E	 ; If Y < 0 (i.e. if the Player Y High is less than zero, which shouldn't happen!), jump to PRG030_9E8E (RTS)
 
-	ADD PRG030_9E6C,Y	; Player_Y += Player_YHi[Y]
+	ADD PRG030_9E6C,Y	; Player_Y += Player_YHiZ[Y]
 	BCS PRG030_9E8A	 	; If carry set (overflow occurred), jump to PRG030_9E8A
 
 	CMP #$f0	
@@ -4136,7 +4187,8 @@ Tile_YNotOverFlow:
 	INC <Map_Tile_AddrH ; Otherwise, go to second half of screen
 
 PRG030_9EC3:
-	LDA <Temp_Var14
+	LDA <Tile_Y
+	STA Tile_DetectionY
 	AND #$f0
 	ORA <Level_TileOff	 ; Level_TileOff gets the Player's current row in the upper 4 bits
 
@@ -4398,10 +4450,10 @@ Try_Item_Reserve_Release:
 	STA Objects_XZ + 5
 	LDA <Player_XHi
 	STA Objects_XHiZ + 5
-	LDA <Player_Y
+	LDA <Player_YZ
 	SUB #$08
 	STA Objects_YZ + 5
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	SBC #$00
 	STA Objects_YHiZ + 5
 	
@@ -4612,13 +4664,13 @@ ClearPointerLoop:
 	RTS
 
 SetProperScroll:
-	LDA <Player_Y
+	LDA <Player_YZ
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA DAIZ_TEMP1
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	ASL A
 	ASL A
 	ASL A
@@ -5002,13 +5054,13 @@ Find_Applicable_Pointer:
 	ASL A
 	ORA <Temp_Var1
 	STA <Temp_Var2
-	LDA <Player_Y
+	LDA <Player_YZ
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var1
-	LDA <Player_YHi
+	LDA <Player_YHiZ
 	ASL A
 	ASL A
 	ASL A
@@ -5591,10 +5643,10 @@ RhythmPlatforming:
 RhythmGraphics:
 	.byte $60, $62, $64, $66
 
-RhythmSet1:
+RhythmDelay:
 	.byte $00, $5F, $90, $82, $00, $00, $00, $00, $80, $5F, $00
 
-RhythmSet2:
+RhythmMeasures:
 	.byte $00, $18, $23, $1E, $00, $00, $00, $00, $20, $18, $00
 
 RhythmSet3:
@@ -5610,6 +5662,9 @@ RhythmPlatformsReset:
 	STA RhythmKeeper + 4
 
 RhythmPlatforms:
+	LDA RhythmPlatformEnabed
+	BEQ RhythmPlatforms0
+
 	LDX #$00
 
 	LDA SndCur_Music2
@@ -5630,11 +5685,11 @@ DoNotStoreRhythmMusic:
 	LSR A
 	TAX
 
-	LDA RhythmSet1, X
+	LDA RhythmDelay, X
 	BEQ RhythmPlatforms0
 
 	LDA RhythmKeeper
-	CMP RhythmSet1, X
+	CMP RhythmDelay, X
 	BEQ RhythmPlatforms1
 
 	INC RhythmKeeper
@@ -5644,7 +5699,7 @@ RhythmPlatforms0:
 
 RhythmPlatforms1:
 	LDA RhythmKeeper + 1
-	CMP RhythmSet2, X
+	CMP RhythmMeasures, X
 	BEQ RhythmPlatforms2
 
 	INC RhythmKeeper + 1
@@ -5694,6 +5749,9 @@ RhythmSwitchPlatforms:
 
 	LDA <Temp_Var1
 	STA TileProperties + $F0, X
+	
+	LDA #$01
+	STA Block_WasUpdated
 
 	DEX
 	BPL RhythmSwitchPlatforms
@@ -5742,7 +5800,7 @@ Player_Die:
 	STA Player_QueueSuit	 ; Queue change to "small"
 
 	LDA #-64
-	STA <Player_YVel ; Player_YVel = -64
+	STA <Player_YVelZ ; Player_YVelZ = -64
 
 	LDA #$30	 
 	STA Event_Countdown ; Event_Countdown = $30 (ticks until dropped back to map)
@@ -5751,6 +5809,39 @@ Player_Die:
 	STA <Player_IsDying	 ; Player_IsDying = 1
 
 	RTS		 ; Return
+
+Point_MidX = Temp_Var8
+Point_MidXHi = Temp_Var9
+Point_X = Temp_Var10
+Point_XHi = Temp_Var11
+Point_Y = Temp_Var12
+Point_YHi = Temp_Var13
+Point_RelativeX = Temp_Var14
+Point_RelativeY = Temp_Var15
+
+CheckPoint_OffScreen:
+	LDA <Point_X
+	SUB <Horz_Scroll
+	STA <Point_RelativeX
+
+	LDA <Point_XHi
+	SBC <Horz_Scroll_Hi
+	BNE Point_OffScreen
+
+	LDA <Point_Y
+	SUB <Vert_Scroll
+	STA <Point_RelativeY
+
+	LDA <Point_YHi
+	SBC <Vert_Scroll_Hi
+	BNE Point_OffScreen
+
+	SEC
+	RTS
+
+Point_OffScreen:
+	CLC
+	RTS	
 
 Tile_WriteTempChange:
 	JSR Common_GetTempTile
@@ -5781,5 +5872,40 @@ Tile_WriteTempChange:
 	RTS
 
 Tile_WriteTempChangeRTS:
-	CLC
 	RTS
+
+
+Objects_AssignSprites:
+	LDA #$30
+	STA <Temp_Var1
+
+	LDA Game_Counter
+	STA <Temp_Var2
+	
+	LDY #$07
+
+DistributeSprites:
+	LDA <Temp_Var2
+	AND #$07
+	TAX
+
+	LDA Objects_State, X
+	BEQ DistributeNextSprite
+
+	LDA <Temp_Var1
+	STA Object_SpriteRAMOffset, X
+	
+	LDA Objects_SpritesRequested, X
+	ASL A
+	ASL A
+	ADD <Temp_Var1
+	STA <Temp_Var1
+
+DistributeNextSprite:	
+	INC <Temp_Var2
+	DEY 
+	BPL DistributeSprites
+
+	LDA <Temp_Var1
+	STA Sprite_FreeRAM
+	RTS	

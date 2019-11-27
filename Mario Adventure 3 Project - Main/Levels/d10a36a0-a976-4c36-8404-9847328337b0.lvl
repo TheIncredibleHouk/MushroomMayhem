@@ -11,9 +11,8 @@
     <sprite x="9" y="10" value="126" item="0" property="0" replaced="false" />
     <sprite x="38" y="15" value="5" item="0" property="0" replaced="false" />
     <sprite x="13" y="25" value="12" item="0" property="0" replaced="false" />
-    <sprite x="61" y="16" value="126" item="0" property="0" replaced="false" />
-    <sprite x="29" y="1" value="135" item="0" property="0" replaced="false" />
-    <sprite x="45" y="24" value="136" item="0" property="0" replaced="false" />
+    <sprite x="60" y="11" value="133" item="0" property="2" replaced="false" />
+    <sprite x="39" y="3" value="133" item="0" property="3" replaced="false" />
     <sprite x="87" y="26" value="7" item="0" property="2" replaced="false" />
     <sprite x="104" y="10" value="136" item="0" property="1" replaced="false" />
     <sprite x="122" y="26" value="7" item="0" property="2" replaced="false" />
@@ -23,5 +22,5 @@
     <sprite x="142" y="3" value="14" item="0" property="0" replaced="false" />
     <sprite x="91" y="1" value="5" item="0" property="0" replaced="false" />
   </spritedata>
-  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Selection" editmode="Tiles" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
+  <settings showgrid="false" specialtiles="false" specialsprites="false" blockproperties="false" showstart="true" zoom="false" drawmode="Pencil" editmode="Sprites" mousemode="RightClickSelection" layout="0" vguidecolor="0,0,255" hguidecolor="255,0,0" itemtransparency="0.75" propertytransparency="0.75" showpointers="true" />
 </level>
