@@ -4533,18 +4533,22 @@ DoNightTransition:
 	LDA <Counter_1
 	AND #$03
 	BNE NightTransRTS
+
 	LDA NightTransition
 	CMP #$01
 	BEQ FinalNightTransition
+
 	ASL A
 	ASL A
 	ASL A
 	ASL A
 	STA DAIZ_TEMP1
+
 	LDA #$40
 	SEC
 	SBC DAIZ_TEMP1
 	STA DAIZ_TEMP1
+	
 	LDA MasterPal_Data
 	SEC
 	SBC DAIZ_TEMP1

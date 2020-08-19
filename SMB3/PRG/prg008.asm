@@ -550,8 +550,6 @@ PRG008_A473:
 	JSR Player_Draw29	 	; ... and if you get through all that, draw the Player!!
 	JSR Player_Events
 
-	LDA #$00
-	STA Player_XVelAdj	 ; Player_XVelAdj = 0
 
 	RTS		 ; Return
 

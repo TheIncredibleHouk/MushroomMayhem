@@ -1460,6 +1460,26 @@ IntNMI:
 	LDA <Temp_Var3
 	PHA
 
+	LDA StatusBar_Recolored
+	BEQ No_Pal_Restore
+
+	LDA #$3F
+	STA PPU_VRAM_ADDR
+
+	LDA #$01
+	STA PPU_VRAM_ADDR
+	STA StatusBar_Recolored
+
+	LDA Pal_Data + 1
+	STA PPU_VRAM_DATA
+
+	LDA Pal_Data + 2
+	STA PPU_VRAM_DATA
+
+	LDA Pal_Data + 3
+	STA PPU_VRAM_DATA
+
+No_Pal_Restore:
 	JMP PRG030_SUB_9F40	 ; Jump to PRG030_SUB_9F40
 
 PRG031_F499:
@@ -2034,18 +2054,28 @@ IntIRQ_Vertical:
 
 	CMP #$00	 ; 
 	BEQ PRG031_F871	 ; If tileset = 0 (World map), go to PRG031_F871
-	CMP #17
-	BEQ PRG031_F871	 ; If tileset = 17 (N-Spade), go to PRG031_F871
+	
 
 	; Unknown hardware thing?  Is this for synchronization?
-	LDA #$00
-	STA PPU_VRAM_ADDR
-	LDA #$00
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
 
 	STX PPU_CTL2	 ; Sprites + BG invisible
+
+	LDA #$3F
+	STA PPU_VRAM_ADDR
+	STA StatusBar_Recolored
+
+	LDA #$01
+	STA PPU_VRAM_ADDR
+
+	LDA #$0F
+	STA PPU_VRAM_DATA
+
+	LDA #$30
+	STA PPU_VRAM_DATA
+
+	LDA #$11
+	STA PPU_VRAM_DATA
+
 	LDA PPU_STAT	 ; 
 
 	; Because vertical scroll will not change after frame begins (second write to
@@ -2054,8 +2084,10 @@ IntIRQ_Vertical:
 	; at to where we would like it to be...
 	; In this case, the location of the beginning of the status bar!
 	STY PPU_VRAM_ADDR	 ; This is $0B unless tileset = $11, which it is then $03
+
 	LDA #$00
 	STA PPU_VRAM_ADDR	; ... so we're now reading at $1100 or $0300
+
 	LDA PPU_VRAM_DATA
 
 	; Load status bar graphics and hide any sprites from appearing over the status bar
@@ -2063,32 +2095,37 @@ IntIRQ_Vertical:
 	; Load two parts of Status Bar
 	LDA #MMC3_2K_TO_PPU_0000
 	STA MMC3_COMMAND
+
 	LDA StatusBarCHR_0000
 	STA MMC3_PAGE
+
 	LDA #MMC3_2K_TO_PPU_0800
 	STA MMC3_COMMAND
+
 	LDA StatusBarCHR_0800
 	STA MMC3_PAGE
+
 	LDA #MMC3_1K_TO_PPU_1000
 	STA MMC3_COMMAND
 
+
 	; Use blank tiles for all sprite graphics
-	LDA SpriteHideCHR_1000
-	STA MMC3_PAGE
-	LDA #MMC3_1K_TO_PPU_1400
-	STA MMC3_COMMAND
-	LDA SpriteHideCHR_1400
-	STA MMC3_PAGE
-	LDA #MMC3_1K_TO_PPU_1800
-	STA MMC3_COMMAND
+	;LDA SpriteHideCHR_1000
+	;STA MMC3_PAGE
+	;LDA #MMC3_1K_TO_PPU_1400
+	;STA MMC3_COMMAND
+	;LDA SpriteHideCHR_1400
+	;STA MMC3_PAGE
+	;LDA #MMC3_1K_TO_PPU_1800
+	;STA MMC3_COMMAND
 	LDA #$08	 ; 
 	STA PPU_CTL2	 ; Sprites + BG now visible
-	LDA SpriteHideCHR_1800
-	STA MMC3_PAGE	
-	LDA #MMC3_1K_TO_PPU_1C00
-	STA MMC3_COMMAND	
-	LDA SpriteHideCHR_1C00
-	STA MMC3_PAGE
+	;LDA SpriteHideCHR_1800
+	;STA MMC3_PAGE	
+	;LDA #MMC3_1K_TO_PPU_1C00
+	;STA MMC3_COMMAND	
+	;LDA SpriteHideCHR_1C00
+	;STA MMC3_PAGE
 	 
 	JMP PRG031_F8B3
 
@@ -2195,14 +2232,18 @@ PRG031_F8E0:
 	; Load two parts of Status Bar
 	LDA #MMC3_2K_TO_PPU_0000
 	STA MMC3_COMMAND
+
 	LDA StatusBarCHR_0000
 	STA MMC3_PAGE	
+
  	LDA #MMC3_2K_TO_PPU_0800
 	STA MMC3_COMMAND
+
 	LDA StatusBarCHR_0800
 	LDX StatusBar_Mode
 	CPX #$80
 	BNE DoSwitchOut
+	
 	LDA #$58
 
 DoSwitchOut:
@@ -2211,22 +2252,30 @@ DoSwitchOut:
 	STA MMC3_COMMAND
 
 	; Use blank tiles for all sprite graphics
-	LDA SpriteHideCHR_1000	
-	STA MMC3_PAGE
-	LDA #MMC3_1K_TO_PPU_1400
-	STA MMC3_COMMAND
-	LDA SpriteHideCHR_1400
-	STA MMC3_PAGE
-	LDA #MMC3_1K_TO_PPU_1800
-	STA MMC3_COMMAND
-	LDA SpriteHideCHR_1800	
-	STA MMC3_PAGE
-	LDA #MMC3_1K_TO_PPU_1C00
-	STA MMC3_COMMAND
-	LDA SpriteHideCHR_1C00	
-	STA MMC3_PAGE
+	;LDA SpriteHideCHR_1000	
+	;STA MMC3_PAGE
 
-	JMP PRG031_F997	 ; Jump to PRG031_F997
+	;LDA #MMC3_1K_TO_PPU_1400
+	;STA MMC3_COMMAND
+
+	;LDA SpriteHideCHR_1400
+	;STA MMC3_PAGE
+
+	;LDA #MMC3_1K_TO_PPU_1800
+	;STA MMC3_COMMAND
+
+	;LDA SpriteHideCHR_1800	
+	;STA MMC3_PAGE
+
+	;LDA #MMC3_1K_TO_PPU_1C00
+	;STA MMC3_COMMAND
+
+	;LDA SpriteHideCHR_1C00	
+	;STA MMC3_PAGE
+	LDA #$10	 ; A | 18 (BG + SPR)
+	STA PPU_CTL2	 ; Sprites/BG are visible
+
+	JMP PRG031_F998	 ; Jump to PRG031_F997
 
 PRG031_F955:
 	; World Map and Toad House alternate (but not N-Spade?)
@@ -2236,34 +2285,46 @@ PRG031_F955:
 	; Load two parts of Status Bar
 	LDA #MMC3_2K_TO_PPU_0000
 	STA MMC3_COMMAND
+
 	LDA StatusBarMTCHR_0000
 	STA MMC3_PAGE
+
 	LDA #MMC3_2K_TO_PPU_0800
 	STA MMC3_COMMAND
+
 	LDA StatusBarMTCHR_0800
 	STA MMC3_PAGE
 
 	; Load sprite graphics appropriate for World Map / Toad House / N-Spade
 	LDA #MMC3_1K_TO_PPU_1000
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1000
 	STA MMC3_PAGE
+
 	LDA #MMC3_1K_TO_PPU_1400
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1400
 	STA MMC3_PAGE
+
 	LDA #MMC3_1K_TO_PPU_1800
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1800
 	STA MMC3_PAGE
+
 	LDA #MMC3_1K_TO_PPU_1C00
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1C00
 	STA MMC3_PAGE
 
 PRG031_F997:
 	LDA #$18	 ; A | 18 (BG + SPR)
 	STA PPU_CTL2	 ; Sprites/BG are visible
+
+PRG031_F998:	
 	LDA <PPU_CTL1_Copy	 ; PPU_CTL1 copy
 	ORA #$01	 ; Force $2400 nametable address
 	STA PPU_CTL1	 ; Set it in the register
@@ -3018,18 +3079,24 @@ Increase_Game_Timer:
 
 	LDA #$00
 	STA DayNightMicroTicker
+
 	INC DayNightTicker
+
 	LDA DayNightTicker
 	CMP #$0C
 	BNE DoGameTimer
+
 	LDA #$00
 	STA DayNightTicker
+
 	LDA DayNight
 	EOR #$FF
 	STA DayNight
 	BNE DoNightTrans
+
 	LDA DayNightActive
 	BEQ DoGameTimer
+
 	LDA #$03
 	STA DayTransition
 	JMP DoGameTimer
@@ -3037,6 +3104,7 @@ Increase_Game_Timer:
 DoNightTrans:
 	LDA DayNightActive
 	BEQ DoGameTimer
+
 	LDA #$03
 	STA NightTransition
 

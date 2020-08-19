@@ -2940,7 +2940,6 @@ Object_Draw16x48:
 ; Draws a wide 48x16 object
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Object_Draw48x16:
-	STA Debug_Snap
 	JSR Object_ShakeAndCalcSprite
 
 	LDX <CurrentObjectIndexZ	; X = object slot index

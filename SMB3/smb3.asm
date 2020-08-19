@@ -1276,7 +1276,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Fade_Level:		.ds 1	; 4 to 0, fade in level
 	FadeOut_Cancel:		.ds 1	; If set, the next attempted fade out will be cancelled, which then resets this to zero
 	Player_AllowAirJump:	.ds 1	; Counts down to zero, but while set, you can jump in the air
-	Player_XVelAdj:		.ds 2	; Applies additional value to the X Velocity
+	StatusBar_Recolored: .ds 1
 
 	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Data3 first byte)
 
