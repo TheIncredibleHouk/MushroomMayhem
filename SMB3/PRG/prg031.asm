@@ -1447,11 +1447,22 @@ IntNMI:
 	; This pushes all the registers onto the stack
 	PHP		 ; Push processor status onto stack
 	PHA		 ; Push accumulator onto stack
+	
+	LDA Ignore_VBlank
+	BEQ Continue_VBlank
+
+	STA Debug_Snap
+	PLA
+	PLP
+	CLI
+	RTI
+
+Continue_VBlank:
 	TXA		 ; Reg X -> A
 	PHA		 ; Push A (X) onto stack
 	TYA		 ; Reg Y -> A
 	PHA		 ; Push A (Y) onto stack
-
+	
 	; Push the three temp vars onto the stack 
 	LDA <Temp_Var1
 	PHA
@@ -1507,13 +1518,13 @@ PRG031_F4B3:
 	; Update_Select activity begin...
 
 	LDA Update_Select	 ; Get the Update_Select value
-	CMP #$80	 ; 
-	BNE PRG031_F4BD	 ; If Update_Select <> $80 (Purely vertical level), jump to PRG031_F4BD
-	JMP UpdSel_Vertical	 ; Otherwise, jump to UpdSel_Vertical
+;	CMP #$80	 ; 
+;	BNE PRG031_F4BD	 ; If Update_Select <> $80 (Purely vertical level), jump to PRG031_F4BD
+;	JMP UpdSel_Vertical	 ; Otherwise, jump to UpdSel_Vertical
 
 PRG031_F4BD: 
-	CMP #$40	 ; 
-	BNE PRG031_F4C4	 ; If Update_Select <> $40 (Spade Game), jump to PRG031_F4C4
+;	CMP #$40	 ; 
+;	BNE PRG031_F4C4	 ; If Update_Select <> $40 (Spade Game), jump to PRG031_F4C4
 
 PRG031_F4C4:
 	CMP #$00	 ; 
@@ -2917,7 +2928,7 @@ Clear_Nametable:	; $FDC7:
 	STA PPU_VRAM_ADDR	; $00 as low byte for VRAM address (Reset_PPU_Clear_Nametables selects nametable 1 or 2)
 
 	; This writes over the entire selected name table and attribute table with $FC
-	LDX #$04	 ; X = $04
+	LDX #$03	 ; X = $04
 	LDY #$00	 ; Y = $00
 	LDA #$fc	 ; A = $FC
 PRG031_FDE1:

@@ -2109,9 +2109,11 @@ PRG010_CEF4:
 	LDA <World_Map_Y,X	 
 	ADD MapMove_DeltaY,Y
 	STA <World_Map_Y,X
+
 	LDA <World_Map_X,X
 	ADD MapMove_DeltaX,Y
 	STA <World_Map_X,X
+
 	LDA <World_Map_XHi,X
 	ADC MapMove_DeltaXHi,Y	
 	STA <World_Map_XHi,X
@@ -2137,7 +2139,7 @@ PRG010_CEF4:
 
 WorldMap_UpdateAndDraw:
 	JSR FindLevelInfo
-	JSR UpdateLevel
+	JSR UpdateLevelName
 
 	LDY Player_Current 	; Y = Player_Current
 
@@ -3031,57 +3033,45 @@ FindLevelInfo2:
 UpdateLevelRTS:	
 	RTS
 
-UpdateLevel:
-	LDY #$00
-	LDA StatusBar_Mode
-	BNE UpdateLevel1
-
+UpdateLevelName:
+	LDX Graphics_BufCnt
+	BNE UpdateLevelName_LoopRTS
+	
 	LDA LevelNumber
-	CMP Previous_Map_Level
-	BEQ UpdateLevelRTS
+	CMP PreviousLevelNumber
+	BEQ UpdateLevelName_LoopRTS
 
-	STA Previous_Map_Level
+	STA PreviousLevelNumber
+
+	LDA #$2B
+	STA Graphics_Buffer, X
 	
-	JSR GetLevelBit
-	PHA
+	LDA #$63
+	STA Graphics_Buffer + 1, X
 	
-	LDX #$D6
-	AND Magic_Stars_Collected1, Y
-	BEQ UpdateLevelA1
-	INX
+	LDA #$1A
+	LDY #$00
+	STA Graphics_Buffer + 2, X
 
-UpdateLevelA1:
-	STX Status_Bar_Top + 15
-	LDX #$D6
-	PLA
-	PHA
-	AND Magic_Stars_Collected2, Y
-	BEQ UpdateLevelA2
-	INX
+UpdateLevelName_Loop:
+	LDA LevelName,Y	; Get next byte from StatusBar_UpdTemplate
+	STA Graphics_Buffer + 3,X		; Store it into the graphics buffer
 
-UpdateLevelA2:
-	STX Status_Bar_Top + 16
-	LDX #$D6
-	PLA
-	AND Magic_Stars_Collected3, Y
-	BEQ UpdateLevelA3
-	INX
+	INY				; Y++
+	INX				; X++
+	CPY #$1A
+	BNE UpdateLevelName_Loop	 		
 
-UpdateLevelA3:
-	STX Status_Bar_Top + 17
-	INC Top_Needs_Redraw
+	LDA #$00
+	STA Graphics_Buffer + 3, X
+	
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$1F
+	STA Graphics_BufCnt
+
+UpdateLevelName_LoopRTS:	
 	RTS
-
-UpdateLevel1:
-	LDA LevelName, Y
-	STA Status_Bar_Bottom, Y
-	INY
-	CPY #28
-	BNE UpdateLevel1
-
-	INC Bottom_Needs_Redraw
-	RTS
-
 
 DrawMapBackground:
 	LDA World_Num

@@ -75,38 +75,44 @@ StatusBar	.macro
 	.byte $02, $FC, $80		; Upper left corner
 
 	vaddr \1 + $02
-	.byte VU_REPEAT | $12, $81	; Bar across the top
+	.byte VU_REPEAT | $1C, $81	; Bar across the top
 
-	vaddr \1 + $14
-	.byte $0C, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $82, $FC	; TOP CARD NORMAL
+	vaddr \1 + $1E
+	.byte $02, $82, $FC		; Upper left corner
 
-	;TOP AREA FILLER
+;------
 	vaddr \1 + $20
-	.byte $20, $FE, $90, $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E9, $E9, $E9, $E9	; [M/L]x  000000 c000| etc.
-	.byte $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $83, $FE, $FE, $83, $FE, $FE, $92, $FC
+	.byte $02, $FC, $90		; Upper left corner
 
-	;BOTTOM AREA FILLER
+
+	vaddr \1 + $3E
+	.byte $02, $92, $FC		; Upper left corner
+
+;------
 	vaddr \1 + $40
-	.byte $20, $FE, $90, $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30	; [M/L]x  000000 c000| etc.
-	.byte $FE, $D3, $30, $30, $30, $FE, $D5, $30, $30, $93, $FE, $FE, $93, $FE, $FE, $92, $FC
+	.byte $02, $FC, $90		; Upper left corner
 
-	; Sync next three with PRG026 Flip_BottomBarCards
+
+	vaddr \1 + $5E
+	.byte $02, $92, $FC		; Upper left corner	
+
+;------
+
 	vaddr \1 + $60
-	.byte $02, $FC, $A0	; Lower corner
+	.byte $03, $FC, $90, $FE		; Upper left corner
 
-	vaddr \1 + $62
-	.byte VU_REPEAT | $12, $A1	; Bottom bar
+	vaddr \1 + $7D
+	.byte $03, $FE, $92, $FC		; Upper left corner	
 
-	vaddr \1 + $74
-	.byte $0C, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A1, $A2, $FC	; BOTTOM CARD NORMAL
-
-	; End PRG026 sync
-
+;----	
 	vaddr \1 + $80
-	.byte VU_REPEAT | $20, $FC	; black space
+	.byte $02, $FC, $A0		; Upper left corner
 
-	vaddr \1 + $A0
-	.byte VU_REPEAT | $20, $FC	; black space
+	vaddr \1 + $82
+	.byte VU_REPEAT | $1C, $A1	; Bar across the top
+
+	vaddr \1 + $9E
+	.byte $02, $A2, $FC		; Upper left corner	
 
 	; Terminator
 	.byte $00
@@ -213,8 +219,6 @@ PRG030_845A:
 	JSR Scroll_PPU_Reset	 
 	JSR Reset_PPU_Clear_Nametables
 	
-	LDA #$01
-	STA Last_StatusBar_Mode
 
 	; Load title screen graphics
 	LDA #$78
@@ -966,7 +970,12 @@ PRG030_8B03:
 	LDA #$00		 ; A = 0 (Graphics buffer push)
 	JSR Video_Do_Update	 ; Push through what's in graphics buffer
 
+	INC Ignore_VBlank
+	
 	JSR Scroll_Dirty_Update	 ; Entering level, do dirty update
+
+	LDA #$00
+	STA Ignore_VBlank
 
 	; Changes pages at A000 and C000 to 26 and 6, respectively
 	LDA #6
@@ -2582,6 +2591,7 @@ LevelLoad:	; $97B7
 	STA Level_Jct_VS
 
 LevelLoadQuick:
+	
 	LDA #$6
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
@@ -2941,12 +2951,15 @@ SetDNActive:
 LoadName:
 	LDA Level_JctCtl
 	BNE SkipNameLoad
+
 	LDA [Temp_Var14], Y
 	STA LevelName, X
 	INY
 	INX
 	CPX #28
 	BNE LoadName
+s
+	STA Update_Level_Name
 
 SkipNameLoad:
 	LDA TempY
@@ -3350,8 +3363,8 @@ TileLayoutPage_ByTileset:
 ; (Though it does call the same routine USED for scrolling)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Scroll_Dirty_Update:
-	LDA Level_7Vertical
-	BNE PRG030_9B10	 	; If level is vertical, jump to PRG030_9B10
+	;LDA Level_7Vertical
+	;BNE PRG030_9B10	 	; If level is vertical, jump to PRG030_9B10
 
 	; Non-vertical level
 	LDX <Scroll_LastDir	; X = Scroll_LastDir
@@ -3475,7 +3488,6 @@ PRG030_9B66:
 	LDA #$00
 	STA <Vert_Scroll	; Vert_Scroll = 0
 	STA <Scroll_VertUpd	; Scroll_VertUpd = 0
-
 	RTS		 ; Return
 
 

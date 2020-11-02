@@ -2890,7 +2890,7 @@ AIR_INCREASE	= 3
 	StatusBar_Mode:	.ds 1	; Indicates what status bar information should be displayed
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
-	Last_StatusBar_Mode: .ds 1;
+	Update_Level_Name: .ds 1;
 	Game_Coins:				.ds 3; over all coins collected
 	Odometer:				.ds 3; over all distance traveled
 	Game_Timer:				.ds 6; over all time spent in the game
@@ -3122,7 +3122,6 @@ PLAYER_POOF			= 05
 	Roulette_Lives:			; Number of lives you are rewarded from winning the Roulette (NOTE: Shared with first byte of Objects_IsGiant)
 
 	;#FREERAM
-	StatusBar_Ticker:	.ds 1
 	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
 	Slow_Watch:			.ds 1	;
@@ -3140,29 +3139,26 @@ PLAYER_POOF			= 05
 	MasterPal_Data:		.ds 16	; keeps track of the unmodified, original palette
 	LevelLoadPointer:	.ds 1	;
 	LevelNumber:		.ds 1	;
+	PreviousLevelNumber: .ds 1;
 	PaletteIndex:		.ds 1	;
 	Pointers:			.ds 60	;
-	UseAltEntrance:		.ds 1
 	WorldWidth:			.ds 1
 	Magic_Stars_Collected1: .ds 16 ;
 	Magic_Stars_Collected2:	.ds 16
 	Magic_Stars_Collected3:	.ds 16
 	Levels_Complete:    .ds 16	;
-	StarLevel:			.ds 1
 	MiscValue2:			.ds 1
 	MiscValue3:			.ds 1
-	KoopaKidType:		.ds 1
-	PriorityCheckType:	.ds 1
 	TempX:				.ds 1
 	TempY:				.ds 1
 	TempA:				.ds 1;
 	Objects_Global:		.ds 8
-	JustTileFlag:		.ds 1
 	AlignSpriteFlag:	.ds 1
 	JustName:			.ds 1
 	LastHorzScroll:		.ds 1
 	LastHorzScrollHi:	.ds 1
 	ExtraData:			.ds 5
+	Ignore_VBlank:		.ds 1
 
 	; Tile map property flags
 MAP_PROP_BOUNDARY		= $00

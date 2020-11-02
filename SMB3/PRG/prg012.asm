@@ -35,10 +35,6 @@ PointerFound:
 
 	LDA #$00
 	STA Level_KeepObjects
-
-	LDA MapPointers+2,X
-	AND #$80
-	STA UseAltEntrance
 	RTS
 
 PointerNotFound:

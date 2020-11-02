@@ -4189,34 +4189,34 @@ PRG008_BFD3:
 	LDA <Player_XHi,X
 	ADC <Temp_Var13	
 	STA <Player_XHi,X
-	CPX #$00
-	BNE No_Odo_Increase
+;	CPX #$00
+;	BNE No_Odo_Increase
 
-	LDY #$00
-	LDA Previous_X
-	SEC
-	SBC Player_X
-	BEQ No_Odo_Increase
-	BPL Dont_Flip
+;	LDY #$00
+;	LDA Previous_X
+;	SEC
+;	SBC Player_X
+;	BEQ No_Odo_Increase
+;	BPL Dont_Flip
 
-	INY
+;	INY
 
-	EOR #$FF
-	CLC
-	ADC #$01
+;	EOR #$FF
+;	CLC
+;	ADC #$01
 
-Dont_Flip:
-	CLC
-	ADC Odometer_Increase
-	STA Odometer_Increase
+;Dont_Flip:
+;	CLC
+;	ADC Odometer_Increase
+;	STA Odometer_Increase
 	
-	LDA Player_ForcedSlide
-	ORA Player_Shell
-	BNE No_Odo_Increase
+;	LDA Player_ForcedSlide
+;	ORA Player_Shell
+;	BNE No_Odo_Increase
 
-	STY Player_PrevXDirection
+;	STY Player_PrevXDirection
 
-No_Odo_Increase:
+;No_Odo_Increase:
 	RTS		 ; Return
 
 

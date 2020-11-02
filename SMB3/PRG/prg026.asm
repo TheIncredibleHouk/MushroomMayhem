@@ -98,17 +98,22 @@ InvFlip_VAddrLo_LUT:
 
 Inventory_Close:
 	LDX Graphics_BufCnt		; X = current position in graphics buffer
+	
 	LDA InvFlip_VAddrHi		; A = VRAM High Address
 	STA Graphics_Buffer,X		; Store into the buffer
+	
 	LDY InvFlip_Frame	 	; Y = InvFlip_Frame
+	
 	LDA InvFlip_VAddrLo_LUT,Y	; Get appropriate low byte for video address
 	STA Graphics_Buffer+1,X	 	; Store into the buffer
 
 	; This is data in the style of the Video_Upd_Table; see "Video_Upd_Table" in PRG030 for format.
 	LDA #VU_REPEAT | 32 	
 	STA Graphics_Buffer+2,X		; Repeat 32 times
+
 	LDA #$fc	 	
 	STA Graphics_Buffer+3,X		; Tile $FC
+
 	LDA #$00	 	
 	STA Graphics_Buffer+4,X		; Terminator
 
@@ -1956,12 +1961,16 @@ PRG026_B2F9:
 	; Push 5 blocks in
 	LDA Scroll_PatStrip,X	 
 	STA PPU_VRAM_DATA	 
+
 	LDA Scroll_PatStrip+1,X
 	STA PPU_VRAM_DATA	
+
 	LDA Scroll_PatStrip+2,X
 	STA PPU_VRAM_DATA	
+
 	LDA Scroll_PatStrip+3,X
 	STA PPU_VRAM_DATA	
+
 	LDA Scroll_PatStrip+4,X
 	STA PPU_VRAM_DATA	
 
@@ -1978,6 +1987,7 @@ PRG026_B2F9:
 	LDA Scroll_ToVRAMHi	
 	ORA #$08	 	
 	STA PPU_VRAM_ADDR	
+
 	LDA Scroll_LastCol8	
 	STA PPU_VRAM_ADDR	
 
@@ -1985,10 +1995,13 @@ PRG026_B32E:
 	; Push another 4
 	LDA Scroll_PatStrip,X
 	STA PPU_VRAM_DATA	
+
 	LDA Scroll_PatStrip+1,X
 	STA PPU_VRAM_DATA	
+
 	LDA Scroll_PatStrip+2,X
 	STA PPU_VRAM_DATA	
+
 	LDA Scroll_PatStrip+3,X
 	STA PPU_VRAM_DATA	 
 
@@ -2016,9 +2029,11 @@ PRG026_B354:
 	LDX #$00	 	; X = 0
 	LDY Scroll_LastAttr	; Y = Scroll_LastAttr (low part)
 PRG026_B363:
+	
 	LDA Scroll_ToVRAMHA	; A = Scroll_ToVRAMHA (high part)
 	STA PPU_VRAM_ADDR	; Set high address
 	STY PPU_VRAM_ADDR	; Set low address
+	
 	LDA Scroll_AttrStrip,X	; Get next attribute byte
 	STA PPU_VRAM_DATA	; Commit it!
 	TYA		 
@@ -2030,7 +2045,9 @@ PRG026_B363:
 	LDA Scroll_ToVRAMHA
 	EOR #$08	 	; Flips to attribute table 2
 	STA Scroll_ToVRAMHA
+	
 	LDY Scroll_LastAttr	; Get low byte
+
 PRG026_B384:
 	INX		 	; X++
 	CPX #14
@@ -2170,32 +2187,38 @@ StatusBar_Update:
 	BEQ Init_StatusBar
 
 NoForced_Init:
+	LDA Update_Level_Name
+	BEQ No_Level_Name_Update
+
+	JSR Game_UpdateLevelName
+	RTS
+
+No_Level_Name_Update:
 
 	LDA StatusBar_Mode
 	CMP #$80
 	BNE StatusBar_DoUpdates
 	RTS
 
-StatusBar_DoUpdates:
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ No_Switch
-
-	LDA <Pad_Holding
-	AND #(PAD_UP | PAD_DOWN)
-	BNE No_Switch
-
-	LDA StatusBar_Mode
-	EOR #$FF
-	STA StatusBar_Mode
+;	LDA <Pad_Input
+;	AND #PAD_SELECT
+;	BEQ No_Switch
+;
+;	LDA <Pad_Holding
+;	AND #(PAD_UP | PAD_DOWN)
+;	BNE No_Switch
+;
+;	LDA StatusBar_Mode
+;	EOR #$FF
+;	STA StatusBar_Mode
 
 Init_StatusBar:
 	JSR Initialize_Status_Bar
 	JMP AttemptUpdate
 
-No_Switch:
-	LDA StatusBar_Mode
-	BNE UpdateMode2
+StatusBar_DoUpdates:
+;	LDA StatusBar_Mode
+;	BNE UpdateMode2
 
 	JSR Game_UpdatePower
 	JSR Game_UpdateAir
@@ -2206,13 +2229,13 @@ No_Switch:
 	JSR Game_UpdateDayNightMeter
 	JSR Game_UpdateBadge
 	JSR Game_UpdateReserve
-	JMP AttemptUpdate
+;	JMP AttemptUpdate
 
-UpdateMode2:
-	JSR Game_UpdateCoins
-	JSR Game_UpdateTimer
-	JSR Game_UpdateOdometer
-	JSR Game_UpdateLevelName
+;UpdateMode2:
+;	JSR Game_UpdateCoins
+;	JSR Game_UpdateTimer
+;	JSR Game_UpdateOdometer
+;	JSR Game_UpdateLevelName
 
 AttemptUpdate:
 	INC Status_Bar_Render_Toggle
@@ -2299,8 +2322,10 @@ Status_Bottom_Loop:
 	INX				; X++
 	CPY #$1C
 	BNE Status_Bottom_Loop	 		
+
 	LDA #$00
 	STA Graphics_Buffer + 3, X
+
 	LDA Graphics_BufCnt
 	CLC
 	ADC #$1F
@@ -2309,7 +2334,7 @@ Status_Bottom_Loop:
 	LDA #$00
 	STA Bottom_Needs_Redraw
 	RTS
-
+;
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
 	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $30, $30, $30, $FE, $FE, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
@@ -2321,8 +2346,8 @@ Initial_Bar_Display2:
 
 
 Initialize_Status_Bar:
-	LDA StatusBar_Mode
-	BNE Init_Bar_2
+;	LDA StatusBar_Mode
+;	BNE Init_Bar_2
 
 	LDA #LOW(Initial_Bar_Display1)
 	STA <Temp_Var1
@@ -2344,21 +2369,21 @@ Initialize_Status_Bar:
 	INC Bottom_Needs_Redraw
 	RTS
 
-Init_Bar_2:
-	LDA #LOW(Initial_Bar_Display2)
-	STA <Temp_Var1
+;Init_Bar_2:
+;	LDA #LOW(Initial_Bar_Display2)
+;	STA <Temp_Var1
 
-	LDA #HIGH(Initial_Bar_Display2)
-	STA <Temp_Var2
+;	LDA #HIGH(Initial_Bar_Display2)
+;	STA <Temp_Var2
 
-	JSR StatusBar_Template
-	JSR StatusBar_DrawGameCoins
-	JSR StatusBar_DrawOdometer
-	JSR StatusBar_DrawTimer
-	JSR StatusBar_DrawLevelName
-	INC Top_Needs_Redraw
-	INC Bottom_Needs_Redraw
-	RTS
+;	JSR StatusBar_Template
+;	JSR StatusBar_DrawGameCoins
+;	JSR StatusBar_DrawOdometer
+;	JSR StatusBar_DrawTimer
+;	JSR StatusBar_DrawLevelName
+;	INC Top_Needs_Redraw
+;	INC Bottom_Needs_Redraw
+;	RTS
 
 StatusBar_Template:
 	LDY #$00
@@ -3041,29 +3066,40 @@ Odometer_Loop:
 	
 ;----------------------------------------------
 Game_UpdateLevelName:
-	LDA StatusBar_Mode
-	BEQ Game_UpdateLevelName1
+	LDX Graphics_BufCnt
+	BNE Game_UpdateLevelNameRTS
 
-	LDA Force_LeveNameUpdate
-	BNE StatusBar_DrawLevelName
-
-Game_UpdateLevelName1:
-	RTS
+	LDA #$2B
+	STA Graphics_Buffer, X
 	
-StatusBar_DrawLevelName:
-	LDX #$00
-
-StatusBar_DrawLevelName1:
-	LDA LevelName, X
-	STA Status_Bar_Bottom, X
+	LDA #$63
+	STA Graphics_Buffer + 1, X
 	
-	INX
-	CPX #28
-	BNE StatusBar_DrawLevelName1
+	LDA #$1A
+	LDY #$00
+	STA Graphics_Buffer + 2, X
 
-	INC Bottom_Needs_Redraw
+LevelName_Loop:
+	LDA LevelName,Y	; Get next byte from StatusBar_UpdTemplate
+	STA Graphics_Buffer + 3,X		; Store it into the graphics buffer
+
+	INY				; Y++
+	INX				; X++
+	CPY #$1A
+	BNE LevelName_Loop	 		
+
 	LDA #$00
-	STA Force_LeveNameUpdate
+	STA Graphics_Buffer + 3, X
+	
+	LDA Graphics_BufCnt
+	CLC
+	ADC #$1C
+	STA Graphics_BufCnt
+
+	LDA #$00
+	STA Update_Level_Name
+
+Game_UpdateLevelNameRTS:	
 	RTS
 
 Process_Spinners:
