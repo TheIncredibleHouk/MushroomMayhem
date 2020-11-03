@@ -3238,7 +3238,7 @@ TILE_ITEM_SPINNER	= $FE
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
-	LevelName:			.ds 28
+	LevelName:			.ds 26
 	Force_LeveNameUpdate: .ds 1
 	TileCheckX:			.ds 1
 	TileCheckXHi:		.ds 1

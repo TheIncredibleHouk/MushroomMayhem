@@ -1491,6 +1491,7 @@ PRG026_AD37:
 	; Set VRAM address to [$2B][PRG026_ACCB[Y]]
 	LDA #$2b
 	STA PPU_VRAM_ADDR
+	
 	LDA PRG026_ACCB,Y
 	STA PPU_VRAM_ADDR
 PRG026_AD5F:
@@ -2275,7 +2276,8 @@ Do_Top:
 	LDA #$2B
 	STA Graphics_Buffer, X
 
-	LDA #$22
+	LDA #$42
+	;LDA #$22
 	STA Graphics_Buffer + 1, X
 
 	LDA #$1C
@@ -2309,7 +2311,8 @@ Do_Bottom:
 	LDX Graphics_BufCnt
 	LDA #$2B
 	STA Graphics_Buffer, X
-	LDA #$42
+	LDA #$62
+	;LDA #$42
 	STA Graphics_Buffer + 1, X
 	LDA #$1C
 	LDY #$00
@@ -3072,7 +3075,8 @@ Game_UpdateLevelName:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$63
+	LDA #$03
+	;LDA #$83
 	STA Graphics_Buffer + 1, X
 	
 	LDA #$1A

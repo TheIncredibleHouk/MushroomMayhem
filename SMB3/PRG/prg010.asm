@@ -3007,7 +3007,7 @@ FindLevelInfoSkip:
 	STA LevelNumber
 
 	LDY #27
-	LDA #$FE
+	LDA #$20
 
 FindLevelInfo11:
 	STA LevelName, Y
@@ -3046,7 +3046,8 @@ UpdateLevelName:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$63
+	LDA #$03
+	;LDA #$83
 	STA Graphics_Buffer + 1, X
 	
 	LDA #$1A

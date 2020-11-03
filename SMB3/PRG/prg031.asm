@@ -1480,13 +1480,13 @@ Continue_VBlank:
 	STA PPU_VRAM_ADDR
 	STA StatusBar_Recolored
 
-	LDA Pal_Data + 1
+	LDA Palette_Buffer + 1
 	STA PPU_VRAM_DATA
 
-	LDA Pal_Data + 2
+	LDA Palette_Buffer + 2
 	STA PPU_VRAM_DATA
 
-	LDA Pal_Data + 3
+	LDA Palette_Buffer + 3
 	STA PPU_VRAM_DATA
 
 No_Pal_Restore:

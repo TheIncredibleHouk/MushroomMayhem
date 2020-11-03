@@ -71,38 +71,64 @@ Video_Upd_Table: ; $803E
 StatusBar	.macro
 
 	; Sync next three with PRG026 Flip_TopBarCards
-	vaddr \1 + $00
+;	vaddr \1 + $00
+;	.byte $02, $AE, $80		; Upper left corner
+
+;	vaddr \1 + $02
+;	.byte VU_REPEAT | $1C, $81	; Bar across the top
+
+;	vaddr \1 + $1E
+;	.byte $02, $82, $AE		; Upper left corner
+
+;------
+;	vaddr \1 + $20
+;	.byte $02, $AE, $90		; Upper left corner
+
+
+;	vaddr \1 + $3E
+;	.byte $02, $92, $AE		; Upper left corner
+
+;------
+;	vaddr \1 + $40
+;	.byte $02, $AE, $90		; Upper left corner
+
+
+;	vaddr \1 + $5E
+;	.byte $02, $92, $AE		; Upper left corner	
+
+;----	
+;	vaddr \1 + $60
+;	.byte $02, $AE, $A0		; Upper left corner
+
+;	vaddr \1 + $62
+;	.byte VU_REPEAT | $1C, $A1	; Bar across the top
+
+;	vaddr \1 + $7E
+;	.byte $02, $A2, $AE		; Upper left corner	
+
+;------
+
+;	vaddr \1 + $80
+;	.byte VU_REPEAT | $20, $AE		; Upper left corner
+
+
+;@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+	vaddr \1 + $20
 	.byte $02, $AE, $80		; Upper left corner
 
-	vaddr \1 + $02
+	vaddr \1 + $22
 	.byte VU_REPEAT | $1C, $81	; Bar across the top
 
-	vaddr \1 + $1E
+	vaddr \1 + $3E
 	.byte $02, $82, $AE		; Upper left corner
 
 ;------
-	vaddr \1 + $20
-	.byte $02, $AE, $90		; Upper left corner
-
-
-	vaddr \1 + $3E
-	.byte $02, $92, $AE		; Upper left corner
-
-;------
 	vaddr \1 + $40
-	.byte $02, $AE, $90		; Upper left corner
-
-
-	vaddr \1 + $5E
-	.byte $02, $92, $AE		; Upper left corner	
-
-;------
+	.byte $20, $AE, $90, $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E9, $E9, $E9, $E9, $EA, $FE, $30, $30, $30, $FE, $FE, $30, $FE, $83, $FE, $FE, $83, $FE, $FE, $92, $AE
 
 	vaddr \1 + $60
-	.byte $03, $AE, $90, $FE		; Upper left corner
-
-	vaddr \1 + $7D
-	.byte $03, $FE, $92, $AE		; Upper left corner	
+	.byte $20, $AE, $90, $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE, $92, $AE	
 
 ;----	
 	vaddr \1 + $80
@@ -113,6 +139,14 @@ StatusBar	.macro
 
 	vaddr \1 + $9E
 	.byte $02, $A2, $AE		; Upper left corner	
+
+;------
+
+	vaddr \1 + $00
+	.byte VU_REPEAT | $03, $AE		; Upper left corner
+
+	vaddr \1 + $1D
+	.byte VU_REPEAT | $03, $AE		; Upper left corner
 
 	; Terminator
 	.byte $00
