@@ -201,8 +201,8 @@ ObjP47:
 ObjP48:
 	.byte $C1, $C3, $C5, $C7
 	.byte $C9, $CB, $CD, $CF
-	.byte $71, $D1, $D3, $D5
-	.byte $71, $71, $DD, $DF
+	.byte $E1, $D1, $D3, $D5
+	.byte $E1, $E1, $DD, $DF
 
 ObjP49:
 	.byte $E5, $E7, $E3, $E3, $E9, $EB, $E3, $E3
@@ -2276,6 +2276,11 @@ DryBones_Norm:
 	INY
 
 DryBones_MakePoof:
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE DryBones_NoPoof
+
 	LDA <Objects_XZ, X
 	ADD DryBones_PoofX, Y
 	STA <Poof_X

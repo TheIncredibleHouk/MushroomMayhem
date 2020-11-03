@@ -1451,7 +1451,6 @@ IntNMI:
 	LDA Ignore_VBlank
 	BEQ Continue_VBlank
 
-	STA Debug_Snap
 	PLA
 	PLP
 	CLI

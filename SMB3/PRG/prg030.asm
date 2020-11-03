@@ -72,47 +72,47 @@ StatusBar	.macro
 
 	; Sync next three with PRG026 Flip_TopBarCards
 	vaddr \1 + $00
-	.byte $02, $FC, $80		; Upper left corner
+	.byte $02, $AE, $80		; Upper left corner
 
 	vaddr \1 + $02
 	.byte VU_REPEAT | $1C, $81	; Bar across the top
 
 	vaddr \1 + $1E
-	.byte $02, $82, $FC		; Upper left corner
+	.byte $02, $82, $AE		; Upper left corner
 
 ;------
 	vaddr \1 + $20
-	.byte $02, $FC, $90		; Upper left corner
+	.byte $02, $AE, $90		; Upper left corner
 
 
 	vaddr \1 + $3E
-	.byte $02, $92, $FC		; Upper left corner
+	.byte $02, $92, $AE		; Upper left corner
 
 ;------
 	vaddr \1 + $40
-	.byte $02, $FC, $90		; Upper left corner
+	.byte $02, $AE, $90		; Upper left corner
 
 
 	vaddr \1 + $5E
-	.byte $02, $92, $FC		; Upper left corner	
+	.byte $02, $92, $AE		; Upper left corner	
 
 ;------
 
 	vaddr \1 + $60
-	.byte $03, $FC, $90, $FE		; Upper left corner
+	.byte $03, $AE, $90, $FE		; Upper left corner
 
 	vaddr \1 + $7D
-	.byte $03, $FE, $92, $FC		; Upper left corner	
+	.byte $03, $FE, $92, $AE		; Upper left corner	
 
 ;----	
 	vaddr \1 + $80
-	.byte $02, $FC, $A0		; Upper left corner
+	.byte $02, $AE, $A0		; Upper left corner
 
 	vaddr \1 + $82
 	.byte VU_REPEAT | $1C, $A1	; Bar across the top
 
 	vaddr \1 + $9E
-	.byte $02, $A2, $FC		; Upper left corner	
+	.byte $02, $A2, $AE		; Upper left corner	
 
 	; Terminator
 	.byte $00
@@ -2719,6 +2719,7 @@ SkipMemClear:
 	LDA [Temp_Var14],Y
 
 Skip_Normal_Gfx2:
+	STA Debug_Snap
 	STA PatTable_BankSel
 
 	LDY #$02

@@ -213,20 +213,20 @@ Flip_Video_Data_Closing:	; Inventory_Open = 0
 
 Flip_TopBarMid:
 	vaddr $2B20
-	.byte 2, $FC, $80
+	.byte 2, $FF, $80
 
 	vaddr $2B22
 	.byte VU_REPEAT | 28, $81
 
 	vaddr $2B3E
-	.byte 2, $A2, $FC
+	.byte 2, $A2, $FF
 
 	.byte $00
 
 Flip_BotBarMid:
 	; Lower left corner
 	vaddr $2B40
-	.byte 2, $FC, $A8
+	.byte 2, $FF, $A8
 
 	; Bottom bar
 	vaddr $2B42
@@ -234,19 +234,19 @@ Flip_BotBarMid:
 
 	; Upper right corner
 	vaddr $2B5E
-	.byte 2, $A5, $FC
+	.byte 2, $A5, $FF
 
 	.byte $00
 
 Flip_EraseTopBarMid:	
 	vaddr $2B20
-	.byte VU_REPEAT | 32, $FC
+	.byte VU_REPEAT | 32, $FF
 
 	.byte $00
 
 Flip_EraseBotBarMid:	
 	vaddr $2B40
-	.byte VU_REPEAT | 32, $FC
+	.byte VU_REPEAT | 32, $FF
 	
 	.byte $00
 
