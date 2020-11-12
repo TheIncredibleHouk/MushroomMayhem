@@ -100,7 +100,7 @@ OBJ_MAGNET			= $26
     .byte OA1_PAL1 | OA1_HEIGHT48 | OA1_WIDTH16	; Object $19
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1A
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $1B
-    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $1C
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $1C
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH8  ; Object $1D
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $1E
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	 ; Object $1F

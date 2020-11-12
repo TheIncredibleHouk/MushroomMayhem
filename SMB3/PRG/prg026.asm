@@ -1491,7 +1491,7 @@ PRG026_AD37:
 	; Set VRAM address to [$2B][PRG026_ACCB[Y]]
 	LDA #$2b
 	STA PPU_VRAM_ADDR
-	
+
 	LDA PRG026_ACCB,Y
 	STA PPU_VRAM_ADDR
 PRG026_AD5F:
@@ -2340,13 +2340,8 @@ Status_Bottom_Loop:
 ;
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E1, $E1, $E1, $E1, $EA, $FE, $30, $30, $30, $FE, $FE, $30, $FE, $83, $FE, $FE, $83, $FE, $FE
-	.byte $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE
-
-Initial_Bar_Display2:
-	.byte $D0, $30, $30, $30, $30, $30, $30, $30, $FE, $D3, $30, $30, $D4, $30, $30, $D4, $20, $20, $20, $20, $20, $F0, $F0, $F0, $F0, $F0, $F0, $F0
-	.byte $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20, $20
-
+	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $92, $90, $FE, $FE, $93, $FE, $FE
+	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $92, $90, $FE, $FE, $93, $FE, $FE
 
 Initialize_Status_Bar:
 ;	LDA StatusBar_Mode
@@ -2433,7 +2428,7 @@ StatusBar_Fill_PowerMT1:
 	LDA #$D2
 
 StatusBar_Fill_PowerMT2:
-	STA (Status_Bar_Top + 1),Y	; Store this tile into the buffer
+	STA Status_Bar_Top,Y	; Store this tile into the buffer
 	INY
 	DEX
 	BPL StatusBar_Fill_PowerMT2
@@ -2445,7 +2440,7 @@ StatusBar_Fill_PowerMT3:
 	LDA #$D1
 
 StatusBar_Fill_PowerMT4:
-	STA (Status_Bar_Top + 1),Y
+	STA Status_Bar_Top,Y
 	INY
 	CPY #$06
 	BCC StatusBar_Fill_PowerMT4
@@ -2481,7 +2476,7 @@ StatusBar_DrawAir:
 
 Full_Air_Loop:				
 	LDA #$E9
-	STA Status_Bar_Top + 9, Y
+	STA Status_Bar_Top + 8, Y
 	
 	INY
 	DEX
@@ -2496,7 +2491,7 @@ Paritial_Air:
 	AND #$0F
 	LSR A
 	ADC #$E1				; offset the tile number
-	STA Status_Bar_Top + 9, Y
+	STA Status_Bar_Top + 8, Y
 	INY
 
 	LDA #$E1
@@ -2504,7 +2499,7 @@ Paritial_Air:
 Empty_Air_Loop:
 	CPY #$04				
 	BEQ Fill_Air_MT_Done		; Did it fill all the way? we're done!
-	STA Status_Bar_Top + 9, Y	; no? let's fill empty tiles
+	STA Status_Bar_Top + 8, Y	; no? let's fill empty tiles
 	INY
 	BNE Empty_Air_Loop
 	
@@ -2540,15 +2535,15 @@ StatusBar_DrawStars:
 
 	LDA <DigitsResult + 2
 	ORA #$30
-	STA Status_Bar_Bottom + 15
+	STA Status_Bar_Bottom + 14
 
 	LDA <DigitsResult + 1
 	ORA #$30
-	STA Status_Bar_Bottom + 16
+	STA Status_Bar_Bottom + 15
 
 	LDA <DigitsResult
 	ORA #$30
-	STA Status_Bar_Bottom + 17
+	STA Status_Bar_Bottom + 16
 	INC Bottom_Needs_Redraw
 	RTS
 	
@@ -2575,11 +2570,11 @@ StatusBar_DrawCherries:
 
 	LDA <DigitsResult
 	ORA #$30
-	STA Status_Bar_Bottom + 21
+	STA Status_Bar_Bottom + 20
 	
 	LDA <DigitsResult + 1
 	ORA #$30
-	STA Status_Bar_Bottom + 20
+	STA Status_Bar_Bottom + 19
 
 StatusBar_DrawCherries1:
 	INC Bottom_Needs_Redraw
@@ -2645,7 +2640,7 @@ StatusBar_DrawExperience:
 StatusBar_DrawExperience1:
 	LDA <DigitsResult, X
 	ORA #$30
-	STA Status_Bar_Bottom + 1, Y
+	STA Status_Bar_Bottom , Y
 	INX
 	DEY
 	BPL StatusBar_DrawExperience1
@@ -2748,7 +2743,7 @@ StatusBar_DrawCoins:
 StatusBar_DrawCoins1:
 	LDA <DigitsResult, X
 	ORA #$30
-	STA Status_Bar_Bottom + 9, Y
+	STA Status_Bar_Bottom + 8, Y
 	INX
 	DEY
 	BPL StatusBar_DrawCoins1
@@ -2774,7 +2769,7 @@ StatusBar_DrawGameCoins:
 StatusBar_DrawGameCoins1:
 	LDA <DigitsResult, X
 	ORA #$30
-	STA Status_Bar_Top + 1, Y
+	STA Status_Bar_Top , Y
 	INX
 	DEY
 	BPL StatusBar_DrawGameCoins1
@@ -2791,7 +2786,7 @@ StatusBar_DrawStarsCollected:
 	INX
 
 StatusBar_DrawStars1:
-	STX Status_Bar_Top + 15
+	STX Status_Bar_Top + 14
 	LDX #$D6
 	PLA
 	PHA
@@ -2800,7 +2795,7 @@ StatusBar_DrawStars1:
 	INX
 
 StatusBar_DrawStars2:
-	STX Status_Bar_Top + 16
+	STX Status_Bar_Top + 15
 	LDX #$D6
 	PLA
 	AND Magic_Stars_Collected3, Y
@@ -2808,7 +2803,7 @@ StatusBar_DrawStars2:
 	INX
 
 StatusBar_DrawStars3:
-	STX Status_Bar_Top + 17
+	STX Status_Bar_Top + 16
 	INC Top_Needs_Redraw
 	RTS
 ;--------------------------------------
@@ -2842,17 +2837,17 @@ StatusBar_DrawDayNightMeter:
 
 StatusBar_DrawDayNightMeter1:
 	LDA DayNightIcon, X
-	STA Status_Bar_Top + 19
+	STA Status_Bar_Top + 18
 	
 	LDA DayNightTicker
 	ASL A
 	TAX
 	
 	LDA DayNightTiles, X
-	STA Status_Bar_Top + 20
+	STA Status_Bar_Top + 19
 	
 	LDA DayNightTiles + 1,X
-	STA Status_Bar_Top + 21
+	STA Status_Bar_Top + 20
 	INC Top_Needs_Redraw
 	RTS
 ;--------------------------------------
@@ -2971,102 +2966,7 @@ Item_ReserveRTS:
 	INC Top_Needs_Redraw
 	INC Bottom_Needs_Redraw
 	RTS
-	
-;--------------------------------------
-Game_UpdateTimer:
-	LDA StatusBar_Mode
-	BEQ Game_UpdateTimer1
 
-	LDA Game_Timer + 5
-	CMP Old_Game_TimerSeconds
-	BEQ Game_UpdateTimer1
-	
-	STA Old_Game_TimerSeconds
-	BNE StatusBar_DrawTimer
-	
-Game_UpdateTimer1:
-	RTS
-	
-StatusBar_DrawTimer:
-	LDA Game_Timer
-	ORA #$30
-	STA Status_Bar_Top + 10
-	
-	LDA Game_Timer + 1
-	ORA #$30
-	STA Status_Bar_Top + 11
-
-	LDA Game_Timer + 2
-	ORA #$30
-	STA Status_Bar_Top + 13
-	
-	LDA Game_Timer + 3
-	ORA #$30
-	STA Status_Bar_Top + 14
-
-	LDA Game_Timer + 4
-	ORA #$30
-	STA Status_Bar_Top + 16
-	
-	LDA Game_Timer + 5
-	ORA #$30
-	STA Status_Bar_Top + 17
-	INC Top_Needs_Redraw
-	RTS
-
-;------------------------------------
-Game_UpdateOdometer:
-	LDA Odometer_Increase
-	CMP #$80
-	BCC Game_UpdateOdometer1
-
-	SBC #$80
-	STA Odometer_Increase
-
-	LDA Odometer
-	ADD #$01
-	STA Odometer
-
-	LDA Odometer + 1
-	ADC #$00
-	STA Odometer + 1
-
-	LDA Odometer + 2
-	ADC #$00
-	STA Odometer + 2
-	
-	LDA StatusBar_Mode
-	BNE StatusBar_DrawOdometer
-
-Game_UpdateOdometer1
-	RTS
-
-StatusBar_DrawOdometer:
-	LDA Odometer
-	STA <DigitsParam
-
-	LDA Odometer + 1
-	STA <DigitsParam + 1
-
-	LDA Odometer + 2
-	STA <DigitsParam + 2
-
-	JSR BytesTo7Digits
-	
-	LDY #$06
-	LDX #$00
-
-Odometer_Loop:
-	LDA <DigitsResult, X
-	ORA #$30
-	STA Status_Bar_Top + 21, Y
-	INX
-	DEY
-	BPL Odometer_Loop
-
-	INC Top_Needs_Redraw
-	RTS
-	
 ;----------------------------------------------
 Game_UpdateLevelName:
 	LDX Graphics_BufCnt

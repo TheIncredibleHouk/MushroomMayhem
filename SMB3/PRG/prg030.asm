@@ -118,27 +118,27 @@ StatusBar	.macro
 	.byte $02, $AE, $80		; Upper left corner
 
 	vaddr \1 + $22
-	.byte VU_REPEAT | $1C, $81	; Bar across the top
+	.byte VU_REPEAT | $15, $81	; Bar across the top
 
-	vaddr \1 + $3E
-	.byte $02, $82, $AE		; Upper left corner
+	vaddr \1 + $37
+	.byte $09, $82, $80, $81, $81, $83, $81, $81, $82, $AE		; Upper left corner
 
 ;------
 	vaddr \1 + $40
-	.byte $20, $AE, $90, $FE, $D1, $D1, $D1, $D1, $D1, $D1, $FE, $E0, $E9, $E9, $E9, $E9, $EA, $FE, $30, $30, $30, $FE, $FE, $30, $FE, $83, $FE, $FE, $83, $FE, $FE, $92, $AE
+	.byte $20, $AE, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $92, $90, $FE, $FE, $93, $FE, $FE, $92, $AE
 
 	vaddr \1 + $60
-	.byte $20, $AE, $90, $FE, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $FE, $FE, $93, $FE, $FE, $93, $FE, $FE, $92, $AE	
+	.byte $20, $AE, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $92, $90, $FE, $FE, $93, $FE, $FE, $92, $AE
 
 ;----	
 	vaddr \1 + $80
 	.byte $02, $AE, $A0		; Upper left corner
 
 	vaddr \1 + $82
-	.byte VU_REPEAT | $1C, $A1	; Bar across the top
+	.byte VU_REPEAT | $15, $A1	; Bar across the top
 
-	vaddr \1 + $9E
-	.byte $02, $A2, $AE		; Upper left corner	
+	vaddr \1 + $97
+	.byte $09, $A2, $A0, $A1, $A1, $A3, $A1, $A1, $A2, $AE		; Upper left corner
 
 ;------
 
@@ -2753,7 +2753,6 @@ SkipMemClear:
 	LDA [Temp_Var14],Y
 
 Skip_Normal_Gfx2:
-	STA Debug_Snap
 	STA PatTable_BankSel
 
 	LDY #$02
@@ -2993,7 +2992,6 @@ LoadName:
 	INX
 	CPX #28
 	BNE LoadName
-s
 	STA Update_Level_Name
 
 SkipNameLoad:
@@ -3001,7 +2999,10 @@ SkipNameLoad:
 	ADD #$22
 	TAY
 	; now load pointers
+	
 	JSR ClearPointers
+	JSR ClearBuffers
+
 	LDX #$00
 	LDA <Temp_Var6
 	BEQ Pointers_Done
@@ -4713,6 +4714,15 @@ ClearPointerLoop:
 	DEX
 	BPL ClearPointerLoop
 	RTS
+
+ClearBuffers:
+	LDX #$32
+	LDA #$00
+
+ClearBufferLoop:
+	STA Object_BufferY, Y
+	STA Object_BufferY, X
+	RTS	
 
 SetProperScroll:
 	LDA <Player_YZ

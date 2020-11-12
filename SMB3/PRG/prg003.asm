@@ -24,7 +24,7 @@ OBJ_CHECKPOINT		= $35
     .word ObjInit_WoodenPlatCCW     ; Object $2D
     .word ObjInit_PlatformFollow    ; Object $2E
     .word ObjInit_PlatformUnstable  ; Object $2F
-    .word ObjInit_PlatformCommon ; Object $30
+    .word ObjInit_Pulley ; Object $30
     .word ObjInit_SnakeBlock        ; Object $31
     .word ObjInit_PipeBlock         ; Object $32
 	.word ObjInit_PlatformSwing			; Object $33
@@ -117,7 +117,7 @@ OBJ_CHECKPOINT		= $35
     .byte OPTS_NOCHANGE         ; Object $2D
     .byte OPTS_NOCHANGE         ; Object $2E
     .byte OPTS_NOCHANGE         ; Object $2F
-    .byte OPTS_SETPT5 | $4E         ; Object $30
+    .byte OPTS_SETPT5 | $36         ; Object $30
     .byte OPTS_NOCHANGE         ; Object $31
     .byte OPTS_SETPT5 | $0B	    ; Object $32
 	.byte OPTS_SETPT5 | $36	    ; Object $33
@@ -665,7 +665,7 @@ Unstable_Move:
 	BEQ Unstable_MoveNormal
 
 	DEC PlatformUnstable_MoveTimer, X
-	BNE Unstable_MoveContant
+	BNE Unstable_MoveConstant
 
 	INC Platform_SteppedOn, X
 	
@@ -676,7 +676,7 @@ Unstable_Move:
 	JSR Object_ApplyYVel_NoGravity
 	RTS
 
-Unstable_MoveContant:
+Unstable_MoveConstant:
 	JSR Object_ApplyYVel_NoGravity
 
 	LDA Objects_SpriteAttributes, X
@@ -693,10 +693,10 @@ Unstable_MoveNormal:
 
 	LDA <Objects_YVelZ,X
 	BMI Unstable_MoveRTS
-	CMP #$20
+	CMP #$10
 	BCC Unstable_MoveRTS
 
-	LDA #$20
+	LDA #$10
 	STA <Objects_YVelZ,X
 
 Unstable_MoveRTS:
@@ -1280,6 +1280,30 @@ PipeBlock_MatchPalette:
 	STA Palette_Buffer + 27
 	RTS    
 
+ObjInit_Pulley:
+	LDA #$FF
+	STA Pulley_Sibling, X
+
+	LDY Objects_SpawnIdx, X
+	LDA Pulley_SaveY,  Y
+	ORA Pulley_SaveYHi, Y
+	BEQ Pulley_InitRTS
+
+	LDA Pulley_SaveY, Y
+	STA <Objects_YZ, X
+
+	LDA Pulley_SaveYHi, Y
+	STA <Objects_YHiZ, X
+
+
+Pulley_InitRTS:
+	JMP ObjInit_PlatformCommon
+
+Pulley_WriteOccured = Objects_Data1
+Pulley_SaveY = Object_BufferY
+Pulley_SaveYHi = Object_BufferX
+Pulley_Sibling = Objects_Data2
+
 ObjNorm_PlatformPulley:
 
 	LDA <Player_HaltGameZ
@@ -1288,60 +1312,87 @@ ObjNorm_PlatformPulley:
 	JMP Pulley_Draw
 
 Pulley_Norm:
-	LDA Objects_Property, X
-	BEQ Pulley_Weight
+	JSR Object_DeleteOffScreen
 
-	JSR Object_Move
-	JMP Pulley_NoMove
+	LDA <Objects_YVelZ, X
+	BEQ Pulley_Move
 
-Pulley_Weight:
+	LDA Pulley_WriteOccured, X
+	BEQ Pulley_Check
+
+	LDA #$00
+	STA Pulley_WriteOccured, X
+	BEQ Pulley_Move
+
+Pulley_Check:
+
 	LDA <Objects_YZ, X
-	AND #$0F
-	CMP #$0F
+	AND #$07
+	CMP #$07
 	BNE Pulley_Move
 
 	LDA Block_NeedsUpdate
-	BNE Pulley_NoMove
+	BEQ Pulley_CheckTiles
 
+	LDA #$00
+	STA <Objects_YVelZ, X
+	BEQ Pulley_FindSibling
+
+Pulley_CheckTiles:
 	JSR Object_DetectTileCenter
 	
 	LDA Tile_LastProp
 	CMP #TILE_PROP_ENEMY
-	BNE Pulley_Fall
+	BNE Pulley_Stop
 
 	LDA <Objects_YVelZ, X
 	BMI Pulley_MovingUp
 
+	INC Pulley_WriteOccured, X
 	LDA Tile_LastValue
-	ORA #$01
+	ADD #$01
 	JMP Pulley_UpdateBlock
 
-Pulley_Fall:
-	INC Objects_Property, X
+Pulley_Stop:
+	LDA #$01
+	STA Objects_Property, X
 	JMP Pulley_Move
 
 Pulley_MovingUp:
+	INC Pulley_WriteOccured, X
 	LDA Tile_LastValue
-	AND #$FE
+	SUB #$01
 
 Pulley_UpdateBlock:
+	TAY
+	LDA TileProperties, Y
+	CMP #TILE_PROP_ENEMY
+	BNE Pulley_Move
+
+	TYA
 	JSR Object_ChangeBlock
 
 Pulley_Move:
-	JSR Object_ApplyYVel_NoGravity
-
-Pulley_NoMove:	
+	JSR Object_ApplyYVel_NoGravity	
 	JSR Object_CalcBoundBox
 	
 	LDA Objects_Property, X
-	BNE Pulley_NoYVel
+	BEQ Pulley_NoYVel
 
 	LDA #$00
 	STA <Objects_YVelZ, X
 
 Pulley_NoYVel:
+
 	LDA #$00
+	LDY Pulley_Sibling, X
+	BNE Pulley_NoSibling
+
+	STA Objects_YVelZ, Y
+
+Pulley_NoSibling:	
 	STA Platform_MadeContact, X
+	STA <Objects_YVelZ, X
 
 	JSR Object_InteractWithPlayer
 	JSR Platform_ContactCheck
@@ -1349,6 +1400,7 @@ Pulley_NoYVel:
 	LDA Platform_MadeContact, X
 	BEQ Pulley_Draw
 
+Pulley_MadeContact:
 	LDA Objects_Property, X
 	BNE Pulley_FindSibling
 
@@ -1366,25 +1418,39 @@ Pulley_FindBuddy:
 	CMP #OBJ_PLATFORMPULLEY
 	BNE Pulley_NextObject
 
-	LDA Objects_Property, X
-	BEQ Pully_SiblingUp
-
-	LDA Objects_Property, Y
-	BNE Pulley_Draw
-
-	
-	LDA #$01
+	LDA #$00
 	STA Objects_Property, Y
 
-Pully_SiblingUp:	
-	LDA #$F8
+	LDA Objects_YVelZ, X
+	EOR #$FF
+	ADD #$01
 	STA Objects_YVelZ, Y
+
+	TYA
+	STA Pulley_Sibling, X
+
+	LDA Objects_YVelFrac, X
+	EOR $00
+	ADD #$01
+	STA Objects_YVelFrac, X
+	BNE Pulley_Draw
 
 Pulley_NextObject:
 	DEY
 	BPL Pulley_FindBuddy
 
 Pulley_Draw:
+
+	LDY Objects_SpawnIdx, X
+	
+	LDA <Objects_YZ, X
+	ADD #$02
+	STA Pulley_SaveY, Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Pulley_SaveYHi, Y
+
 	JSR Platform_Draw
 
 	LDY Object_SpriteRAMOffset, X
