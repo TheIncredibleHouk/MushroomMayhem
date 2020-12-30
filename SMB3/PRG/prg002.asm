@@ -21,6 +21,7 @@ OBJ_BRIDGEBUILD    = $23
 OBJ_BLOCKSWITCHER  = $24
 OBJ_MUSHROOMBLOCK	= $25
 OBJ_MAGNET			= $26
+OBJ_SOMETHING		= $27
 
     .word ObjInit_WaterSplash   ; Object $14
 	.word ObjInit_Waterfill	; Object $15

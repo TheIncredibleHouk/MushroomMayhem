@@ -1276,6 +1276,9 @@ PlayerProj_HitEnemies:
 	LDY #$04	 ; Y = 4 (enemies only exist in the lower slots)
 
 PlayerProj_HitEnemies1:
+	LDA Objects_ToggleDetect, Y
+	BNE PlayerProj_HitEnemies2
+
 	LDA Objects_SpritesHorizontallyOffScreen,Y
 	ORA Objects_SpritesVerticallyOffScreen,Y
 	BNE PlayerProj_HitEnemies2	 ; If object has sprites horizontally or vertically off-screen, jump to PRG007_A667 (Forget it!)
@@ -1828,6 +1831,26 @@ PRG007_AE4A:
 	LDA #$00
 	STA CoinPUp_State,X
 
+	JSR SpecialObject_FindEmpty
+	
+	LDA #SOBJ_COINSPARKLE
+	STA SpecialObj_ID, Y
+
+	LDA #$0C
+	STA SpecialObj_Timer, Y
+
+	LDA CoinPUp_Y,X
+	ADD <Vert_Scroll
+	STA SpecialObj_Y, Y
+
+	LDA CoinPUp_X,X
+	ADD <Horz_Scroll
+	STA SpecialObj_X, Y
+
+	LDA #$0C
+	STA SpecialObj_Timer, Y
+
+	INC Coins_Earned	 ; You get a coin
 	RTS		 ; Return
 
 
@@ -1846,8 +1869,6 @@ SObj_CheckHitSolid:
 ; Updates Special Objects and they draw as they will
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SpecialObjs_UpdateAndDraw:
-
-
 	LDX #$07	 ; X = 7
 PRG007_AF1B:
 	STX <CurrentObjectIndexZ ; Store current checked index -> CurrentObjectIndexZ
@@ -1892,7 +1913,7 @@ SpecialObj_UpdateAndDraw:
 	.word Enemy_Fireblob	; 14: Blooper kid
 	.word Enemy_SpinyEgg	; 15: Laser
 	.word SpecialObj_Poof		; 16: Poof
-	.word SObj_DoNothing	; 17 placeholder
+	.word Coin_Sparkle	; 17 placeholder
 
 
 SpecialObj_DetectObject:
@@ -2027,11 +2048,7 @@ PRG007_B169:
 	BMI PRG007_B17E	 ; If Y Velocity < $20, jump to PRG007_B17E
 
 	; Coin fell far enough..
-
-	JSR SpecialObj_Remove	 ; Remove it
 	INC Coins_Earned	 ; You get a coin
-
-
 
 PRG007_B17E:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
@@ -5333,16 +5350,17 @@ DrawSkyBackground2:
 	LSR A
 	LSR A
 	LSR A
+	LSR A
 	STA <Temp_Var1
 
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
 	LSR A
+	LSR A
 	STA <Temp_Var2
 
 	LDA <Horz_Scroll_Hi
-	ASL A
 	ASL A
 	ASL A
 	ASL A
@@ -5362,35 +5380,46 @@ DrawClouds0:
 	STA Sprite_RAM + 1, Y
 	
 	LDA Weather_YPos, X
-	SUB <Temp_Var1
-	STA Sprite_RAM, Y
+	ADD <Temp_Var1
+	STA Sprite_RAMY, Y
 	
 	LDA Weather_XPos, X
 	SUB <Temp_Var2
-	STA Sprite_RAM +3, Y
+	STA Sprite_RAMX, Y
+	
+	TXA
+	AND #$01
+	BNE Bg_NoXOffset
+
+	LSR <Temp_Var1
+	LSR <Temp_Var2
+
+Bg_NoXOffset:
 	DEX
 	BPL DrawClouds0
 	RTS
 
+
 DrawStarsBackground1:
-	LDY #$E4
 	LDX #$05
-	
+	LDY #$E4
+
 	LDA <Vert_Scroll
 	LSR A
 	LSR A
 	LSR A
 	LSR A
+	LSR A
 	STA <Temp_Var1
-	
+
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
 	LSR A
+	LSR A
 	STA <Temp_Var2
-	
+
 	LDA <Horz_Scroll_Hi
-	ASL A
 	ASL A
 	ASL A
 	ASL A
@@ -5407,6 +5436,7 @@ DrawStars0:
 	AND #$03
 	ORA #SPR_BEHINDBG
 	STA Sprite_RAM + 2, Y
+
 	LDA #$5D
 	STA Sprite_RAM + 1, Y
 
@@ -5417,6 +5447,15 @@ DrawStars0:
 	LDA StarXPositions, X
 	SUB <Temp_Var2
 	STA Sprite_RAM +3, Y
+	
+	TXA
+	AND #$01
+	BNE Stars_NoXOffset
+
+	LSR <Temp_Var1
+	LSR <Temp_Var2
+
+Stars_NoXOffset:
 	DEX
 	BPL DrawStars0
 	RTS
@@ -5485,3 +5524,19 @@ Enemy_SpinyEggNoFlip:
 	JSR SpecialObj_CheckForeground
 	JSR SpecialObj_Draw16x16
 	RTS
+
+Coin_Sparkle:
+	DEC SpecialObj_Timer, X
+	BPL Coin_Sparkle1
+
+	JMP SpecialObj_Delete
+
+Coin_Sparkle1:
+	LDA #$71
+	STA <SpecialObj_Tile
+
+	LDA <SpecialObj_Attributes
+	ORA #SPR_BEHINDBG | SPR_PAL3
+	STA <SpecialObj_Attributes 
+
+	JMP SpecialObj_Draw8x16

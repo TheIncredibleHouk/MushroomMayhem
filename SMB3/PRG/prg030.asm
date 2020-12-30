@@ -168,11 +168,11 @@ Video_DoStatusBarHM:
 
 	; List of C000 pages to switch to by Level_Tileset
 PAGE_C000_ByTileset: ; $83D6
-	.byte 10, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 22, 22, 22, 14
+	.byte 10
 
 	; List of A000 pages to switch to by Level_Tileset
 PAGE_A000_ByTileset: ; $83E9
-	.byte 11, 15, 21, 16, 17, 19, 18, 18, 18, 20, 23, 19, 17, 19, 13, 26, 26, 26, 9
+	.byte 11
 
 	; The normal level VROM page cycle set
 PT2_Anim:	.byte $80, $82, $84, $86, $88, $8A, $8C, $8E
@@ -1682,12 +1682,6 @@ PRG030_9097:
 
 	; Need to transfer Player's "gameplay score" to their "inventory" score storage...
 
-	LDA Map_MusicBox_Cnt
-	BEQ PRG030_90C4	 ; If Map_MusicBox_Cnt = 0, jump to PRG030_90C4
-
-	DEC Map_MusicBox_Cnt	 ; Otherwise, one less turn with music box...
-
-PRG030_90C4:
 	LDY #$06	 ; Y = 6
 
 	LDA Map_ReturnStatus
@@ -1740,9 +1734,6 @@ PRG030_910C:
 	; Map_ReturnStatus = 0
 	LDA #$00
 	STA Map_ReturnStatus
-
-	; Clear all Big ? Blocks bits
-	STA BigQBlock_GotIt
 
 	LDX Player_Current	 ; X = Player_Current
 
@@ -2034,7 +2025,6 @@ PRG030_92B6:
 	STA Map_Player_SkidBack,X
 	STA World_EnterState
 	STA Map_GameOver_CursorY
-	STA BigQBlock_GotIt	; Didn't get any Big ? Blocks
 
 	LDY #(Player_Coins - Inventory_Cards)	; Y = offset to Mario's coins
 
@@ -2116,7 +2106,6 @@ PRG030_933E:
 ; This routine uses sets both A000 and C000 pages based on the active Level_Tileset
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SetPages_ByTileset:	; $94BB
-
 	LDY Level_Tileset	 	; Y = Level_Tileset
 
 	; Change A000 and C000 pages based on Page_A/C000_List
@@ -2732,6 +2721,7 @@ SkipLevelLoad:
 	JMP Skip_Level_Loading
 
 NotJctBQ:
+	JSR ClearBuffers
 	LDA Level_Redraw
 	BEQ SkipMemClear
 	LDY #$00
@@ -4720,8 +4710,10 @@ ClearBuffers:
 	LDA #$00
 
 ClearBufferLoop:
-	STA Object_BufferY, Y
+	STA Object_BufferX, X
 	STA Object_BufferY, X
+	DEX
+	BPL ClearBufferLoop
 	RTS	
 
 SetProperScroll:
@@ -5399,7 +5391,8 @@ StarXPositions:
 	.byte $00, $54, $A8, $2A, $7E, $D2
 
 StarYPositions:
-	.byte $01, $22, $13, $0C, $29, $1B
+	.byte $08, $10, $18, $20, $28, $30
+	.byte $44, $38, $2C, $20, $14, $08
 
 StarYPostions2:
 	.byte $20, $43, $69, $86, $A7, $CE
@@ -5412,9 +5405,12 @@ InitStarsBackground:
 
 ObjInit_Stars1:
 	LDA RandomN, Y
-	AND #$1F
+	AND #$0F
 	ADD StarXPositions, Y
 	STA Weather_XPos, Y
+
+	LDA RandomN + 6, Y
+	AND #$07
 
 	LDA PaletteEffect
 	CMP #$03
@@ -5425,7 +5421,7 @@ ObjInit_Stars1:
 
 Normal_WeatherParticle:
 	LDA RandomN + 6, Y
-	AND #$0F
+	AND #$07
 	ADD StarYPositions, Y
 
 Store_WeatherParticle:
@@ -5935,6 +5931,21 @@ Tile_WriteTempChange:
 Tile_WriteTempChangeRTS:
 	RTS
 
+Objects_DetectionTable:
+	.byte $00, $01, $00, $01, $00
+
+Objects_ToggleDetection:
+	LDX #$04
+
+Objects_ToggleDetectionLoop:	
+	LDA <Counter_1
+	AND #$01
+	EOR Objects_DetectionTable, X
+	STA Objects_ToggleDetect, X
+	DEX
+	BPL Objects_ToggleDetectionLoop
+
+	RTS
 
 Objects_AssignSprites:
 	LDA #$30

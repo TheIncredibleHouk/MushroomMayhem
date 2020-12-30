@@ -2233,10 +2233,6 @@ StatusBar_DoUpdates:
 ;	JMP AttemptUpdate
 
 ;UpdateMode2:
-;	JSR Game_UpdateCoins
-;	JSR Game_UpdateTimer
-;	JSR Game_UpdateOdometer
-;	JSR Game_UpdateLevelName
 
 AttemptUpdate:
 	INC Status_Bar_Render_Toggle
@@ -2367,21 +2363,6 @@ Initialize_Status_Bar:
 	INC Bottom_Needs_Redraw
 	RTS
 
-;Init_Bar_2:
-;	LDA #LOW(Initial_Bar_Display2)
-;	STA <Temp_Var1
-
-;	LDA #HIGH(Initial_Bar_Display2)
-;	STA <Temp_Var2
-
-;	JSR StatusBar_Template
-;	JSR StatusBar_DrawGameCoins
-;	JSR StatusBar_DrawOdometer
-;	JSR StatusBar_DrawTimer
-;	JSR StatusBar_DrawLevelName
-;	INC Top_Needs_Redraw
-;	INC Bottom_Needs_Redraw
-;	RTS
 
 StatusBar_Template:
 	LDY #$00
@@ -2684,25 +2665,7 @@ Game_UpdateCoins0:
 	LDA <CalcResult + 2
 	STA Player_Coins + 2
 
-	LDA Game_Coins
-	STA <CalcParam1
 
-	LDA Game_Coins + 1
-	STA <CalcParam1 + 1
-
-	LDA Game_Coins + 2
-	STA <CalcParam1 + 2
-
-	JSR Add3ByteValue
-
-	LDA <CalcResult
-	STA Game_Coins
-
-	LDA <CalcResult + 1
-	STA Game_Coins + 1
-
-	LDA <CalcResult + 2
-	STA Game_Coins + 2
 
 	LDA #$00
 	STA Coins_Earned
@@ -2722,8 +2685,6 @@ Game_UpdateCoins0:
 	STA Player_Coins + 1
 
 Game_UpdateCoins1:
-	LDA StatusBar_Mode
-	BNE StatusBar_DrawGameCoins
 	
 StatusBar_DrawCoins:
 	LDA Player_Coins
@@ -2751,31 +2712,6 @@ StatusBar_DrawCoins1:
 	INC Bottom_Needs_Redraw
 	RTS
 	
-StatusBar_DrawGameCoins:
-	LDA Game_Coins
-	STA <DigitsParam
-
-	LDA Game_Coins + 1
-	STA <DigitsParam + 1
-
-	LDA Game_Coins + 2
-	STA <DigitsParam + 2
-
-	JSR BytesTo7Digits
-
-	LDX #$00
-	LDY #$06
-
-StatusBar_DrawGameCoins1:
-	LDA <DigitsResult, X
-	ORA #$30
-	STA Status_Bar_Top , Y
-	INX
-	DEY
-	BPL StatusBar_DrawGameCoins1
-	INC Top_Needs_Redraw
-	RTS
-
 ;--------------------------------------
 StatusBar_DrawStarsCollected:
 	JSR GetLevelBit

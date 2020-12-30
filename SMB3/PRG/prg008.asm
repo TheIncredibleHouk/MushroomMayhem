@@ -146,7 +146,6 @@ Player_DoGameplay:
 	JSR CoinsEarnedBuffer
 	JSR Do_Air_Timer
 	JSR Do_PowerChange
-	JSR Increase_Game_Timer
 	JSR Try_Item_Reserve_Release
 	JSR Try_Use_Equipped
 
@@ -4180,7 +4179,6 @@ PRG008_BFD3:
 
 	; Apply velocity to X if there's carry
 	LDA <Player_X,X
-	STA Previous_X
 	ADC <Temp_Var11
 	STA <Player_X,X
 	
@@ -4189,34 +4187,6 @@ PRG008_BFD3:
 	LDA <Player_XHi,X
 	ADC <Temp_Var13	
 	STA <Player_XHi,X
-;	CPX #$00
-;	BNE No_Odo_Increase
-
-;	LDY #$00
-;	LDA Previous_X
-;	SEC
-;	SBC Player_X
-;	BEQ No_Odo_Increase
-;	BPL Dont_Flip
-
-;	INY
-
-;	EOR #$FF
-;	CLC
-;	ADC #$01
-
-;Dont_Flip:
-;	CLC
-;	ADC Odometer_Increase
-;	STA Odometer_Increase
-	
-;	LDA Player_ForcedSlide
-;	ORA Player_Shell
-;	BNE No_Odo_Increase
-
-;	STY Player_PrevXDirection
-
-;No_Odo_Increase:
 	RTS		 ; Return
 
 
@@ -5352,6 +5322,26 @@ Bg_Coin:
 	INC Coins_Earned
 	LDA #$00
 	STA Tile_LastProp
+	
+	JSR SpecialObject_FindEmpty
+	BCC Bg_CoinToggleBlock
+
+	LDA #SOBJ_COINSPARKLE
+	STA SpecialObj_ID, Y
+
+	LDA #$0C
+	STA SpecialObj_Timer, Y
+
+	LDA Tile_X
+	AND #$F0
+	ORA #$04
+	STA SpecialObj_X, Y
+
+	LDA Tile_Y
+	AND #$F0
+	STA SpecialObj_Y, Y
+
+Bg_CoinToggleBlock:
 	JMP Player_ToggleBlock
 
 Bg_CoinRTS:

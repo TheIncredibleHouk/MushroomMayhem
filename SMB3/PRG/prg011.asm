@@ -2157,7 +2157,7 @@ Map_Object_March:
 	BLT PRG011_AE93	 	; If object ID < MAPOBJ_BATTLESHIP (includes bonus items), jump to PRG011_AE93 (they don't "sleep")
 
 Map_Object_MusicBoxCheck:
-	LDA Map_MusicBox_Cnt
+	LDA #$00
 	BNE PRG011_AED1	 	; If music box is active, jump to PRG011_AED1
 
 PRG011_AE93:
@@ -2211,7 +2211,7 @@ Map_Object_March_NonNormal:
 	CMP #$0b	 
 	BNE PRG011_AED1	 	; If Map_Operation <> $0B (Hammer Brothers march around), jump to PRG011_AED1 (RTS)
 
-	LDA Map_MusicBox_Cnt
+	LDA #$00
 	BNE PRG011_AF46	 	; If music box is active, jump to PRG011_AF46
 
 	; Hammer brothers need to march about...
@@ -2297,7 +2297,7 @@ PRG011_AF46:
 	DEC Map_March_Count,X	 	; Decrement the march counter
 	BNE PRG011_AF84	 		; If not zero, jump to PRG011_AF84 (RTS)
 
-	LDA Map_MusicBox_Cnt
+	LDA #$00
 	BNE PRG011_AF84	 		; If music box active, jump to PRG011_AF84
 
 	; This is going to loop through all OTHER objects...
@@ -3349,7 +3349,7 @@ PRG011_B623:
 
 	; Map object $03 - $0C
 
-	LDA Map_MusicBox_Cnt
+	LDA #$00
 	BNE PRG011_B630	 ; If a music box is active, jump to PRG011_B630
 
 PRG011_B628:
@@ -3445,7 +3445,7 @@ PRG011_B69C:
 
 	; Map Object IDs $03-$08 come here (basically everything that "sleeps")
 
-	LDA Map_MusicBox_Cnt
+	LDA #$00
 	BNE PRG011_B6F5	 ; If Music Box is active, jump to PRG011_B6F5 (RTS)
 
 PRG011_B6A1:

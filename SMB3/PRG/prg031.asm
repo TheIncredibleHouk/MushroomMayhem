@@ -1476,17 +1476,17 @@ Continue_VBlank:
 	LDA #$3F
 	STA PPU_VRAM_ADDR
 
-	LDA #$01
+	LDA #$00
 	STA PPU_VRAM_ADDR
 	STA StatusBar_Recolored
+
+	LDA Palette_Buffer + $10
+	STA PPU_VRAM_DATA
 
 	LDA Palette_Buffer + 1
 	STA PPU_VRAM_DATA
 
 	LDA Palette_Buffer + 2
-	STA PPU_VRAM_DATA
-
-	LDA Palette_Buffer + 3
 	STA PPU_VRAM_DATA
 
 No_Pal_Restore:
@@ -1651,7 +1651,6 @@ PRG031_F567:
 	JSR PRGROM_Change_Both
 
 	INC <Counter_1	 ; Simply increments every frame, used for timing
-	DEC <Counter_2
 
 	LDA <Player_HaltGameZ
 	BNE PRG031_F568
@@ -2058,23 +2057,26 @@ PRG031_F7DF:
 IntIRQ_Vertical:
 	STA MMC3_IRQENABLE ; Active IRQ
 	LDY #$0b	 ; Y = $0B
-	LDA Level_Tileset ; A = current tileset
+
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
 
 	LDX #$00	 ; X = 0
-
-	CMP #$00	 ; 
-	BEQ PRG031_F871	 ; If tileset = 0 (World map), go to PRG031_F871
-	
-
 	; Unknown hardware thing?  Is this for synchronization?
-
 	STX PPU_CTL2	 ; Sprites + BG invisible
 
 	LDA #$3F
 	STA PPU_VRAM_ADDR
 	STA StatusBar_Recolored
 
-	LDA #$01
+	LDA #$00
 	STA PPU_VRAM_ADDR
 
 	LDA #$0F
@@ -3072,8 +3074,6 @@ PRG031_FE76:
 PRG031_FE98:
 	RTS		 ; Return
 
-Time_Digit_Limits: .byte $09, $0A, $06, $0A, $06, $0A
-
 Increase_Game_Timer:
 	INC Game_Timer_Tick
 	
@@ -3081,11 +3081,13 @@ Increase_Game_Timer:
 	CMP #$3C
 	BCC Game_Timer_RTS
 
+	LDA #$00
+	STA Game_Timer_Tick
 	INC DayNightMicroTicker
 
 	LDA DayNightMicroTicker
 	CMP #$0A
-	BCC DoGameTimer
+	BCC Game_Timer_RTS
 
 	LDA #$00
 	STA DayNightMicroTicker
@@ -3094,7 +3096,7 @@ Increase_Game_Timer:
 
 	LDA DayNightTicker
 	CMP #$0C
-	BNE DoGameTimer
+	BNE Game_Timer_RTS
 
 	LDA #$00
 	STA DayNightTicker
@@ -3105,35 +3107,18 @@ Increase_Game_Timer:
 	BNE DoNightTrans
 
 	LDA DayNightActive
-	BEQ DoGameTimer
+	BEQ Game_Timer_RTS
 
 	LDA #$03
 	STA DayTransition
-	JMP DoGameTimer
+	JMP Game_Timer_RTS
 
 DoNightTrans:
 	LDA DayNightActive
-	BEQ DoGameTimer
+	BEQ Game_Timer_RTS
 
 	LDA #$03
 	STA NightTransition
-
-DoGameTimer:
-	LDX #$05
-
-Game_Timer_Loop:
-	INC Game_Timer,X
-	LDA Game_Timer,X
-	CMP Time_Digit_Limits, X
-	BCC No_More_Loop
-	LDA #$00
-	STA Game_Timer,X
-	DEX
-	BPL Game_Timer_Loop
-
-No_More_Loop:
-	LDA #$00
-	STA Game_Timer_Tick
 
 Game_Timer_RTS:
 	RTS

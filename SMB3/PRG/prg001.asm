@@ -2,7 +2,7 @@
 ;****************************** OBJECT INITIALIZATION ******************************
 	; 
 OBJ_POWERUP 		= $01
-OBJ_ITEMBLOCK 	= $04
+OBJ_ITEMBLOCK 		= $04
 OBJ_COINLOCK	 	= $05
 OBJ_ELOCK			= $06
 OBJ_BUBBLE			= $07
@@ -826,6 +826,7 @@ ItemBlock_ReplaceTile = Objects_Data5
 ItemBlock_Initialized = Objects_Data6
 
 ObjNorm_ItemBlock:
+	STA Debug_Snap
 	LDA ItemBlock_Initialized, X
 	BNE ItemBlock_IsInitialized
 

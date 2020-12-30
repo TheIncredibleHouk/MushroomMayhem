@@ -645,6 +645,7 @@ MakeSplash:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
 	JSR Objects_AssignSprites
+	JSR Objects_ToggleDetection
 
 	LDA <Player_IsDying
 	CMP #$03
@@ -662,8 +663,6 @@ PRG000_C949:
 	JSR LevelEvent_Do 		; Perform event as set by Level_Event
 	JSR Player_CalcBoundBox
 	JSR Level_SpawnObjsAndBounce	; Handle if Player bounced off block and spawn new objects as screen scrolls
-
-	DEC Counter_7to0 ; Counter_7to0--
 
 PRG000_C973:
 	LDA #$00
@@ -4823,6 +4822,7 @@ DontDrawGiant:
 
 
 Object_InteractWithObjects:
+	
 	LDA Objects_State, X
 	AND #$FE
 	CMP #OBJSTATE_NORMAL
@@ -4833,12 +4833,14 @@ Object_InteractWithObjectsSkip:
 	RTS
 
 DetectObjects:
-
 	LDY #$04
 
 DetectNextSprite:
 	CPY <CurrentObjectIndexZ
 	BEQ GoNextSprite
+
+	LDA Objects_ToggleDetect, Y
+	BNE GoNextSprite
 
 	LDA Objects_State, Y
 	CMP #OBJSTATE_FROZEN
@@ -4886,6 +4888,9 @@ Object_Carry:
 
 	LDA #$00
 	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Objects_YVelFrac,X
 	SEC
 	RTS
 

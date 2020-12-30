@@ -1266,17 +1266,13 @@ PRG010_CA35:
 	LDA #$ff	 ; A = $FF
 	STA Map_MoveRepeat,X
 
-	LDA Map_NoLoseTurn
+	LDA #$01
 	BNE PRG010_CA77	 ; If Player's turn does not end (e.g. used a pipeway, Toad House, etc.), jump to PRG010_CA77
 
 	LDA World_Num
 	CMP #$FF
 	BNE PRG010_CA60	 ; If World_Num <> 2 (World 3), jump to PRG010_CA60
 
-	; On World 3, toggle the bridge state
-	LDA World3_Bridge
-	EOR #$01
-	STA World3_Bridge
 
 PRG010_CA60:
 	LDA Total_Players
@@ -2044,9 +2040,6 @@ PRG010_CE78:
 	LDA <World_Map_X,X
 	CMP World_Map_X,Y
 	BNE PRG010_CEBF	
-
-	LDA #$12
-	STA <Map_Enter2PFlag	; Map_Enter2PFlag = $12 (enterint 2P Vs)
 
 PRG010_CEA7:
 	LDX #$01

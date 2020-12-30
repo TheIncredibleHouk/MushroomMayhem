@@ -364,7 +364,6 @@ MMC3_IRQENABLE	= $E001 ; Enables IRQ generation
 	Level_ExitToMap:	.ds 1	; When non-zero, kicks back to map (OR to event when Player_FallToKing or Player_RescuePrincess is nonzero!)
 
 	Counter_1:		.ds 1	; This value simply increments every frame, used for timing various things
-	Counter_2:		.ds 1
 
 	PPU_CTL2_Copy:		.ds 1	; Essentially a copy of PPU_CTL2, which updates it as well, though the sprite/BG visibility setting is usually (always?) forced on
 
@@ -388,16 +387,9 @@ PAD_RIGHT	= $01
 ; Pal_Force_Set12 to a non-zero value will select as the index instead of
 ; Level_Tileset, and then it will copy the first two sets of 16 colors from
 ; the palette data as bg / sprite colors.  FIXME is this used though??
-	Pal_Force_Set12:	.ds 1
 
-	PlantInfest_ACnt:	.ds 1	; Plant infestation level animation counter
 
 	VBlank_TickEn:		.ds 1	; Enables the VBlank_Tick decrement and typically other things like joypad reading
-
-	Map_Enter2PFlag:	.ds 1	; If $00, entering level, otherwise set if entering 2P VS mode
-
-
-	Map_EnterViaID:		.ds 1	; Overrides whatever spot on the map you entered with something special (see Map_DoEnterViaID)
 
 				.ds 1	; $1F unused
 
@@ -448,16 +440,7 @@ PAD_RIGHT	= $01
 						.ds 2
 
 	.org $63	; NOTE, the following two are also $63/$64, bonus game context
-	BonusText_BaseL:	.ds 1	; Instruction text base address low
-	BonusText_BaseH:	.ds 1	; Instruction text base address high
-
-
-	Level_ObjPtr_AddrL:	.ds 1	; Low byte of address to object set (ORIGINAL stored in Level_ObjPtrOrig_AddrL)
-	Level_ObjPtr_AddrH:	.ds 1	; High byte of address to object set (ORIGINAL stored in Level_ObjPtrOrig_AddrH)
-
-				.ds 1	; $67 unused
-				.ds 1	; $68 unused
-
+	
 	Video_Upd_AddrL:	.ds 1	; Video_Misc_Updates routine uses this as an address, low byte
 	Video_Upd_AddrH:	.ds 1	; Video_Misc_Updates routine uses this as an address, hi byte
 	Music_Base_L:		.ds 1	; Current music segment base address low byte
@@ -1280,6 +1263,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 
 	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Data3 first byte)
 
+	Objects_Data6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
 	Objects_Data7:		.ds 8	; $0421-$0428 General object variable 7
 
 	Objects_BoundLeft:	.ds 8
@@ -1648,8 +1632,6 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_EndLevel:	.ds 1	; Player's end of level run-off until count down to zero (player will actually wrap around horizontally if too large)
 	Level_AirshipCtl:	.ds 1	; Airship control -- 1 = run and jump to catch air ship, 2 = climb to enter, 3 = ente
 
-	Counter_Wiggly:		.ds 1	; "Wiggly" counter, provides rippled movement (like the airship rising during its intro)
-	Counter_7to0:		.ds 1	; Counter that runs from 7 to 0 continuously while level is in progress
 
 	LevelPartialInit:	.ds 1	; When set, performs a partial reinitialization of level data (notably does not perform the Level InitAction unless it is airship related)
 	Level_TilesetIdx:	.ds 1	; Holds Level_Tileset as an "index" value instead, relative to levels (i.e. Level_Tileset - 1)
@@ -1921,7 +1903,6 @@ SPRITE_3_VINVISIBLE = $08
 						.ds 1	;
 	Objects_Property:		.ds 5
 	Player_IsHolding:	.ds 1	; Set when Player is holding something (animation effect only)
-	Player_ISHolding_OLD:	.ds 1	; Holds onto whether Player WAS holding onto something (so we can be sure to clear Player_IsHolding)
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
 
@@ -1937,8 +1918,6 @@ SPRITE_3_VINVISIBLE = $08
 
 	Buffer_Occupied:	.ds 2	; $06B4-$06B5 Set if respective Object_BufferX/Y buffer is already taken by an object
 
-	Player_UphillSpeedIdx:		; Override when Player_UphillFlag is set (shared with Player_Microgoomba)
-	Player_Microgoomba:	.ds 1	; Microgoomba stuck to Player
 	Object_DisableWater: .ds 1
 	Objects_InWater:	.ds 5	; $06B7-$06BB Set when object is in water
 
@@ -1968,41 +1947,9 @@ GENERATOR_VVISIBLE = 02;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	.org $0700
 
-	TileAddr_Off:		.ds 1	; During level loading, specifies an offset into the current Mem_Tile_Addr setting
-
-	; LevLoad_Unused1-4 are initialized when about to load a level, 
-	; but never used.  May have been reserved or intended or 
-	; even debugging, but who knows now...
-	LevLoad_Unused1:	.ds 1
-	LevLoad_Unused2:	.ds 1
-	LevLoad_Unused3:	.ds 1
-	LevLoad_Unused4:	.ds 1
-
-	LL_ShapeDef:		.ds 1	; During level loading, defines a shape of something (context-specific)
-
 	Scroll_UpdAttrFlag:	.ds 1	; Set when it is time to update attributes
 
 
-	; Tileset values:
-	; 00 = On map
-	; 01 = Plains style; bushes, zigzag ground, blocks (includes blue-block bonus area)
-	; 02 = Mini fortress style; gray blocks, lava (and king's room)
-	; 03 = Hills style; green grass, bushes (works in desert like 2-2 also)
-	; 04 = High-Up style; "cliffside" grass, swirly clouds, wooden block style ground
-	; 05 = pipe world plant infestation
-	; 06 = Water world
-	; 07 = Toad House
-	; 08 = Vertical pipe maze
-	; 09 = desert level, sand, pyramids (and desert fortress)
-	; 10 = Airship
-	; 11 = Giant World
-	; 12 = Ice level, frozen "1" style
-	; 13 = Coin heaven / Sky level
-	; 14 = Underground
-	; 15 = Bonus game intro and N-Spade
-	; 16 = Spade game sliders
-	; 17 = N-Spade
-	; 18 = 2P vs
 	Level_Tileset:		.ds 1	; Different tilesets which changes the detection and meaning in levels
 
 	Bonus_UnusedVH:			; VRAM High address ?? Seems to only be part of an unused routine
@@ -2110,11 +2057,8 @@ GENERATOR_VVISIBLE = 02;
 	; OBJ_PYRANTULA, OBJ_CHAINCHOMPFREE, OBJ_VEGGIEGUY, 
 	; OBJ_SKULLBLOOPER, or OBJ_FIRESNAKE
 	; ... as the X/Y buffer slot they occupy (see Object_Delete)
-	Objects_Data6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
-	Objects_TargetingXVal:	.ds 5	; $0775-$0779 X velocity result of Object_CalcHomingVels for this object OR some other X pixel target
 
 	King_Y:				; Y position (NOTE: shared with Objects_TargetingYVal)
-	Objects_TargetingYVal:	.ds 5	; $077A-$077E Y velocity result of Object_CalcHomingVels for this object OR some other Y pixel target
 
 	Pipe_TransYDelta:		; In-level transit pipe Y delta value (WARNING: Shared with Level_ScrollDiffV)
 	Level_ScrollDiffV:	.ds 1	; Difference between desired vertical and the current Vert_Scroll (WARNING: Shared with Pipe_TransYDelta)
@@ -2131,26 +2075,6 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 	;	Bit 1 - Set if Player's bbox left edge is to the LEFT of object's bbox left edge
 	;	Bit 4 - Set if Player tail attacked an object
 	Objects_PlayerHitStat:	.ds 8	; $0796-$079D Player hit status
-
-	; Up to five "scores" can be displayed at once
-	Scores_Value:		.ds 5	; $079E-$07A2 score "value"; '0' none, (10, 20, 40, 80, 100, 200, 400, 800, 1000, 2000, 4000, 8000, 1-up)
-	Scores_Counter:		.ds 5	; $07A3-$07A7 "counter" until score disappears
-	Scores_Y:		.ds 5	; $07A8-$07AC Score's Y
-	Scores_X:		.ds 5	; $07AD-$07B1 Score's X
-
-	LRBounce_Y:		.ds 1	; Left/right bouncer as sprite Y ($FF is disabled)
-	LRBounce_X:		.ds 1	; Left/right bouncer as sprite X
-	LRBounce_Vel:		.ds 1	; Left/right bouncer absolute value of X velocity
-
-	; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
-	Objects_Slope:		.ds 5	; $07B5-$07B9 Absolute slope calc value
-
-
-	World3_Bridge:		.ds 1	; 0 - Bridges are down, 1 - Bridges are up
-
-	ArrowPlat_IsActive:	.ds 1	; Set if arrow platform is active
-
-	Level_GetWandState:	.ds 1	; See Koopaling code in PRG001
 
 ; ********************************************************************************
 ; The Palette_* vars here form a graphics buffer to be committed in the
@@ -2171,7 +2095,6 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 ;	NOTE: This is cleared completely upon Player death which works since levels
 ;	are not re-enterable, but still seems a bit extreme...
 	
-	BigQBlock_GotIt:	.ds 0;
 	Palette_NeedsUpdate:		.ds 1;
 
 	DMC_Queue:		.ds 1	; Stores value to play on DMC
@@ -2625,7 +2548,6 @@ CFIRE_LASER		= $15	; Laser fire
 
 	DAIZ_TEMP1:		.ds 1	; #DAHRKDAIZ $7A70 USED for temprorary in variables
 
-	Object_SplashAlt:	.ds 1	; Used to alternate the "splash slots" 1 and 2 as objects hit the water
 	Special_Suit_Flag:		.ds 1	; Special suit flag is used to indicate when we have a non-standard suit
 									; Ice, Fire Fox, Boo and Ninja Mario all piggy back off existing code
 									; and uses this flag to indicate different ways to execute (ice balls vs fire balls for example).
@@ -2759,6 +2681,7 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Kicked:		.ds 5
 	Objects_Shelled:	.ds 5
+	Objects_ToggleDetect: .ds 5
 
 ATTR_FIREPROOF		= %00000001
 ATTR_ICEPROOF		= %00000010
@@ -2892,14 +2815,10 @@ AIR_INCREASE	= 3
 								; 1 = overall time, enemies killed, coins collected, odometer
 	Update_Level_Name: .ds 1;
 	Game_Coins:				.ds 3; over all coins collected
-	Odometer:				.ds 3; over all distance traveled
-	Game_Timer:				.ds 6; over all time spent in the game
 	Old_Game_TimerSeconds:	.ds 1
 	Force_StatusBar_Init: .ds 1
 	Top_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Bottom_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
-	Odometer_Increase:		.ds 1; Indicates we need to increase the odometer
-	Previous_X:				.ds 1; Keeps track of the the Previous x position
 	Game_Timer_Tick:		.ds 1; Indicates the game timer needs to increase by 1 second
 
 Max_Item_Count = 8
@@ -2981,27 +2900,10 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 
 	Map_SprRAMOffDistr:	.ds 1	; A free running counter on the map only which distributes Sprite_RAM offsets to ensure visibility
 
-	; Map_2PVsGame
-	; Sets which "style" of 2P Vs game will be played
-	;  0: Spiny Only
-	;  1: Fighter Fly Only
-	;  2: Spiny and Fighter Fly
-	;  3: Static coins
-	;  4: Spiny and Sidestepper
-	;  5: Fighter Fly and Sidestepper
-	;  6: Sidestepper Only
-	;  7: Coin Fountain
-	;  8: Spiny Only
-	;  9: Fighter Fly Only 
-	; 10: Sidestepper Only
-	; 11: Ladder and [?] blocks
 	Cherries:		.ds 1
 	Old_Cherries:	.ds 1
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
-	StatusBar_PMT:		.ds 8	; $7F3E-$7F45, tiles that currently make up the power meter >>>>>>[P]
-	StatusBar_Time:		.ds 3	; $7F50-$7F52 Status bar tiles for time remaining
-	Map_MusicBox_Cnt:	.ds 1	; Number of turns remaining until hammer brothers wake up (>= 1 and they're be asleep on the map)
 
 	; Store arrays defined by level data as starts after an "alternate" level junction event
 	; Level_JctXLHStart:
@@ -3088,6 +2990,7 @@ SOBJ_BARREL			= $12   ;
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_FIREBLOB		= $14 	; Blooper kid
 SOBJ_SPINYEGG		= $15
+SOBJ_COINSPARKLE    = $17
 SOBJ_POOF		=  $05 	; Poof
 SOBJ_PLACEHOLDER = $15
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
@@ -3110,12 +3013,6 @@ PLAYER_POOF			= 05
 
 	SpecialObj_YHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
 	PlayerProj_YHi:			.ds 2
-	Objects_LastTile:	.ds 0	; $7FDF-$7FE6 Last tile this object detected
-	Objects_LastProp:	.ds 0
-	Objects_LastTileX:  .ds 0
-	Objects_LastTileXHi:  .ds 0
-	Objects_LastTileY:  .ds 0
-	Objects_LastTileYHi:  .ds 0
 
 	Objects_SpriteAttributes:	.ds 8	; $7FE7-$7FEE Object sprite attributes (only uses bit 6 for H-Flip and bits 0-1 for palette)
 
@@ -3126,7 +3023,6 @@ PLAYER_POOF			= 05
 	Stop_Watch:			.ds 1	;
 	Slow_Watch:			.ds 1	;
 	Player_Dialog:		.ds 1
-	PowerUp_NoRaise:	.ds 1	; Current slot we are saving to
 	PowerUp_Reserve:	.ds 1	;
 	Old_PowerUp_Reserve:.ds 1
 	From_Reserve:		.ds 1
