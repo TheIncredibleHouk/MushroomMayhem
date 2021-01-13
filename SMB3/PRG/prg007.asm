@@ -5257,7 +5257,7 @@ SpecObj_YDistanceFromPlayer:
 
 	LDA SpecialObj_YHi, X
 	ADC #$00
-	STA <Temp_Var2
+	STA <Temp_Var2 
 
 	LDA Player_BoundBottom
 	SUB Player_BoundTop
@@ -5350,17 +5350,16 @@ DrawSkyBackground2:
 	LSR A
 	LSR A
 	LSR A
-	LSR A
 	STA <Temp_Var1
 
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
 	LSR A
-	LSR A
 	STA <Temp_Var2
 
 	LDA <Horz_Scroll_Hi
+	ASL A
 	ASL A
 	ASL A
 	ASL A
@@ -5380,46 +5379,35 @@ DrawClouds0:
 	STA Sprite_RAM + 1, Y
 	
 	LDA Weather_YPos, X
-	ADD <Temp_Var1
-	STA Sprite_RAMY, Y
+	SUB <Temp_Var1
+	STA Sprite_RAM, Y
 	
 	LDA Weather_XPos, X
 	SUB <Temp_Var2
-	STA Sprite_RAMX, Y
-	
-	TXA
-	AND #$01
-	BNE Bg_NoXOffset
-
-	LSR <Temp_Var1
-	LSR <Temp_Var2
-
-Bg_NoXOffset:
+	STA Sprite_RAM +3, Y
 	DEX
 	BPL DrawClouds0
 	RTS
 
-
 DrawStarsBackground1:
-	LDX #$05
 	LDY #$E4
-
+	LDX #$05
+	
 	LDA <Vert_Scroll
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	LSR A
 	STA <Temp_Var1
-
+	
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
 	LSR A
-	LSR A
 	STA <Temp_Var2
-
+	
 	LDA <Horz_Scroll_Hi
+	ASL A
 	ASL A
 	ASL A
 	ASL A
@@ -5436,7 +5424,6 @@ DrawStars0:
 	AND #$03
 	ORA #SPR_BEHINDBG
 	STA Sprite_RAM + 2, Y
-
 	LDA #$5D
 	STA Sprite_RAM + 1, Y
 
@@ -5447,18 +5434,10 @@ DrawStars0:
 	LDA StarXPositions, X
 	SUB <Temp_Var2
 	STA Sprite_RAM +3, Y
-	
-	TXA
-	AND #$01
-	BNE Stars_NoXOffset
-
-	LSR <Temp_Var1
-	LSR <Temp_Var2
-
-Stars_NoXOffset:
 	DEX
 	BPL DrawStars0
 	RTS
+
 
 Projectile_TempChange:
 	LDA ProjectileToSpinners
