@@ -826,7 +826,6 @@ ItemBlock_ReplaceTile = Objects_Data5
 ItemBlock_Initialized = Objects_Data6
 
 ObjNorm_ItemBlock:
-	STA Debug_Snap
 	LDA ItemBlock_Initialized, X
 	BNE ItemBlock_IsInitialized
 
@@ -1717,6 +1716,28 @@ ObjInit_Spring:
 
 	LDA #ATTR_ALLWEAPONPROOF
 	STA Objects_WeaponAttr, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Spring_InitRTS
+	
+	CMP #TILE_PROP_ITEM
+	BCS Spring_PlaceInBlock
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+	RTS
+
+Spring_PlaceInBlock:
+	STA Spring_InItemBlock, X
+
+Spring_InitRTS:
 	RTS
 
 Spring_Jump_Height:
@@ -1732,8 +1753,28 @@ Spring_CurrentY = Objects_Data3
 Spring_CurrentYHi = Objects_Data4
 Spring_CurrentFrame = Objects_Data5
 Spring_LastInteract = Objects_Data6
+Spring_InItemBlock = Objects_Data7
 
 ObjNorm_Spring:
+	LDA Spring_InItemBlock, X
+	BEQ Spring_Norm
+
+	JSR Object_DeleteOffScreen
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	CMP #TILE_PROP_ITEM
+	BCS Spring_InitRTS
+
+	LDA #$00
+	STA Spring_InItemBlock, X
+
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyYVel
+	JMP Object_DrawMirrored
+
+Spring_Norm:
 	LDA <Player_HaltGameZ
 	BNE Spring_RTS
 
@@ -1863,7 +1904,7 @@ Spring_PositionRestore:
 	STA <Objects_YHiZ, X
 	RTS
 	
-
+Sprint_InsideBlock:
 
 PointerDataOffset:
 	.byte $06, $0C, $12, $18
