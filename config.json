@@ -1,6 +1,6 @@
 {
-	"assembledFile": "F:/ROM Hacking/Mario Adventure 3/SMB3/smb3.nes",
-	"assetsFile": "F:/ROM Hacking/Mario Adventure 3/MarioAdventure3.nes",
+	"assembledFile": "E:/Mushroom Mayhem/Game/SMB3/smb3.nes",
+	"assetsFile": "E:/Mushroom Mayhem/Game/MushroomMayhem.nes",
 	"dataCopy": [{
 		"source": "assets",
 		"destination": "assembly",
