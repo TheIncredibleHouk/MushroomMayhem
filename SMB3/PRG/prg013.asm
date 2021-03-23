@@ -5,13 +5,14 @@ HandleLevelEvent:
 	LDA EventType
 	JSR DynJump
 
-	.word NoEvent
-	.word FloodFloor1
-	.word FloodFloor2
-	.word LetEnemyHandle
-	.word ColorSwitch
-	.word Snow_Event
-	.word Fireball_Event
+	.word NoEvent ;00
+	.word FloodFloor1 ;01
+	.word FloodFloor2 ; 02
+	.word LetEnemyHandle ;03
+	.word TileSwitch ;04
+	.word Snow_Event ;05
+	.word Fireball_Event ;06
+	.word Direction_Switch ;07
 
 NoEvent:
 LetEnemyHandle:
@@ -85,12 +86,12 @@ FloodFloorEnd:
 	RTS
 
 
-Color_SwitchTables:
+TileSwitch_Tables:
 	.byte $60, $62, $64, $66
 
-ColorSwitch:
+TileSwitch:
 	LDA EventSwitch
-	BEQ ColorSwitchRTS
+	BEQ TileSwitchRTS
 
 	AND #$C0
 	LSR A
@@ -101,7 +102,7 @@ ColorSwitch:
 	LSR A
 	TAY
 
-	LDA Color_SwitchTables, Y
+	LDA TileSwitch_Tables, Y
 	STA PatTable_BankSel
 
 	LDA #$00
@@ -135,7 +136,7 @@ ColorSwitch:
 	STA TileProperties + 2, Y
 	STA EventSwitch
 
-ColorSwitchRTS:
+TileSwitchRTS:
 	RTS
 
 Snow_Event:
@@ -562,4 +563,26 @@ Fireball_NextPal:
 	STA EventType
 
 Fireball_ReturnPalRTS:
+	RTS
+
+DirectionSwitch_Tables:
+	.byte $60, $62
+
+Direction_Movement:
+	.byte TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_LEFT
+
+Direction_Switch:
+	LDA EventVar
+	EOR #$01
+	STA EventVar
+	TAY
+
+	LDA DirectionSwitch_Tables, Y
+	STA PatTable_BankSel
+
+	LDA Direction_Movement, Y
+	STA TileProperties + $FE
+
+	LDA #$00
+	STA EventSwitch
 	RTS

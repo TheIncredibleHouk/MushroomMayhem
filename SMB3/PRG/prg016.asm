@@ -9,6 +9,7 @@ OBJ_PIRATEBRO           = $90
 OBJ_SPINTULA            = $91
 OBJ_PYRANTULA           = $92
 OBJ_BARRELBRO			= $93
+OBJ_PLUMBERPAUL			= $94
 
     .word ObjInit_HammerBro ; Object $8C
     .word ObjInit_NinjaBro ; Object $8D

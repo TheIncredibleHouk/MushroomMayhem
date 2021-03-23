@@ -3426,10 +3426,10 @@ BumpBlock_JumpTable:
 	.word BumpBlock_Frog     ;
 	.word BumpBlock_FoxLeaf	; A = Fox Leaf
 	.word BumpBlock_Koopa	;
-	.word BumpBlock_Pumpkin	; 8 = 10 coin
+	.word BumpBlock_Event	; 8 = 10 coin
 	.word BumpBlock_Sledge   ;
 	.word BumpBlock_NinjaShroom		; 9 = 1-up
-	.word BumpBlock_Star		; 3 = Star-
+	.word BumpBlock_Empty		; 3 = Star-
 	.word BumpBlock_Vine		; 7 = Vine
 	.word BumpBlock_PSwitch	; B = P-Switch
 	.word BumpBlock_Brick	; 6 = Standard brick behavior
@@ -3611,10 +3611,18 @@ BumpBlock_Leaf:
 	JSR BumpBlock_CheckMushroom
 	RTS		 ; Return
 
-BumpBlock_Star:
-	JSR Bumps_CheckExistingPowerUps
+BumpBlock_Event:
+	INC EventSwitch
 	JSR Bumps_PowerUpBlock
-	LDA #POWERUP_STAR
+	LDA #00
+	STA ItemBlock_PowerUp, X
+	LDA Tile_LastValue
+	STA ItemBlock_ReplaceTile, X
+	RTS		 ; Return
+
+BumpBlock_Empty:
+	JSR Bumps_PowerUpBlock
+	LDA #00
 	STA ItemBlock_PowerUp, X
 	RTS		 ; Return
 
@@ -3824,7 +3832,7 @@ Tile_MoveTable_XCarry:
 
 Tile_MoveTable_XVel:
 	;	   L    R    U    D
-	.byte $D8, $28, $00, $00 ; X Air
+	.byte $E0, $20, $00, $00 ; X Air
 	.byte $00, $00, $00, $00 ; X Water
 	.byte $00, $00, $00, $00 ; X Ground
 	.byte $00, $00, $00, $00 ; X Wall
@@ -4697,6 +4705,7 @@ Wall_Hit:
 
 	LDA #$00
 	STA <Player_XVel
+	STA Player_CarryXVel
 
 Wall_NoHit:
 	JSR Player_CheckWallJump
