@@ -781,7 +781,7 @@ PAD_RIGHT	= $01
 	Player_SpriteY:		.ds 1	; Player's sprite Y
 	Objects_SpriteY:	.ds 8	; $B5-$BC Other object's sprite Y positions
 	; WARNING: The distance between Player/Objects_XVelZ and Player/Objects_YVelZ must be same as Player/Objects_X/YVelFrac!
-	Player_XVel:		.ds 1	; Player's X Velocity (negative values to the left) (max value is $38)
+	Player_XVelZ:		.ds 1	; Player's X Velocity (negative values to the left) (max value is $38)
 	Objects_XVelZ:		.ds 8	; $BE-$C5 Other object's X velocities
 	Player_CarryXVel:	.ds 1
 	TileYIndexBase:		.ds 6	; $C6-$CC OBJECT SLOTS 0 - 5 ONLY ... uncleared var??
@@ -1652,8 +1652,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_IsClimbing:	.ds 1	; Set when Player is climing vine
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
 	Player_HitCeiling:	.ds 1	; Flag set when Player has just hit head off ceiling
-	Player_HitLeftWall: .ds 1
-	Player_HitRightWall:	 .ds 1
+	Player_HitWall: .ds 1
 	Player_FlyTime:		.ds 1	; When > 0, Player can fly (for power ups that do so); decrements (unless $FF) to 0
 	Player_IsDucking:	.ds 1	; Set when Player is ducking down
 	Player_XExit:	.ds 1	;
@@ -2035,7 +2034,7 @@ GENERATOR_VVISIBLE = 02;
 	Object_VelCarry:	.ds 1	; '1' when last Object Velocity fraction accumulation rolled over
 
 	; WARNING: The distance between Player/Objects_XVelFrac and Player/Objects_YVelFrac must be same as Player/Objects_X/YVel!
-	Player_XVelFrac:	.ds 1	; X velocity fractional accumulator
+	Player_XVelZFrac:	.ds 1	; X velocity fractional accumulator
 	Objects_XVelFrac:	.ds 8	; $074E-$0755 Other object's X velocity fractional accumulator
 
 				.ds 1	; $0756 unused
@@ -2980,20 +2979,17 @@ SOBJ_WRENCH		= $0A 	; Rocky's Wrench
 SOBJ_CANNONBALL		= $0B 	; Cannonball
 SOBJ_LIGHTNINGBOLT  = $0C
 SOBJ_EXPLOSIONSTAR	= $0D 	; Explosion star
-SOBJ_BUBBLE		= $00 	; Bubble
 SOBJ_FLAME			= $0E
 SOBJ_SKULL	= $0F	; Lava Lotus fire
-SOBJ_LAVALOTUSFIRE	= $00
 SOBJ_FROST			= $10
-SOBJ_RECOVEREDWAND	= $00 	; Recovered wand
 SOBJ_POPPEDOUTCOIN	= $11 	; Popped out coin
 SOBJ_BARREL			= $12   ;
 SOBJ_BRICKDEBRIS	= $13 	; Brick debris (used for busting e.g. Piledriver Microgroomba, OR giant world brick busting)
 SOBJ_FIREBLOB		= $14 	; Blooper kid
 SOBJ_SPINYEGG		= $15
 SOBJ_COINSPARKLE    = $17
-SOBJ_POOF		=  $05 	; Poof
-SOBJ_PLACEHOLDER = $15
+SOBJ_PLUNGER		= $18
+SOBJ_PLACEHOLDER = $FF
 	SpecialObj_ID:		.ds 8	; $7FC6-$7FCD Special object spawn event IDs
 
 ; Player's hammer/fireball

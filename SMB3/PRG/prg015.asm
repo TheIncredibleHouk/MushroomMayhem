@@ -2521,7 +2521,7 @@ P_PRG007_B827:
 	ADD Objects_Data5, X
 	TAY
 	LDA XKnockBacks, Y
-	STA <Player_XVel
+	STA <Player_XVelZ
 	JSR Object_XDistanceFromPlayer
 	TYA
 	ASL A

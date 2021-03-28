@@ -473,17 +473,17 @@ PRG009_BCCA:
 
 	LDA Level_AScrlHVel	; Get the horizontal scroll velocity
 	CLC		
-	SBC <Player_XVel	; Difference against Player's X velocity
+	SBC <Player_XVelZ	; Difference against Player's X velocity
 	EOR <Player_SpriteX	; Check sign of difference against Player's Sprite X
 	BMI PRG009_BCF1	 	; Basically determines if Player should be pushed by the scroll; if not, jump to PRG009_BCF1
 
 	; Set Player's X velocity same as auto scroll horizontal velocity
 	LDA Level_AScrlHVel
-	STA <Player_XVel
+	STA <Player_XVelZ
 
-	; Player_XVelFrac = 0
+	; Player_XVelZFrac = 0
 	LDA #$00
-	STA Player_XVelFrac
+	STA Player_XVelZFrac
 
 	BEQ PRG009_BCF1	 ; Jump (technically always) to PRG009_BCF1
 
@@ -514,7 +514,7 @@ PRG009_BCF1:
 	AND #$01	; Masks 0/1
 	STA Level_AScrlSclLastDir	; -> Level_AScrlSclLastDir
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BEQ PRG009_BD1D	 ; If Player is not moving horizontally, jump to PRG009_BD1D (RTS)
 
 	EOR Level_AScrlHVel
@@ -537,9 +537,9 @@ PRG009_BD0E:
 	ADC <Player_XHi
 	STA <Player_XHi
 
-	; Player_XVelFrac = 0
+	; Player_XVelZFrac = 0
 	LDA #$00
-	STA Player_XVelFrac
+	STA Player_XVelZFrac
 
 PRG009_BD1D:
 	RTS		 ; Return

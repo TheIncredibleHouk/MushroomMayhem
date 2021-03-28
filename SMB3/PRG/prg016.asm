@@ -19,7 +19,7 @@ OBJ_PLUMBERPAUL			= $94
     .word ObjInit_Spintula ; Object $91
     .word ObjInit_Pyrantula ; Object $92
     .word ObjInit_BarrelBro ; Object $93
-    .word ObjInit_DoNothing ; Object $94
+    .word ObjInit_PlungerPaul ; Object $94
     .word ObjInit_DoNothing ; Object $95
     .word ObjInit_DoNothing ; Object $96
     .word ObjInit_DoNothing ; Object $97
@@ -42,7 +42,7 @@ OBJ_PLUMBERPAUL			= $94
     .word ObjNorm_Spintula ; Object $91
     .word ObjNorm_Pyrantula ; Object $92
     .word ObjNorm_BarrelBro ; Object $93
-    .word ObjNorm_DoNothing ; Object $94
+    .word ObjNorm_PlungerPaul ; Object $94
     .word ObjNorm_DoNothing ; Object $95
     .word ObjNorm_DoNothing ; Object $96
     .word ObjNorm_DoNothing ; Object $97
@@ -65,7 +65,7 @@ OBJ_PLUMBERPAUL			= $94
     .word Player_GetHurt ; Object $91
     .word Player_GetHurt ; Object $92
     .word Player_GetHurt ; Object $93
-    .word ObjHit_DoNothing ; Object $94
+    .word Player_GetHurt ; Object $94
     .word ObjHit_DoNothing ; Object $95
     .word ObjHit_DoNothing ; Object $96
     .word ObjHit_DoNothing ; Object $97
@@ -88,7 +88,7 @@ OBJ_PLUMBERPAUL			= $94
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $91
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $92
     .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $93
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $94
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $94
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $95
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $96
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $97
@@ -111,7 +111,7 @@ OBJ_PLUMBERPAUL			= $94
     .byte OPTS_SETPT5 | $0A ; Object $91
     .byte OPTS_SETPT5 | $0A ; Object $92
     .byte OPTS_SETPT5 | $4E ; Object $93
-    .byte OPTS_NOCHANGE ; Object $94
+    .byte OPTS_SETPT5 | $36 ; Object $94
     .byte OPTS_NOCHANGE ; Object $95
     .byte OPTS_NOCHANGE ; Object $96
     .byte OPTS_NOCHANGE ; Object $97
@@ -186,6 +186,8 @@ ObjP92:
     
 
 ObjP94:
+	.byte $BB, $BD, $9B, $9D
+
 ObjP95:
 ObjP96:
 ObjP97:
@@ -1858,3 +1860,217 @@ BarrelBro_ThrowToRight:
 
 BarrelBro_ThrowDone:
 	RTS    	
+
+ObjInit_PlungerPaul:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #(ATTR_STOMPKICKSOUND)
+	STA Objects_BehaviorAttr, X
+
+	LDA #$40
+	STA Objects_Timer, X
+
+	LDA Objects_SpriteAttributes, X
+	ORA #SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	LDA Objects_YZ, X
+	ADD #$02
+	STA Objects_YZ, X
+
+	LDA Objects_YHiZ, X
+	ADC #$00
+	STA Objects_YHiZ, X
+	RTS
+
+PlungerPaul_State = Objects_Data1
+
+ObjNorm_PlungerPaul:
+	LDA <Player_HaltGameZ
+	BEQ PlungerPaul_Norm
+
+	JMP PlungerPaul_Draw
+
+PlungerPaul_Norm:
+	JSR Object_CalcBoundBox
+	JSR Object_FacePlayer
+	JSR Object_AttackOrDefeat
+	
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_STOMPED
+	BEQ PlungerPaul_DoState
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE PlungerPaul_DoState
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$F0
+	STA Player_YVelZ, X
+
+PlungerPaul_DoState:	
+	LDA PlungerPaul_State, X
+	JSR DynJump
+
+	.word PlungerPaul_Wait
+	.word PlungerPaul_Raise
+	.word PlungerPaul_Throw
+	.word PlungerPaul_Descend
+
+PlungerPaul_Wait:
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA Objects_Timer, X
+	BEQ PlungerPaul_Wait1
+	JMP PlungerPaul_Draw
+
+PlungerPaul_Wait1:
+	INC PlungerPaul_State, X
+	LDA #$24
+	STA Objects_Timer, X
+	JMP PlungerPaul_Draw
+
+PlungerPaul_Raise:
+	LDA #$F8
+	STA Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+
+	LDA Objects_Timer, X
+	BNE PlungerPaul_Draw
+
+	INC PlungerPaul_State, X
+	LDA #$30
+	STA Objects_Timer, X
+	JMP PlungerPaul_Draw
+	
+PlungerPaul_Throw:
+	LDA Objects_Timer, X
+	CMP #$18
+	BNE PlungerPaul_Throw1
+
+	LDA #$01
+	STA Objects_Frame, X
+	
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE PlungerPaul_Throw1
+
+	JSR Object_PrepProjectile
+	BCC PlungerPaul_Throw1
+
+	LDA #SOBJ_PLUNGER
+	STA SpecialObj_ID,Y
+
+	LDA <Objects_XZ, X
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi, Y
+
+	LDA <Objects_YZ, X
+	SUB #$02
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA SpecialObj_YHi, Y
+
+	LDA #$00
+	STA SpecialObj_YVel, Y
+
+	LDA #$28
+	STA SpecialObj_XVel, Y
+
+	LDA Objects_Orientation, X
+	BNE PlungerPaul_Throw1
+	
+	LDA #$D8
+	STA SpecialObj_XVel, Y
+	
+
+PlungerPaul_Throw1:
+	LDA Objects_Timer, X
+	BNE PlungerPaul_Draw
+
+	INC PlungerPaul_State, X
+	LDA #$24
+	STA Objects_Timer, X
+	JMP PlungerPaul_Draw
+
+PlungerPaul_Descend:
+	LDA #$08
+	STA Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+
+	LDA Objects_Timer, X
+	BNE PlungerPaul_Draw
+
+	LDA #$00
+	STA PlungerPaul_State, X
+	
+	LDA #$40
+	STA Objects_Timer, X
+
+PlungerPaul_Draw:
+	LDA Object_SpriteRAMOffset, X
+	ADD #$08
+	STA Object_SpriteRAMOffset, X
+	JSR Object_Draw
+
+	LDA Objects_Frame, X
+	BNE PlungerPaul_RTS
+	
+	LDA Object_SpriteRAMOffset, X
+	SUB #$08
+	TAY
+
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BNE PlungerPaul_DrawFlipped
+
+	LDA #$A9
+	STA Sprite_RAMTile, Y
+
+	LDA #$BF
+	STA Sprite_RAMTile + 4, Y
+	BNE PlungerPaul_DrawPlunger
+
+PlungerPaul_DrawFlipped:	
+	LDA #$A9
+	STA Sprite_RAMTile + 4, Y
+
+	LDA #$BF
+	STA Sprite_RAMTile, Y
+
+PlungerPaul_DrawPlunger:
+	LDA Sprite_RAMY + 8, Y
+	SUB #$04
+	STA Sprite_RAMY, Y
+
+	LDA Sprite_RAMY + 12, Y
+	SUB #$04
+	STA Sprite_RAMY + 4, Y
+
+	LDA Sprite_RAMX + 8, Y
+	STA Sprite_RAMX, Y
+	
+	LDA Sprite_RAMX + 12, Y
+	STA Sprite_RAMX + 4, Y
+
+	LDA Sprite_RAMAttr + 8, Y
+	AND #~SPR_PAL3
+	ORA #SPR_PAL1
+	STA Sprite_RAMAttr , Y
+	STA Sprite_RAMAttr + 4, Y
+
+PlungerPaul_RTS:	
+	RTS

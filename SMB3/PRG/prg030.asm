@@ -4563,7 +4563,7 @@ Jump_Right:
 	LDA #$E0
 
 Do_Jump_Off:
-	STA <Player_XVel
+	STA <Player_XVelZ
 	STA <Player_EffXVel
 	RTS
 
@@ -5840,7 +5840,7 @@ Player_Die:
 
 	; Clear a bunch of stuff at time of death
 	LDA #$00
-	STA <Player_XVel
+	STA <Player_XVelZ
 	STA Player_Flip	
 	STA Player_FlashInv
 	STA Player_StarInv

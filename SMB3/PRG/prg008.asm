@@ -864,7 +864,7 @@ Player_XAccelPseudoFrac_UW:
 	; (i.e. what tick value to reach to go to next anim frame)
 Player_WalkAnimTickMax:
 	; 0-15 POSSIBLE, but only 0-7 defined (due to game's max X vel of $38)
-	; Index is Player_XVel >> 3
+	; Index is Player_XVelZ >> 3
 	.byte $07, $06, $05, $04, $03, $02, $01, $01, $01	; Lower number = faster animation
 
 
@@ -954,7 +954,7 @@ PRG008_A6D2:
 
 	; Remove horizontal velocity and cancel controller inputs
 	LDA #$00
-	STA <Player_XVel
+	STA <Player_XVelZ
 	STA <Pad_Holding
 	STA <Pad_Input	
 
@@ -1077,7 +1077,7 @@ PRG008_A916:
 
 	LDY #$02	 ; Y = 2 (moving right)
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BPL PRG008_A925	 ; If Player's X Velocity is rightward, jump to PRG008_A925
 
 	JSR Negate	 ; Negate X Velocity (get absolute value)
@@ -1117,7 +1117,7 @@ PRG008_A928:
 	ADD <Player_CarryYVel
 	STA <Player_EffYVel
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	ADD <Player_CarryXVel
 
 	LDY Player_InWater
@@ -1279,7 +1279,7 @@ Player_RunMeterNoCap:
 	AND #(PAD_LEFT | PAD_RIGHT)
 	BNE Player_KeepHopping
 
-	STA <Player_XVel
+	STA <Player_XVelZ
 	BEQ PRG008_AA1A	 ; If Player is not pressing left/right, jump to PRG008_AA1A
 
 Player_KeepHopping:
@@ -1395,25 +1395,25 @@ PRG008_AA6E:
 	ASL A		 ; Double horizontal velocity
 
 PRG008_AA7E:
-	STA <Player_XVel ; Update X Velocity
+	STA <Player_XVelZ ; Update X Velocity
 
 	LDX #$02	 ; X = 2
 	BNE PRG008_AA9C	 ; Jump (technically always) to PRG008_AA9C
 
 PRG008_AA84:
-	LDY <Player_XVel
+	LDY <Player_XVelZ
 	BEQ PRG008_AA94	 ; If Player is not moving horizontally, jump to PRG008_AA94
 
 	INY		 ; Y++
 
-	LDA <Player_XVel
-	BMI PRG008_AA8F	 ; If Player_XVel < 0, jump to PRG008_AA8F
+	LDA <Player_XVelZ
+	BMI PRG008_AA8F	 ; If Player_XVelZ < 0, jump to PRG008_AA8F
 
 	DEY
 	DEY		 ; Y -= 2
 
 PRG008_AA8F:
-	STY <Player_XVel ; Update X Velocity
+	STY <Player_XVelZ ; Update X Velocity
 	JMP PRG008_AA9C	 ; Jump to PRG008_AA9C
 
 PRG008_AA94:
@@ -1574,7 +1574,7 @@ PRG008_ABA6:
 	LDA <Player_InAir
 	BNE PRG008_AC01	 ; If Player is mid air, jump to PRG008_AC01 (RTS)
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BEQ PRG008_AC01	 ; If Player is not moving horizontally, jump to PRG008_AC01 (RTS)
 	BMI PRG008_ABD3	 ; If Player is moving leftward, jump to PRG008_ABD3
 	BPL PRG008_ABEB	 ; If Player is moving rightward, jump to PRG008_ABEB
@@ -1646,9 +1646,9 @@ PRG008_ABF5:
 	LDA <Temp_Var1
 	ADD RandomN	; actual value not used, looking for a semi-random carry
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	ADC <Temp_Var2
-	STA <Player_XVel	; Player_XVel += Temp_Var2 (and sometimes carry)
+	STA <Player_XVelZ	; Player_XVelZ += Temp_Var2 (and sometimes carry)
 
 PRG008_AC01:
 	RTS		 ; Return
@@ -1782,7 +1782,7 @@ STORE_SMALL_JUMP:
 PRG008_AC6C:
 
 	; Get absolute value of Player's X velocity
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BPL PRG008_AC73
 	JSR Negate
 
@@ -2047,7 +2047,7 @@ PRG008_AD9A:
 	LDA Player_SwimCnt
 	BNE PRG008_ADBD	 ; If Player_SwimCnt <> 0, jump to PRG008_ADBD
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BNE PRG008_ADAD	 ; If Player is moving left or right, jump to PRG008_ADAD
 
 	; Player NOT moving left/right
@@ -2117,8 +2117,8 @@ PowerUp_Ability:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_CommonGroundAnims:
 
-	; Get absolute value of Player_XVel
-	LDA <Player_XVel
+	; Get absolute value of Player_XVelZ
+	LDA <Player_XVelZ
 	BPL PRG008_ADE0
 	JSR Negate
 
@@ -2156,8 +2156,8 @@ PRG008_AE03:
 
 	; Player NOT pressing left/right
 
-	LDA <Player_XVel
-	BNE PRG008_AE11	 ; If Player_XVel <> 0, jump to PRG008_AE11
+	LDA <Player_XVelZ
+	BNE PRG008_AE11	 ; If Player_XVelZ <> 0, jump to PRG008_AE11
 
 	LDA #$02
 	STA <Player_WalkFrame	 ; Otherwise, force Player_WalkFrame to 2 (standing still)
@@ -2202,10 +2202,10 @@ PRG008_AE58:
 
 	; Player not in water...
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	ADD #$01
 	CMP #$03
-	BLT PRG008_AE90	 ; If (Player_XVel + 1) < 3, jump to PRG008_AE90
+	BLT PRG008_AE90	 ; If (Player_XVelZ + 1) < 3, jump to PRG008_AE90
 
 	LDA Player_MoveLR
 	AND <Pad_Holding
@@ -2253,8 +2253,8 @@ PRG008_AEC0:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_SetSpecialFrames:
 
-	; Get absolute value of Player_XVel
-	LDA <Player_XVel
+	; Get absolute value of Player_XVelZ
+	LDA <Player_XVelZ
 	BPL PRG008_AECA
 	JSR Negate
 
@@ -2297,8 +2297,8 @@ PRG008_AEF0:
 
 	LDA Player_SomersaultFlipBits,Y	 ; Get proper somersault flip bits
 
-	LDY <Player_XVel
-	BPL PRG008_AF05	 ; If Player_XVel >= 0, jump to PRG008_AF05
+	LDY <Player_XVelZ
+	BPL PRG008_AF05	 ; If Player_XVelZ >= 0, jump to PRG008_AF05
 
 	EOR #SPR_HFLIP	 ; Otherwise, horizontally flip!
 
@@ -2425,7 +2425,7 @@ Player_Koopa_Shell:
 	RTS
 
 Try_Shell:
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	CMP #$1C
 	BCC Kill_Shell
 
@@ -2563,17 +2563,17 @@ PRG008_B082:
 	BEQ PRG008_B09F	 ; If flying or fluttering, jump to PRG008_B09F (RTS)
 
 	LDY #-1		 ; Y = -1
-	LDA <Player_XVel
-	BPL PRG008_B095	 ; If Player_XVel >= 0, jump to PRG008_B095
+	LDA <Player_XVelZ
+	BPL PRG008_B095	 ; If Player_XVelZ >= 0, jump to PRG008_B095
 
 	LDY #1		 ; Y = 1
-	JSR Negate	 ; Negate Player_XVel (get absolute value)
+	JSR Negate	 ; Negate Player_XVelZ (get absolute value)
 
 PRG008_B095:
 
-	; Y = -1 and Player_XVel >= 0
+	; Y = -1 and Player_XVelZ >= 0
 	;    OR
-	; Y = 1 and Player_XVel < 0
+	; Y = 1 and Player_XVelZ < 0
 	;    (but magnitude is in 'A' either way)
 
 	CMP #PLAYER_TOPWALKSPEED	
@@ -2581,8 +2581,8 @@ PRG008_B095:
 
 	; Otherwise add 'Y', which gives a slow acceleration up to that speed when in air as raccoon
 	TYA
-	ADD <Player_XVel
-	STA <Player_XVel
+	ADD <Player_XVelZ
+	STA <Player_XVelZ
 
 PRG008_B09F:
 	RTS		 ; Return
@@ -2855,7 +2855,7 @@ PRG008_B1CE:
 	LDA <Player_SpriteX
 	BEQ PRG008_B208
 
-	LDY <Player_XVel
+	LDY <Player_XVelZ
 	BMI PRG008_B1DD	 ; If Player X velocity < 0 (moving leftward), jump to PRG008_B1DD
 
 	; Player moving rightward...
@@ -2893,19 +2893,19 @@ PRG008_B1F6:
 	ADD <Player_XHi	 ; Apply high adjustment
 	STA <Player_XHi	 ; And store it!
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	PHP		 ; Save processor status
 
 	AND #%00001111	 ; Just take lower 4 bits (the "fractional" part)
 
 	PLP		 ; Restore processor status
 
-	BPL PRG008_B206	 ; If Player_XVel >= 0, jump to PRG008_B206
+	BPL PRG008_B206	 ; If Player_XVelZ >= 0, jump to PRG008_B206
 
 	ORA #$F0	 ; Otherwise, provide negative sign extention for fractional part
 
 PRG008_B206:
-	STA <Player_XVel ; Revise Player_XVel with only signed fractional part!
+	STA <Player_XVelZ ; Revise Player_XVelZ with only signed fractional part!
 
 PRG008_B208:
 	LDA Level_FreeVertScroll
@@ -3212,6 +3212,7 @@ TileSolidOffset:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DetectSolids:
 	LDA #$00
+	STA Player_HitWall
 	STA Player_HitCeiling ; Clear Player_HitCeiling
 	STA Player_Slippery	 
 	STA TrapSet
@@ -3919,7 +3920,7 @@ Apply_Move1:
 	LDA Tile_MoveTable_XVel, X
 	BEQ Apply_Move2
 
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 Apply_Move2:
 	LDA Tile_MoveTable_YCarry, X
@@ -4092,25 +4093,25 @@ Player_ApplyXVelocity:
 	STA <Player_CarryXVel
 
 	LDA #$00
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 Player_ApplyXVelocity1:
 	LDX #$00	; X = 0
 	LDY #PLAYER_MAXSPEED	; Y = PLAYER_MAXSPEED
 
-	LDA <Player_XVel
-	BPL PRG008_BFAC	 ; If Player_XVel >= 0, jump to Player_ApplyXVelocity 
+	LDA <Player_XVelZ
+	BPL PRG008_BFAC	 ; If Player_XVelZ >= 0, jump to Player_ApplyXVelocity 
 
 	LDY #-PLAYER_MAXSPEED	 ; Y = -PLAYER_MAXSPEED
 
-	; Negate Player_XVel (get absolute value)
+	; Negate Player_XVelZ (get absolute value)
 	NEG
 
 PRG008_BFAC:
-	STA <Temp_Var16		; Store absolute value Player_XVel -> Temp_Var166
+	STA <Temp_Var16		; Store absolute value Player_XVelZ -> Temp_Var166
 	CMP #PLAYER_MAXSPEED
 	BLS Player_ApplyVelocity ; If we haven't hit the PLAYER_MAXSPEED yet, apply it!
-	STY <Player_XVel	 ; Otherwise, cap at max speed!
+	STY <Player_XVelZ	 ; Otherwise, cap at max speed!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_ApplyVelocity
@@ -4119,7 +4120,7 @@ PRG008_BFAC:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_ApplyVelocity:
 	; X may specify offset to YVel, or else be zero
-	LDA <Player_XVel,X	; Get velocity
+	LDA <Player_XVelZ,X	; Get velocity
 	STA <Temp_Var1
 	
 	CPX #$00
@@ -4181,9 +4182,9 @@ PRG008_BFD3:
 	STY <Temp_Var13	 ; Temp_Var13 = 0 or $FF (High part)
 
 	; Accumulating fractional component
-	LDA Player_XVelFrac,X
+	LDA Player_XVelZFrac,X
 	ADD <Temp_Var12	
-	STA Player_XVelFrac,X
+	STA Player_XVelZFrac,X
 
 	; Apply velocity to X if there's carry
 	LDA <Player_X,X
@@ -4224,7 +4225,7 @@ Player_CapYVel:
 	STA <Player_YVelZ ; Player_YVelZ = FALLRATE_MAX
 
 PRG008_BFF9:
-	LDX #(Player_YVelZ - Player_XVel) ; Do the Y velocity
+	LDX #(Player_YVelZ - Player_XVelZ) ; Do the Y velocity
 	JSR Player_ApplyVelocity	 ; Apply it!
 
 	RTS		 ; Return
@@ -4468,7 +4469,7 @@ StartCountDown:
 	BNE NoCountDown
 	
 	LDA #$00
-	STA <Player_XVel
+	STA <Player_XVelZ
 	
 	LDA #MUS1_BOSSVICTORY
 	STA Sound_QMusic1
@@ -4607,6 +4608,7 @@ Player_DetectWall:
 
 
 Player_DetectWall1:
+	INC Player_HitWall
 	LDA Player_Shell
 	BEQ Player_DetectWall2
 
@@ -4625,10 +4627,10 @@ Player_DetectWall1_1:
 	CMP #TILE_ITEM_BRICK
 	BEQ Player_DetectWall1_2
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	EOR #$FF
 	ADD #$01
-	STA <Player_XVel
+	STA <Player_XVelZ
 	
 	JSR Player_ApplyXVelocity
 	RTS
@@ -4699,12 +4701,12 @@ Hit_LeftWall:
 	STA <Player_XHi
 
 Wall_Hit:
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	EOR <Player_EffXVel
 	BMI Wall_NoHit
 
 	LDA #$00
-	STA <Player_XVel
+	STA <Player_XVelZ
 	STA Player_CarryXVel
 
 Wall_NoHit:
@@ -4816,12 +4818,12 @@ CLC
 ;	CMP #$08
 ;	BCS PRG008_B531
 ;
-;	LDA <Player_XVel
+;	LDA <Player_XVelZ
 ;	ADD Player_CarryXVel, X
 ;	ADD Wind
 ;	BMI PRG008_B53C
 ;
-;	LDA <Player_XVel
+;	LDA <Player_XVelZ
 ;	BPL PRG008_B530_1
 ;
 ;	LDA <Pad_Holding
@@ -4830,7 +4832,7 @@ CLC
 ;
 ;PRG008_B530_1:
 ;	LDA #$00
-;	STA <Player_XVel
+;	STA <Player_XVelZ
 ;
 ;PRG008_B530_2:
 ;	LDA <Player_X
@@ -4843,14 +4845,14 @@ CLC
 ;	RTS
 
 ;PRG008_B531:
-;	LDA <Player_XVel
+;	LDA <Player_XVelZ
 ;	ADD Player_CarryXVel, X
 ;	ADD Wind
 ;	BEQ PRG008_B531_2
 ;	BPL PRG008_B53C
 ;
 ;PRG008_B531_2:
-;	LDA <Player_XVel
+;	LDA <Player_XVelZ
 ;	BMI PRG008_B531_3
 ;
 ;	LDA <Pad_Holding
@@ -4859,7 +4861,7 @@ CLC
 ;
 ;PRG008_B531_3:
 ;	LDA #$00
-;	STA <Player_XVel
+;	STA <Player_XVelZ
 ;
 ;PRG008_B531_4:
 ;
@@ -5494,7 +5496,7 @@ Door_PlayerStanding:
 	STA <Player_X	 ; Update Player_X
 
 	LDA #$00
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 	INC Level_JctCtl ; Set appropriate value to Level_JctCtl
 
@@ -5831,7 +5833,7 @@ ContinueDash:
 	LDY Player_Direction
 
 	LDA Fox_DashDir, Y
-	STA <Player_XVel
+	STA <Player_XVelZ
 	STA <Player_InAir
 
 	LDA #$00
@@ -5861,7 +5863,7 @@ Player_KillDash:
 	INY
 Player_BounceLeft:
 	LDA Bounce_Direction, Y
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 	LDA <Player_X
 	ADD Bounce_Direction + 2, Y
@@ -6235,7 +6237,7 @@ Player_DoClimbing1:
 
 	LDA #$00
 	STA Player_Flip
-	STA <Player_XVel
+	STA <Player_XVelZ
 	STA <Player_YVelZ
 
 Player_DoClimbing2:
@@ -6254,7 +6256,7 @@ Player_DoClimbing2:
 	TAX
 
 	LDA Climbing_XVel, X
-	STA <Player_XVel
+	STA <Player_XVelZ
 	STA Player_EffXVel
 
 	LDA <Player_YVelZ

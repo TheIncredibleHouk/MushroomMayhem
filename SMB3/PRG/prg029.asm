@@ -1286,7 +1286,7 @@ Pipe_Move_Down:
 	LDA #$00	 
 	STA Player_IsDucking	; Clear ducking flag (since Player pressed down on a pipe, it's incorrectly set)
 	STA Level_PipeMove	; Not moving through a pipe anymore
-	STA <Player_XVel	; Not horizontally moving, period
+	STA <Player_XVelZ	; Not horizontally moving, period
 
 	LDA #$38
 	STA <Player_YVelZ	; Player_IsDucking = $38 (fall out the bottom)
@@ -1845,7 +1845,7 @@ PipeMove_LeftRight:
 	TAY		 ; Y = 0 (right) or 1 (left) 
 
 	LDA PipeMove_XVel,Y	 	; Get appropriate X velocity
-	STA <Player_XVel	 	; Set it!
+	STA <Player_XVelZ	 	; Set it!
 
 	JSR Player_ApplyXVelocity 	; Apply Player's X velocity
 
@@ -1885,7 +1885,7 @@ PipeMove_UpDown:
 Player_StopMovement:
 	LDA #$00
 	STA Level_PipeMove	; Not moving through a pipe
-	STA <Player_XVel	; Player stopped horizontall
+	STA <Player_XVelZ	; Player stopped horizontall
 	STA <Player_YVelZ	; Player stopped vertically
 	STA <Player_InAir	; Not mid-air
 	RTS		 ; Return

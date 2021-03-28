@@ -1649,7 +1649,7 @@ Object_GetKicked1:
 	LDA #$B0
 	STA <Objects_YVelZ,X
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BEQ Object_NotKickState
 
 Object_SetKickedState:
@@ -1668,10 +1668,10 @@ Object_NotKickState:
 	AND #PAD_UP
 	BEQ Kicked_FindXVel
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BEQ Kicked_SetUpXVel
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	CMP #$30
 	BCC Kicked_CalcXVel
 
@@ -1775,7 +1775,7 @@ PRG000_CF1F:
 	LDA <Player_YVelZ
 	STA <Objects_YVelZ, X
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	STA <Objects_XVelZ, X
 
 	LDA Objects_Orientation, X

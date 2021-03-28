@@ -1316,7 +1316,7 @@ SnowBall_Hit:
 	JSR Player_Freeze
 
 	LDA <Objects_XVelZ, X
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 	LDA #$D0
 	STA <Player_YVelZ
@@ -2256,7 +2256,7 @@ Phanto_Hover:
 	BCC Phanto_HoverRTS
 
 	LDY #$00
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	BEQ Phanto_Facing
 	BPL Phanto_Reappear
 

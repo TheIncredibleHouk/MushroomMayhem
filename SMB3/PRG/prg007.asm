@@ -259,7 +259,7 @@ Hammer_Vel:
 Throw_Hammer:
 	JSR SetProjectilePosition16x16
 	
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	ADC Hammer_Vel, Y
 	STA SpecialObj_XVel, X
 
@@ -1884,9 +1884,8 @@ PRG007_AF23:
 	RTS		 ; Return
 
 SpecialObj_UpdateAndDraw:	
-	
-	LDA SpecialObj_ID,X
 
+	LDA SpecialObj_ID,X
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -1913,7 +1912,8 @@ SpecialObj_UpdateAndDraw:
 	.word Enemy_Fireblob	; 14: Blooper kid
 	.word Enemy_SpinyEgg	; 15: Laser
 	.word SpecialObj_Poof		; 16: Poof
-	.word Coin_Sparkle	; 17 placeholder
+	.word Coin_Sparkle	; 17 
+	.word Enemy_Plunger ; 18
 
 
 SpecialObj_DetectObject:
@@ -4969,7 +4969,7 @@ EnemeyProj_Enemy_FreezePlayer1:
 	TAY
 	
 	LDA FreezeXVel, Y
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 	LDA HitTest_Result
 	LSR A
@@ -5080,7 +5080,7 @@ Enemy_OilPlayer2:
 	STA Player_SuitLost
 
 	LDA #$00
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 	LDA #$80
 	STA Player_QueueSuit
@@ -5519,3 +5519,156 @@ Coin_Sparkle1:
 	STA <SpecialObj_Attributes 
 
 	JMP SpecialObj_Draw8x16
+
+Plunger_State = SpecialObj_Data1
+Plunger_PushingPlayer = SpecialObj_Data2
+
+Enemy_Plunger:
+	LDA <Player_HaltGameZ
+	BEQ Enemy_PlungerNorm
+	JMP Enemy_PlungerDraw
+
+Enemy_PlungerNorm:
+	LDA Plunger_State, X
+	JSR DynJump
+
+	.word Plunger_Move
+	.word Plunger_Stuck
+	.word Plunger_Fall
+
+Plunger_Move:	
+	JSR SObj_ApplyXYVels
+
+	LDA Plunger_PushingPlayer, X
+	BEQ Plunger_NotPushing
+
+	STA Debug_Snap
+	LDA Player_HitWall
+	BEQ Plunger_PushPlayer
+
+	LDA #$02
+	STA Plunger_State, X
+
+Plunger_PushPlayer:	
+	LDA #$00
+	STA <Player_YVelZ
+	STA <Player_CarryXVel
+
+	LDA SpecialObj_XVel, X
+	STA <Player_XVelZ
+
+Plunger_NotPushing:	
+	JSR SpecialObj_CalcBounds16x16
+	JSR SpecialObj_DetectWorld16x16Side
+	
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Plunger_DetectPlayer
+
+	LDA #$01
+	STA Plunger_State, X
+	
+	LDA SpecialObj_X, X
+	ADD #$08
+	AND #$F0
+	STA SpecialObj_X, X
+
+	LDA SpecialObj_XHi, X
+	ADC #$00
+	STA SpecialObj_XHi, X
+
+	LDA #$40
+	STA SpecialObj_Timer, X
+	JMP Enemy_PlungerDraw
+
+Plunger_DetectPlayer:
+	JSR SpecialObj_DetectPlayer
+	BCC Enemy_PlungerDraw
+
+	LDA #$01
+	STA Plunger_PushingPlayer, X
+
+	LDA Player_BoundTop
+	ADD #$02
+	STA SpecialObj_Y, X
+
+	LDA Player_BoundTopHi, X
+	ADC #$00
+	STA SpecialObj_YHi, X
+
+	LDA SpecialObj_XVel, X
+	BPL Plunger_LeftSide
+
+	LDA Player_BoundRight
+	ADD #$03
+	STA SpecialObj_X, X
+
+	LDA Player_BoundRightHi
+	STA SpecialObj_XHi, X
+	JMP Enemy_PlungerDraw
+
+Plunger_LeftSide:
+	LDA Player_BoundLeft
+	SUB #$10
+	STA SpecialObj_X, X
+
+	LDA Player_BoundLeftHi
+	SBC #$00
+	STA SpecialObj_XHi, X
+	JMP Enemy_PlungerDraw
+
+Plunger_Stuck:
+	JSR SpecialObj_CalcBounds16x16
+	JSR SpecialObj_DetectWorld16x16
+	
+	JSR SpecialObj_DetectPlayer
+	BCC Plunger_Drop
+
+	LDA <HitTest_Result
+	AND #(HITTEST_BOTTOM)
+	BEQ Enemy_PlungerDraw
+
+	LDX #$09
+	JSR ObjHit_SolidBlock
+	LDX <CurrentObjectIndexZ
+
+Plunger_Drop:
+	DEC SpecialObj_Timer, X
+	BNE	Enemy_PlungerDraw
+
+	LDA #$02
+	STA Plunger_State, X
+
+Enemy_PlungerDraw:
+
+	LDA #$A9
+	STA <SpecialObj_Tile
+
+	LDA #$BF
+	STA <SpecialObj_Tile + 1
+
+	LDA #SPR_PAL1
+	STA <SpecialObj_Attributes
+	STA <SpecialObj_Attributes + 1
+
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_CheckDirection16x16
+
+Enemey_PlungerDraw1:
+	LDA SpecialObj_Y, X
+	SUB #$03
+	STA SpecialObj_Y, X
+
+	JSR SpecialObj_Draw16x16
+	
+	LDA SpecialObj_Y, X
+	ADD #$03
+	STA SpecialObj_Y, X
+	RTS
+
+Enemy_PlungerStuck:
+	JMP Enemy_PlungerDraw
+
+Plunger_Fall:
+	JSR SObj_ApplyYVelWithGravity
+	JMP Enemy_PlungerDraw

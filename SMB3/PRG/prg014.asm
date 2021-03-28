@@ -2474,7 +2474,7 @@ ObjHit_Freezie:
 	JSR Object_XDistanceFromPlayer
 	
 	LDA FreezieThrowPlayerX, Y
-	STA <Player_XVel
+	STA <Player_XVelZ
 	
 	LDA #$A0
 	STA <Player_YVelZ
@@ -2622,9 +2622,9 @@ Swoosh_SuckIn2:
 	CMP Swoosh_Direction, X
 	BNE Swoosh_SuckTimer
 
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	ADD Swoosh_Pull, Y
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 Swoosh_SuckTimer:
 	LDA Objects_Timer, X
@@ -2718,7 +2718,7 @@ Swoosh_BreatheOut:
 	CMP Swoosh_Direction, X
 	BNE Swoosh_BlowTimer
 	
-	LDA <Player_XVel
+	LDA <Player_XVelZ
 	CMP #$3C
 	BCC Swoos_AddPush
 
@@ -2727,7 +2727,7 @@ Swoosh_BreatheOut:
 
 Swoos_AddPush:
 	ADD Swoosh_Push, Y
-	STA <Player_XVel
+	STA <Player_XVelZ
 
 Swoosh_BlowTimer:
 	LDA Objects_Timer, X
