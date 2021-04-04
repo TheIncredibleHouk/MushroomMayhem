@@ -871,6 +871,7 @@ PRG000_CA82:
 	
 
 ObjState_Frozen:
+
 	LDA #(ATTR_WINDAFFECTS  | ATTR_CARRYANDBUMP | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
@@ -895,6 +896,12 @@ Frozen_Normal:
 	JSR Object_Move
 	JSR Object_CalcBoundBoxForced
 
+	LDA Objects_Timer, X
+	BNE Frozen_Hold
+
+	JMP Frozen_Die
+
+Frozen_Hold:
 	LDA Objects_XVelZ, X
 	ORA Objects_BeingHeld, X
 	BEQ Frozen_NotKilledOthers

@@ -4264,19 +4264,19 @@
         15,
         15,
         48,
-        6,
+        0,
         15,
         15,
         48,
         39,
         15,
-        15,
-        43,
-        11,
-        15,
         12,
         44,
         28,
+        15,
+        15,
+        43,
+        11,
         15,
         15,
         54,
@@ -34693,18 +34693,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 52,
+          "UpperRight": 53,
+          "LowerLeft": 52,
+          "LowerRight": 53
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 84,
+          "UpperRight": 85,
+          "LowerLeft": 84,
+          "LowerRight": 85
         },
         {
           "Property": 16,
@@ -35183,18 +35183,18 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 247,
+          "UpperLeft": 76,
+          "UpperRight": 77,
+          "LowerLeft": 92,
+          "LowerRight": 93
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 244,
+          "UpperLeft": 140,
+          "UpperRight": 141,
+          "LowerLeft": 156,
+          "LowerRight": 157
         },
         {
           "Property": 242,
@@ -35515,8 +35515,8 @@
           "Property": 0,
           "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 11,
-          "LowerRight": 11
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 1,
@@ -35625,24 +35625,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 32,
+          "UpperRight": 33,
+          "LowerLeft": 48,
+          "LowerRight": 49
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 49,
+          "UpperRight": 50,
+          "LowerLeft": 50,
+          "LowerRight": 49
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 49,
+          "UpperRight": 35,
+          "LowerLeft": 33,
+          "LowerRight": 51
         },
         {
           "Property": 0,
@@ -35730,10 +35730,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 242,
+          "UpperRight": 243,
+          "LowerLeft": 240,
+          "LowerRight": 241
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 74,
+          "UpperRight": 75,
+          "LowerLeft": 242,
+          "LowerRight": 243
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 74,
+          "UpperRight": 75,
+          "LowerLeft": 90,
+          "LowerRight": 91
         },
         {
           "Property": 0,
@@ -35743,32 +35757,18 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 60,
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 51,
+          "UpperLeft": 252,
+          "UpperRight": 252,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
           "Property": 0,
@@ -35835,10 +35835,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 240,
+          "UpperRight": 241,
+          "LowerLeft": 240,
+          "LowerRight": 241
         },
         {
           "Property": 0,
@@ -35939,53 +35939,53 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
+          "Property": 51,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 51,
+          "UpperLeft": 148,
+          "UpperRight": 149,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 16,
+          "UpperLeft": 152,
+          "UpperRight": 153,
+          "LowerLeft": 152,
+          "LowerRight": 153
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 138,
+          "UpperRight": 139,
+          "LowerLeft": 154,
+          "LowerRight": 155
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 228,
+          "UpperRight": 229,
+          "LowerLeft": 169,
+          "LowerRight": 168
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 244,
+          "UpperRight": 245,
+          "LowerLeft": 169,
+          "LowerRight": 168
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 168,
+          "UpperRight": 169,
+          "LowerLeft": 169,
+          "LowerRight": 168
         },
         {
           "Property": 16,
@@ -36226,11 +36226,11 @@
           "LowerRight": 155
         },
         {
-          "Property": 51,
-          "UpperLeft": 148,
-          "UpperRight": 149,
-          "LowerLeft": 252,
-          "LowerRight": 252
+          "Property": 3,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 48,
@@ -36338,11 +36338,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 51,
-          "UpperLeft": 252,
-          "UpperRight": 252,
-          "LowerLeft": 252,
-          "LowerRight": 252
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 16,
@@ -51434,7 +51434,7 @@
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
           "TileTableAddress": "0xD800",
           "TileValue": "0x3A",
@@ -51446,7 +51446,7 @@
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 8,
+          "X": 16,
           "Y": 0,
           "TileTableAddress": "0xD800",
           "TileValue": "0x3C",
@@ -51458,8 +51458,8 @@
         },
         {
           "PropertiesAppliedTo": null,
-          "X": -2,
-          "Y": 0,
+          "X": 6,
+          "Y": -5,
           "TileTableAddress": "0xD800",
           "TileValue": "0x28",
           "HorizontalFlip": false,
@@ -51470,8 +51470,8 @@
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 6,
-          "Y": 0,
+          "X": 14,
+          "Y": -5,
           "TileTableAddress": "0xD800",
           "TileValue": "0x3E",
           "HorizontalFlip": false,

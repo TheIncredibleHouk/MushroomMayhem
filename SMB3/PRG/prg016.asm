@@ -134,7 +134,7 @@ OBJ_PLUMBERPAUL			= $94
     .byte KILLACT_STARDEATH ; Object $91
     .byte KILLACT_STARDEATH ; Object $92
     .byte KILLACT_STARDEATH ; Object $93
-    .byte KILLACT_STARDEATH ; Object $94
+    .byte KILLACT_NORMALSTATE ; Object $94
     .byte KILLACT_STARDEATH ; Object $95
     .byte KILLACT_STARDEATH ; Object $96
     .byte KILLACT_STARDEATH ; Object $97
@@ -1868,6 +1868,9 @@ ObjInit_PlungerPaul:
 	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
+	LDA #(ATTR_ICEPROOF)
+	STA Objects_WeaponAttr, X
+
 	LDA #$40
 	STA Objects_Timer, X
 
@@ -1878,16 +1881,28 @@ ObjInit_PlungerPaul:
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
-	LDA Objects_YZ, X
-	ADD #$02
-	STA Objects_YZ, X
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
 
-	LDA Objects_YHiZ, X
+	LDA <Objects_XHiZ, X
 	ADC #$00
-	STA Objects_YHiZ, X
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$02
+	STA <Objects_YZ, X
+	STA PlungerPaul_InitialY, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+	STA PlungerPaul_InitialYHi, X
 	RTS
 
 PlungerPaul_State = Objects_Data1
+PlungerPaul_InitialY = Objects_Data2
+PlungerPaul_InitialYHi = Objects_Data3
 
 ObjNorm_PlungerPaul:
 	LDA <Player_HaltGameZ
@@ -1898,21 +1913,51 @@ ObjNorm_PlungerPaul:
 PlungerPaul_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_FacePlayer
+
+	LDA PlungerPaul_State, X
+	BEQ  PlungerPaul_DoState
+
 	JSR Object_AttackOrDefeat
-	
-	LDA Objects_PlayerProjHit, X
-	AND #HIT_STOMPED
-	BEQ PlungerPaul_DoState
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE PlungerPaul_DoState
 
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_STOMPED
+	BNE PlungerPaul_Stand
+
+	STA Debug_Snap
+
+	JSR Object_PoofDie
+
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	LDA #$F0
-	STA Player_YVelZ, X
+	LDA #$00
+	STA PlungerPaul_State, X
+
+	LDA #$60
+	STA Objects_Timer, X
+
+	LDA PlungerPaul_InitialY, X
+	STA <Objects_YZ, X
+
+	LDA PlungerPaul_InitialYHi, X
+	STA <Objects_YHiZ, X
+	RTS
+
+PlungerPaul_Stand:
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA Player_Jumped
+	BNE PlungerPaul_DoState
+
+	LDA #$00
+	STA Player_YVelZ
+
+	JSR ObjHit_SolidStand
 
 PlungerPaul_DoState:	
 	LDA PlungerPaul_State, X
@@ -1944,14 +1989,19 @@ PlungerPaul_Raise:
 	JSR Object_ApplyYVel_NoGravity
 
 	LDA Objects_Timer, X
-	BNE PlungerPaul_Draw
+	BEQ Plunger_RaiseNextState
+	JMP PlungerPaul_Draw
 
+Plunger_RaiseNextState:
 	INC PlungerPaul_State, X
 	LDA #$30
 	STA Objects_Timer, X
 	JMP PlungerPaul_Draw
 	
 PlungerPaul_Throw:
+	LDA #$00
+	STA <Objects_YVelZ, X
+
 	LDA Objects_Timer, X
 	CMP #$18
 	BNE PlungerPaul_Throw1

@@ -23,116 +23,6 @@ Rotation_Colors:
 	.byte $26, $2A, $22, $36
 
 ColorRotation_Do:
-	
-	LDX Graphics_BufCnt	 ; X = Graphics_BufCnt
-
-	LDA RotatingColor_Cnt
-	BEQ PRG007_A1EA	 ; If RotatingColor_Cnt = 0 (No color rotation active), jump to PRG007_A1EA (RTS)
-
-	PHA		 ; Save rotation value
-
-	AND #$03
-	TAY		 ; Y = 0 to 3, based on rotation value
-
-	DEC RotatingColor_Cnt	 ; RotatingColor_Cnt--
-
-	PLA		 ; Restore rotation value
-	BPL PRG007_A1EB	 ; If bit 7 not set on rotation value, jump to PRG007_A1EB
-
-	; Bit 7 set on RotatingColor_Cnt
-
-	AND #%01111111	 ; Ignore bit 7
-	BNE PRG007_A1A8	 ; If does not amount to zero, jump to PRG007_A1A8
-
-	STA RotatingColor_Cnt	 ; Otherwise, clear RotatingColor_Cnt
-
-PRG007_A1A8:
-
-	; Address of palette to modify
-	LDA #$3f
-	STA Graphics_Buffer+$00,X
-	LDA #$04
-	STA Graphics_Buffer+$01,X
-
-	; 8 bytes to go
-	LDA #$08
-	STA Graphics_Buffer+$02,X
-
-	; Set the rotation colors into the buffer
-	LDA Rotation_Colors,Y
-	STA Graphics_Buffer+$04,X
-	STA Graphics_Buffer+$05,X
-	STA Graphics_Buffer+$06,X
-	STA Graphics_Buffer+$08,X
-
-	LDA Palette_Buffer+$4
-	STA Graphics_Buffer+$03,X
-
-	LDA Palette_Buffer+$8
-	STA Graphics_Buffer+$07,X
-
-	LDA Palette_Buffer+$A
-	STA Graphics_Buffer+$09,X
-
-	LDA Palette_Buffer+$B
-	STA Graphics_Buffer+$0A,X
-
-	; Terminator
-	LDA #$00
-	STA Graphics_Buffer+$0B,X
-
-	; Add to the graphics buffer counter
-	TXA
-	ADD #$0b
-	STA Graphics_BufCnt
-
-PRG007_A1EA:
-	RTS		 ; Return
-
-
-PRG007_A1EB:
-
-	; Bit 7 not set on RotatingColor_Cnt
-
-	LDA RotatingColor_Cnt
-	BEQ PRG007_A1F5	 ; If RotatingColor_Cnt = 0, jump to PRG007_A1F5
-
-	; Set the rotation colors into the buffer
-	LDA Rotation_Colors,Y
-	BNE PRG007_A1F8	 ; Jump (technically always) to PRG007_A1F8
-
-PRG007_A1F5:
-	LDA Palette_Buffer+$10
-
-PRG007_A1F8:
-	STA Graphics_Buffer+$03,X
-
-	LDA #$10
-	STA Graphics_Buffer+$01,X
-
-	LDA Palette_Buffer+$11
-	STA Graphics_Buffer+$04,X
-
-	LDA Palette_Buffer+$12
-	STA Graphics_Buffer+$05,X
-
-	LDA Palette_Buffer+$13
-	STA Graphics_Buffer+$06,X
-
-	; Address of palette to modify
-	LDA #$3f
-	STA Graphics_Buffer+$00,X
-	LDA #$04
-	STA Graphics_Buffer+$02,X
-
-	; Terminator
-	LDA #$00
-	STA Graphics_Buffer+$07,X
-
-	; Add to the graphics buffer counter
-	TXA
-	ADD #$07
-	STA Graphics_BufCnt
 
 	RTS		 ; Return
 
@@ -563,6 +453,9 @@ Make_Ice:
 	LDA #$00
 	STA Explosion_Timer, Y
 	STA Objects_Timer3, Y
+
+	LDA #$FF
+	STA Objects_Timer, Y
 
 	TYA
 	TAX
@@ -5542,7 +5435,6 @@ Plunger_Move:
 	LDA Plunger_PushingPlayer, X
 	BEQ Plunger_NotPushing
 
-	STA Debug_Snap
 	LDA Player_HitWall
 	BEQ Plunger_PushPlayer
 
@@ -5556,6 +5448,7 @@ Plunger_PushPlayer:
 
 	LDA SpecialObj_XVel, X
 	STA <Player_XVelZ
+	JMP Enemy_PlungerDraw
 
 Plunger_NotPushing:	
 	JSR SpecialObj_CalcBounds16x16
@@ -5577,7 +5470,7 @@ Plunger_NotPushing:
 	ADC #$00
 	STA SpecialObj_XHi, X
 
-	LDA #$40
+	LDA #$80
 	STA SpecialObj_Timer, X
 	JMP Enemy_PlungerDraw
 
@@ -5589,11 +5482,9 @@ Plunger_DetectPlayer:
 	STA Plunger_PushingPlayer, X
 
 	LDA Player_BoundTop
-	ADD #$02
 	STA SpecialObj_Y, X
 
 	LDA Player_BoundTopHi, X
-	ADC #$00
 	STA SpecialObj_YHi, X
 
 	LDA SpecialObj_XVel, X
@@ -5604,6 +5495,7 @@ Plunger_DetectPlayer:
 	STA SpecialObj_X, X
 
 	LDA Player_BoundRightHi
+	ADC #$00
 	STA SpecialObj_XHi, X
 	JMP Enemy_PlungerDraw
 
@@ -5629,7 +5521,7 @@ Plunger_Stuck:
 	BEQ Enemy_PlungerDraw
 
 	LDX #$09
-	JSR ObjHit_SolidBlock
+	JSR ObjHit_SolidStand
 	LDX <CurrentObjectIndexZ
 
 Plunger_Drop:
