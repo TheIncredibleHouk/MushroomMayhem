@@ -1,7 +1,7 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
-  "RomFilePath": "E:\\Mushroom Mayhem\\Game\\MushroomMayhem.nes",
+  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
+  "RomFilePath": "C:\\Projects\\Mario Adventure 3\\MarioAdventure3.nes",
   "Palettes": [
     {
       "IndexedColors": [
@@ -6402,7 +6402,7 @@
           "Name": "Right Vertical Pipe Entrance",
           "Value": 9,
           "Overlay": {
-            "PaletteIndex": 3,
+            "PaletteIndex": 0,
             "UpperLeftTile": "49",
             "UpperRightTile": "FF",
             "LowerLeftTile": "48",

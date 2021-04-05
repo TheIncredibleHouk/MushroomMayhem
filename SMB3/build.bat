@@ -1,5 +1,5 @@
 @echo off
-cd "E:\Mushroom Mayhem\Game\SMB3"
+cd "C:\Projects\Mario Adventure 3\SMB3"
 ..\nesasm.exe smb3.asm
 cd ..
 RomMerger.exe
