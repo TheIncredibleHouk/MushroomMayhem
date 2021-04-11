@@ -1441,6 +1441,7 @@ IntNMI_Raster_Table:
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; NMI INTERRUPT
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 IntNMI:
 	SEI		 ; Prevent further masked Interrupts
 
@@ -1457,21 +1458,11 @@ IntNMI:
 	RTI
 
 Continue_VBlank:
-	TXA		 ; Reg X -> A
-	PHA		 ; Push A (X) onto stack
-	TYA		 ; Reg Y -> A
-	PHA		 ; Push A (Y) onto stack
-	
-	; Push the three temp vars onto the stack 
-	LDA <Temp_Var1
-	PHA
-	LDA <Temp_Var2
-	PHA
-	LDA <Temp_Var3
-	PHA
-
 	LDA StatusBar_Recolored
 	BEQ No_Pal_Restore
+
+	LDA #$A8
+	STA PPU_CTL1
 
 	LDA #$3F
 	STA PPU_VRAM_ADDR
@@ -1489,7 +1480,23 @@ Continue_VBlank:
 	LDA Palette_Buffer + 2
 	STA PPU_VRAM_DATA
 
-No_Pal_Restore:
+	LDA <PPU_CTL1_Copy
+	STA PPU_CTL1
+
+No_Pal_Restore:	
+	TXA		 ; Reg X -> A
+	PHA		 ; Push A (X) onto stack
+	TYA		 ; Reg Y -> A
+	PHA		 ; Push A (Y) onto stack
+	
+	; Push the three temp vars onto the stack 
+	LDA <Temp_Var1
+	PHA
+	LDA <Temp_Var2
+	PHA
+	LDA <Temp_Var3
+	PHA
+
 	JMP PRG030_SUB_9F40	 ; Jump to PRG030_SUB_9F40
 
 PRG031_F499:

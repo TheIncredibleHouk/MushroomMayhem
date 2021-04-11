@@ -3430,7 +3430,7 @@ BumpBlock_JumpTable:
 	.word BumpBlock_Event	; 8 = 10 coin
 	.word BumpBlock_Sledge   ;
 	.word BumpBlock_NinjaShroom		; 9 = 1-up
-	.word BumpBlock_Empty		; 3 = Star-
+	.word BumpBlock_CheckPoint		; 3 = Star-
 	.word BumpBlock_Vine		; 7 = Vine
 	.word BumpBlock_PSwitch	; B = P-Switch
 	.word BumpBlock_Brick	; 6 = Standard brick behavior
@@ -3602,7 +3602,11 @@ BumpBlock_IceFlower:
 	RTS		 ; Return
 
 ;;;;;;;;;;;;
-BumpBlock_Pumpkin:
+BumpBlock_CheckPoint:
+	JSR Bumps_CheckExistingPowerUps
+	JSR Bumps_PowerUpBlock
+	LDA #POWERUP_CHECKPOINT
+	STA ItemBlock_PowerUp, X
 	RTS		 ; Return
 
 BumpBlock_Leaf:
@@ -4484,6 +4488,7 @@ DoCountDown:
 	LDA <Counter_1
 	AND #$01
 	BNE NoCountDown
+
 	DEC CompleteLevelTimer
 	BMI EndLevel
 
@@ -4493,6 +4498,7 @@ NoCountDown:
 EndLevel:
 	LDA #$00
 	STA Map_ReturnStatus
+	STA CheckPoint_Flag
 
 	LDA #$01
 	STA Level_ExitToMap

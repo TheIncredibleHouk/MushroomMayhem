@@ -1391,8 +1391,6 @@ PRG030_8F31:
 	LDA Previous_Stars
 	STA Magic_Stars
 
-	LDA Previous_Stars+1
-	STA Magic_Stars+1
 
 	JSR GetLevelBit
 	
@@ -1583,7 +1581,7 @@ PRG030_8FFC:
 
 	; Player died or not rescuing the princess...
 
-	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
+	LDA #%0101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
 	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
 	STA PPU_CTL1	 	
 
@@ -2602,16 +2600,12 @@ AnimStarts: .byte $80, $D0, $F0, $6A
 ; Best to follow through to figure out the format to each "style"...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-LevelPointerOffsets:
-	.byte $A0, $A1, $A2, $A3
-
 LevelLoad:	; $97B7
 	; Clear loading variables
 	JSR InitStarsBackground
 
 	LDA #$00
 	STA <Vert_Scroll
-	STA Level_Jct_VS
 
 LevelLoadQuick:
 	
@@ -2630,7 +2624,17 @@ LevelLoadQuick:
 	LDA #$00
 	STA <Temp_Var1
 	STA <Temp_Var2
+	
+	LDA JustName
+	BNE LoadLevel_FromPointer
 
+	LDA CheckPoint_Flag
+	BEQ LoadLevel_FromPointer
+
+	LDA CheckPoint_Level
+	STA LevelLoadPointer
+
+LoadLevel_FromPointer:
 	LDA LevelLoadPointer
 	CLC
 	ROL A
@@ -2753,6 +2757,7 @@ Skip_Normal_Gfx2:
 
 	LDA Level_JctCtl
 	BNE Set_Level_Exit_Action
+
 	LDA #$00
 	STA Level_InitAction
 	JMP Level_Exit_Set
@@ -2787,6 +2792,7 @@ NoXOffset:
 	LDA Player_YExit
 	AND #$F0
 	STA <Player_YZ
+
 	LDA Player_YExit
 	AND #$0F
 	STA Player_YHiZ
@@ -2842,6 +2848,23 @@ NormAnimBank:
 	JMP Skip_Level_Position
 
 Not_Lvl_Jct:
+	LDA CheckPoint_Flag
+	BEQ SetPosition_FromLevel
+
+	LDA CheckPoint_X
+	STA <Player_X
+
+	LDA CheckPoint_XHi
+	STA <Player_XHi
+
+	LDA CheckPoint_Y
+	STA <Player_YZ
+
+	LDA CheckPoint_YHi
+	STA <Player_YHiZ
+	JMP Skip_Level_Position
+
+SetPosition_FromLevel:	
 	; load X/Y starting position
 	LDA [Temp_Var14], Y	
 	AND #$0F
@@ -2963,10 +2986,10 @@ SetDNActive:
 
 	LDY #$0B
 	LDA [Temp_Var14], Y
-	STA MiscValue2
+	
 	LDY #$0C
 	LDA [Temp_Var14], Y
-	STA MiscValue3
+	
 	LDY #$0D
 
 	LDX #$00

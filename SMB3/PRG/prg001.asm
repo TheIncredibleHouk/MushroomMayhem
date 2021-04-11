@@ -239,18 +239,19 @@ POWERUP_NINJASHROOM = 10
 POWERUP_STAR		= 11
 POWERUP_VINE		= 12
 POWERUP_PWING		= 13
+POWERUP_CHECKPOINT	= 14
 
 PowerUp_Palette:
-	.byte SPR_PAL0, SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL3
+	.byte SPR_PAL0, SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL0
 
 PowerUp_YVelocities:
-	.byte $00, $00, $D0, $D0, $C0, $D0, $D0, $D0, $D0, $C0, $B0, $D0, $D0, $D0
+	.byte $00, $00, $D0, $D0, $C0, $D0, $D0, $D0, $D0, $C0, $B0, $D0, $D0, $D0, $D0
 
 PowerUp_AnimOff:
-	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $FF, $2C
+	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $FF, $2C, $1C
 
 PowerUp_Timers:
-	.byte $00, $00, $08, $08, $1C, $1C, $08, $1C, $08, $1C, $08, $1C, $0A, $08
+	.byte $00, $00, $08, $08, $1C, $1C, $08, $1C, $08, $1C, $08, $1C, $0A, $08, $08
 
 
 ObjInit_PUp1:
@@ -380,6 +381,7 @@ ObjNorm_PowerUp1:
 	.word PUp_ItemBlock
 	.word PUp_Vine
 	.word Pup_PWing
+	.word PUp_Flower
 
 
 PUp_DrawMaskSprite:
@@ -423,10 +425,10 @@ PUp_DrawMaskSprite1:
 	RTS
 
 PUp_Compare:
-	.byte $00, $00, $01, $02, $03, $04, $05, $06, $07, $08, $0B, $FF, $FF, $FF
+	.byte $00, $00, $01, $02, $03, $04, $05, $06, $07, $08, $0B, $FF, $FF, $FF, $FF
 
 PUp_Queue:
-	.byte $00, $00, $02, $03, $04, $05, $06, $07, $08, $09, $0C, $00, $FF, $FF
+	.byte $00, $00, $02, $03, $04, $05, $06, $07, $08, $09, $0C, $00, $FF, $FF, $FF
 
 PUp_Collect:
 	LDA #OBJSTATE_DEADEMPTY
@@ -475,6 +477,7 @@ PUp_Collect3:
 	.word PUp_Star
 	.word ObjNorm_DoNothing
 	.word PUp_CollectPWing
+	.word PUp_CheckPoint
 
 PUp_Grow:
 	LDA Sound_QLevel1
@@ -758,6 +761,55 @@ PUp_CollectPWing:
 	STA Objects_State, X
 	RTS
 
+
+PUp_CheckPoint:
+	LDA LevelNumber
+	STA CheckPoint_Flag
+
+	LDA LevelLoadPointer
+	STA CheckPoint_Level
+
+	LDA <Objects_XZ, X
+	STA CheckPoint_X
+
+	LDA <Objects_XHiZ, X
+	STA CheckPoint_XHi
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA CheckPoint_Y
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA CheckPoint_YHi
+
+	LDA Player_Coins
+	STA Previous_Coins
+
+	LDA Player_Coins+1
+	STA Previous_Coins+1
+
+	LDA Player_Coins+2
+	STA Previous_Coins+2
+
+	LDA Cherries
+	STA Previous_Cherries
+
+	LDA Magic_Stars
+	STA Previous_Stars
+
+	JSR GetLevelBit
+	
+	LDA Magic_Stars_Collected1, Y
+	STA Previous_Stars_Collected1
+
+	LDA Magic_Stars_Collected2, Y
+	STA Previous_Stars_Collected2
+
+	LDA Magic_Stars_Collected3, Y
+	STA Previous_Stars_Collected3
+
+	JMP Object_PoofDie
 
 ;***********************************************************************************
 ; BLOCK BOUNCE

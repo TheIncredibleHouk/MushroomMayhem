@@ -1,7 +1,7 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
-  "RomFilePath": "C:\\Projects\\Mario Adventure 3\\MarioAdventure3.nes",
+  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
+  "RomFilePath": "E:\\Mushroom Mayhem\\Game\\MushroomMayhem.nes",
   "Palettes": [
     {
       "IndexedColors": [
@@ -5332,6 +5332,14 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Plumbing Plunging"
+        },
+        {
+          "Name": "Fox Fire Dash Bash",
+          "Id": "66e48880-1688-4acb-a7bf-df47d55b5797",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [],
+          "InfoType": 1,
+          "DisplayName": "(Level) Fox Fire Dash Bash"
         }
       ],
       "InfoType": 0,
@@ -6599,14 +6607,14 @@
           }
         },
         {
-          "Name": "Empty",
+          "Name": "Checkpoint Flag",
           "Value": 10,
           "Overlay": {
-            "PaletteIndex": 0,
-            "UpperLeftTile": "00",
-            "UpperRightTile": "02",
-            "LowerLeftTile": "01",
-            "LowerRightTile": "03"
+            "PaletteIndex": 4,
+            "UpperLeftTile": "94",
+            "UpperRightTile": "96",
+            "LowerLeftTile": "95",
+            "LowerRightTile": "97"
           }
         },
         {
@@ -9654,11 +9662,11 @@
           "LowerRight": 159
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 140,
+          "UpperRight": 141,
+          "LowerLeft": 156,
+          "LowerRight": 157
         },
         {
           "Property": 240,
@@ -35428,11 +35436,11 @@
           "LowerRight": 10
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 0,
@@ -47889,7 +47897,8 @@
         "Ninja Power Helper",
         "Koopa Power Helper",
         "Frog Power Helper",
-        "P-Wing"
+        "P-Wing",
+        "Fox Leaf"
       ],
       "Group": "Spiny/Buzzy Beetle"
     },

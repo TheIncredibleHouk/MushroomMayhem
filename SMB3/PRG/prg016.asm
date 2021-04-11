@@ -1915,7 +1915,7 @@ PlungerPaul_Norm:
 	JSR Object_FacePlayer
 
 	LDA PlungerPaul_State, X
-	BEQ  PlungerPaul_DoState
+	BEQ PlungerPaul_DoState
 
 	JSR Object_AttackOrDefeat
 
@@ -1926,8 +1926,6 @@ PlungerPaul_Norm:
 	LDA Objects_PlayerProjHit, X
 	AND #HIT_STOMPED
 	BNE PlungerPaul_Stand
-
-	STA Debug_Snap
 
 	JSR Object_PoofDie
 
@@ -1948,6 +1946,11 @@ PlungerPaul_Norm:
 	RTS
 
 PlungerPaul_Stand:
+	STA Debug_Snap
+	LDA Sound_QPlayer
+	AND #~SND_PLAYERKICK
+	STA Sound_QPlayer
+
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
