@@ -465,8 +465,8 @@ PAD_RIGHT	= $01
 
 	Controller1Press:	.ds 1	; Player 1's controller "pressed this frame only" (see Controller1 for values)
 	Controller1:	.ds 1	; Player 2's controller "pressed this frame only" (see Controller2 for values)
-	Object_SpawnColumnOffset:		.ds 1	; Player 1's controller inputs -- R01 L02 D04 U08 S10 E20 B40 A80
-	Object_SpawnScrollCount:		.ds 1	; Player 2's controller inputs -- R01 L02 D04 U08 S10 E20 B40 A80
+	Object_SpawnColumn:		.ds 1	; Player 1's controller inputs -- R01 L02 D04 U08 S10 E20 B40 A80
+	Object_SpawnScroll:		.ds 1	; Player 2's controller inputs -- R01 L02 D04 U08 S10 E20 B40 A80
 
 	Object_LastScrollColumn: .ds 1	; $F9 unused
 				.ds 1	; $FA unused
@@ -2676,14 +2676,13 @@ ABILITY_CHERRY_STAR = 5
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
 	
-	Objects_Data8:		.ds 5	; $7CC8-$7CCC Generic object variable 10
-	Objects_Data9:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
-	Objects_Data10:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
-	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
-	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data8:		.ds 8	; $7CC8-$7CCC Generic object variable 10
+	Objects_Data9:		.ds 8	; $7CCD-$7CD1 Generic object variable 11
+	Objects_Data10:		.ds 8	; $7CD2-$7CD6 Generic object variable 12
+	Objects_Data11:		.ds 8	; $7CD7-$7CDB Generic object variable 13
+	Objects_Data12:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data13:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
-	Objects_DynamicallySpawned:	.ds 8
 	Objects_Kicked:		.ds 5
 	Objects_Shelled:	.ds 5
 	Objects_ToggleDetect: .ds 5

@@ -2350,14 +2350,14 @@ ObjState_Fresh:
 	LSR A
 	ADD Objects_BoundLeft, X
 	SUB #$08
-	STA <Poof_X
+	STA Poof_X
 
-	LDA Objects_BoundBottom, X
-	SUB Objects_BoundTop, X
+	LDA Objects_BoundTop, X
+	SUB Objects_BoundBottom, X
 	LSR A
-	ADD Objects_BoundTop, X
+	ADD Objects_BoundBottom, X
 	SUB #$08
-	STA <Poof_Y
+	STA Poof_Y
 
 	JSR Common_MakePoof
 
@@ -2611,7 +2611,7 @@ Object_New:
 	STA Objects_Regen, X
 	STA Objects_BoundBox, X
 	STA ObjSplash_Disabled, X
-	STA Objects_BoundBox, X
+	DEC Objects_BoundBox, X
 
 	CPX #$06
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)

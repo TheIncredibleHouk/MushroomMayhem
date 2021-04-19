@@ -46,17 +46,17 @@ NIGHT_FLAG		= $60
 
 Spawn_Column = Temp_Var6
 Spawn_ColumnHi  = Temp_Var7
-Spawn_Dynamically = Temp_Var16
+Spawn_Dynamically = Temp_Var8
 
 Level_ObjectsSpawnByScrolling:
 	LDA #$02
 	STA <Object_SpawnScrollCount
-	
-Level_ObjectsSpawnByScroll:
-	DEC <Object_SpawnScrollCount
 
 	LDA #$00
 	STA <Spawn_Dynamically
+	
+Level_ObjectsSpawnByScroll:
+	DEC <Object_SpawnScrollCount
 
 	LDY <Scroll_LastDir	 
 
@@ -195,9 +195,8 @@ PRG005_B913:
 PRG005_B91E:
 
 	LDA <Spawn_Dynamically
-	STA Debug_Snap
 	STA Objects_DynamicallySpawned, X
-
+	
 	; Set object X
 	LDA <Temp_Var1
 	STA <Objects_XZ,X

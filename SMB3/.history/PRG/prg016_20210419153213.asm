@@ -1946,6 +1946,7 @@ PlungerPaul_Norm:
 	RTS
 
 PlungerPaul_Stand:
+	STA Debug_Snap
 	LDA Sound_QPlayer
 	AND #~SND_PLAYERKICK
 	STA Sound_QPlayer

@@ -2342,6 +2342,7 @@ ObjState_Fresh:
 	JSR Object_CallInit
 	JSR Object_CalcBoundBox
 
+	STA Debug_Snap
 	LDA Objects_DynamicallySpawned, X
 	BEQ ObjectState_InitRTS
 

@@ -3254,12 +3254,12 @@ PRG031_FEC3:
 	ORA Read_Joypads_UnkTable,X	 ; FIXME: A |= Read_Joypads_UnkTable[X]
 	PHA		 	; Save A
 	STA <Temp_Var3	 	; Temp_Var3 = A
-	EOR Controller1	; 
+	EOR Controller1,Y	; 
 	AND <Temp_Var3	 	; 
-	STA Controller1Press	; Figures which buttons have only been PRESSED this frame as opposed to those which are being held down
+	STA Controller1Press,Y	; Figures which buttons have only been PRESSED this frame as opposed to those which are being held down
 	STA <Pad_Input	 	; #VIRUS
 	PLA		 	; Restore A
-	STA Controller1	; 
+	STA Controller1,Y	; 
 	STA <Pad_Holding	 ; 
 	DEY		 ; Y-- 
 	BPL PRG031_FEC0	 ; If Y hasn't gone negative (it should just now be 0), Read other joypad

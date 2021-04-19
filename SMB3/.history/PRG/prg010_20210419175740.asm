@@ -2015,6 +2015,7 @@ PRG010_CE78:
 	; Player is not moving on map...
 
 	LDA <Controller1Press
+	ORA <Controller2Press
 	AND #$80	 
 	BEQ PRG010_CEE1		; If neither of the two players are pressing the 'A' button jump to PRG010_CEE1
 

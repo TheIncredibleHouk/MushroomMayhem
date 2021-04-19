@@ -2342,27 +2342,7 @@ ObjState_Fresh:
 	JSR Object_CallInit
 	JSR Object_CalcBoundBox
 
-	LDA Objects_DynamicallySpawned, X
-	BEQ ObjectState_InitRTS
-
-	LDA Objects_BoundRight, X
-	SUB Objects_BoundLeft, X
-	LSR A
-	ADD Objects_BoundLeft, X
-	SUB #$08
-	STA <Poof_X
-
-	LDA Objects_BoundBottom, X
-	SUB Objects_BoundTop, X
-	LSR A
-	ADD Objects_BoundTop, X
-	SUB #$08
-	STA <Poof_Y
-
-	JSR Common_MakePoof
-
-ObjectState_InitRTS:
-	RTS
+	LDA Objects_DynamicallySpawned
 
 Object_CallInit:
 	; Get jump address specific to this object
@@ -2611,7 +2591,7 @@ Object_New:
 	STA Objects_Regen, X
 	STA Objects_BoundBox, X
 	STA ObjSplash_Disabled, X
-	STA Objects_BoundBox, X
+	DEC Objects_BoundBox, X
 
 	CPX #$06
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)

@@ -49084,7 +49084,7 @@
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
           "TileTableAddress": "0x2C00",
           "TileValue": "0x1C",
@@ -49096,7 +49096,7 @@
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 8,
+          "X": 16,
           "Y": 0,
           "TileTableAddress": "0x2C00",
           "TileValue": "0x1C",
@@ -49110,7 +49110,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": 0,
+          "X": 8,
           "Y": -12,
           "TileTableAddress": "0x2c00",
           "TileValue": "0x18",
@@ -49124,7 +49124,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": 8,
+          "X": 16,
           "Y": -12,
           "TileTableAddress": "0x2c00",
           "TileValue": "0x18",

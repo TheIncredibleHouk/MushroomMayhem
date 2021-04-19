@@ -51,12 +51,12 @@ Spawn_Dynamically = Temp_Var16
 Level_ObjectsSpawnByScrolling:
 	LDA #$02
 	STA <Object_SpawnScrollCount
-	
-Level_ObjectsSpawnByScroll:
-	DEC <Object_SpawnScrollCount
 
 	LDA #$00
 	STA <Spawn_Dynamically
+	
+Level_ObjectsSpawnByScroll:
+	DEC <Object_SpawnScrollCount
 
 	LDY <Scroll_LastDir	 
 

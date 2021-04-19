@@ -2682,8 +2682,9 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
 	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Data14:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_DynamicallySpawned:	.ds 8
+	Objects_BeingHeld: .ds 8
 	Objects_Kicked:		.ds 5
 	Objects_Shelled:	.ds 5
 	Objects_ToggleDetect: .ds 5

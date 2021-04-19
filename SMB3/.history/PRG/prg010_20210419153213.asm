@@ -1259,6 +1259,8 @@ PRG010_CA35:
 	LDA #$00	 
 	STA <Controller1	
 	STA <Controller1Press	
+	STA <Controller2	
+	STA <Controller2Press	
 
 	; Stop any movement repeating
 	LDA #$ff	 ; A = $FF
@@ -2015,6 +2017,7 @@ PRG010_CE78:
 	; Player is not moving on map...
 
 	LDA <Controller1Press
+	ORA <Controller2Press
 	AND #$80	 
 	BEQ PRG010_CEE1		; If neither of the two players are pressing the 'A' button jump to PRG010_CEE1
 

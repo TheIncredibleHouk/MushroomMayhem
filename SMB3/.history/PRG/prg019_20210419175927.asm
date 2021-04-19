@@ -8,33 +8,18 @@ Level_SpawnObjsAndBounce:
 	; Do scene-change-reset, if needed
 	; NOTE!! Does NOT return here if it did!
 	JSR Level_DoChangeReset	
+	JMP Level_ObjectsSpawnByScroll	 ; Spawn objects as screen scrolls
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Level_ObjectsSpawnByScroll
+;
+; Spawns object while screen scrolls (how it goes from static 
+; level data to dynamic stuff on the screen)
+; Non-vertical variant of Level_ObjectsSpawnByScrollV
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Level_ObjectsSpawn:
-	LDA <Object_SpawnScrollCount
-	BPL Level_ObjectsSpawnByScroll
 
-	LDA <Horz_Scroll
-	AND #$F0
-	CMP <Object_LastScrollColumn
-	STA <Object_LastScrollColumn
-	BNE Level_ObjectsSpawnByScrolling
-
-	LDA <Object_SpawnColumnOffset
-	ADD <Horz_Scroll
-	STA <Spawn_Column
-
-	LDA <Horz_Scroll_Hi
-	ADC #$00
-	STA <Spawn_ColumnHi
-
-	LDA <Object_SpawnColumnOffset
-	ADD #$10
-	STA <Object_SpawnColumnOffset
-
-	LDA #$01
-	STA <Spawn_Dynamically
-	JMP Level_ObjectsSpawnByColumn
-	
 	; This defines the values used as "look ahead" when screen is moving
 	; Basically the values are $110 (one screen over + 16)
 	; and -$20 (32 pixels to the left)
@@ -44,20 +29,7 @@ HARD_FLAG	= $20
 DAY_FLAG		= $40
 NIGHT_FLAG		= $60
 
-Spawn_Column = Temp_Var6
-Spawn_ColumnHi  = Temp_Var7
-Spawn_Dynamically = Temp_Var16
-
-Level_ObjectsSpawnByScrolling:
-	LDA #$02
-	STA <Object_SpawnScrollCount
-	
 Level_ObjectsSpawnByScroll:
-	DEC <Object_SpawnScrollCount
-
-	LDA #$00
-	STA <Spawn_Dynamically
-
 	LDY <Scroll_LastDir	 
 
 	LDA <Horz_Scroll
@@ -70,12 +42,12 @@ Level_ObjectsSpawnByScroll:
 	STA <Temp_Var7	 ; Temp_Var7 = "look ahead" high part
 
 	CMP <Level_Width
-	BEQ Level_ObjectsSpawnByColumn	
-	BLT Level_ObjectsSpawnByColumn	 ; If the "high part" is <= the level width, jump to PRG005_B852
+	BEQ PRG005_B852	
+	BLT PRG005_B852	 ; If the "high part" is <= the level width, jump to PRG005_B852
 
 	JMP PRG005_B956	 ; Otherwise, at the end, jump to PRG005_B956 (RTS)
 
-Level_ObjectsSpawnByColumn:
+PRG005_B852:
 	LDX <Temp_Var7	 ; X = "look ahead" high part
 
 	LDA Level_ObjIdxStartByScreen,X	 ; Get starting Level_Objects index for this screen
@@ -193,10 +165,6 @@ PRG005_B913:
 	JMP PRG005_B956	 ; Jump to PRG005_B956 (RTS)
 
 PRG005_B91E:
-
-	LDA <Spawn_Dynamically
-	STA Debug_Snap
-	STA Objects_DynamicallySpawned, X
 
 	; Set object X
 	LDA <Temp_Var1

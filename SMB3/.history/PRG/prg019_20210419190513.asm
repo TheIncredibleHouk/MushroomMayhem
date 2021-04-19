@@ -30,9 +30,6 @@ Level_ObjectsSpawn:
 	LDA <Object_SpawnColumnOffset
 	ADD #$10
 	STA <Object_SpawnColumnOffset
-
-	LDA #$01
-	STA <Spawn_Dynamically
 	JMP Level_ObjectsSpawnByColumn
 	
 	; This defines the values used as "look ahead" when screen is moving
@@ -46,7 +43,6 @@ NIGHT_FLAG		= $60
 
 Spawn_Column = Temp_Var6
 Spawn_ColumnHi  = Temp_Var7
-Spawn_Dynamically = Temp_Var16
 
 Level_ObjectsSpawnByScrolling:
 	LDA #$02
@@ -54,9 +50,6 @@ Level_ObjectsSpawnByScrolling:
 	
 Level_ObjectsSpawnByScroll:
 	DEC <Object_SpawnScrollCount
-
-	LDA #$00
-	STA <Spawn_Dynamically
 
 	LDY <Scroll_LastDir	 
 
@@ -193,10 +186,6 @@ PRG005_B913:
 	JMP PRG005_B956	 ; Jump to PRG005_B956 (RTS)
 
 PRG005_B91E:
-
-	LDA <Spawn_Dynamically
-	STA Debug_Snap
-	STA Objects_DynamicallySpawned, X
 
 	; Set object X
 	LDA <Temp_Var1

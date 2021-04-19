@@ -1430,7 +1430,7 @@ Title_Menu_1P2PCursorY:
 	.byte 151, 167	 ; Y position for the 1P/2P select cursor
 
 Title_Do1P2PMenu:
-	LDA #$00
+	LDA <Controller2
 	AND #(PAD_A | PAD_B)
 	CMP #(PAD_A | PAD_B)	
 	BNE PRG024_AC42	 ; If Player 2 is not holding A+B, jump to PRG024_AC42
@@ -1579,7 +1579,7 @@ Title_PrepForWorldMap1:
 Title_DebugMenu:
 	JSR Title_Menu_UpdateKoopas	 ; Update the koopas
 
-	LDA #$00
+	LDA <Controller2
 	AND #$c1	 
 	CMP #$c1	
 	BNE PRG024_ACD7	 ; If Player 2 is NOT hitting A+B+Right (credits jump), jump to PRG024_ACD7
@@ -1587,7 +1587,7 @@ Title_DebugMenu:
 	JMP Ending_Credits	 ; Jump to credits
 
 PRG024_ACD7:
-	LDA #$00
+	LDA <Controller2
 	AND #$c4	
 	CMP #$c4	
 	BNE PRG024_ACE2	 ; If Player 2 is NOT hitting A+B+Down (jump to Princess rescue), jump to PRG024_ACE2
