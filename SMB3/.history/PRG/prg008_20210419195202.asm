@@ -979,6 +979,7 @@ PRG008_A6F2:
 	CPY #PLAYERSUIT_FROG
 	BEQ PRG008_A70E	 	; If Player is Frog, jump to PRG008_A70E
 
+	
 	LDA Player_IsHolding
 	BNE PRG008_A70E	 	; If Player is holding something, sliding down a slope, or in a Kuribo's shoe, jump to PRG008_A70E 
 
@@ -1058,7 +1059,14 @@ PRG008_A906:
 	
 	LDA #$00
 	STA Player_Direction
+	STA Player_LastDirection
 
+	LDA Player_TailAttack
+	BEQ Player_FaceOrientation
+
+	LDA Player_TailDirection
+	BEQ PRG008_A916
+	BNE Player_FaceLeft
 
 Player_FaceOrientation:	
 	LDA <Player_FlipBits
@@ -1074,6 +1082,7 @@ PRG008_A916:
 	LDA <Player_XVelZ
 	BPL PRG008_A925	 ; If Player's X Velocity is rightward, jump to PRG008_A925
 
+	INC Player_LastDirection
 	JSR Negate	 ; Negate X Velocity (get absolute value)
 
 	DEY		 ; Y = 1 (moving left)
@@ -1103,7 +1112,7 @@ PRG008_A928:
 	;LDA <Player_YVelZ
 	;BMI PRG008_A940	 ; If Player is moving upward, jump to PRG008_A940
 
-PRG008_A93D:
+;PRG008_A93D:
 	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
 
 
@@ -2167,13 +2176,11 @@ PRG008_AE11:
 	; Player is pressing left/right
 
 	LDY #$00	; No flip
-	STY Player_LastDirection
 
 	AND #%00000010
 	BNE PRG008_AE24	 ; If Player is pressing left, jump to PRG008_AE24
 
 	LDY #SPR_HFLIP	; Horizontal flip
-	INC Player_LastDirection
 
 PRG008_AE24:
 	STY <Player_FlipBits	; Set appropriate flip
@@ -4988,10 +4995,11 @@ PowBlock1:
 	DEX
 	BPL PowBlock0
 
-
 	STA Slow_Watch
+
 	LDA Player_Equip
 	CMP #ITEM_POW1
+
 	BEQ PowBlock2
 	DEC Player_Equip
 	RTS
@@ -5770,9 +5778,7 @@ Player_NextTile:
 	RTS
 
 
-Fox_DashDir: .byte $D0, $30, SPR_HFLIP, $00, $01, $00
-Player_KillDash_NoFXJump:
-	JMP Player_KillDash_NoFX
+Fox_DashDir: .byte $D0, $30, $00, SPR_HFLIP
 
 Fox_BurnMode:
 	LDA Player_FireDash			; we're already in fireball mode, let's continue doing velocity checks
@@ -5792,10 +5798,10 @@ Fox_BurnModeCont:
 Fox_BurnModeCont1:
 	LDA <Pad_Holding
 	AND #PAD_B
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	LDA Player_Power
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	JMP ContinueDash
 
@@ -5824,24 +5830,27 @@ Try_FireBall:					; not a fireball, so let's try it!
 	STA Player_SuitLost
 	STA Player_FireDash
 
+	LDA Player_TailDirection
+	STA Player_Direction
+
 	LDA Sound_QLevel2		; flame sound effect
 	ORA #SND_LEVELFLAME
 	STA Sound_QLevel2
+	BNE ContinueDash
 
 ContinueDash:
-	STA Debug_Snap
+
 	LDY Player_LastDirection
-	STY Player_Direction
 
 	LDA Fox_DashDir, Y
 	STA <Player_XVelZ
 	STA <Player_InAir
 
-	LDA Fox_DashDir + 2, Y
-	STA Player_FlipBits
-
 	LDA #$00
 	STA <Player_YVelZ
+
+	LDA Fox_DashDir+2, Y
+	STA <Player_FlipBits
 
 	LDA #$F4
 	STA Power_Change

@@ -5771,8 +5771,6 @@ Player_NextTile:
 
 
 Fox_DashDir: .byte $D0, $30, SPR_HFLIP, $00, $01, $00
-Player_KillDash_NoFXJump:
-	JMP Player_KillDash_NoFX
 
 Fox_BurnMode:
 	LDA Player_FireDash			; we're already in fireball mode, let's continue doing velocity checks
@@ -5792,10 +5790,10 @@ Fox_BurnModeCont:
 Fox_BurnModeCont1:
 	LDA <Pad_Holding
 	AND #PAD_B
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	LDA Player_Power
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	JMP ContinueDash
 
@@ -5829,6 +5827,7 @@ Try_FireBall:					; not a fireball, so let's try it!
 	STA Sound_QLevel2
 
 ContinueDash:
+
 	STA Debug_Snap
 	LDY Player_LastDirection
 	STY Player_Direction

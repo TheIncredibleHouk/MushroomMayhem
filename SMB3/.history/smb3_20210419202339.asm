@@ -2417,7 +2417,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Player_FireDash:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
 	Player_Direction:		.ds 1	;
-	Player_LastDirection:		.ds	1	;
+	Player_LastMove:		.ds	1	;
 	EventSwitch:			.ds 1	; For e-switch levels
 	EventVar:				.ds 1
 	EventTicker:			.ds 1

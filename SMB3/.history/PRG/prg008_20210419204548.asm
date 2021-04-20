@@ -5792,10 +5792,10 @@ Fox_BurnModeCont:
 Fox_BurnModeCont1:
 	LDA <Pad_Holding
 	AND #PAD_B
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	LDA Player_Power
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	JMP ContinueDash
 

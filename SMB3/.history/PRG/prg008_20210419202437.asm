@@ -1088,6 +1088,11 @@ PRG008_A928:
 	STA <Temp_Var3	 ; Temp_Var3 = absolute value of Player's X Velocity
 
 	STY Player_MoveLR	; Set Player_MoveLR appropriately
+	LDY Player_MoveLR
+	BEQ PRG008_A93D
+
+	DEY
+	STY Player_LastDirection
  
 	;LDA <Player_InAir
 	;BEQ PRG008_A940	 ; If Player is not mid air, jump to PRG008_A940
@@ -2167,13 +2172,11 @@ PRG008_AE11:
 	; Player is pressing left/right
 
 	LDY #$00	; No flip
-	STY Player_LastDirection
 
 	AND #%00000010
 	BNE PRG008_AE24	 ; If Player is pressing left, jump to PRG008_AE24
 
 	LDY #SPR_HFLIP	; Horizontal flip
-	INC Player_LastDirection
 
 PRG008_AE24:
 	STY <Player_FlipBits	; Set appropriate flip
@@ -5770,9 +5773,7 @@ Player_NextTile:
 	RTS
 
 
-Fox_DashDir: .byte $D0, $30, SPR_HFLIP, $00, $01, $00
-Player_KillDash_NoFXJump:
-	JMP Player_KillDash_NoFX
+Fox_DashDir: .byte $30, $D0, $01, $00
 
 Fox_BurnMode:
 	LDA Player_FireDash			; we're already in fireball mode, let's continue doing velocity checks
@@ -5792,10 +5793,10 @@ Fox_BurnModeCont:
 Fox_BurnModeCont1:
 	LDA <Pad_Holding
 	AND #PAD_B
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	LDA Player_Power
-	BEQ Player_KillDash_NoFXJump
+	BEQ Player_KillDash_NoFX
 
 	JMP ContinueDash
 
@@ -5829,16 +5830,16 @@ Try_FireBall:					; not a fireball, so let's try it!
 	STA Sound_QLevel2
 
 ContinueDash:
+
 	STA Debug_Snap
 	LDY Player_LastDirection
-	STY Player_Direction
 
 	LDA Fox_DashDir, Y
 	STA <Player_XVelZ
 	STA <Player_InAir
 
 	LDA Fox_DashDir + 2, Y
-	STA Player_FlipBits
+	STA Player_Direction
 
 	LDA #$00
 	STA <Player_YVelZ
