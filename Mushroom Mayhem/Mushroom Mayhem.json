@@ -4296,6 +4296,44 @@
       ],
       "Name": "Plumbing Plunging",
       "Id": "d7ec0505-eee2-4cc1-bb88-8529e9c901f7"
+    },
+    {
+      "IndexedColors": [
+        15,
+        6,
+        48,
+        22,
+        15,
+        15,
+        48,
+        0,
+        15,
+        15,
+        48,
+        23,
+        15,
+        15,
+        48,
+        9,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        1,
+        48,
+        33,
+        15,
+        15,
+        48,
+        0
+      ],
+      "Name": "Fox Fire Dash Bash 2",
+      "Id": "ea147096-fdb2-4be6-8220-205fab46b513"
     }
   ],
   "WorldInfo": [
@@ -5267,21 +5305,21 @@
           "DisplayName": "(Level) Oil Spill Thrill"
         },
         {
-          "Name": "Polar Pendulums",
+          "Name": "Polarity Pendulums",
           "Id": "0368b992-26e4-4a3a-bb10-cd700b4322cc",
           "LastModified": "2019-11-17T19:35:15.2644151-05:00",
           "SublevelsInfo": [
             {
-              "Name": "Pendulums and Polarizing 2",
+              "Name": "Polarity Pendulums 2",
               "Id": "c5255ab4-5fc4-46f3-b574-6805c9e9320c",
               "LastModified": "2019-11-17T19:35:15.2464265-05:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Pendulums and Polarizing 2"
+              "DisplayName": "(Level) Polarity Pendulums 2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Polar Pendulums"
+          "DisplayName": "(Level) Polarity Pendulums"
         },
         {
           "Name": "Frost Flame Factory",
@@ -5337,7 +5375,16 @@
           "Name": "Fox Fire Dash Bash",
           "Id": "66e48880-1688-4acb-a7bf-df47d55b5797",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Name": "Fox Fire Dash Bash 2",
+              "Id": "9abdcc99-1041-420b-abab-67c4b5bb7c11",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Fox Fire Dash Bash 2"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) Fox Fire Dash Bash"
         }
@@ -34764,11 +34811,11 @@
           "LowerRight": 113
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "Property": 64,
+          "UpperLeft": 93,
+          "UpperRight": 93,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -35114,18 +35161,18 @@
           "LowerRight": 238
         },
         {
-          "Property": 9,
+          "Property": 57,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperRight": 238,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
-          "Property": 9,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 49,
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
           "Property": 192,
@@ -35184,18 +35231,18 @@
           "LowerRight": 20
         },
         {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 11,
+          "UpperLeft": 250,
+          "UpperRight": 251,
+          "LowerLeft": 250,
+          "LowerRight": 251
         },
         {
           "Property": 247,
-          "UpperLeft": 76,
-          "UpperRight": 77,
-          "LowerLeft": 92,
-          "LowerRight": 93
+          "UpperLeft": 56,
+          "UpperRight": 57,
+          "LowerLeft": 72,
+          "LowerRight": 73
         },
         {
           "Property": 244,
@@ -35412,7 +35459,7 @@
           "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 119
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -35555,18 +35602,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "Property": 254,
+          "UpperLeft": 202,
+          "UpperRight": 203,
+          "LowerLeft": 218,
+          "LowerRight": 219
         },
         {
-          "Property": 11,
-          "UpperLeft": 250,
-          "UpperRight": 251,
-          "LowerLeft": 250,
-          "LowerRight": 251
+          "Property": 0,
+          "UpperLeft": 230,
+          "UpperRight": 231,
+          "LowerLeft": 246,
+          "LowerRight": 247
         },
         {
           "Property": 128,
@@ -47893,10 +47940,10 @@
         }
       ],
       "Properties": [
-        "Fire Power Helper",
-        "Ninja Power Helper",
-        "Koopa Power Helper",
-        "Frog Power Helper",
+        "Fire Power",
+        "Ninja Power",
+        "Koopa Power",
+        "Frog Power",
         "P-Wing",
         "Fox Leaf"
       ],

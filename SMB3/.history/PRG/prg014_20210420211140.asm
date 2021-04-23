@@ -838,8 +838,6 @@ Larry_InBag:
 	JMP Larry_Draw
 
 Larry_RemoveBag:
-	STA Debug_Snap
-
 	LDA <Objects_XZ, X
 	STA <Poof_X
 
@@ -1130,7 +1128,6 @@ Larry_Item1:
 	STA Sprite_RAMX + 24, Y
 
 Larry_DrawItemDone:
-	LDX <CurrentObjectIndexZ
 	RTS
 
 
@@ -3656,9 +3653,13 @@ LakituWindow_DrawEnemy:
 	STA <Temp_Var1
 
 	LDA Sprite_RAMY + 8, Y
+	CMP #$F8
+	BEQ LakituWindow_Enemy1
+
 	SUB <Temp_Var1
 	STA Sprite_RAMY + 16, Y
 
+LakituWindow_Enemy1:
 	STA <Temp_Var3
 
 	LDA #$99
@@ -3669,8 +3670,13 @@ LakituWindow_DrawEnemy:
 	ORA #SPR_PAL2
 	STA Sprite_RAMAttr + 16, Y
 
-	LDA Sprite_RAMX + 8, Y
+	LDA Sprite_RAMX, Y
 	STA Sprite_RAMX + 16, Y
+
+	LDA Sprite_RAMY + 4, Y
+	CMP #$F8
+	BEQ LakituWindow_DrawEnemyDone
+	STA Sprite_RAMY + 20, Y
 
 	LDA #$99
 	STA Sprite_RAMTile + 20, Y
@@ -3680,12 +3686,8 @@ LakituWindow_DrawEnemy:
 	ORA #(SPR_PAL2 | SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAMAttr + 20, Y
 
-	LDA Sprite_RAMX + 12, Y
+	LDA Sprite_RAMX + 4, Y
 	STA Sprite_RAMX + 20, Y
-
-	LDA Sprite_RAMY + 12, Y
-	SUB <Temp_Var1
-	STA Sprite_RAMY + 20, Y
 
 LakituWindow_DrawEnemyDone:
 	RTS

@@ -5829,7 +5829,6 @@ Try_FireBall:					; not a fireball, so let's try it!
 	STA Sound_QLevel2
 
 ContinueDash:
-	STA Debug_Snap
 	LDY Player_LastDirection
 	STY Player_Direction
 

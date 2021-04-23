@@ -3672,6 +3672,10 @@ LakituWindow_DrawEnemy:
 	LDA Sprite_RAMX + 8, Y
 	STA Sprite_RAMX + 16, Y
 
+	LDA Sprite_RAMY + 8, Y
+	SUB #$10
+	STA Sprite_RAMY + 16, Y
+
 	LDA #$99
 	STA Sprite_RAMTile + 20, Y
 
@@ -3684,7 +3688,7 @@ LakituWindow_DrawEnemy:
 	STA Sprite_RAMX + 20, Y
 
 	LDA Sprite_RAMY + 12, Y
-	SUB <Temp_Var1
+	SUB #$10
 	STA Sprite_RAMY + 20, Y
 
 LakituWindow_DrawEnemyDone:
