@@ -568,16 +568,14 @@ PRG000_C834:
 
 
 	; When Object hits water, splash!
-Object_OilSplash:
-	LDA #$01
-	STA Splash_IsOil
-	JMP Object_WaterSplashNorm
-	
 Object_WaterSplash:
 	LDA #$00
 	STA Splash_IsOil
 
 Object_WaterSplashNorm:
+	LDA <Objects_YVelZ, X
+	STA <Temp_Var2
+
 	LDX #$05
 
 FindSplash:
@@ -591,13 +589,33 @@ FindSplash:
 	LDX <CurrentObjectIndexZ
 	RTS
 
+Splash_Vel:
+	.byte $80, $00
+
 Splash_Offsets:
-	.byte $00, $1E
+	.byte $00, $F0
+	.byte $FA, $0A
+
+Splash_OffsetsHi:
+	.byte $00, $FF
+	.byte $FF, $00	
 
 Splash_Orientations:
-	.byte $00, SPR_VFLIP	
+	.byte $00, $00
+	.byte SPR_VFLIP, SPR_VFLIP	
 
 MakeSplash:
+	STY <Temp_Var1
+	STA Debug_Snap
+	LDA <Temp_Var2
+	AND #$80
+	CMP Splash_Vel, Y
+	BEQ SetSplash
+
+	INY
+	INY 
+
+SetSplash:	
 	LDA Tile_DetectionX
 	STA <Objects_XZ, X
 
@@ -609,23 +627,17 @@ MakeSplash:
 	STA <Objects_YZ, X
 
 	LDA Tile_DetectionYHi
-	ADC #$00
+	ADC Splash_OffsetsHi, Y
 	STA <Objects_YHiZ, X
 
 	LDA #OBJ_WATERSPLASH
 	STA Objects_ID, X
 
-	LDA #OBJSTATE_FRESH
+	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X 
 	
 	LDA #$0B
 	STA Objects_Timer, X
-
-	LDA #$02
-	STA Objects_SpritesRequested, X
-
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, X
 
 	LDA Splash_IsOil
 	STA WaterSplash_IsOil, X
@@ -634,6 +646,7 @@ MakeSplash:
 	STA Objects_Orientation, X
 
 	LDX <CurrentObjectIndexZ
+	LDY <Temp_Var1
 	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -662,7 +675,7 @@ PRG000_C949:
 
 	JSR LevelEvent_Do 		; Perform event as set by Level_Event
 	JSR Player_CalcBoundBox
-	JSR Level_SpawnObjsAndBounce	; Handle if Player bounced off block and spawn new objects as screen scrolls
+	JSR Level_SpawnObjects	; Handle if Player bounced off block and spawn new objects as screen scrolls
 
 PRG000_C973:
 	LDA #$00

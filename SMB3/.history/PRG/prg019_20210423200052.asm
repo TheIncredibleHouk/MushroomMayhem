@@ -21,7 +21,6 @@ Level_ObjectsSpawn:
 
 	LDA <Object_SpawnColumnOffset
 	ADD <Horz_Scroll
-	AND #$F0
 	STA <Spawn_Column
 
 	LDA <Horz_Scroll_Hi
@@ -197,6 +196,7 @@ PRG005_B909:
 
 PRG005_B913:
 
+	STA Debug_Snap
 	LDA Objects_State,X	
 	BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
 	DEX		 ; X--

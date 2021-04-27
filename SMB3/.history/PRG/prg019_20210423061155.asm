@@ -21,7 +21,6 @@ Level_ObjectsSpawn:
 
 	LDA <Object_SpawnColumnOffset
 	ADD <Horz_Scroll
-	AND #$F0
 	STA <Spawn_Column
 
 	LDA <Horz_Scroll_Hi
@@ -32,20 +31,10 @@ Level_ObjectsSpawn:
 	ADD #$10
 	STA <Object_SpawnColumnOffset
 
-	LDA <Spawn_Column
-	SUB <Player_X
-	CMP #$10
-	BCC Level_SpawnObjectsRTS
-
-	CMP #$F0
-	BCS Level_SpawnObjectsRTS
-
 	LDA #$01
 	STA <Spawn_Dynamically
 	JMP Level_ObjectsSpawnByColumn
 	
-Level_SpawnObjectsRTS:
-	RTS	
 	; This defines the values used as "look ahead" when screen is moving
 	; Basically the values are $110 (one screen over + 16)
 	; and -$20 (32 pixels to the left)

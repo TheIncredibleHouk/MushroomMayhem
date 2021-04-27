@@ -2898,8 +2898,9 @@ Enemy_OilSplash:
 	INY
 
 Enemy_OilMakeSplash:
-	JSR Object_OilSplash
-
+	LDA #$01
+	STA Splash_IsOil
+	JSR Object_WaterSplashNorm
 	
 	JMP SpecialObj_Delete
 	

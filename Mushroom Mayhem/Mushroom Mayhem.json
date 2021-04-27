@@ -4301,20 +4301,20 @@
       "IndexedColors": [
         15,
         6,
-        48,
+        55,
         22,
-        15,
-        15,
-        48,
-        0,
         15,
         15,
         48,
         23,
         15,
         15,
-        48,
-        9,
+        59,
+        11,
+        15,
+        6,
+        16,
+        45,
         15,
         15,
         54,
@@ -4330,7 +4330,7 @@
         15,
         15,
         48,
-        0
+        23
       ],
       "Name": "Fox Fire Dash Bash 2",
       "Id": "ea147096-fdb2-4be6-8220-205fab46b513"
@@ -34811,7 +34811,7 @@
           "LowerRight": 113
         },
         {
-          "Property": 64,
+          "Property": 76,
           "UpperLeft": 93,
           "UpperRight": 93,
           "LowerLeft": 255,
@@ -35154,14 +35154,14 @@
           "LowerRight": 238
         },
         {
-          "Property": 9,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 49,
+          "UpperLeft": 194,
+          "UpperRight": 195,
+          "LowerLeft": 210,
+          "LowerRight": 211
         },
         {
-          "Property": 57,
+          "Property": 49,
           "UpperLeft": 238,
           "UpperRight": 238,
           "LowerLeft": 238,
@@ -36247,10 +36247,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 7,
+          "UpperRight": 9,
+          "LowerLeft": 23,
+          "LowerRight": 25
         },
         {
           "Property": 0,
@@ -36281,11 +36281,11 @@
           "LowerRight": 155
         },
         {
-          "Property": 3,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 195,
+          "UpperLeft": 7,
+          "UpperRight": 8,
+          "LowerLeft": 23,
+          "LowerRight": 24
         },
         {
           "Property": 48,
@@ -36393,11 +36393,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 8,
+          "UpperRight": 9,
+          "LowerLeft": 24,
+          "LowerRight": 25
         },
         {
           "Property": 16,

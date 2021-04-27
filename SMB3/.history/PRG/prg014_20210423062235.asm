@@ -978,7 +978,7 @@ Larry_ThrowItem:
 	BCS Larry_ThrowItemDone
 
 	LDY Larry_ItemSlot, X
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
 
 	LDA <Objects_XZ, X
@@ -1000,9 +1000,6 @@ Larry_ThrowItem:
 
 	LDA <Objects_XVelZ, X
 	STA Objects_XVelZ, Y
-
-	LDA #$00
-	STA Objects_Frame, Y
 
 	INC Larry_Action, X
 

@@ -21,7 +21,6 @@ Level_ObjectsSpawn:
 
 	LDA <Object_SpawnColumnOffset
 	ADD <Horz_Scroll
-	AND #$F0
 	STA <Spawn_Column
 
 	LDA <Horz_Scroll_Hi
@@ -32,13 +31,14 @@ Level_ObjectsSpawn:
 	ADD #$10
 	STA <Object_SpawnColumnOffset
 
+	STA Debug_Snap
 	LDA <Spawn_Column
 	SUB <Player_X
 	CMP #$10
-	BCC Level_SpawnObjectsRTS
+	;BCC Level_SpawnObjectsRTS
 
 	CMP #$F0
-	BCS Level_SpawnObjectsRTS
+	;BCS Level_SpawnObjectsRTS
 
 	LDA #$01
 	STA <Spawn_Dynamically

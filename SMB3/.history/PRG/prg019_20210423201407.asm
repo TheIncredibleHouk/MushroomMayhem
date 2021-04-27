@@ -13,6 +13,7 @@ Level_ObjectsSpawn:
 	LDA <Object_SpawnScrollCount
 	BPL Level_ObjectsSpawnByScroll
 
+	STA Debug_Snap
 	LDA <Horz_Scroll
 	AND #$F0
 	CMP <Object_LastScrollColumn
@@ -21,7 +22,6 @@ Level_ObjectsSpawn:
 
 	LDA <Object_SpawnColumnOffset
 	ADD <Horz_Scroll
-	AND #$F0
 	STA <Spawn_Column
 
 	LDA <Horz_Scroll_Hi

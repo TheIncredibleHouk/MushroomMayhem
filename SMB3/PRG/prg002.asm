@@ -258,6 +258,12 @@ ObjNorm_WaterSplash:
 	JMP WaterSplash_Draw
 
 WaterSplash_Norm:
+	LDA #$02
+	STA Objects_SpritesRequested, X
+
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
 	LDA Objects_Timer, X
 	CMP #$09
 	BCC WaterSplash_KeepSplashing
