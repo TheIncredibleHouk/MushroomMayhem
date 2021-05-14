@@ -4334,6 +4334,44 @@
       ],
       "Name": "Fox Fire Dash Bash 2",
       "Id": "ea147096-fdb2-4be6-8220-205fab46b513"
+    },
+    {
+      "IndexedColors": [
+        2,
+        15,
+        48,
+        6,
+        2,
+        15,
+        48,
+        39,
+        2,
+        15,
+        32,
+        11,
+        2,
+        15,
+        48,
+        45,
+        2,
+        15,
+        54,
+        6,
+        2,
+        15,
+        48,
+        5,
+        2,
+        15,
+        48,
+        26,
+        2,
+        15,
+        48,
+        24
+      ],
+      "Name": "Toxic Towers",
+      "Id": "4cdcb306-ccde-4d06-aa7d-ba4b573055bd"
     }
   ],
   "WorldInfo": [
@@ -5387,6 +5425,14 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Fox Fire Dash Bash"
+        },
+        {
+          "Name": "Toxic Towers",
+          "Id": "43f6bbc9-3a7c-44d1-a45e-9e4fc08cb85c",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [],
+          "InfoType": 1,
+          "DisplayName": "(Level) Toxic Towers"
         }
       ],
       "InfoType": 0,
@@ -25300,25 +25346,25 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 18,
+          "UpperLeft": 29,
+          "UpperRight": 29,
+          "LowerLeft": 29,
+          "LowerRight": 29
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 18,
+          "UpperLeft": 12,
+          "UpperRight": 13,
+          "LowerLeft": 28,
+          "LowerRight": 29
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 18,
+          "UpperLeft": 14,
+          "UpperRight": 15,
+          "LowerLeft": 30,
+          "LowerRight": 31
         },
         {
           "Property": 0,
@@ -25371,10 +25417,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
+          "UpperRight": 0,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 1,
+          "UpperRight": 0,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 3,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 2,
+          "LowerRight": 3
         },
         {
           "Property": 0,
@@ -25391,46 +25451,32 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 18,
+          "UpperLeft": 10,
+          "UpperRight": 45,
+          "LowerLeft": 26,
+          "LowerRight": 29
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 18,
+          "UpperLeft": 46,
+          "UpperRight": 11,
+          "LowerLeft": 30,
+          "LowerRight": 27
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 18,
+          "UpperLeft": 44,
+          "UpperRight": 45,
+          "LowerLeft": 60,
+          "LowerRight": 61
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 18,
+          "UpperLeft": 46,
+          "UpperRight": 47,
+          "LowerLeft": 62,
+          "LowerRight": 63
         },
         {
           "Property": 78,
@@ -57309,7 +57355,7 @@
       },
       {
         "Key": "9",
-        "Value": "Desert"
+        "Value": "Extra"
       }
     ],
     "effects": [
