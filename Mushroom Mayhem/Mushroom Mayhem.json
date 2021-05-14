@@ -4324,9 +4324,9 @@
         48,
         22,
         15,
-        1,
+        15,
         48,
-        33,
+        10,
         15,
         15,
         48,
@@ -35224,18 +35224,18 @@
           "LowerRight": 20
         },
         {
-          "Property": 0,
+          "Property": 128,
           "UpperLeft": 255,
-          "UpperRight": 4,
+          "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 20
+          "LowerRight": 255
         },
         {
-          "Property": 11,
-          "UpperLeft": 250,
-          "UpperRight": 251,
-          "LowerLeft": 250,
-          "LowerRight": 251
+          "Property": 240,
+          "UpperLeft": 202,
+          "UpperRight": 203,
+          "LowerLeft": 218,
+          "LowerRight": 219
         },
         {
           "Property": 247,
@@ -35701,17 +35701,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 11,
+          "UpperLeft": 250,
+          "UpperRight": 251,
+          "LowerLeft": 250,
+          "LowerRight": 251
         },
         {
           "Property": 0,
@@ -36246,7 +36246,7 @@
           "LowerRight": 18
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 7,
           "UpperRight": 9,
           "LowerLeft": 23,
@@ -36281,7 +36281,7 @@
           "LowerRight": 155
         },
         {
-          "Property": 195,
+          "Property": 192,
           "UpperLeft": 7,
           "UpperRight": 8,
           "LowerLeft": 23,
@@ -36997,7 +36997,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 0,
           "Y": 16,
           "TileTableAddress": "0x1000",
@@ -37009,11 +37011,97 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 8,
           "Y": 16,
           "TileTableAddress": "0x1000",
           "TileValue": "0x48",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x22",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x28",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x28",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x48",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x46",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x46",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 3,
@@ -37024,10 +37112,6 @@
       "Properties": [
         "10 Coins",
         "25 Coins",
-        "50 Coins",
-        "50 Coins",
-        "50 Coins",
-        "50 Coins",
         "50 Coins",
         "99 Coins"
       ],
@@ -49892,7 +49976,7 @@
           "Y": 0,
           "TileTableAddress": "0x24000",
           "TileValue": "0x24",
-          "HorizontalFlip": true,
+          "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
           "Overlay": false,
@@ -49967,7 +50051,7 @@
           "Y": 0,
           "TileTableAddress": "0x24000",
           "TileValue": "0x24",
-          "HorizontalFlip": true,
+          "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
           "Overlay": false,
@@ -49982,7 +50066,7 @@
           "Y": 0,
           "TileTableAddress": "0x24000",
           "TileValue": "0x24",
-          "HorizontalFlip": true,
+          "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
           "Overlay": false,

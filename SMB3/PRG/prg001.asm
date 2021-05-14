@@ -1012,7 +1012,7 @@ CoinLock_CoinsRemaining = Objects_Data4
 CoinLock_BlocksRemaining = Objects_Data5
 
 CoinLocks:
-	.byte $0A, $19, $32, $32, $32, $32, $32, $63
+	.byte $0A, $19, $32, $63, $32, $32, $32, $63
 
 Lock_NumOffset:
 	.byte $00, $40	
