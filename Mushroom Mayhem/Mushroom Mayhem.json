@@ -1,7 +1,6 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
-  "RomFilePath": "E:\\Mushroom Mayhem\\Game\\MushroomMayhem.nes",
+  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
   "Palettes": [
     {
       "IndexedColors": [
@@ -4523,48 +4522,39 @@
           "DisplayName": "(Level) Rhythm and Blocks"
         },
         {
-          "Name": "Colossal Cheep Challenge",
-          "Id": "9d188c37-2589-400a-a742-ed3feea907d1",
-          "LastModified": "2019-06-20T06:47:00.1678983-04:00",
+          "Name": "Colossal Cheep",
+          "Id": "22a5a5e5-ccc5-4f9a-abb9-3ae0525d987a",
+          "LastModified": "2019-06-20T19:27:00.954171-04:00",
           "SublevelsInfo": [
             {
-              "Name": "Big Bad Boss Bass 2",
-              "Id": "22a5a5e5-ccc5-4f9a-abb9-3ae0525d987a",
-              "LastModified": "2019-06-20T19:27:00.954171-04:00",
+              "Name": "Colossal Cheep1",
+              "Id": "2ba384ff-285b-4f6a-a2f6-3f67ee5efb7f",
+              "LastModified": "2019-06-20T19:27:03.4900571-04:00",
               "SublevelsInfo": [
                 {
-                  "Name": "Big Bad Boss Bass 3",
-                  "Id": "2ba384ff-285b-4f6a-a2f6-3f67ee5efb7f",
-                  "LastModified": "2019-06-20T19:27:03.4900571-04:00",
+                  "Name": "Colossal Cheep 2",
+                  "Id": "63773480-3fc7-4967-87e0-e790a3154044",
+                  "LastModified": "2019-06-20T19:27:05.89715-04:00",
                   "SublevelsInfo": [
                     {
-                      "Name": "Big Bad Boss Bass 4",
-                      "Id": "63773480-3fc7-4967-87e0-e790a3154044",
-                      "LastModified": "2019-06-20T19:27:05.89715-04:00",
-                      "SublevelsInfo": [
-                        {
-                          "Name": "Big Bad Boss Bass 5",
-                          "Id": "4b03f52e-b093-4ad7-b603-24de17a04fb3",
-                          "LastModified": "2019-06-17T19:15:34.8666959-04:00",
-                          "SublevelsInfo": null,
-                          "InfoType": 1,
-                          "DisplayName": "(Level) Big Bad Boss Bass 5"
-                        }
-                      ],
+                      "Name": "Colossal Cheep Boss",
+                      "Id": "4b03f52e-b093-4ad7-b603-24de17a04fb3",
+                      "LastModified": "2019-06-17T19:15:34.8666959-04:00",
+                      "SublevelsInfo": null,
                       "InfoType": 1,
-                      "DisplayName": "(Level) Big Bad Boss Bass 4"
+                      "DisplayName": "(Level) Colossal Cheep Boss"
                     }
                   ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Big Bad Boss Bass 3"
+                  "DisplayName": "(Level) Colossal Cheep 2"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Big Bad Boss Bass 2"
+              "DisplayName": "(Level) Colossal Cheep1"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Colossal Cheep Challenge"
+          "DisplayName": "(Level) Colossal Cheep"
         },
         {
           "Name": "World 1 to 2",
@@ -4733,25 +4723,7 @@
                           "Name": "World 2 Dungeon Boss",
                           "Id": "9195cd08-2dd9-4372-a406-3ab09623c4d7",
                           "LastModified": "2018-10-28T10:42:11.1159016-04:00",
-                          "SublevelsInfo": [
-                            {
-                              "Name": "World 2 Dungeon Switches",
-                              "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
-                              "LastModified": "2018-10-28T10:42:11.1268955-04:00",
-                              "SublevelsInfo": [
-                                {
-                                  "Name": "World 2 Dungeon Switches 2",
-                                  "Id": "26eb57e4-ab1f-42d7-a62c-f49a01c3c1ee",
-                                  "LastModified": "2018-10-28T10:42:11.1378881-04:00",
-                                  "SublevelsInfo": null,
-                                  "InfoType": 1,
-                                  "DisplayName": "(Level) World 2 Dungeon Switches 2"
-                                }
-                              ],
-                              "InfoType": 1,
-                              "DisplayName": "(Level) World 2 Dungeon Switches"
-                            }
-                          ],
+                          "SublevelsInfo": [],
                           "InfoType": 1,
                           "DisplayName": "(Level) World 2 Dungeon Boss"
                         }
@@ -4766,6 +4738,23 @@
               ],
               "InfoType": 1,
               "DisplayName": "(Level) World 2 Dungeon 2"
+            },
+            {
+              "Name": "World 2 Dungeon Switches",
+              "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
+              "LastModified": "2018-10-28T10:42:11.1268955-04:00",
+              "SublevelsInfo": [
+                {
+                  "Name": "World 2 Dungeon Switches 2",
+                  "Id": "26eb57e4-ab1f-42d7-a62c-f49a01c3c1ee",
+                  "LastModified": "2018-10-28T10:42:11.1378881-04:00",
+                  "SublevelsInfo": null,
+                  "InfoType": 1,
+                  "DisplayName": "(Level) World 2 Dungeon Switches 2"
+                }
+              ],
+              "InfoType": 1,
+              "DisplayName": "(Level) World 2 Dungeon Switches"
             }
           ],
           "InfoType": 1,
