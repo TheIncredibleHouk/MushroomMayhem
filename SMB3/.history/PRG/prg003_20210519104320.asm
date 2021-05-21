@@ -317,7 +317,7 @@ ObjNorm_PlatformOscillate1:
 
 
 Platform_Draw:
-	JSR Object_DetectTiles
+	STA Debug_Snap 
 	JSR Object_CheckForeground
 
 	JMP Object_Draw48x16

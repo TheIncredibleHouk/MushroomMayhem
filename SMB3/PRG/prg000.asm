@@ -606,7 +606,7 @@ Splash_Orientations:
 
 MakeSplash:
 	STY <Temp_Var1
-	STA Debug_Snap
+	
 	LDA <Temp_Var2
 	AND #$80
 	CMP Splash_Vel, Y
@@ -4653,6 +4653,7 @@ SetSpriteFG3:
 	BEQ SetSpriteFG5
 
 SetSpriteFG4:
+	STA Debug_Snap
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA  Objects_SpriteAttributes, X

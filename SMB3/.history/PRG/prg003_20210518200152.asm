@@ -77,7 +77,7 @@ OBJ_CLOUDGEN		= $36
     .word Platform_PlayerStand	        ; Object $33
 	.word ObjHit_DoNothing	        ; Object $34
 	.word ObjHit_DoNothing	        ; Object $35
-	.word ObjHit_CloudGen	        ; Object $36
+	.word ObjHit_DoNothing	        ; Object $36
 	.word ObjHit_DoNothing	        ; Object $37
 	.word ObjHit_DoNothing	        ; Object $38
 	.word ObjHit_DoNothing	        ; Object $39
@@ -317,11 +317,92 @@ ObjNorm_PlatformOscillate1:
 
 
 Platform_Draw:
-	JSR Object_DetectTiles
-	JSR Object_CheckForeground
+	LDA #$00
+	STA Objects_Orientation, X
+	
+	LDA Objects_SpritesVerticallyOffScreen,X
+	BEQ Platform_DoDraw
+	RTS
 
-	JMP Object_Draw48x16
+Platform_DoDraw:
+	
+	JSR Object_Draw48x16
+	RTS
 
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_2_HINVISIBLE
+	BNE Platform_Draw1
+
+	LDA <Objects_SpriteX, X
+	ADD #$10
+	STA Sprite_RAMX + 8, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 8, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 8, Y
+
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 8, Y
+
+Platform_Draw1:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_3_HINVISIBLE
+	BNE Platform_Draw2
+
+	LDA <Objects_SpriteX, X
+	ADD #$18
+	STA Sprite_RAMX + 12, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 12, Y
+
+	LDA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr + 12, Y
+
+	LDA Sprite_RAMTile + 4, Y
+	STA Sprite_RAMTile + 12, Y
+
+Platform_Draw2:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_4_HINVISIBLE
+	BNE Platform_Draw3
+
+	LDA <Objects_SpriteX, X
+	ADD #$20
+	STA Sprite_RAMX + 16, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 16, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 16, Y
+
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
+
+Platform_Draw3:
+	
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_5_HINVISIBLE
+	BNE Platform_Draw4
+
+	LDA <Objects_SpriteX, X
+	ADD #$28
+	STA Sprite_RAMX + 20, Y
+
+	LDA <Objects_SpriteY, X
+	STA Sprite_RAMY + 20, Y
+
+	LDA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr + 20, Y
+
+	LDA Sprite_RAMTile + 4, Y
+	STA Sprite_RAMTile + 20, Y
+
+Platform_Draw4:
+	RTS		 ; Return    
 
 Platform_PlayerOffset:
 	.byte $01, $00
@@ -1577,7 +1658,7 @@ Swing_Draw:
 	LDA #$A5
 	STA Sprite_RAMTile + 24, Y
 
-	LDA #SPR_PAL2 | SPR_BEHINDBG
+	LDA #SPR_PAL1
 	STA Sprite_RAMAttr + 24, Y
 
 Swing_DrawAttach:
@@ -1609,7 +1690,7 @@ Swing_DrawAttach:
 	LDA #$A7
 	STA Sprite_RAMTile + 28, Y
 
-	LDA #SPR_PAL2 | SPR_BEHINDBG
+	LDA #SPR_PAL1
 	STA Sprite_RAMAttr + 28, Y
 
 Swing_DrawRTS:	
@@ -1822,18 +1903,12 @@ ObjNorm_CheckPointRTS:
 
 ObjInit_CloudGen:
 
-	LDA #BOUND32x32
-	STA Objects_BoundBox, X
-
 	LDA #$10
 	STA Objects_Timer, X
-
-	JSR Object_CalcBoundBox
 	RTS	
 
 ObjNorm_CloudGen:
-	JSR Object_InteractWithPlayer	
-
+	STA Debug_Snap
 	LDA Objects_Timer, X
 	BNE ObjNorm_CloudGenRTS
 
@@ -1861,7 +1936,6 @@ ObjNorm_CloudGenRTS:
 	RTS
 
 ObjHit_CloudGen:
-	LDA <Player_YVelZ
-	SUB #$10
-	STA <Player_YVelZ
+	LDA #$E0
+	STA <Player_CarryYVel, X
 	RTS	

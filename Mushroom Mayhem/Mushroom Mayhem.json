@@ -1,6 +1,6 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
+  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
   "Palettes": [
     {
       "IndexedColors": [
@@ -4336,35 +4336,35 @@
     },
     {
       "IndexedColors": [
-        2,
+        12,
         15,
-        48,
+        55,
         6,
-        2,
+        12,
         15,
         48,
         39,
-        2,
+        12,
         15,
         32,
         11,
-        2,
+        12,
         15,
         48,
         45,
-        2,
+        12,
         15,
         54,
         6,
-        2,
+        12,
         15,
-        48,
-        5,
-        2,
+        15,
+        22,
+        12,
         15,
         48,
         26,
-        2,
+        12,
         15,
         48,
         24
@@ -23725,7 +23725,14 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
+        },
+        {
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -23746,28 +23753,21 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -23837,7 +23837,21 @@
           "LowerRight": 23
         },
         {
-          "Property": 16,
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
+        },
+        {
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -23851,35 +23865,21 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -23977,25 +23977,25 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 70,
+          "UpperRight": 71,
+          "LowerLeft": 86,
+          "LowerRight": 87
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 72,
+          "UpperRight": 73,
+          "LowerLeft": 88,
+          "LowerRight": 89
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 74,
+          "UpperRight": 75,
+          "LowerLeft": 90,
+          "LowerRight": 91
         },
         {
           "Property": 0,
@@ -24580,10 +24580,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 46,
+          "UpperRight": 47,
+          "LowerLeft": 62,
+          "LowerRight": 63
         },
         {
           "Property": 128,
@@ -24957,25 +24957,25 @@
           "LowerRight": 61
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 0,
+          "UpperRight": 1,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 2,
+          "UpperRight": 1,
+          "LowerLeft": 18,
+          "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 2,
+          "UpperRight": 3,
+          "LowerLeft": 18,
+          "LowerRight": 19
         },
         {
           "Property": 0,
@@ -25202,21 +25202,21 @@
           "LowerRight": 252
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -25293,42 +25293,42 @@
           "LowerRight": 29
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -25336,10 +25336,10 @@
         },
         {
           "Property": 18,
-          "UpperLeft": 29,
-          "UpperRight": 29,
-          "LowerLeft": 29,
-          "LowerRight": 29
+          "UpperLeft": 14,
+          "UpperRight": 14,
+          "LowerLeft": 14,
+          "LowerRight": 14
         },
         {
           "Property": 18,
@@ -25405,35 +25405,42 @@
           "LowerRight": 23
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 0,
-          "LowerLeft": 0,
-          "LowerRight": 1
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 1,
-          "UpperRight": 0,
-          "LowerLeft": 0,
-          "LowerRight": 1
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 3,
-          "UpperRight": 255,
-          "LowerLeft": 2,
-          "LowerRight": 3
-        },
-        {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
+        },
+        {
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -25441,31 +25448,24 @@
         },
         {
           "Property": 18,
-          "UpperLeft": 10,
-          "UpperRight": 45,
-          "LowerLeft": 26,
-          "LowerRight": 29
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 18,
-          "UpperLeft": 46,
-          "UpperRight": 11,
-          "LowerLeft": 30,
-          "LowerRight": 27
-        },
-        {
-          "Property": 18,
-          "UpperLeft": 44,
+          "UpperLeft": 238,
           "UpperRight": 45,
           "LowerLeft": 60,
-          "LowerRight": 61
+          "LowerRight": 238
         },
         {
           "Property": 18,
-          "UpperLeft": 46,
+          "UpperLeft": 238,
           "UpperRight": 47,
           "LowerLeft": 62,
-          "LowerRight": 63
+          "LowerRight": 238
         },
         {
           "Property": 78,
@@ -35827,17 +35827,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 74,
-          "UpperRight": 75,
+          "UpperLeft": 64,
+          "UpperRight": 65,
           "LowerLeft": 242,
           "LowerRight": 243
         },
         {
           "Property": 0,
-          "UpperLeft": 74,
-          "UpperRight": 75,
-          "LowerLeft": 90,
-          "LowerRight": 91
+          "UpperLeft": 64,
+          "UpperRight": 65,
+          "LowerLeft": 80,
+          "LowerRight": 81
         },
         {
           "Property": 0,
@@ -36229,21 +36229,21 @@
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
-          "LowerRight": 17
+          "LowerRight": 0
         },
         {
           "Property": 192,
-          "UpperLeft": 2,
+          "UpperLeft": 0,
           "UpperRight": 1,
-          "LowerLeft": 18,
-          "LowerRight": 17
+          "LowerLeft": 1,
+          "LowerRight": 0
         },
         {
           "Property": 192,
-          "UpperLeft": 2,
-          "UpperRight": 3,
-          "LowerLeft": 18,
-          "LowerRight": 19
+          "UpperLeft": 0,
+          "UpperRight": 1,
+          "LowerLeft": 1,
+          "LowerRight": 17
         },
         {
           "Property": 204,
@@ -42051,7 +42051,7 @@
           "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -42065,7 +42065,7 @@
           "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -42079,7 +42079,7 @@
           "TileValue": "0x26",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -42093,7 +42093,7 @@
           "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -42107,7 +42107,7 @@
           "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -42121,7 +42121,7 @@
           "TileValue": "0x26",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         }
@@ -42305,35 +42305,107 @@
     {
       "GameId": 54,
       "GameObjectType": 1,
-      "Name": "Unused x36",
+      "Name": "Cloud Generator",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x00",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 16,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x00",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": -32,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x02",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": -32,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x02",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": -64,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x04",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": -64,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x04",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": -96,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": -96,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x06",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Global"
     },
     {
       "GameId": 55,

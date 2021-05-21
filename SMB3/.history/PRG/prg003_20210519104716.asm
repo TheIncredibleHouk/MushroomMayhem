@@ -317,7 +317,7 @@ ObjNorm_PlatformOscillate1:
 
 
 Platform_Draw:
-	JSR Object_DetectTiles
+	JSR Object_DetectTileCenter
 	JSR Object_CheckForeground
 
 	JMP Object_Draw48x16

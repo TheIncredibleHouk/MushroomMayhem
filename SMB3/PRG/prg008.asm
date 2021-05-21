@@ -5258,13 +5258,18 @@ Player_AirChanges0:
 	STA Air_Change
 	RTS
 
+Player_AirChangesFast:
+	LDA #$FE
+	STA Air_Change
+	RTS
+
 Player_AirChanges1:
 	LDA Level_Tile_Prop_Head
 	CMP #TILE_PROP_DEPLETE_AIR
-	BEQ Player_AirChanges0
+	BEQ Player_AirChangesFast
 
 	CMP #(TILE_PROP_DEPLETE_AIR | TILE_PROP_FOREGROUND)
-	BEQ Player_AirChanges0
+	BEQ Player_AirChangesFast
 
 Player_AirChanges2:
 	RTS

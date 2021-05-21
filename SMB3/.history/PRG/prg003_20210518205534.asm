@@ -317,7 +317,6 @@ ObjNorm_PlatformOscillate1:
 
 
 Platform_Draw:
-	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 
 	JMP Object_Draw48x16
@@ -1861,6 +1860,8 @@ ObjNorm_CloudGenRTS:
 	RTS
 
 ObjHit_CloudGen:
+	STA Debug_Snap
+
 	LDA <Player_YVelZ
 	SUB #$10
 	STA <Player_YVelZ

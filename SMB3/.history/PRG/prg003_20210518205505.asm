@@ -317,11 +317,19 @@ ObjNorm_PlatformOscillate1:
 
 
 Platform_Draw:
-	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 
-	JMP Object_Draw48x16
+	LDA #$00
+	STA Objects_Orientation, X
+	
+	LDA Objects_SpritesVerticallyOffScreen,X
+	BEQ Platform_DoDraw
+	RTS
 
+Platform_DoDraw:
+	
+	JSR Object_Draw48x16
+	RTS
 
 Platform_PlayerOffset:
 	.byte $01, $00
@@ -1861,6 +1869,8 @@ ObjNorm_CloudGenRTS:
 	RTS
 
 ObjHit_CloudGen:
+	STA Debug_Snap
+
 	LDA <Player_YVelZ
 	SUB #$10
 	STA <Player_YVelZ

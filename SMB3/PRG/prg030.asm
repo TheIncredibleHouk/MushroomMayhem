@@ -5634,6 +5634,10 @@ Common_MakePoof1:
 
 	LDA <Poof_YHi
 	STA SpecialObj_YHi, Y
+
+	LDA #$00
+	STA SpecialObj_XVel, Y
+	STA SpecialObj_YVel, Y
 	RTS
 
 Common_GetTempTile:

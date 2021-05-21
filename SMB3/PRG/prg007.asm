@@ -764,6 +764,8 @@ SpecialObj_Poof:
 	LDA <Player_HaltGameZ
 	BNE Poof_DoDraw
 
+	JSR SObj_ApplyXYVels
+
 	DEC SpecialObj_Timer, X
 	BEQ SpecialObj_Poof1
 
