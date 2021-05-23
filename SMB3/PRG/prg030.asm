@@ -1019,8 +1019,6 @@ PRG030_8B03:
 	JSR PRGROM_Change_Both2
 
 	LDX Player_Current
-	LDA Player_FallToKing,X
-	BNE PRG030_8B6D	 	; If Player is bound for king, jump to PRG030_8B6D
 
 	LDA Inventory_Open
 	BNE PRG030_8B51	 	; If inventory is open (only normally happens at this point in Toad House), jump to PRG030_8B51
@@ -1593,79 +1591,79 @@ PRG030_9006:
 PRG030_9009:
 	; Player is falling into king's room...
 
-	LDA #$c0
-	STA Update_Select	; Update_Select = $C0 (Normal)
+	;LDA #$c0
+	;STA Update_Select	; Update_Select = $C0 (Normal)
 
-	LDA #$00
-	STA Raster_Effect	; Raster_Effect = $00 (Normal status bar)
+	;LDA #$00
+	;STA Raster_Effect	; Raster_Effect = $00 (Normal status bar)
 
-	LDA #$00
-	STA World_EnterState	; World_EnterState = 0
-	STA <Level_ExitToMap	; Level_ExitToMap = 0 (not going to exit to map)
+	;LDA #$00
+	;STA World_EnterState	; World_EnterState = 0
+	;STA <Level_ExitToMap	; Level_ExitToMap = 0 (not going to exit to map)
 
 	; Set page @ A000 to 27
-	LDA #27
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+	;LDA #27
+	;STA PAGE_A000
+	;JSR PRGROM_Change_A000
 
-	JSR EndWorldLetter_GenerateText	; Generate the text for the end-of-world letter
+	;JSR EndWorldLetter_GenerateText	; Generate the text for the end-of-world letter
 
 	; Resume Update_Select activity
-	LDA #$00
-	STA UpdSel_Disable
+	;LDA #$00
+	;STA UpdSel_Disable
 
 	; Set page @ A000 to 27
-	LDA #27
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-	JSR Setup_PalData	 ; Setup palette data
+	;LDA #27
+	;STA PAGE_A000
+	;JSR PRGROM_Change_A000
+	;JSR Setup_PalData	 ; Setup palette data
 
 	; Switch bank A000 to page 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-	JSR Palette_FadeIn	 ; On page 26 -- Fade in
+	;LDA #26
+	;STA PAGE_A000
+	;JSR PRGROM_Change_A000
+	;JSR Palette_FadeIn	 ; On page 26 -- Fade in
 
 	; Load font graphics
-	LDA #$5e
-	STA PatTable_BankSel+1
+	;LDA #$5e
+	;STA PatTable_BankSel+1
 
 	; Set page @ A000 to 27
-	LDA #27
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+	;LDA #27
+	;STA PAGE_A000
+	;JSR PRGROM_Change_A000
 
 PRG030_904D:
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; VSync
+	;JSR GraphicsBuf_Prep_And_WaitVSync	 ; VSync
 
-	JSR CineKing_DoWandReturn	 ; Do the returned wand scene!
+	;JSR CineKing_DoWandReturn	 ; Do the returned wand scene!
 
-	LDA <Level_ExitToMap
-	BEQ PRG030_904D		; While Level_ExitToMap = 0, loop
+	;LDA <Level_ExitToMap
+	;BEQ PRG030_904D		; While Level_ExitToMap = 0, loop
 
 	; Clear $06FF - $0000, excluding $01xx
-	LDY #$06
-	JSR Clear_RAM_thru_ZeroPage
+	;LDY #$06
+	;JSR Clear_RAM_thru_ZeroPage
 
 	; Clear some relevant Player values
-	LDX Total_Players
-	DEX		 ; X = Total_Players - 1
-	LDA #$00	 ; Clear value
+	;LDX Total_Players
+	;DEX		 ; X = Total_Players - 1
+	;LDA #$00	 ; Clear value
 PRG030_9062:
-	STA Player_FallToKing,X
-	STA Map_ReturnStatus
-	STA Map_Prev_XOff,X
-	STA Map_Prev_XHi,X
+	;STA Player_FallToKing,X
+	;STA Map_ReturnStatus
+	;STA Map_Prev_XOff,X
+	;STA Map_Prev_XHi,X
 
-	DEX		 ; X--
-	BPL PRG030_9062	 ; While X >= 0, loop
+	;DEX		 ; X--
+	;BPL PRG030_9062	 ; While X >= 0, loop
 	; Stop any music
 	;LDA #MUS1_STOPMUSIC
 	;STA Sound_QMusic1
 
-	INC World_Num	 ; Go to next world!
+	;INC World_Num	 ; Go to next world!
 
-	JMP PRG030_84A0	 	; Jump to PRG030_84A0 (initialize the world map!)
+	;JMP PRG030_84A0	 	; Jump to PRG030_84A0 (initialize the world map!)
 
 PRG030_9097:
 
@@ -2586,22 +2584,7 @@ Tile_Mem_ClearB:	; $9734
 AnimOffsets: .byte $00, $10, $20, $28
 AnimStarts: .byte $80, $D0, $F0, $6A
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LevelLoad
-;
-; The master level loader function!  Without this, there's no game!
-;
-; This function performs all the work necessary to translate 
-; "layout" data into functional geometry.  Note that based on
-; the value of Level_Tileset, there are different "generators"
-; that are employed, so while the overall macro format is consistent,
-; the stylization and inner format may not be!
-;
-; Best to follow through to figure out the format to each "style"...
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-LevelLoad:	; $97B7
-	; Clear loading variables
+LevelLoad:	
 	JSR InitStarsBackground
 
 	LDA #$00
@@ -2726,8 +2709,10 @@ SkipLevelLoad:
 
 NotJctBQ:
 	JSR ClearBuffers
+	
 	LDA Level_Redraw
 	BEQ SkipMemClear
+	
 	LDY #$00
 	LDA [Temp_Var14],Y
 
@@ -2736,14 +2721,13 @@ NotJctBQ:
 ClearLevelMem:
 	JSR Tile_Mem_ClearA
 	JSR Tile_Mem_ClearB
+	
 	CPY #$00
 	BNE ClearLevelMem
 
 SkipMemClear:
 	LDY #$01
-	; now load bg gfx, for eswitch levels (dungeon)
-	; we use the tables, otherwise we use 
-
+	
 	LDA [Temp_Var14],Y
 
 Skip_Normal_Gfx2:
@@ -2812,6 +2796,7 @@ Level_Exit_Set:
 
 	LDA AnimOffsets, X
 	STA AnimOffset
+	
 	LDA AnimStarts, X
 	STA PatTable_BankSel+1	
 
@@ -2895,6 +2880,7 @@ Skip_Level_Position:
 
 	CPX #MUS2B_PSWITCH
 	BEQ Skip_Set_Music		; If playing the P-Tab music, don't queue this song right now
+	
 	CPX #MUS2A_INVINCIBILITY		
 	BEQ Skip_Set_Music		; If playing the Invincibility music, don't queue this song right now
 
@@ -2908,11 +2894,13 @@ Skip_Set_Music:
 	LDA [Temp_Var14],Y
 	LDX Level_JctCtl
 	BNE Skip_Time_Set
+	
 	AND #$F0
 	LSR A
 	LSR A
 	LSR A
 	LSR A
+	
 	LDA [Temp_Var14],Y
 	AND #$0F
 	
@@ -2940,12 +2928,12 @@ HorzNotLocked:
 	LSR A
 	LSR A
 	STA <Temp_Var6	; temporarily store pointer count
+	
 	LDA [Temp_Var14], Y
 	AND #$08
 	STA BlockedLevel
 	LDY #$09
 
-	; set invincible enemies
 	LDA [Temp_Var14],Y
 	AND #$80
 	STA MushroomBlocks_Enabled
@@ -3045,11 +3033,13 @@ Pointers_Done:
 NoCarryInc:
 	LDA #$00
 	STA <Temp_Var8
+	
 	LDA #$60
 	STA <Temp_Var9
 	LDY #$00
 
 NextDecompressionCommand:
+	
 	LDA [Temp_Var14], Y
 	CMP #$FF
 	BNE GetDecompressionCommand
@@ -3077,45 +3067,48 @@ GetDecompressionCommand:
 
 DecompressCommand:
 	JSR DynJump
+
 	.word RepeatTile
 	.word SkipTiles
 	.word RepeatPattern
 	.word WriteRaw
 
 RepeatTile:
+
 	LDY #$00
 	LDA [Temp_Var14], Y
 	AND #$3F
 	STA <Temp_Var10
+
 	JSR NextLevelByte
-	LDA [Temp_Var14], Y
 
 RepeatTileLoop:
 	LDX Level_Redraw
 	BEQ SkipRepeat
 
+	LDA [Temp_Var14], Y
 	STA [Temp_Var8],Y
 
 SkipRepeat:	
 	JSR NextTileByte
 	DEC <Temp_Var10
 	BPL RepeatTileLoop
+
 	JSR NextLevelByte
 	RTS
 
-SkipTiles:
+SkipTiles: 
 	LDY #$00
 	LDA [Temp_Var14], Y
 	AND #$3F
 	TAX
-	INX
-	TXA
-	CLC
-	ADC <Temp_Var8
-	STA <Temp_Var8
-	BCC SkipIncVar9Skip
-	INC <Temp_Var9
-SkipIncVar9Skip:
+
+SkipMore:	
+	JSR NextTileByte
+
+	DEX
+	BPL SkipMore
+
 	JSR NextLevelByte
 	RTS
 
@@ -3124,15 +3117,20 @@ RepeatPattern:
 	LDA [Temp_Var14], Y
 	AND #$3F			; pattern repeat count
 	STA <Temp_Var11
+
 	JSR NextLevelByte
+
 	LDA [Temp_Var14], Y
 	STA <Temp_Var12		; pattern length
+
 	LDX #$00
 
 LoadPattern:
 	JSR NextLevelByte
+	
 	LDA [Temp_Var14], Y
 	STA Level_Objects, X		; load pattern, reusing LevelObjects area for this
+	
 	INX
 	CPX <Temp_Var12
 	BNE LoadPattern
@@ -3152,9 +3150,12 @@ SkipDrawPattern:
 	JSR NextTileByte
 	INX
 	CPX <Temp_Var12
+
 	BNE DrawPattern
 	DEC <Temp_Var11
+
 	BNE RepeatPatternToLevel
+	
 	JSR NextLevelByte
 	RTS
 
@@ -4707,15 +4708,61 @@ NextLevelByte:
 	INC <Temp_Var14
 	BNE DontIncVar5
 	INC <Temp_Var15
+
 DontIncVar5:
 	RTS
 
-NextTileByte:
-	INC <Temp_Var8
-	BNE DontIncVar9
-	INC <Temp_Var9
+Compression_Screen = Temp_Var6
+Screen_Padding:
+	.byte $00, $B0, $60, $10, $C0, $70, $20, $D0, $80, $30, $E0, $90, $40, $F0, $A0
+Screen_PaddingHi:	
+	.byte $00, $01, $03, $05, $06, $08, $0A, $0B, $0D, $0F, $10, $12, $14, $15, $17
 
-DontIncVar9:
+NextTileByte:	
+	STA Debug_Snap
+
+	LDA <Temp_Var8
+	ADD #$01
+	STA <Temp_Var8
+
+	LDA <Temp_Var9
+	ADC #$00
+	STA <Temp_Var9
+
+NextTileByte1:
+	LDA <Temp_Var8
+	AND #$0F
+	BNE NextTileByteRTS
+
+	INC <Compression_Screen
+
+	LDA <Level_Width
+	SUB <Compression_Screen
+	BPL Next_Column
+
+	LDY Level_Width
+	LDA <Temp_Var8
+	SUB Screen_Padding, Y
+	STA <Temp_Var8
+
+	LDA <Temp_Var9
+	SBC Screen_PaddingHi, Y
+	STA <Temp_Var9
+
+	LDY #$00
+	STY <Compression_Screen
+
+NextTileByteRTS:
+	RTS
+
+Next_Column:
+	LDA <Temp_Var8
+	ADD #$A0
+	STA <Temp_Var8
+
+	LDA <Temp_Var9
+	ADC #$01
+	STA <Temp_Var9
 	RTS
 
 ClearPointers:
