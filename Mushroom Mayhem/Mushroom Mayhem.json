@@ -22609,11 +22609,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 140,
