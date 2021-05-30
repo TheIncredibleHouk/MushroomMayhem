@@ -606,7 +606,7 @@ Splash_Orientations:
 
 MakeSplash:
 	STY <Temp_Var1
-	
+
 	LDA <Temp_Var2
 	AND #$80
 	CMP Splash_Vel, Y

@@ -4375,17 +4375,20 @@
   ],
   "WorldInfo": [
     {
+      "Size": 0,
       "Number": 0,
       "Name": "World 0",
       "Id": "a88cce07-d75c-4e6c-a34d-b149a4841f8d",
       "LastModified": "2019-11-24T16:08:44.4813018-05:00",
       "LevelsInfo": [
         {
+          "Size": 107,
           "Name": "Mario Adventure",
           "Id": "2f4efb91-3fc8-4cc6-991f-dfd6ecd9864c",
           "LastModified": "2018-10-28T10:42:10.1944704-04:00",
           "SublevelsInfo": [
             {
+              "Size": 48,
               "Name": "Bowser Prison",
               "Id": "66bd6579-8ef4-4ca7-aeff-e20c50693e00",
               "LastModified": "2018-10-28T10:42:10.7551261-04:00",
@@ -4398,6 +4401,7 @@
           "DisplayName": "(Level) Mario Adventure"
         },
         {
+          "Size": 66,
           "Name": "Warp Zone",
           "Id": "b9a58592-6618-4b28-b410-2653d8711130",
           "LastModified": "2018-10-28T10:42:10.3793576-04:00",
@@ -4410,17 +4414,20 @@
       "DisplayName": "(World) World 0"
     },
     {
+      "Size": 0,
       "Number": 1,
       "Name": "Cheep Cheep Everglades",
       "Id": "735d9378-c4b7-44a0-9790-45d87c6f8190",
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
+          "Size": 1552,
           "Name": "Take a Dip",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
           "SublevelsInfo": [
             {
+              "Size": 295,
               "Name": "Take a Dip 2",
               "Id": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
               "LastModified": "2019-05-24T20:25:56.6878235-04:00",
@@ -4433,11 +4440,13 @@
           "DisplayName": "(Level) Take a Dip"
         },
         {
+          "Size": 324,
           "Name": "Key Coin Caverns",
           "Id": "747d617e-59bb-40d5-a9fc-f558dc5fadd8",
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
+              "Size": 2839,
               "Name": "Key Coin Caverns 2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -4450,11 +4459,13 @@
           "DisplayName": "(Level) Key Coin Caverns"
         },
         {
+          "Size": 2719,
           "Name": "Shy Guys In Subcon",
           "Id": "04a6cfde-b3c5-4695-81c5-dda10c212a97",
           "LastModified": "2019-05-28T07:41:45.7634163-04:00",
           "SublevelsInfo": [
             {
+              "Size": 1283,
               "Name": "Shy Guys In Subcon 2",
               "Id": "bac5b80e-008d-439e-88e8-4a8752f21834",
               "LastModified": "2019-05-27T08:26:24.2298778-04:00",
@@ -4467,11 +4478,13 @@
           "DisplayName": "(Level) Shy Guys In Subcon"
         },
         {
+          "Size": 1766,
           "Name": "Feeling Weighed Down",
           "Id": "645b2239-1a1b-4cbf-9262-49b0cb7f313e",
           "LastModified": "2019-06-20T21:07:58.5411251-04:00",
           "SublevelsInfo": [
             {
+              "Size": 282,
               "Name": "Feeling Weighed Down 2",
               "Id": "6fff7350-c94d-4a3e-8b58-f41133ed71ba",
               "LastModified": "2019-05-25T21:35:00.409302-04:00",
@@ -4484,11 +4497,13 @@
           "DisplayName": "(Level) Feeling Weighed Down"
         },
         {
+          "Size": 2413,
           "Name": "Turnip Toss Tussle",
           "Id": "15b60511-3ccd-4a9d-95a1-4fd7108a90d6",
           "LastModified": "2019-05-24T16:08:39.6355729-04:00",
           "SublevelsInfo": [
             {
+              "Size": 578,
               "Name": "Turnip Toss Tussle 2",
               "Id": "d52c37b2-7e2d-441c-a78d-cf3525003b4e",
               "LastModified": "2019-05-21T21:27:35.6167328-04:00",
@@ -4501,11 +4516,13 @@
           "DisplayName": "(Level) Turnip Toss Tussle"
         },
         {
+          "Size": 1614,
           "Name": "Windy Waters",
           "Id": "ae704d35-4b12-49d3-b370-56c5554cf3f3",
           "LastModified": "2019-05-26T10:38:27.5775602-04:00",
           "SublevelsInfo": [
             {
+              "Size": 78,
               "Name": "Windy Waters 2",
               "Id": "8bb4eb07-2e4c-4fb2-9fc5-3e25ee1ac289",
               "LastModified": "2018-10-28T10:42:11.0239591-04:00",
@@ -4518,11 +4535,13 @@
           "DisplayName": "(Level) Windy Waters"
         },
         {
+          "Size": 1594,
           "Name": "Hurry Up!",
           "Id": "d57bcadf-a390-4a0a-8a3b-5d223ddc0068",
           "LastModified": "2019-05-26T10:38:27.5925505-04:00",
           "SublevelsInfo": [
             {
+              "Size": 491,
               "Name": "Hurry Up! 2",
               "Id": "f813db59-4352-4f76-90ae-29e24c925008",
               "LastModified": "2019-05-26T10:38:27.5855549-04:00",
@@ -4535,6 +4554,7 @@
           "DisplayName": "(Level) Hurry Up!"
         },
         {
+          "Size": 1914,
           "Name": "Fun With Shrooms",
           "Id": "f0a489a9-7d86-4eaa-8b6b-25d37638e662",
           "LastModified": "2019-06-25T06:52:18.9039502-04:00",
@@ -4543,11 +4563,13 @@
           "DisplayName": "(Level) Fun With Shrooms"
         },
         {
+          "Size": 2575,
           "Name": "Rhythm and Blocks",
           "Id": "e96e7d58-5b21-47b3-9d71-2e0cd473786d",
           "LastModified": "2019-05-25T18:48:10.8648985-04:00",
           "SublevelsInfo": [
             {
+              "Size": 112,
               "Name": "Rhythm and Blocks Bonus",
               "Id": "c23efd32-217f-4c9e-b2c9-dcacf229ed7c",
               "LastModified": "2018-10-28T10:42:11.0549392-04:00",
@@ -4560,21 +4582,25 @@
           "DisplayName": "(Level) Rhythm and Blocks"
         },
         {
+          "Size": 1028,
           "Name": "Colossal Cheep",
           "Id": "22a5a5e5-ccc5-4f9a-abb9-3ae0525d987a",
           "LastModified": "2019-06-20T19:27:00.954171-04:00",
           "SublevelsInfo": [
             {
+              "Size": 1124,
               "Name": "Colossal Cheep1",
               "Id": "2ba384ff-285b-4f6a-a2f6-3f67ee5efb7f",
               "LastModified": "2019-06-20T19:27:03.4900571-04:00",
               "SublevelsInfo": [
                 {
+                  "Size": 1037,
                   "Name": "Colossal Cheep 2",
                   "Id": "63773480-3fc7-4967-87e0-e790a3154044",
                   "LastModified": "2019-06-20T19:27:05.89715-04:00",
                   "SublevelsInfo": [
                     {
+                      "Size": 66,
                       "Name": "Colossal Cheep Boss",
                       "Id": "4b03f52e-b093-4ad7-b603-24de17a04fb3",
                       "LastModified": "2019-06-17T19:15:34.8666959-04:00",
@@ -4595,11 +4621,13 @@
           "DisplayName": "(Level) Colossal Cheep"
         },
         {
+          "Size": 399,
           "Name": "World 1 to 2",
           "Id": "6c2dafec-caa6-40bd-b4d2-a6f14d6d78dd",
           "LastModified": "2018-10-28T10:42:10.7361377-04:00",
           "SublevelsInfo": [
             {
+              "Size": 183,
               "Name": "World 2 to 1",
               "Id": "d844fc50-d8b2-44c2-978c-f945e10a0455",
               "LastModified": "2018-10-28T10:42:10.7461298-04:00",
@@ -4616,12 +4644,14 @@
       "DisplayName": "(World) Cheep Cheep Everglades"
     },
     {
+      "Size": 0,
       "Number": 2,
       "Name": "Piranha Forest",
       "Id": "5f27c217-b4d8-4e8d-8196-1710ddeda0d7",
       "LastModified": "2015-01-24T17:03:56.237-05:00",
       "LevelsInfo": [
         {
+          "Size": 2138,
           "Name": "Icy Wind Currents",
           "Id": "76a75f19-0eb9-45c1-8b94-3f72327e072b",
           "LastModified": "2018-10-28T10:42:10.2134574-04:00",
@@ -4630,11 +4660,13 @@
           "DisplayName": "(Level) Icy Wind Currents"
         },
         {
+          "Size": 1262,
           "Name": "Return of Freezie",
           "Id": "96c012f4-46a6-4090-a837-41455948ce4b",
           "LastModified": "2018-10-28T10:42:10.24544-04:00",
           "SublevelsInfo": [
             {
+              "Size": 520,
               "Name": "Return of Freezie 2",
               "Id": "7de49797-2774-4eb8-bd7f-5a1b97cd2e76",
               "LastModified": "2018-10-28T10:42:10.6262044-04:00",
@@ -4647,6 +4679,7 @@
           "DisplayName": "(Level) Return of Freezie"
         },
         {
+          "Size": 1793,
           "Name": "Blistering Blizzard",
           "Id": "8997fbb7-40f8-40c0-8a34-7f5c976f5d74",
           "LastModified": "2018-10-28T10:42:10.2564313-04:00",
@@ -4655,6 +4688,7 @@
           "DisplayName": "(Level) Blistering Blizzard"
         },
         {
+          "Size": 1586,
           "Name": "Want to Build an Igloo?",
           "Id": "9863b665-9d38-4970-863b-67ff3ea1e355",
           "LastModified": "2018-10-28T10:42:10.2654279-04:00",
@@ -4663,6 +4697,7 @@
           "DisplayName": "(Level) Want to Build an Igloo?"
         },
         {
+          "Size": 1355,
           "Name": "Color Swatch Switch",
           "Id": "66c646c0-9b8d-435d-95c5-499ef7774e5b",
           "LastModified": "2018-10-28T10:42:10.6361981-04:00",
@@ -4671,11 +4706,13 @@
           "DisplayName": "(Level) Color Swatch Switch"
         },
         {
+          "Size": 2014,
           "Name": "Lake Lakitu",
           "Id": "698f0ae0-07f8-4936-ab36-bc34202f8d50",
           "LastModified": "2018-10-28T10:42:10.6461909-04:00",
           "SublevelsInfo": [
             {
+              "Size": 320,
               "Name": "Lake Lakitu 2",
               "Id": "439962d2-3f4a-47e7-b5e7-7ff7958d0bfb",
               "LastModified": "2018-10-28T10:42:10.6551875-04:00",
@@ -4688,6 +4725,7 @@
           "DisplayName": "(Level) Lake Lakitu"
         },
         {
+          "Size": 2401,
           "Name": "Breath of Fresh Air",
           "Id": "51a8c851-aa68-47f5-ab57-76f4953851c9",
           "LastModified": "2018-10-28T10:42:10.6651816-04:00",
@@ -4696,11 +4734,13 @@
           "DisplayName": "(Level) Breath of Fresh Air"
         },
         {
+          "Size": 2048,
           "Name": "Firey Frenzy Icey Issues",
           "Id": "9181c764-09d7-454f-806e-172123bee50a",
           "LastModified": "2018-10-28T10:42:10.6851691-04:00",
           "SublevelsInfo": [
             {
+              "Size": 179,
               "Name": "Fire Frenzy Ice Issues 2",
               "Id": "c8b57fb2-ca92-4bee-a1dc-5df4d2330fa7",
               "LastModified": "2018-10-28T10:42:11.0119656-04:00",
@@ -4713,6 +4753,7 @@
           "DisplayName": "(Level) Firey Frenzy Icey Issues"
         },
         {
+          "Size": 26,
           "Name": "World 2 to 3",
           "Id": "0fd70302-c35b-40c8-b7db-a0671cf37584",
           "LastModified": "2018-10-28T10:42:10.8040937-04:00",
@@ -4721,11 +4762,13 @@
           "DisplayName": "(Level) World 2 to 3"
         },
         {
+          "Size": 1721,
           "Name": "Pixie Panic Switch",
           "Id": "1df08282-a211-4f0f-974c-6924444c9e8f",
           "LastModified": "2018-10-28T10:42:11.034952-04:00",
           "SublevelsInfo": [
             {
+              "Size": 85,
               "Name": "Pixie Panic Switch 2",
               "Id": "1c74a986-0f13-4a47-8244-a0eb1e505a7b",
               "LastModified": "2018-10-28T10:42:11.0449454-04:00",
@@ -4738,26 +4781,31 @@
           "DisplayName": "(Level) Pixie Panic Switch"
         },
         {
+          "Size": 1224,
           "Name": "World 2 Dungeon",
           "Id": "386aaa7f-9bfb-4f40-aecd-7df3ff747342",
           "LastModified": "2018-10-28T10:42:11.0749274-04:00",
           "SublevelsInfo": [
             {
+              "Size": 1845,
               "Name": "World 2 Dungeon 2",
               "Id": "deae9b28-696b-4d4a-b892-b7d4edb5589c",
               "LastModified": "2018-10-28T10:42:11.0839213-04:00",
               "SublevelsInfo": [
                 {
+                  "Size": 1652,
                   "Name": "World 2 Dungeon 3",
                   "Id": "7699038e-3420-464f-8788-ea81bf236462",
                   "LastModified": "2018-10-28T10:42:11.0949152-04:00",
                   "SublevelsInfo": [
                     {
+                      "Size": 645,
                       "Name": "World 2 Dungeon 4",
                       "Id": "4a7b88cc-cb17-46e8-b5b5-383a8bdaa0d5",
                       "LastModified": "2018-10-28T10:42:11.1059081-04:00",
                       "SublevelsInfo": [
                         {
+                          "Size": 22,
                           "Name": "World 2 Dungeon Boss",
                           "Id": "9195cd08-2dd9-4372-a406-3ab09623c4d7",
                           "LastModified": "2018-10-28T10:42:11.1159016-04:00",
@@ -4778,11 +4826,13 @@
               "DisplayName": "(Level) World 2 Dungeon 2"
             },
             {
+              "Size": 86,
               "Name": "World 2 Dungeon Switches",
               "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
               "LastModified": "2018-10-28T10:42:11.1268955-04:00",
               "SublevelsInfo": [
                 {
+                  "Size": 79,
                   "Name": "World 2 Dungeon Switches 2",
                   "Id": "26eb57e4-ab1f-42d7-a62c-f49a01c3c1ee",
                   "LastModified": "2018-10-28T10:42:11.1378881-04:00",
@@ -4803,12 +4853,14 @@
       "DisplayName": "(World) Piranha Forest"
     },
     {
+      "Size": 0,
       "Number": 3,
       "Name": "Bob-omb Quarry",
       "Id": "40f6c25f-1581-495c-b5e9-edd37eec7432",
       "LastModified": "2015-01-24T17:09:38.684-05:00",
       "LevelsInfo": [
         {
+          "Size": 2414,
           "Name": "Bobomb Burst Mine",
           "Id": "e4bda44e-b8c5-41e8-9a63-48698630f802",
           "LastModified": "2019-05-17T21:46:45.9677889-04:00",
@@ -4817,11 +4869,13 @@
           "DisplayName": "(Level) Bobomb Burst Mine"
         },
         {
+          "Size": 394,
           "Name": "The Floor is Lava",
           "Id": "43d110f2-6669-474f-b0db-78091e9db2e2",
           "LastModified": "2018-10-30T20:20:03.221991-04:00",
           "SublevelsInfo": [
             {
+              "Size": 2870,
               "Name": "Lava Core - Main",
               "Id": "4fe75123-e06f-4d1e-aa0a-dddc96c15ede",
               "LastModified": "2018-10-30T20:20:03.2319864-04:00",
@@ -4834,6 +4888,7 @@
           "DisplayName": "(Level) The Floor is Lava"
         },
         {
+          "Size": 3424,
           "Name": "Mario Ninja Warrior",
           "Id": "73be4ac1-4c4c-49cb-a07d-c64d2fdebde9",
           "LastModified": "2019-05-18T09:05:20.0269966-04:00",
@@ -4842,6 +4897,7 @@
           "DisplayName": "(Level) Mario Ninja Warrior"
         },
         {
+          "Size": 2841,
           "Name": "Fire Snake Fury",
           "Id": "d28d09cf-d6c1-44bd-9550-76bfa71cd1ac",
           "LastModified": "2019-12-10T21:23:30.0972397-05:00",
@@ -4850,11 +4906,13 @@
           "DisplayName": "(Level) Fire Snake Fury"
         },
         {
+          "Size": 2136,
           "Name": "Everything Is a Nail",
           "Id": "7ccc9f5f-e01e-4097-a487-711beda97a72",
           "LastModified": "2019-05-13T20:41:11.6098204-04:00",
           "SublevelsInfo": [
             {
+              "Size": 120,
               "Name": "Rock Farm Ending",
               "Id": "f002a25e-85bb-4603-a9fa-e7baf914b8cf",
               "LastModified": "2018-10-28T10:42:10.7061541-04:00",
@@ -4867,11 +4925,13 @@
           "DisplayName": "(Level) Everything Is a Nail"
         },
         {
+          "Size": 2038,
           "Name": "Podobo Panic",
           "Id": "68614364-831a-4129-b8eb-fb277ee5c8fb",
           "LastModified": "2018-10-30T22:01:12.9063096-04:00",
           "SublevelsInfo": [
             {
+              "Size": 156,
               "Name": "Hot Ride Bonus",
               "Id": "bf6fb5f4-37cf-4fdd-9c02-028e85c4d976",
               "LastModified": "2018-10-28T10:42:11.0649333-04:00",
@@ -4884,6 +4944,7 @@
           "DisplayName": "(Level) Podobo Panic"
         },
         {
+          "Size": 2723,
           "Name": "Spicy Dry Cheeps",
           "Id": "d7ebddd8-1579-459a-98d4-add28a9efe9d",
           "LastModified": "2019-01-22T20:12:29.0882358-05:00",
@@ -4892,6 +4953,7 @@
           "DisplayName": "(Level) Spicy Dry Cheeps"
         },
         {
+          "Size": 2632,
           "Name": "Colorful Explosions",
           "Id": "d3538842-3aaa-44c7-83da-b4b6742ca6d2",
           "LastModified": "2018-10-28T10:42:10.7651188-04:00",
@@ -4900,6 +4962,7 @@
           "DisplayName": "(Level) Colorful Explosions"
         },
         {
+          "Size": 2717,
           "Name": "No Time To Waste",
           "Id": "4682d759-a06e-4856-93da-d632f280b778",
           "LastModified": "2018-10-28T10:42:10.7751129-04:00",
@@ -4908,6 +4971,7 @@
           "DisplayName": "(Level) No Time To Waste"
         },
         {
+          "Size": 26,
           "Name": "World 3 to 4",
           "Id": "7e37a2e7-e643-4b27-883c-96a4bf34dd44",
           "LastModified": "2018-10-28T10:42:10.8140875-04:00",
@@ -4920,17 +4984,20 @@
       "DisplayName": "(World) Bob-omb Quarry"
     },
     {
+      "Size": 0,
       "Number": 4,
       "Name": "Blooper Bay",
       "Id": "e302aa7b-d54f-4eb0-b9e0-a75b4b19522d",
       "LastModified": "2015-01-24T17:09:38.671-05:00",
       "LevelsInfo": [
         {
+          "Size": 2747,
           "Name": "Crazy Cannons",
           "Id": "8769fb99-4fd8-46d7-bbf2-ffda438023cc",
           "LastModified": "2019-05-13T16:47:21.8912935-04:00",
           "SublevelsInfo": [
             {
+              "Size": 293,
               "Name": "Crazy Cannons 2",
               "Id": "166c10b9-b63e-4430-a2a6-1c7d96b7a69e",
               "LastModified": "2018-10-28T10:42:11.1528791-04:00",
@@ -4943,6 +5010,7 @@
           "DisplayName": "(Level) Crazy Cannons"
         },
         {
+          "Size": 1996,
           "Name": "Out to Sea",
           "Id": "e689be33-9b16-4612-8b5e-7b8c96d9f89a",
           "LastModified": "2018-10-28T10:42:10.419333-04:00",
@@ -4951,6 +5019,7 @@
           "DisplayName": "(Level) Out to Sea"
         },
         {
+          "Size": 2099,
           "Name": "Treasure Island",
           "Id": "1865027f-7185-42ad-9e7e-c8be2de520a8",
           "LastModified": "2019-05-13T20:41:11.5858355-04:00",
@@ -4959,11 +5028,13 @@
           "DisplayName": "(Level) Treasure Island"
         },
         {
+          "Size": 623,
           "Name": "Deep Sea Treasure",
           "Id": "d51c828d-e91f-4f14-87cc-681630d7eb5e",
           "LastModified": "2018-10-28T10:42:10.4393185-04:00",
           "SublevelsInfo": [
             {
+              "Size": 1398,
               "Name": "Deep Sea Treasure 2",
               "Id": "9a6c42b5-88d8-4d06-8493-b643bb923546",
               "LastModified": "2018-10-28T10:42:10.4503128-04:00",
@@ -4976,6 +5047,7 @@
           "DisplayName": "(Level) Deep Sea Treasure"
         },
         {
+          "Size": 2107,
           "Name": "Sea Siege",
           "Id": "2f03ab32-cfd4-40cd-8123-36501dd1215b",
           "LastModified": "2018-10-28T10:42:10.6751747-04:00",
@@ -4984,11 +5056,13 @@
           "DisplayName": "(Level) Sea Siege"
         },
         {
+          "Size": 2529,
           "Name": "Tripping Traps",
           "Id": "45130f0a-3282-499b-8e04-66572d044135",
           "LastModified": "2018-10-28T10:42:10.7851077-04:00",
           "SublevelsInfo": [
             {
+              "Size": 692,
               "Name": "Trap Tripping Bonus",
               "Id": "f874daa2-7c7a-4681-9139-631469dcd28b",
               "LastModified": "2018-10-28T10:42:10.7950991-04:00",
@@ -5001,6 +5075,7 @@
           "DisplayName": "(Level) Tripping Traps"
         },
         {
+          "Size": 26,
           "Name": "World 4 to 5",
           "Id": "30edf6dd-48ca-4797-90d1-9461d6022d94",
           "LastModified": "2018-10-28T10:42:10.8240835-04:00",
@@ -5009,6 +5084,7 @@
           "DisplayName": "(Level) World 4 to 5"
         },
         {
+          "Size": 1327,
           "Name": "Super Jump Man",
           "Id": "8acd0773-8087-45d3-81ee-3909179d1414",
           "LastModified": "2018-10-28T10:42:11.1638723-04:00",
@@ -5017,6 +5093,7 @@
           "DisplayName": "(Level) Super Jump Man"
         },
         {
+          "Size": 1669,
           "Name": "Stormy Skies",
           "Id": "7457e3f2-b766-4b73-bc95-fabfd5a8647e",
           "LastModified": "2018-10-28T10:42:11.1748659-04:00",
@@ -5025,6 +5102,7 @@
           "DisplayName": "(Level) Stormy Skies"
         },
         {
+          "Size": 2357,
           "Name": "Flying Fish Frenzy",
           "Id": "d0467dd2-5dd8-41d4-b24e-d27885c8fd8f",
           "LastModified": "2019-05-13T16:47:21.8842973-04:00",
@@ -5037,17 +5115,20 @@
       "DisplayName": "(World) Blooper Bay"
     },
     {
+      "Size": 0,
       "Number": 5,
       "Name": "Sky Castle",
       "Id": "c05cc28a-7180-4d48-b775-c96253edda5c",
       "LastModified": "2015-01-24T17:10:22.206-05:00",
       "LevelsInfo": [
         {
+          "Size": 2726,
           "Name": "Let It Roll",
           "Id": "80a75db5-5cb8-4d03-9160-d6d5cf83c26e",
           "LastModified": "2018-10-28T10:42:10.565243-04:00",
           "SublevelsInfo": [
             {
+              "Size": 75,
               "Name": "Let It Roll 2",
               "Id": "b939b077-66d4-4e75-b8ff-990f9751eb46",
               "LastModified": "2018-10-28T10:42:11.2098438-04:00",
@@ -5060,6 +5141,7 @@
           "DisplayName": "(Level) Let It Roll"
         },
         {
+          "Size": 2016,
           "Name": "Chain Chomp Chow Time",
           "Id": "aa823e52-0d81-4113-9556-d4a17dc13ddd",
           "LastModified": "2019-05-17T21:11:46.1574883-04:00",
@@ -5068,11 +5150,13 @@
           "DisplayName": "(Level) Chain Chomp Chow Time"
         },
         {
+          "Size": 2903,
           "Name": "Lock and Key",
           "Id": "a2b45e51-1a23-4aa2-9b0d-655dbad17d74",
           "LastModified": "2019-05-05T20:34:45.4238555-04:00",
           "SublevelsInfo": [
             {
+              "Size": 1158,
               "Name": "Lock and Key 2",
               "Id": "86906806-10ab-4674-a9c0-7f1449e53a7d",
               "LastModified": "2018-10-28T10:42:11.2208374-04:00",
@@ -5085,11 +5169,13 @@
           "DisplayName": "(Level) Lock and Key"
         },
         {
+          "Size": 3493,
           "Name": "Lava Lair",
           "Id": "207af17e-a2f0-48ac-bb7e-768bca382019",
           "LastModified": "2019-05-17T21:03:57.5509169-04:00",
           "SublevelsInfo": [
             {
+              "Size": 131,
               "Name": "Lava Bonus",
               "Id": "9d77d817-dcc9-45ee-b5ff-d5f818d0cd02",
               "LastModified": "2018-10-28T10:42:10.8540628-04:00",
@@ -5102,6 +5188,7 @@
           "DisplayName": "(Level) Lava Lair"
         },
         {
+          "Size": 1960,
           "Name": "Pwing Peril",
           "Id": "62f23ebc-e39c-416b-9950-5362b61db84b",
           "LastModified": "2019-02-20T07:04:46.1724767-05:00",
@@ -5110,6 +5197,7 @@
           "DisplayName": "(Level) Pwing Peril"
         },
         {
+          "Size": 3015,
           "Name": "Protracted Piranhas",
           "Id": "0ec3e06c-8eb6-490b-855e-fad3ed63d439",
           "LastModified": "2018-10-28T10:42:10.874051-04:00",
@@ -5118,11 +5206,13 @@
           "DisplayName": "(Level) Protracted Piranhas"
         },
         {
+          "Size": 226,
           "Name": "Lights Out",
           "Id": "c0a5216b-ad4f-4fe7-80ac-3effa769ede7",
           "LastModified": "2018-10-28T10:42:11.1988505-04:00",
           "SublevelsInfo": [
             {
+              "Size": 2144,
               "Name": "Lights Out 2",
               "Id": "ad980ac1-6949-480c-9850-4f70b58e6b67",
               "LastModified": "2018-10-28T10:42:10.4792939-04:00",
@@ -5135,11 +5225,13 @@
           "DisplayName": "(Level) Lights Out"
         },
         {
+          "Size": 1489,
           "Name": "Infinity Tower",
           "Id": "0c13a6cd-dcba-4be4-a32b-468cfc3f9fb2",
           "LastModified": "2019-02-03T14:36:16.882028-05:00",
           "SublevelsInfo": [
             {
+              "Size": 2622,
               "Name": "Infinity Tower 2",
               "Id": "5b0cd045-f762-48e3-8c08-1a27dc922c68",
               "LastModified": "2018-10-28T10:42:11.2428236-04:00",
@@ -5152,11 +5244,13 @@
           "DisplayName": "(Level) Infinity Tower"
         },
         {
+          "Size": 1858,
           "Name": "Cloudy Clash",
           "Id": "d818a42b-d3d3-47f4-84c3-d755d29f8460",
           "LastModified": "2018-10-28T10:42:11.2538172-04:00",
           "SublevelsInfo": [
             {
+              "Size": 1264,
               "Name": "Cloudy Clash 2",
               "Id": "0d9fee4c-acbd-425e-b00f-a2279f8fde2e",
               "LastModified": "2018-10-28T10:42:11.2638109-04:00",
@@ -5173,17 +5267,20 @@
       "DisplayName": "(World) Sky Castle"
     },
     {
+      "Size": 0,
       "Number": 6,
       "Name": "Haunted Desert",
       "Id": "79737f7b-5b73-4bb3-a7ac-02dff38af3fb",
       "LastModified": "2014-01-02T05:57:36.3826227-05:00",
       "LevelsInfo": [
         {
+          "Size": 2471,
           "Name": "Zombie Oasis",
           "Id": "05b44437-5e5d-4a2b-9dca-9af711eee83c",
           "LastModified": "2019-01-19T14:06:13.5562286-05:00",
           "SublevelsInfo": [
             {
+              "Size": 85,
               "Name": "Zombie Oasis Bonus",
               "Id": "0e6e4b91-c031-46cd-8f78-af55a8723a31",
               "LastModified": "2018-10-28T10:42:10.9430101-04:00",
@@ -5196,16 +5293,19 @@
           "DisplayName": "(Level) Zombie Oasis"
         },
         {
+          "Size": 308,
           "Name": "Dry Bones Catacombs",
           "Id": "3f54a813-34d1-4e23-b667-ed0ac5adcd8d",
           "LastModified": "2018-10-28T10:42:10.9030331-04:00",
           "SublevelsInfo": [
             {
+              "Size": 2965,
               "Name": "Dry Bones Catacombs 2",
               "Id": "b18b22be-2371-4e34-9e6a-435fa1c28411",
               "LastModified": "2019-01-19T14:06:13.5472346-05:00",
               "SublevelsInfo": [
                 {
+                  "Size": 432,
                   "Name": "Dry Bones Catacombs 3",
                   "Id": "2fbdb167-f925-4399-994a-d6f3737ab1aa",
                   "LastModified": "2018-10-28T10:42:11.2748045-04:00",
@@ -5222,6 +5322,7 @@
           "DisplayName": "(Level) Dry Bones Catacombs"
         },
         {
+          "Size": 2507,
           "Name": "Phantom Winds",
           "Id": "7078db37-a1f5-4304-bc4c-9c87028ebb72",
           "LastModified": "2019-01-19T14:06:13.5392392-05:00",
@@ -5230,6 +5331,7 @@
           "DisplayName": "(Level) Phantom Winds"
         },
         {
+          "Size": 1026,
           "Name": "Boo Mansion",
           "Id": "3bad4ff1-56f5-48a5-a7aa-ceafca284d85",
           "LastModified": "2019-05-18T09:35:27.7436245-04:00",
@@ -5238,11 +5340,13 @@
           "DisplayName": "(Level) Boo Mansion"
         },
         {
+          "Size": 2087,
           "Name": "Pirate Boo Plunder",
           "Id": "d10a36a0-a976-4c36-8404-9847328337b0",
           "LastModified": "2019-05-19T14:26:36.9101296-04:00",
           "SublevelsInfo": [
             {
+              "Size": 990,
               "Name": "Pirate Boo Plunder 2",
               "Id": "53ba8be2-96e0-4886-aff8-36dc9574e63a",
               "LastModified": "2019-01-11T21:01:53.6666286-05:00",
@@ -5255,21 +5359,25 @@
           "DisplayName": "(Level) Pirate Boo Plunder"
         },
         {
+          "Size": 2568,
           "Name": "Shadow Subcon",
           "Id": "30e2e664-1b5c-4849-a0d7-85503c92cc03",
           "LastModified": "2019-05-19T14:11:31.7166281-04:00",
           "SublevelsInfo": [
             {
+              "Size": 2568,
               "Name": "Shadow Subcon 2",
               "Id": "fb1ac91d-540e-436a-98e5-8d763c6d76ad",
               "LastModified": "2019-05-19T14:11:31.70064-04:00",
               "SublevelsInfo": [
                 {
+                  "Size": 231,
                   "Name": "Shadow Subcon 3",
                   "Id": "481ef46c-5f00-4222-9f9d-19c99925c526",
                   "LastModified": "2019-01-19T14:06:13.521251-05:00",
                   "SublevelsInfo": [
                     {
+                      "Size": 7,
                       "Name": "Shadow Subcon 4",
                       "Id": "f8538c6f-bb93-40c6-8533-c38437d79d79",
                       "LastModified": "2019-05-19T14:11:31.7076355-04:00",
@@ -5290,6 +5398,7 @@
           "DisplayName": "(Level) Shadow Subcon"
         },
         {
+          "Size": 2736,
           "Name": "Hidden In Plain Sight",
           "Id": "3789c1f2-abe0-4798-b7ec-be0e288d87b4",
           "LastModified": "2019-04-22T21:59:19.119027-04:00",
@@ -5298,6 +5407,7 @@
           "DisplayName": "(Level) Hidden In Plain Sight"
         },
         {
+          "Size": 2491,
           "Name": "Bun Block Bananza",
           "Id": "4619f7ba-8d0f-4abd-af35-061a0b861db0",
           "LastModified": "2019-02-21T19:44:16.3828921-05:00",
@@ -5306,6 +5416,7 @@
           "DisplayName": "(Level) Bun Block Bananza"
         },
         {
+          "Size": 2627,
           "Name": "Wicked Well",
           "Id": "2de9957a-8e26-4a44-a883-849eb254fd6e",
           "LastModified": "2019-04-28T07:07:41.6615628-04:00",
@@ -5318,12 +5429,14 @@
       "DisplayName": "(World) Haunted Desert"
     },
     {
+      "Size": 0,
       "Number": 7,
       "Name": "Koopatropolis",
       "Id": "b064a3af-855a-4fb9-bafe-71884ca6f85a",
       "LastModified": "2019-11-27T08:19:22.8040621-05:00",
       "LevelsInfo": [
         {
+          "Size": 3000,
           "Name": "Oil Spill Thrill",
           "Id": "7188b881-9e5e-41f7-8ccc-9be4e8fd1b38",
           "LastModified": "2019-11-17T19:35:15.2724097-05:00",
@@ -5332,11 +5445,13 @@
           "DisplayName": "(Level) Oil Spill Thrill"
         },
         {
+          "Size": 2331,
           "Name": "Polarity Pendulums",
           "Id": "0368b992-26e4-4a3a-bb10-cd700b4322cc",
           "LastModified": "2019-11-17T19:35:15.2644151-05:00",
           "SublevelsInfo": [
             {
+              "Size": 695,
               "Name": "Polarity Pendulums 2",
               "Id": "c5255ab4-5fc4-46f3-b574-6805c9e9320c",
               "LastModified": "2019-11-17T19:35:15.2464265-05:00",
@@ -5349,6 +5464,7 @@
           "DisplayName": "(Level) Polarity Pendulums"
         },
         {
+          "Size": 2066,
           "Name": "Frost Flame Factory",
           "Id": "24a42c29-3f0d-4121-b348-a9f188e392b2",
           "LastModified": "2019-11-17T14:03:39.6851142-05:00",
@@ -5357,11 +5473,13 @@
           "DisplayName": "(Level) Frost Flame Factory"
         },
         {
+          "Size": 2650,
           "Name": "Level Lifts",
           "Id": "a83f0f1e-c937-40b6-b296-df5b88ab9284",
           "LastModified": "2019-11-24T20:40:19.6659942-05:00",
           "SublevelsInfo": [
             {
+              "Size": 180,
               "Name": "Level Lifts 2",
               "Id": "f22d091b-03d1-4842-9a51-e99be63de541",
               "LastModified": "2019-11-24T20:39:28.7182554-05:00",
@@ -5374,6 +5492,7 @@
           "DisplayName": "(Level) Level Lifts"
         },
         {
+          "Size": 1021,
           "Name": "Mario Run",
           "Id": "b36af08b-76a7-4909-8391-bda20be64e55",
           "LastModified": "0001-01-01T00:00:00",
@@ -5382,11 +5501,13 @@
           "DisplayName": "(Level) Mario Run"
         },
         {
+          "Size": 66,
           "Name": "Plumbing Plunging",
           "Id": "6687bc7f-bcd2-44bc-97a1-0323d9a797e0",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
+              "Size": 2574,
               "Name": "Plumbing Plunging 2",
               "Id": "712b7eec-18df-42a8-acaf-5864db5e9ba2",
               "LastModified": "0001-01-01T00:00:00",
@@ -5399,11 +5520,13 @@
           "DisplayName": "(Level) Plumbing Plunging"
         },
         {
+          "Size": 910,
           "Name": "Fox Fire Dash Bash",
           "Id": "66e48880-1688-4acb-a7bf-df47d55b5797",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
+              "Size": 2925,
               "Name": "Fox Fire Dash Bash 2",
               "Id": "9abdcc99-1041-420b-abab-67c4b5bb7c11",
               "LastModified": "0001-01-01T00:00:00",
@@ -5416,6 +5539,7 @@
           "DisplayName": "(Level) Fox Fire Dash Bash"
         },
         {
+          "Size": 54,
           "Name": "Toxic Towers",
           "Id": "43f6bbc9-3a7c-44d1-a45e-9e4fc08cb85c",
           "LastModified": "0001-01-01T00:00:00",
@@ -5429,12 +5553,14 @@
     }
   ],
   "EmptyWorld": {
+    "Size": 0,
     "Number": 25,
     "Name": "No World",
     "Id": "f2059af1-7348-4f6f-9324-0f681041f856",
     "LastModified": "2012-08-30T08:56:17.95-04:00",
     "LevelsInfo": [
       {
+        "Size": 128,
         "Name": "Badge Shop",
         "Id": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
         "LastModified": "2018-10-28T10:42:10.224453-04:00",
@@ -5443,6 +5569,7 @@
         "DisplayName": "(Level) Badge Shop"
       },
       {
+        "Size": 1150,
         "Name": "Power Up Tour",
         "Id": "069edf8f-a326-43de-80c2-f647b8e7b4aa",
         "LastModified": "2018-10-28T10:42:10.5452535-04:00",
@@ -5451,6 +5578,7 @@
         "DisplayName": "(Level) Power Up Tour"
       },
       {
+        "Size": 785,
         "Name": "Bonus Areas",
         "Id": "e94cdab8-8063-45e3-842f-20cd9f3e874f",
         "LastModified": "2018-10-28T10:42:10.5552492-04:00",
@@ -5459,6 +5587,7 @@
         "DisplayName": "(Level) Bonus Areas"
       },
       {
+        "Size": 422,
         "Name": "Island Bonus Area",
         "Id": "382402ae-bcb9-4143-8e1e-47c222ce5915",
         "LastModified": "2018-10-28T10:42:10.58623-04:00",
@@ -5467,6 +5596,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
+        "Size": 39,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -5475,11 +5605,13 @@
         "DisplayName": "(Level) Tile Test"
       },
       {
+        "Size": 522,
         "Name": "Enemy Test",
         "Id": "14ae8688-9855-43a5-abe6-63859296c269",
         "LastModified": "2019-05-15T21:46:36.0536536-04:00",
         "SublevelsInfo": [
           {
+            "Size": 76,
             "Name": "Enemy Test 2",
             "Id": "cb461bba-c704-4560-86e5-0fee472d4325",
             "LastModified": "2019-05-15T21:46:36.0606495-04:00",
@@ -22477,11 +22609,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 140,
