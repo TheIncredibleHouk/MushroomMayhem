@@ -11,22 +11,6 @@
 ; This source file last updated: 2012-02-13 22:44:39.225983982 -0600
 ; Distribution package date: Fri Apr  6 23:46:16 UTC 2012
 ;---------------------------------------------------------------------------
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ColorRotation_Do
-;
-; Performs the palette color rotation effects per RotatingColor_Cnt
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; The palette color forcefully applied in a color rotation
-Rotation_Colors:
-	.byte $26, $2A, $22, $36
-
-ColorRotation_Do:
-
-	RTS		 ; Return
-
-PlayerXVel: .byte 03, 02
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Gameplay_UpdateAndDrawMisc
@@ -37,7 +21,6 @@ PlayerXVel: .byte 03, 02
 ; and, last but not least (well, maybe least), "shell kill flashes"!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Gameplay_UpdateAndDrawMisc:
-	JSR ColorRotation_Do	 	 ; Do color rotation effects, if any
 	JSR BrickBusts_DrawAndUpdate	 ; Draw and update brick bust effects
 	JSR CoinPUps_DrawAndUpdate	 ; Update and draw coins that have popped out of boxes
 	JSR SpecialObjs_UpdateAndDraw	 ; Update and draw Special objects
@@ -591,6 +574,13 @@ SpecialObj_ForcedPoof:
 	LDA #PLAYER_POOF
 	STA SpecialObj_ID, X
 
+	LDA #$00
+	STA SpecialObj_XVel, X
+	STA SpecialObj_YVel, X
+
+	LDA #SPR_PAL2
+	STA SpecialObj_Data3, X
+
 	LDA #$10
 	STA SpecialObj_Timer, X
 
@@ -800,18 +790,20 @@ Poof_DrawTiles:
 	AND #$01
 	BNE SpecialObj_PoofMirrored
 
-	LDA #(SPR_PAL1)
+	LDA SpecialObj_Data3, X
 	STA SpecialObj_Attributes
 
-	LDA #(SPR_PAL1 | SPR_VFLIP | SPR_HFLIP)
+	ORA #(SPR_VFLIP | SPR_HFLIP)
 	STA SpecialObj_Attributes + 1
 	BNE SpecialObj_Poof0
 
 SpecialObj_PoofMirrored:
-	LDA #(SPR_PAL1 | SPR_VFLIP)
+	LDA SpecialObj_Data3, X
+	ORA #SPR_VFLIP
 	STA SpecialObj_Attributes
 
-	LDA #(SPR_PAL1 | SPR_HFLIP)
+	LDA SpecialObj_Data3, X
+	ORA #SPR_HFLIP
 	STA SpecialObj_Attributes + 1
 
 SpecialObj_Poof0:
@@ -3573,7 +3565,7 @@ ObjectGenerator_DrawAndUpdate:
 
 PRG007_BB8F:
 
-	JSR DetermineCannonVisibilty
+	JSR DetermineGeneratorVisibility
 	JSR ObjectGenerator_DeleteOffScreen
 
 PRG007_BB97:
@@ -3852,16 +3844,19 @@ BobOmbGeneratorRTS:
 
 GoombaXOffset:		.byte $00, $00, $08, $08
 GoombaYOffset:		.byte $F8, $F8, $00, $00
+					.byte $FF, $FF, $00, $00
+
 ObjectGen_Goombas:
 	LDA ObjectGenerator_Timer, X
-	BNE GoombaGeneratorRTS
+	BNE ObjectGen_GoombasRTS
 
 	LDA ObjectGenerator_Visibility, X
 	BNE GoombaGen_Make
+
+ObjectGen_GoombasRTS:	
 	RTS
 
 GoombaGen_Make:
-
 	LDA #OBJ_GOOMBA
 	STA <Object_Check
 
@@ -3899,6 +3894,9 @@ GoombaGen_Make:
 	LDA GoombaYOffset,Y
 	STA <Temp_Var2
 
+	LDA GoombaYOffset + 4, Y
+	STA <Temp_Var3
+
 	LDY <CurrentObjectIndexZ	
 	
 	LDA ObjectGenerator_Y,Y
@@ -3906,6 +3904,7 @@ GoombaGen_Make:
 	STA <Objects_YZ,X
 
 	LDA ObjectGenerator_YHi,Y
+	ADC <Temp_Var3
 	STA <Objects_YHiZ,X
 
 	LDA ObjectGenerator_X,Y
@@ -3933,25 +3932,27 @@ GoombaGeneratorRTS:
 	RTS
 
 TroopaXOffset:		.byte $00, $00, $08, $08
-TroopaYOffset:		.byte $F8, $F8, $00, $00
+TroopaYOffset:		.byte $FC, $FC, $00, $00
+					.byte $FF, $FF, $00, $00
 
 ObjectGen_Troopa:
 	LDA ObjectGenerator_Timer, X
-	BNE TroopaGeneratorRTS
+	BNE ObjectGen_TroopaRTS
 
 	LDA ObjectGenerator_Visibility, X
 	BNE TroopaGen_Make
+
+ObjectGen_TroopaRTS:
 	RTS
 
 TroopaGen_Make:
-
 	LDA #OBJ_GREENTROOPA
 	STA <Object_Check
 
 	JSR CheckObjectsOfType
 
 	LDA <Num_Objects
-	CMP #$01
+	CMP #$03
 	BCS TroopaGeneratorRTS
 
 	JSR PrepareNewObjectOrAbort
@@ -3982,6 +3983,9 @@ TroopaGen_Make:
 	LDA TroopaYOffset,Y
 	STA <Temp_Var2
 
+	LDA TroopaYOffset + 4, Y
+	STA <Temp_Var3
+
 	LDY <CurrentObjectIndexZ	
 	
 	LDA ObjectGenerator_Y,Y
@@ -3989,6 +3993,7 @@ TroopaGen_Make:
 	STA <Objects_YZ,X
 
 	LDA ObjectGenerator_YHi,Y
+	ADC <Temp_Var3
 	STA <Objects_YHiZ,X
 
 	LDA ObjectGenerator_X,Y
@@ -4264,8 +4269,7 @@ Bill_CPYOff:	.byte $00, $00		; Bullet/Missile Bill
 
 CannonWidths: .byte $00, $08
 
-DetermineCannonVisibilty:
-	
+DetermineGeneratorVisibility:
 	LDA #$00
 	STA ObjectGenerator_Visibility, X
 
@@ -4285,13 +4289,13 @@ CheckCannonVVisibility:
 
 	LDA ObjectGenerator_YHi, X
 	SBC <Vert_Scroll_Hi
-	BNE DetermineCannonVisibiltyRTS
+	BNE DetermineGeneratorVisibilityRTS
 
 	LDA ObjectGenerator_Visibility, X
 	ORA #GENERATOR_VVISIBLE
 	STA ObjectGenerator_Visibility, X
 
-DetermineCannonVisibiltyRTS:
+DetermineGeneratorVisibilityRTS:
 	RTS	
 
 ObjectGen_Platform:

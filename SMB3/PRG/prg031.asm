@@ -3493,6 +3493,7 @@ PT2_Full_CHRROM_Loop:
 	TYA		 ; A = Y 
 	ORA #$40	 ; A = 5 | $40 = $45 (When 5, MMC3_1K_TO_PPU_1C00; decrements thru other pages)
 	STA MMC3_COMMAND ; Set MMC3 command
+	
 	LDA PatTable_BankSel,Y ; Offset into the Pattern Table 2 LUT for this page
 	STA MMC3_PAGE	 ; Set MMC3 page
 	DEY		 ; Y--

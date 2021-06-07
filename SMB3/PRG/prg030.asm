@@ -4719,8 +4719,6 @@ Screen_PaddingHi:
 	.byte $00, $01, $03, $05, $06, $08, $0A, $0B, $0D, $0F, $10, $12, $14, $15, $17
 
 NextTileByte:	
-	STA Debug_Snap
-
 	LDA <Temp_Var8
 	ADD #$01
 	STA <Temp_Var8
@@ -5685,6 +5683,9 @@ Common_MakePoof1:
 	LDA #$00
 	STA SpecialObj_XVel, Y
 	STA SpecialObj_YVel, Y
+
+	LDA #SPR_PAL2
+	STA SpecialObj_Data3, Y
 	RTS
 
 Common_GetTempTile:

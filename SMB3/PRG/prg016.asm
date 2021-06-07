@@ -1784,17 +1784,32 @@ BarrelBro_LeftSide:
 
 	LDY Object_SpriteRAMOffset, X
 
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	BNE BarrelBro_DrawBarrelRTS
+
 	LDA Sprite_RAMX, Y
 	ADD <Temp_Var1
+	BCS BarrelBro_NoLeft
+
 	STA Sprite_RAMX - 8, Y
-	ADD #$08
-	STA Sprite_RAMX - 4, Y
 
 	LDA Sprite_RAMY, Y
 	SUB #$06
 	STA Sprite_RAMY - 8, Y
+
+BarrelBro_NoLeft:
+	LDA Sprite_RAMX, Y
+	ADD <Temp_Var1
+	ADD #$08
+	BCS BarrelBro_NoRight
+
+	STA Sprite_RAMX - 4, Y
+
+	LDA Sprite_RAMY, Y
+	SUB #$06
 	STA Sprite_RAMY - 4, Y
 
+BarrelBro_NoRight:
 	LDA <Temp_Var2
 	STA Sprite_RAMTile - 8, Y
 
@@ -1805,6 +1820,7 @@ BarrelBro_LeftSide:
 	STA Sprite_RAMAttr - 8, Y
 	STA Sprite_RAMAttr - 4, Y
 
+BarrelBro_DrawBarrelRTS:
 	RTS		 ; Return
 
 BarrelBro_ThrowBarrel:

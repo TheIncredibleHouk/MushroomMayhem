@@ -4358,7 +4358,7 @@
         6,
         12,
         15,
-        15,
+        16,
         22,
         12,
         15,
@@ -4367,10 +4367,48 @@
         12,
         15,
         48,
-        24
+        39
       ],
       "Name": "Toxic Towers",
       "Id": "4cdcb306-ccde-4d06-aa7d-ba4b573055bd"
+    },
+    {
+      "IndexedColors": [
+        15,
+        15,
+        55,
+        6,
+        15,
+        15,
+        48,
+        39,
+        15,
+        15,
+        32,
+        11,
+        15,
+        15,
+        48,
+        45,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        16,
+        22,
+        15,
+        15,
+        48,
+        26,
+        15,
+        15,
+        48,
+        39
+      ],
+      "Name": "Toxic Towers 2",
+      "Id": "d56c0127-f2c1-4783-8ac0-219025e96ff9"
     }
   ],
   "WorldInfo": [
@@ -4427,7 +4465,7 @@
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
           "SublevelsInfo": [
             {
-              "Size": 295,
+              "Size": 443,
               "Name": "Take a Dip 2",
               "Id": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
               "LastModified": "2019-05-24T20:25:56.6878235-04:00",
@@ -4459,7 +4497,7 @@
           "DisplayName": "(Level) Key Coin Caverns"
         },
         {
-          "Size": 2719,
+          "Size": 2720,
           "Name": "Shy Guys In Subcon",
           "Id": "04a6cfde-b3c5-4695-81c5-dda10c212a97",
           "LastModified": "2019-05-28T07:41:45.7634163-04:00",
@@ -4535,7 +4573,7 @@
           "DisplayName": "(Level) Windy Waters"
         },
         {
-          "Size": 1594,
+          "Size": 1574,
           "Name": "Hurry Up!",
           "Id": "d57bcadf-a390-4a0a-8a3b-5d223ddc0068",
           "LastModified": "2019-05-26T10:38:27.5925505-04:00",
@@ -4826,7 +4864,7 @@
               "DisplayName": "(Level) World 2 Dungeon 2"
             },
             {
-              "Size": 86,
+              "Size": 125,
               "Name": "World 2 Dungeon Switches",
               "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
               "LastModified": "2018-10-28T10:42:11.1268955-04:00",
@@ -4888,7 +4926,7 @@
           "DisplayName": "(Level) The Floor is Lava"
         },
         {
-          "Size": 3424,
+          "Size": 3433,
           "Name": "Mario Ninja Warrior",
           "Id": "73be4ac1-4c4c-49cb-a07d-c64d2fdebde9",
           "LastModified": "2019-05-18T09:05:20.0269966-04:00",
@@ -5507,7 +5545,7 @@
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 2574,
+              "Size": 2589,
               "Name": "Plumbing Plunging 2",
               "Id": "712b7eec-18df-42a8-acaf-5864db5e9ba2",
               "LastModified": "0001-01-01T00:00:00",
@@ -5539,11 +5577,21 @@
           "DisplayName": "(Level) Fox Fire Dash Bash"
         },
         {
-          "Size": 54,
+          "Size": 2993,
           "Name": "Toxic Towers",
           "Id": "43f6bbc9-3a7c-44d1-a45e-9e4fc08cb85c",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Size": 995,
+              "Name": "Toxic Towers 2",
+              "Id": "aa4b2d72-bba4-446d-8c1a-a9841099095f",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Toxic Towers 2"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) Toxic Towers"
         }
@@ -9344,14 +9392,14 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 4,
+          "UpperRight": 5,
+          "LowerLeft": 20,
+          "LowerRight": 21
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 94,
           "UpperRight": 95,
           "LowerLeft": 110,
@@ -10219,18 +10267,18 @@
           "LowerRight": 117
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 4,
+          "UpperRight": 5,
+          "LowerLeft": 20,
+          "LowerRight": 21
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 94,
+          "UpperRight": 95,
+          "LowerLeft": 110,
+          "LowerRight": 111
         },
         {
           "Property": 0,
@@ -10737,18 +10785,18 @@
           "LowerRight": 63
         },
         {
-          "Property": 16,
-          "UpperLeft": 12,
-          "UpperRight": 13,
-          "LowerLeft": 28,
-          "LowerRight": 29
+          "Property": 192,
+          "UpperLeft": 4,
+          "UpperRight": 5,
+          "LowerLeft": 20,
+          "LowerRight": 21
         },
         {
-          "Property": 48,
-          "UpperLeft": 12,
-          "UpperRight": 13,
-          "LowerLeft": 28,
-          "LowerRight": 29
+          "Property": 192,
+          "UpperLeft": 94,
+          "UpperRight": 95,
+          "LowerLeft": 110,
+          "LowerRight": 111
         },
         {
           "Property": 205,
@@ -23806,28 +23854,28 @@
           "To": 142
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 149,
+          "To": 150
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 150,
+          "To": 149
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 95,
+          "To": 110
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 110,
+          "To": 95
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 252,
+          "To": 65
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 253,
+          "To": 65
         },
         {
           "From": 0,
@@ -23858,45 +23906,45 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 38,
+          "UpperRight": 39,
+          "LowerLeft": 54,
+          "LowerRight": 55
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 40,
+          "UpperRight": 41,
+          "LowerLeft": 56,
+          "LowerRight": 57
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 42,
+          "UpperRight": 43,
+          "LowerLeft": 58,
+          "LowerRight": 59
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 70,
+          "UpperRight": 71,
+          "LowerLeft": 6,
+          "LowerRight": 87
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 72,
+          "UpperRight": 73,
+          "LowerLeft": 7,
+          "LowerRight": 89
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 74,
+          "UpperRight": 75,
+          "LowerLeft": 8,
+          "LowerRight": 91
         },
         {
           "Property": 192,
@@ -23970,45 +24018,45 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 70,
+          "UpperRight": 71,
+          "LowerLeft": 86,
+          "LowerRight": 87
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 72,
+          "UpperRight": 73,
+          "LowerLeft": 88,
+          "LowerRight": 89
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 74,
+          "UpperRight": 75,
+          "LowerLeft": 90,
+          "LowerRight": 91
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 70,
+          "UpperRight": 71,
+          "LowerLeft": 86,
+          "LowerRight": 9
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 72,
+          "UpperRight": 73,
+          "LowerLeft": 88,
+          "LowerRight": 10
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 74,
+          "UpperRight": 75,
+          "LowerLeft": 90,
+          "LowerRight": 11
         },
         {
           "Property": 192,
@@ -24214,11 +24262,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "Property": 64,
+          "UpperLeft": 37,
+          "UpperRight": 37,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -24347,25 +24395,25 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 240,
+          "UpperLeft": 140,
+          "UpperRight": 141,
+          "LowerLeft": 156,
+          "LowerRight": 157
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 248,
+          "UpperLeft": 140,
+          "UpperRight": 141,
+          "LowerLeft": 156,
+          "LowerRight": 157
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 244,
+          "UpperLeft": 140,
+          "UpperRight": 141,
+          "LowerLeft": 156,
+          "LowerRight": 157
         },
         {
           "Property": 252,
@@ -24459,11 +24507,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 255,
@@ -24571,11 +24619,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 247,
+          "UpperLeft": 140,
+          "UpperRight": 141,
+          "LowerLeft": 156,
+          "LowerRight": 157
         },
         {
           "Property": 203,
@@ -24585,25 +24633,25 @@
           "LowerRight": 126
         },
         {
+          "Property": 192,
+          "UpperLeft": 46,
+          "UpperRight": 47,
+          "LowerLeft": 62,
+          "LowerRight": 63
+        },
+        {
+          "Property": 203,
+          "UpperLeft": 78,
+          "UpperRight": 79,
+          "LowerLeft": 94,
+          "LowerRight": 95
+        },
+        {
           "Property": 0,
           "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 12,
@@ -24704,18 +24752,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 204,
+          "UpperLeft": 204,
+          "UpperRight": 205,
+          "LowerLeft": 220,
+          "LowerRight": 221
         },
         {
           "Property": 0,
-          "UpperLeft": 46,
-          "UpperRight": 47,
-          "LowerLeft": 62,
-          "LowerRight": 63
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 128,
@@ -24880,17 +24928,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 134,
+          "UpperRight": 135,
+          "LowerLeft": 150,
+          "LowerRight": 151
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 224,
+          "UpperRight": 225,
+          "LowerLeft": 240,
+          "LowerRight": 241
         },
         {
           "Property": 0,
@@ -24992,10 +25040,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 236,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 236
         },
         {
           "Property": 0,
@@ -25040,18 +25088,18 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 66,
+          "UpperRight": 67,
+          "LowerLeft": 82,
+          "LowerRight": 83
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 68,
+          "UpperRight": 68,
+          "LowerLeft": 84,
+          "LowerRight": 84
         },
         {
           "Property": 200,
@@ -25152,11 +25200,25 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 98,
+          "UpperRight": 99,
+          "LowerLeft": 114,
+          "LowerRight": 115
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 100,
+          "UpperRight": 100,
+          "LowerLeft": 116,
+          "LowerRight": 116
+        },
+        {
+          "Property": 202,
+          "UpperLeft": 98,
+          "UpperRight": 99,
+          "LowerLeft": 114,
+          "LowerRight": 115
         },
         {
           "Property": 0,
@@ -25167,31 +25229,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 48,
-          "UpperLeft": 252,
-          "UpperRight": 252,
-          "LowerLeft": 252,
-          "LowerRight": 252
-        },
-        {
-          "Property": 48,
-          "UpperLeft": 252,
-          "UpperRight": 252,
-          "LowerLeft": 252,
-          "LowerRight": 252
+          "LowerRight": 255
         },
         {
           "Property": 16,
@@ -25243,39 +25291,39 @@
           "LowerRight": 83
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 96,
+          "UpperRight": 3,
+          "LowerLeft": 2,
+          "LowerRight": 239
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 3,
+          "UpperRight": 97,
+          "LowerLeft": 239,
+          "LowerRight": 19
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 195,
+          "UpperLeft": 69,
+          "UpperRight": 183,
+          "LowerLeft": 85,
+          "LowerRight": 217
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 195,
+          "UpperLeft": 182,
+          "UpperRight": 183,
+          "LowerLeft": 216,
+          "LowerRight": 217
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 195,
+          "UpperLeft": 182,
+          "UpperRight": 101,
+          "LowerLeft": 216,
+          "LowerRight": 117
         },
         {
           "Property": 14,
@@ -25306,18 +25354,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 38,
+          "UpperRight": 39,
+          "LowerLeft": 54,
+          "LowerRight": 55
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 40,
+          "UpperRight": 41,
+          "LowerLeft": 56,
+          "LowerRight": 57
         },
         {
           "Property": 60,
@@ -25355,39 +25403,39 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 2,
+          "UpperRight": 239,
+          "LowerLeft": 112,
+          "LowerRight": 18
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 239,
+          "UpperRight": 19,
+          "LowerLeft": 18,
+          "LowerRight": 113
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 196,
+          "UpperLeft": 101,
+          "UpperRight": 217,
+          "LowerLeft": 117,
+          "LowerRight": 183
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 196,
+          "UpperLeft": 216,
+          "UpperRight": 217,
+          "LowerLeft": 182,
+          "LowerRight": 183
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 196,
+          "UpperLeft": 216,
+          "UpperRight": 69,
+          "LowerLeft": 182,
+          "LowerRight": 85
         },
         {
           "Property": 192,
@@ -25425,46 +25473,46 @@
           "LowerRight": 29
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 205,
+          "UpperLeft": 44,
+          "UpperRight": 45,
+          "LowerLeft": 60,
+          "LowerRight": 61
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 102,
+          "UpperRight": 103,
+          "LowerLeft": 118,
+          "LowerRight": 119
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 104,
+          "UpperRight": 105,
+          "LowerLeft": 120,
+          "LowerRight": 121
+        },
+        {
+          "Property": 193,
+          "UpperLeft": 106,
+          "UpperRight": 106,
+          "LowerLeft": 122,
+          "LowerRight": 122
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 68,
+          "UpperRight": 68,
+          "LowerLeft": 84,
+          "LowerRight": 84
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 66,
+          "UpperRight": 67,
+          "LowerLeft": 82,
+          "LowerRight": 83
         },
         {
           "Property": 18,
@@ -25545,34 +25593,48 @@
         },
         {
           "Property": 192,
+          "UpperLeft": 22,
+          "UpperRight": 23,
+          "LowerLeft": 22,
+          "LowerRight": 23
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 24,
+          "UpperRight": 25,
+          "LowerLeft": 24,
+          "LowerRight": 25
+        },
+        {
+          "Property": 193,
+          "UpperLeft": 107,
+          "UpperRight": 107,
+          "LowerLeft": 123,
+          "LowerRight": 123
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 100,
+          "UpperRight": 100,
+          "LowerLeft": 116,
+          "LowerRight": 116
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 98,
+          "UpperRight": 99,
+          "LowerLeft": 114,
+          "LowerRight": 115
+        },
+        {
+          "Property": 0,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -25580,24 +25642,10 @@
         },
         {
           "Property": 18,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 18,
-          "UpperLeft": 238,
-          "UpperRight": 45,
-          "LowerLeft": 60,
-          "LowerRight": 238
-        },
-        {
-          "Property": 18,
-          "UpperLeft": 238,
-          "UpperRight": 47,
-          "LowerLeft": 62,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 78,
@@ -34916,10 +34964,10 @@
         },
         {
           "Property": 193,
-          "UpperLeft": 52,
-          "UpperRight": 53,
-          "LowerLeft": 52,
-          "LowerRight": 53
+          "UpperLeft": 108,
+          "UpperRight": 109,
+          "LowerLeft": 108,
+          "LowerRight": 109
         },
         {
           "Property": 193,
@@ -42437,7 +42485,7 @@
     {
       "GameId": 54,
       "GameObjectType": 1,
-      "Name": "Cloud Generator",
+      "Name": "Smoke Stack",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
@@ -42481,54 +42529,6 @@
           "Y": -32,
           "TileTableAddress": "0x24000",
           "TileValue": "0x02",
-          "HorizontalFlip": true,
-          "VerticalFlip": true,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 8,
-          "Y": -64,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x04",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 16,
-          "Y": -64,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x04",
-          "HorizontalFlip": true,
-          "VerticalFlip": true,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 8,
-          "Y": -96,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x06",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 16,
-          "Y": -96,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x06",
           "HorizontalFlip": true,
           "VerticalFlip": true,
           "PaletteIndex": 1,

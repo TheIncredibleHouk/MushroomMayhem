@@ -1314,7 +1314,7 @@ ObjState_Kicked2:
 	AND #HIT_GROUND
 	BEQ Kicked_NotCliff
 
-	LDA #$10
+	LDA #$14
 	STA <Objects_YVelZ, X
 
 Kicked_NotCliff:
@@ -2358,6 +2358,9 @@ ObjState_Fresh:
 	LDA Objects_DynamicallySpawned, X
 	BEQ ObjectState_InitRTS
 
+	LDA #$00
+	STA Objects_DynamicallySpawned, X
+
 	LDA Objects_BoundRight, X
 	SUB Objects_BoundLeft, X
 	LSR A
@@ -2372,6 +2375,7 @@ ObjState_Fresh:
 	SUB #$08
 	STA <Poof_Y
 
+	STA Debug_Snap
 	JSR Common_MakePoof
 
 ObjectState_InitRTS:
@@ -4653,7 +4657,6 @@ SetSpriteFG3:
 	BEQ SetSpriteFG5
 
 SetSpriteFG4:
-	STA Debug_Snap
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA  Objects_SpriteAttributes, X
