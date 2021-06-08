@@ -13,7 +13,6 @@ Level_SpawnObjects:
 	BPL Level_ObjectsSpawnByScroll
 
 	STA Debug_Snap
-	
 	LDA <Horz_Scroll
 	AND #$F0
 	CMP <Object_LastScrollColumn

@@ -837,6 +837,7 @@ Troopa_Out:
 	JMP Troopa_Animate
 
 Troopa_Norm:
+	STA Debug_Snap
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving

@@ -2375,7 +2375,6 @@ ObjState_Fresh:
 	SUB #$08
 	STA <Poof_Y
 
-	STA Debug_Snap
 	JSR Common_MakePoof
 
 ObjectState_InitRTS:
@@ -4587,16 +4586,18 @@ Conveyer_EffectMin:
 	.byte $04, $FC
 
 Object_CheckConveyors:
-	LDA <Objects_YVelZ, X
-	BMI Object_CheckConveyorsRTS
-
+	LDA <Objects_TilesDetectZ,X
+	AND #HIT_GROUND
+	BEQ Object_CheckConveyorsRTS
+	
 	LDY #$00
 
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_MOVE_LEFT)
+	AND #$0F
+	CMP #(TILE_PROP_MOVE_LEFT)
 	BEQ Object_ConveryAffected
 
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_MOVE_RIGHT)
+	CMP #(TILE_PROP_MOVE_RIGHT)
 	BNE Object_CheckConveyorsRTS
 	INY
 

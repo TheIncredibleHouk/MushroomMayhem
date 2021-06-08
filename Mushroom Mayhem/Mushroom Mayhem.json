@@ -5577,13 +5577,13 @@
           "DisplayName": "(Level) Fox Fire Dash Bash"
         },
         {
-          "Size": 2993,
+          "Size": 3009,
           "Name": "Toxic Towers",
           "Id": "43f6bbc9-3a7c-44d1-a45e-9e4fc08cb85c",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 995,
+              "Size": 1121,
               "Name": "Toxic Towers 2",
               "Id": "aa4b2d72-bba4-446d-8c1a-a9841099095f",
               "LastModified": "0001-01-01T00:00:00",
@@ -25312,7 +25312,7 @@
           "LowerRight": 217
         },
         {
-          "Property": 195,
+          "Property": 67,
           "UpperLeft": 182,
           "UpperRight": 183,
           "LowerLeft": 216,

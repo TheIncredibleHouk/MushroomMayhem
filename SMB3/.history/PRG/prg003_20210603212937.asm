@@ -1835,7 +1835,8 @@ ObjInit_CloudGenRTS:
 	RTS	
 
 ObjNorm_CloudGen:
-	JSR Object_DeleteOffScreen
+	LDA #$08
+	JSR Object_DeleteOffScreenRange
 
 	LDA <Objects_XZ, X
 	ADD #$08
