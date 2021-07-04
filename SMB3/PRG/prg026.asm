@@ -2911,7 +2911,7 @@ Game_UpdateLevelName:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$03
+	LDA #$02
 	;LDA #$83
 	STA Graphics_Buffer + 1, X
 	

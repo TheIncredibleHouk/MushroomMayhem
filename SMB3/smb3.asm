@@ -1263,7 +1263,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 
 	CineKing_Frame:			; King's animation frame (NOTE: Shared with Objects_Data3 first byte)
 
-	Objects_Data6:		.ds 5	; $0770-$0774 General purpose variable 6 (except as noted above)
+	Objects_Data6:		.ds 8	; $0770-$0774 General purpose variable 6 (except as noted above)
 	Objects_Data7:		.ds 8	; $0421-$0428 General object variable 7
 
 	Objects_BoundLeft:	.ds 8
@@ -2819,8 +2819,6 @@ AIR_INCREASE	= 3
 								; 0 = P-Bar, Air, Exp, Coins, Timer
 								; 1 = overall time, enemies killed, coins collected, odometer
 	Update_Level_Name: .ds 1;
-	Game_Coins:				.ds 3; over all coins collected
-	Old_Game_TimerSeconds:	.ds 1
 	Force_StatusBar_Init: .ds 1
 	Top_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Bottom_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle

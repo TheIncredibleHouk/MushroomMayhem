@@ -70,47 +70,6 @@ Video_Upd_Table: ; $803E
 
 StatusBar	.macro
 
-	; Sync next three with PRG026 Flip_TopBarCards
-;	vaddr \1 + $00
-;	.byte $02, $AE, $80		; Upper left corner
-
-;	vaddr \1 + $02
-;	.byte VU_REPEAT | $1C, $81	; Bar across the top
-
-;	vaddr \1 + $1E
-;	.byte $02, $82, $AE		; Upper left corner
-
-;------
-;	vaddr \1 + $20
-;	.byte $02, $AE, $90		; Upper left corner
-
-
-;	vaddr \1 + $3E
-;	.byte $02, $92, $AE		; Upper left corner
-
-;------
-;	vaddr \1 + $40
-;	.byte $02, $AE, $90		; Upper left corner
-
-
-;	vaddr \1 + $5E
-;	.byte $02, $92, $AE		; Upper left corner	
-
-;----	
-;	vaddr \1 + $60
-;	.byte $02, $AE, $A0		; Upper left corner
-
-;	vaddr \1 + $62
-;	.byte VU_REPEAT | $1C, $A1	; Bar across the top
-
-;	vaddr \1 + $7E
-;	.byte $02, $A2, $AE		; Upper left corner	
-
-;------
-
-;	vaddr \1 + $80
-;	.byte VU_REPEAT | $20, $AE		; Upper left corner
-
 
 ;@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -143,10 +102,10 @@ StatusBar	.macro
 ;------
 
 	vaddr \1 + $00
-	.byte VU_REPEAT | $03, $AE		; Upper left corner
+	.byte VU_REPEAT | $01, $AE		; Upper left corner
 
-	vaddr \1 + $1D
-	.byte VU_REPEAT | $03, $AE		; Upper left corner
+	vaddr \1 + $1F
+	.byte VU_REPEAT | $01, $AE		; Upper left corner
 
 	; Terminator
 	.byte $00
@@ -4546,7 +4505,6 @@ Produce_Coin_Loop:
 	LDY #$03	 ; Y = 3
 
 PRG000_C4A7:
-
 	; Play coin sound
 	LDA Sound_QLevel1
 	ORA #SND_LEVELCOIN

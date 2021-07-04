@@ -946,7 +946,7 @@ ObjNorm_RedTroopa:
 	LDA <Player_HaltGameZ
 	BEQ RedTroopa_Norm
 	JMP Troopa_Draw
-.
+
 RedTroopa_Norm:
 	JSR Object_DeleteOffScreen
 	JSR Object_FaceDirectionMoving

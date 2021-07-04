@@ -1079,10 +1079,9 @@ Coin_Unlock:
 	STA <Poof_X
 
 	LDA <Objects_YZ, X
+	SUB #$04
 	STA <Poof_Y
 
-	LDA <Objects_YHiZ, X
-	STA <Poof_YHi
 	JSR Common_MakePoof
 
 Coin_Unlock0:
@@ -1091,7 +1090,6 @@ Coin_Unlock0:
 	STA Sound_QLevel1
 
 	LDA Objects_YZ, X
-	AND #$F0
 	ADD #$10
 	STA Objects_YZ, X
 	

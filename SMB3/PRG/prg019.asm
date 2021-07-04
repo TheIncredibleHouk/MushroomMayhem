@@ -12,8 +12,6 @@ Level_SpawnObjects:
 	LDA <Object_SpawnScrollCount
 	BPL Level_ObjectsSpawnByScroll
 
-	STA Debug_Snap
-	
 	LDA <Horz_Scroll
 	AND #$F0
 	CMP <Object_LastScrollColumn
@@ -126,10 +124,13 @@ PRG005_B873:
 	CMP #$ff	 
 	BEQ PRG005_B872	 ; If this is the terminator, jump to PRG005_B872 (RTS)
 
-	LDA Level_ObjectsSpawned,X
-	CMP #$00	 
+	STA Debug_Snap
+	LDA Level_ObjectsSpawned,X 
 	BMI PRG005_B863	 ; If this object is already currently spawned, jump to PRG005_B863 (skip to next object)
 
+	AND <Spawn_Dynamically
+	BNE PRG005_B863
+	
 	STX <LevelSpawn_IndexZ
 	LDA Level_Objects,Y	 ; Get object column
 	ASL A		 
@@ -160,7 +161,7 @@ PRG005_B8BE:
 	LDX <Temp_Var2	 ; Restore object index
 
 	LDA Level_ObjectsSpawned,X
-	ORA #$80	 
+	ORA #$81	 
 	STA Level_ObjectsSpawned,X	; Mark object as already spawned (even though technically it isn't, but prevents re-triggering)
 
 	JMP PRG005_B863	 ; Jump to PRG005_B863 (next object)
@@ -754,12 +755,12 @@ LevelEvent_8WayBulletBills:
 EightWay_Fire:
 	LDA EventType
 	CMP #EVENT_8WAY_BULLETS
-	BNE EightWar_CanFire
+	BNE EightWay_CanFire
 
 	LDA TrapSet
 	BEQ EightWay_RTS
 
-EightWar_CanFire:
+EightWay_CanFire:
 	LDA RandomN
 	AND #$C0
 	

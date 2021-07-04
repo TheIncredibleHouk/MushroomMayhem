@@ -651,7 +651,7 @@
   ],
   "Pointers": [
     {
-      "LevelId": "cfcc0470-b205-448b-9246-3dd44dce3830",
+      "LevelId": "2f03ab32-cfd4-40cd-8123-36501dd1215b",
       "X": 7,
       "Y": 4,
       "BoundRectangle": "112,64,16,16"
@@ -669,7 +669,7 @@
       "BoundRectangle": "112,96,16,16"
     },
     {
-      "LevelId": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
+      "LevelId": "43f6bbc9-3a7c-44d1-a45e-9e4fc08cb85c",
       "X": 5,
       "Y": 6,
       "BoundRectangle": "80,96,16,16"
@@ -699,7 +699,7 @@
       "BoundRectangle": "144,128,16,16"
     },
     {
-      "LevelId": "43f6bbc9-3a7c-44d1-a45e-9e4fc08cb85c",
+      "LevelId": "747d617e-59bb-40d5-a9fc-f558dc5fadd8",
       "X": 5,
       "Y": 4,
       "BoundRectangle": "80,64,16,16"

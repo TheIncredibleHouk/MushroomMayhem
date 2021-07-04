@@ -1367,6 +1367,7 @@ BulletBill_Norm:
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat	 	; Player to Bullet Bill collision
+	INC Object_DisableWater
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 	JSR Object_ApplyXVel	 	

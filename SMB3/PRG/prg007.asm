@@ -1081,16 +1081,12 @@ SpecialObj_NotDelete:
 	LDA <Temp_Var2
 	ADD #$08
 	STA Sprite_RAM+$03,Y
-	
 	RTS
 
 SpecialObj_Draw16x16Delete:
 	LDA #$F8
 	STA Sprite_RAM, Y
 	JMP SpecialObj_Delete
-	
-ProjXBound:
-	.byte $00, $07
 
 SpecialObj_CalcBounds8x16:
 	LDA SpecialObj_X, X
@@ -1702,16 +1698,6 @@ PRG007_AE02:
 	RTS		 ; Return
 
 PRG007_AE28:
-
-	LDA CoinPUp_Y,X
-	CMP #192
-	BLT PRG007_AE3E	 ; If the coin is not too low, jump to PRG007_AE3E
-
-	LDA #$05	 ; Otherwise use top of screen
-
-PRG007_AE3E:
-
-
 PRG007_AE4A:
 
 	; Remove coin
@@ -1733,11 +1719,6 @@ PRG007_AE4A:
 	LDA CoinPUp_X,X
 	ADD <Horz_Scroll
 	STA SpecialObj_X, Y
-
-	LDA #$0C
-	STA SpecialObj_Timer, Y
-
-	INC Coins_Earned	 ; You get a coin
 	RTS		 ; Return
 
 
@@ -1933,9 +1914,6 @@ PRG007_B169:
 	LDA SpecialObj_YVel,X
 	CMP #$20
 	BMI PRG007_B17E	 ; If Y Velocity < $20, jump to PRG007_B17E
-
-	; Coin fell far enough..
-	INC Coins_Earned	 ; You get a coin
 
 PRG007_B17E:
 	JSR SObj_SetSpriteXYRelative	 ; Special Object X/Y put to sprite, scroll-relative
@@ -5414,8 +5392,7 @@ Coin_Sparkle1:
 	LDA #$71
 	STA <SpecialObj_Tile
 
-	LDA <SpecialObj_Attributes
-	ORA #SPR_BEHINDBG | SPR_PAL3
+	LDA #SPR_PAL3
 	STA <SpecialObj_Attributes 
 
 	JMP SpecialObj_Draw8x16

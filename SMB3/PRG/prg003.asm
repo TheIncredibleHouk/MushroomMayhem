@@ -16,6 +16,8 @@ OBJ_PLATFORMSWING   = $33
 OBJ_WEIGHT			= $34
 OBJ_CHECKPOINT		= $35
 OBJ_CLOUDGEN		= $36
+OBJ_COINALERT		= $37
+OBJ_MONTYMOLE		= $38
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
 	.word ObjInit_WoodenPlatVert    ; Object $29
@@ -32,8 +34,8 @@ OBJ_CLOUDGEN		= $36
 	.word ObjInit_Weight			; Object $34
 	.word ObjInit_CheckPoint			; Object $35
 	.word ObjInit_CloudGen			; Object $36
-	.word ObjInit_DoNothing			; Object $37
-	.word ObjInit_DoNothing			; Object $38
+	.word ObjInit_CoinAlert			; Object $37
+	.word ObjInit_MontyMole			; Object $38
 	.word ObjInit_DoNothing			; Object $39
 	.word ObjInit_DoNothing			; Object $3A
 	.word ObjInit_DoNothing			; Object $3B
@@ -55,8 +57,8 @@ OBJ_CLOUDGEN		= $36
 	.word ObjNorm_Weight			; Object $34
 	.word ObjNorm_CheckPoint			; Object $35
 	.word ObjNorm_CloudGen			; Object $36
-	.word ObjNorm_DoNothing			; Object $37
-	.word ObjNorm_DoNothing			; Object $38
+	.word ObjNorm_CoinAlert			; Object $37
+	.word ObjNorm_MontyMole			; Object $38
 	.word ObjNorm_DoNothing			; Object $39
 	.word ObjNorm_DoNothing			; Object $3A
 	.word ObjNorm_DoNothing			; Object $3B
@@ -79,7 +81,7 @@ OBJ_CLOUDGEN		= $36
 	.word ObjHit_DoNothing	        ; Object $35
 	.word ObjHit_CloudGen	        ; Object $36
 	.word ObjHit_DoNothing	        ; Object $37
-	.word ObjHit_DoNothing	        ; Object $38
+	.word Player_GetHurt	        ; Object $38
 	.word ObjHit_DoNothing	        ; Object $39
 	.word ObjHit_DoNothing	        ; Object $3A
 	.word ObjHit_DoNothing	        ; Object $3B
@@ -102,8 +104,8 @@ OBJ_CLOUDGEN		= $36
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $34
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $35
 	.byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16	 ; Object $36
-	.byte $00									 ; Object $37
-	.byte $00									 ; Object $38
+	.byte $00  ; Object $37
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16									 ; Object $38
 	.byte $00									 ; Object $39
 	.byte $00									 ; Object $3A
 	.byte $00									 ; Object $3B
@@ -126,7 +128,7 @@ OBJ_CLOUDGEN		= $36
 	.byte OPTS_NOCHANGE         ; Object $35
 	.byte OPTS_NOCHANGE         ; Object $36
 	.byte OPTS_NOCHANGE         ; Object $37
-	.byte OPTS_NOCHANGE         ; Object $38
+	.byte OPTS_SETPT5 | $4C         ; Object $38
 	.byte OPTS_NOCHANGE         ; Object $39
 	.byte OPTS_NOCHANGE         ; Object $3A
 	.byte OPTS_NOCHANGE         ; Object $3B
@@ -196,6 +198,9 @@ ObjP35:
 ObjP36:
 ObjP37:
 ObjP38:
+	.byte $AD, $AF, $B1, $B3
+	.byte $AD, $A5, $B1, $9B
+
 ObjP39:
 ObjP3A:
 ObjP3B:
@@ -1905,3 +1910,397 @@ ObjHit_CloudGen:
 	SUB #$10
 	STA <Player_YVelZ
 	RTS	
+
+ObjInit_CoinAlert:
+	JSR Object_NoInteractions
+	RTS
+
+CoinAlert_Colors:
+	.byte $0F, $06 
+
+CoinAlert_Alarm = Objects_Data1
+
+CoinAlert_ObjectSpawnX:
+	.byte $40, $C0
+	.byte $00, $FF
+
+ObjNorm_CoinAlert:
+	LDA Objects_Timer, X
+	BNE ObjNorm_CoinAlertRTS
+
+	LDA CoinAlert_Alarm, X
+	BEQ CoinAlert_CheckCoins
+
+	LSR A
+	LSR A
+	LSR A
+
+	AND #$01
+	TAY
+
+	LDA CoinAlert_Colors, Y
+	STA Pal_Data
+	STA Pal_Data + 16
+	STA Palette_Buffer
+	STA Palette_Buffer + 16
+
+	DEC CoinAlert_Alarm, X
+	BNE ObjNorm_CoinAlertRTS
+
+	LDA #$02
+	STA Objects_Timer, X
+	RTS
+
+CoinAlert_CheckCoins:	
+
+	LDA Coins_Earned
+	BEQ ObjNorm_CoinAlertRTS
+
+
+	LDA #$40
+	STA CoinAlert_Alarm, X
+
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word CoinAlarm_MontyMole
+	.word CoinAlarm_Bullets
+
+ObjNorm_CoinAlertRTS:	
+	RTS
+
+CoinAlarm_MontyMole:
+
+	JSR Object_FindEmptyY
+	BCC ObjNorm_CoinAlertRTS
+
+	LDA #OBJ_MONTYMOLE
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA RandomN
+	AND #$01
+	TAX
+
+	LDA <Player_X
+	ADD CoinAlert_ObjectSpawnX, X
+	STA Objects_XZ, Y
+
+	LDA <Player_XHi
+	ADC CoinAlert_ObjectSpawnX + 2, X
+	STA Objects_XHiZ, Y
+
+	LDA <Vert_Scroll
+	ADD #$C0
+	STA Objects_YZ, Y
+
+	LDA <Vert_Scroll_Hi
+	ADC #$00
+	STA Objects_YHiZ, Y
+
+	LDA #$01
+	STA Objects_Property, Y
+	RTS
+
+CoinAlarm_BulletYOffset:
+	.byte $10, $E0
+
+CoinAlarm_BulletYHiOffset:
+	.byte $00, $FF
+
+CoinAlarm_BulletXOffset:
+	.byte $F0, $10
+
+CoinAlarm_BulletXHiOffset:
+	.byte $FF, $01
+
+CoinAlarm_BullXVel:
+	.byte $30, $D0	
+
+CoinAlarm_Bullets:
+	LDY #$01
+
+CoinAlarm_MoreBullets:
+	JSR Object_FindEmptyX	 ; Spawn new object (Note: If no slots free, does not return)
+	BCC CoinAlarm_BulletRTS
+
+	LDA #OBJ_BULLETBILL
+	STA Objects_ID, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA <Player_YZ
+	ADD CoinAlarm_BulletYOffset, Y
+	STA <Objects_YZ, X
+
+	LDA <Player_YHiZ
+	ADC CoinAlarm_BulletYHiOffset, Y
+	STA <Objects_YHiZ, X
+
+	LDA <Horz_Scroll
+	ADD CoinAlarm_BulletXOffset, Y
+	STA <Objects_XZ, X
+
+	LDA <Horz_Scroll_Hi
+	ADC CoinAlarm_BulletXHiOffset, Y
+	STA <Objects_XHiZ, X
+
+	LDA CoinAlarm_BullXVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	DEY
+	BPL CoinAlarm_MoreBullets
+
+CoinAlarm_BulletRTS:
+	RTS		 ; Return
+
+ObjInit_MontyMole:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA Objects_Property, X
+	BEQ ObjInit_MontyMoleRTS
+
+	LDA #$B8
+	STA <Objects_YVelZ, X
+
+	LDA #$10
+	STA MontyMole_Idle, X
+
+ObjInit_MontyMoleRTS:
+	LDA #$40
+	STA MontyMole_HoldingBullet, X
+
+	LDA #$01
+	STA MontyMole_HoldFrame, X
+	RTS
+
+MontyMole_CurrentFrame = Objects_Data1
+MontyMole_HoldFrame = Objects_Data2
+MontyMole_HoldingBullet = Objects_Data3
+MontyMole_Idle = Objects_Data4
+MontyMole_WallHit = Objects_Timer2
+
+MontyMole_BulletYVel:
+	.byte $E0, $20
+
+MontyMole_BulletXVel:
+	.byte $D0, $30
+
+MontyMole_XVelChange:
+	.byte $FF, $01
+
+MontyMole_MaxXVel:
+	.byte $E8, $18
+
+ObjNorm_MontyMole:
+	LDA #$4F
+	STA PatTable_BankSel + 5
+
+	LDA <Player_HaltGameZ
+	BEQ MontyMole_Norm
+
+	JMP MontyMole_Draw
+
+MontyMole_Norm:
+	JSR Object_DeleteOffScreen
+	JSR Object_FacePlayer
+
+	LDA MontyMole_Idle, X
+	BEQ MontyMole_NotIdle
+
+	DEC MontyMole_Idle, X
+
+	JSR Object_ApplyY_With_Gravity
+	JMP MontyMole_Draw
+
+MontyMole_NotIdle:	
+	LDY #$00
+	LDA Objects_Orientation, X
+	BEQ MontyMole_Vel
+
+	INY
+
+MontyMole_Vel:
+	LDA MontyMole_WallHit, X
+	BNE MontyMole_Interact 
+
+	LDA <Objects_XVelZ, X
+	CMP MontyMole_MaxXVel, Y
+	BEQ MontyMole_Interact
+
+	ADD MontyMole_XVelChange, Y
+	STA <Objects_XVelZ, X
+
+MontyMole_Interact:	
+	JSR Object_Move
+	JSR Object_CalcBoundBox	
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	
+	LDA Object_HorzTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCC MontyMole_NoWall
+
+	LDA #$08
+	STA MontyMole_WallHit, X
+
+MontyMole_NoWall:	 
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	CMP #$01
+	BNE MontyMole_NoTimer
+
+	LDA #$40
+	STA MontyMole_HoldingBullet, X
+
+MontyMole_NoTimer:
+	LDA MontyMole_HoldingBullet, X
+	BEQ MontyMole_Animate
+
+	LDA #$01
+	STA MontyMole_HoldFrame, X
+
+	DEC MontyMole_HoldingBullet, X
+	BNE MontyMole_Animate
+
+	INC MontyMole_HoldingBullet, X
+	JSR Object_FindEmptyY
+	BCC MontyMole_Animate
+
+	DEC MontyMole_HoldingBullet, X
+
+	LDA #$00
+	STA MontyMole_HoldFrame, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA #OBJ_BULLETBILL
+	STA Objects_ID, Y
+	STA Objects_NoExp, Y
+
+	LDA <Objects_XZ, X
+	STA Objects_XZ, Y
+
+	LDA <Objects_XHiZ, X
+	STA Objects_XHiZ, Y
+
+	LDA <Objects_YZ, X
+	SUB #$10
+	STA Objects_YZ, Y
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA Objects_YHiZ, Y
+
+	LDA #$40
+	STA Objects_Timer, X
+
+	LDA <Objects_XVelZ, X
+	BMI MontyMole_BulletRight
+
+	LDA MontyMole_BulletXVel + 1
+	STA Objects_XVelZ, Y
+	BNE MontyMole_Bullet_YVel
+
+MontyMole_BulletRight:
+	LDA MontyMole_BulletXVel 
+	STA Objects_XVelZ, Y
+
+MontyMole_Bullet_YVel:
+	STY <Temp_Var16
+
+	JSR Object_YDistanceFromPlayer
+	CMP #$30
+	BCC MontyMole_BullletNoYVel
+
+	LDA MontyMole_BulletYVel, Y
+	LDY <Temp_Var16
+	STA Objects_YVelZ, Y
+	BNE MontyMole_Animate
+
+MontyMole_BullletNoYVel:
+	LDY <Temp_Var16
+	LDA #$00
+	STA Objects_YVelZ, Y
+	
+MontyMole_Animate:
+	INC MontyMole_CurrentFrame, X
+	LDA MontyMole_CurrentFrame, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+
+MontyMole_Draw:
+	LDA MontyMole_HoldFrame, X
+	ASL A
+	ORA Objects_Frame,X
+	STA Objects_Frame,X
+
+	LDA Object_SpriteRAMOffset, X
+	ADD #$08
+	STA Object_SpriteRAMOffset, X
+
+	JSR Object_Draw
+	
+	LDA MontyMole_HoldingBullet, X
+	BEQ MontyMole_DrawRTS
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA #$DD
+	STA Sprite_RAMTile - 8, Y
+
+	LDA #$DF
+	STA Sprite_RAMTile - 4, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr - 8, Y
+
+	LDA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr - 4, Y
+
+	LDA Objects_Frame, X
+	AND #$01
+	ADD Sprite_RAMY, Y
+	SUB #$0C
+	STA Sprite_RAMY - 8, Y
+
+	LDA Objects_Frame, X
+	AND #$01
+	ADD Sprite_RAMY + 4, Y
+	SUB #$0C
+	STA Sprite_RAMY - 4, Y
+
+	LDA Objects_Orientation, X
+	BNE MontyMole_Flipped
+
+	LDA Sprite_RAMX, Y
+	STA Sprite_RAMX - 8, Y
+
+	LDA Sprite_RAMX + 4, Y
+	STA Sprite_RAMX - 4, Y
+	RTS
+
+MontyMole_Flipped:	
+	LDA Sprite_RAMX, Y
+	STA Sprite_RAMX - 4, Y
+
+	LDA Sprite_RAMX + 4, Y
+	STA Sprite_RAMX - 8, Y
+
+MontyMole_DrawRTS:
+	RTS

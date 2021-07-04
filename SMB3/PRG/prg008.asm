@@ -3547,6 +3547,9 @@ Bumps_PowerUpBlock2:
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
 
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+
 	LDA Bump_X
 	AND #$F0
 	STA <Objects_XZ, X

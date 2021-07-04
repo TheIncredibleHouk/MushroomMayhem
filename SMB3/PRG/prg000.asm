@@ -2568,8 +2568,7 @@ Object_FreeBuffer:
 Object_Respawn:
 	LDY Objects_SpawnIdx,X
 
-	LDA Level_ObjectsSpawned,Y
-	AND #$7f
+	LDA #$01
 	STA Level_ObjectsSpawned,Y
 	RTS
 
@@ -2603,7 +2602,7 @@ Object_New:
 	STA <Objects_SpriteX,X
 	STA Objects_Timer,X
 	STA Objects_Timer2,X
-	STA Objects_SlowTimer,X
+
 	STA <Objects_XVelZ,X
 	STA <Objects_YVelZ,X
 	STA Objects_XVelFrac,X 
@@ -2635,6 +2634,7 @@ Object_New:
 	; Clear some more variables (object slots 0 to 5 ONLY)
 	STA Objects_FrozenKicked,X
 	STA Objects_InWater,X
+	STA Objects_SlowTimer,X
 
 PRG000_D4C8:
 
@@ -4670,7 +4670,8 @@ Object_FindEmptyX:
 	LDX #$04
 
 Object_FindEmptyX1:
-	LDA Objects_State,X
+	LDA Objects_ID, X
+	LDA Objects_State, X
 	BEQ Object_FindEmptyX2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
 
 	DEX		 ; X--
@@ -4969,7 +4970,7 @@ Objects_BumpOff1:
 	RTS
 
 InitPatrol:
-	LDA #$41
+	LDA #$36
 	STA Patrol_ResetTimer, X
 
 InitPatrol_NoTimers:
@@ -5388,45 +5389,6 @@ Object_MoveAwayFromPlayer:
 	STA <Objects_XVelZ, X
 	RTS
 
-
-Reap_Coin:
-	LDA Player_Equip
-	CMP #BADGE_COIN
-	BNE Reap_Coin1
-
-	INC Coins_Earned ; One more coin earned
-
-	LDA Objects_YZ, X
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-
-	LDA Objects_XZ, X
-	STA <Temp_Var2
-	JSR Produce_Coin
-
-Reap_Coin1:
-	RTS
-
-Reap_CoinY:
-	LDA Player_Equip
-	CMP #BADGE_COIN
-	BNE Reap_CoinY1
-
-	INC Coins_Earned ; One more coin earned
-
-	LDA Objects_YZ, Y
-	CLC
-	ADC #$08
-	STA <Temp_Var1
-
-	LDA Objects_XZ, Y
-	STA <Temp_Var2
-	JSR Produce_Coin
-
-Reap_CoinY1:
-	RTS
-
 Object_HitWall:
 	LDA <Objects_XVelZ, X
 	BPL Object_HitWall1
@@ -5474,8 +5436,6 @@ Add_KillyTally:
 
 	STA Kill_Tally
 	STA Exp_Earned
-
-	JSR Reap_Coin
 
 Object_EarnExpRTS:
 	RTS

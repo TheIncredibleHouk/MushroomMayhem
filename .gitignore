@@ -6,6 +6,7 @@ SMB3/PRG/maps/
 SMB3/Backup/
 *.nes
 bin/
+.history/
 Backup/
 obj/
 *.fns

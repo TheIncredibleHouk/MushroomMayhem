@@ -361,9 +361,7 @@ WaterFill_Norm:
 	LDA #SPR_PAL2
 	STA BrickBust_Pal, Y
 	
-	LDA <Temp_Var1
-	SUB #$01
-
+	LDA #$C2
 	JSR Object_ChangeBlock
 
 	JMP FillWater_Animate
@@ -373,9 +371,7 @@ FillWater_DrawWater:
 	AND #$0F
 	BNE FillWater_Animate
 
-	LDA <Temp_Var1
-	EOR #$01
-
+	LDA #$C2
 	JSR Object_ChangeBlock
 
 FillWater_Animate:
