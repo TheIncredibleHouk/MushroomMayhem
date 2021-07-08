@@ -1119,9 +1119,9 @@
         48,
         27,
         15,
-        7,
-        48,
-        39,
+        6,
+        55,
+        22,
         15,
         15,
         54,
@@ -1647,7 +1647,7 @@
         48,
         40,
         15,
-        0,
+        12,
         48,
         16,
         15,
@@ -4522,7 +4522,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 3313,
+              "Size": 2873,
               "Name": "Key Coin Caverns 2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -33239,11 +33239,11 @@
           "LowerRight": 193
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 16,
+          "UpperLeft": 78,
+          "UpperRight": 79,
+          "LowerLeft": 94,
+          "LowerRight": 95
         },
         {
           "Property": 0,
@@ -33352,10 +33352,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 110,
+          "UpperRight": 111,
+          "LowerLeft": 126,
+          "LowerRight": 127
         },
         {
           "Property": 0,
@@ -33425,13 +33425,13 @@
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
           "UpperLeft": 2,
           "UpperRight": 3,
-          "LowerLeft": 238,
+          "LowerLeft": 255,
           "LowerRight": 19
         },
         {
@@ -33535,13 +33535,13 @@
         {
           "Property": 192,
           "UpperLeft": 32,
-          "UpperRight": 238,
+          "UpperRight": 255,
           "LowerLeft": 48,
           "LowerRight": 49
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 35,
           "LowerLeft": 50,
           "LowerRight": 51
@@ -33890,11 +33890,11 @@
           "LowerRight": 95
         },
         {
-          "Property": 192,
-          "UpperLeft": 78,
-          "UpperRight": 79,
-          "LowerLeft": 94,
-          "LowerRight": 95
+          "Property": 0,
+          "UpperLeft": 110,
+          "UpperRight": 111,
+          "LowerLeft": 126,
+          "LowerRight": 127
         },
         {
           "Property": 192,
@@ -34612,8 +34612,8 @@
         },
         {
           "Property": 48,
-          "UpperLeft": 44,
-          "UpperRight": 44,
+          "UpperLeft": 92,
+          "UpperRight": 93,
           "LowerLeft": 255,
           "LowerRight": 255
         },
