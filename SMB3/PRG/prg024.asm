@@ -1513,7 +1513,7 @@ PRG024_AC96:
 PRG024_ACA5:
 	STY Sprite_RAM+$F0	 ; Set it!
 
-	JSR Title_3Glow	 		; Make the big '3' glow!
+	JSR Title_3Glow	 		; Make the big '3' glow!F
 
 	LDA SndCur_Level1
 	BNE PRG024_AC96	 ; If the "gling" sound has not ended, loop!
@@ -1521,7 +1521,7 @@ PRG024_ACA5:
 	INC <Title_State ; Title_State++
 Title_PrepForWorldMap:
 	; World_Num = 0 (World 1)
-	LDA #$00
+	LDA #$04
 	STA World_Num
 
 	INC Force_StatusBar_Init
@@ -1652,6 +1652,7 @@ PRG024_AD3A:
 	; Updates number of lives
 	LDA #$21	 
 	STA Graphics_Buffer
+
 	LDA #$14	 
 	STA Graphics_Buffer+1	; VRAM Address $2114
 

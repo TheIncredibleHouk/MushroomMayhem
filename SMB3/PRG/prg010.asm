@@ -1930,7 +1930,7 @@ PRG010_CDEC:
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 
 	LDA <World_Map_Prop
-	CMP #MAP_PROP_TRAVERSABLE
+	CMP #MAP_PROP_COMPLETABLE
 	BCC PRG010_CE64	 	; If tile is not in "enterable" range, jump to PRG010_CE64
 
 	LDA <Pad_Holding
@@ -1963,8 +1963,6 @@ PRG010_CE0D:
 
 	; A traversable path was found... since we're currently standing on an enterable, 
 	; non-bypassable level panel, you must be wearing a Judgem's cloud to proceed...
-
-	JMP PRG010_CE39	 	; If Player is wearing Judgem's cloud, jump to PRG010_CE39
 
 	; Otherwise, undo the move; you're not allowed to take the path until you complete that level!
 	LDX Player_Current
@@ -2041,7 +2039,8 @@ PRG010_CE78:
 PRG010_CEA7:
 	LDX #$01
 	CMP #MAP_PROP_COMPLETABLE
-	BNE PRG010_CEA8
+	BCC PRG010_CEA8
+
 	LDX #$00
 
 PRG010_CEA8:
@@ -2670,7 +2669,7 @@ Map_CanoeCheckXHiOff:	.byte  0,  $FF, 0,   0	; Remember, this is used more as a 
 ;
 ; Checks if able to move and performs moves based on Player's pad input
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Map_CheckDoMove:
+Map_CheckDoMove:		
 	LDA <Pad_Holding
 	STA <Temp_Var4		; Temp_Var4 = Pad_Holding
 
@@ -3065,7 +3064,13 @@ UpdateLevelName_LoopRTS:
 
 DrawMapBackground:
 	LDA World_Num
-	BNE DrawMapBackground0
+	BEQ NoMapClouds
+	
+	CMP #$03
+	BEQ NoMapClouds
+	
+
+NoMapClouds:	
 	RTS 
 
 DrawMapBackground0:
@@ -3127,8 +3132,8 @@ DrawMapClouds0:
 	STA Sprite_RAM +3, Y
 
 	LDA Weather_YPos, X
-	ADD #$18
-	CMP #$38
+	ADD #$0C
+	CMP #$2C
 	BCC DrawMapClouds2
 
 	SUB #$10

@@ -124,7 +124,6 @@ PRG005_B873:
 	CMP #$ff	 
 	BEQ PRG005_B872	 ; If this is the terminator, jump to PRG005_B872 (RTS)
 
-	STA Debug_Snap
 	LDA Level_ObjectsSpawned,X 
 	BMI PRG005_B863	 ; If this object is already currently spawned, jump to PRG005_B863 (skip to next object)
 

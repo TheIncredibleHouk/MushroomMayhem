@@ -1367,6 +1367,7 @@ MO_SkidAfarPrep:
 
 	LDA Map_Previous_X,X
 	ADD <Horz_Scroll
+	
 	LDA Map_Previous_XHi,X
 	ADC #$00
 	STA <World_Map_XHi,X
@@ -1418,6 +1419,7 @@ MO_SkidAfarFinish:
 	LDA <World_Map_X,X
 	SUB #$02
 	STA <World_Map_X,X
+
 	LDA <World_Map_XHi,X
 	SBC #$00
 	STA <World_Map_XHi,X
@@ -1436,6 +1438,7 @@ PRG011_A986:
 	LDA <World_Map_X,X
 	ADD #$02
 	STA <World_Map_X,X
+
 	LDA <World_Map_XHi,X
 	ADC #$00
 	STA <World_Map_XHi,X
@@ -1502,7 +1505,7 @@ Map_NoLoseTurnTiles_End
 MO_DoLevelClear:
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 	CMP #MAP_PROP_COMPLETABLE
-	BEQ PRG011_AA19
+	BCS PRG011_AA19
 
 DoNotClear:
 	LDA #$0D
@@ -4432,7 +4435,9 @@ Map_AnimCHRROM:
 
 Map_DoAnimations:	; $BC29
 	LDA <Counter_1
-	AND #$18
+	AND #$60
+	LSR A
+	LSR A
 	LSR A
 	LSR A
 	LSR A
@@ -4479,7 +4484,6 @@ FindCompletedLevels0:
 	STX TempX
 
 	JSR MarkCompletedLevels
-	JSR MarkRoadsPassable
 	
 	LDX TempX
 
@@ -4490,10 +4494,19 @@ FindCompletedLevels1:
 
 	JMP FindCompletedLevels3
 
+Completion_Tiles: 
+	.byte $FF, $7C
+
 MarkCompletedLevels:
+	STA Debug_Snap
 	JSR GetMapTile
 
-	EOR #$01
+	TAX
+	LDA TileProperties, X
+	SUB #MAP_PROP_COMPLETABLE
+	TAX
+
+	LDA Completion_Tiles, X
 	STA [Map_Tile_AddrL],Y
 	RTS
 
@@ -4532,6 +4545,7 @@ MarkCompletedLevels1:
 
 	LDA Block_ChangeYHi
 	BNE MarkCompletedLevels2	
+
 	LDA Block_ChangeY
 	AND #$f0
 	CMP #$f0
@@ -4550,106 +4564,3 @@ MarkCompletedLevels3:
 
 	LDA [Map_Tile_AddrL],Y
 	RTS	
-
-MarkRoadsPassable:
-	LDA Block_ChangeX
-	SUB #$10
-	STA Block_ChangeX
-
-	LDA Block_ChangeXHi
-	SBC #$00
-	STA Block_ChangeXHi
-
-	JSR GetMapTile
-	TAX
-	LDA TileProperties, X
-	CMP #MAP_PROP_BLOCKEDROAD
-	BNE MapsRoadsAbove
-
-	TXA
-	EOR #$01
-	STA [Map_Tile_AddrL],Y
-
-MapsRoadsAbove:
-	LDA Block_ChangeX
-	ADD #$10
-	STA Block_ChangeX
-
-	LDA Block_ChangeXHi
-	ADC #$00
-	STA Block_ChangeXHi
-
-	LDA Block_ChangeY
-	SUB #$10
-	STA Block_ChangeY
-
-	LDA Block_ChangeYHi
-	SBC #$00
-	STA Block_ChangeYHi
-
-	JSR GetMapTile
-	TAX
-	LDA TileProperties, X
-	CMP #MAP_PROP_BLOCKEDROAD
-	BNE MapsRoadsRight
-
-	TXA
-	EOR #$01
-	STA [Map_Tile_AddrL],Y
-
-MapsRoadsRight:
-	LDA Block_ChangeX
-	ADD #$10
-	STA Block_ChangeX
-
-	LDA Block_ChangeXHi
-	ADC #$00
-	STA Block_ChangeXHi
-
-	LDA Block_ChangeY
-	ADD #$10
-	STA Block_ChangeY
-
-	LDA Block_ChangeYHi
-	ADC #$00
-	STA Block_ChangeYHi
-
-	JSR GetMapTile
-	TAX
-	LDA TileProperties, X
-	CMP #MAP_PROP_BLOCKEDROAD
-	BNE MapsRoadsBelow
-
-	TXA
-	EOR #$01
-	STA [Map_Tile_AddrL],Y
-
-MapsRoadsBelow:
-	LDA Block_ChangeX
-	SUB #$10
-	STA Block_ChangeX
-
-	LDA Block_ChangeXHi
-	SBC #$00
-	STA Block_ChangeXHi
-
-	LDA Block_ChangeY
-	ADD #$10
-	STA Block_ChangeY
-
-	LDA Block_ChangeYHi
-	ADC #$00
-	STA Block_ChangeYHi
- 
-	JSR GetMapTile
-	TAX
-	LDA TileProperties, X
-	CMP #MAP_PROP_BLOCKEDROAD
-	BNE MapRoadsRTS
-
-	TXA
-	EOR #$01
-	STA [Map_Tile_AddrL],Y
-
-MapRoadsRTS:
-	RTS

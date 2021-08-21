@@ -5,21 +5,21 @@
     {
       "IndexedColors": [
         15,
-        15,
-        53,
+        48,
         6,
+        42,
         15,
-        8,
+        55,
         39,
-        26,
+        42,
         15,
+        42,
+        26,
+        33,
+        15,
+        48,
         49,
         33,
-        26,
-        15,
-        32,
-        22,
-        26,
         15,
         15,
         54,
@@ -29,13 +29,13 @@
         48,
         15,
         15,
-        23,
+        15,
         48,
+        33,
         15,
         15,
         48,
-        49,
-        15
+        17
       ],
       "Name": "Mushroom Glades",
       "Id": "c6560d1b-5f71-4e4a-8856-8845797a63e9"
@@ -310,7 +310,7 @@
       "IndexedColors": [
         33,
         15,
-        48,
+        53,
         6,
         33,
         15,
@@ -467,7 +467,7 @@
         33,
         15,
         48,
-        24,
+        55,
         33,
         15,
         48,
@@ -490,8 +490,8 @@
         33,
         33,
         15,
-        56,
-        24
+        48,
+        55
       ],
       "Name": "Ice",
       "Id": "0b4bb2af-f89c-413c-a911-683e36d52e47"
@@ -993,21 +993,21 @@
     {
       "IndexedColors": [
         15,
+        48,
+        26,
+        17,
+        15,
+        48,
+        49,
+        55,
         15,
         48,
         17,
+        60,
         15,
-        55,
-        24,
-        32,
-        15,
+        48,
         49,
         33,
-        32,
-        15,
-        24,
-        11,
-        32,
         15,
         15,
         54,
@@ -1112,12 +1112,12 @@
         6,
         15,
         15,
+        55,
+        23,
+        15,
+        15,
         48,
         0,
-        15,
-        11,
-        48,
-        27,
         15,
         6,
         55,
@@ -1303,15 +1303,15 @@
         49,
         13,
         48,
-        17,
+        54,
         49,
         13,
         59,
         27,
         49,
         13,
-        48,
-        19,
+        60,
+        28,
         49,
         15,
         54,
@@ -2100,7 +2100,7 @@
         22,
         55,
         15,
-        55,
+        32,
         39,
         55,
         15,
@@ -4447,6 +4447,82 @@
       ],
       "Name": "Bowser Bank",
       "Id": "5c228666-c765-4844-b21b-0c5332911d96"
+    },
+    {
+      "IndexedColors": [
+        15,
+        48,
+        6,
+        26,
+        15,
+        54,
+        23,
+        7,
+        15,
+        55,
+        23,
+        15,
+        15,
+        48,
+        17,
+        40,
+        15,
+        15,
+        54,
+        6,
+        15,
+        2,
+        48,
+        15,
+        15,
+        26,
+        48,
+        15,
+        15,
+        15,
+        49,
+        15
+      ],
+      "Name": "Bob-omb Quarry",
+      "Id": "c3555666-7b29-428f-a6ae-366f86dd4eea"
+    },
+    {
+      "IndexedColors": [
+        15,
+        48,
+        56,
+        17,
+        15,
+        48,
+        7,
+        7,
+        15,
+        48,
+        25,
+        17,
+        15,
+        48,
+        56,
+        17,
+        15,
+        15,
+        54,
+        6,
+        15,
+        2,
+        48,
+        15,
+        15,
+        26,
+        48,
+        15,
+        15,
+        48,
+        49,
+        15
+      ],
+      "Name": "Booper Bay",
+      "Id": "dce22047-4e30-4ba4-b8ff-a10eb91857ab"
     }
   ],
   "WorldInfo": [
@@ -4497,7 +4573,7 @@
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
-          "Size": 1552,
+          "Size": 1538,
           "Name": "Take a Dip",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
@@ -4516,13 +4592,13 @@
           "DisplayName": "(Level) Take a Dip"
         },
         {
-          "Size": 324,
+          "Size": 318,
           "Name": "Key Coin Caverns",
           "Id": "747d617e-59bb-40d5-a9fc-f558dc5fadd8",
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2873,
+              "Size": 2765,
               "Name": "Key Coin Caverns 2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -4535,7 +4611,7 @@
           "DisplayName": "(Level) Key Coin Caverns"
         },
         {
-          "Size": 2720,
+          "Size": 2709,
           "Name": "Shy Guys In Subcon",
           "Id": "04a6cfde-b3c5-4695-81c5-dda10c212a97",
           "LastModified": "2019-05-28T07:41:45.7634163-04:00",
@@ -4554,7 +4630,7 @@
           "DisplayName": "(Level) Shy Guys In Subcon"
         },
         {
-          "Size": 1766,
+          "Size": 1738,
           "Name": "Feeling Weighed Down",
           "Id": "645b2239-1a1b-4cbf-9262-49b0cb7f313e",
           "LastModified": "2019-06-20T21:07:58.5411251-04:00",
@@ -4573,7 +4649,7 @@
           "DisplayName": "(Level) Feeling Weighed Down"
         },
         {
-          "Size": 2413,
+          "Size": 2448,
           "Name": "Turnip Toss Tussle",
           "Id": "15b60511-3ccd-4a9d-95a1-4fd7108a90d6",
           "LastModified": "2019-05-24T16:08:39.6355729-04:00",
@@ -4592,7 +4668,7 @@
           "DisplayName": "(Level) Turnip Toss Tussle"
         },
         {
-          "Size": 1614,
+          "Size": 1598,
           "Name": "Windy Waters",
           "Id": "ae704d35-4b12-49d3-b370-56c5554cf3f3",
           "LastModified": "2019-05-26T10:38:27.5775602-04:00",
@@ -4727,7 +4803,7 @@
       "LastModified": "2015-01-24T17:03:56.237-05:00",
       "LevelsInfo": [
         {
-          "Size": 2138,
+          "Size": 2187,
           "Name": "Icy Wind Currents",
           "Id": "76a75f19-0eb9-45c1-8b94-3f72327e072b",
           "LastModified": "2018-10-28T10:42:10.2134574-04:00",
@@ -5038,7 +5114,7 @@
           "DisplayName": "(Level) Colorful Explosions"
         },
         {
-          "Size": 2717,
+          "Size": 2405,
           "Name": "No Time To Waste",
           "Id": "4682d759-a06e-4856-93da-d632f280b778",
           "LastModified": "2018-10-28T10:42:10.7751129-04:00",
@@ -7248,8 +7324,8 @@
       "FireBallInteractions": [
         0,
         0,
-        0,
-        0,
+        136,
+        207,
         0,
         0,
         0,
@@ -7275,16 +7351,16 @@
           "To": 0
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 252,
+          "To": 1
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 253,
+          "To": 1
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 19,
+          "To": 127
         },
         {
           "From": 0,
@@ -7311,337 +7387,92 @@
           "Property": 0,
           "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 164,
-          "LowerRight": 164
+          "LowerLeft": 2,
+          "LowerRight": 2
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 18,
+          "UpperRight": 18,
+          "LowerLeft": 255,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 166,
+          "UpperRight": 167,
+          "LowerLeft": 182,
+          "LowerRight": 183
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 167,
+          "UpperRight": 168,
+          "LowerLeft": 183,
+          "LowerRight": 184
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 168,
+          "UpperRight": 169,
+          "LowerLeft": 184,
+          "LowerRight": 185
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 166,
+          "UpperRight": 169,
+          "LowerLeft": 182,
+          "LowerRight": 185
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 162,
+          "UpperRight": 163,
+          "LowerLeft": 178,
+          "LowerRight": 179
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 163,
+          "UpperRight": 164,
+          "LowerLeft": 179,
+          "LowerRight": 180
         },
         {
           "Property": 0,
           "UpperLeft": 164,
-          "UpperRight": 164,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "UpperRight": 165,
+          "LowerLeft": 180,
+          "LowerRight": 181
         },
         {
           "Property": 0,
-          "UpperLeft": 24,
-          "UpperRight": 28,
-          "LowerLeft": 239,
-          "LowerRight": 239
-        },
-        {
-          "Property": 2,
-          "UpperLeft": 192,
-          "UpperRight": 193,
-          "LowerLeft": 208,
-          "LowerRight": 209
+          "UpperLeft": 162,
+          "UpperRight": 165,
+          "LowerLeft": 178,
+          "LowerRight": 181
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 216,
+          "LowerRight": 217
         },
         {
           "Property": 1,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 6
+          "UpperLeft": 234,
+          "UpperRight": 233,
+          "LowerLeft": 218,
+          "LowerRight": 217
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 218,
+          "LowerRight": 219
         },
         {
           "Property": 0,
@@ -7652,150 +7483,500 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 224,
+          "UpperRight": 225,
+          "LowerLeft": 240,
+          "LowerRight": 241
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 3,
+          "UpperLeft": 128,
+          "UpperRight": 129,
+          "LowerLeft": 0,
+          "LowerRight": 1
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 3,
+          "UpperLeft": 144,
+          "UpperRight": 145,
+          "LowerLeft": 0,
+          "LowerRight": 1
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 2,
+          "Property": 3,
           "UpperLeft": 130,
           "UpperRight": 131,
-          "LowerLeft": 146,
-          "LowerRight": 147
+          "LowerLeft": 0,
+          "LowerRight": 1
         },
         {
-          "Property": 2,
-          "UpperLeft": 160,
-          "UpperRight": 161,
-          "LowerLeft": 176,
-          "LowerRight": 177
+          "Property": 3,
+          "UpperLeft": 146,
+          "UpperRight": 147,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 132,
+          "UpperRight": 133,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 148,
+          "UpperRight": 149,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 134,
+          "UpperRight": 135,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 150,
+          "UpperRight": 151,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 136,
+          "UpperRight": 137,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 237,
+          "UpperRight": 237,
+          "LowerLeft": 252,
+          "LowerRight": 252
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 206,
+          "UpperRight": 222,
+          "LowerLeft": 222,
+          "LowerRight": 206
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 33,
+          "UpperRight": 66,
+          "LowerLeft": 49,
+          "LowerRight": 238
         },
         {
           "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 8,
+          "UpperLeft": 66,
+          "UpperRight": 34,
+          "LowerLeft": 238,
+          "LowerRight": 154
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 66,
+          "UpperRight": 65,
           "LowerLeft": 238,
           "LowerRight": 238
         },
         {
-          "Property": 2,
-          "UpperLeft": 142,
-          "UpperRight": 143,
-          "LowerLeft": 158,
-          "LowerRight": 159
+          "Property": 1,
+          "UpperLeft": 33,
+          "UpperRight": 34,
+          "LowerLeft": 157,
+          "LowerRight": 154
         },
         {
           "Property": 1,
-          "UpperLeft": 169,
-          "UpperRight": 169,
-          "LowerLeft": 168,
-          "LowerRight": 168
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
         },
         {
           "Property": 1,
-          "UpperLeft": 11,
-          "UpperRight": 11,
-          "LowerLeft": 151,
-          "LowerRight": 151
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 239,
+          "UpperRight": 239,
+          "LowerLeft": 253,
+          "LowerRight": 253
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 237,
+          "UpperRight": 237,
+          "LowerLeft": 237,
+          "LowerRight": 237
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 238,
+          "UpperRight": 5,
+          "LowerLeft": 5,
+          "LowerRight": 238
         },
         {
           "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
-          "LowerLeft": 11,
-          "LowerRight": 11
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 128,
+          "UpperRight": 129,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 144,
+          "UpperRight": 145,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 130,
+          "UpperRight": 131,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 146,
+          "UpperRight": 147,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 132,
+          "UpperRight": 133,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 148,
+          "UpperRight": 149,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 134,
+          "UpperRight": 135,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 150,
+          "UpperRight": 151,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 136,
+          "UpperRight": 137,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 2,
+          "UpperLeft": 174,
+          "UpperRight": 175,
+          "LowerLeft": 190,
+          "LowerRight": 191
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 2,
+          "UpperLeft": 204,
+          "UpperRight": 205,
+          "LowerLeft": 220,
+          "LowerRight": 221
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 206,
+          "UpperRight": 205,
+          "LowerLeft": 222,
+          "LowerRight": 221
+        },
+        {
+          "Property": 2,
+          "UpperLeft": 206,
+          "UpperRight": 207,
+          "LowerLeft": 222,
+          "LowerRight": 223
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 217,
+          "UpperRight": 249,
+          "LowerLeft": 235,
+          "LowerRight": 26
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 250,
+          "UpperRight": 249,
+          "LowerLeft": 25,
+          "LowerRight": 26
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 250,
+          "UpperRight": 218,
+          "LowerLeft": 25,
+          "LowerRight": 216
         },
         {
           "Property": 1,
@@ -7805,84 +7986,602 @@
           "LowerRight": 30
         },
         {
-          "Property": 1,
-          "UpperLeft": 16,
-          "UpperRight": 17,
-          "LowerLeft": 32,
-          "LowerRight": 33
+          "Property": 0,
+          "UpperLeft": 250,
+          "UpperRight": 218,
+          "LowerLeft": 202,
+          "LowerRight": 234
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
         },
         {
           "Property": 1,
-          "UpperLeft": 34,
-          "UpperRight": 34,
-          "LowerLeft": 184,
-          "LowerRight": 184
+          "UpperLeft": 204,
+          "UpperRight": 205,
+          "LowerLeft": 220,
+          "LowerRight": 221
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 9,
+          "UpperRight": 10,
+          "LowerLeft": 25,
+          "LowerRight": 200
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 9,
+          "UpperRight": 10,
+          "LowerLeft": 203,
+          "LowerRight": 26
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 219,
+          "UpperRight": 10,
+          "LowerLeft": 235,
+          "LowerRight": 26
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 9,
+          "UpperRight": 10,
+          "LowerLeft": 25,
+          "LowerRight": 26
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 9,
+          "UpperRight": 232,
+          "LowerLeft": 25,
+          "LowerRight": 216
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 9,
+          "UpperRight": 10,
+          "LowerLeft": 203,
+          "LowerRight": 200
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 9,
+          "UpperRight": 248,
+          "LowerLeft": 202,
+          "LowerRight": 201
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
         },
         {
           "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
-          "LowerLeft": 184,
+          "LowerLeft": 208,
+          "LowerRight": 238
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 238,
+          "UpperRight": 208,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 236,
+          "UpperRight": 196,
+          "LowerLeft": 236,
+          "LowerRight": 212
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 197,
+          "UpperRight": 198,
+          "LowerLeft": 213,
+          "LowerRight": 214
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 164,
-          "LowerRight": 164
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 2,
-          "UpperLeft": 128,
-          "UpperRight": 129,
-          "LowerLeft": 144,
-          "LowerRight": 145
+          "UpperLeft": 199,
+          "UpperRight": 236,
+          "LowerLeft": 215,
+          "LowerRight": 236
         },
         {
           "Property": 1,
-          "UpperLeft": 166,
-          "UpperRight": 167,
-          "LowerLeft": 182,
-          "LowerRight": 183
+          "UpperLeft": 41,
+          "UpperRight": 42,
+          "LowerLeft": 25,
+          "LowerRight": 26
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 9,
+          "UpperRight": 248,
+          "LowerLeft": 25,
+          "LowerRight": 26
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 251,
+          "UpperRight": 10,
+          "LowerLeft": 25,
+          "LowerRight": 26
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 219,
+          "UpperRight": 10,
+          "LowerLeft": 233,
+          "LowerRight": 201
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 9,
+          "UpperRight": 10,
+          "LowerLeft": 202,
+          "LowerRight": 201
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 9,
+          "UpperRight": 232,
+          "LowerLeft": 202,
+          "LowerRight": 234
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 251,
+          "UpperRight": 248,
+          "LowerLeft": 25,
+          "LowerRight": 26
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 13,
+          "UpperRight": 12,
+          "LowerLeft": 29,
+          "LowerRight": 28
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 11,
+          "UpperRight": 12,
+          "LowerLeft": 27,
+          "LowerRight": 28
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 11,
+          "UpperRight": 14,
+          "LowerLeft": 27,
+          "LowerRight": 30
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 226,
+          "UpperRight": 227,
+          "LowerLeft": 242,
+          "LowerRight": 243
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 236,
+          "UpperRight": 228,
+          "LowerLeft": 236,
+          "LowerRight": 244
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 229,
+          "UpperRight": 230,
+          "LowerLeft": 245,
+          "LowerRight": 246
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 231,
+          "UpperRight": 236,
+          "LowerLeft": 247,
+          "LowerRight": 236
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 6,
+          "UpperRight": 22,
+          "LowerLeft": 173,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 23,
+          "UpperRight": 22,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 23,
+          "UpperRight": 7,
+          "LowerLeft": 238,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 6,
+          "UpperRight": 22,
+          "LowerLeft": 157,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 23,
+          "UpperRight": 22,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 23,
+          "UpperRight": 7,
+          "LowerLeft": 141,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 141,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 238,
+          "LowerLeft": 173,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 170,
+          "LowerLeft": 141,
+          "LowerRight": 154
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 128,
+          "UpperRight": 129,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 144,
+          "UpperRight": 145,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 130,
+          "UpperRight": 131,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 146,
+          "UpperRight": 147,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 132,
+          "UpperRight": 133,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 3,
+          "UpperRight": 4,
+          "LowerLeft": 19,
+          "LowerRight": 20
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 238,
+          "LowerLeft": 173,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 170,
+          "LowerLeft": 238,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 173,
+          "UpperRight": 154,
+          "LowerLeft": 157,
+          "LowerRight": 170
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 154,
+          "LowerLeft": 173,
+          "LowerRight": 170
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 21,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 24,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 21,
+          "LowerLeft": 173,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 24,
+          "UpperRight": 170,
+          "LowerLeft": 238,
+          "LowerRight": 154
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 148,
+          "UpperRight": 149,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 134,
+          "UpperRight": 135,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 150,
+          "UpperRight": 151,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 136,
+          "UpperRight": 137,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 19,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 4
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 254,
+          "UpperRight": 4,
+          "LowerLeft": 19,
+          "LowerRight": 254
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 238,
+          "LowerLeft": 171,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 170,
+          "LowerLeft": 140,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 173,
+          "UpperRight": 21,
+          "LowerLeft": 171,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 23,
+          "UpperRight": 22,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 24,
+          "UpperRight": 170,
+          "LowerLeft": 139,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 141,
+          "LowerRight": 138
         },
         {
           "Property": 2,
-          "UpperLeft": 2,
-          "UpperRight": 3,
-          "LowerLeft": 18,
-          "LowerRight": 19
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
-          "Property": 2,
+          "Property": 0,
+          "UpperLeft": 23,
+          "UpperRight": 22,
+          "LowerLeft": 238,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 188,
+          "UpperRight": 187,
+          "LowerLeft": 141,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 192,
+          "UpperRight": 193,
+          "LowerLeft": 208,
+          "LowerRight": 209
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 194,
+          "UpperRight": 195,
+          "LowerLeft": 210,
+          "LowerRight": 211
+        },
+        {
+          "Property": 0,
           "UpperLeft": 160,
           "UpperRight": 161,
           "LowerLeft": 176,
@@ -7890,6 +8589,209 @@
         },
         {
           "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 236,
+          "UpperRight": 196,
+          "LowerLeft": 236,
+          "LowerRight": 212
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 199,
+          "UpperRight": 236,
+          "LowerLeft": 215,
+          "LowerRight": 236
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 173,
+          "UpperRight": 170,
+          "LowerLeft": 171,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 157,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 23,
+          "UpperRight": 7,
+          "LowerLeft": 140,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 6,
+          "UpperRight": 22,
+          "LowerLeft": 171,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 21,
+          "LowerLeft": 238,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 24,
+          "UpperRight": 238,
+          "LowerLeft": 141,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 24,
+          "UpperRight": 21,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 171,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 21,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 24,
+          "UpperRight": 238,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 204,
+          "UpperRight": 205,
+          "LowerLeft": 220,
+          "LowerRight": 221
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 4,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 236,
+          "UpperRight": 228,
+          "LowerLeft": 236,
+          "LowerRight": 244
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 231,
+          "UpperRight": 236,
+          "LowerLeft": 247,
+          "LowerRight": 236
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 128,
+          "UpperRight": 129,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 144,
+          "UpperRight": 145,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 130,
+          "UpperRight": 131,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 146,
+          "UpperRight": 147,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 132,
+          "UpperRight": 133,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 148,
+          "UpperRight": 149,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 134,
+          "UpperRight": 135,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 150,
+          "UpperRight": 151,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 3,
+          "UpperLeft": 136,
+          "UpperRight": 137,
+          "LowerLeft": 0,
+          "LowerRight": 1
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 206,
+          "UpperRight": 222,
+          "LowerLeft": 222,
+          "LowerRight": 206
+        },
+        {
+          "Property": 1,
           "UpperLeft": 174,
           "UpperRight": 175,
           "LowerLeft": 190,
@@ -7932,1165 +8834,339 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 255,
-          "UpperRight": 238,
-          "LowerLeft": 7,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 155
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 156,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 171,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 139,
-          "UpperRight": 140,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 172,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 137,
-          "LowerLeft": 137,
-          "LowerRight": 153
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 253,
-          "UpperRight": 253,
-          "LowerLeft": 140,
-          "LowerRight": 139
+          "UpperLeft": 5,
+          "UpperRight": 5,
+          "LowerLeft": 5,
+          "LowerRight": 5
         },
         {
           "Property": 0,
           "UpperLeft": 155,
           "UpperRight": 188,
-          "LowerLeft": 173,
-          "LowerRight": 239
+          "LowerLeft": 157,
+          "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 157,
-          "UpperRight": 239,
-          "LowerLeft": 171,
-          "LowerRight": 139
+          "UpperLeft": 66,
+          "UpperRight": 187,
+          "LowerLeft": 238,
+          "LowerRight": 238
         },
         {
-          "Property": 1,
-          "UpperLeft": 187,
+          "Property": 0,
+          "UpperLeft": 188,
           "UpperRight": 156,
-          "LowerLeft": 239,
-          "LowerRight": 170
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 157,
-          "UpperRight": 154,
-          "LowerLeft": 173,
-          "LowerRight": 170
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 4,
-          "UpperRight": 5,
-          "LowerLeft": 20,
-          "LowerRight": 21
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "LowerLeft": 238,
+          "LowerRight": 154
         },
         {
           "Property": 0,
           "UpperLeft": 155,
-          "UpperRight": 156,
-          "LowerLeft": 171,
-          "LowerRight": 172
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 253,
-          "UpperRight": 253,
-          "LowerLeft": 141,
-          "LowerRight": 239
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 173,
-          "UpperRight": 239,
+          "UpperRight": 187,
           "LowerLeft": 157,
-          "LowerRight": 239
-        },
-        {
-          "Property": 3,
-          "UpperLeft": 130,
-          "UpperRight": 131,
-          "LowerLeft": 146,
-          "LowerRight": 147
-        },
-        {
-          "Property": 2,
-          "UpperLeft": 160,
-          "UpperRight": 161,
-          "LowerLeft": 176,
-          "LowerRight": 177
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 217,
-          "UpperRight": 250,
-          "LowerLeft": 233,
-          "LowerRight": 202
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 249,
-          "UpperRight": 218,
-          "LowerLeft": 201,
-          "LowerRight": 234
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 12,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 27,
-          "UpperRight": 27,
-          "LowerLeft": 27,
-          "LowerRight": 27
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 135,
-          "UpperRight": 135,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 150,
-          "LowerRight": 150
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 253,
-          "UpperRight": 253,
-          "LowerLeft": 239,
-          "LowerRight": 239
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 253,
-          "UpperRight": 253,
-          "LowerLeft": 239,
           "LowerRight": 138
         },
         {
           "Property": 0,
-          "UpperLeft": 189,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 239
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 255,
-          "UpperRight": 22,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 239,
-          "UpperRight": 239,
+          "UpperLeft": 188,
+          "UpperRight": 187,
           "LowerLeft": 140,
           "LowerRight": 139
         },
         {
           "Property": 0,
           "UpperLeft": 188,
+          "UpperRight": 156,
+          "LowerLeft": 141,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 141,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 238,
+          "LowerLeft": 173,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 170,
+          "LowerLeft": 141,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 188,
           "UpperRight": 187,
+          "LowerLeft": 238,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 188,
+          "UpperRight": 187,
+          "LowerLeft": 141,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 239,
+          "UpperRight": 239,
           "LowerLeft": 239,
           "LowerRight": 239
         },
         {
           "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 238,
+          "LowerLeft": 173,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 170,
+          "LowerLeft": 238,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 173,
+          "UpperRight": 154,
+          "LowerLeft": 157,
+          "LowerRight": 170
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 155,
+          "UpperRight": 156,
+          "LowerLeft": 171,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 154,
+          "LowerLeft": 173,
+          "LowerRight": 170
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 186,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 189,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 186,
+          "LowerLeft": 173,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 189,
+          "UpperRight": 170,
+          "LowerLeft": 238,
+          "LowerRight": 154
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 186,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 189,
+          "UpperRight": 238,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 186,
+          "LowerLeft": 238,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 189,
+          "UpperRight": 238,
+          "LowerLeft": 141,
+          "LowerRight": 238
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
+        },
+        {
+          "Property": 0,
           "UpperLeft": 239,
+          "UpperRight": 239,
+          "LowerLeft": 253,
+          "LowerRight": 253
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 157,
+          "UpperRight": 238,
+          "LowerLeft": 171,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 140,
+          "LowerRight": 139
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
           "UpperRight": 170,
           "LowerLeft": 140,
           "LowerRight": 172
         },
         {
           "Property": 0,
-          "UpperLeft": 253,
-          "UpperRight": 253,
-          "LowerLeft": 239,
-          "LowerRight": 239
+          "UpperLeft": 173,
+          "UpperRight": 186,
+          "LowerLeft": 171,
+          "LowerRight": 139
         },
         {
           "Property": 0,
-          "UpperLeft": 239,
-          "UpperRight": 239,
-          "LowerLeft": 141,
-          "LowerRight": 239
+          "UpperLeft": 188,
+          "UpperRight": 187,
+          "LowerLeft": 140,
+          "LowerRight": 139
         },
         {
           "Property": 0,
           "UpperLeft": 189,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 239
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 239,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 138
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 239,
-          "UpperRight": 186,
-          "LowerLeft": 239,
-          "LowerRight": 239
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 239,
           "UpperRight": 170,
-          "LowerLeft": 239,
+          "LowerLeft": 139,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 173,
+          "UpperRight": 170,
+          "LowerLeft": 171,
+          "LowerRight": 172
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 155,
+          "UpperRight": 156,
+          "LowerLeft": 157,
           "LowerRight": 154
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "UpperLeft": 188,
+          "UpperRight": 156,
+          "LowerLeft": 140,
+          "LowerRight": 172
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "UpperLeft": 155,
+          "UpperRight": 187,
+          "LowerLeft": 171,
+          "LowerRight": 139
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 1,
           "UpperLeft": 238,
-          "UpperRight": 238,
+          "UpperRight": 21,
           "LowerLeft": 238,
+          "LowerRight": 138
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 24,
+          "UpperRight": 238,
+          "LowerLeft": 141,
           "LowerRight": 238
         },
         {
-          "Property": 4,
-          "UpperLeft": 238,
-          "UpperRight": 238,
+          "Property": 0,
+          "UpperLeft": 189,
+          "UpperRight": 186,
           "LowerLeft": 238,
           "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 239,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 239
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 149,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
-          "LowerLeft": 133,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 136,
-          "UpperRight": 238,
-          "LowerLeft": 152,
-          "LowerRight": 238
+          "LowerLeft": 141,
+          "LowerRight": 138
         },
         {
           "Property": 2,
-          "UpperLeft": 198,
-          "UpperRight": 199,
-          "LowerLeft": 214,
-          "LowerRight": 215
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 9,
-          "UpperRight": 10,
-          "LowerLeft": 25,
-          "LowerRight": 26
-        },
-        {
-          "Property": 0,
           "UpperLeft": 224,
           "UpperRight": 225,
           "LowerLeft": 240,
           "LowerRight": 241
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 148,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 134
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 194
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 195,
-          "LowerRight": 196
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 197,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 210,
-          "LowerLeft": 238,
-          "LowerRight": 226
-        },
-        {
-          "Property": 2,
-          "UpperLeft": 211,
-          "UpperRight": 212,
-          "LowerLeft": 227,
-          "LowerRight": 228
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 213,
-          "UpperRight": 238,
-          "LowerLeft": 229,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 1,
-          "UpperLeft": 23,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 242,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 243,
-          "UpperRight": 244,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 245,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
         }
       ]
     },
@@ -10601,20 +10677,20 @@
           "UpperLeft": 44,
           "UpperRight": 45,
           "LowerLeft": 60,
-          "LowerRight": 61
+          "LowerRight": 89
         },
         {
           "Property": 192,
           "UpperLeft": 46,
           "UpperRight": 45,
-          "LowerLeft": 62,
-          "LowerRight": 61
+          "LowerLeft": 90,
+          "LowerRight": 89
         },
         {
           "Property": 192,
           "UpperLeft": 46,
           "UpperRight": 47,
-          "LowerLeft": 62,
+          "LowerLeft": 90,
           "LowerRight": 63
         },
         {
@@ -10710,23 +10786,23 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 126,
+          "UpperLeft": 61,
           "UpperRight": 105,
           "LowerLeft": 60,
-          "LowerRight": 61
+          "LowerRight": 89
         },
         {
           "Property": 192,
           "UpperLeft": 106,
           "UpperRight": 105,
-          "LowerLeft": 62,
-          "LowerRight": 61
+          "LowerLeft": 90,
+          "LowerRight": 89
         },
         {
           "Property": 192,
           "UpperLeft": 106,
-          "UpperRight": 127,
-          "LowerLeft": 62,
+          "UpperRight": 62,
+          "LowerLeft": 90,
           "LowerRight": 63
         },
         {
@@ -10825,20 +10901,20 @@
           "UpperLeft": 76,
           "UpperRight": 77,
           "LowerLeft": 60,
-          "LowerRight": 61
+          "LowerRight": 89
         },
         {
           "Property": 192,
           "UpperLeft": 78,
           "UpperRight": 77,
-          "LowerLeft": 62,
-          "LowerRight": 61
+          "LowerLeft": 90,
+          "LowerRight": 89
         },
         {
           "Property": 192,
           "UpperLeft": 78,
           "UpperRight": 79,
-          "LowerLeft": 62,
+          "LowerLeft": 90,
           "LowerRight": 63
         },
         {
@@ -23163,7 +23239,7 @@
         },
         {
           "Property": 64,
-          "UpperLeft": 80,
+          "UpperLeft": 124,
           "UpperRight": 53,
           "LowerLeft": 68,
           "LowerRight": 69
@@ -23171,7 +23247,7 @@
         {
           "Property": 64,
           "UpperLeft": 54,
-          "UpperRight": 81,
+          "UpperRight": 125,
           "LowerLeft": 70,
           "LowerRight": 71
         },
@@ -23729,11 +23805,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 205,
+          "UpperLeft": 72,
+          "UpperRight": 73,
+          "LowerLeft": 88,
+          "LowerRight": 89
         },
         {
           "Property": 192,
@@ -29498,10 +29574,10 @@
         },
         {
           "Property": 193,
-          "UpperLeft": 8,
-          "UpperRight": 9,
-          "LowerLeft": 24,
-          "LowerRight": 25
+          "UpperLeft": 7,
+          "UpperRight": 8,
+          "LowerLeft": 23,
+          "LowerRight": 24
         },
         {
           "Property": 0,
@@ -29590,20 +29666,20 @@
         {
           "Property": 192,
           "UpperLeft": 64,
-          "UpperRight": 65,
+          "UpperRight": 104,
           "LowerLeft": 120,
           "LowerRight": 254
         },
         {
           "Property": 192,
-          "UpperLeft": 66,
-          "UpperRight": 65,
+          "UpperLeft": 104,
+          "UpperRight": 104,
           "LowerLeft": 254,
           "LowerRight": 254
         },
         {
           "Property": 192,
-          "UpperLeft": 66,
+          "UpperLeft": 104,
           "UpperRight": 67,
           "LowerLeft": 254,
           "LowerRight": 121
@@ -30393,18 +30469,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 216,
-          "LowerRight": 217
+          "Property": 16,
+          "UpperLeft": 9,
+          "UpperRight": 102,
+          "LowerLeft": 25,
+          "LowerRight": 118
         },
         {
           "Property": 16,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 216,
-          "LowerRight": 217
+          "UpperLeft": 103,
+          "UpperRight": 12,
+          "LowerLeft": 119,
+          "LowerRight": 28
         },
         {
           "Property": 3,
@@ -30512,7 +30588,7 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 102,
           "UpperRight": 103,
           "LowerLeft": 118,
@@ -30624,11 +30700,11 @@
           "LowerRight": 60
         },
         {
-          "Property": 0,
-          "UpperLeft": 118,
-          "UpperRight": 119,
-          "LowerLeft": 118,
-          "LowerRight": 119
+          "Property": 16,
+          "UpperLeft": 9,
+          "UpperRight": 12,
+          "LowerLeft": 25,
+          "LowerRight": 28
         },
         {
           "Property": 4,
@@ -33121,7 +33197,7 @@
     },
     {
       "FireBallInteractions": [
-        0,
+        202,
         0,
         0,
         0,
@@ -33142,8 +33218,12 @@
       ],
       "PSwitchAlterations": [
         {
-          "From": 0,
-          "To": 0
+          "From": 94,
+          "To": 110
+        },
+        {
+          "From": 110,
+          "To": 94
         },
         {
           "From": 0,
@@ -33166,12 +33246,8 @@
           "To": 0
         },
         {
-          "From": 204,
-          "To": 202
-        },
-        {
-          "From": 60,
-          "To": 6
+          "From": 0,
+          "To": 0
         }
       ],
       "TileBlocks": [
@@ -33456,21 +33532,21 @@
           "LowerRight": 137
         },
         {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -34240,18 +34316,18 @@
           "LowerRight": 114
         },
         {
-          "Property": 0,
-          "UpperLeft": 64,
-          "UpperRight": 65,
-          "LowerLeft": 80,
-          "LowerRight": 81
+          "Property": 16,
+          "UpperLeft": 78,
+          "UpperRight": 79,
+          "LowerLeft": 94,
+          "LowerRight": 95
         },
         {
           "Property": 0,
-          "UpperLeft": 66,
-          "UpperRight": 67,
-          "LowerLeft": 82,
-          "LowerRight": 83
+          "UpperLeft": 110,
+          "UpperRight": 111,
+          "LowerLeft": 126,
+          "LowerRight": 127
         },
         {
           "Property": 12,
@@ -36869,7 +36945,7 @@
     },
     {
       "GameId": 2,
-      "GameObjectType": 1,
+      "GameObjectType": 3,
       "Name": "Power Up",
       "Sprites": [
         {
@@ -55227,36 +55303,36 @@
     },
     {
       "GameId": 200,
-      "GameObjectType": 1,
-      "Name": "Unused xC8",
+      "GameObjectType": 0,
+      "Name": "Rain Indicator",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x8000",
+          "TileValue": "0x0C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 2,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x8000",
+          "TileValue": "0x0E",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 2,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "World"
     },
     {
       "GameId": 201,

@@ -10,7 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "ceee7668-a8e4-44c0-8676-a3d11168456f",
   "StaticTileTableIndex": 8,
-  "MostCommonTile": 0,
+  "MostCommonTile": 128,
   "AnimationType": 0,
   "ScrollType": 1,
   "Effects": 0,
@@ -4876,8 +4876,8 @@
     65,
     65,
     65,
-    161,
-    161,
+    65,
+    65,
     65,
     63,
     63,
@@ -5064,14 +5064,14 @@
     65,
     65,
     65,
-    161,
-    161,
-    65,
+    162,
+    162,
+    162,
     65,
     147,
     148,
     65,
-    65,
+    162,
     95,
     65,
     65,
@@ -5110,7 +5110,7 @@
     65,
     65,
     65,
-    161,
+    65,
     147,
     148,
     65,
@@ -6499,12 +6499,6 @@
   ],
   "ObjectData": [
     {
-      "GameObjectId": 0,
-      "X": 1,
-      "Y": 21,
-      "Property": 0
-    },
-    {
       "GameObjectId": 18,
       "X": 60,
       "Y": 18,
@@ -6532,5 +6526,5 @@
       "BoundRectangle": "96,368,32,32"
     }
   ],
-  "CompressedData": "D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/CEHBAANBwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/FUEaPw1BwT8VQRo/DUHBPwlBwUsCScJLQQI/AiIaPwpBwVkBQcE/D0ECP8NBLkEaPw1BwT8BQcLT1AdBwjM0AUECPwJBGj8FQcIzNAJBAaHCQT8BQcKTlANBAaEBQcKTlAFBwV8EQRo/BEHEoZOUQQU/BJHBkgFBwZAokcGSAUHBkAmRBFHEUq6vUChRxFKOj1AJUQRhxGKen2AoYcRinp9gDmHEYp6fYChhxGKen2AOYcRinp9gKGHEYp6fYAlh"
+  "CompressedData": "D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/CEHBAANBwT8PQSA/DUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BID8NQcE/FUEaPw1BwT8VQRo/DUHBPwlBwUsCScJLQQI/AiIaPwpBwVkBQcE/D0ECP8NBLkEaPw1BwT8BQcLT1AdBwjM0AUECPwJBGj8FQcIzNAVBwT8BQcKTlANBAqLGQZOUQaJfBEEaPwVBw5OUQQU/BJHBkgFBwZAokcGSAUHBkAmRBFHEUq6vUChRxFKOj1AJUQRhxGKen2AoYcRinp9gDmHEYp6fYChhxGKen2AOYcRinp9gKGHEYp6fYAlh"
 }

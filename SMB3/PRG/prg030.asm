@@ -1749,10 +1749,13 @@ PRG030_9163:
 PRG030_9185:
 	LDA Map_Entered_Y,X
 	STA <World_Map_Y,X
+
 	LDA Map_Entered_XHi,X
 	STA <World_Map_XHi,X
+
 	LDA Map_Entered_X,X
 	STA <World_Map_X,X
+	
 	LDA Map_Previous_UnusedPVal2,X
 	STA <Map_UnusedPlayerVal2,X
 
@@ -4872,11 +4875,14 @@ Map_Reload_with_Completions:
 PRG012_A462:
 	TXA		 
 	TAY		 
+
 	LDA #$02	 
 	JSR Tile_Mem_ClearB
+
 	TYA		 
 	ADD #$10	 
 	TAY		 
+
 	LDA #$01
 	JSR Tile_Mem_ClearB
 	INX		 ; X++
@@ -4918,11 +4924,11 @@ PRG012_A4C9:
 	ASL A
 	TAX
 
-	
 	LDA $B800, X
 	STA PAGE_A000
+
+	ADC #$01
 	STA PAGE_C000
-	INC PAGE_C000
 
 	INX
 
