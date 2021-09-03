@@ -1032,9 +1032,7 @@ PRG011_A76D:
 	CMP Map_Objects_XLo,Y
 	BNE PRG011_A767
 
-	LDA Map_Objects_IDs,Y
-	CMP #MAPOBJ_AIRSHIP
-	BNE PRG011_A791
+	JMP PRG011_A791
 
 	; Player is on top of the airship
 	; NOTE: Assumes Index 1 is the Airship!
@@ -1046,12 +1044,8 @@ PRG011_A76D:
 	JMP PRG011_A767	 ; Jump to PRG011_A767
 
 PRG011_A791:
-	CMP #MAPOBJ_COINSHIP
-	BNE PRG011_A767	 ; If this is NOT a Coin Ship, jump to PRG011_A767
+	JMP PRG011_A767	 ; If this is NOT a Coin Ship, jump to PRG011_A767
 
-	; Player was on top of a coin ship and DIED!!, return to Hammer Bro!
-	LDA #MAPOBJ_HAMMERBRO
-	STA Map_Objects_IDs,Y
 
 	JMP PRG011_A767	 ; Jump to PRG011_A767
 
@@ -1734,9 +1728,7 @@ PRG011_AB89:
 PRG011_AB8F:
 	STY <Map_HideObj	; Index of map object Player is standing on -> Map_HideObj (hide this object and can't re-enter it)
 
-	LDA Map_Objects_IDs,Y
-	CMP #MAPOBJ_AIRSHIP
-	BNE PRG011_AB9E	 	; If Player is NOT on the airship, jump to PRG011_AB9E
+	JMP PRG011_AB9E	 	; If Player is NOT on the airship, jump to PRG011_AB9E
 
 	; Player is on the airship...
 
@@ -1884,6 +1876,7 @@ Map_WhiteObjects:
 Map_WhiteObjects_End
 
 MO_CheckForBonus:
+	RTS
 
 	; Temp_Var16 is our loop counter
 	LDA #(Map_WhiteObjects_End - Map_WhiteObjects - 1)
@@ -1995,6 +1988,7 @@ PRG011_AD9C:
 	; "Do Not Return to Caller" (double PLA instruction), but oh well...
 Map_FindEmptyObjectSlot:
 	LDY #$02	 ; Y = 2
+	
 PRG011_AD9F:
 	LDA Map_Objects_IDs,Y
 	BEQ PRG011_ADA8	 ; If this map object slot is empty, jump to PRG011_ADA8 (RTS)
@@ -2097,15 +2091,15 @@ Map_Object_Do:
 	JSR Map_Object_CheckVisibility	 ; Check and store if this object is visible
 
 	LDA Map_Objects_IDs,X	; Get the ID
-	CMP #MAPOBJ_CANOE
-	BGE PRG011_AE0B	 	; If object ID >= $10 (Canoe), jump to PRG011_AE0B
+	;CMP #MAPOBJ_CANOE
+	;BGE PRG011_AE0B	 	; If object ID >= $10 (Canoe), jump to PRG011_AE0B
 
-	LDY Map_Operation	; Y = Map_Operation
-	CPY #MAPOBJ_COINSHIP
-	BNE PRG011_AE0B	 	; If Map_Operation <> $0B, jump to PRG011_AE0B
+	;LDY Map_Operation	; Y = Map_Operation
+	;CPY #MAPOBJ_COINSHIP
+	;BNE PRG011_AE0B	 	; If Map_Operation <> $0B, jump to PRG011_AE0B
 
-	LDY Map_March_Count,X
-	BEQ PRG011_ADF4	 ; If march count = 0, jump to PRG011_ADF4
+	;LDY Map_March_Count,X
+	;BEQ PRG011_ADF4	 ; If march count = 0, jump to PRG011_ADF4
 
 PRG011_AE0B:
 	; Based on the ID, jump to proper routine for how it should act on the map
@@ -2146,6 +2140,7 @@ Map_Object_March_OffsetXHi:
 	.byte  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1, -1, -1, -1, -1
 
 Map_Object_March:
+	RTS
 	; For all map objects which "march" back and forth (includes Hammer/etc. Brothers, and bonuses...)
 	LDA Map_Operation
 	CMP #$0d	 	
@@ -2153,7 +2148,7 @@ Map_Object_March:
 
 	; Normal operation, objects just "marching" around...
 	LDA Map_Objects_IDs,X	; A = object's ID
-	CMP #MAPOBJ_NSPADE
+	;CMP #MAPOBJ_NSPADE
 	BLT Map_Object_MusicBoxCheck ; If object ID < MAPOBJ_NSPADE (includes hammer brother types and the world 7 plant), jump to Map_Object_MusicBoxCheck
 
 	CMP #MAPOBJ_BATTLESHIP
@@ -2209,6 +2204,7 @@ PRG011_AED1:
 	RTS		 ; Return
 
 Map_Object_March_NonNormal:
+	RTS
 	; For marchers when Map_Operation <> $0D ...
 
 	CMP #$0b	 
@@ -2255,42 +2251,6 @@ PRG011_AEFA:
 
 PRG011_AF0C:
 	LDY <Temp_Var13		; Y = Index of current object we're working with
-	LDA Map_Objects_IDs,Y	; Get this object's ID
-	BEQ PRG011_AF46	 	; If ID = 0, jump to PRG011_AF46 (shouldn't ever happen??)
-
-	; If object ID is < MAPOBJ_HAMMERBRO or >= MAPOBJ_W7PLANT (not one of the hammer/etc. brothers), jump to PRG011_AF26
-	CMP #MAPOBJ_HAMMERBRO
-	BLT PRG011_AF26
-	CMP #MAPOBJ_W7PLANT	 
-	BGE PRG011_AF26
-
-	LDA <Counter_1
-	AND #$0f	 ; Restrict counter to 0-15
-	BNE PRG011_AF26	 ; If not zero, jump to PRG011_AF26
-
-	LDA #SND_LEVELMARCH	 	
-	STA Sound_QLevel2	; Play Marching sound
-
-PRG011_AF26:
-	LDX Map_Object_Data,Y	 ; Get march direction
-
-	; The moment you've all been waiting for:
-	; The actual march movement!
-
-	; Travel Y
-	LDA Map_Object_ActY,Y
-	ADD Map_Object_Travel_Y,X
-	STA Map_Object_ActY,Y
-
-	; Travel X
-	LDA Map_Object_ActX,Y	
-	ADD Map_Object_Travel_X,X
-	STA Map_Object_ActX,Y	
-
-	; Travel X Hi byte
-	LDA Map_Object_ActXH,Y
-	ADC Map_Object_Travel_XHi,X
-	STA Map_Object_ActXH,Y	
 
 PRG011_AF46:
 	; Jumps here if music box is active
@@ -3018,7 +2978,7 @@ PRG011_B415:
 
 	PLA		 ; Restore tile
 
-	CMP Tile_AttrTable+4,Y
+	;CMP Tile_AttrTable+4,Y
 	BLT PRG011_B435	 ; If this tile is not enterable, jump to PRG011_B435 (safe landing)
 
 PRG011_B42A:
@@ -3260,280 +3220,275 @@ PRG011_B599:
 	.word MapObj_DrawAndEnter	; 10=Canoe
 
 MapObj_DrawAndEnter:
-	LDA #$00	 ; A = 0 (no offset on map sprite)
-
-	LDY Map_Objects_IDs,X
-	CPY #MAPOBJ_CANOE
-	BNE PRG011_B5C9	 ; If this not a Canoe, jump to PRG011_B5C9
-
-	LDA #$07	 ; Otherwise, A = 7 (Canoe offset 7)
-
-PRG011_B5C9:
-	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
-
-	; Set Y for map object sprite
-	ADD Map_Object_ActY,X
-	STA Sprite_RAM+$98,Y
-	STA Sprite_RAM+$9C,Y
-
-	; Set X for map object sprite
-	LDA Map_Object_ActX,X
-	SUB <Horz_Scroll
-	STA Sprite_RAM+$9B,Y
-
-	; Right half
-	ADD #$08
-	STA Sprite_RAM+$9F,Y
-
-	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
-
-	; Map object ID -> Temp_Var8
-	LDA Map_Objects_IDs,X
-	STA <Temp_Var8
-
-	LDX #%00001000	 ; X = 8 (masking value against Counter_1 for animation)
-
-	CMP #MAPOBJ_CANOE
-	BGE PRG011_B60A	 ; If this is a canoe (or greater??), jump to PRG011_B60A
- 
-	CMP #MAPOBJ_HELP
-	BNE PRG011_B5FA	 ; If this NOT the HELP bubble, jump to PRG011_B5FA
-
-	LDX #$FF	 ; X = $30 (masking value against Counter_1 for animation)
-	JMP PRG011_B60A	 ; Jump to PRG011_B60A
-
-PRG011_B5FA:
-	; HELP bubble only
-
-	LDA Map_Operation
-	CMP #$0b
-	BNE PRG011_B60A	 ; If Map_Operation <> $0B (hammer brothers aren't marching around), jump to PRG011_B60A
-
-	; Hammer brothers are marching around the map...
-
-	LDY <Temp_Var13		 ; Y = Temp_Var13 (the map object slot index)
-
-	; NOTE: This is improper, the Map_March_Count should be indexed by ID, not by slot index
-	LDA Map_March_Count,Y
-	BEQ PRG011_B60A	 ; 
-
-	LDX #%00000100	 ; X = 4 (masking value against Counter_1 for animation)
-
-PRG011_B60A:
-	STX <Temp_Var9	 ; -> Temp_Var9 (masking value for animation)
-
-	LDA <Temp_Var8	 ; A = map object ID
-	ASL A		 ; Multiply by 2
-	ADD <Temp_Var8	 ; Total multiply is 3
-	TAX		 ; X = ID * 3
-
-	; Heh, they had to compare AFTER making it a multiple of 3... :P
-
-	CPX #(MAPOBJ_HAMMERBRO * 3)
-	BLT PRG011_B628	 ; If ID < MAPOBJ_HAMMERBRO (None, HELP, Airship), jump to PRG011_B628
-
-	; So not nothing, a "HELP" bubble, or the airship...
-
-	CPX #(MAPOBJ_CANOE * 3)
-	BEQ PRG011_B628	 ; If ID = MAPOBJ_CANOE, jump to PRG011_B628
-
-	; Not a canoe...
-
-	CPX #(MAPOBJ_BATTLESHIP * 3)
-	BLT PRG011_B623	 ; If ID < MAPOBJ_BATTLESHIP (Not a World 8 Tank / Battleship / Airship), jump to PRG011_B623
-
-	; Canoe was technically already eliminated, but it checks again anyway
-	; In any case, one of the World 8 battle implements
-
-	CPX #(MAPOBJ_CANOE * 3)
-	BLT PRG011_B628	 ; Otherwise, jump to PRG011_B628
-
-PRG011_B623:
-
-	; Map object $03 - $0C
-
-	LDA #$00
-	BNE PRG011_B630	 ; If a music box is active, jump to PRG011_B630
-
-PRG011_B628:
-	INX	; Use first column pattern
-
-	LDA <Counter_1
-	AND <Temp_Var9
-	BEQ PRG011_B630	 ; Animation time dependent on Temp_Var9; periodically jump to PRG011_B630
-
-	INX	; Use second column pattern
-
-PRG011_B630:
-	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
-
-	; Load the patterns of the map object
-	LDA MapObject_Pat1-3,X
-	STA Sprite_RAM+$99,Y	
-	LDA MapObject_Pat2-3,X	
-	STA Sprite_RAM+$9D,Y	
-
-	; Load the attributes of the map object
-	LDA MapObject_Attr1-3,X	
-	STA Sprite_RAM+$9A,Y	
-	LDA MapObject_Attr2-3,X	
-	STA Sprite_RAM+$9E,Y	
-
-	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
-
-	LDA Map_Objects_IDs,X
-
-	CMP #MAPOBJ_HELP
-	BEQ PRG011_B657	 ; If this is the HELP bubble, jump to PRG011_B657 (RTS)
-
-	CMP #MAPOBJ_CANOE
-	BLT PRG011_B658	 ; If this is not the canoe, jump to PRG011_B658
-
-PRG011_B657:
-	RTS		 ; Return
-
-PRG011_B658:
-
-	; Not the HELP bubble or canoe...
-
-	CMP #$07
-	BEQ PRG011_B68B	 ; If this is the World 7 Plant, jump to PRG011_B68B
-
-	CMP #$09
-	BLT PRG011_B664	 ; Basically if one of the marchers (map object ID $02-$06/$08), jump to PRG011_B664
-
-	CMP #$0d
-	BLT PRG011_B68B	 ; If NOT one of the World 8 implements, jump to PRG011_B68B
-
-PRG011_B664:
-
-	; "Marching" objects come here (map object ID $02-$06/$08)
-	; Horizontal flip for "marching" type objects when their Data is non-zero
-
-	LDA Map_Object_Data,X
-	BNE PRG011_B68B		; If data <> 0, jump to PRG011_B68B
-
-	LDA Sprite_RAM+$9D,Y
-	CMP Sprite_RAM+$99,Y
-	BEQ PRG011_B68B	 ; If the sprite patterns are the same, jump to PRG011_B68B
-
-	; Swaps the pattern and attributes and marks horizontal flip (i.e. mirrors the map object sprite)
-	LDX Sprite_RAM+$99,Y
-	STA Sprite_RAM+$99,Y
-	TXA
-	STA Sprite_RAM+$9D,Y
-	LDA Sprite_RAM+$9A,Y
-	EOR #$40
-	STA Sprite_RAM+$9A,Y
-	LDA Sprite_RAM+$9E,Y
-	EOR #$40
-	STA Sprite_RAM+$9E,Y
-
-PRG011_B68B:
-	LDY <Temp_Var13		 ; Y = Temp_Var13 (the map object slot index)
-
-	; HELP bubble was already eliminated
-
-	; Map Object ID $03-$08  all jump to PRG011_B69C
-	; Otherwise, jump to PRG011_B6A1
-	LDA Map_Objects_IDs,Y
-	CMP #MAPOBJ_AIRSHIP
-	BEQ PRG011_B6A1
-	CMP #MAPOBJ_NSPADE
-	BLT PRG011_B69C
-	CMP #MAPOBJ_CANOE
-	BLT PRG011_B6A1
-
-PRG011_B69C:
-
-	; Map Object IDs $03-$08 come here (basically everything that "sleeps")
-
-	LDA #$00
-	BNE PRG011_B6F5	 ; If Music Box is active, jump to PRG011_B6F5 (RTS)
-
-PRG011_B6A1:
-	LDA Map_DrawPanState
-	BNE PRG011_B6F5	 ; If some kind of map drawing/panning activity is occurring, jump to PRG011_B6F5 (RTS)
-
-	LDA Map_Pan_Count
-	BNE PRG011_B6F5	 ; If the map is panning, jump to PRG011_B6F5 (RTS)
-
-	LDA Map_Operation
-	CMP #$0D
-	BNE PRG011_B6F5	 ; If Map_Operation <> $0D (something is going on), jump to PRG011_B6F5 (RTS)
-
-	LDX Player_Current	 ; X = Player_Current
-
-	; If the Player is not perfectly situated on top of the map object, jump to PRG011_B6F5 (RTS)
-
-	LDA Map_Objects_Y,Y
-	CMP <World_Map_Y,X
-	BNE PRG011_B6F5
-
-	LDA Map_Objects_XHi,Y
-	CMP <World_Map_XHi,X
-	BNE PRG011_B6F5
-
-	LDA Map_Objects_XLo,Y
-	CMP <World_Map_X,X
-	BNE PRG011_B6F5	
-
-	; Player is going to "enter" this map object...
-
-	LDX Player_Current	 ; X = Player_Current (needless reload?)
-
-	LDA #$00
-	STA Map_Player_SkidBack,X
-
-	LDA #$03
-	STA World_EnterState
-
-	; Store the object ID -> Map_EnterViaID
-	;LDA Map_Objects_IDs,Y
-	;STA <Map_EnterViaID
-
-	; If this is a N-Spade or White Toad house, jump to PRG011_B6E2
-	CMP #MAPOBJ_NSPADE
-	BEQ PRG011_B6E2
-	CMP #MAPOBJ_WHITETOADHOUSE
-	BNE PRG011_B6E5
-
-PRG011_B6E2:
-	; N-Spade and White Toad House only...
-	INC Map_NoLoseTurn	 ; Set Map_NoLoseTurn
-
-PRG011_B6E5:
-	LDA Map_Objects_Itm,Y
-	STA Level_TreasureItem
-
-	; Begin level entry
-	LDA #$0f
-	STA Map_Operation
-
-	; Don't return to caller!
-	PLA
-	PLA
-
-	JMP PRG011_B57C	; Jump to PRG011_B57C
-
-PRG011_B6F5:
-	RTS		 ; Return
-
-	; FIXME: Anyone want to claim this?  (Exact same routine appears in PRG010 @ $D228)
-; $B6F6 
-	LDX Player_Current	 ; X = Player_Current
-
-	LDA <World_Map_Dir,X	; Get Player's map direction
-	EOR #$03
-	CMP #$03
-	BNE PRG011_B703	 	; If Player did not travel left or right, jump to PRG011_B703
-
-	EOR #$0f	 ; Otherwise invert all direction bits??
-
-PRG011_B703:
-	STA <World_Map_Dir,X	 ; -> World_Map_Dir
-
-	RTS		 ; Return
+	RTS
+;	LDA #$00	 ; A = 0 (no offset on map sprite)
+;
+;	LDY Map_Objects_IDs,X
+;	CPY #MAPOBJ_CANOE
+;	BNE PRG011_B5C9	 ; If this not a Canoe, jump to PRG011_B5C9
+;
+;	LDA #$07	 ; Otherwise, A = 7 (Canoe offset 7)
+;
+;PRG011_B5C9:
+;	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
+;
+;	; Set Y for map object sprite
+;	ADD Map_Object_ActY,X
+;	STA Sprite_RAM+$98,Y
+;	STA Sprite_RAM+$9C,Y
+;
+;	; Set X for map object sprite
+;	LDA Map_Object_ActX,X
+;	SUB <Horz_Scroll
+;	STA Sprite_RAM+$9B,Y
+;
+;	; Right half
+;	ADD #$08
+;	STA Sprite_RAM+$9F,Y
+;
+;	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
+;
+;	; Map object ID -> Temp_Var8
+;	LDA Map_Objects_IDs,X
+;	STA <Temp_Var8
+;
+;	LDX #%00001000	 ; X = 8 (masking value against Counter_1 for animation)
+;
+;	CMP #MAPOBJ_CANOE
+;	BGE PRG011_B60A	 ; If this is a canoe (or greater??), jump to PRG011_B60A
+; 
+;	JMP PRG011_B5FA	 ; If this NOT the HELP bubble, jump to PRG011_B5FA
+;
+;	LDX #$FF	 ; X = $30 (masking value against Counter_1 for animation)
+;	JMP PRG011_B60A	 ; Jump to PRG011_B60A
+;
+;PRG011_B5FA:
+;	; HELP bubble only
+;
+;	LDA Map_Operation
+;	CMP #$0b
+;	BNE PRG011_B60A	 ; If Map_Operation <> $0B (hammer brothers aren't marching around), jump to PRG011_B60A
+;
+;	; Hammer brothers are marching around the map...
+;
+;	LDY <Temp_Var13		 ; Y = Temp_Var13 (the map object slot index)
+;
+;	; NOTE: This is improper, the Map_March_Count should be indexed by ID, not by slot index
+;	LDA Map_March_Count,Y
+;	BEQ PRG011_B60A	 ; 
+;
+;	LDX #%00000100	 ; X = 4 (masking value against Counter_1 for animation)
+;
+;PRG011_B60A:
+;	STX <Temp_Var9	 ; -> Temp_Var9 (masking value for animation)
+;
+;	LDA <Temp_Var8	 ; A = map object ID
+;	ASL A		 ; Multiply by 2
+;	ADD <Temp_Var8	 ; Total multiply is 3
+;	TAX		 ; X = ID * 3
+;
+;	; Heh, they had to compare AFTER making it a multiple of 3... :P
+;
+;	CPX #(MAPOBJ_HAMMERBRO * 3)
+;	BLT PRG011_B628	 ; If ID < MAPOBJ_HAMMERBRO (None, HELP, Airship), jump to PRG011_B628
+;
+;	; So not nothing, a "HELP" bubble, or the airship...
+;
+;	CPX #(MAPOBJ_CANOE * 3)
+;	BEQ PRG011_B628	 ; If ID = MAPOBJ_CANOE, jump to PRG011_B628
+;
+;	; Not a canoe...
+;
+;	CPX #(MAPOBJ_BATTLESHIP * 3)
+;	BLT PRG011_B623	 ; If ID < MAPOBJ_BATTLESHIP (Not a World 8 Tank / Battleship / Airship), jump to PRG011_B623
+;
+;	; Canoe was technically already eliminated, but it checks again anyway
+;	; In any case, one of the World 8 battle implements
+;
+;	CPX #(MAPOBJ_CANOE * 3)
+;	BLT PRG011_B628	 ; Otherwise, jump to PRG011_B628
+;
+;PRG011_B623:
+;
+;	; Map object $03 - $0C
+;
+;	LDA #$00
+;	BNE PRG011_B630	 ; If a music box is active, jump to PRG011_B630
+;
+;PRG011_B628:
+;	INX	; Use first column pattern
+;
+;	LDA <Counter_1
+;	AND <Temp_Var9
+;	BEQ PRG011_B630	 ; Animation time dependent on Temp_Var9; periodically jump to PRG011_B630
+;
+;	INX	; Use second column pattern
+;
+;PRG011_B630:
+;	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
+;
+;	; Load the patterns of the map object
+;	LDA MapObject_Pat1-3,X
+;	STA Sprite_RAM+$99,Y	
+;	LDA MapObject_Pat2-3,X	
+;	STA Sprite_RAM+$9D,Y	
+;
+;	; Load the attributes of the map object
+;	LDA MapObject_Attr1-3,X	
+;	STA Sprite_RAM+$9A,Y	
+;	LDA MapObject_Attr2-3,X	
+;	STA Sprite_RAM+$9E,Y	
+;
+;	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
+;
+;	LDA Map_Objects_IDs,X
+;
+;	CMP #MAPOBJ_CANOE
+;	BLT PRG011_B658	 ; If this is not the canoe, jump to PRG011_B658
+;
+;PRG011_B657:
+;	RTS		 ; Return
+;
+;PRG011_B658:
+;
+;	; Not the HELP bubble or canoe...
+;
+;	CMP #$07
+;	BEQ PRG011_B68B	 ; If this is the World 7 Plant, jump to PRG011_B68B
+;
+;	CMP #$09
+;	BLT PRG011_B664	 ; Basically if one of the marchers (map object ID $02-$06/$08), jump to PRG011_B664
+;
+;	CMP #$0d
+;	BLT PRG011_B68B	 ; If NOT one of the World 8 implements, jump to PRG011_B68B
+;
+;PRG011_B664:
+;
+;	; "Marching" objects come here (map object ID $02-$06/$08)
+;	; Horizontal flip for "marching" type objects when their Data is non-zero
+;
+;	LDA Map_Object_Data,X
+;	BNE PRG011_B68B		; If data <> 0, jump to PRG011_B68B
+;
+;	LDA Sprite_RAM+$9D,Y
+;	CMP Sprite_RAM+$99,Y
+;	BEQ PRG011_B68B	 ; If the sprite patterns are the same, jump to PRG011_B68B
+;
+;	; Swaps the pattern and attributes and marks horizontal flip (i.e. mirrors the map object sprite)
+;	LDX Sprite_RAM+$99,Y
+;	STA Sprite_RAM+$99,Y
+;	TXA
+;	STA Sprite_RAM+$9D,Y
+;	LDA Sprite_RAM+$9A,Y
+;	EOR #$40
+;	STA Sprite_RAM+$9A,Y
+;	LDA Sprite_RAM+$9E,Y
+;	EOR #$40
+;	STA Sprite_RAM+$9E,Y
+;
+;PRG011_B68B:
+;	LDY <Temp_Var13		 ; Y = Temp_Var13 (the map object slot index)
+;
+;	; HELP bubble was already eliminated
+;
+;	; Map Object ID $03-$08  all jump to PRG011_B69C
+;	; Otherwise, jump to PRG011_B6A1
+;	LDA Map_Objects_IDs,Y
+;	;CMP #MAPOBJ_NSPADE
+;	BLT PRG011_B69C
+;	CMP #MAPOBJ_CANOE
+;	BLT PRG011_B6A1
+;
+;PRG011_B69C:
+;
+;	; Map Object IDs $03-$08 come here (basically everything that "sleeps")
+;
+;	LDA #$00
+;	BNE PRG011_B6F5	 ; If Music Box is active, jump to PRG011_B6F5 (RTS)
+;
+;PRG011_B6A1:
+;	LDA Map_DrawPanState
+;	BNE PRG011_B6F5	 ; If some kind of map drawing/panning activity is occurring, jump to PRG011_B6F5 (RTS)
+;
+;	LDA Map_Pan_Count
+;	BNE PRG011_B6F5	 ; If the map is panning, jump to PRG011_B6F5 (RTS)
+;
+;	LDA Map_Operation
+;	CMP #$0D
+;	BNE PRG011_B6F5	 ; If Map_Operation <> $0D (something is going on), jump to PRG011_B6F5 (RTS)
+;
+;	LDX Player_Current	 ; X = Player_Current
+;
+;	; If the Player is not perfectly situated on top of the map object, jump to PRG011_B6F5 (RTS)
+;
+;	LDA Map_Objects_Y,Y
+;	CMP <World_Map_Y,X
+;	BNE PRG011_B6F5
+;
+;	LDA Map_Objects_XHi,Y
+;	CMP <World_Map_XHi,X
+;	BNE PRG011_B6F5
+;
+;	LDA Map_Objects_XLo,Y
+;	CMP <World_Map_X,X
+;	BNE PRG011_B6F5	
+;
+;	; Player is going to "enter" this map object...
+;
+;	LDX Player_Current	 ; X = Player_Current (needless reload?)
+;
+;	LDA #$00
+;	STA Map_Player_SkidBack,X
+;
+;	LDA #$03
+;	STA World_EnterState
+;
+;	; Store the object ID -> Map_EnterViaID
+;	;LDA Map_Objects_IDs,Y
+;	;STA <Map_EnterViaID
+;
+;	; If this is a N-Spade or White Toad house, jump to PRG011_B6E2
+;	;CMP #MAPOBJ_NSPADE
+;	BEQ PRG011_B6E2
+;	;CMP #MAPOBJ_WHITETOADHOUSE
+;	BNE PRG011_B6E5
+;
+;PRG011_B6E2:
+;	; N-Spade and White Toad House only...
+;	INC Map_NoLoseTurn	 ; Set Map_NoLoseTurn
+;
+;PRG011_B6E5:
+;	LDA Map_Objects_Itm,Y
+;	STA Level_TreasureItem
+;
+;	; Begin level entry
+;	LDA #$0f
+;	STA Map_Operation
+;
+;	; Don't return to caller!
+;	PLA
+;	PLA
+;
+;	JMP PRG011_B57C	; Jump to PRG011_B57C
+;
+;PRG011_B6F5:
+;	RTS		 ; Return
+;
+;	; FIXME: Anyone want to claim this?  (Exact same routine appears in PRG010 @ $D228)
+;; $B6F6 
+;	LDX Player_Current	 ; X = Player_Current
+;
+;	LDA <World_Map_Dir,X	; Get Player's map direction
+;	EOR #$03
+;	CMP #$03
+;	BNE PRG011_B703	 	; If Player did not travel left or right, jump to PRG011_B703
+;
+;	EOR #$0f	 ; Otherwise invert all direction bits??
+;
+;PRG011_B703:
+;	STA <World_Map_Dir,X	 ; -> World_Map_Dir
+;
+;	RTS		 ; Return
 
 	; FIXME: Anyone want to claim this?
 	; Gets a tile based on an input 'Y' value to pick from one of the offset sets below...
@@ -4498,7 +4453,6 @@ Completion_Tiles:
 	.byte $FF, $7C
 
 MarkCompletedLevels:
-	STA Debug_Snap
 	JSR GetMapTile
 
 	TAX

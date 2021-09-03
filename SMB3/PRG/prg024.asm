@@ -72,10 +72,6 @@ TAndK_WaitPlayerButtonA:
 	LDA #MAPOBJ_EMPTY
 	STA Map_Objects_IDs
 
-	; Airship is in town now!
-	LDA #MAPOBJ_AIRSHIP
-	STA Map_Objects_IDs+1
-
 	RTS		 ; Return
 
 
@@ -1521,7 +1517,7 @@ PRG024_ACA5:
 	INC <Title_State ; Title_State++
 Title_PrepForWorldMap:
 	; World_Num = 0 (World 1)
-	LDA #$04
+	LDA #$01
 	STA World_Num
 
 	INC Force_StatusBar_Init

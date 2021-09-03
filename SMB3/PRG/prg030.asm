@@ -168,10 +168,6 @@ IntReset_Part2:
 	STA PPU_CTL2	 ; Most importantly, hide sprites/bg
 	STA PPU_CTL1	 ; Most likely just to disable further Resets
 
-	; Map_Unused7992 = 0 (used only in dead code it seems)
-	LDA #$00
-	STA Map_Unused7992
-
 	; Note: This is setting up the address $7F00 @ $00/$01, the last page of SRAM
 	LDY #$00	 ; Y = $00
 	STY <Temp_Var1	 ; <Temp_Var1 = $00
@@ -216,22 +212,29 @@ PRG030_845A:
 	; Load title screen graphics
 	LDA #$78
 	STA PatTable_BankSel
+
 	LDA #$7a	
 	STA PatTable_BankSel+1
+
 	LDA #$20	
 	STA PatTable_BankSel+2
+
 	LDA #$21	
 	STA PatTable_BankSel+3
+
 	LDA #$04	
 	STA PatTable_BankSel+4
+
 	LDA #$7f	
 	STA PatTable_BankSel+5
 
 	; Load page 24 into A000 and page 25 into C000
 	LDA #24	 
 	STA PAGE_A000
+
 	LDA #25	 
 	STA PAGE_C000
+
 	JSR PRGROM_Change_Both2	
 
 	LDA #$20
@@ -252,6 +255,7 @@ PRG030_84A0:
 	; Load page 11 into A000 and page 10 into C000
 	LDA #10
 	STA PAGE_C000
+
 	LDA #11
 	STA PAGE_A000
 	JSR PRGROM_Change_Both2	
@@ -261,10 +265,6 @@ PRG030_84A0:
 
 	LDA #$01
 	STA Map_Operation	; Map_Operation = 0 ("World X" intro)
-
-	; Map_UnusedGOFlag = $F8?
-	LDA #$f8
-	STA <Map_UnusedGOFlag
 
 	LDA #$00	 ; 
 	STA PPU_CTL2	 ; Most importantly, hide sprites/bg
@@ -280,8 +280,6 @@ PRG030_84D7:
 
 	LDA #$00
 	STA Level_Tileset	; Level_Tileset = 0
-	STA Map_Unused72C 	; Map_Unused72C = 0
-	STA Map_March_Count	; Not sure about this
 	STA Raster_Effect	; Raster Effects disabled
 	STA UpdSel_Disable 	; Stop Update_Select activity
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
@@ -319,13 +317,6 @@ PRG030_8552:
 
 	LDA Map_Entered_X,X
 	STA <World_Map_X,X
-
-	LDA Map_Previous_UnusedPVal2,X
-	STA <Map_UnusedPlayerVal2,X
-
-	; Map_UnusedPlayerVal = $20 each Player (not used for anything)
-	LDA #$20
-	STA <Map_UnusedPlayerVal,X
 
 	DEX		 ; X--
 	BPL PRG030_8552	 ; If more players to initialize, loop!
@@ -639,9 +630,6 @@ PRG030_8775:
 	LDA <World_Map_X,X
 	STA Map_Entered_X,X
 
-	LDA <Map_UnusedPlayerVal2,X
-	STA Map_Previous_UnusedPVal2,X	
-
 	LDA #$00
 	STA Map_Player_SkidBack,X
 
@@ -676,16 +664,18 @@ PRG030_87BD:
 	LDX Player_Current
 	LDA <Horz_Scroll
 	STA Map_Prev_XOff,X
+
 	LDA <Horz_Scroll_Hi
 	STA Map_Prev_XHi,X
+
 	LDA <World_Map_Y,X
 	STA Map_Entered_Y,X
+
 	LDA <World_Map_XHi,X
 	STA Map_Entered_XHi,X
+
 	LDA <World_Map_X,X	
 	STA Map_Entered_X,X	
-	LDA <Map_UnusedPlayerVal2,X	
-	STA Map_Previous_UnusedPVal2,X	
 
 	LDA #$00
 	STA <Map_EnterLevelFX		; Map_EnterLevelFX = 0
@@ -1454,10 +1444,6 @@ PRG030_8F85:
 
 	LDX Player_Current	 ; X = Player_Current
 
-	; Map_Unused749 = 1 (just set here, never read back)
-	LDA #$01
-	STA Map_Unused749,X
-
 	; Switch bank A000 to page 26
 	LDA #26
 	STA PAGE_A000
@@ -1755,9 +1741,6 @@ PRG030_9185:
 
 	LDA Map_Entered_X,X
 	STA <World_Map_X,X
-	
-	LDA Map_Previous_UnusedPVal2,X
-	STA <Map_UnusedPlayerVal2,X
 
 	; Set Player's previous travel direction
 	LDA Map_Previous_Dir,X
@@ -1967,16 +1950,18 @@ PRG030_92B6:
 	; Set up position variables
 	LDA <Horz_Scroll
 	STA Map_Prev_XOff,X
+
 	LDA <Horz_Scroll_Hi
 	STA Map_Prev_XHi,X
+
 	LDA <World_Map_Y,X
 	STA Map_Entered_Y,X
+
 	LDA <World_Map_XHi,X
 	STA Map_Entered_XHi,X
+
 	LDA <World_Map_X,X
 	STA Map_Entered_X,X
-	LDA <Map_UnusedPlayerVal2,X
-	STA Map_Previous_UnusedPVal2,X
 
 	; Reset map variables
 	LDA #$00
@@ -2487,60 +2472,6 @@ Tile_Mem_ClearB:	; $9734
 	STA Tile_Mem+$16B0,Y
 	STA Tile_Mem+$1860,Y
 	RTS		 ; Return
-
-
-;	; Array of bank selections by Level_BG_Page1_2 
-;	; What LEVEL4_BGBANK_INDEX references
-;Level_BG_Pages1:
-;	.byte $00	;  0 Not Used
-;	.byte $08	;  1 Plains
-;	.byte $10	;  2 Fortress
-;	.byte $1C	;  3 Hills / Underground
-;	.byte $0C	;  4 High-Up
-;	.byte $58	;  5 Plant Infestation
-;	.byte $58	;  6 Underwater
-;	.byte $5C	;  7 Toad House
-;	.byte $58	;  8 Pipe Maze
-;	.byte $30	;  9 Desert
-;	.byte $34	;  A Airship
-;	.byte $6E	;  B Giant world
-;	.byte $18	;  C Ice
-;	.byte $38	;  D Sky
-;	.byte $1C	;  E Not Used (Same as Hills / Underground)
-;	.byte $24	;  F Bonus Room
-;	.byte $2C	; 10 Spade (Roulette)
-;	.byte $5C	; 11 N-Spade (Card)
-;	.byte $58	; 12 2P Vs
-;	.byte $6C	; 13 Hills / Underground alternate
-;	.byte $68	; 14 3-7 only
-;	.byte $34	; 15 World 8 War Vehicle
-;	.byte $28	; 16 Throne Room
-;
-;Level_BG_Pages2:
-;	.byte $00	; 17 Not Used
-;	.byte $80	; 18 Plains
-;	.byte $80	; 19 Fortress
-;	.byte $80	; 1A Hills / Underground
-;	.byte $80	; 1B High-Up
-;	.byte $80	; 1C Plant Infestation
-;	.byte $80	; 1D Underwater
-;	.byte $80	; 1E Toad House
-;	.byte $6E	; 1F Pipe Maze
-;	.byte $80	;  Desert
-;	.byte $80	;  Airship
-;	.byte $80	;  Giant world
-;	.byte $80	;  Ice
-;	.byte $80	;  Sky
-;	.byte $80	;  Not Used (Same as Hills / Underground)
-;	.byte $80	;  Bonus Room
-;	.byte $80	;  Spade (Roulette)
-;	.byte $80	;  N-Spade (Card)
-;	.byte $80	;  2P Vs
-;	.byte $80	;  Hills / Underground alternate
-;	.byte $80	;  3-7 only
-;	.byte $80	;  World 8 War Vehicle
-;	.byte $70	;  Throne Room
-
 
 
 AnimOffsets: .byte $00, $10, $20, $28
@@ -3299,32 +3230,6 @@ TileLayout_ByTileset:
 	.word $A000
 	.word $A400
 	.word $A800
-		 
-
-; RegEx S&R:
-; LDA LL_ShapeDef.*\n.*AND #\$0f.*\n.*STA <Temp_Var(.)		 ; .*
-; LDA LL_ShapeDef\n\tAND #$0f\n\tSTA <Temp_Var\1		 ; Temp_Var\1 = lower 4 bits of LL_ShapeDef
-
-; LDA LL_ShapeDef.*\n.*AND #\$0f.*\n.*TAX		 ; .*
-; LDA LL_ShapeDef\n\tAND #$0f\n\tTAX		 ; X = lower 4 bits of LL_ShapeDef
-
-; LDA <Temp_Var(.).*\n.*STA <Temp_Var(.)		 ; .*
-; LDA <Temp_Var\1\n\tSTA <Temp_Var\2		 ; Temp_Var\2 = Temp_Var\1
-
-; DEC <Temp_Var(.)		 ; .*
-; DEC <Temp_Var\1		 ; Temp_Var\1--
-
-; LDA <Map_Tile_AddrL.*\n.*STA <Temp_Var1.*\n.*LDA <Map_Tile_AddrH.*\n.*STA <Temp_Var2.*
-;; Backup Map_Tile_AddrL/H into Temp_Var1/2\n\tLDA <Map_Tile_AddrL\n\tSTA <Temp_Var1\n\tLDA <Map_Tile_AddrH\n\tSTA <Temp_Var2
-
-; LDA <Temp_Var1.*\n.*STA <Map_Tile_AddrL.*\n.*LDA <Temp_Var2.*\n.*STA <Map_Tile_AddrH.*
-;; Restore Map_Tile_Addr from backup\n\tLDA <Temp_Var1\n\tSTA <Map_Tile_AddrL\n\tLDA <Temp_Var2\n\tSTA <Map_Tile_AddrH
-
-LeveLoad_Generators:
-	RTS
-
-LeveLoad_FixedSizeGens:
-	RTS
 
 PRG030_9AA1:
 	.byte $01, $FF
@@ -3354,18 +3259,6 @@ TileLayoutPage_ByTileset:
 	.byte 23
 	.byte 23
 
-	; THESE VALUES ARE WRONG!  Appears that they were not maintained?
-	; It doesn't matter because these specialized cases go where they need to anyway!
-	.byte 23				; 15 - bonus game intro (WRONG: Should be 22)
-	.byte 23				; 16 - spade game sliders (WRONG: Should be 22)
-	.byte 23				; 17 - N-spade (WRONG: Should be 22)
-	.byte 16				; 18 - 2P Vs (WRONG: Should be 14)
-
-	; CORRECT VALUES:
-	;.byte BANK(Tile_Layout_TS15_TS16_TS17)	; 15 - bonus game intro [22]
-	;.byte BANK(Tile_Layout_TS15_TS16_TS17)	; 16 - spade game sliders [22]
-	;.byte BANK(Tile_Layout_TS15_TS16_TS17)	; 17 - N-spade [22]
-	;.byte BANK(Tile_Layout_TS18)		; 18 - 2P Vs [14]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Scroll_Dirty_Update
@@ -4272,9 +4165,6 @@ PRG030_9F80:
 	STA MMC3_IRQENABLE ; Enable IRQ again
 	JMP PRG031_FA3C	 ; Jump to PRG031_FA3C
 
-	; Unused space
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-
 IntIRQ_32PixelPartition_Part2:	; $9FA0
 	LDA Update_Request	 
 	AND #UPDATERASTER_32PIXSHOWSPR
@@ -4866,7 +4756,7 @@ Update_Columns:
 	RTS
 
 Map_Reload_with_Completions:
-
+ 
 	; Clears all map tiles to $02 (all black tiles)
 	JSR Tile_Mem_Clear
 
@@ -5020,6 +4910,52 @@ CopyMapPointers:
 	
 	LDA #$FF
 	STA MapPointers, X
+
+Map_LoadObjects:
+	LDX #$00
+
+	LDA [Temp_Var1], Y
+	CMP #$FF
+	BEQ Map_LoadTileProperties
+
+	STA Map_Objects_IDs, X
+
+	INX
+
+	JSR Next_World_Byte
+
+	LDA [Temp_Var1], Y
+	STA Map_Objects_Y, X
+
+	INX
+
+	JSR Next_World_Byte
+
+	LDA [Temp_Var1], Y
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+
+	STA Map_Objects_XLo, X
+
+	LDA [Temp_Var1], Y
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+
+	STA Map_Objects_XHi, X
+
+	JSR Next_World_Byte
+	INX
+
+	JMP Map_LoadObjects
+
+Map_LoadTileProperties:
+	JSR Next_World_Byte
 
 	LDA PAGE_A000
 	PHA

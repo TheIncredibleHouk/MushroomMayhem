@@ -215,8 +215,10 @@ PRG010_C488:
 	; Copy object's Y and XHi/Los into their display variables
 	LDA Map_Objects_Y,Y
 	STA Map_Object_ActY,Y
+
 	LDA Map_Objects_XHi,Y
 	STA Map_Object_ActXH,Y
+
 	LDA Map_Objects_XLo,Y
 	STA Map_Object_ActX,Y
 
@@ -3063,11 +3065,12 @@ UpdateLevelName_LoopRTS:
 	RTS
 
 DrawMapBackground:
+	STA Debug_Snap
 	LDA World_Num
 	BEQ NoMapClouds
-	
+
 	CMP #$03
-	BEQ NoMapClouds
+	BNE DrawMapBackground0
 	
 
 NoMapClouds:	
@@ -3143,7 +3146,8 @@ DrawMapClouds2:
 
 	LDA #(SPR_PAL3)
 	STA Sprite_RAM + 2, Y
-	LDA #$E1
+	
+	LDA #$1D
 	STA Sprite_RAM + 1, Y
 	
 DrawMapClouds1:
@@ -3152,7 +3156,7 @@ DrawMapClouds1:
 	RTS
 
 StarTiles:
-	.byte $E3, $E5, $E7, $E3, $E5, $E7
+	.byte $1F, $3F, $5F, $1F, $3F, $5F
 
 DrawMapStarsBackground1:
 	LDA <Horz_Scroll

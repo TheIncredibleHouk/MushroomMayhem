@@ -2833,52 +2833,16 @@ CARD_10COIN	= 4
 CARD_20COIN	= 5
 CARD_WILD	= 8	; UNUSED Wild card (can match any other!)
 
-	; Tile_AttrTable:
-	; On the world map, it's always the following:
-	; [03 67 BF E9] [03 67 BF E9]
-	; There's a usage of checking which "quadrant" of tile the Player is standing on ($00, $40, $80, or $C0)
-	; and using that as an index (shifted right 6) into the second half of this table
-	; TILE_PANEL1		= $03	; Level Panel 1
-
-
-
-
-	; TILE_FORT		= $67	; Mini-Fortress
-	; TILE_POOL		= $BF	; Pool / Oasis
-	; TILE_WORLD5STAR	= $E9	; Star used on World 5 Sky map
-	; The check follows with a "less than", as a quick failure check (if you're in this "range"
-	; of tiles, but less than that value, you can't possibly be on an enterable tile)
-	; The second half is not used on the world map
-	;
-	; In levels, both "halves" define the first tile of a quadrant to be solid
-	; The first half is solid at the ground (i.e. Player can stand on it)
-	; The second half is solid at the head and walls (i.e. Player bumps head on it, typically "full solidity" when combined above)
-	; Interestingly, the Sonic the Hedgehog games implemented this same solidity pattern...
-	Tile_AttrTable:		.ds 8	; $7E94-$7E9B
-
-	Level_UnusedSlopesTS5:	.ds 1	; UNUSED; If set to 2, forces slopes to be enabled for Level_Tileset = 5 (plant infestation)
-	PlantInfest_ACnt_Max:	.ds 1	; Always set to $1A in plant infestation levels, sets max value for animation counter
-
 	Level_HorzScrollLock:	.ds 1	; Set to '1' while in a Big Question block area, locks horizontal scrolling
-	Level_JctBackupTileset:	.ds 1	; Level Junction tileset backup
-	Level_AltTileset:	.ds 1	; Level's "alternate" tileset (when you go into bonus pipe, etc.)
-
-	; The "ORIGINAL" series are so you can switch back after going to a level's "alternate"
-	Level_LayPtrOrig_AddrL:	.ds 1	; ORIGINAL Low byte of address to tile layout
-	Level_LayPtrOrig_AddrH:	.ds 1	; ORIGINAL High byte of address to tile layout
-	Level_ObjPtrOrig_AddrL:	.ds 1	; ORIGINAL Low byte of address to object set
-	Level_ObjPtrOrig_AddrH:	.ds 1	; ORIGINAL High byte of address to object set
-
-	Level_BG_Page1_2:	.ds 1	; Sets which bank the first and second page (2K / 64 8x8 tiles) of BG is using (see Level_BG_Pages1/2)
 
 	Map_BorderAttrFromTiles:.ds 44	; $7EBE-$7EC8 (?) Attributes collected from map tiles that get overwritten by border FIXME SIZE UNCERTAIN
 
-	Map_Unused7EEA:		.ds 1	; Unused; Value retrieved from LUT at initialization of world, but never used otherwise
 	Map_Objects_Y:		.ds 14	; $7EEB-$7EF8, Y coordinate of all map objects
 	Map_Objects_XLo:	.ds 14	; $7EF9-$7F06, X coordinate lo byte of all map objects
 	Map_Objects_XHi:	.ds 14	; $7F07-$7F14, X coordinate hi byte of all map objects
 
 ; Map_Objects_IDs: ID of all 8 map objects 
+; none of these apply anymore
 MAPOBJ_EMPTY		= $00	; None
 MAPOBJ_HELP		= $01	; HELP
 MAPOBJ_AIRSHIP		= $02	; Airship
@@ -2899,6 +2863,7 @@ MAPOBJ_CANOE		= $10	; Canoe
 
 MAPOBJ_TOTALINIT	= $08	; Total number of map objects initialized per world
 MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
+
 	Map_Objects_IDs:	.ds 14	; $7F15-$7F22
 
 	Map_SprRAMOffDistr:	.ds 1	; A free running counter on the map only which distributes Sprite_RAM offsets to ensure visibility
