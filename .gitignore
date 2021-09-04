@@ -11,3 +11,5 @@ Backup/
 obj/
 *.fns
 Documentation/node_modules/
+
+config.json
