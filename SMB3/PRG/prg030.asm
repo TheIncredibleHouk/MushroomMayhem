@@ -1895,7 +1895,6 @@ PRG030_9257:
 PRG030_927E:
 	JSR GraphicsBuf_Prep_And_WaitVSync	; This is probably just using it to VSync
 	JSR Sprite_RAM_Clear	 		; Clear sprites!
-	JSR GameOver_Loop	 		; Do Gameover stuff
 
 	LDA GameOver_State
 
