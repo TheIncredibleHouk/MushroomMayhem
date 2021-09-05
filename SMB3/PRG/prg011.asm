@@ -3034,77 +3034,77 @@ Map_Object_March_PickTravel:
 	; First column is for when the object is sleeping by Music Box (if applicable)
 	; The other two are the animation...
 
-MapObject_Pat1:
-	.byte $00, $29, $29	; 01=HELP
-	.byte $00, $C9, $D9	; 02=Airship
-	.byte $ED, $C5, $D5	; 03=Hammer Bro
-	.byte $ED, $C5, $D5	; 04=Boomerang Bro
-	.byte $ED, $C5, $D5	; 05=Heavy Bro
-	.byte $ED, $C5, $D5	; 06=Fire Bro
-	.byte $6B, $E1, $F1	; 07=World 7 Plant
-	.byte $25, $21, $23	; 08=Unknown marching glitch object
-	.byte $11, $11, $11	; 09=N-Spade
-	.byte $13, $13, $13	; 0A=White Toad House
-	.byte $17, $17, $17	; 0B=Coin Ship
-	.byte $FD, $FD, $1B	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $F5, $F5, $F9	; 0D=World 8 Battleship
-	.byte $E5, $E5, $E9	; 0E=World 8 Tank
-	.byte $FD, $FD, $1B	; 0F=World 8 Airship
-	.byte $00, $71, $75	; 10=Canoe
+MapObject_LeftTile:
+	.byte $0D, $11, $15, $19	; 01=Rain
+	.byte $2D, $31, $35, $39	; 02=Snow
+	.byte $21, $21, $41, $41	; 03=Ship
+	.byte $47, $47, $47, $47	; 04=wrecked Ship
+	.byte $4D, $4D, $4D, $4D	; 05=Boo
+	.byte $C5, $D5, $C5, $D5	; 06=Fire Bro
+	.byte $E1, $F1, $E1, $F1	; 07=World 7 Plant
+	.byte $21, $23, $21, $23	; 08=Unknown marching glitch object
+	.byte $11, $11, $11, $11	; 09=N-Spade
+	.byte $13, $13, $13, $13	; 0A=White Toad House
+	.byte $17, $17, $17, $17	; 0B=Coin Ship
+	.byte $FD, $1B, $FD, $1B	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
+	.byte $F5, $F9, $F5, $F9	; 0D=World 8 Battleship
+	.byte $E5, $E9, $E5, $E9	; 0E=World 8 Tank
+	.byte $FD, $1B, $FD, $1B	; 0F=World 8 Airship
+	.byte $71, $75, $71, $75	; 10=Canoe
 
-MapObject_Pat2:
-	.byte $00, $2B, $2B	; 01=HELP
-	.byte $00, $CB, $DB	; 02=Airship
-	.byte $EF, $C7, $D7	; 03=Hammer Bro
-	.byte $EF, $C7, $D7	; 04=Boomerang Bro
-	.byte $EF, $C7, $D7	; 05=Heavy Bro
-	.byte $EF, $C7, $D7	; 06=Fire Bro
-	.byte $6D, $E1, $F1	; 07=World 7 Plant
-	.byte $25, $23, $21	; 08=Unknown marching glitch object
-	.byte $21, $21, $21	; 09=N-Spade
-	.byte $15, $15, $15	; 0A=White Toad House
-	.byte $19, $19, $19	; 0B=Coin Ship
-	.byte $FF, $FF, $BB	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $F7, $F7, $FB	; 0D=World 8 Battleship
-	.byte $E7, $E7, $EB	; 0E=World 8 Tank
-	.byte $FF, $FF, $BB	; 0F=World 8 Airship
-	.byte $00, $73, $77	; 10=Canoe
+MapObject_RightTile:
+	.byte $0F, $13, $17, $1B	; 01=Rain
+	.byte $2F, $33, $37, $3B	; 02=Snow
+	.byte $23, $23, $43, $43	; 03=Ship
+	.byte $49, $49, $49, $49	; 04=wrecked Ship
+	.byte $4F, $4F, $4F, $4F	; 05=Boo
+	.byte $C7, $D7, $C7, $D7	; 06=Fire Bro
+	.byte $E1, $F1, $E1, $F1	; 07=World 7 Plant
+	.byte $23, $21, $23, $21	; 08=Unknown marching glitch object
+	.byte $21, $21, $21, $21	; 09=N-Spade
+	.byte $15, $15, $15, $15	; 0A=White Toad House
+	.byte $19, $19, $19, $19	; 0B=Coin Ship
+	.byte $FF, $BB, $FF, $BB	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
+	.byte $F7, $FB, $F7, $FB	; 0D=World 8 Battleship
+	.byte $E7, $EB, $E7, $EB	; 0E=World 8 Tank
+	.byte $FF, $BB, $FF, $BB	; 0F=World 8 Airship
+	.byte $73, $77, $73, $77	; 10=Canoe
 
-MapObject_Attr1:
-	.byte $00, $03, $03	; 01=HELP
-	.byte $00, $01, $01	; 02=Airship
-	.byte $02, $02, $02	; 03=Hammer Bro
-	.byte $02, $02, $02	; 04=Boomerang Bro
-	.byte $02, $02, $02	; 05=Heavy Bro
-	.byte $02, $02, $02	; 06=Fire Bro
-	.byte $01, $01, $01	; 07=World 7 Plant
-	.byte $02, $02, $42	; 08=Unknown marching glitch object
-	.byte $03, $03, $03	; 09=N-Spade
-	.byte $03, $03, $03	; 0A=White Toad House
-	.byte $03, $03, $03	; 0B=Coin Ship
-	.byte $03, $03, $03	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $02, $02, $02	; 0D=World 8 Battleship
-	.byte $02, $02, $02	; 0E=World 8 Tank
-	.byte $01, $01, $01	; 0F=World 8 Airship
-	.byte $00, $02, $02	; 10=Canoe
+MapObject_AttrLeft:
+	.byte $02, $02, $02, $02	; 01=Rain Cloud
+	.byte $01, $01, $01, $01	; 02=Snow
+	.byte $03, $03, $03, $03	; 03=Ship
+	.byte $03, $03, $03, $03	; 04=wrecked Ship
+	.byte $02, $02, $02, $02	; 05=Boo
+	.byte $02, $02, $02, $02	; 06=Fire Bro
+	.byte $01, $01, $01, $01	; 07=World 7 Plant
+	.byte $02, $42, $02, $42	; 08=Unknown marching glitch object
+	.byte $03, $03, $03, $03	; 09=N-Spade
+	.byte $03, $03, $03, $03	; 0A=White Toad House
+	.byte $03, $03, $03, $03	; 0B=Coin Ship
+	.byte $03, $03, $03, $03	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
+	.byte $02, $02, $02, $02	; 0D=World 8 Battleship
+	.byte $02, $02, $02, $02	; 0E=World 8 Tank
+	.byte $01, $01, $01, $01	; 0F=World 8 Airship
+	.byte $02, $02, $02, $02	; 10=Canoe
 
-MapObject_Attr2:
-	.byte $00, $03, $03	; 01=HELP
-	.byte $00, $01, $01	; 02=Airship
-	.byte $02, $02, $02	; 03=Hammer Bro
-	.byte $02, $02, $02	; 04=Boomerang Bro
-	.byte $02, $02, $02	; 05=Heavy Bro
-	.byte $02, $02, $02	; 06=Fire Bro
-	.byte $01, $41, $41	; 07=World 7 Plant
-	.byte $42, $02, $42	; 08=Unknown marching glitch object
-	.byte $03, $03, $03	; 09=N-Spade
-	.byte $03, $03, $03	; 0A=White Toad House
-	.byte $03, $03, $03	; 0B=Coin Ship
-	.byte $03, $03, $03	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $02, $02, $02	; 0D=World 8 Battleship
-	.byte $02, $02, $02	; 0E=World 8 Tank
-	.byte $01, $01, $01	; 0F=World 8 Airship
-	.byte $00, $02, $02	; 10=Canoe
+MapObject_AttrRight:
+	.byte $02, $02, $02, $02	; 01=Rain Cloud
+	.byte $01, $01, $01, $01	; 02=Snow
+	.byte $03, $03, $03, $03	; 03=Ship
+	.byte $03, $03, $03, $03	; 04=wrecked Ship
+	.byte $02, $02, $02, $02	; 05=Boo
+	.byte $02, $02, $02, $02	; 06=Fire Bro
+	.byte $41, $41, $41, $41	; 07=World 7 Plant
+	.byte $02, $42, $02, $42	; 08=Unknown marching glitch object
+	.byte $03, $03, $03, $03	; 09=N-Spade
+	.byte $03, $03, $03, $03	; 0A=White Toad House
+	.byte $03, $03, $03, $03	; 0B=Coin Ship
+	.byte $03, $03, $03, $03	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
+	.byte $02, $02, $02, $02	; 0D=World 8 Battleship
+	.byte $02, $02, $02, $02	; 0E=World 8 Tank
+	.byte $01, $01, $01, $01	; 0F=World 8 Airship
+	.byte $02, $02, $02, $02	; 10=Canoe
 
 	; This is a rotated array of Sprite_RAM offsets, helps distribute
 	; the map object display so even if there's scanline overflows,
@@ -3184,17 +3184,6 @@ PRG011_B58C:
 	; Draw the map object, put it to sleep (if applicable), and enter it if it should be entered
 MapObject_DrawSleepEnter:
 	LDA Map_Objects_IDs,X
-
-	CPX <Map_HideObj
-	BNE PRG011_B599	 ; If this map object slot index <> Map_HideObj, jump to PRG011_B599
-
-	CPX #$00	 
-	BEQ PRG011_B599	 ; If this map object slot index = 0, jump to PRG011_B599
-
-	RTS		 ; Return
-
-PRG011_B599:
-
 	; Map object slot 0 (typ. HELP bubble) or any object that is not in the Map_HideObj override slot
 
 	; Jump by the Map Object ID (this is largely wasted here...)
@@ -3220,173 +3209,68 @@ PRG011_B599:
 	.word MapObj_DrawAndEnter	; 10=Canoe
 
 MapObj_DrawAndEnter:
+	LDA #$00	 ; A = 0 (no offset on map sprite)
+
+	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
+
+	STA Debug_Snap
+	; Set Y for map object sprite
+	ADD Map_Object_ActY,X
+	STA Sprite_RAM+$98,Y
+	STA Sprite_RAM+$9C,Y
+
+	; Set X for map object sprite
+	LDA Map_Object_ActX,X
+	SUB <Horz_Scroll
+	STA Sprite_RAM+$9B,Y
+
+	; Right half
+	ADD #$08
+	STA Sprite_RAM+$9F,Y
+
+	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
+
+	; Map object ID -> Temp_Var8
+	LDA Map_Objects_IDs,X
+	STA <Temp_Var8
+
+	LDA <Counter_1	 ; X = 8 (masking value against Counter_1 for animation)
+	AND #$30
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var9	 ; -> Temp_Var9 (masking value for animation)
+
+	LDA <Temp_Var8	 ; A = map object ID
+	ASL A		 ; Multiply by 2
+	ASL A		 ; Multiply by 4
+	ADD <Temp_Var9
+	TAX
+
+PRG011_B630:
+	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
+
+	; Load the patterns of the map object
+	LDA MapObject_LeftTile-4,X
+	STA Sprite_RAM+$99,Y
+
+	LDA MapObject_RightTile-4,X	
+	STA Sprite_RAM+$9D,Y	
+
+	
+	; Load the attributes of the map object
+	LDA MapObject_AttrLeft-4,X	
+	STA Sprite_RAM+$9A,Y	
+
+	LDA MapObject_AttrRight-4,X	
+	STA Sprite_RAM+$9E,Y	
+
 	RTS
-;	LDA #$00	 ; A = 0 (no offset on map sprite)
-;
-;	LDY Map_Objects_IDs,X
-;	CPY #MAPOBJ_CANOE
-;	BNE PRG011_B5C9	 ; If this not a Canoe, jump to PRG011_B5C9
-;
-;	LDA #$07	 ; Otherwise, A = 7 (Canoe offset 7)
-;
-;PRG011_B5C9:
-;	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
-;
-;	; Set Y for map object sprite
-;	ADD Map_Object_ActY,X
-;	STA Sprite_RAM+$98,Y
-;	STA Sprite_RAM+$9C,Y
-;
-;	; Set X for map object sprite
-;	LDA Map_Object_ActX,X
-;	SUB <Horz_Scroll
-;	STA Sprite_RAM+$9B,Y
-;
-;	; Right half
-;	ADD #$08
-;	STA Sprite_RAM+$9F,Y
-;
-;	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
-;
-;	; Map object ID -> Temp_Var8
-;	LDA Map_Objects_IDs,X
-;	STA <Temp_Var8
-;
-;	LDX #%00001000	 ; X = 8 (masking value against Counter_1 for animation)
-;
-;	CMP #MAPOBJ_CANOE
-;	BGE PRG011_B60A	 ; If this is a canoe (or greater??), jump to PRG011_B60A
-; 
-;	JMP PRG011_B5FA	 ; If this NOT the HELP bubble, jump to PRG011_B5FA
-;
-;	LDX #$FF	 ; X = $30 (masking value against Counter_1 for animation)
-;	JMP PRG011_B60A	 ; Jump to PRG011_B60A
-;
-;PRG011_B5FA:
-;	; HELP bubble only
-;
-;	LDA Map_Operation
-;	CMP #$0b
-;	BNE PRG011_B60A	 ; If Map_Operation <> $0B (hammer brothers aren't marching around), jump to PRG011_B60A
-;
-;	; Hammer brothers are marching around the map...
-;
-;	LDY <Temp_Var13		 ; Y = Temp_Var13 (the map object slot index)
-;
-;	; NOTE: This is improper, the Map_March_Count should be indexed by ID, not by slot index
-;	LDA Map_March_Count,Y
-;	BEQ PRG011_B60A	 ; 
-;
-;	LDX #%00000100	 ; X = 4 (masking value against Counter_1 for animation)
-;
-;PRG011_B60A:
-;	STX <Temp_Var9	 ; -> Temp_Var9 (masking value for animation)
-;
-;	LDA <Temp_Var8	 ; A = map object ID
-;	ASL A		 ; Multiply by 2
-;	ADD <Temp_Var8	 ; Total multiply is 3
-;	TAX		 ; X = ID * 3
-;
-;	; Heh, they had to compare AFTER making it a multiple of 3... :P
-;
-;	CPX #(MAPOBJ_HAMMERBRO * 3)
-;	BLT PRG011_B628	 ; If ID < MAPOBJ_HAMMERBRO (None, HELP, Airship), jump to PRG011_B628
-;
-;	; So not nothing, a "HELP" bubble, or the airship...
-;
-;	CPX #(MAPOBJ_CANOE * 3)
-;	BEQ PRG011_B628	 ; If ID = MAPOBJ_CANOE, jump to PRG011_B628
-;
-;	; Not a canoe...
-;
-;	CPX #(MAPOBJ_BATTLESHIP * 3)
-;	BLT PRG011_B623	 ; If ID < MAPOBJ_BATTLESHIP (Not a World 8 Tank / Battleship / Airship), jump to PRG011_B623
-;
-;	; Canoe was technically already eliminated, but it checks again anyway
-;	; In any case, one of the World 8 battle implements
-;
-;	CPX #(MAPOBJ_CANOE * 3)
-;	BLT PRG011_B628	 ; Otherwise, jump to PRG011_B628
-;
-;PRG011_B623:
-;
-;	; Map object $03 - $0C
-;
-;	LDA #$00
-;	BNE PRG011_B630	 ; If a music box is active, jump to PRG011_B630
-;
-;PRG011_B628:
-;	INX	; Use first column pattern
-;
-;	LDA <Counter_1
-;	AND <Temp_Var9
-;	BEQ PRG011_B630	 ; Animation time dependent on Temp_Var9; periodically jump to PRG011_B630
-;
-;	INX	; Use second column pattern
-;
-;PRG011_B630:
-;	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
-;
-;	; Load the patterns of the map object
-;	LDA MapObject_Pat1-3,X
-;	STA Sprite_RAM+$99,Y	
-;	LDA MapObject_Pat2-3,X	
-;	STA Sprite_RAM+$9D,Y	
-;
-;	; Load the attributes of the map object
-;	LDA MapObject_Attr1-3,X	
-;	STA Sprite_RAM+$9A,Y	
-;	LDA MapObject_Attr2-3,X	
-;	STA Sprite_RAM+$9E,Y	
-;
+
 ;	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
 ;
 ;	LDA Map_Objects_IDs,X
-;
-;	CMP #MAPOBJ_CANOE
-;	BLT PRG011_B658	 ; If this is not the canoe, jump to PRG011_B658
-;
-;PRG011_B657:
-;	RTS		 ; Return
-;
-;PRG011_B658:
-;
-;	; Not the HELP bubble or canoe...
-;
-;	CMP #$07
-;	BEQ PRG011_B68B	 ; If this is the World 7 Plant, jump to PRG011_B68B
-;
-;	CMP #$09
-;	BLT PRG011_B664	 ; Basically if one of the marchers (map object ID $02-$06/$08), jump to PRG011_B664
-;
-;	CMP #$0d
-;	BLT PRG011_B68B	 ; If NOT one of the World 8 implements, jump to PRG011_B68B
-;
-;PRG011_B664:
-;
-;	; "Marching" objects come here (map object ID $02-$06/$08)
-;	; Horizontal flip for "marching" type objects when their Data is non-zero
-;
-;	LDA Map_Object_Data,X
-;	BNE PRG011_B68B		; If data <> 0, jump to PRG011_B68B
-;
-;	LDA Sprite_RAM+$9D,Y
-;	CMP Sprite_RAM+$99,Y
-;	BEQ PRG011_B68B	 ; If the sprite patterns are the same, jump to PRG011_B68B
-;
-;	; Swaps the pattern and attributes and marks horizontal flip (i.e. mirrors the map object sprite)
-;	LDX Sprite_RAM+$99,Y
-;	STA Sprite_RAM+$99,Y
-;	TXA
-;	STA Sprite_RAM+$9D,Y
-;	LDA Sprite_RAM+$9A,Y
-;	EOR #$40
-;	STA Sprite_RAM+$9A,Y
-;	LDA Sprite_RAM+$9E,Y
-;	EOR #$40
-;	STA Sprite_RAM+$9E,Y
-;
-;PRG011_B68B:
 ;	LDY <Temp_Var13		 ; Y = Temp_Var13 (the map object slot index)
 ;
 ;	; HELP bubble was already eliminated
@@ -3394,19 +3278,6 @@ MapObj_DrawAndEnter:
 ;	; Map Object ID $03-$08  all jump to PRG011_B69C
 ;	; Otherwise, jump to PRG011_B6A1
 ;	LDA Map_Objects_IDs,Y
-;	;CMP #MAPOBJ_NSPADE
-;	BLT PRG011_B69C
-;	CMP #MAPOBJ_CANOE
-;	BLT PRG011_B6A1
-;
-;PRG011_B69C:
-;
-;	; Map Object IDs $03-$08 come here (basically everything that "sleeps")
-;
-;	LDA #$00
-;	BNE PRG011_B6F5	 ; If Music Box is active, jump to PRG011_B6F5 (RTS)
-;
-;PRG011_B6A1:
 ;	LDA Map_DrawPanState
 ;	BNE PRG011_B6F5	 ; If some kind of map drawing/panning activity is occurring, jump to PRG011_B6F5 (RTS)
 ;
@@ -4136,6 +4007,7 @@ Map_MarkLevelComplete:
 	RTS
 
 Map_Object_CheckVisibility:
+	;STA Debug_Snap
 	; For a given object, check if it's visible on the map.  This value is
 	; stored into the Map_Objects_Vis array
 	; X is the index to the map object we need to work with!

@@ -2844,22 +2844,22 @@ CARD_WILD	= 8	; UNUSED Wild card (can match any other!)
 ; Map_Objects_IDs: ID of all 8 map objects 
 ; none of these apply anymore
 MAPOBJ_EMPTY		= $00	; None
-MAPOBJ_HELP		= $01	; HELP
-MAPOBJ_AIRSHIP		= $02	; Airship
-MAPOBJ_HAMMERBRO	= $03	; Hammer Bro
-MAPOBJ_BOOMERANGBRO	= $04	; Boomerang Bro
-MAPOBJ_HEAVYBRO		= $05	; Heavy Bro
-MAPOBJ_FIREBRO		= $06	; Fire Bro
-MAPOBJ_W7PLANT		= $07	; World 7 Plant
-MAPOBJ_UNK08		= $08	; Unknown marching glitch object
-MAPOBJ_NSPADE		= $09 	; N-Spade
-MAPOBJ_WHITETOADHOUSE	= $0A	; White Toad House
-MAPOBJ_COINSHIP		= $0B	; Coin Ship
-MAPOBJ_UNK0C		= $0C	; Unknown white colorization of $0F (goes to World 7 level??)
-MAPOBJ_BATTLESHIP	= $0D	; World 8 Battleship
+MAPOBJ_HELP		= $FF	; HELP
+MAPOBJ_AIRSHIP		= $FF	; Airship
+MAPOBJ_HAMMERBRO	= $FF	; Hammer Bro
+MAPOBJ_BOOMERANGBRO	= $FF	; Boomerang Bro
+MAPOBJ_HEAVYBRO		= $FF	; Heavy Bro
+MAPOBJ_FIREBRO		= $FF	; Fire Bro
+MAPOBJ_W7PLANT		= $FF	; World 7 Plant
+MAPOBJ_UNK08		= $FF	; Unknown marching glitch object
+MAPOBJ_NSPADE		= $FF 	; N-Spade
+MAPOBJ_WHITETOADHOUSE	= $FF	; White Toad House
+MAPOBJ_COINSHIP		= $FF	; Coin Ship
+MAPOBJ_UNK0C		= $FF	; Unknown white colorization of $0F (goes to World 7 level??)
+MAPOBJ_BATTLESHIP	= $FF	; World 8 Battleship
 MAPOBJ_TANK		= $0E	; World 8 Tank
-MAPOBJ_W8AIRSHIP	= $0F	; World 8 Airship
-MAPOBJ_CANOE		= $10	; Canoe
+MAPOBJ_W8AIRSHIP	= $FF	; World 8 Airship
+MAPOBJ_CANOE		= $FF	; Canoe
 
 MAPOBJ_TOTALINIT	= $08	; Total number of map objects initialized per world
 MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects

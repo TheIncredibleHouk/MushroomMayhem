@@ -4910,26 +4910,27 @@ CopyMapPointers:
 	LDA #$FF
 	STA MapPointers, X
 
-Map_LoadObjects:
 	LDX #$00
 
+Map_LoadObjects:
 	LDA [Temp_Var1], Y
 	CMP #$FF
 	BEQ Map_LoadTileProperties
 
 	STA Map_Objects_IDs, X
-
-	INX
-
 	JSR Next_World_Byte
 
 	LDA [Temp_Var1], Y
+	AND #$0F
+	ASL A
+	ASL A
+	ASL A
+	ASL A
 	STA Map_Objects_Y, X
-
-	INX
 
 	JSR Next_World_Byte
 
+	;STA Debug_Snap
 	LDA [Temp_Var1], Y
 	AND #$0F
 	ASL A

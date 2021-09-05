@@ -3065,7 +3065,6 @@ UpdateLevelName_LoopRTS:
 	RTS
 
 DrawMapBackground:
-	STA Debug_Snap
 	LDA World_Num
 	BEQ NoMapClouds
 
