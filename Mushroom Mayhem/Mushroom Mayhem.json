@@ -3,6 +3,7 @@
   "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
   "Palettes": [
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         48,
@@ -37,10 +38,11 @@
         48,
         17
       ],
-      "Name": "Mushroom Glades",
+      "Name": "World 0",
       "Id": "c6560d1b-5f71-4e4a-8856-8845797a63e9"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -75,10 +77,11 @@
         54,
         39
       ],
-      "Name": "Plains",
+      "Name": "Take a Dip",
       "Id": "ceee7668-a8e4-44c0-8676-a3d11168456f"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         6,
@@ -113,10 +116,11 @@
         48,
         40
       ],
-      "Name": "Fortress",
+      "Name": "Colossal Cheep",
       "Id": "4a0438e0-7d45-4d3b-9fe4-cde7822e0100"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         18,
         15,
@@ -155,6 +159,7 @@
       "Id": "698c2fa8-01f2-4a5f-a7a2-0144c11ecbdb"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         17,
         15,
@@ -189,10 +194,11 @@
         54,
         39
       ],
-      "Name": "Park",
+      "Name": "Let It Roll",
       "Id": "be476f89-09db-4479-8bcc-56e76d462aeb"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         45,
         15,
@@ -227,10 +233,11 @@
         54,
         39
       ],
-      "Name": "Piranha Plant",
+      "Name": "Lights Out 2",
       "Id": "f0df204b-4537-4562-a5ca-2b9d3a76fb83"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -265,10 +272,11 @@
         48,
         39
       ],
-      "Name": "Water",
+      "Name": "Deep Sea Treasure 2",
       "Id": "f29e848d-6a32-4400-9416-55397fdc1150"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         17,
         15,
@@ -303,10 +311,11 @@
         48,
         39
       ],
-      "Name": "Haunted Desert",
+      "Name": "Zombie Oasis",
       "Id": "8944a8b7-cefd-4bb4-ba68-e41d09d22d49"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -341,10 +350,11 @@
         48,
         39
       ],
-      "Name": "Subcon",
+      "Name": "Shy Guys In Subcon",
       "Id": "28405934-7822-4343-8c74-cbd42ec57f8e"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         55,
         33,
@@ -383,6 +393,7 @@
       "Id": "cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         12,
         15,
@@ -417,10 +428,11 @@
         48,
         40
       ],
-      "Name": "Airship",
+      "Name": "Out to Sea",
       "Id": "4dd54dba-3c74-49c9-aded-05e0ea1e006c"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         59,
         15,
@@ -459,6 +471,7 @@
       "Id": "d97a4897-b537-4ba5-92c9-5b479de01bc8"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -493,10 +506,11 @@
         48,
         55
       ],
-      "Name": "Ice",
+      "Name": "World 2 to 1",
       "Id": "0b4bb2af-f89c-413c-a911-683e36d52e47"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         48,
         15,
@@ -535,6 +549,7 @@
       "Id": "71eea64a-4106-44df-be63-4f50214169ad"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         0,
@@ -569,10 +584,11 @@
         54,
         39
       ],
-      "Name": "Underground",
+      "Name": "Key Coin Caverns 2",
       "Id": "2859f352-57a0-40f4-8c28-59a3a106333d"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -607,10 +623,11 @@
         55,
         40
       ],
-      "Name": "Plains Autumn",
+      "Name": "Frost Flame Factory",
       "Id": "9b3e52c3-66c9-4363-842b-72e95e15de4a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         12,
         15,
@@ -645,10 +662,11 @@
         56,
         24
       ],
-      "Name": "Plains Rain",
+      "Name": "Windy Waters",
       "Id": "c7c3b08e-8f1a-42e9-9986-d34994fe35b6"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -687,6 +705,7 @@
       "Id": "5543b5ff-dd04-4843-ab7a-27a495d345d6"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -725,6 +744,7 @@
       "Id": "a10a5ad7-138b-4df5-9ec2-ae226827ab89"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         16,
         15,
@@ -763,6 +783,7 @@
       "Id": "21ee6bde-bb06-4df4-8235-03d13a4faaad"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -801,6 +822,7 @@
       "Id": "2b261081-0670-43f6-ab3c-3fb002e672b3"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -839,6 +861,7 @@
       "Id": "63331b27-48e9-4c2a-b860-d4457721b214"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -873,10 +896,11 @@
         32,
         16
       ],
-      "Name": "Zero",
+      "Name": "Warp Zone",
       "Id": "a4cab6c3-8e9d-4f4b-8a95-95431d27d166"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -915,6 +939,7 @@
       "Id": "be23a896-cf98-40ea-b632-c1f32f106a77"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -953,6 +978,7 @@
       "Id": "94fedb0d-96ba-4ca7-b225-07d8b22cfbdf"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -987,10 +1013,11 @@
         48,
         24
       ],
-      "Name": "Ice Cave",
+      "Name": "Return of Freezie 2",
       "Id": "d40ba990-7346-49f9-bd57-1f9b45533c17"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         48,
@@ -1029,6 +1056,7 @@
       "Id": "8f153109-272c-412d-9d4c-00eda1d56f0e"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -1063,10 +1091,11 @@
         48,
         0
       ],
-      "Name": "Quarry",
+      "Name": "Bobomb Burst Mine",
       "Id": "81c54437-115c-42d0-9f03-8274d99b4d63"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         12,
         15,
@@ -1101,10 +1130,11 @@
         48,
         23
       ],
-      "Name": "Snow Storm",
+      "Name": "Blistering Blizzard",
       "Id": "97f10736-9726-4c78-aa47-3c521ee7a20c"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -1139,10 +1169,11 @@
         48,
         0
       ],
-      "Name": "Lava",
+      "Name": "The Floor is Lava",
       "Id": "bbfc55b5-0b06-4e99-b682-866b5fde750b"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1181,6 +1212,7 @@
       "Id": "4923dd1b-2b1a-4b35-ad47-9e7759feeea8"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         39,
         15,
@@ -1219,6 +1251,7 @@
       "Id": "36853d72-5cb6-449c-be57-b139abf203d1"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -1253,10 +1286,11 @@
         48,
         40
       ],
-      "Name": "Island",
+      "Name": "Treasure Island",
       "Id": "64ece206-14b1-42a3-8df8-7549a840d049"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -1291,10 +1325,11 @@
         48,
         17
       ],
-      "Name": "Ice Fortress",
+      "Name": "World 2 Dungeon",
       "Id": "212e8375-7a01-4327-87d2-7aee5f7bcf6d"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         49,
         13,
@@ -1329,10 +1364,11 @@
         48,
         54
       ],
-      "Name": "Mangrove",
+      "Name": "Feeling Weighed Down",
       "Id": "1da259b6-d2ff-44e9-b6d3-91ad25ce6a48"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -1367,10 +1403,11 @@
         48,
         40
       ],
-      "Name": "Blue Waters",
+      "Name": "Deep Sea Treasure",
       "Id": "3e939a4c-1d49-479c-96e9-23dcab565d89"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -1405,10 +1442,11 @@
         54,
         39
       ],
-      "Name": "Chasm",
+      "Name": "Mario Ninja Warrior",
       "Id": "f1ae3729-c623-4110-9527-687f564b2e12"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -1447,6 +1485,7 @@
       "Id": "00d0fef5-7f75-4612-b734-6c460b1bd592"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         11,
         15,
@@ -1485,6 +1524,7 @@
       "Id": "f85c4fce-2d30-4c8c-8513-6f974b8243a4"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1523,6 +1563,7 @@
       "Id": "207ccd86-2824-49d6-a06c-2987a6ee930d"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         59,
         15,
@@ -1561,6 +1602,7 @@
       "Id": "31e10d1f-12f2-43cd-a2b3-525c80844fb7"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -1599,6 +1641,7 @@
       "Id": "e6685e2f-647e-43ea-bf44-90d711dbeb27"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -1637,6 +1680,7 @@
       "Id": "9ed6f55f-2add-4fb0-9e01-5b17baf5f21c"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -1671,10 +1715,11 @@
         54,
         39
       ],
-      "Name": "Firey Chasm",
+      "Name": "Fire Snake Fury",
       "Id": "a32e3d4d-c8d2-4024-bbc1-0cc574e344da"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         33,
         13,
@@ -1713,6 +1758,7 @@
       "Id": "9c880daf-6544-4f15-a5af-9ae7937c360b"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1751,6 +1797,7 @@
       "Id": "28af848d-f2e0-404f-9d44-745995ad862b"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -1785,10 +1832,11 @@
         55,
         39
       ],
-      "Name": "Ice 2",
+      "Name": "Return of Freezie",
       "Id": "db217d18-b428-435b-aecc-39a4a110c2d6"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -1823,10 +1871,11 @@
         54,
         39
       ],
-      "Name": "Black",
+      "Name": "Shy Guys In Subcon 2",
       "Id": "0e92fb53-7ded-4887-b244-221949148d0b"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -1865,6 +1914,7 @@
       "Id": "1d5b5983-2ad6-4784-9de5-3d1fb2759bd4"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1903,6 +1953,7 @@
       "Id": "6f7d568d-baf8-4d2f-b613-c0b116278530"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -1937,10 +1988,11 @@
         54,
         39
       ],
-      "Name": "Dark Colors",
+      "Name": "Take a Dip 2",
       "Id": "0a78a53f-63ce-43d7-81d4-78a1bb80f28c"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         2,
         15,
@@ -1979,6 +2031,7 @@
       "Id": "5a0caa42-be3f-4a47-8fde-c29c487a611a"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -2017,6 +2070,7 @@
       "Id": "8b58fc82-d001-479b-9a04-aee03d691914"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2055,6 +2109,7 @@
       "Id": "25f71da9-56f9-49e2-afeb-3070dde4bef8"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         48,
         15,
@@ -2093,6 +2148,7 @@
       "Id": "07f8c5fb-c26c-4f62-b922-88ce83f7ab2a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         55,
         15,
@@ -2127,10 +2183,11 @@
         55,
         39
       ],
-      "Name": "Veggie",
+      "Name": "Turnip Toss Tussle",
       "Id": "e07842ca-e3f9-4f25-bdb9-c961ce40dd24"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2169,6 +2226,7 @@
       "Id": "5e3038bd-2284-4ac1-a2bd-93fff4812dd2"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         51,
         15,
@@ -2203,10 +2261,11 @@
         55,
         39
       ],
-      "Name": "Ice 3",
+      "Name": "Lake Lakitu",
       "Id": "24ef1261-b6e5-4a60-84b9-87106362235a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         2,
         15,
@@ -2241,10 +2300,11 @@
         48,
         40
       ],
-      "Name": "Gusty",
+      "Name": "Breath of Fresh Air",
       "Id": "0fa4ea35-3a26-464b-ac1e-4dc3f466e80b"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         49,
         15,
@@ -2279,10 +2339,11 @@
         48,
         39
       ],
-      "Name": "Sunbcon Ice",
+      "Name": "Want to Build an Igloo?",
       "Id": "4de85bdd-bdf6-4dba-8bea-940bb4bd3617"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -2317,10 +2378,11 @@
         48,
         40
       ],
-      "Name": "Yarr",
+      "Name": "Sea Siege",
       "Id": "53932c71-769e-48c7-b04a-57fb8193a187"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         38,
         15,
@@ -2355,10 +2417,11 @@
         48,
         24
       ],
-      "Name": "Cold Mountains",
+      "Name": "Firey Frenzy Icey Issues",
       "Id": "16233056-d5a9-4adb-90a3-554659b53a5b"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         16,
         15,
@@ -2393,10 +2456,11 @@
         48,
         38
       ],
-      "Name": "Icy Rocks",
+      "Name": "Pixie Panic Switch",
       "Id": "76c1f15b-0e7a-4e9e-9899-9ac848c4c154"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         1,
         15,
@@ -2431,10 +2495,11 @@
         54,
         39
       ],
-      "Name": "Rock Farm",
+      "Name": "Everything Is a Nail",
       "Id": "3d3875ad-1563-4b7d-8193-d5c62374cab2"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -2469,10 +2534,11 @@
         48,
         40
       ],
-      "Name": "Hot Ride",
+      "Name": "Podobo Panic",
       "Id": "e500a699-5a05-47bb-99dc-1e96cf0dc73a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -2507,10 +2573,11 @@
         48,
         28
       ],
-      "Name": "Earthquake",
+      "Name": "Spicy Dry Cheeps",
       "Id": "ffc2a02f-1afe-4037-84e2-a4c0f9a0258e"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -2549,6 +2616,7 @@
       "Id": "3f7f11f4-3100-437b-8dc2-b07f6df38e2a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -2587,6 +2655,7 @@
       "Id": "793e83dc-d2f5-436a-b4ec-f804b5da3f6b"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -2621,10 +2690,11 @@
         48,
         40
       ],
-      "Name": "Colorful",
+      "Name": "Color Swatch Switch",
       "Id": "8f7f7e3e-d0bd-4022-9a96-0ad54fc78d79"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -2659,10 +2729,11 @@
         48,
         28
       ],
-      "Name": "Lost World",
+      "Name": "No Time To Waste",
       "Id": "f4ef7755-8114-44c1-bef6-0b31d06d9086"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -2697,10 +2768,11 @@
         48,
         40
       ],
-      "Name": "Dusk Island",
+      "Name": "Tripping Traps",
       "Id": "044b7107-8b00-4c59-bd8a-d269ce8dd46f"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -2735,10 +2807,11 @@
         48,
         40
       ],
-      "Name": "Sunken Ship",
+      "Name": "Pirate Boo Plunder",
       "Id": "8055bd47-ddc4-44bd-a9ab-749a3809c5cd"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -2777,6 +2850,7 @@
       "Id": "95f0e627-f0ea-4680-9d0b-3a6979bbce51"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2815,6 +2889,7 @@
       "Id": "2393336c-66b1-46e6-8061-92f8a0c88f29"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         2,
         15,
@@ -2853,6 +2928,7 @@
       "Id": "d9fd94d4-13cc-4343-a854-5f8f140e7190"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2891,6 +2967,7 @@
       "Id": "2e8707ed-db5e-4aca-8048-eb43c5731fa9"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2929,6 +3006,7 @@
       "Id": "1a8921c1-b7ca-4737-9e81-8d811c0dbc66"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -2963,10 +3041,11 @@
         48,
         40
       ],
-      "Name": "Sea Seage",
+      "Name": "Crazy Cannons",
       "Id": "a4701b9a-f399-4a86-a9c4-73cb9afdc513"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -3001,10 +3080,11 @@
         48,
         40
       ],
-      "Name": "Ninja Attack",
+      "Name": "Lock and Key",
       "Id": "8400d865-6c41-4d22-ad75-d30ce913b8f6"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -3039,10 +3119,11 @@
         54,
         39
       ],
-      "Name": "Lava Floor",
+      "Name": "Lava Lair",
       "Id": "495696f6-eb29-47c5-87ad-68a980641b4f"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         49,
         15,
@@ -3077,10 +3158,11 @@
         48,
         40
       ],
-      "Name": "Sky",
+      "Name": "Pwing Peril",
       "Id": "68f4654d-cbad-4d88-8b8c-14cc1567f313"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -3115,10 +3197,11 @@
         48,
         40
       ],
-      "Name": "Plan Attack",
+      "Name": "Protracted Piranhas",
       "Id": "cef3bfd8-4aaa-4df0-b473-664357927eff"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -3157,6 +3240,7 @@
       "Id": "fa46b743-c554-4487-8c80-f839b2033e8b"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -3191,10 +3275,11 @@
         48,
         40
       ],
-      "Name": "Catacombs Inside",
+      "Name": "Dry Bones Catacombs 2",
       "Id": "28b5ab02-63cc-4dc7-adea-5ff0d553a859"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -3233,6 +3318,7 @@
       "Id": "d9164c03-a65b-4344-8711-8d794b7ef872"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         12,
         15,
@@ -3267,10 +3353,11 @@
         55,
         8
       ],
-      "Name": "Scary Desert",
+      "Name": "Phantom Winds",
       "Id": "bb263a15-a998-4667-8475-0eb8152a559a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -3305,10 +3392,11 @@
         48,
         38
       ],
-      "Name": "Icy Rocks Dark",
+      "Name": "Pixie Panic Switch 2",
       "Id": "2ed30cb8-f64d-49f5-96ee-e2a864c3be9e"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3347,6 +3435,7 @@
       "Id": "08d9df5a-bb68-4fca-9361-bafb182a32b2"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3385,6 +3474,7 @@
       "Id": "9a3ff96a-0698-4d80-9355-104f4476bd84"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -3419,10 +3509,11 @@
         48,
         17
       ],
-      "Name": "Ice Fortress Boss",
+      "Name": "World 2 Dungeon Boss",
       "Id": "9e3b3e40-a198-4b45-b4ed-ce5138870851"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         12,
         15,
@@ -3461,6 +3552,7 @@
       "Id": "5e4a08e6-55f5-4b3b-a49a-5ddb65809d95"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         49,
         15,
@@ -3495,10 +3587,11 @@
         48,
         39
       ],
-      "Name": "Flying Fish",
+      "Name": "Flying Fish Frenzy",
       "Id": "1273f302-a2c2-4391-87b1-bc7fc79a5992"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         3,
         15,
@@ -3537,6 +3630,7 @@
       "Id": "7bfbf5f8-427d-47af-9ce2-f19c7a81f82a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         18,
         15,
@@ -3571,10 +3665,11 @@
         48,
         38
       ],
-      "Name": "Castle Park",
+      "Name": "Chain Chomp Chow Time",
       "Id": "149e0c06-7282-4a7e-aaca-77ec5b4355a3"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         38,
         15,
@@ -3613,6 +3708,7 @@
       "Id": "0120eaad-a41e-44ed-8515-4aee1b00b096"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -3651,6 +3747,7 @@
       "Id": "1b20d6c1-1720-4979-beb8-65e2acdf780b"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -3685,10 +3782,11 @@
         48,
         40
       ],
-      "Name": "Cloudy",
+      "Name": "Cloudy Clash",
       "Id": "47e62a68-ce2d-442f-8821-1406ffae4830"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         2,
         15,
@@ -3723,10 +3821,11 @@
         48,
         40
       ],
-      "Name": "Catacombs Outside",
+      "Name": "Dry Bones Catacombs",
       "Id": "e7175002-72b6-4070-949f-45b8458e17e5"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         0,
         15,
@@ -3765,6 +3864,7 @@
       "Id": "8a66f543-f2e1-48f2-8309-c169e0804b09"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -3803,6 +3903,7 @@
       "Id": "215a0933-b074-47fc-91b1-ffa48dee05b3"
     },
     {
+      "Renamed": false,
       "IndexedColors": [
         6,
         15,
@@ -3841,6 +3942,7 @@
       "Id": "e15d0091-475c-4c11-ba84-4835bb611eee"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         18,
         15,
@@ -3875,10 +3977,11 @@
         55,
         24
       ],
-      "Name": "Spooky Subcon",
+      "Name": "Shadow Subcon",
       "Id": "c9fe2252-11e5-468e-b82c-8fc2c0d56e07"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         23,
         15,
@@ -3913,10 +4016,11 @@
         15,
         15
       ],
-      "Name": "Spooky Subcon 2",
+      "Name": "Shadow Subcon 2",
       "Id": "120c673c-ec82-484b-8812-7509e33e62ed"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         7,
         15,
@@ -3951,10 +4055,11 @@
         48,
         39
       ],
-      "Name": "Jump Scare",
+      "Name": "Hidden In Plain Sight",
       "Id": "b2b3fc51-abc8-445b-8a71-d1c444cbc3c4"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -3989,10 +4094,11 @@
         48,
         24
       ],
-      "Name": "Pulley Puzzles",
+      "Name": "Wicked Well",
       "Id": "7363cf6e-c246-454d-9084-c8ab4efc77fa"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -4031,6 +4137,7 @@
       "Id": "0267ae44-cea7-43b2-a14e-99a0e9039094"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         33,
         15,
@@ -4065,10 +4172,11 @@
         54,
         39
       ],
-      "Name": "Metropolis",
+      "Name": "Oil Spill Thrill",
       "Id": "7ee4aa04-a5b7-4459-9f5e-ad54b6c7358a"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         17,
         15,
@@ -4103,10 +4211,11 @@
         54,
         39
       ],
-      "Name": "Metro Sundown",
+      "Name": "Polarity Pendulums",
       "Id": "bc6d9ad8-b420-474b-b0be-5339fb5f2261"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         59,
         15,
@@ -4141,10 +4250,11 @@
         54,
         39
       ],
-      "Name": "Stackin Shrooms",
+      "Name": "Fun With Shrooms",
       "Id": "7de9e95c-aeae-4f3d-a074-f0c1f3aaa22c"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         27,
         15,
@@ -4179,10 +4289,11 @@
         48,
         39
       ],
-      "Name": "100 Meters",
+      "Name": "Level Lifts",
       "Id": "6649f798-978f-4a6e-825b-23d50dfb0eb2"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         2,
         15,
@@ -4217,10 +4328,11 @@
         54,
         39
       ],
-      "Name": "Cityscape",
+      "Name": "Fox Fire Dash Bash",
       "Id": "d0f03b0a-f5ac-401b-8749-dc368d810d64"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         6,
@@ -4259,6 +4371,7 @@
       "Id": "e8906ddd-9c00-4f44-8d67-1d32e0246637"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -4293,10 +4406,11 @@
         48,
         39
       ],
-      "Name": "Plumbing Plunging",
+      "Name": "Plumbing Plunging 2",
       "Id": "d7ec0505-eee2-4cc1-bb88-8529e9c901f7"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         6,
@@ -4335,6 +4449,7 @@
       "Id": "ea147096-fdb2-4be6-8220-205fab46b513"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         12,
         15,
@@ -4373,6 +4488,7 @@
       "Id": "4cdcb306-ccde-4d06-aa7d-ba4b573055bd"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         15,
@@ -4411,6 +4527,7 @@
       "Id": "d56c0127-f2c1-4783-8ac0-219025e96ff9"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         63,
         15,
@@ -4449,6 +4566,7 @@
       "Id": "5c228666-c765-4844-b21b-0c5332911d96"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         48,
@@ -4487,6 +4605,7 @@
       "Id": "c3555666-7b29-428f-a6ae-366f86dd4eea"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         48,
@@ -4521,10 +4640,11 @@
         55,
         23
       ],
-      "Name": "Booper Bay",
+      "Name": "Blooper Bay",
       "Id": "dce22047-4e30-4ba4-b8ff-a10eb91857ab"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         55,
@@ -4563,23 +4683,24 @@
       "Id": "802750bb-4669-4ed0-b876-1a874ce55cb5"
     },
     {
+      "Renamed": true,
       "IndexedColors": [
         15,
         48,
-        33,
-        17,
+        49,
+        27,
         15,
-        54,
+        55,
         39,
-        42,
+        27,
         15,
-        42,
-        26,
+        48,
+        49,
         17,
         15,
         48,
-        33,
-        17,
+        22,
+        27,
         15,
         15,
         54,
@@ -7423,23 +7544,23 @@
           "To": 0
         },
         {
-          "From": 223,
-          "To": 0
-        },
-        {
           "From": 0,
           "To": 0
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 252,
+          "To": 1
+        },
+        {
+          "From": 253,
+          "To": 1
+        },
+        {
+          "From": 19,
+          "To": 127
         },
         {
           "From": 0,
-          "To": 0
-        },
-        {
-          "From": 222,
           "To": 0
         },
         {
@@ -7629,31 +7750,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 176,
-          "LowerLeft": 176,
-          "LowerRight": 254
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 254,
-          "UpperRight": 254,
-          "LowerLeft": 254,
-          "LowerRight": 254
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 177,
-          "UpperRight": 238,
-          "LowerLeft": 254,
-          "LowerRight": 177
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 176,
-          "LowerRight": 177
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 22,
+          "LowerRight": 23
         },
         {
           "Property": 0,
@@ -7668,6 +7768,27 @@
           "UpperRight": 239,
           "LowerLeft": 239,
           "LowerRight": 255
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 155,
+          "UpperRight": 187,
+          "LowerLeft": 173,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 188,
+          "UpperRight": 187,
+          "LowerLeft": 238,
+          "LowerRight": 238
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 188,
+          "UpperRight": 156,
+          "LowerLeft": 238,
+          "LowerRight": 154
         },
         {
           "Property": 0,
@@ -7762,24 +7883,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 157,
+          "UpperRight": 238,
+          "LowerLeft": 173,
+          "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 237,
+          "UpperRight": 237,
+          "LowerLeft": 237,
+          "LowerRight": 237
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 238,
+          "UpperRight": 170,
+          "LowerLeft": 238,
+          "LowerRight": 154
         },
         {
           "Property": 0,
@@ -7817,11 +7938,11 @@
           "LowerRight": 211
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 1,
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 250,
+          "LowerRight": 251
         },
         {
           "Property": 0,
@@ -7874,7 +7995,7 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 237,
+          "UpperLeft": 189,
           "UpperRight": 237,
           "LowerLeft": 237,
           "LowerRight": 237
@@ -7889,7 +8010,7 @@
         {
           "Property": 1,
           "UpperLeft": 238,
-          "UpperRight": 238,
+          "UpperRight": 186,
           "LowerLeft": 238,
           "LowerRight": 238
         },
@@ -7979,24 +8100,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 178,
+          "UpperRight": 179,
+          "LowerLeft": 238,
+          "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 162,
+          "UpperRight": 163,
+          "LowerLeft": 238,
+          "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 162,
+          "UpperRight": 163,
+          "LowerLeft": 178,
+          "LowerRight": 179
         },
         {
           "Property": 0,
@@ -8077,10 +8198,10 @@
         },
         {
           "Property": 1,
-          "UpperLeft": 202,
-          "UpperRight": 203,
-          "LowerLeft": 218,
-          "LowerRight": 219
+          "UpperLeft": 206,
+          "UpperRight": 207,
+          "LowerLeft": 222,
+          "LowerRight": 223
         },
         {
           "Property": 0,
@@ -8091,17 +8212,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 180,
+          "LowerRight": 181
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 1,
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 250,
+          "LowerRight": 251
         },
         {
           "Property": 0,
@@ -8314,11 +8435,11 @@
           "LowerRight": 217
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 1,
+          "UpperLeft": 202,
+          "UpperRight": 203,
+          "LowerLeft": 218,
+          "LowerRight": 219
         },
         {
           "Property": 1,
@@ -8763,10 +8884,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 180,
+          "LowerRight": 181
         },
         {
           "Property": 0,
@@ -8896,10 +9017,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 232,
-          "UpperRight": 233,
-          "LowerLeft": 248,
-          "LowerRight": 249
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 250,
+          "LowerRight": 251
         },
         {
           "Property": 0,
@@ -9001,10 +9122,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 180,
+          "LowerRight": 181
         },
         {
           "Property": 0,
