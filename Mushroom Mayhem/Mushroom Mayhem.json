@@ -1,9 +1,9 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
+  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
   "Palettes": [
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         48,
@@ -42,7 +42,7 @@
       "Id": "c6560d1b-5f71-4e4a-8856-8845797a63e9"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -81,7 +81,7 @@
       "Id": "ceee7668-a8e4-44c0-8676-a3d11168456f"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         6,
@@ -159,7 +159,7 @@
       "Id": "698c2fa8-01f2-4a5f-a7a2-0144c11ecbdb"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -167,12 +167,12 @@
         5,
         17,
         15,
-        55,
-        24,
+        56,
+        23,
         17,
         15,
-        57,
         26,
+        11,
         17,
         15,
         48,
@@ -188,7 +188,7 @@
         17,
         15,
         48,
-        42,
+        26,
         17,
         15,
         54,
@@ -198,7 +198,7 @@
       "Id": "be476f89-09db-4479-8bcc-56e76d462aeb"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         45,
         15,
@@ -237,7 +237,7 @@
       "Id": "f0df204b-4537-4562-a5ca-2b9d3a76fb83"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -276,7 +276,7 @@
       "Id": "f29e848d-6a32-4400-9416-55397fdc1150"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -315,7 +315,7 @@
       "Id": "8944a8b7-cefd-4bb4-ba68-e41d09d22d49"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -393,7 +393,7 @@
       "Id": "cd1ecf46-ef9a-411e-a4d5-8ee6e67a8385"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -471,7 +471,7 @@
       "Id": "d97a4897-b537-4ba5-92c9-5b479de01bc8"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -549,7 +549,7 @@
       "Id": "71eea64a-4106-44df-be63-4f50214169ad"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         0,
@@ -588,7 +588,7 @@
       "Id": "2859f352-57a0-40f4-8c28-59a3a106333d"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -627,7 +627,7 @@
       "Id": "9b3e52c3-66c9-4363-842b-72e95e15de4a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -861,7 +861,7 @@
       "Id": "63331b27-48e9-4c2a-b860-d4457721b214"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -978,7 +978,7 @@
       "Id": "94fedb0d-96ba-4ca7-b225-07d8b22cfbdf"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1017,7 +1017,7 @@
       "Id": "d40ba990-7346-49f9-bd57-1f9b45533c17"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         48,
@@ -1056,7 +1056,7 @@
       "Id": "8f153109-272c-412d-9d4c-00eda1d56f0e"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1095,7 +1095,7 @@
       "Id": "81c54437-115c-42d0-9f03-8274d99b4d63"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -1134,7 +1134,7 @@
       "Id": "97f10736-9726-4c78-aa47-3c521ee7a20c"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1251,7 +1251,7 @@
       "Id": "36853d72-5cb6-449c-be57-b139abf203d1"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -1290,18 +1290,18 @@
       "Id": "64ece206-14b1-42a3-8df8-7549a840d049"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
         48,
         33,
         15,
-        15,
+        12,
         48,
         28,
         15,
-        15,
+        2,
         32,
         17,
         15,
@@ -1329,7 +1329,7 @@
       "Id": "212e8375-7a01-4327-87d2-7aee5f7bcf6d"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         49,
         13,
@@ -1368,7 +1368,7 @@
       "Id": "1da259b6-d2ff-44e9-b6d3-91ad25ce6a48"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -1407,7 +1407,7 @@
       "Id": "3e939a4c-1d49-479c-96e9-23dcab565d89"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1680,7 +1680,7 @@
       "Id": "9ed6f55f-2add-4fb0-9e01-5b17baf5f21c"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -1797,7 +1797,7 @@
       "Id": "28af848d-f2e0-404f-9d44-745995ad862b"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -1836,7 +1836,7 @@
       "Id": "db217d18-b428-435b-aecc-39a4a110c2d6"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -1953,7 +1953,7 @@
       "Id": "6f7d568d-baf8-4d2f-b613-c0b116278530"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2148,7 +2148,7 @@
       "Id": "07f8c5fb-c26c-4f62-b922-88ce83f7ab2a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         55,
         15,
@@ -2226,7 +2226,7 @@
       "Id": "5e3038bd-2284-4ac1-a2bd-93fff4812dd2"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         51,
         15,
@@ -2265,7 +2265,7 @@
       "Id": "24ef1261-b6e5-4a60-84b9-87106362235a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         2,
         15,
@@ -2304,7 +2304,7 @@
       "Id": "0fa4ea35-3a26-464b-ac1e-4dc3f466e80b"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         49,
         15,
@@ -2343,7 +2343,7 @@
       "Id": "4de85bdd-bdf6-4dba-8bea-940bb4bd3617"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -2382,7 +2382,7 @@
       "Id": "53932c71-769e-48c7-b04a-57fb8193a187"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         38,
         15,
@@ -2421,7 +2421,7 @@
       "Id": "16233056-d5a9-4adb-90a3-554659b53a5b"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         16,
         15,
@@ -2460,7 +2460,7 @@
       "Id": "76c1f15b-0e7a-4e9e-9899-9ac848c4c154"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         1,
         15,
@@ -2499,7 +2499,7 @@
       "Id": "3d3875ad-1563-4b7d-8193-d5c62374cab2"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2538,7 +2538,7 @@
       "Id": "e500a699-5a05-47bb-99dc-1e96cf0dc73a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2577,7 +2577,7 @@
       "Id": "ffc2a02f-1afe-4037-84e2-a4c0f9a0258e"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2616,7 +2616,7 @@
       "Id": "3f7f11f4-3100-437b-8dc2-b07f6df38e2a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2655,7 +2655,7 @@
       "Id": "793e83dc-d2f5-436a-b4ec-f804b5da3f6b"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2694,7 +2694,7 @@
       "Id": "8f7f7e3e-d0bd-4022-9a96-0ad54fc78d79"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -2733,7 +2733,7 @@
       "Id": "f4ef7755-8114-44c1-bef6-0b31d06d9086"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -2772,7 +2772,7 @@
       "Id": "044b7107-8b00-4c59-bd8a-d269ce8dd46f"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3006,7 +3006,7 @@
       "Id": "1a8921c1-b7ca-4737-9e81-8d811c0dbc66"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -3045,7 +3045,7 @@
       "Id": "a4701b9a-f399-4a86-a9c4-73cb9afdc513"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -3084,7 +3084,7 @@
       "Id": "8400d865-6c41-4d22-ad75-d30ce913b8f6"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3123,7 +3123,7 @@
       "Id": "495696f6-eb29-47c5-87ad-68a980641b4f"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         49,
         15,
@@ -3162,7 +3162,7 @@
       "Id": "68f4654d-cbad-4d88-8b8c-14cc1567f313"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3240,7 +3240,7 @@
       "Id": "fa46b743-c554-4487-8c80-f839b2033e8b"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3318,7 +3318,7 @@
       "Id": "d9164c03-a65b-4344-8711-8d794b7ef872"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -3357,7 +3357,7 @@
       "Id": "bb263a15-a998-4667-8475-0eb8152a559a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3474,14 +3474,14 @@
       "Id": "9a3ff96a-0698-4d80-9355-104f4476bd84"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
         48,
         33,
         15,
-        15,
+        12,
         48,
         28,
         15,
@@ -3497,23 +3497,23 @@
         54,
         6,
         15,
+        15,
+        48,
+        22,
+        15,
         12,
         48,
-        33,
+        28,
         15,
-        15,
+        7,
         48,
-        17,
-        15,
-        15,
-        48,
-        17
+        39
       ],
       "Name": "World 2 Dungeon Boss",
       "Id": "9e3b3e40-a198-4b45-b4ed-ce5138870851"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -3552,7 +3552,7 @@
       "Id": "5e4a08e6-55f5-4b3b-a49a-5ddb65809d95"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         49,
         15,
@@ -3630,7 +3630,7 @@
       "Id": "7bfbf5f8-427d-47af-9ce2-f19c7a81f82a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         18,
         15,
@@ -3669,7 +3669,7 @@
       "Id": "149e0c06-7282-4a7e-aaca-77ec5b4355a3"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         38,
         15,
@@ -3708,7 +3708,7 @@
       "Id": "0120eaad-a41e-44ed-8515-4aee1b00b096"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -3747,7 +3747,7 @@
       "Id": "1b20d6c1-1720-4979-beb8-65e2acdf780b"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -3786,7 +3786,7 @@
       "Id": "47e62a68-ce2d-442f-8821-1406ffae4830"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         2,
         15,
@@ -3942,7 +3942,7 @@
       "Id": "e15d0091-475c-4c11-ba84-4835bb611eee"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         18,
         15,
@@ -3981,7 +3981,7 @@
       "Id": "c9fe2252-11e5-468e-b82c-8fc2c0d56e07"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         23,
         15,
@@ -4020,7 +4020,7 @@
       "Id": "120c673c-ec82-484b-8812-7509e33e62ed"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         7,
         15,
@@ -4059,7 +4059,7 @@
       "Id": "b2b3fc51-abc8-445b-8a71-d1c444cbc3c4"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -4098,7 +4098,7 @@
       "Id": "7363cf6e-c246-454d-9084-c8ab4efc77fa"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -4137,7 +4137,7 @@
       "Id": "0267ae44-cea7-43b2-a14e-99a0e9039094"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         33,
         15,
@@ -4176,7 +4176,7 @@
       "Id": "7ee4aa04-a5b7-4459-9f5e-ad54b6c7358a"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         17,
         15,
@@ -4215,7 +4215,7 @@
       "Id": "bc6d9ad8-b420-474b-b0be-5339fb5f2261"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         59,
         15,
@@ -4254,7 +4254,7 @@
       "Id": "7de9e95c-aeae-4f3d-a074-f0c1f3aaa22c"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         27,
         15,
@@ -4293,7 +4293,7 @@
       "Id": "6649f798-978f-4a6e-825b-23d50dfb0eb2"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         2,
         15,
@@ -4332,7 +4332,7 @@
       "Id": "d0f03b0a-f5ac-401b-8749-dc368d810d64"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         6,
@@ -4371,7 +4371,7 @@
       "Id": "e8906ddd-9c00-4f44-8d67-1d32e0246637"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -4410,7 +4410,7 @@
       "Id": "d7ec0505-eee2-4cc1-bb88-8529e9c901f7"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         6,
@@ -4449,7 +4449,7 @@
       "Id": "ea147096-fdb2-4be6-8220-205fab46b513"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         12,
         15,
@@ -4488,7 +4488,7 @@
       "Id": "4cdcb306-ccde-4d06-aa7d-ba4b573055bd"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         15,
@@ -4527,7 +4527,7 @@
       "Id": "d56c0127-f2c1-4783-8ac0-219025e96ff9"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         63,
         15,
@@ -4566,7 +4566,7 @@
       "Id": "5c228666-c765-4844-b21b-0c5332911d96"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         48,
@@ -4605,7 +4605,7 @@
       "Id": "c3555666-7b29-428f-a6ae-366f86dd4eea"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         48,
@@ -4616,8 +4616,8 @@
         23,
         17,
         15,
-        33,
         48,
+        33,
         42,
         15,
         48,
@@ -4644,7 +4644,7 @@
       "Id": "dce22047-4e30-4ba4-b8ff-a10eb91857ab"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         55,
@@ -4683,24 +4683,24 @@
       "Id": "802750bb-4669-4ed0-b876-1a874ce55cb5"
     },
     {
-      "Renamed": true,
+      "Renamed": false,
       "IndexedColors": [
         15,
         48,
-        49,
-        27,
+        22,
+        11,
         15,
         55,
-        39,
-        27,
+        42,
+        11,
         15,
         48,
         49,
         17,
         15,
         48,
-        22,
-        27,
+        45,
+        11,
         15,
         15,
         54,
@@ -4720,6 +4720,45 @@
       ],
       "Name": "Sky Castle",
       "Id": "14f2fe65-b6b7-475f-87a8-acf0b22030c2"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        53,
+        22,
+        0,
+        15,
+        48,
+        16,
+        0,
+        15,
+        55,
+        24,
+        45,
+        15,
+        53,
+        22,
+        17,
+        15,
+        15,
+        54,
+        6,
+        15,
+        2,
+        48,
+        15,
+        15,
+        15,
+        48,
+        33,
+        15,
+        15,
+        48,
+        17
+      ],
+      "Name": "Koopatropolis",
+      "Id": "932c7365-3a01-466e-ae96-9b865dc8b72e"
     }
   ],
   "WorldInfo": [
@@ -4771,22 +4810,22 @@
       "LevelsInfo": [
         {
           "Size": 1538,
-          "Name": "Take a Dip",
+          "Name": "Waterway Wash",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
           "SublevelsInfo": [
             {
               "Size": 443,
-              "Name": "Take a Dip 2",
+              "Name": "Waterway Wash 2",
               "Id": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
               "LastModified": "2019-05-24T20:25:56.6878235-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Take a Dip 2"
+              "DisplayName": "(Level) Waterway Wash 2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Take a Dip"
+          "DisplayName": "(Level) Waterway Wash"
         },
         {
           "Size": 318,
@@ -4795,7 +4834,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2765,
+              "Size": 2762,
               "Name": "Key Coin Caverns 2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -4827,7 +4866,7 @@
           "DisplayName": "(Level) Shy Guys In Subcon"
         },
         {
-          "Size": 1738,
+          "Size": 1804,
           "Name": "Feeling Weighed Down",
           "Id": "645b2239-1a1b-4cbf-9262-49b0cb7f313e",
           "LastModified": "2019-06-20T21:07:58.5411251-04:00",
@@ -5130,72 +5169,72 @@
           "DisplayName": "(Level) Pixie Panic Switch"
         },
         {
-          "Size": 1224,
-          "Name": "World 2 Dungeon",
+          "Size": 1253,
+          "Name": "Mighty Piranha",
           "Id": "386aaa7f-9bfb-4f40-aecd-7df3ff747342",
           "LastModified": "2018-10-28T10:42:11.0749274-04:00",
           "SublevelsInfo": [
             {
-              "Size": 1845,
-              "Name": "World 2 Dungeon 2",
+              "Size": 1986,
+              "Name": "Mighty Piranha 1",
               "Id": "deae9b28-696b-4d4a-b892-b7d4edb5589c",
               "LastModified": "2018-10-28T10:42:11.0839213-04:00",
               "SublevelsInfo": [
                 {
-                  "Size": 1652,
-                  "Name": "World 2 Dungeon 3",
+                  "Size": 1577,
+                  "Name": "Mighty Piranha 2",
                   "Id": "7699038e-3420-464f-8788-ea81bf236462",
                   "LastModified": "2018-10-28T10:42:11.0949152-04:00",
                   "SublevelsInfo": [
                     {
-                      "Size": 645,
-                      "Name": "World 2 Dungeon 4",
+                      "Size": 686,
+                      "Name": "Mighty Piranha 3",
                       "Id": "4a7b88cc-cb17-46e8-b5b5-383a8bdaa0d5",
                       "LastModified": "2018-10-28T10:42:11.1059081-04:00",
                       "SublevelsInfo": [
                         {
-                          "Size": 22,
-                          "Name": "World 2 Dungeon Boss",
+                          "Size": 58,
+                          "Name": "Mighty Piranha Boss",
                           "Id": "9195cd08-2dd9-4372-a406-3ab09623c4d7",
                           "LastModified": "2018-10-28T10:42:11.1159016-04:00",
                           "SublevelsInfo": [],
                           "InfoType": 1,
-                          "DisplayName": "(Level) World 2 Dungeon Boss"
+                          "DisplayName": "(Level) Mighty Piranha Boss"
                         }
                       ],
                       "InfoType": 1,
-                      "DisplayName": "(Level) World 2 Dungeon 4"
+                      "DisplayName": "(Level) Mighty Piranha 3"
                     }
                   ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) World 2 Dungeon 3"
+                  "DisplayName": "(Level) Mighty Piranha 2"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) World 2 Dungeon 2"
+              "DisplayName": "(Level) Mighty Piranha 1"
             },
             {
               "Size": 125,
-              "Name": "World 2 Dungeon Switches",
+              "Name": "Mighty Piranha Bonus 1",
               "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
               "LastModified": "2018-10-28T10:42:11.1268955-04:00",
               "SublevelsInfo": [
                 {
                   "Size": 79,
-                  "Name": "World 2 Dungeon Switches 2",
+                  "Name": "Mighty Piranha Bonus 2",
                   "Id": "26eb57e4-ab1f-42d7-a62c-f49a01c3c1ee",
                   "LastModified": "2018-10-28T10:42:11.1378881-04:00",
                   "SublevelsInfo": null,
                   "InfoType": 1,
-                  "DisplayName": "(Level) World 2 Dungeon Switches 2"
+                  "DisplayName": "(Level) Mighty Piranha Bonus 2"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) World 2 Dungeon Switches"
+              "DisplayName": "(Level) Mighty Piranha Bonus 1"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) World 2 Dungeon"
+          "DisplayName": "(Level) Mighty Piranha"
         }
       ],
       "InfoType": 0,
@@ -5471,7 +5510,7 @@
       "LastModified": "2015-01-24T17:10:22.206-05:00",
       "LevelsInfo": [
         {
-          "Size": 2726,
+          "Size": 2619,
           "Name": "Let It Roll",
           "Id": "80a75db5-5cb8-4d03-9160-d6d5cf83c26e",
           "LastModified": "2018-10-28T10:42:10.565243-04:00",
@@ -5974,7 +6013,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 39,
+        "Size": 71,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -7498,10 +7537,10 @@
       "Value": 3,
       "Overlay": {
         "PaletteIndex": 4,
-        "UpperLeftTile": "e6",
-        "UpperRightTile": "e8",
-        "LowerLeftTile": "e7",
-        "LowerRightTile": "e9"
+        "UpperLeftTile": "e2",
+        "UpperRightTile": "e4",
+        "LowerLeftTile": "e3",
+        "LowerRightTile": "e5"
       }
     },
     {
@@ -7673,10 +7712,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 152,
+          "LowerRight": 152
         },
         {
           "Property": 0,
@@ -7757,45 +7796,45 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 166,
+          "UpperRight": 167,
+          "LowerLeft": 182,
+          "LowerRight": 183
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 166,
+          "UpperRight": 167,
+          "LowerLeft": 167,
+          "LowerRight": 254
         },
         {
           "Property": 0,
-          "UpperLeft": 155,
-          "UpperRight": 187,
-          "LowerLeft": 173,
-          "LowerRight": 238
+          "UpperLeft": 168,
+          "UpperRight": 169,
+          "LowerLeft": 254,
+          "LowerRight": 168
         },
         {
           "Property": 0,
-          "UpperLeft": 188,
-          "UpperRight": 187,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
           "LowerLeft": 238,
           "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 188,
-          "UpperRight": 156,
-          "LowerLeft": 238,
-          "LowerRight": 154
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 52,
+          "UpperRight": 53,
+          "LowerLeft": 68,
+          "LowerRight": 69
         },
         {
           "Property": 0,
@@ -7840,25 +7879,25 @@
           "LowerRight": 154
         },
         {
-          "Property": 1,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 176,
+          "LowerLeft": 176,
+          "LowerRight": 177
         },
         {
-          "Property": 1,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 0,
+          "UpperLeft": 177,
+          "UpperRight": 176,
+          "LowerLeft": 176,
+          "LowerRight": 177
         },
         {
-          "Property": 1,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 0,
+          "UpperLeft": 177,
+          "UpperRight": 238,
+          "LowerLeft": 176,
+          "LowerRight": 177
         },
         {
           "Property": 0,
@@ -7882,32 +7921,32 @@
           "LowerRight": 191
         },
         {
-          "Property": 0,
-          "UpperLeft": 157,
+          "Property": 1,
+          "UpperLeft": 160,
+          "UpperRight": 161,
+          "LowerLeft": 176,
+          "LowerRight": 177
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 238,
           "UpperRight": 238,
-          "LowerLeft": 173,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
           "Property": 0,
-          "UpperLeft": 237,
-          "UpperRight": 237,
-          "LowerLeft": 237,
-          "LowerRight": 237
+          "UpperLeft": 207,
+          "UpperRight": 207,
+          "LowerLeft": 223,
+          "LowerRight": 223
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 170,
-          "LowerLeft": 238,
-          "LowerRight": 154
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 70,
+          "UpperRight": 71,
+          "LowerLeft": 86,
+          "LowerRight": 87
         },
         {
           "Property": 1,
@@ -7946,24 +7985,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 238,
+          "UpperRight": 160,
+          "LowerLeft": 160,
+          "LowerRight": 176
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 161,
+          "UpperRight": 238,
+          "LowerLeft": 177,
+          "LowerRight": 161
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 160,
+          "UpperRight": 161,
+          "LowerLeft": 176,
+          "LowerRight": 177
         },
         {
           "Property": 0,
@@ -7995,10 +8034,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 189,
-          "UpperRight": 237,
-          "LowerLeft": 237,
-          "LowerRight": 237
+          "UpperLeft": 192,
+          "UpperRight": 193,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
           "Property": 1,
@@ -8008,7 +8047,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 1,
+          "Property": 0,
           "UpperLeft": 238,
           "UpperRight": 186,
           "LowerLeft": 238,
@@ -8022,67 +8061,67 @@
           "LowerRight": 255
         },
         {
-          "Property": 3,
-          "UpperLeft": 128,
-          "UpperRight": 129,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 162,
+          "LowerRight": 163
         },
         {
-          "Property": 3,
-          "UpperLeft": 144,
-          "UpperRight": 145,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 164,
+          "LowerRight": 163
         },
         {
-          "Property": 3,
-          "UpperLeft": 130,
-          "UpperRight": 131,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 164,
+          "LowerRight": 165
         },
         {
-          "Property": 3,
-          "UpperLeft": 146,
-          "UpperRight": 147,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 178,
+          "LowerRight": 179
         },
         {
-          "Property": 3,
-          "UpperLeft": 132,
-          "UpperRight": 133,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 2,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
-          "Property": 3,
-          "UpperLeft": 148,
-          "UpperRight": 149,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 1,
+          "UpperLeft": 160,
+          "UpperRight": 161,
+          "LowerLeft": 176,
+          "LowerRight": 177
         },
         {
-          "Property": 3,
-          "UpperLeft": 134,
-          "UpperRight": 135,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 1,
+          "UpperLeft": 194,
+          "UpperRight": 195,
+          "LowerLeft": 210,
+          "LowerRight": 211
         },
         {
-          "Property": 3,
-          "UpperLeft": 150,
-          "UpperRight": 151,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 38,
+          "UpperRight": 39,
+          "LowerLeft": 54,
+          "LowerRight": 55
         },
         {
-          "Property": 3,
-          "UpperLeft": 136,
-          "UpperRight": 137,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 255
         },
         {
           "Property": 2,
@@ -8121,17 +8160,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 162,
+          "UpperRight": 163,
+          "LowerLeft": 178,
+          "LowerRight": 179
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 164,
+          "UpperRight": 165,
+          "LowerLeft": 180,
+          "LowerRight": 181
         },
         {
           "Property": 0,
@@ -8197,7 +8236,7 @@
           "LowerRight": 221
         },
         {
-          "Property": 1,
+          "Property": 0,
           "UpperLeft": 206,
           "UpperRight": 207,
           "LowerLeft": 222,
@@ -8226,24 +8265,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 200,
+          "UpperRight": 201,
+          "LowerLeft": 216,
+          "LowerRight": 217
+        },
+        {
+          "Property": 1,
+          "UpperLeft": 163,
+          "UpperRight": 164,
+          "LowerLeft": 179,
+          "LowerRight": 180
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 78,
+          "UpperRight": 79,
+          "LowerLeft": 94,
+          "LowerRight": 95
         },
         {
           "Property": 1,
@@ -8428,11 +8467,11 @@
           "LowerRight": 30
         },
         {
-          "Property": 0,
-          "UpperLeft": 200,
-          "UpperRight": 201,
-          "LowerLeft": 216,
-          "LowerRight": 217
+          "Property": 1,
+          "UpperLeft": 202,
+          "UpperRight": 203,
+          "LowerLeft": 237,
+          "LowerRight": 237
         },
         {
           "Property": 1,
@@ -8540,39 +8579,39 @@
           "LowerRight": 154
         },
         {
-          "Property": 3,
-          "UpperLeft": 128,
-          "UpperRight": 129,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 168,
+          "UpperRight": 169,
+          "LowerLeft": 184,
+          "LowerRight": 185
         },
         {
-          "Property": 3,
-          "UpperLeft": 144,
-          "UpperRight": 145,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 239,
+          "UpperRight": 239,
+          "LowerLeft": 152,
+          "LowerRight": 152
         },
         {
-          "Property": 3,
-          "UpperLeft": 130,
-          "UpperRight": 131,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 167,
+          "LowerLeft": 167,
+          "LowerRight": 254
         },
         {
-          "Property": 3,
-          "UpperLeft": 146,
-          "UpperRight": 147,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 168,
+          "UpperRight": 238,
+          "LowerLeft": 254,
+          "LowerRight": 168
         },
         {
-          "Property": 3,
-          "UpperLeft": 132,
-          "UpperRight": 133,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 226,
+          "UpperRight": 227,
+          "LowerLeft": 242,
+          "LowerRight": 243
         },
         {
           "Property": 1,
@@ -8652,32 +8691,32 @@
           "LowerRight": 154
         },
         {
-          "Property": 3,
-          "UpperLeft": 148,
-          "UpperRight": 149,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 1,
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 250,
+          "LowerRight": 251
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 239,
+          "UpperRight": 239,
+          "LowerLeft": 239,
+          "LowerRight": 239
         },
         {
           "Property": 3,
-          "UpperLeft": 134,
-          "UpperRight": 135,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "UpperLeft": 229,
+          "UpperRight": 230,
+          "LowerLeft": 245,
+          "LowerRight": 246
         },
         {
-          "Property": 3,
-          "UpperLeft": 150,
-          "UpperRight": 151,
-          "LowerLeft": 0,
-          "LowerRight": 1
-        },
-        {
-          "Property": 3,
-          "UpperLeft": 136,
-          "UpperRight": 137,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 197,
+          "UpperRight": 198,
+          "LowerLeft": 213,
+          "LowerRight": 214
         },
         {
           "Property": 1,
@@ -8890,18 +8929,18 @@
           "LowerRight": 181
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 1,
+          "UpperLeft": 238,
+          "UpperRight": 5,
+          "LowerLeft": 5,
+          "LowerRight": 238
         },
         {
-          "Property": 4,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 1,
+          "UpperLeft": 200,
+          "UpperRight": 201,
+          "LowerLeft": 216,
+          "LowerRight": 217
         },
         {
           "Property": 1,
@@ -8918,67 +8957,67 @@
           "LowerRight": 236
         },
         {
-          "Property": 3,
-          "UpperLeft": 128,
-          "UpperRight": 129,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 192,
+          "UpperRight": 193,
+          "LowerLeft": 208,
+          "LowerRight": 209
         },
         {
-          "Property": 3,
-          "UpperLeft": 144,
-          "UpperRight": 145,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 2,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
-          "Property": 3,
-          "UpperLeft": 130,
-          "UpperRight": 131,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 160,
+          "UpperRight": 161,
+          "LowerLeft": 176,
+          "LowerRight": 177
         },
         {
-          "Property": 3,
-          "UpperLeft": 146,
-          "UpperRight": 147,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 192,
+          "UpperRight": 193,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
-          "Property": 3,
-          "UpperLeft": 132,
-          "UpperRight": 133,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 207,
+          "UpperRight": 207,
+          "LowerLeft": 223,
+          "LowerRight": 223
         },
         {
-          "Property": 3,
-          "UpperLeft": 148,
-          "UpperRight": 149,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 52,
+          "UpperRight": 53,
+          "LowerLeft": 68,
+          "LowerRight": 69
         },
         {
-          "Property": 3,
-          "UpperLeft": 134,
-          "UpperRight": 135,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 220,
+          "UpperRight": 221,
+          "LowerLeft": 193,
+          "LowerRight": 192
         },
         {
-          "Property": 3,
-          "UpperLeft": 150,
-          "UpperRight": 151,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 0,
+          "UpperLeft": 192,
+          "UpperRight": 193,
+          "LowerLeft": 193,
+          "LowerRight": 192
         },
         {
-          "Property": 3,
-          "UpperLeft": 136,
-          "UpperRight": 137,
-          "LowerLeft": 0,
-          "LowerRight": 1
+          "Property": 1,
+          "UpperLeft": 60,
+          "UpperRight": 61,
+          "LowerLeft": 76,
+          "LowerRight": 77
         },
         {
           "Property": 0,
@@ -9016,7 +9055,7 @@
           "LowerRight": 159
         },
         {
-          "Property": 0,
+          "Property": 1,
           "UpperLeft": 234,
           "UpperRight": 235,
           "LowerLeft": 250,
@@ -9024,10 +9063,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 238
         },
         {
           "Property": 0,
@@ -9128,18 +9167,18 @@
           "LowerRight": 181
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "Property": 1,
+          "UpperLeft": 56,
+          "UpperRight": 57,
+          "LowerLeft": 72,
+          "LowerRight": 73
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 255
+          "UpperLeft": 58,
+          "UpperRight": 59,
+          "LowerLeft": 74,
+          "LowerRight": 75
         },
         {
           "Property": 0,
@@ -9156,7 +9195,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
           "LowerLeft": 238,
@@ -9799,18 +9838,18 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 64,
+          "UpperLeft": 113,
+          "UpperRight": 99,
+          "LowerLeft": 239,
+          "LowerRight": 119
         },
         {
           "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 239,
+          "UpperRight": 119,
+          "LowerLeft": 116,
+          "LowerRight": 100
         },
         {
           "Property": 0,
@@ -10219,18 +10258,18 @@
           "LowerRight": 91
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 64,
+          "UpperLeft": 113,
+          "UpperRight": 99,
+          "LowerLeft": 239,
+          "LowerRight": 119
         },
         {
           "Property": 0,
-          "UpperLeft": 34,
-          "UpperRight": 35,
-          "LowerLeft": 50,
-          "LowerRight": 51
+          "UpperLeft": 239,
+          "UpperRight": 119,
+          "LowerLeft": 116,
+          "LowerRight": 100
         },
         {
           "Property": 0,
@@ -10485,18 +10524,18 @@
           "LowerRight": 119
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 64,
+          "UpperLeft": 113,
+          "UpperRight": 99,
+          "LowerLeft": 239,
+          "LowerRight": 119
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 64,
+          "UpperLeft": 239,
+          "UpperRight": 119,
+          "LowerLeft": 116,
+          "LowerRight": 100
         },
         {
           "Property": 0,
@@ -11136,18 +11175,18 @@
           "LowerRight": 84
         },
         {
-          "Property": 204,
-          "UpperLeft": 12,
-          "UpperRight": 13,
-          "LowerLeft": 28,
-          "LowerRight": 29
+          "Property": 64,
+          "UpperLeft": 113,
+          "UpperRight": 99,
+          "LowerLeft": 239,
+          "LowerRight": 119
         },
         {
-          "Property": 194,
-          "UpperLeft": 98,
-          "UpperRight": 99,
-          "LowerLeft": 28,
-          "LowerRight": 29
+          "Property": 192,
+          "UpperLeft": 239,
+          "UpperRight": 119,
+          "LowerLeft": 116,
+          "LowerRight": 100
         },
         {
           "Property": 60,
@@ -11838,11 +11877,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 66,
+          "UpperLeft": 82,
+          "UpperRight": 82,
+          "LowerLeft": 98,
+          "LowerRight": 98
         },
         {
           "Property": 0,
@@ -11951,24 +11990,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 80,
+          "UpperRight": 81,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 71,
+          "UpperRight": 15,
+          "LowerLeft": 31,
+          "LowerRight": 17
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 14,
+          "UpperRight": 15,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 0,
@@ -12070,17 +12109,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 30,
+          "UpperRight": 1,
+          "LowerLeft": 31,
+          "LowerRight": 17
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 18,
+          "UpperRight": 1,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 0,
@@ -13021,7 +13060,7 @@
           "LowerRight": 17
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
@@ -15434,17 +15473,17 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 101,
-          "UpperRight": 102,
-          "LowerLeft": 117,
-          "LowerRight": 118
+          "UpperLeft": 15,
+          "UpperRight": 94,
+          "LowerLeft": 114,
+          "LowerRight": 113
         },
         {
           "Property": 192,
-          "UpperLeft": 103,
-          "UpperRight": 104,
-          "LowerLeft": 119,
-          "LowerRight": 120
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 16,
@@ -15455,24 +15494,24 @@
         },
         {
           "Property": 64,
-          "UpperLeft": 101,
-          "UpperRight": 102,
-          "LowerLeft": 117,
-          "LowerRight": 118
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 64,
-          "UpperLeft": 103,
-          "UpperRight": 102,
-          "LowerLeft": 119,
-          "LowerRight": 118
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 64,
-          "UpperLeft": 103,
-          "UpperRight": 104,
-          "LowerLeft": 119,
-          "LowerRight": 120
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 16,
@@ -15637,24 +15676,24 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 96,
-          "UpperRight": 97,
+          "UpperLeft": 100,
+          "UpperRight": 105,
           "LowerLeft": 112,
-          "LowerRight": 68
+          "LowerRight": 113
         },
         {
           "Property": 192,
-          "UpperLeft": 98,
-          "UpperRight": 97,
+          "UpperLeft": 105,
+          "UpperRight": 116,
           "LowerLeft": 114,
-          "LowerRight": 68
+          "LowerRight": 113
         },
         {
           "Property": 192,
-          "UpperLeft": 98,
-          "UpperRight": 99,
+          "UpperLeft": 105,
+          "UpperRight": 121,
           "LowerLeft": 114,
-          "LowerRight": 84
+          "LowerRight": 115
         },
         {
           "Property": 192,
@@ -16028,25 +16067,25 @@
           "LowerRight": 121
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 16,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 76,
+          "LowerRight": 77
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 16,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 78,
+          "LowerRight": 77
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 16,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 78,
+          "LowerRight": 79
         },
         {
           "Property": 0,
@@ -16084,39 +16123,39 @@
           "LowerRight": 163
         },
         {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 255,
-          "UpperRight": 15,
+          "UpperRight": 30,
           "LowerLeft": 30,
           "LowerRight": 31
         },
         {
-          "Property": 0,
-          "UpperLeft": 94,
+          "Property": 16,
+          "UpperLeft": 111,
           "UpperRight": 255,
           "LowerLeft": 110,
           "LowerRight": 111
         },
         {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 31,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 239
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
-          "UpperLeft": 239,
+          "Property": 16,
+          "UpperLeft": 254,
           "UpperRight": 110,
-          "LowerLeft": 239,
-          "LowerRight": 239
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 31,
           "UpperRight": 110,
-          "LowerLeft": 239,
-          "LowerRight": 239
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
           "Property": 0,
@@ -16140,42 +16179,42 @@
           "LowerRight": 120
         },
         {
-          "Property": 14,
-          "UpperLeft": 198,
-          "UpperRight": 199,
-          "LowerLeft": 214,
-          "LowerRight": 215
-        },
-        {
-          "Property": 0,
+          "Property": 16,
           "UpperLeft": 255,
+          "UpperRight": 30,
+          "LowerLeft": 78,
+          "LowerRight": 126
+        },
+        {
+          "Property": 16,
+          "UpperLeft": 111,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "LowerLeft": 127,
+          "LowerRight": 77
+        },
+        {
+          "Property": 16,
+          "UpperLeft": 96,
+          "UpperRight": 97,
+          "LowerLeft": 112,
+          "LowerRight": 113
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 98,
+          "UpperRight": 97,
+          "LowerLeft": 114,
+          "LowerRight": 113
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 98,
+          "UpperRight": 99,
+          "LowerLeft": 114,
+          "LowerRight": 115
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -16217,11 +16256,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 239,
-          "UpperRight": 239,
-          "LowerLeft": 239,
-          "LowerRight": 239
+          "Property": 16,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
           "Property": 0,
@@ -16435,17 +16474,17 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 100,
-          "UpperRight": 102,
-          "LowerLeft": 116,
-          "LowerRight": 118
+          "UpperLeft": 101,
+          "UpperRight": 104,
+          "LowerLeft": 117,
+          "LowerRight": 120
         },
         {
           "Property": 192,
-          "UpperLeft": 103,
-          "UpperRight": 105,
-          "LowerLeft": 119,
-          "LowerRight": 121
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 0,
@@ -16548,23 +16587,23 @@
         {
           "Property": 192,
           "UpperLeft": 100,
-          "UpperRight": 104,
-          "LowerLeft": 116,
-          "LowerRight": 120
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 103,
-          "UpperRight": 105,
-          "LowerLeft": 119,
-          "LowerRight": 121
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 101,
-          "UpperRight": 104,
+          "UpperRight": 116,
           "LowerLeft": 117,
+          "LowerRight": 118
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 105,
+          "UpperRight": 121,
+          "LowerLeft": 119,
           "LowerRight": 120
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 64,
@@ -16645,8 +16684,8 @@
         },
         {
           "Property": 193,
-          "UpperLeft": 85,
-          "UpperRight": 85,
+          "UpperLeft": 84,
+          "UpperRight": 84,
           "LowerLeft": 14,
           "LowerRight": 14
         },
@@ -16660,16 +16699,16 @@
         {
           "Property": 192,
           "UpperLeft": 100,
-          "UpperRight": 104,
-          "LowerLeft": 116,
+          "UpperRight": 121,
+          "LowerLeft": 117,
           "LowerRight": 120
         },
         {
-          "Property": 192,
-          "UpperLeft": 101,
+          "Property": 0,
+          "UpperLeft": 100,
           "UpperRight": 105,
           "LowerLeft": 117,
-          "LowerRight": 121
+          "LowerRight": 120
         },
         {
           "Property": 0,
@@ -19260,17 +19299,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 64,
+          "UpperRight": 65,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 66,
+          "UpperRight": 67,
+          "LowerLeft": 18,
+          "LowerRight": 19
         },
         {
           "Property": 48,
@@ -19519,10 +19558,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 66,
+          "UpperRight": 65,
+          "LowerLeft": 17,
+          "LowerRight": 18
         },
         {
           "Property": 204,
@@ -29835,20 +29874,20 @@
         {
           "Property": 64,
           "UpperLeft": 64,
-          "UpperRight": 65,
+          "UpperRight": 104,
           "LowerLeft": 120,
           "LowerRight": 254
         },
         {
           "Property": 64,
-          "UpperLeft": 66,
-          "UpperRight": 65,
+          "UpperLeft": 104,
+          "UpperRight": 104,
           "LowerLeft": 254,
           "LowerRight": 254
         },
         {
           "Property": 64,
-          "UpperLeft": 66,
+          "UpperLeft": 104,
           "UpperRight": 67,
           "LowerLeft": 254,
           "LowerRight": 121
@@ -29925,7 +29964,7 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 66,
+          "UpperLeft": 104,
           "UpperRight": 126,
           "LowerLeft": 254,
           "LowerRight": 254
@@ -29933,7 +29972,7 @@
         {
           "Property": 192,
           "UpperLeft": 127,
-          "UpperRight": 66,
+          "UpperRight": 104,
           "LowerLeft": 254,
           "LowerRight": 254
         },
@@ -33933,10 +33972,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 98,
+          "UpperRight": 99,
+          "LowerLeft": 114,
+          "LowerRight": 115
         },
         {
           "Property": 0,
@@ -36739,21 +36778,21 @@
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
-          "LowerRight": 0
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 0,
-          "UpperRight": 1,
-          "LowerLeft": 1,
-          "LowerRight": 0
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 0,
-          "UpperRight": 1,
-          "LowerLeft": 1,
           "LowerRight": 17
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 2,
+          "UpperRight": 1,
+          "LowerLeft": 18,
+          "LowerRight": 17
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 2,
+          "UpperRight": 3,
+          "LowerLeft": 18,
+          "LowerRight": 19
         },
         {
           "Property": 204,
@@ -38461,10 +38500,10 @@
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x08",
+          "TileValue": "0x00",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -38475,10 +38514,10 @@
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x0A",
+          "TileValue": "0x02",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -38489,10 +38528,10 @@
           "X": 16,
           "Y": 0,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x0C",
-          "HorizontalFlip": false,
+          "TileValue": "0x02",
+          "HorizontalFlip": true,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -38503,10 +38542,10 @@
           "X": 24,
           "Y": 0,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x0E",
-          "HorizontalFlip": false,
+          "TileValue": "0x00",
+          "HorizontalFlip": true,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -38517,10 +38556,10 @@
           "X": 0,
           "Y": 16,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x28",
+          "TileValue": "0x20",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -38531,10 +38570,10 @@
           "X": 8,
           "Y": 16,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x2A",
+          "TileValue": "0x22",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -38545,10 +38584,10 @@
           "X": 16,
           "Y": 16,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x2C",
-          "HorizontalFlip": false,
+          "TileValue": "0x22",
+          "HorizontalFlip": true,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -38559,10 +38598,122 @@
           "X": 24,
           "Y": 16,
           "TileTableAddress": "0x16000",
-          "TileValue": "0x2E",
+          "TileValue": "0x24",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 32,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x08",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 32,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x0A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 16,
+          "Y": 32,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x0A",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 24,
+          "Y": 32,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x08",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 48,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x08",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 48,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x0A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 16,
+          "Y": 48,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x0A",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 24,
+          "Y": 48,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x08",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         }
@@ -50161,8 +50312,8 @@
           ],
           "X": 4,
           "Y": 0,
-          "TileTableAddress": "0x3800",
-          "TileValue": "0x3C",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x14",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -50175,8 +50326,8 @@
           ],
           "X": 17,
           "Y": 0,
-          "TileTableAddress": "0x3800",
-          "TileValue": "0x3C",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x14",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -50189,8 +50340,8 @@
           ],
           "X": 30,
           "Y": 0,
-          "TileTableAddress": "0x3800",
-          "TileValue": "0x3C",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x14",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -50203,8 +50354,8 @@
           ],
           "X": 43,
           "Y": 0,
-          "TileTableAddress": "0x3800",
-          "TileValue": "0x3C",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x14",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -51625,36 +51776,120 @@
     },
     {
       "GameId": 139,
-      "GameObjectType": 1,
-      "Name": "Unused x8B",
+      "GameObjectType": 2,
+      "Name": "Para Chomp",
       "Sprites": [
         {
-          "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "PropertiesAppliedTo": [
+            0,
+            1
+          ],
+          "X": 4,
+          "Y": 8,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x14",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "PropertiesAppliedTo": [
+            0,
+            1
+          ],
+          "X": -7,
+          "Y": -8,
+          "TileTableAddress": "0x13C00",
+          "TileValue": "0x0C",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0,
+            1
+          ],
+          "X": 15,
+          "Y": -8,
+          "TileTableAddress": "0x13C00",
+          "TileValue": "0x0C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0,
+            1
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x3800",
+          "TileValue": "0x1C",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0,
+            1
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x3800",
+          "TileValue": "0x1E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0,
+            1
+          ],
+          "X": 4,
+          "Y": 32,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x14",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0,
+            1
+          ],
+          "X": 4,
+          "Y": 56,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x14",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "Floating",
+        "Moving"
+      ],
+      "Group": "Chomps"
     },
     {
       "GameId": 140,
@@ -55098,7 +55333,9 @@
         {
           "PropertiesAppliedTo": [
             0,
-            1
+            1,
+            4,
+            5
           ],
           "X": 0,
           "Y": -6,
@@ -55113,7 +55350,9 @@
         {
           "PropertiesAppliedTo": [
             0,
-            1
+            1,
+            4,
+            5
           ],
           "X": 0,
           "Y": 10,
@@ -55128,7 +55367,9 @@
         {
           "PropertiesAppliedTo": [
             0,
-            1
+            1,
+            4,
+            5
           ],
           "X": 8,
           "Y": 10,
@@ -55143,7 +55384,9 @@
         {
           "PropertiesAppliedTo": [
             0,
-            1
+            1,
+            4,
+            5
           ],
           "X": 0,
           "Y": 26,
@@ -55158,7 +55401,9 @@
         {
           "PropertiesAppliedTo": [
             0,
-            1
+            1,
+            4,
+            5
           ],
           "X": 8,
           "Y": 26,
@@ -55173,7 +55418,9 @@
         {
           "PropertiesAppliedTo": [
             2,
-            3
+            3,
+            6,
+            7
           ],
           "X": 8,
           "Y": -6,
@@ -55188,7 +55435,9 @@
         {
           "PropertiesAppliedTo": [
             2,
-            3
+            3,
+            6,
+            7
           ],
           "X": 8,
           "Y": 10,
@@ -55203,7 +55452,9 @@
         {
           "PropertiesAppliedTo": [
             2,
-            3
+            3,
+            6,
+            7
           ],
           "X": 16,
           "Y": 10,
@@ -55218,7 +55469,9 @@
         {
           "PropertiesAppliedTo": [
             2,
-            3
+            3,
+            6,
+            7
           ],
           "X": 8,
           "Y": 26,
@@ -55233,7 +55486,9 @@
         {
           "PropertiesAppliedTo": [
             2,
-            3
+            3,
+            6,
+            7
           ],
           "X": 16,
           "Y": 26,
@@ -55247,7 +55502,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            0
+            0,
+            4
           ],
           "X": -16,
           "Y": 8,
@@ -55261,7 +55517,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            0
+            0,
+            4
           ],
           "X": -8,
           "Y": 8,
@@ -55275,7 +55532,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            1,
+            5
           ],
           "X": 16,
           "Y": 8,
@@ -55289,7 +55547,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            1,
+            5
           ],
           "X": 24,
           "Y": 8,
@@ -55303,7 +55562,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            2
+            2,
+            6
           ],
           "X": 8,
           "Y": -16,
@@ -55317,7 +55577,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            2
+            2,
+            6
           ],
           "X": 16,
           "Y": -16,
@@ -55331,7 +55592,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            3
+            3,
+            7
           ],
           "X": 8,
           "Y": 32,
@@ -55345,7 +55607,8 @@
         },
         {
           "PropertiesAppliedTo": [
-            3
+            3,
+            7
           ],
           "X": 16,
           "Y": 32,
@@ -55362,7 +55625,11 @@
         "Troopa Left",
         "Troopa Right",
         "Troopa Up",
-        "Troopa Down"
+        "Troopa Down",
+        "Troopa Left Limit 1",
+        "Troopa Right Limit 1",
+        "Troopa Up Limit 1",
+        "Troopa Down Limit 1"
       ],
       "Group": "Common"
     },

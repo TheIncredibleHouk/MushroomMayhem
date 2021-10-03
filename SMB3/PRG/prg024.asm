@@ -1517,7 +1517,7 @@ PRG024_ACA5:
 	INC <Title_State ; Title_State++
 Title_PrepForWorldMap:
 	; World_Num = 0 (World 1)
-	LDA #$05
+	LDA #$00
 	STA World_Num
 
 	INC Force_StatusBar_Init

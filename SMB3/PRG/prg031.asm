@@ -2007,8 +2007,13 @@ IntIRQ:	 ; $F795 IRQ Interrupt (scanline from MMC3)
 	; Save all registers
 	PHP		 ; Push processor status onto stack
 	PHA		 ; Push accumulator onto stack
+
+    LDA #$00	 ; X = 0
+	STA PPU_CTL2	 ; Sprites + BG invisible		
+
 	TXA		 ; Reg X -> A
 	PHA		 ; Push A (X) onto stack
+	
 	TYA		 ; Reg Y -> A
 	PHA		 ; Push A (Y) onto stack
 
@@ -2065,20 +2070,6 @@ IntIRQ_Vertical:
 	STA MMC3_IRQENABLE ; Active IRQ
 	LDY #$0b	 ; Y = $0B
 
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-
-	LDX #$00	 ; X = 0
-	; Unknown hardware thing?  Is this for synchronization?
-	STX PPU_CTL2	 ; Sprites + BG invisible
-
 	LDA #$3F
 	STA PPU_VRAM_ADDR
 	STA StatusBar_Recolored
@@ -2126,25 +2117,6 @@ IntIRQ_Vertical:
 
 	LDA #MMC3_1K_TO_PPU_1000
 	STA MMC3_COMMAND
-
-
-	; Use blank tiles for all sprite graphics
-	;LDA SpriteHideCHR_1000
-	;STA MMC3_PAGE
-	;LDA #MMC3_1K_TO_PPU_1400
-	;STA MMC3_COMMAND
-	;LDA SpriteHideCHR_1400
-	;STA MMC3_PAGE
-	;LDA #MMC3_1K_TO_PPU_1800
-	;STA MMC3_COMMAND
-	LDA #$08	 ; 
-	STA PPU_CTL2	 ; Sprites + BG now visible
-	;LDA SpriteHideCHR_1800
-	;STA MMC3_PAGE	
-	;LDA #MMC3_1K_TO_PPU_1C00
-	;STA MMC3_COMMAND	
-	;LDA SpriteHideCHR_1C00
-	;STA MMC3_PAGE
 	 
 	JMP PRG031_F8B3
 
@@ -2201,6 +2173,9 @@ IntIRQ_Finish_NoDis:
 	PLA		 ; Restore A (PAPU_MODCTL_Copy)
 	STA PAPU_MODCTL	 ; Set DMC back to normal
 
+	LDA #$08	 ; 
+	STA PPU_CTL2	 ; Sprites + BG now visible
+	
 	; Restore the other registers
 	PLA
 	TAY

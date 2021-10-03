@@ -836,7 +836,7 @@ JumpControl_RTS:
 ;	An odd X position causes the wind to blow right.
 ;***********************************************************************************
 
-Weather_Patterns: .byte $7B, $7B, $55, $5F, $5D, $5D 
+Weather_Patterns: .byte $7B, $7B, $5F, $5F, $5D, $5D 
 Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
 Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
 Sand_XVel: .byte $06, $07, $0A, $09, $06, $08, $08, $08
@@ -918,8 +918,7 @@ DontReverseWind1:
 	RTS
 
 Wind_Speed = Objects_Data1
-Wind_ExtraVel = Objects_Data10
-Wind_ExtraVelCarry = Objects_Data11
+Wind_ExtraVel = Objects_Data2
 
 ObjNorm_Weather:
 
@@ -985,9 +984,7 @@ DoNextParticle:
 	RTS
 
 MoveSingleParticle:	
-
 	LDA Weather_XPos, Y
-	ADD Weather_XVel, Y
 	ADD Wind_ExtraVel, X
 	STA Weather_XPos, Y
 

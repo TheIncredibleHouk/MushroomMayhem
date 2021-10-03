@@ -42,36 +42,9 @@ Object_BoundBox:
 	.byte  1,  14,   1,  32	; A BOUND16x32 (16x32)
 	.byte  1,  14,   1,  32	; A BOUND16x32TALL (16x32)
 	.byte  1,  14,   1,  38	; C BOUND16x48
-	.byte  0,  47,   0,  15	; D 
+	.byte  4,  27,   2,  60	; E BOUND32x64
 	.byte  4,  27,   2,  28	; E BOUND32x32
 	.byte  4,  44,   4,  40	; F BOUND48x48
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; SpecialObject_FindEmptyAbort
-; SpecialObject_FindEmptyAbortY
-;
-; Finds an empty special object slot (returned in 'Y') or "aborts" 
-; if no slot is open OR if the object has any horizontal sprite visibility
-; "abort" = will not return to caller...
-;
-; SpecialObject_FindEmptyAbortY just allows a specified range
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $C447
-SpecialObject_FindEmptyAbort:
-	LDY #$05
-
-SpecialObject_FindEmptyAbortY:
-	LDA SpecialObj_ID,Y
-	BEQ PRG000_C454	 ; If object slot is dead/empty, jump to PRG000_C454 
-	DEY		 ; Y--
-	BPL SpecialObject_FindEmptyAbortY	 ; While Y >= 0, loop!
-
-PRG000_C451:
-	; Do not return to caller!!
-	PLA
-	PLA
-	RTS
 
 SpecialObject_FindEmpty:
 
@@ -90,14 +63,6 @@ SpecialObject_FindEmptyNext:
 SpecialObject_FindEmptyFound:
 	SEC
 	RTS
-
-PRG000_C454:
-	LDA Objects_SpritesHorizontallyOffScreen,X
-	ORA Objects_SpritesVerticallyOffScreen,X
-
-	BNE PRG000_C451	 ; If any sprites are off-screen, jump to PRG000_C451
-
-	RTS		 ; Return
 
 	; Checks for and handles object touching conveyor belt, storing result into LRBounce_Vel
 ; $CF46
@@ -3409,6 +3374,7 @@ PRG000_D82B:
 
 ; $D83B
 Object_InteractWithPlayer:
+	STA Debug_Snap
 	LDA Objects_Timer2, X
 	BEQ Object_CheckInteraction
 
@@ -3642,125 +3608,6 @@ HITTEST_TOP		= 08
 Object_DetectTail:
 	LDY #$0A
 	JMP Object_DetectObjects
-
-
-;Object_XDistanceFromObject:
-	;LDA Objects_BoundRight, X
-	;SUB Objects_BoundLeft, X
-	;LSR A
-	;ADD Objects_BoundLeft, X
-	;STA <Temp_Var1
-
-	;LDA Objects_BoundLeftHi, X
-	;ADC #$00
-	;STA <Temp_Var2
-
-	;LDA Objects_BoundRight, Y 
-	;SUB Objects_BoundLeft, Y 
-	;LSR A
-	;ADD Objects_BoundLeft, Y 
-	;STA <Temp_Var3
-
-	;LDA Objects_BoundLeftHi, Y 
-	;ADC #$00
-	;STA <Temp_Var4
-
-	;LDA <Temp_Var1
-	;SUB <Temp_Var3
-	;STA <XDiff
-
-	;LDA <Temp_Var2
-	;SBC <Temp_Var4
-	;BMI Object_ToRight
-
-	;CMP #$01
-	;BNE Object_ToLeft1
-
-	;LDA #$FF
-	;STA <XDiff
-
-Object_ToLeft1:
-	;LDY #$00
-	;STY <XDiffLeftRight
-
-	;LDA <XDiff
-	;RTS
-
-Object_ToRight:
-	;CMP #$FE
-	;BNE Object_ToRight1
-
-	;LDA #$01
-	;STA <XDiff
-
-Object_ToRight1:
-	;LDY #$01
-	;STY <XDiffLeftRight
-
-	;LDA <XDiff
-	;EOR #$FF
-	;ADD #$01
-	;STA <XDiff
-	;RTS
-
-;Object_YDistanceFromObject:
-	;LDA Objects_BoundBottom, X
-	;SUB Objects_BoundTop, X
-	;LSR A
-	;ADD Objects_BoundTop, X
-	;STA <Temp_Var1
-
-	;LDA Objects_BoundTopHi, X
-	;ADC #$00
-	;STA <Temp_Var2
-
-	;LDA Objects_BoundBottom, Y
-	;SUB Objects_BoundTop, Y
-	;LSR A
-	;ADD Objects_BoundTop, Y
-	;STA <Temp_Var3
-
-	;LDA Objects_BoundTopHi, Y
-	;ADC #$00
-	;STA <Temp_Var4
-
-	;LDA <Temp_Var1
-	;SUB <Temp_Var3
-	;STA <YDiff
-
-	;LDA <Temp_Var2
-	;SBC <Temp_Var4
-	;BMI Object_ToBottom
-
-	;CMP #$01
-	;BNE Object_ToTop1
-
-	;LDA #$FF
-	;STA <YDiff
-
-Object_ToTop1:
-	;LDY #$00
-	;STY <YDiffAboveBelow
-	
-	;LDA <YDiff
-	;RTS
-
-Object_ToBottom:
-	;CMP #$FE
-	;BNE Object_ToBottom1
-
-	;LDA #$01
-	;STA <YDiff
-
-Object_ToBottom1:
-	;LDY #$01
-	;STY <YDiffAboveBelow
-
-	;LDA <YDiff
-	;EOR #$FF
-	;ADD #$01
-	;STA <YDiff
-	;RTS
 
 Object_DetectPlayer:
 	LDA Objects_BeingHeld, X
@@ -5510,6 +5357,7 @@ KillEnemy1:
 
 
 Objects_BeingHeld = Objects_Data14
+
 Object_Hold:
 	LDA Player_Shell
 	BNE Object_HoldRTS
@@ -5625,13 +5473,6 @@ Object_Explode:
 
 	LDA #OBJSTATE_INIT
 	STA Objects_State, X
-
-	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
-	BMI Object_Explode1
-
-	LDA Level_ObjectsSpawned,Y
-	AND #$7f
-	STA Level_ObjectsSpawned,Y
 
 Object_Explode1:
 	RTS

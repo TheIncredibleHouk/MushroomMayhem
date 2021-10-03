@@ -4929,8 +4929,7 @@ Map_LoadObjects:
 	STA Map_Objects_Y, X
 
 	JSR Next_World_Byte
-
-	;STA Debug_Snap
+	
 	LDA [Temp_Var1], Y
 	AND #$0F
 	ASL A

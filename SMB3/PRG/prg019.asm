@@ -208,7 +208,7 @@ PRG005_B91E:
 
 	LDA <Spawn_Dynamically
 	STA Objects_DynamicallySpawned, X
-
+	
 	; Set object X
 	LDA <Temp_Var1
 	STA <Objects_XZ,X

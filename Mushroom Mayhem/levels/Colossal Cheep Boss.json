@@ -6,7 +6,7 @@
   "MusicValue": 80,
   "ScreenLength": 1,
   "StartX": 7,
-  "StartY": 3,
+  "StartY": 2,
   "PaletteEffect": 2,
   "PaletteId": "6f7d568d-baf8-4d2f-b613-c0b116278530",
   "StaticTileTableIndex": 16,
@@ -6499,12 +6499,6 @@
   ],
   "ObjectData": [
     {
-      "GameObjectId": 0,
-      "X": 7,
-      "Y": 3,
-      "Property": 0
-    },
-    {
       "GameObjectId": 19,
       "X": 8,
       "Y": 10,
@@ -6514,7 +6508,7 @@
       "GameObjectId": 195,
       "X": 13,
       "Y": 0,
-      "Property": 3
+      "Property": 7
     }
   ],
   "LevelPointers": [],

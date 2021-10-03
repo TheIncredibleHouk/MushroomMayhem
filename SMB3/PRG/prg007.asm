@@ -370,9 +370,6 @@ Player_FireTiles2:
 
 	JSR Projectile_TempChange
 
-	LDA SpecialObj_Data3, X
-	BNE SpecialObj_FireTiles2
-
 	LDA Tile_DetectionX
 	AND #$F0
 	STA SpecialObj_X, X
@@ -1009,9 +1006,13 @@ SpecialObj_Draw8x16:
 
 	LDA SpecialObj_Y,X
 	SUB Level_VertScroll
-	CMP #$F8
+	CMP #$F0
+	BCS SpecialObj_Draw8x160
+
+	CMP #$C0
 	BCS SpecialObj_Draw8x161
 
+SpecialObj_Draw8x160:
 	STA Sprite_RAM+$00,Y
 
 	LDA SpecialObj_X,X
@@ -3909,9 +3910,12 @@ GoombaGen_Make:
 GoombaGeneratorRTS:
 	RTS
 
-TroopaXOffset:		.byte $00, $00, $08, $08
-TroopaYOffset:		.byte $FC, $FC, $00, $00
-					.byte $FF, $FF, $00, $00
+TroopaXOffset:		.byte $00, $00, $08, $08, $00, $00, $08, $08
+TroopaYOffset:		.byte $FC, $FC, $00, $00, $FC, $FC, $00, $00
+					.byte $FF, $FF, $00, $00, $FF, $FF, $00, $00
+
+TroopaLimit:
+	.byte $03, $03, $03, $03, $01, $01, $01, $01					
 
 ObjectGen_Troopa:
 	LDA ObjectGenerator_Timer, X
@@ -3929,8 +3933,9 @@ TroopaGen_Make:
 
 	JSR CheckObjectsOfType
 
+	LDY <CurrentObjectIndexZ
 	LDA <Num_Objects
-	CMP #$03
+	CMP TroopaLimit, Y
 	BCS TroopaGeneratorRTS
 
 	JSR PrepareNewObjectOrAbort

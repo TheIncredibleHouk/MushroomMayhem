@@ -1650,6 +1650,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_TailDirection:	.ds 1	; While Player is sliding, this is added to X Velocity (does not persist, however)
 
 	Player_IsClimbing:	.ds 1	; Set when Player is climing vine
+	Player_IsClimbingObject: .ds 1;
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
 	Player_HitCeiling:	.ds 1	; Flag set when Player has just hit head off ceiling
 	Player_HitWall: .ds 1
@@ -1887,8 +1888,6 @@ SPRITE_3_VINVISIBLE = $08
 
 	Objects_Data4:		.ds 8	; $0689-$0690 Generic variable 1 for objects
 	Objects_Data5:		.ds 8	; $0691-$0698 Generic variable 2 for objects
-
-	BossBoundBox:		.ds 1
 
 	; UNUSED Bonus Game Die counter
 	; While the die is rotating, just used as a counter 0 to 3 to time the rolling animation.
@@ -3374,7 +3373,7 @@ OAT_BOUNDBOX09		= $09
 BOUND16x32			= $0A
 BOUND16x32TALL		= $0B
 BOUND16x48		= $0C
-OAT_BOUNDBOX13		= $0D
+BOUND32X64		= $0D
 BOUND32x32			= $0E
 BOUND48x48			= $0F
 OAT_BOUNDBOXMASK	= %00001111	; Not intended for use in attribute table, readability/traceability only

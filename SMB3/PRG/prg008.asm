@@ -6200,6 +6200,12 @@ Climbing_XVel: .byte $00, $10, $F0, $00
 Climbing_YVel: .byte $00, $10, $F0, $00
 
 Player_HandleClimbing:
+	LDA Player_IsClimbingObject	
+	BEQ Player_HandleClimbingCheck
+	STA Player_IsClimbing
+	JMP Player_DoClimbing
+
+Player_HandleClimbingCheck:
 	LDA Player_InWater
 	ORA Player_IsHolding
 	ORA Player_FireDash
@@ -6235,6 +6241,7 @@ Player_DoClimbing:
 
 	LDA #$00
 	STA Player_IsClimbing
+	STA Player_IsClimbingObject
 	JMP DIRECT_TO_JUMP
 
 Player_DoClimbing1:
@@ -6283,6 +6290,9 @@ Player_DoClimbing2:
 
 Player_DoClimbing1_1:
 	STA <Temp_Var10
+
+	LDA Player_IsClimbingObject
+	BNE Player_DoClimbing2_0
 
 	JSR Player_GetTileAndSlope
 	AND #$0F

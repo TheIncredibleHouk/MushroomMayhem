@@ -1292,7 +1292,7 @@ SnowBall_Move:
 	JSR Object_CalcBoundBox
 	JSR Object_FaceDirectionMoving
 	JSR Object_InteractWithPlayer
-	JSR Shell_KillOthers
+	;JSR Shell_KillOthers
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 

@@ -123,7 +123,7 @@ OBJ_MONTYMOLE		= $38
     .byte OPTS_SETPT5 | $36         ; Object $30
     .byte OPTS_NOCHANGE         ; Object $31
     .byte OPTS_SETPT5 | $0B	    ; Object $32
-	.byte OPTS_SETPT5 | $36	    ; Object $33
+	.byte OPTS_NOCHANGE		    ; Object $33
 	.byte OPTS_SETPT5 | $0B     ; Object $34
 	.byte OPTS_NOCHANGE         ; Object $35
 	.byte OPTS_NOCHANGE         ; Object $36
@@ -1579,7 +1579,7 @@ Swing_Draw:
 	LDA <Point_RelativeY
 	STA Sprite_RAMY + 24, Y
 
-	LDA #$A5
+	LDA #$55
 	STA Sprite_RAMTile + 24, Y
 
 	LDA #SPR_PAL2 | SPR_BEHINDBG
@@ -1595,7 +1595,7 @@ Swing_DrawAttach:
 	STA <Point_XHi
 
 	LDA <Objects_YZ, X
-	SUB #$10
+	SUB #$09
 	STA <Point_Y
 
 	LDA <Objects_YHiZ, X
@@ -1611,7 +1611,7 @@ Swing_DrawAttach:
 	LDA <Point_RelativeY
 	STA Sprite_RAMY + 28, Y
 
-	LDA #$A7
+	LDA #$A5
 	STA Sprite_RAMTile + 28, Y
 
 	LDA #SPR_PAL2 | SPR_BEHINDBG

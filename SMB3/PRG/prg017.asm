@@ -1,5 +1,15 @@
 	.org $A000
 
+ObjGiant_Mirror:
+	LDY Object_SpriteRAMOffset, X
+	LDA Sprite_RAMAttr + 8, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 8, Y
+	STA Sprite_RAMAttr + 12, Y
+	STA Sprite_RAMAttr + 24, Y
+	STA Sprite_RAMAttr + 28, Y
+	RTS
+
 ObjNorm_Boss:
 	
 	LDA Objects_Property, X
@@ -666,15 +676,27 @@ Boss_CheepMakeFishRTS:
 
 Boss_CheepNextStage:
 	
-
 Giant_PiranhaSprites:
-	.byte $81, $83, $85, $87, $A1, $A3, $A5, $A7
-	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
+	.byte $C1, $C3, $C3, $C1, $E1, $E3, $E3, $E1
+	.byte $C5, $C7, $C7, $C5, $E5, $E7, $E7, $E5
+	
+
+Giant_PiranhaStemSprites:
+	.byte $C9, $CB, $CB, $C9, $C9, $CB, $CB, $C9
+	.byte $C9, $CB, $CB, $C9, $C9, $CB, $CB, $C9
 
 Giant_PiranhaAction = Objects_Data1
 Giant_PiranhaFrames = Objects_Data2
-Giant_PiranhaAttackTicker = Objects_Data3
-Giant_PiranhaTicker = Objects_Data4
+Giant_PiranhaTicker = Objects_Data3
+Giant_PiranhaSnowAttack = Objects_Data4
+Giant_PiranhaTopLeftProp = Objects_Data5
+Giant_PiranhaTopRightProp = Objects_Data6
+Giant_PiranhaChompGrab = Objects_Data7
+Giant_PiranhaChompIndex = Objects_Data8
+Giant_PiranhaSpawnTimer = Objects_Data10
+Giant_PiranhaHits = Objects_Data11
+Giant_PiranhaFreezeBlocks = Objects_Data12
+Giant_PiranhaBlocksBroken = Objects_Data13
 
 Giant_Piranha:
 	LDA <Player_HaltGameZ
@@ -682,36 +704,48 @@ Giant_Piranha:
 
 	JMP Giant_PiranhaDraw
 
+Giant_PiranhaRTS:	
+	RTS
+
 Giant_PiranhaNorm:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Giant_PiranhaNorm1
+
+	LDA #$80
+	STA Objects_Timer2, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	INC Giant_PiranhaHits, X
+
+Giant_PiranhaNorm1:
+	JSR Giant_PiranhaSpawnChomp
+
 	LDA Giant_PiranhaAction, X
 	JSR DynJump
 
 	.word Giant_PiranhaInit
 	.word Giant_WaitUnder
 	.word Giant_PiranhaAttackUp
+	.word Giant_PiranhaWait
 	.word Giant_PiranhaAttackDown
+	.word Giant_PiranhaFreezeBridge
+	.word Giant_PiranhaDie
 
 Giant_PiranhaInit:
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
 
-	LDA #SPR_BEHINDBG
-	STA Objects_Orientation, X
-
 	LDA #ATTR_STOMPPROOF
 	STA Objects_WeaponAttr, X
 	
-	LDA #$C0
+	LDA #$E0
 	STA <Objects_YZ, X
 
 	LDA #$00
 	STA <Objects_YHiZ, X
-
-	LDA #$F0
-	STA ChaseVel_LimitLo, X
-
-	LDA #$10
-	STA ChaseVel_LimitHi, X
 
 	LDA #$04
 	STA Objects_Health, X
@@ -720,9 +754,20 @@ Giant_PiranhaInit:
 
 	LDA #$80
 	STA Objects_Timer, X
+
+	LDA #$10
+	STA Objects_SpritesRequested, X
+
+	LDA #$20
+	STA Giant_PiranhaSpawnTimer, X
+
+	LDA #BOUND32X64
+	STA Objects_BoundBox, X
 	RTS
 
+
 Giant_WaitUnder:
+
 	LDA Objects_Timer, X
 	BNE Giant_WaitUnder1
 
@@ -730,66 +775,150 @@ Giant_WaitUnder:
 
 	LDA Player_X
 	AND #$F0
-
 	STA <Objects_XZ, X
 
 Giant_WaitUnder1:
-	RTS
+	JMP Giant_PiranhaDraw
+
 
 Giant_PiranhaAttackUp:
 	LDA #$C0
 	STA <Objects_YVelZ, X
 
-	JSR Object_Move
+	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
+	LDA Giant_PiranhaHits, X
+	CMP #$02
+	BCC Giant_PiranhaAttackUp0
+	
+	JSR Giant_PiranhaBreakBlocks
+
+Giant_PiranhaAttackUp0:
 	LDA <Objects_YZ, X
-	CMP #$90
+	CMP #$88
 	BCS Giant_PiranhaAttackUpRTS
 
-	LDA #$40
+	LDA #$20
 	STA Objects_Timer, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+	
 	INC Giant_PiranhaAction, X
 
 Giant_PiranhaAttackUpRTS:
 	JMP Giant_PiranhaAnimate
 
-Giant_PiranhaBurstBlocks:
-	LDA <Objects_XZ, X
-	ADD #$08
-	STA Block_DetectX
+Giant_PiranhaWait:	
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Giant_PiranhaDetectChomps
 
-	LDA #$00
-	STA Block_DetectXHi
+	LDA Objects_Timer, X
+	BNE Giant_PiranhaWaitDraw
 
+	INC Giant_PiranhaAction, X
+	
+	LDA Giant_PiranhaHits, X
+	CMP #$04
+	BCC Giant_PiranhaWait1
+
+	LDA #$06
+	STA Giant_PiranhaAction, X
+	
+	LDA #$40
+	STA Objects_Timer2, X
+	
+Giant_PiranhaWait1:	
+	LDA #$20
+	STA Objects_Timer, X
+
+Giant_PiranhaWaitDraw:	
+	JMP Giant_PiranhaAnimate
 
 Giant_PiranhaAttackDown:
-	LDA Objects_Timer, X
-	BNE Giant_PiranhaAttackDownRTS
-
-	LDA #$40
-	STA <Objects_YVelZ, X
-
-	JSR Object_Move
+	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
+	LDA Giant_PiranhaChompGrab, X
+	BEQ Giant_PiranhaNoPull
+
+	LDY Giant_PiranhaChompIndex, X
+	LDA Objects_YZ, Y
+	ADD #$02
+	STA Objects_YZ, Y
+
+	LDA Objects_YHiZ, Y
+	ADC #$00
+	STA Objects_YHiZ, Y
+
+	DEC Giant_PiranhaChompGrab, X
+
+Giant_PiranhaNoPull:	
+	LDA #$20
+	STA <Objects_YVelZ, X
+
 	LDA <Objects_YZ, X
-	CMP #$C0
+	CMP #$E0
 	BCC Giant_PiranhaAttackDownRTS
 
+	LDA Objects_Timer2, X
+	BNE Giant_PiranhaHitAction
+
+Giant_Stage3:
 	LDA #$01
-	STA  Giant_PiranhaAction, X
+	STA Giant_PiranhaAction, X
 
 	LDA #$80
 	STA Objects_Timer, X
 
+	LDA #$00
+	STA Giant_PiranhaChompGrab, X
+
+	JSR Giant_PiranhaReverseSnow
+
 Giant_PiranhaAttackDownRTS:
 	JMP Giant_PiranhaAnimate
+	
+Giant_PiranhaHitAction:	
+	LDA #$04
+	STA Objects_Health, X
 
+	LDA Giant_PiranhaHits, X
+
+	JSR DynJump
+
+	.word Giant_Stage1
+	.word Giant_Stage2
+	.word Giant_Stage3
+	.word Giant_Stage4
+
+Giant_Stage1:
+Giant_Stage2:
+	LDA #$0F
+	STA Giant_PiranhaFreezeBlocks, X
+	
+	LDA #$05
+	STA Giant_PiranhaAction, X
+	RTS
+
+Giant_Stage4:
+	JSR Giant_PiranhaSpawnWeather
+
+	LDA #$05
+	STA Giant_PiranhaAction, X
+	RTS
+
+Giant_PiranhaPalettes:
+	.byte SPR_PAL2, SPR_PAL3
 
 Giant_PiranhaAnimate:
+	LDA Giant_PiranhaChompGrab, X
+	BNE Giant_PiranhaPaletteFlash
+
 	INC Giant_PiranhaFrames, X
 	LDA Giant_PiranhaFrames, X
 	AND #$08
@@ -797,6 +926,16 @@ Giant_PiranhaAnimate:
 	LSR A
 	LSR A
 	STA Objects_Frame, X
+
+Giant_PiranhaPaletteFlash:
+	LDA Objects_Timer2, X
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Giant_PiranhaPalettes, Y
+	STA Objects_SpriteAttributes, X
 
 Giant_PiranhaDraw:
 	LDA #LOW(Giant_PiranhaSprites)
@@ -806,10 +945,349 @@ Giant_PiranhaDraw:
 	STA <Giant_TilesHi
 
 	LDA #$58
-	STA PatTable_BankSel + 4
+	STA PatTable_BankSel + 5
 
 	LDA Objects_Orientation, X
 	AND #~SPR_VFLIP
 	STA Objects_Orientation, X
 
-	JMP Object_DrawGiant
+	JSR Object_DrawGiant
+	JSR ObjGiant_Mirror
+
+	LDA #LOW(Giant_PiranhaStemSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Giant_PiranhaStemSprites)
+	STA <Giant_TilesHi
+
+	LDA <Objects_YZ, X
+	ADD #$20
+	STA <Objects_YZ, X
+
+	LDA Object_SpriteRAMOffset, X
+	ADD #$20
+	STA Object_SpriteRAMOffset, X
+
+	JSR Object_DrawGiant
+	JSR ObjGiant_Mirror
+
+
+	LDA <Objects_YZ, X
+	SUB #$20
+	STA <Objects_YZ, X
+	RTS
+
+Giant_PiranhaDetectChomps:
+	LDY #$04
+
+Giant_PiranhaDetectChomps1:
+	CPY CurrentObjectIndexZ
+	BEQ Giant_PiranhaDetectChomps2
+	
+	LDA Objects_State, Y
+	CMP #OBJSTATE_NORMAL
+	BNE Giant_PiranhaDetectChomps2
+
+	LDA Objects_ID, Y
+	CMP #OBJ_PARACHOMP
+	BEQ Giant_ParaChompDetect
+
+Giant_PiranhaDetectChomps2:
+	DEY
+	BPL Giant_PiranhaDetectChomps1
+	RTS
+
+Giant_ParaChompDetect:	
+	JSR Object_DetectObjects
+	BCC Giant_ParaChompDetectRTS
+
+	LDA ParaChomp_HitDetection, Y
+	BEQ Giant_ParaChompKilled
+
+	LDA #$00
+	STA Objects_YVelZ, Y
+	STA ParaChomp_Frame, Y
+	STA Objects_Frame, X
+
+	LDA #$20
+	STA Giant_PiranhaChompGrab, X
+
+	TYA
+	STA Giant_PiranhaChompIndex, X
+
+Giant_ParaChompDetectRTS:	
+	RTS	
+
+Giant_ParaChompKilled:
+	TYA
+	TAX
+
+	JSR Object_GetKilled
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
+
+	LDX <CurrentObjectIndexZ
+
+	LDA #$60
+	STA Objects_Timer2, X
+
+	INC Giant_PiranhaHits, X
+
+	LDA #$00
+	STA Player_IsClimbingObject
+	RTS
+	
+Giant_PiranhaSpawnPoints:
+	.byte $30, $50, $70, $90, $B0, $40, $60, $80
+
+Giant_PiranhaSpawnChomp:
+	LDA Giant_PiranhaSpawnTimer, X
+	BEQ Giant_PiranhaCheckChomps
+
+	CMP #$01
+	BNE Giant_PiranhaNoSpawn
+
+	JSR Object_FindEmptyY
+	BCC Giant_PiranhaSpawnChompRTS
+
+	LDA #OBJ_PARACHOMP
+	STA Objects_ID, Y
+
+	LDA #$00
+	STA Objects_ExpPoints, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA RandomN, Y
+	AND #$07
+	TAX
+
+	LDA Giant_PiranhaSpawnPoints, X
+	STA Objects_XZ, Y
+	STA <Poof_X
+
+	LDA #$40
+	STA Objects_YZ, Y
+	STA <Poof_Y
+
+	LDA #$00
+	STA Objects_XHiZ, Y
+	STA Objects_YHiZ, Y
+
+	JSR Common_MakePoof
+
+	LDA <Poof_Y
+	ADD #$18
+	STA <Poof_Y
+
+	JSR Common_MakePoof
+
+	LDA <Poof_Y
+	ADD #$18
+	STA <Poof_Y
+	
+	JSR Common_MakePoof
+
+	LDX <CurrentObjectIndexZ
+
+Giant_PiranhaNoSpawn:
+	DEC Giant_PiranhaSpawnTimer, X
+
+Giant_PiranhaSpawnChompRTS:	
+	RTS	
+
+Giant_PiranhaCheckChomps:
+	LDY #$04
+
+Giant_PiranhaCheckChomps0:
+	LDA Objects_State, Y
+	BEQ Giant_PiranhaCheckChomps1
+
+	LDA Objects_ID, Y
+	CMP #OBJ_PARACHOMP
+	BEQ Giant_PiranhaCheckChompsRTS
+	
+Giant_PiranhaCheckChomps1:
+	DEY
+	BPL Giant_PiranhaCheckChomps0
+
+Giant_PiranhaCheckChomps2:
+	LDA #$80
+	STA Giant_PiranhaSpawnTimer, X
+
+Giant_PiranhaCheckChompsRTS:
+	RTS	
+
+Giant_PiranhaFreezeBridge:
+	LDA Objects_Timer, X
+	BNE Giant_PiranhaFreezeBridgeRTS
+
+	LDA #$52
+	STA Block_UpdateValue
+	STA Block_NeedsUpdate	 ; Store type of block change!
+
+	LDA Giant_PiranhaFreezeBlocks, X
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA Block_ChangeX
+	STA <Poof_X
+
+	LDA #$B0		; Align to nearest grid coordinate
+	STA Block_ChangeY
+	STA <Poof_Y
+
+	LDA #$00
+	STA Block_ChangeXHi
+	STA Block_ChangeYHi
+
+	JSR Common_MakePoof
+
+	LDA #$08
+	STA Objects_Timer, X 
+
+	DEC Giant_PiranhaFreezeBlocks, X
+	BPL Giant_PiranhaFreezeBridgeRTS
+
+	LDA #$01
+	STA Giant_PiranhaAction, X
+
+	LDA #$80
+	STA Objects_Timer, X 
+
+Giant_PiranhaFreezeBridgeRTS:	
+	RTS
+
+Giant_PiranhaBreakBlocks:
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Block_DetectX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Block_DetectXHi
+
+	LDA <Objects_YZ, X
+	ADD #$20
+	STA Block_DetectY
+	
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Block_DetectYHi
+	
+	JSR Object_DetectTile
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SLICK)
+	BEQ Giant_PiranhaBreakBlock
+
+Giant_PiranhaBreakBlocks1:
+	LDA Block_DetectX
+	ADD #$10
+	STA Block_DetectX
+
+	LDA Block_DetectXHi
+	ADC #$00
+	STA Block_DetectXHi
+
+	JSR Object_DetectTile
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SLICK)
+	BEQ Giant_PiranhaBreakBlock
+
+Giant_PiranhaBreakBlocks2:	
+	RTS
+
+Giant_PiranhaBreakBlock:
+	LDA Giant_PiranhaBlocksBroken, X
+	CMP #$04
+	BCS Giant_PiranhaBreakBlockRTS
+
+	INC Giant_PiranhaBlocksBroken, X
+	LDA #$41
+	JSR Object_ChangeBlock
+
+	LDA Tile_DetectionX
+	STA Debris_X
+	
+	LDA Tile_DetectionY
+	STA Debris_Y
+
+	JSR Common_MakeIce
+
+Giant_PiranhaBreakBlockRTS:	
+	RTS	
+
+Giant_PiranhaSpawnWeather:
+	JSR Object_FindEmptyY
+	BCC Giant_PiranhaSpawnWeatherRTS
+
+	LDA #OBJ_WEATHER
+	STA Objects_ID, Y
+
+	LDA #$01
+	STA Objects_Property, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA #$C0
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_YHiZ, Y
+	STA Objects_XHiZ, Y
+
+Giant_PiranhaSpawnWeatherRTS:
+	RTS	
+
+Giant_PiranhaReverseSnow:
+	LDY #$04
+
+Giant_PiranhaReverseSnow1:	
+	LDA Objects_ID, Y
+	CMP #OBJ_WEATHER
+	BEQ Giant_PiranhaReverseSnow2
+
+	DEY
+	BPL Giant_PiranhaReverseSnow1
+	RTS	
+
+Giant_PiranhaReverseSnow2:	
+	LDA Wind_Speed, Y
+	JSR Negate
+	STA Wind_Speed, Y
+
+	LDA Wind_ExtraVel, Y
+	JSR Negate
+	STA Wind_ExtraVel, Y
+	RTS
+
+Giant_PiranhaDie:
+	LDA Objects_Timer2, X
+	BNE Giant_PiranhaDieRTS
+
+	LDA #$80
+	STA CompleteLevelTimer
+
+	LDA #$18
+	STA Objects_Timer,X
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$64
+	STA Exp_Earned
+
+	JSR Object_Explode
+	
+	LDA #$FF
+	STA Objects_Timer2, X
+	RTS
+
+Giant_PiranhaDieRTS:
+	LDA #$80
+	STA Giant_PiranhaSpawnTimer, X
+	JMP Giant_PiranhaAnimate

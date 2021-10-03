@@ -1,6 +1,6 @@
 {
   "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
-  "Name": "World 2 Dungeon Switches",
+  "Name": "Mighty Piranha Bonus 1",
   "TileSetIndex": 2,
   "ClearTileIndex": 144,
   "MusicValue": 64,
@@ -10,6 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "212e8375-7a01-4327-87d2-7aee5f7bcf6d",
   "StaticTileTableIndex": 16,
+  "MostCommonTile": 0,
   "AnimationType": 0,
   "ScrollType": 3,
   "Effects": 0,

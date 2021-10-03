@@ -3213,7 +3213,6 @@ MapObj_DrawAndEnter:
 
 	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
 
-	STA Debug_Snap
 	; Set Y for map object sprite
 	ADD Map_Object_ActY,X
 	STA Sprite_RAM+$98,Y
@@ -4007,7 +4006,6 @@ Map_MarkLevelComplete:
 	RTS
 
 Map_Object_CheckVisibility:
-	;STA Debug_Snap
 	; For a given object, check if it's visible on the map.  This value is
 	; stored into the Map_Objects_Vis array
 	; X is the index to the map object we need to work with!

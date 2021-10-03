@@ -20,6 +20,7 @@ OBJ_MISSILE			= $87
 OBJ_PHASM			= $88
 OBJ_BOOWAVE			= $89
 OBJ_POKEY			= $8A
+OBJ_PARACHOMP		= $8B
 
     .word ObjInit_Spike ; Object $78
     .word ObjInit_SpikeBall ; Object $79
@@ -40,7 +41,7 @@ OBJ_POKEY			= $8A
     .word ObjInit_Phasm ; Object $88
     .word ObjInit_BooWave ; Object $89
     .word ObjInit_Pokey ; Object $8A
-    .word ObjInit_DoNothing ; Object $8B
+    .word ObjInit_ParaChomp ; Object $8B
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
@@ -63,7 +64,7 @@ OBJ_POKEY			= $8A
     .word ObjNorm_Phasm ; Object $88
     .word ObjNorm_BooWave ; Object $89
     .word ObjNorm_Pokey ; Object $8A
-    .word ObjNorm_DoNothing ; Object $8B
+    .word ObjNorm_ParaChomp ; Object $8B
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -86,7 +87,7 @@ OBJ_POKEY			= $8A
     .word ObjHit_DoNothing ; Object $88
     .word ObjHit_DoNothing ; Object $89
     .word ObjHit_DoNothing ; Object $8A
-    .word ObjHit_DoNothing ; Object $8B
+    .word Player_GetHurt ; Object $8B
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ;****************************** OBJECT PALETTE/SIZE ******************************
@@ -109,7 +110,7 @@ OBJ_POKEY			= $8A
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $89
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8A
-    .byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16 ; Object $8B
+    .byte OA1_PAL1 | OA1_HEIGHT64 | OA1_WIDTH24 ; Object $8B
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -132,7 +133,7 @@ OBJ_POKEY			= $8A
     .byte OPTS_SETPT5 | $37 ; Object $88
     .byte OPTS_SETPT5 | $37 ; Object $89
     .byte OPTS_SETPT5 | $37 ; Object $8A
-    .byte OPTS_NOCHANGE ; Object $8B
+    .byte OPTS_SETPT5 | $0E ; Object $8B
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
@@ -237,7 +238,8 @@ ObjP8A:
 	.byte $B9, $BB
 
 ObjP8B:
-
+	.byte $91, $93
+	.byte $9D, $9F
 
 Spike_XOff:
 	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
@@ -3887,3 +3889,301 @@ PRG004_BE54C:
 	TAX
 	CLC		 ; Clear carry (link is visible)
 	RTS		 ; Return	
+
+ObjInit_ParaChomp:
+	LDA #$07
+	STA Objects_SpritesRequested, X
+
+	LDA #$04
+	STA Objects_Health, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_STOMPPROOF | ATTR_TAILPROOF |  ATTR_NINJAPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #ATTR_BUMPNOKILL
+	STA Objects_BehaviorAttr, X
+
+ParaChomp_Reset:
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+	LDA #$01
+	STA Patrol_YVelocityChange, X
+
+	LDA #$04
+	STA Patrol_YAccelLimit, X
+
+	LDA #$10
+	STA Patrol_ResetTimer, X
+	RTS
+
+
+ParaChomp_Frame = Objects_Data1
+ParaChomp_Grabbed = Objects_Data2
+ParaChomp_HitDetection = Objects_Data3
+	
+ObjNorm_ParaChomp:
+	LDA <Objects_XZ, X
+	LDA <Objects_XHiZ, X
+	LDA <Objects_YZ, X
+	LDA <Objects_YHiZ, X
+
+	LDA <Player_HaltGameZ
+	BEQ ParaChomp_Norm
+
+	JMP ParaChomp_Draw
+
+ParaChomp_Norm:	
+	LDA ParaChomp_Grabbed, X
+	BEQ ParaChomp_NotGrabbed
+
+	LDA #$F8
+	STA <Objects_YVelZ, X
+	STA Player_CarryYVel
+
+	JSR Object_ApplyYVel_NoGravity
+	JMP ParaChomp_DoInteract
+
+ParaChomp_NotGrabbed:	
+	JSR PatrolUpDown
+
+ParaChomp_DoInteract:	
+	JSR ParaChomp_Interact
+	JSR ParaChomp_DetectTiles
+
+ParaChomp_Animate:
+	INC ParaChomp_Frame, X
+	LDA ParaChomp_Frame, X
+	LSR A
+	LSR A
+
+	LDY ParaChomp_Grabbed, X
+	BNE ParaChomp_Slow
+
+	LSR A
+
+ParaChomp_Slow:
+	AND #$01
+	LDX <CurrentObjectIndexZ
+	STA Objects_Frame, X
+
+ParaChomp_Draw:
+	JSR Object_Draw
+
+ParaChomp_DrawChains:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_0_HINVISIBLE
+	BNE ParaChomp_DrawWings
+
+	LDA Objects_SpriteX, X
+	ADD #$04
+	BCC ParaChomp_FirstChain
+	JMP ParaChomp_DrawWings
+
+ParaChomp_FirstChain:
+	STA Sprite_RAMX+8, Y
+	STA Sprite_RAMX+12, Y
+	STA Sprite_RAMX+16, Y
+
+	LDA Objects_SpritesVerticallyOffScreen, X
+	AND #SPRITE_1_VINVISIBLE
+	BNE ParaChomp_SecondChain
+
+	LDA Objects_SpriteY, X
+	ADD #$08
+	STA Sprite_RAMY + 8, Y
+
+ParaChomp_SecondChain:
+	LDA Objects_SpritesVerticallyOffScreen, X
+	AND #SPRITE_2_VINVISIBLE
+	BNE ParaChomp_ThirdChain
+
+	LDA Objects_SpriteY, X
+	ADD #32
+	STA Sprite_RAMY + 12, Y
+
+ParaChomp_ThirdChain:
+	LDA Objects_SpritesVerticallyOffScreen, X
+	AND #SPRITE_3_VINVISIBLE
+	BNE ParaChomp_ChainTiles
+
+	LDA Objects_SpriteY, X
+	ADD #56
+	STA Sprite_RAMY + 16, Y
+
+ParaChomp_ChainTiles:
+	LDA #$55
+	STA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 12, Y
+	STA Sprite_RAMTile + 16, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr + 8, Y
+	STA Sprite_RAMAttr + 12, Y
+	STA Sprite_RAMAttr + 16, Y
+
+ParaChomp_DrawWings:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_0_HINVISIBLE
+	BNE ParaChomp_RightWing
+
+	LDA Sprite_RAMY, Y
+	SUB #$08
+	STA Sprite_RAMY + 20, Y
+
+	LDA Sprite_RAMX,Y
+	SUB #$04
+	STA Sprite_RAMX + 20,Y
+
+ParaChomp_RightWing:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #SPRITE_2_HINVISIBLE
+	BNE ParaChomp_DrawWingsAttr
+
+	LDA Sprite_RAMY + 4, Y
+	SUB #$08
+	STA Sprite_RAMY + 24, Y
+
+	LDA Sprite_RAMX + 4,Y
+	ADD #$05
+	STA Sprite_RAMX + 24,Y
+
+ParaChomp_DrawWingsAttr:
+	LDA Objects_SpriteAttributes, X
+	ORA Objects_Orientation, X
+	AND #(SPR_BEHINDBG | SPR_VFLIP)
+	ORA #SPR_PAL1
+	STA Sprite_RAMAttr + 24,Y
+
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 20,Y
+
+	LDA Objects_Frame,X
+
+	LDX #$CD
+	AND #$01
+	BNE ParaChomp_DrawWings3	
+
+	LDX #$CF
+
+ParaChomp_DrawWings3:
+	TXA		 
+	STA Sprite_RAMTile + 20, Y
+	STA Sprite_RAMTile + 24, Y
+
+ParaChomp_DrawWingsRTS:
+	LDX <CurrentObjectIndexZ
+	RTS
+
+ParaChomp_Interact:
+	LDA ParaChomp_HitDetection, X
+	EOR #$01
+	STA ParaChomp_HitDetection, X
+
+	JSR ParaChomp_CalcBoundBox
+	JSR Object_DeleteOffScreen
+	JSR Object_DetectPlayer
+	BCC ParaChomp_NoInteract
+
+	JMP ParaChomp_PlayerInteract
+	
+ParaChomp_NoInteract:
+	LDA ParaChomp_HitDetection, X
+	BEQ ParaChomp_NoInteractRTS
+
+	LDA ParaChomp_Grabbed, X
+	BEQ ParaChomp_NoInteractRTS
+
+	JSR ParaChomp_Reset
+	
+	LDA #$00
+	STA Player_IsClimbingObject
+	STA ParaChomp_Grabbed, X
+
+ParaChomp_NoInteractRTS:	
+	RTS
+
+ParaChomp_CalcBoundBox:
+	LDA ParaChomp_HitDetection, X
+
+	JSR DynJump
+
+	.word Object_CalcBoundBoxForced
+	.word ParaChomp_ChainBoundBox
+
+ParaChomp_PlayerInteract:
+	LDA ParaChomp_HitDetection, X
+	
+	JSR DynJump
+
+	.word Player_GetHurt
+	.word ParaChomp_ChainGrab
+
+ParaChomp_DetectTiles:
+	LDA ParaChomp_HitDetection, X
+	
+	JSR DynJump
+
+	.word ParaChomp_TileInteract
+	.word ParaChomp_NoInteractRTS
+
+ParaChomp_ChainBoundBox:
+	LDA <Objects_XZ,X
+	ADD #$08
+	STA Objects_BoundLeft, X
+	STA Objects_BoundRight, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_BoundLeftHi, X
+	STA Objects_BoundRightHi, X
+
+	LDA <Objects_YZ,X
+	ADD #$10
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Objects_BoundTopHi, X
+
+	LDA <Objects_YZ,X
+	ADD #$40
+	STA Objects_BoundBottom, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+	RTS		 ; Return
+
+ParaChomp_ChainGrab:
+	LDY #$00
+	LDA <Pad_Holding
+	AND #(PAD_DOWN | PAD_UP)
+	BEQ ParaChomp_ChainGrabRTS
+
+	STA Player_IsClimbingObject
+	STA ParaChomp_Grabbed, X
+
+ParaChomp_ChainGrabRTS:	
+	RTS	
+
+ParaChomp_TileInteract:
+	JSR Object_DetectTileTopEdge
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	BNE ParaChomp_TileInteractRTS
+
+	JSR Object_GetKilled
+	
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
+
+	LDA #$00
+	STA Player_IsClimbingObject
+	STA Player_CarryYVel
+
+ParaChomp_TileInteractRTS:
+	RTS
