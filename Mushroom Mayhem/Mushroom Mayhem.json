@@ -1293,21 +1293,21 @@
       "Renamed": false,
       "IndexedColors": [
         15,
-        15,
+        6,
         48,
         33,
         15,
-        12,
-        48,
-        28,
+        8,
+        56,
+        24,
         15,
-        2,
-        32,
-        17,
+        11,
+        59,
+        27,
         15,
-        0,
-        48,
-        16,
+        6,
+        54,
+        22,
         15,
         15,
         54,
@@ -4759,6 +4759,45 @@
       ],
       "Name": "Koopatropolis",
       "Id": "932c7365-3a01-466e-ae96-9b865dc8b72e"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        15,
+        48,
+        33,
+        15,
+        12,
+        48,
+        28,
+        15,
+        2,
+        32,
+        17,
+        15,
+        0,
+        48,
+        16,
+        15,
+        15,
+        54,
+        6,
+        15,
+        7,
+        48,
+        22,
+        15,
+        15,
+        48,
+        33,
+        15,
+        15,
+        48,
+        17
+      ],
+      "Name": "Mighty Podobo",
+      "Id": "21243e86-d0ce-4884-954c-43b841a44600"
     }
   ],
   "WorldInfo": [
@@ -5366,6 +5405,25 @@
           "SublevelsInfo": null,
           "InfoType": 1,
           "DisplayName": "(Level) World 3 to 4"
+        },
+        {
+          "Size": 68,
+          "Name": "Mammoth Podobo",
+          "Id": "722b743a-8d6d-400a-b1ae-067b8c99dd36",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [
+            {
+              "Size": 0,
+              "Name": "Mammoth Podobo 2",
+              "Id": "29767657-d82d-4e47-93fa-d711ee3e6c48",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Mammoth Podobo 2"
+            }
+          ],
+          "InfoType": 1,
+          "DisplayName": "(Level) Mammoth Podobo"
         }
       ],
       "InfoType": 0,
@@ -11884,18 +11942,18 @@
           "LowerRight": 98
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 33,
+          "UpperRight": 36,
+          "LowerLeft": 49,
+          "LowerRight": 52
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 40,
+          "UpperRight": 41,
+          "LowerLeft": 56,
+          "LowerRight": 57
         },
         {
           "Property": 0,
@@ -12311,25 +12369,25 @@
           "LowerRight": 147
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 71,
+          "UpperRight": 15,
+          "LowerLeft": 31,
+          "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 14,
+          "UpperRight": 15,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 0,
+          "UpperRight": 1,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 0,
@@ -12423,18 +12481,18 @@
           "LowerRight": 163
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 30,
+          "UpperRight": 1,
+          "LowerLeft": 31,
+          "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 18,
+          "UpperRight": 1,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 0,
@@ -12675,11 +12733,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 49,
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
           "Property": 0,
@@ -12787,10 +12845,10 @@
           "LowerRight": 20
         },
         {
-          "Property": 0,
+          "Property": 49,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperRight": 238,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
@@ -58017,7 +58075,7 @@
       },
       {
         "Key": "40",
-        "Value": "NoneFortress"
+        "Value": "Fortress"
       },
       {
         "Key": "50",

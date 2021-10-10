@@ -38,7 +38,7 @@ Object_BoundBox:
 	.byte  0,  32,  0,  16	; BOUND32x16BLOCK
 	.byte  1,  14,   4,   26; 16x28 BOUND16x28
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
-	.byte  2,  20,   2,  28	; 9
+	.byte  2,  22,   2,  22	; 9 BOUND24X24
 	.byte  1,  14,   1,  32	; A BOUND16x32 (16x32)
 	.byte  1,  14,   1,  32	; A BOUND16x32TALL (16x32)
 	.byte  1,  14,   1,  38	; C BOUND16x48

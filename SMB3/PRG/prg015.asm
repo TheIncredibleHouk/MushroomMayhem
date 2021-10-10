@@ -1854,17 +1854,17 @@ Thwomp_DrawRTS:
     
 
 
-ObjInit_AngryThwomp:
+ObjInit_Wallop:
 	LDA #$06
 	STA Objects_SpritesRequested, X
 
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	LDA #(ATTR_ALLWEAPONPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
-	LDA #BOUND24x32
+	LDA #BOUND24X24
 	STA Objects_BoundBox, X
 
 	LDA #$03
@@ -1929,27 +1929,25 @@ AngryThwomp_DoAction:
 
 	JSR DynJump
 
-	.word Thwomp_FallToGround
-	.word AngryThwompWait
-	.word Thwomp_FallToCeiling
-	.word AngryThwompWait
+	.word Wallop_Slide
+	.word Wallop_Wait
 
-AngryThwompWait:
+Wallop_Wait:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
 	LDA Objects_Timer, X
-	BNE AngryThwompWaitRTS
+	BNE Wallop_WaitRTS
 
 	LDA Objects_SpritesVerticallyOffScreen,X
 	AND #(SPRITE_1_VINVISIBLE)
-	BNE AngryThwompWaitRTS
+	BNE Wallop_WaitRTS
 
 	JSR Object_XDistanceFromPlayer
 
 	LDA <XDiff
 	CMP #$40
-	BCS AngryThwompWaitRTS
+	BCS Wallop_WaitRTS
 
 	INC Thwomp_Action, X
 	LDA Objects_Frame, X
@@ -1959,11 +1957,11 @@ AngryThwompWait:
 	LDA #$00
 	STA Thwomp_TilesDetected, X
 
-AngryThwompWaitRTS:
+Wallop_WaitRTS:
 	JMP Thwomp_Draw
 
 
-Thwomp_FallToCeiling:
+Wallop_Slide:
 	INC Reverse_Gravity
 	JSR Object_Move
 	JSR Object_CalcBoundBox

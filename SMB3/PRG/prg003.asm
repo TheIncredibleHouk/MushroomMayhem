@@ -18,6 +18,7 @@ OBJ_CHECKPOINT		= $35
 OBJ_CLOUDGEN		= $36
 OBJ_COINALERT		= $37
 OBJ_MONTYMOLE		= $38
+OBJ_WALLOP 			= $39
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
 	.word ObjInit_WoodenPlatVert    ; Object $29
@@ -2303,4 +2304,12 @@ MontyMole_Flipped:
 	STA Sprite_RAMX - 8, Y
 
 MontyMole_DrawRTS:
+	RTS
+
+ObjInit_Wallop:
+
+	RTS
+
+ObjNorm_Wallop:
+
 	RTS
