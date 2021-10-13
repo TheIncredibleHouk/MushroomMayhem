@@ -4085,13 +4085,13 @@ Level_QueueChangeBlock:
 ; faster than the cap value (PLAYER_MAXSPEED)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ForceDirection:
-	.byte $10, $F0
+	.byte $F0, $10
 
 Player_ApplyXVelocity:
 	LDA Player_ForcedSlide
 	BEQ Player_ApplyXVelocity1
 
-	LDY Player_PrevXDirection
+	LDY Player_LastDirection
 	LDA ForceDirection, Y
 	STA <Player_CarryXVel
 
@@ -4892,7 +4892,9 @@ SetLastScrollDirection:
 	LDA <Horz_Scroll
 	CMP LastHorzScroll
 	BEQ SetLastScrollDirection2
+
 	SUB LastHorzScroll
+
 	LDA <Horz_Scroll_Hi
 	SBC LastHorzScrollHi
 	BPL SetLastScrollDirection1

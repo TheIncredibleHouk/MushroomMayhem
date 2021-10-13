@@ -1293,17 +1293,17 @@
       "Renamed": false,
       "IndexedColors": [
         15,
-        6,
+        12,
         48,
-        33,
+        28,
         15,
-        8,
+        7,
         56,
-        24,
+        23,
         15,
+        15,
+        26,
         11,
-        59,
-        27,
         15,
         6,
         54,
@@ -1323,7 +1323,7 @@
         15,
         15,
         48,
-        17
+        0
       ],
       "Name": "World 2 Dungeon",
       "Id": "212e8375-7a01-4327-87d2-7aee5f7bcf6d"
@@ -5009,19 +5009,19 @@
           "DisplayName": "(Level) Rhythm and Blocks"
         },
         {
-          "Size": 1056,
+          "Size": 1067,
           "Name": "Colossal Cheep",
           "Id": "22a5a5e5-ccc5-4f9a-abb9-3ae0525d987a",
           "LastModified": "2019-06-20T19:27:00.954171-04:00",
           "SublevelsInfo": [
             {
-              "Size": 1090,
+              "Size": 1100,
               "Name": "Colossal Cheep1",
               "Id": "2ba384ff-285b-4f6a-a2f6-3f67ee5efb7f",
               "LastModified": "2019-06-20T19:27:03.4900571-04:00",
               "SublevelsInfo": [
                 {
-                  "Size": 1070,
+                  "Size": 1064,
                   "Name": "Colossal Cheep 2",
                   "Id": "63773480-3fc7-4967-87e0-e790a3154044",
                   "LastModified": "2019-06-20T19:27:05.89715-04:00",
@@ -5407,17 +5407,27 @@
           "DisplayName": "(Level) World 3 to 4"
         },
         {
-          "Size": 68,
+          "Size": 227,
           "Name": "Mammoth Podobo",
           "Id": "722b743a-8d6d-400a-b1ae-067b8c99dd36",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 0,
+              "Size": 1066,
               "Name": "Mammoth Podobo 2",
               "Id": "29767657-d82d-4e47-93fa-d711ee3e6c48",
               "LastModified": "0001-01-01T00:00:00",
-              "SublevelsInfo": [],
+              "SublevelsInfo": [
+                {
+                  "Size": 1122,
+                  "Name": "Mammoth Podobo 3",
+                  "Id": "7008e137-6afa-4850-9e0f-8da4c8a31391",
+                  "LastModified": "0001-01-01T00:00:00",
+                  "SublevelsInfo": [],
+                  "InfoType": 1,
+                  "DisplayName": "(Level) Mammoth Podobo 3"
+                }
+              ],
               "InfoType": 1,
               "DisplayName": "(Level) Mammoth Podobo 2"
             }
@@ -6071,7 +6081,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 71,
+        "Size": 110,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -11382,18 +11392,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 33,
+          "UpperRight": 34,
+          "LowerLeft": 49,
+          "LowerRight": 50
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 35,
+          "UpperRight": 36,
+          "LowerLeft": 51,
+          "LowerRight": 52
         },
         {
           "Property": 194,
@@ -11480,7 +11490,7 @@
           "LowerRight": 23
         },
         {
-          "Property": 0,
+          "Property": 64,
           "UpperLeft": 2,
           "UpperRight": 2,
           "LowerLeft": 255,
@@ -11495,10 +11505,10 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 33,
+          "UpperRight": 36,
+          "LowerLeft": 49,
+          "LowerRight": 52
         },
         {
           "Property": 192,
@@ -11739,18 +11749,18 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 79,
+          "UpperLeft": 110,
+          "UpperRight": 111,
+          "LowerLeft": 126,
+          "LowerRight": 127
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 96,
+          "LowerRight": 97
         },
         {
           "Property": 0,
@@ -11796,10 +11806,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -11837,18 +11847,18 @@
           "LowerRight": 95
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 33,
+          "UpperRight": 34,
+          "LowerLeft": 49,
+          "LowerRight": 50
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 35,
+          "UpperRight": 36,
+          "LowerLeft": 51,
+          "LowerRight": 52
         },
         {
           "Property": 0,
@@ -12369,21 +12379,21 @@
           "LowerRight": 147
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 71,
           "UpperRight": 15,
           "LowerLeft": 31,
           "LowerRight": 17
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 14,
           "UpperRight": 15,
           "LowerLeft": 16,
           "LowerRight": 17
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
@@ -12481,14 +12491,14 @@
           "LowerRight": 163
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 30,
           "UpperRight": 1,
           "LowerLeft": 31,
           "LowerRight": 17
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 18,
           "UpperRight": 1,
           "LowerLeft": 16,
@@ -12673,8 +12683,8 @@
           "Property": 0,
           "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 150,
-          "LowerRight": 151
+          "LowerLeft": 96,
+          "LowerRight": 97
         },
         {
           "Property": 79,
@@ -12741,24 +12751,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 192,
+          "UpperRight": 193,
+          "LowerLeft": 208,
+          "LowerRight": 209
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 64,
+          "UpperLeft": 2,
+          "UpperRight": 2,
+          "LowerLeft": 208,
+          "LowerRight": 209
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "Property": 64,
+          "UpperLeft": 2,
+          "UpperRight": 2,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -22408,7 +22418,7 @@
       "FireBallInteractions": [
         219,
         218,
-        0,
+        202,
         0,
         0,
         0,
@@ -48407,36 +48417,84 @@
     },
     {
       "GameId": 93,
-      "GameObjectType": 1,
-      "Name": "Unused x5D",
+      "GameObjectType": 2,
+      "Name": "Smash",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "X": 4,
+          "Y": 8,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x04",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
+          "X": 12,
+          "Y": 8,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 20,
+          "Y": 8,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x04",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 4,
+          "Y": 24,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x08",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 12,
+          "Y": 24,
+          "TileTableAddress": "0x4800",
           "TileValue": "0x0A",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 20,
+          "Y": 24,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x08",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Fortress"
     },
     {
       "GameId": 94,

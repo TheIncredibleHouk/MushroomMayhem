@@ -29,7 +29,7 @@ OBJ_BOSS			= $13
 	.word ObjInit_Bubble	; Object $07
 	.word ObjInit_Key		; Object $08
 	.word ObjInit_Spring	; Object $09
-	.word ObjInit_ModifyPointers ; Object $0A
+	.word ObjInit_DoNothing ; Object $0A
 	.word ObjInit_SendBack	; Object $0B
 	.word ObjInit_MagicStar1 ; Object $0C
 	.word ObjInit_MagicStar2 ; Object $0D
@@ -1959,20 +1959,6 @@ Sprint_InsideBlock:
 PointerDataOffset:
 	.byte $06, $0C, $12, $18
 
-ObjInit_ModifyPointers:
-	JSR Object_NoInteractions
-
-	LDY World_Num
-
-	LDA BossLevel_CheckPoint, Y
-	TAY
-
-	LDA PointerDataOffset, Y
-	TAY
-
-	LDA Pointers, Y
-	STA Pointers + 6
-	RTS		
 
 
 ;***********************************************************************************

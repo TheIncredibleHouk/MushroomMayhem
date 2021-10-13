@@ -4615,7 +4615,7 @@ Next_Column:
 
 ClearPointers:
 	LDX #59
-	LDA #$00
+	LDA #$FF
 
 ClearPointerLoop:
 	STA Pointers, X
@@ -5059,7 +5059,7 @@ Try_Replace_Tile1:
 
 
 Find_Applicable_Pointer:
-
+	
 	;;; find proper pointer now
 	LDA <Player_X
 	LSR A
@@ -5067,6 +5067,7 @@ Find_Applicable_Pointer:
 	LSR A
 	LSR A
 	STA <Temp_Var1
+
 	LDA <Player_XHi
 	ASL A
 	ASL A
@@ -5074,12 +5075,14 @@ Find_Applicable_Pointer:
 	ASL A
 	ORA <Temp_Var1
 	STA <Temp_Var2
+
 	LDA <Player_YZ
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA <Temp_Var1
+
 	LDA <Player_YHiZ
 	ASL A
 	ASL A
@@ -5099,10 +5102,12 @@ FindPointerLoop:
 	DEX
 	DEX
 	DEX
+
 	LDA <Temp_Var2
 	SUB Pointers + 1, X
 	CMP #$02
 	BCS NextPointer
+
 	LDA Pointers + 2, X
 	SUB <Temp_Var3
 	CMP #$03
@@ -5115,8 +5120,9 @@ NextPointer:
 	RTS
 
 Do_Pointer_Effect:
+	STA Debug_Snap
 	JSR Find_Applicable_Pointer	 ; Initialize level junction
-	
+
 	LDA <Temp_Var1
 	BPL UsePointer
 

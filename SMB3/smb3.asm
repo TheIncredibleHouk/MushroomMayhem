@@ -1327,7 +1327,7 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	Object_WallStops:	.ds 1;
 	Object_CeilingStops: .ds 1
 	Player_ForcedSlide:	.ds 1
-	Player_PrevXDirection:	ds 1
+	Player_PrevVel:	ds 1
 	RhythmPlatformEnabed: .ds 1
 	RhythmPlatformInitiated: .ds 1
 	RhythmKeeper:		.ds 5;
@@ -3105,7 +3105,6 @@ TILE_ITEM_SPINNER	= $FE
 	PreviousLevel:		.ds 1
 	ForcedSwitch:       .ds 1
 	NegaStars:			.ds 8
-	BossLevel_CheckPoint:		.ds 8
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
@@ -3369,7 +3368,7 @@ BOUND24x32			= $05
 BOUND32x16BLOCK		= $06
 BOUND16x28			= $07
 BOUND48x16			= $08
-BOUND24X24			= $09
+BOUND24x24			= $09
 BOUND16x32			= $0A
 BOUND16x32TALL		= $0B
 BOUND16x48		= $0C

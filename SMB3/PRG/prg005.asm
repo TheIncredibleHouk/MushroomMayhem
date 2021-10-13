@@ -14,6 +14,7 @@ OBJ_SPARK           = $59
 OBJ_BOBOMB          = $5A
 OBJ_FLOATMINE       = $5B
 OBJ_PANSER			= $5C
+OBJ_SMASH			= $5D
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51
@@ -28,7 +29,7 @@ OBJ_PANSER			= $5C
     .word ObjInit_BobOmb ; Object $5A
     .word ObjInit_FloatMine ; Object $5B
     .word ObjInit_Panser ; Object $5C
-    .word ObjInit_DoNothing ; Object $5D
+    .word ObjInit_Smash ; Object $5D
     .word ObjInit_DoNothing ; Object $5E
     .word ObjInit_DoNothing ; Object $5F
     .word ObjInit_DoNothing ; Object $60
@@ -52,7 +53,7 @@ OBJ_PANSER			= $5C
 	.word ObjNorm_BobOmb ; Object $5A
 	.word ObjNorm_FloatMine ; Object $5B
 	.word ObjNorm_Panser ; Object $5C
-	.word ObjNorm_DoNothing ; Object $5D
+	.word ObjNorm_Smash ; Object $5D
 	.word ObjNorm_DoNothing ; Object $5E
 	.word ObjNorm_DoNothing ; Object $5F
 	.word ObjNorm_DoNothing ; Object $60
@@ -98,7 +99,7 @@ OBJ_PANSER			= $5C
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5A
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $5B
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $5C
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5D
+	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH24 ; Object $5D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5E
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5F
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $60
@@ -121,7 +122,7 @@ OBJ_PANSER			= $5C
 	.byte OPTS_SETPT5 | $0A ; Object $5A
 	.byte OPTS_SETPT5 | $1A ; Object $5B
 	.byte OPTS_SETPT5 | $7E; Object $5C
-	.byte OPTS_NOCHANGE ; Object $5D
+	.byte OPTS_SETPT5 | $12 ; Object $5D
 	.byte OPTS_NOCHANGE ; Object $5E
 	.byte OPTS_NOCHANGE ; Object $5F
 	.byte OPTS_NOCHANGE ; Object $60
@@ -144,7 +145,7 @@ OBJ_PANSER			= $5C
 	.byte KILLACT_STARDEATH ; Object $5A
 	.byte KILLACT_STARDEATH ; Object $5B
 	.byte KILLACT_STARDEATH ; Object $5C
-	.byte KILLACT_STARDEATH ; Object $5D
+	.byte KILLACT_NORMALSTATE ; Object $5D
 	.byte KILLACT_STARDEATH ; Object $5E
 	.byte KILLACT_STARDEATH ; Object $5F
 	.byte KILLACT_STARDEATH ; Object $60
@@ -228,6 +229,9 @@ ObjP5C:
 	.byte $83, $83, $A1, $A3 ; walk frame 1 petals opened
 
 ObjP5D:
+	.byte $85, $87
+	.byte $89, $8B
+
 ObjP5E:
 ObjP5F:
 ObjP60:
@@ -3209,3 +3213,295 @@ Panser_NoFire:
 
 Panser_SpitFireRTS:
 	RTS
+
+
+ObjInit_Smash:
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND24x24
+	STA Objects_BoundBox, X
+
+	LDA #$01
+	STA Smash_XAccel, X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Objects_YZ, X
+	RTS		 ; Return
+
+
+Smash_Action = Objects_Data1
+Smash_XAccel = Objects_Data2
+Smash_PoofMaker = Objects_Data3
+
+Smash_DetectXOffset:
+	.byte $05, $14
+
+ObjNorm_Smash:
+	LDA <Player_HaltGameZ
+	BEQ Smash_Normal
+
+	JMP Smash_Draw
+
+Smash_Normal:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Smash_DoAction
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Debris_X
+
+	LDA <Objects_YZ, X
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+	
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA Objects_SpriteAttributes, X
+	STA BrickBust_Pal, Y
+	
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+	LDA #BRICK_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA Objects_SpriteAttributes, X
+	STA BrickBust_Pal, Y
+	JMP Object_SetDeadAndNotSpawned
+
+Smash_DoAction:
+	JSR Object_DeleteOffScreen
+
+	LDA Smash_Action, X
+	JSR DynJump
+
+	.word Smash_Wait
+	.word Smash_Slide
+
+Smash_InteractWithPlayer:
+	JSR Object_DetectPlayer
+	BCC Smash_InteractWithPlayerRTS
+	
+	LDA <HitTest_Result
+	AND #(HITTEST_BOTTOM)
+	BEQ Smash_SolidInteract
+
+	LDA <Objects_XVelZ, X
+	STA Player_CarryXVel
+
+	LDA Player_BoundBottom
+	SUB Objects_BoundTop, X
+	CMP #$04
+	BCC Smash_SolidInteract
+
+	JSR Player_GetHurt
+
+Smash_SolidInteract:	
+	JSR ObjHit_SolidBlock
+
+Smash_InteractWithPlayerRTS:	
+	RTS
+
+Smash_SlideXAccel:
+	.byte $FF, $01
+
+Smash_Wait:
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	JSR Object_CalcBoundBox
+	JSR Smash_Draw
+	JSR Object_Move
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Smash_InteractWithPlayer
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Smash_Wait2
+
+	LDA Objects_PreviousTilesDetect, X
+	AND #HIT_GROUND
+	BNE Smash_Wait1
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1	
+
+	LDA #$10
+	STA Level_Vibration
+
+Smash_Wait1:
+	LDA Objects_Timer, X
+	BEQ Smash_Reverse
+	JMP Smash_Draw
+
+Smash_Reverse:	
+	LDA Smash_XAccel, X
+	JSR Negate
+	STA Smash_XAccel, X
+
+	LDA #$01
+	STA Smash_Action, X
+
+	LDA #$18
+	STA Smash_PoofMaker, X
+
+Smash_Wait2:
+	RTS
+
+Smash_HitTest:
+	.byte HIT_LEFTWALL, HIT_RIGHTWALL
+
+Smash_Slide:
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+	LDA Smash_XAccel, X
+	ADD <Objects_XVelZ, X
+	CMP #$30
+	BCC Smash_Slide1
+
+	CMP #$D0
+	BCC Smash_Slide2
+
+Smash_Slide1:
+	STA <Objects_XVelZ, X
+	
+Smash_Slide2:
+	JSR Object_CalcBoundBox
+	JSR Smash_Draw
+	JSR Object_Move
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTilesWallStops
+	JSR Smash_InteractWithPlayer
+
+	LDA Smash_PoofMaker, X
+	BNE Smash_SlideNoPoof
+
+	LDA Objects_SpritesVerticallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	BNE Smash_SlidePoofReset
+
+	LDA <Objects_XZ, X
+	ADD #$04
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Poof_Y
+
+	JSR Common_MakePoof
+
+Smash_SlidePoofReset:
+	LDA #$10
+	STA Smash_PoofMaker, X
+
+Smash_SlideNoPoof:
+	DEC Smash_PoofMaker, X
+
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ Smash_Draw	
+
+	LDA Objects_PreviousTilesDetect, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BNE Smash_Draw
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA Level_Vibration
+
+Smash_Slide3:	
+
+	LDA #$20
+	STA Objects_Timer, X
+	
+	LDA #$00
+	STA Smash_Action, X
+
+	RTS
+
+Smash_Draw:
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JSR Object_Draw16x32	 
+
+	LDY #$00
+
+	LDA Smash_XAccel, X
+	BMI Smash_Draw1
+
+	LDY #SPR_HFLIP
+
+Smash_Draw1:
+	STY <Temp_Var1
+
+	LDY Object_SpriteRAMOffset,X	 ; Y = Sprite_RAM offset
+
+	LDA Sprite_RAMAttr + 4, Y
+	ORA <Temp_Var1
+	STA Sprite_RAMAttr + 4, Y
+
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_2_HINVISIBLE
+	BNE Smash_DrawRTS
+
+	LDA Objects_SpritesVerticallyOffScreen,X
+	AND #SPRITE_0_VINVISIBLE
+	BNE Smash_Draw2
+
+	LDA Objects_SpriteX, X
+	ADD #$10
+	STA Sprite_RAMX + 16,Y
+
+	LDA Objects_SpriteY, X
+	STA Sprite_RAMY + 16,Y
+
+	LDA Sprite_RAMAttr,Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 16,Y
+	
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
+
+Smash_Draw2:
+	LDA Objects_SpritesVerticallyOffScreen,X
+	AND #SPRITE_1_VINVISIBLE
+	BNE Smash_DrawRTS
+
+	LDA Objects_SpriteX, X
+	ADD #$10
+	STA Sprite_RAMX + 20,Y
+
+	LDA Objects_SpriteY, X
+	ADD #$10
+	STA Sprite_RAMY + 20,Y
+
+	; Right sprite horizontally flipped
+	LDA Sprite_RAMAttr + 8,Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 20,Y
+
+	LDA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 20, Y
+
+Smash_DrawRTS:
+	RTS		 ; Return 

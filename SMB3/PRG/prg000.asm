@@ -38,7 +38,7 @@ Object_BoundBox:
 	.byte  0,  32,  0,  16	; BOUND32x16BLOCK
 	.byte  1,  14,   4,   26; 16x28 BOUND16x28
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
-	.byte  2,  22,   2,  22	; 9 BOUND24X24
+	.byte  0,  24,   0,  24	; 9 BOUND24X24
 	.byte  1,  14,   1,  32	; A BOUND16x32 (16x32)
 	.byte  1,  14,   1,  32	; A BOUND16x32TALL (16x32)
 	.byte  1,  14,   1,  38	; C BOUND16x48
@@ -47,7 +47,6 @@ Object_BoundBox:
 	.byte  4,  44,   4,  40	; F BOUND48x48
 
 SpecialObject_FindEmpty:
-
 	LDY #$05
 
 SpecialObject_FindEmptyNext:
@@ -3374,7 +3373,6 @@ PRG000_D82B:
 
 ; $D83B
 Object_InteractWithPlayer:
-	STA Debug_Snap
 	LDA Objects_Timer2, X
 	BEQ Object_CheckInteraction
 
@@ -3396,6 +3394,7 @@ Object_InteractWithPlayer1:
 	JSR Object_DoCollision ; Otherwise...
 
 	SEC		 ; Set carry
+
 	LDA <HitTest_Result
 No_Collission:
 	RTS		 ; Return
@@ -5658,6 +5657,13 @@ TestHit_FromLeft:
 	AND #HITTEST_LEFT
 	BEQ HitFrom_Right
 
+	LDA Player_HitWall
+	ORA Player_ForcedSlide
+	BEQ TestHit_FromLeft1
+
+	JSR Player_Die
+
+TestHit_FromLeft1:
 	LDA Player_BoundRight
 	SUB Objects_BoundLeft, X
 	STA <Temp_Var1
@@ -5669,6 +5675,14 @@ TestHit_FromLeft:
 	LDA <Player_XHi
 	SBC #$00
 	STA <Player_XHi
+
+	LDA <Player_XVelZ
+	BEQ PlayerTestDone
+	BMI PlayerTestDone
+
+	LDA #$00
+	STA <Player_XVelZ
+
 	CLC
 	RTS
 
@@ -5676,6 +5690,14 @@ HitFrom_Right:
 	LDA <HitTest_Result
 	AND #HITTEST_RIGHT
 	BEQ PlayerTestDone
+
+	LDA Player_HitWall
+	ORA Player_ForcedSlide
+	BEQ TestHit_FromRight1
+	
+	JSR Player_Die
+
+TestHit_FromRight1:	
 	
 	LDA Objects_BoundRight, X
 	SUB Player_BoundLeft
@@ -5688,7 +5710,14 @@ HitFrom_Right:
 	LDA <Player_XHi
 	ADC #$00
 	STA <Player_XHi
+	
+	LDA <Player_XVelZ
+	BEQ PlayerTestDone
+	BPL PlayerTestDone
 
+	LDA #$00
+	STA <Player_XVelZ
+	
 PlayerTestDone:
 	CLC
 	RTS

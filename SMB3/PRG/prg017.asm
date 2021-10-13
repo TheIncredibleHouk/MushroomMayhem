@@ -752,7 +752,7 @@ Giant_PiranhaInit:
 
 	INC Giant_PiranhaAction, X
 
-	LDA #$80
+	LDA #$C0
 	STA Objects_Timer, X
 
 	LDA #$10
@@ -767,7 +767,6 @@ Giant_PiranhaInit:
 
 
 Giant_WaitUnder:
-
 	LDA Objects_Timer, X
 	BNE Giant_WaitUnder1
 
@@ -778,8 +777,38 @@ Giant_WaitUnder:
 	STA <Objects_XZ, X
 
 Giant_WaitUnder1:
-	JMP Giant_PiranhaDraw
+	JSR Giant_PiranhaDetectChomps
+	BCC Giant_WaitUnder2
 
+	LDA Objects_Timer, X
+	CMP #$20
+	BCS Giant_WaitUnder2
+
+	STA Debug_Snap
+	LDA Objects_SpriteX, Y
+	ADD #$04
+	STA <Temp_Var1
+
+	LDA Objects_SpriteY, Y
+	SUB #$10
+	STA <Temp_Var2
+
+	JSR Object_GetUnusedSprite
+
+	LDA #$E9
+	STA Sprite_RAMTile, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr, Y
+
+	LDA <Temp_Var1
+	STA Sprite_RAMX, Y
+
+	LDA <Temp_Var2
+	STA Sprite_RAMY, Y
+
+Giant_WaitUnder2:	
+	JMP Giant_PiranhaDraw
 
 Giant_PiranhaAttackUp:
 	LDA #$C0
@@ -814,7 +843,7 @@ Giant_PiranhaAttackUpRTS:
 Giant_PiranhaWait:	
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-	JSR Giant_PiranhaDetectChomps
+	JSR Giant_ParaChompInteract
 
 	LDA Objects_Timer, X
 	BNE Giant_PiranhaWaitDraw
@@ -990,14 +1019,19 @@ Giant_PiranhaDetectChomps1:
 
 	LDA Objects_ID, Y
 	CMP #OBJ_PARACHOMP
-	BEQ Giant_ParaChompDetect
+	SEC
+	RTS
 
 Giant_PiranhaDetectChomps2:
 	DEY
 	BPL Giant_PiranhaDetectChomps1
+	CLC
 	RTS
 
-Giant_ParaChompDetect:	
+Giant_ParaChompInteract:	
+	JSR Giant_PiranhaDetectChomps
+	BCC Giant_ParaChompDetectRTS
+
 	JSR Object_DetectObjects
 	BCC Giant_ParaChompDetectRTS
 

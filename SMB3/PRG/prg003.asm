@@ -33,7 +33,7 @@ OBJ_WALLOP 			= $39
     .word ObjInit_PipeBlock         ; Object $32
 	.word ObjInit_PlatformSwing			; Object $33
 	.word ObjInit_Weight			; Object $34
-	.word ObjInit_CheckPoint			; Object $35
+	.word ObjInit_DoNothing			; Object $35
 	.word ObjInit_CloudGen			; Object $36
 	.word ObjInit_CoinAlert			; Object $37
 	.word ObjInit_MontyMole			; Object $38
@@ -56,7 +56,7 @@ OBJ_WALLOP 			= $39
     .word ObjNorm_PipeBlock         ; Object $32
 	.word ObjNorm_PlatformSwing			; Object $33
 	.word ObjNorm_Weight			; Object $34
-	.word ObjNorm_CheckPoint			; Object $35
+	.word ObjInit_DoNothing			; Object $35
 	.word ObjNorm_CloudGen			; Object $36
 	.word ObjNorm_CoinAlert			; Object $37
 	.word ObjNorm_MontyMole			; Object $38
@@ -1782,49 +1782,6 @@ ObjInit_CheckPoint:
 
 	RTS
 
-ObjNorm_CheckPoint:
-	JSR Object_DeleteOffScreen
-
-		; Calculate upper left of bounding box and lower right offsets
-	LDA <Objects_XZ,X
-	STA Objects_BoundLeft, X
-
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA Objects_BoundLeftHi, X
-
-	LDA <Objects_XZ, X
-	ADD #$10
-	STA Objects_BoundRight, X
-	
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA Objects_BoundRightHi, X
-
-	LDA <Objects_YZ,X
-	STA Objects_BoundTop, X
-
-	LDA <Objects_YHiZ, X
-	STA Objects_BoundTopHi, X
-
-	LDA <Objects_YZ,X
-	ADD #$A0
-	STA Objects_BoundBottom, X
-
-	LDA <Objects_YHiZ, X
-	ADC #$00
-	STA Objects_BoundBottomHi, X
-
-	JSR Object_DetectPlayer
-	BCC ObjNorm_CheckPointRTS
-
-	LDA Objects_Property, X
-	ADD #$01
-	LDY World_Num
-	STA BossLevel_CheckPoint, Y
-
-ObjNorm_CheckPointRTS:
-	RTS
 
 ObjInit_CloudGen:
 
