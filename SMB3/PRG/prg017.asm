@@ -784,7 +784,6 @@ Giant_WaitUnder1:
 	CMP #$20
 	BCS Giant_WaitUnder2
 
-	STA Debug_Snap
 	LDA Objects_SpriteX, Y
 	ADD #$04
 	STA <Temp_Var1

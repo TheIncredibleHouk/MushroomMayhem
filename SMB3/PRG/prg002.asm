@@ -3,7 +3,7 @@
 	; 
 
 OBJ_WATERSPLASH     = $14    
-OBJ_WATERFILLER		= $15
+OBJ_EVENTFILLER		= $15
 OBJ_TIMER           = $16
 OBJ_CLOCK           = $17
 OBJ_DIMMER          = $18
@@ -21,10 +21,10 @@ OBJ_BRIDGEBUILD    = $23
 OBJ_BLOCKSWITCHER  = $24
 OBJ_MUSHROOMBLOCK	= $25
 OBJ_MAGNET			= $26
-OBJ_SOMETHING		= $27
+OBJ_EVENTSETTER		= $27
 
     .word ObjInit_WaterSplash   ; Object $14
-	.word ObjInit_Waterfill	; Object $15
+	.word ObjInit_EventFill	; Object $15
     .word ObjInit_Timer     ; Object $16
     .word ObjInit_Clock     ; Object $17
     .word ObjInit_Dimmer    ; Object $18
@@ -42,12 +42,12 @@ OBJ_SOMETHING		= $27
     .word ObjInit_BlockSwitcher ; Object $24
     .word ObjInit_MushroomBlock ; Object $25
     .word ObjInit_Magnet ; Object $26
-    .word ObjInit_DoNothing ; Object $27
+    .word ObjInit_EventSetter ; Object $27
 	
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
     .word ObjNorm_WaterSplash   ; Object $14
-	.word ObjNorm_Waterfill	    ; Object $15
+	.word ObjNorm_EventFill	    ; Object $15
     .word ObjNorm_Timer         ; Object $16
     .word ObjNorm_Clock         ; Object $17
     .word ObjNorm_Dimmer        ; Object $18
@@ -117,7 +117,7 @@ OBJ_SOMETHING		= $27
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
     .byte OPTS_NOCHANGE         ; Object $14
-	.byte OPTS_SETPT5 | $12		; Object $15
+	.byte OPTS_SETPT6 | $23		; Object $15
     .byte OPTS_NOCHANGE         ; Object $16
     .byte OPTS_NOCHANGE         ; Object $17
     .byte OPTS_NOCHANGE         ; Object $18
@@ -192,8 +192,18 @@ ObjP14:
 	.byte $81, $81
     
 ObjP15:
-    .byte $81, $83
+	; water
+    .byte $E1, $E3, $00, $00
 
+	; lava
+	.byte $C1, $C3, $FF, $FF
+	.byte $C5, $C7, $FF, $FF
+	.byte $C9, $CB, $FF, $FF
+	.byte $CD, $CF, $FF, $FF
+	.byte $D1, $D3, $FF, $FF
+	.byte $D5, $D7, $FF, $FF
+	.byte $D9, $DB, $FF, $FF
+	.byte $DD, $DF, $FF, $FF
 
 ObjP17:
     .byte $97, $99
@@ -313,13 +323,13 @@ WaterSplash_Draw:
 ;	This object moves quickly to the right, toggling the tile it's currently on every 16 pixels.
 ;***********************************************************************************	
 
-ObjInit_Waterfill:
+ObjInit_EventFill:
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #$40
-	STA Objects_XVelZ, X
-	
 	JMP Object_NoInteractions
 
 WaterFill_Ticks = Objects_Data1
@@ -327,12 +337,18 @@ WaterFill_Ticks = Objects_Data1
 WaterFill_Flip:
 	.byte $00, SPR_VFLIP
 
-ObjNorm_Waterfill:
-	LDA <Player_HaltGameZ
-	BNE FillWater_Draw
+ObjNorm_EventFill:
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word WaterFill_Norm
+	.word LavaFallFill_Norm
+	.word LavaPoolFill_Norm
 
 WaterFill_Norm:
-	
+	LDA #$40
+	STA Objects_XVelZ, X
+
 	JSR Object_DeleteOffScreen
 	JSR Object_FaceDirectionMoving
 	JSR Object_ApplyXVel
@@ -381,7 +397,6 @@ FillWater_Animate:
 	AND #$03
 	
 	LSR A
-
 	TAY
 	
 	LDA Objects_Orientation, X
@@ -391,7 +406,169 @@ FillWater_Animate:
 FillWater_Draw:
 	JMP Object_Draw
 
+LavaFill_FrameTicker = Objects_Data2
+LavaFill_BlockUpdated = Objects_Data3
 
+LavaFallFill_Norm:
+
+	LDA #$08
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+	LDA <Objects_YZ, X
+	AND #$0F
+	BEQ Lava_ResetBlockDraw
+
+	CMP #$0F
+	BNE Lava_FallDraw
+
+	LDA LavaFill_BlockUpdated, X
+	BNE Lava_FallDraw
+
+	LDA Block_NeedsUpdate
+	BNE Lava_FallDraw
+
+	INC LavaFill_BlockUpdated, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Lava_DrawBlock
+
+	JMP Object_Delete
+
+Lava_DrawBlock:	
+	LDA #$C6
+	JSR Object_ChangeBlock
+	JMP Lava_FallDraw
+
+Lava_ResetBlockDraw:	
+	LDA #$00
+	STA LavaFill_BlockUpdated, X
+
+Lava_FallDraw:
+	LDA #(SPR_VFLIP)
+	STA Objects_Orientation, X
+
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+
+	INC LavaFill_FrameTicker, X
+	
+	LDA LavaFill_FrameTicker, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$07
+	ADD #$01
+	STA Objects_Frame, X
+
+	JMP Object_Draw16x32
+
+
+LavaPool_XOffset:
+	.byte $08, $18
+
+
+LavaPoolFill_Norm:
+	LDA #$FE
+	STA <Objects_YVelZ, X
+	
+	LDA <Objects_YZ, X
+	CMP #$7E
+	BCS LavaPool_Rise
+
+	JMP Lava_PoolDraw
+
+LavaPool_Rise:
+	JSR Object_ApplyYVel_NoGravity
+	LDA <Objects_YZ, X
+	AND #$0F
+	BEQ LavaPool_ResetBlockDraw
+
+	CMP #$0F
+	BNE Lava_PoolDraw
+
+	LDA LavaFill_BlockUpdated, X
+	CMP #$02
+	BCS Lava_PoolDraw
+
+	LDA Block_NeedsUpdate
+	BNE Lava_PoolDraw
+
+	LDY LavaFill_BlockUpdated, X
+	INC LavaFill_BlockUpdated, X
+	
+	STA Debug_Snap
+	LDA <Objects_XZ, X
+	ADD LavaPool_XOffset, Y
+	STA Block_DetectX
+
+	LDA <Objects_YZ, X
+	ADD #$18
+	STA Block_DetectY
+
+	LDA #$00
+	STA Block_DetectXHi
+	STA Block_DetectYHi
+
+	LDA #$D8
+	JSR Object_ChangeBlock
+	JMP Lava_PoolDraw
+
+LavaPool_ResetBlockDraw:	
+	LDA #$00
+	STA LavaFill_BlockUpdated, X
+
+Lava_PoolDraw:
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+
+	INC LavaFill_FrameTicker, X
+	
+	LDA LavaFill_FrameTicker, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$07
+	ADD #$01
+	STA Objects_Frame, X
+	
+	JSR Object_Draw16x32
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
+	
+	LDA Sprite_RAMTile + 4, Y
+	STA Sprite_RAMTile + 20, Y
+	
+	LDA #$FF
+	STA Sprite_RAMTile + 24, Y
+	STA Sprite_RAMTile + 28, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 16, Y
+	STA Sprite_RAMAttr + 20, Y
+	STA Sprite_RAMAttr + 24, Y
+	STA Sprite_RAMAttr + 28, Y
+
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY + 16, Y
+	STA Sprite_RAMY + 20, Y
+	ADD #$10
+	STA Sprite_RAMY + 24, Y
+	STA Sprite_RAMY + 28, Y	
+
+	LDA Sprite_RAMX, Y
+	ADD #$10
+	STA Sprite_RAMX + 16, Y
+	STA Sprite_RAMX + 24, Y
+	ADD #$08
+	STA Sprite_RAMX + 20, Y
+	STA Sprite_RAMX + 28, Y
+	RTS
+		
 
 ;***********************************************************************************
 ; Timer
@@ -2685,3 +2862,8 @@ Magnet_SetPosition:
 	LDA #$00
 	STA Magnet_Stuck, X
 	RTS
+
+ObjInit_EventSetter:
+	LDA #$01
+	STA EventSwitch
+	RTS	

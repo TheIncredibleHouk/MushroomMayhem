@@ -13,6 +13,7 @@ HandleLevelEvent:
 	.word Snow_Event ;05
 	.word Fireball_Event ;06
 	.word Direction_Switch ;07
+	.word Lava_Flood ; 08
 
 NoEvent:
 LetEnemyHandle:
@@ -20,6 +21,7 @@ LetEnemyHandle:
 
 FFLevelsY:	.byte $17, $16, $15, $14, $13, $12, $11, $10
 			.byte $0B, $0A, $09, $08, $07, $06, $05, $04
+
 FloodFloor:
 	LDA #$01
 	STA Player_VibeDisable
@@ -27,8 +29,11 @@ FloodFloor:
 	LDA Objects_State
 	BNE FloodFloorRTS
 
-	LDA #OBJ_WATERFILLER
+	LDA #OBJ_EVENTFILLER
 	STA Objects_ID
+
+	LDA #$00
+	STA Objects_Property
 
 	LDA #OBJSTATE_INIT
 	STA Objects_State
@@ -586,3 +591,160 @@ Direction_Switch:
 	LDA #$00
 	STA EventSwitch
 	RTS
+
+Lava_Flood:
+	LDA EventVar
+
+	JSR DynJump
+
+	.word Lava_Init
+	.word Lava_FloodWait
+	.word Lava_BlockPath
+	.word Lava_FloodWait
+	.word Lava_FloodPhase1
+	.word Lava_FloodWait
+	.word Lava_FloodPhase2
+	.word Lava_FloodWait
+	.word Lava_FloodWait
+	.word Lava_Done
+
+Lava_Init:
+	LDA #$30
+	STA EventTicker
+	STA Player_VibeDisable
+
+	INC EventVar
+	RTS
+
+Lava_BlockPath:
+	INC Block_NeedsUpdate	 ; Store type of block change!
+
+	LDA #$40
+	STA Block_ChangeX
+	STA Block_ChangeY
+	STA Player_VibeDisable
+
+	LDA #$00
+	STA Block_ChangeXHi
+	STA Block_ChangeYHi
+
+	LDA #$53
+	STA Block_UpdateValue
+
+	LDA #$7C
+	STA EventTicker
+	INC EventVar
+	RTS
+
+Lava_FloodPhase1:
+	LDA #OBJ_EVENTFILLER
+	STA Objects_ID
+	STA Objects_ID + 1
+	STA Player_VibeDisable
+
+	LDA #$01
+	STA Objects_Property
+	STA Objects_Property + 1
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State
+	STA Objects_State + 1
+
+	LDA #$00
+	STA LavaFill_FrameTicker
+	STA LavaFill_FrameTicker + 1
+
+	STA <Objects_XHiZ
+	STA <Objects_XHiZ + 1
+
+	STA <Objects_YHiZ
+	STA <Objects_YHiZ + 1
+
+	LDA #$20
+	STA <Objects_XZ
+	
+	LDA #$30
+	STA <Objects_XZ + 1
+
+	LDA #$3E
+	STA <Objects_YZ
+	STA <Objects_YZ + 1
+
+	INC EventVar
+	RTS
+
+Lava_FloodWait:
+	LDA #$01
+	STA Player_VibeDisable
+
+	DEC EventTicker
+	BNE Lava_FloodWaitRTS
+
+	INC EventVar
+
+Lava_FloodWaitRTS:	
+	RTS	
+
+Lava_FloodPhase2
+	LDA #OBJ_EVENTFILLER
+	STA Objects_ID
+	STA Objects_ID + 1
+	STA Objects_ID + 2
+	STA Objects_ID + 3
+	STA Player_VibeDisable
+
+	LDA #$02
+	STA Objects_Property
+	STA Objects_Property + 1
+	STA Objects_Property + 2
+	STA Objects_Property + 3
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State
+	STA Objects_State + 1
+	STA Objects_State + 2
+	STA Objects_State + 3
+
+	LDA #$00
+	STA LavaFill_FrameTicker
+	STA LavaFill_FrameTicker + 1
+	STA LavaFill_FrameTicker + 2
+	STA LavaFill_FrameTicker + 3
+
+
+	LDA #$00
+	STA <Objects_XHiZ
+	STA <Objects_XHiZ + 1
+	STA <Objects_XHiZ + 2
+	STA <Objects_XHiZ + 3
+
+	STA <Objects_YHiZ
+	STA <Objects_YHiZ + 1
+	STA <Objects_YHiZ + 2
+	STA <Objects_YHiZ + 3
+
+	LDA #$20
+	STA <Objects_XZ
+	
+	LDA #$40
+	STA <Objects_XZ + 1
+
+	LDA #$60
+	STA <Objects_XZ + 2
+
+	LDA #$80
+	STA <Objects_XZ + 3
+
+	LDA #$C2
+	STA <Objects_YZ
+	STA <Objects_YZ + 1
+	STA <Objects_YZ + 2
+	STA <Objects_YZ + 3
+
+	INC EventVar
+	RTS
+
+Lava_Done:
+	LDA #$00
+	STA Player_VibeDisable
+	RTS	

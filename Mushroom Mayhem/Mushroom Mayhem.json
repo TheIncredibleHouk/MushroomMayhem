@@ -4798,6 +4798,45 @@
       ],
       "Name": "Mighty Podobo",
       "Id": "21243e86-d0ce-4884-954c-43b841a44600"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        12,
+        48,
+        28,
+        15,
+        7,
+        56,
+        23,
+        15,
+        15,
+        26,
+        11,
+        15,
+        6,
+        54,
+        22,
+        15,
+        15,
+        54,
+        6,
+        15,
+        7,
+        48,
+        22,
+        15,
+        15,
+        48,
+        33,
+        15,
+        6,
+        54,
+        22
+      ],
+      "Name": "Mammoth Podob Room",
+      "Id": "1ce1f37d-2b9e-4fb9-8d10-ae08f0a9d5a1"
     }
   ],
   "WorldInfo": [
@@ -5419,17 +5458,36 @@
               "LastModified": "0001-01-01T00:00:00",
               "SublevelsInfo": [
                 {
-                  "Size": 1122,
+                  "Size": 1309,
                   "Name": "Mammoth Podobo 3",
                   "Id": "7008e137-6afa-4850-9e0f-8da4c8a31391",
                   "LastModified": "0001-01-01T00:00:00",
-                  "SublevelsInfo": [],
+                  "SublevelsInfo": [
+                    {
+                      "Size": 392,
+                      "Name": "Mammoth Podobo 4",
+                      "Id": "2909cbff-1fcf-4840-84ed-6514206a76bb",
+                      "LastModified": "0001-01-01T00:00:00",
+                      "SublevelsInfo": [],
+                      "InfoType": 1,
+                      "DisplayName": "(Level) Mammoth Podobo 4"
+                    }
+                  ],
                   "InfoType": 1,
                   "DisplayName": "(Level) Mammoth Podobo 3"
                 }
               ],
               "InfoType": 1,
               "DisplayName": "(Level) Mammoth Podobo 2"
+            },
+            {
+              "Size": 236,
+              "Name": "Mammoth Podobo Room",
+              "Id": "74f27e95-1457-4a76-86cf-575a42366540",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Mammoth Podobo Room"
             }
           ],
           "InfoType": 1,
@@ -5540,7 +5598,7 @@
           "DisplayName": "(Level) World 4 to 5"
         },
         {
-          "Size": 1327,
+          "Size": 1321,
           "Name": "Super Jump Man",
           "Id": "8acd0773-8087-45d3-81ee-3909179d1414",
           "LastModified": "2018-10-28T10:42:11.1638723-04:00",
@@ -6081,7 +6139,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 110,
+        "Size": 81,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -11959,7 +12017,7 @@
           "LowerRight": 52
         },
         {
-          "Property": 192,
+          "Property": 204,
           "UpperLeft": 40,
           "UpperRight": 41,
           "LowerLeft": 56,
@@ -11967,10 +12025,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 33,
+          "UpperRight": 36,
+          "LowerLeft": 49,
+          "LowerRight": 52
         },
         {
           "Property": 0,
@@ -12568,11 +12626,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 202,
+          "UpperLeft": 101,
+          "UpperRight": 102,
+          "LowerLeft": 117,
+          "LowerRight": 118
         },
         {
           "Property": 192,
@@ -12736,18 +12794,18 @@
           "LowerRight": 252
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 64,
+          "UpperLeft": 2,
+          "UpperRight": 2,
+          "LowerLeft": 208,
+          "LowerRight": 209
         },
         {
-          "Property": 49,
-          "UpperLeft": 142,
-          "UpperRight": 143,
-          "LowerLeft": 158,
-          "LowerRight": 159
+          "Property": 65,
+          "UpperLeft": 2,
+          "UpperRight": 2,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -12757,35 +12815,35 @@
           "LowerRight": 209
         },
         {
-          "Property": 64,
-          "UpperLeft": 2,
-          "UpperRight": 2,
+          "Property": 16,
+          "UpperLeft": 192,
+          "UpperRight": 193,
           "LowerLeft": 208,
           "LowerRight": 209
         },
         {
-          "Property": 64,
-          "UpperLeft": 2,
-          "UpperRight": 2,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "Property": 204,
+          "UpperLeft": 40,
+          "UpperRight": 41,
+          "LowerLeft": 56,
+          "LowerRight": 57
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 33,
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 49,
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
-          "Property": 0,
+          "Property": 49,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -12855,11 +12913,11 @@
           "LowerRight": 20
         },
         {
-          "Property": 49,
-          "UpperLeft": 238,
-          "UpperRight": 238,
-          "LowerLeft": 238,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 192,
+          "UpperRight": 193,
+          "LowerLeft": 208,
+          "LowerRight": 209
         },
         {
           "Property": 194,
@@ -12883,25 +12941,25 @@
           "LowerRight": 115
         },
         {
-          "Property": 0,
+          "Property": 49,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperRight": 238,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 33,
+          "UpperLeft": 176,
+          "UpperRight": 177,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 49,
+          "UpperLeft": 176,
+          "UpperRight": 177,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
           "Property": 0,
@@ -39129,7 +39187,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 25,
@@ -39233,7 +39291,7 @@
         "2 Jumps",
         "1 Jumps"
       ],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 26,
@@ -39671,7 +39729,7 @@
     {
       "GameId": 33,
       "GameObjectType": 1,
-      "Name": "Force Mario Black",
+      "Name": "Force Mario Back",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
@@ -39709,7 +39767,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 34,
@@ -39790,7 +39848,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 35,
@@ -39798,7 +39856,7 @@
       "Name": "Bridge Builder",
       "Sprites": [],
       "Properties": [],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 36,
@@ -39835,7 +39893,7 @@
         "Quick Speed",
         "Fast Speed"
       ],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 37,
@@ -39906,14 +39964,14 @@
     {
       "GameId": 39,
       "GameObjectType": 1,
-      "Name": "Unused x27",
+      "Name": "Initiate Event",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x68",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 0,
@@ -39922,10 +39980,46 @@
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x8A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 0,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x68",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 0,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x7A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 0,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 32,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x86",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 0,
@@ -39934,7 +40028,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Scripting"
     },
     {
       "GameId": 40,
@@ -43146,7 +43240,7 @@
         "Dispatch Monty Mole",
         "Dispatch Bullet Bill"
       ],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 56,
@@ -54120,7 +54214,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 188,
@@ -56598,7 +56692,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 212,
@@ -58214,6 +58308,10 @@
       {
         "Key": "7",
         "Value": "Direction Switch"
+      },
+      {
+        "Key": "8",
+        "Value": "Lava Flood"
       },
       {
         "Key": "80",

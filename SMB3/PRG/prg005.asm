@@ -2478,7 +2478,7 @@ ObjInit_BobOmb:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF)
 	STA Objects_WeaponAttr, X
 
-	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL | ATTR_CARRYANDBUMP)
+	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_CalcBoundBox
@@ -2622,16 +2622,15 @@ BobOmb_Norm:
 
 	JSR Object_DeleteOffScreen	 
 	JSR Object_Move
-	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
+	JSR Object_FaceDirectionMoving
 
 	LDA <Objects_XVelZ, X
-	BNE BobOmb_Norm1
+	BEQ BobOmb_Norm1
 
 	JSR Object_FacePlayerOnLanding
 
 BobOmb_Norm1:
-
 	LDA Explosion_Timer, X
 	ORA BobOmb_Unstable, X
 	BEQ BobOmb_Attack
@@ -2644,6 +2643,14 @@ BobOmb_Norm1:
 	JSR Object_DampenVelocity
 	JSR Object_InteractWithTilesWallStops
 	JSR Object_InteractWithPlayer
+	BCC BobOmb_NoPlayer
+	
+	LDA Objects_BeingHeld, X
+	BNE BobOmb_NoPlayer
+
+	JSR Object_GetKicked
+
+BobOmb_NoPlayer:	
 	JSR Object_InteractWithObjects
 	
 	LDA #$02

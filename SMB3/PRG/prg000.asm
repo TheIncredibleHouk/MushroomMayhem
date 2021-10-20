@@ -1622,8 +1622,10 @@ Object_WillGetKicked:
 	STA Player_Kick
 
 Object_GetKicked1:
-	LDA #$00
+	LDA #$F0
 	STA <Objects_YVelZ,X
+
+	LDA #$00
 	STA Objects_BeingHeld, X
 
 	LDA <Pad_Holding
@@ -3382,6 +3384,7 @@ Object_InteractWithPlayer:
 Object_CheckInteraction:
 	LDA Objects_BeingHeld, X
 	BEQ Object_InteractWithPlayer1
+	
 	JSR Object_Hold
 	SEC
 
@@ -3396,6 +3399,7 @@ Object_InteractWithPlayer1:
 	SEC		 ; Set carry
 
 	LDA <HitTest_Result
+
 No_Collission:
 	RTS		 ; Return
 
