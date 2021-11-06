@@ -6499,6 +6499,12 @@
   ],
   "ObjectData": [
     {
+      "GameObjectId": 0,
+      "X": 3,
+      "Y": 6,
+      "Property": 0
+    },
+    {
       "GameObjectId": 90,
       "X": 20,
       "Y": 3,

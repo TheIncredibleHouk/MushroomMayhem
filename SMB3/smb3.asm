@@ -1968,6 +1968,7 @@ GENERATOR_VVISIBLE = 02;
 	CineKing_Timer2:		; Timer; decrements to zero
 	Bonus_Timer:			; Decrements to zero
 	Map_Intro_Tick:		.ds 1	; Counts down to zero while displaying the "World X" intro
+	Entering_From_Map:	.ds 1
 	CheckPoint_Flag:	.ds 1
 	CheckPoint_Level:	.ds 1
 	CheckPoint_X:		.ds 1

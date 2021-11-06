@@ -142,7 +142,7 @@ OBJ_SMASH			= $5D
 	.byte KILLACT_STARDEATH ; Object $57
 	.byte KILLACT_NORMALSTATE ; Object $58
 	.byte KILLACT_STARDEATH ; Object $59
-	.byte KILLACT_STARDEATH ; Object $5A
+	.byte KILLACT_NORMALSTATE ; Object $5A
 	.byte KILLACT_STARDEATH ; Object $5B
 	.byte KILLACT_STARDEATH ; Object $5C
 	.byte KILLACT_NORMALSTATE ; Object $5D
@@ -2475,7 +2475,7 @@ ObjInit_BobOmb:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF)
+	LDA #(ATTR_ICEPROOF | ATTR_NINJAPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_STOMPKICKSOUND | ATTR_WINDAFFECTS | ATTR_BUMPNOKILL)
@@ -2498,10 +2498,8 @@ ObjNorm_BobOmb:
 	JMP Object_Draw
 
 BobOmb_DoAction:
-	
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-
 	BEQ BobOmb_Death
 
 	LDA BobOmb_Action, X
@@ -2514,19 +2512,26 @@ BobOmb_DoAction:
 	.word BobOmb_Drop
 
 BobOmb_Death:
-
 	LDA Objects_PlayerProjHit, X
 	CMP #HIT_FIREBALL
 	BNE BobOmb_Death1
 
 	LDA #$01
 	STA Explosion_Timer, X
-
-	LDA #OBJSTATE_NORMAL
-	STA  Objects_State, X
+	RTS
 
 BobOmb_Death1:
-	JMP BobOmb_Draw
+	LDA #$10
+	STA Objects_Timer2, X
+
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+	LDA <Objects_XVelZ, X
+	JSR Negate
+	STA <Objects_XVelZ, X
+
+	JMP BobOmb_ProcessKill
 
 BobOmb_Raise:
 	LDA Objects_Timer, X
@@ -2637,6 +2642,10 @@ BobOmb_Norm1:
 
 	JSR Object_DetectTiles
 	
+	LDA Object_VertTileProp, X
+	CMP #(TILE_PROP_FOREGROUND | TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	BEQ BobOmb_ForceExplode
+
 	LDA BobOmb_Unstable, X
 	BNE BobOmb_UnstableCheck
 
@@ -2674,12 +2683,18 @@ BobOmb_Normal:
 	LDA <Objects_TilesDetectZ,X
 	BEQ BobOmb_ShakeDraw
 
+BobOmb_ForceExplode:
 	LDA #$01
 	STA Explosion_Timer, X
 	BNE BobOmb_ShakeDraw
 
 BobOmb_Attack:
 	JSR Object_DetectTiles
+
+	LDA Object_VertTileProp, X
+	CMP #(TILE_PROP_FOREGROUND | TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	BEQ BobOmb_ForceExplode
+
 	JSR Object_InteractWithTiles
 	JSR Object_AttackOrDefeat
 	
@@ -2691,6 +2706,7 @@ BobOmb_Attack:
 	CMP #OBJSTATE_KILLED
 	BNE BobOmb_InteractOthers
 
+BobOmb_ProcessKill:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
@@ -3306,7 +3322,7 @@ Smash_InteractWithPlayer:
 	AND #(HITTEST_BOTTOM)
 	BEQ Smash_SolidInteract
 
-	LDA <Objects_XVelZ, X
+	LDA Objects_EffectiveXVel, X
 	STA Player_CarryXVel
 
 	LDA Player_BoundBottom

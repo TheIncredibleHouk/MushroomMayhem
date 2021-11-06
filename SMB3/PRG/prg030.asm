@@ -2503,6 +2503,9 @@ LevelLoadQuick:
 	LDA JustName
 	BNE LoadLevel_FromPointer
 
+	LDA Entering_From_Map
+	BEQ LoadLevel_FromPointer
+
 	LDA CheckPoint_Flag
 	BEQ LoadLevel_FromPointer
 
@@ -5059,6 +5062,8 @@ Try_Replace_Tile1:
 
 
 Find_Applicable_Pointer:
+	LDA #$00
+	STA Entering_From_Map
 	
 	;;; find proper pointer now
 	LDA <Player_X

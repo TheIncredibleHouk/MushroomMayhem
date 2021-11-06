@@ -348,6 +348,9 @@ PowerUp_Norm:
 	LDA Objects_Timer, X
 	BEQ ObjNorm_PowerUp1
 
+	LDA #$01
+	STA ObjSplash_Disabled, X
+
 	JSR Object_ApplyY_With_Gravity
 	JSR PUp_DrawMaskSprite
 
@@ -1313,7 +1316,8 @@ Bubble_RegenYHi = Objects_Data8
 
 
 ObjNorm_Bubble:
-
+	INC ObjSplash_Disabled, X
+	
 	LDA Bubble_Action, X
 	JSR DynJump
 
@@ -1331,6 +1335,7 @@ Bubble_FloatNormal:
 	JSR Object_DeleteOffScreen
 
 	INC Reverse_Gravity
+
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
@@ -1542,6 +1547,7 @@ Key_Norm:
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA <Objects_YVelZ, X
+	STA Objects_InWater, X
 	
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X

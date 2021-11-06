@@ -451,7 +451,11 @@ Player_IceBallNoKill:
 Player_IceBallTiles:
 	JSR SpecialObj_DetectWorld8x8
 	JSR SpecialObj_IceTiles
+	BCC Player_IceballNoHitIce
 
+	JMP SpecialObj_ToPoofNoSound	
+
+Player_IceballNoHitIce:
 	LDA SpecialObj_YVel, X
 	BPL Player_IceBall1
 
@@ -518,6 +522,8 @@ Ice_Empty:
 	DEY
 	BPL SpecialObj_IceTiles0
 
+	CLC
+
 SpecialObj_IceTiles1:
 	RTS
 
@@ -546,6 +552,7 @@ IceTiles_YesTemp:
 	STA SpinnerBlocksPoof, Y
 
 IceTiles_NoTemp:
+	SEC
 	LDA SpecialObj_Data3, X
 	BNE SpecialObj_IceTiles1
 

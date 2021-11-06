@@ -605,13 +605,15 @@ Lava_Flood:
 	.word Lava_FloodWait
 	.word Lava_FloodPhase2
 	.word Lava_FloodWait
-	.word Lava_FloodWait
 	.word Lava_Done
 
 Lava_Init:
 	LDA #$30
 	STA EventTicker
 	STA Player_VibeDisable
+
+	LDA #00
+	STA Player_FlipBits
 
 	INC EventVar
 	RTS
@@ -685,43 +687,31 @@ Lava_FloodWait:
 Lava_FloodWaitRTS:	
 	RTS	
 
-Lava_FloodPhase2
+Lava_FloodPhase2:
 	LDA #OBJ_EVENTFILLER
 	STA Objects_ID
 	STA Objects_ID + 1
-	STA Objects_ID + 2
-	STA Objects_ID + 3
 	STA Player_VibeDisable
 
 	LDA #$02
 	STA Objects_Property
 	STA Objects_Property + 1
-	STA Objects_Property + 2
-	STA Objects_Property + 3
 
 	LDA #OBJSTATE_INIT
 	STA Objects_State
 	STA Objects_State + 1
-	STA Objects_State + 2
-	STA Objects_State + 3
 
 	LDA #$00
 	STA LavaFill_FrameTicker
 	STA LavaFill_FrameTicker + 1
-	STA LavaFill_FrameTicker + 2
-	STA LavaFill_FrameTicker + 3
 
 
 	LDA #$00
 	STA <Objects_XHiZ
 	STA <Objects_XHiZ + 1
-	STA <Objects_XHiZ + 2
-	STA <Objects_XHiZ + 3
 
 	STA <Objects_YHiZ
 	STA <Objects_YHiZ + 1
-	STA <Objects_YHiZ + 2
-	STA <Objects_YHiZ + 3
 
 	LDA #$20
 	STA <Objects_XZ
@@ -729,17 +719,9 @@ Lava_FloodPhase2
 	LDA #$40
 	STA <Objects_XZ + 1
 
-	LDA #$60
-	STA <Objects_XZ + 2
-
-	LDA #$80
-	STA <Objects_XZ + 3
-
 	LDA #$C2
 	STA <Objects_YZ
 	STA <Objects_YZ + 1
-	STA <Objects_YZ + 2
-	STA <Objects_YZ + 3
 
 	INC EventVar
 	RTS

@@ -44,7 +44,7 @@ Object_BoundBox:
 	.byte  1,  14,   1,  38	; C BOUND16x48
 	.byte  4,  27,   2,  60	; E BOUND32x64
 	.byte  4,  27,   2,  28	; E BOUND32x32
-	.byte  4,  44,   4,  40	; F BOUND48x48
+	.byte  2,  46,   2,  46	; F BOUND48x48
 
 SpecialObject_FindEmpty:
 	LDY #$05
@@ -1363,6 +1363,19 @@ Kill_NotKicked:
 	JSR Object_DetectObjects
 	BCC Object_KillOthers2
 
+	LDA Objects_ID, Y
+	CMP #OBJ_BOBOMB
+	BNE Kill_Normal
+
+	LDA Objects_ID, X
+	CMP #OBJ_EXPLOSION
+	BNE Kill_Normal
+
+	TYA
+	TAX
+	JMP Object_Explode
+
+Kill_Normal:	
 	TYA
 	TAX
 
@@ -1697,11 +1710,13 @@ Kicked_FindRelVel:
 Object_PositionHeld:
 	LDA Level_PipeMove
 	BEQ PRG000_CEFD	 ; If Player is NOT moving through pipes, jump to PRG000_CEFD
-	BPL Held_NotBehind
 
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA Objects_SpriteAttributes, X
+
+	LDA Level_PipeMove
+	BPL Held_NotBehind
 
 Held_NotBehind:
 	LDY #$0a	 ; Y = 10
@@ -1731,7 +1746,7 @@ PRG000_CF04:
 PRG000_CF1A:
 
 	; Set object to occupy Sprite_RAM offset $10
-	LDA #$00
+	LDA #$10
 	STA Object_SpriteRAMOffset,X
 
 PRG000_CF1F:
@@ -4265,6 +4280,9 @@ NotWater:
 PRG000_C6FA:
 	TYA
 	STA Objects_InWater,X	 ; Set object's in-water flag
+
+	LDA #$00
+	STA ObjSplash_Disabled, X
 	RTS
 
 Object_TestTopBumpBlocks:
@@ -5373,10 +5391,19 @@ Object_Hold:
 	RTS
 
 Can_Hold:
+	LDA Player_InPipe
+	BEQ Check_BHold
+
+	LDA Objects_BeingHeld, X
+	BNE Object_HoldRTS0
+	BEQ Object_HoldRTS
+	
+Check_BHold:
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Object_Kick
 
+Assume_Hold:
 	LDA Objects_BeingHeld, X
 	BNE Object_HoldRTS0
 

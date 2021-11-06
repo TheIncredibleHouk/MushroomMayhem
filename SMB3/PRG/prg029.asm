@@ -800,12 +800,12 @@ PRG029_D0E1:
 	; Mask sprite X
 	LDA <Pipe_PlayerX
 	SUB <Horz_Scroll
-	STA Sprite_RAM+$03
-	STA Sprite_RAM+$07
+	STA Sprite_RAMX
+	STA Sprite_RAMX + 8
 
 	ADD #$08
-	STA Sprite_RAM+$0B
-	STA Sprite_RAM+$0F
+	STA Sprite_RAMX + 4
+	STA Sprite_RAMX + 12
 
 	; Mask sprite Y
 	LDA <Pipe_PlayerY
@@ -817,26 +817,26 @@ PRG029_D0E1:
 	LDA #$00	
 
 PRG029_D10E:
-	STA Sprite_RAM+$00
-	STA Sprite_RAM+$08
+	STA Sprite_RAMY
+	STA Sprite_RAMY + 4
 	PLA
-	ADD #16
-	STA Sprite_RAM+$04
-	STA Sprite_RAM+$0C
+	ADD #$10
+	STA Sprite_RAMY + 8
+	STA Sprite_RAMY + 12
 
 	; Uses pattern $77 ("metal block" from used up [?], should be completely opaque)
 	LDA #$6B
-	STA Sprite_RAM+$01
-	STA Sprite_RAM+$05
-	STA Sprite_RAM+$09
-	STA Sprite_RAM+$0D
+	STA Sprite_RAMTile 
+	STA Sprite_RAMTile + 4
+	STA Sprite_RAMTile + 8
+	STA Sprite_RAMTile + 12
 
 	; Must appear behind tiles
 	LDA #SPR_BEHINDBG
-	STA Sprite_RAM+$02
-	STA Sprite_RAM+$06
-	STA Sprite_RAM+$0A
-	STA Sprite_RAM+$0E
+	STA Sprite_RAMAttr
+	STA Sprite_RAMAttr + 4
+	STA Sprite_RAMAttr + 8
+	STA Sprite_RAMAttr + 12
 
 
 PRG029_D13A:

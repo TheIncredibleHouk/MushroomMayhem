@@ -286,7 +286,7 @@ WaterSplash_Norm:
 	CMP #(TILE_PROP_SOLID_ALL)
 	BCC WaterSplash_KeepSplashing
 
-	JMP Object_PoofDie
+	JMP Object_Delete
 
 WaterSplash_KeepSplashing:
 	LDA Objects_Timer, X
@@ -471,7 +471,7 @@ LavaPool_XOffset:
 
 
 LavaPoolFill_Norm:
-	LDA #$FE
+	LDA #$FC
 	STA <Objects_YVelZ, X
 	
 	LDA <Objects_YZ, X
@@ -499,7 +499,6 @@ LavaPool_Rise:
 	LDY LavaFill_BlockUpdated, X
 	INC LavaFill_BlockUpdated, X
 	
-	STA Debug_Snap
 	LDA <Objects_XZ, X
 	ADD LavaPool_XOffset, Y
 	STA Block_DetectX

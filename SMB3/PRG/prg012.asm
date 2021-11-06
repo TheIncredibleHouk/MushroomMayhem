@@ -38,6 +38,7 @@ PointerFound:
 Skip_CheckPoint_Clear:	
 	STA LevelLoadPointer
 	STA LevelNumber
+	STA Entering_From_Map
 
 	LDA #$01
 	STA Level_Redraw

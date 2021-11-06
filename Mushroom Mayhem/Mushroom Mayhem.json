@@ -4894,12 +4894,12 @@
           "SublevelsInfo": [
             {
               "Size": 443,
-              "Name": "Waterway Wash 2",
+              "Name": "Waterway Wash-2",
               "Id": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
               "LastModified": "2019-05-24T20:25:56.6878235-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Waterway Wash 2"
+              "DisplayName": "(Level) Waterway Wash-2"
             }
           ],
           "InfoType": 1,
@@ -4912,51 +4912,51 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2762,
-              "Name": "Key Coin Caverns 2",
+              "Size": 2754,
+              "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Key Coin Caverns 2"
+              "DisplayName": "(Level) Key Coin Caverns-2"
             }
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Key Coin Caverns"
         },
         {
-          "Size": 2709,
+          "Size": 2708,
           "Name": "Shy Guys In Subcon",
           "Id": "04a6cfde-b3c5-4695-81c5-dda10c212a97",
           "LastModified": "2019-05-28T07:41:45.7634163-04:00",
           "SublevelsInfo": [
             {
               "Size": 1283,
-              "Name": "Shy Guys In Subcon 2",
+              "Name": "Shy Guys In Subcon-2",
               "Id": "bac5b80e-008d-439e-88e8-4a8752f21834",
               "LastModified": "2019-05-27T08:26:24.2298778-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Shy Guys In Subcon 2"
+              "DisplayName": "(Level) Shy Guys In Subcon-2"
             }
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Shy Guys In Subcon"
         },
         {
-          "Size": 1804,
+          "Size": 1803,
           "Name": "Feeling Weighed Down",
           "Id": "645b2239-1a1b-4cbf-9262-49b0cb7f313e",
           "LastModified": "2019-06-20T21:07:58.5411251-04:00",
           "SublevelsInfo": [
             {
               "Size": 282,
-              "Name": "Feeling Weighed Down 2",
+              "Name": "Feeling Weighed Down-2",
               "Id": "6fff7350-c94d-4a3e-8b58-f41133ed71ba",
               "LastModified": "2019-05-25T21:35:00.409302-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Feeling Weighed Down 2"
+              "DisplayName": "(Level) Feeling Weighed Down-2"
             }
           ],
           "InfoType": 1,
@@ -4970,12 +4970,12 @@
           "SublevelsInfo": [
             {
               "Size": 578,
-              "Name": "Turnip Toss Tussle 2",
+              "Name": "Turnip Toss Tussle-2",
               "Id": "d52c37b2-7e2d-441c-a78d-cf3525003b4e",
               "LastModified": "2019-05-21T21:27:35.6167328-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Turnip Toss Tussle 2"
+              "DisplayName": "(Level) Turnip Toss Tussle-2"
             }
           ],
           "InfoType": 1,
@@ -4989,12 +4989,12 @@
           "SublevelsInfo": [
             {
               "Size": 78,
-              "Name": "Windy Waters 2",
+              "Name": "Windy Waters-2",
               "Id": "8bb4eb07-2e4c-4fb2-9fc5-3e25ee1ac289",
               "LastModified": "2018-10-28T10:42:11.0239591-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Windy Waters 2"
+              "DisplayName": "(Level) Windy Waters-2"
             }
           ],
           "InfoType": 1,
@@ -5008,12 +5008,12 @@
           "SublevelsInfo": [
             {
               "Size": 491,
-              "Name": "Hurry Up! 2",
+              "Name": "Hurry Up!-2",
               "Id": "f813db59-4352-4f76-90ae-29e24c925008",
               "LastModified": "2019-05-26T10:38:27.5855549-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Hurry Up! 2"
+              "DisplayName": "(Level) Hurry Up!-2"
             }
           ],
           "InfoType": 1,
@@ -5036,12 +5036,12 @@
           "SublevelsInfo": [
             {
               "Size": 112,
-              "Name": "Rhythm and Blocks Bonus",
+              "Name": "Rhythm and Blocks-2",
               "Id": "c23efd32-217f-4c9e-b2c9-dcacf229ed7c",
               "LastModified": "2018-10-28T10:42:11.0549392-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Rhythm and Blocks Bonus"
+              "DisplayName": "(Level) Rhythm and Blocks-2"
             }
           ],
           "InfoType": 1,
@@ -5055,32 +5055,32 @@
           "SublevelsInfo": [
             {
               "Size": 1100,
-              "Name": "Colossal Cheep1",
+              "Name": "Colossal Cheep-2",
               "Id": "2ba384ff-285b-4f6a-a2f6-3f67ee5efb7f",
               "LastModified": "2019-06-20T19:27:03.4900571-04:00",
               "SublevelsInfo": [
                 {
                   "Size": 1064,
-                  "Name": "Colossal Cheep 2",
+                  "Name": "Colossal Cheep-3",
                   "Id": "63773480-3fc7-4967-87e0-e790a3154044",
                   "LastModified": "2019-06-20T19:27:05.89715-04:00",
                   "SublevelsInfo": [
                     {
                       "Size": 66,
-                      "Name": "Colossal Cheep Boss",
+                      "Name": "Colossal Cheep-Boss",
                       "Id": "4b03f52e-b093-4ad7-b603-24de17a04fb3",
                       "LastModified": "2019-06-17T19:15:34.8666959-04:00",
                       "SublevelsInfo": null,
                       "InfoType": 1,
-                      "DisplayName": "(Level) Colossal Cheep Boss"
+                      "DisplayName": "(Level) Colossal Cheep-Boss"
                     }
                   ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Colossal Cheep 2"
+                  "DisplayName": "(Level) Colossal Cheep-3"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Colossal Cheep1"
+              "DisplayName": "(Level) Colossal Cheep-2"
             }
           ],
           "InfoType": 1,
@@ -5088,22 +5088,22 @@
         },
         {
           "Size": 399,
-          "Name": "World 1 to 2",
+          "Name": "Path to Piranha Forest",
           "Id": "6c2dafec-caa6-40bd-b4d2-a6f14d6d78dd",
           "LastModified": "2018-10-28T10:42:10.7361377-04:00",
           "SublevelsInfo": [
             {
               "Size": 183,
-              "Name": "World 2 to 1",
+              "Name": "Path to Cheep Cheep Everglades",
               "Id": "d844fc50-d8b2-44c2-978c-f945e10a0455",
               "LastModified": "2018-10-28T10:42:10.7461298-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) World 2 to 1"
+              "DisplayName": "(Level) Path to Cheep Cheep Everglades"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) World 1 to 2"
+          "DisplayName": "(Level) Path to Piranha Forest"
         }
       ],
       "InfoType": 0,
@@ -5446,48 +5446,48 @@
           "DisplayName": "(Level) World 3 to 4"
         },
         {
-          "Size": 227,
+          "Size": 336,
           "Name": "Mammoth Podobo",
           "Id": "722b743a-8d6d-400a-b1ae-067b8c99dd36",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 1066,
-              "Name": "Mammoth Podobo 2",
+              "Size": 1251,
+              "Name": "Mammoth Podobo-2",
               "Id": "29767657-d82d-4e47-93fa-d711ee3e6c48",
               "LastModified": "0001-01-01T00:00:00",
               "SublevelsInfo": [
                 {
-                  "Size": 1355,
-                  "Name": "Mammoth Podobo 3",
+                  "Size": 1410,
+                  "Name": "Mammoth Podobo-3",
                   "Id": "7008e137-6afa-4850-9e0f-8da4c8a31391",
                   "LastModified": "0001-01-01T00:00:00",
                   "SublevelsInfo": [
                     {
-                      "Size": 392,
-                      "Name": "Mammoth Podobo 4",
+                      "Size": 407,
+                      "Name": "Mammoth Podobo-4",
                       "Id": "2909cbff-1fcf-4840-84ed-6514206a76bb",
                       "LastModified": "0001-01-01T00:00:00",
                       "SublevelsInfo": [],
                       "InfoType": 1,
-                      "DisplayName": "(Level) Mammoth Podobo 4"
+                      "DisplayName": "(Level) Mammoth Podobo-4"
                     }
                   ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Mammoth Podobo 3"
+                  "DisplayName": "(Level) Mammoth Podobo-3"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Mammoth Podobo 2"
+              "DisplayName": "(Level) Mammoth Podobo-2"
             },
             {
               "Size": 236,
-              "Name": "Mammoth Podobo Room",
+              "Name": "Mammoth Podobo-Room",
               "Id": "74f27e95-1457-4a76-86cf-575a42366540",
               "LastModified": "0001-01-01T00:00:00",
               "SublevelsInfo": [],
               "InfoType": 1,
-              "DisplayName": "(Level) Mammoth Podobo Room"
+              "DisplayName": "(Level) Mammoth Podobo-Room"
             }
           ],
           "InfoType": 1,
@@ -5524,7 +5524,7 @@
           "DisplayName": "(Level) Crazy Cannons"
         },
         {
-          "Size": 1996,
+          "Size": 1994,
           "Name": "Out to Sea",
           "Id": "e689be33-9b16-4612-8b5e-7b8c96d9f89a",
           "LastModified": "2018-10-28T10:42:10.419333-04:00",
@@ -11308,7 +11308,7 @@
           "LowerRight": 119
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 239,
           "UpperRight": 119,
           "LowerLeft": 116,
@@ -11940,11 +11940,11 @@
           "LowerRight": 249
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 246,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 242,
@@ -12801,7 +12801,7 @@
           "LowerRight": 209
         },
         {
-          "Property": 65,
+          "Property": 64,
           "UpperLeft": 2,
           "UpperRight": 2,
           "LowerLeft": 255,
@@ -34139,11 +34139,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 140,
+          "UpperRight": 141,
+          "LowerLeft": 156,
+          "LowerRight": 157
         },
         {
           "Property": 242,
@@ -38161,11 +38161,11 @@
         "World 1 Boss Level",
         "World 2 Boss Level"
       ],
-      "Group": "One Time Use"
+      "Group": "Unused"
     },
     {
       "GameId": 11,
-      "GameObjectType": 2,
+      "GameObjectType": 1,
       "Name": "Auto Revert",
       "Sprites": [
         {
@@ -38194,7 +38194,7 @@
         }
       ],
       "Properties": [],
-      "Group": "One Time Use"
+      "Group": "Scripting"
     },
     {
       "GameId": 12,

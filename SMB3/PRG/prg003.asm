@@ -18,7 +18,7 @@ OBJ_CHECKPOINT		= $35
 OBJ_CLOUDGEN		= $36
 OBJ_COINALERT		= $37
 OBJ_MONTYMOLE		= $38
-OBJ_WALLOP 			= $39
+
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
 	.word ObjInit_WoodenPlatVert    ; Object $29
@@ -1500,9 +1500,11 @@ Swing_Interact:
 	STA Platform_MadeContact, X
 
 	JSR Object_InteractWithPlayer
+	JSR Swing_Draw
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel
 	JSR Platform_ContactCheck
+	RTS
 
 Swing_Draw:
 	JSR Platform_Draw
@@ -1612,7 +1614,7 @@ Swing_DrawAttach:
 	LDA <Point_RelativeY
 	STA Sprite_RAMY + 28, Y
 
-	LDA #$A5
+	LDA #$55
 	STA Sprite_RAMTile + 28, Y
 
 	LDA #SPR_PAL2 | SPR_BEHINDBG
@@ -2261,12 +2263,4 @@ MontyMole_Flipped:
 	STA Sprite_RAMX - 8, Y
 
 MontyMole_DrawRTS:
-	RTS
-
-ObjInit_Wallop:
-
-	RTS
-
-ObjNorm_Wallop:
-
 	RTS
