@@ -5452,7 +5452,7 @@
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 1251,
+              "Size": 1254,
               "Name": "Mammoth Podobo-2",
               "Id": "29767657-d82d-4e47-93fa-d711ee3e6c48",
               "LastModified": "0001-01-01T00:00:00",
@@ -5464,7 +5464,7 @@
                   "LastModified": "0001-01-01T00:00:00",
                   "SublevelsInfo": [
                     {
-                      "Size": 407,
+                      "Size": 570,
                       "Name": "Mammoth Podobo-4",
                       "Id": "2909cbff-1fcf-4840-84ed-6514206a76bb",
                       "LastModified": "0001-01-01T00:00:00",
@@ -6139,7 +6139,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 81,
+        "Size": 83,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",

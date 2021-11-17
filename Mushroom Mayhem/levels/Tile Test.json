@@ -5789,17 +5789,17 @@
     65,
     255,
     255,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
+    205,
+    205,
+    205,
+    205,
+    205,
+    205,
+    205,
+    205,
+    205,
+    205,
+    205,
     255,
     255,
     65,
@@ -6029,17 +6029,17 @@
     65,
     255,
     255,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
+    221,
+    221,
+    221,
+    221,
+    221,
+    221,
+    221,
+    221,
+    221,
+    221,
+    221,
     255,
     255,
     129,
@@ -6515,18 +6515,6 @@
       "X": 125,
       "Y": 17,
       "Property": 0
-    },
-    {
-      "GameObjectId": 60,
-      "X": 19,
-      "Y": 25,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 90,
-      "X": 16,
-      "Y": 25,
-      "Property": 0
     }
   ],
   "LevelPointers": [
@@ -6544,5 +6532,5 @@
       "BoundRectangle": "2656,80,32,32"
     }
   ],
-  "CompressedData": "f39/f2IB/10B/10B/10B/10B/10B/10B/10B/10B/39dAf9SAf9IAf9SAf9IAf9SAf9IAf9FAf9KAf9IAf9FAf9KAf9IAf9FAf9KAf8FgR+R"
+  "CompressedData": "f39/f2IB/10B/10B/10B/10B/10B/10B/10B/10B/39dAf9SAf9IAf9SAf9IAf9SAf9IAf9FAf9KAf9IAf9FAf8KzQH/SAH/RQH/Ct0B/wWBH5E="
 }

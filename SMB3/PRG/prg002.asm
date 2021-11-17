@@ -270,6 +270,7 @@ ObjNorm_WaterSplash:
 WaterSplash_Norm:
 	LDA #$02
 	STA Objects_SpritesRequested, X
+	STA <Objects_YVelZ, X
 
 	LDA #SPR_PAL2
 	STA Objects_SpriteAttributes, X
@@ -280,15 +281,27 @@ WaterSplash_Norm:
 	
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
-	JSR Object_CalcBoundBoxForced
-	JSR Object_DetectTileCenter
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTilesForced
 
+	LDA Object_BodyTileProp, X
 	CMP #(TILE_PROP_SOLID_ALL)
 	BCC WaterSplash_KeepSplashing
 
 	JMP Object_Delete
 
 WaterSplash_KeepSplashing:
+	STA Debug_Snap
+
+	LDA Object_VertTileProp, X
+	CMP #(TILE_PROP_LAVA)
+	BNE WaterSplash_KeepSplashing1
+
+	LDA <Objects_YZ, X
+	ORA #$04
+	STA <Objects_YZ, X
+
+WaterSplash_KeepSplashing1:
 	LDA Objects_Timer, X
 	BNE WaterSplash_Animate
 
