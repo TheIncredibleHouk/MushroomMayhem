@@ -597,7 +597,7 @@ SetSplash:
 	LDA #OBJ_WATERSPLASH
 	STA Objects_ID, X
 
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, X 
 	
 	LDA #$0B

@@ -254,7 +254,10 @@ ObjP27:
 ; 	An oject that just represents the splash animation when an object goes in and out of water
 ;***********************************************************************************	
 ObjInit_WaterSplash:
-	
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTilesForced
 
 	JMP Object_NoInteractions
 	
@@ -279,10 +282,7 @@ WaterSplash_Norm:
 	CMP #$09
 	BCC WaterSplash_KeepSplashing
 	
-	LDA #BOUND16x16
-	STA Objects_BoundBox, X
-	JSR Object_CalcBoundBox
-	JSR Object_DetectTilesForced
+	STA Debug_Snap
 
 	LDA Object_BodyTileProp, X
 	CMP #(TILE_PROP_SOLID_ALL)
@@ -291,7 +291,6 @@ WaterSplash_Norm:
 	JMP Object_Delete
 
 WaterSplash_KeepSplashing:
-	STA Debug_Snap
 
 	LDA Object_VertTileProp, X
 	CMP #(TILE_PROP_LAVA)

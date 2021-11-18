@@ -1,6 +1,6 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
+  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
   "Palettes": [
     {
       "Renamed": false,
@@ -5464,7 +5464,7 @@
                   "LastModified": "0001-01-01T00:00:00",
                   "SublevelsInfo": [
                     {
-                      "Size": 570,
+                      "Size": 642,
                       "Name": "Mammoth Podobo-4",
                       "Id": "2909cbff-1fcf-4840-84ed-6514206a76bb",
                       "LastModified": "0001-01-01T00:00:00",
