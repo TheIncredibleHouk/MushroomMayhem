@@ -1780,7 +1780,7 @@
     65,
     65,
     151,
-    151,
+    127,
     151,
     77,
     77,
@@ -2692,7 +2692,7 @@
     65,
     65,
     65,
-    151,
+    127,
     151,
     151,
     151,
@@ -2712,7 +2712,7 @@
     151,
     151,
     151,
-    151,
+    127,
     77,
     77,
     151,
@@ -6512,8 +6512,8 @@
     },
     {
       "GameObjectId": 128,
-      "X": 48,
-      "Y": 9,
+      "X": 56,
+      "Y": 11,
       "Property": 0
     },
     {
@@ -6563,6 +6563,24 @@
       "X": 28,
       "Y": 16,
       "Property": 1
+    },
+    {
+      "GameObjectId": 128,
+      "X": 36,
+      "Y": 11,
+      "Property": 4
+    },
+    {
+      "GameObjectId": 128,
+      "X": 84,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 128,
+      "X": 48,
+      "Y": 9,
+      "Property": 4
     }
   ],
   "LevelPointers": [
@@ -6606,5 +6624,5 @@
       "BoundRectangle": "304,16,32,32"
     }
   ],
-  "CompressedData": "CjLBl0zClzE/Mg8ywZdGwQ5EwpcxPzIPMsGXRsEfRIILlzEyMjIyMpeXl5cGl8ExEDIDl8ExAjINl8IxMguXwUdEAhFDwpcxBDLBl0LClzEDl8Ixl0jDlzEyA5fBMQoywZdBwpcxAjLBl0QBTUTElzEyl0PDnp+XAfcB8gzBwpcxA5fCMZdCw5cxlwFNw5cxl0jElzEylwFNwpcxCjLBl0HClzECMsGXRAFNRMSXMTKXQ8Oen5cB9wHyDMGCBZcxl0FBwUsClwFNApdIxJcxMpcBTcKXMQoywZdBwpcxAjLBl0QBTUTElzEyl0PDnp+XAfcB8gzBApdBApdFAU1LA5cBTQSXwTEGMsGXQcKXMQIywZdEAU1ExJcxMpdDw46PlwH3AfIMwU0BTU8BTUPClzEGMsGXQcKXMQIywZdBApcBTQKXQcSXMTKXRcGXAfcB8gzBZQKXwX8Fl8RLQZcxAjKCBZdBQZchwZdBxJcxMpdFwZcB9wHyDMFCAU1KApdDwX9ZApfBfwGXQcOXMZdBy5cxl66vlzEyl66vQ8GXAfcB8gzBQgFNSsOXIZdCAtJGAU1XwpcxA5fKMZeen5cxMpeen0LCPJcB9wHyDMFCAU1FBZfBMQ2XAU0Ll8J/l0nClzEDIsESA5fCMTIRl0YClwFNApdCwpchAyLBEgwiwZcBTcKXIQoiC5fBMQQyAyLCEjIQIsGXRsKXIQOXwiGXQsKXMREywZcBTcKXMQoyCyLBEhsywZdGwpcxAyLCEpdCwpcxAjIDl8ExAzIDl8IxMgOXwTEJl8ExDDIIl8IxMhGXRcFHB5dCwpcxAjLBl0HClzEDMsGXQcOXMTIDIsISl0fClzEMMsGXRsSXMTKXQ8Oen5cb9gX4AfbC+OgD6cH4AfYI+Af2wvjoDOnB+Ab2xPjo6ZdDw56flyP3wuL6A/vB4hL3BuLB+gb7weIG98Ti+vuXQ8Oen5cj98Li+gP7weIT98H/A/fC4voG+8HiBvfE4vr7l0PDjo+XHPfB/wX3wuL6A/vB4gv3wf8L98Li+gb7weIG98Ti+vuXRcGXI/fC4voD+8HiGPcJ4gb3xOL6+5dFwZcO98HiDvcC4gH3wuL6A/vB4gH3BOLB/yH3xuL6+5eur0PBlx73w+Lq4gH3BuIB98Li6gHrAeIh98bi+vuXnp9Cwj2XDffB/w33AuLC+uIK98Li+gH7wuviAfcF4gj3COIF98XOz+L6+xGXAvcI4gL3wfUC98Xi6uvb4gr3wuL6AvvB4gH3wuLqAuvB4gP3wf8D98Li6gXrweIF98Xe3+L6+xAiwZcC98Li6gXrweIB9wLiAffC4voB+wniAfeCCOL6+/v74vf3wfcG4sH6BfvB4gT3A+LC+vsQMsGXAvfC4voF+8HiAffD4uriAffC4voB+wjrggji9/fi+vv7+8HiAvfC4uoE68HbBfvB4gT3wuLqAevC2/s="
+  "CompressedData": "CjLBl0zClzE/Mg8ywZdGwQ5EwpcxPzIPMsGXRsEfRIILlzEyMjIyMpeXl5cGl8ExEDIDl8ExAjINl8IxMguXwUdEAhFDwpcxBDLBl0LClzEDl8Ixl0jDlzEyA5fBMQoywZdBwpcxAjLBl0QBTUTElzEyl0PDnp+XAfcB8gzBwpcxA5fCMZdCw5cxlwFNw5cxl0jElzEylwFNwpcxCjLBl0HClzECMsGXRAFNRMSXMTKXQ8Oen5cB9wHyDMGCBZcxl0FBwUsClwFNApdIxJcxMpcBTcKXMQoywZdBwpcxAjLBl0QBTUTElzEyl0PDnp+XAfcB8gzBApdBApdFAU1LA5cBTQSXwTEGMsGXQcKXMQIywZdEAU1ExJcxMpdDw46PlwH3AfIMwU0BTU8BTUPClzEGMsGXQcKXMQIywZdBw5d/lwFNApdBxJcxMpdFwZcB9wHyDMFlApfBfwWXxEtBlzECMoIFl0FBlyHBl0HElzEyl0XBlwH3AfIMwUIBTUoCl0PBf1kCl8F/AZdBw5cxl0HLlzGXrq+XMTKXrq9DwZcB9wHyDMFCAU1Kw5chl0IC0kYBTVfClzEDl8oxl56flzEyl56fQsI8lwH3AfIMwUIBTUXBfwSXwTEMl8F/AU0Ll8J/l0nClzEDIsESA5fCMTIRl0YClwFNApdCwpchAyLBEgwiwZcBTcKXIQoiC5fBMQQyAyLCEjIQIsGXRsKXIQOXwiGXQsKXMREywZcBTcKXMQoyCyLBEhsywZdGwpcxAyLCEpdCwpcxAjIDl8ExAzIDl8IxMgOXwTEJl8ExDDIIl8IxMhGXRcFHB5dCwpcxAjLBl0HClzEDMsGXQcOXMTIDIsISl0fClzEMMsGXRsSXMTKXQ8Oen5cb9gX4AfbC+OgD6cH4AfYI+Af2wvjoDOnB+Ab2xPjo6ZdDw56flyP3wuL6A/vB4hL3BuLB+gb7weIG98Ti+vuXQ8Oen5cj98Li+gP7weIT98H/A/fC4voG+8HiBvfE4vr7l0PDjo+XHPfB/wX3wuL6A/vB4gv3wf8L98Li+gb7weIG98Ti+vuXRcGXI/fC4voD+8HiGPcJ4gb3xOL6+5dFwZcO98HiDvcC4gH3wuL6A/vB4gH3BOLB/yH3xuL6+5eur0PBlx73w+Lq4gH3BuIB98Li6gHrAeIh98bi+vuXnp9Cwj2XDffB/w33AuLC+uIK98Li+gH7wuviAfcF4gj3COIF98XOz+L6+xGXAvcI4gL3wfUC98Xi6uvb4gr3wuL6AvvB4gH3wuLqAuvB4gP3wf8D98Li6gXrweIF98Xe3+L6+xAiwZcC98Li6gXrweIB9wLiAffC4voB+wniAfeCCOL6+/v74vf3wfcG4sH6BfvB4gT3A+LC+vsQMsGXAvfC4voF+8HiAffD4uriAffC4voB+wjrggji9/fi+vv7+8HiAvfC4uoE68HbBfvB4gT3wuLqAevC2/s="
 }

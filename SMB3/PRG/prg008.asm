@@ -6468,7 +6468,7 @@ Player_MakeSplash:
 	LDA #$0B
 	STA Objects_Timer, Y
 
-	LDA #OBJSTATE_NORMAL
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
 
 	LDA #$02

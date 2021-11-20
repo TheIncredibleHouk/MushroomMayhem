@@ -1,6 +1,6 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
+  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
   "Palettes": [
     {
       "Renamed": false,
@@ -5054,7 +5054,7 @@
           "LastModified": "2019-06-20T19:27:00.954171-04:00",
           "SublevelsInfo": [
             {
-              "Size": 1100,
+              "Size": 1106,
               "Name": "Colossal Cheep-2",
               "Id": "2ba384ff-285b-4f6a-a2f6-3f67ee5efb7f",
               "LastModified": "2019-06-20T19:27:03.4900571-04:00",
@@ -5464,7 +5464,7 @@
                   "LastModified": "0001-01-01T00:00:00",
                   "SublevelsInfo": [
                     {
-                      "Size": 642,
+                      "Size": 1730,
                       "Name": "Mammoth Podobo-4",
                       "Id": "2909cbff-1fcf-4840-84ed-6514206a76bb",
                       "LastModified": "0001-01-01T00:00:00",
@@ -50722,7 +50722,7 @@
           "X": 4,
           "Y": 0,
           "TileTableAddress": "0x4800",
-          "TileValue": "0x14",
+          "TileValue": "0x2C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 2,
@@ -50746,7 +50746,7 @@
           "X": 20,
           "Y": 0,
           "TileTableAddress": "0x4800",
-          "TileValue": "0x14",
+          "TileValue": "0x2C",
           "HorizontalFlip": true,
           "VerticalFlip": false,
           "PaletteIndex": 2,
@@ -50803,7 +50803,7 @@
           "X": 4,
           "Y": 0,
           "TileTableAddress": "0x4800",
-          "TileValue": "0x14",
+          "TileValue": "0x2C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -50827,7 +50827,7 @@
           "X": 20,
           "Y": 0,
           "TileTableAddress": "0x4800",
-          "TileValue": "0x14",
+          "TileValue": "0x2C",
           "HorizontalFlip": true,
           "VerticalFlip": false,
           "PaletteIndex": 1,

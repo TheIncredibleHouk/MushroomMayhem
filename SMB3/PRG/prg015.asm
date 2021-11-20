@@ -183,7 +183,7 @@ ObjP7A:
 ObjP7B:
 ObjP7C:
     .byte $99, $9B, $B9, $BB
-	.byte $95, $97, $B5, $B7
+	.byte $AD, $97, $B5, $B7
 
 ObjP7D:	
 	.byte $9D, $9F, $BD, $BF
@@ -1858,6 +1858,12 @@ ObjInit_AngryThwomp:
 
 	LDA #BOUND24x32
 	STA Objects_BoundBox, X
+
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X	
 
 	LDA #$03
 	STA Thwomp_Action, X
