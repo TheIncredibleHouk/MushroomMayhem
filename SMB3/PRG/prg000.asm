@@ -4506,7 +4506,7 @@ SetSpriteFG1:
 	BCS SetSpriteFG2
 	
 	AND #TILE_PROP_FOREGROUND
-	BNE SetSpriteFG4
+	BNE SetBehindFg
 
 SetSpriteFG2:
 	LDA Object_HorzTileProp, X
@@ -4514,23 +4514,31 @@ SetSpriteFG2:
 	BCS SetSpriteFG3
 	
 	AND #TILE_PROP_FOREGROUND
-	BNE SetSpriteFG4
+	BNE SetBehindFg
 
 
 SetSpriteFG3:
 	LDA Object_HorzTileProp, X
 	CMP #TILE_PROP_SOLID_ALL
-	BCS SetSpriteFG5
+	BCS SetSpriteFG4
 
 	AND #TILE_PROP_FOREGROUND
-	BEQ SetSpriteFG5
+	BNE SetBehindFg
 
 SetSpriteFG4:
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCS Object_CheckForegroundRTS
+
+	AND #TILE_PROP_FOREGROUND
+	BEQ Object_CheckForegroundRTS
+
+SetBehindFg:
 	LDA Objects_SpriteAttributes, X
 	ORA #SPR_BEHINDBG
 	STA  Objects_SpriteAttributes, X
-
-SetSpriteFG5:
+	
+Object_CheckForegroundRTS:	
 	RTS
 
 

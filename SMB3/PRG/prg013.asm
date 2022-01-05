@@ -1,7 +1,6 @@
 	.org $C000
 
 HandleLevelEvent:
-
 	LDA EventType
 	JSR DynJump
 
@@ -14,6 +13,7 @@ HandleLevelEvent:
 	.word Fireball_Event ;06
 	.word Direction_Switch ;07
 	.word Lava_Flood ; 08
+	.word Lava_Drain ; 09
 
 NoEvent:
 LetEnemyHandle:
@@ -730,3 +730,105 @@ Lava_Done:
 	LDA #$00
 	STA Player_VibeDisable
 	RTS	
+
+Lava_Drain:
+	LDA EventVar
+
+	JSR DynJump
+
+	.word Lava_DrainInit
+	.word Lava_DrainWaitForSwitch
+	.word Lava_DrainWait
+	.word Lava_DrainWait
+	.word Lava_DrainDone
+
+
+Lava_DrainInit:
+	LDA #OBJ_EVENTFILLER
+	STA Objects_ID
+	STA Objects_ID + 1
+
+	STA Player_VibeDisable
+
+	LDA #$03
+	STA Objects_Property
+	STA Objects_Property + 1
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State
+	STA Objects_State + 1
+
+	LDA #$00
+	STA LavaFill_FrameTicker
+	STA LavaFill_FrameTicker + 1
+
+
+	LDA #$00
+	STA <Objects_XHiZ
+	STA <Objects_XHiZ + 1
+
+	STA <Objects_YHiZ
+	STA <Objects_YHiZ + 1
+
+	LDA #$A0
+	STA <Objects_XZ
+
+	LDA #$C0
+	STA <Objects_XZ + 1
+
+	LDA #$5F
+	STA <Objects_YZ
+	STA <Objects_YZ + 1
+
+	INC EventVar
+
+	LDA #$20
+	STA Player_VibeDisable
+
+	LDA #$5F
+	STA <Objects_YZ
+	STA <Objects_YZ + 1	
+
+	LDA #$00
+	STA Anim_Counter
+	RTS
+
+	INC EventVar
+
+Lava_DrainInitRTS:
+	RTS
+
+Lava_DrainWaitForSwitch:
+	LDA #$02
+	STA Player_VibeDisable
+	STA Anim_Counter
+
+	LDA #$5F
+	STA <Objects_YZ
+	STA <Objects_YZ + 1
+
+	LDA EventSwitch
+	CMP #$01
+	BEQ Lava_DrainWaitForSwitchRTS
+
+	INC EventVar
+
+	LDA #$20
+	STA EventTicker
+
+Lava_DrainWaitForSwitchRTS:
+	RTS
+
+Lava_DrainWait:
+	LDA #$02
+	STA Player_VibeDisable
+
+	DEC EventTicker
+	BNE Lava_DrainWaitRTS
+
+	INC EventVar
+Lava_DrainWaitRTS:
+	RTS	
+
+Lava_DrainDone:
+	RTS

@@ -2643,7 +2643,8 @@ BobOmb_Norm1:
 	JSR Object_DetectTiles
 	
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_FOREGROUND | TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	AND #~(TILE_PROP_FOREGROUND)
+	CMP #(TILE_PROP_WATER | TILE_PROP_HARMFUL)
 	BEQ BobOmb_ForceExplode
 
 	LDA BobOmb_Unstable, X
@@ -2692,7 +2693,8 @@ BobOmb_Attack:
 	JSR Object_DetectTiles
 
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_FOREGROUND | TILE_PROP_WATER | TILE_PROP_HARMFUL)
+	AND #~(TILE_PROP_FOREGROUND)
+	CMP #(TILE_PROP_WATER | TILE_PROP_HARMFUL)
 	BEQ BobOmb_ForceExplode
 
 	JSR Object_InteractWithTiles

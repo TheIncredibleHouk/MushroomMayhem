@@ -1293,21 +1293,21 @@
       "Renamed": false,
       "IndexedColors": [
         15,
+        1,
+        48,
+        33,
+        15,
         12,
         48,
         28,
         15,
-        7,
-        56,
-        23,
         15,
+        32,
+        39,
         15,
-        26,
-        11,
-        15,
-        6,
-        54,
-        22,
+        0,
+        48,
+        16,
         15,
         15,
         54,
@@ -4764,21 +4764,21 @@
       "Renamed": false,
       "IndexedColors": [
         15,
-        15,
-        48,
-        33,
-        15,
         12,
         48,
         28,
         15,
-        2,
-        32,
-        17,
+        7,
+        56,
+        23,
         15,
-        0,
-        48,
-        16,
+        15,
+        26,
+        11,
+        15,
+        6,
+        54,
+        22,
         15,
         15,
         54,
@@ -4790,14 +4790,14 @@
         15,
         15,
         48,
-        33,
+        22,
         15,
-        15,
-        48,
-        17
+        6,
+        54,
+        22
       ],
-      "Name": "Mighty Podobo",
-      "Id": "21243e86-d0ce-4884-954c-43b841a44600"
+      "Name": "Mammoth Podob Room",
+      "Id": "1ce1f37d-2b9e-4fb9-8d10-ae08f0a9d5a1"
     },
     {
       "Renamed": false,
@@ -4829,14 +4829,53 @@
         15,
         15,
         48,
-        33,
+        22,
         15,
         6,
         54,
         22
       ],
-      "Name": "Mammoth Podob Room",
-      "Id": "1ce1f37d-2b9e-4fb9-8d10-ae08f0a9d5a1"
+      "Name": "",
+      "Id": "f3eb1b51-ed42-40dd-b78d-dadae9fb09cc"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        12,
+        48,
+        28,
+        15,
+        7,
+        56,
+        23,
+        15,
+        15,
+        26,
+        11,
+        15,
+        6,
+        54,
+        22,
+        15,
+        15,
+        54,
+        6,
+        15,
+        7,
+        48,
+        22,
+        15,
+        15,
+        48,
+        22,
+        15,
+        15,
+        48,
+        45
+      ],
+      "Name": "Mammoth Podobo",
+      "Id": "b75a6d0f-995b-4a75-98f5-febe5c2bf907"
     }
   ],
   "WorldInfo": [
@@ -5253,7 +5292,7 @@
           "LastModified": "2018-10-28T10:42:11.0749274-04:00",
           "SublevelsInfo": [
             {
-              "Size": 1986,
+              "Size": 1989,
               "Name": "Mighty Piranha 1",
               "Id": "deae9b28-696b-4d4a-b892-b7d4edb5589c",
               "LastModified": "2018-10-28T10:42:11.0839213-04:00",
@@ -5446,7 +5485,7 @@
           "DisplayName": "(Level) World 3 to 4"
         },
         {
-          "Size": 336,
+          "Size": 381,
           "Name": "Mammoth Podobo",
           "Id": "722b743a-8d6d-400a-b1ae-067b8c99dd36",
           "LastModified": "0001-01-01T00:00:00",
@@ -5464,11 +5503,21 @@
                   "LastModified": "0001-01-01T00:00:00",
                   "SublevelsInfo": [
                     {
-                      "Size": 1730,
+                      "Size": 1964,
                       "Name": "Mammoth Podobo-4",
                       "Id": "2909cbff-1fcf-4840-84ed-6514206a76bb",
                       "LastModified": "0001-01-01T00:00:00",
-                      "SublevelsInfo": [],
+                      "SublevelsInfo": [
+                        {
+                          "Size": 1608,
+                          "Name": "Mammoth Podobo-5",
+                          "Id": "cd0ca741-4937-4849-9379-ac0a47ce1aa7",
+                          "LastModified": "0001-01-01T00:00:00",
+                          "SublevelsInfo": [],
+                          "InfoType": 1,
+                          "DisplayName": "(Level) Mammoth Podobo-5"
+                        }
+                      ],
                       "InfoType": 1,
                       "DisplayName": "(Level) Mammoth Podobo-4"
                     }
@@ -5481,11 +5530,21 @@
               "DisplayName": "(Level) Mammoth Podobo-2"
             },
             {
-              "Size": 236,
+              "Size": 244,
               "Name": "Mammoth Podobo-Room",
               "Id": "74f27e95-1457-4a76-86cf-575a42366540",
               "LastModified": "0001-01-01T00:00:00",
-              "SublevelsInfo": [],
+              "SublevelsInfo": [
+                {
+                  "Size": 355,
+                  "Name": "Mammoth Podobo-Room-2",
+                  "Id": "efa39d44-cbf3-457e-a2d5-17d138ef7a81",
+                  "LastModified": "0001-01-01T00:00:00",
+                  "SublevelsInfo": [],
+                  "InfoType": 1,
+                  "DisplayName": "(Level) Mammoth Podobo-Room-2"
+                }
+              ],
               "InfoType": 1,
               "DisplayName": "(Level) Mammoth Podobo-Room"
             }
@@ -11507,10 +11566,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 204,
+          "UpperRight": 71,
+          "LowerLeft": 103,
+          "LowerRight": 178
         },
         {
           "Property": 192,
@@ -11619,10 +11678,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 103,
+          "UpperRight": 194,
+          "LowerLeft": 220,
+          "LowerRight": 87
         },
         {
           "Property": 192,
@@ -11682,31 +11741,31 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 204,
+          "UpperRight": 71,
+          "LowerLeft": 103,
+          "LowerRight": 6
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 71,
+          "UpperRight": 205,
+          "LowerLeft": 7,
+          "LowerRight": 119
+        },
+        {
+          "Property": 79,
+          "UpperLeft": 12,
+          "UpperRight": 13,
+          "LowerLeft": 28,
+          "LowerRight": 29
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 96,
+          "LowerRight": 97
         },
         {
           "Property": 192,
@@ -11731,10 +11790,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 71,
+          "UpperRight": 205,
+          "LowerLeft": 179,
+          "LowerRight": 119
         },
         {
           "Property": 200,
@@ -11780,13 +11839,6 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 0,
-          "UpperRight": 1,
-          "LowerLeft": 16,
-          "LowerRight": 17
-        },
-        {
-          "Property": 192,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -11798,13 +11850,20 @@
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 103,
+          "UpperRight": 22,
+          "LowerLeft": 220,
+          "LowerRight": 87
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 23,
+          "UpperRight": 119,
+          "LowerLeft": 87,
+          "LowerRight": 221
         },
         {
           "Property": 79,
@@ -11843,10 +11902,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 195,
+          "UpperRight": 119,
+          "LowerLeft": 87,
+          "LowerRight": 221
         },
         {
           "Property": 79,
@@ -11919,11 +11978,11 @@
           "LowerRight": 52
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 128,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 250,
@@ -12123,7 +12182,7 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 71,
+          "UpperLeft": 83,
           "UpperRight": 15,
           "LowerLeft": 31,
           "LowerRight": 17
@@ -12242,10 +12301,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 18,
-          "UpperRight": 1,
-          "LowerLeft": 16,
-          "LowerRight": 17
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 0,
@@ -58312,6 +58371,10 @@
       {
         "Key": "8",
         "Value": "Lava Flood"
+      },
+      {
+        "Key": "9",
+        "Value": "Lava Drain"
       },
       {
         "Key": "80",

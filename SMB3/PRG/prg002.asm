@@ -281,8 +281,6 @@ WaterSplash_Norm:
 	LDA Objects_Timer, X
 	CMP #$09
 	BCC WaterSplash_KeepSplashing
-	
-	STA Debug_Snap
 
 	LDA Object_BodyTileProp, X
 	CMP #(TILE_PROP_SOLID_ALL)
@@ -356,6 +354,7 @@ ObjNorm_EventFill:
 	.word WaterFill_Norm
 	.word LavaFallFill_Norm
 	.word LavaPoolFill_Norm
+	.word LavaDrain_Norm
 
 WaterFill_Norm:
 	LDA #$40
@@ -580,6 +579,123 @@ Lava_PoolDraw:
 	STA Sprite_RAMX + 28, Y
 	RTS
 		
+
+LavaDrain_XOffset:
+	.byte $08, $18
+
+
+LavaDrain_Norm:
+	LDA #$02
+	STA <Objects_YVelZ, X
+	
+	LDA <Objects_YZ, X
+	CMP #$8F
+	BCC LavaDrain_Fall
+
+	JMP Lava_DrainDraw
+
+LavaDrain_Fall:
+	JSR Object_ApplyYVel_NoGravity
+	LDA <Objects_YZ, X
+	CMP #$70
+	BCS LavaDrain_ResetBlockDraw
+
+	AND #$0F
+	BEQ LavaDrain_ResetBlockDraw
+
+	CMP #$0F
+	BNE Lava_DrainDraw
+
+	LDA LavaFill_BlockUpdated, X
+	CMP #$02
+	BCS Lava_DrainDraw
+
+	LDA Block_NeedsUpdate
+	BNE Lava_DrainDraw
+
+	LDY LavaFill_BlockUpdated, X
+	INC LavaFill_BlockUpdated, X
+	
+	LDA <Objects_XZ, X
+	ADD LavaDrain_XOffset, Y
+	STA Block_DetectX
+
+	LDA <Objects_YZ, X
+	ADD #$18
+	STA Block_DetectY
+
+	LDA #$00
+	STA Block_DetectXHi
+	STA Block_DetectYHi
+
+	LDA #$C1
+	JSR Object_ChangeBlock
+	JMP Lava_DrainDraw
+
+LavaDrain_ResetBlockDraw:	
+	LDA #$00
+	STA LavaFill_BlockUpdated, X
+
+Lava_DrainDraw:
+	LDA #(SPR_PAL3 | SPR_BEHINDBG)
+	STA Objects_SpriteAttributes, X
+
+	INC LavaFill_FrameTicker, X
+	
+	LDA LavaFill_FrameTicker, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$07
+	ADD #$01
+	STA Objects_Frame, X
+	
+	JSR Object_Draw16x32
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
+	
+	LDA Sprite_RAMTile + 4, Y
+	STA Sprite_RAMTile + 20, Y
+	
+	LDA #$FF
+	STA Sprite_RAMTile + 24, Y
+	STA Sprite_RAMTile + 28, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 16, Y
+	STA Sprite_RAMAttr + 20, Y
+	STA Sprite_RAMAttr + 24, Y
+	STA Sprite_RAMAttr + 28, Y
+
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY + 16, Y
+	STA Sprite_RAMY + 20, Y
+	ADD #$10
+	STA Sprite_RAMY + 24, Y
+	STA Sprite_RAMY + 28, Y	
+
+	LDA Sprite_RAMX, Y
+	ADD #$10
+	STA Sprite_RAMX + 16, Y
+	STA Sprite_RAMX + 24, Y
+	ADD #$08
+	STA Sprite_RAMX + 20, Y
+	STA Sprite_RAMX + 28, Y
+
+	LDA <Objects_YZ, X	
+	CMP #$80
+	BCC Lava_DrainDrawRTS
+
+	LDA #$F8
+	STA Sprite_RAMY + 8, Y
+	STA Sprite_RAMY + 12, Y
+	STA Sprite_RAMY + 24, Y
+	STA Sprite_RAMY + 28, Y
+
+Lava_DrainDrawRTS:
+	RTS
 
 ;***********************************************************************************
 ; Timer
