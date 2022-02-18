@@ -3116,6 +3116,9 @@ KeepDestroying:
 	LDA Objects_State,X
 	BEQ SkipDestroy
 
+	CMP	#OBJSTATE_KILLED
+	BEQ SkipDestroy
+
 	JSR Object_StarBurstDeath
 
 SkipDestroy:

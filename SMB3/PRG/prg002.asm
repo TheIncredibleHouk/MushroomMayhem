@@ -145,9 +145,9 @@ OBJ_EVENTSETTER		= $27
     .byte KILLACT_STARDEATH     ; Object $17
     .byte KILLACT_STARDEATH     ; Object $18
     .byte KILLACT_STARDEATH     ; Object $19
-    .byte KILLACT_NORMALANDKILLED     ; Object $1A
-    .byte KILLACT_NORMALANDKILLED     ; Object $1B
-    .byte KILLACT_NORMALANDKILLED     ; Object $1C
+    .byte KILLACT_NORMALSTATE     ; Object $1A
+    .byte KILLACT_NORMALSTATE     ; Object $1B
+    .byte KILLACT_NORMALSTATE     ; Object $1C
     .byte KILLACT_STARDEATH     ; Object $1D
     .byte KILLACT_NORMALSTATE   ; Object $1E
     .byte KILLACT_NORMALSTATE   ; Object $1F
@@ -1201,11 +1201,6 @@ ObjInit_Weather2:
 DontReverseWind:
 	LDA <Temp_Var2
 	STA Wind_Speed, X
-	
-	JSR Half_Value
-	JSR Half_Value
-	
-	STA Wind_ExtraVel, X
 
 	LDA #$01
 	STA WeatherActive
@@ -1229,16 +1224,18 @@ ObjNorm_Weather:
 	LDA Weather_Disabled
 	BNE DontReverseWind1
 
-	LDA #$00
-	STA Wind
-
-	LDA Player_IsClimbing
-	BNE No_Wind
-
 	LDA Wind_Speed, X
+	BEQ No_Wind
+	
 	STA Wind
 
 No_Wind:
+	LDA Wind
+	JSR Half_Value
+	JSR Half_Value
+	
+	STA Wind_ExtraVel, X
+
 	LDA <Vert_Scroll
 	STA <Temp_Var7
 
@@ -1711,7 +1708,7 @@ Lightning_Normal:
 	BNE Lightning_GroundCheck
 
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Lightning_GroundCheck
 
 	LDA Objects_BoundBottom, X
@@ -2215,10 +2212,10 @@ Explosion_BumpBlocks:
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
 	BEQ Explosion_Bust 
 
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SOLID_OBJECTINTERACT)
 	BEQ Explosion_Bust
 
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BEQ Explosion_Bust
 
 	CMP #(TILE_PROP_ITEM)
@@ -2744,7 +2741,7 @@ MushroomBlock_Snap:
 	STA Tile_DetectionYHi
 
 	LDA Object_BodyTileProp, X
-	CMP #TILE_PROP_ENEMY
+	CMP #TILE_PROP_OBJECTINTERACT
 	BNE MushroomBlock_Draw
 
 	LDA Object_BodyTileValue, X
@@ -2911,7 +2908,7 @@ Magnet_DetectTiles:
 	BEQ Magnet_TileInteract
 
 	LDA Object_HorzTileProp, X
-	CMP #(TILE_PROP_ENEMYSOLID | TILE_PROP_SOLID_ALL)
+	CMP #(TILE_PROP_SOLID_OBJECTINTERACT | TILE_PROP_SOLID_ALL)
 	BNE Magnet_TileInteract
 
 	INC Magnet_Stuck, X

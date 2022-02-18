@@ -2317,7 +2317,7 @@ Enemey_LightningWorld:
 	BCC Enemy_LightningBoltDraw
 
 	LDA Tile_LastProp
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Enemy_LightningBoltPoof
 
 	LDA Tile_LastValue
@@ -2813,7 +2813,7 @@ Enemy_OilNorm:
 	JSR Enemy_OilPlayer
 	JSR SpecialObj_DetectWorld16x16
 
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Enemy_OilSolid
 
 	LDA #SOBJ_OILOOZE

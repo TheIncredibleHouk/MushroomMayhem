@@ -118,7 +118,7 @@ OBJ_PARACHOMP		= $8B
     .byte OPTS_SETPT5 | $0E ; Object $79
     .byte OPTS_SETPT5 | $0E ; Object $7A
     .byte OPTS_SETPT5 | $0E ; Object $7B
-    .byte OPTS_SETPT5 | $12 ; Object $7C
+    .byte OPTS_NOCHANGE ; Object $7C
     .byte OPTS_SETPT5 | $12 ; Object $7D
     .byte OPTS_SETPT5 | $37 ; Object $7E
     .byte OPTS_SETPT5 | $37 ; Object $7F
@@ -188,6 +188,8 @@ ObjP7C:
 ObjP7D:	
 	.byte $9D, $9F, $BD, $BF
 	.byte $91, $93, $B1, $B3
+    .byte $D9, $DB, $F9, $FB
+
 
 ObjP7E:
     .byte $9D, $9F
@@ -1582,6 +1584,16 @@ ObjInit_Thwomp:
 	LDA #$10
 	STA Objects_Health, X
 
+	LDA Objects_Property, X
+	BEQ Thwomp_Awake
+
+	LDA #$03
+	STA Thwomp_Action, X
+	
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL | ATTR_WINDAFFECTS)
+	STA Objects_BehaviorAttr, X
+
+Thwomp_Awake:	
 	; Var4 = origin Y
 	LDA <Objects_YZ, X
 	STA Thwomp_StartY, X
@@ -1662,8 +1674,12 @@ Thwomp_DoAction:
 	.word Thwomp_WaitForPlayer
 	.word Thwomp_FallToGround
 	.word Thwomp_ReturnToOrigin
+	.word Thwomp_Sleep
 
 Thwomp_WaitForPlayer:
+	LDA #$12
+	STA PatTable_BankSel + 4
+
 	LDA Objects_SpritesVerticallyOffScreen,X
 	CMP #(SPRITE_0_VINVISIBLE | SPRITE_1_VINVISIBLE)
 
@@ -1700,6 +1716,9 @@ Thwomp_KeepWaiting:
 	JMP Thwomp_Draw
 
 Thwomp_FallToGround:
+	LDA #$12
+	STA PatTable_BankSel + 4
+
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
@@ -1740,7 +1759,7 @@ Thwomp_FallToGround:
 	STA <Objects_YVelZ, X
 
 	LDA Tile_LastProp
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BEQ Thwomp_Burst
 
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
@@ -1774,6 +1793,9 @@ Thwomp_NoHit:
 	JMP Thwomp_Draw
 
 Thwomp_ReturnToOrigin:
+	LDA #$12
+	STA PatTable_BankSel + 4
+
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
@@ -1851,7 +1873,78 @@ Thwomp_Draw1:
 
 Thwomp_DrawRTS:
 	RTS		 ; Return    
-    
+
+Thwomp_Sleep:   
+	LDA #$12
+	STA PatTable_BankSel + 5
+
+	LDA Wind
+	PHA
+	
+	JSR Half_Value
+	JSR Half_Value
+	STA Wind
+
+	JSR Object_Move
+
+	PLA
+	STA Wind 
+	
+	JSR Object_CalcBoundBox
+	JSR Explosion_KillOthers
+	JSR Object_AttackOrDefeat
+
+	INC Thwomp_Ticker, X
+	LDA Thwomp_Ticker, X
+	AND #$01
+	TAY
+
+	LDA Objects_BoundLeft, X
+	ADD Thwomp_DetectXOffset, Y
+	STA Tile_DetectionX
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	LDA Objects_BoundBottom, X
+	STA Tile_DetectionY
+
+	LDA Objects_BoundBottomHi, X
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_TOP
+	BCC Thwomp_SleepNoHit
+
+	JSR Object_HitGround
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL | ATTR_WINDAFFECTS)
+	STA Objects_BehaviorAttr, X
+
+	LDA <Objects_YHiZ, X
+	BMI Thwomp_SleepNoBreak
+
+	LDA <Objects_YZ, X
+	CMP #$80
+	BCC Thwomp_SleepNoBreak
+
+	LDA #OBJSTATE_KILLED
+	STA Objects_State, X
+	BNE Thwomp_SleepDetectGrnd
+
+Thwomp_SleepNoHit:
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+Thwomp_SleepDetectGrnd:
+Thwomp_SleepNoBreak:
+	LDA #$04
+	STA Objects_Frame, X
+	JMP Thwomp_Draw
+
 ObjInit_AngryThwomp:
 	LDA #$06
 	STA Objects_SpritesRequested, X
@@ -2718,10 +2811,10 @@ Podobo_MoveDone:
 	JSR Object_CheckForeground
 
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SOLID_OBJECTINTERACT)
 	BEQ Podobo_DoBridgeBreak
 
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Podobo_NoBridgeBreak
 
 Podobo_DoBridgeBreak:
@@ -2848,7 +2941,7 @@ Podobo_BreakBridges:
 	STA Tile_DetectionYHi
 
 	JSR Object_DetectTile
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Podobo_BreakBridgesRTS
 
 	TYA

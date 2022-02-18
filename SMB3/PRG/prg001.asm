@@ -1637,7 +1637,7 @@ Key_CheckAdjacents:
 	JSR Object_DetectTile
 	
 	LDA Tile_LastProp
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Key_NextBlock
 
 	JSR Key_UnlockBlock

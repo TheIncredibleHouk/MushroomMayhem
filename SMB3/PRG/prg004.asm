@@ -149,10 +149,10 @@ OBJ_PARAPIRANHA		= $4D
 	.byte KILLACT_STARDEATH 	; Object $46
 	.byte KILLACT_STARDEATH 	; Object $47
 	.byte KILLACT_STARDEATH 	; Object $48
-	.byte KILLACT_NORMALANDKILLED 	; Object $49
+	.byte KILLACT_NORMALSTATE 	; Object $49
 	.byte KILLACT_STARDEATH 	; Object $4A
 	.byte KILLACT_STARDEATH 	; Object $4B
-	.byte KILLACT_NORMALANDKILLED 	; Object $4C
+	.byte KILLACT_NORMALSTATE 	; Object $4C
 	.byte KILLACT_STARDEATH 	; Object $4D
 	.byte KILLACT_STARDEATH 	; Object $4E
 	.byte KILLACT_STARDEATH 	; Object $4F
@@ -2975,8 +2975,8 @@ ObjInit_PiranhaGrowerCommon:
 	LDA Objects_Property, X
 	STA Grower_Direction, X
 
-	 ; Grower_StartYHi = current tile to check for (Toggle sbeten #TILE_PROP_ENEMY and #TILE_PROP_HARMFUL)
-	LDA #TILE_PROP_ENEMY
+	 ; Grower_StartYHi = current tile to check for (Toggle sbeten #TILE_PROP_OBJECTINTERACT and #TILE_PROP_HARMFUL)
+	LDA #TILE_PROP_OBJECTINTERACT
 	STA Grower_TilePropDetect, X
 
 	; back up original position
@@ -3144,10 +3144,10 @@ Grower_TimerToggle:
 	STA Grower_ReverseDraw, X
 
 	LDA Grower_TilePropDetect, X
-	CMP #TILE_PROP_ENEMY
+	CMP #TILE_PROP_OBJECTINTERACT
 	BEQ Grower_TimerToggle0
 
-	LDA #TILE_PROP_ENEMY
+	LDA #TILE_PROP_OBJECTINTERACT
 	STA Grower_TilePropDetect, X
 	RTS
 

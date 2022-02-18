@@ -147,10 +147,10 @@ OBJ_MONTYMOLE		= $38
     .byte KILLACT_STARDEATH		; Object $2F
     .byte KILLACT_STARDEATH		; Object $30
     .byte KILLACT_STARDEATH		; Object $31
-    .byte KILLACT_NORMALANDKILLED ; Object $32
+    .byte KILLACT_NORMALSTATE ; Object $32
 	.byte KILLACT_STARDEATH		; Object $33
 	.byte KILLACT_STARDEATH		; Object $34
-	.byte KILLACT_NORMALANDKILLED		; Object $35
+	.byte KILLACT_NORMALSTATE		; Object $35
 	.byte KILLACT_NORMALSTATE		; Object $36
 	.byte KILLACT_STARDEATH		; Object $37
 	.byte KILLACT_STARDEATH		; Object $38
@@ -469,7 +469,7 @@ Platform_CheckBlocks:
 	STA Block_DetectYHi
 
 	JSR Object_DetectTile
-	CMP #TILE_PROP_ENEMY
+	CMP #TILE_PROP_OBJECTINTERACT
 	BEQ Platform_SetVel
 
 	DEC Platform_Index, X
@@ -1040,10 +1040,10 @@ PipeBlock_YVelFrac:
 	.byte $00, $80, $00, $80
 
 PipeBlock_PropCheck:
-	.byte TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID
-	.byte TILE_PROP_ENEMY
-	.byte TILE_PROP_ENEMY
-	.byte TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID
+	.byte TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT
+	.byte TILE_PROP_OBJECTINTERACT
+	.byte TILE_PROP_OBJECTINTERACT
+	.byte TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT
 
 PipeBlock_CheckBlocks:
 	LDA Block_NeedsUpdate
@@ -1268,7 +1268,7 @@ Pulley_CheckTiles:
 	JSR Object_DetectTileCenter
 	
 	LDA Tile_LastProp
-	CMP #TILE_PROP_ENEMY
+	CMP #TILE_PROP_OBJECTINTERACT
 	BNE Pulley_Stop
 
 	LDA <Objects_YVelZ, X
@@ -1292,7 +1292,7 @@ Pulley_MovingUp:
 Pulley_UpdateBlock:
 	TAY
 	LDA TileProperties, Y
-	CMP #TILE_PROP_ENEMY
+	CMP #TILE_PROP_OBJECTINTERACT
 	BNE Pulley_Move
 
 	TYA

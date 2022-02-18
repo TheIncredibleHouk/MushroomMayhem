@@ -16,6 +16,9 @@ OBJ_PIXIE    		= $6F
 OBJ_FIREBLAST		= $70
 OBJ_ICEBLAST		= $71
 OBJ_LAKITUWINDOW	= $72
+OBJ_STINGBEE		= $73
+OBJ_FUZZY			= $74
+OBJ_ICEWALL		= $75
 
     .word ObjInit_Lakitu ; Object $64
     .word ObjInit_Larry ; Object $65
@@ -32,9 +35,9 @@ OBJ_LAKITUWINDOW	= $72
     .word ObjInit_FireBlast ; Object $70
     .word ObjInit_FrostBlast ; Object $71
     .word ObjInit_LakituWindow ; Object $72
-    .word ObjInit_DoNothing ; Object $73
-    .word ObjInit_DoNothing ; Object $74
-    .word ObjInit_DoNothing ; Object $75
+    .word ObjInit_StingBee ; Object $73
+    .word ObjInit_Fuzzy ; Object $74
+    .word ObjInit_IceWall ; Object $75
     .word ObjInit_DoNothing ; Object $76
     .word ObjInit_DoNothing ; Object $77
 
@@ -55,9 +58,9 @@ OBJ_LAKITUWINDOW	= $72
     .word ObjNorm_FireBlast ; Object $70
     .word ObjNorm_FrostBlast ; Object $71
     .word ObjNorm_LakituWindow ; Object $72
-    .word ObjNorm_DoNothing ; Object $73
-    .word ObjNorm_DoNothing ; Object $74
-    .word ObjNorm_DoNothing ; Object $75
+    .word ObjNorm_StingBee ; Object $73
+    .word ObjNorm_Fuzzy ; Object $74
+    .word ObjNorm_IceWall ; Object $75
     .word ObjNorm_DoNothing ; Object $76
     .word ObjNorm_DoNothing ; Object $77
 
@@ -78,9 +81,9 @@ OBJ_LAKITUWINDOW	= $72
     .word Player_GetHurt ; Object $70
     .word Player_Freeze ; Object $71
     .word Player_GetHurt ; Object $72
-    .word ObjHit_DoNothing ; Object $73
+    .word Player_GetHurt ; Object $73
     .word ObjHit_DoNothing ; Object $74
-    .word ObjHit_DoNothing ; Object $75
+    .word ObjHit_SolidBlock ; Object $75
     .word ObjHit_DoNothing ; Object $76
     .word ObjHit_DoNothing ; Object $77
 
@@ -101,9 +104,9 @@ OBJ_LAKITUWINDOW	= $72
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $70
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $71
     .byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $72
-    .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $73
-    .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $74
-    .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $75
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $73
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $74
+    .byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16 ; Object $75
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $76
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $77
 
@@ -124,9 +127,9 @@ OBJ_LAKITUWINDOW	= $72
     .byte OPTS_NOCHANGE ; Object $70
     .byte OPTS_NOCHANGE ; Object $71
     .byte OPTS_SETPT5 | $0B ; Object $72
-    .byte OPTS_NOCHANGE ; Object $73
-    .byte OPTS_NOCHANGE ; Object $74
-    .byte OPTS_NOCHANGE ; Object $75
+    .byte OPTS_SETPT5 | $33 ; Object $73
+    .byte OPTS_SETPT5 | $33 ; Object $74
+    .byte OPTS_SETPT6 | $12 ; Object $75
     .byte OPTS_NOCHANGE ; Object $76
     .byte OPTS_NOCHANGE ; Object $77
 
@@ -140,10 +143,10 @@ OBJ_LAKITUWINDOW	= $72
     .byte KILLACT_STARDEATH ; Object $69
     .byte KILLACT_STARDEATH ; Object $6A
     .byte KILLACT_STARDEATH ; Object $6B
-    .byte KILLACT_NORMALANDKILLED ; Object $6C
-    .byte KILLACT_NORMALANDKILLED ; Object $6D
+    .byte KILLACT_NORMALSTATE ; Object $6C
+    .byte KILLACT_NORMALSTATE ; Object $6D
     .byte KILLACT_STARDEATH ; Object $6E
-    .byte KILLACT_NORMALANDKILLED ; Object $6F
+    .byte KILLACT_NORMALSTATE ; Object $6F
     .byte KILLACT_STARDEATH ; Object $70
     .byte KILLACT_STARDEATH ; Object $71
     .byte KILLACT_STARDEATH ; Object $72
@@ -223,8 +226,15 @@ ObjP72:
 	.byte $6B, $6B, $9D, $9D
 
 ObjP73:
+	.byte $B9, $BB, $B9, $BF
+
 ObjP74:
+	.byte $99, $9B
+	.byte $9B, $99
+
 ObjP75:
+	.byte $E5, $E5, $E5, $E5, $E5, $E5
+
 ObjP76:
 ObjP77:
 
@@ -1565,7 +1575,7 @@ HardIce_NoXVel:
 	BEQ HardIce_Draw
 
 	LDA Object_BodyTileProp, X
-	CMP #(TILE_PROP_ENEMY)
+	CMP #(TILE_PROP_OBJECTINTERACT)
 	BNE HardIce_Burst
 
 	JSR Object_HitGround
@@ -1756,7 +1766,7 @@ FireSnake_MovingDown:
 	BNE FireSnake_Animate
 
 	JSR Object_DetectTileCenter
-	CMP #TILE_PROP_ENEMY
+	CMP #TILE_PROP_OBJECTINTERACT
 	BNE FireSnake_NoFire
 
 	LDA Tile_DetectionX
@@ -2275,7 +2285,7 @@ ObjInit_Freezie:
 
 	LDA #ATTR_ICEPROOF
 	STA Objects_WeaponAttr, X
-
+	
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
@@ -3425,7 +3435,7 @@ Check_NextObject:
 	JSR Object_DetectObjects
 	BCC Check_FindObject
 
-	LDA #OBJSTATE_FROZEN2
+	LDA #OBJSTATE_FROZENSOLID
 	STA Objects_State,Y
 	
 	LDA #$00
@@ -3705,4 +3715,345 @@ LakituWindow_DoHide:
 	STA Sprite_RAMY + 4, Y
 
 LakituWindow_HideMaskRTS:
+	RTS
+
+ObjInit_StingBee:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	JSR Object_CalcBoundBox
+
+	JMP InitPatrol
+
+StingBee_AnimTicks = Objects_Data1	
+StingBee_Action	= Objects_Data2
+StingBee_ChargeShake = Objects_Data3
+StingBee_BackupXVel	= Objects_Data4
+StingBee_DecreaseXVel	= Objects_Data5
+
+ObjNorm_StingBee:
+	LDA <Player_HaltGameZ
+	BEQ StingBee_DoAction
+	JMP StingBee_Draw
+
+StingBee_DoAction:
+	LDA StingBee_Action, X
+	JSR DynJump
+
+	.word StingBee_Norm
+	.word StingBee_Charging
+	.word StingBee_Charge
+
+
+StingBee_DirectionTest:
+	.byte $00, SPR_HFLIP
+
+StingBee_ChargeDirection:
+	.byte $C0, $40	
+
+StingBee_ChargeSlowDown:
+	.byte $01, $FF
+
+StingBee_Norm:
+	JSR Object_MovePattern
+	JSR Object_FaceDirectionMoving
+	JSR StingBee_Interact
+
+	JSR Object_XDistanceFromPlayer
+	
+	LDA Objects_Orientation, X
+	CMP StingBee_DirectionTest, Y
+	BNE StingBee_Animate
+
+	JSR Object_YDistanceFromPlayer
+	CMP #$10
+	BCS StingBee_Animate
+
+	LDA <Objects_XVelZ, X
+	STA StingBee_BackupXVel, X
+	
+	INC StingBee_Action, X
+	LDA #$20
+	STA Objects_Timer, X
+	JMP StingBee_Animate
+
+StingBee_Interact:
+	LDA <Objects_XVelZ, X
+	BNE StingBee_Interact1
+
+	JSR Object_FacePlayer
+
+StingBee_Interact1:
+	JSR Object_DeleteOffScreen
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Object_AttackOrDefeat
+	RTS
+
+StingBee_Animate:
+	INC StingBee_AnimTicks, X
+
+	LDA StingBee_AnimTicks, X
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+	
+StingBee_Draw:
+	JMP Object_Draw
+
+StingBee_Charging:
+	JSR StingBee_Interact
+	
+	LDA Objects_Timer, X
+	STA Objects_Timer4, X
+	BNE StingBee_AnimateFast
+
+	INC StingBee_Action, X
+	
+	JSR Object_XDistanceFromPlayer
+
+	LDA StingBee_ChargeDirection, Y
+	STA <Objects_XVelZ, X
+
+	LDA StingBee_ChargeSlowDown, Y
+	STA StingBee_DecreaseXVel, X
+
+StingBee_AnimateFast:
+	INC StingBee_AnimTicks, X
+
+	LDA StingBee_AnimTicks, X
+	AND #$01
+	STA Objects_Frame, X
+	
+	JMP StingBee_Draw
+
+StingBee_Charge:
+	LDA <Objects_XVelZ, X
+	ADD StingBee_DecreaseXVel, X
+	STA <Objects_XVelZ, X
+
+	JSR Object_ApplyXVel
+	JSR StingBee_Interact
+
+	LDA <Objects_TilesDetectZ, X
+	BNE StingBee_ChargeStop
+
+	LDA <Objects_XVelZ, X
+	BEQ StingBee_ChargeStop
+	JMP StingBee_AnimateFast
+
+StingBee_ChargeStop:
+	LDA #$00
+	STA StingBee_Action, X
+
+	LDA StingBee_BackupXVel, X
+	STA <Objects_XVelZ, X
+
+	JMP StingBee_AnimateFast
+
+Fuzzy_AnimTicks = Objects_Data1
+Fuzzy_BlockCheck = Objects_Data2
+Fuzzy_BlockCheckIndex = Objects_Data3
+Fuzzy_BlockCheckCount = Objects_Data4
+
+ObjInit_Fuzzy:
+	LDA #(ATTR_FIREPROOF | ATTR_NINJAPROOF | ATTR_HAMMERPROOF  | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND16x16
+	STA Object_BoundBox, X
+	RTS
+
+ObjNorm_Fuzzy:
+	LDA <Player_HaltGameZ
+	BEQ Fuzzy_Norm
+	JMP Fuzzy_Draw
+
+Fuzzy_Norm:	
+	LDA #$40
+	JSR Object_DeleteOffScreenRange
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_XZ, X
+	ORA <Objects_YZ, X
+	AND #$0F
+	CMP #$00
+	BEQ Fuzzy_FindBlock
+
+	JMP Fuzzy_Animate
+
+Fuzzy_BlockChecksX:
+	.byte $08, $18, $08, $F8
+
+Fuzzy_BlockChecksXHi:	
+	.byte $00, $00, $00, $FF
+
+Fuzzy_BlockChecksY:
+	.byte $F8, $08, $18, $08
+
+Fuzzy_BlockChecksYHi:	
+	.byte $FF, $00, $00, $00
+
+FUZZY_BLOCKCHECK_UP = $00
+FUZZY_BLOCKCHECK_RIGHT = $01
+FUZZY_BLOCKCHECK_DOWN = $02
+FUZZY_BLOCKCHECK_LEFT = $03
+
+Fuzzy_BlockXVelocities:
+	.byte $00, $10, $00, $F0
+	.byte $00, $20, $00, $E0
+
+Fuzzy_BlockYVelocities:
+	.byte $F0, $00, $10, $00
+	.byte $E0, $00, $20, $00
+
+Fuzzy_BlockChecks:
+	.byte FUZZY_BLOCKCHECK_UP, FUZZY_BLOCKCHECK_RIGHT, FUZZY_BLOCKCHECK_LEFT, FUZZY_BLOCKCHECK_DOWN
+	.byte FUZZY_BLOCKCHECK_RIGHT, FUZZY_BLOCKCHECK_UP, FUZZY_BLOCKCHECK_DOWN, FUZZY_BLOCKCHECK_LEFT
+	.byte FUZZY_BLOCKCHECK_DOWN, FUZZY_BLOCKCHECK_LEFT, FUZZY_BLOCKCHECK_RIGHT, FUZZY_BLOCKCHECK_UP
+	.byte FUZZY_BLOCKCHECK_LEFT, FUZZY_BLOCKCHECK_UP, FUZZY_BLOCKCHECK_DOWN, FUZZY_BLOCKCHECK_RIGHT
+
+Fuzzy_FindBlock:
+	LDA Fuzzy_BlockCheck, X
+	ASL A
+	ASL A
+	STA Fuzzy_BlockCheckIndex, X
+
+	LDA #$00
+	STA Fuzzy_BlockCheckCount, X
+
+Fuzzy_FindNextBlock:
+	LDA Fuzzy_BlockCheckCount, X
+	ADD Fuzzy_BlockCheckIndex, X
+	TAY
+	LDA Fuzzy_BlockChecks, Y
+	TAY 
+
+	LDA <Objects_XZ, X
+	ADD Fuzzy_BlockChecksX, Y
+	STA Block_DetectX
+
+	LDA <Objects_XHiZ, X
+	ADC Fuzzy_BlockChecksXHi, Y
+	STA Block_DetectXHi
+
+	LDA <Objects_YZ, X
+	ADD Fuzzy_BlockChecksY, Y
+	STA Block_DetectY
+
+	LDA <Objects_YHiZ, X
+	ADC Fuzzy_BlockChecksYHi, Y
+	STA Block_DetectYHi
+
+	JSR Object_DetectTile
+	CMP #TILE_PROP_OBJECTINTERACT
+	BNE Fuzzy_NextBlockCheck
+
+	LDA Fuzzy_BlockCheckCount, X
+	ADD Fuzzy_BlockCheckIndex, X
+	TAY
+	
+	LDA Fuzzy_BlockChecks, Y
+	STA Fuzzy_BlockCheck, X
+	TAY
+
+	LDA Objects_Property, X
+	BEQ Fuzzy_NormalSpeed
+
+	TYA
+	ADD #$04
+	TAY
+
+Fuzzy_NormalSpeed:	
+	LDA Fuzzy_BlockXVelocities, Y
+	STA <Objects_XVelZ, X
+
+	LDA Fuzzy_BlockYVelocities, Y
+	STA <Objects_YVelZ, X
+
+	JMP Fuzzy_Animate
+
+Fuzzy_NextBlockCheck:
+	INC Fuzzy_BlockCheckCount, X
+	LDA Fuzzy_BlockCheckCount, X
+	CMP #$04
+	BEQ Fuzzy_Animate
+
+	JMP Fuzzy_FindNextBlock
+
+
+Fuzzy_Animate:	
+	INC Fuzzy_AnimTicks, X
+	LDA Fuzzy_AnimTicks, X
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+Fuzzy_Draw:
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JSR Object_Draw
+
+	LDA Sprite_RAMAttr + 4, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 4, Y
+	RTS
+
+ObjInit_IceWall:
+	JSR Object_NoInteractions
+
+	LDA #BOUND16X48TALL
+	STA Objects_BoundBox, X
+
+	LDA #$06
+	STA Objects_SpritesRequested, X
+
+	LDA Objects_BehaviorAttr, X
+	ORA #ATTR_WINDAFFECTS
+	STA Objects_BehaviorAttr, X
+	RTS
+
+ObjNorm_IceWall:
+	LDA <Player_HaltGameZ
+	BNE IceWall_Draw
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+
+	LDA Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ IceWall_Draw
+
+	JMP Object_BurstIce
+
+IceWall_Draw:
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JSR Object_Draw16x48
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA Sprite_RAMAttr + 4, Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
+	STA Sprite_RAMAttr + 4, Y
+	
+	LDA Sprite_RAMAttr + 12, Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
+	STA Sprite_RAMAttr + 12, Y
+
+	LDA Sprite_RAMAttr + 20, Y
+	ORA #(SPR_HFLIP | SPR_VFLIP)
+	STA Sprite_RAMAttr + 20, Y
 	RTS

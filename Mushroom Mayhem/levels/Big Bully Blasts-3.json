@@ -1,6 +1,6 @@
 {
   "Id": "7008e137-6afa-4850-9e0f-8da4c8a31391",
-  "Name": "Mammoth Podobo-3",
+  "Name": "Big Bully Blasts-3",
   "TileSetIndex": 2,
   "ClearTileIndex": 0,
   "MusicValue": 64,
@@ -8,7 +8,7 @@
   "StartX": 1,
   "StartY": 6,
   "PaletteEffect": 2,
-  "PaletteId": "1ce1f37d-2b9e-4fb9-8d10-ae08f0a9d5a1",
+  "PaletteId": "b75a6d0f-995b-4a75-98f5-febe5c2bf907",
   "StaticTileTableIndex": 16,
   "MostCommonTile": 0,
   "AnimationType": 1,

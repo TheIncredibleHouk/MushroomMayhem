@@ -65,11 +65,10 @@ Video_Upd_Table: ; $803E
 	.word Video_DoStatusBar	; $02 - status bar (typical)
 	.word $A000		; $03 - ???
 	.word $A06F		; $04 - ???
-	.word Video_DoStatusBarHM; $05 - status bar appropriate for horizontal mirroring
+	.word Video_DoStatusBar; $05 - status bar appropriate for horizontal mirroring
 	.word Video_DoPalUpd	; $06 - Updates palettes per values in the $07BE+ Palette_* vars; used during fade in/out routines
 
 StatusBar	.macro
-
 
 ;@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -99,6 +98,9 @@ StatusBar	.macro
 	vaddr \1 + $97
 	.byte $09, $A2, $A0, $A1, $A1, $A3, $A1, $A1, $A2, $AE		; Upper left corner
 
+	vaddr \1 + $A0
+	.byte VU_REPEAT | $20, $FF	; Bar across the top
+
 ;------
 
 	vaddr \1 + $00
@@ -116,12 +118,6 @@ StatusBar	.macro
 	; Typical status bar (non-vertical level)
 Video_DoStatusBar:
 	StatusBar $2B00
-
-	; Status bar used when Horizontal Mirroring in effect (Roulette game)
-Video_DoStatusBarHM:
-	StatusBar $2300
-
-
 
 	; This single byte is used in plant infestation levels to load the animation counter
 
@@ -5916,7 +5912,7 @@ Tile_WriteTempChangeRTS:
 	RTS
 
 Objects_DetectionTable:
-	.byte $00, $01, $00, $01, $00
+	.byte $00, $01, $00, $01, $00, $01, $00, $01
 
 Objects_ToggleDetection:
 	LDX #$04

@@ -1,12 +1,16 @@
-	.org $A000
-
 ObjGiant_Mirror:
 	LDY Object_SpriteRAMOffset, X
 	LDA Sprite_RAMAttr + 8, Y
 	ORA #SPR_HFLIP
 	STA Sprite_RAMAttr + 8, Y
+	LDA Sprite_RAMAttr + 12, Y
+	ORA #SPR_HFLIP
 	STA Sprite_RAMAttr + 12, Y
+	LDA Sprite_RAMAttr + 24, Y
+	ORA #SPR_HFLIP
 	STA Sprite_RAMAttr + 24, Y
+	LDA Sprite_RAMAttr + 28, Y
+	ORA #SPR_HFLIP
 	STA Sprite_RAMAttr + 28, Y
 	RTS
 
@@ -16,6 +20,8 @@ ObjNorm_Boss:
 	JSR DynJump
 
 	.word Boss_Cheep
+	.word Boss_Fwoosh
+	.word Boss_Bully
 	.word Giant_Piranha
 
 
@@ -365,7 +371,7 @@ Boss_CheepBreakBridgeLeft:
 	JSR Boss_CheepNorm
 	
 	LDA Boss_CheepTopLeftProp, X
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Boss_CheepNoBreak
 
 	LDA <Objects_XZ, X
@@ -381,7 +387,7 @@ Boss_CheepBreakBridgeLeft:
 
 Boss_CheepBreakBridgeRight:
 	LDA Boss_CheepTopRightProp, X
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE Boss_CheepNoBreak
 
 	LDA <Objects_XZ, X
@@ -674,8 +680,860 @@ Boss_CheepSecondFishDo:
 Boss_CheepMakeFishRTS:
 	RTS	
 
-Boss_CheepNextStage:
+
+Boss_FwooshAction = Objects_Data1
+Boss_FwooshPoofTimer = Objects_Data2
+Boss_FwooshPoofOffset = Objects_Data3
+Boss_FwooshAccelerate = Objects_Data4
+Boss_FwooshBreatheState = Objects_Data5
+Boss_FwooshStage = Objects_Data6
+Boss_FwooshPlatformState = Objects_Data7
+Boss_FwooshHealth = Objects_Data8
+
+Boss_FwooshSprites:
+	.byte $FF, $C1, $C1, $FF, $FF, $C3, $C3, $FF
+	.byte $FF, $C1, $C1, $FF, $FF, $E1, $E1, $FF
+	.byte $FF, $C1, $C1, $FF, $FF, $E3, $E3, $FF	
+
+Boss_Fwoosh:
+	LDA <Player_HaltGameZ
+	BEQ Boss_Fwoosh1
+
+	JMP Boss_FwooshDraw
+
+Boss_Fwoosh1:	
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Boss_Fwoosh2
+
+	JSR Boss_FwooshHit
+	JSR Object_CalcBoundBox
+	RTS
+
+Boss_Fwoosh2:	
+	JSR Giant_FwooshMakeThwomp
+
+	LDA Boss_FwooshAction, X
+	JSR DynJump
+
+	.word Boss_FwooshInit			; 0
+	.word Boss_FwooshWait			; 1
+	.word Boss_FwooshSwitchSides	; 2
+	.word Boss_FwooshMove			; 3
+	.word Boss_FwooshWait			; 4
+	.word Boss_FwooshDeepBreath		; 5
+	.word Boss_FwooshBlow			; 6
+	.word Boss_FwooshWait			; 7
+	.word Boss_FwooshRecover		; 8
+	.word Boss_FwooshDeath			; 9
+
+Boss_UpdatePlatforms:
+	LDA Wind
+	BEQ Boss_UpdatePlatformsDraw
+	BMI Boss_UpdatePlatformsLeft
+
+	LDA Boss_FwooshPlatformState, X
+	CMP #$10
+	BCS Boss_UpdatePlatformsDraw
+	INC Boss_FwooshPlatformState, X
+	JMP Boss_UpdatePlatformsDraw
+
+Boss_UpdatePlatformsLeft:	
+	LDA Boss_FwooshPlatformState, X
+	BEQ Boss_UpdatePlatformsDraw
 	
+	DEC Boss_FwooshPlatformState, X
+
+Boss_UpdatePlatformsDraw:
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA Boss_FwooshPlatformState, X
+	STA Sprite_RAMX + (4 * 8), Y
+	ADD #$08
+	STA Sprite_RAMX + (4 * 9), Y
+
+	LDA Boss_FwooshPlatformState, X
+	ADD #$E0
+	STA Sprite_RAMX + (4 * 10), Y
+	ADD #$08
+	STA Sprite_RAMX + (4 * 11), Y
+
+	LDA #$20
+	STA Sprite_RAMY + (4 * 8), Y
+	STA Sprite_RAMY + (4 * 9), Y
+	STA Sprite_RAMY + (4 * 10), Y
+	STA Sprite_RAMY + (4 * 11), Y
+
+	LDA #SPR_PAL3
+	STA Sprite_RAMAttr + (4 * 8), Y
+	STA Sprite_RAMAttr + (4 * 9), Y
+	STA Sprite_RAMAttr + (4 * 10), Y
+	STA Sprite_RAMAttr + (4 * 11), Y
+
+	LDA #$E5
+	STA Sprite_RAMTile + (4 * 8), Y
+	STA Sprite_RAMTile + (4 * 9), Y
+	STA Sprite_RAMTile + (4 * 10), Y
+	STA Sprite_RAMTile + (4 * 11), Y
+	RTS
+
+Boss_FwooshInit:
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+
+	LDA #$11
+	STA Boss_FwooshHealth, X
+
+	LDA #$0C
+	STA Objects_SpritesRequested, X
+
+	LDA #$10
+	STA ChaseVel_LimitHi, X
+	STA Boss_FwooshPlatformState, X
+
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
+
+	LDA #BOUND16x32
+	STA Objects_BoundBox, X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_BUMPNOKILL | ATTR_WINDAFFECTS)
+	STA Objects_BehaviorAttr, X
+
+	LDA #$08
+	STA Boss_FwooshPoofTimer, X
+
+	INC Boss_FwooshAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+	RTS
+
+Boss_FwooshSideAccels:
+	.byte $01, $FF
+
+Boss_FwooshSwitchSides:
+	LDY #$00
+	LDA <Objects_XZ, X
+	BPL Boss_FwooshSwitchSides1
+
+	INY
+
+Boss_FwooshSwitchSides1:	
+	LDA Boss_FwooshSideAccels, Y
+	STA Boss_FwooshAccelerate, X
+	ADD <Objects_XZ, X
+	STA <Objects_XZ, X
+
+	INC Boss_FwooshAction, X
+	JMP Boss_FwooshAnimate
+
+Boss_FwooshMove:
+	LDA Boss_FwooshAccelerate, X
+	ADD <Objects_XVelZ, X
+	CMP #$08
+	BEQ Boss_FwooshMoveCapped
+
+	CMP #$F8
+	BEQ Boss_FwooshMoveCapped
+
+	STA <Objects_XVelZ, X
+
+Boss_FwooshMoveCapped:
+	JSR Object_ApplyXVel
+	
+	JSR Object_ChasePlayerY
+	JSR Boss_FwooshCalcBoundBox	
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_XZ, X
+	CMP #$20
+	BEQ Boss_FwooshMove1
+
+	CMP #$C0
+	BEQ Boss_FwooshMove1
+	JMP Boss_FwooshAnimate
+
+Boss_FwooshMove1:
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA Boss_FwooshAccelerate, X
+
+	LDA #$60
+	STA Objects_Timer, X
+
+	INC Boss_FwooshAction, X
+	
+	JMP Boss_FwooshAnimate
+
+Boss_FwooshWait:
+	LDA Wind
+	BEQ Boss_FwooshWait0
+
+	BPL Boss_FwooshWindDec
+
+	INC Wind
+	JMP Boss_FwooshWait0
+
+Boss_FwooshWindDec:	
+	DEC Wind
+
+Boss_FwooshWait0:
+	LDA Objects_Timer, X
+	BNE Boss_FwooshWait1
+
+	INC Boss_FwooshAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+Boss_FwooshWait1:	
+	JSR Object_CalcBoundBox
+	JSR Object_ChasePlayerY
+	JSR Boss_FwooshCalcBoundBox	
+	JSR Object_AttackOrDefeat
+	
+	JMP Boss_FwooshAnimate	
+
+Boss_FwooshBreatheInFrames:
+	.byte $00, $01, $02, $02
+
+Boss_FwooshBreatheInWind:
+	.byte $F0, $10
+
+Boss_FwooshBreatheOutWind:	
+	.byte $18, $E8
+
+Boss_FwooshDeepBreath:
+	JSR Boss_FwooshCalcBoundBox	
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE Boss_FwooshDeepBreath1
+	
+	INC Boss_FwooshAction, X
+
+	LDA #$FF
+	STA Objects_Timer, X
+
+Boss_FwooshDeepBreath1:	
+	LDA Boss_FwooshBreatheState, X
+	CMP #$0F
+	BCS Boss_FwooshDeepBreath2
+
+	INC Boss_FwooshBreatheState, X
+	LDA Boss_FwooshBreatheState, X
+	LSR A
+	LSR A
+	TAY
+
+	LDA Boss_FwooshBreatheInFrames, Y
+	STA Objects_Frame, X
+	
+Boss_FwooshDeepBreath2:		
+	JSR Boss_FwooshCalcBoundBox	
+	JSR Object_AttackOrDefeat
+
+	LDY #$00
+	LDA <Objects_XZ, X
+	BPL Boss_FwooshDeepBreath3
+
+	INY
+
+Boss_FwooshDeepBreath3:
+	LDA Boss_FwooshBreatheInWind, Y
+	STA Wind
+
+	JMP Boss_FwooshAnimate
+
+Boss_FwooshBlow:
+	LDA Player_FlashInv
+	BNE Fwoosh_StopBlowing
+
+Boss_NoStopBlowing:	
+	LDA Boss_FwooshStage, X
+	BNE Fwoosh_TryStage2
+	
+	JSR Giant_FwooshMakeStage1Enemies
+	JMP Boss_FwooshKeepBlowing
+
+Fwoosh_TryStage2:
+	CMP #$01
+	BNE Fwoosh_TryStage3
+	
+	JSR Giant_FwooshMakeStage2Enemies
+	JMP Boss_FwooshKeepBlowing
+
+Fwoosh_TryStage3:
+	JSR Giant_FwooshMakeStage3Enemies
+
+Boss_FwooshKeepBlowing:
+	LDA Sound_QLevel2
+	ORA #SND_LEVELAIRSHIP
+	STA Sound_QLevel2
+
+	LDA Objects_Timer, X
+	BNE Boss_FwooshBlow1
+
+Fwoosh_StopBlowing:
+	LDA #$01
+	STA Boss_FwooshAction, X
+
+	LDA #$20
+	STA Objects_Timer, X
+	
+Boss_FwooshBlow1:
+	LDA Boss_FwooshBreatheState, X
+	BEQ Boss_FwooshBlow2
+
+	DEC Boss_FwooshBreatheState, X
+	LDA Boss_FwooshBreatheState, X
+	LSR A
+	LSR A
+	TAY
+
+	LDA Boss_FwooshBreatheInFrames, Y
+	STA Objects_Frame, X
+
+Boss_FwooshBlow2:	
+	STA Objects_Frame, X
+
+	JSR Boss_FwooshCalcBoundBox	
+	JSR Object_AttackOrDefeat
+
+	LDY #$00
+	LDA <Objects_XZ, X
+	BPL Boss_FwooshBlow3
+
+	INY
+
+Boss_FwooshBlow3:
+	LDA Boss_FwooshBreatheOutWind, Y
+	STA Wind
+
+	JMP Boss_FwooshAnimate
+
+Boss_FwooshCalcBoundBox:
+	JSR Object_CalcBoundBox
+
+	LDA Objects_BoundLeft, X
+	ADD #$08
+	STA Objects_BoundLeft, X
+
+	LDA Objects_BoundRight, X
+	ADD #$08
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundTop, X
+	ADD #$06
+	STA Objects_BoundTop, X
+
+	LDA Objects_BoundBottom, X
+	SUB #$06
+	STA Objects_BoundBottom, X
+	RTS
+
+Boss_FwooshPoofX:
+	.byte $00, $10, $00, $10
+
+Boss_FwooshPoofY:
+	.byte $00, $10, $10, $00
+
+Boss_FwooshSpriteMask:
+	.byte SPRITE_0_HINVISIBLE | SPRITE_3_HINVISIBLE, SPRITE_0_HINVISIBLE | SPRITE_3_HINVISIBLE
+
+Boss_FwooshAnimate:
+	LDA <Objects_YHiZ, X
+	BNE Boss_FwooshDraw
+
+	DEC Boss_FwooshPoofTimer, X
+	BNE Boss_FwooshDraw
+
+	INC Boss_FwooshPoofOffset, X
+	LDA Boss_FwooshPoofOffset, X
+	AND #$03
+	TAY
+
+	LDA Boss_FwooshPoofX, Y
+	ADD <Objects_XZ, X
+	STA Poof_X
+
+	LDA Boss_FwooshPoofY, Y
+	ADD <Objects_YZ, X
+	STA Poof_Y
+
+	JSR Common_MakePoof
+
+	LDA #$08
+	STA Boss_FwooshPoofTimer, X
+
+Boss_FwooshDraw:
+	LDY #$00
+	LDA Objects_Orientation, X
+	BEQ Boss_FwooshDraw1
+
+	INY
+
+Boss_FwooshDraw1:
+	LDA Boss_FwooshSpriteMask, Y
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	STA Objects_SpritesHorizontallyOffScreen, X
+
+	LDA #LOW(Boss_FwooshSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Boss_FwooshSprites)
+	STA <Giant_TilesHi
+
+	LDA #$12
+	STA PatTable_BankSel + 5
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JSR Object_CheckForeground
+	JSR Object_DrawGiant
+	JSR ObjGiant_Mirror
+	RTS
+
+Giant_FwooshMakeThwomp:
+	LDY #$02
+
+Giant_FwooshCheckThwomp:	
+	LDA Objects_ID + 5, Y
+	CMP #OBJ_THWOMP
+	BEQ Giant_FwooshMakeThwompRTS
+
+	DEY
+	BPL Giant_FwooshCheckThwomp
+
+	LDY #$02
+
+Giant_FwooshFindThwompSlot:	
+	LDA Objects_State + 5, Y
+	BEQ Giant_FwooshProduceThwomp
+
+	DEY
+	BPL Giant_FwooshFindThwompSlot
+	BMI Giant_FwooshMakeThwompRTS
+
+Giant_FwooshProduceThwomp:
+	LDA #$70
+	STA Objects_XZ + 5, Y
+
+	LDA #$00
+	STA Objects_XHiZ + 5, Y
+
+	LDA #$C0
+	STA Objects_YZ + 5, Y
+
+	LDA #$FF
+	STA Objects_YHiZ + 5, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State + 5, Y
+
+	LDA #$02
+	STA Objects_Property + 5, Y
+
+	LDA #OBJ_THWOMP
+	STA Objects_ID + 5, Y
+
+Giant_FwooshMakeThwompRTS:
+	RTS	
+
+Giant_FwooshMakeStage1Enemies:
+	LDA Objects_Timer, X
+	CMP #$FE
+	BNE Giant_FwooshMakeStage1Enemies1
+
+	JSR Giant_FwooshMakeFreezie
+	RTS
+
+Giant_FwooshMakeStage1Enemies1:
+	CMP #$A0
+	BNE Giant_FwooshMakeStage1Enemies2
+
+	JSR Giant_FwooshMakeFuzzy
+	RTS
+
+Giant_FwooshMakeStage1Enemies2:
+	CMP #$20
+	BNE Giant_FwooshMakeStage1EnemiesRTS
+
+	JSR Giant_FwooshMakeFreezie
+
+Giant_FwooshMakeStage1EnemiesRTS:	
+	RTS
+
+Giant_FwooshMakeStage2Enemies:	
+	LDA Objects_Timer, X
+	CMP #$F0
+	BNE Giant_FwooshMakeStage2Enemies1
+
+	JSR Giant_FwooshMakeIceWall
+	RTS
+
+Giant_FwooshMakeStage2Enemies1:
+	CMP #$A0
+	BNE Giant_FwooshMakeStage2Enemies2
+
+	JSR Giant_FwooshMakeIceWall
+	RTS
+
+Giant_FwooshMakeStage2Enemies2:	
+	CMP #$80
+	BNE Giant_FwooshMakeStage2Enemies3
+
+	JSR Giant_FwooshMakeFuzzy
+	RTS
+
+Giant_FwooshMakeStage2Enemies3:	
+	CMP #$40
+	BNE Giant_FwooshMakeStage2EnemiesRTS
+
+	JSR Giant_FwooshMakeIceWall
+
+Giant_FwooshMakeStage2EnemiesRTS:
+	RTS	
+
+Giant_FwooshMakeStage3Enemies:	
+	LDA Objects_Timer, X
+	CMP #$FE
+	BNE Giant_FwooshMakeStage3Enemies1
+
+	JSR Giant_FwooshMakeIceWall
+	RTS
+
+Giant_FwooshMakeStage3Enemies1:	
+	CMP #$B0
+	BNE Giant_FwooshMakeStage3Enemies2
+
+	JSR Giant_FwooshMakeFreezie
+	RTS
+
+Giant_FwooshMakeStage3Enemies2:
+	CMP #$90
+	BNE Giant_FwooshMakeStage3Enemies3
+	
+	JSR Giant_FwooshMakeIceWall
+	RTS
+
+Giant_FwooshMakeStage3Enemies3:
+	CMP #$40
+	BNE Giant_FwooshMakeStage3Enemies4
+
+	JSR Giant_FwooshMakeFreezie
+	RTS
+
+Giant_FwooshMakeStage3Enemies4
+	CMP #$20
+	BNE Giant_FwooshMakeStage3Enemies5
+
+	JSR Giant_FwooshMakeFuzzy
+
+Giant_FwooshMakeStage3Enemies5:	
+	RTS	
+
+Giant_FwooshMakeFreezie:
+	JSR Object_FindEmptyY
+	BCC Giant_FwooshMakeFreezieRTS
+
+Giant_FwooshProduceFreezie:
+	LDA <Objects_XZ, X
+	BMI Fwoosh_FreezieOtherSide
+
+	LDA #$18
+	STA Objects_XZ, Y
+	BNE Fwoosh_FreezieXHi
+
+Fwoosh_FreezieOtherSide:
+	LDA #$D8
+	STA Objects_XZ, Y
+
+Fwoosh_FreezieXHi:
+	LDA #$00
+	STA Objects_XHiZ, Y
+
+	LDA #$A0
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_YHiZ, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, Y
+
+	LDA #$00
+	STA Objects_Property, Y
+
+	LDA #OBJ_FREEZIE
+	STA Objects_ID , Y
+
+Giant_FwooshMakeFreezieRTS:
+	RTS	
+
+
+Giant_FwooshMakeIceWall:
+	JSR Object_FindEmptyY
+	BCC Giant_FwooshMakeIceWallRTS
+
+Giant_FwooshProduceIceWall:
+	LDA <Objects_XZ, X
+	BMI Fwoosh_IceWallOtherSide
+
+	LDA #$18
+	STA Objects_XZ, Y
+
+	LDA #$18
+	STA Objects_XVelZ, Y
+	BNE Fwoosh_IceWallXHi
+
+Fwoosh_IceWallOtherSide:
+	LDA #$D8
+	STA Objects_XZ, Y
+
+	LDA #$E8
+	STA Objects_XVelZ, Y
+
+Fwoosh_IceWallXHi:
+	LDA #$00
+	STA Objects_XHiZ, Y
+
+	LDA #$80
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_YHiZ, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA #$00
+	STA Objects_Property, Y
+
+	LDA #OBJ_ICEWALL
+	STA Objects_ID , Y
+
+Giant_FwooshMakeIceWallRTS:
+	RTS	
+
+
+Giant_FwooshMakeFuzzy:
+	LDY #$04
+
+Giant_FwooshMakeFuzzyLoop:
+	LDA Objects_ID, Y
+	CMP #OBJ_FUZZY
+	BEQ Giant_FwooshMakeFuzzyRTS
+
+	LDA Objects_State, Y
+	BEQ Giant_FwooshProduceFuzzy
+
+Fwoosh_NotFuzzy:
+	DEY
+	BPL Giant_FwooshMakeFuzzyLoop
+	RTS
+
+Giant_FwooshProduceFuzzy:
+	TYA
+	TAX
+
+	JSR Object_New
+
+	LDX <CurrentObjectIndexZ
+
+	LDA <Objects_XZ, X
+	BMI Fwoosh_FuzzyOtherSide
+
+	LDA #$18
+	STA Objects_XZ, Y
+
+	BNE Fwoosh_FuzzyXHi
+
+Fwoosh_FuzzyOtherSide:
+	LDA #$D8
+	STA Objects_XZ, Y
+
+Fwoosh_FuzzyXHi:
+	LDA #$00
+	STA Objects_XHiZ, Y
+
+	LDA #$A0
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_YHiZ, Y
+
+	LDA #OBJSTATE_FROZENSOLID
+	STA Objects_State, Y
+
+	LDA #OBJ_FUZZY
+	STA Objects_ID , Y
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, Y
+
+Giant_FwooshMakeFuzzyRTS:
+	RTS	
+
+Poof_XVel:
+	.byte $E0, $20, $20, $E0	
+
+Poof_YVel:
+	.byte $E0, $E0, $20, $20
+
+Fwoosh_HealthStage:
+	.byte $02, $02, $02, $02, $02, $02
+	.byte $01, $01, $01, $01, $01, $01
+	.byte $00, $00, $00, $00, $00, $00
+
+Boss_FwooshHit:
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	STA Debug_Snap
+	DEC Boss_FwooshHealth, X
+
+	LDA Objects_PlayerProjHit, X
+	CMP #HIT_EXPLOSION
+	BNE Boss_FwooshHit1
+
+	LDA #$00
+	STA Objects_PlayerProjHit, X
+
+	LDA Boss_FwooshHealth, X
+	SUB #$06
+	STA Boss_FwooshHealth, X
+
+Boss_FwooshHit1:
+	LDY Boss_FwooshHealth, X
+	BPL Boss_FwooshSetStage
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	LDA #$09
+	STA Boss_FwooshAction, X
+	JMP Boss_FwooshDraw
+
+Boss_FwooshSetStage:	
+	LDA Fwoosh_HealthStage, Y
+	STA Boss_FwooshStage, X
+
+	LDA #$40
+	STA Objects_Timer, X
+	STA Objects_Timer2, X
+
+	LDA #$07
+	STA Boss_FwooshAction, X
+
+	LDA #$01
+	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+	STA <Objects_XVelZ, X
+	STA Boss_FwooshBreatheState, X
+	STA Objects_Frame, X
+
+	LDX #$03
+	LDY #$05
+
+Hit_LoopPoofs:
+	LDA SpecialObj_ID, Y
+	CMP #SOBJ_POOF
+	BNE Hit_NotAPoof
+
+	LDA Poof_XVel, X
+	STA SpecialObj_XVel, Y
+	
+	LDA Poof_YVel, X
+	STA SpecialObj_YVel, Y
+
+	LDA #$20
+	STA SpecialObj_Timer, X
+	DEX
+
+Hit_NotAPoof:
+	DEY
+	BPL Hit_LoopPoofs
+
+	LDX <CurrentObjectIndexZ
+
+	LDA Boss_FwooshAccelerate, X
+	BEQ FwooshHit_Relocate
+	BMI FwooshHit_RelocateLeft
+	BPL FwooshHit_RelocateRight
+
+FwooshHit_Relocate:
+	LDA <Objects_XZ, X
+	BPL FwooshHit_RelocateRight
+
+FwooshHit_RelocateLeft:
+	LDA #$20
+	STA <Objects_XZ, X
+	RTS
+
+FwooshHit_RelocateRight:
+	LDA #$C0
+	STA <Objects_XZ, X
+	RTS	
+
+Boss_FwooshRecover:
+	LDA #$04
+	STA Boss_FwooshAction, X
+
+	LDA #$00
+	STA <Objects_YHiZ, X
+	RTS	
+
+Boss_FwooshFlash:
+	.byte SPR_PAL1, SPR_PAL3
+
+Boss_FwooshDeath:
+	STA Debug_Snap
+	LDA Objects_Timer, X
+	BEQ Boss_FwooshDeathExplode
+
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Boss_FwooshFlash, Y
+	STA Objects_SpriteAttributes, X
+	JSR Boss_FwooshDraw
+	RTS
+
+Boss_FwooshDeathExplode:
+	LDA #$FF
+	STA Objects_Timer2, X
+
+	LDA #$80
+	STA CompleteLevelTimer
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$18
+	STA Objects_Timer,X
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA RotatingColor_Cnt
+
+	LDA #$64
+	STA Exp_Earned
+	JMP Object_Explode
+
 Giant_PiranhaSprites:
 	.byte $C1, $C3, $C3, $C1, $E1, $E3, $E3, $E1
 	.byte $C5, $C7, $C7, $C5, $E5, $E7, $E7, $E5
@@ -734,7 +1592,7 @@ Giant_PiranhaNorm1:
 	.word Giant_PiranhaFreezeBridge
 	.word Giant_PiranhaDie
 
-Giant_PiranhaInit:
+Giant_PiranhaInit:	
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
 
@@ -1324,3 +2182,615 @@ Giant_PiranhaDieRTS:
 	LDA #$80
 	STA Giant_PiranhaSpawnTimer, X
 	JMP Giant_PiranhaAnimate
+
+Boss_BullyAction = Objects_Data1
+Boss_BullyAnimTicks = Objects_Data2
+Boss_BullyBounces = Objects_Data3
+
+Boss_BullyPals:
+	.byte SPR_PAL1, SPR_PAL3
+
+Boss_BullySprites:
+	.byte $C1, $C3, $C5, $C7, $E1, $E3, $E5, $E7
+	.byte $C1, $C3, $C5, $C7, $C9, $CB, $E9, $EB
+	.byte $CD, $CF, $CF, $CD, $ED, $EF, $EF, $ED
+	.byte $CD, $CF, $CF, $CD, $C9, $CB, $CB, $C9
+	
+Boss_Bully:
+	LDA <Player_HaltGameZ
+	BEQ Boss_BullyDoAction
+
+	LDA Boss_BullyAction, X
+	JSR DynJump
+
+Boss_BullyDrawOnly:
+	.word Boss_BullyDraw
+	.word Boss_BullyDraw
+	.word Boss_BullyDraw
+	.word Boss_BullyDraw
+	.word Boss_BullyDraw
+	.word Boss_BullyDraw
+	.word Boss_BullyDrawJump
+	.word Boss_BullyDrawJump
+	.word Boss_BullyDrawJump
+	.word Boss_BullyDraw
+
+Boss_BullyDoAction:
+	LDA <Objects_XHiZ, X
+	CMP <Player_XHi
+	BEQ Boss_BullyDoAction2
+
+	LDA #$05
+	STA Boss_BullyAction, X
+
+	LDA #$70
+	STA Objects_Timer, X
+
+	LDA #$E0
+	STA <Objects_YZ, X
+
+	LDA #$FF
+	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA <Player_X
+	ADD #$80
+	CMP #$D0
+	BCS Boss_BullyDoAction1
+
+	CMP #$30
+	BCC Boss_BullyDoAction1
+	
+	STA <Objects_XZ, X
+
+	SEC
+
+	LDA <Objects_XHiZ, X
+	CMP <Player_XHi
+	BCC Boss_BullyDoAction1
+
+	SUB #$01
+	STA <Objects_XHiZ, X
+
+Boss_BullyDoAction1:
+	RTS
+
+Boss_BullyDoAction2:	
+	LDA Boss_BullyAction, X
+	JSR DynJump
+
+	.word Boss_BullyInit 		; $00
+	.word Boss_BullyMarch		; $01
+	.word Boss_BullyCharging	; $02
+	.word Boss_BullyCharge		; $03
+	.word Boss_BullyBounceBack	; $04
+	.word Boss_BullyWait		; $05
+	.word Boss_BullyJumpPrep	; $06
+	.word Boss_BullyJump		; $07
+	.word Boss_BullyBounce		; $08
+	.word Boss_BullyBounceWait	; $09
+	.word Boss_BullyDie			; $0A
+
+Boss_BullyInit:
+	LDA #$F0
+	STA Objects_XVelZ, X
+
+	LDA #$00
+	STA Objects_ExpPoints, X
+
+	LDA #$03
+	STA Objects_Health, X
+
+	INC Boss_BullyAction, X
+
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND32x32
+	STA Objects_BoundBox, X
+
+	LDA #$20
+	STA Objects_Timer, X
+	STA Objects_Global, X
+	RTS
+
+
+Boss_BullyBounceCounts:
+	.byte $02, $01, $04, $03
+
+Boss_BullyActionTypes:
+	.byte $02, $01, $06, $01
+
+Boss_BullyActionTimers:
+	.byte $20, $40, $30, $40
+
+Boss_BullyMarch:
+	JSR Object_FaceDirectionMoving
+	JSR Boss_BullyMove
+	
+	LDA Objects_Timer, X
+	BNE Boss_BullyMarch1
+
+	LDA RandomN
+	AND #$03
+	TAY
+
+	LDA Boss_BullyActionTypes, Y
+	STA Boss_BullyAction, X
+	CMP #$06
+	BNE Boss_BullyMarch0
+
+Boss_BullyMarch0:	
+
+	LDA Boss_BullyActionTimers, Y
+	STA Objects_Timer, X
+
+Boss_BullyMarch1:
+	JMP Boss_BullyAnimate
+
+
+Boss_BullyMove:
+	LDA Objects_SpritesVerticallyOffScreen, X
+	BEQ Boss_BullyMoveNotOffScreen
+
+	LDA <Objects_YHiZ, X
+	BEQ Boss_BullyMoveNotOffScreen
+	BMI Boss_BullyMoveNotOffScreen
+
+	LDA <Objects_YZ, X
+	CMP #$C0
+	BCC Boss_BullyMoveNotOffScreen
+
+	DEC <Objects_XHiZ, X
+
+Boss_BullyMoveNotOffScreen:
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+
+	LDA Object_HorzTileProp, X
+	CMP #(TILE_PROP_LAVA)
+	BNE Boss_BullyMoveRTS
+
+	LDA #$0A
+	STA Boss_BullyAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+Boss_BullyMoveRTS:
+	RTS	
+
+Boss_BullyCharging:
+	LDA #$00
+	STA	<Objects_XVelZ, X
+	
+	JSR Object_FacePlayer
+	JSR Boss_BullyMove
+
+	LDA Objects_Timer, X
+	BNE Boss_BullyCharging1
+
+	JSR Object_MoveDirectionFacing
+	
+	LDA <Objects_XVelZ, X
+	JSR Double_Value
+	JSR Double_Value
+	JSR Double_Value
+	STA <Objects_XVelZ, X
+
+	LDA #$03
+	STA Boss_BullyAction, X
+
+Boss_BullyCharging1:	
+	JMP Boss_BullyAnimateFast
+
+Boss_BullyCharge:
+	JSR Object_FaceDirectionMoving
+	JSR Boss_BullyMove
+	JSR Shell_KillOthers
+	BCC Boss_BullyCharge0
+
+	TYA
+	TAX
+	JSR Object_StarBurstDeath
+
+	LDX <CurrentObjectIndexZ
+
+Boss_BullyCharge0:	
+	LDA Object_HorzTileProp, X
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BNE Boss_Bully_Charge3
+
+	LDA #TILE_ITEM_BRICK
+	STA Tile_LastProp
+
+	JSR Object_Reverse
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_LEFTWALL
+	BNE Boss_BullyCharge1
+
+	LDA Objects_BoundRight, X
+	STA Tile_DetectionX
+
+	LDA Objects_BoundRightHi, X
+	STA Tile_DetectionXHi
+	JMP Boss_BullyCharge2
+
+Boss_BullyCharge1:
+	LDA Objects_BoundLeft, X
+	STA Tile_DetectionX
+
+	LDA Objects_BoundLeftHi, X
+	STA Tile_DetectionXHi
+
+Boss_BullyCharge2:	
+	LDA Objects_BoundBottom, X
+	SUB #$08
+	STA Tile_DetectionY
+
+	LDA Objects_BoundBottomHi, X
+	SBC #$00
+	STA Tile_DetectionYHi
+
+	JSR Object_DirectBumpBlocks
+	JMP Boss_Bully_Charge4
+	
+Boss_Bully_Charge3:
+	CMP #(TILE_PROP_SOLID_ALL)
+	BNE Boss_Bully_Charge4
+
+	LDA <Objects_XVelZ, X
+	JSR Half_Value
+	JSR Half_Value
+	STA <Objects_XVelZ, X
+
+	LDA #$10
+	STA Level_Vibration
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	JSR Object_FlipFace
+
+	LDA #$E0
+	STA <Objects_YVelZ, X
+
+	LDA #$04
+	STA Boss_BullyAction, X 
+
+	JSR BossBully_MakeBobomb
+
+Boss_Bully_Charge4:	
+	JMP Boss_BullyAnimateFast
+
+Boss_BullyBounceBack:
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+
+	LDA <Objects_YVelZ, X
+	BEQ Boss_BullyBounceBack1
+
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithTiles
+	JMP Boss_BullyDraw
+
+Boss_BullyBounceBack1:
+	LDA #$05
+	STA Boss_BullyAction, X
+
+	LDA #$20
+	STA Objects_Timer, X
+
+Boss_BullyBounceBack2:
+	JMP Boss_BullyDraw
+
+Boss_BullyWait:
+	LDA #$00
+	STA <Objects_XVelZ, X
+	
+	JSR Boss_BullyMove
+
+	LDA Objects_Timer, X
+	BNE Boss_BullyWait1
+
+	LDA #$01
+	STA Boss_BullyAction, X
+
+	LDA #$40
+	STA Objects_Timer, X
+
+	JSR Object_MoveTowardsPlayerFast
+
+Boss_BullyWait1:
+	JMP Boss_BullyDraw
+
+Boss_BullyJumpPrep:
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	JSR Boss_BullyMove
+
+	LDA Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Boss_BullyJumpPrep1
+
+	LDA #$F0
+	STA <Objects_YVelZ, X
+
+Boss_BullyJumpPrep1:
+	LDA #$01
+	STA Objects_Frame, x
+
+	LDA Objects_Timer, X
+	BNE Boss_BullyJumpPrep2
+
+	INC Boss_BullyAction, X
+
+Boss_BullyJumpPrep2:
+	JMP Boss_BullyDraw
+
+Boss_BullyJump:
+	JSR Object_MoveTowardsPlayerFast
+	
+	LDA #$A0
+	STA Objects_YVelZ, X
+
+	JSR Boss_BullyMove
+
+	LDA RandomN + 1
+	AND #$03
+	TAY
+
+	LDA Boss_BullyBounceCounts, Y
+	STA Boss_BullyBounces, X
+
+	INC Boss_BullyAction, X
+	JMP Boss_BullyDrawJump
+
+Boss_BullyBounce:
+	JSR Boss_BullyMove
+	JSR Shell_KillOthers
+	BCC Boss_BullyBounceA
+
+	TYA
+	TAX
+	JSR Object_StarBurstDeath
+
+	LDX <CurrentObjectIndexZ
+
+Boss_BullyBounceA:
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Boss_BullyBounce2
+
+	LDA #$10
+	STA Level_Vibration
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA Player_InAir
+	BNE Boss_BullyBounce0
+
+	LDA #$20
+	STA Player_VibeDisable
+
+Boss_BullyBounce0:
+	LDA Boss_BullyBounces, X
+	BNE Boss_BullyBounce1
+
+	INC Boss_BullyAction, X
+
+	LDA #$20
+	STA Objects_Timer, X
+
+	JSR BossBully_MakeBobomb
+	JMP Boss_BullyBounce2
+
+Boss_BullyBounce1:
+	DEC Boss_BullyBounces, X
+
+	LDA #$A0
+	STA <Objects_YVelZ, X
+
+Boss_BullyBounce2:
+	JMP Boss_BullyDrawJump
+
+Boss_BullyBounceWait:
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	JSR Boss_BullyMove
+
+	LDA Objects_Timer, X
+	BNE Boss_BullyBounceWait1
+
+	LDA #$01
+	STA Boss_BullyAction, X
+
+	LDA #$40
+	STA Objects_Timer, X
+	
+	JSR Object_MoveTowardsPlayerFast
+
+
+Boss_BullyBounceWait1:
+	JMP Boss_BullyDrawJump
+
+Boss_BullyAnimateFast:
+	INC Boss_BullyAnimTicks, X
+
+Boss_BullyAnimate:
+	INC Boss_BullyAnimTicks, X
+	
+	LDA Boss_BullyAnimTicks, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+Boss_BullyDraw:
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
+	LDA #LOW(Boss_BullySprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Boss_BullySprites)
+	STA <Giant_TilesHi
+
+	LDA #$1B
+	STA PatTable_BankSel + 5
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JSR Object_CheckForeground
+	JSR Object_DrawGiant
+
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA Sprite_RAMAttr, Y
+	AND #(SPR_HFLIP)
+	ORA #SPR_PAL3
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr + 8, Y
+	STA Sprite_RAMAttr + 12, Y
+	RTS
+
+Boss_BullyDrawJump:
+	LDY #$02
+
+	LDA <Objects_YVelZ, X
+	BMI Boss_BullyDrawJump1
+
+	INY
+
+Boss_BullyDrawJump1:
+	TYA
+	STA Objects_Frame, X
+
+	LDA Objects_Orientation, X
+	AND #~SPR_HFLIP
+	STA Objects_Orientation, X
+
+	JSR Boss_BullyDraw
+	JSR ObjGiant_Mirror
+	RTS
+
+BossBully_MakeBobomb:
+	JSR Object_FindEmptyX
+	BCC Boss_BullyBounceWait1
+	
+	LDA #OBJ_BOBOMB
+	STA Objects_ID,X
+	
+	LDA #$01
+	STA Objects_Property, X
+
+	LDA #$00
+	STA BobOmb_Action, X
+
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA <Player_X
+	STA <Objects_XZ, X
+
+	LDA Player_XHi
+	STA <Objects_XHiZ, X
+
+	LDA #$80
+	STA <Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	JSR Object_MoveAwayFromPlayer
+
+	JSR Object_CalcBoundBox
+	JSR Object_FacePlayer
+
+	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
+	RTS
+
+Boss_BullyDie:
+	LDA Objects_Timer, X
+	BEQ Boss_BullyExplode
+
+	AND #$0F
+	BNE Boss_BullyDieRTS
+
+	LDA RandomN
+	AND #$0F
+	ADD <Objects_XZ, X
+	STA Poof_X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA Poof_Y
+
+	JSR Common_MakePoof
+
+	LDA #$E0
+	STA SpecialObj_YVel, Y
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	RTS
+
+Boss_BullyDieRTS:
+	LDA #$00
+	STA Objects_Frame, X
+
+	JMP Boss_BullyDraw
+
+Boss_BullyExplode:	
+	JSR Object_Explode
+
+	LDA #$FF
+	STA Objects_Timer2, X
+
+	LDA #$80
+	STA CompleteLevelTimer
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$18
+	STA Objects_Timer,X
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA RotatingColor_Cnt
+
+	LDA #$64
+	STA Exp_Earned
+	JMP DestroyAllEnemies
+	

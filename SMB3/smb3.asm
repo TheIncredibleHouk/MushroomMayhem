@@ -1863,7 +1863,8 @@ OBJSTATE_KILLED		= 5	; Killed (flipped over and falling off screen)
 OBJSTATE_FRESH		= 6 ;
 OBJSTATE_NONE		= 7 ; used to keep a slot open
 OBJSTATE_FROZEN		= 8
-OBJSTATE_FROZEN2	= 9
+OBJSTATE_FROZENSOLID	= 9
+
 
 	Objects_State:		.ds 8
 
@@ -2701,15 +2702,14 @@ ATTR_ATTACKPROOF = (ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATT
 ATTR_ALLWEAPONPROOF	= %11111111
 
 	Objects_WeaponAttr: .ds 8
-
-ATTR_EXPLOSIONPROOF		= %00000001
-ATTR_SHELLPROOF			= %00000010
+ATTR_BUMPNOKILL			= %00000001
+ATTR_CARRYANDBUMP		= %00000010
 ATTR_NOICE				= %00000100 ; *
 ATTR_STOMPKICKSOUND		= %00001000 ; *
 ATTR_WINDAFFECTS		= %00010000
 ATTR_HASSHELL			= %00100000 ; *
-ATTR_CARRYANDBUMP		= %01000000
-ATTR_BUMPNOKILL			= %10000000
+ATTR_SHELLPROOF			= %01000000
+ATTR_EXPLOSIONPROOF		= %10000000
 
 	Objects_BehaviorAttr: .ds 8
 	Objects_NoAttack:	.ds 5
@@ -2721,12 +2721,14 @@ ATTR_BUMPNOKILL			= %10000000
 	Objects_SpritesRequested: .ds 8
 	Objects_Regen: .ds 8
 
-HIT_FIREBALL	= 01
-HIT_ICEBALL		= 02
-HIT_HAMMER		= 04
-HIT_NINJASTAR	= 08
-HIT_TAIL		= 10
-HIT_STOMPED		= 20
+HIT_FIREBALL	= $01
+HIT_ICEBALL		= $02
+HIT_HAMMER		= $04
+HIT_NINJASTAR	= $08
+HIT_TAIL		= $10
+HIT_STOMPED		= $20
+HIT_SHELL		= $40
+HIT_EXPLOSION	= $80
 	
 
 	Temp_VarNP0:		.ds 1	; A temporary not on page 0
@@ -3052,7 +3054,7 @@ TILE_PROP_MOVE_UP		= $05 ;
 TILE_PROP_MOVE_DOWN		= $06 ;
 TILE_PROP_TREASURE		= $07 ; 
 TILE_PROP_LOCK			= $08 ; 
-TILE_PROP_ENEMY			= $09; 
+TILE_PROP_OBJECTINTERACT= $09; 
 TILE_PROP_TRAP			= $0A ;
 TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
@@ -3074,7 +3076,7 @@ TILE_PROP_VPIPE_LEFT	= $08 ;
 TILE_PROP_VPIPE_RIGHT	= $09 ;
 TILE_PROP_HPIPE_BOTTOM	= $0A ;
 TILE_PROP_LOCKBLOCK		= $0B ;
-TILE_PROP_ENEMYSOLID	= $0C ;
+TILE_PROP_SOLID_OBJECTINTERACT	= $0C ;
 TILE_PROP_STONE			= $0D ;
 TILE_PROP_PSWITCH		= $0E ;
 TILE_PROP_ESWITCH		= $0F ;
@@ -3366,7 +3368,7 @@ BOUND8x16			= $00
 BOUND16x16			= $01
 BOUND16x24			= $02
 BOUND16x16BLOCK		= $03
-OAT_BOUNDBOX04		= $04
+BOUND16X48TALL		= $04
 BOUND24x32			= $05
 BOUND32x16BLOCK		= $06
 BOUND16x28			= $07
@@ -3394,17 +3396,9 @@ OPTS_SETPT6		= $80		; Set pattern table bank 6
 ; Determines what action is taken when object is in "Killed" state (6)
 ; See Object_DoKillAction for the jump table
 ; NOTE: Any action type other than zero always sets the frame to 2 (unless object is not general purpose, i.e. index >= 5)
-KILLACT_STANDARD	= 0	; 0: Standard kill (does not set frame 2)
-KILLACT_JUSTDRAW16X16	= 1	; 1: Standard sprite draw and kill
-KILLACT_JUSTDRAWMIRROR	= 2	; 2: Draw mirrored sprite
-KILLACT_JUSTDRAW16X32	= 3	; 3: Draw tall sprite
-KILLACT_JUSTDRAWTALLFLIP= 4	; 4: Draw tall object horizontally flipped
-KILLACT_NORMALANDKILLED	= 5	; 5: Do "Normal" state and killed action (sinking/vert flip)
-KILLACT_GIANTKILLED	= 6	; 6: Giant enemy death
-KILLACT_STARDEATH	= 6
-KILLACT_POOFDEATH	= 7	; 7: Do "poof" dying state while killed
-KILLACT_DRAWMOVENOHALT	= 8	; 8: Draw and do movements unless gameplay halted
-KILLACT_NORMALSTATE	= 9	; 9: Just do "Normal" state while killed
+
+KILLACT_STARDEATH	= 0
+KILLACT_NORMALSTATE	= 1	; 5: Do "Normal" state and killed action (sinking/vert flip)
 
 ; NOTE: Starting here, all object IDs are now handled specially (see PRG005_B8DB or just before PRG005_BB5F)
 OBJ_CHEEPCHEEPBEGIN	= $00;

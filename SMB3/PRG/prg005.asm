@@ -133,10 +133,10 @@ OBJ_SMASH			= $5D
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
 	.byte KILLACT_STARDEATH ; Object $50
-	.byte KILLACT_NORMALANDKILLED ; Object $51
+	.byte KILLACT_NORMALSTATE ; Object $51
 	.byte KILLACT_STARDEATH ; Object $52
 	.byte KILLACT_STARDEATH ; Object $53
-	.byte KILLACT_NORMALANDKILLED ; Object $54
+	.byte KILLACT_NORMALSTATE ; Object $54
 	.byte KILLACT_STARDEATH ; Object $55
 	.byte KILLACT_STARDEATH ; Object $56
 	.byte KILLACT_STARDEATH ; Object $57
@@ -836,7 +836,7 @@ VeggieGuy_FindVeggie:
 	BCS VeggieGuy_FindVeggieDone
 
 	AND #$0F
-	CMP #TILE_PROP_ENEMY
+	CMP #TILE_PROP_OBJECTINTERACT
 	BNE VeggieGuy_FindVeggieDone
 
 	LDA #$20
@@ -1136,7 +1136,7 @@ SnowGuy_FindSnow:
 	BEQ SnowGuy_FindSnowDone
 
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_ENEMYSOLID)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BNE SnowGuy_FindSnowDone
 
 	LDA #$40
@@ -2513,12 +2513,20 @@ BobOmb_DoAction:
 
 BobOmb_Death:
 	LDA Objects_PlayerProjHit, X
-	CMP #HIT_FIREBALL
-	BNE BobOmb_Death1
+	CMP #HIT_TAIL
+	BEQ BobOmb_Death1
 
-	LDA #$01
-	STA Explosion_Timer, X
-	RTS
+	CMP #HIT_EXPLOSION
+	BEQ BobOmb_ExplodeNow
+	
+	CMP #HIT_FIREBALL
+	BNE BobOmb_ProcessKill1
+
+BobOmb_ExplodeNow:
+	JMP Object_Explode
+
+BobOmb_ProcessKill1:
+	JMP Object_StarBurstDeath
 
 BobOmb_Death1:
 	LDA #$10

@@ -1115,6 +1115,7 @@ PRG008_A93D:
 	ADD <Player_CarryXVel
 
 	LDY Player_InWater
+	ORA Player_IsClimbing
 	BNE Player_NoWindFactor
 
 	ADD Wind
@@ -2856,16 +2857,17 @@ PRG008_B1CE:
 
 	; Player moving rightward...
 
-	CMP #232
+	CMP #$F0
 	BLT PRG008_B208	 ; If Player_SpriteX < 232, jump to PRG008_B1DD
 
-	LDA #232	; Cap max at 232
+	LDA #$F0	; Cap max at 232
 	JMP PRG008_B1E3	 ; Jump to PRG008_B1E3
 
 PRG008_B1DD:
-	CMP #17
+	CMP #09
 	BGE PRG008_B208	 ; If Player_SpriteX >= 17, jump to PRG008_B208
-	LDA #16	 	; Cap min at 16
+	
+	LDA #08	 	; Cap min at 16
 
 PRG008_B1E3:
 	STA <Player_SpriteX ; Update Player_SpriteX
@@ -5306,7 +5308,7 @@ Player_BgTileInteract:
 	.word Tile_NoInteract	; TILE_PROP_MOVE_DOWN		= $06 ;
 	.word Tile_NoInteract	; TILE_PROP_TREASURE		= $07 ;
 	.word Tile_NoInteract	; TILE_PROP_LOCK			= $08 ;
-	.word Tile_NoInteract	; TILE_PROP_ENEMY			= $09; 
+	.word Tile_NoInteract	; TILE_PROP_OBJECTINTERACT			= $09; 
 	.word Bg_ActivateTrap	; TILE_PROP_TRAP			= $0A ;
 	.word Tile_NoInteract	; TILE_PROP_CLIMBABLE		= $0B ;
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
@@ -5426,7 +5428,7 @@ Player_BodyHeadTileInteract:
 	.word ApplyTileMove		; TILE_PROP_MOVE_DOWN		= $06 ;
 	.word Body_Treasure		; TILE_PROP_TREASURE		= $07 ;
 	.word Tile_NoInteract	; TILE_PROP_LOCK			= $08 ;
-	.word Tile_NoInteract	; TILE_PROP_ENEMY			= $09; 
+	.word Tile_NoInteract	; TILE_PROP_OBJECTINTERACT			= $09; 
 	.word Tile_NoInteract	; TILE_PROP_TRAP			= $0A ;
 	.word BodyHead_Climb	; TILE_PROP_CLIMBABLE		= $0B ;
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
@@ -5537,7 +5539,7 @@ Player_SolidTileInteract:
 	.word Tile_NoInteract	; TILE_PROP_VPIPE_RIGHT	= $09
 	.word Tile_NoInteract	; TILE_PROP_HPIPE_BOTTOM= $0A
 	.word Tile_NoInteract	; TILE_PROP_CLIMBABLE	= $0B
-	.word Solid_MushroomBlock	; TILE_PROP_ENEMYSOLID	= $0C
+	.word Solid_MushroomBlock	; TILE_PROP_SOLID_OBJECTINTERACT	= $0C
 	.word Tile_NoInteract	; TILE_PROP_STONE		= $0D
 	.word Solid_PSwitch		; TILE_PROP_PSWITCH		= $0E
 	.word Solid_ESwitch		; TILE_PROP_ESWITCH		= $0F

@@ -1173,6 +1173,13 @@ SndLev2_Airship:
 	STA SFX_Counter4
 
 SndLev2_AirshipCont:
+	LDA Game_Counter
+	AND #$01
+	BNE Airship_SndLengthen
+
+	INC SFX_Counter4
+
+Airship_SndLengthen:	
 	LDA SFX_Counter4
 	LSR A
 	LSR A

@@ -74,7 +74,7 @@
         26,
         33,
         15,
-        54,
+        48,
         39
       ],
       "Name": "Take a Dip",
@@ -1061,19 +1061,19 @@
         15,
         15,
         48,
-        33,
+        21,
         15,
-        15,
-        48,
-        0,
+        7,
+        55,
+        23,
         15,
         11,
         48,
         27,
         15,
-        7,
-        55,
-        23,
+        12,
+        60,
+        28,
         15,
         15,
         54,
@@ -1089,7 +1089,7 @@
         15,
         15,
         48,
-        0
+        39
       ],
       "Name": "Bobomb Burst Mine",
       "Id": "81c54437-115c-42d0-9f03-8274d99b4d63"
@@ -3505,9 +3505,9 @@
         48,
         28,
         15,
-        7,
+        15,
         48,
-        39
+        55
       ],
       "Name": "World 2 Dungeon Boss",
       "Id": "9e3b3e40-a198-4b45-b4ed-ce5138870851"
@@ -4831,51 +4831,51 @@
         48,
         22,
         15,
-        6,
-        54,
-        22
-      ],
-      "Name": "",
-      "Id": "f3eb1b51-ed42-40dd-b78d-dadae9fb09cc"
-    },
-    {
-      "Renamed": false,
-      "IndexedColors": [
-        15,
-        12,
-        48,
-        28,
-        15,
-        7,
-        56,
-        23,
-        15,
-        15,
-        26,
-        11,
-        15,
-        6,
-        54,
-        22,
-        15,
-        15,
-        54,
-        6,
-        15,
-        7,
-        48,
-        22,
-        15,
-        15,
-        48,
-        22,
-        15,
         15,
         48,
         45
       ],
       "Name": "Mammoth Podobo",
       "Id": "b75a6d0f-995b-4a75-98f5-febe5c2bf907"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        15,
+        48,
+        6,
+        15,
+        15,
+        49,
+        12,
+        15,
+        11,
+        59,
+        27,
+        15,
+        6,
+        55,
+        22,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        2,
+        48,
+        26,
+        15,
+        2,
+        48,
+        40
+      ],
+      "Name": "Bobomb Blaster-Boss",
+      "Id": "79c70e8c-9566-424f-a5e6-da2803380954"
     }
   ],
   "WorldInfo": [
@@ -4921,7 +4921,7 @@
     {
       "Size": 0,
       "Number": 1,
-      "Name": "Cheep Cheep Everglades",
+      "Name": "Cheep Cheep Channel",
       "Id": "735d9378-c4b7-44a0-9790-45d87c6f8190",
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
@@ -5088,42 +5088,42 @@
         },
         {
           "Size": 1067,
-          "Name": "Colossal Cheep",
+          "Name": "Colossal Cheep Challenge",
           "Id": "22a5a5e5-ccc5-4f9a-abb9-3ae0525d987a",
           "LastModified": "2019-06-20T19:27:00.954171-04:00",
           "SublevelsInfo": [
             {
               "Size": 1106,
-              "Name": "Colossal Cheep-2",
+              "Name": "Colossal Cheep Challenge-2",
               "Id": "2ba384ff-285b-4f6a-a2f6-3f67ee5efb7f",
               "LastModified": "2019-06-20T19:27:03.4900571-04:00",
               "SublevelsInfo": [
                 {
                   "Size": 1064,
-                  "Name": "Colossal Cheep-3",
+                  "Name": "Colossal Cheep Challenge-3",
                   "Id": "63773480-3fc7-4967-87e0-e790a3154044",
                   "LastModified": "2019-06-20T19:27:05.89715-04:00",
                   "SublevelsInfo": [
                     {
                       "Size": 66,
-                      "Name": "Colossal Cheep-Boss",
+                      "Name": "Colossal Cheep Challenge-Boss",
                       "Id": "4b03f52e-b093-4ad7-b603-24de17a04fb3",
                       "LastModified": "2019-06-17T19:15:34.8666959-04:00",
                       "SublevelsInfo": null,
                       "InfoType": 1,
-                      "DisplayName": "(Level) Colossal Cheep-Boss"
+                      "DisplayName": "(Level) Colossal Cheep Challenge-Boss"
                     }
                   ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Colossal Cheep-3"
+                  "DisplayName": "(Level) Colossal Cheep Challenge-3"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Colossal Cheep-2"
+              "DisplayName": "(Level) Colossal Cheep Challenge-2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Colossal Cheep"
+          "DisplayName": "(Level) Colossal Cheep Challenge"
         },
         {
           "Size": 399,
@@ -5146,12 +5146,12 @@
         }
       ],
       "InfoType": 0,
-      "DisplayName": "(World) Cheep Cheep Everglades"
+      "DisplayName": "(World) Cheep Cheep Channel"
     },
     {
       "Size": 0,
       "Number": 2,
-      "Name": "Piranha Forest",
+      "Name": "Freezie Forest",
       "Id": "5f27c217-b4d8-4e8d-8196-1710ddeda0d7",
       "LastModified": "2015-01-24T17:03:56.237-05:00",
       "LevelsInfo": [
@@ -5287,85 +5287,85 @@
         },
         {
           "Size": 1253,
-          "Name": "Mighty Piranha",
+          "Name": "Fierce Fwoosh Freeze",
           "Id": "386aaa7f-9bfb-4f40-aecd-7df3ff747342",
           "LastModified": "2018-10-28T10:42:11.0749274-04:00",
           "SublevelsInfo": [
             {
               "Size": 1989,
-              "Name": "Mighty Piranha 1",
+              "Name": "Fierce Fwoosh Freeze-1",
               "Id": "deae9b28-696b-4d4a-b892-b7d4edb5589c",
               "LastModified": "2018-10-28T10:42:11.0839213-04:00",
               "SublevelsInfo": [
                 {
                   "Size": 1577,
-                  "Name": "Mighty Piranha 2",
+                  "Name": "Fierce Fwoosh Freeze-2",
                   "Id": "7699038e-3420-464f-8788-ea81bf236462",
                   "LastModified": "2018-10-28T10:42:11.0949152-04:00",
                   "SublevelsInfo": [
                     {
                       "Size": 686,
-                      "Name": "Mighty Piranha 3",
+                      "Name": "Fierce Fwoosh Freeze-3",
                       "Id": "4a7b88cc-cb17-46e8-b5b5-383a8bdaa0d5",
                       "LastModified": "2018-10-28T10:42:11.1059081-04:00",
                       "SublevelsInfo": [
                         {
-                          "Size": 58,
-                          "Name": "Mighty Piranha Boss",
+                          "Size": 107,
+                          "Name": "Fierce Fwoosh Freeze-Boss",
                           "Id": "9195cd08-2dd9-4372-a406-3ab09623c4d7",
                           "LastModified": "2018-10-28T10:42:11.1159016-04:00",
                           "SublevelsInfo": [],
                           "InfoType": 1,
-                          "DisplayName": "(Level) Mighty Piranha Boss"
+                          "DisplayName": "(Level) Fierce Fwoosh Freeze-Boss"
                         }
                       ],
                       "InfoType": 1,
-                      "DisplayName": "(Level) Mighty Piranha 3"
+                      "DisplayName": "(Level) Fierce Fwoosh Freeze-3"
                     }
                   ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Mighty Piranha 2"
+                  "DisplayName": "(Level) Fierce Fwoosh Freeze-2"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Mighty Piranha 1"
+              "DisplayName": "(Level) Fierce Fwoosh Freeze-1"
             },
             {
               "Size": 125,
-              "Name": "Mighty Piranha Bonus 1",
+              "Name": "Fierce Fwoosh Freeze-Room",
               "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
               "LastModified": "2018-10-28T10:42:11.1268955-04:00",
               "SublevelsInfo": [
                 {
                   "Size": 79,
-                  "Name": "Mighty Piranha Bonus 2",
+                  "Name": "Fierce Fwoosh Freeze-Room-2",
                   "Id": "26eb57e4-ab1f-42d7-a62c-f49a01c3c1ee",
                   "LastModified": "2018-10-28T10:42:11.1378881-04:00",
                   "SublevelsInfo": null,
                   "InfoType": 1,
-                  "DisplayName": "(Level) Mighty Piranha Bonus 2"
+                  "DisplayName": "(Level) Fierce Fwoosh Freeze-Room-2"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Mighty Piranha Bonus 1"
+              "DisplayName": "(Level) Fierce Fwoosh Freeze-Room"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Mighty Piranha"
+          "DisplayName": "(Level) Fierce Fwoosh Freeze"
         }
       ],
       "InfoType": 0,
-      "DisplayName": "(World) Piranha Forest"
+      "DisplayName": "(World) Freezie Forest"
     },
     {
       "Size": 0,
       "Number": 3,
-      "Name": "Bob-omb Quarry",
+      "Name": "Bob-omb Basin",
       "Id": "40f6c25f-1581-495c-b5e9-edd37eec7432",
       "LastModified": "2015-01-24T17:09:38.684-05:00",
       "LevelsInfo": [
         {
-          "Size": 2414,
+          "Size": 2383,
           "Name": "Bobomb Burst Mine",
           "Id": "e4bda44e-b8c5-41e8-9a63-48698630f802",
           "LastModified": "2019-05-17T21:46:45.9677889-04:00",
@@ -5485,81 +5485,90 @@
           "DisplayName": "(Level) World 3 to 4"
         },
         {
-          "Size": 381,
-          "Name": "Mammoth Podobo",
+          "Size": 489,
+          "Name": "Big Bully Blasts",
           "Id": "722b743a-8d6d-400a-b1ae-067b8c99dd36",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
               "Size": 1254,
-              "Name": "Mammoth Podobo-2",
+              "Name": "Big Bully Blasts-2",
               "Id": "29767657-d82d-4e47-93fa-d711ee3e6c48",
               "LastModified": "0001-01-01T00:00:00",
               "SublevelsInfo": [
                 {
                   "Size": 1410,
-                  "Name": "Mammoth Podobo-3",
+                  "Name": "Big Bully Blasts-3",
                   "Id": "7008e137-6afa-4850-9e0f-8da4c8a31391",
                   "LastModified": "0001-01-01T00:00:00",
                   "SublevelsInfo": [
                     {
-                      "Size": 1964,
-                      "Name": "Mammoth Podobo-4",
+                      "Size": 1993,
+                      "Name": "Big Bully Blasts-4",
                       "Id": "2909cbff-1fcf-4840-84ed-6514206a76bb",
                       "LastModified": "0001-01-01T00:00:00",
                       "SublevelsInfo": [
                         {
-                          "Size": 1608,
-                          "Name": "Mammoth Podobo-5",
+                          "Size": 1733,
+                          "Name": "Big Bully Blasts-5",
                           "Id": "cd0ca741-4937-4849-9379-ac0a47ce1aa7",
                           "LastModified": "0001-01-01T00:00:00",
                           "SublevelsInfo": [],
                           "InfoType": 1,
-                          "DisplayName": "(Level) Mammoth Podobo-5"
+                          "DisplayName": "(Level) Big Bully Blasts-5"
                         }
                       ],
                       "InfoType": 1,
-                      "DisplayName": "(Level) Mammoth Podobo-4"
+                      "DisplayName": "(Level) Big Bully Blasts-4"
                     }
                   ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Mammoth Podobo-3"
+                  "DisplayName": "(Level) Big Bully Blasts-3"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Mammoth Podobo-2"
+              "DisplayName": "(Level) Big Bully Blasts-2"
             },
             {
               "Size": 244,
-              "Name": "Mammoth Podobo-Room",
+              "Name": "Big Bully Blasts-Room",
               "Id": "74f27e95-1457-4a76-86cf-575a42366540",
               "LastModified": "0001-01-01T00:00:00",
               "SublevelsInfo": [
                 {
                   "Size": 355,
-                  "Name": "Mammoth Podobo-Room-2",
+                  "Name": "Big Bully Blasts-Room-2",
                   "Id": "efa39d44-cbf3-457e-a2d5-17d138ef7a81",
                   "LastModified": "0001-01-01T00:00:00",
                   "SublevelsInfo": [],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Mammoth Podobo-Room-2"
+                  "DisplayName": "(Level) Big Bully Blasts-Room-2"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Mammoth Podobo-Room"
+              "DisplayName": "(Level) Big Bully Blasts-Room"
+            },
+            {
+              "Size": 113,
+              "Name": "Big Bully Blasts-Boss",
+              "Id": "4ae48225-9002-4f78-a015-4d16a3696421",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Big Bully Blasts-Boss"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Mammoth Podobo"
+          "DisplayName": "(Level) Big Bully Blasts"
         }
       ],
       "InfoType": 0,
-      "DisplayName": "(World) Bob-omb Quarry"
+      "DisplayName": "(World) Bob-omb Basin"
     },
     {
       "Size": 0,
       "Number": 4,
-      "Name": "Blooper Bay",
+      "Name": "Bullet Bill Bay",
       "Id": "e302aa7b-d54f-4eb0-b9e0-a75b4b19522d",
       "LastModified": "2015-01-24T17:09:38.671-05:00",
       "LevelsInfo": [
@@ -5685,12 +5694,12 @@
         }
       ],
       "InfoType": 0,
-      "DisplayName": "(World) Blooper Bay"
+      "DisplayName": "(World) Bullet Bill Bay"
     },
     {
       "Size": 0,
       "Number": 5,
-      "Name": "Sky Castle",
+      "Name": "Piranha Palace",
       "Id": "c05cc28a-7180-4d48-b775-c96253edda5c",
       "LastModified": "2015-01-24T17:10:22.206-05:00",
       "LevelsInfo": [
@@ -5837,12 +5846,12 @@
         }
       ],
       "InfoType": 0,
-      "DisplayName": "(World) Sky Castle"
+      "DisplayName": "(World) Piranha Palace"
     },
     {
       "Size": 0,
       "Number": 6,
-      "Name": "Haunted Desert",
+      "Name": "Dry Bones Dustbowl",
       "Id": "79737f7b-5b73-4bb3-a7ac-02dff38af3fb",
       "LastModified": "2014-01-02T05:57:36.3826227-05:00",
       "LevelsInfo": [
@@ -5999,7 +6008,7 @@
         }
       ],
       "InfoType": 0,
-      "DisplayName": "(World) Haunted Desert"
+      "DisplayName": "(World) Dry Bones Dustbowl"
     },
     {
       "Size": 0,
@@ -6207,7 +6216,7 @@
         "DisplayName": "(Level) Tile Test"
       },
       {
-        "Size": 522,
+        "Size": 571,
         "Name": "Enemy Test",
         "Id": "14ae8688-9855-43a5-abe6-63859296c269",
         "LastModified": "2019-05-15T21:46:36.0536536-04:00",
@@ -9778,18 +9787,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 9,
+          "UpperLeft": 255,
+          "UpperRight": 120,
+          "LowerLeft": 108,
+          "LowerRight": 0
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 9,
+          "UpperLeft": 120,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 1,
+          "LowerRight": 98
         },
         {
           "Property": 0,
@@ -9813,18 +9822,18 @@
           "LowerRight": 119
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 9,
+          "UpperLeft": 120,
+          "UpperRight": 120,
+          "LowerLeft": 39,
+          "LowerRight": 39
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 9,
+          "UpperLeft": 108,
+          "UpperRight": 98,
+          "LowerLeft": 108,
+          "LowerRight": 98
         },
         {
           "Property": 0,
@@ -9890,18 +9899,18 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "Property": 9,
+          "UpperLeft": 108,
+          "UpperRight": 16,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 39
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 9,
+          "UpperLeft": 17,
+          "UpperRight": 98,
+          "LowerLeft": 39,
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -9925,14 +9934,14 @@
           "LowerRight": 117
         },
         {
-          "Property": 0,
+          "Property": 9,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 9,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -12034,11 +12043,11 @@
           "LowerRight": 249
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 245,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 0,
@@ -12091,17 +12100,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 230,
+          "UpperRight": 231,
+          "LowerLeft": 246,
+          "LowerRight": 247
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 254,
+          "UpperLeft": 202,
+          "UpperRight": 203,
+          "LowerLeft": 218,
+          "LowerRight": 219
         },
         {
           "Property": 0,
@@ -12195,11 +12204,11 @@
           "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 192,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -12301,17 +12310,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 2,
+          "LowerRight": 2
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 192,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -12497,7 +12506,7 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 71,
+          "UpperLeft": 14,
           "UpperRight": 15,
           "LowerLeft": 31,
           "LowerRight": 17
@@ -12804,11 +12813,11 @@
           "LowerRight": 97
         },
         {
-          "Property": 79,
-          "UpperLeft": 62,
-          "UpperRight": 63,
-          "LowerLeft": 78,
-          "LowerRight": 79
+          "Property": 14,
+          "UpperLeft": 198,
+          "UpperRight": 199,
+          "LowerLeft": 214,
+          "LowerRight": 215
         },
         {
           "Property": 0,
@@ -12917,17 +12926,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 198,
+          "UpperRight": 199,
+          "LowerLeft": 214,
+          "LowerRight": 215
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -13028,18 +13037,18 @@
           "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 16,
+          "UpperLeft": 104,
+          "UpperRight": 105,
+          "LowerLeft": 104,
+          "LowerRight": 105
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 16,
+          "UpperLeft": 120,
+          "UpperRight": 121,
+          "LowerLeft": 120,
+          "LowerRight": 121
         },
         {
           "Property": 192,
@@ -13127,7 +13136,7 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 71,
+          "UpperLeft": 14,
           "UpperRight": 15,
           "LowerLeft": 31,
           "LowerRight": 17
@@ -13140,18 +13149,18 @@
           "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 104,
+          "UpperRight": 105,
+          "LowerLeft": 104,
+          "LowerRight": 105
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 120,
+          "UpperRight": 121,
+          "LowerLeft": 120,
+          "LowerRight": 121
         },
         {
           "Property": 0,
@@ -38684,6 +38693,286 @@
           ],
           "X": 0,
           "Y": 0,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x00",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x00",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x02",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x02",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x02",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x02",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 16,
+          "Y": 16,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x00",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 24,
+          "Y": 16,
+          "TileTableAddress": "0x24C00",
+          "TileValue": "0x00",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x00",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x00",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x02",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x02",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x00",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x02",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x04",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x20",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x22",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 16,
+          "Y": 16,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x24",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 24,
+          "Y": 16,
+          "TileTableAddress": "0x6C00",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": 0,
+          "Y": 0,
           "TileTableAddress": "0x16000",
           "TileValue": "0x00",
           "HorizontalFlip": false,
@@ -38694,7 +38983,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 8,
           "Y": 0,
@@ -38708,7 +38997,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 16,
           "Y": 0,
@@ -38722,7 +39011,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 24,
           "Y": 0,
@@ -38736,7 +39025,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 0,
           "Y": 16,
@@ -38750,7 +39039,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 8,
           "Y": 16,
@@ -38764,7 +39053,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 16,
           "Y": 16,
@@ -38778,7 +39067,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 24,
           "Y": 16,
@@ -38792,7 +39081,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 0,
           "Y": 32,
@@ -38806,7 +39095,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 8,
           "Y": 32,
@@ -38820,7 +39109,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 16,
           "Y": 32,
@@ -38834,7 +39123,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 24,
           "Y": 32,
@@ -38848,7 +39137,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 0,
           "Y": 48,
@@ -38862,7 +39151,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 8,
           "Y": 48,
@@ -38876,7 +39165,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 16,
           "Y": 48,
@@ -38890,7 +39179,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
+            4
           ],
           "X": 24,
           "Y": 48,
@@ -38905,7 +39194,10 @@
       ],
       "Properties": [
         "Colossal Cheep",
-        "Giant Piranha"
+        "Fwoosh",
+        "Bully",
+        "Bullet Bill",
+        "Piranha"
       ],
       "Group": "Boss"
     },
@@ -39392,7 +39684,7 @@
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0x25000",
-          "TileValue": "0x14",
+          "TileValue": "0x1C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 2,
@@ -39406,7 +39698,7 @@
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0x25000",
-          "TileValue": "0x14",
+          "TileValue": "0x1E",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 2,
@@ -50313,102 +50605,911 @@
     },
     {
       "GameId": 115,
-      "GameObjectType": 1,
-      "Name": "Unused x73",
+      "GameObjectType": 2,
+      "Name": "Stingbee",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0xCC00",
+          "TileValue": "0x38",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0xCC00",
+          "TileValue": "0x3A",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": 4,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -12,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -28,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -44,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -60,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -76,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -92,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -108,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": -124,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 32,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 48,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 64,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 80,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 96,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 112,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 128,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 144,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 4,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -12,
+          "Y": 32,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -28,
+          "Y": 48,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -44,
+          "Y": 64,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -60,
+          "Y": 80,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -76,
+          "Y": 96,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -92,
+          "Y": 112,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -108,
+          "Y": 128,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": -124,
+          "Y": 144,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": 4,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -12,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -28,
+          "Y": -16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -44,
+          "Y": -32,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -60,
+          "Y": -48,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -76,
+          "Y": -64,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -92,
+          "Y": -80,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -108,
+          "Y": -96,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -124,
+          "Y": -112,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": -76,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": -52,
+          "Y": -40,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": 4,
+          "Y": -64,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": 60,
+          "Y": -40,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": 84,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": 60,
+          "Y": 72,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": 4,
+          "Y": 96,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4,
+            5
+          ],
+          "X": -52,
+          "Y": 72,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": -92,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4C",
+          "HorizontalFlip": false,
+          "VerticalFlip": true,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": 4,
+          "Y": -78,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": 100,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4C",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": 4,
+          "Y": 112,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4E",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": -92,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4C",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 4,
+          "Y": -78,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4E",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 100,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4C",
+          "HorizontalFlip": false,
+          "VerticalFlip": true,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 4,
+          "Y": 112,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x4E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
           "Overlay": true,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "Horizontal Pattern",
+        "Vertical Pattern",
+        "Diagonal Pattern 1",
+        "Diagonal Pattern 2",
+        "Circle Counter Clockwise",
+        "Circle Clockwise",
+        "Chase"
+      ],
+      "Group": "Wind/Ice Enemies"
     },
     {
       "GameId": 116,
-      "GameObjectType": 1,
+      "GameObjectType": 2,
       "Name": "Unused x74",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0xCC00",
+          "TileValue": "0x18",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
-          "HorizontalFlip": false,
+          "TileTableAddress": "0xCC00",
+          "TileValue": "0x1A",
+          "HorizontalFlip": true,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "Normal",
+        "Double Speed"
+      ],
+      "Group": "Wind/Ice Enemies"
     },
     {
       "GameId": 117,
-      "GameObjectType": 1,
-      "Name": "Unused x75",
+      "GameObjectType": 2,
+      "Name": "Ice Wall",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x24",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1,
+            2
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1,
+            2
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x24",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 32,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x24",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 32,
+          "TileTableAddress": "0x4800",
+          "TileValue": "0x24",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "One Block",
+        "Two Blocks",
+        "Three Blocks"
+      ],
+      "Group": "Boss"
     },
     {
       "GameId": 118,
@@ -50849,7 +51950,10 @@
           "CustomPalette": null
         }
       ],
-      "Properties": [],
+      "Properties": [
+        "Normal",
+        "Sleeping"
+      ],
       "Group": "Fortress"
     },
     {
