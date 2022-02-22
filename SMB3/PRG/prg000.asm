@@ -3602,10 +3602,6 @@ Object_DetectObjects:
 	STA <HitTest_Result 
 	STA <HitTest_Count
 
-
-	LDA Objects_ToggleDetect, X
-	BEQ ODOBottom1
-
 	LDA Objects_BoundLeft, X
 	SUB Objects_BoundLeft, Y
 
@@ -3788,6 +3784,8 @@ PRG000_DA15:
 	JSR Unfreeze
 
 Player_NotFrozen:
+	
+
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
@@ -3795,6 +3793,15 @@ Player_NotFrozen:
 	LDA Player_Equip
 	CMP #BADGE_DAMAGE
 	BNE PRG000_DA4E
+
+
+	LDA #$02
+	STA Player_QueueSuit	 ; Queue power-up change
+
+	LDA #$80
+	STA Player_FlyTime
+
+Player_PoofHurt:
 	LDA #$17
 	STA Player_SuitLost	 ; Player_SuitLost = $17
 
@@ -3803,11 +3810,6 @@ Player_NotFrozen:
 	ORA #SND_LEVELPOOF
 	STA Sound_QLevel1
 
-	LDA #$02
-	STA Player_QueueSuit	 ; Queue power-up change
-
-	LDA #$80
-	STA Player_FlyTime
 
 PRG000_DA47:
 	LDA #$00	 
@@ -3824,6 +3826,11 @@ PRG000_DA4E:
 	STA Player_QueueSuit	 ; Return to Big
 
 PRG000_DA50:
+	DEC Player_QueueSuit	; Get small!
+
+	LDA Player_Vehicle
+	BNE Player_PoofHurt
+
 	; Play shrinking sound!!
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERPIPE
@@ -3831,7 +3838,6 @@ PRG000_DA50:
 
 	LDA #$2f	
 	STA Player_Grow	 	; Player_Grow = $2f (shrinking!)
-	DEC Player_QueueSuit	; Get small!
 
 PRG000_DA6D: 
 	LDA #$71

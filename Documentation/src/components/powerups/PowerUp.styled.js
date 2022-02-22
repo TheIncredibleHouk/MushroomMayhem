@@ -4,6 +4,7 @@ const PowerUpStyles = styled.div`
     border-left: 5px solid #5fa0ff;
     border-bottom: 5px solid #5fa0ff;
     border-radius: 5px;
+    break-inside: avoid;
     height: 165px;
     margin: 20px;
     position: relative;

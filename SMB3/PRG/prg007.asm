@@ -46,6 +46,13 @@ Player_Projectiles:
 	.byte $00, $00, PLAYER_FIREBALL, $00, $00, $00, PLAYER_HAMMER, PLAYER_ICEBALL, $00, $00, $00, PLAYER_NINJASTAR
 
 PlayerProj_ThrowWeapon:
+	LDA Player_Vehicle
+	BEQ PowerUp_Weapon
+
+	LDA #PLAYER_BULLET
+	BNE PlayerProj_ThrowWeapon1
+
+PowerUp_Weapon:	
 	LDA Wall_Jump_Enabled
 	BNE PlayerProj_None
 
@@ -87,6 +94,8 @@ PlayerProj_ThrowWeapon3:
 	.word Throw_IceBall
 	.word Throw_Hammer
 	.word Throw_NinjaStar
+	.word Throw_Bullet
+	.word Throw_Bullet
 
 IceFire_XVel:
 	.byte $D0, $30, $E8, $18
@@ -177,6 +186,18 @@ Throw_NinjaStar1:
 	STA SpecialObj_XVel, X
 	RTS		 ; Return
 
+Throw_Bullet:
+	
+	JSR SetProjectilePosition8x16
+	
+	LDA #$40
+	STA SpecialObj_XVel, X
+
+	LDA SpecialObj_Y, X
+	ADD #$05
+	STA SpecialObj_Y, X
+	RTS
+
 Proj_BallPos:
 	.byte $04, $0C, $FE, $04
 	.byte $00, $00, $FF, $00
@@ -230,7 +251,7 @@ PlayerProjs_UpdateAndDraw:
 	
 Player_ProjDoState:
 	LDA SpecialObj_ID, X
-	
+
 	JSR DynJump
 
 	.word Player_Nothing
@@ -239,6 +260,7 @@ Player_ProjDoState:
 	.word Player_Hammer
 	.word Player_NinjaStar
 	.word SpecialObj_Poof
+	.word Player_Bullet
 
 Player_Nothing
 	RTS
@@ -733,6 +755,49 @@ Player_StarNoKill:
 	JSR SpecialObj_Draw16x16
 	RTS
 
+Player_Bullet:
+	LDA <Player_HaltGameZ
+	BNE Player_BulletNoKill
+
+	JSR SObj_ApplyXYVels
+	JSR SpecialObj_CalcBounds8x16
+	JSR PlayerProj_HitEnemies
+	BCC Player_BulletNoKill
+
+	LDA <SpecialObj_ObjectAttributes
+	CMP #ATTR_ALLWEAPONPROOF
+	BEQ Player_BulletNoKill
+
+	AND #ATTR_NINJAPROOF
+	BNE Player_BulletPoof
+
+	LDA #HIT_NINJASTAR
+	STA Objects_PlayerProjHit, Y
+
+	LDA #$01
+	STA Proj_Attack
+
+	JSR SpecialObj_AttackEnemy
+
+
+Player_BulletPoof:
+	LDA #$00
+	STA SpecialObj_ID,X
+	RTS
+
+Player_BulletNoKill:
+	JSR SpecialObj_DetectWorld8x8
+	JSR Player_HammerTilesInteraction
+
+	LDA #$15
+	STA <SpecialObj_Tile
+
+	LDA #SPR_PAL3
+	STA <SpecialObj_Attributes
+	JSR SpecialObj_CheckForeground
+	JSR SpecialObj_Draw8x16
+	RTS
+
 SpecialObj_SetMirrorFlipped:
 	LDA SpecialObj_XVel, X
 	BPL SpecialObj_SetMirrorFlipped1
@@ -1167,6 +1232,7 @@ PlayerProj_HitEnemies:
 	LDY #$04	 ; Y = 4 (enemies only exist in the lower slots)
 
 PlayerProj_HitEnemies1:
+
 	LDA Objects_ToggleDetect, Y
 	BNE PlayerProj_HitEnemies2
 
@@ -1812,12 +1878,6 @@ PUpCoin_Attributes:	.byte SPR_PAL3, SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
 PRG007_B058:
 	RTS		 ; Return
 
-SObj_BlooperKid:
-	
-	RTS		 ; Return
-
-PRG007_B0F7:
-	JMP SpecialObj_Remove	 ; Remove Blooper kid
 
 DebrisPattern:
 	.byte $4B, $59, $55

@@ -720,101 +720,124 @@ PRG030_881D:
 	AND #$1f	 
 	STA Map_EntTran_BVAddrL+2
 
-	LDA #$30
+; level transition effect
+	LDA #$01
 	STA Map_EntTran_Cnt	 ; Map_EntTran_Cnt = $30
 
 	LDA #SND_MAPENTERLEVEL
 	STA Sound_QMap	 ; Play "enter level" sound effect!
 
-	; Loop until V-Blank is not occurring
-PRG030_883E:
+	LDA #$FF
+	STA Map_Transition_Column
+
+	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Waiting for vertical sync
+
+
+EnterEffect_SpriteStart:
+
+	LDA #$F8
+	STA Map_Transition_SpriteIndex
+
+	LDA #$20
+	STA Map_Transition_SpriteY
+
+EnterEffect_SpriteLoop:
+	LDY Map_Transition_SpriteIndex
+	LDA Map_Transition_SpriteY
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY + 4, Y
+	
+	LDA Map_Transition_Column
+	SUB #$10
+	STA Sprite_RAMX, Y
+	
+	ADD #$08
+	STA Sprite_RAMX + 4, Y
+
+	LDA #$00
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 4, Y
+
+	LDA #$29
+	STA Sprite_RAMTile, Y
+
+	LDA #$2B
+	STA Sprite_RAMTile + 4, Y
+
+	LDA Map_Transition_SpriteIndex
+	SUB #$08
+	STA Map_Transition_SpriteIndex
+
+	LDA Map_Transition_SpriteY
+	ADD #$10
+	STA Map_Transition_SpriteY
+
+	LDA Map_Transition_SpriteY
+	CMP #$B0
+	BCC EnterEffect_SpriteLoop
+
+	LDA #$28
+	STA Graphics_Buffer 
+
+	LDA Map_Transition_Column
+	ADD <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	ADD #$80
+	STA Graphics_Buffer + 1
+	
+	LDA #$D2
+	STA Graphics_Buffer + 2
+
+	LDA #$FF
+	STA Graphics_Buffer + 3
+
+	LDA #$00
+	STA Graphics_Buffer + 4
+	STA Graphics_Queue
+
+	JSR GraphicsBuf_Prep_And_WaitVSync
+	
+	LDA #$00
+	JSR Video_Do_Update
+
+	LDA #%10100000
+	STA <PPU_CTL1_Copy
+	STA PPU_CTL1
+
+	LDA #%00011000
+	STA <PPU_CTL2_Copy
+	STA PPU_CTL2
+
 	LDA PPU_STAT
-	AND #$80	
-	BNE PRG030_883E	
 
-	LDA #%10101000		; sprites on PT2, 8x16 sprites, generate V-Blank NMIs
-	STA PPU_CTL1	 
-	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
+	LDA #$20
+	STA PPU_VRAM_ADDR
 
-	; The actual border rendering occurs in the interrupt's "Update_Select" routine
-	; which calls "Map_EnterLevel_Effect" in PRG026
-PRG030_884C:
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Just VSyncs
+	LDA #$00
+	STA PPU_VRAM_ADDR
+	
+	LDA <Horz_Scroll
+	STA PPU_SCROLL
 
-	LDA #$01
-	STA <Map_EnterLevelFX	; Map_EnterLevelFX = 1
+	LDA <Vert_Scroll
+	STA PPU_SCROLL
 
-	LDX Map_EntTran_BorderLoop	; Get current border loop counter (0-3: Top 0, bottom 1, right 2, left 3)
-	TXA
-	AND #$02
-	BEQ PRG030_887F		 	; If Map_EntTran_BorderLoop & 2 = 0, jump to PRG030_887F (means jump if doing top/bottom)
+	DEC Map_Transition_Column
+	DEC Map_Transition_Column
+	DEC Map_Transition_Column
+	DEC Map_Transition_Column
 
-	; Left/right edge sprite removal check...
 
-	; This calculates the border's relative X position -> Temp_Var1
-	LDA Map_EntTran_BVAddrL,X
-	ASL A
-	ASL A
-	ASL A
-	SUB <Horz_Scroll
-	STA <Temp_Var1		; Temp_Var1 = (Map_EntTran_BVAddrL[X] << 3) - Horz_Scroll
+	LDA Map_Transition_Column
+	CMP #$08
+	BCC TransitionComplete
+	JMP EnterEffect_SpriteStart
 
-	; This goes through all system sprites and removes them as the encroaching black border hits them
-	LDX #$00	 	; X = 0
-PRG030_8868:
-	LDA Sprite_RAM+$03,X	; Get this sprite's X coordinate
-	AND #$f8	 	; Only considering its nearest-8 position (aligned to the pattern-based border)
-	CMP <Temp_Var1		
-	BNE PRG030_8876	 	; If this sprite hasn't been touched yet, jump to PRG030_8876
+; level transition effect
 
-	LDA #$f8	 
-	STA Sprite_RAM+$00,X	; Set this sprite's Y to $F8 (make invisible)
-
-PRG030_8876:
-	DEX
-	DEX
-	DEX
-	DEX		 	; X -= 4
-	BNE PRG030_8868	 	; While X <> 0, loop!
-
-	JMP PRG030_88A5	 	; Jump to PRG030_88A5
-
-PRG030_887F:
-	; Top/bottom edge sprite removal check...
-
-	; This calculates the border's relative Y position -> Temp_Var1
-	LDA Map_EntTran_BVAddrL,X
-	AND #$c0	
-	STA <Temp_Var1
-	LDA Map_EntTran_BVAddrH,X
-	LSR A		
-	ROR <Temp_Var1	
-	LSR A		
-	ROR <Temp_Var1	
-
-	LDX #$00	 	; X = 0
-PRG030_8891:
-	LDA Sprite_RAM+$00,X	; Get this sprite's Y position
-	AND #$f0	 	; Only check its nearest-16 position (16 because of 16 pixel tall sprites)
-	CMP <Temp_Var1
-	BNE PRG030_889F	 	; If this sprite hasn't been touched yet, jump to PRG030_889F
-
-	LDA #$f8	 
-	STA Sprite_RAM+$00,X	; Set this sprite's Y to $F8 (make invisible)
-
-PRG030_889F:
-	DEX
-	DEX
-	DEX
-	DEX		 	; X -= 4
-	BNE PRG030_8891	 	; While X <> 0, loop!
-
-PRG030_88A5:
-	DEC Map_EntTran_Cnt	; Map_EntTran_Cnt--
-	BMI PRG030_88AD	 	; If Map_EntTran_Cnt < 0, jump to PRG030_88AD
-
-	JMP PRG030_884C	 	; Jump to PRG030_884C (loop)
-
+TransitionComplete:
 PRG030_88AD:
 	; Completed the entrance transition...
 
@@ -2095,14 +2118,14 @@ PRG030_94EE:
 	
 	; This one selects the appropriate init values for everything
 	; else based on what the vertical start position is...
-BoxOut_ByVStart:	.byte $00, $30, $70, $B0, $EF	; Needs to sync with GamePlay_VStart
+;BoxOut_ByVStart:	.byte $00, $30, $70, $B0, $EF	; Needs to sync with GamePlay_VStart
 
-	; The init values, each column links to an above vertical start position
-BoxOut_InitVAddrH:	.byte $21, $22, $23, $28, $29
-BoxOut_InitVAddrL0:	.byte $6E, $2E, $2E, $6E, $6E
-BoxOut_InitVAddrL1:	.byte $8E, $4E, $4E, $8E, $8E
-BoxOut_InitVAddrL2:	.byte $73, $33, $33, $73, $73
-BoxOut_InitVAddrL3:	.byte $6D, $2D, $2D, $6D, $6D
+;	; The init values, each column links to an above vertical start position
+;BoxOut_InitVAddrH:	.byte $21, $22, $23, $28, $29
+;BoxOut_InitVAddrL0:	.byte $6E, $2E, $2E, $6E, $6E
+;BoxOut_InitVAddrL1:	.byte $8E, $4E, $4E, $8E, $8E
+;BoxOut_InitVAddrL2:	.byte $73, $33, $33, $73, $73
+;BoxOut_InitVAddrL3:	.byte $6D, $2D, $2D, $6D, $6D
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Map_Clear_EntTranMem
@@ -2120,104 +2143,104 @@ PRG030_9555:
 	RTS		 ; Return
 
 
-BoxOut_SetThisBorderVRAM:
-	; Map_EntTran_VAddrL/H += Map_EntTran_VRAMGap
-	LDA Map_EntTran_VAddrL
-	ADD Map_EntTran_VRAMGap
-	STA Map_EntTran_VAddrL
-	LDA Map_EntTran_VAddrH
-	ADC #$00
-	STA Map_EntTran_VAddrH
-
-	LDA Map_EntTran_InitValIdx
-	CMP #$04
-	BEQ PRG030_95AD	 ; If the initial index was 4, jump to PRG030_95AD (RTS)
-
-	LDA Map_EntTran_Temp
-	CMP #$ff	 
-	BNE PRG030_95AD	 ; If Map_EntTran_Temp <> $FF, jump to PRG030_95AD (RTS)
-
-	LDY Map_EntTran_BorderLoop	 ; Y = current border index (0-3: Top 0, bottom 1, right 2, left 3)
-
-	; Prevent out of range video writes
-	LDA Map_EntTran_BVAddrH,Y
-	CMP #$28	 
-	BGE PRG030_95AD	 	; If border's VRAM high address >= $28, jump to PRG030_95AD (RTS)
- 
-	LDA Map_EntTran_VAddrH
-	CMP #$23
-	BLT PRG030_95AD	 	; If border's VRAM high address < $23, jump to PRG030_95AD (RTS)
-
-	LDA Map_EntTran_VAddrL
-	CMP #$c0
-	BLT PRG030_95AD	 	; If border's VRAM low address < $C0, jump to PRG030_95AD (RTS)
-
-	; Set VRAM address to [$28][Map_EntTran_BVAddrL & $1f]
-	LDA #$28
-	STA Map_EntTran_VAddrH
-
-	LDA Map_EntTran_VAddrL
-	AND #$1f
-	STA Map_EntTran_VAddrL
-
-	LDA Map_EntTran_BorderLoop	 ; A = current border index (0-3: Top 0, bottom 1, right 2, left 3)
-	AND #$02	
-	BEQ PRG030_95AD	 	; If not doing right side update, jump to PRG030_95AD (RTS)
-
-	STX Map_EntTran_Temp	 ; Store X (LRCnt) into Map_EntTran_Temp
-
-PRG030_95AD:
-	RTS		 ; Return
+;BoxOut_SetThisBorderVRAM:
+;	; Map_EntTran_VAddrL/H += Map_EntTran_VRAMGap
+;	LDA Map_EntTran_VAddrL
+;	ADD Map_EntTran_VRAMGap
+;	STA Map_EntTran_VAddrL
+;	LDA Map_EntTran_VAddrH
+;	ADC #$00
+;	STA Map_EntTran_VAddrH
+;
+;	LDA Map_EntTran_InitValIdx
+;	CMP #$04
+;	BEQ PRG030_95AD	 ; If the initial index was 4, jump to PRG030_95AD (RTS)
+;
+;	LDA Map_EntTran_Temp
+;	CMP #$ff	 
+;	BNE PRG030_95AD	 ; If Map_EntTran_Temp <> $FF, jump to PRG030_95AD (RTS)
+;
+;	LDY Map_EntTran_BorderLoop	 ; Y = current border index (0-3: Top 0, bottom 1, right 2, left 3)
+;
+;	; Prevent out of range video writes
+;	LDA Map_EntTran_BVAddrH,Y
+;	CMP #$28	 
+;	BGE PRG030_95AD	 	; If border's VRAM high address >= $28, jump to PRG030_95AD (RTS)
+; 
+;	LDA Map_EntTran_VAddrH
+;	CMP #$23
+;	BLT PRG030_95AD	 	; If border's VRAM high address < $23, jump to PRG030_95AD (RTS)
+;
+;	LDA Map_EntTran_VAddrL
+;	CMP #$c0
+;	BLT PRG030_95AD	 	; If border's VRAM low address < $C0, jump to PRG030_95AD (RTS)
+;
+;	; Set VRAM address to [$28][Map_EntTran_BVAddrL & $1f]
+;	LDA #$28
+;	STA Map_EntTran_VAddrH
+;
+;	LDA Map_EntTran_VAddrL
+;	AND #$1f
+;	STA Map_EntTran_VAddrL
+;
+;	LDA Map_EntTran_BorderLoop	 ; A = current border index (0-3: Top 0, bottom 1, right 2, left 3)
+;	AND #$02	
+;	BEQ PRG030_95AD	 	; If not doing right side update, jump to PRG030_95AD (RTS)
+;
+;	STX Map_EntTran_Temp	 ; Store X (LRCnt) into Map_EntTran_Temp
+;
+;PRG030_95AD:
+;	RTS		 ; Return
 
 
 	; As part of the "boxing out" effect, calculate adjusted VRAM 
 	; addresses as fit to the arbitrary positioning of the screen
-BoxOut_CalcOffsets:
-	; I'll let someone else figure this out in particular,
-	; I'm not as concerned about a removed effect...
-
-	LDA Map_EntTran_VAddrL
-	AND #$c0
-	STA Map_EntTran_TileOff
-
-	LDA Map_EntTran_VAddrH
-	AND #$0f
-	STA Map_EntTran_VAddrHAdj
-
-	CLC
-	ROR Map_EntTran_VAddrHAdj
-	ROR Map_EntTran_TileOff
-	CLC
-	ROR Map_EntTran_VAddrHAdj
-	ROR Map_EntTran_TileOff
-	LDA Map_EntTran_VAddrL
-	AND #$1f
-	LSR A	
-	ADD Map_EntTran_TileOff
-	STA Map_EntTran_TileOff
-
-	RTS		 ; Return
-
-
-	; Determine which 8x8 of the tile layout we're going to need
-BoxOut_CalcWhich8x8:
-	LDA Map_EntTran_VAddrL
-	AND #$01
-	STA Map_EntTran_Tile8x8
-
-	LDA Map_EntTran_VAddrL
-	AND #$20	 
-	BNE PRG030_95EF	
-
-	ASL Map_EntTran_Tile8x8
-	JMP PRG030_95F3	 	; Jump to PRG030_95F3
-
-PRG030_95EF: 
-	SEC		 
-	ROL Map_EntTran_Tile8x8
-
-PRG030_95F3:
-	RTS		 ; Return
+;BoxOut_CalcOffsets:
+;	; I'll let someone else figure this out in particular,
+;	; I'm not as concerned about a removed effect...
+;
+;	LDA Map_EntTran_VAddrL
+;	AND #$c0
+;	STA Map_EntTran_TileOff
+;
+;	LDA Map_EntTran_VAddrH
+;	AND #$0f
+;	STA Map_EntTran_VAddrHAdj
+;
+;	CLC
+;	ROR Map_EntTran_VAddrHAdj
+;	ROR Map_EntTran_TileOff
+;	CLC
+;	ROR Map_EntTran_VAddrHAdj
+;	ROR Map_EntTran_TileOff
+;	LDA Map_EntTran_VAddrL
+;	AND #$1f
+;	LSR A	
+;	ADD Map_EntTran_TileOff
+;	STA Map_EntTran_TileOff
+;
+;	RTS		 ; Return
+;
+;
+;	; Determine which 8x8 of the tile layout we're going to need
+;BoxOut_CalcWhich8x8:
+;	LDA Map_EntTran_VAddrL
+;	AND #$01
+;	STA Map_EntTran_Tile8x8
+;
+;	LDA Map_EntTran_VAddrL
+;	AND #$20	 
+;	BNE PRG030_95EF	
+;
+;	ASL Map_EntTran_Tile8x8
+;	JMP PRG030_95F3	 	; Jump to PRG030_95F3
+;
+;PRG030_95EF: 
+;	SEC		 
+;	ROL Map_EntTran_Tile8x8
+;
+;PRG030_95F3:
+;	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Map_Calc_NT2Addr_By_XY
@@ -2261,49 +2284,49 @@ Map_Calc_NT2Addr_By_XY:
 
 
 
-BoxOut_PutPatternInStrip:
-	JSR BoxOut_CalcOffsets	 ; Calculate offset to tile
-	JSR BoxOut_CalcWhich8x8	 ; Calculate which 8x8 pattern of the tile layout we're going to use
-
-PRG030_9654:
-	; Correct base address for non-vertical levels
-	LDA Tile_Mem_Addr
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1
-	STA <Map_Tile_AddrH
-
-PRG030_965E:
-	LDA Map_EntTran_VAddrH
-	AND #$08	 
-	BEQ PRG030_966C	 ; If "high" address is not halfway through vertically, jump to PRG030_966C
-
-	; Otherwise, offset halfway through screen
-	LDA <Map_Tile_AddrL
-	ADD #$f0
-	STA <Map_Tile_AddrL	; Map_Tile_AddrL += $F0
-
-PRG030_966C:
-	LDA Level_Tileset
-	ASL A		
-	TAY		 
-
-	; Set Temp_Var13/14 to point to the layout data for this Tileset
-	LDA TileLayout_ByTileset,Y
-	STA <Temp_Var13	
-	LDA TileLayout_ByTileset+1,Y
-	STA <Temp_Var14	
-
-	LDY Map_EntTran_TileOff
-	LDA [Map_Tile_AddrL],Y	 ; Get the tile we're working on
-
-	TAY		 
-	LDA Map_EntTran_Tile8x8
-	ADD <Temp_Var14		
-	STA <Temp_Var14		
-	LDA [Temp_Var13],Y	 ; Get the specific 8x8 tile of the tile we're working on
-
-	STA <Scroll_ColorStrip,X ; Store into the strip
-	RTS		 ; Return
+;BoxOut_PutPatternInStrip:
+;	JSR BoxOut_CalcOffsets	 ; Calculate offset to tile
+;	JSR BoxOut_CalcWhich8x8	 ; Calculate which 8x8 pattern of the tile layout we're going to use
+;
+;PRG030_9654:
+;	; Correct base address for non-vertical levels
+;	LDA Tile_Mem_Addr
+;	STA <Map_Tile_AddrL
+;	LDA Tile_Mem_Addr+1
+;	STA <Map_Tile_AddrH
+;
+;PRG030_965E:
+;	LDA Map_EntTran_VAddrH
+;	AND #$08	 
+;	BEQ PRG030_966C	 ; If "high" address is not halfway through vertically, jump to PRG030_966C
+;
+;	; Otherwise, offset halfway through screen
+;	LDA <Map_Tile_AddrL
+;	ADD #$f0
+;	STA <Map_Tile_AddrL	; Map_Tile_AddrL += $F0
+;
+;PRG030_966C:
+;	LDA Level_Tileset
+;	ASL A		
+;	TAY		 
+;
+;	; Set Temp_Var13/14 to point to the layout data for this Tileset
+;	LDA TileLayout_ByTileset,Y
+;	STA <Temp_Var13	
+;	LDA TileLayout_ByTileset+1,Y
+;	STA <Temp_Var14	
+;
+;	LDY Map_EntTran_TileOff
+;	LDA [Map_Tile_AddrL],Y	 ; Get the tile we're working on
+;
+;	TAY		 
+;	LDA Map_EntTran_Tile8x8
+;	ADD <Temp_Var14		
+;	STA <Temp_Var14		
+;	LDA [Temp_Var13],Y	 ; Get the specific 8x8 tile of the tile we're working on
+;
+;	STA <Scroll_ColorStrip,X ; Store into the strip
+;	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Scroll_Update_Ranges
@@ -2812,6 +2835,8 @@ Skip_Time_Set:
 
 HorzNotLocked:
 	STX Level_HorzScrollLock
+
+
 	LDA [Temp_Var14],Y
 	AND #$F0
 	LSR A
@@ -2819,11 +2844,6 @@ HorzNotLocked:
 	LSR A
 	LSR A
 	STA <Temp_Var6	; temporarily store pointer count
-	
-	LDA [Temp_Var14], Y
-	AND #$08
-	STA BlockedLevel
-	LDY #$09
 
 	LDA [Temp_Var14],Y
 	AND #$80
@@ -2836,6 +2856,7 @@ HorzNotLocked:
 	LDA [Temp_Var14],Y
 	AND #$10
 	STA TreasureBox_Disabled
+
 
 	LDA [Temp_Var14],Y
 	AND #$20
@@ -2852,9 +2873,13 @@ HorzNotLocked:
 
 SetDNActive:
 	STX DayNightActive
+	
+	LDY #$09
+	LDA [Temp_Var14],Y
+	AND #$08
+	STA Player_Vehicle
 
 	LDY #$0A
-
 	; load misc data
 	LDA [Temp_Var14], Y
 	STA EventType
@@ -3266,10 +3291,7 @@ TileLayoutPage_ByTileset:
 ; (Though it does call the same routine USED for scrolling)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Scroll_Dirty_Update:
-	;LDA Level_7Vertical
-	;BNE PRG030_9B10	 	; If level is vertical, jump to PRG030_9B10
 
-	; Non-vertical level
 	LDX <Scroll_LastDir	; X = Scroll_LastDir
 	LDA <Horz_Scroll	; A = Horz_Scroll
 	STA <Scroll_RightUpd,X	; Current horizontal scroll stored into appropriate left/right value
@@ -5820,6 +5842,7 @@ Player_Die:
 
 	; Clear a bunch of stuff at time of death
 	LDA #$00
+	STA Player_Vehicle
 	STA <Player_XVelZ
 	STA Player_Flip	
 	STA Player_FlashInv
@@ -5915,7 +5938,7 @@ Objects_DetectionTable:
 	.byte $00, $01, $00, $01, $00, $01, $00, $01
 
 Objects_ToggleDetection:
-	LDX #$04
+	LDX #$07
 
 Objects_ToggleDetectionLoop:	
 	LDA <Counter_1
@@ -5960,4 +5983,38 @@ DistributeNextSprite:
 
 	LDA <Temp_Var1
 	STA Sprite_FreeRAM
+	RTS	
+
+
+Debug_Code:
+	LDA <Pad_Holding
+	AND #PAD_B
+	BEQ Debug_CodeRTS
+
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ Debug_CodeRTS
+
+	LDA Player_EffectiveSuit
+	CMP #$08
+	BEQ Debug_Code0
+
+	CMP #$0B
+	BCC Debug_Code1
+
+	LDA #$FF
+	BMI Debug_Code1
+
+Debug_Code0:
+	LDA #$0A
+
+Debug_Code1:
+	ADD #$02
+	STA Player_QueueSuit
+
+	LDA <Pad_Input
+	AND #~PAD_SELECT
+	STA <Pad_Input
+
+Debug_CodeRTS:
 	RTS	

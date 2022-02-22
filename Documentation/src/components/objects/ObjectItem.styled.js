@@ -51,6 +51,10 @@ const ObjectItemStyles = styled.div`
     .object-mario {
         display: inline-block;
     }
+
+    @media print {
+        page-break-inside: avoid;
+    }
 `;
 
 export default ObjectItemStyles;

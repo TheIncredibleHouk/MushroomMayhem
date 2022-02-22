@@ -1396,7 +1396,6 @@ Boss_FwooshHit:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	STA Debug_Snap
 	DEC Boss_FwooshHealth, X
 
 	LDA Objects_PlayerProjHit, X
@@ -1496,7 +1495,6 @@ Boss_FwooshFlash:
 	.byte SPR_PAL1, SPR_PAL3
 
 Boss_FwooshDeath:
-	STA Debug_Snap
 	LDA Objects_Timer, X
 	BEQ Boss_FwooshDeathExplode
 

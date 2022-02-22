@@ -143,7 +143,7 @@ OBJ_SMASH			= $5D
 	.byte KILLACT_NORMALSTATE ; Object $58
 	.byte KILLACT_STARDEATH ; Object $59
 	.byte KILLACT_NORMALSTATE ; Object $5A
-	.byte KILLACT_STARDEATH ; Object $5B
+	.byte KILLACT_NORMALSTATE ; Object $5B
 	.byte KILLACT_STARDEATH ; Object $5C
 	.byte KILLACT_NORMALSTATE ; Object $5D
 	.byte KILLACT_STARDEATH ; Object $5E
@@ -2518,7 +2518,7 @@ BobOmb_Death:
 
 	CMP #HIT_EXPLOSION
 	BEQ BobOmb_ExplodeNow
-	
+
 	CMP #HIT_FIREBALL
 	BNE BobOmb_ProcessKill1
 
@@ -2854,6 +2854,7 @@ FloatMine_Norm:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE FloatMine_NotDead
+
 	JSR FloatMine_Expload
 
 FloatMine_NotDead:
@@ -3055,10 +3056,7 @@ FloatMine_CalcBoundBox:
 	RTS
 
 FloatMine_Expload:
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
-	INC Explosion_Timer, X
-	RTS    	
+	JMP Object_Explode
 	
 ObjInit_Panser:
 	LDA #BOUND16x28

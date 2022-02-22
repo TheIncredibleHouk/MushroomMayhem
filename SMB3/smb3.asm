@@ -1103,8 +1103,10 @@ UPDATERASTER_32PIXSHOWSPR= $80	; If NOT set, hides sprites that fall beneath the
 	Map_EntTran_TileOff:	.ds 1	; Offset into tile memory (used in removed "box out" version only)
 	Map_EntTran_Tile8x8:	.ds 1	; Offset to which 8x8 pattern of the tile we're grabbing that we need (used in removed "box out" version only)
 	Map_EntTran_VRAMGap:	.ds 1	; Sets gap (i.e. 1 for vertical, 32 for horizontal; used in removed "box out" version only)
-
-				.ds 8	; $0457-$045E unused
+	Map_Transition_Column:	.ds 1
+	Map_Transition_SpriteY:	.ds 1
+	Map_Transition_SpriteIndex:	.ds 1
+				.ds 5	; $0457-$045E unused
 
 	Map_EntTran_Temp:	.ds 1	; Seems to me a multi-purpose value in entrance transition
 	Map_EntTran_InitValIdx:	.ds 1	; Selects an index of values to initialize by
@@ -1589,7 +1591,11 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	Player_FrogHopCnt:	.ds 1	; Counter used for frog hopping along the ground (shared with Player_FireCount)
 	Player_PMeterCnt:	.ds 1	; Tick counter used to count when to increase/decrease Power Meter
 	Player_TailAttack:	.ds 1	; Initiailized to $12; counts down to zero, performs tail attack!
-	Object_BlockAttack:	.ds 1
+
+MARIO_SUBMARINE = 1
+MARIO_PLANE = 2
+
+	Player_Vehicle:	.ds 1
 						.ds 1
 	CineKing_Timer:			; Timer; decrements to zero (shares Objects_Timer first byte)
 	Objects_Timer:		.ds 8	; $0518-$051F "Timer" values; automatically decrements to zero
@@ -2570,8 +2576,8 @@ MARIO_FROG		= 04
 MARIO_KOOPA		= 05
 MARIO_HAMMER	= 06
 MARIO_ICE		= 07
-MARIO_NINJA		= 11
 MARIO_FOX		= 08
+MARIO_NINJA		= 11
 
 	Player_EffectiveSuit:			ds 1
 	DAIZ_TEMP2:			.ds 1	; #DAHRKDAIZ $7A74 USED for temprorary in variables
@@ -2687,7 +2693,7 @@ ABILITY_CHERRY_STAR = 5
 	Objects_DynamicallySpawned:	.ds 8
 	Objects_Kicked:		.ds 5
 	Objects_Shelled:	.ds 5
-	Objects_ToggleDetect: .ds 5
+	Objects_ToggleDetect: .ds 8
 
 ATTR_FIREPROOF		= %00000001
 ATTR_ICEPROOF		= %00000010
@@ -2968,6 +2974,7 @@ PLAYER_ICEBALL		= 02
 PLAYER_HAMMER		= 03
 PLAYER_NINJASTAR	= 04
 PLAYER_POOF			= 05
+PLAYER_BULLET		= 06
 
 	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
 
@@ -3400,16 +3407,6 @@ OPTS_SETPT6		= $80		; Set pattern table bank 6
 KILLACT_STARDEATH	= 0
 KILLACT_NORMALSTATE	= 1	; 5: Do "Normal" state and killed action (sinking/vert flip)
 
-; NOTE: Starting here, all object IDs are now handled specially (see PRG005_B8DB or just before PRG005_BB5F)
-OBJ_CHEEPCHEEPBEGIN	= $00;
-OBJ_8WAYBULLETBILLS = $B4	; (Level_Event = 1) Begins swarm of cheep cheeps
-OBJ_GREENCHEEPBEGIN	= $B5	; (Level_Event = 2) Begins Spike Cheeps floating by
-OBJ_LAKITUFLEE		= $B6	; (Level_Event = 3) Causes active Lakitu to flee
-OBJ_PARABEETLESBEGIN	= $B7	; (Level_Event = 4) Begins Green and red parabeetles flyby
-OBJ_CLOUDSINBGBEGIN	= $B8	; (Level_Event = 5) Begins floating clouds in background 
-OBJ_WOODPLATFORMBEGIN	= $B9	; (Level_Event = 6) Begins random wooden platforms 
-OBJ_TREASUREBOXAPPEAR	= $BA	; (Level_Event = 7) Causes treasure box to appear
-OBJ_CANCELEVENT		= $BB	; (Level_Event = 8) Cancels Level_Event (sets to zero)
 
 ; Objects $BC to $D0 create Cannon Fires
 OBJ_CFIRE_BULLETBILL	= $BC + CFIRE_BULLETBILL - 1	; Bullet Bill cannon

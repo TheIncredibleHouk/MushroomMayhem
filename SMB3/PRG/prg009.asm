@@ -59,7 +59,7 @@ PRG009_B922:
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word AutoScroll_Horizontal	; 0 Generally for non-stop horizontal levels, uses movement commands; most complex type
-	.word AutoScroll_Horizontal	; 1 Same as type zero, except accesses $1x Level_AScrlVar
+	.word AutoScroll_HorizontalFast	; 1 Same as type zero, except accesses $1x Level_AScrlVar
 	.word AutoScroll_URDiagonal	; 2 Up-right diagonal used in 5-9
 	.word AutoScroll_SpikeCeiling	; 3 Falling spiked ceilings (e.g. World 1 and 2 Mini Fortresses)
 	.word AutoScroll_BooRoom	; 4 Used in the last World 6 Fortress, a room of Boos, scrolls up to meet a door
@@ -247,9 +247,18 @@ AScroll_HorizontalInitMove:
 	.byte ASHIM(ASM_World8Tank1)	; 13 World 8 Tank 1
 	.byte ASHIM(ASM_World8Tank2)	; 14 World 8 Tank 2
 	.byte ASHIM(ASM_Terminator)	; 15 ** Terminator Only (because it seeks ahead to see the terminating movement index)
-	
+
+
+AutoScroll_HorizontalFast:
+	LDA #$08
+	STA Level_AScrlHVel	
+	BNE AutoScroll_HorizontalNorm
 
 AutoScroll_Horizontal:
+	LDA #$04
+	STA Level_AScrlHVel
+
+AutoScroll_HorizontalNorm:
 	LDX #$00	; X = 0 
 	JSR AutoScroll_ApplyHVel	 ; Apply auto scroll horizontal velocity
 
@@ -257,7 +266,6 @@ PRG009_BBC5:
 	CMP #$0e	 
 	BNE PRG009_BBCC	 ; If Level_AScrlLimitSel <> $0E (World 8 Battleship), jump to PRG009_BBCC
 
-	JSR Setup32PixPartWater	 ; World 8 Battleship needs its muddy water
 
 PRG009_BBCC:
 	JSR AScroll_MovePlayer	 ; Moves Player as necessary with auto scroll

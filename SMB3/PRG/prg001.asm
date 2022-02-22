@@ -483,6 +483,12 @@ PUp_Collect3:
 	.word PUp_CheckPoint
 
 PUp_Grow:
+	LDA Player_Vehicle
+	BEQ PUp_Grow0
+
+	JMP PUp_Poof
+
+PUp_Grow0:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1
@@ -500,6 +506,13 @@ PUp_Grow1:
 	RTS
 
 PUp_Rainbow:
+
+	LDA Player_Vehicle
+	BEQ PUp_Rainbow0
+
+	JMP PUp_Poof
+	
+PUp_Rainbow0:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1

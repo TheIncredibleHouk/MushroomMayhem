@@ -2958,6 +2958,7 @@ Clear_Nametable_Short:	; $FE02
 	LDX #$03	 ; X = 3
 	LDY #$c0	 ; Y = $C0
 	LDA ClearPattern	 ; A = ClearPattern
+
 PRG031_FE1B:
 	STA PPU_VRAM_DATA	; Write this pattern
 
@@ -2969,92 +2970,6 @@ PRG031_FE1B:
 
 	RTS		 ; Return
 
-; FIXME: Anybody want to claim this?
-; Seems to clear the screen based on specific Vert_Scroll values
-PRG031_FE25:	.byte $00, $30, $70, $B0, $EF
-
-	; High and Low VRAM Addresses
-PRG031_FE2A:	.byte $20, $20, $21, $22, $28
-PRG031_FE2F:	.byte $00, $C0, $C0, $C0, $00
-
-; $FE34
-	LDY #$04	; Y = 4
-	LDA <Vert_Scroll
-PRG031_FE38:
-	CMP PRG031_FE25,Y
-	BEQ PRG031_FE40	 ; If Vert_Scroll = this value, jump to PRG031_FE40
-
-	DEY		 ; Y--
-	BPL PRG031_FE38	 ; While Y >= 0, loop
-
-PRG031_FE40:
-
-	; Load FIXME values -> Temp_Var1/2
-	LDA PRG031_FE2A,Y
-	STA <Temp_Var1
-	LDA PRG031_FE2F,Y
-	STA <Temp_Var2
-
-	LDY #$00	 ; Y = 0
-	LDX #$03	 ; X = 3
-
-	LDA <Vert_Scroll
-	CMP #$ef
-	BEQ PRG031_FE58	 ; If Vert_Scroll = $EF (bottom of horizontal scroll level), jump to PRG031_FE58
-
-	LDY #$20	 ; Y = $20
-	LDX #$04	 ; X = 4
-
-PRG031_FE58:
-	LDA PPU_STAT
-
-	; Disable display
-	LDA #$00
-	STA PPU_CTL1
-PRG031_FE60:
-	; Set VRAM High/Low Addresses
-	LDA <Temp_Var1
-	STA PPU_VRAM_ADDR
-	LDA <Temp_Var2
-	STA PPU_VRAM_ADDR
-
-PRG031_FE6A:
-	LDA ClearPattern	 ; Get the clearing pattern
-	STA PPU_VRAM_DATA	 ; Store it
-
-	DEY		 ; Y--
-	BNE PRG031_FE76	 ; If Y <> 0, jump to PRG031_FE76
-
-	DEX		 ; X--
-	BEQ PRG031_FE98	 ; If X = 0, jump to PRG031_FE98 (RTS)
-
-PRG031_FE76:
-
-	; Next VRAM byte
-	LDA <Temp_Var2
-	ADD #$01
-	STA <Temp_Var2
-	LDA <Temp_Var1
-	ADC #$00
-	STA <Temp_Var1
-
-	CMP #$23
-	BNE PRG031_FE6A	 ; If haven't possibly hit the end of the nametable, jump to PRG031_FE6A
-
-	LDA <Temp_Var2
-	CMP #$c0
-	BNE PRG031_FE6A	 ; If haven't hit the end of the nametable, jump to PRG031_FE6A
-
-	; Set address to second nametable
-	LDA #$28
-	STA <Temp_Var1
-	LDA #$00
-	STA <Temp_Var2
-
-	JMP PRG031_FE60	; Loop!
-
-PRG031_FE98:
-	RTS		 ; Return
 
 Increase_Game_Timer:
 	INC Game_Timer_Tick

@@ -414,6 +414,12 @@ RAINBOW_PAL_CYCLE:
 ; etc. all handled by this major subroutine...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_Draw:
+	LDA Player_Vehicle
+	BEQ Player_DrawNorm
+
+	JMP Player_DrawSubmarine
+
+Player_DrawNorm:	
 	JSR Player_RainbowCycle
 
 	LDX Frozen_Frame
@@ -632,52 +638,6 @@ PRG029_CF88:
 
 
 PRG029_D010:
-	LDA Player_Kuribo
-	BEQ PRG029_D050	 ; If Player is not in a Kuribo's shoe, jump to PRG029_D050
-
-	; In short, if Player is small, use Temp_Var1 = 6, otherwise Temp_Var1 = 0 (sprite vertical offset in shoe)
-	LDY #$00
-	LDA <Player_Suit
-	BNE PRG029_D01D
-	LDY #$06
-PRG029_D01D:
-	STY <Temp_Var1
-
-	LDA <Player_InAir
-	BEQ PRG029_D036	 ; If Player is not mid-air, jump to PRG029_D036
-
-	LDA <Player_YVelZ
-	BPL PRG029_D029	 ; If Player is falling, jump to PRG029_D029
-
-	EOR #$ff	 ; Otherwise negate it (sort of)
-
-PRG029_D029:
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	SUB #$03	; The "whole" part of the Y Velocity, minus 3
-
-	EOR #$ff	 ; Negate that (sort of)
-	BPL PRG029_D036	 ; If the result is positive, jump to PRG029_D036
-
-	LDA #$00	 ; Otherwise if it slipped below zero, just use zero
-
-PRG029_D036:
-	ADD <Temp_Var1	 ; Add that to the initial offset
-	ADD <Player_SpriteY	 ; And add in the Player's sprite Y position
-
-	; Store that as the new Y position on the "first row" sprites
-	STA Sprite_RAM+$0C,X
-	STA Sprite_RAM+$10,X
-	STA Sprite_RAM+$14,X
-
-	; The "second row" sprites (the shoe part in this case) use a different palette
-	LDA Sprite_RAM+$02,X
-	ORA #$02
-	STA Sprite_RAM+$02,X
-	STA Sprite_RAM+$06,X
-
 PRG029_D050:
 	LDA <Player_Frame
 	CMP #PF_KICK_BIG 
@@ -2737,4 +2697,172 @@ Player_RecoverOverrides:
 	STA <Player_FlipBits
 
 Player_RecoverOverrides1:
+	RTS
+
+Submarine_PatternsTop:
+	.byte $29, $01, $03, $37
+	.byte $29, $05, $07, $37
+	.byte $29, $05, $07, $37
+	.byte $29, $09, $0B, $37
+	.byte $29, $0D, $0F, $37
+	.byte $29, $11, $13, $37
+	.byte $29, $3D, $3F, $37
+	.byte $29, $19, $1B, $37
+	.byte $29, $1D, $1F, $37
+	.byte $29, $21, $23, $37
+	.byte $29, $21, $23, $37
+	.byte $29, $21, $23, $37
+	.byte $29, $21, $23, $37
+
+Subarmine_PatternsBottom:
+	.byte $25, $2B, $2D, $2F
+	.byte $27, $2B, $2D, $2F	
+
+Player_DrawSubmarine:
+	LDA #$59
+	STA PatTable_BankSel + 2
+
+	LDA #$00
+	STA <Temp_Var2
+
+	LDA Player_Behind
+	BEQ Player_SubOverBg
+
+	LDA #SPR_BEHINDBG
+	STA <Temp_Var2
+
+Player_SubOverBg:	
+	LDA <Player_X
+	SUB <Horz_Scroll
+	SUB #$08
+	STA <Player_SpriteX	 ; Player_SpriteX = Player_X - Horz_Scroll
+
+	LDA <Player_YZ
+	SUB Level_VertScroll
+	STA <Player_SpriteY	; Player_SpriteY = Player_Y - Level_VertScroll
+
+Submarine_Flash:
+	LDA Player_FlashInv
+	BEQ Submarine_NormFlash
+
+	DEC Player_FlashInv
+	LDA Player_FlashInv
+	AND #$02
+	BEQ Submarine_NormFlash
+
+	LDA #$E0
+	STA <Player_SpriteY
+
+Submarine_NormFlash:
+
+	LDA Player_SprOff
+	SUB #$08
+	TAY
+
+	LDA #$03
+	STA <Temp_Var1
+
+	LDA <Player_SpriteX
+
+Submarine_XLoop:	
+	STA Sprite_RAMX, Y
+	STA Sprite_RAMX + $10, Y
+
+	ADD #$08
+
+	INY
+	INY
+	INY
+	INY
+
+	DEC <Temp_Var1
+	BPL Submarine_XLoop	
+
+	LDA Player_SprOff
+	SUB #$08
+	TAY
+
+	LDA <Player_SpriteY
+
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY + $04, Y
+	STA Sprite_RAMY + $08, Y
+	STA Sprite_RAMY + $0C, Y
+
+	ADD #$10
+	STA Sprite_RAMY + $10, Y
+	STA Sprite_RAMY + $14, Y
+	STA Sprite_RAMY + $18, Y
+	STA Sprite_RAMY + $1C, Y
+
+	LDA #SPR_PAL0
+	ORA <Temp_Var2
+	STA Sprite_RAMAttr + $04, Y
+	STA Sprite_RAMAttr + $08, Y
+	STA Sprite_RAMAttr + $0C, Y
+
+	LDA #SPR_PAL3
+	ORA <Temp_Var2
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + $10, Y
+	STA Sprite_RAMAttr + $14, Y
+	STA Sprite_RAMAttr + $18, Y
+	STA Sprite_RAMAttr + $1C, Y	
+
+	LDA Player_EffectiveSuit
+	ASL A
+	ASL A
+	TAX
+
+	LDA #$03
+	STA <Temp_Var1
+
+Submarine_PatternLoop:
+	LDA Submarine_PatternsTop, X
+	STA Sprite_RAMTile, Y
+
+	INX
+	INY
+	INY
+	INY
+	INY
+
+	DEC <Temp_Var1
+	BPL Submarine_PatternLoop
+
+	LDA <Pad_Holding
+	AND #PAD_A
+	BEQ Submarine_NormPropeller
+
+	LDA Game_Counter
+	AND #$04
+	TAX
+	BPL Submarine_DrawBottom
+
+Submarine_NormPropeller:	
+	LDA Game_Counter
+	LSR A
+	AND #$04
+	TAX
+
+Submarine_DrawBottom:
+	LDA #$03
+	STA <Temp_Var1
+
+	LDA Player_SprOff
+	SUB #$08
+	TAY
+
+Submarin_PatternBottomLoop:
+	LDA Subarmine_PatternsBottom, X
+	STA Sprite_RAMTile + $10, Y
+
+	INX
+	INY
+	INY
+	INY
+	INY 
+
+	DEC <Temp_Var1
+	BPL Submarin_PatternBottomLoop
 	RTS

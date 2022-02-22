@@ -117,14 +117,10 @@ Player_VibeDisableFrame:
 ; objects; this is handled elsewhere...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoGameplay:
-	INC Game_Counter_NoStop
-	LDY Level_Tileset
+	JSR Increase_Game_Timer
 
 	JSR Level_Initialize	 ; Initialize level if needed
 	JSR LevelJunction_PartialInit	 
-
-	; NOTE: If a partial initialization occurred (above),
-	; it will NOT return here!  It will be back up at PRG030...
 
 	JSR Sprite_RAM_Clear_NotWeather
 	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
@@ -262,6 +258,7 @@ PChg_C000_To_0:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Level_Initialize:
+
 	LDA <Player_XStart	
 	BEQ PRG008_A242	 ; If Player_XStart = 0 (not yet initialized), jump to PRG008_A242
 	RTS		 ; Return
@@ -1050,6 +1047,7 @@ PRG008_A7AD:
 	STX Player_ForcedSlide
 
 PRG008_A7AD_2:
+
 	JSR Player_HandleWater
 	JSR Player_HandleClimbing
 
@@ -1106,7 +1104,6 @@ PRG008_A928:
 PRG008_A93D:
 	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
 
-
 	LDA <Player_YVelZ
 	ADD <Player_CarryYVel
 	STA <Player_EffYVel
@@ -1128,6 +1125,11 @@ Player_NoWindFactor:
 	STA <Player_CarryYVel	
 
 PRG008_A940:
+	LDA Player_Vehicle
+	BEQ Player_GroundNoVehicle
+	JMP Swim_Frog
+
+Player_GroundNoVehicle:
 	LDA #$00
 	JSR Player_CommonGroundAnims	 ; Perform common ground animation routines
 
@@ -1316,6 +1318,10 @@ Frog_Velocity:
 	.byte 16, -16
 
 Swim_Frog:
+	LDA Player_Vehicle
+	BNE Swim_FrogNoPoison
+
+Swim_FrogNoPoison:	
 	JSR Player_PoisonMode
 	LDX #$ff	 ; X = $FF
 
@@ -1438,6 +1444,9 @@ PRG008_AAAB:
 	AND #$07
 	TAY	
 	BNE PRG008_AABF	
+
+	LDA Player_Vehicle
+	BNE PRG008_AABF
 
 	LDA <Counter_1
 	AND Frog_SwimSoundMask,Y
@@ -2173,6 +2182,7 @@ PRG008_AE11:
 	AND #%00000010
 	BNE PRG008_AE24	 ; If Player is pressing left, jump to PRG008_AE24
 
+Player_ForceFaceRight:
 	LDY #SPR_HFLIP	; Horizontal flip
 	INC Player_LastDirection
 
@@ -2180,12 +2190,6 @@ PRG008_AE24:
 	STY <Player_FlipBits	; Set appropriate flip
 
 PRG008_AE26:
-
-
-PRG008_AE50:
-
-
-PRG008_AE58:
 	LDA <Player_Suit
 	ASL A
 	ASL A
@@ -4236,8 +4240,13 @@ PRG008_BFF9:
 	RTS		 ; Return
 
 Do_Air_Timer:				; Added code to increase/decrease the air time based on water
+	LDA Player_Vehicle
+	BNE AirTimerRTS
+
 	LDA Air_Change
 	BNE CheckAirChange
+
+AirTimerRTS:	
 	RTS
 
 AirTicker: .byte $0B, $12
@@ -4572,38 +4581,6 @@ Player_EventsRTS:
 Player_Refresh:
 	RTS
 
-Debug_Code:
-	LDA <Pad_Holding
-	AND #PAD_B
-	BEQ Debug_CodeRTS
-
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ Debug_CodeRTS
-
-	LDA Player_EffectiveSuit
-	CMP #$08
-	BEQ Debug_Code0
-
-	CMP #$0B
-	BCC Debug_Code1
-
-	LDA #$FF
-	BMI Debug_Code1
-
-Debug_Code0:
-	LDA #$0A
-
-Debug_Code1:
-	ADD #$02
-	STA Player_QueueSuit
-
-	LDA <Pad_Input
-	AND #~PAD_SELECT
-	STA <Pad_Input
-
-Debug_CodeRTS:
-	RTS
 
 Player_DetectWall:
 	LDA Player_ForcedSlide
@@ -5251,6 +5228,7 @@ Player_PitDeath2:
 
 Player_DetermineAir:
 	LDA Player_InWater
+	ORA Player_Vehicle
 	BEQ Player_AirChanges1
 
 	LDA Top_Of_Water
@@ -5908,7 +5886,6 @@ Bounce_Direction
 	.byte $00, $FF
 
 Player_HandleWater:
-	
 
 	LDA Level_Tile_Prop_Head
 	JSR Level_CheckIfTileUnderwater
@@ -6436,6 +6413,9 @@ Check_TimersRTS:
 
 
 Player_Splash:
+	LDA Player_Vehicle
+	BNE Check_TimersRTS
+
 	LDY #$05
 
 Player_FindSplash:

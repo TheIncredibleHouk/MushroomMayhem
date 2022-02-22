@@ -19,6 +19,7 @@ OBJ_PIRUMPKINHEAD	= $4A
 OBJ_DRYCHEEP		= $4B
 OBJ_GREENPIRANHA	= $4C
 OBJ_PARAPIRANHA		= $4D
+OBJ_GOLDCHEEPCHEEP  = $4E
 
     .word ObjInit_Goomba    ; Object $3C
 	.word ObjInit_ParaGoomba ; Object $3D
@@ -38,7 +39,7 @@ OBJ_PARAPIRANHA		= $4D
 	.word ObjInit_DryCheep ; Object $4B
 	.word ObjInit_PiranhaGrower ; Object $4C
 	.word ObjInit_ParaPiranha ; Object $4D
-	.word ObjInit_DoNothing ; Object $4E
+	.word ObjInit_GoldCheep ; Object $4E
 	.word ObjInit_DoNothing ; Object $4F
 
 
@@ -62,7 +63,7 @@ OBJ_PARAPIRANHA		= $4D
 	.word ObjNorm_DryCheep ; Object $4B
 	.word ObjNorm_PiranhaGrower ; Object $4C
 	.word ObjNorm_ParaPiranha ; Object $4D
-	.word ObjNorm_DoNothing ; Object $4E
+	.word ObjNorm_GoldCheep ; Object $4E
 	.word ObjNorm_DoNothing ; Object $4F
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
@@ -85,7 +86,7 @@ OBJ_PARAPIRANHA		= $4D
 	.word Player_GetHurt ; Object $4B
 	.word Player_GetHurt ; Object $4C
 	.word Player_GetHurt ; Object $4D
-	.word ObjHit_DoNothing ; Object $4E
+	.word Player_GetHurt ; Object $4E
 	.word ObjHit_DoNothing ; Object $4F
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
@@ -108,7 +109,7 @@ OBJ_PARAPIRANHA		= $4D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4B
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4C
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4D
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4E
+	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $4E
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4F
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
@@ -131,7 +132,7 @@ OBJ_PARAPIRANHA		= $4D
 	.byte OPTS_SETPT5 | $0A ; Object $4B
 	.byte OPTS_SETPT5 | $0B ; Object $4C
 	.byte OPTS_SETPT6 | $4F ; Object $4D
-	.byte OPTS_NOCHANGE ; Object $4E
+	.byte OPTS_SETPT6 | $4F ; Object $4E
 	.byte OPTS_NOCHANGE ; Object $4F
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
@@ -229,6 +230,8 @@ ObjP4D:
 	.byte $E5, $E5
 
 ObjP4E:
+	.byte $E7, $E9, $E7, $EF
+
 ObjP4F:
 
 ObjInit_Goomba:
@@ -3610,3 +3613,51 @@ ParaPiranhaw_AnimateWings3:
 	LDX <CurrentObjectIndexZ
 
 	RTS		
+
+ObjInit_GoldCheep:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+
+	LDA #$01
+	STA Objects_Property, X
+
+	LDA #$10
+	STA Patrol_ResetTimer, X
+
+	LDA #$04
+	STA Patrol_YVelocityChange, X
+
+	LDA #$18
+	STA Patrol_YAccelLimit, X
+
+	RTS
+
+ObjNorm_GoldCheep:
+	LDA <Player_HaltGameZ
+	BEQ GoldCheepNorm
+	JMP GoldCheep_Draw
+
+GoldCheepNorm:
+	LDA #$F8
+	STA <Objects_XVelZ, X
+
+	JSR Object_DeleteOffScreen
+
+	JSR PatrolUpDown
+	JSR Object_ApplyXVel
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	INC SwimCheep_CurrentFrame,X	 ; Var5++
+
+	; Toggle frame 0/1
+	LDA SwimCheep_CurrentFrame,X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame,X
+
+GoldCheep_Draw:
+	JMP Object_Draw	

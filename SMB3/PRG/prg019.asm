@@ -1,3 +1,7 @@
+OBJ_8WAYBULLETBILLS 	= $B4	
+OBJ_GREENCHEEPBEGIN		= $B5	
+OBJ_GOLDENCHEEPSWARM	= $B6
+
 
 ; This spawns new objects as the screen scrolls, and also
 ; incidentally handles spawning the "bounced block" effect object
@@ -276,57 +280,16 @@ PRG005_B956:
 	; of the level.  Sprites do not appear below the line.  Only really
 	; looks right when there's no vertical scrolling.
 ObjAutoScroller_Init:
-	LDA Level_Objects+1,Y	; Get object row
-	CMP #$60	 	
-	BNE PRG005_B964	 	; If object is NOT on row $60, jump to PRG005_B964
-
-	LDA #UPDATERASTER_WATERLINE
-	STA Update_Request	 ; Update_Request = UPDATERASTER_WATERLINE
-
-	RTS		 ; Return
-
-PRG005_B964:
-	PHA		 ; Save object row 
-
-	; Clear auto scroll variables
-	LDY #$14	 ; Y = $14
-	LDA #$00	 ; A = 0
-PRG005_B969:
-	DEY		 ; Y--
-	BNE PRG005_B969	 ; While Y <> 0, loop!
-
-	PLA		 ; Restore object row
-
-	PHA		 ; Save object row
-
-	AND #$0f	 ; Cap 0 - 15
-	TAY		 ; -> 'Y'
-
-	PLA		 ; Restore object row
-
+	LDA Level_Objects+1,Y
+	AND #$E0
 	LSR A
 	LSR A
 	LSR A
-	LSR A		 ; Divide by 16
+	LSR A
+	LSR A
 
 	STA Level_AScrlSelect
-	CMP #$03	 
-	BGE PRG005_B98E	 ; If Level_AScrlSelect >= 3 (Likely but not necessarily one of the Airships), jump to PRG005_B98E
-
-	CMP #$01	 
-	BNE PRG005_B988	 ; If Level_AScrlSelect <> 1 (World 3 Airship), jump to PRG005_B988
-
-	TYA
-	ORA #$10
-	TAY		 ; New base for Y index at $10
-
-PRG005_B988:
-	LDA AScroll_HorizontalInitMove,Y
-	STA Level_AScrlVar	 ; -> Level_AScrlVar
-
-PRG005_B98E:
-	STY Level_AScrlLimitSel	 ; Y -> Level_AScrlLimitSel
-
+	
 	LDA <Vert_Scroll
 	STA Level_AScrlPosV	 ; Level_AScrlPosV = Vert_Scroll
 
@@ -425,10 +388,10 @@ LevelEvent_Do:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!! 
 
 	.word LevelEvent_DoNothing	; 0 - Do nothing (not used!)
-	.word LevelEvent_8WayBulletBills	; 1 - Cheep Cheep attack
-	.word LevelEvent_ProduceMines	; 2 - Spike Cheeps float by
+	.word LevelEvent_8WayBulletBills	; $B4
+	.word LevelEvent_ProduceMines	; $B5
+	.word LevelEvent_SpawnGoldCheeps	; $B6
 	.word LevelEvent_GenerateCheepCheeps	; 
-	.word LevelEvent_Earthquake	; 4 - Green and red parabeetles flyby!
 	.word LevelEvent_BooWaves	; 5 - Floating clouds in background float by
 	.word LevelEvent_WoodPlatforms	; 6 - Random wooden platforms 
 	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
@@ -837,6 +800,7 @@ LevelEvent_ProduceMines:
 	LDA <Player_HaltGameZ
 	BNE PRG005_BDB0
 	INC LevelEvent_Cnt	 ; LevelEvent_Cnt++
+
 	LDA LevelEvent_Cnt
 	CMP #$60
 	BNE PRG005_BDB0
@@ -851,6 +815,7 @@ LevelEvent_ProduceMines1:
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BNE LevelEvent_ProduceMines2
+
 	LDA Objects_ID,X
 	CMP #OBJ_FLOATMINE
 	BNE LevelEvent_ProduceMines2
@@ -894,70 +859,41 @@ LevelEvent_ProduceMines2:
 PRG005_BDB0:
 	RTS		 ; Return
 
-EarthquakeEventTimers: .byte $80, $A0, $C0, $FF
-DebrisOffset: .byte $F8, $F0, $E8, $E0, $08, $10, $18, $20
-DebrisColors: .byte SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL1
-
-LevelEvent_Earthquake:
-	LDA LevelEvent_Cnt
-	BEQ LevelEvent_Earthquake0
-	DEC LevelEvent_Cnt
-	BNE LevelEvent_Earthquake0_1
-	LDA #$20
-	STA Level_Vibration
-
-LevelEvent_Earthquake0_1:
+LevelEvent_SpawnGoldCheeps:
+	STA Debug_Snap
+	LDA Level_EventTimer
+	BEQ Generate_GoldCheep
+	
+	DEC Level_EventTimer
 	RTS
 
-LevelEvent_Earthquake0:
-	LDA Level_Vibration
-	BNE LevelEvent_Earthquake0_1
-	JSR Level_SpawnObj
+Generate_GoldCheep:	
+	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
-	LDA #$0A
-	STA PatTable_BankSel+4
-	; Set Ice Block to state Kicked
-	LDA #OBJ_BRICK
+	; Set Spike Cheep's object ID
+	LDA #OBJ_GOLDCHEEPCHEEP
 	STA Objects_ID,X
+	
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
 
-	LDA #$01
-	STA Objects_Frame, X
+	LDA <Player_YZ
+	SUB #$18
+	STA <Objects_YZ, X
 
-	LDA RandomN + 3
-	AND #$03
-	TAY
-	LDA DebrisColors, Y
-	STA Objects_SpriteAttributes, X
-
-	; Set Frame = 2
-	LDA #$01
-	STA Objects_Frame,X
-
-	; Set expiration timer
-	LDA #$ff
-	STA Objects_Timer3,X
-
-	LDA RandomN + 2
-	AND #$07
-	TAY
-	LDA <Player_X
-	ADD DebrisOffset, Y
-	STA <Objects_XZ, X
-	LDA <Player_XHi
-	STA <Objects_XHiZ, X
-
-	LDA <Vert_Scroll
-	SUB #$40
-	STA <Objects_YZ,X 
-	LDA #$00
+	LDA <Player_YHiZ
 	SBC #$00
 	STA <Objects_YHiZ, X
-	LDA RandomN + 1
-	AND #$03
-	TAY
-	LDA EarthquakeEventTimers, Y
-	STA LevelEvent_Cnt
+	
+	LDA <Horz_Scroll
+	STA <Objects_XZ, X
 
+	LDA <Horz_Scroll_Hi
+	ADD #$01
+	STA <Objects_XHiZ, X
+
+	LDA #$FF
+	STA Level_EventTimer
 	RTS		 ; Return
 
 

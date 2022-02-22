@@ -239,38 +239,38 @@
     {
       "Renamed": false,
       "IndexedColors": [
-        15,
-        15,
-        33,
         2,
         15,
-        15,
+        48,
         40,
-        8,
+        2,
         15,
+        55,
+        23,
+        2,
         15,
-        43,
-        11,
-        15,
+        58,
+        26,
+        2,
         15,
         48,
         0,
-        15,
+        2,
         15,
         54,
         6,
-        15,
+        2,
         15,
         48,
         22,
-        15,
+        2,
         15,
         48,
         26,
-        15,
+        2,
         15,
         48,
-        39
+        40
       ],
       "Name": "Deep Sea Treasure 2",
       "Id": "f29e848d-6a32-4400-9416-55397fdc1150"
@@ -4876,6 +4876,45 @@
       ],
       "Name": "Bobomb Blaster-Boss",
       "Id": "79c70e8c-9566-424f-a5e6-da2803380954"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        15,
+        33,
+        2,
+        15,
+        15,
+        40,
+        8,
+        15,
+        15,
+        43,
+        11,
+        15,
+        15,
+        48,
+        0,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        15,
+        48,
+        26,
+        15,
+        15,
+        48,
+        39
+      ],
+      "Name": "Treasure Trespass",
+      "Id": "3796ba90-5c87-4292-813d-40d25269d9f6"
     }
   ],
   "WorldInfo": [
@@ -4933,12 +4972,12 @@
           "SublevelsInfo": [
             {
               "Size": 443,
-              "Name": "Waterway Wash-2",
+              "Name": "Waterway Wash-Bonus",
               "Id": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
               "LastModified": "2019-05-24T20:25:56.6878235-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Waterway Wash-2"
+              "DisplayName": "(Level) Waterway Wash-Bonus"
             }
           ],
           "InfoType": 1,
@@ -5691,6 +5730,15 @@
           "SublevelsInfo": null,
           "InfoType": 1,
           "DisplayName": "(Level) Flying Fish Frenzy"
+        },
+        {
+          "Size": 395,
+          "Name": "Treasure Trespass",
+          "Id": "331f1a98-6948-4169-a84b-c2dceeac3a51",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [],
+          "InfoType": 1,
+          "DisplayName": "(Level) Treasure Trespass"
         }
       ],
       "InfoType": 0,
@@ -6216,7 +6264,7 @@
         "DisplayName": "(Level) Tile Test"
       },
       {
-        "Size": 571,
+        "Size": 557,
         "Name": "Enemy Test",
         "Id": "14ae8688-9855-43a5-abe6-63859296c269",
         "LastModified": "2019-05-15T21:46:36.0536536-04:00",
@@ -19072,11 +19120,11 @@
           "LowerRight": 19
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 170,
+          "UpperRight": 171,
+          "LowerLeft": 186,
+          "LowerRight": 187
         },
         {
           "Property": 0,
@@ -19184,11 +19232,11 @@
           "LowerRight": 19
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 184,
+          "UpperRight": 185,
+          "LowerLeft": 184,
+          "LowerRight": 185
         },
         {
           "Property": 0,
@@ -20388,11 +20436,11 @@
           "LowerRight": 85
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 205,
+          "UpperLeft": 68,
+          "UpperRight": 69,
+          "LowerLeft": 84,
+          "LowerRight": 85
         },
         {
           "Property": 0,
@@ -20605,11 +20653,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 4,
+          "UpperRight": 5,
+          "LowerLeft": 4,
+          "LowerRight": 5
         },
         {
           "Property": 32,
@@ -54877,7 +54925,7 @@
     },
     {
       "GameId": 180,
-      "GameObjectType": 3,
+      "GameObjectType": 1,
       "Name": "8 Way Bullet Bill Generators",
       "Sprites": [
         {
@@ -55074,7 +55122,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Misc"
+      "Group": "Scripting"
     },
     {
       "GameId": 181,
@@ -55184,35 +55232,35 @@
     {
       "GameId": 182,
       "GameObjectType": 1,
-      "Name": "Unused xB6",
+      "Name": "Generate Golden Cheeps",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x13C00",
+          "TileValue": "0x26",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x13C00",
+          "TileValue": "0x28",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Scripting"
     },
     {
       "GameId": 183,
@@ -57854,7 +57902,10 @@
           "CustomPalette": null
         }
       ],
-      "Properties": [],
+      "Properties": [
+        "Horizontal Slow",
+        "Horizontal Fast"
+      ],
       "Group": "Scripting"
     },
     {
@@ -59600,6 +59651,10 @@
       {
         "Key": "80",
         "Value": "Enabled Mushroom Blocks"
+      },
+      {
+        "Key": "08",
+        "Value": "Submarin Mode"
       }
     ]
   },

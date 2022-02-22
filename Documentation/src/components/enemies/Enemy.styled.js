@@ -4,6 +4,7 @@ const EnemyStyles = styled.div`
     border: 5px solid #d82800;
     border-radius: 5px;
     border-top: 0;
+    break-inside: avoid;
     display: inline-block;
     margin: 20px;
     position: relative;
