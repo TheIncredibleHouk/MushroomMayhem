@@ -584,7 +584,7 @@ SetSplash:
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X 
 	
-	LDA #$0B
+	LDA #$0F
 	STA Objects_Timer, X
 
 	LDA Splash_IsOil
@@ -5914,7 +5914,6 @@ Object_PrepProjectile1:
 	STA SpecialObj_Timer, Y
 
 	LDA <Objects_XZ, X
-	SUB #$04
 	ADD <Proj_XOff
 	STA SpecialObj_X, Y
 
@@ -5923,7 +5922,6 @@ Object_PrepProjectile1:
 	STA SpecialObj_XHi, Y
 
 	LDA <Objects_YZ, X
-	SUB #$08
 	ADD <Proj_YOff
 	STA SpecialObj_Y, Y
 

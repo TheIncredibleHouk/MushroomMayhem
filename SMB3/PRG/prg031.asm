@@ -1612,6 +1612,7 @@ PRG031_F51D:
 	STA PPU_CTL1	; Set above settings
 	LDA PPU_STAT	; read PPU status to reset the high/low latch
 
+
 	LDA <Horz_Scroll
 	STA PPU_SCROLL	; Horizontal Scroll set
 	LDA <Vert_Scroll
@@ -2128,28 +2129,38 @@ PRG031_F871:
 	; Load two parts of Status Bar
 	LDA #MMC3_2K_TO_PPU_0000
 	STA MMC3_COMMAND
+
 	LDA StatusBarMTCHR_0000
 	STA MMC3_PAGE
+
 	LDA #MMC3_2K_TO_PPU_0800
 	STA MMC3_COMMAND
+
 	LDA StatusBarMTCHR_0800
 
 	; Load sprite graphics appropriate for World Map / Toad House / N-Spade
 	STA MMC3_PAGE
 	LDA #MMC3_1K_TO_PPU_1000
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1000
 	STA MMC3_PAGE
+
 	LDA #MMC3_1K_TO_PPU_1400
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1400
 	STA MMC3_PAGE
+
 	LDA #MMC3_1K_TO_PPU_1800
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1800
 	STA MMC3_PAGE
+
 	LDA #MMC3_1K_TO_PPU_1C00
 	STA MMC3_COMMAND
+
 	LDA SpriteMTCHR_1C00
 	STA MMC3_PAGE
 
@@ -2667,20 +2678,9 @@ PRG031_FB80:
 	LDA #27	 
 	STA MMC3_IRQCNT	 ; Next IRQ in 27 lines
 
-	; Some kind of delay loop?
-	LDX #$02	 ; X = $14
-PRG031_FBD3:
-	NOP		 ; ?
-	DEX		 ; X--
-	BPL PRG031_FBD3 ; While X >= 0, loop
 
 	LDA #$18	 ; 
 	STA PPU_CTL2	 ; Sprites + BG now visible
-
-	; Dead code?  Or timing/cycle filler
-	NOP
-	NOP
-	NOP
 
 	; The following JSR does a delay then updates the IRQ
 	; counter latch and Resets it

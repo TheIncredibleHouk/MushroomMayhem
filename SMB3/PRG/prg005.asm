@@ -15,6 +15,7 @@ OBJ_BOBOMB          = $5A
 OBJ_FLOATMINE       = $5B
 OBJ_PANSER			= $5C
 OBJ_SMASH			= $5D
+OBJ_BLOOPER			= $5E
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51
@@ -30,7 +31,7 @@ OBJ_SMASH			= $5D
     .word ObjInit_FloatMine ; Object $5B
     .word ObjInit_Panser ; Object $5C
     .word ObjInit_Smash ; Object $5D
-    .word ObjInit_DoNothing ; Object $5E
+    .word ObjInit_Blooper ; Object $5E
     .word ObjInit_DoNothing ; Object $5F
     .word ObjInit_DoNothing ; Object $60
     .word ObjInit_DoNothing ; Object $61
@@ -54,7 +55,7 @@ OBJ_SMASH			= $5D
 	.word ObjNorm_FloatMine ; Object $5B
 	.word ObjNorm_Panser ; Object $5C
 	.word ObjNorm_Smash ; Object $5D
-	.word ObjNorm_DoNothing ; Object $5E
+	.word ObjNorm_Blooper ; Object $5E
 	.word ObjNorm_DoNothing ; Object $5F
 	.word ObjNorm_DoNothing ; Object $60
 	.word ObjNorm_DoNothing ; Object $61
@@ -77,7 +78,7 @@ OBJ_SMASH			= $5D
 	.word FloatMine_Expload ; Object $5B
 	.word Player_GetHurt ; Object $5C
 	.word ObjHit_DoNothing ; Object $5D
-	.word ObjHit_DoNothing ; Object $5E
+	.word Player_GetHurt ; Object $5E
 	.word ObjHit_DoNothing ; Object $5F
 	.word ObjHit_DoNothing ; Object $60
 	.word ObjHit_DoNothing ; Object $61
@@ -123,7 +124,7 @@ OBJ_SMASH			= $5D
 	.byte OPTS_SETPT5 | $1A ; Object $5B
 	.byte OPTS_SETPT5 | $7E; Object $5C
 	.byte OPTS_SETPT5 | $12 ; Object $5D
-	.byte OPTS_NOCHANGE ; Object $5E
+	.byte OPTS_SETPT5 | $1A ; Object $5E
 	.byte OPTS_NOCHANGE ; Object $5F
 	.byte OPTS_NOCHANGE ; Object $60
 	.byte OPTS_NOCHANGE ; Object $61
@@ -233,6 +234,9 @@ ObjP5D:
 	.byte $89, $8B
 
 ObjP5E:
+	.byte $B1, $B1
+	.byte $B3, $B3
+
 ObjP5F:
 ObjP60:
 ObjP61:
@@ -3536,3 +3540,121 @@ Smash_Draw2:
 
 Smash_DrawRTS:
 	RTS		 ; Return 
+
+Blooper_Dampener = Objects_Data1
+Blooper_CoolDown = Objects_Data2
+
+Blooper_XVel:
+	.byte $EC, $14
+
+ObjInit_Blooper:
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	RTS	
+
+ObjNorm_Blooper:
+	LDA Player_HaltGameZ
+	BEQ Blooper_Norm
+
+	JMP Blooper_Draw
+
+Blooper_Norm:
+	LDA Objects_Timer, X
+	BEQ Blooper_Check
+	
+	CMP #$01
+	BNE Blooper_Move
+
+	LDA #$D8
+	STA <Objects_YVelZ, X
+
+	JSR Object_XDistanceFromPlayer
+	LDA Blooper_XVel, Y
+	STA <Objects_XVelZ, X
+	
+	LDA <Objects_XVelZ, X
+	JSR Double_Value
+	STA <Objects_XVelZ, X
+
+	BNE Blooper_Move
+
+Blooper_Check:
+	LDA <Objects_XVelZ, X
+	BEQ Blooper_SeePlayer
+	BMI Blooper_SlowDown
+
+	DEC Blooper_Dampener, X
+	BNE Blooper_SeePlayer
+
+	LDA #$03
+	STA Blooper_Dampener, X
+	
+	DEC <Objects_XVelZ, X
+	JMP Blooper_SeePlayer
+
+Blooper_SlowDown:
+	DEC Blooper_Dampener, X
+	BNE Blooper_SeePlayer
+
+	LDA #$02
+	STA Blooper_Dampener, X
+
+	INC <Objects_XVelZ, X
+	JMP Blooper_SeePlayer
+
+Blooper_SeePlayer:
+	LDA Blooper_CoolDown, X
+	BEQ Blooper_FindPlayer
+
+	DEC Blooper_CoolDown, X
+	BNE Blooper_Move
+
+Blooper_FindPlayer:	
+	JSR Object_YDistanceFromPlayer
+	CPY #$01
+	BEQ Blooper_Move
+
+	LDA #$10
+	STA Objects_Timer, X
+
+	LDA #$04
+	STA Blooper_Dampener, X
+
+	LDA #$20
+	STA Blooper_CoolDown, X
+
+Blooper_Move:
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTilesWallStops
+
+	STA Debug_Snap
+	LDA Objects_InWater, X
+	BNE Blooper_Attack
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Blooper_Attack
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+Blooper_Attack:
+	JSR Object_AttackOrDefeat
+
+Blooper_Animate:
+	LDY #$00
+
+	LDA Objects_Timer, X
+	BEQ Blooper_Frame
+
+	INY
+
+Blooper_Frame:
+	TYA
+	STA Objects_Frame, X
+
+Blooper_Draw:
+	JMP Object_DrawMirrored

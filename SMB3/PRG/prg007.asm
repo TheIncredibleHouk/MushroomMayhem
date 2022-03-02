@@ -700,7 +700,7 @@ Player_HammerTilesInteraction1:
 Player_HammerTilesInteraction2:
 	JSR Object_DirectBumpBlocks
 
-	JMP SpecialObj_ToPoofNoSound
+	JMP SpecialObj_Delete
 
 Player_NinjaStar:
 	LDA <Player_HaltGameZ
@@ -761,6 +761,10 @@ Player_Bullet:
 
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds8x16
+
+	LDA #$01
+	STA Proj_Attack
+
 	JSR PlayerProj_HitEnemies
 	BCC Player_BulletNoKill
 
@@ -789,6 +793,13 @@ Player_BulletNoKill:
 	JSR SpecialObj_DetectWorld8x8
 	JSR Player_HammerTilesInteraction
 
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Bull_NoSolid
+
+	JMP SpecialObj_Delete
+
+Bull_NoSolid:	
 	LDA #$15
 	STA <SpecialObj_Tile
 
@@ -1796,15 +1807,6 @@ PRG007_AE4A:
 	RTS		 ; Return
 
 
-	; Sets carry if solid was hit
-SObj_CheckHitSolid:
-
-	; Flag Blooper Kid as out of water until determined otherwise
-
-	; Temp_Var6 = special object Y + 12
-	JSR SpecialObj_DetectWorld8x8
-	RTS
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SpecialObjs_UpdateAndDraw
 ;
@@ -2436,52 +2438,6 @@ Enemy_LightningBoltDraw:
 SObj_OffsetYForRaster:
 	
 	RTS		 ; Return
-
-Wrench_Patterns:	.byte $A1, $95, $9F, $95
-Wrench_Attributes:	.byte SPR_PAL2, SPR_PAL2 | SPR_VFLIP, SPR_PAL2, SPR_PAL2
-	
-SObj_Wrench:
-	LDA <Player_HaltGameZ		 
-	BNE PRG007_B4AF	 ; If gameplay halted, jump to PRG007_B4AF
-
-	JSR SObj_OffsetYForRaster	; Offset Y with raster effects (if any)
-	JSR SObj_AddXVelFrac	 	; Apply X velocity
-
-	LDA SpecialObj_YVel,X
-	BEQ PRG007_B4AC	 ; If wrench Y velocity = 0, jump to PRG007_B4AC
-
-	INC SpecialObj_YVel,X	 ; Otherwise, Y Vel++ (fall?)
-
-PRG007_B4AC:
-	JSR SObj_AddYVelFrac	 ; Apply Y velocity
-
-PRG007_B4AF:
-	JSR SObj_PlayerCollide	 ; Do Player-to-wrench collision
-
-	JSR SObj_GetSprRAMOffChkVScreen
-	BNE PRG007_B4EB	 ; If wrench is not vertically on-screen, jump to PRG007_B4EB (RTS)
-
-	; Set Temp_Var1 = $00 or $80, depending on sign bit of X velocity
-	LDA SpecialObj_XVel,X
-	AND #$80
-	STA <Temp_Var1
-
-	LDA Game_Counter
-	LSR A
-	ADD <CurrentObjectIndexZ
-	AND #$03
-	TAX		 ; X = 0 to 3
-
-	; Set wrench pattern
-	LDA Wrench_Patterns,X
-	STA Sprite_RAM+$01,Y
-
-	; Set wrench attributes
-	LDA Wrench_Attributes,X
-	EOR <Temp_Var1	
-	STA Sprite_RAM+$02,Y
-
-	LDX <CurrentObjectIndexZ	; X = special object slot index
 
 SObj_SetSpriteXYRelative:
 	LDA SpecialObj_Y,X

@@ -3029,6 +3029,7 @@ PLAYER_BULLET		= 06
 	LastHorzScrollHi:	.ds 1
 	ExtraData:			.ds 5
 	Ignore_VBlank:		.ds 1
+	Scroll_Lock:			.ds 1
 
 	; Tile map property flags
 MAP_PROP_BOUNDARY		= $00

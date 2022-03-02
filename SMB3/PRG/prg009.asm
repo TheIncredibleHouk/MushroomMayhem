@@ -684,9 +684,6 @@ PRG009_BDC1:
 
 PRG009_BDC9:
 
-	; Set Player_PartDetEn (detect bottom 2 rows of tiles when Player Y >= 160)
-	LDA #$01
-	STA Player_PartDetEn
 
 	; Enable display of 32 pixel partition and show sprites beneath the partition
 	LDA #(UPDATERASTER_32PIXPART | UPDATERASTER_32PIXSHOWSPR)

@@ -271,7 +271,7 @@
     16,
     148,
     148,
-    148,
+    16,
     148,
     148,
     148,
@@ -651,7 +651,7 @@
   ],
   "Pointers": [
     {
-      "LevelId": "722b743a-8d6d-400a-b1ae-067b8c99dd36",
+      "LevelId": "14ae8688-9855-43a5-abe6-63859296c269",
       "X": 7,
       "Y": 4,
       "BoundRectangle": "112,64,16,16"
@@ -669,7 +669,7 @@
       "BoundRectangle": "112,96,16,16"
     },
     {
-      "LevelId": "331f1a98-6948-4169-a84b-c2dceeac3a51",
+      "LevelId": "af0a10f2-7070-445f-9e44-54b72fe77e2f",
       "X": 5,
       "Y": 6,
       "BoundRectangle": "80,96,16,16"
@@ -706,5 +706,5 @@
     }
   ],
   "ObjectData": [],
-  "CompressedData": "4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJQQlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJQQlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlBCUlJSUlJSUlJSU4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlBCUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSU"
+  "CompressedData": "4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJQQlJQQlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJQQlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlBCUlJSUlJSUlJSU4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlBCUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSU"
 }

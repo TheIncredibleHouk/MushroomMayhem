@@ -2726,6 +2726,7 @@ Player_DrawSubmarine:
 	STA <Temp_Var2
 
 	LDA Player_Behind
+	ORA Level_PipeMove
 	BEQ Player_SubOverBg
 
 	LDA #SPR_BEHINDBG

@@ -184,6 +184,7 @@ ObjP1F:
 ObjP20:
 
 ObjP14:
+	.byte $47, $47
     .byte $15, $15
 	.byte $13, $13
 	.byte $11, $11

@@ -242,7 +242,7 @@
         2,
         15,
         48,
-        40,
+        17,
         2,
         15,
         55,
@@ -4880,21 +4880,99 @@
     {
       "Renamed": false,
       "IndexedColors": [
-        15,
-        15,
-        33,
         2,
         15,
+        48,
+        17,
+        2,
         15,
-        40,
-        8,
+        55,
+        23,
+        2,
+        15,
+        58,
+        26,
+        2,
+        15,
+        48,
+        0,
+        2,
+        15,
+        54,
+        6,
+        2,
+        15,
+        48,
+        22,
+        2,
+        15,
+        48,
+        26,
+        2,
+        15,
+        48,
+        40
+      ],
+      "Name": "Treasure Trespass",
+      "Id": "c2f993df-cd9b-4a51-8d36-a03458358933"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        2,
+        15,
+        48,
+        17,
+        2,
+        15,
+        39,
+        7,
+        2,
+        15,
+        58,
+        11,
+        2,
+        15,
+        48,
+        0,
+        2,
+        15,
+        54,
+        6,
+        2,
+        15,
+        48,
+        22,
+        2,
+        15,
+        48,
+        26,
+        2,
+        15,
+        48,
+        40
+      ],
+      "Name": "Treasure Trespass-2",
+      "Id": "fb65f94f-bb38-4e5b-8773-222349799155"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
         15,
         15,
-        43,
+        49,
+        1,
+        15,
+        15,
+        23,
+        7,
+        15,
+        15,
+        42,
         11,
         15,
         15,
-        48,
+        61,
         0,
         15,
         15,
@@ -4911,10 +4989,10 @@
         15,
         15,
         48,
-        39
+        40
       ],
-      "Name": "Treasure Trespass",
-      "Id": "3796ba90-5c87-4292-813d-40d25269d9f6"
+      "Name": "Treasure Trespass-3",
+      "Id": "ba387427-8e80-4a8d-bc7c-2c3acdca0350"
     }
   ],
   "WorldInfo": [
@@ -4965,7 +5043,7 @@
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
-          "Size": 1538,
+          "Size": 1542,
           "Name": "Waterway Wash",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
@@ -5732,11 +5810,31 @@
           "DisplayName": "(Level) Flying Fish Frenzy"
         },
         {
-          "Size": 395,
+          "Size": 1344,
           "Name": "Treasure Trespass",
           "Id": "331f1a98-6948-4169-a84b-c2dceeac3a51",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Size": 1433,
+              "Name": "Treasure Tresspass-2",
+              "Id": "af0a10f2-7070-445f-9e44-54b72fe77e2f",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [
+                {
+                  "Size": 1311,
+                  "Name": "Treasure Trespass-3",
+                  "Id": "85eb459c-5a34-4691-82f3-dce2cbef39a0",
+                  "LastModified": "0001-01-01T00:00:00",
+                  "SublevelsInfo": [],
+                  "InfoType": 1,
+                  "DisplayName": "(Level) Treasure Trespass-3"
+                }
+              ],
+              "InfoType": 1,
+              "DisplayName": "(Level) Treasure Tresspass-2"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) Treasure Trespass"
         }
@@ -6264,7 +6362,7 @@
         "DisplayName": "(Level) Tile Test"
       },
       {
-        "Size": 557,
+        "Size": 578,
         "Name": "Enemy Test",
         "Id": "14ae8688-9855-43a5-abe6-63859296c269",
         "LastModified": "2019-05-15T21:46:36.0536536-04:00",
@@ -19239,25 +19337,25 @@
           "LowerRight": 185
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 176,
+          "UpperRight": 177,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 108,
+          "UpperRight": 109,
+          "LowerLeft": 124,
+          "LowerRight": 125
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 110,
+          "UpperRight": 111,
+          "LowerLeft": 126,
+          "LowerRight": 127
         },
         {
           "Property": 0,
@@ -19351,25 +19449,25 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 208,
+          "UpperRight": 209,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 102,
+          "UpperRight": 103,
+          "LowerLeft": 118,
+          "LowerRight": 119
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 104,
+          "UpperRight": 105,
+          "LowerLeft": 120,
+          "LowerRight": 121
         },
         {
           "Property": 0,
@@ -19687,11 +19785,11 @@
           "LowerRight": 191
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 174,
+          "UpperRight": 175,
+          "LowerLeft": 190,
+          "LowerRight": 191
         },
         {
           "Property": 0,
@@ -20107,11 +20205,11 @@
           "LowerRight": 193
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 176,
+          "UpperRight": 177,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
           "Property": 0,
@@ -20219,11 +20317,11 @@
           "LowerRight": 193
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 208,
+          "UpperRight": 209,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
           "Property": 0,
@@ -20450,11 +20548,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 176,
+          "UpperRight": 177,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
           "Property": 0,
@@ -20562,11 +20660,11 @@
           "LowerRight": 193
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 208,
+          "UpperRight": 209,
+          "LowerLeft": 192,
+          "LowerRight": 193
         },
         {
           "Property": 0,
@@ -47975,36 +48073,254 @@
     },
     {
       "GameId": 79,
-      "GameObjectType": 1,
-      "Name": "Unused x4F",
+      "GameObjectType": 2,
+      "Name": "Yurarin",
       "Sprites": [
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
           "TileValue": "0x08",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x28",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x08",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x28",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
           "Overlay": true,
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 32,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": -1,
           "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 48,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 64,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
+          "Y": 80,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": -1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x08",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x28",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "Stationary",
+        "Vertical Path",
+        "Charging"
+      ],
+      "Group": "Sea Enemies"
     },
     {
       "GameId": 80,
@@ -48991,36 +49307,36 @@
     },
     {
       "GameId": 94,
-      "GameObjectType": 1,
-      "Name": "Unused x5E",
+      "GameObjectType": 2,
+      "Name": "Blooper",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x30",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
-          "HorizontalFlip": false,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x30",
+          "HorizontalFlip": true,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Sea Enemies"
     },
     {
       "GameId": 95,
@@ -53131,8 +53447,8 @@
     },
     {
       "GameId": 137,
-      "GameObjectType": 2,
-      "Name": "Boo Wave",
+      "GameObjectType": 1,
+      "Name": "Blooper Generator",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
@@ -53160,7 +53476,7 @@
         }
       ],
       "Properties": [],
-      "Group": "Ghosts"
+      "Group": "Sea Enemies"
     },
     {
       "GameId": 138,
@@ -55231,8 +55547,8 @@
     },
     {
       "GameId": 182,
-      "GameObjectType": 1,
-      "Name": "Generate Golden Cheeps",
+      "GameObjectType": 2,
+      "Name": "Generate Gold Cheeps",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
@@ -55257,55 +55573,127 @@
           "PaletteIndex": 3,
           "Overlay": false,
           "CustomPalette": null
-        }
-      ],
-      "Properties": [],
-      "Group": "Scripting"
-    },
-    {
-      "GameId": 183,
-      "GameObjectType": 1,
-      "Name": "Unused xB7",
-      "Sprites": [
+        },
         {
           "PropertiesAppliedTo": null,
           "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "Y": 18,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 1,
           "Overlay": true,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "X": 8,
+          "Y": 18,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
           "Overlay": true,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Sea Enemies"
     },
     {
-      "GameId": 184,
+      "GameId": 183,
       "GameObjectType": 2,
-      "Name": "Boo Wave Generator",
+      "Name": "Generate Yurarin",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0xDC00",
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x08",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x28",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 0,
+          "Y": 28,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 28,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": true,
+          "CustomPalette": null
+        }
+      ],
+      "Properties": [],
+      "Group": "Sea Enemies"
+    },
+    {
+      "GameId": 184,
+      "GameObjectType": 2,
+      "Name": "Blooper Generator",
+      "Sprites": [
+        {
+          "PropertiesAppliedTo": null,
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x30",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -55316,17 +55704,41 @@
           "PropertiesAppliedTo": null,
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0xDC00",
-          "TileValue": "0x0C",
-          "HorizontalFlip": false,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x30",
+          "HorizontalFlip": true,
           "VerticalFlip": false,
           "PaletteIndex": 1,
           "Overlay": false,
           "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 0,
+          "Y": 18,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 18,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": true,
+          "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Ghosts"
+      "Group": "Sea Enemies"
     },
     {
       "GameId": 185,

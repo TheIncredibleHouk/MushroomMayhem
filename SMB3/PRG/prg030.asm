@@ -2500,6 +2500,8 @@ LevelLoad:
 
 	LDA #$00
 	STA <Vert_Scroll
+	STA Level_AScrlPosH
+	STA Level_AScrlPosHHi
 
 LevelLoadQuick:
 	
@@ -2845,6 +2847,7 @@ HorzNotLocked:
 	LSR A
 	STA <Temp_Var6	; temporarily store pointer count
 
+	LDY #$09
 	LDA [Temp_Var14],Y
 	AND #$80
 	STA MushroomBlocks_Enabled
@@ -2856,7 +2859,6 @@ HorzNotLocked:
 	LDA [Temp_Var14],Y
 	AND #$10
 	STA TreasureBox_Disabled
-
 
 	LDA [Temp_Var14],Y
 	AND #$20
@@ -2874,7 +2876,6 @@ HorzNotLocked:
 SetDNActive:
 	STX DayNightActive
 	
-	LDY #$09
 	LDA [Temp_Var14],Y
 	AND #$08
 	STA Player_Vehicle

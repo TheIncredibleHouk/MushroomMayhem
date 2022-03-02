@@ -391,8 +391,8 @@ LevelEvent_Do:
 	.word LevelEvent_8WayBulletBills	; $B4
 	.word LevelEvent_ProduceMines	; $B5
 	.word LevelEvent_SpawnGoldCheeps	; $B6
-	.word LevelEvent_GenerateCheepCheeps	; 
-	.word LevelEvent_BooWaves	; 5 - Floating clouds in background float by
+	.word LevelEvent_SpawnGoldYurarin	; $B7
+	.word LevelEvent_SpawnBlooper	; $B8
 	.word LevelEvent_WoodPlatforms	; 6 - Random wooden platforms 
 	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
 	.word LevelEvent_Cancel		; 8 - Does nothing but clear Level_Event
@@ -860,12 +860,24 @@ PRG005_BDB0:
 	RTS		 ; Return
 
 LevelEvent_SpawnGoldCheeps:
-	STA Debug_Snap
+	LDA <Horz_Scroll_Hi
+	CMP #$0E
+	BEQ LevelEvent_SpawnGoldCheepsRTS
+
 	LDA Level_EventTimer
 	BEQ Generate_GoldCheep
 	
 	DEC Level_EventTimer
+
+LevelEvent_SpawnGoldCheepsRTS:	
 	RTS
+
+GoldCheep_YVel:
+	.byte $00, $E8
+
+GoldCheep_Timer:
+	.byte $FF, $EF, $DF, $CF, $AF, $9F, $8F, $80
+	.byte $80, $80, $80, $80, $80, $80, $80, $80
 
 Generate_GoldCheep:	
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
@@ -876,6 +888,13 @@ Generate_GoldCheep:
 	
 	LDA #OBJSTATE_INIT
 	STA Objects_State, X
+
+	LDA RandomN
+	AND #$01
+	TAY
+	
+	LDA GoldCheep_YVel, Y
+	STA <Objects_YVelZ, X
 
 	LDA <Player_YZ
 	SUB #$18
@@ -892,10 +911,129 @@ Generate_GoldCheep:
 	ADD #$01
 	STA <Objects_XHiZ, X
 
-	LDA #$FF
+	LDY Horz_Scroll_Hi
+	LDA GoldCheep_Timer, Y
 	STA Level_EventTimer
 	RTS		 ; Return
 
+LevelEvent_SpawnGoldYurarin:
+	LDA <Horz_Scroll_Hi
+	CMP #$0E
+	BEQ LevelEvent_SpawnGoldYurarinRTS
+
+
+Try_SpawnGoldYurarin:	
+	LDA Level_EventTimer
+	BEQ Generate_YurarinCheep
+	
+	DEC Level_EventTimer
+
+LevelEvent_SpawnGoldYurarinRTS:
+	RTS
+
+GoldYurarin_YVel:
+	.byte $00, $E8
+
+GoldYurarin_Timer:
+	.byte $FF, $EF, $EF, $DF, $DF, $CF, $CF, $B0
+	.byte $A0, $90, $90, $80, $80, $80, $80, $80
+
+Generate_YurarinCheep:	
+	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
+
+	; Set Spike Cheep's object ID
+	LDA #OBJ_YURARIN
+	STA Objects_ID,X
+
+	LDA #$02
+	STA Objects_Property, X
+	
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
+
+	LDA RandomN
+	AND #$01
+	TAY
+	
+	LDA GoldYurarin_YVel, Y
+	STA <Objects_YVelZ, X
+
+	LDA <Player_YZ
+	SUB #$18
+	STA <Objects_YZ, X
+
+	LDA <Player_YHiZ
+	SBC #$00
+	STA <Objects_YHiZ, X
+	
+	LDA <Horz_Scroll
+	STA <Objects_XZ, X
+
+	LDA <Horz_Scroll_Hi
+	ADD #$01
+	STA <Objects_XHiZ, X
+
+	LDY Horz_Scroll_Hi
+	LDA GoldYurarin_Timer, Y
+	STA Level_EventTimer
+	RTS		 ; Return
+
+
+LevelEvent_SpawnBlooper:
+	LDA <Horz_Scroll_Hi
+	CMP #$0E
+	BEQ LevelEvent_SpawnBlooperRTS
+
+
+Try_SpawnBlooper:	
+	LDA Level_EventTimer
+	BEQ Generate_Blooper
+	
+	DEC Level_EventTimer
+
+LevelEvent_SpawnBlooperRTS:
+	RTS
+
+Generate_BlooperTimer:
+	.byte $FF, $EF, $EF, $DF, $DF, $CF, $CF, $B0
+	.byte $A0, $90, $90, $80, $80, $80, $80, $80
+
+Generate_BlooperY:
+	.byte $40, $60, $80, $A0
+
+Generate_Blooper:	
+	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
+
+	; Set Spike Cheep's object ID
+	LDA #OBJ_BLOOPER
+	STA Objects_ID,X
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
+
+	LDA RandomN
+	AND #$03
+	TAY
+
+	LDA <Vert_Scroll
+	ADD Generate_BlooperY, Y
+	STA <Objects_YZ, X
+
+	LDA <Vert_Scroll_Hi
+	ADC #$00
+	STA <Objects_YHiZ, X
+	
+	LDA <Horz_Scroll
+	STA <Objects_XZ, X
+
+	LDA <Horz_Scroll_Hi
+	ADD #$01
+	STA <Objects_XHiZ, X
+
+	LDY Horz_Scroll_Hi
+	LDA Generate_BlooperTimer, Y
+	STA Level_EventTimer
+	RTS		 ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_SpawnObj	-- slots 0 - 4
@@ -979,6 +1117,7 @@ Level_DoChangeReset:
 	RTS		 ; Return
 
 PRG005_BE35:
+
 	LDY #$09	 	; Y = 9
 
 PRG005_BE37:
@@ -1001,7 +1140,6 @@ PRG005_BE4B:
 	BEQ PRG005_BE64	 	; If Y = 3, jump to PRG005_BE64
 	BGE PRG005_BE67	 	; If Y > 3, jump to PRG005_BE67
 
-	;STA Bubble_Cnt,Y	; Clear any water bubbles
 	STA BrickBust_En,Y	; Clear any brick busting effects
 
 	CPY #$02
@@ -1049,7 +1187,6 @@ PRG005_BE90:
 PRG005_BE91:
 	LDY #$FF
 	STY Level_ObjectsInitialized
-	STA Player_PartDetEn
 	STA Level_ObjIdxStartByScreen
 	STA Player_InWater
 	STA Air_Change
@@ -1073,6 +1210,7 @@ PRG005_BEB6:
 	BEQ PRG005_BEE5	 ; If terminator, jump to PRG005_BEE5
 
 	LDA Level_Objects+1,Y	; Get object column
+
 PRG005_BECE:
 	LSR A
 	LSR A
@@ -1159,8 +1297,8 @@ PRG005_BF01:
 	BPL PRG005_BF001	 ; While X >= 0, loop!
 
 PRG005_BF02:
-	LDA #$4f	 
-	STA PatTable_BankSel+5	 ; Set sixth pattern table to $4F
+	;LDA #$4f	 
+	;STA PatTable_BankSel+5	 ; Set sixth pattern table to $4F
 
 	LDA <Horz_Scroll
 	PHA		 ; Save Horz_Scroll
@@ -1185,6 +1323,8 @@ PRG005_BF02:
 	LDA #$01
 	STA <Scroll_LastDir	 ; Scroll_LastDir = 1 (screen last moved left)
 
+	JSR GraphicsBuf_Prep_And_WaitVSync
+	
 	; Fake leftward scroll by 16
 	LDA <Horz_Scroll
 	SUB #16
@@ -1197,6 +1337,7 @@ PRG005_BF02:
 	; screen of the level by pretending to scroll a whole screen's worth
 
 PRG005_BF49:
+
 	LDA <Horz_Scroll
 	ADC #$10
 	AND #$f0
@@ -1204,6 +1345,7 @@ PRG005_BF49:
 
 	BCC PRG005_BF55	 ; If no carry, jump to PRG005_BF55
 	INC <Horz_Scroll_Hi	 ; Apply carry
+
 PRG005_BF55:
 
 	; Ensures all objects that should appear on the initial screen, will appear

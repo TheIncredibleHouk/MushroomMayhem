@@ -417,7 +417,6 @@ LevelJunction_PartialInit:
 	STA ForcedSwitch
 	STA Level_HAutoScroll	 ; Disable auto horizontal scrolling
 	STA Level_AScrlConfig	 ; Clear auto scroll configuration (no auto scroll)
-;	STA Player_SlideRate	 ; No slide
 	STA Level_ObjectsInitialized	 ; Do level scene change reset
 
 	JSR Level_SetPlayerPUpPal  ; Set power up's correct palette
@@ -6298,6 +6297,9 @@ Player_DoClimbingRTS:
 	RTS
 
 Player_PoisonMode:
+	LDA Player_Vehicle
+	BNE Cant_Poison_Mode
+
 	LDA Poison_Mode
 	BNE Continue_Poison_Mode
 
@@ -6447,7 +6449,7 @@ Player_MakeSplash:
 	LDA #OBJ_WATERSPLASH
 	STA Objects_ID, Y
 
-	LDA #$0B
+	LDA #$0F
 	STA Objects_Timer, Y
 
 	LDA #OBJSTATE_FRESH

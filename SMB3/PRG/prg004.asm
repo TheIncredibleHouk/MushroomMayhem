@@ -20,6 +20,7 @@ OBJ_DRYCHEEP		= $4B
 OBJ_GREENPIRANHA	= $4C
 OBJ_PARAPIRANHA		= $4D
 OBJ_GOLDCHEEPCHEEP  = $4E
+OBJ_YURARIN			= $4F
 
     .word ObjInit_Goomba    ; Object $3C
 	.word ObjInit_ParaGoomba ; Object $3D
@@ -40,7 +41,7 @@ OBJ_GOLDCHEEPCHEEP  = $4E
 	.word ObjInit_PiranhaGrower ; Object $4C
 	.word ObjInit_ParaPiranha ; Object $4D
 	.word ObjInit_GoldCheep ; Object $4E
-	.word ObjInit_DoNothing ; Object $4F
+	.word ObjInit_Yurarin ; Object $4F
 
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
@@ -64,7 +65,7 @@ OBJ_GOLDCHEEPCHEEP  = $4E
 	.word ObjNorm_PiranhaGrower ; Object $4C
 	.word ObjNorm_ParaPiranha ; Object $4D
 	.word ObjNorm_GoldCheep ; Object $4E
-	.word ObjNorm_DoNothing ; Object $4F
+	.word ObjNorm_Yurarin ; Object $4F
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -87,7 +88,7 @@ OBJ_GOLDCHEEPCHEEP  = $4E
 	.word Player_GetHurt ; Object $4C
 	.word Player_GetHurt ; Object $4D
 	.word Player_GetHurt ; Object $4E
-	.word ObjHit_DoNothing ; Object $4F
+	.word Player_GetHurt ; Object $4F
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ;****************************** OBJECT PALETTE/SIZE ******************************
@@ -110,7 +111,7 @@ OBJ_GOLDCHEEPCHEEP  = $4E
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4C
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4D
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $4E
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4F
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4F
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -133,7 +134,7 @@ OBJ_GOLDCHEEPCHEEP  = $4E
 	.byte OPTS_SETPT5 | $0B ; Object $4C
 	.byte OPTS_SETPT6 | $4F ; Object $4D
 	.byte OPTS_SETPT6 | $4F ; Object $4E
-	.byte OPTS_NOCHANGE ; Object $4F
+	.byte OPTS_SETPT5 | $1A ; Object $4F
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
@@ -233,6 +234,8 @@ ObjP4E:
 	.byte $E7, $E9, $E7, $EF
 
 ObjP4F:
+	.byte $87, $89, $A7, $A9
+	.byte $87, $8B, $A7, $A9
 
 ObjInit_Goomba:
 	LDA #BOUND16x16
@@ -3661,3 +3664,223 @@ GoldCheepNorm:
 
 GoldCheep_Draw:
 	JMP Object_Draw	
+
+
+Yurarin_AnimTicks = Objects_Data1
+Yurarin_Pause	= Objects_Data2
+
+
+Yurarin_Palettes:
+	.byte SPR_PAL2, SPR_PAL1, SPR_PAL3
+
+ObjInit_Yurarin:
+	LDA #BOUND16x24
+	STA Objects_BoundBox, X
+
+	LDA #04
+	STA Objects_SpritesRequested, X
+
+	LDA #$01
+	STA Objects_Health, X
+
+	LDA #(ATTR_STOMPPROOF)
+	STA Objects_WeaponAttr, X
+
+	LDA Objects_Property, X
+
+	JSR DynJump
+
+	.word ObjInit_YurarinRTS
+	.word Yurarin_InitVertical
+	.word Yurarin_InitGenerated
+
+Yurarin_InitVertical: 
+	LDA #$10
+	STA Patrol_ResetTimer, X
+
+	LDA #$04
+	STA Patrol_YVelocityChange, X
+
+	LDA #$18
+	STA Patrol_YAccelLimit, X
+
+ObjInit_YurarinRTS:	
+	RTS
+
+Yurarin_InitChase:
+	JSR InitPatrol_Chase
+	RTS	
+
+Yurarin_InitGenerated:
+	LDA #$10
+	STA Patrol_ResetTimer, X
+
+	LDA #$04
+	STA Patrol_YVelocityChange, X
+
+	LDA #$18
+	STA Patrol_YAccelLimit, X
+
+	LDA #$F8
+	STA <Objects_XVelZ, X	
+	RTS
+
+ObjNorm_Yurarin:
+	LDA <Player_HaltGameZ
+	BEQ Yurarin_Action
+
+	JMP Yurarin_Draw
+
+Yurarin_Action:	
+	JSR Object_DeleteOffScreen
+
+	LDA Yurarin_Pause, X
+	BEQ Yurarin_Action1
+
+	DEC Yurarin_Pause, X
+
+Yurarin_Action1:	
+	LDA Objects_Timer, X
+	CMP #$10
+	BNE Yurarin_Action2
+
+	LDA #$20
+	STA Yurarin_Pause, X
+
+Yurarin_Action2:	
+	LDA Objects_Property, X
+
+	JSR DynJump
+
+	.word Yurarin_Standard
+	.word Yurarin_Vertical
+	.word Yurarin_Generated
+
+Fireball_XOff:
+	.byte $00, $08
+
+Yurarin_Fireball:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Yurarin_FireballRTS
+
+	LDY #$00
+
+	LDA Objects_Orientation, X
+	BEQ Yurarin_Fireball1
+
+	INY
+
+Yurarin_Fireball1:	
+	LDA Fireball_XOff, Y
+	STA <Proj_XOff
+
+	LDA #$00
+	STA <Proj_YOff
+
+	JSR Object_ShootFireBallStraight
+	BCC Yurarin_FireballRTS
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERFIRE
+	STA Sound_QPlayer
+
+	JSR Object_AimProjectile
+
+	LDA SpecialObj_XVel, Y
+	JSR Double_Value
+	STA SpecialObj_XVel, Y
+
+	LDA SpecialObj_YVel, Y
+	JSR Double_Value
+	STA SpecialObj_YVel, Y
+
+	LDA #$80
+	STA Objects_Timer, X
+
+Yurarin_FireballRTS:	
+	RTS
+
+Yurarin_Standard:
+	JSR Object_FacePlayer
+
+	LDA Yurarin_Pause, X
+	BNE Yurarin_Standard0
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+
+Yurarin_Standard0:	
+	JSR Object_CalcBoundBox	
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE Yurarin_Standard1
+
+	JSR Yurarin_Fireball
+
+Yurarin_Standard1:	
+	JMP Yurarin_Animate
+
+
+Yurarin_Vertical:
+	JSR Object_FacePlayer
+
+	LDA Yurarin_Pause, X
+	BNE Yurarin_Vertical0
+
+	JSR Object_MovePattern
+
+Yurarin_Vertical0:	
+	JSR Object_CalcBoundBox	
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE Yurarin_Vertical1
+
+	JSR Yurarin_Fireball
+
+Yurarin_Vertical1:
+	JMP Yurarin_Animate
+
+Yurarin_Generated:
+	JSR Object_FacePlayer
+
+	LDA Yurarin_Pause, X
+	BNE Yurarin_Generated0
+
+	JSR PatrolUpDown
+	JSR Object_ApplyXVel
+
+Yurarin_Generated0:	
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox	
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE Yurarin_Generated1
+
+	JSR Yurarin_Fireball
+
+Yurarin_Generated1:	
+	JMP Yurarin_Animate
+
+Yurarin_Animate:
+	LDA Yurarin_Pause, X
+	BNE Yurarin_Draw
+
+	INC Yurarin_AnimTicks, X
+	LDA Yurarin_AnimTicks, X
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+Yurarin_Draw:
+	LDY Objects_Property, X
+	LDA Yurarin_Palettes, Y
+	STA Objects_SpriteAttributes, X
+
+	JSR Object_Draw16x32
+	RTS
