@@ -2866,4 +2866,8 @@ Submarin_PatternBottomLoop:
 
 	DEC <Temp_Var1
 	BPL Submarin_PatternBottomLoop
+
+	LDA <Player_SpriteX
+	ADD #$08
+	STA <Player_SpriteX
 	RTS

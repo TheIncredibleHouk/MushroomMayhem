@@ -16,6 +16,7 @@ OBJ_FLOATMINE       = $5B
 OBJ_PANSER			= $5C
 OBJ_SMASH			= $5D
 OBJ_BLOOPER			= $5E
+OBJ_TENTACLE		= $5F
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51
@@ -32,7 +33,7 @@ OBJ_BLOOPER			= $5E
     .word ObjInit_Panser ; Object $5C
     .word ObjInit_Smash ; Object $5D
     .word ObjInit_Blooper ; Object $5E
-    .word ObjInit_DoNothing ; Object $5F
+    .word ObjInit_Tentacle ; Object $5F
     .word ObjInit_DoNothing ; Object $60
     .word ObjInit_DoNothing ; Object $61
     .word ObjInit_DoNothing ; Object $62
@@ -56,7 +57,7 @@ OBJ_BLOOPER			= $5E
 	.word ObjNorm_Panser ; Object $5C
 	.word ObjNorm_Smash ; Object $5D
 	.word ObjNorm_Blooper ; Object $5E
-	.word ObjNorm_DoNothing ; Object $5F
+	.word ObjNorm_Tentacle ; Object $5F
 	.word ObjNorm_DoNothing ; Object $60
 	.word ObjNorm_DoNothing ; Object $61
 	.word ObjNorm_DoNothing ; Object $62
@@ -79,7 +80,7 @@ OBJ_BLOOPER			= $5E
 	.word Player_GetHurt ; Object $5C
 	.word ObjHit_DoNothing ; Object $5D
 	.word Player_GetHurt ; Object $5E
-	.word ObjHit_DoNothing ; Object $5F
+	.word Player_GetHurt ; Object $5F
 	.word ObjHit_DoNothing ; Object $60
 	.word ObjHit_DoNothing ; Object $61
 	.word ObjHit_DoNothing ; Object $62
@@ -102,7 +103,7 @@ OBJ_BLOOPER			= $5E
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $5C
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH24 ; Object $5D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5E
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5F
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5F
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $60
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $61
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $62
@@ -125,7 +126,7 @@ OBJ_BLOOPER			= $5E
 	.byte OPTS_SETPT5 | $7E; Object $5C
 	.byte OPTS_SETPT5 | $12 ; Object $5D
 	.byte OPTS_SETPT5 | $1A ; Object $5E
-	.byte OPTS_NOCHANGE ; Object $5F
+	.byte OPTS_SETPT5 | $1A ; Object $5F
 	.byte OPTS_NOCHANGE ; Object $60
 	.byte OPTS_NOCHANGE ; Object $61
 	.byte OPTS_NOCHANGE ; Object $62
@@ -148,7 +149,7 @@ OBJ_BLOOPER			= $5E
 	.byte KILLACT_STARDEATH ; Object $5C
 	.byte KILLACT_NORMALSTATE ; Object $5D
 	.byte KILLACT_STARDEATH ; Object $5E
-	.byte KILLACT_STARDEATH ; Object $5F
+	.byte KILLACT_NORMALSTATE ; Object $5F
 	.byte KILLACT_STARDEATH ; Object $60
 	.byte KILLACT_STARDEATH ; Object $61
 	.byte KILLACT_STARDEATH ; Object $62
@@ -238,6 +239,10 @@ ObjP5E:
 	.byte $B3, $B3
 
 ObjP5F:
+	.byte $B5, $B7
+	.byte $B9, $BB
+	.byte $93, $BF
+
 ObjP60:
 ObjP61:
 ObjP62:
@@ -2795,6 +2800,9 @@ ObjInit_FloatMine:
 	LDA #$06
 	STA Objects_SpritesRequested, X
 	
+	LDA #ATTR_NINJAPROOF
+	STA Objects_WeaponAttr, X
+
 	LDA #(ATTR_NOICE)
 	STA Objects_BehaviorAttr, X
 
@@ -2817,6 +2825,8 @@ ObjInit_FloatMine:
 
 	CMP #$02
 	BCS InitMineMove_Pattern
+
+ObjInit_FloatMineRTS:	
 	RTS
 
 InitMineMove_Pattern:
@@ -2847,6 +2857,8 @@ InitMineMove_Pattern:
 	.word InitPatrolVertical
 	.word InitCircleCCW
 	.word InitCircleCW
+	.word ObjInit_FloatMineRTS
+	.word ObjInit_FloatMineRTS
 
 ObjNorm_FloatMine:
 	LDA <Player_HaltGameZ
@@ -2875,6 +2887,12 @@ FloatMine_NotDead:
 	.word FloatMine_PatternMove
 	.word FloatMine_PatternMove
 	.word FloatMine_PatternMoveOnce
+	.word FloatMine_Tide
+
+FloatMine_Tide:
+	LDA #$00
+	STA <Objects_YVelZ, X
+	JMP FloatMine_Move
 
 FloatMine_PatternMove:
 	JSR FloatMine_DoPatternMove
@@ -2912,6 +2930,7 @@ FloatMine_Move:
 	JSR Object_Move
 
 FloatMine_Chained:
+
 	JSR Object_InteractWithPlayer
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
@@ -2969,9 +2988,6 @@ FloatMine_NoExplodeYet:
 	INC FloatMine_Action, X
 
 FloatMine_Draw:
-	LDA #SPR_BEHINDBG
-	STA Objects_Orientation, X
-
 	JSR Object_Draw16x32
 
 	LDY Object_SpriteRAMOffset,X
@@ -3630,7 +3646,6 @@ Blooper_Move:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTilesWallStops
 
-	STA Debug_Snap
 	LDA Objects_InWater, X
 	BNE Blooper_Attack
 
@@ -3658,3 +3673,370 @@ Blooper_Frame:
 
 Blooper_Draw:
 	JMP Object_DrawMirrored
+
+ObjInit_Tentacle:
+	LDA #$10
+	STA Objects_SpritesRequested, X
+
+	LDA #$02
+	STA Tentacle_Health, X
+
+	LDA #$20
+	STA Tentacle_IdleTimer, X
+
+	LDA #$D0
+	STA <Objects_YZ, X
+	RTS
+
+Tentacle_OriginY = Objects_Data1
+Tentacle_BoundBoxToggle = Objects_Data2
+Tentacle_Health = Objects_Data3
+Tentacle_IdleTimer = Objects_Data4
+Tentacle_ExtendTimer = Objects_Data5
+
+ObjNorm_Tentacle:
+	LDA <Player_HaltGameZ
+	BEQ Tentacle_Norm
+
+	JMP Tentacle_Draw
+
+Tentacle_Norm:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Tentacle_NoFlash
+
+	JSR Tentacle_HurtFlash
+
+Tentacle_NoFlash:
+
+	JSR Tentacle_CheckIdle
+	JSR Tentacle_CheckExtended
+	JSR Tentacle_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	JSR Object_ApplyYVel_NoGravity
+	JSR Tentacle_CheckPosition
+
+	LDA #$00
+	STA Objects_ToggleDetect, X
+	
+	JMP Tentacle_Animate
+
+	RTS
+
+Tentacle_CheckExtended:
+	LDA Tentacle_IdleTimer, X
+	BNE Tentacle_CheckExtendedRTS
+
+	LDA <Objects_YVelZ, X
+	BNE Tentacle_CheckExtendedRTS
+
+	LDA Tentacle_ExtendTimer, X
+	BEQ Tentacle_CheckBehind
+
+	DEC Tentacle_ExtendTimer, X
+	BNE Tentacle_CheckExtendedRTS
+
+	LDA #$40
+	STA <Objects_YVelZ, X
+
+Tentacle_CheckExtendedRTS:	
+	RTS
+
+Tentacle_CheckBehind:
+	JSR Object_XDistanceFromPlayer
+	CPY #$00
+	BEQ Tentacle_CheckBehindRTS
+
+	LDA #$40
+	STA Tentacle_ExtendTimer, X
+
+Tentacle_CheckBehindRTS:	
+	RTS
+
+Tentacle_CheckIdle:
+	LDA Tentacle_IdleTimer, X
+	BEQ Tentacle_CheckIdleRTS
+
+	LDA Game_Timer_Tick
+	AND #$03
+	BNE Tentacle_CheckIdleRTS
+
+	DEC Tentacle_IdleTimer, X
+	BNE Tentacle_CheckIdleRTS
+
+	LDA #$A0
+	STA <Objects_YVelZ, X
+
+	LDA #$02
+	STA Tentacle_Health, X
+
+	LDA <Player_X
+	SUB #$04
+	STA <Objects_XZ, X
+
+Tentacle_CheckIdleRTS:
+	RTS
+
+Tentacle_CheckPosition:
+	LDA <Objects_YVelZ, X
+	BEQ Tentacle_CheckPositionRTS
+	BMI Tentacle_CheckPositionUp
+
+	LDA <Objects_YZ, X
+	CMP #$D0
+	BCC Tentacle_CheckPositionRTS
+
+	LDA #$20
+	STA Tentacle_IdleTimer, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+	RTS
+
+Tentacle_CheckPositionUp:
+	LDA <Objects_YZ, X
+	CMP #$40
+	BCS Tentacle_CheckPositionRTS
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+Tentacle_CheckPositionRTS:
+	RTS
+
+Tentacle_CalcBoundBox:
+	LDA Tentacle_BoundBoxToggle, X
+	EOR #$01
+	STA Tentacle_BoundBoxToggle, X
+	BNE Tentacle_CalcAppendage
+
+	LDA <Objects_XZ, X
+	ADD #$04
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD #$10
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+
+	LDA <Objects_YZ, X
+	ADD #$04
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Objects_BoundTopHi, X
+
+	LDA Objects_BoundTop, X
+	ADD #$1C
+	STA Objects_BoundBottom, X
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+	JMP Tentacle_CalcBoundBoxRTS
+
+Tentacle_CalcAppendage:
+	
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD #$08
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+
+	LDA <Objects_YZ, X
+	ADD #$28
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Objects_BoundTopHi, X
+
+	LDA Objects_BoundTop, X
+	ADD #$F0
+	STA Objects_BoundBottom, X
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+
+Tentacle_CalcBoundBoxRTS:
+	RTS
+
+
+Tentacle_HurtFlash:
+	LDA #$18
+	STA Objects_Timer2, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	DEC Tentacle_Health, X
+	BPL Tentacle_HurtFlashRTS
+
+	LDA #$60
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Tentacle_IdleTimer, X
+	STA Tentacle_ExtendTimer, X
+
+Tentacle_HurtFlashRTS:	
+	RTS
+
+Tentacle_Palettes:
+	.byte SPR_PAL3, SPR_PAL2
+
+Tentacle_DrawRTS2:
+	RTS 
+
+Tentacle_Animate:
+	LDA Objects_Timer2, X
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Tentacle_Palettes, Y
+	STA Objects_SpriteAttributes, X
+
+Tentacle_Draw:
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JSR Object_Draw16x32	 
+
+	LDY Object_SpriteRAMOffset,X	 
+
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_2_INVISIBLE
+	BNE Tentacle_DrawRTS2
+
+	LDA Objects_SpritesVerticallyOffScreen,X
+	AND #SPRITE_0_VINVISIBLE
+	BNE Tentacle_Draw1
+
+	LDA Objects_SpriteX, X
+	ADD #$10
+	STA Sprite_RAMX + 16,Y
+
+	LDA Objects_SpriteY, X
+	STA Sprite_RAMY + 16,Y
+
+	LDA Sprite_RAMAttr,Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 16,Y
+
+	
+	LDA Sprite_RAMTile, Y
+	STA Sprite_RAMTile + 16, Y
+
+Tentacle_Draw1:
+	LDA Objects_SpritesVerticallyOffScreen,X
+	AND #SPRITE_1_VINVISIBLE
+	BNE Tentacle_DrawRTS2
+
+	LDA Objects_SpriteX, X
+	ADD #$10
+	STA Sprite_RAMX + 20,Y
+
+	LDA Objects_SpriteY, X
+	ADD #$10
+	STA Sprite_RAMY + 20,Y
+
+	; Right sprite horizontally flipped
+	LDA Sprite_RAMAttr + 8, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 20, Y
+
+	LDA Sprite_RAMTile + 8, Y
+	STA Sprite_RAMTile + 20, Y
+
+	LDA Objects_SpriteY, X
+	ADD #$20
+	STA <Temp_Var1
+	CMP #$C0
+	BCS Tentacle_DrawRTS
+
+	STA Sprite_RAMY + 24, Y
+	STA Sprite_RAMY + 28, Y
+	STA Sprite_RAMY + 32, Y
+	
+	LDA Sprite_RAMX, Y
+	STA Sprite_RAMX + 24, Y
+
+	ADD #$08
+	STA Sprite_RAMX + 28, Y
+
+	ADD #$08
+	STA Sprite_RAMX + 32, Y
+
+	LDA ObjP5F + 4
+	STA Sprite_RAMTile + 24, Y
+	STA Sprite_RAMTile + 32, Y
+
+	LDA ObjP5F + 5
+	STA Sprite_RAMTile + 28, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 24, Y
+
+	LDA Sprite_RAMAttr + 4, Y
+	STA Sprite_RAMAttr + 28, Y
+
+	LDA Sprite_RAMAttr, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 32, Y
+
+	TYA
+	ADD #$24
+	TAY
+
+	LDA Objects_SpriteX, X
+	ADD #$08
+	STA <Temp_Var2
+
+Tentacle_DrawLoop:
+	LDA <Temp_Var1
+	ADD #$10
+	CMP #$C0
+	BCS Tentacle_DrawRTS
+
+	STA <Temp_Var1
+	STA Sprite_RAMY, Y
+
+	LDA <Temp_Var2
+	STA Sprite_RAMX, Y
+
+	LDA ObjP5F + 5
+	STA Sprite_RAMTile, Y
+
+	LDA Objects_SpriteAttributes, X
+	STA Sprite_RAMAttr, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	BNE Tentacle_DrawLoop
+
+Tentacle_DrawRTS:
+	RTS

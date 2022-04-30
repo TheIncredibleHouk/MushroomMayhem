@@ -10,6 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "3d3875ad-1563-4b7d-8193-d5c62374cab2",
   "StaticTileTableIndex": 22,
+  "MostCommonTile": 0,
   "AnimationType": 2,
   "ScrollType": 3,
   "Effects": 0,
@@ -6516,6 +6517,7 @@
       "Property": 0
     }
   ],
+  "SecondObjectData": [],
   "LevelPointers": [],
   "CompressedData": "jhCiwcHBwcHBwcHBwcHBwcGgwaIGwcHYBcHCoKINwcKgogHBwcMHwcHDAcHCoKIBwQnDAcGCEKCiwcHBwcHBwcHBwcHBwcHCoKIBwcHDB8HBwwHBwqCiAcEJwwHBgxCgosHBwcHBwcHBwcHBwcHBwqCkDZHBow/B"
 }

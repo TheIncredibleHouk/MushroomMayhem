@@ -3844,7 +3844,6 @@ Yurarin_Vertical1:
 	JMP Yurarin_Animate
 
 Yurarin_Generated:
-	JSR Object_FacePlayer
 
 	LDA Yurarin_Pause, X
 	BNE Yurarin_Generated0
@@ -3859,6 +3858,10 @@ Yurarin_Generated0:
 
 	LDA Objects_Timer, X
 	BNE Yurarin_Generated1
+
+	JSR Object_XDistanceFromPlayer
+	CPY #$01
+	BEQ Yurarin_Generated1
 
 	JSR Yurarin_Fireball
 

@@ -175,6 +175,9 @@ PRG005_B8CB:
 	CMP #OBJ_8WAYBULLETBILLS
 	BLT PRG005_B909	 ; If object ID < OBJ_8WAYBULLETBILLS, jump to PRG005_B909
 
+
+	LDY Spawn_Dynamically
+	BNE PRG005_B863
 	; All object IDs higher than OBJ_8WAYBULLETBILLS are handled specially:
 
 	CMP #OBJ_CFIRE_BULLETBILL
@@ -185,6 +188,8 @@ PRG005_B8CB:
 	SBC #OBJ_CFIRE_BULLETBILL	 ; Zero base it
 	ADD #$01	 ; +1 (because zero means "empty/unused" in Cannon Fire)
 	STY TempY
+
+
 	JSR ObjectGenerator_Init	 ; Initialize the Cannon Fire
 	LDX <LevelSpawn_IndexZ
 
@@ -388,15 +393,23 @@ LevelEvent_Do:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!! 
 
 	.word LevelEvent_DoNothing	; 0 - Do nothing (not used!)
-	.word LevelEvent_8WayBulletBills	; $B4
-	.word LevelEvent_ProduceMines	; $B5
-	.word LevelEvent_SpawnGoldCheeps	; $B6
-	.word LevelEvent_SpawnGoldYurarin	; $B7
-	.word LevelEvent_SpawnBlooper	; $B8
+	.word LevelEvent_8WayBulletBills	; 1 - $B4
+	.word LevelEvent_ProduceMines	; 2 - $B5
+	.word LevelEvent_SpawnGoldCheeps	; 3 - $B6
+	.word LevelEvent_SpawnGoldYurarin	; 4 - $B7
+	.word LevelEvent_SpawnBlooper	; 5 - $B8
 	.word LevelEvent_WoodPlatforms	; 6 - Random wooden platforms 
 	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
 	.word LevelEvent_Cancel		; 8 - Does nothing but clear Level_Event
 
+GEN_CANCEL		= 0
+GEN_8WAYBULLETS = 8
+GEN_MINES		= 2
+GEN_GOLDCHEEPS	= 3
+GEN_GOLDYURARIN = 4
+GEN_BLOOPERS	= 5
+
+LevelEvent_DoNothing:
 LevelEvent_DoRTS:
 	RTS
 
@@ -492,8 +505,6 @@ GenerateCheepCheepRTS:
 	RTS
 
 LevelEvent_Cancel:
-	LDA #$00
-	STA Level_Event
 
 PRG005_BBBF:
 	RTS		 ; Return
@@ -791,72 +802,49 @@ EightWay_NotSame:
 EightWay_RTS:
 	RTS		 ; Return
 
-	; The Spike Cheeps appear on the left or right side of the screen (respective)
-	; And thus travel to the right or the left (respective again)
-SpikeCheepX:	.byte 0, 255
-SpikeCheepXVel:	.byte 8, -16
 
 LevelEvent_ProduceMines:
-	LDA <Player_HaltGameZ
-	BNE PRG005_BDB0
-	INC LevelEvent_Cnt	 ; LevelEvent_Cnt++
-
-	LDA LevelEvent_Cnt
-	CMP #$60
-	BNE PRG005_BDB0
-	LDA #$00
-	STA LevelEvent_Cnt
-
-	LDA #$00
-	STA <Temp_Var1
-	LDX #$04
-
-LevelEvent_ProduceMines1:
-	LDA Objects_State, X
-	CMP #OBJSTATE_NORMAL
-	BNE LevelEvent_ProduceMines2
-
-	LDA Objects_ID,X
-	CMP #OBJ_FLOATMINE
-	BNE LevelEvent_ProduceMines2
-	INC <Temp_Var1
-
-LevelEvent_ProduceMines2:
-	DEX
-	BPL LevelEvent_ProduceMines1
-
-	LDA <Temp_Var1
-	CMP #$02
-	BCS PRG005_BDB0
+	LDA Level_EventTimer
+	BEQ LevelEvent_ProduceMinesMake
 	
-	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
+	DEC Level_EventTimer
+	RTS
 
-	; Set Spike Cheep's object ID
+LevelEvent_ProduceMinesMake:
+	LDA <Player_HaltGameZ
+	BNE LevelEvent_ProduceMinesRTS
+
+	JSR Level_SpawnObj
+
 	LDA #OBJ_FLOATMINE
 	STA Objects_ID,X
-	
-	LDA #$01
-	STA Objects_SpriteAttributes, X
-	STA Objects_Data4, X
 
-	LDA <Player_XHi
-	STA Objects_XHiZ, X
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
 	
-	LDA #$01
-	STA Objects_Data4,X	; var 1 = 1
-	
-	LDA #$A8
-	STA Objects_YZ, X
-	
-	LDA #$01
-	STA Objects_YHiZ, X
-	STA Objects_Data4, X
+	LDA <Horz_Scroll
+	STA <Objects_XZ, X
 
-	LDA RandomN
-	ADC <Player_X
-	STA Objects_XZ, X
+	LDA <Horz_Scroll_Hi
+	ADD #$01
+	STA <Objects_XHiZ, X
+	
+	LDA #$07
+	STA Objects_Property, X
+	
+	LDA <Player_YZ
+	STA <Objects_YZ, X
 
-PRG005_BDB0:
+	LDA <Player_YHiZ
+	STA <Objects_YHiZ, X
+
+	LDA #$D0
+	STA <Objects_XVelZ, X
+
+	LDA #$80
+	STA Level_EventTimer
+
+LevelEvent_ProduceMinesRTS:
 	RTS		 ; Return
 
 LevelEvent_SpawnGoldCheeps:

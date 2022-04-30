@@ -1,6 +1,6 @@
 {
   "Id": "af0a10f2-7070-445f-9e44-54b72fe77e2f",
-  "Name": "Treasure Tresspass-2",
+  "Name": "Banzai Blooper Battle-2",
   "TileSetIndex": 6,
   "ClearTileIndex": 0,
   "MusicValue": 96,
@@ -6499,12 +6499,6 @@
   ],
   "ObjectData": [
     {
-      "GameObjectId": 0,
-      "X": 233,
-      "Y": 7,
-      "Property": 0
-    },
-    {
       "GameObjectId": 211,
       "X": 3,
       "Y": 3,
@@ -6619,6 +6613,7 @@
       "Property": 0
     }
   ],
+  "SecondObjectData": [],
   "LevelPointers": [
     {
       "LevelId": "85eb459c-5a34-4691-82f3-dce2cbef39a0",

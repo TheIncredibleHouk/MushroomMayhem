@@ -2012,6 +2012,7 @@ PlungerPaul_Raise:
 
 Plunger_RaiseNextState:
 	INC PlungerPaul_State, X
+	
 	LDA #$30
 	STA Objects_Timer, X
 	JMP PlungerPaul_Draw

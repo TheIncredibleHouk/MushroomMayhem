@@ -22,7 +22,8 @@ ObjNorm_Boss:
 	.word Boss_Cheep
 	.word Boss_Fwoosh
 	.word Boss_Bully
-	.word Giant_Piranha
+	.word Boss_Blooper
+	.word Boss_Piranha
 
 
 Boss_CheepAction = Objects_Data1
@@ -1532,41 +1533,346 @@ Boss_FwooshDeathExplode:
 	STA Exp_Earned
 	JMP Object_Explode
 
-Giant_PiranhaSprites:
+Boss_BlooperAction = Objects_Data1
+Boss_BlooperHealth = Objects_Data2
+Boss_BlooperNewTentacle = Objects_Data3
+Boss_BlooperDeathTicks	= Objects_Data4
+
+Boss_BlooperSprites:
+	.byte $8D, $8D, $FF, $FF, $FF, $FF, $FF, $FF
+	.byte $8F, $8F, $FF, $FF, $FF, $FF, $FF, $FF
+
+Boss_Blooper:
+	JSR Boss_BlooperHurt
+
+	LDA Boss_BlooperAction, X
+	JSR DynJump
+
+	.word Boss_BlooperInit
+	.word Boss_BlooperNorm
+	.word Boss_BlooperDeath
+	.word Boss_BlooperDying
+
+Boss_BlooperInit:
+	LDA Boss_BlooperStartHealth
+	STA Boss_BlooperHealth, X
+
+	INC Boss_BlooperAction, X
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, X
+	RTS
+
+Boss_BlooperNorm:
+	JSR Boss_BlooperEnemyGen_HitCheck
+	JSR Boss_MakeBlooperNewTentacle
+	JSR Object_CalcBoundBox
+	JMP Boss_BlooperAnimate
+
+Boss_MakeBlooperNewTentacle:
+	LDA Boss_BlooperNewTentacle, X
+	BEQ Boss_MakeBlooperNewTentacleRTS
+
+	JSR Object_FindEmptyY
+	BCC Boss_WaitTentacle
+
+	LDA #OBJ_TENTACLE
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, Y
+
+	LDA #$80
+	STA Objects_XZ, Y
+
+	LDA #$C0
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_XHiZ, Y
+	STA Objects_YHiZ, Y
+
+	LDA #$00
+	STA Boss_BlooperNewTentacle, X
+
+Boss_MakeBlooperNewTentacleRTS:
+	RTS	
+
+Boss_WaitTentacle:
+	LDA #$01
+	STA Objects_Timer2, X
+	RTS
+
+
+Boss_BlooperStartHealth:
+Boss_BlooperGenThresholds:
+	.byte 49, 37
+	.byte 35, 32
+	.byte 30, 27
+	.byte 25, 22
+	.byte 20, 17
+	.byte 15, 13
+Boss_BlooperSecondTentacle:	
+	.byte 10
+
+Boss_BlooperEnemyGens:
+	.byte 00
+	.byte GEN_GOLDCHEEPS, GEN_MINES
+	.byte GEN_GOLDCHEEPS, GEN_MINES
+	.byte GEN_BLOOPERS, GEN_MINES
+	.byte GEN_BLOOPERS, GEN_MINES
+	.byte GEN_GOLDYURARIN, GEN_MINES
+	.byte GEN_GOLDYURARIN, GEN_MINES
+	.byte GEN_MINES
+
+Boss_BlooperEnemyGen_HitCheck:
+	LDY #$01
+
+Boss_CheckThreshold:
+	LDA Boss_BlooperHealth, X
+	CMP Boss_BlooperGenThresholds, Y
+	BCS Boss_BlooperEnemyGen_HitCheckSet
+
+	INY
+	JMP Boss_CheckThreshold
+
+Boss_BlooperEnemyGen_HitCheckSet:
+	LDA Boss_BlooperEnemyGens, Y
+	STA Level_Event
+	RTS
+
+Boss_BlooperHurt:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Boss_BlooperHurtRTS
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$40
+	STA Objects_Timer2, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$00
+	STA Objects_Health, X
+
+	LDA Boss_BlooperHealth, X
+	CMP Boss_BlooperSecondTentacle
+	BNE Blooper_NoNewTentacle
+
+	STA Boss_BlooperNewTentacle, X
+
+Blooper_NoNewTentacle:	
+	DEC Boss_BlooperHealth, X
+	BPL Boss_BlooperHurtRTS
+
+	INC Boss_BlooperAction, X
+
+Boss_BlooperHurtRTS:	
+	RTS
+
+Boss_BlooperColors:
+	.byte $30, $16
+
+Boss_BlooperAnimate:
+	LDA Objects_Timer2, X
+	BEQ Boss_BlooperDrawNorm
+
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Boss_BlooperColors, Y
+	STA Pal_Data + 10
+	STA Palette_Buffer + 10
+
+	LDA #$01
+	STA Objects_Frame, X
+	BNE Boss_BlooperDraw
+
+Boss_BlooperDrawNorm:
+	LDA #$00
+	STA Objects_Frame, X
+
+Boss_BlooperDraw:
+	LDA #$00
+	STA Objects_Orientation, X
+
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+	
+	LDA #$1A
+	STA PatTable_BankSel + 4
+
+	LDA #(SPRITE_2_HINVISIBLE | SPRITE_3_HINVISIBLE)
+	STA Objects_SpritesHorizontallyOffScreen, X
+
+	LDA #(SPRITE_1_VINVISIBLE)
+	STA Objects_SpritesVerticallyOffScreen, X
+
+	LDA #LOW(Boss_BlooperSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Boss_BlooperSprites)
+	STA <Giant_TilesHi
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	LDA <Objects_YZ, X
+	ADD #$03
+	STA <Objects_YZ, X
+	
+	JSR Object_DrawGiant
+
+	LDA <Objects_YZ, X
+	SUB #$03
+	STA <Objects_YZ, X
+
+	LDY Object_SpriteRAMOffset, X
+	LDA Sprite_RAMAttr + 4, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 4, Y
+	
+	LDA #$00
+	STA Objects_SpritesHorizontallyOffScreen, X
+	STA Objects_SpritesVerticallyOffScreen, X
+	RTS
+
+Boss_BlooperDeath:
+	JSR DestroyAllEnemies
+	JSR Destroy_Projectiles
+
+	LDX <CurrentObjectIndexZ
+
+	LDA #GEN_CANCEL
+	STA Level_Event
+	
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #OBJ_BOSS
+	STA Objects_ID, X
+
+	LDA #$03
+	STA Boss_BlooperAction, X
+
+	LDA #$01
+	STA Objects_Frame, X
+
+	LDA #$0F
+	STA Boss_BlooperDeathTicks, X
+	JMP Boss_BlooperDraw
+
+Boss_BlooperExplosionsY:
+	.byte $10, $70, $40, $A0, $28, $88, $58, $C8
+	.byte $20, $80, $50, $90, $18, $78, $48, $B8
+
+Boss_BlooperDying:
+	LDA Objects_Timer, X
+	BNE Boss_BlooperDyingDraw
+
+	DEC Boss_BlooperDeathTicks, X
+	BEQ Boss_BlooperDyingFinal
+
+	JSR Object_FindEmptyY
+
+	LDA RandomN
+	AND #$07
+	TAX
+	LDA Boss_BlooperExplosionsY, X
+	STA Objects_YZ, Y
+
+	LDA #$D0
+	STA Objects_XZ, Y
+
+	LDA #$00
+	STA Objects_YHiZ, Y
+	STA Objects_XHiZ, Y
+
+	TYA
+	TAX
+	JSR Object_Explode
+
+	LDX <CurrentObjectIndexZ
+
+	LDA #$10
+	STA Objects_Timer, X
+	
+Boss_BlooperDyingDraw:	
+	JMP Boss_BlooperDraw
+
+Boss_BlooperDyingFinal:
+	
+	LDA #$FF
+	STA Objects_Timer2, X
+
+	STA Debug_Snap
+
+	LDA #$01
+	STA Player_OnObject
+
+	LDA #$00
+	STA <Player_InAir
+
+	LDA #$80
+	STA CompleteLevelTimer
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$18
+	STA Objects_Timer,X
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA RotatingColor_Cnt
+
+	LDA #$64
+	STA Exp_Earned
+	JMP Object_Explode	
+
+Boss_PiranhaSprites:
 	.byte $C1, $C3, $C3, $C1, $E1, $E3, $E3, $E1
 	.byte $C5, $C7, $C7, $C5, $E5, $E7, $E7, $E5
 	
 
-Giant_PiranhaStemSprites:
+Boss_PiranhaStemSprites:
 	.byte $C9, $CB, $CB, $C9, $C9, $CB, $CB, $C9
 	.byte $C9, $CB, $CB, $C9, $C9, $CB, $CB, $C9
 
-Giant_PiranhaAction = Objects_Data1
-Giant_PiranhaFrames = Objects_Data2
-Giant_PiranhaTicker = Objects_Data3
-Giant_PiranhaSnowAttack = Objects_Data4
-Giant_PiranhaTopLeftProp = Objects_Data5
-Giant_PiranhaTopRightProp = Objects_Data6
-Giant_PiranhaChompGrab = Objects_Data7
-Giant_PiranhaChompIndex = Objects_Data8
-Giant_PiranhaSpawnTimer = Objects_Data10
-Giant_PiranhaHits = Objects_Data11
-Giant_PiranhaFreezeBlocks = Objects_Data12
-Giant_PiranhaBlocksBroken = Objects_Data13
+Boss_PiranhaAction = Objects_Data1
+Boss_PiranhaFrames = Objects_Data2
+Boss_PiranhaTicker = Objects_Data3
+Boss_PiranhaSnowAttack = Objects_Data4
+Boss_PiranhaTopLeftProp = Objects_Data5
+Boss_PiranhaTopRightProp = Objects_Data6
+Boss_PiranhaChompGrab = Objects_Data7
+Boss_PiranhaChompIndex = Objects_Data8
+Boss_PiranhaSpawnTimer = Objects_Data10
+Boss_PiranhaHits = Objects_Data11
+Boss_PiranhaFreezeBlocks = Objects_Data12
+Boss_PiranhaBlocksBroken = Objects_Data13
 
-Giant_Piranha:
+Boss_Piranha:
 	LDA <Player_HaltGameZ
-	BEQ Giant_PiranhaNorm
+	BEQ Boss_PiranhaNorm
 
-	JMP Giant_PiranhaDraw
+	JMP Boss_PiranhaDraw
 
-Giant_PiranhaRTS:	
+Boss_PiranhaRTS:	
 	RTS
 
-Giant_PiranhaNorm:
+Boss_PiranhaNorm:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BNE Giant_PiranhaNorm1
+	BNE Boss_PiranhaNorm1
 
 	LDA #$80
 	STA Objects_Timer2, X
@@ -1574,23 +1880,23 @@ Giant_PiranhaNorm:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	INC Giant_PiranhaHits, X
+	INC Boss_PiranhaHits, X
 
-Giant_PiranhaNorm1:
-	JSR Giant_PiranhaSpawnChomp
+Boss_PiranhaNorm1:
+	JSR Boss_PiranhaSpawnChomp
 
-	LDA Giant_PiranhaAction, X
+	LDA Boss_PiranhaAction, X
 	JSR DynJump
 
-	.word Giant_PiranhaInit
+	.word Boss_PiranhaInit
 	.word Giant_WaitUnder
-	.word Giant_PiranhaAttackUp
-	.word Giant_PiranhaWait
-	.word Giant_PiranhaAttackDown
-	.word Giant_PiranhaFreezeBridge
-	.word Giant_PiranhaDie
+	.word Boss_PiranhaAttackUp
+	.word Boss_PiranhaWait
+	.word Boss_PiranhaAttackDown
+	.word Boss_PiranhaFreezeBridge
+	.word Boss_PiranhaDie
 
-Giant_PiranhaInit:	
+Boss_PiranhaInit:	
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
 
@@ -1606,7 +1912,7 @@ Giant_PiranhaInit:
 	LDA #$04
 	STA Objects_Health, X
 
-	INC Giant_PiranhaAction, X
+	INC Boss_PiranhaAction, X
 
 	LDA #$C0
 	STA Objects_Timer, X
@@ -1615,7 +1921,7 @@ Giant_PiranhaInit:
 	STA Objects_SpritesRequested, X
 
 	LDA #$20
-	STA Giant_PiranhaSpawnTimer, X
+	STA Boss_PiranhaSpawnTimer, X
 
 	LDA #BOUND32X64
 	STA Objects_BoundBox, X
@@ -1626,14 +1932,14 @@ Giant_WaitUnder:
 	LDA Objects_Timer, X
 	BNE Giant_WaitUnder1
 
-	INC Giant_PiranhaAction, X
+	INC Boss_PiranhaAction, X
 
 	LDA Player_X
 	AND #$F0
 	STA <Objects_XZ, X
 
 Giant_WaitUnder1:
-	JSR Giant_PiranhaDetectChomps
+	JSR Boss_PiranhaDetectChomps
 	BCC Giant_WaitUnder2
 
 	LDA Objects_Timer, X
@@ -1663,9 +1969,9 @@ Giant_WaitUnder1:
 	STA Sprite_RAMY, Y
 
 Giant_WaitUnder2:	
-	JMP Giant_PiranhaDraw
+	JMP Boss_PiranhaDraw
 
-Giant_PiranhaAttackUp:
+Boss_PiranhaAttackUp:
 	LDA #$C0
 	STA <Objects_YVelZ, X
 
@@ -1673,16 +1979,16 @@ Giant_PiranhaAttackUp:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
-	LDA Giant_PiranhaHits, X
+	LDA Boss_PiranhaHits, X
 	CMP #$02
-	BCC Giant_PiranhaAttackUp0
+	BCC Boss_PiranhaAttackUp0
 	
-	JSR Giant_PiranhaBreakBlocks
+	JSR Boss_PiranhaBreakBlocks
 
-Giant_PiranhaAttackUp0:
+Boss_PiranhaAttackUp0:
 	LDA <Objects_YZ, X
 	CMP #$88
-	BCS Giant_PiranhaAttackUpRTS
+	BCS Boss_PiranhaAttackUpRTS
 
 	LDA #$20
 	STA Objects_Timer, X
@@ -1690,47 +1996,47 @@ Giant_PiranhaAttackUp0:
 	LDA #$00
 	STA <Objects_YVelZ, X
 	
-	INC Giant_PiranhaAction, X
+	INC Boss_PiranhaAction, X
 
-Giant_PiranhaAttackUpRTS:
-	JMP Giant_PiranhaAnimate
+Boss_PiranhaAttackUpRTS:
+	JMP Boss_PiranhaAnimate
 
-Giant_PiranhaWait:	
+Boss_PiranhaWait:	
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Giant_ParaChompInteract
 
 	LDA Objects_Timer, X
-	BNE Giant_PiranhaWaitDraw
+	BNE Boss_PiranhaWaitDraw
 
-	INC Giant_PiranhaAction, X
+	INC Boss_PiranhaAction, X
 	
-	LDA Giant_PiranhaHits, X
+	LDA Boss_PiranhaHits, X
 	CMP #$04
-	BCC Giant_PiranhaWait1
+	BCC Boss_PiranhaWait1
 
 	LDA #$06
-	STA Giant_PiranhaAction, X
+	STA Boss_PiranhaAction, X
 	
 	LDA #$40
 	STA Objects_Timer2, X
 	
-Giant_PiranhaWait1:	
+Boss_PiranhaWait1:	
 	LDA #$20
 	STA Objects_Timer, X
 
-Giant_PiranhaWaitDraw:	
-	JMP Giant_PiranhaAnimate
+Boss_PiranhaWaitDraw:	
+	JMP Boss_PiranhaAnimate
 
-Giant_PiranhaAttackDown:
+Boss_PiranhaAttackDown:
 	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
-	LDA Giant_PiranhaChompGrab, X
-	BEQ Giant_PiranhaNoPull
+	LDA Boss_PiranhaChompGrab, X
+	BEQ Boss_PiranhaNoPull
 
-	LDY Giant_PiranhaChompIndex, X
+	LDY Boss_PiranhaChompIndex, X
 	LDA Objects_YZ, Y
 	ADD #$02
 	STA Objects_YZ, Y
@@ -1739,39 +2045,39 @@ Giant_PiranhaAttackDown:
 	ADC #$00
 	STA Objects_YHiZ, Y
 
-	DEC Giant_PiranhaChompGrab, X
+	DEC Boss_PiranhaChompGrab, X
 
-Giant_PiranhaNoPull:	
+Boss_PiranhaNoPull:	
 	LDA #$20
 	STA <Objects_YVelZ, X
 
 	LDA <Objects_YZ, X
 	CMP #$E0
-	BCC Giant_PiranhaAttackDownRTS
+	BCC Boss_PiranhaAttackDownRTS
 
 	LDA Objects_Timer2, X
-	BNE Giant_PiranhaHitAction
+	BNE Boss_PiranhaHitAction
 
 Giant_Stage3:
 	LDA #$01
-	STA Giant_PiranhaAction, X
+	STA Boss_PiranhaAction, X
 
 	LDA #$80
 	STA Objects_Timer, X
 
 	LDA #$00
-	STA Giant_PiranhaChompGrab, X
+	STA Boss_PiranhaChompGrab, X
 
-	JSR Giant_PiranhaReverseSnow
+	JSR Boss_PiranhaReverseSnow
 
-Giant_PiranhaAttackDownRTS:
-	JMP Giant_PiranhaAnimate
+Boss_PiranhaAttackDownRTS:
+	JMP Boss_PiranhaAnimate
 	
-Giant_PiranhaHitAction:	
+Boss_PiranhaHitAction:	
 	LDA #$04
 	STA Objects_Health, X
 
-	LDA Giant_PiranhaHits, X
+	LDA Boss_PiranhaHits, X
 
 	JSR DynJump
 
@@ -1783,49 +2089,49 @@ Giant_PiranhaHitAction:
 Giant_Stage1:
 Giant_Stage2:
 	LDA #$0F
-	STA Giant_PiranhaFreezeBlocks, X
+	STA Boss_PiranhaFreezeBlocks, X
 	
 	LDA #$05
-	STA Giant_PiranhaAction, X
+	STA Boss_PiranhaAction, X
 	RTS
 
 Giant_Stage4:
-	JSR Giant_PiranhaSpawnWeather
+	JSR Boss_PiranhaSpawnWeather
 
 	LDA #$05
-	STA Giant_PiranhaAction, X
+	STA Boss_PiranhaAction, X
 	RTS
 
-Giant_PiranhaPalettes:
+Boss_PiranhaPalettes:
 	.byte SPR_PAL2, SPR_PAL3
 
-Giant_PiranhaAnimate:
-	LDA Giant_PiranhaChompGrab, X
-	BNE Giant_PiranhaPaletteFlash
+Boss_PiranhaAnimate:
+	LDA Boss_PiranhaChompGrab, X
+	BNE Boss_PiranhaPaletteFlash
 
-	INC Giant_PiranhaFrames, X
-	LDA Giant_PiranhaFrames, X
+	INC Boss_PiranhaFrames, X
+	LDA Boss_PiranhaFrames, X
 	AND #$08
 	LSR A
 	LSR A
 	LSR A
 	STA Objects_Frame, X
 
-Giant_PiranhaPaletteFlash:
+Boss_PiranhaPaletteFlash:
 	LDA Objects_Timer2, X
 	LSR A
 	LSR A
 	AND #$01
 	TAY
 
-	LDA Giant_PiranhaPalettes, Y
+	LDA Boss_PiranhaPalettes, Y
 	STA Objects_SpriteAttributes, X
 
-Giant_PiranhaDraw:
-	LDA #LOW(Giant_PiranhaSprites)
+Boss_PiranhaDraw:
+	LDA #LOW(Boss_PiranhaSprites)
 	STA <Giant_TilesLow
 
-	LDA #HIGH(Giant_PiranhaSprites)
+	LDA #HIGH(Boss_PiranhaSprites)
 	STA <Giant_TilesHi
 
 	LDA #$58
@@ -1838,10 +2144,10 @@ Giant_PiranhaDraw:
 	JSR Object_DrawGiant
 	JSR ObjGiant_Mirror
 
-	LDA #LOW(Giant_PiranhaStemSprites)
+	LDA #LOW(Boss_PiranhaStemSprites)
 	STA <Giant_TilesLow
 
-	LDA #HIGH(Giant_PiranhaStemSprites)
+	LDA #HIGH(Boss_PiranhaStemSprites)
 	STA <Giant_TilesHi
 
 	LDA <Objects_YZ, X
@@ -1861,30 +2167,30 @@ Giant_PiranhaDraw:
 	STA <Objects_YZ, X
 	RTS
 
-Giant_PiranhaDetectChomps:
+Boss_PiranhaDetectChomps:
 	LDY #$04
 
-Giant_PiranhaDetectChomps1:
+Boss_PiranhaDetectChomps1:
 	CPY CurrentObjectIndexZ
-	BEQ Giant_PiranhaDetectChomps2
+	BEQ Boss_PiranhaDetectChomps2
 	
 	LDA Objects_State, Y
 	CMP #OBJSTATE_NORMAL
-	BNE Giant_PiranhaDetectChomps2
+	BNE Boss_PiranhaDetectChomps2
 
 	LDA Objects_ID, Y
 	CMP #OBJ_PARACHOMP
 	SEC
 	RTS
 
-Giant_PiranhaDetectChomps2:
+Boss_PiranhaDetectChomps2:
 	DEY
-	BPL Giant_PiranhaDetectChomps1
+	BPL Boss_PiranhaDetectChomps1
 	CLC
 	RTS
 
 Giant_ParaChompInteract:	
-	JSR Giant_PiranhaDetectChomps
+	JSR Boss_PiranhaDetectChomps
 	BCC Giant_ParaChompDetectRTS
 
 	JSR Object_DetectObjects
@@ -1899,10 +2205,10 @@ Giant_ParaChompInteract:
 	STA Objects_Frame, X
 
 	LDA #$20
-	STA Giant_PiranhaChompGrab, X
+	STA Boss_PiranhaChompGrab, X
 
 	TYA
-	STA Giant_PiranhaChompIndex, X
+	STA Boss_PiranhaChompIndex, X
 
 Giant_ParaChompDetectRTS:	
 	RTS	
@@ -1922,24 +2228,24 @@ Giant_ParaChompKilled:
 	LDA #$60
 	STA Objects_Timer2, X
 
-	INC Giant_PiranhaHits, X
+	INC Boss_PiranhaHits, X
 
 	LDA #$00
 	STA Player_IsClimbingObject
 	RTS
 	
-Giant_PiranhaSpawnPoints:
+Boss_PiranhaSpawnPoints:
 	.byte $30, $50, $70, $90, $B0, $40, $60, $80
 
-Giant_PiranhaSpawnChomp:
-	LDA Giant_PiranhaSpawnTimer, X
-	BEQ Giant_PiranhaCheckChomps
+Boss_PiranhaSpawnChomp:
+	LDA Boss_PiranhaSpawnTimer, X
+	BEQ Boss_PiranhaCheckChomps
 
 	CMP #$01
-	BNE Giant_PiranhaNoSpawn
+	BNE Boss_PiranhaNoSpawn
 
 	JSR Object_FindEmptyY
-	BCC Giant_PiranhaSpawnChompRTS
+	BCC Boss_PiranhaSpawnChompRTS
 
 	LDA #OBJ_PARACHOMP
 	STA Objects_ID, Y
@@ -1954,7 +2260,7 @@ Giant_PiranhaSpawnChomp:
 	AND #$07
 	TAX
 
-	LDA Giant_PiranhaSpawnPoints, X
+	LDA Boss_PiranhaSpawnPoints, X
 	STA Objects_XZ, Y
 	STA <Poof_X
 
@@ -1982,43 +2288,43 @@ Giant_PiranhaSpawnChomp:
 
 	LDX <CurrentObjectIndexZ
 
-Giant_PiranhaNoSpawn:
-	DEC Giant_PiranhaSpawnTimer, X
+Boss_PiranhaNoSpawn:
+	DEC Boss_PiranhaSpawnTimer, X
 
-Giant_PiranhaSpawnChompRTS:	
+Boss_PiranhaSpawnChompRTS:	
 	RTS	
 
-Giant_PiranhaCheckChomps:
+Boss_PiranhaCheckChomps:
 	LDY #$04
 
-Giant_PiranhaCheckChomps0:
+Boss_PiranhaCheckChomps0:
 	LDA Objects_State, Y
-	BEQ Giant_PiranhaCheckChomps1
+	BEQ Boss_PiranhaCheckChomps1
 
 	LDA Objects_ID, Y
 	CMP #OBJ_PARACHOMP
-	BEQ Giant_PiranhaCheckChompsRTS
+	BEQ Boss_PiranhaCheckChompsRTS
 	
-Giant_PiranhaCheckChomps1:
+Boss_PiranhaCheckChomps1:
 	DEY
-	BPL Giant_PiranhaCheckChomps0
+	BPL Boss_PiranhaCheckChomps0
 
-Giant_PiranhaCheckChomps2:
+Boss_PiranhaCheckChomps2:
 	LDA #$80
-	STA Giant_PiranhaSpawnTimer, X
+	STA Boss_PiranhaSpawnTimer, X
 
-Giant_PiranhaCheckChompsRTS:
+Boss_PiranhaCheckChompsRTS:
 	RTS	
 
-Giant_PiranhaFreezeBridge:
+Boss_PiranhaFreezeBridge:
 	LDA Objects_Timer, X
-	BNE Giant_PiranhaFreezeBridgeRTS
+	BNE Boss_PiranhaFreezeBridgeRTS
 
 	LDA #$52
 	STA Block_UpdateValue
 	STA Block_NeedsUpdate	 ; Store type of block change!
 
-	LDA Giant_PiranhaFreezeBlocks, X
+	LDA Boss_PiranhaFreezeBlocks, X
 	ASL A
 	ASL A
 	ASL A
@@ -2039,19 +2345,19 @@ Giant_PiranhaFreezeBridge:
 	LDA #$08
 	STA Objects_Timer, X 
 
-	DEC Giant_PiranhaFreezeBlocks, X
-	BPL Giant_PiranhaFreezeBridgeRTS
+	DEC Boss_PiranhaFreezeBlocks, X
+	BPL Boss_PiranhaFreezeBridgeRTS
 
 	LDA #$01
-	STA Giant_PiranhaAction, X
+	STA Boss_PiranhaAction, X
 
 	LDA #$80
 	STA Objects_Timer, X 
 
-Giant_PiranhaFreezeBridgeRTS:	
+Boss_PiranhaFreezeBridgeRTS:	
 	RTS
 
-Giant_PiranhaBreakBlocks:
+Boss_PiranhaBreakBlocks:
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA Block_DetectX
@@ -2070,9 +2376,9 @@ Giant_PiranhaBreakBlocks:
 	
 	JSR Object_DetectTile
 	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SLICK)
-	BEQ Giant_PiranhaBreakBlock
+	BEQ Boss_PiranhaBreakBlock
 
-Giant_PiranhaBreakBlocks1:
+Boss_PiranhaBreakBlocks1:
 	LDA Block_DetectX
 	ADD #$10
 	STA Block_DetectX
@@ -2083,17 +2389,17 @@ Giant_PiranhaBreakBlocks1:
 
 	JSR Object_DetectTile
 	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SLICK)
-	BEQ Giant_PiranhaBreakBlock
+	BEQ Boss_PiranhaBreakBlock
 
-Giant_PiranhaBreakBlocks2:	
+Boss_PiranhaBreakBlocks2:	
 	RTS
 
-Giant_PiranhaBreakBlock:
-	LDA Giant_PiranhaBlocksBroken, X
+Boss_PiranhaBreakBlock:
+	LDA Boss_PiranhaBlocksBroken, X
 	CMP #$04
-	BCS Giant_PiranhaBreakBlockRTS
+	BCS Boss_PiranhaBreakBlockRTS
 
-	INC Giant_PiranhaBlocksBroken, X
+	INC Boss_PiranhaBlocksBroken, X
 	LDA #$41
 	JSR Object_ChangeBlock
 
@@ -2105,12 +2411,12 @@ Giant_PiranhaBreakBlock:
 
 	JSR Common_MakeIce
 
-Giant_PiranhaBreakBlockRTS:	
+Boss_PiranhaBreakBlockRTS:	
 	RTS	
 
-Giant_PiranhaSpawnWeather:
+Boss_PiranhaSpawnWeather:
 	JSR Object_FindEmptyY
-	BCC Giant_PiranhaSpawnWeatherRTS
+	BCC Boss_PiranhaSpawnWeatherRTS
 
 	LDA #OBJ_WEATHER
 	STA Objects_ID, Y
@@ -2128,22 +2434,22 @@ Giant_PiranhaSpawnWeather:
 	STA Objects_YHiZ, Y
 	STA Objects_XHiZ, Y
 
-Giant_PiranhaSpawnWeatherRTS:
+Boss_PiranhaSpawnWeatherRTS:
 	RTS	
 
-Giant_PiranhaReverseSnow:
+Boss_PiranhaReverseSnow:
 	LDY #$04
 
-Giant_PiranhaReverseSnow1:	
+Boss_PiranhaReverseSnow1:	
 	LDA Objects_ID, Y
 	CMP #OBJ_WEATHER
-	BEQ Giant_PiranhaReverseSnow2
+	BEQ Boss_PiranhaReverseSnow2
 
 	DEY
-	BPL Giant_PiranhaReverseSnow1
+	BPL Boss_PiranhaReverseSnow1
 	RTS	
 
-Giant_PiranhaReverseSnow2:	
+Boss_PiranhaReverseSnow2:	
 	LDA Wind_Speed, Y
 	JSR Negate
 	STA Wind_Speed, Y
@@ -2153,9 +2459,9 @@ Giant_PiranhaReverseSnow2:
 	STA Wind_ExtraVel, Y
 	RTS
 
-Giant_PiranhaDie:
+Boss_PiranhaDie:
 	LDA Objects_Timer2, X
-	BNE Giant_PiranhaDieRTS
+	BNE Boss_PiranhaDieRTS
 
 	LDA #$80
 	STA CompleteLevelTimer
@@ -2176,10 +2482,10 @@ Giant_PiranhaDie:
 	STA Objects_Timer2, X
 	RTS
 
-Giant_PiranhaDieRTS:
+Boss_PiranhaDieRTS:
 	LDA #$80
-	STA Giant_PiranhaSpawnTimer, X
-	JMP Giant_PiranhaAnimate
+	STA Boss_PiranhaSpawnTimer, X
+	JMP Boss_PiranhaAnimate
 
 Boss_BullyAction = Objects_Data1
 Boss_BullyAnimTicks = Objects_Data2

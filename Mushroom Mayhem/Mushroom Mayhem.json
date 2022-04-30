@@ -4960,8 +4960,47 @@
       "IndexedColors": [
         15,
         15,
-        49,
-        1,
+        58,
+        11,
+        15,
+        15,
+        23,
+        7,
+        15,
+        15,
+        48,
+        11,
+        15,
+        15,
+        61,
+        0,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        15,
+        22,
+        48,
+        15,
+        15,
+        48,
+        40
+      ],
+      "Name": "Treasure Trespass-3",
+      "Id": "ba387427-8e80-4a8d-bc7c-2c3acdca0350"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        15,
+        48,
+        17,
         15,
         15,
         23,
@@ -4972,7 +5011,7 @@
         11,
         15,
         15,
-        61,
+        48,
         0,
         15,
         15,
@@ -4991,8 +5030,8 @@
         48,
         40
       ],
-      "Name": "Treasure Trespass-3",
-      "Id": "ba387427-8e80-4a8d-bc7c-2c3acdca0350"
+      "Name": "Treasure Tresspass-Boss",
+      "Id": "919ff7ae-6012-4451-8d09-f5171ce9e2fd"
     }
   ],
   "WorldInfo": [
@@ -5811,32 +5850,42 @@
         },
         {
           "Size": 1344,
-          "Name": "Treasure Trespass",
+          "Name": "Banzai Blooper Battle",
           "Id": "331f1a98-6948-4169-a84b-c2dceeac3a51",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
               "Size": 1433,
-              "Name": "Treasure Tresspass-2",
+              "Name": "Banzai Blooper Battle-2",
               "Id": "af0a10f2-7070-445f-9e44-54b72fe77e2f",
               "LastModified": "0001-01-01T00:00:00",
               "SublevelsInfo": [
                 {
-                  "Size": 1311,
-                  "Name": "Treasure Trespass-3",
+                  "Size": 1316,
+                  "Name": "Banzai Blooper Battle-3",
                   "Id": "85eb459c-5a34-4691-82f3-dce2cbef39a0",
                   "LastModified": "0001-01-01T00:00:00",
-                  "SublevelsInfo": [],
+                  "SublevelsInfo": [
+                    {
+                      "Size": 134,
+                      "Name": "Banzai Blooper Battle-Boss",
+                      "Id": "d5fa3c80-0785-465c-8a90-a433fe0dcada",
+                      "LastModified": "0001-01-01T00:00:00",
+                      "SublevelsInfo": [],
+                      "InfoType": 1,
+                      "DisplayName": "(Level) Banzai Blooper Battle-Boss"
+                    }
+                  ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Treasure Trespass-3"
+                  "DisplayName": "(Level) Banzai Blooper Battle-3"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Treasure Tresspass-2"
+              "DisplayName": "(Level) Banzai Blooper Battle-2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Treasure Trespass"
+          "DisplayName": "(Level) Banzai Blooper Battle"
         }
       ],
       "InfoType": 0,
@@ -20114,39 +20163,39 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 32,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "Property": 32,
+          "UpperLeft": 255,
+          "UpperRight": 96,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 112
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "Property": 32,
+          "UpperLeft": 255,
+          "UpperRight": 64,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 80
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
           "Property": 192,
@@ -20219,46 +20268,46 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 32,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 100,
+          "LowerRight": 100
+        },
+        {
+          "Property": 32,
+          "UpperLeft": 254,
+          "UpperRight": 99,
+          "LowerLeft": 254,
+          "LowerRight": 115
+        },
+        {
+          "Property": 32,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 98,
+          "UpperRight": 254,
+          "LowerLeft": 114,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 64,
+          "UpperRight": 254,
+          "LowerLeft": 80,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 254,
+          "UpperRight": 65,
+          "LowerLeft": 254,
+          "LowerRight": 81
         },
         {
           "Property": 192,
@@ -20331,46 +20380,46 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 116,
+          "UpperRight": 116,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 254,
+          "UpperRight": 117,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
+          "Property": 32,
           "UpperLeft": 238,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 97,
+          "UpperRight": 254,
+          "LowerLeft": 113,
+          "LowerRight": 254
         },
         {
-          "Property": 0,
+          "Property": 32,
           "UpperLeft": 238,
-          "UpperRight": 255,
+          "UpperRight": 66,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 82
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 32,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
           "Property": 200,
@@ -39115,6 +39164,34 @@
         },
         {
           "PropertiesAppliedTo": [
+            3
+          ],
+          "X": 0,
+          "Y": 4,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x0C",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": 8,
+          "Y": 4,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x0C",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
             4
           ],
           "X": 0,
@@ -39342,7 +39419,7 @@
         "Colossal Cheep",
         "Fwoosh",
         "Bully",
-        "Bullet Bill",
+        "Blooper",
         "Piranha"
       ],
       "Group": "Boss"
@@ -49347,24 +49424,180 @@
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x34",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x36",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x34",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
           "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x38",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": 16,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x38",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 0,
+          "Y": 32,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 32,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": 32,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x12",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 48,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 64,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 80,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 96,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 112,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 128,
+          "TileTableAddress": "0x6800",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
@@ -60066,7 +60299,7 @@
       },
       {
         "Key": "08",
-        "Value": "Submarin Mode"
+        "Value": "Submarine Mode"
       }
     ]
   },

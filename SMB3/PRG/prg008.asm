@@ -121,8 +121,18 @@ Player_DoGameplay:
 
 	JSR Level_Initialize	 ; Initialize level if needed
 	JSR LevelJunction_PartialInit	 
+	
+	
+	LDA DayNightActive
+	BNE Clear_WeatherSprites
 
+	JSR Sprite_RAM_Clear
+	JMP Player_DoUpdate
+
+Clear_WeatherSprites:
 	JSR Sprite_RAM_Clear_NotWeather
+
+Player_DoUpdate:
 	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 
 	; If Player is...
@@ -2870,7 +2880,7 @@ PRG008_B1DD:
 	CMP #09
 	BGE PRG008_B208	 ; If Player_SpriteX >= 17, jump to PRG008_B208
 	
-	LDA #08	 	; Cap min at 16
+	LDA #08	 	
 
 PRG008_B1E3:
 	STA <Player_SpriteX ; Update Player_SpriteX
@@ -4405,7 +4415,7 @@ NotSmallMario:
 
 	LDX #$07
 	
-ClearSprite
+ClearSprite:
 	LDA Objects_Global, X
 	BNE Check_GlobalHold
 

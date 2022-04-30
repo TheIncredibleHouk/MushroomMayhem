@@ -2278,7 +2278,6 @@ ObjInit_DoNothing:
 ObjNorm_DoNothing:
 ObjHit_DoNothing:
 ObjHalt_DoNothing:
-LevelEvent_DoNothing:
 	RTS		 ; Return
 
 	; Called for an object in state 1 to perform initialization logic
@@ -2876,6 +2875,7 @@ PRG000_D63F:
 Object_Draw16x48:
 	JSR Object_ShakeAndCalcSprite
 
+Object_Draw16x48PreCalc:
 	LDX <CurrentObjectIndexZ	; X = object slot index
 
 	LDA Objects_Frame,X
@@ -2928,6 +2928,7 @@ Object_Draw16x48:
 Object_Draw48x16:
 	JSR Object_ShakeAndCalcSprite
 
+Object_Draw48x16PreCalc:
 	LDX <CurrentObjectIndexZ	; X = object slot index
 
 	LDA Objects_Frame,X
@@ -3094,70 +3095,6 @@ PRG000_D693:
 PRG000_D6C6:
 	RTS		 ; Return
 
-
-Object_Draw24x16Sprite:
-	LDY <Temp_Var7
-	LDA <Temp_Var5	; Check sprite vertical visibility
-	LSR A		
-	BCS PRG000_D726	; If this sprite is off-screen, jump to PRG000_D726 (RTS)
-
-	LDA <Temp_Var8	; Checking horizontal sprite visibility
-	ASL A		; Left shift flags value
-	STA <Temp_Var10	; -> Temp_Var10
-
-	LDA <Temp_Var1	; Sprite Y
-	BCS PRG000_D6D8	; If sprite is horizontally off-screen, jump to PRG000_D6D8
-
-	STA Sprite_RAM+$00,Y	 ; Set sprite Y in RAM
-
-PRG000_D6D8:
-	BIT <Temp_Var10	 
-	BMI PRG000_D6DF	 ; If this sprite is off-screen, jump to PRG000_D6DF
-
-	STA Sprite_RAM+$04,Y	 ; Set sprite Y in RAM
-
-PRG000_D6DF:
-	BVS PRG000_D6E4	 ; If this sprite is off-screen, jump to PRG000_D6E4
-
-	STA Sprite_RAM+$08,Y	 ; Set sprite Y in RAM
-
-PRG000_D6E4:
-	LDA <Temp_Var2
-	STA Sprite_RAM+$03,Y	 ; Set sprite X in RAM
-	ADD #$08
-	STA Sprite_RAM+$07,Y	 ; Set sprite X in RAM (+8)
-	ADD #$08
-	STA Sprite_RAM+$0B,Y	 ; Set sprite X in RAM (+16)
-
-	; Set each of the sprite's patterns
-	LDA ObjectGroup_PatternSets,X
-	STA Sprite_RAM+$01,Y
-	LDA ObjectGroup_PatternSets+1,X
-	STA Sprite_RAM+$05,Y
-	LDA ObjectGroup_PatternSets+2,X
-	STA Sprite_RAM+$09,Y
-
-	; Set each sprite's attributes
-	LDA <Temp_Var3
-	ORA <Temp_Var4		 ; Combine attributes
-	STA Sprite_RAM+$02,Y
-	STA Sprite_RAM+$06,Y
-	STA Sprite_RAM+$0A,Y
-
-	BIT <Temp_Var3
-	BVC PRG000_D6C6	 ; If sprite is not horizontally flipped, jump to PRG000_D6C6 (RTS)
-
-	; Swap end sprites patterns
-	LDA Sprite_RAM+$01,Y
-	PHA	
-	LDA Sprite_RAM+$09,Y
-	STA Sprite_RAM+$01,Y
-	PLA	
-	STA Sprite_RAM+$09,Y
-
-PRG000_D726:
-	RTS		 ; Return
-	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_GetUnusedSprite
 ;

@@ -10,6 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "3f7f11f4-3100-437b-8dc2-b07f6df38e2a",
   "StaticTileTableIndex": 16,
+  "MostCommonTile": 0,
   "AnimationType": 1,
   "ScrollType": 0,
   "Effects": 0,
@@ -6504,6 +6505,7 @@
       "Property": 0
     }
   ],
+  "SecondObjectData": [],
   "LevelPointers": [
     {
       "LevelId": "66bd6579-8ef4-4ca7-aeff-e20c50693e00",

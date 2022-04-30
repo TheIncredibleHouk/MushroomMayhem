@@ -6653,14 +6653,9 @@
       "X": 125,
       "Y": 3,
       "Property": 0
-    },
-    {
-      "GameObjectId": 128,
-      "X": 7,
-      "Y": 10,
-      "Property": 0
     }
   ],
+  "SecondObjectData": [],
   "LevelPointers": [
     {
       "LevelId": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
