@@ -6637,6 +6637,146 @@
       "Property": 2
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 65,
+      "X": 46,
+      "Y": 6,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 72,
+      "Y": 22,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 12,
+      "X": 76,
+      "Y": 2,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 102,
+      "X": 72,
+      "Y": 10,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 33,
+      "Y": 12,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 61,
+      "X": 18,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 72,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 194,
+      "X": 85,
+      "Y": 12,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 8,
+      "X": 156,
+      "Y": 2,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 13,
+      "X": 139,
+      "Y": 13,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 102,
+      "X": 200,
+      "Y": 11,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 200,
+      "Y": 10,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 102,
+      "X": 183,
+      "Y": 24,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 183,
+      "Y": 23,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 14,
+      "X": 217,
+      "Y": 5,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 194,
+      "X": 236,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 18,
+      "X": 235,
+      "Y": 4,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 9,
+      "X": 224,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 65,
+      "X": 148,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 65,
+      "X": 159,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 33,
+      "Y": 11,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 194,
+      "X": 98,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 194,
+      "X": 117,
+      "Y": 23,
+      "Property": 2
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [
     {

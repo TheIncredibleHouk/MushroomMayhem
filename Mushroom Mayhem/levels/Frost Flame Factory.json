@@ -6667,6 +6667,176 @@
       "Property": 1
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 63,
+      "X": 26,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 12,
+      "X": 57,
+      "Y": 25,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 113,
+      "X": 41,
+      "Y": 1,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 194,
+      "X": 32,
+      "Y": 2,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 112,
+      "X": 14,
+      "Y": 21,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 112,
+      "X": 38,
+      "Y": 17,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 63,
+      "X": 81,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 113,
+      "X": 98,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 110,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 110,
+      "Y": 19,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 110,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 113,
+      "X": 60,
+      "Y": 19,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 35,
+      "X": 161,
+      "Y": 1,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 112,
+      "X": 144,
+      "Y": 1,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 13,
+      "X": 104,
+      "Y": 9,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 113,
+      "X": 180,
+      "Y": 7,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 9,
+      "X": 187,
+      "Y": 2,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 61,
+      "X": 184,
+      "Y": 9,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 113,
+      "X": 206,
+      "Y": 1,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 194,
+      "X": 215,
+      "Y": 1,
+      "Property": 3
+    },
+    {
+      "GameObjectId": 112,
+      "X": 216,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 14,
+      "X": 238,
+      "Y": 24,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 112,
+      "X": 187,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 18,
+      "X": 188,
+      "Y": 18,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 47,
+      "X": 55,
+      "Y": 6,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 63,
+      "X": 88,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 113,
+      "X": 156,
+      "Y": 2,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 113,
+      "X": 223,
+      "Y": 7,
+      "Property": 1
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [],
   "CompressedData": "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"

@@ -6511,6 +6511,20 @@
       "Property": 0
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 90,
+      "X": 13,
+      "Y": 3,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 90,
+      "X": 2,
+      "Y": 11,
+      "Property": 0
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [
     {

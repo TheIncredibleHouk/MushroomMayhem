@@ -6517,6 +6517,26 @@
       "Property": 0
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 18,
+      "X": 26,
+      "Y": 22,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 26,
+      "X": 4,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 67,
+      "X": 26,
+      "Y": 23,
+      "Property": 0
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [],
   "CompressedData": "Pz8/Pz8/Pz8/Pz8/Pz8iP1kEP1sCP1wCP1wCPwGtwaxZAj8BvcG8WQM/WwM/QsNjZGVGxOPk5UEBP0gEP0LBdEjBdAU/RQI/H5EfUR9h"

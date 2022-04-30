@@ -6619,6 +6619,128 @@
       "Property": 1
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 62,
+      "X": 28,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 100,
+      "X": 46,
+      "Y": 15,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 109,
+      "X": 22,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 65,
+      "X": 101,
+      "Y": 15,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 136,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 157,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 13,
+      "X": 143,
+      "Y": 12,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 18,
+      "X": 236,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 12,
+      "X": 90,
+      "Y": 10,
+      "Property": 5
+    },
+    {
+      "GameObjectId": 68,
+      "X": 57,
+      "Y": 24,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 62,
+      "X": 83,
+      "Y": 17,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 69,
+      "X": 147,
+      "Y": 6,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 9,
+      "X": 170,
+      "Y": 25,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 63,
+      "X": 171,
+      "Y": 17,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 69,
+      "X": 184,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 69,
+      "X": 192,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 69,
+      "X": 201,
+      "Y": 18,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 9,
+      "X": 206,
+      "Y": 7,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 61,
+      "X": 229,
+      "Y": 17,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 100,
+      "X": 124,
+      "Y": 12,
+      "Property": 1
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [
     {

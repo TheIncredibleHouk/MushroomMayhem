@@ -6529,6 +6529,38 @@
       "Property": 0
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 190,
+      "X": 9,
+      "Y": 1,
+      "Property": 5
+    },
+    {
+      "GameObjectId": 190,
+      "X": 29,
+      "Y": 3,
+      "Property": 4
+    },
+    {
+      "GameObjectId": 190,
+      "X": 42,
+      "Y": 3,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 190,
+      "X": 51,
+      "Y": 10,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 18,
+      "X": 50,
+      "Y": 0,
+      "Property": 0
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [],
   "CompressedData": "B0TBPydExEVBQz8KREfCYxJBJ1XBY0XBVEvDYyJDJUTERUFDPwpER8RjMq6vQsFUTMEhRsFUQ8EgQ8FUQ8FjRcFUS8RjMp6fQsFUVMFURMIEBUHBVEPBY0XBVEvCYzJEwVRUwVREwhQVQcFUQ8FjRcFUS8JjMkTBVFTBVETBFELBVEPBY0XBVEvCYzJEwVRUwVREwRRCwVRDwWNFwVRLwmMyQcQEBUFUVMFURMEUQsFUQ8FjRcFUS8JjMkHEFBVBVE/BBkPDVEEGQsEUQsFUQ8FjRcFUS8JjMkHBFEHBVEfCnp9FwQZDw1RBBkLBFELBVELCEGNFwVRDB0TBPwZEwUUGVcOur0MYRME/CkRHwWN+wWN+wWN+wWN/f39/f39/f39/f3Y="

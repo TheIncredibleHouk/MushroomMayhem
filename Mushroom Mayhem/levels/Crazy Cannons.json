@@ -6619,6 +6619,128 @@
       "Property": 0
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 192,
+      "X": 31,
+      "Y": 6,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 192,
+      "X": 18,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 12,
+      "X": 57,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 193,
+      "X": 47,
+      "Y": 15,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 64,
+      "X": 61,
+      "Y": 10,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 192,
+      "X": 72,
+      "Y": 11,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 64,
+      "X": 11,
+      "Y": 13,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 192,
+      "X": 69,
+      "Y": 18,
+      "Property": 3
+    },
+    {
+      "GameObjectId": 190,
+      "X": 98,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 190,
+      "X": 101,
+      "Y": 10,
+      "Property": 4
+    },
+    {
+      "GameObjectId": 13,
+      "X": 100,
+      "Y": 8,
+      "Property": 4
+    },
+    {
+      "GameObjectId": 190,
+      "X": 117,
+      "Y": 8,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 64,
+      "X": 104,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 190,
+      "X": 140,
+      "Y": 14,
+      "Property": 4
+    },
+    {
+      "GameObjectId": 5,
+      "X": 174,
+      "Y": 22,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 190,
+      "X": 176,
+      "Y": 15,
+      "Property": 6
+    },
+    {
+      "GameObjectId": 190,
+      "X": 198,
+      "Y": 14,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 190,
+      "X": 198,
+      "Y": 10,
+      "Property": 4
+    },
+    {
+      "GameObjectId": 192,
+      "X": 228,
+      "Y": 8,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 68,
+      "X": 9,
+      "Y": 25,
+      "Property": 0
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [
     {

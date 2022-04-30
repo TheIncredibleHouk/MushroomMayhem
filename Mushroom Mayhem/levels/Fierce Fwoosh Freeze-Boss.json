@@ -6511,6 +6511,20 @@
       "Property": 1
     }
   ],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 19,
+      "X": 12,
+      "Y": 8,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 26,
+      "X": 0,
+      "Y": 0,
+      "Property": 1
+    }
+  ],
   "SecondObjectData": [],
   "LevelPointers": [],
   "CompressedData": "ghBT7EFBQUFBQUFBQUFBQe1TwlPsAUEHEQFBiBDtU1PsQUFBQUFBQUFBQUFBwe0BU4cCREXBUx9BEPsN0wH7DUEB+w1BAfvBTAtBwUwB+w1BAfsNQQH7DUEB+w1BAfsNQQH7DUHB+w9RD9I="
