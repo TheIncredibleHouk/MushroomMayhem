@@ -59,7 +59,7 @@ DAY_FLAG		= $40
 NIGHT_FLAG		= $60
 
 Spawn_Column = Temp_Var6
-Spawn_ColumnHi  = Temp_Var7
+Spawn_ColumnHi  = Temp_Var7 
 Spawn_Dynamically = Temp_Var16
 
 Level_ObjectsSpawnByScrolling:

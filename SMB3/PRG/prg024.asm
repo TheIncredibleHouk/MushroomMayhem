@@ -1515,10 +1515,13 @@ PRG024_ACA5:
 	BNE PRG024_AC96	 ; If the "gling" sound has not ended, loop!
 
 	INC <Title_State ; Title_State++
+
 Title_PrepForWorldMap:
-	; World_Num = 0 (World 1)
 	LDA #$00
 	STA World_Num
+
+	LDA #$00
+	STA SecondQuest
 
 	INC Force_StatusBar_Init
 

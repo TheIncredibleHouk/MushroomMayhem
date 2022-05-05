@@ -5032,6 +5032,45 @@
       ],
       "Name": "Treasure Tresspass-Boss",
       "Id": "919ff7ae-6012-4451-8d09-f5171ce9e2fd"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        15,
+        35,
+        3,
+        15,
+        7,
+        56,
+        23,
+        15,
+        15,
+        26,
+        11,
+        15,
+        1,
+        49,
+        17,
+        15,
+        15,
+        54,
+        6,
+        15,
+        7,
+        48,
+        22,
+        15,
+        15,
+        48,
+        26,
+        15,
+        15,
+        48,
+        23
+      ],
+      "Name": "Piranha Boss Level",
+      "Id": "d06f8384-72f8-4093-9b39-63db01085d91"
     }
   ],
   "WorldInfo": [
@@ -6038,6 +6077,25 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Cloudy Clash"
+        },
+        {
+          "Size": 222,
+          "Name": "Piranha Boss",
+          "Id": "ea57e130-1e2b-4d1e-9432-5ff178444b68",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [
+            {
+              "Size": 1283,
+              "Name": "Piranha Boss-Powerups",
+              "Id": "d1f23b48-8743-4b97-bd83-e465d3749b2f",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Piranha Boss-Powerups"
+            }
+          ],
+          "InfoType": 1,
+          "DisplayName": "(Level) Piranha Boss"
         }
       ],
       "InfoType": 0,
@@ -11637,17 +11695,17 @@
     },
     {
       "FireBallInteractions": [
+        238,
+        252,
         0,
         0,
-        136,
-        207,
         0,
         0,
         0,
         0
       ],
       "IceBallInteractions": [
-        0,
+        253,
         0,
         0,
         0,
@@ -11832,7 +11890,7 @@
           "LowerRight": 52
         },
         {
-          "Property": 192,
+          "Property": 194,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -11854,10 +11912,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 58,
+          "UpperRight": 61,
+          "LowerLeft": 106,
+          "LowerRight": 109
         },
         {
           "Property": 192,
@@ -12043,17 +12101,17 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
+          "UpperLeft": 239,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 239
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
+          "Property": 0,
+          "UpperLeft": 239,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 239
         },
         {
           "Property": 192,
@@ -12245,11 +12303,11 @@
           "LowerRight": 249
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 240,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 9,
@@ -12308,25 +12366,25 @@
           "LowerRight": 219
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 248,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 243,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 249,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 0,
@@ -12407,10 +12465,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 164,
+          "UpperRight": 165,
+          "LowerLeft": 180,
+          "LowerRight": 181
         },
         {
           "Property": 0,
@@ -12519,10 +12577,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 196,
+          "UpperRight": 197,
+          "LowerLeft": 212,
+          "LowerRight": 213
         },
         {
           "Property": 0,
@@ -13359,17 +13417,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 58,
+          "UpperRight": 59,
+          "LowerLeft": 74,
+          "LowerRight": 75
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -13456,25 +13514,25 @@
           "LowerRight": 17
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 199,
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 253,
+          "UpperRight": 253,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 252,
+          "UpperRight": 252,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
           "Property": 192,
@@ -17208,20 +17266,20 @@
       ],
       "PSwitchAlterations": [
         {
-          "From": 0,
-          "To": 0
+          "From": 95,
+          "To": 78
         },
         {
-          "From": 119,
-          "To": 238
+          "From": 78,
+          "To": 95
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 32,
+          "To": 33
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 33,
+          "To": 32
         },
         {
           "From": 0,
@@ -37538,14 +37596,16 @@
     {
       "GameId": 1,
       "GameObjectType": 1,
-      "Name": "Unused x1",
+      "Name": "Power Up 1",
       "Sprites": [
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 0,
           "Y": 0,
           "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileValue": "0x00",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 0,
@@ -37553,20 +37613,199 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
-          "X": 0,
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 4,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x08",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x25000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x25000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x26000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x26000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x27000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x27000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x28000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x28000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x29000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x29000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "None",
+        "Coin",
+        "Mushroom",
+        "Fire Flower",
+        "Super Leaf",
+        "Frog Suit",
+        "Koopa Shell",
+        "Hammer Suit"
+      ],
+      "Group": "Global"
     },
     {
       "GameId": 2,
@@ -37792,7 +38031,7 @@
           ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x2D000",
+          "TileTableAddress": "0x2a000",
           "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
@@ -37806,7 +38045,7 @@
           ],
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0x2D000",
+          "TileTableAddress": "0x2a000",
           "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
@@ -37820,11 +38059,11 @@
           ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x2C000",
+          "TileTableAddress": "0x2D000",
           "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -37834,6 +38073,34 @@
           ],
           "X": 8,
           "Y": 0,
+          "TileTableAddress": "0x2D000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x2C000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 8,
+          "Y": 0,
           "TileTableAddress": "0x2C000",
           "TileValue": "0x12",
           "HorizontalFlip": false,
@@ -37844,35 +38111,35 @@
         },
         {
           "PropertiesAppliedTo": [
-            2
+            4
           ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x2E000",
-          "TileValue": "0x10",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x32",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": [
-            2
+            4
           ],
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0x2E000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x32",
+          "HorizontalFlip": true,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": [
-            3
+            5
           ],
           "X": 0,
           "Y": 0,
@@ -37886,7 +38153,7 @@
         },
         {
           "PropertiesAppliedTo": [
-            3
+            5
           ],
           "X": 8,
           "Y": 0,
@@ -37895,15 +38162,46 @@
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x2b000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x2b000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
           "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [
+        "Ice Flower",
         "Fox Leaf",
         "Ninjashroom",
-        "Super Star",
-        "Vine"
+        "INVALID",
+        "Vine",
+        "P-Wing",
+        "Checkpoint"
       ],
       "Group": "Global"
     },
@@ -49250,8 +49548,8 @@
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 6,
-          "TileTableAddress": "0x1F800",
-          "TileValue": "0x00",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x18",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -49262,8 +49560,8 @@
           "PropertiesAppliedTo": null,
           "X": 8,
           "Y": 6,
-          "TileTableAddress": "0x1F800",
-          "TileValue": "0x00",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x18",
           "HorizontalFlip": true,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -49274,8 +49572,8 @@
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 22,
-          "TileTableAddress": "0x1F800",
-          "TileValue": "0x20",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x38",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 2,
@@ -49286,11 +49584,11 @@
           "PropertiesAppliedTo": null,
           "X": 8,
           "Y": 22,
-          "TileTableAddress": "0x1F800",
-          "TileValue": "0x22",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x3A",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 2,
+          "PaletteIndex": 1,
           "Overlay": false,
           "CustomPalette": null
         }

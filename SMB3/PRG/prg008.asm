@@ -1011,8 +1011,8 @@ PRG008_A71C:
 	STA Player_IsDucking	; Player_IsDucking = 0
 
 PRG008_A72B:
-	LDA Player_ForcedSlide
-	BNE PRG008_A736
+	;LDA Player_ForcedSlide
+	;BNE PRG008_A736
 
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)
@@ -1113,21 +1113,8 @@ PRG008_A928:
 PRG008_A93D:
 	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
 
-	LDA <Player_YVelZ
-	ADD <Player_CarryYVel
+	LDA <Temp_Var1
 	STA <Player_EffYVel
-
-	LDA <Player_XVelZ
-	ADD <Player_CarryXVel
-
-	LDY Player_InWater
-	ORA Player_IsClimbing
-	BNE Player_NoWindFactor
-
-	ADD Wind
-
-Player_NoWindFactor:
-	STA <Player_EffXVel
 	
 	LDA #$00
 	STA <Player_CarryXVel
@@ -1709,8 +1696,6 @@ PRG008_AC14:
 ;
 ; Controls the acts of jumping, flying, and fluttering (tail wagging)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-PRG008_AC22:
-	.byte $D0, $CE, $CC, $CA, $CA, $CA
 
 Player_JumpFlyFlutter:
 	LDA #$00
@@ -4106,7 +4091,13 @@ Player_ApplyXVelocity:
 	LDA Player_ForcedSlide
 	BEQ Player_ApplyXVelocity1
 
-	LDY Player_LastDirection
+	LDY #$00
+	LDA Player_LastXVel
+	BPL ForceLeft
+
+	INY
+
+ForceLeft:	
 	LDA ForceDirection, Y
 	STA <Player_CarryXVel
 
@@ -4128,9 +4119,26 @@ Player_ApplyXVelocity1:
 PRG008_BFAC:
 	STA <Temp_Var16		; Store absolute value Player_XVelZ -> Temp_Var166
 	CMP #PLAYER_MAXSPEED
-	BLS Player_ApplyVelocity ; If we haven't hit the PLAYER_MAXSPEED yet, apply it!
+	BLS Player_DoXApply ; If we haven't hit the PLAYER_MAXSPEED yet, apply it!
 	STY <Player_XVelZ	 ; Otherwise, cap at max speed!
 
+Player_DoXApply:
+	JSR Player_ApplyVelocity
+
+	LDA <Temp_Var1
+	STA <Player_EffXVel
+
+	LDA Player_ForcedSlide
+	ORA Player_Shell
+	BNE Player_DoXApplyRTS
+
+	LDA <Player_EffXVel
+	BEQ Player_DoXApplyRTS
+
+	STA Player_LastXVel
+
+Player_DoXApplyRTS:	
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_ApplyVelocity
 ;
@@ -6482,8 +6490,5 @@ Player_SetHolding:
 	ORA Objects_BeingHeld + 2
 	ORA Objects_BeingHeld + 3
 	ORA Objects_BeingHeld + 4
-	ORA Objects_BeingHeld + 5
-	ORA Objects_BeingHeld + 6
-	ORA Objects_BeingHeld + 7
 	STA Player_IsHolding
 	RTS

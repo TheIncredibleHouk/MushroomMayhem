@@ -2838,7 +2838,6 @@ Skip_Time_Set:
 HorzNotLocked:
 	STX Level_HorzScrollLock
 
-
 	LDA [Temp_Var14],Y
 	AND #$F0
 	LSR A
@@ -3100,11 +3099,17 @@ SkipWriteRaw:
 LoadSprites:
 	LDA #$01
 	STA Level_Objects
+
+LoadSpritesReset:
 	LDX #$01
 
 LoadSpriteLoop:
 	JSR NextLevelByte
+
 	LDA [Temp_Var14], Y
+	CMP SecondQuest
+	BEQ LoadSpritesReset
+
 	STA Level_Objects, X
 	CMP #$FF
 	BEQ LoadSpritesDone
@@ -4460,7 +4465,6 @@ Jump_Right:
 
 Do_Jump_Off:
 	STA <Player_XVelZ
-	STA <Player_EffXVel
 	RTS
 
 DoNightTransition:

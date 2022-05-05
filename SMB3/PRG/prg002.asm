@@ -1160,6 +1160,7 @@ DeleteWeather:
 	JMP Object_SetDeadAndNotSpawned
 
 ObjInit_Weather:
+	STA Debug_Snap
 	LDA #$06
 	STA Objects_SpritesRequested, X
 

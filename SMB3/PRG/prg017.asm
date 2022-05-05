@@ -1810,8 +1810,6 @@ Boss_BlooperDyingFinal:
 	LDA #$FF
 	STA Objects_Timer2, X
 
-	STA Debug_Snap
-
 	LDA #$01
 	STA Player_OnObject
 

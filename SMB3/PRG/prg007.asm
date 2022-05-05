@@ -1243,7 +1243,7 @@ PlayerProj_HitEnemies:
 	LDY #$04	 ; Y = 4 (enemies only exist in the lower slots)
 
 PlayerProj_HitEnemies1:
-	LDA Objects_Timer2, X
+	LDA Objects_Timer2, Y
 	BNE PlayerProj_HitEnemies2
 
 	LDA Objects_ToggleDetect, Y

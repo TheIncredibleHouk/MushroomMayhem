@@ -2424,7 +2424,8 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Player_FireDash:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
 	Player_Direction:		.ds 1	;
-	Player_LastDirection:		.ds	1	;
+	Player_LastDirection:	.ds	1	;
+	Player_LastXVel:		.ds 1
 	EventSwitch:			.ds 1	; For e-switch levels
 	EventVar:				.ds 1
 	EventTicker:			.ds 1
@@ -3118,6 +3119,8 @@ TILE_ITEM_SPINNER	= $FE
 	PreviousLevel:		.ds 1
 	ForcedSwitch:       .ds 1
 	NegaStars:			.ds 8
+	SecondQuest:		.ds 1
+
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
