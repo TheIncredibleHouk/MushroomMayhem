@@ -1182,7 +1182,7 @@ Pause_DoMenu:
 	STA PatTable_BankSel+5	; Set patterns needed for P A U S E sprites
 
 	LDA Pad_Input
-	AND #PAD_SELECT
+	AND #PAD_SELECT | PAD_UP | PAD_DOWN
 	BEQ Pause_SelectNotPressed
 
 	LDA #SND_MAPPATHMOVE	 
@@ -3107,12 +3107,13 @@ LoadSpriteLoop:
 	JSR NextLevelByte
 
 	LDA [Temp_Var14], Y
-	CMP SecondQuest
-	BEQ LoadSpritesReset
-
 	STA Level_Objects, X
 	CMP #$FF
 	BEQ LoadSpritesDone
+
+	CMP SecondQuest
+	BEQ LoadSpritesReset
+
 	INX
 	BCC LoadSpriteLoop
 
@@ -4373,23 +4374,32 @@ Try_Item_Reserve_Release:
 	LDA Player_Level
 	CMP #ABILITY_ITEMRESERVE
 	BCC No_Release
+
 	LDA PowerUp_Reserve
 	BEQ No_Release
+
 	LDA <Pad_Input
 	AND #PAD_SELECT
 	BEQ No_Release
+
 	LDX PowerUp_Reserve
 	DEX
+
 	LDA #OBJSTATE_INIT
 	STA Objects_State + 5
+
 	LDA Reserve_Sprites, X
 	STA Objects_ID + 5
+
 	LDA Reserve_Flash, X
 	STA PUp_StarManFlash
+
 	LDA <Player_X
 	STA Objects_XZ + 5
+
 	LDA <Player_XHi
 	STA Objects_XHiZ + 5
+
 	LDA <Player_YZ
 	SUB #$08
 	STA Objects_YZ + 5
@@ -5145,6 +5155,25 @@ FindPointerLoop:
 NextPointer:
 	DEC <Temp_Var1
 	BPL FindPointerLoop
+	RTS
+
+Climbing_Pointer:
+	LDA <Player_SpriteY
+	BEQ Climbing_FindPointer
+
+	CMP #$B0
+	BCC Climbing_PointerRTS
+
+Climbing_FindPointer:
+	JSR Find_Applicable_Pointer	 ; Initialize level junction
+ 
+	LDA <Temp_Var1
+	BMI Climbing_PointerRTS
+	
+	JSR UsePointer
+	INC Level_JctCtl
+
+Climbing_PointerRTS:
 	RTS
 
 Do_Pointer_Effect:
@@ -5974,7 +6003,7 @@ DistributeSprites:
 
 	LDA <Temp_Var1
 	STA Object_SpriteRAMOffset, X
-	
+
 	LDA Objects_SpritesRequested, X
 	ASL A
 	ASL A

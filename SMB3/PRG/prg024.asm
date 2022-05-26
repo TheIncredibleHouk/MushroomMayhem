@@ -1520,7 +1520,7 @@ Title_PrepForWorldMap:
 	LDA #$00
 	STA World_Num
 
-	LDA #$00
+	LDA #$FF
 	STA SecondQuest
 
 	INC Force_StatusBar_Init

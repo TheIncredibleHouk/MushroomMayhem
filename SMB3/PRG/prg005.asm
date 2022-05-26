@@ -2830,8 +2830,8 @@ ObjInit_FloatMineRTS:
 	RTS
 
 InitMineMove_Pattern:
-	LDA #$10
-	STA Patrol_ResetTimer, X
+	LDA #$04
+	STA Patrol_Blocks, X
 
 	LDA <Objects_XZ, X
 	SUB #$01
@@ -2953,8 +2953,10 @@ FloatMine_Chained:
 	LDA #$00
 	STA <Objects_YVelZ, X
 
-	LDA #$04
-	STA Patrol_ResetTimer, X
+	LDA #$01
+	STA Patrol_Blocks, X
+
+	LDA #$01
 	STA Patrol_YAccelLimit, X
 
 	LDA #$06

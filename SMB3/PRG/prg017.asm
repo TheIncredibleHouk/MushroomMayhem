@@ -2448,13 +2448,13 @@ Boss_PiranhaReverseSnow1:
 	RTS	
 
 Boss_PiranhaReverseSnow2:	
-	LDA Wind_Speed, Y
+	;LDA Wind_Speed, Y
 	JSR Negate
-	STA Wind_Speed, Y
+	;STA Wind_Speed, Y
 
-	LDA Wind_ExtraVel, Y
+	;LDA Wind_ExtraVel, Y
 	JSR Negate
-	STA Wind_ExtraVel, Y
+	;STA Wind_ExtraVel, Y
 	RTS
 
 Boss_PiranhaDie:

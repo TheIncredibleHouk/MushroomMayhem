@@ -3624,8 +3624,8 @@ ObjInit_GoldCheep:
 	LDA #$01
 	STA Objects_Property, X
 
-	LDA #$10
-	STA Patrol_ResetTimer, X
+	LDA #$03
+	STA Patrol_Blocks, X
 
 	LDA #$04
 	STA Patrol_YVelocityChange, X
@@ -3695,8 +3695,8 @@ ObjInit_Yurarin:
 	.word Yurarin_InitGenerated
 
 Yurarin_InitVertical: 
-	LDA #$10
-	STA Patrol_ResetTimer, X
+	LDA #$03
+	STA Patrol_Blocks, X
 
 	LDA #$04
 	STA Patrol_YVelocityChange, X
@@ -3712,8 +3712,8 @@ Yurarin_InitChase:
 	RTS	
 
 Yurarin_InitGenerated:
-	LDA #$10
-	STA Patrol_ResetTimer, X
+	LDA #$04
+	STA Patrol_Blocks, X
 
 	LDA #$04
 	STA Patrol_YVelocityChange, X

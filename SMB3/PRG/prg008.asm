@@ -6308,6 +6308,7 @@ Player_DoClimbing2_0:
 Player_DoClimbing2_1:
 	JSR Player_DoClimbAnim	 ; Animate climbing
 	JSR Player_Draw29	 ; Draw Player
+	JSR Climbing_Pointer
 	PLA
 	PLA
 

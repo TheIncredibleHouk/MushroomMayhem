@@ -19,7 +19,7 @@ OBJ_SPECTER			= $86
 OBJ_MISSILE			= $87
 OBJ_PHASM			= $88
 OBJ_BOOWAVE			= $89
-OBJ_POKEY			= $8A
+OBJ_BALLCHAIN		= $8A
 OBJ_PARACHOMP		= $8B
 
     .word ObjInit_Spike ; Object $78
@@ -40,7 +40,7 @@ OBJ_PARACHOMP		= $8B
     .word ObjInit_Missile ; Object $87
     .word ObjInit_Phasm ; Object $88
     .word ObjInit_BooWave ; Object $89
-    .word ObjInit_Pokey ; Object $8A
+    .word ObjInit_BallChain ; Object $8A
     .word ObjInit_ParaChomp ; Object $8B
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
@@ -63,7 +63,7 @@ OBJ_PARACHOMP		= $8B
     .word ObjNorm_Missile ; Object $87
     .word ObjNorm_Phasm ; Object $88
     .word ObjNorm_BooWave ; Object $89
-    .word ObjNorm_Pokey ; Object $8A
+    .word ObjNorm_BallChain ; Object $8A
     .word ObjNorm_ParaChomp ; Object $8B
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
@@ -86,7 +86,7 @@ OBJ_PARACHOMP		= $8B
     .word Object_Explode ; Object $87
     .word ObjHit_DoNothing ; Object $88
     .word ObjHit_DoNothing ; Object $89
-    .word ObjHit_DoNothing ; Object $8A
+    .word Player_GetHurt ; Object $8A
     .word Player_GetHurt ; Object $8B
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
@@ -132,7 +132,7 @@ OBJ_PARACHOMP		= $8B
     .byte OPTS_NOCHANGE ; Object $87
     .byte OPTS_SETPT5 | $37 ; Object $88
     .byte OPTS_SETPT5 | $37 ; Object $89
-    .byte OPTS_SETPT5 | $37 ; Object $8A
+    .byte OPTS_SETPT5 | $0E ; Object $8A
     .byte OPTS_SETPT5 | $0E ; Object $8B
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
@@ -234,10 +234,7 @@ ObjP88:
 	.byte $83, $83
 
 ObjP8A:
-	.byte $99, $9B
-	.byte $B9, $BB
-	.byte $B9, $BB
-	.byte $B9, $BB
+	.byte $97, $97
 
 ObjP8B:
 	.byte $91, $93
@@ -308,7 +305,10 @@ Spike_Norm1:
 
 Spike_Norm:
 	JSR Object_DeleteOffScreen
+	JSR Object_Move
 	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
 	JSR Object_FacePlayer
 	JSR Object_AttackOrDefeat
 
@@ -919,8 +919,8 @@ NoBounceHigher:
 	JSR Object_MoveAwayFromPlayerFast
 
 ChompAnimate:
-	INC Chomp_Frame, x
-	LDA Chomp_Frame, x
+	INC Chomp_Frame, X
+	LDA Chomp_Frame, X
 	LSR A
 	LSR A
 
@@ -1268,6 +1268,7 @@ Chomp_DrawChains:
 	LDY <Temp_Var4
 	LDA <Temp_Var2
 	STA Sprite_RAMX + 8, Y
+
 	LDA <Temp_Var1
 	STA Sprite_RAMY + 8, Y
 
@@ -1327,7 +1328,7 @@ CDC3:
 
 CDC4:
 	LDY <Temp_Var4
-	LDA #$BD
+	LDA #$55
 	STA Sprite_RAMTile + 8, Y
 	STA Sprite_RAMTile + 12, Y
 	STA Sprite_RAMTile + 16, Y
@@ -1347,8 +1348,6 @@ Chomp_Free:
 	JSR Object_FaceDirectionMoving
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
-
-	
 
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
@@ -3429,8 +3428,8 @@ ObjInit_PolterGuy:
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
 	STA Objects_BehaviorAttr, X
 
-	LDA #$1C
-	STA Patrol_ResetTimer, X
+	LDA #03
+	STA Patrol_Blocks, X
 
 	LDA <Objects_XZ, X
 	SUB #$04
@@ -3887,8 +3886,8 @@ ObjInit_BooWave:
 	STA Objects_BoundBox, X
 	JSR InitPatrolVertical
 
-	LDA #$08
-	STA Patrol_ResetTimer, X
+	LDA #$02
+	STA Patrol_Blocks, X
 
 	LDY #$00
 
@@ -3934,11 +3933,213 @@ ObjNorm_BooWave:
 BooWave_Draw:
 	JMP Object_Draw
 
-ObjInit_Pokey:
 
+BallChain_XOrigin = Objects_Data1
+BallChain_XHiOrigin = Objects_Data2
+BallChain_YOrigin = Objects_Data3
+BallChain_YHiOrigin = Objects_Data4
+
+BallChain_XOffset:
+	.byte $FA, $07, $08, $08
+
+BallChain_XOffsetHi:	
+	.byte $FF, $00, $00, $00
+
+BallChain_YOffset:
+	.byte $C0, $C0, $40, $40
+
+BallChain_YOffsetHi:	
+	.byte $FF, $FF, $00, $00
+
+ObjInit_BallChain:
+	LDA <Objects_XZ, X
+	ADD #$04
+	STA BallChain_XOrigin, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA BallChain_XHiOrigin, X
+
+	LDA <Objects_YZ, X
+	STA BallChain_YOrigin, X
+
+	LDA <Objects_YHiZ, X
+	STA BallChain_YHiOrigin, X
+
+	LDY Objects_Property, X
+	LDA <Objects_YZ, X
+	ADD BallChain_YOffset, Y
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC BallChain_YOffsetHi, Y
+	STA <Objects_YHiZ, X
+
+	LDA <Objects_XZ, X
+	ADD BallChain_XOffset, Y
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC BallChain_XOffsetHi, Y
+	STA <Objects_XHiZ, X
+
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	LDA #$07
+	STA Patrol_BlockDiameter, X
+	
+	LDA #OAT_WEAPONSHELLPROOF
+	STA Objects_WeaponAttr, X
+
+	JSR BallChain_InitMovement
+	
+	LDA #$05
+	STA Objects_Property, X
 	RTS
 
-ObjNorm_Pokey:
+BallChain_InitMovement:
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word InitCircleCW
+	.word InitCircleCCW
+
+ObjNorm_BallChain:
+	LDA <Player_HaltGameZ
+	BEQ BallChain_Norm
+	JMP BallChain_Draw
+
+BallChain_Norm:
+	LDA <Objects_YZ, X
+	CMP BallChain_YOrigin, X
+	BNE BallChain_Move
+
+	LDA #$60
+	JSR Object_DeleteOffScreenRange
+
+BallChain_Move:	
+	JSR PatrolDiagonal
+	JSR PatrolDiagonal
+	JSR Object_CalcBoundBox
+	JSR Object_DetectPlayer
+	JSR Object_InteractWithPlayer
+
+BallChain_Draw:
+	LDA #$00
+	STA Objects_Frame, X
+
+	JSR Object_DrawMirrored
+
+	LDY Object_SpriteRAMOffset, X
+
+
+	LDA <Objects_XZ, X
+	ADD #$0D
+	STA <Temp_Var3
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Temp_Var4
+
+	LDA <Temp_Var3
+	SUB BallChain_XOrigin, X
+	
+	PHA
+
+	LDA <Temp_Var4
+	SBC BallChain_XHiOrigin, X
+	STA <Temp_Var2
+
+	PLA
+	JSR Half_Value
+	ADD BallChain_XOrigin, X
+	STA <Point_X
+
+	LDA BallChain_XHiOrigin, X
+	ADC <Temp_Var2
+	STA <Point_XHi
+
+	LDA <Objects_YZ, X
+	SUB BallChain_YOrigin, X
+	
+	PHA
+
+	LDA <Objects_YHiZ, X
+	SBC BallChain_YHiOrigin, X
+	STA <Temp_Var2
+
+	PLA
+	JSR Half_Value
+
+	ADD BallChain_YOrigin, X
+	STA <Point_Y
+
+	LDA <Temp_Var2
+	ADC BallChain_YHiOrigin, X
+	STA <Point_YHi
+	
+	LDA <Point_X
+	SUB #$04
+	STA <Point_X
+
+	LDA <Point_XHi
+	SBC #$00
+	STA <Point_XHi
+
+	LDA <Point_Y
+	SUB #$04
+	STA <Point_Y
+
+	LDA <Point_YHi
+	SBC #$00
+	STA <Point_YHi
+
+	JSR CheckPoint_OffScreen
+	BCC BallChain_Center
+
+	LDA <Point_RelativeX
+	STA Sprite_RAMX + 8, Y
+
+	LDA <Point_RelativeY
+	STA Sprite_RAMY + 8, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr + 8, Y
+
+	LDA #$55
+	STA Sprite_RAMTile + 8, Y
+	
+
+BallChain_Center:
+	LDA BallChain_XOrigin, X
+	STA <Point_X
+	
+	LDA BallChain_XHiOrigin, X
+	STA <Point_XHi
+
+	LDA BallChain_YOrigin, X
+	STA <Point_Y
+	
+	LDA BallChain_YHiOrigin, X
+	STA <Point_YHi
+
+	JSR CheckPoint_OffScreen
+	BCC BallChain_DrawRTS
+
+	LDA <Point_RelativeX
+	STA Sprite_RAMX + 12, Y
+
+	LDA <Point_RelativeY
+	STA Sprite_RAMY + 12, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr + 12, Y
+
+	LDA #$55
+	STA Sprite_RAMTile + 12, Y
+
+BallChain_DrawRTS:
 	RTS
 
 Object_ParticleVisibleTestC:
@@ -4008,8 +4209,8 @@ ParaChomp_Reset:
 	LDA #$04
 	STA Patrol_YAccelLimit, X
 
-	LDA #$10
-	STA Patrol_ResetTimer, X
+	LDA #$01
+	STA Patrol_Blocks, X
 	RTS
 
 

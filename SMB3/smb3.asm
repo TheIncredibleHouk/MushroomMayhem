@@ -1313,11 +1313,11 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	CompleteLevelTimer:	.ds 1
 	PBarHitTestX:		.ds 5
 	PBarHitTestY:		.ds 5
-	Weather_XPos:		.ds 6;
-	Weather_YPos:		.ds 6;
-	Weather_XVel:		.ds 6
-	Weather_YVel:		.ds 6
-	Weather_Pattern:	.ds 6;
+	Weather_XPos:		.ds 8;
+	Weather_YPos:		.ds 8;
+	Weather_XVel:		.ds 8
+	Weather_YVel:		.ds 8
+	Weather_Pattern:	.ds 8;
 	Weather_Disabled:	.ds 1
 	AnimOffset:			.ds 1;
 	SprAnimOffset:		.ds 1;
@@ -2691,6 +2691,8 @@ ABILITY_CHERRY_STAR = 5
 	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data14:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
+	Objects_Ticker: 	.ds 5
+	
 	Objects_DynamicallySpawned:	.ds 8
 	Objects_Kicked:		.ds 5
 	Objects_Shelled:	.ds 5
@@ -2925,7 +2927,7 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	BrickBust_Tile:		.ds 3
 	BrickBust_Pal:		.ds 3
 
-CHAIN_DEBRIS = $BD
+CHAIN_DEBRIS = $55
 BRICK_DEBRIS = $4B
 ICE_DEBRIS = $59
 OIL_DEBRIS = $61
@@ -2943,8 +2945,8 @@ BARREL_DEBRIS = $9D
 SOBJ_HAMMER		= $01	; Hammer Bro hammer
 SOBJ_VEGGIE	=	$02
 SOBJ_BOOMERANG		= $02	; Boomerangs
-SOBJ_OIL		= $03	; ??? Floats around, back and forth, some other strange movements (uses bits of boomerang code)
-SOBJ_FIREBALL	= $04 	; Nipper fireball (falls)
+SOBJ_OIL		= $03	;
+SOBJ_FIREBALL	= $04 	;
 SOBJ_POOF		= $05
 SOBJ_ICEBALL	= $06	; Piranha fireball
 SOBJ_MICROGOOMBA	= $00 	; Micro goombas

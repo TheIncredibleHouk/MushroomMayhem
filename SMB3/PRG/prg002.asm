@@ -1141,263 +1141,193 @@ JumpControl_RTS:
 ;	An odd X position causes the wind to blow right.
 ;***********************************************************************************
 
-Weather_Patterns: .byte $7B, $7B, $5F, $5F, $5D, $5D 
+Weather_Patterns: .byte $7B, $5F, $5D, $9B
+Weather_VelOffsets: .byte $00, $08, $10, $18
 Rain_XVel: .byte $04, $05, $06, $07, $04, $05, $06, $06
-Snow_XVel: .byte $01, $01, $01, $01, $01, $01, $01, $01
+Snow_XVel: .byte $00, $00, $00, $00, $00, $00, $00, $00
 Sand_XVel: .byte $06, $07, $0A, $09, $06, $08, $08, $08
+Leaf_XVel: .byte $01, $02, $02, $01, $01, $01, $01, $02
 Rain_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
-Snow_YVel: .byte $02, $03, $02, $02, $03, $02, $02, $04
+Snow_YVel: .byte $02, $03, $02, $02, $03, $02, $02, $01
 Sand_YVel: .byte $03, $04, $03, $04, $03, $04, $03, $04
+Leaf_YVel: .byte $01, $02, $01, $01, $02, $01, $01, $03
+Weather_PalOffsets: .byte $00, $02, $04, $06
+Rain_Pals: .byte SPR_PAL2, SPR_PAL2
+Snow_Pals: .byte SPR_PAL2, SPR_PAL2
+Sand_Pals: .byte SPR_PAL3, SPR_PAL3
+Leaf_Pals: .byte SPR_PAL1, SPR_PAL3
+Weather_StartX: .byte $08, $7E, $2A, $A8, $54, $D2, $3A, $C0
+Weather_StartY: .byte $93, $15, $63, $BD, $E7, $39, $C0, $7E
 
-Weather_Type = Objects_Data4
-Weather_Ticker = Objects_Data5
+WEATHER_RAIN = 0
+WEATHER_SNOW = 1
+WEATHER_SAND = 2
+WEATHER_LEAF = 3
 
-DeleteWeather:
-	LDA Objects_State, Y
-	CMP #OBJSTATE_NORMAL
-	BNE ObjInit_Weather2
-
-	JMP Object_SetDeadAndNotSpawned
+Weather_InitX = Temp_Var6
+Weather_InitY = Temp_Var7
 
 ObjInit_Weather:
-	STA Debug_Snap
-	LDA #$06
+	LDA #OBJ_WEATHER
+	STA WeatherActive
+	STA <Object_Check
+
+	JSR CheckObjectsOfType3
+
+	LDA <Num_Objects
+	CMP #$01
+	BEQ Weather_NotDupe
+
+	JMP Object_Delete
+
+Weather_NotDupe:
+	LDX <CurrentObjectIndexZ
+	LDA #$08
 	STA Objects_SpritesRequested, X
 
 	JSR Object_NoInteractions
 
 	LDA Objects_Property, X
-	STA Weather_Type, X
-	LDY #$04
-
-ObjInit_Weather1:
-	CPY <CurrentObjectIndexZ
-	BEQ ObjInit_Weather2
-
-	LDA Objects_ID, Y
-	CMP #OBJ_WEATHER
-	BEQ DeleteWeather
-
-ObjInit_Weather2:
-	DEY
-	BPL ObjInit_Weather1
-
-	LDY #$05
-
-	LDA Objects_YZ, X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var2
-
-	LDA Objects_XZ, X
-	AND #$10
-	BNE DontReverseWind
-
-	LDA <Temp_Var2
-	EOR #$FF
-	ADD #$01
-	STA <Temp_Var2
-	
-DontReverseWind:
-	LDA <Temp_Var2
-	STA Wind_Speed, X
-
-	LDA #$01
-	STA WeatherActive
-
-KeepRandomizing:
-	JSR Randomize_Weather
+	STA Weather_Type
 
 	LDA RandomN
+	STA <Weather_InitX
+
+	LDA RandomN + 1
+	STA <Weather_InitY
+
+	LDY #$07
+
+Weather_InitXY:		
+	LDA <Weather_InitX
+	ADD Weather_StartX, Y
+	STA Weather_XPos, Y
+
+	LDA <Weather_InitY
+	ADD Weather_StartY, Y
 	STA Weather_YPos, Y
-	DEY
-	BPL KeepRandomizing
 
-DontReverseWind1:
-	RTS
+	LDX <Weather_Type
 
-Wind_Speed = Objects_Data1
-Wind_ExtraVel = Objects_Data2
+	TYA
+	ADD Weather_VelOffsets, X
+	TAX
 
-ObjNorm_Weather:
-
-	LDA Weather_Disabled
-	BNE DontReverseWind1
-
-	LDA Wind_Speed, X
-	BEQ No_Wind
-	
-	STA Wind
-
-No_Wind:
 	LDA Wind
 	JSR Half_Value
 	JSR Half_Value
-	
-	STA Wind_ExtraVel, X
+	ADD Rain_XVel, X
+	STA Weather_XVel, Y
 
-	LDA <Vert_Scroll
-	STA <Temp_Var7
+	LDA Rain_YVel, X
+	STA Weather_YVel, Y
 
-	LDA <Horz_Scroll
-	STA <Temp_Var8
+	LDA Wind
+	BMI Weather_DoLoop
 
-	LDA Objects_Property, X 
-	CMP #$02
-	BNE DoNextParticle0
+	LDA Weather_XVel, Y
+	JSR Negate
+	STA Weather_XVel, Y
 
-	LDA <Player_HaltGameZ
-	BNE Weather_SkipTicker
-	INC Weather_Ticker, X
+Weather_DoLoop:	
 
-Weather_SkipTicker:
-	LDA Weather_Ticker, X
-	AND #$01
-
-	BNE DoNextParticle0
-
-	LDA <Temp_Var7
-	ADD #$80
-	STA <Temp_Var7
-
-	LDA <Temp_Var8
-	ADD #$80
-	STA <Temp_Var8
-
-
-DoNextParticle0:
-	LDA Object_SpriteRAMOffset, X
-	STA TempX
-	LDY #$05
-
-DoNextParticle:
-	LDX <CurrentObjectIndexZ
-	JSR MoveSingleParticle
-
-	LDX TempX
-
-	JSR DrawSingleParticle
-	LDA TempX
-	ADD #$04
-	STA TempX
 	DEY
-	BPL DoNextParticle
+	BPL Weather_InitXY
 	RTS
 
-MoveSingleParticle:	
+ObjNorm_Weather:
+	LDA <Player_HaltGameZ
+	BEQ Weather_Norm
+	JMP Weather_Draw
+
+Weather_Norm:
+	JSR Weather_Move
+	JMP Weather_Draw
+
+Weather_Move:
+	LDY #$07
+
+Weather_MoveLoop:
 	LDA Weather_XPos, Y
-	ADD Wind_ExtraVel, X
+	ADD Weather_XVel, Y
 	STA Weather_XPos, Y
 
 	LDA Weather_YPos, Y
 	ADD Weather_YVel, Y
 	STA Weather_YPos, Y
-
-	CMP #$F8
-	BCC MoveSingleParticle1
-
-	JSR Randomize_Weather
-
-MoveSingleParticle1:
+	DEY
+	BPL Weather_MoveLoop
 	RTS
 
-Randomize_Weather:
-	STY TempY
-	JSR Randomize
+Weather_Type = Temp_Var8
+Weather_Tile = Temp_Var2
+Weather_Palette1 = Temp_Var3
+Weather_Palette2 = Temp_Var4
+Weather_Orientation = Temp_Var5
 
-	LDY TempY
-	LDX <CurrentObjectIndexZ
-	LDA RandomN
-	STA Weather_XPos, Y
-
-	LDA #$00
-	STA Weather_YPos, Y
-
-	LDA RandomN + 1
-	AND #$07
-	STA TempA
-
-	LDA Weather_Type, X
-	ASL A
-	ASL A
-	ASL A
-	ORA TempA
-	TAY
-
-	LDA Rain_XVel, Y
+Weather_PaletteUse:
+	.byte $00, $01, $00, $01, $00, $01
 	
-	LDY TempY
-	STA Weather_XVel, Y
-
-	LDA RandomN + 2
-	AND #$07
-	STA TempA
-
-	LDA Weather_Type, X
-	ASL A
-	ASL A
-	ASL A
-	ORA TempA
-
+Weather_Draw:
+	LDA Objects_Property, X
+	STA <Weather_Type
 	TAY
 
-	LDA Rain_YVel, Y
-	LDY TempY
-	STA Weather_YVel, Y
-
-	LDA Objects_XZ, X
-	AND #$10
-	BNE DoNotReverse
-
-	LDA Weather_XVel, Y
-	EOR #$FF
-	ADD #$01
-	STA Weather_XVel, Y
-
-DoNotReverse: 
-
-	LDA RandomN + 3
-	AND #$01
-	STA TempA
-
-	LDA Weather_Type, X
-	ASL A
-	ORA TempA
-
-RainPattern:
-	TAY
 	LDA Weather_Patterns, Y
-	LDY TempY
-	STA Weather_Pattern, Y
-	RTS
+	STA <Weather_Tile
 
-DrawSingleParticle:
+	LDA Weather_PalOffsets, Y
+	TAY
 
-	LDA Weather_YPos, Y
-	STA Sprite_RAM, X
+	LDA Rain_Pals, Y
+	STA <Weather_Palette1
 
-	LDA Weather_XPos, Y
-	SUB <Temp_Var8
-	STA Sprite_RAM + 3, X
+	LDA Rain_Pals + 1, Y
+	STA <Weather_Palette2
 
-	LDA Weather_Pattern, Y
-	STA Sprite_RAM + 1, X
+	LDY #$00
+	LDA Wind
+	BPL Weather_SetOrientation
 
-	LDA #$02
-	STA TempA
+	LDY #SPR_HFLIP
 
-	LDA Weather_XVel, Y
-	BMI DontFlipParticle
+Weather_SetOrientation:	
+	STY <Weather_Orientation
 
-	LDA #SPR_HFLIP
-	ORA TempA
-	STA TempA
+	LDY Object_SpriteRAMOffset, X
+	LDX #$07
+ 
+ Weather_DrawLoop:
+	LDA Weather_XPos, X
+	SUB <Horz_Scroll
+	STA Sprite_RAMX, Y
 
-DontFlipParticle:
-	LDA TempA
-	STA Sprite_RAM + 2, X
+	LDA Weather_YPos, X
+	SUB <Vert_Scroll
+	STA Sprite_RAMY, Y
+
+	LDA Weather_PaletteUse, X
+	BNE Weather_UsePal2
+
+	LDA Weather_Palette1
+	BNE Weather_SetSpriteAttr
+
+Weather_UsePal2:
+	LDA Weather_Palette2
+
+Weather_SetSpriteAttr:	
+	ORA <Weather_Orientation
+	STA Sprite_RAMAttr, Y
+
+	LDA Weather_Tile
+	STA Sprite_RAMTile, Y
+
+	INY
+	INY
+	INY
+	INY
+	DEX
+	BPL Weather_DrawLoop
 	RTS
     
 
@@ -2992,4 +2922,25 @@ Magnet_SetPosition:
 ObjInit_EventSetter:
 	LDA #$01
 	STA EventSwitch
+	RTS	
+
+CheckObjectsOfType3:
+	LDA #$00
+	STA <Num_Objects
+
+	LDX #$04
+
+CheckNextObject3:
+	LDA Objects_State, X
+	BEQ NotObject_Checking3
+
+	LDA Objects_ID, X
+	CMP <Object_Check
+	BNE NotObject_Checking3
+
+	INC <Num_Objects
+
+NotObject_Checking3:
+	DEX
+	BPL CheckNextObject3
 	RTS	

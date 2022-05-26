@@ -223,8 +223,11 @@ Platform_SteppedOn = Objects_Data5
 Platform_MadeContact = Objects_Data6
 Platform_Fall = Objects_Data7
 
-PlatformTimers:
-	.byte $01, $11, $21, $31, $41, $51, $61, $71
+PlatformBlocks:
+	.byte $06, $07, $08, $09, $0A, $0B, $0C, $0D
+
+PlatformDiameter:
+	.byte $04, $05, $06, $07, $08, $09, $0A, $0B
 
 ObjInit_PlatformCommon:
 	LDA #$06
@@ -242,7 +245,7 @@ ObjInit_PlatformCommon:
 	STA Platform_StartXHi, X
 
 	LDA <Objects_YZ, X
-	SUB #$02
+	SUB #$01
 	STA <Objects_YZ, X
 
 	LDA <Objects_YHiZ, X
@@ -250,8 +253,8 @@ ObjInit_PlatformCommon:
 	STA <Objects_YHiZ, X
 
 	LDY Objects_Property, X
-	LDA PlatformTimers, Y
-	STA Patrol_ResetTimer, X
+	LDA PlatformBlocks, Y
+	STA Patrol_Blocks, X
 	RTS
 
 ObjInit_WoodenPlatHorz:
@@ -282,12 +285,22 @@ ObjInit_WoodenPlatDiagonal2:
 
 ObjInit_WoodenPlatCW:
 	JSR ObjInit_PlatformCommon
+	
+	LDY Objects_Property, X
+	LDA PlatformDiameter, Y
+	STA Patrol_BlockDiameter, X
+
 	LDA #$05
 	STA Objects_Property, X
 	JMP InitPatrol_NoTimers
 
 ObjInit_WoodenPlatCCW:
 	JSR ObjInit_PlatformCommon
+
+	LDY Objects_Property, X
+	LDA PlatformDiameter, Y
+	STA Patrol_BlockDiameter, X
+
 	LDA #$04
 	STA Objects_Property, X
 	JMP InitPatrol_NoTimers   
@@ -1507,6 +1520,7 @@ Swing_Interact:
 	RTS
 
 Swing_Draw:
+	
 	JSR Platform_Draw
 
 	LDY Object_SpriteRAMOffset, X

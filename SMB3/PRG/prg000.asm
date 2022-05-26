@@ -2587,6 +2587,7 @@ PRG000_D4C8:
 	STA Objects_Data12,X
 	STA Objects_Data13,X
 	STA Objects_Data14,X
+	STA Objects_Ticker, X
 
 	CPX #$05
 	BGE PRG000_D506	 ; If using slot index >= 5, jump to PRG000_D506 (skip variables available only to slots 0 to 4)
@@ -4755,8 +4756,8 @@ Objects_BumpOff1:
 	RTS
 
 InitPatrol:
-	LDA #$36
-	STA Patrol_ResetTimer, X
+	LDA #$06
+	STA Patrol_Blocks, X
 
 InitPatrol_NoTimers:
 	LDA Objects_Property, X
@@ -4772,10 +4773,10 @@ InitPatrol_NoTimers:
 
 
 InitPatrolHorizontal:
-	LDA #$FF
+	LDA #$01
 	STA Patrol_XVelocityChange, X
 
-	LDA #$F0
+	LDA #$10
 	STA Patrol_XAccelLimit, X
 	RTS
 
@@ -4813,37 +4814,33 @@ InitDiagonal2:
 	RTS
 	
 InitCircleCCW:
-	JSR InitDiagonal
-
-	LDA Patrol_ResetTimer, X
-	LSR A
-	STA Patrol_XCycleTimer, X
+	JSR InitCircleCW
 
 	LDA Patrol_XAccelLimit, X
-	EOR #$FF
-	ADD #$01
-	STA <Objects_XVelZ, X
-
-	LDA Patrol_XAccelLimit, X
-	EOR #$FF
-	ADD #$01
+	JSR Negate
 	STA Patrol_XAccelLimit, X
 
-	LDA Patrol_XVelocityChange, X
-	EOR #$FF
-	ADD #$01
+	LDA <Objects_XVelZ, X
+	JSR Negate
+	STA <Objects_XVelZ, X
+
+	LDA #$FF
 	STA Patrol_XVelocityChange, X
 	RTS
 
 InitCircleCW:
-	JSR InitDiagonal
-
-	LDA Patrol_ResetTimer, X
-	LSR A
-	STA Patrol_XCycleTimer, X
-
-	LDA Patrol_XAccelLimit, X
+	LDY Patrol_BlockDiameter, X
+	LDA Patrol_CircleTimers, Y
+	STA Patrol_XAccelLimit, X
+	STA Patrol_YAccelLimit, X
 	STA <Objects_XVelZ, X
+
+	LDA #$01
+	STA Patrol_XVelocityChange, X
+	STA Patrol_YVelocityChange, X
+
+	LDA #(Patrol_CircleTimer - Patrol_BlockTimers)
+	STA Patrol_Blocks, X
 	RTS
 
 InitPatrol_Chase:
@@ -4860,10 +4857,23 @@ Patrol_XVelocityChange = Objects_Data9
 Patrol_YVelocityChange = Objects_Data10
 Patrol_XCycleTimer = Objects_Data11
 Patrol_YCycleTimer = Objects_Data12
-Patrol_ResetTimer = Objects_Data13
+Patrol_Blocks = Objects_Data13
+Patrol_BlockDiameter = Objects_Data13
 
 ChaseVel_LimitLo = Objects_Data10
 ChaseVel_LimitHi = Objects_Data11
+
+	.byte $01, $03, $01, $01, $01, $01
+Patrol_BlockTimersTable:
+Patrol_BlockTimers = Patrol_BlockTimersTable - 6
+	.byte $09, $18, $27, $36, $45, $54, $63, $72
+
+Patrol_CircleTimer:	
+	.byte $01
+
+Patrol_CircleTimersTable:
+Patrol_CircleTimers = Patrol_CircleTimersTable - 4
+	.byte $0F, $11, $13, $15, $16, $17, $19, $1A
 
 Object_MovePattern:
 	LDA Objects_Property, X
@@ -4878,8 +4888,13 @@ Object_MovePattern:
 	.word Object_ChasePlayer
 
 PatrolDiagonal:
+	LDA Objects_Ticker, X
+	PHA
 
 	JSR PatrolUpDown
+
+	PLA
+	STA Objects_Ticker, X
 
 PatrolBackForth:
 	LDA Patrol_XCycleTimer,X
@@ -4900,7 +4915,8 @@ PatrolBackForth:
 
 
 PatrolBackForth_Accel:
-	LDA Game_Counter
+	INC Objects_Ticker, X
+	LDA Objects_Ticker, X
 	AND #$03
 	BNE PatrolBackForth_Move
 
@@ -4908,9 +4924,13 @@ PatrolBackForth_Accel:
 	CMP Patrol_XAccelLimit, X
 	BNE PatrolBackForth_SetVel
 
-PatrolBackForth_Reset:
-	LDA Patrol_ResetTimer, X
+	LDY Patrol_Blocks, X
+	LDA Patrol_BlockTimers, Y
 	STA Patrol_XCycleTimer, X
+	
+	LDA #$00
+	STA Objects_Ticker, X
+
 	LDA Patrol_XAccelLimit, X
 
 PatrolBackForth_SetVel:
@@ -4919,7 +4939,6 @@ PatrolBackForth_SetVel:
 
 PatrolBackForth_Move:
 	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR Object_FaceDirectionMoving
 	RTS
 
 PatrolUpDown:
@@ -4939,9 +4958,9 @@ PatrolUpDown:
 	ADD #$01
 	STA Patrol_YAccelLimit, X
 
-
 PatrolUpDown_Accel:
-	LDA Game_Counter
+	INC Objects_Ticker, X
+	LDA Objects_Ticker, X
 	AND #$03
 	BNE PatrolUpDown_Move
 
@@ -4949,9 +4968,13 @@ PatrolUpDown_Accel:
 	CMP Patrol_YAccelLimit, X
 	BNE PatrolUpDown_SetVel
 
-PatrolUpDown_Reset:
-	LDA Patrol_ResetTimer, X
+	LDY Patrol_Blocks, X
+	LDA Patrol_BlockTimers, Y
 	STA Patrol_YCycleTimer, X
+
+	LDA #$00
+	STA Objects_Ticker, X
+
 	LDA Patrol_YAccelLimit, X
 
 PatrolUpDown_SetVel:

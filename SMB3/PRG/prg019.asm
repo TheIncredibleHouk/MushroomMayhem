@@ -124,6 +124,7 @@ PRG005_B872:
 	RTS		 ; Return
 
 PRG005_B873:
+
 	LDA Level_Objects-1,Y	 ; Get object ID (we're aligned by column, hence -1)
 	CMP #$ff	 
 	BEQ PRG005_B872	 ; If this is the terminator, jump to PRG005_B872 (RTS)

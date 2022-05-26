@@ -1839,8 +1839,8 @@ SpecialObj_UpdateAndDraw:
 	.word Enemy_Hammer	; 01: Hammer Bro hammer
 	.word Enemy_Veggie	; 02: Boomerangs
 	.word Enemy_Oil	; 03: 
-	.word Enemy_FireBall	; 04: Nipper fireball
-	.word SpecialObj_Poof	; 05: Piranha fireball
+	.word Enemy_FireBall	; 04: 
+	.word SpecialObj_Poof	; 05: 
 	.word Enemy_IceBall	; 06: Micro goombas
 	.word Enemy_NinjaStar	; 07: Spike/Patooie's spike ball
 	.word Enemy_Egg	; 08: Koopaling wand blast
@@ -3411,8 +3411,6 @@ PRG007_BAED:
 	BNE PRG007_BB1A	 ; If sprite available, jump to PRG007_BB1A
 
 	LDA SpecialObj_ID,X
-
-	; If this special object is empty, or is a Nipper fireball/Piranha Fireball/Microgoomba, jump to PRG007_BB1A
 
 	CMP #SOBJ_FIREBALL
 	BEQ PRG007_BB1A
