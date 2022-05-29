@@ -156,7 +156,7 @@ OBJ_PARACHOMP		= $8B
     .byte KILLACT_STARDEATH ; Object $88
     .byte KILLACT_NORMALSTATE ; Object $89
     .byte KILLACT_STARDEATH ; Object $8A
-    .byte KILLACT_STARDEATH ; Object $8B
+    .byte KILLACT_NORMALSTATE ; Object $8B
 
 OG7_POff .func (\1 - ObjectGroup07_PatternSets)
 
@@ -3989,9 +3989,7 @@ ObjInit_BallChain:
 	LDA #$07
 	STA Patrol_BlockDiameter, X
 	
-	LDA #OAT_WEAPONSHELLPROOF
-	STA Objects_WeaponAttr, X
-
+	JSR Object_NoInteractions
 	JSR BallChain_InitMovement
 	
 	LDA #$05
@@ -4011,10 +4009,6 @@ ObjNorm_BallChain:
 	JMP BallChain_Draw
 
 BallChain_Norm:
-	LDA <Objects_YZ, X
-	CMP BallChain_YOrigin, X
-	BNE BallChain_Move
-
 	LDA #$60
 	JSR Object_DeleteOffScreenRange
 
@@ -4217,8 +4211,18 @@ ParaChomp_Reset:
 ParaChomp_Frame = Objects_Data1
 ParaChomp_Grabbed = Objects_Data2
 ParaChomp_HitDetection = Objects_Data3
+ParaChomp_HitCeiling = Objects_Data4
 	
 ObjNorm_ParaChomp:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ParaChomp_NotDead
+
+	JSR Object_SetDeadAndNotSpawned
+
+	JMP Object_StarBurstDeath
+
+ParaChomp_NotDead:	
 	LDA <Objects_XZ, X
 	LDA <Objects_XHiZ, X
 	LDA <Objects_YZ, X
@@ -4229,15 +4233,28 @@ ObjNorm_ParaChomp:
 
 	JMP ParaChomp_Draw
 
-ParaChomp_Norm:	
+ParaChomp_Norm:
+	LDA PatTable_BankSel + 5
+	CMP #$32
+	BNE ParaChomp_NoBankSwap
+
+	LDA #$4F
+	STA PatTable_BankSel + 5
+
+ParaChomp_NoBankSwap:
 	LDA ParaChomp_Grabbed, X
 	BEQ ParaChomp_NotGrabbed
+
+	LDA ParaChomp_HitCeiling, X
+	BNE ParaChomp_NoFly
 
 	LDA #$F8
 	STA <Objects_YVelZ, X
 	STA Player_CarryYVel
 
 	JSR Object_ApplyYVel_NoGravity
+
+ParaChomp_NoFly:	
 	JMP ParaChomp_DoInteract
 
 ParaChomp_NotGrabbed:	
@@ -4465,6 +4482,17 @@ ParaChomp_ChainGrabRTS:
 
 ParaChomp_TileInteract:
 	JSR Object_DetectTileTopEdge
+	CMP #(TILE_PROP_SOLID_ALL)
+	BCC ParaChomp_TileInteractRTS
+
+	JSR Object_HitCeiling
+
+	LDA #$01
+	STA ParaChomp_HitCeiling, X
+
+	LDA #$00
+	STA Player_CarryYVel
+
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
 	BNE ParaChomp_TileInteractRTS
 
@@ -4476,7 +4504,6 @@ ParaChomp_TileInteract:
 
 	LDA #$00
 	STA Player_IsClimbingObject
-	STA Player_CarryYVel
 
 ParaChomp_TileInteractRTS:
 	RTS

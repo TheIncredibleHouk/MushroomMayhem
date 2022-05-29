@@ -2036,9 +2036,7 @@ Piranha_FireStraight:
 	JSR Object_AimProjectile
 
 Piranha_ProjectileRTS:
-	RTS
-	
-
+	RTS 
 
 ZombieGoomba_CurrentFrame  = Objects_Data1
 

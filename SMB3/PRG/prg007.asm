@@ -4838,9 +4838,6 @@ EnemeyProj_Enemy_FreezePlayer:
 	JMP Player_HitIce
 
 Enemy_FreezePlayer:
-	LDA Player_Frozen
-	BNE Enemy_IcePoofAway
-
 	JSR SpecialObj_DetectPlayer
 	BCC EnemeyProj_Enemy_FreezePlayer3
 

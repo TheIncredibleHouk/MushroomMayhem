@@ -10,6 +10,7 @@ OBJ_SPINTULA            = $91
 OBJ_PYRANTULA           = $92
 OBJ_BARRELBRO			= $93
 OBJ_PLUMBERPAUL			= $94
+OBJ_SEASONSLOT			= $95
 
     .word ObjInit_HammerBro ; Object $8C
     .word ObjInit_NinjaBro ; Object $8D
@@ -20,7 +21,7 @@ OBJ_PLUMBERPAUL			= $94
     .word ObjInit_Pyrantula ; Object $92
     .word ObjInit_BarrelBro ; Object $93
     .word ObjInit_PlungerPaul ; Object $94
-    .word ObjInit_DoNothing ; Object $95
+    .word ObjInit_SeasonSlot ; Object $95
     .word ObjInit_DoNothing ; Object $96
     .word ObjInit_DoNothing ; Object $97
     .word ObjInit_DoNothing ; Object $98
@@ -43,7 +44,7 @@ OBJ_PLUMBERPAUL			= $94
     .word ObjNorm_Pyrantula ; Object $92
     .word ObjNorm_BarrelBro ; Object $93
     .word ObjNorm_PlungerPaul ; Object $94
-    .word ObjNorm_DoNothing ; Object $95
+    .word ObjNorm_SeasonSlot ; Object $95
     .word ObjNorm_DoNothing ; Object $96
     .word ObjNorm_DoNothing ; Object $97
     .word ObjNorm_DoNothing ; Object $98
@@ -88,7 +89,7 @@ OBJ_PLUMBERPAUL			= $94
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $91
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $92
     .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $93
-    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $94
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH64 ; Object $94
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $95
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $96
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $97
@@ -112,7 +113,7 @@ OBJ_PLUMBERPAUL			= $94
     .byte OPTS_SETPT5 | $0A ; Object $92
     .byte OPTS_SETPT5 | $4E ; Object $93
     .byte OPTS_SETPT5 | $36 ; Object $94
-    .byte OPTS_NOCHANGE ; Object $95
+    .byte OPTS_SETPT5 | $58 ; Object $95
     .byte OPTS_NOCHANGE ; Object $96
     .byte OPTS_NOCHANGE ; Object $97
     .byte OPTS_NOCHANGE ; Object $98
@@ -189,6 +190,11 @@ ObjP94:
 	.byte $BB, $BD, $9B, $9D
 
 ObjP95:
+	.byte $AB, $AD
+	.byte $AF, $B1
+	.byte $B3, $B5
+	.byte $91, $93
+
 ObjP96:
 ObjP97:
 ObjP98:
@@ -2142,4 +2148,131 @@ PlungerPaul_DrawPlunger:
 	STA Sprite_RAMAttr + 4, Y
 
 PlungerPaul_RTS:	
+	RTS
+
+SeasonSlot_StartingOffset:
+	.byte $00, $10, $20, $30
+
+SeasonSlot_EndingOffset:
+	.byte $D0, $E0, $F0, $00
+
+ObjInit_SeasonSlot:
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
+	LDY Objects_Property, X
+	LDA SeasonSlot_StartingOffset, Y
+	STA SeasonSlot_Ticker, X
+
+	LDA SeasonSlot_EndingOffset, Y
+	STA SeasonSlot_Stop, X
+
+	LDA #$40
+	STA Objects_Timer, X
+	RTS
+
+
+SeasonSlot_SpriteX = Temp_Var2
+SeasonSlot_SpriteY = Temp_Var1
+SeasonSlot_SpriteOffset = Temp_Var7
+SeasonSlot_TilesRemaining = Temp_Var4
+SeasonSlot_TileOffset = Temp_Var3
+SeasonSlot_Ticker = Objects_Data1
+SeasonSlot_Pause = Objects_Data2
+SeasonSlot_Stop = Objects_Data3
+
+SeasonSlot_SpritePals:
+	.byte SPR_PAL1, SPR_PAL1
+	.byte SPR_PAL2, SPR_PAL2
+	.byte SPR_PAL2, SPR_PAL2
+	.byte SPR_PAL3, SPR_PAL3
+
+ObjNorm_SeasonSlot:
+; Temp_Var1 = Object sprite Y
+; Temp_Var2 = Object sprite X
+; Temp_Var3 = Object's LR flag
+; Temp_Var4 = Object's attributes
+; Temp_Var5 = Objects_SpritesVerticallyOffScreen
+; Temp_Var6 = Object's starting tiles index (and -> 'X')
+; Temp_Var7 = Object's Sprite_RAM offset (and -> 'Y')
+; Temp_Var8 = Objects_SpritesHorizontallyOffScreen
+	LDA Objects_Timer, X
+	ORA SeasonSlot_Pause, X
+	BNE SeasonSlot_NoTicker
+
+	INC SeasonSlot_Ticker, X
+	LDA SeasonSlot_Ticker, X
+	CMP SeasonSlot_Stop, X
+	BNE SeasonSlot_NoTicker
+
+	LDA #$01
+	STA SeasonSlot_Pause, X
+	STA EventSwitch
+
+SeasonSlot_NoTicker:
+	STA Debug_Snap	
+	JSR Object_ShakeAndCalcSprite
+
+	DEC <SeasonSlot_SpriteY
+	LDX <CurrentObjectIndexZ
+	
+	LDA SeasonSlot_Ticker, X
+	AND #$0F
+	STA <Temp_Var3
+
+	LDA <SeasonSlot_SpriteX
+	SUB <Temp_Var3
+	STA <SeasonSlot_SpriteX
+
+	LDA SeasonSlot_Ticker, X
+	AND #$30
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <SeasonSlot_TileOffset
+
+	LDA #$02
+	STA <SeasonSlot_TilesRemaining
+
+SeasonSlot_Loop:
+	LDY <SeasonSlot_SpriteOffset
+	
+	LDA <SeasonSlot_TileOffset
+	AND #$03
+	ASL A
+	TAX
+	
+	LDA ObjP95, X
+	STA Sprite_RAMTile, Y
+
+	LDA ObjP95 + 1, X
+	STA Sprite_RAMTile + 4, Y
+
+	LDA <SeasonSlot_SpriteY
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY + 4, Y
+
+	LDA <SeasonSlot_SpriteX
+	STA Sprite_RAMX, Y
+	ADD #$08
+	STA Sprite_RAMX + 4, Y
+
+	LDA SeasonSlot_SpritePals, X
+	ORA #SPR_BEHINDBG
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 4, Y
+
+	LDA <SeasonSlot_SpriteOffset
+	ADD #$08
+	STA <SeasonSlot_SpriteOffset
+
+	LDA <SeasonSlot_SpriteX
+	ADD #$10
+	STA <SeasonSlot_SpriteX
+
+	INC <SeasonSlot_TileOffset
+
+	DEC <SeasonSlot_TilesRemaining
+	BPL SeasonSlot_Loop
 	RTS

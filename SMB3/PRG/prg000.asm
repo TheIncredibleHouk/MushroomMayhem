@@ -2295,6 +2295,8 @@ ObjState_Fresh:
 	TAY		 ; -> Y
 
 	JSR Object_CallInit
+
+	LDX <CurrentObjectIndexZ
 	JSR Object_CalcBoundBox
 
 	LDA Objects_DynamicallySpawned, X

@@ -2937,7 +2937,6 @@ AutoScroll_CalcPlayerY:
 	BEQ PRG008_B245	 ; If Player is not mid-air, jump to PRG008_B245 (RTS)
 
 	LDA Player_IsClimbing
-	ORA AScrlURDiag_WrapState_Copy
 	BNE PRG008_B245	 ; If Player is climbing or diagonal autoscroller is wrapping, jump to PRG008_B245
 
 	LDA Level_ScrollDiffV
@@ -6491,5 +6490,8 @@ Player_SetHolding:
 	ORA Objects_BeingHeld + 2
 	ORA Objects_BeingHeld + 3
 	ORA Objects_BeingHeld + 4
+	ORA Objects_BeingHeld + 5
+	ORA Objects_BeingHeld + 6
+	ORA Objects_BeingHeld + 7
 	STA Player_IsHolding
 	RTS

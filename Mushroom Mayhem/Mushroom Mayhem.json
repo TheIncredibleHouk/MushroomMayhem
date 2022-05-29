@@ -1,6 +1,6 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
+  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
   "Palettes": [
     {
       "Renamed": false,
@@ -5141,7 +5141,7 @@
         12,
         15,
         48,
-        26,
+        17,
         12,
         15,
         54,
@@ -5227,6 +5227,45 @@
       ],
       "Name": "Perennial Piranha Pressure Summar",
       "Id": "52bf013d-732d-4f8d-9048-36c82bf83cc6"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        15,
+        48,
+        0,
+        15,
+        15,
+        39,
+        6,
+        15,
+        15,
+        57,
+        11,
+        15,
+        15,
+        57,
+        28,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        39,
+        6,
+        15,
+        15,
+        48,
+        33,
+        15,
+        15,
+        55,
+        39
+      ],
+      "Name": "Perennial Piranha Pressure Season Change",
+      "Id": "1a8549da-fc9a-40b3-a498-46b96dace3f2"
     }
   ],
   "WorldInfo": [
@@ -6169,7 +6208,7 @@
           "DisplayName": "(Level) Pwing Peril"
         },
         {
-          "Size": 3015,
+          "Size": 3013,
           "Name": "Protracted Piranhas",
           "Id": "0ec3e06c-8eb6-490b-855e-fad3ed63d439",
           "LastModified": "2018-10-28T10:42:10.874051-04:00",
@@ -6235,25 +6274,45 @@
           "DisplayName": "(Level) Cloudy Clash"
         },
         {
-          "Size": 1323,
-          "Name": "Perennial Piranha Pressure",
+          "Size": 1361,
+          "Name": "Perennial Piranha Pressure-Autumn",
           "Id": "d9293de5-acef-40e3-a6cb-3316e8b49a0a",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Size": 780,
+              "Name": "Perennial Piranha Pressure-Autumn 2",
+              "Id": "2cdad819-930a-436d-b259-f7897edb9be9",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Perennial Piranha Pressure-Autumn 2"
+            }
+          ],
           "InfoType": 1,
-          "DisplayName": "(Level) Perennial Piranha Pressure"
+          "DisplayName": "(Level) Perennial Piranha Pressure-Autumn"
         },
         {
-          "Size": 1298,
+          "Size": 1334,
           "Name": "Perennial Piranha Pressure-Winter",
           "Id": "6fbeaa5c-4e9f-4231-9d5a-5368d62c49fc",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Size": 612,
+              "Name": "Perennial Piranha Pressure-Winter 2",
+              "Id": "5109bfb8-51de-47f7-a072-01b4abfa3f8d",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Perennial Piranha Pressure-Winter 2"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) Perennial Piranha Pressure-Winter"
         },
         {
-          "Size": 1084,
+          "Size": 1136,
           "Name": "Perennial Piranha Pressure-Spring",
           "Id": "81125a48-a57e-42bd-92b5-26ef4117876d",
           "LastModified": "0001-01-01T00:00:00",
@@ -6262,13 +6321,22 @@
           "DisplayName": "(Level) Perennial Piranha Pressure-Spring"
         },
         {
-          "Size": 1305,
+          "Size": 1607,
           "Name": "Perennial Piranha Pressure-Summer",
           "Id": "0a1c2ec7-3d2d-4db4-84ff-e4e37eeb22bb",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [],
           "InfoType": 1,
           "DisplayName": "(Level) Perennial Piranha Pressure-Summer"
+        },
+        {
+          "Size": 296,
+          "Name": "Perennial Piranha Pressure-Season Change",
+          "Id": "8cceefea-c8f3-40da-a51d-cea5353b432c",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [],
+          "InfoType": 1,
+          "DisplayName": "(Level) Perennial Piranha Pressure-Season Change"
         }
       ],
       "InfoType": 0,
@@ -17418,7 +17486,7 @@
     },
     {
       "FireBallInteractions": [
-        0,
+        60,
         0,
         0,
         0,
@@ -17434,7 +17502,7 @@
         86,
         118,
         237,
-        0,
+        61,
         0
       ],
       "PSwitchAlterations": [
@@ -17543,24 +17611,24 @@
           "LowerRight": 49
         },
         {
-          "Property": 16,
+          "Property": 0,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 56
         },
         {
           "Property": 0,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperRight": 238,
+          "LowerLeft": 56,
+          "LowerRight": 56
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 56,
           "LowerRight": 238
         },
         {
@@ -17655,11 +17723,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 16,
+          "Property": 0,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperRight": 56,
+          "LowerLeft": 238,
+          "LowerRight": 56
         },
         {
           "Property": 16,
@@ -17669,10 +17737,10 @@
           "LowerRight": 238
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "Property": 0,
+          "UpperLeft": 56,
+          "UpperRight": 238,
+          "LowerLeft": 56,
           "LowerRight": 238
         },
         {
@@ -17767,24 +17835,24 @@
           "LowerRight": 238
         },
         {
-          "Property": 64,
+          "Property": 0,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperRight": 56,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "Property": 0,
+          "UpperLeft": 56,
+          "UpperRight": 56,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "Property": 0,
+          "UpperLeft": 56,
+          "UpperRight": 238,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
@@ -17809,18 +17877,18 @@
           "LowerRight": 163
         },
         {
-          "Property": 48,
-          "UpperLeft": 238,
+          "Property": 0,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
-          "Property": 53,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 101,
+          "UpperRight": 104,
+          "LowerLeft": 117,
+          "LowerRight": 120
         },
         {
           "Property": 13,
@@ -17886,25 +17954,25 @@
           "LowerRight": 238
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 252,
+          "UpperRight": 252,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 199,
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 253,
+          "UpperRight": 253,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
           "Property": 200,
@@ -18033,14 +18101,14 @@
           "LowerRight": 255
         },
         {
-          "Property": 64,
+          "Property": 192,
           "UpperLeft": 101,
           "UpperRight": 102,
           "LowerLeft": 117,
           "LowerRight": 118
         },
         {
-          "Property": 64,
+          "Property": 192,
           "UpperLeft": 103,
           "UpperRight": 104,
           "LowerLeft": 119,
@@ -18285,7 +18353,7 @@
           "LowerRight": 5
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 101,
           "UpperRight": 104,
           "LowerLeft": 117,
@@ -18495,25 +18563,25 @@
           "LowerRight": 120
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
+          "Property": 16,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 96,
+          "LowerRight": 97
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
+          "Property": 16,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 66,
+          "LowerRight": 97
         },
         {
-          "Property": 204,
-          "UpperLeft": 238,
+          "Property": 16,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 66,
+          "LowerRight": 98
         },
         {
           "Property": 9,
@@ -18608,24 +18676,24 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 112,
+          "UpperRight": 254,
+          "LowerLeft": 110,
+          "LowerRight": 111
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 126,
+          "LowerRight": 111
         },
         {
-          "Property": 204,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 254,
+          "UpperRight": 114,
+          "LowerLeft": 126,
+          "LowerRight": 127
         },
         {
           "Property": 9,
@@ -18726,11 +18794,11 @@
           "LowerRight": 251
         },
         {
-          "Property": 11,
-          "UpperLeft": 238,
+          "Property": 0,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 113,
+          "LowerRight": 82
         },
         {
           "Property": 0,
@@ -18775,7 +18843,7 @@
           "LowerRight": 120
         },
         {
-          "Property": 204,
+          "Property": 192,
           "UpperLeft": 74,
           "UpperRight": 75,
           "LowerLeft": 90,
@@ -18845,18 +18913,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 71,
+          "UpperRight": 70,
+          "LowerLeft": 87,
+          "LowerRight": 86
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 56,
+          "UpperRight": 56,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
           "Property": 64,
@@ -18950,25 +19018,25 @@
           "LowerRight": 209
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 101,
+          "UpperRight": 104,
+          "LowerLeft": 117,
+          "LowerRight": 120
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 71,
+          "UpperRight": 72,
+          "LowerLeft": 87,
+          "LowerRight": 88
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 69,
+          "UpperRight": 70,
+          "LowerLeft": 85,
+          "LowerRight": 86
         },
         {
           "Property": 0,
@@ -19104,11 +19172,11 @@
           "LowerRight": 225
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 227,
+          "UpperRight": 227,
+          "LowerLeft": 243,
+          "LowerRight": 243
         },
         {
           "Property": 64,
@@ -19174,7 +19242,7 @@
           "LowerRight": 159
         },
         {
-          "Property": 49,
+          "Property": 0,
           "UpperLeft": 238,
           "UpperRight": 238,
           "LowerLeft": 238,
@@ -55137,15 +55205,15 @@
     },
     {
       "GameId": 149,
-      "GameObjectType": 2,
-      "Name": "Plunger",
+      "GameObjectType": 1,
+      "Name": "Seasonal Slot",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0xD800",
-          "TileValue": "0x28",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x2A",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 0,
@@ -55156,17 +55224,94 @@
           "PropertiesAppliedTo": null,
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0xD800",
-          "TileValue": "0x3E",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x2C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 0,
           "Overlay": false,
           "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x2E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x30",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 32,
+          "Y": 0,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x32",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 40,
+          "Y": 0,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x34",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 48,
+          "Y": 0,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x10",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 56,
+          "Y": 0,
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Industrial"
+      "Properties": [
+        "Autumun",
+        "Winter",
+        "Spring",
+        "Summer"
+      ],
+      "Group": "Scripting"
     },
     {
       "GameId": 150,
