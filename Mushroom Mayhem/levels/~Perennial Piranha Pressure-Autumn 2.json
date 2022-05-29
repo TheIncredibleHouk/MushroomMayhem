@@ -6580,14 +6580,14 @@
   "SecondObjectData": [],
   "LevelPointers": [
     {
-      "LevelId": "00000000-0000-0000-0000-000000000000",
-      "ExitActionType": 0,
-      "ExitX": 0,
-      "ExitY": 0,
+      "LevelId": "8cceefea-c8f3-40da-a51d-cea5353b432c",
+      "ExitActionType": 1,
+      "ExitX": 2,
+      "ExitY": 23,
       "X": 87,
       "Y": 22,
       "ExitsLevel": false,
-      "RedrawsLevel": false,
+      "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
       "BoundRectangle": "1392,352,32,32"
