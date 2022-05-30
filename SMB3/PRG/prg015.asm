@@ -947,9 +947,14 @@ Chomp_ChargeAtPlayer:
 	LDA Objects_Timer, X
 	BNE Chomp_ChargeAtPlayer1
 
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Chomp_ChargeNoDec
+
 	DEC Chomp_Charges, X
 	BEQ Chomp_GetFree
 
+Chomp_ChargeNoDec:
 	LDA #$00
 	STA Chomp_Charging, X
 	STA <Objects_XVelZ, X
@@ -4485,6 +4490,7 @@ ParaChomp_TileInteract:
 	CMP #(TILE_PROP_SOLID_ALL)
 	BCC ParaChomp_TileInteractRTS
 
+	PHA
 	JSR Object_HitCeiling
 
 	LDA #$01
@@ -4493,6 +4499,7 @@ ParaChomp_TileInteract:
 	LDA #$00
 	STA Player_CarryYVel
 
+	PLA
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
 	BNE ParaChomp_TileInteractRTS
 
