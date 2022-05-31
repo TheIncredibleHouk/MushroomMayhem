@@ -6549,6 +6549,19 @@
       "KeepObjects": false,
       "DisableWeather": false,
       "BoundRectangle": "192,368,32,32"
+    },
+    {
+      "LevelId": "81125a48-a57e-42bd-92b5-26ef4117876d",
+      "ExitActionType": 2,
+      "ExitX": 2,
+      "ExitY": 8,
+      "X": 28,
+      "Y": 23,
+      "ExitsLevel": false,
+      "RedrawsLevel": true,
+      "KeepObjects": false,
+      "DisableWeather": false,
+      "BoundRectangle": "448,368,32,32"
     }
   ],
   "CompressedData": "mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/gxAUE/Pz8/MKCwzz8/Pz8xQTf3+DEBMU8/Pz8xpBHPPz8/PzExR/f4MQFBPz8/PzKiss8/Pz8/MUE39/mAITFH9/gxAUE0FBQUFBQUFBJEFBQRQTf3+DEBMUQUFBQUFBQUExQUFBExR/f4MQFBOen0FBQUFBQTFBvr8UE39/gxATFK6vQUFBQUFBMUGurxMUf3+YAhQTf3+YAhMUf38="

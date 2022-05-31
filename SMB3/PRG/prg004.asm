@@ -1689,7 +1689,7 @@ ObjNorm_Piranha1:
 	JSR Object_YDistanceFromPlayer
 
 	JSR Piranha_DoState
-
+	
 	LDA Objects_Property, X
 	CMP #$02
 	BCC Piranha_Animate
