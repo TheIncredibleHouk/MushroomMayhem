@@ -4,7 +4,7 @@
   "TileSetIndex": 5,
   "ClearTileIndex": 0,
   "MusicValue": 16,
-  "ScreenLength": 11,
+  "ScreenLength": 3,
   "StartX": 3,
   "StartY": 18,
   "PaletteEffect": 2,
@@ -6562,7 +6562,20 @@
       "KeepObjects": false,
       "DisableWeather": false,
       "BoundRectangle": "448,368,32,32"
+    },
+    {
+      "LevelId": "0a1c2ec7-3d2d-4db4-84ff-e4e37eeb22bb",
+      "ExitActionType": 2,
+      "ExitX": 2,
+      "ExitY": 9,
+      "X": 44,
+      "Y": 23,
+      "ExitsLevel": false,
+      "RedrawsLevel": true,
+      "KeepObjects": false,
+      "DisableWeather": false,
+      "BoundRectangle": "704,368,32,32"
     }
   ],
-  "CompressedData": "mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/mAIUE39/mAITFH9/gxAUE/Pz8/MKCwzz8/Pz8xQTf3+DEBMU8/Pz8xpBHPPz8/PzExR/f4MQFBPz8/PzKiss8/Pz8/MUE39/mAITFH9/gxAUE0FBQUFBQUFBJEFBQRQTf3+DEBMUQUFBQUFBQUExQUFBExR/f4MQFBOen0FBQUFBQTFBvr8UE39/gxATFK6vQUFBQUFBMUGurxMUf3+YAhQTf3+YAhMUf38="
+  "CompressedData": "mAITFJgCFBOYAhMUmAIUE5gCExSYAhQTmAITFJgCFBOYAhMUmAIUE5gCExSYAhQTmAITFJgCFBOYAhMUmAIUE5gCExSDEBQT8/Pz8woLDPPz8/PzFBODEBMU8/Pz8xpBHPPz8/PzExSDEBQT8/Pz8yorLPPz8/PzFBOYAhMUgxAUE0FBQUFBQUFBJEFBQRQTgxATFEFBQUFBQUFBMUFBQRMUgxAUE56fQUFBQUFBMUG+vxQTgxATFK6vQUFBQUFBMUGurxMUmAIUE5gCExQ="
 }

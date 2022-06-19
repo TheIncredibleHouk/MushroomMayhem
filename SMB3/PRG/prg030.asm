@@ -2920,7 +2920,7 @@ SkipNameLoad:
 	JSR ClearPointers
 	JSR ClearBuffers
 
-	LDX #$00
+	LDX #$00	
 	LDA <Temp_Var6
 	BEQ Pointers_Done
 
@@ -4475,6 +4475,7 @@ Jump_Right:
 
 Do_Jump_Off:
 	STA <Player_XVelZ
+	STA <Player_EffXVel
 	RTS
 
 DoNightTransition:
@@ -5159,6 +5160,8 @@ NextPointer:
 
 Climbing_Pointer:
 	LDA <Player_SpriteY
+	AND #$F0
+	CMP #$F0
 	BEQ Climbing_FindPointer
 
 	CMP #$B0

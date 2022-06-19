@@ -1670,7 +1670,7 @@ Piranha_AttackProjectiles:
 	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_OIL
 	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_OIL
 
-Piranah_AttackNumbers:
+Piranha_AttackNumbers:
 	.byte $00, $00, $01, $01, $01, $01, $02, $02
 	.byte $00, $00, $03, $03
 
@@ -1872,7 +1872,7 @@ Piranha_Move:
 
 Piranha_GetAttacks:
 	LDY Objects_Property, X
-	LDA Piranah_AttackNumbers, Y
+	LDA Piranha_AttackNumbers, Y
 
 Piranha_SetAttacks:	
 	STA Piranha_AttacksLeft, X
@@ -1931,19 +1931,19 @@ Piranha_Attack:
 	ORA Objects_SpritesHorizontallyOffScreen, X
 	BNE Piranha_AttackReset
 
-	LDA #$08
+	LDA #$00
 	STA <Proj_YOff
 
 	LDA Objects_Orientation, X
 	AND #SPR_VFLIP
 	BEQ Piranha_NoYOff
 
-	LDA #$18
+	LDA #$10
 	STA <Proj_YOff
 
 Piranha_NoYOff:
 
-	LDA #$08
+	LDA #$04
 	STA <Proj_XOff
 
 	JSR Object_PrepProjectile

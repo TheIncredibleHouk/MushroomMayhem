@@ -387,7 +387,7 @@ Platform_ContactCheck:
 	STA Player_InAir
 
 	LDA <Objects_XVelZ, X
-	STA Player_CarryXVel
+	STA <Player_CarryXVel
 	
 Platform_CheckRTS:
 	RTS    

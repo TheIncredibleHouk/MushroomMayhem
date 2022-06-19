@@ -1313,11 +1313,11 @@ BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
 	CompleteLevelTimer:	.ds 1
 	PBarHitTestX:		.ds 5
 	PBarHitTestY:		.ds 5
-	Weather_XPos:		.ds 8;
-	Weather_YPos:		.ds 8;
+	Weather_XPos:		.ds 8
+	Weather_YPos:		.ds 8
 	Weather_XVel:		.ds 8
 	Weather_YVel:		.ds 8
-	Weather_Pattern:	.ds 8;
+	Weather_Pattern:	.ds 8
 	Weather_Disabled:	.ds 1
 	AnimOffset:			.ds 1;
 	SprAnimOffset:		.ds 1;

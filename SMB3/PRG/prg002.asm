@@ -2928,19 +2928,19 @@ CheckObjectsOfType3:
 	LDA #$00
 	STA <Num_Objects
 
-	LDX #$04
+	LDY #$04
 
 CheckNextObject3:
-	LDA Objects_State, X
+	LDA Objects_State, Y
 	BEQ NotObject_Checking3
 
-	LDA Objects_ID, X
+	LDA Objects_ID, Y
 	CMP <Object_Check
 	BNE NotObject_Checking3
 
 	INC <Num_Objects
 
 NotObject_Checking3:
-	DEX
+	DEY
 	BPL CheckNextObject3
 	RTS	

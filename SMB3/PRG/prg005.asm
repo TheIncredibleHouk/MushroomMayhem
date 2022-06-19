@@ -2082,7 +2082,7 @@ Birdo_HurtOrStand:
 	STA <Player_YVelZ
 
 	LDA <Objects_XVelZ, X
-	STA Player_CarryXVel
+	STA <Player_CarryXVel
 	
 Birdo_StandRTS:
 	RTS
@@ -3353,7 +3353,7 @@ Smash_InteractWithPlayer:
 	BEQ Smash_SolidInteract
 
 	LDA Objects_EffectiveXVel, X
-	STA Player_CarryXVel
+	STA <Player_CarryXVel
 
 	LDA Player_BoundBottom
 	SUB Objects_BoundTop, X

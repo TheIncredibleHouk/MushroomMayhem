@@ -4018,8 +4018,13 @@ BallChain_Norm:
 	JSR Object_DeleteOffScreenRange
 
 BallChain_Move:	
+	LDA Objects_Property, X
+	BEQ BallChain_Draw
+
 	JSR PatrolDiagonal
 	JSR PatrolDiagonal
+
+BallChain_Move1:	
 	JSR Object_CalcBoundBox
 	JSR Object_DetectPlayer
 	JSR Object_InteractWithPlayer
@@ -4029,7 +4034,7 @@ BallChain_Draw:
 	STA Objects_Frame, X
 
 	JSR Object_DrawMirrored
-
+	
 	LDY Object_SpriteRAMOffset, X
 
 

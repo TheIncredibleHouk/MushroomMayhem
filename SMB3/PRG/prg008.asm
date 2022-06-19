@@ -4172,6 +4172,7 @@ Check_WeatherOther:
 No_Weather_Vel:
 	LDA <Temp_Var1
 	ADD <Player_CarryXVel, X
+	STA <Temp_Var1
 
 PRG008_BFBF:
 	PHA		 ; Save result
@@ -4609,6 +4610,7 @@ Player_DetectWall:
 
 Player_DetectWall1:
 	INC Player_HitWall
+
 	LDA Player_Shell
 	BEQ Player_DetectWall2
 
@@ -4707,7 +4709,7 @@ Wall_Hit:
 
 	LDA #$00
 	STA <Player_XVelZ
-	STA Player_CarryXVel
+	STA <Player_CarryXVel
 
 Wall_NoHit:
 	JSR Player_CheckWallJump
@@ -4746,10 +4748,6 @@ Player_CheckWallJump:
 
 	LDA <Player_InAir
 	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
-
-	LDA <Player_EffXVel
-	AND #$80
-	CMP WallPressSign, X
 
 	LDA <Player_X
 	ADD WallClingXVel, X
@@ -4819,7 +4817,7 @@ CLC
 ;	BCS PRG008_B531
 ;
 ;	LDA <Player_XVelZ
-;	ADD Player_CarryXVel, X
+;	ADD <Player_CarryXVel, X
 ;	ADD Wind
 ;	BMI PRG008_B53C
 ;
@@ -4846,7 +4844,7 @@ CLC
 
 ;PRG008_B531:
 ;	LDA <Player_XVelZ
-;	ADD Player_CarryXVel, X
+;	ADD <Player_CarryXVel, X
 ;	ADD Wind
 ;	BEQ PRG008_B531_2
 ;	BPL PRG008_B53C
@@ -4932,19 +4930,6 @@ Try_Use_Equipped:
 	.word PowBlock
 	.word PowBlock
 	.word PowBlock
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
-	.word EquipNoUse
 	.word StarManItem
 	.word StarManItem
 
@@ -6482,6 +6467,9 @@ Player_MakeSplash:
 	LDA #$00
 	STA Objects_Orientation, Y
 	STA WaterSplash_IsOil, Y
+
+	LDA <Player_YVelZ
+	STA Objects_YVelZ, Y
 	RTS		 ; Return
 
 Player_SetHolding: 

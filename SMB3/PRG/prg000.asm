@@ -513,8 +513,6 @@ PRG000_C834:
 
 	RTS		 ; Return
 
-
-
 	; When Object hits water, splash!
 Object_WaterSplash:
 	LDA #$00
@@ -2326,8 +2324,11 @@ ObjectState_InitRTS:
 
 Object_CallInit:
 	; Get jump address specific to this object
+	INC ObjSplash_Disabled, X
+
 	LDA ObjectGroup_InitJumpTable,Y
 	STA <Temp_Var1
+
 	LDA ObjectGroup_InitJumpTable+1,Y
 	STA <Temp_Var2
 	JMP [Temp_Var1]	 ; Dynamically jump to object's init routine 
@@ -4897,7 +4898,7 @@ PatrolDiagonal:
 
 	PLA
 	STA Objects_Ticker, X
-
+	
 PatrolBackForth:
 	LDA Patrol_XCycleTimer,X
 	BEQ PatrolBackForth_Accel	 ; If timer is not expired, jump to PRG004_B2FB
@@ -4966,6 +4967,7 @@ PatrolUpDown_Accel:
 	AND #$03
 	BNE PatrolUpDown_Move
 
+	STA Debug_Snap
 	LDA <Objects_YVelZ,X
 	CMP Patrol_YAccelLimit, X
 	BNE PatrolUpDown_SetVel

@@ -739,6 +739,13 @@ Player_StarPoof:
 
 	LDA #$08
 	STA SpecialObj_Timer, X
+
+	LDA #$00
+	STA SpecialObj_XVel, X
+	STA SpecialObj_YVel, X
+
+	LDA #$02
+	STA SpecialObj_Data3, X
 	RTS
 
 Player_StarNoKill:

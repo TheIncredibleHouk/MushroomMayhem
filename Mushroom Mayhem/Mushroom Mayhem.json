@@ -1,6 +1,6 @@
 {
   "Name": "Mushroom Mayhem",
-  "DirectoryPath": "C:\\Projects\\Mario Adventure 3\\Mushroom Mayhem",
+  "DirectoryPath": "E:\\Mushroom Mayhem\\Game\\Mushroom Mayhem",
   "Palettes": [
     {
       "Renamed": false,
@@ -5159,12 +5159,12 @@
         17,
         1,
         15,
-        57,
-        9,
+        55,
+        23,
         1,
         15,
         58,
-        26,
+        11,
         1,
         15,
         48,
@@ -5180,7 +5180,7 @@
         1,
         15,
         48,
-        27,
+        45,
         1,
         15,
         54,
@@ -6274,7 +6274,7 @@
           "DisplayName": "(Level) Cloudy Clash"
         },
         {
-          "Size": 1432,
+          "Size": 1429,
           "Name": "Perennial Piranha Pressure-Autumn",
           "Id": "d9293de5-acef-40e3-a6cb-3316e8b49a0a",
           "LastModified": "0001-01-01T00:00:00",
@@ -6318,7 +6318,7 @@
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 486,
+              "Size": 1568,
               "Name": "Perennial Piranha Pressure-Spring 2",
               "Id": "d3a8fb10-6653-4fa4-be37-4c9b56e00d3e",
               "LastModified": "0001-01-01T00:00:00",
@@ -6331,16 +6331,26 @@
           "DisplayName": "(Level) Perennial Piranha Pressure-Spring"
         },
         {
-          "Size": 1607,
+          "Size": 1616,
           "Name": "Perennial Piranha Pressure-Summer",
           "Id": "0a1c2ec7-3d2d-4db4-84ff-e4e37eeb22bb",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Size": 634,
+              "Name": "Perennial Piranha Pressure-Summer 2",
+              "Id": "33a7f7d9-e72c-413f-bf48-1e98d8f6eaf2",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Perennial Piranha Pressure-Summer 2"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) Perennial Piranha Pressure-Summer"
         },
         {
-          "Size": 260,
+          "Size": 206,
           "Name": "Perennial Piranha Pressure-Season Change",
           "Id": "8cceefea-c8f3-40da-a51d-cea5353b432c",
           "LastModified": "0001-01-01T00:00:00",
@@ -18644,17 +18654,17 @@
         },
         {
           "Property": 9,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 9,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -18937,32 +18947,32 @@
           "LowerRight": 252
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 51,
+          "UpperLeft": 148,
+          "UpperRight": 149,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 51,
+          "UpperLeft": 252,
+          "UpperRight": 252,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 52,
+          "UpperLeft": 252,
+          "UpperRight": 252,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 52,
+          "UpperLeft": 168,
+          "UpperRight": 169,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
           "Property": 78,
@@ -19049,14 +19059,14 @@
           "LowerRight": 86
         },
         {
-          "Property": 0,
+          "Property": 54,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 48,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -19273,25 +19283,25 @@
           "LowerRight": 120
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 51,
+          "UpperLeft": 200,
+          "UpperRight": 201,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 54,
+          "UpperLeft": 236,
+          "UpperRight": 237,
+          "LowerLeft": 236,
+          "LowerRight": 237
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 52,
+          "UpperLeft": 216,
+          "UpperRight": 217,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
           "Property": 64,

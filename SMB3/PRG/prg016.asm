@@ -2210,7 +2210,6 @@ ObjNorm_SeasonSlot:
 	STA EventSwitch
 
 SeasonSlot_NoTicker:
-	STA Debug_Snap	
 	JSR Object_ShakeAndCalcSprite
 
 	DEC <SeasonSlot_SpriteY

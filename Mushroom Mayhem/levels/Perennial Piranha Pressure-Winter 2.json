@@ -13,7 +13,7 @@
   "MostCommonTile": 0,
   "AnimationType": 1,
   "ScrollType": 1,
-  "Effects": 0,
+  "Effects": 8,
   "EventType": 0,
   "TileData": [
     51,
