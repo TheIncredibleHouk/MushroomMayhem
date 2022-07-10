@@ -1880,18 +1880,30 @@ Boss_PiranhaNorm:
 
 	INC Boss_PiranhaHits, X
 
+	LDA #$10
+	STA Objects_Health, X
+
+	JSR Boss_PiranhaDetectChomps
+	BCC Boss_PiranhaNorm1
+
+	TYA
+	TAX
+
+	JSR Object_GetKilled
+	LDX <CurrentObjectIndexZ
+
 Boss_PiranhaNorm1:
 	JSR Boss_PiranhaSpawnChomp
+	JSR Boss_PiranhaMoveMuncher
 
 	LDA Boss_PiranhaAction, X
 	JSR DynJump
 
 	.word Boss_PiranhaInit
-	.word Giant_WaitUnder
+	.word Boss_PiranhaWaitUnder
 	.word Boss_PiranhaAttackUp
 	.word Boss_PiranhaWait
 	.word Boss_PiranhaAttackDown
-	.word Boss_PiranhaFreezeBridge
 	.word Boss_PiranhaDie
 
 Boss_PiranhaInit:	
@@ -1907,12 +1919,12 @@ Boss_PiranhaInit:
 	LDA #$00
 	STA <Objects_YHiZ, X
 
-	LDA #$04
+	LDA #$10
 	STA Objects_Health, X
 
 	INC Boss_PiranhaAction, X
 
-	LDA #$C0
+	LDA #$FF
 	STA Objects_Timer, X
 
 	LDA #$10
@@ -1926,9 +1938,23 @@ Boss_PiranhaInit:
 	RTS
 
 
-Giant_WaitUnder:
+Boss_PiranhaWaitUnder:
+	JSR Boss_PiranhaDetectSeasonSlot
+	BCC Boss_PiranhaWaitUnder2
+
+	LDA SeasonSlot_Pause, Y
+	BNE Boss_PiranhaWaitUnder0
+
+	INC Objects_Timer, X
+
+	LDA Boss_PiranhaSpawnTimer, X
+	BEQ Boss_PiranhaWaitUnder0
+
+	INC Boss_PiranhaSpawnTimer, X
+
+Boss_PiranhaWaitUnder0:
 	LDA Objects_Timer, X
-	BNE Giant_WaitUnder1
+	BNE Boss_PiranhaWaitUnder1
 
 	INC Boss_PiranhaAction, X
 
@@ -1936,13 +1962,13 @@ Giant_WaitUnder:
 	AND #$F0
 	STA <Objects_XZ, X
 
-Giant_WaitUnder1:
-	JSR Boss_PiranhaDetectChomps
-	BCC Giant_WaitUnder2
-
+Boss_PiranhaWaitUnder1:
 	LDA Objects_Timer, X
 	CMP #$20
-	BCS Giant_WaitUnder2
+	BCS Boss_PiranhaWaitUnder2
+
+	JSR Boss_PiranhaDetectChomps
+	BCC Boss_PiranhaWaitUnder2
 
 	LDA Objects_SpriteX, Y
 	ADD #$04
@@ -1957,7 +1983,7 @@ Giant_WaitUnder1:
 	LDA #$E9
 	STA Sprite_RAMTile, Y
 
-	LDA #SPR_PAL1
+	LDA #SPR_PAL2
 	STA Sprite_RAMAttr, Y
 
 	LDA <Temp_Var1
@@ -1966,7 +1992,7 @@ Giant_WaitUnder1:
 	LDA <Temp_Var2
 	STA Sprite_RAMY, Y
 
-Giant_WaitUnder2:	
+Boss_PiranhaWaitUnder2:	
 	JMP Boss_PiranhaDraw
 
 Boss_PiranhaAttackUp:
@@ -1977,15 +2003,8 @@ Boss_PiranhaAttackUp:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
-	LDA Boss_PiranhaHits, X
-	CMP #$02
-	BCC Boss_PiranhaAttackUp0
-	
-	JSR Boss_PiranhaBreakBlocks
-
-Boss_PiranhaAttackUp0:
 	LDA <Objects_YZ, X
-	CMP #$88
+	CMP #$84
 	BCS Boss_PiranhaAttackUpRTS
 
 	LDA #$20
@@ -2013,7 +2032,7 @@ Boss_PiranhaWait:
 	CMP #$04
 	BCC Boss_PiranhaWait1
 
-	LDA #$06
+	LDA #$05
 	STA Boss_PiranhaAction, X
 	
 	LDA #$40
@@ -2056,7 +2075,6 @@ Boss_PiranhaNoPull:
 	LDA Objects_Timer2, X
 	BNE Boss_PiranhaHitAction
 
-Giant_Stage3:
 	LDA #$01
 	STA Boss_PiranhaAction, X
 
@@ -2066,12 +2084,10 @@ Giant_Stage3:
 	LDA #$00
 	STA Boss_PiranhaChompGrab, X
 
-	JSR Boss_PiranhaReverseSnow
-
 Boss_PiranhaAttackDownRTS:
 	JMP Boss_PiranhaAnimate
 	
-Boss_PiranhaHitAction:	
+Boss_PiranhaHitAction:
 	LDA #$04
 	STA Objects_Health, X
 
@@ -2086,26 +2102,106 @@ Boss_PiranhaHitAction:
 
 Giant_Stage1:
 Giant_Stage2:
-	LDA #$0F
-	STA Boss_PiranhaFreezeBlocks, X
-	
-	LDA #$05
+	JSR Boss_PiranhaUpdateWeather
+
+	LDA #$01
 	STA Boss_PiranhaAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	JSR Object_FindEmptyY
+	BCC Giant_Stage2RTS
+
+	LDA #OBJ_ICESPAWN
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, Y
+	
+	LDA #$E0
+	STA Objects_XZ, Y
+
+	LDA #$20
+	STA Objects_YZ, Y	
+
+	LDA #$00
+	STA Objects_XHiZ, Y
+	STA Objects_YHiZ, Y
+
+	LDA #$01
+	STA Objects_Property, Y
+	
+Giant_Stage2RTS:	
+	RTS
+
+Giant_Stage3:
+	JSR Boss_PiranhaUpdateWeather
+
+	LDA #$01
+	STA Boss_PiranhaAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	LDY #$04
+
+Giant_Stage3_1:
+	LDA Objects_ID, Y
+	CMP #OBJ_ICESPAWN
+	BEQ Giant_Stage3_2
+	
+	DEY
+	BPL Giant_Stage3_1
+
+Giant_Stage3_2:
+
+	LDA #OBJSTATE_DEADEMPTY
+	STA Objects_State, Y
+
+	JSR Object_FindEmptyY
+	
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA #$1C
+	STA Objects_XZ, Y
+
+	LDA #$90
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_Property, Y
+	
+	LDA #OBJ_EVENTFILLER
+	STA Objects_ID, Y
+
+	JSR Object_FindEmptyY
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA #$14
+	STA Objects_XZ, Y
+
+	LDA #$80
+	STA Objects_YZ, Y
+	
+	LDA #OBJ_EVENTFILLER
+	STA Objects_ID, Y
 	RTS
 
 Giant_Stage4:
-	JSR Boss_PiranhaSpawnWeather
-
-	LDA #$05
-	STA Boss_PiranhaAction, X
+	JSR Giant_Stage3
+	JSR Boss_PiranhaSpawnMuncher
 	RTS
 
 Boss_PiranhaPalettes:
-	.byte SPR_PAL2, SPR_PAL3
+	.byte SPR_PAL1, SPR_PAL3
 
 Boss_PiranhaAnimate:
 	LDA Boss_PiranhaChompGrab, X
-	BNE Boss_PiranhaPaletteFlash
+	BNE Boss_PiranhaDraw
 
 	INC Boss_PiranhaFrames, X
 	LDA Boss_PiranhaFrames, X
@@ -2115,7 +2211,7 @@ Boss_PiranhaAnimate:
 	LSR A
 	STA Objects_Frame, X
 
-Boss_PiranhaPaletteFlash:
+Boss_PiranhaDraw:
 	LDA Objects_Timer2, X
 	LSR A
 	LSR A
@@ -2125,7 +2221,6 @@ Boss_PiranhaPaletteFlash:
 	LDA Boss_PiranhaPalettes, Y
 	STA Objects_SpriteAttributes, X
 
-Boss_PiranhaDraw:
 	LDA #LOW(Boss_PiranhaSprites)
 	STA <Giant_TilesLow
 
@@ -2156,6 +2251,15 @@ Boss_PiranhaDraw:
 	ADD #$20
 	STA Object_SpriteRAMOffset, X
 
+	LSR Objects_SpritesHorizontallyOffScreen, X
+	LSR Objects_SpritesHorizontallyOffScreen, X
+
+	LSR Objects_SpritesVerticallyOffScreen, X
+	LSR Objects_SpritesVerticallyOffScreen, X
+
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+
 	JSR Object_DrawGiant
 	JSR ObjGiant_Mirror
 
@@ -2163,6 +2267,102 @@ Boss_PiranhaDraw:
 	LDA <Objects_YZ, X
 	SUB #$20
 	STA <Objects_YZ, X
+	RTS
+
+Boss_PiranhaSpawnMuncher:
+	LDY #$07
+
+Boss_PiranhaSpawnMuncher1:
+	LDA Objects_State, Y
+	CMP #OBJSTATE_DEADEMPTY
+	BEQ Boss_PiranhaSpawnMuncher2
+
+	DEY
+	CPY #$04
+	BNE Boss_PiranhaSpawnMuncher1
+	RTS
+
+Boss_PiranhaSpawnMuncher2:
+	LDA #OBJ_MUNCHER
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA RandomN
+	AND #$0F
+	TAX
+
+	LDA <Player_X
+	AND #$F0
+	STA Objects_XZ, Y
+
+	LDA #$B0
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_XHiZ, Y
+	STA Objects_YHiZ, Y
+
+	LDX <CurrentObjectIndexZ
+	RTS	
+
+Muncher_Positions:
+	.byte $20, $30, $40, $50, $60, $70, $80, $90
+	.byte $A0, $B0, $C0, $D0, $E0, $30, $70, $B0
+
+Boss_PiranhaMoveMuncher:
+	LDA Boss_PiranhaHits, X
+	CMP #$03
+	BNE Boss_PiranhaMoveMuncherRTS
+
+	LDY #$07
+
+Boss_PiranhaMoveMuncher1:
+	LDA Objects_ID, Y
+	CMP #OBJ_MUNCHER
+	BEQ Boss_PiranhaMoveMuncher2
+
+	DEY
+	CPY #$04
+	BNE Boss_PiranhaMoveMuncher1
+	RTS
+
+Boss_PiranhaMoveMuncher2:
+
+	LDA Objects_Timer, Y
+	CMP #$10
+	BNE Boss_PiranhaMoveMuncherRTS
+
+	LDA <Player_X
+	AND #$F0
+	STA Objects_XZ, Y
+
+Boss_PiranhaMoveMuncherRTS:	
+	RTS	
+
+Boss_PiranhaDetectSeasonSlot:
+	LDY #$04
+
+Boss_PiranhaDetectSeasonSlot1:
+	CPY CurrentObjectIndexZ
+	BEQ Boss_PiranhaDetectSeasonSlot2
+	
+	LDA Objects_State, Y
+	CMP #OBJSTATE_NORMAL
+	BNE Boss_PiranhaDetectSeasonSlot2
+
+	LDA Objects_ID, Y
+	CMP #OBJ_SEASONSLOT
+	BNE Boss_PiranhaDetectSeasonSlot2
+
+	SEC
+	RTS
+
+Boss_PiranhaDetectSeasonSlot2:
+	DEY
+	BPL Boss_PiranhaDetectSeasonSlot1
+	CLC
 	RTS
 
 Boss_PiranhaDetectChomps:
@@ -2178,6 +2378,8 @@ Boss_PiranhaDetectChomps1:
 
 	LDA Objects_ID, Y
 	CMP #OBJ_PARACHOMP
+	BNE Boss_PiranhaDetectChomps2
+
 	SEC
 	RTS
 
@@ -2187,7 +2389,7 @@ Boss_PiranhaDetectChomps2:
 	CLC
 	RTS
 
-Giant_ParaChompInteract:	
+Giant_ParaChompInteract:
 	JSR Boss_PiranhaDetectChomps
 	BCC Giant_ParaChompDetectRTS
 
@@ -2314,150 +2516,39 @@ Boss_PiranhaCheckChomps2:
 Boss_PiranhaCheckChompsRTS:
 	RTS	
 
-Boss_PiranhaFreezeBridge:
-	LDA Objects_Timer, X
-	BNE Boss_PiranhaFreezeBridgeRTS
+Boss_PiranhaUpdateWeather:
+	JSR Boss_PiranhaDetectSeasonSlot
+	BCC Boss_PiranhaUpdateWeatherRTS
 
-	LDA #$52
-	STA Block_UpdateValue
-	STA Block_NeedsUpdate	 ; Store type of block change!
-
-	LDA Boss_PiranhaFreezeBlocks, X
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	STA Block_ChangeX
-	STA <Poof_X
-
-	LDA #$B0		; Align to nearest grid coordinate
-	STA Block_ChangeY
-	STA <Poof_Y
-
-	LDA #$00
-	STA Block_ChangeXHi
-	STA Block_ChangeYHi
-
-	JSR Common_MakePoof
-
-	LDA #$08
-	STA Objects_Timer, X 
-
-	DEC Boss_PiranhaFreezeBlocks, X
-	BPL Boss_PiranhaFreezeBridgeRTS
-
-	LDA #$01
-	STA Boss_PiranhaAction, X
-
-	LDA #$80
-	STA Objects_Timer, X 
-
-Boss_PiranhaFreezeBridgeRTS:	
-	RTS
-
-Boss_PiranhaBreakBlocks:
-	LDA <Objects_XZ, X
-	ADD #$08
-	STA Block_DetectX
-
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA Block_DetectXHi
-
-	LDA <Objects_YZ, X
-	ADD #$20
-	STA Block_DetectY
-	
-	LDA <Objects_YHiZ, X
-	ADC #$00
-	STA Block_DetectYHi
-	
-	JSR Object_DetectTile
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SLICK)
-	BEQ Boss_PiranhaBreakBlock
-
-Boss_PiranhaBreakBlocks1:
-	LDA Block_DetectX
-	ADD #$10
-	STA Block_DetectX
-
-	LDA Block_DetectXHi
-	ADC #$00
-	STA Block_DetectXHi
-
-	JSR Object_DetectTile
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SLICK)
-	BEQ Boss_PiranhaBreakBlock
-
-Boss_PiranhaBreakBlocks2:	
-	RTS
-
-Boss_PiranhaBreakBlock:
-	LDA Boss_PiranhaBlocksBroken, X
-	CMP #$04
-	BCS Boss_PiranhaBreakBlockRTS
-
-	INC Boss_PiranhaBlocksBroken, X
-	LDA #$41
-	JSR Object_ChangeBlock
-
-	LDA Tile_DetectionX
-	STA Debris_X
-	
-	LDA Tile_DetectionY
-	STA Debris_Y
-
-	JSR Common_MakeIce
-
-Boss_PiranhaBreakBlockRTS:	
-	RTS	
-
-Boss_PiranhaSpawnWeather:
-	JSR Object_FindEmptyY
-	BCC Boss_PiranhaSpawnWeatherRTS
-
-	LDA #OBJ_WEATHER
-	STA Objects_ID, Y
-
-	LDA #$01
+	LDA Boss_PiranhaHits, X
+	SUB #$01
 	STA Objects_Property, Y
 
-	LDA #OBJSTATE_FRESH
+	LDA #OBJSTATE_INIT
 	STA Objects_State, Y
 
-	LDA #$C0
-	STA Objects_YZ, Y
-
-	LDA #$00
-	STA Objects_YHiZ, Y
-	STA Objects_XHiZ, Y
-
-Boss_PiranhaSpawnWeatherRTS:
+Boss_PiranhaUpdateWeatherRTS:
 	RTS	
-
-Boss_PiranhaReverseSnow:
-	LDY #$04
-
-Boss_PiranhaReverseSnow1:	
-	LDA Objects_ID, Y
-	CMP #OBJ_WEATHER
-	BEQ Boss_PiranhaReverseSnow2
-
-	DEY
-	BPL Boss_PiranhaReverseSnow1
-	RTS	
-
-Boss_PiranhaReverseSnow2:	
-	;LDA Wind_Speed, Y
-	JSR Negate
-	;STA Wind_Speed, Y
-
-	;LDA Wind_ExtraVel, Y
-	JSR Negate
-	;STA Wind_ExtraVel, Y
-	RTS
 
 Boss_PiranhaDie:
+	LDX #$07
+
+Boss_PiranhaDie1:
+	CPX CurrentObjectIndexZ
+	BEQ Boss_PiranhaDie2
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_NORMAL
+	BNE Boss_PiranhaDie2
+
+	JSR Object_PoofDie
+
+Boss_PiranhaDie2:
+	DEX
+	BPL Boss_PiranhaDie1
+
+	LDX <CurrentObjectIndexZ
+
 	LDA Objects_Timer2, X
 	BNE Boss_PiranhaDieRTS
 

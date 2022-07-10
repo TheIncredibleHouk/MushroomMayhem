@@ -6499,6 +6499,12 @@
   ],
   "FirstObjectData": [
     {
+      "GameObjectId": 0,
+      "X": 3,
+      "Y": 13,
+      "Property": 0
+    },
+    {
       "GameObjectId": 60,
       "X": 19,
       "Y": 14,

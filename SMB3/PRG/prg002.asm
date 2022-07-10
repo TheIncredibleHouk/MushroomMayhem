@@ -194,7 +194,7 @@ ObjP14:
     
 ObjP15:
 	; water
-    .byte $E1, $E3, $00, $00
+    .byte $A1, $A3, $00, $00
 
 	; lava
 	.byte $C1, $C3, $FF, $FF
@@ -364,18 +364,22 @@ WaterFill_Norm:
 	JSR Object_DeleteOffScreen
 	JSR Object_FaceDirectionMoving
 	JSR Object_ApplyXVel
-	JSR Object_CalcBoundBoxForced
-	JSR Object_DetectTileCenter
-
-	STY <Temp_Var1
-
-	CMP #TILE_PROP_SOLID_ALL
-	BCC FillWater_DrawWater
 
 	LDA <Objects_XZ, X
 	AND #$0F
 	BNE FillWater_Animate
 
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_OBJECTINTERACT)
+	BEQ FillWater_Burst
+
+	CMP #(TILE_PROP_SOLID_ALL)
+	BNE FillWater_ToggleTile
+
+	JMP Object_Delete
+
+FillWater_Burst:
 	LDA Objects_XZ, X
 	AND #$F0
 	STA Debris_X
@@ -392,14 +396,9 @@ WaterFill_Norm:
 	LDA #$C2
 	JSR Object_ChangeBlock
 
-	JMP FillWater_Animate
-
-FillWater_DrawWater:
-	LDA <Objects_XZ, X
-	AND #$0F
-	BNE FillWater_Animate
-
-	LDA #$C2
+FillWater_ToggleTile:
+	TYA
+	EOR #$01
 	JSR Object_ChangeBlock
 
 FillWater_Animate:
@@ -414,6 +413,9 @@ FillWater_Animate:
 	LDA Objects_Orientation, X
 	ORA WaterFill_Flip, Y
 	STA Objects_Orientation, X
+
+	LDA #$23
+	STA PatTable_BankSel + 4
 
 FillWater_Draw:
 	JMP Object_Draw
@@ -1163,6 +1165,7 @@ WEATHER_RAIN = 0
 WEATHER_SNOW = 1
 WEATHER_SAND = 2
 WEATHER_LEAF = 3
+WEATHER_NONE = 4
 
 Weather_InitX = Temp_Var6
 Weather_InitY = Temp_Var7
@@ -1178,6 +1181,7 @@ ObjInit_Weather:
 	CMP #$01
 	BEQ Weather_NotDupe
 
+Weather_Delete:
 	JMP Object_Delete
 
 Weather_NotDupe:
@@ -1233,9 +1237,15 @@ Weather_DoLoop:
 
 	DEY
 	BPL Weather_InitXY
+
+Weather_RTS:	
 	RTS
 
 ObjNorm_Weather:
+	LDA Objects_Property, X
+	CMP #WEATHER_NONE
+	BEQ Weather_RTS
+
 	LDA <Player_HaltGameZ
 	BEQ Weather_Norm
 	JMP Weather_Draw

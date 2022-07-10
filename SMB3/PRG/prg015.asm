@@ -4233,10 +4233,6 @@ ObjNorm_ParaChomp:
 	JMP Object_StarBurstDeath
 
 ParaChomp_NotDead:	
-	LDA <Objects_XZ, X
-	LDA <Objects_XHiZ, X
-	LDA <Objects_YZ, X
-	LDA <Objects_YHiZ, X
 
 	LDA <Player_HaltGameZ
 	BEQ ParaChomp_Norm
@@ -4375,7 +4371,7 @@ ParaChomp_DrawWingsAttr:
 	LDA Objects_SpriteAttributes, X
 	ORA Objects_Orientation, X
 	AND #(SPR_BEHINDBG | SPR_VFLIP)
-	ORA #SPR_PAL1
+	ORA #SPR_PAL2
 	STA Sprite_RAMAttr + 24,Y
 
 	ORA #SPR_HFLIP

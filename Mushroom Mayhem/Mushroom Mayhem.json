@@ -5266,6 +5266,45 @@
       ],
       "Name": "Perennial Piranha Pressure Season Change",
       "Id": "1a8549da-fc9a-40b3-a498-46b96dace3f2"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        63,
+        15,
+        48,
+        1,
+        63,
+        15,
+        54,
+        39,
+        63,
+        15,
+        48,
+        11,
+        63,
+        15,
+        48,
+        0,
+        63,
+        15,
+        54,
+        6,
+        63,
+        15,
+        48,
+        6,
+        63,
+        15,
+        48,
+        12,
+        63,
+        15,
+        54,
+        39
+      ],
+      "Name": "Perennial Piranha Pressure-Boss",
+      "Id": "0f17cc02-ae1e-41d3-9e27-f466a228e8eb"
     }
   ],
   "WorldInfo": [
@@ -5316,7 +5355,7 @@
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
-          "Size": 1538,
+          "Size": 1624,
           "Name": "Waterway Wash",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
@@ -5335,7 +5374,7 @@
           "DisplayName": "(Level) Waterway Wash"
         },
         {
-          "Size": 318,
+          "Size": 320,
           "Name": "Key Coin Caverns",
           "Id": "747d617e-59bb-40d5-a9fc-f558dc5fadd8",
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
@@ -5354,7 +5393,7 @@
           "DisplayName": "(Level) Key Coin Caverns"
         },
         {
-          "Size": 2708,
+          "Size": 2710,
           "Name": "Shy Guys In Subcon",
           "Id": "04a6cfde-b3c5-4695-81c5-dda10c212a97",
           "LastModified": "2019-05-28T07:41:45.7634163-04:00",
@@ -5373,7 +5412,7 @@
           "DisplayName": "(Level) Shy Guys In Subcon"
         },
         {
-          "Size": 1803,
+          "Size": 1837,
           "Name": "Feeling Weighed Down",
           "Id": "645b2239-1a1b-4cbf-9262-49b0cb7f313e",
           "LastModified": "2019-06-20T21:07:58.5411251-04:00",
@@ -5477,7 +5516,7 @@
           "DisplayName": "(Level) Rhythm and Blocks"
         },
         {
-          "Size": 1067,
+          "Size": 1069,
           "Name": "Colossal Cheep Challenge",
           "Id": "22a5a5e5-ccc5-4f9a-abb9-3ae0525d987a",
           "LastModified": "2019-06-20T19:27:00.954171-04:00",
@@ -6274,7 +6313,7 @@
           "DisplayName": "(Level) Cloudy Clash"
         },
         {
-          "Size": 1429,
+          "Size": 1432,
           "Name": "Perennial Piranha Pressure-Autumn",
           "Id": "d9293de5-acef-40e3-a6cb-3316e8b49a0a",
           "LastModified": "0001-01-01T00:00:00",
@@ -6318,7 +6357,7 @@
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 1568,
+              "Size": 1565,
               "Name": "Perennial Piranha Pressure-Spring 2",
               "Id": "d3a8fb10-6653-4fa4-be37-4c9b56e00d3e",
               "LastModified": "0001-01-01T00:00:00",
@@ -6331,17 +6370,27 @@
           "DisplayName": "(Level) Perennial Piranha Pressure-Spring"
         },
         {
-          "Size": 1616,
+          "Size": 1620,
           "Name": "Perennial Piranha Pressure-Summer",
           "Id": "0a1c2ec7-3d2d-4db4-84ff-e4e37eeb22bb",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
-              "Size": 634,
+              "Size": 1856,
               "Name": "Perennial Piranha Pressure-Summer 2",
               "Id": "33a7f7d9-e72c-413f-bf48-1e98d8f6eaf2",
               "LastModified": "0001-01-01T00:00:00",
-              "SublevelsInfo": [],
+              "SublevelsInfo": [
+                {
+                  "Size": 80,
+                  "Name": "Perennial Piranha Pressure-Boss",
+                  "Id": "0afe7b2f-7b24-48c3-bfbc-864a0b107ca1",
+                  "LastModified": "0001-01-01T00:00:00",
+                  "SublevelsInfo": [],
+                  "InfoType": 1,
+                  "DisplayName": "(Level) Perennial Piranha Pressure-Boss"
+                }
+              ],
               "InfoType": 1,
               "DisplayName": "(Level) Perennial Piranha Pressure-Summer 2"
             }
@@ -10519,17 +10568,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 6,
-          "LowerLeft": 255,
-          "LowerRight": 22
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 22,
+          "LowerRight": 23
         },
         {
           "Property": 0,
-          "UpperLeft": 7,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 23,
-          "LowerRight": 255
+          "LowerLeft": 0,
+          "LowerRight": 1
         },
         {
           "Property": 0,
@@ -10743,17 +10792,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 6,
-          "LowerLeft": 255,
-          "LowerRight": 22
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 22,
+          "LowerRight": 23
         },
         {
           "Property": 0,
-          "UpperLeft": 7,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 23,
-          "LowerRight": 255
+          "LowerLeft": 0,
+          "LowerRight": 1
         },
         {
           "Property": 193,
@@ -10981,10 +11030,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 34,
+          "UpperRight": 35,
+          "LowerLeft": 50,
+          "LowerRight": 51
         },
         {
           "Property": 194,
@@ -11079,17 +11128,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 6,
-          "LowerLeft": 255,
-          "LowerRight": 22
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 22,
+          "LowerRight": 23
         },
         {
           "Property": 0,
-          "UpperLeft": 7,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 23,
-          "LowerRight": 255
+          "LowerLeft": 0,
+          "LowerRight": 1
         },
         {
           "Property": 11,
@@ -11205,10 +11254,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 18,
+          "UpperRight": 19,
+          "LowerLeft": 18,
+          "LowerRight": 19
         },
         {
           "Property": 0,
@@ -11291,8 +11340,8 @@
           "Property": 0,
           "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 132,
-          "LowerRight": 133
+          "LowerLeft": 210,
+          "LowerRight": 211
         },
         {
           "Property": 16,
@@ -11639,17 +11688,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 6,
-          "LowerLeft": 255,
-          "LowerRight": 22
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 22,
+          "LowerRight": 23
         },
         {
           "Property": 0,
-          "UpperLeft": 7,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 23,
-          "LowerRight": 255
+          "LowerLeft": 0,
+          "LowerRight": 1
         },
         {
           "Property": 64,
@@ -12243,7 +12292,7 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 71,
+          "UpperLeft": 38,
           "UpperRight": 15,
           "LowerLeft": 31,
           "LowerRight": 17
@@ -12362,10 +12411,10 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 239,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 239
+          "UpperLeft": 0,
+          "UpperRight": 1,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 0,
@@ -17585,15 +17634,15 @@
           "Property": 192,
           "UpperLeft": 71,
           "UpperRight": 72,
-          "LowerLeft": 87,
-          "LowerRight": 88
+          "LowerLeft": 117,
+          "LowerRight": 118
         },
         {
           "Property": 192,
           "UpperLeft": 69,
           "UpperRight": 70,
-          "LowerLeft": 85,
-          "LowerRight": 86
+          "LowerLeft": 119,
+          "LowerRight": 120
         },
         {
           "Property": 0,
@@ -17604,10 +17653,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 14,
-          "UpperRight": 15,
-          "LowerLeft": 30,
-          "LowerRight": 31
+          "UpperLeft": 85,
+          "UpperRight": 86,
+          "LowerLeft": 87,
+          "LowerRight": 88
         },
         {
           "Property": 0,
@@ -17876,11 +17925,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "Property": 64,
+          "UpperLeft": 56,
+          "UpperRight": 56,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -17967,11 +18016,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 64,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 0,
+          "UpperLeft": 22,
+          "UpperRight": 22,
+          "LowerLeft": 22,
+          "LowerRight": 22
         },
         {
           "Property": 48,
@@ -18401,11 +18450,11 @@
           "LowerRight": 159
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
           "Property": 0,
@@ -18751,7 +18800,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 1,
+          "Property": 9,
           "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -18822,10 +18871,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "UpperLeft": 6,
+          "UpperRight": 7,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -18934,10 +18983,10 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 71,
+          "UpperLeft": 68,
           "UpperRight": 70,
-          "LowerLeft": 87,
-          "LowerRight": 86
+          "LowerLeft": 84,
+          "LowerRight": 120
         },
         {
           "Property": 48,
@@ -19046,31 +19095,31 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 71,
+          "UpperLeft": 68,
           "UpperRight": 72,
-          "LowerLeft": 87,
-          "LowerRight": 88
+          "LowerLeft": 84,
+          "LowerRight": 118
         },
         {
           "Property": 192,
           "UpperLeft": 69,
+          "UpperRight": 73,
+          "LowerLeft": 119,
+          "LowerRight": 89
+        },
+        {
+          "Property": 192,
+          "UpperLeft": 71,
           "UpperRight": 70,
-          "LowerLeft": 85,
+          "LowerLeft": 87,
           "LowerRight": 86
         },
         {
-          "Property": 54,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
           "Property": 48,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 71,
+          "UpperRight": 70,
+          "LowerLeft": 87,
+          "LowerRight": 86
         },
         {
           "Property": 193,
@@ -19339,18 +19388,18 @@
           "LowerRight": 238
         },
         {
+          "Property": 240,
+          "UpperLeft": 174,
+          "UpperRight": 175,
+          "LowerLeft": 190,
+          "LowerRight": 191
+        },
+        {
           "Property": 192,
           "UpperLeft": 204,
           "UpperRight": 205,
           "LowerLeft": 220,
           "LowerRight": 221
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 170,
-          "UpperRight": 171,
-          "LowerLeft": 186,
-          "LowerRight": 187
         }
       ]
     },
@@ -23324,8 +23373,8 @@
           "Property": 8,
           "UpperLeft": 166,
           "UpperRight": 167,
-          "LowerLeft": 200,
-          "LowerRight": 201
+          "LowerLeft": 182,
+          "LowerRight": 183
         },
         {
           "Property": 13,
@@ -24031,15 +24080,15 @@
           "Property": 9,
           "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 132,
-          "LowerRight": 133
+          "LowerLeft": 210,
+          "LowerRight": 211
         },
         {
           "Property": 7,
           "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 132,
-          "LowerRight": 133
+          "LowerLeft": 210,
+          "LowerRight": 211
         },
         {
           "Property": 0,
@@ -37857,7 +37906,7 @@
     {
       "GameId": 1,
       "GameObjectType": 1,
-      "Name": "Power Up 1",
+      "Name": "Power Up",
       "Sprites": [
         {
           "PropertiesAppliedTo": [
@@ -37865,25 +37914,53 @@
           ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x00",
+          "TileTableAddress": "0x2a000",
+          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x2a000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": [
             1
           ],
-          "X": 4,
+          "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x08",
+          "TileTableAddress": "0x2D000",
+          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 3,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x2D000",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -37893,7 +37970,7 @@
           ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x24000",
+          "TileTableAddress": "0x2C000",
           "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
@@ -37907,50 +37984,8 @@
           ],
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0x24000",
+          "TileTableAddress": "0x2C000",
           "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            3
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x25000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            3
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x25000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            4
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x26000",
-          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 1,
@@ -37961,13 +37996,27 @@
           "PropertiesAppliedTo": [
             4
           ],
-          "X": 8,
+          "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x26000",
-          "TileValue": "0x12",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x32",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            4
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x32",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -37977,7 +38026,7 @@
           ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x27000",
+          "TileTableAddress": "0x2F000",
           "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
@@ -37991,7 +38040,7 @@
           ],
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0x27000",
+          "TileTableAddress": "0x2F000",
           "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
@@ -38005,35 +38054,7 @@
           ],
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x28000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            6
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x28000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            7
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x29000",
+          "TileTableAddress": "0x2b000",
           "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
@@ -38043,11 +38064,11 @@
         },
         {
           "PropertiesAppliedTo": [
-            7
+            6
           ],
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0x29000",
+          "TileTableAddress": "0x2b000",
           "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
@@ -38057,16 +38078,15 @@
         }
       ],
       "Properties": [
-        "None",
-        "Coin",
-        "Mushroom",
-        "Fire Flower",
-        "Super Leaf",
-        "Frog Suit",
-        "Koopa Shell",
-        "Hammer Suit"
+        "Ice Flower",
+        "Fox Leaf",
+        "Ninjashroom",
+        "INVALID",
+        "Vine",
+        "P-Wing",
+        "Checkpoint"
       ],
-      "Group": "Global"
+      "Group": "Scripting"
     },
     {
       "GameId": 2,
@@ -40548,7 +40568,8 @@
         "Rain",
         "Snow",
         "Sandstorm",
-        "Leaves"
+        "Leaves",
+        "None"
       ],
       "Group": "Global"
     },
@@ -55236,7 +55257,7 @@
           "TileValue": "0x2A",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 1,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -55248,7 +55269,7 @@
           "TileValue": "0x2C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 3,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -55369,35 +55390,35 @@
     {
       "GameId": 151,
       "GameObjectType": 1,
-      "Name": "Unused x97",
+      "Name": "Jumping Muncher",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x14",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x16000",
+          "TileValue": "0x16",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Scripting"
     },
     {
       "GameId": 152,

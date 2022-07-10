@@ -11,6 +11,8 @@ OBJ_PYRANTULA           = $92
 OBJ_BARRELBRO			= $93
 OBJ_PLUMBERPAUL			= $94
 OBJ_SEASONSLOT			= $95
+OBJ_ICESPAWN			= $96
+OBJ_MUNCHER			    = $97
 
     .word ObjInit_HammerBro ; Object $8C
     .word ObjInit_NinjaBro ; Object $8D
@@ -22,8 +24,8 @@ OBJ_SEASONSLOT			= $95
     .word ObjInit_BarrelBro ; Object $93
     .word ObjInit_PlungerPaul ; Object $94
     .word ObjInit_SeasonSlot ; Object $95
-    .word ObjInit_DoNothing ; Object $96
-    .word ObjInit_DoNothing ; Object $97
+    .word ObjInit_IceSpawn ; Object $96
+    .word ObjInit_Muncher ; Object $97
     .word ObjInit_DoNothing ; Object $98
     .word ObjInit_DoNothing ; Object $99
     .word ObjInit_DoNothing ; Object $9A
@@ -45,8 +47,8 @@ OBJ_SEASONSLOT			= $95
     .word ObjNorm_BarrelBro ; Object $93
     .word ObjNorm_PlungerPaul ; Object $94
     .word ObjNorm_SeasonSlot ; Object $95
-    .word ObjNorm_DoNothing ; Object $96
-    .word ObjNorm_DoNothing ; Object $97
+    .word ObjNorm_IceSpawn ; Object $96
+    .word ObjNorm_Muncher ; Object $97
     .word ObjNorm_DoNothing ; Object $98
     .word ObjNorm_DoNothing ; Object $99
     .word ObjNorm_DoNothing ; Object $9A
@@ -69,7 +71,7 @@ OBJ_SEASONSLOT			= $95
     .word Player_GetHurt ; Object $94
     .word ObjHit_DoNothing ; Object $95
     .word ObjHit_DoNothing ; Object $96
-    .word ObjHit_DoNothing ; Object $97
+    .word Player_GetHurt ; Object $97
     .word ObjHit_DoNothing ; Object $98
     .word ObjHit_DoNothing ; Object $99
     .word ObjHit_DoNothing ; Object $9A
@@ -92,7 +94,7 @@ OBJ_SEASONSLOT			= $95
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH64 ; Object $94
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $95
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $96
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $97
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $97
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $98
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $99
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9A
@@ -113,7 +115,7 @@ OBJ_SEASONSLOT			= $95
     .byte OPTS_SETPT5 | $0A ; Object $92
     .byte OPTS_SETPT5 | $4E ; Object $93
     .byte OPTS_SETPT5 | $36 ; Object $94
-    .byte OPTS_SETPT5 | $58 ; Object $95
+    .byte OPTS_SETPT6 | $58 ; Object $95
     .byte OPTS_NOCHANGE ; Object $96
     .byte OPTS_NOCHANGE ; Object $97
     .byte OPTS_NOCHANGE ; Object $98
@@ -190,13 +192,16 @@ ObjP94:
 	.byte $BB, $BD, $9B, $9D
 
 ObjP95:
-	.byte $AB, $AD
-	.byte $AF, $B1
-	.byte $B3, $B5
-	.byte $91, $93
+	.byte $EB, $ED
+	.byte $EF, $F1
+	.byte $F3, $F5
+	.byte $D1, $D3
 
 ObjP96:
 ObjP97:
+	.byte $D5, $D7
+	.byte $FD, $FF
+
 ObjP98:
 ObjP99:
 ObjP9A:
@@ -1019,11 +1024,6 @@ FireIcePirateBro_WalkDirection = Objects_Data7
 FireIcePirateBro_FireIcePirateCount = Objects_Data8
 FireIcePirateBro_WalkDirectionBackup = Objects_Data9
 FireIcePirateBro_Projectile = Objects_Data10
-
-
-
-
-
 
 
 ObjNorm_FireIcePirateBro:
@@ -2157,8 +2157,12 @@ SeasonSlot_EndingOffset:
 	.byte $D0, $E0, $F0, $00
 
 ObjInit_SeasonSlot:
-	LDA #$08
+	LDA #$04
 	STA Objects_SpritesRequested, X
+
+	LDA Objects_Property, X
+	AND #$03
+	STA Objects_Property, X
 
 	LDY Objects_Property, X
 	LDA SeasonSlot_StartingOffset, Y
@@ -2169,7 +2173,7 @@ ObjInit_SeasonSlot:
 
 	LDA #$40
 	STA Objects_Timer, X
-	RTS
+	JMP ObjNorm_SeasonSlot
 
 
 SeasonSlot_SpriteX = Temp_Var2
@@ -2182,7 +2186,7 @@ SeasonSlot_Pause = Objects_Data2
 SeasonSlot_Stop = Objects_Data3
 
 SeasonSlot_SpritePals:
-	.byte SPR_PAL1, SPR_PAL1
+	.byte SPR_PAL1, SPR_PAL3
 	.byte SPR_PAL2, SPR_PAL2
 	.byte SPR_PAL2, SPR_PAL2
 	.byte SPR_PAL3, SPR_PAL3
@@ -2196,20 +2200,25 @@ ObjNorm_SeasonSlot:
 ; Temp_Var6 = Object's starting tiles index (and -> 'X')
 ; Temp_Var7 = Object's Sprite_RAM offset (and -> 'Y')
 ; Temp_Var8 = Objects_SpritesHorizontallyOffScreen
+	LDA <Player_HaltGameZ
+	BNE SeasonSlot_Draw
+
 	LDA Objects_Timer, X
 	ORA SeasonSlot_Pause, X
-	BNE SeasonSlot_NoTicker
+	BNE SeasonSlot_Draw
 
 	INC SeasonSlot_Ticker, X
 	LDA SeasonSlot_Ticker, X
 	CMP SeasonSlot_Stop, X
-	BNE SeasonSlot_NoTicker
+	BNE SeasonSlot_Draw
 
 	LDA #$01
 	STA SeasonSlot_Pause, X
 	STA EventSwitch
 
-SeasonSlot_NoTicker:
+	JSR SeasonSlot_UpdateWeather
+
+SeasonSlot_Draw:
 	JSR Object_ShakeAndCalcSprite
 
 	DEC <SeasonSlot_SpriteY
@@ -2231,7 +2240,7 @@ SeasonSlot_NoTicker:
 	LSR A
 	STA <SeasonSlot_TileOffset
 
-	LDA #$02
+	LDA #$01
 	STA <SeasonSlot_TilesRemaining
 
 SeasonSlot_Loop:
@@ -2260,6 +2269,9 @@ SeasonSlot_Loop:
 	LDA SeasonSlot_SpritePals, X
 	ORA #SPR_BEHINDBG
 	STA Sprite_RAMAttr, Y
+
+	LDA SeasonSlot_SpritePals + 1, X
+	ORA #SPR_BEHINDBG
 	STA Sprite_RAMAttr + 4, Y
 
 	LDA <SeasonSlot_SpriteOffset
@@ -2275,3 +2287,202 @@ SeasonSlot_Loop:
 	DEC <SeasonSlot_TilesRemaining
 	BPL SeasonSlot_Loop
 	RTS
+
+Weather_UpdateProperty:
+	.byte WEATHER_SNOW
+	.byte WEATHER_RAIN
+	.byte WEATHER_NONE
+	.byte WEATHER_LEAF
+
+SeasonSlot_UpdateWeather:
+	JSR SeasonSlot_FindWeather
+	BCC SeasonSlot_UpdateWeatherRTS
+
+	LDA Objects_Property, X
+	TAX
+	
+	LDA Weather_UpdateProperty, X
+	STA Objects_Property, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, Y
+
+	LDA #$0E
+	STA PatTable_BankSel + 4
+
+	LDX <CurrentObjectIndexZ
+
+SeasonSlot_UpdateWeatherRTS:
+	RTS
+SeasonSlot_FindWeather:
+	LDY #$04
+
+SeasonSlot_UpdateWeather1:
+	CPY CurrentObjectIndexZ
+	BEQ SeasonSlot_UpdateWeather2
+	
+	LDA Objects_State, Y
+	CMP #OBJSTATE_NORMAL
+	BNE SeasonSlot_UpdateWeather2
+
+	LDA Objects_ID, Y
+	CMP #OBJ_WEATHER
+	BNE SeasonSlot_UpdateWeather2
+
+	SEC
+	RTS
+
+SeasonSlot_UpdateWeather2:
+	DEY
+	BPL SeasonSlot_UpdateWeather1
+	CLC
+	RTS
+
+IceSpawn_Timers:
+	.byte $40, $80
+
+IceSpawn_XOffset:
+	.byte $00, $08
+
+IceSpawn_XVel:
+	.byte $10, $F0
+
+ObjInit_IceSpawn:
+	LDY Objects_Property, X
+
+	LDA IceSpawn_Timers, Y
+	STA Objects_Timer, X
+
+	JMP Object_NoInteractions
+
+ObjNorm_IceSpawn:
+	LDA Objects_Timer, X
+	BNE IceSpawnRTS
+
+	LDY Objects_Property, X
+	LDA IceSpawn_XOffset, Y
+	STA Proj_XOff
+
+	LDA #$00
+	STA Proj_YOff
+
+	JSR Object_PrepProjectile
+	BCC IceSpawnRTS
+
+	LDA #$C0
+	STA Objects_Timer, X
+
+	LDA Objects_Property, X
+	TAX
+
+	LDA #SOBJ_ICEBALL
+	STA SpecialObj_ID, Y
+
+	LDA IceSpawn_XVel, X
+	STA SpecialObj_XVel, Y
+
+IceSpawnRTS:	
+	RTS
+
+Muncher_StartY = Objects_Data1
+Muncher_StartYHi = Objects_Data2
+Muncher_Jumping = Objects_Data5
+
+ObjInit_Muncher:
+	LDA #$02
+	STA Objects_SpritesRequested, X
+
+	LDA <Objects_YZ, X
+	STA Muncher_StartY, X
+
+	LDA <Objects_YHiZ, X
+	STA Muncher_StartYHi, X
+
+	LDA #$20
+	STA Objects_Timer, X
+	
+	JMP Object_NoInteractions
+
+ObjNorm_Muncher:
+	LDA <Player_HaltGameZ
+	BNE Muncher_Draw
+
+	LDA Muncher_Jumping, X
+	
+	JSR DynJump
+
+	.word Muncher_Waiting
+	.word Muncher_Jump
+
+Muncher_Waiting:
+	LDA Objects_Timer, X
+	BNE Muncher_Waiting1
+
+	LDA Block_NeedsUpdate
+	BNE Muncher_Waiting1
+
+	LDA #$01
+	STA Muncher_Jumping, X
+
+	LDA #$C0
+	STA <Objects_YVelZ, X
+
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTileCenter
+	TYA
+	EOR #$01
+
+	JSR Object_ChangeBlock
+
+Muncher_Waiting1:
+	JMP Muncher_Draw
+
+Muncher_Jump:
+	JSR Object_ApplyY_With_Gravity
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	
+	LDA Muncher_StartY, X
+	SUB <Objects_YZ, X
+
+	LDA Muncher_StartYHi, X
+	SBC <Objects_YHiZ, X
+
+	BCS Muncher_Draw
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+	LDA Block_NeedsUpdate
+	BNE Muncher_Draw
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	TYA
+	EOR #$01
+
+	JSR Object_ChangeBlock
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA Muncher_Jumping, X
+
+Muncher_Draw:
+	LDA Muncher_Jumping, X
+	BEQ Muncher_DrawRTS
+
+	LDY #$00
+	LDA <Objects_YVelZ, X
+	BMI Muncher_DrawFrame
+
+	INY
+
+Muncher_DrawFrame:	
+	TYA
+	STA Objects_Frame, X
+	JSR Object_Draw
+
+Muncher_DrawRTS:
+	RTS	

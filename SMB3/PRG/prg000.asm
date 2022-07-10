@@ -4967,7 +4967,6 @@ PatrolUpDown_Accel:
 	AND #$03
 	BNE PatrolUpDown_Move
 
-	STA Debug_Snap
 	LDA <Objects_YVelZ,X
 	CMP Patrol_YAccelLimit, X
 	BNE PatrolUpDown_SetVel

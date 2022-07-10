@@ -107,7 +107,7 @@ OBJ_BOSS			= $13
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $10
 	.byte OA1_PAL2 | OA1_WIDTH16 | OA1_WIDTH16	; Object $11
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16	; Object $12
-	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH32	; Object $13	
+	.byte OA1_PAL1 | OA1_HEIGHT64 | OA1_WIDTH32	; Object $13	
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
