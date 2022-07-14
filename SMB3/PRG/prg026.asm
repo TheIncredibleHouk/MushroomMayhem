@@ -982,6 +982,7 @@ Inv_Display_Hilite:
 
 NumberSpriteMap:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $B1, $B3
+
 Map_Poof_To_Row:
 	; Convert a Map Poof Y coordinate to a row LUT
 	.byte $20, $30, $40, $50, $60, $70, $80
@@ -2180,6 +2181,13 @@ TileChng_VRAMCommit:
 ; graphics buffer for commitment later on!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Update:
+	LDA Message_Id
+	BEQ StatusBar_Norm
+
+	JSR Message_Handler
+	JMP AttemptUpdate
+
+StatusBar_Norm:	
 	LDA Force_StatusBar_Init
 	BEQ NoForced_Init
 
@@ -2189,38 +2197,23 @@ StatusBar_Update:
 
 NoForced_Init:
 	LDA Update_Level_Name
-	BEQ No_Level_Name_Update
+	BEQ StatusBar_DoUpdates
 
 	JSR Game_UpdateLevelName
 	RTS
 
-No_Level_Name_Update:
+; No_Level_Name_Update:
 
-	LDA StatusBar_Mode
-	CMP #$80
-	BNE StatusBar_DoUpdates
-	RTS
-
-;	LDA <Pad_Input
-;	AND #PAD_SELECT
-;	BEQ No_Switch
-;
-;	LDA <Pad_Holding
-;	AND #(PAD_UP | PAD_DOWN)
-;	BNE No_Switch
-;
-;	LDA StatusBar_Mode
-;	EOR #$FF
-;	STA StatusBar_Mode
+; 	LDA StatusBar_Mode
+; 	CMP #$80
+; 	BNE StatusBar_DoUpdates
+; 	RTS
 
 Init_StatusBar:
 	JSR Initialize_Status_Bar
 	JMP AttemptUpdate
 
 StatusBar_DoUpdates:
-;	LDA StatusBar_Mode
-;	BNE UpdateMode2
-
 	JSR Game_UpdatePower
 	JSR Game_UpdateAir
 	JSR Game_UpdateStars
@@ -2230,9 +2223,7 @@ StatusBar_DoUpdates:
 	JSR Game_UpdateDayNightMeter
 	JSR Game_UpdateBadge
 	JSR Game_UpdateReserve
-;	JMP AttemptUpdate
 
-;UpdateMode2:
 
 AttemptUpdate:
 	INC Status_Bar_Render_Toggle
@@ -2272,8 +2263,7 @@ Do_Top:
 	LDA #$2B
 	STA Graphics_Buffer, X
 
-	LDA #$42
-	;LDA #$22
+	LDA #$62
 	STA Graphics_Buffer + 1, X
 
 	LDA #$1C
@@ -2307,9 +2297,10 @@ Do_Bottom:
 	LDX Graphics_BufCnt
 	LDA #$2B
 	STA Graphics_Buffer, X
-	LDA #$62
-	;LDA #$42
+	
+	LDA #$82
 	STA Graphics_Buffer + 1, X
+	
 	LDA #$1C
 	LDY #$00
 	STA Graphics_Buffer + 2, X
@@ -2336,8 +2327,8 @@ Status_Bottom_Loop:
 ;
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $92, $90, $FE, $FE, $93, $FE, $FE
-	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $92, $90, $FE, $FE, $93, $FE, $FE
+	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FE, $FE, $76, $FE, $FE
+	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FE, $FE, $76, $FE, $FE
 
 Initialize_Status_Bar:
 ;	LDA StatusBar_Mode
@@ -2376,8 +2367,8 @@ StatusBar_Template1:
 	RTS
 
 Game_UpdatePower:
-	LDA StatusBar_Mode
-	BNE Game_UpdatePower1
+	; LDA StatusBar_Mode
+	; BNE Game_UpdatePower1
 	
 	LDA Player_Power
 	CMP Old_Player_Power
@@ -2431,8 +2422,8 @@ StatusBar_Fill_PowerMT5:
 	RTS		 ; Return
 ;--------------------------------------
 Game_UpdateAir:
-	LDA StatusBar_Mode
-	BNE Game_UpdateAir1
+	; LDA StatusBar_Mode
+	; BNE Game_UpdateAir1
 	
 	LDA Air_Time
 	CMP Old_Air_Time
@@ -2491,8 +2482,8 @@ Fill_Air_MT_Done:
 ;--------------------------------------
 
 Game_UpdateStars:
-	LDA StatusBar_Mode
-	BNE Game_UpdateStars1
+	; LDA StatusBar_Mode
+	; BNE Game_UpdateStars1
 	
 	LDA Magic_Stars
 	CMP Old_Magic_Stars
@@ -2530,8 +2521,8 @@ StatusBar_DrawStars:
 	
 ;--------------------------------------
 Game_UpdateCherries:
-	LDA StatusBar_Mode
-	BNE Game_UpdateCherries1
+	; LDA StatusBar_Mode
+	; BNE Game_UpdateCherries1
 
 	LDA Cherries
 	CMP Old_Cherries
@@ -2598,9 +2589,9 @@ Game_UpdateExperience1:
 	STA Exp_Earned
 	INC Bottom_Needs_Redraw
 
-	LDA StatusBar_Mode
-	BEQ StatusBar_DrawExperience
-	RTS
+	; LDA StatusBar_Mode
+	; BEQ StatusBar_DrawExperience
+	; RTS
 
 
 StatusBar_DrawExperience:
@@ -2751,8 +2742,8 @@ DayNightTiles:
 	.byte $60, $74, $61, $74, $62, $74, $63, $74, $64, $65, $66, $67, $70, $71, $72, $73, $74, $60, $74, $61, $74, $62, $74, $63
 
 Game_UpdateDayNightMeter:
-	LDA StatusBar_Mode
-	BNE Game_UpdateDayNightMeter1
+	; LDA StatusBar_Mode
+	; BNE Game_UpdateDayNightMeter1
 
 	LDA DayNightTicker
 	CMP Old_DayNightTicker
@@ -2824,8 +2815,8 @@ BadgeTiles:
 	.byte $0E, $0F, $1E, $1F
 
 Game_UpdateBadge:
-	LDA StatusBar_Mode
-	BNE Game_UpdateBadge1
+	; LDA StatusBar_Mode
+	; BNE Game_UpdateBadge1
 
 	LDA Player_Equip
 	CMP Old_Player_Equip
@@ -2868,8 +2859,8 @@ PUp_Reserve_Tiles2:
 	.byte $FE, $FE, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $00, $00, $00, $00, $00, $00
 
 Game_UpdateReserve:
-	LDA StatusBar_Mode
-	BNE Game_UpdateReserve1
+	; LDA StatusBar_Mode
+	; BNE Game_UpdateReserve1
 
 	LDA PowerUp_Reserve
 	CMP Old_PowerUp_Reserve
@@ -2911,11 +2902,10 @@ Game_UpdateLevelName:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$02
-	;LDA #$83
+	LDA #$22
 	STA Graphics_Buffer + 1, X
 	
-	LDA #$1A
+	LDA #$1C
 	LDY #$00
 	STA Graphics_Buffer + 2, X
 
@@ -2925,7 +2915,7 @@ LevelName_Loop:
 
 	INY				; Y++
 	INX				; X++
-	CPY #$1A
+	CPY #$1C
 	BNE LevelName_Loop	 		
 
 	LDA #$00
@@ -2933,7 +2923,7 @@ LevelName_Loop:
 	
 	LDA Graphics_BufCnt
 	CLC
-	ADC #$1C
+	ADC #$1E
 	STA Graphics_BufCnt
 
 	LDA #$00

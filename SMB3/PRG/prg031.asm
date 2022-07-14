@@ -1621,7 +1621,7 @@ PRG031_F51D:
 
 	; This sets the status bar scroll fix for everything after the title screen!
 	; At scanline 192, the name table scroll is fixed to always display the status bar
-	LDA #192		; A = 192
+	LDA #184		; A = 192
 	STA MMC3_IRQCNT		; Store 192 into the IRQ count
 	STA MMC3_IRQLATCH	; Store it into the latch (will be used later)
 	STA MMC3_IRQENABLE	; Start the IRQ counter
@@ -1752,7 +1752,7 @@ PRG031_F5D3:
 	LDA <Vert_Scroll
 	STA PPU_SCROLL	 ; Vertical Scroll set
 
-	LDA #192	 ; A = 192
+	LDA #184	 ; A = 192
 	STA MMC3_IRQCNT	 ; Store 192 into the IRQ count
 	STA MMC3_IRQLATCH ; Store it into the latch (will be used later)
 	STA MMC3_IRQENABLE ; Start the IRQ counter
@@ -1819,7 +1819,7 @@ PRG031_F631:
 	LDA <Vert_Scroll
 	STA PPU_SCROLL	 ; Vertical Scroll set
 
-	LDA #192	 ; A = 192
+	LDA #184	 ; A = 192
 	STA MMC3_IRQCNT	 ; Store 192 into the IRQ count
 	STA MMC3_IRQLATCH ; Store it into the latch (will be used later)
 	STA MMC3_IRQENABLE ; Start the IRQ counter
@@ -2245,11 +2245,11 @@ PRG031_F8E0:
 	STA MMC3_COMMAND
 
 	LDA StatusBarCHR_0800
-	LDX StatusBar_Mode
-	CPX #$80
-	BNE DoSwitchOut
+	; LDX StatusBar_Mode
+	; CPX #$80
+	; BNE DoSwitchOut
 	
-	LDA #$58
+	; LDA #$58
 
 DoSwitchOut:
 	STA MMC3_PAGE

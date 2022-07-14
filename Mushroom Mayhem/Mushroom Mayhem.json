@@ -5355,7 +5355,7 @@
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
-          "Size": 1624,
+          "Size": 1626,
           "Name": "Waterway Wash",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
@@ -5572,6 +5572,15 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Path to Piranha Forest"
+        },
+        {
+          "Size": 0,
+          "Name": "Solunar Showtime",
+          "Id": "fb9ea35a-a6d1-4334-afbd-fa6eaf8d48db",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [],
+          "InfoType": 1,
+          "DisplayName": "(Level) Solunar Showtime"
         }
       ],
       "InfoType": 0,
@@ -11240,24 +11249,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 0,
-          "UpperRight": 1,
-          "LowerLeft": 16,
-          "LowerRight": 17
+          "UpperLeft": 255,
+          "UpperRight": 0,
+          "LowerLeft": 255,
+          "LowerRight": 16
         },
         {
           "Property": 0,
-          "UpperLeft": 2,
-          "UpperRight": 3,
-          "LowerLeft": 18,
-          "LowerRight": 19
+          "UpperLeft": 1,
+          "UpperRight": 2,
+          "LowerLeft": 17,
+          "LowerRight": 18
         },
         {
           "Property": 0,
-          "UpperLeft": 18,
-          "UpperRight": 19,
-          "LowerLeft": 18,
-          "LowerRight": 19
+          "UpperLeft": 3,
+          "UpperRight": 255,
+          "LowerLeft": 19,
+          "LowerRight": 255
         },
         {
           "Property": 0,

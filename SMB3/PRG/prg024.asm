@@ -12,7 +12,7 @@
 ; Distribution package date: Fri Apr  6 23:46:16 UTC 2012
 ;---------------------------------------------------------------------------
 
-; Some constants specific to title screen; they don't really match up with the gameplay
+; ; Some constants specific to title screen; they don't really match up with the gameplay
 FALL_NORMAL		= 5	; Normal fall rate added to 'Y'
 FALL_TAILWAG		= 1	; Adjusted fall rate for when wagging raccoon tail
 FALL_OBJECT		= 4	; Fall rate for objects
@@ -21,521 +21,521 @@ FALLRATE_TAILWAGMAX	= 8	; Maximum Y velocity falling rate when wagging raccoon t
 FALLRATE_MAX		= $40	; Maximum Y velocity falling rate
 FALLRATE_OBJECTMAX	= $60	; Maximum Y velocity falling rate of an object
 
-Cinematic_ToadAndKing:
+; Cinematic_ToadAndKing:
 
-King_DoDialog:
+; King_DoDialog:
 
-	JSR DynJump
+; 	JSR DynJump
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word TAndK_DrawDiagBox		; 0: Draw the dialog box
-	.word TAndK_DoToadText		; 1: Do the text
-	.word TAndK_WaitPlayerButtonA	; 2: Wait for Player to push 'A'
+; 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+; 	.word TAndK_DrawDiagBox		; 0: Draw the dialog box
+; 	.word TAndK_DoToadText		; 1: Do the text
+; 	.word TAndK_WaitPlayerButtonA	; 2: Wait for Player to push 'A'
 
-	; Patterns that make up the rows of the dialog box
-DiagBox_R1:	.byte $94, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $96
-DiagBox_R2:	.byte $92, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $93
-DiagBox_R3:	.byte $95, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $97
+; 	; Patterns that make up the rows of the dialog box
+; DiagBox_R1:	.byte $94, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $96
+; DiagBox_R2:	.byte $92, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $93
+; DiagBox_R3:	.byte $95, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $97
 
-DiagBox_RowOffs:
-	.byte (DiagBox_R1 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1)
-	.byte (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R3 - DiagBox_R1)
-DiagBox_RowOffs_End
+; DiagBox_RowOffs:
+; 	.byte (DiagBox_R1 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1)
+; 	.byte (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R2 - DiagBox_R1), (DiagBox_R3 - DiagBox_R1)
+; DiagBox_RowOffs_End
 
-TAndK_DrawDiagBox:
-	RTS		 ; Return
+; TAndK_DrawDiagBox:
+; 	RTS		 ; Return
 
-	; English: "Oh,it's terrible!" / "The King has been" / "transformed!" / "Please find the" / "Magic Wand so we can" / "change him back"
-KingHelpMsg1:
+; 	; English: "Oh,it's terrible!" / "The King has been" / "transformed!" / "Please find the" / "Magic Wand so we can" / "change him back"
+; KingHelpMsg1:
 
-	; English: "Hurry! Hurry!" / "Get the Magic Wand" / "back from Little" / "Koopa."
-KingHelpMsg2:
-	;       H    u    r    r    y    !         H    u    r    r    y    !
+; 	; English: "Hurry! Hurry!" / "Get the Magic Wand" / "back from Little" / "Koopa."
+; KingHelpMsg2:
+; 	;       H    u    r    r    y    !         H    u    r    r    y    !
 	
 
-TAndK_DoToadText:
-	RTS		 ; Return
-
-
-TAndK_WaitPlayerButtonA:
-	LDA <Pad_Input
-	BPL PRG024_A282	 ; If Player is not pushing 'A', jump to PRG024_A282 (RTS)
-
-	LDA Map_Objects_IDs
-	BEQ PRG024_A27A	 ; If the "HELP!" bubble is gone, jump to PRG024_A27A
-
-	; Level_JctCtl = 3 (switch to airship)
-	LDA #$03
-	STA Level_JctCtl
-
-	; No more "HELP!" bubble...
-	LDA #MAPOBJ_EMPTY
-	STA Map_Objects_IDs
-
-	RTS		 ; Return
-
-
-PRG024_A27A:
-	; Standard exit to map
-	LDA #$00
-	STA Map_ReturnStatus
-	INC Level_ExitToMap
-
-PRG024_A282:
-	RTS		 ; Return
-
-	; Sets PatTable_BankSel+5 by world 1-7
-King_PatTableByWorld:
-	.byte $27, $27, $27, $26, $26, $26, $27
-
-	; Sets King's sprite palette select by world 1-7
-King_PalByWorld:
-	.byte SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2
-
-	; Number of King's patterns (sprites) by world 1-7
-King_NumPatsByWorld:
-	.byte (King_W1Pat0 - King_W1Pat1), (King_W2Pat1 - King_W2Pat0), (King_W3Pat0 - King_W3Pat1), (King_W4Pat0 - King_W4Pat1)
-	.byte (King_W5Pat1 - King_W5Pat0), (King_W6Pat1 - King_W6Pat0), (King_W7Pat0 - King_W7Pat1)
-
-	; King sprite data offset by world and frame (Left = 0, Right = 1)
-King_SprDataOffByWorldAndFrame:
-	.byte (King_W1YOff - King_SprDataYOff), (King_W1YOff - King_SprDataYOff)	; World 1
-	.byte (King_W2YOff - King_SprDataYOff), (King_W2YOff - King_SprDataYOff)	; World 2
-	.byte (King_W3YOff0 - King_SprDataYOff), (King_W3YOff1 - King_SprDataYOff)	; World 3
-	.byte (King_W4YOff - King_SprDataYOff), (King_W4YOff - King_SprDataYOff)	; World 4
-	.byte (King_W5YOff - King_SprDataYOff), (King_W5YOff - King_SprDataYOff)	; World 5
-	.byte (King_W6YOff - King_SprDataYOff), (King_W6YOff - King_SprDataYOff)	; World 6
-	.byte (King_W7YOff0 - King_SprDataYOff), (King_W7YOff1 - King_SprDataYOff)	; World 7
-
-	; Y offset (from King_Y) per King sprite (must be parallel with King_SprDataX)
-King_SprDataYOff:
-King_W1YOff:	.byte $09, $10, $10, $10, $20, $20, $20
-King_W7YOff1:	.byte $02, $10, $10, $20, $20
-King_W7YOff0:	.byte $03, $10, $10, $20, $20
-King_W6YOff:	.byte $00, $16, $16
-King_W5YOff:	.byte $EA, $F0, $F0, $F0, $00, $00, $00
-King_W4YOff:	.byte $0B, $10, $10, $10, $20, $20, $20
-King_W2YOff:	.byte $00, $00, $00
-King_W3YOff1:	.byte $0D, $10, $10, $20, $20, $20
-King_W3YOff0:	.byte $0E, $10, $10, $20, $20, $20
-
-	; X per King sprite (must be parallel with King_SprDataYOff)
-King_SprDataX:
-King_W1X:	.byte $D7, $CC, $D4, $DC, $CC, $D4, $DC
-King_W7X1:	.byte $CC, $C8, $D0, $C8, $D0
-King_W7X2:	.byte $CC, $C8, $D0, $C8, $D0
-King_W6X:	.byte $C8, $C8, $D0
-King_W5X:	.byte $D4, $D0, $D8, $E0, $D0, $D8, $E0
-King_W4X:	.byte $D2, $D0, $D8, $E0, $D0, $D8, $E0
-King_W2X:	.byte $CC, $C8, $D0
-King_W3X1:	.byte $D3, $D0, $D8, $D0, $D8, $E0
-King_W3X0:	.byte $D1, $D0, $D8, $D0, $D8, $E0
-
-King_SprPatOffByWorldAndFrame:
-	.byte (King_W1Pat0 - King_SprPats), (King_W1Pat1 - King_SprPats)	; World 1
-	.byte (King_W2Pat0 - King_SprPats), (King_W2Pat1 - King_SprPats)	; World 2
-	.byte (King_W3Pat0 - King_SprPats), (King_W3Pat1 - King_SprPats)	; World 3
-	.byte (King_W4Pat0 - King_SprPats), (King_W4Pat1 - King_SprPats)	; World 4
-	.byte (King_W5Pat0 - King_SprPats), (King_W5Pat1 - King_SprPats)	; World 5
-	.byte (King_W6Pat0 - King_SprPats), (King_W6Pat1 - King_SprPats)	; World 6
-	.byte (King_W7Pat0 - King_SprPats), (King_W7Pat1 - King_SprPats)	; World 7
-
-King_SprPats:
-King_W1Pat1:	.byte $E1, $E3, $E5, $E7, $E9, $EB
-King_W1Pat0:	.byte $E1, $ED, $E5, $E7, $EF, $EB
-King_W7Pat1:	.byte $F1, $F3, $F5, $F7
-King_W7Pat0:	.byte $F9, $D5, $FD, $FF
-King_W6Pat0:	.byte $C1, $C3
-King_W6Pat1:	.byte $C5, $C7
-King_W5Pat0:	.byte $DB, $DD, $DF, $E1, $E3, $E5
-King_W5Pat1:	.byte $DB, $E7, $E9, $E1, $EB, $ED
-King_W4Pat1:	.byte $D5, $CB, $CD, $D7, $D9, $D3
-King_W4Pat0:	.byte $C9, $CB, $CD, $CF, $D1, $D3
-King_W2Pat0:	.byte $D9, $DB
-King_W2Pat1:	.byte $DD, $DF
-King_W3Pat1:	.byte $CB, $CD, $CF, $D1, $D3
-King_W3Pat0:	.byte $C1, $C3, $C5, $C7, $C9
-
-	; World 6 King is a seal juggling a crown (indexed by CineKing_Frame2)
-King_W6Crown_YOff:	.byte $06, $04, $0A, $09, $09, $02, $04, $06
-King_W6Crown_Pattern:	.byte -5, -3, -3, -5, -3, -3, -5, -5
-King_W6Crown_Attr:	
-	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3 | SPR_VFLIP, SPR_PAL3 | SPR_VFLIP, SPR_PAL3 | SPR_HFLIP | SPR_VFLIP
-	.byte SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
-
-PRG024_A36C:
-	.byte $30, $40, $50, $60
-
-	; Sprites that make up the yelling Toad
-KingToad_Sprites:
-	.byte $80, $00, $01, $B8
-	.byte $80, $00, $01, $B0
-	.byte $80, $00, $01, $A8
-	.byte $70, $00, $01, $B8
-	.byte $70, $00, $01, $B0
-	.byte $70, $00, $01, $A8
-KingToad_Sprites_End
-
-KingToad_Patterns:
-ToadFrame0:	.byte $A1, $A3, $A5, $A7, $A9, $AB
-ToadFrame1:	.byte $B9, $BB, $71, $BD, $BF, $71
-ToadFrame2:	.byte $AD, $AF, $B1, $B3, $B5, $B7
-
-KingToad_PatOffset:
-	.byte (ToadFrame0 - KingToad_Patterns), (ToadFrame1 - KingToad_Patterns), (ToadFrame2 - KingToad_Patterns)
-
-PRG024_A39D:
-	; Load yelling Toad's graphics
-	LDA #$2a
-	STA PatTable_BankSel+4
-
-	; Copy in the sprites for yelling Toad
-	LDY #(KingToad_Sprites_End - KingToad_Sprites - 1)
-PRG024_A3A4:
-	LDA KingToad_Sprites,Y
-	STA Sprite_RAM+$40,Y
-
-	DEY		 ; Y--
-	BPL PRG024_A3A4	 ; While Y >= 0, loop
-
-	LDY Objects_Frame	; Y = yelling Toad's frame
-	LDX KingToad_PatOffset,Y ; X = base offset into patterns for this frame
-
-	; Patch the patterns on the yelling Toad for the current frame
-	LDY #((KingToad_Sprites_End - KingToad_Sprites - 1) & ~3)
-PRG024_A3B5:
-	LDA KingToad_Patterns,X
-	STA Sprite_RAM+$41,Y
-
-	INX		 ; X++ (index to next patch pattern)
-
-	; Y -= 4 (previous sprite)
-	DEY
-	DEY
-	DEY
-	DEY
-
-	BPL PRG024_A3B5	; While Y >= 0, loop
-
-	LDY World_Num	 ; Y = World_Num
-
-	; Set King's pattern table
-	LDA King_PatTableByWorld,Y
-	STA PatTable_BankSel+5	
-
-	; King's Y -> Temp_Var1
-	LDA King_Y
-	STA <Temp_Var1
-
-	; King's palette select -> Temp_Var2
-	LDA King_PalByWorld,Y
-	STA <Temp_Var2
-
-	; King's number of patterns (sprites) -> Temp_Var4 and 5
-	LDA King_NumPatsByWorld,Y
-	STA <Temp_Var4
-	STA <Temp_Var5
-
-	TYA		; A = Y (World_Num)
-	ASL A		; A = World_Num * 2
-	ORA CineKing_Frame	; OR'd King's frame (0 or 1)
-	PHA		; Save value
-	TAY		; -> 'Y'
-
-	LDX King_SprDataOffByWorldAndFrame,Y	; X = root index of King Sprite data
-	LDY #$60	; Y = $60
-PRG024_A3E8:
-	; Set King Sprite Y
-	LDA <Temp_Var1
-	ADD King_SprDataYOff,X
-	STA Sprite_RAM,Y
-
-	; Set King Sprite Attributes
-	LDA <Temp_Var2
-	STA Sprite_RAM+$02,Y
-
-	; Set King Sprite X
-	LDA King_SprDataX,X
-	STA Sprite_RAM+$03,Y
-
-	INX		 ; X++ (next King sprite data)
-
-	; Y += 4 (Next King sprite)
-	INY
-	INY
-	INY
-	INY
-
-	DEC <Temp_Var4	 ; Temp_Var4--
-	BPL PRG024_A3E8	 ; While Temp_Var4 >= 0, loop
-
-	PLA		 ; Restore A = (World_Num * 2) | CineKing_Frame
-	TAY		 ; -> 'Y'
-
-	; Copy in all the King sprite patterns
-	LDX King_SprPatOffByWorldAndFrame,Y	; X = root index of King Sprite patterns
-	LDY #$64	 ; Y = $64
-PRG024_A40C:
-	LDA King_SprPats,X
-	STA Sprite_RAM+$01,Y
-
-	INX		 ; X++ (next King Sprite pattern index)
-
-	; Y += 4 (next King Sprite)
-	INY
-	INY
-	INY
-	INY
-
-	DEC <Temp_Var5	 ; Temp_Var5--
-	BNE PRG024_A40C	 ; While Temp_Var5 <> 0, loop
-
-	LDY World_Num
-	CPY #$05
-	BEQ PRG024_A48A	 ; If World_Num = 5 (World 6), jump to PRG024_A48A
+; TAndK_DoToadText:
+; 	RTS		 ; Return
+
+
+; TAndK_WaitPlayerButtonA:
+; 	LDA <Pad_Input
+; 	BPL PRG024_A282	 ; If Player is not pushing 'A', jump to PRG024_A282 (RTS)
+
+; 	LDA Map_Objects_IDs
+; 	BEQ PRG024_A27A	 ; If the "HELP!" bubble is gone, jump to PRG024_A27A
+
+; 	; Level_JctCtl = 3 (switch to airship)
+; 	LDA #$03
+; 	STA Level_JctCtl
+
+; 	; No more "HELP!" bubble...
+; 	LDA #MAPOBJ_EMPTY
+; 	STA Map_Objects_IDs
+
+; 	RTS		 ; Return
+
+
+; PRG024_A27A:
+; 	; Standard exit to map
+; 	LDA #$00
+; 	STA Map_ReturnStatus
+; 	INC Level_ExitToMap
+
+; PRG024_A282:
+; 	RTS		 ; Return
+
+; 	; Sets PatTable_BankSel+5 by world 1-7
+; King_PatTableByWorld:
+; 	.byte $27, $27, $27, $26, $26, $26, $27
+
+; 	; Sets King's sprite palette select by world 1-7
+; King_PalByWorld:
+; 	.byte SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2
+
+; 	; Number of King's patterns (sprites) by world 1-7
+; King_NumPatsByWorld:
+; 	.byte (King_W1Pat0 - King_W1Pat1), (King_W2Pat1 - King_W2Pat0), (King_W3Pat0 - King_W3Pat1), (King_W4Pat0 - King_W4Pat1)
+; 	.byte (King_W5Pat1 - King_W5Pat0), (King_W6Pat1 - King_W6Pat0), (King_W7Pat0 - King_W7Pat1)
+
+; 	; King sprite data offset by world and frame (Left = 0, Right = 1)
+; King_SprDataOffByWorldAndFrame:
+; 	.byte (King_W1YOff - King_SprDataYOff), (King_W1YOff - King_SprDataYOff)	; World 1
+; 	.byte (King_W2YOff - King_SprDataYOff), (King_W2YOff - King_SprDataYOff)	; World 2
+; 	.byte (King_W3YOff0 - King_SprDataYOff), (King_W3YOff1 - King_SprDataYOff)	; World 3
+; 	.byte (King_W4YOff - King_SprDataYOff), (King_W4YOff - King_SprDataYOff)	; World 4
+; 	.byte (King_W5YOff - King_SprDataYOff), (King_W5YOff - King_SprDataYOff)	; World 5
+; 	.byte (King_W6YOff - King_SprDataYOff), (King_W6YOff - King_SprDataYOff)	; World 6
+; 	.byte (King_W7YOff0 - King_SprDataYOff), (King_W7YOff1 - King_SprDataYOff)	; World 7
+
+; 	; Y offset (from King_Y) per King sprite (must be parallel with King_SprDataX)
+; King_SprDataYOff:
+; King_W1YOff:	.byte $09, $10, $10, $10, $20, $20, $20
+; King_W7YOff1:	.byte $02, $10, $10, $20, $20
+; King_W7YOff0:	.byte $03, $10, $10, $20, $20
+; King_W6YOff:	.byte $00, $16, $16
+; King_W5YOff:	.byte $EA, $F0, $F0, $F0, $00, $00, $00
+; King_W4YOff:	.byte $0B, $10, $10, $10, $20, $20, $20
+; King_W2YOff:	.byte $00, $00, $00
+; King_W3YOff1:	.byte $0D, $10, $10, $20, $20, $20
+; King_W3YOff0:	.byte $0E, $10, $10, $20, $20, $20
+
+; 	; X per King sprite (must be parallel with King_SprDataYOff)
+; King_SprDataX:
+; King_W1X:	.byte $D7, $CC, $D4, $DC, $CC, $D4, $DC
+; King_W7X1:	.byte $CC, $C8, $D0, $C8, $D0
+; King_W7X2:	.byte $CC, $C8, $D0, $C8, $D0
+; King_W6X:	.byte $C8, $C8, $D0
+; King_W5X:	.byte $D4, $D0, $D8, $E0, $D0, $D8, $E0
+; King_W4X:	.byte $D2, $D0, $D8, $E0, $D0, $D8, $E0
+; King_W2X:	.byte $CC, $C8, $D0
+; King_W3X1:	.byte $D3, $D0, $D8, $D0, $D8, $E0
+; King_W3X0:	.byte $D1, $D0, $D8, $D0, $D8, $E0
+
+; King_SprPatOffByWorldAndFrame:
+; 	.byte (King_W1Pat0 - King_SprPats), (King_W1Pat1 - King_SprPats)	; World 1
+; 	.byte (King_W2Pat0 - King_SprPats), (King_W2Pat1 - King_SprPats)	; World 2
+; 	.byte (King_W3Pat0 - King_SprPats), (King_W3Pat1 - King_SprPats)	; World 3
+; 	.byte (King_W4Pat0 - King_SprPats), (King_W4Pat1 - King_SprPats)	; World 4
+; 	.byte (King_W5Pat0 - King_SprPats), (King_W5Pat1 - King_SprPats)	; World 5
+; 	.byte (King_W6Pat0 - King_SprPats), (King_W6Pat1 - King_SprPats)	; World 6
+; 	.byte (King_W7Pat0 - King_SprPats), (King_W7Pat1 - King_SprPats)	; World 7
+
+; King_SprPats:
+; King_W1Pat1:	.byte $E1, $E3, $E5, $E7, $E9, $EB
+; King_W1Pat0:	.byte $E1, $ED, $E5, $E7, $EF, $EB
+; King_W7Pat1:	.byte $F1, $F3, $F5, $F7
+; King_W7Pat0:	.byte $F9, $D5, $FD, $FF
+; King_W6Pat0:	.byte $C1, $C3
+; King_W6Pat1:	.byte $C5, $C7
+; King_W5Pat0:	.byte $DB, $DD, $DF, $E1, $E3, $E5
+; King_W5Pat1:	.byte $DB, $E7, $E9, $E1, $EB, $ED
+; King_W4Pat1:	.byte $D5, $CB, $CD, $D7, $D9, $D3
+; King_W4Pat0:	.byte $C9, $CB, $CD, $CF, $D1, $D3
+; King_W2Pat0:	.byte $D9, $DB
+; King_W2Pat1:	.byte $DD, $DF
+; King_W3Pat1:	.byte $CB, $CD, $CF, $D1, $D3
+; King_W3Pat0:	.byte $C1, $C3, $C5, $C7, $C9
+
+; 	; World 6 King is a seal juggling a crown (indexed by CineKing_Frame2)
+; King_W6Crown_YOff:	.byte $06, $04, $0A, $09, $09, $02, $04, $06
+; King_W6Crown_Pattern:	.byte -5, -3, -3, -5, -3, -3, -5, -5
+; King_W6Crown_Attr:	
+; 	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3 | SPR_VFLIP, SPR_PAL3 | SPR_VFLIP, SPR_PAL3 | SPR_HFLIP | SPR_VFLIP
+; 	.byte SPR_PAL3 | SPR_HFLIP, SPR_PAL3, SPR_PAL3
+
+; PRG024_A36C:
+; 	.byte $30, $40, $50, $60
+
+; 	; Sprites that make up the yelling Toad
+; KingToad_Sprites:
+; 	.byte $80, $00, $01, $B8
+; 	.byte $80, $00, $01, $B0
+; 	.byte $80, $00, $01, $A8
+; 	.byte $70, $00, $01, $B8
+; 	.byte $70, $00, $01, $B0
+; 	.byte $70, $00, $01, $A8
+; KingToad_Sprites_End
+
+; KingToad_Patterns:
+; ToadFrame0:	.byte $A1, $A3, $A5, $A7, $A9, $AB
+; ToadFrame1:	.byte $B9, $BB, $71, $BD, $BF, $71
+; ToadFrame2:	.byte $AD, $AF, $B1, $B3, $B5, $B7
+
+; KingToad_PatOffset:
+; 	.byte (ToadFrame0 - KingToad_Patterns), (ToadFrame1 - KingToad_Patterns), (ToadFrame2 - KingToad_Patterns)
+
+; PRG024_A39D:
+; 	; Load yelling Toad's graphics
+; 	LDA #$2a
+; 	STA PatTable_BankSel+4
+
+; 	; Copy in the sprites for yelling Toad
+; 	LDY #(KingToad_Sprites_End - KingToad_Sprites - 1)
+; PRG024_A3A4:
+; 	LDA KingToad_Sprites,Y
+; 	STA Sprite_RAM+$40,Y
+
+; 	DEY		 ; Y--
+; 	BPL PRG024_A3A4	 ; While Y >= 0, loop
+
+; 	LDY Objects_Frame	; Y = yelling Toad's frame
+; 	LDX KingToad_PatOffset,Y ; X = base offset into patterns for this frame
+
+; 	; Patch the patterns on the yelling Toad for the current frame
+; 	LDY #((KingToad_Sprites_End - KingToad_Sprites - 1) & ~3)
+; PRG024_A3B5:
+; 	LDA KingToad_Patterns,X
+; 	STA Sprite_RAM+$41,Y
+
+; 	INX		 ; X++ (index to next patch pattern)
+
+; 	; Y -= 4 (previous sprite)
+; 	DEY
+; 	DEY
+; 	DEY
+; 	DEY
+
+; 	BPL PRG024_A3B5	; While Y >= 0, loop
+
+; 	LDY World_Num	 ; Y = World_Num
+
+; 	; Set King's pattern table
+; 	LDA King_PatTableByWorld,Y
+; 	STA PatTable_BankSel+5	
+
+; 	; King's Y -> Temp_Var1
+; 	LDA King_Y
+; 	STA <Temp_Var1
+
+; 	; King's palette select -> Temp_Var2
+; 	LDA King_PalByWorld,Y
+; 	STA <Temp_Var2
+
+; 	; King's number of patterns (sprites) -> Temp_Var4 and 5
+; 	LDA King_NumPatsByWorld,Y
+; 	STA <Temp_Var4
+; 	STA <Temp_Var5
+
+; 	TYA		; A = Y (World_Num)
+; 	ASL A		; A = World_Num * 2
+; 	ORA CineKing_Frame	; OR'd King's frame (0 or 1)
+; 	PHA		; Save value
+; 	TAY		; -> 'Y'
+
+; 	LDX King_SprDataOffByWorldAndFrame,Y	; X = root index of King Sprite data
+; 	LDY #$60	; Y = $60
+; PRG024_A3E8:
+; 	; Set King Sprite Y
+; 	LDA <Temp_Var1
+; 	ADD King_SprDataYOff,X
+; 	STA Sprite_RAM,Y
+
+; 	; Set King Sprite Attributes
+; 	LDA <Temp_Var2
+; 	STA Sprite_RAM+$02,Y
+
+; 	; Set King Sprite X
+; 	LDA King_SprDataX,X
+; 	STA Sprite_RAM+$03,Y
+
+; 	INX		 ; X++ (next King sprite data)
+
+; 	; Y += 4 (Next King sprite)
+; 	INY
+; 	INY
+; 	INY
+; 	INY
+
+; 	DEC <Temp_Var4	 ; Temp_Var4--
+; 	BPL PRG024_A3E8	 ; While Temp_Var4 >= 0, loop
+
+; 	PLA		 ; Restore A = (World_Num * 2) | CineKing_Frame
+; 	TAY		 ; -> 'Y'
+
+; 	; Copy in all the King sprite patterns
+; 	LDX King_SprPatOffByWorldAndFrame,Y	; X = root index of King Sprite patterns
+; 	LDY #$64	 ; Y = $64
+; PRG024_A40C:
+; 	LDA King_SprPats,X
+; 	STA Sprite_RAM+$01,Y
+
+; 	INX		 ; X++ (next King Sprite pattern index)
+
+; 	; Y += 4 (next King Sprite)
+; 	INY
+; 	INY
+; 	INY
+; 	INY
+
+; 	DEC <Temp_Var5	 ; Temp_Var5--
+; 	BNE PRG024_A40C	 ; While Temp_Var5 <> 0, loop
+
+; 	LDY World_Num
+; 	CPY #$05
+; 	BEQ PRG024_A48A	 ; If World_Num = 5 (World 6), jump to PRG024_A48A
 
-	; Not World 6...
-
-	; Just put a stationary crown there
-	LDA #$fb
-	STA Sprite_RAM+$61
-	LDA #$02
-	STA Sprite_RAM+$62
-
-	CPY #$06
-	BNE PRG024_A439	 ; If World_Num <> 6 (World 7), jump to PRG024_A439
-
-	; World 7 only...
-
-	; Set piranha's body palette to 3
-	LDA #SPR_PAL3
-	STA Sprite_RAM+$6E
-	STA Sprite_RAM+$72
-
-	RTS		 ; Return
-
-PRG024_A439:
-	CPY #$01
-	BNE PRG024_A4A1	 ; If World_Num <> 1 (World 2), jump to PRG024_A4A1 (RTS)
-
-	; World 2 only...
-
-	; Crown on the floor 
-	LDA #$80
-	STA Sprite_RAM+$60
-
-	; Temp_Var4 = CineKing_DialogState
-	;LDA <CineKing_DialogState
-	STA <Temp_Var4
-
-	; Temp_Var3 = $10
-	LDA #$10
-	STA <Temp_Var3
-
-	LDY #$80	 ; Y = $80
-PRG024_A44C:
-	LDA <Temp_Var4
-	BEQ PRG024_A466	 ; If Temp_Var4 (CineKing_DialogState) = 0, jump to PRG024_A466
-
-	LDX #$03	 ; X = 3
-
-	CMP #$00
-	BNE PRG024_A45B	 ; Jump (technically always) to PRG024_A45B
-
-	LDA ToadTalk_CPos
-	LSR A
-	TAX		 ; X = ToadTalk_CPos / 2
-
-PRG024_A45B:
-	LDA <Temp_Var3
-	CMP #$20
-	BLT PRG024_A466	 ; If Temp_Var3 < $20, jump to PRG024_A466
-
-	CMP PRG024_A36C,X
-	BLT PRG024_A47E	 ; If Temp_Var3 < PRG024_A36C[X], jump to PRG024_A47E
-
-PRG024_A466:
-
-	; Set web sprite Y
-	LDA <Temp_Var3
-	STA Sprite_RAM,Y
-
-	; Set web sprite pattern
-	LDA #$d7
-	STA Sprite_RAM+$01,Y
-
-	; Set web sprite attribute
-	LDA <Temp_Var2
-	STA Sprite_RAM+$02,Y
-
-	; Set web sprite X
-	LDA #$d0
-	STA Sprite_RAM+$03,Y
-
-	; Y += 4 (next sprite)
-	INY
-	INY
-	INY
-	INY
-
-PRG024_A47E:
-
-	; Temp_Var3 += $10
-	LDA <Temp_Var3
-	ADD #$10
-	STA <Temp_Var3
-
-	CMP <Temp_Var1	
-	BLT PRG024_A44C	 ; While Temp_Var3 < Temp_Var1, loop!
-
-	RTS		 ; Return
-
-PRG024_A48A:
-	LDY <CineKing_Frame2
-
-	; Set crown sprite Y
-	LDA <Temp_Var1	; King Sprite Y
-	ADD King_W6Crown_YOff,Y
-	STA Sprite_RAM+$60
-
-	; Set crown sprite pattern
-	LDA King_W6Crown_Pattern,Y
-	STA Sprite_RAM+$61
-
-	; Set crown sprite attributes
-	LDA King_W6Crown_Attr,Y
-	STA Sprite_RAM+$62
-
-PRG024_A4A1:
-	RTS		 ; Return
-
-	; Performs animation logic for the king
-King_Animate:
-	LDA <Counter_1
-	AND #$07
-	BNE PRG024_A4B2	 ; 6:7 ticks, jump to PRG024_A4B2
-
-	; Loop the panicking Toad's frame 2 to 0
-	DEC Objects_Frame
-	BPL PRG024_A4B2
-	LDA #$02
-	STA Objects_Frame
-
-PRG024_A4B2:
-	LDA World_Num
-	JSR DynJump
-
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word King_W1347	; World 1 King (Dog scratching ear)
-	.word King_W2		; World 2 King (Spider with crown on floor)
-	.word King_W1347	; World 3 King (Hunched green creature)
-	.word King_W1347	; World 4 King (Dinosaur)
-	.word King_W5		; World 5 King (Albatross)
-	.word King_W6		; World 6 King (Seal juggling crown)
-	.word King_W1347	; World 7 King (Fire Piranha)
-
-W6Seal_Frames:	.byte $01, $01, $01, $00, $00, $00, $00, $01
-W6Crown_Frames:	.byte $00, $01, $02, $03, $04, $05, $00, $01
-
-King_W6:
-	LDA <Counter_1
-	LSR A
-	LSR A
-	LSR A
-	AND #$07
-	TAY		 ; Y = 0 to 7 by counter
-
-	; Set seal's frame
-	LDA W6Seal_Frames,Y
-	STA CineKing_Frame
-
-	; Set seal juggled crown frame
-	LDA W6Crown_Frames,Y
-	STA <CineKing_Frame2
-
-	RTS		 ; Return
-
-King_YDelta:	.byte $01, -$01, $01
-King_W2_YLimit:	.byte $70, $68
-
-King_W2:
-	JSR King_W1347	 ; Do animation like other kings
-
-	LDA King_Y
-	CMP #$68
-	BGE PRG024_A4FD	 ; If King_Y >= $68, jump to PRG024_A4FD 
-
-	INC King_Y 	 ; King_Y++
-
-	RTS		 ; Return
-
-PRG024_A4FD:
-	LDA <Counter_1
-	AND #$03	
-	BNE PRG024_A519	 ; 3:4 ticks, jump to PRG024_A519
-
-	;LDY <CineKing_Var	 ; Y = CineKing_Var (0/1 as spider walks up and down)
-
-	; King spider moves up or down
-	LDA King_Y
-	ADD King_YDelta,Y
-	STA King_Y
-
-	CMP King_W2_YLimit,Y
-	BNE PRG024_A519	 ; If King has not hit Y limit in this direction, jump to PRG024_A519
-
-	; Reverse direction
-	TYA
-	EOR #$01
-	;STA <CineKing_Var
-
-PRG024_A519:
-	RTS		 ; Return
-
-PRG024_A51A:
-	.byte %00100100	; World 1
-	.byte %00001000	; World 2
-	.byte %00101000	; World 3
-	.byte %00101000	; World 4
-	.byte %00010000	; World 5
-	.byte %00000000	; World 6
-	.byte %00010000	; World 7
+; 	; Not World 6...
+
+; 	; Just put a stationary crown there
+; 	LDA #$fb
+; 	STA Sprite_RAM+$61
+; 	LDA #$02
+; 	STA Sprite_RAM+$62
+
+; 	CPY #$06
+; 	BNE PRG024_A439	 ; If World_Num <> 6 (World 7), jump to PRG024_A439
+
+; 	; World 7 only...
+
+; 	; Set piranha's body palette to 3
+; 	LDA #SPR_PAL3
+; 	STA Sprite_RAM+$6E
+; 	STA Sprite_RAM+$72
+
+; 	RTS		 ; Return
+
+; PRG024_A439:
+; 	CPY #$01
+; 	BNE PRG024_A4A1	 ; If World_Num <> 1 (World 2), jump to PRG024_A4A1 (RTS)
+
+; 	; World 2 only...
+
+; 	; Crown on the floor 
+; 	LDA #$80
+; 	STA Sprite_RAM+$60
+
+; 	; Temp_Var4 = CineKing_DialogState
+; 	;LDA <CineKing_DialogState
+; 	STA <Temp_Var4
+
+; 	; Temp_Var3 = $10
+; 	LDA #$10
+; 	STA <Temp_Var3
+
+; 	LDY #$80	 ; Y = $80
+; PRG024_A44C:
+; 	LDA <Temp_Var4
+; 	BEQ PRG024_A466	 ; If Temp_Var4 (CineKing_DialogState) = 0, jump to PRG024_A466
+
+; 	LDX #$03	 ; X = 3
+
+; 	CMP #$00
+; 	BNE PRG024_A45B	 ; Jump (technically always) to PRG024_A45B
+
+; 	LDA ToadTalk_CPos
+; 	LSR A
+; 	TAX		 ; X = ToadTalk_CPos / 2
+
+; PRG024_A45B:
+; 	LDA <Temp_Var3
+; 	CMP #$20
+; 	BLT PRG024_A466	 ; If Temp_Var3 < $20, jump to PRG024_A466
+
+; 	CMP PRG024_A36C,X
+; 	BLT PRG024_A47E	 ; If Temp_Var3 < PRG024_A36C[X], jump to PRG024_A47E
+
+; PRG024_A466:
+
+; 	; Set web sprite Y
+; 	LDA <Temp_Var3
+; 	STA Sprite_RAM,Y
+
+; 	; Set web sprite pattern
+; 	LDA #$d7
+; 	STA Sprite_RAM+$01,Y
+
+; 	; Set web sprite attribute
+; 	LDA <Temp_Var2
+; 	STA Sprite_RAM+$02,Y
+
+; 	; Set web sprite X
+; 	LDA #$d0
+; 	STA Sprite_RAM+$03,Y
+
+; 	; Y += 4 (next sprite)
+; 	INY
+; 	INY
+; 	INY
+; 	INY
+
+; PRG024_A47E:
+
+; 	; Temp_Var3 += $10
+; 	LDA <Temp_Var3
+; 	ADD #$10
+; 	STA <Temp_Var3
+
+; 	CMP <Temp_Var1	
+; 	BLT PRG024_A44C	 ; While Temp_Var3 < Temp_Var1, loop!
+
+; 	RTS		 ; Return
+
+; PRG024_A48A:
+; 	LDY <CineKing_Frame2
+
+; 	; Set crown sprite Y
+; 	LDA <Temp_Var1	; King Sprite Y
+; 	ADD King_W6Crown_YOff,Y
+; 	STA Sprite_RAM+$60
+
+; 	; Set crown sprite pattern
+; 	LDA King_W6Crown_Pattern,Y
+; 	STA Sprite_RAM+$61
+
+; 	; Set crown sprite attributes
+; 	LDA King_W6Crown_Attr,Y
+; 	STA Sprite_RAM+$62
+
+; PRG024_A4A1:
+; 	RTS		 ; Return
+
+; 	; Performs animation logic for the king
+; King_Animate:
+; 	LDA <Counter_1
+; 	AND #$07
+; 	BNE PRG024_A4B2	 ; 6:7 ticks, jump to PRG024_A4B2
+
+; 	; Loop the panicking Toad's frame 2 to 0
+; 	DEC Objects_Frame
+; 	BPL PRG024_A4B2
+; 	LDA #$02
+; 	STA Objects_Frame
+
+; PRG024_A4B2:
+; 	LDA World_Num
+; 	JSR DynJump
+
+; 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+; 	.word King_W1347	; World 1 King (Dog scratching ear)
+; 	.word King_W2		; World 2 King (Spider with crown on floor)
+; 	.word King_W1347	; World 3 King (Hunched green creature)
+; 	.word King_W1347	; World 4 King (Dinosaur)
+; 	.word King_W5		; World 5 King (Albatross)
+; 	.word King_W6		; World 6 King (Seal juggling crown)
+; 	.word King_W1347	; World 7 King (Fire Piranha)
+
+; W6Seal_Frames:	.byte $01, $01, $01, $00, $00, $00, $00, $01
+; W6Crown_Frames:	.byte $00, $01, $02, $03, $04, $05, $00, $01
+
+; King_W6:
+; 	LDA <Counter_1
+; 	LSR A
+; 	LSR A
+; 	LSR A
+; 	AND #$07
+; 	TAY		 ; Y = 0 to 7 by counter
+
+; 	; Set seal's frame
+; 	LDA W6Seal_Frames,Y
+; 	STA CineKing_Frame
+
+; 	; Set seal juggled crown frame
+; 	LDA W6Crown_Frames,Y
+; 	STA <CineKing_Frame2
+
+; 	RTS		 ; Return
+
+; King_YDelta:	.byte $01, -$01, $01
+; King_W2_YLimit:	.byte $70, $68
+
+; King_W2:
+; 	JSR King_W1347	 ; Do animation like other kings
+
+; 	LDA King_Y
+; 	CMP #$68
+; 	BGE PRG024_A4FD	 ; If King_Y >= $68, jump to PRG024_A4FD 
+
+; 	INC King_Y 	 ; King_Y++
+
+; 	RTS		 ; Return
+
+; PRG024_A4FD:
+; 	LDA <Counter_1
+; 	AND #$03	
+; 	BNE PRG024_A519	 ; 3:4 ticks, jump to PRG024_A519
+
+; 	;LDY <CineKing_Var	 ; Y = CineKing_Var (0/1 as spider walks up and down)
+
+; 	; King spider moves up or down
+; 	LDA King_Y
+; 	ADD King_YDelta,Y
+; 	STA King_Y
+
+; 	CMP King_W2_YLimit,Y
+; 	BNE PRG024_A519	 ; If King has not hit Y limit in this direction, jump to PRG024_A519
+
+; 	; Reverse direction
+; 	TYA
+; 	EOR #$01
+; 	;STA <CineKing_Var
+
+; PRG024_A519:
+; 	RTS		 ; Return
+
+; PRG024_A51A:
+; 	.byte %00100100	; World 1
+; 	.byte %00001000	; World 2
+; 	.byte %00101000	; World 3
+; 	.byte %00101000	; World 4
+; 	.byte %00010000	; World 5
+; 	.byte %00000000	; World 6
+; 	.byte %00010000	; World 7
 	
-King_W1347:
-	LDY World_Num	; Y = World_Num
+; King_W1347:
+; 	LDY World_Num	; Y = World_Num
 
-	LDA <Counter_1
-	AND PRG024_A51A,Y ; Mask counter by value from PRG024_A51A
-	BEQ PRG024_A52D	 ; If this is the tick to fire on, jump to PRG024_A52D
+; 	LDA <Counter_1
+; 	AND PRG024_A51A,Y ; Mask counter by value from PRG024_A51A
+; 	BEQ PRG024_A52D	 ; If this is the tick to fire on, jump to PRG024_A52D
 
-	LDA #$01	 ; A = 1 (frame)
+; 	LDA #$01	 ; A = 1 (frame)
 
-PRG024_A52D:
-	STA CineKing_Frame	 ; Set king frame
+; PRG024_A52D:
+; 	STA CineKing_Frame	 ; Set king frame
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-King_W5:
-	JSR King_W1347	 ; Do animation like other kings
+; King_W5:
+; 	JSR King_W1347	 ; Do animation like other kings
 
-	TAY		 ; Y = King frame
+; 	TAY		 ; Y = King frame
 
-	LDA <Counter_1
-	AND #$03	
-	BNE PRG024_A545	 ; 3:4 ticks, jump to PRG024_A545
+; 	LDA <Counter_1
+; 	AND #$03	
+; 	BNE PRG024_A545	 ; 3:4 ticks, jump to PRG024_A545
 
-	LDA King_Y
-	ADD King_YDelta+1,Y
-	STA King_Y
+; 	LDA King_Y
+; 	ADD King_YDelta+1,Y
+; 	STA King_Y
 
-PRG024_A545:
-	RTS		 ; Return
+; PRG024_A545:
+; 	RTS		 ; Return
 
 
-Debug_DownUp:	.byte 1, -1	; Add 1 or subtract 1 from current world on debug menu
+; Debug_DownUp:	.byte 1, -1	; Add 1 or subtract 1 from current world on debug menu
 
-; $A802
-	.byte $02, $FF, $00, $01
+; ; $A802
+; 	.byte $02, $FF, $00, $01
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; GraphicsBuf_Prep_And_WaitVSyn2
@@ -1575,129 +1575,129 @@ Title_PrepForWorldMap1:
 	BNE Title_PrepForWorldMap1
 	RTS		 ; Return
 
-Title_DebugMenu:
-	JSR Title_Menu_UpdateKoopas	 ; Update the koopas
+; Title_DebugMenu:
+; 	JSR Title_Menu_UpdateKoopas	 ; Update the koopas
 
-	LDA #$00
-	AND #$c1	 
-	CMP #$c1	
-	BNE PRG024_ACD7	 ; If Player 2 is NOT hitting A+B+Right (credits jump), jump to PRG024_ACD7
+; 	LDA #$00
+; 	AND #$c1	 
+; 	CMP #$c1	
+; 	BNE PRG024_ACD7	 ; If Player 2 is NOT hitting A+B+Right (credits jump), jump to PRG024_ACD7
 
-	JMP Ending_Credits	 ; Jump to credits
+; 	JMP Ending_Credits	 ; Jump to credits
 
-PRG024_ACD7:
-	LDA #$00
-	AND #$c4	
-	CMP #$c4	
-	BNE PRG024_ACE2	 ; If Player 2 is NOT hitting A+B+Down (jump to Princess rescue), jump to PRG024_ACE2
+; PRG024_ACD7:
+; 	LDA #$00
+; 	AND #$c4	
+; 	CMP #$c4	
+; 	BNE PRG024_ACE2	 ; If Player 2 is NOT hitting A+B+Down (jump to Princess rescue), jump to PRG024_ACE2
 
-	JMP Rescue_Princess	 ; Jump to princess rescue
+; 	JMP Rescue_Princess	 ; Jump to princess rescue
 
-PRG024_ACE2:
-	LDA <Pad_Input
-	AND #(PAD_UP | PAD_DOWN)
-	BEQ PRG024_ACFB	 ; If Player is not pressing Up or Down, jump to PRG024_ACFB
+; PRG024_ACE2:
+; 	LDA <Pad_Input
+; 	AND #(PAD_UP | PAD_DOWN)
+; 	BEQ PRG024_ACFB	 ; If Player is not pressing Up or Down, jump to PRG024_ACFB
 
-	LSR A
-	LSR A
-	LSR A
-	TAX		 ; X = 0 (Down) or 1 (Up)
+; 	LSR A
+; 	LSR A
+; 	LSR A
+; 	TAX		 ; X = 0 (Down) or 1 (Up)
 
-	; Properly add or subtract from world depending on direction pressed,
-	; and loop around so it never leaves World 1 - 8 (0-7)
-	LDA World_Num_Debug
-	ADD Debug_DownUp,X
-	AND #$07	 
-	STA World_Num_Debug
+; 	; Properly add or subtract from world depending on direction pressed,
+; 	; and loop around so it never leaves World 1 - 8 (0-7)
+; 	LDA World_Num_Debug
+; 	ADD Debug_DownUp,X
+; 	AND #$07	 
+; 	STA World_Num_Debug
 
-	JMP PRG024_AD9C	 ; Jump to PRG024_AD9C
+; 	JMP PRG024_AD9C	 ; Jump to PRG024_AD9C
 
-PRG024_ACFB:
-	LDA <Pad_Input	
-	AND #PAD_SELECT
-	BEQ PRG024_AD0C		; If Player is not pressing SELECT, jump to PRG024_AD0C
+; PRG024_ACFB:
+; 	LDA <Pad_Input	
+; 	AND #PAD_SELECT
+; 	BEQ PRG024_AD0C		; If Player is not pressing SELECT, jump to PRG024_AD0C
 
-	; Basically makes sure that the value of Total_Players is 0 or 1 
+; 	; Basically makes sure that the value of Total_Players is 0 or 1 
 
-PRG024_AD0C:
-	LDY Total_Players	 ; Y = Total_Players (0 or 1)
-	LDA Title_Menu_1P2PCursorY,Y	 ; Get proper Y value for where cursor is at
-	STA Sprite_RAM+$F0	 ; Store into sprite
+; PRG024_AD0C:
+; 	LDY Total_Players	 ; Y = Total_Players (0 or 1)
+; 	LDA Title_Menu_1P2PCursorY,Y	 ; Get proper Y value for where cursor is at
+; 	STA Sprite_RAM+$F0	 ; Store into sprite
 
-	LDA #$df	 
-	STA Sprite_RAM+$F1	 ; Store pattern value into sprite
+; 	LDA #$df	 
+; 	STA Sprite_RAM+$F1	 ; Store pattern value into sprite
 
-	LDA #$00	 
-	STA Sprite_RAM+$F2	 ; Store attribute value into sprite
+; 	LDA #$00	 
+; 	STA Sprite_RAM+$F2	 ; Store attribute value into sprite
 
-	LDA #72
-	STA Sprite_RAM+$F3	 ; Store X value into sprite
+; 	LDA #72
+; 	STA Sprite_RAM+$F3	 ; Store X value into sprite
 
-	LDA <Pad_Input
-	AND #PAD_A
-	BEQ PRG024_AD54	 	; If Player is not pressing A, jump to PRG024_AD54
+; 	LDA <Pad_Input
+; 	AND #PAD_A
+; 	BEQ PRG024_AD54	 	; If Player is not pressing A, jump to PRG024_AD54
 
-	LDA Player_Lives
-	CMP #99
-	BEQ PRG024_AD3A	 	; If Player_Lives = 99, jump to PRG024_AD3A
+; 	LDA Player_Lives
+; 	CMP #99
+; 	BEQ PRG024_AD3A	 	; If Player_Lives = 99, jump to PRG024_AD3A
 
-	; Otherwise, 5 more lives
-	LDA Player_Lives
-	ADD #$05	
-	STA Player_Lives
+; 	; Otherwise, 5 more lives
+; 	LDA Player_Lives
+; 	ADD #$05	
+; 	STA Player_Lives
 
-PRG024_AD3A:
+; PRG024_AD3A:
 
-	; Updates number of lives
-	LDA #$21	 
-	STA Graphics_Buffer
+; 	; Updates number of lives
+; 	LDA #$21	 
+; 	STA Graphics_Buffer
 
-	LDA #$14	 
-	STA Graphics_Buffer+1	; VRAM Address $2114
+; 	LDA #$14	 
+; 	STA Graphics_Buffer+1	; VRAM Address $2114
 
-	LDA #$01	 
-	STA Graphics_Buffer+2	; 1 byte
+; 	LDA #$01	 
+; 	STA Graphics_Buffer+2	; 1 byte
 
-	LDA Player_Lives	
-	STA Graphics_Buffer+3	; Number of lives direct
+; 	LDA Player_Lives	
+; 	STA Graphics_Buffer+3	; Number of lives direct
 
-	LDA #$00	 
-	STA Graphics_Buffer+4	; Terminator
+; 	LDA #$00	 
+; 	STA Graphics_Buffer+4	; Terminator
 
-PRG024_AD54:
-	LDA <Pad_Input	
-	AND #PAD_START
-	BEQ PRG024_AD9C	 ; If Player is NOT pressing START, jump to PRG024_AD9C
+; PRG024_AD54:
+; 	LDA <Pad_Input	
+; 	AND #PAD_START
+; 	BEQ PRG024_AD9C	 ; If Player is NOT pressing START, jump to PRG024_AD9C
 
-	LDA #$80	
-	STA Debug_Flag	 ; Activate debug functions
+; 	LDA #$80	
+; 	STA Debug_Flag	 ; Activate debug functions
 
-	LDA #$04
-	STA <Title_State 	; Title_State = 4 (prep for world map)
+; 	LDA #$04
+; 	STA <Title_State 	; Title_State = 4 (prep for world map)
 
-	; Quick loop to set up Mario and Luigi with the lives start and world map power
-	LDX Total_Players	; X = Total_Players
-	LDY Player_Lives	; Y = Player_Lives
-PRG024_AD69:
-	TYA		 	; A = Player_Lives
-	STA Player_Lives,X	; Store to this player
-	LDA #$00	 
-	STA World_Map_Power,X	; This player starts small on world map
-	DEX		 	; X--
-	BPL PRG024_AD69	 	; While X >= 0, loop...
+; 	; Quick loop to set up Mario and Luigi with the lives start and world map power
+; 	LDX Total_Players	; X = Total_Players
+; 	LDY Player_Lives	; Y = Player_Lives
+; PRG024_AD69:
+; 	TYA		 	; A = Player_Lives
+; 	STA Player_Lives,X	; Store to this player
+; 	LDA #$00	 
+; 	STA World_Map_Power,X	; This player starts small on world map
+; 	DEX		 	; X--
+; 	BPL PRG024_AD69	 	; While X >= 0, loop...
 
-	LDA World_Num_Debug
-	STA World_Num	 	; Transfer the selected world to the game's world variable
+; 	LDA World_Num_Debug
+; 	STA World_Num	 	; Transfer the selected world to the game's world variable
 
-	; Fills entire inventory of Mario and Luigi with P-Wings first
+; 	; Fills entire inventory of Mario and Luigi with P-Wings first
 	 
-PRG024_AD7F:
+; PRG024_AD7F:
 
-PRG024_AD92:
+; PRG024_AD92:
 
-PRG024_AD9C:
+; PRG024_AD9C:
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
 
 T_SP_Off .func \1-Title_SpritePattern	; "Title SpritePattern Offset"

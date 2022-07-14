@@ -3037,10 +3037,10 @@ UpdateLevelName:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$02
+	LDA #$22
 	STA Graphics_Buffer + 1, X
 	
-	LDA #$1A
+	LDA #$1C
 	LDY #$00
 	STA Graphics_Buffer + 2, X
 
@@ -3050,7 +3050,7 @@ UpdateLevelName_Loop:
 
 	INY				; Y++
 	INX				; X++
-	CPY #$1A
+	CPY #$1C
 	BNE UpdateLevelName_Loop	 		
 
 	LDA #$00
@@ -3058,7 +3058,7 @@ UpdateLevelName_Loop:
 	
 	LDA Graphics_BufCnt
 	CLC
-	ADC #$1F
+	ADC #$21
 	STA Graphics_BufCnt
 
 UpdateLevelName_LoopRTS:	

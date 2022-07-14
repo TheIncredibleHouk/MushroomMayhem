@@ -1008,20 +1008,14 @@ SPR_VFLIP	= %10000000
 
 	THouse_ID:		.ds 1	; An unused ID value that would track boxes already opened in a Toad House (concept unused!)
 
-	; Treasure type you'll get at this Toad House
-	; 0 = INVALID
-	; 1 = Warp Whistle
-	; 2 = P-Wing
-	; 3 = Frog
-	; 4 = Tanooki
-	; 5 = Hammer
-	; 6 = Random Super Suit
-	; 7 = Random Basic Item
 	Coins_Earned_Buffer:	.ds 1
 
 	Coins_Earned:		.ds 1	; A "buffer" of coins earned to be added to your total, actual coinage stored in Player_Coins[2]
 	Coins_Lost:			.ds 1
 	Map_Powerup_Poof:	.ds 1	; Counter that handles the "poof" effect when a powerup is used on the map (requires Inventory to be open, and forces it to close afterward)
+	Message_Timer:		.ds 1
+	Message_Id:			.ds 1
+	Message_Drawn:		.ds 1
 
 	; Level_FreeVertScroll
 	; 0 = Screen locked at $EF (lowest point) unless flying or climbing a vine
@@ -1232,14 +1226,7 @@ UPDATERASTER_32PIXSHOWSPR= $80	; If NOT set, hides sprites that fall beneath the
 
 	; The "unused" ones are just guesses (where even possible) based on the
 	; semi-translated "greetings" for the sake of tracking...
-BONUS_UNUSED_KEYCOIN	= 0
-BONUS_SPADE		= 1	; Line up images Spade game
-BONUS_NSPADE		= 2	; Card matching N-Spade game
-BONUS_UNUSED_CCCC	= 3
-BONUS_UNUSED_DDDD	= 4	; Unused placeholder (I think), but does actually set something when it exits!
-BONUS_UNUSED_ODDROULETTE= 5
-BONUS_UNUSED_EVENCARD	= 6
-BONUS_UNUSED_2RETURN	= 7	; MAY have been Koopa Troopa's "Prize" Game...
+
 	Bonus_GameType:		.ds 1
 
 	Bonus_KTPrize:		.ds 1	; UNUSED Koopa Troopa's "Prize" Game Prize ID (0 = Mushroom, 1 = Star, 2 = Flower, 3 = Judgem's, by BMF54123's patch)

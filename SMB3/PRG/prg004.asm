@@ -238,6 +238,7 @@ ObjP4F:
 	.byte $87, $8B, $A7, $A9
 
 ObjInit_Goomba:
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -270,7 +271,6 @@ Goomba_CappedMovement:
 	.byte $08, $F8
 
 ObjNorm_Goomba:
-	
 	LDA <Player_HaltGameZ
 	BEQ Goomba_DoAction
 	JMP Goomba_Draw

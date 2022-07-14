@@ -72,42 +72,52 @@ StatusBar	.macro
 
 ;@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-	vaddr \1 + $20
+	vaddr \1 + $00
 	.byte $02, $AE, $80		; Upper left corner
 
-	vaddr \1 + $22
-	.byte VU_REPEAT | $15, $81	; Bar across the top
+	vaddr \1 + $02
+	.byte VU_REPEAT | $1C, $81	; Bar across the top
 
-	vaddr \1 + $37
-	.byte $09, $82, $80, $81, $81, $83, $81, $81, $82, $AE		; Upper left corner
+	vaddr \1 + $1E
+	.byte $04, $82, $AE, $AE, $90		; Upper left corner
+
+	vaddr \1 + $22
+	.byte VU_REPEAT | $1C, $FE	; Bar across the top
+
+	vaddr \1 + $3E
+	.byte $04, $92, $AE, $AE, $83 		; Upper left corner
+
+	vaddr \1 + $42
+	.byte VU_REPEAT | $16, $93	; Bar across the top
+
+	vaddr \1 + $58
+	.byte $08, $75, $93, $93, $75, $93, $93, $A3, $AE
 
 ;------
-	vaddr \1 + $40
-	.byte $20, $AE, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $92, $90, $FE, $FE, $93, $FE, $FE, $92, $AE
-
 	vaddr \1 + $60
-	.byte $20, $AE, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $92, $90, $FE, $FE, $93, $FE, $FE, $92, $AE
+	.byte $20, $AE, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FE, $FE, $76, $FE, $FE, $92, $AE
+
+	vaddr \1 + $80
+	.byte $20, $AE, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FE, $FE, $76, $FE, $FE, $92, $AE
 
 ;----	
-	vaddr \1 + $80
+	vaddr \1 + $A0
 	.byte $02, $AE, $A0		; Upper left corner
 
-	vaddr \1 + $82
-	.byte VU_REPEAT | $15, $A1	; Bar across the top
+	vaddr \1 + $A2
+	.byte VU_REPEAT | $16, $A1	; Bar across the top
 
-	vaddr \1 + $97
-	.byte $09, $A2, $A0, $A1, $A1, $A3, $A1, $A1, $A2, $AE		; Upper left corner
+	vaddr \1 + $B8
+	.byte $08, $77, $A1, $A1, $77, $A1, $A1, $A2, $AE		; Upper left corner
 
-	vaddr \1 + $A0
-	.byte VU_REPEAT | $20, $FF	; Bar across the top
 
-;------
+; ;------
 
-	vaddr \1 + $00
-	.byte VU_REPEAT | $01, $AE		; Upper left corner
+; 	vaddr \1 + $00
+; 	.byte VU_REPEAT | $01, $AE		; Upper left corner
 
-	vaddr \1 + $1F
-	.byte VU_REPEAT | $01, $AE		; Upper left corner
+; 	vaddr \1 + $1F
+; 	.byte VU_REPEAT | $01, $AE		; Upper left corner
 
 	; Terminator
 	.byte $00
@@ -6054,4 +6064,19 @@ Debug_Code1:
 	STA <Pad_Input
 
 Debug_CodeRTS:
+	RTS	
+
+Message_Handler:
+	STA Debug_Snap
+	LDA PAGE_A000
+	PHA
+
+	LDA #27
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	JSR Messages_Display
+
+	PLA
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
 	RTS	
