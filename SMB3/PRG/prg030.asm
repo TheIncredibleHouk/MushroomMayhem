@@ -76,39 +76,36 @@ StatusBar	.macro
 	.byte $02, $AE, $80		; Upper left corner
 
 	vaddr \1 + $02
-	.byte VU_REPEAT | $1C, $81	; Bar across the top
+	.byte VU_REPEAT | $16, $81	; Bar across the top
 
-	vaddr \1 + $1E
-	.byte $04, $82, $AE, $AE, $90		; Upper left corner
-
-	vaddr \1 + $22
-	.byte VU_REPEAT | $1C, $FE	; Bar across the top
-
-	vaddr \1 + $3E
-	.byte $04, $92, $AE, $AE, $83 		; Upper left corner
-
-	vaddr \1 + $42
-	.byte VU_REPEAT | $16, $93	; Bar across the top
-
-	vaddr \1 + $58
-	.byte $08, $75, $93, $93, $75, $93, $93, $A3, $AE
+	vaddr \1 + $18
+	.byte $08, $75, $FB, $FB, $FC, $FB, $FB, $F9, $AE 		; Upper left corner
 
 ;------
-	vaddr \1 + $60
-	.byte $20, $AE, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FE, $FE, $76, $FE, $FE, $92, $AE
+	vaddr \1 + $20
+	.byte $20, $AE, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $F5, $F5, $FD, $F5, $F5, $F8, $AE
 
-	vaddr \1 + $80
-	.byte $20, $AE, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FE, $FE, $76, $FE, $FE, $92, $AE
+	vaddr \1 + $40
+	.byte $20, $AE, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $F5, $F5, $FD, $F5, $F5, $F8, $AE
 
 ;----	
-	vaddr \1 + $A0
-	.byte $02, $AE, $A0		; Upper left corner
+	vaddr \1 + $60
+	.byte $02, $AE, $83
+
+	vaddr \1 + $62
+	.byte VU_REPEAT | $16, $93	; Bar across the top
+
+	vaddr \1 + $78
+	.byte $0A, $77, $F7, $F7, $F6, $F7, $F7, $A3, $AE, $A2, $90		; Upper left corner
+
+	vaddr \1 + $9E
+	.byte $04, $92, $AE, $AE, $A0
 
 	vaddr \1 + $A2
-	.byte VU_REPEAT | $16, $A1	; Bar across the top
+	.byte VU_REPEAT | $1C, $A1	; Bar across the top
 
-	vaddr \1 + $B8
-	.byte $08, $77, $A1, $A1, $77, $A1, $A1, $A2, $AE		; Upper left corner
+	vaddr \1 + $BE
+	.byte $02, $A2, $AE
 
 
 ; ;------
@@ -2513,6 +2510,8 @@ LevelLoad:
 	STA Level_AScrlPosH
 	STA Level_AScrlPosHHi
 
+	INC Force_StatusBar_Init
+
 LevelLoadQuick:
 	
 	LDA #$6
@@ -2613,10 +2612,12 @@ JustName10:
 JustName2:
 	LDA [Temp_Var14],Y
 	STA LevelName, X
+
 	INY
 	INX
 	CPX #28
 	BNE JustName2
+	
 	PLA
 	STA PAGE_C000
 	PLA
@@ -6067,7 +6068,6 @@ Debug_CodeRTS:
 	RTS	
 
 Message_Handler:
-	STA Debug_Snap
 	LDA PAGE_A000
 	PHA
 

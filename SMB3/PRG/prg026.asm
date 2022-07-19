@@ -2182,6 +2182,7 @@ TileChng_VRAMCommit:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StatusBar_Update:
 	LDA Message_Id
+	ORA Message_Id_Prev
 	BEQ StatusBar_Norm
 
 	JSR Message_Handler
@@ -2263,7 +2264,7 @@ Do_Top:
 	LDA #$2B
 	STA Graphics_Buffer, X
 
-	LDA #$62
+	LDA #$22
 	STA Graphics_Buffer + 1, X
 
 	LDA #$1C
@@ -2298,7 +2299,7 @@ Do_Bottom:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$82
+	LDA #$42
 	STA Graphics_Buffer + 1, X
 	
 	LDA #$1C
@@ -2327,8 +2328,8 @@ Status_Bottom_Loop:
 ;
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FE, $FE, $76, $FE, $FE
-	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FE, $FE, $76, $FE, $FE
+	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $F5, $F5, $FD, $F5, $F5
+	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $F5, $F5, $FD, $F5, $F5
 
 Initialize_Status_Bar:
 ;	LDA StatusBar_Mode
@@ -2853,10 +2854,10 @@ StatusBar_DrawBadge:
 ;--------------------------------------
 
 PUp_Reserve_Tiles1:
-	.byte $FE, $FE, $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $00, $00, $00, $00, $00, $00
+	.byte $F5, $F5, $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $00, $00, $00, $00, $00, $00
 
 PUp_Reserve_Tiles2:
-	.byte $FE, $FE, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $00, $00, $00, $00, $00, $00
+	.byte $F5, $F5, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $00, $00, $00, $00, $00, $00
 
 Game_UpdateReserve:
 	; LDA StatusBar_Mode
@@ -2902,7 +2903,7 @@ Game_UpdateLevelName:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$22
+	LDA #$82
 	STA Graphics_Buffer + 1, X
 	
 	LDA #$1C

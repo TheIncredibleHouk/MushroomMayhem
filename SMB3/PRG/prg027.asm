@@ -149,15 +149,35 @@ PRG027_B8F9:
 
 Messages_Lookup:
 	.word Empty_Message
-	.word Test_Message
+	.word Game_Script_1_A
+	.word Game_Script_1_1
+	.word Game_Script_1_2
+	.word Game_Script_1_3
+	.word Game_Script_1_4
 
 Empty_Message:
 	.byte $00
 
-Test_Message:                ;V 
-	.db "TESTING MESSAGE TIME!"
-	.db "WILL THIS DRAW OUT?"
-	.byte 00
+Messages_Table:
+Game_Script_1_A:                ;V 
+	.db "WIN 3 OUT OF 5 TO    "
+	.db "MAKE IT OUT ALIVE... "
+
+Game_Script_1_1:                 
+	.db "COLLECT ALL THE COINS"
+	.db "IN 30 SECONDS        "
+
+Game_Script_1_2:
+	.db "DEFEAT ALL GOOMBAS   "
+	.db "IN 30 SECONDS        "
+
+Game_Script_1_3:
+	.db "COMPLETE THE PUZZLE  "
+	.db "IN 30 SECONDS        "
+
+Game_Script_1_4:
+	.db "BREAK ALL THE BRICKS "
+	.db "IN 30 SECONDS        "
 
 Message_Low = Temp_Var1
 Message_Hi = Temp_Var2
@@ -165,14 +185,25 @@ Message_Text_Top = Status_Bar_Top
 Message_Text_Bottom = Status_Bar_Bottom - 21
 
 Messages_Display:
-	LDA Message_Drawn
-	BNE Messages_DisplayRTS
+	LDA Message_Id
+	BNE Messages_DisplayDraw
+
+	INC Force_StatusBar_Init
+
+	LDA #$00
+	STA Message_Id_Prev
+	RTS
+
+Messages_DisplayDraw:
+	CMP Message_Id_Prev
+	BEQ Messages_DisplayRTS
 
 	LDA #$01
 	STA Top_Needs_Redraw
 	STA Bottom_Needs_Redraw
 
 	LDA Message_Id
+	STA Message_Id_Prev
 	ASL A
 	TAX
 
@@ -186,8 +217,6 @@ Messages_Display:
 
 Message_Load:	
 	LDA [Message_Low], Y
-	BEQ Message_Fill
-
 	CPY #21
 	BCS Message_Write_Bottom
 
@@ -201,8 +230,6 @@ Message_Loop:
 	INY
 	CPY #42
 	BCC Message_Load
-
-	INC Message_Drawn
 	RTS
 
 Message_Fill:
@@ -220,8 +247,6 @@ Message_Fill_Loop:
 	INY
 	CPY #42
 	BCC Message_Fill
-
-	INC Message_Drawn
 
 Messages_DisplayRTS:	
 	RTS

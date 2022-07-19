@@ -13,6 +13,7 @@ OBJ_PLUMBERPAUL			= $94
 OBJ_SEASONSLOT			= $95
 OBJ_ICESPAWN			= $96
 OBJ_MUNCHER			    = $97
+OBJ_GAMESCRIPT			= $9F
 
     .word ObjInit_HammerBro ; Object $8C
     .word ObjInit_NinjaBro ; Object $8D
@@ -33,7 +34,7 @@ OBJ_MUNCHER			    = $97
     .word ObjInit_DoNothing ; Object $9C
     .word ObjInit_DoNothing ; Object $9D
     .word ObjInit_DoNothing ; Object $9E
-    .word ObjInit_DoNothing ; Object $9F
+    .word ObjInit_GameScript ; Object $9F
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
@@ -56,7 +57,7 @@ OBJ_MUNCHER			    = $97
     .word ObjNorm_DoNothing ; Object $9C
     .word ObjNorm_DoNothing ; Object $9D
     .word ObjNorm_DoNothing ; Object $9E
-    .word ObjNorm_DoNothing ; Object $9F
+    .word ObjNorm_GameScript ; Object $9F
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -2486,3 +2487,543 @@ Muncher_DrawFrame:
 
 Muncher_DrawRTS:
 	RTS	
+
+ObjInit_GameScript:
+	LDA #$07
+	STA Objects_SpritesRequested, X
+
+	JMP Object_NoInteractions
+
+GameScript_Init = Objects_Data1
+GameScript_Finished = Objects_Data2
+GameScript_Timer = Objects_Data3
+GameScript_TimerFrac = Objects_Data4
+
+Handle_GameScript_Timer:
+	LDA GameScript_Timer, X
+	BEQ GameScript_TimerRTS
+
+	LDA GameScript_TimerFrac, X
+	BNE GameScript_TimerDec
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+GameScript_TimerDec:	
+	DEC GameScript_TimerFrac, X
+	BNE GameScript_TimerRTS
+
+	DEC GameScript_Timer, X
+
+GameScript_TimerRTS:
+	RTS
+
+
+GameScript_XOffset:
+	.byte $20, $18
+
+GameScript_NumOffset:
+	.byte $00, $40				
+
+GameScript_Draw:
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+
+	LDA GameScript_Timer, X
+	STA DigitsParam
+
+	LDA #$00
+	STA DigitsParam + 1
+
+	JSR BytesTo2Digits
+
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAX
+
+	LDA GameScript_NumOffset, X
+	STA <Temp_Var1
+
+	LDX <CurrentObjectIndexZ
+	LDY Object_SpriteRAMOffset, X
+
+	LDA #$10
+	STA Sprite_RAMX, Y
+	STA Sprite_RAMX + 4, Y
+	STA Sprite_RAMX + 8, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr, Y
+	
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr + 4 , Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr + 8 , Y
+
+	LDA #$10
+	STA Sprite_RAMY, Y
+
+	LDA #$18
+	STA Sprite_RAMY + 4, Y
+
+	LDA #$20
+	STA Sprite_RAMY + 8, Y
+
+	LDA #$9F
+	ADD <Temp_Var1
+	STA Sprite_RAMTile, Y
+
+	LDA #$BD
+	ADD <Temp_Var1
+	STA Sprite_RAMTile, Y
+
+	LDA #$9F
+	ADD <Temp_Var1
+	STA Sprite_RAMTile + 4, Y
+
+	LDA #$BF
+	ADD <Temp_Var1
+	STA Sprite_RAMTile + 8, Y
+
+	LDX #$01
+
+GameScript_DrawLoop:
+	LDA #$10
+	STA Sprite_RAMY+12, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr+12, Y
+
+	LDA GameScript_XOffset, X
+	STA Sprite_RAMX+ 12, Y
+
+	LDA <DigitsResult, X
+	ASL A
+	ADD #$A1
+	ADD <Temp_Var1
+	STA Sprite_RAMTile+12, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	DEX
+	BPL GameScript_DrawLoop
+
+	LDA #$18
+	STA Sprite_RAMX + 12, Y
+	STA Sprite_RAMX + 16, Y
+
+	LDA #$18
+	STA Sprite_RAMY + 12, Y
+
+	LDA #$20
+	STA Sprite_RAMY + 16, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr + 12, Y
+	STA Sprite_RAMAttr + 16, Y
+
+	LDA GameScript_Losses
+	ASL A
+	ADD #$A1
+	ADD <Temp_Var1
+	STA Sprite_RAMTile + 12, Y
+
+	LDA GameScript_Wins
+	ASL A
+	ADD #$A1
+	ADD <Temp_Var1
+	STA Sprite_RAMTile + 16, Y
+
+	LDX <CurrentObjectIndexZ
+	RTS
+
+GameScript_MakeKey:
+	JSR Object_FindEmptyX
+	
+	LDA #OBJ_KEY
+	STA Objects_ID, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA #$00
+	STA Objects_Property, X
+
+	LDA <Player_XHi
+	STA <Objects_XHiZ, X
+
+	LDA #$80
+	STA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA #$70
+	STA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA #$01
+	STA <Objects_YHiZ, X
+
+	JSR Common_MakePoof
+
+GameScript_MakeKeyRTS:
+	LDX <CurrentObjectIndexZ
+	RTS
+
+ObjNorm_GameScript:
+	LDA GameScript_Init, X
+	BNE GameScript_Norm
+
+	INC GameScript_Init, X
+
+	LDA <Objects_YZ, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+
+	LDA <Objects_YHiZ, X
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+
+	JSR DynJump
+
+	.word Stage_1_Notify_Init
+	.word Stage_1_1_Init
+	.word Stage_1_2_Init
+	.word Stage_1_3_Init
+	.word Stage_1_4_Init
+
+GameScript_Norm:
+	LDA <Player_HaltGameZ
+	BEQ GameScript_DoNorm
+	
+	JMP GameScript_Draw
+
+GameScript_DoNorm:
+	JSR Handle_GameScript_Timer
+	JSR GameScript_Draw
+
+	LDA <Objects_YZ, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+
+	LDA <Objects_YHiZ, X
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+
+	JSR DynJump
+
+	.word Stage_1_Notify
+	.word Stage_1_1
+	.word Stage_1_2
+	.word Stage_1_3
+	.word Stage_1_4
+
+
+GameScript_CoinsRemaining = Objects_Data5
+GameScript_EnemiesRemaining = Objects_Data5
+GameScript_BricksRemaining = Objects_Data5
+
+GameScript_CoinChallenge:
+	LDA GameScript_Finished, X
+	BEQ GameScript_CoinChallengeDo
+	CLR_MSG
+	RTS
+
+GameScript_CoinChallengeDo:
+	LDA Coins_Earned
+	BEQ GameScript_CoinChallengeTimer
+
+	LDA GameScript_CoinsRemaining, X
+	SUB Coins_Earned
+	STA GameScript_CoinsRemaining, X
+
+	LDA #$00
+	STA Coins_Earned
+
+	LDA GameScript_CoinsRemaining, X
+	BNE GameScript_CoinChallengeTimer
+
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+GameScript_CoinChallengeTimer:
+	LDA GameScript_Timer, X
+	BNE GameScript_CoinChallengeTimerRTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+GameScript_CoinChallengeTimerRTS:	
+	RTS
+
+GameScript_EnemyChallenge:
+	LDA GameScript_Finished, X
+	BEQ GameScript_EnemyChallengeDo
+	CLR_MSG
+	RTS
+
+GameScript_EnemyChallengeDo:
+	LDA Exp_Earned
+	BEQ GameScript_EnemyChallengeTimer
+
+	LDA GameScript_EnemiesRemaining, X
+	DEC GameScript_EnemiesRemaining, X
+
+	LDA #$00
+	STA Exp_Earned
+
+	LDA GameScript_EnemiesRemaining, X
+	BNE GameScript_EnemyChallengeTimer
+
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+GameScript_EnemyChallengeTimer:
+	LDA GameScript_Timer, X
+	BNE GameScript_EnemyChallengeRTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+GameScript_EnemyChallengeRTS:	
+	RTS
+
+GameScript_GfxBanks:
+	.byte $60, $62, $64, $66
+
+GameScript_BlockReplaces:
+	.byte $16, $17, $18, $19
+
+GameScript_BlockToggles:
+	LDA GameScript_Finished, X
+	BNE GameScript_BlockTogglesRTS
+
+	LDA GameScript_Timer, X
+	BNE GameScript_BlockToggleGfx
+
+	INC GameScript_Finished, X
+	INC GameScript_Losses
+	JSR GameScript_MakeKey
+	RTS
+
+GameScript_BlockToggleGfx:
+	LDA Game_Counter
+	AND #$30
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA GameScript_GfxBanks, Y
+	STA PatTable_BankSel
+
+	LDA EventSwitch
+	BEQ GameScript_BlockTogglesRTS
+
+	LDX #$02
+
+GS_FindBlock:
+	LDA Objects_ID + 5, X
+	CMP #OBJ_ITEMBLOCK
+	BEQ GS_BlockToggle_Replace
+
+	DEX
+	BPL GS_FindBlock
+	RTS
+
+GS_BlockToggle_Replace:
+	LDA ItemBlock_ReplaceTile + 5, X
+	AND #$F0
+	CMP #$10
+	BNE GS_BlockToggle_Exchange
+
+	LDA #$26
+	BNE GS_BlockToggle_Set
+
+GS_BlockToggle_Exchange:
+	LDA GameScript_BlockReplaces, Y
+
+GS_BlockToggle_Set:	
+	STA ItemBlock_ReplaceTile + 5, X
+	PHA
+
+	LDA <Objects_XZ + 5, X
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	PLA
+	STA GameScript_Data, Y
+
+	LDA #$00
+	STA EventSwitch
+
+GameScript_BlockTogglesRTS:
+	LDX <CurrentObjectIndexZ
+	RTS	
+
+GameScript_BrickChallenge:
+	LDA GameScript_Finished, X
+	BEQ GameScript_BrickChallengeDo
+	CLR_MSG
+	RTS
+
+GameScript_BrickChallengeDo:
+	LDA Block_NeedsUpdate
+	BEQ GameScript_BrickChallengeTimer
+
+	DEC GameScript_BricksRemaining, X
+
+	LDA GameScript_BricksRemaining, X
+	BNE GameScript_BrickChallengeTimer
+
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+GameScript_BrickChallengeTimer:
+	LDA GameScript_Timer, X
+	BNE GameScript_BrickChallengeTimerRTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+GameScript_BrickChallengeTimerRTS:	
+	RTS
+
+
+Stage_1_Notify_Init:
+Stage_1_Notify:
+	SET_MSG Game_Script_1_A
+	RTS
+
+Stage_1_1_Init:
+	LDA #30
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #28
+	STA GameScript_CoinsRemaining, X
+
+	SET_MSG Game_Script_1_1
+	RTS
+
+Stage_1_1:	
+	JSR GameScript_CoinChallenge
+	RTS
+
+Stage_1_2_Init:
+	LDA #30
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #08
+	STA GameScript_EnemiesRemaining, X
+
+	SET_MSG Game_Script_1_2
+	RTS
+
+Stage_1_2:
+	JSR GameScript_EnemyChallenge 
+	RTS
+
+Stage_1_3_Init:
+	LDA #30
+	STA GameScript_Timer, X
+
+	SET_MSG Game_Script_1_3
+
+	LDY #$0F
+	LDA #$00
+
+Stage_1_3_InitLoop:	
+	STA GameScript_Data, Y
+	DEY
+	BPL Stage_1_3_InitLoop
+	RTS
+
+Stage_1_3_Pattern:
+	.byte $00, $00, $00, $00, $18, $00, $17, $17, $17, $17, $00, $18, $00, $00, $00, $00
+
+Stage_1_3:
+	JSR GameScript_BlockToggles
+	LDA GameScript_Finished, X
+	BNE Stage_1_3RTS
+
+	STA Debug_Snap
+	LDY #$0F
+
+Stage_1_3_Loop:	
+	LDA GameScript_Data, Y
+	CMP Stage_1_3_Pattern, Y
+	BNE Stage_1_3RTS
+
+	DEY
+	BPL Stage_1_3_Loop
+
+	INC GameScript_Finished, X
+	INC GameScript_Wins
+	LDA #$00
+	STA GameScript_Timer, X
+	JSR GameScript_MakeKey
+
+Stage_1_3RTS:	
+	RTS
+
+Stage_1_4_Init:
+	LDA #30
+	STA GameScript_Timer, X
+
+	SET_MSG Game_Script_1_4
+
+	LDA #28
+	STA GameScript_BricksRemaining
+	RTS
+
+Stage_1_4:
+	JSR GameScript_BrickChallenge
+	RTS

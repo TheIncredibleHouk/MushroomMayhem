@@ -59,6 +59,17 @@ vaddr	.macro
 	.byte (\1 & $00FF)
 	.endm
 
+
+SET_MSG	.macro
+	LDA #(((\1 - Messages_Table) / 42) + 1)
+	STA Message_Id
+	.endm
+
+CLR_MSG .macro
+	LDA #$00
+	STA Message_Id
+	.endm		
+
 ; These are flags related to a video update stream value
 VU_VERT		= $80	; Update in vertical (+32B) mode instead of horizontal (+1B) mode
 VU_REPEAT	= $40	; Repeat following value several times instead of several raw values
@@ -1013,9 +1024,9 @@ SPR_VFLIP	= %10000000
 	Coins_Earned:		.ds 1	; A "buffer" of coins earned to be added to your total, actual coinage stored in Player_Coins[2]
 	Coins_Lost:			.ds 1
 	Map_Powerup_Poof:	.ds 1	; Counter that handles the "poof" effect when a powerup is used on the map (requires Inventory to be open, and forces it to close afterward)
-	Message_Timer:		.ds 1
 	Message_Id:			.ds 1
-	Message_Drawn:		.ds 1
+	Message_Id_Prev:	.ds 1
+
 
 	; Level_FreeVertScroll
 	; 0 = Screen locked at $EF (lowest point) unless flying or climbing a vine
@@ -3101,7 +3112,7 @@ TILE_ITEM_SPINNER	= $FE
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
-	LevelName:			.ds 26
+	LevelName:			.ds 28
 	Force_LeveNameUpdate: .ds 1
 	TileCheckX:			.ds 1
 	TileCheckXHi:		.ds 1
@@ -3109,6 +3120,9 @@ TILE_ITEM_SPINNER	= $FE
 	ForcedSwitch:       .ds 1
 	NegaStars:			.ds 8
 	SecondQuest:		.ds 1
+	GameScript_Wins:	.ds 1
+	GameScript_Losses:	.ds 1
+	GameScript_Data:	.ds 16
 
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints

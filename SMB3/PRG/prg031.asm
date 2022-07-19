@@ -1480,6 +1480,9 @@ Continue_VBlank:
 	LDA Palette_Buffer + 2
 	STA PPU_VRAM_DATA
 
+	LDA Palette_Buffer + 3
+	STA PPU_VRAM_DATA
+
 	LDA <PPU_CTL1_Copy
 	STA PPU_CTL1
 
@@ -2087,6 +2090,10 @@ IntIRQ_Vertical:
 	LDA #$11
 	STA PPU_VRAM_DATA
 
+	LDA #$27
+	STA PPU_VRAM_DATA
+	
+
 	LDA PPU_STAT	 ; 
 
 	; Because vertical scroll will not change after frame begins (second write to
@@ -2333,9 +2340,11 @@ PRG031_F998:
 	LDA <PPU_CTL1_Copy	 ; PPU_CTL1 copy
 	ORA #$01	 ; Force $2400 nametable address
 	STA PPU_CTL1	 ; Set it in the register
+
 	LDA PPU_STAT	 ; 
 	LDA #$00	 ; 
 	STA PPU_SCROLL	 ; Horizontal scroll = 0
+	
 	LDA <Vert_Scroll ; 
 	STA PPU_SCROLL	 ; Vertical scroll update as-is
 	JMP IntIRQ_Finish	 ; Clean up IRQ

@@ -3037,7 +3037,7 @@ UpdateLevelName:
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
-	LDA #$22
+	LDA #$82
 	STA Graphics_Buffer + 1, X
 	
 	LDA #$1C
