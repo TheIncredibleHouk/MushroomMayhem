@@ -1977,6 +1977,7 @@ PRG031_F748:
 
 	LDA <VBlank_TickEn	 ; Check VBlank flag
 	BEQ PRG031_F786	 	; If A = 0, jump to PRG031_F786
+	
 	JSR Randomize	 	; Shake up the randomizer!
 	JSR Read_Joypads	 ; Updates both joypads in RAM
 

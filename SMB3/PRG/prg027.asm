@@ -154,6 +154,25 @@ Messages_Lookup:
 	.word Game_Script_1_2
 	.word Game_Script_1_3
 	.word Game_Script_1_4
+	.word Game_Script_1_5
+	.word Game_Script_2_A
+	.word Game_Script_2_1
+	.word Game_Script_2_2
+	.word Game_Script_2_3
+	.word Game_Script_2_4
+	.word Game_Script_2_5
+	.word Game_Script_2_6
+	.word Game_Script_2_7
+	.word Game_Script_3_A
+	.word Game_Script_3_1
+	.word Game_Script_3_2
+	.word Game_Script_3_3
+	.word Game_Script_3_4
+	.word Game_Script_3_5
+	.word Game_Script_3_6
+	.word Game_Script_3_7
+	.word Game_Script_3_8
+	.word Game_Script_3_9
 
 Empty_Message:
 	.byte $00
@@ -168,16 +187,93 @@ Game_Script_1_1:
 	.db "IN 30 SECONDS        "
 
 Game_Script_1_2:
-	.db "DEFEAT ALL GOOMBAS   "
+	.db "DEFEAT 8   GOOMBAS   "
 	.db "IN 30 SECONDS        "
 
 Game_Script_1_3:
-	.db "COMPLETE THE PUZZLE  "
+	.db "COMPLETE THE SPRITE  "
 	.db "IN 30 SECONDS        "
 
 Game_Script_1_4:
 	.db "BREAK ALL THE BRICKS "
+	.db "IN 45 SECONDS        "
+
+Game_Script_1_5:
+	.db "PLACE THE MUSHROOM   "
+	.db "BLOCKS IN 45 SECONDS "
+
+Game_Script_2_A:                
+	.db "WITHIN 7, WIN 4. NOW "
+	.db "GO IN THE NEXT DOOR  "
+
+Game_Script_2_1:                 
+	.db "COLLECT 20 COINS     "
 	.db "IN 30 SECONDS        "
+
+Game_Script_2_2:
+	.db "DEFEAT 13 SPINIES AND"
+	.db "1 BUZZY IN 45 SECONDS"
+
+Game_Script_2_3:	
+	.db "COMPLETE THE SPRITE  "
+	.db "IN 60 SECONDS        "
+
+Game_Script_2_4:
+	.db "BREAK ALL THE BRICKS "
+	.db "IN 35 SECONDS        "
+
+Game_Script_2_5:
+	.db "PLACE THE MUSHROOM   "
+	.db "BLOCKS IN 35 SECONDS "
+
+Game_Script_2_6:
+	.db "HIT ALL THE SWITCHES "
+	.db "IN 20 SECONDS        "
+
+Game_Script_2_7:
+	.db "FIND THE POWERUP     "
+	.db "IN 3 SECONDS         "
+
+Game_Script_3_A:
+	.db "9 GAMES, THINK FAST  "
+	.db "OR YOU WILL NOT LAST "
+
+Game_Script_3_1:
+	.db "COLLECT 64 COINS IN  "
+	.db "5 SECONDS            "
+
+Game_Script_3_2:
+	.db "DEFEAT 3 PIRANHA     "
+	.db "PLANTS IN 5 SECONDS  "
+
+Game_Script_3_3:	
+	.db "COMPLETE THE SPRITE  "
+	.db "IN 5 SECONDS         "
+
+Game_Script_3_4:
+	.db "BREAK ALL THE BRICKS "
+	.db "IN 5 SECONDS         "
+
+Game_Script_3_5:
+	.db "PLACE THE MUSHROOM   "
+	.db "BLOCKS IN 7 SECONDS  "
+
+Game_Script_3_6:
+	.db "HIT ALL THE SWITCHES "
+	.db "IN 5 SECONDS         "
+
+
+Game_Script_3_7:
+	.db "FIND THE POWERUP     "
+	.db "IN 3 SECONDS         "
+
+Game_Script_3_8:
+	.db "AVOID FIREBALLS FOR  "
+	.db "30 SECONDS           "
+
+Game_Script_3_9:
+	.db "MAKE IT TO THE DOOR  "
+	.db "IN 10 SECONDS        "
 
 Message_Low = Temp_Var1
 Message_Hi = Temp_Var2

@@ -2623,11 +2623,11 @@ MushroomBlock_Normal:
 	BNE MushroomBlock_Carry
 
 	JSR ObjHit_SolidStand
- 	BCC MushroomBlock_Carry
+	BCC MushroomBlock_Carry
 
 	LDA Objects_XVelZ, X
 	STA Player_CarryXVel
-	JMP MushroomBlock_DetectTiles
+	;JMP MushroomBlock_DetectTiles
 
 MushroomBlock_Carry:
 	LDA #$00
@@ -2644,10 +2644,8 @@ MushroomBlock_Carry:
 	JMP MushroomBlock_Draw
 
 MushroomBlock_Kicked:	
-	LDA #$10
-	STA Objects_Timer2, X
 
-MushroomBlock_DetectTiles
+MushroomBlock_DetectTiles:
 	JSR Object_DetectTiles
 	JSR Object_DampenVelocity
 	JSR Object_InteractWithTilesWallStops

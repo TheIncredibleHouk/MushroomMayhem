@@ -1979,7 +1979,7 @@ Piranha_NoMoreAttacks:
 Piranha_Attack1:
 	LDA Objects_ID, X
 	CMP #OBJ_PIRANHAPLANTGOLD
-	BEQ Piranha_Attack2
+	BEQ Piranha_AttackReset
 
 	LDA #$20
 	STA Objects_Timer, X

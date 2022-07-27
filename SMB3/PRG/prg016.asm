@@ -2518,6 +2518,17 @@ GameScript_TimerDec:
 GameScript_TimerRTS:
 	RTS
 
+GameScript_CheckLoses:
+	LDA GameScript_Losses
+	BEQ GameScript_CheckLosesRTS
+
+	CMP GameScript_LossLimit
+    BNE GameScript_CheckLosesRTS
+
+	JSR Player_Die
+
+GameScript_CheckLosesRTS:
+	RTS
 
 GameScript_XOffset:
 	.byte $20, $18
@@ -2646,6 +2657,7 @@ GameScript_DrawLoop:
 	RTS
 
 GameScript_MakeKey:
+	JSR GameScript_Cleanup
 	JSR Object_FindEmptyX
 	
 	LDA #OBJ_KEY
@@ -2704,6 +2716,25 @@ ObjNorm_GameScript:
 	.word Stage_1_2_Init
 	.word Stage_1_3_Init
 	.word Stage_1_4_Init
+	.word Stage_1_5_Init
+	.word Stage_2_Notify_Init
+	.word Stage_2_1_Init
+	.word Stage_2_2_Init
+	.word Stage_2_3_Init
+	.word Stage_2_4_Init
+	.word Stage_2_5_Init
+	.word Stage_2_6_Init
+	.word Stage_2_7_Init
+	.word Stage_3_Notify_Init
+	.word Stage_3_1_Init
+	.word Stage_3_2_Init
+	.word Stage_3_3_Init
+	.word Stage_3_4_Init
+	.word Stage_3_5_Init
+	.word Stage_3_6_Init
+	.word Stage_3_7_Init
+	.word Stage_3_8_Init
+	.word Stage_3_9_Init
 
 GameScript_Norm:
 	LDA <Player_HaltGameZ
@@ -2714,6 +2745,7 @@ GameScript_Norm:
 GameScript_DoNorm:
 	JSR Handle_GameScript_Timer
 	JSR GameScript_Draw
+	JSR GameScript_CheckLoses
 
 	LDA <Objects_YZ, X
 	LSR A
@@ -2736,11 +2768,33 @@ GameScript_DoNorm:
 	.word Stage_1_2
 	.word Stage_1_3
 	.word Stage_1_4
+	.word Stage_1_5
+	.word Stage_2_Notify
+	.word Stage_2_1
+	.word Stage_2_2
+	.word Stage_2_3
+	.word Stage_2_4
+	.word Stage_2_5
+	.word Stage_2_6
+	.word Stage_2_7
+	.word Stage_3_Notify
+	.word Stage_3_1
+	.word Stage_3_2
+	.word Stage_3_3
+	.word Stage_3_4
+	.word Stage_3_5
+	.word Stage_3_6
+	.word Stage_3_7
+	.word Stage_3_8
+	.word Stage_3_9
 
 
 GameScript_CoinsRemaining = Objects_Data5
 GameScript_EnemiesRemaining = Objects_Data5
 GameScript_BricksRemaining = Objects_Data5
+GameScript_BlocksRemaining = Objects_Data5
+GameScript_SwitchesRemaining = Objects_Data5
+GameScript_PowerupPlacement = Objects_Data5
 
 GameScript_CoinChallenge:
 	LDA GameScript_Finished, X
@@ -2764,6 +2818,11 @@ GameScript_CoinChallengeDo:
 
 	INC GameScript_Wins
 	INC GameScript_Finished, X
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+	
 	JSR GameScript_MakeKey
 
 	LDA #$00
@@ -2778,6 +2837,10 @@ GameScript_CoinChallengeTimer:
 	INC GameScript_Finished, X
 	JSR GameScript_MakeKey
 
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+
 GameScript_CoinChallengeTimerRTS:	
 	RTS
 
@@ -2788,13 +2851,15 @@ GameScript_EnemyChallenge:
 	RTS
 
 GameScript_EnemyChallengeDo:
-	LDA Exp_Earned
+	LDA Kill_Count
 	BEQ GameScript_EnemyChallengeTimer
 
 	LDA GameScript_EnemiesRemaining, X
-	DEC GameScript_EnemiesRemaining, X
+	SUB Kill_Count
+	STA GameScript_EnemiesRemaining, X
 
 	LDA #$00
+	STA Kill_Count
 	STA Exp_Earned
 
 	LDA GameScript_EnemiesRemaining, X
@@ -2804,6 +2869,10 @@ GameScript_EnemyChallengeDo:
 	INC GameScript_Finished, X
 	JSR GameScript_MakeKey
 
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+	
 	LDA #$00
 	STA GameScript_Timer, X
 	RTS
@@ -2815,6 +2884,10 @@ GameScript_EnemyChallengeTimer:
 	INC GameScript_Losses
 	INC GameScript_Finished, X
 	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap
 
 GameScript_EnemyChallengeRTS:	
 	RTS
@@ -2835,6 +2908,10 @@ GameScript_BlockToggles:
 	INC GameScript_Finished, X
 	INC GameScript_Losses
 	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap	
 	RTS
 
 GameScript_BlockToggleGfx:
@@ -2864,6 +2941,15 @@ GS_FindBlock:
 	RTS
 
 GS_BlockToggle_Replace:
+	LDA Game_Counter
+	SUB #$01
+	AND #$30
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
 	LDA ItemBlock_ReplaceTile + 5, X
 	AND #$F0
 	CMP #$10
@@ -2904,7 +2990,7 @@ GameScript_BrickChallenge:
 	RTS
 
 GameScript_BrickChallengeDo:
-	LDA Block_NeedsUpdate
+	LDA Block_WasUpdated
 	BEQ GameScript_BrickChallengeTimer
 
 	DEC GameScript_BricksRemaining, X
@@ -2916,6 +3002,10 @@ GameScript_BrickChallengeDo:
 	INC GameScript_Finished, X
 	JSR GameScript_MakeKey
 
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
 	LDA #$00
 	STA GameScript_Timer, X
 	RTS
@@ -2926,14 +3016,145 @@ GameScript_BrickChallengeTimer:
 
 	INC GameScript_Losses
 	INC GameScript_Finished, X
+
 	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap	
 
 GameScript_BrickChallengeTimerRTS:	
 	RTS
 
 
+GameScript_MBlockChallenge:
+	LDA GameScript_Finished, X
+	BEQ GameScript_MBlockChallengeDo
+	CLR_MSG
+	RTS
+
+GameScript_MBlockChallengeDo:
+	LDA Block_WasUpdated
+	BEQ GameScript_BrickChallengeTimer
+
+	LDA Block_UpdateValue
+	CMP #$1A
+	BNE GameScript_MBlockChallengeTimer
+
+	DEC GameScript_BlocksRemaining, X
+
+	LDA GameScript_BlocksRemaining, X
+	BNE GameScript_MBlockChallengeTimer
+
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+GameScript_MBlockChallengeTimer:
+	LDA GameScript_Timer, X
+	BNE GameScript_MBlockChallengeRTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap	
+
+GameScript_MBlockChallengeRTS:	
+	RTS
+
+
+GameScript_SwitchChallenge:
+	LDA GameScript_Finished, X
+	BEQ GameScript_SwitchChallengeDo
+	CLR_MSG
+	RTS
+
+GameScript_SwitchChallengeDo:
+	LDA Block_WasUpdated
+	BEQ GameScript_SwitchChallengeTimer
+
+	DEC GameScript_SwitchesRemaining, X
+	BNE GameScript_SwitchChallengeTimer
+
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+GameScript_SwitchChallengeTimer:
+	LDA GameScript_Timer, X
+	BNE GameScript_SwitchChallengeRTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap	
+
+GameScript_SwitchChallengeRTS:	
+	RTS	
+
+GameScript_Cleanup:
+	LDX #$04
+
+GameScript_CleanupLoop:	
+	CPX <CurrentObjectIndexZ
+	BEQ GameScript_CleanupNext
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_DEADEMPTY
+	BEQ GameScript_CleanupNext
+
+	JSR Object_PoofDie
+
+GameScript_CleanupNext:
+	DEX
+	BPL GameScript_CleanupLoop
+
+	LDY #$07
+	LDA #$00
+
+GameScript_ClearGens:	
+	STA ObjectGenerator_ID, Y
+	STA SpecialObj_ID, Y
+
+	DEY
+	BPL GameScript_ClearGens
+
+	LDX <CurrentObjectIndexZ
+	RTS
+
 Stage_1_Notify_Init:
 Stage_1_Notify:
+	LDA #$00
+	STA GameScript_Wins
+	STA GameScript_Losses
+
+	LDA #$03
+	STA GameScript_LossLimit
+
 	SET_MSG Game_Script_1_A
 	RTS
 
@@ -2991,10 +3212,10 @@ Stage_1_3_Pattern:
 
 Stage_1_3:
 	JSR GameScript_BlockToggles
+
 	LDA GameScript_Finished, X
 	BNE Stage_1_3RTS
 
-	STA Debug_Snap
 	LDY #$0F
 
 Stage_1_3_Loop:	
@@ -3007,23 +3228,714 @@ Stage_1_3_Loop:
 
 	INC GameScript_Finished, X
 	INC GameScript_Wins
+
 	LDA #$00
 	STA GameScript_Timer, X
 	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 
 Stage_1_3RTS:	
 	RTS
 
 Stage_1_4_Init:
-	LDA #30
+	LDA #45
 	STA GameScript_Timer, X
 
 	SET_MSG Game_Script_1_4
 
-	LDA #28
-	STA GameScript_BricksRemaining
+	LDA #22
+	STA GameScript_BricksRemaining, X
 	RTS
 
 Stage_1_4:
 	JSR GameScript_BrickChallenge
 	RTS
+
+Stage_1_5_Init:
+	LDA #45
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #10
+	STA GameScript_BlocksRemaining, X
+
+	SET_MSG Game_Script_1_5
+	RTS
+
+Stage_1_5:
+	JSR GameScript_MBlockChallenge
+	RTS
+
+Stage_2_Notify_Init:
+Stage_2_Notify:
+	LDA #$00
+	STA GameScript_Wins
+	STA GameScript_Losses
+
+	LDA #$04
+	STA GameScript_LossLimit
+
+	SET_MSG Game_Script_2_A
+	RTS
+
+
+Stage_2_1_Init:
+	LDA #30
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #20
+	STA GameScript_CoinsRemaining, X
+
+	SET_MSG Game_Script_2_1
+	RTS
+
+Stage_2_1:	
+	JSR GameScript_CoinChallenge
+	RTS
+
+
+Stage_2_2_Init:
+	LDA #45
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #14
+	STA GameScript_EnemiesRemaining, X
+
+	SET_MSG Game_Script_2_2
+	RTS
+
+Stage_2_2:	
+	JSR GameScript_EnemyChallenge
+	RTS	
+
+
+Stage_2_3_Init:
+	LDA #60
+	STA GameScript_Timer, X
+
+	SET_MSG Game_Script_2_3
+
+	LDY #$0F
+	LDA #$00
+
+Stage_2_3_InitLoop:	
+	STA GameScript_Data, Y
+	DEY
+	BPL Stage_2_3_InitLoop
+	RTS
+
+Stage_2_3_Pattern:
+	.byte $00, $00, $17, $00, $00, $19, $18, $17, $17, $00, $19, $18, $00, $00, $17, $00
+
+Stage_2_3:
+	JSR GameScript_BlockToggles
+	LDA GameScript_Finished, X
+	BNE Stage_2_3RTS
+
+	LDY #$0F
+
+Stage_2_3_Loop:	
+	LDA GameScript_Data, Y
+	CMP Stage_2_3_Pattern, Y
+	BNE Stage_2_3RTS
+
+	DEY
+	BPL Stage_2_3_Loop
+
+	INC GameScript_Finished, X
+	INC GameScript_Wins
+
+	LDA #$00
+	STA GameScript_Timer, X
+
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+Stage_2_3RTS:	
+	RTS	
+
+Stage_2_4_Init:
+	LDA #35
+	STA GameScript_Timer, X
+
+	SET_MSG Game_Script_2_4
+
+	LDA #18
+	STA GameScript_BricksRemaining, X
+	RTS
+
+Stage_2_4:	
+	JSR GameScript_BrickChallenge
+	RTS
+
+
+Stage_2_5_Init:
+	LDA #35
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #10
+	STA GameScript_BlocksRemaining, X
+
+	SET_MSG Game_Script_2_5
+	RTS
+
+Stage_2_5:
+	JSR GameScript_MBlockChallenge
+	RTS	
+
+
+Stage_2_6_Init:
+	LDA #20
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #20
+	STA GameScript_SwitchesRemaining, X
+
+	SET_MSG Game_Script_2_6
+	RTS
+
+Stage_2_6:
+	JSR GameScript_SwitchChallenge
+	RTS		
+
+
+Stage_2_7_Init:
+	LDA #08
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	SET_MSG Game_Script_2_7
+
+Stage_2_7RTS:
+	RTS
+
+Stage_2_7:
+	LDA GameScript_Finished, X
+	BNE Stage_2_7RTS
+
+	LDA GameScript_Timer, X
+	CMP #$04
+	BCC Stage_2_7_Check
+
+	LDA Game_Counter
+	AND #$07
+	BNE Stage_2_7_Wait
+
+Stage_2_7_Shuffle:
+	LDY #$04
+
+Stage_2_7_Loop:
+	LDA Objects_ID, Y
+	CMP #OBJ_POWERUP
+	BEQ Stage_2_7_Placement
+
+	DEY
+	BPL Stage_2_7_Loop
+
+Stage_2_7_Placement:
+	LDA RandomN
+	AND #$70
+	ADD #$40
+
+	STA Objects_XZ, Y
+	STA GameScript_PowerupPlacement, X
+
+	LDA #$40
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_XVelZ, Y
+	STA Objects_YVelZ, Y
+
+Stage_2_7_Wait:
+	LDA #$08
+	STA Player_HaltTick
+	RTS
+
+Stage_2_7_Check:
+	LDA GameScript_PowerupPlacement, X
+	BEQ Stage_2_7_Find
+
+	LDY #$04
+
+Stage_2_7_CheckLoop:
+	LDA Objects_ID, Y
+	CMP #OBJ_POWERUP
+	BEQ Stage_2_7_Remove
+
+	DEY
+	BPL Stage_2_7_CheckLoop
+	RTS
+
+Stage_2_7_Remove:
+
+	LDA #$00
+	STA Objects_ID, Y
+
+	LDA GameScript_PowerupPlacement, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA #$5B
+	STA $6D20, Y
+
+	LDA #$00
+	STA GameScript_PowerupPlacement, X
+	RTS
+
+Stage_2_7_Find:
+	LDY #$02
+
+Stage_2_7_FindLoop:
+	LDA Objects_ID + 5, Y
+	CMP #OBJ_POWERUP
+	BEQ Stage_2_7_Found
+
+	DEY
+	BPL Stage_2_7_FindLoop
+
+	LDA GameScript_Timer, X
+	BNE Stage_2_7_FindRTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+
+Stage_2_7_FindRTS:	
+	RTS
+
+Stage_2_7_Found:
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+
+Stage_3_Notify_Init:
+Stage_3_Notify:
+	LDA #$00
+	STA GameScript_Wins
+	STA GameScript_Losses
+
+	LDA #$03
+	STA GameScript_LossLimit
+
+	SET_MSG Game_Script_3_A
+	RTS	
+
+
+Stage_3_1_Init:
+	LDA #5
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #64
+	STA GameScript_CoinsRemaining, X
+
+	SET_MSG Game_Script_1_1
+	RTS
+
+Stage_3_1:	
+	JSR GameScript_CoinChallenge
+	RTS	
+
+
+Stage_3_2_Init:
+	LDA #5
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #3
+	STA GameScript_EnemiesRemaining, X
+
+	SET_MSG Game_Script_3_2
+	RTS
+
+Stage_3_2:	
+	JSR GameScript_EnemyChallenge
+	RTS		
+
+
+Stage_3_3_Init:
+	LDA #5
+	STA GameScript_Timer, X
+
+	SET_MSG Game_Script_3_4
+
+	LDY #$0F
+	LDA #$00
+
+Stage_3_3_InitLoop:	
+	STA GameScript_Data, Y
+	DEY
+	BPL Stage_3_3_InitLoop
+	RTS
+
+Stage_3_3_Pattern:
+	.byte $00, $00, $00, $00, $00, $00, $00, $00, $18, $00, $00, $00, $00, $00, $00, $00
+
+Stage_3_3:
+	JSR GameScript_BlockToggles
+	LDA GameScript_Finished, X
+	BNE Stage_3_3RTS
+
+	LDY #$0F
+
+Stage_3_3_Loop:
+	LDA GameScript_Data, Y
+	CMP Stage_3_3_Pattern, Y
+	BNE Stage_3_3RTS
+
+	DEY
+	BPL Stage_3_3_Loop
+
+	INC GameScript_Finished, X
+	INC GameScript_Wins
+
+	LDA #$00
+	STA GameScript_Timer, X
+
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+Stage_3_3RTS:	
+	RTS		
+
+
+Stage_3_4_Init:
+	LDA #5
+	STA GameScript_Timer, X
+
+	SET_MSG Game_Script_3_4
+
+	LDA #4
+	STA GameScript_BricksRemaining, X
+	RTS
+
+Stage_3_4:	
+	JSR GameScript_BrickChallenge
+	RTS
+
+Stage_3_5_Init:
+	LDA #7
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #2
+	STA GameScript_BlocksRemaining, X
+
+	SET_MSG Game_Script_3_5
+	RTS
+
+Stage_3_5:
+	JSR GameScript_MBlockChallenge
+	RTS	
+
+Stage_3_6_Init:
+	LDA #5
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	LDA #4
+	STA GameScript_SwitchesRemaining, X
+
+	SET_MSG Game_Script_3_6
+	RTS
+
+Stage_3_6:
+	JSR GameScript_SwitchChallenge
+	RTS	
+
+Stage_3_7_Init:
+	LDA #08
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	SET_MSG Game_Script_3_7
+
+Stage_3_7RTS:
+	RTS
+
+Stage_3_7:
+	LDA GameScript_Finished, X
+	BNE Stage_3_7RTS
+
+	LDA GameScript_Timer, X
+	CMP #$04
+	BCC Stage_3_7_Check
+
+	LDA Game_Counter
+	AND #$07
+	BNE Stage_3_7_Wait
+
+Stage_3_7_Shuffle:
+	LDY #$04
+
+Stage_3_7_Loop:
+	LDA Objects_ID, Y
+	CMP #OBJ_POWERUP
+	BEQ Stage_3_7_Placement
+
+	DEY
+	BPL Stage_3_7_Loop
+
+Stage_3_7_Placement:
+	LDA RandomN
+	AND #$70
+	ADD #$40
+
+	STA Debug_Snap
+	STA Objects_XZ, Y
+	STA GameScript_PowerupPlacement, X
+
+	LDA #$10
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_XVelZ, Y
+	STA Objects_YVelZ, Y
+
+Stage_3_7_Wait:
+	LDA #$08
+	STA Player_HaltTick
+	RTS
+
+Stage_3_7_Check:
+	LDA GameScript_PowerupPlacement, X
+	BEQ Stage_3_7_Find
+
+	LDY #$04
+
+Stage_3_7_CheckLoop:
+	LDA Objects_ID, Y
+	CMP #OBJ_POWERUP
+	BEQ Stage_3_7_Remove
+
+	DEY
+	BPL Stage_3_7_CheckLoop
+	RTS
+
+Stage_3_7_Remove:
+
+	LDA #$00
+	STA Objects_ID, Y
+
+	LDA GameScript_PowerupPlacement, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA #$5B
+	STA $6B70, Y
+
+	LDA #$00
+	STA GameScript_PowerupPlacement, X
+	RTS
+
+Stage_3_7_Find:
+	LDY #$02
+
+Stage_3_7_FindLoop:
+	LDA Objects_ID + 5, Y
+	CMP #OBJ_POWERUP
+	BEQ Stage_3_7_Found
+
+	DEY
+	BPL Stage_3_7_FindLoop
+
+	LDA GameScript_Timer, X
+	BNE Stage_3_7_FindRTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+
+Stage_3_7_FindRTS:	
+	RTS
+
+Stage_3_7_Found:
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+Stage_3_8_Init:
+	LDA #30
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	SET_MSG Game_Script_3_8
+	RTS
+
+Stage_3_8:
+	LDA GameScript_Finished, X
+	BNE Stage_3_8RTS
+
+	LDA GameScript_Timer, X
+	BNE Stage_3_8_Attack
+
+	INC GameScript_Wins
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+
+	LDA #$00
+	STA GameScript_Timer, X
+	RTS
+
+Stage_3_8_Attack:
+	LDY #$05
+	LDA #$20
+
+Stage_3_8_Loop:	
+	STA Objects_Timer2, Y
+
+	DEY
+	BPL Stage_3_8_Loop
+
+	LDA Player_FlashInv
+	BEQ Stage_3_8RTS
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+	JSR GameScript_MakeKey
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+
+Stage_3_8RTS:
+	RTS
+
+Stage_3_9_Init:
+	LDA #10
+	STA GameScript_Timer, X
+
+	LDA #60
+	STA GameScript_TimerFrac, X
+
+	SET_MSG Game_Script_3_9
+	RTS
+
+Stage_3_9:
+	LDA GameScript_Finished, X
+	BNE Stage_3_9RTS
+
+	STA Debug_Snap
+	LDA GameScript_Timer, X
+	BNE Stage_3_9_Check
+
+	INC GameScript_Losses
+	INC GameScript_Finished, X
+
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+
+
+Stage_3_9_Check:	
+	CMP #8
+	BNE Stage_3_9RTS
+
+	LDA GameScript_TimerFrac, X
+	CMP #$01
+	BNE Stage_3_9RTS
+
+	LDY #$04
+
+Stage_3_9_Loop:	
+	LDA Objects_State, Y
+	BEQ Stage_3_9_Dim
+
+	DEY
+	BPL Stage_3_9_Loop
+
+Stage_3_9_Dim:	
+	LDA #OBJ_DIMMER
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, Y
+
+	LDA <Objects_XZ, X
+	STA Objects_XZ, Y
+
+	LDA <Objects_XHiZ, X
+	STA Objects_XHiZ, Y
+
+	LDA <Objects_YZ, X
+	STA Objects_YZ, Y
+
+	LDA <Objects_YHiZ, X
+	STA Objects_YHiZ, Y
+
+Stage_3_9RTS:
+	RTS
+	

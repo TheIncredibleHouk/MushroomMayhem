@@ -3534,7 +3534,6 @@ PRG007_BB60:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ObjectGenerator_UpdateAndDraw:
 	LDA <Player_HaltGameZ		 
-	ORA EndCard_Flag
 	BNE PRG007_BB80	 ; If gameplay halted or end level card grabbed, jump to PRG007_BB80 (RTS)
 
 	LDX #$07	 ; X = 7
@@ -3552,7 +3551,6 @@ PRG007_BB80:
 
 
 ObjectGenerator_DrawAndUpdate:
-
 	LDA ObjectGenerator_ID,X
 	BEQ PRG007_BB80	 ; If this slot is unused/empty, jump to PRG007_BB80 (RTS)
 
@@ -3578,7 +3576,6 @@ PRG007_BB8F:
 	JSR ObjectGenerator_DeleteOffScreen
 
 PRG007_BB97:
-	
 	LDA ObjectGenerator_ID, X
 	JSR DynJump
 
@@ -3765,7 +3762,7 @@ ObjectGen_Bobombs:
 	BNE BobOmbGeneratorRTS0
 
 	LDA ObjectGenerator_Visibility, X
-	CMP #(GENERATOR_HVISIBLE)
+	AND #(GENERATOR_HVISIBLE)
 	BNE BobOmbGen_Make
 
 BobOmbGeneratorRTS0:

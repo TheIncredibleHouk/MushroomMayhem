@@ -255,19 +255,29 @@ PowerUp_Timers:
 
 
 ObjInit_PUp1:
-	
 	LDA #OBJ_POWERUP
 	STA Objects_ID, X
 
 	LDA Objects_Property, X
+	ADD #$02
 	STA PowerUp_Type, X
-	JMP ObjInit_PowerUp
+	
+	JSR ObjInit_PowerUp
+	
+	LDA #$00
+	STA <Objects_YVelZ, X
+	RTS
 
 ObjInit_PUp2:
 	LDA Objects_Property, X
-	ADD #$07
+	ADD #$09
 	STA PowerUp_Type, X
-	JMP ObjInit_PowerUp
+	
+	JSR ObjInit_PowerUp
+	
+	LDA #$00
+	STA <Objects_YVelZ, X
+	RTS
 
 ObjInit_PowerUp:
 	JSR Object_NoInteractions

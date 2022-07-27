@@ -2307,16 +2307,33 @@ ObjState_Fresh:
 	SUB Objects_BoundLeft, X
 	LSR A
 	ADD Objects_BoundLeft, X
-	SUB #$08
-	STA <Poof_X
+	STA <Point_X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA <Point_XHi
 
 	LDA Objects_BoundBottom, X
 	SUB Objects_BoundTop, X
 	LSR A
 	ADD Objects_BoundTop, X
+	STA <Point_Y
+
+	LDA Objects_BoundBottomHi, X
+	ADC #$00
+	STA <Point_YHi
+
+	JSR CheckPoint_OffScreen
+	BCC ObjectState_InitRTS
+
+	LDA <Point_X
+	SUB #$08
+	STA <Poof_X
+
+	LDA <Point_Y
 	SUB #$08
 	STA <Poof_Y
-
+	
 	JSR Common_MakePoof
 
 ObjectState_InitRTS:
@@ -2422,6 +2439,7 @@ Object_NotTooLow:
 	LDA Objects_BoundRightHi, X
 	STA <Temp_Var13
 
+	
 	LDA <Horz_Scroll
 	STA <Temp_Var14
 
@@ -5248,6 +5266,8 @@ Add_KillyTally:
 	STA Kill_Tally
 	STA Exp_Earned
 
+	INC Kill_Count
+
 Object_EarnExpRTS:
 	RTS
 
@@ -5417,6 +5437,9 @@ Do_Reverse:
 	LDA <Objects_XHiZ, X
 	ADC Object_XPreventStuck + 2, Y
 	STA <Objects_XHiZ, X
+
+	LDA #$08
+	STA Objects_Timer2, X
 	RTS
 
 Object_DieInstead:	

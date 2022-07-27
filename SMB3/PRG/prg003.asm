@@ -1434,7 +1434,7 @@ PlatformSwing_AnchorXOff:
 ObjInit_PlatformSwing:
 	JSR ObjInit_PlatformCommon
 
-	LDA #$08
+	LDA #$09
 	STA Objects_SpritesRequested, X
 
 	LDY Objects_Property, X
@@ -1599,7 +1599,7 @@ Swing_Draw:
 	LDA #$55
 	STA Sprite_RAMTile + 24, Y
 
-	LDA #SPR_PAL2 | SPR_BEHINDBG
+	LDA #SPR_PAL2
 	STA Sprite_RAMAttr + 24, Y
 
 Swing_DrawAttach:
@@ -1620,7 +1620,7 @@ Swing_DrawAttach:
 	STA <Point_YHi
 
 	JSR CheckPoint_OffScreen
-	BCC Swing_DrawRTS
+	BCC Swing_DrawBlock
 
 	LDA <Point_RelativeX
 	STA Sprite_RAMX + 28, Y
@@ -1631,8 +1631,40 @@ Swing_DrawAttach:
 	LDA #$55
 	STA Sprite_RAMTile + 28, Y
 
-	LDA #SPR_PAL2 | SPR_BEHINDBG
+	LDA #SPR_PAL2
 	STA Sprite_RAMAttr + 28, Y
+
+Swing_DrawBlock:
+	LDA SwingAnchor_X, X
+	STA <Point_RelativeX
+
+	LDA SwingAnchor_X, X
+	STA <Point_X
+
+	LDA SwingAnchor_XHi, X
+	STA <Point_XHi
+
+	LDA SwingAnchor_Y, X
+	STA <Point_Y
+
+	LDA SwingAnchor_YHi, X
+	STA <Point_YHi
+
+	JSR CheckPoint_OffScreen
+	BCC Swing_DrawRTS
+
+
+	LDA <Point_RelativeX
+	STA Sprite_RAMX + 32, Y
+
+	LDA <Point_RelativeY
+	STA Sprite_RAMY + 32, Y
+
+	LDA #$55
+	STA Sprite_RAMTile + 32, Y
+
+	LDA #SPR_PAL2 
+	STA Sprite_RAMAttr + 32, Y
 
 Swing_DrawRTS:	
 	RTS

@@ -480,8 +480,8 @@ PAD_RIGHT	= $01
 	Object_SpawnScrollCount:		.ds 1	; Player 2's controller inputs -- R01 L02 D04 U08 S10 E20 B40 A80
 
 	Object_LastScrollColumn: .ds 1	; $F9 unused
-				.ds 1	; $FA unused
-				.ds 1	; $FB unused
+	Horz_Scroll_Backup:			.ds 1	; $FA unused
+	Horz_ScrollHi_Backup:	.ds 1	; $FB unused
 
 	Vert_Scroll:		.ds 1	; Vertical scroll of name table; typically at $EF (239, basically showing the bottom half)
 	Horz_Scroll:		.ds 1	; Horizontal scroll of name table
@@ -1767,6 +1767,7 @@ MARIO_PLANE = 2
 	Inventory_Open:		.ds 1	; Set when inventory panel is open, also used to dictate whether it is "opening" (1) or "closing" (0)
 	Kill_Tally:		.ds 1	; Counter that increases with each successful hit of an object without touching the ground
 	Kill_Tally_Ticker: .ds 1
+	Kill_Count:			.ds 1
 
 	; NOTE: Since Level_AScrlConfig checks are generally implemented as "BEQ/BNE", technically ANY
 	; value enables auto scroll adjustments, but officially ASCONFIG_ENABLE is used to enable it
@@ -3122,6 +3123,7 @@ TILE_ITEM_SPINNER	= $FE
 	SecondQuest:		.ds 1
 	GameScript_Wins:	.ds 1
 	GameScript_Losses:	.ds 1
+	GameScript_LossLimit: .ds 1
 	GameScript_Data:	.ds 16
 
 	.org $7FFF

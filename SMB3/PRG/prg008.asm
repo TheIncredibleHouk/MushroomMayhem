@@ -5621,7 +5621,6 @@ Solid_ThinIceGround:
 	JMP Solid_ThinBreakIce
 
 Solid_MushroomBlock:
-
 	LDA MushroomBlocks_Enabled
 	BEQ Solid_MushroomBlockRTS
 

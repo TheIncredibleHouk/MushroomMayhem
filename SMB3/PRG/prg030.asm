@@ -2413,6 +2413,7 @@ GraphicsBuf_Prep_And_WaitVSync:	; 96E5
 	; Get the address where the video update data is
 	LDA Video_Upd_Table,Y
 	STA <Video_Upd_AddrL
+
 	LDA Video_Upd_Table+1,Y
 	STA <Video_Upd_AddrH	
 
@@ -2420,12 +2421,13 @@ GraphicsBuf_Prep_And_WaitVSync:	; 96E5
 	;STA PPU_CTL2
 	LDA #$01	
 	STA <VBlank_TickEn	 ; Enable the VBlank tick
+	
 	LDA #$00	 
 	STA <VBlank_Tick	 ; Force VBlank_Tick = 0, so we know when a VBlank has occurred
 
 	; Waiting for VBlank...
 PRG030_96FB:
-	LDA #%00011110
+	;LDA #%00011110
 	;STA $2001
 	LDA <VBlank_Tick
 	BPL PRG030_96FB	
@@ -4793,8 +4795,10 @@ DynHScroll:
 Update_Columns:
 	LDA #$01
 	STA Scroll_LastDir
+
 	LDA <Horz_Scroll
 	STA <Scroll_Temp	; Scroll_Temp = Horz_Scroll
+
 	LDA Level_JctCtl
 	LDX <Horz_Scroll_Hi	; A = Horz_Scroll_Hi
 	INX

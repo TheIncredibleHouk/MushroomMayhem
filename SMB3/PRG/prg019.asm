@@ -177,7 +177,7 @@ PRG005_B8CB:
 	BLT PRG005_B909	 ; If object ID < OBJ_8WAYBULLETBILLS, jump to PRG005_B909
 
 
-	LDY Spawn_Dynamically
+	LDX Spawn_Dynamically
 	BNE PRG005_B863
 	; All object IDs higher than OBJ_8WAYBULLETBILLS are handled specially:
 
@@ -1290,7 +1290,7 @@ PRG005_BF02:
 	;STA PatTable_BankSel+5	 ; Set sixth pattern table to $4F
 
 	LDA <Horz_Scroll
-	PHA		 ; Save Horz_Scroll
+	STA <Horz_Scroll_Backup		 ; Save Horz_Scroll
 
 	LDA LOSBS_LookAhead	 ; $10
 	SUB LOSBS_LookAhead+1	 ; $10 - $E0 = $30
@@ -1304,7 +1304,7 @@ PRG005_BF02:
 	STA <Temp_Var14	 ; -> Temp_Var14
 
 	LDA <Horz_Scroll_Hi
-	PHA		 ; Save Horz_Scroll_Hi
+	STA <Horz_ScrollHi_Backup		 ; Save Horz_Scroll_Hi
 
 	ADC LOSBS_LookAheadHi	 ; Add 1 with carry (LOSBS_LookAheadHi = 1)
 	STA <Temp_Var15	 ; -> Temp_Var15
@@ -1312,8 +1312,26 @@ PRG005_BF02:
 	LDA #$01
 	STA <Scroll_LastDir	 ; Scroll_LastDir = 1 (screen last moved left)
 
+	LDA <Horz_Scroll
+	PHA
+
+	LDA <Horz_Scroll_Hi
+	PHA
+
+	LDA <Horz_Scroll_Backup
+	STA <Horz_Scroll
+
+	LDA <Horz_ScrollHi_Backup
+	STA <Horz_Scroll_Hi
+
 	JSR GraphicsBuf_Prep_And_WaitVSync
-	
+
+	PLA
+	STA <Horz_Scroll_Hi
+
+	PLA
+	STA <Horz_Scroll
+
 	; Fake leftward scroll by 16
 	LDA <Horz_Scroll
 	SUB #16
@@ -1326,7 +1344,22 @@ PRG005_BF02:
 	; screen of the level by pretending to scroll a whole screen's worth
 
 PRG005_BF49:
+	LDA Objects_State
+	BEQ Test_Spawn
 
+	LDA Objects_State + 1
+	BEQ Test_Spawn
+
+	LDA Objects_State + 2
+	BEQ Test_Spawn
+	
+	LDA Objects_State + 3
+	BEQ Test_Spawn
+	
+	LDA Objects_State + 4
+	BNE End_Spawn
+
+Test_Spawn:
 	LDA <Horz_Scroll
 	ADC #$10
 	AND #$f0
@@ -1350,10 +1383,11 @@ PRG005_BF55:
 	CMP <Horz_Scroll
 	BNE PRG005_BF49	 ; If we haven't reached the low target yet, loop
 
-	PLA
+End_Spawn:
+	LDA <Horz_ScrollHi_Backup
 	STA <Horz_Scroll_Hi	 ; Restore Horz_Scroll_Hi
 
-	PLA
+	LDA <Horz_Scroll_Backup
 	STA <Horz_Scroll	 ; Restore Horz_Scroll
 
 	; Do not return to caller!!
