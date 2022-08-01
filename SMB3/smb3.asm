@@ -2927,6 +2927,7 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	BrickBust_Pal:		.ds 3
 
 CHAIN_DEBRIS = $55
+STAR_DEBRIS	= $17
 BRICK_DEBRIS = $4B
 ICE_DEBRIS = $59
 OIL_DEBRIS = $61

@@ -3733,7 +3733,6 @@ Stage_3_7_Placement:
 	AND #$70
 	ADD #$40
 
-	STA Debug_Snap
 	STA Objects_XZ, Y
 	STA GameScript_PowerupPlacement, X
 
@@ -3888,7 +3887,6 @@ Stage_3_9:
 	LDA GameScript_Finished, X
 	BNE Stage_3_9RTS
 
-	STA Debug_Snap
 	LDA GameScript_Timer, X
 	BNE Stage_3_9_Check
 

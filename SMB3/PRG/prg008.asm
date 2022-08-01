@@ -2968,7 +2968,7 @@ PRG008_B246:
 	; unless one of the above specified overrides occur.  And here we go...
 
 	LDA <Vert_Scroll
-	CMP #$ef
+	CMP #$Ff
 	BNE PRG008_B258	 ; If Vert_Scroll <> $EF (lowest scroll point), jump to PRG008_B258 (allow free while Vert_Scroll < $EF)
 
 	LDA Player_FlyTime

@@ -1,6 +1,6 @@
 {
   "Id": "be01a450-d1ac-4172-a583-a6bae34dc879",
-  "Name": "Phanto Funhouse-Stage 3",
+  "Name": "Celestial Showtime-Stage-3",
   "TileSetIndex": 11,
   "ClearTileIndex": 0,
   "MusicValue": 64,
@@ -6499,6 +6499,12 @@
   ],
   "FirstObjectData": [
     {
+      "GameObjectId": 0,
+      "X": 3,
+      "Y": 24,
+      "Property": 0
+    },
+    {
       "GameObjectId": 159,
       "X": 6,
       "Y": 15,
@@ -6739,14 +6745,14 @@
       "BoundRectangle": "2256,368,32,32"
     },
     {
-      "LevelId": "00000000-0000-0000-0000-000000000000",
+      "LevelId": "bd184f8a-e0c8-402b-bd2a-eb514419baa2",
       "ExitActionType": 0,
-      "ExitX": 0,
-      "ExitY": 0,
+      "ExitX": 7,
+      "ExitY": 24,
       "X": 157,
       "Y": 23,
       "ExitsLevel": false,
-      "RedrawsLevel": false,
+      "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
       "BoundRectangle": "2512,368,32,32"

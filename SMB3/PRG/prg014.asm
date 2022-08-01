@@ -18,7 +18,9 @@ OBJ_ICEBLAST		= $71
 OBJ_LAKITUWINDOW	= $72
 OBJ_STINGBEE		= $73
 OBJ_FUZZY			= $74
-OBJ_ICEWALL		= $75
+OBJ_ICEWALL			= $75
+OBJ_METEOR			= $76
+OBJ_SUNBEAM			= $77
 
     .word ObjInit_Lakitu ; Object $64
     .word ObjInit_Larry ; Object $65
@@ -38,8 +40,8 @@ OBJ_ICEWALL		= $75
     .word ObjInit_StingBee ; Object $73
     .word ObjInit_Fuzzy ; Object $74
     .word ObjInit_IceWall ; Object $75
-    .word ObjInit_DoNothing ; Object $76
-    .word ObjInit_DoNothing ; Object $77
+    .word ObjInit_Meteor ; Object $76
+    .word ObjInit_SunBeam ; Object $77
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
@@ -61,8 +63,8 @@ OBJ_ICEWALL		= $75
     .word ObjNorm_StingBee ; Object $73
     .word ObjNorm_Fuzzy ; Object $74
     .word ObjNorm_IceWall ; Object $75
-    .word ObjNorm_DoNothing ; Object $76
-    .word ObjNorm_DoNothing ; Object $77
+    .word ObjNorm_Meteor ; Object $76
+    .word ObjNorm_SunBeam ; Object $77
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -84,8 +86,8 @@ OBJ_ICEWALL		= $75
     .word Player_GetHurt ; Object $73
     .word ObjHit_DoNothing ; Object $74
     .word ObjHit_SolidBlock ; Object $75
-    .word ObjHit_DoNothing ; Object $76
-    .word ObjHit_DoNothing ; Object $77
+    .word Player_GetHurt ; Object $76
+    .word Player_GetHurt ; Object $77
 
 	.org ObjectGroup_Attributes	; <-- help enforce this table *here*
 ;****************************** OBJECT PALETTE/SIZE ******************************
@@ -107,8 +109,8 @@ OBJ_ICEWALL		= $75
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $73
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $74
     .byte OA1_PAL2 | OA1_HEIGHT48 | OA1_WIDTH16 ; Object $75
-    .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $76
-    .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $77
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $76
+    .byte OA1_PAL0 | OA1_HEIGHT32 | OA1_WIDTH32 ; Object $77
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -130,8 +132,8 @@ OBJ_ICEWALL		= $75
     .byte OPTS_SETPT5 | $33 ; Object $73
     .byte OPTS_SETPT5 | $33 ; Object $74
     .byte OPTS_SETPT6 | $12 ; Object $75
-    .byte OPTS_NOCHANGE ; Object $76
-    .byte OPTS_NOCHANGE ; Object $77
+    .byte OPTS_SETPT5 | $37 ; Object $76
+    .byte OPTS_SETPT5 | $37 ; Object $77
 
 	.org ObjectGroup_KillAction	; <-- help enforce this table *here*
 ;****************************** OBJECT DEATH ROUTINE ******************************
@@ -236,8 +238,11 @@ ObjP75:
 	.byte $E5, $E5, $E5, $E5, $E5, $E5
 
 ObjP76:
-ObjP77:
+	.byte $95, $97
 
+ObjP77:
+	.byte $89, $8B, $8B, $89
+	.byte $89, $8B, $8B, $89
 
 Lakitu_GraphicsTables:
 	.byte $0B, $0B, $0B, $1A
@@ -4057,3 +4062,344 @@ IceWall_Draw:
 	ORA #(SPR_HFLIP | SPR_VFLIP)
 	STA Sprite_RAMAttr + 20, Y
 	RTS
+
+ObjInit_Meteor:
+	JSR Object_NoInteractions
+	LDA Sound_QMap
+	ORA #SND_MAPENTERWORLD
+	STA Sound_QMap
+	RTS
+
+Meteor_FrameTicks = Objects_Data1
+Meteor_Action = Objects_Data2
+Meteor_NoSmash = Objects_Data3
+Meteor_Kicked = Objects_Data4
+
+Meteor_XVel:
+	.byte $20, $E0, $00
+
+Meteor_YVel:
+	.byte $20, $20, $60
+
+Meteor_Orientation:
+	.byte $00, SPR_HFLIP
+
+ObjNorm_Meteor:
+	LDA <Player_HaltGameZ
+	BEQ Meteor_Norm
+
+	JMP Meteor_Draw
+
+
+Meteor_Norm:
+	LDA Meteor_Action, X
+
+	JSR DynJump
+
+	.word Meteor_Fall
+	.word Meteor_Carry
+
+Meteor_Fall:
+	LDY Objects_Property, X
+	
+	LDA Meteor_XVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA Meteor_YVel, Y
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+	JSR Object_CalcBoundBoxForced
+	JSR Object_DetectTiles
+	JSR Object_InteractWithPlayer
+
+	LDA Objects_Timer, X
+	BNE Meteor_CheckHit
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	BNE Meteor_Animate
+
+	LDA #$20
+	STA Objects_Timer, X
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	JSR Common_MakePoof
+
+Meteor_CheckHit:
+	LDA Objects_TilesDetectZ, X
+	CMP #HIT_GROUND
+	BNE Meteor_Animate
+
+	LDA Meteor_NoSmash, X
+	BEQ Meteor_BreakApart
+
+	INC Meteor_Action, X
+	JMP Meteor_Draw
+
+Meteor_BreakApart:	
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	BNE Meteor_Delete
+
+	LDA <Objects_XZ, X
+	STA <Debris_X
+
+	LDA <Objects_YZ, X
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+
+	LDA #STAR_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA #SPR_PAL3
+	STA BrickBust_Pal, Y	
+
+Meteor_Delete:	
+	JMP Object_Delete
+
+Meteor_Animate:
+	INC Meteor_FrameTicks, X
+	LDA Meteor_FrameTicks, X
+	LSR A
+	AND #$01
+
+	TAY
+	LDA Meteor_Orientation, Y
+	STA Objects_Orientation, X
+
+Meteor_Draw:
+	JSR Object_Draw
+	RTS
+
+Meteor_Carry:
+	JSR Object_DeleteOffScreen
+
+	LDA Meteor_Kicked, X
+	BEQ Meteor_NotKicked
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+	JMP Meteor_Interact
+
+Meteor_NotKicked:
+	JSR Object_Move
+	JSR Object_DetectTiles
+	JSR Object_DampenVelocity
+	JSR Object_InteractWithTiles
+	JMP Meteor_Interact
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+
+Meteor_Interact:	
+	JSR Object_CalcBoundBoxForced
+	
+	LDA Meteor_Kicked, X
+	BEQ Meteor_Hold
+
+	JSR Explosion_KillOthers
+	BCC Meteor_NotKilled
+
+	LDA <Objects_XZ, X
+	STA <Debris_X
+
+	LDA <Objects_YZ, X
+	STA <Debris_Y
+
+	JSR Common_MakeDebris
+
+	LDA #STAR_DEBRIS
+	STA BrickBust_Tile, Y
+
+	LDA #SPR_PAL3
+	STA BrickBust_Pal, Y	
+
+	JMP Object_Delete
+
+Meteor_NotKilled:	
+	JMP Meteor_CarryDraw
+
+Meteor_Hold:	
+	JSR Object_DetectPlayer
+	BCC Meteor_CarryDraw
+
+	JSR Object_Hold
+	
+	LDA Objects_Kicked, X
+	STA Meteor_Kicked, X
+	BEQ Meteor_CarryDraw
+
+	LDA Sound_QMap
+	ORA #SND_MAPENTERWORLD
+	STA Sound_QMap
+
+Meteor_CarryDraw:
+	LDA Objects_BeingHeld, X
+	BNE Meteor_CarryDrawStatic
+
+	LDA <Objects_YVelZ, X
+	BEQ Meteor_CarryDrawStatic
+
+	JMP Meteor_Animate
+
+Meteor_CarryDrawStatic:
+	JMP Meteor_Draw	
+
+SunBeam_OriginY = Objects_Data1
+SunBeam_OriginYHi = Objects_Data2
+SunBeam_DrawLoops = Objects_Data3
+SunBeam_Firing = Objects_Data4
+
+ObjInit_SunBeam:
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
+	LDA #BOUND32x32
+	STA Objects_BoundBox, X
+
+	JSR Object_NoInteractions
+
+	LDA <Objects_YZ, X
+	STA SunBeam_OriginY, X
+
+	LDA <Objects_YHiZ, X
+	STA SunBeam_OriginYHi, X
+
+SunBeam_InitRTS:
+	RTS
+
+ObjNorm_SunBeam:
+	LDA SunBeam_Firing, X
+	BEQ SunBeam_InitRTS
+
+	LDA <Player_HaltGameZ
+	BEQ SunBeam_Norm
+
+	JMP SunBeam_Draw
+
+SunBeam_Norm:
+	DEC SunBeam_Firing, X
+
+	LDA <Objects_YZ, X
+	ADD #$20
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_DeleteOffScreen
+	JSR Object_InteractWithPlayer
+	JSR Object_DetectTiles
+	JSR SunBeam_Draw
+
+	LDA Objects_TilesDetectZ, X
+	BEQ SunBeam_RTS
+
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+
+	LDA Objects_Timer, X
+	BNE SunBeam_Reset
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	ADD #$10
+	STA <Poof_Y
+
+	JSR Common_MakePoof
+
+	LDA <Objects_XZ, X
+	ADD #$10
+	STA <Poof_X
+
+	JSR Common_MakePoof
+
+	LDA #$20
+	STA Objects_Timer, X
+
+
+SunBeam_Reset:
+	LDA SunBeam_OriginY, X
+	STA <Objects_YZ, X
+
+	LDA SunBeam_OriginYHi, X
+	STA <Objects_YHiZ, X
+	RTS
+
+SunBeam_Draw:
+	LDA #LOW(ObjP77)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(ObjP77)
+	STA <Giant_TilesHi
+
+	LDA #SPR_PAL3 | SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+	
+	LDA #$01
+	STA SunBeam_DrawLoops, X
+
+	LDA <Objects_YZ, X
+	PHA 
+
+SunBeam_DrawLoop:
+	JSR Object_DrawGiant
+	JSR SunBeam_Mirror
+
+	LDA Object_SpriteRAMOffset, X
+	ADD #$20
+	STA Object_SpriteRAMOffset, X
+
+	LDA <Objects_YZ, X
+	ADD #$20
+	STA <Objects_YZ, X
+
+	LSR Objects_SpritesHorizontallyOffScreen, X
+	LSR Objects_SpritesHorizontallyOffScreen, X
+
+	LSR Objects_SpritesVerticallyOffScreen, X
+	LSR Objects_SpritesVerticallyOffScreen, X
+
+	DEC SunBeam_DrawLoops, X
+	BNE SunBeam_DrawLoop
+
+	PLA
+	STA <Objects_YZ, X
+
+SunBeam_RTS:	
+	RTS
+
+
+SunBeam_Mirror:
+	LDY Object_SpriteRAMOffset, X
+	LDA Sprite_RAMAttr + 8, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 8, Y
+
+	LDA Sprite_RAMAttr + 12, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 12, Y
+
+	LDA Sprite_RAMAttr + 24, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 24, Y
+
+	LDA Sprite_RAMAttr + 28, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 28, Y
+	RTS	
+	

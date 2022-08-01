@@ -24,6 +24,8 @@ ObjNorm_Boss:
 	.word Boss_Bully
 	.word Boss_Blooper
 	.word Boss_Piranha
+	.word Boss_Sun
+	.word Boss_Moon
 
 
 Boss_CheepAction = Objects_Data1
@@ -3187,3 +3189,868 @@ Boss_BullyExplode:
 	STA Exp_Earned
 	JMP DestroyAllEnemies
 	
+Boss_SunSprites:
+	.byte $81, $83, $83, $81
+	.byte $A1, $A3, $A3, $A1
+
+Sun_Action 		= Objects_Data1
+Sun_MoonLink	= Objects_Data2
+Sun_BeamLink	= Objects_Data3
+Sun_BeamMeteor  = Objects_Data4
+Sun_Health		= Objects_Data5
+
+Boss_Sun:
+	LDA <Player_HaltGameZ
+	BEQ Sun_Norm
+
+	JMP Sun_Draw
+
+Sun_Norm:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Sun_NotDead
+
+	STA Debug_Snap
+	LDA Sun_Health, X
+	BNE Sun_KeepFighting
+
+	LDA Sun_Action, X
+	CMP #$05
+	BEQ Sun_NotDead
+
+	LDY Sun_MoonLink, X
+
+	LDA #$06
+	STA Sun_Action, X
+	STA Moon_Action, Y
+
+	LDA #$80
+	STA Objects_Timer2, X
+	STA Objects_Timer2, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	STA Objects_State, Y
+	JMP Sun_NotDead
+
+Sun_KeepFighting:
+
+	DEC Sun_Health, X
+	LDY Sun_MoonLink, X
+
+	LDA Sun_Health, X
+	STA Moon_Health, Y
+
+	LDA #$20
+	STA Objects_Timer2, X
+	STA Objects_Timer2, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+Sun_NotDead:	
+	LDA Sun_Action, X
+	JSR DynJump
+
+	.word Sun_Init 	; $00
+	.word Sun_Rise 	; $01
+	.word Sun_Sky  	; $02
+	.word Sun_Set  	; $03
+	.Word Sun_Attack; $04
+	.word Sun_Wait	; $05
+	.word Sun_Death	; $06
+
+Sun_Init:
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
+	LDA #$05
+	STA Sun_Health, X
+
+	LDY #$04
+
+Sun_LinkLoop:	
+	CPY CurrentObjectIndexZ
+	BEQ Sun_LinkNext
+
+	LDA Objects_ID, X
+	CMP #OBJ_BOSS
+	BEQ Sun_Link
+
+Sun_LinkNext:
+	DEY
+	BPL Sun_LinkLoop
+
+Sun_Link:
+	TYA
+	STA Sun_MoonLink, X	
+	
+	INC Sun_Action, X
+
+	LDA DayNight
+	BEQ Sun_InitRTS
+
+	JSR SunMoon_SetDay
+
+Sun_InitRTS:
+	LDA #$03
+	STA Sun_Action, X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+	JSR Object_FindEmptyY
+
+	LDA #OBJ_SUNBEAM
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, Y
+
+	LDA <Objects_XZ, X
+	STA Objects_XZ, Y
+
+	LDA <Objects_XHiZ, X
+	STA Objects_XHiZ, Y	
+
+	LDA #$F4
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_YHiZ, Y	
+
+	TYA
+	STA Sun_BeamLink, X
+	RTS	
+
+Sun_Rise:
+	LDA #$F0
+	STA <Objects_YVelZ, X
+	
+	JSR Object_ApplyYVel_NoGravity
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_YZ, X
+	BNE Sun_RiseDraw
+
+	LDY Sun_MoonLink, X
+
+	LDA #$04
+	STA Moon_Action, Y
+
+	LDA #$02
+	STA Sun_Action, X
+	
+	JSR SunMoon_SetDay
+
+	LDA RandomN
+	AND #$07
+	STA Sun_BeamMeteor, X
+
+Sun_RiseDraw:
+	JMP Sun_Draw
+
+Sun_Sky:
+	LDA Objects_Timer, X
+	BNE Sun_SkyMove
+
+	LDA #$30
+	STA Objects_Timer, X
+
+	LDA Sun_BeamLink, X
+	TAY
+
+	LDA #$10
+	STA SunBeam_Firing, Y
+
+	LDA Sun_BeamMeteor, X
+	BNE Sky_NoMeteor
+
+	JSR Object_FindEmptyY
+	BCC Sky_NoMeteor
+
+	LDA #OBJ_METEOR
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+	STA Moon_MeteorNoSmash, Y
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Objects_XZ, Y
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_XHiZ, Y
+
+	LDA #$10
+	STA Objects_YZ, Y
+
+	LDA #$01
+	STA Objects_YHiZ, Y	
+
+	LDA #$02
+	STA Objects_Property, Y
+
+Sky_NoMeteor:
+	DEC Sun_BeamMeteor, X
+
+Sun_SkyMove:
+	LDA Sun_BeamLink, X
+	TAY
+	
+	LDA <Objects_XZ, X
+	STA Objects_XZ, Y
+	CMP #$08
+	BCC Sun_AtEdge
+
+	LDA #$F8
+	STA <Objects_XVelZ, X
+
+	JSR Object_ApplyXVel
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	JMP Sun_Draw
+
+Sun_AtEdge:
+	LDA #10
+	STA Objects_Timer, X 
+	JMP	Sun_Draw
+
+Sun_Wait:
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JMP Sun_Draw 
+
+Sun_Set:
+	LDA Sun_Health, X
+	CMP #$03
+	BCC Sun_AttackSet
+
+	LDA <Objects_YZ, X
+	CMP #$A0
+	BCS Sun_AtBottom
+
+	JMP Sun_KeepSetting
+
+Sun_AttackSet:
+	LDA <Objects_YZ, X
+	CMP #$70
+	BCS Sun_AtBottom
+
+Sun_KeepSetting:
+	LDA #$10
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+
+Sun_AtBottom:	
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	JMP Sun_Draw
+
+Sun_AttackVelocity:
+	.byte $30, $D0
+
+Sun_AttackX:
+	.byte $E0, $20
+
+Sun_AttackXHi:
+	.byte $FF, $01
+
+Sun_Attack:
+	BCS Sun_DoAttack
+
+Sun_DoAttack:	
+	LDA Objects_Timer, X
+	BNE Sun_KeepAttacking
+
+	LDY Sun_MoonLink, X
+	LDA Objects_XZ, Y
+	CMP #$08
+	BCC Sun_DoneAttack
+
+	LDY #$00
+
+	LDA <Objects_XHiZ, X
+	BEQ Sun_ChargeAttack
+	BMI Sun_ChargeAttack
+
+	INY
+
+Sun_ChargeAttack:
+	LDA <Objects_XHiZ, X
+	BEQ Sun_NoXPos
+
+	LDA Sun_AttackX, Y
+	STA <Objects_XZ, X
+
+	LDA Sun_AttackXHi, Y
+	STA <Objects_XHiZ, X
+
+Sun_NoXPos:	
+	LDA Sun_AttackVelocity, Y
+	STA <Objects_XVelZ, X
+
+	LDA #$A0
+	STA Objects_Timer, X
+
+Sun_KeepAttacking:
+	JSR Object_ApplyXVel
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	JMP Sun_Draw
+
+Sun_DoneAttack:
+	LDA #$E0
+	STA <Objects_XZ, X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+
+	LDA #$A0
+	STA <Objects_YZ, X
+
+	LDA #$01
+	STA Sun_Action, X
+
+	LDA Sun_MoonLink, X
+	TAY
+
+	LDA #$03
+	STA Moon_Action, Y
+	JMP Sun_Draw
+
+Sun_DrawPalette:
+	.byte SPR_PAL3, SPR_PAL1
+
+Sun_Draw:
+	LDA Objects_Timer2, X
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Sun_DrawPalette, Y
+	STA Objects_SpriteAttributes, X
+
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+
+	LDA #LOW(Boss_SunSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Boss_SunSprites)
+	STA <Giant_TilesHi
+
+	LDA #$37
+	STA PatTable_BankSel + 4
+
+	JSR Object_DrawGiant
+	JMP ObjGiant_Mirror
+	
+Sun_Death:
+	LDA Objects_Timer2, X
+	BNE Sun_NotDeath
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Objects_YZ, X
+	
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	JMP Object_Explode
+
+Sun_NotDeath:
+	JMP Sun_Draw	
+	
+Boss_MoonSprites:
+	.byte $85, $87, $87, $85
+	.byte $A5, $A7, $A7, $A5
+
+Moon_Action 	= Objects_Data1
+Moon_SunLink	= Objects_Data2
+Moon_MeteorNoSmash = Objects_Data3
+Moon_AttackDone = Objects_Data4
+Moon_Health		= Objects_Data5
+
+Boss_Moon:
+	LDA <Player_HaltGameZ
+	BEQ Moon_Norm
+
+	JMP Moon_Draw
+
+Moon_Norm:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Moon_NotDead
+
+	LDA Moon_Health, X
+	BNE Moon_KeepFighting
+
+	LDA Moon_Action, X
+	CMP #$05
+	BEQ Moon_NotDead
+
+	LDY Moon_SunLink, X
+
+	LDA #$06
+	STA Moon_Action, X
+	STA Sun_Action, Y
+
+	LDA #$80
+	STA Objects_Timer2, X
+	STA Objects_Timer2, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+	STA Objects_State, Y
+	JMP Moon_NotDead
+
+Moon_KeepFighting:
+	DEC Moon_Health, X
+	LDY Moon_SunLink, X
+
+	LDA Moon_Health, X
+	STA Sun_Health, Y
+
+	LDA #$20
+	STA Objects_Timer2, X
+	STA Objects_Timer2, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+Moon_NotDead:	
+	LDA Moon_Action, X
+	
+	JSR DynJump
+
+	.word Moon_Init 	; $00
+	.word Moon_Rise 	; $01
+	.word Moon_Sky  	; $02
+	.word Moon_Set  	; $03
+	.Word Moon_Attack	; $04
+	.word Moon_Wait		; $05
+	.word Moon_Death	; $06
+
+Moon_Init:
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
+	LDA #$05
+	STA Moon_Health, X
+
+	LDY #$04
+
+Moon_LinkLoop:	
+	CPY CurrentObjectIndexZ
+	BEQ Moon_LinkNext
+
+	LDA Objects_ID, X
+	CMP #OBJ_BOSS
+	BEQ Moon_Link
+
+Moon_LinkNext:
+	DEY
+	BPL Moon_LinkLoop
+
+Moon_Link:
+	TYA
+	STA Moon_SunLink, X	
+	
+	LDA #$01
+	STA Moon_Action, X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X	
+	RTS
+
+Moon_Rise:
+	LDA #$F0
+	STA <Objects_YVelZ, X
+	
+	JSR Object_ApplyYVel_NoGravity
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_YZ, X
+	BNE Moon_RiseDraw
+
+	LDY Moon_SunLink, X
+	
+	LDA #$04
+	STA Sun_Action, Y
+
+	LDA #$02
+	STA Moon_Action, X
+
+	LDA #$00
+	STA <Objects_YZ, X
+
+	LDA #$01
+	STA <Objects_YHiZ, X
+
+	JSR SunMoon_SetNight
+
+	LDA RandomN
+	AND #$07
+	STA Moon_MeteorNoSmash, X
+
+Moon_RiseDraw:
+	JMP Moon_Draw
+
+Moon_MeteorX:
+	.byte $C0, $E0, $00, $20, $E0, $00, $20, $40
+
+Moon_MeteorXHi:
+	.byte $FF, $FF, $00, $00, $00, $01, $01, $01
+
+Moon_MeteorProperty:
+	.byte $00, $00, $00, $00, $01, $01, $01, $01
+
+Moon_Sky:
+	LDA <Objects_XZ, X
+	CMP #$08
+	BCC Moon_AtEdge
+
+	LDA #$F8
+	STA <Objects_XVelZ, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyXVel
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE Moon_NoStars
+
+	JSR Object_FindEmptyY
+	BCC Moon_NoStars
+
+	LDA #OBJ_METEOR
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA Moon_MeteorNoSmash, X
+	BNE Moon_NoMeteorSmash
+
+	LDA #$01
+	STA Meteor_NoSmash, Y
+
+Moon_NoMeteorSmash:
+	DEC Moon_MeteorNoSmash, X
+
+	LDA RandomN
+	AND #$07
+	TAX
+
+	LDA Moon_MeteorX, X
+	STA Objects_XZ, Y
+
+	LDA Moon_MeteorXHi, X
+	STA Objects_XHiZ, Y
+
+	LDA Moon_MeteorProperty, X
+	STA Objects_Property, Y	
+
+	LDA #$F0
+	STA Objects_YZ, Y
+
+	LDA #$00
+	STA Objects_YHiZ, Y
+
+	LDX <CurrentObjectIndexZ
+
+	LDA #$30
+	STA Objects_Timer, X
+
+Moon_NoStars:
+	JMP Moon_Draw
+
+Moon_AtEdge:
+	LDA #$05
+	STA Moon_Action, X
+	JMP	Moon_Draw
+
+Moon_Wait:
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JMP Moon_Draw 
+
+Moon_Set:
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA Moon_AttackDone, X
+
+	LDA Moon_Health, X
+	CMP #$03
+	BCC Moon_FastSet
+
+	LDA <Objects_YZ, X
+	CMP #$A0
+	BCS Moon_AtBottom
+
+
+Moon_KeepSetting:	
+	LDA #$10
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyYVel_NoGravity
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JMP Moon_Draw
+
+Moon_FastSet:
+	JSR Object_Move
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Moon_DetectGround
+
+Moon_AtBottom:
+	JMP Moon_Draw
+
+Moon_AttackDirection:
+	.byte $F8, $08
+
+Moon_Attack:
+	LDA Moon_AttackDone, X
+	BEQ Moon_DoAttack
+
+	JMP Moon_GoRight
+
+Moon_DoAttack:
+	LDA Moon_Health, X
+	CMP #$03
+	BCC Moon_BounceAttacks
+
+	LDY Moon_SunLink, X
+	LDA Objects_XZ, Y
+	CMP #$08
+	BCC Moon_Fall
+	JMP Moon_Draw
+
+Moon_BounceAttacks:	
+
+	JSR Object_Move
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDY Moon_SunLink, X
+	LDA Objects_XZ, Y
+	CMP #$08
+	BCC Moon_Fall
+
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Moon_DetectGround
+
+	LDA <Objects_TilesDetectZ, X
+	BEQ Moon_NoBounce
+
+	JSR Object_XDistanceFromPlayer
+
+	LDA Moon_AttackDirection, Y
+	STA <Objects_XVelZ, X
+
+	LDA #$A0
+	STA <Objects_YVelZ, X
+
+Moon_NoBounce:
+	JMP Moon_Draw
+
+Moon_Fall:
+	LDA <Objects_YZ, X
+	BEQ  Moon_NoBounce
+
+	LDA <Objects_YZ, X
+	CMP #$A0
+	BCC Moon_NoBounce
+
+	INC Moon_AttackDone, X
+
+	LDA #$A0
+	STA <Objects_YVelZ, X
+
+	JMP Moon_NoBounce
+
+Moon_GoRight:	
+	LDA #$20
+	STA <Objects_XVelZ, X
+
+	JSR Object_ApplyXVel
+	JSR SunMoon_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA <Objects_XZ, X
+	CMP #$E0
+	BCS	Moon_DoneAttack
+
+	JMP Moon_Draw
+
+Moon_DoneAttack:
+	LDA #$01
+	STA Moon_Action, X
+
+	LDA #$E0
+	STA <Objects_XZ, X
+
+	LDA Moon_SunLink, X
+	TAY
+
+	LDA #$03
+	STA Sun_Action, Y
+	JMP Moon_Draw
+
+Moon_DrawPalette:
+	.byte SPR_PAL2, SPR_PAL1
+
+Moon_Draw:
+	LDA Objects_Timer2, X
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+
+	LDA Moon_DrawPalette, Y
+	STA Objects_SpriteAttributes, X
+
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+
+	LDA #LOW(Boss_MoonSprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(Boss_MoonSprites)
+	STA <Giant_TilesHi
+
+	LDA #$37
+	STA PatTable_BankSel + 4
+
+	JSR Object_DrawGiant
+	JMP ObjGiant_Mirror
+
+Moon_DetectGround:
+	LDA <Objects_TilesDetectZ, X
+	BEQ Moon_NoGround
+
+	CMP Objects_PreviousTilesDetect, X
+	BEQ Moon_NoGround
+
+	LDA #$20
+	STA Level_Vibration
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	SEC
+	RTS
+
+Moon_NoGround:
+	CLC
+	RTS	
+
+Moon_Death:
+	LDA Objects_Timer2, X
+	BNE Moon_NotDeath
+
+	LDA #$80
+	STA CompleteLevelTimer
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Objects_YZ, X
+	
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	JMP Object_Explode
+
+Moon_NotDeath:
+	JMP Moon_Draw
+
+SunMoon_CalcBoundBox:
+	LDA <Objects_XZ, X
+	ADD #$06
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD #20
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+
+	LDA <Objects_YZ, X
+	ADD #$06
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Objects_BoundTopHi, X
+
+	LDA Objects_BoundTop, X
+	ADD #20
+	STA Objects_BoundBottom, X
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+	RTS
+
+SunMoon_SetDay:
+	LDA #$00
+	STA Game_Timer_Tick
+	STA DayNightMicroTicker
+	STA DayNightTicker
+	STA DayNight
+
+	LDA #$03
+	STA DayTransition
+	RTS
+
+SunMoon_SetNight:
+	LDA #$00
+	STA Game_Timer_Tick
+	STA DayNightMicroTicker
+	STA DayNightTicker
+
+	LDA #$01
+	STA DayNight
+
+	LDA #$03
+	STA NightTransition
+	RTS	

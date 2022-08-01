@@ -5344,6 +5344,45 @@
       ],
       "Name": "Phanto Funhouse",
       "Id": "e9b46050-8fbf-4925-916b-6ffa56510ebe"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        17,
+        15,
+        48,
+        22,
+        17,
+        15,
+        56,
+        23,
+        17,
+        15,
+        48,
+        27,
+        17,
+        15,
+        48,
+        17,
+        17,
+        15,
+        54,
+        6,
+        17,
+        15,
+        48,
+        22,
+        17,
+        15,
+        48,
+        12,
+        17,
+        15,
+        55,
+        39
+      ],
+      "Name": "Phanto Funhouse Boss",
+      "Id": "8ed68893-090f-4067-921b-9cd534526bc6"
     }
   ],
   "WorldInfo": [
@@ -6610,32 +6649,42 @@
         },
         {
           "Size": 1222,
-          "Name": "Phanto Funhouse-Stage-1",
+          "Name": "Celestial Showtime-Stage-1",
           "Id": "67a87146-b163-4e42-9162-5df95684d558",
           "LastModified": "0001-01-01T00:00:00",
           "SublevelsInfo": [
             {
               "Size": 1617,
-              "Name": "Phanto Funhouse-Stage-2",
+              "Name": "Celestial Showtime-Stage-2",
               "Id": "d3a033fc-fa3d-4401-b44c-bc1e990b4bc0",
               "LastModified": "0001-01-01T00:00:00",
               "SublevelsInfo": [
                 {
                   "Size": 1394,
-                  "Name": "Phanto Funhouse-Stage 3",
+                  "Name": "Celestial Showtime-Stage-3",
                   "Id": "be01a450-d1ac-4172-a583-a6bae34dc879",
                   "LastModified": "0001-01-01T00:00:00",
-                  "SublevelsInfo": [],
+                  "SublevelsInfo": [
+                    {
+                      "Size": 20,
+                      "Name": "Celestial Showtime-Boss",
+                      "Id": "bd184f8a-e0c8-402b-bd2a-eb514419baa2",
+                      "LastModified": "0001-01-01T00:00:00",
+                      "SublevelsInfo": [],
+                      "InfoType": 1,
+                      "DisplayName": "(Level) Celestial Showtime-Boss"
+                    }
+                  ],
                   "InfoType": 1,
-                  "DisplayName": "(Level) Phanto Funhouse-Stage 3"
+                  "DisplayName": "(Level) Celestial Showtime-Stage-3"
                 }
               ],
               "InfoType": 1,
-              "DisplayName": "(Level) Phanto Funhouse-Stage-2"
+              "DisplayName": "(Level) Celestial Showtime-Stage-2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Phanto Funhouse-Stage-1"
+          "DisplayName": "(Level) Celestial Showtime-Stage-1"
         }
       ],
       "InfoType": 0,
@@ -6838,7 +6887,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 62,
+        "Size": 19,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -40088,6 +40137,230 @@
           "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x00",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x02",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x02",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x00",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x20",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x22",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 16,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x22",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            5
+          ],
+          "X": 24,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x20",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x04",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x06",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x06",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x04",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x24",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 16,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x26",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            6
+          ],
+          "X": 24,
+          "Y": 16,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x24",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 2,
+          "Overlay": false,
+          "CustomPalette": null
         }
       ],
       "Properties": [
@@ -40095,7 +40368,9 @@
         "Fwoosh",
         "Bully",
         "Blooper",
-        "Piranha"
+        "Piranha",
+        "Sun",
+        "Moon"
       ],
       "Group": "Boss"
     },
@@ -52920,69 +53195,96 @@
     },
     {
       "GameId": 118,
-      "GameObjectType": 1,
-      "Name": "Unused x76",
+      "GameObjectType": 2,
+      "Name": "Shooting Star",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x14",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x16",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "Right",
+        "Left"
+      ],
+      "Group": "Ghosts"
     },
     {
       "GameId": 119,
-      "GameObjectType": 1,
-      "Name": "Unused x77",
+      "GameObjectType": 2,
+      "Name": "Sun Beam",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
+          "TileTableAddress": "0xDC00",
           "TileValue": "0x08",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 0,
-          "Overlay": true,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
+          "TileTableAddress": "0xDC00",
           "TileValue": "0x0A",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 0,
-          "Overlay": true,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x0A",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 0,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0xDC00",
+          "TileValue": "0x08",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 0,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Ghosts"
     },
     {
       "GameId": 120,

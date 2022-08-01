@@ -1579,6 +1579,7 @@ Object_DropXOffset:
 Object_GetKicked:
 	LDA #$10
 	STA Objects_Timer2, X
+	STA Objects_Kicked, X
 
 	LDA <Pad_Holding
 	AND #PAD_DOWN
@@ -2333,7 +2334,7 @@ ObjState_Fresh:
 	LDA <Point_Y
 	SUB #$08
 	STA <Poof_Y
-	
+
 	JSR Common_MakePoof
 
 ObjectState_InitRTS:
@@ -2434,17 +2435,17 @@ Object_NotTooLow:
 	BEQ Object_DeleteOffScreen1
 
 	LDA Objects_BoundRight, X
-	STA <Temp_Var12
+	STA <Temp_Var14
 
 	LDA Objects_BoundRightHi, X
-	STA <Temp_Var13
+	STA <Temp_Var15
 
 	
 	LDA <Horz_Scroll
-	STA <Temp_Var14
+	STA <Temp_Var12
 
 	LDA <Horz_Scroll_Hi
-	STA <Temp_Var15
+	STA <Temp_Var13
 
 	JMP Object_CheckOutOfRange
 
