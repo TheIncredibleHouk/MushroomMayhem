@@ -4,7 +4,7 @@
   "TileSetIndex": 1,
   "ClearTileIndex": 129,
   "MusicValue": 0,
-  "ScreenLength": 2,
+  "ScreenLength": 3,
   "StartX": 2,
   "StartY": 25,
   "PaletteEffect": 0,
@@ -6499,16 +6499,10 @@
   ],
   "FirstObjectData": [
     {
-      "GameObjectId": 118,
-      "X": 1,
-      "Y": 15,
+      "GameObjectId": 60,
+      "X": 17,
+      "Y": 25,
       "Property": 0
-    },
-    {
-      "GameObjectId": 118,
-      "X": 26,
-      "Y": 15,
-      "Property": 1
     }
   ],
   "SecondObjectData": [],
@@ -6527,5 +6521,5 @@
       "BoundRectangle": "2656,80,32,32"
     }
   ],
-  "CompressedData": "f39/f39/f39/f39/egSBH5HBkQ=="
+  "CompressedData": "f39/f39/f39/f39/f39/f39/f0oEgcGRTh+RwVFOwUE="
 }

@@ -323,6 +323,12 @@ Super_MarioStandard:
 	LDA Magic_Stars_Collected3, Y
 	STA Previous_Stars_Collected3
 
+	LDA Player_Badge
+	STA Previous_Badge
+
+	LDA PowerUp_Reserve
+	STA Previous_PowerUp_Reserve
+
 	; Set power up's correct palette
 	JSR Level_SetPlayerPUpPal
 
@@ -1804,7 +1810,7 @@ PRG008_AC73:
 Normal_Jump:
 	STA <Temp_Var1
 
-	LDA Player_Equip
+	LDA Player_Badge
 	CMP #BADGE_JUMP
 	BNE Jump_Normal
 
@@ -4291,7 +4297,7 @@ NotMaxAir:
 
 	LDA Air_Time_Frac
 	LDY #$00
-	LDX Player_Equip
+	LDX Player_Badge
 	CPX #BADGE_AIR
 	BNE NotMaxAir1
 	INY
@@ -4321,7 +4327,7 @@ Power_TickChange:
 Do_PowerChange:				; Added code to increase/decrease the air time based on water
 	INC Power_Tick
 	LDX #$00
-	LDA Player_Equip
+	LDA Player_Badge
 	CMP #BADGE_PMETER
 	BNE Do_PowerChange01
 	INX
@@ -4361,7 +4367,7 @@ Do_PowerChange3:
 	RTS
 
 Do_PUp_Proper:
-	LDA Player_Equip
+	LDA Player_Badge
 	CMP #BADGE_NOSHOORMS
 	BEQ PUp_RTS
 
@@ -4906,7 +4912,7 @@ EquipNoUse:
 
 
 Try_Use_Equipped:
-	LDA Player_Equip
+	LDA Player_Badge
 	BEQ SetLastScrollDirection2
 	CMP #BADGE_COIN
 	BCS SetLastScrollDirection2
@@ -4919,7 +4925,7 @@ Try_Use_Equipped:
 	AND #PAD_SELECT
 	BEQ SetLastScrollDirection2
 
-	LDA Player_Equip
+	LDA Player_Badge
 	JSR DynJump
 
 	.word EquipNoUse
@@ -4934,7 +4940,7 @@ Try_Use_Equipped:
 	.word StarManItem
 
 StopWatch:
-	DEC Player_Equip
+	DEC Player_Badge
 	LDA #$FF
 	STA Stop_Watch
 	RTS
@@ -4942,15 +4948,15 @@ StopWatch:
 SlowWatch:
 	LDA #$FF
 	STA Slow_Watch
-	LDA Player_Equip
+	LDA Player_Badge
 	CMP #ITEM_SLOW2
 	BNE SlowWatch1
-	DEC Player_Equip
+	DEC Player_Badge
 	RTS
 
 SlowWatch1:
 	LDA #$00
-	STA Player_Equip
+	STA Player_Badge
 	RTS
 	
 PowBlock:
@@ -4975,15 +4981,15 @@ PowBlock1:
 
 
 	STA Slow_Watch
-	LDA Player_Equip
+	LDA Player_Badge
 	CMP #ITEM_POW1
 	BEQ PowBlock2
-	DEC Player_Equip
+	DEC Player_Badge
 	RTS
 
 PowBlock2:
 	LDA #$00
-	STA Player_Equip
+	STA Player_Badge
 	RTS
 
 StarManItem:
@@ -4998,15 +5004,15 @@ StarManItem:
 	;LDA #$e0
 	;STA Player_StarInv
 	
-	;LDA Player_Equip
+	;LDA Player_Badge
 	;CMP #ITEM_STAR2
 	;BNE StarManItem1
-	;DEC Player_Equip
+	;DEC Player_Badge
 	RTS
 
 StarManItem1:
 	;LDA #$00
-	;STA Player_Equip
+	;STA Player_Badge
 	RTS
 
 
@@ -5194,12 +5200,12 @@ Player_CheckPit:
 	CMP #$C0
 	BCC Player_PitDeath2
 
-	LDA Player_Equip
-	CMP #ITEM_CATCH
+	LDA PowerUp_Reserve
+	CMP #ITEM_WINGS
 	BNE Player_PitDeath1
 
 	LDA #$00
-	STA Player_Equip
+	STA PowerUp_Reserve
 
 	LDA #$80
 	STA Player_FlyTime
@@ -6382,43 +6388,9 @@ Player_CheckForeground2:
 Player_CheckForegroundRTS:	
 	RTS
 
-Check_Timers:
-	LDA Kill_Tally_Ticker
-	BNE Killy_TallyTick
-
-	STA Kill_Tally
-	BEQ Check_SlowWatch
-
-Killy_TallyTick:	
-	DEC Kill_Tally_Ticker
-
-Check_SlowWatch:
-	LDA Slow_Watch
-	BEQ Check_StopWatch
-
-	LDA <Counter_1
-	AND #$01
-	BNE Check_StopWatch
-
-	DEC Slow_Watch
-
-Check_StopWatch:
-	LDA Stop_Watch
-	BEQ Check_TimersRTS
-
-	LDA <Counter_1
-	AND #$01
-	BEQ Check_TimersRTS
-
-	DEC Stop_Watch
-
-Check_TimersRTS:	
-	RTS
-
-
 Player_Splash:
 	LDA Player_Vehicle
-	BNE Check_TimersRTS
+	BNE Player_CheckForegroundRTS
 
 	LDY #$05
 

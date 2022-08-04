@@ -772,7 +772,7 @@ Inv_UseItem_Powerup1:
 	
 	DEC Inventory_Items, X
 	LDA Inv_Item_Map, X
-	STA Player_Equip
+	STA Player_Badge
 
 	LDA #$14	 
 	STA Map_Powerup_Poof	 	; Map_Powerup_Poof = $14
@@ -2328,8 +2328,8 @@ Status_Bottom_Loop:
 ;
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $F5, $F5, $FD, $F5, $F5
-	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $F5, $F5, $FD, $F5, $F5
+	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FA, $FA, $FD, $FA, $FA
+	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FA, $FA, $FD, $FA, $FA
 
 Initialize_Status_Bar:
 ;	LDA StatusBar_Mode
@@ -2636,9 +2636,6 @@ Game_UpdateCoins0:
 	LDA Player_Coins + 1
 	STA <CalcParam1 + 1
 
-	LDA Player_Coins + 2
-	STA <CalcParam1 + 2
-
 	LDA Coins_Earned
 	STA <CalcParam2
 
@@ -2646,7 +2643,7 @@ Game_UpdateCoins0:
 	STA <CalcParam2 + 1
 	STA <CalcParam2 + 2
 
-	JSR Add3ByteValue
+	JSR Add2ByteValue
 
 	LDA <CalcResult
 	STA Player_Coins
@@ -2657,23 +2654,21 @@ Game_UpdateCoins0:
 	LDA <CalcResult + 2
 	STA Player_Coins + 2
 
-
-
 	LDA #$00
 	STA Coins_Earned
 
 	LDA Player_Coins + 1
-	CMP #$03
+	CMP #$27
 	BCC Game_UpdateCoins1
 
 	LDA Player_Coins
-	CMP #$E7
+	CMP #$0F
 	BCC Game_UpdateCoins1
 
-	LDA #$03
-	STA Player_Coins + 1
+	LDA #$27
+	STA Player_Coins
 
-	LDA #$E7
+	LDA #$0F
 	STA Player_Coins + 1
 
 Game_UpdateCoins1:
@@ -2684,9 +2679,6 @@ StatusBar_DrawCoins:
 
 	LDA Player_Coins + 1
 	STA <DigitsParam + 1
-
-	LDA Player_Coins + 2
-	STA <DigitsParam + 2
 
 	JSR BytesTo4Digits
 
@@ -2780,72 +2772,45 @@ StatusBar_DrawDayNightMeter1:
 	RTS
 ;--------------------------------------
 BadgeTiles:
-	.byte $FE, $FE, $FE, $FE
-	.byte $68, $FE, $78, $FE	; ITEM_CLOCK1
-	.byte $68, $69, $78, $79	; ITEM_CLOCK2
-	.byte $6A, $FE, $7A, $FE	; ITEM_SLOW1
-	.byte $6A, $6B, $7A, $7B	; ITEM_SLOW2
-	.byte $B0, $B1, $C0, $C1	; ITEM_POW1
-	.byte $84, $85, $94, $95	; ITEM_POW2
-	.byte $6C, $6D, $7C, $7D	; ITEM_POW3
-	.byte $6E, $6F, $7E, $7F	; ITEM_RADARNE
-	.byte $B2, $B3, $C2, $C3	; ITEM_RADARN
-	.byte $B4, $B5, $C4, $C5	; ITEM_RADARNW
-	.byte $B6, $B7, $C6, $C7	; ITEM_RADARW
-	.byte $B8, $B9, $C8, $C9	; ITEM_RADARSW
-	.byte $BA, $BB, $CA, $CB	; ITEM_RADARS
-	.byte $BC, $BD, $CC, $CD	; ITEM_RADARSE
-	.byte $BE, $BF, $CE, $CF	; ITEM_RADARE
-	.byte $DC, $DD, $EC, $ED	; ITEM_RADAR
-	.byte $86, $87, $96, $97	; ITEM_CATCH
-	.byte $AA, $AB, $AC, $AD	; ITEM_HEART1
-	.byte $A4, $A5, $A8, $A9	; ITEM_HEART2
-	.byte $A4, $A5, $A6, $A7	; ITEM_HEART3
-	.byte $DE, $FE, $EE, $FE	; ITEM_STAR1
-	.byte $DE, $DF, $EE, $EF	; ITEM_STAR2
-	.byte $0E, $0F, $1E, $1F
-	.byte $0E, $0F, $1E, $1F
-	.byte $0E, $0F, $1E, $1F
-	.byte $00, $01, $10, $11
-	.byte $02, $03, $12, $13
-	.byte $04, $05, $14, $15
-	.byte $06, $07, $16, $17
-	.byte $08, $09, $18, $19
-	.byte $0A, $0B, $1A, $1B
-	.byte $0C, $0D, $1C, $1D	
-	.byte $0E, $0F, $1E, $1F
+	.byte $FA, $FA, $FA, $FA
+	.byte $B0, $B1, $C0, $C1 ; $01
+	.byte $B2, $B3, $C2, $C3 ; $02
+	.byte $B4, $B5, $C4, $C5 ; $03
+	.byte $B6, $B7, $C6, $C7 ; $04
+	.byte $B8, $B9, $C8, $C9 ; $05
+	.byte $BA, $BB, $CA, $CB ; $05
 
 Game_UpdateBadge:
 	; LDA StatusBar_Mode
 	; BNE Game_UpdateBadge1
 
-	LDA Player_Equip
-	CMP Old_Player_Equip
+	LDA Player_Badge
+	CMP Old_Player_Badge
 	BEQ Game_UpdateBadge1
 	
-	STA Old_Player_Equip
+	STA Old_Player_Badge
 	BNE StatusBar_DrawBadge
 
 Game_UpdateBadge1:	
 	RTS
 
 StatusBar_DrawBadge:
-	LDA Player_Equip
+	LDA Player_Badge
 	ASL A
 	ASL A
 	TAX
 	
 	LDA BadgeTiles, X
-	STA (Status_Bar_Top + 26)
+	STA (Status_Bar_Top + 23)
 	
 	LDA BadgeTiles + 1, X
-	STA (Status_Bar_Top + 27)
+	STA (Status_Bar_Top + 24)
 	
 	LDA BadgeTiles + 2, X
-	STA (Status_Bar_Bottom + 26)
+	STA (Status_Bar_Bottom + 23)
 	
 	LDA BadgeTiles + 3, X
-	STA (Status_Bar_Bottom + 27)
+	STA (Status_Bar_Bottom + 24)
 
 	INC Top_Needs_Redraw
 	INC Bottom_Needs_Redraw
@@ -2853,16 +2818,25 @@ StatusBar_DrawBadge:
 
 ;--------------------------------------
 
-PUp_Reserve_Tiles1:
-	.byte $F5, $F5, $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $00, $00, $00, $00, $00, $00
-
-PUp_Reserve_Tiles2:
-	.byte $F5, $F5, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $00, $00, $00, $00, $00, $00
+PUp_Reserve_Tiles:
+	.byte $FA, $FA, $FA, $FA ; $00
+	.byte $00, $01, $10, $11 ; $01
+	.byte $02, $03, $12, $13 ; $02
+	.byte $04, $05, $14, $15 ; $03
+	.byte $06, $07, $16, $17 ; $04
+	.byte $08, $09, $18, $19 ; $05
+	.byte $0A, $0B, $1A, $1B ; $06
+	.byte $0C, $0D, $1C, $1D ; $07
+	.byte $0E, $0F, $1E, $1F ; $08
+	.byte $68, $69, $78, $79 ; $09
+	.byte $6A, $6B, $7A, $7B ; $0A
+	.byte $9C, $9D, $AC, $AD ; $0B
+	.byte $9E, $9F, $AE, $AF ; $0C
+	.byte $FF, $FF, $FF, $FF ; $0D
+	.byte $FF, $FF, $FF, $FF ; $0E
+	.byte $6C, $6D, $7C, $7C ; $10
 
 Game_UpdateReserve:
-	; LDA StatusBar_Mode
-	; BNE Game_UpdateReserve1
-
 	LDA PowerUp_Reserve
 	CMP Old_PowerUp_Reserve
 	BEQ Game_UpdateReserve1
@@ -2876,19 +2850,20 @@ Game_UpdateReserve1:
 StatusBar_DrawReserve:
 	LDA PowerUp_Reserve
 	ASL A
+	ASL A
 	TAX
 	
-	LDA PUp_Reserve_Tiles1, X
-	STA (Status_Bar_Top + 23)
+	LDA PUp_Reserve_Tiles, X
+	STA (Status_Bar_Top + 26)
 	
-	LDA (PUp_Reserve_Tiles1 + 1), X
-	STA (Status_Bar_Top + 24)
+	LDA (PUp_Reserve_Tiles + 1), X
+	STA (Status_Bar_Top + 27)
 	
-	LDA PUp_Reserve_Tiles2, X
-	STA (Status_Bar_Bottom + 23)
+	LDA PUp_Reserve_Tiles + 2, X
+	STA (Status_Bar_Bottom + 26)
 	
-	LDA (PUp_Reserve_Tiles2 + 1), X
-	STA (Status_Bar_Bottom + 24)
+	LDA (PUp_Reserve_Tiles + 3), X
+	STA (Status_Bar_Bottom + 27)
 
 Item_ReserveRTS:
 	INC Top_Needs_Redraw

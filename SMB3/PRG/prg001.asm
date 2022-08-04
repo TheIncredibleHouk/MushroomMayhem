@@ -338,9 +338,9 @@ PowerUp_Type = Objects_Data1
 PowerUp_Raise = Objects_Data2
 PowerUp_StartX = Objects_Data3
 PowerUp_StartY = Objects_Data4
+PowerUp_NoDraw = Objects_Data5
 
 ObjNorm_PowerUp:
-
 	LDA <Player_HaltGameZ
 	BEQ PowerUp_Norm
 
@@ -820,6 +820,12 @@ PUp_CheckPoint:
 
 	LDA Cherries
 	STA Previous_Cherries
+
+	LDA PowerUp_Reserve
+	STA Previous_PowerUp_Reserve
+	
+	LDA Player_Badge
+	STA Previous_Badge
 
 	LDA Magic_Stars
 	STA Previous_Stars
@@ -2254,7 +2260,7 @@ NextSpinnerCheck1:
 	RTS
 
 MagicStar_Radar:
-	LDA Player_Equip
+	LDA Player_Badge
 	SUB #ITEM_RADARNE
 	BMI MagicStar_RadarRTS
 
@@ -2282,7 +2288,7 @@ MagicStar_Radar1:
 MagicStar_Radar2:
 	LDY <Temp_Var1
 	LDA RadarMap, Y
-	STA Player_Equip
+	STA Player_Badge
 	RTS
 
 MagicStar_RadarRTS:

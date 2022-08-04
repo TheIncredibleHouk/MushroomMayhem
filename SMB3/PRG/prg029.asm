@@ -1698,7 +1698,7 @@ Player_Die_FellOff:
 PRG029_D6FB:
 	INC <Level_ExitToMap	; Level_ExitToMap = 1
 
-	LDA #$01
+	LDA #$FF
 	STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
 
 PRG029_D702:
@@ -1951,6 +1951,7 @@ PRG029_DC50:
 	LDA Block_ChangeY
 	AND #$f0
 	STA <Temp_Var6
+	
 	LDA Block_ChangeX
 	LSR A
 	LSR A

@@ -1987,6 +1987,8 @@ GENERATOR_VVISIBLE = 02;
 	Previous_Stars_Collected1: .ds 1
 	Previous_Stars_Collected2: .ds 1
 	Previous_Stars_Collected3: .ds 1
+	Previous_PowerUp_Reserve: .ds 1
+	Previous_Badge: .ds 1
 	Previous_Map_Level: .ds 1
 	Map_ReturnStatus:	.ds 1	; When 0, level panel is cleared; otherwise, Player is considered to have died (decrements life!)
 
@@ -2625,8 +2627,8 @@ ABILITY_RESHELL = 2
 ABILITY_SHELCATCH = 3
 ABILITY_ITEMRESERVE = 4
 ABILITY_CHERRY_STAR = 5
-	Player_Equip:		.ds 1	;
-	Old_Player_Equip:	.ds 1
+	Player_Badge:		.ds 1	;
+	Old_Player_Badge:	.ds 1
 	Player_Level:		.ds 1	;
 	Tile_Anim_Enabled:  .ds 1	;
 

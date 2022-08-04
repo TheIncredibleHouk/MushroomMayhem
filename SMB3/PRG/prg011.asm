@@ -357,7 +357,7 @@ LT0:	STA <Map_WWOrHT_X	; Map_WWOrHT_X = 240 (oops, reassigned?)
 	LDA #$80	 
 	STA Map_Intro_Tick	; Map_Intro_Tick = $80
 
-	LDA #$03	
+	LDA #$01	
 	STA Map_ReturnStatus	 ; Map_ReturnStatus = 3 (??)
 
 	LDA #$00	 

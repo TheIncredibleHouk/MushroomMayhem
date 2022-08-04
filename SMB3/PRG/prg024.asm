@@ -1529,25 +1529,15 @@ Title_PrepForWorldMap:
 	STA Air_Time
 	STA Tile_Anim_Enabled
 
-	; GAME START
-	LDA #$09
-	STA NegaStars
-	STA NegaStars+1
-	STA NegaStars+2
-	STA NegaStars+3
-	STA NegaStars+4
-	STA NegaStars+5
-	STA NegaStars+6
-	STA NegaStars+7
 
-	LDA #$09
-	;STA Player_Coins
-	;STA Player_Coins + 1
-	;STA Player_Coins + 2
-	;STA Player_Coins + 3
+	LDA #$0F
+	STA Player_Coins
+	
+	LDA #$27
+	STA Player_Coins + 1
 
 	LDA #$63
-	;STA Cherries
+	STA Cherries
 
 	LDA #$01
 	STA World_Map_Power	 ; Mario starts as small on world map

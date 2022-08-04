@@ -2434,48 +2434,37 @@ Object_NotTooLow:
 	CPY #$00
 	BEQ Object_DeleteOffScreen1
 
+	LDA <Horz_Scroll
+	SUB <DeleteRange
+	STA <Temp_Var12
+
+	LDA <Horz_Scroll_Hi
+	SBC #$00
+	STA <Temp_Var13
+
 	LDA Objects_BoundRight, X
-	STA <Temp_Var14
+	SUB <Temp_Var12
 
 	LDA Objects_BoundRightHi, X
-	STA <Temp_Var15
-
-	
-	LDA <Horz_Scroll
-	STA <Temp_Var12
-
-	LDA <Horz_Scroll_Hi
-	STA <Temp_Var13
-
-	JMP Object_CheckOutOfRange
+	SBC <Temp_Var13
+	BMI Object_IsOffScreen
+	BPL Object_NotOffScreen
 
 Object_DeleteOffScreen1:
-
 	LDA <Horz_Scroll
+	ADD <DeleteRange
 	STA <Temp_Var12
 
 	LDA <Horz_Scroll_Hi
-	ADD #$01
+	ADC #$01
 	STA <Temp_Var13
 
-	LDA Objects_BoundLeft, X
-	STA <Temp_Var14
-
-	LDA Objects_BoundLeftHi, X
-	STA <Temp_Var15
-
-Object_CheckOutOfRange:
-	LDA <Temp_Var14
-	SUB <Temp_Var12
-	STA <Temp_Var12
-
-	LDA <Temp_Var15
-	SBC <Temp_Var13
-	BMI Object_NotOffScreen
-
 	LDA <Temp_Var12
-	CMP <DeleteRange
-	BCS Object_IsOffScreen
+	SUB Objects_BoundLeft, X
+
+	LDA <Temp_Var13
+	SBC Objects_BoundLeftHi, X
+	BMI Object_IsOffScreen
 
 Object_NotOffScreen:
 	CLC
@@ -2484,8 +2473,6 @@ Object_NotOffScreen:
 Object_IsOffScreen:
 	SEC
 	RTS
-
-
 
 Object_SetDeadAndNotSpawned:
 
@@ -3750,7 +3737,7 @@ Player_NotFrozen:
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
 
-	LDA Player_Equip
+	LDA Player_Badge
 	CMP #BADGE_DAMAGE
 	BNE PRG000_DA4E
 

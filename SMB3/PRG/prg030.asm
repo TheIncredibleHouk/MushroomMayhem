@@ -73,48 +73,39 @@ StatusBar	.macro
 ;@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 	vaddr \1 + $00
-	.byte $02, $AE, $80		; Upper left corner
+	.byte $02, $FF, $80		; Upper left corner
 
 	vaddr \1 + $02
 	.byte VU_REPEAT | $16, $81	; Bar across the top
 
 	vaddr \1 + $18
-	.byte $08, $75, $FB, $FB, $FC, $FB, $FB, $F9, $AE 		; Upper left corner
+	.byte $08, $75, $FB, $FB, $FC, $FB, $FB, $F9, $FF 		; Upper left corner
 
 ;------
 	vaddr \1 + $20
-	.byte $20, $AE, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $F5, $F5, $FD, $F5, $F5, $F8, $AE
+	.byte $20, $FF, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
 
 	vaddr \1 + $40
-	.byte $20, $AE, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $F5, $F5, $FD, $F5, $F5, $F8, $AE
+	.byte $20, $FF, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
 
 ;----	
 	vaddr \1 + $60
-	.byte $02, $AE, $83
+	.byte $02, $FF, $83
 
 	vaddr \1 + $62
 	.byte VU_REPEAT | $16, $93	; Bar across the top
 
 	vaddr \1 + $78
-	.byte $0A, $77, $F7, $F7, $F6, $F7, $F7, $A3, $AE, $A2, $90		; Upper left corner
+	.byte $0A, $77, $F7, $F7, $F6, $F7, $F7, $A3, $FF, $A2, $90		; Upper left corner
 
 	vaddr \1 + $9E
-	.byte $04, $92, $AE, $AE, $A0
+	.byte $04, $92, $FF, $FF, $A0
 
 	vaddr \1 + $A2
 	.byte VU_REPEAT | $1C, $A1	; Bar across the top
 
 	vaddr \1 + $BE
-	.byte $02, $A2, $AE
-
-
-; ;------
-
-; 	vaddr \1 + $00
-; 	.byte VU_REPEAT | $01, $AE		; Upper left corner
-
-; 	vaddr \1 + $1F
-; 	.byte VU_REPEAT | $01, $AE		; Upper left corner
+	.byte $02, $A2, $FF
 
 	; Terminator
 	.byte $00
@@ -126,9 +117,6 @@ StatusBar	.macro
 Video_DoStatusBar:
 	StatusBar $2B00
 
-	; This single byte is used in plant infestation levels to load the animation counter
-
-	; List of C000 pages to switch to by Level_Tileset
 PAGE_C000_ByTileset: ; $83D6
 	.byte 10
 
@@ -142,7 +130,7 @@ PSwitch_Anim: .byte $C0, $C2, $C4, $C6, $C8, $CA, $CC, $CE
 PT2_Anim2:	.byte $D0, $D2, $D4, $D6, $D8, $DA, $DC, $DE
 PSwitch_Anim2: .byte $E0, $E2, $E4, $E6, $E8, $EA, $EC, $EE
 PT2_Anim3:	.byte $F0, $F2, $F4, $F6, $F8, $FA, $FC, $FE
-PT2_Anim4:	.byte $6A, $6A, $6A, $6A, $6A, $6A, $6A, $6A
+PT2_Anim4:	.byte $5E, $5E, $5E, $5E, $5E, $5E, $5E, $5E
 
 SPR_Anim:
 	.byte $90, $91, $92, $93
@@ -1148,6 +1136,7 @@ PRG030_8E5D:
 	; End of animations...
 
 	LDA SndCur_Pause
+	ORA Player_IsDying
 	BNE PRG030_8E79	 ; Can't unpause game while pause sound is playing
 
 	LDA <Pad_Input	
@@ -1165,6 +1154,7 @@ PRG030_8E5D:
 	LDA Pause_Menu
 	BEQ Pause_NoExit
 
+	LDA #$FF
 	STA <Level_ExitToMap
 	STA Map_ReturnStatus
 
@@ -1347,7 +1337,7 @@ PRG030_8F31:
 	BEQ PRG030_8F42	 ; If Level_ExitToMap flag is not set, jump to PRG030_8F42
 
 	LDA Map_ReturnStatus
-	BEQ PRG030_8F31_2
+	BPL PRG030_8F31_2
 
 	LDA Previous_Coins
 	STA Player_Coins
@@ -1360,6 +1350,12 @@ PRG030_8F31:
 
 	LDA Previous_Cherries
 	STA Cherries
+
+	LDA Previous_Badge
+	STA Player_Badge
+
+	LDA Previous_PowerUp_Reserve
+	STA PowerUp_Reserve
 
 	LDA Previous_Stars
 	STA Magic_Stars
@@ -2502,7 +2498,7 @@ Tile_Mem_ClearB:	; $9734
 
 
 AnimOffsets: .byte $00, $10, $20, $28
-AnimStarts: .byte $80, $D0, $F0, $6A
+AnimStarts: .byte $80, $D0, $F0, $5E
 
 LevelLoad:	
 	JSR InitStarsBackground
@@ -3301,6 +3297,7 @@ TileLayoutPage_ByTileset:
 	.byte 23
 	.byte 23
 	.byte 23
+	.byte 23
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3318,6 +3315,7 @@ Scroll_Dirty_Update:
 
 PRG030_9AC5:
 	; Set proper Page @ A000 for tile layout data
+	STA Debug_Snap
 	LDY Level_Tileset
 	LDA TileLayoutPage_ByTileset,Y	
 	STA PAGE_A000	 
@@ -4378,15 +4376,28 @@ Half_Value:
 	ORA <Temp_Var1
 	RTS
 
-Reserve_Sprites:
+ITEM_STOPWATCH = $0B
+ITEM_WINGS = $0C
+ITEM_1_HP = $0D
+ITEM_2_HP = $0E
+ITEM_3_HP = $0F
 
-Reserve_Flash:
-	.byte $00, $00, $00, $01, $02, $03, $00, $00, $00, $00, $00
+Reserve_Items:
+	.byte $00
+	.byte POWERUP_MUSHROOM
+	.byte POWERUP_FIREFLOWER	
+	.byte POWERUP_SUPERLEAF	
+	.byte POWERUP_FROGSUIT	
+	.byte POWERUP_SHELL		
+	.byte POWERUP_HAMMERSUIT	
+	.byte POWERUP_ICEFLOWER	
+	.byte POWERUP_FOXLEAF	
+	.byte POWERUP_NINJASHROOM 
+	.byte POWERUP_STAR	
 
 Try_Item_Reserve_Release:
-	LDA Player_Level
-	CMP #ABILITY_ITEMRESERVE
-	BCC No_Release
+	LDA <Player_HaltGameZ
+	BNE No_Release
 
 	LDA PowerUp_Reserve
 	BEQ No_Release
@@ -4395,38 +4406,59 @@ Try_Item_Reserve_Release:
 	AND #PAD_SELECT
 	BEQ No_Release
 
-	LDX PowerUp_Reserve
-	DEX
+	LDA PowerUp_Reserve
+	CMP #ITEM_STOPWATCH
+	BCC Item_UsePowerUp
+	BNE No_Release
 
-	LDA #OBJSTATE_INIT
-	STA Objects_State + 5
-
-	LDA Reserve_Sprites, X
-	STA Objects_ID + 5
-
-	LDA Reserve_Flash, X
-	STA PUp_StarManFlash
-
-	LDA <Player_X
-	STA Objects_XZ + 5
-
-	LDA <Player_XHi
-	STA Objects_XHiZ + 5
-
-	LDA <Player_YZ
-	SUB #$08
-	STA Objects_YZ + 5
-	LDA <Player_YHiZ
-	SBC #$00
-	STA Objects_YHiZ + 5
+	LDA #$FF
+	STA Stop_Watch
 	
-No_PUp_Dec:
-	LDA #$01
-	STA From_Reserve
 	LDA #$00
 	STA PowerUp_Reserve
-	STA Objects_XVelZ + 5
+	RTS
+
+Item_UsePowerUp:	
+
+	JSR Check_ExistingPowerUps
+	BCS No_Release
+	LDX #$02
+
+Reserve_Loop:	
+	LDA Objects_State + 5, X
+	BEQ Reserve_MakePUp
+	DEX
+	BPL Reserve_Loop
+	BMI No_Release
+
+Reserve_MakePUp:
+	LDY PowerUp_Reserve
+	LDA #OBJ_POWERUP
+	STA Objects_ID + 5, X
+
+	LDA Reserve_Items, Y
+	STA PowerUp_Type + 5, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State + 5, X
+
+	LDA <Player_X
+	STA <Objects_XZ + 5, X
 	
+	LDA <Player_XHi
+	STA <Objects_XHiZ + 5, X
+
+	LDA <Player_YZ
+	ADD #$10
+	STA <Objects_YZ + 5, X
+
+	LDA <Player_YHiZ
+	ADC #$00
+	STA <Objects_YHiZ + 5, X
+
+	LDA #$00
+	STA PowerUp_Reserve
+
 No_Release:
 	RTS
 
@@ -5551,7 +5583,7 @@ Sprite_RAM_Clear_NotWeather:
 	RTS
 
 GetPowerBadgeY:
-	LDA Player_Equip
+	LDA Player_Badge
 	CMP #BADGE_PMETER
 	RTS
 
@@ -6084,3 +6116,44 @@ Message_Handler:
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	RTS	
+
+
+Check_Timers:
+	LDA Kill_Tally_Ticker
+	BNE Killy_TallyTick
+
+	STA Kill_Tally
+	BEQ Check_SlowWatch
+
+Killy_TallyTick:	
+	DEC Kill_Tally_Ticker
+
+Check_SlowWatch:
+	LDA Slow_Watch
+	BEQ Check_StopWatch
+
+	LDA <Counter_1
+	AND #$01
+	BNE Check_StopWatch
+
+	DEC Slow_Watch
+
+Check_StopWatch:
+	LDA Stop_Watch
+	BEQ Check_TimersRTS
+
+	LDA <Counter_1
+	AND #$01
+	BEQ Check_TimersRTS
+
+	DEC Stop_Watch
+	LDA Stop_Watch
+	AND #$1F
+	BNE Check_TimersRTS
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+
+Check_TimersRTS:	
+	RTS

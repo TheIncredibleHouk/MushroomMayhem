@@ -1868,7 +1868,7 @@ Map_StateNothing:
 ; $CD53
 
 	; Map_ReturnStatus = 3 (??)
-	LDA #$03	 
+	LDA #$01	 
 	STA Map_ReturnStatus
 
 	; Map_Intro_Tick = $80
@@ -2942,18 +2942,18 @@ Try_Ability_Change:
 	LDA <Pad_Input
 	AND #PAD_START
 	BEQ Ability_RTS
-	LDA Player_Equip
+	LDA Player_Badge
 	;CMP Player_Level
 	BCS Reset_Ability
 	
-	INC Player_Equip
+	INC Player_Badge
 
-	LDA Player_Equip 
-	STA Player_Equip
+	LDA Player_Badge 
+	STA Player_Badge
 	RTS
 Reset_Ability:
 	LDA #$01
-	STA Player_Equip
+	STA Player_Badge
 
 Ability_RTS:
 	RTS

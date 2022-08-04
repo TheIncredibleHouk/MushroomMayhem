@@ -3210,7 +3210,6 @@ Sun_Norm:
 	CMP #OBJSTATE_KILLED
 	BNE Sun_NotDead
 
-	STA Debug_Snap
 	LDA Sun_Health, X
 	BNE Sun_KeepFighting
 
