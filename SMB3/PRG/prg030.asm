@@ -483,7 +483,9 @@ PRG030_86A2:
 	LDA #27
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
+
 	JSR Setup_PalData	 ; On page 27 -- PalData now holds palette data for world map tiles/objects
+	JSR Map_DayNightPalette
 
 	; Switch bank A000 to page 26
 	LDA #26
@@ -1927,6 +1929,7 @@ PRG030_9257:
 	JSR PRGROM_Change_A000
 	JSR Setup_PalData	 ; On page 27 -- PalData now holds palette data for world map tiles/objects
 
+Map_DayPalette:	
 	; Switch bank A000 to page 26
 	LDA #26
 	STA PAGE_A000
@@ -5496,14 +5499,14 @@ Keep_Going:
 	RTS
 
 
-StarXPositions:
+StartXPositions:
 	.byte $00, $54, $A8, $2A, $7E, $D2
 
-StarYPositions:
+StartYPositions:
 	.byte $08, $10, $18, $20, $28, $30
 	.byte $44, $38, $2C, $20, $14, $08
 
-StarYPostions2:
+StartYPostions2:
 	.byte $20, $43, $69, $86, $A7, $CE
 
 StarPals:
@@ -5512,31 +5515,33 @@ StarPals:
 InitStarsBackground:
 	LDY #$07
 
-ObjInit_Stars1:
+InitStars_Loop:
 	LDA RandomN, Y
 	AND #$0F
-	ADD StarXPositions, Y
+	ADD StartXPositions, Y
 	STA Weather_XPos, Y
-
-	LDA RandomN + 6, Y
-	AND #$07
 
 	LDA PaletteEffect
 	CMP #$03
 	BNE Normal_WeatherParticle
 
-	LDA StarYPostions2, Y
+	LDA StartYPostions2, Y
 	BNE Store_WeatherParticle
 
 Normal_WeatherParticle:
-	LDA RandomN + 6, Y
-	AND #$07
-	ADD StarYPositions, Y
+	
+	LDA RandomN, Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ADD StartYPositions, Y
 
 Store_WeatherParticle:
+	STA Debug_Snap
 	STA Weather_YPos, Y
 	DEY
-	BPL ObjInit_Stars1
+	BPL InitStars_Loop
 	RTS
 
 

@@ -1517,7 +1517,7 @@ PRG024_ACA5:
 	INC <Title_State ; Title_State++
 
 Title_PrepForWorldMap:
-	LDA #$00
+	LDA #$01
 	STA World_Num
 
 	LDA #$FF

@@ -8462,17 +8462,17 @@
   "TileSets": [
     {
       "FireBallInteractions": [
+        238,
+        252,
         0,
         0,
-        136,
-        207,
         0,
         0,
         0,
         0
       ],
       "IceBallInteractions": [
-        0,
+        253,
         0,
         0,
         0,
@@ -8629,49 +8629,49 @@
           "LowerRight": 241
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 128,
           "UpperRight": 129,
           "LowerLeft": 0,
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 144,
           "UpperRight": 145,
           "LowerLeft": 0,
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 130,
           "UpperRight": 131,
           "LowerLeft": 0,
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 146,
           "UpperRight": 147,
           "LowerLeft": 0,
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 132,
           "UpperRight": 133,
           "LowerLeft": 0,
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 148,
           "UpperRight": 149,
           "LowerLeft": 0,
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 134,
           "UpperRight": 135,
           "LowerLeft": 0,
@@ -8685,7 +8685,7 @@
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 136,
           "UpperRight": 137,
           "LowerLeft": 0,

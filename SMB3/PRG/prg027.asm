@@ -20,7 +20,7 @@ InitPals_Per_MapPUp:
 ; Setup_PalData
 ;
 ; This subroutine loads the Pal_Data array with a set
-; of colors based on Level_Tileset and the values in
+; of colors based on Level_Tileset and thevalues in
 ; PalSel_Tile_Colors and PalSel_Obj_Colors OR base on
 ; the override value Pal_Force_Set12.  This also
 ; performs the corrections of red/green for Mario vs.
@@ -71,6 +71,7 @@ SetDNActive1:
 	CLC
 	ADC #$C0
 	STA <Temp_Var2
+
 	; Copy 32 bytes of data into Pal_Data
 	LDY #31	 ; Y = 31 (32 bytes total, a whole bg/sprite palette set)
 	LDX #$0F
@@ -90,8 +91,10 @@ SkipMasterBackup:
 
 	LDA DayNightActive
 	BEQ No_Darken
+
 	LDA DayNight
 	BEQ No_Darken
+
 	LDA Pal_Data
 	CMP #$0F
 	BEQ No_Darken
@@ -103,6 +106,7 @@ Darken_Pal:
 	SEC
 	SBC #$10
 	BMI Skip_Darken
+
 	STA Pal_Data, X
 
 Skip_Darken:
@@ -134,8 +138,10 @@ No_Darken:
 	; Store the correct power-up suit colors over the Player colors
 	LDA InitPals_Per_MapPUp+3,Y
 	STA Pal_Data+19
+
 	LDA InitPals_Per_MapPUp+2,Y
 	STA Pal_Data+18
+
 	LDA InitPals_Per_MapPUp+1,Y
 	STA Pal_Data+17 
 
@@ -376,3 +382,20 @@ Message_Fill_Loop:
 
 Messages_DisplayRTS:	
 	RTS
+
+Map_DayNightPalIndex:
+	.byte $00, $0E
+
+Map_DayNightPalette:
+	LDA DayNight
+	BEQ Map_DayNightPaletteRTS
+
+	LDX World_Num
+	LDA Map_DayNightPalIndex, X
+	TAX
+
+	LDA #$0F
+	STA Pal_Data, X
+
+Map_DayNightPaletteRTS:
+	RTS		

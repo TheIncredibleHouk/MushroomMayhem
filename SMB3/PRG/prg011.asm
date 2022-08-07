@@ -4002,8 +4002,6 @@ Map_Object_CheckVisibility:
 	; X is the index to the map object we need to work with!
 	LDY #$00	 	; Object is not visible until proven visible...
 
-
-	STA Debug_Snap
 	LDA Map_Objects_XHi,X
 	ASL A
 	ASL A

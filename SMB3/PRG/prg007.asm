@@ -5334,11 +5334,11 @@ DrawStars0:
 	LDA #$5D
 	STA Sprite_RAM + 1, Y
 
-	LDA StarYPositions, X
+	LDA Weather_YPos, X
 	SUB <Temp_Var1
 	STA Sprite_RAM, Y
 	
-	LDA StarXPositions, X
+	LDA Weather_XPos, X
 	SUB <Temp_Var2
 	STA Sprite_RAM +3, Y
 	DEX

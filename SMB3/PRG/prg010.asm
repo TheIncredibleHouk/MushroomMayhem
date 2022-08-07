@@ -99,6 +99,7 @@ World_BGM_Arrival:
 ; lively and interesting...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Map_DoMap:
+	JSR DrawMapBackground
 
 	LDA Map_Operation
 	CMP #$0d	 
@@ -236,7 +237,6 @@ PRG010_C4A9:
 	BPL PRG010_C488	 ; If Y >= 0, loop!
 
 Map_DoOperation:
-	JSR DrawMapBackground
 	JSR Scroll_Map_SpriteBorder	; Keep up the map's sprite border
 
 	LDA Map_Operation
@@ -3036,6 +3036,7 @@ NoMapClouds:
 DrawMapBackground0:
 	LDA MapBackgroundInit
 	BNE DrawMapBackground1
+
 	INC MapBackgroundInit
 
 	JSR InitStarsBackground
@@ -3043,7 +3044,6 @@ DrawMapBackground0:
 DrawMapBackground1:
 	LDA DayNight
 	BNE DrawMapStarsBackground1
-
 
 DrawMapSkyBackground1:
 	LDA <Counter_1
@@ -3092,11 +3092,12 @@ DrawMapClouds0:
 	STA Sprite_RAM +3, Y
 
 	LDA Weather_YPos, X
-	ADD #$0C
+	ADD #$10
 	CMP #$2C
 	BCC DrawMapClouds2
 
-	SUB #$10
+	AND #$0F
+	ADD #$1C
 
 DrawMapClouds2:
 	STA Sprite_RAM, Y
@@ -3113,7 +3114,10 @@ DrawMapClouds1:
 	RTS
 
 StarTiles:
-	.byte $1F, $3F, $5F, $1F, $3F, $5F
+	.byte $1F, $3F, $1F, $3F, $1F, $3F
+
+StarMapPals:
+	.byte SPR_PAL0,	SPR_PAL2, SPR_PAL0,	SPR_PAL2, SPR_PAL0,	SPR_PAL2
 
 DrawMapStarsBackground1:
 	LDA <Horz_Scroll
@@ -3139,27 +3143,34 @@ DrawMapStars0:
 	INY 
 	INY 
 	
-	LDA StarXPositions, X
+	LDA Weather_XPos, X
 	SUB TempA
 	CMP #$10
 	BCC DrawMapStars1
+
 	CMP #$E8
 	BCS DrawMapStars1
-	STA Sprite_RAM +3, Y
+	STA Sprite_RAMX, Y
 
-	LDA StarYPositions, X
-	ADD #$1A
-	CMP #$38
+	LDA Weather_YPos, X
+	ADD #$10
+	CMP #$2C
 	BCC DrawMapStars2
-	SUB #$10
+	
+	AND #$0F
+	ADD #$1C
 
 DrawMapStars2:
-	STA Sprite_RAM, Y
+	STA Sprite_RAMY, Y
 
-	LDA #SPR_PAL2
-	STA Sprite_RAM + 2, Y
+	LDA <Counter_1
+	LSR A
+	AND #$01
+	ORA StarMapPals, X
+	STA Sprite_RAMAttr, Y
+
 	LDA StarTiles, X
-	STA Sprite_RAM + 1, Y
+	STA Sprite_RAMTile, Y
 
 DrawMapStars1:
 	DEX
