@@ -839,7 +839,7 @@ HIT_CEILING =		8
 
 	Player_XStart:		.ds 1	; Set to Player's original starting X position (also used to check if level has initialized)
 
-	       				.ds 1	; $EC unused
+			.ds 1	; $EC unused
 
 ; Player_Suit -- Player's active powerup (see also: Player_QueueSuit)
 PLAYERSUIT_SMALL	= 0
@@ -2603,8 +2603,11 @@ BADGE_COIN = 5
 BADGE_AIR = 6
 
 
-ABILITY_RESURRECT = 1
-ABILITY_POWERDOWN = 2
+ABILITY_EXTRAHIT = 1
+ABILITY_STARTBIG = 2
+ABILITY_NOSHROOMS = 3
+ABILITY_RECOVERY = 4
+ABILITY_DOUBLEJUMP = 5
 
 	Player_Badge:		.ds 1	;
 	Old_Player_Badge:	.ds 1
@@ -2806,10 +2809,8 @@ AIR_INCREASE	= 3
 	Status_Bar_Render_Toggle: .ds 1	; Indicates if we're toggling the status mode
 	Player_Experience:	.ds 3		; Experience points that increase by defeating enemies
 	Player_Pal_Backup:  .ds 3	; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
-	StatusBar_Mode:	.ds 1	; Indicates what status bar information should be displayed
-								; 0 = P-Bar, Air, Exp, Coins, Timer
-								; 1 = overall time, enemies killed, coins collected, odometer
 	Update_Level_Name: .ds 1;
+	StatusBar_FirstInit: .ds 1
 	Force_StatusBar_Init: .ds 1
 	Top_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Bottom_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle

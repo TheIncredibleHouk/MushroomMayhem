@@ -1539,8 +1539,10 @@ Title_PrepForWorldMap:
 	LDA #$63
 	STA Cherries
 
+	LDA #ABILITY_DOUBLEJUMP
+	STA Player_Level
+
 	LDA #$01
-	STA World_Map_Power	 ; Mario starts as small on world map
 	STA Total_Players	 ; Total_Players should be 1/2, not 0/1
 
 	INC <Title_State	 ; Next title state...

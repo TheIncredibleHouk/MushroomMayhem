@@ -96,7 +96,10 @@ StatusBar	.macro
 	.byte VU_REPEAT | $16, $93	; Bar across the top
 
 	vaddr \1 + $78
-	.byte $0A, $77, $F7, $F7, $F6, $F7, $F7, $A3, $FF, $A2, $90		; Upper left corner
+	.byte $0A, $77, $F7, $F7, $F6, $F7, $F7, $A3, $FF, $FF, $90		; Upper left corner
+
+	vaddr \1  + $82
+	.byte VU_REPEAT | 28 , $FE
 
 	vaddr \1 + $9E
 	.byte $04, $92, $FF, $FF, $A0
@@ -382,10 +385,15 @@ PRG012_85CE:
 	LDA #32
 	STA Scroll_Cols2Upd
 
+	LDA StatusBar_FirstInit
+	BNE No_StatusbarInit
+
+	INC StatusBar_FirstInit
 	; This (re)draws the status bar
 	LDA #$02
 	JSR Video_Do_Update
 
+No_StatusbarInit:
 	; Switch to page 26 @ A000
 	LDA #MMC3_8K_TO_PRG_A000
 	STA MMC3_COMMAND
@@ -772,7 +780,7 @@ EnterEffect_SpriteLoop:
 	ADD #$08
 	STA Sprite_RAMX + 4, Y
 
-	LDA #$00
+	LDA #$01
 	STA Sprite_RAMAttr, Y
 	STA Sprite_RAMAttr + 4, Y
 
@@ -981,7 +989,7 @@ PRG030_8AE7:
 PRG030_8B03:
 	STX Update_Select	; Set Update_Select
 
-	JSR Video_Do_Update	; Video update
+	;JSR Video_Do_Update	; Video update
 
 	; Set bank at A000 to page 26
 	LDA #26
@@ -1410,18 +1418,6 @@ PRG030_8F31_2:
 	
 	; Transfer Player's current power up to the World Map counterpart
 	LDA Player_EffectiveSuit
-	BNE PRG030_8F32
-
-	LDX Player_Level
-	CPX #ABILITY_RESURRECT
-	BCC PRG030_8F32
-
-	LDA Map_ReturnStatus
-	BEQ PRG030_8F32
-
-	LDA #$01
-
-PRG030_8F32:
 	STA World_Map_Power
 
 	LDA #$00
@@ -5538,7 +5534,6 @@ Normal_WeatherParticle:
 	ADD StartYPositions, Y
 
 Store_WeatherParticle:
-	STA Debug_Snap
 	STA Weather_YPos, Y
 	DEY
 	BPL InitStars_Loop

@@ -283,6 +283,11 @@ PRG008_A242:
 	; Set player power up based on current suit on 
 	LDX World_Map_Power
 	BNE Super_MarioStandard
+
+	LDA Player_Level
+	CMP #ABILITY_STARTBIG
+	BCC Super_MarioStandard
+
 	INX
 
 Super_MarioStandard:	
@@ -1181,12 +1186,6 @@ GndMov_Small:
 	JSR Player_GroundHControl ; Do Player left/right input control
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
 
-	LDA Player_SandSink
-	LSR A		 
-	BCS PRG008_A9A3	 ; If bit 0 of Player_SandSink was set, jump to PRG008_A9A3 (RTS)
-
-	LDA Player_AllowAirJump
-	BNE PRG008_A9A3	 ; If Player_AllowAirJump, jump to PRG008_A9A3 (RTS)
 
 	LDA <Player_InAir
 	BEQ PRG008_A9A3	 ; If Player is not mid air, jump to PRG008_A9A3 (RTS)
@@ -1709,11 +1708,6 @@ Player_JumpFlyFlutter:
 	LDA Wall_Jump_Enabled
 	BNE PRG008_AC30
 
-	LDA Player_AllowAirJump
-	BEQ PRG008_AC30	 ; If Player_AllowAirJump = 0, jump to PRG008_AC30
-
-	DEC Player_AllowAirJump ; Player_AllowAirJump--
-
 PRG008_AC30:
 
 	LDA Player_ForcedSlide
@@ -1731,15 +1725,16 @@ Jump_Over_PRG008_AC9E:
 	LDA Wall_Jump_Enabled
 	BNE PRG008_AC41
 
+	LDA <Player_InAir
+	BEQ DIRECT_TO_JUMP
+
 	LDA Player_AllowAirJump
 	BNE DIRECT_TO_JUMP	 ; If Player_AllowAirJump <> 0, jump to PRG008_AC41
 
-	LDA <Player_InAir
-	BEQ DIRECT_TO_JUMP
+Skip_Jump	
 	JMP PRG008_AC9E	 ; If Player is mid air, jump to PRG008_AC9E
 
 PRG008_AC41:
-
 	JSR Do_Wall_Jump
 
 DIRECT_TO_JUMP:
@@ -1757,30 +1752,27 @@ STORE_SMALL_JUMP:
 	ORA #SND_PLAYERJUMP	 
 	STA Sound_QPlayer
 
-	LDA Player_StarInv
-	BEQ PRG008_AC6C	 ; If Player is not invincible by star, jump to PRG008_AC6C
-
-	LDA Player_RunMeter
-	CMP #$7f
-	BEQ PRG008_AC6C	 ; If Player is at max power, jump to PRG008_AC6C
-
-	LDA Player_IsHolding
-	BNE PRG008_AC6C	 ; If Player is holding something, jump to PRG008_AC6C
-
-	LDA Player_EffectiveSuit
-	BEQ PRG008_AC6C
-
-	CMP #$03
-	BEQ PRG008_AC6C
-
-	CMP #$08
-	BEQ PRG008_AC6C
-
-	; Otherwise, mark as mid air AND backflipping
-	STA <Player_InAir
-
-	LDA #$00
-	STA Player_AllowAirJump	 ; Cut off Player_AllowAirJump
+;	LDA Player_StarInv
+;	BEQ PRG008_AC6C	 ; If Player is not invincible by star, jump to PRG008_AC6C
+;
+;	LDA Player_RunMeter
+;	CMP #$7f
+;	BEQ PRG008_AC6C	 ; If Player is at max power, jump to PRG008_AC6C
+;
+;	LDA Player_IsHolding
+;	BNE PRG008_AC6C	 ; If Player is holding something, jump to PRG008_AC6C
+;
+;	LDA Player_EffectiveSuit
+;	BEQ PRG008_AC6C
+;
+;	CMP #$03
+;	BEQ PRG008_AC6C
+;
+;	CMP #$08
+;	BEQ PRG008_AC6C
+;
+;	; Otherwise, mark as mid air AND backflipping
+;	STA <Player_InAir
 
 PRG008_AC6C:
 
@@ -1819,15 +1811,28 @@ Normal_Jump:
 
 Jump_NotFrog:
 	LDA <Temp_Var1
+
+	LDX <Player_InAir
+	BEQ Set_JumpVel
+
+	LDX Player_AllowAirJump
+	BEQ Set_JumpVel
+
+	STA Debug_Snap
+	LDX #$00
+	STX Player_AllowAirJump
+
+	LDA #$D0
+
+Set_JumpVel:	
 	STA <Player_YVelZ		; -> Y velocity
 
 	LDA #$01
 	STA <Player_InAir ; Flag Player as mid air
 	STA <Player_Jumped
-
+	
 	LDA #$00	
 	STA Player_WagCount	 ; Player_WagCount = 0
-	STA Player_AllowAirJump	 ; Player_AllowAirJump = 0
 
 	LDA Player_RunMeter
 	CMP #$7f
@@ -2492,9 +2497,6 @@ Player_AnimTailWag:
 	LSR A
 	BCS PRG008_B09F	 ; If bit 0 of Player_SandSink is set, jump to PRG008_B09F (RTS)
 
-	LDA Player_AllowAirJump
-	BNE PRG008_B09F	 ; If Player_AllowAirJump, jump to PRG008_B09F (RTS)
-
 	LDA <Player_InAir
 	BEQ PRG008_B09F	 ; If Player is NOT mid air, jump to PRG008_B09F (RTS)
 
@@ -2587,9 +2589,6 @@ Player_SoarJumpFallFrame:
 	LDA Player_SandSink
 	LSR A
 	BCS PRG008_B0C5	 ; If bit 0 of Player_SandSink is set, jump to PRG008_B0C5
-
-	LDA Player_AllowAirJump
-	BNE PRG008_B0C5	 ; If Player_AllowAirJump, jump to PRG008_B0C5 (RTS)
 
 	LDA <Player_InAir
 	BEQ PRG008_B0C5	 ; If Player is mid air, jump to PRG008_B0C5 (RTS)
@@ -3561,6 +3560,10 @@ Bumps_PowerUpBlock2:
 BumpBlock_CheckMushroom:
 	LDY <Player_Suit
 	BNE BumpBlock_CheckMushroom1
+
+	LDY Player_Level
+	CPY #ABILITY_NOSHROOMS
+	BCS BumpBlock_CheckMushroom1
 
 	LDA #POWERUP_MUSHROOM
 
@@ -5049,6 +5052,16 @@ Player_DetectFloor1:
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVelZ  ; Halt Player vertically
 	STA Player_Flip
+
+	LDX #$00
+	LDA Player_Level
+	CMP #ABILITY_DOUBLEJUMP
+	BCC No_DoubleJump
+
+	INX
+
+No_DoubleJump:	
+	STX Player_AllowAirJump	 ; Player_AllowAirJump = 0
 
 	LDA <Player_FlipBits
 	AND #~SPR_VFLIP

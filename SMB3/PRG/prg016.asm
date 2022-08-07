@@ -2497,8 +2497,7 @@ ObjInit_ItemShop:
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
-	
-	RTS	
+	JMP Object_NoInteractions
 
 ObjNorm_ItemShop:
 	LDA ItemShop_Drawn, X
@@ -3009,11 +3008,11 @@ ItemShop_InstructionLoop:
 ItemShop_WriteInstructionsRTS:
 	RTS
 
-
 ObjInit_BadgeShop:
 	LDA #$04
 	STA Objects_SpritesRequested, X
-	RTS	
+	
+	JMP Object_NoInteractions
 
 ObjNorm_BadgeShop:
 	LDA BadgeShop_Drawn, X

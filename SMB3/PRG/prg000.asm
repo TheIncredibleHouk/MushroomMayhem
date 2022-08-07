@@ -3752,10 +3752,9 @@ Player_NoHP:
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
 
-	LDA Player_Badge
-	CMP #BADGE_INVALID
-	BNE PRG000_DA4E
-
+	LDA Player_Level
+	CMP #ABILITY_EXTRAHIT
+	BCC PRG000_DA4E
 
 	LDA #$02
 	STA Player_QueueSuit	 ; Queue power-up change
@@ -3803,6 +3802,14 @@ PRG000_DA50:
 
 PRG000_DA6D: 
 	LDA #$71
+	
+	LDX Player_Level
+	CPX #ABILITY_RECOVERY
+	BCC Store_Recovery
+
+	ASL A
+
+Store_Recovery:	
 	STA Player_FlashInv	 ; Player_FlashInv = $71
 
 	LDA #$00

@@ -2120,7 +2120,7 @@ Map_Power_Pats_F1:
 	; NOTE: $27 is actually a magic value hard-wired to remove the
 	; upper sprites!  (The tiles appear as a black box otherwise)
 	; See code following label PRG010_D045 for this hardcode...
-	.byte $11, $11, $2D, $2F	; Small
+	.byte $5D, $5F, $7D, $7F	; Small
 	.byte $81, $83, $A1, $A3	; Super Mushroom
 	.byte $81, $83, $A1, $A3	; Fire
 	.byte $85, $87, $A5, $A7	; Racoon
@@ -2134,7 +2134,7 @@ Map_Power_Pats_F1:
 	.byte $9D, $9F, $BD, $BF	; Ninja
 
 Map_Power_Pats_F2:
-	.byte $11, $11, $2F, $2D	; Small
+	.byte $5F, $5D, $7F, $7D	; Small
 	.byte $83, $81, $A3, $A1	; Super Mushroom
 	.byte $83, $81, $A3, $A1	; Fire
 	.byte $87, $85, $A7, $A5	; Racoon
@@ -2234,6 +2234,7 @@ PRG010_D012:
 	LDA <Counter_1
 	AND #$08	; On 8 ticks, off 8 ticks
 	BEQ PRG010_D037	; 
+
 	TXA		
 	ADD #(Map_Power_Pats_F2-Map_Power_Pats_F1)	
 	TAX		; X Offset to second frame
@@ -3184,7 +3185,7 @@ Player_CheckEnterableSprite:
 
 	LDX #14
 
-EnterableSprite_Loop:	
+EnterableSprite_Loop:
 	LDA Map_Objects_XLo, X
 	CMP <World_Map_X
 	BNE NotEnterable_Sprite
@@ -3201,10 +3202,10 @@ EnterableSprite_Loop:
 	CMP Enterable_Sprites
 	BEQ IsEnterableSprite
 
-	CMP Enterable_Sprites
+	CMP Enterable_Sprites + 1
 	BEQ IsEnterableSprite
 
-	CMP Enterable_Sprites
+	CMP Enterable_Sprites + 2
 	BEQ IsEnterableSprite
 
 NotEnterable_Sprite:	

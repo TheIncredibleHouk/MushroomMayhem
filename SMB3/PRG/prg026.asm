@@ -2678,10 +2678,10 @@ Coin_NoDouble:
 	CMP #$0F
 	BCC Game_UpdateCoins1
 
-	LDA #$27
+	LDA #$0F
 	STA Player_Coins
 
-	LDA #$0F
+	LDA #$27
 	STA Player_Coins + 1
 
 Game_UpdateCoins1:

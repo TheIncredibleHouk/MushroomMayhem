@@ -1040,17 +1040,17 @@
         54,
         6,
         15,
-        24,
-        54,
         15,
+        48,
+        22,
         15,
         15,
         48,
         33,
         15,
+        15,
         48,
-        49,
-        15
+        39
       ],
       "Name": "Piranha Forest",
       "Id": "8f153109-272c-412d-9d4c-00eda1d56f0e"
@@ -2932,7 +2932,7 @@
       "IndexedColors": [
         15,
         48,
-        25,
+        17,
         39,
         15,
         48,
@@ -2953,11 +2953,11 @@
         15,
         15,
         48,
-        25,
+        17,
         15,
         15,
         48,
-        26,
+        17,
         15,
         15,
         54,
@@ -5422,6 +5422,45 @@
       ],
       "Name": "Item Shop",
       "Id": "d925275d-dd05-4985-aac7-c6aa8e599d58"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        32,
+        39,
+        39,
+        15,
+        48,
+        15,
+        39,
+        15,
+        48,
+        16,
+        15,
+        15,
+        48,
+        17,
+        39,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        6,
+        15,
+        15,
+        48,
+        26,
+        15,
+        15,
+        54,
+        39
+      ],
+      "Name": "Training Shop",
+      "Id": "33fb56c6-d711-4469-8359-67ee5ea8a7dd"
     }
   ],
   "WorldInfo": [
@@ -5477,6 +5516,15 @@
           "SublevelsInfo": [],
           "InfoType": 1,
           "DisplayName": "(Level) The Badge Hut"
+        },
+        {
+          "Size": 130,
+          "Name": "The Training Grounds",
+          "Id": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [],
+          "InfoType": 1,
+          "DisplayName": "(Level) The Training Grounds"
         }
       ],
       "InfoType": 0,
@@ -56163,35 +56211,59 @@
     {
       "GameId": 154,
       "GameObjectType": 1,
-      "Name": "Unused x9A",
+      "Name": "Training Shop",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x28",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x2A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Shop"
     },
     {
       "GameId": 155,
