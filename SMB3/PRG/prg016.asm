@@ -2976,11 +2976,11 @@ ItemShop_Instructions:
 	.byte $29, $A9, 14
 	.db ": AND ; SELECT"
 
-	.byte $29, $C9, 14
-	.db "A TO BUY  ITEM"
+	.byte $29, $C9, 10
+	.db "A BUY ITEM"
 
-	.byte $29, $E9, 14
-	.db "B TO EXIT     "
+	.byte $29, $E9, 6
+	.db "B EXIT"
 
 	.byte $00
 
@@ -2996,7 +2996,7 @@ ItemShop_InstructionLoop:
 	INY 
 	INX
 
-	CPX #52
+	CPX #40
 	BCC  ItemShop_InstructionLoop
 
 	TYA
@@ -3034,6 +3034,14 @@ BadgeShop_Norm:
 	STA Player_HaltTick
 
 	LDA Pad_Input
+	AND #PAD_UP
+	BEQ BadgeShop_TryExit
+
+	JSR BadgeShop_Explanation
+	JMP BadgeShop_Draw
+
+BadgeShop_TryExit:	
+	LDA Pad_Input
 	AND #PAD_B
 	BEQ BadgeShop_TryBuy
 
@@ -3043,12 +3051,17 @@ BadgeShop_Norm:
 
 	LDA #MUS1_STOPMUSIC
 	STA Sound_QMusic1
+
+	CLR_MSG
 	JMP BadgeShop_Draw
 
 BadgeShop_TryBuy:	
 	LDA Pad_Input
 	AND #PAD_A
 	BEQ BadgeShop_Prev
+
+	LDA #$00
+	STA Message_Id
 
 	JSR BadgeShop_BuyBadge
 	JMP BadgeShop_Draw
@@ -3057,6 +3070,9 @@ BadgeShop_Prev:
 	LDA Pad_Input
 	AND #PAD_LEFT
 	BEQ BadgeShop_Next
+
+	LDA #$00
+	STA Message_Id
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
@@ -3074,6 +3090,9 @@ BadgeShop_Next:
 	LDA Pad_Input
 	AND #PAD_RIGHT
 	BEQ BadgeShop_Draw
+
+	LDA #$00
+	STA Message_Id
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBLIP
@@ -3133,12 +3152,12 @@ BadgeShop_Cost:
 
 Badge_Descriptions:
 	.db "     INVALID    "; 00
-	.db " START AS SUPER "; 01
-	.db "? BLOCK UPGRADE "; 02
-	.db "  RACCOON LEAF  "; 03
-	.db " UNKNOWN        "; 04
-	.db "  DOUBLE POWER  "; 05
-	.db "  ITEM RESERVE  "; 06
+	.db "  ITEM RESERVE  "; 01
+	.db "    DOUBLE XP   "; 02
+	.db "   STAR RADAR   "; 03
+	.db " DOUBLE P METER "; 04
+	.db "  DOUBLE COINS  "; 05
+	.db " INCREASED AIR  "; 06
 
 BadgeShop_Window = Objects_Data1
 BadgeShop_Badge1 = Temp_Var1
@@ -3366,6 +3385,7 @@ BadgeShop_BuyBadge:
 	LDY BadgeShop_Window, X
 	LDA BadgeShop_List + 1, Y
 	TAY
+
 	LDA Cherries
 	SUB BadgeShop_Cost, Y
 	BCC BadgeShop_CannotBuy
@@ -3376,6 +3396,10 @@ BadgeShop_BuyBadge:
 
 	LDA BadgeShop_List + 1, Y
 	STA Player_Badge
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 	RTS
 
 BadgeShop_CannotBuy:
@@ -3390,11 +3414,14 @@ BadgeShop_Instructions:
 	.byte $29, $A9, 14
 	.db ": AND ; SELECT"
 
-	.byte $29, $C9, 14
-	.db "A TO BUY BADGE"
+	.byte $29, $C9, 11
+	.db "A BUY BADGE"
 
-	.byte $29, $E9, 14
-	.db "B TO EXIT     "
+	.byte $29, $E9, 6
+	.db "B EXIT"
+
+	.byte $2A, $09, 14
+	.db "< EXPLANATION "
 
 	.byte $00
 
@@ -3410,7 +3437,7 @@ BadgeShop_InstructionLoop:
 	INY 
 	INX
 
-	CPX #52
+	CPX #58
 	BCC  BadgeShop_InstructionLoop
 
 	TYA
@@ -3421,6 +3448,24 @@ BadgeShop_InstructionLoop:
 	INC BadgeShop_InstructionsDrawn, X
 
 BadgeShop_WriteInstructionsRTS:
+	RTS
+
+Badge_Explanations:
+	.byte $00
+	 MSG_ID Badge_A_Explanation
+	 MSG_ID Badge_B_Explanation
+	 MSG_ID Badge_C_Explanation
+	 MSG_ID Badge_D_Explanation
+	 MSG_ID Badge_E_Explanation
+	 MSG_ID Badge_F_Explanation
+
+BadgeShop_Explanation:
+	LDY BadgeShop_Window, X
+	LDA BadgeShop_List + 1, Y
+	TAY
+
+	LDA Badge_Explanations, Y
+	STA Message_Id
 	RTS
 
 

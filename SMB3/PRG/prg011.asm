@@ -2074,8 +2074,10 @@ PRG011_ADDE:
 
 PRG011_ADE6:
 	LDX <Temp_Var13		; X = Temp_Var13
+
 	LDA Map_Objects_IDs,X
 	BEQ PRG011_ADF0	 	; If the object ID is zero, nothing to do, jump to PRG011_ADF0
+
 	JSR Map_Object_Do 	; Process this map object!
 
 PRG011_ADF0:
@@ -2091,17 +2093,9 @@ Map_Object_Do:
 	JSR Map_Object_CheckVisibility	 ; Check and store if this object is visible
 
 	LDA Map_Objects_IDs,X	; Get the ID
-	;CMP #MAPOBJ_CANOE
-	;BGE PRG011_AE0B	 	; If object ID >= $10 (Canoe), jump to PRG011_AE0B
-
-	;LDY Map_Operation	; Y = Map_Operation
-	;CPY #MAPOBJ_COINSHIP
-	;BNE PRG011_AE0B	 	; If Map_Operation <> $0B, jump to PRG011_AE0B
-
-	;LDY Map_March_Count,X
-	;BEQ PRG011_ADF4	 ; If march count = 0, jump to PRG011_ADF4
 
 PRG011_AE0B:
+	RTS
 	; Based on the ID, jump to proper routine for how it should act on the map
 	JSR DynJump
 
@@ -3040,17 +3034,18 @@ MapObject_LeftTile:
 	.byte $21, $21, $41, $41	; 03=Ship
 	.byte $47, $47, $47, $47	; 04=wrecked Ship
 	.byte $4D, $4D, $4D, $4D	; 05=Boo
-	.byte $C5, $D5, $C5, $D5	; 06=Fire Bro
-	.byte $E1, $F1, $E1, $F1	; 07=World 7 Plant
-	.byte $21, $23, $21, $23	; 08=Unknown marching glitch object
-	.byte $11, $11, $11, $11	; 09=N-Spade
-	.byte $13, $13, $13, $13	; 0A=White Toad House
-	.byte $17, $17, $17, $17	; 0B=Coin Ship
-	.byte $FD, $1B, $FD, $1B	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $F5, $F9, $F5, $F9	; 0D=World 8 Battleship
-	.byte $E5, $E9, $E5, $E9	; 0E=World 8 Tank
-	.byte $FD, $1B, $FD, $1B	; 0F=World 8 Airship
-	.byte $71, $75, $71, $75	; 10=Canoe
+	.byte $51, $51, $51, $51	; Red mushroom
+	.byte $11, $11, $11, $11	;
+	.byte $51, $51, $51, $51	; Green Mushroom
+	.byte $51, $51, $51, $51	; Orange Mushroom
+	.byte $11, $11, $11, $11	;
+	.byte $13, $13, $13, $13	;
+	.byte $17, $17, $17, $17	;
+	.byte $FD, $1B, $FD, $1B	;
+	.byte $F5, $F9, $F5, $F9	;
+	.byte $E5, $E9, $E5, $E9	;
+	.byte $FD, $1B, $FD, $1B	;
+	.byte $71, $75, $71, $75	;
 
 MapObject_RightTile:
 	.byte $0F, $13, $17, $1B	; 01=Rain
@@ -3058,17 +3053,18 @@ MapObject_RightTile:
 	.byte $23, $23, $43, $43	; 03=Ship
 	.byte $49, $49, $49, $49	; 04=wrecked Ship
 	.byte $4F, $4F, $4F, $4F	; 05=Boo
-	.byte $C7, $D7, $C7, $D7	; 06=Fire Bro
-	.byte $E1, $F1, $E1, $F1	; 07=World 7 Plant
-	.byte $23, $21, $23, $21	; 08=Unknown marching glitch object
-	.byte $21, $21, $21, $21	; 09=N-Spade
-	.byte $15, $15, $15, $15	; 0A=White Toad House
-	.byte $19, $19, $19, $19	; 0B=Coin Ship
-	.byte $FF, $BB, $FF, $BB	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $F7, $FB, $F7, $FB	; 0D=World 8 Battleship
-	.byte $E7, $EB, $E7, $EB	; 0E=World 8 Tank
-	.byte $FF, $BB, $FF, $BB	; 0F=World 8 Airship
-	.byte $73, $77, $73, $77	; 10=Canoe
+	.byte $53, $53, $53, $53	; Red mushroom
+	.byte $11, $11, $11, $11	; None
+	.byte $53, $53, $53, $53	; Blue Mushroom
+	.byte $53, $53, $53, $53	; Orange Mushroom
+	.byte $21, $21, $21, $21	; 
+	.byte $15, $15, $15, $15	; 
+	.byte $19, $19, $19, $19	; 
+	.byte $FF, $BB, $FF, $BB	; 
+	.byte $F7, $FB, $F7, $FB	; 
+	.byte $E7, $EB, $E7, $EB	; 
+	.byte $FF, $BB, $FF, $BB	; 
+	.byte $73, $77, $73, $77	; 
 
 MapObject_AttrLeft:
 	.byte $02, $02, $02, $02	; 01=Rain Cloud
@@ -3076,17 +3072,18 @@ MapObject_AttrLeft:
 	.byte $03, $03, $03, $03	; 03=Ship
 	.byte $03, $03, $03, $03	; 04=wrecked Ship
 	.byte $02, $02, $02, $02	; 05=Boo
-	.byte $02, $02, $02, $02	; 06=Fire Bro
-	.byte $01, $01, $01, $01	; 07=World 7 Plant
-	.byte $02, $42, $02, $42	; 08=Unknown marching glitch object
-	.byte $03, $03, $03, $03	; 09=N-Spade
-	.byte $03, $03, $03, $03	; 0A=White Toad House
-	.byte $03, $03, $03, $03	; 0B=Coin Ship
-	.byte $03, $03, $03, $03	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $02, $02, $02, $02	; 0D=World 8 Battleship
-	.byte $02, $02, $02, $02	; 0E=World 8 Tank
-	.byte $01, $01, $01, $01	; 0F=World 8 Airship
-	.byte $02, $02, $02, $02	; 10=Canoe
+	.byte $01, $01, $01, $01	; Red Mushroom
+	.byte $02, $02, $02, $02	; None
+	.byte $02, $02, $02, $02	; Blue Mushroom
+	.byte $03, $03, $03, $03	; Orange Mushroom
+	.byte $03, $03, $03, $03	; 
+	.byte $03, $03, $03, $03	; 
+	.byte $03, $03, $03, $03	; 
+	.byte $03, $03, $03, $03	; 
+	.byte $02, $02, $02, $02	; 
+	.byte $02, $02, $02, $02	; 
+	.byte $01, $01, $01, $01	; 
+	.byte $02, $02, $02, $02	; 
 
 MapObject_AttrRight:
 	.byte $02, $02, $02, $02	; 01=Rain Cloud
@@ -3094,40 +3091,38 @@ MapObject_AttrRight:
 	.byte $03, $03, $03, $03	; 03=Ship
 	.byte $03, $03, $03, $03	; 04=wrecked Ship
 	.byte $02, $02, $02, $02	; 05=Boo
-	.byte $02, $02, $02, $02	; 06=Fire Bro
-	.byte $41, $41, $41, $41	; 07=World 7 Plant
-	.byte $02, $42, $02, $42	; 08=Unknown marching glitch object
-	.byte $03, $03, $03, $03	; 09=N-Spade
-	.byte $03, $03, $03, $03	; 0A=White Toad House
-	.byte $03, $03, $03, $03	; 0B=Coin Ship
-	.byte $03, $03, $03, $03	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
-	.byte $02, $02, $02, $02	; 0D=World 8 Battleship
-	.byte $02, $02, $02, $02	; 0E=World 8 Tank
-	.byte $01, $01, $01, $01	; 0F=World 8 Airship
-	.byte $02, $02, $02, $02	; 10=Canoe
+	.byte $01, $01, $01, $01	; Red Mushroom
+	.byte $02, $02, $02, $02	; None
+	.byte $02, $02, $02, $02	; Blue Mushroom
+	.byte $03, $03, $03, $03	; Orange Mushroom
+	.byte $03, $03, $03, $03	; 
+	.byte $03, $03, $03, $03	; 
+	.byte $03, $03, $03, $03	; 
+	.byte $03, $03, $03, $03	; 
+	.byte $02, $02, $02, $02	; 
+	.byte $02, $02, $02, $02	; 
+	.byte $01, $01, $01, $01	; 
+	.byte $02, $02, $02, $02	; 
 
 	; This is a rotated array of Sprite_RAM offsets, helps distribute
 	; the map object display so even if there's scanline overflows,
 	; there will be at least some visibility of all objects.
 Map_SpriteRAM_Offset:
-	.byte $08, $60, $10, $58, $18, $50, $20, $48, $28, $40, $30, $38 
+	.byte $08, $10, $18, $20, $28, $30, $38, $40
 
 
 MapObjects_UpdateDrawEnter:
 	JSR Map_Object_Do_All	 ; Runs update code for all map objects
-	JSR FX_World_8_Darkness	 ; Performs / updates the World 8 darkness effect, if active
 
 	; Temp_Var13 = $0D
-	LDA #$0D	 	; Total map objects which may exist on the map (only 8 are defined at start)
+	LDA #$07	 	; Total map objects which may exist on the map (only 8 are defined at start)
 	STA <Temp_Var13
 
 	; Map_SprRAMOffDistr runs from $00 to $0A, inclusive
 	INC Map_SprRAMOffDistr
-	LDA Map_SprRAMOffDistr
-	CMP #$0b
-	BLT PRG011_B554
 
-	LDA #$00
+	LDA Map_SprRAMOffDistr
+	AND #$07
 	STA Map_SprRAMOffDistr
 
 PRG011_B554:
@@ -3137,21 +3132,9 @@ PRG011_B554:
 	STA <Temp_Var6
 
 	LDY <Temp_Var13	 ; Y = Temp_Var13 (current map slot index)
-	BEQ PRG011_B56E	 ; If Temp_Var13 = 0, jump to PRG011_B56E
-
-	DEY		 ; Y--
-	TYA
-	ADD Map_SprRAMOffDistr	 ; A = Map_SprRAMOffDistr + Temp_Var13
-
-	CMP #$0b
-	BLT PRG011_B568	 ; If value didn't overflow, jump to PRG011_B568
-
-	SBC #$0b	 ; Otherwise, keep it in range of $00 - $0A (modulus)
+	LDA Map_SpriteRAM_Offset, Y	 ; A = Map_SprRAMOffDistr + Temp_Var13
 
 PRG011_B568:
-	TAX		 ; -> 'X'
-
-	LDA Map_SpriteRAM_Offset,X	; Get Sprite_RAM offset
 	STA <Temp_Var6		 	; -> Temp_Var6
 
 PRG011_B56E:
@@ -3209,23 +3192,26 @@ MapObject_DrawSleepEnter:
 	.word MapObj_DrawAndEnter	; 10=Canoe
 
 MapObj_DrawAndEnter:
-	LDA #$00	 ; A = 0 (no offset on map sprite)
+	LDA <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
+	ADD #$90
+	STA <Temp_Var6
+	TAY
 
-	LDY <Temp_Var6		 ; Y = Temp_Var6 (Sprite_RAM offset)
+	LDA #$00	 ; A = 0 (no offset on map sprite)
 
 	; Set Y for map object sprite
 	ADD Map_Object_ActY,X
-	STA Sprite_RAM+$98,Y
-	STA Sprite_RAM+$9C,Y
+	STA Sprite_RAMY,Y
+	STA Sprite_RAMY + 4,Y
 
 	; Set X for map object sprite
 	LDA Map_Object_ActX,X
 	SUB <Horz_Scroll
-	STA Sprite_RAM+$9B,Y
+	STA Sprite_RAMX,Y
 
 	; Right half
 	ADD #$08
-	STA Sprite_RAM+$9F,Y
+	STA Sprite_RAMX + 4,Y
 
 	LDX <Temp_Var13		 ; X = Temp_Var13 (the map object slot index)
 
@@ -3252,18 +3238,18 @@ PRG011_B630:
 
 	; Load the patterns of the map object
 	LDA MapObject_LeftTile-4,X
-	STA Sprite_RAM+$99,Y
+	STA Sprite_RAMTile,Y
 
 	LDA MapObject_RightTile-4,X	
-	STA Sprite_RAM+$9D,Y	
+	STA Sprite_RAMTile + 4,Y	
 
 	
 	; Load the attributes of the map object
 	LDA MapObject_AttrLeft-4,X	
-	STA Sprite_RAM+$9A,Y	
+	STA Sprite_RAMAttr,Y	
 
 	LDA MapObject_AttrRight-4,X	
-	STA Sprite_RAM+$9E,Y	
+	STA Sprite_RAMAttr + 4,Y	
 
 	RTS
 
@@ -4005,34 +3991,61 @@ Map_MarkLevelComplete:
 	;STA World_Complete_Tiles,X
 	RTS
 
+
+MapObject_X = Temp_Var2
+MapLeft_Edge = Temp_Var3
+MapRight_Edge = Temp_Var4
+
 Map_Object_CheckVisibility:
 	; For a given object, check if it's visible on the map.  This value is
 	; stored into the Map_Objects_Vis array
 	; X is the index to the map object we need to work with!
 	LDY #$00	 	; Object is not visible until proven visible...
 
+
+	STA Debug_Snap
 	LDA Map_Objects_XHi,X
 	ASL A
 	ASL A
 	ASL A
 	ASL A
-	STA <Temp_Var2		; Temp_Var2 = object's X Hi byte << 4
+	STA <MapObject_X		; Temp_Var2 = object's X Hi byte << 4
 
 	LDA Map_Objects_XLo,X
 	LSR A		 
 	LSR A		 
 	LSR A		 
 	LSR A		 
-	ORA <Temp_Var2		
-	STA <Temp_Var2		; OR'ing the low X >> 4; Temp_Var2 now contains a proper "column" position
+	ORA <MapObject_X		
+	STA <MapObject_X		; OR'ing the low X >> 4; Temp_Var2 now contains a proper "column" position
 
-	LDA <Scroll_ColumnR
-	SUB #$02	 	; A = Scroll_ColumnR - 2
-	CMP <Temp_Var2
+	LDA <Horz_Scroll_Hi
+	ASL A
+	ASL A
+	ASL A
+	ASL A
+	STA <MapLeft_Edge
+	ADD #$10
+	STA <MapRight_Edge
+
+	LDA <Horz_Scroll
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	PHA
+	ORA <MapLeft_Edge
+	STA <MapLeft_Edge
+
+	PLA 
+	ORA <MapRight_Edge
+	STA <MapRight_Edge
+
+	LDA <MapObject_X
+	CMP <MapLeft_Edge
 	BLT PRG011_BAB1	 	; If object is less than the right scroll column, jump to PRG011_BAB1
 
-	LDA <Scroll_ColumnL	; A = Scroll_ColumnL
-	CMP <Temp_Var2	
+	CMP <MapRight_Edge	
 	BGE PRG011_BAB1	 	; If object is greater-equal to the left scroll column, jump to PRG011_BAB1
 
 	LDY #$01	 	; Object is visible!

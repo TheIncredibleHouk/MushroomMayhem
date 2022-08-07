@@ -709,6 +709,12 @@
       "X": 41,
       "Y": 4,
       "BoundRectangle": "656,64,16,16"
+    },
+    {
+      "LevelId": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
+      "X": 4,
+      "Y": 7,
+      "BoundRectangle": "64,112,16,16"
     }
   ],
   "ObjectData": [
@@ -716,6 +722,21 @@
       "GameObjectId": 200,
       "X": 22,
       "Y": 4
+    },
+    {
+      "GameObjectId": 205,
+      "X": 4,
+      "Y": 7
+    },
+    {
+      "GameObjectId": 208,
+      "X": 4,
+      "Y": 4
+    },
+    {
+      "GameObjectId": 207,
+      "X": 6,
+      "Y": 6
     }
   ],
   "CompressedData": "AODg4ODg4ODg4ODg4ODg4ADw8PDw8PDw8PDw8PDw8PAAhqGhpqGhoaGhh5GGoaGhAKJrjxCAgoCohLmhoo+UawCenreUkJKQkrePnz2Ug4QAlLOFPYi4uaKUErOFlJWPAI9slWsRlI9snoOEpZSwlACUp5WemIGBgYG2gYKfaxMAPZ+jhLmhoaGhoaG4hIS54ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PCmoaGhoaGhoaGhoaGhoYeGFJSUlJ49lI+UnhaUPZSQloSyn7OEhISEhLKUs4SEuaGUPWyUlI8VlJSUnpSPlGufgIGCnoCBtoGCsZSDspSAqJeGopSgoaGhorBssJQ9kJKhopSPbJ6UlGuUF5Sft6Ci4ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PChpqGHhqGhpqGhoYeRkZGRgZmPkJaohKVtbm+goYeRkaG4pLWRkj2efX5/j2ugh5GUGJ+Ih5KUg6SlnpSUj6CHhLKUsKCij6OkpIU9n7OEtZSPa5Q9bJSelLeVlKeUs7WegIGBgYGBgaikpWyUn5SQ"

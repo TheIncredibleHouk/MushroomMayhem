@@ -1892,7 +1892,7 @@ PRG031_F6BC:
 	STA PPU_SCROLL	; Vertical scroll set
 
 	; 32 pixel partition begins at line 160
-	LDA #160
+	LDA #184
 	STA MMC3_IRQCNT		; Store 160 into the IRQ count
 	STA MMC3_IRQLATCH	; Store it into the latch (will be used later)
 	STA MMC3_IRQENABLE	; Start the IRQ counter
@@ -1969,7 +1969,7 @@ PRG031_F748:
 	STA PPU_SCROLL	; Vertical scroll set
 
 	; NOTE: Different from the typical 192 scanline count!
-	LDA #193		; A = 193
+	LDA #184		; A = 193
 	STA MMC3_IRQCNT		; Store 193 into the IRQ count
 	STA MMC3_IRQLATCH	; Store it into the latch (will be used later)
 	STA MMC3_IRQENABLE	; Start the IRQ counter
@@ -2031,6 +2031,7 @@ IntIRQ:	 ; $F795 IRQ Interrupt (scanline from MMC3)
 	; This gets the address of the Reset entry point -> [Temp_Var2][Temp_Var1]
 	LDA Vector_Table+2
 	STA <Temp_Var1
+
 	LDA Vector_Table+3
 	STA <Temp_Var2
 
@@ -2180,6 +2181,7 @@ PRG031_F8B3:
 
 	LDA #$00	 ; 
 	STA PPU_SCROLL	 ; Horizontal Scroll = 0
+
 	LDA <Vert_Scroll ; 
 	STA PPU_SCROLL	 ; Vertical Scroll updated
 

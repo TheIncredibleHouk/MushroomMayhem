@@ -440,6 +440,33 @@ PUp_DrawMaskSprite1:
 PUp_Compare:
 	.byte $00, $00, $01, $02, $03, $04, $05, $06, $07, $08, $0B, $FF, $FF, $FF, $FF
 
+Mario_AsItem:
+	.byte $00
+	.byte ITEM_MUSHROOM
+	.byte ITEM_FIREFLOWER
+	.byte ITEM_SUPERLEAF
+	.byte ITEM_FROGSUIT
+	.byte ITEM_SHELL
+	.byte ITEM_HAMMERSUIT
+	.byte ITEM_ICEFLOWER
+	.byte ITEM_FOXLEAF
+	.byte $00
+	.byte $00
+	.byte ITEM_NINJASHROOM
+
+PUp_AsItem:
+	.byte $00	
+	.byte $00
+	.byte ITEM_MUSHROOM
+	.byte ITEM_FIREFLOWER
+	.byte ITEM_SUPERLEAF
+	.byte ITEM_FROGSUIT
+	.byte ITEM_SHELL
+	.byte ITEM_HAMMERSUIT
+	.byte ITEM_ICEFLOWER
+	.byte ITEM_FOXLEAF
+	.byte ITEM_NINJASHROOM	
+
 PUp_Queue:
 	.byte $00, $00, $02, $03, $04, $05, $06, $07, $08, $09, $0C, $00, $FF, $FF, $FF
 
@@ -448,14 +475,22 @@ PUp_Collect:
 	STA Objects_State, X
 
 	LDA PowerUp_Type, X
-	CMP #$01
+	CMP #POWERUP_MUSHROOM
 	BNE PUp_Collect2
 
 	LDY Player_EffectiveSuit
 	BEQ PUp_Collect2
 
 PUp_Collect1:
-	
+	LDA Player_Badge
+	CMP #BADGE_ITEMRESERVE
+	BNE PUp_NoReserve
+
+	LDY PowerUp_Type, X
+	LDA PUp_AsItem, Y
+	STA PowerUp_Reserve
+
+PUp_NoReserve:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELPOWER
 	STA Sound_QLevel1
@@ -472,6 +507,18 @@ PUp_Collect3:
 	LDA PUp_Queue, Y
 	STA Player_QueueSuit
 
+	LDA Player_Badge
+	CMP #BADGE_ITEMRESERVE
+	BNE PUp_CollectNoReserve
+
+	LDY Player_EffectiveSuit
+
+	LDA Mario_AsItem, Y
+	BEQ PUp_CollectNoReserve
+
+	STA PowerUp_Reserve
+
+PUp_CollectNoReserve:	
 	LDA PowerUp_Type, X
 
 	JSR DynJump
@@ -2034,6 +2081,7 @@ ObjNorm_SendBackRTS:
 
 
 Magic_StarIndicator = Objects_Data4
+Magic_StarRadar = Objects_Data5
 
 ObjInit_MagicStar1:
 	LDA #$00
@@ -2050,6 +2098,15 @@ ObjInit_MagicStar3:
 	STA Magic_StarIndicator, X
 
 ObjInit_MagicStar:
+	LDA Objects_Property, X
+	CMP #$07
+	BNE MagicStar_NoOffset
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+
+MagicStar_NoOffset:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -2085,10 +2142,14 @@ ObjNorm_MagicStar:
 	CMP #$07
 	BEQ MagicStar_NoDelete
 
-	JSR Object_DeleteOffScreen	
+	JSR Object_DeleteOffScreen
+	BCC MagicStar_NoDelete
+
+	JSR MagicStar_ClearRadar
+	RTS
 
 MagicStar_NoDelete:
-
+	JSR MagicStar_Radar
 	JSR Object_CalcBoundBox
 	JSR Magic_Star_Action
 	JSR Object_InteractWithPlayer
@@ -2120,6 +2181,7 @@ Magic_StarCollect:
 	ORA Magic_Stars_Collected1, Y
 	STA Magic_Stars_Collected1, Y
 
+	JSR MagicStar_ClearRadar
 	JMP Object_SetDeadEmpty
 
 Magic_Star_Action:
@@ -2133,7 +2195,7 @@ Magic_Star_Action:
 	.word MagicStar_CheckItemBlock
 	.word MagicStar_CheckClearedBlock
 	.word MagicStar_SpinnersActive
-	.word MagicStar_NoFloat
+	.word MagicStar_CheckClearedBlock
 
 MagicStar_CheckCoins:
 	LDY #$04
@@ -2261,34 +2323,32 @@ NextSpinnerCheck1:
 
 MagicStar_Radar:
 	LDA Player_Badge
-	SUB #ITEM_RADARNE
-	BMI MagicStar_RadarRTS
+	CMP #BADGE_RADAR
+	BNE MagicStar_RadarRTS
 
-	CMP #$09
-	BCS MagicStar_RadarRTS
 	LDA #$00
-	STA <Temp_Var1
+	STA Magic_StarRadar, X
 	JSR Object_XDistanceFromPlayer
 
-	CMP #$00
-	BEQ MagicStar_Radar1
+	CMP #$08
+	BCC MagicStar_Radar1
 
 	LDA EWBitMap, Y
-	STA <Temp_Var1
+	STA Magic_StarRadar, X
 	
 MagicStar_Radar1:
 	JSR Object_YDistanceFromPlayer
-	CMP #$00
-	BEQ MagicStar_Radar2
+	CMP #$08
+	BCC MagicStar_Radar2
 
 	LDA NSBitMap, Y
-	ORA <Temp_Var1
-	STA <Temp_Var1
+	ORA Magic_StarRadar, X
+	STA Magic_StarRadar, X
 
 MagicStar_Radar2:
-	LDY <Temp_Var1
+	LDY Magic_StarRadar, X
 	LDA RadarMap, Y
-	STA Player_Badge
+	STA PowerUp_Reserve
 	RTS
 
 MagicStar_RadarRTS:
@@ -2300,8 +2360,8 @@ NSBitMap:
 	.byte $04, $08
 
 RadarMap:
-	.byte ITEM_RADAR, ITEM_RADARE, ITEM_RADARW, ITEM_RADAR
-	.byte ITEM_RADARN, ITEM_RADARNE, ITEM_RADARNW, ITEM_RADAR
+	.byte ITEM_RADARUNKNOWN, ITEM_RADARE, ITEM_RADARW, ITEM_RADARUNKNOWN
+	.byte ITEM_RADARN, ITEM_RADARNE, ITEM_RADARNW, ITEM_RADARUNKNOWN
 	.byte ITEM_RADARS, ITEM_RADARSE, ITEM_RADARSW	
 	
 

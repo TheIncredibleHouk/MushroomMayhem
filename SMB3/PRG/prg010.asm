@@ -99,7 +99,6 @@ World_BGM_Arrival:
 ; lively and interesting...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Map_DoMap:
-	JSR Try_Ability_Change
 
 	LDA Map_Operation
 	CMP #$0d	 
@@ -211,6 +210,7 @@ PRG010_C481:
 
 	; For all objects $D - $0...
 	LDY #(MAPOBJ_TOTAL-1)
+	
 PRG010_C488:
 	; Copy object's Y and XHi/Los into their display variables
 	LDA Map_Objects_Y,Y
@@ -262,38 +262,6 @@ Map_DoOperation:
 	; NOTE: There is a Map_Operation $F (edge scroll) and Map_Operation $10 (enter level)
 	; that are not in this jump table, but handled explicitly...
 
-World5_Sky_CloudDeco:
-	; Sprite data of a single cloud over the lower world
-	.byte $30, $7D, $03, $48, $30, $7F, $03, $50, $30, $A3, $03, $58, $30, $A5, $03, $60
-
-World5_Sky_CloudDeco_End
-
-World5_Sky_AddCloudDeco:
-	RTS
-	; All this does is on World 5, Sky part ONLY, add a cloud
-	; Maybe there was to be intention of other map graphic decorations?
-
-	LDA World_Num	 ; A = World_Num
-	CMP #$ff
-	BNE PRG010_C4F9	 ; If World_Num <> 4 (World 5), jump to PRG010_C4F9 (RTS)
-
-	; World 5 only!
-	LDX Player_Current	; X = Player_Current
-	LDA <World_Map_XHi,X	; A = Player's X Hi byte (to determine if we're on the Sky part of W5)
-	BEQ PRG010_C4F9	 	; If not on World 5 sky screen, jump to PRG010_C4F9 (RTS)
-
-	; World 5 Sky only!
-
-	; Copy in the cloud sprite data
-	LDY #(World5_Sky_CloudDeco_End - World5_Sky_CloudDeco - 1)
-PRG010_C4F0:
-	LDA World5_Sky_CloudDeco,Y
-	STA Sprite_RAM+$50,Y
-	DEY		 	; Y--
-	BPL PRG010_C4F0	 	; While Y >= 0, loop!
-
-PRG010_C4F9:
-	RTS		 ; Return
 
 
 MO_WorldXIntro:
@@ -2070,7 +2038,8 @@ PRG010_CEBF:
 
 PRG010_CEC9:
 	; What makes other tiles (e.g. standard panels) work...
-	
+	JSR Player_CheckEnterableSprite
+
 	LDA <World_Map_Prop
 	CMP #MAP_PROP_ENTERABLE
 	BCS PRG010_CEA7	 	; If the tile the Player is standing on >= Tile_AttrTable+4[Y], jump to PRG010_CEA7 (enter level!)
@@ -2285,22 +2254,28 @@ PRG010_D045:
 	; This builds the 4 hardware sprites for the Player sprite
 	TYA		 
 	ORA Map_Power_Attrib_F1,X	 
-	STA Sprite_RAM+$86	 
+	STA Sprite_RAM+$86	
+
 	LDA Map_Power_Pats_F1,X	 
 	STA Sprite_RAM+$85	 
 	TYA		 
 	ORA Map_Power_Attrib_F1+1,X	 
 	STA Sprite_RAM+$8A	 
+
 	LDA Map_Power_Pats_F1+1,X	 
 	STA Sprite_RAM+$89	 
+
 	TYA		 
 	ORA Map_Power_Attrib_F1+2,X	 
 	STA Sprite_RAM+$8E	 
+
 	LDA Map_Power_Pats_F1+2,X	 
 	STA Sprite_RAM+$8D	 
+
 	TYA		 
 	ORA Map_Power_Attrib_F1+3,X	 
 	STA Sprite_RAM+$92	 
+
 	LDA Map_Power_Pats_F1+3,X	 
 	STA Sprite_RAM+$91	 
 
@@ -2360,10 +2335,13 @@ Map_DoPlayer_As_Twirl:
 	; Setup appropriate "twirl" frame!		 
 	LDA Player_Twirl_Tiles,Y	 
 	STA Sprite_RAM+$8D	 
+
 	LDA Player_Twirl_Tiles+1,Y	 
 	STA Sprite_RAM+$91	 
+
 	LDA Player_Twirl_Attribs,Y	 
 	STA Sprite_RAM+$8E	 
+
 	LDA Player_Twirl_Attribs+1,Y	 
 	STA Sprite_RAM+$92	 
 
@@ -2409,15 +2387,17 @@ Map_Check_PanL:
 
 	LDA Sprite_RAM+$87
 	CMP #33
-
 	BGE Map_No_Pan	 	; If Player's sprite's X coord is >= 33, jump to Map_No_Pan
+
 	LDX #$01	 	; X = 1
 
 Map_Set_Pan:
 	; We need to pan the map!
 	STX <Scroll_LastDir	; Set proper pan direction
+
 	LDA #$80	 
 	STA Map_Pan_Count	; Map_Pan_Count = $80 (moves half a screen's worth)
+
 	LDA #$04	 
 	STA Map_DrawPanState	; Map_DrawPanState = 4 (Do panning)
 
@@ -2448,10 +2428,13 @@ Map_No_Pan:
 	; Other Player sprite marker
 	LDA <World_Map_Y,X	 
 	STA Sprite_RAM+$94	 
+
 	LDA Map_Marker_MorL,X	 
 	STA Sprite_RAM+$95	 
+
 	LDA #$03	 
 	STA Sprite_RAM+$96	 
+	
 	LDA <World_Map_X,X	 
 	SUB <Horz_Scroll		 
 	ADD #$04	 
@@ -2933,31 +2916,6 @@ DMC08:
 	.byte $49, $6D, $AB, $52, $53, $A5, $B2, $AD, $2A, $55, $55, $49, $6D, $57, $21, $B6
 DMC08_End
 
-; Rest of ROM bank was empty
-
-Try_Ability_Change:
-	RTS
-	LDA Player_Level
-	;BEQ Ability_RTS
-	LDA <Pad_Input
-	AND #PAD_START
-	BEQ Ability_RTS
-	LDA Player_Badge
-	;CMP Player_Level
-	BCS Reset_Ability
-	
-	INC Player_Badge
-
-	LDA Player_Badge 
-	STA Player_Badge
-	RTS
-Reset_Ability:
-	LDA #$01
-	STA Player_Badge
-
-Ability_RTS:
-	RTS
-
 FindLevelInfo:
 	
 	LDA World_Map_X
@@ -3101,7 +3059,7 @@ DrawMapSkyBackground1:
 DrawMapSkyBackground2:
 	LDX #$05
 
-	LDY #$C0
+	LDY #$E0
 	LDA <Horz_Scroll
 	LSR A
 	LSR A
@@ -3206,4 +3164,44 @@ DrawMapStars2:
 DrawMapStars1:
 	DEX
 	BPL DrawMapStars0
+	RTS
+
+Enterable_Sprites:
+	.byte $06, $08, $09
+
+Player_CheckEnterableSprite:
+
+	LDX #14
+
+EnterableSprite_Loop:	
+	LDA Map_Objects_XLo, X
+	CMP <World_Map_X
+	BNE NotEnterable_Sprite
+
+	LDA Map_Objects_XHi, X
+	CMP <World_Map_XHi
+	BNE NotEnterable_Sprite
+
+	LDA Map_Objects_Y, X
+	CMP <World_Map_Y
+	BNE NotEnterable_Sprite	
+
+	LDA Map_Objects_IDs, X
+	CMP Enterable_Sprites
+	BEQ IsEnterableSprite
+
+	CMP Enterable_Sprites
+	BEQ IsEnterableSprite
+
+	CMP Enterable_Sprites
+	BEQ IsEnterableSprite
+
+NotEnterable_Sprite:	
+	DEX
+	BPL EnterableSprite_Loop
+	RTS
+
+IsEnterableSprite:
+	LDA #MAP_PROP_ENTERABLE
+	STA <World_Map_Prop
 	RTS

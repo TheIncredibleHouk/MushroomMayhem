@@ -26,9 +26,9 @@
         54,
         6,
         15,
-        2,
-        48,
         15,
+        48,
+        22,
         15,
         15,
         48,
@@ -36,7 +36,7 @@
         15,
         15,
         48,
-        17
+        39
       ],
       "Name": "World 0",
       "Id": "c6560d1b-5f71-4e4a-8856-8845797a63e9"
@@ -5470,7 +5470,7 @@
           "DisplayName": "(Level) The Powerup Emporium"
         },
         {
-          "Size": 152,
+          "Size": 158,
           "Name": "The Badge Hut",
           "Id": "bd30da54-924b-4274-a74c-93f1b5b1a671",
           "LastModified": "0001-01-01T00:00:00",
@@ -5490,7 +5490,7 @@
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
-          "Size": 1630,
+          "Size": 1638,
           "Name": "Waterway Wash",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
@@ -6792,7 +6792,7 @@
           "DisplayName": "(Level) Frost Flame Factory"
         },
         {
-          "Size": 2650,
+          "Size": 2652,
           "Name": "Level Lifts",
           "Id": "a83f0f1e-c937-40b6-b296-df5b88ab9284",
           "LastModified": "2019-11-24T20:40:19.6659942-05:00",
@@ -6917,7 +6917,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 19,
+        "Size": 32,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -29851,24 +29851,24 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 32,
+          "UpperRight": 33,
+          "LowerLeft": 49,
+          "LowerRight": 32
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 32,
+          "UpperRight": 33,
+          "LowerLeft": 33,
+          "LowerRight": 32
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 32,
+          "UpperRight": 33,
+          "LowerLeft": 33,
+          "LowerRight": 48
         },
         {
           "Property": 0,
@@ -30208,31 +30208,31 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 0,
+          "UpperRight": 0,
+          "LowerLeft": 16,
+          "LowerRight": 16
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 1,
+          "UpperRight": 1,
+          "LowerLeft": 17,
+          "LowerRight": 17
         },
         {
           "Property": 0,
-          "UpperLeft": 71,
-          "UpperRight": 71,
-          "LowerLeft": 71,
-          "LowerRight": 71
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 16,
+          "LowerRight": 23
         },
         {
           "Property": 192,
@@ -30242,31 +30242,31 @@
           "LowerRight": 25
         },
         {
-          "Property": 79,
-          "UpperLeft": 42,
-          "UpperRight": 43,
-          "LowerLeft": 58,
-          "LowerRight": 63
-        },
-        {
-          "Property": 0,
-          "UpperLeft": 40,
-          "UpperRight": 41,
-          "LowerLeft": 56,
-          "LowerRight": 57
+          "Property": 192,
+          "UpperLeft": 10,
+          "UpperRight": 11,
+          "LowerLeft": 26,
+          "LowerRight": 16
         },
         {
           "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "UpperLeft": 2,
+          "UpperRight": 33,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 2
         },
         {
           "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperLeft": 19,
+          "UpperRight": 20,
+          "LowerLeft": 3,
+          "LowerRight": 4
+        },
+        {
+          "Property": 16,
+          "UpperLeft": 32,
+          "UpperRight": 5,
+          "LowerLeft": 5,
           "LowerRight": 238
         },
         {
@@ -30320,66 +30320,66 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperLeft": 254,
+          "UpperRight": 254,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
           "Property": 192,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperRight": 238,
+          "LowerLeft": 254,
+          "LowerRight": 254
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 254,
+          "UpperRight": 66,
+          "LowerLeft": 238,
+          "LowerRight": 82
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 67,
+          "UpperRight": 68,
+          "LowerLeft": 83,
+          "LowerRight": 84
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperLeft": 69,
+          "UpperRight": 254,
+          "LowerLeft": 85,
           "LowerRight": 238
         },
         {
           "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
+          "UpperLeft": 255,
+          "UpperRight": 18,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 2
         },
         {
           "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 19,
+          "UpperRight": 20,
+          "LowerLeft": 3,
+          "LowerRight": 4
         },
         {
           "Property": 16,
-          "UpperLeft": 238,
+          "UpperLeft": 21,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 5,
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -30453,10 +30453,10 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 38,
+          "UpperRight": 39,
+          "LowerLeft": 17,
+          "LowerRight": 55
         },
         {
           "Property": 192,
@@ -30470,28 +30470,28 @@
           "UpperLeft": 42,
           "UpperRight": 43,
           "LowerLeft": 58,
-          "LowerRight": 63
+          "LowerRight": 17
         },
         {
           "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
-        },
-        {
-          "Property": 48,
           "UpperLeft": 255,
+          "UpperRight": 2,
+          "LowerLeft": 18,
+          "LowerRight": 32
+        },
+        {
+          "Property": 16,
+          "UpperLeft": 19,
+          "UpperRight": 20,
+          "LowerLeft": 3,
+          "LowerRight": 4
+        },
+        {
+          "Property": 16,
+          "UpperLeft": 21,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "LowerLeft": 33,
+          "LowerRight": 21
         },
         {
           "Property": 32,
@@ -30566,23 +30566,23 @@
         {
           "Property": 192,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperRight": 98,
+          "LowerLeft": 254,
+          "LowerRight": 114
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 99,
+          "UpperRight": 100,
+          "LowerLeft": 115,
+          "LowerRight": 116
         },
         {
           "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 101,
+          "UpperRight": 238,
+          "LowerLeft": 117,
+          "LowerRight": 254
         },
         {
           "Property": 79,
@@ -30592,11 +30592,11 @@
           "LowerRight": 63
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 48,
+          "UpperLeft": 253,
+          "UpperRight": 253,
+          "LowerLeft": 252,
+          "LowerRight": 252
         },
         {
           "Property": 192,
@@ -39219,7 +39219,15 @@
       "Name": "Magic Star #1",
       "Sprites": [
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0x24000",
@@ -39231,7 +39239,15 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0x24000",
@@ -39243,8 +39259,58 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 4,
+          "Y": 12,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x20",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x3E",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 12,
           "Y": 12,
           "TileTableAddress": "0x1000",
           "TileValue": "0x20",
@@ -39263,7 +39329,7 @@
         "Hidden inside item block.",
         "Hidden inside stone or brick block.",
         "Appears with 5 block changes",
-        "Does not disappear off screen"
+        "Indicator for radar"
       ],
       "Group": "Global"
     },
@@ -39273,7 +39339,15 @@
       "Name": "Magic Star #2",
       "Sprites": [
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0x24000",
@@ -39285,7 +39359,15 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0x24000",
@@ -39297,8 +39379,58 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 4,
+          "Y": 12,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x22",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x3E",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 12,
           "Y": 12,
           "TileTableAddress": "0x1000",
           "TileValue": "0x22",
@@ -39317,7 +39449,7 @@
         "Hidden inside item block.",
         "Hidden inside stone or brick block.",
         "Appears with 5 block changes",
-        "Does not disappear off screen"
+        "Indicator for radar"
       ],
       "Group": "Global"
     },
@@ -39327,7 +39459,15 @@
       "Name": "Magic Star #3",
       "Sprites": [
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0x24000",
@@ -39339,7 +39479,15 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0x24000",
@@ -39351,8 +39499,58 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "X": 4,
+          "Y": 12,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x24",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x3E",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x3E",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            7
+          ],
+          "X": 12,
           "Y": 12,
           "TileTableAddress": "0x1000",
           "TileValue": "0x24",
@@ -39371,7 +39569,7 @@
         "Hidden inside item block.",
         "Hidden inside stone or brick block.",
         "Appears with 5 block changes",
-        "Does not disappear off screen"
+        "Indicator for radar"
       ],
       "Group": "Global"
     },
@@ -59321,36 +59519,36 @@
     },
     {
       "GameId": 205,
-      "GameObjectType": 1,
-      "Name": "Unused xCD",
+      "GameObjectType": 0,
+      "Name": "Red Mushroom",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x8400",
+          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x8400",
+          "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "World"
     },
     {
       "GameId": 206,
@@ -59590,69 +59788,69 @@
     },
     {
       "GameId": 207,
-      "GameObjectType": 1,
-      "Name": "Unused xCF",
+      "GameObjectType": 0,
+      "Name": "Green Mushroom",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x8400",
+          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 2,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x8400",
+          "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 2,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "World"
     },
     {
       "GameId": 208,
-      "GameObjectType": 1,
-      "Name": "Unused xD0",
+      "GameObjectType": 0,
+      "Name": "Orange Mushroom",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x8400",
+          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x8400",
+          "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "World"
     },
     {
       "GameId": 209,

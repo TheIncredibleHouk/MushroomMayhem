@@ -3715,7 +3715,6 @@ Player_GetHurt:
 	ORA Player_StarInv		; ... invincible by star 
 	ORA <Player_HaltGameZ		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
-	ORA Player_FireDash		;
 	BNE PRG000_D9B7	 ; ... then jump to PRG000_D9B7 (RTS)
 
 	JMP PRG000_DA15	 ; Jump to PRG000_DA15 (skips lost/dead Japanese version code)
@@ -3731,14 +3730,30 @@ PRG000_DA15:
 	JSR Unfreeze
 
 Player_NotFrozen:
+	LDA PowerUp_Reserve
+	CMP #ITEM_1_HP
+	BCC Player_NoHP
 	
+	CMP #(ITEM_3_HP + 1)
+	BCS Player_NoHP
 
+	DEC PowerUp_Reserve
+
+	LDA PowerUp_Reserve
+	CMP #ITEM_1_HP
+	BCS Player_PoofHurt
+
+	LDA #$00
+	STA PowerUp_Reserve
+	BEQ Player_PoofHurt
+
+Player_NoHP:
 	LDA <Player_Suit
 	CMP #PLAYERSUIT_FIRE		; RAS: Change this to "PLAYERSUIT_SUPERSUITBEGIN" and you restore Japanese version's "always shrink" code!!
 	BLS PRG000_DA4E	 ; If Player is Big or small, jump to PRG000_DA4E
 
 	LDA Player_Badge
-	CMP #BADGE_DAMAGE
+	CMP #BADGE_INVALID
 	BNE PRG000_DA4E
 
 

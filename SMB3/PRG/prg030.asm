@@ -83,10 +83,10 @@ StatusBar	.macro
 
 ;------
 	vaddr \1 + $20
-	.byte $20, $FF, $90, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
+	.byte $20, $FF, $90, $EE, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
 
 	vaddr \1 + $40
-	.byte $20, $FF, $90, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
+	.byte $20, $FF, $90, $EF, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
 
 ;----	
 	vaddr \1 + $60
@@ -729,6 +729,27 @@ PRG030_881D:
 
 
 EnterEffect_SpriteStart:
+	LDY #$80
+
+Enter_CheckSprites:	
+	LDA Sprite_RAMX, Y
+	ADD #$10
+	CMP Map_Transition_Column
+	BCC Enter_SkipSprite
+
+	LDA #$F8
+	STA Sprite_RAMY, Y
+	
+	LDA #$00
+	STA Sprite_RAMX, Y
+
+Enter_SkipSprite:
+	INY
+	INY
+	INY
+	INY
+	CPY #$C0
+	BNE Enter_CheckSprites
 
 	LDA #$F8
 	STA Map_Transition_SpriteIndex
@@ -915,7 +936,8 @@ PRG030_897B:
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 	STA LeftRightInfection
 	STA Player_IsHolding
-
+	
+	JSR MagicStar_ClearRadar
 	JSR LevelLoad			; Load the level layout data!
 	JSR ClearBlockedAreas
 	
@@ -1382,6 +1404,8 @@ Player_DyingNoSuit:
 	INC Force_StatusBar_Init
 
 PRG030_8F31_2:
+	JSR MagicStar_ClearRadar
+	
 	; Transfer Player's current power up to the World Map counterpart
 	LDA Player_EffectiveSuit
 	BNE PRG030_8F32
@@ -3315,7 +3339,6 @@ Scroll_Dirty_Update:
 
 PRG030_9AC5:
 	; Set proper Page @ A000 for tile layout data
-	STA Debug_Snap
 	LDY Level_Tileset
 	LDA TileLayoutPage_ByTileset,Y	
 	STA PAGE_A000	 
@@ -4376,11 +4399,7 @@ Half_Value:
 	ORA <Temp_Var1
 	RTS
 
-ITEM_STOPWATCH = $0B
-ITEM_WINGS = $0C
-ITEM_1_HP = $0D
-ITEM_2_HP = $0E
-ITEM_3_HP = $0F
+
 
 Reserve_Items:
 	.byte $00
@@ -4395,43 +4414,46 @@ Reserve_Items:
 	.byte POWERUP_NINJASHROOM 
 	.byte POWERUP_STAR	
 
-Try_Item_Reserve_Release:
-	LDA <Player_HaltGameZ
-	BNE No_Release
+Player_NoItem:
+	RTS
 
-	LDA PowerUp_Reserve
-	BEQ No_Release
+Player_UseItem:
+	LDA <Player_HaltGameZ
+	BNE Player_NoItem
 
 	LDA <Pad_Input
 	AND #PAD_SELECT
-	BEQ No_Release
+	BEQ Player_NoItem
 
 	LDA PowerUp_Reserve
-	CMP #ITEM_STOPWATCH
-	BCC Item_UsePowerUp
-	BNE No_Release
-
-	LDA #$FF
-	STA Stop_Watch
+	JSR DynJump
 	
-	LDA #$00
-	STA PowerUp_Reserve
-	RTS
+	.word Player_ItemNone
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemPowerUp
+	.word Player_ItemStopWatch
 
-Item_UsePowerUp:	
-
+Player_ItemPowerUp:
 	JSR Check_ExistingPowerUps
-	BCS No_Release
+	BCS Player_ItemPowerUpRTS
 	LDX #$02
 
-Reserve_Loop:	
+Item_PowerupLoop:	
 	LDA Objects_State + 5, X
-	BEQ Reserve_MakePUp
+	BEQ Item_MakePowerup
 	DEX
-	BPL Reserve_Loop
-	BMI No_Release
+	BPL Item_PowerupLoop
+	BMI Player_ItemPowerUpRTS
 
-Reserve_MakePUp:
+Item_MakePowerup:
 	LDY PowerUp_Reserve
 	LDA #OBJ_POWERUP
 	STA Objects_ID + 5, X
@@ -4459,9 +4481,17 @@ Reserve_MakePUp:
 	LDA #$00
 	STA PowerUp_Reserve
 
-No_Release:
+Player_ItemPowerUpRTS:
+Player_ItemNone:
 	RTS
 
+Player_ItemStopWatch:
+	LDA #$FF
+	STA Stop_Watch
+	
+	LDA #$00
+	STA PowerUp_Reserve
+	RTS
 
 
 Coin_X = Temp_Var2
@@ -6156,4 +6186,15 @@ Check_StopWatch:
 	STA Sound_QLevel1
 
 Check_TimersRTS:	
+	RTS
+
+MagicStar_ClearRadar:
+	LDA Player_Badge
+	CMP #BADGE_RADAR
+	BNE MagicStar_ClearRadarRTS
+
+	LDA #ITEM_RADARUNKNOWN
+	STA PowerUp_Reserve
+
+MagicStar_ClearRadarRTS:
 	RTS

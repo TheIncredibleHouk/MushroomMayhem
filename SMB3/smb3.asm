@@ -59,9 +59,12 @@ vaddr	.macro
 	.byte (\1 & $00FF)
 	.endm
 
+MSG_ID .macro
+	.byte #(((\1 - Messages_Table) / 44) + 1)
+	.endm
 
 SET_MSG	.macro
-	LDA #(((\1 - Messages_Table) / 42) + 1)
+	LDA #(((\1 - Messages_Table) / 44) + 1)
 	STA Message_Id
 	.endm
 
@@ -2590,43 +2593,19 @@ MARIO_NINJA		= 11
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Old_World_Map_Tile:	.ds	1	;
 
-ITEM_STOP1  = 1
-ITEM_STOP2	=	2
-ITEM_SLOW1	=	3
-ITEM_SLOW2	=	4
-ITEM_POW1	= 5
-ITEM_POW2	= 6
-ITEM_POW3	= 7
-ITEM_RADARNE	= 8
-ITEM_RADARN		= 9
-ITEM_RADARNW	= 10
-ITEM_RADARW		= 11
-ITEM_RADARSW	= 12
-ITEM_RADARS		= 13
-ITEM_RADARSE	= 14
-ITEM_RADARE		= 15
-ITEM_RADAR		= 16
-ITEM_CATCH	= 17
-ITEM_HEART1	= 18
-ITEM_HEART2	= 19
-ITEM_HEART3	= 20
-ITEM_STAR1 = 21
-ITEM_STAR2 = 22
 
-BADGE_DAMAGE = 26
-BADGE_NOSHOORMS = 27
-BADGE_JUMP = 28
-BADGE_AIR = 29
-BADGE_PMETER = 30
-BADGE_COIN = 31
-BADGE_BOOTS = 32
+BADGE_INVALID = 255
+BADGE_ITEMRESERVE = 1
+BADGE_XP = 2
+BADGE_RADAR = 3
+BADGE_PMETER = 4
+BADGE_COIN = 5
+BADGE_AIR = 6
 
 
 ABILITY_RESURRECT = 1
-ABILITY_RESHELL = 2
-ABILITY_SHELCATCH = 3
-ABILITY_ITEMRESERVE = 4
-ABILITY_CHERRY_STAR = 5
+ABILITY_POWERDOWN = 2
+
 	Player_Badge:		.ds 1	;
 	Old_Player_Badge:	.ds 1
 	Player_Level:		.ds 1	;
@@ -2997,6 +2976,33 @@ PLAYER_BULLET		= 06
 
 	Roulette_Lives:			; Number of lives you are rewarded from winning the Roulette (NOTE: Shared with first byte of Objects_IsGiant)
 
+
+ITEM_NONE = $00
+ITEM_MUSHROOM = $01
+ITEM_FIREFLOWER = $02
+ITEM_SUPERLEAF = $03
+ITEM_FROGSUIT = $04
+ITEM_SHELL = $05
+ITEM_HAMMERSUIT = $06
+ITEM_ICEFLOWER = $07
+ITEM_FOXLEAF = $08
+ITEM_NINJASHROOM = $09
+ITEM_STARMAN = $0A
+ITEM_STOPWATCH = $0B
+ITEM_WINGS = $0C
+ITEM_1_HP = $0D
+ITEM_2_HP = $0E
+ITEM_3_HP = $0F
+ITEM_RADARSW	= $10
+ITEM_RADARS		= $11
+ITEM_RADARSE	= $12
+ITEM_RADARE		= $13
+ITEM_RADARNE	= $14
+ITEM_RADARN		= $15
+ITEM_RADARNW	= $16
+ITEM_RADARW		= $17
+ITEM_RADARUNKNOWN = $18
+
 	;#FREERAM
 	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
@@ -3004,7 +3010,7 @@ PLAYER_BULLET		= 06
 	Player_Dialog:		.ds 1
 	PowerUp_Reserve:	.ds 1	;
 	Old_PowerUp_Reserve:.ds 1
-	From_Reserve:		.ds 1
+	Player_Health:		.ds 1
 	DayNight:			.ds 1	; signifies if it's day or night
 	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
 	DayNightTicker:		.ds 1	;

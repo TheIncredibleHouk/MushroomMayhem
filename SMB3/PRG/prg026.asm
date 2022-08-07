@@ -765,8 +765,6 @@ Inv_UseItem_Powerup:
 	RTS
 
 Inv_Item_Map:
-	.byte ITEM_STOP2, ITEM_SLOW2, ITEM_POW3, ITEM_RADAR, ITEM_CATCH, ITEM_HEART3, ITEM_STAR2, ITEM_STAR2
-	.byte BADGE_DAMAGE, BADGE_NOSHOORMS, BADGE_JUMP, BADGE_AIR, BADGE_PMETER, BADGE_COIN, BADGE_BOOTS
 
 Inv_UseItem_Powerup1:
 	
@@ -2229,7 +2227,7 @@ StatusBar_DoUpdates:
 AttemptUpdate:
 	INC Status_Bar_Render_Toggle
 
-	LDA Map_DrawPanState
+	LDA Map_Pan_Count
 	BNE AttemptUpdate1
 
 	LDA Status_Bar_Render_Toggle
@@ -2328,8 +2326,8 @@ Status_Bottom_Loop:
 ;
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $FE, $76, $FA, $FA, $FD, $FA, $FA
-	.byte $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $FE, $76, $FA, $FA, $FD, $FA, $FA
+	.byte $EE, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $76, $FA, $FA, $FD, $FA, $FA
+	.byte $EF, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $76, $FA, $FA, $FD, $FA, $FA
 
 Initialize_Status_Bar:
 ;	LDA StatusBar_Mode
@@ -2351,6 +2349,7 @@ Initialize_Status_Bar:
 	JSR StatusBar_DrawStarsCollected
 	JSR StatusBar_DrawDayNightMeter
 	JSR StatusBar_DrawReserve
+	JSR StatusBar_DrawBadge
 	INC Top_Needs_Redraw
 	INC Bottom_Needs_Redraw
 	RTS
@@ -2401,7 +2400,7 @@ StatusBar_Fill_PowerMT1:
 	LDA #$D2
 
 StatusBar_Fill_PowerMT2:
-	STA Status_Bar_Top,Y	; Store this tile into the buffer
+	STA Status_Bar_Top + 1,Y	; Store this tile into the buffer
 	INY
 	DEX
 	BPL StatusBar_Fill_PowerMT2
@@ -2413,7 +2412,7 @@ StatusBar_Fill_PowerMT3:
 	LDA #$D1
 
 StatusBar_Fill_PowerMT4:
-	STA Status_Bar_Top,Y
+	STA Status_Bar_Top + 1,Y
 	INY
 	CPY #$06
 	BCC StatusBar_Fill_PowerMT4
@@ -2449,7 +2448,7 @@ StatusBar_DrawAir:
 
 Full_Air_Loop:				
 	LDA #$E9
-	STA Status_Bar_Top + 8, Y
+	STA Status_Bar_Top + 9, Y
 	
 	INY
 	DEX
@@ -2464,7 +2463,7 @@ Paritial_Air:
 	AND #$0F
 	LSR A
 	ADC #$E1				; offset the tile number
-	STA Status_Bar_Top + 8, Y
+	STA Status_Bar_Top + 9, Y
 	INY
 
 	LDA #$E1
@@ -2472,7 +2471,7 @@ Paritial_Air:
 Empty_Air_Loop:
 	CPY #$04				
 	BEQ Fill_Air_MT_Done		; Did it fill all the way? we're done!
-	STA Status_Bar_Top + 8, Y	; no? let's fill empty tiles
+	STA Status_Bar_Top + 9, Y	; no? let's fill empty tiles
 	INY
 	BNE Empty_Air_Loop
 	
@@ -2508,15 +2507,15 @@ StatusBar_DrawStars:
 
 	LDA <DigitsResult + 2
 	ORA #$30
-	STA Status_Bar_Bottom + 14
+	STA Status_Bar_Bottom + 15
 
 	LDA <DigitsResult + 1
 	ORA #$30
-	STA Status_Bar_Bottom + 15
+	STA Status_Bar_Bottom + 16
 
 	LDA <DigitsResult
 	ORA #$30
-	STA Status_Bar_Bottom + 16
+	STA Status_Bar_Bottom + 17
 	INC Bottom_Needs_Redraw
 	RTS
 	
@@ -2543,11 +2542,11 @@ StatusBar_DrawCherries:
 
 	LDA <DigitsResult
 	ORA #$30
-	STA Status_Bar_Bottom + 20
+	STA Status_Bar_Bottom + 21
 	
 	LDA <DigitsResult + 1
 	ORA #$30
-	STA Status_Bar_Bottom + 19
+	STA Status_Bar_Bottom + 20
 
 StatusBar_DrawCherries1:
 	INC Bottom_Needs_Redraw
@@ -2560,6 +2559,13 @@ Game_UpdateExperience:
 	RTS
 
 Game_UpdateExperience1:
+	LDX Player_Badge
+	CPX #BADGE_XP
+	BNE Game_NoXpDouble
+
+	ASL A
+
+Game_NoXpDouble:
 	STA <CalcParam1
 
 	LDA #$00
@@ -2613,7 +2619,7 @@ StatusBar_DrawExperience:
 StatusBar_DrawExperience1:
 	LDA <DigitsResult, X
 	ORA #$30
-	STA Status_Bar_Bottom , Y
+	STA Status_Bar_Bottom + 1, Y
 	INX
 	DEY
 	BPL StatusBar_DrawExperience1
@@ -2637,6 +2643,13 @@ Game_UpdateCoins0:
 	STA <CalcParam1 + 1
 
 	LDA Coins_Earned
+	LDX Player_Badge
+	CPX #BADGE_COIN
+	BNE Coin_NoDouble
+
+	ASL A
+
+Coin_NoDouble:
 	STA <CalcParam2
 
 	LDA #$00
@@ -2688,7 +2701,7 @@ StatusBar_DrawCoins:
 StatusBar_DrawCoins1:
 	LDA <DigitsResult, X
 	ORA #$30
-	STA Status_Bar_Bottom + 8, Y
+	STA Status_Bar_Bottom + 9, Y
 	INX
 	DEY
 	BPL StatusBar_DrawCoins1
@@ -2706,7 +2719,7 @@ StatusBar_DrawStarsCollected:
 	INX
 
 StatusBar_DrawStars1:
-	STX Status_Bar_Top + 14
+	STX Status_Bar_Top + 15
 	LDX #$D6
 	PLA
 	PHA
@@ -2715,7 +2728,7 @@ StatusBar_DrawStars1:
 	INX
 
 StatusBar_DrawStars2:
-	STX Status_Bar_Top + 15
+	STX Status_Bar_Top + 16
 	LDX #$D6
 	PLA
 	AND Magic_Stars_Collected3, Y
@@ -2723,7 +2736,7 @@ StatusBar_DrawStars2:
 	INX
 
 StatusBar_DrawStars3:
-	STX Status_Bar_Top + 16
+	STX Status_Bar_Top + 17
 	INC Top_Needs_Redraw
 	RTS
 ;--------------------------------------
@@ -2757,17 +2770,17 @@ StatusBar_DrawDayNightMeter:
 
 StatusBar_DrawDayNightMeter1:
 	LDA DayNightIcon, X
-	STA Status_Bar_Top + 18
+	STA Status_Bar_Top + 19
 	
 	LDA DayNightTicker
 	ASL A
 	TAX
 	
 	LDA DayNightTiles, X
-	STA Status_Bar_Top + 19
+	STA Status_Bar_Top + 20
 	
 	LDA DayNightTiles + 1,X
-	STA Status_Bar_Top + 20
+	STA Status_Bar_Top + 21
 	INC Top_Needs_Redraw
 	RTS
 ;--------------------------------------
@@ -2818,7 +2831,7 @@ StatusBar_DrawBadge:
 
 ;--------------------------------------
 
-PUp_Reserve_Tiles:
+PowerUp_Reserve_Item:
 	.byte $FA, $FA, $FA, $FA ; $00
 	.byte $00, $01, $10, $11 ; $01
 	.byte $02, $03, $12, $13 ; $02
@@ -2832,9 +2845,19 @@ PUp_Reserve_Tiles:
 	.byte $6A, $6B, $7A, $7B ; $0A
 	.byte $9C, $9D, $AC, $AD ; $0B
 	.byte $9E, $9F, $AE, $AF ; $0C
-	.byte $FF, $FF, $FF, $FF ; $0D
-	.byte $FF, $FF, $FF, $FF ; $0E
-	.byte $6C, $6D, $7C, $7C ; $10
+	.byte $6E, $6F, $7C, $7D ; $0D
+	.byte $6E, $6F, $7C, $7C ; $0E
+	.byte $6C, $6D, $7C, $7C ; $0F
+	.byte $FA, $ED, $98, $FA ; $10
+	.byte $DC, $DD, $8E, $8F ; $11
+	.byte $ED, $FA, $FA, $99; $12
+	.byte $EB, $8B, $EC, $9B; $13
+	.byte $FA, $89, $ED, $FA; $14
+	.byte $8C, $8D, $DC, $DD; $15
+	.byte $88, $FA, $FA, $ED; $16
+	.byte $8A, $EB, $9A, $EC; $17
+	.byte $DE, $DF, $DC, $DD; $18
+
 
 Game_UpdateReserve:
 	LDA PowerUp_Reserve
@@ -2853,16 +2876,16 @@ StatusBar_DrawReserve:
 	ASL A
 	TAX
 	
-	LDA PUp_Reserve_Tiles, X
+	LDA PowerUp_Reserve_Item, X
 	STA (Status_Bar_Top + 26)
 	
-	LDA (PUp_Reserve_Tiles + 1), X
+	LDA (PowerUp_Reserve_Item + 1), X
 	STA (Status_Bar_Top + 27)
 	
-	LDA PUp_Reserve_Tiles + 2, X
+	LDA PowerUp_Reserve_Item + 2, X
 	STA (Status_Bar_Bottom + 26)
 	
-	LDA (PUp_Reserve_Tiles + 3), X
+	LDA (PowerUp_Reserve_Item + 3), X
 	STA (Status_Bar_Bottom + 27)
 
 Item_ReserveRTS:

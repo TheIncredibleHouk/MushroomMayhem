@@ -152,8 +152,7 @@ Player_DoUpdate:
 	JSR CoinsEarnedBuffer
 	JSR Do_Air_Timer
 	JSR Do_PowerChange
-	JSR Try_Item_Reserve_Release
-	JSR Try_Use_Equipped
+	JSR Player_UseItem
 
 	LDA DayNightActive
 	BEQ NoTransition
@@ -1809,17 +1808,6 @@ PRG008_AC73:
 
 Normal_Jump:
 	STA <Temp_Var1
-
-	LDA Player_Badge
-	CMP #BADGE_JUMP
-	BNE Jump_Normal
-
-	LDA <Temp_Var1
-	SEC
-	SBC #$06
-	STA <Temp_Var1
-
-Jump_Normal:
 
 	LDA Player_EffectiveSuit
 	CMP #MARIO_FROG
@@ -4272,7 +4260,7 @@ Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 AirTimerRTS:	
 	RTS
 
-AirTicker: .byte $0B, $12
+AirTicker: .byte $0B, $0E
 
 CheckAirChange:
 	LDA Air_Time
@@ -4322,7 +4310,7 @@ NoChange:
 	RTS
 
 Power_TickChange:
-	.byte $07, $0A
+	.byte $07, $0E
 
 Do_PowerChange:				; Added code to increase/decrease the air time based on water
 	INC Power_Tick
@@ -4368,7 +4356,7 @@ Do_PowerChange3:
 
 Do_PUp_Proper:
 	LDA Player_Badge
-	CMP #BADGE_NOSHOORMS
+	CMP #BADGE_INVALID
 	BEQ PUp_RTS
 
 	LDA <Player_Suit
@@ -4908,111 +4896,6 @@ SetLastScrollDirection1:
 
 SetLastScrollDirection2:
 EquipNoUse:
-	RTS
-
-
-Try_Use_Equipped:
-	LDA Player_Badge
-	BEQ SetLastScrollDirection2
-	CMP #BADGE_COIN
-	BCS SetLastScrollDirection2
-
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ SetLastScrollDirection2
-
-	LDA <Pad_Input
-	AND #PAD_SELECT
-	BEQ SetLastScrollDirection2
-
-	LDA Player_Badge
-	JSR DynJump
-
-	.word EquipNoUse
-	.word StopWatch
-	.word StopWatch
-	.word SlowWatch
-	.word SlowWatch
-	.word PowBlock
-	.word PowBlock
-	.word PowBlock
-	.word StarManItem
-	.word StarManItem
-
-StopWatch:
-	DEC Player_Badge
-	LDA #$FF
-	STA Stop_Watch
-	RTS
-
-SlowWatch:
-	LDA #$FF
-	STA Slow_Watch
-	LDA Player_Badge
-	CMP #ITEM_SLOW2
-	BNE SlowWatch1
-	DEC Player_Badge
-	RTS
-
-SlowWatch1:
-	LDA #$00
-	STA Player_Badge
-	RTS
-	
-PowBlock:
-	LDA #$10
-	STA Level_Vibration
-	LDX #$04
-
-PowBlock0:
-	LDA Objects_State, X
-	CMP #OBJSTATE_NORMAL
-	BNE PowBlock1
-
-	LDA Objects_WeaponAttr, X	 ; Get this object's attribute flags
-	AND #ATTR_SHELLPROOF	 
-	BNE PowBlock1
-
-	JSR Object_PoofDie
-
-PowBlock1:
-	DEX
-	BPL PowBlock0
-
-
-	STA Slow_Watch
-	LDA Player_Badge
-	CMP #ITEM_POW1
-	BEQ PowBlock2
-	DEC Player_Badge
-	RTS
-
-PowBlock2:
-	LDA #$00
-	STA Player_Badge
-	RTS
-
-StarManItem:
-	;LDA Sound_QLevel1
-	;ORA #SND_LEVELPOWER
-	;STA Sound_QLevel1
-
-	;LDA Sound_QMusic2
-	;ORA #MUS2A_INVINCIBILITY
-	;STA Sound_QMusic2
-	; Player_StarInv = $E0
-	;LDA #$e0
-	;STA Player_StarInv
-	
-	;LDA Player_Badge
-	;CMP #ITEM_STAR2
-	;BNE StarManItem1
-	;DEC Player_Badge
-	RTS
-
-StarManItem1:
-	;LDA #$00
-	;STA Player_Badge
 	RTS
 
 

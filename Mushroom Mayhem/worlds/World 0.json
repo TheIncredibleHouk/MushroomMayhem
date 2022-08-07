@@ -675,7 +675,7 @@
       "BoundRectangle": "272,96,16,16"
     },
     {
-      "LevelId": "eb751a40-77ef-410f-962e-9ef1d16e53c3",
+      "LevelId": "cfcc0470-b205-448b-9246-3dd44dce3830",
       "X": 4,
       "Y": 4,
       "BoundRectangle": "64,64,16,16"
@@ -699,6 +699,12 @@
       "BoundRectangle": "32,96,16,16"
     }
   ],
-  "ObjectData": [],
+  "ObjectData": [
+    {
+      "GameObjectId": 207,
+      "X": 15,
+      "Y": 6
+    }
+  ],
   "CompressedData": "4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJQQlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJQQlJSUEJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUEJSUlJSUlJSUlJSU4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlBCUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSU"
 }

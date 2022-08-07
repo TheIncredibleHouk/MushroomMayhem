@@ -173,112 +173,142 @@ Messages_Lookup:
 	.word Game_Script_3_7
 	.word Game_Script_3_8
 	.word Game_Script_3_9
+	.word Badge_A_Explanation
+	.word Badge_B_Explanation
+	.word Badge_C_Explanation
+	.word Badge_D_Explanation
+	.word Badge_E_Explanation
+	.word Badge_F_Explanation
 
 Empty_Message:
 	.byte $00
 
 Messages_Table:
 Game_Script_1_A:                ;V 
-	.db "WIN 3 OUT OF 5 TO    "
-	.db "MAKE IT OUT ALIVE... "
+	.db "WIN 3 OUT OF 5 TO     "
+	.db "MAKE IT OUT ALIVE...  "
 
 Game_Script_1_1:                 
-	.db "COLLECT ALL THE COINS"
-	.db "IN 30 SECONDS        "
+	.db "COLLECT ALL THE COINS "
+	.db "IN 30 SECONDS         "
 
 Game_Script_1_2:
-	.db "DEFEAT 8   GOOMBAS   "
-	.db "IN 30 SECONDS        "
+	.db "DEFEAT 8   GOOMBAS    "
+	.db "IN 30 SECONDS         "
 
 Game_Script_1_3:
-	.db "COMPLETE THE SPRITE  "
-	.db "IN 30 SECONDS        "
+	.db "COMPLETE THE SPRITE   "
+	.db "IN 30 SECONDS         "
 
 Game_Script_1_4:
-	.db "BREAK ALL THE BRICKS "
-	.db "IN 45 SECONDS        "
+	.db "BREAK ALL THE BRICKS  "
+	.db "IN 45 SECONDS         "
 
 Game_Script_1_5:
-	.db "PLACE THE MUSHROOM   "
-	.db "BLOCKS IN 45 SECONDS "
+	.db "PLACE THE MUSHROOM    "
+	.db "BLOCKS IN 45 SECONDS  "
 
 Game_Script_2_A:                
-	.db "WITHIN 7, WIN 4. NOW "
-	.db "GO IN THE NEXT DOOR  "
+	.db "WITHIN 7, WIN 4. NOW  "
+	.db "GO IN THE NEXT DOOR   "
 
 Game_Script_2_1:                 
-	.db "COLLECT 20 COINS     "
-	.db "IN 30 SECONDS        "
+	.db "COLLECT 20 COINS      "
+	.db "IN 30 SECONDS         "
 
 Game_Script_2_2:
-	.db "DEFEAT 13 SPINIES AND"
-	.db "1 BUZZY IN 45 SECONDS"
+	.db "DEFEAT 13 SPINIES AND "
+	.db "1 BUZZY IN 45 SECONDS "
 
 Game_Script_2_3:	
-	.db "COMPLETE THE SPRITE  "
-	.db "IN 60 SECONDS        "
+	.db "COMPLETE THE SPRITE   "
+	.db "IN 60 SECONDS         "
 
 Game_Script_2_4:
-	.db "BREAK ALL THE BRICKS "
-	.db "IN 35 SECONDS        "
+	.db "BREAK ALL THE BRICKS  "
+	.db "IN 35 SECONDS         "
 
 Game_Script_2_5:
-	.db "PLACE THE MUSHROOM   "
-	.db "BLOCKS IN 35 SECONDS "
+	.db "PLACE THE MUSHROOM    "
+	.db "BLOCKS IN 35 SECONDS  "
 
 Game_Script_2_6:
-	.db "HIT ALL THE SWITCHES "
-	.db "IN 20 SECONDS        "
+	.db "HIT ALL THE SWITCHES  "
+	.db "IN 20 SECONDS         "
 
 Game_Script_2_7:
-	.db "FIND THE POWERUP     "
-	.db "IN 3 SECONDS         "
+	.db "FIND THE POWERUP      "
+	.db "IN 3 SECONDS          "
 
 Game_Script_3_A:
-	.db "9 GAMES, THINK FAST  "
-	.db "OR YOU WILL NOT LAST "
+	.db "9 GAMES, THINK FAST   "
+	.db "OR YOU WILL NOT LAST  "
 
 Game_Script_3_1:
-	.db "COLLECT 64 COINS IN  "
-	.db "5 SECONDS            "
+	.db "COLLECT 64 COINS IN   "
+	.db "5 SECONDS             "
 
 Game_Script_3_2:
-	.db "DEFEAT 3 PIRANHA     "
-	.db "PLANTS IN 5 SECONDS  "
+	.db "DEFEAT 3 PIRANHA      "
+	.db "PLANTS IN 5 SECONDS   "
 
 Game_Script_3_3:	
-	.db "COMPLETE THE SPRITE  "
-	.db "IN 5 SECONDS         "
+	.db "COMPLETE THE SPRITE   "
+	.db "IN 5 SECONDS          "
 
 Game_Script_3_4:
-	.db "BREAK ALL THE BRICKS "
-	.db "IN 5 SECONDS         "
+	.db "BREAK ALL THE BRICKS  "
+	.db "IN 5 SECONDS          "
 
 Game_Script_3_5:
-	.db "PLACE THE MUSHROOM   "
-	.db "BLOCKS IN 7 SECONDS  "
+	.db "PLACE THE MUSHROOM    "
+	.db "BLOCKS IN 7 SECONDS   "
 
 Game_Script_3_6:
-	.db "HIT ALL THE SWITCHES "
-	.db "IN 5 SECONDS         "
+	.db "HIT ALL THE SWITCHES  "
+	.db "IN 5 SECONDS          "
 
 
 Game_Script_3_7:
-	.db "FIND THE POWERUP     "
-	.db "IN 3 SECONDS         "
+	.db "FIND THE POWERUP      "
+	.db "IN 3 SECONDS          "
 
 Game_Script_3_8:
-	.db "AVOID FIREBALLS FOR  "
-	.db "30 SECONDS           "
+	.db "AVOID FIREBALLS FOR   "
+	.db "30 SECONDS            "
 
 Game_Script_3_9:
-	.db "MAKE IT TO THE DOOR  "
-	.db "IN 10 SECONDS        "
+	.db "MAKE IT TO THE DOOR   "
+	.db "IN 10 SECONDS         "
+
+Badge_A_Explanation:
+	.db "OLD POWERUP GOES INTO "
+	.db "RESERVE, SELECT TO USE"
+
+Badge_B_Explanation:
+	.db "ALL XP EARNED IS      "
+	.db "DOUBLED               "
+
+Badge_C_Explanation:
+	.db "FIND MAGIC STARS,     "
+	.db "ERASES RESERVED ITEM  "
+
+Badge_D_Explanation:
+	.db "DOUBLE LENGTH P METER "
+	.db "POWER USAGE           "
+
+Badge_E_Explanation:
+	.db "ALL COINS COLLECTED   "
+	.db "ARE DOUBLED           "
+
+Badge_F_Explanation:
+	.db "AIR METER LASTS MUCH  "
+	.db "LONGER                "
 
 Message_Low = Temp_Var1
 Message_Hi = Temp_Var2
 Message_Text_Top = Status_Bar_Top
-Message_Text_Bottom = Status_Bar_Bottom - 21
+Message_Text_Bottom = Status_Bar_Bottom - 22
 
 Messages_Display:
 	LDA Message_Id
@@ -313,7 +343,7 @@ Messages_DisplayDraw:
 
 Message_Load:	
 	LDA [Message_Low], Y
-	CPY #21
+	CPY #22
 	BCS Message_Write_Bottom
 
 	STA Message_Text_Top, Y
@@ -324,14 +354,14 @@ Message_Write_Bottom:
 
 Message_Loop:
 	INY
-	CPY #42
+	CPY #44
 	BCC Message_Load
 	RTS
 
 Message_Fill:
 	LDA #$20
 
-	CPY #$21
+	CPY #$22
 	BCS Message_Fill_Bottom
 	STA Message_Text_Top, Y
 	JMP Message_Fill_Loop
@@ -341,7 +371,7 @@ Message_Fill_Bottom:
 
 Message_Fill_Loop:	
 	INY
-	CPY #42
+	CPY #44
 	BCC Message_Fill
 
 Messages_DisplayRTS:	
