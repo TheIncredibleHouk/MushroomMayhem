@@ -1818,7 +1818,6 @@ Jump_NotFrog:
 	LDX Player_AllowAirJump
 	BEQ Set_JumpVel
 
-	STA Debug_Snap
 	LDX #$00
 	STX Player_AllowAirJump
 
@@ -4514,6 +4513,14 @@ DoCountDown:
 	BNE NoCountDown
 
 	DEC CompleteLevelTimer
+	LDA CompleteLevelTimer
+	CMP #$02
+	BCS CountDownNoClear
+
+	LDA #$00
+	STA Message_Id
+
+CountDownNoClear:	
 	BMI EndLevel
 
 NoCountDown:

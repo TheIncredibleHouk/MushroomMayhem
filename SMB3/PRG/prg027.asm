@@ -185,6 +185,11 @@ Messages_Lookup:
 	.word Badge_D_Explanation
 	.word Badge_E_Explanation
 	.word Badge_F_Explanation
+	.word Level_Up1
+	.word Level_Up2
+	.word Level_Up3
+	.word Level_Up4
+	.word Level_Up5
 
 Empty_Message:
 	.byte $00
@@ -310,6 +315,26 @@ Badge_E_Explanation:
 Badge_F_Explanation:
 	.db "AIR METER LASTS MUCH  "
 	.db "LONGER                "
+
+Level_Up1:
+	.db "TAKE AN EXTRA HIT WHEN"
+	.db "FULLY POWERED UP      "
+
+Level_Up2:
+	.db "START LEVELS AS SUPER "
+	.db "WHEN NO POWERUP       "
+
+Level_Up3:
+	.db "ITEM BLOCKS ALWAYS    "
+	.db "CONTAIN FULL POWERUP  "
+
+Level_Up4:
+	.db "DOUBLE LENGTH OF TIME "
+	.db "TO RECOVER WHEN HIT   "
+
+Level_Up5:
+	.db "ENABLE THE ABILITY TO "
+	.db "DOUBLE JUMP           "
 
 Message_Low = Temp_Var1
 Message_Hi = Temp_Var2

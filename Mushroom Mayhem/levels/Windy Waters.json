@@ -6497,163 +6497,11 @@
     97,
     97
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 26,
-      "X": 16,
-      "Y": 7,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 5,
-      "X": 7,
-      "Y": 21,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 62,
-      "X": 27,
-      "Y": 20,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 60,
-      "X": 27,
-      "Y": 20,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 69,
-      "X": 42,
-      "Y": 17,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 69,
-      "X": 60,
-      "Y": 18,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 67,
-      "X": 85,
-      "Y": 21,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 63,
-      "X": 78,
-      "Y": 16,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 12,
-      "X": 4,
-      "Y": 5,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 69,
-      "X": 99,
-      "Y": 14,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 13,
-      "X": 117,
-      "Y": 4,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 60,
-      "X": 107,
-      "Y": 16,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 60,
-      "X": 121,
-      "Y": 24,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 60,
-      "X": 121,
-      "Y": 23,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 69,
-      "X": 129,
-      "Y": 8,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 69,
-      "X": 139,
-      "Y": 3,
-      "Property": 3
-    },
-    {
-      "GameObjectId": 69,
-      "X": 156,
-      "Y": 18,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 62,
-      "X": 175,
-      "Y": 18,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 9,
-      "X": 178,
-      "Y": 14,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 14,
-      "X": 148,
-      "Y": 7,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 65,
-      "X": 213,
-      "Y": 11,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 68,
-      "X": 212,
-      "Y": 24,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 9,
-      "X": 228,
-      "Y": 4,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 69,
-      "X": 231,
-      "Y": 16,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 26,
-      "X": 228,
-      "Y": 5,
-      "Property": 0
-    }
-  ],
   "FirstObjectData": [
     {
       "GameObjectId": 26,
-      "X": 16,
-      "Y": 7,
+      "X": 2,
+      "Y": 13,
       "Property": 0
     },
     {
@@ -6843,5 +6691,5 @@
       "BoundRectangle": "48,352,32,32"
     }
   ],
-  "CompressedData": "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"
+  "CompressedData": "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"
 }

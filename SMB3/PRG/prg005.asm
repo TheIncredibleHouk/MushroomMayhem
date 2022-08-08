@@ -17,6 +17,7 @@ OBJ_PANSER			= $5C
 OBJ_SMASH			= $5D
 OBJ_BLOOPER			= $5E
 OBJ_TENTACLE		= $5F
+OBJ_TRAININGSHOP	= $60
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51
@@ -34,7 +35,7 @@ OBJ_TENTACLE		= $5F
     .word ObjInit_Smash ; Object $5D
     .word ObjInit_Blooper ; Object $5E
     .word ObjInit_Tentacle ; Object $5F
-    .word ObjInit_DoNothing ; Object $60
+    .word ObjInit_TrainingShop ; Object $60
     .word ObjInit_DoNothing ; Object $61
     .word ObjInit_DoNothing ; Object $62
     .word ObjInit_DoNothing ; Object $63
@@ -58,7 +59,7 @@ OBJ_TENTACLE		= $5F
 	.word ObjNorm_Smash ; Object $5D
 	.word ObjNorm_Blooper ; Object $5E
 	.word ObjNorm_Tentacle ; Object $5F
-	.word ObjNorm_DoNothing ; Object $60
+	.word ObjNorm_TrainingShop ; Object $60
 	.word ObjNorm_DoNothing ; Object $61
 	.word ObjNorm_DoNothing ; Object $62
 	.word ObjNorm_DoNothing ; Object $63
@@ -104,10 +105,10 @@ OBJ_TENTACLE		= $5F
 	.byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH24 ; Object $5D
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5E
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $5F
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $60
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $60
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $61
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $62
-	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $63
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $63
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -127,7 +128,7 @@ OBJ_TENTACLE		= $5F
 	.byte OPTS_SETPT5 | $12 ; Object $5D
 	.byte OPTS_SETPT5 | $1A ; Object $5E
 	.byte OPTS_SETPT5 | $1A ; Object $5F
-	.byte OPTS_NOCHANGE ; Object $60
+	.byte OPTS_SETPT5 | $23 ; Object $60
 	.byte OPTS_NOCHANGE ; Object $61
 	.byte OPTS_NOCHANGE ; Object $62
 	.byte OPTS_NOCHANGE ; Object $63
@@ -244,6 +245,9 @@ ObjP5F:
 	.byte $93, $BF
 
 ObjP60:
+	.byte $A5, $A7
+	.byte $A9, $AB
+
 ObjP61:
 ObjP62:
 ObjP63:
@@ -4042,3 +4046,263 @@ Tentacle_DrawLoop:
 
 Tentacle_DrawRTS:
 	RTS
+
+
+TrainingShop_InstructionsDrawn = Objects_Data1
+
+ObjInit_TrainingShop:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
+	JMP Object_NoInteractions
+
+ObjNorm_TrainingShop:
+
+	LDA TrainingShop_InstructionsDrawn, X
+	BNE TrainingShop_Norm
+
+	JSR TrainingShop_WriteInstructions
+	JMP TrainingShop_Draw
+
+TrainingShop_Norm:
+	JMP TrainingShop_Draw
+
+
+Training_ExpRequirements:
+	.word $03EB
+	.word $09C4
+	.word $2710
+	.word $61A8
+	.word $C350
+
+TrainingShop_WriteInstructions:
+	LDA Player_Level
+	CMP #ABILITY_MAX
+	BNE TrainingShop_CheckExp
+	JMP TrainingShop_NoMore
+
+TrainingShop_CheckExp:
+	ASL A
+	TAY
+	
+	LDA #$00
+	STA <CalcParam1 + 2
+
+	LDA Training_ExpRequirements, Y
+	STA <CalcParam1 
+
+	LDA Training_ExpRequirements + 1, Y
+	STA <CalcParam1 + 1
+
+	LDA Player_Experience
+	STA <CalcParam2
+
+	LDA Player_Experience + 1
+	STA <CalcParam2 + 1
+
+	LDA Player_Experience + 2
+	STA <CalcParam2 + 2
+
+	JSR Subtract3ByteValue
+
+	LDA CalcResult + 2
+	BMI TrainingShop_HasEnough
+
+	JMP TrainingShop_WriteNotEnough
+
+TrainingShop_HasEnough:
+	JMP TrainingShop_EnterLevel	
+
+TrainingShop_NotEnough:
+	.byte $29, $87, 14
+	.db "YOU NEED 00000"
+
+	.byte $29, $A7, 13
+	.db "MORE XP, COME"
+
+	.byte $29, $C7, 10
+	.db "BACK LATER"
+
+	.byte $00	
+
+Buffer_Backup = Objects_Data2
+
+TrainingShop_WriteNotEnough:
+	LDA Graphics_BufCnt
+	STA Buffer_Backup,  X
+	BNE TrainingShop_NotEnoughLoopRTS
+	
+	LDX #$00
+	TAY
+
+TrainingShop_NotEnoughLoop:	
+	LDA TrainingShop_NotEnough, X
+	STA Graphics_Buffer, Y
+	INY 
+	INX
+
+	CPX #46
+	BCC TrainingShop_NotEnoughLoop
+
+	TYA
+	ADD Graphics_BufCnt
+	STA Graphics_BufCnt
+
+	LDX <CurrentObjectIndexZ
+	INC TrainingShop_InstructionsDrawn, X
+
+	LDA Player_Level
+	ASL A
+	TAX
+
+	LDA Training_ExpRequirements, X
+	STA <DigitsParam 
+
+	LDA Training_ExpRequirements + 1, X
+	STA <DigitsParam + 1
+
+	JSR BytesTo5Digits
+
+	LDX <CurrentObjectIndexZ
+
+	LDA Buffer_Backup, X
+	TAY 
+	LDA DigitsResult + 3
+	ORA #$30
+	STA Graphics_Buffer + 13, Y
+
+	LDA DigitsResult + 2
+	ORA #$30
+	STA Graphics_Buffer + 14, Y
+
+	LDA DigitsResult + 1
+	ORA #$30
+	STA Graphics_Buffer + 15, Y
+
+	LDA DigitsResult
+	ORA #$30
+	STA Graphics_Buffer + 16, Y
+
+	LDX <CurrentObjectIndexZ
+
+TrainingShop_NotEnoughLoopRTS:
+	RTS
+
+TrainingShop_EnterLevelText:
+	.byte $29, $87, 11
+	.db "YOU MAY NOW"
+
+	.byte $29, $A7, 10
+	.db "PROCEED TO"
+
+	.byte $29, $C7, 12
+	.db "THE TRAINING"
+
+	.byte $00	
+
+Training_DoorX
+	.byte $40, $60, $70, $90, $A0
+
+Training_DoorY:
+	.byte $90, $20, $90, $20, $90
+
+TrainingShop_EnterLevel:
+	LDY Player_Level
+	
+	LDA Training_DoorX, Y
+	STA Block_ChangeX
+	STA <Poof_X
+
+	LDA #$00
+	STA Block_ChangeXHi
+
+	LDA Training_DoorY, Y
+	STA Block_ChangeY
+	STA <Poof_Y
+	
+	LDA #$01
+	STA Block_ChangeYHi
+
+	LDA #$38
+	STA Block_UpdateValue
+	STA Block_NeedsUpdate
+
+	JSR Common_MakePoof
+
+	LDY Graphics_BufCnt
+	BNE TrainingShop_EnterLevelRTS
+	
+	LDX #$00
+
+TrainingShop_EnterLevelLoop:	
+	LDA TrainingShop_EnterLevelText, X
+	STA Graphics_Buffer, Y
+	INY 
+	INX
+
+	CPX #42
+	BCC TrainingShop_EnterLevelLoop
+
+	TYA
+	ADD Graphics_BufCnt
+	STA Graphics_BufCnt
+
+	LDX <CurrentObjectIndexZ
+	INC TrainingShop_InstructionsDrawn, X
+
+TrainingShop_EnterLevelRTS:
+	RTS
+
+TrainingShop_NoMoreText:
+	.byte $29, $87, 11
+	.db "THERE IS NO"
+
+	.byte $29, $A7, 16
+	.db "FURTHER TRAINING"
+
+	.byte $00	
+
+TrainingShop_NoMore:
+	LDY Graphics_BufCnt
+	BNE TrainingShop_NoMoreRTS
+	
+	LDX #$00
+
+TrainingShop_NoMoreLoop:	
+	LDA TrainingShop_NoMoreText, X
+	STA Graphics_Buffer, Y
+	INY 
+	INX
+
+	CPX #33
+	BCC TrainingShop_NoMoreLoop
+
+	TYA
+	ADD Graphics_BufCnt
+	STA Graphics_BufCnt
+
+	LDX <CurrentObjectIndexZ
+	INC TrainingShop_InstructionsDrawn, X
+
+TrainingShop_NoMoreRTS:
+	RTS		
+
+TrainingShop_Draw:
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	JSR Object_Draw
+
+	INC Objects_Frame, X
+
+	LDA Object_SpriteRAMOffset, X
+	ADD #$08
+	STA Object_SpriteRAMOffset, X
+
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+	JSR Object_Draw
+	RTS		

@@ -552,7 +552,7 @@
       "Renamed": false,
       "IndexedColors": [
         15,
-        0,
+        15,
         48,
         16,
         15,
@@ -5449,7 +5449,7 @@
         15,
         15,
         48,
-        6,
+        39,
         15,
         15,
         48,
@@ -5461,6 +5461,45 @@
       ],
       "Name": "Training Shop",
       "Id": "33fb56c6-d711-4469-8359-67ee5ea8a7dd"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        15,
+        48,
+        6,
+        15,
+        15,
+        48,
+        39,
+        15,
+        15,
+        48,
+        26,
+        15,
+        15,
+        48,
+        17,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        15,
+        48,
+        42,
+        15,
+        15,
+        54,
+        39
+      ],
+      "Name": "Training Grounds-1",
+      "Id": "3c30e639-4d0a-4974-bd84-9ac631b781dc"
     }
   ],
   "WorldInfo": [
@@ -5500,7 +5539,7 @@
           "DisplayName": "(Level) Warp Zone"
         },
         {
-          "Size": 152,
+          "Size": 150,
           "Name": "The Powerup Emporium",
           "Id": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
           "LastModified": "2018-10-28T10:42:10.224453-04:00",
@@ -5509,7 +5548,7 @@
           "DisplayName": "(Level) The Powerup Emporium"
         },
         {
-          "Size": 158,
+          "Size": 156,
           "Name": "The Badge Hut",
           "Id": "bd30da54-924b-4274-a74c-93f1b5b1a671",
           "LastModified": "0001-01-01T00:00:00",
@@ -5518,11 +5557,31 @@
           "DisplayName": "(Level) The Badge Hut"
         },
         {
-          "Size": 130,
+          "Size": 148,
           "Name": "The Training Grounds",
           "Id": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Size": 404,
+              "Name": "Training Grounds-1",
+              "Id": "feac509a-e3e0-4c75-a01f-e52fade993dc",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [
+                {
+                  "Size": 44,
+                  "Name": "Training Grounds-1-End",
+                  "Id": "fe239a67-7a45-4db6-82da-0d592c2c7178",
+                  "LastModified": "0001-01-01T00:00:00",
+                  "SublevelsInfo": [],
+                  "InfoType": 1,
+                  "DisplayName": "(Level) Training Grounds-1-End"
+                }
+              ],
+              "InfoType": 1,
+              "DisplayName": "(Level) Training Grounds-1"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) The Training Grounds"
         }
@@ -5538,32 +5597,32 @@
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
-          "Size": 1638,
-          "Name": "Waterway Wash",
+          "Size": 1637,
+          "Name": "Super Soggy Start",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
           "SublevelsInfo": [
             {
               "Size": 443,
-              "Name": "Waterway Wash-Bonus",
+              "Name": "Super Soggy Start-1",
               "Id": "85b0fee4-c23a-4d1f-9f0b-b256421547f5",
               "LastModified": "2019-05-24T20:25:56.6878235-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Waterway Wash-Bonus"
+              "DisplayName": "(Level) Super Soggy Start-1"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Waterway Wash"
+          "DisplayName": "(Level) Super Soggy Start"
         },
         {
-          "Size": 320,
+          "Size": 399,
           "Name": "Key Coin Caverns",
           "Id": "747d617e-59bb-40d5-a9fc-f558dc5fadd8",
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2754,
+              "Size": 2878,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -5633,7 +5692,7 @@
           "DisplayName": "(Level) Turnip Toss Tussle"
         },
         {
-          "Size": 1598,
+          "Size": 1600,
           "Name": "Windy Waters",
           "Id": "ae704d35-4b12-49d3-b370-56c5554cf3f3",
           "LastModified": "2019-05-26T10:38:27.5775602-04:00",
@@ -29415,7 +29474,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 143,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -30087,11 +30146,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 202,
+          "UpperLeft": 69,
+          "UpperRight": 70,
+          "LowerLeft": 85,
+          "LowerRight": 86
         },
         {
           "Property": 192,
@@ -30668,18 +30727,18 @@
           "LowerRight": 252
         },
         {
-          "Property": 4,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "Property": 79,
+          "UpperLeft": 42,
+          "UpperRight": 43,
+          "LowerLeft": 58,
+          "LowerRight": 59
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 40,
+          "UpperRight": 41,
+          "LowerLeft": 56,
+          "LowerRight": 57
         }
       ]
     },
@@ -32751,18 +32810,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "Property": 192,
+          "UpperLeft": 132,
+          "UpperRight": 169,
+          "LowerLeft": 148,
+          "LowerRight": 171
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "Property": 192,
+          "UpperLeft": 168,
+          "UpperRight": 135,
+          "LowerLeft": 170,
+          "LowerRight": 151
         },
         {
           "Property": 0,
@@ -32969,24 +33028,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "UpperLeft": 188,
+          "UpperRight": 189,
+          "LowerLeft": 204,
+          "LowerRight": 205
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "UpperLeft": 190,
+          "UpperRight": 191,
+          "LowerLeft": 206,
+          "LowerRight": 207
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "Property": 13,
+          "UpperLeft": 92,
+          "UpperRight": 93,
+          "LowerLeft": 94,
+          "LowerRight": 95
         },
         {
           "Property": 0,
@@ -34653,8 +34712,8 @@
           "Property": 8,
           "UpperLeft": 166,
           "UpperRight": 167,
-          "LowerLeft": 200,
-          "LowerRight": 201
+          "LowerLeft": 182,
+          "LowerRight": 183
         },
         {
           "Property": 13,
@@ -38940,8 +38999,8 @@
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x6800",
-          "TileValue": "0x26",
+          "TileTableAddress": "0x8C00",
+          "TileValue": "0x2C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
           "PaletteIndex": 2,
@@ -38952,8 +39011,8 @@
           "PropertiesAppliedTo": null,
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0x6800",
-          "TileValue": "0x26",
+          "TileTableAddress": "0x8C00",
+          "TileValue": "0x2C",
           "HorizontalFlip": true,
           "VerticalFlip": true,
           "PaletteIndex": 2,
@@ -38986,8 +39045,7 @@
         }
       ],
       "Properties": [
-        "Won't force graphics change.",
-        "Will force graphics change.",
+        "Single Bubble",
         "Regenerates"
       ],
       "Group": "Sea Enemies"
@@ -46919,7 +46977,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -12,
+          "X": 20,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46933,7 +46991,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -28,
+          "X": 36,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46947,7 +47005,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -44,
+          "X": 52,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46961,7 +47019,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -60,
+          "X": 68,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46975,7 +47033,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -76,
+          "X": 84,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46989,7 +47047,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -92,
+          "X": 100,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -47003,7 +47061,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -108,
+          "X": 116,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -47017,7 +47075,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -124,
+          "X": 132,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -50968,35 +51026,59 @@
     {
       "GameId": 96,
       "GameObjectType": 1,
-      "Name": "Unused x60",
+      "Name": "Training Shop",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x24",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x26",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x28",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x8c00",
+          "TileValue": "0x2A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Shop"
     },
     {
       "GameId": 97,
@@ -56211,92 +56293,43 @@
     {
       "GameId": 154,
       "GameObjectType": 1,
-      "Name": "Training Shop",
-      "Sprites": [
-        {
-          "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x8c00",
-          "TileValue": "0x24",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x8c00",
-          "TileValue": "0x26",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x8c00",
-          "TileValue": "0x28",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x8c00",
-          "TileValue": "0x2A",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        }
-      ],
+      "Name": "Unused",
+      "Sprites": [],
       "Properties": [],
-      "Group": "Shop"
+      "Group": "Unused"
     },
     {
       "GameId": 155,
       "GameObjectType": 1,
-      "Name": "Unused x9B",
+      "Name": "Level Up Mushroom",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 2,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x24000",
+          "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 2,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Global"
     },
     {
       "GameId": 156,

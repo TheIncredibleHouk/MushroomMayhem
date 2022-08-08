@@ -1636,12 +1636,15 @@ Swing_DrawAttach:
 
 Swing_DrawBlock:
 	LDA SwingAnchor_X, X
+	SUB #$04
 	STA <Point_RelativeX
 
 	LDA SwingAnchor_X, X
+	SUB #$04
 	STA <Point_X
 
 	LDA SwingAnchor_XHi, X
+	SBC #$00
 	STA <Point_XHi
 
 	LDA SwingAnchor_Y, X

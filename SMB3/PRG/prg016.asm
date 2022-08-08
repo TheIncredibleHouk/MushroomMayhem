@@ -15,6 +15,7 @@ OBJ_ICESPAWN			= $96
 OBJ_MUNCHER			    = $97
 OBJ_ITEMSHOP			= $98
 OBJ_BADGESHOP			= $99
+OBJ_LEVELUPMUSHROOM		= $9B
 OBJ_GAMESCRIPT			= $9F
 
     .word ObjInit_HammerBro ; Object $8C
@@ -32,7 +33,7 @@ OBJ_GAMESCRIPT			= $9F
     .word ObjInit_ItemShop ; Object $98
     .word ObjInit_BadgeShop ; Object $99
     .word ObjInit_DoNothing ; Object $9A
-    .word ObjInit_DoNothing ; Object $9B
+    .word ObjInit_GoldMushroom ; Object $9B
     .word ObjInit_DoNothing ; Object $9C
     .word ObjInit_DoNothing ; Object $9D
     .word ObjInit_DoNothing ; Object $9E
@@ -54,8 +55,8 @@ OBJ_GAMESCRIPT			= $9F
     .word ObjNorm_Muncher ; Object $97
     .word ObjNorm_ItemShop ; Object $98
     .word ObjNorm_BadgeShop ; Object $99
-    .word ObjNorm_DoNothing ; Object $9A
-    .word ObjNorm_DoNothing ; Object $9B
+    .word ObjInit_DoNothing ; Object $9A
+    .word ObjNorm_GoldMushoom ; Object $9B
     .word ObjNorm_DoNothing ; Object $9C
     .word ObjNorm_DoNothing ; Object $9D
     .word ObjNorm_DoNothing ; Object $9E
@@ -78,7 +79,7 @@ OBJ_GAMESCRIPT			= $9F
     .word ObjHit_DoNothing ; Object $98
     .word ObjHit_DoNothing ; Object $99
     .word ObjHit_DoNothing ; Object $9A
-    .word ObjHit_DoNothing ; Object $9B
+    .word GoldMushroom_Collect ; Object $9B
     .word ObjHit_DoNothing ; Object $9C
     .word ObjHit_DoNothing ; Object $9D
     .word ObjHit_DoNothing ; Object $9E
@@ -101,7 +102,7 @@ OBJ_GAMESCRIPT			= $9F
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $98
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $99
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9A
-    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9B
+    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9B
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9C
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9D
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $9E
@@ -211,7 +212,11 @@ ObjP99:
 	.byte $A9, $AB
 
 ObjP9A:
+	.byte $51, $53
+
 ObjP9B:
+	.byte $51, $53
+
 ObjP9C:
 ObjP9D:
 ObjP9E:
@@ -278,6 +283,14 @@ HammerBro_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	
+		
+	LDA HammerBro_FallThrough, X
+	BEQ HammerBro_DetFloor
+
+	DEC HammerBro_FallThrough, X
+	JMP HammerBro_SkipTiles
+
+HammerBro_DetFloor:
 	LDA <Objects_TilesDetectZ, X
 	AND #~HIT_CEILING
 	STA <Objects_TilesDetectZ, X
@@ -899,6 +912,7 @@ NinjaBro_ThrowDone:
 	RTS
 
 Bro_CheckTop:
+	STA Debug_Snap
 	LDA Objects_BoundBottom, X
 	ADD #$14
 	STA Tile_DetectionY
@@ -939,6 +953,7 @@ Bro_NotTop:
 	LSR A
 	LSR A
 	TAY
+
 Bro_RTS:
 	RTS    
 
@@ -1333,7 +1348,7 @@ Spintula_Wait:
 	BNE Spintula_WaitRTS
 	
 	JSR Object_XDistanceFromPlayer
-	CMP #$28
+	CMP #$30
 	
 	BCS Spintula_WaitRTS
 	INC Spintula_Action, X
@@ -4917,4 +4932,64 @@ Stage_3_9_Dim:
 Stage_3_9RTS:
 	RTS
 	
+
+LevelUp_Messages:
+	.byte $00
+	 MSG_ID Level_Up1
+	 MSG_ID Level_Up2
+	 MSG_ID Level_Up3
+	 MSG_ID Level_Up4
+	 MSG_ID Level_Up5
+
+ObjInit_GoldMushroom
+	JSR Object_CalcBoundBoxForced
+	JSR Object_MoveAwayFromPlayer
+	JMP Object_NoInteractions
+
+ObjNorm_GoldMushoom:
+	LDA <Player_HaltGameZ
+	BEQ GoldMushroom_Do
+
+	JMP Object_Draw
+
+GoldMushroom_Do:
+	LDA #$00
+	STA SprAnimOffset
+
+	JSR Object_DeleteOffScreen
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Object_DetectPlayer
+	JSR Object_InteractWithPlayer
+
+	JMP Object_Draw
+
+GoldMushroom_Collect:
+	LDY #$04
+
+GoldMushroom_Loop:	
+	CPY <CurrentObjectIndexZ
+	BEQ GoldMushroom_NoDelete
+
+	LDA #$00
+	STA Objects_ID, Y
+
+GoldMushroom_NoDelete:	
+	DEY
+	BPL GoldMushroom_Loop
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVEL1UP
+	STA Sound_QLevel1
+
+	INC Player_Level
+	LDY Player_Level
 	
+	LDA LevelUp_Messages, Y
+	STA Message_Id
+
+	LDA #$80
+	STA CompleteLevelTimer
+	JMP Object_Delete

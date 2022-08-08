@@ -192,7 +192,8 @@ ObjP06:
 	.byte $F9, $FB
 
 ObjP07:
-	.byte $A7, $A7, $A9, $A9, $AB, $AB, $8D, $8D, $8F, $8F, $91, $91	
+	.byte $AD, $AD, $AF, $AF, $B1, $B1, $B3, $B3, $B5, $B5, $B7, $B7
+	.byte $ED, $ED, $EF, $EF, $F1, $F1, $F3, $F3, $F5, $F5, $F7, $F7
 
 ObjP08:
 	.byte $69, $7D
@@ -1215,7 +1216,7 @@ ObjNorm_CoinLock1:
 	EOR #$01
 	TAY
 
-	LDA #$4D
+	LDA #$23
 	STA PatTable_BankSel + 4, Y
 
 DrawCoinLock0:
@@ -1350,18 +1351,6 @@ ObjInit_Bubble:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA Objects_Property, X
-	BEQ Bubble_NoGraphics
-
-
-Bubble_NoRegen:
-	LDA #$1A
-	STA PatTable_BankSel + 4
-
-	LDA #$00
-	STA LastPatTab_Sel
-
-Bubble_NoGraphics:
 	LDA <Objects_XZ, X
 	STA Bubble_RegenX, X
 
@@ -1380,6 +1369,13 @@ Bubble_NoGraphics:
 
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
+
+	LDA LastPatTab_Sel
+	AND #$01
+	TAY
+
+	LDA Bubble_FrameOffset, Y
+	STA Objects_Frame, X
 	RTS		 ; Return
 
 Bubble_Action = Objects_Data2
@@ -1392,6 +1388,12 @@ Bubble_RegenYHi = Objects_Data8
 
 
 ObjNorm_Bubble:
+	LDA LastPatTab_Sel
+	AND #$01
+	TAY
+
+	LDA #$23
+	STA PatTable_BankSel + 4, Y
 	INC ObjSplash_Disabled, X
 	
 	LDA Bubble_Action, X
@@ -1424,6 +1426,7 @@ Bubble_FloatNormal:
 	INC Bubble_Action, X
 
 Draw_Bubble:
+
 	JSR Object_DrawMirrored
 
 	LDY Object_SpriteRAMOffset,X
@@ -1440,13 +1443,17 @@ Bubble_Hit:
 	RTS
 
 Bubble_Pop:
+	LDA LastPatTab_Sel
+	AND #$01
+	TAY
+
 	INC Bubble_PopTimer, X
 	LDA Bubble_PopTimer, X
 	CMP #$0C
 	BNE Bubble_PopDraw
 
 	LDA Objects_Property, X
-	CMP #$02
+	CMP #$01
 	BNE Bubble_PopDelete
 	
 	INC Bubble_Action, X
@@ -1461,11 +1468,16 @@ Bubble_Pop:
 Bubble_PopDelete:
 	JMP Object_Delete
 
+Bubble_FrameOffset:
+	.byte $00, $06
+
 Bubble_PopDraw:
 	LSR A
 	LSR A
 	AND #$03
+	ADD Bubble_FrameOffset, Y
 	STA Objects_Frame, X
+
 	JMP Draw_Bubble
 
 Bubble_Wait:
@@ -1490,6 +1502,10 @@ Bubble_WaitRTS:
 	RTS
 
 Bubble_Regenerate:
+	LDA LastPatTab_Sel
+	AND #$01
+	TAY
+
 	INC Bubble_GeneratorTimer, X
 	LDA Bubble_GeneratorTimer, X
 	CMP #$18
@@ -1498,6 +1514,12 @@ Bubble_Regenerate:
 	LDA #$00
 	STA Bubble_Action, X
 	STA Bubble_GeneratorTimer, X
+
+	LDA LastPatTab_Sel
+	AND #$01
+	TAY
+
+	LDA Bubble_FrameOffset, Y
 	STA Objects_Frame, X
 	
 	JMP Draw_Bubble
@@ -1508,6 +1530,8 @@ Bubble_RegenerateDraw:
 	LSR A
 	AND #$03
 	ADD #$03
+
+	ADD Bubble_FrameOffset, Y
 	STA Objects_Frame, X
 	JMP Object_DrawMirrored	
 
@@ -2205,8 +2229,7 @@ CheckEnemies:
 	BEQ NoCheck
 
 	LDA Objects_ID, Y
-	CMP #OBJ_STARPIECE
-	BEQ Check_Done
+	BNE Check_Done
 
 
 NoCheck:

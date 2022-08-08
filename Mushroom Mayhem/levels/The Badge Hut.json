@@ -3,7 +3,7 @@
   "Name": "The Badge Hut",
   "TileSetIndex": 13,
   "ClearTileIndex": 0,
-  "MusicValue": 160,
+  "MusicValue": 14,
   "ScreenLength": 1,
   "StartX": 4,
   "StartY": 25,
@@ -12,7 +12,7 @@
   "StaticTileTableIndex": 92,
   "MostCommonTile": 0,
   "AnimationType": 3,
-  "ScrollType": 0,
+  "ScrollType": 2,
   "Effects": 0,
   "EventType": 0,
   "TileData": [
@@ -6507,5 +6507,5 @@
   ],
   "SecondObjectData": [],
   "LevelPointers": [],
-  "CompressedData": "P5E/kT+RBZHBYSuRwRAHEcESA5HDEBEyB2HDMDESAZHBIgGRB2EBkcUikRAykQJhxJHQ0ZECYcSRMBIiApEBYcOR4OEBkQNhwiAiApEBYcGRAWEBkcZhExQVICICkQdhwyNbJQEiAZEIYcczNDUgMBKRBmECQcaREDKRMBIGYQJBwhAyApHBIAZhAkHBIgORwzAxEQUxwxExMgGRwZE="
+  "CompressedData": "P5E/kT+RBZHBYSuRwRAHEcESA5HDEBEyB2HDMDESAZHBIgGRB2EBkcUikRAykQJhxJHQ0ZECYcSRMBIiApEBYcOR4OEBkQNhwiAiApEBYcGRAWEBkcZhExQVICICkQdhwyNbJQEiAZEIYcczNDUgMBKRBmECQcaREDKRMBIGYQJBwhAyApHBIAZhAkHBIgORwzAxEQUxxRExMpGR"
 }

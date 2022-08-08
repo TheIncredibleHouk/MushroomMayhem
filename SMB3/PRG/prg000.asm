@@ -3802,9 +3802,9 @@ PRG000_DA50:
 
 PRG000_DA6D: 
 	LDA #$71
-	
-	LDX Player_Level
-	CPX #ABILITY_RECOVERY
+
+	LDY Player_Level
+	CPY #ABILITY_RECOVERY
 	BCC Store_Recovery
 
 	ASL A
@@ -5354,6 +5354,7 @@ Objects_BeingHeld = Objects_Data14
 
 Object_Hold:
 	LDA Player_Shell
+	ORA Player_IsDying
 	BNE Object_HoldRTS
 
 	JSR Object_DetermineContactKill

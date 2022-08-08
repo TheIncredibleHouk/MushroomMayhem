@@ -1539,7 +1539,7 @@ Title_PrepForWorldMap:
 	LDA #$63
 	STA Cherries
 
-	LDA #ABILITY_DOUBLEJUMP
+	LDA #0
 	STA Player_Level
 
 	LDA #$01

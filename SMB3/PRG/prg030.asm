@@ -739,7 +739,7 @@ PRG030_881D:
 
 
 EnterEffect_SpriteStart:
-	LDY #$80
+	LDY #$00
 
 Enter_CheckSprites:	
 	LDA Sprite_RAMX, Y
@@ -857,7 +857,7 @@ EnterEffect_SpriteLoop:
 
 
 	LDA Map_Transition_Column
-	CMP #$08
+	CMP #$18
 	BCC TransitionComplete
 	JMP EnterEffect_SpriteStart
 
@@ -3013,6 +3013,7 @@ GetDecompressionCommand:
 	JSR DecompressCommand
 	JMP NextDecompressionCommand
 
+SECOND_QUEST_DIVIDER = $FE
 DecompressCommand:
 	JSR DynJump
 
@@ -3140,16 +3141,25 @@ LoadSpriteLoop:
 
 	LDA [Temp_Var14], Y
 	STA Level_Objects, X
+	CMP #SECOND_QUEST_DIVIDER
+	BEQ CheckSecondQuest
+
 	CMP #$FF
 	BEQ LoadSpritesDone
+	BNE ContinueSpriteLoop
 
+CheckSecondQuest:
 	CMP SecondQuest
 	BEQ LoadSpritesReset
+	BNE LoadSpritesDone
 
+ContinueSpriteLoop:
 	INX
 	BCC LoadSpriteLoop
 
 LoadSpritesDone:
+	LDA #$FF
+	STA Level_Objects, X
 	RTS
 
 LoadTileProperties:
@@ -4292,7 +4302,6 @@ Subtract3ByteValue:
 	STA <CalcResult + 2
 	RTS
 
-
 DigitsParam = Temp_Var1
 
 DigitsResult = Temp_Var10
@@ -4868,12 +4877,13 @@ Update_Columns:
 	RTS
 
 Map_Reload_with_Completions:
- 
+
 	; Clears all map tiles to $02 (all black tiles)
 	JSR Tile_Mem_Clear
 
 	; Fill 16x tile $4E every $1B0 (upper horizontal border)
 	LDX #$30	 ; X = $30
+	
 PRG012_A462:
 	TXA		 
 	TAY		 
