@@ -5339,17 +5339,41 @@ Body_Treasure:
 	LDA Block_NeedsUpdate
 	BNE Body_TreasureRTS
 	
+	LDA <Temp_Var13
+	PHA
+
+	LDA <Temp_Var14
+	PHA
+
+	LDA <Temp_Var15
+	PHA
+
 	LDA Tile_Y
 	AND #$F0
-	SUB #$08
-	STA Coin_Y
+	ORA #$08
+	STA <Coin_Y
+	
+	LDA Tile_YHi
+	STA <Coin_YHi
 
 	LDA Tile_X
 	AND #$F0
 	ORA #$04
-	STA Coin_X
+	STA <Coin_X
+
+	LDA Tile_XHi
+	STA <Coin_XHi
 
 	JSR Produce_Coin
+
+	PLA
+	STA <Temp_Var15
+
+	PLA
+	STA <Temp_Var14
+
+	PLA
+	STA <Temp_Var13
 
 	LDA #$04
 	ADD Coins_Earned_Buffer

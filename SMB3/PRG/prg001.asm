@@ -145,7 +145,7 @@ OBJ_BOSS			= $13
 	.byte KILLACT_STARDEATH		; Object $08
 	.byte KILLACT_STARDEATH		; Object $09
 	.byte KILLACT_STARDEATH		; Object $0A
-	.byte KILLACT_STARDEATH		; Object $0B
+	.byte KILLACT_NORMALSTATE		; Object $0B
 	.byte KILLACT_STARDEATH		; Object $0C
 	.byte KILLACT_STARDEATH		; Object $0D
 	.byte KILLACT_STARDEATH		; Object $0E
@@ -937,13 +937,21 @@ ItemBlock_Initialize:
 	CMP #POWERUP_MUSHROOM
 	BCS ObjInit_ItemBlock2
 
-	LDA Objects_YZ, X
+	LDA <Objects_YZ, X
 	ADD #$08
-	STA <Temp_Var1
+	STA <Coin_Y
 
-	LDA Objects_XZ, X
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Coin_YHi
+
+	LDA <Objects_XZ, X
 	ADD #$04
-	STA <Temp_Var2
+	STA <Coin_X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Coin_XHi
 
 	JMP Produce_Coin
 

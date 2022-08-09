@@ -657,15 +657,25 @@ Brick_Coin:
 	ADD #$08
 	STA <Coin_X
 
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Coin_XHi
+
 	LDA <Objects_YZ, X
 	ADD #$08
 	STA <Coin_Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Coin_YHi
 	JMP Brick_MakeCoin
 
 Brick_NoCoin:	
 	LDA #$FF
 	STA <Coin_X
 	STA <Coin_Y
+	STA <Coin_XHi
+	STA <Coin_YHi
 
 Brick_MakeCoin:	
 	JSR Produce_Coin

@@ -1928,6 +1928,10 @@ StarsDraw:
 Stars_KeepDrawing:
 	STA <Temp_Var1
 	
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE StarsDrawRTS	
+
 	LDA #$17
 	STA Sprite_RAMTile, Y
 	STA Sprite_RAMTile + 4, Y

@@ -4504,7 +4504,31 @@ Player_ItemStopWatch:
 
 Coin_X = Temp_Var2
 Coin_Y = Temp_Var1
+Coin_XHi = Temp_Var3
+Coin_YHi = Temp_Var4
 Produce_Coin:
+	; Play coin sound
+	LDA Sound_QLevel1
+	ORA #SND_LEVELCOIN
+	STA Sound_QLevel1
+
+	INC Coins_Earned_Buffer
+
+	LDA Coin_X
+	STA <Point_X
+
+	LDA Coin_XHi
+	STA <Point_XHi
+
+	LDA Coin_Y
+	STA <Point_Y
+
+	LDA Coin_YHi
+	STA <Point_YHi
+
+	JSR CheckPoint_OffScreen
+	BCC Produce_CoinRTS
+
 	LDY #$03	 ; Y = 3
 
 Produce_Coin_Loop:
@@ -4517,12 +4541,7 @@ Produce_Coin_Loop:
 	LDY #$03	 ; Y = 3
 
 PRG000_C4A7:
-	; Play coin sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELCOIN
-	STA Sound_QLevel1
 
-	INC Coins_Earned_Buffer
 
 	LDA #$01
 	STA CoinPUp_State,Y	; Set coin state to 1
@@ -4542,6 +4561,7 @@ PRG000_C4A7:
 	LDA #$01	 
 	STA CoinPUp_Counter,Y	; Set counter to 1
 
+Produce_CoinRTS:
 	RTS		 ; Return
 
 

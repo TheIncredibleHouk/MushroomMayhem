@@ -5616,13 +5616,13 @@
           "DisplayName": "(Level) Super Soggy Start"
         },
         {
-          "Size": 399,
+          "Size": 423,
           "Name": "Key Coin Caverns",
           "Id": "747d617e-59bb-40d5-a9fc-f558dc5fadd8",
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2878,
+              "Size": 2886,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -5635,13 +5635,13 @@
           "DisplayName": "(Level) Key Coin Caverns"
         },
         {
-          "Size": 2710,
+          "Size": 2538,
           "Name": "Shy Guys In Subcon",
           "Id": "04a6cfde-b3c5-4695-81c5-dda10c212a97",
           "LastModified": "2019-05-28T07:41:45.7634163-04:00",
           "SublevelsInfo": [
             {
-              "Size": 1283,
+              "Size": 936,
               "Name": "Shy Guys In Subcon-2",
               "Id": "bac5b80e-008d-439e-88e8-4a8752f21834",
               "LastModified": "2019-05-27T08:26:24.2298778-04:00",
@@ -5655,22 +5655,22 @@
         },
         {
           "Size": 1837,
-          "Name": "Feeling Weighed Down",
+          "Name": "Brittle Ice Bridges",
           "Id": "645b2239-1a1b-4cbf-9262-49b0cb7f313e",
           "LastModified": "2019-06-20T21:07:58.5411251-04:00",
           "SublevelsInfo": [
             {
               "Size": 282,
-              "Name": "Feeling Weighed Down-2",
+              "Name": "Brittle Ice Bridges-1",
               "Id": "6fff7350-c94d-4a3e-8b58-f41133ed71ba",
               "LastModified": "2019-05-25T21:35:00.409302-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Feeling Weighed Down-2"
+              "DisplayName": "(Level) Brittle Ice Bridges-1"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Feeling Weighed Down"
+          "DisplayName": "(Level) Brittle Ice Bridges"
         },
         {
           "Size": 2448,
