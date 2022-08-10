@@ -5222,7 +5222,6 @@ SpecialObjToBottom1_O1:
 	RTS
 
 DrawStarsBackground:
-	
 	LDA WeatherActive
 	BNE DrawStarsBackground01
 

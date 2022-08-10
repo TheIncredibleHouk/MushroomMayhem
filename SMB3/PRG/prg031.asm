@@ -2086,13 +2086,13 @@ IntIRQ_Vertical:
 	LDA #$0F
 	STA PPU_VRAM_DATA
 
-	LDA #$30
+	LDA StatusBar_Palette
 	STA PPU_VRAM_DATA
 
-	LDA #$11
+	LDA StatusBar_Palette + 1
 	STA PPU_VRAM_DATA
 
-	LDA #$27
+	LDA StatusBar_Palette + 2
 	STA PPU_VRAM_DATA
 	
 

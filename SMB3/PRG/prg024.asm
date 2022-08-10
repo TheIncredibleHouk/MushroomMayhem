@@ -1539,6 +1539,11 @@ Title_PrepForWorldMap:
 	LDA #$63
 	STA Cherries
 
+	LDA #$0F
+	STA StatusBar_Palette
+	STA StatusBar_Palette + 1
+	STA StatusBar_Palette + 2
+
 	LDA #0
 	STA Player_Level
 

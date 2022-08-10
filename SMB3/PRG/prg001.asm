@@ -2230,15 +2230,15 @@ Magic_Star_Action:
 	.word MagicStar_CheckClearedBlock
 
 MagicStar_CheckCoins:
+	STA Debug_Snap
 	LDY #$04
 
 CheckEnemies:
 	CPY <CurrentObjectIndexZ
 	BEQ NoCheck
 
-	LDA Objects_ID, Y
+	LDA Objects_State, Y
 	BNE Check_Done
-
 
 NoCheck:
 	DEY
@@ -2391,7 +2391,7 @@ NSBitMap:
 	.byte $04, $08
 
 RadarMap:
-	.byte ITEM_RADARUNKNOWN, ITEM_RADARE, ITEM_RADARW, ITEM_RADARUNKNOWN
+	.byte ITEM_RADARN, ITEM_RADARE, ITEM_RADARW, ITEM_RADARUNKNOWN
 	.byte ITEM_RADARN, ITEM_RADARNE, ITEM_RADARNW, ITEM_RADARUNKNOWN
 	.byte ITEM_RADARS, ITEM_RADARSE, ITEM_RADARSW	
 	

@@ -3,7 +3,7 @@
   "Id": "a88cce07-d75c-4e6c-a34d-b149a4841f8d",
   "ClearTileIndex": 2,
   "TileTableIndex": 20,
-  "MusicValue": 0,
+  "MusicValue": 1,
   "ScreenLength": 2,
   "PaletteId": "c6560d1b-5f71-4e4a-8856-8845797a63e9",
   "Name": "World 0",

@@ -1153,6 +1153,9 @@ PRG026_AB0E:
 
 	; For levels which employ the "generic exit" pipe at the end
 
+
+StatusBar_FullPalette:
+	.byte $30, $11, $27
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Palette_PrepareFadeIn
 ;
@@ -1168,6 +1171,7 @@ Palette_PrepareFadeOut_Entry:	; entry point when preparing to fade out!
 	; Set the palette address to the beginning of palettes, $3F00
 	LDA #$3f	 
 	STA Palette_AddrHi
+
 	LDA #$00	 
 	STA Palette_AddrLo
 
@@ -1208,6 +1212,7 @@ PRG026_ABC5:
 Palette_DoFadeIn:
 	LDA Fade_Tick	 
 	BEQ PRG026_ABE4	 ; If Fade_Tick = 0, jump to PRG026_ABE4
+
 	DEC Fade_Tick	 ; Otherwise, Fade_Tick--
 
 PRG026_ABE4:
@@ -1223,6 +1228,7 @@ PRG026_ABE4:
 	DEC Fade_Level	 ; Fade_Level--
 
 	LDY #31		 ; Y = 31
+
 PRG026_ABF8:
 	LDA Palette_Buffer,Y	; Get next byte of palette data 
 	CMP #$0f	 	; Is this color black?
@@ -1239,10 +1245,62 @@ PRG026_AC07:
 
 PRG026_AC0F:
 	STA Palette_Buffer,Y	 ; Update the buffer!
+	
 
 PRG026_AC12:
 	DEY		 ; Y--
 	BPL PRG026_ABF8	 ; While Y >= 0, loop!
+
+	LDA StatusBar_Palette
+	CMP #$0F
+	BNE StatusBar_FI_NotBlack
+
+	LDA StatusBar_FullPalette
+	AND #$0F
+	BNE StatusBar_FI_StorePalette
+
+StatusBar_FI_NotBlack:
+	CMP StatusBar_FullPalette
+	BEQ StatusBar_FI_StorePalette
+
+	ADD #$10
+
+StatusBar_FI_StorePalette:	
+	STA StatusBar_Palette
+
+	LDA StatusBar_Palette + 1
+	CMP #$0F
+	BNE StatusBar_FI_NotBlack1
+
+	LDA StatusBar_FullPalette + 1
+	AND #$0F
+	BNE StatusBar_FI_StorePalette1
+
+StatusBar_FI_NotBlack1:
+	CMP StatusBar_FullPalette + 1
+	BEQ StatusBar_FI_StorePalette1
+
+	ADD #$10
+
+StatusBar_FI_StorePalette1:	
+	STA StatusBar_Palette + 1
+
+	LDA StatusBar_Palette + 2
+	CMP #$0F
+	BNE StatusBar_FI_NotBlack2
+
+	LDA StatusBar_FullPalette + 2
+	AND #$0F
+	BNE StatusBar_FI_StorePalette2
+
+StatusBar_FI_NotBlack2:
+	CMP StatusBar_FullPalette + 2
+	BEQ StatusBar_FI_StorePalette2
+
+	ADD #$10
+
+StatusBar_FI_StorePalette2:	
+	STA StatusBar_Palette + 2
 
 	LDA #$06	 
 	STA <Graphics_Queue	 ; Queue graphics routine 6
@@ -1302,6 +1360,42 @@ PRG026_AC55:
 	DEY		 	; Y--
 	BPL PRG026_AC4B	 	; While Y >= 0, loop!
 
+	LDA StatusBar_Palette
+	CMP #$0F
+	BEQ StatusBar_FO_StorePalette
+
+	SUB #$10
+	BPL StatusBar_FO_StorePalette
+
+	LDA #$0F
+
+StatusBar_FO_StorePalette:
+	STA StatusBar_Palette
+
+	LDA StatusBar_Palette + 1
+	CMP #$0F
+	BEQ StatusBar_FO_StorePalette1
+
+	SUB #$10
+	BPL StatusBar_FO_StorePalette1
+
+	LDA #$0F
+
+StatusBar_FO_StorePalette1:
+	STA StatusBar_Palette + 1
+
+	LDA StatusBar_Palette + 2
+	CMP #$0F
+	BEQ StatusBar_FO_StorePalette2
+
+	SUB #$10
+	BPL StatusBar_FO_StorePalette2
+
+	LDA #$0F
+
+StatusBar_FO_StorePalette2:
+	STA StatusBar_Palette + 2
+			
 	; Update palette
 	LDA #$06
 	STA <Graphics_Queue
@@ -1329,12 +1423,15 @@ Palette_FadeIn:		; AC69
 	LDA #$00
 	STA PPU_VRAM_ADDR
 	STA PPU_VRAM_ADDR
+
 	LDA #$10
 	STA PPU_VRAM_ADDR
 	STA PPU_VRAM_ADDR
+
 	LDA #$00
 	STA PPU_VRAM_ADDR
 	STA PPU_VRAM_ADDR
+
 	LDA #$10
 	STA PPU_VRAM_ADDR
 	STA PPU_VRAM_ADDR

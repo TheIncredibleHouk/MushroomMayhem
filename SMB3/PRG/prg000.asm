@@ -1025,6 +1025,7 @@ Object_DampenVelocity:
 	LDA <Objects_XVelZ,X 
 	AND #$80
 	STA TempA
+
 	LDA <Objects_XVelZ,X 
 	LSR A
 	ORA TempA
@@ -4403,6 +4404,9 @@ Object_CheckConveyors:
 	LDY #$00
 
 	LDA Object_VertTileProp, X
+	CMP #TILE_PROP_ITEM
+	BCS Object_CheckConveyorsRTS
+
 	AND #$0F
 	CMP #(TILE_PROP_MOVE_LEFT)
 	BEQ Object_ConveryAffected
@@ -4427,8 +4431,7 @@ Object_ConveryAffected:
 	LDA Conveyer_EffectMin, Y
 	STA <Temp_Var2
 
-Apply_ConveyorAffect:	
-	
+Apply_ConveyorAffect:
 	LDA <Temp_Var2
 	STA Objects_EffectiveXVel, X
 

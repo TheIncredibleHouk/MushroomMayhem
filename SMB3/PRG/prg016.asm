@@ -912,7 +912,6 @@ NinjaBro_ThrowDone:
 	RTS
 
 Bro_CheckTop:
-	STA Debug_Snap
 	LDA Objects_BoundBottom, X
 	ADD #$14
 	STA Tile_DetectionY
