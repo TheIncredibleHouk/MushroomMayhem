@@ -18,6 +18,7 @@ OBJ_CHECKPOINT		= $35
 OBJ_CLOUDGEN		= $36
 OBJ_COINALERT		= $37
 OBJ_MONTYMOLE		= $38
+OBJ_HIDDENWELL		= $39
 
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
@@ -37,7 +38,7 @@ OBJ_MONTYMOLE		= $38
 	.word ObjInit_CloudGen			; Object $36
 	.word ObjInit_CoinAlert			; Object $37
 	.word ObjInit_MontyMole			; Object $38
-	.word ObjInit_DoNothing			; Object $39
+	.word ObjInit_HiddenWall			; Object $39
 	.word ObjInit_DoNothing			; Object $3A
 	.word ObjInit_DoNothing			; Object $3B
 
@@ -60,7 +61,7 @@ OBJ_MONTYMOLE		= $38
 	.word ObjNorm_CloudGen			; Object $36
 	.word ObjNorm_CoinAlert			; Object $37
 	.word ObjNorm_MontyMole			; Object $38
-	.word ObjNorm_DoNothing			; Object $39
+	.word ObjNorm_HiddenWall		; Object $39
 	.word ObjNorm_DoNothing			; Object $3A
 	.word ObjNorm_DoNothing			; Object $3B
 
@@ -83,7 +84,7 @@ OBJ_MONTYMOLE		= $38
 	.word ObjHit_CloudGen	        ; Object $36
 	.word ObjHit_DoNothing	        ; Object $37
 	.word Player_GetHurt	        ; Object $38
-	.word ObjHit_DoNothing	        ; Object $39
+	.word ObjHit_SolidBlock	        ; Object $39
 	.word ObjHit_DoNothing	        ; Object $3A
 	.word ObjHit_DoNothing	        ; Object $3B
 
@@ -154,7 +155,7 @@ OBJ_MONTYMOLE		= $38
 	.byte KILLACT_NORMALSTATE		; Object $36
 	.byte KILLACT_STARDEATH		; Object $37
 	.byte KILLACT_STARDEATH		; Object $38
-	.byte KILLACT_STARDEATH		; Object $39
+	.byte KILLACT_NORMALSTATE		; Object $39
 	.byte KILLACT_STARDEATH		; Object $3A
 	.byte KILLACT_STARDEATH		; Object $3B
 
@@ -570,6 +571,7 @@ Unstable_DrawNorm:
 
 Unstable_Draw1:
 	LDA Objects_Property, X
+	STA Objects_Frame, X
 	BEQ Draw_NormPlatform
 
 	STA Objects_Frame, X
@@ -2312,4 +2314,63 @@ MontyMole_Flipped:
 	STA Sprite_RAMX - 8, Y
 
 MontyMole_DrawRTS:
+	RTS
+
+ObjInit_HiddenWall:
+	JSR Object_NoInteractions
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	TYA
+	STA HiddenWall_ExtendTile, X
+	RTS
+
+HiddenWall_ExtendTile = Objects_Data1	
+
+HiddenExtend_ChangeX:
+	.byte $00, $00, $10, $F0
+
+HiddenExtend_ChangeXHi;	
+	.byte $00, $00, $00, $FF
+
+HiddenExtend_ChangeY:
+	.byte $10, $F0, $00, $00
+
+HiddenExtend_ChangeYHi;	
+	.byte $00, $FF, $00, $00
+
+ObjNorm_HiddenWall:
+	LDA Block_NeedsUpdate
+	BNE HiddenWall_ExtendDownRTS
+
+	LDY Objects_Property, X
+
+	LDA <Objects_XZ, X
+	ADD HiddenExtend_ChangeX, Y
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC HiddenExtend_ChangeXHi, Y
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	ADD HiddenExtend_ChangeY, Y
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC HiddenExtend_ChangeYHi, Y
+	STA <Objects_YHiZ, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+
+	LDA HiddenWall_ExtendTile, X
+	CMP Tile_LastValue
+	BNE HiddenWall_ExtendBlockDown
+
+	JMP Object_Delete
+
+HiddenWall_ExtendBlockDown:
+	JSR Object_ChangeBlock
+
+HiddenWall_ExtendDownRTS:	
 	RTS

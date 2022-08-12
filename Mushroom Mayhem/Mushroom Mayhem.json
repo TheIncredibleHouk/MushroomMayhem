@@ -1358,7 +1358,7 @@
         49,
         13,
         32,
-        26,
+        17,
         49,
         13,
         48,
@@ -5661,7 +5661,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2886,
+              "Size": 2887,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -5693,13 +5693,13 @@
           "DisplayName": "(Level) Shy Guys In Subcon"
         },
         {
-          "Size": 1794,
+          "Size": 1857,
           "Name": "Brittle Ice Bridges",
           "Id": "645b2239-1a1b-4cbf-9262-49b0cb7f313e",
           "LastModified": "2019-06-20T21:07:58.5411251-04:00",
           "SublevelsInfo": [
             {
-              "Size": 156,
+              "Size": 199,
               "Name": "Brittle Ice Bridges-1",
               "Id": "6fff7350-c94d-4a3e-8b58-f41133ed71ba",
               "LastModified": "2019-05-25T21:35:00.409302-04:00",
@@ -5712,7 +5712,7 @@
           "DisplayName": "(Level) Brittle Ice Bridges"
         },
         {
-          "Size": 2448,
+          "Size": 2449,
           "Name": "Turnip Toss Tussle",
           "Id": "15b60511-3ccd-4a9d-95a1-4fd7108a90d6",
           "LastModified": "2019-05-24T16:08:39.6355729-04:00",
@@ -10798,17 +10798,17 @@
         },
         {
           "Property": 9,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 9,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -44511,7 +44511,9 @@
       "Name": "Platform Falls When Touched",
       "Sprites": [
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0x2C000",
@@ -44523,7 +44525,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0x2C000",
@@ -44535,7 +44539,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 16,
           "Y": 0,
           "TileTableAddress": "0x2C000",
@@ -44547,7 +44553,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 24,
           "Y": 0,
           "TileTableAddress": "0x2C000",
@@ -44559,7 +44567,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 32,
           "Y": 0,
           "TileTableAddress": "0x2C000",
@@ -44571,7 +44581,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 40,
           "Y": 0,
           "TileTableAddress": "0x2C000",
@@ -44583,7 +44595,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 16,
           "Y": 0,
           "TileTableAddress": "0x0",
@@ -44595,7 +44609,9 @@
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": null,
+          "PropertiesAppliedTo": [
+            0
+          ],
           "X": 24,
           "Y": 0,
           "TileTableAddress": "0x0",
@@ -44605,9 +44621,96 @@
           "PaletteIndex": -3,
           "Overlay": true,
           "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": 0,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0x08",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0x0A",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0xa",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0xa",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 32,
+          "Y": 0,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0xa",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 40,
+          "Y": 0,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0x8",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
         }
       ],
-      "Properties": [],
+      "Properties": [
+        "Metal",
+        "Wodden"
+      ],
       "Group": "Platform"
     },
     {
@@ -45334,35 +45437,152 @@
     {
       "GameId": 57,
       "GameObjectType": 1,
-      "Name": "Unused x39",
+      "Name": "Wall Extender",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x5C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 3,
           "Overlay": true,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
-          "X": 0,
+          "X": 8,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x5C",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": 0,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x3C",
+          "HorizontalFlip": false,
+          "VerticalFlip": true,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            0
+          ],
+          "X": 8,
+          "Y": 16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x3C",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 0,
+          "Y": -16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x3C",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            1
+          ],
+          "X": 8,
+          "Y": -16,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x3C",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 16,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x3A",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            2
+          ],
+          "X": 24,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x38",
+          "HorizontalFlip": true,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -16,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x38",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": [
+            3
+          ],
+          "X": -8,
+          "Y": 0,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x3a",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
           "Overlay": true,
           "CustomPalette": null
         }
       ],
-      "Properties": [],
-      "Group": "Unused"
+      "Properties": [
+        "Down",
+        "Up",
+        "Right",
+        "Left"
+      ],
+      "Group": "Global"
     },
     {
       "GameId": 58,
@@ -45944,7 +46164,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -12,
+          "X": 20,
           "Y": 16,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -45958,7 +46178,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -28,
+          "X": 36,
           "Y": 16,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -45972,7 +46192,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -44,
+          "X": 52,
           "Y": 16,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -45986,7 +46206,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -60,
+          "X": 68,
           "Y": 16,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46000,49 +46220,7 @@
           "PropertiesAppliedTo": [
             0
           ],
-          "X": -76,
-          "Y": 16,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": -92,
-          "Y": 16,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": -108,
-          "Y": 16,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": -124,
+          "X": 84,
           "Y": 16,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46138,48 +46316,6 @@
         },
         {
           "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": 112,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": 128,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": 144,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
             2
           ],
           "X": 4,
@@ -46196,7 +46332,7 @@
           "PropertiesAppliedTo": [
             2
           ],
-          "X": -12,
+          "X": 20,
           "Y": 32,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46210,7 +46346,7 @@
           "PropertiesAppliedTo": [
             2
           ],
-          "X": -28,
+          "X": 36,
           "Y": 48,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46224,7 +46360,7 @@
           "PropertiesAppliedTo": [
             2
           ],
-          "X": -44,
+          "X": 52,
           "Y": 64,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46238,7 +46374,7 @@
           "PropertiesAppliedTo": [
             2
           ],
-          "X": -60,
+          "X": 68,
           "Y": 80,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46252,50 +46388,8 @@
           "PropertiesAppliedTo": [
             2
           ],
-          "X": -76,
+          "X": 84,
           "Y": 96,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            2
-          ],
-          "X": -92,
-          "Y": 112,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            2
-          ],
-          "X": -108,
-          "Y": 128,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            2
-          ],
-          "X": -124,
-          "Y": 144,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
           "HorizontalFlip": false,
@@ -46322,7 +46416,7 @@
           "PropertiesAppliedTo": [
             3
           ],
-          "X": -12,
+          "X": 20,
           "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46336,7 +46430,7 @@
           "PropertiesAppliedTo": [
             3
           ],
-          "X": -28,
+          "X": 36,
           "Y": -16,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46350,7 +46444,7 @@
           "PropertiesAppliedTo": [
             3
           ],
-          "X": -44,
+          "X": 52,
           "Y": -32,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46364,7 +46458,7 @@
           "PropertiesAppliedTo": [
             3
           ],
-          "X": -60,
+          "X": 68,
           "Y": -48,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
@@ -46378,50 +46472,8 @@
           "PropertiesAppliedTo": [
             3
           ],
-          "X": -76,
+          "X": 84,
           "Y": -64,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            3
-          ],
-          "X": -92,
-          "Y": -80,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            3
-          ],
-          "X": -108,
-          "Y": -96,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            3
-          ],
-          "X": -124,
-          "Y": -112,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
           "HorizontalFlip": false,
@@ -47084,48 +47136,6 @@
         },
         {
           "PropertiesAppliedTo": [
-            0
-          ],
-          "X": 100,
-          "Y": 0,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": 116,
-          "Y": 0,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": 132,
-          "Y": 0,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
             1
           ],
           "X": 4,
@@ -47200,48 +47210,6 @@
           ],
           "X": 4,
           "Y": 96,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": 112,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": 128,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x32",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": -1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": 0,
           "TileTableAddress": "0x1000",
           "TileValue": "0x32",
           "HorizontalFlip": false,
@@ -58544,11 +58512,11 @@
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": "0x2C000",
-          "TileValue": "0x20",
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0x08",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 3,
+          "PaletteIndex": 1,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -58556,11 +58524,11 @@
           "PropertiesAppliedTo": null,
           "X": 8,
           "Y": 0,
-          "TileTableAddress": "0x2C000",
-          "TileValue": "0x20",
-          "HorizontalFlip": true,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0x0A",
+          "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 3,
+          "PaletteIndex": 1,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -58568,11 +58536,11 @@
           "PropertiesAppliedTo": null,
           "X": 16,
           "Y": 0,
-          "TileTableAddress": "0x2C000",
-          "TileValue": "0x20",
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0xa",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 3,
+          "PaletteIndex": 1,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -58580,35 +58548,11 @@
           "PropertiesAppliedTo": null,
           "X": 24,
           "Y": 0,
-          "TileTableAddress": "0x2C000",
-          "TileValue": "0x20",
-          "HorizontalFlip": true,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 32,
-          "Y": 0,
-          "TileTableAddress": "0x2C000",
-          "TileValue": "0x20",
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0xa",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 40,
-          "Y": 0,
-          "TileTableAddress": "0x2C000",
-          "TileValue": "0x20",
-          "HorizontalFlip": true,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
+          "PaletteIndex": 1,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -58616,24 +58560,24 @@
           "PropertiesAppliedTo": null,
           "X": 32,
           "Y": 0,
-          "TileTableAddress": "0x0",
-          "TileValue": "0x8C",
-          "HorizontalFlip": true,
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0xa",
+          "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": -3,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
           "X": 40,
           "Y": 0,
-          "TileTableAddress": "0x0",
-          "TileValue": "0x8C",
+          "TileTableAddress": "0x3c00",
+          "TileValue": "0x8",
           "HorizontalFlip": true,
-          "VerticalFlip": false,
-          "PaletteIndex": -3,
-          "Overlay": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         }
       ],

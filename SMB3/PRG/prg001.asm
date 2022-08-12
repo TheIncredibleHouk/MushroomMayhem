@@ -1212,6 +1212,7 @@ ObjNorm_CoinLock0:
 	STA CoinLock_CoinsRemaining, X
 
 ObjNorm_CoinLock1:
+	STA Debug_Snap
 	LDA #$00
 	STA Coins_Lost
 	STA Coins_Earned
@@ -1224,7 +1225,7 @@ ObjNorm_CoinLock1:
 	EOR #$01
 	TAY
 
-	LDA #$23
+	LDA #$4D
 	STA PatTable_BankSel + 4, Y
 
 DrawCoinLock0:
@@ -2230,7 +2231,6 @@ Magic_Star_Action:
 	.word MagicStar_CheckClearedBlock
 
 MagicStar_CheckCoins:
-	STA Debug_Snap
 	LDY #$04
 
 CheckEnemies:

@@ -215,7 +215,6 @@ PRG005_B913:
 	JMP PRG005_B956	 ; Jump to PRG005_B956 (RTS)
 
 PRG005_B91E:
-
 	LDA <Spawn_Dynamically
 	STA Objects_DynamicallySpawned, X
 	

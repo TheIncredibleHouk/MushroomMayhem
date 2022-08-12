@@ -268,7 +268,7 @@ PChg_C000_To_0:
 
 Level_Initialize:
 
-	LDA <Player_XStart	
+	LDA <Player_Started
 	BEQ PRG008_A242	 ; If Player_XStart = 0 (not yet initialized), jump to PRG008_A242
 	RTS		 ; Return
 
@@ -342,7 +342,8 @@ Super_MarioStandard:
 	; Set Player_X based on Level_SelXStart
 
 	LDA <Player_X
-	STA <Player_XStart	; Also set Player_XStart
+	ORA <Player_XHi
+	STA <Player_Started	; Also set Player_XStar
 
 	JSR Level_InitAction_Do	; Do whatever action this level wants at the start, if any
 
@@ -813,14 +814,17 @@ Skipped_Palette:
 	LDA PowerUp_Palettes+1,Y
 	STA Graphics_Buffer+3,X
 	STA Palette_Buffer+$11	 ; Also put into Palette_Buffer
+	STA MasterPal_Data+$11
 
 	LDA PowerUp_Palettes+2,Y
 	STA Graphics_Buffer+4,X
 	STA Palette_Buffer+$12	 ; Also put into Palette_Buffer
+	STA MasterPal_Data+$12
 
 	LDA PowerUp_Palettes+3,Y
 	STA Graphics_Buffer+5,X
 	STA Palette_Buffer+$13	 ; Also put into Palette_Buffer
+	STA MasterPal_Data+$13
 
 	RTS		 ; Return
 

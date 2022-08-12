@@ -116,6 +116,7 @@ PRG028_A08F:
 Sound_PlayMapSounds:
 	LDA Sound_QMap
 	BNE MapSound_Queued	 ; If a map sound has been queued, jump to MapSound_Queued
+	
 	LDA SndCur_Map
 	BNE MapSound_Playing	 ; If a map sound is already playing, jump to MapSound_Playing
 

@@ -2954,7 +2954,6 @@ AddFrame48x16:
 	BNE AddFrame48x16
 	
 SetFrame48x16:
-	ADD <Temp_Var6
 	STA <Temp_Var6	 ; Temp_Var6 += object's frame
 	TAX
 
@@ -6053,6 +6052,9 @@ Object_EdgeMarch:
 
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
+
+	LDA #HIT_GROUND
+	STA <Objects_TilesDetectZ, X
 
 Object_EdgeMarchRTS:
 	RTS

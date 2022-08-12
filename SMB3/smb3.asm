@@ -837,7 +837,7 @@ HIT_CEILING =		8
 	TileXIndex:			.ds 1	; $E9 unused
 	TileYIndex:			.ds 1	; $EA unused
 
-	Player_XStart:		.ds 1	; Set to Player's original starting X position (also used to check if level has initialized)
+	Player_Started:		.ds 1	; Set to Player's original starting X position (also used to check if level has initialized)
 
 			.ds 1	; $EC unused
 
