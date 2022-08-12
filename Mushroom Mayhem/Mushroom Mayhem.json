@@ -5712,13 +5712,13 @@
           "DisplayName": "(Level) Brittle Ice Bridges"
         },
         {
-          "Size": 2449,
+          "Size": 2451,
           "Name": "Turnip Toss Tussle",
           "Id": "15b60511-3ccd-4a9d-95a1-4fd7108a90d6",
           "LastModified": "2019-05-24T16:08:39.6355729-04:00",
           "SublevelsInfo": [
             {
-              "Size": 578,
+              "Size": 576,
               "Name": "Turnip Toss Tussle-2",
               "Id": "d52c37b2-7e2d-441c-a78d-cf3525003b4e",
               "LastModified": "2019-05-21T21:27:35.6167328-04:00",
@@ -11924,7 +11924,7 @@
           "LowerRight": 159
         },
         {
-          "Property": 48,
+          "Property": 51,
           "UpperLeft": 252,
           "UpperRight": 252,
           "LowerLeft": 252,

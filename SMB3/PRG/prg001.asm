@@ -1212,7 +1212,6 @@ ObjNorm_CoinLock0:
 	STA CoinLock_CoinsRemaining, X
 
 ObjNorm_CoinLock1:
-	STA Debug_Snap
 	LDA #$00
 	STA Coins_Lost
 	STA Coins_Earned

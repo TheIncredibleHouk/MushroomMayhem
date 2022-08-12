@@ -1169,6 +1169,7 @@ WEATHER_NONE = 4
 
 Weather_InitX = Temp_Var6
 Weather_InitY = Temp_Var7
+Weather_Direction = Temp_Var16
 
 ObjInit_Weather:
 	LDA #OBJ_WEATHER
@@ -1185,6 +1186,29 @@ Weather_Delete:
 	JMP Object_Delete
 
 Weather_NotDupe:
+	LDA Objects_YZ, X 
+	LSR A 
+	LSR A 
+	LSR A 
+	LSR A 
+	STA <Temp_Var2 
+ 
+	LDA Objects_XZ, X 
+	AND #$10 
+	BNE DontReverseWind 
+ 
+	LDA <Temp_Var2 
+	EOR #$FF 
+	ADD #$01 
+	STA <Temp_Var2 
+	 
+DontReverseWind: 
+	LDA <Temp_Var2 
+	STA Wind
+ 
+	LDA #$01 
+	STA WeatherActive 
+
 	LDX <CurrentObjectIndexZ
 	LDA #$08
 	STA Objects_SpritesRequested, X
@@ -1193,6 +1217,7 @@ Weather_NotDupe:
 
 	LDA Objects_Property, X
 	STA Weather_Type
+
 
 	LDA RandomN
 	STA <Weather_InitX
@@ -1220,9 +1245,24 @@ Weather_InitXY:
 	LDA Wind
 	JSR Half_Value
 	JSR Half_Value
+	STA <Temp_Var1
+
+	STA Debug_Snap
+	LDA Wind
+	BPL Weather_Right
+
+	LDA Rain_XVel, X
+	JSR Negate
+	ADD <Temp_Var1
+	STA Weather_XVel, Y
+	JMP Weather_StoreYVel
+	
+Weather_Right:
+	LDA <Temp_Var1
 	ADD Rain_XVel, X
 	STA Weather_XVel, Y
 
+Weather_StoreYVel:
 	LDA Rain_YVel, X
 	STA Weather_YVel, Y
 
@@ -1297,7 +1337,7 @@ Weather_Draw:
 
 	LDY #$00
 	LDA Wind
-	BPL Weather_SetOrientation
+	BMI Weather_SetOrientation
 
 	LDY #SPR_HFLIP
 
