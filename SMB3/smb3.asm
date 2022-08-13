@@ -1926,7 +1926,8 @@ SPRITE_3_VINVISIBLE = $08
 	Buffer_Occupied:	.ds 2	; $06B4-$06B5 Set if respective Object_BufferX/Y buffer is already taken by an object
 
 	Object_DisableWater: .ds 1
-	Objects_InWater:	.ds 5	; $06B7-$06BB Set when object is in water
+	Objects_InWater:	.ds 8	; $06B7-$06BB Set when object is in water
+	Objects_SlowFall:	.ds 8
 
 	SpecialObj_Data2:	.ds 8	; $06BD-$06C4 General purpose variable 1
 
@@ -3008,11 +3009,8 @@ ITEM_RADARUNKNOWN = $18
 	;#FREERAM
 	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
-	Slow_Watch:			.ds 1	;
-	Player_Dialog:		.ds 1
 	PowerUp_Reserve:	.ds 1	;
 	Old_PowerUp_Reserve:.ds 1
-	Player_Health:		.ds 1
 	DayNight:			.ds 1	; signifies if it's day or night
 	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
 	DayNightTicker:		.ds 1	;
@@ -3570,6 +3568,7 @@ OBJECT_MAXFALL		= $40
 OBJECT_MAXFALLINWATER	= $10
 OBJECT_MAXWATERUPWARD	= -$7F
 OBJECT_FALLRATE		= $03
+OBJECT_SLOWFALLRATE		= $02
 OBJECT_FALLRATEINWATER	= $01
 
 ; Some key map tiles defined

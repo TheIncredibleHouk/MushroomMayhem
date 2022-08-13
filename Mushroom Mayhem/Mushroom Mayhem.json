@@ -5731,13 +5731,13 @@
           "DisplayName": "(Level) Turnip Toss Tussle"
         },
         {
-          "Size": 1600,
+          "Size": 1778,
           "Name": "Windy Waters",
           "Id": "ae704d35-4b12-49d3-b370-56c5554cf3f3",
           "LastModified": "2019-05-26T10:38:27.5775602-04:00",
           "SublevelsInfo": [
             {
-              "Size": 78,
+              "Size": 130,
               "Name": "Windy Waters-2",
               "Id": "8bb4eb07-2e4c-4fb2-9fc5-3e25ee1ac289",
               "LastModified": "2018-10-28T10:42:11.0239591-04:00",
@@ -5751,22 +5751,22 @@
         },
         {
           "Size": 1574,
-          "Name": "Hurry Up!",
+          "Name": "Fast Flower Field Fleet",
           "Id": "d57bcadf-a390-4a0a-8a3b-5d223ddc0068",
           "LastModified": "2019-05-26T10:38:27.5925505-04:00",
           "SublevelsInfo": [
             {
-              "Size": 491,
-              "Name": "Hurry Up!-2",
+              "Size": 524,
+              "Name": "Fast Flower Field Fleet-1",
               "Id": "f813db59-4352-4f76-90ae-29e24c925008",
               "LastModified": "2019-05-26T10:38:27.5855549-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Hurry Up!-2"
+              "DisplayName": "(Level) Fast Flower Field Fleet-1"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Hurry Up!"
+          "DisplayName": "(Level) Fast Flower Field Fleet"
         },
         {
           "Size": 1914,
@@ -10699,14 +10699,14 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 78,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 78,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -46734,7 +46734,8 @@
         {
           "PropertiesAppliedTo": [
             0,
-            2
+            2,
+            3
           ],
           "X": 0,
           "Y": 0,
@@ -46749,7 +46750,8 @@
         {
           "PropertiesAppliedTo": [
             0,
-            2
+            2,
+            3
           ],
           "X": 8,
           "Y": 0,
@@ -47017,7 +47019,8 @@
       "Properties": [
         "Normal",
         "Reverse Gravity",
-        "Anti Gravity"
+        "Anti Gravity",
+        "Flying Cheep"
       ],
       "Group": "Common"
     },
@@ -57608,36 +57611,60 @@
     },
     {
       "GameId": 185,
-      "GameObjectType": 1,
-      "Name": "Unused xB9",
+      "GameObjectType": 3,
+      "Name": "Generate Flying Cheeps",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0x13C00",
+          "TileValue": "0x26",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 1,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0x13C00",
+          "TileValue": "0x28",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 1,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
           "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "Y": 28,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 28,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
           "Overlay": true,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Common"
     },
     {
       "GameId": 186,

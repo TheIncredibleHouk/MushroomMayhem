@@ -1912,13 +1912,13 @@ PRG000_D068:
 	JMP Object_SetDeadEmpty	 ; Jump to Object_SetDeadEmpty
 
 Object_MaxFalls:
-	.byte OBJECT_MAXFALL, OBJECT_MAXFALLINWATER
+	.byte OBJECT_MAXFALL, OBJECT_MAXFALLINWATER, OBJECT_MAXFALL
 
 Object_MaxAntiGravity:
-	.byte -OBJECT_MAXFALL, -OBJECT_MAXFALLINWATER
+	.byte -OBJECT_MAXFALL, -OBJECT_MAXFALLINWATER, OBJECT_MAXFALL
 	; Gravity of object 
 Object_Gravity:
-	.byte OBJECT_FALLRATE, OBJECT_FALLRATEINWATER
+	.byte OBJECT_FALLRATE, OBJECT_FALLRATEINWATER, OBJECT_SLOWFALLRATE
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_Move
@@ -1948,8 +1948,12 @@ PRG000_D0A9:
 Object_ApplyY_With_Gravity:
 	JSR Object_ApplyYVel_NoGravity	 ; Apply Y velocity without limit
 
+	LDY Objects_SlowFall, X
+	BNE Apply_SlowFall
+
 	LDY Objects_InWater,X	; Y = whether in-water
 
+Apply_SlowFall:
 	LDA <Objects_YVelZ,X
 	BPL PRG000_D0CA	 	; If object is object is still or moving downward, jump to PRG000_D0CA
 
@@ -2583,12 +2587,13 @@ Object_New:
 
 	; Clear some more variables (object slots 0 to 5 ONLY)
 	STA Objects_FrozenKicked,X
-	STA Objects_InWater,X
 	STA Objects_SlowTimer,X
 
 PRG000_D4C8:
 
 	; Clear even more variables (object slots 0 to 4 [major objects] ONLY!!)
+	STA Objects_InWater,X
+	STA Objects_SlowFall, X
 	STA Objects_PlayerHitStat,X
 	STA Objects_Data8,X
 	STA Objects_Data9,X

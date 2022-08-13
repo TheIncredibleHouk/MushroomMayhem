@@ -1306,7 +1306,7 @@ ObjInit_JumpingCheep:
 	LDA <Objects_YVelZ, X
 	BNE JumpingCheep_Prop
 
-	LDA #(ATTR_CARRYANDBUMP | ATTR_STOMPKICKSOUND)
+	LDA #(ATTR_STOMPKICKSOUND)
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_CalcBoundBox
@@ -1326,8 +1326,8 @@ ObjInit_JumpingCheep1:
 	STA Objects_Orientation, X
 	RTS
 	
-JumpingCheep_XVel: .byte $10, $F0
-JumpingCheep_YVel: .byte $A0, $60
+JumpingCheep_XVel: .byte $10, $F0, $00, $00
+JumpingCheep_YVel: .byte $A0, $60, $00, $00
 JumpingCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00
 
 JumpingCheep_IsWaiting = Objects_Data3
@@ -1361,13 +1361,14 @@ Jumping_NoTimer:
 	LDY Objects_Property, X
 
 	LDA JumpingCheep_YVel, Y
+	BEQ Jumping_Move
+
 	STA <Objects_YVelZ, X
 
 	LDA #$10
 	STA JumpingCheep_NoWaterTimer, X
 
 Jumping_Move:
-	
 	LDY Objects_Property, X
 	BEQ Jumping_Move1
 
@@ -1389,25 +1390,12 @@ Jumping_Move1:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
-	JSR Object_DetectTiles
-
 	LDA Objects_Property, X
 	CMP #$03
-	BNE Jumping_InteractTiles
-
-	LDA <Objects_YVelZ, X
-	BMI Jumping_NoDetect
-
-	LDA #$00
-	STA Objects_Property, X
-
-	LDA Object_BodyTileProp, X
-	CMP #TILE_PROP_SOLID_ALL
-	BCC Jumping_InteractTiles
-
-	JMP Object_PoofDie
+	BEQ Jumping_NoDetect
 
 Jumping_InteractTiles:
+	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 	JSR Jumping_DoBounce
 

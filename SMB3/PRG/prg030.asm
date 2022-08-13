@@ -4165,6 +4165,7 @@ Tile_YNotOverFlow:
 	; Set Map_Tile_AddrL/H to appropriate screen based on Player's position
 	LDA Tile_Mem_Addr,X
 	STA <Map_Tile_AddrL
+	
 	LDA Tile_Mem_Addr+1,X
 	STA <Map_Tile_AddrH
 
@@ -6183,20 +6184,10 @@ Check_Timers:
 	BNE Killy_TallyTick
 
 	STA Kill_Tally
-	BEQ Check_SlowWatch
+	BEQ Check_StopWatch
 
 Killy_TallyTick:	
 	DEC Kill_Tally_Ticker
-
-Check_SlowWatch:
-	LDA Slow_Watch
-	BEQ Check_StopWatch
-
-	LDA <Counter_1
-	AND #$01
-	BNE Check_StopWatch
-
-	DEC Slow_Watch
 
 Check_StopWatch:
 	LDA Stop_Watch

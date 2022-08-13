@@ -386,6 +386,7 @@ Level_ObjectsSpawnByScrollV:
 ; Performs a "level event" based on the value of Level_Event
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LevelEvent_Do:
+	STA Debug_Snap
 	LDA Level_Event	
 	BEQ LevelEvent_DoRTS	 ; If no level event, jump to PRG005_BBBF (RTS)
 	JSR DynJump	 ; Dynamic jump based on Level_Event... 
@@ -398,7 +399,7 @@ LevelEvent_Do:
 	.word LevelEvent_SpawnGoldCheeps	; 3 - $B6
 	.word LevelEvent_SpawnGoldYurarin	; 4 - $B7
 	.word LevelEvent_SpawnBlooper	; 5 - $B8
-	.word LevelEvent_WoodPlatforms	; 6 - Random wooden platforms 
+	.word LevelEvent_GenerateCheepCheeps	; 6 - Random wooden platforms 
 	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
 	.word LevelEvent_Cancel		; 8 - Does nothing but clear Level_Event
 
@@ -414,16 +415,16 @@ LevelEvent_DoRTS:
 	RTS
 
 CheepCheepXOffsets:
-	.byte $E8, $F8, $08, $18, $E8, $F8, $08, $18
+	.byte $F0, $00, $10, $20, $E0, $F0, $08, $10
 
 CheepCheepXHiOffsets
 	.byte $FF, $FF, $00, $00, $00, $00, $01, $01
 
 CheepCheepXVelocity:
-	.byte $19, $16, $13, $10, $F0, $ED, $EA, $E7
+	.byte $20, $18, $10, $08, $F8, $F0, $E8, $E0
 
 CheepCheepTimers:
-	.byte $80, $60, $80, $A0, $80, $60, $A0, $E0
+	.byte $40, $40, $80, $40, $40, $80, $40, $40
 
 LevelEvent_GenerateCheepCheeps:
 	LDA Level_EventTimer
@@ -437,7 +438,7 @@ GenerateCheepCheep:
 	AND #$07
 	TAY
 
-	LDA CheepCheepTimers, Y
+	LDA #$40
 	STA Level_EventTimer
 
 
@@ -494,12 +495,15 @@ EnemyCount_NoInc:
 	LDA CheepCheepXVelocity, Y
 	STA <Objects_XVelZ, X
 
-	LDA #$90
+	LDA #$A0
 	STA <Objects_YVelZ, X
 	STA Objects_NoExp, X
 
 	LDA #$03
 	STA Objects_Property, X
+
+	LDA #$02
+	STA Objects_SlowFall, X
 
 GenerateCheepCheepRTS:
 	RTS

@@ -1218,7 +1218,6 @@ DontReverseWind:
 	LDA Objects_Property, X
 	STA Weather_Type
 
-
 	LDA RandomN
 	STA <Weather_InitX
 
@@ -1247,7 +1246,6 @@ Weather_InitXY:
 	JSR Half_Value
 	STA <Temp_Var1
 
-	STA Debug_Snap
 	LDA Wind
 	BPL Weather_Right
 
@@ -1265,13 +1263,6 @@ Weather_Right:
 Weather_StoreYVel:
 	LDA Rain_YVel, X
 	STA Weather_YVel, Y
-
-	LDA Wind
-	BMI Weather_DoLoop
-
-	LDA Weather_XVel, Y
-	JSR Negate
-	STA Weather_XVel, Y
 
 Weather_DoLoop:	
 
