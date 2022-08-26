@@ -1317,8 +1317,8 @@ JumpingCheep_Prop:
 	CPY #$02
 	BNE ObjInit_JumpingCheep1
 
-	LDA #$10
-	STA <Objects_YVelZ, X
+	 LDA #$30
+	 STA <Objects_YVelZ, X
 
 ObjInit_JumpingCheep1:
 	LDA JumpingCheep_VFlip, Y

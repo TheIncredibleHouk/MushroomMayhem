@@ -124,7 +124,7 @@ OBJ_TRAININGSHOP	= $60
 	.byte OPTS_SETPT5 | $0A ; Object $59
 	.byte OPTS_SETPT5 | $0A ; Object $5A
 	.byte OPTS_SETPT5 | $1A ; Object $5B
-	.byte OPTS_SETPT5 | $7E; Object $5C
+	.byte OPTS_SETPT5 | $58; Object $5C
 	.byte OPTS_SETPT5 | $12 ; Object $5D
 	.byte OPTS_SETPT5 | $1A ; Object $5E
 	.byte OPTS_SETPT5 | $1A ; Object $5F
@@ -142,7 +142,7 @@ OBJ_TRAININGSHOP	= $60
 	.byte KILLACT_NORMALSTATE ; Object $54
 	.byte KILLACT_STARDEATH ; Object $55
 	.byte KILLACT_STARDEATH ; Object $56
-	.byte KILLACT_STARDEATH ; Object $57
+	.byte KILLACT_NORMALSTATE ; Object $57
 	.byte KILLACT_NORMALSTATE ; Object $58
 	.byte KILLACT_STARDEATH ; Object $59
 	.byte KILLACT_NORMALSTATE ; Object $5A
@@ -228,8 +228,8 @@ ObjP5B:
     .byte $81, $83, $A1, $A3   
 
 ObjP5C:
-	.byte $81, $81, $A1, $A3 ; walk frame 1 petals closed
-	.byte $83, $83, $A1, $A3 ; walk frame 1 petals opened
+	.byte $99, $99, $B9, $BB ; walk frame 1 petals closed
+	.byte $9B, $9B, $B9, $BB ; walk frame 1 petals opened
 
 ObjP5D:
 	.byte $85, $87
@@ -1792,7 +1792,7 @@ NinjiIdleTimes:
 Birdo_WalkTicker = Objects_Data1
 Birdo_Pause = Objects_Data2
 Birdo_HurtTimer = Objects_Data3
-Birdo_PrevHealth = Objects_Data4
+Birdo_Health = Objects_Data4
 Birdo_PalState = Objects_Data5
 Birdo_TickIndex = Objects_Data6
 
@@ -1810,7 +1810,7 @@ ObjInit_Birdo:
 	LDA #BOUND16x32TALL
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_ICEPROOF)
+	LDA #(ATTR_ICEPROOF | ATTR_FIREPROOF | ATTR_NINJAPROOF )
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_NOICE | ATTR_BUMPNOKILL)
@@ -1823,14 +1823,13 @@ ObjInit_Birdo:
 	LDA Birdo_ShootTimers, Y
 	STA Objects_Timer, X
 
-	LDA #$08
-	STA Objects_ExpPoints, X
+	LDA #$02
+	STA Birdo_Health, X
+	STA Objects_NoExp, X
 
-	LDA #$04
-	STA Objects_Health, X
-	STA Birdo_PrevHealth, X
-
-	LDY Objects_Property, X
+	LDA Objects_Property, X
+	AND #$01
+	TAY
 
 	LDA Birdo_Pal, Y
 	STA Objects_SpriteAttributes, X
@@ -1850,38 +1849,71 @@ Birdo_ShootTimers:
 ObjNorm_Birdo:
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Birdo1
+
 	JMP Birdo_Draw
 
 ObjNorm_Birdo1:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE ObjNorm_Birdo2
-	
-	JMP Object_Draw16x32
 
-ObjNorm_Birdo2:
-	JSR Object_DeleteOffScreen
+	LDA Objects_Timer2, X
+	BNE Birdo_NormState
 
-	LDA Objects_Health, X
-	CMP Birdo_PrevHealth, X
-	BEQ Birdo_NotHit
+	DEC Birdo_Health, X
+	BPL Birdo_StillAlive
 
-	LDA Birdo_HurtTimer, X
-	BEQ Birdo_Hit
-	
-	LDA Birdo_PrevHealth, X
-	STA Objects_Health, X
-	JMP Birdo_NotHit
+	LDA Objects_Property, X
+	CMP #$02
+	BCC Birdo_NoKey
 
-Birdo_Hit:
-	LDA Objects_Health, X
-	STA Birdo_PrevHealth, X
-	
+	JSR Object_FindEmptyY
+
+	LDA #OBJ_KEY
+	STA Objects_ID, Y
+
+	LDA #$00
+	STA Objects_Property, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA <Objects_XZ, X
+	STA Objects_XZ, Y
+
+	LDA <Objects_XHiZ, X
+	STA Objects_XHiZ, Y	
+
+	LDA <Objects_YZ, X
+	STA Objects_YZ, Y
+
+	LDA <Objects_YHiZ, X
+	STA Objects_YHiZ, Y	
+
+Birdo_NoKey:	
+	LDA #$19
+	ADD Exp_Earned
+	STA Exp_Earned
+	JMP Object_StarBurstDeath
+
+Birdo_StillAlive:
+
 	LDA #$1F
 	STA Birdo_HurtTimer, X
 	STA Objects_Timer2, X
 
-Birdo_NotHit:
+Birdo_NormState:	
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+
+ObjNorm_Birdo2:
+	JSR Object_DeleteOffScreen
+
 	LDA Birdo_HurtTimer, X
 	BEQ Birdo_CheckPause
 
@@ -1963,6 +1995,7 @@ Birdo_EggNoFlip:
 	STA SpecialObj_YVel,Y
 
 	LDA Objects_Property, X
+	AND #$01
 	BEQ Birdo_ShootEgg
 	 
 	LDA RandomN
@@ -2019,7 +2052,6 @@ Birdo_Norm:
 	JSR Object_Move
 	JSR Object_CalcBoundBoxForced
 
-	
 	LDY Birdo_TickIndex, X
 	LDA Birdo_Walk + 4,Y
 	STA Objects_EffectiveXVel, X
@@ -2102,9 +2134,7 @@ Birdo_StandRTS:
 	RTS
 
 Birdo_Hurt:	
-	JMP Player_GetHurt
-
-        
+	JMP Object_AttackOrDefeat
 
 ObjInit_Phanto:
 

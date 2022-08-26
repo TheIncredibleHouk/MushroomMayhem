@@ -1536,6 +1536,9 @@ Title_PrepForWorldMap:
 	LDA #$27
 	STA Player_Coins + 1
 
+	LDA #12
+	STA Magic_Stars
+
 	LDA #$63
 	STA Cherries
 

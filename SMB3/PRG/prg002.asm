@@ -371,7 +371,7 @@ WaterFill_Norm:
 
 	JSR Object_CalcBoundBoxForced
 	JSR Object_DetectTileCenter
-	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_OBJECTINTERACT)
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BEQ FillWater_Burst
 
 	CMP #(TILE_PROP_SOLID_ALL)
@@ -2650,7 +2650,16 @@ MushroomBlock_Normal:
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	
+	
+	LDA Objects_BeingHeld, X
+	BNE MushroomBlock_NoKill
+	
+	LDA <Objects_XVelZ, X
+	BEQ MushroomBlock_NoKill
+
 	JSR Shell_KillOthers
+
+MushroomBlock_NoKill:	
 	JSR Object_DetectPlayer
 	BCC MushroomBlock_DetectTiles
 

@@ -1251,7 +1251,7 @@
     226,
     247,
     247,
-    255,
+    247,
     226,
     226,
     226,
@@ -1489,7 +1489,7 @@
     226,
     226,
     226,
-    247,
+    255,
     247,
     247,
     247,
@@ -1781,7 +1781,7 @@
     247,
     226,
     226,
-    226,
+    255,
     247,
     247,
     226,
@@ -2257,7 +2257,7 @@
     255,
     226,
     226,
-    247,
+    255,
     247,
     226,
     250,
@@ -6497,36 +6497,10 @@
     65,
     65
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 68,
-      "X": 21,
-      "Y": 21,
-      "Property": 6
-    },
-    {
-      "GameObjectId": 68,
-      "X": 16,
-      "Y": 6,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 68,
-      "X": 40,
-      "Y": 4,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 68,
-      "X": 29,
-      "Y": 5,
-      "Property": 1
-    }
-  ],
   "FirstObjectData": [
     {
       "GameObjectId": 68,
-      "X": 21,
+      "X": 14,
       "Y": 21,
       "Property": 6
     },
@@ -6549,7 +6523,38 @@
       "Property": 1
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 125,
+      "X": 86,
+      "Y": 8,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 68,
+      "X": 58,
+      "Y": 5,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 68,
+      "X": 45,
+      "Y": 5,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 68,
+      "X": 35,
+      "Y": 18,
+      "Property": 6
+    },
+    {
+      "GameObjectId": 68,
+      "X": 22,
+      "Y": 17,
+      "Property": 6
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "4106e461-a5f5-40b6-b070-fce3600a7621",
@@ -6578,5 +6583,5 @@
       "BoundRectangle": "304,16,32,32"
     }
   ],
-  "CompressedData": "CjLBl0zClzE/Mg8ywZdGwQ5EwpcxPzIPMsGXRsEfRIILlzEyMjIyMpeXl5cGl8ExEDIDl8ExAjINl8IxMguXwUdEAhFDwpcxBDLBl0LClzEDl8Ixl0jDlzEyA5fBMQoywZdBwpcxAjLBl0vElzEyl0PDnp+XEPbC+OgD+MLo+AL2ggX46Pj29gb2xPjo+fgB9sL46Ar5wfgB9sL46AL5wfgL9sT46PmXQ8Oen5cQ94IF4vri9/fB/wLiAfcC4gj3xOL6++IB98Li+gr7weIB98Li+gL7weIL98Ti+vuXQ8Oen5cQ9wLiAfcC4hP3A+IB9wTiwfoG+8HiAffC4voC+8HiC/fE4vr7l0PDjo+XNvfC4voG+8HiAffC4voC+4IF4vf34uLB4gH3xOL6+5dFwZc29wLiwf8F4sT/9+L6AvuCBeL39+LqweIB98bi+vuXQcFDwZcg9wLiA/fB/xn3AuLB/wHiAffD4vriAffL4vrizs/i+vuXrq9DwZcg98Pi6uIC9wL1IPfC4voD4sr64t7f4vr7l56fQsI9lxv3BeLB+g3iAfcL4sL/4gn3wuL6A+vB2wPiwvr7EZcG9wLiAfcC4gL3wuLqA+vB2wzrweIB98Li6grrC+LB+gT7A+vC2/sQIsGXBvfC4uoD4sLq4gL3wuL6EfvB4gH3wuL6CvsL68HbCvsQMsGXBvfC4voD68Lb4gL3wuL6AvsD4sH6A/sD4sL6+wPiwfoJ4sH6DPsI4sL6+xGXBffB/wfiAvfC4voC+8HiAffC4voD+8HiAffD4vr7A+vC2+IH98Li+gz7weIG98Ti+vuXQ8Oen5cb9wXiAffC4voD+8HiAfcI4gf3wuL6DPvB4gb3xOL6+5dDw56flyP3wuL6A/vB4hL3BuLB+gb7weIG98Ti+vuXQ8Oen5cj98Li+gP7weIT98H/A/fC4voG+8HiBvfE4vr7l0PDjo+XHPfB/wX3wuL6A/vB4gv3wf8L98Li+gb7weIG98Ti+vuXRcGXI/fC4voD+8HiGPcJ4gb3xOL6+5dFwZcO98HiDvcC4gH3wuL6A/vB4gH3BOLB/yH3xuL6+5eur0PBlx73w+Lq4gH3BuIB98Li6gHrAeIh98bi+vuXnp9Cwj2XDffB/w33AuLC+uIK98Li+gH7wuviAfcF4gj3COIF98XOz+L6+xGXAvcI4gL3wfUC98Xi6uvb4gr3wuL6AvvB4gH3wuLqAuvB4gP3wf8D98Li6gXrweIF98Xe3+L6+xAiwZcC98Li6gXrweIB9wLiAffC4voB+wniAfeCCOL6+/v74vf3wfcG4sH6BfvB4gT3A+LC+vsQMsGXAvfC4voF+8HiAffD4uriAffC4voB+wjrggji9/fi+vv7+8HiAvfC4uoE68HbBfvB4gT3wuLqAevC2/s="
+  "CompressedData": "CjLBl0zClzE/Mg8ywZdGwQ5EwpcxPzIPMsGXRsEfRIILlzEyMjIyMpeXl5cGl8ExEDIDl8ExAjINl8IxMguXwUdEAhFDwpcxBDLBl0LClzEDl8Ixl0jDlzEyA5fBMQoywZdBwpcxAjLBl0vElzEyl0PDnp+XEPbC+OgD+MLo+AL2ggX46Pj29gb2xPjo+fgB9sL46Ar5wfgB9sL46AL5wfgL9sT46PmXQ8Oen5cQ94IF4vri9/eCBffi4uL3B/fE4vr74gH3wuL6CvvB4gH3wuL6AvvB4gv3xOL6+5dDw56flxD3AuIB9wLiwf8S9wPiAfcE4sH6BvvB4gH3wuL6AvvB4gv3xOL6+5dDw46Plzb3wuL6BvvB4gH3wuL6AvvB4gH3AeLB/wH3AuIB98Ti+vuXRcGXNvcC4sH/BeLE//fi+gL7ggXi9/fi6sHiAffG4vr7l0HBQ8GXIPcC4gP3wf8Z9wLiwf8B4sX/9+L64gH3y+L64s7P4vr7l66vQ8GXIPfD4uriAvcC9SD3wuL6A+LK+uLe3+L6+5een0LCPZcb9wXiwfoN4gH3C+LC/+IJ98Li+gPrwdsD4sL6+xGXBvcC4gH3AuIC98Li6gPrwdsM68HiAffC4uoK6wviwfoE+wPrwtv7ECLBlwb3wuLqA+LC6uIC98Li+hH7weIB98Li+gr7C+vB2wr7EDLBlwb3wuL6A+vC2+IC98Li+gL7A+LB+gP7A+LC+vsD4sH6CeLB+gz7COLC+vsRlwX3wf8H4gL3wuL6AvvB4gH3wuL6A/vB4gH3w+L6+wPrwtviB/fC4voM+8HiBvfE4vr7l0PDnp+XG/cF4gH3wuL6A/vB4gH3COIH98Li+gz7weIG98Ti+vuXQ8Oen5cj98Li+gP7weIS9wbiwfoG+8HiBvfE4vr7l0PDnp+XI/fC4voD+8HiE/fB/wP3wuL6BvvB4gb3xOL6+5dDw46Plxz3wf8F98Li+gP7weIL98H/C/fC4voG+8HiBvfE4vr7l0XBlyP3wuL6A/vB4hj3CeIG98Ti+vuXRcGXDvfB4g73AuIB98Li+gP7weIB9wTiwf8h98bi+vuXrq9DwZce98Pi6uIB9wbiAffC4uoB6wHiIffG4vr7l56fQsI9lw33wf8N9wLiwvriCvfC4voB+8Lr4gH3BeII9wjiBffFzs/i+vsRlwL3COIC98H1AvfF4urr2+IK98Li+gL7weIB98Li6gLrweID98H/A/fC4uoF68HiBffF3t/i+vsQIsGXAvfC4uoF68HiAfcC4gH3wuL6AfsJ4gH3ggji+vv7++L398H3BuLB+gX7weIE9wPiwvr7EDLBlwL3wuL6BfvB4gH3w+Lq4gH3wuL6AfsI64II4vf34vr7+/vB4gL3wuLqBOvB2wX7weIE98Li6gHrwtv7"
 }

@@ -270,6 +270,9 @@ ObjInit_PUp1:
 	RTS
 
 ObjInit_PUp2:
+	LDA #OBJ_POWERUP
+	STA Objects_ID, X
+
 	LDA Objects_Property, X
 	ADD #$09
 	STA PowerUp_Type, X
@@ -776,7 +779,7 @@ Vine_Grow:
 	BCC PUp_Delete
 
 Vine_NoDelete:
-	JSR Object_CalcBoundBox
+	JSR Object_CalcBoundBoxForced
 	JSR Object_DetectTileCenter
 
 	LDA Tile_LastProp
@@ -888,6 +891,9 @@ PUp_CheckPoint:
 
 	LDA Magic_Stars_Collected3, Y
 	STA Previous_Stars_Collected3
+
+	LDA Player_EffectiveSuit
+	STA World_Map_Power
 
 	JMP Object_PoofDie
 

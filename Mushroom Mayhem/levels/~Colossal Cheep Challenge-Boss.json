@@ -6513,6 +6513,12 @@
   ],
   "SecondObjectData": [
     {
+      "GameObjectId": 0,
+      "X": 7,
+      "Y": 2,
+      "Property": 0
+    },
+    {
       "GameObjectId": 195,
       "X": 13,
       "Y": 0,

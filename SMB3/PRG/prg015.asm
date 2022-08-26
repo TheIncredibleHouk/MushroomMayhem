@@ -1689,6 +1689,8 @@ Thwomp_WaitForPlayer:
 
 	BEQ Thwomp_KeepWaiting
 	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_AttackOrDefeat
 
 	JSR Object_XDistanceFromPlayer
@@ -1725,6 +1727,7 @@ Thwomp_FallToGround:
 
 	JSR Object_Move
 	JSR Object_CalcBoundBox
+	
 	JSR Object_AttackOrDefeat
 
 	INC Thwomp_Ticker, X
@@ -2031,6 +2034,8 @@ AngryThwomp_DoAction:
 
 AngryThwompWait:
 	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_AttackOrDefeat
 
 	LDA Objects_Timer, X
@@ -2085,6 +2090,7 @@ Thwomp_FallToCeiling:
 	STA Tile_DetectionYHi
 
 	JSR Object_DetectTile
+	
 	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_TOP
 	BCC AngryThwomp_NoHit

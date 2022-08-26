@@ -386,7 +386,6 @@ Level_ObjectsSpawnByScrollV:
 ; Performs a "level event" based on the value of Level_Event
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LevelEvent_Do:
-	STA Debug_Snap
 	LDA Level_Event	
 	BEQ LevelEvent_DoRTS	 ; If no level event, jump to PRG005_BBBF (RTS)
 	JSR DynJump	 ; Dynamic jump based on Level_Event... 

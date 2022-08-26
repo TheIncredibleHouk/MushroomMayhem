@@ -285,8 +285,10 @@ PRG030_84D7:
 	; Load world map graphics
 	LDA #$14
 	STA PatTable_BankSel
+
 	LDX #$20
 	STX PatTable_BankSel+2
+
 	INX
 	STX PatTable_BankSel+3
 	INX
@@ -1422,6 +1424,9 @@ PRG030_8F31_2:
 
 	LDA #$00
 	STA LeftRightInfection
+	STA Player_Oiled
+	STA Player_Yolked
+
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled
@@ -2489,7 +2494,6 @@ Tile_Mem_ClearA:	; $9705
 	STA Tile_Mem+$1440,Y
 	STA Tile_Mem+$15F0,Y
 	STA Tile_Mem+$17A0,Y
-	INY		 ; Y++
 
 	RTS		 ; Return
 
@@ -2532,6 +2536,12 @@ LevelLoad:
 	STA Level_AScrlPosHHi
 
 	INC Force_StatusBar_Init
+
+	
+	LDA #$0F
+	STA StatusBar_Palette
+	STA StatusBar_Palette + 1
+	STA StatusBar_Palette + 2
 
 LevelLoadQuick:
 	
@@ -2663,10 +2673,13 @@ NotJctBQ:
 	
 	LDY #$00
 	LDA [Temp_Var14],Y
-
+	
+	LDY #$F0
 	;NextLevelByte
 	; draw clear tile
 ClearLevelMem:
+	
+	DEY
 	JSR Tile_Mem_ClearA
 	JSR Tile_Mem_ClearB
 	
@@ -2984,10 +2997,10 @@ NoCarryInc:
 	
 	LDA #$60
 	STA <Temp_Var9
+
 	LDY #$00
 
 NextDecompressionCommand:
-	
 	LDA [Temp_Var14], Y
 	CMP #$FF
 	BNE GetDecompressionCommand
@@ -3391,79 +3404,79 @@ PRG030_9B02:
 	STA <Scroll_LeftUpd		 ; Scroll_LeftUpd = $ff (marker as in "not last updated"; flat for dirty)
 	JMP SetPages_ByTileset	 ; JUMP to SetPages_ByTileset to reset pages (will take care of the RTS)
 
-PRG030_9B10:
+; PRG030_9B10:
 
-	; Scroll_LastDir = 0
-	LDA #$00
-	STA <Scroll_LastDir
+; 	; Scroll_LastDir = 0
+; 	LDA #$00
+; 	STA <Scroll_LastDir
 
-	; Vert_Scroll = $E0
-	LDA #$e0
-	STA <Vert_Scroll
+; 	; Vert_Scroll = $E0
+; 	LDA #$e0
+; 	STA <Vert_Scroll
 
-	; Scroll_RightUpd = $E8
-	ADD #$08
-	STA <Scroll_RightUpd
+; 	; Scroll_RightUpd = $E8
+; 	ADD #$08
+; 	STA <Scroll_RightUpd
 
-	; Scroll_ColumnR = (Level_SizeOrig - 1) | $E0
-	LDY Level_SizeOrig	 ; Y = Level_SizeOrig
-	DEY		 ; Y--
-	TYA
-	ORA #$e0
-	STA <Scroll_ColumnR
+; 	; Scroll_ColumnR = (Level_SizeOrig - 1) | $E0
+; 	LDY Level_SizeOrig	 ; Y = Level_SizeOrig
+; 	DEY		 ; Y--
+; 	TYA
+; 	ORA #$e0
+; 	STA <Scroll_ColumnR
 
-PRG030_9B26:
-	; Set proper Page @ A000 for tile layout data
-	LDY Level_Tileset
-	LDA TileLayoutPage_ByTileset,Y	
-	STA PAGE_A000	 
-	JSR PRGROM_Change_A000
+; PRG030_9B26:
+; 	; Set proper Page @ A000 for tile layout data
+; 	LDY Level_Tileset
+; 	LDA TileLayoutPage_ByTileset,Y	
+; 	STA PAGE_A000	 
+; 	JSR PRGROM_Change_A000
 
-	JSR VScroll_PageAndDoPatAttrRow	 ; Do the row of patterns and attributes for vertical scroll
+; 	JSR VScroll_PageAndDoPatAttrRow	 ; Do the row of patterns and attributes for vertical scroll
 
-	; Set page @ A000 to 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+; 	; Set page @ A000 to 26
+; 	LDA #26
+; 	STA PAGE_A000
+; 	JSR PRGROM_Change_A000
 
-	JSR Scroll_ToVRAM_Apply	 ; Applies Scroll_ToVRAMHi and Scroll_ToVRAMHA updates
-	JSR Scroll_ToVRAM_Apply	 ; Applies Scroll_ToVRAMHi and Scroll_ToVRAMHA updates
+; 	JSR Scroll_ToVRAM_Apply	 ; Applies Scroll_ToVRAMHi and Scroll_ToVRAMHA updates
+; 	JSR Scroll_ToVRAM_Apply	 ; Applies Scroll_ToVRAMHi and Scroll_ToVRAMHA updates
 
-	LDA <Vert_Scroll
-	ADD #$08
-	STA <Vert_Scroll
+; 	LDA <Vert_Scroll
+; 	ADD #$08
+; 	STA <Vert_Scroll
 
-	CMP #$f0
-	BNE PRG030_9B59	 ; If not changing to new screen, jump to PRG030_9B59
+; 	CMP #$f0
+; 	BNE PRG030_9B59	 ; If not changing to new screen, jump to PRG030_9B59
 
-	INC <Scroll_VOffsetT		 ; Scroll_VOffsetT++
+; 	INC <Scroll_VOffsetT		 ; Scroll_VOffsetT++
 
-	; Loop vertical offset to new screen
-	LDA <Scroll_VOffsetT
-	AND #$0f
-	STA <Scroll_VOffsetT
+; 	; Loop vertical offset to new screen
+; 	LDA <Scroll_VOffsetT
+; 	AND #$0f
+; 	STA <Scroll_VOffsetT
 
-	JMP PRG030_9B66	 ; Jump to PRG030_9B66
+; 	JMP PRG030_9B66	 ; Jump to PRG030_9B66
 
-PRG030_9B59:
-	LDA <Vert_Scroll
-	AND #$08
-	BNE PRG030_9B66	 ; If only halfway vertically through tile row, jump to PRG030_9B66
+; PRG030_9B59:
+; 	LDA <Vert_Scroll
+; 	AND #$08
+; 	BNE PRG030_9B66	 ; If only halfway vertically through tile row, jump to PRG030_9B66
 
-	; Otherwise, go to next row
-	LDA <Scroll_VOffsetT
-	ADD #$10
-	STA <Scroll_VOffsetT
+; 	; Otherwise, go to next row
+; 	LDA <Scroll_VOffsetT
+; 	ADD #$10
+; 	STA <Scroll_VOffsetT
 
-PRG030_9B66:
-	LDA <Vert_Scroll
-	CMP #$d0
-	BNE PRG030_9B26	 ; While Vert_Scroll <> $D0, loop!
+; PRG030_9B66:
+; 	LDA <Vert_Scroll
+; 	CMP #$d0
+; 	BNE PRG030_9B26	 ; While Vert_Scroll <> $D0, loop!
 
-	LDA #$00
-	STA <Vert_Scroll	; Vert_Scroll = 0
-	STA <Scroll_VertUpd	; Scroll_VertUpd = 0
-	RTS		 ; Return
+; 	LDA #$00
+; 	STA <Vert_Scroll	; Vert_Scroll = 0
+; 	STA <Scroll_VertUpd	; Scroll_VertUpd = 0
+; 	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3538,18 +3551,18 @@ PRG030_9BA9:
 PRG030_9BB1:
 	RTS		 ; Return
 
-VScroll_PageAndDoPatAttrRow:
-	; Set proper Page @ A000 for tile layout data
-	LDY Level_Tileset
-	LDA TileLayoutPage_ByTileset,Y	
-	STA PAGE_A000	 
-	JSR PRGROM_Change_A000
+; VScroll_PageAndDoPatAttrRow:
+; 	; Set proper Page @ A000 for tile layout data
+; 	LDY Level_Tileset
+; 	LDA TileLayoutPage_ByTileset,Y	
+; 	STA PAGE_A000	 
+; 	JSR PRGROM_Change_A000
 
-	JSR VScroll_CalcPatternVRAMAddr	 ; Calculate start of pattern row
-	JSR VScroll_DoPatternAndAttrRow	 ; Do the pattern row AND attributes
+; 	JSR VScroll_CalcPatternVRAMAddr	 ; Calculate start of pattern row
+; 	JSR VScroll_DoPatternAndAttrRow	 ; Do the pattern row AND attributes
 
-PRG030_9BD2:
-	RTS		 ; Return
+; PRG030_9BD2:
+; 	RTS		 ; Return
 
 PRG030_9BD3:	.byte $00, $01
 
@@ -3809,160 +3822,160 @@ PRG030_9CF8:
 	RTS		 	; Return!
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; VScroll_CalcPatternVRAMAddr
-;
-; Calculates Scroll_ToVRAMHi/Lo for patterns for the current vertical scroll
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-VScroll_CalcPatternVRAMAddr:
-	LDX <Scroll_LastDir	; X = Scroll_LastDir
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ; VScroll_CalcPatternVRAMAddr
+; ;
+; ; Calculates Scroll_ToVRAMHi/Lo for patterns for the current vertical scroll
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; VScroll_CalcPatternVRAMAddr:
+; 	LDX <Scroll_LastDir	; X = Scroll_LastDir
 
-	; Calculate VRAM High into nametable for this offset
-	LDA <Scroll_VOffsetT,X
-	AND #$c0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	ADD #$20
-	STA Scroll_ToVRAMHi
+; 	; Calculate VRAM High into nametable for this offset
+; 	LDA <Scroll_VOffsetT,X
+; 	AND #$c0
+; 	LSR A
+; 	LSR A
+; 	LSR A
+; 	LSR A
+; 	LSR A
+; 	LSR A
+; 	ADD #$20
+; 	STA Scroll_ToVRAMHi
 
-	; Calculate VRAM Low into nametable for this offset
-	LDA <Scroll_VOffsetT,X
-	AND #$30
-	ASL A
-	ASL A
-	STA Scroll_LastOff8
+; 	; Calculate VRAM Low into nametable for this offset
+; 	LDA <Scroll_VOffsetT,X
+; 	AND #$30
+; 	ASL A
+; 	ASL A
+; 	STA Scroll_LastOff8
 
-	LDA <Vert_Scroll
-	AND #$08
-	BEQ PRG030_9D3E	 ; If not on odd row, jump to PRG030_9D3E (RTS)
+; 	LDA <Vert_Scroll
+; 	AND #$08
+; 	BEQ PRG030_9D3E	 ; If not on odd row, jump to PRG030_9D3E (RTS)
 
-	; +32 bytes to offset to reach next tile row in VRAM
-	LDA Scroll_LastOff8
-	ADD #32
-	STA Scroll_LastOff8
+; 	; +32 bytes to offset to reach next tile row in VRAM
+; 	LDA Scroll_LastOff8
+; 	ADD #32
+; 	STA Scroll_LastOff8
 
-PRG030_9D3E:
-	RTS		 ; Return
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; VScroll_DoPatternAndAttrRow
-;
-; This subroutine renders a "row" of 8x8 blocks for the vertical
-; screen scrolling.  Also creates the attributes for the same.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-VScroll_DoPatternAndAttrRow:
-	LDX <Scroll_LastDir	 ; X = Scroll_LastDir
-
-	LDA <Scroll_VOffsetT,X	; Get proper offset based on direction of scroll
-	AND #$0f
-	TAY		 ; Y = offset column
-
-	; Get address of tile at this vertical position
-	LDA Tile_Mem_AddrVL,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_AddrVH,Y
-	STA <Map_Tile_AddrH
-
-	; Temp_Var9 = offset at leftmost column in current row
-	LDA <Scroll_VOffsetT,X
-	AND #$f0
-	STA <Temp_Var9
-
-	; Temp_Var10 = 0
-	LDA #$00
-	STA <Temp_Var10
-
-PRG030_9D5A:
-	LDY <Temp_Var9		 ; Y = current offset along row
-	LDA [Map_Tile_AddrL],Y	 ; Get tile here
-	STA <Temp_Var11		 ; -> Temp_Var11
-
-	INC <Temp_Var9		 ; Temp_Var9++ (next column)
-
-	JSR TileLayout_GetBaseAddr	 ; Get tile layout address -> Temp_Var13/14
-
-	LDX <Temp_Var10		 ; X = Temp_Var10
-
-	LDA <Vert_Scroll
-	AND #$08
-	BEQ PRG030_9D6F	 ; If not vertically halfway on the tile, jump to PRG030_9D6F
-
-	INC <Temp_Var14		 ; Otherwise, Temp_Var14++ (next row of layout)
-
-PRG030_9D6F:
-	LDA [Temp_Var13],Y	 ; Get pattern of tile
-	STA Scroll_PatStrip,X	 ; Store into pattern strip
-
-	INX		 ; X++ (next pattern strip byte)
-
-	; Temp_Var14 += 2 (next adjacent tile pattern)
-	INC <Temp_Var14
-	INC <Temp_Var14
-
-	LDA [Temp_Var13],Y	 ; Get pattern of tile
-	STA Scroll_PatStrip,X	 ; Store into pattern strip
-
-	INX		 ; X++ (next pattern strip byte)
-
-	STX <Temp_Var10		 ; X -> Temp_Var10
-
-	CPX #$20
-	BLT PRG030_9D5A	 ; If not at end of strip row, loop
-
-	LDA Scroll_LastOff8
-	CMP #$20
-	BEQ PRG030_9D92	 ; If Scroll_LastOff8 = $20 (end of top row), jump to PRG030_9D92
-
-	CMP #$a0
-	BEQ PRG030_9D92	 ; If Scroll_LastOff8 = $A0 (end of bottom row), jump to PRG030_9D92
-
-	BNE PRG030_9D98	 ; Otherwise, jump to PRG030_9D98 (RTS)
-
-PRG030_9D92:
-	JSR VScroll_CalcAttributeVRAMAddr	; Calculate the attribute VRAM addresses
-	JSR Scroll_Do_AttrRow	 		; Do row of attributes
-
-PRG030_9D98:
-	RTS		 ; Return
+; PRG030_9D3E:
+; 	RTS		 ; Return
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; VScroll_CalcAttributeVRAMAddr
-;
-; Calculates Scroll_ToVRAMHA/Scroll_LastAttr for attributes for the current vertical scroll
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-VScroll_CalcAttributeVRAMAddr:
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ; VScroll_DoPatternAndAttrRow
+; ;
+; ; This subroutine renders a "row" of 8x8 blocks for the vertical
+; ; screen scrolling.  Also creates the attributes for the same.
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; VScroll_DoPatternAndAttrRow:
+; 	LDX <Scroll_LastDir	 ; X = Scroll_LastDir
 
-	; VRAM High address to attributes
-	LDA #$23
-	STA Scroll_ToVRAMHA
+; 	LDA <Scroll_VOffsetT,X	; Get proper offset based on direction of scroll
+; 	AND #$0f
+; 	TAY		 ; Y = offset column
 
-	LDX <Scroll_LastDir	 ; X = Scroll_LastDir
+; 	; Get address of tile at this vertical position
+; 	LDA Tile_Mem_AddrVL,Y
+; 	STA <Map_Tile_AddrL
+; 	LDA Tile_Mem_AddrVH,Y
+; 	STA <Map_Tile_AddrH
 
-	; VRAM Low address to attributes
-	LDA <Scroll_VOffsetT,X	; Get proper offset based on direction of scroll
-	AND #$c0
-	LSR A
-	LSR A
-	ADD #$c0
-	STA Scroll_LastAttr
+; 	; Temp_Var9 = offset at leftmost column in current row
+; 	LDA <Scroll_VOffsetT,X
+; 	AND #$f0
+; 	STA <Temp_Var9
 
-	LDA <Scroll_VOffsetT,X
-	AND #$20
-	BEQ PRG030_9DBB	
+; 	; Temp_Var10 = 0
+; 	LDA #$00
+; 	STA <Temp_Var10
 
-	; Scroll_LastAttr += 8
-	LDA Scroll_LastAttr
-	ADD #$08
-	STA Scroll_LastAttr
+; PRG030_9D5A:
+; 	LDY <Temp_Var9		 ; Y = current offset along row
+; 	LDA [Map_Tile_AddrL],Y	 ; Get tile here
+; 	STA <Temp_Var11		 ; -> Temp_Var11
 
-PRG030_9DBB:
-	RTS		 ; Return
+; 	INC <Temp_Var9		 ; Temp_Var9++ (next column)
+
+; 	JSR TileLayout_GetBaseAddr	 ; Get tile layout address -> Temp_Var13/14
+
+; 	LDX <Temp_Var10		 ; X = Temp_Var10
+
+; 	LDA <Vert_Scroll
+; 	AND #$08
+; 	BEQ PRG030_9D6F	 ; If not vertically halfway on the tile, jump to PRG030_9D6F
+
+; 	INC <Temp_Var14		 ; Otherwise, Temp_Var14++ (next row of layout)
+
+; PRG030_9D6F:
+; 	LDA [Temp_Var13],Y	 ; Get pattern of tile
+; 	STA Scroll_PatStrip,X	 ; Store into pattern strip
+
+; 	INX		 ; X++ (next pattern strip byte)
+
+; 	; Temp_Var14 += 2 (next adjacent tile pattern)
+; 	INC <Temp_Var14
+; 	INC <Temp_Var14
+
+; 	LDA [Temp_Var13],Y	 ; Get pattern of tile
+; 	STA Scroll_PatStrip,X	 ; Store into pattern strip
+
+; 	INX		 ; X++ (next pattern strip byte)
+
+; 	STX <Temp_Var10		 ; X -> Temp_Var10
+
+; 	CPX #$20
+; 	BLT PRG030_9D5A	 ; If not at end of strip row, loop
+
+; 	LDA Scroll_LastOff8
+; 	CMP #$20
+; 	BEQ PRG030_9D92	 ; If Scroll_LastOff8 = $20 (end of top row), jump to PRG030_9D92
+
+; 	CMP #$a0
+; 	BEQ PRG030_9D92	 ; If Scroll_LastOff8 = $A0 (end of bottom row), jump to PRG030_9D92
+
+; 	BNE PRG030_9D98	 ; Otherwise, jump to PRG030_9D98 (RTS)
+
+; PRG030_9D92:
+; 	JSR VScroll_CalcAttributeVRAMAddr	; Calculate the attribute VRAM addresses
+; 	JSR Scroll_Do_AttrRow	 		; Do row of attributes
+
+; PRG030_9D98:
+; 	RTS		 ; Return
+
+
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ; VScroll_CalcAttributeVRAMAddr
+; ;
+; ; Calculates Scroll_ToVRAMHA/Scroll_LastAttr for attributes for the current vertical scroll
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; VScroll_CalcAttributeVRAMAddr:
+
+; 	; VRAM High address to attributes
+; 	LDA #$23
+; 	STA Scroll_ToVRAMHA
+
+; 	LDX <Scroll_LastDir	 ; X = Scroll_LastDir
+
+; 	; VRAM Low address to attributes
+; 	LDA <Scroll_VOffsetT,X	; Get proper offset based on direction of scroll
+; 	AND #$c0
+; 	LSR A
+; 	LSR A
+; 	ADD #$c0
+; 	STA Scroll_LastAttr
+
+; 	LDA <Scroll_VOffsetT,X
+; 	AND #$20
+; 	BEQ PRG030_9DBB	
+
+; 	; Scroll_LastAttr += 8
+; 	LDA Scroll_LastAttr
+; 	ADD #$08
+; 	STA Scroll_LastAttr
+
+; PRG030_9DBB:
+; 	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5032,7 +5045,6 @@ CopyMapPointers:
 
 	INX
 
-	
 	JSR Next_World_Byte
 	LDA [Temp_Var1], Y
 	STA MapPointers, X
@@ -5054,7 +5066,15 @@ CopyMapPointers:
 	LDA #$FF
 	STA MapPointers, X
 
-	LDX #$00
+Map_ClearObjects:
+	LDA #$00
+
+	LDX #13
+
+Map_ClearObjectsLoop:	
+	STA Map_Objects_IDs, X
+	DEX
+	BPL Map_ClearObjectsLoop
 
 Map_LoadObjects:
 	LDA [Temp_Var1], Y
@@ -5863,6 +5883,7 @@ RhythmPlatformsReset:
 	STA RhythmKeeper
 	STA RhythmKeeper + 1
 	STA RhythmKeeper + 2
+	STA RhythmKeeper + 3
 	STA RhythmKeeper + 4
 
 RhythmPlatforms:

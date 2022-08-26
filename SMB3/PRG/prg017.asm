@@ -35,6 +35,7 @@ Boss_CheepTopRightProp = Objects_Data4
 Boss_CheepBounces = Objects_Data5
 Boss_CheepHits = Objects_Data6
 Boss_CheepYLine = Objects_Data7
+Boss_CheepHealth = Objects_Data8
 
 Boss_Cheep:
 	LDA <Player_HaltGameZ
@@ -100,12 +101,11 @@ Boss_CheepReset:
 	LDA #$01
 	STA Boss_CheepAction, X
 
-	LDA #ATTR_ALLWEAPONPROOF
+	LDA #(ATTR_TAILPROOF)
 	STA Objects_WeaponAttr, X
 
-	LDA #ATTR_SHELLPROOF
+	LDA #(ATTR_NOICE)
 	STA Objects_BehaviorAttr, X
-
 	RTS
 
 Boss_CheepNorm:
@@ -118,12 +118,7 @@ Boss_CheepNorm:
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
-	
-	LDA #ATTR_ALLWEAPONPROOF
-	STA Objects_WeaponAttr, X
-	
-	LDA #ATTR_SHELLPROOF
-	STA Objects_BehaviorAttr, X
+
 
 	LDA #$03
 	STA Boss_CheepBounces, X
@@ -278,8 +273,10 @@ Boss_CheepKeepRight:
 	ADD #$44
 
 	LDA <Objects_XHiZ, X
+	BMI Boss_KeepRight
 	BNE Boss_SwitchDirectionLeft
 
+Boss_KeepRight:
 	ADC #$00
 	BEQ Boss_CheepMoveRight
 
@@ -404,7 +401,7 @@ Boss_CheepBreakBridgeRight:
 
 Boss_CheepBreak:
 	LDA <Objects_YZ, X
-	ADD #$18
+	ADD #$28
 	STA Block_DetectY
 	STA Debris_Y
 

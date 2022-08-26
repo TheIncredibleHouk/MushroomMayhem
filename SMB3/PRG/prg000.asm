@@ -638,6 +638,9 @@ PRG000_C975:
 	LDA Objects_State, X
 	BEQ PRG000_C9D2
 
+	LDA Stop_Watch
+	BNE PRG000_C9B6
+
 	LDA Objects_Timer,X
 	BEQ PRG000_C983	 ; If this timer is already at zero, jump to PRG000_C983
 
@@ -1994,6 +1997,7 @@ PRG000_D0CA:
 PRG000_D0DE:
 	LDA #$00
 	STA NoGravity
+	STA Reverse_Gravity
 	JMP Object_XYCheckSum
 
 PRG000_D0DF:
@@ -5319,7 +5323,6 @@ Object_KilledNormal:
 
 	LDA #$00
 	STA Objects_PlayerProjHit, X
-	JSR Object_FlipFallAwayFromPlayer
 
 ObjectNoFlipped:	
 	RTS
@@ -5944,12 +5947,6 @@ Object_IsHammerNinjaShellProof:
 
 Object_FlipFall:
 	RTS
-
-Object_FlipFallAwayFromPlayer:
-
-	LDA Objects_Orientation, X
-	ORA #SPR_VFLIP
-	STA Objects_Orientation, X
 
 Object_FallAwayFromPlayer:
 	LDA #$C0

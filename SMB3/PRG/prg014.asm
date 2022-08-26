@@ -2329,6 +2329,7 @@ Freezie_NoYVel = Objects_Timer
 Freezie_NoImpact = Objects_Data3
 
 ObjNorm_Freezie:
+	STA Debug_Snap
 	LDA <Player_HaltGameZ
 	BEQ Freezie_Norm
 
@@ -2355,6 +2356,7 @@ Freezie_DoAction:
 
 	.word Freezie_Wait
 	.word Freezie_Move
+	.word Freezie_Dead
 
 Freezie_Wait:
 	JSR Object_CalcBoundBox
@@ -2501,18 +2503,28 @@ ObjHit_Freezie:
 	STA <Player_InAir
 
 Freezie_Die:
-	LDY Objects_SpawnIdx,X
-	
-	LDA Level_ObjectsSpawned,Y
-	AND #$7F
-	STA Level_ObjectsSpawned,Y
+	LDA #$02
+	STA Freezie_State, X
 	
 	LDA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
 
-	JMP Object_BurstIce
+	JSR Object_BurstIce
 
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
 
+	LDA #OBJ_FREEZIE
+	STA Objects_ID, X
+
+	LDA #$F0
+	STA <Objects_YZ, X
+
+	LDA #$FF
+	STA <Objects_YHiZ, X
+
+Freezie_Dead:
+	JMP Object_DeleteOffScreen
 
 ObjInit_Swoosh:
 	LDA #BOUND16x16

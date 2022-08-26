@@ -18,8 +18,8 @@ OBJ_CHECKPOINT		= $35
 OBJ_CLOUDGEN		= $36
 OBJ_COINALERT		= $37
 OBJ_MONTYMOLE		= $38
-OBJ_HIDDENWELL		= $39
-
+OBJ_TILEEXTENDER	= $39
+OBJ_STARBARRIER     = $3A
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
 	.word ObjInit_WoodenPlatVert    ; Object $29
@@ -38,8 +38,8 @@ OBJ_HIDDENWELL		= $39
 	.word ObjInit_CloudGen			; Object $36
 	.word ObjInit_CoinAlert			; Object $37
 	.word ObjInit_MontyMole			; Object $38
-	.word ObjInit_HiddenWall			; Object $39
-	.word ObjInit_DoNothing			; Object $3A
+	.word ObjInit_TileExtender			; Object $39
+	.word ObjInit_StarBarrier			; Object $3A
 	.word ObjInit_DoNothing			; Object $3B
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
@@ -61,8 +61,8 @@ OBJ_HIDDENWELL		= $39
 	.word ObjNorm_CloudGen			; Object $36
 	.word ObjNorm_CoinAlert			; Object $37
 	.word ObjNorm_MontyMole			; Object $38
-	.word ObjNorm_HiddenWall		; Object $39
-	.word ObjNorm_DoNothing			; Object $3A
+	.word ObjNorm_TileExtender		; Object $39
+	.word ObjNorm_StarBarrier			; Object $3A
 	.word ObjNorm_DoNothing			; Object $3B
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
@@ -109,7 +109,7 @@ OBJ_HIDDENWELL		= $39
 	.byte $00  ; Object $37
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16									 ; Object $38
 	.byte $00									 ; Object $39
-	.byte $00									 ; Object $3A
+	.byte  OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16							 ; Object $3A
 	.byte $00									 ; Object $3B
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
@@ -132,7 +132,7 @@ OBJ_HIDDENWELL		= $39
 	.byte OPTS_NOCHANGE         ; Object $37
 	.byte OPTS_SETPT5 | $4C         ; Object $38
 	.byte OPTS_NOCHANGE         ; Object $39
-	.byte OPTS_NOCHANGE         ; Object $3A
+	.byte OPTS_SETPT5 | $4D         ; Object $3A
 	.byte OPTS_NOCHANGE         ; Object $3B
 
 	
@@ -205,6 +205,8 @@ ObjP38:
 
 ObjP39:
 ObjP3A:
+	.byte $7F, $7F
+
 ObjP3B:
 
 
@@ -2316,7 +2318,7 @@ MontyMole_Flipped:
 MontyMole_DrawRTS:
 	RTS
 
-ObjInit_HiddenWall:
+ObjInit_TileExtender:
 	JSR Object_NoInteractions
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
@@ -2338,7 +2340,7 @@ HiddenExtend_ChangeY:
 HiddenExtend_ChangeYHi;	
 	.byte $00, $FF, $00, $00
 
-ObjNorm_HiddenWall:
+ObjNorm_TileExtender:
 	LDA Block_NeedsUpdate
 	BNE HiddenWall_ExtendDownRTS
 
@@ -2374,3 +2376,117 @@ HiddenWall_ExtendBlockDown:
 
 HiddenWall_ExtendDownRTS:	
 	RTS
+
+ObjInit_StarBarrier:
+	LDA #$05
+	STA Objects_SpritesRequested, X
+
+	LDA #$03
+	STA StarBarrier_RemoveBlockCount, X
+
+	JMP Object_NoInteractions
+
+StarBarrier_Values:
+	.byte 12
+	.byte 27
+	.byte 45
+	.byte 66
+	.byte 90
+	.byte 117
+	.byte 147
+	.byte 189
+
+StarBarrier_XOffset
+	.byte $0C, $04, $FC
+
+StarBarrier_DetectY = Objects_Data1
+StarBarrier_RemoveBlockCount = Objects_Data2
+ObjNorm_StarBarrier:
+	LDY Objects_Property, X
+
+	LDA Magic_Stars
+	CMP StarBarrier_Values, Y
+	BCC StarBarrier_Draw
+
+	LDA StarBarrier_RemoveBlockCount, X
+	BMI StarBarrier_Draw
+
+	LDA <Objects_XZ, X
+	STA Block_DetectX
+	STA <Poof_X
+
+	LDA <Objects_XHiZ, X
+	STA Block_DetectXHi
+
+	LDA <Objects_YZ, X
+	ADD StarBarrier_DetectY, X
+	STA Block_DetectY
+	STA <Poof_Y
+
+	LDA <Objects_YHiZ, X
+	STA Block_DetectYHi
+
+	LDA #$41
+	JSR Object_ChangeBlock
+
+	JSR Common_MakePoof
+	
+	LDA StarBarrier_DetectY, X
+	ADD #$10
+	STA StarBarrier_DetectY, X
+
+	DEC StarBarrier_RemoveBlockCount, X
+
+StarBarrier_Draw:
+	JSR Object_DrawMirrored
+
+	LDY Objects_Property, X
+	
+	LDA StarBarrier_Values, Y
+	STA <DigitsParam
+
+	LDA #$00
+	STA <DigitsParam + 1
+	
+	LDA Object_SpriteRAMOffset, X
+	ADD #$08
+	TAY
+
+	JSR BytesTo3Digits
+
+	LDX <CurrentObjectIndexZ
+
+	LDA Objects_SpriteX, X
+	STA <Temp_Var1
+
+	LDA Objects_SpriteY, X
+	STA <Temp_Var2
+
+	LDX #$02
+
+Barrier_DrawLoop:
+	LDA <Temp_Var1
+	ADD StarBarrier_XOffset, X
+	STA Sprite_RAMX, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr, Y
+
+	LDA <Temp_Var2
+	ADD #$10
+	STA Sprite_RAMY, Y
+
+	LDA <DigitsResult, X
+	ASL A
+	ADD #$A1
+	STA Sprite_RAMTile, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	DEX
+	BPL Barrier_DrawLoop
+	RTS
+	

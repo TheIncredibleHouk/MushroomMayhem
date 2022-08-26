@@ -1999,9 +1999,11 @@ PRG010_CE78:
 	LDA <World_Map_XHi,X
 	CMP World_Map_XHi,Y
 	BNE PRG010_CEBF	
+
 	LDA <World_Map_Y,X
 	CMP World_Map_Y,Y
 	BNE PRG010_CEBF	
+	
 	LDA <World_Map_X,X
 	CMP World_Map_X,Y
 	BNE PRG010_CEBF	

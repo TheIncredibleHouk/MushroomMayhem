@@ -1,6 +1,6 @@
 {
   "Id": "d844fc50-d8b2-44c2-978c-f945e10a0455",
-  "Name": "Path to Cheep Cheep Everglades",
+  "Name": "To Cheep Cheep Channel",
   "TileSetIndex": 12,
   "ClearTileIndex": 65,
   "MusicValue": 0,
@@ -10,7 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "0b4bb2af-f89c-413c-a911-683e36d52e47",
   "StaticTileTableIndex": 24,
-  "MostCommonTile": 0,
+  "MostCommonTile": 144,
   "AnimationType": 0,
   "ScrollType": 1,
   "Effects": 0,
@@ -4826,8 +4826,8 @@
     129,
     129,
     129,
-    131,
-    131,
+    164,
+    164,
     129,
     129,
     32,
@@ -5301,9 +5301,9 @@
     158,
     159,
     129,
-    131,
-    131,
-    131,
+    164,
+    164,
+    164,
     129,
     32,
     33,
@@ -6497,32 +6497,6 @@
     144,
     144
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 26,
-      "X": 1,
-      "Y": 0,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 60,
-      "X": 12,
-      "Y": 20,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 109,
-      "X": 22,
-      "Y": 16,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 26,
-      "X": 27,
-      "Y": 0,
-      "Property": 1
-    }
-  ],
   "FirstObjectData": [
     {
       "GameObjectId": 26,
@@ -6549,13 +6523,44 @@
       "Property": 1
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 0,
+      "X": 28,
+      "Y": 14,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 143,
+      "X": 12,
+      "Y": 19,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 143,
+      "X": 22,
+      "Y": 15,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 26,
+      "X": 1,
+      "Y": 0,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 26,
+      "X": 29,
+      "Y": 0,
+      "Property": 1
+    }
+  ],
   "LevelPointers": [
     {
-      "LevelId": "00000000-0000-0000-0000-000000000000",
+      "LevelId": "5f27c217-b4d8-4e8d-8196-1710ddeda0d7",
       "ExitActionType": 0,
       "ExitX": 2,
-      "ExitY": 7,
+      "ExitY": 2,
       "X": 29,
       "Y": 13,
       "ExitsLevel": true,
@@ -6578,5 +6583,5 @@
       "BoundRectangle": "32,336,32,32"
     }
   ],
-  "CompressedData": "HoHB/x6Bwf8egcH/HoHB/x6Bwf8egcH/HoHB/x6Bwf8egcH/HoHB/x6Bwf8ZgcKSkwKBwf8ZgcKiowKBwf8Zgcays4Gur/8ZgcZ1doGen/8OgcKSkwaBxBARGRoDEQ6BwqKjBoHBIAYhDoHCsrMBgcEQAxEHIQ6BwnV2AYHBIAshDYHDEBkaAREMIQmBAYMBgcEgECEBgcKurwSBwRADEREhAYHDnp+BAoPCgSAVIQgUFjEfUT9h"
+  "CompressedData": "HoHB/x6Bwf8egcH/HoHB/x6Bwf8egcH/HoHB/x6Bwf8egcH/HoHB/x6Bwf8ZgcKSkwKBwf8ZgcKiowKBwf8Zgcays4Gur/8ZgcZ1doGen/8OgcKSkwaBxBARGRoDEQ6BwqKjBoHBIAYhDoHCsrMBgcEQAxEHIQ6BwnV2AYHBIAshDYHDEBkaAREMIQmBAaQBgcEgECEBgcKurwSBwRADEREhAYHDnp+BAqTCgSAVIQgUFjEfUT5hwWE="
 }

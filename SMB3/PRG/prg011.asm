@@ -4336,9 +4336,14 @@ Completion_Tiles:
 MarkCompletedLevels:
 	JSR GetMapTile
 
-	TAX
-	LDA TileProperties, X
-	SUB #MAP_PROP_COMPLETABLE
+	AND #$E0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	
 	TAX
 
 	LDA Completion_Tiles, X

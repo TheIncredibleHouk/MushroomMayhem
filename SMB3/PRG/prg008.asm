@@ -814,17 +814,17 @@ Skipped_Palette:
 	LDA PowerUp_Palettes+1,Y
 	STA Graphics_Buffer+3,X
 	STA Palette_Buffer+$11	 ; Also put into Palette_Buffer
-	STA MasterPal_Data+$11
+	STA Pal_Data+$11	 ; Also put into Palette_Buffer
 
 	LDA PowerUp_Palettes+2,Y
 	STA Graphics_Buffer+4,X
 	STA Palette_Buffer+$12	 ; Also put into Palette_Buffer
-	STA MasterPal_Data+$12
+	STA Pal_Data+$12	 ; Also put into Palette_Buffer
 
 	LDA PowerUp_Palettes+3,Y
 	STA Graphics_Buffer+5,X
 	STA Palette_Buffer+$13	 ; Also put into Palette_Buffer
-	STA MasterPal_Data+$13
+	STA Pal_Data+$13	 ; Also put into Palette_Buffer
 
 	RTS		 ; Return
 
@@ -3436,7 +3436,7 @@ Bumps_CheckNextExisting:
 	BEQ Bump_NotPowerUp
 
 	LDA Objects_ID, X
-	CMP #OBJ_ITEMBLOCK
+	CMP #OBJ_POWERUP
 	BNE Bump_CheckObjPowerUp
 
 	LDA ItemBlock_PowerUp, X
@@ -3444,7 +3444,7 @@ Bumps_CheckNextExisting:
 	BCC Bump_NotPowerUp
 
 	CMP #POWERUP_VINE
-	BCS Bump_NotPowerUp
+	BEQ Bump_NotPowerUp
 
 Bump_IsPowerUp:
 	LDA <Objects_XZ, X
@@ -3459,7 +3459,7 @@ Bump_IsPowerUp:
 	JSR Common_MakePoof
 
 	LDA #$00
-	STA ItemBlock_PowerUp, X
+	STA Objects_ID, X
 	RTS
 
 Object_IsPowerUp:
@@ -3488,7 +3488,7 @@ Bump_CheckObjPowerUp:
 	BCC Bump_NotPowerUp
 
 	CMP #POWERUP_VINE
-	BCC Object_IsPowerUp
+	BNE Object_IsPowerUp
 
 Bump_NotPowerUp:
 	INX

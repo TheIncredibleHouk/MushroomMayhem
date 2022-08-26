@@ -1,6 +1,6 @@
 {
   "Id": "15b60511-3ccd-4a9d-95a1-4fd7108a90d6",
-  "Name": "Turnip Toss Tussle",
+  "Name": "Veggie Volleys",
   "TileSetIndex": 8,
   "ClearTileIndex": 129,
   "MusicValue": 144,
@@ -6656,12 +6656,6 @@
     }
   ],
   "SecondObjectData": [
-    {
-      "GameObjectId": 0,
-      "X": 2,
-      "Y": 23,
-      "Property": 0
-    },
     {
       "GameObjectId": 82,
       "X": 25,

@@ -463,6 +463,7 @@ Make_Ice:
 	TAX
 
 	JSR Object_FallAwayFromPlayer
+	
 	LDX <CurrentObjectIndexZ
 	JMP SpecialObj_ToPoofNoSound
 
@@ -647,15 +648,7 @@ Player_Hammer:
 
 
 Player_HammerPoof:
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,X
-
-	; SpecialObj_Data1 = $1F
-
-	LDA #$08
-	STA SpecialObj_Timer, X
-	RTS
-
+	JMP SpecialObj_ForcedPoof
 
 Player_HammerNoKill:
 	JSR SpecialObj_DetectWorld16x16
@@ -732,21 +725,7 @@ Player_NinjaStar:
 
 
 Player_StarPoof:
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,X
-
-	; SpecialObj_Data1 = $1F
-
-	LDA #$08
-	STA SpecialObj_Timer, X
-
-	LDA #$00
-	STA SpecialObj_XVel, X
-	STA SpecialObj_YVel, X
-
-	LDA #$02
-	STA SpecialObj_Data3, X
-	RTS
+	JMP SpecialObj_ForcedPoof
 
 Player_StarNoKill:
 
@@ -2411,12 +2390,7 @@ Enemy_LightngingBoltGrnd:
 	BCS Enemy_LightningBoltDraw
 
 Enemy_LightningBoltPoof:
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,X
-
-	LDA #$08
-	STA SpecialObj_Timer, X
-	RTS
+	JMP SpecialObj_ForcedPoof
 
 LightningBolt_Tiles:
 	.byte $AD, $AF, $95, $97
@@ -2745,14 +2719,7 @@ Enemy_NinjaStar:
 	BCC Enemy_NinjaStarDraw
 
 Enemy_StarPoof:
-	LDA #SOBJ_POOF
-	STA SpecialObj_ID,X
-
-	; SpecialObj_Data1 = $1F
-
-	LDA #$08
-	STA SpecialObj_Timer, X
-	RTS
+	JMP SpecialObj_ForcedPoof
 
 Enemy_NinjaStarDraw:
 
@@ -3137,7 +3104,7 @@ Enemy_HammerTilesInteraction2:
 	JMP SpecialObj_ToPoofNoSound
 
 Enemy_FireblobTiles:
-	.byte $85, $87, $85, $87
+	.byte $9D, $9F, $9D, $9F
 
 Enemy_FireblobAttr:
 	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1 | SPR_HFLIP, SPR_PAL1 | SPR_HFLIP	
@@ -3170,7 +3137,7 @@ Fireblob_Poof:
 	SUB #$04
 	STA SpecialObj_X, X
 
-	JMP SpecialObj_ToPoofNoSound
+	JMP SpecialObj_ForcedPoof
 
 Fireblob_Normal:	
 
@@ -4481,61 +4448,6 @@ ObjectGenerator_NoiseAndSmoke:
 
 CannonPoofRTS:
 	RTS		 ; Return
-
-
-Rocky_InitAttr:	.byte SPR_HFLIP | SPR_BEHINDBG, SPR_BEHINDBG
-
-ObjectGen_RockyWrench:
-	LDA ObjectGenerator_Timer,X
-	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
-
-	; Reset cannon timer to $C0
-	LDA #$c0
-	STA ObjectGenerator_Timer,X
-
-	JSR PrepareNewObjectOrAbort	; Get me a slot for Rocky Wrench or don't come back!
-
-	LDY <CurrentObjectIndexZ	; Y = Cannon Fire slot index
-
-	; This is a Rocky Wrench
-	;LDA #OBJ_ROCKYWRENCH
-	STA Objects_ID,X
-
-	; Start at Cannon Fire Y - 6
-	LDA ObjectGenerator_Y,Y
-	SUB #$06
-	STA <Objects_YZ,X
-	LDA ObjectGenerator_YHi,Y
-	SBC #$00
-	STA <Objects_YHiZ,X
-
-	; Set Rocky's X to Cannon Fire's X
-	LDA ObjectGenerator_XHi,Y
-	STA <Objects_XHiZ,X
-	LDA ObjectGenerator_X,Y
-	STA <Objects_XZ,X
-
-	; Var5 = 0
-	LDA #$00
-	STA Objects_Data2,X
-
-	; Set Rocky's timer to $28
-	LDA #$28
-	STA Objects_Timer,X
-
-	; Set Rocky's attributes
-	LDA #SPR_PAL3
-	STA Objects_SpriteAttributes,X
-
-	; Set Rocky's initial attributes towards Player
-	JSR Object_XDistanceFromPlayer
-	LDA Rocky_InitAttr,Y
-	STA Objects_Orientation,X
-
-	LDX <CurrentObjectIndexZ	; X = Cannon Fire slot index
-
-PRG007_BF28:
-	RTS		 ; Return
 				  
 Bill_XVel:
 	.byte -$18, $18, $00, -$16, -$16, $00, $16, $16
@@ -4557,11 +4469,13 @@ CanonTimers:
 ObjectGen_BulletBill:
 	
 	LDA ObjectGenerator_Timer,X
-	BNE PRG007_BF28	 ; If timer not expired, jump to PRG007_BF28 (RTS)
+	BNE ObjectGen_BulletBillRTS	 ; If timer not expired, jump to PRG007_BF28 (RTS)
 
 	LDA ObjectGenerator_Visibility, X
 	AND #GENERATOR_HVISIBLE
 	BNE BulletBillGen_Make
+
+ObjectGen_BulletBillRTS:	
 	RTS
 
 BulletBillGen_Make:
@@ -5576,3 +5490,4 @@ Enemy_PlungerStuck:
 Plunger_Fall:
 	JSR SObj_ApplyYVelWithGravity
 	JMP Enemy_PlungerDraw
+	

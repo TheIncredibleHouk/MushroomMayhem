@@ -57,13 +57,16 @@ PointerNotFound:
 
 Tile_Mem_Clear:	; A40E
 	; The following loop clears all of the tile memory space to $02 (an all-black tile)
-	LDY #$00	
+	LDY #$F0
 
 PRG012_A410:
-	LDA #$00	
+	LDA #$00
+	DEY	
+	
 	JSR Tile_Mem_ClearB
 	JSR Tile_Mem_ClearA
-	CPY #$f0	 
+	
+	CPY #$00
 	BNE PRG012_A410	 ; If Y <> $F0, loop! (increments happen in ClearA)
 
 	RTS		 ; Return

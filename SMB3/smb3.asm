@@ -2411,7 +2411,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Level_Jct_VSHi:		.ds 1	; Level junction vertical scroll high value
 	Level_Jct_VS:		.ds 1	; Level junction vertical scroll value
 
-	Magic_Stars:			.ds 1	; #DAHRKDAIZ keeps track of hammer bros coins collected
+	Magic_Stars:			.ds 1	; 
 	Old_Magic_Stars:		.ds 1
 
 	Map_Unused7992:			; Value used in some dead code in PRG011; cleared elsewhere (NOT SURE if maybe it sometimes meant Bonus_DiePos?)
@@ -3017,7 +3017,7 @@ ITEM_RADARUNKNOWN = $18
 	Old_DayNightTicker:	.ds 1
 	NightTransition:	.ds 1	; when not 0, we're transitioning into night
 	DayTransition:		.ds 1	; when not 0, we're transitioning into day
-	MasterPal_Data:		.ds 16	; keeps track of the unmodified, original palette
+	MasterPal_Data:		.ds 32	; keeps track of the unmodified, original palette
 	LevelLoadPointer:	.ds 1	;
 	LevelNumber:		.ds 1	;
 	PreviousLevelNumber: .ds 1;
