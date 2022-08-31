@@ -5897,13 +5897,13 @@
       "LastModified": "2015-01-24T17:03:56.237-05:00",
       "LevelsInfo": [
         {
-          "Size": 2203,
+          "Size": 2263,
           "Name": "Bumbling Bee Breezes",
           "Id": "76a75f19-0eb9-45c1-8b94-3f72327e072b",
           "LastModified": "2018-10-28T10:42:10.2134574-04:00",
           "SublevelsInfo": [
             {
-              "Size": 647,
+              "Size": 653,
               "Name": "Bumbling Bee Breezes-1",
               "Id": "b18b2ff1-ec37-496c-ab70-8445214682c1",
               "LastModified": "0001-01-01T00:00:00",
@@ -5912,7 +5912,7 @@
               "DisplayName": "(Level) Bumbling Bee Breezes-1"
             },
             {
-              "Size": 0,
+              "Size": 401,
               "Name": "Bumbling Bee Breezes-2",
               "Id": "f06465bc-708c-4b26-8f01-821b749e83e2",
               "LastModified": "0001-01-01T00:00:00",
@@ -5925,23 +5925,23 @@
           "DisplayName": "(Level) Bumbling Bee Breezes"
         },
         {
-          "Size": 1262,
-          "Name": "Return of Freezie",
+          "Size": 1327,
+          "Name": "Frosty Freezies",
           "Id": "96c012f4-46a6-4090-a837-41455948ce4b",
           "LastModified": "2018-10-28T10:42:10.24544-04:00",
           "SublevelsInfo": [
             {
-              "Size": 520,
-              "Name": "Return of Freezie 2",
+              "Size": 238,
+              "Name": "Frosty Freezies-2",
               "Id": "7de49797-2774-4eb8-bd7f-5a1b97cd2e76",
               "LastModified": "2018-10-28T10:42:10.6262044-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Return of Freezie 2"
+              "DisplayName": "(Level) Frosty Freezies-2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Return of Freezie"
+          "DisplayName": "(Level) Frosty Freezies"
         },
         {
           "Size": 1793,
@@ -30835,18 +30835,18 @@
       "FireBallInteractions": [
         3,
         41,
-        0,
-        0,
-        0,
-        0,
         109,
+        222,
+        0,
+        0,
+        0,
         0
       ],
       "IceBallInteractions": [
-        84,
-        110,
-        82,
-        255,
+        223,
+        0,
+        0,
+        0,
         0,
         0,
         0,

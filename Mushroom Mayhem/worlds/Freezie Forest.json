@@ -8,7 +8,7 @@
   "PaletteId": "8f153109-272c-412d-9d4c-00eda1d56f0e",
   "Name": "Freezie Forest",
   "TileData": [
-    0,
+    239,
     63,
     63,
     63,
@@ -72,7 +72,7 @@
     60,
     60,
     60,
-    0,
+    239,
     4,
     4,
     5,
@@ -136,7 +136,7 @@
     4,
     4,
     4,
-    0,
+    239,
     9,
     167,
     7,
@@ -200,7 +200,7 @@
     8,
     8,
     8,
-    0,
+    239,
     9,
     239,
     7,
@@ -264,7 +264,7 @@
     8,
     8,
     8,
-    0,
+    239,
     9,
     239,
     239,
@@ -328,7 +328,7 @@
     8,
     8,
     8,
-    0,
+    239,
     81,
     81,
     81,
@@ -392,7 +392,7 @@
     8,
     8,
     8,
-    0,
+    239,
     9,
     239,
     239,
@@ -408,7 +408,7 @@
     239,
     239,
     239,
-    69,
+    239,
     239,
     80,
     81,
@@ -456,7 +456,7 @@
     8,
     8,
     8,
-    0,
+    239,
     179,
     17,
     7,
@@ -520,7 +520,7 @@
     8,
     8,
     8,
-    0,
+    239,
     9,
     239,
     239,
@@ -661,6 +661,36 @@
       "X": 2,
       "Y": 2,
       "BoundRectangle": "32,32,16,16"
+    },
+    {
+      "LevelId": "96c012f4-46a6-4090-a837-41455948ce4b",
+      "X": 2,
+      "Y": 7,
+      "BoundRectangle": "32,112,16,16"
+    },
+    {
+      "LevelId": "8997fbb7-40f8-40c0-8a34-7f5c976f5d74",
+      "X": 8,
+      "Y": 2,
+      "BoundRectangle": "128,32,16,16"
+    },
+    {
+      "LevelId": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
+      "X": 7,
+      "Y": 6,
+      "BoundRectangle": "112,96,16,16"
+    },
+    {
+      "LevelId": "bd30da54-924b-4274-a74c-93f1b5b1a671",
+      "X": 16,
+      "Y": 4,
+      "BoundRectangle": "256,64,16,16"
+    },
+    {
+      "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
+      "X": 28,
+      "Y": 6,
+      "BoundRectangle": "448,96,16,16"
     }
   ],
   "ObjectData": [
@@ -668,7 +698,22 @@
       "GameObjectId": 201,
       "X": 21,
       "Y": 4
+    },
+    {
+      "GameObjectId": 205,
+      "X": 7,
+      "Y": 6
+    },
+    {
+      "GameObjectId": 207,
+      "X": 16,
+      "Y": 4
+    },
+    {
+      "GameObjectId": 208,
+      "X": 28,
+      "Y": 6
     }
   ],
-  "CompressedData": "AD8/Pz8/Pz8/Pz8/Pz8/PwAEBAUgAwUGIAMFBiAGAwQACacHCe/v7xLv7+/v7+8HAAnvBwgJ71BRUVFS+hT57wAJ7+8Q7+/vBwgJ7+/vBwkAUVFRUVLvBwgICAnv7+8HAAnv7+/v7+8HCAgICe/v7wCzEQcICAmqq+/v7+/vBwgACe/v7+/v7+8TqwcICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwUGIAYgAwUGIAMEBQYgBiAICAgICAgJ7wcICe8HCAgI7+/vUFFRUVFRUVFS7wcICO8K7+/v7wcICAnv7+/vGO8J7+/v7xbv7+/v7wcICAgIRe9QUVFRUVFRUu/v7wcICQnv7+/v7+/vF+/v7wcJUFEICAmrqquqq6qqBwgICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwYGIAMEBAQEBAQEBAQEBAQICAgICAgICAgICAgICAgICAgICAgICe/vp+/vBwgICO/vBwgICe/v7+/v7+8HCAcJ721ubwcJ71BRUVFRUVFR7+99fn/v7+/vBwgICAgICFFRUVFRUVFRUVFS7wcICAgJ7+8HCAgICAjv7+/vBwgI"
+  "CompressedData": "7z8/Pz8/Pz8/Pz8/Pz8/P+8EBAUgAwUGIAMFBiAGAwTvCacHCe/v7xLv7+/v7+8H7wnvBwgJ71BRUVFS+hT57+8J7+8Q7+/vBwgJ7+/vBwnvUVFRUVLvBwgICAnv7+8H7wnv7+/v7+8HCAgICe/v7++zEQcICAmqq+/v7+/vBwjvCe/v7+/v7+8TqwcICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwUGIAYgAwUGIAMEBQYgBiAICAgICAgJ7wcICe8HCAgI7+/vUFFRUVFRUVFS7wcICO8K7+/v7wcICAnv7+/vGO8J7+/v7xbv7+/v7wcICAgI7+9QUVFRUVFRUu/v7wcICQnv7+/v7+/vF+/v7wcJUFEICAmrqquqq6qqBwgICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwYGIAMEBAQEBAQEBAQEBAQICAgICAgICAgICAgICAgICAgICAgICe/vp+/vBwgICO/vBwgICe/v7+/v7+8HCAcJ721ubwcJ71BRUVFRUVFR7+99fn/v7+/vBwgICAgICFFRUVFRUVFRUVFS7wcICAgJ7+8HCAgICAjv7+/vBwgI"
 }

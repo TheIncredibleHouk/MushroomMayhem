@@ -2537,7 +2537,6 @@ LevelLoad:
 
 	INC Force_StatusBar_Init
 
-	
 	LDA #$0F
 	STA StatusBar_Palette
 	STA StatusBar_Palette + 1
@@ -3643,6 +3642,7 @@ PRG030_9C1B:
 	; Set the address of the tiles we need to modify!
 	LDA Tile_Mem_Addr,Y
 	STA <Temp_Var15	
+
 	LDA Tile_Mem_Addr+1,Y
 	STA <Temp_Var16	
 
@@ -3731,6 +3731,7 @@ PRG030_9C8D:
 	; Setup pointer to tile memory we need to be focusing on!
 	LDA Tile_Mem_Addr,Y	
 	STA <Temp_Var15		
+
 	LDA Tile_Mem_Addr+1,Y	
 	STA <Temp_Var16	
 

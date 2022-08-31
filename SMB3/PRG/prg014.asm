@@ -2477,6 +2477,10 @@ Freezie_Animate:
 	STA Objects_Frame, X
 
 Freezie_Draw:
+	LDA Freezie_State, X
+	CMP #$02
+	BEQ FreezieDraw_RTS
+
 	LDA Freezie_NoImpact, X
 	BEQ Freezie_NoBehindBg
 
@@ -2485,7 +2489,10 @@ Freezie_Draw:
 	STA Objects_SpriteAttributes, X
 
 Freezie_NoBehindBg:
-	JMP Object_Draw
+	JSR Object_Draw
+
+FreezieDraw_RTS:
+	RTS
 
 FreezieThrowPlayerX:
 	.byte $E0, $20
@@ -2510,6 +2517,7 @@ Freezie_Die:
 
 	JSR Object_BurstIce
 
+	LDX <CurrentObjectIndexZ
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
@@ -2523,6 +2531,7 @@ Freezie_Die:
 	STA <Objects_YHiZ, X
 
 Freezie_Dead:
+	JSR Object_CalcBoundBoxForced
 	JMP Object_DeleteOffScreen
 
 ObjInit_Swoosh:
