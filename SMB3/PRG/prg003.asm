@@ -1840,23 +1840,45 @@ ObjInit_CheckPoint:
 
 ObjInit_CloudGen:
 
-	LDA #BOUND32x32
-	STA Objects_BoundBox, X
-
 	LDA #$10
 	STA Objects_Timer, X
 
-	JSR Object_CalcBoundBox
+	JSR CloudGen_CalcBoundBox
 	JSR Object_NoInteractions
 
 ObjInit_CloudGenRTS:	
 	RTS	
 
+Cloud_DirectionY:
+	.byte $D0, $00, $00, $30
+
+Cloud_DirectionX:
+	.byte $00, $30, $D0, $00
+
+Cloud_PlayerXVel:
+	.byte $00, $02, $FE, $00
+
+Cloud_PlayerYVel:
+	.byte $F8, $00, $00, $08
+
+Cloud_BlockCheckX1:
+	.byte $08, $08, $08, $08
+
+Cloud_BlockCheckX2:
+	.byte $18, $08, $08, $18
+
+Cloud_BlockCheckY1:
+	.byte $08, $08, $08, $08
+
+Cloud_BlockCheckY2:
+	.byte $08, $18, $18, $08
+
 ObjNorm_CloudGen:
 	JSR Object_DeleteOffScreen
 
+	LDY Objects_Property, X
 	LDA <Objects_XZ, X
-	ADD #$08
+	ADD Cloud_BlockCheckX1, Y
 	STA Tile_DetectionX
 
 	LDA <Objects_XHiZ, X
@@ -1864,7 +1886,7 @@ ObjNorm_CloudGen:
 	STA Tile_DetectionXHi
 
 	LDA <Objects_YZ, X
-	ADD #$08
+	ADD Cloud_BlockCheckY1, Y
 	STA Tile_DetectionY
 
 	LDA <Objects_YHiZ, X
@@ -1875,13 +1897,22 @@ ObjNorm_CloudGen:
 	CMP #TILE_PROP_SOLID_ALL
 	BCS ObjInit_CloudGenRTS
 
+	LDY Objects_Property, X
 	LDA <Objects_XZ, X
-	ADD #$18
+	ADD Cloud_BlockCheckX2, Y
 	STA Tile_DetectionX
 
 	LDA <Objects_XHiZ, X
 	ADC #$00
 	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	ADD Cloud_BlockCheckY2, Y
+	STA Tile_DetectionY
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Tile_DetectionYHi
 
 	JSR Object_DetectTile
 	CMP #TILE_PROP_SOLID_ALL
@@ -1896,12 +1927,33 @@ ObjNorm_CloudGen:
 	ORA Objects_SpritesHorizontallyOffScreen, X
 	BNE ObjNorm_CloudGenRTS
 
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
+
+	LDA Objects_Property, X
+	BEQ CloudGen_RandomX
+	CMP #$03
+	BNE CloudGen_RandomY
+	
+CloudGen_RandomX
 	LDA RandomN
 	AND #$0F
+	STA <Temp_Var1
+	JMP CloudGen_Set
+
+CloudGen_RandomY:
+	LDA RandomN
+	AND #$0F
+	STA <Temp_Var2
+	
+CloudGen_Set:	
+	LDA <Temp_Var1
 	ADD <Objects_XZ, X
 	STA <Poof_X
 	
-	LDA <Objects_YZ, X
+	LDA <Temp_Var2
+	ADD <Objects_YZ, X
 	STA <Poof_Y
 
 	JSR Common_MakePoof
@@ -1909,18 +1961,85 @@ ObjNorm_CloudGen:
 	LDA #SPR_PAL1
 	STA SpecialObj_Data3, Y
 
-	LDA #$D0
+	LDA Objects_Property, X
+	TAX
+
+	LDA Cloud_DirectionX, X
+	STA SpecialObj_XVel, Y
+
+	LDA Cloud_DirectionY, X
 	STA SpecialObj_YVel, Y
 
+	LDX <CurrentObjectIndexZ
 	LDA #$10
 	STA Objects_Timer, X
 
 ObjNorm_CloudGenRTS:
 	RTS
 
+CloudGen_XBound:
+	.byte 2, 0, $D0, 2
+	.byte 0, 0, $FF, 0
+
+CloudGen_BoundWidth:
+	.byte 26, 72, 72, 26
+
+CloudGen_YBound:
+	.byte $C0, $02, $02, $00
+	.byte $FF, $00, $00, $00
+
+CloudGen_BoundHeight:
+	.byte 72, 26, 26, 72
+
+CloudGen_CalcBoundBox:
+	LDY Objects_Property, X
+	
+	LDA <Objects_XZ, X
+	ADD CloudGen_XBound, Y
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	ADC CloudGen_XBound + 4, Y
+	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD CloudGen_BoundWidth, Y
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+
+	LDA <Objects_YZ, X
+	ADD CloudGen_YBound, Y
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	ADC CloudGen_YBound + 4, Y
+	STA Objects_BoundTopHi, X
+
+	LDA Objects_BoundTop, X
+	ADD CloudGen_BoundHeight, Y
+	STA Objects_BoundBottom, X
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+
+	LDA #$00
+	STA Objects_XYCS, X
+	STA Objects_XYCSPrev, X
+	RTS
+	
 ObjHit_CloudGen:
+	STA Debug_Snap
+	LDY Objects_Property, X
+	LDA <Player_XVelZ
+	ADD Cloud_PlayerXVel, Y
+	STA <Player_XVelZ
+
 	LDA <Player_YVelZ
-	SUB #$10
+	ADD Cloud_PlayerYVel, Y
 	STA <Player_YVelZ
 	RTS	
 

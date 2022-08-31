@@ -737,11 +737,6 @@
   ],
   "ObjectData": [
     {
-      "GameObjectId": 200,
-      "X": 22,
-      "Y": 4
-    },
-    {
       "GameObjectId": 205,
       "X": 4,
       "Y": 7
@@ -760,6 +755,11 @@
       "GameObjectId": 201,
       "X": 15,
       "Y": 6
+    },
+    {
+      "GameObjectId": 200,
+      "X": 22,
+      "Y": 4
     }
   ],
   "CompressedData": "AODg4ODg4ODg4ODg4ODg4ADw8PDw8PDw8PDw8PDw8PAAhqGhpqGhoaGhh5GGoaGhAKJrjxCAgoCohLmhoo+UawCenreUkJKQkrePnz2Ug4QAlLOFPYi4uaKUErOFlJWPAI9slWsRlI9snoOEpZSwlACUp5WemIGBgYG2gYKfaxMAPZ+jhLmhoaGhoaG4hIS54ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PCmoaGhoaGhoaGhoaGhoYeGFJSUlJ49lI+UnhaUPZSQloSyn7OEhISEhLKUs4SEuaGUPWyUlI8VlJSUnpSPlGufgIGCnoCBtoGCsZSDspSAqJeGopSgoaGhorBssJQ9kJKhopSPbJ6UlGuUF5Sft6Ci4ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PChpqGHhqGhpqGhoYeRkZGRgZmPkJaohKVtbm+goYeRkaG4pLWRkj2efX5/j2ugh5GUGJ+Ih5KUg6SlnpSUj6CHhLKUsKCij6OkpIU9n7OEtZSPa5Q9bJSelLeVlKeUs7WegIGBgYGBgaikpWyUn5SQ4ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PCRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGR"

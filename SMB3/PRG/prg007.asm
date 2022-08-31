@@ -4747,6 +4747,9 @@ FreezeYVel:
 	.byte $00, $20, $E0, $E0
 
 EnemeyProj_Enemy_FreezePlayer:
+	LDA Player_FlashInv
+	BNE EnemeyProj_Enemy_FreezePlayer3
+
 	LDA SpecialObj_HurtEnemies, X
 	BEQ Enemy_FreezePlayer
 

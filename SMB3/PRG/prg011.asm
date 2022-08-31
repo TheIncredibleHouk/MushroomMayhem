@@ -3068,7 +3068,7 @@ MapObject_RightTile:
 
 MapObject_AttrLeft:
 	.byte $02, $02, $02, $02	; 01=Rain Cloud
-	.byte $01, $01, $01, $01	; 02=Snow
+	.byte $02, $02, $02, $02	; 02=Snow
 	.byte $03, $03, $03, $03	; 03=Ship
 	.byte $03, $03, $03, $03	; 04=wrecked Ship
 	.byte $02, $02, $02, $02	; 05=Boo
@@ -3087,7 +3087,7 @@ MapObject_AttrLeft:
 
 MapObject_AttrRight:
 	.byte $02, $02, $02, $02	; 01=Rain Cloud
-	.byte $01, $01, $01, $01	; 02=Snow
+	.byte $02, $02, $02, $02	; 02=Snow
 	.byte $03, $03, $03, $03	; 03=Ship
 	.byte $03, $03, $03, $03	; 04=wrecked Ship
 	.byte $02, $02, $02, $02	; 05=Boo

@@ -5076,6 +5076,8 @@ Map_ClearObjectsLoop:
 	DEX
 	BPL Map_ClearObjectsLoop
 
+	LDX #$00
+
 Map_LoadObjects:
 	LDA [Temp_Var1], Y
 	CMP #$FF

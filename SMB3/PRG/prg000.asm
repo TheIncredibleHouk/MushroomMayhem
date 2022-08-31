@@ -1088,7 +1088,6 @@ ObjState_Shelled0:
 	STA Objects_BeingHeld, X
 
 	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
 
 	JMP Object_DrawShelled
 
@@ -1366,7 +1365,6 @@ Kill_Normal:
 
 	JSR Object_KickSound
 	JSR Object_GetKilled
-	JSR Object_FlipFallAwayFromHit
 
 Object_KillOthers3:
 	TXA
@@ -3867,8 +3865,8 @@ Object_RespondToTailAttack1:
 
 	JSR Object_KickSound
 	JSR Object_DetermineChange
+	JSR Object_FlipFallAwayFromHit
 	JSR Object_GetKilled
-	
 	
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
@@ -5955,7 +5953,7 @@ Object_FallAwayFromPlayer:
 	JMP Object_MoveAwayFromPlayer
 
 Object_FlipFallAwayFromHit:
-	LDA #$D0
+	LDA #$C0
 	STA <Objects_YVelZ, X
 
 	LDA Objects_Orientation, X
@@ -5966,12 +5964,12 @@ Object_FlipFallAwayFromHit:
 	AND #HITTEST_RIGHT
 	BNE Object_FlipFallAwayFromHit1
 
-	LDA #$10
+	LDA #$04
 	STA <Objects_XVelZ, X
 	RTS
 
 Object_FlipFallAwayFromHit1:
-	LDA #$F0
+	LDA #$FC
 	STA <Objects_XVelZ, X
 	RTS
 

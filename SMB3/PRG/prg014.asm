@@ -2329,7 +2329,6 @@ Freezie_NoYVel = Objects_Timer
 Freezie_NoImpact = Objects_Data3
 
 ObjNorm_Freezie:
-	STA Debug_Snap
 	LDA <Player_HaltGameZ
 	BEQ Freezie_Norm
 
@@ -3851,6 +3850,7 @@ StingBee_Charge:
 	STA <Objects_XVelZ, X
 
 	JSR Object_ApplyXVel
+	JSR Object_FaceDirectionMoving
 	JSR StingBee_Interact
 
 	LDA <Objects_TilesDetectZ, X
