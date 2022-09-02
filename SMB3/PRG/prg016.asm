@@ -1192,11 +1192,11 @@ FireIcePirate_XOffset:
 
 FireIcePirateBro_Shoot:
 
+	STA Debug_Snap
 	LDA Objects_SpritesHorizontallyOffScreen,X
-	CMP #(SPRITE_0_INVISIBLE | SPRITE_1_INVISIBLE)
-	BCS FireICePriateBro_NoShoot
+	BNE FireICePriateBro_NoShoot
 
-	LDA Objects_SpritesHorizontallyOffScreen,X
+	LDA Objects_SpritesVerticallyOffScreen,X
 	BEQ FireIcePirateBro_DoShoot
 
 FireICePriateBro_NoShoot:

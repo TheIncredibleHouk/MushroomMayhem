@@ -3558,6 +3558,19 @@ Bumps_PowerUpBlock2:
 
 	LDA Bump_YHi
 	STA <Objects_YHiZ, X
+
+	LDA <Player_X
+	AND #$0F
+	CMP #$08
+	BCS PowerUp_Left
+
+	LDA #$08
+	STA <Objects_YVelZ, X
+	RTS
+
+PowerUp_Left:
+	LDA #$F8
+	STA <Objects_YVelZ, X
 	RTS
 
 BumpBlock_CheckMushroom:

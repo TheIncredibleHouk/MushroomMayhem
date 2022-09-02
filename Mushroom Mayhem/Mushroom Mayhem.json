@@ -5925,7 +5925,7 @@
           "DisplayName": "(Level) Bumbling Bee Breezes"
         },
         {
-          "Size": 1327,
+          "Size": 1363,
           "Name": "Frosty Freezies",
           "Id": "96c012f4-46a6-4090-a837-41455948ce4b",
           "LastModified": "2018-10-28T10:42:10.24544-04:00",
@@ -5944,7 +5944,7 @@
           "DisplayName": "(Level) Frosty Freezies"
         },
         {
-          "Size": 1793,
+          "Size": 1795,
           "Name": "Blistering Blizzard",
           "Id": "8997fbb7-40f8-40c0-8a34-7f5c976f5d74",
           "LastModified": "2018-10-28T10:42:10.2564313-04:00",
@@ -31427,11 +31427,11 @@
           "LowerRight": 22
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 247,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 255,
@@ -32043,11 +32043,11 @@
           "LowerRight": 28
         },
         {
-          "Property": 4,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
+          "Property": 0,
+          "UpperLeft": 9,
+          "UpperRight": 12,
+          "LowerLeft": 25,
+          "LowerRight": 28
         },
         {
           "Property": 0,

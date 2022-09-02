@@ -2032,7 +2032,6 @@ CloudGen_CalcBoundBox:
 	RTS
 	
 ObjHit_CloudGen:
-	STA Debug_Snap
 	LDY Objects_Property, X
 	LDA <Player_XVelZ
 	ADD Cloud_PlayerXVel, Y
