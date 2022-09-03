@@ -80,10 +80,10 @@
     3,
     5,
     6,
-    32,
     3,
     5,
-    6,
+    3,
+    5,
     32,
     6,
     3,
@@ -285,8 +285,8 @@
     239,
     239,
     239,
-    239,
     7,
+    8,
     8,
     8,
     9,
@@ -682,15 +682,21 @@
     },
     {
       "LevelId": "bd30da54-924b-4274-a74c-93f1b5b1a671",
-      "X": 16,
-      "Y": 4,
-      "BoundRectangle": "256,64,16,16"
+      "X": 17,
+      "Y": 7,
+      "BoundRectangle": "272,112,16,16"
     },
     {
       "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
       "X": 28,
       "Y": 6,
       "BoundRectangle": "448,96,16,16"
+    },
+    {
+      "LevelId": "9863b665-9d38-4970-863b-67ff3ea1e355",
+      "X": 9,
+      "Y": 8,
+      "BoundRectangle": "144,128,16,16"
     }
   ],
   "ObjectData": [
@@ -706,14 +712,19 @@
     },
     {
       "GameObjectId": 207,
-      "X": 16,
-      "Y": 4
+      "X": 17,
+      "Y": 7
     },
     {
       "GameObjectId": 208,
       "X": 28,
       "Y": 6
+    },
+    {
+      "GameObjectId": 201,
+      "X": 8,
+      "Y": 1
     }
   ],
-  "CompressedData": "7z8/Pz8/Pz8/Pz8/Pz8/P+8EBAUgAwUGIAMFBiAGAwTvCacHCe/v7xLv7+/v7+8H7wnvBwgJ71BRUVFS+hT57+8J7+8Q7+/vBwgJ7+/vBwnvUVFRUVLvBwgICAnv7+8H7wnv7+/v7+8HCAgICe/v7++zEQcICAmqq+/v7+/vBwjvCe/v7+/v7+8TqwcICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwUGIAYgAwUGIAMEBQYgBiAICAgICAgJ7wcICe8HCAgI7+/vUFFRUVFRUVFS7wcICO8K7+/v7wcICAnv7+/vGO8J7+/v7xbv7+/v7wcICAgI7+9QUVFRUVFRUu/v7wcICQnv7+/v7+/vF+/v7wcJUFEICAmrqquqq6qqBwgICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwYGIAMEBAQEBAQEBAQEBAQICAgICAgICAgICAgICAgICAgICAgICe/vp+/vBwgICO/vBwgICe/v7+/v7+8HCAcJ721ubwcJ71BRUVFRUVFR7+99fn/v7+/vBwgICAgICFFRUVFRUVFRUVFS7wcICAgJ7+8HCAgICAjv7+/vBwgI"
+  "CompressedData": "7z8/Pz8/Pz8/Pz8/Pz8/P+8EBAUgAwUGAwUDBSAGAwTvCacHCe/v7xLv7+/v7+8H7wnvBwgJ71BRUVFS+hT57+8J7+8Q7+/vBwgJ7+/vBwnvUVFRUVLvBwgICAnv7+8H7wnv7+/v7+8HCAgICe/v7++zEQcICAmqq+/v7+/vBwjvCe/v7+/v7+8TqwcICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwUGIAYgAwUGIAMEBQYgBiAICAgICAgJ7wcICe8HCAgI7+/vUFFRUVFRUVFS7wcICO8K7+/vBwgICAnv7+/vGO8J7+/v7xbv7+/v7wcICAgI7+9QUVFRUVFRUu/v7wcICQnv7+/v7+/vF+/v7wcJUFEICAmrqquqq6qqBwgICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwYGIAMEBAQEBAQEBAQEBAQICAgICAgICAgICAgICAgICAgICAgICe/vp+/vBwgICO/vBwgICe/v7+/v7+8HCAcJ721ubwcJ71BRUVFRUVFR7+99fn/v7+/vBwgICAgICFFRUVFRUVFRUVFS7wcICAgJ7+8HCAgICAjv7+/vBwgI"
 }

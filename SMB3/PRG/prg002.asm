@@ -924,6 +924,9 @@ ObjNorm_Clock2:
 
 	JSR Object_ApplyYVel_NoGravity
 
+	LDA #SPR_PAL2
+	STA Objects_SpriteAttributes, X
+
 	LDA Objects_Timer, X
 	BEQ ObjNorm_Clock4
 
@@ -965,9 +968,6 @@ ObjHit_Clock2:
 
 	LDA #$F8
 	STA Objects_YVelZ, X
-
-	LDA #SPR_PAL2
-	STA Objects_SpriteAttributes, X
 
 	LDA Sound_QLevel1
 	ORA #SND_MAPBONUSAPPEAR

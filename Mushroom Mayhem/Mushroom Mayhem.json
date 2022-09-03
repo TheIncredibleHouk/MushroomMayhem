@@ -5944,7 +5944,7 @@
           "DisplayName": "(Level) Frosty Freezies"
         },
         {
-          "Size": 1795,
+          "Size": 1777,
           "Name": "Blistering Blizzard",
           "Id": "8997fbb7-40f8-40c0-8a34-7f5c976f5d74",
           "LastModified": "2018-10-28T10:42:10.2564313-04:00",
@@ -5953,13 +5953,13 @@
           "DisplayName": "(Level) Blistering Blizzard"
         },
         {
-          "Size": 1586,
-          "Name": "Want to Build an Igloo?",
+          "Size": 1588,
+          "Name": "Chilly Ice Chucking",
           "Id": "9863b665-9d38-4970-863b-67ff3ea1e355",
           "LastModified": "2018-10-28T10:42:10.2654279-04:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) Want to Build an Igloo?"
+          "DisplayName": "(Level) Chilly Ice Chucking"
         },
         {
           "Size": 1355,
@@ -23531,7 +23531,7 @@
           "LowerRight": 89
         },
         {
-          "Property": 0,
+          "Property": 9,
           "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,

@@ -349,7 +349,6 @@ Lakitu_CalcBoundBox:
 
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
-	JSR Object_CheckForeground
 	JSR Object_AttackOrDefeat
 	JSR Lakitu_DoAction
 	JMP Lakitu_Draw
@@ -360,6 +359,7 @@ Lakitu_DoAction:
 
 	.word Lakitu_Wait
 	.word Lakitu_Lower
+	.word Lakitu_GetEnemy
 	.word Lakitu_RaiseEnemy
 	.word Lakitu_Raise
 	.word Lakitu_Aim
@@ -451,6 +451,7 @@ Lakitu_LowerDone:
 	RTS
 
 Lakitu_GetEnemy:
+	STA Debug_Snap
 	JSR Lakitu_CheckObjCount
 
 	LDA <Lakitu_ObjectCount
@@ -703,6 +704,7 @@ Lakitu_Draw2:
 	STA Sprite_RAMAttr, Y
 
 Lakitu_Draw3:
+	;STA Debug_Snap
 	LDA Lakitu_EnemySlot, X
 	BMI Lakitu_DrawDone
 
@@ -734,6 +736,8 @@ Lakitu_EnemyFrameRightAttr:
 	.byte SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL2, SPR_PAL2, SPR_PAL3
 
 Lakitu_DrawEnemy:
+	;STA Debug_Snap
+
 	LDA Lakitu_EnemyOffset, X
 	STA <Temp_Var1
 

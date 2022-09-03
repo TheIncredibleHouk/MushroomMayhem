@@ -1191,8 +1191,6 @@ FireIcePirate_XOffset:
 	.byte $FF, $00
 
 FireIcePirateBro_Shoot:
-
-	STA Debug_Snap
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	BNE FireICePriateBro_NoShoot
 
