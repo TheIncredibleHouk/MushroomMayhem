@@ -735,6 +735,7 @@ Troopa_BehindTimer = Objects_Data5
 ObjNorm_GreenTroopa:
 	LDA <Player_HaltGameZ
 	BEQ Troopa_DoAction
+
 	JMP Troopa_Draw
 
 Troopa_DoAction:
@@ -752,7 +753,7 @@ Troopa_Raise:
 	LDA Objects_Timer, X
 	BEQ Troopa_PopOut
 
-	CMP #$20
+	CMP #$10
 	BCC Troopa_RaiseDone
 
 	LDA #$F0
@@ -781,7 +782,7 @@ Troopa_Drop:
 	LDA Objects_Timer, X
 	BEQ Troopa_DropDown
 
-	CMP #$28
+	CMP #$18
 	BCC Troopa_DropDone
 
 	LDA #$00
@@ -1672,6 +1673,8 @@ ObjNorm_Piranha:
 ObjNorm_Piranha1:
 	JSR Object_DeleteOffScreen
 	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 	JSR Object_AttackOrDefeat
 	
 	JSR Object_YDistanceFromPlayer

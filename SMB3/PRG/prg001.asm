@@ -2037,7 +2037,10 @@ SpringAnim:
 	STA <Player_YVelZ
 	STA <Player_InAir
 
-	
+
+	LDA Player_HitCeiling
+	BNE SpringAnimRTS
+
 	LDA #$E0
 	STA <Objects_YVelZ, X
 
@@ -2073,13 +2076,6 @@ Spring_PositionRestore:
 	LDA Spring_CurrentYHi, X
 	STA <Objects_YHiZ, X
 	RTS
-	
-Sprint_InsideBlock:
-
-PointerDataOffset:
-	.byte $06, $0C, $12, $18
-
-
 
 ;***********************************************************************************
 ; Auto Level Revert

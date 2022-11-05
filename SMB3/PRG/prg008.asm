@@ -4715,6 +4715,8 @@ Hit_LeftWall:
 	AND #$0F
 	STA <Temp_Var1
 
+	DEC <Temp_Var1
+
 	LDA <Player_X
 	ADD <Temp_Var1
 	STA <Player_X
@@ -5356,6 +5358,9 @@ Body_Treasure:
 	LDA Block_NeedsUpdate
 	BNE Body_TreasureRTS
 	
+	LDA <Temp_Var12
+	PHA
+
 	LDA <Temp_Var13
 	PHA
 
@@ -5391,6 +5396,9 @@ Body_Treasure:
 
 	PLA
 	STA <Temp_Var13
+
+	PLA
+	STA <Temp_Var12
 
 	LDA #$04
 	ADD Coins_Earned_Buffer

@@ -1319,7 +1319,6 @@ SnowBall_Move:
 	JSR Object_CalcBoundBox
 	JSR Object_FaceDirectionMoving
 	JSR Object_InteractWithPlayer
-	;JSR Shell_KillOthers
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 
@@ -3761,9 +3760,6 @@ Tentacle_NoFlash:
 	JSR Object_InteractWithPlayer
 	JSR Object_ApplyYVel_NoGravity
 	JSR Tentacle_CheckPosition
-
-	LDA #$00
-	STA Objects_ToggleDetect, X
 	
 	JMP Tentacle_Animate
 

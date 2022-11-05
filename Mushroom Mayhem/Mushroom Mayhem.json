@@ -1958,15 +1958,15 @@
         15,
         15,
         48,
-        6,
+        0,
         15,
         15,
         48,
         39,
         15,
-        11,
+        6,
         48,
-        27,
+        22,
         15,
         2,
         48,
@@ -2329,7 +2329,7 @@
         49,
         15,
         32,
-        17,
+        6,
         49,
         15,
         48,
@@ -5647,7 +5647,7 @@
       "LastModified": "2019-05-13T20:41:11.5768419-04:00",
       "LevelsInfo": [
         {
-          "Size": 1637,
+          "Size": 1640,
           "Name": "Super Soggy Start",
           "Id": "cfcc0470-b205-448b-9246-3dd44dce3830",
           "LastModified": "2019-11-17T19:35:15.2554196-05:00",
@@ -5672,7 +5672,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2887,
+              "Size": 2888,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -5800,22 +5800,22 @@
         },
         {
           "Size": 2375,
-          "Name": "Rhythm and Blocks",
+          "Name": "Beat Block Binge",
           "Id": "e96e7d58-5b21-47b3-9d71-2e0cd473786d",
           "LastModified": "2019-05-25T18:48:10.8648985-04:00",
           "SublevelsInfo": [
             {
               "Size": 114,
-              "Name": "Rhythm and Blocks-2",
+              "Name": "Beat Block Binge-2",
               "Id": "c23efd32-217f-4c9e-b2c9-dcacf229ed7c",
               "LastModified": "2018-10-28T10:42:11.0549392-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Rhythm and Blocks-2"
+              "DisplayName": "(Level) Beat Block Binge-2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Rhythm and Blocks"
+          "DisplayName": "(Level) Beat Block Binge"
         },
         {
           "Size": 401,
@@ -5953,16 +5953,26 @@
           "DisplayName": "(Level) Blistering Blizzard"
         },
         {
-          "Size": 1588,
+          "Size": 1867,
           "Name": "Chilly Ice Chucking",
           "Id": "9863b665-9d38-4970-863b-67ff3ea1e355",
           "LastModified": "2018-10-28T10:42:10.2654279-04:00",
-          "SublevelsInfo": null,
+          "SublevelsInfo": [
+            {
+              "Size": 109,
+              "Name": "Chilly Ice Chucking-2",
+              "Id": "62c600a8-aa1f-49ee-8de6-3562a7fe4bcc",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) Chilly Ice Chucking-2"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) Chilly Ice Chucking"
         },
         {
-          "Size": 1355,
+          "Size": 1357,
           "Name": "Color Swatch Switch",
           "Id": "66c646c0-9b8d-435d-95c5-499ef7774e5b",
           "LastModified": "2018-10-28T10:42:10.6361981-04:00",
@@ -5971,19 +5981,19 @@
           "DisplayName": "(Level) Color Swatch Switch"
         },
         {
-          "Size": 2014,
+          "Size": 1942,
           "Name": "Lake Lakitu",
           "Id": "698f0ae0-07f8-4936-ab36-bc34202f8d50",
           "LastModified": "2018-10-28T10:42:10.6461909-04:00",
           "SublevelsInfo": [
             {
-              "Size": 320,
-              "Name": "Lake Lakitu 2",
+              "Size": 758,
+              "Name": "Lake Lakitu-2",
               "Id": "439962d2-3f4a-47e7-b5e7-7ff7958d0bfb",
               "LastModified": "2018-10-28T10:42:10.6551875-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Lake Lakitu 2"
+              "DisplayName": "(Level) Lake Lakitu-2"
             }
           ],
           "InfoType": 1,
@@ -11029,11 +11039,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 129,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 193,
@@ -30768,17 +30778,17 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 99,
-          "UpperRight": 100,
-          "LowerLeft": 115,
-          "LowerRight": 116
+          "UpperLeft": 14,
+          "UpperRight": 15,
+          "LowerLeft": 30,
+          "LowerRight": 31
         },
         {
           "Property": 192,
-          "UpperLeft": 101,
-          "UpperRight": 238,
-          "LowerLeft": 117,
-          "LowerRight": 254
+          "UpperLeft": 14,
+          "UpperRight": 15,
+          "LowerLeft": 30,
+          "LowerRight": 31
         },
         {
           "Property": 79,
@@ -31707,17 +31717,17 @@
           "LowerRight": 255
         },
         {
-          "Property": 16,
+          "Property": 129,
           "UpperLeft": 255,
-          "UpperRight": 106,
+          "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 110
+          "LowerRight": 255
         },
         {
-          "Property": 16,
-          "UpperLeft": 107,
+          "Property": 136,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 111,
+          "LowerLeft": 255,
           "LowerRight": 255
         },
         {
@@ -35106,11 +35116,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 129,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 250,
@@ -38249,214 +38259,9 @@
     {
       "GameId": 1,
       "GameObjectType": 1,
-      "Name": "Power Up",
-      "Sprites": [
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x25000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x25000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            2
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x26000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            2
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x26000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            3
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x27000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            3
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x27000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            4
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x28000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            4
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x28000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            5
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x29000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            5
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x29000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 3,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            6
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0x2A000",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            6
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0x2A000",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        }
-      ],
-      "Properties": [
-        "Mushroom",
-        "Fire Flower",
-        "Super Leaf",
-        "Frog Suit",
-        "Koopa Suit",
-        "Hammer Suit",
-        "Ice FLower"
-      ],
+      "Name": "Unused",
+      "Sprites": [],
+      "Properties": null,
       "Group": "Global"
     },
     {
@@ -52665,10 +52470,10 @@
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0xCC00",
-          "TileValue": "0x24",
+          "TileValue": "0x00",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 3,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         },
@@ -52677,18 +52482,15 @@
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0xCC00",
-          "TileValue": "0x26",
+          "TileValue": "0x02",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 3,
+          "PaletteIndex": 2,
           "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [
-        "Stationary",
-        "Chases Player"
-      ],
+      "Properties": null,
       "Group": "Wind/Ice Enemies"
     },
     {

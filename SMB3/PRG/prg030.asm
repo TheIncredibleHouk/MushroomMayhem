@@ -6025,6 +6025,15 @@ Player_Die:
 	STA Player_Frozen
 	STA Player_EffectiveSuit
 
+	LDA #$0F
+	STA Palette_Buffer + $11
+
+	LDA #$16
+	STA Palette_Buffer + $12
+
+	LDA #$36
+	STA Palette_Buffer + $13
+
 	LDA #$01
 	STA Player_QueueSuit	 ; Queue change to "small"
 
@@ -6106,7 +6115,7 @@ Tile_WriteTempChangeRTS:
 Objects_DetectionTable:
 	.byte $00, $01, $00, $01, $00, $01, $00, $01
 
-Objects_ToggleDetection:
+Objects_ResetDetects:
 	LDX #$07
 
 Objects_ToggleDetectionLoop:	
@@ -6114,6 +6123,10 @@ Objects_ToggleDetectionLoop:
 	AND #$01
 	EOR Objects_DetectionTable, X
 	STA Objects_ToggleDetect, X
+
+	LDA #$00
+	STA Objects_DetectedObject, X
+
 	DEX
 	BPL Objects_ToggleDetectionLoop
 

@@ -2681,6 +2681,7 @@ ABILITY_MAX = 5
 	Objects_DynamicallySpawned:	.ds 8
 	Objects_Kicked:		.ds 5
 	Objects_Shelled:	.ds 5
+	Objects_DetectedObject: .ds 8
 	Objects_ToggleDetect: .ds 8
 
 ATTR_FIREPROOF		= %00000001
@@ -3134,6 +3135,7 @@ TILE_ITEM_SPINNER	= $FE
 	GameScript_Losses:	.ds 1
 	GameScript_LossLimit: .ds 1
 	GameScript_Data:	.ds 16
+	Object_Count:	.ds 1
 
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints

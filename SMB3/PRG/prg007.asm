@@ -340,7 +340,7 @@ Player_FireBall3:
 	LDA SpecialObj_YVel, X
 	BMI Player_FireBall5
 
-	LDA #-$38
+	LDA #-$2C
 	STA SpecialObj_YVel, X
 	BNE Player_FireBall5
 
@@ -845,7 +845,14 @@ Poof_DrawNorm:
 	TAY
 
 Poof_DrawTiles:
+	LDA SpecialObj_Data2, X
+	BEQ Poof_AnimateNorma
 
+	TYA
+	ADD #$04
+	TAY
+
+Poof_AnimateNorma:
 	LDA Poof_Patterns, Y
 	STA <SpecialObj_Tile
 	STA <SpecialObj_Tile2
@@ -1234,15 +1241,15 @@ PlayerProj_HitEnemies1:
 
 	LDA Objects_ToggleDetect, Y
 	BNE PlayerProj_HitEnemies2
-
+	
 	LDA Objects_SpritesHorizontallyOffScreen,Y
 	ORA Objects_SpritesVerticallyOffScreen,Y
 	BNE PlayerProj_HitEnemies2	 ; If object has sprites horizontally or vertically off-screen, jump to PRG007_A667 (Forget it!)
 
-	LDX Objects_State,Y	; X = object's state
-
-	LDA Objects_Timer2, X
-	BNE PlayerProj_HitEnemies2
+	LDA #OBJSTATE_KICKED
+	SUB Objects_State,Y	; X = object's State
+	CMP #$03
+	BCS PlayerProj_HitEnemies2
 
 	LDA Objects_WeaponAttr,Y
 	STA <SpecialObj_ObjectAttributes		; Object attribute flags -> Temp_Var1
@@ -2944,7 +2951,7 @@ Enemy_FireBall3:
 	LDA SpecialObj_YVel, X
 	BMI Enemy_FireBall5
 
-	LDA #-$38
+	LDA #-$2C
 	STA SpecialObj_YVel, X
 	BNE Enemy_FireBall5
 
@@ -3050,6 +3057,7 @@ Enemy_IceBall5:
 	RTS
 
 Poof_Patterns:	.byte $47, $45, $43, $41
+				.byte $41, $43, $45, $47
 
 Enemy_Hammer:
 	LDA <Player_HaltGameZ
@@ -3911,7 +3919,8 @@ TroopaYOffset:		.byte $FC, $FC, $00, $00, $FC, $FC, $00, $00
 TroopaLimit:
 	.byte $03, $03, $03, $03, $01, $01, $01, $01					
 
-ObjectGen_Troopa:
+ObjectGen_Troopa:	
+	
 	LDA ObjectGenerator_Timer, X
 	BNE ObjectGen_TroopaRTS
 
@@ -3922,6 +3931,10 @@ ObjectGen_TroopaRTS:
 	RTS
 
 TroopaGen_Make:
+	LDA ObjectGenerator_Property, X
+	CMP #$04
+	BCC Generator_MakeTroopa
+
 	LDA #OBJ_GREENTROOPA
 	STA <Object_Check
 
@@ -3932,6 +3945,7 @@ TroopaGen_Make:
 	CMP TroopaLimit, Y
 	BCS TroopaGeneratorRTS
 
+Generator_MakeTroopa:
 	JSR PrepareNewObjectOrAbort
 
 	LDY <CurrentObjectIndexZ	
@@ -3939,7 +3953,7 @@ TroopaGen_Make:
 	LDA #OBJ_GREENTROOPA
 	STA Objects_ID,X
 
-	LDA #$38
+	LDA #$28
 	STA Objects_Timer, X
 	STA Objects_NoExp, X
 
@@ -3960,7 +3974,7 @@ TroopaGen_Make:
 	LDA TroopaYOffset,Y
 	STA <Temp_Var2
 
-	LDA TroopaYOffset + 4, Y
+	LDA TroopaYOffset + 8, Y
 	STA <Temp_Var3
 
 	LDY <CurrentObjectIndexZ	

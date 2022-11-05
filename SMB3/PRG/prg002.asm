@@ -2650,7 +2650,6 @@ MushroomBlock_Normal:
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	
-	
 	LDA Objects_BeingHeld, X
 	BNE MushroomBlock_NoKill
 	
@@ -2671,7 +2670,6 @@ MushroomBlock_NoKill:
 
 	LDA Objects_XVelZ, X
 	STA Player_CarryXVel
-	;JMP MushroomBlock_DetectTiles
 
 MushroomBlock_Carry:
 	LDA #$00

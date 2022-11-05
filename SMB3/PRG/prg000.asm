@@ -481,6 +481,7 @@ TileXFine:
 	; Calculate Temp_Var2/1 (tile address)
 	LDA Tile_Mem_Addr,Y
 	STA <Temp_Var1
+
 	LDA Tile_Mem_Addr+1,Y
 	ADC <Temp_Var3	
 	STA <Temp_Var2	
@@ -604,16 +605,8 @@ SetSplash:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
 	JSR Objects_AssignSprites
-	JSR Objects_ToggleDetection
+	JSR Objects_ResetDetects
 
-	LDA <Player_IsDying
-	CMP #$03
-	BNE PRG000_C948	 ; If Player is NOT dying due to TIME UP, jump to PRG000_C948
-
-
-PRG000_C948:
-
-PRG000_C949:
 	; Set page @ A000 to 5
 	LDA #19
 	STA PAGE_A000
@@ -627,6 +620,7 @@ PRG000_C973:
 	LDA #$00
 	STA <CurrentObjectIndexZ
 	STA Player_OnObject
+	;STA Object_Count
 
 PRG000_C975:
 	LDX <CurrentObjectIndexZ	 ; Backup current object index -> CurrentObjectIndexZ
@@ -659,6 +653,7 @@ PRG000_C98B:
 	BGE PRG000_C9B6	 ; If object slot index >= 5, jump to PRG000_C9B6
 
 	; Non-special objects in slots 0 to 4...
+	;INC Object_Count
 
 	LDA Explosion_Timer, X
 	BEQ DoNot_Explode
@@ -1007,18 +1002,13 @@ Object_DampenVelocity:
 	CMP #$10
 	BCC Object_DampenStop
 
-	LDA <Objects_YVelZ,X
-	TAY
+	JSR Half_Value
+	JSR Negate
+	PHA
+
 	JSR Object_HitGround
 
-	TYA
-	AND #$80
-	STA TempA
-	TYA
-	LSR A
-	ORA TempA
-	EOR #$FF
-	ADD #$01
+	PLA 
 	STA <Objects_YVelZ,X 
 
 	LDA <Objects_TilesDetectZ, X
@@ -1026,12 +1016,7 @@ Object_DampenVelocity:
 	STA <Objects_TilesDetectZ, X
 	
 	LDA <Objects_XVelZ,X 
-	AND #$80
-	STA TempA
-
-	LDA <Objects_XVelZ,X 
-	LSR A
-	ORA TempA
+	JSR Half_Value
 	STA <Objects_XVelZ,X 
 	RTS
 
@@ -4244,8 +4229,11 @@ Object_TestTopBumpBlocks:
 	BCC Object_TestTopBumpBlocks1
 
 	JSR Object_TopBumpBlocks
+	SEC
+	RTS
 
 Object_TestTopBumpBlocks1:
+	CLC
 	RTS
 
 Object_TestBottomBumpBlocks:
@@ -4469,13 +4457,6 @@ SetSpriteFG2:
 
 
 SetSpriteFG3:
-	LDA Object_HorzTileProp, X
-	CMP #TILE_PROP_SOLID_ALL
-	BCS SetSpriteFG4
-
-	AND #TILE_PROP_FOREGROUND
-	BNE SetBehindFg
-
 SetSpriteFG4:
 	LDA Object_BodyTileProp, X
 	CMP #TILE_PROP_SOLID_ALL
@@ -4706,16 +4687,26 @@ Object_InteractWithObjectsSkip:
 	CLC
 	RTS
 
+Object_DetectBit:
+	.byte %00000001, %0000010, %00000100, %00001000, %00010000
+
 DetectObjects:
+
+
 	LDY #$04
 
 DetectNextSprite:
 	CPY <CurrentObjectIndexZ
 	BEQ GoNextSprite
 
-	LDA Objects_ToggleDetect, Y
+	LDA Objects_DetectedObject, X
+	AND Object_DetectBit, Y
 	BNE GoNextSprite
 
+	LDA Object_DetectBit, X
+	ORA Objects_DetectedObject, Y
+	STA Objects_DetectedObject, Y
+	
 	LDA Objects_State, Y
 	CMP #OBJSTATE_FROZEN
 	BCS Detect_ThisObject
@@ -4762,8 +4753,6 @@ Object_Carry:
 
 	LDA #$00
 	STA <Objects_YVelZ, X
-
-	LDA #$00
 	STA Objects_YVelFrac,X
 	SEC
 	RTS
@@ -5045,10 +5034,10 @@ ChaseDetermineX:
 
 	LDA <Objects_XVelZ,X
 	CMP ChaseVel_LimitLo,X	
-	BEQ Object_ChasePlayerXRTS	 ; If Boo is at his acceleration limit, jump to PRG002_A8EE
+	BEQ Object_ChasePlayerXRTS	 
 
-	ADD #$FF	 ; Boo accelerates!
-	STA <Objects_XVelZ,X	 ; Update Boo's X velocity
+	ADD #$FF	 
+	STA <Objects_XVelZ,X	 
 	JMP Object_ChasePlayerXRTS
 
 ChaseDetermineXRight:
@@ -5669,9 +5658,10 @@ TestHit_FromLeft:
 	AND #HITTEST_LEFT
 	BEQ HitFrom_Right
 
-	LDA Player_HitWall
-	ORA Player_ForcedSlide
-	BEQ TestHit_FromLeft1
+	LDA Player_BoundRight
+	SUB Objects_BoundLeft, X
+	CMP #$05
+	BCC TestHit_FromLeft1
 
 	JSR Player_Die
 
@@ -5703,10 +5693,11 @@ HitFrom_Right:
 	AND #HITTEST_RIGHT
 	BEQ PlayerTestDone
 
-	LDA Player_HitWall
-	ORA Player_ForcedSlide
-	BEQ TestHit_FromRight1
-	
+	LDA Objects_BoundRight, X
+	SUB Player_BoundLeft
+	CMP #$05
+	BCC TestHit_FromRight1
+
 	JSR Player_Die
 
 TestHit_FromRight1:	
@@ -6053,8 +6044,8 @@ Object_EdgeMarch:
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
 
-	LDA #HIT_GROUND
-	STA <Objects_TilesDetectZ, X
+	;LDA #HIT_GROUND
+	;STA <Objects_TilesDetectZ, X
 
 Object_EdgeMarchRTS:
 	RTS
