@@ -1153,6 +1153,9 @@ Larry_DrawItemDone:
 Spiny_Frame = Objects_Data1
 
 ObjInit_Spiny:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -1201,6 +1204,10 @@ Spiny_NormGravity:
 	LDA Objects_Property, X
 	AND #$01
 	BEQ Spiny_NoDrop
+
+	JSR Object_YDistanceFromPlayer
+	CPY #$01
+	BNE Spiny_NoDrop
 
 	JSR Object_XDistanceFromPlayer
 	
@@ -1333,6 +1340,9 @@ SpinyEgg_FlipRight:
 	RTS        
 
 ObjInit_BuzzyBeetle:
+	LDA #$04
+	STA Objects_SpritesRequested, X
+	
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -2646,7 +2656,7 @@ Swoosh_Normal:
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
-	
+
 	LDA Swoosh_Action, X
 	JSR DynJump
 
@@ -2844,7 +2854,6 @@ Swoosh_InteractWithPlayer:
 	CMP #$18
 	BCS Swoosh_InteractWithPlayerRTS
 
-	STA Debug_Snap
 	JSR Object_XDistanceFromPlayer
 	STA <Temp_Var1
 
@@ -3939,9 +3948,6 @@ ObjInit_Fuzzy:
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
-
-	LDA #BOUND16x16
-	STA Object_BoundBox, X
 	RTS
 
 ObjNorm_Fuzzy:

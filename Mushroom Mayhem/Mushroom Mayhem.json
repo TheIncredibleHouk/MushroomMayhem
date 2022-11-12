@@ -5972,13 +5972,13 @@
           "DisplayName": "(Level) Chilly Ice Chucking"
         },
         {
-          "Size": 1357,
-          "Name": "Color Swatch Switch",
+          "Size": 1875,
+          "Name": "Chromatic Control",
           "Id": "66c646c0-9b8d-435d-95c5-499ef7774e5b",
           "LastModified": "2018-10-28T10:42:10.6361981-04:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) Color Swatch Switch"
+          "DisplayName": "(Level) Chromatic Control"
         },
         {
           "Size": 1942,
@@ -6026,15 +6026,6 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Firey Frenzy Icey Issues"
-        },
-        {
-          "Size": 26,
-          "Name": "World 2 to 3",
-          "Id": "0fd70302-c35b-40c8-b7db-a0671cf37584",
-          "LastModified": "2018-10-28T10:42:10.8040937-04:00",
-          "SublevelsInfo": null,
-          "InfoType": 1,
-          "DisplayName": "(Level) World 2 to 3"
         },
         {
           "Size": 1721,
@@ -6122,6 +6113,15 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Fierce Fwoosh Freeze"
+        },
+        {
+          "Size": 26,
+          "Name": "World 2 to 3",
+          "Id": "0fd70302-c35b-40c8-b7db-a0671cf37584",
+          "LastModified": "2018-10-28T10:42:10.8040937-04:00",
+          "SublevelsInfo": null,
+          "InfoType": 1,
+          "DisplayName": "(Level) World 2 to 3"
         }
       ],
       "InfoType": 0,
@@ -29441,10 +29441,10 @@
         },
         {
           "Property": 79,
-          "UpperLeft": 42,
-          "UpperRight": 43,
-          "LowerLeft": 58,
-          "LowerRight": 59
+          "UpperLeft": 40,
+          "UpperRight": 41,
+          "LowerLeft": 56,
+          "LowerRight": 57
         },
         {
           "Property": 0,
@@ -30351,10 +30351,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 64,
-          "UpperRight": 65,
-          "LowerLeft": 80,
-          "LowerRight": 81
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 238
         },
         {
           "Property": 192,
@@ -30707,6 +30707,13 @@
           "LowerRight": 255
         },
         {
+          "Property": 199,
+          "UpperLeft": 234,
+          "UpperRight": 235,
+          "LowerLeft": 255,
+          "LowerRight": 255
+        },
+        {
           "Property": 14,
           "UpperLeft": 198,
           "UpperRight": 199,
@@ -30715,17 +30722,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
-        },
-        {
-          "Property": 12,
-          "UpperLeft": 206,
-          "UpperRight": 207,
-          "LowerLeft": 222,
-          "LowerRight": 223
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
+          "LowerRight": 238
         },
         {
           "Property": 192,
@@ -30784,11 +30784,11 @@
           "LowerRight": 31
         },
         {
-          "Property": 192,
-          "UpperLeft": 14,
-          "UpperRight": 15,
-          "LowerLeft": 30,
-          "LowerRight": 31
+          "Property": 79,
+          "UpperLeft": 46,
+          "UpperRight": 47,
+          "LowerLeft": 62,
+          "LowerRight": 63
         },
         {
           "Property": 79,
@@ -30798,11 +30798,11 @@
           "LowerRight": 63
         },
         {
-          "Property": 48,
-          "UpperLeft": 253,
-          "UpperRight": 253,
-          "LowerLeft": 252,
-          "LowerRight": 252
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 192,
@@ -38262,7 +38262,7 @@
       "Name": "Unused",
       "Sprites": [],
       "Properties": null,
-      "Group": "Global"
+      "Group": "Unused"
     },
     {
       "GameId": 2,
@@ -44980,139 +44980,10 @@
     {
       "GameId": 53,
       "GameObjectType": 1,
-      "Name": "Check Point",
-      "Sprites": [
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 0,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x64",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 16,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x6E",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 32,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x68",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 48,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x64",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 64,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x74",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 80,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x7e",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 96,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x7c",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 112,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x70",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 128,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x7a",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": null,
-          "X": 4,
-          "Y": 144,
-          "TileTableAddress": "0x1000",
-          "TileValue": "0x86",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": true,
-          "CustomPalette": null
-        }
-      ],
-      "Properties": [
-        "Check Point 1",
-        "Check Point 2",
-        "Check Point 3",
-        "Check Point 4",
-        "Check Point 5",
-        "Check Point 6",
-        "Check Point 7"
-      ],
-      "Group": "Global"
+      "Name": "Unused",
+      "Sprites": [],
+      "Properties": null,
+      "Group": "Unused"
     },
     {
       "GameId": 54,
@@ -53848,7 +53719,7 @@
     {
       "GameId": 116,
       "GameObjectType": 2,
-      "Name": "Unused x74",
+      "Name": "Fuzzy",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,

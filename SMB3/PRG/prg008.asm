@@ -5668,6 +5668,9 @@ Solid_PSwitchRTS:
 	RTS
 
 Solid_ESwitch:
+	LDA <Player_YVelZ
+	BMI Solid_ESwitchRTS
+
 	LDA <TileXIndex
 	CMP #HEAD_FEET_LEFT_INDEX
 	BEQ Solid_ESwitch1
