@@ -604,6 +604,7 @@ SpecialObj_ForcedPoof:
 	LDA #$00
 	STA SpecialObj_XVel, X
 	STA SpecialObj_YVel, X
+	STA SpecialObj_Data2, X
 
 	LDA #SPR_PAL2
 	STA SpecialObj_Data3, X

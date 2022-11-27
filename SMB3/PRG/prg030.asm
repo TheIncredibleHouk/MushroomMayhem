@@ -5778,6 +5778,7 @@ Common_MakePoof1:
 	LDA #$00
 	STA SpecialObj_XVel, Y
 	STA SpecialObj_YVel, Y
+	STA SpecialObj_Data2, Y
 
 	LDA #SPR_PAL2
 	STA SpecialObj_Data3, Y

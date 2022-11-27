@@ -2637,7 +2637,7 @@ ObjInit_Swoosh:
 
 
 Swoosh_Times:
-	.byte $40, $60, $80, $A0
+	.byte $10, $20, $30, $A0
 
 Swoosh_Frame = Objects_Data1
 Swoosh_Action = Objects_Data2
@@ -2697,7 +2697,7 @@ Swoosh_NoBob:
 
 	INC Swoosh_Action, X
 
-	LDA #$50
+	LDA #$14
 	STA Objects_Timer, X
 
 Swoosh_IdleDone:
@@ -2717,8 +2717,6 @@ Swoosh_BreathIn:
 	JMP Object_Draw
 
 Swoosh_BreathInAnimate:
-	LSR A
-	LSR A
 	LSR A
 	LSR A
 

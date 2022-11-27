@@ -688,9 +688,9 @@
     },
     {
       "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
-      "X": 26,
-      "Y": 4,
-      "BoundRectangle": "416,64,16,16"
+      "X": 28,
+      "Y": 3,
+      "BoundRectangle": "448,48,16,16"
     },
     {
       "LevelId": "9863b665-9d38-4970-863b-67ff3ea1e355",
@@ -709,6 +709,12 @@
       "X": 15,
       "Y": 6,
       "BoundRectangle": "240,96,16,16"
+    },
+    {
+      "LevelId": "51a8c851-aa68-47f5-ab57-76f4953851c9",
+      "X": 21,
+      "Y": 5,
+      "BoundRectangle": "336,80,16,16"
     }
   ],
   "ObjectData": [
@@ -729,8 +735,8 @@
     },
     {
       "GameObjectId": 208,
-      "X": 26,
-      "Y": 4
+      "X": 28,
+      "Y": 3
     },
     {
       "GameObjectId": 201,
