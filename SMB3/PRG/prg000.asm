@@ -932,12 +932,13 @@ Frozen_Draw:
 	LDA #$01
 	STA <Player_HaltGameZ
 
-	LDA Objects_Kicked, X
-	BEQ Frozen_NotKicked
+
+	;LDA Objects_Kicked, X
+	;BEQ Frozen_NotKicked
 	
-	LDY #$00
-	JSR Kicked_DrawNoAnimate
-	JMP Frozen_DrawNormal
+	;LDY #$00
+	;JSR Kicked_DrawNoAnimate
+	;JMP Frozen_DrawNormal
 
 Frozen_NotKicked:
 	LDA Objects_Shelled, X
@@ -3680,9 +3681,6 @@ ODOFin2:
 	SEC
 	RTS
 
-ObjectObject_Intersect:
-	RTS
-
 	; Proper Collision routine for this object
 ; $D9BB
 Object_DoCollision:
@@ -4691,21 +4689,20 @@ Object_DetectBit:
 	.byte %00000001, %0000010, %00000100, %00001000, %00010000
 
 DetectObjects:
-
-
+	STA Debug_Snap
 	LDY #$04
 
 DetectNextSprite:
 	CPY <CurrentObjectIndexZ
 	BEQ GoNextSprite
 
-	LDA Objects_DetectedObject, X
-	AND Object_DetectBit, Y
-	BNE GoNextSprite
+	;LDA Objects_DetectedObject, X
+	;AND Object_DetectBit, Y
+	;BNE GoNextSprite
 
-	LDA Object_DetectBit, X
-	ORA Objects_DetectedObject, Y
-	STA Objects_DetectedObject, Y
+	;LDA Object_DetectBit, X
+	;ORA Objects_DetectedObject, Y
+	;STA Objects_DetectedObject, Y
 	
 	LDA Objects_State, Y
 	CMP #OBJSTATE_FROZEN

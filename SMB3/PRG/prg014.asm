@@ -12,7 +12,7 @@ OBJ_HARDICE    		= $6B
 OBJ_FIRESNAKE  		= $6C
 OBJ_FREEZIE    		= $6D
 OBJ_SWOOSH    		= $6E
-OBJ_PIXIE    		= $6F
+OBJ_RUSTER    		= $6F
 OBJ_FIREBLAST		= $70
 OBJ_ICEBLAST		= $71
 OBJ_LAKITUWINDOW	= $72
@@ -33,7 +33,7 @@ OBJ_SUNBEAM			= $77
     .word ObjInit_FireSnake ; Object $6C
     .word ObjInit_Freezie ; Object $6D
     .word ObjInit_Swoosh ; Object $6E
-    .word ObjInit_IceFireFly ; Object $6F
+    .word ObjInit_Ruster ; Object $6F
     .word ObjInit_FireBlast ; Object $70
     .word ObjInit_FrostBlast ; Object $71
     .word ObjInit_LakituWindow ; Object $72
@@ -56,7 +56,7 @@ OBJ_SUNBEAM			= $77
     .word ObjNorm_FireSnake ; Object $6C
     .word ObjNorm_Freezie ; Object $6D
     .word ObjNorm_Swoosh ; Object $6E
-    .word ObjNorm_IceFireFly ; Object $6F
+    .word ObjNorm_Ruster ; Object $6F
     .word ObjNorm_FireBlast ; Object $70
     .word ObjNorm_FrostBlast ; Object $71
     .word ObjNorm_LakituWindow ; Object $72
@@ -102,7 +102,7 @@ OBJ_SUNBEAM			= $77
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $6C
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $6D
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $6E
-    .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $6F
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $6F
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $70
     .byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $71
     .byte OA1_PAL3 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $72
@@ -218,7 +218,10 @@ ObjP6E:
 	.byte $A9, $AB
 
 ObjP6F:
-    .byte $91, $93, $95, $97, $99, $9B, $95, $97
+    .byte $91, $93
+	.byte $95, $97
+	.byte $91, $93
+	.byte $95, $97
 
 ObjP70:
 ObjP71:
@@ -2889,338 +2892,210 @@ Swoosh_Push:
 	ADD <Player_XVelZ
 	STA <Player_XVelZ
 	RTS	
-;***********************************************************************************
-; Pyro/Frost Fairies
-;***********************************************************************************
-; IMMUNITIES:
-;	Pyro - Fireballs
-;	Frost - Iceballs
-;***********************************************************************************
-; PROPERTIES
-;	0 - Pyro (fire)
-;	1 - Ice (ice)
-;***********************************************************************************
-;	These fairires float around towards Mario with either ice or fire balls rotating around
-;   them. 
-;***********************************************************************************
 
+Ruster_Frame = Objects_Data1
+Ruster_Action = Objects_Data2
+Ruster_Attacked = Objects_Data3
+Ruster_Reps = Objects_Data4
 
-IceFireFlyProjectiles:
-	.byte SOBJ_FIREBALL, SOBJ_ICEBALL
-
-IceFlyRotationX:
-	.byte 0, 2, 5, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 24, 24
-	.byte 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2
-	.byte 0, -2, -5, -7, -9, -11, -13, -15, -17, -19, -20, -21, -22, -23, -24, -24
-	.byte -24, -24, -24, -23, -22, -21, -20, -19, -17, -15, -13, -11, -9, -7, -5, -2
-
-IceFlyRotationY:
-	.byte 24, 24, 24, 23, 22, 21, 20, 19, 17, 15, 13, 11, 9, 7, 5, 2
-	.byte 0, -2, -5, -7, -9, -11, -13, -15, -17, -19, -20, -21, -22, -23, -24, -24
-	.byte -24, -24, -24, -23, -22, -21, -20, -19, -17, -15, -13, -11, -9, -7, -5, -2
-	.byte 0, 2, 5, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 24, 24
-
-IceFlyRotationVel:
-   .byte -$20, $20
-
-IceFireFly_Frame = Objects_Data3
-IceFireFly_ProjectileSlot = Objects_Data1
-IceFireFly_ProjectileTicks = Objects_Data4
-IceFireFly_ProjectileID = Objects_Data5
-
-IceFireFly_Palettes:
-	.byte SPR_PAL1, SPR_PAL2
-
-IceFireFly_WeaponAttr:
-	.byte ATTR_FIREPROOF, ATTR_ICEPROOF
-
-ObjInit_IceFireFly:
-	LDA #$04
-	STA Objects_SpritesRequested,X
-	
+ObjInit_Ruster:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #$FF
-	STA IceFireFly_ProjectileSlot, X
-
-	LDA #ATTR_STOMPKICKSOUND
-	STA Objects_BehaviorAttr, X
+	JSR Object_CalcBoundBox
+	JSR Object_MoveTowardsPlayer
 	
-	LDY Objects_Property, X
-	LDA IceFireFlyProjectiles, Y
-	STA IceFireFly_ProjectileID, X
+	LDA #$18
+	STA ChaseVel_LimitHi, X
 
-	LDA IceFireFly_WeaponAttr, Y
-	STA Objects_WeaponAttr, X
-	
-	LDA IceFireFly_Palettes, Y
-	STA Objects_SpriteAttributes, X
-
-	JSR InitPatrol_Chase
-
-	JSR Object_PrepProjectile
-	BCC ObjInit_IceFireFlyRTS
-
-	TYA
-	STA IceFireFly_ProjectileSlot, X
-
-	LDA #SOBJ_PLACEHOLDER
-	STA SpecialObj_ID, Y
-	STA SpecialObj_Data1, Y
-	STA SpecialObj_Data3, Y
-	
-	LDX <CurrentObjectIndexZ
-
-ObjInit_IceFireFlyRTS:
+	LDA #$E8
+	STA ChaseVel_LimitLo, X
 	RTS
 
-
-ObjNorm_IceFireFly:
-
-	LDA <Player_HaltGameZ
-	BEQ IceFireFly_Normal
-		
-	JMP IceFireFly_Draw
-
-IceFireFly_Normal:
+ObjNorm_Ruster:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BNE IceFireFly_DoNormal
+	BNE Ruster_Alive
 
-	JSR IceFireFly_DestroyProjectiles
-	JSR Object_SetDeadAndNotSpawned
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
 
-	JMP Object_PoofDie
-
-IceFireFly_DoNormal:
-	JSR Object_DeleteOffScreen
+	LDA #$30
+	STA Objects_Timer2, X
 	
-	JSR Object_ChasePlayer
-	JSR Object_CalcBoundBox
-	JSR Object_FaceDirectionMoving
-	JSR Object_AttackOrDefeat
-	JSR IceFireFly_Animate
-	JSR IceFireFly_MoveProjectiles
-	RTS
+	LDA #$01
+	STA Ruster_Action, X
 
-IceFireFly_Animate:
-	INC IceFireFly_Frame, X
-	LDA IceFireFly_Frame, X
-	AND #$0C
+	LDA Ruster_Attacked, X
+	CMP #$02
+	BEQ Ruster_Die
+
+	INC Ruster_Attacked, X
+
+	LDA Ruster_Attacked, X
+	STA Ruster_Reps, X
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
+	JSR Common_MakePoof
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+	STA <Objects_YVelZ, X
+
+	LDA <Player_X
+	STA <Objects_XZ, X
+
+	LDA <Vert_Scroll
+	ADD #$10
+	STA <Objects_YZ, X
+
+	LDA <Vert_Scroll_Hi
+	ADC #$00
+	STA <Objects_YHiZ, X
+
+	JMP Ruster_Alive
+
+Ruster_Die:
+	JMP Object_StarBurstDeath
+	
+Ruster_Alive:	
+	LDA <Player_HaltGameZ
+	BEQ Ruster_Do
+
+	JMP Object_Draw
+
+Ruster_Do:
+	LDA #$20
+	STA <DeleteRange
+	JSR Object_DeleteOffScreenRange
+
+	LDA Ruster_Action, X
+	JSR DynJump
+
+	.word Ruster_Norm
+	.word Ruster_Angry
+
+Ruster_Norm:
+	JSR Object_Move
+	JSR Object_FaceDirectionMoving
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+
+	LDA Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Ruster_Animate
+
+	LDA Objects_PreviousTilesDetect, X
+	AND #HIT_GROUND
+	BNE Ruster_Animate
+
+	LDA #$E8
+	STA <Objects_YVelZ, X
+
+	JSR Object_MoveTowardsPlayer
+
+Ruster_Animate:
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+	
+	INC Ruster_Frame, X
+	LDA Ruster_Frame, X
 	LSR A
 	LSR A
+	LSR A
+	AND #$01
 	STA Objects_Frame, X
 
-IceFireFly_Draw:
-	JSR Object_Draw
-	RTS
+	JMP Object_Draw
 
-IceFireFly_MoveProjectiles:
-	INC IceFireFly_ProjectileTicks, X
+Ruster_AnimPals:
+	.byte SPR_PAL3, SPR_PAL1
 
-	LDY IceFireFly_ProjectileSlot, X
-	BMI IceFireFly_MoveProjectilesRTS
- 
-	LDA #$00
-	STA SpecialObj_HurtEnemies, Y
-
-	LDA IceFireFly_ProjectileTicks, X
-	AND #$3F
-
-	TAY
-	
-	LDA Object_SpriteRAMOffset,X
-	TAX
-
-	JSR IceFireFly_DetermineProjectileVisibility
-	BCC IceFireFly_ClearFirstProjectile
-
-	JSR IceFireFly_CalcXYPosition
-
-	LDY IceFireFly_ProjectileSlot, X
-	JSR IceFireFly_SetXYPosition
-
-	RTS
-
-IceFireFly_ClearFirstProjectile:
-	LDX <CurrentObjectIndexZ
-
-	LDY IceFireFly_ProjectileSlot, X
-	JSR IceFireFly_ClearProjectile
-
-IceFireFly_MoveProjectilesRTS:
-	RTS
-
-IceFireFly_DetermineProjectileVisibility:
-
-	LDA IceFlyRotationX, Y
-	STA <Temp_Var1
-	BMI Projectile_NegativeXOffset
-
-	LDA Sprite_RAMX, X
-	ADD #$04
-	BCS IceFireFly_NotVisible
-
-	ADC IceFlyRotationX, Y
-	BCS IceFireFly_NotVisible
-	BCC Projectile_DetermineYVisibility
-
-Projectile_NegativeXOffset:
-	EOR #$FF
-	ADD #$01
-	STA <Temp_Var1
-
-	LDA Sprite_RAMX, X
-	ADD #$04
-	SUB <Temp_Var1
-	BCC IceFireFly_NotVisible
-
-Projectile_DetermineYVisibility:
-	LDA IceFlyRotationY, Y
-	STA <Temp_Var1
-	BMI Projectile_NegativeYOffset
-
-	LDA Sprite_RAMY, X
-	CMP #$F8
-	BEQ IceFireFly_NotVisible
-
-	ADD #$08
-	BCS IceFireFly_NotVisible
-
-	ADC IceFlyRotationY, Y
-	BCS IceFireFly_NotVisible
-	BCC IceFireFly_Visible
-
-Projectile_NegativeYOffset:
-	EOR #$FF
-	ADD #$01
-	STA <Temp_Var1
-
-	LDA Sprite_RAMY, X
-	CMP #$F8
-	BEQ IceFireFly_NotVisible
-
-	SUB <Temp_Var1
-	BCC IceFireFly_NotVisible
-	
-IceFireFly_Visible
-	LDX <CurrentObjectIndexZ
-	SEC
-	RTS
-
-IceFireFly_NotVisible:
-	LDX <CurrentObjectIndexZ
-	CLC
-	RTS
-
-IceFireFly_ClearProjectile:
-	LDA #$FF
-	STA SpecialObj_XHi, Y
-	STA SpecialObj_YHi, Y
-
-	LDA #SOBJ_PLACEHOLDER
-	STA SpecialObj_ID, Y
-	RTs
-
-IceFireFly_CalcXYPosition:
-	LDX <CurrentObjectIndexZ
-
-	LDA IceFlyRotationX, Y
-	STA <Temp_Var1
-	BMI IceFireFly_CalcXNegative
+Ruster_Angry:
+	LDA Objects_Timer2, X
+	BEQ Ruster_Chase
+	CMP #$01
+	BNE Ruster_AngryRTS
 
 	LDA <Objects_XZ, X
-	ADD #$04
-	ADC IceFlyRotationX, Y
-	STA <Temp_Var1
-
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA <Temp_Var2
-	JMP IceFireFly_CalcY
-
-IceFireFly_CalcXNegative:
-	EOR #$FF
-	ADD #$01
-	STA <Temp_Var1
-
-	LDA <Objects_XZ, X
-	ADD #$04
-	SUB <Temp_Var1
-	STA <Temp_Var1
-
-	LDA <Objects_XHiZ, X
-	SBC #$00
-	STA <Temp_Var2
-	
-IceFireFly_CalcY:
-	LDA IceFlyRotationY, Y
-	STA <Temp_Var3
-	BMI IceFireFly_CalcYNegative
+	STA <Poof_X
 
 	LDA <Objects_YZ, X
-	ADC IceFlyRotationY, Y
-	STA <Temp_Var3
+	STA <Poof_Y
+	JSR Common_MakePoof
 
-	LDA <Objects_YHiZ, X
-	ADC #$00
-	STA <Temp_Var4
+Ruster_AngryRTS:	
 	RTS
 
-IceFireFly_CalcYNegative:
-	EOR #$FF
-	ADD #$01
-	STA <Temp_Var3
-
-	LDA <Objects_YZ, X
-	SUB <Temp_Var3
-	STA <Temp_Var3
-
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Temp_Var4
-	RTS
-
-IceFireFly_SetXYPosition:
-
-	LDA <Temp_Var1
-	STA SpecialObj_X, Y
-	
-	LDA <Temp_Var2
-	STA SpecialObj_XHi, Y
-
-	LDA <Temp_Var3
-	STA SpecialObj_Y, Y
-	
-	LDA <Temp_Var4
-	STA SpecialObj_YHi, Y
-
-	LDA IceFireFly_ProjectileID, X
-	STA SpecialObj_ID, Y
-	STA SpecialObj_Data3, Y
-	STA SpecialObj_AllowOffScreen, Y
-	RTS
-
-
-IceFireFly_DestroyProjectiles:
-	LDY IceFireFly_ProjectileSlot, X
-	BMI IceFireFly_DestroyProjectilesRTS
-
-	LDA #PLAYER_POOF
-	STA SpecialObj_ID, Y
-
-	LDA #$10
-	STA SpecialObj_Timer, Y
-
+Ruster_Chase:
 	LDA #$00
-	STA SpecialObj_Data1, Y
+	STA Objects_XYCS, X
+	STA Objects_XYCSPrev, X
+	INC Objects_XYCSPrev, X
 
-	LDA #$FF
-	STA IceFireFly_ProjectileSlot, X
+	JSR Object_ChasePlayer
+	JSR Object_FaceDirectionMoving
 
-IceFireFly_DestroyProjectilesRTS:
-	RTS    
+	LDA Game_Counter
+	AND #$01
+	BNE Ruster_ResetReps
+
+	DEC Ruster_Reps, X
+	BNE Ruster_Chase
+
+Ruster_ResetReps:
+	LDA Ruster_Attacked, X
+	STA Ruster_Reps, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	
+Ruster_AnimateFast:
+	; LDA Objects_Timer2, X
+	; LSR A
+	; LSR A
+	; AND #$01
+	; TAY 
+
+	; LDA Objects_SpriteAttributes, X
+	; AND #~SPR_PAL3
+	; ORA Ruster_AnimPals, Y
+	; STA Objects_SpriteAttributes, X
+
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+	LDA Ruster_Attacked, X
+	STA <Temp_Var1
+
+	INC Ruster_Frame, X
+	LDA Ruster_Frame, X
+	LDY Ruster_Attacked, X
+
+Ruster_AnimLoop:
+	INY
+	CPY #$03
+	BEQ Ruster_DrawFast
+
+	LSR A
+	JMP Ruster_AnimLoop
+
+Ruster_DrawFast:
+	AND #$01
+	ORA #$02
+	STA Objects_Frame, X
+	JMP Object_Draw
 
 Object_ParticleVisibleTest:
 	TXA

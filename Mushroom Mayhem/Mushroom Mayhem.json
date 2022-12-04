@@ -2423,35 +2423,35 @@
     {
       "Renamed": false,
       "IndexedColors": [
-        16,
-        15,
-        48,
-        33,
-        16,
-        15,
-        48,
-        38,
-        16,
+        39,
         15,
         48,
         49,
-        16,
+        39,
         15,
         48,
-        17,
-        16,
+        23,
+        39,
+        15,
+        48,
+        25,
+        39,
+        15,
+        48,
+        22,
+        39,
         15,
         54,
         6,
-        16,
+        39,
         15,
         48,
         6,
-        16,
+        39,
         15,
         48,
         33,
-        16,
+        39,
         15,
         48,
         38
@@ -6006,7 +6006,7 @@
           "LastModified": "2018-10-28T10:42:10.6651816-04:00",
           "SublevelsInfo": [
             {
-              "Size": 0,
+              "Size": 903,
               "Name": "Whispy Winds-2",
               "Id": "de9f7bb5-5a53-4789-b17e-43937e548535",
               "LastModified": "0001-01-01T00:00:00",
@@ -52377,125 +52377,34 @@
     {
       "GameId": 111,
       "GameObjectType": 2,
-      "Name": "Pixie",
+      "Name": "Ruster",
       "Sprites": [
         {
-          "PropertiesAppliedTo": [
-            0
-          ],
+          "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
           "TileTableAddress": "0xCC00",
           "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 3,
           "Overlay": false,
           "CustomPalette": null
         },
         {
-          "PropertiesAppliedTo": [
-            0
-          ],
+          "PropertiesAppliedTo": null,
           "X": 8,
           "Y": 0,
           "TileTableAddress": "0xCC00",
           "TileValue": "0x12",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": 4,
-          "Y": -16,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x24",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            0
-          ],
-          "X": 4,
-          "Y": 16,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x24",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 0,
-          "Y": 0,
-          "TileTableAddress": "0xCC00",
-          "TileValue": "0x10",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 8,
-          "Y": 0,
-          "TileTableAddress": "0xCC00",
-          "TileValue": "0x12",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 2,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": -16,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x18",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
-          "Overlay": false,
-          "CustomPalette": null
-        },
-        {
-          "PropertiesAppliedTo": [
-            1
-          ],
-          "X": 4,
-          "Y": 16,
-          "TileTableAddress": "0x24000",
-          "TileValue": "0x18",
-          "HorizontalFlip": false,
-          "VerticalFlip": false,
-          "PaletteIndex": 1,
+          "PaletteIndex": 3,
           "Overlay": false,
           "CustomPalette": null
         }
       ],
-      "Properties": [
-        "Starts Fire",
-        "Starts Ice"
-      ],
+      "Properties": [],
       "Group": "Wind/Ice Enemies"
     },
     {
