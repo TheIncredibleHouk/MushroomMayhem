@@ -4689,7 +4689,6 @@ Object_DetectBit:
 	.byte %00000001, %0000010, %00000100, %00001000, %00010000
 
 DetectObjects:
-	STA Debug_Snap
 	LDY #$04
 
 DetectNextSprite:

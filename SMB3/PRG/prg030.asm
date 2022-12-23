@@ -2850,19 +2850,9 @@ Skip_Level_Position:
 
 Skip_Set_Music:
 	
+	; Unused header value
 	LDY #$07
 	LDA [Temp_Var14],Y
-	LDX Level_JctCtl
-	BNE Skip_Time_Set
-	
-	AND #$F0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	
-	LDA [Temp_Var14],Y
-	AND #$0F
 	
 	
 Skip_Time_Set:
@@ -6125,8 +6115,8 @@ Objects_ToggleDetectionLoop:
 	EOR Objects_DetectionTable, X
 	STA Objects_ToggleDetect, X
 
-	LDA #$00
-	STA Objects_DetectedObject, X
+	;LDA #$00
+	;STA Objects_DetectedObject, X
 
 	DEX
 	BPL Objects_ToggleDetectionLoop

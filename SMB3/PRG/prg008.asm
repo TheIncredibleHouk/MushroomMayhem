@@ -213,6 +213,7 @@ PRG008_A1FE:
 PRG008_A203:
 	LDA <Counter_1
 	AND #$03	 ; Cap 0 - 3
+	ORA <Player_HaltGameZ
 	BNE PRG008_A20C	 ; If 1 - 3, jump to PRG008_A20C (RTS)
 
 PRG008_A209:

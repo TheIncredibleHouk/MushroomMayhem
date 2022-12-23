@@ -2639,6 +2639,12 @@ ObjNorm_MushroomBlock:
 	LDA <Player_HaltGameZ
 	BEQ MushroomBlock_Normal
 
+	LDA Objects_BeingHeld, X
+	BEQ MushroomBlock_Halt
+
+	JSR Object_Hold
+
+MushroomBlock_Halt:	
 	JMP MushroomBlock_Draw
 
 MushroomBlock_Normal:

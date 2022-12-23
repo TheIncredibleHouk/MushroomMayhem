@@ -2910,6 +2910,18 @@ ObjInit_Ruster:
 
 	LDA #$E8
 	STA ChaseVel_LimitLo, X
+
+	LDA Objects_Property, X
+	STA Ruster_Action, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Ruster_InitRTS
+
+	JMP Object_PoofDie
+
+Ruster_InitRTS:	
 	RTS
 
 ObjNorm_Ruster:
@@ -2927,13 +2939,17 @@ ObjNorm_Ruster:
 	STA Ruster_Action, X
 
 	LDA Ruster_Attacked, X
-	CMP #$02
+	CMP #$01
 	BEQ Ruster_Die
 
 	INC Ruster_Attacked, X
 
 	LDA Ruster_Attacked, X
 	STA Ruster_Reps, X
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Ruster_NoPoof
 
 	LDA <Objects_XZ, X
 	STA <Poof_X
@@ -2943,6 +2959,7 @@ ObjNorm_Ruster:
 
 	JSR Common_MakePoof
 
+Ruster_NoPoof:
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA <Objects_YVelZ, X
@@ -2958,6 +2975,8 @@ ObjNorm_Ruster:
 	ADC #$00
 	STA <Objects_YHiZ, X
 
+	JSR Object_CalcBoundBox
+
 	JMP Ruster_Alive
 
 Ruster_Die:
@@ -2967,6 +2986,11 @@ Ruster_Alive:
 	LDA <Player_HaltGameZ
 	BEQ Ruster_Do
 
+	LDA Objects_Timer2, X
+	BEQ Ruster_HaltDraw
+	RTS
+
+Ruster_HaltDraw:	
 	JMP Object_Draw
 
 Ruster_Do:

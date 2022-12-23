@@ -2426,19 +2426,19 @@
         39,
         15,
         48,
-        49,
+        5,
         39,
         15,
         48,
-        23,
+        40,
         39,
         15,
         48,
-        25,
+        27,
         39,
         15,
         48,
-        22,
+        34,
         39,
         15,
         54,
@@ -2450,11 +2450,11 @@
         39,
         15,
         48,
-        33,
+        27,
         39,
         15,
         48,
-        38
+        40
       ],
       "Name": "Pixie Panic Switch",
       "Id": "76c1f15b-0e7a-4e9e-9899-9ac848c4c154"
@@ -6038,23 +6038,23 @@
           "DisplayName": "(Level) Firey Frenzy Icey Issues"
         },
         {
-          "Size": 1721,
-          "Name": "Pixie Panic Switch",
+          "Size": 2131,
+          "Name": "Forest Fliers",
           "Id": "1df08282-a211-4f0f-974c-6924444c9e8f",
           "LastModified": "2018-10-28T10:42:11.034952-04:00",
           "SublevelsInfo": [
             {
-              "Size": 85,
-              "Name": "Pixie Panic Switch 2",
+              "Size": 285,
+              "Name": "Forest Fliers-1",
               "Id": "1c74a986-0f13-4a47-8244-a0eb1e505a7b",
               "LastModified": "2018-10-28T10:42:11.0449454-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Pixie Panic Switch 2"
+              "DisplayName": "(Level) Forest Fliers-1"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Pixie Panic Switch"
+          "DisplayName": "(Level) Forest Fliers"
         },
         {
           "Size": 1253,
@@ -30890,20 +30890,20 @@
           "To": 110
         },
         {
-          "From": 156,
+          "From": 60,
           "To": 65
         },
         {
-          "From": 157,
+          "From": 61,
           "To": 65
         },
         {
-          "From": 69,
-          "To": 70
+          "From": 154,
+          "To": 110
         },
         {
-          "From": 70,
-          "To": 69
+          "From": 0,
+          "To": 0
         }
       ],
       "TileBlocks": [
@@ -30971,18 +30971,18 @@
           "LowerRight": 19
         },
         {
-          "Property": 192,
-          "UpperLeft": 104,
-          "UpperRight": 105,
-          "LowerLeft": 82,
-          "LowerRight": 81
+          "Property": 204,
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
-          "Property": 192,
-          "UpperLeft": 104,
-          "UpperRight": 105,
-          "LowerLeft": 254,
-          "LowerRight": 254
+          "Property": 9,
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 194,
@@ -31014,8 +31014,8 @@
         },
         {
           "Property": 64,
-          "UpperLeft": 5,
-          "UpperRight": 5,
+          "UpperLeft": 105,
+          "UpperRight": 105,
           "LowerLeft": 255,
           "LowerRight": 255
         },
@@ -31328,11 +31328,11 @@
           "LowerRight": 51
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 150,
-          "LowerRight": 151
+          "Property": 78,
+          "UpperLeft": 136,
+          "UpperRight": 137,
+          "LowerLeft": 152,
+          "LowerRight": 153
         },
         {
           "Property": 78,
@@ -31342,18 +31342,18 @@
           "LowerRight": 153
         },
         {
-          "Property": 0,
+          "Property": 204,
+          "UpperLeft": 102,
+          "UpperRight": 103,
+          "LowerLeft": 118,
+          "LowerRight": 119
+        },
+        {
+          "Property": 9,
           "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 255
-        },
-        {
-          "Property": 192,
-          "UpperLeft": 100,
-          "UpperRight": 101,
-          "LowerLeft": 116,
-          "LowerRight": 117
         },
         {
           "Property": 192,
@@ -31377,18 +31377,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 14,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 178,
-          "LowerRight": 179
-        },
-        {
           "Property": 78,
           "UpperLeft": 136,
           "UpperRight": 137,
           "LowerLeft": 152,
           "LowerRight": 153
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 178,
+          "LowerRight": 179
         },
         {
           "Property": 192,
@@ -31406,10 +31406,10 @@
         },
         {
           "Property": 64,
-          "UpperLeft": 239,
-          "UpperRight": 238,
-          "LowerLeft": 255,
-          "LowerRight": 254
+          "UpperLeft": 102,
+          "UpperRight": 103,
+          "LowerLeft": 118,
+          "LowerRight": 119
         },
         {
           "Property": 0,
@@ -31440,11 +31440,11 @@
           "LowerRight": 221
         },
         {
-          "Property": 64,
-          "UpperLeft": 239,
-          "UpperRight": 238,
-          "LowerLeft": 255,
-          "LowerRight": 254
+          "Property": 193,
+          "UpperLeft": 41,
+          "UpperRight": 77,
+          "LowerLeft": 44,
+          "LowerRight": 93
         },
         {
           "Property": 247,
@@ -31825,25 +31825,25 @@
           "LowerRight": 255
         },
         {
-          "Property": 16,
+          "Property": 0,
           "UpperLeft": 9,
-          "UpperRight": 102,
+          "UpperRight": 36,
           "LowerLeft": 25,
-          "LowerRight": 118
+          "LowerRight": 52
         },
         {
-          "Property": 16,
-          "UpperLeft": 103,
+          "Property": 0,
+          "UpperLeft": 36,
+          "UpperRight": 37,
+          "LowerLeft": 52,
+          "LowerRight": 53
+        },
+        {
+          "Property": 0,
+          "UpperLeft": 37,
           "UpperRight": 12,
-          "LowerLeft": 119,
+          "LowerLeft": 53,
           "LowerRight": 28
-        },
-        {
-          "Property": 3,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -31944,14 +31944,14 @@
           "LowerRight": 255
         },
         {
-          "Property": 16,
+          "Property": 204,
           "UpperLeft": 102,
           "UpperRight": 103,
           "LowerLeft": 118,
           "LowerRight": 119
         },
         {
-          "Property": 5,
+          "Property": 9,
           "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -31986,11 +31986,11 @@
           "LowerRight": 125
         },
         {
-          "Property": 12,
-          "UpperLeft": 206,
-          "UpperRight": 207,
-          "LowerLeft": 222,
-          "LowerRight": 223
+          "Property": 0,
+          "UpperLeft": 228,
+          "UpperRight": 229,
+          "LowerLeft": 244,
+          "LowerRight": 245
         },
         {
           "Property": 0,
@@ -32001,17 +32001,17 @@
         },
         {
           "Property": 78,
-          "UpperLeft": 136,
-          "UpperRight": 137,
-          "LowerLeft": 152,
-          "LowerRight": 153
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 78,
-          "UpperLeft": 136,
-          "UpperRight": 137,
-          "LowerLeft": 152,
-          "LowerRight": 153
+          "UpperLeft": 238,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 238
         },
         {
           "Property": 192,
@@ -32651,25 +32651,25 @@
           "LowerRight": 55
         },
         {
-          "Property": 48,
-          "UpperLeft": 36,
-          "UpperRight": 37,
-          "LowerLeft": 20,
-          "LowerRight": 21
+          "Property": 192,
+          "UpperLeft": 64,
+          "UpperRight": 65,
+          "LowerLeft": 80,
+          "LowerRight": 81
         },
         {
-          "Property": 48,
-          "UpperLeft": 38,
-          "UpperRight": 37,
-          "LowerLeft": 22,
-          "LowerRight": 21
+          "Property": 192,
+          "UpperLeft": 66,
+          "UpperRight": 65,
+          "LowerLeft": 82,
+          "LowerRight": 81
         },
         {
-          "Property": 48,
-          "UpperLeft": 38,
-          "UpperRight": 39,
-          "LowerLeft": 22,
-          "LowerRight": 23
+          "Property": 192,
+          "UpperLeft": 66,
+          "UpperRight": 67,
+          "LowerLeft": 82,
+          "LowerRight": 83
         },
         {
           "Property": 62,
@@ -39333,10 +39333,10 @@
       "Properties": [
         "Free floating.",
         "Obeys gravity.",
-        "Appears when all enemies off screen.",
+        "Appears when all objects off screen.",
         "Appears when P-Switch is activated.",
-        "Hidden inside item block.",
-        "Hidden inside stone or brick block.",
+        "Hidden inside of block.",
+        "Appears after 8 coins collected",
         "Appears with 5 block changes",
         "Indicator for radar"
       ],
@@ -39453,10 +39453,10 @@
       "Properties": [
         "Free floating.",
         "Obeys gravity.",
-        "Appears when all enemies off screen.",
+        "Appears when all objects off screen.",
         "Appears when P-Switch is activated.",
-        "Hidden inside item block.",
-        "Hidden inside stone or brick block.",
+        "Hidden inside of block.",
+        "Appears after 8 coins collected",
         "Appears with 5 block changes",
         "Indicator for radar"
       ],
@@ -39573,10 +39573,10 @@
       "Properties": [
         "Free floating.",
         "Obeys gravity.",
-        "Appears when all enemies off screen.",
+        "Appears when all objects off screen.",
         "Appears when P-Switch is activated.",
-        "Hidden inside item block.",
-        "Hidden inside stone or brick block.",
+        "Hidden inside of block.",
+        "Appears after 8 coins collected",
         "Appears with 5 block changes",
         "Indicator for radar"
       ],
@@ -57846,7 +57846,7 @@
         {
           "PropertiesAppliedTo": null,
           "X": 0,
-          "Y": 28,
+          "Y": 20,
           "TileTableAddress": "0x1000",
           "TileValue": "0x50",
           "HorizontalFlip": false,
@@ -57858,7 +57858,7 @@
         {
           "PropertiesAppliedTo": null,
           "X": 8,
-          "Y": 28,
+          "Y": 20,
           "TileTableAddress": "0x1000",
           "TileValue": "0x50",
           "HorizontalFlip": true,
@@ -57873,36 +57873,60 @@
     },
     {
       "GameId": 186,
-      "GameObjectType": 1,
-      "Name": "Unused xBA",
+      "GameObjectType": 2,
+      "Name": "Ruster Generator",
       "Sprites": [
         {
           "PropertiesAppliedTo": null,
           "X": 0,
           "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x08",
+          "TileTableAddress": "0xCC00",
+          "TileValue": "0x10",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
-          "Overlay": true,
+          "PaletteIndex": 3,
+          "Overlay": false,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 0,
+          "TileTableAddress": "0xCC00",
+          "TileValue": "0x12",
+          "HorizontalFlip": false,
+          "VerticalFlip": false,
+          "PaletteIndex": 3,
+          "Overlay": false,
           "CustomPalette": null
         },
         {
           "PropertiesAppliedTo": null,
           "X": 0,
-          "Y": 0,
-          "TileTableAddress": null,
-          "TileValue": "0x0A",
+          "Y": 20,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
           "HorizontalFlip": false,
           "VerticalFlip": false,
-          "PaletteIndex": 0,
+          "PaletteIndex": 1,
+          "Overlay": true,
+          "CustomPalette": null
+        },
+        {
+          "PropertiesAppliedTo": null,
+          "X": 8,
+          "Y": 20,
+          "TileTableAddress": "0x1000",
+          "TileValue": "0x50",
+          "HorizontalFlip": true,
+          "VerticalFlip": true,
+          "PaletteIndex": 1,
           "Overlay": true,
           "CustomPalette": null
         }
       ],
       "Properties": [],
-      "Group": "Unused"
+      "Group": "Wind/Ice Enemies"
     },
     {
       "GameId": 187,

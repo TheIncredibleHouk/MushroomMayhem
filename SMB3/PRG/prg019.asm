@@ -399,7 +399,7 @@ LevelEvent_Do:
 	.word LevelEvent_SpawnGoldYurarin	; 4 - $B7
 	.word LevelEvent_SpawnBlooper	; 5 - $B8
 	.word LevelEvent_GenerateCheepCheeps	; 6 - Random wooden platforms 
-	.word LevelEvent_TreasureBox	; 7 - Get a treasure box
+	.word LevelEvent_Ruster	; 7 - Ruster generator
 	.word LevelEvent_Cancel		; 8 - Does nothing but clear Level_Event
 
 GEN_CANCEL		= 0
@@ -473,7 +473,6 @@ EnemyCount_NoInc:
 
 	LDA #OBJ_JUMPINGCHEEP
 	STA Objects_ID,X
-
 
 	LDA <Horz_Scroll
 	ADD CheepCheepXOffsets, Y
@@ -635,74 +634,59 @@ BooWave_Generate:
 BooWave_GenerateRTS:
 	RTS	
 
-LevelEvent_TreasureBox:
+LevelEvent_Ruster:
+	LDA Level_EventTimer
+	BEQ LevelEvent_RusterCheck
 
-	; Used as delay until collected box kicks back to map
-	LDY LevelEvent_Cnt
-	BEQ PRG005_BCB6	 ; If LevelEvent_Cnt = 0, jump to PRG005_BCB6
-
-	DEC LevelEvent_Cnt	; LevelEvent_Cnt--
-	BNE PRG005_BCB5	 	; If LevelEvent_Cnt <> 0, jump to PRG005_BCB5 (RTS)
-
-	; Exit to map
-	INC Level_ExitToMap
+	DEC Level_EventTimer
+	RTS
+ 
+LevelEvent_RusterCheck:
 	LDA #$00
-	STA Map_ReturnStatus
+	STA <Temp_Var1
 
-PRG005_BCB5:
-	RTS		 ; Return
+Ruster_CountLoop:	
+	LDA #OBJ_RUSTER
+	STA <Object_Check
 
-PRG005_BCB6:
+	JSR CheckObjectsOfType2
 
-	; The following loop limits the appearance of the treasure box
-	; to only when there's no objects...
-	LDY #$07	 ; Y = 7
+	LDA <Num_Objects
+	CMP #$03
+	BCS LevelEvent_RusterRTS
 
-PRG005_BCB8:
-	LDA SpecialObj_ID,Y
-	BNE PRG005_BCF4	 ; If special object slot <> 0 (dead/empty), jump to PRG005_BCF4 (RTS)
+	JSR Level_SpawnObj
 
-	CPY #$05
-	BGE PRG005_BCCD	 ; If Y >= 5, jump to PRG005_BCCD
+	LDA #OBJ_RUSTER
+	STA Objects_ID, X
 
-	LDA Objects_ID,Y
-	CMP #OBJ_BIRDO	 
-	BEQ PRG005_BCCD	 ; If object ID = OBJ_BIRDO (the Giant World block controller), jump to PRG005_BCCD
-
-	LDA Objects_State,Y	
-	BNE PRG005_BCF4	 ; If this object slot is not "dead/empty", jump to PRG005_BCF4
-
-PRG005_BCCD:
-	DEY		 ; Y--
-	BPL PRG005_BCB8	 ; While Y >= 0, loop!
-
-	; Set treasure box state to Init
-	LDA #OBJSTATE_INIT
-	STA Objects_State
-
-	; Set treasure box ID
-	LDA #OBJ_SPINTULA
-	STA Objects_ID
-
-	; Treasure box always appears at Y coordinate $0170
 	LDA #$01
-	STA <Objects_YHiZ
-	LDA #$70
-	STA <Objects_YZ
+	STA Objects_Property, X
 
-	; Treasure box attempts to appear roughly at left quarter of screen
-	LDA #$30
-	LDY <Player_X
-	BMI PRG005_BCEA
-	LDA #$c0
-PRG005_BCEA:
-	ADC <Horz_Scroll
-	STA <Objects_XZ
-	LDA <Horz_Scroll_Hi
-	ADC #$00
-	STA <Objects_XHiZ
+	LDA #$01
+	STA Ruster_Attacked, X
+	STA Ruster_Reps, X
 
-PRG005_BCF4:
+	LDA <Vert_Scroll
+	STA Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	LDA <Horz_Scroll
+	STA <Objects_XZ, X
+
+	LDA RandomN
+	AND #$01
+	ADD <Horz_Scroll_Hi
+	STA <Objects_XHiZ, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+LevelEvent_RusterRTS:	
+	LDA #$C0
+	STA Level_EventTimer
 	RTS		 ; Return
 
 

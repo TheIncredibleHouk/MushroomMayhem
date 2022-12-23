@@ -2116,6 +2116,7 @@ ObjNorm_SendBackRTS:
 
 Magic_StarIndicator = Objects_Data4
 Magic_StarRadar = Objects_Data5
+Magic_StarCoinsNeeded = Objects_Data7
 
 ObjInit_MagicStar1:
 	LDA #$00
@@ -2165,8 +2166,9 @@ Kill_Star:
 	JSR Object_Delete
 
 Dont_Kill_Star:
+	LDA #$07
+	STA Magic_StarCoinsNeeded, X
 	RTS		 ; Return	
-
 
 MagicStarOffset:
 	.byte $00, $10, $20
@@ -2219,19 +2221,25 @@ Magic_StarCollect:
 	JMP Object_SetDeadEmpty
 
 Magic_Star_Action:
+
 	LDA Objects_Property, X
 	JSR DynJump
 
 	.word ObjNorm_DoNothing
 	.word MagicStar_NoFloat
-	.word MagicStar_CheckCoins
+	.word MagicStar_CheckObjects
 	.word MagicStar_CheckPSwitch
-	.word MagicStar_CheckItemBlock
 	.word MagicStar_CheckClearedBlock
+	.word MagicStar_CheckCoins
 	.word MagicStar_SpinnersActive
-	.word MagicStar_CheckClearedBlock
+	.word MagicStar_Indicator
 
-MagicStar_CheckCoins:
+MagicStar_Indicator:
+	LDA #$01
+	STA Objects_Timer2, X
+	RTS
+	
+MagicStar_CheckObjects:
 	LDY #$04
 
 CheckEnemies:
@@ -2245,6 +2253,7 @@ NoCheck:
 	DEY
 	BPL CheckEnemies
 
+Magic_StarPoofAppear:
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE Magic_StarNoPoof
@@ -2254,7 +2263,11 @@ NoCheck:
 
 	LDA <Objects_YZ, X
 	STA <Poof_Y
+	
 	JSR Common_MakePoof
+
+	LDA #SND_LEVELPOOF
+	STA Sound_QLevel1
 
 Magic_StarNoPoof:
 	LDA #$01
@@ -2287,44 +2300,55 @@ MagicStar_NoFloat:
 MagicStar_NoMove:
 	JMP Object_InteractWithTiles
 
-MagicStar_CheckItemBlock:
+MagicStar_CheckClearedBlock:
+	STA Debug_Snap
 	JSR Object_DetectTileCenter
-
-	LDA Tile_LastProp
-	AND #$F0
 	CMP #TILE_PROP_ITEM
-	BEQ MagicStar_CheckItemBlock1
+	BCS Magic_StarHidden
+
+	CMP #TILE_PROP_STONE | TILE_PROP_SOLID_ALL
+	BEQ Magic_StarHidden
+
+	CMP #TILE_PROP_OBJECTINTERACT | TILE_PROP_SOLID_ALL
+	BEQ Magic_StarHidden
+
+	AND #$F0
+	CMP #TILE_PROP_SOLID_BOTTOM
+	BEQ Magic_StarHidden
 
 	LDA #$01
 	STA Objects_Property, X
 
-	LDA #$D0
-	STA Objects_YVelZ, X
+	LDA <Objects_YZ, X
+	SUB #$08
+	STA <Objects_YZ, X
 
-	LDA Objects_YZ, X
-	SUB #$12
-	STA Objects_YZ, X
-
-	LDA Objects_YHiZ, X
+	LDA <Objects_YHiZ, X
 	SBC #$00
-	STA Objects_YHiZ, X
+	STA <Objects_YHiZ, X
+
+	LDA #$E0
+	STA <Objects_YVelZ, X
 	RTS
 
-MagicStar_CheckItemBlock1:
+Magic_StarHidden:
 	PLA
 	PLA
 	RTS	
 
-MagicStar_CheckClearedBlock:
-	JSR Object_DetectTileCenter
-	
-	LDA Tile_LastProp
-	CMP #TILE_PROP_SOLID_TOP
-	BCS MagicStar_CheckItemBlock1
+MagicStar_CheckCoins:
+	LDA Magic_StarCoinsNeeded, X
+	SUB Coins_Earned
+	STA Magic_StarCoinsNeeded, X
 
-	LDA #$01
-	STA Objects_Property, X
-	RTS
+	BPL MagicStar_CheckCoinsRTS
+
+	JMP Magic_StarPoofAppear
+
+MagicStar_CheckCoinsRTS:
+	PLA
+	PLA
+	RTS	
 
 MagicStar_SpinnersActive:
 	LDY #$02
@@ -2713,8 +2737,6 @@ IceBlock_Draw:
 	ORA #SPR_VFLIP
 	STA Sprite_RAM+$06, Y
 	RTS    
-	
-
 
 PoisonMushroom_Action = Objects_Data1
 
