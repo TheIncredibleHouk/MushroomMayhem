@@ -4431,6 +4431,10 @@ Player_NoItem:
 	RTS
 
 Player_UseItem:
+	LDA PowerUp_Reserve
+	CMP #ITEM_RADARSW
+	BCS Player_NoItem
+
 	LDA <Player_HaltGameZ
 	BNE Player_NoItem
 

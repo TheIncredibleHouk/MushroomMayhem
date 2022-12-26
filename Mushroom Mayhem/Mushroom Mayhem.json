@@ -2384,38 +2384,38 @@
     {
       "Renamed": false,
       "IndexedColors": [
-        38,
+        28,
         15,
         48,
-        16,
-        38,
+        60,
+        28,
         15,
         48,
-        24,
-        38,
+        39,
+        28,
         15,
         48,
-        33,
-        38,
+        27,
+        28,
         15,
         48,
         22,
-        38,
+        28,
         15,
         54,
         6,
-        38,
+        28,
         15,
         48,
         22,
-        38,
+        28,
         15,
         48,
-        33,
-        38,
+        27,
+        28,
         15,
         48,
-        24
+        39
       ],
       "Name": "Firey Frenzy Icey Issues",
       "Id": "16233056-d5a9-4adb-90a3-554659b53a5b"
@@ -5672,7 +5672,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2888,
+              "Size": 2892,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -5897,7 +5897,7 @@
       "LastModified": "2015-01-24T17:03:56.237-05:00",
       "LevelsInfo": [
         {
-          "Size": 2263,
+          "Size": 2283,
           "Name": "Bumbling Bee Breezes",
           "Id": "76a75f19-0eb9-45c1-8b94-3f72327e072b",
           "LastModified": "2018-10-28T10:42:10.2134574-04:00",
@@ -6019,32 +6019,32 @@
           "DisplayName": "(Level) Whispy Winds"
         },
         {
-          "Size": 2048,
-          "Name": "Firey Frenzy Icey Issues",
+          "Size": 138,
+          "Name": "Fuzzies On the Fritz",
           "Id": "9181c764-09d7-454f-806e-172123bee50a",
           "LastModified": "2018-10-28T10:42:10.6851691-04:00",
           "SublevelsInfo": [
             {
               "Size": 179,
-              "Name": "Fire Frenzy Ice Issues 2",
+              "Name": "Fuzzies On the Fritz-2",
               "Id": "c8b57fb2-ca92-4bee-a1dc-5df4d2330fa7",
               "LastModified": "2018-10-28T10:42:11.0119656-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Fire Frenzy Ice Issues 2"
+              "DisplayName": "(Level) Fuzzies On the Fritz-2"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) Firey Frenzy Icey Issues"
+          "DisplayName": "(Level) Fuzzies On the Fritz"
         },
         {
-          "Size": 2131,
+          "Size": 2151,
           "Name": "Forest Fliers",
           "Id": "1df08282-a211-4f0f-974c-6924444c9e8f",
           "LastModified": "2018-10-28T10:42:11.034952-04:00",
           "SublevelsInfo": [
             {
-              "Size": 285,
+              "Size": 289,
               "Name": "Forest Fliers-1",
               "Id": "1c74a986-0f13-4a47-8244-a0eb1e505a7b",
               "LastModified": "2018-10-28T10:42:11.0449454-04:00",
@@ -7133,7 +7133,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 32,
+        "Size": 30,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -30857,14 +30857,14 @@
         41,
         109,
         222,
-        0,
+        156,
         0,
         0,
         0
       ],
       "IceBallInteractions": [
         223,
-        0,
+        157,
         0,
         0,
         0,
@@ -30902,8 +30902,8 @@
           "To": 110
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 69,
+          "To": 110
         }
       ],
       "TileBlocks": [
@@ -31391,18 +31391,18 @@
           "LowerRight": 179
         },
         {
-          "Property": 192,
-          "UpperLeft": 224,
-          "UpperRight": 225,
-          "LowerLeft": 240,
-          "LowerRight": 241
+          "Property": 12,
+          "UpperLeft": 228,
+          "UpperRight": 229,
+          "LowerLeft": 244,
+          "LowerRight": 245
         },
         {
           "Property": 0,
-          "UpperLeft": 134,
-          "UpperRight": 135,
-          "LowerLeft": 150,
-          "LowerRight": 151
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 64,
@@ -32000,18 +32000,18 @@
           "LowerRight": 255
         },
         {
-          "Property": 78,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 194,
+          "UpperLeft": 228,
+          "UpperRight": 229,
+          "LowerLeft": 244,
+          "LowerRight": 245
         },
         {
-          "Property": 78,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 193,
+          "UpperLeft": 142,
+          "UpperRight": 143,
+          "LowerLeft": 158,
+          "LowerRight": 159
         },
         {
           "Property": 192,
@@ -32107,7 +32107,7 @@
         {
           "Property": 9,
           "UpperLeft": 255,
-          "UpperRight": 105,
+          "UpperRight": 255,
           "LowerLeft": 20,
           "LowerRight": 21
         },
@@ -34582,8 +34582,8 @@
           "To": 94
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 138,
+          "To": 110
         },
         {
           "From": 0,
@@ -34888,21 +34888,21 @@
           "LowerRight": 137
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
+          "Property": 0,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 178,
+          "LowerRight": 179
         },
         {
-          "Property": 16,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 78,
+          "UpperLeft": 136,
+          "UpperRight": 137,
+          "LowerLeft": 152,
+          "LowerRight": 153
         },
         {
-          "Property": 16,
+          "Property": 0,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -35007,7 +35007,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 78,
           "UpperLeft": 238,
           "UpperRight": 255,
           "LowerLeft": 255,
@@ -35574,14 +35574,14 @@
           "LowerRight": 117
         },
         {
-          "Property": 44,
-          "UpperLeft": 206,
-          "UpperRight": 207,
-          "LowerLeft": 222,
-          "LowerRight": 223
+          "Property": 0,
+          "UpperLeft": 228,
+          "UpperRight": 229,
+          "LowerLeft": 244,
+          "LowerRight": 245
         },
         {
-          "Property": 32,
+          "Property": 0,
           "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
