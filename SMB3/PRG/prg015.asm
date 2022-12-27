@@ -2049,8 +2049,7 @@ AngryThwompWait:
 	LDA Objects_Timer, X
 	BNE AngryThwompWaitRTS
 
-	
-	LDA Objects_SpritesVerticallyOffScreen,X
+	LDA Objects_SpritesVerticallyOffScreen, X
 	CMP #(SPRITE_0_VINVISIBLE | SPRITE_1_VINVISIBLE)
 	BEQ AngryThwompWaitRTS
 
@@ -2067,12 +2066,14 @@ AngryThwompWait:
 
 	LDA #$00
 	STA Thwomp_TilesDetected, X
+	STA Objects_TilesDetectZ, X
 
 AngryThwompWaitRTS:
 	JMP Thwomp_Draw
 
 
 Thwomp_FallToCeiling:
+	STA Debug_Snap - 1
 	INC Reverse_Gravity
 	JSR Object_Move
 	JSR Object_CalcBoundBox
@@ -2444,10 +2445,6 @@ DecBar:
 	DEC Objects_Data3, X
 
 DoBarBar:
-	LDY #$08
-	JSR Object_DetermineVerticallyOffScreen
-	LDY #$08
-	JSR Object_DetermineHorizontallyOffScreen
 
 DoPBarDraw:
 	LDA Objects_SpritesVerticallyOffScreen, X
