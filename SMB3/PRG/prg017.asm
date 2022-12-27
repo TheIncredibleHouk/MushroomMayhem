@@ -781,7 +781,7 @@ Boss_FwooshInit:
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes, X
 
-	LDA #$11
+	LDA #$09
 	STA Boss_FwooshHealth, X
 
 	LDA #$0C
@@ -1388,9 +1388,9 @@ Poof_YVel:
 	.byte $E0, $E0, $20, $20
 
 Fwoosh_HealthStage:
-	.byte $02, $02, $02, $02, $02, $02
-	.byte $01, $01, $01, $01, $01, $01
-	.byte $00, $00, $00, $00, $00, $00
+	.byte $02, $02, $02
+	.byte $01, $01, $01
+	.byte $00, $00, $00
 
 Boss_FwooshHit:
 	LDA #OBJSTATE_NORMAL
@@ -1406,7 +1406,7 @@ Boss_FwooshHit:
 	STA Objects_PlayerProjHit, X
 
 	LDA Boss_FwooshHealth, X
-	SUB #$06
+	SUB #$05
 	STA Boss_FwooshHealth, X
 
 Boss_FwooshHit1:
@@ -1530,6 +1530,14 @@ Boss_FwooshDeathExplode:
 
 	LDA #$64
 	STA Exp_Earned
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$08
+	STA <Objects_YZ, X
 	JMP Object_Explode
 
 Boss_BlooperAction = Objects_Data1

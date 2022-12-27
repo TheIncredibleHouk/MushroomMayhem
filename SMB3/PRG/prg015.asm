@@ -1972,12 +1972,20 @@ ObjInit_AngryThwomp:
 	ADD #$04
 	STA <Objects_XZ, X
 
-	LDA #$01
+	LDA Objects_Property, X
+	EOR #$01
 	STA Objects_Frame, X
 
 	LDA #$05
 	STA Objects_Health, X
+
+	LDY Objects_Property, X
+	LDA AngryThwomp_StartAction, Y
+	STA Thwomp_Action, X
 	RTS
+
+AngryThwomp_StartAction:
+	.byte $03, $01
 
 ObjNorm_AngryThwomp:
 	LDA <Player_HaltGameZ
@@ -2105,6 +2113,20 @@ Thwomp_FallToCeiling:
 	LDA #$E0
 	STA <Objects_YVelZ, X
 
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
+	BEQ AngryThwomp_Burst
+
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_STONE)
+	BNE AngryThwomp_CheckBlock
+
+
+AngryThwomp_Burst
+	LDA #TILE_ITEM_BRICK
+	STA Tile_LastProp
+
+
+AngryThwomp_CheckBlock:
 	LDA Tile_LastProp
 	CMP #TILE_ITEM_COIN
 	BCC AngryThwomp_NoBump

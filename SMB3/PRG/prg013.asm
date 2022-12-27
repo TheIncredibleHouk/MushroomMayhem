@@ -180,7 +180,7 @@ Snow_EventYStart:
 	.byte $02, $07, $13, $15, $21, $2B
 
 Snow_EventPatterns:
-	.byte $55, $55, $5F, $55, $5F, $5F
+	.byte $5F, $5F, $5F, $5F, $5F, $5F
 
 Snow_EventDrawTicker = Objects_Data1
 Snow_EventDoDraw = Objects_Data2
@@ -265,7 +265,7 @@ Snow_EventStoreColumnsRight:
 
 Snow_EventMove:
 	LDX #$05
-	LDY Object_SpriteRAMOffset
+	LDY #$80
 
 Snow_MoveNext:
 	LDA Weather_XPos, X
@@ -344,6 +344,9 @@ Snow_MoveNextRTS:
 	RTS
 
 Fireball_Event
+	LDA #$4C 
+	STA PatTable_BankSel + 4
+
 	LDA #$01
 	STA Player_VibeDisable
 
@@ -477,7 +480,7 @@ Fireball_MaskPal:
 Fireball_WhiteOut:
 	LDA MasterPal_Data, Y
 	ADD <Temp_Var1
-	CMP #$3F
+	CMP #$2F
 	BCC Fireball_NotMaxPal
 
 	LDA #$30

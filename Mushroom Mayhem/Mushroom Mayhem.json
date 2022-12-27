@@ -5578,6 +5578,45 @@
       ],
       "Name": "To Freezie Forest",
       "Id": "cce895ff-70c5-4222-beb6-92dbbe564f1e"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        6,
+        54,
+        22,
+        15,
+        15,
+        48,
+        17,
+        15,
+        15,
+        48,
+        0,
+        15,
+        2,
+        48,
+        17,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        15,
+        48,
+        18,
+        15,
+        15,
+        55,
+        39
+      ],
+      "Name": "Fierce Fwoosh Freeze Out",
+      "Id": "110b7d51-e0d0-4667-82e6-00fad757d007"
     }
   ],
   "WorldInfo": [
@@ -5837,7 +5876,7 @@
           "DisplayName": "(Level) To Freezie Forest"
         },
         {
-          "Size": 240,
+          "Size": 72,
           "Name": "Colossal Cheep Challenge",
           "Id": "25653fa1-d4cb-4981-88ed-3ac2c76b2e62",
           "LastModified": "0001-01-01T00:00:00",
@@ -6019,13 +6058,13 @@
           "DisplayName": "(Level) Whispy Winds"
         },
         {
-          "Size": 138,
+          "Size": 1971,
           "Name": "Fuzzies On the Fritz",
           "Id": "9181c764-09d7-454f-806e-172123bee50a",
           "LastModified": "2018-10-28T10:42:10.6851691-04:00",
           "SublevelsInfo": [
             {
-              "Size": 179,
+              "Size": 1390,
               "Name": "Fuzzies On the Fritz-2",
               "Id": "c8b57fb2-ca92-4bee-a1dc-5df4d2330fa7",
               "LastModified": "2018-10-28T10:42:11.0119656-04:00",
@@ -6057,74 +6096,6 @@
           "DisplayName": "(Level) Forest Fliers"
         },
         {
-          "Size": 1253,
-          "Name": "Fierce Fwoosh Freeze",
-          "Id": "386aaa7f-9bfb-4f40-aecd-7df3ff747342",
-          "LastModified": "2018-10-28T10:42:11.0749274-04:00",
-          "SublevelsInfo": [
-            {
-              "Size": 1989,
-              "Name": "Fierce Fwoosh Freeze-1",
-              "Id": "deae9b28-696b-4d4a-b892-b7d4edb5589c",
-              "LastModified": "2018-10-28T10:42:11.0839213-04:00",
-              "SublevelsInfo": [
-                {
-                  "Size": 1577,
-                  "Name": "Fierce Fwoosh Freeze-2",
-                  "Id": "7699038e-3420-464f-8788-ea81bf236462",
-                  "LastModified": "2018-10-28T10:42:11.0949152-04:00",
-                  "SublevelsInfo": [
-                    {
-                      "Size": 686,
-                      "Name": "Fierce Fwoosh Freeze-3",
-                      "Id": "4a7b88cc-cb17-46e8-b5b5-383a8bdaa0d5",
-                      "LastModified": "2018-10-28T10:42:11.1059081-04:00",
-                      "SublevelsInfo": [
-                        {
-                          "Size": 107,
-                          "Name": "Fierce Fwoosh Freeze-Boss",
-                          "Id": "9195cd08-2dd9-4372-a406-3ab09623c4d7",
-                          "LastModified": "2018-10-28T10:42:11.1159016-04:00",
-                          "SublevelsInfo": [],
-                          "InfoType": 1,
-                          "DisplayName": "(Level) Fierce Fwoosh Freeze-Boss"
-                        }
-                      ],
-                      "InfoType": 1,
-                      "DisplayName": "(Level) Fierce Fwoosh Freeze-3"
-                    }
-                  ],
-                  "InfoType": 1,
-                  "DisplayName": "(Level) Fierce Fwoosh Freeze-2"
-                }
-              ],
-              "InfoType": 1,
-              "DisplayName": "(Level) Fierce Fwoosh Freeze-1"
-            },
-            {
-              "Size": 125,
-              "Name": "Fierce Fwoosh Freeze-Room",
-              "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
-              "LastModified": "2018-10-28T10:42:11.1268955-04:00",
-              "SublevelsInfo": [
-                {
-                  "Size": 79,
-                  "Name": "Fierce Fwoosh Freeze-Room-2",
-                  "Id": "26eb57e4-ab1f-42d7-a62c-f49a01c3c1ee",
-                  "LastModified": "2018-10-28T10:42:11.1378881-04:00",
-                  "SublevelsInfo": null,
-                  "InfoType": 1,
-                  "DisplayName": "(Level) Fierce Fwoosh Freeze-Room-2"
-                }
-              ],
-              "InfoType": 1,
-              "DisplayName": "(Level) Fierce Fwoosh Freeze-Room"
-            }
-          ],
-          "InfoType": 1,
-          "DisplayName": "(Level) Fierce Fwoosh Freeze"
-        },
-        {
           "Size": 26,
           "Name": "World 2 to 3",
           "Id": "0fd70302-c35b-40c8-b7db-a0671cf37584",
@@ -6132,6 +6103,84 @@
           "SublevelsInfo": null,
           "InfoType": 1,
           "DisplayName": "(Level) World 2 to 3"
+        },
+        {
+          "Size": 73,
+          "Name": "Fierce Fwoosh Freeze",
+          "Id": "2235ff7f-6b01-4fc9-b1ee-f5c856dba1bb",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [
+            {
+              "Size": 1255,
+              "Name": "Fierce Fwoosh Freeze-0",
+              "Id": "386aaa7f-9bfb-4f40-aecd-7df3ff747342",
+              "LastModified": "2018-10-28T10:42:11.0749274-04:00",
+              "SublevelsInfo": [
+                {
+                  "Size": 1999,
+                  "Name": "Fierce Fwoosh Freeze-1",
+                  "Id": "deae9b28-696b-4d4a-b892-b7d4edb5589c",
+                  "LastModified": "2018-10-28T10:42:11.0839213-04:00",
+                  "SublevelsInfo": [
+                    {
+                      "Size": 1656,
+                      "Name": "Fierce Fwoosh Freeze-2",
+                      "Id": "7699038e-3420-464f-8788-ea81bf236462",
+                      "LastModified": "2018-10-28T10:42:11.0949152-04:00",
+                      "SublevelsInfo": [
+                        {
+                          "Size": 689,
+                          "Name": "Fierce Fwoosh Freeze-3",
+                          "Id": "4a7b88cc-cb17-46e8-b5b5-383a8bdaa0d5",
+                          "LastModified": "2018-10-28T10:42:11.1059081-04:00",
+                          "SublevelsInfo": [
+                            {
+                              "Size": 109,
+                              "Name": "Fierce Fwoosh Freeze-Boss",
+                              "Id": "9195cd08-2dd9-4372-a406-3ab09623c4d7",
+                              "LastModified": "2018-10-28T10:42:11.1159016-04:00",
+                              "SublevelsInfo": [],
+                              "InfoType": 1,
+                              "DisplayName": "(Level) Fierce Fwoosh Freeze-Boss"
+                            }
+                          ],
+                          "InfoType": 1,
+                          "DisplayName": "(Level) Fierce Fwoosh Freeze-3"
+                        }
+                      ],
+                      "InfoType": 1,
+                      "DisplayName": "(Level) Fierce Fwoosh Freeze-2"
+                    }
+                  ],
+                  "InfoType": 1,
+                  "DisplayName": "(Level) Fierce Fwoosh Freeze-1"
+                },
+                {
+                  "Size": 88,
+                  "Name": "Fierce Fwoosh Freeze-Room",
+                  "Id": "1ce25b79-bdd7-4591-a4cf-1b61012f5cf4",
+                  "LastModified": "2018-10-28T10:42:11.1268955-04:00",
+                  "SublevelsInfo": [
+                    {
+                      "Size": 81,
+                      "Name": "Fierce Fwoosh Freeze-Room-2",
+                      "Id": "26eb57e4-ab1f-42d7-a62c-f49a01c3c1ee",
+                      "LastModified": "2018-10-28T10:42:11.1378881-04:00",
+                      "SublevelsInfo": null,
+                      "InfoType": 1,
+                      "DisplayName": "(Level) Fierce Fwoosh Freeze-Room-2"
+                    }
+                  ],
+                  "InfoType": 1,
+                  "DisplayName": "(Level) Fierce Fwoosh Freeze-Room"
+                }
+              ],
+              "InfoType": 1,
+              "DisplayName": "(Level) Fierce Fwoosh Freeze-0"
+            }
+          ],
+          "InfoType": 1,
+          "DisplayName": "(Level) Fierce Fwoosh Freeze"
         }
       ],
       "InfoType": 0,
@@ -7133,7 +7182,7 @@
         "DisplayName": "(Level) Island Bonus Area"
       },
       {
-        "Size": 30,
+        "Size": 70,
         "Name": "Tile Test",
         "Id": "93187539-442a-4d56-839b-79beb93ef8dd",
         "LastModified": "2019-06-20T21:07:58.5271336-04:00",
@@ -13095,7 +13144,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 14,
           "UpperRight": 15,
           "LowerLeft": 16,
@@ -13207,7 +13256,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
@@ -13236,10 +13285,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
-          "LowerLeft": 2,
-          "LowerRight": 2
+          "UpperLeft": 18,
+          "UpperRight": 1,
+          "LowerLeft": 16,
+          "LowerRight": 17
         },
         {
           "Property": 192,
@@ -14061,7 +14110,7 @@
           "LowerRight": 17
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 38,
           "UpperRight": 15,
           "LowerLeft": 31,
@@ -14173,14 +14222,14 @@
           "LowerRight": 17
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 30,
           "UpperRight": 1,
           "LowerLeft": 31,
           "LowerRight": 17
         },
         {
-          "Property": 192,
+          "Property": 0,
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
@@ -54316,7 +54365,10 @@
           "CustomPalette": null
         }
       ],
-      "Properties": [],
+      "Properties": [
+        "Starts off falling",
+        "Starts off rising"
+      ],
       "Group": "Fortress"
     },
     {

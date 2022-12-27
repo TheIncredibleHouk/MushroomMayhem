@@ -2301,7 +2301,6 @@ MagicStar_NoMove:
 	JMP Object_InteractWithTiles
 
 MagicStar_CheckClearedBlock:
-	STA Debug_Snap
 	JSR Object_DetectTileCenter
 	CMP #TILE_PROP_ITEM
 	BCS Magic_StarHidden

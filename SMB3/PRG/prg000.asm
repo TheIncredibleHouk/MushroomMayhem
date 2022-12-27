@@ -3225,6 +3225,7 @@ PRG000_D7DE:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D7E2
 Object_DetermineVerticallyOffScreen:
+	STA Debug_Snap
 	LDY ObjGroupRel_Idx	 	; Y = object group relative index
 	LDA ObjectGroup_Attributes,Y	; Get object's attributes
 	AND #OA1_HEIGHTMASK	 ; keep only bits 2 and 3
