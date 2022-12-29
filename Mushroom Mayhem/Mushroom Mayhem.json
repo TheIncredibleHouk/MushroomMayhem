@@ -1059,9 +1059,9 @@
       "Renamed": false,
       "IndexedColors": [
         15,
-        15,
+        0,
         48,
-        21,
+        16,
         15,
         7,
         55,
@@ -1081,7 +1081,7 @@
         15,
         15,
         48,
-        0,
+        22,
         15,
         11,
         48,
@@ -1089,7 +1089,7 @@
         15,
         15,
         48,
-        39
+        0
       ],
       "Name": "Bobomb Burst Mine",
       "Id": "81c54437-115c-42d0-9f03-8274d99b4d63"
@@ -1142,12 +1142,12 @@
         6,
         15,
         15,
-        55,
-        23,
-        15,
-        15,
         48,
-        0,
+        45,
+        15,
+        15,
+        58,
+        9,
         15,
         6,
         55,
@@ -4589,7 +4589,7 @@
         54,
         6,
         15,
-        2,
+        15,
         48,
         15,
         15,
@@ -5711,7 +5711,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2892,
+              "Size": 2912,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -5857,25 +5857,6 @@
           "DisplayName": "(Level) Beat Block Binge"
         },
         {
-          "Size": 401,
-          "Name": "To Freezie Forest",
-          "Id": "6c2dafec-caa6-40bd-b4d2-a6f14d6d78dd",
-          "LastModified": "2018-10-28T10:42:10.7361377-04:00",
-          "SublevelsInfo": [
-            {
-              "Size": 185,
-              "Name": "To Cheep Cheep Channel",
-              "Id": "d844fc50-d8b2-44c2-978c-f945e10a0455",
-              "LastModified": "2018-10-28T10:42:10.7461298-04:00",
-              "SublevelsInfo": null,
-              "InfoType": 1,
-              "DisplayName": "(Level) To Cheep Cheep Channel"
-            }
-          ],
-          "InfoType": 1,
-          "DisplayName": "(Level) To Freezie Forest"
-        },
-        {
           "Size": 72,
           "Name": "Colossal Cheep Challenge",
           "Id": "25653fa1-d4cb-4981-88ed-3ac2c76b2e62",
@@ -5923,6 +5904,25 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Colossal Cheep Challenge"
+        },
+        {
+          "Size": 401,
+          "Name": "To Freezie Forest-From World 1",
+          "Id": "6c2dafec-caa6-40bd-b4d2-a6f14d6d78dd",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [
+            {
+              "Size": 185,
+              "Name": "To Cheep Cheep Channel-From World 2",
+              "Id": "d844fc50-d8b2-44c2-978c-f945e10a0455",
+              "LastModified": "2018-10-28T10:42:10.7461298-04:00",
+              "SublevelsInfo": null,
+              "InfoType": 1,
+              "DisplayName": "(Level) To Cheep Cheep Channel-From World 2"
+            }
+          ],
+          "InfoType": 1,
+          "DisplayName": "(Level) To Freezie Forest-From World 1"
         }
       ],
       "InfoType": 0,
@@ -6096,15 +6096,6 @@
           "DisplayName": "(Level) Forest Fliers"
         },
         {
-          "Size": 26,
-          "Name": "World 2 to 3",
-          "Id": "0fd70302-c35b-40c8-b7db-a0671cf37584",
-          "LastModified": "2018-10-28T10:42:10.8040937-04:00",
-          "SublevelsInfo": null,
-          "InfoType": 1,
-          "DisplayName": "(Level) World 2 to 3"
-        },
-        {
           "Size": 73,
           "Name": "Fierce Fwoosh Freeze",
           "Id": "2235ff7f-6b01-4fc9-b1ee-f5c856dba1bb",
@@ -6181,6 +6172,25 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) Fierce Fwoosh Freeze"
+        },
+        {
+          "Size": 654,
+          "Name": "To Bobomb Basin-From World 2",
+          "Id": "a57c08f2-fd18-4c4c-b75f-a2cd55c8f4d1",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [
+            {
+              "Size": 322,
+              "Name": "To Freezie Forest-From World 3",
+              "Id": "c330839f-4d88-458f-8323-225937500b0f",
+              "LastModified": "2018-10-28T10:42:10.7361377-04:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) To Freezie Forest-From World 3"
+            }
+          ],
+          "InfoType": 1,
+          "DisplayName": "(Level) To Bobomb Basin-From World 2"
         }
       ],
       "InfoType": 0,
@@ -6194,7 +6204,7 @@
       "LastModified": "2015-01-24T17:09:38.684-05:00",
       "LevelsInfo": [
         {
-          "Size": 2383,
+          "Size": 2575,
           "Name": "Bobomb Burst Mine",
           "Id": "e4bda44e-b8c5-41e8-9a63-48698630f802",
           "LastModified": "2019-05-17T21:46:45.9677889-04:00",
@@ -6203,23 +6213,23 @@
           "DisplayName": "(Level) Bobomb Burst Mine"
         },
         {
-          "Size": 394,
-          "Name": "The Floor is Lava",
+          "Size": 437,
+          "Name": "Pools of Podobo",
           "Id": "43d110f2-6669-474f-b0db-78091e9db2e2",
           "LastModified": "2018-10-30T20:20:03.221991-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2870,
-              "Name": "Lava Core - Main",
+              "Size": 2990,
+              "Name": "Pools of Podobo-1",
               "Id": "4fe75123-e06f-4d1e-aa0a-dddc96c15ede",
               "LastModified": "2018-10-30T20:20:03.2319864-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Lava Core - Main"
+              "DisplayName": "(Level) Pools of Podobo-1"
             }
           ],
           "InfoType": 1,
-          "DisplayName": "(Level) The Floor is Lava"
+          "DisplayName": "(Level) Pools of Podobo"
         },
         {
           "Size": 3433,
@@ -34678,7 +34688,7 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
+          "Property": 204,
           "UpperLeft": 64,
           "UpperRight": 65,
           "LowerLeft": 80,
@@ -34951,18 +34961,18 @@
           "LowerRight": 153
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 205,
+          "UpperLeft": 66,
+          "UpperRight": 67,
+          "LowerLeft": 82,
+          "LowerRight": 83
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 46,
@@ -35049,11 +35059,11 @@
           "LowerRight": 135
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 9,
+          "UpperLeft": 102,
+          "UpperRight": 103,
+          "LowerLeft": 118,
+          "LowerRight": 119
         },
         {
           "Property": 78,
@@ -35168,11 +35178,11 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 250,
+          "UpperLeft": 232,
+          "UpperRight": 233,
+          "LowerLeft": 248,
+          "LowerRight": 249
         },
         {
           "Property": 129,
@@ -35354,13 +35364,13 @@
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
-          "LowerRight": 255
+          "LowerRight": 113
         },
         {
           "Property": 192,
           "UpperLeft": 2,
           "UpperRight": 3,
-          "LowerLeft": 255,
+          "LowerLeft": 112,
           "LowerRight": 19
         },
         {
@@ -35464,13 +35474,13 @@
         {
           "Property": 192,
           "UpperLeft": 32,
-          "UpperRight": 255,
+          "UpperRight": 97,
           "LowerLeft": 48,
           "LowerRight": 49
         },
         {
           "Property": 192,
-          "UpperLeft": 255,
+          "UpperLeft": 96,
           "UpperRight": 35,
           "LowerLeft": 50,
           "LowerRight": 51
@@ -35519,10 +35529,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 96,
+          "UpperRight": 97,
+          "LowerLeft": 112,
+          "LowerRight": 113
         },
         {
           "Property": 12,
@@ -35735,11 +35745,11 @@
           "LowerRight": 127
         },
         {
-          "Property": 12,
-          "UpperLeft": 206,
-          "UpperRight": 207,
-          "LowerLeft": 222,
-          "LowerRight": 223
+          "Property": 0,
+          "UpperLeft": 228,
+          "UpperRight": 229,
+          "LowerLeft": 244,
+          "LowerRight": 245
         },
         {
           "Property": 0,
@@ -36029,18 +36039,18 @@
           "LowerRight": 22
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 205,
+          "UpperLeft": 66,
+          "UpperRight": 67,
+          "LowerLeft": 82,
+          "LowerRight": 83
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
+          "Property": 48,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 76,
@@ -36065,10 +36075,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 92,
+          "UpperRight": 93,
+          "LowerLeft": 112,
+          "LowerRight": 113
         },
         {
           "Property": 194,
@@ -36250,21 +36260,21 @@
           "UpperLeft": 0,
           "UpperRight": 1,
           "LowerLeft": 16,
-          "LowerRight": 255
+          "LowerRight": 113
         },
         {
           "Property": 192,
           "UpperLeft": 2,
           "UpperRight": 3,
-          "LowerLeft": 255,
+          "LowerLeft": 112,
           "LowerRight": 19
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 96,
+          "UpperRight": 97,
+          "LowerLeft": 112,
+          "LowerRight": 113
         },
         {
           "Property": 194,
@@ -36360,13 +36370,13 @@
         {
           "Property": 192,
           "UpperLeft": 32,
-          "UpperRight": 255,
+          "UpperRight": 97,
           "LowerLeft": 48,
           "LowerRight": 49
         },
         {
           "Property": 192,
-          "UpperLeft": 255,
+          "UpperLeft": 96,
           "UpperRight": 35,
           "LowerLeft": 50,
           "LowerRight": 51

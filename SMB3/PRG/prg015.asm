@@ -146,9 +146,9 @@ OBJ_PARACHOMP		= $8B
     .byte KILLACT_NORMALSTATE ; Object $7E
     .byte KILLACT_STARDEATH ; Object $7F
     .byte KILLACT_STARDEATH ; Object $80
-    .byte KILLACT_STARDEATH ; Object $81
-    .byte KILLACT_STARDEATH ; Object $82
-    .byte KILLACT_STARDEATH ; Object $83
+    .byte KILLACT_NORMALSTATE ; Object $81
+    .byte KILLACT_NORMALSTATE ; Object $82
+    .byte KILLACT_NORMALSTATE ; Object $83
     .byte KILLACT_NORMALSTATE ; Object $84
     .byte KILLACT_NORMALSTATE ; Object $85
     .byte KILLACT_STARDEATH ; Object $86
@@ -2073,7 +2073,6 @@ AngryThwompWaitRTS:
 
 
 Thwomp_FallToCeiling:
-	STA Debug_Snap - 1
 	INC Reverse_Gravity
 	JSR Object_Move
 	JSR Object_CalcBoundBox
@@ -2756,7 +2755,7 @@ Podob_NextTileCheck:
 	LDA Tile_DetectionYHi
 	STA <Objects_YHiZ, X
 
-	LDA #$40
+	LDA #$20
 	STA Objects_Timer, X
 
 	LDA Podobo_JumpYVel, Y
@@ -2769,6 +2768,13 @@ Podob_NextTileCheck:
 	RTS		 ; Return
 
 ObjNorm_Podobo:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Podobo_NormDo
+
+	JMP Object_PoofDie
+
+Podobo_NormDo:	
 	LDA <Player_HaltGameZ
 	BEQ Podobo_Norm
 
@@ -2839,12 +2845,45 @@ Podobo_MoveDone:
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 
+
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SOLID_OBJECTINTERACT)
-	BEQ Podobo_DoBridgeBreak
+	CMP #(TILE_PROP_OBJECTINTERACT)
+	BEQ Podobo_PoofBlock
 
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
-	BNE Podobo_NoBridgeBreak
+	BEQ Podobo_DoBridgeBreak
+
+	CMP #(TILE_PROP_SOLID_TOP | TILE_PROP_SOLID_OBJECTINTERACT)
+	BEQ Podobo_DoBridgeBreak
+	JMP Podobo_NoBridgeBreak
+
+Podobo_PoofBlock:
+	LDA <Objects_XZ, X
+	STA Tile_DetectionX
+	AND #$F0
+	STA Poof_X
+	
+	LDA <Objects_XHiZ, X
+	STA Tile_DetectionXHi
+
+	LDA <Objects_YZ, X
+	STA Tile_DetectionY
+	AND #$F0
+	STA Poof_Y
+
+	LDA <Objects_YHiZ, X
+	STA Tile_DetectionYHi
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Podobo_FlipTile
+
+	JSR Common_MakePoof
+
+Podobo_FlipTile:
+	LDA #$01
+	JSR Object_ChangeBlock
+	JMP Podobo_NoBridgeBreak
 
 Podobo_DoBridgeBreak:
 	LDA #$03
@@ -2997,10 +3036,10 @@ Podobo_BreakBridgesRTS:
 
 
 PipePodobo_YVel:
-	.byte $20, $E0
+	.byte $20, $E0, $20, $E0
 
 PipePodobo_Orientation:
-	.byte SPR_VFLIP, $00
+	.byte SPR_VFLIP, $00, SPR_VFLIP, $00
 
 PipePodobo_StartY = Objects_Data3
 PipePodobo_StartYHi = Objects_Data4
@@ -3068,10 +3107,17 @@ ResetPipePodobo:
 	RTS		 ; Return
 
 ObjNorm_PipePodobo:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE PipePodobo_Norm
+
+	JMP Object_PoofDie
+
+PipePodobo_Norm:	
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_PipePodobo1
 
-	JMP Object_DrawMirrored
+	JMP PipePodobo_Draw
 
 ObjNorm_PipePodobo1:
 	JSR Object_DeleteOffScreen
@@ -3120,9 +3166,7 @@ PipePodobo_Draw:
 	RTS
 
 PipePodobo_DrawAnyway:
-	JMP Object_DrawMirrored	    
-         
-
+	JMP Object_DrawMirrored	    	    
 
 Ricochet_Direction = Objects_Data4
 
@@ -3162,6 +3206,13 @@ ObjInit_DiagonalPodobo:
 	RTS
 
 ObjNorm_DiagonalPodobo:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE DiagonalPodobo_Do
+
+	JMP Object_PoofDie
+
+DiagonalPodobo_Do:	
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_DiagonalPodoboEnd
 

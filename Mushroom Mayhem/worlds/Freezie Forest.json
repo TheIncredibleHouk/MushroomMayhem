@@ -241,7 +241,7 @@
     9,
     239,
     239,
-    167,
+    239,
     239,
     239,
     7,
@@ -306,7 +306,7 @@
     239,
     239,
     239,
-    239,
+    167,
     239,
     239,
     7,
@@ -733,6 +733,12 @@
       "X": 35,
       "Y": 6,
       "BoundRectangle": "560,96,16,16"
+    },
+    {
+      "LevelId": "a57c08f2-fd18-4c4c-b75f-a2cd55c8f4d1",
+      "X": 42,
+      "Y": 4,
+      "BoundRectangle": "672,64,16,16"
     }
   ],
   "ObjectData": [
@@ -762,5 +768,5 @@
       "Y": 1
     }
   ],
-  "CompressedData": "7z8/Pz8/Pz8/Pz8/Pz8/P+8EBAUgAwUGAwUDBSAGAwTvCacHCe/v7xLv7+/v7+8H7wnvBwgJ71BRUVFS+hT5B+8J7+8Q7+/vBwgJ7+/vBwnvUVFRUVLvBwgICAnv7wcI7wnv7+/v7+8HCAgICe/vFe/6EQcICAmqq+/v7+/vBwjvCe/v7+/v7+8TqwcICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwUGIAYgAwUGIAMEBQYgBiAJ7+8ICAgJ7wcICe8HCAgICe8KUFFRUVFRUVFS7wcICO/v7++q76sHCAnv7+/vGO8J7+/v7xbv7+/v7wcICAgI7+9QUVKqqwcICe/v7wcICQnv7+/v7+/vF+/v7wcJUFEICAgICAgJUFFSBwgICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwYGIAMEBAQEBAQEBAQEBAQICAgICAgICAgICAgICAgICAgICAgICe/vp+/vBwgICO/vBwgICe/v7+/v7+8HCAcJ721ubwcJ71BRUVFRUVFR7+99fn/v7+/vBwgICAgICFFRUVFRUVFRUVFS7wcICAgJ7+8HCAgICAnv7+/vBwgI"
+  "CompressedData": "7z8/Pz8/Pz8/Pz8/Pz8/P+8EBAUgAwUGAwUDBSAGAwTvCacHCe/v7xLv7+/v7+8H7wnvBwgJ71BRUVFS+hT5B+8J7+8Q7+/vBwgJ7+/vBwnvUVFRUVLvBwgICAnv7wcI7wnv7+/v7+8HCAgICe/vFe/6EQcICAmqq+/v7+/vBwjvCe/v7+/v7+8TqwcICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwUGIAYgAwUGIAMEBQYgBiAJ7+8ICAgJ7wcICe8HCAgICe8KUFFRUVFRUVFS7wcICO/v7++q76sHCAnv7+/vGO8J7+/v7xbv7+/v7wcICAgI7+9QUVKqqwcICe/v7wcICQnv7+/v7+/vF+/v7wcJUFEICAgICAgJUFFSBwgICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwYGIAMEBAQEBAQEBAQEBAQICAgICAgICAgICAgICAgICAgICAgICe/v7+/vBwgICO/vBwgICe/v7++n7+8HCAcJ721ubwcJ71BRUVFRUVFR7+99fn/v7+/vBwgICAgICFFRUVFRUVFRUVFS7wcICAgJ7+8HCAgICAnv7+/vBwgI"
 }

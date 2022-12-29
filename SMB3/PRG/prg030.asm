@@ -2639,6 +2639,14 @@ JustName10:
 	LDY #$0D
 	LDX #$00
 
+	LDA SecondQuest
+	CMP #$FE
+	BNE JustName2
+
+	LDA #$D7
+	STA LevelName, X
+	INX
+
 JustName2:
 	LDA [Temp_Var14],Y
 	STA LevelName, X
@@ -2933,6 +2941,15 @@ SetDNActive:
 	LDX #$00
 	STY TempY
 
+	LDA SecondQuest
+	CMP #$FE
+	BNE LoadName
+
+	LDA #$D7
+	STA LevelName, X
+
+	INX
+	
 LoadName:
 	LDA Level_JctCtl
 	BNE SkipNameLoad

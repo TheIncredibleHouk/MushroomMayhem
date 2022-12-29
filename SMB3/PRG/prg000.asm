@@ -2181,6 +2181,16 @@ PRG000_D1C5:
 	RTS
 
 PRG000_D1C6:
+	STA Debug_Snap
+
+	LDA Objects_WeaponAttr, X
+	AND #ATTR_DASHPROOF
+	BEQ Object_HurtNoDash
+
+	LDA Player_FireDash
+	BNE Object_DefeatedRTS
+
+Object_HurtNoDash:
 	LDA Player_InWater
 	BNE Object_HurtPlayer
 	
@@ -3225,7 +3235,6 @@ PRG000_D7DE:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D7E2
 Object_DetermineVerticallyOffScreen:
-	STA Debug_Snap
 	LDY ObjGroupRel_Idx	 	; Y = object group relative index
 	LDA ObjectGroup_Attributes,Y	; Get object's attributes
 	AND #OA1_HEIGHTMASK	 ; keep only bits 2 and 3
@@ -4179,7 +4188,9 @@ Object_Check_Water:
 	BNE Object_Check_Water1
 
 Object_Check_Water0:
-	JMP Object_PoofDie
+	LDA #OBJSTATE_KILLED
+	STA Objects_State, X
+	RTS
 
 Object_Check_Water1:
 	LDY #$00
@@ -5471,8 +5482,7 @@ Object_Explode:
 	LDA #OBJSTATE_INIT
 	STA Objects_State, X
 
-Object_Explode1:
-	RTS
+	JMP Object_NoInteractions
 
 Object_ChangeBlock:
 	LDY Block_NeedsUpdate
