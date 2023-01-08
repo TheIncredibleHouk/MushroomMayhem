@@ -6241,13 +6241,13 @@
           "DisplayName": "(Level) Mario Ninja Warrior"
         },
         {
-          "Size": 3550,
+          "Size": 3552,
           "Name": "Fire Snake Fury",
           "Id": "d28d09cf-d6c1-44bd-9550-76bfa71cd1ac",
           "LastModified": "2019-12-10T21:23:30.0972397-05:00",
           "SublevelsInfo": [
             {
-              "Size": 1525,
+              "Size": 2394,
               "Name": "Fire Snake Fury-1",
               "Id": "30d2996a-764a-4e5b-9457-f7e688c1d071",
               "LastModified": "0001-01-01T00:00:00",
