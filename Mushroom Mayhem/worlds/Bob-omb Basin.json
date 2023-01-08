@@ -176,7 +176,7 @@
     96,
     96,
     96,
-    33,
+    201,
     115,
     116,
     116,
@@ -239,11 +239,11 @@
     201,
     33,
     201,
-    33,
+    96,
     201,
     96,
     96,
-    70,
+    22,
     96,
     96,
     201,
@@ -337,8 +337,8 @@
     84,
     85,
     96,
-    99,
-    100,
+    115,
+    98,
     101,
     96,
     99,
@@ -401,8 +401,8 @@
     100,
     101,
     96,
+    96,
     99,
-    100,
     101,
     96,
     99,
@@ -465,8 +465,8 @@
     116,
     117,
     96,
-    99,
-    100,
+    83,
+    114,
     101,
     96,
     99,
@@ -667,8 +667,66 @@
       "X": 8,
       "Y": 8,
       "BoundRectangle": "128,128,16,16"
+    },
+    {
+      "LevelId": "bd30da54-924b-4274-a74c-93f1b5b1a671",
+      "X": 39,
+      "Y": 3,
+      "BoundRectangle": "624,48,16,16"
+    },
+    {
+      "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
+      "X": 35,
+      "Y": 8,
+      "BoundRectangle": "560,128,16,16"
+    },
+    {
+      "LevelId": "7ccc9f5f-e01e-4097-a487-711beda97a72",
+      "X": 12,
+      "Y": 3,
+      "BoundRectangle": "192,48,16,16"
+    },
+    {
+      "LevelId": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
+      "X": 9,
+      "Y": 6,
+      "BoundRectangle": "144,96,16,16"
+    },
+    {
+      "LevelId": "d28d09cf-d6c1-44bd-9550-76bfa71cd1ac",
+      "X": 19,
+      "Y": 0,
+      "BoundRectangle": "304,0,16,16"
+    },
+    {
+      "LevelId": "186d5c67-58c5-4f3f-a43e-aa353ea9befc",
+      "X": 2,
+      "Y": 8,
+      "BoundRectangle": "32,128,16,16"
+    },
+    {
+      "LevelId": "ef5c3eb2-5f23-4e26-bdcb-c991c2a716dd",
+      "X": 22,
+      "Y": 0,
+      "BoundRectangle": "352,0,16,16"
     }
   ],
-  "ObjectData": [],
-  "CompressedData": "AAAAAAAAAAAAAAAAAAAAAHBwcHBwcHBwcHBwcHBwcHBkYXR0dGJkYXR0dHRiYmRkZGVgYGBzdHVgYGBgEWJkZGRlYElgYBBgYFNUVWBjZGRkZWBgYFNUVWBjZGVgY2RkZHFUVFRyZGVgY2RlYGNkZGRhdHR0dHR1YGNkZWBjZGRkZUlgYGBgYBJjZGVJY2RkZHh5E2BgSXd5YElgYHd4AGRkZWBTVFRycVRVYGBjZABkZGVgc3RiZGF0dWBgY2QAZGRlYGBgd3h5YGAUYGNkAGRkZWBgYHNmdWBgU1RyZABkZGVgYGBgVmBgU3JkZGQAZGRxVFRVYBVgU3JkZGRkAGRkYXR0Z1dgU3JkZGRkZABkZGVJYGBgYGNkZGRkZGQAIckhySHJIUlgYGBgYGAhyckhySHJIclgYFNUVFVgySEhySEXYGBgYCFzdHR1YCHJySHJYMkhySHJYGBGYGDJISHJIWAhySHJIWAhySHJIcnJIclgYGBgYGBgyWBgYGBTVFRUVFRVGMkhySFgU1RUcnR0dHR0dWBgrm6vYGNkZGQhySFgYGBgYL5+v1NyZGRk"
+  "ObjectData": [
+    {
+      "GameObjectId": 208,
+      "X": 35,
+      "Y": 8
+    },
+    {
+      "GameObjectId": 205,
+      "X": 9,
+      "Y": 6
+    },
+    {
+      "GameObjectId": 207,
+      "X": 39,
+      "Y": 3
+    }
+  ],
+  "CompressedData": "AAAAAAAAAAAAAAAAAAAAAHBwcHBwcHBwcHBwcHBwcHBkYXR0dGJkYXR0dHRiYmRkZGVgYGBzdHVgYGBgEWJkZGRlYElgYBBgYFNUVWBjZGRkZWBgYFNUVWBzYmVgY2RkZHFUVFRyZGVgYGNlYGNkZGRhdHR0dHR1YFNyZWBjZGRkZUlgYGBgYBJjZGVJY2RkZHh5E2BgSXd5YElgYHd4AGRkZWBTVFRycVRVYGBjZABkZGVgc3RiZGF0dWBgY2QAZGRlYGBgd3h5YGAUYGNkAGRkZWBgYHNmdWBgU1RyZABkZGVgYGBgVmBgU3JkZGQAZGRxVFRVYBVgU3JkZGRkAGRkYXR0Z1dgU3JkZGRkZABkZGVJYGBgYGNkZGRkZGQAIckhySHJIUlgYGBgYGAhyckhySHJIclgYFNUVFVgySEhySEXYGBgYMlzdHR1YCHJySHJYMkhyWDJYGAWYGDJISHJIWAhySHJIWAhySHJIcnJIclgYGBgYGBgyWBgYGBTVFRUVFRVGMkhySFgU1RUcnR0dHR0dWBgrm6vYGNkZGQhySFgYGBgYL5+v1NyZGRk"
 }

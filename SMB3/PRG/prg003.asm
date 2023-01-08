@@ -233,6 +233,8 @@ PlatformDiameter:
 	.byte $04, $05, $06, $07, $08, $09, $0A, $0B
 
 ObjInit_PlatformCommon:
+	INC ObjSplash_Disabled, X
+	
 	LDA #$06
 	STA Objects_SpritesRequested, X
 

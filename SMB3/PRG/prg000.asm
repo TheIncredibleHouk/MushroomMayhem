@@ -2181,8 +2181,6 @@ PRG000_D1C5:
 	RTS
 
 PRG000_D1C6:
-	STA Debug_Snap
-
 	LDA Objects_WeaponAttr, X
 	AND #ATTR_DASHPROOF
 	BEQ Object_HurtNoDash
@@ -5482,7 +5480,8 @@ Object_Explode:
 	LDA #OBJSTATE_INIT
 	STA Objects_State, X
 
-	JMP Object_NoInteractions
+	JSR Object_NoInteractions
+	JMP Object_Respawn
 
 Object_ChangeBlock:
 	LDY Block_NeedsUpdate

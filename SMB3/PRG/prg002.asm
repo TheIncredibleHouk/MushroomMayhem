@@ -713,7 +713,7 @@ Lava_DrainDrawRTS:
 ;	in the upper left hand corner.
 ;***********************************************************************************	
 TimerStartTimes:
-	.byte 30, 100
+	.byte 30, 100, 120
 
 Timer_Remaining = Objects_Data1
 Timer_WarningPlayed = Objects_Data2

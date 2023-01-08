@@ -1708,9 +1708,10 @@ FireSnake_Ticker = Objects_Data4
 FireSnake_MakeFire = Objects_Data5
 FireSnake_XCharge = Objects_Data6
 FireSnake_YCharge = Objects_Data7
+Firesnake_BufferOccupied = Objects_Data8
 
 FiresSnake_Charge:
-	.byte $E8, $18, $C0, $40
+	.byte $F0, $10, $E0, $20
 
 FireSnakeFlips:
 	.byte $00, SPR_HFLIP
@@ -1735,6 +1736,12 @@ ObjInit_FireSnake:
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_InitBuffer
+
+	LDA #$01
+	STA Buffer_Occupied, Y
+
+	TYA
+	STA Firesnake_BufferOccupied, X
 
 	LDA FireSnake_BufferOffsets, Y
 	STA FireSnake_BufferOffset, X
@@ -1761,18 +1768,13 @@ ObjNorm_FireSnake:
 	CMP #OBJSTATE_KILLED
 	BNE FireSnake_NotDead
 
-	LDY FireSnake_BufferOffset, X
+	LDY Firesnake_BufferOccupied, X
 	
 	LDA #$00
 	STA Buffer_Occupied, Y
 
-	LDY Objects_SpawnIdx, X
-
-	LDA Level_ObjectsSpawned, Y
-	AND #$7f
-	STA Level_ObjectsSpawned, Y
-
-	JMP Object_PoofDie
+	JSR Object_PoofDie
+	JMP Object_SetDeadAndNotSpawned
 
 FireSnake_NotDead:
 	LDA <Player_HaltGameZ
@@ -1789,6 +1791,8 @@ FireSnake_Norm:
 	LDA Objects_State, X
 	CMP #OBJSTATE_NORMAL
 	BEQ FireSnake_Move
+
+	LDY Firesnake_BufferOccupied, X
 
 	LDA #$00
 	STA Buffer_Occupied, Y
@@ -1828,8 +1832,16 @@ FireSnake_NoYVelCap:
 	JSR FireSnake_MoveTail
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
-	JSR Object_DetectTiles	
-	JSR Object_InteractWithTiles
+	JSR Object_DetectTiles
+
+	LDA <Objects_XVelZ, X
+	PHA
+
+	JSR Object_InteractWithTilesWallStops
+
+	PLA
+	STA <Objects_XVelZ, X
+
 	JSR FireSnake_MeltIce
 
 	LDA <Objects_TilesDetectZ, X
@@ -1953,7 +1965,6 @@ FireSnake_MoveTail:
 
 
 MoveTail_Loop:
-
 	LDA Object_BufferX, Y
 	STA Object_BufferX + 1, Y
 
@@ -1987,6 +1998,7 @@ FireSnake_DrawTail:
 	LDY Object_SpriteRAMOffset, X
 	STY <FireSnake_RAMOffset
 
+	STA Debug_Snap
 	LDA FireSnake_BufferOffset, X
 	STA <FireSnake_TailOffset
 	TAX
@@ -2021,6 +2033,7 @@ FireSnake_DrawTail:
 	LDA Sprite_RAMY + 8, Y
 	SUB Sprite_RAMY, Y
 	STA <FireSnake_TailPartY
+	
 	JSR FireSnake_TailHitTest
 
 FSDT1:
@@ -2096,11 +2109,11 @@ FSDT2:
 	JSR FireSnake_TailHitTest
 
 FSDT3:
+	LDX <FireSnake_TailOffset
 	LDA Object_BufferX + 15, X
 	SUB <Horz_Scroll
 	ADD #$04
 	STA <FireSnake_TailPartX
-	
 
 	LDA Object_BufferY + 15, X
 	SUB <Vert_Scroll
@@ -2112,6 +2125,7 @@ FSDT3:
 	LDY <FireSnake_RAMOffset
 	LDA <FireSnake_TailPartX
 	STA Sprite_RAMX + 20, Y
+	
 	LDA <FireSnake_TailPartY
 	STA Sprite_RAMY + 20, Y
 
@@ -2248,7 +2262,7 @@ TailHit_None:
 TailPiece_DetectPlayer:
 	STX TempX
 	LDX #$09
-	JSR Object_DetectPlayer
+	JSR Object_SpecialDetectPlayer
 	LDX TempX
 	RTS	
 
@@ -2315,6 +2329,8 @@ FireSnake_MeltIceVert:
 	JMP Object_ChangeBlock
 
 FireSnake_DetectIceHorz:
+	LDA <Objects_XVelZ, X
+	BEQ FireSnake_MeltIceRTS
 
 	LDA Object_HorzTileProp, X
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SLICK)
@@ -2413,7 +2429,6 @@ ObjNorm_Freezie:
 
 	LDA Freezie_State, X
 	BNE Freezie_JustDraw
-
 	RTS
 
 Freezie_JustDraw:

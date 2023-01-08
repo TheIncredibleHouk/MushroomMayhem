@@ -6136,9 +6136,6 @@ Objects_ToggleDetectionLoop:
 	EOR Objects_DetectionTable, X
 	STA Objects_ToggleDetect, X
 
-	;LDA #$00
-	;STA Objects_DetectedObject, X
-
 	DEX
 	BPL Objects_ToggleDetectionLoop
 

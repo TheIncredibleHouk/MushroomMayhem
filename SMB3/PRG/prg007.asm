@@ -489,6 +489,10 @@ Player_IceballNoHitIce:
 
 Player_IceBall1:
 	LDA Tile_LastProp
+	AND #$F0
+	CMP #TILE_PROP_SOLID_BOTTOM
+	BEQ Player_IceBall4
+
 	CMP #TILE_PROP_SOLID_TOP
 	BCC Player_IceBall4
 

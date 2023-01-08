@@ -453,8 +453,32 @@ HammerBro_LeftSide:
 
 	LDA Sprite_RAMX, Y
 	ADD <Temp_Var1
+	BCC HammerBro_DrawLeft
+
+	CMP #$F8
+	BCS Hammer_DrawLeftRTS
+
+	CMP #$08
+	BCS HammerBro_DrawLeft
+
+Hammer_DrawLeftRTS:
+	RTS
+
+HammerBro_DrawLeft:
 	STA Sprite_RAMX - 8, Y
 	ADD #$08
+	BCC HammerBro_SetRight
+
+	CMP #$F8
+	BCS HammerBro_SetRightRTS
+
+	CMP #$08
+	BCS HammerBro_SetRight
+
+HammerBro_SetRightRTS:	
+	RTS
+
+HammerBro_SetRight:	
 	STA Sprite_RAMX - 4, Y
 
 	LDA Sprite_RAMY, Y

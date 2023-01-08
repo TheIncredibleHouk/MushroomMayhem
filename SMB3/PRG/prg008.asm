@@ -299,6 +299,12 @@ Super_MarioStandard:
 	STA Air_Time
 	STA Tile_Anim_Enabled
 
+	LDA #$00
+	STA Power_Change
+
+	LDA #$50
+	STA Player_Power
+
 	LDA #$FF
 	STA CompleteLevelTimer
 
@@ -4950,8 +4956,10 @@ Player_SuitChange2:
 	
 	LDY #$00
 	STY LeftRightInfection
-	STY Player_Power
 	STY Power_Change
+
+	LDY #$50
+	STY Player_Power
 
 	CMP #$05
 	BEQ Player_SuitChange3
