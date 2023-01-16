@@ -1998,7 +1998,6 @@ FireSnake_DrawTail:
 	LDY Object_SpriteRAMOffset, X
 	STY <FireSnake_RAMOffset
 
-	STA Debug_Snap
 	LDA FireSnake_BufferOffset, X
 	STA <FireSnake_TailOffset
 	TAX

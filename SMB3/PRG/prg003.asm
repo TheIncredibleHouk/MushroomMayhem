@@ -234,7 +234,7 @@ PlatformDiameter:
 
 ObjInit_PlatformCommon:
 	INC ObjSplash_Disabled, X
-	
+
 	LDA #$06
 	STA Objects_SpritesRequested, X
 
@@ -630,7 +630,7 @@ Unstable_MoveConstant:
 	RTS
 
 Unstable_MoveNormal:
-
+	STA Debug_Snap
 	LDA Platform_SteppedOn, X
 	BEQ Unstable_MoveRTS
 
@@ -639,7 +639,7 @@ Unstable_MoveNormal:
 	LDA <Objects_YVelZ,X
 	BMI Unstable_MoveRTS
 	CMP #$10
-	BCC Unstable_MoveRTS
+	BEQ Unstable_MoveRTS
 
 	LDA #$10
 	STA <Objects_YVelZ,X

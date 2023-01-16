@@ -2541,20 +2541,20 @@
       "Renamed": false,
       "IndexedColors": [
         15,
-        15,
-        48,
-        12,
-        15,
         12,
         48,
         28,
         15,
         8,
-        55,
+        56,
         24,
         15,
-        7,
+        10,
         48,
+        26,
+        15,
+        7,
+        55,
         23,
         15,
         15,
@@ -2565,13 +2565,13 @@
         48,
         23,
         15,
-        11,
-        48,
-        42,
         15,
-        12,
         48,
-        28
+        27,
+        15,
+        15,
+        48,
+        24
       ],
       "Name": "Spicy Dry Cheeps",
       "Id": "ffc2a02f-1afe-4037-84e2-a4c0f9a0258e"
@@ -4688,11 +4688,11 @@
         15,
         48,
         22,
-        11,
+        25,
         15,
-        55,
-        42,
-        11,
+        48,
+        41,
+        25,
         15,
         48,
         49,
@@ -4700,7 +4700,7 @@
         15,
         48,
         45,
-        11,
+        25,
         15,
         15,
         54,
@@ -6298,13 +6298,13 @@
           "DisplayName": "(Level) Podobo Panic"
         },
         {
-          "Size": 2723,
-          "Name": "Spicy Dry Cheeps",
+          "Size": 3161,
+          "Name": "Charred Cheeps",
           "Id": "d7ebddd8-1579-459a-98d4-add28a9efe9d",
           "LastModified": "2019-01-22T20:12:29.0882358-05:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) Spicy Dry Cheeps"
+          "DisplayName": "(Level) Charred Cheeps"
         },
         {
           "Size": 2632,
@@ -6411,22 +6411,42 @@
           "DisplayName": "(Level) Big Bully Blasts"
         },
         {
-          "Size": 48,
-          "Name": "To Bobomb Basin Level 2-E",
-          "Id": "186d5c67-58c5-4f3f-a43e-aa353ea9befc",
-          "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
-          "InfoType": 1,
-          "DisplayName": "(Level) To Bobomb Basin Level 2-E"
-        },
-        {
           "Size": 68,
           "Name": "To Bobomb Basin Level 1-E",
           "Id": "ef5c3eb2-5f23-4e26-bdcb-c991c2a716dd",
           "LastModified": "0001-01-01T00:00:00",
-          "SublevelsInfo": [],
+          "SublevelsInfo": [
+            {
+              "Size": 48,
+              "Name": "To Bobomb Basin Level 2-E",
+              "Id": "186d5c67-58c5-4f3f-a43e-aa353ea9befc",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) To Bobomb Basin Level 2-E"
+            }
+          ],
           "InfoType": 1,
           "DisplayName": "(Level) To Bobomb Basin Level 1-E"
+        },
+        {
+          "Size": 83,
+          "Name": "To Bobomb Basin Level 1-W",
+          "Id": "58ba1731-821b-48b6-89a8-8a646ad79d2b",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [
+            {
+              "Size": 48,
+              "Name": "To Bobomb Basin Level 2-W",
+              "Id": "79422d18-392c-4574-a324-0eeedb7b0128",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) To Bobomb Basin Level 2-W"
+            }
+          ],
+          "InfoType": 1,
+          "DisplayName": "(Level) To Bobomb Basin Level 1-W"
         }
       ],
       "InfoType": 0,
@@ -9268,28 +9288,28 @@
           "LowerRight": 237
         },
         {
-          "Property": 0,
+          "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
           "LowerLeft": 162,
           "LowerRight": 163
         },
         {
-          "Property": 0,
+          "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
           "LowerLeft": 164,
           "LowerRight": 163
         },
         {
-          "Property": 0,
+          "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
           "LowerLeft": 164,
           "LowerRight": 165
         },
         {
-          "Property": 0,
+          "Property": 1,
           "UpperLeft": 238,
           "UpperRight": 238,
           "LowerLeft": 178,
@@ -10039,17 +10059,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 236,
-          "UpperRight": 196,
-          "LowerLeft": 236,
+          "UpperLeft": 238,
+          "UpperRight": 238,
+          "LowerLeft": 238,
           "LowerRight": 212
         },
         {
           "Property": 0,
-          "UpperLeft": 199,
-          "UpperRight": 236,
+          "UpperLeft": 238,
+          "UpperRight": 238,
           "LowerLeft": 215,
-          "LowerRight": 236
+          "LowerRight": 238
         },
         {
           "Property": 0,
@@ -10151,17 +10171,17 @@
         },
         {
           "Property": 1,
-          "UpperLeft": 236,
+          "UpperLeft": 238,
           "UpperRight": 228,
-          "LowerLeft": 236,
+          "LowerLeft": 238,
           "LowerRight": 244
         },
         {
           "Property": 1,
           "UpperLeft": 231,
-          "UpperRight": 236,
+          "UpperRight": 238,
           "LowerLeft": 247,
-          "LowerRight": 236
+          "LowerRight": 238
         },
         {
           "Property": 0,
@@ -10171,7 +10191,7 @@
           "LowerRight": 209
         },
         {
-          "Property": 2,
+          "Property": 0,
           "UpperLeft": 232,
           "UpperRight": 233,
           "LowerLeft": 248,
@@ -34641,8 +34661,8 @@
     {
       "FireBallInteractions": [
         202,
-        0,
-        0,
+        60,
+        204,
         0,
         0,
         0,
@@ -34650,8 +34670,8 @@
         0
       ],
       "IceBallInteractions": [
-        0,
-        0,
+        61,
+        205,
         0,
         0,
         0,
@@ -34673,20 +34693,20 @@
           "To": 110
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 187,
+          "To": 171
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 171,
+          "To": 187
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 184,
+          "To": 1
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 185,
+          "To": 1
         },
         {
           "From": 0,
@@ -34766,10 +34786,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 110,
+          "UpperRight": 111,
+          "LowerLeft": 126,
+          "LowerRight": 127
         },
         {
           "Property": 16,
@@ -34870,7 +34890,7 @@
           "LowerRight": 193
         },
         {
-          "Property": 0,
+          "Property": 32,
           "UpperLeft": 110,
           "UpperRight": 111,
           "LowerLeft": 126,
@@ -35102,8 +35122,8 @@
         },
         {
           "Property": 32,
-          "UpperLeft": 44,
-          "UpperRight": 44,
+          "UpperLeft": 92,
+          "UpperRight": 93,
           "LowerLeft": 255,
           "LowerRight": 255
         },
@@ -35123,8 +35143,8 @@
         },
         {
           "Property": 48,
-          "UpperLeft": 44,
-          "UpperRight": 44,
+          "UpperLeft": 92,
+          "UpperRight": 93,
           "LowerLeft": 255,
           "LowerRight": 255
         },
@@ -35556,7 +35576,7 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 96,
           "UpperRight": 97,
           "LowerLeft": 112,
@@ -35577,7 +35597,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 205,
+          "Property": 0,
           "UpperLeft": 228,
           "UpperRight": 229,
           "LowerLeft": 244,
@@ -36033,10 +36053,10 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "UpperLeft": 227,
+          "UpperRight": 227,
+          "LowerLeft": 243,
+          "LowerRight": 243
         },
         {
           "Property": 192,

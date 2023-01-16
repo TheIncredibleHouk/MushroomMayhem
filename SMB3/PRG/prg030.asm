@@ -5350,7 +5350,7 @@ UsePointer:
 	AND #$F0
 	STA Map_Entered_X
 
-	AND #$80
+	LDA #$00
 	STA Map_Prev_XOff
 
 	LDA Pointers + 4, X

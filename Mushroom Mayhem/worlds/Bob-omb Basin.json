@@ -33,8 +33,8 @@
     73,
     119,
     121,
-    96,
     73,
+    96,
     96,
     96,
     119,
@@ -670,9 +670,9 @@
     },
     {
       "LevelId": "bd30da54-924b-4274-a74c-93f1b5b1a671",
-      "X": 39,
+      "X": 25,
       "Y": 3,
-      "BoundRectangle": "624,48,16,16"
+      "BoundRectangle": "400,48,16,16"
     },
     {
       "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
@@ -709,6 +709,24 @@
       "X": 22,
       "Y": 0,
       "BoundRectangle": "352,0,16,16"
+    },
+    {
+      "LevelId": "d7ebddd8-1579-459a-98d4-add28a9efe9d",
+      "X": 27,
+      "Y": 3,
+      "BoundRectangle": "432,48,16,16"
+    },
+    {
+      "LevelId": "79422d18-392c-4574-a324-0eeedb7b0128",
+      "X": 12,
+      "Y": 8,
+      "BoundRectangle": "192,128,16,16"
+    },
+    {
+      "LevelId": "58ba1731-821b-48b6-89a8-8a646ad79d2b",
+      "X": 25,
+      "Y": 0,
+      "BoundRectangle": "400,0,16,16"
     }
   ],
   "ObjectData": [
@@ -726,7 +744,12 @@
       "GameObjectId": 207,
       "X": 39,
       "Y": 3
+    },
+    {
+      "GameObjectId": 207,
+      "X": 25,
+      "Y": 3
     }
   ],
-  "CompressedData": "AAAAAAAAAAAAAAAAAAAAAHBwcHBwcHBwcHBwcHBwcHBkYXR0dGJkYXR0dHRiYmRkZGVgYGBzdHVgYGBgEWJkZGRlYElgYBBgYFNUVWBjZGRkZWBgYFNUVWBzYmVgY2RkZHFUVFRyZGVgYGNlYGNkZGRhdHR0dHR1YFNyZWBjZGRkZUlgYGBgYBJjZGVJY2RkZHh5E2BgSXd5YElgYHd4AGRkZWBTVFRycVRVYGBjZABkZGVgc3RiZGF0dWBgY2QAZGRlYGBgd3h5YGAUYGNkAGRkZWBgYHNmdWBgU1RyZABkZGVgYGBgVmBgU3JkZGQAZGRxVFRVYBVgU3JkZGRkAGRkYXR0Z1dgU3JkZGRkZABkZGVJYGBgYGNkZGRkZGQAIckhySHJIUlgYGBgYGAhyckhySHJIclgYFNUVFVgySEhySEXYGBgYMlzdHR1YCHJySHJYMkhyWDJYGAWYGDJISHJIWAhySHJIWAhySHJIcnJIclgYGBgYGBgyWBgYGBTVFRUVFRVGMkhySFgU1RUcnR0dHR0dWBgrm6vYGNkZGQhySFgYGBgYL5+v1NyZGRk"
+  "CompressedData": "AAAAAAAAAAAAAAAAAAAAAHBwcHBwcHBwcHBwcHBwcHBkYXR0dGJkYXR0dHRiYmRkZGVgYGBzdHVgYGBgEWJkZGRlYElgYBBgYFNUVWBjZGRkZWBgYFNUVWBzYmVgY2RkZHFUVFRyZGVgYGNlYGNkZGRhdHR0dHR1YFNyZWBjZGRkZUlgYGBgYBJjZGVJY2RkZHh5E2BgSXd5SWBgYHd4AGRkZWBTVFRycVRVYGBjZABkZGVgc3RiZGF0dWBgY2QAZGRlYGBgd3h5YGAUYGNkAGRkZWBgYHNmdWBgU1RyZABkZGVgYGBgVmBgU3JkZGQAZGRxVFRVYBVgU3JkZGRkAGRkYXR0Z1dgU3JkZGRkZABkZGVJYGBgYGNkZGRkZGQAIckhySHJIUlgYGBgYGAhyckhySHJIclgYFNUVFVgySEhySEXYGBgYMlzdHR1YCHJySHJYMkhyWDJYGAWYGDJISHJIWAhySHJIWAhySHJIcnJIclgYGBgYGBgyWBgYGBTVFRUVFRVGMkhySFgU1RUcnR0dHR0dWBgrm6vYGNkZGQhySFgYGBgYL5+v1NyZGRk"
 }

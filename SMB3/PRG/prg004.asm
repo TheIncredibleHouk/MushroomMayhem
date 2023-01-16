@@ -2705,7 +2705,7 @@ DryCheep_FlameFrame = Objects_Data6
 DryCheep_PoofTimer = Objects_Data7
 
 DryCheep_PoofTime:
-	.byte $13
+	.byte $18
 
 Flame_Frames:
 	.byte $81, $83, $85, $87	
