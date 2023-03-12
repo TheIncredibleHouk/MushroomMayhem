@@ -6500,6 +6500,12 @@
   "PatchTileData": null,
   "FirstObjectData": [
     {
+      "GameObjectId": 0,
+      "X": 4,
+      "Y": 20,
+      "Property": 0
+    },
+    {
       "GameObjectId": 75,
       "X": 18,
       "Y": 22,

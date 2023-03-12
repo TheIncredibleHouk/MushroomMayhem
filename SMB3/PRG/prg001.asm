@@ -2117,6 +2117,7 @@ ObjNorm_SendBackRTS:
 Magic_StarIndicator = Objects_Data4
 Magic_StarRadar = Objects_Data5
 Magic_StarCoinsNeeded = Objects_Data7
+Magic_StarEnemyAttached = Objects_Data8
 
 ObjInit_MagicStar1:
 	LDA #$00
@@ -2168,6 +2169,34 @@ Kill_Star:
 Dont_Kill_Star:
 	LDA #$07
 	STA Magic_StarCoinsNeeded, X
+
+	LDA Objects_Property, X
+	CMP #$06
+	BNE MagicStar_InitRTS
+
+	LDY #$04
+
+MagicStar_FindEnemy:	
+	CPY <CurrentObjectIndexZ
+	BEQ MagicStar_NoEnemy
+
+	LDA Objects_XZ, Y
+	CMP <Objects_XZ, X
+	BNE MagicStar_NoEnemy
+
+	LDA Objects_XHiZ, Y
+	CMP <Objects_XHiZ, X
+	BEQ Magic_StarEnemyFound
+
+MagicStar_NoEnemy:
+	DEY
+	BPL MagicStar_FindEnemy
+
+Magic_StarEnemyFound:
+	TYA
+	STA Magic_StarEnemyAttached, X
+
+MagicStar_InitRTS:
 	RTS		 ; Return	
 
 MagicStarOffset:
@@ -2231,7 +2260,7 @@ Magic_Star_Action:
 	.word MagicStar_CheckPSwitch
 	.word MagicStar_CheckClearedBlock
 	.word MagicStar_CheckCoins
-	.word MagicStar_SpinnersActive
+	.word MagicStar_AttachedEnemyDefeated
 	.word MagicStar_Indicator
 
 MagicStar_Indicator:
@@ -2349,29 +2378,36 @@ MagicStar_CheckCoinsRTS:
 	PLA
 	RTS	
 
-MagicStar_SpinnersActive:
-	LDY #$02
-	LDX #$07
+MagicStar_AttachedEnemyDefeated:
+	LDA Magic_StarEnemyAttached, X
+	BMI MagicStar_EnemyDefeatedRTS
 
-NextSpinnerCheck:
-	LDA SpinnerBlocksActive, X
-	BEQ NextSpinnerCheck1
+	TAY
+	LDA Objects_XZ, Y
+	STA <Objects_XZ, X
 
-	DEY
-	BPL NextSpinnerCheck1
+	LDA Objects_XHiZ, Y
+	STA <Objects_XHiZ, X
 
-	LDX <CurrentObjectIndexZ
+	LDA Objects_YZ, Y
+	STA <Objects_YZ, X
 
+	LDA Objects_YHiZ, Y
+	STA <Objects_YHiZ, X
+
+	LDA Objects_State, Y
+	CMP #OBJSTATE_DEADEMPTY
+	BNE MagicStar_EnemyDefeatedRTS
+
+MagicStar_EnemyDead:
 	LDA #$01
 	STA Objects_Property, X
 
-	LDA #SND_LEVELUNK
-	STA Sound_QLevel1
+	LDA #$E0
+	STA <Objects_YVelZ, X
 	RTS
 
-NextSpinnerCheck1:
-	DEX
-	BPL NextSpinnerCheck
+MagicStar_EnemyDefeatedRTS:	
 	PLA
 	PLA
 	RTS

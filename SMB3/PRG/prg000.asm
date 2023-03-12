@@ -620,7 +620,7 @@ PRG000_C973:
 	LDA #$00
 	STA <CurrentObjectIndexZ
 	STA Player_OnObject
-	;STA Object_Count
+	STA Object_Count
 
 PRG000_C975:
 	LDX <CurrentObjectIndexZ	 ; Backup current object index -> CurrentObjectIndexZ
@@ -653,7 +653,7 @@ PRG000_C98B:
 	BGE PRG000_C9B6	 ; If object slot index >= 5, jump to PRG000_C9B6
 
 	; Non-special objects in slots 0 to 4...
-	;INC Object_Count
+	INC Object_Count
 
 	LDA Explosion_Timer, X
 	BEQ DoNot_Explode
@@ -761,6 +761,7 @@ Object_DoStateAction:
 	; Try to locate the group that this object ID belongs to
 	; Groups are defined by ObjectID_BaseVals, every 36 values.
 PRG000_CA51:
+	STA Debug_Snap
 	LDA Objects_ID,X	; Get object ID
 	CMP ObjectID_BaseVals,Y	; Compare to this base value
 	BGE PRG000_CA5C	 ; If this object ID >= the base value, jump to PRG000_CA5C

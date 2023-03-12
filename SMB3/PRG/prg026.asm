@@ -2621,18 +2621,18 @@ Game_UpdateCherries:
 	; LDA StatusBar_Mode
 	; BNE Game_UpdateCherries1
 
-	LDA Cherries
-	CMP Old_Cherries
-	BEQ Game_UpdateCherries1
+	;LDA Object_Count
+	;CMP Old_Cherries
+	;BEQ Game_UpdateCherries1
 		
-	STA Old_Cherries
-	BNE StatusBar_DrawCherries
+	;STA Old_Cherries
+	;BNE StatusBar_DrawCherries
 	
 Game_UpdateCherries1:
-	RTS
+	;RTS
 	
 StatusBar_DrawCherries:
-	LDA Cherries
+	LDA Object_Count
 	STA <DigitsParam
 	
 	JSR BytesTo2Digits

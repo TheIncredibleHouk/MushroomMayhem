@@ -2636,6 +2636,11 @@ Fireball_HitIce:
 
 	LDA #$00
 	STA SpecialObj_Data1, Y
+	STA SpecialObj_YVel, Y
+	STA SpecialObj_XVel, Y
+	
+	LDA #SPR_PAL3
+	STA SpecialObj_Data3, Y
 
 Fireball_NotHitWall:
 	LDA #$01

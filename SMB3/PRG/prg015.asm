@@ -2847,9 +2847,6 @@ Podobo_MoveDone:
 
 
 	LDA Object_VertTileProp, X
-	CMP #(TILE_PROP_OBJECTINTERACT)
-	BEQ Podobo_PoofBlock
-
 	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 	BEQ Podobo_DoBridgeBreak
 
@@ -2858,27 +2855,27 @@ Podobo_MoveDone:
 	JMP Podobo_NoBridgeBreak
 
 Podobo_PoofBlock:
-	LDA <Objects_XZ, X
-	STA Tile_DetectionX
-	AND #$F0
-	STA Poof_X
+	; LDA <Objects_XZ, X
+	; STA Tile_DetectionX
+	; AND #$F0
+	; STA Poof_X
 	
-	LDA <Objects_XHiZ, X
-	STA Tile_DetectionXHi
+	; LDA <Objects_XHiZ, X
+	; STA Tile_DetectionXHi
 
-	LDA <Objects_YZ, X
-	STA Tile_DetectionY
-	AND #$F0
-	STA Poof_Y
+	; LDA <Objects_YZ, X
+	; STA Tile_DetectionY
+	; AND #$F0
+	; STA Poof_Y
 
-	LDA <Objects_YHiZ, X
-	STA Tile_DetectionYHi
+	; LDA <Objects_YHiZ, X
+	; STA Tile_DetectionYHi
 
-	LDA Objects_SpritesHorizontallyOffScreen, X
-	ORA Objects_SpritesVerticallyOffScreen, X
-	BNE Podobo_FlipTile
+	; LDA Objects_SpritesHorizontallyOffScreen, X
+	; ORA Objects_SpritesVerticallyOffScreen, X
+	; BNE Podobo_FlipTile
 
-	JSR Common_MakePoof
+	; JSR Common_MakePoof
 
 Podobo_FlipTile:
 	LDA #$01

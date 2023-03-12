@@ -1809,7 +1809,7 @@ ObjInit_Birdo:
 	LDA #BOUND16x32TALL
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_ICEPROOF | ATTR_FIREPROOF | ATTR_NINJAPROOF )
+	LDA #(ATTR_ICEPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_NOICE | ATTR_BUMPNOKILL)
@@ -1822,7 +1822,7 @@ ObjInit_Birdo:
 	LDA Birdo_ShootTimers, Y
 	STA Objects_Timer, X
 
-	LDA #$02
+	LDA #$04
 	STA Birdo_Health, X
 	STA Objects_NoExp, X
 
@@ -2070,6 +2070,21 @@ Birdo_Norm:
 Birdo_InteractPlayer:
 	JSR Object_FacePlayer
 	JSR Object_InteractWithPlayer
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE ObjNorm_BirdoDraw
+
+	LDA Objects_PlayerProjHit, X
+	CMP #HIT_STOMPED
+	BNE ObjNorm_BirdoDraw
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$00
+	STA <Player_YVelZ
+	STA <Player_InAir
 
 ObjNorm_BirdoDraw:
 	LDA <Objects_XZ, X

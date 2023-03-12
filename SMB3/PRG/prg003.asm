@@ -630,7 +630,6 @@ Unstable_MoveConstant:
 	RTS
 
 Unstable_MoveNormal:
-	STA Debug_Snap
 	LDA Platform_SteppedOn, X
 	BEQ Unstable_MoveRTS
 
@@ -758,9 +757,6 @@ ObjInit_SnakeBlock:
 	LDA #$FF
 	STA SnakeBlock_BlockIndexCheck, X
 
-	LDA #SPR_BEHINDBG
-	STA Objects_Orientation, X
-
 	JMP SnakeBlock_CheckBlockToggle
 
 ObjNorm_SnakeBlock:
@@ -792,12 +788,16 @@ SnakeBlock_Normal:
 	JSR Object_DeleteOffScreen
 
 SnakeBlock1:
+	LDA Objects_Timer, X
+	BNE SnakeBlock_NoMove
+
+SnakeBlock_Move:	
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
 
 	JSR Object_CalcBoundBox
 
-
+SnakeBlock_NoMove:
 	LDA Objects_BoundLeft, X
 	SUB #$01
 	STA Objects_BoundLeft, X
@@ -834,8 +834,13 @@ SnakeBlock_CheckBlockToggle:
 	BNE SnakeBlock_RTS1
 
 	LDA Block_NeedsUpdate
-	BNE SnakeBlock_RTS1
+	BEQ SnakeBlock_ChangeBlock
 
+	LDA #$02
+	STA Objects_Timer, X
+	JMP SnakeBlock_RTS1
+
+SnakeBlock_ChangeBlock:
 	LDA <Objects_XZ, X
 	ADD #$08
 	STA Block_DetectX

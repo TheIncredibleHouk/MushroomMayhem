@@ -2709,9 +2709,9 @@
         48,
         23,
         15,
-        5,
+        15,
         48,
-        37,
+        17,
         15,
         15,
         54,
@@ -4595,7 +4595,7 @@
         15,
         15,
         48,
-        25,
+        17,
         15,
         15,
         48,
@@ -5617,6 +5617,84 @@
       ],
       "Name": "Fierce Fwoosh Freeze Out",
       "Id": "110b7d51-e0d0-4667-82e6-00fad757d007"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        12,
+        49,
+        17,
+        15,
+        8,
+        56,
+        40,
+        15,
+        11,
+        58,
+        27,
+        15,
+        7,
+        55,
+        22,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        15,
+        48,
+        26,
+        15,
+        15,
+        48,
+        40
+      ],
+      "Name": "Color Explosions",
+      "Id": "c183ac9b-6878-45c0-9f60-00e7c0cd37d5"
+    },
+    {
+      "Renamed": false,
+      "IndexedColors": [
+        15,
+        1,
+        49,
+        17,
+        15,
+        8,
+        56,
+        40,
+        15,
+        11,
+        58,
+        27,
+        15,
+        6,
+        38,
+        22,
+        15,
+        15,
+        54,
+        6,
+        15,
+        15,
+        48,
+        22,
+        15,
+        13,
+        48,
+        26,
+        15,
+        15,
+        48,
+        0
+      ],
+      "Name": "Bob-omb Basin Level 3",
+      "Id": "c56b9001-02b0-4552-a49d-9f61cdb21634"
     }
   ],
   "WorldInfo": [
@@ -5711,7 +5789,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2912,
+              "Size": 2900,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -6233,12 +6311,12 @@
         },
         {
           "Size": 3433,
-          "Name": "Mario Ninja Warrior",
+          "Name": "Wall Jump Challenge",
           "Id": "73be4ac1-4c4c-49cb-a07d-c64d2fdebde9",
           "LastModified": "2019-05-18T09:05:20.0269966-04:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) Mario Ninja Warrior"
+          "DisplayName": "(Level) Wall Jump Challenge"
         },
         {
           "Size": 3552,
@@ -6279,19 +6357,19 @@
           "DisplayName": "(Level) Brothers Boulder Bash"
         },
         {
-          "Size": 2038,
+          "Size": 2110,
           "Name": "Podobo Panic",
           "Id": "68614364-831a-4129-b8eb-fb277ee5c8fb",
           "LastModified": "2018-10-30T22:01:12.9063096-04:00",
           "SublevelsInfo": [
             {
-              "Size": 156,
-              "Name": "Hot Ride Bonus",
+              "Size": 641,
+              "Name": "Podobo Panic-1",
               "Id": "bf6fb5f4-37cf-4fdd-9c02-028e85c4d976",
               "LastModified": "2018-10-28T10:42:11.0649333-04:00",
               "SublevelsInfo": null,
               "InfoType": 1,
-              "DisplayName": "(Level) Hot Ride Bonus"
+              "DisplayName": "(Level) Podobo Panic-1"
             }
           ],
           "InfoType": 1,
@@ -6307,22 +6385,22 @@
           "DisplayName": "(Level) Charred Cheeps"
         },
         {
-          "Size": 2632,
-          "Name": "Colorful Explosions",
+          "Size": 2635,
+          "Name": "Chromatic Crumbling Bombs",
           "Id": "d3538842-3aaa-44c7-83da-b4b6742ca6d2",
           "LastModified": "2018-10-28T10:42:10.7651188-04:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) Colorful Explosions"
+          "DisplayName": "(Level) Chromatic Crumbling Bombs"
         },
         {
-          "Size": 2405,
-          "Name": "No Time To Waste",
+          "Size": 2675,
+          "Name": "Land Lost To Time",
           "Id": "4682d759-a06e-4856-93da-d632f280b778",
           "LastModified": "2018-10-28T10:42:10.7751129-04:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) No Time To Waste"
+          "DisplayName": "(Level) Land Lost To Time"
         },
         {
           "Size": 26,
@@ -6447,6 +6525,25 @@
           ],
           "InfoType": 1,
           "DisplayName": "(Level) To Bobomb Basin Level 1-W"
+        },
+        {
+          "Size": 58,
+          "Name": "To Bobomb Basin Level 3",
+          "Id": "baf145ce-2128-44de-9188-420624fccb42",
+          "LastModified": "0001-01-01T00:00:00",
+          "SublevelsInfo": [
+            {
+              "Size": 218,
+              "Name": "To Bombomb Basin Level 2-S",
+              "Id": "02d3b4a5-cce6-416e-8281-497446cd8f9c",
+              "LastModified": "0001-01-01T00:00:00",
+              "SublevelsInfo": [],
+              "InfoType": 1,
+              "DisplayName": "(Level) To Bombomb Basin Level 2-S"
+            }
+          ],
+          "InfoType": 1,
+          "DisplayName": "(Level) To Bobomb Basin Level 3"
         }
       ],
       "InfoType": 0,
@@ -8785,53 +8882,53 @@
   "TileSets": [
     {
       "FireBallInteractions": [
-        237,
-        154,
-        185,
-        223,
+        202,
+        60,
+        204,
+        0,
         0,
         0,
         0,
         0
       ],
       "IceBallInteractions": [
-        110,
-        126,
-        126,
-        110,
-        156,
-        1,
-        157,
-        1
+        61,
+        205,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
       ],
       "PSwitchAlterations": [
         {
-          "From": 44,
-          "To": 45
+          "From": 94,
+          "To": 110
         },
         {
-          "From": 45,
-          "To": 44
+          "From": 110,
+          "To": 94
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 138,
+          "To": 110
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 187,
+          "To": 171
         },
         {
-          "From": 139,
-          "To": 175
+          "From": 171,
+          "To": 187
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 184,
+          "To": 1
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 185,
+          "To": 1
         },
         {
           "From": 0,
@@ -9001,7 +9098,7 @@
           "LowerRight": 1
         },
         {
-          "Property": 3,
+          "Property": 2,
           "UpperLeft": 150,
           "UpperRight": 151,
           "LowerLeft": 0,
@@ -14346,12 +14443,12 @@
       ],
       "PSwitchAlterations": [
         {
-          "From": 0,
-          "To": 0
+          "From": 79,
+          "To": 109
         },
         {
-          "From": 0,
-          "To": 0
+          "From": 109,
+          "To": 79
         },
         {
           "From": 0,
@@ -14402,10 +14499,10 @@
         },
         {
           "Property": 204,
-          "UpperLeft": 0,
-          "UpperRight": 3,
-          "LowerLeft": 48,
-          "LowerRight": 51
+          "UpperLeft": 105,
+          "UpperRight": 106,
+          "LowerLeft": 121,
+          "LowerRight": 122
         },
         {
           "Property": 192,
@@ -14626,8 +14723,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 2,
-          "UpperRight": 1,
+          "UpperLeft": 1,
+          "UpperRight": 2,
           "LowerLeft": 239,
           "LowerRight": 239
         },
@@ -14731,8 +14828,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 22,
-          "UpperRight": 23,
+          "UpperLeft": 32,
+          "UpperRight": 35,
           "LowerLeft": 48,
           "LowerRight": 51
         },
@@ -14787,17 +14884,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerLeft": 178,
+          "LowerRight": 179
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 78,
+          "UpperLeft": 136,
+          "UpperRight": 137,
+          "LowerLeft": 152,
+          "LowerRight": 153
         },
         {
           "Property": 0,
@@ -14850,10 +14947,10 @@
         },
         {
           "Property": 204,
-          "UpperLeft": 0,
-          "UpperRight": 3,
-          "LowerLeft": 48,
-          "LowerRight": 51
+          "UpperLeft": 105,
+          "UpperRight": 106,
+          "LowerLeft": 121,
+          "LowerRight": 122
         },
         {
           "Property": 192,
@@ -15074,8 +15171,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 2,
-          "UpperRight": 1,
+          "UpperLeft": 1,
+          "UpperRight": 2,
           "LowerLeft": 239,
           "LowerRight": 239
         },
@@ -15179,8 +15276,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 22,
-          "UpperRight": 23,
+          "UpperLeft": 32,
+          "UpperRight": 35,
           "LowerLeft": 48,
           "LowerRight": 51
         },
@@ -15298,10 +15395,10 @@
         },
         {
           "Property": 204,
-          "UpperLeft": 0,
-          "UpperRight": 3,
-          "LowerLeft": 48,
-          "LowerRight": 51
+          "UpperLeft": 105,
+          "UpperRight": 106,
+          "LowerLeft": 121,
+          "LowerRight": 122
         },
         {
           "Property": 192,
@@ -15522,8 +15619,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 2,
-          "UpperRight": 1,
+          "UpperLeft": 1,
+          "UpperRight": 2,
           "LowerLeft": 239,
           "LowerRight": 239
         },
@@ -15627,8 +15724,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 22,
-          "UpperRight": 23,
+          "UpperLeft": 32,
+          "UpperRight": 35,
           "LowerLeft": 48,
           "LowerRight": 51
         },
@@ -15746,10 +15843,10 @@
         },
         {
           "Property": 204,
-          "UpperLeft": 0,
-          "UpperRight": 3,
-          "LowerLeft": 48,
-          "LowerRight": 51
+          "UpperLeft": 105,
+          "UpperRight": 106,
+          "LowerLeft": 121,
+          "LowerRight": 122
         },
         {
           "Property": 192,
@@ -15913,10 +16010,10 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
+          "Property": 192,
           "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
+          "UpperRight": 238,
+          "LowerLeft": 238,
           "LowerRight": 238
         },
         {
@@ -15970,8 +16067,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 2,
-          "UpperRight": 1,
+          "UpperLeft": 1,
+          "UpperRight": 2,
           "LowerLeft": 239,
           "LowerRight": 239
         },
@@ -16075,8 +16172,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 22,
-          "UpperRight": 23,
+          "UpperLeft": 32,
+          "UpperRight": 35,
           "LowerLeft": 48,
           "LowerRight": 51
         },
@@ -16120,7 +16217,7 @@
           "UpperLeft": 44,
           "UpperRight": 45,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -34946,11 +35043,11 @@
           "LowerRight": 53
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 100,
+          "UpperRight": 101,
+          "LowerLeft": 116,
+          "LowerRight": 117
         },
         {
           "Property": 192,
@@ -34998,8 +35095,8 @@
           "Property": 0,
           "UpperLeft": 255,
           "UpperRight": 255,
-          "LowerLeft": 178,
-          "LowerRight": 179
+          "LowerLeft": 150,
+          "LowerRight": 151
         },
         {
           "Property": 78,
@@ -35009,11 +35106,11 @@
           "LowerRight": 153
         },
         {
-          "Property": 205,
-          "UpperLeft": 66,
-          "UpperRight": 67,
-          "LowerLeft": 82,
-          "LowerRight": 83
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 255,
+          "LowerLeft": 255,
+          "LowerRight": 255
         },
         {
           "Property": 0,
@@ -35297,8 +35394,8 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 17,
-          "UpperRight": 18,
+          "UpperLeft": 10,
+          "UpperRight": 11,
           "LowerLeft": 22,
           "LowerRight": 23
         },
@@ -35395,10 +35492,10 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 10,
-          "UpperRight": 11,
-          "LowerLeft": 22,
-          "LowerRight": 23
+          "UpperLeft": 100,
+          "UpperRight": 101,
+          "LowerLeft": 116,
+          "LowerRight": 117
         },
         {
           "Property": 192,
@@ -35562,7 +35659,7 @@
           "LowerRight": 63
         },
         {
-          "Property": 75,
+          "Property": 64,
           "UpperLeft": 76,
           "UpperRight": 77,
           "LowerLeft": 62,
@@ -35843,10 +35940,10 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 10,
-          "UpperRight": 11,
-          "LowerLeft": 22,
-          "LowerRight": 23
+          "UpperLeft": 100,
+          "UpperRight": 101,
+          "LowerLeft": 116,
+          "LowerRight": 117
         },
         {
           "Property": 192,
@@ -36291,10 +36388,10 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 6,
-          "UpperRight": 7,
-          "LowerLeft": 22,
-          "LowerRight": 23
+          "UpperLeft": 100,
+          "UpperRight": 101,
+          "LowerLeft": 116,
+          "LowerRight": 117
         },
         {
           "Property": 192,
@@ -39444,7 +39541,7 @@
         "Appears when P-Switch is activated.",
         "Hidden inside of block.",
         "Appears after 8 coins collected",
-        "Appears with 5 block changes",
+        "Appears after above/below enemy is defeated",
         "Indicator for radar"
       ],
       "Group": "Global"
@@ -39564,7 +39661,7 @@
         "Appears when P-Switch is activated.",
         "Hidden inside of block.",
         "Appears after 8 coins collected",
-        "Appears with 5 block changes",
+        "Appears after above/below enemy is defeated",
         "Indicator for radar"
       ],
       "Group": "Global"
@@ -39684,7 +39781,7 @@
         "Appears when P-Switch is activated.",
         "Hidden inside of block.",
         "Appears after 8 coins collected",
-        "Appears with 5 block changes",
+        "Appears after above/below enemy is defeated",
         "Indicator for radar"
       ],
       "Group": "Global"

@@ -3008,6 +3008,7 @@ ITEM_RADARW		= $17
 ITEM_RADARUNKNOWN = $18
 
 	;#FREERAM
+	
 	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
 	PowerUp_Reserve:	.ds 1	;
@@ -3039,7 +3040,6 @@ ITEM_RADARUNKNOWN = $18
 	JustName:			.ds 1
 	LastHorzScroll:		.ds 1
 	LastHorzScrollHi:	.ds 1
-	ExtraData:			.ds 5
 	Ignore_VBlank:		.ds 1
 	StatusBar_Palette:	.ds 3
 
