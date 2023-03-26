@@ -604,6 +604,9 @@ SetSplash:
 ; updates the timers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
+;	STA Debug_Snap
+;	INC Save_Ram_Boundary_Start
+;	INC Save_Ram_Boundary_End
 	JSR Objects_AssignSprites
 	JSR Objects_ResetDetects
 
@@ -761,7 +764,6 @@ Object_DoStateAction:
 	; Try to locate the group that this object ID belongs to
 	; Groups are defined by ObjectID_BaseVals, every 36 values.
 PRG000_CA51:
-	STA Debug_Snap
 	LDA Objects_ID,X	; Get object ID
 	CMP ObjectID_BaseVals,Y	; Compare to this base value
 	BGE PRG000_CA5C	 ; If this object ID >= the base value, jump to PRG000_CA5C

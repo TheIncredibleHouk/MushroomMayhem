@@ -2705,9 +2705,9 @@
         32,
         28,
         15,
-        7,
-        48,
         23,
+        48,
+        39,
         15,
         15,
         48,
@@ -5789,7 +5789,7 @@
           "LastModified": "2019-05-24T23:29:26.7079117-04:00",
           "SublevelsInfo": [
             {
-              "Size": 2900,
+              "Size": 2788,
               "Name": "Key Coin Caverns-2",
               "Id": "1079adc5-8f63-46ab-9e53-d10e6eb10723",
               "LastModified": "2019-05-25T21:10:48.1143722-04:00",
@@ -6394,7 +6394,7 @@
           "DisplayName": "(Level) Chromatic Crumbling Bombs"
         },
         {
-          "Size": 2675,
+          "Size": 2858,
           "Name": "Land Lost To Time",
           "Id": "4682d759-a06e-4856-93da-d632f280b778",
           "LastModified": "2018-10-28T10:42:10.7751129-04:00",
@@ -35113,9 +35113,9 @@
           "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 255,
-          "UpperRight": 255,
+          "Property": 76,
+          "UpperLeft": 76,
+          "UpperRight": 77,
           "LowerLeft": 255,
           "LowerRight": 255
         },
@@ -35246,9 +35246,9 @@
           "LowerRight": 255
         },
         {
-          "Property": 76,
-          "UpperLeft": 76,
-          "UpperRight": 77,
+          "Property": 0,
+          "UpperLeft": 255,
+          "UpperRight": 255,
           "LowerLeft": 255,
           "LowerRight": 255
         },
@@ -35281,9 +35281,9 @@
           "LowerRight": 255
         },
         {
-          "Property": 11,
-          "UpperLeft": 46,
-          "UpperRight": 47,
+          "Property": 1,
+          "UpperLeft": 26,
+          "UpperRight": 27,
           "LowerLeft": 46,
           "LowerRight": 47
         },

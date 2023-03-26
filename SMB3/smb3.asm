@@ -3011,11 +3011,7 @@ ITEM_RADARUNKNOWN = $18
 	
 	Background_Animations:		.ds 16
 	Stop_Watch:			.ds 1	;
-	PowerUp_Reserve:	.ds 1	;
-	Old_PowerUp_Reserve:.ds 1
-	DayNight:			.ds 1	; signifies if it's day or night
-	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
-	DayNightTicker:		.ds 1	;
+
 	Old_DayNightTicker:	.ds 1
 	NightTransition:	.ds 1	; when not 0, we're transitioning into night
 	DayTransition:		.ds 1	; when not 0, we're transitioning into day
@@ -3026,10 +3022,6 @@ ITEM_RADARUNKNOWN = $18
 	PaletteIndex:		.ds 1	;
 	Pointers:			.ds 60	;
 	WorldWidth:			.ds 1
-	Magic_Stars_Collected1: .ds 16 ;
-	Magic_Stars_Collected2:	.ds 16
-	Magic_Stars_Collected3:	.ds 16
-	Levels_Complete:    .ds 16	;
 	MiscValue2:			.ds 1
 	MiscValue3:			.ds 1
 	TempX:				.ds 1
@@ -3041,8 +3033,21 @@ ITEM_RADARUNKNOWN = $18
 	LastHorzScroll:		.ds 1
 	LastHorzScrollHi:	.ds 1
 	Ignore_VBlank:		.ds 1
-	StatusBar_Palette:	.ds 3
+	StatusBar_Palette:	.ds 3 
 
+	; #SAVE RAM
+	Save_Ram_Boundary_Start:	.ds 1
+	Levels_Complete:    .ds 16	;
+	Magic_Stars_Collected1: .ds 16 ;
+	Magic_Stars_Collected2:	.ds 16
+	Magic_Stars_Collected3:	.ds 16
+	PowerUp_Reserve:	.ds 1	;
+	Old_PowerUp_Reserve: .ds 1
+	DayNight:			.ds 1	; signifies if it's day or night
+	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
+	DayNightTicker:		.ds 1	;
+	Save_Ram_Boundary_End: .ds 1
+	
 	; Tile map property flags
 MAP_PROP_BOUNDARY		= $00
 MAP_PROP_TRAVERSABLE	= $01

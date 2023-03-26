@@ -1015,11 +1015,6 @@ PRG030_8B03:
 	STA PAGE_A000
 	JSR PRGROM_Change_Both2
 
-	LDX Player_Current
-
-	LDA Inventory_Open
-	BNE PRG030_8B51	 	; If inventory is open (only normally happens at this point in Toad House), jump to PRG030_8B51
-
 	LDA Level_JctCtl
 	BNE PRG030_8B51	 	; If we're using a level junction override, jump to PRG030_8B51
 
@@ -1046,10 +1041,10 @@ PRG030_8B51:
 PRG030_8B6D:
 	LDX Player_Current
 
-	LDA Player_FallToKing,X
-	BEQ PRG030_8B78	 	; If player is NOT bound for king's room, jump to PRG030_8B78
+	; LDA Player_FallToKing,X
+	; BEQ PRG030_8B78	 	; If player is NOT bound for king's room, jump to PRG030_8B78
 
-	JMP PRG030_9009	 ; Jump to PRG030_9009
+	; JMP PRG030_9009	 ; Jump to PRG030_9009
 
 PRG030_8B78:
 	LDA #$00	
@@ -1063,14 +1058,14 @@ PRG030_8B78:
 
 	JSR Setup_PalData	 ; Setup palette data
 
-	LDA Level_Tileset
-	CMP #15
-	BNE PRG030_8B9A	 ; If Level_Tileset <> 15 (Bonus game intro), jump to PRG030_8B9A
+	; LDA Level_Tileset
+	; CMP #15
+	; BNE PRG030_8B9A	 ; If Level_Tileset <> 15 (Bonus game intro), jump to PRG030_8B9A
 
-	; Otherwise, set page @ C000 to 22
-	LDA #22
-	STA PAGE_C000
-	JSR PRGROM_Change_Both2
+	; ; Otherwise, set page @ C000 to 22
+	; LDA #22
+	; STA PAGE_C000
+	; JSR PRGROM_Change_Both2
 
 PRG030_8B9A:
 	; Set page @ A000 to 26
@@ -5270,9 +5265,10 @@ Find_Applicable_Pointer:
 	ASL A
 	ORA <Temp_Var1
 	STA <Temp_Var3
-	LDA #$09
 
+	LDA #$09
 	STA <Temp_Var1
+
 	LDX #$3C
 
 FindPointerLoop:
@@ -5321,6 +5317,7 @@ Climbing_PointerRTS:
 	RTS
 
 Do_Pointer_Effect:
+	;STA Debug_Snap
 	JSR Find_Applicable_Pointer	 ; Initialize level junction
 
 	LDA <Temp_Var1
