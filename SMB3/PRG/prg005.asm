@@ -2579,6 +2579,12 @@ BobOmb_DoAction:
 	.word BobOmb_Drop
 
 BobOmb_Death:
+	LDY Objects_SpawnIdx,X	 ; Get the spawn index of this object
+	BMI BobOmb_NoRespawn	 ; If object is spawned, jump to Object_SetDeadEmpty
+
+	JSR Object_Respawn
+
+BobOmb_NoRespawn:	
 	LDA Objects_PlayerProjHit, X
 	CMP #HIT_TAIL
 	BEQ BobOmb_Death1
