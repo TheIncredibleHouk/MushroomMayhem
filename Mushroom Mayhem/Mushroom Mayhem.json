@@ -1410,7 +1410,7 @@
       "Renamed": false,
       "IndexedColors": [
         15,
-        15,
+        1,
         48,
         33,
         15,
@@ -6310,7 +6310,7 @@
           "DisplayName": "(Level) Pools of Podobo"
         },
         {
-          "Size": 3433,
+          "Size": 3612,
           "Name": "Wall Jump Challenge",
           "Id": "73be4ac1-4c4c-49cb-a07d-c64d2fdebde9",
           "LastModified": "2019-05-18T09:05:20.0269966-04:00",
@@ -6357,7 +6357,7 @@
           "DisplayName": "(Level) Brothers Boulder Bash"
         },
         {
-          "Size": 2110,
+          "Size": 2093,
           "Name": "Podobo Panic",
           "Id": "68614364-831a-4129-b8eb-fb277ee5c8fb",
           "LastModified": "2018-10-30T22:01:12.9063096-04:00",
@@ -14533,11 +14533,11 @@
           "LowerRight": 239
         },
         {
-          "Property": 192,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 0,
+          "UpperLeft": 240,
+          "UpperRight": 241,
+          "LowerLeft": 240,
+          "LowerRight": 241
         },
         {
           "Property": 0,
@@ -14583,10 +14583,10 @@
         },
         {
           "Property": 16,
-          "UpperLeft": 138,
-          "UpperRight": 139,
-          "LowerLeft": 138,
-          "LowerRight": 139
+          "UpperLeft": 152,
+          "UpperRight": 153,
+          "LowerLeft": 152,
+          "LowerRight": 153
         },
         {
           "Property": 192,
@@ -14653,24 +14653,24 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 81,
-          "UpperRight": 182,
-          "LowerLeft": 81,
+          "UpperLeft": 176,
+          "UpperRight": 217,
+          "LowerLeft": 176,
           "LowerRight": 183
         },
         {
           "Property": 196,
-          "UpperLeft": 182,
-          "UpperRight": 182,
-          "LowerLeft": 183,
+          "UpperLeft": 216,
+          "UpperRight": 217,
+          "LowerLeft": 182,
           "LowerRight": 183
         },
         {
           "Property": 0,
-          "UpperLeft": 182,
-          "UpperRight": 82,
-          "LowerLeft": 183,
-          "LowerRight": 82
+          "UpperLeft": 216,
+          "UpperRight": 176,
+          "LowerLeft": 182,
+          "LowerRight": 176
         },
         {
           "Property": 0,
@@ -14681,15 +14681,15 @@
         },
         {
           "Property": 192,
-          "UpperLeft": 61,
-          "UpperRight": 61,
+          "UpperLeft": 176,
+          "UpperRight": 176,
           "LowerLeft": 167,
           "LowerRight": 166
         },
         {
           "Property": 192,
-          "UpperLeft": 61,
-          "UpperRight": 61,
+          "UpperLeft": 177,
+          "UpperRight": 177,
           "LowerLeft": 166,
           "LowerRight": 167
         },
@@ -14772,17 +14772,17 @@
         },
         {
           "Property": 0,
-          "UpperLeft": 238,
+          "UpperLeft": 255,
           "UpperRight": 255,
           "LowerLeft": 255,
-          "LowerRight": 238
+          "LowerRight": 255
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 11,
+          "UpperLeft": 6,
+          "UpperRight": 7,
+          "LowerLeft": 22,
+          "LowerRight": 23
         },
         {
           "Property": 0,
@@ -14843,9 +14843,9 @@
         {
           "Property": 192,
           "UpperLeft": 32,
-          "UpperRight": 7,
+          "UpperRight": 35,
           "LowerLeft": 16,
-          "LowerRight": 23
+          "LowerRight": 35
         },
         {
           "Property": 192,
@@ -14907,15 +14907,15 @@
           "Property": 192,
           "UpperLeft": 167,
           "UpperRight": 166,
-          "LowerLeft": 60,
-          "LowerRight": 60
+          "LowerLeft": 176,
+          "LowerRight": 176
         },
         {
           "Property": 192,
           "UpperLeft": 166,
           "UpperRight": 167,
-          "LowerLeft": 60,
-          "LowerRight": 60
+          "LowerLeft": 177,
+          "LowerRight": 177
         },
         {
           "Property": 0,
@@ -15352,11 +15352,11 @@
           "LowerRight": 149
         },
         {
-          "Property": 0,
-          "UpperLeft": 238,
-          "UpperRight": 255,
-          "LowerLeft": 255,
-          "LowerRight": 238
+          "Property": 192,
+          "UpperLeft": 32,
+          "UpperRight": 35,
+          "LowerLeft": 16,
+          "LowerRight": 35
         },
         {
           "Property": 9,
@@ -15739,9 +15739,9 @@
         {
           "Property": 192,
           "UpperLeft": 32,
-          "UpperRight": 7,
+          "UpperRight": 35,
           "LowerLeft": 16,
-          "LowerRight": 23
+          "LowerRight": 35
         },
         {
           "Property": 16,
@@ -16187,9 +16187,9 @@
         {
           "Property": 192,
           "UpperLeft": 32,
-          "UpperRight": 7,
+          "UpperRight": 35,
           "LowerLeft": 16,
-          "LowerRight": 23
+          "LowerRight": 35
         },
         {
           "Property": 192,

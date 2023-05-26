@@ -1016,8 +1016,17 @@ Larry_ThrowItem:
 	STA Objects_YVelZ, Y
 
 	LDA <Objects_XVelZ, X
+	BMI Larry_ItemLeftVel
+
+	LDA #$08
+	STA Objects_XVelZ, Y
+	BPL Larry_Item_Frame
+
+Larry_ItemLeftVel:
+	LDA #$F8
 	STA Objects_XVelZ, Y
 
+Larry_Item_Frame:
 	LDA #$00
 	STA Objects_Frame, Y
 
