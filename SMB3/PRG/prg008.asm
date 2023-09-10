@@ -5458,7 +5458,6 @@ Door_PlayerStanding:
 	LDA #$00
 	STA <Player_XVelZ
 
-	STA Debug_Snap
 	INC Level_JctCtl ; Set appropriate value to Level_JctCtl
 
 	LDA #$00

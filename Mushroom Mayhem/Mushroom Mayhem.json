@@ -4846,9 +4846,9 @@
         48,
         6,
         15,
-        15,
-        49,
         12,
+        49,
+        0,
         15,
         11,
         59,
@@ -6310,13 +6310,13 @@
           "DisplayName": "(Level) Pools of Podobo"
         },
         {
-          "Size": 3612,
-          "Name": "Wall Jump Challenge",
+          "Size": 3607,
+          "Name": "Tunneling Conveyor Course",
           "Id": "73be4ac1-4c4c-49cb-a07d-c64d2fdebde9",
           "LastModified": "2019-05-18T09:05:20.0269966-04:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) Wall Jump Challenge"
+          "DisplayName": "(Level) Tunneling Conveyor Course"
         },
         {
           "Size": 3552,
@@ -6377,12 +6377,12 @@
         },
         {
           "Size": 3161,
-          "Name": "Charred Cheeps",
+          "Name": "Charred Charging Cheeps",
           "Id": "d7ebddd8-1579-459a-98d4-add28a9efe9d",
           "LastModified": "2019-01-22T20:12:29.0882358-05:00",
           "SublevelsInfo": null,
           "InfoType": 1,
-          "DisplayName": "(Level) Charred Cheeps"
+          "DisplayName": "(Level) Charred Charging Cheeps"
         },
         {
           "Size": 2751,
@@ -6412,7 +6412,7 @@
           "DisplayName": "(Level) World 3 to 4"
         },
         {
-          "Size": 489,
+          "Size": 493,
           "Name": "Big Bully Blasts",
           "Id": "722b743a-8d6d-400a-b1ae-067b8c99dd36",
           "LastModified": "0001-01-01T00:00:00",
@@ -8322,10 +8322,10 @@
           "Value": 5,
           "Overlay": {
             "PaletteIndex": 0,
-            "UpperLeftTile": "00",
-            "UpperRightTile": "02",
-            "LowerLeftTile": "01",
-            "LowerRightTile": "03"
+            "UpperLeftTile": "48",
+            "UpperRightTile": "48",
+            "LowerLeftTile": "48",
+            "LowerRightTile": "48"
           }
         },
         {
@@ -8333,10 +8333,10 @@
           "Value": 6,
           "Overlay": {
             "PaletteIndex": 0,
-            "UpperLeftTile": "00",
-            "UpperRightTile": "02",
-            "LowerLeftTile": "01",
-            "LowerRightTile": "03"
+            "UpperLeftTile": "49",
+            "UpperRightTile": "49",
+            "LowerLeftTile": "49",
+            "LowerRightTile": "49"
           }
         },
         {
@@ -14792,7 +14792,7 @@
           "LowerRight": 238
         },
         {
-          "Property": 197,
+          "Property": 198,
           "UpperLeft": 167,
           "UpperRight": 166,
           "LowerLeft": 167,
@@ -35694,11 +35694,11 @@
           "LowerRight": 238
         },
         {
-          "Property": 0,
-          "UpperLeft": 228,
-          "UpperRight": 229,
-          "LowerLeft": 244,
-          "LowerRight": 245
+          "Property": 205,
+          "UpperLeft": 66,
+          "UpperRight": 67,
+          "LowerLeft": 82,
+          "LowerRight": 83
         },
         {
           "Property": 192,

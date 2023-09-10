@@ -5317,7 +5317,6 @@ Climbing_PointerRTS:
 	RTS
 
 Do_Pointer_Effect:
-	;STA Debug_Snap
 	JSR Find_Applicable_Pointer	 ; Initialize level junction
 
 	LDA <Temp_Var1

@@ -2580,28 +2580,27 @@ Object_New:
 	STA Objects_BoundBox, X
 	STA ObjSplash_Disabled, X
 	STA Objects_BoundBox, X
-
-	CPX #$06
+	STA Objects_BeingHeld,X
+	
+	CPX #$05
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)
 
 	; Clear some more variables (object slots 0 to 5 ONLY)
 	STA Objects_FrozenKicked,X
 	STA Objects_SlowTimer,X
-
-PRG000_D4C8:
-
-	; Clear even more variables (object slots 0 to 4 [major objects] ONLY!!)
-	STA Objects_InWater,X
-	STA Objects_SlowFall, X
-	STA Objects_PlayerHitStat,X
 	STA Objects_Data8,X
 	STA Objects_Data9,X
 	STA Objects_Data10,X
 	STA Objects_Data11,X
 	STA Objects_Data12,X
 	STA Objects_Data13,X
-	STA Objects_Data14,X
 	STA Objects_Ticker, X
+
+PRG000_D4C8:
+	; Clear even more variables (object slots 0 to 4 [major objects] ONLY!!)
+	STA Objects_InWater,X
+	STA Objects_SlowFall, X
+	STA Objects_PlayerHitStat,X
 
 	CPX #$05
 	BGE PRG000_D506	 ; If using slot index >= 5, jump to PRG000_D506 (skip variables available only to slots 0 to 4)
@@ -4935,6 +4934,7 @@ PatrolDiagonal:
 	STA Objects_Ticker, X
 	
 PatrolBackForth:
+	STA Debug_Snap
 	LDA Patrol_XCycleTimer,X
 	BEQ PatrolBackForth_Accel	 ; If timer is not expired, jump to PRG004_B2FB
 
@@ -5354,9 +5354,6 @@ Kill_NoRespawn:
 KillEnemy1:
 	; Set object Y velocity to -$40 (fly up after death)
 	RTS
-
-
-Objects_BeingHeld = Objects_Data14
 
 Object_Hold:
 	LDA Player_Shell

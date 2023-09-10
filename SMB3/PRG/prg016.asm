@@ -415,7 +415,7 @@ HammerBros_Draw:
 HammerBros_Done:
 	RTS
 
-Hammer_XVel:	.byte -$12, $12
+Hammer_XVel:	.byte -$16, $16
 
 HammerXOffset:
 	.byte $08, $F8

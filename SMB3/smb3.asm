@@ -2675,7 +2675,7 @@ ABILITY_MAX = 5
 	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
 	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_Data14:		.ds 9	; $7CDC-$7CE0 Generic object variable 14
+	Objects_BeingHeld:		.ds 9	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Ticker: 	.ds 5
 	
 	Objects_DynamicallySpawned:	.ds 8
