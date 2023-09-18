@@ -633,7 +633,7 @@ Lava_BlockPath:
 	STA Block_ChangeXHi
 	STA Block_ChangeYHi
 
-	LDA #$53
+	LDA #$55
 	STA Block_UpdateValue
 
 	LDA #$7C

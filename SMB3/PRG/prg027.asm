@@ -409,7 +409,7 @@ Messages_DisplayRTS:
 	RTS
 
 Map_DayNightPalIndex:
-	.byte $00, $0E, $03
+	.byte $00, $0E, $03, $00, $0A
 
 Map_DayNightPalette:
 	LDA DayNight

@@ -410,7 +410,7 @@ Goomba_CheckSpeed:
 	BCS Goomba_MovementCapped
 
 	LDA Goomba_CappedMovement, Y
-	STA <Objects_YVelZ, X
+	STA <Objects_XVelZ, X
 
 Goomba_MovementCapped:
 	LDA <Objects_XVelZ, X

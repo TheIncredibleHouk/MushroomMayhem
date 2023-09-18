@@ -1536,7 +1536,7 @@ Title_PrepForWorldMap:
 	LDA #$27
 	STA Player_Coins + 1
 
-	LDA #28
+	LDA #45 
 	STA Magic_Stars
 
 	LDA #$63

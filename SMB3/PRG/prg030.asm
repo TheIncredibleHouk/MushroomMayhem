@@ -5205,7 +5205,6 @@ PRG012_A4C1:
 	LDX #$00
 	RTS		 ; Return
 
-
 Next_World_Byte:
 	INC <Temp_Var1
 	BNE DontIncWorldVar2

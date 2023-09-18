@@ -6497,14 +6497,7 @@
     65,
     65
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 39,
-      "X": 6,
-      "Y": 2,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 39,
@@ -6513,7 +6506,14 @@
       "Property": 0
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 39,
+      "X": 6,
+      "Y": 2,
+      "Property": 0
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "cd0ca741-4937-4849-9379-ac0a47ce1aa7",

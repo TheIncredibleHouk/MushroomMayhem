@@ -3643,6 +3643,9 @@ CannonBall_PoofY:
 	.byte $F8, $00, $0C, $08, $08, $00, $F8, $F8
 
 ObjectGen_Cannonball:
+	LDA #$4E
+	STA PatTable_BankSel + 4
+
 	LDA ObjectGenerator_Timer, X
 	BEQ ObjectGen_Cannonball2
 	RTS
@@ -4271,6 +4274,7 @@ Bill_CPYOff:	.byte $00, $00		; Bullet/Missile Bill
 CannonWidths: .byte $00, $08
 
 DetermineGeneratorVisibility:
+	STA Debug_Snap
 	LDA #$00
 	STA ObjectGenerator_Visibility, X
 
@@ -4366,11 +4370,11 @@ ObjectGen_Platform1:
 PlatformGenTimer:
 	.byte $A0
 
-PRG007_BE59:
-	STA <Temp_Var1
-	JMP FireCannonBall	 ; Fire the cannonball!
+; PRG007_BE59:
+; 	STA <Temp_Var1
+; 	JMP FireCannonBall	 ; Fire the cannonball!
 
-FireCannonBall:
+; FireCannonBall:
 	LDY #$05	 ; Y = 5
 
 PRG007_BE60:
@@ -4571,20 +4575,24 @@ PRG007_BF81:
 	LDA <Objects_XZ, X
 	ADD Bill_XOffset,Y
 	STA <Objects_XZ, X
+	STA <Point_X
 	STA <Poof_X
 
 	LDA <Objects_XHiZ, X
 	ADC Bill_XOffset + 8,Y
 	STA <Objects_XHiZ, X
+	STA <Point_XHi
 
 	LDA <Objects_YZ, X
 	ADD Bill_YOffset,Y
 	STA <Objects_YZ, X
 	STA <Poof_Y
+	STA <Point_Y
 
 	LDA <Objects_YHiZ, X
 	ADC Bill_YOffset + 8,Y
 	STA <Objects_YHiZ, X
+	STA <Point_YHi
 
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
@@ -4596,6 +4604,9 @@ PRG007_BF81:
 	LDA ObjectGenerator_Visibility, X
 	AND #(GENERATOR_VVISIBLE | GENERATOR_HVISIBLE)
 	BNE Make_BulletRTS
+
+	JSR CheckPoint_OffScreen
+	BCC Make_BulletRTS
 
 	JSR Common_MakePoof	 ; Play cannon fire noise and make smoke
 
@@ -4705,7 +4716,7 @@ HitPlayer:
 	STA SpecialObj_YVel, X
 	STA SpecialObj_XVel, X
 
-	LDA #-$20
+	LDA #-$28
 	STA <Player_YVelZ
 	STA Player_InAir
 	INC Exp_Earned

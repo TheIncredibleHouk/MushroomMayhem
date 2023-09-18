@@ -997,13 +997,12 @@ PRG000_CAF1:
 ObjWakeUp_FeetYOff:	.byte 10, -10
 
 Object_DampenVelocity:
-	
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ Object_DampenVelocityRTS
 
 	LDA <Objects_YVelZ,X 
-	CMP #$10
+	CMP #$0F
 	BCC Object_DampenStop
 
 	JSR Half_Value
@@ -4934,7 +4933,6 @@ PatrolDiagonal:
 	STA Objects_Ticker, X
 	
 PatrolBackForth:
-	STA Debug_Snap
 	LDA Patrol_XCycleTimer,X
 	BEQ PatrolBackForth_Accel	 ; If timer is not expired, jump to PRG004_B2FB
 

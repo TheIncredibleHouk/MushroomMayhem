@@ -3124,6 +3124,14 @@ ObjNorm_PipePodobo1:
 	RTS
 
 ObjNorm_PipePodobo2:
+	LDA Objects_Property, X
+	AND #$02
+	LSR A
+	TAY
+
+	LDA PipePodobo_YVel, Y
+	STA Objects_YVelZ, X
+	
 	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat	 ; Handle Player collision with Podoboo
