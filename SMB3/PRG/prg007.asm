@@ -698,7 +698,7 @@ Player_HammerTilesInteraction1:
 Player_HammerTilesInteraction2:
 	JSR Object_DirectBumpBlocks
 
-	JMP SpecialObj_Delete
+	JMP Player_HammerPoof
 
 Player_NinjaStar:
 	LDA <Player_HaltGameZ
@@ -1697,6 +1697,7 @@ CoinPUp_Attributes:	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3, SPR_PAL3
 
 CoinPUps_DrawAndUpdate:
 	LDX #$03	 ; X = 3 (all "power up" coin slots)
+
 PRG007_ADB2: 
 	STX <CurrentObjectIndexZ	 ; -> slot index backup
 
@@ -2339,11 +2340,11 @@ CannonBall_TilesInteraction2:
 	ORA #$01
 	JSR Object_ChangeBlock
 
-	LDA SpecialObj_X, X
+	LDA Tile_DetectionX
 	AND #$F0
 	STA Debris_X
 
-	LDA SpecialObj_Y, X
+	LDA Tile_DetectionY
 	AND #$F0
 	STA Debris_Y
 	JMP Common_MakeBricks
@@ -3637,7 +3638,7 @@ CannonBall_YVel:
 	.byte $F0, $00, $10, $20, $10, $00, $F0, $E0
 
 CannonBall_PoofX:
-	.byte $F8, $F8, $F8, $00, $08, $08, $08, $00
+	.byte $F8, $F0, $F8, $00, $08, $10, $08, $00
 
 CannonBall_PoofY:
 	.byte $F8, $00, $0C, $08, $08, $00, $F8, $F8
@@ -3645,6 +3646,9 @@ CannonBall_PoofY:
 ObjectGen_Cannonball:
 	LDA #$4E
 	STA PatTable_BankSel + 4
+
+	LDA #$00
+	STA LastPatTab_Sel
 
 	LDA ObjectGenerator_Timer, X
 	BEQ ObjectGen_Cannonball2
@@ -3661,12 +3665,11 @@ Cannonball_Make:
 	LDA ObjectGenerator_Var, X
 	AND #$03
 	CMP #$03
-	BEQ ObjectGen_CannonballReset
+	BNE ObjectGen_CannonballCont
+	JMP ObjectGen_CannonballReset
 
+ObjectGen_CannonballCont:
 	JSR Object_PrepProjectile
-
-	LDA #SOBJ_CANNONBALL
-	STA SpecialObj_ID,Y
 	
 	LDA ObjectGenerator_X, X
 	STA <Temp_Var1
@@ -3686,18 +3689,28 @@ Cannonball_Make:
 	LDA <Temp_Var1
 	ADD CannonBall_XOffset, X
 	STA SpecialObj_X, Y
+	STA Point_X
 
 	LDA <Temp_Var2
 	ADC CannonBall_XOffset + 8, X
 	STA SpecialObj_XHi, Y
+	STA Point_XHi
 
 	LDA <Temp_Var3
 	ADD CannonBall_YOffset, X
 	STA SpecialObj_Y, Y
+	STA Point_Y
 
 	LDA <Temp_Var4
 	ADC CannonBall_YOffset + 8, X
 	STA SpecialObj_YHi, Y
+	STA Point_YHi
+	
+	JSR CheckPoint_OffScreen
+	BCC ObjectGen_CannonballReset
+
+	LDA #SOBJ_CANNONBALL
+	STA SpecialObj_ID,Y
 	
 	LDA CannonBall_XVel, X
 	STA SpecialObj_XVel, Y
@@ -4274,11 +4287,11 @@ Bill_CPYOff:	.byte $00, $00		; Bullet/Missile Bill
 CannonWidths: .byte $00, $08
 
 DetermineGeneratorVisibility:
-	STA Debug_Snap
 	LDA #$00
 	STA ObjectGenerator_Visibility, X
 
 	LDA ObjectGenerator_X,X
+	ADD #$08
 	SUB <Horz_Scroll
 
 	LDA ObjectGenerator_XHi,X
@@ -4290,6 +4303,7 @@ DetermineGeneratorVisibility:
 
 CheckCannonVVisibility:
 	LDA ObjectGenerator_Y, X
+	ADD #$08
 	SUB <Vert_Scroll
 
 	LDA ObjectGenerator_YHi, X

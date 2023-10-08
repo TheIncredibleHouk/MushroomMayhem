@@ -10,7 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "1b20d6c1-1720-4979-beb8-65e2acdf780b",
   "StaticTileTableIndex": 48,
-  "MostCommonTile": 0,
+  "MostCommonTile": 144,
   "AnimationType": 0,
   "ScrollType": 1,
   "Effects": 0,
@@ -6497,104 +6497,7 @@
     144,
     144
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 145,
-      "X": 17,
-      "Y": 10,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 61,
-      "X": 8,
-      "Y": 17,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 145,
-      "X": 8,
-      "Y": 2,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 60,
-      "X": 22,
-      "Y": 7,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 146,
-      "X": 56,
-      "Y": 21,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 146,
-      "X": 66,
-      "Y": 15,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 13,
-      "X": 48,
-      "Y": 5,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 89,
-      "X": 82,
-      "Y": 3,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 89,
-      "X": 86,
-      "Y": 20,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 89,
-      "X": 92,
-      "Y": 11,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 14,
-      "X": 134,
-      "Y": 7,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 9,
-      "X": 144,
-      "Y": 5,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 18,
-      "X": 154,
-      "Y": 9,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 61,
-      "X": 133,
-      "Y": 24,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 61,
-      "X": 148,
-      "Y": 23,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 61,
-      "X": 107,
-      "Y": 21,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 145,

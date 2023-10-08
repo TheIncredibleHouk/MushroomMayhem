@@ -1183,7 +1183,7 @@ ObjInit_Weather:
 	BEQ Weather_NotDupe
 
 Weather_Delete:
-	JMP Object_Delete
+	JMP Object_SetDeadAndNotSpawned
 
 Weather_NotDupe:
 	LDA Objects_YZ, X 
@@ -1247,8 +1247,10 @@ Weather_InitXY:
 	STA <Temp_Var1
 
 	LDA Wind
+	BEQ Weather_Left
 	BPL Weather_Right
 
+Weather_Left:
 	LDA Rain_XVel, X
 	JSR Negate
 	ADD <Temp_Var1
@@ -1328,6 +1330,7 @@ Weather_Draw:
 
 	LDY #$00
 	LDA Wind
+	BEQ Weather_SetOrientation
 	BMI Weather_SetOrientation
 
 	LDY #SPR_HFLIP

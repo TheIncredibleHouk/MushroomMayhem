@@ -6,11 +6,11 @@
   "MusicValue": 0,
   "ScreenLength": 1,
   "StartX": 2,
-  "StartY": 16,
+  "StartY": 20,
   "PaletteEffect": 0,
   "PaletteId": "6649f798-978f-4a6e-825b-23d50dfb0eb2",
   "StaticTileTableIndex": 90,
-  "MostCommonTile": 0,
+  "MostCommonTile": 129,
   "AnimationType": 0,
   "ScrollType": 1,
   "Effects": 0,
@@ -6497,32 +6497,7 @@
     129,
     129
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 48,
-      "X": 8,
-      "Y": 16,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 48,
-      "X": 2,
-      "Y": 11,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 60,
-      "X": 20,
-      "Y": 18,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 13,
-      "X": 14,
-      "Y": 1,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 48,
@@ -6578,5 +6553,5 @@
       "BoundRectangle": "32,336,32,32"
     }
   ],
-  "CompressedData": "QcKen0HBMErCjo9BwTBKA0HBMAVBRANBwTAEQcE/AjFBA0HBMARBwTBEA0HBPwRBwTACQUIIQcIwQUQGQUHBMEXBygTLwcxBghAwgYGBgYGBz4GBgYGBz4GBhRAwgYGBgYGBzYGBgYGBz4GBghAwgYGBgYGBzYGBgYGBzYGBgxAwgYGBgYGBgYGBgYGBgYGBwTBEwq6vRQFBghAwgYGBgYGen4GBgYGBgUFBwTBCD/wPBg8W"
+  "CompressedData": "QcKen0HBMErCjo9BwTBKA0HBMAVBRANBwTAEQcE/AjFBA0HBMARBwTBEA0HBPwRBwTACQUIIQcIwQUQGQUHBMEXBygTLwcxBghAwgYGBgYGBz4GBgYGBz4GBhRAwgYGBgYGBzYGBgYGBz4GBghAwgYGBgYGBzYGBgYGBzYGBgxAwgYGBgYGBgYGBgYGBgYGBwTBEwq6vRQFBghAwgYGBgYGen4GBgYGBgUFBwTBCD/wPBg4WwRY="
 }

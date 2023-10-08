@@ -5,8 +5,8 @@
   "ClearTileIndex": 0,
   "MusicValue": 96,
   "ScreenLength": 15,
-  "StartX": 233,
-  "StartY": 7,
+  "StartX": 2,
+  "StartY": 4,
   "PaletteEffect": 2,
   "PaletteId": "fb65f94f-bb38-4e5b-8773-222349799155",
   "StaticTileTableIndex": 4,
@@ -6497,122 +6497,7 @@
     97,
     97
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 211,
-      "X": 3,
-      "Y": 3,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 183,
-      "X": 4,
-      "Y": 6,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 188,
-      "X": 32,
-      "Y": 9,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 188,
-      "X": 14,
-      "Y": 8,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 188,
-      "X": 22,
-      "Y": 6,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 68,
-      "X": 55,
-      "Y": 8,
-      "Property": 6
-    },
-    {
-      "GameObjectId": 68,
-      "X": 45,
-      "Y": 5,
-      "Property": 6
-    },
-    {
-      "GameObjectId": 79,
-      "X": 79,
-      "Y": 4,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 79,
-      "X": 92,
-      "Y": 4,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 190,
-      "X": 143,
-      "Y": 10,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 190,
-      "X": 153,
-      "Y": 2,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 190,
-      "X": 160,
-      "Y": 8,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 188,
-      "X": 171,
-      "Y": 7,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 190,
-      "X": 183,
-      "Y": 2,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 91,
-      "X": 207,
-      "Y": 10,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 91,
-      "X": 212,
-      "Y": 2,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 79,
-      "X": 218,
-      "Y": 2,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 79,
-      "X": 223,
-      "Y": 2,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 79,
-      "X": 120,
-      "Y": 7,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 211,
@@ -6745,5 +6630,5 @@
       "BoundRectangle": "3760,144,32,32"
     }
   ],
-  "CompressedData": "QcRirq9gf39/asVxcp6fcCFxQz9xLXFQIHFGG3HCYWIMwcEZBsHBMAjBwdUGwcFgQcFiFcHB1QPBwRkSwcEZDsGCBBnBwcEPwcEZBcEB1QbBAdUDwcI7YE7CYjAFwQLVAcHCOxkDwcEZAsLCwRkFwcEZAcHBYETBYhHBwdUIwcJgYgzBwSkGwcEwCMHB1QbBwWBBwWIIwcIZwQLCB8HB1QPBwSkBwcGlD8HBKQbBwUoGwcEpAcHCGSkEwYID1cHBB8HBKQXBAdUGwQHVBMHBcA5xwnIwBcEC1QXBwRkBwcPCKsIHwcEpAcHBYETBYhHBwdUIwcJgYgzBwSkBwcElA8HBMAjBwdUCwcEZAsHBYEHBYgjBxSnBwirCB8HB1QPBwSkBwcG1D8HBKQbBwRkGwcEpARnBKQTBggIZwcLBGQjBwikZBMEB1QbBAdUHwQHVBMHBGQXBwTAFwQLVCMHDwjrCA8ECwsLBKQHBwWBEwWICwcFQC1HDUsHVCMHCYGIFwQLCBsHBNQPBwSECwcGlBMHB1QLBwSkCwcFgQcFiCMHFKcHCOsIHwcEZA8HBKQHBwbUJwcLVwQLCggjBKcHBwcHBwcEZAykHwcMZwSmCAhnBBcHDKcEZAsEB1QbBAdXBwQTCAcEB1QTBwSkFwcEwBcEC1QjBw8I6wgPBxcIqwsEpAcHBYETBYgLBwWBLw2LB1QjBw2BiGQTBw8LXwgbBwTUDwcEiAsHBtQTBwdUGwcFgQgJRwVIGwcPCOsIHwcEpA8HBKQHBwbUCwcEZB8HFwufCwSkJwQLCgwLBKQnBASnDGSkZBcGCAinBAcEB1QbBAdXBwYICwqbBwgHBAdULwcEhBcEC1QHBwVALUcRSwjrCA8HBYETBYgLBwWBLw2LB1QjBwmBiBcHDwufCBsHBNQHBw2XB1QLBwrXBAsLCwdUGwcFwBXHBcgLBwWUCwcPCOsIDwcEZAsHDKcH0AcHBKQHBwbUCwcEpB8HFwufCwSkDwcH0BMHFwirCwSkCwcMpwRkHwYMCKcEGwcQpwfTBAdUGwQHVwcGCAsK2wcIBwQHVC8HBIgXBAtUBwcFgS8RiwjrCA8HBYETBYgLBwWBLw2LB1QjBwmBiBcHDwufCA8HBEAHBwTUBwcN1wdUCwce1wcLXwsHVA8HB9AHBw8KmwgHBwfUEwcF1AsHDwjrCA8HBKQLBwynB9AHBwdUBwcG1AsHBKQLBwdUDwcPC58IFwcH0BMHDwjrCBcHCGcEBGcLVGQPBwSkCwcIpGQjBwvTBAdUGwQHVxsHCtqa2wgHBAdXCwSsJwcHVBcEC1QHBwWBLxGLCOsIDwcFwBHHBcgLBwWBLw2LB1QLBwWoDwcdKYGLBZcEZAcHFwufCwfQBwcEgAcHBNQHBw3XB1QLBx7XBwufCwRADwcH0AcHDwrbCAcHB9QTBwXUCwcXCOsLBGQXBwynB9AHBwdUBwcG1AsHBKQfBw8LnwgXBwfQEwcPCOsIUwcMpwRkGwcL0wQHVBsEB1cLBwgK2wVAKUcFSA8HB1QXBAtUBwcFgS8RiwjrCDcHBYEvDYsHVAsHKUFK+v1BRYWLBdQPByMLnwsH0wUowAcHBNQHBw3XB1QLBx7XBwufCwSADwcH0AcHDwrbCAcHB9QTBwXUCwcXCOsLBKQXBwynB9AHBwdUBwcG1AsHBKQfBw8LnwgXBwfQEwcPCOsIBwcHVBcGCBdXBwcHBAcHBKQjBwvTBAdUCwcErAsEB1cLBwgK2wWBKwWIDwcHVBcEC1cPBSmBLxGLCOsINwcFgS8NiwdUCwcVgYq6vYEI/UT9RGFFMD1FNEFFNBFFBAVF/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f1I="
+  "CompressedData": "QcRirq9gf39/asVxcp6fcCFxQz9xLXFQIHFGG3HCYWIMwcEZBsHBMAjBwdUGwcFgQcFiFcHB1QPBwRkSwcEZDsGCBBnBwcEPwcEZBcEB1QbBAdUDwcI7YE7CYjAFwQLVAcHCOxkDwcEZAsLCwRkFwcEZAcHBYETBYhHBwdUIwcJgYgzBwSkGwcEwCMHB1QbBwWBBwWIIwcIZwQLCB8HB1QPBwSkBwcGlD8HBKQbBwUoGwcEpAcHCGSkEwYID1cHBB8HBKQXBAdUGwQHVBMHBcA5xwnIwBcEC1QXBwRkBwcPCKsIHwcEpAcHBYETBYhHBwdUIwcJgYgzBwSkBwcElA8HBMAjBwdUCwcEZAsHBYEHBYgjBxSnBwirCB8HB1QPBwSkBwcG1D8HBKQbBwRkGwcEpARnBKQTBggIZwcLBGQjBwikZBMEB1QbBAdUHwQHVBMHBGQXBwTAFwQLVCMHDwjrCA8ECwsLBKQHBwWBEwWICwcFQC1HDUsHVCMHCYGIFwQLCBsHBNQPBwSECwcGlBMHB1QLBwSkCwcFgQcFiCMHFKcHCOsIHwcEZA8HBKQHBwbUJwcLVwQLCggjBKcHBwcHBwcEZAykHwcMZwSmCAhnBBcHDKcEZAsEB1QbBAdXBwQTCAcEB1QTBwSkFwcEwBcEC1QjBw8I6wgPBxcIqwsEpAcHBYETBYgLBwWBLw2LB1QjBw2BiGQTBw8LXwgbBwTUDwcEiAsHBtQTBwdUGwcFgQgJRwVIGwcPCOsIHwcEpA8HBKQHBwbUCwcEZB8HFwufCwSkJwQLCgwLBKQnBASnDGSkZBcGCAinBAcEB1QbBAdXBwYICwqbBwgHBAdULwcEhBcEC1QHBwVALUcRSwjrCA8HBYETBYgLBwWBLw2LB1QjBwmBiBcHDwufCBsHBNQHBw2XB1QLBwrXBAsLCwdUGwcFwBXHBcgLBwWUCwcPCOsIDwcEZAsHDKcH0AcHBKQHBwbUCwcEpB8HFwufCwSkDwcH0BMHFwirCwSkCwcMpwRkHwYMCKcEGwcQpwfTBAdUGwQHVwcGCAsK2wcIBwQHVC8HBIgXBAtUBwcFgS8RiwjrCA8HBYETBYgLBwWBLw2LB1QjBwmBiBcHDwufCA8HBEAHBwTUBwcN1wdUCwce1wcLXwsHVA8HB9AHBw8KmwgHBwfUEwcF1AsHDwjrCA8HBKQLBwynB9AHBwdUBwcG1AsHBKQLBwdUDwcPC58IFwcH0BMHDwjrCBcHCGcEBGcLVGQPBwSkCwcIpGQjBwvTBAdUGwQHVxsHCtqa2wgHBAdXCwSsJwcHVBcEC1QHBwWBLxGLCOsIDwcFwBHHBcgLBwWBLw2LB1QLBwWoDwcdKYGLBZcEZAcHFwufCwfQBwcEgAcHBNQHBw3XB1QLBx7XBwufCwRADwcH0AcHDwrbCAcHB9QTBwXUCwcXCOsLBGQXBwynB9AHBwdUBwcG1AsHBKQfBw8LnwgXBwfQEwcPCOsIUwcMpwRkGwcL0wQHVBsEB1cLBwgK2wVAKUcFSA8HB1QXBAtUBwcFgS8RiwjrCDcHBYEvDYsHVAsHKUFK+v1BRYWLBdQPByMLnwsH0wUowAcHBNQHBw3XB1QLBx7XBwufCwSADwcH0AcHDwrbCAcHB9QTBwXUCwcXCOsLBKQXBwynB9AHBwdUBwcG1AsHBKQfBw8LnwgXBwfQEwcPCOsIBwcHVBcGCBdXBwcHBAcHBKQjBwvTBAdUCwcErAsEB1cLBwgK2wWBKwWIDwcHVBcEC1cPBSmBLxGLCOsINwcFgS8NiwdUCwcVgYq6vYEI/UT9RGFFMD1FNEFFNBFFBAVF/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f1LBYQ=="
 }

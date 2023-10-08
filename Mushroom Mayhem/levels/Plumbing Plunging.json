@@ -6497,7 +6497,7 @@
     0,
     0
   ],
-  "ObjectData": [],
+  "PatchTileData": null,
   "FirstObjectData": [],
   "SecondObjectData": [],
   "LevelPointers": [
@@ -6515,5 +6515,5 @@
       "BoundRectangle": "144,352,32,32"
     }
   ],
-  "CompressedData": "f39PBvzB+0cFBsEHSAUWixAXAAAAAAAAAAAAFhYWFhYWwRdBwq6vRAUWwRdBwp6fRArRwdJDCuHB4gO+CuHB4gO8"
+  "CompressedData": "f39PBvzB+0cFBsEHSAUWixAXAAAAAAAAAAAAFhYWFhYWwRdBwq6vRAUWwRdBwp6fRArRwdJDCuHB4gO+CuHB4gK8wbw="
 }

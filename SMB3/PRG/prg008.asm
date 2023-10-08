@@ -4183,6 +4183,9 @@ Check_WeatherOther:
 	ORA Level_PipeMove
 	BNE No_Weather_Vel
 
+	LDA Player_IsClimbing
+	BNE No_Weather_Vel
+	
 	LDA Wind
 	BEQ No_Weather_Vel
 

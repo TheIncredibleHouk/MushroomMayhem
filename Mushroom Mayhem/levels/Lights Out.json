@@ -10,7 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "be476f89-09db-4479-8bcc-56e76d462aeb",
   "StaticTileTableIndex": 72,
-  "MostCommonTile": 0,
+  "MostCommonTile": 65,
   "AnimationType": 0,
   "ScrollType": 2,
   "Effects": 0,
@@ -6497,7 +6497,7 @@
     65,
     65
   ],
-  "ObjectData": [],
+  "PatchTileData": null,
   "FirstObjectData": [],
   "SecondObjectData": [],
   "LevelPointers": [
@@ -6515,5 +6515,5 @@
       "BoundRectangle": "192,336,32,32"
     }
   ],
-  "CompressedData": "ScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRS8Ti0NHQS8TS0dDRSwEgwuLQSwEwwtLRQsEERMFUQcTi0NHQQcOwsbJCyLCxskHS0dDRD5EPUQ=="
+  "CompressedData": "ScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRScHiggLQ0cHQScHSggLR0MHRS8Ti0NHQS8TS0dDRSwEgwuLQSwEwwtLRQsEERMFUQcTi0NHQQcOwsbJCyLCxskHS0dDRD5EOUcFR"
 }

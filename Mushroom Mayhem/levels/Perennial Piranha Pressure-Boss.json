@@ -5,8 +5,8 @@
   "ClearTileIndex": 0,
   "MusicValue": 16,
   "ScreenLength": 1,
-  "StartX": 3,
-  "StartY": 18,
+  "StartX": 5,
+  "StartY": 9,
   "PaletteEffect": 2,
   "PaletteId": "0f17cc02-ae1e-41d3-9e27-f466a228e8eb",
   "StaticTileTableIndex": 48,
@@ -6497,6 +6497,7 @@
     65,
     65
   ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 19,
@@ -6519,5 +6520,5 @@
   ],
   "SecondObjectData": [],
   "LevelPointers": [],
-  "CompressedData": "AdMMmwLTTALTRMMKCwxEwbwB00TDGkEcRALTRMMqKyxEAtNMAtNMAtNMwdOCEL28Ojo6Ojo6Ojo6Ojo6OrwB0wwtAtMMeD/TP9M/0zDTwdM="
+  "CompressedData": "AdMMmwLTTALTRMMKCwxEwbwB00TDGkEcRALTRMMqKyxEAtNMAtNMAtNMwdOCEL28Ojo6Ojo6Ojo6Ojo6OrwB0wwtAtMMeD/TP9M/0y/TwdM="
 }

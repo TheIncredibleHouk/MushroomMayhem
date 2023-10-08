@@ -6497,6 +6497,7 @@
     0,
     0
   ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 19,
@@ -6513,5 +6514,5 @@
   ],
   "SecondObjectData": [],
   "LevelPointers": [],
-  "CompressedData": "D0A/QT9BP0E/QT9BP0EPUQ9jwWM="
+  "CompressedData": "D0A/QT9BP0E/QT9BP0EPUQ5jwWM="
 }

@@ -6497,26 +6497,7 @@
     193,
     193
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 19,
-      "X": 14,
-      "Y": 9,
-      "Property": 3
-    },
-    {
-      "GameObjectId": 95,
-      "X": 9,
-      "Y": 3,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 182,
-      "X": 15,
-      "Y": 3,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 19,
@@ -6539,5 +6520,5 @@
   ],
   "SecondObjectData": [],
   "LevelPointers": [],
-  "CompressedData": "D39Nwqy9R8ElQ8GcAb1HwTVDwawBvUHBJUTBNULBnAK9QcE1RME1QsGsAr1BwTVEwTVBwZwDvUHBNUHBJUHBNUHCrK0CvUGDAzXBwcWZm72aqEGDAzXBwcXBq6nBmUGDAzXBwcXBu7m6uEGDAzXBwcG8A71BgwM1wcHBmwO9P38/fz9/H38="
+  "CompressedData": "D39Nwqy9R8ElQ8GcAb1HwTVDwawBvUHBJUTBNULBnAK9QcE1RME1QsGsAr1BwTVEwTVBwZwDvUHBNUHBJUHBNUHCrK0CvUGDAzXBwcWZm72aqEGDAzXBwcXBq6nBmUGDAzXBwcXBu7m6uEGDAzXBwcG8A71BgwM1wcHBmwO9P38/fz9/Hn/Bfw=="
 }

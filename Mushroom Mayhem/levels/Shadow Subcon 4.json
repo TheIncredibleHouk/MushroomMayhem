@@ -10,7 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "120c673c-ec82-484b-8812-7509e33e62ed",
   "StaticTileTableIndex": 62,
-  "MostCommonTile": 0,
+  "MostCommonTile": 65,
   "AnimationType": 0,
   "ScrollType": 1,
   "Effects": 0,
@@ -6497,32 +6497,7 @@
     144,
     144
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 18,
-      "X": 8,
-      "Y": 25,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 33,
-      "X": 2,
-      "Y": 1,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 33,
-      "X": 11,
-      "Y": 8,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 33,
-      "X": 12,
-      "Y": 10,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 18,
@@ -6565,5 +6540,5 @@
       "BoundRectangle": "176,352,32,32"
     }
   ],
-  "CompressedData": "f39/f39/bw=="
+  "CompressedData": "f39/f39/b8FB"
 }

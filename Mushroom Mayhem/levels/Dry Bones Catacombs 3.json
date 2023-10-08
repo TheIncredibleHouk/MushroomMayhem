@@ -10,7 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "28b5ab02-63cc-4dc7-adea-5ff0d553a859",
   "StaticTileTableIndex": 36,
-  "MostCommonTile": 0,
+  "MostCommonTile": 65,
   "AnimationType": 1,
   "ScrollType": 0,
   "Effects": 0,
@@ -6497,32 +6497,7 @@
     65,
     65
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 14,
-      "X": 4,
-      "Y": 14,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 72,
-      "X": 22,
-      "Y": 20,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 72,
-      "X": 18,
-      "Y": 20,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 18,
-      "X": 21,
-      "Y": 16,
-      "Property": 1
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 14,
@@ -6551,5 +6526,5 @@
   ],
   "SecondObjectData": [],
   "LevelPointers": [],
-  "CompressedData": "hQUTFRMUFccTFa6vGRMVhQUzNTM0NcczNa6vOTM1hQUVExQVE8cVGa6vExUThQU1MzQ1M8c1Oa6vMzUzhQUTFRMUFccTFa6vGRMVhQUzNTM0NcczNa6vOTM1hQUVExQVE8cVGa6vExUThQU1MzQ1M8c1OZ6fMzUzhQUTFRMUFcITFUHDGRMVhQUzNTM0NcIzNUHDOTM1ggUVExQVE8QVExQVAW7BNwduwTcCbsMTFROCBTUzNDUzxDUzNDUBbsE3B27BNwJuwzM1M4ICExXBA0TEBBkTFQFuwTcHbsE3Am7DGRMVggIzNUbDOTM1AW7BNwduwTcCbsc5MzUVExQVRsMTFBUBbsE3B27BNwJuxxMVEzUzNDVGwzM0NQFuwTcHbsE3Am7DMzUzggITFUHBo0HFo0EZExUBbso3bqNuXU9uo243Am7DGRMVggIzNUHB4kHF4kE5MzUBbsM3buIDbsPibjcCbsc5MzUVExQVRgIeDm7HExUTNTM0NUYCHg5uwzM1M4ICExVGAh4ObsMZExWCAjM1BCZBAh4ObsM5MzWGBRUTFBUTwhUTH80/3R/d"
+  "CompressedData": "hQUTFRMUFccTFa6vGRMVhQUzNTM0NcczNa6vOTM1hQUVExQVE8cVGa6vExUThQU1MzQ1M8c1Oa6vMzUzhQUTFRMUFccTFa6vGRMVhQUzNTM0NcczNa6vOTM1hQUVExQVE8cVGa6vExUThQU1MzQ1M8c1OZ6fMzUzhQUTFRMUFcITFUHDGRMVhQUzNTM0NcIzNUHDOTM1ggUVExQVE8QVExQVAW7BNwduwTcCbsMTFROCBTUzNDUzxDUzNDUBbsE3B27BNwJuwzM1M4ICExXBA0TEBBkTFQFuwTcHbsE3Am7DGRMVggIzNUbDOTM1AW7BNwduwTcCbsc5MzUVExQVRsMTFBUBbsE3B27BNwJuxxMVEzUzNDVGwzM0NQFuwTcHbsE3Am7DMzUzggITFUHBo0HFo0EZExUBbso3bqNuXU9uo243Am7DGRMVggIzNUHB4kHF4kE5MzUBbsM3buIDbsPibjcCbsc5MzUVExQVRgIeDm7HExUTNTM0NUYCHg5uwzM1M4ICExVGAh4ObsMZExWCAjM1BCZBAh4ObsM5MzWGBRUTFBUTwhUTH80/3R7dwd0="
 }

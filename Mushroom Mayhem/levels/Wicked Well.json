@@ -10,7 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "7363cf6e-c246-454d-9084-c8ab4efc77fa",
   "StaticTileTableIndex": 38,
-  "MostCommonTile": 0,
+  "MostCommonTile": 65,
   "AnimationType": 0,
   "ScrollType": 3,
   "Effects": 128,
@@ -6497,122 +6497,7 @@
     65,
     65
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 80,
-      "X": 124,
-      "Y": 21,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 80,
-      "X": 120,
-      "Y": 9,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 133,
-      "X": 105,
-      "Y": 10,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 133,
-      "X": 106,
-      "Y": 21,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 133,
-      "X": 84,
-      "Y": 5,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 9,
-      "X": 77,
-      "Y": 25,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 86,
-      "X": 68,
-      "Y": 14,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 80,
-      "X": 65,
-      "Y": 5,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 80,
-      "X": 71,
-      "Y": 25,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 134,
-      "X": 40,
-      "Y": 26,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 7,
-      "X": 28,
-      "Y": 8,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 134,
-      "X": 28,
-      "Y": 16,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 7,
-      "X": 19,
-      "Y": 24,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 7,
-      "X": 14,
-      "Y": 14,
-      "Property": 2
-    },
-    {
-      "GameObjectId": 13,
-      "X": 39,
-      "Y": 12,
-      "Property": 3
-    },
-    {
-      "GameObjectId": 14,
-      "X": 129,
-      "Y": 10,
-      "Property": 5
-    },
-    {
-      "GameObjectId": 133,
-      "X": 155,
-      "Y": 23,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 12,
-      "X": 94,
-      "Y": 7,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 18,
-      "X": 158,
-      "Y": 12,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 80,

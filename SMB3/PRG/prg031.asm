@@ -3077,6 +3077,12 @@ Destroy_Projectiles:
 
 	LDA #$00
 	STA SpecialObj_Data1, X
+	STA SpecialObj_Data2, X
+	STA SpecialObj_XVel, X
+	STA SpecialObj_YVel, X
+
+	LDA #SPR_PAL2
+	STA SpecialObj_Data3, X
 
 Destroy_Projectiles1:
 	DEX

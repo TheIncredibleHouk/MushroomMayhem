@@ -5,8 +5,8 @@
   "ClearTileIndex": 144,
   "MusicValue": 16,
   "ScreenLength": 3,
-  "StartX": 0,
-  "StartY": 20,
+  "StartX": 7,
+  "StartY": 7,
   "PaletteEffect": 2,
   "PaletteId": "039d83e8-a355-4b66-b6b0-b067f7cc5e15",
   "StaticTileTableIndex": 8,
@@ -6497,6 +6497,7 @@
     65,
     65
   ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 14,

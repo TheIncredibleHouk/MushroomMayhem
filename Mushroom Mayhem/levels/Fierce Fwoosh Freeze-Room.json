@@ -5,8 +5,8 @@
   "ClearTileIndex": 144,
   "MusicValue": 64,
   "ScreenLength": 2,
-  "StartX": 0,
-  "StartY": 20,
+  "StartX": 1,
+  "StartY": 24,
   "PaletteEffect": 2,
   "PaletteId": "212e8375-7a01-4327-87d2-7aee5f7bcf6d",
   "StaticTileTableIndex": 16,
@@ -6497,6 +6497,7 @@
     65,
     65
   ],
+  "PatchTileData": null,
   "FirstObjectData": [],
   "SecondObjectData": [],
   "LevelPointers": [

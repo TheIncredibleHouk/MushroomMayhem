@@ -10,7 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "d0f03b0a-f5ac-401b-8749-dc368d810d64",
   "StaticTileTableIndex": 74,
-  "MostCommonTile": 0,
+  "MostCommonTile": 65,
   "AnimationType": 1,
   "ScrollType": 2,
   "Effects": 0,
@@ -6497,20 +6497,7 @@
     65,
     65
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 101,
-      "X": 112,
-      "Y": 9,
-      "Property": 5
-    },
-    {
-      "GameObjectId": 18,
-      "X": 173,
-      "Y": 19,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 101,

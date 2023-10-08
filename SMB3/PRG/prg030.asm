@@ -3028,6 +3028,7 @@ GetDecompressionCommand:
 	JMP NextDecompressionCommand
 
 SECOND_QUEST_DIVIDER = $FE
+
 DecompressCommand:
 	JSR DynJump
 
@@ -4709,6 +4710,7 @@ NextColorDay:
 	STA Palette_Buffer, X
 	DEX
 	BPL NextColorDay
+
 	LDA MasterPal_Data
 	STA Pal_Data + $10
 	STA Palette_Buffer + $10
@@ -4724,6 +4726,7 @@ DontIncVar5:
 	RTS
 
 Compression_Screen = Temp_Var6
+
 Screen_Padding:
 	.byte $00, $B0, $60, $10, $C0, $70, $20, $D0, $80, $30, $E0, $90, $40, $F0, $A0
 Screen_PaddingHi:	

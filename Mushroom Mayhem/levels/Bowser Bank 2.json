@@ -6497,26 +6497,7 @@
     65,
     65
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 55,
-      "X": 27,
-      "Y": 3,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 5,
-      "X": 23,
-      "Y": 7,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 18,
-      "X": 8,
-      "Y": 5,
-      "Property": 1
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 55,

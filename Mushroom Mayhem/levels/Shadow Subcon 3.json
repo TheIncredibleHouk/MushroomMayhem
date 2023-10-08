@@ -10,7 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "c9fe2252-11e5-468e-b82c-8fc2c0d56e07",
   "StaticTileTableIndex": 62,
-  "MostCommonTile": 0,
+  "MostCommonTile": 129,
   "AnimationType": 0,
   "ScrollType": 1,
   "Effects": 0,
@@ -6497,20 +6497,7 @@
     129,
     129
   ],
-  "ObjectData": [
-    {
-      "GameObjectId": 90,
-      "X": 13,
-      "Y": 3,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 90,
-      "X": 2,
-      "Y": 11,
-      "Property": 0
-    }
-  ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 90,
@@ -6541,5 +6528,5 @@
       "BoundRectangle": "176,352,32,32"
     }
   ],
-  "CompressedData": "ghD/gYGBgYFBQUFBQUFBQYH/wf9EwkG6A0HDgUGBAf9NA/9DCf9EB0HBgQH/RMJBugVBwYEB/0oBQcGBAf9BCf/CQYEB/0QHQcGBAf9EwkG6BUHBgQH/RAdBwYEG/wNBBv9NAf9EB0HBgQH/RAdBggSB//+BA//BQQH/ghBBgf//gYGBgYFBQUFBQUFBwkGBAf9LwUGCA4H//wH/wUEB/8GBA//BgQH/RAdBwYEB/0nBDkIB/8GBAYRGxB+BhIEB/wORwZIDY8GQA5EB/wNRwVIBQcOBQVADUQH/wWACYcFiA5HBYANh"
+  "CompressedData": "ghD/gYGBgYFBQUFBQUFBQYH/wf9EwkG6A0HDgUGBAf9NA/9DCf9EB0HBgQH/RMJBugVBwYEB/0oBQcGBAf9BCf/CQYEB/0QHQcGBAf9EwkG6BUHBgQH/RAdBwYEG/wNBBv9NAf9EB0HBgQH/RAdBggSB//+BA//BQQH/ghBBgf//gYGBgYFBQUFBQUFBwkGBAf9LwUGCA4H//wH/wUEB/8GBA//BgQH/RAdBwYEB/0nBDkIB/8GBAYRGxB+BhIEB/wORwZIDY8GQA5EB/wNRwVIBQcOBQVADUQH/wWACYcFiA5HBYANhwf8="
 }

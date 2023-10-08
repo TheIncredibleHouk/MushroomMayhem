@@ -6,7 +6,7 @@
   "MusicValue": 16,
   "ScreenLength": 3,
   "StartX": 3,
-  "StartY": 18,
+  "StartY": 22,
   "PaletteEffect": 2,
   "PaletteId": "1a8549da-fc9a-40b3-a498-46b96dace3f2",
   "StaticTileTableIndex": 48,
@@ -6497,6 +6497,7 @@
     65,
     65
   ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 149,

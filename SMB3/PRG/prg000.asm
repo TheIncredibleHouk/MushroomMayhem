@@ -604,7 +604,6 @@ SetSplash:
 ; updates the timers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
-;	STA Debug_Snap
 ;	INC Save_Ram_Boundary_Start
 ;	INC Save_Ram_Boundary_End
 	JSR Objects_AssignSprites
@@ -943,7 +942,7 @@ Frozen_Draw:
 	;JSR Kicked_DrawNoAnimate
 	;JMP Frozen_DrawNormal
 
-Frozen_NotKicked:
+; Frozen_NotKicked:
 	LDA Objects_Shelled, X
 	BEQ Frozen_NotShelled
 
@@ -951,6 +950,14 @@ Frozen_NotKicked:
 	JMP Frozen_DrawNormal
 
 Frozen_NotShelled:
+	LDA Objects_Kicked, X
+	BEQ Frozen_NotKicked
+
+	LDY #$00
+	JSR Kicked_DrawNoAnimate
+	JMP Frozen_DrawNormal
+
+Frozen_NotKicked:
 	JSR ObjState_Normal
 
 Frozen_DrawNormal:	
