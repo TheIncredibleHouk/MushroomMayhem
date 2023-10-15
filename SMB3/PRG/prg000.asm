@@ -5482,6 +5482,9 @@ Object_Explode:
 	LDA #$00
 	STA Objects_Timer, X
 
+	LDA #$08
+	STA Objects_Timer2, X
+
 	LDA #OBJSTATE_INIT
 	STA Objects_State, X
 

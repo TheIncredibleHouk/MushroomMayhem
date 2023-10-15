@@ -2035,8 +2035,10 @@ StarsDrawRTS:
 
 
 	; X and Y offsets for the exploding Bob-omb stars
-BombStars_XOff:	.byte -$04, $04, $08, $04, -$04, -$08, $00, $08, $08, $00, -$08, -$08
-BombStars_YOff:	.byte -$08, -$08, $00, $08, $08, $00, $08, $04, -$04, -$08, -$04, $04
+BombStars_XOff:		.byte -$04, $04, $08, $04, -$04, -$08, $00, $08, $08, $00, -$08, -$08
+BombStars_XHiOff: 	.byte -$01, $00, $00, $00, -$01, -$01, $00, $00, $00, $00, -$01, -$01 
+BombStars_YOff:		.byte -$08, -$08, $00, $08, $08, $00, $08, $04, -$04, -$08, -$04, $04
+BombStars_YHiOff: 	.byte -$01, -$01, $00, $00, $00, $00, $00, $00, -$01, -$01, -$01, $00
 
 Explosion_Offset = Objects_Data1
 
@@ -2044,7 +2046,7 @@ ObjInit_Explosion:
 	LDA #$06
 	STA Objects_SpritesRequested, X
 
-	LDA #BOUND48x48
+	LDA #BOUND32x32
 	STA Objects_BoundBox, X
 
 	JSR Object_NoInteractions
@@ -2058,7 +2060,16 @@ ObjInit_Explosion:
 
 	LDA #$10
 	STA RotatingColor_Cnt
+
+	LDA #$08
+	STA Objects_Timer2, X
 	RTS		 ; Return
+
+Explosion_StarX = Temp_Var2
+Explosion_StarXHi = Temp_Var14
+Explosion_StarY = Temp_Var1
+Explosion_StarYHi = Temp_Var15
+Explosion_StarCounter = Temp_Var16
 
 ObjNorm_Explosion:
 	
@@ -2077,11 +2088,28 @@ PRG003_A836:
 
 	JSR Explosion_CalcBoundBox
 	JSR Explosion_KillOthers
+
+	LDA Objects_Timer2, X
+	CMP #$01
+	BNE Explosion_Hurt
+
+	STA Debug_Snap
+	LDA #BOUND48x48
+	STA Objects_BoundBox, X
+	JSR Object_CalcBoundBox
+
+Explosion_Hurt:
 	JSR Object_InteractWithPlayer
 
 Explosion_NoKill:
 	JSR Object_CalcSpriteXY_NoHi
 
+	LDA Objects_SpritesVerticallyOffScreen, X
+	ORA Objects_SpritesHorizontallyOffScreen, X
+	BEQ Explosion_DrawStars
+	RTS
+
+Explosion_DrawStars: 
 	; Temp_Var16 = 5
 	LDA #$05
 	STA <Temp_Var16
@@ -2089,12 +2117,16 @@ Explosion_NoKill:
 PRG003_A83D:
 	; Temp_Var1 = Bob-omb's sprite Y
 	LDA <Objects_SpriteY,X
-	STA <Temp_Var1	
+	STA <Explosion_StarY	
 
 	; Temp_Var2 = Bob-omb's sprite X + 4
 	LDA <Objects_SpriteX,X
 	ADD #$04
-	STA <Temp_Var2
+	STA <Explosion_StarX
+
+	LDA #$00
+	ADC #$00
+	STA <Explosion_StarXHi
 
 	LDA Objects_Data1,X
 	LSR A		 ; Var4 / 2
@@ -2104,7 +2136,7 @@ PRG003_A83D:
 	AND #$03
 	STA <Temp_Var3
 
-	LDX <Temp_Var16	 ; X = Temp_Var16
+	LDX <Explosion_StarCounter	 ; X = Explosion_StarCounter
 
 	PLA		 ; Restore Var4 / 2
 
@@ -2117,50 +2149,62 @@ PRG003_A83D:
 	TAX
 
 PRG003_A85C:
-	LDA <Temp_Var1
+	LDA <Explosion_StarY
 	ADD BombStars_YOff,X
-	STA <Temp_Var1
+	STA <Explosion_StarY
 
-	LDA <Temp_Var2
+	LDA #$00
+	ADC BombStars_YHiOff,X
+	STA <Explosion_StarYHi
+
+	LDA <Explosion_StarX
 	ADD BombStars_XOff,X
-	STA <Temp_Var2
+	STA <Explosion_StarX
+
+	LDA <Explosion_StarXHi
+	ADC BombStars_XHiOff, X
+	STA <Explosion_StarXHi
 
 	DEC <Temp_Var3	 ; Temp_Var3--
 	BPL PRG003_A85C	 ; While Temp_Var3 >= 0, loop!
 
 	LDX <CurrentObjectIndexZ		 ; X = object slot index
 
+	LDA <Explosion_StarXHi
+	ORA <Explosion_StarYHi
+	BNE PRG003_A89D
+
 	JSR Sprite_NoCarryIfVisible
 	BCS PRG003_A89D	 ; If this star is not visible, jump to PRG003_A89D
 
-	LDA <Temp_Var16
+	LDA <Explosion_StarCounter
 	ASL A
-	ASL A		; A = Temp_Var16 * 4 (one sprite per star)
+	ASL A		; A = Explosion_StarCounter * 4 (one sprite per star)
 	ADC Object_SpriteRAMOffset,X	 ; Add the base Sprite_RAM offset
 	TAY		 ; -> 'Y'
 
 	; Star Y
-	LDA <Temp_Var1
-	STA Sprite_RAM+$00,Y
+	LDA <Explosion_StarY
+	STA Sprite_RAMY,Y
 
 	; Star X
-	LDA <Temp_Var2
-	STA Sprite_RAM+$03,Y
+	LDA <Explosion_StarX
+	STA Sprite_RAMX,Y
 
 	; Star pattern
 	LDA #$17
-	STA Sprite_RAM+$01,Y
+	STA Sprite_RAMTile,Y
 
 	LDA <Counter_1
 	LSR A	
 	LSR A	
 	ADD <CurrentObjectIndexZ
 	AND #$03	 ; Palette select 0 to 3
-	STA Sprite_RAM+$02,Y	 ; Set attributes
+	STA Sprite_RAMAttr,Y	 ; Set attributes
 
 PRG003_A89D:
-	DEC <Temp_Var16	 ; Temp_Var16--
-	BPL PRG003_A83D	 ; While Temp_Var16 >= 0, loop!
+	DEC <Explosion_StarCounter	 ; Explosion_StarCounter--
+	BPL PRG003_A83D	 ; While Explosion_StarCounter >= 0, loop!
 
 Explosion_BumpBlocks:
 	LDA Objects_Timer,X
