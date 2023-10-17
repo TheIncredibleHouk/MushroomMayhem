@@ -976,7 +976,7 @@ Generate_BlooperTimer:
 Generate_BlooperY:
 	.byte $40, $60, $80, $A0
 
-Generate_Blooper:	
+Generate_Blooper:
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
 	; Set Spike Cheep's object ID
@@ -993,18 +993,30 @@ Generate_Blooper:
 	LDA <Vert_Scroll
 	ADD Generate_BlooperY, Y
 	STA <Objects_YZ, X
+	STA Tile_DetectionY
 
 	LDA <Vert_Scroll_Hi
 	ADC #$00
 	STA <Objects_YHiZ, X
+	STA Tile_DetectionYHi
 	
 	LDA <Horz_Scroll
 	STA <Objects_XZ, X
+	STA Tile_DetectionX
 
 	LDA <Horz_Scroll_Hi
 	ADD #$01
 	STA <Objects_XHiZ, X
+	STA Tile_DetectionXHi
 
+	JSR Object_DetectTile
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BNE Blooper_Generate
+
+	JSR Object_Delete
+
+Blooper_Generate:
 	LDY Horz_Scroll_Hi
 	LDA Generate_BlooperTimer, Y
 	STA Level_EventTimer

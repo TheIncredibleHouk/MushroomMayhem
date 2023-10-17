@@ -785,6 +785,22 @@ Lakitu_DrawEnemyDone:
 	RTS    
 
 ObjInit_Larry:
+	LDY #$04
+	LDA #OBJ_LAKITUHELPER
+
+Larry_CheckExists:
+	CPY CurrentObjectIndexZ
+	BEQ Larry_NotFound
+
+	CMP Objects_ID, Y
+	BNE Larry_NotFound
+
+	JMP Object_Delete
+
+Larry_NotFound:
+	DEY
+	BPL Larry_CheckExists
+
 	LDA #$07
 	STA Objects_SpritesRequested, X
 
@@ -842,6 +858,7 @@ Larry_SuitHelp:
 Larry_InBag:
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
+	BCS Larry_Freed
 
 	INC Larry_Frame, X
 
@@ -851,7 +868,8 @@ Larry_InBag:
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
-	
+
+Larry_Freed:
 	JMP Larry_Draw
 
 Larry_RemoveBag:
@@ -865,9 +883,6 @@ Larry_RemoveBag:
 	STA <Poof_YHi
 	
 	JSR Common_MakePoof
-
-	LDA #$01
-	STA Objects_Frame, X
 
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
@@ -886,7 +901,6 @@ Larry_RemoveBag:
 	
 	LDA #$02
 	STA Larry_Action, X
-
 
 	JSR Larry_Prepare
 	RTS
@@ -1063,6 +1077,9 @@ Larry_Draw:
 	JMP Object_DrawMirrored
 
 Larry_DrawFull:
+	STA Debug_Snap
+	LDA Objects_Frame, X
+
 	JSR Object_Draw16x32Mirrored
 
 	LDY Object_SpriteRAMOffset, X

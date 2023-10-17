@@ -2420,7 +2420,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Map_Previous_Dir:	.ds 2	; $7993-$7994 (Mario/Luigi) Backup movement dir (remember which way Player moved last) (8=Up, 4=Down, 2=Left, 1=Right)
 
 	Poison_Mode:		.ds 1	; Unused; cleared but never used otherwise
-
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Wind:					.ds 1	; Wind factor (affects player!)
 	WeatherActive:			.ds 1
@@ -3141,7 +3140,8 @@ TILE_ITEM_SPINNER	= $FE
 	GameScript_LossLimit: .ds 1
 	GameScript_Data:	.ds 16
 	Object_Count:	.ds 1
-
+	Poison_TapTimer:	.ds 1
+	
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

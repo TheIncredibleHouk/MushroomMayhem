@@ -117,8 +117,13 @@ Player_VibeDisableFrame:
 ; objects; this is handled elsewhere...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoGameplay:
-	JSR Increase_Game_Timer
+	LDA Poison_TapTimer
+	BEQ No_PoisonTapTimer
 
+	DEC Poison_TapTimer
+
+No_PoisonTapTimer:
+	JSR Increase_Game_Timer
 	JSR Level_Initialize	 ; Initialize level if needed
 	JSR LevelJunction_PartialInit	 
 	
@@ -4185,7 +4190,7 @@ Check_WeatherOther:
 
 	LDA Player_IsClimbing
 	BNE No_Weather_Vel
-	
+
 	LDA Wind
 	BEQ No_Weather_Vel
 
@@ -6282,13 +6287,18 @@ Player_PoisonMode:
 	CMP #$50
 	BNE Cant_Poison_Mode
 
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ Cant_Poison_Mode
-
 	LDA <Pad_Input
 	AND #PAD_B
 	BEQ Cant_Poison_Mode
+
+	LDA Poison_TapTimer
+	BNE PoisonMode_Activate
+
+	LDA #$18
+	STA Poison_TapTimer
+	RTS
+
+PoisonMode_Activate:
 
 	LDA #SND_LEVELSHOE
 	STA Sound_QLevel1
