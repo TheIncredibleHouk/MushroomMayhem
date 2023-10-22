@@ -664,9 +664,9 @@
     },
     {
       "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
-      "X": 26,
-      "Y": 4,
-      "BoundRectangle": "416,64,16,16"
+      "X": 28,
+      "Y": 7,
+      "BoundRectangle": "448,112,16,16"
     },
     {
       "LevelId": "e8459828-b201-4b97-b8cb-e3d3470f35f0",
@@ -752,8 +752,8 @@
     },
     {
       "GameObjectId": 208,
-      "X": 26,
-      "Y": 4
+      "X": 28,
+      "Y": 7
     },
     {
       "GameObjectId": 207,

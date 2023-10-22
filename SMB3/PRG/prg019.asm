@@ -703,7 +703,7 @@ BB8WayYOffset:
 	.byte $C0, $60, $00, $00, $00, $60, $C0, $C0
 
 BB8Way_Timers:
-	.byte $80, $60, $80, $A0
+	.byte $FF, $F8, $E8, $E0, $D8, $D0, $C8, $C0, $B8, $B0, $A8, $A0, $98, $90, $88, $80
 
 LevelEvent_8WayBulletBills:	
 	LDA Level_EventTimer
@@ -721,18 +721,7 @@ EightWay_Fire:
 	BEQ EightWay_RTS
 
 EightWay_CanFire:
-	LDA RandomN
-	AND #$C0
-	
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-
-	TAX
-
+	LDX <Horz_Scroll_Hi
 	LDA BB8Way_Timers, X
 	STA Level_EventTimer
 

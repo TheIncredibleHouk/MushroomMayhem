@@ -2395,6 +2395,7 @@ MagicStar_AttachedEnemyDefeated:
 	LDA Objects_YHiZ, Y
 	STA <Objects_YHiZ, X
 
+	STA Debug_Snap
 	LDA Objects_State, Y
 	CMP #OBJSTATE_DEADEMPTY
 	BNE MagicStar_EnemyDefeatedRTS

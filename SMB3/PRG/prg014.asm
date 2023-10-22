@@ -1077,7 +1077,6 @@ Larry_Draw:
 	JMP Object_DrawMirrored
 
 Larry_DrawFull:
-	STA Debug_Snap
 	LDA Objects_Frame, X
 
 	JSR Object_Draw16x32Mirrored

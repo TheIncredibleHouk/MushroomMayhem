@@ -720,6 +720,22 @@ Timer_WarningPlayed = Objects_Data2
 Timer_Delayed = Objects_Data3
 
 ObjInit_Timer:
+	LDY #$04
+	STX <Temp_Var1
+	
+Timer_CheckExistsLoop:	
+	CPY <Temp_Var1
+	BEQ Timer_Same
+
+	LDA Objects_ID, Y
+	CMP #OBJ_TIMER
+	BNE Timer_Same
+
+	JMP Object_Delete
+
+Timer_Same:
+	DEY
+	BPL Timer_CheckExistsLoop
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
@@ -2093,7 +2109,6 @@ PRG003_A836:
 	CMP #$01
 	BNE Explosion_Hurt
 
-	STA Debug_Snap
 	LDA #BOUND48x48
 	STA Objects_BoundBox, X
 	JSR Object_CalcBoundBox

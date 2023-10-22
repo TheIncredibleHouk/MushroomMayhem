@@ -740,6 +740,22 @@ PRG030_881D:
 	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Waiting for vertical sync
 
 
+	LDY #$FC
+	LDA #$F8
+
+EnterEffect_ClearEdge:
+	CMP Sprite_RAMX, Y
+	BNE EnterEffect_NoClear
+
+	STA Sprite_RAMY, Y
+
+EnterEffect_NoClear:
+	DEY
+	DEY
+	DEY
+	DEY
+	BNE EnterEffect_ClearEdge
+
 EnterEffect_SpriteStart:
 	LDY #$00
 
