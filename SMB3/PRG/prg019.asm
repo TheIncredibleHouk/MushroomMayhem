@@ -705,11 +705,16 @@ BB8WayYOffset:
 BB8Way_Timers:
 	.byte $FF, $F8, $E8, $E0, $D8, $D0, $C8, $C0, $B8, $B0, $A8, $A0, $98, $90, $88, $80
 
-LevelEvent_8WayBulletBills:	
+LevelEvent_8WayBulletBills:
+	LDA <Player_HaltGameZ
+	BNE EightWay_FireRTS
+
 	LDA Level_EventTimer
 	BEQ EightWay_Fire
 
 	DEC Level_EventTimer
+
+EightWay_FireRTS:	
 	RTS
 
 EightWay_Fire:
@@ -722,6 +727,7 @@ EightWay_Fire:
 
 EightWay_CanFire:
 	LDX <Horz_Scroll_Hi
+
 	LDA BB8Way_Timers, X
 	STA Level_EventTimer
 
