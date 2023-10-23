@@ -4521,6 +4521,7 @@ ObjectGen_BulletBillRTS:
 	RTS
 
 BulletBillGen_Make:
+
 	; Reset Cannon Fire timer to $80-$9F, random
 	LDA RandomN,X
 	AND #$07
@@ -4528,6 +4529,13 @@ BulletBillGen_Make:
 	LDA CanonTimers, Y
 	STA ObjectGenerator_Timer,X
 
+	LDA TrapSet
+	BEQ BulletBillGen_NoOverride
+
+	LDA #$40
+	STA ObjectGenerator_Timer, X
+
+BulletBillGen_NoOverride:
 	JSR PrepareNewObjectOrAbort
 
 	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire object slot
@@ -4567,7 +4575,11 @@ PRG007_BF80:
 	STA Objects_BoundBox, X
 
 	JSR Object_CalcBoundBoxForced
+
 	JSR Object_XDistanceFromPlayer
+
+	LDA TrapSet
+	BNE Make_Bullet
 	
 	LDA <XDiff
 	CMP #$10
@@ -4618,6 +4630,10 @@ PRG007_BF81:
 	LDA ObjectGenerator_Visibility, X
 	AND #(GENERATOR_VVISIBLE | GENERATOR_HVISIBLE)
 	BNE Make_BulletRTS
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBABOOM
+	STA Sound_QLevel1
 
 	JSR CheckPoint_OffScreen
 	BCC Make_BulletRTS

@@ -310,7 +310,7 @@ ObjectGenerator_Init:
 	LDX #$07
 
 Find_EmptyGenerator:
-	
+
 	LDA ObjectGenerator_ID, X
 	BEQ Found_EmptyGenerator
 
