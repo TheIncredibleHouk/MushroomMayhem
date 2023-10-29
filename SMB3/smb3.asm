@@ -2,6 +2,7 @@
 	.ineschr 32  ; 16x  8KB CHR data (128 banks of 1KB)
 	.inesmap 4   ; mapper 4 = MMC3, 8KB PRG, 1/2KB CHR bank swapping
 	.inesmir 0   ; background mirroring
+	;.inesbat 1	 ; enables sram
 
 ; Verifies:
 ; \$[0-9A-F][0-9A-F][0-9A-F][0-9A-F]
@@ -969,7 +970,7 @@ SPR_VFLIP	= %10000000
 	Player_RunMeter:		.ds 1	; >>>>>>[P] charge level ($7F max)
 	Player_Power:		.ds 1
 	Old_Player_Power:	.ds 1
-
+	Old_Player_Badge:	.ds 1
 	; Level_JctCtl is configured when you enter a door or a pipe
 	; * When $80, use current values for Level_AltLayout and Level_AltObjects
 	; * When otherwise non-zero (inc $80), skips setting vertical start position
@@ -1083,13 +1084,13 @@ UPDATERASTER_32PIXSHOWSPR= $80	; If NOT set, hides sprites that fall beneath the
 
 				.ds 2	; $0456-$0457 unused
 
-	Map_W8D_YOff:		.ds 1	; Y Offset from Player when doing darkness
-	Map_W8D_XOff:		.ds 1	; X Offset from Player when doing darkness
-	Map_W8D_RC:		.ds 1	; Row in the upper bits, column in the lower bits
-	Map_W8D_Dir:		.ds 1	; Direction of travel in darkness (1 = Right, 2 = Left, 4 = Down, 8 = Up)
-	Map_W8D_X:		.ds 1
-	Map_W8D_Y:		.ds 1
-	Map_W8D_Idx:		.ds 1
+	;Map_W8D_YOff:		.ds 1	; Y Offset from Player when doing darkness
+	;Map_W8D_XOff:		.ds 1	; X Offset from Player when doing darkness
+	;Map_W8D_RC:		.ds 1	; Row in the upper bits, column in the lower bits
+	;Map_W8D_Dir:		.ds 1	; Direction of travel in darkness (1 = Right, 2 = Left, 4 = Down, 8 = Up)
+	;Map_W8D_X:		.ds 1
+	;Map_W8D_Y:		.ds 1
+	;Map_W8D_Idx:		.ds 1
 
 	; ASSEMBLER BOUNDARY CHECK, CONTEXT END OF $04D0
 .BoundW8D_04D0:	BoundCheck .BoundW8D_04D0, $04D0, $04xx range World Map Entrance Transition context
@@ -1381,6 +1382,7 @@ Level_MusicQueueRestore:	.ds 1	; What to "restore" the BGM to when it changes (e
 
 	Sound_IsPaused:		.ds 1	; When set, sound processing is PAUSED
 
+
 				.ds 1	; $04EE ununsed
 				.ds 1	; $04EF ununsed
 				.ds 1	; $04F0 ununsed
@@ -1553,7 +1555,8 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 	World_Map_AnimF:	.ds 1	; World map animation frame (for bushes, etc.)
 	World_Map_AnimT:	.ds 1	; World map animation tick
 
-
+	Save_Menu_Showing: .ds 1
+	Save_Menu_YesNo:  .ds 1
 	; $059B-$05FF unused
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0600
@@ -1898,11 +1901,6 @@ SPRITE_3_VINVISIBLE = $08
 	Objects_Data4:		.ds 8	; $0689-$0690 Generic variable 1 for objects
 	Objects_Data5:		.ds 8	; $0691-$0698 Generic variable 2 for objects
 
-	; UNUSED Bonus Game Die counter
-	; While the die is rotating, just used as a counter 0 to 3 to time the rolling animation.
-	; After Player would press 'A', this value is immediately set to 0.
-	; In the case of the odd/even game, if the Player "won", it is set to 5 or 6.
-	Bonus_DieCnt:		.ds 0
 	Objects_ExpPoints: .ds 8
 
 
@@ -1953,8 +1951,8 @@ GENERATOR_VVISIBLE = 02;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $07xx RAM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	.org $0700
 
+	.org $0700
 	Scroll_UpdAttrFlag:	.ds 1	; Set when it is time to update attributes
 
 
@@ -1979,12 +1977,6 @@ GENERATOR_VVISIBLE = 02;
 	Bonus_Timer:			; Decrements to zero
 	Map_Intro_Tick:		.ds 1	; Counts down to zero while displaying the "World X" intro
 	Entering_From_Map:	.ds 1
-	CheckPoint_Flag:	.ds 1
-	CheckPoint_Level:	.ds 1
-	CheckPoint_X:		.ds 1
-	CheckPoint_XHi:		.ds 1
-	CheckPoint_Y:		.ds 1
-	CheckPoint_YHi:		.ds 1
 	Previous_Coins:		.ds 3
 	Previous_Cherries:	.ds 1
 	Previous_Stars:		.ds 1
@@ -2005,10 +1997,8 @@ GENERATOR_VVISIBLE = 02;
 	PAGE_C000:		.ds 1	; Page to set PRG ROM C000 (PRGROM_Change_Both)
 	PAGE_A000:		.ds 1	; Page to set PRG ROM A000 (PRGROM_Change_Both)
 	PAGE_CMD:		.ds 1	; When using PRGROM_Change_Both2 or PRGROM_Change_A000, this value stores the MMC3 command
-	Map_Prev_XOff:		.ds 2	; $0722-$0723 (Mario/Luigi) Stores previous scroll X offset on map
-	Map_Prev_XHi:		.ds 2	; $0724-$0725 (Mario/Luigi) Stores previous "hi byte" of map X
 	Player_Current:		.ds 1	; Which Player is currently up (0 = Mario, 1 = Luigi)
-	World_Num:		.ds 1	; Current world index (0-8, where 0 = World 1, 7 = World 8, 8 = World 9 / Warp Zone)
+	
 
 	; NOTE: sharing
 	World_EnterState:		; State variable during "world X" intro entrance, set to 3 when entering a level; overlaps GameOver_State
@@ -2042,12 +2032,6 @@ GENERATOR_VVISIBLE = 02;
 	Map_Airship_Trav:	.ds 1	; Airship's current travel-table offset (randomly offset by 0-2, spices up life)
 
 	Map_DoFortressFX:	.ds 1	; Bust locks, build bridges, whatever after Mini-Fortress is toppled
-
-	World_Map_Power:	.ds 2	; $0746-$0747 (Mario/Luigi) MAP Power up # (1 - big, 2 - Fire, 3 - Leaf, 4 - Frog, 5 - Tanooki, 6 - Hammer, 7 - Judgems, 8 - Pwing, 9 - Star)
-
-	Map_Unused749:		.ds 2	; $0749-$074A (Mario/Luigi) ? Another value just set once and never read back!
-
-	Object_VelCarry:	.ds 1	; '1' when last Object Velocity fraction accumulation rolled over
 
 	; WARNING: The distance between Player/Objects_XVelFrac and Player/Objects_YVelFrac must be same as Player/Objects_X/YVel!
 	Player_XVelZFrac:	.ds 1	; X velocity fractional accumulator
@@ -2136,7 +2120,12 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 	Sound_Map_Off2:		.ds 1	; Same as Sound_Map_Off, used for the secondary track
 	Sound_Unused7FF:	.ds 1	; Cleared once, never used otherwise
 
+	GameScript_Wins:	.ds 1
+	GameScript_Losses:	.ds 1
+	GameScript_LossLimit: .ds 1
+	GameScript_Data:	.ds 16
 
+	LevelName:			.ds 28
 	; ASSEMBLER BOUNDARY CHECK, END OF $0800
 .Bound_0800:	BoundCheck .Bound_0800, $0800, $07xx RAM
 
@@ -2353,7 +2342,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	AScrlURDiag_OffsetY:	.ds 1	; When diagonal autoscroller is wrapping, this holds an Y offset for Player/Objects to temporarily correct
 	StatusBar_UpdFl:	.ds 1	; Status bar Update Flag; toggles so to update status bar only every other frame
 	UpdSel_Disable:		.ds 1	; When set, disables the Update_Select routine during the NMI, which halts most activity due to no reported V-Blanking
-	Map_Objects_Itm:	.ds 11	; $7956-$795D, "Item given by" map objects
 	ChaseTargetX:			.ds 1
 	ChaseTargetXHi:			.ds 1
 	ChaseTargetY:			.ds 1
@@ -2375,35 +2363,9 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	; B = Hammer
 	; C = Warp Whistle
 	; D = Music Box
-	Level_TreasureItem:	.ds 1
 	Reset_Latch:		.ds 1	; If this value is anything besides $5A, the reset is run (I assume this is considered a safe value in case of data corruption, e.g. from runaway generator)
-	Map_BonusType:		.ds 1	; 0 = No bonus, 1 = White Toad House, 2 = UNKNOWN WHITE THING (MAPOBJ_UNK0C)
-	Map_BonusCoinsReqd:	.ds 1	; Number of coins you need for White Toad House (or the MAPOBJ_UNK0C thing!); value ranges 0-127
-	Coins_ThisLevel:	.ds 1	; Internal counter of coins earned -this level- (so always starts at 0 and increments)
 
-	Map_BonusAppY:		.ds 1	; Map "white" bonus appearance Y (set to Player's last "succeeded" map position)
-	Map_BonusAppXHi:	.ds 1	; Map "white" bonus appearance XHi (set to Player's last "succeeded" map position)
-	Map_BonusAppX:		.ds 1	; Map "white" bonus appearance X (set to Player's last "succeeded" map position)
-
-	Map_NoLoseTurn:		.ds 1	; If set, Player does not lose turn after having completed a level (used for Toad House, pipeways, etc.)
-	Map_Got13Warp:		.ds 1	; Set non-zero if Player already got the 1-3 Warp Whistle
-	Map_Anchored:		.ds 1	; Set if anchor is set on this map
-	Map_WhiteHouse:		.ds 1	; Set if you have already earned the White Toad House for this world
-	Map_CoinShip:		.ds 1	; Set if you have already earned the Coin Ship for this world
-	Map_WasInPipeway:	.ds 1	; Set if you just came out of a pipeway
-	EndCard_Flag:		.ds 1	; Set when End Level card is hit (can determine when level has ended)
 	Map_PlyrSprOvrY:	.ds 1	; "Player Sprite Override Y"; If set to $F8 during warp, erases Player's map sprite; otherwise provides a Y to put it at
-	Map_Entered_Y:		.ds 1	; $7976-$7977 (Mario/Luigi) Stores the Y value when you enter a level; this is the Y used if you complete the level
-	Map_Entered_XHi:	.ds 1	; $7978-$7979 (Mario/Luigi) Hi byte for Map_Entered_X
-	Map_Entered_X:		.ds 1	; $797A-$797B (Mario/Luigi) Same as Map_Entered_Y, only for X
-	Map_Previous_UnusedPVal2:.ds 1	; $797C-$797D (Mario/Luigi) Backup of Map_UnusedPlayerVal2
-	Map_Previous_Y:		.ds 1	; $797E-$797F (Mario/Luigi) Stores the previous Y you were "safe" at; this is the Y you go back to if you die
-	Map_Previous_XHi:	.ds 1	; $7980-$7981 (Mario/Luigi) Same as Map_Previous_Y, only for XHi
-	Map_Previous_X:		.ds 1	; $7982-$7983 (Mario/Luigi) Same as Map_Previous_Y, only for X
-	Map_Unused7984:		.ds 1	; $7984-$7985 (Mario/Luigi) Unused; cleared and never touched again
-	Map_Prev_XOff2:		.ds 1	; $7986-$7987 (Mario/Luigi) Holds a copy of Map_Prev_XOff, but I'm not sure why?
-	Map_Prev_XHi2:		.ds 1	; $7988-$7989 (Mario/Luigi) Holds a copy of Map_Prev_XHi, but I'm not sure why?
-	Map_Unused798A:		.ds 1	; $798A-$798B (Mario/Luigi) Unused; cleared and never touched again
 	; These define values to use when you junction back
 	; to the level you were before...
 	Level_Jct_HSHi:		.ds 1	; Level junction horizontal scroll high value
@@ -2411,7 +2373,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Level_Jct_VSHi:		.ds 1	; Level junction vertical scroll high value
 	Level_Jct_VS:		.ds 1	; Level junction vertical scroll value
 
-	Magic_Stars:			.ds 1	; 
 	Old_Magic_Stars:		.ds 1
 
 	Map_Unused7992:			; Value used in some dead code in PRG011; cleared elsewhere (NOT SURE if maybe it sometimes meant Bonus_DiePos?)
@@ -2592,28 +2553,7 @@ MARIO_NINJA		= 11
 	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Old_World_Map_Tile:	.ds	1	;
-
-
-BADGE_INVALID = 255
-BADGE_ITEMRESERVE = 1
-BADGE_XP = 2
-BADGE_RADAR = 3
-BADGE_PMETER = 4
-BADGE_COIN = 5
-BADGE_AIR = 6
-
-
-ABILITY_EXTRAHIT = 1
-ABILITY_STARTBIG = 2
-ABILITY_NOSHROOMS = 3
-ABILITY_RECOVERY = 4
-ABILITY_DOUBLEJUMP = 5
-ABILITY_MAX = 5
-
-	Player_Badge:		.ds 1	;
-	Old_Player_Badge:	.ds 1
-	Player_Level:		.ds 1	;
-	Tile_Anim_Enabled:  .ds 1	;
+	Tile_Anim_Enabled:  .ds 4	;
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
@@ -2637,7 +2577,7 @@ ABILITY_MAX = 5
 
 	PAPU_MODCTL_Copy:	.ds 1	; Current PAPU_MODCTL register
 
-	Level_ObjIdxStartByScreen:.ds 16	; $7B00-$7B0F Defines the starting index into Level_Objects for each "screen"
+	Level_ObjIdxStartByScreen: .ds 16	; $7B00-$7B0F Defines the starting index into Level_Objects for each "screen"
 
 	Level_ObjectsSpawned:	.ds 48	; $7B10-$7B3F When $80 set, object is already spawned, $00 means not
 
@@ -2774,10 +2714,9 @@ HIT_EXPLOSION	= $80
 	; C = Warp Whistle
 	; D = Music Box
 	
-	Inventory_Items:	.ds 16	; $7D80-$7D9B Mario, 4 rows of 7 items 
+	Inventory_Items:	.ds 0	; $7D80-$7D9B Mario, 4 rows of 7 items 
 	Inventory_Cards:	.ds 0	; #DAHRKDAIZ indicates the player is at the top of water
 	Inventory_Score:	.ds 0	; $7D9F-$7DA1 Mario, 3 byte score
-	Player_Coins:		.ds 3	; Mario's coins
 	Air_Time_Frac:		.ds 1
 	Air_Time:			.ds 1	;
 	Old_Air_Time:		.ds 1
@@ -2805,11 +2744,9 @@ AIR_INCREASE	= 3
 	Level_AltLayout:	.ds 0	; $7DFE-$7DFF Pointer to level's "alternate" layout (when you go into bonus pipe, etc.)
 	Level_AltObjects:	.ds 0	; $7E00-$7E01 Pointer to level's "alternate" object set (when you go into bonus pipe, etc.)
 
-	; #DAHRKDAIZ RAM
 	Status_Bar_Top:		.ds 28		; Tiles to display at the top of the status bar
 	Status_Bar_Bottom:	.ds 28		; Tiles to display at the bottom of the status bar
-	Status_Bar_Render_Toggle: .ds 1	; Indicates if we're toggling the status mode
-	Player_Experience:	.ds 3		; Experience points that increase by defeating enemies
+	Status_Bar_Render_Toggle: .ds 4	; Indicates if we're toggling the status mode
 	Player_Pal_Backup:  .ds 3	; $AC #DAHRKDAIZ player palette backup for the "rainbow palette" effect
 	Update_Level_Name: .ds 1;
 	StatusBar_FirstInit: .ds 1
@@ -2861,9 +2798,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 	Map_Objects_IDs:	.ds 14	; $7F15-$7F22
 
 	Map_SprRAMOffDistr:	.ds 1	; A free running counter on the map only which distributes Sprite_RAM offsets to ensure visibility
-
-	Cherries:		.ds 1
-	Old_Cherries:	.ds 1
 
 	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
 
@@ -2965,10 +2899,6 @@ PLAYER_BULLET		= 06
 
 	PlayerProj_ID:		.ds 2	; $7CE1-$7CE2 Player projectile ID (0 = not in use, 1 = fireball, 2 = iceball, 3 = hammer, 4 = ninja star 3+ = Fireball impact "Poof")
 
-	Objects_Data1:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
-	Objects_Data2:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
-	Objects_Data3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
-
 	SpecialObj_XHi:		.ds 8	; $7FD5-$7FDC Special object Y high coordinate
 	PlayerProj_XHi:			.ds 2
 
@@ -2977,34 +2907,9 @@ PLAYER_BULLET		= 06
 
 	Objects_SpriteAttributes:	.ds 8	; $7FE7-$7FEE Object sprite attributes (only uses bit 6 for H-Flip and bits 0-1 for palette)
 
-	Roulette_Lives:			; Number of lives you are rewarded from winning the Roulette (NOTE: Shared with first byte of Objects_IsGiant)
-
-
-ITEM_NONE = $00
-ITEM_MUSHROOM = $01
-ITEM_FIREFLOWER = $02
-ITEM_SUPERLEAF = $03
-ITEM_FROGSUIT = $04
-ITEM_SHELL = $05
-ITEM_HAMMERSUIT = $06
-ITEM_ICEFLOWER = $07
-ITEM_FOXLEAF = $08
-ITEM_NINJASHROOM = $09
-ITEM_STARMAN = $0A
-ITEM_STOPWATCH = $0B
-ITEM_WINGS = $0C
-ITEM_1_HP = $0D
-ITEM_2_HP = $0E
-ITEM_3_HP = $0F
-ITEM_RADARSW	= $10
-ITEM_RADARS		= $11
-ITEM_RADARSE	= $12
-ITEM_RADARE		= $13
-ITEM_RADARNE	= $14
-ITEM_RADARN		= $15
-ITEM_RADARNW	= $16
-ITEM_RADARW		= $17
-ITEM_RADARUNKNOWN = $18
+	Objects_Data1:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
+	Objects_Data2:		.ds 8	; $7F-$83 Generic variable 4 for objects SLOT 0 - 4 ONLY
+	Objects_Data3:		.ds 8	; $7FD0-$7FD4 Generic variable 3 for objects SLOT 0 - 4 ONLY
 
 	;#FREERAM
 	
@@ -3034,19 +2939,98 @@ ITEM_RADARUNKNOWN = $18
 	Ignore_VBlank:		.ds 1
 	StatusBar_Palette:	.ds 3 
 
+
+ITEM_NONE = $00
+ITEM_MUSHROOM = $01
+ITEM_FIREFLOWER = $02
+ITEM_SUPERLEAF = $03
+ITEM_FROGSUIT = $04
+ITEM_SHELL = $05
+ITEM_HAMMERSUIT = $06
+ITEM_ICEFLOWER = $07
+ITEM_FOXLEAF = $08
+ITEM_NINJASHROOM = $09
+ITEM_STARMAN = $0A
+ITEM_STOPWATCH = $0B
+ITEM_WINGS = $0C
+ITEM_1_HP = $0D
+ITEM_2_HP = $0E
+ITEM_3_HP = $0F
+ITEM_RADARSW	= $10
+ITEM_RADARS		= $11
+ITEM_RADARSE	= $12
+ITEM_RADARE		= $13
+ITEM_RADARNE	= $14
+ITEM_RADARN		= $15
+ITEM_RADARNW	= $16
+ITEM_RADARW		= $17
+ITEM_RADARUNKNOWN = $18
+
+BADGE_INVALID = 255
+BADGE_ITEMRESERVE = 1
+BADGE_XP = 2
+BADGE_RADAR = 3
+BADGE_PMETER = 4
+BADGE_COIN = 5
+BADGE_AIR = 6
+
+
+ABILITY_EXTRAHIT = 1
+ABILITY_STARTBIG = 2
+ABILITY_NOSHROOMS = 3
+ABILITY_RECOVERY = 4
+ABILITY_DOUBLEJUMP = 5
+ABILITY_MAX = 5
+
 	; #SAVE RAM
-	Save_Ram_Boundary_Start:	.ds 1
+	Player_Stats_Boundary_Start: .ds 1	
+	World_Num:			.ds 1	
+	World_Map_Power:	.ds 1	
+	Map_Entered_Y:		.ds 1	
+	Map_Entered_XHi:	.ds 1	
+	Map_Entered_X:		.ds 1
+	Map_Previous_Y:		.ds 1	; $797E-$797F (Mario/Luigi) Stores the previous Y you were "safe" at; this is the Y you go back to if you die
+	Map_Previous_XHi:	.ds 1	; $7980-$7981 (Mario/Luigi) Same as Map_Previous_Y, only for XHi
+	Map_Previous_X:		.ds 1	; $7982-$7983 (Mario/Luigi) Same as Map_Previous_Y, only for X
+	Map_Prev_XOff2:		.ds 1	; $7986-$7987 (Mario/Luigi) Holds a copy of Map_Prev_XOff, but I'm not sure why?
+	Map_Prev_XHi2:		.ds 1	; $7988-$7989 (Mario/Luigi) Holds a copy of Map_Prev_XHi, but I'm not sure why?
+	Map_Prev_XOff:		.ds 2	; $0722-$0723 (Mario/Luigi) Stores previous scroll X offset on map
+	Map_Prev_XHi:		.ds 2	; $0724-$0725 (Mario/Luigi) Stores previous "hi byte" of map X
+	CheckPoint_Flag:	.ds 1
+	CheckPoint_Level:	.ds 1
+	CheckPoint_X:		.ds 1
+	CheckPoint_XHi:		.ds 1
+	CheckPoint_Y:		.ds 1
+	CheckPoint_YHi:		.ds 1
 	Levels_Complete:    .ds 16	;
+	Magic_Stars:			.ds 1	; 
 	Magic_Stars_Collected1: .ds 16 ;
 	Magic_Stars_Collected2:	.ds 16
 	Magic_Stars_Collected3:	.ds 16
+
 	PowerUp_Reserve:	.ds 1	;
 	Old_PowerUp_Reserve: .ds 1
+
 	DayNight:			.ds 1	; signifies if it's day or night
 	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
 	DayNightTicker:		.ds 1	;
-	Save_Ram_Boundary_End: .ds 1
-	
+	Player_Coins:		.ds 3	; Mario's coins
+	Player_Cherries:	.ds 1;
+	Player_Badge:		.ds 1	;
+	Player_Level:		.ds 1	;
+	Player_Experience:	.ds 3		; Experience points that increase by defeating enemies
+	SecondQuest:		.ds 1
+
+NORMAL_QUEST = $FF
+SECOND_QUEST = $FE
+
+	Player_Stats_Boundary_End: .ds 1
+
+	Save_Ram_Boundary_Start: 	.ds 1
+	Save_Ram:			.ds (Player_Stats_Boundary_End - Player_Stats_Boundary_Start)
+	Save_Ram_CheckSum:	.ds 2
+	Save_Ram_Boundary_End: 		.ds 1
+
 	; Tile map property flags
 MAP_PROP_BOUNDARY		= $00
 MAP_PROP_TRAVERSABLE	= $01
@@ -3127,18 +3111,11 @@ TILE_ITEM_SPINNER	= $FE
 	FireBallTransitions: .ds 8;
 	IceBallTransitions:  .ds 8;
 	PSwitchTransitions: .ds 16;
-	LevelName:			.ds 28
 	Force_LeveNameUpdate: .ds 1
 	TileCheckX:			.ds 1
 	TileCheckXHi:		.ds 1
 	PreviousLevel:		.ds 1
 	ForcedSwitch:       .ds 1
-	NegaStars:			.ds 8
-	SecondQuest:		.ds 1
-	GameScript_Wins:	.ds 1
-	GameScript_Losses:	.ds 1
-	GameScript_LossLimit: .ds 1
-	GameScript_Data:	.ds 16
 	Object_Count:	.ds 1
 	Poison_TapTimer:	.ds 1
 	
@@ -3147,32 +3124,8 @@ TILE_ITEM_SPINNER	= $FE
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000
 .Bound_8000:	BoundCheck .Bound_8000, $8000, MMC3 SRAM
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $7A01-$7A11 MMC3 SRAM as Cinematic for Wand Return (Post-Airship)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	.data
-	.org $7A01
-; This uses the same space as most of the Auto Scroll data, I'm annoyed that I have to make a section for this
-
-; After the wand is returned ONLY
-	CineKing_WandState:		.ds 1	; Wand state; 0 = falling, 1 = spinning, 2 = held
-	CineKing_WandFrame:		.ds 1	; Wand frame; 0 to 7
-	CineKing_ToadFrame:		.ds 1	; Toad's frame
-	CineKing_DiagHi:		.ds 1	; Text high address value
-
-					.ds 3	; $7A05-$7A07 unused in this context
-
-	CineKing_TimerT:		.ds 1	; Cheering Toad animation Timer
-	CineKing_Timer3:		.ds 1	; Timer decremented every 4 ticks (does not appear to be used!)
-
-					.ds 2	; $7A0A-$7A0B unused in this context
-
-	CineKing_WandX:			.ds 1	; Wand X position
-	CineKing_WandY:			.ds 1	; Wand Y position
-	CineKing_WandXVel:		.ds 1	; Wand X velocity (4.4FP)
-	CineKing_WandYVel:		.ds 1	; Wand Y velocity (4.4FP)
-	CineKing_WandXVel_Frac:		.ds 1	; Wand X velocity fractional accumulator
-	CineKing_WandYVel_Frac:		.ds 1	; Wand Y velocity fractional accumulator
+	.org $0700
+	Save_Ram_Backup: .ds 1
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $7A12
 .Bound_7A12:	BoundCheck .Bound_7A12, $7A12, Wand Return Cinematic Vars

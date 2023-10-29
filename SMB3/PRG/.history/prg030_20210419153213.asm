@@ -298,7 +298,7 @@ PRG030_84A0:
 	JSR PRGROM_Change_Both2	
 
 
-	JSR Map_Init	 ; Initialize map variables (page 11)
+	JSR Load_Save	 ; Initialize map variables (page 11)
 
 	LDA #$01
 	STA Map_Operation	; Map_Operation = 0 ("World X" intro)

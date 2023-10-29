@@ -158,6 +158,9 @@ PAUSE_ExitSprites:
 IntReset_Part2:
 	LDA PPU_STAT	 ;
 	BPL IntReset_Part2 ; Wait until VBlank
+
+	JSR SaveRam_Backup
+
 	LDA #$00	 ; 
 	STA PPU_CTL2	 ; Most importantly, hide sprites/bg
 	STA PPU_CTL1	 ; Most likely just to disable further Resets
@@ -181,6 +184,7 @@ PRG030_8437:
 	CMP #$5f	 ; 
 	BNE PRG030_8437	 ; If A <> $5F, loop again (clears down to $6000)
 
+	JSR SaveRam_Restore
 	; Clear $07FF - $0000, excluding $01xx
 	LDY #$07
 	JSR Clear_RAM_thru_ZeroPage
@@ -255,7 +259,7 @@ PRG030_84A0:
 	JSR PRGROM_Change_Both2	
 
 
-	JSR Map_Init	 ; Initialize map variables (page 11)
+	JSR Load_Save	 ; Initialize map variables (page 11)
 
 	LDA #$01
 	STA Map_Operation	; Map_Operation = 0 ("World X" intro)
@@ -293,8 +297,9 @@ PRG030_84D7:
 	STX PatTable_BankSel+3
 	INX
 	STX PatTable_BankSel+4
-	INX
-	STX PatTable_BankSel+5
+	
+	LDA #$7B
+	STA PatTable_BankSel+5
 
 	; Changes pages at A000 and C000 based on value Level_Tileset (0)
 	JSR SetPages_ByTileset	 ;	A000 = Page 11, C000 = Page 10
@@ -418,7 +423,8 @@ PRG030_8617:
 	LDY Player_Current	 ; Y = Player_Current
 	LDA Map_Prev_XOff,Y	 ; Get player's previous X offset (low byte)
 	STA <Horz_Scroll	 ; Set the scroll to that
-	STA <Scroll_Temp	 
+	STA <Scroll_Temp
+		 
 	LDA Map_Prev_XHi,Y	 ; Get player's previous X offset (high byte) 
 	STA <Horz_Scroll_Hi	 ; Store as current scroll "high"
 	JSR Scroll_Update_Ranges
@@ -913,9 +919,6 @@ PRG030_88C8:
 	STA <Scroll_LastDir
 
 	STA Shop_Mode_Initialized
-	STA Coins_ThisLevel	 ; Clear "coins earned this level" counter
-	STA Map_BonusCoinsReqd	 ; Clear the "coins required for bonus"
-	STA Map_BonusType	 ; Clear the "bonus type"
 
 	STA <Temp_Var1	; Temp_Var1 = 0
 
@@ -1382,7 +1385,7 @@ PRG030_8F31:
 	BEQ PRG030_8F42	 ; If Level_ExitToMap flag is not set, jump to PRG030_8F42
 
 	LDA Map_ReturnStatus
-	BPL PRG030_8F31_2
+	BPL Skip_StatReset
 
 	LDA Previous_Coins
 	STA Player_Coins
@@ -1394,7 +1397,7 @@ PRG030_8F31:
 	STA Player_Coins+2
 
 	LDA Previous_Cherries
-	STA Cherries
+	STA Player_Cherries
 
 	LDA Previous_Badge
 	STA Player_Badge
@@ -1404,7 +1407,6 @@ PRG030_8F31:
 
 	LDA Previous_Stars
 	STA Magic_Stars
-
 
 	JSR GetLevelBit
 	
@@ -1426,7 +1428,7 @@ PRG030_8F31:
 Player_DyingNoSuit:	
 	INC Force_StatusBar_Init
 
-PRG030_8F31_2:
+Skip_StatReset:
 	JSR MagicStar_ClearRadar
 	
 	; Transfer Player's current power up to the World Map counterpart
@@ -1685,65 +1687,65 @@ PRG030_9097:
 
 	LDY #$06	 ; Y = 6
 
-	LDA Map_ReturnStatus
-	BNE PRG030_910C	 ; If Player died, jump to PRG030_910C
+	; LDA Map_ReturnStatus
+	; BNE PRG030_910C	 ; If Player died, jump to PRG030_910C
 
 	; Player did not die...
 	JMP PRG030_9128
 	; Toad House and bonuses jump to PRG030_9128
-	LDA Level_Tileset
-	CMP #15
-	BGE PRG030_9128	 ; If Level_Tileset >= 15 (some kind of Bonus Game), jump to PRG030_9128
-	CMP #$07
-	BEQ PRG030_9128	 ; If Level_Tileset = 7 (Toad House), jump to PRG030_9128
+; 	LDA Level_Tileset
+; 	CMP #15
+; 	BGE PRG030_9128	 ; If Level_Tileset >= 15 (some kind of Bonus Game), jump to PRG030_9128
+; 	CMP #$07
+; 	BEQ PRG030_9128	 ; If Level_Tileset = 7 (Toad House), jump to PRG030_9128
 
-	; Typical levels go here...
+; 	; Typical levels go here...
 
-	LDX Player_Current	 ; X = Player_Current
+; 	LDX Player_Current	 ; X = Player_Current
 
-	; Set bonus appearance coordinates at your last valid location!
-	LDA Map_Previous_Y,X
-	STA Map_BonusAppY
-	LDA Map_Previous_XHi,X
-	STA Map_BonusAppXHi
-	LDA Map_Previous_X,X
-	STA Map_BonusAppX
+; 	; Set bonus appearance coordinates at your last valid location!
+; 	LDA Map_Previous_Y,X
+; 	STA Map_BonusAppY
+; 	LDA Map_Previous_XHi,X
+; 	STA Map_BonusAppXHi
+; 	LDA Map_Previous_X,X
+; 	STA Map_BonusAppX
 
-	LDA Map_Entered_Y,X
-	STA Map_Previous_Y,X
+; 	LDA Map_Entered_Y,X
+; 	STA Map_Previous_Y,X
 
-	LDA Map_Entered_XHi,X
-	STA Map_Previous_XHi,X
+; 	LDA Map_Entered_XHi,X
+; 	STA Map_Previous_XHi,X
 
-	LDA Map_Entered_X,X
-	STA Map_Previous_X,X
+; 	LDA Map_Entered_X,X
+; 	STA Map_Previous_X,X
 
-	LDA Map_Prev_XOff,X
-	STA Map_Prev_XOff2,X
+; 	LDA Map_Prev_XOff,X
+; 	STA Map_Prev_XOff2,X
 
-	LDA Map_Prev_XHi,X
-	STA Map_Prev_XHi2,X
+; 	LDA Map_Prev_XHi,X
+; 	STA Map_Prev_XHi2,X
 
-	JMP PRG030_9128	 ; Jump to PRG030_9128
+; 	JMP PRG030_9128	 ; Jump to PRG030_9128
 
-PRG030_910C:
+; PRG030_910C:
 
-	; Player returns to map dead
+; 	; Player returns to map dead
 
-	LDY #$02	 ; Y = 2 (Will be the Map_Operation value)
+; 	LDY #$02	 ; Y = 2 (Will be the Map_Operation value)
 
-	; Map_ReturnStatus = 0
-	LDA #$00
-	STA Map_ReturnStatus
+; 	; Map_ReturnStatus = 0
+; 	LDA #$00
+; 	STA Map_ReturnStatus
 
-	LDX Player_Current	 ; X = Player_Current
+; 	LDX Player_Current	 ; X = Player_Current
 
-	; Skid backward
-	LDA #$00
-	STA Map_Player_SkidBack,X
+; 	; Skid backward
+; 	LDA #$00
+; 	STA Map_Player_SkidBack,X
 
-	LDA Map_PlayerLost2PVs
-	BNE PRG030_9128	 ; If Map_PlayerLost2PVs is set, jump to PRG030_9128
+; 	LDA Map_PlayerLost2PVs
+; 	BNE PRG030_9128	 ; If Map_PlayerLost2PVs is set, jump to PRG030_9128
 
 PRG030_9128:
 
@@ -1819,6 +1821,7 @@ PRG030_9185:
 	JSR PRGROM_Change_A000
 
 	JSR Map_Reload_with_Completions	 ; Load map and set already completed levels
+
 
 	INC Top_Needs_Redraw
 	INC Bottom_Needs_Redraw
@@ -2028,25 +2031,6 @@ PRG030_92B6:
 	STA Map_Player_SkidBack,X
 	STA World_EnterState
 	STA Map_GameOver_CursorY
-
-	LDY #(Player_Coins - Inventory_Cards)	; Y = offset to Mario's coins
-
-	CPX #$00
-	BEQ PRG030_92FE	 ; If Player is Mario, jump to PRG030_92FE
-
-	LDY #(Player_Coins2 - Inventory_Cards)	; Y = offset to Luigi's coins
-
-PRG030_92FE:
-	LDA #(Player_Coins - Inventory_Cards)
-	STA <Temp_Var1		 ; Temp_Var1 = total bytes to clear
-
-	LDA #$00	 ; A = 0
-PRG030_9304:
-	STA Inventory_Cards,Y	 ; Clear cards/coins
-
-	DEY		 ; Y--
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BPL PRG030_9304	 ; While Temp_Var1 >= 0, loop
 
 	LDY #$3f	 ; Y = $3F (End of Mario's Map Completions)
 
@@ -2651,7 +2635,7 @@ JustName10:
 	LDX #$00
 
 	LDA SecondQuest
-	CMP #$FE
+	CMP #SECOND_QUEST
 	BNE JustName2
 
 	LDA #$D7
@@ -2953,7 +2937,7 @@ SetDNActive:
 	STY TempY
 
 	LDA SecondQuest
-	CMP #$FE
+	CMP #SECOND_QUEST
 	BNE LoadName
 
 	LDA #$D7
@@ -6279,3 +6263,102 @@ MagicStar_ClearRadar:
 
 MagicStar_ClearRadarRTS:
 	RTS
+
+Generate_StatChecksum:
+	LDY #(Player_Stats_Boundary_End - Player_Stats_Boundary_Start)
+
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
+
+Generate_StatChecksum_Loop:
+	LDA Player_Stats_Boundary_Start, Y
+	ADD <Temp_Var1
+	STA <Temp_Var1
+
+	LDA <Temp_Var2
+	ADC #$00
+	STA <Temp_Var2
+
+	DEY 
+	BPL Generate_StatChecksum_Loop
+	RTS
+
+Generate_SaveChecksum:
+	LDY #(Save_Ram_Boundary_End - Save_Ram_Boundary_Start - 3)
+
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
+
+Generate_SaveChecksum_Loop:
+	LDA Save_Ram_Boundary_Start, Y
+	ADD <Temp_Var1
+	STA <Temp_Var1
+
+	LDA <Temp_Var2
+	ADC #$00
+	STA <Temp_Var2
+
+	DEY 
+	BPL Generate_SaveChecksum_Loop
+	RTS
+
+Save_Game:
+	JSR Generate_StatChecksum
+
+	LDY #(Player_Stats_Boundary_End - Player_Stats_Boundary_Start)
+
+Save_GameLoop:	
+	LDA Player_Stats_Boundary_Start, Y
+	STA Save_Ram_Boundary_Start, Y
+	DEY 
+	BPL Save_GameLoop
+
+	LDA <Temp_Var1
+	STA Save_Ram_CheckSum
+
+	LDA <Temp_Var2
+	STA Save_Ram_CheckSum + 1
+	RTS
+
+
+SaveRam_Backup:
+	LDY #(Save_Ram_Boundary_End - Save_Ram_Boundary_Start)
+	
+SaveRam_BackupLoop:
+	LDA Save_Ram_Boundary_Start, Y
+	STA Save_Ram_Backup, Y
+
+	DEY
+	BPL SaveRam_BackupLoop
+	RTS
+
+SaveRam_Restore:
+	LDY #(Save_Ram_Boundary_End - Save_Ram_Boundary_Start)
+	
+SaveRam_RestoreLoop:
+	LDA Save_Ram_Backup, Y
+	STA Save_Ram_Boundary_Start, Y
+
+	DEY
+	BPL SaveRam_RestoreLoop
+	RTS
+
+Absolute_Param = Temp_Var15
+Absolute_Value = Temp_Var16
+
+Absolute_Add:
+	LDA Absolute_Param
+	BEQ Absolute_AddRTS
+
+	BMI Absolute_AddSub
+
+	ADD Absolute_Value
+
+Absolute_AddRTS:
+	RTS
+
+Absolute_AddSub:
+	SUB Absolute_Value
+	RTS 

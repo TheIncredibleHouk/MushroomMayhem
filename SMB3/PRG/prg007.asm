@@ -2301,7 +2301,7 @@ CannonBall_Solid:
 	LDA Block_NeedsUpdate
 	BNE CannonBall_TilesInteraction1
 
-	LDY #$03
+	LDY #$04
 
 CannonBall_TilesInteraction0:
 	LDA Cannon_Tiles, Y
@@ -2332,7 +2332,7 @@ CannonBall_TilesInteraction1:
 	RTS
 
 Cannon_Tiles:
-	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_STONE), (TILE_PROP_SOLID_ALL | TILE_PROP_STONE), (TILE_ITEM_BRICK), (TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	.byte (TILE_PROP_SOLID_TOP | TILE_PROP_STONE), (TILE_PROP_SOLID_ALL | TILE_PROP_STONE), (TILE_ITEM_BRICK), (TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL), (TILE_PROP_SOLID_ALL | TILE_PROP_SOLID_OBJECTINTERACT)
 
 CannonBall_TilesInteraction2:
 	LDA Tile_LastValue
@@ -3718,6 +3718,28 @@ ObjectGen_CannonballCont:
 	LDA CannonBall_YVel, X
 	STA SpecialObj_YVel, Y
 
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BNE CannonBall_Place
+
+	LDA #$08
+	STA Absolute_Value
+
+	LDA CannonBall_XVel, X
+	STA Absolute_Param
+
+	JSR Absolute_Add
+	
+	STA SpecialObj_XVel, Y
+
+	LDA CannonBall_YVel, X
+	STA Absolute_Param
+	
+	JSR Absolute_Add
+
+	STA SpecialObj_YVel, Y
+
+CannonBall_Place:
 	LDA #$01
 	STA SpecialObj_Stompable, Y
 
@@ -4389,66 +4411,66 @@ PlatformGenTimer:
 ; 	JMP FireCannonBall	 ; Fire the cannonball!
 
 ; FireCannonBall:
-	LDY #$05	 ; Y = 5
+; 	LDY #$05	 ; Y = 5
 
-PRG007_BE60:
-	LDA SpecialObj_ID,Y
-	BEQ PRG007_BE69	 ; If this special object slot is free, jump to PRG007_BE69
+; PRG007_BE60:
+; 	LDA SpecialObj_ID,Y
+; 	BEQ PRG007_BE69	 ; If this special object slot is free, jump to PRG007_BE69
 
-	DEY		 ; Y--
-	BPL PRG007_BE60	 ; While Y >= 0, loop!
+; 	DEY		 ; Y--
+; 	BPL PRG007_BE60	 ; While Y >= 0, loop!
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-PRG007_BE69:
+; PRG007_BE69:
 
-	; Set this as a cannon ball!
-	LDA #SOBJ_CANNONBALL
-	STA SpecialObj_ID,Y
+; 	; Set this as a cannon ball!
+; 	LDA #SOBJ_CANNONBALL
+; 	STA SpecialObj_ID,Y
 
-	; Set cannonball X
-	LDA ObjectGenerator_X,X
-	CLC
-	LDX <Temp_Var1		; X = 0 to 7
-	ADC CannonPoof_XOffs,X
-	STA SpecialObj_X,Y
+; 	; Set cannonball X
+; 	LDA ObjectGenerator_X,X
+; 	CLC
+; 	LDX <Temp_Var1		; X = 0 to 7
+; 	ADC CannonPoof_XOffs,X
+; 	STA SpecialObj_X,Y
 
-	; Set cannonball Y velocity
-	LDA FourWay_CannonballYVel,X
-	ASL A
-	STA SpecialObj_YVel,Y
+; 	; Set cannonball Y velocity
+; 	LDA FourWay_CannonballYVel,X
+; 	ASL A
+; 	STA SpecialObj_YVel,Y
 
-	; Set cannonball X velocity
-	LDA FourWay_CannonballXVel,X
-	ASL A
-	STA SpecialObj_XVel,Y
+; 	; Set cannonball X velocity
+; 	LDA FourWay_CannonballXVel,X
+; 	ASL A
+; 	STA SpecialObj_XVel,Y
 
-	; Temp_Var3 = 0 (16-bit sign extension)
-	LDA #$00
-	STA <Temp_Var3
+; 	; Temp_Var3 = 0 (16-bit sign extension)
+; 	LDA #$00
+; 	STA <Temp_Var3
 
-	LDA CannonPoof_YOffs,X
-	BPL PRG007_BE91	 ; If Y offset is not negative, jump to PRG007_BE91
+; 	LDA CannonPoof_YOffs,X
+; 	BPL PRG007_BE91	 ; If Y offset is not negative, jump to PRG007_BE91
 
-	DEC <Temp_Var3	 ; Temp_Var3 = $FF (16-bit sign extension)
+; 	DEC <Temp_Var3	 ; Temp_Var3 = $FF (16-bit sign extension)
 
-PRG007_BE91:
-	CLC
-	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
-	ADC ObjectGenerator_Y,X
-	STA SpecialObj_Y,Y
-	LDA ObjectGenerator_YHi,X
-	ADC <Temp_Var3		; 16-bit sign extension
-	STA SpecialObj_YHi,Y	
+; PRG007_BE91:
+; 	CLC
+; 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
+; 	ADC ObjectGenerator_Y,X
+; 	STA SpecialObj_Y,Y
+; 	LDA ObjectGenerator_YHi,X
+; 	ADC <Temp_Var3		; 16-bit sign extension
+; 	STA SpecialObj_YHi,Y	
 
-	; Data = 0
-	LDA #$00
-	STA SpecialObj_Data1,Y
+; 	; Data = 0
+; 	LDA #$00
+; 	STA SpecialObj_Data1,Y
 
-	JMP ObjectGenerator_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
+; 	JMP ObjectGenerator_NoiseAndSmoke	 ; Play cannon fire noise and make smoke
 
-PRG007_BEAA:
-	RTS		 ; Return
+; PRG007_BEAA:
+; 	RTS		 ; Return
 
 	; Produces the smoke resulting from cannon fire; specify X/Y offset
 	; from Cannon Fire's position by Temp_Var1 which indexes CannonPoof_X/YOffs 
@@ -4536,6 +4558,10 @@ BulletBillGen_Make:
 	STA ObjectGenerator_Timer, X
 
 BulletBillGen_NoOverride:
+	LDA ObjectGenerator_Visibility, X
+	CMP #(GENERATOR_VVISIBLE | GENERATOR_HVISIBLE)
+	BNE ObjectGen_BulletBillRTS
+
 	JSR PrepareNewObjectOrAbort
 
 	LDY <CurrentObjectIndexZ	 ; Y = Cannon Fire object slot
@@ -4598,6 +4624,27 @@ PRG007_BF81:
 	LDA Bill_YVel, Y
 	STA <Objects_YVelZ, X
 
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BNE Place_Bullet
+
+	LDA #$08
+	STA Absolute_Value
+	
+	LDA <Objects_XVelZ, x
+	STA Absolute_Param
+	
+	JSR Absolute_Add
+
+	STA <Objects_XVelZ, X
+
+	LDA <Objects_YVelZ, X
+	STA Absolute_Param
+
+	JSR Absolute_Add
+	STA <Objects_YVelZ, X
+
+Place_Bullet:
 	LDA <Objects_XZ, X
 	ADD Bill_XOffset,Y
 	STA <Objects_XZ, X
@@ -4626,10 +4673,6 @@ PRG007_BF81:
 
 	LDA #$02
 	STA Objects_SpritesRequested, X
-
-	LDA ObjectGenerator_Visibility, X
-	AND #(GENERATOR_VVISIBLE | GENERATOR_HVISIBLE)
-	BNE Make_BulletRTS
 
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM

@@ -322,7 +322,7 @@ Super_MarioStandard:
 	LDA Player_Coins+2
 	STA Previous_Coins+2
 
-	LDA Cherries
+	LDA Player_Cherries
 	STA Previous_Cherries
 
 	LDA Magic_Stars
@@ -3570,19 +3570,6 @@ Bumps_PowerUpBlock2:
 
 	LDA Bump_YHi
 	STA <Objects_YHiZ, X
-
-	LDA <Player_X
-	AND #$0F
-	CMP #$08
-	BCS PowerUp_Left
-
-	LDA #$08
-	STA <Objects_YVelZ, X
-	RTS
-
-PowerUp_Left:
-	LDA #$F8
-	STA <Objects_YVelZ, X
 	RTS
 
 BumpBlock_CheckMushroom:
@@ -5300,7 +5287,7 @@ Bg_Cherry:
 	LDA Block_NeedsUpdate
 	BNE Bg_CherryRTS
 
-	LDA Cherries
+	LDA Player_Cherries
 	CMP #99
 	BCS Bg_CherryRTS
 
@@ -5308,7 +5295,7 @@ Bg_Cherry:
 	ORA #SND_LEVELBLIP
 	STA Sound_QLevel1
 
-	INC Cherries
+	INC Player_Cherries
 
 	LDA #$00
 	STA Tile_LastProp

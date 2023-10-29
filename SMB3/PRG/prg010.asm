@@ -177,6 +177,7 @@ PRG010_C447:
 
 	LDA <Horz_Scroll_Hi
 	ADC Map_ScrollDeltaXHi,Y	
+	STA Debug_Snap
 	STA <Horz_Scroll_Hi	; Add carry if needed!
 
 	JSR Scroll_Update_Ranges	; Update Scroll column values
@@ -1158,14 +1159,14 @@ FX_MonoFlash_By_MapTick:
 
 
 MO_HammerBroMarch:
-	LDA Map_NoLoseTurn
-	BEQ PRG010_C9F2	 ; If Player's turn will end, jump to PRG010_C9F2
-
-	; Otherwise, Map_Operation = $0C (the "Wait 8 ticks and proceed" state...)
-	LDA #$0c
-	STA Map_Operation
-
-	JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
+	;LDA Map_NoLoseTurn
+	;BEQ PRG010_C9F2	 ; If Player's turn will end, jump to PRG010_C9F2
+;
+	;; Otherwise, Map_Operation = $0C (the "Wait 8 ticks and proceed" state...)
+	;LDA #$0c
+	;STA Map_Operation
+;
+	;JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
 
 PRG010_C9F2:
 	JSR WorldMap_UpdateAndDraw	; Update and draw map
@@ -1464,7 +1465,7 @@ PRG010_CB6B:
 PRG010_CB6B_End
 
 Border_TopCorners:	.byte $A2, $A3, $FF	; Upper left corner, upper right corner, and a black one more to the right
-Border_VertEdges:	.byte $B4, $B4, $FF	; Border left, border right, and a black one more to the right
+Border_VertEdges:	.byte $15, $15, $FF	; Border left, border right, and a black one more to the right
 Border_BottomCorners:	.byte $B2, $B3, $FF	; Lower left corner, lower right corner, and a black one more to the right
 
 VBorder_Offset:
@@ -1875,9 +1876,10 @@ Map_PostJC_PUpPML:	.byte $16, $1A
 
 
 MO_NormalMoveEnter:
-	LDA #$00
-	STA Map_NoLoseTurn	 ; Map_NoLoseTurn = 0
-	STA Map_WasInPipeway	 ; Map_WasInPipeway = 0
+	JSR Map_SaveMenu
+
+	LDA Save_Menu_Showing
+	BNE PRG010_CD6E
 
 	LDX Player_Current
 	LDA <World_Map_Move,X
@@ -1888,6 +1890,7 @@ MO_NormalMoveEnter:
 PRG010_CDDC:
 	LDA Map_Pan_Count	
 	BNE PRG010_CD6E	 	; If map is panning, jump to PRG010_CD6E (indirect to WorldMap_UpdateAndDraw)
+
 
 	LDA <Pad_Input	
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)	 
@@ -2027,7 +2030,6 @@ PRG010_CEAC:
 
 	LDA #$00	 
 	STA World_EnterState	; World_EnterState = 0
-	STA Map_NoLoseTurn	 ; Clear Map_NoLoseTurn
 
 	JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
 
@@ -2111,6 +2113,7 @@ PRG010_CEF4:
 WorldMap_UpdateAndDraw:
 	JSR FindLevelInfo
 	JSR UpdateLevelName
+
 
 	LDY Player_Current 	; Y = Player_Current
 
@@ -2214,6 +2217,11 @@ Map_BorderSprites:
 Map_BorderSprites_End
 
 Map_DrawPlayer:
+	LDA Save_Menu_Showing
+	BEQ Map_DrawPlayer1
+	RTS
+
+Map_DrawPlayer1:
 	LDX Player_Current	; X = Player_Current
 	LDA <World_Map_Y,X	; A = Player's Y position
 	CMP #$f8
@@ -3004,6 +3012,9 @@ UpdateLevelName:
 
 	STA PreviousLevelNumber
 
+	JSR Map_UpdateCollectedStars
+
+	LDX Graphics_BufCnt
 	LDA #$2B
 	STA Graphics_Buffer, X
 	
@@ -3034,7 +3045,79 @@ UpdateLevelName_Loop:
 UpdateLevelName_LoopRTS:	
 	RTS
 
+Map_UpdateCollectedStars:
+
+	LDA #$FE
+	STA Status_Bar_Top + 15
+	STA Status_Bar_Top + 16
+	STA Status_Bar_Top + 17
+	
+	LDA LevelNumber
+	CMP #$FF
+	BEQ Map_UpdateStars
+
+	JSR GetLevelBit
+	PHA
+	LDX #$D6
+	AND Magic_Stars_Collected1, Y
+	BEQ Map_UpdateCollectedStars1
+	INX
+
+Map_UpdateCollectedStars1:
+	STX Status_Bar_Top + 15
+	LDX #$D6
+	PLA
+	PHA
+	AND Magic_Stars_Collected2, Y
+	BEQ Map_UpdateCollectedStars2
+	INX
+
+Map_UpdateCollectedStars2:
+	STX Status_Bar_Top + 16
+	LDX #$D6
+	PLA
+	AND Magic_Stars_Collected3, Y
+	BEQ Map_UpdateCollectedStars3
+	INX
+
+Map_UpdateCollectedStars3:
+	STX Status_Bar_Top + 17
+
+Map_UpdateStars:
+	LDX Graphics_BufCnt
+	BNE Map_MagicStarsRTS
+
+	LDA #$2B
+	STA Graphics_Buffer, X
+	
+	LDA #$31
+	STA Graphics_Buffer + 1, X
+	
+	LDA #$03
+	STA Graphics_Buffer + 2, X
+
+	LDA Status_Bar_Top + 15
+	STA Graphics_Buffer + 3, X
+	
+	LDA Status_Bar_Top + 16
+	STA Graphics_Buffer + 4, X
+
+	LDA Status_Bar_Top + 17
+	STA Graphics_Buffer + 5, X
+
+	LDA Graphics_BufCnt
+	ADD #$06
+	STA Graphics_BufCnt
+
+	LDA #$00
+	STA Graphics_Buffer + 6, X
+Map_MagicStarsRTS:
+	RTS
+	
 DrawMapBackground:
+	LDA Save_Menu_Showing
+	BNE NoMapClouds
+	
 	LDA World_Num
 	BEQ NoMapClouds
 

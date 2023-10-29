@@ -25,57 +25,68 @@ PRG011_A1C8:
 	.byte $03, $04, $05, $01, $03, $05, $01, $01
 	.byte $00, $00, $00, $00, $00, $00, $00, $00
 
-Map_Init:
-	LDX World_Num	 		; X = World_Num
+Check_Save:
+	JSR Generate_SaveChecksum
+	LDA <Temp_Var1
+	ORA <Temp_Var2
+	BEQ Checksum_Invalid
 
-	; Unknown lookup val stored to an unused variabl
+	LDA <Temp_Var1
+	CMP Save_Ram_CheckSum
+	BNE Checksum_Invalid
 
-	; X = World_Num << 1
-	TXA
-	ASL A
-	TAX
+	LDA <Temp_Var2
+	CMP Save_Ram_CheckSum + 1
+	BNE Checksum_Invalid
+ 
+	LDY #(Player_Stats_Boundary_End - Player_Stats_Boundary_Start)
 
-	LDY World_Num	 	; Y = World_Num
-	LDX Total_Players	; X = Total players (1 for 1P, 2 for 2P)
-	DEX		 	; X--
+LoadSave_Loop:
+	LDA Save_Ram_Boundary_Start, Y
+	STA Player_Stats_Boundary_Start, Y
+	DEY
+	BPL LoadSave_Loop
 
-	; Initialization for players...
-PRG011_A23E:
-	; X is the player index, 1 = Luigi, 0 = Mario
-	; Y is World_Num
+	SEC
+	RTS
 
-	; Set starting Y position
-	LDA #$60
-	STA Map_Entered_Y,X
-	STA Map_Previous_Y,X
+Checksum_Invalid:
+	CLC
+	RTS
+
+Load_Save:
+	JSR Check_Save
+	BCS Map_Init
+	
+	LDA #$01
+	STA World_Num
+
+	LDA #$40
+	STA Map_Entered_Y
+	STA Map_Previous_Y
+	
+	LDA #$00
+	STA Map_Entered_XHi
 
 	; Set starting X position (forced to $20!)
-	LDA #$50
-	STA Map_Entered_X,X
-	STA Map_Previous_X,X
+	LDA #$30
+	STA Map_Entered_X
+	STA Map_Previous_X
 
-	; Set Player's previous movement direction
+	LDA #$FF
+	STA SecondQuest
+
 	LDA #$01
-	STA Map_Previous_Dir,X
+	STA Map_Previous_Dir
 
 	LDA #$00
-	STA Map_Previous_UnusedPVal2,X
-	STA Map_Entered_XHi,X
-	STA Map_Previous_XHi,X
-	STA Map_Unused7984,X	; Cleared here, but never used
-	STA Map_Prev_XOff2,X
-	STA Map_Prev_XHi2,X
-	STA Map_Unused798A,X	; Cleared here, but never used
-	STA Map_Prev_XOff,X
-	STA Map_Prev_XHi,X
+	STA Map_Prev_XOff2
+	STA Map_Prev_XHi2
+	STA Map_Prev_XOff
+	STA Map_Prev_XHi
 
-	DEX		 ; X--
-	BPL PRG011_A23E	 ; As long as we have another player to init, loop!
+Map_Init:
 
-
-	; Clear the following
-	STA Map_WhiteHouse
-	STA Map_CoinShip
 
 	RTS		 ; Return
 
@@ -1693,9 +1704,7 @@ PRG011_AB5B:
 	JMP PRG011_ABCC	 ; Jump to PRG011_ABCC (MapObjects_UpdateDrawEnter)
 
 PRG011_AB61:
-	LDA Map_WasInPipeway
-	BNE PRG011_AB58	 ; If we were just in a pipe, jump to PRG011_AB58 (PRG011_ABBE) (do short cycle because we didn't do anything)
-
+	
 	; Here we check if Player was on top of a map object, thus assumed to be the cause of level entry, thus needs to be "completed."
 
 	LDY #(MAPOBJ_TOTAL - 1)	 ; Y = (MAPOBJ_TOTAL - 1) (For all map objects)
@@ -1769,9 +1778,6 @@ PRG011_ABBE:
 	BNE PRG011_ABCC	 ; If Map_ClearLevelFXCnt <> 0, jump to PRG011_ABCC
 
 	; Level clearing effect is over...
-
-	LDA #$00
-	STA Map_WasInPipeway
 
 	; Map_Operation = 8
 	LDA #$08
@@ -1935,46 +1941,6 @@ MAPOBJ_UNK0C_Y:	.byte $60
 MAPOBJ_UNK0C_X:	.byte $60
 
 MapBonusChk_MAPOBJ_UNK0C:
-	LDA Map_BonusType
-	CMP #$02
-	BNE PRG011_AD9C	 ; If Map_BonusType <> 2, jump to PRG011_AD9C (RTS)
-
-	LDA Coins_ThisLevel
-	CMP Map_BonusCoinsReqd
-	BLT PRG011_AD9C	 ; If Coins_ThisLevel < Map_BonusCoinsReqd, jump to PRG011_AD9C (RTS)
-
-	; Find an empty map object slot
-	JSR Map_FindEmptyObjectSlot
-
-	; Put the MAPOBJ_UNK0C here
-	LDA #MAPOBJ_UNK0C
-	STA Map_Objects_IDs,Y
-
-	; Set the MAPOBJ_UNK0C Y
-	LDA MAPOBJ_UNK0C_Y
-	STA Map_Objects_Y,Y
-	STA Map_Object_ActY,Y
-
-	LDA MAPOBJ_UNK0C_X
-	PHA		 ; Save original value
-
-	; Set the MAPOBJ_UNK0C XHi
-	AND #%00001111	 ; The lower 4 bits are the X Hi
-	STA Map_Objects_XHi,Y
-	STA Map_Object_ActXH,Y
-
-	PLA		 ; Restore original value
- 
-	; Set the MAPOBJ_UNK0C X
-	AND #%11110000
-	STA Map_Objects_XLo,Y
-	STA Map_Object_ActX,Y
-
-	; Bonus appearance sound!
-	LDA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-
-PRG011_AD9C:
 	RTS		 ; Return
 
 
@@ -2042,8 +2008,6 @@ Map_March_InitValues:
 ; the Player is standing in it.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Map_Object_Do_All:
-	LDA Map_NoLoseTurn
-	BNE PRG011_ADF4	 ; If Map_NoLoseTurn is set, jump to PRG011_ADF4 (RTS)
 
 	LDY #(MAPOBJ_TOTAL-1) 	; Total map objects which may exist on the map (only 8 are defined at start)
 	STY <Temp_Var13		; Temp_Var13 = $0D
@@ -2459,11 +2423,6 @@ Map_Airship_Travel_To:
 	CMP #$04
 	BNE PRG011_B1A7	 ; If Map_Operation <> 4, jump to PRG011_B1A7
 
-	LDA Map_Anchored
-	BEQ PRG011_B17A	 ; If Airship is not anchored, jump to PRG011_B17A
-
-	JMP PRG011_B2B8	 ; Airship anchored!  Jump to PRG011_B2B8
-
 PRG011_B17A:
 	LDA #$00
 	STA Map_March_Count+1	; Clear Airship's counter
@@ -2705,14 +2664,14 @@ PRG011_B2B8:
 	JMP FX_MonoFlash_By_MapTick	; Otherwise, jump to FX_MonoFlash_By_MapTick (on Page 10)
 
 PRG011_B2C0:
-	LDA Map_Anchored
-	BEQ PRG011_B2D0	 	; If Map_Anchored = 0 (Airship not anchorned), jump to PRG011_B2D0
+	; LDA Map_Anchored
+	; BEQ PRG011_B2D0	 	; If Map_Anchored = 0 (Airship not anchorned), jump to PRG011_B2D0
 
-	; Airship's anchored!
-	LDA #$00	 
-	STA Map_March_Count+1		; Stop Airship
-	STA Map_Airship_Dest		; Reset destination index
-	JMP Map_Object_March_UpdateXs	; And that's it...
+	; ; Airship's anchored!
+	; LDA #$00	 
+	; STA Map_March_Count+1		; Stop Airship
+	; STA Map_Airship_Dest		; Reset destination index
+	; JMP Map_Object_March_UpdateXs	; And that's it...
 
 PRG011_B2D0:
 	LDA SndCur_Level2	
@@ -4145,10 +4104,6 @@ PRG011_BB7A:
 PRG011_BB7B:
 	CPY #$07	 
 	BGE PRG011_BB9A	 	; If World_8_Dark >= 7 (effect complete), jump to PRG011_BB9A
-
-	LDA #$00	
-	STA Map_W8D_Idx	 	; Map_W8D_Idx = 0
-
 	LDA <World_Map_X,X	; Player's X coordinate -> A
 	ADD PRG011_BB66,Y	; Add an offset based on World_8_Dark
 
@@ -4179,8 +4134,6 @@ PRG011_BB9A:
 	INY		 ; Otherwise, Y++
 
 PRG011_BBAC:
-	STY Map_W8D_Idx	 ; -> Map_W8D_Idx
-
 	LDA <World_Map_X,X
 	PHA		 ; Save Player's map X
 
@@ -4403,4 +4356,129 @@ MarkCompletedLevels3:
 	LDY <Temp_Var5
 
 	LDA [Map_Tile_AddrL],Y
+
+Map_SaveMenuSCRTS:
 	RTS	
+
+
+Map_SaveMenu:
+	LDA Map_Pan_Count
+	BNE Map_SaveMenuSCRTS
+
+	LDA Save_Menu_Showing
+	BEQ Map_SaveMenuHidden
+
+	JMP Map_SaveMenuShowing
+
+Map_SaveMenuHidden:
+	LDA <Pad_Input
+	AND #PAD_START
+	BEQ Map_SaveMenuHiddenRTS
+
+	LDA #$01
+	STA Save_Menu_Showing
+
+	LDA #$00
+	STA Save_Menu_YesNo
+
+	LDA #PAUSE_STOPMUSIC
+	STA Sound_QPause
+
+Map_SaveMenuHiddenRTS:
+	RTS
+
+
+SAVE_MENU_YES = 0
+SAVE_MENU_NO = 1
+SAVE_MENU_SPRAM = $A0
+SAVE_MENU_SPRAM_STOP = (4 * 10) + SAVE_MENU_SPRAM
+
+Map_SaveMenuTiles:
+Map_SaveMenuYes:
+	.byte $C1, $C3, $C5, $C7, $C9
+	.byte $EB, $ED, $EF, $F1, $F3
+
+Map_SaveMenuNo:
+	.byte $CB, $CD, $CF, $D1, $D3
+	.byte $E1, $E3, $E5, $E7, $E9
+
+Map_SaveMenuX:
+	.byte $6C, $74, $7C, $84, $8C
+	.byte $6C, $74, $7C, $84, $8C
+	.byte $6C, $74, $7C, $84, $8C
+	.byte $6C, $74, $7C, $84, $8C
+
+Map_SaveMenuY:
+	.byte $60, $60, $60, $60, $60
+	.byte $70, $70, $70, $70, $70
+	.byte $60, $60, $60, $60, $60
+	.byte $70, $70, $70, $70, $70
+
+Map_SaveMenuOffset:
+	.byte 00, (Map_SaveMenuNo - Map_SaveMenuYes)
+
+Map_SaveMenuShowing:
+	LDY Save_Menu_YesNo 
+
+	LDA Map_SaveMenuOffset, Y
+	TAX
+
+	LDY #SAVE_MENU_SPRAM
+	
+Map_SaveMenuLoop:
+	LDA Map_SaveMenuTiles, X
+	STA Sprite_RAMTile, Y
+
+	LDA Map_SaveMenuX, X
+	STA Sprite_RAMX, Y
+
+	LDA Map_SaveMenuY, X
+	STA Sprite_RAMY, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	INX
+
+	CPY #SAVE_MENU_SPRAM_STOP
+	BNE Map_SaveMenuLoop
+
+	LDA <Pad_Input
+	AND #PAD_START
+	BEQ Map_SaveMenuToggleCheck
+
+	LDA Save_Menu_YesNo
+	BNE Save_MenuRTS
+
+	JSR Save_Game
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELPOWER
+	STA Sound_QLevel1
+
+Save_MenuRTS:
+	LDA #PAUSE_RESUMEMUSIC
+	STA Sound_QPause
+	
+	LDA #$00
+	STA Save_Menu_Showing
+	RTS
+
+Map_SaveMenuToggleCheck:
+	LDA <Pad_Input
+	AND #(PAD_UP | PAD_DOWN | PAD_SELECT)
+	BEQ Map_SaveMenuShowingRTS
+
+
+	LDA Save_Menu_YesNo
+	EOR #$01
+	STA Save_Menu_YesNo
+
+Map_SaveMenuShowingRTS:
+	RTS	
+	; List continued in PRG025

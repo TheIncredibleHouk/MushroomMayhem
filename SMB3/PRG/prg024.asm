@@ -1509,19 +1509,15 @@ PRG024_AC96:
 PRG024_ACA5:
 	STY Sprite_RAM+$F0	 ; Set it!
 
-	JSR Title_3Glow	 		; Make the big '3' glow!F
-
 	LDA SndCur_Level1
 	BNE PRG024_AC96	 ; If the "gling" sound has not ended, loop!
 
 	INC <Title_State ; Title_State++
 
 Title_PrepForWorldMap:
-	LDA #$01
-	STA World_Num
-
 	LDA #$FF
-	STA SecondQuest
+	STA Player_Stats_Boundary_Start
+	STA Player_Stats_Boundary_End
 
 	INC Force_StatusBar_Init
 
@@ -1529,18 +1525,17 @@ Title_PrepForWorldMap:
 	STA Air_Time
 	STA Tile_Anim_Enabled
 
-
-	LDA #$0F
-	STA Player_Coins
+	; LDA #$0F
+	; STA Player_Coins
 	
-	LDA #$27
-	STA Player_Coins + 1
+	; LDA #$27
+	; STA Player_Coins + 1
 
-	LDA #45 
-	STA Magic_Stars
+	; LDA #45 
+	; STA Magic_Stars
 
-	LDA #$63
-	STA Cherries
+	; LDA #$63
+	; STA Player_Cherries
 
 	LDA #$0F
 	STA StatusBar_Palette
@@ -1564,15 +1559,6 @@ Title_PrepForWorldMap:
 	STA BrickBust_Pal
 	STA BrickBust_Pal+1
 	STA BrickBust_Pal+2
-
-	LDA #$63
-	LDX #$00
-
-Title_PrepForWorldMap1:
-	;STA Inventory_Items, X
-	INX
-	CPX #$10
-	BNE Title_PrepForWorldMap1
 	RTS		 ; Return
 
 ; Title_DebugMenu:
@@ -5444,5 +5430,3 @@ Ending2_EndPicSprites3:
 	.byte $3F, $B1, $01, $30
 	.byte $3F, $B1, $41, $38
 	.byte $47, $B5
-
-	; List continued in PRG025

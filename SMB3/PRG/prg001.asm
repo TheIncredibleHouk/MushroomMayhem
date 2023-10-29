@@ -329,7 +329,16 @@ Skip_SprAnimOffset:
 
 ObjInit_PowerUp2:
 	JSR Object_CalcBoundBox
-	JSR Object_MoveAwayFromPlayer
+	LDY #$00
+
+	LDA DayNight
+	BPL PowerUp_InitSetXVel
+
+	INY
+
+PowerUp_InitSetXVel:
+	LDA PowerUp_XVel, Y
+	STA <Objects_XVelZ, X
 
 	LDA <Objects_XZ, X
 	STA PowerUp_StartX, X
@@ -337,6 +346,9 @@ ObjInit_PowerUp2:
 	LDA <Objects_YZ, X
 	STA PowerUp_StartY, X
 	RTS
+
+PowerUp_XVel:
+	.byte $08, $F8
 
 PowerUp_Type = Objects_Data1
 PowerUp_Raise = Objects_Data2
@@ -869,7 +881,7 @@ PUp_CheckPoint:
 	LDA Player_Coins+2
 	STA Previous_Coins+2
 
-	LDA Cherries
+	LDA Player_Cherries
 	STA Previous_Cherries
 
 	LDA PowerUp_Reserve
@@ -2295,10 +2307,10 @@ Magic_StarPoofAppear:
 	
 	JSR Common_MakePoof
 
+Magic_StarNoPoof:
 	LDA #SND_LEVELPOOF
 	STA Sound_QLevel1
 
-Magic_StarNoPoof:
 	LDA #$01
 	STA Objects_Property, X
 	JMP MagicStar_NoFloat
@@ -2484,110 +2496,110 @@ ObjInit_NegaStar:
 
 ObjNorm_NegaStar:
 
-	; Up to 8 Negastars are possible, each with different star costs, the NegaStars are prefilled at game initialization
-	; see GAME START comment
-	LDY Objects_Property, X
-	LDA NegaStars, Y
-	BNE ObjNorm_NegaStar0
-	JMP Coin_Unlock
+; ; 	; Up to 8 Negastars are possible, each with different star costs, the NegaStars are prefilled at game initialization
+; ; 	; see GAME START comment
+; ; 	LDY Objects_Property, X
+; ; 	LDA NegaStars, Y
+; ; 	BNE ObjNorm_NegaStar0
+; ; 	JMP Coin_Unlock
 
-ObjNorm_NegaStar0:
-	JSR Object_DeleteOffScreen
-	LDA <Player_HaltGameZ
-	BNE ObjNorm_NegaStar01
-	LDA #$91
-	BEQ ObjNorm_NegaStar01
-	JSR TakeMagic_Star
+; ; ObjNorm_NegaStar0:
+; ; 	JSR Object_DeleteOffScreen
+; ; 	LDA <Player_HaltGameZ
+; ; 	BNE ObjNorm_NegaStar01
+; ; 	LDA #$91
+; ; 	BEQ ObjNorm_NegaStar01
+; ; 	JSR TakeMagic_Star
 
-ObjNorm_NegaStar01:
-	JSR Object_DrawMirrored
+; ; ObjNorm_NegaStar01:
+; ; 	JSR Object_DrawMirrored
 
-	LDA Objects_SpritesHorizontallyOffScreen,X 
-	ORA Objects_SpritesVerticallyOffScreen,X
-	BNE NegaStarRTS
+; ; 	LDA Objects_SpritesHorizontallyOffScreen,X 
+; ; 	ORA Objects_SpritesVerticallyOffScreen,X
+; ; 	BNE NegaStarRTS
 
-	LDY Objects_Property, X
+; ; 	LDY Objects_Property, X
 
-	LDA NegaStars, Y
-	STA DigitsParam
+; ; 	LDA NegaStars, Y
+; ; 	STA DigitsParam
 
-	JSR BytesTo2Digits
+; ; 	JSR BytesTo2Digits
 
-	LDY Object_SpriteRAMOffset, X
+; ; 	LDY Object_SpriteRAMOffset, X
 
-	LDA Sprite_RAM, Y
-	ADD #$10
-	STA Sprite_RAM+8, Y
-	STA Sprite_RAM+12, Y
+; ; 	LDA Sprite_RAM, Y
+; ; 	ADD #$10
+; ; 	STA Sprite_RAM+8, Y
+; ; 	STA Sprite_RAM+12, Y
 
-	LDA Sprite_RAM+3, Y
-	STA Sprite_RAM+11, Y
-	ADD #$08
-	STA Sprite_RAM+15, Y
+; ; 	LDA Sprite_RAM+3, Y
+; ; 	STA Sprite_RAM+11, Y
+; ; 	ADD #$08
+; ; 	STA Sprite_RAM+15, Y
 
-	LDA #SPR_PAL1
-	STA Sprite_RAM+10,Y
-	STA Sprite_RAM+14,Y
+; ; 	LDA #SPR_PAL1
+; ; 	STA Sprite_RAM+10,Y
+; ; 	STA Sprite_RAM+14,Y
 
-	LDA <DigitsResult
-	ASL A
-	ADD #$A1
-	STA Sprite_RAM + 9, Y
+; ; 	LDA <DigitsResult
+; ; 	ASL A
+; ; 	ADD #$A1
+; ; 	STA Sprite_RAM + 9, Y
 
-	LDA <DigitsResult + 1
-	ASL A
-	ADD #$A1
-	STA Sprite_RAM + 13, Y
+; ; 	LDA <DigitsResult + 1
+; ; 	ASL A
+; ; 	ADD #$A1
+; ; 	STA Sprite_RAM + 13, Y
 
-NegaStarRTS:
-	RTS
+; NegaStarRTS:
+; 	RTS
 
-TakeMagic_Star:
-	LDA Objects_Data4, X
-	BEQ TakeMagic_Star0
-	DEC Objects_Data4, X
-	RTS
+; TakeMagic_Star:
+; 	LDA Objects_Data4, X
+; 	BEQ TakeMagic_Star0
+; 	DEC Objects_Data4, X
+; 	RTS
 
-TakeMagic_Star0:
-	INC Objects_Data5, X
-	LDA Objects_Data5, X
-	CMP #$20
-	BEQ TakeMagic_Star1
+; TakeMagic_Star0:
+; 	INC Objects_Data5, X
+; 	LDA Objects_Data5, X
+; 	CMP #$20
+; 	BEQ TakeMagic_Star1
 
-	LDY Objects_Property, X
-	LDA <Player_SpriteX
-	STA Sprite_RAM+11,Y
-	ADD #$08
-	STA Sprite_RAM+15,Y
+; 	LDY Objects_Property, X
+; 	LDA <Player_SpriteX
+; 	STA Sprite_RAM+11,Y
+; 	ADD #$08
+; 	STA Sprite_RAM+15,Y
 
-	LDA <Player_SpriteY
-	SUB Objects_Data5, X
-	STA Sprite_RAM+8,Y
-	STA Sprite_RAM+12,Y
+; 	LDA <Player_SpriteY
+; 	SUB Objects_Data5, X
+; 	STA Sprite_RAM+8,Y
+; 	STA Sprite_RAM+12,Y
 
-	LDA #$7F
-	STA Sprite_RAM+9,Y
-	STA Sprite_RAM+13,Y
+; 	LDA #$7F
+; 	STA Sprite_RAM+9,Y
+; 	STA Sprite_RAM+13,Y
 
-	LDA #SPR_PAL1
-	STA Sprite_RAM+10,Y
-	ORA #SPR_HFLIP
-	STA Sprite_RAM+14,Y
-	RTS
+; 	LDA #SPR_PAL1
+; 	STA Sprite_RAM+10,Y
+; 	ORA #SPR_HFLIP
+; 	STA Sprite_RAM+14,Y
+; 	RTS
 
-TakeMagic_Star1:
-	DEC Magic_Stars
-	LDY Objects_Property, X
-	LDA NegaStars, Y
-	SUB #$01
-	STA NegaStars, Y
-	LDA Sound_QLevel1
-	ORA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-	LDA #40
-	STA Objects_Data4,X
-	LDA #$00
-	STA Objects_Data5,X
+; TakeMagic_Star1:
+; 	DEC Magic_Stars
+; 	LDY Objects_Property, X
+; 	LDA NegaStars, Y
+; 	SUB #$01
+; 	STA NegaStars, Y
+; 	LDA Sound_QLevel1
+; 	ORA #SND_MAPBONUSAPPEAR
+; 	STA Sound_QMap
+; 	LDA #40
+; 	STA Objects_Data4,X
+; 	LDA #$00
+; 	STA Objects_Data5,X
 	RTS
 	
 
@@ -2638,6 +2650,7 @@ ObjNorm_StarPiece:
 	LDA SPFrames, Y
 	STA Objects_Frame, X
 
+	JSR Object_DeleteOffScreen
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
@@ -2669,7 +2682,25 @@ DrawStarPieceAnim:
 
 StarCoin_Collect:
 	LDA #SND_MAPINVENTORYFLIP	 
-	STA Sound_QMap	
+	STA Sound_QMap
+
+	LDX #$04
+
+Find_StarCollection:
+	CPX <CurrentObjectIndexZ
+	BEQ NotFound_StarCollection
+
+	LDA Objects_ID, X
+	CMP #OBJ_STARCOLLECTION
+	BNE NotFound_StarCollection
+
+	INC StarPiecesCollected, X
+
+NotFound_StarCollection:
+	DEX
+	BPL Find_StarCollection
+
+	LDX <CurrentObjectIndexZ
 	JMP Object_SetDeadEmpty	
 
 

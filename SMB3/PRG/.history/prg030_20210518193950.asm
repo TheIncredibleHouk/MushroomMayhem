@@ -1386,7 +1386,7 @@ PRG030_8F31:
 	STA Player_Coins+2
 
 	LDA Previous_Cherries
-	STA Cherries
+	STA Player_Cherries
 
 	LDA Previous_Stars
 	STA Magic_Stars

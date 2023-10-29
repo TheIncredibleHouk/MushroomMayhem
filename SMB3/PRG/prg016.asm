@@ -3421,11 +3421,11 @@ BadgeShop_BuyBadge:
 	LDA BadgeShop_List + 1, Y
 	TAY
 
-	LDA Cherries
+	LDA Player_Cherries
 	SUB BadgeShop_Cost, Y
 	BCC BadgeShop_CannotBuy
 	
-	STA Cherries
+	STA Player_Cherries
 	LDX <CurrentObjectIndexZ
 	LDY BadgeShop_Window, X
 

@@ -604,8 +604,6 @@ SetSplash:
 ; updates the timers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Objects_HandleScrollAndUpdate:
-;	INC Save_Ram_Boundary_Start
-;	INC Save_Ram_Boundary_End
 	JSR Objects_AssignSprites
 	JSR Objects_ResetDetects
 

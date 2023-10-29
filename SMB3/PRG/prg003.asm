@@ -20,6 +20,7 @@ OBJ_COINALERT		= $37
 OBJ_MONTYMOLE		= $38
 OBJ_TILEEXTENDER	= $39
 OBJ_STARBARRIER     = $3A
+OBJ_STARCOLLECTION	= $3B
 
     .word ObjInit_WoodenPlatHorz    ; Object $28
 	.word ObjInit_WoodenPlatVert    ; Object $29
@@ -40,7 +41,7 @@ OBJ_STARBARRIER     = $3A
 	.word ObjInit_MontyMole			; Object $38
 	.word ObjInit_TileExtender			; Object $39
 	.word ObjInit_StarBarrier			; Object $3A
-	.word ObjInit_DoNothing			; Object $3B
+	.word ObjInit_StarPieceCollection			; Object $3B
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT GAME LOOP ******************************
@@ -63,7 +64,7 @@ OBJ_STARBARRIER     = $3A
 	.word ObjNorm_MontyMole			; Object $38
 	.word ObjNorm_TileExtender		; Object $39
 	.word ObjNorm_StarBarrier			; Object $3A
-	.word ObjNorm_DoNothing			; Object $3B
+	.word ObjNorm_StarPieceCollection			; Object $3B
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -2614,4 +2615,127 @@ Barrier_DrawLoop:
 	DEX
 	BPL Barrier_DrawLoop
 	RTS
+
+;-----
 	
+StarPieceXOffset:
+	.byte $30, $28, $20, $18, $10
+
+StarPiecesCollected = Objects_Data1
+MagicStarTable:
+	.byte OBJ_MAGICSTAR_1, OBJ_MAGICSTAR_2, OBJ_MAGICSTAR_3
+
+ObjInit_StarPieceCollection:
+	LDA #$05
+	STA Objects_SpritesRequested,X
+
+	LDA #$FF
+	STA Objects_YHiZ, X
+	RTS
+
+ObjNorm_StarPieceCollection:
+	LDA #$9B
+	STA <Temp_Var1
+
+	LDA #$9D
+	STA <Temp_Var2
+
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+
+	LDA #$4D
+	STA PatTable_BankSel + 4, Y
+	CPY #$00
+	BEQ ObjNorm_StarPieceCollection1
+
+	LDA <Temp_Var1
+	ADD #$40
+	STA <Temp_Var1
+
+	LDA <Temp_Var2
+	ADD #$40
+	STA <Temp_Var2
+
+ObjNorm_StarPieceCollection1:
+	LDY Object_SpriteRAMOffset, X
+	
+	LDA StarPiecesCollected, X
+	CMP #$05
+	BCS StarCollection_Make
+
+	STA <Temp_Var5
+
+CheckNextStarPiece:
+	LDA #$08
+	STA Sprite_RAMY, Y
+
+	LDA #SPR_PAL3
+	STA Sprite_RAMAttr, Y
+
+	LDA <Temp_Var5
+	BNE UseFilledStar
+
+	LDA <Temp_Var2
+	BNE DrawStarPiece
+
+UseFilledStar:
+	LDA <Temp_Var1
+
+DrawStarPiece:
+	STA Sprite_RAMTile, Y
+
+	LDA StarPieceXOffset, X
+	STA Sprite_RAMX, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	LDA <Temp_Var5
+	BEQ StarCollection_Draw
+
+	DEC <Temp_Var5
+
+StarCollection_Draw:
+	DEX
+	BPL CheckNextStarPiece
+	RTS
+
+StarCollection_Make:
+	LDX <CurrentObjectIndexZ
+
+	LDA Objects_Property, X
+	TAY
+
+	LDA MagicStarTable, Y
+	STA Objects_ID, X
+	
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA #$01
+	STA Objects_Property, X
+
+	LDA <Player_X
+	STA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Player_XHi
+	STA <Objects_XHiZ, x
+
+	LDA <Player_YZ
+	SUB #$18
+	STA <Objects_YZ, X
+	STA Poof_Y
+
+	LDA <Player_YHiZ
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	JMP Common_MakePoof
+
+StarPieceRTS:
+	RTS

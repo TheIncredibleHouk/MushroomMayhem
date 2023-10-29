@@ -1138,7 +1138,6 @@ PRG005_BE67:
 	BPL PRG005_BE37	 ; While Y >= 0, loop
 
 	; Clear a bunch of stuff!
-	STA EndCard_Flag
 	STA RotatingColor_Cnt
 	STA Player_TwisterSpin
 	STA Level_Vibration

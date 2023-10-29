@@ -1460,8 +1460,10 @@ ObjNorm_KeyPieceCollection1:
 CheckNextPiece:
 	LDA #$08
 	STA Sprite_RAM, Y
+
 	LDA #SPR_PAL3
-	STA Sprite_RAM + 2, Y
+	STA Sprite_RAMAttr, Y
+
 	LDA <Temp_Var5
 	AND KeyPieceGet, X
 	BNE UseFilledKey
