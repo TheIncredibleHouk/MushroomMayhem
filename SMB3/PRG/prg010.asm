@@ -177,7 +177,6 @@ PRG010_C447:
 
 	LDA <Horz_Scroll_Hi
 	ADC Map_ScrollDeltaXHi,Y	
-	STA Debug_Snap
 	STA <Horz_Scroll_Hi	; Add carry if needed!
 
 	JSR Scroll_Update_Ranges	; Update Scroll column values

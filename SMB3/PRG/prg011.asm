@@ -4418,6 +4418,8 @@ Map_SaveMenuOffset:
 	.byte 00, (Map_SaveMenuNo - Map_SaveMenuYes)
 
 Map_SaveMenuShowing:
+	JSR Cheat_Code
+	
 	LDY Save_Menu_YesNo 
 
 	LDA Map_SaveMenuOffset, Y
@@ -4457,14 +4459,14 @@ Map_SaveMenuLoop:
 
 	JSR Save_Game
 
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOWER
-	STA Sound_QLevel1
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 
 Save_MenuRTS:
 	LDA #PAUSE_RESUMEMUSIC
 	STA Sound_QPause
-	
+
 	LDA #$00
 	STA Save_Menu_Showing
 	RTS
@@ -4481,4 +4483,242 @@ Map_SaveMenuToggleCheck:
 
 Map_SaveMenuShowingRTS:
 	RTS	
+
+U_ = PAD_UP
+D_ = PAD_DOWN
+L_ = PAD_LEFT
+R_ = PAD_RIGHT
+S_ = PAD_SELECT
+B_ = PAD_B
+A_ = PAD_A
+__ = 00
+X_ = $FF
+
+Cheat_Codes:	
+	.byte U_, U_, U_, U_, U_, U_, U_, U_, U_
+	.byte U_, R_, D_, L_, U_, R_, D_, L_, __
+	.byte L_, D_, R_, D_, L_, D_, R_, D_, L_
+	.byte L_, R_, S_, B_, A_, B_, S_, R_, L_
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, U_
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, D_
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, L_
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, R_
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, S_
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, B_
+	.byte S_, B_, S_, B_, S_, B_, S_, B_, S_
+	.byte U_, R_, S_, U_, L_, A_, S_, U_, B_
+
+Cheat_Index = Temp_Var1
+Cheat_Offset = Temp_Var2
+Cheat_Number = Temp_Var3
+Cheat_Length = 9
+Cheat_Count = 12
+
+Cheat_Code:
+	LDA <Pad_Input
+	BNE Cheat_CodeInput
+
+	RTS
+
+Cheat_CodeInput:
+	LDX #$0F
+
+Cheat_InputLoop:
+	LDA Cheat_Input - 1, X
+	STA Cheat_Input, X
+
+	DEX
+	BNE Cheat_InputLoop
+
+	LDA <Pad_Input
+	STA Cheat_Input
+
+	LDA #$00
+	STA <Cheat_Index
+	STA <Cheat_Number
+
+Cheat_BeginSearch:
+	LDA #(Cheat_Length)
+	STA <Cheat_Offset
+
+	LDX #$00
+	
+	LDA <Cheat_Index
+	ADD #(Cheat_Length - 1)
+	TAY
+
+Cheat_CodeSearch:
+	LDA Cheat_Codes, Y
+	BEQ Cheat_CodeSkip
+
+	CMP Cheat_Input, X
+	BNE Cheat_CodeBad
+
+	INX
+
+Cheat_CodeSkip:
+	DEY
+	DEC <Cheat_Offset
+	
+	LDA <Cheat_Offset
+	BNE Cheat_CodeSearch
+	BEQ Cheat_CodeSuccess
+
+Cheat_CodeBad:
+	INC <Cheat_Number
+
+	LDA <Cheat_Index
+	ADD #(Cheat_Length)
+	STA <Cheat_Index
+
+	CMP #(Cheat_Count * Cheat_Length)
+	BNE Cheat_BeginSearch
+	RTS
+
+Cheat_CodeSuccess:
+	LDA Sound_QLevel1
+	ORA #SND_LEVEL1UP
+	STA Sound_QLevel1
+
+	LDA #$00
+	STA Save_Menu_Showing
+
+	LDA #PAUSE_RESUMEMUSIC
+	STA Sound_QPause
+
+	LDA #$00
+	LDX #(Cheat_Count)
+
+Cheat_Clear:
+	STA Cheat_Input, X
+	DEX
+	BPL Cheat_Clear
+	
+	LDA <Cheat_Number
+	
+	JSR DynJump
+
+	.word Cheat_AbilityUp
+	.word Cheat_250Coins
+	.word Cheat_25Cherries
+	.word Cheat_1000Exp
+	.word Cheat_Badge1
+	.word Cheat_Badge2
+	.word Cheat_Badge3
+	.word Cheat_Badge4
+	.word Cheat_Badge5
+	.word Cheat_Badge6
+	.word Cheat_DebugMode
+	.word Cheat_Sub
+
+Cheat_DoNothing:
+	RTS
+
+Cheat_AbilityUp:
+	LDA Player_Level
+	CMP #ABILITY_MAX
+	BCS Cheat_AbilityUpRTS
+
+	INC Player_Level
+
+Cheat_AbilityUpRTS:
+	RTS
+
+Cheat_250Coins:
+	LDA #250
+	STA Coins_Earned
+	RTS
+
+Cheat_25Cherries:
+	LDA Player_Cherries
+	ADD #25
+	CMP #99
+	BCC Cheat_25CherriesRTS
+
+	LDA #99
+
+Cheat_25CherriesRTS:
+	STA Player_Cherries
+	RTS
+
+Cheat_1000Exp:
+	LDA Player_Experience
+	STA <CalcParam1
+
+	LDA Player_Experience + 1
+	STA <CalcParam1 + 1
+
+	LDA Player_Experience + 2
+	STA <CalcParam1 + 2
+
+	LDA #$E7
+	STA <CalcParam2
+
+	LDA #$03
+	STA <CalcParam2 + 1
+
+	LDA #$00
+	STA <CalcParam2 + 2
+
+	JSR Add3ByteValue
+
+	LDA <CalcResult
+	STA Player_Experience
+
+	LDA <CalcResult + 1
+	STA Player_Experience + 1
+
+	LDA <CalcResult + 2
+	STA Player_Experience + 2
+
+	INC Exp_Earned
+	RTS
+
+BADGE_ITEMRESERVE = 1
+BADGE_XP = 2
+BADGE_RADAR = 3
+BADGE_PMETER = 4
+BADGE_COIN = 5
+BADGE_AIR = 6
+
+Cheat_Badge1:
+	LDA #BADGE_ITEMRESERVE
+	BNE Cheat_BadgeApply
+
+Cheat_Badge2:
+	LDA #BADGE_XP
+	BNE Cheat_BadgeApply
+
+Cheat_Badge3:
+	LDA #BADGE_RADAR
+	BNE Cheat_BadgeApply
+
+Cheat_Badge4:
+	LDA #BADGE_PMETER
+	BNE Cheat_BadgeApply
+
+Cheat_Badge5:
+	LDA #BADGE_COIN
+	BNE Cheat_BadgeApply
+
+Cheat_Badge6:
+	LDA #BADGE_AIR
+	BNE Cheat_BadgeApply
+
+Cheat_BadgeApply:
+	STA Player_Badge
+	RTS
+
+Cheat_DebugMode:
+	LDA Player_Debug
+	EOR #$01
+	STA Player_Debug
+	RTS
+
+Cheat_Sub:
+	STA Debug_Snap
+	LDA Player_CheatSub
+	EOR #$01
+	STA Player_CheatSub
+	RTS
 	; List continued in PRG025

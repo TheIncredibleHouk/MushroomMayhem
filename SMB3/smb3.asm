@@ -971,6 +971,8 @@ SPR_VFLIP	= %10000000
 	Player_Power:		.ds 1
 	Old_Player_Power:	.ds 1
 	Old_Player_Badge:	.ds 1
+	Player_Debug:		.ds 1
+	Player_CheatSub:	.ds 1
 	; Level_JctCtl is configured when you enter a door or a pipe
 	; * When $80, use current values for Level_AltLayout and Level_AltObjects
 	; * When otherwise non-zero (inc $80), skips setting vertical start position
@@ -1600,7 +1602,7 @@ MARIO_SUBMARINE = 1
 MARIO_PLANE = 2
 
 	Player_Vehicle:	.ds 1
-						.ds 1
+					.ds 1
 	CineKing_Timer:			; Timer; decrements to zero (shares Objects_Timer first byte)
 	Objects_Timer:		.ds 8	; $0518-$051F "Timer" values; automatically decrements to zero
 
@@ -2133,7 +2135,8 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 	.data
 	.org $7000
 
-MapPointers:	.ds 256
+	MapPointers:	.ds 256
+	Cheat_Input: 	.ds 16
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $68xx SRAM for 2P Vs ONLY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

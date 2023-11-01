@@ -740,6 +740,9 @@ PRG030_881D:
 	LDA #SND_MAPENTERLEVEL
 	STA Sound_QMap	 ; Play "enter level" sound effect!
 
+	LDA #$00
+	STA Sound_QLevel1
+
 	LDA #$FF
 	STA Map_Transition_Column
 
@@ -2914,6 +2917,7 @@ SetDNActive:
 	
 	LDA [Temp_Var14],Y
 	AND #$08
+	ORA Player_CheatSub
 	STA Player_Vehicle
 
 	LDY #$0A
@@ -6172,10 +6176,15 @@ DistributeNextSprite:
 
 	LDA <Temp_Var1
 	STA Sprite_FreeRAM
+
+Debug_QuickRTS:
 	RTS	
 
 
 Debug_Code:
+	LDA Player_Debug
+	BEQ Debug_QuickRTS
+
 	LDA <Pad_Holding
 	AND #PAD_B
 	BEQ Debug_CodeRTS

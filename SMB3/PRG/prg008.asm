@@ -1331,7 +1331,7 @@ Frog_FrameOffset:
 
 	; Base velocity for frog swim right/down, left/up
 Frog_Velocity:
-	.byte 16, -16
+	.byte 12, -12
 
 Swim_Frog:
 	LDA Player_Vehicle

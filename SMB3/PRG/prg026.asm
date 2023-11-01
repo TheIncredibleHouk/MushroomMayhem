@@ -2447,6 +2447,7 @@ Initialize_Status_Bar:
 	JSR StatusBar_DrawDayNightMeter
 	JSR StatusBar_DrawReserve
 	JSR StatusBar_DrawBadge
+	
 	INC Top_Needs_Redraw
 	INC Bottom_Needs_Redraw
 	RTS
@@ -2632,7 +2633,7 @@ Game_UpdateCherries1:
 	;RTS
 	
 StatusBar_DrawCherries:
-	LDA Object_Count
+	LDA Player_Cherries
 	STA <DigitsParam
 	
 	JSR BytesTo2Digits
