@@ -969,7 +969,14 @@ PRG030_897B:
 	LDA #$00	
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 	STA LeftRightInfection
-	STA Player_IsHolding
+	STA Objects_BeingHeld, X
+	STA Objects_BeingHeld + 1, X
+	STA Objects_BeingHeld + 2, X
+	STA Objects_BeingHeld + 3, X
+	STA Objects_BeingHeld + 4, X
+	STA Objects_BeingHeld + 5, X
+	STA Objects_BeingHeld + 6, X
+	STA Objects_BeingHeld + 7, X
 	
 	JSR MagicStar_ClearRadar
 	JSR LevelLoad			; Load the level layout data!

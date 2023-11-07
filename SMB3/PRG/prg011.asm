@@ -4507,12 +4507,13 @@ Cheat_Codes:
 	.byte B_, A_, B_, A_, B_, A_, B_, A_, B_
 	.byte S_, B_, S_, B_, S_, B_, S_, B_, S_
 	.byte U_, R_, S_, U_, L_, A_, S_, U_, B_
+	.byte B_, U_, L_, B_, A_, S_, A_, U_, R_
 
 Cheat_Index = Temp_Var1
 Cheat_Offset = Temp_Var2
 Cheat_Number = Temp_Var3
 Cheat_Length = 9
-Cheat_Count = 12
+Cheat_Count = 13
 
 Cheat_Code:
 	LDA <Pad_Input
@@ -4610,6 +4611,7 @@ Cheat_Clear:
 	.word Cheat_Badge6
 	.word Cheat_DebugMode
 	.word Cheat_Sub
+	.word Cheat_SecondQuest
 
 Cheat_DoNothing:
 	RTS
@@ -4716,9 +4718,14 @@ Cheat_DebugMode:
 	RTS
 
 Cheat_Sub:
-	STA Debug_Snap
 	LDA Player_CheatSub
 	EOR #$01
 	STA Player_CheatSub
 	RTS
-	; List continued in PRG025
+	
+Cheat_SecondQuest:
+	LDA SecondQuest
+	EOR #$01
+	STA SecondQuest
+	RTS
+		; List continued in PRG025

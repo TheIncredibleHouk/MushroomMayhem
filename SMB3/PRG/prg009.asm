@@ -250,12 +250,12 @@ AScroll_HorizontalInitMove:
 
 
 AutoScroll_HorizontalFast:
-	LDA #$08
+	LDA #$0C
 	STA Level_AScrlHVel	
 	BNE AutoScroll_HorizontalNorm
 
 AutoScroll_Horizontal:
-	LDA #$04
+	LDA #$06
 	STA Level_AScrlHVel
 
 AutoScroll_HorizontalNorm:

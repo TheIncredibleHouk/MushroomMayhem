@@ -713,7 +713,7 @@ Lava_DrainDrawRTS:
 ;	in the upper left hand corner.
 ;***********************************************************************************	
 TimerStartTimes:
-	.byte 30, 100, 120
+	.byte 30, 100, 120, 180
 
 Timer_Remaining = Objects_Data1
 Timer_WarningPlayed = Objects_Data2
@@ -1139,6 +1139,8 @@ JumpControl_CheckJump:
 	LDA JumpControl_SwitchProps, Y
 	STA TileProperties + $E2
 	STA TileProperties + $E3
+
+	INC Block_WasUpdated
 
 JumpControl_RTS:
 	RTS		
@@ -1799,6 +1801,10 @@ Lightning_CheckWater:
 	BNE Lightning_Draw
 
 Lightning_Electricute:
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
+	BNE Lightning_Delete
+
 	LDA #$01
 	STA Lightning_Action, X
 	
@@ -1818,6 +1824,7 @@ Lightning_Electricuting:
 	LDA Objects_Timer, X
 	BNE Lightning_Flash
 
+Lightning_Delete:
 	JMP Object_Delete
 
 Lightning_Flash:
@@ -1837,6 +1844,23 @@ Lightning_PlayerHurt:
 	BEQ Lightning_RTS
 
 	JSR Player_GetHurt
+
+	LDX #$04
+	
+Lightning_KillOthers:
+	CPX <CurrentObjectIndexZ
+	BEQ Lightning_Next
+
+	LDA Objects_InWater, X
+	BEQ Lightning_Next
+
+	JSR Object_StarBurstDeath
+
+Lightning_Next:
+	DEX
+	BPL Lightning_KillOthers
+
+	LDX <CurrentObjectIndexZ
 	RTS     
 
 

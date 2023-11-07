@@ -2414,8 +2414,12 @@ Enemy_LightningBoltDraw:
 	AND #$02
 	TAY
 
+	LDA <Player_HaltGameZ
+	BNE Enemy_LightningDoDraw
+
 	INC SpecialObj_Data1, X
 
+Enemy_LightningDoDraw:
 	LDA LightningBolt_Tiles, Y
 	STA <SpecialObj_Tile
 
@@ -3863,6 +3867,7 @@ BobOmbGen_Make:
 	LSR A
 	STA Objects_Property, X
 
+	
 	LDA #$C0
 	STA ObjectGenerator_Timer, Y
 	LDY <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
@@ -3885,14 +3890,23 @@ ObjectGen_Goombas:
 ObjectGen_GoombasRTS:	
 	RTS
 
+GoombaLimits:
+	.byte $03, $01
+
 GoombaGen_Make:
+	LDA ObjectGenerator_Property, X
+	AND #$04
+	LSR A
+	LSR A
+	TAY
+
 	LDA #OBJ_GOOMBA
 	STA <Object_Check
 
 	JSR CheckObjectsOfType
 
 	LDA <Num_Objects
-	CMP #$03
+	CMP GoombaLimits, Y
 	BCS GoombaGeneratorRTS
 
 	JSR PrepareNewObjectOrAbort

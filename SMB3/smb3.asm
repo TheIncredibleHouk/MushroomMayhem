@@ -3346,7 +3346,7 @@ OA3_HALT_MASK		= %00001111	; Not intended for use in attribute table, readabilit
 OA3_WINDAFFECTS		= %00010000	; Enemy should "squash" (state 7) not "shell" (state 3), or "killed" (state 6) in case of statue/Kuribo's shoe stomp; requires OA2_NOTSHELLED to be NOT SET
 OA3_NOTSTOMPABLE	= %00100000	; If the Player tries to stomp this enemy, he will be HURT!  (E.g. Spikey enemy)
 OA3_SHELL		= %01000000	; The CollideJumpTable entry MAY contain the "special" entry; see CollideJumpTable; also "dies" into "shell" (state 3) (i.e. object "bumps" into shell when hit from beneath)
-OA3_TAILATKIMMUNE	= %10000000	; Object cannot be Raccoon tail attacked
+OA3_TAILATKIMMUNE	= %10000000	; Object cannot - Raccoon tail attacked
 
 
 ; Object Attribute Common Flags

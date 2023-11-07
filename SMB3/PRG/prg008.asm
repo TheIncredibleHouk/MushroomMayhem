@@ -1744,10 +1744,14 @@ Jump_Over_PRG008_AC9E:
 	LDA <Player_InAir
 	BEQ DIRECT_TO_JUMP
 
+	LDA <Pad_Holding
+	AND #PAD_UP
+	BEQ Skip_Jump
+	
 	LDA Player_AllowAirJump
 	BNE DIRECT_TO_JUMP	 ; If Player_AllowAirJump <> 0, jump to PRG008_AC41
 
-Skip_Jump	
+Skip_Jump:	
 	JMP PRG008_AC9E	 ; If Player is mid air, jump to PRG008_AC9E
 
 PRG008_AC41:
@@ -3104,7 +3108,7 @@ TileAttrAndQuad_OffsFlat:
 
 TileAttrAndQuad_OffsFlat_Sm:
 	; Small or ducking moving downward - right half
-	.byte $11, $08 ; head
+	.byte $14, $08 ; head
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
 	.byte $20, $0B	; Ground right
@@ -3112,7 +3116,7 @@ TileAttrAndQuad_OffsFlat_Sm:
 	.byte $1B, $0E	; In-front lower
 
 	; Small or ducking moving downward - left half
-	.byte $11, $08 ; head
+	.byte $14, $08 ; head
 	.byte $18, $08  ; body
 	.byte $20, $04	; Ground left
 	.byte $20, $0B	; Ground right
@@ -3120,7 +3124,7 @@ TileAttrAndQuad_OffsFlat_Sm:
 	.byte $1B, $02	; In-front lower
 
 	; Small or ducking moving upward - right half
-	.byte $11, $08 ; head
+	.byte $14, $08 ; head
 	.byte $18, $08  ; body
 	.byte $10, $04	; Ground left
 	.byte $10, $0B	; Ground right
@@ -3128,7 +3132,7 @@ TileAttrAndQuad_OffsFlat_Sm:
 	.byte $1B, $0E	; In-front lower
 
 	; Small or ducking moving upward - left half
-	.byte $11, $08 ; head
+	.byte $14, $08 ; head
 	.byte $18, $08  ; body
 	.byte $10, $04	; Ground left
 	.byte $10, $0B	; Ground right

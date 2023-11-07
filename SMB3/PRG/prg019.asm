@@ -972,6 +972,15 @@ Generate_BlooperY:
 	.byte $40, $60, $80, $A0
 
 Generate_Blooper:
+	LDA #OBJ_BLOOPER
+	STA <Object_Check
+
+	JSR CheckObjectsOfType2
+
+	LDA <Num_Objects
+	CMP #$02
+	BCS LevelEvent_SpawnBlooperRTS
+
 	JSR Level_SpawnObj	 ; Spawn new object (Note: If no slots free, does not return)
 
 	; Set Spike Cheep's object ID
@@ -1007,7 +1016,7 @@ Generate_Blooper:
 	JSR Object_DetectTile
 	LDA Tile_LastProp
 	CMP #TILE_PROP_SOLID_ALL
-	BNE Blooper_Generate
+	BCC Blooper_Generate
 
 	JSR Object_Delete
 

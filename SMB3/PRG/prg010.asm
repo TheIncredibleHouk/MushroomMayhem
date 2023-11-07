@@ -2040,15 +2040,6 @@ PRG010_CEBF:
 	BEQ PRG010_CEE1	 	; If Player is not pressing 'A', jump to PRG010_CEE1
 
 PRG010_CEC9:
-	LDA <Pad_Holding
-	AND #PAD_SELECT
-	BEQ SecondQuest_NotToggled
-
-	LDA SecondQuest
-	EOR #$01
-	STA SecondQuest
-
-SecondQuest_NotToggled:
 	; What makes other tiles (e.g. standard panels) work...
 	JSR Player_CheckEnterableSprite
 

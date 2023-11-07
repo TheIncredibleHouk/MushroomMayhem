@@ -3628,10 +3628,14 @@ Blooper_CoolDown = Objects_Data2
 
 Blooper_XVel:
 	.byte $EC, $14
+	.byte $F4, $0C
 
 ObjInit_Blooper:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA #ATTR_WINDAFFECTS
+	STA Objects_BehaviorAttr, X
 	RTS	
 
 ObjNorm_Blooper:
@@ -3647,12 +3651,25 @@ Blooper_Norm:
 	CMP #$01
 	BNE Blooper_Move
 
-	LDA #$D8
-	STA <Objects_YVelZ, X
 
 	JSR Object_XDistanceFromPlayer
+
+	LDA Objects_InWater, X
+	BNE Blooper_ApplyMove
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Blooper_Move
+
+	INY
+	INY
+
+Blooper_ApplyMove:
 	LDA Blooper_XVel, Y
 	STA <Objects_XVelZ, X
+
+	LDA #$D8
+	STA <Objects_YVelZ, X
 	
 	LDA <Objects_XVelZ, X
 	JSR Double_Value

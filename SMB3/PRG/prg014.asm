@@ -250,7 +250,8 @@ Lakitu_GraphicsTables:
 	.byte $0B, $0B, $0B, $1A
 
 ObjInit_Lakitu:
-	LDA #$07
+
+	LDA #$08
 	STA Objects_SpritesRequested, X
 	
 	LDA #BOUND16x16
@@ -313,13 +314,21 @@ Lakitu_Alive:
 	LDA Objects_SlowTimer, X
 	BEQ Lakitu_Do
 	
-	LDA <Horz_Scroll
-	ADD #$40
+	STA Debug_Snap
+
+	LDA <Player_X
 	STA <Objects_XZ, X
 
-	LDA <Horz_Scroll_Hi
-	ADC #$01
+	LDA <Player_XHi
 	STA <Objects_XHiZ, X
+	
+	LDA <Vert_Scroll
+	SUB #$10
+	STA <Objects_YZ, X
+
+	LDA #$FF
+	STA <Objects_YHiZ, X
+
 	JSR Object_CalcBoundBox
 	RTS
 
@@ -334,6 +343,9 @@ Lakitu_Norm:
 	AND #$03
 	BNE Lakitu_Chase
 
+	LDA #$00
+	STA <Objects_YVelZ, X
+
 	JSR Object_Move
 	JMP Lakitu_CalcBoundBox
 
@@ -343,12 +355,47 @@ Lakitu_Chase:
 Lakitu_CalcBoundBox:
 	LDA <Vert_Scroll
 	ADD #$14
-	STA <Objects_YZ, X
+	STA <Temp_Var1
 
 	LDA #$00
 	ADC #$00
+	STA <Temp_Var2
+
+	LDA <Temp_Var1
+	SUB <Objects_YZ, X
+	STA <Temp_Var3
+
+	LDA <Temp_Var2
+	SBC <Objects_YHiZ, X
+	STA <Temp_Var4
+	
+	LDA <Temp_Var3
+	ORA <Temp_Var4
+	BEQ Lakitu_InPlace
+
+	LDA <Temp_Var4
+	BMI Lakitu_Down
+
+	LDA <Objects_YZ, X
+	ADD #$01
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
 	STA <Objects_YHiZ, X
 
+	JMP Lakitu_InPlace
+
+Lakitu_Down:
+	LDA <Objects_YZ, X
+	SUB #$01
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+Lakitu_InPlace:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_AttackOrDefeat
@@ -395,6 +442,12 @@ Lakitu_Die:
 	STA Objects_State, Y
 
 Lakitu_NoPoof:
+	LDA #$20
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
 	JSR Object_Move
 
 	LDA <Objects_YHiZ, X
@@ -405,11 +458,11 @@ Lakitu_NoPoof:
 	BCC Lakitu_DieDone
 
 	LDA #$FF
+	STA Objects_Timer2, X
 	STA Objects_SlowTimer, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
-
 
 	JSR Lakitu_Reset
 
@@ -621,8 +674,7 @@ Lakitu_Reset:
 
 	LDA #$FF
 	STA Lakitu_EnemySlot, X
-
-
+	
 Lakitu_AimDone:
 	RTS
 
