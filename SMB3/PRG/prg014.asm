@@ -313,8 +313,6 @@ ObjNorm_Lakitu:
 Lakitu_Alive:
 	LDA Objects_SlowTimer, X
 	BEQ Lakitu_Do
-	
-	STA Debug_Snap
 
 	LDA <Player_X
 	STA <Objects_XZ, X

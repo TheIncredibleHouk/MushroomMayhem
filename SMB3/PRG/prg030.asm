@@ -214,17 +214,17 @@ PRG030_845A:
 	LDA #$7a	
 	STA PatTable_BankSel+1
 
-	LDA #$20	
-	STA PatTable_BankSel+2
+	LDA #$78
+	STA PatTable_BankSel + 2
 
-	LDA #$21	
-	STA PatTable_BankSel+3
+	LDA #$79
+	STA PatTable_BankSel + 3
 
-	LDA #$04	
-	STA PatTable_BankSel+4
+	LDA #$7A
+	STA PatTable_BankSel + 4
 
-	LDA #$7f	
-	STA PatTable_BankSel+5
+	LDA #$7B
+	STA PatTable_BankSel + 5
 
 	; Load page 24 into A000 and page 25 into C000
 	LDA #24	 

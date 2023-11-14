@@ -423,7 +423,7 @@ CheepCheepXVelocity:
 	.byte $20, $18, $10, $08, $F8, $F0, $E8, $E0
 
 CheepCheepTimers:
-	.byte $40, $40, $80, $40, $40, $80, $40, $40
+	.byte $80, $80, $A0, $60, $60, $A0, $80, $40
 
 LevelEvent_GenerateCheepCheeps:
 	LDA Level_EventTimer

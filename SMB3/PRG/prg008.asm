@@ -1900,6 +1900,21 @@ PRG008_ACCD:
 
 	LDX Player_FireDash
 	BNE Skip_YVel
+
+	LDX Moon_Gravity
+	BEQ Normal_PlayerGravity
+
+	PHA
+	LDA Game_Counter
+	AND #$01
+	TAX
+
+	PLA
+
+	CPX #$01
+	BEQ Skip_YVel
+
+Normal_PlayerGravity:
 	STA <Player_YVelZ ; Player_YVelZ += Y
 
 Skip_YVel:

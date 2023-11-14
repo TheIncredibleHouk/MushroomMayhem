@@ -4508,12 +4508,13 @@ Cheat_Codes:
 	.byte S_, B_, S_, B_, S_, B_, S_, B_, S_
 	.byte U_, R_, S_, U_, L_, A_, S_, U_, B_
 	.byte B_, U_, L_, B_, A_, S_, A_, U_, R_
+	.byte B_, R_, A_, B_, B_, U_, L_, S_, __
 
 Cheat_Index = Temp_Var1
 Cheat_Offset = Temp_Var2
 Cheat_Number = Temp_Var3
 Cheat_Length = 9
-Cheat_Count = 13
+Cheat_Count = 14
 
 Cheat_Code:
 	LDA <Pad_Input
@@ -4612,6 +4613,7 @@ Cheat_Clear:
 	.word Cheat_DebugMode
 	.word Cheat_Sub
 	.word Cheat_SecondQuest
+	.word Cheat_ToggleMoonGravity
 
 Cheat_DoNothing:
 	RTS
@@ -4727,5 +4729,11 @@ Cheat_SecondQuest:
 	LDA SecondQuest
 	EOR #$01
 	STA SecondQuest
+	RTS
+
+Cheat_ToggleMoonGravity:
+	LDA Moon_Gravity
+	EOR #$01
+	STA Moon_Gravity
 	RTS
 		; List continued in PRG025

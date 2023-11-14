@@ -1969,7 +1969,7 @@ PRG031_F748:
 	STA PPU_SCROLL	; Vertical scroll set
 
 	; NOTE: Different from the typical 192 scanline count!
-	LDA #184		; A = 193
+	LDA #$FF	; A = 193
 	STA MMC3_IRQCNT		; Store 193 into the IRQ count
 	STA MMC3_IRQLATCH	; Store it into the latch (will be used later)
 	STA MMC3_IRQENABLE	; Start the IRQ counter
@@ -2925,7 +2925,8 @@ Clear_Nametable:	; $FDC7:
 	; This writes over the entire selected name table and attribute table with $FC
 	LDX #$03	 ; X = $04
 	LDY #$00	 ; Y = $00
-	LDA #$fc	 ; A = $FC
+	
+	LDA #$FE	 ; A = $FC
 PRG031_FDE1:
 	STA PPU_VRAM_DATA	 ; Write $FC to NT
 	DEY		 ; Y--

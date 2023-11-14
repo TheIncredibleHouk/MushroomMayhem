@@ -1328,7 +1328,8 @@ UPDATERASTER_32PIXSHOWSPR= $80	; If NOT set, hides sprites that fall beneath the
 	TrapSet:			.ds 1;
 	DayNightActive:		.ds 1;
 	LastPowerUp:		.ds 1;
-	Reverse_Gravity:		.ds 1
+	Reverse_Gravity:	.ds 1
+	Moon_Gravity:		.ds 1
 	NoGravity:			.ds 1;
 	Object_WallStops:	.ds 1;
 	Object_CeilingStops: .ds 1
