@@ -225,15 +225,17 @@ Video_Upd_Table2:
 	.word Graphics_Buffer		; $00 - Graphics buffer for dynamically generated content
 	.word Title_Clear
 	.word Title_Attributes	; $01 - Loads palette for title screen (and falls into Title_Checkerboard_Floor)
+	.word Title_Subtitle
 	.word Title_FadeIn_1		; $03 - Title screen colors fade in part 1
 	.word Title_FadeIn_2		; $04 - Title screen colors fade in part 2
 	.word Title_FadeIn_3		; $05 - Title screen colors fade in part 3
 	.word Title_FadeIn_4		; $06 - Title screen colors fade in part 4
 	.word Title_FadeIn_5		; $07 - Loads the 1P/2P select menu
+	.word Title_NewGameOnly
 	.word Title_Continue
 	.word Title_NewGame
-	.word Title_Subtitle
-	.word Title_NewGameOnly
+	.word Title_ConfirmNo
+	.word Title_ConfirmYes
 
 	; The title screen -- this is too complicated/large to load in one single buffer
 	; instance, so it is broken up across several frames in chunks.  Maybe I could
@@ -439,28 +441,33 @@ Title_NewGame:
 Title_NewGameOnly:
 	vaddr $22AB
 	.byte 08
-	.byte $69, $6A, $6B, $1F, $6D, $7F, $0E, $FE
+	.byte $79, $7A, $7B, $FE, $7C, $7D, $7E, $7A
+
+	vaddr $22EB
+	.byte 08
+	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 	.byte 00	
 
 Title_ConfirmNo:
 	vaddr $22AB
 	.byte 08
-	.byte $79, $7A, $7B, $FE, $7C, $7D, $7E, $7A
+	.byte $69, $6A, $6B, $1F, $6D, $7F, $0E, $1E
 
 	vaddr $22EB
 	.byte 08
-	.byte $FE, $2E, $9A, $9F, $FE, $79, $6A, $FE
+	.byte $FE, $2E, $9A, $2F, $FE, $79, $6A, $FE
 	.byte 00	
 
 Title_ConfirmYes:
 	vaddr $22AB
 	.byte 08
-	.byte $79, $7A, $7B, $FE, $7C, $7D, $7E, $7A
+	.byte $69, $6A, $6B, $1F, $6D, $7F, $0E, $1E
 
 	vaddr $22EB
 	.byte 08
 	.byte $FE, $8F, $7A, $6F, $FE, $8B, $8A, $FE
 	.byte 00	
+
 Title_Checkerboard_Floor:
 	vaddr $22E0	; Bottom of nametable
 	.byte 32	; 32 bytes to follow

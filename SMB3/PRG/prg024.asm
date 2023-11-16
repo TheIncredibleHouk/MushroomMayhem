@@ -746,9 +746,9 @@ PRG024_A8C8:
 	STA PPU_CTL1		; use 8x16 sprites, sprites use PT2
 	STA <PPU_CTL1_Copy	; Sync with PPU_CTL1_Copy
 
-	JSR Title_Display_Curtain	; Put up the curtain!
+	JSR Title_Display_Title	; Put up the curtain!
 
-	; Load the palette and checkerboard floor pattern
+	
 	LDY #$02	 ; A = 1
 	LDA Video_Upd_Table2,Y
 	STA <Video_Upd_AddrL
@@ -763,7 +763,7 @@ PRG024_A8C8:
 	STA <Video_Upd_AddrH
 	JSR Video_Misc_Updates2
 
-	LDY #$14	 ; A = 1
+	LDY #$06	 ; A = 1
 	LDA Video_Upd_Table2,Y
 	STA <Video_Upd_AddrL
 	LDA Video_Upd_Table2+1,Y
@@ -884,13 +884,13 @@ Title_Screen_Tiles:
 	.byte $FE, $FE, $90, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $91, $FE, $FE, $FE
 	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
 	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
-	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $2A, $2B, $2C, $2D, $2F, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
+	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $2A, $2B, $2C, $2D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
 	.byte $FE, $FE, $94, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F, $60, $61, $62, $63, $64, $65, $66, $67, $68, $97, $FE, $FE, $FE
 	.byte $FE, $FE, $94, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $70, $71, $72, $73, $74, $75, $76, $77, $78, $97, $FE, $FE, $FE
 	.byte $FE, $FE, $94, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $5A, $5B, $5C, $5D, $5E, $5F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $97, $FE, $FE, $FE
 	.byte $FE, $FE, $92, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $93, $FE, $FE, $FE
 
-Title_Display_Curtain:
+Title_Display_Title:
 	SEI
 
 	LDA PPU_STAT 	; read PPU status to reset the high/low latch
@@ -944,17 +944,49 @@ TitleState_Wait:
 	AND #PAD_START
 	BEQ TitleState_WaitRTS
 
-	LDA #$01
-	STA <Title_State
+	STA Debug_Snap
+
+	LDA Title_GameMenu
 	
+	JSR DynJump
+
+	.word TitleState_Start
+	.word TitleState_Start
+	.word TitleState_Start
+	.word TitleState_Confirm
+	.word TitleState_Cancel
+	.word TitleState_EraseGame
+	
+TitleState_Start:
 	LDA #SND_LEVELCOIN
 	STA Sound_QLevel1
 
 	LDA #$40
 	STA Title_DelayTicker
+
+	LDA #$01
+	STA Title_State
 	
 TitleState_WaitRTS:
 	RTS
+
+TitleState_Confirm:
+	LDA #TITLEMENU_CONFIRM_NO
+	STA Title_GameMenu
+	JMP Title_MenuUpdate
+
+TitleState_Cancel:
+	LDA #TITLEMENU_CONTINUE
+	STA Title_GameMenu
+	JMP Title_MenuUpdate
+
+TitleState_EraseGame:
+	LDA #$00
+	STA Save_Ram_CheckSum
+
+	LDA #TITLEMENU_NEWGAME_ONLY
+	STA Title_GameMenu
+	JMP Title_MenuUpdate
 
 Title_DelayTicker = $6900
 
@@ -4647,7 +4679,7 @@ PRG024_BBB0:
 	DEX		 ; X--
 	BPL PRG024_BBB0	 ; While X >= 0, loop
 
-	JSR Title_Display_Curtain	; Put up the curtain!
+	;JSR Title_Display_Curtain	; Put up the curtain!
 
 	; Push in the Checkerboard floor
 	LDA #$23
@@ -5519,7 +5551,7 @@ FadeIn_Ticker = $6000
 FadeIn_Stage = $6001
 
 Title_FadeIn:
-	LDA #$03
+	LDA #$04
 	STA MMC3_IRQDISABLE
 	STA FadeIn_Stage
 
@@ -5546,9 +5578,14 @@ Title_FadeInTick:
 Title_GameMenu = $6800
 Title_GameMenu_Init = $6801
 
-TITLEMENU_CONTINUE = $00
-TITLEMENU_NEWGAME = $01
-TITLEMENU_NEWGAME_ONLY = $02
+TITLEMENU_NEWGAME_ONLY = $00
+TITLEMENU_CONTINUE = $02
+TITLEMENU_NEWGAME = $03
+TITLEMENU_CONFIRM_NO = $04
+TITLEMENU_CONFIRM_YES = $05
+
+TitleMenu_DrawMode:
+	.byte $09, $09, $0A, $0B, $0C, $0D
 
 Title_Menu:
 	LDA Title_GameMenu_Init
@@ -5556,10 +5593,23 @@ Title_Menu:
 
 	INC Title_GameMenu_Init
 
+	LDA Save_Ram_CheckSum
+	ORA Save_Ram_CheckSum
+	BNE Title_MenuContinue
+
 	LDA #$00
+	STA Title_GameMenu
 	BEQ Title_MenuUpdate
 
+Title_MenuContinue:
+	LDA #TITLEMENU_CONTINUE
+	STA Title_GameMenu
+	BNE Title_MenuUpdate
+
 Title_MenuController:
+	LDA Title_GameMenu
+	BEQ Title_MenuRTS
+
 	LDA <Pad_Input
 	AND #PAD_SELECT
 	BEQ Title_MenuRTS
@@ -5568,29 +5618,14 @@ Title_MenuController:
 	STA Sound_QMap
 
 	LDA Title_GameMenu
-	;CMP #TITLEMENU_NEWGAME_ONLY
-	;BNE Title_NewGameOnlyDraw
-
 	EOR #$01
 	STA Title_GameMenu
 
 Title_MenuUpdate:
-	ADD #$08
+	LDY Title_GameMenu
+	LDA TitleMenu_DrawMode, Y
 	STA Graphics_Queue
 
-	STA Debug_Snap
-	;LDA Save_Ram_CheckSum
-	;ORA Save_Ram_CheckSum + 1
-	;BNE Title_DrawMenu
-
-Title_NewGameOnlyDraw:
-	;LDA #11
-	;STA Graphics_Queue
-
-	;LDA #TITLEMENU_NEWGAME_ONLY
-	;STA Title_GameMenu
-
-Title_DrawMenu:
 	JSR GraphicsBuf_Prep_And_WaitVSyn2
 
 Title_MenuRTS:

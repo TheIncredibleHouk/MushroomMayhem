@@ -201,6 +201,15 @@ PRG005_B902:
 	SUB #(OBJ_8WAYBULLETBILLS-1)	; Base at 1
 	STA Level_Event	 		; Set Level_Event
 
+	LDA Level_Objects+1,Y
+	AND #$E0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA Level_Event_Property
+
 	RTS		 ; Return
 
 PRG005_B909:
@@ -503,7 +512,23 @@ EnemyCount_NoInc:
 	LDA #$02
 	STA Objects_SlowFall, X
 
+	LDA Level_Event_Property
+	BNE GenerateCheepCheep_AntiGrav
+
 GenerateCheepCheepRTS:
+	RTS
+
+GenerateCheepCheep_AntiGrav:
+	LDA #$04
+	STA Objects_Property, X
+
+	LDA <Objects_YZ, x
+	SUB #$B0
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
 	RTS
 
 LevelEvent_Cancel:

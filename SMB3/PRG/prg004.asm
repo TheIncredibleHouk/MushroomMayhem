@@ -1328,9 +1328,9 @@ ObjInit_JumpingCheep1:
 	STA Objects_Orientation, X
 	RTS
 	
-JumpingCheep_XVel: .byte $10, $F0, $00, $00
-JumpingCheep_YVel: .byte $A0, $60, $00, $00
-JumpingCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00
+JumpingCheep_XVel: .byte $10, $F0, $00, $00, $00
+JumpingCheep_YVel: .byte $A0, $60, $00, $00, $00
+JumpingCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00, SPR_VFLIP
 
 JumpingCheep_IsWaiting = Objects_Data3
 JumpingCheep_CurrentFrame = Objects_Data4
@@ -1380,6 +1380,9 @@ Jumping_Move:
 	CPY #$01
 	BEQ Jumping_ReveseGravity
 
+	CPY #$04
+	BEQ Jumping_ReveseGravity
+
 	INC NoGravity
 	BNE Jumping_Move1
 
@@ -1394,7 +1397,7 @@ Jumping_Move1:
 
 	LDA Objects_Property, X
 	CMP #$03
-	BEQ Jumping_NoDetect
+	BCS Jumping_NoDetect
 
 Jumping_InteractTiles:
 	JSR Object_DetectTiles

@@ -2130,6 +2130,7 @@ Magic_StarIndicator = Objects_Data4
 Magic_StarRadar = Objects_Data5
 Magic_StarCoinsNeeded = Objects_Data7
 Magic_StarEnemyAttached = Objects_Data8
+Magic_StarSparkle = Objects_Data9
 
 ObjInit_MagicStar1:
 	LDA #$00
@@ -2397,15 +2398,18 @@ MagicStar_AttachedEnemyDefeated:
 	TAY
 	LDA Objects_XZ, Y
 	STA <Objects_XZ, X
+	STA Poof_X
 
 	LDA Objects_XHiZ, Y
 	STA <Objects_XHiZ, X
 
 	LDA Objects_YZ, Y
 	STA <Objects_YZ, X
+	STA Poof_Y
 
 	LDA Objects_YHiZ, Y
 	STA <Objects_YHiZ, X
+	STA Poof_YHi
 
 	LDA Objects_State, Y
 	CMP #OBJSTATE_DEADEMPTY
@@ -2419,7 +2423,22 @@ MagicStar_EnemyDead:
 	STA <Objects_YVelZ, X
 	RTS
 
-MagicStar_EnemyDefeatedRTS:	
+MagicStar_EnemyDefeatedRTS:
+	LDA Magic_StarSparkle, X
+	BNE MagicStar_RTS
+	JSR Common_MakePoof
+
+	LDA #SOBJ_COINSPARKLE
+	STA SpecialObj_ID, Y
+
+	LDA #SPR_PAL2
+	STA SpecialObj_Data3, Y
+
+	LDA #$20
+	STA Magic_StarSparkle, X
+
+MagicStar_RTS:
+	DEC Magic_StarSparkle, X
 	PLA
 	PLA
 	RTS
@@ -2837,6 +2856,7 @@ ObjNorm_PoisonMushroom0:
 	JSR DynJump
 
 	.word PoisonMushroom_Normal
+	.word PoisonMushroom_InsideItemBlock
 	.word PoisonMushroom_InsideBlock
 
 PoisonMushroom_Normal:
@@ -2858,7 +2878,7 @@ PoisonMushroom_Normal:
 PoisonMushroom_Draw:
 	JMP Object_DrawMirrored
 
-PoisonMushroom_InsideBlock:
+PoisonMushroom_InsideItemBlock:
 	LDA #$08
 	STA Objects_Timer2, X
 
@@ -2873,7 +2893,7 @@ PoisonMushroom_InsideBlock:
 	
 	LDA Object_BodyTileProp, X
 	CMP #TILE_PROP_ITEM
-	BCS PoisonMushroom_InsideBlockRTS
+	BCS PoisonMushroom_InsideItemBlockRTS
 
 	JSR Object_MoveTowardsPlayer	
 
@@ -2892,6 +2912,53 @@ PoisonMushroom_InsideBlock:
 	STA Sound_QLevel1
 
 	LDA #$C0
+	STA <Objects_YVelZ, X
+
+	LDA #$00
+	STA Objects_WeaponAttr, X
+
+	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
+	STA Objects_BehaviorAttr, X
+
+PoisonMushroom_InsideItemBlockRTS:
+	LDA #$04
+	STA Objects_Timer2, X
+	RTS
+
+PoisonMushroom_InsideBlock:
+	LDA #$08
+	STA Objects_Timer2, X
+
+	LDA #(ATTR_SHELLPROOF | ATTR_BUMPNOKILL | ATTR_EXPLOSIONPROOF)
+	STA Objects_BehaviorAttr, X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	
+	LDA Object_BodyTileProp, X
+	CMP #TILE_PROP_SOLID_ALL
+	BCS PoisonMushroom_InsideBlockRTS
+
+	JSR Object_MoveTowardsPlayer	
+
+	LDA #$00
+	STA Objects_Property, X
+
+	LDA <Objects_YZ, X
+	SUB #$02
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
+
+	LDA #SND_LEVELRISE
+	STA Sound_QLevel1
+
+	LDA #$08
 	STA <Objects_YVelZ, X
 
 	LDA #$00

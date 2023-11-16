@@ -2422,7 +2422,6 @@ Object_DeleteOffScreenRTS:
 	RTS
 
 Object_CheckOffScreen:
-
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
 	BEQ Object_NotOffScreen
