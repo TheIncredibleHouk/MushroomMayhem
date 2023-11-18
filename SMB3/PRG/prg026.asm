@@ -1155,7 +1155,8 @@ PRG026_AB0E:
 
 
 StatusBar_FullPalette:
-	.byte $30, $11, $27
+	.byte $30, $11, $27, $00
+	.byte $30, $14, $28, $00
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Palette_PrepareFadeIn
 ;
@@ -1217,11 +1218,17 @@ Palette_DoFadeIn:
 
 PRG026_ABE4:
 	LDA Fade_Level	 
-	BEQ PRG026_AC1A	 ; If Fade_Level = 0, jump to PRG026_AC1A
+	BNE Not_FadeLevel
+	
+	JMP PRG026_AC1A	 ; If Fade_Level = 0, jump to PRG026_AC1A
 
-	LDA Fade_Tick	 
-	BNE PRG026_AC19	 ; If Fade_Tick <> 0, jump to PRG026_AC19
+Not_FadeLevel:
+	LDA Fade_Tick
+	BEQ Not_FadeTick 
 
+	JMP PRG026_AC19	 ; If Fade_Tick <> 0, jump to PRG026_AC19
+
+Not_FadeTick:
 	LDA #$04	
 	STA Fade_Tick	 ; Fade_Tick = 4 (reload) 
 
@@ -1255,12 +1262,23 @@ PRG026_AC12:
 	CMP #$0F
 	BNE StatusBar_FI_NotBlack
 
-	LDA StatusBar_FullPalette
+	LDX #$00
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BNE StatusBar_NotSecond
+
+	INX
+	INX
+	INX
+	INX
+
+StatusBar_NotSecond:
+	LDA StatusBar_FullPalette, X
 	AND #$0F
 	BNE StatusBar_FI_StorePalette
 
 StatusBar_FI_NotBlack:
-	CMP StatusBar_FullPalette
+	CMP StatusBar_FullPalette, X
 	BEQ StatusBar_FI_StorePalette
 
 	ADD #$10
@@ -1272,12 +1290,12 @@ StatusBar_FI_StorePalette:
 	CMP #$0F
 	BNE StatusBar_FI_NotBlack1
 
-	LDA StatusBar_FullPalette + 1
+	LDA StatusBar_FullPalette + 1, X
 	AND #$0F
 	BNE StatusBar_FI_StorePalette1
 
 StatusBar_FI_NotBlack1:
-	CMP StatusBar_FullPalette + 1
+	CMP StatusBar_FullPalette + 1, X
 	BEQ StatusBar_FI_StorePalette1
 
 	ADD #$10
@@ -1289,12 +1307,12 @@ StatusBar_FI_StorePalette1:
 	CMP #$0F
 	BNE StatusBar_FI_NotBlack2
 
-	LDA StatusBar_FullPalette + 2
+	LDA StatusBar_FullPalette + 2, X
 	AND #$0F
 	BNE StatusBar_FI_StorePalette2
 
 StatusBar_FI_NotBlack2:
-	CMP StatusBar_FullPalette + 2
+	CMP StatusBar_FullPalette + 2, X
 	BEQ StatusBar_FI_StorePalette2
 
 	ADD #$10
@@ -2313,6 +2331,7 @@ StatusBar_DoUpdates:
 	JSR Game_UpdatePower
 	JSR Game_UpdateAir
 	JSR Game_UpdateStars
+	JSR Game_UpdateEnemyHealth
 	JSR Game_UpdateCherries
 	JSR Game_UpdateExperience
 	JSR Game_UpdateCoins
@@ -2443,6 +2462,7 @@ Initialize_Status_Bar:
 	JSR StatusBar_DrawCherries
 	JSR StatusBar_DrawExperience
 	JSR StatusBar_DrawCoins
+	JSR StatusBar_DrawEnemyHealth
 	JSR StatusBar_DrawStarsCollected
 	JSR StatusBar_DrawDayNightMeter
 	JSR StatusBar_DrawReserve
@@ -2583,19 +2603,30 @@ Game_UpdateStars:
 	; LDA StatusBar_Mode
 	; BNE Game_UpdateStars1
 	
-	LDA Magic_Stars
-	CMP Old_Magic_Stars
+	LDA Paper_Stars
+	CMP Old_Paper_Stars
 	BEQ Game_UpdateStars1
 
-	STA Old_Magic_Stars
+	STA Old_Paper_Stars
 	JSR StatusBar_DrawStars
 	JMP StatusBar_DrawStarsCollected
 
 Game_UpdateStars1:
 	RTS
 
+Game_UpdateEnemyHealth:
+	LDA Enemy_Health
+	CMP Old_Enemy_Health
+	BEQ Game_UpdateEnemyHealthRTS
+
+	STA Old_Enemy_Health
+	JMP StatusBar_DrawEnemyHealth
+
+Game_UpdateEnemyHealthRTS:
+	RTS
+
 StatusBar_DrawStars:
-	LDA Magic_Stars
+	LDA Paper_Stars
 	STA <DigitsParam
 
 	LDA #$00
@@ -2807,13 +2838,91 @@ StatusBar_DrawCoins1:
 
 	INC Bottom_Needs_Redraw
 	RTS
-	
 ;--------------------------------------
+StatusBar_DrawEnemyHealth:
+	
+	LDA Enemy_Health_Mode
+	BEQ DrawEnemy_HealthRTS
+
+	LDA #$3E
+	STA Status_Bar_Top + 14
+	
+	LDA #$EA
+	STA Status_Bar_Top + 18
+
+	LDY #$00
+	LDA Enemy_Health
+	BMI DrawEnemy_HealthRTS
+
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	BEQ Paritial_EnemyHealth
+
+Full_EnemyHealth_Loop:				
+	LDA #$E9
+	STA Status_Bar_Top + 15, Y
+	
+	INY
+	DEX
+	BNE Full_EnemyHealth_Loop
+	
+	CPY #$03				; Did it fill all the way? we're done!
+	BEQ Fill_EnemyHealth_MT_Done
+
+Paritial_EnemyHealth:
+							; Not filled all the way, let's fill the partial bar
+	LDA Enemy_Health
+	AND #$0F
+	LSR A
+	ADC #$E1				; offset the tile number
+	STA Status_Bar_Top + 15, Y
+	INY
+
+	LDA #$E1
+
+Empty_EnemyHealth_Loop:
+	CPY #$03				
+	BEQ Fill_EnemyHealth_MT_Done		; Did it fill all the way? we're done!
+
+	STA Status_Bar_Top + 15, Y	; no? let's fill empty tiles
+	INY
+	BNE Empty_EnemyHealth_Loop
+	
+Fill_EnemyHealth_MT_Done: 
+	INC Top_Needs_Redraw
+
+DrawEnemy_HealthRTS:
+	RTS
+
+
+;--------------------------------------
+	
 StatusBar_DrawStarsCollected:
+	LDA Enemy_Health_Mode
+	BNE StatusBar_DrawStarsRTS
+
+	LDA Level_NoStars
+	BEQ StatusBar_HasStars
+
+	LDA #$FE
+	STA Status_Bar_Top + 14
+	STA Status_Bar_Top + 15
+	STA Status_Bar_Top + 16
+	STA Status_Bar_Top + 17
+	STA Status_Bar_Top + 18
+	INC Top_Needs_Redraw
+
+StatusBar_DrawStarsRTS:
+	RTS
+
+StatusBar_HasStars:
 	JSR GetLevelBit
 	PHA
 	LDX #$D6
-	AND Magic_Stars_Collected1, Y
+	AND Paper_Stars_Collected1, Y
 	BEQ StatusBar_DrawStars1
 	INX
 
@@ -2822,7 +2931,7 @@ StatusBar_DrawStars1:
 	LDX #$D6
 	PLA
 	PHA
-	AND Magic_Stars_Collected2, Y
+	AND Paper_Stars_Collected2, Y
 	BEQ StatusBar_DrawStars2
 	INX
 
@@ -2830,7 +2939,7 @@ StatusBar_DrawStars2:
 	STX Status_Bar_Top + 16
 	LDX #$D6
 	PLA
-	AND Magic_Stars_Collected3, Y
+	AND Paper_Stars_Collected3, Y
 	BEQ StatusBar_DrawStars3
 	INX
 

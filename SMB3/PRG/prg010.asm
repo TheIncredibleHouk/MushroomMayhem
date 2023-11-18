@@ -1824,11 +1824,6 @@ Map_StateNothing:
 ; $CD3F
 	LDX Player_Current	 ; X = Player_Current
 
-	LDA #$00
-	STA Map_Unused72C
-	STA Player_FallToKing,X
-	STA Bonus_UnusedFlag	; ?
-
 	JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
 
 
@@ -1844,10 +1839,6 @@ Map_StateNothing:
 	STA Map_Intro_Tick
 
 	LDX Player_Current	; X = Player_Current
-
-	LDA #$00
-	STA Map_Unused72C
-	STA Player_FallToKing,X
 
 	INC World_EnterState	 ; World_EnterState++
 
@@ -3038,10 +3029,15 @@ UpdateLevelName_LoopRTS:
 Map_UpdateCollectedStars:
 
 	LDA #$FE
+	STA Status_Bar_Top + 14
 	STA Status_Bar_Top + 15
 	STA Status_Bar_Top + 16
 	STA Status_Bar_Top + 17
+	STA Status_Bar_Top + 18
 	
+	LDA Level_NoStars
+	BNE Map_UpdateStars
+
 	LDA LevelNumber
 	CMP #$FF
 	BEQ Map_UpdateStars
@@ -3049,7 +3045,7 @@ Map_UpdateCollectedStars:
 	JSR GetLevelBit
 	PHA
 	LDX #$D6
-	AND Magic_Stars_Collected1, Y
+	AND Paper_Stars_Collected1, Y
 	BEQ Map_UpdateCollectedStars1
 	INX
 
@@ -3058,7 +3054,7 @@ Map_UpdateCollectedStars1:
 	LDX #$D6
 	PLA
 	PHA
-	AND Magic_Stars_Collected2, Y
+	AND Paper_Stars_Collected2, Y
 	BEQ Map_UpdateCollectedStars2
 	INX
 
@@ -3066,7 +3062,7 @@ Map_UpdateCollectedStars2:
 	STX Status_Bar_Top + 16
 	LDX #$D6
 	PLA
-	AND Magic_Stars_Collected3, Y
+	AND Paper_Stars_Collected3, Y
 	BEQ Map_UpdateCollectedStars3
 	INX
 

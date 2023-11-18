@@ -77,9 +77,9 @@ OBJ_BOSS			= $13
 	.word Object_Hold		; Object $09
 	.word ObjHit_DoNothing	; Object $0A
 	.word ObjHit_DoNothing	; Object $0B
-	.word Magic_StarCollect	; Object $0C
-	.word Magic_StarCollect	; Object $0D
-	.word Magic_StarCollect	; Object $0E
+	.word Paper_StarCollect	; Object $0C
+	.word Paper_StarCollect	; Object $0D
+	.word Paper_StarCollect	; Object $0E
 	.word ObjHit_DoNothing	; Object $0F
 	.word StarCoin_Collect ; Object $10
 	.word Object_Hold		; Object $11
@@ -890,18 +890,18 @@ PUp_CheckPoint:
 	LDA Player_Badge
 	STA Previous_Badge
 
-	LDA Magic_Stars
+	LDA Paper_Stars
 	STA Previous_Stars
 
 	JSR GetLevelBit
 	
-	LDA Magic_Stars_Collected1, Y
+	LDA Paper_Stars_Collected1, Y
 	STA Previous_Stars_Collected1
 
-	LDA Magic_Stars_Collected2, Y
+	LDA Paper_Stars_Collected2, Y
 	STA Previous_Stars_Collected2
 
-	LDA Magic_Stars_Collected3, Y
+	LDA Paper_Stars_Collected3, Y
 	STA Previous_Stars_Collected3
 
 	LDA Player_EffectiveSuit
@@ -2126,25 +2126,25 @@ ObjNorm_SendBackRTS:
 
 
 
-Magic_StarIndicator = Objects_Data4
-Magic_StarRadar = Objects_Data5
-Magic_StarCoinsNeeded = Objects_Data7
-Magic_StarEnemyAttached = Objects_Data8
-Magic_StarSparkle = Objects_Data9
+Paper_StarIndicator = Objects_Data4
+Paper_StarRadar = Objects_Data5
+Paper_StarCoinsNeeded = Objects_Data7
+Paper_StarEnemyAttached = Objects_Data8
+Paper_StarSparkle = Objects_Data9
 
 ObjInit_MagicStar1:
 	LDA #$00
-	STA Magic_StarIndicator, X
+	STA Paper_StarIndicator, X
 	JMP ObjInit_MagicStar
 
 ObjInit_MagicStar2:
 	LDA #$01
-	STA Magic_StarIndicator, X
+	STA Paper_StarIndicator, X
 	JMP ObjInit_MagicStar
 
 ObjInit_MagicStar3:
 	LDA #$02
-	STA Magic_StarIndicator, X
+	STA Paper_StarIndicator, X
 
 ObjInit_MagicStar:
 	LDA Objects_Property, X
@@ -2165,7 +2165,7 @@ MagicStar_NoOffset:
 	STA <Temp_Var1
 	STY <Temp_Var2
 	
-	LDA Magic_StarIndicator, X
+	LDA Paper_StarIndicator, X
 	TAY
 
 	LDA <Temp_Var2
@@ -2173,7 +2173,7 @@ MagicStar_NoOffset:
 	TAY
 
 	LDA <Temp_Var1
-	AND Magic_Stars_Collected1, Y
+	AND Paper_Stars_Collected1, Y
 	BEQ Dont_Kill_Star
 
 Kill_Star:
@@ -2181,7 +2181,7 @@ Kill_Star:
 
 Dont_Kill_Star:
 	LDA #$07
-	STA Magic_StarCoinsNeeded, X
+	STA Paper_StarCoinsNeeded, X
 
 	LDA Objects_Property, X
 	CMP #$06
@@ -2199,15 +2199,15 @@ MagicStar_FindEnemy:
 
 	LDA Objects_XHiZ, Y
 	CMP <Objects_XHiZ, X
-	BEQ Magic_StarEnemyFound
+	BEQ Paper_StarEnemyFound
 
 MagicStar_NoEnemy:
 	DEY
 	BPL MagicStar_FindEnemy
 
-Magic_StarEnemyFound:
+Paper_StarEnemyFound:
 	TYA
-	STA Magic_StarEnemyAttached, X
+	STA Paper_StarEnemyAttached, X
 
 MagicStar_InitRTS:
 	RTS		 ; Return	
@@ -2229,7 +2229,7 @@ ObjNorm_MagicStar:
 MagicStar_NoDelete:
 	JSR MagicStar_Radar
 	JSR Object_CalcBoundBox
-	JSR Magic_Star_Action
+	JSR Paper_Star_Action
 	JSR Object_InteractWithPlayer
 
 	JSR Object_DetectTiles
@@ -2237,18 +2237,18 @@ MagicStar_NoDelete:
 
 	JMP Object_DrawMirrored
 
-Magic_StarCollect:
+Paper_StarCollect:
 	LDA Sound_QLevel1
 	ORA #SND_MAPBONUSAPPEAR
 	STA Sound_QMap
-	INC Magic_Stars
+	INC Paper_Stars
 
 	JSR GetLevelBit
 
 	STA <Temp_Var1
 	STY <Temp_Var2
 
-	LDA Magic_StarIndicator, X
+	LDA Paper_StarIndicator, X
 	TAY
 
 	LDA <Temp_Var2
@@ -2256,13 +2256,13 @@ Magic_StarCollect:
 	TAY
 
 	LDA <Temp_Var1
-	ORA Magic_Stars_Collected1, Y
-	STA Magic_Stars_Collected1, Y
+	ORA Paper_Stars_Collected1, Y
+	STA Paper_Stars_Collected1, Y
 
 	JSR MagicStar_ClearRadar
 	JMP Object_SetDeadEmpty
 
-Magic_Star_Action:
+Paper_Star_Action:
 
 	LDA Objects_Property, X
 	JSR DynJump
@@ -2295,10 +2295,10 @@ NoCheck:
 	DEY
 	BPL CheckEnemies
 
-Magic_StarPoofAppear:
+Paper_StarPoofAppear:
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X
-	BNE Magic_StarNoPoof
+	BNE Paper_StarNoPoof
 
 	LDA <Objects_XZ, X
 	STA <Poof_X
@@ -2308,7 +2308,7 @@ Magic_StarPoofAppear:
 	
 	JSR Common_MakePoof
 
-Magic_StarNoPoof:
+Paper_StarNoPoof:
 	LDA #SND_LEVELPOOF
 	STA Sound_QLevel1
 
@@ -2345,17 +2345,17 @@ MagicStar_NoMove:
 MagicStar_CheckClearedBlock:
 	JSR Object_DetectTileCenter
 	CMP #TILE_PROP_ITEM
-	BCS Magic_StarHidden
+	BCS Paper_StarHidden
 
 	CMP #TILE_PROP_STONE | TILE_PROP_SOLID_ALL
-	BEQ Magic_StarHidden
+	BEQ Paper_StarHidden
 
 	CMP #TILE_PROP_OBJECTINTERACT | TILE_PROP_SOLID_ALL
-	BEQ Magic_StarHidden
+	BEQ Paper_StarHidden
 
 	AND #$F0
 	CMP #TILE_PROP_SOLID_BOTTOM
-	BEQ Magic_StarHidden
+	BEQ Paper_StarHidden
 
 	LDA #$01
 	STA Objects_Property, X
@@ -2372,19 +2372,19 @@ MagicStar_CheckClearedBlock:
 	STA <Objects_YVelZ, X
 	RTS
 
-Magic_StarHidden:
+Paper_StarHidden:
 	PLA
 	PLA
 	RTS	
 
 MagicStar_CheckCoins:
-	LDA Magic_StarCoinsNeeded, X
+	LDA Paper_StarCoinsNeeded, X
 	SUB Coins_Earned
-	STA Magic_StarCoinsNeeded, X
+	STA Paper_StarCoinsNeeded, X
 
 	BPL MagicStar_CheckCoinsRTS
 
-	JMP Magic_StarPoofAppear
+	JMP Paper_StarPoofAppear
 
 MagicStar_CheckCoinsRTS:
 	PLA
@@ -2392,7 +2392,7 @@ MagicStar_CheckCoinsRTS:
 	RTS	
 
 MagicStar_AttachedEnemyDefeated:
-	LDA Magic_StarEnemyAttached, X
+	LDA Paper_StarEnemyAttached, X
 	BMI MagicStar_EnemyDefeatedRTS
 
 	TAY
@@ -2424,7 +2424,7 @@ MagicStar_EnemyDead:
 	RTS
 
 MagicStar_EnemyDefeatedRTS:
-	LDA Magic_StarSparkle, X
+	LDA Paper_StarSparkle, X
 	BNE MagicStar_RTS
 	JSR Common_MakePoof
 
@@ -2435,10 +2435,10 @@ MagicStar_EnemyDefeatedRTS:
 	STA SpecialObj_Data3, Y
 
 	LDA #$20
-	STA Magic_StarSparkle, X
+	STA Paper_StarSparkle, X
 
 MagicStar_RTS:
-	DEC Magic_StarSparkle, X
+	DEC Paper_StarSparkle, X
 	PLA
 	PLA
 	RTS
@@ -2449,14 +2449,14 @@ MagicStar_Radar:
 	BNE MagicStar_RadarRTS
 
 	LDA #$00
-	STA Magic_StarRadar, X
+	STA Paper_StarRadar, X
 	JSR Object_XDistanceFromPlayer
 
 	CMP #$08
 	BCC MagicStar_Radar1
 
 	LDA EWBitMap, Y
-	STA Magic_StarRadar, X
+	STA Paper_StarRadar, X
 	
 MagicStar_Radar1:
 	JSR Object_YDistanceFromPlayer
@@ -2464,11 +2464,11 @@ MagicStar_Radar1:
 	BCC MagicStar_Radar2
 
 	LDA NSBitMap, Y
-	ORA Magic_StarRadar, X
-	STA Magic_StarRadar, X
+	ORA Paper_StarRadar, X
+	STA Paper_StarRadar, X
 
 MagicStar_Radar2:
-	LDY Magic_StarRadar, X
+	LDY Paper_StarRadar, X
 	LDA RadarMap, Y
 	STA PowerUp_Reserve
 	RTS
@@ -2528,7 +2528,7 @@ ObjNorm_NegaStar:
 ; ; 	BNE ObjNorm_NegaStar01
 ; ; 	LDA #$91
 ; ; 	BEQ ObjNorm_NegaStar01
-; ; 	JSR TakeMagic_Star
+; ; 	JSR TakePaper_Star
 
 ; ; ObjNorm_NegaStar01:
 ; ; 	JSR Object_DrawMirrored
@@ -2573,17 +2573,17 @@ ObjNorm_NegaStar:
 ; NegaStarRTS:
 ; 	RTS
 
-; TakeMagic_Star:
+; TakePaper_Star:
 ; 	LDA Objects_Data4, X
-; 	BEQ TakeMagic_Star0
+; 	BEQ TakePaper_Star0
 ; 	DEC Objects_Data4, X
 ; 	RTS
 
-; TakeMagic_Star0:
+; TakePaper_Star0:
 ; 	INC Objects_Data5, X
 ; 	LDA Objects_Data5, X
 ; 	CMP #$20
-; 	BEQ TakeMagic_Star1
+; 	BEQ TakePaper_Star1
 
 ; 	LDY Objects_Property, X
 ; 	LDA <Player_SpriteX
@@ -2606,8 +2606,8 @@ ObjNorm_NegaStar:
 ; 	STA Sprite_RAM+14,Y
 ; 	RTS
 
-; TakeMagic_Star1:
-; 	DEC Magic_Stars
+; TakePaper_Star1:
+; 	DEC Paper_Stars
 ; 	LDY Objects_Property, X
 ; 	LDA NegaStars, Y
 ; 	SUB #$01

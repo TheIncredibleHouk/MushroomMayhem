@@ -178,6 +178,7 @@
     139,
     139,
     139,
+    138,
     139,
     139,
     139,
@@ -185,14 +186,13 @@
     139,
     139,
     139,
+    138,
     139,
     139,
     139,
     139,
     139,
-    139,
-    139,
-    139,
+    138,
     139,
     139,
     139,
@@ -727,6 +727,18 @@
       "X": 35,
       "Y": 4,
       "BoundRectangle": "560,64,16,16"
+    },
+    {
+      "LevelId": "665d7f5c-9379-4b5a-b7dd-44b4f594097e",
+      "X": 45,
+      "Y": 6,
+      "BoundRectangle": "720,96,16,16"
+    },
+    {
+      "LevelId": "a37e7acc-fc69-40fb-a8f4-565466203b23",
+      "X": 52,
+      "Y": 7,
+      "BoundRectangle": "832,112,16,16"
     }
   ],
   "ObjectData": [
@@ -761,5 +773,5 @@
       "Y": 8
     }
   ],
-  "CompressedData": "m5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLiouLioqLiouKiouKi4uLGsoaytHS0tLS0tLS0tLS0soaysrhWntYWBBYe9fy8vIaMcrK4Vp7aGhaaHtYyhoa0tPKylhYe1paWlp748rKElrn0tLoaHtYWBFYe+fS0tJaWlpaWlpoaGhoaGhaWlpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLioqLi4qLi4uKi4uK0tLS0tLS0tLTysoayhoaGvLy/vLy8vLy8xrKysrKF8oayhPKysoUysrKGsrK0f3SysrmysoaGhoaysoWyuFaWtLS/dPKyhXKysoaGsrhWlpaWlrn0tLS0tLS0tLS6Fpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4uLi4uLi4uLi4uLi4uLytHS0tLS0tLS0tLS0tLS0spYWBhYWHtaWlrX8vLy8vLS6GhaaFp7Wlpa48opKisaWlpaWlpae1hYWFjKOTo7ylpaWlrX8nvYWlrn0tL908paWlpa48rK4VpaWlpaWufSm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4uLi4uLi4uLi4uLi4uL0tLS0tLS0tLS0tLS0tLS0vLy2FpaWlpaWlpaWlpaWlrKyuFaWlpaWlpaWlpaWlpaGsrx8vLYWlpaWlpaWlpaWsrKysox4VpaWlpaWlpaWlrS0tLS0uhaWlpaWlpaWlpa"
+  "CompressedData": "m5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLiouLioqLiouKiouKi4uLGsoaytHS0tLS0tLS0tLS0soaysrhWntYWBBYe9fy8vIaMcrK4Vp7aGhaaHtYyhoa0tPKylhYe1paWlp748rKElrn0tLoaHtYWBFYe+fS0tJaWlpaWlpoaGhoaGhaWlpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLioqLi4qLi4uKi4uK0tLS0tLS0tLTysoayhoaGvLy/vLy8vLy8xrKysrKF8oayhPKysoUysrKGsrK0f3SysrmysoaGhoaysoWyuFaWtLS/dPKyhXKysoaGsrhWlpaWlrn0tLS0tLS0tLS6Fpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4uLi4uLi4uLiouLi4uLytHS0tLS0tLS0tLS0tLS0spYWBhYWHtaWlrX8vLy8vLS6GhaaFp7Wlpa48opKisaWlpaWlpae1hYWFjKOTo7ylpaWlrX8nvYWlrn0tL908paWlpa48rK4VpaWlpaWufSm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLi4uLi4qLi4uLi4uL0tLS0tLS0tLS0tLS0tLS0vLy2FpaWlpaWlpaWlpaWlrKyuFaWlpaWlpaWlpaWlpaGsrx8vLYWlpaWlpaWlpaWsrKysox4VpaWlpaWlpaWlrS0tLS0uhaWlpaWlpaWlpa"
 }

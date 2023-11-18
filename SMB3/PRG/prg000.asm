@@ -3769,9 +3769,6 @@ Player_NoHP:
 	LDA #$02
 	STA Player_QueueSuit	 ; Queue power-up change
 
-	LDA #$80
-	STA Player_FlyTime
-
 Player_PoofHurt:
 	LDA #$17
 	STA Player_SuitLost	 ; Player_SuitLost = $17

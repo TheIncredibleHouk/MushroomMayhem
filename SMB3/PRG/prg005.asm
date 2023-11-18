@@ -2863,9 +2863,6 @@ FloatMine_Action = Objects_Data1
 ObjInit_FloatMine:
 	LDA #$06
 	STA Objects_SpritesRequested, X
-	
-	LDA #ATTR_NINJAPROOF
-	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_NOICE)
 	STA Objects_BehaviorAttr, X
@@ -3795,7 +3792,16 @@ Tentacle_NoFlash:
 	JSR Tentacle_CheckIdle
 	JSR Tentacle_CheckExtended
 	JSR Tentacle_CalcBoundBox
+	
+	LDA #$01
+	STA Objects_ToggleDetect, X
+	
 	JSR Object_InteractWithPlayer
+	JSR Tentacle_CalcAppendage
+	
+	LDA #$00
+	STA Objects_ToggleDetect, X
+	
 	JSR Object_ApplyYVel_NoGravity
 	JSR Tentacle_CheckPosition
 	
@@ -3823,10 +3829,15 @@ Tentacle_CheckExtendedRTS:
 	RTS
 
 Tentacle_CheckBehind:
+	LDA <Objects_XZ, X
+	CMP #$E0
+	BCS Tentacle_Retract
+
 	JSR Object_XDistanceFromPlayer
 	CPY #$00
 	BEQ Tentacle_CheckBehindRTS
 
+Tentacle_Retract:
 	LDA #$40
 	STA Tentacle_ExtendTimer, X
 
@@ -3853,6 +3864,10 @@ Tentacle_CheckIdle:
 	LDA <Player_X
 	SUB #$04
 	STA <Objects_XZ, X
+
+	LDA <Player_XHi
+	SBC #$00
+	STA <Objects_XHiZ, X
 
 Tentacle_CheckIdleRTS:
 	RTS
@@ -3885,11 +3900,6 @@ Tentacle_CheckPositionRTS:
 	RTS
 
 Tentacle_CalcBoundBox:
-	LDA Tentacle_BoundBoxToggle, X
-	EOR #$01
-	STA Tentacle_BoundBoxToggle, X
-	BNE Tentacle_CalcAppendage
-
 	LDA <Objects_XZ, X
 	ADD #$04
 	STA Objects_BoundLeft, X
@@ -3926,7 +3936,7 @@ Tentacle_CalcBoundBox:
 Tentacle_CalcAppendage:
 	
 	LDA <Objects_XZ, X
-	ADD #$08
+	ADD #$06
 	STA Objects_BoundLeft, X
 
 	LDA <Objects_XHiZ, X
@@ -3934,20 +3944,12 @@ Tentacle_CalcAppendage:
 	STA Objects_BoundLeftHi, X
 
 	LDA Objects_BoundLeft, X
-	ADD #$08
+	ADD #$0A
 	STA Objects_BoundRight, X
 
 	LDA Objects_BoundLeftHi, X
 	ADC #$00
 	STA Objects_BoundRightHi, X
-
-	LDA <Objects_YZ, X
-	ADD #$28
-	STA Objects_BoundTop, X
-
-	LDA <Objects_YHiZ, X
-	ADC #$00
-	STA Objects_BoundTopHi, X
 
 	LDA Objects_BoundTop, X
 	ADD #$F0
@@ -3962,8 +3964,11 @@ Tentacle_CalcBoundBoxRTS:
 
 
 Tentacle_HurtFlash:
+	LDA Objects_Timer, X
+	BNE Tentacle_HurtFlashRTS
+
 	LDA #$18
-	STA Objects_Timer2, X
+	STA Objects_Timer, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
@@ -3982,13 +3987,13 @@ Tentacle_HurtFlashRTS:
 	RTS
 
 Tentacle_Palettes:
-	.byte SPR_PAL3, SPR_PAL2
+	.byte SPR_PAL3, SPR_PAL1
 
 Tentacle_DrawRTS2:
 	RTS 
 
 Tentacle_Animate:
-	LDA Objects_Timer2, X
+	LDA Objects_Timer, X
 	LSR A
 	LSR A
 	AND #$01
@@ -4094,6 +4099,10 @@ Tentacle_Draw1:
 	STA <Temp_Var2
 
 Tentacle_DrawLoop:
+	LDA Objects_SpritesHorizontallyOffScreen,X
+	AND #SPRITE_1_INVISIBLE
+	BNE Tentacle_DrawRTS
+
 	LDA <Temp_Var1
 	ADD #$10
 	CMP #$C0

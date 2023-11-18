@@ -371,9 +371,6 @@ LT0:	STA <Map_WWOrHT_X	; Map_WWOrHT_X = 240 (oops, reassigned?)
 	LDA #$01	
 	STA Map_ReturnStatus	 ; Map_ReturnStatus = 3 (??)
 
-	LDA #$00	 
-	STA Map_Unused72C	 ; Map_Unused72C = 0
-
 	RTS		 ; Return
 
 WWFX_WarpLanding:
@@ -4509,12 +4506,14 @@ Cheat_Codes:
 	.byte U_, R_, S_, U_, L_, A_, S_, U_, B_
 	.byte B_, U_, L_, B_, A_, S_, A_, U_, R_
 	.byte B_, R_, A_, B_, B_, U_, L_, S_, __
+	.byte U_, D_, L_, R_, U_, D_, L_, R_, A_
+	.byte U_, D_, L_, R_, U_, D_, L_, R_, B_
 
 Cheat_Index = Temp_Var1
 Cheat_Offset = Temp_Var2
 Cheat_Number = Temp_Var3
 Cheat_Length = 9
-Cheat_Count = 14
+Cheat_Count = 16
 
 Cheat_Code:
 	LDA <Pad_Input
@@ -4614,6 +4613,8 @@ Cheat_Clear:
 	.word Cheat_Sub
 	.word Cheat_SecondQuest
 	.word Cheat_ToggleMoonGravity
+	.word Cheat_IncreaseStars1
+	.word Cheat_IncreaseStars10
 
 Cheat_DoNothing:
 	RTS
@@ -4735,5 +4736,15 @@ Cheat_ToggleMoonGravity:
 	LDA Moon_Gravity
 	EOR #$01
 	STA Moon_Gravity
+	RTS
+
+Cheat_IncreaseStars1:
+	INC Paper_Stars
+	RTS
+
+Cheat_IncreaseStars10:
+	LDA Paper_Stars
+	ADD #10
+	STA Paper_Stars
 	RTS
 		; List continued in PRG025

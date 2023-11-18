@@ -944,8 +944,6 @@ TitleState_Wait:
 	AND #PAD_START
 	BEQ TitleState_WaitRTS
 
-	STA Debug_Snap
-
 	LDA Title_GameMenu
 	
 	JSR DynJump
@@ -1606,7 +1604,7 @@ Title_PrepForWorldMap:
 	; STA Player_Coins + 1
 
 	; LDA #45 
-	; STA Magic_Stars
+	; STA Paper_Stars
 
 	; LDA #$63
 	; STA Player_Cherries

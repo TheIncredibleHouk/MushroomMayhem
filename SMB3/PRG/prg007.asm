@@ -186,6 +186,9 @@ Throw_NinjaStar1:
 	STA SpecialObj_XVel, X
 	RTS		 ; Return
 
+Bullet_Y:
+	.byte $00, $05
+
 Throw_Bullet:
 	
 	JSR SetProjectilePosition8x16
@@ -194,7 +197,7 @@ Throw_Bullet:
 	STA SpecialObj_XVel, X
 
 	LDA SpecialObj_Y, X
-	ADD #$05
+	ADD Bullet_Y - 8, X
 	STA SpecialObj_Y, X
 	RTS
 
@@ -268,12 +271,13 @@ Player_Nothing
 SpecialObj_ObjectAttributes = Temp_Var16
 
 Player_FireBall:
-	LDA <Player_HaltGameZ
-	BNE Player_FireBall5
-
 	LDA Player_EffectiveSuit
 	CMP #MARIO_FIRE
 	BNE Player_FireBallNoKill
+
+	LDA <Player_HaltGameZ
+	BNE Player_FireBall5
+
 
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
@@ -405,16 +409,16 @@ SpecialObj_FireTiles2:
 	RTS
 
 Player_IceBall:
+	LDA Player_EffectiveSuit
+	CMP #MARIO_ICE
+	BNE Player_IceBallNoKill
+
 	LDA <Player_HaltGameZ
 	BEQ Player_IceBall0
 
 	JMP Player_IceBall5
 
 Player_IceBall0:
-	LDA Player_EffectiveSuit
-	CMP #MARIO_ICE
-	BNE Player_IceBallNoKill
-
 	JSR SObj_ApplyXYVelsWithGravity
 	INC SpecialObj_YVel, X
 	INC SpecialObj_YVel, X
@@ -623,12 +627,12 @@ SpecialObj_ToPoofNoSound1:
 	RTS
 
 Player_Hammer:
-	LDA <Player_HaltGameZ
-	BNE Player_HammerDraw
-
 	LDA Player_EffectiveSuit
 	CMP #MARIO_HAMMER
 	BNE Player_HammerPoof
+
+	LDA <Player_HaltGameZ
+	BNE Player_HammerDraw
 
 	JSR SObj_ApplyXYVelsWithGravity
 	JSR SpecialObj_CalcBounds16x16
@@ -701,12 +705,12 @@ Player_HammerTilesInteraction2:
 	JMP Player_HammerPoof
 
 Player_NinjaStar:
-	LDA <Player_HaltGameZ
-	BNE Player_StarNoKill
-
 	LDA Player_EffectiveSuit
 	CMP #MARIO_NINJA
 	BNE Player_StarPoof
+
+	LDA <Player_HaltGameZ
+	BNE Player_StarNoKill
 
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
@@ -747,6 +751,12 @@ Player_StarNoKill:
 	RTS
 
 Player_Bullet:
+	LDA Player_Vehicle
+	BNE Player_Bullet1
+
+	JMP SpecialObj_ToPoof
+
+Player_Bullet1:
 	LDA <Player_HaltGameZ
 	BNE Player_BulletNoKill
 
@@ -799,6 +809,9 @@ Bull_NoSolid:
 	JSR SpecialObj_CheckForeground
 	JSR SpecialObj_Draw8x16
 	RTS
+
+Bullet_Poof:
+
 
 SpecialObj_SetMirrorFlipped:
 	LDA SpecialObj_XVel, X

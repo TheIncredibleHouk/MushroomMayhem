@@ -2530,7 +2530,7 @@ StarBarrier_RemoveBlockCount = Objects_Data2
 ObjNorm_StarBarrier:
 	LDY Objects_Property, X
 
-	LDA Magic_Stars
+	LDA Paper_Stars
 	CMP StarBarrier_Values, Y
 	BCC StarBarrier_Draw
 

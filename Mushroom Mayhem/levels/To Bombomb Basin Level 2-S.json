@@ -10,6 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "c56b9001-02b0-4552-a49d-9f61cdb21634",
   "StaticTileTableIndex": 28,
+  "NoStars": true,
   "MostCommonTile": 65,
   "AnimationType": 1,
   "ScrollType": 3,

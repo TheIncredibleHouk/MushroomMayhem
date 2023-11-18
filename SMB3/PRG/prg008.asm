@@ -325,18 +325,18 @@ Super_MarioStandard:
 	LDA Player_Cherries
 	STA Previous_Cherries
 
-	LDA Magic_Stars
+	LDA Paper_Stars
 	STA Previous_Stars
 
 	JSR GetLevelBit
 	
-	LDA Magic_Stars_Collected1, Y
+	LDA Paper_Stars_Collected1, Y
 	STA Previous_Stars_Collected1
 
-	LDA Magic_Stars_Collected2, Y
+	LDA Paper_Stars_Collected2, Y
 	STA Previous_Stars_Collected2
 
-	LDA Magic_Stars_Collected3, Y
+	LDA Paper_Stars_Collected3, Y
 	STA Previous_Stars_Collected3
 
 	LDA Player_Badge
@@ -711,6 +711,8 @@ Player_FullMeter:
 	RTS
 
 Player_UpdateRunPower:
+	STA Debug_Snap
+	
 	LDA Player_FlyTime
 	BMI Player_FullMeter
 	BNE Player_UpdateRunPowerRTS
@@ -1528,6 +1530,8 @@ Player_GroundHControl1:
 	BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
 
 	; Player is holding B...
+	LDA Player_Vehicle
+	BNE PRG008_AB78
 
 	LDA <Player_InAir
 	BNE PRG008_AB78	 ; If Player is mid air or sliding, jump to PRG008_AB78

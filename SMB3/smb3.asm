@@ -2012,7 +2012,7 @@ GENERATOR_VVISIBLE = 02;
 	Map_Operation:		.ds 1	; Map_Operation: Current "operation" happening on map (See Map_DoOperation in PRG010)
 
 	Total_Players:		.ds 1	; Total players (0 = 1P, 1 = 2P)
-	Map_Unused72C:		.ds 1	; No apparent use; only assigned to, but never read back
+	Level_NoStars:		.ds 1	; No apparent use; only assigned to, but never read back
 	Bonus_DDDD:		.ds 1	; ?? Set to '1' if you exit the unused bonus game BONUS_UNUSED_DDDD
 	Map_HandState:		.ds 1	; Hand trap state
 
@@ -2378,7 +2378,7 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Level_Jct_VSHi:		.ds 1	; Level junction vertical scroll high value
 	Level_Jct_VS:		.ds 1	; Level junction vertical scroll value
 
-	Old_Magic_Stars:		.ds 1
+	Old_Paper_Stars:		.ds 1
 
 	Map_Unused7992:			; Value used in some dead code in PRG011; cleared elsewhere (NOT SURE if maybe it sometimes meant Bonus_DiePos?)
 	Bonus_DiePos:		.ds 1	; UNUSED Die in the lost bonus games, counts 0-5
@@ -2725,6 +2725,9 @@ HIT_EXPLOSION	= $80
 	Air_Time_Frac:		.ds 1
 	Air_Time:			.ds 1	;
 	Old_Air_Time:		.ds 1
+	Enemy_Health:		.ds 1
+	Old_Enemy_Health:	.ds 1
+	Enemy_Health_Mode:	.ds 1
 
 AIR_INCREASE	= 3
 	Air_Change:			.ds 1	
@@ -2738,9 +2741,7 @@ AIR_INCREASE	= 3
 	Inventory_Score2:	.ds 0	; $7DC2-$7DC4 Luigi, 3 byte score
 	Player_Coins2:	.ds 0	; Luigi's coins
 
-	Map_GameOver_CursorY:	.ds 1	; Game Over popup cursor Y ($60/$68)
-	Boo_Mode_Timer:			.ds 1	; Indicates how long we are in boo mode
-	Boo_Mode_KillTimer:		.ds 1	; This timer is for the period coming out of boo mode, when not 0, Mario is invincible
+	Map_GameOver_CursorY:	.ds 0	; Game Over popup cursor Y ($60/$68)
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
 
@@ -3008,10 +3009,10 @@ ABILITY_MAX = 5
 	CheckPoint_Y:		.ds 1
 	CheckPoint_YHi:		.ds 1
 	Levels_Complete:    .ds 16	;
-	Magic_Stars:			.ds 1	; 
-	Magic_Stars_Collected1: .ds 16 ;
-	Magic_Stars_Collected2:	.ds 16
-	Magic_Stars_Collected3:	.ds 16
+	Paper_Stars:			.ds 1	; 
+	Paper_Stars_Collected1: .ds 16 ;
+	Paper_Stars_Collected2:	.ds 16
+	Paper_Stars_Collected3:	.ds 16
 
 	PowerUp_Reserve:	.ds 1	;
 	Old_PowerUp_Reserve: .ds 1

@@ -10,6 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "d925275d-dd05-4985-aac7-c6aa8e599d58",
   "StaticTileTableIndex": 92,
+  "NoStars": false,
   "MostCommonTile": 65,
   "AnimationType": 3,
   "ScrollType": 2,
@@ -6497,6 +6498,7 @@
     65,
     65
   ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 152,

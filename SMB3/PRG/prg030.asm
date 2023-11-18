@@ -1416,18 +1416,18 @@ PRG030_8F31:
 	STA PowerUp_Reserve
 
 	LDA Previous_Stars
-	STA Magic_Stars
+	STA Paper_Stars
 
 	JSR GetLevelBit
 	
 	LDA Previous_Stars_Collected1
-	STA Magic_Stars_Collected1, Y
+	STA Paper_Stars_Collected1, Y
 	
 	LDA Previous_Stars_Collected2
-	STA Magic_Stars_Collected2, Y
+	STA Paper_Stars_Collected2, Y
 	
 	LDA Previous_Stars_Collected3
-	STA Magic_Stars_Collected3, Y
+	STA Paper_Stars_Collected3, Y
 
 	LDA <Player_IsDying
 	BNE Player_DyingNoSuit
@@ -1449,10 +1449,13 @@ Skip_StatReset:
 	STA LeftRightInfection
 	STA Player_Oiled
 	STA Player_Yolked
+	STA Enemy_Health
+	STA Enemy_Health_Mode
 
 	LDA #$40
 	STA Air_Time
 	STA Tile_Anim_Enabled
+	STA Force_StatusBar_Init
 
 PRG030_8F42:
 
@@ -2644,14 +2647,6 @@ JustName10:
 	LDY #$0D
 	LDX #$00
 
-	LDA SecondQuest
-	CMP #SECOND_QUEST
-	BNE JustName2
-
-	LDA #$D7
-	STA LevelName, X
-	INX
-
 JustName2:
 	LDA [Temp_Var14],Y
 	STA LevelName, X
@@ -2661,6 +2656,10 @@ JustName2:
 	CPX #28
 	BNE JustName2
 	
+	LDY #$07
+	LDA [Temp_Var14], Y
+	STA Level_NoStars
+
 	PLA
 	STA PAGE_C000
 	PLA
@@ -2866,7 +2865,7 @@ Skip_Set_Music:
 	; Unused header value
 	LDY #$07
 	LDA [Temp_Var14],Y
-	
+	STA Level_NoStars
 	
 Skip_Time_Set:
 	LDY #$08
@@ -2947,15 +2946,6 @@ SetDNActive:
 	LDX #$00
 	STY TempY
 
-	LDA SecondQuest
-	CMP #SECOND_QUEST
-	BNE LoadName
-
-	LDA #$D7
-	STA LevelName, X
-
-	INX
-	
 LoadName:
 	LDA Level_JctCtl
 	BNE SkipNameLoad
@@ -6039,8 +6029,6 @@ Player_Die:
 	STA Player_StarInv
 	STA Player_Shell
 	STA Player_FireDash
-	STA Boo_Mode_Timer
-	STA Boo_Mode_KillTimer
 	STA Level_PSwitchCnt
 	STA Frozen_Frame
 	STA Player_Frozen

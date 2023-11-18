@@ -1544,12 +1544,19 @@ Boss_BlooperAction = Objects_Data1
 Boss_BlooperHealth = Objects_Data2
 Boss_BlooperNewTentacle = Objects_Data3
 Boss_BlooperDeathTicks	= Objects_Data4
+Boss_BlooperCanSecondTentacle = Objects_Data5
 
 Boss_BlooperSprites:
 	.byte $8D, $8D, $FF, $FF, $FF, $FF, $FF, $FF
 	.byte $8F, $8F, $FF, $FF, $FF, $FF, $FF, $FF
 
 Boss_Blooper:
+	LDA #$01
+	STA Enemy_Health_Mode
+
+	LDA Boss_BlooperHealth, X
+	STA Enemy_Health
+
 	JSR Boss_BlooperHurt
 
 	LDA Boss_BlooperAction, X
@@ -1561,6 +1568,8 @@ Boss_Blooper:
 	.word Boss_BlooperDying
 
 Boss_BlooperInit:
+	LDA #$01
+	STA Boss_BlooperCanSecondTentacle, X
 	LDA Boss_BlooperStartHealth
 	STA Boss_BlooperHealth, X
 
@@ -1568,6 +1577,14 @@ Boss_BlooperInit:
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BNE Boss_BlooperInitRTS
+
+	INC Boss_BlooperNewTentacle, X
+
+Boss_BlooperInitRTS:
 	RTS
 
 Boss_BlooperNorm:
@@ -1613,14 +1630,14 @@ Boss_WaitTentacle:
 
 Boss_BlooperStartHealth:
 Boss_BlooperGenThresholds:
-	.byte 49, 37
-	.byte 35, 32
-	.byte 30, 27
-	.byte 25, 22
-	.byte 20, 17
-	.byte 15, 13
+	.byte 49, 44
+	.byte 42, 37
+	.byte 35, 30
+	.byte 28, 25
+	.byte 23, 18
+	.byte 16, 11
 Boss_BlooperSecondTentacle:	
-	.byte 10
+	.byte 9
 
 Boss_BlooperEnemyGens:
 	.byte 00
@@ -1649,10 +1666,21 @@ Boss_BlooperEnemyGen_HitCheckSet:
 	RTS
 
 Boss_BlooperHurt:
+	LDA Objects_Timer2, X
+	BNE Boss_BlooperHurtRTS
+
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE Boss_BlooperHurtRTS
 
+	LDA Objects_PlayerProjHit, X
+	CMP #HIT_EXPLOSION
+	BNE Boss_BlooperHitLow
+
+	DEC Boss_BlooperHealth, X
+	DEC Boss_BlooperHealth, X
+
+Boss_BlooperHitLow:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
@@ -1665,11 +1693,17 @@ Boss_BlooperHurt:
 	LDA #$00
 	STA Objects_Health, X
 
+	LDA Boss_BlooperCanSecondTentacle, X
+	BEQ Blooper_NoNewTentacle
+
 	LDA Boss_BlooperHealth, X
 	CMP Boss_BlooperSecondTentacle
-	BNE Blooper_NoNewTentacle
+	BCS Blooper_NoNewTentacle
 
 	STA Boss_BlooperNewTentacle, X
+	
+	LDA #$00
+	STA Boss_BlooperCanSecondTentacle, X
 
 Blooper_NoNewTentacle:	
 	DEC Boss_BlooperHealth, X
