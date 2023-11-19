@@ -651,10 +651,16 @@
   ],
   "Pointers": [
     {
-      "LevelId": "80a75db5-5cb8-4d03-9160-d6d5cf83c26e",
-      "X": 6,
+      "LevelId": "63db22c3-ef7d-4d34-b0b6-c2d4f5ef603f",
+      "X": 2,
       "Y": 3,
-      "BoundRectangle": "96,48,16,16"
+      "BoundRectangle": "32,48,16,16"
+    },
+    {
+      "LevelId": "80a75db5-5cb8-4d03-9160-d6d5cf83c26e",
+      "X": 5,
+      "Y": 3,
+      "BoundRectangle": "80,48,16,16"
     }
   ],
   "ObjectData": [],
