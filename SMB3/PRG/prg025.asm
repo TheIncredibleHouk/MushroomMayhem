@@ -236,6 +236,7 @@ Video_Upd_Table2:
 	.word Title_NewGame
 	.word Title_ConfirmNo
 	.word Title_ConfirmYes
+	.word Title_WorldSelect
 
 	; The title screen -- this is too complicated/large to load in one single buffer
 	; instance, so it is broken up across several frames in chunks.  Maybe I could
@@ -467,6 +468,12 @@ Title_ConfirmYes:
 	.byte 08
 	.byte $FE, $8F, $7A, $6F, $FE, $8B, $8A, $FE
 	.byte 00	
+
+Title_WorldSelect:
+	vaddr $232B
+	.byte 08
+	.byte $7B, $6A, $7F, $BE, $BF, $FE, $FE, $FE
+	.byte $00
 
 Title_Checkerboard_Floor:
 	vaddr $22E0	; Bottom of nametable

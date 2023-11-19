@@ -3037,6 +3037,7 @@ SECOND_QUEST = $FE
 	Save_Ram_CheckSum:	.ds 2
 	Save_Ram_Boundary_End: 		.ds 1
 
+	World_Start: 		.ds 1
 	; Tile map property flags
 MAP_PROP_BOUNDARY		= $00
 MAP_PROP_TRAVERSABLE	= $01

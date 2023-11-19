@@ -711,8 +711,6 @@ Player_FullMeter:
 	RTS
 
 Player_UpdateRunPower:
-	STA Debug_Snap
-	
 	LDA Player_FlyTime
 	BMI Player_FullMeter
 	BNE Player_UpdateRunPowerRTS

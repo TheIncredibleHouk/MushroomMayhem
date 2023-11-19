@@ -3178,9 +3178,11 @@ PRG031_FEC3:
 
 	LDA Player_Shell
 	BEQ ChallengeRTS
+
 	LDA <Pad_Input
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Input
+	
 	LDA <Pad_Holding
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Holding

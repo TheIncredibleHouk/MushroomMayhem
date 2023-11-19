@@ -54,14 +54,17 @@ Checksum_Invalid:
 	CLC
 	RTS
 
+
 Load_Save:
 	JSR Check_Save
 	BCS Map_Init
 	
+	LDX #$00
+
 	LDA #$01
 	STA World_Num
 
-	LDA #$40
+	LDA #$90
 	STA Map_Entered_Y
 	STA Map_Previous_Y
 	
@@ -69,7 +72,7 @@ Load_Save:
 	STA Map_Entered_XHi
 
 	; Set starting X position (forced to $20!)
-	LDA #$30
+	LDA #$20
 	STA Map_Entered_X
 	STA Map_Previous_X
 
@@ -86,9 +89,39 @@ Load_Save:
 	STA Map_Prev_XHi
 
 Map_Init:
-
-
+	JSR World_Override
 	RTS		 ; Return
+
+World_Start_X:
+	.byte $00, $20, $20, $30, $10, $20, $20, $30
+
+World_Start_Y:
+	.byte $00, $90, $40, $60, $70, $50, $50, $90
+
+World_Start_Num:
+	.byte $00, $10, $20, $30, $40, $50, $60, $70
+
+World_Override:
+	STA Debug_Snap
+	LDX World_Start
+	BEQ World_OverrideRTS
+
+	LDA World_Start_X, X
+	STA Map_Entered_X
+	STA Map_Previous_X
+
+	LDA World_Start_Y, X
+	STA Map_Entered_Y
+	STA Map_Previous_Y
+
+	LDA #$00
+	STA Map_Entered_XHi
+	STA Map_Previous_XHi
+
+	STX World_Num
+
+World_OverrideRTS:
+	RTS
 
 Map_Airship_Travel_BaseIdx:
 	; Base index value, per-world

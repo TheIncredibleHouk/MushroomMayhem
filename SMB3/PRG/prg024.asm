@@ -938,6 +938,7 @@ Title_DoState:
 	.word Title_PrepForWorldMap			; 07 - Debug menu
 
 TitleState_Wait:
+	JSR World_Select
 	JSR Title_Menu
 
 	LDA <Pad_Input
@@ -5627,4 +5628,78 @@ Title_MenuUpdate:
 	JSR GraphicsBuf_Prep_And_WaitVSyn2
 
 Title_MenuRTS:
+	RTS
+
+
+World_Select_Enabled = $6802
+World_Number_Sprite:
+	.byte $00, $E3, $E5, $E7, $E9, $EB, $ED, $EF
+
+World_Select:
+	LDA World_Select_Enabled
+	BEQ World_Select_CheckEnable
+
+	LDA <Pad_Input
+	AND #(PAD_RIGHT | PAD_UP)
+	BNE World_Select_Increase
+
+	LDA <Pad_Input
+	AND #(PAD_LEFT | PAD_DOWN)
+	BEQ World_Select_Sprite
+	
+	DEC World_Start
+	JMP World_Select_Verify
+
+World_Select_Increase:
+	INC World_Start
+	JMP World_Select_Verify
+
+World_Select_Verify:
+	LDA World_Start
+	BNE World_Select_CheckMax
+
+	LDA #$07
+	STA World_Start
+	BNE World_Select_Sprite
+
+World_Select_CheckMax:
+	CMP #$08
+	BCC World_Select_Sprite
+
+	LDA #$01
+	STA World_Start
+
+World_Select_Sprite:
+	LDY #$80
+	LDX World_Start
+	LDA World_Number_Sprite, X
+	STA Sprite_RAMTile, Y
+
+	LDA #SPR_PAL0
+	STA Sprite_RAMAttr, Y
+
+	LDA #$8A
+	STA Sprite_RAMX, Y
+
+	LDA #$C7
+	STA Sprite_RAMY, Y
+
+World_SelectRTS:
+	RTS
+
+World_Select_CheckEnable:
+	LDA <Pad_Holding
+	CMP #(PAD_DOWN | PAD_A | PAD_B | PAD_SELECT)
+	BNE World_Select_CheckEnableRTS
+
+	LDA #$01
+	STA World_Select_Enabled
+	STA World_Start
+
+	LDA #$0E
+	STA Graphics_Queue
+
+	JSR GraphicsBuf_Prep_And_WaitVSyn2
+
+World_Select_CheckEnableRTS:
 	RTS
