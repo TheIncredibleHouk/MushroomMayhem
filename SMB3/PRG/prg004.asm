@@ -433,11 +433,10 @@ ObjNorm_Goomba02:
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
-	JSR Object_InteractWithObjects
-	BCS Goomba_Draw
-
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+	JSR Object_InteractWithObjects
+	BCS Goomba_Draw
 
 Goomba_Animate:
 	INC Goomba_CurrentFrame, X
@@ -3466,6 +3465,7 @@ ParaPiranha_Attack:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 
 	LDA Objects_Property, X
 	BNE ParaPirana_CheckGround

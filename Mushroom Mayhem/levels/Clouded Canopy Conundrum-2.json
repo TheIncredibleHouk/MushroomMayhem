@@ -1,6 +1,6 @@
 {
   "Id": "b939b077-66d4-4e75-b8ff-990f9751eb46",
-  "Name": "Let It Roll 2",
+  "Name": "Clouded Canopy Conundrum-2",
   "TileSetIndex": 4,
   "ClearTileIndex": 144,
   "MusicValue": 32,
@@ -6502,9 +6502,9 @@
   "FirstObjectData": [
     {
       "GameObjectId": 13,
-      "X": 2,
-      "Y": 6,
-      "Property": 0
+      "X": 3,
+      "Y": 19,
+      "Property": 2
     },
     {
       "GameObjectId": 120,
@@ -6516,12 +6516,6 @@
       "GameObjectId": 120,
       "X": 13,
       "Y": 21,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 120,
-      "X": 4,
-      "Y": 12,
       "Property": 0
     },
     {

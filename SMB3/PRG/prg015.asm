@@ -328,7 +328,7 @@ SpikeWait:
 
 	INC Spike_Action, X
 
-	LDA #$60
+	LDA #$30
 	STA Objects_Timer, X
 
 SpikeWait1:
@@ -440,25 +440,29 @@ Spike_BallNoFlip:
 	STA Spike_BallOffset, X
 	STA Spike_Frame, X
 
-	LDA #$40
+	LDA #$60
 	STA Objects_Timer, X
 
 Spike_Draw:
 	JSR Object_Draw
 	
 	LDA Spike_Action, X
-	BEQ Spike_Draw1
+	BNE Spike_DrawNorm
+	JMP Spike_Draw1
 
+Spike_DrawNorm:
 	LDY Object_SpriteRAMOffset, X
 
 	LDA #$95
 	STA Sprite_RAMTile + 8, Y
 	STA Sprite_RAMTile + 12, Y
 
-	LDA #SPR_PAL1
+	LDA Sprite_RAMAttr, Y
+	AND #SPR_BEHINDBG
+	ORA #SPR_PAL1
 	STA Sprite_RAMAttr + 8, Y
 
-	LDA #(SPR_PAL1 | SPR_HFLIP)
+	ORA #(SPR_HFLIP)
 	STA Sprite_RAMAttr + 12, Y
 
 	LDA Spike_BallOffset, X
