@@ -876,6 +876,9 @@ Frozen_NotKilledOthers:
 	JSR Object_DetectTiles
 	JSR Object_CheckForeground
 
+	LDA Objects_Timer2, X
+	BNE Frozen_DetectTiles
+
 	JSR Object_DetectPlayer
 	BCC Frozen_DetectTiles
 
@@ -896,7 +899,7 @@ Frozen_Carry:
 
 	JSR Object_GetKicked
 
-Frozen_DetectTiles
+Frozen_DetectTiles:
 	LDA Objects_FrozenKicked, X
 	BNE Frozen_NotDampen
 
@@ -922,6 +925,10 @@ Frozen_DoDraw:
 	JMP Frozen_Draw
 	
 Frozen_Die:
+	LDA Sound_QLevel2
+	ORA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
 	JSR Object_EarnExp
 	JMP Object_BurstIce
 
@@ -948,12 +955,12 @@ Frozen_Draw:
 	JMP Frozen_DrawNormal
 
 Frozen_NotShelled:
-	LDA Objects_Kicked, X
-	BEQ Frozen_NotKicked
+	; LDA Objects_Kicked, X
+	; BEQ Frozen_NotKicked
 
-	LDY #$00
-	JSR Kicked_DrawNoAnimate
-	JMP Frozen_DrawNormal
+	; LDY #$00
+	; JSR Kicked_DrawNoAnimate
+	; JMP Frozen_DrawNormal
 
 Frozen_NotKicked:
 	JSR ObjState_Normal

@@ -272,6 +272,7 @@ ObjInit_Spike:
 Spike_Action = Objects_Data3
 Spike_Frame = Objects_Data4
 Spike_BallOffset = Objects_Data5
+Spike_ThrowCount = Objects_Data6
 
 ObjNorm_Spike:
 	LDA Objects_State, X
@@ -366,11 +367,14 @@ SpikeOpenMouth1:
 	JMP Spike_Draw
 	
 SpikeThrow_XVel:
-	.byte $10, $18
+	.byte $14, $20
 
 SpikeThrow_YVel:
-	.byte $D0, $C0
+	.byte $C0, $E8
 
+SpikeThrow_Timers:
+	.byte $40, $40, $40, $A0
+	
 SpikeThrowSpike:
 	LDA Objects_SpritesHorizontallyOffScreen,X
 	ORA Objects_SpritesHorizontallyOffScreen,X
@@ -402,9 +406,15 @@ SpikeThrowSpike:
 	STA <Objects_XHiZ, X
 
 	
-	LDA RandomN, X
-	AND #$01
-	TAY
+	LDY #$00
+	LDA DayNight
+	BPL Spike_Throw
+
+	INY
+
+Spike_Throw:
+	TYA
+	PHA
 
 	LDA SpikeThrow_XVel, Y
 	STA <Objects_XVelZ, X
@@ -421,12 +431,7 @@ SpikeThrowSpike:
 	STA <Objects_XVelZ, X
 
 Spike_BallNoFlip:
-	LDA RandomN, X
-	AND #$10
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	PLA
 	TAY
 
 	LDA SpikeThrow_YVel, Y
@@ -440,7 +445,12 @@ Spike_BallNoFlip:
 	STA Spike_BallOffset, X
 	STA Spike_Frame, X
 
-	LDA #$60
+	INC Spike_ThrowCount, X 
+	LDA Spike_ThrowCount, X
+	AND #$03
+	TAY
+
+	LDA SpikeThrow_Timers, Y
 	STA Objects_Timer, X
 
 Spike_Draw:
@@ -4043,11 +4053,9 @@ BallChain_YOffsetHi:
 
 ObjInit_BallChain:
 	LDA <Objects_XZ, X
-	ADD #$04
 	STA BallChain_XOrigin, X
 
 	LDA <Objects_XHiZ, X
-	ADC #$00
 	STA BallChain_XHiOrigin, X
 
 	LDA <Objects_YZ, X
@@ -4122,25 +4130,24 @@ BallChain_Draw:
 	
 	LDY Object_SpriteRAMOffset, X
 
+	
+	; ADD #$08
+	; STA <Temp_Var3
+
+	; LDA <Objects_XHiZ, X
+	; STA <Temp_Var4
 
 	LDA <Objects_XZ, X
-	ADD #$0D
-	STA <Temp_Var3
-
-	LDA <Objects_XHiZ, X
-	ADC #$00
-	STA <Temp_Var4
-
-	LDA <Temp_Var3
 	SUB BallChain_XOrigin, X
 	
 	PHA
 
-	LDA <Temp_Var4
+	LDA <Objects_XHiZ, X
 	SBC BallChain_XHiOrigin, X
 	STA <Temp_Var2
 
 	PLA
+	
 	JSR Half_Value
 	ADD BallChain_XOrigin, X
 	STA <Point_X
@@ -4168,21 +4175,21 @@ BallChain_Draw:
 	ADC BallChain_YHiOrigin, X
 	STA <Point_YHi
 	
-	LDA <Point_X
-	SUB #$04
-	STA <Point_X
+	; LDA <Point_X
+	; SUB #$04
+	; STA <Point_X
 
-	LDA <Point_XHi
-	SBC #$00
-	STA <Point_XHi
+	; LDA <Point_XHi
+	; SBC #$00
+	; STA <Point_XHi
 
-	LDA <Point_Y
-	SUB #$04
-	STA <Point_Y
+	; LDA <Point_Y
+	; SUB #$04
+	; STA <Point_Y
 
-	LDA <Point_YHi
-	SBC #$00
-	STA <Point_YHi
+	; LDA <Point_YHi
+	; SBC #$00
+	; STA <Point_YHi
 
 	JSR CheckPoint_OffScreen
 	BCC BallChain_Center
@@ -4220,6 +4227,7 @@ BallChain_Center:
 	STA Sprite_RAMX + 12, Y
 
 	LDA <Point_RelativeY
+	SUB #$01
 	STA Sprite_RAMY + 12, Y
 
 	LDA #SPR_PAL2

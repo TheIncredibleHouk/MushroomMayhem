@@ -96,7 +96,7 @@ World_Start_X:
 	.byte $00, $20, $20, $30, $10, $20, $20, $30
 
 World_Start_Y:
-	.byte $00, $90, $40, $60, $70, $50, $50, $90
+	.byte $00, $90, $40, $60, $70, $80, $50, $90
 
 World_Start_Num:
 	.byte $00, $10, $20, $30, $40, $50, $60, $70
@@ -3027,7 +3027,7 @@ MapObject_LeftTile:
 	.byte $11, $11, $11, $11	;
 	.byte $51, $51, $51, $51	; Green Mushroom
 	.byte $51, $51, $51, $51	; Orange Mushroom
-	.byte $11, $11, $11, $11	;
+	.byte $61, $65, $61, $65	; Piranah Plant
 	.byte $13, $13, $13, $13	;
 	.byte $17, $17, $17, $17	;
 	.byte $FD, $1B, $FD, $1B	;
@@ -3042,11 +3042,11 @@ MapObject_RightTile:
 	.byte $23, $23, $43, $43	; 03=Ship
 	.byte $49, $49, $49, $49	; 04=wrecked Ship
 	.byte $4F, $4F, $4F, $4F	; 05=Boo
-	.byte $53, $53, $53, $53	; Red mushroom
-	.byte $11, $11, $11, $11	; None
-	.byte $53, $53, $53, $53	; Blue Mushroom
-	.byte $53, $53, $53, $53	; Orange Mushroom
-	.byte $21, $21, $21, $21	; 
+	.byte $53, $53, $53, $53	; 06=Red mushroom
+	.byte $11, $11, $11, $11	; 07=None
+	.byte $53, $53, $53, $53	; 08=Blue Mushroom
+	.byte $53, $53, $53, $53	; 09=Orange Mushroom
+	.byte $63, $67, $63, $67	; 0A=Piranah Plant
 	.byte $15, $15, $15, $15	; 
 	.byte $19, $19, $19, $19	; 
 	.byte $FF, $BB, $FF, $BB	; 
@@ -3065,7 +3065,7 @@ MapObject_AttrLeft:
 	.byte $02, $02, $02, $02	; None
 	.byte $02, $02, $02, $02	; Blue Mushroom
 	.byte $03, $03, $03, $03	; Orange Mushroom
-	.byte $03, $03, $03, $03	; 
+	.byte $02, $02, $02, $02	; Piranha
 	.byte $03, $03, $03, $03	; 
 	.byte $03, $03, $03, $03	; 
 	.byte $03, $03, $03, $03	; 
@@ -3084,7 +3084,7 @@ MapObject_AttrRight:
 	.byte $02, $02, $02, $02	; None
 	.byte $02, $02, $02, $02	; Blue Mushroom
 	.byte $03, $03, $03, $03	; Orange Mushroom
-	.byte $03, $03, $03, $03	; 
+	.byte $02, $02, $02, $02	; Piranha Plant
 	.byte $03, $03, $03, $03	; 
 	.byte $03, $03, $03, $03	; 
 	.byte $03, $03, $03, $03	; 

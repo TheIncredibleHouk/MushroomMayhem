@@ -1224,8 +1224,8 @@
     65,
     65,
     65,
-    65,
-    65,
+    158,
+    159,
     65,
     65,
     65,
@@ -1464,8 +1464,8 @@
     65,
     65,
     65,
-    65,
-    65,
+    158,
+    159,
     65,
     65,
     65,
@@ -1704,8 +1704,8 @@
     65,
     65,
     65,
-    65,
-    65,
+    158,
+    159,
     65,
     65,
     65,
@@ -1944,8 +1944,8 @@
     65,
     65,
     65,
-    65,
-    65,
+    174,
+    175,
     65,
     65,
     65,
@@ -5778,8 +5778,8 @@
     144,
     144,
     125,
-    174,
-    175,
+    142,
+    143,
     65,
     65,
     125,
@@ -6502,8 +6502,8 @@
   "FirstObjectData": [
     {
       "GameObjectId": 13,
-      "X": 3,
-      "Y": 19,
+      "X": 9,
+      "Y": 11,
       "Property": 2
     },
     {
@@ -6531,21 +6531,46 @@
       "Property": 0
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 102,
+      "X": 10,
+      "Y": 17,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 102,
+      "X": 6,
+      "Y": 17,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 102,
+      "X": 11,
+      "Y": 5,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 102,
+      "X": 2,
+      "Y": 5,
+      "Property": 1
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "80a75db5-5cb8-4d03-9160-d6d5cf83c26e",
       "ExitActionType": 1,
       "ExitX": 120,
       "ExitY": 8,
-      "X": 1,
-      "Y": 24,
+      "X": 7,
+      "Y": 7,
       "ExitsLevel": false,
       "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
-      "BoundRectangle": "16,384,32,32"
+      "BoundRectangle": "112,112,32,32"
     }
   ],
-  "CompressedData": "P30QfU0BfU0BfU0BfU0BfU0BfU0EfUoEfUoHfUcHfUcNfUENfUEBfU0BfUzBagF9TQF9TQF9TQF9RQl9RQl9wq6vQQt9wp6fQRl9wX0="
+  "CompressedData": "P30QfUWDEJ6fQUFBQUFBfX1BQUFBQUHCrq9FAX1NAX1NBH1KBH1KB31HB31HDX1BDX1BAX1NAX1MwWoBfU0BfU0BfU0BfUUJfUUJfcKOj0ELfcKen0EZfcF9"
 }

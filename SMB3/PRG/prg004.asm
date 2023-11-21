@@ -3423,7 +3423,8 @@ ParaPiranha_Norm:
 	.word ParaPiranha_Attack
 
 ParaPiranha_AttackYVel:
-	.byte $C8, $38
+	.byte $D0, $30
+	.byte $E0, $20
 
 ParaPiranha_Wait:
 	LDA Objects_Timer, X
@@ -3438,10 +3439,18 @@ ParaPiranha_Wait:
 	STA ParaPiranha_Action, X
 
 	LDY Objects_Property, X
+
+	LDA DayNight
+	BPL ParaPiranha_FlyOut
+
+	INY
+	INY
+
+ParaPiranha_FlyOut:	
 	LDA ParaPiranha_AttackYVel, Y
 	STA <Objects_YVelZ, X
 
-	LDA #$0F
+	LDA #$60
 	STA Objects_Timer, X
 
 ParaPiranha_WaitRTS:	
@@ -3451,6 +3460,13 @@ ParaPiranha_Attack:
 	LDA Objects_Property, X
 	STA Reverse_Gravity
 
+	LDA Objects_Timer, X
+	BEQ ParaPiranha_NoFloat
+
+	LDA <Objects_YVelZ, X
+	BEQ ParaPirnha_Float
+
+ParaPiranha_NoFloat:
 	LDA Objects_InWater, X
 	PHA
 
@@ -3462,6 +3478,7 @@ ParaPiranha_Attack:
 	PLA 
 	STA Objects_InWater, X
 
+ParaPirnha_Float:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JSR Object_DetectTiles
@@ -3518,6 +3535,7 @@ ParaPiranha_Animate:
 	STA Objects_Frame, X
 
 	LDA <Objects_YVelZ, X
+	BEQ ParaPiranha_AnimateWings
 	BMI ParaPiranha_AnimateWings
 
 	LDA #$01
