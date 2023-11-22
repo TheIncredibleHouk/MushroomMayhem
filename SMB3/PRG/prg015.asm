@@ -4053,12 +4053,14 @@ BallChain_YOffsetHi:
 
 ObjInit_BallChain:
 	LDA <Objects_XZ, X
+	ADD #$08
 	STA BallChain_XOrigin, X
 
 	LDA <Objects_XHiZ, X
 	STA BallChain_XHiOrigin, X
 
 	LDA <Objects_YZ, X
+	ADD #$08
 	STA BallChain_YOrigin, X
 
 	LDA <Objects_YHiZ, X
@@ -4130,67 +4132,74 @@ BallChain_Draw:
 	
 	LDY Object_SpriteRAMOffset, X
 
-	
-	; ADD #$08
-	; STA <Temp_Var3
-
-	; LDA <Objects_XHiZ, X
-	; STA <Temp_Var4
-
 	LDA <Objects_XZ, X
-	SUB BallChain_XOrigin, X
-	
-	PHA
+	ADD #$08
+	STA <Ball_CenterX
 
 	LDA <Objects_XHiZ, X
-	SBC BallChain_XHiOrigin, X
-	STA <Temp_Var2
+	ADC #$00
+	STA <Ball_CenterXHi
 
-	PLA
-	
-	JSR Half_Value
-	ADD BallChain_XOrigin, X
-	STA <Point_X
+	LDA BallChain_XOrigin, X
+	SUB <Ball_CenterX
+	STA <Ball_MidX
 
 	LDA BallChain_XHiOrigin, X
-	ADC <Temp_Var2
+	SBC <Ball_CenterXHi
+	STA <Ball_MidXHi
+
+	LDA <Ball_MidX
+	JSR Half_Value
+
+	ADD <Ball_CenterX
+	STA <Point_X
+
+	LDA <Ball_CenterXHi
+	ADC <Ball_MidXHi
 	STA <Point_XHi
 
 	LDA <Objects_YZ, X
-	SUB BallChain_YOrigin, X
-	
-	PHA
+	ADD #$08
+	STA <Ball_CenterY
 
 	LDA <Objects_YHiZ, X
-	SBC BallChain_YHiOrigin, X
-	STA <Temp_Var2
+	ADC #$00
+	STA <Ball_CenterYHi
 
-	PLA
+	LDA BallChain_YOrigin, X
+	SUB <Ball_CenterY
+	STA <Ball_MidY
+
+	LDA BallChain_YHiOrigin, X
+	SBC <Ball_CenterYHi
+	STA <Ball_MidYHi
+
+	LDA <Ball_MidY
 	JSR Half_Value
 
-	ADD BallChain_YOrigin, X
+	ADD <Ball_CenterY
 	STA <Point_Y
 
-	LDA <Temp_Var2
-	ADC BallChain_YHiOrigin, X
+	LDA <Ball_CenterYHi
+	ADC <Ball_MidYHi
+	STA <Point_YHi
+
+	LDA <Point_X
+	SUB #$04
+	STA <Point_X
+
+	LDA <Point_XHi
+	SBC #$00
+	STA <Point_XHi
+
+	LDA <Point_Y
+	SUB #$08
+	STA <Point_Y
+
+	LDA <Point_YHi
+	SBC #$00
 	STA <Point_YHi
 	
-	; LDA <Point_X
-	; SUB #$04
-	; STA <Point_X
-
-	; LDA <Point_XHi
-	; SBC #$00
-	; STA <Point_XHi
-
-	; LDA <Point_Y
-	; SUB #$04
-	; STA <Point_Y
-
-	; LDA <Point_YHi
-	; SBC #$00
-	; STA <Point_YHi
-
 	JSR CheckPoint_OffScreen
 	BCC BallChain_Center
 
@@ -4209,15 +4218,18 @@ BallChain_Draw:
 
 BallChain_Center:
 	LDA BallChain_XOrigin, X
+	SUB #$04
 	STA <Point_X
 	
 	LDA BallChain_XHiOrigin, X
 	STA <Point_XHi
 
 	LDA BallChain_YOrigin, X
+	SUB #$08
 	STA <Point_Y
 	
 	LDA BallChain_YHiOrigin, X
+	SBC #$00
 	STA <Point_YHi
 
 	JSR CheckPoint_OffScreen
@@ -4238,6 +4250,17 @@ BallChain_Center:
 
 BallChain_DrawRTS:
 	RTS
+
+Ball_CenterX = Temp_Var3
+Ball_CenterXHi = Temp_Var4
+Ball_MidX = Temp_Var5
+Ball_MidXHi = Temp_Var6
+
+
+Ball_CenterY = Temp_Var3
+Ball_CenterYHi = Temp_Var4
+Ball_MidY = Temp_Var5
+Ball_MidYHi = Temp_Var6
 
 Object_ParticleVisibleTestC:
 	TXA

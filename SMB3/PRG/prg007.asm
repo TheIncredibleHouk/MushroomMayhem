@@ -5463,6 +5463,9 @@ Enemy_SpinyEggNoFlip:
 	RTS
 
 Coin_Sparkle:
+	LDA <Player_HaltGameZ
+	BNE Coin_Sparkle1
+
 	DEC SpecialObj_Timer, X
 	BPL Coin_Sparkle1
 

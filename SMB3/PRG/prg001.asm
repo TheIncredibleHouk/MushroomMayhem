@@ -2131,6 +2131,7 @@ Paper_StarRadar = Objects_Data5
 Paper_StarCoinsNeeded = Objects_Data7
 Paper_StarEnemyAttached = Objects_Data8
 Paper_StarSparkle = Objects_Data9
+Paper_StarSparkleDirection = Objects_Data10
 
 ObjInit_MagicStar1:
 	LDA #$00
@@ -2216,9 +2217,9 @@ MagicStarOffset:
 	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
-	LDA Objects_Property, X
-	CMP #$07
-	BEQ MagicStar_NoDelete
+	; LDA Objects_Property, X
+	; CMP #$07
+	; BEQ MagicStar_NoDelete
 
 	JSR Object_DeleteOffScreen
 	BCC MagicStar_NoDelete
@@ -2230,6 +2231,7 @@ MagicStar_NoDelete:
 	JSR MagicStar_Radar
 	JSR Object_CalcBoundBox
 	JSR Paper_Star_Action
+	JSR MagicStar_Sparkle
 	JSR Object_InteractWithPlayer
 
 	JSR Object_DetectTiles
@@ -2277,8 +2279,10 @@ Paper_Star_Action:
 	.word MagicStar_Indicator
 
 MagicStar_Indicator:
-	LDA #$01
+	LDA #$02
 	STA Objects_Timer2, X
+	PLA
+	PLA
 	RTS
 	
 MagicStar_CheckObjects:
@@ -2392,6 +2396,8 @@ MagicStar_CheckCoinsRTS:
 	RTS	
 
 MagicStar_AttachedEnemyDefeated:
+	JSR MagicStar_Sparkle
+
 	LDA Paper_StarEnemyAttached, X
 	BMI MagicStar_EnemyDefeatedRTS
 
@@ -2423,24 +2429,64 @@ MagicStar_EnemyDead:
 	STA <Objects_YVelZ, X
 	RTS
 
+Sparkle_OffSetX:
+	.byte $FA, $0C, $FA, $04, $0C, $F8, $0C, $04
+
+Sparkle_OffSetY:
+	.byte $F8, $00, $08, $F8, $08, $00, $F8, $08
+
 MagicStar_EnemyDefeatedRTS:
+	PLA
+	PLA
+	RTS
+
+MagicStar_Sparkle:
+	LDA <Player_HaltGameZ
+	BEQ MagicStar_DoSparkle
+	RTS
+
+MagicStar_DoSparkle:
+	STA Debug_Snap
 	LDA Paper_StarSparkle, X
-	BNE MagicStar_RTS
+	BNE MagicStar_SparkleRTS
+
+	LDA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA <Objects_YZ, X
+	STA <Poof_Y
+
 	JSR Common_MakePoof
 
+	LDA #$10
+	STA SpecialObj_Timer, Y
+	
 	LDA #SOBJ_COINSPARKLE
 	STA SpecialObj_ID, Y
+
+	LDA Paper_StarSparkleDirection, X
+	INC Paper_StarSparkleDirection, X
+	AND #$07
+	TAX
+
+	LDA SpecialObj_X, Y
+	ADD Sparkle_OffSetX, X
+	STA SpecialObj_X, Y
+
+	LDA SpecialObj_Y, Y
+	ADD Sparkle_OffSetY, X
+	STA SpecialObj_Y, Y
 
 	LDA #SPR_PAL2
 	STA SpecialObj_Data3, Y
 
-	LDA #$20
+	LDX <CurrentObjectIndexZ
+
+	LDA #$08
 	STA Paper_StarSparkle, X
 
-MagicStar_RTS:
+MagicStar_SparkleRTS:
 	DEC Paper_StarSparkle, X
-	PLA
-	PLA
 	RTS
 
 MagicStar_Radar:
@@ -2475,6 +2521,7 @@ MagicStar_Radar2:
 
 MagicStar_RadarRTS:
 	RTS
+
 EWBitMap:
 	.byte $02, $01
 
@@ -2485,7 +2532,6 @@ RadarMap:
 	.byte ITEM_RADARN, ITEM_RADARE, ITEM_RADARW, ITEM_RADARUNKNOWN
 	.byte ITEM_RADARN, ITEM_RADARNE, ITEM_RADARNW, ITEM_RADARUNKNOWN
 	.byte ITEM_RADARS, ITEM_RADARSE, ITEM_RADARSW	
-	
 
 ;***********************************************************************************
 ; Negative Star

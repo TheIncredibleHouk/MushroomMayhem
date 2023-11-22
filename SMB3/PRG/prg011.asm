@@ -102,7 +102,6 @@ World_Start_Num:
 	.byte $00, $10, $20, $30, $40, $50, $60, $70
 
 World_Override:
-	STA Debug_Snap
 	LDX World_Start
 	BEQ World_OverrideRTS
 

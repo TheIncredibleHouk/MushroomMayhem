@@ -1663,8 +1663,8 @@ Piranha_AttackProjectiles:
 	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_OIL
 
 Piranha_AttackNumbers:
-	.byte $00, $00, $01, $01, $01, $01, $02, $02
-	.byte $00, $00, $03, $03
+	.byte $00, $00, $01, $01, $01, $01, $01, $01
+	.byte $00, $00, $02, $02, $02, $02, $01, $01
 
 ObjNorm_Piranha:
 	
@@ -1865,7 +1865,15 @@ Piranha_Move:
 	BNE Piranha_SetAttacks
 
 Piranha_GetAttacks:
-	LDY Objects_Property, X
+	LDA Objects_Property, X
+
+	LDY DayNight
+	BMI Piranha_SetAttackNum
+	
+	ADD #$08
+
+Piranha_SetAttackNum:
+	TAY
 	LDA Piranha_AttackNumbers, Y
 
 Piranha_SetAttacks:	
