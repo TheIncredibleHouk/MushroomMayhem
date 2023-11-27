@@ -6798,8 +6798,8 @@
     },
     {
       "GameObjectId": 120,
-      "X": 231,
-      "Y": 6,
+      "X": 219,
+      "Y": 15,
       "Property": 0
     },
     {
@@ -6834,9 +6834,9 @@
     },
     {
       "GameObjectId": 14,
-      "X": 213,
-      "Y": 16,
-      "Property": 4
+      "X": 216,
+      "Y": 22,
+      "Property": 0
     }
   ],
   "LevelPointers": [

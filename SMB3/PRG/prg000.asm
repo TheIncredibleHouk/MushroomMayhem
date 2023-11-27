@@ -1353,7 +1353,7 @@ Kill_NotKicked:
 	BCC Object_KillOthers2
 
 
-Kill_Normal:	
+Kill_Normal:
 	TYA
 	TAX
 
@@ -6066,8 +6066,8 @@ Object_EdgeMarch:
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
 
-	;LDA #HIT_GROUND
-	;STA <Objects_TilesDetectZ, X
+	LDA #HIT_GROUND
+	STA <Objects_TilesDetectZ, X
 
 Object_EdgeMarchRTS:
 	RTS

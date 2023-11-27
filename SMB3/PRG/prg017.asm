@@ -62,12 +62,23 @@ Boss_CheepDoAction:
 Boss_CheepTimers:
 	.byte $80, $90, $A0, $B0
 
+Boss_CheepHitScale:
+	.byte 21, 16, 11, 6, 1
+
 Boss_CheepInit:
+	LDA #25
+	STA Boss_CheepHealth, X
+
+	LDA #$01
+	STA Enemy_Health_Mode
+
+	LDA #50
+	STA Enemy_Health
 
 	LDA #$00
 	STA Objects_ExpPoints, X
 
-	LDA #$04
+	LDA #$00
 	STA Objects_Health, X
 
 	INC Boss_CheepAction, X
@@ -113,24 +124,60 @@ Boss_CheepNorm:
 	CMP #OBJSTATE_KILLED
 	BNE Boss_CheepNotKilled
 
+	LDA Objects_Timer2, X
+	BNE Boss_CheepResetNorm
+
+Boss_CheepNormHit:
+	LDA Objects_PlayerProjHit, X
+	CMP #HIT_SHELL
+	BNE Boss_ShortFlash
+
 	LDA #$40
 	STA Objects_Timer2, X
 
+	LDA Boss_CheepHealth, X
+	SUB #$05
+	STA Boss_CheepHealth, X
+	JMP Boss_CheepResetNorm
+
+Boss_ShortFlash:
+	DEC Boss_CheepHealth, X
+	DEC Boss_CheepHealth, X
+
+Boss_CheepResetNorm:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-
-	LDA #$03
-	STA Boss_CheepBounces, X
-
-	LDA #$04
+	LDA Boss_CheepHealth, X
+	ASL A
+	STA Enemy_Health
+	
+	LDA #$00
 	STA Objects_Health, X
 
-	INC Boss_CheepHits, X
+Boss_CheepNoRefill:
+	LDY #$00
+	LDA Boss_CheepHealth, X
+	BMI Boss_CheepDoDeath
 
-	LDA Boss_CheepHits, X
-	CMP #$05
-	BCC Boss_CheepNotDead
+Boss_CheepFindHits:	
+	CMP Boss_CheepHitScale, Y
+	BCS Boss_CheepSetHits
+
+	INY
+	BNE Boss_CheepFindHits
+
+Boss_CheepSetHits:
+	TYA
+	CMP Boss_CheepHits, X
+	BEQ Boss_CheepNotKilled
+	
+	STA Boss_CheepHits, X
+	JMP Boss_CheepNotDead
+
+Boss_CheepDoDeath:
+	LDA #$00
+	STA Enemy_Health
 
 	LDA #$09
 	STA Boss_CheepAction, X
@@ -140,7 +187,6 @@ Boss_CheepNotDead:
 	JSR Boss_CheepMakeFish
 
 Boss_CheepNotKilled:	
-
 	LDA Objects_InWater, X
 	PHA
 
@@ -160,6 +206,13 @@ Boss_CheepNotKilled:
 	PHA
 
 	JSR Object_AttackOrDefeat
+	
+	LDA Objects_Timer2, X
+	BEQ	Boss_CheepNoKills
+
+	JSR Object_KillOthers
+
+Boss_CheepNoKills:
 
 	PLA
 
@@ -588,7 +641,7 @@ Boss_CheepFirstFish:
 	JSR Common_MakePoof
 
 	LDA Boss_CheepHits, X
-	CMP #$02
+	CMP #$03
 	BCS Boss_CheepSecondFish
 
 	JMP Boss_CheepMakeFishRTS
@@ -635,47 +688,47 @@ Boss_CheepSecondFishDo:
 
 	JSR Common_MakePoof
 
-	LDA Boss_CheepHits, X
-	CMP #$04
-	BCC Boss_CheepMakeFishRTS
+	; LDA Boss_CheepHits, X
+	; CMP #$04
+	; BCC Boss_CheepMakeFishRTS
 
-	JSR Object_FindEmptyY
-	BCC Boss_CheepMakeFishRTS
+	; JSR Object_FindEmptyY
+	; BCC Boss_CheepMakeFishRTS
 
-	LDA #OBJ_JUMPINGCHEEP
-	STA Objects_ID, Y
+	; LDA #OBJ_JUMPINGCHEEP
+	; STA Objects_ID, Y
 
-	LDA #$00
-	STA Objects_ExpPoints, Y
+	; LDA #$00
+	; STA Objects_ExpPoints, Y
 
-	LDA #OBJSTATE_FRESH
-	STA Objects_State, Y
+	; LDA #OBJSTATE_FRESH
+	; STA Objects_State, Y
 
-	LDA <Temp_Var16
-	ADD #$40
-	STA Objects_XZ, Y
-	STA <Poof_X
+	; LDA <Temp_Var16
+	; ADD #$40
+	; STA Objects_XZ, Y
+	; STA <Poof_X
 
-	LDX <CurrentObjectIndexZ
-	LDA <Objects_XHiZ, X
-	STA Objects_XHiZ, Y
+	; LDX <CurrentObjectIndexZ
+	; LDA <Objects_XHiZ, X
+	; STA Objects_XHiZ, Y
 
-	LDA Boss_CheepYLine, X
-	STA Objects_YZ, Y
-	STA <Poof_Y
+	; LDA Boss_CheepYLine, X
+	; STA Objects_YZ, Y
+	; STA <Poof_Y
 
-	LDA #$00
-	STA Objects_YHiZ, Y
-	STA Objects_Property, Y
+	; LDA #$00
+	; STA Objects_YHiZ, Y
+	; STA Objects_Property, Y
 	
-	LDA #$80
-	STA Objects_Timer, Y
-	STA Objects_InWater, Y
+	; LDA #$80
+	; STA Objects_Timer, Y
+	; STA Objects_InWater, Y
 
-	LDA #SPR_BEHINDBG
-	STA Objects_Orientation, Y
+	; LDA #SPR_BEHINDBG
+	; STA Objects_Orientation, Y
 
-	JSR Common_MakePoof
+	; JSR Common_MakePoof
 
 Boss_CheepMakeFishRTS:
 	RTS	

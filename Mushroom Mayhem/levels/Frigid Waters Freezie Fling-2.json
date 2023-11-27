@@ -10,6 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "24ef1261-b6e5-4a60-84b9-87106362235a",
   "StaticTileTableIndex": 24,
+  "NoStars": false,
   "MostCommonTile": 110,
   "AnimationType": 0,
   "ScrollType": 3,
@@ -6503,7 +6504,7 @@
       "GameObjectId": 12,
       "X": 23,
       "Y": 19,
-      "Property": 5
+      "Property": 4
     },
     {
       "GameObjectId": 13,

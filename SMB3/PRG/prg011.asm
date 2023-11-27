@@ -4317,6 +4317,13 @@ Completion_Tiles:
 
 MarkCompletedLevels:
 	JSR GetMapTile
+	TAY
+
+	LDA TileProperties, Y
+	CMP #MAP_PROP_COMPLETABLE
+	BNE MarkCompletedLevelsRTS
+
+	TYA
 
 	AND #$E0
 	LSR A
@@ -4330,6 +4337,8 @@ MarkCompletedLevels:
 
 	LDA Completion_Tiles, X
 	STA [Map_Tile_AddrL],Y
+
+MarkCompletedLevelsRTS:	
 	RTS
 
 GetMapTile:

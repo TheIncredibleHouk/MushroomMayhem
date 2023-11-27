@@ -3021,6 +3021,9 @@ Grower_NotHit:
 	JMP Grower_Retract
 	
 Grower_Normal:
+	LDA #$4F
+	STA PatTable_BankSel+5
+	
 	LDA Objects_Timer, X
 	BEQ Grower_Move
 	

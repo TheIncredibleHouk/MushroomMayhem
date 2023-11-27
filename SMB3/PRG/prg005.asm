@@ -726,8 +726,8 @@ VeggieGuy_Norm:
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
 	JSR Object_EdgeMarch
-	JSR Object_InteractWithObjects
 	JSR Object_FacePlayerOnLanding
+	JSR Object_InteractWithObjects
 	JSR VeggieGuy_FindVeggie
 	JSR VeggieGuy_GrabVeggie
 	JSR VeggieGuy_ThrowVeggie

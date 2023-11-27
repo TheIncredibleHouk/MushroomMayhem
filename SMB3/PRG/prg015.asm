@@ -94,7 +94,7 @@ OBJ_PARACHOMP		= $8B
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $78
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $79
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7A
-    .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32 ; Object $7B
+    .byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH32 ; Object $7B
     .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7C
     .byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH48 ; Object $7D
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $7E
@@ -630,6 +630,10 @@ SpikeBall_Burst:
 
 	LDA #SPR_PAL1
 	STA Object_BurstPalette
+
+	LDA Sound_QLevel2
+	ORA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
 	JMP Object_Burst
 
 
@@ -1269,6 +1273,10 @@ Chomp_MoveChains1:
 	RTS
 
 Chomp_DrawChains:
+	LDA Objects_SpriteAttributes, X
+	AND #SPR_BEHINDBG
+	STA <Temp_Var12
+
 	LDY Object_SpriteRAMOffset, X
 	STY <Temp_Var4
 
@@ -1354,6 +1362,7 @@ CDC4:
 	STA Sprite_RAMTile + 20, Y
 
 	LDA #SPR_PAL1
+	ORA <Temp_Var12
 	STA Sprite_RAMAttr + 8, Y
 	STA Sprite_RAMAttr + 12, Y
 	STA Sprite_RAMAttr + 16, Y
@@ -1419,7 +1428,7 @@ GiantChompFrames:
 	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
 
 GiantChomp_Offsets:
-	.byte $E0, $C0
+	.byte $E0, $A0
 	.byte $FF, $00
 
 ObjInit_GiantChomp:
@@ -1453,8 +1462,21 @@ GiantChomp_Wait:
 	
 	INC GiantChomp_Action, X
 	
+	STA Debug_Snap
 	LDY Objects_Property, X
+	CPY #$02
+	BCC GiantChomp_PlaceY
 
+	DEY
+	DEY
+	TYA
+	STA Objects_Property, X
+
+	LDA GiantChomp_Orientation, Y
+	STA Objects_Orientation, X
+	RTS
+
+GiantChomp_PlaceY:
 	LDA #$40
 	STA <Objects_YVelZ, X
 

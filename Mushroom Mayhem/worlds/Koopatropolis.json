@@ -655,6 +655,12 @@
       "X": 5,
       "Y": 2,
       "BoundRectangle": "80,32,16,16"
+    },
+    {
+      "LevelId": "0368b992-26e4-4a3a-bb10-cd700b4322cc",
+      "X": 3,
+      "Y": 5,
+      "BoundRectangle": "48,80,16,16"
     }
   ],
   "ObjectData": [],

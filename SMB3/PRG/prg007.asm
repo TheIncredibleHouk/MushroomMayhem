@@ -302,7 +302,7 @@ Player_HitFire:
 	BNE Player_FireBallNoKill
 
 	JSR SpecialObj_AttackEnemy
-	JMP SpecialObj_ToPoofNoSound
+	JMP SpecialObj_ToPoofKickSound
 
 Player_FireBallNoKill:
 	JMP SpecialObj_ToPoof
@@ -443,6 +443,7 @@ Player_HitIce:
 	BNE Player_IceBallNoKill
 
 	JSR SpecialObj_AttackEnemy
+
 	LDA Objects_State, Y
 	CMP #OBJSTATE_KILLED
 	BNE Player_IceBallNoKill
@@ -450,7 +451,7 @@ Player_HitIce:
 	LDA Objects_BehaviorAttr, Y
 	AND #ATTR_NOICE
 	BEQ Make_Ice
-	JMP SpecialObj_ToPoofNoSound
+	JMP SpecialObj_ToPoofKickSound
 
 Make_Ice:
 	LDA #OBJSTATE_FROZEN
@@ -469,7 +470,7 @@ Make_Ice:
 	JSR Object_FallAwayFromPlayer
 	
 	LDX <CurrentObjectIndexZ
-	JMP SpecialObj_ToPoofNoSound
+	JMP SpecialObj_ToPoofKickSound
 
 Player_IceBallNoKill:
 
@@ -599,6 +600,11 @@ IceTiles_NoTemp:
 
 SpecialObj_ToPoof:
 	LDA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+	BNE SpecialObj_ToPoofNoSound
+
+SpecialObj_ToPoofKickSound:
+	LDA #SND_PLAYERKICK
 	STA Sound_QPlayer
 
 SpecialObj_ToPoofNoSound:
@@ -1297,6 +1303,7 @@ SpecialObj_AttackEnemy:
 	BMI ProjEnemyDead	 ; If enemy has no hits left, jump to PRG007_A6DD
 	
 	JSR SpecialObj_ToPoof
+
 	LDA #SND_PLAYERKICK
 	STA Sound_QPlayer
 
@@ -1316,18 +1323,18 @@ ProjEnemyDead:
 	LDX <CurrentObjectIndexZ
 
 	; Set object's velocity based on Player's velocity (sort of works)
-	LDA SpecialObj_XVel,X
-	BMI ProjEnemyDead_Left
+; 	LDA SpecialObj_XVel,X
+; 	BMI ProjEnemyDead_Left
 
 
-	LDA #$0C
-	BNE ProjEnemyDead_XVel
+; 	LDA #$0C
+; 	BNE ProjEnemyDead_XVel
 
-ProjEnemyDead_Left:
-	LDA #-$0C
+; ProjEnemyDead_Left:
+; 	LDA #-$0C
 
-ProjEnemyDead_XVel:
-	STA Objects_XVelZ,Y
+; ProjEnemyDead_XVel:
+; 	STA Objects_XVelZ,Y
 
 	LDA #SND_PLAYERKICK
 	STA Sound_QPlayer

@@ -523,6 +523,10 @@ PUp_Collect3:
 	LDA PUp_Queue, Y
 	STA Player_QueueSuit
 
+	LDA PowerUp_Type, X
+	CMP #POWERUP_CHECKPOINT
+	BEQ PUp_CollectNoReserve
+
 	LDA Player_Badge
 	CMP #BADGE_ITEMRESERVE
 	BNE PUp_CollectNoReserve
@@ -852,6 +856,10 @@ PUp_CollectPWing:
 
 
 PUp_CheckPoint:
+	LDA Sound_QMap
+	ORA #SND_MAPENTERWORLD
+	STA Sound_QMap
+	
 	LDA LevelNumber
 	STA CheckPoint_Flag
 
@@ -2430,7 +2438,7 @@ MagicStar_EnemyDead:
 	RTS
 
 Sparkle_OffSetX:
-	.byte $FA, $0C, $FA, $04, $0C, $F8, $0C, $04
+	.byte $FC, $0C, $FC, $04, $0C, $FC, $0C, $04
 
 Sparkle_OffSetY:
 	.byte $F8, $00, $08, $F8, $08, $00, $F8, $08
@@ -2446,12 +2454,16 @@ MagicStar_Sparkle:
 	RTS
 
 MagicStar_DoSparkle:
-	STA Debug_Snap
-	LDA Paper_StarSparkle, X
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE MagicStar_SparkleRTS
+
+	LDA Paper_StarSparkle, X
+	BNE MagicStar_SparkleDec
 
 	LDA <Objects_XZ, X
 	STA <Poof_X
+	STA <Poof_YHi
 
 	LDA <Objects_YZ, X
 	STA <Poof_Y
@@ -2485,8 +2497,10 @@ MagicStar_DoSparkle:
 	LDA #$08
 	STA Paper_StarSparkle, X
 
-MagicStar_SparkleRTS:
+MagicStar_SparkleDec:
 	DEC Paper_StarSparkle, X
+
+MagicStar_SparkleRTS:
 	RTS
 
 MagicStar_Radar:

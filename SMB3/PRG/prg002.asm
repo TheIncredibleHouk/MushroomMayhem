@@ -207,8 +207,8 @@ ObjP15:
 	.byte $DD, $DF, $FF, $FF
 
 ObjP17:
-    .byte $97, $99
-    .byte $9B, $9D
+    .byte $97, $97
+    .byte $99, $99
 	.byte $A1, $AB
 	.byte $A3, $A1
 	.byte $A3, $AB
@@ -922,7 +922,11 @@ ObjNorm_Clock0:
 	STA Objects_Frame, X
 	
 ObjNorm_Clock1:
-	JMP Object_Draw
+	JSR Object_DrawMirrored
+	LDA Sprite_RAMX + 4, Y
+	SUB #$01
+	STA Sprite_RAMX + 4, Y
+	RTS
 
 ObjNorm_Clock2:
 	LDA <Player_HaltGameZ

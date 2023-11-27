@@ -5137,6 +5137,7 @@ Map_LoadTileProperties:
 	PHA
 
 	JSR LoadTileProperties
+	
 	PLA
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
