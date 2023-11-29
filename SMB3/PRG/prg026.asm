@@ -2664,8 +2664,8 @@ Game_UpdateCherries1:
 	;RTS
 	
 StatusBar_DrawCherries:
-	LDA Player_Cherries
-	;LDA Object_Count
+	;LDA Player_Cherries
+	LDA Object_Count
 	STA <DigitsParam
 	
 	JSR BytesTo2Digits
@@ -2682,6 +2682,8 @@ StatusBar_DrawCherries1:
 	INC Bottom_Needs_Redraw
 	RTS
 	
+; StatusBar_XpIcon:
+; 	.byte $EF, $2D
 ;-----------------------------------
 Game_UpdateExperience:
 	LDA Exp_Earned
@@ -2689,6 +2691,8 @@ Game_UpdateExperience:
 	RTS
 
 Game_UpdateExperience1:
+	LDA Exp_Earned
+	
 	LDX Player_Badge
 	CPX #BADGE_XP
 	BNE Game_NoXpDouble
@@ -2724,6 +2728,19 @@ Game_NoXpDouble:
 
 	LDA #$00
 	STA Exp_Earned
+
+; 	LDX #$00
+
+; 	LDA Kill_Tally_Ticker
+; 	CMP #$02
+; 	BCC StatusBar_DrawXpIcon
+
+; 	INX
+
+; StatusBar_DrawXpIcon:
+; 	LDA StatusBar_XpIcon, X
+; 	STA Status_Bar_Bottom
+
 	INC Bottom_Needs_Redraw
 
 	; LDA StatusBar_Mode
@@ -2838,13 +2855,23 @@ StatusBar_DrawCoins1:
 
 	INC Bottom_Needs_Redraw
 	RTS
+
+StatusBar_SkullIcon:
+	.byte $3E, $3D
 ;--------------------------------------
 StatusBar_DrawEnemyHealth:
 	
 	LDA Enemy_Health_Mode
 	BEQ DrawEnemy_HealthRTS
 
-	LDA #$3E
+	LDX #$00
+	LDA Enemy_Health
+	BNE StatusBar_DrawSkull
+
+	INX
+
+StatusBar_DrawSkull:
+	LDA StatusBar_SkullIcon, X
 	STA Status_Bar_Top + 14
 	
 	LDA #$EA
@@ -2873,7 +2900,6 @@ Full_EnemyHealth_Loop:
 	BEQ Fill_EnemyHealth_MT_Done
 
 Paritial_EnemyHealth:
-							; Not filled all the way, let's fill the partial bar
 	LDA Enemy_Health
 	AND #$0F
 	LSR A

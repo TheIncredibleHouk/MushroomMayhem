@@ -553,7 +553,7 @@ HammerBro_ThrowDone:
 	RTS    
 
 
-NinjaBro_JumpYVel:	.byte -$60, -$30
+NinjaBro_JumpYVel:	.byte -$60, -$30, -$60, -$30
 NinjaBro_JumpWait: .byte $C0, $FF
 NinjaBro_WaitTimers: .byte $30, $48, $18, $60
 NinjaBro_CanFallThrough: .byte $00, $30
@@ -709,12 +709,43 @@ NinjaBro_DecHamTimer:
 NinjaBro_CheckJump:
 	LDA Objects_Timer, X
 	BNE NinjaBro_NoJump
+
 	LDA Objects_Property, X
 	BNE NinjaBro_NoJump
 
 	JSR Bro_CheckTop
 
 NinjaBro_DoJump:
+	LDA Objects_BoundBottom, X
+	ADD #$18
+	STA Tile_DetectionY
+
+	LDA Objects_BoundBottomHi, X
+	ADC #$00
+	STA Tile_DetectionYHi
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Tile_DetectionX
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Tile_DetectionXHi
+
+	JSR Object_DetectTile
+
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Ninja_NotTop
+
+	LDY #$00
+	BEQ Ninja_SetYVel
+
+Ninja_NotTop:	
+	LDA RandomN + 2, X
+	AND #$01
+	TAY
+	
+Ninja_SetYVel:	
 	LDA NinjaBro_JumpYVel, Y
 	STA <Objects_YVelZ, X
 

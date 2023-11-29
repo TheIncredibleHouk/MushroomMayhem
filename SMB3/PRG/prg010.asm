@@ -1881,11 +1881,11 @@ PRG010_CDDC:
 	LDA Map_Pan_Count	
 	BNE PRG010_CD6E	 	; If map is panning, jump to PRG010_CD6E (indirect to WorldMap_UpdateAndDraw)
 
-
 	LDA <Pad_Input	
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)	 
 	BEQ PRG010_CDEC	 	; If Player is not pushing up/down/left/right, jump to PRG010_CDEC
 
+	STA Debug_Snap
 	LDA #SND_PLAYERBUMP	 
 	STA Sound_QPlayer	; "Bump" noise
 

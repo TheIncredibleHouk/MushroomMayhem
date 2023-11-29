@@ -1428,7 +1428,7 @@ GiantChompFrames:
 	.byte $89, $8B, $8D, $8F, $A9, $AB, $AD, $AF
 
 GiantChomp_Offsets:
-	.byte $E0, $A0
+	.byte $E0, $C0
 	.byte $FF, $00
 
 ObjInit_GiantChomp:
@@ -1462,7 +1462,6 @@ GiantChomp_Wait:
 	
 	INC GiantChomp_Action, X
 	
-	STA Debug_Snap
 	LDY Objects_Property, X
 	CPY #$02
 	BCC GiantChomp_PlaceY

@@ -925,8 +925,7 @@ Frozen_DoDraw:
 	JMP Frozen_Draw
 	
 Frozen_Die:
-	LDA Sound_QLevel2
-	ORA #SND_LEVELCRUMBLE
+	LDA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
 
 	JSR Object_EarnExp
@@ -1279,8 +1278,7 @@ Kicked_NotAir:
 	AND #(HIT_CEILING | HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ DrawKickedShell
 
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERBUMP
+	LDA #SND_PLAYERBUMP
 	STA Sound_QPlayer
 	
 DrawKickedShell:
@@ -2271,8 +2269,7 @@ Object_DoChange:
 	LDA #$08
 	STA Objects_Timer2, X
 
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERSWIM
+	LDA #SND_PLAYERSWIM
 	STA Sound_QPlayer
 
 	LDA Objects_PlayerProjHit, X
@@ -3781,8 +3778,7 @@ Player_PoofHurt:
 	STA Player_SuitLost	 ; Player_SuitLost = $17
 
 	; Play Power up lost sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELPOOF
+	LDA #SND_LEVELPOOF
 	STA Sound_QLevel1
 
 
@@ -3807,8 +3803,7 @@ PRG000_DA50:
 	BNE Player_PoofHurt
 
 	; Play shrinking sound!!
-	LDA Sound_QPlayer
-	ORA #SND_PLAYERPIPE
+	LDA #SND_PLAYERPIPE
 	STA Sound_QPlayer
 
 	LDA #$2f	
@@ -4721,9 +4716,8 @@ DetectNextSprite:
 	CPY <CurrentObjectIndexZ
 	BEQ GoNextSprite
 
-	;LDA Objects_DetectedObject, X
-	;AND Object_DetectBit, Y
-	;BNE GoNextSprite
+	LDA Objects_ToggleDetect, X
+	BEQ GoNextSprite
 
 	;LDA Object_DetectBit, X
 	;ORA Objects_DetectedObject, Y
@@ -5294,6 +5288,8 @@ Add_KillyTally:
 	ADD Kill_Tally
 
 	STA Kill_Tally
+
+	ASL A
 	STA Exp_Earned
 
 	INC Kill_Count
@@ -6072,8 +6068,8 @@ Object_EdgeMarch:
 Object_EdgeMarchRTS:
 	RTS
 
-Defeat_Sounds:
-	.byte SND_PLAYERSWIM, SND_PLAYERKICK
+; Defeat_Sounds:
+; 	.byte SND_PLAYERKICK, SND_PLAYERKICK
 
 Object_KickSound:
 	LDY #$01
@@ -6088,8 +6084,7 @@ Object_DefeatSound:
 	INY
 
 Object_MakeSound:
-	LDA Sound_QPlayer 
-	ORA Defeat_Sounds, Y
+	LDA #SND_PLAYERKICK
 	STA Sound_QPlayer
 	RTS
 

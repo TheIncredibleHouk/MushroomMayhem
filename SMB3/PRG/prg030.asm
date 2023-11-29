@@ -5137,7 +5137,7 @@ Map_LoadTileProperties:
 	PHA
 
 	JSR LoadTileProperties
-	
+
 	PLA
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
@@ -5153,7 +5153,7 @@ PRG012_A498:
 	STA DAIZ_TEMP2
 	STY TempY
 
-	JSR Try_Replace_Tile
+	;JSR Try_Replace_Tile
 
 	LDY TempY
 	STA [Map_Tile_AddrL],Y	; Copy byte to RAM copy of tiles
@@ -5219,20 +5219,20 @@ DontIncWorldVar2:
 	RTS
 
 
-Try_Replace_Tile:
-	STA TempA
-	CMP #$3E
-	BNE Try_Replace_Tile1
+; Try_Replace_Tile:
+; 	STA TempA
+; 	CMP #$3E
+; 	BNE Try_Replace_Tile1
 
-	LDA DayNight
-	BEQ Try_Replace_Tile1
+; 	LDA DayNight
+; 	BEQ Try_Replace_Tile1
 
-	LDA #$3F
-	RTS
+; 	LDA #$3F
+; 	RTS
 
-Try_Replace_Tile1:
-	LDA TempA
-	RTS
+; Try_Replace_Tile1:
+; 	LDA TempA
+; 	RTS
 
 
 Find_Applicable_Pointer:
@@ -5767,6 +5767,7 @@ Common_MakePoof1:
 	DEY
 	BPL Common_MakePoof1
 
+	CLC
 	RTS
 
  Common_MakePoof2:
@@ -5793,6 +5794,7 @@ Common_MakePoof1:
 
 	LDA #SPR_PAL2
 	STA SpecialObj_Data3, Y
+	SEC
 	RTS
 
 Common_GetTempTile:

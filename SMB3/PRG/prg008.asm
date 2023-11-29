@@ -3713,6 +3713,7 @@ BumpBlock_Brick:
 
 	LDA ActualTile_LastValue
 	STA ItemBlock_ReplaceTile, X
+
 	RTS
 
 BumpBlock_Brick1:
@@ -3732,6 +3733,7 @@ BumpBlock_Brick1:
 	ORA #$01
 	
 	JSR Level_QueueChangeBlock
+	INC Exp_Earned
 	
 Bump_BrickRTS:
 	RTS		 ; Return

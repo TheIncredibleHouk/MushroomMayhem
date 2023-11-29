@@ -6885,6 +6885,18 @@
       "X": 219,
       "Y": 3,
       "Property": 1
+    },
+    {
+      "GameObjectId": 12,
+      "X": 69,
+      "Y": 2,
+      "Property": 6
+    },
+    {
+      "GameObjectId": 13,
+      "X": 221,
+      "Y": 1,
+      "Property": 0
     }
   ],
   "LevelPointers": [

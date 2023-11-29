@@ -517,7 +517,11 @@ PUp_Collect2:
 
 	LDA Player_EffectiveSuit
 	CMP PUp_Compare, Y
-	BEQ PUp_Collect1
+	BNE PUp_Collect3
+
+	LDA #$10
+	STA Exp_Earned
+	JMP PUp_Collect1
 
 PUp_Collect3:
 	LDA PUp_Queue, Y
@@ -1731,12 +1735,12 @@ Key_CheckUnlockSection:
 	JMP Key_DoUnlocks
 
 Key_UnlockCheckX:
-	.byte $08, $18, $08, $F8
-	.byte $00, $00, $00, $FF
-
-Key_UnlockCheckY:
 	.byte $F8, $08, $18, $08
 	.byte $FF, $00, $00, $00
+
+Key_UnlockCheckY:
+	.byte $08, $18, $08, $F8
+	.byte $00, $00, $00, $FF
 
 Key_Unlock_Pal:
 	.byte $00, $00, $80, $40, $00
@@ -1793,6 +1797,9 @@ Key_DoUnlocksRTS:
 	RTS
 
 Key_CheckUnlock:
+	LDA Block_NeedsUpdate
+	BNE Key_NoUnlocks
+
 	JSR Object_DetectTileCenter
 
 	LDA Tile_LastProp
@@ -1821,6 +1828,10 @@ Key_UnlockBlockDelete:
 Key_UnlockBlock:
 	LDA #$00
 	STA Objects_BeingHeld, X
+
+	LDA Sound_QLevel2
+	ORA #SND_LEVELMARCH
+	STA Sound_QLevel2
 
 	LDA Block_NeedsUpdate
 	BNE RemainLocked
@@ -2469,6 +2480,7 @@ MagicStar_DoSparkle:
 	STA <Poof_Y
 
 	JSR Common_MakePoof
+	BCC MagicStar_SparkleRTS
 
 	LDA #$10
 	STA SpecialObj_Timer, Y

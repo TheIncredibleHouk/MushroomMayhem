@@ -3452,6 +3452,14 @@ PF_JUMPBIG		= $4F	; Jump as not small (except raccoon)
 PF_JUMPRACCOON		= $50	; Jump frame as raccoon
 PF_SOMERSAULT_BASE	= $1A	; $1A-$1D Invincibility somersault base frame
 
+FALL_NORMAL		= 5	; Normal fall rate added to 'Y'
+FALL_TAILWAG		= 1	; Adjusted fall rate for when wagging raccoon tail
+FALL_OBJECT		= 4	; Fall rate for objects
+
+FALLRATE_TAILWAGMAX	= 8	; Maximum Y velocity falling rate when wagging raccoon tail
+FALLRATE_MAX		= $40	; Maximum Y velocity falling rate
+FALLRATE_OBJECTMAX	= $60	; Maximum Y velocity falling rate of an object
+
 ; Walking frames
 PF_WALKSMALL_BASE	= $3E	; $3E-$3F Base frame of walking while "small"
 PF_WALKBIG_BASE		= $0C	; $0C-$0E Base frame of walking while big/fire/hammer

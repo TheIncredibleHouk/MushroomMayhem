@@ -2666,6 +2666,8 @@ ObjNorm_StarPieceCollection1:
 
 	STA <Temp_Var5
 
+	LDX #$04
+	
 CheckNextStarPiece:
 	LDA #$08
 	STA Sprite_RAMY, Y
@@ -2701,6 +2703,8 @@ DrawStarPiece:
 StarCollection_Draw:
 	DEX
 	BPL CheckNextStarPiece
+
+	LDX <CurrentObjectIndexZ
 	RTS
 
 StarCollection_Make:

@@ -474,7 +474,7 @@ Make_Ice:
 
 Player_IceBallNoKill:
 
-	JMP SpecialObj_ToPoof
+	JMP SpecialObj_ToPoofKickSound
 
 Player_IceBallTiles:
 	JSR SpecialObj_DetectWorld8x8
