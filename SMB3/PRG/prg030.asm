@@ -6379,3 +6379,70 @@ Absolute_AddRTS:
 Absolute_AddSub:
 	SUB Absolute_Value
 	RTS 
+
+
+Player_TryGroundPound:
+	LDA Player_EffectiveSuit
+	CMP #MARIO_HAMMER
+	BNE Player_TryGroundPoundRTS
+
+	LDA <Player_InAir
+	BEQ Player_EndGroundPound
+
+	LDA Player_GroundPound
+	BEQ Player_CanGroundPound
+
+	STA Player_Flip
+
+Player_CanGroundPound:
+	LDA <Pad_Holding
+	AND #PAD_DOWN
+	BEQ Player_TryGroundPoundRTS
+
+	LDA <Pad_Input
+	AND #PAD_B
+	BEQ Player_TryGroundPoundRTS
+
+	LDA #$20
+	STA <Player_YVelZ
+	STA Player_GroundPound
+	RTS
+
+Player_EndGroundPound:
+	LDA Player_GroundPound
+	BEQ Player_TryGroundPoundRTS
+
+	LDA #$00
+	STA Player_GroundPound
+	STA Player_Flip
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA Level_Vibration
+
+	LDA Player_BoundBottom
+	AND #$F0
+	ORA #$08
+	STA <Poof_Y
+
+	LDA Player_BoundLeft
+	SUB #$08
+	STA <Poof_X
+	JSR Common_MakePoof
+
+	LDA #$F0
+	STA SpecialObj_XVel, Y
+
+	LDA <Poof_X
+	ADD #$10
+	STA <Poof_X
+
+	JSR Common_MakePoof
+
+	LDA #$10
+	STA SpecialObj_XVel, Y
+
+Player_TryGroundPoundRTS:
+	RTS

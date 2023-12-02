@@ -1236,6 +1236,7 @@ GndMov_Big:
 GndMov_FireHammer:
 	JSR Player_GroundHControl ; Do Player left/right input control
 	JSR Player_JumpFlyFlutter ; Do Player jump, fly, flutter wag
+	JSR Player_TryGroundPound
 	JSR Player_SoarJumpFallFrame ; Do Player soar/jump/fall frame
 	JSR Player_ShootAnim ; Do Player shooting animation
 	RTS		 ; Return
@@ -1760,7 +1761,6 @@ PRG008_AC41:
 	JSR Do_Wall_Jump
 
 DIRECT_TO_JUMP:
-
 	LDA <Player_Suit
 	BNE STORE_BIG_JUMP
 
@@ -1879,7 +1879,6 @@ PRG008_AC9E:
 	JMP PRG008_AD1A	 ; Jump to PRG008_AD1A
 
 PRG008_ACB3:
-
 	; Player is mid air...
 
 	LDY #$05	 ; Y = 5
@@ -3239,6 +3238,7 @@ Player_DetectSolids:
 	LDA #$00
 	STA Player_HitWall
 	STA Player_HitCeiling ; Clear Player_HitCeiling
+	STA Player_HitFloor
 	STA Player_Slippery	 
 	STA TrapSet
 	STA Wall_Jump_Enabled
@@ -3373,8 +3373,11 @@ Player_NoCeilStop:
 
 Player_DetectSolids2:
 	JSR Player_NextTile	
+	JSR Player_DetectFloor
+
 	JSR Player_NextTile	
 	JSR Player_DetectFloor
+
 
 Player_DetectSolids3:
 	JSR Player_NextTile
@@ -5027,7 +5030,7 @@ Player_SuitChange9:
 
 Player_DetectCeiling:
 	LDA Player_ForcedSlide
-	BNE Player_HitBlocks1
+	BNE Player_DetectCeiling2
 
 	LDA Level_Tile_Prop_Head, X
 	CMP #TILE_PROP_SOLID_BOTTOM
@@ -5063,40 +5066,48 @@ Player_DetectCeiling1_1:
 Player_HitBlocks:
 	JSR Level_DoBumpBlocks
 
-Player_HitBlocks1:
-	RTS		 ; Return
-
 Player_DetectCeiling2:
 	RTS
 
 Player_DetectFloor:
+	STA Debug_Snap
 	LDA <Player_YVelZ
 	BMI Player_DetectFloorRTS
 
-	LDA Level_Tile_Prop_Floor_Ceiling_Right
+	LDA Level_Tile_Prop_Head, X
 	AND #$F0
 	CMP #TILE_PROP_SOLID_TOP
 	BEQ Player_DetectFloor1
 
+	LDY Player_GroundPound
+	BEQ Player_NotGroundPound
+
+	CMP #TILE_PROP_ITEM
+	BNE Player_NotGroundPound
+
+	JSR Level_DoBumpBlocks
+
+	LDA Tile_LastProp
+	CMP #(TILE_PROP_ITEM | TILE_ITEM_BRICK)
+	BEQ Player_FloorBumpRTS
+
+	LDA #$D0
+	STA <Player_YVelZ
+
+Player_FloorBumpRTS:
+	RTS
+
+Player_NotGroundPound:
 	CMP #TILE_PROP_SOLID_ALL
 	BCS Player_DetectFloor1
-
-	LDA Level_Tile_Prop_Floor_Ceiling_Left
-	AND #$F0
-	CMP #TILE_PROP_SOLID_TOP
-	BEQ Player_DetectFloor1
-
-	CMP #TILE_PROP_SOLID_ALL
 	BCC Player_DetectFloor2
 
 Player_DetectFloor1:
-
 	LDA <Player_YZ
 	SEC
 	AND #$0F
 	CMP #$06
 	BGE Player_DetectFloor2
-
 
 	LDA <Player_YZ
 	AND #$F0
@@ -5106,6 +5117,9 @@ Player_DetectFloor1:
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVelZ  ; Halt Player vertically
 	STA Player_Flip
+
+	LDA #$01
+	STA Player_HitFloor
 
 	LDX #$00
 	LDA Player_Level
@@ -5126,10 +5140,12 @@ Player_DetectFloorRTS:
 
 Player_DetectFloor2:
 	LDA <Player_OnObject
+	ORA Player_HitFloor
 	BNE Player_DetectFloorRTS
 
 	LDA #$01
 	STA <Player_InAir
+	CLC
 	RTS
 
 Player_PitDeath:
@@ -6347,7 +6363,6 @@ Stop_Poison_Mode:
 	RTS
 
 Player_CheckForeground:
-	
 	LDX #$05
 
 Player_CheckForeground1:
@@ -6432,13 +6447,14 @@ Player_MakeSplash:
 	RTS		 ; Return
 
 Player_SetHolding: 
-	LDA Objects_BeingHeld
-	ORA Objects_BeingHeld + 1
-	ORA Objects_BeingHeld + 2
-	ORA Objects_BeingHeld + 3
-	ORA Objects_BeingHeld + 4
-	ORA Objects_BeingHeld + 5
-	ORA Objects_BeingHeld + 6
-	ORA Objects_BeingHeld + 7
+	LDX #$07
+	LDA #$00
+
+Player_HoldingLoop:
+	ORA Objects_BeingHeld, X
+	DEX
+	BPL Player_HoldingLoop
+
 	STA Player_IsHolding
 	RTS
+

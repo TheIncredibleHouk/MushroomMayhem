@@ -2254,10 +2254,13 @@ Object_Defeated:
 
 	JSR Object_GetKilled
 	
+	LDA Player_GroundPound
+	BNE Object_DefeatedSound
+
 	LDA #-$40
 	STA <Player_YVelZ
-	STA Player_InAir
-	
+
+Object_DefeatedSound:	
 	JMP Object_DefeatSound
 
 Object_DefeatedRTS:

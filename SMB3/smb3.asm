@@ -1629,7 +1629,7 @@ MARIO_PLANE = 2
 
 	Player_UphillFlag:	.ds 1	; When set, Player is walking uphill, and uses speed index value at Player_UphillSpeedIdx
 	Player_Flip:		.ds 1	; Invincibility Somersault is used when set; only works in air, reset on ground
-
+	Player_GroundPound: .ds 1
 	Level_AirshipH:			; Height of the airship during the Airship Intro (shared with Player_KuriboDir)
 	Player_KuriboDir:	.ds 1	; While Kuribo's shoe is moving: 0 - Not requesting move, 1 - move right, 2 - move left
 
@@ -1666,6 +1666,7 @@ MARIO_PLANE = 2
 	Player_IsClimbingObject: .ds 1;
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
 	Player_HitCeiling:	.ds 1	; Flag set when Player has just hit head off ceiling
+	Player_HitFloor:	.ds 1
 	Player_HitWall: .ds 1
 	Player_FlyTime:		.ds 1	; When > 0, Player can fly (for power ups that do so); decrements (unless $FF) to 0
 	Player_IsDucking:	.ds 1	; Set when Player is ducking down
