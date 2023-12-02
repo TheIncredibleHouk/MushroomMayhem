@@ -4,7 +4,7 @@
   "TileSetIndex": 1,
   "ClearTileIndex": 65,
   "MusicValue": 32,
-  "ScreenLength": 5,
+  "ScreenLength": 3,
   "StartX": 3,
   "StartY": 25,
   "PaletteEffect": 2,
@@ -6501,12 +6501,6 @@
   "PatchTileData": null,
   "FirstObjectData": [
     {
-      "GameObjectId": 62,
-      "X": 14,
-      "Y": 24,
-      "Property": 0
-    },
-    {
       "GameObjectId": 12,
       "X": 7,
       "Y": 16,
@@ -6516,6 +6510,12 @@
       "GameObjectId": 63,
       "X": 76,
       "Y": 19,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 62,
+      "X": 13,
+      "Y": 24,
       "Property": 0
     }
   ],
@@ -6549,6 +6549,18 @@
       "X": 40,
       "Y": 18,
       "Property": 2
+    },
+    {
+      "GameObjectId": 60,
+      "X": 43,
+      "Y": 23,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 60,
+      "X": 37,
+      "Y": 25,
+      "Property": 0
     }
   ],
   "LevelPointers": [
@@ -6592,5 +6604,5 @@
       "BoundRectangle": "1040,384,32,32"
     }
   ],
-  "CompressedData": "qALz9KAC9PPB9E3Bw6AC8/TBw03Bw6AC9PPB9E3Bw6AC8/TBw03Bw6AC9PPB9E3Bw6AC8/TBw03Bw6AC9PPB9E3Bw6AC8/TBw03Bw6AC9PPB9E3Bw6AC8/TBw03Bw6AC9PPB9E3Bw6AC8/TBw0rBPkHBw6AC9PPB9EUCw0HBXUHBw6EC8/TBw0vBw6EC9PPC9MNKwcODAvP0wsNBngLz9MHDSQHDgwLz9MJfw54C8/TBw0gBw03Bw4gC8/TDw56fS8HDiwLz9MHDRwHDRcFuRokC8/TCnp9LjALz9MHDRgHDRAJuRcHDiALz9MPDrq9DA25DwcOIAvP0wcNNAcNDgwJuQUOJAvP0RQNuQ4kC8/RIBF8Bw0XBbkbBw4gC8/TBw0UDbkPBw4gC8/TBw0gEXwHDRcFuRokC8/RFA25DiQLz9EgBX8GwAV8Bw8KtrEvBw4gC8/TBw0SDAvP0QsHDiALz9MPDrq9GBF8Bw8K9vkfBw0KJAvP0RMHDggLz9MTDQbBBiQLz9MKen0YEX8HDqALz9A=="
+  "CompressedData": "mALz9JgC9POYAvP0mAL085gC8/SYAvTzmALz9JgC9POYAvP0mAL085gC8/SYAvTzmALz9JgC9POYAvP0mAL084MC8/TCw0GUAvP0wcODAvP0wl/DkwLz9MLzw03Bw4gC8/TDw56fSwHDRcFuRokC8/TCnp9LwvPDRAJuRcHDiALz9MPDrq9DA25DAcNDgwJuQUOJAvP0RQNuQ8Lzw0XBbkbBw4gC8/TBw0UDbkMBw0XBbkaJAvP0RQNuQ8Tzw62sS8HDiALz9MHDRIMC8/RCAcPCvb5HwcNCiQLz9ETBw4IC8/TEw0GwQQHzlwL088H0"
 }

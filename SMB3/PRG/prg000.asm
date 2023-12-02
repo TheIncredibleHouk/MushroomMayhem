@@ -620,7 +620,7 @@ PRG000_C973:
 	LDA #$00
 	STA <CurrentObjectIndexZ
 	STA Player_OnObject
-	STA Object_Count
+	;STA Object_Count
 
 PRG000_C975:
 	LDX <CurrentObjectIndexZ	 ; Backup current object index -> CurrentObjectIndexZ
@@ -653,7 +653,7 @@ PRG000_C98B:
 	BGE PRG000_C9B6	 ; If object slot index >= 5, jump to PRG000_C9B6
 
 	; Non-special objects in slots 0 to 4...
-	INC Object_Count
+	;INC Object_Count
 
 	LDA Explosion_Timer, X
 	BEQ DoNot_Explode
@@ -1069,6 +1069,7 @@ ObjState_Shelled:
 	BNE ObjState_Shelled0
 
 	LDA Objects_BeingHeld, X
+	ORA Objects_Timer2, X
 	BNE ObjState_Shelled0
 
 	JMP Object_GetKicked
@@ -1581,13 +1582,22 @@ Object_GetKicked:
 	STA Objects_Timer2, X
 	STA Objects_Kicked, X
 
+	
+	LDA Objects_BeingHeld, X
+	STA <Object_WasHeld
+
+	LDA #$00
+	STA Objects_BeingHeld, X
+
+	LDA <Object_WasHeld
+	BEQ Object_WillGetKicked
+	
 	LDA <Pad_Holding
 	AND #PAD_DOWN
 	BEQ Object_WillGetKicked
 
 	LDA #$00
 	STA <Objects_YVelZ, X
-	STA Objects_BeingHeld, X
 
 	LDY #$00
 	LDA <Player_FlipBits
@@ -1605,6 +1615,8 @@ Object_DropRight:
 	STA <Objects_XHiZ, X
 	RTS
 
+Object_WasHeld = Temp_Var12
+
 Object_WillGetKicked:
 
 	JSR Object_KickSound
@@ -1617,8 +1629,8 @@ Object_GetKicked1:
 	LDA #$F0
 	STA <Objects_YVelZ,X
 
-	LDA #$00
-	STA Objects_BeingHeld, X
+	LDA <Object_WasHeld
+	BEQ Object_SetKickedState
 
 	LDA <Pad_Holding
 	AND #PAD_UP
@@ -1641,6 +1653,8 @@ Object_SetKickedState:
 	STA Objects_State, X
 
 Object_NotKickState:
+	LDA <Object_WasHeld
+	BEQ Kicked_FindXVel
 
 	LDA <Pad_Holding
 	AND #PAD_UP
@@ -2589,7 +2603,6 @@ Object_New:
 	STA Objects_BoundTopHi, X
 	STA Objects_BoundBottom, X
 	STA Objects_BoundBottomHi, X
-	STA Objects_NoExp, X
 	STA Objects_Regen, X
 	STA Objects_BoundBox, X
 	STA ObjSplash_Disabled, X
@@ -2626,7 +2639,7 @@ PRG000_D506:
 	LDA #$02
 	STA Objects_SpritesRequested, X
 
-	LDA #$01
+	LDA #$02
 	STA Objects_ExpPoints, X
 	RTS		 ; Return
 
@@ -3556,9 +3569,18 @@ Object_DetectPlayer:
 	SEC
 	RTS
 
-Object_SpecialDetectPlayer:
 Object_DoDetectPlayer:
+	; LDA <Objects_YVelZ, X
+	; BMI Object_DoPlayerDetect
 
+	; LDA Objects_ToggleDetect, X
+	; BEQ Object_DoPlayerDetect
+	
+	; CLC
+	; RTS
+
+Object_SpecialDetectPlayer:
+Object_DoPlayerDetect:
 	LDY #$08
 
 Object_DetectObjects:
@@ -5272,9 +5294,6 @@ Object_HitWall1:
 
 
 Object_EarnExp:
-	LDA Objects_NoExp, X
-	BNE Object_EarnExpRTS
-
 	LDA #$30
 	STA Kill_Tally_Ticker
 
@@ -5286,10 +5305,8 @@ Object_EarnExp:
 
 Add_KillyTally:	
 	ADD Kill_Tally
-
 	STA Kill_Tally
 
-	ASL A
 	STA Exp_Earned
 
 	INC Kill_Count

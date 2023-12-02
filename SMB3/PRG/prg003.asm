@@ -2327,7 +2327,9 @@ MontyMole_NoTimer:
 
 	LDA #OBJ_BULLETBILL
 	STA Objects_ID, Y
-	STA Objects_NoExp, Y
+
+	LDA #$01
+	STA Objects_ExpPoints, Y
 
 	LDA <Objects_XZ, X
 	STA Objects_XZ, Y

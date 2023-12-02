@@ -1824,7 +1824,6 @@ ObjInit_Birdo:
 
 	LDA #$04
 	STA Birdo_Health, X
-	STA Objects_NoExp, X
 
 	LDA Objects_Property, X
 	AND #$01

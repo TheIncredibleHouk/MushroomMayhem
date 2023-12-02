@@ -3026,12 +3026,12 @@ MapObject_LeftTile:
 	.byte $11, $11, $11, $11	;
 	.byte $51, $51, $51, $51	; Green Mushroom
 	.byte $51, $51, $51, $51	; Orange Mushroom
-	.byte $61, $65, $61, $65	; Piranah Plant
-	.byte $13, $13, $13, $13	;
-	.byte $17, $17, $17, $17	;
-	.byte $FD, $1B, $FD, $1B	;
-	.byte $F5, $F9, $F5, $F9	;
-	.byte $E5, $E9, $E5, $E9	;
+	.byte $61, $61, $63, $63	; Piranah Plant
+	.byte $69, $6D, $6B, $6F	; Cheep
+	.byte $71, $73, $75, $77	; Freezie
+	.byte $55, $55, $55, $55	; Bullet Turret
+	.byte $59, $5D, $5B, $5F	; Bobomb
+	.byte $3D, $3D, $3D, $3D	; 0F = Piranha Stem
 	.byte $FD, $1B, $FD, $1B	;
 	.byte $71, $75, $71, $75	;
 
@@ -3045,12 +3045,12 @@ MapObject_RightTile:
 	.byte $11, $11, $11, $11	; 07=None
 	.byte $53, $53, $53, $53	; 08=Blue Mushroom
 	.byte $53, $53, $53, $53	; 09=Orange Mushroom
-	.byte $63, $67, $63, $67	; 0A=Piranah Plant
-	.byte $15, $15, $15, $15	; 
-	.byte $19, $19, $19, $19	; 
-	.byte $FF, $BB, $FF, $BB	; 
-	.byte $F7, $FB, $F7, $FB	; 
-	.byte $E7, $EB, $E7, $EB	; 
+	.byte $61, $61, $63, $63	; 0A=Piranah Plant
+	.byte $6B, $6F, $69, $6D	; 0B=Cheep
+	.byte $4B, $4B, $4B, $4B	; 0C=Freezie
+	.byte $57, $57, $57, $57	; 0D
+	.byte $5B, $5F, $59, $5D	; 0E = Bobomb
+	.byte $3D, $3D, $3D, $3D	; 0F = Piranha Stem
 	.byte $FF, $BB, $FF, $BB	; 
 	.byte $73, $77, $73, $77	; 
 
@@ -3064,12 +3064,12 @@ MapObject_AttrLeft:
 	.byte $02, $02, $02, $02	; None
 	.byte $02, $02, $02, $02	; Blue Mushroom
 	.byte $03, $03, $03, $03	; Orange Mushroom
-	.byte $02, $02, $02, $02	; Piranha
-	.byte $03, $03, $03, $03	; 
-	.byte $03, $03, $03, $03	; 
-	.byte $03, $03, $03, $03	; 
-	.byte $02, $02, $02, $02	; 
-	.byte $02, $02, $02, $02	; 
+	.byte SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2	; Piranha
+	.byte SPR_PAL1, SPR_PAL1, (SPR_PAL1 | SPR_HFLIP), (SPR_PAL1 | SPR_HFLIP)	; Cheep
+	.byte $02, $02, $02, $02	; Freezie
+	.byte $03, $03, $03, $03	; Bullet Turret
+	.byte SPR_PAL3, SPR_PAL3, (SPR_PAL3 | SPR_HFLIP), (SPR_PAL3 | SPR_HFLIP)	; 0E = Bobomb
+	.byte SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2	; 0F = Piranha Stem
 	.byte $01, $01, $01, $01	; 
 	.byte $02, $02, $02, $02	; 
 
@@ -3083,12 +3083,12 @@ MapObject_AttrRight:
 	.byte $02, $02, $02, $02	; None
 	.byte $02, $02, $02, $02	; Blue Mushroom
 	.byte $03, $03, $03, $03	; Orange Mushroom
-	.byte $02, $02, $02, $02	; Piranha Plant
-	.byte $03, $03, $03, $03	; 
-	.byte $03, $03, $03, $03	; 
-	.byte $03, $03, $03, $03	; 
-	.byte $02, $02, $02, $02	; 
-	.byte $02, $02, $02, $02	; 
+	.byte (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP)	; Piranha Plant
+	.byte SPR_PAL1, SPR_PAL1, (SPR_PAL1 | SPR_HFLIP), (SPR_PAL1 | SPR_HFLIP)	; Cheep
+	.byte $03, $02, $02, $02	; 
+	.byte $03, $03, $03, $03	; 0E = Bobomb
+	.byte SPR_PAL3, SPR_PAL3, (SPR_PAL3 | SPR_HFLIP), (SPR_PAL3 | SPR_HFLIP)	; 
+	.byte (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP)	; 0F = Piranha Stem
 	.byte $01, $01, $01, $01	; 
 	.byte $02, $02, $02, $02	; 
 
@@ -3096,14 +3096,14 @@ MapObject_AttrRight:
 	; the map object display so even if there's scanline overflows,
 	; there will be at least some visibility of all objects.
 Map_SpriteRAM_Offset:
-	.byte $08, $10, $18, $20, $28, $30, $38, $40
+	.byte $08, $10, $18, $20, $28, $30, $38, $40, $08, $10, $18, $20, $28, $30, $38, $40
 
 
 MapObjects_UpdateDrawEnter:
 	JSR Map_Object_Do_All	 ; Runs update code for all map objects
 
 	; Temp_Var13 = $0D
-	LDA #$07	 	; Total map objects which may exist on the map (only 8 are defined at start)
+	LDA #14	 	; Total map objects which may exist on the map (only 8 are defined at start)
 	STA <Temp_Var13
 
 	; Map_SprRAMOffDistr runs from $00 to $0A, inclusive

@@ -527,7 +527,9 @@ Lakitu_GetEnemy:
 
 	LDA #OBJSTATE_NONE
 	STA Objects_State, Y
-	STA Objects_NoExp, Y
+
+	LDA #$01
+	STA Objects_ExpPoints, Y
 
 	LDA <Temp_Var1
 	STA Objects_ID, Y	
@@ -985,6 +987,9 @@ Larry_Prepare:
 	LDA Larry_ItemToss, Y
 	STA <Temp_Var1
 
+	LDA Larry_ItemFrameLeftAttr, Y
+	STA <Temp_Var2
+
 	JSR Check_ExistingPowerUps
 	BCS Larry_WaitOffScreenRTS
 
@@ -1010,8 +1015,14 @@ Larry_ItemSlotFound:
 	LDA <Temp_Var1
 	STA PowerUp_Type, Y
 
+	LDA <Temp_Var2
+	STA Objects_SpriteAttributes, Y 
+
 	LDA #OBJSTATE_NONE
 	STA Objects_State, Y
+
+	LDA #$02
+	STA Objects_SpritesRequested, Y
 
 	LDA #$02
 	STA Larry_Action, X
@@ -1486,12 +1497,9 @@ ObjInit_MissileMark:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF)
 	STA Objects_WeaponAttr, X
 
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	LDA #$03
-	STA Objects_ExpPoints, X
+	; LDA Sound_QLevel1
+	; ORA #SND_LEVELBABOOM
+	; STA Sound_QLevel1
 	RTS
 
 Missile_Flash = Objects_Data5

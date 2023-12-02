@@ -503,9 +503,6 @@ ObjInit_ParaGoomba:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #$02
-	STA Objects_ExpPoints, X
-
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
 
@@ -1468,9 +1465,6 @@ ObjInit_SwimmingCheep:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #$02
-	STA Objects_ExpPoints, X
-
 	LDA #(ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
@@ -1960,6 +1954,13 @@ Piranha_AttackReset:
 	CMP #OBJ_PIRANHAPLANTGOLD
 	BNE Piranha_NormTimer
 
+	LDA DayNight
+	BMI Pirnha_GoldSlowAttack
+
+	LDA #$50
+	BNE Piranha_SetTimer
+
+Pirnha_GoldSlowAttack:	
 	LDA #$70
 	BNE Piranha_SetTimer
 
@@ -3023,7 +3024,7 @@ Grower_NotHit:
 Grower_Normal:
 	LDA #$4F
 	STA PatTable_BankSel+5
-	
+
 	LDA Objects_Timer, X
 	BEQ Grower_Move
 	

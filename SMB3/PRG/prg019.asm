@@ -504,7 +504,9 @@ EnemyCount_NoInc:
 
 	LDA #$A0
 	STA <Objects_YVelZ, X
-	STA Objects_NoExp, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 	LDA #$03
 	STA Objects_Property, X
@@ -804,7 +806,8 @@ EightWay_NotSame:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-	STA Objects_NoExp, X
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 EightWay_RTS:
 	RTS		 ; Return

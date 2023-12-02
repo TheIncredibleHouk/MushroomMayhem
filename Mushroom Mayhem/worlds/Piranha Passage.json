@@ -3,7 +3,7 @@
   "Id": "c05cc28a-7180-4d48-b775-c96253edda5c",
   "ClearTileIndex": 2,
   "TileTableIndex": 186,
-  "MusicValue": 0,
+  "MusicValue": 2,
   "ScreenLength": 4,
   "PaletteId": "14f2fe65-b6b7-475f-87a8-acf0b22030c2",
   "Name": "Piranha Passage",
@@ -197,7 +197,7 @@
     148,
     144,
     146,
-    189,
+    28,
     144,
     145,
     0,
@@ -336,7 +336,7 @@
     62,
     62,
     17,
-    62,
+    67,
     62,
     62,
     244,
@@ -344,8 +344,8 @@
     194,
     194,
     194,
-    194,
     198,
+    192,
     192,
     192,
     229,
@@ -353,8 +353,8 @@
     228,
     192,
     192,
-    192,
-    229,
+    246,
+    245,
     62,
     67,
     22,
@@ -372,7 +372,7 @@
     192,
     192,
     229,
-    145,
+    141,
     145,
     145,
     146,
@@ -383,7 +383,7 @@
     148,
     144,
     146,
-    189,
+    28,
     144,
     146,
     148,
@@ -404,7 +404,6 @@
     214,
     62,
     62,
-    67,
     16,
     67,
     62,
@@ -412,13 +411,14 @@
     228,
     192,
     192,
+    192,
     229,
     62,
     244,
     194,
     194,
-    194,
     245,
+    63,
     62,
     214,
     214,
@@ -436,8 +436,8 @@
     192,
     192,
     229,
-    145,
-    145,
+    29,
+    141,
     145,
     150,
     129,
@@ -453,14 +453,14 @@
     164,
     185,
     162,
-    189,
+    28,
     144,
     145,
     0,
     247,
     226,
-    226,
     213,
+    63,
     62,
     67,
     67,
@@ -470,10 +470,10 @@
     212,
     226,
     226,
-    226,
     213,
     62,
     228,
+    192,
     192,
     192,
     229,
@@ -483,7 +483,7 @@
     20,
     62,
     62,
-    62,
+    67,
     62,
     62,
     21,
@@ -500,13 +500,13 @@
     192,
     192,
     229,
+    29,
+    29,
+    141,
     145,
     145,
-    145,
-    145,
-    145,
-    145,
-    145,
+    140,
+    141,
     145,
     145,
     145,
@@ -523,8 +523,8 @@
     0,
     192,
     192,
-    192,
-    229,
+    247,
+    213,
     62,
     212,
     226,
@@ -534,10 +534,10 @@
     199,
     192,
     192,
-    192,
     229,
     68,
     228,
+    192,
     192,
     192,
     247,
@@ -564,16 +564,16 @@
     192,
     192,
     229,
-    145,
-    145,
-    145,
-    145,
-    145,
-    145,
-    145,
-    145,
-    145,
-    145,
+    29,
+    29,
+    29,
+    141,
+    140,
+    29,
+    29,
+    141,
+    140,
+    141,
     150,
     129,
     129,
@@ -652,15 +652,15 @@
   "Pointers": [
     {
       "LevelId": "63db22c3-ef7d-4d34-b0b6-c2d4f5ef603f",
-      "X": 16,
+      "X": 15,
       "Y": 8,
-      "BoundRectangle": "256,128,16,16"
+      "BoundRectangle": "240,128,16,16"
     },
     {
       "LevelId": "80a75db5-5cb8-4d03-9160-d6d5cf83c26e",
-      "X": 13,
+      "X": 12,
       "Y": 6,
-      "BoundRectangle": "208,96,16,16"
+      "BoundRectangle": "192,96,16,16"
     },
     {
       "LevelId": "aa823e52-0d81-4113-9556-d4a17dc13ddd",
@@ -673,6 +673,24 @@
       "X": 8,
       "Y": 7,
       "BoundRectangle": "128,112,16,16"
+    },
+    {
+      "LevelId": "3d8e564f-2002-4b1e-874e-5f2ca86eac18",
+      "X": 2,
+      "Y": 6,
+      "BoundRectangle": "32,96,16,16"
+    },
+    {
+      "LevelId": "65cec76e-2e46-4c97-aba7-169a8953d2b2",
+      "X": 61,
+      "Y": 6,
+      "BoundRectangle": "976,96,16,16"
+    },
+    {
+      "LevelId": "62f23ebc-e39c-416b-9950-5362b61db84b",
+      "X": 58,
+      "Y": 7,
+      "BoundRectangle": "928,112,16,16"
     }
   ],
   "ObjectData": [
@@ -699,23 +717,53 @@
     {
       "GameObjectId": 209,
       "X": 11,
-      "Y": 3
-    },
-    {
-      "GameObjectId": 209,
-      "X": 20,
-      "Y": 3
+      "Y": 2
     },
     {
       "GameObjectId": 209,
       "X": 25,
-      "Y": 3
+      "Y": 2
     },
     {
       "GameObjectId": 209,
       "X": 31,
       "Y": 3
+    },
+    {
+      "GameObjectId": 209,
+      "X": 52,
+      "Y": 7
+    },
+    {
+      "GameObjectId": 214,
+      "X": 52,
+      "Y": 8
+    },
+    {
+      "GameObjectId": 214,
+      "X": 25,
+      "Y": 3
+    },
+    {
+      "GameObjectId": 214,
+      "X": 11,
+      "Y": 3
+    },
+    {
+      "GameObjectId": 209,
+      "X": 46,
+      "Y": 6
+    },
+    {
+      "GameObjectId": 209,
+      "X": 46,
+      "Y": 7
+    },
+    {
+      "GameObjectId": 214,
+      "X": 46,
+      "Y": 8
     }
   ],
-  "CompressedData": "AJGRkZGRkZGRkZGRkZGRkQCRkZGRkZGRkZGRkZGRkZEAkZGRkZGMjZGRkZGRkYyNAIyNkZGMHR2NjI2RkYwdHQDi4uLV1tbW1tbW1OLi4uIA9sLC9T4+ET4+PvTCwsLCAOVEQz4+1tbW1j4+QxBDPgD34uLVPkNDEj4+1OLi4tUAwMDA5T7U4uLi4sfAwMDlkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGMjZGRkZGRkZGRkYyNkZGRHR2NkZGRkYyNkYwdHY2RkeLi4uLV1tTi4uLV1tbW1tbCxsDA5UTkwMDA5T5DFj4+PuTAwOU+9MLCwvU+1tbW1j7kwMDlQz5DFD4+Pj4+FT5E5MDA9+Li4uLi4uLi4uLVkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkYaRkZGRkZGRkZGRkZGRkZGSkZGMjZGRkZGRkZGRkZGRktbU4uLi4uLi4uLi1ZGRkZI+5MDAwMDAwMDAwOWRkZGSPvTCwsbAwMDAwMDlkZGRlj5DQ0TkwMDAwMDA5ZGRkZE+1OLix8DAwMDAwOWRkZGRkZGRkZGRkZGRkZGRkZGRkaGhoaahoaGhoaGhh4ahh5GUlL2VlJSUGJSUlJCSvZCRlLOkpZSAgYGBgpSgopSQkZRtbm+UkIahh5IXlJSUkJGUfX5/lJCSvZCSlICopLWRgYGBgYGXkpSguKS5or2QkZGRkZGRkZKUlJQTlJSUkJGRkZGRkZGWgYGBgYGBgZeR"
+  "CompressedData": "AJGRkZGRkZGRkZGRkZGRkQCRkZGRkZGRkZGRkZGRkZEAkZGRkZGMjZGRkZGRkYyNAIyNkZGMHR2NjI2RkYwdHQDi4uLV1tbW1tbW1OLi4uIA9sLC9T4+EUM+PvTCwsLCAOVEQz4+1tbW1j4+EEM+PgD34tU/PkNDEj4+1OLi1T4AwMD31T7U4uLi4sfAwOVEkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGMjZGRkZGRkZGRkYyNkZGRHR2NkZGRkYyNkYwdHY2RkeLi4uLV1tTi4uLV1tbW1tbGwMDA5UTkwMD29T5DFj4+5MDAwOU+9MLC9T8+1tbW1uTAwMDlQz5DFD4+Qz4+FT7kwMDA9+Li4uLi4uLi4uLVkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkYaRkZGRkZGRkZGRkZGRkZGSkZGMjZGRkZGRkZGRkZGRktbU4uLi4uLi4uLi1ZGRkZI+5MDAwMDAwMDAwOWNkZGSPvTCwsbAwMDAwMDlHY2Rlj5DQ0TkwMDAwMDA5R0djZE+1OLix8DAwMDAwOUdHR2NkZGRkZGRkZGRkZGRkZGRkaGhoaahoaGhoaGhh4ahh5GUlL2VlJSUGJSUlJCSHJCRlLOkpZSAgYGBgpSgopSQkZRtbm+UkIahh5IXlJSUkJGUfX5/lJCSHJCSlICopLWRgYGBgYGXkpSguKS5ohyQkZGMjZGRkZKUlJQTlJSUkJGMHR2NjI2WgYGBgYGBgZeR"
 }

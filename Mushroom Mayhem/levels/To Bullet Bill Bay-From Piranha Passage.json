@@ -10,7 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "be476f89-09db-4479-8bcc-56e76d462aeb",
   "StaticTileTableIndex": 72,
-  "NoStars": false,
+  "NoStars": true,
   "MostCommonTile": 157,
   "AnimationType": 0,
   "ScrollType": 3,
@@ -6561,7 +6561,7 @@
     {
       "LevelId": "c05cc28a-7180-4d48-b775-c96253edda5c",
       "ExitActionType": 0,
-      "ExitX": 16,
+      "ExitX": 15,
       "ExitY": 8,
       "X": 39,
       "Y": 2,

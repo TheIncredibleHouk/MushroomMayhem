@@ -811,10 +811,10 @@ EnterEffect_SpriteLoop:
 	STA Sprite_RAMAttr, Y
 	STA Sprite_RAMAttr + 4, Y
 
-	LDA #$29
+	LDA #$27
 	STA Sprite_RAMTile, Y
 
-	LDA #$2B
+	LDA #$0B
 	STA Sprite_RAMTile + 4, Y
 
 	LDA Map_Transition_SpriteIndex
@@ -980,6 +980,7 @@ PRG030_897B:
 	
 	JSR MagicStar_ClearRadar
 	JSR LevelLoad			; Load the level layout data!
+	JSR InitStarsBackground
 	JSR ClearBlockedAreas
 	
 	LDA #$00
@@ -2536,12 +2537,10 @@ AnimOffsets: .byte $00, $10, $20, $28
 AnimStarts: .byte $80, $D0, $F0, $5E
 
 LevelLoad:	
-	JSR InitStarsBackground
-
 	LDA #$00
 	STA <Vert_Scroll
-	STA Level_AScrlPosH
-	STA Level_AScrlPosHHi
+	; STA Level_AScrlPosH
+	; STA Level_AScrlPosHHi
 
 	INC Force_StatusBar_Init
 
@@ -2910,7 +2909,7 @@ HorzNotLocked:
 	STA RhythmPlatformEnabed
 
 	LDX #$01
-
+	
 	LDA [Temp_Var14],Y
 	AND #$03
 	STA PaletteEffect
@@ -4854,10 +4853,12 @@ Store_Vert_Scroll:
 	ASL A
 	ORA #$08
 	STA DAIZ_TEMP2
+	
 	LDA DAIZ_TEMP1
 	SEC 
 	SBC #$08
 	BCS TryHScrollUpperLimit
+
 	LDA #$00
 	STA <Horz_Scroll
 	STA <Horz_Scroll_Hi
@@ -4904,8 +4905,10 @@ DynHScroll:
 
 	LDA #$00
 	STA <Horz_Scroll
+	
 	LDA <Player_XHi
 	STA <Horz_Scroll_Hi
+	
 
 Update_Columns:
 	LDA #$01
@@ -4918,7 +4921,14 @@ Update_Columns:
 	LDX <Horz_Scroll_Hi	; A = Horz_Scroll_Hi
 	INX
 	TXA
+
 	JSR Scroll_Update_Ranges
+
+	LDA <Horz_Scroll
+	STA Level_AScrlPosH
+
+	LDA <Horz_Scroll_Hi
+	STA Level_AScrlPosHHi
 	RTS
 
 Map_Reload_with_Completions:
@@ -5082,7 +5092,7 @@ Map_ClearObjects:
 
 	LDX #13
 
-Map_ClearObjectsLoop:	
+Map_ClearObjectsLoop:
 	STA Map_Objects_IDs, X
 	DEX
 	BPL Map_ClearObjectsLoop

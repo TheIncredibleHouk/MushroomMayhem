@@ -1617,8 +1617,7 @@ MARIO_PLANE = 2
 	Block_ChangeX:	.ds 1	; Player X Low value when block change was queued
 	Block_ChangeYHi:	.ds 1	; Player Y High value when block change was queued
 	Block_ChangeY:	.ds 1	; Player Y Low value when block change was queued
-
-	Objects_NoExp:	.ds 8;
+	
 	; The alternate vertical scrolls are used so that raster effects can be properly implemented!
 	Level_VertScrollH:	.ds 1	; Alternate VertScroll_Hi used by engine, adjusted before being sent to Vert_Scroll_Hi
 	Level_VertScroll:	.ds 1	; Alternate VertScroll used by engine, adjusted before being sent to Vert_Scroll

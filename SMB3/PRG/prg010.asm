@@ -1885,7 +1885,6 @@ PRG010_CDDC:
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)	 
 	BEQ PRG010_CDEC	 	; If Player is not pushing up/down/left/right, jump to PRG010_CDEC
 
-	STA Debug_Snap
 	LDA #SND_PLAYERBUMP	 
 	STA Sound_QPlayer	; "Bump" noise
 
@@ -2115,7 +2114,7 @@ Map_Power_Pats_F1:
 	; NOTE: $27 is actually a magic value hard-wired to remove the
 	; upper sprites!  (The tiles appear as a black box otherwise)
 	; See code following label PRG010_D045 for this hardcode...
-	.byte $5D, $5F, $7D, $7F	; Small
+	.byte $4B, $4B, $7D, $7F	; Small
 	.byte $81, $83, $A1, $A3	; Super Mushroom
 	.byte $81, $83, $A1, $A3	; Fire
 	.byte $85, $87, $A5, $A7	; Racoon
@@ -2129,7 +2128,7 @@ Map_Power_Pats_F1:
 	.byte $9D, $9F, $BD, $BF	; Ninja
 
 Map_Power_Pats_F2:
-	.byte $5F, $5D, $7F, $7D	; Small
+	.byte $4B, $4B, $7F, $7D	; Small
 	.byte $83, $81, $A3, $A1	; Super Mushroom
 	.byte $83, $81, $A3, $A1	; Fire
 	.byte $87, $85, $A7, $A5	; Racoon

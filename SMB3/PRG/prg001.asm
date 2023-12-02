@@ -2405,6 +2405,10 @@ MagicStar_CheckCoins:
 	SUB Coins_Earned
 	STA Paper_StarCoinsNeeded, X
 
+	LDA #$00
+	STA Coins_Earned
+
+	LDA Paper_StarCoinsNeeded, X
 	BPL MagicStar_CheckCoinsRTS
 
 	JMP Paper_StarPoofAppear

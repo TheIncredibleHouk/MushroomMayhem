@@ -2824,6 +2824,7 @@ PRG008_B166:
 	ADD <Horz_Scroll
 	STA <Horz_Scroll	 ; Horz_Scroll += Level_ScrollDiffH
 	BCC PRG008_B181	 	; If no carry, jump to PRG008_B181
+	
 	INC <Horz_Scroll_Hi	 ; Otherwise, apply carry
 
 PRG008_B181:

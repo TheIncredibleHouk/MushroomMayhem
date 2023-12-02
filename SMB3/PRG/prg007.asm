@@ -3834,7 +3834,9 @@ BobOmbGen_Make:
 
 	LDA #$28
 	STA Objects_Timer, X
-	STA Objects_NoExp, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 	LDA ObjectGenerator_Property, Y
 	AND #$03
@@ -3938,7 +3940,9 @@ GoombaGen_Make:
 
 	LDA #$28
 	STA Objects_Timer, X
-	STA Objects_NoExp, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 	LDA ObjectGenerator_Property, Y
 	AND #$03
@@ -4037,7 +4041,9 @@ Generator_MakeTroopa:
 
 	LDA #$28
 	STA Objects_Timer, X
-	STA Objects_NoExp, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 	LDA ObjectGenerator_Property, Y
 	AND #$03
@@ -4193,7 +4199,9 @@ PRG007_BD49:
 
 	LDA EnemyCannonType, Y
 	STA Objects_ID,X
-	STA Objects_NoExp, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 	LDA #$00
 	STA Objects_Property, X
@@ -4272,7 +4280,9 @@ ShellCannnon_Make:
 
 	LDA #$BF
 	STA Explosion_Timer, X
-	STA Objects_NoExp, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 	; Set Goomba's color
 	LDA #SPR_PAL1
@@ -4703,7 +4713,9 @@ Place_Bullet:
 
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
-	STA Objects_NoExp, X
+
+	LDA #$01
+	STA Objects_ExpPoints, X
 
 	LDA #$02
 	STA Objects_SpritesRequested, X
@@ -5453,18 +5465,7 @@ Enemy_SpinyEggDraw:
 	STA <SpecialObj_Attributes + 1
 
 	DEC SpecialObj_Timer, X
-	INC SpecialObj_Data1, X
-	LDA SpecialObj_Data1, X
-	
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	BEQ Enemy_SpinyEggNoFlip
 
-	JSR SpecialObj_Flip
-
-Enemy_SpinyEggNoFlip:
 	JSR SpecialObj_CheckForeground
 	JSR SpecialObj_Draw16x16
 	RTS

@@ -226,7 +226,7 @@
     210,
     211,
     202,
-    202,
+    26,
     26,
     202,
     26,
@@ -348,14 +348,14 @@
     202,
     19,
     202,
-    202,
-    202,
+    226,
+    226,
     20,
     202,
     202,
-    202,
     26,
-    202,
+    22,
+    26,
     202,
     209,
     253,
@@ -377,7 +377,7 @@
     43,
     26,
     202,
-    202,
+    26,
     225,
     90,
     90,
@@ -416,10 +416,10 @@
     26,
     26,
     26,
+    202,
+    202,
+    202,
     26,
-    202,
-    202,
-    22,
     202,
     225,
     90,
@@ -478,10 +478,10 @@
     211,
     202,
     202,
+    202,
+    202,
     21,
-    202,
-    202,
-    202,
+    226,
     26,
     26,
     202,
@@ -665,8 +665,8 @@
     {
       "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
       "X": 28,
-      "Y": 7,
-      "BoundRectangle": "448,112,16,16"
+      "Y": 6,
+      "BoundRectangle": "448,96,16,16"
     },
     {
       "LevelId": "e8459828-b201-4b97-b8cb-e3d3470f35f0",
@@ -706,15 +706,15 @@
     },
     {
       "LevelId": "45130f0a-3282-499b-8e04-66572d044135",
-      "X": 22,
+      "X": 24,
       "Y": 7,
-      "BoundRectangle": "352,112,16,16"
+      "BoundRectangle": "384,112,16,16"
     },
     {
-      "LevelId": "8acd0773-8087-45d3-81ee-3909179d1414",
-      "X": 27,
-      "Y": 6,
-      "BoundRectangle": "432,96,16,16"
+      "LevelId": "d28d383a-05e6-43e3-a91b-b44b6b0c67ae",
+      "X": 26,
+      "Y": 5,
+      "BoundRectangle": "416,80,16,16"
     },
     {
       "LevelId": "7457e3f2-b766-4b73-bc95-fabfd5a8647e",
@@ -765,13 +765,53 @@
     {
       "GameObjectId": 208,
       "X": 28,
-      "Y": 7
+      "Y": 6
     },
     {
       "GameObjectId": 207,
       "X": 37,
       "Y": 8
+    },
+    {
+      "GameObjectId": 212,
+      "X": 25,
+      "Y": 7
+    },
+    {
+      "GameObjectId": 202,
+      "X": 3,
+      "Y": 8
+    },
+    {
+      "GameObjectId": 210,
+      "X": 7,
+      "Y": 5
+    },
+    {
+      "GameObjectId": 210,
+      "X": 35,
+      "Y": 5
+    },
+    {
+      "GameObjectId": 210,
+      "X": 41,
+      "Y": 7
+    },
+    {
+      "GameObjectId": 212,
+      "X": 1,
+      "Y": 3
+    },
+    {
+      "GameObjectId": 210,
+      "X": 17,
+      "Y": 8
+    },
+    {
+      "GameObjectId": 202,
+      "X": 48,
+      "Y": 4
     }
   ],
-  "CompressedData": "m5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLiouLioqLiouKiouKi4uLGsoaytHS0tLS0tLS0tLS0soaysrhWntYWBBYe9fy8vIaMcrK4Vp7aGhaaHtYyhoa0tPKylhYe1paWlp748rKElrn0tLoaHtYWBFYe+fS0tJaWlpaWlpoaGhoaGhaWlpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLioqLi4qLi4uKi4uK0tLS0tLS0tLTysoayhoaGvLy/vLy8vLy8xrKysrKF8oayhPKysoUysrKGsrK0f3SysrmysoaGhoaysoWyuFaWtLS/dPKyhXKysoaGsrhWlpaWlrn0tLS0tLS0tLS6Fpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4uLi4uLi4uLiouLi4uLytHS0tLS0tLS0tLS0tLS0spYWBhYWHtaWlrX8vLy8vLS6GhaaFp7Wlpa48opKisaWlpaWlpae1hYWFjKOTo7ylpaWlrX8nvYWlrn0tL908paWlpa48rK4VpaWlpaWufSm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLi4uLi4qLi4uLi4uL0tLS0tLS0tLS0tLS0tLS0vLy2FpaWlpaWlpaWlpaWlrKyuFaWlpaWlpaWlpaWlpaGsrx8vLYWlpaWlpaWlpaWsrKysox4VpaWlpaWlpaWlrS0tLS0uhaWlpaWlpaWlpa"
+  "CompressedData": "m5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLiouLioqLiouKiouKi4uLGsoaytHS0tLS0tLS0tLS0soaysrhWntYWBBYe9fy8vIaMcrK4Vp7aGhaaHtYyhoa0tPKylhYe1paWlp748rKElrn0tLoaHtYWBFYe+fS0tJaWlpaWlpoaGhoaGhaWlpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLioqLi4qLi4uKi4uK0tLS0tLS0tLTyhoayhoaGvLy/vLy8vLy8xrKysrKF8oayhPK4uIUysoaFhrK0f3SysrmysoaGhrKysoayuFaWtLS/dPKysrKFeIaGsrhWlpaWlrn0tLS0tLS0tLS6Fpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4uLi4uLi4uLiouLi4uLytHS0tLS0tLS0tLS0tLS0spYWBhYWHtaWlrX8vLy8vLS6GhaaFp7Wlpa48opKisaWlpaWlpae1hYWFjKOTo7ylpaWlrX8nvYWlrn0tL908paWlpa48rK4VpaWlpaWufSm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLi4uLi4qLi4uLi4uL0tLS0tLS0tLS0tLS0tLS0vLy2FpaWlpaWlpaWlpaWlrKGuFaWlpaWlpaWlpaWlpaGsrx8vLYWlpaWlpaWlpaWsrKysox4VpaWlpaWlpaWlrS0tLS0uhaWlpaWlpaWlpa"
 }
