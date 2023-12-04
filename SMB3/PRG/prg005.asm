@@ -295,6 +295,7 @@ ShyGuy_Norm:
 	BEQ ShyGuy_DeadRTS
 
 	JSR ShyGuy_ThrowBlockForced
+
 	LDA #$00
 	STA Objects_XVelZ, Y
 
@@ -508,7 +509,7 @@ ShyGuy_ThrowBlock:
 
 	JSR Object_XDistanceFromPlayer
 	LDA <XDiff
-	CMP #$40
+	CMP #$28
 	BCS ShyGuy_ThrowBlockDone
 
 ShyGuy_ThrowBlockForced:
@@ -1462,13 +1463,13 @@ Snifit_Shoot:
 	AND #$01
 	BNE Snifit_Draw2
 	
-
 	LDA #$C0
 	STA <Objects_YVelZ, X
 	BNE Snifit_Draw2
 
 Snifit_DoShot:
 	JSR Object_FacePlayer
+
 	LDA Snifit_ShotsLeft, X
 	BNE Snifit_CheckYVel
 
@@ -1496,23 +1497,37 @@ Snifit_CheckYVel:
 
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
-	BNE Snifit_FireballNoFlip
+	BNE Snifit_ShootDone
 
 	JSR Object_PrepProjectile
 	BCC Snifit_ShootDone
 
+	LDA DayNight
+	BMI Snifit_NoAim
+
+	JSR Object_AimProjectile
+	JMP Snifit_Fireball
+
+Snifit_NoAim:	
+	LDA #$E8
+	STA SpecialObj_XVel, Y
+
+	LDA #$00
+	STA SpecialObj_YVel, Y
+
+	LDA Objects_Orientation, X
+	BEQ Snifit_Fireball
+
+	LDA #$18
+	STA SpecialObj_XVel, Y	
+
+Snifit_Fireball:	
 	LDA #SOBJ_FIREBALL
 	STA SpecialObj_ID, Y
 
 	LDA #$01
 	STA SpecialObj_Data1, Y
 	STA SpecialObj_Data3, Y
-
-	LDA #$E8
-	STA SpecialObj_XVel, Y
-
-	LDA #$00
-	STA SpecialObj_YVel, Y
 
 	LDA <Objects_XZ, X
 	ADD #$04
@@ -1527,16 +1542,18 @@ Snifit_CheckYVel:
 	LDA <Objects_YHiZ, X
 	STA SpecialObj_YHi, Y
 
-	LDA Objects_Orientation, X
-	BEQ Snifit_FireballNoFlip
-
-	LDA #$18
-	STA SpecialObj_XVel, Y
-
-Snifit_FireballNoFlip:
 	DEC Snifit_ShotsLeft, X
 
+	LDA DayNight
+	BMI Snifit_FireFast
+
+	LDA #$50
+	BNE Snifit_FireTimer
+	
+Snifit_FireFast:	
 	LDA #$30
+
+Snifit_FireTimer:	
 	STA Snifit_ShootTimer, X
 
 Snifit_ShootDone:
@@ -1755,14 +1772,27 @@ Ninji_ThrowStar:
 	JSR Object_AimProjectile
 
 	LDA SpecialObj_XVel, Y
+
+	LDX DayNight
+	BPL Ninji_NoDouble1
+
 	JSR Double_Value
+
+Ninji_NoDouble1:
 	STA SpecialObj_XVel, Y
 
 	LDA SpecialObj_YVel, Y
+
+	LDX DayNight
+	BPL Ninji_NoDouble2	
+
 	JSR Double_Value
+
+Ninji_NoDouble2		
 	STA SpecialObj_YVel, Y
 
 Ninji_ThrowDone:
+	LDX <CurrentObjectIndexZ
 	INC Ninji_Action, X
 	LDA #$00
 	STA Objects_Frame, X

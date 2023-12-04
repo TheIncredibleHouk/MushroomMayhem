@@ -6380,7 +6380,6 @@ Absolute_AddSub:
 	SUB Absolute_Value
 	RTS 
 
-
 Player_TryGroundPound:
 	LDA Player_EffectiveSuit
 	CMP #MARIO_HAMMER
@@ -6403,9 +6402,12 @@ Player_CanGroundPound:
 	AND #PAD_B
 	BEQ Player_TryGroundPoundRTS
 
-	LDA #$20
+	LDA #$40
 	STA <Player_YVelZ
 	STA Player_GroundPound
+
+	LDA #$00
+	STA <Player_XVelZ
 	RTS
 
 Player_EndGroundPound:
@@ -6445,4 +6447,12 @@ Player_EndGroundPound:
 	STA SpecialObj_XVel, Y
 
 Player_TryGroundPoundRTS:
+	RTS
+
+Player_GroundPoundBump:
+	LDA #SND_PLAYERBUMP
+	STA Sound_QPlayer
+
+	LDA #$D0
+	STA <Player_YVelZ
 	RTS

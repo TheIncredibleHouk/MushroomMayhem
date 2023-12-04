@@ -4831,7 +4831,7 @@
     65,
     65,
     150,
-    150,
+    137,
     28,
     65,
     65,
@@ -5071,7 +5071,7 @@
     65,
     65,
     150,
-    150,
+    153,
     28,
     65,
     65,
@@ -6507,14 +6507,14 @@
       "ExitActionType": 0,
       "ExitX": 7,
       "ExitY": 25,
-      "X": 13,
+      "X": 14,
       "Y": 20,
       "ExitsLevel": false,
       "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
-      "BoundRectangle": "208,320,32,32"
+      "BoundRectangle": "224,320,32,32"
     }
   ],
-  "CompressedData": "C0EDHAtBAxwLQQMcC0EDHAtBAxwLQQMcC0EDHAtBAxwLQQMcC0EDHAtBAxwLQQMcC0EDHAtBAxwEQcSQkZKTAkEDHAVBwmNkA0EDHAVBwnN0A0EDHMhBkJGSk0FzdANBAxwBQcJjZAFBxnN0kJGSkwMcAUHCc3QBQcVzdEFjZAFBAZaCEBxBQXN0QUFzdEFzdEFBlpbCHFEKUwNRD2EPxB7hweE="
+  "CompressedData": "C0EDHAtBAxwLQQMcC0EDHAtBAxwLQQMcC0EDHAtBAxwLQQMcC0EDHAtBAxwLQQMcC0EDHAtBAxwEQcSQkZKTAkEDHAVBwmNkA0EDHAVBwnN0A0EDHMhBkJGSk0FzdANBAxwBQcJjZAFBxnN0kJGSkwMcAUHCc3QBQcVzdEFjZAFBAZbBHAFBwnN0AUGCA3N0QcRBlokcAUHCc3QBQYIDc3RBxUGWmRxRClMDUQ9hD8Qe4cHh"
 }

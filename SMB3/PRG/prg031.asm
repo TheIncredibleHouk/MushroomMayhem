@@ -2865,6 +2865,7 @@ Scroll_PPU_Reset:	; $FD97
 	STA <Horz_Scroll ; Horz_Scroll = 0
 	STA PPU_SCROLL	 ; Vertical scroll = 0
 	STA <Vert_Scroll ; Vert_Scroll = 0
+	
 	LDA #$08	 ; 
 	STA PPU_CTL1	 ; Sprites in PT2
 	RTS		 ; Return

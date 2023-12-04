@@ -691,6 +691,24 @@
       "X": 58,
       "Y": 7,
       "BoundRectangle": "928,112,16,16"
+    },
+    {
+      "LevelId": "ac485e88-8754-4eec-bd97-6ddfd48ba037",
+      "X": 55,
+      "Y": 5,
+      "BoundRectangle": "880,80,16,16"
+    },
+    {
+      "LevelId": "f8b955ab-b470-409e-8e7e-285d8fda0634",
+      "X": 21,
+      "Y": 5,
+      "BoundRectangle": "336,80,16,16"
+    },
+    {
+      "LevelId": "7b5d8f91-528f-4bf6-8296-13473f9175cc",
+      "X": 24,
+      "Y": 7,
+      "BoundRectangle": "384,112,16,16"
     }
   ],
   "ObjectData": [

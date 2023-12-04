@@ -1024,6 +1024,7 @@ PRG008_A70E:
 	; Forcefully disable any ducking
 	LDA #$00
 	STA Player_IsDucking	; Player_IsDucking = 0
+	STA Player_GroundPound
 
 	BEQ PRG008_A736	 	; Jump (technically always) to PRG008_A736
 
@@ -1773,29 +1774,6 @@ STORE_BIG_JUMP:
 STORE_SMALL_JUMP:
 	ORA #SND_PLAYERJUMP	 
 	STA Sound_QPlayer
-
-;	LDA Player_StarInv
-;	BEQ PRG008_AC6C	 ; If Player is not invincible by star, jump to PRG008_AC6C
-;
-;	LDA Player_RunMeter
-;	CMP #$7f
-;	BEQ PRG008_AC6C	 ; If Player is at max power, jump to PRG008_AC6C
-;
-;	LDA Player_IsHolding
-;	BNE PRG008_AC6C	 ; If Player is holding something, jump to PRG008_AC6C
-;
-;	LDA Player_EffectiveSuit
-;	BEQ PRG008_AC6C
-;
-;	CMP #$03
-;	BEQ PRG008_AC6C
-;
-;	CMP #$08
-;	BEQ PRG008_AC6C
-;
-;	; Otherwise, mark as mid air AND backflipping
-;	STA <Player_InAir
-
 PRG008_AC6C:
 
 	; Get absolute value of Player's X velocity
@@ -3540,6 +3518,7 @@ Bumps_PowerUpBlock:
 Bumps_PowerUpBlock1:
 	LDA Objects_State, X
 	BEQ Bumps_PowerUpBlock2
+
 	INX
 	CPX #$08
 	BNE Bumps_PowerUpBlock1
@@ -3570,6 +3549,9 @@ Bumps_PowerUpBlock2:
 
 	JSR Object_New
 	
+	LDA Player_BlockPounded
+	STA ItemBlock_Reverse, X
+
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
@@ -3595,6 +3577,9 @@ Bumps_PowerUpBlock2:
 
 	LDA Bump_YHi
 	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA Player_BlockPounded
 	RTS
 
 BumpBlock_CheckMushroom:
@@ -4979,6 +4964,8 @@ Player_SuitChange2:
 	LDY #$00
 	STY LeftRightInfection
 	STY Power_Change
+	STY Player_GroundPound
+	STY Player_Flip
 
 	LDY #$50
 	STY Player_Power
@@ -5070,7 +5057,6 @@ Player_DetectCeiling2:
 	RTS
 
 Player_DetectFloor:
-	STA Debug_Snap
 	LDA <Player_YVelZ
 	BMI Player_DetectFloorRTS
 
@@ -5085,6 +5071,7 @@ Player_DetectFloor:
 	CMP #TILE_PROP_ITEM
 	BNE Player_NotGroundPound
 
+	INC Player_BlockPounded
 	JSR Level_DoBumpBlocks
 
 	LDA Tile_LastProp
@@ -5988,6 +5975,10 @@ Player_HandleWater10:
 	BEQ Player_HandleWater12	 
 
 	JSR Player_Splash
+	
+	LDA #$00
+	STA Player_GroundPound
+	STA Player_Flip
 
 	LDY <Temp_Var15
 
@@ -6188,6 +6179,7 @@ Climbing_YVel: .byte $00, $10, $F0, $00
 Player_HandleClimbing:
 	LDA Player_IsClimbingObject	
 	BEQ Player_HandleClimbingCheck
+
 	STA Player_IsClimbing
 	JMP Player_DoClimbing
 
@@ -6228,11 +6220,16 @@ Player_DoClimbing:
 	LDA #$00
 	STA Player_IsClimbing
 	STA Player_IsClimbingObject
+	STA Player_AllowAirJump
 	JMP DIRECT_TO_JUMP
 
 Player_DoClimbing1:
 	LDA #$01
 	STA Player_IsClimbing
+	
+	LDA #$00
+	STA Player_GroundPound
+	STA Player_Flip
 
 	LDA <Player_FlipBits
 	AND #~SPR_VFLIP

@@ -1617,7 +1617,7 @@ MARIO_PLANE = 2
 	Block_ChangeX:	.ds 1	; Player X Low value when block change was queued
 	Block_ChangeYHi:	.ds 1	; Player Y High value when block change was queued
 	Block_ChangeY:	.ds 1	; Player Y Low value when block change was queued
-	
+
 	; The alternate vertical scrolls are used so that raster effects can be properly implemented!
 	Level_VertScrollH:	.ds 1	; Alternate VertScroll_Hi used by engine, adjusted before being sent to Vert_Scroll_Hi
 	Level_VertScroll:	.ds 1	; Alternate VertScroll used by engine, adjusted before being sent to Vert_Scroll
@@ -1702,19 +1702,13 @@ MARIO_PLANE = 2
 
 	Player_InWater:		.ds 1	; Set for when in water (1 = Regular water specifically, other non-zero values indicate waterfall)
 	Player_SwimCnt:		.ds 1	; Swim counter FIXME Describe better 0-3
-	Player_Kuribo:		.ds 1	; Set for Kuribo's Shoe active
 	Player_QueueSuit:	.ds 1	; Queues a suit change (values like Player_Suit, but add 1, EXCEPT: $0F = Statue enable, $40 = Splash, $80 = Kuribo's Shoe)
-	Player_mGoomba:		.ds 1	; Player is caught by a micro Goomba (jump short)
 	Player_Shell:		.ds 1	; Player is in Tanooki Statue mode; counts down to zero
 	Player_RunFlag:		.ds 1	; Set while Player is actually considered "running" (holding down B and at enough speed; doesn't persist)
-	Player_Bounce:		.ds 1	; Set to cause block bounce (upper 4 bits specifies what kind of block will be bounced)
-	Player_BounceDir:	.ds 1	; Direction of Player bounce -- 0 = Down, 1 = Up, 2 = Left, 3 = Right
-	Player_BounceObj:	.ds 1	; Set if it was a kicked shelled object that hit the bounce block (i.e. don't bounce the Player if the object is the one that hit) 
+	Player_BlockPounded:    .ds 1	; Set to cause block bounce (upper 4 bits specifies what kind of block will be bounced)
 	Counter_ByPlayerSpd:	.ds 1	; A counter which increments faster as the Player goes faster
 
 	Level_HAutoScroll:	.ds 1	; When set to 1, "auto horizontal scroll" is active (this can be toggled mid-level)
-	B10Coin_Count:		.ds 1	; Decrements until -1, you continue to get a coin until it does so
-	B10Coin_ID:		.ds 1	; Forms a sort of unique ID so game knows if you've switched blocks
 
 	Player_OffScreen:	.ds 1	; Set when Player is completely off screen
 

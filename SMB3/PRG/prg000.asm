@@ -2240,6 +2240,14 @@ Object_HurtNoDash:
 	
 
 Object_HurtPlayer:
+	LDA Player_GroundPound
+	BEQ Player_HurtNotGroundPound
+
+	LDA Objects_WeaponAttr, X
+	AND #ATTR_HAMMERPROOF
+	BEQ Object_Stomped
+
+Player_HurtNotGroundPound:	
 	JSR Player_GetHurt
 	SEC
 	RTS
@@ -2261,7 +2269,7 @@ Object_Defeated:
 	STA <Player_YVelZ
 
 Object_DefeatedSound:	
-	JMP Object_DefeatSound
+	JMP Object_KickSound
 
 Object_DefeatedRTS:
 	RTS
@@ -5332,6 +5340,9 @@ Object_KilledNormal:
 	AND #ATTR_HASSHELL
 	BEQ KillEnemy
 
+	LDA Player_GroundPound
+	BNE KillEnemy
+
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State, X
 
@@ -5648,6 +5659,8 @@ HitFrom_Top:
 	LDA #$00
 	STA Player_InAir
 	STA <Player_YVelZ
+	STA Player_Flip
+	STA Player_GroundPound
 
 	LDA Objects_YVelFrac, X
 	STA Player_YVelFrac
@@ -6092,18 +6105,6 @@ Object_EdgeMarchRTS:
 ; 	.byte SND_PLAYERKICK, SND_PLAYERKICK
 
 Object_KickSound:
-	LDY #$01
-	BNE Object_MakeSound
-
-Object_DefeatSound:
-	LDY #$00
-	LDA Objects_BehaviorAttr, X
-	AND #ATTR_STOMPKICKSOUND
-	BEQ Object_MakeSound
-
-	INY
-
-Object_MakeSound:
 	LDA #SND_PLAYERKICK
 	STA Sound_QPlayer
 	RTS

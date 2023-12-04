@@ -12,7 +12,7 @@
   "StaticTileTableIndex": 24,
   "NoStars": false,
   "MostCommonTile": 17,
-  "AnimationType": 1,
+  "AnimationType": 0,
   "ScrollType": 1,
   "Effects": 0,
   "EventType": 0,
@@ -4111,7 +4111,7 @@
     177,
     65,
     148,
-    148,
+    167,
     255,
     65,
     65,
@@ -4351,7 +4351,7 @@
     116,
     65,
     148,
-    148,
+    168,
     255,
     65,
     65,
@@ -6507,14 +6507,14 @@
       "ExitActionType": 0,
       "ExitX": 2,
       "ExitY": 3,
-      "X": 13,
+      "X": 14,
       "Y": 17,
       "ExitsLevel": false,
       "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
-      "BoundRectangle": "208,272,32,32"
+      "BoundRectangle": "224,272,32,32"
     }
   ],
-  "CompressedData": "C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/hgKQkQP/hgKgocFBAZTB/4YCsLHBQQGUwf+GAnN0wUEBlMH/Tx8hDzEPUS5hwWE="
+  "CompressedData": "C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/C0ED/wtBA/8LQQP/hgKQkQP/hgKgocFBAZTB/4YCsLHEQZSn/4YCc3TEQZSo/08fIQ8xD1EuYcFh"
 }

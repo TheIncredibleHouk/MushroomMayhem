@@ -1997,9 +1997,9 @@
     65,
     65,
     65,
-    255,
-    255,
-    255,
+    65,
+    178,
+    178,
     255,
     65,
     65,
@@ -2239,7 +2239,7 @@
     65,
     65,
     178,
-    178,
+    14,
     255,
     65,
     65,
@@ -2479,7 +2479,7 @@
     65,
     65,
     178,
-    178,
+    31,
     255,
     65,
     65,
@@ -6589,14 +6589,14 @@
       "ExitActionType": 0,
       "ExitX": 3,
       "ExitY": 22,
-      "X": 61,
+      "X": 62,
       "Y": 9,
       "ExitsLevel": false,
       "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
-      "BoundRectangle": "976,144,32,32"
+      "BoundRectangle": "992,144,32,32"
     }
   ],
-  "CompressedData": "Xw//SwP/Xw//SwP/TMH/BF9MD/9LA/9Mwf9RD/9LA/9Mw/9BLk8P/0sD/0yCBf9BQUFBSA//SwP/TMP/X1wBX8H/QgRJRA//SwP/Xw//SwP/Xw//SwP/RMMDBAVXD/9Fw6OkpUMBssH/RcF1SsFCA6LBQkcP/0bBdUQBssH/G5HCrq8BkQ//D5EaUcNSnp8BUQ//D1FfD/8PYVXBLkgP/w9hXw//D2FfD/8PYVXBSUgP/w9hXw//D2FfD/8PYV8P/w9hT8FJQsVfT19JX0YP/w9hXw//D2FWw+Pk5UHCrq9BD/8PYULBQgaiwUJLwXVCwp6fQQ//D2EfkQ//D2EfUQ//DmHBYQ=="
+  "CompressedData": "Xw//SwP/Xw//SwP/TMH/BF9MD/9LA/9Mwf9RD/9LA/9Mw/9BLk8P/0sD/0yCBf9BQUFBSA//SwP/TMP/X1wBX8H/QgRJRA//SwP/Xw//SwP/Xw//TAGywf9EwwMEBVcP/0XDo6SlQ8OyDv9FwXVKwUIDosFCRw//RsF1RMOyH/8bkcKurwGRD/8PkRpRw1KenwFRD/8PUV8P/w9hVcEuSA//D2FfD/8PYV8P/w9hVcFJSA//D2FfD/8PYV8P/w9hXw//D2FPwUlCxV9PX0lfRg//D2FfD/8PYVbD4+TlQcKur0EP/w9hQsFCBqLBQkvBdULCnp9BD/8PYR+RD/8PYR9RD/8OYcFh"
 }

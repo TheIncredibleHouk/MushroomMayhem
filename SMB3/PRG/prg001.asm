@@ -290,11 +290,18 @@ ObjInit_PowerUp:
 	STA Objects_BoundBox, X
 
 	LDY PowerUp_Type, X
+	CPY #POWERUP_CHECKPOINT
+	BNE PowerUp_CheckVine
 
+	LDA #$20
+	STA Objects_Timer2, X
+	BNE PowerUp_Sound
+
+PowerUp_CheckVine:
 	CPY #POWERUP_VINE
 	BEQ PowerUp_VineSndFX
 
-
+PowerUp_Sound:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELRISE
 	STA Sound_QLevel1
@@ -344,6 +351,7 @@ PowerUp_InitSetXVel:
 	STA PowerUp_StartX, X
 
 	LDA <Objects_YZ, X
+	SUB #$04
 	STA PowerUp_StartY, X
 	RTS
 
@@ -994,6 +1002,7 @@ ItemBlock_PowerUp = Objects_Data3
 ItemBlock_Frame = Objects_Data4
 ItemBlock_ReplaceTile = Objects_Data5
 ItemBlock_Initialized = Objects_Data6
+ItemBlock_Reverse = Objects_Data7
 
 ObjNorm_ItemBlock:
 	LDA ItemBlock_Initialized, X
@@ -1009,11 +1018,15 @@ ItemBlock_IsInitialized:
 
 ItemBlock_Normal:
 	LDA ItemBlock_UpTimer, X
-	BNE ItemBlock_Up
+	BEQ ItemBlock_TryDown
+	JMP ItemBlock_Up
 
+ItemBlock_TryDown:
 	LDA ItemBlock_DownTimer, X
-	BNE ItemBlock_Down
+	BEQ ItemBlock_NoMove
+	JMP ItemBlock_Down
 
+ItemBlock_NoMove:
 	LDA Block_NeedsUpdate
 	BEQ Produce_Item
 	RTS
@@ -1088,6 +1101,11 @@ ItemBlock_Delete:
 
 ItemBlock_Down:
 	DEC ItemBlock_DownTimer, X
+	
+	LDA ItemBlock_Reverse, X
+	BNE ItemBlock_MoveUp
+
+ItemBlock_MoveDown:	
 	LDA #$20
 	STA <Objects_YVelZ, X
 	JSR Object_ApplyYVel_NoGravity
@@ -1095,6 +1113,11 @@ ItemBlock_Down:
 
 ItemBlock_Up:
 	DEC ItemBlock_UpTimer, X
+
+	LDA ItemBlock_Reverse, X
+	BNE ItemBlock_MoveDown
+
+ItemBlock_MoveUp:
 	LDA #$E0
 	STA <Objects_YVelZ, X
 	JSR Object_ApplyYVel_NoGravity
@@ -2014,6 +2037,8 @@ Spring_Norm:
 	STA Objects_BeingHeld, X
 	STA <Objects_YVelZ, X
 	STA <Objects_XVelZ, X
+	STA Player_GroundPound
+	STA Player_Flip
 
 	LDA #$02
 	STA Objects_Timer, X
@@ -2214,6 +2239,7 @@ MagicStar_FindEnemy:
 	BEQ MagicStar_NoEnemy
 
 	LDA Objects_XZ, Y
+	AND #$F0
 	CMP <Objects_XZ, X
 	BNE MagicStar_NoEnemy
 
