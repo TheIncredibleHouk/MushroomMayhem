@@ -5252,7 +5252,7 @@ Player_BgTileInteract:
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
 	.word Tile_NoInteract	; TILE_PROP_DOOR			= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY		= $0E ;
-	.word Bg_PowerCoin	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+	.word Player_GetHurt	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Bg_HurtPlayer:
 	LDA Tile_LastProp
@@ -5331,23 +5331,11 @@ Bg_Cherry:
 Bg_CherryRTS:
 	RTS
 
-Bg_PowerCoin:
-	LDA Block_NeedsUpdate
-	BNE Bg_PowerCoinRTS
+; Bg_PowerCoin:
+; 	JMP 
 
-	LDA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-
-	LDA #$50
-	STA Player_Power
-	
-	LDA #$00
-	STA Tile_LastProp
-
-	JMP Player_ToggleBlock
-
-Bg_PowerCoinRTS:
-	RTS
+; Bg_PowerCoinRTS:
+; 	RTS
 
 
 Player_BodyHeadTileInteract:
@@ -5372,7 +5360,7 @@ Player_BodyHeadTileInteract:
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
 	.word BodyHead_Door	; TILE_PROP_DOOR					= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY			= $0E ;
-	.word Bg_PowerCoin	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+	.word Player_GetHurt	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Body_Treasure:
 	LDA TreasureBox_Disabled

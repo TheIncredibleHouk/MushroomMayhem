@@ -1910,22 +1910,22 @@ UpdSel_Title:
 	LDA <VBlank_Tick
 	BNE PRG031_F748	 ; If VBlank_Tick <> 0, go to PRG031_F748
 
-	LDA <Ending2_IntCmd
-	BEQ PRG031_F72B	 ; If Ending2_IntCmd = 0, go to PRG031_F72B
+	; LDA <Ending2_IntCmd
+	; BEQ PRG031_F72B	 ; If Ending2_IntCmd = 0, go to PRG031_F72B
 
-	LDA #MMC3_8K_TO_PRG_C000	; Changing PRG ROM at C000
-	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #25	 			; Page 25
-	STA MMC3_PAGE	 		; Set MMC3 page
+	; LDA #MMC3_8K_TO_PRG_C000	; Changing PRG ROM at C000
+	; STA MMC3_COMMAND 		; Set MMC3 command
+	; LDA #25	 			; Page 25
+	; STA MMC3_PAGE	 		; Set MMC3 page
 
-	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
-	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #24	 			; Page 24
-	STA MMC3_PAGE	 		; Set MMC3 page
+	; LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
+	; STA MMC3_COMMAND 		; Set MMC3 command
+	; LDA #24	 			; Page 24
+	; STA MMC3_PAGE	 		; Set MMC3 page
 
-	JSR Do_Ending2_IntCmd	; Perform action of Ending2_IntCmd
+	; JSR Do_Ending2_IntCmd	; Perform action of Ending2_IntCmd
 
-	JMP PRG031_F748	 ; Jump to PRG031_F748
+	; JMP PRG031_F748	 ; Jump to PRG031_F748
 
 PRG031_F72B:
 	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
@@ -3183,7 +3183,7 @@ PRG031_FEC3:
 	LDA <Pad_Input
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Input
-	
+
 	LDA <Pad_Holding
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Holding

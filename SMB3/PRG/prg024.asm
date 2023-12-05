@@ -1756,91 +1756,91 @@ Title_PrepForWorldMap:
 T_SP_Off .func \1-Title_SpritePattern	; "Title SpritePattern Offset"
 
 	; Index into Title_SpritePattern for all of Mario/Luigi's complex frames
-Title_SpritePatternIndex:
-	.byte T_SP_Off(T_SP_00), T_SP_Off(T_SP_01), T_SP_Off(T_SP_02), T_SP_Off(T_SP_03)
-	.byte T_SP_Off(T_SP_04), T_SP_Off(T_SP_05), T_SP_Off(T_SP_06), T_SP_Off(T_SP_07)
-	.byte T_SP_Off(T_SP_08), T_SP_Off(T_SP_09), T_SP_Off(T_SP_0A), T_SP_Off(T_SP_0B)
-	.byte T_SP_Off(T_SP_0C), T_SP_Off(T_SP_0D), T_SP_Off(T_SP_0E), T_SP_Off(T_SP_0F)
-	.byte T_SP_Off(T_SP_10), T_SP_Off(T_SP_11), T_SP_Off(T_SP_12), T_SP_Off(T_SP_13)
-	.byte T_SP_Off(T_SP_14), T_SP_Off(T_SP_15), T_SP_Off(T_SP_16), T_SP_Off(T_SP_17)
-	.byte T_SP_Off(T_SP_18), T_SP_Off(T_SP_19), T_SP_Off(T_SP_1A), T_SP_Off(T_SP_1B)
+; Title_SpritePatternIndex:
+; 	.byte T_SP_Off(T_SP_00), T_SP_Off(T_SP_01), T_SP_Off(T_SP_02), T_SP_Off(T_SP_03)
+; 	.byte T_SP_Off(T_SP_04), T_SP_Off(T_SP_05), T_SP_Off(T_SP_06), T_SP_Off(T_SP_07)
+; 	.byte T_SP_Off(T_SP_08), T_SP_Off(T_SP_09), T_SP_Off(T_SP_0A), T_SP_Off(T_SP_0B)
+; 	.byte T_SP_Off(T_SP_0C), T_SP_Off(T_SP_0D), T_SP_Off(T_SP_0E), T_SP_Off(T_SP_0F)
+; 	.byte T_SP_Off(T_SP_10), T_SP_Off(T_SP_11), T_SP_Off(T_SP_12), T_SP_Off(T_SP_13)
+; 	.byte T_SP_Off(T_SP_14), T_SP_Off(T_SP_15), T_SP_Off(T_SP_16), T_SP_Off(T_SP_17)
+; 	.byte T_SP_Off(T_SP_18), T_SP_Off(T_SP_19), T_SP_Off(T_SP_1A), T_SP_Off(T_SP_1B)
 
 	; Block of patterns, based on offsets from Title_SpritePatternIndex
-	; For use with Mario/Luigi's sprites
-Title_SpritePattern:
-T_SP_00:	.byte $01, $03, $F1, $05, $07, $F1
-T_SP_01:	.byte $0B, $0D, $F1, $0F, $29, $F1
-T_SP_02:	.byte $2D, $2F, $F1, $19, $1B, $F1
-T_SP_03:	.byte $01, $03, $F1, $05, $07, $09
-T_SP_04:	.byte $0B, $0D, $F1, $0F, $29, $2B
-T_SP_05:	.byte $2D, $2F, $F1, $19, $1B, $1D
-T_SP_06:	.byte $31, $33, $F1, $35, $37, $F1
-T_SP_07:	.byte $31, $33, $F1, $35, $37, $39
-T_SP_08:	.byte $01, $03, $F1, $05, $07, $39
-T_SP_09:	.byte $01, $03, $F1, $05, $07, $3B
-T_SP_0A:	.byte $25, $25, $F1, $27, $27, $F1
-T_SP_0B:	.byte $31, $33, $F1, $35, $37, $F1
-T_SP_0C:	.byte $29, $2B, $F1, $2D, $2F, $F1
-T_SP_0D:	.byte $27, $19, $F1, $1D, $1F, $F1
-T_SP_0E:	.byte $01, $03, $F1, $05, $07, $09
-T_SP_0F:	.byte $01, $03, $F1, $0B, $0D, $0F
-T_SP_10:	.byte $01, $03, $F1, $21, $23, $25
-T_SP_11:	.byte $F1, $F1, $F1, $05, $07, $F1
-T_SP_12:	.byte $F1, $F1, $F1, $01, $03, $F1
-T_SP_13:	.byte $F1, $F1, $F1, $21, $23, $F1
-T_SP_14:	.byte $19, $1B, $F1, $1D, $21, $F1
-T_SP_15:	.byte $19, $1B, $F1, $1D, $21, $23
-T_SP_16:	.byte $01, $03, $05, $07, $09, $0B
-T_SP_17:	.byte $0D, $0F, $F1, $11, $13, $F1
-T_SP_18:	.byte $F1, $F1, $F1, $F1, $F1, $F1
-T_SP_19:	.byte $25, $27, $F1, $29, $2B, $F1
-T_SP_1A:	.byte $2D, $2F, $F1, $19, $1B, $F1
-T_SP_1B:	.byte $31, $33, $F1, $35, $37, $F1
+; 	; For use with Mario/Luigi's sprites
+; Title_SpritePattern:
+; T_SP_00:	.byte $01, $03, $F1, $05, $07, $F1
+; T_SP_01:	.byte $0B, $0D, $F1, $0F, $29, $F1
+; T_SP_02:	.byte $2D, $2F, $F1, $19, $1B, $F1
+; T_SP_03:	.byte $01, $03, $F1, $05, $07, $09
+; T_SP_04:	.byte $0B, $0D, $F1, $0F, $29, $2B
+; T_SP_05:	.byte $2D, $2F, $F1, $19, $1B, $1D
+; T_SP_06:	.byte $31, $33, $F1, $35, $37, $F1
+; T_SP_07:	.byte $31, $33, $F1, $35, $37, $39
+; T_SP_08:	.byte $01, $03, $F1, $05, $07, $39
+; T_SP_09:	.byte $01, $03, $F1, $05, $07, $3B
+; T_SP_0A:	.byte $25, $25, $F1, $27, $27, $F1
+; T_SP_0B:	.byte $31, $33, $F1, $35, $37, $F1
+; T_SP_0C:	.byte $29, $2B, $F1, $2D, $2F, $F1
+; T_SP_0D:	.byte $27, $19, $F1, $1D, $1F, $F1
+; T_SP_0E:	.byte $01, $03, $F1, $05, $07, $09
+; T_SP_0F:	.byte $01, $03, $F1, $0B, $0D, $0F
+; T_SP_10:	.byte $01, $03, $F1, $21, $23, $25
+; T_SP_11:	.byte $F1, $F1, $F1, $05, $07, $F1
+; T_SP_12:	.byte $F1, $F1, $F1, $01, $03, $F1
+; T_SP_13:	.byte $F1, $F1, $F1, $21, $23, $F1
+; T_SP_14:	.byte $19, $1B, $F1, $1D, $21, $F1
+; T_SP_15:	.byte $19, $1B, $F1, $1D, $21, $23
+; T_SP_16:	.byte $01, $03, $05, $07, $09, $0B
+; T_SP_17:	.byte $0D, $0F, $F1, $11, $13, $F1
+; T_SP_18:	.byte $F1, $F1, $F1, $F1, $F1, $F1
+; T_SP_19:	.byte $25, $27, $F1, $29, $2B, $F1
+; T_SP_1A:	.byte $2D, $2F, $F1, $19, $1B, $F1
+; T_SP_1B:	.byte $31, $33, $F1, $35, $37, $F1
 
-	; Specify proper VROM page for Title_ObjMLSprite sprite index
-Title_SpriteVROMPage:
-	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $45
-	.byte $02, $02, $02, $02, $02, $03, $03, $03, $03, $03, $7F, $7F, $00, $13, $13, $13
+; 	; Specify proper VROM page for Title_ObjMLSprite sprite index
+; Title_SpriteVROMPage:
+; 	.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $45
+; 	.byte $02, $02, $02, $02, $02, $03, $03, $03, $03, $03, $7F, $7F, $00, $13, $13, $13
 
 
-	; Walking animation sprite frames
-	; Values per frame (0 - 3, +4 for each power level they are)
-Title_ObjMLWalkSprite:
-	.byte $11, $12, $11, $12	; Small 
-	.byte $00, $01, $02, $01 	; Big
-	.byte $03, $04, $05, $04	; Leaf Raccoon
-	.byte $1A, $1B, $1A, $1B	; The Princess
+; 	; Walking animation sprite frames
+; 	; Values per frame (0 - 3, +4 for each power level they are)
+; Title_ObjMLWalkSprite:
+; 	.byte $11, $12, $11, $12	; Small 
+; 	.byte $00, $01, $02, $01 	; Big
+; 	.byte $03, $04, $05, $04	; Leaf Raccoon
+; 	.byte $1A, $1B, $1A, $1B	; The Princess
 
-	; Duck sprite frames
-Title_ObjMLDuckSprite:
-	.byte $12	; Small (no duck sprite)
-	.byte $06	; Big
-	.byte $07	; Leaf Raccoon
+; 	; Duck sprite frames
+; Title_ObjMLDuckSprite:
+; 	.byte $12	; Small (no duck sprite)
+; 	.byte $06	; Big
+; 	.byte $07	; Leaf Raccoon
 
-	; Skid sprite frames
-Title_ObjMLSkidSprite:
-	.byte $13	; Small
-	.byte $0C	; Big / Leaf Raccoon
+; 	; Skid sprite frames
+; Title_ObjMLSkidSprite:
+; 	.byte $13	; Small
+; 	.byte $0C	; Big / Leaf Raccoon
 
-	; Leaf raccoon tail wag animation sprite frames
-Title_ObjMLTailWagSprite:
-	.byte $09, $03, $08
+; 	; Leaf raccoon tail wag animation sprite frames
+; Title_ObjMLTailWagSprite:
+; 	.byte $09, $03, $08
 
-	; Carrying item while walking
-Title_ObjMLCarrySprite:
-	.byte $0E, $0F, $10, $0E
+; 	; Carrying item while walking
+; Title_ObjMLCarrySprite:
+; 	.byte $0E, $0F, $10, $0E
 
-	; Powering down (shrinking) animation
-Title_ObjMarioPowerDown:
-	.byte $11, $0B, $11, $0B, $11, $0B, $02, $0B, $02, $0B, $02, $0B
+; 	; Powering down (shrinking) animation
+; Title_ObjMarioPowerDown:
+; 	.byte $11, $0B, $11, $0B, $11, $0B, $02, $0B, $02, $0B, $02, $0B
 
-	; Initial X positions of Mario and Luigi
-Title_ObjInitX:
-	.byte $F0, $00
+; 	; Initial X positions of Mario and Luigi
+; Title_ObjInitX:
+; 	.byte $F0, $00
 
-	; Initial sprite flags of Mario and Luigi
-Title_ObjInitFlags:
-	.byte $00, SPR_HFLIP
+; 	; Initial sprite flags of Mario and Luigi
+; Title_ObjInitFlags:
+; 	.byte $00, SPR_HFLIP
 
 
 ; Title_UpdateAllObjs
@@ -4003,1500 +4003,1500 @@ Title_ObjInitFlags:
 ; 	RTS		 	; Return..!
 
 
-Rescue_Princess:
-	; NOTE: Debug menu jump to princess rescue jumps here
+; Rescue_Princess:
+; 	; NOTE: Debug menu jump to princess rescue jumps here
 
-	; Princess housing block graphics
-	LDA #$5c
-	STA PatTable_BankSel
+; 	; Princess housing block graphics
+; 	LDA #$5c
+; 	STA PatTable_BankSel
 
-	; Princess housing background graphics
-	LDA #$5e
-	STA PatTable_BankSel+1
+; 	; Princess housing background graphics
+; 	LDA #$5e
+; 	STA PatTable_BankSel+1
 
-	JSR Reset_PPU_Clear_Nametables
+; 	JSR Reset_PPU_Clear_Nametables
 
-	; Disable display
-	LDA #$00
-	STA PPU_CTL1
-	STA PPU_CTL2
+; 	; Disable display
+; 	LDA #$00
+; 	STA PPU_CTL1
+; 	STA PPU_CTL2
 
-	; Disable raster effects
-	LDA #$80
-	STA Raster_Effect
+; 	; Disable raster effects
+; 	LDA #$80
+; 	STA Raster_Effect
 
-	; Clears RAM $00-$F5
-	LDX #$f5	 ; X = $F5
-PRG024_B876:
-	LDA #$00
-	STA <Temp_Var1,X
+; 	; Clears RAM $00-$F5
+; 	LDX #$f5	 ; X = $F5
+; PRG024_B876:
+; 	LDA #$00
+; 	STA <Temp_Var1,X
 
-	DEX		 ; X--
-	BNE PRG024_B876	 ; While X <> 0, loop!
+; 	DEX		 ; X--
+; 	BNE PRG024_B876	 ; While X <> 0, loop!
 
-	; Scroll at lowest point
-	LDA #$ef
-	STA <Vert_Scroll
+; 	; Scroll at lowest point
+; 	LDA #$ef
+; 	STA <Vert_Scroll
 
-	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
-	STA PPU_CTL1	 	
-	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
+; 	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
+; 	STA PPU_CTL1	 	
+; 	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
 
-	; Entry $55 of Video_Upd_Table2
-	LDA #$55
-	ASL A
-	TAY
+; 	; Entry $55 of Video_Upd_Table2
+; 	LDA #$55
+; 	ASL A
+; 	TAY
 
-	; Load base address of graphics
-	LDA Video_Upd_Table2,Y
-	STA <Video_Upd_AddrL	
-	LDA Video_Upd_Table2+1,Y
-	STA <Video_Upd_AddrH	
+; 	; Load base address of graphics
+; 	LDA Video_Upd_Table2,Y
+; 	STA <Video_Upd_AddrL	
+; 	LDA Video_Upd_Table2+1,Y
+; 	STA <Video_Upd_AddrH	
 
-	JSR Video_Misc_Updates2	; Load those graphics!
+; 	JSR Video_Misc_Updates2	; Load those graphics!
 
-	LDA #%10101000	; In addition to anything else specified by PPU_CTL1_Mod, Generate VBlank Resets, use 8x16 sprites, sprites use PT2
-	STA PPU_CTL1	; Set above settings
-	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
+; 	LDA #%10101000	; In addition to anything else specified by PPU_CTL1_Mod, Generate VBlank Resets, use 8x16 sprites, sprites use PT2
+; 	STA PPU_CTL1	; Set above settings
+; 	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
 
-PRG024_B8A0:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; VSync
+; PRG024_B8A0:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; VSync
 
-	JSR Ending_ChamberScene	 ; Do the Princess Chamber scene, up through the Fade Out
+; 	JSR Ending_ChamberScene	 ; Do the Princess Chamber scene, up through the Fade Out
 
-	LDA <Ending_State
-	CMP #$07
-	BNE PRG024_B8A0	 ; If Princess Chamber scene is still going on, loop!
+; 	LDA <Ending_State
+; 	CMP #$07
+; 	BNE PRG024_B8A0	 ; If Princess Chamber scene is still going on, loop!
 
-	JMP Ending_Credits	 ; Jump to credits
+; 	JMP Ending_Credits	 ; Jump to credits
 
 
-Ending_ChamberScene:
-	;JSR PRG024_SpriteClear	; Clear sprites
+; Ending_ChamberScene:
+; 	;JSR PRG024_SpriteClear	; Clear sprites
 
-	LDA #$10	
-	STA <Title_ObjMLSprRAMOff	; Mario's sprite RAM starts at Sprite_RAM + $10
+; 	LDA #$10	
+; 	STA <Title_ObjMLSprRAMOff	; Mario's sprite RAM starts at Sprite_RAM + $10
 
-	LDA #$28	
-	STA <Title_ObjMLSprRAMOff+1	; Princess's sprite RAM starts at Sprite_RAM + $28
+; 	LDA #$28	
+; 	STA <Title_ObjMLSprRAMOff+1	; Princess's sprite RAM starts at Sprite_RAM + $28
 
-	LDX #$02	 ; X = 2
-PRG024_B8BC:
-	LDA <Ending_Timer,X
-	BEQ PRG024_B8C2		; If this ending timer = 0, jump to PRG024_B8C2
+; 	LDX #$02	 ; X = 2
+; PRG024_B8BC:
+; 	LDA <Ending_Timer,X
+; 	BEQ PRG024_B8C2		; If this ending timer = 0, jump to PRG024_B8C2
 
-	DEC <Ending_Timer,X	; Otherwise, decrement it
+; 	DEC <Ending_Timer,X	; Otherwise, decrement it
 
-PRG024_B8C2:
-	DEX		 ; X--
-	BPL PRG024_B8BC	 ; While X >= 0, loop
+; PRG024_B8C2:
+; 	DEX		 ; X--
+; 	BPL PRG024_B8BC	 ; While X >= 0, loop
 
-	JSR Ending_DoChamberScene	 ; Perform actions for the Princess's Chamber
+; 	JSR Ending_DoChamberScene	 ; Perform actions for the Princess's Chamber
 
-	; Title_CurMLIndex = 0
-	LDX #$00
-	STX <Title_CurMLIndex
+; 	; Title_CurMLIndex = 0
+; 	LDX #$00
+; 	STX <Title_CurMLIndex
 
-	; Title_DrawMarioLuigi	 ; Draws Mario officially, but may be modified after this to Luigi
+; 	; Title_DrawMarioLuigi	 ; Draws Mario officially, but may be modified after this to Luigi
 
-	LDA Player_Current
-	BEQ PRG024_B8E6	 ; If Player is Mario, jump to PRG024_B8E6
+; 	LDA Player_Current
+; 	BEQ PRG024_B8E6	 ; If Player is Mario, jump to PRG024_B8E6
 
-	; Luigi only...
+; 	; Luigi only...
 
-	; This is meant to colorize the Player as Luigi, but I think the loop condition is wrong
-	; Seems to work anyway.  Sort of a Schroedinbug without the fact that it will stop working
-	; just because I pointed it out...
-	LDY #$24	 ; Y = $24
-PRG024_B8D6:
-	; Use the Luigi palette
-	LDA Sprite_RAM+$02,Y
-	ORA #SPR_PAL2
-	STA Sprite_RAM+$02,Y
+; 	; This is meant to colorize the Player as Luigi, but I think the loop condition is wrong
+; 	; Seems to work anyway.  Sort of a Schroedinbug without the fact that it will stop working
+; 	; just because I pointed it out...
+; 	LDY #$24	 ; Y = $24
+; PRG024_B8D6:
+; 	; Use the Luigi palette
+; 	LDA Sprite_RAM+$02,Y
+; 	ORA #SPR_PAL2
+; 	STA Sprite_RAM+$02,Y
 
-	; Y -= 4 (previous sprite)
-	DEY
-	DEY
-	DEY
-	DEY
+; 	; Y -= 4 (previous sprite)
+; 	DEY
+; 	DEY
+; 	DEY
+; 	DEY
 
-	CMP <Title_ObjMLSprRAMOff ; I think this is a mistake!  Will compare to the attribute value!
-	BPL PRG024_B8D6	 ; While ??, loop
+; 	CMP <Title_ObjMLSprRAMOff ; I think this is a mistake!  Will compare to the attribute value!
+; 	BPL PRG024_B8D6	 ; While ??, loop
 
-PRG024_B8E6:
+; PRG024_B8E6:
 
-	; Title_CurMLIndex = 1
-	INX		 ; X = 1
-	STX <Title_CurMLIndex
+; 	; Title_CurMLIndex = 1
+; 	INX		 ; X = 1
+; 	STX <Title_CurMLIndex
 
-	;JSR Title_DrawMarioLuigi	 ; Actually draws the Princess
+; 	;JSR Title_DrawMarioLuigi	 ; Actually draws the Princess
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-Ending_DoChamberScene:
-	LDA <Ending_State
-	JSR DynJump
+; Ending_DoChamberScene:
+; 	LDA <Ending_State
+; 	JSR DynJump
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word Ending_Init		; 0: Prepare the Princess chamber scene
-	.word Ending_FadeIn		; 1: Fade in
-	.word Ending_MarioAppears	; 2: Mario appears, music starts
-	.word Ending_LightsOn		; 3: Lights come on, Princess stands up
-	.word Ending_WalkToCenter	; 4: Mario and Princess walk to the center
-	.word Ending_PrincessSpeech	; 5: Princess's departing message
-	.word Ending_FadeOut		; 6: Fade out
+	; ; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+	; .word Ending_Init		; 0: Prepare the Princess chamber scene
+	; .word Ending_FadeIn		; 1: Fade in
+	; .word Ending_MarioAppears	; 2: Mario appears, music starts
+	; .word Ending_LightsOn		; 3: Lights come on, Princess stands up
+	; .word Ending_WalkToCenter	; 4: Mario and Princess walk to the center
+	; .word Ending_PrincessSpeech	; 5: Princess's departing message
+	; .word Ending_FadeOut		; 6: Fade out
 
-Ending_Init:
-	; Set Mario's X
-	LDA #32
-	STA <Title_ObjX
+; Ending_Init:
+; 	; Set Mario's X
+; 	LDA #32
+; 	STA <Title_ObjX
 
-	; Set Princess's X
-	LDA #200
-	STA <Title_ObjX+1
+; 	; Set Princess's X
+; 	LDA #200
+; 	STA <Title_ObjX+1
 
-	; Set both Y = 160
-	LDA #160
-	STA <Title_ObjY
-	STA <Title_ObjY+1
+; 	; Set both Y = 160
+; 	LDA #160
+; 	STA <Title_ObjY
+; 	STA <Title_ObjY+1
 
-	; Mario standing
-	LDA #$18
-	STA <Title_ObjMLSprite
+; 	; Mario standing
+; 	LDA #$18
+; 	STA <Title_ObjMLSprite
 
-	; Princess sobbing
-	LDA #$19
-	STA <Title_ObjMLSprite+1
+; 	; Princess sobbing
+; 	LDA #$19
+; 	STA <Title_ObjMLSprite+1
 
-	; Mario turned to face, Princess turned away
-	LDA #SPR_HFLIP
-	STA <Title_ObjMLFlags
-	STA <Title_ObjMLFlags+1
+; 	; Mario turned to face, Princess turned away
+; 	LDA #SPR_HFLIP
+; 	STA <Title_ObjMLFlags
+; 	STA <Title_ObjMLFlags+1
 
-	; Super Mario
-	LDA #$01
-	STA <Title_ObjMLPower
+; 	; Super Mario
+; 	LDA #$01
+; 	STA <Title_ObjMLPower
 
-	; Set first ending timer to $0F
-	LDA #$0f
-	STA <Ending_Timer
+; 	; Set first ending timer to $0F
+; 	LDA #$0f
+; 	STA <Ending_Timer
 
-	INC <Ending_State	; Ending_State = 1
+; 	INC <Ending_State	; Ending_State = 1
 
-	; Initialize the princess speech dialog box
+; 	; Initialize the princess speech dialog box
 
-	; EndText_CPos = 0
-	LDA #$00
-	STA <EndText_CPos
+; 	; EndText_CPos = 0
+; 	LDA #$00
+; 	STA <EndText_CPos
 
-	; EndText_VH = $29
-	LDA #$29
-	STA <EndText_VH
+; 	; EndText_VH = $29
+; 	LDA #$29
+; 	STA <EndText_VH
 
-	; EndText_VL = $48
-	LDA #$48
-	STA <EndText_VL
-
-	RTS		 ; Return
-
-Ending_FadeIn:
-	LDA <Ending_Timer
-	BNE PRG024_B93D	 ; If the first ending timer has not expired, jump to PRG024_B93D
-
-	INC <Ending_State	 ; Ending_State = 2
-
-	; Set first ending timer to $30
-	LDY #$30
-	STY <Ending_Timer
-
-PRG024_B93D:
+; 	; EndText_VL = $48
+; 	LDA #$48
+; 	STA <EndText_VL
+
+; 	RTS		 ; Return
+
+; Ending_FadeIn:
+; 	LDA <Ending_Timer
+; 	BNE PRG024_B93D	 ; If the first ending timer has not expired, jump to PRG024_B93D
+
+; 	INC <Ending_State	 ; Ending_State = 2
+
+; 	; Set first ending timer to $30
+; 	LDY #$30
+; 	STY <Ending_Timer
+
+; PRG024_B93D:
 
 
-	; Ending timer was init'ed to $F (15) so ...
-	LSR A
-	LSR A		; Ending timer / 4
-	ADD #$56	; ... run command scripts $59, $58, $57, $56 (the "fade in" effect)
-
-	STA Graphics_Queue	 ; Execute appropriate scripe
+; 	; Ending timer was init'ed to $F (15) so ...
+; 	LSR A
+; 	LSR A		; Ending timer / 4
+; 	ADD #$56	; ... run command scripts $59, $58, $57, $56 (the "fade in" effect)
+
+; 	STA Graphics_Queue	 ; Execute appropriate scripe
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-Ending_MarioAppears:
-	LDA <Ending_Timer
-	CMP #$01
-	BNE PRG024_B959	 ; If ending timer does not have one tick left, jump to PRG024_B959
+; Ending_MarioAppears:
+; 	LDA <Ending_Timer
+; 	CMP #$01
+; 	BNE PRG024_B959	 ; If ending timer does not have one tick left, jump to PRG024_B959
 
-	; Mario standing there
-	LDA #$02
-	STA <Title_ObjMLSprite
+; 	; Mario standing there
+; 	LDA #$02
+; 	STA <Title_ObjMLSprite
 
-	; Set ending timer 2 = $80
-	LDA #$80
-	STA <Ending_Timer+1
+; 	; Set ending timer 2 = $80
+; 	LDA #$80
+; 	STA <Ending_Timer+1
 
-	; Play finale music
-	LDA #MUS2A_ENDING
-	STA Sound_QMusic2
+; 	; Play finale music
+; 	LDA #MUS2A_ENDING
+; 	STA Sound_QMusic2
 
-PRG024_B959:
-	LDA <Ending_Timer+1
-	CMP #$01
-	BNE PRG024_B965	 ; If second ending timer does not have one tick left, jump to PRG024_B965
+; PRG024_B959:
+; 	LDA <Ending_Timer+1
+; 	CMP #$01
+; 	BNE PRG024_B965	 ; If second ending timer does not have one tick left, jump to PRG024_B965
 
-	; Set first ending timer = $13
-	LDA #$13
-	STA <Ending_Timer
+; 	; Set first ending timer = $13
+; 	LDA #$13
+; 	STA <Ending_Timer
 
-	INC <Ending_State ; Ending_State = 3
+; 	INC <Ending_State ; Ending_State = 3
 
-PRG024_B965:
-	RTS		 ; Return
+; PRG024_B965:
+; 	RTS		 ; Return
 
-	; The "lights on" effect palette levels
-Ending_LightsOnPalSet:
-	.byte $0F, $35, $30, $3B
-	.byte $0F, $23, $35, $3B
-	.byte $0F, $11, $3C, $3B
-	.byte $0F, $1C, $2C, $3B
-	.byte $0F, $0C, $1C, $3B
+; 	; The "lights on" effect palette levels
+; Ending_LightsOnPalSet:
+; 	.byte $0F, $35, $30, $3B
+; 	.byte $0F, $23, $35, $3B
+; 	.byte $0F, $11, $3C, $3B
+; 	.byte $0F, $1C, $2C, $3B
+; 	.byte $0F, $0C, $1C, $3B
 
-Ending_LightsOn:
-	LDA <Ending_Timer
-	BEQ PRG024_B9BB	 ; If ending timer has expired, jump to PRG024_B9BB
+; Ending_LightsOn:
+; 	LDA <Ending_Timer
+; 	BEQ PRG024_B9BB	 ; If ending timer has expired, jump to PRG024_B9BB
 
-	; Second ending timer = $30
-	LDY #$30
-	STY <Ending_Timer+1
+; 	; Second ending timer = $30
+; 	LDY #$30
+; 	STY <Ending_Timer+1
 
-	AND #%00001100
-	TAY		 ; Y = 0, 4, 8, 12 (Ending_LightsOnPalSet level offset)
+; 	AND #%00001100
+; 	TAY		 ; Y = 0, 4, 8, 12 (Ending_LightsOnPalSet level offset)
 
-	LDX Graphics_BufCnt	 ; X = current graphics buffer count
-	TXA
-	ADD #$07
-	STA Graphics_BufCnt	; Make room for 7 bytes
+; 	LDX Graphics_BufCnt	 ; X = current graphics buffer count
+; 	TXA
+; 	ADD #$07
+; 	STA Graphics_BufCnt	; Make room for 7 bytes
 
-	; VRAM High/Low (for palette)
-	LDA #$3f
-	STA Graphics_Buffer,X
-	LDA #$04
-	STA Graphics_Buffer+1,X
+; 	; VRAM High/Low (for palette)
+; 	LDA #$3f
+; 	STA Graphics_Buffer,X
+; 	LDA #$04
+; 	STA Graphics_Buffer+1,X
 
-	; Run length of 4
-	LDA #$04
-	STA Graphics_Buffer+2,X
+; 	; Run length of 4
+; 	LDA #$04
+; 	STA Graphics_Buffer+2,X
 
-	; Terminator
-	LDA #$00
-	STA Graphics_Buffer+7,X
+; 	; Terminator
+; 	LDA #$00
+; 	STA Graphics_Buffer+7,X
 
-	; The four palette colors for the "lights on" effect
-	LDA Ending_LightsOnPalSet,Y
-	STA Graphics_Buffer+3,X
-	LDA Ending_LightsOnPalSet+1,Y
-	STA Graphics_Buffer+4,X
-	LDA Ending_LightsOnPalSet+2,Y
-	STA Graphics_Buffer+5,X
-	LDA Ending_LightsOnPalSet+3,Y
-	STA Graphics_Buffer+6,X
+; 	; The four palette colors for the "lights on" effect
+; 	LDA Ending_LightsOnPalSet,Y
+; 	STA Graphics_Buffer+3,X
+; 	LDA Ending_LightsOnPalSet+1,Y
+; 	STA Graphics_Buffer+4,X
+; 	LDA Ending_LightsOnPalSet+2,Y
+; 	STA Graphics_Buffer+5,X
+; 	LDA Ending_LightsOnPalSet+3,Y
+; 	STA Graphics_Buffer+6,X
 
-PRG024_B9BB:
-	LDA <Ending_Timer+1
-	BNE PRG024_B9C9	 ; If second ending timer has not expired, jump to PRG024_B9C9 (RTS)
+; PRG024_B9BB:
+; 	LDA <Ending_Timer+1
+; 	BNE PRG024_B9C9	 ; If second ending timer has not expired, jump to PRG024_B9C9 (RTS)
 
-	INC <Ending_State	 ; Ending_State = 4
+; 	INC <Ending_State	 ; Ending_State = 4
 
-	; First ending timer = $80
-	LDA #$80
-	STA <Ending_Timer
+; 	; First ending timer = $80
+; 	LDA #$80
+; 	STA <Ending_Timer
 
-	; Princess stands up
-	LDA #$1a
-	STA <Title_ObjMLSprite+1
+; 	; Princess stands up
+; 	LDA #$1a
+; 	STA <Title_ObjMLSprite+1
 
-PRG024_B9C9:
-	RTS		 ; Return
+; PRG024_B9C9:
+; 	RTS		 ; Return
 
 
-Ending_WalkToCenter:
-	LDA <Ending_Timer
-	BEQ PRG024_B9D7	 ; If first ending timer has not expired, jump to PRG024_B9D7
+; ; Ending_WalkToCenter:
+; ; 	LDA <Ending_Timer
+; ; 	BEQ PRG024_B9D7	 ; If first ending timer has not expired, jump to PRG024_B9D7
 
-	CMP #$60
-	BGE PRG024_B9D6	 ; If ending timer >= $60, jump to PRG024_B9D6 (RTS)
+; ; 	CMP #$60
+; ; 	BGE PRG024_B9D6	 ; If ending timer >= $60, jump to PRG024_B9D6 (RTS)
 
-	; Princess turns around
-	LDA #$00
-	STA <Title_ObjMLFlags+1
+; ; 	; Princess turns around
+; ; 	LDA #$00
+; ; 	STA <Title_ObjMLFlags+1
 
-PRG024_B9D6:
-	RTS		 ; Return
+; ; PRG024_B9D6:
+; ; 	RTS		 ; Return
 
-PRG024_B9D7:
-	LDA <Title_ObjX
-	CMP #104
-	BLT PRG024_B9EC	 ; If Mario's X < 104, jump to PRG024_B9EC
+; ; PRG024_B9D7:
+; ; 	LDA <Title_ObjX
+; ; 	CMP #104
+; ; 	BLT PRG024_B9EC	 ; If Mario's X < 104, jump to PRG024_B9EC
 
-	; Mario stands
-	LDA #$02
-	STA <Title_ObjMLSprite
+; ; 	; Mario stands
+; ; 	LDA #$02
+; ; 	STA <Title_ObjMLSprite
 
-	; Princess stands
-	LDA #$1a
-	STA <Title_ObjMLSprite+1
+; ; 	; Princess stands
+; ; 	LDA #$1a
+; ; 	STA <Title_ObjMLSprite+1
 
-	INC <Ending_State	; Ending_State = 5
+; ; 	INC <Ending_State	; Ending_State = 5
 
-	; First Ending Timer = $B0
-	LDA #$b0
-	STA <Ending_Timer
+; ; 	; First Ending Timer = $B0
+; ; 	LDA #$b0
+; ; 	STA <Ending_Timer
 
-	RTS		 ; Return
+; ; 	RTS		 ; Return
 
-PRG024_B9EC:
+; ; PRG024_B9EC:
 
-	; Second ending timer = $50
-	LDA #$50
-	STA <Ending_Timer+1
+; ; 	; Second ending timer = $50
+; ; 	LDA #$50
+; ; 	STA <Ending_Timer+1
 
-	; Mario steps to the right
-	INC <Title_ObjX
+; ; 	; Mario steps to the right
+; ; 	INC <Title_ObjX
 
-	; Princess steps to the left
-	DEC <Title_ObjX+1
+; ; 	; Princess steps to the left
+; ; 	DEC <Title_ObjX+1
 
-	LDA <Counter_1
-	AND #%00001100
-	LSR A
-	LSR A
-	TAY	; Y = 0 to 3
+; ; 	LDA <Counter_1
+; ; 	AND #%00001100
+; ; 	LSR A
+; ; 	LSR A
+; ; 	TAY	; Y = 0 to 3
 
-	; Set Mario's walk frame
-	LDA Title_ObjMLWalkSprite+4,Y
-	STA <Title_ObjMLSprite	
+; ; 	; Set Mario's walk frame
+; ; 	LDA Title_ObjMLWalkSprite+4,Y
+; ; 	STA <Title_ObjMLSprite	
 
-	; Set Princess's walk frame
-	LDA Title_ObjMLWalkSprite+12,Y
-	STA <Title_ObjMLSprite+1
+; ; 	; Set Princess's walk frame
+; ; 	LDA Title_ObjMLWalkSprite+12,Y
+; ; 	STA <Title_ObjMLSprite+1
 
-	RTS		 ; Return
+; ; 	RTS		 ; Return
 
 
-Ending_PrincessSpeech:
-	LDA <Ending_Timer
-	BNE PRG024_BA0D	 ; If timer not expired, jump to PRG024_BA0D (RTS)
+; Ending_PrincessSpeech:
+; 	LDA <Ending_Timer
+; 	BNE PRG024_BA0D	 ; If timer not expired, jump to PRG024_BA0D (RTS)
 
-	JMP PRG024_BA2B	 ; Otherwise, jump to PRG024_BA2B
+; 	JMP PRG024_BA2B	 ; Otherwise, jump to PRG024_BA2B
 
-PRG024_BA0D:
-	RTS		 ; Return
+; PRG024_BA0D:
+; 	RTS		 ; Return
 
 
-Ending_FadeOut:
-	LDA <Ending_Timer
-	BNE PRG024_BA19	 ; If first ending timer has not expired, jump to PRG024_BA19
+; Ending_FadeOut:
+; 	LDA <Ending_Timer
+; 	BNE PRG024_BA19	 ; If first ending timer has not expired, jump to PRG024_BA19
 
-	LDA <Ending_Timer+1
-	BNE PRG024_BA18	 ; If second ending timer has not expired, jump to PRG024_BA18 (RTS)
+; 	LDA <Ending_Timer+1
+; 	BNE PRG024_BA18	 ; If second ending timer has not expired, jump to PRG024_BA18 (RTS)
 
-	INC <Ending_State ; Ending_State = 7
+; 	INC <Ending_State ; Ending_State = 7
 
-PRG024_BA18:
-	RTS		 ; Return
+; PRG024_BA18:
+; 	RTS		 ; Return
 
-PRG024_BA19:
+; PRG024_BA19:
 
-	; Ending timer was init'ed to $F (15) so ...
-	LSR A
-	LSR A		; Ending timer / 4
-	STA <Temp_Var1	 ; Temp_Var1 = 0 to 3
+; 	; Ending timer was init'ed to $F (15) so ...
+; 	LSR A
+; 	LSR A		; Ending timer / 4
+; 	STA <Temp_Var1	 ; Temp_Var1 = 0 to 3
 
-	; Execute $5A, $59, $58, $57 (fade out)
-	LDA #$5a
-	SUB <Temp_Var1
-	STA Graphics_Queue
+; 	; Execute $5A, $59, $58, $57 (fade out)
+; 	LDA #$5a
+; 	SUB <Temp_Var1
+; 	STA Graphics_Queue
 
-	; Second ending timer = $10
-	LDA #$10
-	STA Ending_Timer+1
+; 	; Second ending timer = $10
+; 	LDA #$10
+; 	STA Ending_Timer+1
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-PRG024_BA2B:
-	LDA <EndText_State
-	JSR DynJump
+; PRG024_BA2B:
+; 	LDA <EndText_State
+; 	JSR DynJump
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word EndText_DrawDiagBox	; 0: Draw the dialog box
-	.word EndText_DoPrincessText	; 1: Do the text
-	.word EndText_Wait		; 2: Waits for timer to expire, then advances Ending_State
+; 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+; 	.word EndText_DrawDiagBox	; 0: Draw the dialog box
+; 	.word EndText_DoPrincessText	; 1: Do the text
+; 	.word EndText_Wait		; 2: Waits for timer to expire, then advances Ending_State
 
 
-PDiagBox_R1:	.byte $94, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $96
-PDiagBox_R2:	.byte $92, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $93
-PDiagBox_R3:	.byte $95, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $97
+; PDiagBox_R1:	.byte $94, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $90, $96
+; PDiagBox_R2:	.byte $92, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $93
+; PDiagBox_R3:	.byte $95, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $91, $97
 
-PDiagBox_RowOffs:
-	.byte (PDiagBox_R1 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1)
-	.byte (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R3 - PDiagBox_R1)
-PDiagBox_RowOffs_End
+; PDiagBox_RowOffs:
+; 	.byte (PDiagBox_R1 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1)
+; 	.byte (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R2 - PDiagBox_R1), (PDiagBox_R3 - PDiagBox_R1)
+; PDiagBox_RowOffs_End
 
 
-EndText_DrawDiagBox:
+; EndText_DrawDiagBox:
 
-	LDX Graphics_BufCnt	 ; X = buffer count
+; 	LDX Graphics_BufCnt	 ; X = buffer count
 
-	; Set current VRAM address 
-	LDA <EndText_VH
-	STA Graphics_Buffer,X
-	LDA <EndText_VL	
-	STA Graphics_Buffer+1,X
+; 	; Set current VRAM address 
+; 	LDA <EndText_VH
+; 	STA Graphics_Buffer,X
+; 	LDA <EndText_VL	
+; 	STA Graphics_Buffer+1,X
 
-	ADD #$20	; 32 bytes to next row
-	STA <EndText_VL
-	BCC PRG024_BA87
-	INC <EndText_VH	 ; Apply carry
-PRG024_BA87:
-	LDA #(PDiagBox_R2 - PDiagBox_R1)	; run count per row
-	STA Graphics_Buffer+2,X
-	STA <Temp_Var1		 ; -> Temp_Var1
+; 	ADD #$20	; 32 bytes to next row
+; 	STA <EndText_VL
+; 	BCC PRG024_BA87
+; 	INC <EndText_VH	 ; Apply carry
+; PRG024_BA87:
+; 	LDA #(PDiagBox_R2 - PDiagBox_R1)	; run count per row
+; 	STA Graphics_Buffer+2,X
+; 	STA <Temp_Var1		 ; -> Temp_Var1
 
-	LDY <EndText_CPos	 ; Y = current dialog box row
-	LDA PDiagBox_RowOffs,Y
-	TAY		 	; Y = offset to this row index
+; 	LDY <EndText_CPos	 ; Y = current dialog box row
+; 	LDA PDiagBox_RowOffs,Y
+; 	TAY		 	; Y = offset to this row index
 
-PRG024_BA94:
-	; Store next pattern in dialog box
-	LDA PDiagBox_R1,Y
-	STA Graphics_Buffer+3,X
+; PRG024_BA94:
+; 	; Store next pattern in dialog box
+; 	LDA PDiagBox_R1,Y
+; 	STA Graphics_Buffer+3,X
 
-	INY		 ; Y++ (next pattern for dialog box)
-	INX		 ; X++ (next index in graphics buffer)
+; 	INY		 ; Y++ (next pattern for dialog box)
+; 	INX		 ; X++ (next index in graphics buffer)
 
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BNE PRG024_BA94	 ; While Temp_Var1 > 0, loop!
+; 	DEC <Temp_Var1	 ; Temp_Var1--
+; 	BNE PRG024_BA94	 ; While Temp_Var1 > 0, loop!
 
-	; Insert terminator
-	LDA #$00
-	STA Graphics_Buffer+3,X
+; 	; Insert terminator
+; 	LDA #$00
+; 	STA Graphics_Buffer+3,X
 
-	; X += 3
-	INX
-	INX
-	INX
-	STX Graphics_BufCnt
+; 	; X += 3
+; 	INX
+; 	INX
+; 	INX
+; 	STX Graphics_BufCnt
 
-	INC <EndText_CPos	 ; Next row
+; 	INC <EndText_CPos	 ; Next row
 
-	LDA <EndText_CPos
-	CMP #(PDiagBox_RowOffs_End - PDiagBox_RowOffs)
-	BLT PRG024_BAC8	 ; If rows to go, jump to PRG024_BAC8 (RTS)
+; 	LDA <EndText_CPos
+; 	CMP #(PDiagBox_RowOffs_End - PDiagBox_RowOffs)
+; 	BLT PRG024_BAC8	 ; If rows to go, jump to PRG024_BAC8 (RTS)
 
-	LDY #$00	 ; Y = 0
+; 	LDY #$00	 ; Y = 0
 
-	; This basically just amounts to a zero; kind of strange?
-	LDA PRG024_BB23,Y
-	STA <EndText_CPos
+; 	; This basically just amounts to a zero; kind of strange?
+; 	LDA PRG024_BB23,Y
+; 	STA <EndText_CPos
 
-	; EndText_VH = $92
-	LDA #$29
-	STA <EndText_VH
+; 	; EndText_VH = $92
+; 	LDA #$29
+; 	STA <EndText_VH
 
-	; EndText_VL = $69
-	LDA #$69
-	STA <EndText_VL
+; 	; EndText_VL = $69
+; 	LDA #$69
+; 	STA <EndText_VL
 
-	; EndText_Timer = $10
-	LDA #$10
-	STA <EndText_Timer
+; 	; EndText_Timer = $10
+; 	LDA #$10
+; 	STA <EndText_Timer
 
-	INC <EndText_State	 ; EndText_State = 1
+; 	INC <EndText_State	 ; EndText_State = 1
 
-PRG024_BAC8:
-	RTS		 ; Return
+; PRG024_BAC8:
+; 	RTS		 ; Return
 
-	; English: "Thank you. But" / "our Princess is" / "in another" / "castle!...Just" / "kidding! Ha ha" / "ha! Bye bye."
-EndText:
+; 	; English: "Thank you. But" / "our Princess is" / "in another" / "castle!...Just" / "kidding! Ha ha" / "ha! Bye bye."
+; EndText:
 
-	;       T    h    a    n    k         y    o    u    .         B    u    t
-	.byte $C3, $D7, $D0, $DD, $DA, $FE, $8C, $DE, $CE, $E9, $FE, $B1, $CE, $CD, $FE
+; 	;       T    h    a    n    k         y    o    u    .         B    u    t
+; 	.byte $C3, $D7, $D0, $DD, $DA, $FE, $8C, $DE, $CE, $E9, $FE, $B1, $CE, $CD, $FE
 
-	;       o    u    r         P    r    i    n    c    e    s    s         i    s    
-	.byte $DE, $CE, $CB, $FE, $BF, $CB, $D8, $DD, $D2, $D4, $CC, $CC, $FE, $D8, $CC
+; 	;       o    u    r         P    r    i    n    c    e    s    s         i    s    
+; 	.byte $DE, $CE, $CB, $FE, $BF, $CB, $D8, $DD, $D2, $D4, $CC, $CC, $FE, $D8, $CC
 
-	;       i    n         a    n    o    t    h    e    r    
-	.byte $D8, $DD, $FE, $D0, $DD, $DE, $CD, $D7, $D4, $CB, $FE, $FE, $FE, $FE, $FE
+; 	;       i    n         a    n    o    t    h    e    r    
+; 	.byte $D8, $DD, $FE, $D0, $DD, $DE, $CD, $D7, $D4, $CB, $FE, $FE, $FE, $FE, $FE
 
-	;       c    a    s    t    l    e    !    .    .    .    J    u    s    t
-	.byte $D2, $D0, $CC, $CD, $DB, $D4, $EA, $E9, $E9, $E9, $B9, $CE, $CC, $CD, $FE
+; 	;       c    a    s    t    l    e    !    .    .    .    J    u    s    t
+; 	.byte $D2, $D0, $CC, $CD, $DB, $D4, $EA, $E9, $E9, $E9, $B9, $CE, $CC, $CD, $FE
 
-	;       k    i    d    d    i    n    g    !         H    a         h    a    
-	.byte $DA, $D8, $D3, $D3, $D8, $DD, $D6, $EA, $FE, $B7, $D0, $FE, $D7, $D0, $FE
+; 	;       k    i    d    d    i    n    g    !         H    a         h    a    
+; 	.byte $DA, $D8, $D3, $D3, $D8, $DD, $D6, $EA, $FE, $B7, $D0, $FE, $D7, $D0, $FE
 
-	;       h    a    !         B    y    e         b    y    e    .
-	.byte $D7, $D0, $EA, $FE, $B1, $8C, $D4, $FE, $D1, $8C, $D4, $E9, $FE, $FE, $FE
+; 	;       h    a    !         B    y    e         b    y    e    .
+; 	.byte $D7, $D0, $EA, $FE, $B1, $8C, $D4, $FE, $D1, $8C, $D4, $E9, $FE, $FE, $FE
 
-PRG024_BB23:
-	; Terminator
-	.byte $00
+; PRG024_BB23:
+; 	; Terminator
+; 	.byte $00
 
-EndText_DoPrincessText:
-	LDA <EndText_Timer
-	BNE PRG024_BB70	 ; If the timer is not expired, jump to PRG024_BB70 (RTS)
+; EndText_DoPrincessText:
+; 	LDA <EndText_Timer
+; 	BNE PRG024_BB70	 ; If the timer is not expired, jump to PRG024_BB70 (RTS)
 
-	LDX Graphics_BufCnt	 ; X = current graphics buffer count
+; 	LDX Graphics_BufCnt	 ; X = current graphics buffer count
 
-	LDY <EndText_CPos	 ; Y = dialog message character position
+; 	LDY <EndText_CPos	 ; Y = dialog message character position
 
-	; Insert one character into graphics buffer
-	LDA <EndText_VH
-	STA Graphics_Buffer,X	; address high
-	LDA #$01	 
-	STA Graphics_Buffer+2,X	; run length
-	LDA EndText,Y
-	STA Graphics_Buffer+3,X	 ; Next character from Princess speech
-	LDA #$00
-	STA Graphics_Buffer+4,X	; terminator
+; 	; Insert one character into graphics buffer
+; 	LDA <EndText_VH
+; 	STA Graphics_Buffer,X	; address high
+; 	LDA #$01	 
+; 	STA Graphics_Buffer+2,X	; run length
+; 	LDA EndText,Y
+; 	STA Graphics_Buffer+3,X	 ; Next character from Princess speech
+; 	LDA #$00
+; 	STA Graphics_Buffer+4,X	; terminator
 
-	; Update Graphics_BufCnt
-	TXA
-	ADD #$04
-	STA Graphics_BufCnt
+; 	; Update Graphics_BufCnt
+; 	TXA
+; 	ADD #$04
+; 	STA Graphics_BufCnt
 
-	; VRAM low address
-	LDA <EndText_VL
-	STA Graphics_Buffer+1,X
+; 	; VRAM low address
+; 	LDA <EndText_VL
+; 	STA Graphics_Buffer+1,X
 
-	INC <EndText_CPos	; Next character in message
-	INC <EndText_VL	 	; Next VRAM byte
+; 	INC <EndText_CPos	; Next character in message
+; 	INC <EndText_VL	 	; Next VRAM byte
 
-	AND #$1f	 	; Get current column
-	CMP #$17
-	BNE PRG024_BB6C	 	; If we're not in column 23, jump to PRG024_BB6C
+; 	AND #$1f	 	; Get current column
+; 	CMP #$17
+; 	BNE PRG024_BB6C	 	; If we're not in column 23, jump to PRG024_BB6C
 
-	; Line break!
+; 	; Line break!
 
-	LDA <EndText_VL	
-	ADC #$10		; Add enough bytes to get to next row
-	STA <EndText_VL	
-	BCC PRG024_BB62
-	INC <EndText_VH		; Apply carry
-PRG024_BB62:
+; 	LDA <EndText_VL	
+; 	ADC #$10		; Add enough bytes to get to next row
+; 	STA <EndText_VL	
+; 	BCC PRG024_BB62
+; 	INC <EndText_VH		; Apply carry
+; PRG024_BB62:
 
-	CMP #$29
-	BNE PRG024_BB6C	 ; If we haven't reached the last character, jump to PRG024_BB6C
+; 	CMP #$29
+; 	BNE PRG024_BB6C	 ; If we haven't reached the last character, jump to PRG024_BB6C
 
-	INC <EndText_State	 ; EndText_State = 2
+; 	INC <EndText_State	 ; EndText_State = 2
 
-	; Second ending timer = $4A
-	LDA #$4a
-	STA <Ending_Timer+1
+; 	; Second ending timer = $4A
+; 	LDA #$4a
+; 	STA <Ending_Timer+1
 
-PRG024_BB6C:
+; PRG024_BB6C:
 
-	; First ending timer = $0B
-	LDA #$0b
-	STA <Ending_Timer
+; 	; First ending timer = $0B
+; 	LDA #$0b
+; 	STA <Ending_Timer
 
-PRG024_BB70:
-	RTS		 ; Return
+; PRG024_BB70:
+; 	RTS		 ; Return
 
 
-EndText_Wait:
-	LDA <Ending_Timer+1
-	BNE PRG024_BB7B	 ; If second ending timer has not expired, jump to PRG024_BB7B (RTS)
+; EndText_Wait:
+; 	LDA <Ending_Timer+1
+; 	BNE PRG024_BB7B	 ; If second ending timer has not expired, jump to PRG024_BB7B (RTS)
 
-	; First ending timer = $0F
-	LDA #$0f
-	STA <Ending_Timer
+; 	; First ending timer = $0F
+; 	LDA #$0f
+; 	STA <Ending_Timer
 
-	INC <Ending_State	 ; Ending_State = 6
+; 	INC <Ending_State	 ; Ending_State = 6
 
-PRG024_BB7B:
-	RTS		 ; Return
+; PRG024_BB7B:
+; 	RTS		 ; Return
 
-Ending_Credits:
-	; Debug menu credits jump here
+; Ending_Credits:
+; 	; Debug menu credits jump here
 
-	; Curtain and floor top
-	LDA #$7c
-	STA PatTable_BankSel
+; 	; Curtain and floor top
+; 	LDA #$7c
+; 	STA PatTable_BankSel
 
-	; Rest of floor
-	LDA #$76
-	STA PatTable_BankSel+1
+; 	; Rest of floor
+; 	LDA #$76
+; 	STA PatTable_BankSel+1
 
-	; Disable display
-	LDA #$00
-	STA PPU_CTL2
+; 	; Disable display
+; 	LDA #$00
+; 	STA PPU_CTL2
 
-	; Clear everything
-	JSR Sprite_RAM_Clear
-	JSR Reset_PPU_Clear_Nametables
+; 	; Clear everything
+; 	JSR Sprite_RAM_Clear
+; 	JSR Reset_PPU_Clear_Nametables
 
-	; Stop Update_Select activity temporarily
-	LDA #$01
-	STA UpdSel_Disable
+; 	; Stop Update_Select activity temporarily
+; 	LDA #$01
+; 	STA UpdSel_Disable
 
-	; Raster_Effect = $20 (Title/Ending style)
-	LDA #$20
-	STA Raster_Effect
+; 	; Raster_Effect = $20 (Title/Ending style)
+; 	LDA #$20
+; 	STA Raster_Effect
 
-	; Clears a lot of page 0 RAM
-	LDX #$f4	 ; X = $F4
-PRG024_BB9D:
-	LDA #$00
-	STA <Temp_Var1,X
+; 	; Clears a lot of page 0 RAM
+; 	LDX #$f4	 ; X = $F4
+; PRG024_BB9D:
+; 	LDA #$00
+; 	STA <Temp_Var1,X
 
-PRG024_BBA1:
-	DEX		 ; X--
+; PRG024_BBA1:
+; 	DEX		 ; X--
 
-	; Range between $6B-$75 is not cleared ... mainly protecting sound engine I think
+; 	; Range between $6B-$75 is not cleared ... mainly protecting sound engine I think
 
-	CPX #Music_Base_L
-	BLT PRG024_BBAA	 ; If X < Music_Base_L, jump to PRG024_BBAA
+; 	CPX #Music_Base_L
+; 	BLT PRG024_BBAA	 ; If X < Music_Base_L, jump to PRG024_BBAA
 
-	CPX #World_Map_Y
-	BLT PRG024_BBA1	 ; If X < World_Map_Y, jump to PRG024_BBA1
+; 	CPX #World_Map_Y
+; 	BLT PRG024_BBA1	 ; If X < World_Map_Y, jump to PRG024_BBA1
 
-PRG024_BBAA:
-	CPX #-1
-	BNE PRG024_BB9D	 ; While X >= 0, loop!
+; PRG024_BBAA:
+; 	CPX #-1
+; 	BNE PRG024_BB9D	 ; While X >= 0, loop!
 
-	; This clears some of the title screen area memory
-	LDX #$15	 ; X = $15
-PRG024_BBB0:
-	LDA #$00
-	STA Title_MLAccelCnt,X
+; 	; This clears some of the title screen area memory
+; 	LDX #$15	 ; X = $15
+; PRG024_BBB0:
+; 	LDA #$00
+; 	STA Title_MLAccelCnt,X
 
-	DEX		 ; X--
-	BPL PRG024_BBB0	 ; While X >= 0, loop
+; 	DEX		 ; X--
+; 	BPL PRG024_BBB0	 ; While X >= 0, loop
 
-	;JSR Title_Display_Curtain	; Put up the curtain!
+; 	;JSR Title_Display_Curtain	; Put up the curtain!
 
-	; Push in the Checkerboard floor
-	LDA #$23
-	ASL A
-	TAY
-	;LDA Video_Upd_Table2,Y
-	;STA <Video_Upd_AddrL
-	;LDA Video_Upd_Table2+1,Y
-	;STA <Video_Upd_AddrH
-	;JSR Video_Misc_Updates2
+; 	; Push in the Checkerboard floor
+; 	LDA #$23
+; 	ASL A
+; 	TAY
+; 	;LDA Video_Upd_Table2,Y
+; 	;STA <Video_Upd_AddrL
+; 	;LDA Video_Upd_Table2+1,Y
+; 	;STA <Video_Upd_AddrH
+; 	;JSR Video_Misc_Updates2
 
-	; Set scroll at lowest point (technically, curtain fully raised)
-	LDA #$ef
-	STA <Vert_Scroll
+; 	; Set scroll at lowest point (technically, curtain fully raised)
+; 	LDA #$ef
+; 	STA <Vert_Scroll
 
-	; Clip sprites/BG, show sprites/BG, and enable intensity
-	LDA #%00011110
-	STA <PPU_CTL2_Copy
+; 	; Clip sprites/BG, show sprites/BG, and enable intensity
+; 	LDA #%00011110
+; 	STA <PPU_CTL2_Copy
 
-	; Resume Update_Select activity
-	LDA #$00
-	STA UpdSel_Disable
+; 	; Resume Update_Select activity
+; 	LDA #$00
+; 	STA UpdSel_Disable
 
-	; Curtain extension
-	LDA #$24
-	;STA Graphics_Queue
+; 	; Curtain extension
+; 	LDA #$24
+; 	;STA Graphics_Queue
 
-	;JSR GraphicsBuf_Prep_And_WaitVSyn2
+; 	;JSR GraphicsBuf_Prep_And_WaitVSyn2
 
 
-	; This will push graphics command sets $5C, $5D, and $5E
+; 	; This will push graphics command sets $5C, $5D, and $5E
 
-	; Title_EventGrafX = $5C
-	LDA #$5c
-	STA <Title_EventGrafX 
+; 	; Title_EventGrafX = $5C
+; 	LDA #$5c
+; 	STA <Title_EventGrafX 
 
-	; Title_Ticker = 5
-	LDA #$05
-	STA <Title_Ticker
-PRG024_BBE9:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	; Push out graphics or just VSync
+; 	; Title_Ticker = 5
+; 	LDA #$05
+; 	STA <Title_Ticker
+; PRG024_BBE9:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	; Push out graphics or just VSync
 
-	DEC <Title_Ticker
-	BPL PRG024_BBE9	; If Title_Ticker >= 0, loop!
+; 	DEC <Title_Ticker
+; 	BPL PRG024_BBE9	; If Title_Ticker >= 0, loop!
 
-	; Title_Ticker = 3
-	LDA #$03
-	STA <Title_Ticker
+; 	; Title_Ticker = 3
+; 	LDA #$03
+; 	STA <Title_Ticker
 
-	; Queue next event
-	LDA <Title_EventGrafX
-	STA Graphics_Queue
+; 	; Queue next event
+; 	LDA <Title_EventGrafX
+; 	STA Graphics_Queue
 
-	INC <Title_EventGrafX	 ; Title_EventGrafX++
+; 	INC <Title_EventGrafX	 ; Title_EventGrafX++
 
-	LDA <Title_EventGrafX
-	CMP #$5f
-	BNE PRG024_BBE9	 ; While Title_EventGrafX <> $5F, loop!
+; 	LDA <Title_EventGrafX
+; 	CMP #$5f
+; 	BNE PRG024_BBE9	 ; While Title_EventGrafX <> $5F, loop!
 
-	; Ending2_TimerH = $F
-	LDA #$0f
-	STA <Ending2_TimerH
+; 	; Ending2_TimerH = $F
+; 	LDA #$0f
+; 	STA <Ending2_TimerH
 
-	; Ending2_TimerL = $16
-	LDA #$16
-	STA <Ending2_TimerL
+; 	; Ending2_TimerL = $16
+; 	LDA #$16
+; 	STA <Ending2_TimerL
 
-	; Commit the dynamic graphics buffer
-	LDA #$00
-	STA <Title_EventGrafX
+; 	; Commit the dynamic graphics buffer
+; 	LDA #$00
+; 	STA <Title_EventGrafX
 
-PRG024_BC0D:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2
+; PRG024_BC0D:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2
 
-	LDA <Title_EventGrafX
-	BNE PRG024_BC21	 ; If Title_EventGrafX <> 0 (curtain at the bottom), jump to PRG024_BC21
+; 	LDA <Title_EventGrafX
+; 	BNE PRG024_BC21	 ; If Title_EventGrafX <> 0 (curtain at the bottom), jump to PRG024_BC21
 
-	; Lowering curtain
-	LDA <Vert_Scroll
-	SUB #$01
-	STA <Vert_Scroll
+; 	; Lowering curtain
+; 	LDA <Vert_Scroll
+; 	SUB #$01
+; 	STA <Vert_Scroll
 
-	CMP #$3f
-	BNE PRG024_BC21	 ; If Vert_Scroll <> $3F (curtain all the way down), jump to PRG024_BC21
+; 	CMP #$3f
+; 	BNE PRG024_BC21	 ; If Vert_Scroll <> $3F (curtain all the way down), jump to PRG024_BC21
 
-	INC <Title_EventGrafX		 ; Title_EventGrafX = 1 (flags curtain at the bottom)
+; 	INC <Title_EventGrafX		 ; Title_EventGrafX = 1 (flags curtain at the bottom)
 
-PRG024_BC21:
+; PRG024_BC21:
 
-	; Ending2_TimerL--
-	LDA <Ending2_TimerL
-	SUB #$01
-	STA <Ending2_TimerL
-	BCS PRG024_BC0D	 ; If Ending2_TimerL didn't underflow, loop
+; 	; Ending2_TimerL--
+; 	LDA <Ending2_TimerL
+; 	SUB #$01
+; 	STA <Ending2_TimerL
+; 	BCS PRG024_BC0D	 ; If Ending2_TimerL didn't underflow, loop
 
-	; Ending2_TimerL = $16
-	LDA #$16
-	STA <Ending2_TimerL
+; 	; Ending2_TimerL = $16
+; 	LDA #$16
+; 	STA <Ending2_TimerL
 
-	DEC <Ending2_TimerH	 ; Ending2_TimerH--
-	BPL PRG024_BC0D	 ; While Ending2_TimerH >= 0, loop
+; 	DEC <Ending2_TimerH	 ; Ending2_TimerH--
+; 	BPL PRG024_BC0D	 ; While Ending2_TimerH >= 0, loop
 
-PRG024_BC32:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; Probably mainly for VSync
+; PRG024_BC32:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; Probably mainly for VSync
 
-	JSR Ending2_DoEndPic	 ; Update and draw end picture per world
+; 	JSR Ending2_DoEndPic	 ; Update and draw end picture per world
 
-	LDA <Ending2_CurWorld
-	CMP #$08
-	BNE PRG024_BC32	 ; While Ending2_CurWorld <> 8, loop!
+; 	LDA <Ending2_CurWorld
+; 	CMP #$08
+; 	BNE PRG024_BC32	 ; While Ending2_CurWorld <> 8, loop!
 
-	; Ending2_CurWorld = 0
-	LDA #$00
-	STA <Ending2_CurWorld
+; 	; Ending2_CurWorld = 0
+; 	LDA #$00
+; 	STA <Ending2_CurWorld
 
-	LDY #$44	 ; Y = $44 (all sprites used in ending)
-PRG024_BC44:
+; 	LDY #$44	 ; Y = $44 (all sprites used in ending)
+; PRG024_BC44:
 
-	; Clear this sprite
-	LDA #$f8
-	STA Sprite_RAM,Y
+; 	; Clear this sprite
+; 	LDA #$f8
+; 	STA Sprite_RAM,Y
 
-	; Y -= 4 (previous sprite)
-	DEY
-	DEY
-	DEY
-	DEY
+; 	; Y -= 4 (previous sprite)
+; 	DEY
+; 	DEY
+; 	DEY
+; 	DEY
 
-	BPL PRG024_BC44	 ; While Y >= 0, loop
+; 	BPL PRG024_BC44	 ; While Y >= 0, loop
 
-PRG024_BC4F:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync 
+; PRG024_BC4F:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync 
 
-	DEC <Vert_Scroll ; Vert_Scroll-- (lowering curtain for finale)
+; 	DEC <Vert_Scroll ; Vert_Scroll-- (lowering curtain for finale)
 
-	LDA <Vert_Scroll
-	CMP #$3f
-	BNE PRG024_BC4F	 ; While curtain not completely lowered, loop!
+; 	LDA <Vert_Scroll
+; 	CMP #$3f
+; 	BNE PRG024_BC4F	 ; While curtain not completely lowered, loop!
 
-	; Title_Ticker = $55
-	LDA #$55
-	STA <Title_Ticker
+; 	; Title_Ticker = $55
+; 	LDA #$55
+; 	STA <Title_Ticker
 
-PRG024_BC5E:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; Vsync
+; PRG024_BC5E:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; Vsync
 
-	DEC <Title_Ticker	 ; Title_Ticker--
-	BPL PRG024_BC5E		; While Title_Ticker >= 0, loop
+; 	DEC <Title_Ticker	 ; Title_Ticker--
+; 	BPL PRG024_BC5E		; While Title_Ticker >= 0, loop
 
-	; Load graphics for "THE END"
-	LDA #$1b
-	STA PatTable_BankSel+5
+; 	; Load graphics for "THE END"
+; 	LDA #$1b
+; 	STA PatTable_BankSel+5
 
-	; Copy in sprite bytes to form THE END
-	LDY #(Ending2_THEEND_End - Ending2_THEEND - 1)
-PRG024_BC6C:
-	LDA Ending2_THEEND,Y
-	STA Sprite_RAM,Y
+; 	; Copy in sprite bytes to form THE END
+; 	LDY #(Ending2_THEEND_End - Ending2_THEEND - 1)
+; PRG024_BC6C:
+; 	LDA Ending2_THEEND,Y
+; 	STA Sprite_RAM,Y
 
-	DEY		 ; Y--
-	BPL PRG024_BC6C	 ; While Y >= 0, loop
+; 	DEY		 ; Y--
+; 	BPL PRG024_BC6C	 ; While Y >= 0, loop
 
-	; Title_Ticker = 3
-	LDA #$03
-	STA <Title_Ticker
+; 	; Title_Ticker = 3
+; 	LDA #$03
+; 	STA <Title_Ticker
 
-	; Title_EventGrafX = 3 (going to cycle through all palettes for THE END to fade in)
-	LDA #$03
-	STA <Title_EventGrafX
+; 	; Title_EventGrafX = 3 (going to cycle through all palettes for THE END to fade in)
+; 	LDA #$03
+; 	STA <Title_EventGrafX
 
-	; Graphics_Queue = $5B
-	LDA #$5b
-	STA Graphics_Queue
+; 	; Graphics_Queue = $5B
+; 	LDA #$5b
+; 	STA Graphics_Queue
 
-PRG024_BC82:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync
+; PRG024_BC82:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync
 
-	DEC <Title_Ticker ; Title_Ticker--
-	BNE PRG024_BC82	 ; While Title_Ticker <> 0, loop
+; 	DEC <Title_Ticker ; Title_Ticker--
+; 	BNE PRG024_BC82	 ; While Title_Ticker <> 0, loop
 
-	DEC <Title_EventGrafX	 ; Title_EventGrafX--
-	BMI PRG024_BCAE		; If Title_EventGrafX < 0, jump to PRG024_BCAE
+; 	DEC <Title_EventGrafX	 ; Title_EventGrafX--
+; 	BMI PRG024_BCAE		; If Title_EventGrafX < 0, jump to PRG024_BCAE
 
-	; Title_Ticker = 3
-	LDA #$03
-	STA <Title_Ticker
+; 	; Title_Ticker = 3
+; 	LDA #$03
+; 	STA <Title_Ticker
 
-	; Set attribute on all THE END sprites
-	LDA <Title_EventGrafX
-	STA Sprite_RAM+$02
-	STA Sprite_RAM+$06
-	STA Sprite_RAM+$0A
-	STA Sprite_RAM+$0E
-	STA Sprite_RAM+$12
-	STA Sprite_RAM+$16
-	STA Sprite_RAM+$1A
-	STA Sprite_RAM+$1E
+; 	; Set attribute on all THE END sprites
+; 	LDA <Title_EventGrafX
+; 	STA Sprite_RAM+$02
+; 	STA Sprite_RAM+$06
+; 	STA Sprite_RAM+$0A
+; 	STA Sprite_RAM+$0E
+; 	STA Sprite_RAM+$12
+; 	STA Sprite_RAM+$16
+; 	STA Sprite_RAM+$1A
+; 	STA Sprite_RAM+$1E
 
-	JMP PRG024_BC82	 ; Jump to PRG024_BC82 (loop)
+; 	JMP PRG024_BC82	 ; Jump to PRG024_BC82 (loop)
 
-PRG024_BCAE:
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync
+; PRG024_BCAE:
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync
 
-	LDA <Pad_Input	
-	AND #PAD_START
-	BEQ PRG024_BCAE	 ; While Player has not pressed START, loop
+; 	LDA <Pad_Input	
+; 	AND #PAD_START
+; 	BEQ PRG024_BCAE	 ; While Player has not pressed START, loop
 
-	; Stop music
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
+; 	; Stop music
+; 	LDA #MUS1_STOPMUSIC
+; 	STA Sound_QMusic1
 
-	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync
+; 	JSR GraphicsBuf_Prep_And_WaitVSyn2	 ; V Sync
 
-	; Disable display
-	LDA #$00
-	STA PPU_CTL2
-	STA PPU_CTL1
+; 	; Disable display
+; 	LDA #$00
+; 	STA PPU_CTL2
+; 	STA PPU_CTL1
 
-	; Map_Unused7992 = 0 (used only in dead code it seems)
-	LDA #$00
-	STA Map_Unused7992
+; 	; Map_Unused7992 = 0 (used only in dead code it seems)
+; 	LDA #$00
+; 	STA Map_Unused7992
 
-	; Temp_Var1 = 0
-	LDY #$00
-	STY <Temp_Var1
+; 	; Temp_Var1 = 0
+; 	LDY #$00
+; 	STY <Temp_Var1
 
-	; Temp_Var2 = $7F
-	LDA #$7f
-	STA <Temp_Var2
+; 	; Temp_Var2 = $7F
+; 	LDA #$7f
+; 	STA <Temp_Var2
 
-	; Clearing RAM $7FFF through $6000
-PRG024_BCD4:
-	LDA #$00
-	STA [Temp_Var1],Y
+; 	; Clearing RAM $7FFF through $6000
+; PRG024_BCD4:
+; 	LDA #$00
+; 	STA [Temp_Var1],Y
 
-	DEY		 ; Y--
-	BNE PRG024_BCD4	 ; While Y <> 0 (come full circle), loop
+; 	DEY		 ; Y--
+; 	BNE PRG024_BCD4	 ; While Y <> 0 (come full circle), loop
 
-	DEC <Temp_Var2	 ; Temp_Var2-- (previous page of RAM)
+; 	DEC <Temp_Var2	 ; Temp_Var2-- (previous page of RAM)
 
-	LDA <Temp_Var2
-	CMP #$5f
-	BNE PRG024_BCD4	 ; While Temp_Var2 <> $5F, loop
+; 	LDA <Temp_Var2
+; 	CMP #$5f
+; 	BNE PRG024_BCD4	 ; While Temp_Var2 <> $5F, loop
 
-PRG024_BD01:
+; PRG024_BD01:
 
 
-	; Clear $07FF - $0000, excluding $01xx
-	LDY #$07
-	JSR Clear_RAM_thru_ZeroPage
+; 	; Clear $07FF - $0000, excluding $01xx
+; 	LDY #$07
+; 	JSR Clear_RAM_thru_ZeroPage
 
-	; Reset_Latch = $5A (magic value that prevents reset vector from being run)
-	LDA #$5a
-	STA Reset_Latch
+; 	; Reset_Latch = $5A (magic value that prevents reset vector from being run)
+; 	LDA #$5a
+; 	STA Reset_Latch
 
-	; N-Spade appears every 80,000 points, but the leading zero is fake, so 8000
+; 	; N-Spade appears every 80,000 points, but the leading zero is fake, so 8000
 
-	; Middle byte of the N-Spade score
-	LDA #HIGH(8000)
+; 	; Middle byte of the N-Spade score
+; 	LDA #HIGH(8000)
 
-	; Lowest byte of the N-Spade score
-	LDA #LOW(8000)
+; 	; Lowest byte of the N-Spade score
+; 	LDA #LOW(8000)
 
-	; If they jumped a little earlier, they could've included the N-Spade score init, strangely
-	JMP PRG030_845A		; Jump to PRG030_845A
+; 	; If they jumped a little earlier, they could've included the N-Spade score init, strangely
+; 	JMP PRG030_845A		; Jump to PRG030_845A
 
-	; THE END sprites
-Ending2_THEEND:
-	.byte $60, $F1, $03, $60
-	.byte $60, $F3, $03, $68
-	.byte $60, $F5, $03, $70
-	.byte $60, $F7, $03, $78
-	.byte $60, $F9, $03, $80
-	.byte $60, $FB, $03, $88
-	.byte $60, $FD, $03, $90
-	.byte $60, $FF, $03, $98
-Ending2_THEEND_End
+; 	; THE END sprites
+; Ending2_THEEND:
+; 	.byte $60, $F1, $03, $60
+; 	.byte $60, $F3, $03, $68
+; 	.byte $60, $F5, $03, $70
+; 	.byte $60, $F7, $03, $78
+; 	.byte $60, $F9, $03, $80
+; 	.byte $60, $FB, $03, $88
+; 	.byte $60, $FD, $03, $90
+; 	.byte $60, $FF, $03, $98
+; Ending2_THEEND_End
 
-Do_Ending2_IntCmd:
-	DEC <Ending2_IntCmd	; Ending2_IntCmd-- (because it is zero based, and zero is "Do nothing")
-	LDA <Ending2_IntCmd
-	JSR DynJump
+; Do_Ending2_IntCmd:
+; 	DEC <Ending2_IntCmd	; Ending2_IntCmd-- (because it is zero based, and zero is "Do nothing")
+; 	LDA <Ending2_IntCmd
+; 	JSR DynJump
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word Ending2_ClearScreen
-	.word Ending2_CommitPicture
+; 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+; 	.word Ending2_ClearScreen
+; 	.word Ending2_CommitPicture
  
-Ending2_DoEndPic:
-	; Ending2_IntCmd = 0 (disable interrupt routine command)
-	LDA #$00
-	STA <Ending2_IntCmd
+; Ending2_DoEndPic:
+; 	; Ending2_IntCmd = 0 (disable interrupt routine command)
+; 	LDA #$00
+; 	STA <Ending2_IntCmd
 
-	LDA <Ending2_PicState
-	JSR DynJump
+; 	LDA <Ending2_PicState
+; 	JSR DynJump
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word Ending2_CurtainRaise	; 0: Raise the curtain back up
-	.word Ending2_PrepClear		; 1: Prepare for screen clear
-	.word Ending2_SetFlag1		; 2: Sets Ending2_IntCmd = 1 and waits for interrupt context (which will call Do_Ending2_IntCmd)
-	.word Ending2_PrepEndPic	; 3: Load up the Ending_CmdBuffer, set starting VRAM address for world end picture
-	.word Ending2_SetFlag2		; 4: Sets Ending2_IntCmd = 2 and waits for interrupt context (which will call Do_Ending2_IntCmd)
-	.word Ending2_SeriesQueue	; 5: Queue a series of Graphics_Command (Ending2_QueueCmd++ until Ending2_QCmdEnd)
-	.word Ending2_AddSprites	; 6: Add sprites that are part of the end picture
-	.word Ending2_FadeIn		; 7: Fade in the palette
-	.word Ending2_Wait		; 8: Wait on current world picture
-	.word Ending2_FadeOut		; 9: Fade out the palette
-
-Ending2_CurtainRaise:
-	LDY #$01	; Y = 1 (two stabs at curtain being fully raised)
-PRG024_BD62:
-	INC <Vert_Scroll ; Vert_Scroll++ (raising the curtain)
+; 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+; 	.word Ending2_CurtainRaise	; 0: Raise the curtain back up
+; 	.word Ending2_PrepClear		; 1: Prepare for screen clear
+; 	.word Ending2_SetFlag1		; 2: Sets Ending2_IntCmd = 1 and waits for interrupt context (which will call Do_Ending2_IntCmd)
+; 	.word Ending2_PrepEndPic	; 3: Load up the Ending_CmdBuffer, set starting VRAM address for world end picture
+; 	.word Ending2_SetFlag2		; 4: Sets Ending2_IntCmd = 2 and waits for interrupt context (which will call Do_Ending2_IntCmd)
+; 	.word Ending2_SeriesQueue	; 5: Queue a series of Graphics_Command (Ending2_QueueCmd++ until Ending2_QCmdEnd)
+; 	.word Ending2_AddSprites	; 6: Add sprites that are part of the end picture
+; 	.word Ending2_FadeIn		; 7: Fade in the palette
+; 	.word Ending2_Wait		; 8: Wait on current world picture
+; 	.word Ending2_FadeOut		; 9: Fade out the palette
+
+; Ending2_CurtainRaise:
+; 	LDY #$01	; Y = 1 (two stabs at curtain being fully raised)
+; PRG024_BD62:
+; 	INC <Vert_Scroll ; Vert_Scroll++ (raising the curtain)
 
-	LDA <Vert_Scroll
-	CMP #$ef
-	BEQ PRG024_BD6E	 ; If curtain is fully raised, jump to PRG024_BD6E
+; 	LDA <Vert_Scroll
+; 	CMP #$ef
+; 	BEQ PRG024_BD6E	 ; If curtain is fully raised, jump to PRG024_BD6E
 
-	DEY		 ; Y--
-	BPL PRG024_BD62	 ; While Y >= 0, loop
+; 	DEY		 ; Y--
+; 	BPL PRG024_BD62	 ; While Y >= 0, loop
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-PRG024_BD6E:
-	INC <Ending2_PicState		 ; Ending2_PicState = 1
-	RTS		 ; Return
+; PRG024_BD6E:
+; 	INC <Ending2_PicState		 ; Ending2_PicState = 1
+; 	RTS		 ; Return
 
-Ending2_PrepClear:
-	; Set Ending2_PicVRAMH/L
-	LDA #$28
-	STA <Ending2_PicVRAMH
-	LDA #$60
-	STA <Ending2_PicVRAML
+; Ending2_PrepClear:
+; 	; Set Ending2_PicVRAMH/L
+; 	LDA #$28
+; 	STA <Ending2_PicVRAMH
+; 	LDA #$60
+; 	STA <Ending2_PicVRAML
 
-	; Ending2_ClearLen = $14
-	LDA #$14
-	STA <Ending2_ClearLen
+; 	; Ending2_ClearLen = $14
+; 	LDA #$14
+; 	STA <Ending2_ClearLen
 
-	; Ending2_ClearPat = $5C
-	LDA #$5c
-	STA <Ending2_ClearPat
+; 	; Ending2_ClearPat = $5C
+; 	LDA #$5c
+; 	STA <Ending2_ClearPat
 
-	INC <Ending2_PicState	; Ending2_PicState = 2
+; 	INC <Ending2_PicState	; Ending2_PicState = 2
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-Ending2_SetFlag1:
-	; Ending2_IntCmd = 1
-	LDA #$01
-	STA <Ending2_IntCmd
+; Ending2_SetFlag1:
+; 	; Ending2_IntCmd = 1
+; 	LDA #$01
+; 	STA <Ending2_IntCmd
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
 
-Ending2_ClearScreen:
-	LDA <Ending2_PicVRAMH
-	CMP #$2b
-	BEQ PRG024_BDBB	 ; If Ending2_PicVRAMH = $2b, jump to Ending2_PicVRAMH
+; Ending2_ClearScreen:
+; 	LDA <Ending2_PicVRAMH
+; 	CMP #$2b
+; 	BEQ PRG024_BDBB	 ; If Ending2_PicVRAMH = $2b, jump to Ending2_PicVRAMH
 
-	LDA PPU_STAT
+; 	LDA PPU_STAT
 
-	; Set VRAM Address to Ending2_PicVRAMH/L
-	LDA <Ending2_PicVRAMH
-	STA PPU_VRAM_ADDR
-	LDA <Ending2_PicVRAML
-	STA PPU_VRAM_ADDR
+; 	; Set VRAM Address to Ending2_PicVRAMH/L
+; 	LDA <Ending2_PicVRAMH
+; 	STA PPU_VRAM_ADDR
+; 	LDA <Ending2_PicVRAML
+; 	STA PPU_VRAM_ADDR
 
-	LDY #$1f	 ; Y = $1F
-	LDA <Ending2_ClearPat	; Get the clearing pattern
-PRG024_BDA0:
-	STA PPU_VRAM_DATA	; Store pattern
+; 	LDY #$1f	 ; Y = $1F
+; 	LDA <Ending2_ClearPat	; Get the clearing pattern
+; PRG024_BDA0:
+; 	STA PPU_VRAM_DATA	; Store pattern
 
-	DEY		 ; Y--
-	BPL PRG024_BDA0	 ; While Y >= 0, loop
+; 	DEY		 ; Y--
+; 	BPL PRG024_BDA0	 ; While Y >= 0, loop
 
-	DEC <Ending2_ClearLen	; Ending2_ClearLen--
-	BPL PRG024_BDB7		; If Ending2_ClearLen >= 0, jump to PRG024_BDB7
+; 	DEC <Ending2_ClearLen	; Ending2_ClearLen--
+; 	BPL PRG024_BDB7		; If Ending2_ClearLen >= 0, jump to PRG024_BDB7
 
-	; Set Ending2_PicVRAMH 
-	LDA #$2b
-	STA <Ending2_PicVRAMH
-	LDA #$c8
-	STA <Ending2_PicVRAML
+; 	; Set Ending2_PicVRAMH 
+; 	LDA #$2b
+; 	STA <Ending2_PicVRAMH
+; 	LDA #$c8
+; 	STA <Ending2_PicVRAML
 
-	; Ending2_ClearLen = 4
-	LDA #$04
-	STA <Ending2_ClearLen
+; 	; Ending2_ClearLen = 4
+; 	LDA #$04
+; 	STA <Ending2_ClearLen
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-PRG024_BDB7:
-	JSR Ending2_PicVRAM_NextLineWrap
+; PRG024_BDB7:
+; 	JSR Ending2_PicVRAM_NextLineWrap
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-PRG024_BDBB:
-	LDA PPU_STAT
+; PRG024_BDBB:
+; 	LDA PPU_STAT
 
-	; Set VRAM Address to Ending2_PicVRAMH/L
-	LDA <Ending2_PicVRAMH
-	STA PPU_VRAM_ADDR
-	LDA <Ending2_PicVRAML
-	STA PPU_VRAM_ADDR
+; 	; Set VRAM Address to Ending2_PicVRAMH/L
+; 	LDA <Ending2_PicVRAMH
+; 	STA PPU_VRAM_ADDR
+; 	LDA <Ending2_PicVRAML
+; 	STA PPU_VRAM_ADDR
 
-	LDY #$07	 ; Y = $07
-	LDA #$aa	 ; Pattern $AA
-PRG024_BDCC:
-	STA PPU_VRAM_DATA	; Store pattern
+; 	LDY #$07	 ; Y = $07
+; 	LDA #$aa	 ; Pattern $AA
+; PRG024_BDCC:
+; 	STA PPU_VRAM_DATA	; Store pattern
 
-	DEY		 ; Y--
-	BPL PRG024_BDCC	 ; While Y >= 0, loop
+; 	DEY		 ; Y--
+; 	BPL PRG024_BDCC	 ; While Y >= 0, loop
 
-	DEC <Ending2_ClearLen	; Ending2_ClearLen----
-	BPL PRG024_BDD8	 	; If Ending2_ClearLen >= 0, jump to PRG024_BDD8
+; 	DEC <Ending2_ClearLen	; Ending2_ClearLen----
+; 	BPL PRG024_BDD8	 	; If Ending2_ClearLen >= 0, jump to PRG024_BDD8
 
-	INC <Ending2_PicState	; Ending2_PicState++
+; 	INC <Ending2_PicState	; Ending2_PicState++
 
-PRG024_BDD8:
+; PRG024_BDD8:
 
-	; Ending2_PicVRAML += 8
-	LDA <Ending2_PicVRAML
-	ADD #$08
-	STA <Ending2_PicVRAML
+; 	; Ending2_PicVRAML += 8
+; 	LDA <Ending2_PicVRAML
+; 	ADD #$08
+; 	STA <Ending2_PicVRAML
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-Ending2_PrepEndPic:
-	LDY <Ending2_CurWorld	; Y = current world we're depicting
+; Ending2_PrepEndPic:
+; 	LDY <Ending2_CurWorld	; Y = current world we're depicting
 
-	; Temp_Var2/1 hold the address to the end world picture
-	LDA EndPicByWorld_H,Y
-	STA <Temp_Var2
-	LDA EndPicByWorld_L,Y
-	STA <Temp_Var1
+; 	; Temp_Var2/1 hold the address to the end world picture
+; 	LDA EndPicByWorld_H,Y
+; 	STA <Temp_Var2
+; 	LDA EndPicByWorld_L,Y
+; 	STA <Temp_Var1
 
-	LDY #$00	 ; Y = 0 (EndPic command index)
-	LDX #$00	 ; X = 0 (Ending_CmdBuffer index)
-PRG024_BDF0:
-	; Next command byte -> Temp_Var16
-	LDA [Temp_Var1],Y
-	STA <Temp_Var16	
+; 	LDY #$00	 ; Y = 0 (EndPic command index)
+; 	LDX #$00	 ; X = 0 (Ending_CmdBuffer index)
+; PRG024_BDF0:
+; 	; Next command byte -> Temp_Var16
+; 	LDA [Temp_Var1],Y
+; 	STA <Temp_Var16	
 
-	AND #$80
-	BEQ PRG024_BE02	 ; If bit 7 is NOT set, jump to PRG024_BE02
+; 	AND #$80
+; 	BEQ PRG024_BE02	 ; If bit 7 is NOT set, jump to PRG024_BE02
 
-	; Bit 7 set...
+; 	; Bit 7 set...
 
-	; Clear bit 7
-	LDA <Temp_Var16
-	AND #$7f
-	STA <Temp_Var16
+; 	; Clear bit 7
+; 	LDA <Temp_Var16
+; 	AND #$7f
+; 	STA <Temp_Var16
 
-	; Store byte into buffer
-	STA Ending_CmdBuffer,X
-	INX		 ; X++ (next buffer byte)
+; 	; Store byte into buffer
+; 	STA Ending_CmdBuffer,X
+; 	INX		 ; X++ (next buffer byte)
 
-PRG024_BE02:
+; PRG024_BE02:
 
-	; Bit 7 not set (or just continued)
+; 	; Bit 7 not set (or just continued)
 
-	; Store byte into buffer
-	LDA <Temp_Var16	
-	STA Ending_CmdBuffer,X
-	INX		 ; X++ (next buffer byte)
+; 	; Store byte into buffer
+; 	LDA <Temp_Var16	
+; 	STA Ending_CmdBuffer,X
+; 	INX		 ; X++ (next buffer byte)
 
-	INY		 ; Y++ (next EndPic command byte)
+; 	INY		 ; Y++ (next EndPic command byte)
 
-	CPX #$c1
-	BLT PRG024_BDF0	 ; While buffer index < $C1, loop!
+; 	CPX #$c1
+; 	BLT PRG024_BDF0	 ; While buffer index < $C1, loop!
 
-	; Buffer filled...
+; 	; Buffer filled...
 
-	LDY <Ending2_CurWorld	; Y = current world we're depicting
+; 	LDY <Ending2_CurWorld	; Y = current world we're depicting
 
-	; Set starting VRAM address
-	LDA EndPic_VRAMStart_H,Y
-	STA <Ending2_PicVRAMH
-	LDA EndPic_VRAMStart_L,Y
-	STA <Ending2_PicVRAML
+; 	; Set starting VRAM address
+; 	LDA EndPic_VRAMStart_H,Y
+; 	STA <Ending2_PicVRAMH
+; 	LDA EndPic_VRAMStart_L,Y
+; 	STA <Ending2_PicVRAML
 
-	INC <Ending2_PicState		 ; Ending2_PicState = 4
+; 	INC <Ending2_PicState		 ; Ending2_PicState = 4
 
-	; Ending2_ClearLen = $B
-	LDA #$0b
-	STA <Ending2_ClearLen
+; 	; Ending2_ClearLen = $B
+; 	LDA #$0b
+; 	STA <Ending2_ClearLen
 
-	; Ending2_QCmdEnd = 0
-	LDA #$00
-	STA <Ending2_QCmdEnd
+; 	; Ending2_QCmdEnd = 0
+; 	LDA #$00
+; 	STA <Ending2_QCmdEnd
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-Ending2_SetFlag2:
-	; Ending2_IntCmd = 2
-	LDA #$02
-	STA <Ending2_IntCmd
+; Ending2_SetFlag2:
+; 	; Ending2_IntCmd = 2
+; 	LDA #$02
+; 	STA <Ending2_IntCmd
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
 
-PRG024_BE29:
-	.byte $2A, $2E, $32, $36, $3A, $3E, $44, $49
-PRG024_BE31:
-	.byte $2D, $31, $35, $39, $3D, $43, $48, $4C
+; PRG024_BE29:
+; 	.byte $2A, $2E, $32, $36, $3A, $3E, $44, $49
+; PRG024_BE31:
+; 	.byte $2D, $31, $35, $39, $3D, $43, $48, $4C
 
-Ending2_CommitPicture:
-	LDA PPU_STAT	
+; Ending2_CommitPicture:
+; 	LDA PPU_STAT	
 
-	; Set VRAM Address to Ending2_PicVRAMH/L
-	LDA <Ending2_PicVRAMH
-	STA PPU_VRAM_ADDR
-	LDA <Ending2_PicVRAML
-	STA PPU_VRAM_ADDR
+; 	; Set VRAM Address to Ending2_PicVRAMH/L
+; 	LDA <Ending2_PicVRAMH
+; 	STA PPU_VRAM_ADDR
+; 	LDA <Ending2_PicVRAML
+; 	STA PPU_VRAM_ADDR
 
-	LDX #$0f	 	; X = 4
-	LDY <Ending2_QCmdEnd	; Y = Ending2_QCmdEnd
-PRG024_BE4A:
+; 	LDX #$0f	 	; X = 4
+; 	LDY <Ending2_QCmdEnd	; Y = Ending2_QCmdEnd
+; PRG024_BE4A:
 
-	; Buffer -> PPU_VRAM_DATA
-	LDA Ending_CmdBuffer,Y
-	STA PPU_VRAM_DATA
+; 	; Buffer -> PPU_VRAM_DATA
+; 	LDA Ending_CmdBuffer,Y
+; 	STA PPU_VRAM_DATA
 
-	INY		 ; Y++
-	DEX		 ; X--
-	BPL PRG024_BE4A	 ; While X >= 0, loop
+; 	INY		 ; Y++
+; 	DEX		 ; X--
+; 	BPL PRG024_BE4A	 ; While X >= 0, loop
 
-	STY <Ending2_QCmdEnd	; Update Ending2_QCmdEnd
+; 	STY <Ending2_QCmdEnd	; Update Ending2_QCmdEnd
 
-	JSR Ending2_PicVRAM_NextLineWrap	; Next line
+; 	JSR Ending2_PicVRAM_NextLineWrap	; Next line
 
-	DEC <Ending2_ClearLen	; Ending2_ClearLen--
-	BPL PRG024_BE6B	 	; If Ending2_ClearLen >= 0, jump to PRG024_BE6B (RTS)
+; 	DEC <Ending2_ClearLen	; Ending2_ClearLen--
+; 	BPL PRG024_BE6B	 	; If Ending2_ClearLen >= 0, jump to PRG024_BE6B (RTS)
 
-	INC <Ending2_PicState	; Ending2_PicState++
+; 	INC <Ending2_PicState	; Ending2_PicState++
 
-	LDX <Ending2_CurWorld	; X = current world we're depicting
+; 	LDX <Ending2_CurWorld	; X = current world we're depicting
 
-	LDA PRG024_BE29,X
-	STA <Ending2_QueueCmd
+; 	LDA PRG024_BE29,X
+; 	STA <Ending2_QueueCmd
 
-	LDA PRG024_BE31,X
-	STA <Ending2_QCmdEnd
+; 	LDA PRG024_BE31,X
+; 	STA <Ending2_QCmdEnd
 
-PRG024_BE6B:
-	RTS		 ; Return
+; PRG024_BE6B:
+; 	RTS		 ; Return
 
-Ending2_SeriesQueue:
-	; Execute next command
-	LDA <Ending2_QueueCmd
-	STA <Graphics_Queue
+; Ending2_SeriesQueue:
+; 	; Execute next command
+; 	LDA <Ending2_QueueCmd
+; 	STA <Graphics_Queue
 
-	CMP <Ending2_QCmdEnd
-	BNE PRG024_BE76	 ; If this is not the last series command to execute, jump to PRG024_BE76
+; 	CMP <Ending2_QCmdEnd
+; 	BNE PRG024_BE76	 ; If this is not the last series command to execute, jump to PRG024_BE76
 
-	; Last command executed!
-	INC <Ending2_PicState		 ; Ending2_PicState = 6
+; 	; Last command executed!
+; 	INC <Ending2_PicState		 ; Ending2_PicState = 6
 
-PRG024_BE76:
-	INC <Ending2_QueueCmd		 ; Ending2_QueueCmd++
+; PRG024_BE76:
+; 	INC <Ending2_QueueCmd		 ; Ending2_QueueCmd++
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-Ending2_AddSprites:
+; Ending2_AddSprites:
 
-	; Clear ending sprites
-	LDA #$f8
-	STA Sprite_RAM+$24
-	STA Sprite_RAM+$28
-	STA Sprite_RAM+$2C
-	STA Sprite_RAM+$30
-	STA Sprite_RAM+$34
-	STA Sprite_RAM+$38
-	STA Sprite_RAM+$3C
-	STA Sprite_RAM+$40
-	STA Sprite_RAM+$44
+; 	; Clear ending sprites
+; 	LDA #$f8
+; 	STA Sprite_RAM+$24
+; 	STA Sprite_RAM+$28
+; 	STA Sprite_RAM+$2C
+; 	STA Sprite_RAM+$30
+; 	STA Sprite_RAM+$34
+; 	STA Sprite_RAM+$38
+; 	STA Sprite_RAM+$3C
+; 	STA Sprite_RAM+$40
+; 	STA Sprite_RAM+$44
 
-	LDY <Ending2_CurWorld	; Y = current world we're depicting
+; 	LDY <Ending2_CurWorld	; Y = current world we're depicting
 
-	; Load pattern tables required for this world picture sprites
-	LDA Ending2_EndPicPatTable2,Y
-	STA PatTable_BankSel+2
-	LDA Ending2_EndPicPatTable3,Y
-	STA PatTable_BankSel+3
-	LDA Ending2_EndPicPatTable4,Y
-	STA PatTable_BankSel+4
-	LDA Ending2_EndPicPatTable5,Y
-	STA PatTable_BankSel+5
+; 	; Load pattern tables required for this world picture sprites
+; 	LDA Ending2_EndPicPatTable2,Y
+; 	STA PatTable_BankSel+2
+; 	LDA Ending2_EndPicPatTable3,Y
+; 	STA PatTable_BankSel+3
+; 	LDA Ending2_EndPicPatTable4,Y
+; 	STA PatTable_BankSel+4
+; 	LDA Ending2_EndPicPatTable5,Y
+; 	STA PatTable_BankSel+5
 
-	; Load starting address for sprite list
-	LDA Ending2_EndPicSpriteListH,Y
-	STA <Temp_Var2
-	LDA Ending2_EndPicSpriteListL,Y
-	STA <Temp_Var1
+; 	; Load starting address for sprite list
+; 	LDA Ending2_EndPicSpriteListH,Y
+; 	STA <Temp_Var2
+; 	LDA Ending2_EndPicSpriteListL,Y
+; 	STA <Temp_Var1
 
-	; Load length of sprite list
-	LDA Ending2_EndPicSpriteListLen,Y
-	TAY
+; 	; Load length of sprite list
+; 	LDA Ending2_EndPicSpriteListLen,Y
+; 	TAY
 
-	; Copy sprite data in
-PRG024_BEBE:
-	LDA [Temp_Var1],Y
-	STA Sprite_RAM,Y
+; 	; Copy sprite data in
+; PRG024_BEBE:
+; 	LDA [Temp_Var1],Y
+; 	STA Sprite_RAM,Y
 
-	DEY		 ; Y--
-	BPL PRG024_BEBE	 ; While Y >= 0, loop
+; 	DEY		 ; Y--
+; 	BPL PRG024_BEBE	 ; While Y >= 0, loop
 
-	INC <Ending2_PicState	 ; Ending2_PicState = 7
+; 	INC <Ending2_PicState	 ; Ending2_PicState = 7
 
-	; Ending2_FadeTimer = 3
-	LDA #$03
-	STA <Ending2_FadeTimer
+; 	; Ending2_FadeTimer = 3
+; 	LDA #$03
+; 	STA <Ending2_FadeTimer
 
-	; Ending2_QueueCmd = $26
-	LDA #$26
-	STA <Ending2_QueueCmd
+; 	; Ending2_QueueCmd = $26
+; 	LDA #$26
+; 	STA <Ending2_QueueCmd
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
 
-Ending2_FadeIn:
-	DEC <Ending2_FadeTimer	; Ending2_FadeTimer--
-	BPL PRG024_BEFB	 	; If Ending2_FadeTimer >= 0, jump to PRG024_BEFB (RTS)
+; Ending2_FadeIn:
+; 	DEC <Ending2_FadeTimer	; Ending2_FadeTimer--
+; 	BPL PRG024_BEFB	 	; If Ending2_FadeTimer >= 0, jump to PRG024_BEFB (RTS)
 
-	; Reload Ending2_FadeTimer = 3
-	LDA #$03
-	STA <Ending2_FadeTimer
+; 	; Reload Ending2_FadeTimer = 3
+; 	LDA #$03
+; 	STA <Ending2_FadeTimer
 
-	; Queue graphics command
-	LDA <Ending2_QueueCmd
-	STA Graphics_Queue
+; 	; Queue graphics command
+; 	LDA <Ending2_QueueCmd
+; 	STA Graphics_Queue
 
-	CMP #$2a
-	BNE PRG024_BEF9	 ; If Ending2_QueueCmd <> $2A, jump to PRG024_BEF9
+; 	CMP #$2a
+; 	BNE PRG024_BEF9	 ; If Ending2_QueueCmd <> $2A, jump to PRG024_BEF9
 
-	INC <Ending2_PicState	 ; Ending2_PicState = 8
+; 	INC <Ending2_PicState	 ; Ending2_PicState = 8
 
-	; Queue the full palette (fade in is common)
-	LDA <Ending2_CurWorld	; A = current world we're depicting
-	ADD #$4d
-	STA Graphics_Queue
+; 	; Queue the full palette (fade in is common)
+; 	LDA <Ending2_CurWorld	; A = current world we're depicting
+; 	ADD #$4d
+; 	STA Graphics_Queue
 
-	; Ending2_TimerH = $F
-	LDA #$0f
-	STA <Ending2_TimerH
+; 	; Ending2_TimerH = $F
+; 	LDA #$0f
+; 	STA <Ending2_TimerH
 
-	; Ending2_TimerL = $16
-	LDA #$16
-	STA <Ending2_TimerL
+; 	; Ending2_TimerL = $16
+; 	LDA #$16
+; 	STA <Ending2_TimerL
 
-	; Ending2_QueueCmd = $06
-	LDA #(Ending2_FadeOutQs_End - Ending2_FadeOutQs - 1)
-	STA <Ending2_QueueCmd
+; 	; Ending2_QueueCmd = $06
+; 	LDA #(Ending2_FadeOutQs_End - Ending2_FadeOutQs - 1)
+; 	STA <Ending2_QueueCmd
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-PRG024_BEF9:
-	INC <Ending2_QueueCmd		 ; Ending2_QueueCmd++
+; PRG024_BEF9:
+; 	INC <Ending2_QueueCmd		 ; Ending2_QueueCmd++
 
-PRG024_BEFB:
-	RTS		 ; Return
+; PRG024_BEFB:
+; 	RTS		 ; Return
 
-Ending2_Wait:
-	; Ending2_TimerL--
-	LDA <Ending2_TimerL
-	SUB #$01
-	STA <Ending2_TimerL
-	BCS PRG024_BF13	 ; If Ending2_TimerL >= 0, jump to PRG024_BF13 (RTS)
+; Ending2_Wait:
+; 	; Ending2_TimerL--
+; 	LDA <Ending2_TimerL
+; 	SUB #$01
+; 	STA <Ending2_TimerL
+; 	BCS PRG024_BF13	 ; If Ending2_TimerL >= 0, jump to PRG024_BF13 (RTS)
 
-	; Ending2_TimerL = $16
-	LDA #$16
-	STA <Ending2_TimerL
+; 	; Ending2_TimerL = $16
+; 	LDA #$16
+; 	STA <Ending2_TimerL
 
-	DEC <Ending2_TimerH	 ; Ending2_TimerH--
-	BPL PRG024_BF13	 	; If Ending2_TimerH >= 0, jump to PRG024_BF13 (RTS)
+; 	DEC <Ending2_TimerH	 ; Ending2_TimerH--
+; 	BPL PRG024_BF13	 	; If Ending2_TimerH >= 0, jump to PRG024_BF13 (RTS)
 
-	INC <Ending2_PicState		 ; Ending2_PicState = 9
+; 	INC <Ending2_PicState		 ; Ending2_PicState = 9
 
-	; Ending2_FadeTimer = 3
-	LDA #$03
-	STA <Ending2_FadeTimer
+; 	; Ending2_FadeTimer = 3
+; 	LDA #$03
+; 	STA <Ending2_FadeTimer
 
-PRG024_BF13:
-	RTS		 ; Return
+; PRG024_BF13:
+; 	RTS		 ; Return
 
-	; Fade out command queues
-Ending2_FadeOutQs:
-	.byte $25, $26, $27, $28, $28, $28, $28
-Ending2_FadeOutQs_End
+; 	; Fade out command queues
+; Ending2_FadeOutQs:
+; 	.byte $25, $26, $27, $28, $28, $28, $28
+; Ending2_FadeOutQs_End
 	
-Ending2_FadeOut:
-	DEC <Ending2_FadeTimer
-	BPL PRG024_BF37	 ; If Ending2_FadeTimer >= 0, jump to PRG024_BF37 (RTS)
+; Ending2_FadeOut:
+; 	DEC <Ending2_FadeTimer
+; 	BPL PRG024_BF37	 ; If Ending2_FadeTimer >= 0, jump to PRG024_BF37 (RTS)
 
-	; Ending2_FadeTimer = 3
-	LDA #$03
-	STA <Ending2_FadeTimer
+; 	; Ending2_FadeTimer = 3
+; 	LDA #$03
+; 	STA <Ending2_FadeTimer
 
-	LDX <Ending2_QueueCmd	 ; X = Ending2_QueueCmd (current index)
+; 	LDX <Ending2_QueueCmd	 ; X = Ending2_QueueCmd (current index)
 
-	; Queue next fade command
-	LDA Ending2_FadeOutQs,X
-	STA Graphics_Queue
+; 	; Queue next fade command
+; 	LDA Ending2_FadeOutQs,X
+; 	STA Graphics_Queue
 
-	CMP #$25
-	BNE PRG024_BF35	 ; If current queue command <> $25, jump to PRG024_BF35
+; 	CMP #$25
+; 	BNE PRG024_BF35	 ; If current queue command <> $25, jump to PRG024_BF35
 
-	; Restart ending picture generation
-	LDA #$01
-	STA <Ending2_PicState	; Ending2_PicState = 1
+; 	; Restart ending picture generation
+; 	LDA #$01
+; 	STA <Ending2_PicState	; Ending2_PicState = 1
 
-	INC <Ending2_CurWorld		 ; Ending2_CurWorld++ (display next world in series)
+; 	INC <Ending2_CurWorld		 ; Ending2_CurWorld++ (display next world in series)
 
-PRG024_BF35:
-	DEC <Ending2_QueueCmd		 ; Ending2_QueueCmd--
+; PRG024_BF35:
+; 	DEC <Ending2_QueueCmd		 ; Ending2_QueueCmd--
 
-PRG024_BF37:
-	RTS		 ; Return
+; PRG024_BF37:
+; 	RTS		 ; Return
 
 
-; FIXME: Anybody want to claim this??
-; Seems to be called by dead code, would advance to next row or wrap around; maybe a clearing routine?
-Ending2_PicVRAM_NextLineWrap:
+; ; FIXME: Anybody want to claim this??
+; ; Seems to be called by dead code, would advance to next row or wrap around; maybe a clearing routine?
+; Ending2_PicVRAM_NextLineWrap:
 
-	; Add 32 to VRAM address for next row
-	LDA <Ending2_PicVRAML
-	ADD #32
-	STA <Ending2_PicVRAML
-	LDA <Ending2_PicVRAMH
-	ADC #$00
-	STA <Ending2_PicVRAMH
+; 	; Add 32 to VRAM address for next row
+; 	LDA <Ending2_PicVRAML
+; 	ADD #32
+; 	STA <Ending2_PicVRAML
+; 	LDA <Ending2_PicVRAMH
+; 	ADC #$00
+; 	STA <Ending2_PicVRAMH
 
-	CMP #$28
-	BGE PRG024_BF5D	; If VRAM High address >= $28, jump to PRG024_BF5D (RTS)
+; 	CMP #$28
+; 	BGE PRG024_BF5D	; If VRAM High address >= $28, jump to PRG024_BF5D (RTS)
 
-	CMP #$23
-	BLT PRG024_BF5D	; If VRAM High address < $23, jump to PRG024_BF5D (RTS)
+; 	CMP #$23
+; 	BLT PRG024_BF5D	; If VRAM High address < $23, jump to PRG024_BF5D (RTS)
 
-	LDA <Ending2_PicVRAML
-	CMP #$c0
-	BLT PRG024_BF5D	; If VRAM Low address < $C0, jump to PRG024_BF5D (RTS)
+; 	LDA <Ending2_PicVRAML
+; 	CMP #$c0
+; 	BLT PRG024_BF5D	; If VRAM Low address < $C0, jump to PRG024_BF5D (RTS)
 
-	; This will wrap the VRAM address to the top (???)
+; 	; This will wrap the VRAM address to the top (???)
 
-	; Ending2_PicVRAMH = $28
-	LDA #$28
-	STA <Ending2_PicVRAMH
+; 	; Ending2_PicVRAMH = $28
+; 	LDA #$28
+; 	STA <Ending2_PicVRAMH
 
-	; Column on top row
-	LDA <Ending2_PicVRAML
-	AND #$1f
-	STA <Ending2_PicVRAML
+; 	; Column on top row
+; 	LDA <Ending2_PicVRAML
+; 	AND #$1f
+; 	STA <Ending2_PicVRAML
 
-PRG024_BF5D:
-	RTS		 ; Return
+; PRG024_BF5D:
+; 	RTS		 ; Return
 
-	; PatTable_BankSel+X values (sprite pattern tables) loaded per "world" of ending picture
-Ending2_EndPicPatTable2:	.byte $57, $53, $51, $00, $43, $02, $44, $54
-Ending2_EndPicPatTable3:	.byte $00, $04, $00, $76, $76, $76, $04, $76
-Ending2_EndPicPatTable4:	.byte $57, $4E, $1A, $1A, $00, $0B, $00, $00
-Ending2_EndPicPatTable5:	.byte $4F, $4F, $00, $00, $4F, $4F, $4F, $00
+; 	; PatTable_BankSel+X values (sprite pattern tables) loaded per "world" of ending picture
+; Ending2_EndPicPatTable2:	.byte $57, $53, $51, $00, $43, $02, $44, $54
+; Ending2_EndPicPatTable3:	.byte $00, $04, $00, $76, $76, $76, $04, $76
+; Ending2_EndPicPatTable4:	.byte $57, $4E, $1A, $1A, $00, $0B, $00, $00
+; Ending2_EndPicPatTable5:	.byte $4F, $4F, $00, $00, $4F, $4F, $4F, $00
 
-	; Split address, parallel tables for the starting address of the end picture sprite lists for each world
-Ending2_EndPicSpriteListH:	
-	.byte HIGH(Ending2_EndPicSprites1)
-	.byte HIGH(Ending2_EndPicSprites2)
-	.byte HIGH(Ending2_EndPicSprites3)
-	.byte HIGH(Ending2_EndPicSprites4)
-	.byte HIGH(Ending2_EndPicSprites5)
-	.byte HIGH(Ending2_EndPicSprites6)
-	.byte HIGH(Ending2_EndPicSprites7)
-	.byte HIGH(Ending2_EndPicSprites8)
+; 	; Split address, parallel tables for the starting address of the end picture sprite lists for each world
+; Ending2_EndPicSpriteListH:	
+; 	.byte HIGH(Ending2_EndPicSprites1)
+; 	.byte HIGH(Ending2_EndPicSprites2)
+; 	.byte HIGH(Ending2_EndPicSprites3)
+; 	.byte HIGH(Ending2_EndPicSprites4)
+; 	.byte HIGH(Ending2_EndPicSprites5)
+; 	.byte HIGH(Ending2_EndPicSprites6)
+; 	.byte HIGH(Ending2_EndPicSprites7)
+; 	.byte HIGH(Ending2_EndPicSprites8)
 
-Ending2_EndPicSpriteListL:
-	.byte LOW(Ending2_EndPicSprites1)
-	.byte LOW(Ending2_EndPicSprites2)
-	.byte LOW(Ending2_EndPicSprites3)
-	.byte LOW(Ending2_EndPicSprites4)
-	.byte LOW(Ending2_EndPicSprites5)
-	.byte LOW(Ending2_EndPicSprites6)
-	.byte LOW(Ending2_EndPicSprites7)
-	.byte LOW(Ending2_EndPicSprites8)
+; Ending2_EndPicSpriteListL:
+; 	.byte LOW(Ending2_EndPicSprites1)
+; 	.byte LOW(Ending2_EndPicSprites2)
+; 	.byte LOW(Ending2_EndPicSprites3)
+; 	.byte LOW(Ending2_EndPicSprites4)
+; 	.byte LOW(Ending2_EndPicSprites5)
+; 	.byte LOW(Ending2_EndPicSprites6)
+; 	.byte LOW(Ending2_EndPicSprites7)
+; 	.byte LOW(Ending2_EndPicSprites8)
 
-	; Length of the sprite list per world - 1 (or last index, if you prefer)
-Ending2_EndPicSpriteListLen:	
-	.byte (Ending2_EndPicSprites1_End - Ending2_EndPicSprites1 - 1)
-	.byte (Ending2_EndPicSprites2_End - Ending2_EndPicSprites2 - 1)
-	.byte (Ending2_EndPicSprites4_End - Ending2_EndPicSprites4 - 1)
-	.byte (Ending2_EndPicSprites5_End - Ending2_EndPicSprites5 - 1)
-	.byte (Ending2_EndPicSprites6_End - Ending2_EndPicSprites6 - 1)
-	.byte (Ending2_EndPicSprites7_End - Ending2_EndPicSprites7 - 1)
-	.byte (Ending2_EndPicSprites8_End - Ending2_EndPicSprites8 - 1)
+; 	; Length of the sprite list per world - 1 (or last index, if you prefer)
+; Ending2_EndPicSpriteListLen:	
+; 	.byte (Ending2_EndPicSprites1_End - Ending2_EndPicSprites1 - 1)
+; 	.byte (Ending2_EndPicSprites2_End - Ending2_EndPicSprites2 - 1)
+; 	.byte (Ending2_EndPicSprites4_End - Ending2_EndPicSprites4 - 1)
+; 	.byte (Ending2_EndPicSprites5_End - Ending2_EndPicSprites5 - 1)
+; 	.byte (Ending2_EndPicSprites6_End - Ending2_EndPicSprites6 - 1)
+; 	.byte (Ending2_EndPicSprites7_End - Ending2_EndPicSprites7 - 1)
+; 	.byte (Ending2_EndPicSprites8_End - Ending2_EndPicSprites8 - 1)
 
-Ending2_EndPicSprites1:
-	.byte $81, $19, $00, $B0
-	.byte $81, $1B, $00, $B8
-	.byte $91, $1D, $00, $B0
-	.byte $91, $21, $00, $B8
-	.byte $B1, $EB, $01, $B8
-	.byte $B1, $EB, $41, $C0
-	.byte $B1, $D9, $01, $80
-	.byte $B1, $DB, $41, $88
-	.byte $B1, $D9, $01, $90
-	.byte $B1, $DB, $41, $98
-Ending2_EndPicSprites1_End
+; Ending2_EndPicSprites1:
+; 	.byte $81, $19, $00, $B0
+; 	.byte $81, $1B, $00, $B8
+; 	.byte $91, $1D, $00, $B0
+; 	.byte $91, $21, $00, $B8
+; 	.byte $B1, $EB, $01, $B8
+; 	.byte $B1, $EB, $41, $C0
+; 	.byte $B1, $D9, $01, $80
+; 	.byte $B1, $DB, $41, $88
+; 	.byte $B1, $D9, $01, $90
+; 	.byte $B1, $DB, $41, $98
+; Ending2_EndPicSprites1_End
 
-Ending2_EndPicSprites2:
-	.byte $79, $1B, $40, $38
-	.byte $79, $19, $40, $40
-	.byte $99, $67, $01, $50
-	.byte $B1, $65, $01, $70
-	.byte $A9, $85, $01, $88
-	.byte $A9, $87, $01, $90
-	.byte $B9, $A5, $01, $88
-	.byte $B9, $A7, $01, $90
-	.byte $91, $8D, $02, $A8
-	.byte $91, $8F, $02, $B0
-	.byte $99, $B1, $02, $D0
-	.byte $99, $B3, $02, $D8
-	.byte $A9, $B5, $02, $D0
-	.byte $A9, $B7, $02, $D8
-Ending2_EndPicSprites2_End
+; Ending2_EndPicSprites2:
+; 	.byte $79, $1B, $40, $38
+; 	.byte $79, $19, $40, $40
+; 	.byte $99, $67, $01, $50
+; 	.byte $B1, $65, $01, $70
+; 	.byte $A9, $85, $01, $88
+; 	.byte $A9, $87, $01, $90
+; 	.byte $B9, $A5, $01, $88
+; 	.byte $B9, $A7, $01, $90
+; 	.byte $91, $8D, $02, $A8
+; 	.byte $91, $8F, $02, $B0
+; 	.byte $99, $B1, $02, $D0
+; 	.byte $99, $B3, $02, $D8
+; 	.byte $A9, $B5, $02, $D0
+; 	.byte $A9, $B7, $02, $D8
+; Ending2_EndPicSprites2_End
 
-Ending2_EndPicSprites3:
-	.byte $3F, $B1, $01, $30
-	.byte $3F, $B1, $41, $38
-	.byte $47, $B5
+; Ending2_EndPicSprites3:
+; 	.byte $3F, $B1, $01, $30
+; 	.byte $3F, $B1, $41, $38
+; 	.byte $47, $B5
 
 Title_SpritesX:
 	.byte $60, $60, $78, $78, $98, $98, $30, $40, $40, $70, $88, $B0, $B0, $C8, $C8

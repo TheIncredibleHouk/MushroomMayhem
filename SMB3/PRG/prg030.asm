@@ -1571,30 +1571,31 @@ PRG030_8FCA:
 	LDA #$00
 	STA Vert_Scroll_Off
 
+	JMP PRG030_8FFC
 	; Stop the music
 	;LDA #MUS1_STOPMUSIC
 	;STA Sound_QMusic1
 
-	LDA Map_ReturnStatus
-	BNE PRG030_8FFC	 ; If Player died, jump to PRG030_8FFC
+	; LDA Map_ReturnStatus
+	; BNE PRG030_8FFC	 ; If Player died, jump to PRG030_8FFC
 
-	LDA Player_RescuePrincess
-	BEQ PRG030_8FFC	 ; If not rescuing the Princess, jump to PRG030_8FFC
+	; LDA Player_RescuePrincess
+	; BEQ PRG030_8FFC	 ; If not rescuing the Princess, jump to PRG030_8FFC
 
-	; Load page 24 into A000 and page 25 into C000
-	LDA #25
-	STA PAGE_C000
-	LDA #24
-	STA PAGE_A000
-	JSR PRGROM_Change_Both2
+	; ; Load page 24 into A000 and page 25 into C000
+	; LDA #25
+	; STA PAGE_C000
+	; LDA #24
+	; STA PAGE_A000
+	; JSR PRGROM_Change_Both2
 
-	LDA #%10101000
-	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
+	; LDA #%10101000
+	; STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
 
-	LDA #$20
-	STA Update_Select	 ; Update_Select = $20 (Title Screen... or ending in this case)
+	; LDA #$20
+	; STA Update_Select	 ; Update_Select = $20 (Title Screen... or ending in this case)
 
-	JMP Rescue_Princess	 ; Do the Princess Rescue sequence!!
+	; JMP Rescue_Princess	 ; Do the Princess Rescue sequence!!
 
 PRG030_8FFC:
 
