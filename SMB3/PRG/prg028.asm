@@ -89,7 +89,6 @@ PRG028_A067:
 Sound_Process:
 	; Queue + Play all sounds in...
 
-
 	JSR RhythmPlatforms
 	JSR Sound_PlayLevel2	 ; Level 2
 	JSR Sound_PlayPlayer	 ; Player

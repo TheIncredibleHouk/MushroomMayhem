@@ -1677,7 +1677,7 @@ PRG031_F568:
 	PLA
 	STA <Temp_Var3
 	PLA
-			STA <Temp_Var2
+	STA <Temp_Var2
 	PLA
 	STA <Temp_Var1
 
@@ -1688,7 +1688,7 @@ PRG031_F568:
 	TAX
 	PLA
 	PLP
-
+	STA Debug_Snap - 1
 	; Fully cleaned up "NMI" interrupt
 	RTI
 
@@ -2204,11 +2204,7 @@ IntIRQ_Finish_NoDis:
 	TAX
 	PLA
 	PLP
-
 	RTI		 ; End of IRQ interrupt!
-
-
-
 
 IntIRQ_Standard:	; $F8DB
 	STA MMC3_IRQENABLE ; Enable IRQ generation

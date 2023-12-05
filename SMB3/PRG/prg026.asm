@@ -2665,7 +2665,7 @@ Game_UpdateCherries1:
 	
 StatusBar_DrawCherries:
 	LDA Player_Cherries
-	;LDA Object_Count
+	LDA Object_Count
 	STA <DigitsParam
 	
 	JSR BytesTo2Digits
