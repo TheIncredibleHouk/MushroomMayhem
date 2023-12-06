@@ -1429,7 +1429,7 @@ PRG010_CB39_End
 
 ; FIXME: Anybody want to claim this??
 ; $CB52
-        vaddr $2BC7
+	vaddr $2BC7
 	.byte $01, $00
 
 	vaddr $2BCF

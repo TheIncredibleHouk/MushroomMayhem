@@ -274,7 +274,7 @@ PRG030_84A0:
 PRG030_84D7:
 	JSR Sprite_RAM_Clear	 
 	JSR Scroll_PPU_Reset	 
-	JSR Reset_PPU_Clear_Nametables
+	;SR Reset_PPU_Clear_Nametables
 
 	LDA #$00
 	STA Level_Tileset	; Level_Tileset = 0
@@ -404,7 +404,7 @@ No_StatusbarInit:
 	; Switch to page 26 @ A000
 	LDA #MMC3_8K_TO_PRG_A000
 	STA MMC3_COMMAND
-	LDA #26		
+	LDA #24		
 	STA MMC3_PAGE	 
 
 	LDA #$00	 		; Commit graphics in Graphics_Buffer
@@ -496,17 +496,17 @@ PRG030_86A2:
 	STA UpdSel_Disable
 
 	; Switch bank A000 to page 27
-	LDA #27
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
 	JSR Setup_PalData	 ; On page 27 -- PalData now holds palette data for world map tiles/objects
 	JSR Map_DayNightPalette
 
-	; Switch bank A000 to page 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+	; ; Switch bank A000 to page 26
+	; LDA #24
+	; STA PAGE_A000
+	; JSR PRGROM_Change_A000
 	JSR Palette_FadeIn	 ; On page 26 -- Fade in the world map
 
 	; Switch bank A000 to page 11
@@ -534,10 +534,10 @@ PRG030_86F9:
 	; Inventory_Open <> 0 && InvFlip_Counter = 0 ...
 
 	; Switch bank A000 to page 26
-	LDA #26	
+	LDA #24	
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
-	JSR Map_DoInventory_And_PoofFX	; Do everything with that inventory bar (On page 26)
+	;JSR Map_DoInventory_And_PoofFX	; Do everything with that inventory bar (On page 26)
 
 	; Switch bank A000 to page 11
 	LDA #11	 
@@ -562,7 +562,7 @@ PRG030_8715:
 	; Map_Operation >= 2...
 
 	; Switch bank A000 to page 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JSR StatusBar_Update	; Update status bar
@@ -593,7 +593,7 @@ PRG030_873F:
 
 PRG030_874F:
 	; Switch bank A000 to page 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JSR Palette_FadeOut	 		; Fade out
@@ -1024,7 +1024,7 @@ PRG030_8B03:
 	;JSR Video_Do_Update	; Video update
 
 	; Set bank at A000 to page 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -1041,7 +1041,7 @@ PRG030_8B03:
 	; Changes pages at A000 and C000 to 26 and 6, respectively
 	LDA #6
 	STA PAGE_C000
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_Both2
 
@@ -1082,7 +1082,7 @@ PRG030_8B78:
 	STA UpdSel_Disable	; Resume Update_Select activity
 
 	; Set page @ A000 to 27
-	LDA #27
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -1099,7 +1099,7 @@ PRG030_8B78:
 
 PRG030_8B9A:
 	; Set page @ A000 to 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -1324,13 +1324,13 @@ PRG030_8ECC:
 	; Level junction!
 
 	; Set page @ A000 to 27
-	LDA #27
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JSR Setup_PalData
 
 	; Set page @ A000 to 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JMP HandleLevelJunction	; Handle the junction!
@@ -1487,7 +1487,7 @@ PRG030_8F42:
 	BNE PRG030_8F80	 ; If we have a video update to do, skip the status bar updates for this frame, jump to PRG030_8F80
 
 	; Switch bank A000 to page 26
-	LDA #26	
+	LDA #24	
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -1501,7 +1501,7 @@ PRG030_8F42:
 	BEQ PRG030_8F85	 ; If Inventory is not open, jump to PRG030_8F85
 
 PRG030_8F7D:
-	JSR Map_DoInventory_And_PoofFX	; Do everything with that inventory bar (On page 26)
+	;JSR Map_DoInventory_And_PoofFX	; Do everything with that inventory bar (On page 26)
 
 PRG030_8F80:
 
@@ -1521,7 +1521,7 @@ PRG030_8F85:
 	LDX Player_Current	 ; X = Player_Current
 
 	; Switch bank A000 to page 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -1641,7 +1641,7 @@ PRG030_9009:
 	;JSR Setup_PalData	 ; Setup palette data
 
 	; Switch bank A000 to page 26
-	;LDA #26
+	;LDA #24
 	;STA PAGE_A000
 	;JSR PRGROM_Change_A000
 	;JSR Palette_FadeIn	 ; On page 26 -- Fade in
@@ -1890,7 +1890,7 @@ PRG030_91D1:
 	JSR Video_Do_Update
 
 	; Set page @ A000 to 26
-	LDA #26		
+	LDA #24		
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -1954,16 +1954,16 @@ PRG030_9257:
 	STA Update_Select	; Update_Select = $C0 (Normal)
 
 	; Switch bank A000 to page 27
-	LDA #27
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JSR Setup_PalData	 ; On page 27 -- PalData now holds palette data for world map tiles/objects
 
-Map_DayPalette:	
-	; Switch bank A000 to page 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+; Map_DayPalette:	
+; 	; Switch bank A000 to page 26
+; 	LDA #24
+; 	STA PAGE_A000
+; 	JSR PRGROM_Change_A000
 	JSR Palette_FadeIn	 ; On page 26 -- Fade in the world map
 
 	; Switch bank A000 to page 11
@@ -1998,7 +1998,7 @@ PRG030_929C:
 	;STA Sound_QMusic1
 
 	; Switch bank A000 to page 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -2138,7 +2138,7 @@ Video_Do_Update:	; $94CD
 	STA <Video_Upd_AddrH	
 
 	; Set page @ A000 to 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -3373,7 +3373,7 @@ PRG030_9AC5:
 	JSR Scroll_DoColumn
 
 	; Set page @ A000 to 26
-	LDA #26
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
@@ -3438,7 +3438,7 @@ PRG030_9B02:
 ; 	JSR VScroll_PageAndDoPatAttrRow	 ; Do the row of patterns and attributes for vertical scroll
 
 ; 	; Set page @ A000 to 26
-; 	LDA #26
+; 	LDA #24
 ; 	STA PAGE_A000
 ; 	JSR PRGROM_Change_A000
 
@@ -6230,7 +6230,7 @@ Message_Handler:
 	LDA PAGE_A000
 	PHA
 
-	LDA #27
+	LDA #24
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JSR Messages_Display

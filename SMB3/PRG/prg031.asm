@@ -1542,7 +1542,7 @@ PRG031_F4C4:
 	; MMC3 event
 	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
 	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #26	 			; Page 26
+	LDA #24	 			; Page 26
 	STA MMC3_PAGE	 		; Set MMC3 page
 	JMP PRG031_F610	 		; 
 
@@ -1573,7 +1573,7 @@ PRG031_F4E3:
 
 	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
 	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #26	 			; Page 26
+	LDA #24	 			; Page 26
 	STA MMC3_PAGE	 		; Set MMC3 page
 
 	JSR Scroll_Commit_Column ; Update nametable as screen scrolls (differs from call made in UpdSel_Vertical, UpdSel_32PixPart)
@@ -1677,7 +1677,7 @@ PRG031_F568:
 	PLA
 	STA <Temp_Var3
 	PLA
-	STA <Temp_Var2
+			STA <Temp_Var2
 	PLA
 	STA <Temp_Var1
 
@@ -1688,7 +1688,7 @@ PRG031_F568:
 	TAX
 	PLA
 	PLP
-	STA Debug_Snap - 1
+
 	; Fully cleaned up "NMI" interrupt
 	RTI
 
@@ -1708,7 +1708,7 @@ UpdSel_Vertical:
 
 	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
 	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #26	 			; Page 26
+	LDA #24	 			; Page 26
 	STA MMC3_PAGE	 		; Set MMC3 page
 
 	JSR Scroll_ToVRAM_Apply	 ; Applies Scroll_ToVRAMHi and Scroll_ToVRAMHA updates
@@ -1773,18 +1773,18 @@ PRG031_F610:
 	STA SPR_DMA	 ; DMA sprites from RAM @ $200 (probably trying to blank them out)
 	JSR PT2_Full_CHRROM_Switch	 ; Set up PT2 (Sprites) CHRROM
 
-	LDA <Map_EnterLevelFX	 
-	BEQ PRG031_F631	 ; If Map_EnterLevelFX = 0 (not entering a level), jump to PRG031_F631
-	CMP #$01	 ; 
-	BNE PRG031_F62E	 ; If Map_EnterLevelFX <> 1 (only other value would be 2, during the level "opening" effect, not used in US version), jump to PRG031_F62E
+	; LDA <Map_EnterLevelFX	 
+	; BEQ PRG031_F631	 ; If Map_EnterLevelFX = 0 (not entering a level), jump to PRG031_F631
+	; CMP #$01	 ; 
+	; BNE PRG031_F62E	 ; If Map_EnterLevelFX <> 1 (only other value would be 2, during the level "opening" effect, not used in US version), jump to PRG031_F62E
 
-	; This is being called while level is being entered...
-	JSR Map_EnterLevel_Effect 	; World map "entering" effect on page 26
+	; ; This is being called while level is being entered...
+	; JSR Map_EnterLevel_Effect 	; World map "entering" effect on page 26
 
 	JMP PRG031_F631	 ; Jump to PRG031_F631
 
 PRG031_F62E:
-	JSR Level_Opening_Effect	; Level "opening" effect on page 26 (unused on US release)
+	;JSR Level_Opening_Effect	; Level "opening" effect on page 26 (unused on US release)
 
 PRG031_F631:
 	LDA PPU_STAT
@@ -1844,7 +1844,7 @@ UpdSel_32PixPart:
 
 	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
 	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #26	 			; Page 26
+	LDA #24	 			; Page 26
 	STA MMC3_PAGE	 		; Set MMC3 page
 
 	JSR Scroll_Commit_Column ; Update nametable as screen scrolls (differs from call made in UpdSel_Vertical, UpdSel_32PixPart)
@@ -1903,6 +1903,7 @@ UpdSel_Title:
 	LDA #$00	 ; A = 0
 	STA PPU_CTL2	 ; Hide sprites and bg (most importantly)
 	STA PPU_SPR_ADDR ; Resets to sprite 0 in memory
+	
 	LDA #$02	 ; A = 2
 	STA SPR_DMA	 ; DMA sprites from RAM @ $200 (probably trying to blank them out)
 	JSR PT2_Full_CHRROM_Switch	 ; Set up PT2 (Sprites) CHRROM
@@ -1910,8 +1911,8 @@ UpdSel_Title:
 	LDA <VBlank_Tick
 	BNE PRG031_F748	 ; If VBlank_Tick <> 0, go to PRG031_F748
 
-	; LDA <Ending2_IntCmd
-	; BEQ PRG031_F72B	 ; If Ending2_IntCmd = 0, go to PRG031_F72B
+	LDA <Ending2_IntCmd
+	BEQ PRG031_F72B	 ; If Ending2_IntCmd = 0, go to PRG031_F72B
 
 	; LDA #MMC3_8K_TO_PRG_C000	; Changing PRG ROM at C000
 	; STA MMC3_COMMAND 		; Set MMC3 command
@@ -1923,14 +1924,14 @@ UpdSel_Title:
 	; LDA #24	 			; Page 24
 	; STA MMC3_PAGE	 		; Set MMC3 page
 
-	; JSR Do_Ending2_IntCmd	; Perform action of Ending2_IntCmd
+	;JSR Do_Ending2_IntCmd	; Perform action of Ending2_IntCmd
 
-	; JMP PRG031_F748	 ; Jump to PRG031_F748
+	JMP PRG031_F748	 ; Jump to PRG031_F748
 
 PRG031_F72B:
 	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000
 	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #26	 			; Page 26
+	LDA #24	 			; Page 26
 	STA MMC3_PAGE	 		; Set MMC3 page
 
 	JSR Video_Misc_Updates	 ; Various updates other than scrolling (palettes, status bar, etc.)
@@ -1965,6 +1966,7 @@ PRG031_F748:
 
 	LDA <Horz_Scroll
 	STA PPU_SCROLL	; Horizontal Scroll set
+
 	LDA <Vert_Scroll
 	STA PPU_SCROLL	; Vertical scroll set
 
@@ -2204,7 +2206,11 @@ IntIRQ_Finish_NoDis:
 	TAX
 	PLA
 	PLP
+
 	RTI		 ; End of IRQ interrupt!
+
+
+
 
 IntIRQ_Standard:	; $F8DB
 	STA MMC3_IRQENABLE ; Enable IRQ generation
@@ -3148,7 +3154,9 @@ PRG031_FEC0:
 PRG031_FEC3:
 	LDA <Temp_Var1	 ; Pull result out of $00 -> A
 	PHA		 ; Push A
+
 	JSR Read_Joypad	 ; Read Joypad
+
 	PLA		 ; Pull A
 	CMP <Temp_Var1	 ; Check if same
 	BNE PRG031_FEC3	 ; If not, do it again
@@ -3179,7 +3187,7 @@ PRG031_FEC3:
 	LDA <Pad_Input
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Input
-
+	
 	LDA <Pad_Holding
 	AND #(PAD_SELECT | PAD_START | PAD_A | PAD_B | PAD_DOWN)
 	STA <Pad_Holding
