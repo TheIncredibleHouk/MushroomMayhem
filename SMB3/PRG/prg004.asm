@@ -707,7 +707,7 @@ ObjInit_Troopa:
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayer
 	LDA <Objects_YZ, X
-	ADD #$10
+	ADD #$0A
 	STA <Objects_YZ, X
 
 	LDA <Objects_YHiZ, X
