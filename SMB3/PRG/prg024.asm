@@ -70,19 +70,7 @@ Title_GfxCommit:
 	LDA #LOW(Title_GfxBuffer)
 	STA <Video_Upd_AddrL
 
-	LDA #$01	
-	STA <VBlank_TickEn	 ; Enable the VBlank tick
-
-	LDA #$00	 
-	STA <VBlank_Tick	 ; Force VBlank_Tick = 0, so we know when a VBlank has occurred
-
-	; Waiting for VBlank...
-PRG024_A81C:
-	LDA <VBlank_Tick
-	BPL PRG024_A81C
-
-	LDA #$00	 
-	STA <VBlank_TickEn	 ; Disable the VBlank
+	JSR VBlank_Wait
 
 	CLI		 ; Enable further masked interrupts
 	RTS		 ; Return
@@ -482,7 +470,6 @@ TitleState_EraseGame:
 Title_DelayTicker = $6900
 
 TitleState_Delay:
-	STA Debug_Snap
 	DEC Title_DelayTicker
 	BNE TitleState_DelayRTS
 
@@ -812,6 +799,11 @@ Title_Clear:
 	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 	vaddr $2380
+	.byte $20
+	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+
+	vaddr $23A0
 	.byte $20
 	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE			

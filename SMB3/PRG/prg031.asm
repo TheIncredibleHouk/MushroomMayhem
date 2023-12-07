@@ -3277,7 +3277,21 @@ InfectionRTS:
 
 YolkedRTS:
 	RTS		 ; Return
-	
+
+VBlank_Wait:
+	LDA #$01	
+	STA <VBlank_TickEn	 
+
+	LDA #$00	 
+	STA <VBlank_Tick	 
+
+VBlank_WaitLoop:
+	LDA <VBlank_Tick
+	BPL VBlank_WaitLoop
+
+	LDA #$00	 
+	STA <VBlank_TickEn	 
+	RTS		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Read_Joypad
 ;
