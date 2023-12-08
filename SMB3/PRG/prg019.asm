@@ -409,7 +409,7 @@ LevelEvent_Do:
 	.word LevelEvent_SpawnBlooper	; 5 - $B8
 	.word LevelEvent_GenerateCheepCheeps	; 6 - Random wooden platforms 
 	.word LevelEvent_Ruster	; 7 - Ruster generator
-	.word LevelEvent_Cancel		; 8 - Does nothing but clear Level_Event
+	.word LevelEvent_Snifit	; 8 - Snifit generator
 
 GEN_CANCEL		= 0
 GEN_8WAYBULLETS = 8
@@ -417,6 +417,7 @@ GEN_MINES		= 2
 GEN_GOLDCHEEPS	= 3
 GEN_GOLDYURARIN = 4
 GEN_BLOOPERS	= 5
+GEN_CANCEL = 
 
 LevelEvent_DoNothing:
 LevelEvent_DoRTS:
@@ -1054,6 +1055,41 @@ Blooper_Generate:
 	STA Level_EventTimer
 	RTS		 ; Return
 
+LevelEvent_Snifit:
+	LDX #$07
+
+Snifit_CheckDimmer:
+	LDA SpinnerBlocksTimers, X
+	BNE Snifit_GeneratorActive
+
+	DEX
+	BPL Snifit_CheckDimmer
+	RTS
+
+Snifit_GeneratorActive:
+	LDA Level_EventTimer
+	BEQ Generate_Snifit
+
+	DEC Level_EventTimer
+	RTS
+
+Snifit_GenSideXOffset:
+	.byte $40, $C0
+	.byte $00, $FF
+
+Generate_Snifit:
+	LDA #OBJ_BOOWAVE
+	STA <Object_Check
+
+	JSR CheckObjectsOfType2
+
+	LDA <Num_Objects
+	CMP #$02
+	BCC Genrate_SnifitDo
+
+	RTS
+
+Genrate_SnifitDo:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_SpawnObj	-- slots 0 - 4
 ; Level_SpawnObjSetMax	-- slots 0 - input X register

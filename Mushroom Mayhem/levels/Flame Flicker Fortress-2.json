@@ -1,6 +1,6 @@
 {
   "Id": "ad980ac1-6949-480c-9850-4f70b58e6b67",
-  "Name": "Lights Out-2",
+  "Name": "Flame Flicker Fortress-2",
   "TileSetIndex": 5,
   "ClearTileIndex": 129,
   "MusicValue": 32,
@@ -6651,7 +6651,26 @@
       "Property": 0
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 101,
+      "X": 12,
+      "Y": 15,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 24,
+      "X": 21,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 5,
+      "X": 50,
+      "Y": 16,
+      "Property": 0
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "ad980ac1-6949-480c-9850-4f70b58e6b67",
