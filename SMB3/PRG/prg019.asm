@@ -407,9 +407,9 @@ LevelEvent_Do:
 	.word LevelEvent_SpawnGoldCheeps	; 3 - $B6
 	.word LevelEvent_SpawnGoldYurarin	; 4 - $B7
 	.word LevelEvent_SpawnBlooper	; 5 - $B8
-	.word LevelEvent_GenerateCheepCheeps	; 6 - Random wooden platforms 
-	.word LevelEvent_Ruster	; 7 - Ruster generator
-	.word LevelEvent_Snifit	; 8 - Snifit generator
+	.word LevelEvent_GenerateCheepCheeps	; 6 - $B9 Random wooden platforms 
+	.word LevelEvent_Ruster	; 7 - $BA Ruster generator
+	.word LevelEvent_Snifit	; 8 - $BB Snifit generator
 
 GEN_CANCEL		= 0
 GEN_8WAYBULLETS = 8
@@ -417,7 +417,6 @@ GEN_MINES		= 2
 GEN_GOLDCHEEPS	= 3
 GEN_GOLDYURARIN = 4
 GEN_BLOOPERS	= 5
-GEN_CANCEL = 
 
 LevelEvent_DoNothing:
 LevelEvent_DoRTS:
@@ -1064,11 +1063,14 @@ Snifit_CheckDimmer:
 
 	DEX
 	BPL Snifit_CheckDimmer
+
+	LDA #$00
+	STA Level_EventTimer
 	RTS
 
 Snifit_GeneratorActive:
 	LDA Level_EventTimer
-	BEQ Generate_Snifit
+	BEQ Generate_Snifit	
 
 	DEC Level_EventTimer
 	RTS
@@ -1078,18 +1080,82 @@ Snifit_GenSideXOffset:
 	.byte $00, $FF
 
 Generate_Snifit:
-	LDA #OBJ_BOOWAVE
+	LDA #OBJ_SNIFIT
 	STA <Object_Check
 
 	JSR CheckObjectsOfType2
 
 	LDA <Num_Objects
-	CMP #$02
-	BCC Genrate_SnifitDo
+	CMP #$01
+	BCC Generate_SnifitDo
 
 	RTS
 
-Genrate_SnifitDo:
+Snifit_SpawnXOffset:
+	.byte $60, $A0
+	.byte $00, $FF
+
+Generate_SnifitDo:
+	LDA RandomN, X
+	AND #$01
+	TAY
+
+	STA Debug_Snap
+	LDA <Player_X
+	ADD Snifit_SpawnXOffset, Y
+	STA Tile_DetectionX
+
+	LDA <Player_XHi
+	ADC Snifit_SpawnXOffset + 2, Y
+	STA Tile_DetectionXHi
+
+	LDA <Player_YZ
+	SUB #$30
+	STA Tile_DetectionY
+
+	LDA <Player_YHiZ
+	SBC #$00
+	STA Tile_DetectionYHi
+
+	JSR Object_DetectTile
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_SOLID_ALL
+	BCC Snifit_Spawn
+
+	RTS
+
+Snifit_Spawn:
+	JSR Level_SpawnObj
+
+	LDA #OBJ_SNIFIT
+	STA Objects_ID, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA #$00
+	STA Objects_Property, X
+
+	LDA Tile_DetectionX
+	STA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA Tile_DetectionXHi
+	STA <Objects_XHiZ, X
+
+	LDA Tile_DetectionY
+	STA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA Tile_DetectionYHi
+	STA <Objects_YHiZ, X
+	
+	JSR Common_MakePoof
+
+	LDA #$80
+	STA Level_EventTimer
+	RTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_SpawnObj	-- slots 0 - 4
 ; Level_SpawnObjSetMax	-- slots 0 - input X register

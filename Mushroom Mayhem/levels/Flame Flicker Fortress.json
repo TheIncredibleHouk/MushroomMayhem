@@ -3,7 +3,7 @@
   "Name": "Flame Flicker Fortress",
   "TileSetIndex": 4,
   "ClearTileIndex": 65,
-  "MusicValue": 0,
+  "MusicValue": 16,
   "ScreenLength": 1,
   "StartX": 1,
   "StartY": 24,
