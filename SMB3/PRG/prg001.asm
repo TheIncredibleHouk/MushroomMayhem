@@ -2040,6 +2040,10 @@ Spring_Norm:
 	STA Player_GroundPound
 	STA Player_Flip
 
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
+
 	LDA #$02
 	STA Objects_Timer, X
 

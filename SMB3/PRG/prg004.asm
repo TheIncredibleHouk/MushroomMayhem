@@ -3072,6 +3072,10 @@ Grower_Animate:
 	STA Objects_Frame, X
 
 Grower_Draw:
+	LDY Objects_Property, X
+	LDA Grower_Palettes, Y
+	STA Objects_SpriteAttributes, X
+
 	JSR Object_DrawAligned
 
 	LDA Grower_Direction, X
@@ -3086,6 +3090,9 @@ Grower_Draw:
 	ORA Sprite_RAM + 6, Y
 	STA Sprite_RAM + 6, Y
 	RTS
+
+Grower_Palettes:
+	.byte SPR_PAL2, SPR_PAL1
 
 Grower_AtStart:
 	LDA Grower_StartX, X
@@ -3210,10 +3217,13 @@ Grower_InteractWithTiles2:
 	STA <Objects_XVelZ, X
 	STA <Objects_YVelZ, X
 
-	LDA #$80
+	LDY Objects_Property, X
+	LDA Grower_WaitTimers, Y
 	STA Objects_Timer, X
-
 	RTS
+
+Grower_WaitTimers:
+	.byte $80, $08	
 
 Grower_SetVelocity:
 	LDY <Temp_Var13
@@ -3315,7 +3325,7 @@ Grower_DetectBlockLeft:
 	RTS
 
 Grower_Retract:
-
+	STA Debug_Snap
 	JSR Object_CalcBoundBox
 
 Grower_KeepRetracting:
@@ -3324,8 +3334,16 @@ Grower_KeepRetracting:
 
 	LDA Objects_Timer2, X
 	BNE Grower_RetractRTS
-	
+
 	JSR Object_DetectTileCenter
+
+	LDA <Objects_XZ, X
+	AND #$F0
+	STA <Objects_XZ, X
+
+	LDA <Objects_YZ, X
+	AND #$F0
+	STA <Objects_YZ, X
 
 	LDA Tile_LastValue
 	AND #$FE

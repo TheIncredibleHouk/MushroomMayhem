@@ -1026,6 +1026,10 @@ PRG008_A70E:
 	STA Player_IsDucking	; Player_IsDucking = 0
 	STA Player_GroundPound
 
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
+
 	BEQ PRG008_A736	 	; Jump (technically always) to PRG008_A736
 
 PRG008_A715:
@@ -4967,6 +4971,14 @@ Player_SuitChange2:
 	STY Player_GroundPound
 	STY Player_Flip
 
+	TAY
+
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
+
+	TYA 
+
 	LDY #$50
 	STY Player_Power
 
@@ -5590,6 +5602,9 @@ Solid_ThinIceRTS:
 	RTS
 
 Solid_ThinIceGround:
+	LDA Player_GroundPound
+	BNE Solid_ThinBreakIce
+
 	LDA #$02
 	STA Player_Slippery
 
@@ -5967,6 +5982,10 @@ Player_HandleWater10:
 	LDA #$00
 	STA Player_GroundPound
 	STA Player_Flip
+
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
 
 	LDY <Temp_Var15
 

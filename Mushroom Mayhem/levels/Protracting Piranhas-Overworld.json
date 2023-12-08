@@ -1470,9 +1470,9 @@
     65,
     156,
     210,
-    67,
-    68,
-    68,
+    80,
+    81,
+    81,
     65,
     65,
     65,
@@ -1710,9 +1710,9 @@
     65,
     156,
     210,
-    210,
-    210,
-    210,
+    67,
+    68,
+    68,
     65,
     65,
     65,
@@ -6500,7 +6500,14 @@
   ],
   "PatchTileData": null,
   "FirstObjectData": [],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 12,
+      "X": 0,
+      "Y": 6,
+      "Property": 0
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "0ec3e06c-8eb6-490b-855e-fad3ed63d439",
@@ -6516,5 +6523,5 @@
       "BoundRectangle": "224,160,32,32"
     }
   ],
-  "CompressedData": "SoYQnNJQUVFBQUFBQUFBQUFBQcOc0kMBREqCEJzS0tLSQUFBQUFBQUFBQUHCnEEBPMHSSsWcQTwt0krFnEE8LtJKwZwD0kqGEJzSUFFRQUFBQUFBQUFBQUHDbtJQAVFLwtJQAVHCQZgGmcGaQcLSUAFRDNLBUAFRDGExUcFR"
+  "CompressedData": "SocQnNJQUVFBQUFBQUFBQUFBQcOc0kMBRErBnAPSSsKcQQE8wdJKxZxBPC3SSsWcQTwu0krBnAPSSoYQnNJQUVFBQUFBQUFBQUFBQcNu0lABUUvC0lABUcJBmAaZwZpBwtJQAVEM0sFQAVEMYTFRwVE="
 }

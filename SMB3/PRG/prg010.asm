@@ -130,9 +130,6 @@ PRG010_C403:
 	STA Map_MoveRepeat,X	; Otherwise, Map_MoveRepeat = $FF
 
 PRG010_C40C:
-	LDA <Map_WarpWind_FX
-	BEQ PRG010_C413	 		; If Map_WarpWind_FX = 0 (no warp wind happening), jump to PRG010_C413
-	JMP Map_DoMap_WarpWind_FX	; Do the warp wind effect!
 
 PRG010_C413:
 	LDA Map_Pan_Count
@@ -257,574 +254,574 @@ Map_DoOperation:
 	.word MO_HammerBroMarch	; B - Map Hammer brother march around (mostly handled elsewhere instead of this state routine)
 	.word MO_Wait8Proceed	; C - After 8 ticks, resume normal operations (if 1P game or didn't end turn), or else go to state $0F
 	.word MO_NormalMoveEnter; D - "Normal" map operations; move on map (paths, canoe, bridges etc.), enter levels (including 2P vs and hand trap random)
-	.word MO_HandTrap	; E - Hand trap gotcha!
+	
 
 	; NOTE: There is a Map_Operation $F (edge scroll) and Map_Operation $10 (enter level)
 	; that are not in this jump table, but handled explicitly...
 
 
 
-MO_WorldXIntro:
-	; Process by current World_EnterState value...
-	LDA World_EnterState
-	JSR DynJump	 
+; MO_WorldXIntro:
+; 	; Process by current World_EnterState value...
+; 	LDA World_EnterState
+; 	JSR DynJump	 
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word WorldIntro_BoxTimer	; 0 - Draws Player sprite in "World X" box, and delays until Map_Intro_Tick = 0
-	.word WorldIntro_EraseAndStars	; 1 - Erases the "World X" intro box and does the starry intro
-	.word WorldIntro_CompleteStars	; 2 - Complete the starry intro
+; 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+; 	.word WorldIntro_BoxTimer	; 0 - Draws Player sprite in "World X" box, and delays until Map_Intro_Tick = 0
+; 	.word WorldIntro_EraseAndStars	; 1 - Erases the "World X" intro box and does the starry intro
+; 	.word WorldIntro_CompleteStars	; 2 - Complete the starry intro
 
-WorldIntro_BoxTimer:
-	JSR Map_WorldIntro_DrawPlayer	 ; Put in the tiny player symbol
+; WorldIntro_BoxTimer:
+; 	JSR Map_WorldIntro_DrawPlayer	 ; Put in the tiny player symbol
 
-WorldIntro_BoxTimer_NoSym:
-	LDA Map_Intro_Tick
-	BNE PRG010_C513	 	; If Map_Intro_Tick <> 0, jump to PRG010_C513
+; WorldIntro_BoxTimer_NoSym:
+; 	LDA Map_Intro_Tick
+; 	BNE PRG010_C513	 	; If Map_Intro_Tick <> 0, jump to PRG010_C513
 
-	; This initializes it, since if the world intro box is new, this is zero
-	LDA #$80
-	STA Map_Intro_Tick	; Map_Intro_Tick = $80
+; 	; This initializes it, since if the world intro box is new, this is zero
+; 	LDA #$80
+; 	STA Map_Intro_Tick	; Map_Intro_Tick = $80
 
-PRG010_C513:
-	DEC Map_Intro_Tick	; Map_Intro_Tick--
-	BNE PRG010_C51B	 	; If Map_Intro_Tick <> 0, jump to PRG010_C51B
+; PRG010_C513:
+; 	DEC Map_Intro_Tick	; Map_Intro_Tick--
+; 	BNE PRG010_C51B	 	; If Map_Intro_Tick <> 0, jump to PRG010_C51B
 
-	; Map_Intro_Tick expired
-	INC World_EnterState	; Go to next state!
+; 	; Map_Intro_Tick expired
+; 	INC World_EnterState	; Go to next state!
 
-PRG010_C51B:
-	RTS		 ; Return
-
-
-	; This defines two sprites to make up the Player's current powerup
-Map_WorldIntro_PSpr:
-	.byte $60, $2D, $00, $84	; Left half of Player sprite
-	.byte $60, $2F, $00, $8C	; Right half of Player sprite
-
-	; This defines the first pattern to use for the Player sprite based on powerup
-	; The second pattern is implicitly +2 to this value
-Map_WorldIntro_PSPat:
-	.byte $2D	; 0 - Small
-	.byte $2D	; 1 - Big
-	.byte $2D	; 2 - Fire
-	.byte $2D	; 3 - Leaf
-	.byte $89	; 4 - Frog
-	.byte $79	; 5 - Tanooki
-	.byte $4B	; 6 - Hammer
+; PRG010_C51B:
+; 	RTS		 ; Return
 
 
-	; Draws the tiny Player icon in the world intro box
-Map_WorldIntro_DrawPlayer:
+; 	; This defines two sprites to make up the Player's current powerup
+; Map_WorldIntro_PSpr:
+; 	.byte $60, $2D, $00, $84	; Left half of Player sprite
+; 	.byte $60, $2F, $00, $8C	; Right half of Player sprite
 
-	; Copies in the 2 sprites from Map_WorldIntro_PSpr
-	LDY #$07	 ; Y = 7
-PRG010_C52D:
-	LDA Map_WorldIntro_PSpr,Y
-	STA Sprite_RAM+$84,Y	
-	DEY		 	; Y--
-	BPL PRG010_C52D	 	; While Y >= 0, loop!
-
-	LDX Player_Current	 
-	LDY World_Map_Power,X	 
-	LDA Map_WorldIntro_PSPat,Y	; Get pattern to use based on Player's current powerup
-	STA Sprite_RAM+$85	 	; Store as pattern
-
-	ADD #$02	 
-	STA Sprite_RAM+$89	 	; Opposite side is prior value + 2
-
-	RTS		 	; Return...
-
-	RTS		 ; Return
-
-WorldIntro_EraseAndStars:
-	JSR Map_Intro_Erase1Strip	; Erase one strip of the "World X" Intro box
-	JMP MapStarsIntro_DoStarFX	 		; Jump to PRG010_B76C
-
-	; Provides "Video_Upd_Table" format Graphics_Buffer data specifically
-	; for eradicating the "World X" intro from a dark World 8 map
-	; The low bytes of the video address are replaced with the appropriate offset
-Map_W8Dark_IntroCover:
-	vaddr $2900
-	.byte VU_VERT | 8
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-
-	vaddr $2900
-	.byte VU_VERT | 8
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+; 	; This defines the first pattern to use for the Player sprite based on powerup
+; 	; The second pattern is implicitly +2 to this value
+; Map_WorldIntro_PSPat:
+; 	.byte $2D	; 0 - Small
+; 	.byte $2D	; 1 - Big
+; 	.byte $2D	; 2 - Fire
+; 	.byte $2D	; 3 - Leaf
+; 	.byte $89	; 4 - Frog
+; 	.byte $79	; 5 - Tanooki
+; 	.byte $4B	; 6 - Hammer
 
 
-; Map_Intro_Erase1Strip
-;
-; Erases one "strip" of 16x16 tiles to clear the "World X" intro box (or Gameover!) box
-; It's important to note that it's done one strip at a time, not at once!
-Map_Intro_Erase1Strip:
+; 	; Draws the tiny Player icon in the world intro box
+; Map_WorldIntro_DrawPlayer:
 
-	; Set page @ A000 to 12
-	LDA #12
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+; 	; Copies in the 2 sprites from Map_WorldIntro_PSpr
+; 	LDY #$07	 ; Y = 7
+; PRG010_C52D:
+; 	LDA Map_WorldIntro_PSpr,Y
+; 	STA Sprite_RAM+$84,Y	
+; 	DEY		 	; Y--
+; 	BPL PRG010_C52D	 	; While Y >= 0, loop!
 
-	LDA <Map_IntBoxErase
-	BNE PRG010_C5A9	 	; If Map_IntBoxErase <> 0, jump to PRG010_C5A9
+; 	LDX Player_Current	 
+; 	LDY World_Map_Power,X	 
+; 	LDA Map_WorldIntro_PSPat,Y	; Get pattern to use based on Player's current powerup
+; 	STA Sprite_RAM+$85	 	; Store as pattern
 
-	; Map_IntBoxErase is set to offset of upper-left corner of "World X" 
-	; intro box to tell where to start copying the map tiles from!
-	LDA <Scroll_ColumnR
-	AND #$08	 
-	ADD #$34
-	STA <Map_IntBoxErase	; Map_IntBoxErase = (Scroll_ColumnR & 8) + $34
+; 	ADD #$02	 
+; 	STA Sprite_RAM+$89	 	; Opposite side is prior value + 2
 
-	LDA <Scroll_ColumnL
-	AND #$f0	
-	LSR A		
-	LSR A		
-	LSR A		
-	TAY		 	; Y = (Scroll_ColumnL & $F0) >> 3 (basically current "screen" of map * 2, for indexing Tile_Mem_Addr)
+; 	RTS		 	; Return...
 
-	; Store starting offset for this map screen into Map_Tile_AddrL/H
-	LDA Tile_Mem_Addr,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1,Y
-	STA <Map_Tile_AddrH
+; 	RTS		 ; Return
 
-	INC <Map_Tile_AddrH	; Effectively adds $100 to the address (maps get loaded at screen base + $110)
+; WorldIntro_EraseAndStars:
+; 	JSR Map_Intro_Erase1Strip	; Erase one strip of the "World X" Intro box
+; 	JMP MapStarsIntro_DoStarFX	 		; Jump to PRG010_B76C
+
+; 	; Provides "Video_Upd_Table" format Graphics_Buffer data specifically
+; 	; for eradicating the "World X" intro from a dark World 8 map
+; 	; The low bytes of the video address are replaced with the appropriate offset
+; Map_W8Dark_IntroCover:
+; 	vaddr $2900
+; 	.byte VU_VERT | 8
+; 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+
+; 	vaddr $2900
+; 	.byte VU_VERT | 8
+; 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 
-	; Calculates the base offset into the nametable for erasing the "World X" intro box
-	LDA <Scroll_ColumnR
-	AND #$08	 	; 0 or 8, depending if we're scrolled "halfway" across two screens
-	ASL A		 	; Now 0 or 16
-	ADD #$08	 	; Now 8 or 24
-	STA <Map_Intro_NTOff	; Map_Intro_NTOff = 8 or 24
+; ; Map_Intro_Erase1Strip
+; ;
+; ; Erases one "strip" of 16x16 tiles to clear the "World X" intro box (or Gameover!) box
+; ; It's important to note that it's done one strip at a time, not at once!
+; Map_Intro_Erase1Strip:
 
-	; Calculates the corresponding offset to the attribute table
-	LDA <Horz_Scroll
-	LSR A		
-	LSR A		
-	LSR A		
-	LSR A		
-	LSR A			; Divide by 32 because EACH attribute BYTE defines FOUR 8x8 tiles (4 * 8 = 32)
-	ADD #$d2	
-	STA <Map_Intro_ATOff		; Map_Intro_ATOff = (Horz_Scroll / 32) + $D2
+; 	; Set page @ A000 to 12
+; 	LDA #12
+; 	STA PAGE_A000
+; 	JSR PRGROM_Change_A000
 
-	LDA #$02	
-	STA <Map_StarsState		; Map_StarsState = 2
+; 	LDA <Map_IntBoxErase
+; 	BNE PRG010_C5A9	 	; If Map_IntBoxErase <> 0, jump to PRG010_C5A9
 
-PRG010_C5A9:
-	LDA World_8_Dark
-	BEQ PRG010_C5C5		; If World_8_Dark = 0 (no darkness effect), jump to PRG010_C5C5
+; 	; Map_IntBoxErase is set to offset of upper-left corner of "World X" 
+; 	; intro box to tell where to start copying the map tiles from!
+; 	LDA <Scroll_ColumnR
+; 	AND #$08	 
+; 	ADD #$34
+; 	STA <Map_IntBoxErase	; Map_IntBoxErase = (Scroll_ColumnR & 8) + $34
 
-	; The World 8 Darkness effect version of clearing the World X intro box...
+; 	LDA <Scroll_ColumnL
+; 	AND #$f0	
+; 	LSR A		
+; 	LSR A		
+; 	LSR A		
+; 	TAY		 	; Y = (Scroll_ColumnL & $F0) >> 3 (basically current "screen" of map * 2, for indexing Tile_Mem_Addr)
 
-	; Copy Map_W8Dark_IntroCover into the Graphics_Buffer
-	LDY #$15	 	
-PRG010_C5B0:
-	LDA Map_W8Dark_IntroCover,Y	
-	STA Graphics_Buffer,Y	 	
-	DEY		 		; Y--
-	BPL PRG010_C5B0	 		; While Y >= 0, loop!
+; 	; Store starting offset for this map screen into Map_Tile_AddrL/H
+; 	LDA Tile_Mem_Addr,Y
+; 	STA <Map_Tile_AddrL
+; 	LDA Tile_Mem_Addr+1,Y
+; 	STA <Map_Tile_AddrH
 
-	; Patch in the correct low byte for the video address
-	LDX <Map_Intro_NTOff		
-	STX Graphics_Buffer+1	
-	INX		 
-	STX Graphics_Buffer+$C
-	JMP PRG010_C622	 		; Jump to PRG010_C622
+; 	INC <Map_Tile_AddrH	; Effectively adds $100 to the address (maps get loaded at screen base + $110)
 
-PRG010_C5C5:
-	LDA Map_IntBoxErase	 
-	STA <Temp_Var1		 	; Temp_Var1 = Map_IntBoxErase
 
-	LDX #$00	 		; X = 0
+; 	; Calculates the base offset into the nametable for erasing the "World X" intro box
+; 	LDA <Scroll_ColumnR
+; 	AND #$08	 	; 0 or 8, depending if we're scrolled "halfway" across two screens
+; 	ASL A		 	; Now 0 or 16
+; 	ADD #$08	 	; Now 8 or 24
+; 	STA <Map_Intro_NTOff	; Map_Intro_NTOff = 8 or 24
 
-PRG010_C5CC:	
-	; CHECKME: Isn't Level_Tileset always equal to zero on world maps??
-	; Probably wouldn't matter since PAGE_A000 is hard-coded to 12,
-	; instead of using Page_Per_Tileset like it ought to :)
-	LDA Level_Tileset
-	ASL A		 
-	TAY		 		; Y = Level_Tileset << 1 (for indexing TileLayout_ByTileset)
+; 	; Calculates the corresponding offset to the attribute table
+; 	LDA <Horz_Scroll
+; 	LSR A		
+; 	LSR A		
+; 	LSR A		
+; 	LSR A		
+; 	LSR A			; Divide by 32 because EACH attribute BYTE defines FOUR 8x8 tiles (4 * 8 = 32)
+; 	ADD #$d2	
+; 	STA <Map_Intro_ATOff		; Map_Intro_ATOff = (Horz_Scroll / 32) + $D2
 
-	; Set Temp_Var15 to point to the 16x16 tile 8x8 layout data
-	LDA TileLayout_ByTileset,Y
-	STA <Temp_Var15		 
-	LDA TileLayout_ByTileset+1,Y
-	STA <Temp_Var16	
+; 	LDA #$02	
+; 	STA <Map_StarsState		; Map_StarsState = 2
 
-	LDY <Temp_Var1		 	; Get offset to current 16x16 tile we want to grab
-	LDA [Map_Tile_AddrL],Y	 	; Grab it!
-	TAY		 		; Y = tile
+; PRG010_C5A9:
+; 	LDA World_8_Dark
+; 	BEQ PRG010_C5C5		; If World_8_Dark = 0 (no darkness effect), jump to PRG010_C5C5
 
-	; The 16x16 tile is laid out in four 256 byte sized "chunks" which define each 8x8
-	; in the order of upper-left, lower-left, upper-right, lower-right
+; 	; The World 8 Darkness effect version of clearing the World X intro box...
 
-	; Upper-left
-	LDA [Temp_Var15],Y	 	; Get first 8x8
-	STA Scroll_PatStrip,X	 	; Store this 8x8 into the vertical strip
+; 	; Copy Map_W8Dark_IntroCover into the Graphics_Buffer
+; 	LDY #$15	 	
+; PRG010_C5B0:
+; 	LDA Map_W8Dark_IntroCover,Y	
+; 	STA Graphics_Buffer,Y	 	
+; 	DEY		 		; Y--
+; 	BPL PRG010_C5B0	 		; While Y >= 0, loop!
 
-	; Lower-left
-	INC <Temp_Var16		; Jump to next layout chunk
-	LDA [Temp_Var15],Y	 	; Get next 8x8
-	STA Scroll_PatStrip+1,X	; Store this 8x8 into vertical strip, next slot to the right
+; 	; Patch in the correct low byte for the video address
+; 	LDX <Map_Intro_NTOff		
+; 	STX Graphics_Buffer+1	
+; 	INX		 
+; 	STX Graphics_Buffer+$C
+; 	JMP PRG010_C622	 		; Jump to PRG010_C622
 
-	; Upper-right
-	INC <Temp_Var16		; Jump to next layout chunk
-	LDA [Temp_Var15],Y	 	; Get next 8x8
-	STA Scroll_PatStrip+$B,X	; Store into vertical strip
+; PRG010_C5C5:
+; 	LDA Map_IntBoxErase	 
+; 	STA <Temp_Var1		 	; Temp_Var1 = Map_IntBoxErase
 
-	; Lower-right
-	INC <Temp_Var16		; Jump to next layout chunk
-	LDA [Temp_Var15],Y	 	; Get next 8x8
-	STA Scroll_PatStrip+$C,X	; Store into vertical strip
+; 	LDX #$00	 		; X = 0
 
-	LDA <Temp_Var1	
-	ADD #16	
-	STA <Temp_Var1		 	; Temp_Var1 += 16 (get next tile one row down)
+; PRG010_C5CC:	
+; 	; CHECKME: Isn't Level_Tileset always equal to zero on world maps??
+; 	; Probably wouldn't matter since PAGE_A000 is hard-coded to 12,
+; 	; instead of using Page_Per_Tileset like it ought to :)
+; 	LDA Level_Tileset
+; 	ASL A		 
+; 	TAY		 		; Y = Level_Tileset << 1 (for indexing TileLayout_ByTileset)
 
-	INX
-	INX		; X += 2 (next block down in Scroll_PatStrip)
+; 	; Set Temp_Var15 to point to the 16x16 tile 8x8 layout data
+; 	LDA TileLayout_ByTileset,Y
+; 	STA <Temp_Var15		 
+; 	LDA TileLayout_ByTileset+1,Y
+; 	STA <Temp_Var16	
 
-	CPX #$08	
-	BNE PRG010_C5CC	; If X <> 8 (4 tiles downward in Scroll_PatStrip), loop!
+; 	LDY <Temp_Var1		 	; Get offset to current 16x16 tile we want to grab
+; 	LDA [Map_Tile_AddrL],Y	 	; Grab it!
+; 	TAY		 		; Y = tile
 
-	; Pushes the Scroll_PatStrip memory into the Graphics_Buffer
-	LDX #$12	 		; X = $12
-PRG010_C609:
-	LDA Scroll_PatStrip,X
-	STA Graphics_Buffer+3,X
-	DEX		 		; X--
-	BPL PRG010_C609	 		; If X >= 0, loop!
+; 	; The 16x16 tile is laid out in four 256 byte sized "chunks" which define each 8x8
+; 	; in the order of upper-left, lower-left, upper-right, lower-right
 
-	; Used VRAM addr $29xx for both strips
-	LDA #$29	 
-	STA Graphics_Buffer	
-	STA Graphics_Buffer+$B
+; 	; Upper-left
+; 	LDA [Temp_Var15],Y	 	; Get first 8x8
+; 	STA Scroll_PatStrip,X	 	; Store this 8x8 into the vertical strip
+
+; 	; Lower-left
+; 	INC <Temp_Var16		; Jump to next layout chunk
+; 	LDA [Temp_Var15],Y	 	; Get next 8x8
+; 	STA Scroll_PatStrip+1,X	; Store this 8x8 into vertical strip, next slot to the right
+
+; 	; Upper-right
+; 	INC <Temp_Var16		; Jump to next layout chunk
+; 	LDA [Temp_Var15],Y	 	; Get next 8x8
+; 	STA Scroll_PatStrip+$B,X	; Store into vertical strip
+
+; 	; Lower-right
+; 	INC <Temp_Var16		; Jump to next layout chunk
+; 	LDA [Temp_Var15],Y	 	; Get next 8x8
+; 	STA Scroll_PatStrip+$C,X	; Store into vertical strip
+
+; 	LDA <Temp_Var1	
+; 	ADD #16	
+; 	STA <Temp_Var1		 	; Temp_Var1 += 16 (get next tile one row down)
+
+; 	INX
+; 	INX		; X += 2 (next block down in Scroll_PatStrip)
+
+; 	CPX #$08	
+; 	BNE PRG010_C5CC	; If X <> 8 (4 tiles downward in Scroll_PatStrip), loop!
+
+; 	; Pushes the Scroll_PatStrip memory into the Graphics_Buffer
+; 	LDX #$12	 		; X = $12
+; PRG010_C609:
+; 	LDA Scroll_PatStrip,X
+; 	STA Graphics_Buffer+3,X
+; 	DEX		 		; X--
+; 	BPL PRG010_C609	 		; If X >= 0, loop!
+
+; 	; Used VRAM addr $29xx for both strips
+; 	LDA #$29	 
+; 	STA Graphics_Buffer	
+; 	STA Graphics_Buffer+$B
 	
-	LDA #(VU_VERT | 8)		; 8 8x8s vertically applied
-	STA Graphics_Buffer+2
-	STA Graphics_Buffer+$D
-
-PRG010_C622:
-	LDX <Map_Intro_NTOff		
-	STX Graphics_Buffer+1	 	; Store lower part of VRAM address
-	INX		 
-	STX Graphics_Buffer+$C	 	; Store lower part of VRAM address
-
-
-	; Now it's the attribute table's turn...
-
-	; Store VRAM addr $2Bxx
-	LDA #$2b
-	STA Graphics_Buffer+$16
-	STA Graphics_Buffer+$1A
-
-	; Store lower part of VRAM address
-	LDA <Map_Intro_ATOff	
-	STA Graphics_Buffer+$17
-	ADD #$08	 
-	STA Graphics_Buffer+$1B
-
-	; Just one byte to copy
-	LDA #$01
-	STA Graphics_Buffer+$18
-	STA Graphics_Buffer+$1C
-
-	LDA <Map_Intro_CurStripe
-	AND #$06	
-	LSR A		
-	TAX		 ; X = (Map_Intro_CurStripe & 6) >> 1
-
-	LDA <Scroll_ColorStrip,X
-	STA Graphics_Buffer+$19	
-
-	LDA <Scroll_ColorStrip+4,X	
-	STA Graphics_Buffer+$1D	
-
-	LDA <Map_Intro_CurStripe		
-	AND #$01	 
-	BNE PRG010_C66A	 	; If Map_Intro_CurStripe bit 0 set, jump to PRG010_C66A
-
-	; Otherwise...
-	LDA <Scroll_ColorStrip,X
-	AND #$33	 
-	STA Graphics_Buffer+$19
-
-	LDA <Scroll_ColorStrip+4,X	
-	AND #$33	 	
-	STA Graphics_Buffer+$1D	
-
-PRG010_C66A:
-	LDA #$00	 
-	STA Graphics_Buffer+$1E
+; 	LDA #(VU_VERT | 8)		; 8 8x8s vertically applied
+; 	STA Graphics_Buffer+2
+; 	STA Graphics_Buffer+$D
+
+; PRG010_C622:
+; 	LDX <Map_Intro_NTOff		
+; 	STX Graphics_Buffer+1	 	; Store lower part of VRAM address
+; 	INX		 
+; 	STX Graphics_Buffer+$C	 	; Store lower part of VRAM address
+
+
+; 	; Now it's the attribute table's turn...
+
+; 	; Store VRAM addr $2Bxx
+; 	LDA #$2b
+; 	STA Graphics_Buffer+$16
+; 	STA Graphics_Buffer+$1A
+
+; 	; Store lower part of VRAM address
+; 	LDA <Map_Intro_ATOff	
+; 	STA Graphics_Buffer+$17
+; 	ADD #$08	 
+; 	STA Graphics_Buffer+$1B
+
+; 	; Just one byte to copy
+; 	LDA #$01
+; 	STA Graphics_Buffer+$18
+; 	STA Graphics_Buffer+$1C
+
+; 	LDA <Map_Intro_CurStripe
+; 	AND #$06	
+; 	LSR A		
+; 	TAX		 ; X = (Map_Intro_CurStripe & 6) >> 1
+
+; 	LDA <Scroll_ColorStrip,X
+; 	STA Graphics_Buffer+$19	
+
+; 	LDA <Scroll_ColorStrip+4,X	
+; 	STA Graphics_Buffer+$1D	
+
+; 	LDA <Map_Intro_CurStripe		
+; 	AND #$01	 
+; 	BNE PRG010_C66A	 	; If Map_Intro_CurStripe bit 0 set, jump to PRG010_C66A
+
+; 	; Otherwise...
+; 	LDA <Scroll_ColorStrip,X
+; 	AND #$33	 
+; 	STA Graphics_Buffer+$19
+
+; 	LDA <Scroll_ColorStrip+4,X	
+; 	AND #$33	 	
+; 	STA Graphics_Buffer+$1D	
+
+; PRG010_C66A:
+; 	LDA #$00	 
+; 	STA Graphics_Buffer+$1E
 
-	; If, on the next increment to Map_IntBoxErase, the lower 4 bits are "zero",
-	; it has wrapped to a new row.  This should only happen when the "World X"
-	; intro is being performed in "halfway off-centered" mode...
-	LDX <Map_IntBoxErase
-	INX		
-	TXA		
-	AND #$0f	 	
-	BNE PRG010_C689	 	; If (Map_IntBoxErase + 1) & $0F is non-zero, jump to PRG010_C689
-
-	; Otherwise, we need to update the address
-	LDA <Map_Tile_AddrL
-	ADD #$b0
-	STA <Map_Tile_AddrL	; Map_Tile_AddrL += $B0 (11 tiles over)
+; 	; If, on the next increment to Map_IntBoxErase, the lower 4 bits are "zero",
+; 	; it has wrapped to a new row.  This should only happen when the "World X"
+; 	; intro is being performed in "halfway off-centered" mode...
+; 	LDX <Map_IntBoxErase
+; 	INX		
+; 	TXA		
+; 	AND #$0f	 	
+; 	BNE PRG010_C689	 	; If (Map_IntBoxErase + 1) & $0F is non-zero, jump to PRG010_C689
+
+; 	; Otherwise, we need to update the address
+; 	LDA <Map_Tile_AddrL
+; 	ADD #$b0
+; 	STA <Map_Tile_AddrL	; Map_Tile_AddrL += $B0 (11 tiles over)
 
-	LDA <Map_Tile_AddrH
-	ADC #$01	 
-	STA <Map_Tile_AddrH	; Next screen plus add carry if needed
+; 	LDA <Map_Tile_AddrH
+; 	ADC #$01	 
+; 	STA <Map_Tile_AddrH	; Next screen plus add carry if needed
 
-	LDA <Map_IntBoxErase
-	AND #$f0	 	
-	TAX		 	; X = (Map_IntBoxErase & $F0); current row within map "screen" of tiles
+; 	LDA <Map_IntBoxErase
+; 	AND #$f0	 	
+; 	TAX		 	; X = (Map_IntBoxErase & $F0); current row within map "screen" of tiles
 
-PRG010_C689:
-	STX <Map_IntBoxErase	; Update Map_IntBoxErase
+; PRG010_C689:
+; 	STX <Map_IntBoxErase	; Update Map_IntBoxErase
 
-	TXA		
-	AND #$01	
-	BNE PRG010_C69F	 	; If (Map_IntBoxErase & 1) <> 0 (if we're on an "odd" tile), jump to PRG010_C69F
+; 	TXA		
+; 	AND #$01	
+; 	BNE PRG010_C69F	 	; If (Map_IntBoxErase & 1) <> 0 (if we're on an "odd" tile), jump to PRG010_C69F
 
-	; Otherwise need to update the attribute stuff!
+; 	; Otherwise need to update the attribute stuff!
 
-	; If, on the next increment to Map_Intro_ATOff, the lower 3 bits are "zero",
-	; it has wrapped to a new row.  This should only happen when the "World X"
-	; intro is being performed in "halfway off-centered" mode...
-	LDX <Map_Intro_ATOff
-	INX
-	TXA
-	AND #$07
-	BNE PRG010_C69D	 	; If (Map_Intro_ATOff + 1) & 7 <> 0, jump to PRG010_C69D
+; 	; If, on the next increment to Map_Intro_ATOff, the lower 3 bits are "zero",
+; 	; it has wrapped to a new row.  This should only happen when the "World X"
+; 	; intro is being performed in "halfway off-centered" mode...
+; 	LDX <Map_Intro_ATOff
+; 	INX
+; 	TXA
+; 	AND #$07
+; 	BNE PRG010_C69D	 	; If (Map_Intro_ATOff + 1) & 7 <> 0, jump to PRG010_C69D
 
-	LDA <Map_Intro_ATOff
-	AND #$f0	 
-	TAX		 	; X contains just the upper 4 bits of Map_Intro_ATOff
+; 	LDA <Map_Intro_ATOff
+; 	AND #$f0	 
+; 	TAX		 	; X contains just the upper 4 bits of Map_Intro_ATOff
 
-PRG010_C69D:
-	STX <Map_Intro_ATOff	; Update Map_Intro_ATOff
+; PRG010_C69D:
+; 	STX <Map_Intro_ATOff	; Update Map_Intro_ATOff
 
 
-PRG010_C69F
+; PRG010_C69F
 
-	; If, on the next +2 to Map_Intro_NTOff, the lower 5 bits are "zero",
-	; it has wrapped to a new row.  This should only happen when the "World X"
-	; intro is being performed in "halfway off-centered" mode...
-	LDX <Map_Intro_NTOff
-	INX
-	INX
-	TXA
-	AND #$1f
-	BNE PRG010_C6AA		; If (Map_Intro_NTOff + 1) & $1f <> 0, jump to PRG010_C6AA
+; 	; If, on the next +2 to Map_Intro_NTOff, the lower 5 bits are "zero",
+; 	; it has wrapped to a new row.  This should only happen when the "World X"
+; 	; intro is being performed in "halfway off-centered" mode...
+; 	LDX <Map_Intro_NTOff
+; 	INX
+; 	INX
+; 	TXA
+; 	AND #$1f
+; 	BNE PRG010_C6AA		; If (Map_Intro_NTOff + 1) & $1f <> 0, jump to PRG010_C6AA
 
-	LDX #$00	 	; X = 0
+; 	LDX #$00	 	; X = 0
 
-PRG010_C6AA:
-	STX <Map_Intro_NTOff	; Update Map_Intro_NTOff
+; PRG010_C6AA:
+; 	STX <Map_Intro_NTOff	; Update Map_Intro_NTOff
 
-	INC <Map_Intro_CurStripe ; Map_Intro_CurStripe++
+; 	INC <Map_Intro_CurStripe ; Map_Intro_CurStripe++
 
-	LDA <Map_Intro_CurStripe
-	CMP #$08	 
-	BNE PRG010_C6BB	 	; If Map_Intro_CurStripe <> 8, jump to PRG010_C6BB
+; 	LDA <Map_Intro_CurStripe
+; 	CMP #$08	 
+; 	BNE PRG010_C6BB	 	; If Map_Intro_CurStripe <> 8, jump to PRG010_C6BB
 
-	; Otherwise, we're done!  The stupid box is erased!
-	LDA #$00
-	STA <Map_IntBoxErase	; Map_IntBoxErase = 0
-	INC World_EnterState	; Next state!  (NOTE: Gameover uses this too, so GameOver_State, which is the same memory)
+; 	; Otherwise, we're done!  The stupid box is erased!
+; 	LDA #$00
+; 	STA <Map_IntBoxErase	; Map_IntBoxErase = 0
+; 	INC World_EnterState	; Next state!  (NOTE: Gameover uses this too, so GameOver_State, which is the same memory)
 
-PRG010_C6BB:
-	; In any case, put page 11 back in at A000
-	LDA #11
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+; PRG010_C6BB:
+; 	; In any case, put page 11 back in at A000
+; 	LDA #11
+; 	STA PAGE_A000
+; 	JSR PRGROM_Change_A000
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-WorldIntro_CompleteStars:
-	JSR MapStarsIntro_DoStarFX	; Continue updating starry intro until complete
-	LDA Map_StarFX_State	 
-	BNE PRG010_C6D7		; If Map_StarFX_State <> 0, jump to PRG010_C6D7 (RTS)
+; WorldIntro_CompleteStars:
+; 	JSR MapStarsIntro_DoStarFX	; Continue updating starry intro until complete
+; 	LDA Map_StarFX_State	 
+; 	BNE PRG010_C6D7		; If Map_StarFX_State <> 0, jump to PRG010_C6D7 (RTS)
 
-	; Star intro is over!
+; 	; Star intro is over!
 
-	INC Map_Operation	; Next Map_Operation...
+; 	INC Map_Operation	; Next Map_Operation...
 
-	LDA #$00
-	STA World_EnterState	; World_EnterState = 0
+; 	LDA #$00
+; 	STA World_EnterState	; World_EnterState = 0
 
-	JMP Map_DrawPlayer	; Jump to Map_DrawPlayer
+; 	JMP Map_DrawPlayer	; Jump to Map_DrawPlayer
 
-PRG010_C6D7:
-	RTS		 ; Return
+; PRG010_C6D7:
+; 	RTS		 ; Return
 
-GameOver_Complete:
-	LDA Map_Intro_Tick
-	BNE PRG010_C6E2	 ; If Map_Intro_Tick <> 0, jump to PRG010_C6E2
+; GameOver_Complete:
+; 	LDA Map_Intro_Tick
+; 	BNE PRG010_C6E2	 ; If Map_Intro_Tick <> 0, jump to PRG010_C6E2
 
-	; Map_Intro_Tick = $10
-	LDA #$10
-	STA Map_Intro_Tick
+; 	; Map_Intro_Tick = $10
+; 	LDA #$10
+; 	STA Map_Intro_Tick
 
-PRG010_C6E2:
-	JSR PRG010_C513
+; PRG010_C6E2:
+; 	JSR PRG010_C513
 
-	LDA Map_Intro_Tick
-	BNE PRG010_C6EF	 ; If Map_Intro_Tick <> 0, jump to PRG010_C6EF
+; 	LDA Map_Intro_Tick
+; 	BNE PRG010_C6EF	 ; If Map_Intro_Tick <> 0, jump to PRG010_C6EF
 
-	LDA #$00
-	STA Map_Object_ActY
+; 	LDA #$00
+; 	STA Map_Object_ActY
 
-PRG010_C6EF:
-	JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
+; PRG010_C6EF:
+; 	JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
 
-GameOver_Loop:
-	LDA GameOver_State
-	JSR DynJump
+; GameOver_Loop:
+; 	LDA GameOver_State
+; 	JSR DynJump
 
-	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word GameOver_WaitOnBGM	; 0: Wait for "Game Over" music to finish
-	.word GameOver_DoMenu		; 1: Player selects action
+; 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+; 	.word GameOver_WaitOnBGM	; 0: Wait for "Game Over" music to finish
+; 	.word GameOver_DoMenu		; 1: Player selects action
 
-	; Player selected CONTINUE...
-	.word Map_Intro_Erase1Strip	; 2: Erase the Gameover box
-	.word GameOver_Timeout		; 3: Short timeout before we decide what to do next
-	.word GameOver_TwirlToStart	; 4: Player twirls back to map start (jumps to State 8 after this)
-	.word GameOver_TwirlFromAfar	; 5: Player twirling in from far away; pretty much straight left
-	.word GameOver_AlignToStartY	; 6: Player aligns to starting map Y
-	.word GameOver_ReturnToStartX	; 7: Player slides back to starting X
-	.word GameOver_Complete		; 8: Complete the sequence
+; 	; Player selected CONTINUE...
+; 	.word Map_Intro_Erase1Strip	; 2: Erase the Gameover box
+; 	.word GameOver_Timeout		; 3: Short timeout before we decide what to do next
+; 	.word GameOver_TwirlToStart	; 4: Player twirls back to map start (jumps to State 8 after this)
+; 	.word GameOver_TwirlFromAfar	; 5: Player twirling in from far away; pretty much straight left
+; 	.word GameOver_AlignToStartY	; 6: Player aligns to starting map Y
+; 	.word GameOver_ReturnToStartX	; 7: Player slides back to starting X
+; 	.word GameOver_Complete		; 8: Complete the sequence
 
-	; NOTE: GameOver_State = 9 is handled specially outside of this routine
+; 	; NOTE: GameOver_State = 9 is handled specially outside of this routine
 
-GameOver_WaitOnBGM:
-	LDA SndCur_Music1	 
-	BNE PRG010_C712	 ; If Game Over music is still playing, jump to PRG010_C712
+; GameOver_WaitOnBGM:
+; 	LDA SndCur_Music1	 
+; 	BNE PRG010_C712	 ; If Game Over music is still playing, jump to PRG010_C712
 
-	INC GameOver_State	 ; GameOver_State++
+; 	INC GameOver_State	 ; GameOver_State++
 
-PRG010_C712:
-	JMP PRG010_C772	 ; Jump to PRG010_C772
+; PRG010_C712:
+; 	JMP PRG010_C772	 ; Jump to PRG010_C772
 
-GameOver_DoMenu:
-	LDA <Pad_Input
-	AND #(PAD_UP | PAD_DOWN)
-	BEQ PRG010_C72B	 ; If Player is pressing neither UP nor DOWN, jump to PRG010_C72B
+; GameOver_DoMenu:
+; 	LDA <Pad_Input
+; 	AND #(PAD_UP | PAD_DOWN)
+; 	BEQ PRG010_C72B	 ; If Player is pressing neither UP nor DOWN, jump to PRG010_C72B
 
-	; Play the bleep noise
-	LDA #SND_MAPPATHMOVE
-	STA Sound_QMap
+; 	; Play the bleep noise
+; 	LDA #SND_MAPPATHMOVE
+; 	STA Sound_QMap
 
-	; Switch between $60/$68 (cursor up and down)
-	LDA Map_GameOver_CursorY
-	EOR #$08
-	STA Map_GameOver_CursorY
+; 	; Switch between $60/$68 (cursor up and down)
+; 	LDA Map_GameOver_CursorY
+; 	EOR #$08
+; 	STA Map_GameOver_CursorY
 
-	JMP PRG010_C748	 ; Jump to PRG010_C748
+; 	JMP PRG010_C748	 ; Jump to PRG010_C748
 
-PRG010_C72B:
+; PRG010_C72B:
 
-	; Player not pressing UP or DOWN...
+; 	; Player not pressing UP or DOWN...
 
-	LDA <Pad_Input
-	AND #PAD_START
-	BEQ PRG010_C748	 ; If Player is NOT pressing START, jump to PRG010_C748
+; 	LDA <Pad_Input
+; 	AND #PAD_START
+; 	BEQ PRG010_C748	 ; If Player is NOT pressing START, jump to PRG010_C748
 
-	; Play the starry entrance sound (this is never heard!)
-	LDA #SND_MAPENTERWORLD
-	STA Sound_QLevel1
+; 	; Play the starry entrance sound (this is never heard!)
+; 	LDA #SND_MAPENTERWORLD
+; 	STA Sound_QLevel1
 
-	LDX #$09	 ; X = 9 (Player selects END)
-	LDA Map_GameOver_CursorY
+; 	LDX #$09	 ; X = 9 (Player selects END)
+; 	LDA Map_GameOver_CursorY
 
-	AND #$08
-	BNE PRG010_C741	 ; If Player selected "END", jump to PRG010_C741
+; 	AND #$08
+; 	BNE PRG010_C741	 ; If Player selected "END", jump to PRG010_C741
 
-	LDX #$02	 ; X = 2 (Player selects CONTINUE)
+; 	LDX #$02	 ; X = 2 (Player selects CONTINUE)
 
-PRG010_C741:
-	STX GameOver_State	 ; Set GameOver_State appropriately
+; PRG010_C741:
+; 	STX GameOver_State	 ; Set GameOver_State appropriately
 
-	; Map_UnusedGOFlag = $F8 
-	LDA #$f8
-	STA <Map_UnusedGOFlag
+; 	; Map_UnusedGOFlag = $F8 
+; 	LDA #$f8
+; 	STA <Map_UnusedGOFlag
 
-PRG010_C748:
-	; Clear all the map object Y to $F8 (off-screen)!
-	LDY #$0d	 ; Y = $D
-	LDA #$f8	 ; A = $F8
-PRG010_C74C:
-	STA Map_Object_ActY,Y	 ; -> map object's Y
-	DEY		 ; Y--
-	BPL PRG010_C74C	 ; While Y >= 0, loop!
+; PRG010_C748:
+; 	; Clear all the map object Y to $F8 (off-screen)!
+; 	LDY #$0d	 ; Y = $D
+; 	LDA #$f8	 ; A = $F8
+; PRG010_C74C:
+; 	STA Map_Object_ActY,Y	 ; -> map object's Y
+; 	DEY		 ; Y--
+; 	BPL PRG010_C74C	 ; While Y >= 0, loop!
 
-	JMP PRG010_C75D	 ; Jump to PRG010_C75D
+; 	JMP PRG010_C75D	 ; Jump to PRG010_C75D
 
-GameOver_DeadPlayerSprite:
-	.byte $64, $61, $00, $50	; Left half
-	.byte $64, $61, $40, $58	; Right half
+; GameOver_DeadPlayerSprite:
+; 	.byte $64, $61, $00, $50	; Left half
+; 	.byte $64, $61, $40, $58	; Right half
 	
-PRG010_C75D:
+; PRG010_C75D:
 
-	; Set game over action cursor Y
-	LDA Map_GameOver_CursorY
-	STA Sprite_RAM+$94
+; 	; Set game over action cursor Y
+; 	LDA Map_GameOver_CursorY
+; 	STA Sprite_RAM+$94
 
-	; Set game over action cursor pattern
-	LDA #$6f
-	STA Sprite_RAM+$95
+; 	; Set game over action cursor pattern
+; 	LDA #$6f
+; 	STA Sprite_RAM+$95
 
-	; Set game over action cursor attributes
-	LDA #SPR_PAL0
-	STA Sprite_RAM+$96
+; 	; Set game over action cursor attributes
+; 	LDA #SPR_PAL0
+; 	STA Sprite_RAM+$96
 
-	; Set game over action cursor X
-	LDA #$68
-	STA Sprite_RAM+$97
+; 	; Set game over action cursor X
+; 	LDA #$68
+; 	STA Sprite_RAM+$97
 
-	; Generate the little "dead Player" sprite in the Game Over box
-PRG010_C772:
-	LDY #$07	 ; Y = 7
-PRG010_C774:
-	LDA GameOver_DeadPlayerSprite,Y	 ; Get dead player sprite byte
-	STA Sprite_RAM+$84,Y	 ; Store into Sprite_RAM
+; 	; Generate the little "dead Player" sprite in the Game Over box
+; PRG010_C772:
+; 	LDY #$07	 ; Y = 7
+; PRG010_C774:
+; 	LDA GameOver_DeadPlayerSprite,Y	 ; Get dead player sprite byte
+; 	STA Sprite_RAM+$84,Y	 ; Store into Sprite_RAM
 
-	DEY		 ; Y--
-	BPL PRG010_C774	 ; While Y >= 0, loop!
+; 	DEY		 ; Y--
+; 	BPL PRG010_C774	 ; While Y >= 0, loop!
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
-GameOver_Timeout:
-	LDA Map_Intro_Tick
-	BNE PRG010_C788	 ; If Map_Intro_Tick <> 0, jump to PRG010_C788
+; GameOver_Timeout:
+; 	LDA Map_Intro_Tick
+; 	BNE PRG010_C788	 ; If Map_Intro_Tick <> 0, jump to PRG010_C788
 
-	; Map_Intro_Tick = $10 -- short version
-	LDA #$10
-	STA Map_Intro_Tick
+; 	; Map_Intro_Tick = $10 -- short version
+; 	LDA #$10
+; 	STA Map_Intro_Tick
 
-PRG010_C788:
-	JSR WorldIntro_BoxTimer_NoSym	 ; Just delay until Map_Intro_Tick = 0
+; PRG010_C788:
+; 	JSR WorldIntro_BoxTimer_NoSym	 ; Just delay until Map_Intro_Tick = 0
 
-	LDA GameOver_State
-	CMP #$04
-	BNE PRG010_C79D	 ; If GameOver_State <> 4 (4 means timer expired, went to next state), jump to PRG010_C79D (WorldMap_UpdateAndDraw)
+; 	LDA GameOver_State
+; 	CMP #$04
+; 	BNE PRG010_C79D	 ; If GameOver_State <> 4 (4 means timer expired, went to next state), jump to PRG010_C79D (WorldMap_UpdateAndDraw)
 
-	; We're in state 4 now... (this will be for one cycle only, we're on our way out)
+; 	; We're in state 4 now... (this will be for one cycle only, we're on our way out)
 
-	LDA <Horz_Scroll_Hi
-	BNE PRG010_C79A	 ; If not back on the first map screen yet, jump to PRG010_C79A
+; 	LDA <Horz_Scroll_Hi
+; 	BNE PRG010_C79A	 ; If not back on the first map screen yet, jump to PRG010_C79A
 
-	LDA <Horz_Scroll
-	BEQ PRG010_C79D	 ; If on the first map screen hard left, jump to PRG010_C79D (WorldMap_UpdateAndDraw)
+; 	LDA <Horz_Scroll
+; 	BEQ PRG010_C79D	 ; If on the first map screen hard left, jump to PRG010_C79D (WorldMap_UpdateAndDraw)
 
-PRG010_C79A:
+; PRG010_C79A:
 
-	; In some way we're not all the way to the left on the map at this time...
+; 	; In some way we're not all the way to the left on the map at this time...
 
-	INC GameOver_State	 ; GameOver_State++
+; 	INC GameOver_State	 ; GameOver_State++
 
-PRG010_C79D:
-	JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
+; PRG010_C79D:
+; 	JMP WorldMap_UpdateAndDraw	 ; Jump to WorldMap_UpdateAndDraw
 
 MO_SwitchToMO_D:
 	; Kind of a silly and pointless Map_Operation; maybe they intended for more here?
@@ -2917,7 +2914,11 @@ DMC08:
 DMC08_End
 
 FindLevelInfo:
-	
+	STA Debug_Snap
+	LDA World_Map_X
+	AND #$0F
+	BNE UpdateLevelRTS
+
 	LDA World_Map_X
 	ORA World_Map_XHi
 	STA DAIZ_TEMP1

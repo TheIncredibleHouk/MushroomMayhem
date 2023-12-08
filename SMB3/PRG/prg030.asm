@@ -6419,6 +6419,10 @@ Player_EndGroundPound:
 	STA Player_GroundPound
 	STA Player_Flip
 
+	LDA <Player_FlipBits
+	AND #~SPR_VFLIP
+	STA <Player_FlipBits
+
 	LDA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
