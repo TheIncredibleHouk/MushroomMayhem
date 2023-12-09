@@ -6661,6 +6661,12 @@
       "X": 161,
       "Y": 3,
       "Property": 0
+    },
+    {
+      "GameObjectId": 57,
+      "X": 134,
+      "Y": 2,
+      "Property": 2
     }
   ],
   "SecondObjectData": [

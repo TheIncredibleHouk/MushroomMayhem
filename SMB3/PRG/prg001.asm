@@ -2174,12 +2174,12 @@ ObjNorm_SendBackRTS:
 
 
 
+Paper_StarEnemyAttached = Objects_Data1
+Paper_StarSparkle = Objects_Data2
+Paper_StarSparkleDirection = Objects_Data3
 Paper_StarIndicator = Objects_Data4
 Paper_StarRadar = Objects_Data5
 Paper_StarCoinsNeeded = Objects_Data7
-Paper_StarEnemyAttached = Objects_Data8
-Paper_StarSparkle = Objects_Data9
-Paper_StarSparkleDirection = Objects_Data10
 
 ObjInit_MagicStar1:
 	LDA #$00
