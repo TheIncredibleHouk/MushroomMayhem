@@ -299,7 +299,7 @@ PRG030_84D7:
 	INX
 	STX PatTable_BankSel+4
 	
-	LDA #$90
+	LDA #$7B
 	STA PatTable_BankSel+5
 
 	; Changes pages at A000 and C000 based on value Level_Tileset (0)

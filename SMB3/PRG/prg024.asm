@@ -416,7 +416,13 @@ Title_DoState:
 TitleState_Wait:
 	JSR Randomize
 	JSR Read_Joypads
+
+	LDA World_Select_Enabled
+	BNE Title_SkipStars
+
 	JSR Title_DoStars
+
+Title_SkipStars:
 	JSR World_Select
 	JSR Title_Menu
 
@@ -722,7 +728,7 @@ World_Select_CheckMax:
 	STA World_Start
 
 World_Select_Sprite:
-	LDY #$80
+	LDY #$00
 	LDX World_Start
 	LDA World_Number_Sprite, X
 	STA Sprite_RAMTile, Y
@@ -747,6 +753,17 @@ World_Select_CheckEnable:
 	LDA #$01
 	STA World_Select_Enabled
 	STA World_Start
+
+	LDX #$7F
+	LDA #$FF 
+
+World_Select_ClearSprites:
+	STA Sprite_RAM, X
+	DEX
+	BPL World_Select_ClearSprites
+
+	LDA #$4D
+	STA PatTable_BankSel + 5
 
 	LDA #$0E
 	STA Graphics_Queue
@@ -4609,21 +4626,49 @@ Title_StarStartX:
 Title_StarStartY:
 	.byte $20, $00, $80, $00
 
-Title_RandomizeStars:
-	JSR Randomize
+Title_RandomOffsetX:
+	.word Save_Ram_CheckSum
+	.word Save_Ram_CheckSum + 1
+	.word Save_Ram_CheckSum + 1
+	.word Save_Ram_CheckSum
 
+Title_RandomOffsetY:
+	.word Save_Ram_CheckSum + 1
+	.word Save_Ram_CheckSum
+	.word Save_Ram_CheckSum
+	.word Save_Ram_CheckSum + 1
+
+Title_RandomizeStars:
 	LDA #$00
 	STA Title_StarGfxTimer
 	
 	LDX #$03
 
 Title_NextStar:
-	JSR Title_StarReset
+	TXA 
+	ASL A
+	TAY 
+
+	LDA Title_RandomOffsetX, Y
+	STA <Temp_Var2
+
+	LDA Title_RandomOffsetX + 1, Y
+	STA <Temp_Var1
+
+	LDA Title_RandomOffsetY, Y
+	STA <Temp_Var4
+
+	LDA Title_RandomOffsetY + 1, Y
+	STA <Temp_Var3
+
+	LDY #$00
 
 	LDA Title_StarStartX, X
+	ADD [Temp_Var1], Y
 	STA Title_StarsX, X
 
 	LDA Title_StarStartY, X
+	ADD [Temp_Var3], Y
 	STA Title_StarsY, X
 
 	LDA #$20
@@ -4677,7 +4722,7 @@ Title_StarLoop:
 	DEX
 	BPL Title_StarLoop
 
-	LDX #$07
+	LDX #$0F
 
 Title_SparkleLoop:
 	JSR Title_Sparkle
@@ -4805,7 +4850,9 @@ Title_StarDrawX:
 	STA Sprite_RAMY, Y
 	STA Sprite_RAMY+4, Y
 
-	LDA #SPR_PAL2
+	LDA Save_Ram_CheckSum + 1
+	ADD #SPR_PAL2
+	AND #SPR_PAL3
 	STA Sprite_RAMAttr, Y
 
 	ORA #SPR_HFLIP
@@ -4824,7 +4871,7 @@ Title_MakeSparkleLoop:
 	RTS
 
 Title_CreateSparkle:
-	LDA #$10
+	LDA #$30
 	STA Title_SparklesTimer, Y
 	
 	LDA Title_StarsX, X
@@ -4836,11 +4883,14 @@ Title_CreateSparkle:
 
 
 Title_SparkleAttribute:
-	.byte (SPR_PAL2), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_VFLIP), (SPR_PAL2 | SPR_HFLIP | SPR_VFLIP)
-	.byte (SPR_PAL2), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_VFLIP), (SPR_PAL2 | SPR_HFLIP | SPR_VFLIP)
+	.byte $00, (SPR_HFLIP), (SPR_VFLIP), (SPR_HFLIP | SPR_VFLIP)
+	.byte $00, (SPR_HFLIP), (SPR_VFLIP), (SPR_HFLIP | SPR_VFLIP)
+	.byte $00, (SPR_HFLIP), (SPR_VFLIP), (SPR_HFLIP | SPR_VFLIP)
+	.byte $00, (SPR_HFLIP), (SPR_VFLIP), (SPR_HFLIP | SPR_VFLIP)
 
 Title_SparkleSRAM:
 	.byte $20, $24, $28, $2C, $30, $34, $38, $3C
+	.byte $40, $44, $48, $4C, $50, $54, $58, $5C
 
 Title_Sparkle:
 	LDA Title_SparklesTimer, X
@@ -4857,9 +4907,8 @@ Title_SparkleDraw:
 	LDA Title_SparkleSRAM, X
 	TAY
 
-	STA Debug_Snap
 	LDA Title_SparklesY, X
-	SUB #$20
+	SUB #$18
 	CMP #$40
 	BCC Title_ClearSparkle
 
@@ -4872,7 +4921,10 @@ Title_SparkleDraw:
 	LDA #$F1
 	STA Sprite_RAMTile, Y
 
-	LDA Title_SparkleAttribute, X
+	LDA Save_Ram_CheckSum + 1
+	ADD #SPR_PAL2
+	AND #SPR_PAL3
+	ORA Title_SparkleAttribute, X
 	STA Sprite_RAMAttr, Y
 
 Title_SparkleRTS:
