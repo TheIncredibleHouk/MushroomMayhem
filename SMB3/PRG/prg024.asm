@@ -275,6 +275,7 @@ PRG024_A930:
 	LDA #$00
 	STA PPU_CTL2
 
+	JSR Title_RandomizeStars
 	JSR Title_Sprites
 	JSR Title_FadeIn
 
@@ -413,7 +414,9 @@ Title_DoState:
 	.word Title_PrepForWorldMap			; 07 - Debug menu
 
 TitleState_Wait:
+	JSR Randomize
 	JSR Read_Joypads
+	JSR Title_DoStars
 	JSR World_Select
 	JSR Title_Menu
 
@@ -539,7 +542,7 @@ Title_SpriteCount:
 
 Title_Sprites:
 	LDX Title_SpriteCount
-	LDY #$00
+	LDY #$80
 
 Title_SpritesLoop:
 	LDA Title_SpritesX, X
@@ -4592,4 +4595,309 @@ Map_DayNightPalette:
 	STA Pal_Data, X
 
 Map_DayNightPaletteRTS:
-	RTS			
+	RTS
+
+Title_StarStartHideTimers:
+	.byte $00, $40, $80, $C0
+
+Title_StarStartSRAM:
+	.byte $00, $08, $10, $18
+
+Title_StarStartX:
+	.byte $00, $20, $00, $80
+
+Title_StarStartY:
+	.byte $20, $00, $80, $00
+
+Title_RandomizeStars:
+	JSR Randomize
+
+	LDA #$00
+	STA Title_StarGfxTimer
+	
+	LDX #$03
+
+Title_NextStar:
+	JSR Title_StarReset
+
+	LDA Title_StarStartX, X
+	STA Title_StarsX, X
+
+	LDA Title_StarStartY, X
+	STA Title_StarsY, X
+
+	LDA #$20
+	STA Title_StarsSparkleTimer, X
+
+	LDA Title_StarStartHideTimers, X
+	STA Title_StarsHideTimer, X
+
+	LDA #$20
+	STA Title_StarsSparkleTimer, X
+
+	LDA Title_StarStartSRAM, X
+	STA Title_StarsSRAM, X
+
+	DEX
+	BPL Title_NextStar
+
+	RTS
+
+Title_StarGfxTimer = $7500
+Title_StarDoTimer = $7501
+
+Title_StarPatTables:
+	.byte $90, $91, $92, $93
+
+Title_DoStars:
+	INC Title_StarDoTimer
+
+	LDA Title_StarDoTimer
+	AND #$1F
+	BEQ Title_DoStars1
+	RTS
+
+Title_DoStars1:
+	INC Title_StarGfxTimer
+	LDA Title_StarGfxTimer
+	LSR A
+	LSR A
+	LSR A
+	AND #$03
+	TAY
+
+	LDA Title_StarPatTables, Y
+	STA PatTable_BankSel + 5
+
+	LDX #$03
+
+Title_StarLoop:
+	JSR Title_StarNorm
+	
+	DEX
+	BPL Title_StarLoop
+
+	LDX #$07
+
+Title_SparkleLoop:
+	JSR Title_Sparkle
+	
+	DEX
+	BPL Title_SparkleLoop
+	RTS
+
+Title_StarsHideTimer = $7400
+Title_StarsSparkleTimer = $7410
+Title_StarsX = $7420
+Title_StarsXFrac = $7428
+Title_StarsY = $7430
+Title_StarsYFrac = $7438
+Title_StarTicker = $7440
+Title_StarsSRAM = $7450
+Title_SparklesX = $7470
+Title_SparklesY = $7480
+Title_SparklesTimer = $7490
+
+Title_Affect:
+	.byte $00, PAD_A, PAD_B, PAD_A | PAD_B
+
+Title_SpeedModifiersXY
+	.byte $80, $80  ; $80
+	.byte $FF, $80  ; $FF (PAD_RIGHT)
+	.byte $40, $80  ; $02 (PAD_LEFT)
+	.byte $80, $80  ; $03 (PAD_LEFT | PAD_RIGHT)
+	.byte $80, $FF  ; $04 (PAD_DOWN)
+	.byte $FF, $FF  ; $05 (PAD_DOWN | PAD_RIGHT)
+	.byte $40, $FF  ; $06 (PAD_DOWN | PAD_LEFT)
+	.byte $80, $80	; $07 (PAD_DOWN | PAD_LEFT | PAD_RIGHT)
+	.byte $80, $40  ; $08 (PAD_UP)
+	.byte $FF, $40  ; $09 (PAD_UP | PAD_RIGHT)
+	.byte $40, $40  ; $0A (PAD_UP | PAD_LEFT)
+	.byte $80, $80	; $0B (PAD_UP | PAD_LEFT | PAD_RIGHT)
+	.byte $80, $80	; $0C (PAD_UP | PAD_DOWN)
+	.byte $80, $80	; $0D (PAD_UP | PAD_DOWN | PAD_RIGHT)
+	.byte $80, $80	; $0E (PAD_UP | PAD_DOWN | PAD_LEFT)
+	.byte $80, $80	; $0F (PAD_UP | PAD_DOWN | PAD_LEFT | PAD_RIGHT)
+
+Title_StarNorm:
+	LDA Title_StarsHideTimer, X
+	BEQ Title_StarMove
+
+	DEC Title_StarsHideTimer, X
+	RTS
+
+Title_StarMove:
+	LDY #$00
+
+	LDA <Pad_Holding
+	AND #(PAD_A | PAD_B)
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var1
+
+	CPX <Temp_Var1
+	BNE Title_StarMoveX
+
+	LDA <Pad_Holding
+	AND #$0F
+	ASL A
+	TAY
+
+Title_StarMoveX:
+	LDA Title_StarsXFrac, X
+	ADD Title_SpeedModifiersXY, Y
+	STA Title_StarsXFrac, X
+
+	LDA Title_StarsX, X
+	ADC #$00
+	STA Title_StarsX, X
+
+	BCC Title_StarMoveY
+
+	;JMP Title_StarReset
+
+Title_StarMoveY:
+	LDA Title_StarsYFrac, X
+	ADD Title_SpeedModifiersXY + 1, Y
+	STA Title_StarsYFrac, X
+
+	LDA Title_StarsY, X
+	ADC #$00
+	STA Title_StarsY, X
+	BCC Title_StarTimer
+	
+	;JMP Title_StarReset
+
+Title_StarTimer:
+	DEC Title_StarsSparkleTimer, X
+	LDA Title_StarsSparkleTimer, X
+	BNE Title_StarDraw
+
+ 	JSR Title_MakeSparkle
+
+	LDA #$20
+	STA Title_StarsSparkleTimer, X
+
+Title_StarDraw:
+	LDY Title_StarsSRAM, X
+	
+	LDA #$FF
+	STA Sprite_RAMTile, Y
+	STA Sprite_RAMTile+4, Y
+
+	LDA Title_StarsX, X
+	STA Sprite_RAMX, Y
+
+	ADD #$08
+	BCC Title_StarDrawX
+
+	LDA #$FF
+	STA Sprite_RAMY + 4, Y 
+
+Title_StarDrawX:
+	STA Sprite_RAMX + 4, Y
+
+	LDA Title_StarsY, X
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY+4, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr, Y
+
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr+4, Y
+	RTS
+
+Title_MakeSparkle:
+	LDY #$07
+
+Title_MakeSparkleLoop:
+	LDA Title_SparklesTimer, Y
+	BEQ Title_CreateSparkle
+
+	DEY
+	BPL Title_MakeSparkleLoop
+	RTS
+
+Title_CreateSparkle:
+	LDA #$10
+	STA Title_SparklesTimer, Y
+	
+	LDA Title_StarsX, X
+	STA Title_SparklesX, Y
+
+	LDA Title_StarsY, X
+	STA Title_SparklesY, Y
+	RTS
+
+
+Title_SparkleAttribute:
+	.byte (SPR_PAL2), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_VFLIP), (SPR_PAL2 | SPR_HFLIP | SPR_VFLIP)
+	.byte (SPR_PAL2), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_VFLIP), (SPR_PAL2 | SPR_HFLIP | SPR_VFLIP)
+
+Title_SparkleSRAM:
+	.byte $20, $24, $28, $2C, $30, $34, $38, $3C
+
+Title_Sparkle:
+	LDA Title_SparklesTimer, X
+	BNE Title_SparkleDraw
+
+Title_ClearSparkle:
+	LDA #$FF
+	STA Title_SparklesX, X
+	STA Title_SparklesY, X
+	RTS
+
+Title_SparkleDraw:
+	DEC Title_SparklesTimer, X
+	LDA Title_SparkleSRAM, X
+	TAY
+
+	STA Debug_Snap
+	LDA Title_SparklesY, X
+	SUB #$20
+	CMP #$40
+	BCC Title_ClearSparkle
+
+	LDA Title_SparklesY, X
+	STA Sprite_RAMY, Y
+
+	LDA Title_SparklesX, X
+	STA Sprite_RAMX, Y
+
+	LDA #$F1
+	STA Sprite_RAMTile, Y
+
+	LDA Title_SparkleAttribute, X
+	STA Sprite_RAMAttr, Y
+
+Title_SparkleRTS:
+	RTS
+
+Title_StarResetX:
+	.byte $00, $20, $00, $40, $00, $60, $00, $80
+
+Title_StarResetY:
+	.byte $20, $00, $40, $00, $60, $00, $80, $00
+
+Title_StarResetHide:
+	.byte $20, $40, $60, $80, $A0, $C0, $E0, $FF
+
+Title_StarReset:
+	LDA RandomN, X
+	AND #$07
+	TAY
+
+	LDA Title_StarResetX, Y
+	STA Title_StarsX, X
+
+	LDA Title_StarResetY, Y
+	STA Title_StarsY, X
+
+	LDA Title_StarResetHide, Y
+	STA Title_StarsHideTimer, X
+	RTS

@@ -1100,7 +1100,6 @@ Generate_SnifitDo:
 	AND #$01
 	TAY
 
-	STA Debug_Snap
 	LDA <Player_X
 	ADD Snifit_SpawnXOffset, Y
 	STA Tile_DetectionX

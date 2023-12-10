@@ -427,8 +427,8 @@
     62,
     244,
     194,
-    194,
     198,
+    192,
     192,
     192,
     192,
@@ -490,9 +490,9 @@
     62,
     62,
     67,
-    67,
     68,
     228,
+    192,
     192,
     192,
     192,
@@ -555,8 +555,8 @@
     62,
     212,
     226,
-    226,
     199,
+    192,
     192,
     192,
     192,
@@ -721,6 +721,42 @@
       "X": 29,
       "Y": 5,
       "BoundRectangle": "464,80,16,16"
+    },
+    {
+      "LevelId": "69a4ab10-be16-420b-af3b-b3337e915fb8",
+      "X": 34,
+      "Y": 7,
+      "BoundRectangle": "544,112,16,16"
+    },
+    {
+      "LevelId": "41eb199f-c262-4964-be14-98fe75805c6d",
+      "X": 61,
+      "Y": 2,
+      "BoundRectangle": "976,32,16,16"
+    },
+    {
+      "LevelId": "0c13a6cd-dcba-4be4-a32b-468cfc3f9fb2",
+      "X": 58,
+      "Y": 4,
+      "BoundRectangle": "928,64,16,16"
+    },
+    {
+      "LevelId": "d818a42b-d3d3-47f4-84c3-d755d29f8460",
+      "X": 55,
+      "Y": 2,
+      "BoundRectangle": "880,32,16,16"
+    },
+    {
+      "LevelId": "d9293de5-acef-40e3-a6cb-3316e8b49a0a",
+      "X": 50,
+      "Y": 5,
+      "BoundRectangle": "800,80,16,16"
+    },
+    {
+      "LevelId": "d9293de5-acef-40e3-a6cb-3316e8b49a0a",
+      "X": 50,
+      "Y": 2,
+      "BoundRectangle": "800,32,16,16"
     }
   ],
   "ObjectData": [
@@ -782,11 +818,6 @@
     {
       "GameObjectId": 209,
       "X": 46,
-      "Y": 6
-    },
-    {
-      "GameObjectId": 209,
-      "X": 46,
       "Y": 7
     },
     {
@@ -795,5 +826,5 @@
       "Y": 8
     }
   ],
-  "CompressedData": "AJGRkZGRkZGRkZGRkZGRkQCRkZGRkZGRkZGRkZGRkZEAkZGRkZGMjZGRkZGRkYyNAIyNkZGMHR2NjI2RkYwdHQDi4uLV1tbW1tbW1OLi4uIA9sLC9T4+EUM+PvTCwsLCAOVEQz4+1tbW1j4+EEM+PgD34tU/PkNDEj4+1OLi1T4AwMD31T7U4uLi4sfAwOVEkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGMjZGRkZGRkZGRkYyNkZGRHR2NkZGRkYyNkYwdHY2RkeLi4uLV1tTi4uLV1tbW1tbGwMDA5UTkwMD29T5DFj4+5MDAwOU+9MLC9T4+1tbW1uTAwMDlQz5DFD4+Qz4+FT7kwMDA9+Li4uLi4uLi4uLVkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkYaRkZGRkZGRkZGRkZGRkZGSkZGMjZGRkZGRkZGRkZGRktbU4uLi4uLi4uLi1ZGRkZI+5MDAwMDAwMDAwOWNkZGSPvTCwsbAwMDAwMDlHY2Rlj5DQ0TkwMDAwMDA5R0djZE+1OLix8DAwMDAwOUdHR2NkZGRkZGRkZGRkZGRkZGRkaGhoaahoaGhoaGhh4ahh5GUlL2VlJSUGJSUlJCSHJCRlLOkpZSAgYGBgpSgopSQkZRtbm+UkIahh5IXlJSUkJGUfX5/lJCSHJCSlICopLWRgYGBgYGXkpSguKS5ohyQkZGMjZGRkZKUlJQTlJSUkJGMHR2NjI2WgYGBgYGBgZeR"
+  "CompressedData": "AJGRkZGRkZGRkZGRkZGRkQCRkZGRkZGRkZGRkZGRkZEAkZGRkZGMjZGRkZGRkYyNAIyNkZGMHR2NjI2RkYwdHQDi4uLV1tbW1tbW1OLi4uIA9sLC9T4+EUM+PvTCwsLCAOVEQz4+1tbW1j4+EEM+PgD34tU/PkNDEj4+1OLi1T4AwMD31T7U4uLi4sfAwOVEkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGMjZGRkZGRkZGRkYyNkZGRHR2NkZGRkYyNkYwdHY2RkeLi4uLV1tTi4uLV1tbW1tbGwMDA5UTkwMD29T5DFj4+5MDAwOU+9MLC9T4+1tbW1uTAwMDlQz5DFD4+Qz4+FT7kwMDA9+Li4uLi4uLi4uLVkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkYaRkZGRkZGRkZGRkZGRkZGSkZGMjZGRkZGRkZGRkZGRktbU4uLi4uLi4uLi1ZGRkZI+5MDAwMDAwMDAwOWNkZGSPvTCxsDAwMDAwMDlHY2Rlj5DROTAwMDAwMDA5R0djZE+1OLHwMDAwMDAwOUdHR2NkZGRkZGRkZGRkZGRkZGRkaGhoaahoaGhoaGhh4ahh5GUlL2VlJSUGJSUlJCSHJCRlLOkpZSAgYGBgpSgopSQkZRtbm+UkIahh5IXlJSUkJGUfX5/lJCSHJCSlICopLWRgYGBgYGXkpSguKS5ohyQkZGMjZGRkZKUlJQTlJSUkJGMHR2NjI2WgYGBgYGBgZeR"
 }

@@ -295,10 +295,11 @@ PRG030_84D7:
 
 	INX
 	STX PatTable_BankSel+3
+
 	INX
 	STX PatTable_BankSel+4
 	
-	LDA #$7B
+	LDA #$90
 	STA PatTable_BankSel+5
 
 	; Changes pages at A000 and C000 based on value Level_Tileset (0)
@@ -307,6 +308,7 @@ PRG030_84D7:
 	; Init Player's on map
 	LDX Total_Players
 	DEX		 ; X = Total_Players-1
+
 PRG030_8552:
 	; Set Player's Y position
 	LDA Map_Entered_Y,X
@@ -1909,6 +1911,7 @@ PRG030_91D1:
 	LDA Map_Prev_XOff,Y
 	STA <Horz_Scroll
 	STA <Scroll_Temp
+	
 	LDA Map_Prev_XHi,Y
 	STA <Horz_Scroll_Hi
 	JSR Scroll_Update_Ranges

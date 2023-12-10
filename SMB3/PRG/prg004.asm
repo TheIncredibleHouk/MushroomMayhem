@@ -3325,7 +3325,6 @@ Grower_DetectBlockLeft:
 	RTS
 
 Grower_Retract:
-	STA Debug_Snap
 	JSR Object_CalcBoundBox
 
 Grower_KeepRetracting:

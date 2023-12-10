@@ -2914,7 +2914,6 @@ DMC08:
 DMC08_End
 
 FindLevelInfo:
-	STA Debug_Snap
 	LDA World_Map_X
 	AND #$0F
 	BNE UpdateLevelRTS
