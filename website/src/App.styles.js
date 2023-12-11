@@ -2,7 +2,19 @@ import { createGlobalStyle} from 'styled-components';
 
 
 var AppStyles = createGlobalStyle`
-   @font-face{font-family:new super mario font u;font-style:normal;font-weight:400;src:local('New Super Mario Font U'),url('https://fonts.cdnfonts.com/s/32226/New Super Mario Font U.woff') format('woff')}
+   @font-face {
+        font-family:new super mario font u;
+        font-style:normal;
+        font-weight:400;
+        src:local('New Super Mario Font U'), url('https://fonts.cdnfonts.com/s/32226/New Super Mario Font U.woff') format('woff');
+    }
+
+    @font-face{
+        font-family:KabelHeavy;
+        font-style:normal;
+        font-weight:400;
+        src:local('OPTIKabel-Heavy'), url('./fonts/OPTIKabel-Heavy.woff') format('woff');
+    }
 
     * {
         box-sizing: border-box;
@@ -22,6 +34,7 @@ var AppStyles = createGlobalStyle`
         border-left: #345084 24px solid;
         position: relative;
         padding: 0 10px;
+        padding-bottom: 15px;
         overflow-x: hidden;
 
         &::before {
@@ -36,6 +49,14 @@ var AppStyles = createGlobalStyle`
         }
     }
 
+    ul {
+        margin: 15px;
+        padding-left: 15px;
+    }
+
+    p {
+        margin-bottom: 5px;
+    }
     font-family: Arial, Helvetica, sans-serif;
 `;
 

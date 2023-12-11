@@ -7,23 +7,42 @@ var NesPadActionStyles = styled.div`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0;
+    font-size: 120%;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    line-height: 15px;
 
     &.inline {
-        width: 40px;
+        width: 15px;
         height: 40px;
         position: relative;
         color: white;
         font-size: 12px;
-        font-weight: bold;
-        text-align: center;
         margin-bottom: -32px;
-        position: relative;
-        top: 0px;
-        left: -2px;
         margin-top: -40px;
         line-height: 15px;
+        text-align: center;
+        position: relative;
+        top: -1px;
+
+        .B, .A {
+            width: 15px;
+            padding-top: 5%;
+            display: none;
+
+            &.true {
+                display: block;
+            }
+        }
     }
+
+        &:not(.inline)
+        {
+            .B, .A {
+                border: 1px solid white;
+            }
+        }
 
     .nes-pad-action-layout {
         display: grid;
@@ -35,10 +54,11 @@ var NesPadActionStyles = styled.div`
     }
 
     .B, .A {
-        background-color: grey;
+        background-color: black;
         width: 80%;
         height: calc(80% / 2);
         border-radius: 100px;
+        padding-top: 15%;
 
         &.true {
             background-color: red;

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { mobile } from '../../styles/mobile';
 import { shadow } from '../../styles/shadows';
 
 var PowerUpStyles = styled.div`
@@ -11,24 +12,16 @@ var PowerUpStyles = styled.div`
     align-content: space-evenly;
     align-items: center;
 
-    .power-up-box {
-        border: 2px solid black;
-        border-radius: 10px;
-        box-shadow: 0 0 0;
-        position: relative;
-        height: 400px;
-        width: 400px;
-        overflow: hidden;
-        box-shadow: ${shadow};
-    }
-
     .power-up-layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-content: space-evenly;
         justify-items: center;
         height: calc(100% - 25px);
-        padding: 10px;
+    }
+
+    .box {
+        height: 400px;
     }
 
     .power-up-image {
@@ -52,6 +45,11 @@ var PowerUpStyles = styled.div`
         display: inline-block;
         margin: 10px;
         align-self: end;
+        
+        img {
+            position: relative;
+            left: -40px;
+        }
     }
 
     .power-up-mario {
@@ -63,17 +61,7 @@ var PowerUpStyles = styled.div`
         }
     }
 
-    h1 {
-        background-color: #4d9dde;
-        color: #ffffff;
-        font-size: 16px;
-        text-align: center;
-        padding: 4px;
-        margin: 0;
-        text-transform: uppercase;
-    }
-
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: ${mobile}) {
         grid-template-columns: 1fr;
         justify-items: center;
 

@@ -48,6 +48,8 @@ import NinjaMario from './images/NinjaMario.png';
 import NinjaShroom1 from './images/NinjaShroom1.png';
 import NinjaShroom2 from './images/NinjaShroom2.png';
 import PageTitle from '../../components/PageTitle/PageTitle';
+import Box from '../../components/Box/Box';
+import { blue } from '../../styles/colors';
 
 const powerUpList = [
     {
@@ -70,7 +72,7 @@ const powerUpList = [
     {
         name: "Ice Flower",
         description:  <>
-            A frosty twist on a classic, pressing <NesPadAction B /> to toss ice balls can freeze enemies.
+            A frosty twist on a classic. Press <NesPadAction B /> to toss ice balls that can freeze enemies.
             You can even freeze the surface of water and Munchers.
         </>,
         powerUpImage: IceFlower,
@@ -149,8 +151,7 @@ var PowerUps = () => {
         
         {
             powerUpList.map(powerUp => (
-            <div className="power-up-box">
-                <h1>{powerUp.name}</h1>
+            <Box header={powerUp.name} color={'#4d9dde'}>
                 <span className='power-up-image'>
                     <img src={powerUp.powerUpImage} />
                 </span>
@@ -167,7 +168,7 @@ var PowerUps = () => {
                         </div>
                     ))}
                 </div>
-            </div>
+            </Box>
             ))
         }
         

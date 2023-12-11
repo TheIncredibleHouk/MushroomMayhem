@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { blue, green, red, yellow } from '../../styles/colors';
 import { shadow } from '../../styles/shadows';
 import { blockStyle } from '../../styles/block';
+import { mobile } from '../../styles/mobile';
 
 
 
@@ -17,11 +18,15 @@ var PageTitleStyles = styled.div`
     align-items: start;
     margin-bottom: 15px;
     margin-left: -10px;
-
+    
     .page-description {
         width: 45%;
         margin-right: -10px;
         padding: 15px;
+    }
+
+    .block {
+        ${shadow};
     }
 
     .page-title {
@@ -37,6 +42,8 @@ var PageTitleStyles = styled.div`
         white-space: nowrap;
         padding-top: 8px;
         padding-right: 8px;
+        word-spacing: 15px;
+        text-align: center;
         
         ${() => Array.apply(null, new Array(colors.length)).map((nothing, index) => (
             `.letter_${index} {
@@ -51,29 +58,52 @@ var PageTitleStyles = styled.div`
             font-size: 128px;
             margin-left: 8px;
         }
-
     }
 
-    @media screen and (max-width: 1024px) {
+    .break {
+        display: block;
+    }
+
+    &.center {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        white-space: normal;
+        
+        .page-title {
+            margin-left: 0px;
+        }
+
+        .page-description {
+            width: 90%;
+            padding: 15px;
+        }
+
+        .letter_0 { 
+            font-size: 72px;
+        }
+    }
+
+    @media screen and (max-width: ${mobile}) {
         flex-direction: column;
         width: 100%;
         align-items: center;
 
         .page-title {
             margin-left: 0px;
+            font-size: 50px;
+
+            .letter_0 {
+                font-size: 75px;
+            }
         }
         
         .page-description {
             padding: 0;
-            width: 90%
+            width: 90%;
         }
     }
 
-    @media screen and (max-width: 500px) {
-        .page-title {
-
-        }
-    }
 `;
 
 export default PageTitleStyles;

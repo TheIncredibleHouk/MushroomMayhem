@@ -7,6 +7,29 @@ var NesPadCrossStyles = styled.div`
     width: 100%;
     height: 100%;
     
+    &:not(.inline)
+    {
+        .up, .down, .left, .right {
+            border: 1px solid white;
+            border-radius: 1px;
+        }
+
+        .up {
+            border-bottom: none;
+        }
+
+        .down {
+            border-top: none;
+        }
+
+        .left {
+            border-right: none;
+        }
+
+        .right {
+            border-left: none;
+        }
+    }
 
     &.inline {
         width: 20px;
@@ -26,7 +49,7 @@ var NesPadCrossStyles = styled.div`
     
 
     .up, .down, .left, .right, .center {
-        background-color: gray;
+        background-color: black;
 
         &.true {
             background-color: red;
