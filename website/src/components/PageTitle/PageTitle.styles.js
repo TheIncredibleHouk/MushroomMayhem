@@ -41,7 +41,7 @@ var PageTitleStyles = styled.div`
         -webkit-text-stroke: 4px #000000;
         white-space: nowrap;
         padding-top: 8px;
-        padding-right: 8px;
+        padding-left: 8px;
         word-spacing: 15px;
         text-align: center;
         
@@ -52,11 +52,8 @@ var PageTitleStyles = styled.div`
             }`
         )).join('\n')}
 
-    
-
-        .letter_0 {
-            font-size: 128px;
-            margin-left: 8px;
+        .kern-fix {
+            margin-right: 6px;
         }
     }
 
@@ -92,10 +89,6 @@ var PageTitleStyles = styled.div`
         .page-title {
             margin-left: 0px;
             font-size: 50px;
-
-            .letter_0 {
-                font-size: 75px;
-            }
         }
         
         .page-description {

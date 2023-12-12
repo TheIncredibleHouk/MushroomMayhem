@@ -34,7 +34,7 @@ var AppStyles = createGlobalStyle`
         border-left: #345084 24px solid;
         position: relative;
         padding: 0 10px;
-        padding-bottom: 15px;
+        padding-bottom: 50px;
         overflow-x: hidden;
 
         &::before {
@@ -42,7 +42,7 @@ var AppStyles = createGlobalStyle`
             font-size: 0;
             width: 24px;
             height: 24px;
-            background-color: #ed786e;
+            background-color: #eb4638;
             position: absolute;
             top: -24px;
             left: -24px;

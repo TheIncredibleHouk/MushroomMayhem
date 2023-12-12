@@ -9,6 +9,11 @@ var HomeStyles = styled.div`
         margin-top: 50px;
     }
 
+
+    .title-3 {
+        max-width: 200px;
+    }
+
     .home-table-contents {
         width: 95%;
     }

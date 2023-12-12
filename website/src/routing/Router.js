@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import routes from "./routes";
+import Navigation from "../components/Navigation/Navigation";
 
 var Router = () =>{
     return <BrowserRouter>
@@ -11,6 +12,7 @@ var Router = () =>{
             />)}
         <Route path="/" /> {/* 👈 Renders at /app/ */}
       </Routes>
+      <Navigation />
     </BrowserRouter>
 }
 

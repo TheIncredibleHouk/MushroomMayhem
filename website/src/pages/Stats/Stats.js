@@ -9,7 +9,7 @@ import NesPadMenu from '../../components/NesPad/NesPadMenu/NesPadMenu';
 var Stats = () => {
   return (
     <>
-      <PageTitle title="Stats">
+      <PageTitle title="Player Stats">
         On this adventure, Mario has a lot of stats to keep track! Luckily,
         these stats are displayed in the status bar for you at the bottom of the
         screen. Check out the details on all the numbers and icons below!
