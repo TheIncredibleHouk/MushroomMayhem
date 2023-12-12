@@ -6649,6 +6649,30 @@
       "X": 96,
       "Y": 13,
       "Property": 2
+    },
+    {
+      "GameObjectId": 12,
+      "X": 7,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 5,
+      "X": 4,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 6,
+      "X": 10,
+      "Y": 7,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 23,
+      "X": 9,
+      "Y": 9,
+      "Property": 0
     }
   ],
   "SecondObjectData": [

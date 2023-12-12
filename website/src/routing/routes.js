@@ -30,10 +30,10 @@ const routes = [
         title: "Items"
     },
     {
-        path: "collectibles",
+        path: "Tools",
         component: Collectibles,
         exact: true,
-        title: "Collectibles"
+        title: "Tools"
     }
 ];
 

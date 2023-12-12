@@ -215,8 +215,8 @@ ObjP17:
 	.byte $A5, $A1
 	.byte $A5, $AB
 	.byte $A7, $A1
-	.byte $D7, $D9
-	.byte $DB, $DD
+	.byte $D7, $D7
+	.byte $D9, $D9
 	.byte $E1, $EB
 	.byte $E3, $E1
 	.byte $E3, $EB
