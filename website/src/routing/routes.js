@@ -1,4 +1,4 @@
-import Collectibles from '../pages/Collectibles/Collectibles';
+import Elements from '../pages/Elements/Elements';
 import Home from '../pages/Home/Home';
 import Items from '../pages/Items/Items';
 import PowerUps from '../pages/PowerUps/PowerUps'
@@ -30,10 +30,10 @@ const routes = [
         title: "Items"
     },
     {
-        path: "Tools",
-        component: Collectibles,
+        path: "elements",
+        component: Elements,
         exact: true,
-        title: "Tools"
+        title: "Game Elements"
     }
 ];
 

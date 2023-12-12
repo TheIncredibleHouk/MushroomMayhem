@@ -25,7 +25,7 @@ var Home = () => {
             <Link className="home-table-contents-list" to={link.path}>
               <div className="page-name">{link.title}</div>
               <div className="page-spacer" />
-              <div className="page-number">{index + 1}</div>
+              <div className="page-number">{index + 2}</div>
             </Link>
           ))}
         </div>
