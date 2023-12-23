@@ -10,7 +10,7 @@ var Home = () => {
     <HomeStyles>
       <PageTitle
         center
-        title="Mario&#10;Adventure"
+        title="Mario Adventure"
       />
       <img className="title-3" src={Image3} />
       <div className="home-description">

@@ -9,15 +9,9 @@ var NavigationStyles = styled.div`
             border-radius: 25px
         }
 
-        50% {
-            width: 300px;
-            height: 50px;
-            border-radius: 17.5px
-        }
-
         100%  { 
             width: 300px;
-            height: 165px;
+            height: 471px;
             border-radius: 10px
         }
     }
@@ -25,14 +19,8 @@ var NavigationStyles = styled.div`
     @keyframes close-animation {
         0%    { 
             width: 300px;
-            height: 165px;
+            height: 471px;
             border-radius: 10px
-        }
-
-        50% {
-            width: 300px;
-            height: 50px;
-            border-radius: 17.5px
         }
 
         100%  { 
@@ -42,23 +30,46 @@ var NavigationStyles = styled.div`
         }
     }
 
+    @keyframes fade-out {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
     cursor: pointer;
     position: sticky;
     background-color: #404040;
-    bottom: calc(0vh + 15px);
+    bottom: 25px;
+    left: calc(100% - 50px);
     align-items: center;
     justify-content: center;
     display: flex;
-    left: 100%;
     border-radius: 25px;
     text-align: left;
     overflow: hidden;
     animation: close-animation .5s;
+
     ${shadow};
 
     nav {
         width: 100%;
         padding: 10px 0;
+        list-style: none;
     }
 
     &:not(.open){
@@ -66,7 +77,12 @@ var NavigationStyles = styled.div`
         height: 50px;
 
         nav {
+            animation: fade-out .5s;
             display: none;
+        }
+
+        .navigation-icon {
+            animation: fade-in 1s;
         }
     }
 
@@ -93,11 +109,12 @@ var NavigationStyles = styled.div`
         border-radius: 10px;
 
         .navigation-icon {
+            animation: fade-out 1s;
             display: none;
         }
 
         nav {
-            list-style: none;
+            animation: fade-in .5s;
         }
     }
 

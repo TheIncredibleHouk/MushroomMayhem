@@ -16,17 +16,20 @@ var PageTitleStyles = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: start;
-    margin-bottom: 15px;
+    margin-bottom: 50px;
     margin-left: -10px;
     
     .page-description {
         width: 45%;
         margin-right: -10px;
         padding: 15px;
+        align-self: center;
     }
 
     .block {
         ${shadow};
+        width: 50%;
+        text-align: center;
     }
 
     .page-title {
@@ -85,15 +88,26 @@ var PageTitleStyles = styled.div`
         flex-direction: column;
         width: 100%;
         align-items: center;
+        margin-bottom: 0;
 
         .page-title {
             margin-left: 0px;
             font-size: 50px;
+            line-height: 40px;
         }
         
         .page-description {
+            margin: 25px 0;
             padding: 0;
             width: 90%;
+        }
+
+        .mobile-break {
+            display: block;
+        }
+
+        .block {
+            width: auto;
         }
     }
 

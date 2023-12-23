@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { shadow } from '../../styles/shadows';
 
 var BoxStyles = styled.div`
-    align-self: flex-start;
     border: 2px solid black;
     border-radius: 10px;
     position: relative;

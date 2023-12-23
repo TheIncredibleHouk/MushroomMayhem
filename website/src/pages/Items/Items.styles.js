@@ -3,6 +3,10 @@ import { mobile } from '../../styles/mobile';
 import ItemBox from './images/ItemBox.png';
 
 var ItemStyles = styled.div`
+    .items-layout, .items-example, .items-list {
+        margin-bottom: 25px;
+    }
+
     .items-layout {
         display: flex;
         flex-direction: column;

@@ -9,7 +9,7 @@ import Items5 from "./images/Items5.png";
 import NesPad from "../../components/NesPad/NesPad";
 import NesPadMenu from "../../components/NesPad/NesPadMenu/NesPadMenu";
 import Box from "../../components/Box/Box";
-import { yellow } from "../../styles/colors";
+import { blue, yellow } from "../../styles/colors";
 
 import SuperMushroom from "../PowerUps/images/SuperMushroom.png";
 import FireFlower from "../PowerUps/images/FireFlower.png";
@@ -25,6 +25,7 @@ import Hearts from "./images/Hearts.png";
 import StopWatch from "./images/StopWatch.png";
 import NesPadCross from "../../components/NesPad/NesPadCross/NesPadCross";
 import NesPadAction from "../../components/NesPad/NesPadAction/NesPadAction";
+import PageHeader from "../../components/PageHeader/PageHeader";
 
 const items = [
   {
@@ -100,6 +101,7 @@ var Items = () => {
         <NesPadMenu select /> while playing a level and Mario will instantly use
         the item stored in the item slot!
       </PageTitle>
+      <PageHeader color={blue}>Using Items</PageHeader>
       <div className="items-layout">
         <div className="items-example">
           <img src={Items1} />
@@ -107,7 +109,7 @@ var Items = () => {
           <img src={Items2} />
         </div>
       </div>
-
+      <PageHeader color={blue}>Items</PageHeader>
       <div className="items-list">
         {items.map((item) => (
           <Box header={item.name} color={yellow}>
@@ -120,17 +122,18 @@ var Items = () => {
           </Box>
         ))}
       </div>
-      <PageTitle title="Item Emporium">
+      <PageHeader color={blue}>Item Emporium</PageHeader>
+      <div>
         Mario can get all of items from The Item Emporium. These are located on
         the map and are identifiable by the red mushroom house. Inside, you can
         use <NesPadCross left right /> to navigate the items, <NesPadAction A />{" "}
         to purchase the item and <NesPadAction B /> to leave the shop.
-      </PageTitle>
+      </div>
       <div className="items-shop">
         <img src={Items3} />
         <img src={Items4} />
         <img src={Items5} />
-    </div>
+      </div>
     </ItemStyles>
   );
 };

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { mobile } from '../../styles/mobile';
 
 var HomeStyles = styled.div`
     display: flex;
@@ -55,6 +56,12 @@ var HomeStyles = styled.div`
     a:link, a:visited, a:hover, a:active {
         color: black;
         text-decoration: none;
+    }
+
+    @media screen and (max-width: ${mobile}){
+        .home-table-contents-list  {
+            font-size: 24px;
+        }
     }
 `;
 

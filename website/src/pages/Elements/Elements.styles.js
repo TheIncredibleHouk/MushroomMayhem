@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { mobile } from '../../styles/mobile';
 
 var ElementsStyles = styled.div`
 
@@ -7,6 +8,9 @@ var ElementsStyles = styled.div`
         grid-template-columns: 1fr 1fr;
         align-items: center;
         justify-content: center;
+        justify-items: center;
+        align-content: center;
+        margin-bottom: 50px;
     }
 
     .box-layout {
@@ -24,6 +28,12 @@ var ElementsStyles = styled.div`
                 width: 48px;
             }
         }
+    }
+
+    @media screen and (max-width: ${mobile}){
+        .elements-layout {
+            grid-template-columns: 1fr;
+        }       
     }
 `;
 

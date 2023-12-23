@@ -18,7 +18,7 @@ var Navigation = () => {
                 <div className="navigation-icon-bar" />
             </div>
             <nav>
-                {routes.map(route => (
+                {routes.filter(route => route.menu).map(route => (
                     <li><Link to={route.path}>{route.title}</Link></li>
                 ))}
                 <li><a href="#" onClick={e => e.preventDefault()}>Close</a></li>

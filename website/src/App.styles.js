@@ -1,5 +1,5 @@
-import { createGlobalStyle} from 'styled-components';
-
+import styled, { createGlobalStyle } from "styled-components";
+import { mobile } from "./styles/mobile";
 
 var AppStyles = createGlobalStyle`
    @font-face {
@@ -16,6 +16,13 @@ var AppStyles = createGlobalStyle`
         src:local('OPTIKabel-Heavy'), url('./fonts/OPTIKabel-Heavy.woff') format('woff');
     }
 
+    @font-face{
+        font-family:'BabyTeeth';
+        font-style:normal;
+        font-weight:400;
+        src:local('Baby Teeth'), url('./fonts/Devandra.ttf') format('truetype');
+    }
+
     * {
         box-sizing: border-box;
         padding: 0;
@@ -30,22 +37,22 @@ var AppStyles = createGlobalStyle`
         margin: 0 auto;
         max-width: 9.5in;
         background-color: #ffffff;
-        border-top: #345084 24px solid;
-        border-left: #345084 24px solid;
-        position: relative;
+        border-top: #345084 32px solid;
+        border-left: #345084 32px solid;
         padding: 0 10px;
         padding-bottom: 50px;
         overflow-x: hidden;
+        position: relative;
 
         &::before {
             content: "t";
             font-size: 0;
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             background-color: #eb4638;
             position: absolute;
-            top: -24px;
-            left: -24px;
+            top: -32px;
+            left: -32px;
         }
     }
 
@@ -57,7 +64,39 @@ var AppStyles = createGlobalStyle`
     p {
         margin-bottom: 5px;
     }
+
+    .social-media {
+        position: absolute;
+        right: 0;
+        top: -30px;
+        display: flex;
+        flex-direction: row;
+        
+        img {
+            width: 28px;
+            margin: 0 10px;
+            filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(125deg) brightness(103%) contrast(103%);
+        }
+    }
+
     font-family: Arial, Helvetica, sans-serif;
 `;
+
+var PageStyles = styled.div`
+
+  @media screen and (max-width: ${mobile}) {
+    & > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .social-media {
+        flex-direction: row;
+    }
+  }
+`;
+
+export { PageStyles };
 
 export default AppStyles;

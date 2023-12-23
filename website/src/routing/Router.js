@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import routes from "./routes";
 import Navigation from "../components/Navigation/Navigation";
+import ScrollToTop from "../components/ScrollToTop/ScrollToTop";
 
 var Router = () =>{
     return <BrowserRouter>
@@ -13,6 +14,7 @@ var Router = () =>{
         <Route path="/" /> {/* 👈 Renders at /app/ */}
       </Routes>
       <Navigation />
+      <ScrollToTop />
     </BrowserRouter>
 }
 
