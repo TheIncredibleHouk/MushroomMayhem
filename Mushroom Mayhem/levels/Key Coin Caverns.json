@@ -4347,18 +4347,18 @@
     65,
     65,
     65,
-    75,
+    76,
     73,
     73,
     73,
-    75,
+    76,
     65,
-    63,
-    63,
-    63,
-    34,
-    34,
-    34,
+    65,
+    65,
+    65,
+    65,
+    65,
+    46,
     63,
     63,
     63,
@@ -4593,11 +4593,11 @@
     65,
     65,
     65,
-    63,
-    63,
-    63,
     65,
-    46,
+    65,
+    65,
+    65,
+    65,
     65,
     63,
     63,
@@ -4833,9 +4833,9 @@
     4,
     5,
     65,
-    63,
-    63,
-    63,
+    65,
+    65,
+    65,
     65,
     65,
     65,
@@ -5072,13 +5072,13 @@
     65,
     117,
     65,
-    162,
-    95,
     65,
-    65,
-    65,
-    65,
-    65,
+    63,
+    119,
+    119,
+    119,
+    119,
+    119,
     63,
     63,
     63,
@@ -6515,12 +6515,6 @@
   ],
   "SecondObjectData": [
     {
-      "GameObjectId": 61,
-      "X": 11,
-      "Y": 21,
-      "Property": 0
-    },
-    {
       "GameObjectId": 13,
       "X": 35,
       "Y": 15,
@@ -6534,8 +6528,8 @@
     },
     {
       "GameObjectId": 63,
-      "X": 35,
-      "Y": 15,
+      "X": 34,
+      "Y": 19,
       "Property": 0
     },
     {
@@ -6554,6 +6548,18 @@
       "GameObjectId": 140,
       "X": 60,
       "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 63,
+      "X": 36,
+      "Y": 12,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 61,
+      "X": 11,
+      "Y": 21,
       "Property": 0
     }
   ],
@@ -6585,5 +6591,5 @@
       "BoundRectangle": "480,320,32,32"
     }
   ],
-  "CompressedData": "D0EgPw1BwT8PQSA/DUHBPw9BID8FQQFZBUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BDT8GQQs/A0HBWQMiwVkDQcE/D0ENPwZBCz8NQcE/D0ENPwZBCz8NQcE/D0ENP8JBLgRBCz8NQcE/D0ENPwZBCz/BQQIiBEHBAANBwT8PQQ0/BkELPw1BwT8PQQ0/AiIDQQs/DUHBPw9BDT8GQQs/DUHBPw9BDT8DQQIiCz8DQcFZAyLBWQNBwT8PQQ0/BkELPw1BwT8VQQc/BkELPw1BwT8VQQc/BkELPw1BwT8JQcFLAknCS0ECPwIiBz8GQQs/wWkIQQIiwkE/D0ECP8NBLkEHPwZBCz8NQcE/AUHDo6SlBkHEAwQFQQI/AkEHP8KurwRBCz8DQcPj5OUGQcE/AkHBdQNBAqIBQcR1QaJfBEEHP8KenwR3Cz8EQcF1B0HBPwSRwZIBQcGQKJHBkgFBwZAJkQRRxFKur1AoUcRSjo9QCVEEYcRinp9gKGHEYp6fYA5hxGKen2AoYcRinp9gDmHEYp6fYChhxGKen2AIYcFh"
+  "CompressedData": "D0EgPw1BwT8PQSA/DUHBPw9BID8FQQFZBUHBPw9BID8NQcE/D0EgPw1BwT8PQSA/DUHBPw9BDT8GQQs/A0HBWQMiwVkDQcE/D0ENPwZBCz8NQcE/D0ENPwZBCz8NQcE/D0ENP8JBLgRBCz8NQcE/D0ENPwZBCz/BQQIiBEHBAANBwT8PQQ0/BkELPw1BwT8PQQ0/AiIDQQs/DUHBPw9BDT8GQQs/DUHBPw9BDT8DQQIiCz8DQcFZAyLBWQNBwT8PQQ0/BkELPw1BwT8VQQc/BkELPw1BwT8VQQc/BkELPw1BwT8JQcFMAknBTAVBwS4HPwZBCz/BaQhBAiLCQT8VQQc/BkELPw1BwT8BQcOjpKUGQcMDBAUGQQc/wq6vBEELPwNBw+Pk5QZBwT8CQcF1A0ECogFBwXUBQcE/BHcHP8KenwR3Cz8EQcF1B0HBPwSRwZIBQcGQKJHBkgFBwZAJkQRRxFKur1AoUcRSjo9QCVEEYcRinp9gKGHEYp6fYA5hxGKen2AoYcRinp9gDmHEYp6fYChhxGKen2AIYcFh"
 }

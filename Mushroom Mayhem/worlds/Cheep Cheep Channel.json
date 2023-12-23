@@ -166,10 +166,10 @@
     161,
     161,
     161,
-    135,
-    134,
-    161,
     166,
+    161,
+    161,
+    161,
     161,
     135,
     134,
@@ -230,11 +230,11 @@
     148,
     61,
     148,
-    144,
-    150,
-    129,
-    153,
-    143,
+    149,
+    148,
+    61,
+    148,
+    148,
     144,
     150,
     168,
@@ -294,11 +294,11 @@
     179,
     132,
     132,
-    185,
-    161,
-    161,
-    184,
-    164,
+    165,
+    159,
+    179,
+    132,
+    132,
     181,
     145,
     146,
@@ -500,7 +500,7 @@
     183,
     149,
     148,
-    167,
+    148,
     148,
     179,
     181,
@@ -550,10 +550,10 @@
     148,
     159,
     183,
-    160,
-    162,
-    158,
-    128,
+    144,
+    180,
+    129,
+    129,
     129,
     129,
     129,
@@ -564,7 +564,7 @@
     164,
     165,
     108,
-    148,
+    167,
     159,
     148,
     144,
@@ -724,15 +724,21 @@
     },
     {
       "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
-      "X": 32,
-      "Y": 8,
-      "BoundRectangle": "512,128,16,16"
+      "X": 34,
+      "Y": 3,
+      "BoundRectangle": "544,48,16,16"
     },
     {
       "LevelId": "6c2dafec-caa6-40bd-b4d2-a6f14d6d78dd",
+      "X": 48,
+      "Y": 8,
+      "BoundRectangle": "768,128,16,16"
+    },
+    {
+      "LevelId": "0a510427-71ea-4713-8f21-b31a871bb3d4",
       "X": 44,
-      "Y": 7,
-      "BoundRectangle": "704,112,16,16"
+      "Y": 8,
+      "BoundRectangle": "704,128,16,16"
     }
   ],
   "ObjectData": [
@@ -743,8 +749,8 @@
     },
     {
       "GameObjectId": 208,
-      "X": 32,
-      "Y": 8
+      "X": 34,
+      "Y": 3
     },
     {
       "GameObjectId": 207,
@@ -778,11 +784,6 @@
     },
     {
       "GameObjectId": 210,
-      "X": 6,
-      "Y": 5
-    },
-    {
-      "GameObjectId": 210,
       "X": 31,
       "Y": 6
     },
@@ -798,14 +799,19 @@
     },
     {
       "GameObjectId": 210,
-      "X": 41,
-      "Y": 6
+      "X": 38,
+      "Y": 8
     },
     {
       "GameObjectId": 210,
       "X": 10,
       "Y": 3
+    },
+    {
+      "GameObjectId": 210,
+      "X": 6,
+      "Y": 5
     }
   ],
-  "CompressedData": "AODg4ODg4ODg4ODg4ODg4ADw8PDw8PDw8PDw8PDw8PAAhqGhpqGhoaGhh5GGoaGhAKJrjxCAgoCohLmhoo+UawCenreUkJKQkrePnz2Ug4QAlLOFPYi4uaKUErOFlJWPAI9slWsRlI9snoOEpZSwlACUlJWemIGBgYG2gYKfaxMAPZ+jhLmhoaGhoaG4hIS54ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PCmoaGhoaGhoaGhoaGhoYeGFJSUlJ49lI+UnhaUPZSQloSyn7OEhISEhLKUs4SEuaGUPWyUlI8VlJSUnpSPlGufgIGCnoCBtoGCsZSDspSAqJeGopSgoaGhorBssJQ9kJKhopSPbJ6UlGuUF5Sft6Ci4ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PChpqGHhqGhpqGhoYeRkZGRgZmPkJaohKVtbm+goYeRkaG4pLWRkj2efX5/j2ugh5GUGJ+Ih5KUg6SlnpSUj6CHhLKUsKCij6OkpIU9n7OEtZSPa5Q9bJSelLeVlKeUs7WegIGBgYGBgaikpWyUn5SQ4ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PCRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGR"
+  "CompressedData": "AODg4ODg4ODg4ODg4ODg4ADw8PDw8PDw8PDw8PDw8PAAhqGhpqGhoaGhh5GGoaGhAKJrjxCAgoCohLmhoo+UawCenreUkJKQkrePnz2Ug4QAlLOFPYi4uaKUErOFlJWPAI9slWsRlI9snoOEpZSwlACUlJWemIGBgYG2gYKfaxMAPZ+jhLmhoaGhoaG4hIS54ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PCmoaGhoaGhoaGhoaGhoaahFJSUlJ49lI+UnhaUPZSVlISyn7OEhISEhLKUs4SEpZ+UPWyUlI8VlJSUnpSPlGufgIGCnoCBtoGCsZSDspSAqJeGopSgoaGhorBssJQ9kJKhopSPbJ6UlGuUF5Sft5C04ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PChoaGHhqGhpqGhoYeRkZGRPZSUkJaohKVtbm+goYeRkbOEhLWRkj2efX5/j2ugh5GUGJ+Ih5KUg6SlnpSUj6CHhLKUsKCij6OkpIU9n7OEtZSPa5Q9bJSelLeVlJSUs7WBgYGBgYGBgaikpWynn5SQ4ODg4ODg4ODg4ODg4ODg4PDw8PDw8PDw8PDw8PDw8PCRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGR"
 }

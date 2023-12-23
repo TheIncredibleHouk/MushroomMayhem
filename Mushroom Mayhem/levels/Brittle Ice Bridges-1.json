@@ -6501,12 +6501,6 @@
   "PatchTileData": null,
   "FirstObjectData": [
     {
-      "GameObjectId": 14,
-      "X": 8,
-      "Y": 6,
-      "Property": 2
-    },
-    {
       "GameObjectId": 16,
       "X": 3,
       "Y": 11,
@@ -6531,12 +6525,6 @@
       "Property": 1
     },
     {
-      "GameObjectId": 62,
-      "X": 12,
-      "Y": 8,
-      "Property": 0
-    },
-    {
       "GameObjectId": 16,
       "X": 8,
       "Y": 22,
@@ -6556,8 +6544,14 @@
     },
     {
       "GameObjectId": 59,
-      "X": 2,
+      "X": 4,
       "Y": 3,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 52,
+      "X": 1,
+      "Y": 9,
       "Property": 0
     }
   ],
