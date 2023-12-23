@@ -884,10 +884,9 @@ PLAYERSUIT_LAST		= PLAYERSUIT_HAMMER	; Marker for "last" suit (Debug cycler need
 
 	Update_Select:	.ds 1		; Changes which path of "update routines" are selected; $00 = ??, $20 = Title Screen, $40 = Spade Game, $80 = Vertical level, $A0 = 32 pixel partition, $C0 = Normal
 
-	Raster_Effect:	.ds 1		; $00 is standard status bar, $20 is title/ending, $40 = 32 pixel partition, $60 = Spade Bonus Game (3 sliding rows), $80 is nothing (e.g. as in 2P versus), $A0 = ???
+	IRQ_Mode:	.ds 1		; $00 is standard status bar, $20 is title/ending, $40 = 32 pixel partition, $60 = Spade Bonus Game (3 sliding rows), $80 is nothing (e.g. as in 2P versus), $A0 = ???
 
 	.org $0160
-	Debug_Flag:	.ds 1		; Set to $80 by the debug menu, enables debug functionality like power level cycling and not dying from time over
 
 
 ; Main NES SRAM begin
@@ -945,7 +944,7 @@ SPR_VFLIP	= %10000000
 	Level_PipeNotExit:	.ds 1	; If set, pipes do NOT exit to map (i.e. as in pipe junctions)
 	Level_PauseFlag:	.ds 1	; Set to 0 when not paused, or 1 when paused
 	Level_SkipStatusBarUpd:	.ds 1	; When set, skips updating the status bar for one frame (priority graphics buffer changes I think)
-	Raster_State:		.ds 1	; This variable's meaning depends on the Raster_Effect in use; typically 0 is first pass, then more for further scanlines
+	Raster_State:		.ds 1	; This variable's meaning depends on the IRQ_Mode in use; typically 0 is first pass, then more for further scanlines
 
 				.ds 7	; $0379-$037F unused
 
@@ -1047,7 +1046,7 @@ UPDATERASTER_32PIXPART	= 1	; 32 pixel partition; common use is for levels with w
 UPDATERASTER_SPADEGAME	= 2	; Spade game sliders
 UPDATERASTER_WATERLINE	= 3	; "Water line" mode (described at ObjHorzAutoScroller_Init)
 UPDATERASTER_32PIXSHOWSPR= $80	; If NOT set, hides sprites that fall beneath the partition (i.e. for fixed water effect)
-	Update_Request:		.ds 1	; This changes the current Raster_Effect and Update_Select and doesn't persist
+	Update_Request:		.ds 1	; This changes the current IRQ_Mode and Update_Select and doesn't persist
 	Map_Starman:		.ds 1	; Player used a Starman!
 	Map_Power_Disp:		.ds 1	; This is the powerup currently DISPLAYED on the map; it should be the same as $0746 World_Map_Power, except for Judgem's Cloud
 	Map_Warp_PrevWorld:	.ds 1	; The world you're coming FROM when warping (also used as output from warp zone what world you're going to)
@@ -1636,6 +1635,7 @@ MARIO_PLANE = 2
 	Player_Grow:		.ds 1	; Tick counter used to animate growth into Super Mario (20 is starting value, or 2f to shrink)
 	Player_FlashInv:	.ds 1	; Player "flashing invincibility" after being hit, counts down to zero
 	Player_StarInv:		.ds 1	; Starman Invincibility counter; full/fatal invincibility, counts down to zero
+	Player_Invicible:	.ds 1
 	Player_SuitLost:	.ds 1	; Suit lost to hit discard "poof" counter
 	Player_StarOff:		.ds 1	; Starman Invincibility wear-off (the last second or so when it slows and vanishes), counts down to zero
 	Player_HaltTick:	.ds 1	; When non-zero, all action halts until this countdown hits zero
@@ -1909,13 +1909,14 @@ SPRITE_3_VINVISIBLE = $08
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
 
-; Objects_Timer3: Used as the "wake up" out of shell timer
+; Shell_SleepTimer: Used as the "wake up" out of shell timer
 ; If timer is less than $60, it decrements normally, otherwise...
 ;	If object is in state 2, timer decrements normally
 ;	If object is in state 4 (being held), timer only decrements every 4 ticks
 ;	In all other states, timer decrements every 2 ticks
-	Objects_Timer3:		.ds 5	; $06A6-$06AA Used as the "wake up" out of shell timer
+	Shell_SleepTimer:		.ds 5	; $06A6-$06AA Used as the "wake up" out of shell timer
 	Objects_Timer4:		.ds 5	; $06AB-$06AF "Timer" values; automatically decrements to zero (used in "shakin' awake" effect)
+	Objects_ShowShakeFeet: .ds 5
 	Objects_SlowTimer:	.ds 5
 	Explosion_Timer:	.ds 5
 
@@ -2383,8 +2384,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	Wall_Jump_Enabled:		.ds 1	;#DAHRKDAIZ When 1, wall jumping is enabled
 	Wind:					.ds 1	; Wind factor (affects player!)
 	WeatherActive:			.ds 1
-	Item_Shop_Window:		.ds 3	; Used in item shops for what 3 items are current visible
-	Shop_Mode_Initialized:	.ds 1	; Indicates if the shop has been initialized or not
 	Player_FireDash:			.ds 1	; Indicates we are in Burning mode
 	Burning_Mode:			.ds 1	;
 	Player_Direction:		.ds 1	;
@@ -2470,7 +2469,6 @@ EVENT_JUMP_LIMITS			= $82
 	Level_AScrlVVelFrac:	.ds 1	; Auto scroll vertical velocity fractional accumulator 
 	Level_AScrlHVelCarry:	.ds 1	; '1' when last auto scroll H Velocity fraction accumulation rolled over
 	Level_AScrlVVelCarry:	.ds 1	; '1' when last auto scroll V Velocity fraction accumulation rolled over
-	World8Tank_OnTank:	.ds 1	; Set when Player is standing on tank surface in Tank level (as opposed to ground); for the illusion the tank is moving through...
 ;;;;;;;;;;;;
 
 
@@ -2513,14 +2511,6 @@ CFIRE_LASER		= $15	; Laser fire
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 5 ONLY!
 	ObjSplash_Disabled:	.ds 8	; $7A4F-$7A54 Object water/lava splashes are disabled until decrements to zero
-
-	ObjectGenerator_Timer2:	.ds 8	; $7A57-$7A5E Cannon Fire timer (decrements to zero)
-
-
-	CoinShip_CoinGlowIdx:	.ds 1	; Coin Ship only: Glowing coins palette color index
-	CoinShip_CoinGlowCnt:	.ds 1	; Coin Ship only: Glowing coins palette color counter
-
-	SObjBlooperKid_OutOfWater:.ds 0	; $7A68-$7A6F Blooper kid only; if set, Blooper Kid is trying to go out of water
 
 	DAIZ_TEMP1:		.ds 1	; #DAHRKDAIZ $7A70 USED for temprorary in variables
 
@@ -2645,7 +2635,6 @@ ATTR_SHELLPROOF			= %01000000
 ATTR_EXPLOSIONPROOF		= %10000000
 
 	Objects_BehaviorAttr: .ds 8
-	Objects_NoAttack:	.ds 5
 	Objects_BoundBox:	.ds 8
 	Objects_XYCS:		.ds 8
 	Objects_XYCSPrev:	.ds 8
@@ -2664,23 +2653,19 @@ HIT_SHELL		= $40
 HIT_EXPLOSION	= $80
 	
 
-	Temp_VarNP0:		.ds 1	; A temporary not on page 0
 	Last_EventGen:		.ds 1
 	Level_EventTimer:	.ds 1	;
 
-	LevelEvent_Cnt:		.ds 1	; General purpose counter used by a couple LevelEvents
 	Vert_Scroll_Off:	.ds 1	; Vertical scroll offset, used for "vibration" effects
 	Level_Vibration:	.ds 1	; While greater than zero, screen vibrates (from impact of heavy fellow)
 	Player_VibeDisable:	.ds 1	; While greater than zero, Player is unable to move (from impact of heavy fellow)
-	Player_TwisterSpin:	.ds 1	; While greater than zero, Player is twirling from sand twister
 
 	Proj_Attack:		.ds 1
 	Sprite_FreeRAM:		.ds 1
 	Scroll_Updated:		.ds 1
+
 ; NOTE!! This object var is OBJECT SLOT 0 - 4 ONLY!
 	Objects_Health:	.ds 5	; $7CF6-$7CFA Somewhat uncommon "HP" used generally for bosses only (e.g. they take so many fireballs)
-
-	RotatingColor_Cnt:	.ds 1	; When non-zero, causes rainbow palettes in the background; $80 bit is used by Koopaling wand grab
 
 ; Stores "rows" of completed levels or other map alterations (e.g. rock break,
 ; mini-fortress lock removal, etc.) for a given column, from the leftmost.
@@ -2736,8 +2721,6 @@ AIR_INCREASE	= 3
 	Player_Coins2:	.ds 0	; Luigi's coins
 
 	Map_GameOver_CursorY:	.ds 0	; Game Over popup cursor Y ($60/$68)
-
-	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
 
 	Pal_Data:		.ds 32	; $7DDE-$7DFD Holds an entire bg/sprite palette (this is the MASTER palette, what fades target, and others may source for "original" colors!)
 
@@ -2926,8 +2909,6 @@ PLAYER_BULLET		= 06
 	PaletteIndex:		.ds 1	;
 	Pointers:			.ds 60	;
 	WorldWidth:			.ds 1
-	MiscValue2:			.ds 1
-	MiscValue3:			.ds 1
 	TempX:				.ds 1
 	TempY:				.ds 1
 	TempA:				.ds 1;
@@ -2951,28 +2932,31 @@ ITEM_ICEFLOWER = $07
 ITEM_FOXLEAF = $08
 ITEM_NINJASHROOM = $09
 ITEM_STARMAN = $0A
+ITEM_MEGASTARMAN = $0A
 ITEM_STOPWATCH = $0B
 ITEM_WINGS = $0C
 ITEM_1_HP = $0D
 ITEM_2_HP = $0E
 ITEM_3_HP = $0F
-ITEM_RADARSW	= $10
-ITEM_RADARS		= $11
-ITEM_RADARSE	= $12
-ITEM_RADARE		= $13
-ITEM_RADARNE	= $14
-ITEM_RADARN		= $15
-ITEM_RADARNW	= $16
-ITEM_RADARW		= $17
-ITEM_RADARUNKNOWN = $18
+ITEM_MEGASTAR = $10
 
 BADGE_INVALID = 255
-BADGE_ITEMRESERVE = 1
-BADGE_XP = 2
-BADGE_RADAR = 3
-BADGE_PMETER = 4
-BADGE_COIN = 5
-BADGE_AIR = 6
+
+BADGE_XP = 1
+BADGE_PMETER = 2
+BADGE_COIN = 3
+BADGE_AIR = 4
+BADGE_ITEMRESERVE = 5
+BADGE_RADAR 		= 9
+BADGE_RADARSW		= 10
+BADGE_RADARS		= 11
+BADGE_RADARSE		= 12
+BADGE_RADARE		= 13
+BADGE_RADARNE		= 14
+BADGE_RADARN		= 15
+BADGE_RADARNW		= 16
+BADGE_RADARW		= 17
+BADGE_RADARUNKNOWN 	= 18
 
 
 ABILITY_EXTRAHIT = 1
@@ -2980,7 +2964,7 @@ ABILITY_STARTBIG = 2
 ABILITY_NOSHROOMS = 3
 ABILITY_RECOVERY = 4
 ABILITY_DOUBLEJUMP = 5
-ABILITY_MAX = 5
+ABILITY_MAX = ABILITY_EXTRAHIT
 
 	; #SAVE RAM
 	Player_Stats_Boundary_Start: .ds 1	
@@ -3020,6 +3004,8 @@ ABILITY_MAX = 5
 	Player_Level:		.ds 1	;
 	Player_Experience:	.ds 3		; Experience points that increase by defeating enemies
 	SecondQuest:		.ds 1
+	Map_PrevMoveDir:	.ds 1
+	CurrentDay:			.ds 1
 
 NORMAL_QUEST = $FF
 SECOND_QUEST = $FE
@@ -3069,7 +3055,7 @@ TILE_PROP_CLIMBABLE		= $0B ;
 TILE_PROP_COIN			= $0C ;
 TILE_PROP_DOOR			= $0D ;
 TILE_PROP_CHERRY		= $0E ;
-TILE_PROP_WATERHARMFUL	= $0F ;
+TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 TILE_PROP_LAVA			= TILE_PROP_WATER | TILE_PROP_FOREGROUND | TILE_PROP_HARMFUL
 
@@ -3148,132 +3134,6 @@ ObjectGroup_PatternSets		= $A0C8
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; GAME CONSTANTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; Size of level (width or height, if vertical)
-LEVEL1_SIZE_01		= %00000000
-LEVEL1_SIZE_02		= %00000001
-LEVEL1_SIZE_03		= %00000010
-LEVEL1_SIZE_04		= %00000011
-LEVEL1_SIZE_05		= %00000100
-LEVEL1_SIZE_06		= %00000101
-LEVEL1_SIZE_07		= %00000110
-LEVEL1_SIZE_08		= %00000111
-LEVEL1_SIZE_09		= %00001000
-LEVEL1_SIZE_10		= %00001001
-LEVEL1_SIZE_11		= %00001010
-LEVEL1_SIZE_12		= %00001011
-LEVEL1_SIZE_13		= %00001100
-LEVEL1_SIZE_14		= %00001101
-LEVEL1_SIZE_15		= %00001110
-LEVEL1_SIZE_16		= %00001111
-
-; Player Y Start positions (also selects appropriate starting vertical position)
-LEVEL1_YSTART_170	= %00000000
-LEVEL1_YSTART_040	= %00100000
-LEVEL1_YSTART_000	= %01000000
-LEVEL1_YSTART_140	= %01100000
-LEVEL1_YSTART_070	= %10000000
-LEVEL1_YSTART_0B0	= %10100000
-LEVEL1_YSTART_0F0	= %11000000
-LEVEL1_YSTART_180	= %11100000
-
-LEVEL1_2PVS		= %00010000	; Unknown purpose flag set on 2P Vs levels
-
-; Palettes (full 16 colors in category) are defined by tileset; objects are rooted at index 8
-; BG palette set
-LEVEL2_BGPAL_00		= %00000000
-LEVEL2_BGPAL_01		= %00000001
-LEVEL2_BGPAL_02		= %00000010
-LEVEL2_BGPAL_03		= %00000011
-LEVEL2_BGPAL_04		= %00000100
-LEVEL2_BGPAL_05		= %00000101
-LEVEL2_BGPAL_06		= %00000110
-LEVEL2_BGPAL_07		= %00000111
-
-; Object palette set
-LEVEL2_OBJPAL_08	= %00000000
-LEVEL2_OBJPAL_09	= %00001000
-LEVEL2_OBJPAL_10	= %00010000
-LEVEL2_OBJPAL_11	= %00011000
-
-; Player X Start positions
-LEVEL2_XSTART_18	= %00000000
-LEVEL2_XSTART_70	= %00100000
-LEVEL2_XSTART_D8	= %01000000
-LEVEL2_XSTART_80	= %01100000
-
-; Sets "Level_UnusedFlag", which is apparently not used for anything
-LEVEL2_UNUSEDFLAG	= %10000000
-
-
-; Sets "Level_AltTileset", the tileset of the "alternate" level
-LEVEL3_TILESET_00	= %00000000	; Included for completeness, but not valid (for the world map only)
-LEVEL3_TILESET_01	= %00000001
-LEVEL3_TILESET_02	= %00000010
-LEVEL3_TILESET_03	= %00000011
-LEVEL3_TILESET_04	= %00000100
-LEVEL3_TILESET_05	= %00000101
-LEVEL3_TILESET_06	= %00000110
-LEVEL3_TILESET_07	= %00000111
-LEVEL3_TILESET_08	= %00001000
-LEVEL3_TILESET_09	= %00001001
-LEVEL3_TILESET_10	= %00001010
-LEVEL3_TILESET_11	= %00001011
-LEVEL3_TILESET_12	= %00001100
-LEVEL3_TILESET_13	= %00001101
-LEVEL3_TILESET_14	= %00001110
-LEVEL3_TILESET_15	= %00001111	; Included for completeness, but not valid (bonus game, can't jump in this way)
-
-; Sets "Level_7Vertical", i.e. states object is a vertical oriented one
-LEVEL3_VERTICAL		= %00010000
-
-
-; Sets the vertical scroll lock
-LEVEL3_VSCROLL_LOCKLOW	= %00000000	; Screen locked at $EF (lowest point) unless flying or climbing a vine
-LEVEL3_VSCROLL_FREE	= %00100000	; Free vertical scroll
-LEVEL3_VSCROLL_LOCKED	= %01000000	; Locks either high (0) or low ($EF) depending on value of Vert_Scroll
-
-; Sets Level_PipeNotExit
-LEVEL3_PIPENOTEXIT	= %10000000
-
-
-; BG pattern bank index
-LEVEL4_BGBANK_INDEX	.func (\1 & %00011111)
-
-; Level initial action
-LEVEL4_INITACT_NOTHING	= %00000000	; Do nothing
-LEVEL4_INITACT_SLIDE	= %00100000	; Start level sliding (if able by power-up)
-LEVEL4_INITACT_PIPE_T	= %01000000	; Start by exiting top of pipe
-LEVEL4_INITACT_PIPE_B	= %01100000	; Start by exiting bottom of pipe
-LEVEL4_INITACT_PIPE_R	= %10000000	; Start by exiting right of pipe
-LEVEL4_INITACT_PIPE_L	= %10100000	; Start by exiting left of pipe
-LEVEL4_INITACT_AIRSHIP	= %11000000	; Airship intro run & jump init
-LEVEL4_INITACT_AIRSHIPB	= %11100000	; Boarding the Airship
-
-; Select "Music 2" set BGM (from table GamePlay_BGM)
-LEVEL5_BGM_OVERWORLD	= %00000000
-LEVEL5_BGM_UNDERGROUND	= %00000001
-LEVEL5_BGM_UNDERWATER	= %00000010
-LEVEL5_BGM_FORTRESS	= %00000011
-LEVEL5_BGM_BOSS		= %00000100
-LEVEL5_BGM_AIRSHIP	= %00000101
-LEVEL5_BGM_BATTLE	= %00000110
-LEVEL5_BGM_TOADHOUSE	= %00000111
-LEVEL5_BGM_ATHLETIC	= %00001000
-LEVEL5_BGM_THRONEROOM	= %00001001
-LEVEL5_BGM_SKY		= %00001010
-
-; Bits 4-5 are free apparently
-
-; Set starting clock time
-LEVEL5_TIME_300		= %00000000	; Clock at 300
-LEVEL5_TIME_400		= %01000000	; Clock at 400
-LEVEL5_TIME_200		= %10000000	; Clock at 200
-LEVEL5_TIME_UNLIMITED	= %11000000	; Clock at 000, unlimited
-
-
-; Special values that go into the Collide Jump Table
-OCSPECIAL_HIGHSCORE	= $0400		; Stomp-killing this enemy gives you 1000 pts instead of 100 pts base score
 OCSPECIAL_KILLCHANGETO	= $0800		; When enemy is killed, it changes to the object ID in the lower 8 bits (requires OA3_SHELL)
 
 ; Object Attributes Set 1 Flags
