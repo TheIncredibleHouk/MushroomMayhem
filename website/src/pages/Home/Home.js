@@ -4,8 +4,19 @@ import { Link } from 'react-router-dom';
 
 import Image3 from "./images/3.png";
 import routes from "../../routing/routes";
+import PageHeader from "../../components/PageHeader/PageHeader";
+
+import { red } from "../../styles/colors";
 
 var Home = () => {
+  var showDemos = () => {
+    var date = new Date();
+    if(date >= Date.UTC(2023, 11, 23, 18)){
+      return true;
+    }
+    return false;
+  };
+
   return (
     <HomeStyles>
       <PageTitle
@@ -18,6 +29,17 @@ var Home = () => {
         will give you all the details about Mario's latest NES adventure with
         tips, tricks and secrets exposed directly by the developer!{" "}
       </div>
+      { showDemos() &&
+        <>
+          <PageHeader color={red}>New Demo Released!</PageHeader>
+          <div className="home-description">
+            A new demo has been on December 23, 2023! This contains the entirety of the first world, which includes 9 levels,
+            a fortress (boss level), and having the chance to earn the first ability of the game! Important note: your game save
+            from the demo will not transfer to the full version. It's highly commended that you check out
+            the <Link to="/basics">Basics</Link> and <Link to="/techniques">Techniques</Link> section of this guide. Download your appropriate patch in <Link to="/demos">Demos</Link> and happy holidays!
+          </div>
+        </>
+      }
       <div className="home-table-contents">
         <h1>Table of Contents</h1>
         <div>

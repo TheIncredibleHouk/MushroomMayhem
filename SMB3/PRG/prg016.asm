@@ -2560,10 +2560,52 @@ Muncher_DrawFrame:
 Muncher_DrawRTS:
 	RTS
 
+Half_OffMsg:
+	.db "HALF OFF!"
+
+DrawHalf_OffMsg:
+	LDY Graphics_BufCnt
+
+	LDA #$28
+	STA Graphics_Buffer, Y
+
+	LDA #$6C
+	STA Graphics_Buffer + 1, Y
+
+	LDA #$09
+	STA Graphics_Buffer + 2, Y
+
+	LDX #$00
+
+DrawHalf_OffMsgLoop:	
+	LDA Half_OffMsg, X
+	STA Graphics_Buffer + 3, Y
+	INY
+	INX
+	CPX #$09
+	BNE DrawHalf_OffMsgLoop
+
+	LDA #$00
+	STA Graphics_Buffer + 3, Y
+
+	STY Graphics_BufCnt
+
+	LDX <CurrentObjectIndexZ	
+	RTS
+
 ObjInit_ItemShop:
 	LDA #$04
 	STA Objects_SpritesRequested, X
 
+	LDA CurrentDay
+	SUB #$06
+	CMP #$01
+	BCS ItemShop_InitRTS
+
+	INC ItemShop_HalfOff, X
+	JSR DrawHalf_OffMsg
+
+ItemShop_InitRTS:
 	JMP Object_NoInteractions
 
 ObjNorm_ItemShop:
@@ -2616,7 +2658,7 @@ ItemShop_Prev:
 	DEC ItemShop_Window, X
 	BPL ItemShop_Update
 
-	LDA #$0C
+	LDA #$0D
 	STA ItemShop_Window, X
 
 	JMP ItemShop_Update
@@ -2632,7 +2674,7 @@ ItemShop_Next:
 
 	INC ItemShop_Window, X
 	LDA ItemShop_Window, X
-	CMP #$0D
+	CMP #$0E
 	BCC ItemShop_Update
 
 	LDA #$00
@@ -2658,11 +2700,11 @@ ItemShop_Draw:
 
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes, X
-	JSR Object_Draw
+	JSR Object_Draw	
 	RTS
 
 ItemShop_List:
-	.byte $0F, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0F, $01
+	.byte $10, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0F, $10, $01
 
 ItemShop_Tiles:
 	.byte $FF, $FF, $FF, $FF ; $00
@@ -2681,24 +2723,26 @@ ItemShop_Tiles:
 	.byte $FF, $FF, $FF, $FF ; $0D
 	.byte $FF, $FF, $FF, $FF ; $0E
 	.byte $6C, $6D, $7C, $7C ; $10
+	.byte $6A, $6B, $7E, $7F ; $11
 
 ItemShop_Cost:
 	.word 0		; $00
-	.word 100	; $01
-	.word 250	; $02
-	.word 250	; $03
-	.word 400	; $04
-	.word 400	; $05
-	.word 500	; $06
-	.word 250	; $07
-	.word 400	; $08
-	.word 500	; $09
-	.word 600	; $0A
-	.word 400	; $0B
-	.word 300	; $0C
-	.word 000	; $0D
-	.word 000	; $0E
-	.word 750	; $0F
+	.word 50	; $01
+	.word 100	; $02
+	.word 100	; $03
+	.word 150	; $04
+	.word 150	; $05
+	.word 200	; $06
+	.word 100	; $07
+	.word 150	; $08
+	.word 200	; $09
+	.word 200	; $0A
+	.word 300	; $0B
+	.word 100	; $0C
+	.word 500	; $0D
+	.word 300	; $0E
+	.word 500	; $0F
+	.word 350	; $10
 
 ItemShop_Palette:
 	.byte 0		; $00
@@ -2709,7 +2753,7 @@ ItemShop_Palette:
 	.byte $1A	; $05
 	.byte $27	; $06
 	.byte $1A	; $07
-	.byte $00	; $08
+	.byte $27	; $08
 	.byte $17	; $09
 	.byte $00	; $0A
 	.byte $17	; $0B
@@ -2717,6 +2761,10 @@ ItemShop_Palette:
 	.byte $00	; $0D
 	.byte $00	; $0E
 	.byte $06	; $0F
+	.byte $00	; $10
+
+Item_Description_Addresses:
+	.word Item_Descriptions, Item_Descriptions2
 
 Item_Descriptions:
 	.db "     INVALID    "
@@ -2725,7 +2773,7 @@ Item_Descriptions:
 	.db "  RACCOON LEAF  "
 	.db "POISON FROG SUIT"
 	.db "   KOOPA SHELL  "
-	.db "HAMMER BROS SUIT"
+	.db "SLEDGE BROS SUIT"
 	.db "   ICE FLOWER   "
 	.db "    FOX LEAF    "
 	.db " NINJA MUSHROOM "
@@ -2736,12 +2784,18 @@ Item_Descriptions:
 	.db "                "
 	.db " 3 HEART HEALTH "
 
+Item_Descriptions2:	
+	.db "    MEGA STAR   "
+
 ItemShop_Window = Objects_Data1
 ItemShop_Item1 = Temp_Var1
 ItemShop_Item2 = Temp_Var2
 ItemShop_Item3 = Temp_Var3
+ItemShop_Descripts = Temp_Var5
 ItemShop_Drawn = Objects_Data2
 ItemShop_InstructionsDrawn = Objects_Data3
+ItemShop_HalfOff = Objects_Data4
+ItemShop_FreeDay = Objects_Data5
 
 ItemShop_UpdateWindow:
 	LDA ItemShop_Window, X
@@ -2889,10 +2943,24 @@ ItemShop_UpdateWindow:
 	STA Graphics_Buffer, Y
 	INY
 
+	LDX #$00
+	LDA ItemShop_Item2
+	CMP #$10
+	BCC ItemShop_DescriptOffset
+
+	INX
+	INX
+
+ItemShop_DescriptOffset:
+	LDA Item_Description_Addresses, X
+	STA ItemShop_Descripts
+
+	LDA Item_Description_Addresses + 1, X
+	STA ItemShop_Descripts + 1
+	
 	LDA #$00
-
 	LDX ItemShop_Item2
-
+	
 ItemShop_Loop:	
 	ADD #$10
 	DEX
@@ -2903,15 +2971,26 @@ ItemShop_Loop:
 	LDA #$0F
 	STA <Temp_Var4
 
+	TXA
+	PHA
+
+	TYA
+	TAX
+
+	PLA
+	TAY
+
 ItemShop_Name:
-	LDA Item_Descriptions, X
-	STA Graphics_Buffer, Y
+	LDA [ItemShop_Descripts], Y
+	STA Graphics_Buffer, X
 	INY
 	INX
 
 	DEC <Temp_Var4
 	BPL ItemShop_Name
 
+	TXA
+	TAY
 
 	LDA #$3F
 	STA Graphics_Buffer, Y
@@ -2959,6 +3038,17 @@ ItemShop_Name:
 
 	LDA ItemShop_Cost + 1, X
 	STA DigitsParam + 1
+
+	LDX <CurrentObjectIndexZ
+
+	LDA ItemShop_HalfOff, X
+	BEQ ItemShop_PriceDigits
+
+	CLC
+	ROR DigitsParam + 1
+	ROR DigitsParam
+
+ItemShop_PriceDigits:	
 	
 	JSR BytesTo3Digits
 
@@ -3007,6 +3097,15 @@ ItemShop_BuyItem:
 	LDA ItemShop_Cost + 1, X
 	STA CalcParam2 + 1
 
+	LDX <CurrentObjectIndexZ
+	LDA ItemShop_HalfOff, X
+	BEQ ItemShop_Subtract
+
+	CLC
+	ROR CalcParam2 + 1
+	ROR CalcParam2	
+
+ItemShop_Subtract:
 	JSR Subtract2ByteValue
 	
 	LDA CalcResult + 1
@@ -3079,6 +3178,16 @@ ObjInit_BadgeShop:
 	LDA #$04
 	STA Objects_SpritesRequested, X
 	
+	LDA CurrentDay
+	SUB #12
+	CMP #$02
+	BCS BadgeShop_InitRTS
+
+	INC BadgeShop_HalfOff, X
+
+	JSR DrawHalf_OffMsg
+
+BadgeShop_InitRTS:
 	JMP Object_NoInteractions
 
 ObjNorm_BadgeShop:
@@ -3196,34 +3305,51 @@ BadgeShop_Draw:
 	RTS
 
 BadgeShop_List:
-	.byte $06, $01, $02, $03, $04, $05, $06, $01
+	.byte BADGE_RADAR
+	.byte BADGE_AIR
+	.byte BADGE_XP
+	.byte BADGE_PMETER 
+	.byte BADGE_COIN
+	.byte BADGE_ITEMRESERVE
+	.byte BADGE_RADAR 		
+	.byte BADGE_AIR
 
 BadgeShop_Tiles:
 	.byte $FF, $FF, $FF, $FF ; $00
-	.byte $B0, $B1, $C0, $C1 ; $01
-	.byte $B2, $B3, $C2, $C3 ; $02
-	.byte $B4, $B5, $C4, $C5 ; $03
-	.byte $B6, $B7, $C6, $C7 ; $04
-	.byte $B8, $B9, $C8, $C9 ; $05
-	.byte $BA, $BB, $CA, $CB ; $05
+	.byte $B2, $B3, $C2, $C3 ; $01
+	.byte $B6, $B7, $C2, $C3 ; $02
+	.byte $C6, $C7, $C2, $C3 ; $03
+	.byte $BA, $BB, $CA, $CB ; $04
+	.byte $B0, $B1, $C0, $C1 ; $05
+	.byte $FF, $FF, $FF, $FF ; $06
+	.byte $FF, $FF, $FF, $FF ; $07
+	.byte $FF, $FF, $FF, $FF ; $08
+	.byte $B4, $B5, $C4, $C5 ; $09
+	
 
 BadgeShop_Cost:
 	.byte 0		; $00
-	.byte 10	; $01
-	.byte 20	; $02
-	.byte 30	; $03
-	.byte 40	; $04
-	.byte 50	; $05
-	.byte 60	; $06
+	.byte 6	 	; $01
+	.byte 8		; $02
+	.byte 10	; $03
+	.byte 4		; $04
+	.byte 10	; $05
+	.byte 00
+	.byte 00
+	.byte 00
+	.byte 10	; $06
 
 Badge_Descriptions:
 	.db "     INVALID    "; 00
-	.db "  ITEM RESERVE  "; 01
-	.db "    DOUBLE XP   "; 02
-	.db "   STAR RADAR   "; 03
-	.db " DOUBLE P METER "; 04
-	.db "  DOUBLE COINS  "; 05
-	.db " INCREASED AIR  "; 06
+	.db "    DOUBLE XP   "; 01
+	.db " DOUBLE P METER "; 02
+	.db "  DOUBLE COINS  "; 03
+	.db "  INCREASED AIR "; 04
+	.db "  ITEM RESERVE  "; 05
+	.db "                "; 06
+	.db "                "; 07
+	.db "                "; 08
+	.db "   STAR RADAR   "; 09
 
 BadgeShop_Window = Objects_Data1
 BadgeShop_Badge1 = Temp_Var1
@@ -3231,6 +3357,8 @@ BadgeShop_Badge2 = Temp_Var2
 BadgeShop_Badge3 = Temp_Var3
 BadgeShop_Drawn = Objects_Data2
 BadgeShop_InstructionsDrawn = Objects_Data3
+BadgeShop_HalfOff = Objects_Data4
+BadgeShop_Free = Objects_Data5
 
 BadgeShop_UpdateWindow:
 	LDA BadgeShop_Window, X
@@ -3365,7 +3493,6 @@ BadgeShop_UpdateWindow:
 	STA Graphics_Buffer, Y
 	INY
 
-
 	LDA #$28
 	STA Graphics_Buffer, Y
 	INY
@@ -3422,7 +3549,13 @@ BadgeShop_Name:
 
 	LDA BadgeShop_Cost, X
 	STA <DigitsParam
-	
+
+	LDA BadgeShop_HalfOff, X
+	BEQ BadgeShop_Digits
+
+	LSR <DigitsParam
+
+BadgeShop_Digits:	
 	JSR BytesTo2Digits
 
 	LDA <DigitsResult + 1
@@ -3452,8 +3585,17 @@ BadgeShop_BuyBadge:
 	LDA BadgeShop_List + 1, Y
 	TAY
 
+	LDA BadgeShop_Cost, Y
+	LDY BadgeShop_HalfOff, X
+	BEQ BadgeShop_Subtract
+
+	LSR A
+
+BadgeShop_Subtract:
+	STA <Temp_Var4
+
 	LDA Player_Cherries
-	SUB BadgeShop_Cost, Y
+	SUB <Temp_Var4
 	BCC BadgeShop_CannotBuy
 	
 	STA Player_Cherries
@@ -3523,6 +3665,9 @@ Badge_Explanations:
 	 MSG_ID Badge_C_Explanation
 	 MSG_ID Badge_D_Explanation
 	 MSG_ID Badge_E_Explanation
+	 MSG_ID Badge_F_Explanation
+	 MSG_ID Badge_F_Explanation
+	 MSG_ID Badge_F_Explanation
 	 MSG_ID Badge_F_Explanation
 
 BadgeShop_Explanation:

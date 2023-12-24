@@ -459,7 +459,7 @@ Make_Ice:
 	
 	LDA #$00
 	STA Explosion_Timer, Y
-	STA Objects_Timer3, Y
+	STA Shell_SleepTimer, Y
 
 	LDA #$FF
 	STA Objects_Timer, Y
@@ -467,8 +467,12 @@ Make_Ice:
 	TYA
 	TAX
 
+	LDA Objects_InWater, X
+	BNE Ice_NoVel
+
 	JSR Object_FallAwayFromPlayer
 	
+Ice_NoVel:	
 	LDX <CurrentObjectIndexZ
 	JMP SpecialObj_ToPoofKickSound
 
@@ -608,7 +612,7 @@ SpecialObj_ToPoofKickSound:
 	STA Sound_QPlayer
 
 SpecialObj_ToPoofNoSound:
-	LDA Player_StarInv
+	LDA Player_Invicible
 	BNE SpecialObj_ToPoofNoSound1
 
 SpecialObj_ForcedPoof:
@@ -4867,7 +4871,7 @@ SObj_CantStomp:
 
 NotTailHit:
 
-	LDA Player_StarInv
+	LDA Player_Invicible
 	ORA Player_FireDash
 	BEQ EnemyProj_HitPlayer2
 
@@ -4934,7 +4938,7 @@ Enemy_FreezePlayer:
 	RTS
 
 Enemy_IceFreeze:
-	LDA Player_StarInv
+	LDA Player_Invicible
 	ORA Player_FireDash
 	BEQ EnemeyProj_Enemy_FreezePlayer1
 

@@ -34,35 +34,7 @@ Object_BoundBox:
 	.byte  4,  27,   2,  32	; E BOUND32x32
 	.byte  2,  46,   2,  46	; F BOUND48x48
 
-SpecialObject_FindEmpty:
-	LDY #$05
 
-SpecialObject_FindEmptyNext:
-	LDA SpecialObj_ID,Y
-	BEQ SpecialObject_FindEmptyFound
-
-	DEY
-	BPL SpecialObject_FindEmptyNext	
-
-	CLC
-	RTS
-
-SpecialObject_FindEmptyFound:
-	SEC
-	RTS
-
-	; Checks for and handles object touching conveyor belt, storing result into LRBounce_Vel
-; $CF46
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Object_HitGround
-;
-; When object hits the ground, this aligns it properly to a tile
-; 
-; X = index of on-screen object
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; $C515
 Object_HitGround:
 	LDA Objects_BoundBottom, X
 	AND #$0F
@@ -673,10 +645,10 @@ NoExplosion_Colors:
 
 DoNot_Explode:
 
-	LDA Objects_Timer4,X
+	LDA Shell_ShakeTimer,X
 	BEQ PRG000_C996	 ; If this timer is already at zero, jump to PRG000_C997
 
-	DEC Objects_Timer4,X	; Otherwise, decrement it
+	DEC Shell_ShakeTimer,X	; Otherwise, decrement it
 
 PRG000_C996:
 	LDA Objects_SlowTimer,X
@@ -688,30 +660,27 @@ PRG000_C996:
 	DEC Objects_SlowTimer,X	; Otherwise, decrement it
 
 PRG000_C997:
-	LDA Objects_Timer3,X
+	LDA Shell_SleepTimer,X
 	BEQ PRG000_C9B6	 ; If timer is zero, jump to PRG000_C9B6
+	
+	CMP #$60
+	BLT PRG000_C9B3
 
-	CMP #$60	 
-	BLT PRG000_C9B3	 ; If timer value is < $60, jump to PRG000_C9B3
+	LDA DayNight
+	BPL Normal_ShellTimer
 
-	LDA #$01	 ; A = 1
+	LDA #$03
+	BNE PRG000_C9AF
 
-	LDY Objects_State,X
-	CPY #OBJSTATE_NORMAL
-	BEQ PRG000_C9B3	 ; If object's state is Normal, jump to PRG000_C9B3
+Normal_ShellTimer:	
+	LDA #$01	 ; A = 3
 
-	CPY #$04	 
-	BNE PRG000_C9AF	 ; If object's state is NOT 4 (being held), jump to PRG000_C9AF
-
-	; Object being held...
-
-	LDA #$03	 ; A = 3
 PRG000_C9AF:
 	AND <Counter_1
 	BNE PRG000_C9B6	 ; Every A:A+1 ticks, jump to PRG000_C9B6
 
 PRG000_C9B3:
-	DEC Objects_Timer3,X	 ; Every 4 ticks, decrement Objects_Timer3
+	DEC Shell_SleepTimer,X	 ; Every 4 ticks, decrement Shell_SleepTimer
 
 PRG000_C9B6:
 	JSR Object_DoStateAction 	; Do whatever's required by this object by its current state
@@ -1122,12 +1091,12 @@ Object_SetShakeAwakeTimer:
 
 	; Set timer for object to wake up from
 
-	LDA Objects_Timer3,X
+	LDA Shell_SleepTimer,X
 	CMP #$60	 
 	BGE PRG000_CB7A	 ; If timer 3 >= $60, jump to PRG000_CB7A
 
 	AND #$07
-	STA Objects_Timer4,X	; Timer 4 = 0-7, based on timer3
+	STA Shell_ShakeTimer,X	; Timer 4 = 0-7, based on timer3
 
 PRG000_CB7A:
 	RTS		 ; Return
@@ -1145,7 +1114,7 @@ PRG000_CBB3:
 
 
 Object_Vibrate:
-	LDA Objects_Timer3,X
+	LDA Shell_SleepTimer,X
 	CMP #$50
 	BGE PRG000_CC23	 ; If timer 3 >= $50, jump to PRG000_CC23
 
@@ -1156,9 +1125,12 @@ Object_Vibrate:
 	TAY		 ; Y = index into PRG000_CAF1 (proper bit mask for shaking speed)
 
 	; Various speed shake by timer 3
-	LDA Objects_Timer3,X
+	LDA Shell_SleepTimer,X
 	AND PRG000_CAF1,Y
 	BEQ PRG000_CC23	 ; If not shaking on this bit, jump to PRG000_CC23
+
+	LDA Objects_ShowShakeFeet, X
+	BEQ PRG000_CC23
 
 	LDA #$01	 ; A = 1 (object not vertically flipped)
 
@@ -1578,6 +1550,12 @@ Object_DropXOffset:
 	.byte $03, $FD, $00, $FF
 
 Object_GetKicked:
+	LDA Objects_Timer2, X
+	BEQ Object_GetKicked0
+
+	RTS
+
+Object_GetKicked0:
 	LDA #$10
 	STA Objects_Timer2, X
 	STA Objects_Kicked, X
@@ -2050,7 +2028,7 @@ ObjectHeld_WakeUpDir:	.byte $40, $00
 Object_ShellDoWakeUp:
 
 	; Object is not a Bob-omb and not an Ice Block... 
-	LDA Objects_Timer3,X 
+	LDA Shell_SleepTimer,X 
 	BNE PRG000_D15A	 ; If timer 3 is not expired, jump to PRG000_D15A (RTS) 
 
 	LDA Objects_BeingHeld, X
@@ -2594,6 +2572,7 @@ Object_New:
 	STA <Objects_SpriteX,X
 	STA Objects_Timer,X
 	STA Objects_Timer2,X
+	STA Shell_ShakeTimer, X
 
 	STA <Objects_XVelZ,X
 	STA <Objects_YVelZ,X
@@ -2729,7 +2708,7 @@ Object_ShakeAndCalcSprite:
  
 	SEC		 ; Set carry (remember, this is the default for not applying carry to subtraction)
 
-	LDA Objects_Timer4,X
+	LDA Shell_ShakeTimer,X
 	BEQ PRG000_D5A0	 ; If Timer4 = 0, jump to PRG000_D5A0
 
 	CMP #$40
@@ -3759,7 +3738,7 @@ Object_DoCollision:
 ; $D9D3
 Player_GetHurt:
 	LDA Player_FlashInv		; ... flashing invincible ...
-	ORA Player_StarInv		; ... invincible by star 
+	ORA Player_Invicible		; ... invincible by star 
 	ORA <Player_HaltGameZ		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
 	BNE PRG000_D9B7	 ; ... then jump to PRG000_D9B7 (RTS)
@@ -4525,62 +4504,6 @@ SetBehindFg:
 Object_CheckForegroundRTS:	
 	RTS
 
-
-Object_FindEmptyX:
-	LDX #$04
-
-Object_FindEmptyX1:
-	LDA Objects_ID, X
-	LDA Objects_State, X
-	BEQ Object_FindEmptyX2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
-
-	DEX		 ; X--
-	BPL Object_FindEmptyX1	 ; While X >= 0, loop!
-	CLC
-
-	LDX <CurrentObjectIndexZ
-	RTS
-
-Object_FindEmptyX2:
-	JSR Object_New
-
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
-
-	LDA #$FF
-	STA Objects_SpawnIdx, X
-
-	SEC
-	RTS
-
-Object_FindEmptyY:
-	LDY #$04
-
-Object_FindEmptyY1:
-	LDA Objects_State,Y
-	BEQ Object_FindEmptyY2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
-
-	DEY		 ; X--
-	BPL Object_FindEmptyY1	 ; While X >= 0, loop!
-	CLC
-	RTS
-
-Object_FindEmptyY2:
-	TYA
-	TAX
-
-	JSR Object_New
-
-	LDA #OBJSTATE_NORMAL
-	STA Objects_State, X
-
-	LDA #$FF
-	STA Objects_SpawnIdx, X
-
-	LDX <CurrentObjectIndexZ
-	SEC
-	RTS
-
 Obj_Boss:
 	LDA #17
 	STA PAGE_A000
@@ -4738,9 +4661,6 @@ Object_InteractWithObjects:
 Object_InteractWithObjectsSkip:
 	CLC
 	RTS
-
-Object_DetectBit:
-	.byte %00000001, %0000010, %00000100, %00001000, %00010000
 
 DetectObjects:
 	LDY #$04
@@ -5350,8 +5270,8 @@ Object_KilledNormal:
 	STA Objects_Health, X
 	STA Objects_BeingHeld, X
 
-	LDA #$ff
-	STA Objects_Timer3,X
+	LDA #$FF
+	STA Shell_SleepTimer,X
 
 	LDA Objects_PlayerProjHit, X
 	AND #HIT_TAIL
@@ -5457,6 +5377,9 @@ Object_XPreventStuck:
 	.byte $00, $FF
 
 Object_Kick:
+	LDA Objects_Timer2, X
+	BNE Object_HoldRTS
+
 	LDA Player_Shell
 	BNE Object_KickRTS
 
@@ -5494,6 +5417,7 @@ Do_Reverse:
 
 	LDA #$08
 	STA Objects_Timer2, X
+
 	RTS
 
 Object_DieInstead:	
@@ -6016,7 +5940,7 @@ Object_FlipFallAwayFromHit1:
 	RTS
 
 Object_DetermineContactKill:
-	LDA Player_StarInv
+	LDA Player_Invicible
 	BEQ Check_FireDash
 
 	LDA Objects_WeaponAttr, X
@@ -6101,8 +6025,6 @@ Object_EdgeMarch:
 Object_EdgeMarchRTS:
 	RTS
 
-; Defeat_Sounds:
-; 	.byte SND_PLAYERKICK, SND_PLAYERKICK
 
 Object_KickSound:
 	LDA #SND_PLAYERKICK

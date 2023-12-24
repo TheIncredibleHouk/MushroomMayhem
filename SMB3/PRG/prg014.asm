@@ -3884,7 +3884,7 @@ StingBee_Charging:
 	JSR StingBee_Interact
 	
 	LDA Objects_Timer, X
-	STA Objects_Timer4, X
+	STA Shell_ShakeTimer, X
 	BNE StingBee_AnimateFast
 
 	INC StingBee_Action, X

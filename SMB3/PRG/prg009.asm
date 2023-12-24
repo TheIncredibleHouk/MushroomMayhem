@@ -197,22 +197,14 @@ AScroll_CoinShipCoinGlowPal:
 	.byte $27, $27, $27, $17, $07, $17
 
 CoinShip_CoinGlow:
-	DEC CoinShip_CoinGlowCnt
 	BPL PRG009_BBB3	 ; If CoinShip_CoinGlowCnt >= 0, jump to PRG009_BBB3
 
 	; Reload CoinShip_CoinGlowCnt = 5
 	LDA #$05
-	STA CoinShip_CoinGlowCnt
 
-	INC CoinShip_CoinGlowIdx	 ; CoinShip_CoinGlowIdx++ (next palette color index)
 
-	LDA CoinShip_CoinGlowIdx
 	CMP #(CoinShip_CoinGlow - AScroll_CoinShipCoinGlowPal)
 	BLT PRG009_BBAC	 ; If we haven't hit the end of the palette array yet, jump to PRG009_BBAC
-
-	; CoinShip_CoinGlowIdx = 0
-	LDA #$00
-	STA CoinShip_CoinGlowIdx
 
 PRG009_BBAC:
 	TAY		 ; -> 'Y'
@@ -465,7 +457,6 @@ PRG009_BCBC:
 	INY		 ; Y = 1 (World 8 Tank with low Player Y < 112)
 
 PRG009_BCBD:
-	STY World8Tank_OnTank	 ; Player is standing on the tank (as opposed to the ground)
 
 PRG009_BCC0:
 	LDA <Player_SpriteX
@@ -498,21 +489,7 @@ PRG009_BCCA:
 PRG009_BCE0:
 
 	; Player is not against the left or right edge of the screen...
-
-	LDA World8Tank_OnTank
-	BNE PRG009_BCF1	 ; If World8Tank_OnTank is not set, jump to PRG009_BCF1
-
-	; World8Tank_OnTank is set....
-
-	; Move Player along as scroll occurs; simulates that the tank is rolling at the Player
-	LDA <Player_X
-	ADD Level_AScrlHVelCarry
-	STA <Player_X
-
-	BCC PRG009_BCF1	 ; If no carry, jump to PRG009_BCF1
-
-	INC <Player_XHi	 ; Apply carry
-
+	
 PRG009_BCF1:
 
 	; Set Level_AScrlSclLastDir based on sign of Level_AScrlHVel

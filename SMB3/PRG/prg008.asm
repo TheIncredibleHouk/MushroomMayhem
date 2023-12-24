@@ -451,6 +451,10 @@ LevelJunction_PartialInit:
 	STA Level_HAutoScroll	 ; Disable auto horizontal scrolling
 	STA Level_AScrlConfig	 ; Clear auto scroll configuration (no auto scroll)
 	STA Level_ObjectsInitialized	 ; Do level scene change reset
+	STA Poison_Mode
+
+	LDA #$50
+	STA Player_Power
 
 	JSR Level_SetPlayerPUpPal  ; Set power up's correct palette
 	JSR PRG008_A27A		   ; Partial level initialization (basically continues after setting the power up)
@@ -549,7 +553,7 @@ Player_Update3:
 	JSR Debug_Code
 	JSR Player_DrawAndDoActions29	; Draw Player and perform reactions to various things (coin heaven, pipes, etc lots more)
 
-	LDA #$04
+	LDA #$08
 	STA Air_Change
 
 	JSR Player_Control	 	; Controllable actions
@@ -625,8 +629,16 @@ Player_RunMeterUpdate:
 	BEQ Sound_FullPowerRing	 ; If Player_FlyTime = $FF (P-Wing active), jump to Sound_FullPowerRing
 
 	LDA <Counter_1
+	LDX Player_Badge
+	CPX #BADGE_PMETER
+	BNE Player_NormFlyTime
+
+	AND #$03
+	BNE PRG008_A4D5
+
+Player_NormFlyTime:
 	AND #$01
-	BEQ PRG008_A4D5	 ; Every other tick, jump to PRG008_A4D5
+	BNE PRG008_A4D5	 ; Every other tick, jump to PRG008_A4D5
 
 	DEY			 
 	STY Player_FlyTime ; Player_FlyTime--
@@ -635,7 +647,14 @@ Player_RunMeterUpdate:
 	CMP #$03
 	BNE PRG008_A4D5
 
-	STY Player_Power
+	LDA Player_FlyTime
+	SUB #$04
+	BPL FlyPower
+
+	LDA #$00
+
+FlyPower:
+	STA Player_Power
 
 PRG008_A4D5:
 	TYA		 ; Y (Player_FlyTime) -> A 
@@ -720,6 +739,9 @@ Player_UpdateRunPower:
 	BNE Player_UpdateRunPowerRTS
 
 	LDY #$00
+
+	LDA Player_FlyTime
+	BNE Player_UpdateRunPowerRTS
 
 	LDA Player_RunMeter
 	BEQ RunMeter_StoreEmpty
@@ -3152,9 +3174,6 @@ TileAttrAndQuad_OffsFlat_Sm:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_GetTileAndSlope:
 
-	LDA #$00
-	STA Temp_VarNP0 ; Temp_VarNP0 = 0
-
 	LDA <Player_YHiZ
 	STA <Temp_Var13	 ; Temp_Var13 = Player_YHiZ
 
@@ -3425,7 +3444,7 @@ Bump_XHi	= Temp_Var15
 
 Tiles_BumpBlocks:
 
-	LDA Bump_Prop
+	LDA <Bump_Prop
 	AND #$0F
 	JSR DynJump
 
@@ -3786,6 +3805,9 @@ BumpBlock_PSwitch:
 	BNE BumpBlock_PSwitch1
 
 	JSR Bumps_PowerUpBlock
+
+	LDA #$00
+	STA ItemBlock_PowerUp, X
 
 	LDA Tile_Y
 	SUB #$10
@@ -4406,7 +4428,6 @@ PUp_RTS:
 VScreenTransitions:
 	LDA Level_FreeVertScroll
 	CMP #$03
-
 	BEQ CheckPlayer_Y
 	RTS
 
@@ -4427,7 +4448,7 @@ CheckPlayer_YHiZ:
 	LDX Player_IsClimbing
 
 	BEQ NormalYHiCheck
-	SUB #$10
+	;SUB #$10
 	
 NormalYHiCheck:
 	CMP #$F4
@@ -4563,7 +4584,8 @@ NoCountDown:
 
 EndLevel:
 	LDA #$00
-	STA Map_ReturnStatus
+	STA Map_ReturnStatus	
+	STA Player_Badge
 	STA CheckPoint_Flag
 
 	LDA #$01
@@ -6340,7 +6362,7 @@ PoisonMode_Activate:
 	STA Power_Change
 
 	LDA #$02
-	STA Player_StarInv
+	STA Player_Invicible
 
 Cant_Poison_Mode:
 	RTS
@@ -6354,16 +6376,16 @@ Continue_Poison_Mode:
 	BEQ Stop_Poison_Mode
 
 	LDA #$02
-	STA Player_StarInv
+	STA Player_Invicible
 	RTS
 
 Stop_Poison_Mode:
 	LDA #$08
 	STA Power_Change
-	STA Player_StarInv
 
 	LDA #$00
 	STA Poison_Mode
+	STA Player_Invicible
 	RTS
 
 Player_CheckForeground:

@@ -158,6 +158,7 @@ Boss_CheepResetNorm:
 Boss_CheepNoRefill:
 	LDY #$00
 	LDA Boss_CheepHealth, X
+	BEQ Boss_CheepDoDeath
 	BMI Boss_CheepDoDeath
 
 Boss_CheepFindHits:	
@@ -526,9 +527,6 @@ Boss_CheepExplode:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
-
-	LDA #$10
-	STA RotatingColor_Cnt
 
 	LDA #$64
 	STA Exp_Earned
@@ -1578,9 +1576,6 @@ Boss_FwooshDeathExplode:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-	LDA #$10
-	STA RotatingColor_Cnt
-
 	LDA #$64
 	STA Exp_Earned
 
@@ -1922,9 +1917,6 @@ Boss_BlooperDyingFinal:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
-
-	LDA #$10
-	STA RotatingColor_Cnt
 
 	LDA #$64
 	STA Exp_Earned
@@ -3273,9 +3265,6 @@ Boss_BullyExplode:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
-
-	LDA #$10
-	STA RotatingColor_Cnt
 
 	LDA #$64
 	STA Exp_Earned

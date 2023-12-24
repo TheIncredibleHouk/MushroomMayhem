@@ -83,7 +83,7 @@ StatusBar	.macro
 
 ;------
 	vaddr \1 + $20
-	.byte $20, $FF, $90, $EE, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
+	.byte $20, $FF, $90, $EE, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $FE, $FE, $FE, $FE, $D8, $74, $74, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
 
 	vaddr \1 + $40
 	.byte $20, $FF, $90, $EF, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $76, $FA, $FA, $FD, $FA, $FA, $F8, $FF
@@ -237,7 +237,7 @@ PRG030_845A:
 
 	LDA #$20
 	STA Update_Select	 ; Update_Select = $20 (Title Screen)
-	STA Raster_Effect	 ; Raster_Effect = $20 (Title Screen style)
+	STA IRQ_Mode	 
 
 	LDA #%10101000
 	STA PPU_CTL1	 	; Generate VBlank Resets, use 8x16 sprites, sprites use PT2
@@ -278,7 +278,7 @@ PRG030_84D7:
 
 	LDA #$00
 	STA Level_Tileset	; Level_Tileset = 0
-	STA Raster_Effect	; Raster Effects disabled
+	STA IRQ_Mode	; Raster Effects disabled
 	STA UpdSel_Disable 	; Stop Update_Select activity
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 
@@ -923,8 +923,6 @@ PRG030_88C8:
 	STA <Scroll_ColumnL
 	STA <Scroll_LastDir
 
-	STA Shop_Mode_Initialized
-
 	STA <Temp_Var1	; Temp_Var1 = 0
 
 	LDX #$05	
@@ -1080,7 +1078,7 @@ PRG030_8B6D:
 
 PRG030_8B78:
 	LDA #$00	
-	STA Raster_Effect ; Raster_Effect = $00 (Normal status bar)
+	STA IRQ_Mode ; IRQ_Mode = $00 (Normal status bar)
 	STA UpdSel_Disable	; Resume Update_Select activity
 
 	; Set page @ A000 to 27
@@ -1619,7 +1617,7 @@ PRG030_9009:
 	;STA Update_Select	; Update_Select = $C0 (Normal)
 
 	;LDA #$00
-	;STA Raster_Effect	; Raster_Effect = $00 (Normal status bar)
+	;STA IRQ_Mode	; IRQ_Mode = $00 (Normal status bar)
 
 	;LDA #$00
 	;STA World_EnterState	; World_EnterState = 0
@@ -1697,7 +1695,7 @@ PRG030_9097:
 	STA Update_Select	; Update_Select = $C0 (Normal)
 
 	LDA #$00
-	STA Raster_Effect	; Raster_Effect = $00 (Normal status bar)
+	STA IRQ_Mode	
 
 
 	; Need to transfer Player's "gameplay score" to their "inventory" score storage...
@@ -1908,11 +1906,11 @@ PRG030_91D1:
 
 	LDY Player_Current	 ; Y =  Player_Current
 
-	LDA Map_Prev_XOff,Y
+	LDA Map_Prev_XOff
 	STA <Horz_Scroll
 	STA <Scroll_Temp
 	
-	LDA Map_Prev_XHi,Y
+	LDA Map_Prev_XHi
 	STA <Horz_Scroll_Hi
 	JSR Scroll_Update_Ranges
 
@@ -2579,6 +2577,9 @@ LevelLoadQuick:
 
 	LDA CheckPoint_Flag
 	BEQ LoadLevel_FromPointer
+	
+	CMP LevelLoadPointer
+	BNE LoadLevel_FromPointer
 
 	LDA CheckPoint_Level
 	STA LevelLoadPointer
@@ -2808,8 +2809,11 @@ NormAnimBank:
 	JMP Skip_Level_Position
 
 Not_Lvl_Jct:
-	LDA CheckPoint_Flag
+	LDA CheckPoint_Level
 	BEQ SetPosition_FromLevel
+
+	CMP LevelLoadPointer
+	BNE SetPosition_FromLevel
 
 	LDA CheckPoint_X
 	STA <Player_X
@@ -2861,10 +2865,10 @@ Skip_Level_Position:
 
 	; Queue this music to play
 	STA Level_MusicQueue
-	STA Level_MusicQueueRestore
 
 Skip_Set_Music:
-	
+	STA Level_MusicQueueRestore
+
 	; Unused header value
 	LDY #$07
 	LDA [Temp_Var14],Y
@@ -3246,12 +3250,10 @@ CopyAll:
 
 	LDX #$00
 	LDA [Temp_Var7], Y
-	STA VineGrowthTile
 	INY
 
 CopyVineTiles:
 	LDA [Temp_Var7], Y
-	STA VineTiles, X
 	INY
 	INX
 	CPX #$04
@@ -3259,7 +3261,6 @@ CopyVineTiles:
 
 	LDX #$00
 	LDA [Temp_Var7], Y
-	STA PSwitchActivateTile
 
 CopyPSwitchTiles:
 	LDA [Temp_Var7], Y
@@ -4239,47 +4240,47 @@ PRG030_9F52:
 	STA MMC3_IRQENABLE
 	RTS		 ; Return
 
-IntIRQ_32PixelPartition_Part5:
+; IntIRQ_32PixelPartition_Part5:
 
-	; Some kind of delay loop?
-	LDX #$13	 ; X = $13
-PRG030_9F80:
-	NOP		 ; ?
-	DEX		 ; X--
-	BPL PRG030_9F80 ; While X > 0, loop
+; 	; Some kind of delay loop?
+; 	LDX #$13	 ; X = $13
+; PRG030_9F80:
+; 	NOP		 ; ?
+; 	DEX		 ; X--
+; 	BPL PRG030_9F80 ; While X > 0, loop
 
-	; More NOPs
-	NOP
-	NOP
-	NOP
+; 	; More NOPs
+; 	NOP
+; 	NOP
+; 	NOP
 
-	STA MMC3_IRQLATCH ; Latch A (last set to 27!)
-	STA MMC3_IRQENABLE ; Enable IRQ again
-	JMP PRG031_FA3C	 ; Jump to PRG031_FA3C
+; 	STA MMC3_IRQLATCH ; Latch A (last set to 27!)
+; 	STA MMC3_IRQENABLE ; Enable IRQ again
+; 	JMP PRG031_FA3C	 ; Jump to PRG031_FA3C
 
-IntIRQ_32PixelPartition_Part2:	; $9FA0
-	LDA Update_Request	 
-	AND #UPDATERASTER_32PIXSHOWSPR
-	BNE PRG030_9FAA	 ; If UPDATERASTER_32PIXSHOWSPR is set, go to PRG030_9FAA
+; IntIRQ_32PixelPartition_Part2:	; $9FA0
+; 	LDA Update_Request	 
+; 	AND #UPDATERASTER_32PIXSHOWSPR
+; 	BNE PRG030_9FAA	 ; If UPDATERASTER_32PIXSHOWSPR is set, go to PRG030_9FAA
 
-	; Otherwise, change loaded pattern tables to hide sprites that fall beneath the 32 pixel partition
-	JMP IntIRQ_32PixPart_HideSprites
+; 	; Otherwise, change loaded pattern tables to hide sprites that fall beneath the 32 pixel partition
+; 	JMP IntIRQ_32PixPart_HideSprites
 
-PRG030_9FAA:
+; PRG030_9FAA:
 
-	; I think the following NOPs and loop are to help synchronize the IRQ
-	; routine if it didn't perform the IntIRQ_32PixPart_HideSprites step
-	NOP
-	NOP
-	NOP
+; 	; I think the following NOPs and loop are to help synchronize the IRQ
+; 	; routine if it didn't perform the IntIRQ_32PixPart_HideSprites step
+; 	NOP
+; 	NOP
+; 	NOP
 
-	LDX #$03	 ; X = 3
-PRG030_9FAF:
-	NOP		 ; ?
-	DEX		 ; X--
-	BPL PRG030_9FAF	 ; While X > 0, loop
+; 	LDX #$03	 ; X = 3
+; PRG030_9FAF:
+; 	NOP		 ; ?
+; 	DEX		 ; X--
+; 	BPL PRG030_9FAF	 ; While X > 0, loop
 
-	JMP IntIRQ_32PixelPartition_Part3
+; 	JMP IntIRQ_32PixelPartition_Part3
 
 CalcParam1 = Temp_Var1
 CalcParam2 = Temp_Var4
@@ -4442,17 +4443,20 @@ Reserve_Items:
 	.byte POWERUP_ICEFLOWER	
 	.byte POWERUP_FOXLEAF	
 	.byte POWERUP_NINJASHROOM 
-	.byte POWERUP_STAR	
+	.byte POWERUP_STAR
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte POWERUP_MEGASTAR
 
 Player_NoItem:
 	RTS
 
 Player_UseItem:
-	LDA PowerUp_Reserve
-	CMP #ITEM_RADARSW
-	BCS Player_NoItem
-
 	LDA <Player_HaltGameZ
+	ORA Player_HaltTick
 	BNE Player_NoItem
 
 	LDA <Pad_Input
@@ -4474,6 +4478,11 @@ Player_UseItem:
 	.word Player_ItemPowerUp
 	.word Player_ItemPowerUp
 	.word Player_ItemStopWatch
+	.word Player_ItemNone
+	.word Player_ItemNone
+	.word Player_ItemNone
+	.word Player_ItemNone
+	.word Player_ItemPowerUp
 
 Player_ItemPowerUp:
 	JSR Check_ExistingPowerUps
@@ -4493,6 +4502,15 @@ Item_MakePowerup:
 	STA Objects_ID + 5, X
 
 	LDA Reserve_Items, Y
+	CMP #POWERUP_MEGASTAR
+	BNE SetPowerUpType
+
+	LDA #$01
+	STA PowerUp_Property + 5, X
+
+	LDA #POWERUP_STAR
+
+SetPowerUpType:	
 	STA PowerUp_Type + 5, X
 
 	LDA #OBJSTATE_NORMAL
@@ -4947,7 +4965,7 @@ PRG012_A462:
 	TXA		 
 	TAY		 
 
-	LDA #$02	 
+	LDA #$00	 
 	JSR Tile_Mem_ClearB
 
 	TYA		 
@@ -4970,7 +4988,7 @@ PRG012_A462:
 	STA <Map_Tile_AddrH
 
 	LDY #$e0	 	; Offset to the bottom row
-	LDA #TILE_BORDER1	; Get the appropriate tile for the bottom row
+	LDA #$02	; Get the appropriate tile for the bottom row
 
 PRG012_A4C9:
 	JSR Tile_Mem_ClearB	; Place the tiles
@@ -5462,6 +5480,7 @@ DoLevelEnding:
 	RTS
 
 GetLevelBit:
+
 	LDA LevelNumber
 	AND #$07
 	TAY
@@ -5545,7 +5564,7 @@ NextCol:
 Player_Freeze:
 	LDA Player_Frozen
 	ORA Player_FlashInv
-	ORA Player_StarInv
+	ORA Player_Invicible
 	BEQ Player_FreezeNow
 	RTS
 
@@ -5851,48 +5870,6 @@ PUpCheck_MoveAlong:
 	CLC
 	RTS
 
-
-DPad_ControlTiles:
-	LDA <Player_HaltGameZ
-	BNE DPad_ControlTiles4
-
-	LDA <Pad_Holding
-	AND #PAD_DOWN
-	BEQ DPad_ControlTiles1
-
-	LDA #$01
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles1:
-	LDA <Pad_Holding
-	AND #PAD_LEFT
-	BEQ DPad_ControlTiles2
-
-	LDA #$02
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles2:
-	LDA <Pad_Holding
-	AND #PAD_UP
-	BEQ DPad_ControlTiles3
-
-	LDA #$03
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles3:
-	LDA <Pad_Holding
-	AND #PAD_RIGHT
-	BEQ DPad_ControlTiles4
-
-	LDA #$00
-	STA RhythmKeeper + 3
-	JMP UpdateRhythmTiles
-
-DPad_ControlTiles4:
-	RTS
 	
 RhythmPlatforming:
 RhythmGraphics:
@@ -6013,25 +5990,15 @@ RhythmSwitchPlatforms:
 	BPL RhythmSwitchPlatforms
 	RTS
 
-RhythmCurrents:
-	.byte TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP, TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN
-
-DPadTiles:
-	.byte TILE_PROP_MOVE_RIGHT, TILE_PROP_MOVE_DOWN, TILE_PROP_MOVE_LEFT, TILE_PROP_MOVE_UP
-
 UpdateRhythmTiles:
 	LDA RhythmKeeper + 3
 	AND #$03
 	TAY
 	LDA RhythmGraphics, Y
 	STA PatTable_BankSel
-
-	LDA DPadTiles, Y
-	STA TileProperties + $57
 	RTS
 
 Player_Die:
-	
 	; Queue death song
 	LDA Sound_QMusic1
 	ORA #MUS1_PLAYERDEATH
@@ -6043,6 +6010,7 @@ Player_Die:
 	STA <Player_XVelZ
 	STA Player_Flip	
 	STA Player_FlashInv
+	STA Player_Invicible
 	STA Player_StarInv
 	STA Player_Shell
 	STA Player_FireDash
@@ -6050,6 +6018,13 @@ Player_Die:
 	STA Frozen_Frame
 	STA Player_Frozen
 	STA Player_EffectiveSuit
+
+	LDX #$07
+
+Player_DeathNoHold:	
+	STA Objects_BeingHeld, X
+	DEX
+	BPL Player_DeathNoHold
 
 	LDA #$0F
 	STA Palette_Buffer + $11
@@ -6071,7 +6046,6 @@ Player_Die:
 
 	LDA #$01
 	STA <Player_IsDying	 ; Player_IsDying = 1
-
 	RTS		 ; Return
 
 Point_MidX = Temp_Var8
@@ -6277,10 +6251,10 @@ Check_TimersRTS:
 MagicStar_ClearRadar:
 	LDA Player_Badge
 	CMP #BADGE_RADAR
-	BNE MagicStar_ClearRadarRTS
+	BCC MagicStar_ClearRadarRTS
 
-	LDA #ITEM_RADARUNKNOWN
-	STA PowerUp_Reserve
+	LDA #BADGE_RADARUNKNOWN
+	STA Player_Badge
 
 MagicStar_ClearRadarRTS:
 	RTS
@@ -6326,6 +6300,24 @@ Generate_SaveChecksum_Loop:
 	RTS
 
 Save_Game:
+	LDA <World_Map_X
+	STA Map_Previous_X
+	STA Map_Entered_X
+
+	LDA <World_Map_XHi
+	STA Map_Previous_XHi
+	STA Map_Entered_XHi
+
+	LDA <World_Map_Y
+	STA Map_Previous_Y
+	STA Map_Entered_Y
+
+	LDA <Horz_Scroll
+	STA Map_Prev_XOff
+
+	LDA <Horz_Scroll_Hi	
+	STA Map_Prev_XHi
+
 	JSR Generate_StatChecksum
 
 	LDY #(Player_Stats_Boundary_End - Player_Stats_Boundary_Start)
@@ -6463,4 +6455,79 @@ Player_GroundPoundBump:
 
 	LDA #$D0
 	STA <Player_YVelZ
+	RTS
+
+
+SpecialObject_FindEmpty:
+	LDY #$05
+
+SpecialObject_FindEmptyNext:
+	LDA SpecialObj_ID,Y
+	BEQ SpecialObject_FindEmptyFound
+
+	DEY
+	BPL SpecialObject_FindEmptyNext	
+
+	CLC
+	RTS
+
+SpecialObject_FindEmptyFound:
+	SEC
+	RTS
+
+
+
+Object_FindEmptyX:
+	LDX #$04
+
+Object_FindEmptyX1:
+	LDA Objects_ID, X
+	LDA Objects_State, X
+	BEQ Object_FindEmptyX2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
+
+	DEX		 ; X--
+	BPL Object_FindEmptyX1	 ; While X >= 0, loop!
+	CLC
+
+	LDX <CurrentObjectIndexZ
+	RTS
+
+Object_FindEmptyX2:
+	JSR Object_New
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$FF
+	STA Objects_SpawnIdx, X
+
+	SEC
+	RTS
+
+Object_FindEmptyY:
+	LDY #$04
+
+Object_FindEmptyY1:
+	LDA Objects_State,Y
+	BEQ Object_FindEmptyY2	 ; If this object slot's state is Dead/Empty, jump to PRG002_A5AE
+
+	DEY		 ; X--
+	BPL Object_FindEmptyY1	 ; While X >= 0, loop!
+	CLC
+	RTS
+
+Object_FindEmptyY2:
+	TYA
+	TAX
+
+	JSR Object_New
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$FF
+	STA Objects_SpawnIdx, X
+
+	LDX <CurrentObjectIndexZ
+	SEC
 	RTS

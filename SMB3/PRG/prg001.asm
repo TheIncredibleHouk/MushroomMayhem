@@ -8,7 +8,7 @@ OBJ_ELOCK			= $06
 OBJ_BUBBLE			= $07
 OBJ_KEY				= $08
 OBJ_SPRING			= $09
-OBJ_POINTERMOD 		= $0A
+OBJ_SECONDQUEST 	= $0A
 OBJ_SENDBACK 		= $0B
 OBJ_MAGICSTAR_1		= $0C
 OBJ_MAGICSTAR_2		= $0D
@@ -16,7 +16,7 @@ OBJ_MAGICSTAR_3		= $0E
 OBJ_NEGASTAR		= $0F
 OBJ_STARPIECE		= $10
 OBJ_ICEBLOCK		= $11
-OBJ_POISONMUSHROOM 	= $12
+OBJ_MALICEMUSHROOM 	= $12
 OBJ_BOSS			= $13
 
 	.word ObjInit_DoNothing	; Object $00
@@ -29,7 +29,7 @@ OBJ_BOSS			= $13
 	.word ObjInit_Bubble	; Object $07
 	.word ObjInit_Key		; Object $08
 	.word ObjInit_Spring	; Object $09
-	.word ObjInit_DoNothing ; Object $0A
+	.word ObjInit_SecondQuest ; Object $0A
 	.word ObjInit_SendBack	; Object $0B
 	.word ObjInit_MagicStar1 ; Object $0C
 	.word ObjInit_MagicStar2 ; Object $0D
@@ -37,7 +37,7 @@ OBJ_BOSS			= $13
 	.word ObjInit_NegaStar	; Object $0F
 	.word ObjInit_StarPiece	; Object $10
 	.word ObjInit_IceBlock	; Object $11
-	.word ObjInit_PoisonMushroom ; Object $12
+	.word ObjInit_MaliceMushroom ; Object $12
 	.word ObjInit_DoNothing	; Object $13
 	
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
@@ -52,7 +52,7 @@ OBJ_BOSS			= $13
 	.word ObjNorm_Bubble	; Object $07
 	.word ObjNorm_Key		; Object $08
 	.word ObjNorm_Spring	; Object $09
-	.word ObjNorm_DoNothing	; Object $0A
+	.word ObjNorm_SecondQuest	; Object $0A
 	.word ObjNorm_SendBack	; Object $0B
 	.word ObjNorm_MagicStar ; Object $0C
 	.word ObjNorm_MagicStar ; Object $0D
@@ -60,7 +60,7 @@ OBJ_BOSS			= $13
 	.word ObjNorm_NegaStar	; Object $0F
 	.word ObjNorm_StarPiece ; Object $10
 	.word ObjNorm_IceBlock	; Object $11
-	.word ObjNorm_PoisonMushroom ; Object $12
+	.word ObjNorm_MaliceMushroom ; Object $12
 	.word Obj_Boss	; Object $13	
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
@@ -241,6 +241,7 @@ POWERUP_STAR		= 11
 POWERUP_VINE		= 12
 POWERUP_PWING		= 13
 POWERUP_CHECKPOINT	= 14
+POWERUP_MEGASTAR	= 15
 
 PowerUp_Palette:
 	.byte SPR_PAL0, SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL0
@@ -363,6 +364,7 @@ PowerUp_Raise = Objects_Data2
 PowerUp_StartX = Objects_Data3
 PowerUp_StartY = Objects_Data4
 PowerUp_NoDraw = Objects_Data5
+PowerUp_Property = Objects_Data6
 
 ObjNorm_PowerUp:
 	LDA <Player_HaltGameZ
@@ -379,6 +381,9 @@ PowerUp_NotVine:
 	JMP Object_Draw
 
 PowerUp_Norm:
+	LDA <Objects_XZ, X
+	JSR Object_DeleteOffScreen
+
 	LDA Objects_Timer, X
 	BEQ ObjNorm_PowerUp1
 
@@ -736,6 +741,9 @@ PRG001_AC1F:
 PRG001_AC22:
 	JMP Object_Draw; Draw object and "shake awake" 
 
+Pup_StarLength
+	.byte $70, $FF
+
 PUp_Star:
 	JSR Object_DeleteOffScreen
 	LDA Level_PSwitchCnt
@@ -747,9 +755,9 @@ PUp_Star:
 	STA Sound_QMusic2
 
 PRG001_A810:
-
+	LDY PowerUp_Property, X
 	; Player_StarInv = $E0
-	LDA #$e0
+	LDA Pup_StarLength, Y
 	STA Player_StarInv
 	RTS
 
@@ -789,14 +797,13 @@ PUp_Move:
 	JMP PUp_VineDraw
 
 Vine_Grow:
-
 	LDA #$F0
 	STA <Objects_YVelZ, X
 	JSR Object_ApplyYVel_NoGravity
 
 	LDA <Objects_YZ, X
 	AND #$0F
-	CMP #$0F
+	CMP #$0E
 	BNE PUp_VineDraw
 
 	LDA <Objects_YHiZ, X
@@ -820,6 +827,13 @@ PUp_Delete:
 	RTS
 
 PUp_VineBlock:
+	LDA Block_NeedsUpdate
+	BEQ Vine_ChangeBlock
+
+	INC <Objects_YZ, X
+	RTS
+
+Vine_ChangeBlock:	
 	LDA Tile_LastValue
 	EOR #$01
 
@@ -998,11 +1012,11 @@ ObjInit_ItemBlock2:
 
 ItemBlock_UpTimer = Objects_Data1
 ItemBlock_DownTimer = Objects_Data2
-ItemBlock_PowerUp = Objects_Data3
 ItemBlock_Frame = Objects_Data4
 ItemBlock_ReplaceTile = Objects_Data5
 ItemBlock_Initialized = Objects_Data6
 ItemBlock_Reverse = Objects_Data7
+ItemBlock_PowerUp = Objects_Data8
 
 ObjNorm_ItemBlock:
 	LDA ItemBlock_Initialized, X
@@ -1281,6 +1295,7 @@ ObjNorm_CoinLock1:
 	STA PatTable_BankSel + 4, Y
 
 DrawCoinLock0:
+	STA Debug_Snap
 	JSR Object_Draw
 	LDA Objects_SpritesHorizontallyOffScreen,X 
 	ORA Objects_SpritesVerticallyOffScreen,X
@@ -1431,12 +1446,6 @@ ObjInit_Bubble:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 
-	LDA LastPatTab_Sel
-	AND #$01
-	TAY
-
-	LDA Bubble_FrameOffset, Y
-	STA Objects_Frame, X
 	RTS		 ; Return
 
 Bubble_Action = Objects_Data2
@@ -1447,14 +1456,27 @@ Bubble_RegenXHi = Objects_Data6
 Bubble_RegenY = Objects_Data7
 Bubble_RegenYHi = Objects_Data8
 
-
 ObjNorm_Bubble:
+	LDA Objects_Property, X
+	CMP #$02
+	BCC Bubble_DynamicPatTable
+
+	LDA #$23
+	STA PatTable_BankSel + 5
+
+	LDA #$01
+	STA LastPatTab_Sel
+	BNE Bubble_StaticPatTable
+
+Bubble_DynamicPatTable:
 	LDA LastPatTab_Sel
-	AND #$01
+	EOR #$01
 	TAY
 
 	LDA #$23
 	STA PatTable_BankSel + 4, Y
+
+Bubble_StaticPatTable:	
 	INC ObjSplash_Disabled, X
 	
 	LDA Bubble_Action, X
@@ -1487,7 +1509,23 @@ Bubble_FloatNormal:
 	INC Bubble_Action, X
 
 Draw_Bubble:
+	LDA Objects_Property, X
+	CMP #$02
+	BCC Draw_DynamicBubble
 
+	LDY #$01
+	BNE Draw_StaticBubble
+
+Draw_DynamicBubble:	
+	LDA LastPatTab_Sel
+	EOR #$01
+	TAY
+
+Draw_StaticBubble:
+	LDA Bubble_FrameOffset, Y
+	STA Objects_Frame, X
+
+Draw_BubbleGfx:
 	JSR Object_DrawMirrored
 
 	LDY Object_SpriteRAMOffset,X
@@ -1504,16 +1542,26 @@ Bubble_Hit:
 	RTS
 
 Bubble_Pop:
+	LDA Objects_Property, X
+	CMP #$02
+	BCC Bubble_PopDynamic
+
+	LDY #$01
+	BNE Bubble_PopStatic
+
+Bubble_PopDynamic:	
 	LDA LastPatTab_Sel
-	AND #$01
+	EOR #$01
 	TAY
 
+Bubble_PopStatic:
 	INC Bubble_PopTimer, X
 	LDA Bubble_PopTimer, X
 	CMP #$0C
 	BNE Bubble_PopDraw
 
 	LDA Objects_Property, X
+	AND #$01
 	CMP #$01
 	BNE Bubble_PopDelete
 	
@@ -1539,7 +1587,7 @@ Bubble_PopDraw:
 	ADD Bubble_FrameOffset, Y
 	STA Objects_Frame, X
 
-	JMP Draw_Bubble
+	JMP Draw_BubbleGfx
 
 Bubble_Wait:
 	LDA Objects_Timer, X
@@ -1563,10 +1611,19 @@ Bubble_WaitRTS:
 	RTS
 
 Bubble_Regenerate:
+	LDA Objects_Property, X
+	CMP #$02
+	BCC Bubble_RegenerateDynamic
+
+	LDY #$01
+	BNE Bubble_RegenerateStatic
+
+Bubble_RegenerateDynamic:	
 	LDA LastPatTab_Sel
-	AND #$01
+	EOR #$01
 	TAY
 
+Bubble_RegenerateStatic:
 	INC Bubble_GeneratorTimer, X
 	LDA Bubble_GeneratorTimer, X
 	CMP #$18
@@ -2137,6 +2194,55 @@ Spring_PositionRestore:
 	STA <Objects_YHiZ, X
 	RTS
 
+SecondQuest_Timer = Objects_Data1
+
+ObjInit_SecondQuest:
+	LDA Objects_Property, X
+	BNE DemoEnd
+
+	SET_MSG Second_QuestMsg
+	JMP SecondQuest_SetHalt
+
+DemoEnd:
+	SET_MSG Demo_EndMsg 	
+
+SecondQuest_SetHalt:
+	LDA #$FF
+	STA SecondQuest_Timer, X
+	RTS
+
+ObjNorm_SecondQuest:
+	LDA SecondQuest_Timer, X
+	BEQ ObjNorm_SecondQuestRTS
+
+	DEC SecondQuest_Timer, X
+	LDA #$01
+	STA Player_VibeDisable
+	RTS
+
+ObjNorm_SecondQuestRTS:	
+	LDA #$00
+	STA Player_VibeDisable
+
+	LDA #$00
+	LDY #$10
+
+Reset_Levels:
+	STA Paper_Stars_Collected1, Y
+	STA Paper_Stars_Collected2, Y
+	STA Paper_Stars_Collected3, Y
+	STA Levels_Complete, Y
+	DEY
+	BPL Reset_Levels
+
+	LDA #$00	
+	STA Paper_Stars
+
+	CLR_MSG
+
+	LDA #SECOND_QUEST
+	STA SecondQuest
+	RTS	
 ;***********************************************************************************
 ; Auto Level Revert
 ;***********************************************************************************
@@ -2146,7 +2252,7 @@ Spring_PositionRestore:
 ; 	This object returns Mario to the previous level after the timer hits 0.
 ;***********************************************************************************	
 ObjInit_SendBack:
-	LDA #$C0
+	LDA #$E0
 	STA Objects_SlowTimer, X
 	
 	JMP Object_NoInteractions
@@ -2164,6 +2270,13 @@ ObjNorm_SendBack:
 
 	LDA #$F0
 	SUB <Player_X
+
+	CMP #$08
+	BCS SetPlayer_X
+
+	LDA #$08
+
+SetPlayer_X:	
 	STA <Player_X
 
 	LDA PreviousLevel
@@ -2552,7 +2665,7 @@ MagicStar_SparkleRTS:
 MagicStar_Radar:
 	LDA Player_Badge
 	CMP #BADGE_RADAR
-	BNE MagicStar_RadarRTS
+	BCC MagicStar_RadarRTS
 
 	LDA #$00
 	STA Paper_StarRadar, X
@@ -2576,7 +2689,7 @@ MagicStar_Radar1:
 MagicStar_Radar2:
 	LDY Paper_StarRadar, X
 	LDA RadarMap, Y
-	STA PowerUp_Reserve
+	STA Player_Badge
 	RTS
 
 MagicStar_RadarRTS:
@@ -2589,9 +2702,9 @@ NSBitMap:
 	.byte $04, $08
 
 RadarMap:
-	.byte ITEM_RADARN, ITEM_RADARE, ITEM_RADARW, ITEM_RADARUNKNOWN
-	.byte ITEM_RADARN, ITEM_RADARNE, ITEM_RADARNW, ITEM_RADARUNKNOWN
-	.byte ITEM_RADARS, ITEM_RADARSE, ITEM_RADARSW	
+	.byte BADGE_RADARN, BADGE_RADARE,  BADGE_RADARW,  BADGE_RADARUNKNOWN
+	.byte BADGE_RADARN, BADGE_RADARNE, BADGE_RADARNW, BADGE_RADARUNKNOWN
+	.byte BADGE_RADARS, BADGE_RADARSE, BADGE_RADARSW	
 
 ;***********************************************************************************
 ; Negative Star
@@ -2929,9 +3042,9 @@ IceBlock_Draw:
 	STA Sprite_RAM+$06, Y
 	RTS    
 
-PoisonMushroom_Action = Objects_Data1
+MaliceMushroom_Action = Objects_Data1
 
-ObjInit_PoisonMushroom:
+ObjInit_MaliceMushroom:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -2942,11 +3055,11 @@ ObjInit_PoisonMushroom:
 	JSR Object_MoveTowardsPlayer
 	RTS
 
-ObjNorm_PoisonMushroom:
+ObjNorm_MaliceMushroom:
 
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
-	BNE ObjNorm_PoisonMushroom0
+	BNE ObjNorm_MaliceMushroom0
 
 	LDA #$80
 	STA CompleteLevelTimer
@@ -2955,19 +3068,19 @@ ObjNorm_PoisonMushroom:
 
 	JMP Object_PoofDie
 
-ObjNorm_PoisonMushroom0:
+ObjNorm_MaliceMushroom0:
 	JSR Object_DeleteOffScreen
 
 	LDA Objects_Property, X
 	JSR DynJump
 
-	.word PoisonMushroom_Normal
-	.word PoisonMushroom_InsideItemBlock
-	.word PoisonMushroom_InsideBlock
+	.word MaliceMushroom_Normal
+	.word MaliceMushroom_InsideItemBlock
+	.word MaliceMushroom_InsideBlock
 
-PoisonMushroom_Normal:
+MaliceMushroom_Normal:
 	LDA <Player_HaltGameZ
-	BNE PoisonMushroom_Draw
+	BNE MaliceMushroom_Draw
 
 	JSR Object_Move
 	JSR Object_CalcBoundBox
@@ -2981,10 +3094,10 @@ PoisonMushroom_Normal:
 
 	JSR Object_InteractWithObjects
 
-PoisonMushroom_Draw:
+MaliceMushroom_Draw:
 	JMP Object_DrawMirrored
 
-PoisonMushroom_InsideItemBlock:
+MaliceMushroom_InsideItemBlock:
 	LDA #$08
 	STA Objects_Timer2, X
 
@@ -2999,7 +3112,7 @@ PoisonMushroom_InsideItemBlock:
 	
 	LDA Object_BodyTileProp, X
 	CMP #TILE_PROP_ITEM
-	BCS PoisonMushroom_InsideItemBlockRTS
+	BCS MaliceMushroom_InsideItemBlockRTS
 
 	JSR Object_MoveTowardsPlayer	
 
@@ -3026,12 +3139,12 @@ PoisonMushroom_InsideItemBlock:
 	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
-PoisonMushroom_InsideItemBlockRTS:
+MaliceMushroom_InsideItemBlockRTS:
 	LDA #$04
 	STA Objects_Timer2, X
 	RTS
 
-PoisonMushroom_InsideBlock:
+MaliceMushroom_InsideBlock:
 	LDA #$08
 	STA Objects_Timer2, X
 
@@ -3046,7 +3159,7 @@ PoisonMushroom_InsideBlock:
 	
 	LDA Object_BodyTileProp, X
 	CMP #TILE_PROP_SOLID_ALL
-	BCS PoisonMushroom_InsideBlockRTS
+	BCS MaliceMushroom_InsideBlockRTS
 
 	JSR Object_MoveTowardsPlayer	
 
@@ -3073,7 +3186,7 @@ PoisonMushroom_InsideBlock:
 	LDA #(ATTR_NOICE | ATTR_STOMPKICKSOUND |ATTR_WINDAFFECTS  | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
 
-PoisonMushroom_InsideBlockRTS:
+MaliceMushroom_InsideBlockRTS:
 	LDA #$04
 	STA Objects_Timer2, X
 	RTS

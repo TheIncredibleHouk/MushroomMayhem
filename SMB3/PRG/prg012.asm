@@ -27,13 +27,13 @@ NextPointerSearch:
 
 PointerFound:
 	LDA MapPointers, X
-	CMP CheckPoint_Flag
-	BEQ Skip_CheckPoint_Clear
+	; CMP CheckPoint_Flag
+	; BEQ Skip_CheckPoint_Clear
 
-	LDA #$00
-	STA CheckPoint_Flag
+	; LDA #$00
+	; STA CheckPoint_Flag
 
-	LDA MapPointers, X
+	; LDA MapPointers, X
 
 Skip_CheckPoint_Clear:	
 	STA LevelLoadPointer

@@ -2104,9 +2104,6 @@ ObjInit_Explosion:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
-	LDA #$10
-	STA RotatingColor_Cnt
-
 	LDA #$08
 	STA Objects_Timer2, X
 	RTS		 ; Return

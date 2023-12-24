@@ -695,6 +695,8 @@ PRG004_AF65:
 	RTS	
 
 ObjInit_Troopa:
+	INC Objects_ShowShakeFeet, X
+
 	LDA #$05
 	STA Objects_SpritesRequested, X
 
@@ -942,6 +944,7 @@ Troopa_ColorFixFlip:
 	STA Sprite_RAMAttr+8, Y
 	STA Sprite_RAMAttr+12, Y
 	STA Sprite_RAMAttr+16, Y
+
 	RTS	
 
 

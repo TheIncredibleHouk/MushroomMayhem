@@ -368,6 +368,7 @@ ShyGuy_GroundAnim:
 	AND #SPRITE_0_HINVISIBLE
 	BNE ShyGuy_DrawRight
 
+	LDY Object_SpriteRAMOffset, X
 
 	LDA #$67
 	STA Sprite_RAMTile + 8, Y
@@ -499,6 +500,9 @@ ShyGuy_GrabBlock:
 ShyGuy_GrabBlockDone:
 	RTS
 
+ShyGuy_FacingPlayerCheck:
+	.byte $00, SPR_HFLIP
+
 ShyGuy_ThrowBlock:
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
@@ -509,8 +513,12 @@ ShyGuy_ThrowBlock:
 
 	JSR Object_XDistanceFromPlayer
 	LDA <XDiff
-	CMP #$28
+	CMP #$38
 	BCS ShyGuy_ThrowBlockDone
+	
+	LDA Objects_Orientation, X
+	CMP ShyGuy_FacingPlayerCheck, Y
+	BNE ShyGuy_ThrowBlockDone
 
 ShyGuy_ThrowBlockForced:
 	JSR Object_FindEmptyY
@@ -921,6 +929,7 @@ VeggieGuy_KeepPulling:
 VeggieGuy_GrabVeggieDone:
 	RTS
 
+
 VeggieGuy_ThrowVeggie:
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
@@ -934,9 +943,13 @@ VeggieGuy_ThrowVeggie:
 
 	JSR Object_XDistanceFromPlayer
 	LDA <XDiff
-	CMP #$30
+	CMP #$38
 	BCS VeggieGuy_ThrowVeggieDone
 
+	LDA Objects_Orientation, X
+	CMP ShyGuy_FacingPlayerCheck, Y
+	BNE VeggieGuy_ThrowVeggieDone
+	
 	JSR Object_YDistanceFromPlayer
 
 	LDA <YDiff
@@ -1549,7 +1562,7 @@ Snifit_Fireball:
 
 	LDA #$50
 	BNE Snifit_FireTimer
-	
+
 Snifit_FireFast:	
 	LDA #$30
 
@@ -4181,7 +4194,7 @@ TrainingShop_Norm:
 
 
 Training_ExpRequirements:
-	.word $03EB
+	.word $02EE
 	.word $09C4
 	.word $2710
 	.word $61A8

@@ -357,7 +357,6 @@ Found_EmptyGenerator:
 
 	LDA #$00
 	STA ObjectGenerator_Var, X	; Clear Cannon Fire variable
-	STA ObjectGenerator_Timer2, X	; Clear Cannon Fire timer 2
 
 	LDA #$10
 	STA ObjectGenerator_Timer, X	 ; ObjectGenerator_Timer = $00 or $60, depending on whether we're a 4-Way cannon
@@ -1276,14 +1275,10 @@ PRG005_BE67:
 	BPL PRG005_BE37	 ; While Y >= 0, loop
 
 	; Clear a bunch of stuff!
-	STA RotatingColor_Cnt
-	STA Player_TwisterSpin
 	STA Level_Vibration
 	STA Vert_Scroll_Off
 	STA Player_VibeDisable
 	STA Level_Event	
-	STA LevelEvent_Cnt
-	STA Splash_DisTimer
 	STA Level_ScrollDiffH
 	STA Wind
 	STA WeatherActive

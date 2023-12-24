@@ -15,7 +15,7 @@ import DryBonesDesert from '../pages/Worlds/DryBonesDesert/DryBonesDesert';
 import FreezieForest from '../pages/Worlds/FreezieForest/FreezieForest';
 import Koopatropolis from '../pages/Worlds/Koopatropolis/Koopatropolis';
 import PiranhaPassage from '../pages/Worlds/PiranhaPassage/PiranhaPassage';
-import Demos from '../pages/Basics/Demos/Demos';
+import Demos from '../pages/Demos/Demos';
 import About from '../pages/About/About';
 
 const routes = [

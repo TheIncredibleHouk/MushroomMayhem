@@ -76,42 +76,42 @@ Title_GfxCommit:
 	RTS		 ; Return
 
 
-IntIRQ_TitleEnding:
-	STA MMC3_IRQENABLE
+; IntIRQ_TitleEnding:
+; 	STA MMC3_IRQENABLE
 
-	; Some kind of delay loop?
-	LDX #$04	 ; X = 4
-PRG024_A82B:
-	NOP		 ; ?
-	DEX		 ; X--
-	BNE PRG024_A82B	 ; While X > 0, loop
+; 	; Some kind of delay loop?
+; 	LDX #$04	 ; X = 4
+; PRG024_A82B:
+; 	NOP		 ; ?
+; 	DEX		 ; X--
+; 	BNE PRG024_A82B	 ; While X > 0, loop
 
-	LDA PPU_STAT
+; 	LDA PPU_STAT
 
-	LDY #$0b
-	LDA #$00
-	STY PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+; 	LDY #$0b
+; 	LDA #$00
+; 	STY PPU_VRAM_ADDR
+; 	STA PPU_VRAM_ADDR
 
-	LDA PPU_VRAM_DATA
+; 	LDA PPU_VRAM_DATA
 
-	LDA <PPU_CTL1_Copy	
-	ORA <PPU_CTL1_Mod	; Combine bits from PPU_CTL1_Copy into PPU_CTL1_Mod
-	STA PPU_CTL1	 ; Stored to the register!
+; 	LDA <PPU_CTL1_Copy	
+; 	ORA <PPU_CTL1_Mod	; Combine bits from PPU_CTL1_Copy into PPU_CTL1_Mod
+; 	STA PPU_CTL1	 ; Stored to the register!
 
-	LDA PPU_STAT
+; 	LDA PPU_STAT
 
-	; H-Scroll locked at 0
-	LDA #$00
-	STA PPU_SCROLL
+; 	; H-Scroll locked at 0
+; 	LDA #$00
+; 	STA PPU_SCROLL
 
-	; V-Scroll locked at $EF
-	LDA #$ef
-	STA PPU_SCROLL
+; 	; V-Scroll locked at $EF
+; 	LDA #$ef
+; 	STA PPU_SCROLL
 
-	STA MMC3_IRQDISABLE
+; 	STA MMC3_IRQDISABLE
 
-	JMP IntIRQ_Finish_NoDis	 ; Jump to IntIRQ_Finish_NoDis
+; 	JMP IntIRQ_Finish_NoDis	 ; Jump to IntIRQ_Finish_NoDis
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ; Video_Misc_Updates2
@@ -275,6 +275,9 @@ PRG024_A930:
 	LDA #$00
 	STA PPU_CTL2
 
+	LDA #$FC
+	STA <Horz_Scroll
+
 	JSR Title_RandomizeStars
 	JSR Title_Sprites
 	JSR Title_FadeIn
@@ -285,7 +288,6 @@ PRG024_A946:
 	
 	; Used for VSync
 	JSR GraphicsBuf_Prep_And_WaitVSyn2
-	JSR Title_Sprites
 
 PRG024_A955: 
 	DEC <Title_Ticker	; Decrement title tick counter
@@ -500,6 +502,7 @@ Title_PrepForWorldMap:
 	LDA #$FF
 	STA Player_Stats_Boundary_Start
 	STA Player_Stats_Boundary_End
+	STA Level_NoStars
 
 	INC Force_StatusBar_Init
 
@@ -552,6 +555,7 @@ Title_Sprites:
 
 Title_SpritesLoop:
 	LDA Title_SpritesX, X
+	SUB <Horz_Scroll
 	STA Sprite_RAMX, Y
 
 	LDA Title_SpritesY, X
@@ -737,6 +741,7 @@ World_Select_Sprite:
 	STA Sprite_RAMAttr, Y
 
 	LDA #$8A
+	SUB <Horz_Scroll
 	STA Sprite_RAMX, Y
 
 	LDA #$C7
@@ -3403,7 +3408,7 @@ Status_Bottom_Loop:
 ;
 ; Rest of ROM bank was empty...
 Initial_Bar_Display1:
-	.byte $EE, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $D6, $D6, $D6, $FE, $D8, $74, $74, $76, $FA, $FA, $FD, $FA, $FA
+	.byte $EE, $D1, $D1, $D1, $D1, $D1, $D1, $DA, $DB, $E9, $E9, $E9, $E9, $EA, $FE, $FE, $FE, $FE, $FE, $D8, $74, $74, $76, $FA, $FA, $FD, $FA, $FA
 	.byte $EF, $30, $30, $30, $30, $30, $30, $FE, $D0, $30, $30, $30, $30, $FE, $D7, $30, $30, $30, $FE, $D5, $30, $30, $76, $FA, $FA, $FD, $FA, $FA
 
 Initialize_Status_Bar:
@@ -3751,6 +3756,7 @@ Game_UpdateCoins0:
 	STA <CalcParam1 + 1
 
 	LDA Coins_Earned
+	
 	LDX Player_Badge
 	CPX #BADGE_COIN
 	BNE Coin_NoDouble
@@ -3980,13 +3986,25 @@ StatusBar_DrawDayNightMeter1:
 	RTS
 ;--------------------------------------
 BadgeTiles:
-	.byte $FA, $FA, $FA, $FA
-	.byte $B0, $B1, $C0, $C1 ; $01
-	.byte $B2, $B3, $C2, $C3 ; $02
-	.byte $B4, $B5, $C4, $C5 ; $03
-	.byte $B6, $B7, $C6, $C7 ; $04
-	.byte $B8, $B9, $C8, $C9 ; $05
-	.byte $BA, $BB, $CA, $CB ; $05
+	.byte $FA, $FA, $FA, $FA ; $00
+	.byte $B2, $B3, $C2, $C3 ; $01
+	.byte $B6, $B7, $C2, $C3 ; $02
+	.byte $C6, $C7, $C2, $C3 ; $03
+	.byte $BA, $BB, $CA, $CB ; $04
+	.byte $B0, $B1, $C0, $C1 ; $05
+	.byte $FF, $FF, $FF, $FF ; $06
+	.byte $FF, $FF, $FF, $FF ; $07
+	.byte $FF, $FF, $FF, $FF ; $08
+	.byte $B4, $B5, $C4, $C5 ; $09
+	.byte $FA, $ED, $98, $FA ; $10
+	.byte $DC, $DD, $8E, $8F ; $11
+	.byte $ED, $FA, $FA, $99; $12
+	.byte $EB, $8B, $EC, $9B; $13
+	.byte $FA, $89, $ED, $FA; $14
+	.byte $8C, $8D, $DC, $DD; $15
+	.byte $88, $FA, $FA, $ED; $16
+	.byte $8A, $EB, $9A, $EC; $17
+	.byte $B4, $B5, $C4, $C5 ; $18
 
 Game_UpdateBadge:
 	; LDA StatusBar_Mode
@@ -4043,16 +4061,7 @@ PowerUp_Reserve_Item:
 	.byte $6E, $6F, $7C, $7D ; $0D
 	.byte $6E, $6F, $7C, $7C ; $0E
 	.byte $6C, $6D, $7C, $7C ; $0F
-	.byte $FA, $ED, $98, $FA ; $10
-	.byte $DC, $DD, $8E, $8F ; $11
-	.byte $ED, $FA, $FA, $99; $12
-	.byte $EB, $8B, $EC, $9B; $13
-	.byte $FA, $89, $ED, $FA; $14
-	.byte $8C, $8D, $DC, $DD; $15
-	.byte $88, $FA, $FA, $ED; $16
-	.byte $8A, $EB, $9A, $EC; $17
-	.byte $DE, $DF, $DC, $DD; $18
-
+	.byte $6A, $6B, $7E, $7F ; $11
 
 Game_UpdateReserve:
 	LDA PowerUp_Reserve
@@ -4379,6 +4388,8 @@ Messages_Lookup:
 	.word Level_Up3
 	.word Level_Up4
 	.word Level_Up5
+	.word Second_QuestMsg
+	.word Demo_EndMsg
 
 Empty_Message:
 	.byte $00
@@ -4482,28 +4493,28 @@ Game_Script_3_9:
 	.db "IN 10 SECONDS         "
 
 Badge_A_Explanation:
-	.db "OLD POWERUP GOES INTO "
-	.db "RESERVE, SELECT TO USE"
-
-Badge_B_Explanation:
 	.db "ALL XP EARNED IS      "
 	.db "DOUBLED               "
 
-Badge_C_Explanation:
-	.db "FIND MAGIC STARS,     "
-	.db "ERASES RESERVED ITEM  "
-
-Badge_D_Explanation:
+Badge_B_Explanation:
 	.db "DOUBLE LENGTH P METER "
 	.db "POWER USAGE           "
 
-Badge_E_Explanation:
+Badge_C_Explanation:
 	.db "ALL COINS COLLECTED   "
 	.db "ARE DOUBLED           "
 
-Badge_F_Explanation:
+Badge_D_Explanation:
 	.db "AIR METER LASTS MUCH  "
 	.db "LONGER                "
+
+Badge_E_Explanation:
+	.db "OLD POWERUP GOES INTO "
+	.db "RESERVE, SELECT TO USE"
+
+Badge_F_Explanation:
+	.db "FIND MAGIC STARS      "
+	.db "HIDDEN NEARBY         "
 
 Level_Up1:
 	.db "TAKE AN EXTRA HIT WHEN"
@@ -4524,6 +4535,14 @@ Level_Up4:
 Level_Up5:
 	.db "ENABLE THE ABILITY TO "
 	.db "DOUBLE JUMP           "
+
+Second_QuestMsg:
+	.db "ENTER THE PIPE TO FIND"
+	.db "A QUEST FOR EXPERTS.  "
+
+Demo_EndMsg:
+	.db "THANK YOU FOR PLAYING!"
+	.db "COME BACK SUMMER 2024!"
 
 Message_Low = Temp_Var1
 Message_Hi = Temp_Var2

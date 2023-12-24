@@ -6562,14 +6562,8 @@
     },
     {
       "GameObjectId": 128,
-      "X": 36,
-      "Y": 11,
-      "Property": 4
-    },
-    {
-      "GameObjectId": 128,
-      "X": 85,
-      "Y": 7,
+      "X": 81,
+      "Y": 9,
       "Property": 1
     },
     {

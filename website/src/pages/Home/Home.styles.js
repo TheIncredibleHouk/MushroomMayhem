@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { blue } from '../../styles/colors';
 import { mobile } from '../../styles/mobile';
 
 var HomeStyles = styled.div`
@@ -7,7 +8,12 @@ var HomeStyles = styled.div`
     align-items: center;
 
     .home-description {
-        margin-top: 50px;
+        margin: 50px auto;
+
+        a:link, a:visited, a:hover, a:active {
+            color: blue;
+            font-weight: bold;
+        }
     }
 
 
@@ -32,6 +38,8 @@ var HomeStyles = styled.div`
         padding: 25px;
         margin-top: 25px;
         font-family: KabelHeavy;
+
+      
     }
 
     .home-table-contents-list {
