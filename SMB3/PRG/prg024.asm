@@ -442,8 +442,20 @@ Title_SkipStars:
 	.word TitleState_Confirm
 	.word TitleState_Cancel
 	.word TitleState_EraseGame
-	
-TitleState_Start:
+	.word TitleState_AutoSaveYes
+	.word TitleState_AutoSaveNo
+
+TitleState_AutoSaveYes:
+	LDA #$01
+	STA Auto_Save
+	BNE TitleState_StartGame
+
+TitleState_AutoSaveNo:
+	STA Debug_Snap
+	LDA #$00
+	STA Auto_Save
+
+TitleState_StartGame:
 	LDA #SND_LEVELCOIN
 	STA Sound_QLevel1
 
@@ -455,9 +467,16 @@ TitleState_Start:
 
 	LDA #$01
 	STA Title_State
+	RTS
+
+TitleState_Start:
+	LDA #TITLEMENU_AUTOSAVE_YES
+	STA Title_GameMenu
+
+	JSR Title_MenuUpdate
+	RTS
 	
 TitleState_WaitRTS:
-	
 	RTS
 
 TitleState_Confirm:
@@ -644,9 +663,11 @@ TITLEMENU_CONTINUE = $02
 TITLEMENU_NEWGAME = $03
 TITLEMENU_CONFIRM_NO = $04
 TITLEMENU_CONFIRM_YES = $05
+TITLEMENU_AUTOSAVE_YES = $06
+TITLEMENU_AUTOSAVE_NO = $07
 
 TitleMenu_DrawMode:
-	.byte $09, $09, $0A, $0B, $0C, $0D
+	.byte $09, $09, $0A, $0B, $0C, $0D, $10, $11
 
 Title_Menu:
 	LDA Title_GameMenu_Init
@@ -795,6 +816,8 @@ Video_Upd_Table2:
 	.word Title_ConfirmYes
 	.word Title_WorldSelect
 	.word Title_Reset
+	.word Title_AutoSaveYes
+	.word Title_AutoSaveNo
 	
 	; Falls into...
 Title_Clear:
@@ -914,7 +937,7 @@ Title_Continue:
 	
 	vaddr $22EB
 	.byte 08
-	.byte $99, $9A, $9B, $FE, $9C, $9D, $9E, $9A
+	.byte $8B, $9A, $9B, $FE, $9C, $9D, $9E, $9A
 	.byte 00
 
 Title_NewGame:
@@ -924,14 +947,14 @@ Title_NewGame:
 	
 	vaddr $22EB
 	.byte 08
-	.byte $79, $7A, $7B, $FE, $7C, $7D, $7E, $7A
+	.byte $6B, $7A, $7B, $FE, $7C, $7D, $7E, $7A
 	.byte 00
 
 
 Title_NewGameOnly:
 	vaddr $22AB
 	.byte 08
-	.byte $79, $7A, $7B, $FE, $7C, $7D, $7E, $7A
+	.byte $6B, $7A, $7B, $FE, $7C, $7D, $7E, $7A
 
 	vaddr $22EB
 	.byte 08
@@ -945,7 +968,7 @@ Title_ConfirmNo:
 
 	vaddr $22EB
 	.byte 08
-	.byte $FE, $2E, $9A, $2F, $FE, $79, $6A, $FE
+	.byte $FE, $2E, $9A, $2F, $FE, $6B, $6A, $FE
 	.byte 00	
 
 Title_ConfirmYes:
@@ -970,6 +993,27 @@ Title_Reset:
 	.byte $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
 	.byte $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
 	.byte $00	; Terminator
+
+Title_AutoSaveYes:
+	vaddr $22AB
+	.byte 09
+	.byte $7D, $6E, $6C, $6A, $6F, $7D, $79, $7A, $1E
+
+	vaddr $22EB
+	.byte 08
+	.byte $FE, $8F, $7A, $6F, $FE, $8B, $8A, $FE
+	.byte 00	
+
+Title_AutoSaveNo:
+	vaddr $22AB
+	.byte 09
+	.byte $7D, $6E, $6C, $6A, $6F, $7D, $79, $7A, $1E
+
+	vaddr $22EB
+	.byte 08
+	.byte $FE, $2E, $9A, $2F, $FE, $6B, $6A, $FE
+	.byte 00	
+
 
 ; Super Mario Bros. 3 Full Disassembly by Southbird 2012
 ; For more info, see http://www.sonicepoch.com/sm3mix/

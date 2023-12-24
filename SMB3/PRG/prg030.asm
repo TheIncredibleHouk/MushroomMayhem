@@ -6046,6 +6046,8 @@ Player_DeathNoHold:
 
 	LDA #$01
 	STA <Player_IsDying	 ; Player_IsDying = 1
+
+	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
 
 Point_MidX = Temp_Var8

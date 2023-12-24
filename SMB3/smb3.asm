@@ -2329,10 +2329,6 @@ Tile_Mem:	.ds 6480	; $6000-$794F Space used to store the 16x16 "tiles" that make
 	AScrlURDiag_OffsetY:	.ds 1	; When diagonal autoscroller is wrapping, this holds an Y offset for Player/Objects to temporarily correct
 	StatusBar_UpdFl:	.ds 1	; Status bar Update Flag; toggles so to update status bar only every other frame
 	UpdSel_Disable:		.ds 1	; When set, disables the Update_Select routine during the NMI, which halts most activity due to no reported V-Blanking
-	ChaseTargetX:			.ds 1
-	ChaseTargetXHi:			.ds 1
-	ChaseTargetY:			.ds 1
-	ChaseTargetYHi:			.ds 1
 
 	; Item that will be given by treasure box; set by the object OBJ_TREASURESET by its row
 	; Level_TreasureItem:
@@ -2590,7 +2586,7 @@ MARIO_NINJA		= 11
 	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13
 	Objects_Data12:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Data13:		.ds 5	; $7CDC-$7CE0 Generic object variable 14
-	Objects_BeingHeld:		.ds 9	; $7CDC-$7CE0 Generic object variable 14
+	Objects_BeingHeld:		.ds 8	; $7CDC-$7CE0 Generic object variable 14
 	Objects_Ticker: 	.ds 5
 	
 	Objects_DynamicallySpawned:	.ds 8
@@ -2768,8 +2764,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 
 	Map_SprRAMOffDistr:	.ds 1	; A free running counter on the map only which distributes Sprite_RAM offsets to ensure visibility
 
-	Map_Airship_Dest:	.ds 1	; Airship travel destination; 6 X/Y map coordinates defined per world, after that it just sits still
-
 	; Store arrays defined by level data as starts after an "alternate" level junction event
 	; Level_JctXLHStart:
 	;	Lower 4 bits: X Hi
@@ -2795,12 +2789,6 @@ MAPOBJ_TOTAL		= $0E	; Total POSSIBLE map objects
 ; NOTE: Object_WatrHit* values are set only once, then WatrHit_IsSetFlag latches
 ; and they will never update again; seems it is leftover debug code or maybe
 ; an unused feature (that an object could respond to a splashdown)
-
-
-	Splash_Counter:		.ds 0	; $7F8E-$7F90 Water splash counter
-	Splash_Y:			.ds 0	; $7F91-$7F93 Water splash X
-	Splash_X:			.ds 0	; $7F94-$7F96 Water splash Y
-	Splash_NoScrollY:	.ds 0	; $7F97-$7F99 If set, flags this water splash to not display sprite Y as relative to screen scroll
 
 	Brick_Index:		.ds 1
 	BrickBust_En:		.ds 3	; $7F9A-$7F9C Brick bust "Enable" (0 = disable, 2 = brick debris, anything else = "poof" away)
@@ -3004,6 +2992,7 @@ SECOND_QUEST = $FE
 	Save_Ram_Boundary_End: 		.ds 1
 
 	World_Start: 		.ds 1
+	Auto_Save:			.ds 1
 	; Tile map property flags
 MAP_PROP_BOUNDARY		= $00
 MAP_PROP_TRAVERSABLE	= $01
@@ -3237,39 +3226,11 @@ KILLACT_NORMALSTATE	= 1	; 5: Do "Normal" state and killed action (sinking/vert f
 OBJ_CFIRE_BULLETBILL	= $BC + CFIRE_BULLETBILL - 1	; Bullet Bill cannon
 OBJ_CFIRE_MISSILEBILL	= $BC + CFIRE_MISSILEBILL - 1	; Missile Bill (homing BUllet Bill)
 OBJ_CFIRE_ROCKYWRENCH	= $BC + CFIRE_ROCKYWRENCH - 1	; Creates Rocky Wrench (um why?)
-OBJ_CFIRE_4WAY		= $BC + CFIRE_4WAY - 1		; 4-way cannon
-OBJ_CFIRE_GOOMBAPIPE_DOWN	= $BC + CFIRE_GOOMBAPIPE_DOWN - 1	; Goomba pipe (left output)
-OBJ_CFIRE_GOOMBAPIPE_R = $00 ;
-OBJ_CFIRE_GOOMBAPIPE_L = $00 ;
-OBJ_CFIRE_GOOMBAPIPE_UP	= $BC + CFIRE_GOOMBAPIPE_UP - 1	; Goomba pipe (right output)
-OBJ_CFIRE_HLCANNON	= $BC + CFIRE_HLCANNON - 1	; Fires cannonballs horizontally left
-OBJ_CFIRE_HLBIGCANNON	= $BC + CFIRE_HLBIGCANNON - 1	; Fires BIG cannonballs horizontally left
-OBJ_CFIRE_ULCANNON	= $BC + CFIRE_ULCANNON - 1	; Fires cannonballs diagonally, upper left
-OBJ_CFIRE_URCANNON	= $BC + CFIRE_URCANNON - 1	; Fires cannonballs diagonally, upper right
-OBJ_CFIRE_LLCANNON	= $BC + CFIRE_LLCANNON - 1	; Fires cannonballs diagonally, lower left
-OBJ_CFIRE_LRCANNON	= $BC + CFIRE_LRCANNON - 1	; Fires cannonballs diagonally, lower right
-OBJ_CFIRE_HLCANNON2	= $BC + CFIRE_HLCANNON2 - 1	; Fires cannonballs horizontally left
-OBJ_CFIRE_ULCANNON2	= $BC + CFIRE_ULCANNON2 - 1	; Fires cannonballs diagonally, upper left
-OBJ_CFIRE_URCANNON2	= $BC + CFIRE_URCANNON2 - 1	; Fires cannonballs diagonally, upper right
-OBJ_CFIRE_LLCANNON2	= $BC + CFIRE_LLCANNON2 - 1	; Fires cannonballs diagonally, lower left
-OBJ_CFIRE_HRCANNON	= $BC + CFIRE_HRCANNON - 1	; Fires cannonballs horizontally right
-OBJ_CFIRE_HRBIGCANNON	= $BC + CFIRE_HRBIGCANNON - 1	; Fires BIG cannonballs horizontally right
-OBJ_CFIRE_LBOBOMBS	= $BC + CFIRE_LBOBOMBS - 1	; Launches fused Bob-ombs to the left
-OBJ_CFIRE_RBOBOMBS	= $BC + CFIRE_RBOBOMBS - 1	; Launches fused Bob-ombs to the right
-OBJ_CFIRE_LASER		= $BC + CFIRE_LASER - 1		; Laser fire
 
 ; Objects in $D1+ appear to trigger special events
 OBJ_SPAWN3GREENTROOPAS	= $D1	; Spawns up to 3 (depending on available slots) hopping green paratroops
 OBJ_SPAWN3ORANGECHEEPS	= $D2	; Spawns up to 3 (depending on available slots) "lost" orange cheep cheeps (a school)
 OBJ_AUTOSCROLL		= $D3	; Activates auto scrolling for e.g. World 1-4, World 8 Tank, etc.
-OBJ_BONUSCONTROLLER	= $D4	; Handles the judgement of w39hether you get a White Toad House / Coin Ship
-OBJ_TOADANDKING		= $D5	; Toad and the king from the end of the world
-OBJ_TREASURESET		= $D6	; Sets the treasure box item (Level_TreasureItem) based on what row this object is placed at
-
-
-OBJ_ORANGECHEEP		= $FF	;
-OBJ_HEAVYBRO		= $FF	;
-OBJ_INVISIBLELIFT   = $FF	;
 
 ; Miscellaneous Player frames
 PF_KICK_SMALL		= $42	; Foot out kick when small

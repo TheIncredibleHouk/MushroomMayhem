@@ -1500,10 +1500,7 @@ PRG010_CDA7:
 	; In conjunction with the table above; patches $1A (Luigi) for $16 as needed
 Map_PostJC_PUpPML:	.byte $16, $1A
 
-
-
 MO_NormalMoveEnter:
-	JSR Map_SaveMenu
 
 	LDA Save_Menu_Showing
 	BNE PRG010_CD6E
@@ -1518,6 +1515,8 @@ PRG010_CDDC:
 	LDA Map_Pan_Count	
 	BNE PRG010_CD6E	 	; If map is panning, jump to PRG010_CD6E (indirect to WorldMap_UpdateAndDraw)
 
+	JSR Map_SaveMenu
+	
 	LDA <Pad_Input	
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN)	 
 	BEQ PRG010_CDEC	 	; If Player is not pushing up/down/left/right, jump to PRG010_CDEC

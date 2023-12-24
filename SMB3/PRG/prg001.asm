@@ -1295,7 +1295,6 @@ ObjNorm_CoinLock1:
 	STA PatTable_BankSel + 4, Y
 
 DrawCoinLock0:
-	STA Debug_Snap
 	JSR Object_Draw
 	LDA Objects_SpritesHorizontallyOffScreen,X 
 	ORA Objects_SpritesVerticallyOffScreen,X

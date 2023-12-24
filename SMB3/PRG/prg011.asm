@@ -3039,6 +3039,12 @@ Map_SaveMenu:
 	LDA Map_Pan_Count
 	BNE Map_SaveMenuSCRTS
 
+	LDA Auto_Save
+	BEQ Map_NoAutoSave
+
+	JMP Save_Game
+
+Map_NoAutoSave:	
 	LDA Save_Menu_Showing
 	BEQ Map_SaveMenuHidden
 
