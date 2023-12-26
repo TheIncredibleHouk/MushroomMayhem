@@ -941,6 +941,7 @@ PUp_CheckPoint:
 	LDA Player_EffectiveSuit
 	STA World_Map_Power
 
+Checkpoint_Poof:
 	JMP Object_PoofDie
 
 ;***********************************************************************************

@@ -3034,15 +3034,15 @@ MarkCompletedLevels3:
 Map_SaveMenuSCRTS:
 	RTS	
 
-
 Map_SaveMenu:
+	STA Debug_Snap
 	LDA Map_Pan_Count
 	BNE Map_SaveMenuSCRTS
 
 	LDA Auto_Save
 	BEQ Map_NoAutoSave
 
-	JMP Save_Game
+	JSR Save_Game
 
 Map_NoAutoSave:	
 	LDA Save_Menu_Showing

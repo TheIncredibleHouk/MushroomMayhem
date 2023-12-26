@@ -6643,6 +6643,18 @@
       "X": 231,
       "Y": 6,
       "Property": 0
+    },
+    {
+      "GameObjectId": 26,
+      "X": 1,
+      "Y": 0,
+      "Property": 3
+    },
+    {
+      "GameObjectId": 26,
+      "X": 129,
+      "Y": 0,
+      "Property": 3
     }
   ],
   "SecondObjectData": [

@@ -451,7 +451,6 @@ TitleState_AutoSaveYes:
 	BNE TitleState_StartGame
 
 TitleState_AutoSaveNo:
-	STA Debug_Snap
 	LDA #$00
 	STA Auto_Save
 
