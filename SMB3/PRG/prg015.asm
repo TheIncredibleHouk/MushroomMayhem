@@ -4341,6 +4341,9 @@ ObjInit_ParaChomp:
 	STA Objects_BehaviorAttr, X
 
 ParaChomp_Reset:
+	LDA Objects_Property, X
+	BNE ParaChomp_Horz
+
 	LDA #$00
 	STA <Objects_YVelZ, X
 
@@ -4352,6 +4355,14 @@ ParaChomp_Reset:
 
 	LDA #$01
 	STA Patrol_Blocks, X
+
+ParaChomp_ResetRTS:
+	RTS
+
+ParaChomp_Horz:
+	JSR InitPatrolHorizontal
+	LDA #$08
+	STA Patrol_Blocks, X
 	RTS
 
 
@@ -4359,6 +4370,8 @@ ParaChomp_Frame = Objects_Data1
 ParaChomp_Grabbed = Objects_Data2
 ParaChomp_HitDetection = Objects_Data3
 ParaChomp_HitCeiling = Objects_Data4
+ParaChomp_XPrev = Objects_Data5
+ParaChomp_XPrevHi = Objects_Data6
 	
 ObjNorm_ParaChomp:
 	LDA Objects_State, X
@@ -4370,13 +4383,6 @@ ObjNorm_ParaChomp:
 	JMP Object_StarBurstDeath
 
 ParaChomp_NotDead:	
-
-	LDA <Player_HaltGameZ
-	BEQ ParaChomp_Norm
-
-	JMP ParaChomp_Draw
-
-ParaChomp_Norm:
 	LDA PatTable_BankSel + 5
 	CMP #$32
 	BNE ParaChomp_NoBankSwap
@@ -4385,6 +4391,29 @@ ParaChomp_Norm:
 	STA PatTable_BankSel + 5
 
 ParaChomp_NoBankSwap:
+	LDA <Player_HaltGameZ
+	BEQ ParaChomp_Norm
+
+	JMP ParaChomp_Draw
+
+ParaChomp_Norm:
+	LDA Objects_Property, X
+	BEQ ParaChomp_NormFloat
+	
+	JSR PatrolBackForth
+	JSR Object_FaceDirectionMoving
+	JSR ParaChomp_Interact
+	JSR ParaChomp_DetectTiles
+
+	LDA ParaChomp_Grabbed, X
+	BEQ ParaChomp_Animate
+
+	LDA <Objects_XVelZ, X
+	STA Player_CarryXVel
+
+	JMP ParaChomp_Animate
+
+ParaChomp_NormFloat:
 	LDA ParaChomp_Grabbed, X
 	BEQ ParaChomp_NotGrabbed
 
@@ -4550,8 +4579,11 @@ ParaChomp_NoInteract:
 	LDA ParaChomp_Grabbed, X
 	BEQ ParaChomp_NoInteractRTS
 
+	LDA Objects_Property, X
+	BNE ParaChomp_NoReset
 	JSR ParaChomp_Reset
 	
+ParaChomp_NoReset:	
 	LDA #$00
 	STA Player_IsClimbingObject
 	STA ParaChomp_Grabbed, X

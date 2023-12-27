@@ -3035,7 +3035,6 @@ Map_SaveMenuSCRTS:
 	RTS	
 
 Map_SaveMenu:
-	STA Debug_Snap
 	LDA Map_Pan_Count
 	BNE Map_SaveMenuSCRTS
 

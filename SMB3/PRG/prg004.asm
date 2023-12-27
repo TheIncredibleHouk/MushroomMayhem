@@ -1327,8 +1327,8 @@ ObjInit_JumpingCheep1:
 	STA Objects_Orientation, X
 	RTS
 	
-JumpingCheep_XVel: .byte $10, $F0, $00, $00, $00
-JumpingCheep_YVel: .byte $A0, $60, $00, $00, $00
+JumpingCheep_XVel: .byte $08, $F8, $00, $00, $00
+JumpingCheep_YVel: .byte $B0, $50, $00, $00, $00
 JumpingCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00, SPR_VFLIP
 
 JumpingCheep_IsWaiting = Objects_Data3
@@ -1415,7 +1415,7 @@ Jumping_WaterOk:
 	BEQ Jumping_Draw
 	
 Jumping_SetTimer:
-	LDA #$20
+	LDA #$40
 	STA Objects_Timer, X
 	JSR Object_FacePlayer
 

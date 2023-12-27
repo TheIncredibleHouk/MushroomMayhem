@@ -452,6 +452,7 @@ LevelJunction_PartialInit:
 	STA Level_AScrlConfig	 ; Clear auto scroll configuration (no auto scroll)
 	STA Level_ObjectsInitialized	 ; Do level scene change reset
 	STA Poison_Mode
+	STA Player_Invicible
 
 	LDA #$50
 	STA Player_Power
@@ -1148,20 +1149,6 @@ PRG008_A928:
 	STA <Temp_Var3	 ; Temp_Var3 = absolute value of Player's X Velocity
 
 	STY Player_MoveLR	; Set Player_MoveLR appropriately
- 
-	;LDA <Player_InAir
-	;BEQ PRG008_A940	 ; If Player is not mid air, jump to PRG008_A940
-
-	;LDA <Player_YHiZ
-	;BPL PRG008_A93D	 ; If Player is on the upper half of the screen, jump to PRG008_A93D
-
-	; Player is mid air, lower half of screen...
-
-	;LDA <Player_YZ
-	;BMI PRG008_A93D	 ; If Player is beneath the half point of the lower screen, jump to PRG008_A93D
-
-	;LDA <Player_YVelZ
-	;BMI PRG008_A940	 ; If Player is moving upward, jump to PRG008_A940
 
 PRG008_A93D:
 	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
@@ -3272,7 +3259,7 @@ PRG008_B4B1:
 	LDA #58  		; 6 = 3 * 2 (the offset we start on below) and work backwards from
 
 PRG008_B4B2:
-	LDY <Player_YVelZ 
+	LDY <Player_EffYVel 
 	BPL PRG008_B4BD	 ; If Player_YVelZ >= 0 (moving downward), jump to PRG008_B4BD
 
 	ADD #24
@@ -3326,7 +3313,7 @@ PRG008_B4CB:
 	JSR Player_DetectWall
 
 Player_DetectSolids5:
-
+	STA Debug_Snap
 	LDA <Player_EffYVel
 	BPL Player_DetectSolids2	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
 	
@@ -6315,9 +6302,13 @@ Player_DoClimbing1_1:
 	JMP Player_DoClimbing2_1
 
 Player_DoClimbing2_0:
-
 	JSR Player_ApplyXVelocity
+	LDA <Temp_Var1
+	STA <Player_EffXVel
+
 	JSR Player_ApplyYVelocity
+	LDA <Temp_Var1
+	STA <Player_EffYVel
 
 Player_DoClimbing2_1:
 	JSR Player_DoClimbAnim	 ; Animate climbing
@@ -6358,7 +6349,7 @@ PoisonMode_Activate:
 
 	INC Poison_Mode
 
-	LDA #$F0
+	LDA #$FA
 	STA Power_Change
 
 	LDA #$02
