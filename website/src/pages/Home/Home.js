@@ -31,12 +31,21 @@ var Home = () => {
       </div>
       { showDemos() &&
         <>
-          <PageHeader color={red}>New Demo Released!</PageHeader>
+          <PageHeader color={red}>New Demo Released (Update)!</PageHeader>
           <div className="home-description">
             A new demo has been on December 23, 2023! This contains the entirety of the first world, which includes 9 levels,
             a fortress (boss level), and having the chance to earn the first ability of the game! Important note: your game save
             from the demo will not transfer to the full version. It's highly commended that you check out
             the <Link to="/basics">Basics</Link> and <Link to="/techniques">Techniques</Link> section of this guide. Download your appropriate patch in <Link to="/demos">Demos</Link> and happy holidays!
+            <br />
+            <br />
+            An update to the demo has been created that includes:
+            <ul>
+              <li>Reworked levels</li>
+              <li>Autosave feature</li>
+              <li>Tutorial level</li>
+              <li>Alterations to some enemies and mechanics based off feedback</li>
+            </ul>
           </div>
         </>
       }

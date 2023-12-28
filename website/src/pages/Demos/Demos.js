@@ -19,12 +19,12 @@ var Demos = () => {
                 patch files do not contain copyrighted content and require the original ROM for application. Choose the correct patch
                 file based on the NES ROM you have. In order to apply a IPS, be sure to download <a href="https://www.romhacking.net/utilities/240/" target="_blank">Lunar IPS</a>.
             </PageTitle>
-            <PageHeader color={green}>December 12, 2023</PageHeader>
+            <PageHeader color={green}>December 27, 2023</PageHeader>
             <div className="demos-layout">
                 <ul>
-                    <li><a href="/patches/Mario Adventure 3 [for PRG0].ips">Patch for Super Mario Bros. 3 (PRG0) version</a></li>
-                    <li><a href="/patches/Mario Adventure 3 [for PRG1].ips">Patch for Super Mario Bros. 3 (PRG1) version</a></li>
-                    <li><a href="/patches/Mario Adventure 3 [for PC10].ips">Patch for Super Mario Bros. 3 (PC10) version</a></li>
+                    <li><a href="/patches/Mario Adventure 3 (PRG0).ips">Patch for Super Mario Bros. 3 (PRG0) version</a></li>
+                    <li><a href="/patches/Mario Adventure 3 (PRG1).ips">Patch for Super Mario Bros. 3 (PRG1) version</a></li>
+                    <li><a href="/patches/Mario Adventure 3 (PC10).ips">Patch for Super Mario Bros. 3 (PC10) version</a></li>
                 </ul>
             </div>
         </>

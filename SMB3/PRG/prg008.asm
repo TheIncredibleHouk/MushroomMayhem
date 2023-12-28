@@ -421,12 +421,6 @@ LevelInit_PipeExitRight:
 LevelInit_PipeExitLeft:
 	LDA #$81	 ; A = $81 (sets Level_PipeMove)
 	LDY #$04	 ; Y = 4 (come out pipe to the left, sets Level_PipeExitDir)
-	JMP PRG008_A324	 ; Jump to PRG008_A324
-
-LevelInit_Airship:
-
-
-LevelInit_Airship_Board:
 
 PRG008_A324:
 	; Set as appropriate from entry
@@ -461,13 +455,6 @@ LevelJunction_PartialInit:
 	JSR PRG008_A27A		   ; Partial level initialization (basically continues after setting the power up)
 
 PRG008_A379:
-	LDA Level_InitAction
-	CMP #$06
-	BNE PRG008_A383	 	; If Level_InitAction <> 6 (Run & Jump for the airship), jump to PRG008_A383
-
-	JSR LevelInit_Airship	 ; Run & Jump for the airship
-PRG008_A383:
-
 	JSR PRG008_A38E	 
 
 	; Pulls prior return address, meaning this function
@@ -3313,7 +3300,7 @@ PRG008_B4CB:
 	JSR Player_DetectWall
 
 Player_DetectSolids5:
-	STA Debug_Snap
+
 	LDA <Player_EffYVel
 	BPL Player_DetectSolids2	 ; If Player Y velocity >= 0 (moving downward), jump to PRG008_B55B
 	
@@ -3733,6 +3720,9 @@ BumpBlock_Brick1:
 	
 	JSR Level_QueueChangeBlock
 	INC Exp_Earned
+
+	LDA #$00
+	STA Player_BlockPounded
 	
 Bump_BrickRTS:
 	RTS		 ; Return
@@ -5585,6 +5575,9 @@ Solid_ThinIce:
 	CPX #HEAD_WALL_INDEX
 	BCS Solid_ThinIceRTS
 	
+	LDA Player_InWater
+	BEQ Solid_ThinIceGround
+
 	LDA <Player_YVelZ
 	BPL Solid_ThinIceGround
 

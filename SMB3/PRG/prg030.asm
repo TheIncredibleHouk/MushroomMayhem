@@ -2575,6 +2575,10 @@ LevelLoadQuick:
 	LDA Entering_From_Map
 	BEQ LoadLevel_FromPointer
 
+	LDA <Pad_Holding
+	AND #PAD_SELECT
+	BNE LoadLevel_FromPointer
+
 	LDA CheckPoint_Flag
 	BEQ LoadLevel_FromPointer
 	
@@ -2809,6 +2813,10 @@ NormAnimBank:
 	JMP Skip_Level_Position
 
 Not_Lvl_Jct:
+	LDA <Pad_Holding
+	AND #PAD_SELECT
+	BNE SetPosition_FromLevel
+
 	LDA CheckPoint_Level
 	BEQ SetPosition_FromLevel
 

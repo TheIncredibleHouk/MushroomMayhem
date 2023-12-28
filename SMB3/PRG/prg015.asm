@@ -4325,6 +4325,9 @@ PRG004_BE54C:
 	RTS		 ; Return	
 
 ObjInit_ParaChomp:
+	LDA <Objects_XZ, X
+	STA ParaChomp_StartX, X
+
 	LDA #$07
 	STA Objects_SpritesRequested, X
 
@@ -4370,8 +4373,7 @@ ParaChomp_Frame = Objects_Data1
 ParaChomp_Grabbed = Objects_Data2
 ParaChomp_HitDetection = Objects_Data3
 ParaChomp_HitCeiling = Objects_Data4
-ParaChomp_XPrev = Objects_Data5
-ParaChomp_XPrevHi = Objects_Data6
+ParaChomp_StartX = Objects_Data5
 	
 ObjNorm_ParaChomp:
 	LDA Objects_State, X
@@ -4380,12 +4382,19 @@ ObjNorm_ParaChomp:
 
 	JSR Object_SetDeadAndNotSpawned
 
+	LDA ParaChomp_Grabbed, X
+	BNE ParaChomp_Delete
+
+	LDA #$00
+	STA Player_IsClimbingObject
+
+ParaChomp_Delete:	
 	JMP Object_StarBurstDeath
 
-ParaChomp_NotDead:	
+ParaChomp_NotDead:
 	LDA PatTable_BankSel + 5
-	CMP #$32
-	BNE ParaChomp_NoBankSwap
+	CMP #$54
+	BEQ ParaChomp_NoBankSwap
 
 	LDA #$4F
 	STA PatTable_BankSel + 5
@@ -4566,13 +4575,21 @@ ParaChomp_Interact:
 	STA ParaChomp_HitDetection, X
 
 	JSR ParaChomp_CalcBoundBox
+
+	LDA <Objects_XZ, X
+	CMP ParaChomp_StartX, X
+	BNE ParaChomp_NoDelete
+
 	JSR Object_DeleteOffScreen
+
+ParaChomp_NoDelete:	
 	JSR Object_DetectPlayer
 	BCC ParaChomp_NoInteract
 
 	JMP ParaChomp_PlayerInteract
 	
 ParaChomp_NoInteract:
+
 	LDA ParaChomp_HitDetection, X
 	BEQ ParaChomp_NoInteractRTS
 
@@ -4596,8 +4613,15 @@ ParaChomp_CalcBoundBox:
 
 	JSR DynJump
 
-	.word Object_CalcBoundBoxForced
+	.word ParaChomp_HeadBoundBox
 	.word ParaChomp_ChainBoundBox
+
+ParaChomp_HeadBoundBox:
+	JSR Object_CalcBoundBoxForced
+	
+	LDA #$00
+	STA Objects_Timer2, X
+	RTS
 
 ParaChomp_PlayerInteract:
 	LDA ParaChomp_HitDetection, X
@@ -4641,6 +4665,9 @@ ParaChomp_ChainBoundBox:
 	LDA <Objects_YHiZ, X
 	ADC #$00
 	STA Objects_BoundBottomHi, X
+
+	LDA #$02
+	STA Objects_Timer2, X
 	RTS		 ; Return
 
 ParaChomp_ChainGrab:

@@ -676,7 +676,7 @@ Unstable_CheckFallTooFar:
 	CMP #$B0
 	BCC Unstable_CheckFallTooFarRTS
 
-	LDA #$60
+	LDA #$20
 	STA Objects_Timer, X
 
 Unstable_CheckFallTooFarRTS:
@@ -1016,7 +1016,6 @@ ObjNorm_PipeBlock:
 	JMP PipeBlock_Draw
 
 PipeBlock_Norm:
-
 	LDA <Objects_YZ, X
 	CMP PipeBlock_StartY, X
 	BNE PipeBlock_NoDelete
@@ -1030,7 +1029,6 @@ PipeBlock_Norm:
 PipeBlock_NoDelete:
 	JSR PipeBlock_MatchPalette
 	JSR Object_CalcBoundBox
-	JSR Object_KillOthers
 	JSR Object_InteractWithPlayer
 
 	LDA Objects_Timer, X
@@ -1112,6 +1110,7 @@ PipeBlock_NotQueued:
 	STA Tile_DetectionXHi	
 
 	JSR Object_DetectTile
+
 	LDY PipeBlock_State, X
 	CMP PipeBlock_PropCheck, Y
 	BNE PipeBlock_ChangeDirection

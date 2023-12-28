@@ -6672,7 +6672,7 @@
     },
     {
       "GameObjectId": 61,
-      "X": 90,
+      "X": 87,
       "Y": 4,
       "Property": 0
     },
@@ -6806,6 +6806,12 @@
       "GameObjectId": 8,
       "X": 58,
       "Y": 3,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 86,
+      "X": 104,
+      "Y": 4,
       "Property": 0
     }
   ],

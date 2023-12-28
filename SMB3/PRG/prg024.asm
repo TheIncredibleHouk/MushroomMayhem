@@ -3674,7 +3674,7 @@ Game_UpdateCherries1:
 	
 StatusBar_DrawCherries:
 	LDA Player_Cherries
-	;LDA Object_Count
+	LDA Object_Count
 	STA <DigitsParam
 	
 	JSR BytesTo2Digits
@@ -4433,6 +4433,21 @@ Messages_Lookup:
 	.word Level_Up5
 	.word Second_QuestMsg
 	.word Demo_EndMsg
+	.word Tutorial_Fire_1
+	.word Tutorial_Fire_2
+	.word Tutorial_Ice_1
+	.word Tutorial_Ice_2
+	.word Tutorial_Raccoon
+	.word Tutorial_Fox_1
+	.word Tutorial_Fox_2
+	.word Tutorial_Koopa_1
+	.word Tutorial_Koopa_2
+	.word Tutorial_Frog_1
+	.word Tutorial_Frog_2
+	.word Tutorial_Sledge_1
+	.word Tutorial_Sledge_2
+	.word Tutorial_Ninja_1
+	.word Tutorial_Ninja_2
 
 Empty_Message:
 	.byte $00
@@ -4586,6 +4601,66 @@ Second_QuestMsg:
 Demo_EndMsg:
 	.db "THANK YOU FOR PLAYING!"
 	.db "COME BACK SUMMER 2024!"
+
+Tutorial_Fire_1:
+	.db "B THROWS FIREBALLS,   "
+	.db "HOLD UP TO THROW UP.  "
+
+Tutorial_Fire_2:
+	.db "MELT ICE BELOW AND    "
+	.db "ABOVE TO PROCEED.     "
+
+Tutorial_Ice_1:
+	.db "B THROWS ICEBALLS,    "
+	.db "FREEZE ENEMIES & WATER"
+
+Tutorial_Ice_2:
+	.db "STAND ON FROZEN FOES, "
+	.db "OR KICK THEM FORWARD. "
+
+Tutorial_Raccoon:
+	.db "B BAT YOUR TAIL AND   "
+	.db "DEFLECT PROJECTILES.  "
+
+Tutorial_Fox_1:
+	.db "DOUBLE TAP B TO DASH  "
+	.db "FORWARD AND ATTACK.   "
+
+Tutorial_Fox_2:
+	.db "SWIM IN LAVA AND AVOID"
+	.db "FIRE BASED DAMAGE.    "
+
+Tutorial_Frog_1:
+	.db "BREATHE UNDER WATER & "
+	.db "JUMP MUCH HIGHER.     "
+
+Tutorial_Frog_2:
+	.db "DOUBLE TAP B TO BECOME"
+	.db "INVINCIBLE AND ATTACK."
+
+Tutorial_Koopa_1:
+	.db "RUN AND HOLD DOWN TO  "
+	.db "SPIN IN A SHELL.      "
+	
+Tutorial_Koopa_2:
+	.db "USE SHELL SPINS TO    "
+	.db "BOUNCE OFF HAZARDS.   "
+
+Tutorial_Sledge_1:
+	.db "B TO THROW HAMMERS &  "
+	.db "BREAK BRICKS & STONE. "
+
+Tutorial_Sledge_2:
+	.db "IN THE AIR, HOLD DOWN "
+	.db "AND PRESS B TO POUND! "
+
+Tutorial_Ninja_1:
+	.db "B & ANY DIRECTION TO  "
+	.db "THROW SHURIKENS.      "
+
+Tutorial_Ninja_2:
+	.db "SLIDE AGAINST THE WALL"
+	.db "& PRESS A TO WALLJUMP."
 
 Message_Low = Temp_Var1
 Message_Hi = Temp_Var2
@@ -5014,4 +5089,5 @@ Title_StarReset:
 
 	LDA Title_StarResetHide, Y
 	STA Title_StarsHideTimer, X
+
 	RTS

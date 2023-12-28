@@ -2580,7 +2580,7 @@ MARIO_NINJA		= 11
 
 ; NOTE!! These object vars are OBJECT SLOT 0 - 4 ONLY!
 	
-	Objects_Data8:		.ds 5	; $7CC8-$7CCC Generic object variable 10
+	Objects_Data8:		.ds 8	; $7CC8-$7CCC Generic object variable 10
 	Objects_Data9:		.ds 5	; $7CCD-$7CD1 Generic object variable 11
 	Objects_Data10:		.ds 5	; $7CD2-$7CD6 Generic object variable 12
 	Objects_Data11:		.ds 5	; $7CD7-$7CDB Generic object variable 13

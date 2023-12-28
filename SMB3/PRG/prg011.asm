@@ -13,6 +13,7 @@
 ;---------------------------------------------------------------------------
 
 Check_Save:
+	STA Debug_Snap
 	JSR Generate_SaveChecksum
 	LDA <Temp_Var1
 	ORA <Temp_Var2

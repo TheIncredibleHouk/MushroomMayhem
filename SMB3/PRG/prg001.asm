@@ -381,9 +381,13 @@ PowerUp_NotVine:
 	JMP Object_Draw
 
 PowerUp_Norm:
-	LDA <Objects_XZ, X
+	LDA PowerUp_Type, X
+	CMP #POWERUP_VINE
+	BEQ PowerUp_NoDelete
+
 	JSR Object_DeleteOffScreen
 
+PowerUp_NoDelete:
 	LDA Objects_Timer, X
 	BEQ ObjNorm_PowerUp1
 
@@ -2379,10 +2383,15 @@ MagicStarOffset:
 	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
-	; LDA Objects_Property, X
-	; CMP #$07
-	; BEQ MagicStar_NoDelete
+	LDA Objects_Property, X
+	CMP #$06
+	BNE MagicStar_NormDelete
 
+	LDY Paper_StarEnemyAttached, X
+	LDA Objects_State, Y
+	BNE MagicStar_NoDelete
+
+MagicStar_NormDelete:
 	JSR Object_DeleteOffScreen
 	BCC MagicStar_NoDelete
 

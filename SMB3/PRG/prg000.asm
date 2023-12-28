@@ -592,7 +592,7 @@ PRG000_C973:
 	LDA #$00
 	STA <CurrentObjectIndexZ
 	STA Player_OnObject
-	;STA Object_Count
+	STA Object_Count
 
 PRG000_C975:
 	LDX <CurrentObjectIndexZ	 ; Backup current object index -> CurrentObjectIndexZ
@@ -625,7 +625,8 @@ PRG000_C98B:
 	BGE PRG000_C9B6	 ; If object slot index >= 5, jump to PRG000_C9B6
 
 	; Non-special objects in slots 0 to 4...
-	;INC Object_Count
+	INC Object_Count
+	LDA Objects_ID, X
 
 	LDA Explosion_Timer, X
 	BEQ DoNot_Explode
@@ -1021,8 +1022,14 @@ ObjState_Shelled:
 	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
+
+	LDA Objects_Timer2, X
+	BNE Shelled_NoInteract
+
 	JSR Object_RespondToTailAttack
 	JSR Object_InteractWithPlayer
+
+Shelled_NoInteract:
 
 	PHP
 	JSR Object_DetectTiles
@@ -1303,6 +1310,9 @@ Object_KillOthers1:
 	CPY <CurrentObjectIndexZ
 	BEQ Object_KillOthers2
 
+	LDA Objects_Timer2, Y
+	BNE Object_KillOthers2
+	
 	LDA Objects_State, Y
 	BEQ Object_KillOthers2
 
@@ -2569,6 +2579,7 @@ Object_New:
 	STA Objects_Data5,X
 	STA Objects_Data6,X
 	STA Objects_Data7,X
+	STA Objects_Data8,X
 	STA <Objects_SpriteX,X
 	STA Objects_Timer,X
 	STA Objects_Timer2,X
@@ -2605,7 +2616,6 @@ Object_New:
 	; Clear some more variables (object slots 0 to 5 ONLY)
 	STA Objects_FrozenKicked,X
 	STA Objects_SlowTimer,X
-	STA Objects_Data8,X
 	STA Objects_Data9,X
 	STA Objects_Data10,X
 	STA Objects_Data11,X
@@ -3844,7 +3854,7 @@ PRG000_DA7A:
 	JMP Player_Die
 
 Object_RespondToTailAttack:
-
+	
 	LDA Player_TailAttack
 	BEQ Object_RespondToTailAttack2	 ; If Player is not tail attacking, jump to PRG000_DB16 (RTS)
 
@@ -3870,8 +3880,12 @@ Object_RespondToTailAttack1:
 	JSR Object_DetectTail
 	BCC Object_RespondToTailAttack2	 ; If Player and object are not intersecting, jump to PRG000_DB16 (RTS)
 
+	STA Debug_Snap
 	LDA #$00
 	STA Objects_BeingHeld, X
+
+	LDA #$10
+	STA Objects_Timer2, X
 
 	LDA Objects_PlayerProjHit, X
 	ORA #HIT_TAIL

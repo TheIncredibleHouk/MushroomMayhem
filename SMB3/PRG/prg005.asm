@@ -36,7 +36,7 @@ OBJ_TRAININGSHOP	= $60
     .word ObjInit_Blooper ; Object $5E
     .word ObjInit_Tentacle ; Object $5F
     .word ObjInit_TrainingShop ; Object $60
-    .word ObjInit_DoNothing ; Object $61
+    .word ObjInit_Tutorial ; Object $61
     .word ObjInit_DoNothing ; Object $62
     .word ObjInit_DoNothing ; Object $63
 
@@ -60,7 +60,7 @@ OBJ_TRAININGSHOP	= $60
 	.word ObjNorm_Blooper ; Object $5E
 	.word ObjNorm_Tentacle ; Object $5F
 	.word ObjNorm_TrainingShop ; Object $60
-	.word ObjNorm_DoNothing ; Object $61
+	.word ObjNorm_Tutorial ; Object $61
 	.word ObjNorm_DoNothing ; Object $62
 	.word ObjNorm_DoNothing ; Object $63
 
@@ -4431,3 +4431,29 @@ TrainingShop_Draw:
 	STA Objects_SpriteAttributes, X
 	JSR Object_Draw
 	RTS		
+
+ObjInit_Tutorial:
+	RTS
+
+Tutorial_Messages:
+	MSG_ID Tutorial_Fire_1
+	MSG_ID Tutorial_Fire_2
+	MSG_ID Tutorial_Ice_1
+	MSG_ID Tutorial_Ice_2
+	MSG_ID Tutorial_Raccoon
+	MSG_ID Tutorial_Fox_1
+	MSG_ID Tutorial_Fox_2
+	MSG_ID Tutorial_Koopa_1
+	MSG_ID Tutorial_Koopa_2
+	MSG_ID Tutorial_Frog_1
+	MSG_ID Tutorial_Frog_2
+	MSG_ID Tutorial_Sledge_1
+	MSG_ID Tutorial_Sledge_2
+	MSG_ID Tutorial_Ninja_1
+	MSG_ID Tutorial_Ninja_2
+
+ObjNorm_Tutorial:
+	LDX <Player_XHi
+	LDA Tutorial_Messages, X
+	STA Message_Id
+	RTS
