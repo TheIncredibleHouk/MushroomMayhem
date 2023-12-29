@@ -3,13 +3,14 @@
   "Name": "Perennial Piranha Pressure-Boss",
   "TileSetIndex": 5,
   "ClearTileIndex": 0,
-  "MusicValue": 16,
+  "MusicValue": 176,
   "ScreenLength": 1,
   "StartX": 5,
   "StartY": 9,
   "PaletteEffect": 2,
   "PaletteId": "0f17cc02-ae1e-41d3-9e27-f466a228e8eb",
   "StaticTileTableIndex": 48,
+  "NoStars": true,
   "MostCommonTile": 65,
   "AnimationType": 0,
   "ScrollType": 2,
@@ -1938,19 +1939,19 @@
     65,
     189,
     188,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
-    58,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
+    62,
     188,
     65,
     65,
@@ -6518,7 +6519,26 @@
       "Property": 4
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 19,
+      "X": 11,
+      "Y": 11,
+      "Property": 4
+    },
+    {
+      "GameObjectId": 149,
+      "X": 8,
+      "Y": 3,
+      "Property": 3
+    },
+    {
+      "GameObjectId": 26,
+      "X": 4,
+      "Y": 0,
+      "Property": 4
+    }
+  ],
   "LevelPointers": [],
-  "CompressedData": "AdMMmwLTTALTRMMKCwxEwbwB00TDGkEcRALTRMMqKyxEAtNMAtNMAtNMwdOCEL28Ojo6Ojo6Ojo6Ojo6OrwB0wwtAtMMeD/TP9M/0y/TwdM="
+  "CompressedData": "AdMMmwLTTALTRMMKCwxEwbwB00TDGkEcRALTRMMqKyxEAtNMAtNMAtNMw9O9vAw+w7y9vAw6wbwB0wwtAtMMeD/TP9M/0y/TwdM="
 }

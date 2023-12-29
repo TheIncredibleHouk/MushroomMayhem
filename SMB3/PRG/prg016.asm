@@ -2246,6 +2246,7 @@ ObjInit_SeasonSlot:
 
 	LDA #$40
 	STA Objects_Timer, X
+	JSR Object_NoInteractions
 	JMP ObjNorm_SeasonSlot
 
 
@@ -2420,16 +2421,25 @@ IceSpawn_XOffset:
 IceSpawn_XVel:
 	.byte $10, $F0
 
+IceSpawn_Timer = Objects_Data1
+
 ObjInit_IceSpawn:
 	LDY Objects_Property, X
 
 	LDA IceSpawn_Timers, Y
-	STA Objects_Timer, X
+	STA IceSpawn_Timer, X
 
 	JMP Object_NoInteractions
 
 ObjNorm_IceSpawn:
-	LDA Objects_Timer, X
+	LDA Game_Counter
+	AND #$01
+	BNE IceSpawn_CheckTimer
+
+	DEC IceSpawn_Timer, X
+
+IceSpawn_CheckTimer:
+	LDA IceSpawn_Timer, X
 	BNE IceSpawnRTS
 
 	LDY Objects_Property, X
@@ -2442,8 +2452,8 @@ ObjNorm_IceSpawn:
 	JSR Object_PrepProjectile
 	BCC IceSpawnRTS
 
-	LDA #$C0
-	STA Objects_Timer, X
+	LDA #$60
+	STA IceSpawn_Timer, X
 
 	LDA Objects_Property, X
 	TAX
@@ -2460,6 +2470,7 @@ IceSpawnRTS:
 Muncher_StartY = Objects_Data1
 Muncher_StartYHi = Objects_Data2
 Muncher_Jumping = Objects_Data5
+Muncher_Wait = Objects_Data3
 
 ObjInit_Muncher:
 	LDA #$02
@@ -2480,6 +2491,19 @@ ObjNorm_Muncher:
 	LDA <Player_HaltGameZ
 	BNE Muncher_Draw
 
+	LDA Muncher_Wait, X
+	BEQ Muncher_Do
+
+	LDA Game_Counter
+	AND #$01
+	BNE Mucnher_TimerRTS
+
+	DEC Muncher_Wait, X
+
+Mucnher_TimerRTS:	
+	RTS
+
+Muncher_Do:	
 	LDA Muncher_Jumping, X
 	
 	JSR DynJump

@@ -5384,14 +5384,26 @@ UsePointer:
 	LDA Pointers + 3, X
 	AND #$0F
 	STA Map_Entered_XHi
-	STA Map_Prev_XHi
 
 	LDA Pointers + 3, X
 	AND #$F0
 	STA Map_Entered_X
 
+	LDA Map_Entered_X
+	AND #$80
+	SUB #$80
+	STA Map_Prev_XOff
+
+	LDA Map_Entered_XHi
+	SBC #$00
+	STA Map_Prev_XHi
+	BPL Pointer_SetExit
+
 	LDA #$00
 	STA Map_Prev_XOff
+	STA Map_Prev_XHi
+	
+Pointer_SetExit:	
 
 	LDA Pointers + 4, X
 	AND #$F0

@@ -1940,9 +1940,17 @@ Boss_PiranhaTopRightProp = Objects_Data6
 Boss_PiranhaChompGrab = Objects_Data7
 Boss_PiranhaChompIndex = Objects_Data8
 Boss_PiranhaSpawnTimer = Objects_Data10
-Boss_PiranhaHits = Objects_Data11
+Boss_PiranhaHits= Objects_Data11
 Boss_PiranhaFreezeBlocks = Objects_Data12
-Boss_PiranhaBlocksBroken = Objects_Data13
+Boss_PiranhaHealth = Objects_Data13
+
+	
+Piranha_HitTable:
+	.byte 19
+	.byte 13
+	.byte 7
+	.byte 1
+	.byte $F0
 
 Boss_Piranha:
 	LDA <Player_HaltGameZ
@@ -1958,16 +1966,52 @@ Boss_PiranhaNorm:
 	CMP #OBJSTATE_KILLED
 	BNE Boss_PiranhaNorm1
 
-	LDA #$80
-	STA Objects_Timer2, X
-
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	INC Boss_PiranhaHits, X
+	STA Debug_Snap
+	LDA Objects_PlayerProjHit, X
+	CMP #HIT_EXPLOSION
+	BNE Piranha_NormHit
 
-	LDA #$10
+	DEC Boss_PiranhaHealth, X
+	DEC Boss_PiranhaHealth, X
+	DEC Boss_PiranhaHealth, X
+	DEC Boss_PiranhaHealth, X
+	DEC Boss_PiranhaHealth, X
+
+Piranha_NormHit:
+	
+	DEC Boss_PiranhaHealth, X
+
+	LDA Boss_PiranhaHealth, X
+	ASL A
+	STA Enemy_Health
+	
+	LDA #$00
+	STA Objects_PlayerProjHit, X
 	STA Objects_Health, X
+
+	LDY #$00
+
+	LDA Boss_PiranhaHealth, X
+
+Piranha_HitTableLoop:		
+	CMP Piranha_HitTable, Y
+	BCS Piranha_SetHits
+
+	INY
+	BNE Piranha_HitTableLoop
+
+Piranha_SetHits:	
+	TYA
+	CMP Boss_PiranhaHits, X
+	BEQ Boss_PiranhaNorm1
+
+	STA Boss_PiranhaHits, X
+
+	LDA #$80
+	STA Objects_Timer2, X
 
 	JSR Boss_PiranhaDetectChomps
 	BCC Boss_PiranhaNorm1
@@ -1992,7 +2036,12 @@ Boss_PiranhaNorm1:
 	.word Boss_PiranhaAttackDown
 	.word Boss_PiranhaDie
 
-Boss_PiranhaInit:	
+Boss_PiranhaInit:
+	INC Enemy_Health_Mode
+	
+	LDA #48
+	STA Enemy_Health
+
 	LDA #SPR_PAL1
 	STA Objects_SpriteAttributes, X
 
@@ -2005,8 +2054,9 @@ Boss_PiranhaInit:
 	LDA #$00
 	STA <Objects_YHiZ, X
 
-	LDA #$10
-	STA Objects_Health, X
+
+	LDA #24
+	STA Boss_PiranhaHealth, X
 
 	INC Boss_PiranhaAction, X
 
@@ -2174,9 +2224,6 @@ Boss_PiranhaAttackDownRTS:
 	JMP Boss_PiranhaAnimate
 	
 Boss_PiranhaHitAction:
-	LDA #$04
-	STA Objects_Health, X
-
 	LDA Boss_PiranhaHits, X
 
 	JSR DynJump
@@ -2201,6 +2248,9 @@ Giant_Stage2:
 
 	LDA #OBJ_ICESPAWN
 	STA Objects_ID, Y
+
+	LDA #$C0
+	STA IceSpawn_Timer, Y
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, Y
@@ -2262,6 +2312,9 @@ Giant_Stage3_2:
 	LDA #OBJ_EVENTFILLER
 	STA Objects_ID, Y
 
+	LDA #$98
+	STA WaterFill_Wait, Y
+
 	JSR Object_FindEmptyY
 
 	LDA #OBJSTATE_FRESH
@@ -2275,6 +2328,9 @@ Giant_Stage3_2:
 	
 	LDA #OBJ_EVENTFILLER
 	STA Objects_ID, Y
+
+	LDA #$98
+	STA WaterFill_Wait, Y
 	RTS
 
 Giant_Stage4:
@@ -2374,6 +2430,9 @@ Boss_PiranhaSpawnMuncher2:
 
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
+
+	LDA #$C0
+	STA Muncher_Wait, Y
 
 	LDA RandomN
 	AND #$0F
@@ -2514,7 +2573,12 @@ Giant_ParaChompKilled:
 	LDA #$60
 	STA Objects_Timer2, X
 
-	INC Boss_PiranhaHits, X
+	STA Debug_Snap
+	LDA #HIT_EXPLOSION
+	STA Objects_PlayerProjHit, X
+
+	LDA #OBJSTATE_KILLED
+	STA Objects_State, X
 
 	LDA #$00
 	STA Player_IsClimbingObject
@@ -2538,6 +2602,7 @@ Boss_PiranhaSpawnChomp:
 
 	LDA #$00
 	STA Objects_ExpPoints, Y
+	STA Objects_Property, Y
 
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y

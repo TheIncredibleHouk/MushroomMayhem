@@ -344,6 +344,7 @@ ObjInit_EventFill:
 	JMP Object_NoInteractions
 
 WaterFill_Ticks = Objects_Data1
+WaterFill_Wait = Objects_Data2
 
 WaterFill_Flip:
 	.byte $00, SPR_VFLIP
@@ -358,6 +359,19 @@ ObjNorm_EventFill:
 	.word LavaDrain_Norm
 
 WaterFill_Norm:
+	LDA WaterFill_Wait, X
+	BEQ WaterFill_Go
+
+	LDA Game_Counter
+	AND #$01
+	BNE WaterFill_WaitRTS
+
+	DEC WaterFill_Wait, X
+
+WaterFill_WaitRTS:
+	RTS
+
+WaterFill_Go:	
 	LDA #$40
 	STA Objects_XVelZ, X
 

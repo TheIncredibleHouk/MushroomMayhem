@@ -1029,6 +1029,7 @@ PipeBlock_Norm:
 PipeBlock_NoDelete:
 	JSR PipeBlock_MatchPalette
 	JSR Object_CalcBoundBox
+	JSR Object_KillOthers
 	JSR Object_InteractWithPlayer
 
 	LDA Objects_Timer, X
