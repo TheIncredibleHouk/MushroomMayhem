@@ -5556,7 +5556,7 @@ Solid_HurtBump:
 
 	LDA #SND_PLAYERBUMP
 	STA Sound_QPlayer
-	INC Player_FlashInv
+	INC Player_Invulnerable
 	RTS
 
 Solid_GetHurt:

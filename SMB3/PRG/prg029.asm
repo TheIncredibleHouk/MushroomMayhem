@@ -452,10 +452,10 @@ Player_Draw1:
 	SBC Level_VertScrollH
 	STA Player_AboveTop	 ; Player_Above top calculated if Player is off top of screen
 
-	LDA Player_FlashInv
-	BEQ PRG029_CED7	 	; If Player_FlashInv = 0, jump to PRG029_CED7
+	LDA Player_Invulnerable
+	BEQ PRG029_CED7	 	; If Player_Invulnerable = 0, jump to PRG029_CED7
 
-	DEC Player_FlashInv	; Player_FlashInv--
+	DEC Player_Invulnerable	; Player_Invulnerable--
 	AND #$02	 
 	BEQ PRG029_CED7	 	; Every 2 ticks, draw Player
 	JMP PRG029_D094	 	; Every other 2 ticks, don't!
@@ -2179,11 +2179,11 @@ Player_SubOverBg:
 	STA <Player_SpriteY	; Player_SpriteY = Player_Y - Level_VertScroll
 
 Submarine_Flash:
-	LDA Player_FlashInv
+	LDA Player_Invulnerable
 	BEQ Submarine_NormFlash
 
-	DEC Player_FlashInv
-	LDA Player_FlashInv
+	DEC Player_Invulnerable
+	LDA Player_Invulnerable
 	AND #$02
 	BEQ Submarine_NormFlash
 

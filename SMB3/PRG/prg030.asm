@@ -5402,7 +5402,7 @@ UsePointer:
 	LDA #$00
 	STA Map_Prev_XOff
 	STA Map_Prev_XHi
-	
+
 Pointer_SetExit:	
 
 	LDA Pointers + 4, X
@@ -5583,7 +5583,7 @@ NextCol:
 
 Player_Freeze:
 	LDA Player_Frozen
-	ORA Player_FlashInv
+	ORA Player_Invulnerable
 	ORA Player_Invicible
 	BEQ Player_FreezeNow
 	RTS
@@ -6029,7 +6029,7 @@ Player_Die:
 	STA Player_Vehicle
 	STA <Player_XVelZ
 	STA Player_Flip	
-	STA Player_FlashInv
+	STA Player_Invulnerable
 	STA Player_Invicible
 	STA Player_StarInv
 	STA Player_Shell

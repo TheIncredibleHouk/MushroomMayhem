@@ -18,6 +18,7 @@ OBJ_SMASH			= $5D
 OBJ_BLOOPER			= $5E
 OBJ_TENTACLE		= $5F
 OBJ_TRAININGSHOP	= $60
+OBJ_TUTORIAL	= $61
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51

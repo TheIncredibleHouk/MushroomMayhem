@@ -1633,7 +1633,7 @@ MARIO_PLANE = 2
 	Player_KuriboDir:	.ds 1	; While Kuribo's shoe is moving: 0 - Not requesting move, 1 - move right, 2 - move left
 
 	Player_Grow:		.ds 1	; Tick counter used to animate growth into Super Mario (20 is starting value, or 2f to shrink)
-	Player_FlashInv:	.ds 1	; Player "flashing invincibility" after being hit, counts down to zero
+	Player_Invulnerable:	.ds 1	; Player "flashing invincibility" after being hit, counts down to zero
 	Player_StarInv:		.ds 1	; Starman Invincibility counter; full/fatal invincibility, counts down to zero
 	Player_Invicible:	.ds 1
 	Player_SuitLost:	.ds 1	; Suit lost to hit discard "poof" counter

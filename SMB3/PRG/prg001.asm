@@ -13,7 +13,7 @@ OBJ_SENDBACK 		= $0B
 OBJ_MAGICSTAR_1		= $0C
 OBJ_MAGICSTAR_2		= $0D
 OBJ_MAGICSTAR_3		= $0E
-OBJ_NEGASTAR		= $0F
+OBJ_TRAINING		= $0F
 OBJ_STARPIECE		= $10
 OBJ_ICEBLOCK		= $11
 OBJ_MALICEMUSHROOM 	= $12
@@ -34,7 +34,7 @@ OBJ_BOSS			= $13
 	.word ObjInit_MagicStar1 ; Object $0C
 	.word ObjInit_MagicStar2 ; Object $0D
 	.word ObjInit_MagicStar3 ; Object $0E
-	.word ObjInit_NegaStar	; Object $0F
+	.word ObjInit_Training	; Object $0F
 	.word ObjInit_StarPiece	; Object $10
 	.word ObjInit_IceBlock	; Object $11
 	.word ObjInit_MaliceMushroom ; Object $12
@@ -57,7 +57,7 @@ OBJ_BOSS			= $13
 	.word ObjNorm_MagicStar ; Object $0C
 	.word ObjNorm_MagicStar ; Object $0D
 	.word ObjNorm_MagicStar ; Object $0E
-	.word ObjNorm_NegaStar	; Object $0F
+	.word ObjNorm_Training	; Object $0F
 	.word ObjNorm_StarPiece ; Object $10
 	.word ObjNorm_IceBlock	; Object $11
 	.word ObjNorm_MaliceMushroom ; Object $12
@@ -2715,140 +2715,129 @@ RadarMap:
 	.byte BADGE_RADARN, BADGE_RADARNE, BADGE_RADARNW, BADGE_RADARUNKNOWN
 	.byte BADGE_RADARS, BADGE_RADARSE, BADGE_RADARSW	
 
-;***********************************************************************************
-; Negative Star
-;***********************************************************************************
-; IMMUNITIES:
-;		All
-;***********************************************************************************
-; PROPERTIES:
-;	Each property indicates a unique lock.
-;***********************************************************************************
-; 	This sits upon a solid block. Once Mario is close to it, currently selected stars
-;	will deminish one at a time, lowering the number of stars needed to remove the block.
-;	Once this reaches to 0, the solid blocks it currently resides on poofs away permanently.
-;***********************************************************************************	
+Training_Messages:
 
-ObjInit_NegaStar:
-	; Objects_Data4 is just a timer for taking stars
-	LDA #$FF
-	STA Objects_Data4,X
+Training_Messages:
+	MSG_ID Training_1
+	MSG_ID Training_2
+	MSG_ID Training_3
+	MSG_ID Training_4
+	MSG_ID Training_5
 
-	LDA #ATTR_ALLWEAPONPROOF
-	STA Objects_WeaponAttr, X
-
-	LDA #(ATTR_SHELLPROOF | ATTR_EXPLOSIONPROOF | ATTR_BUMPNOKILL )
-	STA Objects_BehaviorAttr, X
+ObjInit_Training:
+	LDY Objects_Property, X
+	LDA Training_Messages, Y
+	STA Message_Id
 	RTS
 
-ObjNorm_NegaStar:
+ObjNorm_Training:
+	LDA Objects_Property, X
 
-; ; 	; Up to 8 Negastars are possible, each with different star costs, the NegaStars are prefilled at game initialization
-; ; 	; see GAME START comment
-; ; 	LDY Objects_Property, X
-; ; 	LDA NegaStars, Y
-; ; 	BNE ObjNorm_NegaStar0
-; ; 	JMP Coin_Unlock
+	JSR DynJump
 
-; ; ObjNorm_NegaStar0:
-; ; 	JSR Object_DeleteOffScreen
-; ; 	LDA <Player_HaltGameZ
-; ; 	BNE ObjNorm_NegaStar01
-; ; 	LDA #$91
-; ; 	BEQ ObjNorm_NegaStar01
-; ; 	JSR TakePaper_Star
+	.word Training_TakeHits
 
-; ; ObjNorm_NegaStar01:
-; ; 	JSR Object_DrawMirrored
+Training_Make1Up:
+	JSR DestroyAllEnemies
 
-; ; 	LDA Objects_SpritesHorizontallyOffScreen,X 
-; ; 	ORA Objects_SpritesVerticallyOffScreen,X
-; ; 	BNE NegaStarRTS
+	LDA #OBJ_LEVELUPMUSHROOM
+	STA Objects_ID, X
 
-; ; 	LDY Objects_Property, X
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
 
-; ; 	LDA NegaStars, Y
-; ; 	STA DigitsParam
+	LDA <Player_X
+	STA <Objects_XZ, X
+	STA <Poof_X
 
-; ; 	JSR BytesTo2Digits
+	LDA <Player_XHi
+	STA <Objects_XHiZ, X
 
-; ; 	LDY Object_SpriteRAMOffset, X
+	LDA <Player_YZ
+	SUB #$40
+	STA <Objects_YZ, X
+	STA <Poof_Y
 
-; ; 	LDA Sprite_RAM, Y
-; ; 	ADD #$10
-; ; 	STA Sprite_RAM+8, Y
-; ; 	STA Sprite_RAM+12, Y
+	LDA <Player_YHiZ
+	SBC #$00
+	STA <Objects_YHiZ, X
 
-; ; 	LDA Sprite_RAM+3, Y
-; ; 	STA Sprite_RAM+11, Y
-; ; 	ADD #$08
-; ; 	STA Sprite_RAM+15, Y
-
-; ; 	LDA #SPR_PAL1
-; ; 	STA Sprite_RAM+10,Y
-; ; 	STA Sprite_RAM+14,Y
-
-; ; 	LDA <DigitsResult
-; ; 	ASL A
-; ; 	ADD #$A1
-; ; 	STA Sprite_RAM + 9, Y
-
-; ; 	LDA <DigitsResult + 1
-; ; 	ASL A
-; ; 	ADD #$A1
-; ; 	STA Sprite_RAM + 13, Y
-
-; NegaStarRTS:
-; 	RTS
-
-; TakePaper_Star:
-; 	LDA Objects_Data4, X
-; 	BEQ TakePaper_Star0
-; 	DEC Objects_Data4, X
-; 	RTS
-
-; TakePaper_Star0:
-; 	INC Objects_Data5, X
-; 	LDA Objects_Data5, X
-; 	CMP #$20
-; 	BEQ TakePaper_Star1
-
-; 	LDY Objects_Property, X
-; 	LDA <Player_SpriteX
-; 	STA Sprite_RAM+11,Y
-; 	ADD #$08
-; 	STA Sprite_RAM+15,Y
-
-; 	LDA <Player_SpriteY
-; 	SUB Objects_Data5, X
-; 	STA Sprite_RAM+8,Y
-; 	STA Sprite_RAM+12,Y
-
-; 	LDA #$7F
-; 	STA Sprite_RAM+9,Y
-; 	STA Sprite_RAM+13,Y
-
-; 	LDA #SPR_PAL1
-; 	STA Sprite_RAM+10,Y
-; 	ORA #SPR_HFLIP
-; 	STA Sprite_RAM+14,Y
-; 	RTS
-
-; TakePaper_Star1:
-; 	DEC Paper_Stars
-; 	LDY Objects_Property, X
-; 	LDA NegaStars, Y
-; 	SUB #$01
-; 	STA NegaStars, Y
-; 	LDA Sound_QLevel1
-; 	ORA #SND_MAPBONUSAPPEAR
-; 	STA Sound_QMap
-; 	LDA #40
-; 	STA Objects_Data4,X
-; 	LDA #$00
-; 	STA Objects_Data5,X
+	JSR Common_MakePoof
 	RTS
-	
+
+Training_MarioHit = Objects_Data1
+Training_MarioHitCount = Objects_Data2
+
+Training_NumXOffset:
+	.byte $E8, $E0
+
+Training_TakeHits:
+	JSR Training_TakeHitsDraw
+	LDA Training_MarioHit, X
+	BNE Training_WaitMarioVulenerable
+
+	LDA Player_Invulnerable
+	BEQ Training_TakeHitsRTS
+
+	INC Training_MarioHitCount, X
+	INC Training_MarioHit, X
+
+	LDA Training_MarioHitCount, X
+	CMP #$0A
+	BNE Training_TakeHitsRTS
+	JMP Training_Make1Up
+
+Training_WaitMarioVulenerable:
+	LDA Player_Invulnerable
+	BNE Training_TakeHitsRTS
+
+	LDA #$00
+	STA Training_MarioHit, X
+
+Training_TakeHitsRTS:
+	RTS
+
+Training_TakeHitsDraw:
+	STA Debug_Snap
+	LDA #$0A
+	SUB Training_MarioHitCount, X
+	STA <DigitsParam
+
+	LDA #$00
+	STA <DigitsParam + 1
+
+	JSR BytesTo3Digits
+
+	LDX <CurrentObjectIndexZ
+	LDY Object_SpriteRAMOffset, X
+
+	LDX #$01
+
+DrawHits_Counter:
+	LDA #$18
+	STA Sprite_RAMY, Y
+
+	LDA #SPR_PAL2
+	STA Sprite_RAMAttr, Y
+
+	LDA Training_NumXOffset, X
+	STA Sprite_RAMX, Y
+
+	LDA <DigitsResult, X
+	ASL A
+	ADD #$A1
+	STA Sprite_RAMTile, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	DEX
+	BPL DrawHits_Counter
+
+	LDX <CurrentObjectIndexZ
+	RTS
 
 ;***********************************************************************************
 ; Star Piece

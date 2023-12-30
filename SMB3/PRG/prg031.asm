@@ -3223,7 +3223,7 @@ Unfreeze:
 	STA Player_Frozen
 
 	LDA #$71
-	STA Player_FlashInv
+	STA Player_Invulnerable
 
 	LDA <Player_X
 	STA <Debris_X

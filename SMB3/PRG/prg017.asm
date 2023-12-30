@@ -1001,7 +1001,7 @@ Boss_FwooshDeepBreath3:
 	JMP Boss_FwooshAnimate
 
 Boss_FwooshBlow:
-	LDA Player_FlashInv
+	LDA Player_Invulnerable
 	BNE Fwoosh_StopBlowing
 
 Boss_NoStopBlowing:	
@@ -1969,7 +1969,6 @@ Boss_PiranhaNorm:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
 
-	STA Debug_Snap
 	LDA Objects_PlayerProjHit, X
 	CMP #HIT_EXPLOSION
 	BNE Piranha_NormHit
@@ -2573,7 +2572,6 @@ Giant_ParaChompKilled:
 	LDA #$60
 	STA Objects_Timer2, X
 
-	STA Debug_Snap
 	LDA #HIT_EXPLOSION
 	STA Objects_PlayerProjHit, X
 

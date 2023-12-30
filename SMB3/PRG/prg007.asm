@@ -4905,7 +4905,7 @@ FreezeYVel:
 	.byte $00, $20, $E0, $E0
 
 EnemeyProj_Enemy_FreezePlayer:
-	LDA Player_FlashInv
+	LDA Player_Invulnerable
 	BNE EnemeyProj_Enemy_FreezePlayer3
 
 	LDA SpecialObj_HurtEnemies, X
@@ -5008,7 +5008,7 @@ Enemy_YolkPlayer1:
 	STA Player_QueueSuit
 
 	LDA #$71
-	STA Player_FlashInv	 ; Player_FlashInv = $71
+	STA Player_Invulnerable	 ; Player_Invulnerable = $71
 
 	LDA #$FF
 	STA Player_Yolked
@@ -5068,7 +5068,7 @@ Enemy_OilPlayer2:
 	STA Player_QueueSuit
 
 	LDA #$71
-	STA Player_FlashInv	 ; Player_FlashInv = $71
+	STA Player_Invulnerable	 ; Player_Invulnerable = $71
 
 	LDA #$FF
 	STA Player_Oiled

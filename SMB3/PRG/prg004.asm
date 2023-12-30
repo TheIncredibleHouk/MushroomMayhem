@@ -2075,6 +2075,7 @@ ObjNorm_ZombieGoomba:
 
 	.word ZombieGoomba_Norm
 	.word ZombieGoomba_Hide
+	.word ZombieGoomba_Hide
 
 ZombieGoomba_Norm:
 	LDA <Player_HaltGameZ
@@ -2146,7 +2147,7 @@ ZombieGoomba_JumpBlocksRTS:
 	RTS	
 
 ZombieGoomba_Infect:
-	LDA Player_FlashInv
+	LDA Player_Invulnerable
 	BNE ZombieGoomba_HurtRTS
 
 	LDA LeftRightInfection
@@ -2162,7 +2163,7 @@ ZombieGoomba_Infect:
 	STA LeftRightInfection
 	
 	LDA #$71
-	STA Player_FlashInv
+	STA Player_Invulnerable
 	JMP Object_AttackOrDefeat
 
 ZombieGoomba_Hurt:

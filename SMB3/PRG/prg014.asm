@@ -2674,7 +2674,7 @@ FreezieThrowPlayerX:
 	.byte $E0, $20
 
 ObjHit_Freezie:
-	LDA Player_FlashInv
+	LDA Player_Invulnerable
 	BEQ Freeize_HitPlayer
 	RTS
 

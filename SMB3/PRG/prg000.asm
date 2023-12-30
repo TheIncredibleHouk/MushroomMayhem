@@ -3747,7 +3747,7 @@ Object_DoCollision:
 
 ; $D9D3
 Player_GetHurt:
-	LDA Player_FlashInv		; ... flashing invincible ...
+	LDA Player_Invulnerable		; ... flashing invincible ...
 	ORA Player_Invicible		; ... invincible by star 
 	ORA <Player_HaltGameZ		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
@@ -3841,7 +3841,7 @@ PRG000_DA6D:
 	ASL A
 
 Store_Recovery:	
-	STA Player_FlashInv	 ; Player_FlashInv = $71
+	STA Player_Invulnerable	 ; Player_Invulnerable = $71
 
 	LDA #$00
 	STA Player_Flip	 ; Player not somersaulting

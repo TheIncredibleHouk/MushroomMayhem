@@ -4448,6 +4448,12 @@ Messages_Lookup:
 	.word Tutorial_Sledge_2
 	.word Tutorial_Ninja_1
 	.word Tutorial_Ninja_2
+	.word Training_1
+	.word Training_2
+	.word Training_3
+	.word Training_4
+	.word Training_5
+	.word Training_6
 
 Empty_Message:
 	.byte $00
@@ -4576,7 +4582,7 @@ Badge_F_Explanation:
 
 Level_Up1:
 	.db "TAKE AN EXTRA HIT WHEN"
-	.db "FULLY POWERED UP      "
+	.db "FULLY POWERED UP!     "
 
 Level_Up2:
 	.db "START LEVELS AS SUPER "
@@ -4661,6 +4667,31 @@ Tutorial_Ninja_1:
 Tutorial_Ninja_2:
 	.db "SLIDE AGAINST THE WALL"
 	.db "& PRESS A TO WALLJUMP."
+
+Training_1:
+	.db "SUSTAIN 10 HITS AND   "
+	.db "SURVIVE!              "
+
+Training_2:
+	.db "TRAINING MESSAGE GOES "
+	.db "HERE AT SOME POINT... "
+
+Training_3:
+	.db "TRAINING MESSAGE GOES "
+	.db "HERE AT SOME POINT... "
+
+Training_4:
+	.db "TRAINING MESSAGE GOES "
+	.db "HERE AT SOME POINT... "
+
+Training_5:
+	.db "TRAINING MESSAGE GOES "
+	.db "HERE AT SOME POINT... "
+
+Training_6:
+	.db "TRAINING MESSAGE GOES "
+	.db "HERE AT SOME POINT... "
+					
 
 Message_Low = Temp_Var1
 Message_Hi = Temp_Var2

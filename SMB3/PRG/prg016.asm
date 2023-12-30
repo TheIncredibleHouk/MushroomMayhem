@@ -5075,7 +5075,7 @@ Stage_3_8_Loop:
 	DEY
 	BPL Stage_3_8_Loop
 
-	LDA Player_FlashInv
+	LDA Player_Invulnerable
 	BEQ Stage_3_8RTS
 
 	INC GameScript_Losses
@@ -5162,7 +5162,7 @@ LevelUp_Messages:
 	 MSG_ID Level_Up4
 	 MSG_ID Level_Up5
 
-ObjInit_GoldMushroom
+ObjInit_GoldMushroom:
 	JSR Object_CalcBoundBoxForced
 	JSR Object_MoveAwayFromPlayer
 	JMP Object_NoInteractions
@@ -5177,7 +5177,6 @@ GoldMushroom_Do:
 	LDA #$00
 	STA SprAnimOffset
 
-	JSR Object_DeleteOffScreen
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
