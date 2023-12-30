@@ -1273,9 +1273,6 @@ Chomp_MoveChains1:
 	RTS
 
 Chomp_DrawChains:
-	LDA Objects_SpriteAttributes, X
-	AND #SPR_BEHINDBG
-	STA <Temp_Var12
 
 	LDY Object_SpriteRAMOffset, X
 	STY <Temp_Var4
@@ -1362,7 +1359,6 @@ CDC4:
 	STA Sprite_RAMTile + 20, Y
 
 	LDA #SPR_PAL1
-	ORA <Temp_Var12
 	STA Sprite_RAMAttr + 8, Y
 	STA Sprite_RAMAttr + 12, Y
 	STA Sprite_RAMAttr + 16, Y

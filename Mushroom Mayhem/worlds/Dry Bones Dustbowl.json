@@ -3,7 +3,7 @@
   "Id": "79737f7b-5b73-4bb3-a7ac-02dff38af3fb",
   "ClearTileIndex": 2,
   "TileTableIndex": 108,
-  "MusicValue": 0,
+  "MusicValue": 6,
   "ScreenLength": 4,
   "PaletteId": "802750bb-4669-4ed0-b876-1a874ce55cb5",
   "Name": "Dry Bones Dustbowl",
@@ -651,16 +651,16 @@
   ],
   "Pointers": [
     {
-      "LevelId": "cdafd017-4607-46c0-a8ab-5420caa3e22d",
-      "X": 6,
-      "Y": 2,
-      "BoundRectangle": "96,32,16,16"
-    },
-    {
       "LevelId": "7078db37-a1f5-4304-bc4c-9c87028ebb72",
       "X": 4,
       "Y": 7,
       "BoundRectangle": "64,112,16,16"
+    },
+    {
+      "LevelId": "72ee9cce-8bc2-4e82-a999-1be8300c5460",
+      "X": 2,
+      "Y": 3,
+      "BoundRectangle": "32,48,16,16"
     }
   ],
   "ObjectData": [
