@@ -2736,6 +2736,7 @@ ObjNorm_Training:
 	JSR DynJump
 
 	.word Training_TakeHits
+	.word Training_BreakBricks
 
 Training_Make1Up:
 	JSR DestroyAllEnemies
@@ -2798,9 +2799,10 @@ Training_TakeHitsRTS:
 	RTS
 
 Training_TakeHitsDraw:
-	STA Debug_Snap
 	LDA #$0A
 	SUB Training_MarioHitCount, X
+	
+Training_DrawNumber:
 	STA <DigitsParam
 
 	LDA #$00
@@ -2837,6 +2839,28 @@ DrawHits_Counter:
 	BPL DrawHits_Counter
 
 	LDX <CurrentObjectIndexZ
+	RTS
+
+Training_BricksBroken = Objects_Data1
+
+Training_BreakBricks:
+	LDA #50
+	SUB Training_BricksBroken, X
+	
+	JSR Training_DrawNumber
+
+	LDA Block_NeedsUpdate
+	BEQ Training_BreakBricksRTS
+
+	INC Training_BricksBroken, X
+
+	LDA Training_BricksBroken, X
+	CMP #50
+	BNE Training_BreakBricksRTS
+
+	JSR Training_Make1Up
+
+Training_BreakBricksRTS:
 	RTS
 
 ;***********************************************************************************

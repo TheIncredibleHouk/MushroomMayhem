@@ -4196,7 +4196,7 @@ TrainingShop_Norm:
 
 Training_ExpRequirements:
 	.word $02EE
-	.word $09C4
+	.word $02EF
 	.word $2710
 	.word $61A8
 	.word $C350

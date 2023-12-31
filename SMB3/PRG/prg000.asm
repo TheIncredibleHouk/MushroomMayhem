@@ -3838,7 +3838,7 @@ PRG000_DA6D:
 	CPY #ABILITY_RECOVERY
 	BCC Store_Recovery
 
-	ASL A
+	LDA #$FF
 
 Store_Recovery:	
 	STA Player_Invulnerable	 ; Player_Invulnerable = $71

@@ -4586,7 +4586,7 @@ Level_Up1:
 
 Level_Up2:
 	.db "START LEVELS AS SUPER "
-	.db "WHEN NO POWERUP       "
+	.db "WHEN SMALL MARIO!     "
 
 Level_Up3:
 	.db "ITEM BLOCKS ALWAYS    "
