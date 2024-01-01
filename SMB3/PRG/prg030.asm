@@ -6553,3 +6553,4 @@ Object_FindEmptyY2:
 	LDX <CurrentObjectIndexZ
 	SEC
 	RTS
+	

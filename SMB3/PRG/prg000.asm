@@ -3411,57 +3411,51 @@ Player_CalcBoundBox2:
 	BEQ Player_BoundRTS
 	; Tail attack only kicks at counter values $09 and $0C
 
-	CMP #$0c
-	BEQ PRG000_DB26	 ; If tail attack counter = $0C, jump to PRG000_DB26
-
-	CMP #$09
-	BNE Player_BoundRTS	 ; If tail attack counter <> $09, jump to PRG000_DB16 (RTS)
+	SUB #$09
+	CMP #$04
+	BCS Player_BoundRTS	 ; If tail attack counter <> $09, jump to PRG000_DB16 (RTS)
 
 PRG000_DB26:
 	LDA <Player_FlipBits
 	AND #$40
 	BEQ PRG000_DB2F	 ; If 'Y' = 0, jump to PRG000_DB2F
 
-	LDA Player_BoundRightHi
-	STA Tail_BoundLeftHi
-
 	LDA Player_BoundRight
 	STA Tail_BoundLeft
+	
 	ADD #$0B
 	STA Tail_BoundRight
 
-	LDA Tail_BoundLeftHi
+	LDA Player_BoundRightHi
+	STA Tail_BoundLeftHi
+
 	ADC #$00
 	STA Tail_BoundRightHi
 	JMP PRG000_DB30
 
 PRG000_DB2F:
-	LDA Player_BoundLeftHi
-	STA Tail_BoundRightHi
-
 	LDA Player_BoundLeft
 	STA Tail_BoundRight
+
 	SUB #$0B
 	STA Tail_BoundLeft
 
-	LDA Tail_BoundRightHi
+	LDA Player_BoundLeftHi
+	STA Tail_BoundRightHi
+
 	SBC #$00
 	STA Tail_BoundLeftHi
 
 PRG000_DB30:
 	LDA Player_BoundBottom
-	SUB #$04
 	STA Tail_BoundBottom
+	SUB #$0A
 
-	LDA Player_BoundBottomHi
-	SBC #$00
-	STA Tail_BoundBottomHi
-
-	LDA Tail_BoundBottom
-	SUB #$05
 	STA Tail_BoundTop
 
-	LDA Tail_BoundBottomHi
+	LDA Player_BoundBottomHi
+	STA Tail_BoundBottomHi
+
 	SBC #$00
 	STA Tail_BoundTopHi
 
@@ -3803,7 +3797,6 @@ Player_PoofHurt:
 	LDA #SND_LEVELPOOF
 	STA Sound_QLevel1
 
-
 PRG000_DA47:
 	LDA #$00	 
 	BEQ PRG000_DA6D	 ; Jump (technically always) to PRG000_DA6D
@@ -3859,12 +3852,8 @@ Object_RespondToTailAttack:
 	BEQ Object_RespondToTailAttack2	 ; If Player is not tail attacking, jump to PRG000_DB16 (RTS)
 
 	SUB #$09
-	BMI Object_RespondToTailAttack2
-	;CMP #$0c
-	;BEQ Object_RespondToTailAttack1	 ; If tail attack counter = $0C, jump to PRG000_DB26
-
-	;CMP #$09
-	;BNE Object_RespondToTailAttack2	 ; If tail attack counter <> $09, jump to PRG000_DB16 (RTS)
+	CMP #$04
+	BCS Object_RespondToTailAttack2
 
 Object_RespondToTailAttack1:
 	LDY Objects_State, X	; Y = object's current state
@@ -3880,6 +3869,7 @@ Object_RespondToTailAttack1:
 	JSR Object_DetectTail
 	BCC Object_RespondToTailAttack2	 ; If Player and object are not intersecting, jump to PRG000_DB16 (RTS)
 
+	STA Debug_Snap
 	LDA #$00
 	STA Objects_BeingHeld, X
 

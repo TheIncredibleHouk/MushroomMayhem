@@ -126,7 +126,7 @@ OBJ_BOSS			= $13
 	.byte OPTS_NOCHANGE		; Object $0C
 	.byte OPTS_NOCHANGE		; Object $0D
 	.byte OPTS_NOCHANGE		; Object $0E
-	.byte OPTS_SETPT5 | $4D	; Object $0F
+	.byte OPTS_NOCHANGE		; Object $0F
 	.byte OPTS_NOCHANGE		; Object $10
 	.byte OPTS_NOCHANGE		; Object $11
 	.byte OPTS_NOCHANGE		; Object $12
@@ -2724,19 +2724,65 @@ Training_Messages:
 	MSG_ID Training_4
 	MSG_ID Training_5
 
+Training_BackUpItem = Objects_Data5
+Training_BackUpBadge = Objects_Data6
+Training_BackUpPowerUp = Objects_Data7
+
 ObjInit_Training:
 	LDY Objects_Property, X
+
 	LDA Training_Messages, Y
 	STA Message_Id
+
+	LDA PowerUp_Reserve
+	STA Training_BackUpItem, X
+
+	LDA Player_Badge
+	STA Training_BackUpBadge, X
+
+	LDA Player_EffectiveSuit
+	STA World_Map_Power
+	STA Training_BackUpPowerUp, X
+
+	LDA #$00
+	STA Player_Badge
+	STA PowerUp_Reserve
+
+	LDA #$01
+	STA Player_QueueSuit
+
+	JSR Player_PoofHurt
+	JSR Object_NoInteractions
+	RTS
+
+Training_Restore:
+	LDA Training_BackUpItem, X
+	STA PowerUp_Reserve
+
+	LDA Training_BackUpBadge, X
+	STA Player_Badge
+
+	LDA PowerUp_Reserve
+	
+
+	LDA Training_BackUpPowerUp, X
+	ADD #$01
+	STA Player_QueueSuit
+	
+	JSR Player_PoofHurt
 	RTS
 
 ObjNorm_Training:
+	JSR Training_WatchForDeath
+
 	LDA Objects_Property, X
 
 	JSR DynJump
 
 	.word Training_TakeHits
 	.word Training_BreakBricks
+	.word Training_DamageBoost
+	.word Training_Attack
 
 Training_Make1Up:
 	JSR DestroyAllEnemies
@@ -2764,7 +2810,22 @@ Training_Make1Up:
 	STA <Objects_YHiZ, X
 
 	JSR Common_MakePoof
-	RTS
+
+	JMP Training_Restore
+
+Training_WatchForDeath:
+	LDA Player_IsDying
+	BEQ Training_WatchForDeathRTS
+
+	LDA <Player_SpriteY
+	CMP #$B0
+	BCC Training_WatchForDeathRTS
+	
+	LDA Training_BackUpPowerUp, X
+	STA Player_EffectiveSuit
+
+Training_WatchForDeathRTS:
+	RTS	
 
 Training_MarioHit = Objects_Data1
 Training_MarioHitCount = Objects_Data2
@@ -2799,8 +2860,7 @@ Training_TakeHitsRTS:
 	RTS
 
 Training_TakeHitsDraw:
-	LDA #$0A
-	SUB Training_MarioHitCount, X
+	LDA Training_MarioHitCount, X
 	
 Training_DrawNumber:
 	STA <DigitsParam
@@ -2839,13 +2899,15 @@ DrawHits_Counter:
 	BPL DrawHits_Counter
 
 	LDX <CurrentObjectIndexZ
+
+	LDA #$4D
+	STA PatTable_BankSel + 4
 	RTS
 
 Training_BricksBroken = Objects_Data1
 
 Training_BreakBricks:
-	LDA #50
-	SUB Training_BricksBroken, X
+	LDA Training_BricksBroken, X
 	
 	JSR Training_DrawNumber
 
@@ -2863,6 +2925,127 @@ Training_BreakBricks:
 Training_BreakBricksRTS:
 	RTS
 
+Training_DamageBoost:
+	LDA <Player_XHi
+	CMP #$0C
+	BCC Training_DamageBoostRTS
+
+	JSR Training_Make1Up
+
+Training_DamageBoostRTS:	
+	RTS
+
+
+Training_KillCount = Objects_Data1
+Training_AttackStage = Objects_Data2
+Training_PowerUpSet = Objects_Data3
+
+Training_SpawnXOffsets:
+	.byte $10, $30, $50, $70, $90, $B0, $D0, $70
+
+Training_PowerUp:
+	.byte MARIO_FIRE
+	.byte MARIO_ICE
+	.byte MARIO_RACCOON
+	.byte MARIO_FOX
+	.byte MARIO_FROG
+	.byte MARIO_KOOPA
+	.byte MARIO_HAMMER
+	.byte MARIO_NINJA
+
+Training_Attack:
+
+	JSR Object_FindEmptyX
+	BCC Training_DetectKills
+
+	LDA RandomN, X
+	AND #$07
+	TAY
+	
+	LDA Training_SpawnXOffsets, Y
+	STA <Objects_XZ, X
+
+	LDA Training_SpawnXOffsets, Y
+	STA <Objects_XZ, X
+	STA <Poof_X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+
+	LDA #$10
+	STA <Objects_YZ, X
+	STA <Poof_Y
+
+	LDA #$01
+	STA <Objects_YHiZ, X
+
+	LDA #$00
+	STA Objects_Property, X
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State, X
+
+	LDA #OBJ_SPINY
+	STA Objects_ID, X
+
+	JSR Common_MakePoof
+	
+	LDX <CurrentObjectIndexZ
+	INC Training_KillCount, X
+	JMP Training_Attack
+
+Training_DetectKills:
+	LDX <CurrentObjectIndexZ
+
+	LDA Training_KillCount, X
+	CMP #$0A
+	BCC Training_SetPowerUp
+
+	LDA #$00
+	STA Training_PowerUpSet, X
+	INC Training_AttackStage, X
+
+Training_SetPowerUp:
+	LDA Training_PowerUpSet, X
+	BNE Training_AttackRTS
+
+	LDY Training_AttackStage, X
+	CPY #$08
+	BNE Training_UpdatePowerUp
+
+	JMP Training_Make1Up
+
+Training_UpdatePowerUp:
+	LDA Training_PowerUp, Y
+	ADD #$01
+	STA Player_QueueSuit
+
+	JSR Player_PoofHurt
+
+	INC Training_PowerUpSet, X
+
+	LDA #$00
+	STA Training_KillCount, X
+
+	LDA #OBJSTATE_INIT
+	STA Objects_State
+	STA Objects_State + 1
+	STA Objects_State + 2
+
+	LDA #$00
+	STA Objects_Orientation
+	STA Objects_Orientation + 1
+	STA Objects_Orientation + 2
+
+Training_AttackRTS:	
+	RTS
+
+Training_Jumps:
+	
+	RTS
 ;***********************************************************************************
 ; Star Piece
 ;***********************************************************************************

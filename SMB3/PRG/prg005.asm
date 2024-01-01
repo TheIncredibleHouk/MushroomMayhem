@@ -4197,9 +4197,9 @@ TrainingShop_Norm:
 Training_ExpRequirements:
 	.word $02EE
 	.word $02EF
-	.word $2710
-	.word $61A8
-	.word $C350
+	.word $02F0
+	.word $02F1
+	.word $02F2
 
 TrainingShop_WriteInstructions:
 	LDA Player_Level

@@ -5165,6 +5165,9 @@ LevelUp_Messages:
 ObjInit_GoldMushroom:
 	JSR Object_CalcBoundBoxForced
 	JSR Object_MoveAwayFromPlayer
+	
+	INC Player_KeepBadge
+
 	JMP Object_NoInteractions
 
 ObjNorm_GoldMushoom:

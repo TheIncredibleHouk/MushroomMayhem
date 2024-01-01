@@ -2935,8 +2935,8 @@ BADGE_RADARUNKNOWN 	= 18
 
 ABILITY_EXTRAHIT = 1
 ABILITY_STARTBIG = 2
-ABILITY_NOSHROOMS = 3
-ABILITY_RECOVERY = 4
+ABILITY_RECOVERY = 3
+ABILITY_NOSHROOMS = 4
 ABILITY_DOUBLEJUMP = 5
 ABILITY_MAX = ABILITY_DOUBLEJUMP
 
@@ -3080,7 +3080,8 @@ TILE_ITEM_SPINNER	= $FE
 	ForcedSwitch:       .ds 1
 	Object_Count:	.ds 1
 	Poison_TapTimer:	.ds 1
-	
+	Player_KeepBadge:	.ds 1
+
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints
 	; ASSEMBLER BOUNDARY CHECK, END OF $8000

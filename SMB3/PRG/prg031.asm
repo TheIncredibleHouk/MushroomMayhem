@@ -3038,6 +3038,105 @@ Game_Timer_RTS:
 	RTS
 
 
+Level_Initialize:
+	LDA <Player_Started
+	BEQ PRG008_A242	 ; If Player_XStart = 0 (not yet initialized), jump to PRG008_A242
+	RTS		 ; Return
+
+
+PRG008_A242:
+	STA Level_ObjectsInitialized ; Set Level_ObjectsInitialized = 0 (trigger scene-change reset)
+
+	LDA #$18
+	STA Player_SprOff ; Player sprite rooted at offset $28
+
+
+	; Set player power up based on current suit on 
+	LDX World_Map_Power
+	BNE Super_MarioStandard
+
+	LDA Player_Level
+	CMP #ABILITY_STARTBIG
+	BCC Super_MarioStandard
+
+	INX
+
+Super_MarioStandard:	
+	INX
+	STX Player_QueueSuit 
+
+	LDA #$40
+	STA Air_Time
+	STA Tile_Anim_Enabled
+
+	LDA #$00
+	STA Power_Change
+
+	LDA #$50
+	STA Player_Power
+
+	LDA #$FF
+	STA CompleteLevelTimer
+
+	LDA Player_Coins
+	STA Previous_Coins
+
+	LDA Player_Coins+1
+	STA Previous_Coins+1
+
+	LDA Player_Coins+2
+	STA Previous_Coins+2
+
+	LDA Player_Cherries
+	STA Previous_Cherries
+
+	LDA Paper_Stars
+	STA Previous_Stars
+
+	JSR GetLevelBit
+	
+	LDA Paper_Stars_Collected1, Y
+	STA Previous_Stars_Collected1
+
+	LDA Paper_Stars_Collected2, Y
+	STA Previous_Stars_Collected2
+
+	LDA Paper_Stars_Collected3, Y
+	STA Previous_Stars_Collected3
+
+	LDA Player_Badge
+	STA Previous_Badge
+
+	LDA PowerUp_Reserve
+	STA Previous_PowerUp_Reserve
+
+	; Set power up's correct palette
+	JSR Level_SetPlayerPUpPal
+
+	LDA #SPR_HFLIP
+	STA <Player_FlipBits	 ; Player_FlipBits = $40 (face right)
+
+	; Set Player_X based on Level_SelXStart
+
+	LDA <Player_X
+	ORA <Player_XHi
+	STA <Player_Started	; Also set Player_XStar
+
+	JSR Level_InitAction_Do	; Do whatever action this level wants at the start, if any
+
+PRG008_A277:
+
+PRG008_A27A:
+PRG008_A29E:
+	LDA <Vert_Scroll
+	STA Level_VertScroll	; Level_VertScroll = Vert_Scroll
+
+	LDA <Vert_Scroll_Hi
+	STA Level_VertScrollH	; Level_VertScrollH = Vert_Scroll_Hi
+
+LevelInit_DoNothing:
+	RTS		 ; Return
+	
 DestroyAllEnemies:
 	LDX #$04
 

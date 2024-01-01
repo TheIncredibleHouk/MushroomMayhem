@@ -6541,6 +6541,32 @@
       "KeepObjects": false,
       "DisableWeather": false,
       "BoundRectangle": "96,272,32,32"
+    },
+    {
+      "LevelId": "9563e6aa-4b2c-496d-9f09-33efc418878f",
+      "ExitActionType": 0,
+      "ExitX": 3,
+      "ExitY": 24,
+      "X": 7,
+      "Y": 24,
+      "ExitsLevel": false,
+      "RedrawsLevel": true,
+      "KeepObjects": false,
+      "DisableWeather": false,
+      "BoundRectangle": "112,384,32,32"
+    },
+    {
+      "LevelId": "a6e181dc-9ad8-4014-9b51-6eaad652f4e8",
+      "ExitActionType": 0,
+      "ExitX": 4,
+      "ExitY": 25,
+      "X": 9,
+      "Y": 17,
+      "ExitsLevel": false,
+      "RedrawsLevel": true,
+      "KeepObjects": false,
+      "DisableWeather": false,
+      "BoundRectangle": "144,272,32,32"
     }
   ],
   "CompressedData": "f39/bwKRwRAHEcESA5HDEBEyB2HDMDESAZHBIgGRAWGCAzZhYQGRxSKREDKRAmGCAzdhYcVhkTASIgGRwmEXBRHBGAJhwiAiAZEIYcUTFBUgIgGRCGHDI1slASIBkQhhxzM0NSAwEpEJYcaREDKRMBKDA2E2YcNhEDICkcEggwNhN2HCYSIDkcMwMREFMcURMTKRkQ=="

@@ -4582,23 +4582,23 @@ Badge_F_Explanation:
 
 Level_Up1:
 	.db "TAKE AN EXTRA HIT WHEN"
-	.db "FULLY POWERED UP!     "
+	.db "FULLY POWERED UP      "
 
 Level_Up2:
 	.db "START LEVELS AS SUPER "
-	.db "WHEN SMALL MARIO!     "
+	.db "WHEN NO POWERUP!      "
 
 Level_Up3:
-	.db "ITEM BLOCKS ALWAYS    "
-	.db "CONTAIN FULL POWERUP  "
+	.db "INCREASE RECOVERY TIME"
+	.db "WHEN TAKING DAMAGE!   "
 
 Level_Up4:
-	.db "DOUBLE LENGTH OF TIME "
-	.db "TO RECOVER WHEN HIT   "
+	.db "ITEM BLOCKS ALWAYS    "
+	.db "CONTAIN FULL POWERUP! "
 
 Level_Up5:
-	.db "ENABLE THE ABILITY TO "
-	.db "DOUBLE JUMP           "
+	.db "HOLD UP AND PRESS A TO"
+	.db "PERFORM A DOUBLE JUMP!"
 
 Second_QuestMsg:
 	.db "ENTER THE PIPE TO FIND"
@@ -4669,24 +4669,24 @@ Tutorial_Ninja_2:
 	.db "& PRESS A TO WALLJUMP."
 
 Training_1:
-	.db "SUSTAIN 10 HITS AND   "
-	.db "SURVIVE!              "
+	.db "SUSTAIN 10 HITS       "
+	.db "IN 100 SECONDS!       "
 
 Training_2:
-	.db "TRAINING MESSAGE GOES "
-	.db "HERE AT SOME POINT... "
+	.db "BREAK 50 BRICKS BLOCKS"
+	.db "IN 100 SECONDS!	   "
 
 Training_3:
-	.db "TRAINING MESSAGE GOES "
-	.db "HERE AT SOME POINT... "
+	.db "USE DAMAGE BOOST TO   "
+	.db "REACH THE END!		   "
 
 Training_4:
-	.db "TRAINING MESSAGE GOES "
-	.db "HERE AT SOME POINT... "
+	.db "DESTROY 10 SPINIES TO "
+	.db "CYCLE THROUGH POWERUPS"
 
 Training_5:
-	.db "TRAINING MESSAGE GOES "
-	.db "HERE AT SOME POINT... "
+	.db "JUMP TO AVOID ALL THE "
+	.db "INCOMING OBSTACLES!   "
 
 Training_6:
 	.db "TRAINING MESSAGE GOES "
