@@ -2783,6 +2783,7 @@ ObjNorm_Training:
 	.word Training_BreakBricks
 	.word Training_DamageBoost
 	.word Training_Attack
+	.word Training_Jumps
 
 Training_Make1Up:
 	JSR DestroyAllEnemies
@@ -2972,9 +2973,6 @@ Training_Attack:
 	LDA #$00
 	STA <Objects_XHiZ, X
 
-	LDA #$00
-	STA <Objects_XHiZ, X
-
 	LDA #$10
 	STA <Objects_YZ, X
 	STA <Poof_Y
@@ -3043,8 +3041,208 @@ Training_UpdatePowerUp:
 Training_AttackRTS:	
 	RTS
 
+Training_JumpStage = Objects_Data1
+Training_WaitTimer = Objects_Data2
+
+Training_SpawnX:
+	.byte $F0, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $F0, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $F0, $F0 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $F0, $F0 ;
+	.byte $00, $00, $00, $00 ;	
+	.byte $F0, $F0, $F0, $F0 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $F0, $F0 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $F0, $F0 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $F0, $F0 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $F0, $F0, $F0, $F0
+	.byte $00, $00, $00, $00
+	.byte $F0, $F0, $F0, $F0
+	.byte $00, $00, $00, $00
+
+Training_SpawnY:
+	.byte $90, $F0, $F0, $F0 ;
+	.byte $90, $80, $F0, $F0 ;
+	.byte $90, $80, $70, $F0 ;
+	.byte $90, $80, $70, $60 ;
+	.byte $90, $80, $50, $40 ;
+	.byte $90, $60, $50, $40 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $80, $70, $60 ;
+	.byte $90, $80, $70, $60 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $80, $90, $80 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $90, $90, $90 ;
+	.byte $90, $80, $70, $60
+	.byte $90, $80, $70, $60
+	.byte $90, $80, $70, $60
+	.byte $90, $80, $70, $90
+
+Training_SpawnXVel:
+	.byte $E0, $00, $00, $00 ;
+	.byte $20, $20, $00, $00 ;
+	.byte $E0, $E0, $E0, $00 ;
+	.byte $20, $20, $20, $20 ;
+	.byte $E0, $E0, $E0, $E0 ;
+	.byte $20, $20, $20, $20 ;
+	.byte $E0, $E0, $E0, $E0 ;
+	.byte $20, $20, $20, $20 ;	
+	.byte $E0, $E0, $E0, $E0 ;
+	.byte $20, $20, $20, $20 ;
+	.byte $E0, $E0, $E0, $E0 ;
+	.byte $20, $20, $20, $20 ;
+	.byte $C0, $C0, $C0, $C0 ;
+	.byte $10, $18, $20, $28 ;
+	.byte $E0, $E0, $20, $20 ;
+	.byte $20, $30, $30, $30 ;
+	.byte $E0, $D0, $E0, $D0 ;
+	.byte $30, $30, $30, $30 ;
+	.byte $40, $40, $40, $40 ;
+	.byte $C0, $C0, $C0, $C0 
+	.byte $40, $40, $40, $40
+	.byte $C0, $C0, $C0, $C0 
+	.byte $40, $40, $40, $40
+
+Training_SpawnSpikeTimer:
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $10, $20, $30 ;
+	.byte $00, $10, $50, $60 ;
+	.byte $00, $30, $60, $90 ;
+	.byte $00, $20, $40, $60 ;
+	.byte $00, $08, $10, $18 ;
+	.byte $00, $10, $20, $30 ;
+	.byte $00, $10, $20, $30 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $10, $30, $50 ;
+	.byte $00, $20, $30, $50 ;
+	.byte $00, $40, $80, $C0 ;
+	.byte $00, $30, $60, $90 ;
+	.byte $00, $00, $00, $00 ;
+	.byte $00, $04, $08, $0C ;
+	.byte $00, $08, $10, $18 ;
+	.byte $00, $0C, $18, $38 ;
+
+Training_SpawnWaitTimers:
+	.byte $50 ;
+	.byte $50 ;
+	.byte $50 ;
+	.byte $50 ;
+	.byte $50 ;
+	.byte $50 ;
+	.byte $68 ;
+	.byte $80 ;
+	.byte $98 ;
+	.byte $80 ;
+	.byte $5C ;
+	.byte $68 ;
+	.byte $68 ;
+	.byte $A0 ;
+	.byte $50 ;
+	.byte $78 ;
+	.byte $78 ;
+	.byte $98 ;
+	.byte $98 ;
+	.byte $34
+	.byte $34
+	.byte $34
+	.byte $50
+
 Training_Jumps:
+	LDA #$00
+	STA Player_Invulnerable
+
+	LDA Training_WaitTimer, X
+	BNE Training_JumpRTS
+
+	STA Debug_Snap
+	LDA Training_JumpStage, X
+	STA <Temp_Var1
+
+	ASL A
+	ASL A
+	STA <Temp_Var2
+
+Training_ProduceSpikeBall:
+	JSR Object_FindEmptyX
+	BCC Training_Continue
+
+	LDY <Temp_Var2
+
+	LDA Training_SpawnX, Y
+	STA <Objects_XZ, X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+
+	LDA Training_SpawnY, Y
+	STA <Objects_YZ, X
+
+	LDA #$01
+	STA <Objects_YHiZ, X
+
+	LDA Training_SpawnXVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA Training_SpawnSpikeTimer, Y
+	STA Objects_Timer, X
+
+	LDA #$01
+	STA Objects_Property, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA #OBJ_SPIKEBALL
+	STA Objects_ID, X
+
+	INC <Temp_Var2
+
+	JMP Training_ProduceSpikeBall
+
+Training_Continue:
+	LDX <CurrentObjectIndexZ
+	LDY <Temp_Var1
 	
+	LDA Training_SpawnWaitTimers, Y
+	STA Training_WaitTimer, X
+
+	INC Training_JumpStage, X
+
+	LDA Training_JumpStage, X
+	CMP #24
+	BNE Training_JumpRTS
+	JMP Training_Make1Up
+
+Training_JumpRTS:
+	LDA Game_Counter
+	AND #$01
+	BNE TrainingJumpTimerRTS
+
+	DEC Training_WaitTimer, X
+
+TrainingJumpTimerRTS:
 	RTS
 ;***********************************************************************************
 ; Star Piece

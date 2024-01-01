@@ -543,12 +543,14 @@ ObjInit_SpikeBall:
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
+
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
 	RTS
 
 SpikeBall_Frame  = Objects_Data1
 
 ObjNorm_SpikeBall:
-
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE SpikeBallNotKilled
@@ -556,6 +558,14 @@ ObjNorm_SpikeBall:
 	JMP SpikeBall_Burst
 
 SpikeBallNotKilled:
+	LDA Objects_Property, X
+
+	JSR DynJump
+	
+	.word SpikeBall_Bounce
+	.word SpikeBall_Move
+
+SpikeBall_Bounce:
 	LDA <Player_HaltGameZ
 	BNE SpikeBall_Draw
 	
@@ -636,6 +646,28 @@ SpikeBall_Burst:
 	STA Sound_QLevel2
 	JMP Object_Burst
 
+SpikeBall_Move:
+	LDA Objects_Timer, X
+	BNE SpikeBall_MoveRTS
+
+	LDA <Player_HaltGameZ
+	BEQ SpikeBall_MoveDo
+
+SpikeBall_Skip:
+	JMP SpikeBall_Draw
+
+SpikeBall_MoveDo:
+	JSR Object_DeleteOffScreen
+	JSR Object_ApplyXVel
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	
+	LDA #SPR_BEHINDBG
+	STA Objects_Orientation, X
+	JMP SpikeBall_Animate
+
+SpikeBall_MoveRTS:
+	RTS
 
 Chomp_Frame = Objects_Data1
 Chomp_Charges = Objects_Data2

@@ -3869,7 +3869,6 @@ Object_RespondToTailAttack1:
 	JSR Object_DetectTail
 	BCC Object_RespondToTailAttack2	 ; If Player and object are not intersecting, jump to PRG000_DB16 (RTS)
 
-	STA Debug_Snap
 	LDA #$00
 	STA Objects_BeingHeld, X
 

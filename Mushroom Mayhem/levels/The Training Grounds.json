@@ -6567,6 +6567,19 @@
       "KeepObjects": false,
       "DisableWeather": false,
       "BoundRectangle": "144,272,32,32"
+    },
+    {
+      "LevelId": "3b5143b1-1cfe-4b93-b507-2cc232cd1a2c",
+      "ExitActionType": 0,
+      "ExitX": 3,
+      "ExitY": 25,
+      "X": 10,
+      "Y": 24,
+      "ExitsLevel": false,
+      "RedrawsLevel": true,
+      "KeepObjects": false,
+      "DisableWeather": false,
+      "BoundRectangle": "160,384,32,32"
     }
   ],
   "CompressedData": "f39/bwKRwRAHEcESA5HDEBEyB2HDMDESAZHBIgGRAWGCAzZhYQGRxSKREDKRAmGCAzdhYcVhkTASIgGRwmEXBRHBGAJhwiAiAZEIYcUTFBUgIgGRCGHDI1slASIBkQhhxzM0NSAwEpEJYcaREDKRMBKDA2E2YcNhEDICkcEggwNhN2HCYSIDkcMwMREFMcURMTKRkQ=="
