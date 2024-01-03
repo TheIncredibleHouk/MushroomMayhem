@@ -1583,6 +1583,7 @@ ObjInit_Piranha:
 	TAY
 
 	LDA Objects_Property, X
+	STA Piranha_AttackProperty, X
 	AND #$01
 	TAY
 	LDA Piranha_Velocities, Y
@@ -1638,6 +1639,7 @@ Piranha_AttackData = Objects_Data6
 Piranha_StateTimer = Objects_Timer
 Piranha_YHiBackup = Objects_Data7
 Plant_DrawStem = Objects_Data2
+Piranha_AttackProperty = Objects_Data4
 
 Piranha_YVel:
 	.byte $F8, $08
@@ -1660,11 +1662,10 @@ Piranha_AttackProjectiles:
 	.byte $00, SOBJ_FIREBALL, SOBJ_ICEBALL, SOBJ_OIL
 
 Piranha_AttackNumbers:
-	.byte $00, $00, $01, $01, $01, $01, $01, $01
-	.byte $00, $00, $02, $02, $02, $02, $01, $01
+	.byte $00, $00, $02, $02, $02, $02, $01, $01, $00, $00, $01, $01
+	.byte $00, $00, $01, $01, $01, $01, $01, $01, $00, $00, $03, $03
 
 ObjNorm_Piranha:
-	
 	LDA <Player_HaltGameZ
 	BEQ ObjNorm_Piranha1
 
@@ -1862,12 +1863,12 @@ Piranha_Move:
 	BNE Piranha_SetAttacks
 
 Piranha_GetAttacks:
-	LDA Objects_Property, X
+	LDA Piranha_AttackProperty, X
 
 	LDY DayNight
-	BMI Piranha_SetAttackNum
+	BPL Piranha_SetAttackNum
 	
-	ADD #$08
+	ADD #$0C
 
 Piranha_SetAttackNum:
 	TAY
@@ -2012,7 +2013,7 @@ Piranha_Projectile:
 	ORA Sound_QPlayer
 	STA Sound_QPlayer
 
-	LDA Objects_Property, X
+	LDA Piranha_AttackProperty, X
 	CMP #$08
 	BCC Piranha_FireStraight
 
@@ -2058,7 +2059,6 @@ ObjInit_ZombieGoomba:
 
 	LDA #$02
 	STA Objects_Health, X
-
 
 	LDA #$F0
 	STA ChaseVel_LimitLo, X
@@ -2117,6 +2117,13 @@ ZombieGoomba_CheckLanding:
 	AND #(HIT_GROUND)
 	BEQ ZombieGoomba_CheckWater
 
+	LDA DayNight
+	BMI ZombiGoomba_MoveSlow
+	JSR Object_MoveTowardsPlayer
+
+	JMP ZombieGoomba_CheckWater
+
+ZombiGoomba_MoveSlow:
 	JSR Object_MoveTowardsPlayerFast
 
 ZombieGoomba_CheckWater:
@@ -2489,15 +2496,12 @@ DryBones_SkullPrep:
 DryBones_CrumbleRTS:
 	RTS
 	
-
-
-
 ObjInit_Pumpkin:
-	LDA Objects_Property, X
-	ORA #$08
-	STA Objects_Property, X
-
 	JSR ObjInit_Piranha
+
+	LDA Objects_Property, X
+	ADD #$08
+	STA Piranha_AttackProperty, X	
 
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes, X
@@ -2505,7 +2509,6 @@ ObjInit_Pumpkin:
 	LDA #$00
 	STA Piranha_AttackData, X
 	RTS
-
 
 ObjNorm_Pumpkin:
 	JSR ObjNorm_Piranha
@@ -2673,7 +2676,7 @@ PumpkinFree_Draw:
 	ORA #SPR_BEHINDBG
 	STA Objects_Orientation, X
 
-	JMP Object_Draw
+	JMP Object_DrawMirrored
 
 PumpkinFree_DrawNorm:
 	LDA Objects_Orientation, X

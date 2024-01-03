@@ -3176,7 +3176,6 @@ Training_Jumps:
 	LDA Training_WaitTimer, X
 	BNE Training_JumpRTS
 
-	STA Debug_Snap
 	LDA Training_JumpStage, X
 	STA <Temp_Var1
 
