@@ -2046,6 +2046,7 @@ Piranha_ProjectileRTS:
 	RTS 
 
 ZombieGoomba_CurrentFrame  = Objects_Data1
+ZombieGoomba_MoveTimer	= Objects_Data2
 
 ObjInit_ZombieGoomba:
 	LDA #BOUND16x16
@@ -2059,12 +2060,6 @@ ObjInit_ZombieGoomba:
 
 	LDA #$02
 	STA Objects_Health, X
-
-	LDA #$F0
-	STA ChaseVel_LimitLo, X
-
-	LDA #$10
-	STA ChaseVel_LimitHi, X
 
 ObjInit_ZombieGoombaRTS:
 	RTS
@@ -2085,7 +2080,17 @@ ZombieGoomba_Norm:
 
 ZombieGoomba_DoNorm:
 	JSR Object_DeleteOffScreen
-	JSR Object_ChasePlayerX
+
+	LDA DayNight
+	BMI Zombie_MoveFast
+
+	JSR Object_MoveTowardsPlayer
+	JMP Zombie_DoMove
+
+Zombie_MoveFast:
+	JSR Object_MoveTowardsPlayerFast
+
+Zombie_DoMove:
 	JSR Object_Move
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
@@ -2105,17 +2110,18 @@ ZombieGoomba_Chase:
 	BNE ZombieGoomba_CheckWater
 
 	LDA <Objects_TilesDetectZ, X
-	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	AND #(HIT_RIGHTWALL | HIT_LEFTWALL)
 	BEQ ZombieGoomba_CheckLanding
 
-	LDA #$DE
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_GROUND)
+	BEQ ZombieGoomba_CheckLanding
+
+	LDA #$D4
 	STA <Objects_YVelZ, X
 	BNE ZombieGoomba_CheckWater
 
 ZombieGoomba_CheckLanding:
-	LDA <Objects_TilesDetectZ, X
-	AND #(HIT_GROUND)
-	BEQ ZombieGoomba_CheckWater
 
 	LDA DayNight
 	BMI ZombiGoomba_MoveSlow
@@ -2262,6 +2268,9 @@ ObjInit_DryBones:
 
 	LDA #$04
 	STA Objects_SpritesRequested, X
+
+	LDA #$02
+	STA Objects_Health, X
 	RTS
 
 DryBones_Frames = Objects_Data1
@@ -2279,9 +2288,13 @@ ObjNorm_DryBones:
 
 	JMP DryBones_Draw
 
-DryBones_Norm:	
+DryBones_Norm:
+	LDA Objects_Timer2, X
+	BNE DryBones_CheckTimer
+
 	JSR Object_DeleteOffScreen
 
+DryBones_CheckTimer:
 	LDA Objects_Timer2, X
 	CMP #$0F
 	BNE DryBones_NoPoof
@@ -2294,7 +2307,6 @@ DryBones_Norm:
 	INY
 
 DryBones_MakePoof:
-
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE DryBones_NoPoof
@@ -2429,13 +2441,13 @@ DryBones_SkullXVel:
 	.byte $F0, $10
 
 DryBones_Crumble:
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_Timer2, X
 	BNE DryBones_CrumbleRTS
-
-	LDA #$F2
-	STA Objects_Timer2, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
@@ -2487,11 +2499,21 @@ DryBones_SkullPrep:
 	ADC #$00
 	STA SpecialObj_YHi, Y
 
-	LDA #$E2
-	STA SpecialObj_Timer, Y
-
 	LDA #$00
 	STA SpecialObj_YVel, Y
+
+	LDA #$82
+	LDX DayNight
+	BPL Set_SkullTimer
+
+	LDA #$E2
+	
+Set_SkullTimer:	
+	STA SpecialObj_Timer, Y
+
+	LDX <CurrentObjectIndexZ
+	ADD #$10
+	STA Objects_Timer2, X
 
 DryBones_CrumbleRTS:
 	RTS

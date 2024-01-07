@@ -4466,6 +4466,7 @@ EndLevel:
 	LDA #$00
 	STA Map_ReturnStatus	
 	STA CheckPoint_Flag
+	STA CheckPoint_Level
 
 	LDX Player_KeepBadge
 	BNE EndLevel_KeepBage

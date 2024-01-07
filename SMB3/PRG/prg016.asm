@@ -1171,6 +1171,10 @@ FireIcePirateBro_DecFireIcePirateTimer:
 	DEC FireIcePirateBro_SpitTimer, X
 
 FireIcePirateBro_CheckJump:
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ FireIcePirateBro_NoJump
+
 	LDA Objects_Timer, X
 	BNE FireIcePirateBro_NoJump
 

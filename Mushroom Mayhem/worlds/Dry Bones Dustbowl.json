@@ -38,7 +38,7 @@
     90,
     90,
     90,
-    0,
+    90,
     90,
     90,
     90,
@@ -661,6 +661,12 @@
       "X": 2,
       "Y": 3,
       "BoundRectangle": "32,48,16,16"
+    },
+    {
+      "LevelId": "3f54a813-34d1-4e23-b667-ed0ac5adcd8d",
+      "X": 7,
+      "Y": 6,
+      "BoundRectangle": "112,96,16,16"
     }
   ],
   "ObjectData": [
@@ -685,5 +691,5 @@
       "Y": 7
     }
   ],
-  "CompressedData": "AFpaWlpaWlpaWlpaWlpaWgBaWlpaWlpaWlpaWlpaWloASkpKXUpKXUpKSkpKXUpKAAnNysHKysrKEsrKysrBygAICcrKwcrKysrBysrBysoACcrKwcrBysrKyjLKysHKAAnKwcrKyhHKysoTysrKwQAJysoQgYJSysrBysHKyhQACAgJoIeWgYGBgYGBgYG2WlpaWlpaWlpaWlpaWloAWlpaWlpaWlpaWlpaWlpaWlpdSkpKSkpKXUpKSkpKSkpdys3BysrKysrKysrKysrKysrKUsHKysrKyspSysrKysrKysrNBwnKysrKysrKysrKysrKBwgICcrKysrKysrKysrKBwgICAgJysrKysrKysqCBwgICAgICAnKysrKysrKWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKSkpKSkpKSl1KSkpdSkpKysrKysrKwcrKysrKysrKysrKysHKyspSysrKysrKysrKysrKysrBysrByikqK8oYysrKyspSysHKyso5OjvKM8rKysrBysrKysoHCAgICAjKysrBysrBysoHCAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKXUpKSl1KSkpKSkpdSl1KysHKysHKysoVysrKysHKwQcICcHKysrBysHKzcrKwcrKysrKF8rBysHKwcHBysHBBwnBwcrKysHKwcrBysHKwQgICcrBysrKFsrBzcrBwcoICAgJylLKysHKysrBysHB"
+  "CompressedData": "AFpaWlpaWlpaWlpaWlpaWgBaWlpaWlpaWlpaWlpaWloASkpKXUpKXUpKSkpKXUpKAAnNysHKysrKEsrKysrBygAICcrKwcrKysrBysrBysoACcrKwcrBysrKyjLKysHKAAnKwcrKyhHKysoTysrKwQAJysoQgYJSysrBysHKyhQACAgJoIeWgYGBgYGBgYG2WlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpdSkpKSkpKXUpKSkpKSkpdys3BysrKysrKysrKysrKysrKUsHKysrKyspSysrKysrKysrNBwnKysrKysrKysrKysrKBwgICcrKysrKysrKysrKBwgICAgJysrKysrKysqCBwgICAgICAnKysrKysrKWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKSkpKSkpKSl1KSkpdSkpKysrKysrKwcrKysrKysrKysrKysHKyspSysrKysrKysrKysrKysrBysrByikqK8oYysrKyspSysHKyso5OjvKM8rKysrBysrKysoHCAgICAjKysrBysrBysoHCAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKXUpKSl1KSkpKSkpdSl1KysHKysHKysoVysrKysHKwQcICcHKysrBysHKzcrKwcrKysrKF8rBysHKwcHBysHBBwnBwcrKysHKwcrBysHKwQgICcrBysrKFsrBzcrBwcoICAgJylLKysHKysrBysHB"
 }

@@ -5098,7 +5098,7 @@ Enemy_SkullAnimate:
 	LDA SpecialObj_Timer, X
 	BNE Enemy_SkullDraw
 
-	JMP SpecialObj_ToPoof
+	JMP SpecialObj_ToPoofNoSound
 
 Enemy_SkullDraw:
 	LSR A

@@ -31,7 +31,7 @@ var Home = () => {
       </div>
       { showDemos() &&
         <>
-          <PageHeader color={red}>New Demo Released (Update)!</PageHeader>
+          <PageHeader color={red}>New Demo (Update 1/4/2024)!</PageHeader>
           <div className="home-description">
             A new demo has been on December 23, 2023! This contains the entirety of the first world, which includes 9 levels,
             a fortress (boss level), and having the chance to earn the first ability of the game! Important note: your game save
@@ -45,6 +45,12 @@ var Home = () => {
               <li>Autosave feature</li>
               <li>Tutorial level</li>
               <li>Alterations to some enemies and mechanics based off feedback</li>
+            </ul>
+            Another update to the demo has been release that includes:
+            <ul>
+              <li>Fixes for The Badge Hut's palette issue</li>
+              <li>Alterations to the "expert" version of levels that resulted in potential soft locks</li>
+              <li>Alterations to expert version of levels that made previous inaccessible stars now accessible</li>
             </ul>
           </div>
         </>

@@ -4384,6 +4384,7 @@ Object_WallStop:
 
 	LDA #$00
 	STA <Objects_XVelZ, X
+
 	JMP PRG001_A9B7
 
 Object_HitRightWall:
@@ -4401,6 +4402,7 @@ Object_HitRightWall:
 
 	LDA #$00
 	STA <Objects_XVelZ, X
+
 	JMP PRG001_A9B7
 
 Object_DoReverse:
