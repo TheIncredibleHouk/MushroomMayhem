@@ -3231,7 +3231,7 @@ OBJ_CFIRE_ROCKYWRENCH	= $BC + CFIRE_ROCKYWRENCH - 1	; Creates Rocky Wrench (um w
 ; Objects in $D1+ appear to trigger special events
 OBJ_SPAWN3GREENTROOPAS	= $D1	; Spawns up to 3 (depending on available slots) hopping green paratroops
 OBJ_SPAWN3ORANGECHEEPS	= $D2	; Spawns up to 3 (depending on available slots) "lost" orange cheep cheeps (a school)
-OBJ_AUTOSCROLL		= $D3	; Activates auto scrolling for e.g. World 1-4, World 8 Tank, etc.
+OBJ_AUTOSCROLL		= $B0	; Activates auto scrolling for e.g. World 1-4, World 8 Tank, etc.
 
 ; Miscellaneous Player frames
 PF_KICK_SMALL		= $42	; Foot out kick when small

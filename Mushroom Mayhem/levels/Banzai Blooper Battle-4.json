@@ -10,6 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "ba387427-8e80-4a8d-bc7c-2c3acdca0350",
   "StaticTileTableIndex": 4,
+  "NoStars": false,
   "MostCommonTile": 193,
   "AnimationType": 0,
   "ScrollType": 2,
@@ -6500,12 +6501,6 @@
   "PatchTileData": null,
   "FirstObjectData": [
     {
-      "GameObjectId": 211,
-      "X": 2,
-      "Y": 3,
-      "Property": 1
-    },
-    {
       "GameObjectId": 184,
       "X": 5,
       "Y": 6,
@@ -6600,6 +6595,12 @@
       "X": 162,
       "Y": 11,
       "Property": 0
+    },
+    {
+      "GameObjectId": 176,
+      "X": 3,
+      "Y": 4,
+      "Property": 1
     }
   ],
   "SecondObjectData": [

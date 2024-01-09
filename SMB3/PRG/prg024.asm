@@ -3673,8 +3673,8 @@ Game_UpdateCherries1:
 	;RTS
 	
 StatusBar_DrawCherries:
-	;LDA Player_Cherries
-	LDA Object_Count
+	LDA Player_Cherries
+	;LDA Object_Count
 	STA <DigitsParam
 	
 	JSR BytesTo2Digits

@@ -126,7 +126,7 @@ OBJ_EVENTSETTER		= $27
     .byte OPTS_NOCHANGE         ; Object $1B
     .byte OPTS_NOCHANGE	        ; Object $1C
     .byte OPTS_SETPT5 | $1A	    ; Object $1D
-    .byte OPTS_SETPT5 | $12     ; Object $1E
+    .byte OPTS_NOCHANGE     ; Object $1E
     .byte OPTS_NOCHANGE         ; Object $1F
     .byte OPTS_NOCHANGE	        ; Object $20
     .byte OPTS_NOCHANGE	        ; Object $21
@@ -1969,7 +1969,7 @@ IceSpike_KeepShaking:
 
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
-	JMP Object_DrawAligned
+	JMP IceSpike_Draw
 
 IceSpike_Fall:
 	JSR Object_Move
@@ -1981,11 +1981,28 @@ IceSpike_Fall:
 	AND #HIT_GROUND
 	BEQ IceSpike_NoBurst
 
-	JSR Object_BurstIce
+	JSR Object_BurstBricks
 
 IceSpike_NoBurst:
 	JMP Object_DrawAligned    
 
+Spike_PatTableBank:
+	.byte $12, $13
+
+Spike_PatTableIndex:	
+	.byte $00, $01
+
+IceSpike_Draw:
+	LDY Objects_Property, X
+	LDA Spike_PatTableBank, Y
+	STA <Temp_Var1
+
+	LDA Spike_PatTableIndex, Y
+	TAY
+
+	LDA <Temp_Var1
+	STA PatTable_BankSel, Y
+	JMP Object_DrawAligned
 
 ObjInit_Stars:
 	JSR Object_NoInteractions

@@ -758,6 +758,7 @@ PRG000_CA5C:
 	; by bit 7.  
 	LDX #$00
 	
+	
 	LDA ObjectGroup_PatTableSel,Y	 ; Load CHRROM bank request for this object, if any
 	BEQ PRG000_CA7F	 ; If CHRROM bank request is zero, no change, jump to PRG000_CA7F
 	BPL PRG000_CA7A	 ; If CHRROM bank request does not have bit 7 set, jump to PRG000_CA7A

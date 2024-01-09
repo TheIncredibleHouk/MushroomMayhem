@@ -17,7 +17,7 @@ OBJ_PEEKABOO 		= $84
 OBJ_POLTERGUY		= $85
 OBJ_SPECTER			= $86
 OBJ_MISSILE			= $87
-OBJ_PHASM			= $88
+OBJ_SWOOPER			= $88
 OBJ_BOOWAVE			= $89
 OBJ_BALLCHAIN		= $8A
 OBJ_PARACHOMP		= $8B
@@ -38,7 +38,7 @@ OBJ_PARACHOMP		= $8B
     .word ObjInit_PolterGuy ; Object $85
     .word ObjInit_Specter ; Object $86
     .word ObjInit_Missile ; Object $87
-    .word ObjInit_Phasm ; Object $88
+    .word ObjInit_Swooper ; Object $88
     .word ObjInit_BooWave ; Object $89
     .word ObjInit_BallChain ; Object $8A
     .word ObjInit_ParaChomp ; Object $8B
@@ -61,7 +61,7 @@ OBJ_PARACHOMP		= $8B
     .word ObjNorm_PolterGuy ; Object $85
     .word ObjNorm_Specter ; Object $86
     .word ObjNorm_Missile ; Object $87
-    .word ObjNorm_Phasm ; Object $88
+    .word ObjNorm_Swooper ; Object $88
     .word ObjNorm_BooWave ; Object $89
     .word ObjNorm_BallChain ; Object $8A
     .word ObjNorm_ParaChomp ; Object $8B
@@ -107,7 +107,7 @@ OBJ_PARACHOMP		= $8B
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $85
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $86
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $87
-    .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
+    .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $88
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $89
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $8A
     .byte OA1_PAL1 | OA1_HEIGHT64 | OA1_WIDTH24 ; Object $8B
@@ -130,7 +130,7 @@ OBJ_PARACHOMP		= $8B
     .byte OPTS_SETPT5 | $37 ; Object $85
     .byte OPTS_SETPT6 | $13 ; Object $86
     .byte OPTS_NOCHANGE ; Object $87
-    .byte OPTS_SETPT5 | $37 ; Object $88
+    .byte OPTS_SETPT6 | $13 ; Object $88
     .byte OPTS_SETPT5 | $37 ; Object $89
     .byte OPTS_SETPT5 | $0E ; Object $8A
     .byte OPTS_SETPT5 | $0E ; Object $8B
@@ -226,12 +226,8 @@ ObjP87:
 	.byte $B3, $B3
 
 ObjP88:
-	.byte $89, $89
-	.byte $87, $87
-	.byte $85, $85
-	.byte $83, $83
-	.byte $81, $81
-	.byte $83, $83
+	.byte $EF, $EF
+	.byte $ED, $ED
 
 ObjP8A:
 	.byte $97, $97
@@ -3794,230 +3790,107 @@ Missile_Draw:
 	STA Sprite_RAMY + 4, Y
 	RTS
 
-Phasm_Action = Objects_Data1
-Phasm_AnimTicks = Objects_Data2
-Phasm_LocationIndex = Objects_Data3
-Phasm_OriginX = Objects_Data4
-Phasm_OriginXHi = Objects_Data5
-Phasm_OriginY = Objects_Data6
-Phasm_OriginYHi = Objects_Data7
-
-Phasm_XLocations:
-	.byte $C0, $40, $C0, $40, $C0, $40, $C0, $40
-	.byte $00, $10, $00, $10, $00, $10, $00, $10
-	.byte $00, $40, $00, $40, $00, $40, $00, $40
-	.byte $00, $C0, $00, $C0, $00, $C0, $00, $C0
-
-Phasm_YLocations:
-	.byte $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $C0, $E0, $00, $20, $C0, $E0, $00, $20
-	.byte $00, $00, $00, $00, $00, $00, $00, $00
-	.byte $00, $00, $00, $00, $00, $00, $00, $00
-
-ObjInit_Phasm:
-	LDA <Objects_XZ, X
-	STA Phasm_OriginX, X
-
-	LDA <Objects_XHiZ, X
-	STA Phasm_OriginXHi, X
-
-	LDA <Objects_YZ, X
-	STA Phasm_OriginY, X
-
-	LDA <Objects_YHiZ, X
-	STA Phasm_OriginYHi, X
-
-	JSR Phasm_SetLocation
-
-	LDA #$20
-	STA Objects_Timer, X
-
-	JMP Object_NoInteractions
-
-ObjNorm_Phasm:
-	LDA Phasm_Action, X
-	JSR DynJump
-
-	.word Phasm_Wait
-	.word Phasm_PhaseIn
-	.word Phasm_Attack
-	.word Phasm_PhaseOut
-
-Phasm_Wait:
-	LDA Objects_Timer, X
-	BNE Phasm_WaitRTS
-
-	INC Phasm_Action, X
-
-	LDA #$0F
-	STA Objects_Timer, X
-
-	LDA #$00
-	STA Phasm_AnimTicks, X
-
+ObjInit_Swooper:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-Phasm_WaitRTS:
-	RTS	
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
 
-Phasm_PhaseIn:
-	LDA <Player_HaltGameZ
-	BEQ Phasm_PhaseInNorm
+	LDA #$10
+	STA ChaseVel_LimitHi, X
 
-	JMP Phasm_Draw
-
-Phasm_PhaseInNorm:
-	LDA Objects_Timer, X
-	BNE Phasm_PhaseInAnimate
-
-	INC Phasm_Action, X
-
-	LDA #$80
-	STA Objects_Timer, X
-
-	JSR Object_CalcBoundBox
-	JMP Phasm_Draw
-
-Phasm_PhaseInAnimate:
-	INC Phasm_AnimTicks, X
-	
-	LDA Phasm_AnimTicks, X
-	LSR A
-	LSR A
-	LSR A
-	AND #$01
-	STA Objects_Frame, X
-
-	JMP Phasm_Draw
-
-Phasm_Attack:
-	LDA <Player_HaltGameZ
-	BNE Phasm_AttackDraw
-
-	LDA #$C0
-	JSR Object_DeleteOffScreenRange
-	JSR Object_AttackOrDefeat
-
-	LDA Objects_Timer, X
-	BNE Phasm_AttackAnimate
-
-	INC Phasm_Action, X
-
-	LDA #$0F
-	STA Objects_Timer, X
-
-	LDA #$0F
-	STA Phasm_AnimTicks, X
-	JMP Phasm_Draw
-
-Phasm_AttackAnimate:
-	INC Phasm_AnimTicks, X
-	LDA Phasm_AnimTicks, X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	AND #$03
-	ADD #$02
-	STA Objects_Frame, X
-
-Phasm_AttackDraw:	
-	JMP Phasm_Draw
-
-Phasm_PhaseOut:
-	LDA <Player_HaltGameZ
-	BEQ Phasm_PhaseOutNorm
-
-	JMP Phasm_Draw
-
-Phasm_PhaseOutNorm:
-	LDA Objects_Timer, X
-	BNE Phasm_PhaseOutAnimate
-
-	INC Phasm_LocationIndex, X
-
-	LDA #$00
-	STA Phasm_Action, X
-
-
-	LDA #$20
-	STA Objects_Timer, X
-
-	JSR Object_CalcBoundBox
-
-Phasm_SetLocation:
-	LDA Objects_Property, X
-	ASL A
-	ASL A
-	ASL A
-	STA <Temp_Var5
-	
-	LDA Phasm_LocationIndex, X
-	AND #$07
-	STA Phasm_LocationIndex, X
-	ADD <Temp_Var5
-
-	TAY
-	
-	LDA #$00
-	STA <Temp_Var2
-	STA <Temp_Var4
-
-	LDA Phasm_XLocations, Y
-	BPL Phasm_NotNegX
-
-	PHA
-
-	LDA #$FF
-	STA <Temp_Var2
-
-	PLA 
-
-Phasm_NotNegX:
-	STA <Temp_Var1
-	LDA Phasm_YLocations, Y
-	BPL Phasm_NotNegY
-
-	PHA
-	LDA #$FF
-	STA <Temp_Var4
-
-	PLA
-
-Phasm_NotNegY:	
-	STA <Temp_Var3
-
-	LDA Phasm_OriginX, X
-	ADD <Temp_Var1
-	STA <Objects_XZ, X
-
-	LDA Phasm_OriginXHi, X
-	ADC <Temp_Var2
-	STA <Objects_XHiZ, X
-
-	LDA Phasm_OriginY, X
-	ADD <Temp_Var3
-	STA <Objects_YZ, X
-
-	LDA Phasm_OriginYHi, X
-	ADC <Temp_Var4
-	STA <Objects_YHiZ, X
+	LDA PatTable_BankSel + 5
 	RTS
 
-Phasm_PhaseOutAnimate:
-	DEC Phasm_AnimTicks, X
+Swooper_AnimTicks = Objects_Data1
+
+ObjNorm_Swooper:
+	LDA <Player_HaltGameZ
+	BEQ Swooper_DoAction
+
+	JMP Object_DrawMirrored
+
+Swooper_DoAction:	
+	LDA Objects_Property, X
+	JSR DynJump
+
+	.word Swooper_Wait
+	.word Swooper_Chase
+
+Swooper_Wait:
+	JSR Object_DeleteOffScreen
+
+	JSR Object_CalcBoundBox
+
+	JSR Object_XDistanceFromPlayer
+	CMP #$40
+	BCS Swooper_KeepWaiting
+
+	JSR Object_YDistanceFromPlayer
+	CMP #$70
+	BCS Swooper_KeepWaiting
+
+	CPY #$01
+	BNE Swooper_KeepWaiting
+
+	LDA #$01
+	STA Objects_Property, X
+
+	LDA #$18
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+	JMP Object_DrawMirrored
+
+Swooper_KeepWaiting:	
+	LDA #SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JMP Object_DrawMirrored
+
+Swooper_Chase:
+	JSR Object_DeleteOffScreen
+
+	LDA Objects_Timer, X
+	BEQ Swooper_Move
+
+	STA Debug_Snap
 	
-	LDA Phasm_AnimTicks, X
-	LSR A
+	JSR Object_Move
+
+	LDA #$08
+	STA Swooper_AnimTicks, X
+	JMP Swooper_CalcBox
+
+Swooper_Move:
+	LDA <Objects_YVelZ, X
+	BMI Swooper_DoMove
+
+	CMP #$11
+	BCC Swooper_DoMove
+
+	LDA <Objects_YVelZ, X
+	SUB #$04
+	STA <Objects_YVelZ, X
+
+Swooper_DoMove:	
+	JSR Object_ChasePlayer
+
+Swooper_CalcBox:	
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	JSR Object_AttackOrDefeat
+
+Swooper_Animate:
+	INC Swooper_AnimTicks, X
+	LDA Swooper_AnimTicks, X
 	LSR A
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
-
-	JMP Phasm_Draw
-
-Phasm_Draw:
 	JMP Object_DrawMirrored
 
 BooWave_XStart:
