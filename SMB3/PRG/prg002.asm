@@ -126,7 +126,7 @@ OBJ_EVENTSETTER		= $27
     .byte OPTS_NOCHANGE         ; Object $1B
     .byte OPTS_NOCHANGE	        ; Object $1C
     .byte OPTS_SETPT5 | $1A	    ; Object $1D
-    .byte OPTS_NOCHANGE     ; Object $1E
+    .byte OPTS_SETPT5 | $12     ; Object $1E
     .byte OPTS_NOCHANGE         ; Object $1F
     .byte OPTS_NOCHANGE	        ; Object $20
     .byte OPTS_NOCHANGE	        ; Object $21
@@ -1903,31 +1903,41 @@ ObjInit_IceSpike:
 
 	LDA #BOUND8x16
 	STA Objects_BoundBox, X
-	RTS
+
+	LDA <Objects_YZ, X
+	STA IceSpike_YOrigin, X
+
+	LDA <Objects_YHiZ, X
+	STA IceSpike_YHiOrigin, X
+	JMP Object_NoInteractions
 
 IceSpike_Action = Objects_Data1
+IceSpike_YOrigin = Objects_Data2
+IceSpike_YHiOrigin = Objects_Data3
 
 ObjNorm_IceSpike:
 	
 	LDA <Player_HaltGameZ
 	BEQ IceSpike_Normal
 
-	JMP Object_DrawAligned
+	JMP IceSpike_Draw
 	
 IceSpike_Normal:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE IceSpike_NotDead
 
-	JMP Object_BurstIce
+	JMP Object_BurstBricks
 
 IceSpike_NotDead:
+	STA Debug_Snap - 1
 	JSR Object_DeleteOffScreen
 
 	LDA IceSpike_Action, X
 	JSR DynJump
 
 	.word IceSpike_Wait
+	.word IceSpike_ForceFall
 	.word IceSpike_Shake
 	.word IceSpike_Fall
 
@@ -1942,7 +1952,23 @@ IceSpike_Wait:
 	LDA <YDiffAboveBelow
 	BEQ IceSpike_NoShake
 
-	INC IceSpike_Action, X
+IceSpike_ForceFall:
+	JSR Object_CalcBoundBox
+	JSR Object_DetectTileCenter
+	CMP #TILE_PROP_SOLID_ALL
+	BCC IceSpike_SetShake
+
+	LDA Block_NeedsUpdate
+	BNE IceSpike_NoShake
+
+	TYA
+	AND #$C0
+	ORA #$01
+	JSR Object_ChangeBlock
+
+IceSpike_SetShake:
+	LDA #$02
+	STA IceSpike_Action, X
 
 	LDA #$20
 	STA Objects_Timer, X
@@ -1952,9 +1978,10 @@ IceSpike_NoShake:
 	JMP Object_DrawAligned
 
 IceSpike_Shake:
+	
 	LDA Objects_Timer, X
 	BNE IceSpike_KeepShaking
-
+	
 	INC IceSpike_Action, X
 
 IceSpike_KeepShaking:
@@ -1976,32 +2003,93 @@ IceSpike_Fall:
 	JSR Object_CalcBoundBox
 	JSR Object_InteractWithPlayer
 	JSR Object_DetectTiles
+	JSR Object_CheckForeground
 
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ IceSpike_NoBurst
 
 	JSR Object_BurstBricks
+	
+	LDA #SND_LEVELCRUMBLE
+	STA Sound_QLevel2
+	
+	STA Debug_Snap
+	LDA Objects_Property, X
+	BNE IceSpike_Respawn
+	RTS
 
 IceSpike_NoBurst:
-	JMP Object_DrawAligned    
+	LDA <Objects_YHiZ, X
+	BEQ IceSpike_NoDelete
 
-Spike_PatTableBank:
-	.byte $12, $13
+	LDA <Objects_YZ, X
+	CMP #$A0
+	BCS IceSpike_Respawn
 
-Spike_PatTableIndex:	
-	.byte $00, $01
+IceSpike_NoDelete:	
+	JMP IceSpike_Draw	
+
+IceSpike_Respawn:
+	LDA #$01
+	STA IceSpike_Action, X
+
+	LDA IceSpike_YOrigin, X
+	STA Tile_DetectionY
+
+	LDA IceSpike_YHiOrigin, X
+	STA Tile_DetectionYHi
+
+	LDA <Horz_Scroll
+	ADD RandomN
+	AND #$F0
+	STA Tile_DetectionX
+
+
+	LDA <Horz_Scroll_Hi
+	ADC #$00
+	STA Tile_DetectionXHi
+
+IceSpike_ResetCheckTile:
+	JSR Object_DetectTile
+
+	CMP #TILE_PROP_SOLID_ALL
+	BCS IceSpike_SetX
+
+	LDA Tile_DetectionX
+	ADD #$10
+	STA Tile_DetectionX
+
+	LDA Tile_DetectionXHi
+	ADC #$00
+	STA Tile_DetectionXHi
+	JMP IceSpike_ResetCheckTile
+
+IceSpike_SetX:
+	LDA Tile_DetectionX
+	STA <Objects_XZ, X
+
+	LDA Tile_DetectionXHi
+	STA <Objects_XHiZ, X
+
+	LDA Tile_DetectionY
+	STA <Objects_YZ, X
+
+	LDA Tile_DetectionYHi
+	STA <Objects_YHiZ, X
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #OBJ_ICESPIKE
+	STA Objects_ID, X
+
+	LDA #$00
+	STA Objects_YVelZ, X
+	STA Objects_InWater, X
+	RTS
 
 IceSpike_Draw:
-	LDY Objects_Property, X
-	LDA Spike_PatTableBank, Y
-	STA <Temp_Var1
-
-	LDA Spike_PatTableIndex, Y
-	TAY
-
-	LDA <Temp_Var1
-	STA PatTable_BankSel, Y
 	JMP Object_DrawAligned
 
 ObjInit_Stars:

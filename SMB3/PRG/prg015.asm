@@ -3800,7 +3800,8 @@ ObjInit_Swooper:
 	LDA #$10
 	STA ChaseVel_LimitHi, X
 
-	LDA PatTable_BankSel + 5
+	LDA #$03
+	STA Objects_SpritesRequested, X
 	RTS
 
 Swooper_AnimTicks = Objects_Data1
@@ -3809,7 +3810,7 @@ ObjNorm_Swooper:
 	LDA <Player_HaltGameZ
 	BEQ Swooper_DoAction
 
-	JMP Object_DrawMirrored
+	JMP Swooper_Draw
 
 Swooper_DoAction:	
 	LDA Objects_Property, X
@@ -3842,21 +3843,19 @@ Swooper_Wait:
 
 	LDA #$00
 	STA Objects_Orientation, X
-	JMP Object_DrawMirrored
+	JMP Swooper_Draw
 
 Swooper_KeepWaiting:	
 	LDA #SPR_VFLIP
 	STA Objects_Orientation, X
 
-	JMP Object_DrawMirrored
+	JMP Swooper_Draw
 
 Swooper_Chase:
 	JSR Object_DeleteOffScreen
 
 	LDA Objects_Timer, X
 	BEQ Swooper_Move
-
-	STA Debug_Snap
 	
 	JSR Object_Move
 
@@ -3878,6 +3877,28 @@ Swooper_Move:
 Swooper_DoMove:	
 	JSR Object_ChasePlayer
 
+	LDA DayNight
+	BPL Swooper_CalcBox
+
+	LDA <Objects_XVelZ, X
+	PHA
+	JSR Half_Value
+	STA <Objects_XVelZ, X
+
+	LDA <Objects_YVelZ, X
+	PHA
+	JSR Half_Value
+	STA <Objects_YVelZ, X
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyYVel_NoGravity
+
+	PLA
+	STA <Objects_YVelZ, X
+
+	PLA
+	STA <Objects_XVelZ, X
+
 Swooper_CalcBox:	
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
@@ -3891,7 +3912,32 @@ Swooper_Animate:
 	LSR A
 	AND #$01
 	STA Objects_Frame, X
-	JMP Object_DrawMirrored
+
+Swooper_Draw:
+	JSR Object_DrawMirrored
+
+	LDY Object_SpriteRAMOffset, X
+	LDA Sprite_RAMX, Y
+	SUB #$03
+	STA Sprite_RAMX, Y
+
+	LDA Sprite_RAMX+4, Y
+	ADD #$03
+	STA Sprite_RAMX+4, Y
+
+	LDA Objects_SpriteX, X
+	ADD #$04
+	STA Sprite_RAMX+8, Y
+	
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY+8, Y
+
+	LDA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr+8, Y
+
+	LDA #$D7
+	STA Sprite_RAMTile+8,Y
+	RTS
 
 BooWave_XStart:
 	.byte $E0, $20

@@ -409,6 +409,7 @@ LevelEvent_Do:
 	.word LevelEvent_GenerateCheepCheeps	; 6 - $B9 Random wooden platforms 
 	.word LevelEvent_Ruster	; 7 - $BA Ruster generator
 	.word LevelEvent_Snifit	; 8 - $BB Snifit generator
+	
 
 GEN_CANCEL		= 0
 GEN_8WAYBULLETS = 8
@@ -416,6 +417,7 @@ GEN_MINES		= 2
 GEN_GOLDCHEEPS	= 3
 GEN_GOLDYURARIN = 4
 GEN_BLOOPERS	= 5
+GEN_SWOOPERS	= 9
 
 LevelEvent_DoNothing:
 LevelEvent_DoRTS:
@@ -1154,6 +1156,7 @@ Snifit_Spawn:
 	LDA #$80
 	STA Level_EventTimer
 	RTS
+	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_SpawnObj	-- slots 0 - 4
 ; Level_SpawnObjSetMax	-- slots 0 - input X register
