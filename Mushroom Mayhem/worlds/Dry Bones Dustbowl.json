@@ -667,6 +667,54 @@
       "X": 7,
       "Y": 6,
       "BoundRectangle": "112,96,16,16"
+    },
+    {
+      "LevelId": "7078db37-a1f5-4304-bc4c-9c87028ebb72",
+      "X": 9,
+      "Y": 3,
+      "BoundRectangle": "144,48,16,16"
+    },
+    {
+      "LevelId": "3bad4ff1-56f5-48a5-a7aa-ceafca284d85",
+      "X": 11,
+      "Y": 6,
+      "BoundRectangle": "176,96,16,16"
+    },
+    {
+      "LevelId": "d10a36a0-a976-4c36-8404-9847328337b0",
+      "X": 15,
+      "Y": 7,
+      "BoundRectangle": "240,112,16,16"
+    },
+    {
+      "LevelId": "30e2e664-1b5c-4849-a0d7-85503c92cc03",
+      "X": 56,
+      "Y": 3,
+      "BoundRectangle": "896,48,16,16"
+    },
+    {
+      "LevelId": "3789c1f2-abe0-4798-b7ec-be0e288d87b4",
+      "X": 56,
+      "Y": 7,
+      "BoundRectangle": "896,112,16,16"
+    },
+    {
+      "LevelId": "4619f7ba-8d0f-4abd-af35-061a0b861db0",
+      "X": 52,
+      "Y": 5,
+      "BoundRectangle": "832,80,16,16"
+    },
+    {
+      "LevelId": "2de9957a-8e26-4a44-a883-849eb254fd6e",
+      "X": 47,
+      "Y": 5,
+      "BoundRectangle": "752,80,16,16"
+    },
+    {
+      "LevelId": "67a87146-b163-4e42-9162-5df95684d558",
+      "X": 44,
+      "Y": 6,
+      "BoundRectangle": "704,96,16,16"
     }
   ],
   "ObjectData": [
@@ -689,6 +737,21 @@
       "GameObjectId": 204,
       "X": 15,
       "Y": 7
+    },
+    {
+      "GameObjectId": 207,
+      "X": 5,
+      "Y": 3
+    },
+    {
+      "GameObjectId": 208,
+      "X": 17,
+      "Y": 7
+    },
+    {
+      "GameObjectId": 205,
+      "X": 54,
+      "Y": 8
     }
   ],
   "CompressedData": "AFpaWlpaWlpaWlpaWlpaWgBaWlpaWlpaWlpaWlpaWloASkpKXUpKXUpKSkpKXUpKAAnNysHKysrKEsrKysrBygAICcrKwcrKysrBysrBysoACcrKwcrBysrKyjLKysHKAAnKwcrKyhHKysoTysrKwQAJysoQgYJSysrBysHKyhQACAgJoIeWgYGBgYGBgYG2WlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpdSkpKSkpKXUpKSkpKSkpdys3BysrKysrKysrKysrKysrKUsHKysrKyspSysrKysrKysrNBwnKysrKysrKysrKysrKBwgICcrKysrKysrKysrKBwgICAgJysrKysrKysqCBwgICAgICAnKysrKysrKWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKSkpKSkpKSl1KSkpdSkpKysrKysrKwcrKysrKysrKysrKysHKyspSysrKysrKysrKysrKysrBysrByikqK8oYysrKyspSysHKyso5OjvKM8rKysrBysrKysoHCAgICAjKysrBysrBysoHCAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKXUpKSl1KSkpKSkpdSl1KysHKysHKysoVysrKysHKwQcICcHKysrBysHKzcrKwcrKysrKF8rBysHKwcHBysHBBwnBwcrKysHKwcrBysHKwQgICcrBysrKFsrBzcrBwcoICAgJylLKysHKysrBysHB"
