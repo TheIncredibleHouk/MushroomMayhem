@@ -8,7 +8,7 @@
   "StartX": 2,
   "StartY": 7,
   "PaletteEffect": 2,
-  "PaletteId": "2e8707ed-db5e-4aca-8048-eb43c5731fa9",
+  "PaletteId": "4a0438e0-7d45-4d3b-9fe4-cde7822e0100",
   "StaticTileTableIndex": 92,
   "NoStars": false,
   "MostCommonTile": 0,
@@ -498,7 +498,7 @@
     0,
     0,
     0,
-    0,
+    63,
     0,
     0,
     0,
@@ -6501,13 +6501,25 @@
   "PatchTileData": null,
   "FirstObjectData": [
     {
-      "GameObjectId": 60,
+      "GameObjectId": 125,
+      "X": 4,
+      "Y": 5,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 124,
+      "X": 1,
+      "Y": 2,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 93,
       "X": 11,
-      "Y": 6,
+      "Y": 5,
       "Property": 0
     }
   ],
   "SecondObjectData": [],
   "LevelPointers": [],
-  "CompressedData": "eARGSoIERgAAAEeCBEYAAABHggRGAAAARwRGQT9GP0Y/Rj9GLkbBRg=="
+  "CompressedData": "YME/VgRGSoIERgAAAEeCBEYAAABHggRGAAAARwRGQT9GP0Y/Rj9GLkbBRg=="
 }
