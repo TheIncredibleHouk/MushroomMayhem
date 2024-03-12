@@ -1704,6 +1704,7 @@ MARIO_PLANE = 2
 	Player_SwimCnt:		.ds 1	; Swim counter FIXME Describe better 0-3
 	Player_QueueSuit:	.ds 1	; Queues a suit change (values like Player_Suit, but add 1, EXCEPT: $0F = Statue enable, $40 = Splash, $80 = Kuribo's Shoe)
 	Player_Shell:		.ds 1	; Player is in Tanooki Statue mode; counts down to zero
+	Player_ShellBump:	.ds 1
 	Player_RunFlag:		.ds 1	; Set while Player is actually considered "running" (holding down B and at enough speed; doesn't persist)
 	Player_BlockPounded:    .ds 1	; Set to cause block bounce (upper 4 bits specifies what kind of block will be bounced)
 	Counter_ByPlayerSpd:	.ds 1	; A counter which increments faster as the Player goes faster

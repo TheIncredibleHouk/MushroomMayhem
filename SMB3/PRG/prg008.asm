@@ -3120,6 +3120,7 @@ Player_DetectSolids:
 	STA Player_Slippery	 
 	STA TrapSet
 	STA Wall_Jump_Enabled
+	STA Player_ShellBump
 
 	LDA Player_Oiled
 	BEQ Player_CheckPipeMove
@@ -3189,6 +3190,7 @@ PRG008_B4C9:
 PRG008_B4CA:
 	JSR Player_NextTile
 
+	STA Debug_Snap
 	LDA Player_ForcedSlide
 	BNE PRG008_B4CB
 
@@ -3196,6 +3198,9 @@ PRG008_B4CA:
 
 PRG008_B4CB:
 	JSR Player_NextTile	
+	
+	LDA Player_ShellBump
+	BNE Player_DetectSolids5
 
 	LDA Player_ForcedSlide
 	BNE Player_DetectSolids5
@@ -4526,7 +4531,6 @@ Player_EventsRTS:
 Player_Refresh:
 	RTS
 
-
 Player_DetectWall:
 	LDA Player_ForcedSlide
 	BNE Player_DetectWallRTS0
@@ -4561,6 +4565,7 @@ Player_DetectWall1_1:
 	EOR #$FF
 	ADD #$01
 	STA <Player_XVelZ
+	INC Player_ShellBump
 	
 	JSR Player_ApplyXVelocity
 	RTS
@@ -6157,7 +6162,7 @@ Player_DoClimbing2:
 
 	LDA Climbing_XVel, X
 	STA <Player_XVelZ
-	STA Player_EffXVel
+	STA <Player_EffXVel
 
 	LDA <Player_YVelZ
 	BPL Player_DoClimbing2_0

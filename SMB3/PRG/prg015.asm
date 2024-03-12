@@ -3626,6 +3626,7 @@ PolterGuy_Norm:
 	LDA #$40
 	JSR Object_DeleteOffScreenRange
 	JSR PatrolDiagonal
+	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	

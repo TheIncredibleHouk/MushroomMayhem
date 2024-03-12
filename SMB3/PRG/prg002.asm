@@ -1930,7 +1930,6 @@ IceSpike_Normal:
 	JMP Object_BurstBricks
 
 IceSpike_NotDead:
-	STA Debug_Snap - 1
 	JSR Object_DeleteOffScreen
 
 	LDA IceSpike_Action, X
@@ -2014,7 +2013,6 @@ IceSpike_Fall:
 	LDA #SND_LEVELCRUMBLE
 	STA Sound_QLevel2
 	
-	STA Debug_Snap
 	LDA Objects_Property, X
 	BNE IceSpike_Respawn
 	RTS
