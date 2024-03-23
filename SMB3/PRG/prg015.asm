@@ -3622,7 +3622,6 @@ ObjNorm_PolterGuy:
 	JMP PolterGuy_Draw
 
 PolterGuy_Norm:
-
 	LDA #$40
 	JSR Object_DeleteOffScreenRange
 	JSR PatrolDiagonal
