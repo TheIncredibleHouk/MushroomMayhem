@@ -2240,9 +2240,13 @@ Phanto_KeyNotFound:
 	RTS
 
 Phanto_KeyFound:
+	LDA Objects_Property, X
+	BNE Phanto_SetKeyFound
+
 	LDA Objects_BeingHeld, Y
 	BEQ Phanto_KeyNotFound
 
+Phanto_SetKeyFound:
 	SEC
 	RTS
 
