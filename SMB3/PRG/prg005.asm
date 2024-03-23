@@ -2240,9 +2240,6 @@ Phanto_KeyNotFound:
 	RTS
 
 Phanto_KeyFound:
-	LDA Objects_Property, X
-	BNE Phanto_SetKeyFound
-
 	LDA Objects_BeingHeld, Y
 	BEQ Phanto_KeyNotFound
 
@@ -2251,9 +2248,14 @@ Phanto_SetKeyFound:
 	RTS
 
 Phanto_Wait:
+	LDA Objects_Property, X
+	CMP #$02
+	BCS Phanto_ForcedFound
+
 	JSR Phanto_FindKey
 	BCC Phanto_Wait_End
 
+Phanto_ForcedFound:
 	INC Phanto_Action, X
 
 	LDA #$40
@@ -2268,8 +2270,8 @@ Phanto_Wake:
 
 	INC Phanto_Action, X
 	
-	LDA #(ATTR_STOMPPROOF)
-	STA Objects_WeaponAttr, X
+	; LDA #(ATTR_STOMPPROOF)
+	; STA Objects_WeaponAttr, X
 
 Phanto_Wake1:
 	JSR Object_Draw
@@ -2311,6 +2313,9 @@ Phanto_Chase:
 	RTS
 
 Phanto_ChaseNormal:	
+	LDA Objects_Property, X
+	BNE Phanto_ChaseHover
+
 	JSR Phanto_FindKey
 	BCS Phanto_ChaseHover
 
