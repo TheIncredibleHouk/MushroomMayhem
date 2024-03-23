@@ -3623,6 +3623,7 @@ ObjNorm_PolterGuy:
 
 PolterGuy_Norm:
 	LDA #$40
+	
 	JSR Object_DeleteOffScreenRange
 	JSR PatrolDiagonal
 	JSR Object_FaceDirectionMoving

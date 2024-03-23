@@ -3190,7 +3190,6 @@ PRG008_B4C9:
 PRG008_B4CA:
 	JSR Player_NextTile
 
-	STA Debug_Snap
 	LDA Player_ForcedSlide
 	BNE PRG008_B4CB
 
@@ -5159,7 +5158,7 @@ Player_BgTileInteract:
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
 	.word Tile_NoInteract	; TILE_PROP_DOOR			= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY		= $0E ;
-	.word Player_GetHurt	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Bg_HurtPlayer:
 	LDA Tile_LastProp
@@ -5267,7 +5266,7 @@ Player_BodyHeadTileInteract:
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
 	.word BodyHead_Door	; TILE_PROP_DOOR					= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY			= $0E ;
-	.word Player_GetHurt	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Body_Treasure:
 	LDA TreasureBox_Disabled

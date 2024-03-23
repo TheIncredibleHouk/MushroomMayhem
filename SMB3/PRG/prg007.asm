@@ -202,7 +202,7 @@ Throw_Bullet:
 	RTS
 
 Proj_BallPos:
-	.byte $04, $0C, $FE, $04
+	.byte $04, $0B, $FE, $04
 	.byte $00, $00, $FF, $00
 
 SetProjectilePosition16x16:
@@ -689,6 +689,10 @@ Player_HammerDraw:
 	RTS
 
 Player_HammerTilesInteraction:
+	LDA Tile_LastProp
+	CMP #TILE_PROP_BARRIER
+	BEQ Player_HammerPoof
+
 	LDA Block_NeedsUpdate
 	BNE Player_HammerTilesInteraction1
 
@@ -724,6 +728,12 @@ Player_NinjaStar:
 
 	JSR SObj_ApplyXYVels
 	JSR SpecialObj_CalcBounds16x16
+	JSR SpecialObj_DetectWorld16x16
+
+	LDA Tile_LastProp
+	CMP #TILE_PROP_BARRIER
+	BEQ Player_StarPoof
+
 	JSR PlayerProj_HitEnemies
 	BCC Player_StarNoKill
 
