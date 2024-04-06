@@ -771,9 +771,9 @@ World_SelectRTS:
 	RTS
 
 World_Select_CheckEnable:
-	LDA <Pad_Holding
-	CMP #(PAD_DOWN | PAD_A | PAD_B | PAD_SELECT)
-	BNE World_Select_CheckEnableRTS
+	; LDA <Pad_Holding
+	; CMP #(PAD_DOWN | PAD_A | PAD_B | PAD_SELECT)
+	; BNE World_Select_CheckEnableRTS
 
 	LDA #$01
 	STA World_Select_Enabled
