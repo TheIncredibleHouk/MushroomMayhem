@@ -966,17 +966,22 @@ PRG030_8975:
 PRG030_897B:
 	; Level junctions enter here, to continue with preparation to display!
 
+	STA Debug_Snap
 	LDA #$00	
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 	STA LeftRightInfection
+
+	LDX #$07
+
+Clear_CarryedObjects:	
+	LDY Objects_Global, X
+	BNE Keep_HeldState
+	
 	STA Objects_BeingHeld, X
-	STA Objects_BeingHeld + 1, X
-	STA Objects_BeingHeld + 2, X
-	STA Objects_BeingHeld + 3, X
-	STA Objects_BeingHeld + 4, X
-	STA Objects_BeingHeld + 5, X
-	STA Objects_BeingHeld + 6, X
-	STA Objects_BeingHeld + 7, X
+
+Keep_HeldState:	
+	DEX
+	BPL Clear_CarryedObjects
 	
 	JSR MagicStar_ClearRadar
 	JSR LevelLoad			; Load the level layout data!
