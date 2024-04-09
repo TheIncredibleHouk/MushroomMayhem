@@ -193,9 +193,10 @@ ObjP7D:
 
 ObjP7E:
     .byte $9D, $9F
+	.byte $99, $9B
 
 ObjP89:
-	.byte $99, $9B
+	.byte $8D, $9B
 
 ObjP7F:
     .byte $B1, $B3
@@ -3391,7 +3392,6 @@ ObjInit_PeekaBoo:
 	RTS
 
 ObjNorm_PeekaBoo:
-
 	LDA <Player_HaltGameZ
 	BEQ PeekbaBoo_Normal
 
@@ -3958,6 +3958,7 @@ ObjInit_BooWave:
 	LDA #$02
 	STA Patrol_Blocks, X
 
+BooWave_Reset:
 	LDY #$00
 
 	LDA Player_EffXVel
@@ -3984,14 +3985,21 @@ BooWave_SetSide:
 
 	JSR Object_CalcBoundBox
 	JSR Object_MoveTowardsPlayerFast
-
 	RTS
 
 ObjNorm_BooWave:
 	LDA <Player_HaltGameZ
 	BNE BooWave_Draw
 
-	JSR Object_DeleteOffScreen
+	LDA #$20
+	STA DeleteRange
+
+	JSR Object_CheckOffScreen
+	BCC BooWave_KeepMoving
+
+	JSR BooWave_Reset 
+
+BooWave_KeepMoving:
 	JSR Object_FaceDirectionMoving
 	JSR Object_ApplyXVel
 	JSR PatrolUpDown

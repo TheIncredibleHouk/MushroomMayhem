@@ -409,6 +409,7 @@ LevelEvent_Do:
 	.word LevelEvent_GenerateCheepCheeps	; 6 - $B9 Random wooden platforms 
 	.word LevelEvent_Ruster	; 7 - $BA Ruster generator
 	.word LevelEvent_Snifit	; 8 - $BB Snifit generator
+	.word LevelEvent_BooWaves ; 9 - NO OBJECT
 	
 
 GEN_CANCEL		= 0
