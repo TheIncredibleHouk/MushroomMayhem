@@ -1,0 +1,45 @@
+@keyframes open-close {
+    from {
+        transform: skew(0deg, 0deg);
+    }
+
+    to {
+        transform: skew(45deg, 45deg);
+    }
+}
+
+.pacman {
+    background-color: yellow;
+    border-radius: 50px;
+    height: 50px;
+    position: relative;
+    width: 50px;
+}
+
+.pacman.right {
+    transform: rotate(-45deg);
+}
+
+.pacman.left {
+    transform: rotate(-225deg);
+}
+
+.pacman.up {
+    transform: rotate(-135deg);
+}
+
+.pacman.down {
+    transform: rotate(-315deg);
+}
+
+.mouth {
+    animation: open-close .15s infinite;
+    animation-direction: alternate;
+    background-color: #FFFFFF;
+    height: 50px;
+    left: 50%;
+    transform-origin: 0 0;
+    top: 50%;
+    position: absolute;
+    width: 25px;
+}
