@@ -6692,7 +6692,7 @@
       "GameObjectId": 5,
       "X": 14,
       "Y": 15,
-      "Property": 0
+      "Property": 2
     },
     {
       "GameObjectId": 137,
@@ -6731,18 +6731,6 @@
       "Property": 2
     },
     {
-      "GameObjectId": 137,
-      "X": 228,
-      "Y": 21,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 137,
-      "X": 203,
-      "Y": 21,
-      "Property": 0
-    },
-    {
       "GameObjectId": 18,
       "X": 171,
       "Y": 21,
@@ -6751,7 +6739,25 @@
     {
       "GameObjectId": 133,
       "X": 179,
-      "Y": 10,
+      "Y": 9,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 133,
+      "X": 202,
+      "Y": 14,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 133,
+      "X": 226,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 133,
+      "X": 221,
+      "Y": 19,
       "Property": 1
     }
   ],
