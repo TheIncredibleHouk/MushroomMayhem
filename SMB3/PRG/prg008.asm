@@ -5158,7 +5158,7 @@ Player_BgTileInteract:
 	.word Bg_Coin			; TILE_PROP_COIN			= $0C ;
 	.word Tile_NoInteract	; TILE_PROP_DOOR			= $0D ;
 	.word Bg_Cherry			; TILE_PROP_CHERRY		= $0E ;
-	.word Tile_NoInteract	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
+	.word Player_GetHurt	; TILE_PROP_HIDDEN_BLOCK	= $0F ;
 
 Bg_HurtPlayer:
 	LDA Tile_LastProp

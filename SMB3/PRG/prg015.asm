@@ -144,7 +144,7 @@ OBJ_PARACHOMP		= $8B
     .byte KILLACT_NORMALSTATE ; Object $7C
     .byte KILLACT_NORMALSTATE ; Object $7D
     .byte KILLACT_NORMALSTATE ; Object $7E
-    .byte KILLACT_STARDEATH ; Object $7F
+    .byte KILLACT_NORMALSTATE ; Object $7F
     .byte KILLACT_STARDEATH ; Object $80
     .byte KILLACT_NORMALSTATE ; Object $81
     .byte KILLACT_NORMALSTATE ; Object $82
@@ -199,7 +199,7 @@ ObjP89:
 	.byte $8D, $9B
 
 ObjP7F:
-    .byte $B1, $B3
+    .byte $AF, $B1
 
 ObjP80:
 ObjP81:
@@ -2342,10 +2342,10 @@ Boo_SetFrame:
 PirateBoo_CoinTimer = Objects_Data1
 
 ObjInit_PirateBoo:
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
 	STA Objects_WeaponAttr, X
 
-	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
+	LDA #(ATTR_SHELLPROOF)
 	STA Objects_BehaviorAttr, X
 
 	LDA #BOUND16x16
@@ -2361,6 +2361,7 @@ ObjInit_PirateBoo:
 	BEQ PriateBoo_InitRTS
 
 	LDA #SPR_BEHINDBG
+	ORA Objects_SpriteAttributes, X
 	STA Objects_SpriteAttributes, X
 
 PriateBoo_InitRTS:
@@ -2370,6 +2371,9 @@ ObjNorm_PirateBoo:
 	LDA Objects_State, X
 	CMP #OBJSTATE_KILLED
 	BNE PirateBoo_NotDead
+
+	LDA #$00
+	STA Objects_Health, X
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
@@ -2381,6 +2385,18 @@ PirateBoo_NotDead:
 	LDA <Player_HaltGameZ
 	BNE PirateBoo_Draw
 
+	LDA Objects_Timer, X
+	BEQ PirateBoo_Norm
+
+	AND #$01
+	BEQ PriateBoo_Invisible
+
+	JSR PirateBoo_Draw
+
+PriateBoo_Invisible:
+	RTS
+
+PirateBoo_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_ChasePlayer
 	JSR Object_FaceDirectionMoving
@@ -2390,6 +2406,14 @@ PirateBoo_Draw:
 	JMP Object_Draw 	
 
 PirateBoo_TakeCoins:
+	LDA Player_Invicible
+	BEQ PirateBoo_TakeCoinTimer
+
+	LDA #OBJSTATE_KILLED
+	STA Objects_State, X
+	RTS
+
+PirateBoo_TakeCoinTimer:
 	INC PirateBoo_CoinTimer, X
 	LDA PirateBoo_CoinTimer, X
 	AND #$07

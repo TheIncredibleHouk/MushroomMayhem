@@ -681,7 +681,7 @@
       "BoundRectangle": "176,96,16,16"
     },
     {
-      "LevelId": "d10a36a0-a976-4c36-8404-9847328337b0",
+      "LevelId": "2c49ae32-d7ea-4ceb-b9c9-3acd3a38c3e1",
       "X": 15,
       "Y": 7,
       "BoundRectangle": "240,112,16,16"
@@ -745,8 +745,8 @@
     },
     {
       "GameObjectId": 208,
-      "X": 17,
-      "Y": 7
+      "X": 18,
+      "Y": 6
     },
     {
       "GameObjectId": 205,

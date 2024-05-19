@@ -3071,6 +3071,7 @@ RepeatTileLoop:
 	LDX Level_Redraw
 	BEQ SkipRepeat
 
+	STA $7FFF
 	LDA [Temp_Var14], Y
 	STA [Temp_Var8],Y
 
@@ -3125,6 +3126,7 @@ RepeatPatternToLevel:
 	LDX #$00
 
 DrawPattern:
+	STA $7FFE
 	LDA Level_Redraw
 	BEQ SkipDrawPattern
 
@@ -3155,6 +3157,7 @@ WriteRawLoop:
 	LDA Level_Redraw
 	BEQ SkipWriteRaw
 	
+	STA $7FFD
 	LDA [Temp_Var14], Y
 	STA [Temp_Var8], Y
 
