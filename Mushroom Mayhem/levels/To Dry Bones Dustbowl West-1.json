@@ -3907,9 +3907,9 @@
     65,
     65,
     65,
+    65,
+    65,
     127,
-    65,
-    65,
     65,
     65,
     65,
@@ -6502,32 +6502,38 @@
   "FirstObjectData": [
     {
       "GameObjectId": 51,
-      "X": 45,
+      "X": 55,
       "Y": 18,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 47,
-      "X": 39,
-      "Y": 17,
       "Property": 0
     },
     {
-      "GameObjectId": 47,
-      "X": 30,
-      "Y": 17,
+      "GameObjectId": 41,
+      "X": 20,
+      "Y": 16,
       "Property": 0
     },
     {
       "GameObjectId": 51,
-      "X": 16,
+      "X": 8,
+      "Y": 18,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 41,
+      "X": 43,
+      "Y": 16,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 47,
+      "X": 27,
       "Y": 18,
       "Property": 0
     },
     {
       "GameObjectId": 47,
-      "X": 22,
-      "Y": 17,
+      "X": 36,
+      "Y": 18,
       "Property": 0
     }
   ],
@@ -6560,5 +6566,5 @@
       "BoundRectangle": "16,352,32,32"
     }
   ],
-  "CompressedData": "P0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0EMQcF/I0HBfz9BP0E/QT9BP0ENQcK+vzlBwr6/AUHCrq8GQSuzBkHDrq9BP1Q/Yz5j"
+  "CompressedData": "P0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0EMQcF/JUHBfz9BP0E/QT9BP0ELQcK+vzlBwr6/AUHCrq8GQSuzBkHDrq9BP1Q/Yz9j"
 }
