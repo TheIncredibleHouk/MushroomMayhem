@@ -966,7 +966,6 @@ PRG030_8975:
 PRG030_897B:
 	; Level junctions enter here, to continue with preparation to display!
 
-	STA Debug_Snap
 	LDA #$00	
 	STA Vert_Scroll_Off	; Vert_Scroll_Off = 0
 	STA LeftRightInfection
