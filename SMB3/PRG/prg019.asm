@@ -1371,7 +1371,6 @@ PRG005_BEF8:
 	; Clear all object states
 
 Check_GlobalHeld:
-	STA Debug_Snap
 	LDA Objects_BeingHeld, X
 	BEQ PRG005_BF01
 

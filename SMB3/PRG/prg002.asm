@@ -2494,6 +2494,7 @@ PRG003_B8E9:
 	RTS		 ; Return
 
 ObjInit_MarioBlack:
+	STA Debug_Snap
 	STX <Temp_Var1
 	
 	LDY #$04
@@ -2508,6 +2509,29 @@ BlockFlip_CheckNext:
 
 	JSR Object_Delete
 
+BlockFlip_NextCheck:
+	DEY
+	BPL BlockFlip_CheckNext
+
+	LDA #BOUND16x48
+	STA Objects_BoundBox, X
+
+	LDY #$00
+
+BlockFlip_NilSolids:
+	LDA TileProperties, Y
+	CMP #TILE_PROP_ITEM
+	BCC BlockFlip_NextBlock
+
+	LDA #TILE_PROP_SOLID_ALL
+	STA TileProperties, Y
+
+BlockFlip_NextBlock:
+	DEY
+	BNE BlockFlip_NilSolids
+
+	RTS
+
 ObjNorm_MarioBlack:
 	LDA #$0F
 	STA Palette_Buffer + 17
@@ -2521,12 +2545,6 @@ Block_XDistances:
 	.byte $08, $18, $28, $08
 
 ObjInit_BlockFlip:
-	RTS
-
-BlockFlip_NextCheck:
-	DEY
-	BPL BlockFlip_CheckNext
-
 	LDA #BOUND16x48
 	STA Objects_BoundBox, X
 	RTS
