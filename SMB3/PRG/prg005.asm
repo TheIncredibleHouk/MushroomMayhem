@@ -869,9 +869,13 @@ VeggieGuy_FindVeggie:
 	BCS VeggieGuy_FindVeggieDone
 
 	AND #$0F
+	CMP #TILE_PROP_TREASURE
+	BEQ VeggieGuy_PullVeggie
+
 	CMP #TILE_PROP_OBJECTINTERACT
 	BNE VeggieGuy_FindVeggieDone
 
+VeggieGuy_PullVeggie:
 	LDA #$20
 	STA VeggieGuy_PullingVeggie, X
 	

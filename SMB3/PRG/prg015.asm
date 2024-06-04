@@ -3586,8 +3586,12 @@ PolterGuy_StartSpeed:
 	.byte $F0, $10	
 	
 PolterGuy_HasBomb = Objects_Data1
+PolterGuy_StartX = Objects_Data2
 
 ObjInit_PolterGuy:
+	LDA <Objects_XZ, X
+	STA PolterGuy_StartX, X
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
@@ -3646,9 +3650,13 @@ ObjNorm_PolterGuy:
 	JMP PolterGuy_Draw
 
 PolterGuy_Norm:
-	LDA #$40
-	
-	JSR Object_DeleteOffScreenRange
+	LDA <Objects_XZ, X
+	CMP PolterGuy_StartX, X
+	BNE PolterGuy_NoDelete
+
+	JSR Object_DeleteOffScreen
+
+PolterGuy_NoDelete:	
 	JSR PatrolDiagonal
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox

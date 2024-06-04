@@ -5,11 +5,12 @@
   "ClearTileIndex": 128,
   "MusicValue": 0,
   "ScreenLength": 1,
-  "StartX": 0,
-  "StartY": 20,
+  "StartX": 3,
+  "StartY": 23,
   "PaletteEffect": 0,
   "PaletteId": "c9fe2252-11e5-468e-b82c-8fc2c0d56e07",
   "StaticTileTableIndex": 62,
+  "NoStars": false,
   "MostCommonTile": 129,
   "AnimationType": 0,
   "ScrollType": 1,
@@ -5782,10 +5783,10 @@
     145,
     145,
     146,
-    99,
-    99,
-    99,
-    99,
+    122,
+    122,
+    122,
+    122,
     144,
     145,
     145,
@@ -6528,5 +6529,5 @@
       "BoundRectangle": "176,352,32,32"
     }
   ],
-  "CompressedData": "ghD/gYGBgYFBQUFBQUFBQYH/wf9EwkG6A0HDgUGBAf9NA/9DCf9EB0HBgQH/RMJBugVBwYEB/0oBQcGBAf9BCf/CQYEB/0QHQcGBAf9EwkG6BUHBgQH/RAdBwYEG/wNBBv9NAf9EB0HBgQH/RAdBggSB//+BA//BQQH/ghBBgf//gYGBgYFBQUFBQUFBwkGBAf9LwUGCA4H//wH/wUEB/8GBA//BgQH/RAdBwYEB/0nBDkIB/8GBAYRGxB+BhIEB/wORwZIDY8GQA5EB/wNRwVIBQcOBQVADUQH/wWACYcFiA5HBYANhwf8="
+  "CompressedData": "ghD/gYGBgYFBQUFBQUFBQYH/wf9EwkG6A0HDgUGBAf9NA/9DCf9EB0HBgQH/RMJBugVBwYEB/0oBQcGBAf9BCf/CQYEB/0QHQcGBAf9EwkG6BUHBgQH/RAdBwYEG/wNBBv9NAf9EB0HBgQH/RAdBggSB//+BA//BQQH/ghBBgf//gYGBgYFBQUFBQUFBwkGBAf9LwUGCA4H//wH/wUEB/8GBA//BgQH/RAdBwYEB/0nBDkIB/8GBAYRGxB+BhIEB/wORwZIDesGQA5EB/wNRwVIBQcOBQVADUQH/wWACYcFiA5HBYANh"
 }

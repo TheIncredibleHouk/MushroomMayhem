@@ -2494,7 +2494,6 @@ PRG003_B8E9:
 	RTS		 ; Return
 
 ObjInit_MarioBlack:
-	STA Debug_Snap
 	STX <Temp_Var1
 	
 	LDY #$04
@@ -2578,8 +2577,9 @@ ObjNorm_BlockFlip:
 	
 	JSR Object_DetectTile
 
+	STA Debug_Snap
 	LDA Tile_LastProp
-	CMP #(TILE_PROP_STONE | TILE_PROP_SOLID_ALL)
+	CMP #(TILE_PROP_SOLID_OBJECTINTERACT | TILE_PROP_SOLID_ALL)
 	BNE BlockFlip_Next
 
 	LDA <Objects_YZ, X
