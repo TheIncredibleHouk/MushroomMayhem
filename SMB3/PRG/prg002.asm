@@ -2546,7 +2546,7 @@ Block_XDistances:
 ObjInit_BlockFlip:
 	LDA #BOUND16x48
 	STA Objects_BoundBox, X
-	RTS
+	JMP Object_NoInteractions
 
 ObjNorm_BlockFlip:
 	JSR Object_CalcBoundBox
