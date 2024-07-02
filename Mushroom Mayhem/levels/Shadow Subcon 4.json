@@ -500,10 +500,10 @@
     255,
     255,
     255,
-    129,
-    129,
-    129,
-    129,
+    122,
+    122,
+    122,
+    122,
     255,
     255,
     255,
@@ -6513,7 +6513,38 @@
       "Property": 0
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 57,
+      "X": 7,
+      "Y": 14,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 57,
+      "X": 8,
+      "Y": 14,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 57,
+      "X": 7,
+      "Y": 6,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 57,
+      "X": 8,
+      "Y": 6,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 90,
+      "X": 6,
+      "Y": 25,
+      "Property": 1
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "481ef46c-5f00-4222-9f9d-19c99925c526",
@@ -6529,5 +6560,5 @@
       "BoundRectangle": "176,320,32,32"
     }
   ],
-  "CompressedData": "ghD/gYGBgYGBgYGBgYGBgYH/Av9DCf9NAf9FwbpGAf9NAf9BCf9BAf9NAf9FwbpGAf9NBv9DBv9NAf9NAf9NAf9BAf/BgQP/ggSB//+BTAH/TQH/TQH/ggOB//9BAf+CA4H//0gBQUIB/8GBAUFFwkEOAUHBgQH/wUEBhAZBxB9BhEEB/8GQApHBkgN6wZACkcGSAf/BUAJRwVIDesFQAlHBUgH/wWACYcFiA3rBYAJhwWIB/8FgAmHBYkOBEGBhYWFi//9gYWFhYpGRkZHBYAJhwmL/"
+  "CompressedData": "ghD/gYGBgYGBgYGBgYGBgYH/Av8Degn/TQH/RcG6RgH/TQH/QQn/QQH/TQH/RcG6RgH/TQb/Qwb/TQH/TQH/TQH/QQH/wYED/4IEgf//gUwB/00B/00B/4IDgf//QQH/ggOB//9IAUFCAf/BgQFBRcJBDgFBwYEB/8FBAYQGQcQfQYRBAf/BkAKRwZIDesGQApHBkgH/wVACUcFSA3rBUAJRwVIB/8FgAmHBYgN6wWACYcFiAf/BYAJhwWJDgRBgYWFhYv//YGFhYWKRkZGRwWACYcJi/w=="
 }

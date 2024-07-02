@@ -320,7 +320,7 @@
     202,
     202,
     193,
-    202,
+    193,
     193,
     202,
     205,
@@ -383,9 +383,9 @@
     23,
     202,
     193,
-    202,
     193,
-    202,
+    193,
+    193,
     193,
     193,
     193,
@@ -449,12 +449,12 @@
     202,
     193,
     202,
-    193,
+    202,
+    202,
     202,
     193,
-    202,
     193,
-    202,
+    193,
     7,
     0,
     9,
@@ -513,13 +513,13 @@
     202,
     202,
     22,
-    202,
+    193,
     193,
     205,
-    202,
-    7,
-    8,
-    8,
+    193,
+    128,
+    129,
+    129,
     0,
     8,
     8,
@@ -576,14 +576,14 @@
     82,
     202,
     202,
-    193,
     7,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
+    9,
+    128,
+    129,
+    129,
+    151,
+    145,
+    145,
     79,
     79,
     79,
@@ -687,7 +687,7 @@
       "BoundRectangle": "240,112,16,16"
     },
     {
-      "LevelId": "481ef46c-5f00-4222-9f9d-19c99925c526",
+      "LevelId": "30e2e664-1b5c-4849-a0d7-85503c92cc03",
       "X": 56,
       "Y": 3,
       "BoundRectangle": "896,48,16,16"
@@ -760,7 +760,7 @@
     {
       "GameObjectId": 204,
       "X": 15,
-      "Y": 7
+      "Y": 8
     },
     {
       "GameObjectId": 207,
@@ -778,5 +778,5 @@
       "Y": 8
     }
   ],
-  "CompressedData": "AFpaWlpaWlpaWlpaWlpaWgBaWlpaWlpaWlpaWlpaWloASkpKXUpKXUpKSkpKXUpKAAnNysHKysrKEsrKysrBygAICcrKwcrKysrBysrBysoACcrKwcrBysrKyjLKysHKAAnKwcrKyhHKysoTysrKwQAJysoQgYJSysrBysHKyhQACAgJoIeWgYGBgYGBgYG2WlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpdSkpKSkpKXUpKSkpKSkpdys3BwcrBwcHBwcHBwcHBwcrKUsHBwcHBwcFSwcHBwcHKysrNBwnBwcHBwcHBwcHBysrKBwgICcHBwcHBwcHBwcrKBwgICAgICAgICAgICAiCBwgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKSkpKSkpKSl1KSkpdSkpKwcHBwcHBwcHBwcHKysrKysHBwcHBysFSwcHKysrKysrBwcHBwcEHCcHKyikqK8oYwcHBwcEHCAgJyso5OjvKMwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKXUpKSl1KSkpKSkpdSl1KysHKysHKysoVysrBysHKwQcICcHKysrBysHKzcrKwcrKysrKF8rBysHKwcHBysHBBwnBwcrKysHKwcrBysHKBwgICcrBysrKFsrBzcoHCAgICAgIylLKysEHCAgICAgI"
+  "CompressedData": "AFpaWlpaWlpaWlpaWlpaWgBaWlpaWlpaWlpaWlpaWloASkpKXUpKXUpKSkpKXUpKAAnNysHKysrKEsrKysrBygAICcrKwcrKysrBysrBysoACcrKwcrBysrKyjLKysHKAAnKwcrKyhHKysoTysrKwQAJysoQgYJSysrBysHKyhQACAgJoIeWgYGBgYGBgYG2WlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpdSkpKSkpKXUpKSkpKSkpdys3BwcrBwcHBwcHBwcHBwcrKUsHBwcHBwcFSwcHBwcHKysrNBwnBwcHBwcHBwcHBysrKBwgICcHBwcHBwcHBwcrKBwgICAgICAgICAgICAiCBwgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKSkpKSkpKSl1KSkpdSkpKwcHBwcHBwcHBwcHKysrKysHBwcHBysFSwcHKysrKysrBwcHBwcEHCcHKyikqK8oYwcHBwcEHCAgJyso5OjvKMwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKXUpKSl1KSkpKSkpdSl1KysHKysHKysoVysrBysHKwQcICcHKysrBwcHKzcrKwcrKysrKF8rBwcHBwcHBysHBBwnBwcrKysHKysrKwcHBBwgICcrBysrKFsHBzcGAgYEICAgIylLKygcJgIGBl5GR"
 }

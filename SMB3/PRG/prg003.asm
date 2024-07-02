@@ -398,10 +398,10 @@ Platform_ContactCheck:
 Platform_CheckRTS:
 	RTS    
 
-
 ObjInit_PlatformFollow:
-	JMP ObjInit_PlatformCommon    
+	INC <Objects_YZ, X
 
+	JMP ObjInit_PlatformCommon
 
 ObjNorm_PlatformFollow:
 	LDA <Player_HaltGameZ
@@ -440,7 +440,6 @@ PlatformFollow_NoMove:
 
 	LDA <Objects_YZ, X
 	AND #$0F
-	CMP #$0E
 	BNE ObjNorm_PlatformFollow1
 
 	LDA Objects_XVelFrac, X
@@ -467,10 +466,13 @@ Platform_FollowBlocks:
 	STA Platform_Fall, X
 
 	LDA #$03
-	STA Platform_Index, X
+	STA Platform_Ticker, X
 
 Platform_CheckBlocks:
-	LDY Platform_Index, X
+	LDA Platform_Index, X
+	AND #$03
+	TAY
+
 	LDA Platform_XOffsets, Y
 	ADD <Objects_XZ, X
 	STA Block_DetectX
@@ -491,7 +493,8 @@ Platform_CheckBlocks:
 	CMP #TILE_PROP_OBJECTINTERACT
 	BEQ Platform_SetVel
 
-	DEC Platform_Index, X
+	INC Platform_Index, X
+	DEC Platform_Ticker, X
 	BPL Platform_CheckBlocks
 	
 	LDA #$01
@@ -507,7 +510,10 @@ Platform_SetVel:
 	ORA #$01
 	JSR Object_ChangeBlock
 
-	LDY Platform_Index, X
+	LDA Platform_Index, X
+	AND #$03
+	TAY 
+
 	LDA Platform_XVel, Y
 	STA <Objects_XVelZ, X
 

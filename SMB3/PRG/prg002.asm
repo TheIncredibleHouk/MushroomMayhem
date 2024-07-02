@@ -2577,7 +2577,6 @@ ObjNorm_BlockFlip:
 	
 	JSR Object_DetectTile
 
-	STA Debug_Snap
 	LDA Tile_LastProp
 	CMP #(TILE_PROP_SOLID_OBJECTINTERACT | TILE_PROP_SOLID_ALL)
 	BNE BlockFlip_Next

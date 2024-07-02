@@ -3835,6 +3835,14 @@ ObjInit_Swooper:
 
 	LDA #$03
 	STA Objects_SpritesRequested, X
+
+	LDA <Objects_YZ, X
+	SUB #$02
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	SBC #$00
+	STA <Objects_YHiZ, X
 	RTS
 
 Swooper_AnimTicks = Objects_Data1

@@ -1458,6 +1458,12 @@ Snifit_March:
 Snifit_MarchDone:
 	JMP Snifit_Animate
 
+Snifit_ShootXOffset:
+	.byte $FF, $0C
+
+Snifit_ShootXHiOffset:
+	.byte $FF, $00
+
 Snifit_ShootXVel:
 	.byte $18, $E8
 
@@ -1511,8 +1517,10 @@ Snifit_ShootFacePlayer:
 
 Snifit_CheckYVel:
 	LDA <Objects_YVelZ, X
-	BMI Snifit_ShootDone
+	BPL Snifit_NotDone
+	JMP Snifit_ShootDone
 
+Snifit_NotDone:
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
 	BNE Snifit_ShootDone
@@ -1539,7 +1547,23 @@ Snifit_NoAim:
 	LDA #$18
 	STA SpecialObj_XVel, Y	
 
-Snifit_Fireball:	
+Snifit_Fireball:
+	LDA Snifit_ShootXOffset
+	STA <Temp_Var1
+
+	LDA Snifit_ShootXHiOffset
+	STA <Temp_Var2
+
+	LDA Objects_Orientation, X
+	BEQ Snifit_FacingRight
+
+	LDA Snifit_ShootXOffset + 1
+	STA <Temp_Var1
+
+	LDA Snifit_ShootXHiOffset + 1
+	STA <Temp_Var2
+
+Snifit_FacingRight:
 	LDA #SOBJ_FIREBALL
 	STA SpecialObj_ID, Y
 
@@ -1547,17 +1571,21 @@ Snifit_Fireball:
 	STA SpecialObj_Data1, Y
 	STA SpecialObj_Data3, Y
 
+	STA Debug_Snap
 	LDA <Objects_XZ, X
-	ADD #$04
+	ADD <Temp_Var1
 	STA SpecialObj_X, Y
 
 	LDA <Objects_XHiZ, X
+	ADC <Temp_Var2
 	STA SpecialObj_XHi, Y
 
 	LDA <Objects_YZ, X
+	ADD #$04
 	STA SpecialObj_Y, Y
 
 	LDA <Objects_YHiZ, X
+	ADC #$00
 	STA SpecialObj_YHi, Y
 
 	DEC Snifit_ShotsLeft, X
