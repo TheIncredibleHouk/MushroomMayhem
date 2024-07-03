@@ -2783,6 +2783,23 @@ BlockSwitch_Timer = Objects_Data1
 BlockSwitch_Index = Objects_Data2
 
 ObjInit_BlockSwitcher:
+	LDY #$04
+
+BlockSwitch_DupeCheck:
+	TYA
+	CPX <CurrentObjectIndexZ
+	BEQ BlockSwitch_NotDupe
+
+	LDA Objects_ID, Y
+	CMP #OBJ_BLOCKSWITCHER
+	BNE BlockSwitch_NotDupe
+
+	JMP Object_Delete
+
+BlockSwitch_NotDupe:
+	DEY
+	BPL BlockSwitch_DupeCheck
+
 	RTS
 
 ObjNorm_BlockSwitcher:
@@ -2825,16 +2842,16 @@ BlockSwitcher_Norm:
 	STA TileProperties + $8B
 
 	LDA BlockSwitch_TilePropsB, Y
-	STA TileProperties + $C8
+	STA TileProperties + $42
 
 	LDA BlockSwitch_TilePropsB + 4, Y
-	STA TileProperties + $C9
+	STA TileProperties + $43
 
 	LDA BlockSwitch_TilePropsB + 8, Y
-	STA TileProperties + $CA
+	STA TileProperties + $44
 
 	LDA BlockSwitch_TilePropsB + 12, Y
-	STA TileProperties + $CB	
+	STA TileProperties + $45	
 
 BlockSwitcher_RTS:
 	RTS		
