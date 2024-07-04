@@ -1571,7 +1571,6 @@ Snifit_FacingRight:
 	STA SpecialObj_Data1, Y
 	STA SpecialObj_Data3, Y
 
-	STA Debug_Snap
 	LDA <Objects_XZ, X
 	ADD <Temp_Var1
 	STA SpecialObj_X, Y

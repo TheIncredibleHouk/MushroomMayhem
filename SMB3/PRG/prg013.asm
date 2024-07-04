@@ -1,6 +1,8 @@
 	.org $C000
 
 HandleLevelEvent:
+
+	STA Debug_Snap
 	LDA EventType
 	JSR DynJump
 
@@ -14,6 +16,7 @@ HandleLevelEvent:
 	.word Direction_Switch ;07
 	.word Lava_Flood ; 08
 	.word Lava_Drain ; 09
+	.word Dynamic_Wind; 0A
 
 NoEvent:
 LetEnemyHandle:
@@ -834,4 +837,65 @@ Lava_DrainWaitRTS:
 	RTS	
 
 Lava_DrainDone:
+	RTS
+
+Dynamic_WindSpeed:
+	.byte $00, $01, $02, $03, $04, $05, $06, $07
+	.byte $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
+	.byte $0F, $0E, $0D, $0C, $0B, $0A, $09, $08
+	.byte $07, $06, $05, $04, $03, $02, $01, $00
+	.byte $00, $FF, $FE, $FD, $FC, $FB, $FA, $F9
+	.byte $F8, $F7, $F6, $F5, $F4, $F3, $F2, $F1
+	.byte $F1, $F2, $F3, $F4, $F5, $F6, $F7, $F8
+	.byte $F9, $FA, $FB, $FC, $FD, $FE, $FF, $00
+
+Dynamic_Wind:
+	LDX #$04
+
+Dynamic_FindWind:
+	LDA Level_EventTimer
+	BNE Dynamic_WindFindRTS
+
+	LDA Objects_ID, X
+	CMP #OBJ_WEATHER
+	BEQ Dynamic_WindFound
+
+	DEX
+	BPL Dynamic_FindWind
+
+	LDA #$00
+	STA EventSwitch
+	STA EventType
+
+Dynamic_WindFindRTS:
+	DEC Level_EventTimer
+	RTS	
+
+Dynamic_WindFound:
+	LDA #$01
+	STA Objects_Global, X
+
+	LDA EventVar
+	AND #$3F
+	TAY
+
+	LDA Dynamic_WindSpeed, Y
+	JSR Double_Value
+	STA Wind
+
+	LDA Dynamic_WindSpeed, Y
+	JSR Half_Value
+	
+	STA Weather_XVel
+	STA Weather_XVel + 1
+	STA Weather_XVel + 2
+	STA Weather_XVel + 3
+	STA Weather_XVel + 4
+	STA Weather_XVel + 5
+	STA Weather_XVel + 6
+	STA Weather_XVel + 7
+
+	LDA #$04
+	STA Level_EventTimer
+	INC EventVar
 	RTS

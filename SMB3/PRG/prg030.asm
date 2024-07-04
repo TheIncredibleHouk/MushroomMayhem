@@ -3070,7 +3070,6 @@ RepeatTileLoop:
 	LDX Level_Redraw
 	BEQ SkipRepeat
 
-	STA $7FFF
 	LDA [Temp_Var14], Y
 	STA [Temp_Var8],Y
 

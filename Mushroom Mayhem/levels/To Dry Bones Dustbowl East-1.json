@@ -3633,6 +3633,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3644,6 +3645,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3659,6 +3661,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3674,6 +3677,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3685,6 +3689,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3692,12 +3697,14 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3709,6 +3716,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3724,6 +3732,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3739,6 +3748,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3750,6 +3760,7 @@
     65,
     65,
     65,
+    110,
     65,
     65,
     65,
@@ -3782,17 +3793,6 @@
     65,
     65,
     65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
-    65,
     179,
     179,
     179,
@@ -4827,7 +4827,7 @@
     65,
     65,
     65,
-    65,
+    66,
     6,
     6,
     6,
@@ -4966,7 +4966,7 @@
     6,
     6,
     6,
-    65,
+    66,
     65,
     65,
     65,
@@ -6500,7 +6500,86 @@
   ],
   "PatchTileData": null,
   "FirstObjectData": [],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 57,
+      "X": 149,
+      "Y": 20,
+      "Property": 3
+    },
+    {
+      "GameObjectId": 57,
+      "X": 10,
+      "Y": 20,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 9,
+      "X": 16,
+      "Y": 22,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 9,
+      "X": 28,
+      "Y": 22,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 9,
+      "X": 44,
+      "Y": 22,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 9,
+      "X": 143,
+      "Y": 22,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 9,
+      "X": 131,
+      "Y": 22,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 9,
+      "X": 60,
+      "Y": 22,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 9,
+      "X": 115,
+      "Y": 22,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 9,
+      "X": 87,
+      "Y": 22,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 9,
+      "X": 99,
+      "Y": 22,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 9,
+      "X": 72,
+      "Y": 22,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 9,
+      "X": 80,
+      "Y": 22,
+      "Property": 0
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "79737f7b-5b73-4bb3-a7ac-02dff38af3fb",
@@ -6529,5 +6608,5 @@
       "BoundRectangle": "2512,352,32,32"
     }
   ],
-  "CompressedData": "f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39KFQZNCAZMAwZNAwZMCAZNFQZ/f2zCvr9/f1jCvr9Cwq6vRD+zP7MNs0XDrq9BP1E/UR9RP2M/Yz9jP2M/Yw=="
+  "CompressedData": "f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f2+CDG5BQUFBQUFBQUFBQUPBbk7BbkrBbkaCB25BQUFBQUFEghBuQUFBQUFBQUFBQUFBQUFBggxuQUFBQUFBQUFBQUF/f39/f39/f39/TsFCFQZNCAZMAwZNAwZMCAZNFQbBQn9/a8K+v39/WMK+v0LCrq9EP7M/sw2zRcOur0E/UT9RH1E/Yz9jP2M/Yz9j"
 }
