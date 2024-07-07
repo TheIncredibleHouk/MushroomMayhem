@@ -1919,6 +1919,7 @@ Piranha_Attack:
 	LDA Piranha_AttacksLeft, X
 	BEQ Piranha_Attack2
 
+	STA Debug_Snap
 	LDA Objects_Property, X
 	LSR A
 	STA <Temp_Var15

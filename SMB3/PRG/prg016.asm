@@ -3218,495 +3218,6 @@ ObjInit_BadgeShop:
 BadgeShop_InitRTS:
 	JMP Object_NoInteractions
 
-ObjNorm_BadgeShop:
-	LDA BadgeShop_Drawn, X
-	BNE BadgeShop_TryInstructions
-
-	INC BadgeShop_Drawn, X
-	JMP BadgeShop_UpdateWindow
-
-BadgeShop_TryInstructions:
-	LDA BadgeShop_InstructionsDrawn, X
-	BNE BadgeShop_Norm
-
-	JSR BadgeShop_WriteInstructions
-	JMP BadgeShop_Draw
-
-BadgeShop_Norm:		
-	LDA #$10
-	STA Player_HaltTick
-
-	LDA Pad_Input
-	AND #PAD_UP
-	BEQ BadgeShop_TryExit
-
-	JSR BadgeShop_Explanation
-	JMP BadgeShop_Draw
-
-BadgeShop_TryExit:	
-	LDA Pad_Input
-	AND #PAD_B
-	BEQ BadgeShop_TryBuy
-
-	LDA #$01
-	STA <Level_ExitToMap
-	STA Map_ReturnStatus
-
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
-
-	CLR_MSG
-	JMP BadgeShop_Draw
-
-BadgeShop_TryBuy:	
-	LDA Pad_Input
-	AND #PAD_A
-	BEQ BadgeShop_Prev
-
-	LDA #$00
-	STA Message_Id
-
-	JSR BadgeShop_BuyBadge
-	JMP BadgeShop_Draw
-
-BadgeShop_Prev:	
-	LDA Pad_Input
-	AND #PAD_LEFT
-	BEQ BadgeShop_Next
-
-	LDA #$00
-	STA Message_Id
-
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP
-	STA Sound_QLevel1
-
-	DEC BadgeShop_Window, X
-	BPL BadgeShop_Update
-
-	LDA #$05
-	STA BadgeShop_Window, X
-
-	JMP BadgeShop_Update
-
-BadgeShop_Next:
-	LDA Pad_Input
-	AND #PAD_RIGHT
-	BEQ BadgeShop_Draw
-
-	LDA #$00
-	STA Message_Id
-
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP
-	STA Sound_QLevel1
-
-	INC BadgeShop_Window, X
-	LDA BadgeShop_Window, X
-	CMP #$06
-	BCC BadgeShop_Update
-
-	LDA #$00
-	STA BadgeShop_Window, X
-
-BadgeShop_Update:
-	JSR BadgeShop_UpdateWindow
-
-BadgeShop_Draw:
-	LDA #$00
-	STA Objects_Frame, X
-
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
-
-	JSR Object_Draw
-
-	INC Objects_Frame, X
-
-	LDA Object_SpriteRAMOffset, X
-	ADD #$08
-	STA Object_SpriteRAMOffset, X
-
-	LDA #SPR_PAL3
-	STA Objects_SpriteAttributes, X
-	JSR Object_Draw
-	RTS
-
-BadgeShop_List:
-	.byte BADGE_RADAR
-	.byte BADGE_AIR
-	.byte BADGE_XP
-	.byte BADGE_PMETER 
-	.byte BADGE_COIN
-	.byte BADGE_ITEMRESERVE
-	.byte BADGE_RADAR 		
-	.byte BADGE_AIR
-
-BadgeShop_Tiles:
-	.byte $FF, $FF, $FF, $FF ; $00
-	.byte $B2, $B3, $C2, $C3 ; $01
-	.byte $B6, $B7, $C2, $C3 ; $02
-	.byte $C6, $C7, $C2, $C3 ; $03
-	.byte $BA, $BB, $CA, $CB ; $04
-	.byte $B0, $B1, $C0, $C1 ; $05
-	.byte $FF, $FF, $FF, $FF ; $06
-	.byte $FF, $FF, $FF, $FF ; $07
-	.byte $FF, $FF, $FF, $FF ; $08
-	.byte $B4, $B5, $C4, $C5 ; $09
-	
-
-BadgeShop_Cost:
-	.byte 0		; $00
-	.byte 6	 	; $01
-	.byte 8		; $02
-	.byte 10	; $03
-	.byte 4		; $04
-	.byte 10	; $05
-	.byte 00
-	.byte 00
-	.byte 00
-	.byte 10	; $06
-
-Badge_Descriptions:
-	.db "     INVALID    "; 00
-	.db "    DOUBLE XP   "; 01
-	.db " DOUBLE P METER "; 02
-	.db "  DOUBLE COINS  "; 03
-	.db "  INCREASED AIR "; 04
-	.db "  ITEM RESERVE  "; 05
-	.db "                "; 06
-	.db "                "; 07
-	.db "                "; 08
-	.db "   STAR RADAR   "; 09
-
-BadgeShop_Window = Objects_Data1
-BadgeShop_Badge1 = Temp_Var1
-BadgeShop_Badge2 = Temp_Var2
-BadgeShop_Badge3 = Temp_Var3
-BadgeShop_Drawn = Objects_Data2
-BadgeShop_InstructionsDrawn = Objects_Data3
-BadgeShop_HalfOff = Objects_Data4
-BadgeShop_Free = Objects_Data5
-
-BadgeShop_UpdateWindow:
-	LDA BadgeShop_Window, X
-	TAY
-
-	LDA BadgeShop_List, Y
-	STA BadgeShop_Badge1
-
-	LDA BadgeShop_List + 1, Y
-	STA BadgeShop_Badge2
-
-	LDA BadgeShop_List + 2, Y
-	STA BadgeShop_Badge3
-
-	LDY Graphics_BufCnt
-
-	LDA #$28
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$EC
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$08
-	STA Graphics_Buffer, Y
-	INY 
-
-	LDA BadgeShop_Badge1
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 1, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F2
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge2
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 1, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F8
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge3
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 1, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$29
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$0C
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$08
-	STA Graphics_Buffer, Y
-	INY 
-
-	LDA BadgeShop_Badge1
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles + 2, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 3, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F2
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge2
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles + 2, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 3, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F8
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge3
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles + 2, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 3, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$28
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$A8
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$10
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$00
-
-	LDX BadgeShop_Badge2
-
-BadgeShop_Loop:	
-	ADD #$10
-	DEX
-	BNE BadgeShop_Loop
-
-	TAX
-
-	LDA #$0F
-	STA <Temp_Var4
-
-BadgeShop_Name:
-	LDA Badge_Descriptions, X
-	STA Graphics_Buffer, Y
-	INY
-	INX
-
-	DEC <Temp_Var4
-	BPL BadgeShop_Name
-
-	LDA #$29
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$4E
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$03
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$D5
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge2
-	TAX
-
-	LDA BadgeShop_Cost, X
-	STA <DigitsParam
-
-	LDA BadgeShop_HalfOff, X
-	BEQ BadgeShop_Digits
-
-	LSR <DigitsParam
-
-BadgeShop_Digits:	
-	JSR BytesTo2Digits
-
-	LDA <DigitsResult + 1
-	ORA #$30
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA <DigitsResult 
-	ORA #$30
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$00
-	STA Graphics_Buffer, Y
-	INY
-	
-BadgeShop_Finish:
-	TYA
-	ADD Graphics_BufCnt
-	STA Graphics_BufCnt
-
-	LDX <CurrentObjectIndexZ
-	RTS	
-
-BadgeShop_BuyBadge:
-	LDY BadgeShop_Window, X
-	LDA BadgeShop_List + 1, Y
-	TAY
-
-	LDA BadgeShop_Cost, Y
-	LDY BadgeShop_HalfOff, X
-	BEQ BadgeShop_Subtract
-
-	LSR A
-
-BadgeShop_Subtract:
-	STA <Temp_Var4
-
-	LDA Player_Cherries
-	SUB <Temp_Var4
-	BCC BadgeShop_CannotBuy
-	
-	STA Player_Cherries
-	LDX <CurrentObjectIndexZ
-	LDY BadgeShop_Window, X
-
-	LDA BadgeShop_List + 1, Y
-	STA Player_Badge
-
-	LDA Sound_QMap
-	ORA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-	RTS
-
-BadgeShop_CannotBuy:
-	LDA Sound_QMap
-	ORA #SND_MAPDENY
-	STA Sound_QMap
-
-	LDX <CurrentObjectIndexZ
-	RTS
-
-BadgeShop_Instructions:
-	.byte $29, $A9, 14
-	.db ": AND ; SELECT"
-
-	.byte $29, $C9, 11
-	.db "A BUY BADGE"
-
-	.byte $29, $E9, 6
-	.db "B EXIT"
-
-	.byte $2A, $09, 14
-	.db "< EXPLANATION "
-
-	.byte $00
-
-BadgeShop_WriteInstructions:
-	LDY Graphics_BufCnt
-	BNE BadgeShop_WriteInstructionsRTS
-	
-	LDX #$00
-
-BadgeShop_InstructionLoop:	
-	LDA BadgeShop_Instructions, X
-	STA Graphics_Buffer, Y
-	INY 
-	INX
-
-	CPX #58
-	BCC  BadgeShop_InstructionLoop
-
-	TYA
-	ADD Graphics_BufCnt
-	STA Graphics_BufCnt
-
-	LDX <CurrentObjectIndexZ
-	INC BadgeShop_InstructionsDrawn, X
-
-BadgeShop_WriteInstructionsRTS:
-	RTS
-
-Badge_Explanations:
-	.byte $00
-	 MSG_ID Badge_A_Explanation
-	 MSG_ID Badge_B_Explanation
-	 MSG_ID Badge_C_Explanation
-	 MSG_ID Badge_D_Explanation
-	 MSG_ID Badge_E_Explanation
-	 MSG_ID Badge_F_Explanation
-	 MSG_ID Badge_F_Explanation
-	 MSG_ID Badge_F_Explanation
-	 MSG_ID Badge_F_Explanation
-
-BadgeShop_Explanation:
-	LDY BadgeShop_Window, X
-	LDA BadgeShop_List + 1, Y
-	TAY
-
-	LDA Badge_Explanations, Y
-	STA Message_Id
-	RTS
-
 
 ObjInit_GameScript:
 	LDA #$07
@@ -3718,6 +3229,7 @@ GameScript_Init = Objects_Data1
 GameScript_Finished = Objects_Data2
 GameScript_Timer = Objects_Data3
 GameScript_TimerFrac = Objects_Data4
+GameScript_TimerIndex = Objects_Data13
 
 Handle_GameScript_Timer:
 	LDA GameScript_Timer, X
@@ -3914,6 +3426,18 @@ ObjNorm_GameScript:
 	BNE GameScript_Norm
 
 	INC GameScript_Init, X
+
+
+	LDY #$00
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BNE GameScript_LoadType
+
+	INY
+
+GameScript_LoadType:
+	TYA
+	STA GameScript_TimerIndex, X
 
 	LDA <Objects_YZ, X
 	LSR A
@@ -4378,8 +3902,12 @@ Stage_1_Notify:
 	SET_MSG Game_Script_1_A
 	RTS
 
+Stage_1_1_InitTime:
+	.byte 30, 15
+
 Stage_1_1_Init:
-	LDA #30
+	LDY GameScript_TimerIndex, X
+	LDA Stage_1_1_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4395,8 +3923,12 @@ Stage_1_1:
 	JSR GameScript_CoinChallenge
 	RTS
 
+Stage_1_2_InitTime:
+	.byte 30, 20
+
 Stage_1_2_Init:
-	LDA #30
+	LDY GameScript_TimerIndex, X
+	LDA Stage_1_2_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4405,6 +3937,9 @@ Stage_1_2_Init:
 	LDA #08
 	STA GameScript_EnemiesRemaining, X
 
+	LDA #$00
+	STA Kill_Count
+
 	SET_MSG Game_Script_1_2
 	RTS
 
@@ -4412,8 +3947,12 @@ Stage_1_2:
 	JSR GameScript_EnemyChallenge 
 	RTS
 
+Stage_1_3_InitTime:
+	.byte 30, 20
+
 Stage_1_3_Init:
-	LDA #30
+	LDY GameScript_TimerIndex, X
+	LDA Stage_1_3_InitTime, Y 
 	STA GameScript_Timer, X
 
 	SET_MSG Game_Script_1_3
@@ -4460,8 +3999,12 @@ Stage_1_3_Loop:
 Stage_1_3RTS:	
 	RTS
 
+Stage_1_4_InitTime:
+	.byte 45, 30
+
 Stage_1_4_Init:
-	LDA #45
+	LDY GameScript_TimerIndex, X
+	LDA Stage_1_4_InitTime, Y 
 	STA GameScript_Timer, X
 
 	SET_MSG Game_Script_1_4
@@ -4474,8 +4017,12 @@ Stage_1_4:
 	JSR GameScript_BrickChallenge
 	RTS
 
+Stage_1_5_InitTime:
+	.byte 60, 40
+
 Stage_1_5_Init:
-	LDA #45
+	LDY GameScript_TimerIndex, X
+	LDA Stage_1_5_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4504,8 +4051,13 @@ Stage_2_Notify:
 	RTS
 
 
+
+Stage_2_1_InitTime:
+	.byte 30, 20
+
 Stage_2_1_Init:
-	LDA #30
+	LDY GameScript_TimerIndex, X
+	LDA Stage_2_1_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4522,15 +4074,22 @@ Stage_2_1:
 	RTS
 
 
+Stage_2_2_InitTime:
+	.byte 50, 35
+
 Stage_2_2_Init:
-	LDA #45
+	LDY GameScript_TimerIndex, X
+	LDA Stage_2_2_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
 	STA GameScript_TimerFrac, X
 
-	LDA #14
+	LDA #13
 	STA GameScript_EnemiesRemaining, X
+
+	LDA #$00
+	STA Kill_Count	
 
 	SET_MSG Game_Script_2_2
 	RTS
@@ -4540,8 +4099,12 @@ Stage_2_2:
 	RTS	
 
 
+Stage_2_3_InitTime:
+	.byte 60, 45
+
 Stage_2_3_Init:
-	LDA #60
+	LDY GameScript_TimerIndex, X
+	LDA Stage_2_3_InitTime, Y 
 	STA GameScript_Timer, X
 
 	SET_MSG Game_Script_2_3
@@ -4588,8 +4151,12 @@ Stage_2_3_Loop:
 Stage_2_3RTS:	
 	RTS	
 
+Stage_2_4_InitTime:
+	.byte 60, 30
+
 Stage_2_4_Init:
-	LDA #35
+	LDY GameScript_TimerIndex, X
+	LDA Stage_2_4_InitTime, Y 
 	STA GameScript_Timer, X
 
 	SET_MSG Game_Script_2_4
@@ -4603,8 +4170,12 @@ Stage_2_4:
 	RTS
 
 
+Stage_2_5_InitTime:
+	.byte 60, 40
+
 Stage_2_5_Init:
-	LDA #35
+	LDY GameScript_TimerIndex, X
+	LDA Stage_2_5_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4621,8 +4192,12 @@ Stage_2_5:
 	RTS	
 
 
+Stage_2_6_InitTime:
+	.byte 30, 20
+
 Stage_2_6_Init:
-	LDA #20
+	LDY GameScript_TimerIndex, X
+	LDA Stage_2_6_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4639,8 +4214,12 @@ Stage_2_6:
 	RTS		
 
 
+Stage_2_7_InitTime:
+	.byte 10, 5
+
 Stage_2_7_Init:
-	LDA #08
+	LDY GameScript_TimerIndex, X
+	LDA Stage_2_7_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4780,8 +4359,12 @@ Stage_3_Notify:
 	RTS	
 
 
+Stage_3_1_InitTime:
+	.byte 10, 5
+
 Stage_3_1_Init:
-	LDA #5
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_1_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4790,7 +4373,7 @@ Stage_3_1_Init:
 	LDA #64
 	STA GameScript_CoinsRemaining, X
 
-	SET_MSG Game_Script_1_1
+	SET_MSG Game_Script_3_1
 	RTS
 
 Stage_3_1:	
@@ -4798,8 +4381,12 @@ Stage_3_1:
 	RTS	
 
 
+Stage_3_2_InitTime:
+	.byte 8, 4
+
 Stage_3_2_Init:
-	LDA #5
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_2_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4807,6 +4394,9 @@ Stage_3_2_Init:
 
 	LDA #3
 	STA GameScript_EnemiesRemaining, X
+
+	LDA #$00
+	STA Kill_Count	
 
 	SET_MSG Game_Script_3_2
 	RTS
@@ -4816,8 +4406,12 @@ Stage_3_2:
 	RTS		
 
 
+Stage_3_3_InitTime:
+	.byte 5, 3
+
 Stage_3_3_Init:
-	LDA #5
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_3_InitTime, Y 
 	STA GameScript_Timer, X
 
 	SET_MSG Game_Script_3_4
@@ -4865,8 +4459,12 @@ Stage_3_3RTS:
 	RTS		
 
 
+Stage_3_4_InitTime:
+	.byte 5, 3
+
 Stage_3_4_Init:
-	LDA #5
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_4_InitTime, Y 
 	STA GameScript_Timer, X
 
 	SET_MSG Game_Script_3_4
@@ -4879,8 +4477,12 @@ Stage_3_4:
 	JSR GameScript_BrickChallenge
 	RTS
 
+Stage_3_5_InitTime:
+	.byte 12, 6
+
 Stage_3_5_Init:
-	LDA #7
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_5_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4896,8 +4498,12 @@ Stage_3_5:
 	JSR GameScript_MBlockChallenge
 	RTS	
 
+Stage_3_6_InitTime:
+	.byte 7, 4
+
 Stage_3_6_Init:
-	LDA #5
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_6_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -4913,8 +4519,12 @@ Stage_3_6:
 	JSR GameScript_SwitchChallenge
 	RTS	
 
+Stage_3_7_InitTime:
+	.byte 8, 5
+
 Stage_3_7_Init:
-	LDA #08
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_7_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -5040,8 +4650,12 @@ Stage_3_7_Found:
 	STA GameScript_Timer, X
 	RTS
 
+Stage_3_8_InitTime:
+	.byte 15, 30
+
 Stage_3_8_Init:
-	LDA #30
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_8_InitTime, Y 
 	STA GameScript_Timer, X
 
 	LDA #60
@@ -5093,10 +4707,14 @@ Stage_3_8_Loop:
 Stage_3_8RTS:
 	RTS
 
-Stage_3_9_Init:
-	LDA #10
-	STA GameScript_Timer, X
+Stage_3_9_InitTime:
+	.byte 12, 10
 
+Stage_3_9_Init:
+	LDY GameScript_TimerIndex, X
+	LDA Stage_3_9_InitTime, Y 
+	STA GameScript_Timer, X
+	
 	LDA #60
 	STA GameScript_TimerFrac, X
 
@@ -5119,7 +4737,7 @@ Stage_3_9:
 
 
 Stage_3_9_Check:	
-	CMP #8
+	CMP #10
 	BNE Stage_3_9RTS
 
 	LDA GameScript_TimerFrac, X
@@ -5154,10 +4772,11 @@ Stage_3_9_Dim:
 	LDA <Objects_YHiZ, X
 	STA Objects_YHiZ, Y
 
+	CLR_MSG
+
 Stage_3_9RTS:
 	RTS
 	
-
 LevelUp_Messages:
 	.byte $00
 	 MSG_ID Level_Up1

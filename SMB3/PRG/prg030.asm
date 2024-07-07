@@ -6560,3 +6560,9 @@ Object_FindEmptyY2:
 	SEC
 	RTS
 	
+
+ObjNorm_BadgeShop:
+	LDA #17
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	JMP ObjNorm_BadgeShopDo

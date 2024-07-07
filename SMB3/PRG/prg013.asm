@@ -1,8 +1,6 @@
 	.org $C000
 
 HandleLevelEvent:
-
-	STA Debug_Snap
 	LDA EventType
 	JSR DynJump
 

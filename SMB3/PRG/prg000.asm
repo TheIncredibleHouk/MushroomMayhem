@@ -626,6 +626,7 @@ PRG000_C98B:
 
 	; Non-special objects in slots 0 to 4...
 	INC Object_Count
+	
 	LDA Objects_ID, X
 
 	LDA Explosion_Timer, X
@@ -2639,9 +2640,6 @@ PRG000_D4C8:
 PRG000_D506:
 	LDA #$02
 	STA Objects_SpritesRequested, X
-
-	LDA #$02
-	STA Objects_ExpPoints, X
 	RTS		 ; Return
 
 
@@ -5245,8 +5243,6 @@ Add_KillyTally:
 
 	STA Exp_Earned
 
-	INC Kill_Count
-
 Object_EarnExpRTS:
 	RTS
 
@@ -5305,6 +5301,7 @@ KillEnemy:
 Kill_NotFrozen:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
+	INC Kill_Count
 
 Kill_CheckRespawn:
 	LDA Objects_Regen, X

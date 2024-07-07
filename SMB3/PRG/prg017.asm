@@ -3357,6 +3357,9 @@ Sun_Norm:
 	LDA Sun_Health, X
 	BNE Sun_KeepFighting
 
+	LDA #$00
+	STA Enemy_Health, X
+
 	LDA Sun_Action, X
 	CMP #$05
 	BEQ Sun_NotDead
@@ -3377,8 +3380,8 @@ Sun_Norm:
 	JMP Sun_NotDead
 
 Sun_KeepFighting:
-
 	DEC Sun_Health, X
+
 	LDY Sun_MoonLink, X
 
 	LDA Sun_Health, X
@@ -3390,6 +3393,8 @@ Sun_KeepFighting:
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
+
+	JSR SunMoon_CalcHealth
 
 Sun_NotDead:	
 	LDA Sun_Action, X
@@ -3404,6 +3409,12 @@ Sun_NotDead:
 	.word Sun_Death	; $06
 
 Sun_Init:
+	LDA #50
+	STA Enemy_Health
+
+	LDA #$01
+	STA Enemy_Health_Mode
+
 	LDA #$08
 	STA Objects_SpritesRequested, X
 
@@ -3745,6 +3756,9 @@ Moon_Norm:
 	LDA Moon_Health, X
 	BNE Moon_KeepFighting
 
+	LDA #$00
+	STA Enemy_Health, X
+
 	LDA Moon_Action, X
 	CMP #$05
 	BEQ Moon_NotDead
@@ -3777,6 +3791,8 @@ Moon_KeepFighting:
 
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, X
+
+	JSR SunMoon_CalcHealth
 
 Moon_NotDead:	
 	LDA Moon_Action, X
@@ -4197,3 +4213,516 @@ SunMoon_SetNight:
 	LDA #$03
 	STA NightTransition
 	RTS	
+
+SunMoon_HealthPoints:
+	.byte 8, 16, 24, 33, 41
+
+SunMoon_CalcHealth:
+	LDY Sun_Health, X
+	LDA SunMoon_HealthPoints, Y
+	STA Enemy_Health
+	RTS
+
+; BADGE SHOP
+ObjNorm_BadgeShopDo:
+	LDA BadgeShop_Drawn, X
+	BNE BadgeShop_TryInstructions
+
+	INC BadgeShop_Drawn, X
+	JMP BadgeShop_UpdateWindow
+
+BadgeShop_TryInstructions:
+	LDA BadgeShop_InstructionsDrawn, X
+	BNE BadgeShop_Norm
+
+	JSR BadgeShop_WriteInstructions
+	JMP BadgeShop_Draw
+
+BadgeShop_Norm:		
+	LDA #$10
+	STA Player_HaltTick
+
+	LDA Pad_Input
+	AND #PAD_UP
+	BEQ BadgeShop_TryExit
+
+	JSR BadgeShop_Explanation
+	JMP BadgeShop_Draw
+
+BadgeShop_TryExit:	
+	LDA Pad_Input
+	AND #PAD_B
+	BEQ BadgeShop_TryBuy
+
+	LDA #$01
+	STA <Level_ExitToMap
+	STA Map_ReturnStatus
+
+	LDA #MUS1_STOPMUSIC
+	STA Sound_QMusic1
+
+	CLR_MSG
+	JMP BadgeShop_Draw
+
+BadgeShop_TryBuy:	
+	LDA Pad_Input
+	AND #PAD_A
+	BEQ BadgeShop_Prev
+
+	LDA #$00
+	STA Message_Id
+
+	JSR BadgeShop_BuyBadge
+	JMP BadgeShop_Draw
+
+BadgeShop_Prev:	
+	LDA Pad_Input
+	AND #PAD_LEFT
+	BEQ BadgeShop_Next
+
+	LDA #$00
+	STA Message_Id
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+
+	DEC BadgeShop_Window, X
+	BPL BadgeShop_Update
+
+	LDA #$05
+	STA BadgeShop_Window, X
+
+	JMP BadgeShop_Update
+
+BadgeShop_Next:
+	LDA Pad_Input
+	AND #PAD_RIGHT
+	BEQ BadgeShop_Draw
+
+	LDA #$00
+	STA Message_Id
+
+	LDA Sound_QLevel1
+	ORA #SND_LEVELBLIP
+	STA Sound_QLevel1
+
+	INC BadgeShop_Window, X
+	LDA BadgeShop_Window, X
+	CMP #$06
+	BCC BadgeShop_Update
+
+	LDA #$00
+	STA BadgeShop_Window, X
+
+BadgeShop_Update:
+	JSR BadgeShop_UpdateWindow
+
+BadgeShop_Draw:
+	LDA #$00
+	STA Objects_Frame, X
+
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	JSR Object_Draw
+
+	LDA Object_SpriteRAMOffset, X
+	ADD #$08 
+	STA Object_SpriteRAMOffset, X
+
+	LDA #SPR_PAL3
+	STA Objects_SpriteAttributes, X
+	JSR Object_Draw
+
+	LDA Object_SpriteRAMOffset, X
+	SUB #$08
+	TAY
+
+	LDA #$A5
+	STA Sprite_RAMTile, Y
+	
+	LDA #$A7
+	STA Sprite_RAMTile + 4, Y
+
+	LDA #$A9
+	STA Sprite_RAMTile + 8, Y
+	
+	LDA #$AB
+	STA Sprite_RAMTile + 12, Y
+	RTS
+
+BadgeShop_List:
+	.byte BADGE_RADAR
+	.byte BADGE_AIR
+	.byte BADGE_XP
+	.byte BADGE_PMETER 
+	.byte BADGE_COIN
+	.byte BADGE_ITEMRESERVE
+	.byte BADGE_RADAR 		
+	.byte BADGE_AIR
+
+BadgeShop_Tiles:
+	.byte $FF, $FF, $FF, $FF ; $00
+	.byte $B2, $B3, $C2, $C3 ; $01
+	.byte $B6, $B7, $C2, $C3 ; $02
+	.byte $C6, $C7, $C2, $C3 ; $03
+	.byte $BA, $BB, $CA, $CB ; $04
+	.byte $B0, $B1, $C0, $C1 ; $05
+	.byte $FF, $FF, $FF, $FF ; $06
+	.byte $FF, $FF, $FF, $FF ; $07
+	.byte $FF, $FF, $FF, $FF ; $08
+	.byte $B4, $B5, $C4, $C5 ; $09
+	
+
+BadgeShop_Cost:
+	.byte 0		; $00
+	.byte 6	 	; $01
+	.byte 8		; $02
+	.byte 10	; $03
+	.byte 4		; $04
+	.byte 10	; $05
+	.byte 00
+	.byte 00
+	.byte 00
+	.byte 10	; $06
+
+Badge_Descriptions:
+	.db "     INVALID    "; 00
+	.db "    DOUBLE XP   "; 01
+	.db " DOUBLE P METER "; 02
+	.db "  DOUBLE COINS  "; 03
+	.db "  INCREASED AIR "; 04
+	.db "  ITEM RESERVE  "; 05
+	.db "                "; 06
+	.db "                "; 07
+	.db "                "; 08
+	.db "   STAR RADAR   "; 09
+
+BadgeShop_Window = Objects_Data1
+BadgeShop_Badge1 = Temp_Var1
+BadgeShop_Badge2 = Temp_Var2
+BadgeShop_Badge3 = Temp_Var3
+BadgeShop_Drawn = Objects_Data2
+BadgeShop_InstructionsDrawn = Objects_Data3
+BadgeShop_HalfOff = Objects_Data4
+BadgeShop_Free = Objects_Data5
+
+BadgeShop_UpdateWindow:
+	LDA BadgeShop_Window, X
+	TAY
+
+	LDA BadgeShop_List, Y
+	STA BadgeShop_Badge1
+
+	LDA BadgeShop_List + 1, Y
+	STA BadgeShop_Badge2
+
+	LDA BadgeShop_List + 2, Y
+	STA BadgeShop_Badge3
+
+	LDY Graphics_BufCnt
+
+	LDA #$28
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$EC
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$08
+	STA Graphics_Buffer, Y
+	INY 
+
+	LDA BadgeShop_Badge1
+	ASL A
+	ASL A
+	TAX
+
+	LDA BadgeShop_Tiles, X
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA BadgeShop_Tiles + 1, X
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA #$F2
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA BadgeShop_Badge2
+	ASL A
+	ASL A
+	TAX
+
+	LDA BadgeShop_Tiles, X
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA BadgeShop_Tiles + 1, X
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA #$F8
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA BadgeShop_Badge3
+	ASL A
+	ASL A
+	TAX
+
+	LDA BadgeShop_Tiles, X
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA BadgeShop_Tiles + 1, X
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA #$29
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$0C
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$08
+	STA Graphics_Buffer, Y
+	INY 
+
+	LDA BadgeShop_Badge1
+	ASL A
+	ASL A
+	TAX
+
+	LDA BadgeShop_Tiles + 2, X
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA BadgeShop_Tiles + 3, X
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA #$F2
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA BadgeShop_Badge2
+	ASL A
+	ASL A
+	TAX
+
+	LDA BadgeShop_Tiles + 2, X
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA BadgeShop_Tiles + 3, X
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA #$F8
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA BadgeShop_Badge3
+	ASL A
+	ASL A
+	TAX
+
+	LDA BadgeShop_Tiles + 2, X
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA BadgeShop_Tiles + 3, X
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$28
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$A8
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$10
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$00
+
+	LDX BadgeShop_Badge2
+
+BadgeShop_Loop:	
+	ADD #$10
+	DEX
+	BNE BadgeShop_Loop
+
+	TAX
+
+	LDA #$0F
+	STA <Temp_Var4
+
+BadgeShop_Name:
+	LDA Badge_Descriptions, X
+	STA Graphics_Buffer, Y
+	INY
+	INX
+
+	DEC <Temp_Var4
+	BPL BadgeShop_Name
+
+	LDA #$29
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$4E
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$03
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA #$D5
+	STA Graphics_Buffer, Y
+	INY	
+
+	LDA BadgeShop_Badge2
+	TAX
+
+	LDA BadgeShop_Cost, X
+	STA <DigitsParam
+
+	LDA BadgeShop_HalfOff, X
+	BEQ BadgeShop_Digits
+
+	LSR <DigitsParam
+
+BadgeShop_Digits:	
+	JSR BytesTo2Digits
+
+	LDA <DigitsResult + 1
+	ORA #$30
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA <DigitsResult 
+	ORA #$30
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$00
+	STA Graphics_Buffer, Y
+	INY
+	
+BadgeShop_Finish:
+	TYA
+	ADD Graphics_BufCnt
+	STA Graphics_BufCnt
+
+	LDX <CurrentObjectIndexZ
+	RTS	
+
+BadgeShop_BuyBadge:
+	LDY BadgeShop_Window, X
+	LDA BadgeShop_List + 1, Y
+	TAY
+
+	LDA BadgeShop_Cost, Y
+	LDY BadgeShop_HalfOff, X
+	BEQ BadgeShop_Subtract
+
+	LSR A
+
+BadgeShop_Subtract:
+	STA <Temp_Var4
+
+	LDA Player_Cherries
+	SUB <Temp_Var4
+	BCC BadgeShop_CannotBuy
+	
+	STA Player_Cherries
+	LDX <CurrentObjectIndexZ
+	LDY BadgeShop_Window, X
+
+	LDA BadgeShop_List + 1, Y
+	STA Player_Badge
+
+	LDA Sound_QMap
+	ORA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
+	RTS
+
+BadgeShop_CannotBuy:
+	LDA Sound_QMap
+	ORA #SND_MAPDENY
+	STA Sound_QMap
+
+	LDX <CurrentObjectIndexZ
+	RTS
+
+BadgeShop_Instructions:
+	.byte $29, $A9, 14
+	.db ": AND ; SELECT"
+
+	.byte $29, $C9, 11
+	.db "A BUY BADGE"
+
+	.byte $29, $E9, 6
+	.db "B EXIT"
+
+	.byte $2A, $09, 14
+	.db "< EXPLANATION "
+
+	.byte $00
+
+BadgeShop_WriteInstructions:
+	LDY Graphics_BufCnt
+	BNE BadgeShop_WriteInstructionsRTS
+	
+	LDX #$00
+
+BadgeShop_InstructionLoop:	
+	LDA BadgeShop_Instructions, X
+	STA Graphics_Buffer, Y
+	INY 
+	INX
+
+	CPX #58
+	BCC  BadgeShop_InstructionLoop
+
+	TYA
+	ADD Graphics_BufCnt
+	STA Graphics_BufCnt
+
+	LDX <CurrentObjectIndexZ
+	INC BadgeShop_InstructionsDrawn, X
+
+BadgeShop_WriteInstructionsRTS:
+	RTS
+
+Badge_Explanations:
+	.byte $00
+	 MSG_ID Badge_A_Explanation
+	 MSG_ID Badge_B_Explanation
+	 MSG_ID Badge_C_Explanation
+	 MSG_ID Badge_D_Explanation
+	 MSG_ID Badge_E_Explanation
+	 MSG_ID Badge_F_Explanation
+	 MSG_ID Badge_F_Explanation
+	 MSG_ID Badge_F_Explanation
+	 MSG_ID Badge_F_Explanation
+
+BadgeShop_Explanation:
+	LDY BadgeShop_Window, X
+	LDA BadgeShop_List + 1, Y
+	TAY
+
+	LDA Badge_Explanations, Y
+	STA Message_Id
+	RTS
