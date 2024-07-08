@@ -2909,28 +2909,45 @@ Enemy_OilDraw:
 	JSR SpecialObj_Draw16x16
 	RTS
 
+Oil_SplashYOffsets:
+	.byte $0F, $FF
+
+Oil_SplashYHiOffsets	
+	.byte $00, $FF
+
 Enemy_OilSplash:
-
-	LDA Tile_DetectionY
-	SUB #$10
-	STA Tile_DetectionY
-
-	LDA Tile_DetectionYHi
-	SBC #$00
-	STA Tile_DetectionYHi
+	LDA #$01
+	STA Splash_IsOil
 	
 	LDY #$00
 	LDA SpecialObj_YVel, X
-	BPL Enemy_OilMakeSplash
+ 	BMI Enemy_OilMakeSplash
 
 	INY
 
 Enemy_OilMakeSplash:
-	LDA #$01
-	STA Splash_IsOil
-	JSR Object_WaterSplashNorm
+	STA <Temp_Var2
 	
-	JMP SpecialObj_Delete
+	STA Debug_Snap
+	LDA Tile_DetectionY
+	ADD Oil_SplashYOffsets, Y
+	STA Tile_DetectionY
+
+	LDA Tile_DetectionYHi
+	ADC Oil_SplashYHiOffsets, Y
+	STA Tile_DetectionYHi
+
+	JSR SpecialObj_Delete
+	JSR Object_WaterSplashNorm1
+
+	LDA <Temp_Var2
+	BPL OilSplash_RTS
+
+	LDA #SPR_VFLIP
+	STA Objects_Orientation, X
+
+OilSplash_RTS:	
+	RTS
 	
 Enemy_FireBall:
 	LDA <Player_HaltGameZ

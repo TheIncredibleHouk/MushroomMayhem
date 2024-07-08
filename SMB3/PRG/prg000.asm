@@ -492,9 +492,11 @@ Object_WaterSplash:
 	STA Splash_IsOil
 
 Object_WaterSplashNorm:
+
 	LDA <Objects_YVelZ, X
 	STA <Temp_Var2
 
+Object_WaterSplashNorm1:
 	LDX #$05
 
 FindSplash:
@@ -534,7 +536,7 @@ MakeSplash:
 	INY
 	INY 
 
-SetSplash:	
+SetSplash:
 	LDA Tile_DetectionX
 	STA <Objects_XZ, X
 
@@ -5242,6 +5244,7 @@ Add_KillyTally:
 	STA Kill_Tally
 
 	STA Exp_Earned
+	INC Kill_Count
 
 Object_EarnExpRTS:
 	RTS
@@ -5301,7 +5304,6 @@ KillEnemy:
 Kill_NotFrozen:
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,X
-	INC Kill_Count
 
 Kill_CheckRespawn:
 	LDA Objects_Regen, X

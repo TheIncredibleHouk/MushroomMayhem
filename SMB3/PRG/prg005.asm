@@ -690,7 +690,6 @@ Brick_NoCoin:
 Brick_MakeCoin:	
 	JSR Produce_Coin
 	JMP Object_Delete
-    
 
 
 VeggieGuy_Frame = Objects_Data1
@@ -4426,7 +4425,7 @@ TrainingShop_NoMoreText:
 	.byte $29, $A7, 16
 	.db "FURTHER TRAINING"
 
-	.byte $00	
+	.byte $00
 
 TrainingShop_NoMore:
 	LDY Graphics_BufCnt

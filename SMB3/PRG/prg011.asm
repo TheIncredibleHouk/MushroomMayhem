@@ -2948,7 +2948,10 @@ FindCompletedLevels1:
 	JMP FindCompletedLevels3
 
 Completion_Tiles: 
-	.byte $FF, $7C
+	.byte $EE, $EE, $EE, $38
+	.byte $38, $38, $38, $7C
+	.byte $FF, $8E, $FF, $FF
+	.byte $FF, $FF, $FF, $FF
 
 MarkCompletedLevels:
 	JSR GetMapTile
@@ -2960,9 +2963,7 @@ MarkCompletedLevels:
 
 	TYA
 
-	AND #$E0
-	LSR A
-	LSR A
+	AND #$F0
 	LSR A
 	LSR A
 	LSR A

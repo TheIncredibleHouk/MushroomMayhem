@@ -3578,6 +3578,7 @@ Sun_AtEdge:
 	JMP	Sun_Draw
 
 Sun_Wait:
+
 	JSR SunMoon_CalcBoundBox
 	JSR Object_AttackOrDefeat
 	JMP Sun_Draw 
@@ -3730,6 +3731,9 @@ Sun_Death:
 	JMP Object_Explode
 
 Sun_NotDeath:
+	LDA #$00
+	STA Enemy_Health
+	
 	JMP Sun_Draw	
 	
 Boss_MoonSprites:

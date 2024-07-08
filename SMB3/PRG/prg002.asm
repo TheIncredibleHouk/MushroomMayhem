@@ -190,6 +190,7 @@ ObjP14:
 	.byte $11, $11
 	.byte $85, $85
 	.byte $83, $83
+	.byte $83, $83
 	.byte $81, $81
     
 ObjP15:
@@ -317,13 +318,24 @@ WaterSplash_Animate:
 	BEQ WaterSplash_Draw
 
 	LDA Objects_Frame, X
-	ADD #$03
+	ADD #$04
 	STA Objects_Frame, X
 
 WaterSplash_Draw:
-	JMP Object_DrawMirrored
+	JSR Object_DrawMirrored
 
+	LDA Objects_Orientation, X
+	AND #SPR_VFLIP
+	BEQ WaterSplash_DrawRTS
 
+	LDY Object_SpriteRAMOffset, X
+	LDA Sprite_RAMY, Y
+	SUB #$01
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY+4, Y
+
+WaterSplash_DrawRTS:	
+	RTS
 
 ;***********************************************************************************
 ; Water Filler
