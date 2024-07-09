@@ -2848,6 +2848,9 @@ Enemy_VeggieDraw:
 	RTS		 ; Return
 	
 Enemy_Oil:
+	LDA #$36
+	STA PatTable_BankSel+4
+
 	LDA <Player_HaltGameZ
 	BEQ Enemy_OilNorm
 

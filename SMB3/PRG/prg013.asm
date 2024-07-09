@@ -15,6 +15,7 @@ HandleLevelEvent:
 	.word Lava_Flood ; 08
 	.word Lava_Drain ; 09
 	.word Dynamic_Wind; 0A
+	.word ForcedStatus_Oil; OB
 
 NoEvent:
 LetEnemyHandle:
@@ -896,4 +897,27 @@ Dynamic_WindFound:
 	LDA #$04
 	STA Level_EventTimer
 	INC EventVar
+	RTS
+
+
+ForcedStatus_Oil:
+	LDA Player_Oiled
+	BNE ForcedStatus_OilRTS
+
+	LDA #$17
+	STA Player_SuitLost
+
+	LDA #$00
+	STA <Player_XVelZ
+
+	LDA #$80
+	STA Player_QueueSuit
+
+	LDA #$71
+	STA Player_Invulnerable
+
+	LDA #$FF
+	STA Player_Oiled
+
+ForcedStatus_OilRTS:	
 	RTS
