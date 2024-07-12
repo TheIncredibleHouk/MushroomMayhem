@@ -2372,6 +2372,8 @@ MagicStar_NoEnemy:
 	DEY
 	BPL MagicStar_FindEnemy
 
+	JMP Object_Delete
+
 Paper_StarEnemyFound:
 	TYA
 	STA Paper_StarEnemyAttached, X

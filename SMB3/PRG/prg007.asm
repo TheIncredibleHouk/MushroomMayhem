@@ -2931,7 +2931,6 @@ Enemy_OilSplash:
 Enemy_OilMakeSplash:
 	STA <Temp_Var2
 	
-	STA Debug_Snap
 	LDA Tile_DetectionY
 	ADD Oil_SplashYOffsets, Y
 	STA Tile_DetectionY

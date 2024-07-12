@@ -407,7 +407,7 @@ ObjNorm_PlatformFollow:
 	LDA <Player_HaltGameZ
 	BNE ObjNorm_PlatformFollow1	 ; If gameplay halted, Delete if off-screen, otherwise draw wide 48x16 sprite
 
-	JSR PlatformFollow_CheckOffScreen
+	JSR Object_DeleteOffScreen
 
 	LDA #$00
 	STA Platform_MadeContact, X
@@ -455,10 +455,10 @@ ObjNorm_PlatformFollow1:
 PlatformFollow_CheckOffScreen:
 	JSR Object_DeleteOffScreen
 	
-	LDY Objects_SpawnIdx,X
-	LDA Level_ObjectsSpawned,Y
-	ORA #$80
-	STA Level_ObjectsSpawned,Y
+	; LDY Objects_SpawnIdx,X
+	; LDA Level_ObjectsSpawned,Y
+	; ORA #$80
+	; STA Level_ObjectsSpawned,Y
 	RTS
 
 Platform_FollowBlocks:

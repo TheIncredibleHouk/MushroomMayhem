@@ -3000,6 +3000,7 @@ Magnet_OrigXHi  = Objects_Data4
 Magnet_OrigY	= Objects_Data5
 Magnet_OrigYHi	= Objects_Data6
 Magnet_Timer	= Objects_SlowTimer
+Magnet_PullVel  = Objects_Data7
 
 ObjInit_Magnet:
 	LDA #ATTR_ALLWEAPONPROOF
@@ -3033,6 +3034,9 @@ Magnet_InBlock:
 	SBC #$00
 	STA <Objects_YHiZ, X
 
+Magnet_Pals:
+	.byte SPR_PAL1, SPR_PAL2
+
 ObjInit_MagnetRTS:
 	LDA <Objects_XZ, X
 	STA Magnet_OrigX, X
@@ -3045,6 +3049,10 @@ ObjInit_MagnetRTS:
 
 	LDA <Objects_YHiZ, X
 	STA Magnet_OrigYHi, X
+
+	LDY Objects_Property, X
+	LDA Magnet_Pals, Y
+	STA Objects_SpriteAttributes, X
 	RTS
 
 ObjNorm_Magnet:
@@ -3094,6 +3102,50 @@ Magnet_DoNorm:
 	LDA Magnet_Stuck, X
 	BNE Magnet_NoMove
 
+	LDA Objects_Property, X
+	BEQ Magnet_NormMove
+ 
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BNE Magnet_MoveRight
+
+	STA Debug_Snap
+	LDA Magnet_PullVel, X
+	BEQ Magnet_PullLeft
+	BPL Magnet_ResetVel
+
+Magnet_PullLeft:
+	CMP #$E0
+	BEQ Magnet_PullPlayer
+
+	DEC Magnet_PullVel, X
+	JMP Magnet_PullPlayer
+
+Magnet_MoveRight:
+	LDA Magnet_PullVel, X
+	BMI Magnet_ResetVel
+	
+	CMP #$20
+	BEQ Magnet_PullPlayer
+
+	INC Magnet_PullVel, X
+	JMP Magnet_PullPlayer
+
+Magnet_ResetVel:
+	LDA #$00
+	STA Magnet_PullVel, X
+
+Magnet_PullPlayer:
+	LDA Magnet_PullVel, X
+	STA <Objects_XVelZ, X
+
+	LDA Objects_BeingHeld, X
+	BEQ Magnet_NormMove
+
+	LDA Magnet_PullVel, X
+	STA Player_CarryXVel
+
+Magnet_NormMove:
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
@@ -3130,6 +3182,9 @@ Magnet_Carry:
 
 	JSR Object_GetKicked
 
+	LDA <Objects_XVelZ, X
+	STA Magnet_PullVel, X
+
 	LDA #$FF
 	STA Objects_SlowTimer, X
 
@@ -3141,8 +3196,12 @@ Magnet_DetectTiles:
 	BNE Magnet_Draw
 
 	JSR Object_DetectTiles
+	LDA Objects_Property, X
+	BNE Magnet_NoDampen
+
 	JSR Object_DampenVelocity
 	
+Magnet_NoDampen:	
 	LDA Objects_TilesDetectZ, X
 	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
 	BEQ Magnet_TileInteract
@@ -3156,9 +3215,10 @@ Magnet_DetectTiles:
 	LDA #$00
 	STA <Objects_XVelZ, X
 	STA <Objects_YVelZ, X
+	STA Magnet_PullVel, X
 
 	LDA <Objects_XZ, X
-	ADD #$08
+	ADD #$07
 	AND #$F0
 	STA <Objects_XZ, X
 

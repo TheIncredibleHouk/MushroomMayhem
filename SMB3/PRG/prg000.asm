@@ -626,6 +626,7 @@ PRG000_C98B:
 	CPX #$05
 	BGE PRG000_C9B6	 ; If object slot index >= 5, jump to PRG000_C9B6
 
+	
 	; Non-special objects in slots 0 to 4...
 	INC Object_Count
 	
