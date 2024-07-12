@@ -2686,6 +2686,7 @@ BridgeBuild_Wait:
 	BEQ BridgeBuild_RTS
 
 	INC BridgeBuild_Activated, X
+	
 
 BridgeBuild_RTS:
 	RTS	
@@ -2705,6 +2706,7 @@ BridgeBuild_Build:
 	LDA Block_NeedsUpdate
 	BNE BridgeBuild_RTS
 
+	STA Debug_Snap
 	LDA #$03
 	STA BridgeBuild_CheckOffset, X
 
@@ -3109,7 +3111,6 @@ Magnet_DoNorm:
 	AND #SPR_HFLIP
 	BNE Magnet_MoveRight
 
-	STA Debug_Snap
 	LDA Magnet_PullVel, X
 	BEQ Magnet_PullLeft
 	BPL Magnet_ResetVel

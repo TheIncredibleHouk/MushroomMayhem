@@ -2195,7 +2195,6 @@ Frost_NoTimer:
 	LDA SpecialObj_Timer, X
 	BEQ Enemy_FrostDelete
 
-	
 	LSR A
 	LSR A
 	AND #$06

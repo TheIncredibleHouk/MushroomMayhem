@@ -3504,7 +3504,7 @@ Check_NextObject:
 	CMP #OBJSTATE_KILLED
 	BEQ Check_FindObject
 
-	LDA Objects_BehaviorAttr, Y
+	LDA Objects_WeaponAttr, Y
 	AND #ATTR_ICEPROOF
 	BNE Check_FindObject
 

@@ -2321,7 +2321,6 @@ ObjState_Initializing:
 	JSR Object_New ; Prepare the object
 
 ObjState_Fresh:
-
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State,X	 	; Set object state to 2 (Normal run)
 	JSR Object_SetPaletteFromAttr	; Set object's palette
