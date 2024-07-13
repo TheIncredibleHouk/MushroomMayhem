@@ -1330,7 +1330,7 @@ Object_KillOthers1:
 	INC <Kill_WasKicked
 
 Kill_NotKicked:
-	LDA Objects_BehaviorAttr, Y
+	LDA Objects_WeaponAttr, Y
 	AND <Kill_TypeCheck
 	BNE Object_KillOthers2
 

@@ -3292,6 +3292,7 @@ ObjInit_FireBlast:
 	LDA #$01
 	STA Objects_SlowTimer, X
 
+ObjInit_FireBlastRTS:
 	RTS
 
 ObjNorm_FireBlast:
@@ -3312,7 +3313,7 @@ Flames_Normal:
 	STA Sound_QLevel2
 
 Flame_NoSound:
-	BCS FireBlast_RTS
+	BCS ObjInit_FireBlastRTS
 
 	JSR Object_CalcBoundBoxForced
 
@@ -3324,6 +3325,7 @@ Flame_NoSound:
 
 Flames_NoHurt:	
 
+	STA Debug_Snap
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE Flames_NoKill
@@ -3350,7 +3352,6 @@ Flames_NoKill:
 FireBlast_MakeFlame:
 	LDA #$08
 	STA Objects_Timer, X
-
 
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X

@@ -2706,7 +2706,7 @@ BridgeBuild_Build:
 	LDA Block_NeedsUpdate
 	BNE BridgeBuild_RTS
 
-	STA Debug_Snap
+
 	LDA #$03
 	STA BridgeBuild_CheckOffset, X
 

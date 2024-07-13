@@ -2948,7 +2948,7 @@ FindCompletedLevels1:
 	JMP FindCompletedLevels3
 
 Completion_Tiles: 
-	.byte $EE, $EE, $EE, $38
+	.byte $EE, $0F, $EE, $38
 	.byte $38, $38, $38, $7C
 	.byte $FF, $8E, $FF, $FF
 	.byte $FF, $FF, $FF, $FF
