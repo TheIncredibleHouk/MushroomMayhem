@@ -123,7 +123,7 @@ OBJ_STARCOLLECTION	= $3B
     .byte OPTS_NOCHANGE         ; Object $2D
     .byte OPTS_NOCHANGE         ; Object $2E
     .byte OPTS_NOCHANGE         ; Object $2F
-    .byte OPTS_SETPT5 | $36         ; Object $30
+    .byte OPTS_NOCHANGE         ; Object $30
     .byte OPTS_NOCHANGE         ; Object $31
     .byte OPTS_SETPT5 | $0B	    ; Object $32
 	.byte OPTS_NOCHANGE		    ; Object $33
@@ -1246,6 +1246,8 @@ ObjInit_Pulley:
 	ORA Pulley_SaveYHi, Y
 	BEQ Pulley_InitRTS
 
+	STA Debug_Snap
+
 	LDA Pulley_SaveY, Y
 	STA <Objects_YZ, X
 
@@ -1262,7 +1264,16 @@ Pulley_SaveYHi = Object_BufferX
 Pulley_Sibling = Objects_Data2
 
 ObjNorm_PlatformPulley:
+	LDA LastPatTab_Sel
+	BNE Pulley_ForceGfx
+	CMP #$04
+	BNE Pulley_NoGfxForce
 
+Pulley_ForceGfx:
+	LDA #$32
+	STA PatTable_BankSel + 4
+
+Pulley_NoGfxForce:
 	LDA <Player_HaltGameZ
 	BEQ Pulley_Norm
 	
@@ -1292,8 +1303,7 @@ Pulley_Check:
 	BEQ Pulley_CheckTiles
 
 	LDA #$00
-	STA <Objects_YVelZ, X
-	BEQ Pulley_FindSibling
+	JMP Pulley_NoSibling
 
 Pulley_CheckTiles:
 	JSR Object_DetectTileCenter
@@ -1330,20 +1340,19 @@ Pulley_UpdateBlock:
 	JSR Object_ChangeBlock
 
 Pulley_Move:
-	JSR Object_ApplyYVel_NoGravity	
+	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
 	
 	LDA Objects_Property, X
-	BEQ Pulley_NoYVel
+	BEQ Pulley_NoSibling
 
 	LDA #$00
 	STA <Objects_YVelZ, X
 
 Pulley_NoYVel:
-
 	LDA #$00
 	LDY Pulley_Sibling, X
-	BNE Pulley_NoSibling
+	BMI Pulley_NoSibling
 
 	STA Objects_YVelZ, Y
 
@@ -1386,11 +1395,7 @@ Pulley_FindBuddy:
 	TYA
 	STA Pulley_Sibling, X
 
-	LDA Objects_YVelFrac, X
-	EOR $00
-	ADD #$01
-	STA Objects_YVelFrac, X
-	BNE Pulley_Draw
+	JMP Pulley_Draw
 
 Pulley_NextObject:
 	DEY
@@ -1401,7 +1406,7 @@ Pulley_Draw:
 	LDY Objects_SpawnIdx, X
 	
 	LDA <Objects_YZ, X
-	ADD #$02
+	ADD #$01
 	STA Pulley_SaveY, Y
 
 	LDA <Objects_YHiZ, X
@@ -1412,8 +1417,13 @@ Pulley_Draw:
 
 	LDY Object_SpriteRAMOffset, X
 
+	LDA #$9F
+	STA Sprite_RAMTile + 8, Y
+	LDA #$9F
+	STA Sprite_RAMTile + 12, Y
+
 	LDA Sprite_RAMAttr + 12, Y
-	ORA #(SPR_HFLIP)
+	ORA #SPR_HFLIP
 	STA Sprite_RAMAttr + 12, Y
 	RTS
 

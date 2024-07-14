@@ -235,6 +235,8 @@ ObjP73:
 ObjP74:
 	.byte $99, $9B
 	.byte $9B, $99
+	.byte $BD, $BF
+	.byte $BF, $BD
 
 ObjP75:
 	.byte $E5, $E5, $E5, $E5, $E5, $E5
@@ -3324,8 +3326,6 @@ Flame_NoSound:
 	JSR Object_InteractWithPlayer
 
 Flames_NoHurt:	
-
-	STA Debug_Snap
 	LDA Objects_SpritesHorizontallyOffScreen, X
 	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE Flames_NoKill
@@ -3936,6 +3936,8 @@ Fuzzy_AnimTicks = Objects_Data1
 Fuzzy_BlockCheck = Objects_Data2
 Fuzzy_BlockCheckIndex = Objects_Data3
 Fuzzy_BlockCheckCount = Objects_Data4
+Fuzzy_XOrigin = Objects_Data5
+Fuzzy_XHiOrigin = Objects_Data6
 
 ObjInit_Fuzzy:
 	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_HAMMERPROOF  | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
@@ -3943,16 +3945,38 @@ ObjInit_Fuzzy:
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
 	STA Objects_BehaviorAttr, X
+
+	LDA <Objects_XZ, X
+	STA Fuzzy_XOrigin, X
+
+	LDA <Objects_XHiZ, X
+	STA Fuzzy_XHiOrigin, X
 	RTS
 
+Fuzzy_PatTable:
+	.byte $33, $33, $32
+
 ObjNorm_Fuzzy:
+	LDY Objects_Property, X
+	LDA Fuzzy_PatTable, Y
+	STA PatTable_BankSel + 4
+
 	LDA <Player_HaltGameZ
 	BEQ Fuzzy_Norm
 	JMP Fuzzy_Draw
 
 Fuzzy_Norm:	
-	LDA #$40
-	JSR Object_DeleteOffScreenRange
+	LDA <Objects_XZ, X
+	CMP Fuzzy_XOrigin, X
+	BNE Fuzzy_Move
+
+	LDA <Objects_XHiZ, X
+	CMP Fuzzy_XHiOrigin, X
+	BNE Fuzzy_Move
+
+	JSR Object_DeleteOffScreen
+
+Fuzzy_Move:
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
 	JSR Object_CalcBoundBox
@@ -3986,16 +4010,21 @@ FUZZY_BLOCKCHECK_LEFT = $03
 Fuzzy_BlockXVelocities:
 	.byte $00, $10, $00, $F0
 	.byte $00, $20, $00, $E0
+	.byte $00, $40, $00, $C0
 
 Fuzzy_BlockYVelocities:
 	.byte $F0, $00, $10, $00
 	.byte $E0, $00, $20, $00
+	.byte $C0, $00, $40, $00
 
 Fuzzy_BlockChecks:
 	.byte FUZZY_BLOCKCHECK_UP, FUZZY_BLOCKCHECK_RIGHT, FUZZY_BLOCKCHECK_LEFT, FUZZY_BLOCKCHECK_DOWN
 	.byte FUZZY_BLOCKCHECK_RIGHT, FUZZY_BLOCKCHECK_UP, FUZZY_BLOCKCHECK_DOWN, FUZZY_BLOCKCHECK_LEFT
 	.byte FUZZY_BLOCKCHECK_DOWN, FUZZY_BLOCKCHECK_LEFT, FUZZY_BLOCKCHECK_RIGHT, FUZZY_BLOCKCHECK_UP
 	.byte FUZZY_BLOCKCHECK_LEFT, FUZZY_BLOCKCHECK_UP, FUZZY_BLOCKCHECK_DOWN, FUZZY_BLOCKCHECK_RIGHT
+
+Fuzzy_SpeedOffset:
+	.byte 00, 04, 08
 
 Fuzzy_FindBlock:
 	LDA Fuzzy_BlockCheck, X
@@ -4039,13 +4068,12 @@ Fuzzy_FindNextBlock:
 	
 	LDA Fuzzy_BlockChecks, Y
 	STA Fuzzy_BlockCheck, X
-	TAY
+	STA <Temp_Var1
 
-	LDA Objects_Property, X
-	BEQ Fuzzy_NormalSpeed
+	LDY Objects_Property, X
+	LDA Fuzzy_SpeedOffset, Y
 
-	TYA
-	ADD #$04
+	ADD <Temp_Var1
 	TAY
 
 Fuzzy_NormalSpeed:	
@@ -4065,13 +4093,18 @@ Fuzzy_NextBlockCheck:
 
 	JMP Fuzzy_FindNextBlock
 
+Fuzzy_FrameOffset:
+	.byte $00, $00, $02
 
-Fuzzy_Animate:	
+Fuzzy_Animate:
+	LDY Objects_Property, X
+
 	INC Fuzzy_AnimTicks, X
 	LDA Fuzzy_AnimTicks, X
 	LSR A
 	LSR A
 	AND #$01
+	ADD Fuzzy_FrameOffset, Y
 	STA Objects_Frame, X
 
 Fuzzy_Draw:
