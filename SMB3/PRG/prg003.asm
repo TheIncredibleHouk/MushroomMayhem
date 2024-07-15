@@ -1363,6 +1363,14 @@ Pulley_NoSibling:
 	JSR Object_InteractWithPlayer
 	JSR Platform_ContactCheck
 
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BNE Pulley_Contact
+
+	LDA Player_IsHolding
+	BEQ Pulley_Draw
+
+Pulley_Contact:
 	LDA Platform_MadeContact, X
 	BEQ Pulley_Draw
 
