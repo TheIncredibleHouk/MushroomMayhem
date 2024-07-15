@@ -3330,7 +3330,7 @@ Flames_NoHurt:
 	ORA Objects_SpritesVerticallyOffScreen, X
 	BNE Flames_NoKill
 
-	LDA #ATTR_FIREPROOF
+	LDA #$00
 	STA <Kill_TypeCheck
 	JSR Object_KillOthers
 

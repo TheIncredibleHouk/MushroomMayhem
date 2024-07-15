@@ -1297,6 +1297,7 @@ Kill_TypeCheck = Temp_Var16
 Kill_WasKicked = Temp_Var15
 
 Shell_KillOthers:
+	STA Debug_Snap
 	LDA #ATTR_SHELLPROOF
 	STA <Kill_TypeCheck
 	BNE Object_KillOthers
@@ -1330,7 +1331,7 @@ Object_KillOthers1:
 	INC <Kill_WasKicked
 
 Kill_NotKicked:
-	LDA Objects_WeaponAttr, Y
+	LDA Objects_BehaviorAttr, Y
 	AND <Kill_TypeCheck
 	BNE Object_KillOthers2
 

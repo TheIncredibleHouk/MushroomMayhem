@@ -1246,8 +1246,6 @@ ObjInit_Pulley:
 	ORA Pulley_SaveYHi, Y
 	BEQ Pulley_InitRTS
 
-	STA Debug_Snap
-
 	LDA Pulley_SaveY, Y
 	STA <Objects_YZ, X
 
