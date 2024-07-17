@@ -591,7 +591,7 @@ Direction_Switch:
 	STA PatTable_BankSel
 
 	LDA Direction_Movement, Y
-	STA TileProperties + $FE
+	STA TileProperties + $65
 
 	LDA #$00
 	STA EventSwitch

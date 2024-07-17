@@ -3769,7 +3769,7 @@ Tile_MoveTable_XCarry:
 
 Tile_MoveTable_XVel:
 	;	   L    R    U    D
-	.byte $D0, $30, $00, $00 ; X Air
+	.byte $E0, $20, $00, $00 ; X Air
 	.byte $00, $00, $00, $00 ; X Water
 	.byte $00, $00, $00, $00 ; X Ground
 	.byte $00, $00, $00, $00 ; X Wall
