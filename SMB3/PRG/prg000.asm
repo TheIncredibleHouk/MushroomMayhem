@@ -1297,7 +1297,6 @@ Kill_TypeCheck = Temp_Var16
 Kill_WasKicked = Temp_Var15
 
 Shell_KillOthers:
-	STA Debug_Snap
 	LDA #ATTR_SHELLPROOF
 	STA <Kill_TypeCheck
 	BNE Object_KillOthers
@@ -5927,10 +5926,15 @@ Object_FlipFallAwayFromHit:
 	LDA #$C0
 	STA <Objects_YVelZ, X
 
+	LDA Objects_BehaviorAttr, X
+	AND #ATTR_HASSHELL
+	BEQ FallAwayNoFLip
+
 	LDA Objects_Orientation, X
 	ORA #SPR_VFLIP
 	STA Objects_Orientation, X
 
+FallAwayNoFLip:
 	LDA <HitTest_Result
 	AND #HITTEST_RIGHT
 	BNE Object_FlipFallAwayFromHit1

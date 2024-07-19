@@ -478,9 +478,9 @@
     44,
     35,
     36,
+    95,
     70,
-    70,
-    70,
+    95,
     34,
     44,
     35,
@@ -542,8 +542,8 @@
     70,
     70,
     70,
-    21,
     70,
+    21,
     70,
     70,
     70,
@@ -675,10 +675,16 @@
       "BoundRectangle": "240,0,16,16"
     },
     {
-      "LevelId": "b36af08b-76a7-4909-8391-bda20be64e55",
+      "LevelId": "e06beb12-17b7-4ee8-84a4-1a38967608ea",
       "X": 19,
       "Y": 5,
       "BoundRectangle": "304,80,16,16"
+    },
+    {
+      "LevelId": "6687bc7f-bcd2-44bc-97a1-0323d9a797e0",
+      "X": 23,
+      "Y": 8,
+      "BoundRectangle": "368,128,16,16"
     }
   ],
   "ObjectData": [
@@ -689,8 +695,8 @@
     },
     {
       "GameObjectId": 205,
-      "X": 24,
-      "Y": 5
+      "X": 23,
+      "Y": 2
     },
     {
       "GameObjectId": 208,
@@ -698,5 +704,5 @@
       "Y": 2
     }
   ],
-  "CompressedData": "ACTExMTExMTFxM/Pz97eEwAkz8/Pz8/Pw8/Pz8/Iz88AJEVFRUVFRTVFX0VFRV9AACRGRkZGRkY8RkZGRkZGRgAkX0ZGLi4uHy4uRkZGRl8AJEcQX05eXhFeXk9GRl9GACRfRkZGIiwvLCRGRkZGXwAkRkZGRiIsIywkRkZGX0YAJEZGRkZGRhJGRkZGX0ZG3t7fz8/Pz8/Pz8/Pz8/e3s/Iw8/Pz8/Pz8/Pz8/PyM9BQUFBQUFCRUBBQUFBQUFCIiMjLCMkRkZGIiwjIywkRiIvIywvJEZGRiIsLy8sJEYiIyMUIyRGRkYiFi8vFyRfIi8jLC8kRkZGIiwjIywkRiIjIywjJEZGRiIsIyMsJEZfX19GRkYVRkZGRkZGRkZf3t7e38/PzyIvIyMvJCMjI8/PyMPPz88iIyMjIyQjIyNfIiwjIyRFIi8jIy8kIyMjRiIsLy8kRiIjIyMjJCMvI18iLC8vJEZtbm9GRkYjIyNGIiwjIyRGfX5/RkZGIy8jXyIYIyMkRiIjIyMjJCMjI19fRkZGRkYiLyMjLyQjLyNfX19GRkZGIiMjIyMkIyMj"
+  "CompressedData": "ACTExMTExMTFxM/Pz97eEwAkz8/Pz8/Pw8/Pz8/Iz88AJEVFRUVFRTVFX0VFRV9AACRGRkZGRkY8RkZGRkZGRgAkX0ZGLi4uHy4uRkZGRl8AJEcQX05eXhFeXk9GRl9GACRfRkZGIiwvLCRGRkZGXwAkRkZGRiIsIywkRkZGX0YAJEZGRkZGRhJGRkZGX0ZG3t7fz8/Pz8/Pz8/Pz8/e3s/Iw8/Pz8/Pz8/Pz8/PyM9BQUFBQUFCRUBBQUFBQUFCIiMjLCMkRkZGIiwjIywkRiIvIywvJEZGRiIsLy8sJEYiIyMUIyRGRkYiFi8vFyRfIi8jLC8kRkZGIiwjIywkRiIjIywjJF9GXyIsIyMsJEZfX19GRkZGFUZGRkZGRkZf3t7e38/PzyIvIyMvJCMjI8/PyMPPz88iIyMjIyQjIyNfIiwjIyRFIi8jIy8kIyMjRiIsLy8kRiIjIyMjJCMvI18iLC8vJEZtbm9GRkYjIyNGIiwjIyRGfX5/RkZGIy8jXyIYIyMkRiIjIyMjJCMjI19fRkZGRkYiLyMjLyQjLyNfX19GRkZGIiMjIyMkIyMj"
 }

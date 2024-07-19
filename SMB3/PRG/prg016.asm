@@ -95,7 +95,7 @@ OBJ_GAMESCRIPT			= $9F
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $91
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $92
     .byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $93
-    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH64 ; Object $94
+    .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $94
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $95
     .byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $96
     .byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $97
@@ -2022,9 +2022,13 @@ PlungerPaul_Norm:
 	CMP #OBJSTATE_KILLED
 	BNE PlungerPaul_DoState
 
+	STA Debug_Snap
 	LDA Objects_PlayerProjHit, X
-	AND #HIT_STOMPED
-	BNE PlungerPaul_Stand
+	CMP #HIT_STOMPED
+	BEQ PlungerPaul_Stand
+
+	CMP #(HIT_STOMPED | HIT_TAIL)
+	BEQ PlungerPaul_Stand
 
 	JSR Object_PoofDie
 
@@ -2072,6 +2076,9 @@ PlungerPaul_DoState:
 PlungerPaul_Wait:
 	LDA #$00
 	STA Objects_Frame, X
+
+	LDA #$01
+	STA Objects_Timer2, X
 
 	LDA Objects_Timer, X
 	BEQ PlungerPaul_Wait1
