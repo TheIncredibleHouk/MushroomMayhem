@@ -3175,26 +3175,26 @@ __ = 00
 X_ = $FF
 
 Cheat_Codes:	
-	.byte U_, U_, U_, U_, U_, U_, U_, U_, U_
-	.byte U_, R_, D_, L_, U_, R_, D_, L_, __
-	.byte L_, D_, R_, D_, L_, D_, R_, D_, L_
-	.byte L_, R_, S_, B_, A_, B_, S_, R_, L_
-	.byte B_, A_, B_, A_, B_, A_, B_, A_, U_
-	.byte B_, A_, B_, A_, B_, A_, B_, A_, D_
-	.byte B_, A_, B_, A_, B_, A_, B_, A_, L_
-	.byte B_, A_, B_, A_, B_, A_, B_, A_, R_
-	.byte B_, A_, B_, A_, B_, A_, B_, A_, S_
-	.byte B_, A_, B_, A_, B_, A_, B_, A_, B_
-	.byte S_, B_, S_, B_, S_, B_, S_, B_, S_
-	.byte U_, R_, S_, U_, L_, A_, S_, U_, B_
-	.byte B_, U_, L_, B_, A_, S_, A_, U_, R_
-	.byte B_, R_, A_, B_, B_, U_, L_, S_, __
-	.byte U_, D_, L_, R_, U_, D_, L_, R_, A_
-	.byte U_, D_, L_, R_, U_, D_, L_, R_, B_
-	.byte A_, A_, A_, L_, L_, L_, L_, L_, L_
-	.byte A_, A_, A_, R_, R_, R_, R_, R_, R_
-	.byte A_, A_, A_, U_, U_, U_, U_, U_, U_
-	.byte A_, A_, A_, D_, D_, D_, D_, D_, D_
+	.byte U_, U_, U_, U_, U_, U_, U_, U_, U_ ; Cheat_AbilityUp
+	.byte U_, R_, D_, L_, U_, R_, D_, L_, __ ; Cheat_250Coins
+	.byte L_, D_, R_, D_, L_, D_, R_, D_, L_ ; Cheat_25Cherries
+	.byte L_, R_, S_, B_, A_, B_, S_, R_, L_ ; Cheat_1000Exp
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, U_ ; Cheat_Badge1
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, D_ ; Cheat_Badge2
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, L_ ; Cheat_Badge3
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, R_ ; Cheat_Badge4
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, S_ ; Cheat_Badge5
+	.byte B_, A_, B_, A_, B_, A_, B_, A_, B_ ; Cheat_Badge6
+	.byte S_, B_, S_, B_, S_, B_, S_, B_, S_ ; Cheat_DebugMode
+	.byte U_, R_, S_, U_, L_, A_, S_, U_, B_ ; Cheat_Sub
+	.byte B_, U_, L_, B_, A_, S_, A_, U_, R_ ; Cheat_SecondQuest
+	.byte B_, R_, A_, B_, B_, U_, L_, S_, __ ; Cheat_ToggleMoonGravity
+	.byte U_, D_, L_, R_, U_, D_, L_, R_, A_ ; Cheat_IncreaseStars1
+	.byte U_, D_, L_, R_, U_, D_, L_, R_, B_ ; Cheat_IncreaseStars10
+	.byte A_, A_, A_, L_, L_, L_, L_, L_, L_ ; Cheat_SkipMapLeft
+	.byte A_, A_, A_, R_, R_, R_, R_, R_, R_ ; Cheat_SkipMapRight
+	.byte A_, A_, A_, U_, U_, U_, U_, U_, U_ ; Cheat_SkipMapUp
+	.byte A_, A_, A_, D_, D_, D_, D_, D_, D_ ; Cheat_SkipMapDown
 
 Cheat_Index = Temp_Var1
 Cheat_Offset = Temp_Var2
