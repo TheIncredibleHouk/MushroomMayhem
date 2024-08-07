@@ -105,8 +105,7 @@ OBJ_STARCOLLECTION	= $3B
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32  ; Object $32
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $33
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $34
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $35
-	.byte OA1_PAL2 | OA1_HEIGHT64 | OA1_WIDTH16	 ; Object $36
+	.byte OA1_PAL3 | OA1_HEIGHT64 | OA1_WIDTH16	 ; Object $36
 	.byte $00  ; Object $37
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16									 ; Object $38
 	.byte $00									 ; Object $39
@@ -1904,6 +1903,12 @@ Cloud_BlockCheckY2:
 	.byte $08, $18, $18, $08
 
 ObjNorm_CloudGen:
+	LDA <Player_HaltGameZ
+	BEQ CloudGen_Norm
+	JMP ObjNorm_CloudGenRTS
+
+CloudGen_Norm:
+	STA Debug_Snap
 	JSR Object_DeleteOffScreen
 
 	LDY Objects_Property, X
@@ -1946,7 +1951,7 @@ ObjNorm_CloudGen:
 
 	JSR Object_DetectTile
 	CMP #TILE_PROP_SOLID_ALL
-	BCS ObjInit_CloudGenRTS
+	BCS ObjNorm_CloudGenRTS
 	
 	JSR Object_InteractWithPlayer	
 
@@ -1966,7 +1971,7 @@ ObjNorm_CloudGen:
 	CMP #$03
 	BNE CloudGen_RandomY
 	
-CloudGen_RandomX
+CloudGen_RandomX:
 	LDA RandomN
 	AND #$0F
 	STA <Temp_Var1
