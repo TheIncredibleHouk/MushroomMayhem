@@ -629,6 +629,7 @@ PRG000_C98B:
 	
 	; Non-special objects in slots 0 to 4...
 	INC Object_Count
+	STA Debug_Snap
 	
 	LDA Objects_ID, X
 

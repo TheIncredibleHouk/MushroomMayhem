@@ -2011,6 +2011,7 @@ ObjNorm_PlungerPaul:
 
 PlungerPaul_Norm:
 	JSR Object_CalcBoundBox
+	JSR Object_DeleteOffScreen
 	JSR Object_FacePlayer
 
 	LDA PlungerPaul_State, X
@@ -2022,7 +2023,6 @@ PlungerPaul_Norm:
 	CMP #OBJSTATE_KILLED
 	BNE PlungerPaul_DoState
 
-	STA Debug_Snap
 	LDA Objects_PlayerProjHit, X
 	CMP #HIT_STOMPED
 	BEQ PlungerPaul_Stand
@@ -2049,6 +2049,9 @@ PlungerPaul_Norm:
 	RTS
 
 PlungerPaul_Stand:
+	LDA #$00
+	STA Objects_Timer2, X
+	
 	LDA Sound_QPlayer
 	AND #~SND_PLAYERKICK
 	STA Sound_QPlayer
@@ -2057,8 +2060,16 @@ PlungerPaul_Stand:
 	STA Objects_State, X
 
 	LDA Player_Jumped
+	BEQ PlungerPaul_NoJump
+
+	LDA #PLAYER_JUMP
+	STA <Player_YVelZ
+
+	LDA #SND_PLAYERJUMP
+	STA Sound_QPlayer
 	BNE PlungerPaul_DoState
 
+PlungerPaul_NoJump:
 	LDA #$00
 	STA Player_YVelZ
 

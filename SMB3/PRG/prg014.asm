@@ -3278,10 +3278,10 @@ FrostFlame_SetPatternTableRTS:
 	RTS
 
 FrostFlame_Direction:
-	.byte $01, $FF
+	.byte $01, $FF, $01, $FF
 
 Flame_Offset:
-	.byte $04, $18
+	.byte $04, $18, $FC, $20
 
 FireBlast_Count = Objects_Data1
 
@@ -3293,6 +3293,14 @@ ObjInit_FireBlast:
 
 	LDA #$01
 	STA Objects_SlowTimer, X
+
+	LDA Objects_Property, X
+	CMP #$02
+	BCC ObjInit_FireBlast
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ, X
 
 ObjInit_FireBlastRTS:
 	RTS

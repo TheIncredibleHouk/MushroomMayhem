@@ -451,24 +451,12 @@ GenerateCheepCheep:
 	LDA #$40
 	STA Level_EventTimer
 
+	LDA #OBJ_JUMPINGCHEEP
+	STA <Object_Check
 
-	LDA #$00
-	STA <Temp_Var1
+	JSR CheckObjectsOfType2
 
-	LDY #$04
-
-CheepCheep_EnemyCount:
-	LDA Objects_ID, Y
-	LDA Objects_State, Y
-	BEQ EnemyCount_NoInc
-
-	INC <Temp_Var1
-
-EnemyCount_NoInc:
-	DEY
-	BPL CheepCheep_EnemyCount
-
-	LDA <Temp_Var1
+	LDA <Num_Objects
 	CMP #$03
 	BCS GenerateCheepCheepRTS
 
