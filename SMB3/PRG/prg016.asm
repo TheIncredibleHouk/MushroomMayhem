@@ -1845,6 +1845,8 @@ BarrelFlip:
 
 BarrelBro_DrawBarrel:
 
+	STA Debug_Snap
+
 	LDY #$00
 	LDA Objects_Orientation, X
 	AND #SPR_HFLIP
@@ -1862,7 +1864,9 @@ BarrelBro_LeftSide:
 	LDA BarrelTiles + 2, Y
 	STA <Temp_Var3
 
-	LDA BarrelFlip, Y
+	LDA Objects_SpriteAttributes, X
+	AND #SPR_BEHINDBG
+	ORA BarrelFlip, Y
 	STA <Temp_Var4
 
 	LDY Object_SpriteRAMOffset, X
@@ -1872,8 +1876,6 @@ BarrelBro_LeftSide:
 
 	LDA Sprite_RAMX, Y
 	ADD <Temp_Var1
-	BCS BarrelBro_NoLeft
-
 	STA Sprite_RAMX - 8, Y
 
 	LDA Sprite_RAMY, Y

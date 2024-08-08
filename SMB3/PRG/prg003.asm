@@ -1908,7 +1908,6 @@ ObjNorm_CloudGen:
 	JMP ObjNorm_CloudGenRTS
 
 CloudGen_Norm:
-	STA Debug_Snap
 	JSR Object_DeleteOffScreen
 
 	LDY Objects_Property, X
