@@ -663,7 +663,7 @@
       "BoundRectangle": "48,80,16,16"
     },
     {
-      "LevelId": "24a42c29-3f0d-4121-b348-a9f188e392b2",
+      "LevelId": "a63ecd34-78b1-4166-9cad-786e180651e4",
       "X": 8,
       "Y": 8,
       "BoundRectangle": "128,128,16,16"
@@ -697,6 +697,12 @@
       "X": 29,
       "Y": 7,
       "BoundRectangle": "464,112,16,16"
+    },
+    {
+      "LevelId": "eb751a40-77ef-410f-962e-9ef1d16e53c3",
+      "X": 34,
+      "Y": 6,
+      "BoundRectangle": "544,96,16,16"
     }
   ],
   "ObjectData": [

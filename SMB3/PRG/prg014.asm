@@ -3296,7 +3296,7 @@ ObjInit_FireBlast:
 
 	LDA Objects_Property, X
 	CMP #$02
-	BCC ObjInit_FireBlast
+	BCC ObjInit_FireBlastRTS
 
 	LDA <Objects_XZ, X
 	ADD #$08
