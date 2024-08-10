@@ -1459,7 +1459,6 @@ Skip_StatReset:
 
 	LDA #$40
 	STA Air_Time
-	STA Tile_Anim_Enabled
 	STA Force_StatusBar_Init
 
 PRG030_8F42:

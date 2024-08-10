@@ -3067,7 +3067,6 @@ Super_MarioStandard:
 
 	LDA #$40
 	STA Air_Time
-	STA Tile_Anim_Enabled
 
 	LDA #$00
 	STA Power_Change

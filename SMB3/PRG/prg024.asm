@@ -526,7 +526,6 @@ Title_PrepForWorldMap:
 
 	LDA #$40
 	STA Air_Time
-	STA Tile_Anim_Enabled
 
 	LDA #$0F
 	STA StatusBar_Palette

@@ -2526,7 +2526,7 @@ MARIO_NINJA		= 11
 	End_Level_Timer:	.ds 1	; Once this goes to 0, the level ends
 	Force_Coin_Update:	.ds 1	; Indicates the coins need to be update, overriding the Coins_earned marker
 	Old_World_Map_Tile:	.ds	1	;
-	Tile_Anim_Enabled:  .ds 4	;
+	UNUSED_1:  .ds 4	;
 
 	Music_Start:		.ds 1	; Music start index (beginning of this song)
 	Music_End:		.ds 1	; Music end index (inclusive last index to play before loop)
@@ -2534,7 +2534,7 @@ MARIO_NINJA		= 11
 
 	Sound_Octave:		.ds 1	; Used for calculating octave
 
-				.ds 12	; $7AE4-$7AEF unused
+	UNUSED_2:			.ds 12	; $7AE4-$7AEF unused
 
 	Music_Sq1Bend:		.ds 1	; Alters PAPU_FT1 for bend effects
 
