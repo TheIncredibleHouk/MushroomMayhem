@@ -6631,6 +6631,12 @@
       "X": 83,
       "Y": 8,
       "Property": 1
+    },
+    {
+      "GameObjectId": 80,
+      "X": 43,
+      "Y": 21,
+      "Property": 0
     }
   ],
   "SecondObjectData": [

@@ -776,7 +776,7 @@ World_Select_CheckEnable:
 	BNE World_Select_CheckEnableRTS
 
 	JSR TitleState_EraseGame
-	
+
 	LDA #$01
 	STA World_Select_Enabled
 	STA World_Start
@@ -4671,7 +4671,7 @@ Tutorial_Ninja_2:
 	.db "& PRESS A TO WALLJUMP."
 
 Training_1:
-	.db "SUSTAIN 10 HITS       "
+	.db "GET HIT 10 HITS       "
 	.db "IN 100 SECONDS!       "
 
 Training_2:

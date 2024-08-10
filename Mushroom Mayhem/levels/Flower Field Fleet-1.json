@@ -10,6 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "ceee7668-a8e4-44c0-8676-a3d11168456f",
   "StaticTileTableIndex": 8,
+  "NoStars": false,
   "MostCommonTile": 65,
   "AnimationType": 0,
   "ScrollType": 1,
@@ -6542,22 +6543,22 @@
       "Property": 2
     },
     {
-      "GameObjectId": 77,
-      "X": 13,
-      "Y": 18,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 77,
-      "X": 21,
+      "GameObjectId": 63,
+      "X": 14,
       "Y": 16,
       "Property": 0
     },
     {
-      "GameObjectId": 69,
-      "X": 32,
+      "GameObjectId": 63,
+      "X": 21,
       "Y": 14,
       "Property": 0
+    },
+    {
+      "GameObjectId": 194,
+      "X": 32,
+      "Y": 14,
+      "Property": 6
     }
   ],
   "SecondObjectData": [
@@ -6593,5 +6594,5 @@
     }
   ],
   "LevelPointers": [],
-  "CompressedData": "f0fB/0cY/0TB/39Hwf9HGP9Ewf9/R8H/Rxj/RMH/f0fB/0cY/0TB/39Hwf9HGP9Ewf9/R8H/Rxj/RMH/f0eCC/9BQUFBQUFBQf//C/9Ewf9/R8H/RwL/RBCBRMH/f0fB/0cC/0LBgUEPbUTB/39Hwf9HAv9FD/9Ewf9/R8H/RwL/RQX/RwH/RMH/f0fB/0cC/1MB/0TB/39Hwf9HAv8ObUQB/0TB/39Hwf9HEf9EAf9Ewf9fwo6PZcH/RwX/SAL/RAH/RMH/WsKOj0LCnp9lwf9HBf9QAf9Ewf9Uwo6PQ4IFnp9BQUHB/2HB/0cF/0QLbQH/RMH/VMKen0OCBZ6fQUFBwf9gwkr/AV+CC/9BQUFBQf//////CP9Ewf9MggSOj0FBwp6fQ4IFnp9BQUED/2GCC/9BQUFBQf//////CP9Ewf9Iwo6PQYMEnp9BQUGCBZ6fQUFBA/9hwf9iwf9Bwo6PRIQEnp9BQUGCBZ6fQUFBBv9aAqHCQf8fbULB/0HCnp9EAf/CQYEB/0EB/0EB/8GBQgH/QgH/Qgb/U8EuRMGQKJFBwp6fQsGDQsEzQ8HTQ8FTQ8HTRMEzQsJTQQX/RsEuUcFQKFFBwp6fQYIEk5SVQcFBgwWTlJWhoYIEQZOUlQf/V8FgKGEtkcGSVsFgKGEt0cHSFs3B8CjxLeHB4hbLweAn4cHh"
+  "CompressedData": "f0fB/0cY/0TB/39Hwf9HGP9Ewf9/R8H/Rxj/RMH/f0fB/0cY/0TB/39Hwf9HGP9Ewf9/R8H/Rxj/RMH/f0eCC/9BQUFBQUFBQf//C/9Ewf9/R8H/RwL/RBCBRMH/f0fB/0cC/0LBgUEPbUTB/39Hwf9HAv9FD/9Ewf9/R8H/RwL/RQX/RwH/RMH/f0fB/0cC/1MB/0TB/39Hwf9HAv8ObUQB/0TB/39Hwf9HEf9EAf9Ewf9fwo6PZcH/RwX/SAL/RAH/RMH/WsKOj0LCnp9lwf9HBf9QAf9Ewf9Uwo6PQ4IFnp9BQUHB/2HB/0cF/0QLbQH/RMH/VMKen0OCBZ6fQUFBwf9gwkr/AV+CC/9BQUFBQf//////CP9Ewf9MggSOj0FBwp6fQ4IFnp9BQUED/2GCC/9BQUFBQf//////CP9Ewf9Iwo6PQYMEnp9BQUGCBZ6fQUFBA/9hwf9iwf9Bwo6PRIQEnp9BQUGCBZ6fQUFBBv9aAqHCQf8fbULB/0HCnp9EAf/CQYEB/0EB/0EB/8GBQgH/QgH/Qgb/U8EuRMGQKJFBwp6fQsGDQsEzQ8HTQ8FTQ8HTRMEzQsJTQQX/RsEuUcFQKFFBwp6fQYIEk5SVQcFBgwWTlJWhoYIEQZOUlQf/V8FgKGEtkcGSVsFgKGEt0cHSFs3B8CjxLeHB4hbLweAo4Q=="
 }
