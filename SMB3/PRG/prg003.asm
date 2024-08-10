@@ -105,11 +105,12 @@ OBJ_STARCOLLECTION	= $3B
     .byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH32  ; Object $32
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH48	 ; Object $33
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $34
-	.byte OA1_PAL3 | OA1_HEIGHT64 | OA1_WIDTH16	 ; Object $36
-	.byte $00  ; Object $37
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16									 ; Object $38
-	.byte $00									 ; Object $39
-	.byte  OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16							 ; Object $3A
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16  ; Object $35
+	.byte OA1_PAL3 | OA1_HEIGHT64 | OA1_WIDTH16  ; Object $36
+	.byte $00	 ; Object $37
+	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	 ; Object $38
+	.byte $00			 						 ; Object $39
+	.byte  OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $3A
 	.byte $00									 ; Object $3B
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
@@ -2117,10 +2118,9 @@ ObjNorm_CoinAlert:
 	RTS
 
 CoinAlert_CheckCoins:	
-
-	LDA Coins_Earned
+	LDA Sound_QLevel1
+	AND #SND_LEVELCOIN
 	BEQ ObjNorm_CoinAlertRTS
-
 
 	LDA #$40
 	STA CoinAlert_Alarm, X

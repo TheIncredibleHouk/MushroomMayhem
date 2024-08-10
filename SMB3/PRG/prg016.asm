@@ -1845,8 +1845,6 @@ BarrelFlip:
 
 BarrelBro_DrawBarrel:
 
-	STA Debug_Snap
-
 	LDY #$00
 	LDA Objects_Orientation, X
 	AND #SPR_HFLIP
@@ -2053,7 +2051,7 @@ PlungerPaul_Norm:
 PlungerPaul_Stand:
 	LDA #$00
 	STA Objects_Timer2, X
-	
+
 	LDA Sound_QPlayer
 	AND #~SND_PLAYERKICK
 	STA Sound_QPlayer
