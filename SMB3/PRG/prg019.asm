@@ -208,7 +208,7 @@ PRG005_B902:
 	LSR A
 	LSR A
 	LSR A
-	STA Level_Event_Property
+	STA Level_EventProperty
 
 	RTS		 ; Return
 
@@ -410,6 +410,7 @@ LevelEvent_Do:
 	.word LevelEvent_Ruster	; 7 - $BA Ruster generator
 	.word LevelEvent_Snifit	; 8 - $BB Snifit generator
 	.word LevelEvent_BooWaves ; 9 - NO OBJECT
+	.word LevelEvent_CoinAlert ; A - NO OBJECT
 	
 
 GEN_CANCEL		= 0
@@ -419,6 +420,7 @@ GEN_GOLDCHEEPS	= 3
 GEN_GOLDYURARIN = 4
 GEN_BLOOPERS	= 5
 GEN_SWOOPERS	= 9
+GEN_COINALERT	= 10
 
 LevelEvent_DoNothing:
 LevelEvent_DoRTS:
@@ -504,7 +506,7 @@ GenerateCheepCheep:
 	LDA #$02
 	STA Objects_SlowFall, X
 
-	LDA Level_Event_Property
+	LDA Level_EventProperty
 	BNE GenerateCheepCheep_AntiGrav
 
 GenerateCheepCheepRTS:
@@ -1533,4 +1535,232 @@ NotObject_Checking2:
 	DEX
 	BPL CheckNextObject2
 	RTS
-; Rest of ROM bank was empty...
+
+CoinAlert_Colors:
+	.byte $0F, $06 
+
+CoinAlert_Alarm = Objects_Data1
+
+CoinAlert_ObjectSpawnX:
+	.byte $40, $C0
+	.byte $00, $FF
+
+LevelEvent_CoinAlert:
+	LDA Level_EventTimer
+	BNE CoinAlert_DecTimer
+
+	LDA Level_EventData
+	BEQ CoinAlert_CheckCoins
+
+	LSR A
+	LSR A
+	LSR A
+
+	AND #$01
+	TAY
+
+	LDA CoinAlert_Colors, Y
+	STA Pal_Data
+	STA Pal_Data + 16
+	STA Palette_Buffer
+	STA Palette_Buffer + 16
+
+	DEC Level_EventData
+	BNE ObjNorm_CoinAlertRTS
+
+	LDA #$02
+	STA Level_EventTimer
+	RTS
+
+CoinAlert_CheckCoins:	
+	LDA Sound_QLevel1
+	AND #SND_LEVELCOIN
+	BEQ ObjNorm_CoinAlertRTS
+
+	LDA #$40
+	STA Level_EventData
+
+	LDA Level_EventProperty
+	JSR DynJump
+
+	.word CoinAlarm_MontyMole
+	.word CoinAlarm_Bullets
+	.word CoinAlarm_FireBalls
+
+CoinAlert_DecTimer:
+	DEC Level_EventTimer
+
+ObjNorm_CoinAlertRTS:
+	RTS
+
+CoinAlarm_MontyMole:
+
+	JSR Object_FindEmptyY
+	BCC ObjNorm_CoinAlertRTS
+
+	LDA #OBJ_MONTYMOLE
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA RandomN
+	AND #$01
+	TAX
+
+	LDA <Player_X
+	ADD CoinAlert_ObjectSpawnX, X
+	STA Objects_XZ, Y
+
+	LDA <Player_XHi
+	ADC CoinAlert_ObjectSpawnX + 2, X
+	STA Objects_XHiZ, Y
+
+	LDA <Vert_Scroll
+	ADD #$C0
+	STA Objects_YZ, Y
+
+	LDA <Vert_Scroll_Hi
+	ADC #$00
+	STA Objects_YHiZ, Y
+
+	LDA #$01
+	STA Objects_Property, Y
+	RTS
+
+CoinAlarm_BulletYOffset:
+	.byte $10, $E0
+
+CoinAlarm_BulletYHiOffset:
+	.byte $00, $FF
+
+CoinAlarm_BulletXOffset:
+	.byte $F0, $10
+
+CoinAlarm_BulletXHiOffset:
+	.byte $FF, $01
+
+CoinAlarm_BullXVel:
+	.byte $30, $D0	
+
+CoinAlarm_Bullets:
+	LDY #$01
+
+CoinAlarm_MoreBullets:
+	JSR Object_FindEmptyX	 ; Spawn new object (Note: If no slots free, does not return)
+	BCC CoinAlarm_BulletRTS
+
+	LDA #OBJ_BULLETBILL
+	STA Objects_ID, X
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, X
+
+	LDA <Player_YZ
+	ADD CoinAlarm_BulletYOffset, Y
+	STA <Objects_YZ, X
+
+	LDA <Player_YHiZ
+	ADC CoinAlarm_BulletYHiOffset, Y
+	STA <Objects_YHiZ, X
+
+	LDA <Horz_Scroll
+	ADD CoinAlarm_BulletXOffset, Y
+	STA <Objects_XZ, X
+
+	LDA <Horz_Scroll_Hi
+	ADC CoinAlarm_BulletXHiOffset, Y
+	STA <Objects_XHiZ, X
+
+	LDA CoinAlarm_BullXVel, Y
+	STA <Objects_XVelZ, X
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	DEY
+	BPL CoinAlarm_MoreBullets
+
+CoinAlarm_BulletRTS:
+	RTS
+
+
+Alert_FireballXOffset:
+	.byte $08, $00, $F8, $00
+
+Alert_FireballYOffset:
+	.byte $00, $01, $00, $C0
+
+Alert_FireballXVel:
+	.byte $20, $00, $E0, $00
+
+Alert_FireballYVel:
+	.byte $00, $20, $00, $E0
+
+CoinAlarm_FireBalls:
+	LDX #$03
+
+CoinAlarm_FireBallLoop:
+	STA Debug_Snap
+
+	JSR Object_PrepProjectile
+	BCC CoinAlert_FireballRTS
+
+	LDA #SOBJ_FIREBALL
+	STA SpecialObj_ID, Y
+
+	LDA #$01
+	STA SpecialObj_Data3, Y
+
+	LDA Alert_FireballXOffset, X
+	BNE CoinAlert_SetFireBallX
+
+	LDA <Player_X
+	ADD #$04
+	STA SpecialObj_X, Y
+
+	LDA <Player_XHi
+	ADC #$00
+	STA SpecialObj_XHi, Y
+	JMP Coin_AlertSetFireballY
+
+CoinAlert_SetFireBallX:
+	ADD <Horz_Scroll
+	STA SpecialObj_X, Y
+
+	LDA <Horz_Scroll_Hi
+	ADC #$00
+	STA SpecialObj_XHi, Y
+
+Coin_AlertSetFireballY:
+	LDA Alert_FireballYOffset, X
+	BNE CoinAlert_SetFireBallY
+
+	LDA <Player_YZ
+	ADD #$08
+	STA SpecialObj_Y, Y
+
+	LDA <Player_YHiZ
+	ADC #$00
+	STA SpecialObj_YHi, Y
+	JMP CoinAlert_SetVel
+
+CoinAlert_SetFireBallY:
+	ADD <Vert_Scroll
+	STA SpecialObj_Y, Y
+
+	LDA <Vert_Scroll_Hi
+	ADC #$00
+	STA SpecialObj_YHi, Y
+	
+CoinAlert_SetVel:
+	LDA Alert_FireballXVel, X
+	STA SpecialObj_XVel, Y
+
+	LDA Alert_FireballYVel, X
+	STA SpecialObj_YVel, Y
+	DEX
+	BPL CoinAlarm_FireBallLoop
+
+CoinAlert_FireballRTS:
+	RTS

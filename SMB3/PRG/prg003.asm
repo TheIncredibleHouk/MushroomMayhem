@@ -2078,151 +2078,15 @@ ObjHit_CloudGen:
 	RTS	
 
 ObjInit_CoinAlert:
-	JSR Object_NoInteractions
-	RTS
+	LDA Objects_Property, X
+	STA Level_EventProperty
 
-CoinAlert_Colors:
-	.byte $0F, $06 
+	LDA #GEN_COINALERT
+	STA Level_Event
 
-CoinAlert_Alarm = Objects_Data1
-
-CoinAlert_ObjectSpawnX:
-	.byte $40, $C0
-	.byte $00, $FF
+	JMP Object_Delete
 
 ObjNorm_CoinAlert:
-	LDA Objects_Timer, X
-	BNE ObjNorm_CoinAlertRTS
-
-	LDA CoinAlert_Alarm, X
-	BEQ CoinAlert_CheckCoins
-
-	LSR A
-	LSR A
-	LSR A
-
-	AND #$01
-	TAY
-
-	LDA CoinAlert_Colors, Y
-	STA Pal_Data
-	STA Pal_Data + 16
-	STA Palette_Buffer
-	STA Palette_Buffer + 16
-
-	DEC CoinAlert_Alarm, X
-	BNE ObjNorm_CoinAlertRTS
-
-	LDA #$02
-	STA Objects_Timer, X
-	RTS
-
-CoinAlert_CheckCoins:	
-	LDA Sound_QLevel1
-	AND #SND_LEVELCOIN
-	BEQ ObjNorm_CoinAlertRTS
-
-	LDA #$40
-	STA CoinAlert_Alarm, X
-
-	LDA Objects_Property, X
-	JSR DynJump
-
-	.word CoinAlarm_MontyMole
-	.word CoinAlarm_Bullets
-
-ObjNorm_CoinAlertRTS:	
-	RTS
-
-CoinAlarm_MontyMole:
-
-	JSR Object_FindEmptyY
-	BCC ObjNorm_CoinAlertRTS
-
-	LDA #OBJ_MONTYMOLE
-	STA Objects_ID, Y
-
-	LDA #OBJSTATE_FRESH
-	STA Objects_State, Y
-
-	LDA RandomN
-	AND #$01
-	TAX
-
-	LDA <Player_X
-	ADD CoinAlert_ObjectSpawnX, X
-	STA Objects_XZ, Y
-
-	LDA <Player_XHi
-	ADC CoinAlert_ObjectSpawnX + 2, X
-	STA Objects_XHiZ, Y
-
-	LDA <Vert_Scroll
-	ADD #$C0
-	STA Objects_YZ, Y
-
-	LDA <Vert_Scroll_Hi
-	ADC #$00
-	STA Objects_YHiZ, Y
-
-	LDA #$01
-	STA Objects_Property, Y
-	RTS
-
-CoinAlarm_BulletYOffset:
-	.byte $10, $E0
-
-CoinAlarm_BulletYHiOffset:
-	.byte $00, $FF
-
-CoinAlarm_BulletXOffset:
-	.byte $F0, $10
-
-CoinAlarm_BulletXHiOffset:
-	.byte $FF, $01
-
-CoinAlarm_BullXVel:
-	.byte $30, $D0	
-
-CoinAlarm_Bullets:
-	LDY #$01
-
-CoinAlarm_MoreBullets:
-	JSR Object_FindEmptyX	 ; Spawn new object (Note: If no slots free, does not return)
-	BCC CoinAlarm_BulletRTS
-
-	LDA #OBJ_BULLETBILL
-	STA Objects_ID, X
-
-	LDA #OBJSTATE_FRESH
-	STA Objects_State, X
-
-	LDA <Player_YZ
-	ADD CoinAlarm_BulletYOffset, Y
-	STA <Objects_YZ, X
-
-	LDA <Player_YHiZ
-	ADC CoinAlarm_BulletYHiOffset, Y
-	STA <Objects_YHiZ, X
-
-	LDA <Horz_Scroll
-	ADD CoinAlarm_BulletXOffset, Y
-	STA <Objects_XZ, X
-
-	LDA <Horz_Scroll_Hi
-	ADC CoinAlarm_BulletXHiOffset, Y
-	STA <Objects_XHiZ, X
-
-	LDA CoinAlarm_BullXVel, Y
-	STA <Objects_XVelZ, X
-
-	LDA #SND_LEVELBABOOM
-	STA Sound_QLevel1
-
-	DEY
-	BPL CoinAlarm_MoreBullets
-
-CoinAlarm_BulletRTS:
 	RTS		 ; Return
 
 ObjInit_MontyMole:

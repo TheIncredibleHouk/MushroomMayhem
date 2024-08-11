@@ -1657,7 +1657,7 @@ MARIO_PLANE = 2
 	Game_Counter:		.ds 1	; A counter which continuously increments unless something is "stopping" the action
 	Game_Counter_NoStop:	.ds 1
 	Level_Event:		.ds 1	; Check "LevelEvent_Do" for values; 0 means nothing
-	Level_Event_Property: .ds 1
+	Level_EventProperty: .ds 1
 	Level_PSwitchCnt:	.ds 1	; When non-zero, P-Switch is active (init @ $80); counts down to zero and restarts music
 
 	Player_TailDirection:	.ds 1	; While Player is sliding, this is added to X Velocity (does not persist, however)
@@ -2638,6 +2638,7 @@ HIT_EXPLOSION	= $80
 
 	Last_EventGen:		.ds 1
 	Level_EventTimer:	.ds 1	;
+	Level_EventData:	.ds 1
 
 	Vert_Scroll_Off:	.ds 1	; Vertical scroll offset, used for "vibration" effects
 	Level_Vibration:	.ds 1	; While greater than zero, screen vibrates (from impact of heavy fellow)
