@@ -207,7 +207,7 @@
     70,
     70,
     70,
-    70,
+    72,
     60,
     70,
     70,
@@ -703,6 +703,12 @@
       "X": 34,
       "Y": 6,
       "BoundRectangle": "544,96,16,16"
+    },
+    {
+      "LevelId": "3217b9c5-9bb4-4bc2-852a-27eab1540aa5",
+      "X": 7,
+      "Y": 3,
+      "BoundRectangle": "112,48,16,16"
     }
   ],
   "ObjectData": [
@@ -722,5 +728,5 @@
       "Y": 2
     }
   ],
-  "CompressedData": "AO3ExMTExMTFxM/Pz97eEwDtz8/Pz8/Pw8/Pz8/Iz88A7UVFRUVFRTVFX0VFRV9AAO1GRkZGRkY8RkZGRkZGRgDtX0ZGLi4uHy4uRkZGRl8A7UcQX05eXhFeXk9GRl9GAO1fRkZG6ywvLO1GRkZGXwDtRkZGRuss7CztRkZGX0YA7UZGRkZGRhJGRkZGX0ZG3t7fz8/Pz8/Pz8/Pz8/e3s/Iw8/Pz8/Pz8/Pz8/PyM9BQUFBQUFCRUBBFkFBQUFC6+zsLOztRkZG6yzs7CztRusv7Cwv7UZGRussLy8s7Ubr7OwU7O1GRkbrLOzsLO1f6y/sLC/tRkZG6ywvLyztRuvs7Czs7V9GX+ss7OwX7UZfX19GRkZGFUZGRkZGRkZf3t7e38/Pz+sv7Owv7ezs7M/PyMPPz8/r7Ozs7O3s7Oxf6yzs7O1F6y/s7C/t7OzsRussLy/tRuvs7Ozs7ewv7F/rLC8v7UZtbm9GRkbs7OxG6yzs7O1GfX5/RkZG7C/sX+sY7OztRuvs7Ozs7ezs7F9fRkZGRkbrL+zsL+3sL+xfX19GRkZG6+zs7Ozt7Ozs"
+  "CompressedData": "AO3ExMTExMTFxM/Pz97eEwDtz8/Pz8/Pw8/Pz8/Iz88A7UVFRUVFRTVFX0VFRV9AAO1GRkZGRkg8RkZGRkZGRgDtX0ZGLi4uHy4uRkZGRl8A7UcQX05eXhFeXk9GRl9GAO1fRkZG6ywvLO1GRkZGXwDtRkZGRuss7CztRkZGX0YA7UZGRkZGRhJGRkZGX0ZG3t7fz8/Pz8/Pz8/Pz8/e3s/Iw8/Pz8/Pz8/Pz8/PyM9BQUFBQUFCRUBBFkFBQUFC6+zsLOztRkZG6yzs7CztRusv7Cwv7UZGRussLy8s7Ubr7OwU7O1GRkbrLOzsLO1f6y/sLC/tRkZG6ywvLyztRuvs7Czs7V9GX+ss7OwX7UZfX19GRkZGFUZGRkZGRkZf3t7e38/Pz+sv7Owv7ezs7M/PyMPPz8/r7Ozs7O3s7Oxf6yzs7O1F6y/s7C/t7OzsRussLy/tRuvs7Ozs7ewv7F/rLC8v7UZtbm9GRkbs7OxG6yzs7O1GfX5/RkZG7C/sX+sY7OztRuvs7Ozs7ezs7F9fRkZGRkbrL+zsL+3sL+xfX19GRkZG6+zs7Ozt7Ozs"
 }
