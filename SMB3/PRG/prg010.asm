@@ -2691,6 +2691,9 @@ DrawMapBackground:
 	LDA World_Num
 	BEQ NoMapClouds
 
+	CMP #07
+	BEQ NoMapClouds
+
 	CMP #$03
 	BNE DrawMapBackground0
 	
