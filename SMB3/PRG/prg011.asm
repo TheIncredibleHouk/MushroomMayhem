@@ -1649,6 +1649,8 @@ PRG011_AE0B:
 	.word PRG011_ADF4	; World 8 Tank
 	.word PRG011_ADF4	; World 8 Airship
 	.word PRG011_ADF4		; Canoe
+	.word PRG011_ADF4		; Canoe
+	.word PRG011_ADF4		; Canoe
 
 
 MapObject_LeftTile:
@@ -1667,7 +1669,7 @@ MapObject_LeftTile:
 	.byte $55, $55, $55, $55	; Bullet Turret
 	.byte $59, $5D, $5B, $5F	; Bobomb
 	.byte $3D, $3D, $3D, $3D	; 0F = Piranha Stem
-	.byte $FD, $1B, $FD, $1B	;
+	.byte $79, $79, $79, $79	; 
 	.byte $71, $75, $71, $75	;
 
 MapObject_RightTile:
@@ -1686,7 +1688,7 @@ MapObject_RightTile:
 	.byte $57, $57, $57, $57	; 0D
 	.byte $5B, $5F, $59, $5D	; 0E = Bobomb
 	.byte $3D, $3D, $3D, $3D	; 0F = Piranha Stem
-	.byte $FF, $BB, $FF, $BB	; 
+	.byte $2B, $7B, $2B, $7B	; 
 	.byte $73, $77, $73, $77	; 
 
 MapObject_AttrLeft:
@@ -1705,7 +1707,7 @@ MapObject_AttrLeft:
 	.byte $03, $03, $03, $03	; Bullet Turret
 	.byte SPR_PAL3, SPR_PAL3, (SPR_PAL3 | SPR_HFLIP), (SPR_PAL3 | SPR_HFLIP)	; 0E = Bobomb
 	.byte SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2	; 0F = Piranha Stem
-	.byte $01, $01, $01, $01	; 
+	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3, SPR_PAL3	; 
 	.byte $02, $02, $02, $02	; 
 
 MapObject_AttrRight:
@@ -1724,7 +1726,7 @@ MapObject_AttrRight:
 	.byte $03, $03, $03, $03	; 0E = Bobomb
 	.byte SPR_PAL3, SPR_PAL3, (SPR_PAL3 | SPR_HFLIP), (SPR_PAL3 | SPR_HFLIP)	; 
 	.byte (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP), (SPR_PAL2 | SPR_HFLIP)	; 0F = Piranha Stem
-	.byte $01, $01, $01, $01	; 
+	.byte SPR_PAL3, SPR_PAL3, SPR_PAL3, SPR_PAL3	; 
 	.byte $02, $02, $02, $02	; 
 
 	; This is a rotated array of Sprite_RAM offsets, helps distribute
