@@ -104,7 +104,7 @@ OBJ_YURARIN			= $4F
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $45
 	.byte OA1_PAL1 | OA1_HEIGHT32 | OA1_WIDTH16; Object $46
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $47
-	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16; Object $48
+	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH32; Object $48
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH16 ; Object $49
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $4A
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $4B
@@ -2367,6 +2367,7 @@ DryBones_Animate:
 	LSR A
 	TAY
 
+	STA Debug_Snap
 	LDA DryBones_CrumbleFrames, Y
 	STA Objects_Frame,X
 

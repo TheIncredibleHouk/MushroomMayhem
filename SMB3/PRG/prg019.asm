@@ -1701,8 +1701,6 @@ CoinAlarm_FireBalls:
 	LDX #$03
 
 CoinAlarm_FireBallLoop:
-	STA Debug_Snap
-
 	JSR Object_PrepProjectile
 	BCC CoinAlert_FireballRTS
 
