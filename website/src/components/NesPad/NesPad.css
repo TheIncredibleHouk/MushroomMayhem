@@ -1,0 +1,12 @@
+.nes-pad {
+    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    border: 1px solid black;
+    height:calc(var(--zoom) * 100);
+    width: calc(var(--zoom) * 300);
+
+    background-color: #c0c0c0;
+    border-radius: 2px;
+}

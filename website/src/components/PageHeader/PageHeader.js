@@ -1,15 +1,15 @@
 import Block from "../Block/Block";
-import PageHeaderStyles from "./PageHeader.styles";
+import './PageHeader.css';
 
-var PageHeader = ({children, color}) => {
+var PageHeader = ({children, color = "#FFFFFF"}) => {
     return (
-        <PageHeaderStyles color={color}>
+        <div style={{["--color"]: color}}>
             <Block boltSize={2} color={color}>
                 <div className="page-header">
                     {children}
                 </div>
             </Block>
-        </PageHeaderStyles>
+        </div>
     )
 };
 

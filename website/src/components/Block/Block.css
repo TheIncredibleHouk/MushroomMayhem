@@ -1,0 +1,176 @@
+.block {
+    background-color: var(--block-color);
+    border: var(--bolt-size) solid #000000;
+    display: inline-block;
+    position: relative;
+    padding: var(--bolt-size);
+    margin-bottom: 20px;
+
+    .lighting-top {
+        background-color: #FFFFFF;
+        display: block;
+        height: var(--bolt-size);
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: calc(100%  - (var(--bolt-size) * 6));
+
+        &:after {
+            background-color: #FFFFFF;
+            content: '.';
+            font-size: 0;
+            display: block;
+            height: var(--bolt-size);
+            position: absolute;
+            right: calc((var(--bolt-size) * -3));
+            top: 0;
+            width: calc(var(--bolt-size) * 2);
+        }
+
+        &:before {
+            background-color: #FFFFFF;
+            content: '.';
+            font-size: 0;
+            display: block;
+            height: var(--bolt-size);
+            position: absolute;
+            right: calc((var(--bolt-size) * -5));
+            top: 0;
+            width: var(--bolt-size);
+        }
+    }
+
+    .lighting-left {
+        background-color: #FFFFFF;
+        display: block;
+        height: calc(100%  - (var(--bolt-size) * 6));
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: var(--bolt-size);
+
+        &:after {
+            background-color: #FFFFFF;
+            bottom: calc((var(--bolt-size) * -3));
+            content: '.';
+            font-size: 0;
+            display: block;
+            left: 0;
+            height: calc(var(--bolt-size) * 2);
+            position: absolute;
+            width: var(--bolt-size);
+        }
+
+        &:before {
+            background-color: #FFFFFF;
+            bottom: calc((var(--bolt-size) * -5));
+            content: '.';
+            font-size: 0;
+            display: block;
+            height: var(--bolt-size);
+            position: absolute;
+            width: var(--bolt-size);
+        }
+    }
+
+    .lighting-bottom {
+        background-color: #000000;
+        bottom: 0;
+        display: block;
+        height: var(--bolt-size);
+        position: absolute;
+        right: 0;
+        width: calc(100%  - (var(--bolt-size) * 6));
+
+        &:after {
+            background-color: #000000;
+            content: '.';
+            font-size: 0;
+            display: block;
+            left: calc((var(--bolt-size) * -3));
+            height: var(--bolt-size);
+            position: absolute;
+            top: 0;
+            width: calc(var(--bolt-size) * 2);
+        }
+
+        &:before {
+            background-color: #000000;
+            content: '.';
+            font-size: 0;
+            display: block;
+            left: calc((var(--bolt-size) * -5));
+            height: var(--bolt-size);
+            position: absolute;
+            top: 0;
+            width: var(--bolt-size);
+        }
+    }
+
+    .lighting-right {
+        background-color: #000000;
+        bottom: 0;
+        display: block;
+        height: calc(100%  - (var(--bolt-size) * 6));
+        position: absolute;
+        right: 0;
+        width: var(--bolt-size);
+
+        &:after {
+            background-color: #000000;
+            content: '.';
+            font-size: 0;
+            display: block;
+            left: 0;
+            height: calc(var(--bolt-size) * 2);
+            position: absolute;
+            top: calc((var(--bolt-size) * -3));
+            width: var(--bolt-size);
+        }
+
+        &:before {
+            background-color: #000000;
+            content: '.';
+            font-size: 0;
+            display: block;
+            height: var(--bolt-size);
+            position: absolute;
+            top: calc((var(--bolt-size) * -5));
+            width: var(--bolt-size);
+        }
+    }
+
+    .bolt_1, .bolt_2, .bolt_3, .bolt_4 {
+        height: var(--bolt-size);
+        width: var(--bolt-size);
+        background-color: #000000;
+        display: block;
+        position: absolute;
+        margin: calc(var(--bolt-size) * 2);
+    }
+
+    .bolt_1 {
+        left: 0;
+        top: 0;
+    }
+
+    .bolt_2 {
+        top: 0;
+        right: 0;
+    }
+
+    .bolt_3 {
+        left: 0;
+        bottom: 0;
+    }
+
+    .bolt_4 {
+        right: 0;
+        bottom: 0;
+    }
+
+    .block-layout {
+        line-height: 30px;
+        padding: calc(var(--bolt-size) * 3);
+    }
+}

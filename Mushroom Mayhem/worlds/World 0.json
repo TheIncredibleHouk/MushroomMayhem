@@ -649,62 +649,7 @@
     79,
     79
   ],
-  "Pointers": [
-    {
-      "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
-      "X": 6,
-      "Y": 6,
-      "BoundRectangle": "96,96,16,16"
-    },
-    {
-      "LevelId": "04a6cfde-b3c5-4695-81c5-dda10c212a97",
-      "X": 9,
-      "Y": 4,
-      "BoundRectangle": "144,64,16,16"
-    },
-    {
-      "LevelId": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
-      "X": 4,
-      "Y": 8,
-      "BoundRectangle": "64,128,16,16"
-    },
-    {
-      "LevelId": "ae704d35-4b12-49d3-b370-56c5554cf3f3",
-      "X": 17,
-      "Y": 6,
-      "BoundRectangle": "272,96,16,16"
-    },
-    {
-      "LevelId": "cfcc0470-b205-448b-9246-3dd44dce3830",
-      "X": 4,
-      "Y": 4,
-      "BoundRectangle": "64,64,16,16"
-    },
-    {
-      "LevelId": "e96e7d58-5b21-47b3-9d71-2e0cd473786d",
-      "X": 7,
-      "Y": 8,
-      "BoundRectangle": "112,128,16,16"
-    },
-    {
-      "LevelId": "f0a489a9-7d86-4eaa-8b6b-25d37638e662",
-      "X": 9,
-      "Y": 8,
-      "BoundRectangle": "144,128,16,16"
-    },
-    {
-      "LevelId": "bd30da54-924b-4274-a74c-93f1b5b1a671",
-      "X": 2,
-      "Y": 6,
-      "BoundRectangle": "32,96,16,16"
-    }
-  ],
-  "ObjectData": [
-    {
-      "GameObjectId": 207,
-      "X": 15,
-      "Y": 8
-    }
-  ],
+  "Pointers": [],
+  "ObjectData": [],
   "CompressedData": "4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJQQlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJQQlJSUEJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUEJSUlJSUlJSUlJSU4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODw8PDw8PDw8PDw8PDw8PDwoaGhoaGhoaGhoaGhoaGhoZSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlBCUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSU"
 }

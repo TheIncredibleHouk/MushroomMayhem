@@ -5379,6 +5379,7 @@ UsePointer:
 	LDA #$00
 	STA Level_HorzScrollLock
 
+	STA Debug_Snap
 	LDA Pointers + 5, X
 	AND #$80	; does this pointer exit the level?
 	BEQ LevelJction

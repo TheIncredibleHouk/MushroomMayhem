@@ -1,5 +1,4 @@
 import PageTitle from "../../components/PageTitle/PageTitle";
-import HomeStyles from "./Home.styles";
 import { Link } from 'react-router-dom';
 
 import Image3 from "./images/3.png";
@@ -7,6 +6,7 @@ import routes from "../../routing/routes";
 import PageHeader from "../../components/PageHeader/PageHeader";
 
 import { red } from "../../styles/colors";
+import "./Home.css";
 
 var Home = () => {
   var showDemos = () => {
@@ -18,7 +18,7 @@ var Home = () => {
   };
 
   return (
-    <HomeStyles>
+    <div className="home">
       <PageTitle
         center
         title="Mario Adventure"
@@ -67,7 +67,7 @@ var Home = () => {
           ))}
         </div>
       </div>
-    </HomeStyles>
+    </div>
   );
 };
 

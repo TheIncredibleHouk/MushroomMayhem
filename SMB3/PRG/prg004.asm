@@ -2367,7 +2367,6 @@ DryBones_Animate:
 	LSR A
 	TAY
 
-	STA Debug_Snap
 	LDA DryBones_CrumbleFrames, Y
 	STA Objects_Frame,X
 

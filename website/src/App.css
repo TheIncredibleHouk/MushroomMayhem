@@ -1,38 +1,84 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: new super mario font u;
+  font-style: normal;
+  font-weight: 400;
+  src: local("New Super Mario Font U"),
+    url("https://fonts.cdnfonts.com/s/32226/New Super Mario Font U.woff")
+      format("woff");
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+  font-family: KabelHeavy;
+  font-style: normal;
+  font-weight: 400;
+  src: local("OPTIKabel-Heavy"),
+    url("/public/fonts/OPTIKabel-Heavy.woff") format("woff");
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+@font-face {
+  font-family: "BabyTeeth";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Baby Teeth"), url("/public/fonts/Devandra.ttf") format("truetype");
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  background-color: #404040;
+}
+
+body {
+  background-color: #ffffff;
+  border-top: #345084 32px solid;
+  border-left: #345084 32px solid;
+  color: #101010;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 22px;
+  margin: 0 auto;
+  max-width: 9.5in;
+  padding: 0 10px;
+  padding-bottom: 50px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+ul {
+  margin: 15px;
+  padding-left: 15px;
+}
+
+p {
+  margin-bottom: 5px;
+}
+
+.social-media {
+  position: absolute;
+  right: 0;
+  top: -30px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+  flex-direction: row;
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  img {
+    width: 28px;
+    margin: 0 10px;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(125deg)
+      brightness(103%) contrast(103%);
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media screen and (max-width: 1023px) {
+  & > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .social-media {
+    flex-direction: row;
   }
 }
