@@ -1,6 +1,6 @@
 import PageHeader from "../../components/PageHeader/PageHeader";
 import PageTitle from "../../components/PageTitle/PageTitle";
-import TechniquesStyles from "./Techniques.styles";
+import "./Techniques.css";
 import { blue, green, red, yellow } from "../../styles/colors";
 import NesPadAction from "../../components/NesPad/NesPadAction/NesPadAction";
 import NesPadCross from "../../components/NesPad/NesPadCross/NesPadCross";
@@ -80,7 +80,7 @@ import WallJump4 from "./images/WallJump4.png";
 
 var Techniques = () => {
   return (
-    <TechniquesStyles>
+    <div className="techniques">
       <PageTitle title="Techniques">
         Adventure 3 throws a lot of new enemies and hazards in his way.
         Thankfully, Mario has a few new techniques he can use to clear
@@ -388,7 +388,7 @@ var Techniques = () => {
                 <img src={WallJump4} />
             </div>
         </div>
-    </TechniquesStyles>
+    </div>
   );
 };
 

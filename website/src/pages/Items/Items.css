@@ -1,8 +1,4 @@
-import styled from 'styled-components';
-import { mobile } from '../../styles/mobile';
-import ItemBox from './images/ItemBox.png';
-
-var ItemStyles = styled.div`
+.items{
     .items-layout, .items-example, .items-list {
         margin-bottom: 25px;
     }
@@ -33,18 +29,20 @@ var ItemStyles = styled.div`
         display: flex;
         flex-direction: row;
         align-items: center;
+        
 
         .item-box-icon {
+            align-items: center;
             width: 80px;
             height: 80px;
-            padding: 16px;
-            background-image: url('${ItemBox}');
-            background-repeat: no-repeat;
-            background-position: 0 0;
-            background-size: cover;
+            
             margin-right: 16px;
             display: flex;
             justify-content: center;
+
+            .block-layout {
+                line-height: 0;
+            }
 
             img {
                 width: 48px;
@@ -79,6 +77,4 @@ var ItemStyles = styled.div`
             flex-direction: column;
         }
     }
-`;
-
-export default ItemStyles;
+}

@@ -1,6 +1,6 @@
 import PageHeader from "../../components/PageHeader/PageHeader"
 import PageTitle from "../../components/PageTitle/PageTitle"
-import DemoStyles from "./Demos.styles"
+import "./Demos.css";
 import { green } from '../../styles/colors';
 
 var Demos = () => {
@@ -11,7 +11,7 @@ var Demos = () => {
         }
         return false;
       };
-    return <DemoStyles>
+    return <div className="demos">
         { showDemos() && 
         <>
             <PageTitle title="Demos">
@@ -36,7 +36,7 @@ var Demos = () => {
             </PageTitle>
             </>
         }
-    </DemoStyles>
+    </div>
 };
 
 export default Demos;

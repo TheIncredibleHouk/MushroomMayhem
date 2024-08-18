@@ -1,8 +1,8 @@
 import Box from "../../components/Box/Box";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { green, yellow } from "../../styles/colors";
-import ElementsStyles from "./Elements.styles"
-import NesPadAction from "../../components/NesPad/NesPadAction/NesPadAction";
+import "./Elements.css"
+;import NesPadAction from "../../components/NesPad/NesPadAction/NesPadAction";
 import NesPadCross from "../../components/NesPad/NesPadCross/NesPadCross";
 
 import Coin from './images/Coin.png';
@@ -263,7 +263,7 @@ var elements = [
 ]
 var Elements = () => {
     return (
-        <ElementsStyles>
+        <div className="elements">
             <PageTitle title="Game Elements">There are tons of elements that Mario will come across. From coins to Magic Stars,
             let's dive into the many items you'll come across spread through out the lands!</PageTitle>
             <PageHeader color={yellow}>Collectibles</PageHeader>
@@ -311,7 +311,7 @@ var Elements = () => {
                     </Box>
                 ))}
             </div>
-        </ElementsStyles>
+        </div>
     )
 };
 

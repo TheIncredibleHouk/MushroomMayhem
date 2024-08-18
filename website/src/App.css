@@ -82,3 +82,12 @@ p {
     flex-direction: row;
   }
 }
+
+
+.corner-block.block {
+  left: -32px;
+  height: 32px;
+  position: absolute;
+  top: -32px;
+  width: 32px;
+}

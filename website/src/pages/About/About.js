@@ -1,7 +1,7 @@
 import PageHeader from "../../components/PageHeader/PageHeader";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { blue, green, red, yellow } from "../../styles/colors";
-import AboutStyles from "./About.styles"
+import "./About.css"
 
 import MarioAdventure from './images/MarioAdventure.gif'
 import Reuben from './images/Reuben.png';
@@ -12,7 +12,7 @@ import MarioAdventure3 from './images/MarioAdventure3.png'
 
 var About = () => {
     return (
-        <AboutStyles>
+        <div className="about">
             <PageTitle title="About" />
             <PageHeader color={red}>Mario Adventure</PageHeader>
             <div>
@@ -92,7 +92,7 @@ var About = () => {
                     <img src={MarioAdventure3} />
                 </div>
             </div>
-        </AboutStyles>
+        </div>
     )
 };
 

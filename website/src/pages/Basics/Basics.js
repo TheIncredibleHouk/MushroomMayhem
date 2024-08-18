@@ -1,7 +1,7 @@
 import Block from "../../components/Block/Block";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { blue, green, red, yellow } from "../../styles/colors";
-import BasicsStyles from "./Basics.styles";
+import './Basics.css';
 import NesPadCross from "../../components/NesPad/NesPadCross/NesPadCross";
 import NesPadAction from "../../components/NesPad/NesPadAction/NesPadAction";
 import Box from "../../components/Box/Box";
@@ -43,7 +43,7 @@ import Checkpoint2 from './images/Checkpoint2.png';
 var Basics = () => {
   return (
     <>
-      <BasicsStyles>
+      <div className="basics">
         <PageTitle title="Basics">
           Mario Adventure 3 has a lot going on and it can be pretty
           overwhelming! Get up to speed with all the game basics on this page.
@@ -125,27 +125,27 @@ var Basics = () => {
           </div>
           <div className="stats-explanation">
             <div className="stats stats-top">
-              <div className="stat-pmeter">
+              <div className="stat-pmeter border-top" style={{["--border-color"] : red}}>
                 <Block boltSize={2} color={red}>
                   P-Meter
                 </Block>
               </div>
-              <div className="stat-airmeter">
+              <div className="stat-airmeter border-top high" style={{["--border-color"]: blue}}>
                 <Block boltSize={2} color={blue}>
                   Air Meter
                 </Block>
               </div>
-              <div className="stat-levelstars">
+              <div className="stat-levelstars border-top" style={{["--border-color"]: yellow}}>
                 <Block boltSize={2} color={yellow}>
                   Level Stars
                 </Block>
               </div>
-              <div className="stat-daymeter">
+              <div className="stat-daymeter border-top high" style={{["--border-color"]: green}}>
                 <Block boltSize={2} color={green}>
                   Sun Dial
                 </Block>
               </div>
-              <div className="stat-badge">
+              <div className="stat-badge border-top" style={{["--border-color"]: red}}>
                 <Block boltSize={2} color={red}>
                   Badge
                 </Block>
@@ -155,27 +155,27 @@ var Basics = () => {
               <img src={StatusBar} />
             </div>
             <div className="stats stats-bottom">
-              <div className="stat-exp">
+              <div className="stat-exp border-bottom" style={{["--border-color"]: red}}>
                 <Block boltSize={2} color={red}>
                   Experience
                 </Block>
               </div>
-              <div className="stat-coins">
+              <div className="stat-coins border-bottom high" style={{["--border-color"]: blue}}>
                 <Block boltSize={2} color={blue}>
                   Coins
                 </Block>
               </div>
-              <div className="stat-totalstars">
+              <div className="stat-totalstars border-bottom" style={{["--border-color"]: yellow}}>
                 <Block boltSize={2} color={yellow}>
                   Total Stars
                 </Block>
               </div>
-              <div className="stat-cherries">
+              <div className="stat-cherries border-bottom high" style={{["--border-color"]: green}}>
                 <Block boltSize={2} color={green}>
                   Cherries
                 </Block>
               </div>
-              <div className="stat-item">
+              <div className="stat-item border-bottom" style={{["--border-color"]: red}}>
                 <Block boltSize={2} color={red}>
                   Item
                 </Block>
@@ -347,7 +347,7 @@ var Basics = () => {
               </div>
           </div>
         </div>
-      </BasicsStyles>
+      </div>
     </>
   );
 };

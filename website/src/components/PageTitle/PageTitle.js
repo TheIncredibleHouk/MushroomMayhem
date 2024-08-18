@@ -1,15 +1,21 @@
 import Block from "../Block/Block";
-import PageTitleStyles from "./PageTitle.styles"
+import "./PageTitle.css";
+import { red, blue, yellow, green } from "../../styles/colors";
 
 var kernFixes = ['i'];
-var PageTitle = ({title, children, center}) => {
+const colors = [
+    red, blue, yellow, green, red, green, yellow, blue, green, yellow, blue, red, green,
+    red, blue, yellow, green, red, green, yellow, blue, green, yellow, blue, red, green,
+    red, blue, yellow, green, red, green, yellow, blue, green, yellow, blue, red, green,
+];
+const PageTitle = ({title, children, center}) => {
     return (
-        <PageTitleStyles className={center && 'center'}>
+        <div className={`page-title ${center && 'center'}`}>
             <Block color="#bcbcbc" boltSize={4}>
                 <div className="page-title">
                     <div className="page-title-layout">
                         {title.toLowerCase().split('').map((letter, index) =>(
-                            <span className={`letter_${index}
+                            <span style={{["--letter-color"]: colors[index]}} className={`letter
                                 ${kernFixes.indexOf(letter) > -1 && 'kern-fix'}
                                 ${letter === '\n' && 'break'}
                                 ${letter === ' ' && 'break'}
@@ -21,7 +27,7 @@ var PageTitle = ({title, children, center}) => {
             <div className="page-description">
                 {children}
             </div>
-        </PageTitleStyles>
+        </div>
     );
 };
 

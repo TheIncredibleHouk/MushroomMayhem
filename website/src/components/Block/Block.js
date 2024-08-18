@@ -1,11 +1,11 @@
 import "./Block.css";
 
-const Block = ({children, color, boltSize, ...props}) => {
+const Block = ({children, color, boltSize, className, ...props}) => {
     return <div style={{
         ["--bolt-size"]: `${boltSize}px`,
         ["--block-color"]: `${color}`
     }}
-    className="block"
+    className={`block ${className}`}
     color={color}
     {...props} >
         <span className="lighting-top"></span>

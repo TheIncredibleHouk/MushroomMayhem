@@ -96,13 +96,13 @@ const routes = [
     //     title: "World Guide",
     //     menu: true
     // },
-    // {
-    //     path: "level-guide",
-    //     component: LevelGuide,
-    //     exact: true,
-    //     title: "Level Guide",
-    //     menu: true
-    // },
+    {
+        path: "levels/:world/:level",
+        component: LevelGuide,
+        exact: true,
+        title: "Level Guide",
+        menu: true
+    },
 ];
 
 export default routes;

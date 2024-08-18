@@ -1,4 +1,4 @@
-import PowerUpStyles from './PowerUps.styles';
+import "./PowerUps.css";
 
 import NesPadCross from '../../components/NesPad/NesPadCross/NesPadCross';
 import NesPadAction from '../../components/NesPad/NesPadAction/NesPadAction';
@@ -147,7 +147,7 @@ var PowerUps = () => {
     However, Mario will come across several new power-ups on this quest and gain new abilities for familiar ones. Utilize all these
     powers to find hidden Magic Stars, secret areas, and determine who is responsible for these menacing Malice Mushrooms!
     </PageTitle>
-     <PowerUpStyles>
+     <div className="power-ups">
         
         {
             powerUpList.map(powerUp => (
@@ -172,7 +172,7 @@ var PowerUps = () => {
             ))
         }
         
-    </PowerUpStyles>
+    </div>
     </>
 };
 

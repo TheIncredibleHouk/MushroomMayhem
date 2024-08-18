@@ -1,0 +1,46 @@
+{
+    "name": "Leap Fish Lagoon",
+    "sections": [
+        {
+            "name": "Overworld",
+            "image": "overworld.png",
+            "annotations": [
+                {
+                    "col": 41,
+                    "row": 14,
+                    "image": "down-arrow.png",
+                    "label": "A To B",
+                    "location": "top",
+                    "text": "To Bonus Area"
+                }
+            ],
+            "tips": [
+                {
+                    "title": "Save Your Shell!",
+                    "description": "It may be tempting to grab this power-up at the start, but grabbing the second one means you can transform into Koopa Shell Mario. With this, you can use the shell spin to break the bricks that leads to the bonus area.",
+                    "col": 4,
+                    "row": 9,
+                    "height": 3,
+                    "width": 3
+                },
+                {
+                    "title": "Watch Your Step",
+                    "description": "Cheep-Cheeps will be waiting in water in anticipation of jumping out to attach Mario! Wait for the Cheep-Cheep to hop on to land and defeat it out of the water.",
+                    "col": 49,
+                    "row": 10,
+                    "height": 7,
+                    "width": 7
+                }
+            ]
+        },
+        {
+            "name": "Bonus Area",
+            "image": "overworld.png",
+            "tips": [
+                {
+                    "title": "Freebie Coins"
+                }
+            ]
+        }
+    ]
+}

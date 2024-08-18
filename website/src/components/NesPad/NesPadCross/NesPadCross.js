@@ -1,8 +1,8 @@
 
-import NesPadCrossStyles from "./NesPadCross.styles";
+import './NesPadCross.css';
 
 var NesPadCross = ({up, down, left, right, inline=true}) => {
-    return <NesPadCrossStyles className={inline ? 'inline' : ''}>
+    return <div className={`nes-pad-cross ${inline ? 'inline' : ''}`}>
         <div className={`nes-pad-cross-layout `}>
             <div />
             <div className={`up ${up}`} />
@@ -13,7 +13,7 @@ var NesPadCross = ({up, down, left, right, inline=true}) => {
             <div />
             <div className={`down ${down}`} />
         </div>
-    </NesPadCrossStyles>
+    </div>
 };
 
 export default NesPadCross;

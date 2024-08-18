@@ -1,8 +1,4 @@
-import styled from 'styled-components';
-import { mobile } from '../../styles/mobile';
-
-var HazardsStyles = styled.div`
-    
+.hazards {
     .hazards-layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -25,11 +21,9 @@ var HazardsStyles = styled.div`
         width: 100%;
     }
 
-    @media screen and (max-width: ${mobile}){     
+    @media screen and (max-width: 1023px){     
         .hazards-layout {
             grid-template-columns: 1fr;
         }
     }
-`;
-
-export default HazardsStyles;
+}

@@ -1,0 +1,48 @@
+.level-guide {
+    .level-guide-section-image {
+        overflow-x: auto;
+        overflow-y: hidden;
+        position: relative;
+        width: 100%;
+    }
+    
+    .level-guide-section-annotation {
+        left: var(--x);
+        opacity: .9;
+        position: absolute;
+        top: var(--y);
+
+        label {
+            align-items: center;
+            border: .5px solid #000000;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 0 1px;
+            display: flex;
+            line-height: 14px;
+            font-weight: bold;
+            font-size: 12px;
+            justify-content: center;
+            position: absolute;
+            min-width: 100%;
+            white-space: nowrap;
+
+            &.top {
+                left: 50%;
+                position: absolute;
+                top: 0;
+                transform: translate(-50%, -100%);
+            } 
+        }
+    }
+
+    .level-guide-tip-marker {
+        border: 1px solid #ffffff;
+        outline: 1px solid #ff0000;
+        height: var(--height);
+        left: var(--x);
+        position: absolute;
+        top: var(--y);
+        width: var(--width);
+    }
+}

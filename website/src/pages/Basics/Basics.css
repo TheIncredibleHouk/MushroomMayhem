@@ -1,44 +1,50 @@
-import styled from 'styled-components';
-import { blue, green, red, yellow } from '../../styles/colors';
-import { mobile } from '../../styles/mobile';
-import { shadow } from '../../styles/shadows';
+.basics {
 
-var borderTop = (color, high) => `
-    border-left: 2px ${color} solid;
-    border-right: 2px ${color} solid;
-    border-top: 2px ${color} solid;
+    .border-top {
+        border-left: 2px var(--border-color) solid;
+        border-right: 2px var(--border-color) solid;
+        border-top: 2px var(--border-color) solid;
 
-    &:before {
-        content: "F";
-        font-size: 0;
-        width: 2px;
-        height: ${ high ? '500%' : '200%'};
-        background-color: ${color};
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        top: -${ high ? '500%' : '200%'};
+        &:before {
+            content: "F";
+            font-size: 0;
+            width: 2px;
+            height: 200%;
+            background-color: var(--border-color);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: -200%;
+        }
+
+        &.high:before {
+            height: 500%;
+            top:  -500%;
+        }
     }
-`;
 
-var borderBottom = (color, high) => `
-    border-left: 2px ${color} solid;
-    border-right: 2px ${color} solid;
-    border-bottom: 2px ${color} solid;
+    .border-bottom {
+        border-left: 2px var(--border-color) solid;
+        border-right: 2px var(--border-color) solid;
+        border-bottom: 2px var(--border-color) solid;
 
-    &:before {
-        content: "F";
-        font-size: 0;
-        width: 2px;
-        height: ${ high ? '600%' : '300%'};
-        background-color: ${color};
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        top: 24px;
+        &:before {
+            content: "F";
+            font-size: 0;
+            width: 2px;
+            height: 300%;
+            background-color: var(--border-color);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 24px;
+        }
+
+        &.high:before {
+            height: 600%;
+        }
     }
-`;
-var BasicsStyles = styled.div`
+
 
     .basics-layouts {
         display: flex;
@@ -124,61 +130,51 @@ var BasicsStyles = styled.div`
         .stat-pmeter {
             margin-left: 4px;
             width: 140px;
-            ${borderTop(red)}
         }
 
         .stat-airmeter {
             width: 108px;
             margin-left: 9px;
-            ${borderTop(blue, true)}
         }
 
         .stat-levelstars {
             width: 68px;
             margin-left: 21px;
-            ${borderTop(yellow)}
         }
 
         .stat-daymeter {
             width: 64px;
             margin-left: 11px;
-            ${borderTop(green, true)}
         }
 
         .stat-badge {
             width: 55px;
             margin-left: 6px;
-            ${borderTop(red)}
         }
 
         .stat-exp {
             margin-left: 4px;
             width: 140px;
-            ${borderBottom(red)}
         }
 
         .stat-coins {
             width: 108px;
             margin-left: 9px;
-            ${borderBottom(blue, true)}
         }
 
         .stat-totalstars {
             width: 68px;
             margin-left: 21px;
-            ${borderBottom(yellow)}
         }
 
         .stat-cherries {
             width: 64px;
             margin-left: 9px;
-            ${borderBottom(green, true)}
         }
 
         .stat-item {
             width: 55px;
             margin-left: 64px;
-            ${borderBottom(red)}
         }
     }
 
@@ -193,7 +189,7 @@ var BasicsStyles = styled.div`
             border: 2px solid black;
             border-radius: 10px;
             overflow: hidden;
-            ${shadow};
+            box-shadow: 5px 5px 6px #0000007a;
 
             h1 {
                 color: #ffffff;
@@ -256,6 +252,4 @@ var BasicsStyles = styled.div`
             transform: rotate(90deg);
         }
     }
-`;
-
-export default BasicsStyles;
+}

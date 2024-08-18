@@ -1,5 +1,5 @@
 import PageTitle from "../../components/PageTitle/PageTitle";
-import ItemStyles from "./Items.styles";
+import "./Items.css";
 
 import Items1 from "./images/Items1.png";
 import Items2 from "./images/Items2.png";
@@ -26,6 +26,7 @@ import StopWatch from "./images/StopWatch.png";
 import NesPadCross from "../../components/NesPad/NesPadCross/NesPadCross";
 import NesPadAction from "../../components/NesPad/NesPadAction/NesPadAction";
 import PageHeader from "../../components/PageHeader/PageHeader";
+import Block from "../../components/Block/Block";
 
 const items = [
   {
@@ -91,7 +92,7 @@ const items = [
 ];
 var Items = () => {
   return (
-    <ItemStyles>
+    <div className="items">
       <PageTitle title="Items">
         Mario can equip items that can be used during level play. He can equip
         power-ups and new items that have various effects, such as saving him
@@ -114,9 +115,9 @@ var Items = () => {
         {items.map((item) => (
           <Box header={item.name} color={yellow}>
             <div className="item-box">
-              <div className="item-box-icon">
+              <Block color={yellow} boltSize={4} className="item-box-icon">
                 <img src={item.image} />
-              </div>
+              </Block>
               <div>{item.description}</div>
             </div>
           </Box>
@@ -134,7 +135,7 @@ var Items = () => {
         <img src={Items4} />
         <img src={Items5} />
       </div>
-    </ItemStyles>
+    </div>
   );
 };
 

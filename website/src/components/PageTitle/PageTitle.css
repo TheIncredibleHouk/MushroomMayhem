@@ -1,0 +1,99 @@
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 50px;
+    margin-left: -10px;
+    
+    .page-description {
+        width: 45%;
+        margin-right: -10px;
+        padding: 15px;
+        align-self: center;
+    }
+
+    .block {
+        box-shadow: 5px 5px 6px #0000007a;
+        width: 50%;
+        text-align: center;
+    }
+
+    .page-title {
+        font-family: 'New Super Mario Font U', sans-serif;
+        display: inline-block;
+        clear: both;
+        text-transform: uppercase;
+        text-shadow: 6px 6px 0px #000000;
+        padding: 2px;
+        font-size: 72px;
+        line-height: 80px;
+        -webkit-text-stroke: 4px #000000;
+        white-space: nowrap;
+        padding-top: 8px;
+        padding-left: 8px;
+        word-spacing: 15px;
+        text-align: center;
+        
+        .letter {
+            color: var(--letter-color);
+            margin-left: -8px;
+
+            &.kern-fix {
+                margin-right: 6px;
+            }
+
+            
+        }
+    }
+
+    .break {
+        display: block;
+    }
+
+    &.center {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        white-space: normal;
+        
+        .page-title {
+            margin-left: 0px;
+        }
+
+        .page-description {
+            width: 90%;
+            padding: 15px;
+        }
+
+        .letter_0 { 
+            font-size: 72px;
+        }
+    }
+
+    @media screen and (max-width: ${mobile}) {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        margin-bottom: 0;
+
+        .page-title {
+            margin-left: 0px;
+            font-size: 50px;
+            line-height: 40px;
+        }
+        
+        .page-description {
+            margin: 25px 0;
+            padding: 0;
+            width: 90%;
+        }
+
+        .mobile-break {
+            display: block;
+        }
+
+        .block {
+            width: auto;
+        }
+    }
+}

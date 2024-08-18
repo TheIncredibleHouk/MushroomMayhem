@@ -1,7 +1,4 @@
-import styled from 'styled-components';
-import { mobile } from '../../styles/mobile';
-
-var TechniquesStyles = styled.div`
+.techniques {
     .techniques-screenshots {
         display: flex;
         flex-direction: row;
@@ -28,6 +25,4 @@ var TechniquesStyles = styled.div`
             transform: rotate(90deg);
         }
     }
-`
-
-export default TechniquesStyles;
+}
