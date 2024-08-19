@@ -1,6 +1,7 @@
 import Box from "../../components/Box/Box";
 import NesPadAction from "../../components/NesPad/NesPadAction/NesPadAction";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { red } from "../../styles/colors";
 import "./Hazards.css";
 
 import Barrel from './images/Barrel.png';
@@ -160,13 +161,14 @@ var hazards = [
 var Hazards = () =>{
     return (
         <div className="hazards">
-            <PageTitle title="Hazards">
+            <h1>Hazards</h1>
+            <section>
                 The lands that Mario traverses in this adventure contain all kinds of hazards. Lava, spiked balls on chains,
                 and Munchers are just a few of the hazards he'll have to avoid during this journey.
-            </PageTitle>
+            </section>
             <div className="hazards-layout">
                 {hazards.map(hazard => (
-                    <Box header={hazard.name} color="black">
+                    <Box header={hazard.name} color={red}>
                         <div className="hazard-layout">
                             <img src={hazard.image} />
                             <span>{hazard.description}</span>

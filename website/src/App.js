@@ -5,11 +5,12 @@ import Facebook from "./images/Facebook.png";
 import Discord from "./images/Discord.png";
 import YouTube from "./images/YouTube.png";
 import Block from "./components/Block/Block";
+import PageTitle from "./components/PageTitle/PageTitle";
 
 var App = () => {
   return (
     <div>
-      <Block className="corner-block" color="#ee9b4e"  boltSize={2} />
+      <PageTitle className="main-header" title="Mario Adventure 3" center />
       <div className="social-media">
         <a href="https://www.facebook.com/MarioAdventure3" target="_blank">
           <img className="facebook" src={Facebook} />
@@ -24,7 +25,9 @@ var App = () => {
           <img className="youtube" src={YouTube} />
         </a>
       </div>
-      <Router />
+      <div className="content">
+        <Router />
+      </div>
     </div>
   );
 };

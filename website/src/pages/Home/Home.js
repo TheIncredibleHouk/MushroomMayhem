@@ -19,11 +19,6 @@ var Home = () => {
 
   return (
     <div className="home">
-      <PageTitle
-        center
-        title="Mario Adventure"
-      />
-      <img className="title-3" src={Image3} />
       <div className="home-description">
         Welcome to the Official Mario Adventure 3 Strategy Guide! This website
         will give you all the details about Mario's latest NES adventure with

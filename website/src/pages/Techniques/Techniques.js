@@ -81,13 +81,14 @@ import WallJump4 from "./images/WallJump4.png";
 var Techniques = () => {
   return (
     <div className="techniques">
-      <PageTitle title="Techniques">
+      <h1>Techniques</h1>
+      <section>
         Adventure 3 throws a lot of new enemies and hazards in his way.
         Thankfully, Mario has a few new techniques he can use to clear
         obstacles, defeat enemies and solve puzzles!
-      </PageTitle>
-      <PageHeader color={yellow}>Carrying Objects</PageHeader>
-      <div className="techniques-layout">
+        </section>
+      <h2>Carrying Objects</h2>
+      <section className="techniques-layout">
         Mario can grab enemies and some objects by holding <NesPadAction B />{" "}
         when coming in contact with them. Objects that can be picked up include:
         <ul>
@@ -105,9 +106,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={Kick2} />
         </div>
-      </div>
-      <PageHeader color={red}>Advanced Kicks</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Advanced Kicks</h2>
+      <section className="techniques-layout">
         Mario can control his kicks by holding the <NesPadCross up /> in various
         directions. When Mario is standing still, holding <NesPadCross up />{" "}
         will kick the objects straight up. Shells will be kicked up without a
@@ -132,9 +133,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={Drop2} />
         </div>
-      </div>
-      <PageHeader color={blue}>Swimming</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Swimming</h2>
+      <section className="techniques-layout">
         Mario can swim through water by repeatedly tapping the{" "}
         <NesPadAction A /> button. When Mario reachs the top of the water, he
         will simply jump out! (Note: you do NOT need to hold <NesPadCross up />{" "}
@@ -151,9 +152,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={Sink2} />
         </div>
-      </div>
-      <PageHeader color={green}>Climbing</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Climbing</h2>
+      <section className="techniques-layout">
         Mario can climb vines, webs and chains. To climb, hold <NesPadCross up down /> when moving over a vine, web or chain. From there,
         press and hold any direction <NesPadCross up down left right />.
         <div className="techniques-screenshots">
@@ -167,9 +168,9 @@ var Techniques = () => {
             <img className="right-arrow" src={Arrow} />
             <img src={ClimbJump2} />
         </div>
-      </div>
-      <PageHeader color={red}>Fire Mario</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Fire Mario</h2>
+      <section className="techniques-layout">
         Fire Mario has the ability to throw fireballs by tapping the <NesPadAction B /> button. He can throw up to 2 fireballs at a time.
         <div className="techniques-screenshots">
           <img src={Fire} />
@@ -189,9 +190,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={Burn2} />
         </div>
-      </div>
-      <PageHeader color={blue}>Ice Mario</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Ice Mario</h2>
+      <section className="techniques-layout">
         Ice Mario can throw iceballs by tapping the <NesPadAction A /> button. Iceballs move slower and bounce higher than fireballs.
         <div className="techniques-screenshots">
           <img src={Ice1} />
@@ -217,9 +218,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={FrozenKick2} />
         </div>
-      </div>
-      <PageHeader color={red}>Raccoon Mario</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Raccoon Mario</h2>
+      <section className="techniques-layout">
         Raccoon Mario can change his P-Meter by running along the ground with <NesPadCross left right /> + <NesPadAction B />. Once charged,
         jump in to the air with <NesPadAction A /> to begin flying. Tapping <NesPadAction A /> repeatedly will gain altitude.
         <div className="techniques-screenshots">
@@ -245,9 +246,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={BatDeflect2} />
         </div>
-      </div>
-      <PageHeader color="orange">Fox Mario</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Fox Mario</h2>
+      <section className="techniques-layout">
         Fox Mario is a fire based power that lets Mario dash forward. The fire dash can attack enemies and makes Mario
         invulnerable to projectiles. To dash, double tap <NesPadAction B /> and continue holding <NesPadAction B /> to continue
         the dash. Your P-Meter will deplete and Mario will come out of the dash once he hits a wall or runs out of P-Meter. The fire
@@ -269,9 +270,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={Lava2} />
         </div>
-      </div>
-      <PageHeader color={yellow}>Poison Frog Mario</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Poison Frog Mario</h2>
+      <section className="techniques-layout">
         When wearing the Poison Frog Suit, Mario's swimming abilities change. He
         won't sink in water, but instead, swims by holding the{" "}
         <NesPadCross up down left right /> buttons. Holding <NesPadAction A />{" "}
@@ -296,9 +297,9 @@ var Techniques = () => {
           <img className="right-arrow" src={Arrow} />
           <img src={FrogJump2} />
         </div>
-      </div>
-      <PageHeader color={green}>Shell Mario</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Shell Mario</h2>
+      <section className="techniques-layout">
         Shell Mario can spin in to a shell by getting enough movement speed and holding <NesPadCross down /> to go in to
         a spin. While spinning, Mario can access smaller areas, activate item blocks and break bricks!
         <div className="techniques-screenshots">
@@ -319,9 +320,9 @@ var Techniques = () => {
             <img className="right-arrow" src={Arrow} />
             <img src={ShellBuff2} />
         </div>
-      </div>
-      <PageHeader color="black">Sledge Mario</PageHeader>
-      <div className="techniques-layout">
+      </section>
+      <h2>Sledge Mario</h2>
+      <section className="techniques-layout">
         Sledge Mario throws sledge hammers that are quite a bit more powerful than normal hammers. Sledge hammers can activate item blocks,
         break bricks and stone blocks. To throw a sledge hammer, simply tap <NesPadAction B />. Note: enemy sledge hammers can interact with the same
         objects, so be careful!
@@ -348,9 +349,9 @@ var Techniques = () => {
             <img className="right-arrow" src={Arrow} />
             <img src={GroundPound4} />
         </div>
-      </div>
-      <PageHeader color="black">Ninja Mario</PageHeader>
-        <div className="techniques-layout">
+      </section>
+      <h2>Ninja Mario</h2>
+        <section className="techniques-layout">
             Ninja Mario is very nimble. He can throw shurikens with the <NesPadAction B /> button. However, by holding any direction on
             <NesPadCross />, he can throw shurikens in 7 directions:
             <ul>
@@ -387,7 +388,7 @@ var Techniques = () => {
                 <img className="right-arrow" src={Arrow} />
                 <img src={WallJump4} />
             </div>
-        </div>
+        </section>
     </div>
   );
 };

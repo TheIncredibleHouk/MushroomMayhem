@@ -14,12 +14,11 @@ var Demos = () => {
     return <div className="demos">
         { showDemos() && 
         <>
-            <PageTitle title="Demos">
-                Demos of Mario Adventure 3 are distributed via IPS patch files. This patch files require an original Super Mario Bros 3. ROM. These
+            <h1>Demos</h1>
+            <section>Demos of Mario Adventure 3 are distributed via IPS patch files. This patch files require an original Super Mario Bros 3. ROM. These
                 patch files do not contain copyrighted content and require the original ROM for application. Choose the correct patch
-                file based on the NES ROM you have. In order to apply a IPS, be sure to download <a href="https://www.romhacking.net/utilities/240/" target="_blank">Lunar IPS</a>.
-            </PageTitle>
-            <PageHeader color={green}>January 4, 2024</PageHeader>
+                file based on the NES ROM you have. In order to apply a IPS, be sure to download <a href="https://www.romhacking.net/utilities/240/" target="_blank">Lunar IPS</a>.</section>
+            <h2>January 4, 2024</h2>
             <div className="demos-layout">
                 <ul>
                     <li><a href="/patches/Mario Adventure 3 (PRG0).ips">Patch for Super Mario Bros. 3 (PRG0) version</a></li>

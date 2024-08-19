@@ -51,7 +51,7 @@
     }
 
     .B, .A {
-        background-color: black;
+        background-color: #101018;
         width: 80%;
         height: calc(80% / 2);
         border-radius: 100px;

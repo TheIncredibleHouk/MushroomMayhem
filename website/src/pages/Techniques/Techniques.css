@@ -12,11 +12,12 @@
     }
 
     .right-arrow {
+        border: 0;
         width: 112px;
         height: 56px;
     }
 
-    @media screen and (max-width: ${mobile}){
+    @media screen and (max-width: 1023px){
         .techniques-screenshots {
             flex-direction: column;
         }

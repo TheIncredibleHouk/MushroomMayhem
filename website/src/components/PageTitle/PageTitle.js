@@ -8,9 +8,9 @@ const colors = [
     red, blue, yellow, green, red, green, yellow, blue, green, yellow, blue, red, green,
     red, blue, yellow, green, red, green, yellow, blue, green, yellow, blue, red, green,
 ];
-const PageTitle = ({title, children, center}) => {
+const PageTitle = ({title, className, children, center}) => {
     return (
-        <div className={`page-title ${center && 'center'}`}>
+        <div className={`page-title ${className} ${center && 'center'}`}>
             <Block color="#bcbcbc" boltSize={4}>
                 <div className="page-title">
                     <div className="page-title-layout">
@@ -18,7 +18,6 @@ const PageTitle = ({title, children, center}) => {
                             <span style={{["--letter-color"]: colors[index]}} className={`letter
                                 ${kernFixes.indexOf(letter) > -1 && 'kern-fix'}
                                 ${letter === '\n' && 'break'}
-                                ${letter === ' ' && 'break'}
                             `}>{letter}</span>
                         ))}
                     </div>

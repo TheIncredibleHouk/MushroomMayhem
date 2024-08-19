@@ -1,5 +1,4 @@
 import Block from "../../components/Block/Block";
-import PageTitle from "../../components/PageTitle/PageTitle";
 import { blue, green, red, yellow } from "../../styles/colors";
 import './Basics.css';
 import NesPadCross from "../../components/NesPad/NesPadCross/NesPadCross";
@@ -8,7 +7,6 @@ import Box from "../../components/Box/Box";
 
 import StatusBar from "./images/StatusBar.png";
 import NesPadMenu from "../../components/NesPad/NesPadMenu/NesPadMenu";
-import PageHeader from "../../components/PageHeader/PageHeader";
 
 import Arrow from "../../images/right-arrow.png";
 import Save1 from "./images/Save1.png";
@@ -44,12 +42,13 @@ var Basics = () => {
   return (
     <>
       <div className="basics">
-        <PageTitle title="Basics">
+        <h1>Basics</h1>
+        <section>
           Mario Adventure 3 has a lot going on and it can be pretty
           overwhelming! Get up to speed with all the game basics on this page.
-        </PageTitle>
-        <PageHeader color={green}>Game Saves</PageHeader>
-        <div className="basics-layout">
+          </section>
+        <h2>Game Saves</h2>
+        <section className="basics-layout">
           Mario Adventure 3 supports a save system. The save system will save
           Mario's progress, including the levels Mario has completed, Magic
           Stars collected, all player stats and the current map location. To
@@ -81,9 +80,9 @@ var Basics = () => {
             <img className="right-arrow" src={Arrow} />
             <img src={Save1} />
           </div>
-        </div>
-        <PageHeader color={blue}>Status Bar</PageHeader>
-        <div className="basics-layout">
+        </section>
+        <h2>Status Bar</h2>
+        <section className="basics-layout">
           <div className="stats-descriptions">
             <div className="stat-description">
               <h1 style={{ backgroundColor: red }}>P-Meter</h1>
@@ -123,7 +122,7 @@ var Basics = () => {
               </div>
             </div>
           </div>
-          <div className="stats-explanation">
+          <section className="stats-explanation">
             <div className="stats stats-top">
               <div className="stat-pmeter border-top" style={{["--border-color"] : red}}>
                 <Block boltSize={2} color={red}>
@@ -154,7 +153,7 @@ var Basics = () => {
             <div className="stat-image">
               <img src={StatusBar} />
             </div>
-            <div className="stats stats-bottom">
+            <section className="stats stats-bottom">
               <div className="stat-exp border-bottom" style={{["--border-color"]: red}}>
                 <Block boltSize={2} color={red}>
                   Experience
@@ -180,9 +179,9 @@ var Basics = () => {
                   Item
                 </Block>
               </div>
-            </div>
-          </div>
-          <div className="stats-descriptions">
+            </section>
+          </section>
+          <section className="stats-descriptions">
             <div className="stat-description">
               <h1 style={{ backgroundColor: red }}>Experience</h1>
               <div className="stat-description-text">
@@ -219,9 +218,9 @@ var Basics = () => {
                 <NesPadMenu select /> button.
               </div>
             </div>
-          </div>
-          <PageHeader color={yellow}>World Map</PageHeader>
-          <div className="basics-layout">
+          </section>
+          <h2>World Map</h2>
+          <section className="basics-layout">
             Mario will travel from level to level on the world map. The world map contains levels, shops, pipes and fortresses.
             Mario can navigate the world map using the <NesPadCross /> pad and enter levels with the <NesPadAction A /> button.
             Pressing <NesPadMenu start /> will bring up the save screens.
@@ -229,10 +228,10 @@ var Basics = () => {
             The world map will reflect the current time of day (day or night). Also, as Mario moves around the map, going over
             a level will display the level's name and any Magic Stars that have been collected for that level. If the level does not
             have any Magic Stars to collect, then the Magic Stars section of the status bar will be blank.
-            <div className="basics-screenshots">
+            <section className="basics-screenshots">
               <img src={World} />
-            </div>
-            <div className="basics-table">
+            </section>
+            <section className="basics-table">
               <Box color={green} header="Level Icon">
                 <img src={Level} />
                 <span>
@@ -269,9 +268,9 @@ var Basics = () => {
                   This icon indicates a small level for transitioning across maps.
                 </span>
               </Box>
-            </div>
-            <PageHeader color={red}>Levels</PageHeader>
-            <div className="basics-layout">
+            </section>
+            <h2>Levels</h2>
+            <section className="basics-layout">
               Normal levels contain a Malice Mushroom to find. Defeating the Malice Mushroom will
               destroy all objects around you and end the level. Malice Mushrooms can be defeated by stomping on them or
               attacking them in anyway.
@@ -280,8 +279,8 @@ var Basics = () => {
                 <img className="right-arrow" src={Arrow} />
                 <img src={MaliceMushroom2} />
               </div>
-            </div>
-            <div className="basics-layout">
+            </section>
+            <section className="basics-layout">
               Normal levels also contain 3 Magic Stars that are hidden within the level. Collect these to unlock barriers in to the
               fortress levels.
               <div className="basics-screenshots">
@@ -289,8 +288,8 @@ var Basics = () => {
                 <img className="right-arrow" src={Arrow} />
                 <img src={MagicStar2} />
               </div>
-            </div>
-            <div className="basics-layout">
+            </section>
+            <section className="basics-layout">
               Fortress levels are blocked by barriers that require a number of Magic Stars to by pass. Be sure to collect Magic Stars 
               along the way to avoid needing to back track!
               <div className="basics-screenshots">
@@ -298,10 +297,10 @@ var Basics = () => {
                 <img className="right-arrow" src={Arrow} />
                 <img src={Barrier2} />
               </div>
-            </div>
-          </div>
-          <PageHeader color={red}>Checkpoints</PageHeader>
-            <div className="basics-layout">
+            </section>
+          </section>
+          <h2>Checkpoints</h2>
+            <section className="basics-layout">
               Checkpoint flags can be found within most levels of the game (not all levels have checkpoints) and some levels
               (fortresses) contain multiple checkpoints. Dying in a level will reset Mario's stats to what they were when he
               entered a level, but a checkpoint saves those stats at that point. A checkpoint for a level will remain until
@@ -311,9 +310,9 @@ var Basics = () => {
                 <img className="right-arrow" src={Arrow} />
                 <img src={Checkpoint2} />
               </div>
-            </div>
-          <PageHeader color={blue}>Item Emporium</PageHeader>
-          <div className="basics-layout">
+            </section>
+          <h2>Item Emporium</h2>
+          <section className="basics-layout">
             The Item Emporium is where Mario can purchase items to use in a level. To use an item, pressing the <NesPadMenu select /> button.
             You can only have one item at a time, but some badges make use of the item slot and thus, items are not compatible with those badges
             and you will lose them. On some days, the Item Emporium will offer a discount!
@@ -322,31 +321,31 @@ var Basics = () => {
                 <img className="right-arrow" src={Arrow} />
                 <img src={ItemEmporium2} />
               </div>
-          </div>
-          <PageHeader color={red}>Badge Hut</PageHeader>
-          <div className="basics-layout">
+          </section>
+          <h2>Badge Hut</h2>
+          <section className="basics-layout">
             The Badge Hut is where Mario can trade cherries for badges! Badges are a one level use, meaning they are used up once Mario
             completes any level. On some days, the Badge Hut will offer a discount!
-          </div>
-          <div className="basics-layout">
+          </section>
+          <section className="basics-layout">
             <div className="basics-screenshots">
                 <img src={BadgeHut1} />
                 <img className="right-arrow" src={Arrow} />
                 <img src={BadgeHut2} />
               </div>
-          </div>
-          <PageHeader color={yellow}>Training Grounds</PageHeader>
-          <div className="basics-layout">The Training Grounds is where Mario proves his strength and earns new abilities! Each door requires a number of experience
+          </section>
+          <h2>Training Grounds</h2>
+          <section className="basics-layout">The Training Grounds is where Mario proves his strength and earns new abilities! Each door requires a number of experience
           points to access and completing a training level ends with an ability upgrade!
-          </div>
-          <div className="basics-layout">
+          </section>
+          <section className="basics-layout">
             <div className="basics-screenshots">
                 <img src={TrainingGrounds1} />
                 <img className="right-arrow" src={Arrow} />
                 <img src={TrainingGrounds2} />
               </div>
-          </div>
-        </div>
+          </section>
+        </section>
       </div>
     </>
   );

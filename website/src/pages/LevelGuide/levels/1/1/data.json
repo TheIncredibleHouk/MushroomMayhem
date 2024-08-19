@@ -7,21 +7,34 @@
             "annotations": [
                 {
                     "col": 41,
-                    "row": 14,
+                    "row": 12,
                     "image": "down-arrow.png",
                     "label": "A To B",
                     "location": "top",
-                    "text": "To Bonus Area"
+                    "text": "To Bonus Area",
+                    "width": 2,
+                    "height": 2
+                },
+                {
+                    "col": 70,
+                    "row":3,
+                    "image": "down-arrow.png",
+                    "label": "C To D",
+                    "location": "top",
+                    "text": "To Bonus Area",
+                    "width": 2,
+                    "height": 2
                 }
             ],
             "tips": [
                 {
                     "title": "Save Your Shell!",
-                    "description": "It may be tempting to grab this power-up at the start, but grabbing the second one means you can transform into Koopa Shell Mario. With this, you can use the shell spin to break the bricks that leads to the bonus area.",
+                    "description": "It may be tempting to grab this power-up at the start, but grabbing the second one means you can transform into Koopa Shell Mario. With this, you can use the shell spin to break the bricks that leads to the bonus area with coins and a cherry!",
                     "col": 4,
                     "row": 9,
                     "height": 3,
-                    "width": 3
+                    "width": 3,
+                    "images": ["0.png", "1.png"]
                 },
                 {
                     "title": "Watch Your Step",
@@ -29,16 +42,126 @@
                     "col": 49,
                     "row": 10,
                     "height": 7,
-                    "width": 7
+                    "width": 7,
+                    "images": ["2.png", "3.png"]
+                },
+                {
+                    "title": "First Magic Star",
+                    "description": "Be sure to enter this pipe to reach the first Magic Star!",
+                    "col": 69,
+                    "row": 3,
+                    "height": 4,
+                    "width": 4,
+                    "images": ["4.png", "5.png"]
+                },
+                {
+                    "title": "Down Deep for Coins",
+                    "description": "Dive down this pool of water and go left to find a set of coins at the surface.",
+                    "col": 82,
+                    "row": 13,
+                    "height": 7,
+                    "width": 7,
+                    "images": ["6.png", "7.png", "8.png"]
+                },
+                {
+                    "title": "Melty Access",
+                    "description": "Use your own fireballs or the Piranha's fireballs to melt this frozen coin. From there, go down the pool of water and to the right to access an area with a spring to be used later!",
+                    "col": 92,
+                    "row": 13,
+                    "height": 3,
+                    "width": 3,
+                    "images": ["9.png", "10.png", "11.png"]
+                },
+                {
+                    "title": "Touch the Checkpoint",
+                    "description": "Checkpoints allow you to restart a level at a later point. Remember that making a checkpoint appear is not enough, you have to actually touch the checkpoint for it to count!",
+                    "col": 113,
+                    "row": 1,
+                    "height": 3,
+                    "width": 3,
+                    "images": ["12.png", "13.png"]
+                },
+                {
+                    "title": "Many Ways Up",
+                    "description": "The second Magic Star can be reached in various ways. If you grabbed the spring earlier, you can carry it to this spot to reach the area. Alternatively, use the nearby Koopa shell! Carry the shell to the platform and drop it. Once it wakes, bounce off the Koopa to reach the area above.",
+                    "col": 137,
+                    "row": 1,
+                    "height": 5,
+                    "width": 5,
+                    "images": ["14.png", "15.png", "16.png","17.png", "18.png", "19.png"]
+                },
+                {
+                    "title": "Spin Right Through",
+                    "description": "It may be tempting to use the Koopa's shell to remove these blocks, but you can also grab a Koopa Shell powerup to spin through these blocks. Doing so leads right to the 3rd Magic Star.",
+                    "col": 185,
+                    "row": 13,
+                    "height": 3,
+                    "width": 11,
+                    "images": ["20.png", "21.png"]
+                },
+                {
+                    "title": "Richocet Mechanics",
+                    "description": "Koopa Mario can bounce off some hazards when spinning in his shell. Just press down while running and as long as Mario is spinning, he'll bounce off spikes and munchers until he reaches safe ground again.",
+                    "col": 211,
+                    "row": 11,
+                    "height": 5,
+                    "width": 6,
+                    "images": ["27.png", "28.png", "29.png"]
+                },
+                {
+                    "title": "Spring Forward",
+                    "description": "Remember that you can carry springs and kick them! Place them in key locations to gain access to high areas.",
+                    "col": 223,
+                    "row": 13,
+                    "height": 3,
+                    "width": 3,
+                    "images": ["22.png", "23.png", "24.png"]
+                },
+                {
+                    "title": "Malice Mushrooms",
+                    "description": "It may be tempting to try and collect this guy, but your goal is to destroy them! Stomping, shells or pretty much any attack will dispose of these mushrooms. The real challenge is reaching their location!",
+                    "col": 226,
+                    "row": 4,
+                    "height": 3,
+                    "width": 3,
+                    "images": ["25.png", "26.png"]
                 }
             ]
         },
         {
             "name": "Bonus Area",
-            "image": "overworld.png",
+            "image": "bonus.png",
+            "annotations": [
+                {
+                    "col": 3,
+                    "row": 24,
+                    "image": "left-arrow.png",
+                    "label": "D To C",
+                    "location": "top",
+                    "text": "To Overworld",
+                    "width": 2,
+                    "height": 2
+                },
+                {
+                    "col": 33,
+                    "row": 21,
+                    "image": "up-arrow.png",
+                    "label": "B To A",
+                    "location": "top",
+                    "text": "To Overworld",
+                    "width": 2,
+                    "height": 2
+                }
+            ],
             "tips": [
                 {
-                    "title": "Freebie Coins"
+                    "title": "Kick It Up",
+                    "description": "Use the nearby Koopa's shell and kick it upwards to remove the brick. This will allow the Magic Star to fall and allow Mario to collect it.",
+                    "col": 6,
+                    "row": 16,
+                    "height": 10,
+                    "width": 9,
+                    "images": ["30.png", "31.png", "32.png"]
                 }
             ]
         }

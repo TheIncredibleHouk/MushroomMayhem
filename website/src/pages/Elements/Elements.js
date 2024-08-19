@@ -264,53 +264,54 @@ var elements = [
 var Elements = () => {
     return (
         <div className="elements">
-            <PageTitle title="Game Elements">There are tons of elements that Mario will come across. From coins to Magic Stars,
-            let's dive into the many items you'll come across spread through out the lands!</PageTitle>
-            <PageHeader color={yellow}>Collectibles</PageHeader>
-            <div className="elements-layout">
+            <h1>Game Elements</h1>
+            <section>There are tons of elements that Mario will come across. From coins to Magic Stars,
+            let's dive into the many items you'll come across spread through out the lands!</section>
+            <h2>Collectibles</h2>
+            <section className="elements-layout">
                 {elements.filter(element => element.group === "Collectibles").map(element => (
                     <Box header={element.name} color={green}>
                         <div className="element-image"><img src={element.image} /></div>
                         <div className="element-text">{element.description}</div>
                     </Box>
                 ))}
-            </div>
-            <PageHeader color={yellow}>Blocks</PageHeader>
-            <div className="elements-layout">
+            </section>
+            <h2>Blocks</h2>
+            <section className="elements-layout">
                 {elements.filter(element => element.group === "Blocks").map(element => (
                     <Box header={element.name} color={green}>
                         <div className="element-image"><img src={element.image} /></div>
                         <div className="element-text">{element.description}</div>
                     </Box>
                 ))}
-            </div>
-            <PageHeader color={yellow}>Tools</PageHeader>
-            <div className="elements-layout">
+            </section>
+            <h2>Tools</h2>
+            <section className="elements-layout">
                 {elements.filter(element => element.group === "Tools").map(element => (
                     <Box header={element.name} color={green}>
                         <div className="element-image"><img src={element.image} /></div>
                         <div className="element-text">{element.description}</div>
                     </Box>
                 ))}
-            </div>
-            <PageHeader color={yellow}>Environment</PageHeader>
-            <div className="elements-layout">
+            </section>
+            <h2>Environment</h2>
+            <section className="elements-layout">
                 {elements.filter(element => element.group === "Environment").map(element => (
                     <Box header={element.name} color={green}>
                         <div className="element-image"><img src={element.image} /></div>
                         <div className="element-text">{element.description}</div>
                     </Box>
                 ))}
-            </div>
-            <PageHeader color={yellow}>Other</PageHeader>
-            <div className="elements-layout">
+            </section>
+            <h2>Other</h2>
+            <section className="elements-layout">
                 {elements.filter(element => element.group === "Other").map(element => (
                     <Box header={element.name} color={green}>
                         <div className="element-image"><img src={element.image} /></div>
                         <div className="element-text">{element.description}</div>
                     </Box>
                 ))}
-            </div>
+            </section>
         </div>
     )
 };

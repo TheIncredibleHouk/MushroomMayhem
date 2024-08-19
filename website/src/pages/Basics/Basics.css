@@ -186,8 +186,7 @@
         padding: 15px;
 
         .stat-description {
-            border: 2px solid black;
-            border-radius: 10px;
+            border: 2px outset #c0c0c0;
             overflow: hidden;
             box-shadow: 5px 5px 6px #0000007a;
 

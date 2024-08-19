@@ -1,7 +1,6 @@
 .box
 {
-    border: 2px solid black;
-    border-radius: 10px;
+    border: 2px outset #c0c0c0;
     position: relative;
     width: 400px;
     max-width: 90vw;
@@ -9,7 +8,7 @@
     margin-bottom: 15px;
     box-shadow: 5px 5px 6px #0000007a;
 
-    h1 {
+    h2 {
         background-color: var(--box-color);
         color: #ffffff;
         font-size: 16px;

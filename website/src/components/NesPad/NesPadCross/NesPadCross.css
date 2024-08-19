@@ -8,7 +8,7 @@
     &:not(.inline)
     {
         .up, .down, .left, .right {
-            border: 1px solid white;
+            border: 1px solid #0c0c0c;
             border-radius: 1px;
         }
 
@@ -47,7 +47,7 @@
     
 
     .up, .down, .left, .right, .center {
-        background-color: black;
+        background-color: #808080;
 
         &.true {
             background-color: red;

@@ -4,13 +4,26 @@
         overflow-y: hidden;
         position: relative;
         width: 100%;
+
+        img {
+            border: 0;
+        }
     }
     
     .level-guide-section-annotation {
+        align-self: center;
+        display: flex;
+        height: var(--height);
         left: var(--x);
+        justify-content: center;
         opacity: .9;
         position: absolute;
         top: var(--y);
+        height: var(--width);
+
+        img {
+            border: 0;
+        }
 
         label {
             align-items: center;
@@ -44,5 +57,18 @@
         position: absolute;
         top: var(--y);
         width: var(--width);
+
+        &:hover {
+            background-color: #ffffff80;
+            cursor: pointer;
+        }
+    }
+
+    .level-guide-tip-images {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
     }
 }

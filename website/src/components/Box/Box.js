@@ -4,7 +4,7 @@ var Box = ({color, header, children, ...props}) => {
     return (
         <div className="box"
         style={{["--box-color"]: color }} {...props}>
-            { header && <h1>{header}</h1> }
+            { header && <h2>{header}</h2> }
             <div className="box-layout">
                 {children}
             </div>

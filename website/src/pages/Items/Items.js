@@ -93,7 +93,8 @@ const items = [
 var Items = () => {
   return (
     <div className="items">
-      <PageTitle title="Items">
+      <h1>Items</h1>
+      <section>
         Mario can equip items that can be used during level play. He can equip
         power-ups and new items that have various effects, such as saving him
         from a pit death or slowing down time! These items can be purchased at
@@ -101,17 +102,17 @@ var Items = () => {
         different prices! In order to use an item, simply press{" "}
         <NesPadMenu select /> while playing a level and Mario will instantly use
         the item stored in the item slot!
-      </PageTitle>
-      <PageHeader color={blue}>Using Items</PageHeader>
-      <div className="items-layout">
+      </section>
+      <h2>Using Items</h2>
+      <section className="items-layout">
         <div className="items-example">
           <img src={Items1} />
           <NesPad zoom={0.75} select />
           <img src={Items2} />
         </div>
-      </div>
-      <PageHeader color={blue}>Items</PageHeader>
-      <div className="items-list">
+      </section>
+      <h2>Items</h2>
+      <section className="items-list">
         {items.map((item) => (
           <Box header={item.name} color={yellow}>
             <div className="item-box">
@@ -122,14 +123,14 @@ var Items = () => {
             </div>
           </Box>
         ))}
-      </div>
-      <PageHeader color={blue}>Item Emporium</PageHeader>
-      <div>
+      </section>
+      <h2>Item Emporium</h2>
+      <section>
         Mario can get all of items from The Item Emporium. These are located on
         the map and are identifiable by the red mushroom house. Inside, you can
         use <NesPadCross left right /> to navigate the items, <NesPadAction A />{" "}
         to purchase the item and <NesPadAction B /> to leave the shop.
-      </div>
+      </section>
       <div className="items-shop">
         <img src={Items3} />
         <img src={Items4} />

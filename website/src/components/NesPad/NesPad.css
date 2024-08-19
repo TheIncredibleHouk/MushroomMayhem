@@ -4,9 +4,10 @@
     grid-template-columns: repeat(3, 1fr);
     justify-items: center;
     border: 1px solid black;
-    height:calc(var(--zoom) * 100);
-    width: calc(var(--zoom) * 300);
+    height: 75px;
+    margin: 0 10px;
+    width: 225px;
 
-    background-color: #c0c0c0;
+    background-color: #101018;
     border-radius: 2px;
 }

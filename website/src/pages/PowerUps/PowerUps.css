@@ -1,69 +1,68 @@
 .power-ups {
-    display: inline-grid;
+  align-content: space-evenly;
+  align-items: center;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: space-evenly;
+  justify-items: center;
+  row-gap: 25px;
+  width: 100%;
+
+  .power-up-layout {
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    row-gap: 25px;
-    width: 100%;
+    height: calc(100% - 25px);
     justify-content: space-evenly;
     justify-items: center;
-    align-content: space-evenly;
-    align-items: center;
+  }
+  .box {
+    height: 450px;
+  }
+  .power-up-image {
+    background-color: #629bd9;
+    border-radius: 32px;
+    left: 0;
+    padding: 8px;
+    position: absolute;
+    top: 0;
 
-    .power-up-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        justify-content: space-evenly;
-        justify-items: center;
-        height: calc(100% - 25px);
+    img {
+      border: 0;
+      width: 32px;
     }
+  }
+  .power-up-screenshot {
+    align-self: end;
+    border: 2px outset #c0c0c0;
+    display: inline-block;
+    height: 172px;
+    margin: 10px;
+    max-width: 256px;
+    overflow: hidden;
+    width: calc(100% - 20px);
 
-    .box {
-        height: 450px;
+    img {
+        border: 0;
+      left: -40px;
+      position: relative;
     }
+  }
+  .power-up-mario {
+    align-self: center;
+    margin: 8px;
 
-    .power-up-image {
-        position: absolute;
-        left: 0;
-        top: 0;
-        background-color: #629bd9;
-        padding: 8px;
-        border-radius: 32px;
-
-        img {
-            width: 32px;
-        }
+    img {
+      border: 0;
+      height: 64px;
     }
+  }
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: 1fr;
+    justify-items: center;
 
-    .power-up-screenshot {
-        max-width: 256px;
-        height: 172px;
-        width: calc(100% - 20px);
-        overflow: hidden;
-        display: inline-block;
-        margin: 10px;
-        align-self: end;
-        
-        img {
-            position: relative;
-            left: -40px;
-        }
+    .power-up-box {
+      max-width: 400px;
+      width: 100%;
     }
-
-    .power-up-mario {
-        margin: 8px;
-        align-self: center;
-
-        img {
-            height: 64px;
-        }
-    }
-
-    @media screen and (max-width: 1023px) {
-        grid-template-columns: 1fr;
-        justify-items: center;
-
-        .power-up-box {
-            width: 100%;
-            max-width: 400px;
-        }
-    }
+  }
 }

@@ -2,91 +2,124 @@
   font-family: new super mario font u;
   font-style: normal;
   font-weight: 400;
+
   src: local("New Super Mario Font U"),
     url("https://fonts.cdnfonts.com/s/32226/New Super Mario Font U.woff")
       format("woff");
 }
-
 @font-face {
   font-family: KabelHeavy;
   font-style: normal;
   font-weight: 400;
+
   src: local("OPTIKabel-Heavy"),
     url("/public/fonts/OPTIKabel-Heavy.woff") format("woff");
 }
-
 @font-face {
   font-family: "BabyTeeth";
   font-style: normal;
   font-weight: 400;
   src: local("Baby Teeth"), url("/public/fonts/Devandra.ttf") format("truetype");
 }
-
 * {
   box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
-
 html {
-  background-color: #404040;
+  background-image: url("./images/background.svg");
+  background-position: center;
 }
-
 body {
-  background-color: #ffffff;
-  border-top: #345084 32px solid;
-  border-left: #345084 32px solid;
-  color: #101010;
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #080810;
+  border: 2px solid #000000;
+  border-width: 0 2px;
+  color: #e0e0e0;
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
+  font-weight: 400;
   line-height: 22px;
   margin: 0 auto;
   max-width: 9.5in;
-  padding: 0 10px;
-  padding-bottom: 50px;
   overflow-x: hidden;
+  padding-bottom: 50px;
   position: relative;
+
+  .content {
+    padding: 25px;
+  }
 }
 
+h1 {
+  border-bottom: 2px solid #808080;
+  font-family: KabelHeavy;
+  font-size: 48px;
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  text-align: center;
+}
+
+h2 {
+  font-family: "Righteous", sans-serif;
+  font-size: 36px;
+  margin-bottom: 15px;
+}
 ul {
   margin: 15px;
   padding-left: 15px;
 }
-
 p {
   margin-bottom: 5px;
 }
+a:link,
+a:visited,
+a:hover,
+a:active {
+  color: #c0c0ff;
+}
 
+section {
+  display: block;
+  margin-bottom: 50px;
+}
 .social-media {
+  display: flex;
+  flex-direction: row;
   position: absolute;
   right: 0;
   top: -30px;
-  display: flex;
-  flex-direction: row;
 
   img {
-    width: 28px;
     margin: 0 10px;
+    width: 28px;
+
     filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(125deg)
       brightness(103%) contrast(103%);
   }
 }
+.main-header {
+  .block {
+    width: 100%;
+  }
+}
+
+img {
+  border: 2px outset #c0c0c0;
+}
 
 @media screen and (max-width: 1023px) {
   & > div {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
   }
-
   .social-media {
     flex-direction: row;
   }
 }
-
-
 .corner-block.block {
-  left: -32px;
   height: 32px;
+  left: -32px;
   position: absolute;
   top: -32px;
   width: 32px;
