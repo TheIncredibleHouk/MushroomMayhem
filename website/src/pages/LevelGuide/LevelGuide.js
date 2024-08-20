@@ -21,9 +21,9 @@ const LevelGuide = () => {
 
   return (
     <div className="level-guide">
-      <h1>{levelData?.name}</h1>
       {levelData.sections.map((section) => (
         <>
+        <h1>{levelData.name} - {section.name}</h1>
           <section className="level-guide-section-image">
             <img src={require(`./levels/${world}/${level}/${section.image}`)} />
             {section.annotations?.map((annotation) => (

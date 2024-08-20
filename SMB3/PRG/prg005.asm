@@ -1356,7 +1356,9 @@ SnowBall_Draw:
 	JMP Object_Draw
 
 SnowBall_Hit:
-	
+	LDA Player_FireDash
+	BNE SnowBall_Burst
+
 	JSR Player_Freeze
 
 	LDA <Objects_XVelZ, X
@@ -4257,6 +4259,7 @@ TrainingShop_CheckExp:
 	STA <CalcParam1 
 
 	LDA Training_ExpRequirements + 1, Y
+	SUB #$01
 	STA <CalcParam1 + 1
 
 	LDA Player_Experience

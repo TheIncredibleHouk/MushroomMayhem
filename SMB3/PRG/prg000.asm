@@ -2643,6 +2643,9 @@ PRG000_D4C8:
 PRG000_D506:
 	LDA #$02
 	STA Objects_SpritesRequested, X
+
+	LDA #$02
+	STA Objects_ExpPoints, X
 	RTS		 ; Return
 
 
@@ -5234,6 +5237,7 @@ Object_EarnExp:
 	LDA #$30
 	STA Kill_Tally_Ticker
 
+	STA Debug_Snap
 	LDA Objects_ExpPoints, X
 	LDY Player_EffectiveSuit
 	BNE Add_KillyTally

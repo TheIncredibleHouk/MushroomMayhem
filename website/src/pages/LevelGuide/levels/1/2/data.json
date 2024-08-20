@@ -1,0 +1,71 @@
+{
+    "name": "Key Coin Caverns",
+    "sections": [
+        {
+            "name": "Overworld",
+            "image": "overworld.png",
+            "annotations": [
+                {
+                    "col": 6,
+                    "row": 21,
+                    "image": "down-arrow.png",
+                    "label": "A To B",
+                    "location": "top",
+                    "text": "To Underworld",
+                    "width": 2,
+                    "height": 2
+                },
+                {
+                    "col": 30,
+                    "row": 18,
+                    "image": "down-arrow.png",
+                    "label": "C to D",
+                    "location": "top",
+                    "text": "To Underworld",
+                    "width": 2,
+                    "height": 2
+                }
+            ],
+            "tips": [
+                {
+                    "title": "Freeze Those Munchers",
+                    "description": "There are double Ice flowers at the beginning of the stage. Use the iceballs to freeze Munchers to reach the cherry!",
+                    "col": 16,
+                    "row": 16,
+                    "height": 6,
+                    "width": 6,
+                    "images": ["0.png", "1.png"]
+                }
+            ]
+        },
+        {
+            "name": "Underworld",
+            "image": "underworld.png",
+            "annotations": [
+                    {
+                        "col": 2,
+                        "row": 12,
+                        "image": "down-arrow.png",
+                        "label": "A To B",
+                        "location": "top",
+                        "text": "To Bonus Area",
+                        "width": 2,
+                        "height": 2
+                    },
+                    {
+                        "col": 70,
+                        "row":3,
+                        "image": "down-arrow.png",
+                        "label": "C To D",
+                        "location": "top",
+                        "text": "To Bonus Area",
+                        "width": 2,
+                        "height": 2
+                    }
+            ],
+            "tips": [
+                
+            ]
+        }
+    ]
+}

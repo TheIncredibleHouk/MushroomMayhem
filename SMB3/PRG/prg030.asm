@@ -1222,7 +1222,14 @@ PRG030_8E5D:
 	STA Map_ReturnStatus
 
 	LDA #$00
-	STA Pause_Menu
+	STA Player_Vehicle
+	STA Player_Shell
+	STA Player_FireDash
+	STA Level_PSwitchCnt
+	STA Player_Yolked
+	STA Player_Oiled
+	STA Player_Frozen
+	STA Frozen_Frame
 	BEQ PRG030_8E79
 
 Pause_NoExit:
@@ -5379,7 +5386,6 @@ UsePointer:
 	LDA #$00
 	STA Level_HorzScrollLock
 
-	STA Debug_Snap
 	LDA Pointers + 5, X
 	AND #$80	; does this pointer exit the level?
 	BEQ LevelJction
@@ -6030,6 +6036,19 @@ Player_Die:
 	ORA #MUS1_PLAYERDEATH
 	STA Sound_QMusic1
 
+
+	LDA #$01
+	STA Player_QueueSuit	 ; Queue change to "small"
+
+	LDA #-64
+	STA <Player_YVelZ ; Player_YVelZ = -64
+
+	LDA #$30	 
+	STA Event_Countdown ; Event_Countdown = $30 (ticks until dropped back to map)
+
+	LDA #$01
+	STA <Player_IsDying	 ; Player_IsDying = 1
+
 	; Clear a bunch of stuff at time of death
 	LDA #$00
 	STA Player_Vehicle
@@ -6060,18 +6079,6 @@ Player_DeathNoHold:
 
 	LDA #$36
 	STA Palette_Buffer + $13
-
-	LDA #$01
-	STA Player_QueueSuit	 ; Queue change to "small"
-
-	LDA #-64
-	STA <Player_YVelZ ; Player_YVelZ = -64
-
-	LDA #$30	 
-	STA Event_Countdown ; Event_Countdown = $30 (ticks until dropped back to map)
-
-	LDA #$01
-	STA <Player_IsDying	 ; Player_IsDying = 1
 
 	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
