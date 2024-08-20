@@ -2,24 +2,28 @@
     "name": "Key Coin Caverns",
     "sections": [
         {
-            "name": "Overworld",
+            "name": "Overworld - A",
             "image": "overworld.png",
+            "crop": {
+                "x": 0,
+                "y": 0,
+                "width": 30,
+                "height": 27
+            },
             "annotations": [
+                {
+                    "col": 1,
+                    "row": 21,
+                    "image": "start.png",
+                    "location": "top",
+                    "width": 1,
+                    "height": 1
+                },
                 {
                     "col": 6,
                     "row": 21,
                     "image": "down-arrow.png",
-                    "label": "A To B",
-                    "location": "top",
-                    "text": "To Underworld",
-                    "width": 2,
-                    "height": 2
-                },
-                {
-                    "col": 30,
-                    "row": 18,
-                    "image": "down-arrow.png",
-                    "label": "C to D",
+                    "label": "To Underworld - A",
                     "location": "top",
                     "text": "To Underworld",
                     "width": 2,
@@ -34,37 +38,338 @@
                     "row": 16,
                     "height": 6,
                     "width": 6,
-                    "images": ["0.png", "1.png"]
+                    "images": [
+                        "0.png",
+                        "1.png"
+                    ]
                 }
             ]
         },
         {
-            "name": "Underworld",
+            "name": "Underworld - A",
             "image": "underworld.png",
+            "crop": {
+                "x": 0,
+                "y": 0,
+                "height": 27,
+                "width": 134
+            },
             "annotations": [
-                    {
-                        "col": 2,
-                        "row": 12,
-                        "image": "down-arrow.png",
-                        "label": "A To B",
-                        "location": "top",
-                        "text": "To Bonus Area",
-                        "width": 2,
-                        "height": 2
-                    },
-                    {
-                        "col": 70,
-                        "row":3,
-                        "image": "down-arrow.png",
-                        "label": "C To D",
-                        "location": "top",
-                        "text": "To Bonus Area",
-                        "width": 2,
-                        "height": 2
-                    }
+                {
+                    "col": 62,
+                    "row": 5,
+                    "label": "Exit",
+                    "location": "top",
+                    "width": 2,
+                    "height": 2
+                },
+                {
+                    "col": 62.5,
+                    "row": 9,
+                    "label": "To Underworld - B",
+                    "location": "top",
+                    "width": 3,
+                    "height": 1
+                }
             ],
             "tips": [
-                
+                {
+                    "title": "The Key to Success",
+                    "description": "This area has you hunting down key coins. Gathering them all will produce a coin Mario can carry to the locked door. You will see an indicator in the upper left hand corner letting you know what key coins you have collected so far.",
+                    "col": 59,
+                    "row": 7,
+                    "height": 4,
+                    "width": 6,
+                    "images": [
+                        "7.png"
+                    ]
+                },
+                {
+                    "title": "Just Breathe",
+                    "description": "Remember that in Mario Adventure 3, Mario will lose his breath over time! Be sure to grab air bubles in lengthier sections to replenish his air.",
+                    "col": 56,
+                    "row": 11,
+                    "height": 8,
+                    "width": 12,
+                    "images": [
+                        "5.png",
+                        "6.png"
+                    ]
+                },
+                {
+                    "title": "Key Coin #1",
+                    "description": "The first key coin is located deep beneath the pool of water. Dive down and be sure to grab the air bubbles along the way to replenish Mario's air. The air bubbles here will even regenerate!",
+                    "col": 47,
+                    "row": 19,
+                    "height": 7,
+                    "width": 30,
+                    "images": [
+                        "2.png",
+                        "4.png",
+                        "5.png"
+                    ]
+                },
+                {
+                    "title": "Froggy Shortcut",
+                    "description": "There is a nearby Poison Frog Suit that would allow you to jump up to the above area. Just get a running start and jump high!",
+                    "col": 37,
+                    "row": 4,
+                    "height": 7,
+                    "width": 8,
+                    "images": [
+                        "8.png",
+                        "9.png",
+                        "10.png"
+                    ]
+                },
+                {
+                    "title": "Drop Into the Pool",
+                    "description": "Going down this pipe will drop Mario in to a shallow pool of water. No worries, you have plenty of pool beneath before you die!",
+                    "col": 35,
+                    "row": 7,
+                    "height": 17,
+                    "width": 2,
+                    "images": [
+                        "11.png",
+                        "12.png"
+                    ]
+                },
+                {
+                    "title": "Spintula from the Top",
+                    "description": "Spintulas wait above Mario ready to attack! They will drop down with their web, allowing them to crawl back up. Defeat Spintula and you can climb their remaining web to reach new heights!",
+                    "col": 22,
+                    "row": 16,
+                    "height": 9,
+                    "width": 5,
+                    "images": [
+                        "13.png",
+                        "14.png"
+                    ]
+                },
+                {
+                    "title": "Key Coin #2",
+                    "description": "Key coin #2 is located at the left most edge of the stage.",
+                    "col": 0,
+                    "row": 23,
+                    "height": 3,
+                    "width": 3,
+                    "images": [
+                        "15.png"
+                    ]
+                },
+                {
+                    "title": "Keep Going Up!",
+                    "description": "You may want to high tail it back to the right, but try jumping up to this are and wait for a Spintula to fall. Defeat it and use the web to gain access to the upper area. Beware of the hidden coin block that may obstruct your path!",
+                    "col": 2,
+                    "row": 2,
+                    "height": 14,
+                    "width": 3,
+                    "images": [
+                        "16.png",
+                        "17.png",
+                        "18.png"
+                    ]
+                },
+                {
+                    "title": "Magic Star #1",
+                    "description": "Be sure to open this nearby block to reveal a P-Switch. Activating the P-Switch will reveal the first Magic Star of the level!",
+                    "col": 28,
+                    "row": 3,
+                    "height": 9,
+                    "width": 5,
+                    "images": [
+                        "19.png",
+                        "20.png"
+                    ]
+                },
+                {
+                    "title": "Hidden Fire Flower",
+                    "description": "There is a hidden Fire Flower on the edge of the pool of water. You can use this to make sure you're powered up enough to grab the Ice Flower above!",
+                    "col": 90,
+                    "row": 20,
+                    "height": 3,
+                    "width": 3,
+                    "images": [
+                        "21.png"
+                    ]
+                },
+                {
+                    "title": "Key Coin #3 - Climb and Swing",
+                    "description": "Be sure to climb the webbing and wait for the swinging platforms to come close to you! Just be patient and make your away across to reach the 3rd key coin!",
+                    "col": 94,
+                    "row": 7,
+                    "height": 9,
+                    "width": 25,
+                    "images": [
+                        "21.png"
+                    ]
+                },
+                {
+                    "title": "Magic Star #2 - Icy Bridge",
+                    "description": "Ice Mario can use iceballs to freeze the water temporarily. This ice can be stood on and used to create a platform to reach the ledge above, leading to the seon Maggic Star!",
+                    "col": 118,
+                    "row": 18,
+                    "height": 6,
+                    "width": 5,
+                    "images": [
+                        "25.png",
+                        "26.png",
+                        "27.png"
+                    ]
+                },
+                {
+                    "title": "Lost Key?",
+                    "description": "When you have a key created from gathering key coins, you may think losing the key in a pit mean you're stick. Fear not! Keys will respawn where they were produced!",
+                    "col": 120,
+                    "row": 7,
+                    "height": 4,
+                    "width": 5,
+                    "images": [
+                        "28.png",
+                        "29.png",
+                        "30.png"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Underworld - B",
+            "image": "underworld.png",
+            "crop": {
+                "x": 137,
+                "y": 0,
+                "height": 27,
+                "width": 87
+            },
+            "annotations": [
+                {
+                    "col": 141.5,
+                    "row": 3.5,
+                    "label": "Exit B",
+                    "location": "top",
+                    "width": 3,
+                    "height": 1
+                },
+                {
+                    "col": 161,
+                    "row": 1,
+                    "image": "down-arrow.png",
+                    "label": "To Overworld - B",
+                    "location": "top",
+                    "text": "To Overworld",
+                    "width": 2,
+                    "height": 2
+                },
+                {
+                    "col": 202,
+                    "row": 3,
+                    "image": "left-arrow.png",
+                    "label": "To Overworld - C",
+                    "location": "top",
+                    "text": "To Overworld",
+                    "width": 2,
+                    "height": 2
+                }
+            ],
+            "tips": [
+                {
+                    "title": "Jelectro Jolt",
+                    "description": "Jelectros can be dangerous in the water, but as Poison Frog Mario, double tap B to activate an invinicibility mode. Quickly pass through Jelectros and other hazards while invincible (indicated by the P-Meter and rainbow flash).",
+                    "col": 158,
+                    "row": 21,
+                    "height": 5,
+                    "width": 4,
+                    "images": [
+                        "31.png",
+                        "32.png",
+                        "33.png"
+                    ]
+                },
+                {
+                    "title": "Magic Star #3",
+                    "description": "The third Magic Star requires some use of Poison Frog Mario's invincibility mode to pass through these Jelectros. Follow the path around to reach the Magic Star!",
+                    "col": 172,
+                    "row": 6,
+                    "height": 9,
+                    "width": 35,
+                    "images": [
+                        "36.png",
+                        "37.png",
+                        "38.png",
+                        "39.png"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Overworld - B",
+            "image": "overworld.png",
+            "crop": {
+                "x": 25,
+                "y": 0,
+                "width": 16,
+                "height": 27
+            },
+            "annotations": [
+                {
+                    "col": 30,
+                    "row": 18,
+                    "image": "down-arrow.png",
+                    "label": "To Underworld - C",
+                    "location": "top",
+                    "text": "To Underworld",
+                    "width": 2,
+                    "height": 2
+                }
+            ],
+            "tips": [
+                {
+                    "title": "High Jump for Cherries",
+                    "description": "This area requires the high jump of Poison Frog Mario to reach the cherries. Be sure to collect both!",
+                    "col": 30,
+                    "row": 8,
+                    "height": 10,
+                    "width": 7,
+                    "images": [
+                        "34.png",
+                        "35.png"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Overworld - C",
+            "image": "overworld.png",
+            "crop": {
+                "x": 42,
+                "y": 0,
+                "width": 24,
+                "height": 27
+            },
+            "annotations": [
+                {
+                    "col": 52,
+                    "row": 23,
+                    "label": "Exit",
+                    "location": "top",
+                    "width": 2,
+                    "height": 2
+                }
+            ],
+            "tips": [
+                {
+                    "title": "Malice in Hiding",
+                    "description": "The Malice Mushroom is hidden inside this block, waiting to jump out at Mario! Just hit the block an wait for it to move in a direction before attacking it to complete the level.",
+                    "col": 53,
+                    "row": 1,
+                    "height": 5,
+                    "width": 6,
+                    "images": [
+                        "40.png",
+                        "41.png",
+                        "42.png"
+                    ]
+                }
             ]
         }
     ]

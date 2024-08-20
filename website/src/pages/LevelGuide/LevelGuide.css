@@ -1,5 +1,7 @@
 .level-guide {
     .level-guide-section-image {
+        display: grid;
+        place-items: center;
         overflow-x: auto;
         overflow-y: hidden;
         position: relative;
@@ -7,6 +9,25 @@
 
         img {
             border: 0;
+        }
+
+        
+    }
+
+    .level-guide-map {
+        position: relative;
+        width: 100%;
+
+        &.crop {           
+            height: var(--crop-height);
+            overflow: hidden;
+            width: var(--crop-width);
+
+            & > img,
+            .level-guide-section-annotation,
+            .level-guide-tip-marker {
+                transform: translate(calc(var(--crop-x)));
+            }
         }
     }
     
@@ -44,6 +65,13 @@
                 left: 50%;
                 position: absolute;
                 top: 0;
+                transform: translate(-50%, -100%);
+            } 
+
+            &.bottom {
+                left: 50%;
+                position: absolute;
+                bottom: -100%;
                 transform: translate(-50%, -100%);
             } 
         }

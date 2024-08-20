@@ -6,10 +6,18 @@
             "image": "overworld.png",
             "annotations": [
                 {
+                    "col": 3,
+                    "row": 13,
+                    "image": "start.png",
+                    "location": "top",
+                    "width": 1,
+                    "height": 2
+                },
+                {
                     "col": 41,
                     "row": 12,
                     "image": "down-arrow.png",
-                    "label": "A To B",
+                    "label": "To Bonus Area - A",
                     "location": "top",
                     "text": "To Bonus Area",
                     "width": 2,
@@ -17,9 +25,9 @@
                 },
                 {
                     "col": 70,
-                    "row":3,
+                    "row": 3,
                     "image": "down-arrow.png",
-                    "label": "C To D",
+                    "label": "To Bonus Area - B",
                     "location": "top",
                     "text": "To Bonus Area",
                     "width": 2,
@@ -34,7 +42,10 @@
                     "row": 9,
                     "height": 3,
                     "width": 3,
-                    "images": ["0.png", "1.png"]
+                    "images": [
+                        "0.png",
+                        "1.png"
+                    ]
                 },
                 {
                     "title": "Watch Your Step",
@@ -43,7 +54,10 @@
                     "row": 10,
                     "height": 7,
                     "width": 7,
-                    "images": ["2.png", "3.png"]
+                    "images": [
+                        "2.png",
+                        "3.png"
+                    ]
                 },
                 {
                     "title": "First Magic Star",
@@ -52,7 +66,10 @@
                     "row": 3,
                     "height": 4,
                     "width": 4,
-                    "images": ["4.png", "5.png"]
+                    "images": [
+                        "4.png",
+                        "5.png"
+                    ]
                 },
                 {
                     "title": "Down Deep for Coins",
@@ -61,7 +78,11 @@
                     "row": 13,
                     "height": 7,
                     "width": 7,
-                    "images": ["6.png", "7.png", "8.png"]
+                    "images": [
+                        "6.png",
+                        "7.png",
+                        "8.png"
+                    ]
                 },
                 {
                     "title": "Melty Access",
@@ -70,7 +91,11 @@
                     "row": 13,
                     "height": 3,
                     "width": 3,
-                    "images": ["9.png", "10.png", "11.png"]
+                    "images": [
+                        "9.png",
+                        "10.png",
+                        "11.png"
+                    ]
                 },
                 {
                     "title": "Touch the Checkpoint",
@@ -79,7 +104,10 @@
                     "row": 1,
                     "height": 3,
                     "width": 3,
-                    "images": ["12.png", "13.png"]
+                    "images": [
+                        "12.png",
+                        "13.png"
+                    ]
                 },
                 {
                     "title": "Many Ways Up",
@@ -88,7 +116,14 @@
                     "row": 1,
                     "height": 5,
                     "width": 5,
-                    "images": ["14.png", "15.png", "16.png","17.png", "18.png", "19.png"]
+                    "images": [
+                        "14.png",
+                        "15.png",
+                        "16.png",
+                        "17.png",
+                        "18.png",
+                        "19.png"
+                    ]
                 },
                 {
                     "title": "Spin Right Through",
@@ -97,7 +132,10 @@
                     "row": 13,
                     "height": 3,
                     "width": 11,
-                    "images": ["20.png", "21.png"]
+                    "images": [
+                        "20.png",
+                        "21.png"
+                    ]
                 },
                 {
                     "title": "Richocet Mechanics",
@@ -106,7 +144,11 @@
                     "row": 11,
                     "height": 5,
                     "width": 6,
-                    "images": ["27.png", "28.png", "29.png"]
+                    "images": [
+                        "27.png",
+                        "28.png",
+                        "29.png"
+                    ]
                 },
                 {
                     "title": "Spring Forward",
@@ -115,7 +157,11 @@
                     "row": 13,
                     "height": 3,
                     "width": 3,
-                    "images": ["22.png", "23.png", "24.png"]
+                    "images": [
+                        "22.png",
+                        "23.png",
+                        "24.png"
+                    ]
                 },
                 {
                     "title": "Malice Mushrooms",
@@ -124,29 +170,53 @@
                     "row": 4,
                     "height": 3,
                     "width": 3,
-                    "images": ["25.png", "26.png"]
+                    "images": [
+                        "25.png",
+                        "26.png"
+                    ]
                 }
             ]
         },
         {
-            "name": "Bonus Area",
+            "name": "Bonus Area - A",
             "image": "bonus.png",
+            "crop": {
+                "x": 32,
+                "y": 0,
+                "height": 27,
+                "width": 16
+            },
+            "annotations": [
+                {
+                    "col": 33,
+                    "row": 21,
+                    "image": "up-arrow.png",
+                    "label": "To Overworld",
+                    "location": "bottom",
+                    "text": "To Overworld",
+                    "width": 2,
+                    "height": 2
+                }
+            ],
+            "tips": [
+                
+            ]
+        },
+        {
+            "name": "Bonus Area - B",
+            "image": "bonus.png",
+            "crop": {
+                "x": 0,
+                "y": 0,
+                "height": 27,
+                "width": 16
+            },
             "annotations": [
                 {
                     "col": 3,
                     "row": 24,
                     "image": "left-arrow.png",
-                    "label": "D To C",
-                    "location": "top",
-                    "text": "To Overworld",
-                    "width": 2,
-                    "height": 2
-                },
-                {
-                    "col": 33,
-                    "row": 21,
-                    "image": "up-arrow.png",
-                    "label": "B To A",
+                    "label": "To Overwold",
                     "location": "top",
                     "text": "To Overworld",
                     "width": 2,
@@ -161,7 +231,11 @@
                     "row": 16,
                     "height": 10,
                     "width": 9,
-                    "images": ["30.png", "31.png", "32.png"]
+                    "images": [
+                        "30.png",
+                        "31.png",
+                        "32.png"
+                    ]
                 }
             ]
         }
