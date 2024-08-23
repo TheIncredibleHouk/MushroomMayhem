@@ -5237,7 +5237,7 @@ Object_EarnExp:
 	LDA #$30
 	STA Kill_Tally_Ticker
 
-	STA Debug_Snap
+
 	LDA Objects_ExpPoints, X
 	LDY Player_EffectiveSuit
 	BNE Add_KillyTally

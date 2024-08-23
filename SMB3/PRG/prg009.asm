@@ -60,7 +60,7 @@ PRG009_B922:
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word AutoScroll_Horizontal	; 0 Generally for non-stop horizontal levels, uses movement commands; most complex type
 	.word AutoScroll_HorizontalFast	; 1 Same as type zero, except accesses $1x Level_AScrlVar
-	.word AutoScroll_URDiagonal	; 2 Up-right diagonal used in 5-9
+	.word AutoScroll_LeftFast	; 2 Up-right diagonal used in 5-9
 	.word AutoScroll_SpikeCeiling	; 3 Falling spiked ceilings (e.g. World 1 and 2 Mini Fortresses)
 	.word AutoScroll_BooRoom	; 4 Used in the last World 6 Fortress, a room of Boos, scrolls up to meet a door
 	.word AutoScroll_Floating	; 5 Sinking/rising over water world (e.g. in 3-8)
@@ -240,6 +240,10 @@ AScroll_HorizontalInitMove:
 	.byte ASHIM(ASM_World8Tank2)	; 14 World 8 Tank 2
 	.byte ASHIM(ASM_Terminator)	; 15 ** Terminator Only (because it seeks ahead to see the terminating movement index)
 
+AutoScroll_LeftFast:
+	LDA #$F4
+	STA Level_AScrlHVel
+	BNE AutoScroll_HorizontalNorm
 
 AutoScroll_HorizontalFast:
 	LDA #$0C
@@ -806,107 +810,6 @@ PRG009_BE93:
 
 PRG009_BEA0:
 	RTS		 ; Return
-
-AutoScroll_URDiagonalLimits:
-	.byte $70, $D0, $60, $C0, $90, $30, $F0, $00
-
-AutoScroll_URDiagonal:
-	INC Level_AScrlVVelCarry
-
-	LDA #$00
-	STA Level_AScrlHVel
-	STA Level_AScrlHVelCarry
-
-	LDA Level_AScrlLoopSel
-	CMP #$05
-	BGE PRG009_BF18	 ; If Level_AScrlLoopSel >= 5, jump to PRG009_BF18
-
-	; Scroll diagonally
-	LDA #$08
-	STA Level_AScrlHVel
-	LDA #-$08
-	STA Level_AScrlVVel
-
-	LDA Level_AScrlVVelCarry
-	LSR A
-	BCC PRG009_BECE	 ; If vertical velocity didn't carry, jump to PRG009_BECE
-
-	INC Level_AScrlHVelCarry	 ; Carry horizontal velocity with it
-
-PRG009_BECE:
-	LDA AScrlURDiag_WrapState
-	BNE PRG009_BEEC	 ; If AScrlURDiag_WrapState <> 0, jump to PRG009_BEEC
-	BCC PRG009_BF1D	 ; If no horizontal/vertical carry occurred, jump to PRG009_BF1D
-
-	; Horizontal carry occurred...
-
-	INC Level_AScrlPosH	; Level_AScrlPosH++ (horizontal move +1)
-	BNE PRG009_BEDD	 	; As long as no overflow occurred, jump to PRG009_BEDD
-
-	INC Level_AScrlPosHHi	 ; Otherwise, apply carry
-
-PRG009_BEDD:
-	LDA Level_AScrlPosV
-	BNE PRG009_BEE7	 ; If Level_AScrlPosV <> 0, jump to PRG009_BEE7
-
-	; Level_AScrlPosV = 0 (we're at the top...)
-
-	INC Level_AScrlLoopSel	; Level_AScrlLoopSel++
-	BNE PRG009_BF10	 ; If Level_AScrlLoopSel <> 0, jump to PRG009_BF10
-
-PRG009_BEE7:
-	DEC Level_AScrlPosV	; Level_AScrlPosV--
-
-	BCS PRG009_BF1D	 	; Jump (technically always) to PRG009_BF1D
-
-PRG009_BEEC:
-
-	; AScrlURDiag_WrapState <> 0...
-
-	LSR A
-	LSR A	; AScrlURDiag_WrapState bit 1 --> carry
-
-	LDA Level_AScrlLoopSel
-	ROL A
-	TAY		 ; Y = (Level_AScrlLoopSel << 1) | carry
- 
-	; Level_AScrlPosH += 4
-	LDA Level_AScrlPosH
-	ADD #$04
-	STA Level_AScrlPosH
-
-	BCC PRG009_BF01	 ; If no carry, jump to PRG009_BF01
-
-	INC Level_AScrlPosHHi	 ; Otherwise, apply carry
-
-PRG009_BF01: 
-	AND #$f0	 ; Align horizontal auto scroll coordinate to grid
-
-	CMP AutoScroll_URDiagonalLimits-2,Y
-	BNE PRG009_BF1D	 ; If limit not hit, jump to PRG009_BF1D
-
-	; Lock horizontal scroll to limit
-	STA Level_AScrlPosH
-
-	; Set scroll to bottom
-	LDA #$ef
-	STA Level_AScrlPosV
-
-PRG009_BF10:
-	LDY AScrlURDiag_WrapState	 ; Y = AScrlURDiag_WrapState
-	INY		 ; Y++
-	CPY #$04	 
-	BLT PRG009_BF1A	 ; If Y < 4, jump to PRG009_BF1A
-
-PRG009_BF18:
-	LDY #$00	 ; Y = 0
-
-PRG009_BF1A:
-	STY AScrlURDiag_WrapState	 ; Update AScrlURDiag_WrapState 
-
-PRG009_BF1D:
-	JMP AScroll_MovePlayer	 ; Move Player with the scroll and don't come back!
-
 
 AutoScroll_ApplyVVel:
 	LDX #$01	; X = 1	; Vertical instead of horizontal

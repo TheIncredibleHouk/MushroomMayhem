@@ -727,6 +727,12 @@
       "X": 42,
       "Y": 8,
       "BoundRectangle": "672,128,16,16"
+    },
+    {
+      "LevelId": "59b1a728-b198-4be4-8108-f456fce637d3",
+      "X": 43,
+      "Y": 4,
+      "BoundRectangle": "688,64,16,16"
     }
   ],
   "ObjectData": [

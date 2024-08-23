@@ -417,7 +417,7 @@ Player_Draw:
 	LDA Player_Vehicle
 	BEQ Player_DrawNorm
 
-	JMP Player_DrawSubmarine
+	JMP Player_DrawVehicle
 
 Player_DrawNorm:	
 	JSR Player_RainbowCycle
@@ -2135,7 +2135,7 @@ Player_RecoverOverrides:
 Player_RecoverOverrides1:
 	RTS
 
-Submarine_PatternsTop:
+Vehicle_PatternsTop:
 	.byte $29, $01, $03, $37
 	.byte $29, $05, $07, $37
 	.byte $29, $05, $07, $37
@@ -2148,13 +2148,17 @@ Submarine_PatternsTop:
 	.byte $29, $21, $23, $37
 	.byte $29, $21, $23, $37
 	.byte $29, $21, $23, $37
-	.byte $29, $21, $23, $37
+	.byte $29, $21, $23, $37	
+
+Plane_PatternsBottom:
+	.byte $31, $33, $35, $39
+	.byte $31, $33, $35, $3B
 
 Subarmine_PatternsBottom:
 	.byte $25, $2B, $2D, $2F
-	.byte $27, $2B, $2D, $2F	
+	.byte $27, $2B, $2D, $2F
 
-Player_DrawSubmarine:
+Player_DrawVehicle:
 	LDA #$59
 	STA PatTable_BankSel + 2
 
@@ -2163,12 +2167,12 @@ Player_DrawSubmarine:
 
 	LDA Player_Behind
 	ORA Level_PipeMove
-	BEQ Player_SubOverBg
+	BEQ Player_VehicleOverBg
 
 	LDA #SPR_BEHINDBG
 	STA <Temp_Var2
 
-Player_SubOverBg:	
+Player_VehicleOverBg:	
 	LDA <Player_X
 	SUB <Horz_Scroll
 	SUB #$08
@@ -2180,17 +2184,17 @@ Player_SubOverBg:
 
 Submarine_Flash:
 	LDA Player_Invulnerable
-	BEQ Submarine_NormFlash
+	BEQ Vehicle_NoFlash
 
 	DEC Player_Invulnerable
 	LDA Player_Invulnerable
 	AND #$02
-	BEQ Submarine_NormFlash
+	BEQ Vehicle_NoFlash
 
 	LDA #$E0
 	STA <Player_SpriteY
 
-Submarine_NormFlash:
+Vehicle_NoFlash:
 
 	LDA Player_SprOff
 	SUB #$08
@@ -2201,7 +2205,7 @@ Submarine_NormFlash:
 
 	LDA <Player_SpriteX
 
-Submarine_XLoop:	
+Vehcile_XLoop:	
 	STA Sprite_RAMX, Y
 	STA Sprite_RAMX + $10, Y
 
@@ -2213,7 +2217,7 @@ Submarine_XLoop:
 	INY
 
 	DEC <Temp_Var1
-	BPL Submarine_XLoop	
+	BPL Vehcile_XLoop	
 
 	LDA Player_SprOff
 	SUB #$08
@@ -2254,8 +2258,8 @@ Submarine_XLoop:
 	LDA #$03
 	STA <Temp_Var1
 
-Submarine_PatternLoop:
-	LDA Submarine_PatternsTop, X
+Vehcile_PatternLoop:
+	LDA Vehicle_PatternsTop, X
 	STA Sprite_RAMTile, Y
 
 	INX
@@ -2265,24 +2269,34 @@ Submarine_PatternLoop:
 	INY
 
 	DEC <Temp_Var1
-	BPL Submarine_PatternLoop
+	BPL Vehcile_PatternLoop
 
 	LDA <Pad_Holding
 	AND #PAD_A
-	BEQ Submarine_NormPropeller
+	BEQ Vehicle_NormPropeller
 
+	LDA Game_Counter
+	ASL A
+	AND #$04
+	TAX
+	BPL Vehicle_DrawBottom
+
+Vehicle_NormPropeller:	
 	LDA Game_Counter
 	AND #$04
 	TAX
-	BPL Submarine_DrawBottom
 
-Submarine_NormPropeller:	
-	LDA Game_Counter
-	LSR A
-	AND #$04
+Vehicle_DrawBottom:
+	LDA Player_Vehicle
+	SUB #$01
+	ASL A
+	ASL A
+	ASL A
+	STX <Temp_Var1
+	ADD <Temp_Var1
+
 	TAX
 
-Submarine_DrawBottom:
 	LDA #$03
 	STA <Temp_Var1
 
@@ -2290,8 +2304,8 @@ Submarine_DrawBottom:
 	SUB #$08
 	TAY
 
-Submarin_PatternBottomLoop:
-	LDA Subarmine_PatternsBottom, X
+Vehicle_PatternBottomLoop:
+	LDA Subarmine_PatternsBottom - 8, X
 	STA Sprite_RAMTile + $10, Y
 
 	INX
@@ -2301,9 +2315,81 @@ Submarin_PatternBottomLoop:
 	INY 
 
 	DEC <Temp_Var1
-	BPL Submarin_PatternBottomLoop
+	BPL Vehicle_PatternBottomLoop
 
 	LDA <Player_SpriteX
 	ADD #$08
 	STA <Player_SpriteX
+
+	LDA Player_Vehicle
+	CMP #$01
+	BNE Vehicle_DrawRTS
+
+	LDA #$01
+	STA <Temp_Var1
+
+	LDA Player_SprOff
+	SUB #$08
+	TAY
+
+Vehicle_FlipTiles:
+	LDA Sprite_RAMTile, Y
+	PHA
+
+	LDA Sprite_RAMAttr, Y
+	ORA #SPR_HFLIP
+	PHA
+
+	LDA Sprite_RAMTile+4,Y
+	PHA
+
+	LDA Sprite_RAMAttr+4,Y
+	ORA #SPR_HFLIP
+	PHA
+
+	LDA Sprite_RAMTile+8,Y
+	PHA
+
+	LDA Sprite_RAMAttr+8,Y
+	ORA #SPR_HFLIP
+	PHA
+
+	LDA Sprite_RAMTile+12,Y	 
+	PHA
+
+	LDA Sprite_RAMAttr+12,Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr, Y
+
+	PLA
+	STA Sprite_RAMTile,Y
+
+	PLA
+	STA Sprite_RAMAttr+4,Y
+
+	PLA
+	STA Sprite_RAMTile+4,Y
+
+	PLA
+	STA Sprite_RAMAttr+8,Y
+
+	PLA
+	STA Sprite_RAMTile+8,Y
+
+	PLA
+	STA Sprite_RAMAttr+12,Y
+
+	PLA
+	STA Sprite_RAMTile+12,Y	
+
+	TYA
+	ADD #$10
+	TAY
+	DEC <Temp_Var1
+	BPL Vehicle_FlipTiles
+
+	LDA #$00
+	STA Player_Direction
+
+Vehicle_DrawRTS:
 	RTS

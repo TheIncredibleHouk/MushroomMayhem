@@ -2846,7 +2846,7 @@ DrawMapStars1:
 	RTS
 
 Enterable_Sprites:
-	.byte $06, $08, $09
+	.byte $06, $08, $09, $10
 
 Player_CheckEnterableSprite:
 
@@ -2873,6 +2873,9 @@ EnterableSprite_Loop:
 	BEQ IsEnterableSprite
 
 	CMP Enterable_Sprites + 2
+	BEQ IsEnterableSprite
+
+	CMP Enterable_Sprites + 3
 	BEQ IsEnterableSprite
 
 NotEnterable_Sprite:	

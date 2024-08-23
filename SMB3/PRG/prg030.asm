@@ -985,7 +985,7 @@ Keep_HeldState:
 	JSR MagicStar_ClearRadar
 	JSR LevelLoad			; Load the level layout data!
 	JSR InitStarsBackground
-	JSR ClearBlockedAreas
+	; JSR ClearBlockedAreas
 	
 	LDA #$00
 	LDX #$09
@@ -2551,8 +2551,6 @@ AnimStarts: .byte $80, $D0, $F0, $5E
 LevelLoad:	
 	LDA #$00
 	STA <Vert_Scroll
-	; STA Level_AScrlPosH
-	; STA Level_AScrlPosHHi
 
 	INC Force_StatusBar_Init
 
@@ -2706,8 +2704,8 @@ NotJctBQ:
 	LDY #$F0
 	;NextLevelByte
 	; draw clear tile
+
 ClearLevelMem:
-	
 	DEY
 	JSR Tile_Mem_ClearA
 	JSR Tile_Mem_ClearB
@@ -2947,7 +2945,9 @@ SetDNActive:
 	STX DayNightActive
 	
 	LDA [Temp_Var14],Y
-	AND #$08
+	AND #$0C
+	LSR A
+	LSR A
 	ORA Player_CheatSub
 	STA Player_Vehicle
 
@@ -5562,36 +5562,36 @@ FindTileBitRTS:
 	RTS
 
 
-ClearBlockedAreas:
-	LDA BlockedLevel
-	BNE RemoveBlocksByRow
-	RTS
+; ClearBlockedAreas:
+; 	LDA BlockedLevel
+; 	BNE RemoveBlocksByRow
+; 	RTS
 
-RemoveBlocksByRow:
-	LDA World_Num
-	ASL A
-	TAX
-	LDY #$00
-	;LDA World_Complete_Tiles, X
-	STA TempA
+; RemoveBlocksByRow:
+; 	LDA World_Num
+; 	ASL A
+; 	TAX
+; 	LDY #$00
+; 	;LDA World_Complete_Tiles, X
+; 	STA TempA
 
-IsBitSet:
-	LDA TempA
-	CLC
-	ROR A
-	STA TempA
-	BCC NextCol
-	LDA #$90
-	STA $61F0, Y
-	STA $6200, Y
-	STA $6210, Y
-	STA $6220, Y
+; IsBitSet:
+; 	LDA TempA
+; 	CLC
+; 	ROR A
+; 	STA TempA
+; 	BCC NextCol
+; 	LDA #$90
+; 	STA $61F0, Y
+; 	STA $6200, Y
+; 	STA $6210, Y
+; 	STA $6220, Y
 
-NextCol:
-	INY
-	CPY #$08
-	BNE IsBitSet
-	RTS
+; NextCol:
+; 	INY
+; 	CPY #$08
+; 	BNE IsBitSet
+; 	RTS
 
 Player_Freeze:
 	LDA Player_Frozen
@@ -6573,3 +6573,88 @@ ObjNorm_BadgeShop:
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JMP ObjNorm_BadgeShopDo
+
+ObjInit_LiveTransition
+	RTS
+
+ObjNorm_LiveTransition:
+	LDA Pointers
+	STA LevelLoadPointer
+	
+	LDA <Vert_Scroll
+	PHA
+
+	LDA <Player_YZ
+	PHA
+
+	LDA <Player_YHiZ
+	PHA
+
+	LDA <Player_X
+	PHA
+
+	LDA Level_HAutoScroll
+	PHA
+
+	LDA <Horz_Scroll
+	PHA
+
+	LDA #$01
+	STA Level_Redraw
+	STA ForcedSwitch
+
+	JSR LevelLoadQuick
+
+	LDA #$09
+	STA <Player_XHi
+	STA Horz_Scroll_Hi
+	STA Level_AScrlPosHHi
+
+	PLA
+	STA <Horz_Scroll
+	STA Level_AScrlPosH
+
+	PLA 
+	STA Level_HAutoScroll
+
+	PLA
+	STA <Player_X
+
+	PLA
+	STA <Player_YHiZ
+
+	PLA
+	STA <Player_YZ
+
+	PLA
+	STA <Vert_Scroll
+
+	LDA #24
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+
+	STA Debug_Snap
+	JSR Setup_PalData	 ; Setup palette dataSetup_PalData
+
+	LDX #$1F
+
+Live_LoadPalette:
+	LDA Pal_Data, X
+	STA Palette_Buffer, X
+	DEX
+	BPL Live_LoadPalette
+
+	LDA #$00
+	STA PAGE_C000
+
+	JSR PRGROM_Change_C000 
+	LDA #$00
+	STA Objects_ID
+	STA Objects_ID+1
+	STA Objects_ID+2
+	STA Objects_ID+3
+	STA Objects_ID+4
+	STA <CurrentObjectIndexZ
+
+	
+	RTS

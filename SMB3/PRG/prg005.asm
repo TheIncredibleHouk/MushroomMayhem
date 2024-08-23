@@ -19,6 +19,7 @@ OBJ_BLOOPER			= $5E
 OBJ_TENTACLE		= $5F
 OBJ_TRAININGSHOP	= $60
 OBJ_TUTORIAL	= $61
+OBJ_LIVETRANSITION = $62
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51
@@ -38,7 +39,7 @@ OBJ_TUTORIAL	= $61
     .word ObjInit_Tentacle ; Object $5F
     .word ObjInit_TrainingShop ; Object $60
     .word ObjInit_Tutorial ; Object $61
-    .word ObjInit_DoNothing ; Object $62
+    .word ObjInit_LiveTransition ; Object $62
     .word ObjInit_DoNothing ; Object $63
 
 
@@ -62,7 +63,7 @@ OBJ_TUTORIAL	= $61
 	.word ObjNorm_Tentacle ; Object $5F
 	.word ObjNorm_TrainingShop ; Object $60
 	.word ObjNorm_Tutorial ; Object $61
-	.word ObjNorm_DoNothing ; Object $62
+	.word ObjNorm_LiveTransition ; Object $62
 	.word ObjNorm_DoNothing ; Object $63
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*

@@ -186,14 +186,17 @@ Throw_NinjaStar1:
 	STA SpecialObj_XVel, X
 	RTS		 ; Return
 
+Bullet_XVel:
+	.byte $C0, $40
+	
 Bullet_Y:
-	.byte $00, $05
+	.byte $04, $0A
 
 Throw_Bullet:
 	
 	JSR SetProjectilePosition8x16
 	
-	LDA #$40
+	LDA Bullet_XVel, Y
 	STA SpecialObj_XVel, X
 
 	LDA SpecialObj_Y, X
