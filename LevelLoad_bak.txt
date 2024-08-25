@@ -1,0 +1,501 @@
+
+LevelLoad:	
+	
+	LDA #$00
+	STA <Vert_Scroll
+
+	INC Force_StatusBar_Init
+
+	LDA #$0F
+	STA StatusBar_Palette
+	STA StatusBar_Palette + 1
+	STA StatusBar_Palette + 2
+
+LevelLoadQuick:
+	
+	LDA #$6
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+
+	; the LevelLoadPointer is the level number that points to a table of levels that we can load
+	; the table format is
+	; BBBB BBBB = Bank
+	; LLLL LLLL = low address
+	; HHHH HHHH = high address
+	; TTTT TTTT = tile set
+	
+
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
+	
+	LDA JustName
+	BNE LoadLevel_FromPointer
+
+	LDA Entering_From_Map
+	BEQ LoadLevel_FromPointer
+
+	LDA <Pad_Holding
+	AND #PAD_SELECT
+	BNE LoadLevel_FromPointer
+
+	LDA CheckPoint_Flag
+	BEQ LoadLevel_FromPointer
+	
+	CMP LevelLoadPointer
+	BNE LoadLevel_FromPointer
+
+	LDA CheckPoint_Level
+	STA LevelLoadPointer
+
+LoadLevel_FromPointer:
+	LDA LevelLoadPointer
+	CLC
+	ROL A
+	ROL <Temp_Var2
+	
+	ROL A
+	ROL <Temp_Var2
+
+	STA <Temp_Var1
+
+	LDA <Temp_Var2
+	ADD #$BC
+	STA <Temp_Var2
+
+	LDY #$00
+	LDA [Temp_Var1],Y
+	STA <Temp_Var3	; bank
+
+	INY
+
+	LDA [Temp_Var1],Y
+	STA <Temp_Var14  ; lo address
+
+	INY
+
+	LDA [Temp_Var1],Y
+	STA <Temp_Var15  ; hi address
+	INY
+
+	LDA JustName
+	BNE JustName1
+
+	LDA [Temp_Var1],Y
+	STA Level_Tileset
+
+	STY TempY
+
+	JSR LoadTileProperties
+	JSR LoadTransitions
+	LDY TempY
+	; now we swap banks and start loading level headers
+
+JustName1:
+	LDA JustName
+	BEQ JustName10
+
+	LDA PAGE_A000
+	PHA
+	LDA PAGE_C000
+	PHA
+
+JustName10:
+	LDX <Temp_Var3
+	STX PAGE_A000
+	JSR PRGROM_Change_A000
+
+	INX
+	STX PAGE_C000
+	JSR PRGROM_Change_C000
+	
+	LDA JustName
+	BEQ NormalLoading
+
+	LDY #$0D
+	LDX #$00
+
+JustName2:
+	LDA [Temp_Var14],Y
+	STA LevelName, X
+
+	INY
+	INX
+	CPX #28
+	BNE JustName2
+	
+	LDY #$07
+	LDA [Temp_Var14], Y
+	STA Level_NoStars
+
+	PLA
+	STA PAGE_C000
+	PLA
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	JSR PRGROM_Change_C000
+	RTS
+
+NormalLoading:
+
+	LDA Level_HorzScrollLock
+	BEQ NotJctBQ
+
+SkipLevelLoad:
+	JMP Skip_Level_Loading
+
+NotJctBQ:
+	JSR ClearBuffers
+	
+	LDA LevelLoad_Thread
+	BEQ LevelLoad_ClearMem
+
+	INC LevelLoad_Thread
+	RTS
+
+LevelLoad_ClearMem:
+	LDA Level_Redraw
+	BEQ SkipMemClear
+	
+	LDY #$00
+	LDA [Temp_Var14],Y
+	
+	LDY #$F0
+	;NextLevelByte
+	; draw clear tile
+
+ClearLevelMem:
+	DEY
+	JSR Tile_Mem_ClearA
+	JSR Tile_Mem_ClearB
+	
+	CPY #$00
+	BNE ClearLevelMem
+
+SkipMemClear:
+	LDY #$01
+	
+	LDA [Temp_Var14],Y
+
+Skip_Normal_Gfx2:
+	STA PatTable_BankSel
+
+	LDY #$02
+
+	; now we load palette index, we load palette later...
+	LDA [Temp_Var14],Y
+	STA PaletteIndex
+
+	LDA Level_JctCtl
+	BNE Set_Level_Exit_Action
+
+	LDA #$00
+	STA Level_InitAction
+	JMP Level_Exit_Set
+
+Set_Level_Exit_Action:
+    LDA ForcedSwitch 
+	BEQ Set_LevelPosition
+
+	LDA #$01
+	STA Player_HaltTick
+
+	JMP Level_Exit_Set
+
+Set_LevelPosition:
+	LDA Player_XExit
+	AND #$F0
+
+	LDX Level_PipeExitDir
+	BEQ NoXOffset
+
+	CPX #$03
+	BCS NoXOffset
+	ORA #$08
+
+NoXOffset:
+	STA <Player_X
+
+	LDA Player_XExit
+	AND #$0F
+	STA <Player_XHi
+
+	LDA Player_YExit
+	AND #$F0
+	STA <Player_YZ
+
+	LDA Player_YExit
+	AND #$0F
+	STA Player_YHiZ
+
+Level_Exit_Set:
+	
+	; Load level size/width
+	LDY #$03
+	LDA [Temp_Var14], Y
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+
+	LDA AnimOffsets, X
+	STA AnimOffset
+	
+	LDA AnimStarts, X
+	STA PatTable_BankSel+1	
+
+	STY TempY
+	LDY #$00
+	LDX AnimOffset
+
+LoadAnimBanks:
+	LDA PT2_Anim, X
+	STA Background_Animations, Y
+	INX
+	INY
+	CPY #$10
+	BCC LoadAnimBanks
+
+	LDY TempY
+	LDA Level_PSwitchCnt
+	BEQ NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
+
+	LDA Background_Animations + 8
+	STA PatTable_BankSel+1	
+
+NormAnimBank:
+
+	LDA [Temp_Var14],Y
+	AND #$0F
+	
+	STA <Level_Width
+	STA Level_SizeOrig
+	LDY #$04
+
+	LDA Level_JctCtl	 
+	BEQ Not_Lvl_Jct
+	JMP Skip_Level_Position
+
+Not_Lvl_Jct:
+	LDA <Pad_Holding
+	AND #PAD_SELECT
+	BNE SetPosition_FromLevel
+
+	LDA CheckPoint_Level
+	BEQ SetPosition_FromLevel
+
+	CMP LevelLoadPointer
+	BNE SetPosition_FromLevel
+
+	LDA CheckPoint_X
+	STA <Player_X
+
+	LDA CheckPoint_XHi
+	STA <Player_XHi
+
+	LDA CheckPoint_Y
+	STA <Player_YZ
+
+	LDA CheckPoint_YHi
+	STA <Player_YHiZ
+	JMP Skip_Level_Position
+
+SetPosition_FromLevel:	
+	; load X/Y starting position
+	LDA [Temp_Var14], Y	
+	AND #$0F
+	STA <Player_XHi
+
+	LDA [Temp_Var14], Y
+	AND #$F0
+
+DontOffsetX:
+	STA <Player_X
+
+	LDY #$05
+
+	LDA [Temp_Var14], Y
+	AND #$0F
+	STA <Player_YHiZ
+
+	LDA [Temp_Var14], Y
+	AND #$F0
+	STA <Player_YZ
+
+Skip_Level_Position:
+	LDY #$06
+
+	LDA [Temp_Var14], Y
+	BEQ Skip_Set_Music
+	LDX SndCur_Music2	; X = currently playing music
+
+	CPX #MUS2B_PSWITCH
+	BEQ Skip_Set_Music		; If playing the P-Tab music, don't queue this song right now
+	
+	CPX #MUS2A_INVINCIBILITY		
+	BEQ Skip_Set_Music		; If playing the Invincibility music, don't queue this song right now
+
+	; Queue this music to play
+	STA Level_MusicQueue
+
+Skip_Set_Music:
+	STA Level_MusicQueueRestore
+
+	; Unused header value
+	LDY #$07
+	LDA [Temp_Var14],Y
+	STA Level_NoStars
+	
+Skip_Time_Set:
+	LDY #$08
+
+	; set scroll type
+	LDA [Temp_Var14],Y
+	AND #$03
+	STA Level_FreeVertScroll
+
+	LDX #$00
+	CMP #$03
+	BNE HorzNotLocked
+
+	INX
+
+HorzNotLocked:
+	STX Level_HorzScrollLock
+
+	LDA [Temp_Var14],Y
+	AND #$F0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	STA <Temp_Var6	; temporarily store pointer count
+
+	LDY #$09
+	LDA [Temp_Var14],Y
+	AND #$80
+	STA MushroomBlocks_Enabled
+	
+	LDA [Temp_Var14],Y
+	AND #$40
+	STA ProjectileToSpinners
+
+	LDA [Temp_Var14],Y
+	AND #$10
+	STA TreasureBox_Disabled
+
+	LDA [Temp_Var14],Y
+	AND #$20
+	STA RhythmPlatformEnabed
+
+	LDX #$01
+	
+	LDA [Temp_Var14],Y
+	AND #$03
+	STA PaletteEffect
+	BEQ SetDNActive
+
+	DEX
+
+SetDNActive:
+	STX DayNightActive
+	
+	LDA [Temp_Var14],Y
+	AND #$0C
+	LSR A
+	LSR A
+	ORA Player_CheatSub
+	STA Player_Vehicle
+
+	LDY #$0A
+	; load misc data
+	LDA [Temp_Var14], Y
+	STA EventType
+
+	LDA #$00
+	STA EventSwitch
+	STA EventVar
+
+	LDY #$0B
+	LDA [Temp_Var14], Y
+	
+	LDY #$0C
+	LDA [Temp_Var14], Y
+	
+	LDY #$0D
+
+	LDX #$00
+	STY TempY
+
+LoadName:
+	LDA Level_JctCtl
+	BNE SkipNameLoad
+
+	LDA [Temp_Var14], Y
+	STA LevelName, X
+	INY
+	INX
+	CPX #28
+	BNE LoadName
+	STA Update_Level_Name
+
+SkipNameLoad:
+	LDA TempY
+	ADD #$22
+	TAY
+	; now load pointers
+	
+	JSR ClearPointers
+	JSR ClearBuffers
+
+	LDX #$00	
+	LDA <Temp_Var6
+	BEQ Pointers_Done
+
+Pointer_LoadLoop:
+	LDA #$05		; pointers are 6 bytes long
+	STA <Temp_Var7
+
+LoadPointer:
+	LDA [Temp_Var14],Y
+	STA Pointers, X
+	INY
+	INX
+	DEC <Temp_Var7
+	BPL LoadPointer
+	DEC <Temp_Var6
+	BNE Pointer_LoadLoop
+
+Pointers_Done:
+	TYA
+	CLC
+	ADC <Temp_Var14
+	STA <Temp_Var14
+	BCC NoCarryInc
+	INC <Temp_Var15
+
+NoCarryInc:
+	LDA #$00
+	STA <Temp_Var8
+	
+	LDA #$60
+	STA <Temp_Var9
+
+	LDY #$00
+
+NextDecompressionCommand:
+	LDA [Temp_Var14], Y
+	CMP #$FF
+	BNE GetDecompressionCommand
+
+	JSR LoadSprites
+
+Skip_Level_Loading:
+	JSR Sprite_RAM_Clear
+
+
+	JSR SetProperScroll
+	RTS ; we're done!

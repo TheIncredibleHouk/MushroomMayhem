@@ -285,7 +285,7 @@ Boss_CheepKeepLeft:
 	SUB #$30
 
 	LDA <Objects_XHiZ, X
-	BNE Boss_SwitchDirectionRight
+	BMI Boss_SwitchDirectionRight
 
 	SBC #$00
 	BEQ Boss_CheepMoveLeft
@@ -834,6 +834,10 @@ Boss_FwooshInit:
 
 	LDA #$09
 	STA Boss_FwooshHealth, X
+	STA Enemy_Health_Mode
+
+	LDA #48
+	STA Enemy_Health
 
 	LDA #$0C
 	STA Objects_SpritesRequested, X
@@ -861,6 +865,9 @@ Boss_FwooshInit:
 
 	LDA #$80
 	STA Objects_Timer, X
+	
+	JSR Giant_FwooshMakeThwomp
+
 	RTS
 
 Boss_FwooshSideAccels:
@@ -1139,6 +1146,7 @@ Boss_FwooshDraw1:
 	LDA #HIGH(Boss_FwooshSprites)
 	STA <Giant_TilesHi
 
+	STA Debug_Snap
 	LDA #$12
 	STA PatTable_BankSel + 5
 
@@ -1426,6 +1434,9 @@ Fwoosh_FuzzyXHi:
 	LDA #OBJ_FUZZY
 	STA Objects_ID , Y
 
+	LDA #$02
+	STA Objects_Property, Y
+
 	LDA #BOUND16x16
 	STA Objects_BoundBox, Y
 
@@ -1442,6 +1453,9 @@ Fwoosh_HealthStage:
 	.byte $02, $02, $02
 	.byte $01, $01, $01
 	.byte $00, $00, $00
+
+Fwoosh_HealthMeter:
+	.byte 5, 10, 14, 19, 24, 29, 34, 38, 43
 
 Boss_FwooshHit:
 	LDA #OBJSTATE_NORMAL
@@ -1461,17 +1475,24 @@ Boss_FwooshHit:
 	STA Boss_FwooshHealth, X
 
 Boss_FwooshHit1:
+
 	LDY Boss_FwooshHealth, X
 	BPL Boss_FwooshSetStage
 
 	LDA #$80
 	STA Objects_Timer, X
 
+	LDA #$00
+	STA Enemy_Health
+
 	LDA #$09
 	STA Boss_FwooshAction, X
 	JMP Boss_FwooshDraw
 
 Boss_FwooshSetStage:	
+	LDA Fwoosh_HealthMeter, Y
+	STA Enemy_Health
+
 	LDA Fwoosh_HealthStage, Y
 	STA Boss_FwooshStage, X
 
@@ -2816,6 +2837,12 @@ Boss_BullyDoAction2:
 	.word Boss_BullyDie			; $0A
 
 Boss_BullyInit:
+	LDA #$01
+	STA Enemy_Health_Mode
+
+	LDA #48
+	STA Enemy_Health
+
 	LDA #$F0
 	STA Objects_XVelZ, X
 
@@ -3279,6 +3306,9 @@ BossBully_MakeBobomb:
 	RTS
 
 Boss_BullyDie:
+	LDA #$00
+	STA Enemy_Health
+	
 	LDA Objects_Timer, X
 	BEQ Boss_BullyExplode
 

@@ -657,6 +657,7 @@ Brick_MakePower:
 	RTS
 
 Brick_Burst:
+	INC Exp_Earned
 	JMP Object_Delete
 
 Brick_Coin:

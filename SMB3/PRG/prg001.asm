@@ -1107,6 +1107,7 @@ Do_PowerUp:
 
 	PLA
 	STA PowerUp_Type, X
+	STA ItemBlock_PowerUp, X
 
 	LDA #OBJ_POWERUP
 	STA Objects_ID, X

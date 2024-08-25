@@ -5362,6 +5362,7 @@ Assume_Hold:
 
 	LDA #$00
 	STA Player_Flip
+	STA Player_TailAttack
 
 	LDA Player_FlipBits
 	AND #SPR_HFLIP

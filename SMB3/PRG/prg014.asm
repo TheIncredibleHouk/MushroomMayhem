@@ -130,7 +130,7 @@ OBJ_SUNBEAM			= $77
     .byte OPTS_NOCHANGE ; Object $71
     .byte OPTS_SETPT5 | $0B ; Object $72
     .byte OPTS_SETPT5 | $33 ; Object $73
-    .byte OPTS_SETPT5 | $33 ; Object $74
+    .byte OPTS_NOCHANGE ; Object $74
     .byte OPTS_SETPT6 | $12 ; Object $75
     .byte OPTS_SETPT5 | $37 ; Object $76
     .byte OPTS_SETPT5 | $37 ; Object $77
@@ -3962,13 +3962,15 @@ ObjInit_Fuzzy:
 	RTS
 
 Fuzzy_PatTable:
-	.byte $33, $33, $32
+	.byte $33, $33, $00
 
 ObjNorm_Fuzzy:
 	LDY Objects_Property, X
 	LDA Fuzzy_PatTable, Y
+	BEQ Fuzzy_NoGfx
 	STA PatTable_BankSel + 4
 
+Fuzzy_NoGfx:
 	LDA <Player_HaltGameZ
 	BEQ Fuzzy_Norm
 	JMP Fuzzy_Draw

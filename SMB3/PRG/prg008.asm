@@ -123,7 +123,6 @@ Player_DoGameplay:
 	DEC Poison_TapTimer
 
 No_PoisonTapTimer:
-	JSR Increase_Game_Timer
 	JSR Level_Initialize	 ; Initialize level if needed
 	JSR LevelJunction_PartialInit	 
 	
@@ -158,6 +157,7 @@ Player_DoUpdate:
 	JSR Do_Air_Timer
 	JSR Do_PowerChange
 	JSR Player_UseItem
+	JSR Increase_Game_Timer
 
 	LDA DayNightActive
 	BEQ NoTransition
@@ -3512,6 +3512,7 @@ BumpBlock_Flower:
 	LDA #POWERUP_FIREFLOWER
 	JSR BumpBlock_CheckMushroom
 	RTS
+thm:
 
 BumpBlock_None:
 	LDY #$01		; Y = 1 (spawn .. nothing?) (index into PRG001 ItemBlock_PUp)

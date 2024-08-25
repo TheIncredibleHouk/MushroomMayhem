@@ -570,79 +570,80 @@ PRG030_8715:
 	JSR StatusBar_Update	; Update status bar
 
 PRG030_8732:
-	LDY Map_Operation
-	CPY #$0d	 
-	BNE PRG030_873F	 		; If Map_Operation <> $D (Normal), jump to PRG030_873F
+	JMP WorldMap_Loop
+	; LDY Map_Operation
+	; CPY #$0d	 
+	; BNE PRG030_873F	 		; If Map_Operation <> $D (Normal), jump to PRG030_873F
 
-	LDA <Map_WarpWind_FX
-	CMP #$03	 
-	BEQ PRG030_874F	 		; If Map_WarpWind_FX = 3 (initialize for warp island), jump to PRG030_874F
+	; LDA <Map_WarpWind_FX
+	; CMP #$03	 
+	; BEQ PRG030_874F	 		; If Map_WarpWind_FX = 3 (initialize for warp island), jump to PRG030_874F
 
 PRG030_873F:
 	; Map_WarpWind_FX <> 3 or Map_Operation <> $D...
 
-	CPY #$04
-	BEQ PRG030_874F	 		; If Map_Operation <> $4, jump to PRG010_874F
+	; CPY #$04
+	; BEQ PRG030_874F	 		; If Map_Operation <> $4, jump to PRG010_874F
 
-	CPY #$0f	 
-	BLT WorldMap_Loop	 	; If Map_Operation < $F (edge scroll), jump to WorldMap_Loop
+	; CPY #$0f	 
+	; BLT WorldMap_Loop	 	; If Map_Operation < $F (edge scroll), jump to WorldMap_Loop
 
 	; Map_Operation >= $F...
 
-	LDX Player_Current	
-	LDA Map_Player_SkidBack,X
-	BEQ PRG030_87BD			; If Map_Player_SkidBack = 0, jump to PRG030_87BD
+; 	LDX Player_Current	
+; 	LDA Map_Player_SkidBack,X
+; 	BEQ PRG030_87BD			; If Map_Player_SkidBack = 0, jump to PRG030_87BD
 
-PRG030_874F:
-	; Switch bank A000 to page 26
-	LDA #24
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-	JSR Palette_FadeOut	 		; Fade out
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Likely just using this for VSync
+; PRG030_874F:
+; 	; Switch bank A000 to page 26
+; 	LDA #24
+; 	STA PAGE_A000
+; 	JSR PRGROM_Change_A000
+; 	JSR Palette_FadeOut	 		; Fade out
+; 	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Likely just using this for VSync
 
-	; Disable the display
-	LDA #$00	 
-	STA <PPU_CTL2_Copy
-	STA PPU_CTL2	 
+; 	; Disable the display
+; 	LDA #$00	 
+; 	STA <PPU_CTL2_Copy
+; 	STA PPU_CTL2	 
 
-	; Stop Update_Select activity temporarily
-	INC UpdSel_Disable
+; 	; Stop Update_Select activity temporarily
+; 	INC UpdSel_Disable
 
-	LDA <Map_WarpWind_FX
-	BNE PRG030_8772	 		; If Map_WarpWind_FX <> 0 (warp wind is active), jump to PRG030_8772
+; 	LDA <Map_WarpWind_FX
+; 	BNE PRG030_8772	 		; If Map_WarpWind_FX <> 0 (warp wind is active), jump to PRG030_8772
 
-	LDA Map_Operation
-	CMP #$04	 
-	BNE PRG030_8775	 		; If Map_Operation <> 4, jump to PRG030_8775
+; 	LDA Map_Operation
+; 	CMP #$04	 
+; 	BNE PRG030_8775	 		; If Map_Operation <> 4, jump to PRG030_8775
 
-PRG030_8772:
-	JMP PRG030_857E			; Jump to PRG030_857E (partial loop back)
+; PRG030_8772:
+; 	JMP PRG030_857E			; Jump to PRG030_857E (partial loop back)
 
-PRG030_8775:
-	; Map_Operation <> 4
+; PRG030_8775:
+; 	; Map_Operation <> 4
 
-	LDX Player_Current
+; 	LDX Player_Current
 
-	; Store current map scroll positions and Player positions 
-	; into the respective backup variables...
-	LDA <Horz_Scroll
-	STA Map_Prev_XOff,X
+; 	; Store current map scroll positions and Player positions 
+; 	; into the respective backup variables...
+; 	LDA <Horz_Scroll
+; 	STA Map_Prev_XOff,X
 
-	LDA <Horz_Scroll_Hi	
-	STA Map_Prev_XHi,X
+; 	LDA <Horz_Scroll_Hi	
+; 	STA Map_Prev_XHi,X
 
-	LDA <World_Map_Y,X
-	STA Map_Entered_Y,X
+; 	LDA <World_Map_Y,X
+; 	STA Map_Entered_Y,X
 
-	LDA <World_Map_XHi,X
-	STA Map_Entered_XHi,X
+; 	LDA <World_Map_XHi,X
+; 	STA Map_Entered_XHi,X
 
-	LDA <World_Map_X,X
-	STA Map_Entered_X,X
+; 	LDA <World_Map_X,X
+; 	STA Map_Entered_X,X
 
-	LDA #$00
-	STA Map_Player_SkidBack,X
+; 	LDA #$00
+; 	STA Map_Player_SkidBack,X
 
 PRG030_879B:
 	; Switch to the other Player (if any!)
@@ -657,8 +658,8 @@ PRG030_87A9:
 
 	LDA Player_Current
 	TAX		 
-	LDA Player_Lives,X	
-	BMI PRG030_879B	 	; If Player's lives are negative (dead!), jump to PRG030_879B (makes assumption at least ONE Player is alive...)
+	; LDA Player_Lives,X	
+	; BMI PRG030_879B	 	; If Player's lives are negative (dead!), jump to PRG030_879B (makes assumption at least ONE Player is alive...)
 
 	LDA #$00
 	STA Map_Operation		; Map_Operation = 0
@@ -2549,6 +2550,12 @@ AnimOffsets: .byte $00, $10, $20, $28
 AnimStarts: .byte $80, $D0, $F0, $5E
 
 LevelLoad:	
+
+
+LevelLoadQuick:
+
+
+LevelLoad_Init:
 	LDA #$00
 	STA <Vert_Scroll
 
@@ -2558,45 +2565,38 @@ LevelLoad:
 	STA StatusBar_Palette
 	STA StatusBar_Palette + 1
 	STA StatusBar_Palette + 2
+	RTS
 
-LevelLoadQuick:
-	
+LevelLoad_Setup:
 	LDA #$6
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
+	RTS
 
-	; the LevelLoadPointer is the level number that points to a table of levels that we can load
-	; the table format is
-	; BBBB BBBB = Bank
-	; LLLL LLLL = low address
-	; HHHH HHHH = high address
-	; TTTT TTTT = tile set
-	
+LevelLoad_Checkpoint:
+	LDA CheckPoint_Flag
+	ORA Entering_From_Map
+	BEQ LevelLoad_CheckpointRTS
 
-	LDA #$00
-	STA <Temp_Var1
-	STA <Temp_Var2
-	
-	LDA JustName
-	BNE LoadLevel_FromPointer
-
-	LDA Entering_From_Map
-	BEQ LoadLevel_FromPointer
+	LDA CheckPoint_Flag
+	CMP LevelLoadPointer
+	BNE LevelLoad_CheckpointRTS
 
 	LDA <Pad_Holding
 	AND #PAD_SELECT
-	BNE LoadLevel_FromPointer
-
-	LDA CheckPoint_Flag
-	BEQ LoadLevel_FromPointer
-	
-	CMP LevelLoadPointer
-	BNE LoadLevel_FromPointer
+	BNE LevelLoad_CheckpointRTS
 
 	LDA CheckPoint_Level
 	STA LevelLoadPointer
 
-LoadLevel_FromPointer:
+LevelLoad_CheckpointRTS:	
+	RTS
+
+LevelLoad_TransProps:
+	LDA #$00
+	STA <Temp_Var1
+	STA <Temp_Var2
+
 	LDA LevelLoadPointer
 	CLC
 	ROL A
@@ -2626,29 +2626,11 @@ LoadLevel_FromPointer:
 	STA <Temp_Var15  ; hi address
 	INY
 
-	LDA JustName
-	BNE JustName1
-
-	LDA [Temp_Var1],Y
-	STA Level_Tileset
-
-	STY TempY
-
 	JSR LoadTileProperties
 	JSR LoadTransitions
-	LDY TempY
-	; now we swap banks and start loading level headers
+	RTS
 
-JustName1:
-	LDA JustName
-	BEQ JustName10
-
-	LDA PAGE_A000
-	PHA
-	LDA PAGE_C000
-	PHA
-
-JustName10:
+LevelLoad_Bank:
 	LDX <Temp_Var3
 	STX PAGE_A000
 	JSR PRGROM_Change_A000
@@ -2656,48 +2638,14 @@ JustName10:
 	INX
 	STX PAGE_C000
 	JSR PRGROM_Change_C000
-	
-	LDA JustName
-	BEQ NormalLoading
-
-	LDY #$0D
-	LDX #$00
-
-JustName2:
-	LDA [Temp_Var14],Y
-	STA LevelName, X
-
-	INY
-	INX
-	CPX #28
-	BNE JustName2
-	
-	LDY #$07
-	LDA [Temp_Var14], Y
-	STA Level_NoStars
-
-	PLA
-	STA PAGE_C000
-	PLA
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-	JSR PRGROM_Change_C000
 	RTS
 
-NormalLoading:
-
-	LDA Level_HorzScrollLock
-	BEQ NotJctBQ
-
-SkipLevelLoad:
-	JMP Skip_Level_Loading
-
-NotJctBQ:
+LevelLoad_ClearBuffers:
 	JSR ClearBuffers
-	
-	LDA Level_Redraw
-	BEQ SkipMemClear
-	
+	RTS
+
+LevelLoad_ClearMem:
+
 	LDY #$00
 	LDA [Temp_Var14],Y
 	
@@ -2705,20 +2653,19 @@ NotJctBQ:
 	;NextLevelByte
 	; draw clear tile
 
-ClearLevelMem:
+LevelLoad_ClearMemLoop:
 	DEY
 	JSR Tile_Mem_ClearA
 	JSR Tile_Mem_ClearB
 	
 	CPY #$00
-	BNE ClearLevelMem
+	BNE LevelLoad_ClearMemLoop
+	RTS
 
-SkipMemClear:
+LevelLoad_Gfx:
 	LDY #$01
-	
-	LDA [Temp_Var14],Y
 
-Skip_Normal_Gfx2:
+	LDA [Temp_Var14],Y
 	STA PatTable_BankSel
 
 	LDY #$02
@@ -2726,35 +2673,37 @@ Skip_Normal_Gfx2:
 	; now we load palette index, we load palette later...
 	LDA [Temp_Var14],Y
 	STA PaletteIndex
+	RTS
 
+LevelLoad_ExitInfo:
 	LDA Level_JctCtl
-	BNE Set_Level_Exit_Action
+	BNE LevelLoad_SetExit
 
 	LDA #$00
 	STA Level_InitAction
-	JMP Level_Exit_Set
+	JMP LevelLoad_ExitInfoRTS
 
-Set_Level_Exit_Action:
+LevelLoad_SetExit:
     LDA ForcedSwitch 
-	BEQ Set_LevelPosition
+	BEQ LevelLoad_SetExitPos
 
 	LDA #$01
 	STA Player_HaltTick
 
-	JMP Level_Exit_Set
+	JMP LevelLoad_ExitInfoRTS
 
-Set_LevelPosition:
+LevelLoad_SetExitPos:
 	LDA Player_XExit
 	AND #$F0
 
 	LDX Level_PipeExitDir
-	BEQ NoXOffset
+	BEQ LevelLoad_NoXOffset
 
 	CPX #$03
-	BCS NoXOffset
+	BCS LevelLoad_NoXOffset
 	ORA #$08
 
-NoXOffset:
+LevelLoad_NoXOffset:
 	STA <Player_X
 
 	LDA Player_XExit
@@ -2769,9 +2718,11 @@ NoXOffset:
 	AND #$0F
 	STA Player_YHiZ
 
-Level_Exit_Set:
-	
-	; Load level size/width
+LevelLoad_ExitInfoRTS:
+	RTS
+
+LevelLoad_Animations:
+; Load level size/width
 	LDY #$03
 	LDA [Temp_Var14], Y
 	LSR A
@@ -2792,45 +2743,48 @@ Level_Exit_Set:
 	LDY #$00
 	LDX AnimOffset
 
-LoadAnimBanks:
+LevelLoad_AnimBankLoop:
 	LDA PT2_Anim, X
 	STA Background_Animations, Y
 	INX
 	INY
 	CPY #$10
-	BCC LoadAnimBanks
+	BCC LevelLoad_AnimBankLoop
 
 	LDY TempY
 	LDA Level_PSwitchCnt
-	BEQ NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
+	BEQ LevelLoad_NormAnimBank	 	; If P-Switch not active, jump to PRG030_89C4
 
 	LDA Background_Animations + 8
 	STA PatTable_BankSel+1	
 
-NormAnimBank:
+LevelLoad_NormAnimBank:
+	RTS
 
+LevelLoad_Size:
+	LDY #$03
 	LDA [Temp_Var14],Y
 	AND #$0F
 	
 	STA <Level_Width
 	STA Level_SizeOrig
-	LDY #$04
+	RTS
 
-	LDA Level_JctCtl	 
-	BEQ Not_Lvl_Jct
-	JMP Skip_Level_Position
+LevelLoad_StartPosition:
+	LDA Level_JctCtl
+	BNE LevelLoad_StartPositionRTS
 
-Not_Lvl_Jct:
 	LDA <Pad_Holding
 	AND #PAD_SELECT
-	BNE SetPosition_FromLevel
-
+	BNE LevelLoad_LoadPos
+	
 	LDA CheckPoint_Level
-	BEQ SetPosition_FromLevel
+	BEQ LevelLoad_LoadPos
 
 	CMP LevelLoadPointer
-	BNE SetPosition_FromLevel
+	BNE LevelLoad_LoadPos
 
+	
 	LDA CheckPoint_X
 	STA <Player_X
 
@@ -2842,18 +2796,16 @@ Not_Lvl_Jct:
 
 	LDA CheckPoint_YHi
 	STA <Player_YHiZ
-	JMP Skip_Level_Position
+	RTS
 
-SetPosition_FromLevel:	
-	; load X/Y starting position
+LevelLoad_LoadPos:
+; load X/Y starting position
 	LDA [Temp_Var14], Y	
 	AND #$0F
 	STA <Player_XHi
 
 	LDA [Temp_Var14], Y
 	AND #$F0
-
-DontOffsetX:
 	STA <Player_X
 
 	LDY #$05
@@ -2866,33 +2818,37 @@ DontOffsetX:
 	AND #$F0
 	STA <Player_YZ
 
-Skip_Level_Position:
+LevelLoad_StartPositionRTS:
+	RTS
+
+LevelLoad_Music:
 	LDY #$06
 
 	LDA [Temp_Var14], Y
-	BEQ Skip_Set_Music
+	BEQ LevelLoad_MusicRTS
 	LDX SndCur_Music2	; X = currently playing music
 
 	CPX #MUS2B_PSWITCH
-	BEQ Skip_Set_Music		; If playing the P-Tab music, don't queue this song right now
+	BEQ LevelLoad_MusicRTS		; If playing the P-Tab music, don't queue this song right now
 	
 	CPX #MUS2A_INVINCIBILITY		
-	BEQ Skip_Set_Music		; If playing the Invincibility music, don't queue this song right now
+	BEQ LevelLoad_MusicRTS		; If playing the Invincibility music, don't queue this song right now
 
 	; Queue this music to play
 	STA Level_MusicQueue
 
-Skip_Set_Music:
+LevelLoad_MusicRTS:
 	STA Level_MusicQueueRestore
+	RTS
 
-	; Unused header value
+LevelLoad_HasStars:
 	LDY #$07
-	LDA [Temp_Var14],Y
+	LDA [Temp_Var14], Y
 	STA Level_NoStars
-	
-Skip_Time_Set:
-	LDY #$08
+	RTS
 
+LevelLoad_ScrollType:
+	LDY #$08
 	; set scroll type
 	LDA [Temp_Var14],Y
 	AND #$03
@@ -2900,13 +2856,19 @@ Skip_Time_Set:
 
 	LDX #$00
 	CMP #$03
-	BNE HorzNotLocked
+	BNE LevelLoad_ScrollNotLocked
 
 	INX
 
-HorzNotLocked:
+LevelLoad_ScrollNotLocked:
 	STX Level_HorzScrollLock
+	RTS
 
+LevelLoad_Pointers:
+	JSR ClearPointers	
+	
+	LDY #$08
+	
 	LDA [Temp_Var14],Y
 	AND #$F0
 	LSR A
@@ -2915,6 +2877,31 @@ HorzNotLocked:
 	LSR A
 	STA <Temp_Var6	; temporarily store pointer count
 
+	
+	LDY #$2F
+	
+	LDA <Temp_Var6
+	BEQ LevelLoad_PointersRTS
+
+LevelLoad_PointerLoop:
+	LDA #$05		; pointers are 6 bytes long
+	STA <Temp_Var7
+
+LevelLoad_StorePointer:
+	LDA [Temp_Var14],Y
+	STA Pointers, X
+	INY
+	INX
+	DEC <Temp_Var7
+	BPL LevelLoad_StorePointer
+	
+	DEC <Temp_Var6
+	BNE LevelLoad_PointerLoop
+
+LevelLoad_PointersRTS:
+	RTS
+
+LevelLoad_Effects:
 	LDY #$09
 	LDA [Temp_Var14],Y
 	AND #$80
@@ -2937,11 +2924,11 @@ HorzNotLocked:
 	LDA [Temp_Var14],Y
 	AND #$03
 	STA PaletteEffect
-	BEQ SetDNActive
+	BEQ LevelLoad_SetDayNight
 
 	DEX
 
-SetDNActive:
+LevelLoad_SetDayNight:
 	STX DayNightActive
 	
 	LDA [Temp_Var14],Y
@@ -2950,96 +2937,33 @@ SetDNActive:
 	LSR A
 	ORA Player_CheatSub
 	STA Player_Vehicle
+	RTS
 
+LevelLoad_Event:
 	LDY #$0A
-	; load misc data
 	LDA [Temp_Var14], Y
 	STA EventType
 
 	LDA #$00
 	STA EventSwitch
 	STA EventVar
+	RTS
 
-	LDY #$0B
-	LDA [Temp_Var14], Y
-	
-	LDY #$0C
-	LDA [Temp_Var14], Y
-	
+
+LevelLoad_Name:
 	LDY #$0D
-
 	LDX #$00
-	STY TempY
 
-LoadName:
-	LDA Level_JctCtl
-	BNE SkipNameLoad
-
-	LDA [Temp_Var14], Y
+LevelLoad_NameLoop:
+	LDA [Temp_Var14],Y
 	STA LevelName, X
+
 	INY
 	INX
 	CPX #28
-	BNE LoadName
-	STA Update_Level_Name
+	BNE LevelLoad_NameLoop
+	RTS
 
-SkipNameLoad:
-	LDA TempY
-	ADD #$22
-	TAY
-	; now load pointers
-	
-	JSR ClearPointers
-	JSR ClearBuffers
-
-	LDX #$00	
-	LDA <Temp_Var6
-	BEQ Pointers_Done
-
-Pointer_LoadLoop:
-	LDA #$05		; pointers are 6 bytes long
-	STA <Temp_Var7
-
-LoadPointer:
-	LDA [Temp_Var14],Y
-	STA Pointers, X
-	INY
-	INX
-	DEC <Temp_Var7
-	BPL LoadPointer
-	DEC <Temp_Var6
-	BNE Pointer_LoadLoop
-
-Pointers_Done:
-	TYA
-	CLC
-	ADC <Temp_Var14
-	STA <Temp_Var14
-	BCC NoCarryInc
-	INC <Temp_Var15
-
-NoCarryInc:
-	LDA #$00
-	STA <Temp_Var8
-	
-	LDA #$60
-	STA <Temp_Var9
-
-	LDY #$00
-
-NextDecompressionCommand:
-	LDA [Temp_Var14], Y
-	CMP #$FF
-	BNE GetDecompressionCommand
-
-	JSR LoadSprites
-
-Skip_Level_Loading:
-	JSR Sprite_RAM_Clear
-
-
-	JSR SetProperScroll
-	RTS ; we're done!
 
 GetDecompressionCommand:
 	AND #$C0
@@ -6003,7 +5927,7 @@ RhythmPlatforms3:
 	LDA RhythmGraphics, Y
 	STA PatTable_BankSel
 
-	LDX #$0F
+	LDX #$05
 	
 RhythmSwitchPlatforms:
 	LDA TileProperties + $B0, X
@@ -6633,7 +6557,7 @@ ObjNorm_LiveTransition:
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
-	STA Debug_Snap
+	
 	JSR Setup_PalData	 ; Setup palette dataSetup_PalData
 
 	LDX #$1F
@@ -6655,6 +6579,4 @@ Live_LoadPalette:
 	STA Objects_ID+3
 	STA Objects_ID+4
 	STA <CurrentObjectIndexZ
-
-	
 	RTS

@@ -6519,8 +6519,14 @@
       "X": 12,
       "Y": 8,
       "Property": 1
+    },
+    {
+      "GameObjectId": 26,
+      "X": 0,
+      "Y": 0,
+      "Property": 1
     }
   ],
   "LevelPointers": [],
-  "CompressedData": "ghBT7EFBQUFBQUFBQUFBQe1TwlPsAUEHEQFBiBDtU1PsQUFBQUFBQUFBQUFBwe0BU4cCREXBUz9BP0E/QS5BwUE="
+  "CompressedData": "ghBT7EFBQUFBQUFBQUFBQe1TwlPsAUEHEQFBiBDtU1PsQUFBQUFBQUFBQUFBwe0BU4cCREXBUz9BP0E/QS9B"
 }

@@ -1929,7 +1929,7 @@ Piranha_Attack:
 
 	LDA Objects_SpritesVerticallyOffScreen, X
 	ORA Objects_SpritesHorizontallyOffScreen, X
-	BNE Piranha_AttackReset
+	BNE Piranha_NoProjectile
 
 	LDA #$00
 	STA <Proj_YOff
@@ -1950,6 +1950,8 @@ Piranha_NoYOff:
 	BCC Piranha_Attack1
 
 	JSR Piranha_Projectile
+
+Piranha_NoProjectile:	
 	DEC Piranha_AttacksLeft, X
 	BEQ Piranha_NoMoreAttacks
 
