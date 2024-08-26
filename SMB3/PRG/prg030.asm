@@ -2549,12 +2549,52 @@ Tile_Mem_ClearB:	; $9734
 AnimOffsets: .byte $00, $10, $20, $28
 AnimStarts: .byte $80, $D0, $F0, $5E
 
-LevelLoad:	
+LevelLoad_MapLevelName:
+	STA Debug_Snap
+	LDA PAGE_A000
+	PHA
+	LDA PAGE_C000
+	PHA
 
+	JSR LevelLoad_Setup
+	JSR LevelLoad_Bank
+	JSR LevelLoad_Name
+	JSR LevelLoad_HasStars
+
+	PLA
+	STA PAGE_C000
+	PLA
+	STA PAGE_A000
+	
+	JSR PRGROM_Change_A000
+	JSR PRGROM_Change_C000
+	RTS
+
+LevelLoad:	
+	JSR LevelLoad_Init
 
 LevelLoadQuick:
-
-
+	JSR LevelLoad_Setup
+	JSR LevelLoad_TransProps
+	JSR LevelLoad_Bank
+	JSR LevelLoad_Checkpoint
+	JSR LevelLoad_ClearMem
+	JSR LevelLoad_Gfx
+	JSR LevelLoad_ExitInfo
+	JSR LevelLoad_Animations
+	JSR LevelLoad_Size
+	JSR LevelLoad_StartPosition
+	JSR LevelLoad_LoadPos
+	JSR LevelLoad_Music
+	JSR LevelLoad_HasStars
+	JSR LevelLoad_ScrollType
+	JSR LevelLoad_Pointers
+	JSR LevelLoad_Effects
+	JSR LevelLoad_Event
+	JSR LevelLoad_Name
+	JSR LevelLoad_WriteLevel
+	RTS
+	
 LevelLoad_Init:
 	LDA #$00
 	STA <Vert_Scroll
@@ -2565,34 +2605,15 @@ LevelLoad_Init:
 	STA StatusBar_Palette
 	STA StatusBar_Palette + 1
 	STA StatusBar_Palette + 2
+
+	JSR ClearBuffers
 	RTS
 
 LevelLoad_Setup:
 	LDA #$6
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
-	RTS
 
-LevelLoad_Checkpoint:
-	LDA CheckPoint_Flag
-	ORA Entering_From_Map
-	BEQ LevelLoad_CheckpointRTS
-
-	LDA CheckPoint_Flag
-	CMP LevelLoadPointer
-	BNE LevelLoad_CheckpointRTS
-
-	LDA <Pad_Holding
-	AND #PAD_SELECT
-	BNE LevelLoad_CheckpointRTS
-
-	LDA CheckPoint_Level
-	STA LevelLoadPointer
-
-LevelLoad_CheckpointRTS:	
-	RTS
-
-LevelLoad_TransProps:
 	LDA #$00
 	STA <Temp_Var1
 	STA <Temp_Var2
@@ -2625,7 +2646,29 @@ LevelLoad_TransProps:
 	LDA [Temp_Var1],Y
 	STA <Temp_Var15  ; hi address
 	INY
+	RTS
 
+LevelLoad_Checkpoint:
+	LDA CheckPoint_Flag
+	ORA Entering_From_Map
+	BEQ LevelLoad_CheckpointRTS
+
+	LDA CheckPoint_Flag
+	CMP LevelLoadPointer
+	BNE LevelLoad_CheckpointRTS
+
+	LDA <Pad_Holding
+	AND #PAD_SELECT
+	BNE LevelLoad_CheckpointRTS
+
+	LDA CheckPoint_Level
+	STA LevelLoadPointer
+
+LevelLoad_CheckpointRTS:	
+	RTS
+
+
+LevelLoad_TransProps:
 	JSR LoadTileProperties
 	JSR LoadTransitions
 	RTS
@@ -2650,8 +2693,6 @@ LevelLoad_ClearMem:
 	LDA [Temp_Var14],Y
 	
 	LDY #$F0
-	;NextLevelByte
-	; draw clear tile
 
 LevelLoad_ClearMemLoop:
 	DEY
@@ -2949,7 +2990,6 @@ LevelLoad_Event:
 	STA EventVar
 	RTS
 
-
 LevelLoad_Name:
 	LDY #$0D
 	LDX #$00
@@ -2964,6 +3004,29 @@ LevelLoad_NameLoop:
 	BNE LevelLoad_NameLoop
 	RTS
 
+LevelLoad_WriteLevel:
+	LDY #$08
+	
+	LDA [Temp_Var14],Y
+	AND #$F0
+	LSR A
+	LSR A
+	STA <Temp_Var5
+	LSR A
+	ADD <Temp_Var5
+	ADD <Temp_Var14
+	STA <Temp_Var15
+	BCC NextDecompressionCommand
+
+	INC <Temp_Var15
+
+NextDecompressionCommand:
+	LDA [Temp_Var14], Y
+	CMP #$FF
+	BNE GetDecompressionCommand
+
+	JSR LoadSprites
+	RTS
 
 GetDecompressionCommand:
 	AND #$C0
@@ -4764,13 +4827,14 @@ ClearBufferLoop:
 	BPL ClearBufferLoop
 	RTS	
 
-SetProperScroll:
+LevelLoad_SetScrollPos:
 	LDA <Player_YZ
 	LSR A
 	LSR A
 	LSR A
 	LSR A
 	STA DAIZ_TEMP1
+
 	LDA <Player_YHiZ
 	ASL A
 	ASL A
@@ -4778,6 +4842,7 @@ SetProperScroll:
 	ASL A
 	ORA DAIZ_TEMP1
 	CMP #$04
+
 	BCS LowerLimit
 	LDA #$00
 	BEQ Store_Vert_Scroll

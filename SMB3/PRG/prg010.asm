@@ -2555,15 +2555,9 @@ FindLevelInfo2:
 	LDA MapPointers, Y
 	STA LevelLoadPointer
 	STA LevelNumber
-	
-	LDA #$01
-	STA JustName
-	
-	JSR LevelLoadQuick
-	
-	LDA #$00
-	STA JustName
 
+	JSR LevelLoad_MapLevelName
+	
 UpdateLevelRTS:	
 	RTS
 

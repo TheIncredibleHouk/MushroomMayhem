@@ -1146,7 +1146,6 @@ Boss_FwooshDraw1:
 	LDA #HIGH(Boss_FwooshSprites)
 	STA <Giant_TilesHi
 
-	STA Debug_Snap
 	LDA #$12
 	STA PatTable_BankSel + 5
 
