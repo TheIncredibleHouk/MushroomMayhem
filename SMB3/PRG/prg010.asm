@@ -254,9 +254,6 @@ Map_DoOperation:
 	.word MO_SwitchToMO_D	; B - Map Hammer brother march around (mostly handled elsewhere instead of this state routine)
 	.word MO_SwitchToMO_D	; C - After 8 ticks, resume normal operations (if 1P game or didn't end turn), or else go to state $0F
 	.word MO_NormalMoveEnter; D - "Normal" map operations; move on map (paths, canoe, bridges etc.), enter levels (including 2P vs and hand trap random)
-	.word MO_NormalMoveEnter; E
-	.word MO_NormalMoveEnter; F
-	.word MO_NormalMoveEnter; 10
 	
 
 	; NOTE: There is a Map_Operation $F (edge scroll) and Map_Operation $10 (enter level)

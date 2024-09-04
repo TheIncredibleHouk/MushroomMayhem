@@ -570,6 +570,10 @@ PRG030_8715:
 	JSR StatusBar_Update	; Update status bar
 
 PRG030_8732:
+	LDY Map_Operation
+	CPY #$10
+	BEQ PRG030_87BD
+
 	JMP WorldMap_Loop
 	; LDY Map_Operation
 	; CPY #$0d	 
@@ -2571,7 +2575,6 @@ LevelLoad_MapLevelName:
 	RTS
 
 LevelLoad:
-	STA Debug_Snap
 	JSR LevelLoad_Init
 
 LevelLoadQuick:
@@ -2589,11 +2592,12 @@ LevelLoadQuick:
 	JSR LevelLoad_Music
 	JSR LevelLoad_HasStars
 	JSR LevelLoad_ScrollType
-	JSR LevelLoad_Pointers
 	JSR LevelLoad_Effects
 	JSR LevelLoad_Event
 	JSR LevelLoad_Name
+	JSR LevelLoad_Pointers
 	JSR LevelLoad_WriteLevel
+	JSR Sprite_RAM_Clear
 	RTS
 	
 LevelLoad_Init:
@@ -2646,7 +2650,10 @@ LevelLoad_Setup:
 
 	LDA [Temp_Var1],Y
 	STA <Temp_Var15  ; hi address
+	
 	INY
+	LDA [Temp_Var1],Y
+	STA Level_Tileset
 	RTS
 
 LevelLoad_Checkpoint:
@@ -2842,6 +2849,8 @@ LevelLoad_StartPosition:
 
 LevelLoad_LoadPos:
 ; load X/Y starting position
+	LDY #$04
+
 	LDA [Temp_Var14], Y	
 	AND #$0F
 	STA <Player_XHi
@@ -2907,6 +2916,7 @@ LevelLoad_ScrollNotLocked:
 	RTS
 
 LevelLoad_Pointers:
+	STA Debug_Snap
 	JSR ClearPointers	
 	
 	LDY #$08
@@ -2921,7 +2931,8 @@ LevelLoad_Pointers:
 
 	
 	LDY #$2F
-	
+	LDX #$00
+
 	LDA <Temp_Var6
 	BEQ LevelLoad_PointersRTS
 
@@ -3006,6 +3017,7 @@ LevelLoad_NameLoop:
 	RTS
 
 LevelLoad_WriteLevel:
+
 	LDY #$08
 	
 	LDA [Temp_Var14],Y
@@ -3015,11 +3027,24 @@ LevelLoad_WriteLevel:
 	STA <Temp_Var5
 	LSR A
 	ADD <Temp_Var5
+	ADD #$27
+	STA <Temp_Var5
+	TYA
+	ADD <Temp_Var5
 	ADD <Temp_Var14
-	STA <Temp_Var15
-	BCC NextDecompressionCommand
+	STA <Temp_Var14
+	BCC StartLevelWriting
 
 	INC <Temp_Var15
+
+StartLevelWriting:
+	LDA #$00
+	STA <Temp_Var8
+	
+	LDA #$60
+	STA <Temp_Var9
+
+	LDY #$00	
 
 NextDecompressionCommand:
 	LDA [Temp_Var14], Y
@@ -3194,7 +3219,6 @@ LoadSpritesDone:
 	RTS
 
 LoadTileProperties:
-	
 	LDA #$00
 	STA <Temp_Var7
 
