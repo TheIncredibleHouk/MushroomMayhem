@@ -2550,7 +2550,7 @@ AnimOffsets: .byte $00, $10, $20, $28
 AnimStarts: .byte $80, $D0, $F0, $5E
 
 LevelLoad_MapLevelName:
-	STA Debug_Snap
+	
 	LDA PAGE_A000
 	PHA
 	LDA PAGE_C000
@@ -2570,7 +2570,8 @@ LevelLoad_MapLevelName:
 	JSR PRGROM_Change_C000
 	RTS
 
-LevelLoad:	
+LevelLoad:
+	STA Debug_Snap
 	JSR LevelLoad_Init
 
 LevelLoadQuick:
