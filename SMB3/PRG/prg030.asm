@@ -2584,11 +2584,10 @@ LevelLoadQuick:
 	JSR LevelLoad_Checkpoint
 	JSR LevelLoad_ClearMem
 	JSR LevelLoad_Gfx
-	JSR LevelLoad_ExitInfo
 	JSR LevelLoad_Animations
 	JSR LevelLoad_Size
 	JSR LevelLoad_StartPosition
-	JSR LevelLoad_LoadPos
+	JSR LevelLoad_SetScrollPos
 	JSR LevelLoad_Music
 	JSR LevelLoad_HasStars
 	JSR LevelLoad_ScrollType
@@ -2724,51 +2723,51 @@ LevelLoad_Gfx:
 	STA PaletteIndex
 	RTS
 
-LevelLoad_ExitInfo:
-	LDA Level_JctCtl
-	BNE LevelLoad_SetExit
+; LevelLoad_ExitInfo:
+; 	LDA Level_JctCtl
+; 	BNE LevelLoad_SetExit
 
-	LDA #$00
-	STA Level_InitAction
-	JMP LevelLoad_ExitInfoRTS
+; 	LDA #$00
+; 	STA Level_InitAction
+; 	JMP LevelLoad_ExitInfoRTS
 
-LevelLoad_SetExit:
-    LDA ForcedSwitch 
-	BEQ LevelLoad_SetExitPos
+; LevelLoad_SetExit:
+;     LDA ForcedSwitch 
+; 	BEQ LevelLoad_SetExitPos
 
-	LDA #$01
-	STA Player_HaltTick
+; 	LDA #$01
+; 	STA Player_HaltTick
 
-	JMP LevelLoad_ExitInfoRTS
+; 	JMP LevelLoad_ExitInfoRTS
 
-LevelLoad_SetExitPos:
-	LDA Player_XExit
-	AND #$F0
+; LevelLoad_SetExitPos:
+; 	LDA Player_XExit
+; 	AND #$F0
 
-	LDX Level_PipeExitDir
-	BEQ LevelLoad_NoXOffset
+; 	LDX Level_PipeExitDir
+; 	BEQ LevelLoad_NoXOffset
 
-	CPX #$03
-	BCS LevelLoad_NoXOffset
-	ORA #$08
+; 	CPX #$03
+; 	BCS LevelLoad_NoXOffset
+; 	ORA #$08
 
-LevelLoad_NoXOffset:
-	STA <Player_X
+; LevelLoad_NoXOffset:
+; 	STA <Player_X
 
-	LDA Player_XExit
-	AND #$0F
-	STA <Player_XHi
+; 	LDA Player_XExit
+; 	AND #$0F
+; 	STA <Player_XHi
 
-	LDA Player_YExit
-	AND #$F0
-	STA <Player_YZ
+; 	LDA Player_YExit
+; 	AND #$F0
+; 	STA <Player_YZ
 
-	LDA Player_YExit
-	AND #$0F
-	STA Player_YHiZ
+; 	LDA Player_YExit
+; 	AND #$0F
+; 	STA Player_YHiZ
 
-LevelLoad_ExitInfoRTS:
-	RTS
+; LevelLoad_ExitInfoRTS:
+; 	RTS
 
 LevelLoad_Animations:
 ; Load level size/width
@@ -2820,18 +2819,22 @@ LevelLoad_Size:
 	RTS
 
 LevelLoad_StartPosition:
+	STA Debug_Snap
 	LDA Level_JctCtl
-	BNE LevelLoad_StartPositionRTS
+	BNE LevelLoad_StartFromPointer
+
+	LDA #$00
+	STA Level_InitAction
 
 	LDA <Pad_Holding
 	AND #PAD_SELECT
-	BNE LevelLoad_LoadPos
+	BNE LevelLoad_StartFromHeader
 	
 	LDA CheckPoint_Level
-	BEQ LevelLoad_LoadPos
+	BEQ LevelLoad_StartFromHeader
 
 	CMP LevelLoadPointer
-	BNE LevelLoad_LoadPos
+	BNE LevelLoad_StartFromHeader
 
 	
 	LDA CheckPoint_X
@@ -2847,7 +2850,7 @@ LevelLoad_StartPosition:
 	STA <Player_YHiZ
 	RTS
 
-LevelLoad_LoadPos:
+LevelLoad_StartFromHeader:
 ; load X/Y starting position
 	LDY #$04
 
@@ -2870,6 +2873,44 @@ LevelLoad_LoadPos:
 	STA <Player_YZ
 
 LevelLoad_StartPositionRTS:
+	RTS
+
+LevelLoad_StartFromPointer:
+    LDA ForcedSwitch 
+	BEQ LevelLoad_SetExitPos
+
+	LDA #$01
+	STA Player_HaltTick
+
+	JMP LevelLoad_StartPositionRTS
+
+LevelLoad_SetExitPos:
+	LDA Player_XExit
+	AND #$F0
+
+	LDX Level_PipeExitDir
+	BEQ LevelLoad_NoXOffset
+
+	CPX #$03
+	BCS LevelLoad_NoXOffset
+	ORA #$08
+
+LevelLoad_NoXOffset:
+	STA <Player_X
+
+	LDA Player_XExit
+	AND #$0F
+	STA <Player_XHi
+
+	LDA Player_YExit
+	AND #$F0
+	STA <Player_YZ
+
+	LDA Player_YExit
+	AND #$0F
+	STA Player_YHiZ
+
+LevelLoad_ExitInfoRTS:
 	RTS
 
 LevelLoad_Music:
@@ -2916,8 +2957,7 @@ LevelLoad_ScrollNotLocked:
 	RTS
 
 LevelLoad_Pointers:
-	STA Debug_Snap
-	JSR ClearPointers	
+	JSR ClearPointers
 	
 	LDY #$08
 	
@@ -4875,6 +4915,7 @@ LevelLoad_SetScrollPos:
 LowerLimit:
 	CMP #$13
 	BCC DynaVScroll
+
 	LDA #$EF
 	BNE Store_Vert_Scroll
 
