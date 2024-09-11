@@ -18,7 +18,7 @@ SpriteY .macro
 Object_BoundBox:
 	;    Left Right Top  Bot- offsets applied to sprite X/Y
 	.byte  1,   6,   1,   15	; 8x16  BOUND8x16
-	.byte  1,  14,   1,   16	; 16x16 BOUND16x16
+	.byte  2,  14,   1,   15	; 16x16 BOUND16x16
 	.byte  1,  14,   1,   23	; 16x24 BOUND16x24
 	.byte  0,  16,   1,  16	;  ; solid block (16x16) BOUND16x16BLOCK
 	.byte  0,  16,   0,  48	; BOUND16X48TALL

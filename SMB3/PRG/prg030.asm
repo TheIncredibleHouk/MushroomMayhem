@@ -426,9 +426,10 @@ PRG030_8617:
 	LDA Map_Prev_XOff,Y	 ; Get player's previous X offset (low byte)
 	STA <Horz_Scroll	 ; Set the scroll to that
 	STA <Scroll_Temp
-		 
+
 	LDA Map_Prev_XHi,Y	 ; Get player's previous X offset (high byte) 
 	STA <Horz_Scroll_Hi	 ; Store as current scroll "high"
+
 	JSR Scroll_Update_Ranges
 
 PRG030_8646:
@@ -1890,6 +1891,7 @@ PRG030_91D1:
 	; Scroll updates
 	LDA Map_Prev_XOff,Y
 	STA <Scroll_Temp
+
 	LDA Map_Prev_XHi,Y
 	JSR Scroll_Update_Ranges
 
@@ -2129,6 +2131,7 @@ SetPages_ByTileset:	; $94BB
 	; Change A000 and C000 pages based on Page_A/C000_List
 	LDA PAGE_C000_ByTileset,Y
 	STA PAGE_C000
+
 	LDA PAGE_A000_ByTileset,Y
 	STA PAGE_A000	 
 	JMP PRGROM_Change_Both2		; JUMP to page routine, do not continue below...
@@ -2579,6 +2582,7 @@ LevelLoad:
 
 LevelLoadQuick:
 	JSR LevelLoad_Setup
+	JSR LevelLoad_TileSet
 	JSR LevelLoad_TransProps
 	JSR LevelLoad_Bank
 	JSR LevelLoad_Checkpoint
@@ -2649,8 +2653,10 @@ LevelLoad_Setup:
 
 	LDA [Temp_Var1],Y
 	STA <Temp_Var15  ; hi address
-	
-	INY
+	RTS
+
+LevelLoad_TileSet:
+	LDY #$03
 	LDA [Temp_Var1],Y
 	STA Level_Tileset
 	RTS
@@ -2695,6 +2701,9 @@ LevelLoad_ClearBuffers:
 	RTS
 
 LevelLoad_ClearMem:
+	STA Debug_Snap
+	LDA Level_Redraw
+	BEQ LevelLoad_ClearMemRTS
 
 	LDY #$00
 	LDA [Temp_Var14],Y
@@ -2708,6 +2717,8 @@ LevelLoad_ClearMemLoop:
 	
 	CPY #$00
 	BNE LevelLoad_ClearMemLoop
+
+LevelLoad_ClearMemRTS:
 	RTS
 
 LevelLoad_Gfx:
@@ -2819,7 +2830,6 @@ LevelLoad_Size:
 	RTS
 
 LevelLoad_StartPosition:
-	STA Debug_Snap
 	LDA Level_JctCtl
 	BNE LevelLoad_StartFromPointer
 
@@ -4966,8 +4976,10 @@ TryHScrollUpperLimit:
 	SEC
 	SBC DAIZ_TEMP1
 	BCS DynHScroll
+
 	LDA <Level_Width
 	STA <Horz_Scroll_Hi
+
 	LDA #$00
 	STA <Horz_Scroll
 	JMP Update_Columns
@@ -5457,8 +5469,8 @@ UsePointer:
 	STA Map_Entered_X
 
 	LDA Map_Entered_X
+	SUB #$20
 	AND #$80
-	SUB #$80
 	STA Map_Prev_XOff
 
 	LDA Map_Entered_XHi
@@ -5567,7 +5579,6 @@ DoLevelEnding:
 	RTS
 
 GetLevelBit:
-
 	LDA LevelNumber
 	AND #$07
 	TAY

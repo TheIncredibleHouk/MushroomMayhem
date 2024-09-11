@@ -740,7 +740,7 @@ BlockCheck_YOffsets:
 ObjInit_SnakeBlock:
 	JSR Object_NoInteractions
 
-	LDA #BOUND16x16BLOCK
+	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
 	JSR Object_CalcBoundBox

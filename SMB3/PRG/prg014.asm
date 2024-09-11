@@ -960,6 +960,21 @@ Larry_RemoveBag:
 	RTS
 
 Larry_WaitOffScreen:
+	LDA <Vert_Scroll
+	ADD #$C0
+	
+	STA <Objects_YZ, X
+
+	LDA #$00
+	ADC #$00
+	STA <Objects_YHiZ, X
+	
+	LDA <Player_X
+	STA <Objects_XZ, X
+
+	LDA <Player_XHi
+	STA <Objects_XHiZ, X
+	
 	LDY Objects_Property, X
 
 	LDA Player_EffectiveSuit

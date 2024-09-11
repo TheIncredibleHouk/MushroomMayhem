@@ -1910,6 +1910,9 @@ ObjInit_Birdo:
 	LDA Birdo_Pal, Y
 	STA Objects_SpriteAttributes, X
 	STA Birdo_PalState, X
+
+	LDA #$00
+	STA Objects_ExpPoints, X
 	RTS
 
 Birdo_Walk:
@@ -1938,6 +1941,9 @@ ObjNorm_Birdo1:
 
 	DEC Birdo_Health, X
 	BPL Birdo_StillAlive
+
+	LDA #25
+	STA Exp_Earned
 
 	LDA Objects_Property, X
 	CMP #$02
