@@ -1236,6 +1236,7 @@ PRG030_8E5D:
 	STA Player_Oiled
 	STA Player_Frozen
 	STA Frozen_Frame
+	STA ForcedSwitch
 	BEQ PRG030_8E79
 
 Pause_NoExit:
@@ -2701,7 +2702,6 @@ LevelLoad_ClearBuffers:
 	RTS
 
 LevelLoad_ClearMem:
-	STA Debug_Snap
 	LDA Level_Redraw
 	BEQ LevelLoad_ClearMemRTS
 
@@ -2891,6 +2891,9 @@ LevelLoad_StartFromPointer:
 
 	LDA #$01
 	STA Player_HaltTick
+
+	LDA #$00
+	STA ForcedSwitch
 
 	JMP LevelLoad_StartPositionRTS
 
@@ -4900,6 +4903,8 @@ ClearBufferLoop:
 	STA Object_BufferY, X
 	DEX
 	BPL ClearBufferLoop
+
+ClearBufferLoopRTS:	
 	RTS	
 
 LevelLoad_SetScrollPos:
@@ -5476,14 +5481,25 @@ UsePointer:
 	LDA Map_Entered_XHi
 	SBC #$00
 	STA Map_Prev_XHi
-	BPL Pointer_SetExit
+	BPL Check_MapPos
 
 	LDA #$00
 	STA Map_Prev_XOff
 	STA Map_Prev_XHi
 
-Pointer_SetExit:	
+Check_MapPos:
+	STA Debug_Snap
+	LDA Map_Prev_XHi
+	CMP #$03
+	BCC Pointer_SetExit
 
+	LDA #$03
+	STA Map_Prev_XHi
+
+	LDA #$00
+	STA Map_Prev_XOff
+
+Pointer_SetExit:	
 	LDA Pointers + 4, X
 	AND #$F0
 	STA Map_Entered_Y

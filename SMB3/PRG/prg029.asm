@@ -2052,6 +2052,7 @@ Player_RainbowCycle:
 	BNE Player_RainbowCycle1
 
 	DEC Player_StarInv
+
 	LDA Player_StarInv
 	STA Player_Invicible
 	CMP #$10
@@ -2159,6 +2160,8 @@ Subarmine_PatternsBottom:
 	.byte $27, $2B, $2D, $2F
 
 Player_DrawVehicle:
+	JSR Player_RainbowCycle
+	
 	LDA #$59
 	STA PatTable_BankSel + 2
 

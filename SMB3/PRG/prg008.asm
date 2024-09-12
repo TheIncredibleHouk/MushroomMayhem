@@ -4341,12 +4341,15 @@ NormalYHiCheck:
 
 	LDX <Player_XHi
 	INX
+	
 	STX <Player_XHi
-	LDX #$A1
+	
+	LDX #$91
+
 	LDA <Player_Suit
 	BNE NotSmallMario
 
-	LDX #$98
+	LDX #$88
 
 NotSmallMario:
 	STX <Player_YZ
@@ -4355,6 +4358,7 @@ NotSmallMario:
 
 	INC Level_JctCtl
 	INC Level_KeepObjects
+	INC ForcedSwitch
 	PLA
 	PLA
 
@@ -4418,6 +4422,7 @@ CheckPlayer_YLow:
 	STA <Player_YHiZ
 
 	INC Level_JctCtl
+	INC ForcedSwitch
 	PLA
 	PLA
 
@@ -4474,11 +4479,11 @@ EndLevel:
 	STA CheckPoint_Level
 
 	LDX Player_KeepBadge
-	BNE EndLevel_KeepBage
+	BNE EndLevel_KeepBadge
 
 	STA Player_Badge
 
-EndLevel_KeepBage:
+EndLevel_KeepBadge:
 	STA Player_KeepBadge
 
 	LDA #$01
