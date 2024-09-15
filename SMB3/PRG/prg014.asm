@@ -2750,6 +2750,9 @@ ObjInit_Swoosh:
 
 	JSR Object_CalcBoundBox
 	JSR Object_FacePlayer
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
 	RTS
 
 

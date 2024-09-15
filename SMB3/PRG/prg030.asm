@@ -340,8 +340,6 @@ PRG030_857E:
 	LDA #$01	 
 	STA MMC3_MIRROR	 ; Set vertical mirroring
 
-	LDX Player_Current	 ; X = current Player index
-
 	LDA World_Map_Power	; X = Player's current world map power
 	STA Map_Power_Disp	; Set as powerup currently displayed 
 
@@ -366,22 +364,19 @@ PRG030_857E:
 	BNE PRG012_85CE		; If Inventory is open, jump to PRG012_85CE
 
 	; If Inventory is not open
-	LDX Player_Current	; X = Player_Current
 
-	LDA Map_Previous_Dir,X 	; Get Player's previous moment direction
-	STA <World_Map_Dir,X	; Restore it
+	LDA Map_Previous_Dir 	; Get Player's previous moment direction
+	STA <World_Map_Dir	; Restore it
 
 PRG012_85CE:
 	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
 	STA PPU_CTL1
 	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync
 
-	LDY Player_Current	; Y = current Player index
-
 	; This sets up the scroll correctly given wherever the Player last was on the map
-	LDA Map_Prev_XOff,Y	 
+	LDA Map_Prev_XOff
 	STA <Scroll_Temp	 ; Scroll_Temp = X offset
-	LDA Map_Prev_XHi,Y	 ; A = hi byte of X offset
+	LDA Map_Prev_XHi	 ; A = hi byte of X offset
 	JSR Scroll_Update_Ranges ; Off to Scroll_Update_Ranges...
 
 	LDA #$00	 
@@ -422,12 +417,11 @@ PRG030_8617:
 	DEY		 ; Y--
 	BPL PRG030_8617	 ; While Y >= 0, loop!
 
-	LDY Player_Current	 ; Y = Player_Current
-	LDA Map_Prev_XOff,Y	 ; Get player's previous X offset (low byte)
+	LDA Map_Prev_XOff ; Get player's previous X offset (low byte)
 	STA <Horz_Scroll	 ; Set the scroll to that
 	STA <Scroll_Temp
 
-	LDA Map_Prev_XHi,Y	 ; Get player's previous X offset (high byte) 
+	LDA Map_Prev_XHi	 ; Get player's previous X offset (high byte) 
 	STA <Horz_Scroll_Hi	 ; Store as current scroll "high"
 
 	JSR Scroll_Update_Ranges
@@ -678,21 +672,20 @@ PRG030_87BD:
 	JSR GraphicsBuf_Prep_And_WaitVSync	; Vertical sync
 
 	; Copy the Player's positions into respective backup variables
-	LDX Player_Current
 	LDA <Horz_Scroll
-	STA Map_Prev_XOff,X
+	STA Map_Prev_XOff
 
 	LDA <Horz_Scroll_Hi
-	STA Map_Prev_XHi,X
+	STA Map_Prev_XHi
 
-	LDA <World_Map_Y,X
-	STA Map_Entered_Y,X
+	LDA <World_Map_Y
+	STA Map_Entered_Y
 
-	LDA <World_Map_XHi,X
-	STA Map_Entered_XHi,X
+	LDA <World_Map_XHi
+	STA Map_Entered_XHi
 
-	LDA <World_Map_X,X	
-	STA Map_Entered_X,X	
+	LDA <World_Map_X	
+	STA Map_Entered_X
 
 	LDA #$00
 	STA <Map_EnterLevelFX		; Map_EnterLevelFX = 0
@@ -1887,13 +1880,13 @@ PRG030_9185:
 PRG030_91D1:
 	; STY World_8_Dark	 ; Set World_8_Dark appropriately
 
-	LDY Player_Current	 ; Y = Player_Current
+	;LDY Player_Current	 ; Y = Player_Current
 
 	; Scroll updates
-	LDA Map_Prev_XOff,Y
+	LDA Map_Prev_XOff
 	STA <Scroll_Temp
 
-	LDA Map_Prev_XHi,Y
+	LDA Map_Prev_XHi
 	JSR Scroll_Update_Ranges
 
 	LDA <Scroll_ColumnL
@@ -3660,7 +3653,12 @@ PRG030_9BD3:	.byte $00, $01
 ; screen scrolling.  Also used by the "dirty update" routine
 ; to sweep across and render the blocks...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Scroll_DoColumnCancel:
+	JMP SetPages_ByTileset
+
 Scroll_DoColumn:
+	LDA MultiFrameLoad
+	BNE Scroll_DoColumnCancel
 	; Set proper Page @ A000 for tile layout data
 	LDY Level_Tileset
 
@@ -5018,7 +5016,6 @@ DynHScroll:
 	LDA <Player_XHi
 	STA <Horz_Scroll_Hi
 	
-
 Update_Columns:
 	LDA #$01
 	STA Scroll_LastDir
@@ -6688,6 +6685,9 @@ LiveTransition_Next:
 	.word Live_Stage6
 
 Live_Stage1:
+	LDA #$01
+	STA MultiFrameLoad
+
 	JSR LevelLoad_Setup
 	JSR LevelLoad_TileSet
 	JSR LevelLoad_TransProps
@@ -6751,12 +6751,21 @@ Live_Stage3:
 	JSR LevelLoad_Animations
 	JSR LevelLoad_Size
 	JSR LevelLoad_Pointers
+	JSR LevelLoad_Effects
 
 	LDX <CurrentObjectIndexZ
 	INC LiveTransition_Stage, X
 	RTS
 
 Live_Stage4:
+	LDA Level_Width
+	SUB #$01
+	STA Horz_Scroll_Hi
+	STA Level_AScrlPosHHi
+
+	ADD <Player_XHi
+	STA <Player_XHi
+	
 	JSR LevelLoad_Setup
 	JSR LevelLoad_Bank
 	JSR LiveTransition_MultiThread
@@ -6821,8 +6830,6 @@ LiveTransition_WriteDone:
 	RTS
 
 LiveTransition_MultiThread:
-	LDA #$01
-	STA MultiFrameLoad
 	
 	LDA #$05
 	STA CommandCount
@@ -6831,11 +6838,6 @@ LiveTransition_MultiThread:
 LIVE_LEVEL_SIZE = 10
 
 Live_Stage6:
-	LDA Level_Width
-	SUB #$01
- 	STA <Player_XHi
-	STA Horz_Scroll_Hi
-	STA Level_AScrlPosHHi
 
 	LDA #24
  	STA PAGE_A000
@@ -6852,10 +6854,14 @@ Live_Stage6:
  	DEX
  	BPL Live_LoadPalette
 
-	LDX <CurrentObjectIndexZ
-
+	STA Debug_Snap
+	LDX #$04
  	LDA #$00
- 	STA Objects_ID, X
+
+Live_DeleteObjects:	
+ 	STA Objects_State, X
+	DEX
+	BPL Live_DeleteObjects
 
 	LDY #$2f	 ; Y = $2F
 
@@ -6863,8 +6869,6 @@ Reset_Objects:
 	STA Level_ObjectsSpawned,Y
 	DEY		 
 	BPL Reset_Objects
-	
-	STA Debug_Snap
 	
 	LDA #19
 	STA PAGE_A000

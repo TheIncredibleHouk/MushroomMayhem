@@ -2573,6 +2573,9 @@ Object_New:
 	LDA #80
 	STA Objects_XYCSPrev, X
 
+	LDA Player_Vehicle
+	STA ObjSplash_Disabled, X
+
 	LDA #$00
 	STA Objects_Global, X
 	STA Objects_WeaponAttr, X
@@ -2611,7 +2614,6 @@ Object_New:
 	STA Objects_BoundBottomHi, X
 	STA Objects_Regen, X
 	STA Objects_BoundBox, X
-	STA ObjSplash_Disabled, X
 	STA Objects_BoundBox, X
 	STA Objects_BeingHeld,X
 	
@@ -4253,8 +4255,8 @@ PRG000_C6FA:
 	TYA
 	STA Objects_InWater,X	 ; Set object's in-water flag
 
-	LDA #$00
-	STA ObjSplash_Disabled, X
+	; LDA #$00
+	; STA ObjSplash_Disabled, X
 	RTS
 
 Object_TestTopBumpBlocks:

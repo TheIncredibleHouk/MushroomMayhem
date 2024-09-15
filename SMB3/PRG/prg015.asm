@@ -4670,6 +4670,9 @@ ParaChomp_ChainBoundBox:
 	RTS		 ; Return
 
 ParaChomp_ChainGrab:
+	LDA Player_Vehicle
+	BNE ParaChomp_ChainGrabRTS
+	
 	LDY #$00
 	LDA <Pad_Holding
 	AND #(PAD_DOWN | PAD_UP)

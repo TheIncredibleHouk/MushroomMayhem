@@ -2997,7 +2997,7 @@ Increase_Game_Timer:
 	LDA #$00
 	STA DayNightMicroTicker
 
-	INC DayNightTicker
+	;INC DayNightTicker
 
 	LDA DayNightTicker
 	CMP #$0C
