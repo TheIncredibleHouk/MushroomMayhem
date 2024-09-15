@@ -4622,7 +4622,6 @@ ObjectGen_BulletBillRTS:
 	RTS
 
 BulletBillGen_Make:
-
 	; Reset Cannon Fire timer to $80-$9F, random
 	LDA RandomN,X
 	AND #$07
@@ -5080,6 +5079,7 @@ Enemy_OilPlayer:
 
 Enemy_OilPlayer1:
 	LDA Player_Oiled
+	ORA Player_Vehicle
 	BNE Enemy_OilPlayer3
 
 	LDA Player_EffectiveSuit

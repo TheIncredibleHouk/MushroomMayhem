@@ -1302,12 +1302,16 @@ PRG005_BE91:
 	STA AScrlURDiag_WrapState_Copy
 	STA AScrlURDiag_WrapState
 	STA Level_AScrlVVel
-	STA <Temp_Var1
 
+	JSR SetObjects_SpawnPoints
+	JMP PRG005_BEFD
+
+SetObjects_SpawnPoints:
+	LDA #$00
+	STA <Temp_Var1
 	TAX		 ; X = 0
 
-	TAY
-	INY		 ; Y = 1
+	LDY #$01
 
 PRG005_BEB6:
 	CPX #$10	 
@@ -1378,6 +1382,8 @@ Check_GlobalHeld:
 	JMP PRG005_BF01
 
 PRG005_BEFC:
+	RTS
+
 PRG005_BEFD:
 	LDX #$07	 ; X = 7
 

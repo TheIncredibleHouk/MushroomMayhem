@@ -10,7 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "8944a8b7-cefd-4bb4-ba68-e41d09d22d49",
   "StaticTileTableIndex": 56,
-  "NoStars": false,
+  "NoStars": true,
   "MostCommonTile": 104,
   "AnimationType": 0,
   "ScrollType": 1,
@@ -6573,5 +6573,5 @@
       "BoundRectangle": "720,336,32,32"
     }
   ],
-  "CompressedData": "AUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCvr8ZQcJHSBpBwX4QQcRHV1hIKkHBRwFXAVjBSAVBwX4JQcJHSBVBwUcCVwJYwUgJQcK+vwJBxEdXWEgTQcFHA1cDWMFICEHCrq8BQcFHAVcBWMFIBkHBZ0TBaQFBw35BRwRXBFjBSIIEQXZBQcOur0EvUQZjwWQTY8FlIWPBZRRjwWQIY8Fj"
+  "CompressedData": "AUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCrq8tQcKury1Bwq6vLUHCvr8ZQcJHSBpBwX4QQcRHV1hIKkHBRwFXAVjBSAVBwX4JQcJHSBVBwUcCVwJYwUgJQcK+vwJBxEdXWEgTQcFHA1cDWMFICEHCrq8BQcFHAVcBWMFIBkHBZ0TBaQFBw35BRwRXBFjBSIIEQXZBQcOur0EvUQZjwWQTY8FlIWPBZRRjwWQJYw=="
 }

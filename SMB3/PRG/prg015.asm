@@ -385,6 +385,9 @@ SpikeThrowSpike:
 	LDA #OBJ_SPIKEBALL
 	STA Objects_ID, X
 
+	LDA #$00
+	STA Objects_Property, X
+
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
 

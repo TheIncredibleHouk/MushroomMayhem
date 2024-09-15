@@ -2166,6 +2166,7 @@ ZombieGoomba_Infect:
 	BNE ZombieGoomba_HurtRTS
 
 	LDA LeftRightInfection
+	ORA Player_Vehicle
 	BNE ZombieGoomba_Hurt
 
 	LDA #$17

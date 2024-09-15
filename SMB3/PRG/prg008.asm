@@ -386,6 +386,7 @@ PRG008_A38E:
 	LDA <Player_X	
 	STA <Pipe_PlayerX	 ; Pipe_PlayerX = Player_X
 
+	
 	LDA <Player_YZ
 	AND #$F0	
 	STA <Pipe_PlayerY
@@ -4366,6 +4367,7 @@ NotSmallMario:
 	
 ClearSprite:
 	LDA Objects_Global, X
+	ORA Objects_BeingHeld, X
 	BNE Check_GlobalHold
 
 	LDA #$00

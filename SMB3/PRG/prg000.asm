@@ -18,12 +18,12 @@ SpriteY .macro
 Object_BoundBox:
 	;    Left Right Top  Bot- offsets applied to sprite X/Y
 	.byte  1,   6,   1,   15	; 8x16  BOUND8x16
-	.byte  2,  14,   1,   15	; 16x16 BOUND16x16
+	.byte  1,  14,   1,   16	; 16x16 BOUND16x16
 	.byte  1,  14,   1,   23	; 16x24 BOUND16x24
 	.byte  0,  16,   1,  16	;  ; solid block (16x16) BOUND16x16BLOCK
 	.byte  0,  16,   0,  48	; BOUND16X48TALL
 	.byte  2,  22,   2,  30	; BOUND24x32
-	.byte  0,  32,  0,  16	; BOUND32x16BLOCK
+	.byte  2,  29,   0,  15	; BOUND32x16BLOCK
 	.byte  1,  14,   4,   26; 16x28 BOUND16x28
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
 	.byte  0,  24,   0,  24	; 9 BOUND24X24
@@ -5621,6 +5621,7 @@ TestHit_FromBelow:
 	CMP #$0F
 	BCS TestHit_FromLeft
 	STA <Temp_Var1
+	INC <Temp_Var1
 
 	LDA <Player_YZ
 	ADD <Temp_Var1
@@ -5632,6 +5633,7 @@ TestHit_FromBelow:
 
 	LDA #$10
 	STA <Player_YVelZ
+
 	CLC
 	RTS
 

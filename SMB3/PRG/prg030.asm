@@ -442,41 +442,41 @@ PRG030_8646:
 	LDA Map_DrawPanState
 	BNE PRG030_8646	 	; If some kind of map drawing/panning activity is occurring, loop around
 
-	LDA Map_Operation
-	BNE PRG030_86A2	 	; If map operation is anything besides zero, jump to PRG030_86A2
+; 	LDA Map_Operation
+; 	BNE PRG030_86A2	 	; If map operation is anything besides zero, jump to PRG030_86A2
 
-	; Map_Operation = 0 ... the "World X" intro
-	; Used at the beginning of a world, and alternating players
-	LDA Inventory_Open
-	BNE PRG030_86A2	; If inventory is open, jump to PRG030_86A2
+; 	; Map_Operation = 0 ... the "World X" intro
+; 	; Used at the beginning of a world, and alternating players
+; 	LDA Inventory_Open
+; 	BNE PRG030_86A2	; If inventory is open, jump to PRG030_86A2
 
-	; Set bank at A000 to page 11
-	LDA #11	
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+; 	; Set bank at A000 to page 11
+; 	LDA #11	
+; 	STA PAGE_A000
+; 	JSR PRGROM_Change_A000
 
-	JSR Map_IntroAttrSave	; Pick up the current attribute info under the box
+; 	JSR Map_IntroAttrSave	; Pick up the current attribute info under the box
 
-	LDX #$0E 		; X = 14 (standard $00 aligned box)
+; 	LDX #$0E 		; X = 14 (standard $00 aligned box)
 
-	LDA <Horz_Scroll 	; A = Horz_Scroll
-	BEQ PRG030_8670	 	; If Horz_Scroll = 0, jump to PRG030_8670
+; 	LDA <Horz_Scroll 	; A = Horz_Scroll
+; 	BEQ PRG030_8670	 	; If Horz_Scroll = 0, jump to PRG030_8670
 
-	LDX #$10		; Otherwise, X = 16 (map halfway scroll $80 aligned box)
-PRG030_8670:
-	LDA Player_Current
-	BEQ PRG030_8676		; If Player_Current = 0 (Mario), jump to PRG030_8676
-	INX		 	; Otherwise, increment X (use Luigi's name!)
+; 	LDX #$10		; Otherwise, X = 16 (map halfway scroll $80 aligned box)
+; PRG030_8670:
+; 	LDA Player_Current
+; 	BEQ PRG030_8676		; If Player_Current = 0 (Mario), jump to PRG030_8676
+; 	INX		 	; Otherwise, increment X (use Luigi's name!)
 
-PRG030_8676:
-	TXA		 	; A = X ($0E/$0F, $10/$11)
-	JSR Video_Do_Update	; Do the World X intro box!
+; PRG030_8676:
+; 	TXA		 	; A = X ($0E/$0F, $10/$11)
+; 	JSR Video_Do_Update	; Do the World X intro box!
 
-	;JSR Map_ConfigWorldIntro	; Apply the world number and lives count
+; 	;JSR Map_ConfigWorldIntro	; Apply the world number and lives count
 
-	; Push the buffered update
-	LDA #$00
-	JSR Video_Do_Update	 
+; 	; Push the buffered update
+; 	LDA #$00
+; 	JSR Video_Do_Update	 
 
 PRG030_86A2:
 	LDA #$00
@@ -1801,8 +1801,8 @@ PRG030_9149:
 	BNE PRG030_9163	 ; If World_EnterState <> 0, jump to PRG030_9163
 
 	; Otherwise, gotta player the game over music!
-	LDA #MUS1_GAMEOVER
-	STA Sound_QMusic1
+	; LDA #MUS1_GAMEOVER
+	; STA Sound_QMusic1
 
 PRG030_9163:
 
@@ -1870,22 +1870,22 @@ PRG030_9185:
 
 	LDY #$00	 ; Y = 0
 
-	LDA World_Num
-	CMP #$07
-	BNE PRG030_91D1	 ; If World_Num <> 7 (World 8), jump to PRG030_91D1
+	; LDA World_Num
+	; CMP #$07
+	; BNE PRG030_91D1	 ; If World_Num <> 7 (World 8), jump to PRG030_91D1
 
-	; World 8 only...
+	; ; World 8 only...
 
-	LDX Player_Current	 ; X = Player_Current
+	; LDX Player_Current	 ; X = Player_Current
 
-	LDA <World_Map_XHi,X
-	CMP #$02
-	BNE PRG030_91D1	 ; If Player is not on the "dark" part of World 8, jump to PRG030_91D1
+	; LDA <World_Map_XHi,X
+	; CMP #$02
+	; BNE PRG030_91D1	 ; If Player is not on the "dark" part of World 8, jump to PRG030_91D1
 
-	INY		 ; Y = 1 (enable the World 8 darkness)
+	; INY		 ; Y = 1 (enable the World 8 darkness)
 
 PRG030_91D1:
-	STY World_8_Dark	 ; Set World_8_Dark appropriately
+	; STY World_8_Dark	 ; Set World_8_Dark appropriately
 
 	LDY Player_Current	 ; Y = Player_Current
 
@@ -1941,6 +1941,7 @@ PRG030_9226:
 	LDA Map_DrawPanState
 	BNE PRG030_9226	 	; If some kind of map drawing/panning activity is occurring, loop around
 
+	
 	LDA World_EnterState
 	BNE PRG030_9257	 ; If World_EnterState <> 0, jump to PRG030_9257
 
@@ -2023,102 +2024,102 @@ PRG030_929C:
 
 	JSR Palette_FadeOut	; Fade out
 
-	LDA GameOver_State
-	CMP #$09
-	BEQ PRG030_92B6	 ; If GameOver_State = 9 (Player chose to END), jump to PRG030_92B6
+	; LDA GameOver_State
+	; CMP #$09
+	; BEQ PRG030_92B6	 ; If GameOver_State = 9 (Player chose to END), jump to PRG030_92B6
 
 	JMP PRG030_9149	 ; Jump to PRG030_9149
 
 PRG030_92B6:
 
-	LDA #$00
-	STA World_EnterState	 ; World_EnterState = 0 (just arriving)
+; 	LDA #$00
+; 	STA World_EnterState	 ; World_EnterState = 0 (just arriving)
 
-	LDX Player_Current	 ; X = Player_Current
+; 	LDX Player_Current	 ; X = Player_Current
 
-	LDA Map_GameOver_CursorY
-	AND #$08
-	BNE PRG030_932A	 ; If Player chose to END, jump to PRG030_932A
+; 	LDA Map_GameOver_CursorY
+; 	AND #$08
+; 	BNE PRG030_932A	 ; If Player chose to END, jump to PRG030_932A
 
-	; Player's live reset to 4
-	LDA #$04
-	STA Player_Lives,X
+; 	; Player's live reset to 4
+; 	LDA #$04
+; 	STA Player_Lives,X
 
-	; Set up position variables
-	LDA <Horz_Scroll
-	STA Map_Prev_XOff,X
+; 	; Set up position variables
+; 	LDA <Horz_Scroll
+; 	STA Map_Prev_XOff,X
 
-	LDA <Horz_Scroll_Hi
-	STA Map_Prev_XHi,X
+; 	LDA <Horz_Scroll_Hi
+; 	STA Map_Prev_XHi,X
 
-	LDA <World_Map_Y,X
-	STA Map_Entered_Y,X
+; 	LDA <World_Map_Y,X
+; 	STA Map_Entered_Y,X
 
-	LDA <World_Map_XHi,X
-	STA Map_Entered_XHi,X
+; 	LDA <World_Map_XHi,X
+; 	STA Map_Entered_XHi,X
 
-	LDA <World_Map_X,X
-	STA Map_Entered_X,X
+; 	LDA <World_Map_X,X
+; 	STA Map_Entered_X,X
 
-	; Reset map variables
-	LDA #$00
-	STA Map_Player_SkidBack,X
-	STA World_EnterState
-	STA Map_GameOver_CursorY
+; 	; Reset map variables
+; 	LDA #$00
+; 	STA Map_Player_SkidBack,X
+; 	STA World_EnterState
+; 	STA Map_GameOver_CursorY
 
-	LDY #$3f	 ; Y = $3F (End of Mario's Map Completions)
+; 	LDY #$3f	 ; Y = $3F (End of Mario's Map Completions)
 
-	CPX #$00
-	BEQ PRG030_9314	 ; If Player is Mario, jump to PRG030_9314
+; 	CPX #$00
+; 	BEQ PRG030_9314	 ; If Player is Mario, jump to PRG030_9314
 
-	LDY #$7f	 ; Y = $7F (End of Luigi's Map Completions)
+; 	LDY #$7f	 ; Y = $7F (End of Luigi's Map Completions)
 
-PRG030_9314:
-	LDA #$3f
-	STA <Temp_Var1	 ; Temp_Var1 = $3F
+; PRG030_9314:
+; 	LDA #$3f
+; 	STA <Temp_Var1	 ; Temp_Var1 = $3F
  
-PRG030_9318:
-	TYA
-	EOR #$40
-	TAX
+; PRG030_9318:
+; 	TYA
+; 	EOR #$40
+; 	TAX
 
 
-	DEY		 ; Y--
-	DEC <Temp_Var1	 ; Temp_Var1--
-	BPL PRG030_9318	 ; While Temp_Var1 >= 0, loop!
+; 	DEY		 ; Y--
+; 	DEC <Temp_Var1	 ; Temp_Var1--
+; 	BPL PRG030_9318	 ; While Temp_Var1 >= 0, loop!
 
-PRG030_932A:
-	LDY Total_Players	 ; Y = Total_Players
-	DEY		 ; Y = 0 if 1P, or 1 if 2P
+; PRG030_932A:
+; 	LDY Total_Players	 ; Y = Total_Players
+; 	DEY		 ; Y = 0 if 1P, or 1 if 2P
 
-PRG030_932E:
-	LDA Player_Lives,Y
-	BPL PRG030_933E	 ; If this Player isn't dead, jump to PRG030_933E
+; PRG030_932E:
+; 	LDA Player_Lives,Y
+; 	BPL PRG030_933E	 ; If this Player isn't dead, jump to PRG030_933E
 
-	DEY		 ; Y--
-	BPL PRG030_932E	 ; While Y >= 0, loop
+; 	DEY		 ; Y--
+; 	BPL PRG030_932E	 ; While Y >= 0, loop
 
-	; All Players are dead and have given up
+; 	; All Players are dead and have given up
 
-	; Stop music
-	;LDA #MUS1_STOPMUSIC
-	;STA Sound_QMusic1
+; 	; Stop music
+; 	;LDA #MUS1_STOPMUSIC
+; 	;STA Sound_QMusic1
 
-	; Reset game
-	JMP IntReset_Part2
+; 	; Reset game
+; 	JMP IntReset_Part2
 
-PRG030_933E:
+; PRG030_933E:
 
-	; A Player gave up, but there's one left
+; 	; A Player gave up, but there's one left
 
-	;JSR GameOver_PlayerQuitCleanup	 ; Performs some cleanup work for the Player who left
+; 	;JSR GameOver_PlayerQuitCleanup	 ; Performs some cleanup work for the Player who left
 
-	; Map_Operation = 0
-	LDY #$00
-	STY Map_Operation
+; 	; Map_Operation = 0
+; 	LDY #$00
+; 	STY Map_Operation
 
-	LDX Player_Current	 ; X = Player_Current
-	JMP PRG030_879B	 ; Jump to PRG030_879B
+; 	LDX Player_Current	 ; X = Player_Current
+; 	JMP PRG030_879B	 ; Jump to PRG030_879B
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2582,6 +2583,7 @@ LevelLoad:
 	JSR LevelLoad_Init
 
 LevelLoadQuick:
+	JSR LevelLoad_CheckpointOverride
 	JSR LevelLoad_Setup
 	JSR LevelLoad_TileSet
 	JSR LevelLoad_TransProps
@@ -2602,6 +2604,26 @@ LevelLoadQuick:
 	JSR LevelLoad_Pointers
 	JSR LevelLoad_WriteLevel
 	JSR Sprite_RAM_Clear
+	RTS
+
+LevelLoad_CheckpointOverride:
+	LDA Entering_From_Map
+	BEQ LevelLoad_CheckpointOverrideRTS
+
+	LDA <Pad_Holding
+	AND #PAD_SELECT
+	BNE LevelLoad_CheckpointOverrideRTS
+
+	LDA CheckPoint_Flag
+	BEQ LevelLoad_CheckpointOverrideRTS
+	
+	CMP LevelLoadPointer
+	BNE LevelLoad_CheckpointOverrideRTS
+
+	LDA CheckPoint_Level
+	STA LevelLoadPointer
+
+LevelLoad_CheckpointOverrideRTS:	
 	RTS
 	
 LevelLoad_Init:
@@ -2701,21 +2723,27 @@ LevelLoad_ClearBuffers:
 	JSR ClearBuffers
 	RTS
 
+MemClearLimit = Temp_Var1
+
 LevelLoad_ClearMem:
+	LDA #$00
+	STA <MemClearLimit
 	LDA Level_Redraw
 	BEQ LevelLoad_ClearMemRTS
-
+	
 	LDY #$00
 	LDA [Temp_Var14],Y
-	
+
 	LDY #$F0
 
 LevelLoad_ClearMemLoop:
 	DEY
+	
 	JSR Tile_Mem_ClearA
 	JSR Tile_Mem_ClearB
 	
-	CPY #$00
+LevelLoad_ClearCheck:	
+	CPY <MemClearLimit
 	BNE LevelLoad_ClearMemLoop
 
 LevelLoad_ClearMemRTS:
@@ -2733,52 +2761,6 @@ LevelLoad_Gfx:
 	LDA [Temp_Var14],Y
 	STA PaletteIndex
 	RTS
-
-; LevelLoad_ExitInfo:
-; 	LDA Level_JctCtl
-; 	BNE LevelLoad_SetExit
-
-; 	LDA #$00
-; 	STA Level_InitAction
-; 	JMP LevelLoad_ExitInfoRTS
-
-; LevelLoad_SetExit:
-;     LDA ForcedSwitch 
-; 	BEQ LevelLoad_SetExitPos
-
-; 	LDA #$01
-; 	STA Player_HaltTick
-
-; 	JMP LevelLoad_ExitInfoRTS
-
-; LevelLoad_SetExitPos:
-; 	LDA Player_XExit
-; 	AND #$F0
-
-; 	LDX Level_PipeExitDir
-; 	BEQ LevelLoad_NoXOffset
-
-; 	CPX #$03
-; 	BCS LevelLoad_NoXOffset
-; 	ORA #$08
-
-; LevelLoad_NoXOffset:
-; 	STA <Player_X
-
-; 	LDA Player_XExit
-; 	AND #$0F
-; 	STA <Player_XHi
-
-; 	LDA Player_YExit
-; 	AND #$F0
-; 	STA <Player_YZ
-
-; 	LDA Player_YExit
-; 	AND #$0F
-; 	STA Player_YHiZ
-
-; LevelLoad_ExitInfoRTS:
-; 	RTS
 
 LevelLoad_Animations:
 ; Load level size/width
@@ -3070,7 +3052,6 @@ LevelLoad_NameLoop:
 	RTS
 
 LevelLoad_WriteLevel:
-
 	LDY #$08
 	
 	LDA [Temp_Var14],Y
@@ -3078,10 +3059,12 @@ LevelLoad_WriteLevel:
 	LSR A
 	LSR A
 	STA <Temp_Var5
+
 	LSR A
 	ADD <Temp_Var5
 	ADD #$27
 	STA <Temp_Var5
+
 	TYA
 	ADD <Temp_Var5
 	ADD <Temp_Var14
@@ -3092,7 +3075,9 @@ LevelLoad_WriteLevel:
 
 StartLevelWriting:
 	LDA #$00
+	STA <Compression_Screen
 	STA <Temp_Var8
+
 	
 	LDA #$60
 	STA <Temp_Var9
@@ -3100,11 +3085,23 @@ StartLevelWriting:
 	LDY #$00	
 
 NextDecompressionCommand:
+	LDA MultiFrameLoad
+	BEQ NextDecompressionCommand1
+
+	DEC CommandCount
+	BNE NextDecompressionCommand1
+
+	RTS
+
+NextDecompressionCommand1:	
 	LDA [Temp_Var14], Y
 	CMP #$FF
 	BNE GetDecompressionCommand
 
 	JSR LoadSprites
+
+	LDA #$00
+	STA MultiFrameLoad
 	RTS
 
 GetDecompressionCommand:
@@ -3130,7 +3127,6 @@ DecompressCommand:
 	.word WriteRaw
 
 RepeatTile:
-
 	LDY #$00
 	LDA [Temp_Var14], Y
 	AND #$3F
@@ -3196,7 +3192,6 @@ RepeatPatternToLevel:
 	LDX #$00
 
 DrawPattern:
-	STA $7FFE
 	LDA Level_Redraw
 	BEQ SkipDrawPattern
 
@@ -5488,7 +5483,6 @@ UsePointer:
 	STA Map_Prev_XHi
 
 Check_MapPos:
-	STA Debug_Snap
 	LDA Map_Prev_XHi
 	CMP #$03
 	BCC Pointer_SetExit
@@ -6656,85 +6650,230 @@ ObjNorm_BadgeShop:
 	JSR PRGROM_Change_A000
 	JMP ObjNorm_BadgeShopDo
 
-ObjInit_LiveTransition
+ObjInit_LiveTransition:
+	LDA Pointers
+ 	STA LiveTransition_Pointer, X
+
+	LDA #$F0
+	STA LiveTransition_MemClear, X
 	RTS
 
+LiveTransition_Stage = Objects_Data1
+LiveTransition_Pointer = Objects_Data2
+LiveTransition_MemClear = Objects_Data3
+LiveTransition_CompressionScreen = Objects_Data4
+LiveTransition_Temp8 = Objects_Data5
+LiveTransition_Temp9 = Objects_Data6
+LiveTransition_Temp14 = Objects_Data7
+LiveTransition_Temp15 = Objects_Data8
+
 ObjNorm_LiveTransition:
-	LDA Pointers
-	STA LevelLoadPointer
-	
-	LDA <Vert_Scroll
-	PHA
+	LDA LiveTransition_Pointer, X
+	STA LevelLoadPointer	
 
-	LDA <Player_YZ
-	PHA
+	LDA LiveTransition_Stage, X
 
-	LDA <Player_YHiZ
-	PHA
+	JSR LiveTransition_Next
+	JSR Restore_Bank
+	RTS
 
-	LDA <Player_X
-	PHA
+LiveTransition_Next:	
+	JSR DynJump
 
-	LDA Level_HAutoScroll
-	PHA
+	.word Live_Stage1
+	.word Live_Stage2
+	.word Live_Stage3
+	.word Live_Stage4
+	.word Live_Stage5
+	.word Live_Stage6
 
-	LDA <Horz_Scroll
-	PHA
+Live_Stage1:
+	JSR LevelLoad_Setup
+	JSR LevelLoad_TileSet
+	JSR LevelLoad_TransProps
 
+	LDX <CurrentObjectIndexZ
+	INC LiveTransition_Stage, X
+	RTS
+
+Live_Stage2:
+	JSR LevelLoad_Setup
+	JSR LevelLoad_Bank
+
+	LDX <CurrentObjectIndexZ
+
+	LDY #$00
+	LDA [Temp_Var14],Y
+	STA <Temp_Var2
+
+	LDA LiveTransition_MemClear, X
+	SUB #$3C
+	STA <MemClearLimit
+
+	LDY LiveTransition_MemClear, X
+
+	LDA <Temp_Var2
+
+	JSR LevelLoad_ClearMemLoop
+
+	TYA
+	STA LiveTransition_MemClear, X
+	BNE Live_Stage2RTS
+
+	LDX <CurrentObjectIndexZ
+	INC LiveTransition_Stage, X
+
+Live_Stage2RTS:
+	RTS
+
+; Live_Stage3:
+; 	JSR LevelLoad_Setup
+; 	JSR LevelLoad_Bank
+
+; 	LDA #$00
+; 	STA <MemClearLimit
+
+; 	LDY #$00
+; 	LDA [Temp_Var14],Y
+
+; 	LDY #$70
+
+; 	JSR LevelLoad_ClearMemLoop
+
+; 	LDX <CurrentObjectIndexZ
+; 	INC LiveTransition_Stage, X
+; 	RTS	
+
+Live_Stage3:
+	JSR LevelLoad_Setup
+	JSR LevelLoad_Bank
+	JSR LevelLoad_Gfx
+	JSR LevelLoad_Animations
+	JSR LevelLoad_Size
+	JSR LevelLoad_Pointers
+
+	LDX <CurrentObjectIndexZ
+	INC LiveTransition_Stage, X
+	RTS
+
+Live_Stage4:
+	JSR LevelLoad_Setup
+	JSR LevelLoad_Bank
+	JSR LiveTransition_MultiThread
+	JSR LevelLoad_WriteLevel
+		
+	LDX <CurrentObjectIndexZ
+	JSR Live_Backup
+	INC LiveTransition_Stage, X
+	RTS
+
+Live_Backup:
+	LDA <Compression_Screen
+	STA LiveTransition_CompressionScreen, X
+
+	LDA <Temp_Var8
+	STA LiveTransition_Temp8, X
+
+	LDA <Temp_Var9
+	STA LiveTransition_Temp9, X
+
+	LDA <Temp_Var14
+	STA LiveTransition_Temp14, X
+
+	LDA <Temp_Var15
+	STA LiveTransition_Temp15, X
+	RTS	
+
+Live_Stage5:
+	JSR LevelLoad_Setup
+	JSR LevelLoad_Bank
+	JSR LiveTransition_MultiThread
+
+	LDX <CurrentObjectIndexZ
+	LDA LiveTransition_Temp8, X
+	STA <Temp_Var8
+
+	LDA LiveTransition_Temp9, X
+	STA <Temp_Var9
+
+	LDA LiveTransition_Temp14, X
+	STA <Temp_Var14
+
+	LDA LiveTransition_Temp15, X
+	STA <Temp_Var15
+
+	LDA LiveTransition_CompressionScreen, X
+	STA <Compression_Screen
+
+	LDY #$00
+
+	JSR NextDecompressionCommand
+
+	LDX <CurrentObjectIndexZ
+	LDA MultiFrameLoad
+	BEQ LiveTransition_WriteDone
+
+	JSR Live_Backup
+	RTS
+
+LiveTransition_WriteDone:
+	INC LiveTransition_Stage, X
+	RTS
+
+LiveTransition_MultiThread:
 	LDA #$01
-	STA Level_Redraw
-	STA ForcedSwitch
+	STA MultiFrameLoad
+	
+	LDA #$05
+	STA CommandCount
+	RTS
 
-	JSR LevelLoadQuick
+LIVE_LEVEL_SIZE = 10
 
-	LDA #$09
-	STA <Player_XHi
+Live_Stage6:
+	LDA Level_Width
+	SUB #$01
+ 	STA <Player_XHi
 	STA Horz_Scroll_Hi
 	STA Level_AScrlPosHHi
 
-	PLA
-	STA <Horz_Scroll
-	STA Level_AScrlPosH
-
-	PLA 
-	STA Level_HAutoScroll
-
-	PLA
-	STA <Player_X
-
-	PLA
-	STA <Player_YHiZ
-
-	PLA
-	STA <Player_YZ
-
-	PLA
-	STA <Vert_Scroll
-
 	LDA #24
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+ 	STA PAGE_A000
+ 	JSR PRGROM_Change_A000
 
 	
-	JSR Setup_PalData	 ; Setup palette dataSetup_PalData
+ 	JSR Setup_PalData	 ; Setup palette dataSetup_PalData
 
-	LDX #$1F
+ 	LDX #$1F
 
-Live_LoadPalette:
-	LDA Pal_Data, X
-	STA Palette_Buffer, X
-	DEX
-	BPL Live_LoadPalette
+ Live_LoadPalette:
+ 	LDA Pal_Data, X
+ 	STA Palette_Buffer, X
+ 	DEX
+ 	BPL Live_LoadPalette
 
+	LDX <CurrentObjectIndexZ
+
+ 	LDA #$00
+ 	STA Objects_ID, X
+
+	LDY #$2f	 ; Y = $2F
+
+Reset_Objects:
+	STA Level_ObjectsSpawned,Y
+	DEY		 
+	BPL Reset_Objects
+	
+	STA Debug_Snap
+	
+	LDA #19
+	STA PAGE_A000
+	JSR PRGROM_Change_A000
+	JSR SetObjects_SpawnPoints
+	RTS
+
+Restore_Bank:
 	LDA #$00
-	STA PAGE_C000
-
-	JSR PRGROM_Change_C000 
-	LDA #$00
-	STA Objects_ID
-	STA Objects_ID+1
-	STA Objects_ID+2
-	STA Objects_ID+3
-	STA Objects_ID+4
-	STA <CurrentObjectIndexZ
+ 	STA PAGE_C000
+ 	JSR PRGROM_Change_C000 
 	RTS

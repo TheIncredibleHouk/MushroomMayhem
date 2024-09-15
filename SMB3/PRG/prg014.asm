@@ -3977,7 +3977,7 @@ ObjInit_Fuzzy:
 	RTS
 
 Fuzzy_PatTable:
-	.byte $33, $33, $00
+	.byte $33, $33, $32
 
 ObjNorm_Fuzzy:
 	LDY Objects_Property, X
