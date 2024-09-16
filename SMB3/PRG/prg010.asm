@@ -2683,8 +2683,6 @@ DrawMapBackground:
 	BNE NoMapClouds
 	
 	LDA World_Num
-	BEQ NoMapClouds
-
 	CMP #07
 	BEQ NoMapClouds
 

@@ -5092,6 +5092,7 @@ PRG012_A4C9:
 
 	JSR PRGROM_Change_A000
 
+	STA Debug_Snap
 	LDA World_Num
 	ASL A
 	ASL A
@@ -6854,7 +6855,6 @@ Live_Stage6:
  	DEX
  	BPL Live_LoadPalette
 
-	STA Debug_Snap
 	LDX #$04
  	LDA #$00
 

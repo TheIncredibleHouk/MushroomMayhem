@@ -1669,7 +1669,7 @@ MapObject_LeftTile:
 	.byte $55, $55, $55, $55	; Bullet Turret
 	.byte $59, $5D, $5B, $5F	; Bobomb
 	.byte $3D, $3D, $3D, $3D	; 0F = Piranha Stem
-	.byte $79, $79, $79, $79	; 
+	.byte $79, $2B, $79, $2B	; 
 	.byte $71, $75, $71, $75	;
 
 MapObject_RightTile:
@@ -1688,7 +1688,7 @@ MapObject_RightTile:
 	.byte $57, $57, $57, $57	; 0D
 	.byte $5B, $5F, $59, $5D	; 0E = Bobomb
 	.byte $3D, $3D, $3D, $3D	; 0F = Piranha Stem
-	.byte $2B, $7B, $2B, $7B	; 
+	.byte $7B, $7B, $7B, $7B	; 
 	.byte $73, $77, $73, $77	; 
 
 MapObject_AttrLeft:

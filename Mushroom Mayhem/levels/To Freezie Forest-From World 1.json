@@ -1,15 +1,16 @@
 {
   "Id": "6c2dafec-caa6-40bd-b4d2-a6f14d6d78dd",
-  "Name": "To Freezie Forest",
+  "Name": "To Freezie Forest-From World 1",
   "TileSetIndex": 1,
   "ClearTileIndex": 144,
-  "MusicValue": 0,
+  "MusicValue": 16,
   "ScreenLength": 6,
   "StartX": 2,
   "StartY": 17,
   "PaletteEffect": 0,
   "PaletteId": "cce895ff-70c5-4222-beb6-92dbbe564f1e",
   "StaticTileTableIndex": 8,
+  "NoStars": false,
   "MostCommonTile": 65,
   "AnimationType": 0,
   "ScrollType": 1,
@@ -6497,6 +6498,7 @@
     65,
     65
   ],
+  "PatchTileData": null,
   "FirstObjectData": [
     {
       "GameObjectId": 69,
@@ -6633,5 +6635,5 @@
       "BoundRectangle": "1472,288,32,32"
     }
   ],
-  "CompressedData": "agz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1HBSwz/wUt3w0uOj0zCjo9ICv9pwq6vTsKen0zCnp9IwawIrcGsTcKOj1TCro9Cw56foUsBocOen0EBoUnCnp9Iwb4IvcG+SgKhwp6fVMKen0EEkcGSR8GQCJHBkkTBkASRwZJFDP9HwZAHkcGSUMGQA5EE0cHSB83B0AjRwdIEzcHQBNHB0gXNDP8HzcHQB9HB0hDNwdAD0QThweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4ALhweE="
+  "CompressedData": "agz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1IM/39SDP9/Ugz/f1HBSwz/wUt3w0uOj0zCjo9ICv9pwq6vTsKen0zCnp9IwawIrcGsTcKOj1TCro9Cw56foUsBocOen0EBoUnCnp9Iwb4IvcG+SgKhwp6fVMKen0EEkcGSR8GQCJHBkkTBkASRwZJFDP9HwZAHkcGSUMGQA5EE0cHSB83B0AjRwdIEzcHQBNHB0gXNDP8HzcHQB9HB0hDNwdAD0QThweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4AjhweIH3cHgCOHB4gTdweAE4cHiBd0M/wfdweAH4cHiEN3B4APh"
 }

@@ -4767,7 +4767,7 @@ Messages_DisplayRTS:
 	RTS
 
 Map_DayNightPalIndex:
-	.byte $00, $0E, $03, $00, $0A, $0B, $07, $0F
+	.byte $09, $0E, $03, $00, $0A, $0B, $07, $06
 
 Map_DayNightPalette:
 	LDA DayNight
@@ -4779,6 +4779,13 @@ Map_DayNightPalette:
 
 	LDA #$0F
 	STA Pal_Data, X
+
+	LDA World_Num
+	CMP #$07
+	BNE Map_DayNightPaletteRTS
+
+	LDA #$0F
+	STA Pal_Data + $0F
 
 Map_DayNightPaletteRTS:
 	RTS

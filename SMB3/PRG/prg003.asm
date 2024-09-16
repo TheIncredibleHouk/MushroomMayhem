@@ -2431,7 +2431,6 @@ ObjNorm_StarBarrier:
 
 	LDA <Objects_XZ, X
 	STA Block_DetectX
-	STA <Poof_X
 
 	LDA <Objects_XHiZ, X
 	STA Block_DetectXHi
@@ -2439,13 +2438,25 @@ ObjNorm_StarBarrier:
 	LDA <Objects_YZ, X
 	ADD StarBarrier_DetectY, X
 	STA Block_DetectY
-	STA <Poof_Y
 
 	LDA <Objects_YHiZ, X
 	STA Block_DetectYHi
 
-	LDA #$41
+	STA Debug_Snap
+
+	JSR Object_DetectTile
+	TYA
+
+	AND #$C0
+	ORA #$01
 	JSR Object_ChangeBlock
+
+	LDA Tile_DetectionX
+	STA <Poof_X
+
+
+	LDA Tile_DetectionY
+	STA <Poof_Y
 
 	JSR Common_MakePoof
 	
