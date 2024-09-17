@@ -26,6 +26,7 @@ ObjNorm_Boss:
 	.word Boss_Piranha
 	.word Boss_Sun
 	.word Boss_Moon
+	.word Boss_MegaMalice
 
 
 Boss_CheepAction = Objects_Data1
@@ -4759,3 +4760,246 @@ BadgeShop_Explanation:
 	LDA Badge_Explanations, Y
 	STA Message_Id
 	RTS
+
+
+MegaMalice_Action = Objects_Data1
+MegaMalice_PlayerATB = Objects_Data2
+MegaMalice_EnemyATB = Objects_Data3
+MegaMalice_PlayerATBTicks = Objects_Data4
+MegaMalice_EnemyATBTicks = Objects_Data5
+MegaMalice_EnemyATBRate = Objects_Data6
+MegaMalice_PlayerATBState = Objects_Data7
+MegaMalice_PausePlayer = Objects_Data8
+
+PLAYER_ATB_MOVEABLE = 00
+PLAYER_ATB_HALT = 01
+
+Boss_MegaMalice:
+	LDA <Player_HaltGameZ
+	BEQ MegaMalice_Norm
+
+	JMP MegaMalice_Draw
+
+MegaMalice_Norm:
+	JSR MegaMalice_ProcessATB
+	JSR MegaMalice_IncreaseATB
+
+	LDA MegaMalice_Action, X
+	JSR DynJump
+
+	.word MegaMalice_Init
+	.word MegaMalice_Draw
+
+MegaMalice_ProcessATB:
+	STA Debug_Snap
+	LDA MegaMalice_PausePlayer, X
+	STA Player_VibeDisable
+	BNE MegaMalice_ProcessATBRTS
+
+	LDA SpecialObj_ID + 8
+	ORA SpecialObj_ID + 9
+	BNE MegaMalice_DrainPlayerATB
+	
+	LDA <Player_XVelZ
+	ORA <Player_YVelZ
+	BNE MegaMalice_DrainPlayerATB
+
+	LDA <Pad_Input
+	ORA <Pad_Holding
+	AND #(PAD_SELECT |PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN | PAD_A | PAD_B)
+	BEQ MegaMalice_ProcessATBRTS
+
+MegaMalice_DrainPlayerATB:
+	DEC MegaMalice_PlayerATBTicks, X
+	BMI MegaMalice_DecPlayerATB
+	BNE MegaMalice_ProcessATBRTS
+
+MegaMalice_DecPlayerATB:
+	LDA #$04
+	STA MegaMalice_PlayerATBTicks, X
+
+	DEC MegaMalice_PlayerATB, X
+	BEQ MegaMalice_HaltPlayer
+	BPL MegaMalice_ProcessATBRTS
+
+MegaMalice_HaltPlayer:
+	INC MegaMalice_PausePlayer, X
+
+MegaMalice_ProcessATBRTS:
+	RTS
+
+MegaMalice_Init:
+	LDA #48
+	STA Enemy_Health
+	STA Enemy_Health_Mode
+
+	LDA #$00
+	STA Objects_ExpPoints, X
+
+	LDA #$00
+	STA Objects_Health, X
+
+	INC MegaMalice_Action, X
+
+	LDA #$08
+	STA Objects_SpritesRequested, X
+
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	LDA #$08
+	STA MegaMalice_EnemyATBRate, X
+	JMP MegaMalice_Draw
+
+MegaMalice_Sprites:
+	.byte $D1, $D3, $D3, $D1
+	.byte $F1, $F3, $F3, $F1
+
+MegaMalice_Draw:
+	LDA #$1B
+	STA PatTable_BankSel + 5
+	
+	LDA #LOW(MegaMalice_Sprites)
+	STA <Giant_TilesLow
+
+	LDA #HIGH(MegaMalice_Sprites)
+	STA <Giant_TilesHi
+
+	LDA #$1B
+	STA PatTable_BankSel + 5
+
+	JSR Object_CheckForeground
+	JSR Object_DrawGiant
+	JSR ObjGiant_Mirror
+	RTS
+
+MegaMalice_IncreaseATB:
+	LDA <Player_XVelZ
+	ORA <Player_YVelZ
+	BNE MegaMalice_EnemyATBCalc
+
+	LDA SpecialObj_ID + 8
+	ORA SpecialObj_ID + 9
+	BNE MegaMalice_EnemyATBCalc
+
+	LDA <Pad_Input
+	ORA <Pad_Holding
+	AND #(PAD_SELECT |PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN | PAD_A | PAD_B)
+	BNE MegaMalice_EnemyATBCalc
+
+	LDA MegaMalice_PlayerATB, X
+	CMP #$20
+	BCS MegaMalice_FreePlayer
+
+	INC MegaMalice_PlayerATBTicks, X
+
+	LDA MegaMalice_PlayerATBTicks, X
+	CMP #$08
+	BCC MegaMalice_EnemyATBCalc	
+
+	INC MegaMalice_PlayerATB, X
+	
+	LDA #$00
+	STA MegaMalice_PlayerATBTicks, X
+	BEQ MegaMalice_EnemyATBCalc
+
+MegaMalice_FreePlayer:
+	LDA #$00
+	STA MegaMalice_PausePlayer, X
+
+MegaMalice_EnemyATBCalc:
+	LDA MegaMalice_EnemyATB, X
+	CMP #$20
+	BCS MegaMalice_ATBDraw
+
+	INC MegaMalice_EnemyATBTicks, X
+
+	LDA MegaMalice_EnemyATBTicks, X
+	CMP MegaMalice_EnemyATBRate, X
+	BCC MegaMalice_ATBDraw	
+
+	INC MegaMalice_EnemyATB, X
+	
+	LDA #$00
+	STA MegaMalice_EnemyATBTicks, X
+
+MegaMalice_ATBDraw:
+	LDY Graphics_BufCnt
+
+	LDA #$29
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$64
+	STA Graphics_Buffer , Y
+	INY
+
+	LDA #$04
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA MegaMalice_PlayerATB, X
+	STA <Temp_Var1
+
+	LDA #$03
+	STA <Temp_Var2
+
+	JSR MegaMalice_FillATB
+
+	LDA #$29
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$78
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA #$04
+	STA Graphics_Buffer, Y
+	INY
+
+	LDA MegaMalice_EnemyATB, X
+	STA <Temp_Var1
+
+	LDA #$03
+	STA <Temp_Var2
+
+	JSR MegaMalice_FillATB
+	LDA #$00
+	STA Graphics_Buffer, Y
+
+	TYA
+	STA Graphics_BufCnt
+	RTS
+
+MegaMalice_FillATB:
+	LDA <Temp_Var1
+	BPL MegaMalice_TestATBBar
+
+	LDA #$00
+	BEQ MegaMalice_ATBTile
+
+MegaMalice_TestATBBar:
+	CMP #$08
+	BCS MegaMalice_FullATBar
+
+MegaMalice_ATBTile:
+	ADD #$E1
+	BNE MegaMalice_DrawATBar
+
+MegaMalice_FullATBar:
+
+	LDA #$E9
+
+MegaMalice_DrawATBar:
+	STA Graphics_Buffer, Y
+
+	INY
+
+	LDA <Temp_Var1
+	SUB #$08
+	STA <Temp_Var1
+
+	DEC <Temp_Var2
+	BPL MegaMalice_FillATB
+	RTS	

@@ -2442,8 +2442,6 @@ ObjNorm_StarBarrier:
 	LDA <Objects_YHiZ, X
 	STA Block_DetectYHi
 
-	STA Debug_Snap
-
 	JSR Object_DetectTile
 	TYA
 

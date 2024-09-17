@@ -2587,10 +2587,10 @@ LevelLoadQuick:
 	JSR LevelLoad_Animations
 	JSR LevelLoad_Size
 	JSR LevelLoad_StartPosition
-	JSR LevelLoad_SetScrollPos
 	JSR LevelLoad_Music
 	JSR LevelLoad_HasStars
 	JSR LevelLoad_ScrollType
+	JSR LevelLoad_SetScrollPos
 	JSR LevelLoad_Effects
 	JSR LevelLoad_Event
 	JSR LevelLoad_Name
@@ -5092,7 +5092,6 @@ PRG012_A4C9:
 
 	JSR PRGROM_Change_A000
 
-	STA Debug_Snap
 	LDA World_Num
 	ASL A
 	ASL A
