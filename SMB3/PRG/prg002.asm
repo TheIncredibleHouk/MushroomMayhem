@@ -2233,8 +2233,13 @@ ObjInit_Explosion:
 	ORA #SND_LEVELBABOOM
 	STA Sound_QLevel1
 
+	LDA Objects_Timer2, X
+	BNE ObjInit_ExplosionRTS
+
 	LDA #$08
 	STA Objects_Timer2, X
+
+ObjInit_ExplosionRTS:
 	RTS		 ; Return
 
 Explosion_StarX = Temp_Var2

@@ -3871,7 +3871,6 @@ StatusBar_SkullIcon:
 	.byte $3E, $3D
 ;--------------------------------------
 StatusBar_DrawEnemyHealth:
-	
 	LDA Enemy_Health_Mode
 	BEQ DrawEnemy_HealthRTS
 

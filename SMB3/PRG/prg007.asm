@@ -615,7 +615,7 @@ SpecialObj_ToPoofKickSound:
 	STA Sound_QPlayer
 
 SpecialObj_ToPoofNoSound:
-	LDA Player_Invicible
+	LDA Player_Invincible
 	BNE SpecialObj_ToPoofNoSound1
 
 SpecialObj_ForcedPoof:
@@ -4901,7 +4901,7 @@ SObj_CantStomp:
 
 NotTailHit:
 
-	LDA Player_Invicible
+	LDA Player_Invincible
 	ORA Player_FireDash
 	BEQ EnemyProj_HitPlayer2
 
@@ -4968,7 +4968,7 @@ Enemy_FreezePlayer:
 	RTS
 
 Enemy_IceFreeze:
-	LDA Player_Invicible
+	LDA Player_Invincible
 	ORA Player_FireDash
 	BEQ EnemeyProj_Enemy_FreezePlayer1
 
@@ -5674,4 +5674,3 @@ Enemy_PlungerStuck:
 Plunger_Fall:
 	JSR SObj_ApplyYVelWithGravity
 	JMP Enemy_PlungerDraw
-	

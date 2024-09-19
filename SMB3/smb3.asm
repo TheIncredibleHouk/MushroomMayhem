@@ -1635,7 +1635,7 @@ MARIO_PLANE = 2
 	Player_Grow:		.ds 1	; Tick counter used to animate growth into Super Mario (20 is starting value, or 2f to shrink)
 	Player_Invulnerable:	.ds 1	; Player "flashing invincibility" after being hit, counts down to zero
 	Player_StarInv:		.ds 1	; Starman Invincibility counter; full/fatal invincibility, counts down to zero
-	Player_Invicible:	.ds 1
+	Player_Invincible:	.ds 1
 	Player_SuitLost:	.ds 1	; Suit lost to hit discard "poof" counter
 	Player_StarOff:		.ds 1	; Starman Invincibility wear-off (the last second or so when it slows and vanishes), counts down to zero
 	Player_HaltTick:	.ds 1	; When non-zero, all action halts until this countdown hits zero
@@ -2635,6 +2635,8 @@ HIT_TAIL		= $10
 HIT_STOMPED		= $20
 HIT_SHELL		= $40
 HIT_EXPLOSION	= $80
+HIT_DASH 		= $80
+HIT_INVULNERABLE = $80
 
 	Last_EventGen:		.ds 1
 	Level_EventTimer:	.ds 1	;

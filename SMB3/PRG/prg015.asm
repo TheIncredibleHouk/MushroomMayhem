@@ -2409,7 +2409,7 @@ PirateBoo_Draw:
 	JMP Object_Draw 	
 
 PirateBoo_TakeCoins:
-	LDA Player_Invicible
+	LDA Player_Invincible
 	BEQ PirateBoo_TakeCoinTimer
 
 	LDA #OBJSTATE_KILLED
@@ -4672,7 +4672,7 @@ ParaChomp_ChainBoundBox:
 ParaChomp_ChainGrab:
 	LDA Player_Vehicle
 	BNE ParaChomp_ChainGrabRTS
-	
+
 	LDY #$00
 	LDA <Pad_Holding
 	AND #(PAD_DOWN | PAD_UP)

@@ -5669,7 +5669,7 @@ FindTileBitRTS:
 Player_Freeze:
 	LDA Player_Frozen
 	ORA Player_Invulnerable
-	ORA Player_Invicible
+	ORA Player_Invincible
 	BEQ Player_FreezeNow
 	RTS
 
@@ -6128,7 +6128,7 @@ Player_Die:
 	STA <Player_XVelZ
 	STA Player_Flip	
 	STA Player_Invulnerable
-	STA Player_Invicible
+	STA Player_Invincible
 	STA Player_StarInv
 	STA Player_Shell
 	STA Player_FireDash
@@ -6642,7 +6642,7 @@ Object_FindEmptyY2:
 	
 
 ObjNorm_BadgeShop:
-	LDA #17
+	LDA #19
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 	JMP ObjNorm_BadgeShopDo

@@ -2040,7 +2040,7 @@ Player_RainbowCycle:
 	LDA Player_StarOff
 	BNE Player_RainbowCycle1
 
-	LDA Player_Invicible
+	LDA Player_Invincible
 	ORA Player_StarInv
 	BEQ Player_RainbowCycle3
 
@@ -2054,7 +2054,7 @@ Player_RainbowCycle:
 	DEC Player_StarInv
 
 	LDA Player_StarInv
-	STA Player_Invicible
+	STA Player_Invincible
 	CMP #$10
 	BNE Player_RainbowCycle1	 ; If Player_StarInv <> 32, jump to PRG029_CF05
 

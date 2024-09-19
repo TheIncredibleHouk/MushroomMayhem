@@ -346,7 +346,7 @@ LevelJunction_PartialInit:
 	STA Level_AScrlConfig	 ; Clear auto scroll configuration (no auto scroll)
 	STA Level_ObjectsInitialized	 ; Do level scene change reset
 	STA Poison_Mode
-	STA Player_Invicible
+	STA Player_Invincible
 
 	LDA #$50
 	STA Player_Power
@@ -4871,7 +4871,7 @@ Player_SuitChange2:
 	STY Power_Change
 	STY Player_GroundPound
 	STY Player_Flip
-	STY Player_Invicible
+	STY Player_Invincible
 
 	TAY
 
@@ -6249,7 +6249,7 @@ PoisonMode_Activate:
 	STA Power_Change
 
 	LDA #$02
-	STA Player_Invicible
+	STA Player_Invincible
 
 Cant_Poison_Mode:
 	RTS
@@ -6263,7 +6263,7 @@ Continue_Poison_Mode:
 	BEQ Stop_Poison_Mode
 
 	LDA #$02
-	STA Player_Invicible
+	STA Player_Invincible
 	RTS
 
 Stop_Poison_Mode:
@@ -6272,7 +6272,7 @@ Stop_Poison_Mode:
 
 	LDA #$00
 	STA Poison_Mode
-	STA Player_Invicible
+	STA Player_Invincible
 	RTS
 
 Player_CheckForeground:

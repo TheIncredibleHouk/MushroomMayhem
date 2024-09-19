@@ -3749,7 +3749,7 @@ Object_DoCollision:
 ; $D9D3
 Player_GetHurt:
 	LDA Player_Invulnerable		; ... flashing invincible ...
-	ORA Player_Invicible		; ... invincible by star 
+	ORA Player_Invincible		; ... invincible by star 
 	ORA <Player_HaltGameZ		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
 	BNE PRG000_D9B7	 ; ... then jump to PRG000_D9B7 (RTS)
@@ -3882,13 +3882,11 @@ Object_RespondToTailAttack1:
 	LDA #$10
 	STA Objects_Timer2, X
 
-	LDA Objects_PlayerProjHit, X
-	ORA #HIT_TAIL
+	LDA #HIT_TAIL
 	STA Objects_PlayerProjHit, X
 
 	JSR Object_KickSound
 	JSR Object_DetermineChange
-	JSR Object_FlipFallAwayFromHit
 	JSR Object_GetKilled
 	
 	LDA Objects_State, X
@@ -3897,8 +3895,12 @@ Object_RespondToTailAttack1:
 
 	LDA #$FF
 	STA Objects_Health, X
+	BNE Object_TailRTS
 
 Object_TailNotKilled:
+	JSR Object_FlipFallAwayFromHit
+
+Object_TailRTS:
 	PLA
 	PLA
 
@@ -5456,7 +5458,7 @@ Object_Explode:
 	LDA #$08
 	STA Objects_Timer2, X
 
-	LDA #OBJSTATE_INIT
+	LDA #OBJSTATE_FRESH
 	STA Objects_State, X
 
 	JSR Object_NoInteractions
@@ -5959,8 +5961,11 @@ Object_FlipFallAwayFromHit1:
 	RTS
 
 Object_DetermineContactKill:
-	LDA Player_Invicible
+	LDA Player_Invincible
 	BEQ Check_FireDash
+	
+	LDA #HIT_EXPLOSION
+	STA Objects_PlayerProjHit, X
 
 	LDA Objects_WeaponAttr, X
 	AND #ATTR_INVINCIBLE
@@ -5971,6 +5976,9 @@ Check_FireDash:
 	LDA Player_FireDash
 	BEQ Check_ShellAttack
 
+	LDA #HIT_SHELL
+	STA Objects_PlayerProjHit, X
+
 	LDA Objects_WeaponAttr, X
 	AND #ATTR_DASHPROOF
 	BEQ Object_GetsHurt
@@ -5979,6 +5987,9 @@ Check_FireDash:
 Check_ShellAttack:
 	LDA Player_Shell
 	BEQ Object_NotHurt
+
+	LDA #HIT_SHELL
+	STA Objects_PlayerProjHit, X
 
 	LDA Objects_BehaviorAttr, X
 	AND #ATTR_SHELLPROOF

@@ -180,6 +180,8 @@ ObjP13:
 ObjP01:
 	.byte $51, $53	
 	.byte $73, $73
+	.byte $BD, $BD
+	.byte $B9, $BB
 
 ObjP04:
 	.byte $6B, $6B, $67, $67, $77, $77	
@@ -242,18 +244,19 @@ POWERUP_VINE		= 12
 POWERUP_PWING		= 13
 POWERUP_CHECKPOINT	= 14
 POWERUP_MEGASTAR	= 15
+POWERUP_SPORE		= 16
 
 PowerUp_Palette:
-	.byte SPR_PAL0, SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL0
+	.byte SPR_PAL0, SPR_PAL0, SPR_PAL1, SPR_PAL2, SPR_PAL1, SPR_PAL2, SPR_PAL2, SPR_PAL3, SPR_PAL2, SPR_PAL3, SPR_PAL1, SPR_PAL1, SPR_PAL2, SPR_PAL3, SPR_PAL0, SPR_PAL2, SPR_PAL1
 
 PowerUp_YVelocities:
-	.byte $00, $00, $D0, $D0, $C0, $D0, $D0, $D0, $D0, $C0, $B0, $D0, $D0, $D0, $D0
+	.byte $00, $00, $D0, $D0, $C0, $D0, $D0, $D0, $D0, $C0, $B0, $D0, $D0, $D0, $D0, $00, $A0
 
 PowerUp_AnimOff:
-	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $FF, $2C, $1C
+	.byte $00, $00, $00, $04, $08, $0C, $10, $14, $18, $24, $20, $28, $FF, $2C, $1C, $FF, $FF
 
 PowerUp_Timers:
-	.byte $00, $00, $08, $08, $1C, $1C, $08, $1C, $08, $1C, $08, $1C, $0A, $08, $08
+	.byte $00, $00, $08, $08, $1C, $1C, $08, $1C, $08, $1C, $08, $1C, $0A, $08, $08, $00, $00
 
 
 ObjInit_PUp1:
@@ -306,7 +309,7 @@ PowerUp_Sound:
 	LDA Sound_QLevel1
 	ORA #SND_LEVELRISE
 	STA Sound_QLevel1
-	BEQ PowerUp_Init
+	BNE PowerUp_Init
 
 PowerUp_VineSndFX:
 	LDA Sound_QLevel1
@@ -400,12 +403,17 @@ PowerUp_NoDelete:
 ObjNorm_PowerUp0:
 	LDA PowerUp_Type, X
 	CMP #POWERUP_VINE
-
 	BNE PowerUp_NotVine2
 
-	JMP PUp_VineDraw
+	JMP PupSpore_JustDraw
 
 PowerUp_NotVine2:
+	CMP #POWERUP_SPORE
+	BNE PowerUp_HaltDraw
+
+	JMP PupSpore_JustDraw
+
+PowerUp_HaltDraw:
 	JMP Object_Draw
 
 ObjNorm_PowerUp1:
@@ -428,6 +436,8 @@ ObjNorm_PowerUp1:
 	.word PUp_Vine
 	.word Pup_PWing
 	.word PUp_Flower
+	.word ObjNorm_DoNothing
+	.word Pup_Spore
 
 
 PUp_DrawMaskSprite:
@@ -646,7 +656,6 @@ PUp_Mushroom2:
 	JMP Object_Draw
 
 PUp_Flower:
-
 	JSR Object_DeleteOffScreen
 	JSR Object_ApplyY_With_Gravity
 	JSR Object_CalcBoundBox
@@ -661,6 +670,55 @@ PUp_Flower:
 	STA Objects_Orientation, X
 
 PUp_Flower2:
+	JMP Object_Draw
+
+Pup_Spore:
+	LDA #$01
+	STA ObjSplash_Disabled, X
+	STA Objects_InWater, X
+
+	LDA #ATTR_ALLWEAPONPROOF
+	STA Objects_WeaponAttr, X
+
+	JSR Object_ApplyY_With_Gravity
+	JSR Object_CalcBoundBox
+
+	LDA <Objects_YVelZ, X
+	BMI PupSpore_JustDraw
+
+	JSR Object_AttackOrDefeat
+	
+PupSpore_JustDraw:
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+	LDA <Objects_YVelZ, X
+	BPL PUpSpore_NoXMove
+
+	LDA #$02
+	STA Objects_Frame, X
+	
+	LDA <Objects_YHiZ, X
+	BNE PupSpore_DrawMirrored
+
+	LDA <Objects_YZ, X
+	CMP #$C0
+	BCS PupSpore_DrawMirrored
+
+	LDA <Player_X
+	STA <Objects_XZ, X
+
+	LDA #$00
+	STA <Objects_YVelZ, X
+	STA Objects_Timer2, X
+
+PupSpore_DrawMirrored:
+	JMP Object_DrawMirrored
+
+PUpSpore_NoXMove:
+	LDA #$03
+	STA Objects_Frame, X
+
 	JMP Object_Draw
 
 PUp_ItemBlock:
@@ -3457,7 +3515,14 @@ ObjInit_MaliceMushroom:
 	STA Objects_BehaviorAttr, X
 
 	JSR Object_CalcBoundBox
+
+	LDA Objects_Property, X
+	CMP #$03
+	BEQ ObjInit_MaliceMushroomRTS
+	
 	JSR Object_MoveTowardsPlayer
+
+ObjInit_MaliceMushroomRTS:
 	RTS
 
 ObjNorm_MaliceMushroom:
@@ -3466,11 +3531,16 @@ ObjNorm_MaliceMushroom:
 	CMP #OBJSTATE_KILLED
 	BNE ObjNorm_MaliceMushroom0
 
+	LDA Objects_Property, X
+	CMP #$03
+	BEQ MaliceMushroom_NoEnd
+
 	LDA #$80
 	STA CompleteLevelTimer
 
 	JSR DestroyAllEnemies
 
+MaliceMushroom_NoEnd:
 	JMP Object_PoofDie
 
 ObjNorm_MaliceMushroom0:
@@ -3482,6 +3552,7 @@ ObjNorm_MaliceMushroom0:
 	.word MaliceMushroom_Normal
 	.word MaliceMushroom_InsideItemBlock
 	.word MaliceMushroom_InsideBlock
+	.word MaliceMushroom_Normal
 
 MaliceMushroom_Normal:
 	LDA <Player_HaltGameZ
@@ -3595,3 +3666,27 @@ MaliceMushroom_InsideBlockRTS:
 	LDA #$04
 	STA Objects_Timer2, X
 	RTS
+
+MaliceMushroom_AttackOnly:
+	LDA <Player_HaltGameZ
+	BNE MaliceMushroom_AttackDraw
+
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+
+	LDA Objects_Timer, X
+	BNE MaliceMushroom_NoInteract
+
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+	
+MaliceMushroom_NoInteract:
+	LDA Objects_Orientation, X
+	AND #~SPR_VFLIP
+	STA Objects_Orientation, X
+
+	JSR Object_InteractWithObjects
+
+MaliceMushroom_AttackDraw:
+	JMP Object_DrawMirrored

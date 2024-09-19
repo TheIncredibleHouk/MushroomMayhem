@@ -4257,511 +4257,6 @@ SunMoon_CalcHealth:
 	STA Enemy_Health
 	RTS
 
-; BADGE SHOP
-ObjNorm_BadgeShopDo:
-	LDA BadgeShop_Drawn, X
-	BNE BadgeShop_TryInstructions
-
-	INC BadgeShop_Drawn, X
-	JMP BadgeShop_UpdateWindow
-
-BadgeShop_TryInstructions:
-	LDA BadgeShop_InstructionsDrawn, X
-	BNE BadgeShop_Norm
-
-	JSR BadgeShop_WriteInstructions
-	JMP BadgeShop_Draw
-
-BadgeShop_Norm:		
-	LDA #$10
-	STA Player_HaltTick
-
-	LDA Pad_Input
-	AND #PAD_UP
-	BEQ BadgeShop_TryExit
-
-	JSR BadgeShop_Explanation
-	JMP BadgeShop_Draw
-
-BadgeShop_TryExit:	
-	LDA Pad_Input
-	AND #PAD_B
-	BEQ BadgeShop_TryBuy
-
-	LDA #$01
-	STA <Level_ExitToMap
-	STA Map_ReturnStatus
-
-	LDA #MUS1_STOPMUSIC
-	STA Sound_QMusic1
-
-	CLR_MSG
-	JMP BadgeShop_Draw
-
-BadgeShop_TryBuy:	
-	LDA Pad_Input
-	AND #PAD_A
-	BEQ BadgeShop_Prev
-
-	LDA #$00
-	STA Message_Id
-
-	JSR BadgeShop_BuyBadge
-	JMP BadgeShop_Draw
-
-BadgeShop_Prev:	
-	LDA Pad_Input
-	AND #PAD_LEFT
-	BEQ BadgeShop_Next
-
-	LDA #$00
-	STA Message_Id
-
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP
-	STA Sound_QLevel1
-
-	DEC BadgeShop_Window, X
-	BPL BadgeShop_Update
-
-	LDA #$05
-	STA BadgeShop_Window, X
-
-	JMP BadgeShop_Update
-
-BadgeShop_Next:
-	LDA Pad_Input
-	AND #PAD_RIGHT
-	BEQ BadgeShop_Draw
-
-	LDA #$00
-	STA Message_Id
-
-	LDA Sound_QLevel1
-	ORA #SND_LEVELBLIP
-	STA Sound_QLevel1
-
-	INC BadgeShop_Window, X
-	LDA BadgeShop_Window, X
-	CMP #$06
-	BCC BadgeShop_Update
-
-	LDA #$00
-	STA BadgeShop_Window, X
-
-BadgeShop_Update:
-	JSR BadgeShop_UpdateWindow
-
-BadgeShop_Draw:
-	LDA #$00
-	STA Objects_Frame, X
-
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
-
-	JSR Object_Draw
-
-	LDA Object_SpriteRAMOffset, X
-	ADD #$08 
-	STA Object_SpriteRAMOffset, X
-
-	LDA #SPR_PAL3
-	STA Objects_SpriteAttributes, X
-	JSR Object_Draw
-
-	LDA Object_SpriteRAMOffset, X
-	SUB #$08
-	TAY
-
-	LDA #$A5
-	STA Sprite_RAMTile, Y
-	
-	LDA #$A7
-	STA Sprite_RAMTile + 4, Y
-
-	LDA #$A9
-	STA Sprite_RAMTile + 8, Y
-	
-	LDA #$AB
-	STA Sprite_RAMTile + 12, Y
-	RTS
-
-BadgeShop_List:
-	.byte BADGE_RADAR
-	.byte BADGE_AIR
-	.byte BADGE_XP
-	.byte BADGE_PMETER 
-	.byte BADGE_COIN
-	.byte BADGE_ITEMRESERVE
-	.byte BADGE_RADAR 		
-	.byte BADGE_AIR
-
-BadgeShop_Tiles:
-	.byte $FF, $FF, $FF, $FF ; $00
-	.byte $B2, $B3, $C2, $C3 ; $01
-	.byte $B6, $B7, $C2, $C3 ; $02
-	.byte $C6, $C7, $C2, $C3 ; $03
-	.byte $BA, $BB, $CA, $CB ; $04
-	.byte $B0, $B1, $C0, $C1 ; $05
-	.byte $FF, $FF, $FF, $FF ; $06
-	.byte $FF, $FF, $FF, $FF ; $07
-	.byte $FF, $FF, $FF, $FF ; $08
-	.byte $B4, $B5, $C4, $C5 ; $09
-	
-
-BadgeShop_Cost:
-	.byte 0		; $00
-	.byte 6	 	; $01
-	.byte 8		; $02
-	.byte 10	; $03
-	.byte 4		; $04
-	.byte 10	; $05
-	.byte 00
-	.byte 00
-	.byte 00
-	.byte 10	; $06
-
-Badge_Descriptions:
-	.db "     INVALID    "; 00
-	.db "    DOUBLE XP   "; 01
-	.db " DOUBLE P METER "; 02
-	.db "  DOUBLE COINS  "; 03
-	.db "  INCREASED AIR "; 04
-	.db "  ITEM RESERVE  "; 05
-	.db "                "; 06
-	.db "                "; 07
-	.db "                "; 08
-	.db "   STAR RADAR   "; 09
-
-BadgeShop_Window = Objects_Data1
-BadgeShop_Badge1 = Temp_Var1
-BadgeShop_Badge2 = Temp_Var2
-BadgeShop_Badge3 = Temp_Var3
-BadgeShop_Drawn = Objects_Data2
-BadgeShop_InstructionsDrawn = Objects_Data3
-BadgeShop_HalfOff = Objects_Data4
-BadgeShop_Free = Objects_Data5
-
-BadgeShop_UpdateWindow:
-	LDA BadgeShop_Window, X
-	TAY
-
-	LDA BadgeShop_List, Y
-	STA BadgeShop_Badge1
-
-	LDA BadgeShop_List + 1, Y
-	STA BadgeShop_Badge2
-
-	LDA BadgeShop_List + 2, Y
-	STA BadgeShop_Badge3
-
-	LDY Graphics_BufCnt
-
-	LDA #$28
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$EC
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$08
-	STA Graphics_Buffer, Y
-	INY 
-
-	LDA BadgeShop_Badge1
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 1, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F2
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge2
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 1, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F8
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge3
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 1, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$29
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$0C
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$08
-	STA Graphics_Buffer, Y
-	INY 
-
-	LDA BadgeShop_Badge1
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles + 2, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 3, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F2
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge2
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles + 2, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 3, X
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$F8
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge3
-	ASL A
-	ASL A
-	TAX
-
-	LDA BadgeShop_Tiles + 2, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA BadgeShop_Tiles + 3, X
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$28
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$A8
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$10
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$00
-
-	LDX BadgeShop_Badge2
-
-BadgeShop_Loop:	
-	ADD #$10
-	DEX
-	BNE BadgeShop_Loop
-
-	TAX
-
-	LDA #$0F
-	STA <Temp_Var4
-
-BadgeShop_Name:
-	LDA Badge_Descriptions, X
-	STA Graphics_Buffer, Y
-	INY
-	INX
-
-	DEC <Temp_Var4
-	BPL BadgeShop_Name
-
-	LDA #$29
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$4E
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$03
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA #$D5
-	STA Graphics_Buffer, Y
-	INY	
-
-	LDA BadgeShop_Badge2
-	TAX
-
-	LDA BadgeShop_Cost, X
-	STA <DigitsParam
-
-	LDA BadgeShop_HalfOff, X
-	BEQ BadgeShop_Digits
-
-	LSR <DigitsParam
-
-BadgeShop_Digits:	
-	JSR BytesTo2Digits
-
-	LDA <DigitsResult + 1
-	ORA #$30
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA <DigitsResult 
-	ORA #$30
-	STA Graphics_Buffer, Y
-	INY
-
-	LDA #$00
-	STA Graphics_Buffer, Y
-	INY
-	
-BadgeShop_Finish:
-	TYA
-	ADD Graphics_BufCnt
-	STA Graphics_BufCnt
-
-	LDX <CurrentObjectIndexZ
-	RTS	
-
-BadgeShop_BuyBadge:
-	LDY BadgeShop_Window, X
-	LDA BadgeShop_List + 1, Y
-	TAY
-
-	LDA BadgeShop_Cost, Y
-	LDY BadgeShop_HalfOff, X
-	BEQ BadgeShop_Subtract
-
-	LSR A
-
-BadgeShop_Subtract:
-	STA <Temp_Var4
-
-	LDA Player_Cherries
-	SUB <Temp_Var4
-	BCC BadgeShop_CannotBuy
-	
-	STA Player_Cherries
-	LDX <CurrentObjectIndexZ
-	LDY BadgeShop_Window, X
-
-	LDA BadgeShop_List + 1, Y
-	STA Player_Badge
-
-	LDA Sound_QMap
-	ORA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-	RTS
-
-BadgeShop_CannotBuy:
-	LDA Sound_QMap
-	ORA #SND_MAPDENY
-	STA Sound_QMap
-
-	LDX <CurrentObjectIndexZ
-	RTS
-
-BadgeShop_Instructions:
-	.byte $29, $A9, 14
-	.db ": AND ; SELECT"
-
-	.byte $29, $C9, 11
-	.db "A BUY BADGE"
-
-	.byte $29, $E9, 6
-	.db "B EXIT"
-
-	.byte $2A, $09, 14
-	.db "< EXPLANATION "
-
-	.byte $00
-
-BadgeShop_WriteInstructions:
-	LDY Graphics_BufCnt
-	BNE BadgeShop_WriteInstructionsRTS
-	
-	LDX #$00
-
-BadgeShop_InstructionLoop:	
-	LDA BadgeShop_Instructions, X
-	STA Graphics_Buffer, Y
-	INY 
-	INX
-
-	CPX #58
-	BCC  BadgeShop_InstructionLoop
-
-	TYA
-	ADD Graphics_BufCnt
-	STA Graphics_BufCnt
-
-	LDX <CurrentObjectIndexZ
-	INC BadgeShop_InstructionsDrawn, X
-
-BadgeShop_WriteInstructionsRTS:
-	RTS
-
-Badge_Explanations:
-	.byte $00
-	 MSG_ID Badge_A_Explanation
-	 MSG_ID Badge_B_Explanation
-	 MSG_ID Badge_C_Explanation
-	 MSG_ID Badge_D_Explanation
-	 MSG_ID Badge_E_Explanation
-	 MSG_ID Badge_F_Explanation
-	 MSG_ID Badge_F_Explanation
-	 MSG_ID Badge_F_Explanation
-	 MSG_ID Badge_F_Explanation
-
-BadgeShop_Explanation:
-	LDY BadgeShop_Window, X
-	LDA BadgeShop_List + 1, Y
-	TAY
-
-	LDA Badge_Explanations, Y
-	STA Message_Id
-	RTS
-
-
 MegaMalice_Action = Objects_Data1
 MegaMalice_PlayerATB = Objects_Data2
 MegaMalice_EnemyATB = Objects_Data3
@@ -4770,6 +4265,12 @@ MegaMalice_EnemyATBTicks = Objects_Data5
 MegaMalice_EnemyATBRate = Objects_Data6
 MegaMalice_PlayerATBState = Objects_Data7
 MegaMalice_PausePlayer = Objects_Data8
+MegaMalice_Health = Objects_Data9
+MegaMalice_HealTimer = Objects_Data10
+MegaMalice_PauseEnemyATB = Objects_Data11
+MegaMalice_PauseEnemy = Objects_Data12
+MegaMalice_PlayerAboveTicker = Objects_Data13
+MegaMalice_Charging = Object_BufferX
 
 PLAYER_ATB_MOVEABLE = 00
 PLAYER_ATB_HALT = 01
@@ -4781,32 +4282,52 @@ Boss_MegaMalice:
 	JMP MegaMalice_Draw
 
 MegaMalice_Norm:
+	LDA MegaMalice_Action, X
+	CMP #$06
+	BCS MegaMalice_Dying
+
 	JSR MegaMalice_ProcessATB
 	JSR MegaMalice_IncreaseATB
+	JSR MegaMalice_ProcessHealth
+	JSR MegaMalice_Interact
+	JSR MegaMalice_Heal
+	JSR MegaMalice_CheckAbove
 
+MegaMalice_Dying:
 	LDA MegaMalice_Action, X
 	JSR DynJump
 
 	.word MegaMalice_Init
-	.word MegaMalice_Draw
+	.word MegaMalice_Stage1
+	.word MegaMalice_Stage2
+	.word MegaMalice_Stage3
+	.word MegaMalice_Stage4
+	.word MegaMalice_Stage5
+	.word MegaMalice_Die
+	.word MegaMalice_Death
+	.word MegaMalice_FanFare
+	.word MegaMalice_WaitEnding
+	.word MegaMalice_Credits
+	.word Credits_FadeOut
+	.word Credits_Roll
 
 MegaMalice_ProcessATB:
-	STA Debug_Snap
 	LDA MegaMalice_PausePlayer, X
 	STA Player_VibeDisable
 	BNE MegaMalice_ProcessATBRTS
-
-	LDA SpecialObj_ID + 8
-	ORA SpecialObj_ID + 9
-	BNE MegaMalice_DrainPlayerATB
 	
-	LDA <Player_XVelZ
-	ORA <Player_YVelZ
-	BNE MegaMalice_DrainPlayerATB
-
 	LDA <Pad_Input
-	ORA <Pad_Holding
-	AND #(PAD_SELECT |PAD_LEFT | PAD_RIGHT | PAD_UP | PAD_DOWN | PAD_A | PAD_B)
+	AND #(PAD_SELECT | PAD_B | PAD_A)
+	BEQ MegaMalice_Movement
+
+	LDA MegaMalice_PlayerATB, X
+	SUB #$04
+	STA MegaMalice_PlayerATB, X
+	BMI MegaMalice_HaltPlayer
+
+MegaMalice_Movement:
+	LDA <Pad_Holding
+	AND #(PAD_LEFT | PAD_RIGHT)
 	BEQ MegaMalice_ProcessATBRTS
 
 MegaMalice_DrainPlayerATB:
@@ -4818,6 +4339,7 @@ MegaMalice_DecPlayerATB:
 	LDA #$04
 	STA MegaMalice_PlayerATBTicks, X
 
+MegaMalice_FastDec:
 	DEC MegaMalice_PlayerATB, X
 	BEQ MegaMalice_HaltPlayer
 	BPL MegaMalice_ProcessATBRTS
@@ -4825,12 +4347,16 @@ MegaMalice_DecPlayerATB:
 MegaMalice_HaltPlayer:
 	INC MegaMalice_PausePlayer, X
 
+	LDA #$00
+	STA MegaMalice_PlayerATB, X
+	STA MegaMalice_PlayerATBTicks, X
+
 MegaMalice_ProcessATBRTS:
 	RTS
 
 MegaMalice_Init:
 	LDA #48
-	STA Enemy_Health
+	STA MegaMalice_Health, X
 	STA Enemy_Health_Mode
 
 	LDA #$00
@@ -4849,13 +4375,116 @@ MegaMalice_Init:
 
 	LDA #$08
 	STA MegaMalice_EnemyATBRate, X
+
+	LDA #ATTR_NOICE
+	STA Objects_BehaviorAttr, X
+
+	LDA #BOUND32x32
+	STA Objects_BoundBox, X
+
+	LDA #$20
+	STA MegaMalice_EnemyATB, X
+	STA MegaMalice_PlayerATB, X
+
+	JSR Object_MoveTowardsPlayer
 	JMP MegaMalice_Draw
+
+MegaMalice_DamageValues:
+	.byte $00
+	.byte $01 ;HIT_FIREBALL	= $01
+	.byte $01 ;HIT_ICEBALL		= $02
+	.byte $03 ;HIT_HAMMER		= $04
+	.byte $02 ;HIT_NINJASTAR	= $08
+	.byte $08 ;HIT_TAIL		= $10
+	.byte $04 ;HIT_STOMPED		= $20
+	.byte $03 ;HIT_SHELL		= $40
+	.byte $03 ;HIT_EXPLOSION	= $80
+
+MegaMalice_ProcessHealth:
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE MegaMalice_ProcessHealthRTS
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+	LDA #$40
+	STA Objects_Timer2, X
+
+	DEC MegaMalice_Health, X
+
+	LDY #$00
+	CLC
+
+	LDA Objects_PlayerProjHit, X
+
+MegaMalice_DamageLoop:	
+	INY
+	ROR A
+	BCC MegaMalice_DamageLoop
+	
+	LDA MegaMalice_Health, X
+	SUB MegaMalice_DamageValues, Y
+	STA MegaMalice_Health, X
+
+	LDA #$00
+	STA Objects_PlayerProjHit, X
+
+MegaMalice_ProcessHealthRTS:
+	LDA MegaMalice_Health, X
+	STA Enemy_Health
+	RTS
+
+MegaMalice_Interact:
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTiles
+
+	LDA MegaMalice_Charging, X
+	BEQ MegaMalice_InteractRTS
+	LDA <Objects_TilesDetectZ, X
+	AND #(HIT_LEFTWALL | HIT_RIGHTWALL)
+	BEQ MegaMalice_InteractRTS
+
+	LDA #$00
+	STA MegaMalice_Charging, X
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$10
+	STA Level_Vibration
+
+MegaMalice_InteractRTS:	
+	RTS
 
 MegaMalice_Sprites:
 	.byte $D1, $D3, $D3, $D1
 	.byte $F1, $F3, $F3, $F1
 
+MegaMalice_Palettes:
+	.byte SPR_PAL1, SPR_PAL3
+
 MegaMalice_Draw:
+	LDA #$00
+	STA Objects_Orientation, X
+
+	LDY #$00
+	LDA Objects_Timer2, X
+	BEQ MegaMalice_SetPal
+
+	LSR A
+	AND #$01
+	TAY
+
+MegaMalice_SetPal:
+	LDA MegaMalice_Palettes, Y
+	STA Objects_SpriteAttributes, X
+
+	LDA #$23
+	STA PatTable_BankSel + 4
+
 	LDA #$1B
 	STA PatTable_BankSel + 5
 	
@@ -4871,6 +4500,29 @@ MegaMalice_Draw:
 	JSR Object_CheckForeground
 	JSR Object_DrawGiant
 	JSR ObjGiant_Mirror
+
+	LDA Objects_Timer, X
+	BEQ MegaMalice_DrawRTS
+
+	LSR A
+	AND #$01
+	BEQ MegaMalice_DrawRTS
+
+	TYA
+	TAX
+
+	INC Sprite_RAMY, X
+	INC Sprite_RAMY + 4, X
+	INC Sprite_RAMY + 8, X
+	INC Sprite_RAMY + 12, X
+	INC Sprite_RAMY + 16, X
+	INC Sprite_RAMY + 20, X
+	INC Sprite_RAMY + 24, X
+	INC Sprite_RAMY + 28, X
+
+	LDX <CurrentObjectIndexZ
+
+MegaMalice_DrawRTS:
 	RTS
 
 MegaMalice_IncreaseATB:
@@ -4894,7 +4546,7 @@ MegaMalice_IncreaseATB:
 	INC MegaMalice_PlayerATBTicks, X
 
 	LDA MegaMalice_PlayerATBTicks, X
-	CMP #$08
+	CMP #$04
 	BCC MegaMalice_EnemyATBCalc	
 
 	INC MegaMalice_PlayerATB, X
@@ -4908,9 +4560,12 @@ MegaMalice_FreePlayer:
 	STA MegaMalice_PausePlayer, X
 
 MegaMalice_EnemyATBCalc:
+	LDA MegaMalice_PauseEnemyATB, X
+	BNE MegaMalice_ATBDraw
+
 	LDA MegaMalice_EnemyATB, X
 	CMP #$20
-	BCS MegaMalice_ATBDraw
+	BCS MegaMalice_FreeEnemy
 
 	INC MegaMalice_EnemyATBTicks, X
 
@@ -4922,8 +4577,18 @@ MegaMalice_EnemyATBCalc:
 	
 	LDA #$00
 	STA MegaMalice_EnemyATBTicks, X
+	BEQ MegaMalice_ATBDraw
+
+MegaMalice_FreeEnemy:
+	LDA #$00
+	STA MegaMalice_PauseEnemy, X
+	STA MegaMalice_Charging, X
 
 MegaMalice_ATBDraw:
+	LDA Game_Counter
+	AND #03
+	BNE MegaMalice_ATBDrawRTS
+
 	LDY Graphics_BufCnt
 
 	LDA #$29
@@ -5002,4 +4667,705 @@ MegaMalice_DrawATBar:
 
 	DEC <Temp_Var2
 	BPL MegaMalice_FillATB
+
+MegaMalice_ATBDrawRTS:	
 	RTS	
+
+MegaMalice_Stage1:
+	LDA MegaMalice_PauseEnemy, X
+	BNE MegaMalice_Stage1NoAttack
+
+	LDA MegaMalice_EnemyATB, X
+	BNE MegaMalice_Stage1Attack
+
+	INC MegaMalice_PauseEnemy, X
+	
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+	BEQ MegaMalice_Stage1NoAttack
+
+MegaMalice_Stage1Attack:
+	LDA #$01
+	STA MegaMalice_PauseEnemyATB, X
+
+	DEC MegaMalice_EnemyATBTicks, X
+	BPL MegaMalice_Stage1Move
+
+	DEC MegaMalice_EnemyATB, X
+	LDA MegaMalice_EnemyATBRate, X
+	STA MegaMalice_EnemyATBTicks, X
+
+MegaMalice_Stage1Move:
+	JSR Object_Move	
+
+MegaMalice_Stage1NoAttack:	
+	LDA MegaMalice_Health, X
+	CMP #24
+	BCS MegaMalice_Stage1_End
+
+	LDA #$40
+	STA MegaMalice_HealTimer, X
+
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+
+	LDA #48
+	STA MegaMalice_Health, X
+
+	INC MegaMalice_Action, X
+
+	LDA <Objects_XVelZ, X
+	JSR Double_Value
+	STA <Objects_XVelZ, X
+
+MegaMalice_Stage1_End:
+	JMP MegaMalice_Draw	
+
+MegaMalice_Stage2:
+	LDA MegaMalice_PauseEnemy, X
+	BNE MegaMalice_Stage2NoAttack
+
+	LDA MegaMalice_EnemyATB, X
+	BNE MegaMalice_Stage2Attack
+
+	INC MegaMalice_PauseEnemy, X
+	
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+	BEQ MegaMalice_Stage2NoAttack
+
+MegaMalice_Stage2Attack:
+	LDA #$01
+	STA MegaMalice_PauseEnemyATB, X
+
+	DEC MegaMalice_EnemyATBTicks, X
+	BPL MegaMalice_Stage2Move
+
+	DEC MegaMalice_EnemyATB, X
+	LDA MegaMalice_EnemyATBRate, X
+	STA MegaMalice_EnemyATBTicks, X
+	
+MegaMalice_Stage2Move:
+	JSR MegaMalice_JumpAttack
+
+MegaMalice_Stage2NoJump:
+	JSR Object_ApplyXVel	
+
+MegaMalice_Stage2NoAttack:	
+	JSR Object_ApplyY_With_Gravity
+	LDA MegaMalice_Health, X
+	CMP #24
+	BCS MegaMalice_Stage2_End
+
+	LDA #$40
+	STA MegaMalice_HealTimer, X
+
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+
+	LDA #48
+	STA MegaMalice_Health, X
+
+	INC MegaMalice_Action, X
+
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+
+	LDA #$04
+	STA MegaMalice_EnemyATBRate, X
+
+MegaMalice_Stage2_End:
+	JMP MegaMalice_Draw	
+
+MegaMalice_Stage3:
+	LDA MegaMalice_PauseEnemy, X
+	BEQ MegaMalice_Stage3ATBCheck
+
+	JMP MegaMalice_Stage3NoAttack
+
+MegaMalice_Stage3ATBCheck:
+	LDA MegaMalice_EnemyATBTicks, X
+	BNE MegaMalice_Stage3NoMalice
+
+	LDA MegaMalice_EnemyATB, X
+	CMP #$08
+	BNE MegaMalice_Stage3NoMalice
+	
+	JSR MegaMalice_MakeMalice
+
+MegaMalice_Stage3NoMalice:
+	LDA MegaMalice_EnemyATB, X
+	BNE MegaMalice_Stage3Attack
+
+	INC MegaMalice_PauseEnemy, X
+	
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+	BEQ MegaMalice_Stage3NoAttack
+
+MegaMalice_Stage3Attack:
+	LDA #$01
+	STA MegaMalice_PauseEnemyATB, X
+
+	DEC MegaMalice_EnemyATBTicks, X
+	BPL MegaMalice_Stage3Move
+
+	DEC MegaMalice_EnemyATB, X
+	LDA MegaMalice_EnemyATBRate, X
+	STA MegaMalice_EnemyATBTicks, X
+
+MegaMalice_Stage3Move:
+	JSR MegaMalice_JumpAttack
+
+MegaMalice_Stage3NoJump:
+	JSR Object_ApplyXVel
+
+MegaMalice_Stage3NoAttack:	
+	JSR Object_ApplyY_With_Gravity
+
+	LDA MegaMalice_Health, X
+	CMP #12
+	BCS MegaMalice_Stage3_End
+
+	LDA #$40
+	STA MegaMalice_HealTimer, X
+
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+
+	LDA #48
+	STA MegaMalice_Health, X
+
+	INC MegaMalice_Action, X
+
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+
+	LDA #$04
+	STA MegaMalice_EnemyATBRate, X
+
+MegaMalice_Stage3_End:
+	JMP MegaMalice_Draw	
+
+MegaMalice_Stage4:
+	LDA MegaMalice_PauseEnemy, X
+	BEQ MegaMalice_Stage4CheckCharge
+
+	JMP MegaMalice_Stage4NoAttack
+
+MegaMalice_Stage4CheckCharge:
+	JSR MegaMalice_Charge
+
+	LDA MegaMalice_Charging, X
+	BNE MegaMalice_Stage4ATBCheck
+
+	LDA MegaMalice_EnemyATB, X
+	CMP #$20
+	BNE MegaMalice_Stage4ATBCheck
+
+	LDA #$20
+	STA Objects_Timer, X
+
+MegaMalice_Stage4ATBCheck:
+	LDA MegaMalice_EnemyATBTicks, X
+	BNE MegaMalice_Stage4NoMalice
+
+	LDA MegaMalice_EnemyATB, X
+	CMP #$08
+	BNE MegaMalice_Stage4NoMalice
+	
+	JSR MegaMalice_MakeMalice
+
+MegaMalice_Stage4NoMalice:
+	LDA MegaMalice_EnemyATB, X
+	BNE MegaMalice_Stage4Attack
+
+	INC MegaMalice_PauseEnemy, X
+	
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+	BEQ MegaMalice_Stage4NoAttack
+
+MegaMalice_Stage4Attack:
+	LDA #$01
+	STA MegaMalice_PauseEnemyATB, X
+
+	DEC MegaMalice_EnemyATBTicks, X
+	BPL MegaMalice_Stage4Move
+
+	DEC MegaMalice_EnemyATB, X
+	LDA MegaMalice_EnemyATBRate, X
+	STA MegaMalice_EnemyATBTicks, X
+
+MegaMalice_Stage4Move:
+	JSR MegaMalice_JumpAttack
+
+MegaMalice_Stage4NoJump:
+	LDA Objects_Timer, X
+	BNE MegaMalice_Stage4NoAttack
+
+	JSR Object_ApplyXVel
+
+	LDA MegaMalice_Charging, X
+	BEQ MegaMalice_Stage4NoAttack
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyXVel
+
+MegaMalice_Stage4NoAttack:	
+	JSR Object_ApplyY_With_Gravity
+
+	LDA MegaMalice_Health, X
+	CMP #12
+	BCS MegaMalice_Stage4_End
+
+	LDA #$40
+	STA MegaMalice_HealTimer, X
+
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+
+	LDA #48
+	STA MegaMalice_Health, X
+
+	INC MegaMalice_Action, X
+
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+
+	LDA #$04
+	STA MegaMalice_EnemyATBRate, X
+
+MegaMalice_Stage4_End:
+	JMP MegaMalice_Draw	
+
+MegaMalice_Stage5:
+	LDA MegaMalice_PauseEnemy, X
+	BEQ MegaMalice_Stage5CheckCharge
+
+	JSR MegaMalice_MakeSpore
+	JMP MegaMalice_Stage5NoAttack
+
+MegaMalice_Stage5CheckCharge:
+	JSR MegaMalice_Charge
+
+	LDA MegaMalice_Charging, X
+	BNE MegaMalice_Stage5ATBCheck
+
+	LDA MegaMalice_EnemyATB, X
+	CMP #$20
+	BNE MegaMalice_Stage5ATBCheck
+
+	LDA #$20
+	STA Objects_Timer, X
+
+MegaMalice_Stage5ATBCheck:
+	LDA MegaMalice_EnemyATB, X
+	CMP #$08
+	BCC MegaMalice_Stage5NoMalice
+	
+	JSR MegaMalice_MakeMalice
+
+MegaMalice_Stage5NoMalice:
+	LDA MegaMalice_EnemyATB, X
+	BNE MegaMalice_Stage5Attack
+
+	INC MegaMalice_PauseEnemy, X
+	
+	LDA #$00
+	STA MegaMalice_PauseEnemyATB, X
+	BEQ MegaMalice_Stage5NoAttack
+
+MegaMalice_Stage5Attack:
+	LDA #$01
+	STA MegaMalice_PauseEnemyATB, X
+
+	DEC MegaMalice_EnemyATBTicks, X
+	BPL MegaMalice_Stage5Move
+
+	DEC MegaMalice_EnemyATB, X
+	LDA MegaMalice_EnemyATBRate, X
+	STA MegaMalice_EnemyATBTicks, X
+
+MegaMalice_Stage5Move:
+	JSR MegaMalice_JumpAttack
+
+MegaMalice_Stage5NoJump:
+	LDA Objects_Timer, X
+	BNE MegaMalice_Stage5NoAttack
+
+	JSR Object_ApplyXVel
+
+	LDA MegaMalice_Charging, X
+	BEQ MegaMalice_Stage5NoAttack
+
+	JSR Object_ApplyXVel
+	JSR Object_ApplyXVel
+
+MegaMalice_Stage5NoAttack:	
+	JSR Object_ApplyY_With_Gravity
+
+	LDA MegaMalice_Health, X
+	BEQ MegaMalice_NoHealth
+	BPL MegaMalice_Stage5_End
+
+MegaMalice_NoHealth:
+	INC MegaMalice_Action, X
+
+MegaMalice_Stage5_End:
+	JMP MegaMalice_Draw	
+
+MegaMalice_SparkleX:
+	.byte 00, $18, $14, $04
+
+MegaMalice_SparkleY:
+	.byte $00, $FC, $00, $FC
+
+MegaMalice_Heal:
+	LDA MegaMalice_HealTimer, X
+	BEQ MegaMalice_HealRTS
+
+	DEC MegaMalice_HealTimer, X
+	LDA MegaMalice_HealTimer, X
+	AND #$0F
+	BNE MegaMalice_HealRTS
+
+	LDA <Objects_XZ, X
+	STA <Temp_Var1
+
+	LDA <Objects_YZ, X
+	STA <Temp_Var2
+
+	LDA MegaMalice_HealTimer, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$03
+	TAX
+
+	JSR SpecialObject_FindEmpty
+
+	LDA #$10
+	STA SpecialObj_Timer, Y
+	
+	LDA #SOBJ_COINSPARKLE
+	STA SpecialObj_ID, Y
+
+	LDA <Temp_Var1
+	ADD MegaMalice_SparkleX, X
+	STA SpecialObj_X, Y
+
+	LDA <Temp_Var2
+	ADD MegaMalice_SparkleY, X
+	STA SpecialObj_Y, Y
+
+MegaMalice_HealRTS:
+	LDX #$07
+
+MegaMalice_SparkleUp:
+	LDA SpecialObj_ID, X
+	CMP #SOBJ_COINSPARKLE
+	BNE MegaMalice_NoSparkle
+
+	DEC SpecialObj_Y, X
+	DEC SpecialObj_Y, X
+
+MegaMalice_NoSparkle:
+	DEX
+	BPL MegaMalice_SparkleUp
+
+	LDX <CurrentObjectIndexZ
+	RTS	
+
+MegaMalice_CheckAbove:
+	LDA <Player_YHiZ
+	BEQ MegaMalice_IncreaseAbove
+
+	LDA <Player_YZ
+	CMP #$11
+	BCS MegaMalice_ClearAbove
+
+MegaMalice_IncreaseAbove:
+	LDA MegaMalice_PlayerAboveTicker, X
+	CMP #$80
+	BCS MegaMalice_CheckAboveRTS
+
+	INC MegaMalice_PlayerAboveTicker, X
+	BNE MegaMalice_CheckAboveRTS
+
+MegaMalice_ClearAbove:
+	LDA #$00
+	STA MegaMalice_PlayerAboveTicker, X
+
+MegaMalice_CheckAboveRTS:
+	RTS
+
+MegaMalice_JumpAttack:
+	LDA Objects_Timer, X
+	BNE MegaMalice_JumpAttackRTS
+	
+	LDA MegaMalice_PlayerAboveTicker, X
+	CMP #$80
+	BCC MegaMalice_JumpAttackRTS
+
+	LDA <Objects_YZ, X
+	CMP #$70
+	BNE MegaMalice_JumpAttackRTS
+
+	LDA #$00
+	STA MegaMalice_PlayerAboveTicker, X
+
+	LDA #$A0
+	STA <Objects_YVelZ, X
+
+MegaMalice_JumpAttackRTS:
+	RTS	
+
+MegaMalice_MakeMalice:
+	LDA MegaMalice_PauseEnemy, X
+	BNE MegaMalice_MakeMaliceRTS
+
+	LDA Object_Count
+	CMP #$04
+	BCS MegaMalice_MakeMaliceRTS
+
+	JSR Object_FindEmptyY
+	BCC MegaMalice_MakeMaliceRTS
+
+	LDA #OBJ_MALICEMUSHROOM
+	STA Objects_ID, Y
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Objects_XZ, Y
+
+	LDA <Objects_YZ, X
+	STA Objects_YZ, Y
+
+	LDA <Objects_YHiZ, X
+	STA Objects_YHiZ, Y
+
+	LDA #$03
+	STA Objects_Property, Y
+
+	LDA #$E0
+	STA Objects_YVelZ, Y
+
+	LDA <Objects_XVelZ, X
+	JSR Half_Value
+	JSR Negate
+	STA Objects_XVelZ, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, Y
+
+	LDA #$00
+	STA Objects_WeaponAttr, Y
+
+	LDA #ATTR_NOICE
+	STA Objects_BehaviorAttr, Y
+
+MegaMalice_MakeMaliceRTS:
+	RTS
+
+MegaMalice_ChargeRandomATB:
+	.byte $18, $18, $18, $18
+
+MegaMalice_Charge:
+	LDA Objects_Timer, X
+	BEQ MegaMalice_ChargeRTS
+
+	CMP #$01
+	BNE MegaMalice_ChargeRTS
+
+MegaMalice_ChargeAttack:
+	INC MegaMalice_Charging, X
+
+MegaMalice_ChargeRTS:
+	RTS
+
+MegaMalice_MakeSpore:
+	LDA MegaMalice_EnemyATBTicks, X
+	BNE MegaMalice_MakeSporeRTS
+
+	LDA MegaMalice_EnemyATB, X
+	CMP #$0C
+	BNE MegaMalice_MakeSporeRTS
+
+MegaMalice_ProduceSpore:
+	JSR Object_FindEmptyY
+	BCC MegaMalice_MakeSporeRTS
+
+	LDA #OBJ_POWERUP
+	STA Objects_ID, Y
+
+	LDA #POWERUP_SPORE
+	STA PowerUp_Type, Y
+
+	LDA #$B0
+	STA Objects_YVelZ, Y
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Objects_XZ, Y
+
+	LDA <Objects_YZ, X
+	STA Objects_YZ, Y
+
+	LDA <Objects_YHiZ, X
+	STA Objects_YHiZ, Y
+	
+MegaMalice_MakeSporeRTS:
+	RTS
+
+MegaMalice_Die:
+	LDA #$00
+	STA Enemy_Health
+
+	LDA #$40
+	STA Objects_Timer2, X
+
+	LDA #$00
+	STA Objects_ID, X
+	
+	JSR DestroyAllEnemies
+	
+	LDA #OBJ_BOSS
+	STA Objects_ID, X
+
+	INC MegaMalice_Action, X
+	JMP MegaMalice_Draw
+
+MegaMalice_Death:
+	LDA Objects_Timer2, X
+	BNE MegaMalice_DeathRTS
+
+	LDX #$00
+	JSR Object_Explode
+
+	LDX <CurrentObjectIndexZ
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA <Objects_XZ
+
+	LDA <Objects_YZ, X
+	ADD #$04
+	STA <Objects_YZ
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA <Objects_YHiZ
+
+	LDA #$20
+	STA Objects_Timer2 
+
+	INC MegaMalice_Action, X
+
+	LDA #MUS1_STOPMUSIC
+	STA Sound_QMusic1
+
+	LDA #$40
+	STA Objects_Timer, X
+
+MegaMalice_DeathRTS:
+	JMP MegaMalice_Draw
+
+MegaMalice_FanFare:
+	LDA Objects_Timer, X
+	BNE MegaMalice_FanFareRTS
+
+	LDA #MUS1_WORLDVICTORY
+	STA Sound_QMusic1
+
+	INC MegaMalice_Action, X
+
+	LDA #$02
+	STA CreditsWait, X
+
+	LDA #$FF
+	STA CreditsWaitTicks, X
+
+MegaMalice_FanFareRTS:
+	RTS
+
+CreditsWait = Objects_Data3
+CreditsWaitTicks = Objects_Data4
+
+MegaMalice_WaitEnding:
+	LDA CreditsWait, X
+	BNE MegaMalice_WaitEndingEnd
+
+	INC Credits_Action, X
+
+MegaMalice_WaitEndingEnd:
+	DEC CreditsWaitTicks, X
+	BNE MegaMalice_WaitEndingRTS
+
+	DEC CreditsWait, X
+
+MegaMalice_WaitEndingRTS:
+	RTS
+
+Credits_Action = Objects_Data1
+CreditsFade_Tick = Objects_Data2
+CreditsFade_Index = Objects_Data3
+
+MegaMalice_Credits:
+	LDA #MUS2A_ENDING
+	STA Level_MusicQueue
+
+	INC Credits_Action, X
+
+	LDA #$07
+	STA CreditsFade_Tick, X
+
+	LDA #$00
+	STA CreditsFade_Index, X
+	RTS	
+
+Credits_FadeOut:
+	STA Debug_Snap
+	LDA CreditsFade_Tick, X
+	BNE Credits_FadeTickDecrease
+
+	LDY #$0F
+
+	LDA #$06
+	STA <Graphics_Queue
+	
+Credits_FadeOutLoop:
+	LDA MasterPal_Data, Y
+	SUB CreditsFade_Index, X
+	BPL Credits_FadeOutStore
+
+	LDA #$0F
+
+Credits_FadeOutStore:
+	STA Palette_Buffer, Y
+	DEY
+	BPL Credits_FadeOutLoop
+
+	LDA CreditsFade_Index, X
+	ADD #$10
+	CMP #$50
+	BCC Credits_Reset
+
+	INC Credits_Action, X
+	RTS
+
+Credits_Reset:
+	STA CreditsFade_Index, X
+
+	LDA #$07
+	STA CreditsFade_Tick, X
+
+Credits_FadeTickDecrease:
+	DEC CreditsFade_Tick, X
+
+MegaMalice_FadeOutRTS:
+	RTS
+
+Credits_Roll:
+	RTS
