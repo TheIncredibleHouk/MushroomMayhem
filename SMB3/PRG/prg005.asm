@@ -20,6 +20,7 @@ OBJ_TENTACLE		= $5F
 OBJ_TRAININGSHOP	= $60
 OBJ_TUTORIAL	= $61
 OBJ_LIVETRANSITION = $62
+OBJ_BOWSER			= $63
 
     .word ObjInit_ShyGuy ; Object $50
     .word ObjInit_Brick ; Object $51
@@ -40,7 +41,7 @@ OBJ_LIVETRANSITION = $62
     .word ObjInit_TrainingShop ; Object $60
     .word ObjInit_Tutorial ; Object $61
     .word ObjInit_LiveTransition ; Object $62
-    .word ObjInit_DoNothing ; Object $63
+    .word ObjInit_Bowser ; Object $63
 
 
 	.org ObjectGroup_NormalJumpTable	; <-- help enforce this table *here*
@@ -64,7 +65,7 @@ OBJ_LIVETRANSITION = $62
 	.word ObjNorm_TrainingShop ; Object $60
 	.word ObjNorm_Tutorial ; Object $61
 	.word ObjNorm_LiveTransition ; Object $62
-	.word ObjNorm_DoNothing ; Object $63
+	.word ObjNorm_Bowser ; Object $63
 
 	.org ObjectGroup_CollideJumpTable	; <-- help enforce this table *here*
 ;****************************** OBJECT PLAYER INTERACTION ******************************
@@ -110,7 +111,7 @@ OBJ_LIVETRANSITION = $62
 	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $60
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $61
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $62
-	.byte OA1_PAL3 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $63
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16 ; Object $63
 
 	.org ObjectGroup_PatTableSel	; <-- help enforce this table *here*
 ;****************************** OBJECT PATTERN TABLE ******************************
@@ -156,7 +157,7 @@ OBJ_LIVETRANSITION = $62
 	.byte KILLACT_STARDEATH ; Object $60
 	.byte KILLACT_STARDEATH ; Object $61
 	.byte KILLACT_STARDEATH ; Object $62
-	.byte KILLACT_STARDEATH ; Object $63
+	.byte KILLACT_NORMALSTATE ; Object $63
 
 OG5_POff .func (\1 - ObjectGroup05_PatternSets)
 
@@ -4507,4 +4508,7 @@ ObjNorm_Tutorial:
 	LDX <Player_XHi
 	LDA Tutorial_Messages, X
 	STA Message_Id
+	RTS
+
+ObjInit_Bowser:
 	RTS

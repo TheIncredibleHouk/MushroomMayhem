@@ -4309,6 +4309,9 @@ MegaMalice_Dying:
 	.word MegaMalice_WaitEnding
 	.word MegaMalice_Credits
 	.word Credits_FadeOut
+	.word Credits_ClearGfx1
+	.word Credits_ClearGfx2
+	.word Credits_FixPalette
 	.word Credits_Roll
 
 MegaMalice_ProcessATB:
@@ -5160,6 +5163,9 @@ MegaMalice_MakeMalice:
 	LDA #OBJSTATE_NORMAL
 	STA Objects_State, Y
 
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, Y
+
 	LDA #$00
 	STA Objects_WeaponAttr, Y
 
@@ -5326,7 +5332,6 @@ MegaMalice_Credits:
 	RTS	
 
 Credits_FadeOut:
-	STA Debug_Snap
 	LDA CreditsFade_Tick, X
 	BNE Credits_FadeTickDecrease
 
@@ -5353,6 +5358,15 @@ Credits_FadeOutStore:
 	BCC Credits_Reset
 
 	INC Credits_Action, X
+
+	LDY #$0A
+
+	LDA #$01
+
+Credits_ClearBlocks:	
+	STA $6132, Y
+	DEY
+	BNE Credits_ClearBlocks
 	RTS
 
 Credits_Reset:
@@ -5367,5 +5381,118 @@ Credits_FadeTickDecrease:
 MegaMalice_FadeOutRTS:
 	RTS
 
-Credits_Roll:
+Credits_ClearGfx1:
+	LDY #$00
+	LDX Graphics_BufCnt
+	BNE Credits_ClearGfx1RTS
+
+Credits_ClearGfxLoop1:
+	LDA Credits_Clear1, Y
+	STA Graphics_Buffer, X
+
+	INX
+	INY
+	CPY #(Credits_ClearEnd1 - Credits_Clear1)
+	BCC Credits_ClearGfxLoop1
+
+	STX Graphics_BufCnt
+	
+	LDX <CurrentObjectIndexZ
+	INC Credits_Action, X
+
+Credits_ClearGfx1RTS:
 	RTS
+
+Credits_Clear1:
+	.word $2808
+	.byte VU_REPEAT | $10, $FF
+	
+	vaddr $2828
+	.byte VU_REPEAT | $10, $FF
+
+	vaddr $2906
+	.byte VU_REPEAT | $14, $FF
+
+	.byte $00
+Credits_ClearEnd1:
+
+Credits_ClearGfx2:
+	LDY #$00
+	LDX Graphics_BufCnt
+	BNE Credits_ClearGfx1RTS
+
+Credits_ClearGfxLoop2:
+	LDA Credits_Clear2, Y
+	STA Graphics_Buffer, X
+
+	INX
+	INY
+	CPY #(Credits_ClearEnd2 - Credits_Clear2)
+	BCC Credits_ClearGfxLoop2
+
+	STX Graphics_BufCnt
+	
+	LDX <CurrentObjectIndexZ
+	INC Credits_Action, X
+
+Credits_ClearGfx2RTS:
+	RTS
+
+Credits_Clear2:
+	vaddr $2943
+	.byte VU_REPEAT | $6, $FF
+
+	vaddr $2957
+	.byte VU_REPEAT | $6, $FF
+
+	vaddr $2963
+	.byte VU_REPEAT | $6, $FF
+
+	vaddr $2977
+	.byte VU_REPEAT | $6, $FF
+
+	vaddr $2983
+	.byte VU_REPEAT | $6, $FF
+
+	vaddr $2997
+	.byte VU_REPEAT | $6, $FF
+	
+	.byte $00
+Credits_ClearEnd2:	
+
+Credits_FixPalette:
+	LDA Graphics_BufCnt
+	BNE Credits_FixPaletteRTS
+
+	LDA #$30
+	STA Palette_Buffer + 1
+
+	; LDA #$11
+	; STA Palette_Buffer + 2
+
+	; LDA #$27
+	; STA Palette_Buffer + 3
+
+	LDA #$06
+	STA Graphics_Queue
+	
+	LDA #$01
+	STA Credits_Triggered
+
+	LDA #$00
+	STA Credits_LineTimerHi, X
+	STA Credits_LineTimerLow, X
+
+	LDA #$01
+	STA Credits_LineWriteToggle, X
+
+	LDA #$00
+	STA Credits_LineWriteColumn, X
+	STA Credits_LineWriteIndex, X
+
+	LDA #$02
+	STA Credits_LineWriteTimer, X
+
+Credits_FixPaletteRTS:	
+	RTS
+

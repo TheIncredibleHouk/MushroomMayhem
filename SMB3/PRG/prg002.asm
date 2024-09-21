@@ -1819,6 +1819,9 @@ Lightning_GroundCheck:
 	LDA #$02
 	STA SpecialObj_Data1, Y
 
+	LDA #$00
+	STA SpecialObj_Data2, Y
+
 Lightning_Poof:
 	JMP Object_PoofDie
 

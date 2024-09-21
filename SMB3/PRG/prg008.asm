@@ -6227,6 +6227,9 @@ Player_PoisonMode:
 	CMP #$50
 	BNE Cant_Poison_Mode
 
+	LDA Player_Invincible
+	BNE Cant_Poison_Mode
+
 	LDA <Pad_Input
 	AND #PAD_B
 	BEQ Cant_Poison_Mode
@@ -6239,7 +6242,6 @@ Player_PoisonMode:
 	RTS
 
 PoisonMode_Activate:
-
 	LDA #SND_LEVELSHOE
 	STA Sound_QLevel1
 

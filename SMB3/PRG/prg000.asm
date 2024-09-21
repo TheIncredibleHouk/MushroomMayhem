@@ -4518,8 +4518,19 @@ Object_CheckForegroundRTS:
 	RTS
 
 Obj_Boss:
+	LDA Credits_Triggered
+	BEQ No_Credits
+
+	LDA #19
+	STA PAGE_A000
+
+	JSR PRGROM_Change_A000
+	JMP Credits_Roll
+
+No_Credits:
 	LDA #17
 	STA PAGE_A000
+
 	JSR PRGROM_Change_A000
 	JMP ObjNorm_Boss	
 

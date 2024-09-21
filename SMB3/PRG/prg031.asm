@@ -3574,7 +3574,12 @@ PRGROM_Change_C000:	; $FFD1
 	STA MMC3_PAGE			; Set MMC3 page
 	RTS				; Return
 
-
+ObjNorm_Bowser:
+	LDA #19
+	STA PAGE_A000
+ 	JSR PRGROM_Change_A000 
+	JMP Object_Bowser
+	
 	; ASSEMBLER BOUNDARY CHECK, END OF $FFFA
 .Bound_FFFA:	BoundCheck .Bound_FFFA, $FFFA, PRG031: Vector space
 

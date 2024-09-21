@@ -615,9 +615,6 @@ SpecialObj_ToPoofKickSound:
 	STA Sound_QPlayer
 
 SpecialObj_ToPoofNoSound:
-	LDA Player_Invincible
-	BNE SpecialObj_ToPoofNoSound1
-
 SpecialObj_ForcedPoof:
 	LDA #PLAYER_POOF
 	STA SpecialObj_ID, X
@@ -2393,6 +2390,9 @@ Enemy_LightningBolt:
 	JSR SpecialObj_CalcBounds16x16
 	JSR EnemyProj_HitPlayer
 
+	LDA SpecialObj_Data2, X
+	BNE Enemey_LightningWorld
+
 	JSR PlayerProj_HitEnemies
 	BCC Enemey_LightningWorld
 
@@ -2443,11 +2443,13 @@ Enemy_LightningBoltPoof:
 
 LightningBolt_Tiles:
 	.byte $AD, $AF, $95, $97
+	.byte $81, $83, $DD, $DF
 
 Enemy_LightningBoltDraw:
 
 	LDA SpecialObj_Data1, X
 	AND #$02
+	ADD SpecialObj_Data2, X
 	TAY
 
 	LDA <Player_HaltGameZ
@@ -2712,40 +2714,6 @@ Enemy_BigFireballDraw:
 	JSR SpecialObj_Draw16x16
 	RTS
 
-
-SObj_KuriboShoe:
-	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
-
-	JSR SObj_GetSprRAMOffChkVScreen
-
-	LDA SpecialObj_Data1,X
-	TAX		 ; SpecialObj_Data1 -> 'X' (NOTE: Will always be zero in US version, see notes at LostShoe_Pattern)
-
-	; Set left sprite attribute
-	
-	STA Sprite_RAM+$02,Y
-
-	CPX #$00
-	BEQ PRG007_B54F	 ; For the lost Kuribo's shoe only: Do not mirror sprite, jump to PRG007_B54F
-
-	ORA #SPR_HFLIP	 ; Mirror sprite (NOTE: Used only in Japanese version for the "fly off" super suits!)
-
-PRG007_B54F:
-	STA Sprite_RAM+$06,Y	 ; Set attributes on right sprite
-
-	; X *= 2 (two patterns per suit, again generally unused in US version)
-	TXA
-	ASL A
-	TAX
-
-	; Pattern for left fly off sprite
-
-	STA Sprite_RAM+$01,Y
-
-	; Pattern for right fly off sprite
-	STA Sprite_RAM+$05,Y
-
-	LDX <CurrentObjectIndexZ	; X = special object slot index
 
 SObj_Draw16x16:
 	JSR SObj_SetSpriteXYRelative	 
@@ -4900,12 +4868,11 @@ SObj_CantStomp:
 	RTS
 
 NotTailHit:
-
 	LDA Player_Invincible
 	ORA Player_FireDash
 	BEQ EnemyProj_HitPlayer2
 
-	JMP SpecialObj_ToPoof
+	JMP SpecialObj_ToPoofNoSound
 	
 EnemyProj_HitPlayer2:
 	LDA SpecialObj_ID, X

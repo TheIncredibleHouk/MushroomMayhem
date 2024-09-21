@@ -3087,6 +3087,7 @@ TILE_ITEM_SPINNER	= $FE
 	Player_KeepBadge:	.ds 1
 	MultiFrameLoad:	.ds 1
 	CommandCount: .ds 1
+	Credits_Triggered: .ds 1
 
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints

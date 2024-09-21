@@ -2272,3 +2272,2233 @@ BadgeShop_Explanation:
 	LDA Badge_Explanations, Y
 	STA Message_Id
 	RTS
+
+
+Credits_LineTimerLow = Objects_Data2
+Credits_LineTimerHi = Objects_Data3
+Credits_LineIndex = Objects_Data4
+Credits_LineWriteIndex = Objects_Data5
+Credits_LineWriteColumn = Objects_Data6
+Credits_LineWriteTimer = Objects_Data7
+Credits_LineWriteToggle = Objects_Data8
+
+Credits_PPUAddr1:
+	vaddr $2886
+
+Credits_PPUAddr2:
+	vaddr $28C6
+
+Credits_Lines:
+	.word Credits_Line1
+	.word Credits_Line2
+	.word Credits_Line3
+	.word Credits_Line4
+	.word Credits_Line5
+	.word Credits_Line6
+	.word Credits_Line7
+	.word Credits_Line8
+	.word Credits_Line9
+	.word Credits_Line10
+	.word Credits_Line11
+	.word Credits_Line12
+	.word Credits_Line13
+
+Credits_Line1
+	.db "   THANK YOU FOR    "
+	.db "CLEARING THE MALICE "
+
+Credits_Line2
+	.db "FROM THE LANDS RULED"
+	.db "   BY KING BOWSER   "
+
+Credits_Line3
+	.db " HE CAN RIGHTFULLY  "
+	.db "RETURN TO HIS THRONE"
+
+Credits_Line4
+	.db " WE ARE SURE MARIO  "
+	.db "WILL BE THANKED FOR "
+
+Credits_Line5
+	.db "  HIS DEEEDS ACROSS "
+	.db "ALL OF KOOPA KINGDOM"
+
+Credits_Line6:
+	.db "    DEVELOPED BY    "
+	.db "   SCARLETT VIXEN   "
+
+Credits_Line7:
+	.db "   BETA TESTED BY   "
+	.db "        AWAL        "
+
+Credits_Line8:
+	.db "   BETA TESTED BY   "
+	.db "      RETROHAX      "
+
+Credits_Line9:
+	.db "   BETA TESTED BY   "
+	.db " KRYSTIAN POLKOWSKI "
+
+Credits_Line10:
+	.db "   SPECIAL THANKS   "
+	.db "   MY  OTTER HALF   "
+
+Credits_Line11:
+	.db "   SPECIAL THANKS   "
+	.db "   MY  WINTERWOLF    "
+
+Credits_Line12:
+	.db "   SPECIAL THANKS   "
+	.db "      MY KIDDO      "
+
+Credits_Line13:
+	.db "   SPECIAL THANKS   "
+	.db " TO YOU THE PLAYER! "
+
+Credits_Low = Temp_Var1
+Credits_Hi = Temp_Var2
+
+Credits_Roll:
+	LDA #$5C
+	STA PatTable_BankSel
+
+	LDA Credits_LineTimerLow, X
+	ORA Credits_LineTimerHi, X
+	BEQ Credits_LineAction
+
+Credits_RollTimer:
+	DEC Credits_LineTimerLow, X
+	BNE Credits_RollRTS
+
+	LDA Credits_LineTimerHi, X
+	BEQ Credits_RollRTS
+
+	DEC Credits_LineTimerHi, X
+
+	LDA #$20
+	STA Credits_LineTimerLow, X
+
+Credits_RollRTS:
+	RTS
+
+Credits_LineAction:	
+	LDA Credits_LineWriteToggle, X
+	BNE Credits_WriteLines
+	JMP Credits_LineClear
+
+Credits_WriteLines:
+	DEC Credits_LineWriteTimer, X
+	BNE Credits_RollRTS
+
+	LDA Graphics_BufCnt
+	BNE Credits_RollRTS
+
+	LDA #$02
+	STA Credits_LineWriteTimer, X
+
+	JSR Credits_LoadDrawBuffer
+
+	LDA Credits_LineWriteIndex, X
+	ASL A
+	TAY
+
+	LDA Credits_Lines, Y
+	STA <Credits_Low
+
+	LDA Credits_Lines + 1, Y
+	STA <Credits_Hi
+
+	LDY Credits_LineWriteColumn, X
+	
+	LDA [Credits_Low], Y
+	STA Graphics_Buffer + 3
+
+	TYA
+	ADD #20
+	TAY
+	
+	LDA [Credits_Low], Y
+	STA Graphics_Buffer + 7
+
+	LDA #$00
+	STA Graphics_Buffer + 8
+
+	LDA #$09
+	STA Graphics_BufCnt
+
+	LDA Credits_LineWriteColumn, X
+	CMP #19
+	BEQ Credits_WriteDone
+
+	INC Credits_LineWriteColumn, X
+
+	LDA #$02
+	STA Credits_LineWriteTimer, X
+	RTS
+
+Credits_WriteDone:
+	INC Credits_LineWriteIndex, X
+
+Credits_WriteLineReset:
+	LDA #$20
+	STA Credits_LineTimerLow, X
+
+	LDA #$04
+	STA Credits_LineTimerHi, X
+
+	LDA Credits_LineWriteToggle, X
+	EOR #$01
+	STA Credits_LineWriteToggle, X
+
+	LDA #$02
+	STA Credits_LineWriteTimer, X
+
+	LDA #$00
+	STA Credits_LineWriteColumn, X
+
+Credits_WriteLineResetRTS:
+	RTS
+
+Credits_LineClear:
+	DEC Credits_LineWriteTimer, X
+	BNE Credits_WriteLineResetRTS
+
+	LDA Graphics_BufCnt
+	BNE Credits_WriteLineResetRTS
+
+	JSR Credits_LoadDrawBuffer
+
+	LDY Credits_LineWriteColumn, X
+	
+	LDA #$FF
+	STA Graphics_Buffer + 3
+	STA Graphics_Buffer + 7
+
+	LDA #$00
+	STA Graphics_Buffer + 8
+
+	LDA #$09
+	STA Graphics_BufCnt
+
+	LDA Credits_LineWriteColumn, X
+	CMP #20
+	BEQ Credits_WriteLineReset
+
+	INC Credits_LineWriteColumn, X
+
+	LDA #$02
+	STA Credits_LineWriteTimer, X
+	RTS
+
+Credits_LoadDrawBuffer:
+	LDA Credits_PPUAddr1
+	STA Graphics_Buffer
+
+	LDA Credits_PPUAddr1 + 1
+	ADD Credits_LineWriteColumn, X
+	STA Graphics_Buffer + 1
+
+	LDA Credits_PPUAddr2
+	STA Graphics_Buffer + 4
+
+	LDA Credits_PPUAddr2 + 1
+	ADD Credits_LineWriteColumn, X
+	STA Graphics_Buffer + 5
+
+	LDA #$01
+	STA Graphics_Buffer + 2
+	STA Graphics_Buffer + 6
+	RTS	
+
+Bower_SpriteXOffset:
+	.byte $00, $08, $10, $18, $00, $08, $10, $18, $00, $08, $10, $18
+
+Bower_SpriteYOffset:
+	.byte $00, $00, $00, $00, $10, $10, $10, $10, $20, $20, $20, $20
+
+Bowser_FlipOffset:
+	.byte $03, $01, $FF, $FD, $03, $01, $FF, $FD, $03, $01, $FF, $FD
+
+Bowser_Palette:
+	.byte SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2, SPR_PAL2
+	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1
+
+Bowser_CrouchedFrames:
+	.byte $00, $01, $00, $00, $00, $00
+	.byte $00, $01, $00, $00, $00, $00, $00
+
+Bowser_MirroredFrame:
+	.byte $00, $00, $00, $00, $01, $01
+	.byte $00, $00, $00, $00, $01, $01, $00
+
+Bowser_Frames:
+	; Idle 1
+	.byte $89, $8B, $8D, $9F
+	.byte $A9, $AB, $AD, $AF
+	.byte $C9, $CB, $CD, $CF
+
+	; Idle 2
+	.byte $89, $8B, $8D, $9F
+	.byte $A9, $AB, $AD, $AF
+	.byte $D1, $D3, $D5, $D7
+
+	; Breath 1
+	.byte $91, $93, $95, $97
+	.byte $B1, $B3, $B5, $B7
+	.byte $C9, $CB, $CD, $CF
+
+	; Breath 2
+	.byte $91, $9B, $9D, $97
+	.byte $B9, $BB, $BD, $B7
+	.byte $C9, $CB, $CD, $CF
+
+	; Pound 1
+	.byte $C1, $C3, $C3, $C5
+	.byte $E1, $E3, $E3, $E1
+	.byte $E9, $EB, $EB, $E9
+
+	; Pound 2
+	.byte $C5, $C7, $C7, $C5
+	.byte $E5, $E7, $E7, $E5
+	.byte $ED, $EF, $EF, $ED
+
+	; Malice Idle 1
+	.byte $89, $8B, $8D, $9F
+	.byte $A9, $AB, $D9, $DB
+	.byte $C9, $CB, $F9, $FB
+
+	; Malice Idle 2
+	.byte $89, $8B, $8D, $9F
+	.byte $A9, $AB, $D9, $DB
+	.byte $D1, $D3, $FD, $FF
+
+	; Malice Breath 1
+	.byte $91, $93, $95, $97
+	.byte $B1, $B3, $F1, $F3
+	.byte $C9, $CB, $F9, $FB
+
+	; Malice Breathe 2
+	.byte $91, $9B, $9D, $97
+	.byte $B9, $BB, $F5, $F7
+	.byte $C9, $CB, $F9, $FB	
+
+	; Malice Pound 1
+	.byte $C1, $C3, $C3, $C5
+	.byte $E1, $E3, $E3, $E1
+	.byte $E9, $EB, $EB, $E9
+
+	; Malice Pound 2
+	.byte $C5, $C7, $C7, $C5
+	.byte $BF, $E7, $E7, $BF
+	.byte $ED, $EF, $EF, $ED	
+
+	; Malice Throw 1
+	.byte $89, $8B, $8D, $9F
+	.byte $85, $87, $A5, $DB
+	.byte $9F, $A7, $F9, $FB
+
+Bowser_Action = Objects_Data1
+Bowser_Health = Objects_Data2
+Bowser_MaliceMode = Objects_Data3
+Bowser_AttackPhase = Objects_Data4
+Bowser_StarPower = Objects_Data5
+Bowser_UpdateStarCount = Objects_Data6
+Bowser_WaitTimerLo = Objects_Data7
+Bowser_WaitTimerHi = Objects_Data8
+
+Object_Bowser:
+	LDA <Player_HaltGameZ
+	BEQ Bowser_DoAction
+
+	JMP Bowser_NormDraw
+
+Bowser_DoAction:
+	JSR Bowser_ProcessHealth
+
+	LDA Bowser_Action, X
+	JSR DynJump
+
+	.word Bowser_Init				; 0
+	.word Bowser_NormIdle			; 1
+	.word Bowser_NormBreatheFire	; 2
+	.word Bowser_NormJump			; 3
+	.word Bowser_NormSoar			; 4
+	.word Bowser_NormPound			; 5
+	.word Bowser_NormPoundIdle		; 6
+	.word Bowser_MaliceTransition	; 7
+	.word Bowser_MalicePowerUp		; 8
+	.word Bowser_MaliceIdle			; 9
+	.word Bowser_MaliceBreatheFire	; A
+	.word Bowser_MaliceJump			; B
+	.word Bowser_MaliceSoar			; C
+	.word Bowser_MalicePound		; D
+	.word Bowser_MalicePoundIdle	; E
+	.word Bowser_MaliceBigFire		; F
+	.word Bowser_ThrowHammer		; 10
+	.word Bowser_Die
+	.word Bowser_DieBottom
+	.word Bowser_WaitEnding
+	.word Bowser_StartEnding
+	.word SuperCredits_FadeOut
+	.word SuperCredits_FixPalette
+	.word SuperCredits_Roll
+
+Bowser_AttachPhaseHealth:
+	.byte 60, 45, 30, 15, 00
+
+Bowser_ProcessHealth:
+	LDA Bowser_Health, X
+	BMI Bowser_HealthRTS
+
+	LDA Objects_State, X
+	CMP #OBJSTATE_KILLED
+	BNE Bowser_SetHealth
+
+	DEC Bowser_Health, X
+	
+	LDA Objects_PlayerProjHit, X
+	AND #HIT_STOMPED
+	BEQ Bowser_LowDamage
+	
+	DEC Bowser_Health, X
+	DEC Bowser_Health, X
+	DEC Bowser_Health, X
+
+Bowser_LowDamage:
+	LDA #$40
+	STA Objects_Timer2, X
+
+	LDA Bowser_Health, X
+	BPL Bowser_NotDead
+
+	LDA #MUS1_BOWSERFALL
+	STA Sound_QMusic1
+
+	LDA #$E0
+	STA <Objects_YVelZ, X
+
+	LDA #$11
+	STA Bowser_Action, X
+
+	LDA #$00
+	STA Player_Invincible
+
+	LDA #$FF
+	STA Objects_Timer, X
+	RTS
+
+Bowser_NotDead:
+	CMP #76
+	BCS Bowser_NoMaliceYet
+
+	STA Bowser_MaliceMode, X
+
+	LDY Bowser_AttackPhase, X
+	CMP Bowser_AttachPhaseHealth, Y
+	BCS Bowser_NoMaliceYet
+
+	INC Bowser_AttackPhase, X
+
+Bowser_NoMaliceYet:
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, X
+
+Bowser_SetHealth:
+	LDA Bowser_Health, X
+	LSR A
+	STA Enemy_Health
+
+Bowser_HealthRTS:
+	RTS
+
+Bowser_Init:
+	LDA #BOUND32x32
+	STA Objects_BoundBox, X
+
+	JSR Object_CalcBoundBox
+	JSR Object_FacePlayer
+
+	LDA #100
+	STA Bowser_Health, X
+	STA Enemy_Health_Mode
+
+	INC Bowser_Action, X
+
+	LDA #ATTR_NOICE
+	STA Objects_BehaviorAttr, X
+
+	LDA #$00
+	STA Objects_WeaponAttr, X
+
+	LDA #$C0
+	STA Objects_Timer, X
+
+	LDA #14
+	STA Objects_SpritesRequested, X
+
+	JMP Bowser_NormDraw
+
+
+Bowser_NormIdleNextActions:
+	.byte $02, $03
+
+Bowser_NormIdleNextTimers:
+	.byte $20, $20
+
+Bowser_NormIdle_BackVel:
+	.byte $40, $C0
+	
+Bowser_NormIdle:
+	JSR Bowser_Interaction
+	JSR Object_FacePlayer
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Bowser_NormMarioNotClose
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+Bowser_NormIdleNotGround:
+	JSR Object_YDistanceFromPlayer
+
+	CMP #$30
+	BCS Bowser_NormMarioNotClose
+
+	JSR Object_XDistanceFromPlayer
+	CMP #$20
+	BCS Bowser_NormMarioNotClose	
+
+	LDA #$E0
+	STA <Objects_YVelZ, X
+	
+	LDA <Objects_XZ, X
+	ADD #$30
+	CMP #$3D
+	BCS Bowser_NormJumpBack
+
+	TYA
+	EOR #$01
+	TAY
+
+Bowser_NormJumpBack:
+	LDA Bowser_NormIdle_BackVel, Y
+	STA <Objects_XVelZ, X
+
+Bowser_NormMarioNotClose:
+	LDA Objects_Timer, X
+	BNE Bowser_NormIdleDone
+
+	LDA Bowser_MaliceMode, X
+	BEQ Bowser_NoMaliceTransition
+
+	LDA #$07
+	STA Bowser_Action, X
+
+	LDA #$7F
+	STA Objects_Timer, X
+
+	JMP Bowser_NormDraw
+
+Bowser_NoMaliceTransition:
+	LDA RandomN
+	AND #$01
+	TAY
+
+	LDA Bowser_NormIdleNextActions, Y
+	STA Bowser_Action, X
+
+	LDA Bowser_NormIdleNextTimers, Y
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+Bowser_NormIdleDone:
+	LDA Objects_Timer, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_Interaction:
+	LDA Bowser_Action, X
+	CMP #$09
+	BCC Bowser_DoInteractions
+
+	JSR Bowser_ProcessStarPower
+
+	LDA #ATTR_ATTACKPROOF
+	LDY Poison_Mode
+	BEQ Bowser_SetMaliceVulnerability
+
+	ORA #ATTR_INVINCIBLE
+
+Bowser_SetMaliceVulnerability:
+	STA Objects_WeaponAttr, X
+
+Bowser_DoInteractions:
+	JSR Object_Move
+	JSR Bowser_CalcBoundBox
+	JSR Object_DetectTiles
+	JSR Object_InteractWithTilesWallStops
+	JSR Object_AttackOrDefeat
+	RTS
+
+Bowser_CalcBoundBox:
+	LDA <Objects_XZ, X
+	ADD #$04
+	STA Objects_BoundLeft, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD #24
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
+	STA Objects_BoundRightHi, X
+	
+	LDA <Objects_YZ, X
+	ADD #13
+	STA Objects_BoundTop, X
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA Objects_BoundTopHi, X
+
+	LDA Objects_BoundTop, X
+	ADD #$24
+	STA Objects_BoundBottom, X
+
+	LDA Objects_BoundTopHi, X
+	ADC #$00
+	STA Objects_BoundBottomHi, X
+	RTS
+
+Bowser_NormDraw:
+	LDY Objects_Frame, X
+
+	LDA Bowser_MirroredFrame, Y
+	BNE Bowser_MirrorDraw
+
+	JMP Bowser_Draw
+
+Bowser_MirrorDraw:
+	JMP Bowser_DrawMirrored
+
+
+Bowser_FrameOffset = Temp_Var1
+Bowser_SpriteOffset = Temp_Var2
+Bowser_SpriteIndex = Temp_Var3
+Bowser_SpriteVisMask = Temp_Var4
+Bowser_SpriteX = Temp_Var5
+Bowser_SpriteY = Temp_Var6
+Bowser_SpriteTile = Temp_Var12
+Bowser_SpriteOrientation = Temp_Var13
+
+Bowser_DrawMirrored:
+	JSR Bowser_Draw
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMAttr, Y
+	AND #~SPR_HFLIP
+	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr+4, Y
+	STA Sprite_RAMAttr+16, Y
+	STA Sprite_RAMAttr+20, Y
+	STA Sprite_RAMAttr+32, Y
+	STA Sprite_RAMAttr+36, Y
+
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr+8, Y
+	STA Sprite_RAMAttr+12, Y
+	STA Sprite_RAMAttr+24, Y
+	STA Sprite_RAMAttr+28, Y
+	STA Sprite_RAMAttr+40, Y
+	STA Sprite_RAMAttr+44, Y
+	RTS
+
+Bowser_Draw:
+	JSR Object_CalcSpriteXY_NoHi
+	LDY Objects_Frame, X
+
+	LDA Objects_Timer2, X
+	BEQ Bowser_NoFlash
+
+	AND #$04
+	BEQ Bowser_NoFlash
+
+	LDA #SPR_PAL3
+	BNE Bowser_SetPalette
+
+Bowser_NoFlash:
+	LDA Bowser_Palette, Y
+
+Bowser_SetPalette:	
+	STA Objects_SpriteAttributes, X
+
+	LDA Bowser_CrouchedFrames, Y
+	BEQ Bowser_NotCrouched
+
+	LDA Objects_SpriteY, X
+	ADD #$04
+	STA Objects_SpriteY, X
+
+Bowser_NotCrouched:
+	LDY Objects_Frame, X
+
+	LDA #$00
+	STA <Bowser_SpriteIndex
+
+	LDA #$3A
+	STA PatTable_BankSel + 4
+
+	LDA #$3B
+	STA PatTable_BankSel + 5
+
+	LDA Object_SpriteRAMOffset, X
+	STA <Bowser_SpriteOffset
+
+	LDA Objects_Frame, X
+	ASL A
+	ASL A
+
+	STA <Temp_Var7
+	ASL A
+
+	ADD <Temp_Var7
+	STA <Bowser_FrameOffset
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #$F0
+	ORA Objects_SpritesVerticallyOffScreen, X
+	STA <Bowser_SpriteVisMask
+
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	STA <Bowser_SpriteOrientation
+	
+Bowser_DrawLoop:
+	LDY <Bowser_FrameOffset
+
+	JSR Bowser_DrawSprite
+	INC <Bowser_SpriteIndex
+	INC <Bowser_FrameOffset
+
+	LDA <Bowser_SpriteOffset
+	ADD #$04
+	STA <Bowser_SpriteOffset
+
+	LDA <Bowser_SpriteIndex
+	CMP #$0C
+	BNE Bowser_DrawLoop
+
+	LDX <CurrentObjectIndexZ
+	LDY Object_SpriteRAMOffset, X
+
+	JSR Bowser_CheckHFlip
+	JSR Bowser_CheckVFlip
+Bowser_DrawRTS:
+	RTS
+
+Bowser_CheckHFlip:
+	LDA Objects_Orientation, X
+	AND #SPR_HFLIP
+	BEQ Bowser_CheckHFlipRTS
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMX + 12, Y
+	PHA
+
+	LDA Sprite_RAMX + 8, Y
+	PHA
+
+	LDA Sprite_RAMX, Y
+	STA Sprite_RAMX + 12, Y
+	STA Sprite_RAMX + 28, Y
+	STA Sprite_RAMX + 44, Y
+
+	LDA Sprite_RAMX + 4, Y
+	STA Sprite_RAMX + 8, Y
+	STA Sprite_RAMX + 24, Y
+	STA Sprite_RAMX + 40, Y
+
+	PLA
+	STA Sprite_RAMX + 4, Y
+	STA Sprite_RAMX + 20, Y
+	STA Sprite_RAMX + 36, Y
+
+	PLA
+	STA Sprite_RAMX , Y
+	STA Sprite_RAMX + 16, Y
+	STA Sprite_RAMX + 32, Y
+
+Bowser_CheckHFlipRTS:
+	RTS
+
+Bowser_CheckVFlip:
+	LDA Objects_Orientation, X
+	AND #SPR_VFLIP
+	BEQ Bowser_CheckVFlipRTS
+
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Sprite_RAMY + 32, Y
+	PHA
+
+	LDA Sprite_RAMY, Y
+	STA Sprite_RAMY + 32, Y
+	STA Sprite_RAMY + 36, Y
+	STA Sprite_RAMY + 40, Y
+	STA Sprite_RAMY + 44, Y
+
+	PLA
+	STA Sprite_RAMY , Y
+	STA Sprite_RAMY + 4, Y
+	STA Sprite_RAMY + 8, Y
+	STA Sprite_RAMY + 12, Y
+
+Bowser_CheckVFlipRTS:	
+	RTS	
+
+Bowser_DrawSprite:
+	LDA Bowser_Frames, Y
+	BEQ Bowser_DrawSpriteRTS
+	
+	STA <Bowser_SpriteTile
+	
+	LDY <Bowser_SpriteIndex
+	LDX <CurrentObjectIndexZ
+	
+	LDA Bower_SpriteXOffset, Y
+	ADD Objects_SpriteX,X
+	STA <Bowser_SpriteX
+
+	LDA Bower_SpriteYOffset, Y
+	ADD Objects_SpriteY,X
+	STA <Bowser_SpriteY
+
+	LDA VisMask, Y
+	AND <Bowser_SpriteVisMask
+	BNE Bowser_DrawSpriteRTS
+
+	LDY <Bowser_SpriteOffset
+	LDA <Bowser_SpriteY
+	STA Sprite_RAMY, Y
+	
+	LDA Objects_SpriteAttributes,X
+	ORA Objects_Orientation,X
+	STA Sprite_RAMAttr, Y
+
+	LDA <Bowser_SpriteX
+	STA Sprite_RAMX, Y
+
+	LDA <Bowser_SpriteTile
+	STA Sprite_RAMTile, Y
+
+	LDA <Bowser_SpriteOrientation
+	AND #$03
+	CMP #$02
+	BCC Bowser_DrawSpriteRTS
+
+	LDA Sprite_RAM + 2, Y
+	ORA #SPR_HFLIP
+	STA Sprite_RAM + 2, Y
+
+Bowser_DrawSpriteRTS:
+	RTS
+
+Bowser_NormBreatheFire:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_NormFireballSetFrames
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_NormFireballSetFrames
+
+	LDA #SND_LEVELFLAME
+	STA Sound_QLevel2
+
+	LDA #SOBJ_BIGFIREBALL
+	STA SpecialObj_ID,Y
+
+	LDA #$10
+	STA SpecialObj_Timer,Y
+
+	LDA #$00
+	STA SpecialObj_HurtEnemies, Y
+
+	LDA <Objects_XZ,X
+	STA SpecialObj_X,Y
+
+	LDA <Objects_XHiZ,X
+	STA SpecialObj_XHi,Y
+
+	LDA <Objects_YZ,X
+	ADD #$10
+	STA SpecialObj_Y,Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi,Y
+
+	LDA #$F0
+	STA SpecialObj_XVel,Y
+
+	LDA Objects_Orientation, X	
+	BEQ Bowser_NormBreatheFireReset
+
+	LDA #$10
+	STA SpecialObj_XVel, Y
+
+	LDA SpecialObj_X, Y
+	ADD #$10
+	STA SpecialObj_X, Y
+
+Bowser_NormBreatheFireReset:
+	LDA #$01
+	STA Bowser_Action, X
+
+	LDA #$C0
+	STA Objects_Timer, X
+
+Bowser_NormFireballSetFrames:
+	LDA Objects_Timer, X
+	LSR	A
+	LSR	A
+	LSR	A
+	LSR	A
+	AND #$01
+	EOR #$01
+	ADD #$02
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_JumpDistance:
+	; .byte $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $DC, $D8, $D4, $D0
+	.byte $F8, $F0, $E8, $E0, $D8, $D0, $C8, $C0, $B8, $B0, $A8, $A0, $A0, $A0
+
+Bowser_NormJump:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_NormJumpDone
+
+	JSR Object_XDistanceFromPlayer
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA Bowser_JumpDistance, Y
+	STA <Objects_XVelZ, X
+
+	LDA Objects_Orientation, X
+	BEQ Bowser_NormSetJump
+
+	LDA <Objects_XVelZ, X
+	JSR Negate
+	STA <Objects_XVelZ, X
+
+Bowser_NormSetJump:
+	LDA #$A0
+	STA <Objects_YVelZ, X
+
+	LDA #$04
+	STA Bowser_Action, X
+
+	LDA #$20
+	STA Objects_Timer, X
+
+Bowser_NormJumpDone:
+	LDA #$01
+	STA Objects_Frame, X
+	JMP Bowser_NormDraw	
+
+Bowser_NormSoar:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_NormSoarDone
+
+	LDA <Objects_XVelZ, X
+	BEQ Bowser_NormStopSoar
+
+	LDA <Objects_YVelZ, X
+	BPL Bowser_NormStopSoar
+
+	JSR Object_XDistanceFromPlayer
+	CMP #18
+	BCS Bowser_NormSoarDone
+
+Bowser_NormStopSoar:
+	LDA #$05
+	STA Bowser_Action, X
+
+	LDA #$10
+	STA Objects_Timer, X
+
+Bowser_NormSoarDone:
+	LDA #$00
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_NormPound:
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	JSR Bowser_Interaction
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Bowser_NormPoundCheckFloat
+
+	LDA #$20
+	STA Level_Vibration
+
+	LDA #$06
+	STA Bowser_Action, X
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$40
+	STA Objects_Timer, X
+	JMP Bowser_NormPoundDone
+
+Bowser_NormPoundCheckFloat:
+	LDA Objects_Timer, X
+	BEQ Bowser_NormPoundDown
+
+	LDA #$F8
+	STA <Objects_YVelZ, X
+	BNE Bowser_NormPoundDone
+
+Bowser_NormPoundDown:
+	LDA #$60
+	STA <Objects_YVelZ, X
+
+Bowser_NormPoundDone:
+	LDA #$04
+	STA Objects_Frame, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JMP Bowser_NormDraw
+
+Bowser_NormPoundIdle:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_NormPoundIdleDone
+	
+	LDA #$01
+	STA Bowser_Action, X
+
+	LDA #$C0
+	STA Objects_Timer, X
+
+Bowser_NormPoundIdleDone:
+	LDA #$05
+	STA Objects_Frame, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JMP Bowser_NormDraw
+	
+Bowser_MaliceTransition:
+
+	LDA #$01
+	STA Player_VibeDisable
+	
+	LDY Object_SpriteRAMOffset, X
+
+	LDA Objects_Timer, X
+	BNE Bowser_TransitionWait
+
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+
+	LDA #$08
+	STA Bowser_Action, X
+
+	LDA #$30
+	STA Objects_Timer, X
+	JMP Bowser_NormDraw
+
+Bowser_TransitionWait:
+	ADD #$80
+	EOR #$FF
+	ADD #$01
+	STA Sprite_RAMY + 52, Y
+	STA Sprite_RAMY + 56, Y
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA Sprite_RAMX + 52, Y
+	
+	ADD #$08
+	STA Sprite_RAMX + 56, Y
+
+	LDA #$79
+	STA Sprite_RAMTile + 52, Y
+	STA Sprite_RAMTile + 56, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr + 52, Y
+
+	ORA #SPR_HFLIP
+	STA Sprite_RAMAttr + 56, Y
+
+Bowser_MaliceTransitionDone:
+	LDA #$00
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_PowerUpFrames:
+	.byte  $06, $00
+
+Bowser_MalicePowerUp:
+	LDA #$01
+	STA Player_VibeDisable
+
+	LDA Objects_Timer, X
+	BNE Bowser_MalicePowerUpFrame
+
+	LDA #$09
+	STA Bowser_Action, X
+
+	LDA #$60
+	STA Objects_Timer, X
+	JMP Bowser_NormDraw	
+
+Bowser_MalicePowerUpFrame:
+	LDA Objects_Timer, X
+	LSR A
+	LSR A
+	AND #$01
+	TAY
+	LDA Bowser_PowerUpFrames, Y
+	STA Objects_Frame, X
+
+Bowser_MalicePowerUpDone:
+	JMP Bowser_NormDraw	
+
+
+Bowser_MaliceIdleNextActions:
+	.byte $0A, $0B, $0A, $0B, $0A, $0B, $0A, $0B
+	.byte $0F, $0B, $0A, $0F, $0B, $0A, $0B, $0A
+	.byte $0F, $0B, $10, $0B, $0F, $10, $0A, $10
+	.byte $0F, $0B, $10, $0B, $0F, $10, $0F, $0B
+	.byte $0F, $0B, $10, $0B, $0B, $10, $0F, $0B
+
+Bowser_MaliceIdleNextTimers:
+	.byte $20, $20, $20, $20, $20, $20, $20, $20
+	.byte $60, $20, $20, $60, $20, $20, $20, $20
+	.byte $60, $20, $60, $20, $60, $60, $20, $60
+	.byte $30, $10, $30, $10, $30, $30, $10, $30
+	.byte $30, $08, $30, $08, $08, $30, $08, $30
+	
+Bowser_MaliceIdle:
+	JSR Bowser_Interaction
+	JSR Object_FacePlayer
+
+	LDA Objects_Timer, X
+	BNE Bowser_MaliceIdleDone
+
+	LDA Random_Pool, X
+	AND #$07
+	STA <Temp_Var1
+
+	LDA Bowser_AttackPhase, X
+	ASL A
+	ASL A
+	ASL A
+	ORA <Temp_Var1
+	TAY
+
+	LDA Bowser_MaliceIdleNextActions, Y
+	STA Bowser_Action, X
+
+	LDA Bowser_MaliceIdleNextTimers, Y
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+Bowser_MaliceIdleDone:
+	LDA Objects_Timer, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$01
+	ADD #$06
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_MaliceBreatheFire:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_MaliceFireballSetFrames
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBreatheFireReset
+
+	LDA #SND_LEVELFLAME
+	STA Sound_QLevel2
+
+	JSR Bowser_MaliceMakeFire
+
+	LDA #$03
+	STA SpecialObj_YVel, Y
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBreatheFireReset
+
+	JSR Bowser_MaliceMakeFire
+
+	LDA #$FD
+	STA SpecialObj_YVel, Y
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBreatheFireReset
+
+	JSR Bowser_MaliceMakeFire
+
+Bowser_MaliceBreatheFireReset:
+	LDA #$09
+	STA Bowser_Action, X
+
+	LDA #$60
+	STA Objects_Timer, X
+
+Bowser_MaliceFireballSetFrames:
+	LDA Objects_Timer, X
+	LSR	A
+	LSR	A
+	LSR	A
+	LSR	A
+	AND #$01
+	EOR #$01
+	ADD #$08
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_MaliceMakeFire:
+	LDA #SOBJ_BIGFIREBALL
+	STA SpecialObj_ID,Y
+
+	LDA #$10
+	STA SpecialObj_Timer,Y
+
+	LDA #$00
+	STA SpecialObj_HurtEnemies, Y
+
+	LDA <Objects_XZ,X
+	STA SpecialObj_X,Y
+
+	LDA <Objects_XHiZ,X
+	STA SpecialObj_XHi,Y
+
+	LDA <Objects_YZ,X
+	ADD #$10
+	STA SpecialObj_Y,Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi,Y
+
+	LDA #$F0
+	STA SpecialObj_XVel,Y
+
+	LDA Objects_Orientation, X	
+	BEQ Bowser_MaliceMakeFireRTS
+
+	LDA #$10
+	STA SpecialObj_XVel, Y
+
+	LDA SpecialObj_X, Y
+	ADD #$10
+	STA SpecialObj_X, Y
+
+Bowser_MaliceMakeFireRTS	
+	RTS
+
+Bowser_MaliceJump:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_MaliceJumpDone
+
+	JSR Object_XDistanceFromPlayer
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA Bowser_JumpDistance, Y
+	STA <Objects_XVelZ, X
+
+	LDA Objects_Orientation, X
+	BEQ Bowser_MaliceSetJump
+
+	LDA <Objects_XVelZ, X
+	JSR Negate
+	STA <Objects_XVelZ, X
+
+Bowser_MaliceSetJump:
+	LDA #$A0
+	STA <Objects_YVelZ, X
+
+	LDA #$0C
+	STA Bowser_Action, X
+
+	LDA #$20
+	STA Objects_Timer, X
+
+Bowser_MaliceJumpDone:
+	LDA #$07
+	STA Objects_Frame, X
+	JMP Bowser_NormDraw	
+
+Bowser_MaliceSoar:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_MaliceSoarDone
+
+	LDA <Objects_XVelZ, X
+	BEQ Bowser_MaliceStopSoar
+
+	LDA <Objects_YVelZ, X
+	BPL Bowser_MaliceStopSoar
+
+	JSR Object_XDistanceFromPlayer
+	CMP #18
+	BCS Bowser_MaliceSoarDone
+
+Bowser_MaliceStopSoar:
+	LDA #$0D
+	STA Bowser_Action, X
+
+	LDA #$10
+	STA Objects_Timer, X
+
+Bowser_MaliceSoarDone:
+	LDA #$06
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_MalicePound:
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	JSR Bowser_Interaction
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BNE Bowser_MalicePoundGround
+	
+	JMP Bowser_MalicePoundCheckFloat
+
+Bowser_MalicePoundGround:
+	LDA #$20
+	STA Level_Vibration
+
+	LDA #$0E
+	STA Bowser_Action, X
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$20
+	STA Objects_Timer, X
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MalicePoundDone
+
+	LDA #SOBJ_LIGHTNINGBOLT
+	STA SpecialObj_ID, Y
+
+	LDA #$04
+	STA SpecialObj_Data2, Y
+
+	LDA #$C0
+	STA SpecialObj_XVel,Y
+
+	LDA #$00
+	STA SpecialObj_YVel, Y
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA SpecialObj_X,Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi,Y
+
+	LDA <Objects_YZ, X
+	ADD #$28
+	STA SpecialObj_Y,Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi,Y
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MalicePoundDone
+
+	LDA #SOBJ_LIGHTNINGBOLT
+	STA SpecialObj_ID, Y
+	
+	LDA #$04
+	STA SpecialObj_Data2, Y
+
+	LDA #$30
+	STA SpecialObj_XVel,Y
+
+	LDA #$00
+	STA SpecialObj_YVel, Y
+
+	LDA <Objects_XZ, X
+	ADD #$08
+	STA SpecialObj_X,Y
+
+	LDA <Objects_XHiZ, X
+	STA SpecialObj_XHi,Y
+
+	LDA <Objects_YZ, X
+	ADD #$28
+	STA SpecialObj_Y,Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi,Y	
+	JMP Bowser_MalicePoundDone
+
+Bowser_MalicePoundCheckFloat:
+	LDA Objects_Timer, X
+	BEQ Bowser_MalicePoundDown
+
+	LDA #$F8
+	STA <Objects_YVelZ, X
+	BNE Bowser_MalicePoundDone
+
+Bowser_MalicePoundDown:
+	LDA #$60
+	STA <Objects_YVelZ, X
+
+Bowser_MalicePoundDone:
+	LDA #$0A
+	STA Objects_Frame, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JMP Bowser_NormDraw
+
+Bowser_MalicePoundIdle:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_MalicePoundIdleDone
+	
+	LDA #$09
+	STA Bowser_Action, X
+
+	LDA #$60
+	STA Objects_Timer, X
+
+Bowser_MalicePoundIdleDone:
+	LDA #$0B
+	STA Objects_Frame, X
+
+	LDA #$00
+	STA Objects_Orientation, X
+
+	JMP Bowser_NormDraw	
+
+
+Bowser_BigFirePull:
+	.byte $18, $E8
+
+Bowser_MaliceBigFire:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	BNE Bowser_MaliceBigFireSetFrames
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBigFireReset
+
+	LDA #SND_LEVELFLAME
+	STA Sound_QLevel2
+
+	LDA #$00
+	STA SndCur_Level2
+
+	LDA #$00
+	STA <Temp_Var1
+	JSR Bowser_MaliceMakeFastFire
+
+	LDA #$FB
+	STA SpecialObj_YVel, Y
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBigFireReset
+
+	LDA #$02
+	STA <Temp_Var1
+	JSR Bowser_MaliceMakeFastFire
+
+	LDA #$FD
+	STA SpecialObj_YVel, Y
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBigFireReset
+
+	LDA #$04
+	STA <Temp_Var1
+	JSR Bowser_MaliceMakeFastFire
+
+	LDA #$FF
+	STA SpecialObj_YVel, Y
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBigFireReset
+
+	LDA #$06
+	STA <Temp_Var1
+	JSR Bowser_MaliceMakeFastFire
+
+	LDA #$01
+	STA SpecialObj_YVel, Y
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_MaliceBigFireReset
+
+	LDA #$08
+	STA <Temp_Var1
+	JSR Bowser_MaliceMakeFastFire
+
+	LDA #$03
+	STA SpecialObj_YVel, Y
+
+Bowser_MaliceBigFireReset:
+	LDA #$09
+	STA Bowser_Action, X
+
+	LDA #$60
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA Player_CarryXVel
+	BEQ Bowser_MaliceBigFireNoPull
+
+Bowser_MaliceBigFireSetFrames:
+	JSR Object_XDistanceFromPlayer
+	
+	LDA Bowser_BigFirePull, Y
+	STA Player_CarryXVel
+
+Bowser_MaliceBigFireNoPull:
+	LDA Sound_QLevel2
+ 	BNE Bowser_NoWoosh
+
+	LDA #SND_LEVELAIRSHIP
+	STA Sound_QLevel2
+
+Bowser_NoWoosh:	
+	LDA Objects_Timer, X
+	LSR	A
+	LSR	A
+	LSR	A
+	LSR	A
+	LSR	A
+	LSR	A
+	AND #$01
+	EOR #$01
+	ADD #$08
+	STA Objects_Frame, X
+
+	JMP Bowser_NormDraw
+
+Bowser_MaliceMakeFastFire:
+	STA <Temp_Var1
+
+	LDA #SOBJ_BIGFIREBALL
+	STA SpecialObj_ID,Y
+
+	LDA #$10
+	STA SpecialObj_Timer,Y
+
+	LDA #$00
+	STA SpecialObj_HurtEnemies, Y
+
+	LDA <Objects_XZ,X
+	STA SpecialObj_X,Y
+
+	LDA <Objects_XHiZ,X
+	STA SpecialObj_XHi,Y
+
+	LDA <Objects_YZ,X
+	ADD #$10
+	STA SpecialObj_Y,Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi,Y
+
+	LDA #$EC
+	SUB <Temp_Var1
+	STA SpecialObj_XVel,Y
+
+	LDA Objects_Orientation, X	
+	BEQ Bowser_MaliceMakeFastFireRTS
+
+	LDA SpecialObj_XVel,Y
+	JSR Negate
+	STA SpecialObj_XVel,Y
+
+
+	LDA SpecialObj_X, Y
+	ADD #$10
+	STA SpecialObj_X, Y
+
+Bowser_MaliceMakeFastFireRTS:
+	RTS	
+
+Bowser_HammerXVel:
+	.byte $DE, $E4, $EA, $F0, $F6, $FC
+
+Bowser_HammerThrowFrame:
+	.byte $0C, $06
+
+Bowser_ThrowHammer:
+	JSR Bowser_Interaction
+
+	LDA Objects_Timer, X
+	AND #$0F
+	BNE Bowser_ThrowSetFrame
+
+	JSR SpecialObject_FindEmpty
+	BCC Bowser_ThrowSetFrame
+
+	LDA Objects_Timer, X
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAX
+
+	LDA #$00
+	STA SpecialObj_HurtEnemies, X
+
+	LDA #SOBJ_HAMMER
+	STA SpecialObj_ID, Y
+
+	LDA Bowser_HammerXVel, X
+	STA SpecialObj_XVel, Y
+
+	LDA #$98
+	STA SpecialObj_YVel, Y
+
+	LDX <CurrentObjectIndexZ
+	LDA <Objects_XZ, X
+	ADD #$02
+	STA SpecialObj_X, Y
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA SpecialObj_XHi, Y
+
+	LDA <Objects_YZ, X
+	ADD #$06
+	STA SpecialObj_Y, Y
+
+	LDA <Objects_YHiZ, X
+	ADC #$00
+	STA SpecialObj_YHi, Y
+
+	LDA Objects_Orientation, X
+	BEQ Bowser_CheckHammerDone
+
+	LDA SpecialObj_XVel, Y
+	JSR Negate
+	STA SpecialObj_XVel, Y
+
+	LDA SpecialObj_X, Y
+	ADD #$14
+	STA SpecialObj_X, Y
+
+	LDA SpecialObj_XHi, Y
+	ADC #$00
+	STA SpecialObj_XHi, Y
+
+Bowser_CheckHammerDone:
+	LDA Objects_Timer, X
+	BNE Bowser_ThrowSetFrame
+
+Bowser_ThrowDone:
+	LDA #$09
+	STA Bowser_Action, X
+
+	LDA #$60
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA Objects_Frame, X
+	JMP Bowser_NormDraw
+
+Bowser_ThrowSetFrame:
+	LDA Objects_Timer, X
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA Bowser_HammerThrowFrame, Y
+	STA Objects_Frame, X
+	JMP Bowser_NormDraw
+
+MAX_STARS = 189
+
+Bowser_ProcessStarPower:
+	JSR Bowser_DetectStar
+	BCS Bowser_NoStarIncrease
+
+	LDA Poison_Mode
+	BNE Bowser_MarioIsPoison
+
+	LDA Player_Invincible
+	BNE Bowser_DecreaseStarPower
+
+Bowser_MarioIsPoison:
+	LDA Bowser_StarPower, X
+	CMP #MAX_STARS
+	BCC Bowser_IncreaseStarPower
+
+	JSR Object_FindEmptyY
+	BCC Bowser_NoStarIncrease
+
+	LDA #OBJ_MAGICSTAR_1
+	STA Objects_ID, Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
+
+	LDA #$01
+	STA Paper_StarInvincibility, Y
+	STA Objects_Property, Y
+
+	LDA #$7C
+	STA Objects_XZ, Y
+
+	LDA #$00
+	STA Objects_XHiZ, Y
+	STA Objects_YHiZ, Y
+
+	LDA #$E0
+	STA Objects_YZ, Y
+	STA Bowser_UpdateStarCount, X
+	RTS
+
+Bowser_IncreaseStarPower:
+	LDA Game_Counter
+	AND #$01
+	BNE Bowser_NoStarIncrease
+
+	INC Bowser_StarPower, X
+
+	LDA Bowser_UpdateStarCount, X
+	BEQ Bowser_NoStarIncrease
+
+	LDA Bowser_StarPower, X
+	INC Paper_Stars
+
+Bowser_NoStarIncrease:
+	RTS
+
+Bowser_DecreaseStarPower:
+	DEC Bowser_StarPower, X
+	DEC Player_Invincible
+	DEC Paper_Stars
+	RTS
+
+Bowser_MakeStar:
+
+Bowser_DetectStar:
+	LDY #$04
+	CPY <CurrentObjectIndexZ
+	BEQ Bowser_HisIndex
+
+Bowser_StarFindLoop:
+	LDA Objects_State, Y
+	BNE Bowser_StarFound
+
+Bowser_HisIndex:
+	DEY 
+	BPL Bowser_StarFindLoop
+	CLC
+	RTS
+
+Bowser_StarFound:
+	SEC
+	RTS
+
+Bowser_Die:
+	LDA Objects_Timer, X
+	BNE Bowser_DieFall
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$20
+	STA Level_Vibration
+
+	INC Bowser_Action, X
+
+	LDA #$60
+	STA Objects_Timer, X
+	RTS
+
+Bowser_DieFall:
+	LDA #$00
+	STA <Objects_TilesDetectZ, X
+
+	LDA Objects_Orientation, X
+	ORA #SPR_VFLIP
+	STA Objects_Orientation, X
+
+	LDA <Objects_YHiZ, X
+	BEQ Bowser_DieFallDown
+
+	LDA <Objects_YZ, X
+	CMP #$C0
+	BCS Bowser_DieRTS
+
+Bowser_DieFallDown:
+	JSR Object_ApplyY_With_Gravity
+
+Bowser_DieRTS:	
+	JMP Bowser_NormDraw
+
+Bowser_WaitTimer:
+	LDA Bowser_WaitTimerLo, X
+	ORA Bowser_WaitTimerHi, X
+	BEQ Bowser_WaitNoTime
+
+	DEC Bowser_WaitTimerLo, X
+	BPL Bowser_WaitTimerRTS
+
+	LDA Bowser_WaitTimerHi, X
+	BEQ Bowser_WaitNoTime
+
+	DEC Bowser_WaitTimerHi, X
+
+	LDA #59
+	STA Bowser_WaitTimerLo, X
+
+Bowser_WaitTimerRTS:
+	SEC
+	RTS
+
+Bowser_WaitNoTime:
+	CLC
+	RTS
+
+Bowser_DieBottom:
+	LDA Objects_Timer, X
+	BNE Bowser_DieBottomRTS
+
+	LDA #MUS1_WORLDVICTORY
+	STA Sound_QMusic1
+
+	LDA #7
+	STA Bowser_WaitTimerHi, X
+
+	LDA #$00
+	STA Bowser_WaitTimerLo, X
+
+	INC Bowser_Action, X
+	
+Bowser_DieBottomRTS:	
+	RTS
+
+Bowser_WaitEnding:
+	JSR Bowser_WaitTimer
+	BCS Bowser_WaitEndingRTS
+
+	INC Bowser_Action, X
+
+Bowser_WaitEndingRTS:
+	RTS
+
+Bowser_StartEnding:
+	LDA #MUS2A_ENDING
+	STA Level_MusicQueue
+
+	INC Bowser_Action, X
+
+	LDA #15
+	STA Bowser_WaitTimerHi, X
+
+	LDA #$00
+	STA Bowser_WaitTimerLo, X
+
+	LDA #$07
+	STA SuperCreditsFade_Tick, X
+
+	LDA #$00
+	STA SuperCreditsFade_Index, X
+	RTS
+
+SuperCredits_Action = Objects_Data9
+SuperCreditsFade_Tick = Objects_Data10
+SuperCreditsFade_Index = Objects_Data11
+
+SuperCredits_FadeOut:
+	LDA SuperCreditsFade_Tick, X
+	BNE SuperCredits_FadeTickDecrease
+
+	LDY #$0F
+
+	LDA #$06
+	STA <Graphics_Queue
+	
+SuperCredits_FadeOutLoop:
+	LDA MasterPal_Data, Y
+	SUB SuperCreditsFade_Index, X
+	BPL SuperCredits_FadeOutStore
+
+	LDA #$0F
+
+SuperCredits_FadeOutStore:
+	STA Palette_Buffer, Y
+	DEY
+	BPL SuperCredits_FadeOutLoop
+
+	LDA SuperCreditsFade_Index, X
+	ADD #$10
+	CMP #$50
+	BCC SuperCredits_Reset
+
+	INC Bowser_Action, X
+	RTS
+
+SuperCredits_Reset:
+	STA SuperCreditsFade_Index, X
+
+	LDA #$07
+	STA SuperCreditsFade_Tick, X
+
+SuperCredits_FadeTickDecrease:
+	DEC SuperCreditsFade_Tick, X
+
+Bowser_FadeOutRTS:
+	RTS
+
+Bowser_Hold:
+	RTS
+
+SuperCredits_LineTimerLow = Objects_Data7
+SuperCredits_LineTimerHi = Objects_Data8
+SuperCredits_LineIndex = Objects_Data9
+SuperCredits_LineWriteIndex = Objects_Data10
+SuperCredits_LineWriteColumn = Objects_Data11
+SuperCredits_LineWriteTimer = Objects_Data12
+SuperCredits_LineWriteToggle = Objects_Data13
+
+SuperCredits_FixPalette:
+	LDA Graphics_BufCnt
+	BNE SuperCredits_FixPaletteRTS
+
+	LDA #$30
+	STA Palette_Buffer + 1
+
+	LDA #$06
+	STA Graphics_Queue
+	
+	LDA #$00
+	STA SuperCredits_LineTimerHi, X
+	STA SuperCredits_LineTimerLow, X
+
+	LDA #$01
+	STA SuperCredits_LineWriteToggle, X
+
+	LDA #$00
+	STA SuperCredits_LineWriteColumn, X
+	STA SuperCredits_LineWriteIndex, X
+
+	LDA #$02
+	STA SuperCredits_LineWriteTimer, X
+
+	INC Bowser_Action, X
+
+SuperCredits_FixPaletteRTS:	
+	RTS
+
+SuperCredits_PPUAddr1:
+	vaddr $2886
+
+SuperCredits_PPUAddr2:
+	vaddr $28C6
+
+SuperCredits_Lines:
+	.word SuperCredits_Line1
+	.word SuperCredits_Line2
+	.word SuperCredits_Line3
+	.word SuperCredits_Line4
+	.word SuperCredits_Line5
+	.word SuperCredits_Line6
+	.word SuperCredits_Line7
+	.word SuperCredits_Line8
+	.word SuperCredits_Line9
+	.word SuperCredits_Line10
+	.word SuperCredits_Line11
+	.word SuperCredits_Line12
+	.word SuperCredits_Line13
+
+SuperCredits_Line1
+	.db "  CONGRATULATIONS!  "
+	.db "                    "
+
+SuperCredits_Line2
+	.db "   YOU TOOK ON THE  "
+	.db "    THE CHALLENGE   "
+
+SuperCredits_Line3
+	.db "   AND MANAGE TO    "
+	.db "DEFEAT MALICE BOWSER"
+
+SuperCredits_Line4
+	.db " THANK YOU SO MUCH  "
+	.db "FOR SEEING ALL THIS "
+
+SuperCredits_Line5
+	.db " HACK HAS TO OFFER! "
+	.db " FROM SCARLETT VIXEN"
+
+SuperCredits_Line6:
+	.db " ON WORLD MAP PAUSE "
+	.db " ENTER THESE CODES  "
+
+SuperCredits_Line7:
+	.db "  ENABLE MARINE POP "
+	.db "<;SELECT<:ASELECT<B "
+
+SuperCredits_Line8:
+	.db "  ENABLE DEBUG MODE "
+	.db "   <[<[BBAASELECT   "
+
+SuperCredits_Line9:
+	.db " ENABLE MOON GRAVITY"
+	.db "    B;ABB<:SELECT   "
+
+SuperCredits_Line10:
+	.db "  THANKS AGAIN FOR  "
+	.db "  PLAYING THE GAME  "
+
+SuperCredits_Line11:
+	.db "  I HAVE WORKED SO  "
+	.db "   HARD TO BUILD!   "
+
+SuperCredits_Line12:
+	.db " NOW GO TOUCH SOME  "
+	.db "   GRASS AND GET    "
+
+SuperCredits_Line13:
+	.db "   SOME FRESH AIR!  "
+	.db "       BYE BYE      "
+
+SuperCredits_Low = Temp_Var1
+SuperCredits_Hi = Temp_Var2
+
+SuperCredits_Roll:
+	LDA #$5C
+	STA PatTable_BankSel
+
+	LDA SuperCredits_LineTimerLow, X
+	ORA SuperCredits_LineTimerHi, X
+	BEQ SuperCredits_LineAction
+
+SuperCredits_RollTimer:
+	DEC SuperCredits_LineTimerLow, X
+	BNE SuperCredits_RollRTS
+
+	LDA SuperCredits_LineTimerHi, X
+	BEQ SuperCredits_RollRTS
+
+	DEC SuperCredits_LineTimerHi, X
+
+	LDA #$20
+	STA SuperCredits_LineTimerLow, X
+
+SuperCredits_RollRTS:
+	RTS
+
+SuperCredits_LineAction:	
+	LDA SuperCredits_LineWriteToggle, X
+	BNE SuperCredits_WriteLines
+	JMP SuperCredits_LineClear
+
+SuperCredits_WriteLines:
+	DEC SuperCredits_LineWriteTimer, X
+	BNE SuperCredits_RollRTS
+
+	LDA Graphics_BufCnt
+	BNE SuperCredits_RollRTS
+
+	LDA #$02
+	STA SuperCredits_LineWriteTimer, X
+
+	JSR SuperCredits_LoadDrawBuffer
+
+	LDA SuperCredits_LineWriteIndex, X
+	ASL A
+	TAY
+
+	LDA SuperCredits_Lines, Y
+	STA <SuperCredits_Low
+
+	LDA SuperCredits_Lines + 1, Y
+	STA <SuperCredits_Hi
+
+	LDY SuperCredits_LineWriteColumn, X
+	
+	LDA [SuperCredits_Low], Y
+	STA Graphics_Buffer + 3
+
+	TYA
+	ADD #20
+	TAY
+	
+	LDA [SuperCredits_Low], Y
+	STA Graphics_Buffer + 7
+
+	LDA #$00
+	STA Graphics_Buffer + 8
+
+	LDA #$09
+	STA Graphics_BufCnt
+
+	LDA SuperCredits_LineWriteColumn, X
+	CMP #19
+	BEQ SuperCredits_WriteDone
+
+	INC SuperCredits_LineWriteColumn, X
+
+	LDA #$02
+	STA SuperCredits_LineWriteTimer, X
+	RTS
+
+SuperCredits_WriteDone:
+	STA Debug_Snap
+	INC SuperCredits_LineWriteIndex, X
+
+
+SuperCredits_WriteLineReset:
+	LDA #$20
+	STA SuperCredits_LineTimerLow, X
+
+	LDA #$04
+	STA SuperCredits_LineTimerHi, X
+
+	LDA SuperCredits_LineWriteToggle, X
+	EOR #$01
+	STA SuperCredits_LineWriteToggle, X
+
+	LDA #$02
+	STA SuperCredits_LineWriteTimer, X
+
+	LDA #$00
+	STA SuperCredits_LineWriteColumn, X
+
+	LDA SuperCredits_LineWriteToggle, X
+	BEQ SuperCredits_WriteLineResetRTS
+
+	LDA SuperCredits_LineWriteIndex, X
+	CMP #13
+	BNE SuperCredits_WriteLineResetRTS
+
+	JMP SuperCredits_Finish
+
+SuperCredits_WriteLineResetRTS:
+	RTS
+
+SuperCredits_LineClear:
+	DEC SuperCredits_LineWriteTimer, X
+	BNE SuperCredits_WriteLineResetRTS
+
+	LDA Graphics_BufCnt
+	BNE SuperCredits_WriteLineResetRTS
+
+	JSR SuperCredits_LoadDrawBuffer
+
+	LDY SuperCredits_LineWriteColumn, X
+	
+	LDA #$FF
+	STA Graphics_Buffer + 3
+	STA Graphics_Buffer + 7
+
+	LDA #$00
+	STA Graphics_Buffer + 8
+
+	LDA #$09
+	STA Graphics_BufCnt
+
+	LDA SuperCredits_LineWriteColumn, X
+	CMP #20
+	BEQ SuperCredits_WriteLineReset
+
+	INC SuperCredits_LineWriteColumn, X
+
+	LDA #$02
+	STA SuperCredits_LineWriteTimer, X
+	RTS
+
+SuperCredits_LoadDrawBuffer:
+	LDA SuperCredits_PPUAddr1
+	STA Graphics_Buffer
+
+	LDA SuperCredits_PPUAddr1 + 1
+	ADD SuperCredits_LineWriteColumn, X
+	STA Graphics_Buffer + 1
+
+	LDA SuperCredits_PPUAddr2
+	STA Graphics_Buffer + 4
+
+	LDA SuperCredits_PPUAddr2 + 1
+	ADD SuperCredits_LineWriteColumn, X
+	STA Graphics_Buffer + 5
+
+	LDA #$01
+	STA Graphics_Buffer + 2
+	STA Graphics_Buffer + 6
+	RTS
+
+SuperCredits_Finish:
+	JMP IntReset

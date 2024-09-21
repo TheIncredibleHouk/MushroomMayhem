@@ -3187,7 +3187,7 @@ Cheat_Codes:
 	.byte B_, A_, B_, A_, B_, A_, B_, A_, R_ ; Cheat_Badge4
 	.byte B_, A_, B_, A_, B_, A_, B_, A_, S_ ; Cheat_Badge5
 	.byte B_, A_, B_, A_, B_, A_, B_, A_, B_ ; Cheat_Badge6
-	.byte S_, B_, S_, B_, S_, B_, S_, B_, S_ ; Cheat_DebugMode
+	.byte U_, D_, U_, D_, B_, B_, A_, A_, S_ ; Cheat_DebugMode
 	.byte U_, R_, S_, U_, L_, A_, S_, U_, B_ ; Cheat_Sub
 	.byte B_, U_, L_, B_, A_, S_, A_, U_, R_ ; Cheat_SecondQuest
 	.byte B_, R_, A_, B_, B_, U_, L_, S_, __ ; Cheat_ToggleMoonGravity

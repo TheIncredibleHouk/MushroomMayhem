@@ -2356,6 +2356,7 @@ Paper_StarSparkleDirection = Objects_Data3
 Paper_StarIndicator = Objects_Data4
 Paper_StarRadar = Objects_Data5
 Paper_StarCoinsNeeded = Objects_Data7
+Paper_StarInvincibility = Objects_Data8
 
 ObjInit_MagicStar1:
 	LDA #$00
@@ -2472,6 +2473,20 @@ MagicStar_NoDelete:
 	JMP Object_DrawMirrored
 
 Paper_StarCollect:
+	LDA Paper_StarInvincibility, X
+	BEQ Paper_StarNormalCollect
+
+	LDA #189
+	STA Player_Invincible
+
+	LDA #$00
+	STA Poison_Mode
+
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	JMP Object_SetDeadEmpty
+
+Paper_StarNormalCollect:
 	LDA Sound_QLevel1
 	ORA #SND_MAPBONUSAPPEAR
 	STA Sound_QMap
