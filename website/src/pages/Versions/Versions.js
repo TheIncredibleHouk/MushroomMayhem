@@ -25,17 +25,17 @@ var Versions = () => {
       <div className="versions-layout">
         <ul>
           <li>
-            <a href="/patches/1.0.0/Mario Adventure 3 (PRG 0).ips">
+            <a href="/patches/1.0.1/Mario Adventure 3 (PRG 0).ips">
               Patch for Super Mario Bros. 3 (PRG 0) version
             </a>
           </li>
           <li>
-            <a href="/patches/1.0.0/Mario Adventure 3 (PRG 1).ips">
+            <a href="/patches/1.0.1/Mario Adventure 3 (PRG 1).ips">
               Patch for Super Mario Bros. 3 (PRG 1) version
             </a>
           </li>
           <li>
-            <a href="/patches/1.0.0/Mario Adventure 3 (PC10).ips">
+            <a href="/patches/1.0.1/Mario Adventure 3 (PC10).ips">
               Patch for Super Mario Bros. 3 (PC10) version
             </a>
           </li>
@@ -49,7 +49,7 @@ var Versions = () => {
             <li>Fixed graphical glitch in World 3 Buccaneer Sea Battle</li>
         </ul>
       </div>
-      <h2>September 21, 2024 (v 1.0.0)</h2>
+      {/* <h2>September 21, 2024 (v 1.0.0)</h2>
       <div className="versions-layout">
         <ul>
           <li>
@@ -68,7 +68,7 @@ var Versions = () => {
             </a>
           </li>
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 };
