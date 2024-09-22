@@ -462,7 +462,7 @@ PRG009_BCBC:
 
 PRG009_BCBD:
 
-PRG009_BCC0:
+PRG009_BCC0:	
 	LDA <Player_SpriteX
 	CMP #16
 	BLT PRG009_BCCA	 ; If Player is pressed against the left, jump to PRG009_BCCA

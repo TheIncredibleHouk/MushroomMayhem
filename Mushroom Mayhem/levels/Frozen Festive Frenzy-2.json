@@ -10,6 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "4de85bdd-bdf6-4dba-8bea-940bb4bd3617",
   "StaticTileTableIndex": 60,
+  "NoStars": false,
   "MostCommonTile": 65,
   "AnimationType": 1,
   "ScrollType": 1,
@@ -6607,5 +6608,5 @@
       "BoundRectangle": "112,288,32,32"
     }
   ],
-  "CompressedData": "PwU/BYoQBUFBQUFBQUFBQUFBQUFBBcEFRcHHRgEFRcHJRgEFQ8GgA6HBokMBBUOCEJaXl5eXmEFBQUEFBUFBQUHBlgOXwZhDAQXFoKGiQZYDl8WYQaChogEFxZaXmEGWA5fGmEGWl5gFDhnBGQ=="
+  "CompressedData": "PwU/BYoQBUFBQUFBQUFBQUFBQUFBBcEFRcHHRgEFRcHJRgEFQ8GgA6HBokMBBUOCEJaXl5eXmEFBQUEFBUFBQUHBlgOXwZhDAQXFoKGiQZYDl8WYQaChogEFxZaXmEGWA5fGmEGWl5gFDxk="
 }

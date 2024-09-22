@@ -82,7 +82,7 @@ var About = () => {
                 <ul>
                     <li>Completely custom level format</li>
                     <li>A tile collision system built from the ground up</li>
-                    <li>Object handling system rewritten from scartch</li>
+                    <li>Object handling system rewritten from scratch</li>
                     <li>Every enemy rewritten from the ground up</li>
                     <li>4 brand new power-ups and expansions of 4 returning power-ups</li>
                     <li>New graphics effects including weather, new debris types, and displaying more colors than the NES can normally handle</li>

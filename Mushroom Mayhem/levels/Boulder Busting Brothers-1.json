@@ -10,6 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "3d3875ad-1563-4b7d-8193-d5c62374cab2",
   "StaticTileTableIndex": 22,
+  "NoStars": false,
   "MostCommonTile": 144,
   "AnimationType": 2,
   "ScrollType": 3,
@@ -6551,5 +6552,5 @@
     }
   ],
   "LevelPointers": [],
-  "CompressedData": "jhCiQUFBQUFBQUFBQUFBQUGgwaIGQcHYBUHCoKINQcKgogFBwQMHQcEDAUHCoKIBQQkDAUGCEKCiQUFBQUFBQUFBQUFBQUHCoKIBQcEDB0HBAwFBwqCiAUEJAwFBgxCgokFBQUFBQUFBQUFBQUFBwqCkDZHBow6owag="
+  "CompressedData": "jhCiQUFBQUFBQUFBQUFBQUGgwaIGQcHYBUHCoKINQcKgogFBwQMHQcEDAUHCoKIBQQkDAUGCEKCiQUFBQUFBQUFBQUFBQUHCoKIBQcEDB0HBAwFBwqCiAUEJAwFBgxCgokFBQUFBQUFBQUFBQUFBwqCkDZHBow+o"
 }

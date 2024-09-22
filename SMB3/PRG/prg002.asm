@@ -1253,6 +1253,7 @@ Weather_NotDupe:
 DontReverseWind: 
 	LDA <Temp_Var2 
 	STA Wind
+	STA Weather_OldWind, X
  
 	LDA #$01 
 	STA WeatherActive 
@@ -1282,7 +1283,13 @@ Weather_InitXY:
 	LDA <Weather_InitY
 	ADD Weather_StartY, Y
 	STA Weather_YPos, Y
+	DEY
+	BPL Weather_InitXY
 
+	LDY #$07
+
+
+Weather_Update:
 	LDX <Weather_Type
 
 	TYA
@@ -1317,7 +1324,7 @@ Weather_StoreYVel:
 Weather_DoLoop:	
 
 	DEY
-	BPL Weather_InitXY
+	BPL Weather_Left
 
 Weather_RTS:	
 	RTS
@@ -1332,6 +1339,23 @@ ObjNorm_Weather:
 	JMP Weather_Draw
 
 Weather_Norm:
+	LDA Weather_OldWind, X
+	CMP Wind
+	BEQ Weather_NoUpdate
+
+	LDY #$07
+	
+	LDA Objects_Property, X
+	STA <Weather_Type
+
+	JSR Weather_Update
+
+	LDX <CurrentObjectIndexZ
+
+	LDA Wind
+	STA Weather_OldWind, X
+
+Weather_NoUpdate:
 	JSR Weather_Move
 	JMP Weather_Draw
 
@@ -1355,6 +1379,7 @@ Weather_Tile = Temp_Var2
 Weather_Palette1 = Temp_Var3
 Weather_Palette2 = Temp_Var4
 Weather_Orientation = Temp_Var5
+Weather_OldWind = Objects_Data1
 
 Weather_PaletteUse:
 	.byte $00, $01, $00, $01, $00, $01
@@ -1463,6 +1488,9 @@ ObjNorm_KeyPieceCollection:
 	LDA #$95
 	STA <Temp_Var2
 
+	STA Debug_Snap
+	
+	
 	LDA LastPatTab_Sel
 	EOR #$01
 	TAY

@@ -1006,6 +1006,8 @@ Boss_FwooshDeepBreath3:
 	LDA Boss_FwooshBreatheInWind, Y
 	STA Wind
 
+	
+
 	JMP Boss_FwooshAnimate
 
 Boss_FwooshBlow:
@@ -1434,7 +1436,7 @@ Fwoosh_FuzzyXHi:
 	LDA #OBJ_FUZZY
 	STA Objects_ID , Y
 
-	LDA #$02
+	LDA #$00
 	STA Objects_Property, Y
 
 	LDA #BOUND16x16
@@ -2820,7 +2822,18 @@ Boss_BullyDoAction:
 Boss_BullyDoAction1:
 	RTS
 
-Boss_BullyDoAction2:	
+Boss_BullyDoAction2:
+	LDA Object_HorzTileProp, X
+	CMP #(TILE_PROP_LAVA)
+	BNE Boss_BullAlive
+
+	LDA #$0A
+	STA Boss_BullyAction, X
+
+	LDA #$80
+	STA Objects_Timer, X
+
+Boss_BullAlive:
 	LDA Boss_BullyAction, X
 	JSR DynJump
 
@@ -2881,6 +2894,13 @@ Boss_BullyActionTypes:
 Boss_BullyActionTimers:
 	.byte $20, $40, $30, $40
 
+Boss_BullyInteract:
+	JSR Object_Move
+	JSR Object_CalcBoundBox
+	JSR Object_AttackOrDefeat
+	JSR Object_DetectTiles
+	RTS
+
 Boss_BullyMarch:
 	JSR Object_FaceDirectionMoving
 	JSR Boss_BullyMove
@@ -2921,23 +2941,8 @@ Boss_BullyMove:
 	DEC <Objects_XHiZ, X
 
 Boss_BullyMoveNotOffScreen:
-	JSR Object_Move
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
-	JSR Object_DetectTiles
+	JSR Boss_BullyInteract
 	JSR Object_InteractWithTiles
-
-	LDA Object_HorzTileProp, X
-	CMP #(TILE_PROP_LAVA)
-	BNE Boss_BullyMoveRTS
-
-	LDA #$0A
-	STA Boss_BullyAction, X
-
-	LDA #$80
-	STA Objects_Timer, X
-
-Boss_BullyMoveRTS:
 	RTS	
 
 Boss_BullyCharging:
@@ -3046,16 +3051,16 @@ Boss_Bully_Charge4:
 	JMP Boss_BullyAnimateFast
 
 Boss_BullyBounceBack:
-	JSR Object_Move
-	JSR Object_CalcBoundBox
-	JSR Object_AttackOrDefeat
-	JSR Object_DetectTiles
+	JSR Boss_BullyInteract
 
 	LDA <Objects_YVelZ, X
 	BEQ Boss_BullyBounceBack1
+	
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_CEILING
+	BNE Boss_BullyBounceBack1
 
 	JSR Object_DampenVelocity
-	JSR Object_InteractWithTiles
 	JMP Boss_BullyDraw
 
 Boss_BullyBounceBack1:
@@ -3308,6 +3313,7 @@ BossBully_MakeBobomb:
 Boss_BullyDie:
 	LDA #$00
 	STA Enemy_Health
+	STA Object_HorzTileProp, X
 	
 	LDA Objects_Timer, X
 	BEQ Boss_BullyExplode
@@ -4549,7 +4555,7 @@ MegaMalice_IncreaseATB:
 	INC MegaMalice_PlayerATBTicks, X
 
 	LDA MegaMalice_PlayerATBTicks, X
-	CMP #$04
+	CMP #$02
 	BCC MegaMalice_EnemyATBCalc	
 
 	INC MegaMalice_PlayerATB, X
@@ -5049,7 +5055,7 @@ MegaMalice_Heal:
 
 	JSR SpecialObject_FindEmpty
 
-	LDA #$10
+	LDA #$10 
 	STA SpecialObj_Timer, Y
 	
 	LDA #SOBJ_COINSPARKLE
@@ -5171,6 +5177,9 @@ MegaMalice_MakeMalice:
 
 	LDA #ATTR_NOICE
 	STA Objects_BehaviorAttr, Y
+
+	LDA #BOUND16x16
+	STA Objects_BoundBox, Y 
 
 MegaMalice_MakeMaliceRTS:
 	RTS
@@ -5466,12 +5475,6 @@ Credits_FixPalette:
 
 	LDA #$30
 	STA Palette_Buffer + 1
-
-	; LDA #$11
-	; STA Palette_Buffer + 2
-
-	; LDA #$27
-	; STA Palette_Buffer + 3
 
 	LDA #$06
 	STA Graphics_Queue

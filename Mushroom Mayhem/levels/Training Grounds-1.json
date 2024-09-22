@@ -6657,6 +6657,12 @@
       "X": 7,
       "Y": 22,
       "Property": 6
+    },
+    {
+      "GameObjectId": 15,
+      "X": 0,
+      "Y": 22,
+      "Property": 0
     }
   ],
   "LevelPointers": [
@@ -6687,5 +6693,5 @@
       "BoundRectangle": "3456,336,32,32"
     }
   ],
-  "CompressedData": "EPtNAftNAfvBQQFbRwFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNRQMNAftFAVtFAftNAftNAftNAfvBQQFbQQMNQQFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNRQMNAftNAftNAftEAw1EAftNAftNAftFwq6vRQH7RcKen0UB+0XCnp9FH/vB+w=="
+  "CompressedData": "EPtNAftNAfvBQQFbRwFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNRQMNAftFAVtFAftNAftNAftNAfvBQQFbQQMNQQFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNRQMNAftNAftNAftEAw1EAftNAftNAftFwq6vRQH7RcKen0UB+0XCnp9FIPs="
 }

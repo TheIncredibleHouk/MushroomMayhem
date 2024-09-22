@@ -3638,7 +3638,7 @@
     0,
     0,
     0,
-    229,
+    226,
     9,
     9,
     9,
@@ -6567,7 +6567,86 @@
       "Property": 0
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 98,
+      "X": 1,
+      "Y": 3,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 77,
+      "X": 114,
+      "Y": 24,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 77,
+      "X": 112,
+      "Y": 25,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 77,
+      "X": 110,
+      "Y": 23,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 147,
+      "X": 122,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 147,
+      "X": 79,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 147,
+      "X": 85,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 70,
+      "X": 64,
+      "Y": 23,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 70,
+      "X": 99,
+      "Y": 22,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 147,
+      "X": 52,
+      "Y": 19,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 147,
+      "X": 45,
+      "Y": 19,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 147,
+      "X": 25,
+      "Y": 24,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 176,
+      "X": 137,
+      "Y": 2,
+      "Property": 2
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "de7b71ed-98e7-418b-b285-5f4aa4a38749",
@@ -6583,5 +6662,5 @@
       "BoundRectangle": "16,112,32,32"
     }
   ],
-  "CompressedData": "P0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0EfQX9/ZMHlCQnCJygcCcQpExQpKgnBFYICExTBFRsJFUHB6gjpASkc6YICExQq6YMCExQb6RZBweoH6cInKBzpxCkTFCkq6cEVggITFMEVEOmCBOvq6ekC6RdBweoG6QEpHOmCAhMUKumDAhMUD+mCBOtBQeoD6RhBweoF6cInKD/pIOnB6wdBweoC6RlBweoE6QEpK+mFAhMUwSkW6cLr6g/pwesJQcHqAekaQcHqA+nCFgcI6cEphQITFMEpCOnC6+oL6cEphQITFAnpwuvqCenB6wFBweoN6cHrC0HC6ukVQcEFBEHB6gHpwesBX8HqB+mGAhMUB+nB6wFBweoD6cLr6gTphQITFMEpCOnB6wFBweoB6cLr6gPpwesDQcHqA+mCAhMUA+nB6w1BweoVQcEFBUHD6utBAV/CQeoD6cTr6ukphQITFMEpBunB6wNBweoB6cHrAUHB6gPpwSmFAhMUB+nB6wNBwurrAUHB6gHpw+ve3wNBweoC6cQVExQVAunB6yVBwgVKB0EBXwFBweoB6cHrAUHB6oYCExQB6cLr6gHpwesFQcLq6wNBweoC6YUCExTBKQLpwuvqAenB6wFBwt7fBUHF6utB7u8BQcTe30HqAemCAhMUAenB6yZBwQUIQQFfAkHC6usDQcEIhQITFMMp6esBQcLq6wFBggIDBAdBweoB6cEphQITFAHpwesBQcLq6wJBwu7vCEHG7u/e3+7vAUHI6ukVExQV6esCQcFKI0GDAgMEwQUCQQFfCEHCAweFAhMUwesDQYUCAwQFQcLq6YUCExTDKenrB0HC7u8IQYMC7u8CQcHqggITFMEWggIEA8EEDUE="
+  "CompressedData": "P0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0E/QT9BP0EfQX9/ZMHiCQnCJygcCcQpExQpKgnBFYICExTBFRsJFUHB6gjpASkc6YICExQq6YMCExQb6RZBweoH6cInKBzpxCkTFCkq6cEVggITFMEVEOmCBOvq6ekC6RdBweoG6QEpHOmCAhMUKumDAhMUD+mCBOtBQeoD6RhBweoF6cInKD/pIOnB6wdBweoC6RlBweoE6QEpK+mFAhMUwSkW6cLr6g/pwesJQcHqAekaQcHqA+nCFgcI6cEphQITFMEpCOnC6+oL6cEphQITFAnpwuvqCenB6wFBweoN6cHrC0HC6ukVQcEFBEHB6gHpwesBX8HqB+mGAhMUB+nB6wFBweoD6cLr6gTphQITFMEpCOnB6wFBweoB6cLr6gPpwesDQcHqA+mCAhMUA+nB6w1BweoVQcEFBUHD6utBAV/CQeoD6cTr6ukphQITFMEpBunB6wNBweoB6cHrAUHB6gPpwSmFAhMUB+nB6wNBwurrAUHB6gHpw+ve3wNBweoC6cQVExQVAunB6yVBwgVKB0EBXwFBweoB6cHrAUHB6oYCExQB6cLr6gHpwesFQcLq6wNBweoC6YUCExTBKQLpwuvqAenB6wFBwt7fBUHF6utB7u8BQcTe30HqAemCAhMUAenB6yZBwQUIQQFfAkHC6usDQcEIhQITFMMp6esBQcLq6wFBggIDBAdBweoB6cEphQITFAHpwesBQcLq6wJBwu7vCEHG7u/e3+7vAUHI6ukVExQV6esCQcFKI0GDAgMEwQUCQQFfCEHCAweFAhMUwesDQYUCAwQFQcLq6YUCExTDKenrB0HC7u8IQYMC7u8CQcHqggITFMEWggIEA8EEDUE="
 }

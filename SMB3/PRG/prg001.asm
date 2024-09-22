@@ -405,7 +405,7 @@ ObjNorm_PowerUp0:
 	CMP #POWERUP_VINE
 	BNE PowerUp_NotVine2
 
-	JMP PupSpore_JustDraw
+	JMP PUp_Vine
 
 PowerUp_NotVine2:
 	CMP #POWERUP_SPORE

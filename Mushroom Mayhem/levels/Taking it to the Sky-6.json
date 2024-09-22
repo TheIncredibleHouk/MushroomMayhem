@@ -4687,7 +4687,7 @@
     65,
     65,
     65,
-    65,
+    74,
     65,
     65,
     161,
@@ -6062,7 +6062,7 @@
     63,
     63,
     63,
-    65,
+    74,
     65,
     65,
     65,
@@ -6561,7 +6561,68 @@
       "Property": 0
     }
   ],
-  "SecondObjectData": [],
+  "SecondObjectData": [
+    {
+      "GameObjectId": 98,
+      "X": 1,
+      "Y": 9,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 65,
+      "X": 120,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 65,
+      "X": 114,
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 67,
+      "X": 99,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 67,
+      "X": 94,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 67,
+      "X": 89,
+      "Y": 21,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 70,
+      "X": 68,
+      "Y": 21,
+      "Property": 2
+    },
+    {
+      "GameObjectId": 70,
+      "X": 73,
+      "Y": 21,
+      "Property": 3
+    },
+    {
+      "GameObjectId": 67,
+      "X": 33,
+      "Y": 19,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 67,
+      "X": 37,
+      "Y": 19,
+      "Property": 0
+    }
+  ],
   "LevelPointers": [
     {
       "LevelId": "df5427f0-7c8a-47b2-b1f5-9207d2c1957f",
@@ -6577,5 +6638,5 @@
       "BoundRectangle": "16,176,32,32"
     }
   ],
-  "CompressedData": "f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f18bQCA/C0DCnp8/QBRAWwNfSxA/S8Ken39wA19MDz9Lwp6ff3ADX00OP0vCnp9/cANfTg0/S8Ken2UJoX/BQQs/Rww/S8KOj0QFP1EGP8GQC5HBkn4MP0cLP1IFPxHNBj/BUAtRwVJ+DT9HCj9SBT8RywY/wWALYcFifg4/SQVfSMKOj0kFPxHLBj/BYAthwWJ+Dz9IBV9Iwp6fSQU/EcsGP8FgC2HBYn4QP0cFX0jCnp9JHj/BYAthwWJ+ID9Gwp6fSR4/wWALYcFiYg=="
+  "CompressedData": "f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f18bQCA/C0DCnp8/QBRAWwNfSxA/S8Ken39wA19MDz9Lwp6ff3ADX00OP0vCnp9/cANfTg0/S8Ken2LBSkEJoX/BQQs/Rww/S8KOj0QFP1EGP8GQC5HBkn4MP0cLP1IFPxHNBj/BUAtRwVJ+DT9HCj9SBT8RywY/wWALYcFifg4/SQVfSMKOj0kFPxHLBj/BYAthwWJ+Dz9IBV9Iwp6fSQU/EcsGP8FgC2HBYn4QP8FKRgVfSMKen0keP8FgC2HBYn4gP0bCnp9JHj/BYAthwWJi"
 }

@@ -2030,10 +2030,10 @@ Restore_Curr_Player_Pal:
 	LDA (Player_Pal_Backup+ $02)
 	STA (Palette_Buffer + $13)
 
-	LDA #$00
-	STA Player_Pal_Backup
-	STA (Player_Pal_Backup + $01)
-	STA (Player_Pal_Backup + $01)
+	; LDA #$00
+	; STA Player_Pal_Backup
+	; STA (Player_Pal_Backup + $01)
+	; STA (Player_Pal_Backup + $01)
 	RTS
 
 Player_RainbowCycle:

@@ -2456,6 +2456,15 @@ Credits_WriteLineReset:
 	LDA #$00
 	STA Credits_LineWriteColumn, X
 
+	LDA Credits_LineWriteToggle, X
+	BEQ Credits_WriteLineResetRTS
+
+	LDA Credits_LineWriteIndex, X
+	CMP #13
+	BNE Credits_WriteLineResetRTS
+
+	JMP Credits_PlotTwist
+
 Credits_WriteLineResetRTS:
 	RTS
 
@@ -2509,6 +2518,55 @@ Credits_LoadDrawBuffer:
 	STA Graphics_Buffer + 2
 	STA Graphics_Buffer + 6
 	RTS	
+
+Credits_PlotTwist:
+	LDA #$0F
+	LDY #$0F
+
+Credits_ClearPalette:	
+	STA MasterPal_Data, Y
+	STA Pal_Data, Y
+	DEY
+	BPL Credits_ClearPalette
+
+	LDA #OBJ_BOWSER
+	STA Objects_ID + 4
+
+	LDA #$C0
+	STA <Objects_YZ, X
+
+	LDA #$00
+	STA <Objects_YHiZ, X
+
+	LDA #$78
+	STA <Objects_XZ, X
+
+	LDA #$00
+	STA <Objects_XHiZ, X
+	STA <Objects_XVelZ, X
+	
+	LDA #$18
+	STA Bowser_Action + 4
+
+	LDA #MUS2B_BOSS
+	STA Sound_QMusic2
+
+	LDA #$80
+	STA Objects_Timer, X
+
+	LDA #$1B
+	STA Palette_Buffer + 25
+
+	LDA #$30
+	STA Palette_Buffer + 26
+
+	LDA #$27
+	STA Palette_Buffer + 27
+
+	LDA #$06
+	STA <Graphics_Queue
+
+	RTS 
 
 Bower_SpriteXOffset:
 	.byte $00, $08, $10, $18, $00, $08, $10, $18, $00, $08, $10, $18
@@ -2635,13 +2693,16 @@ Bowser_DoAction:
 	.word Bowser_MalicePoundIdle	; E
 	.word Bowser_MaliceBigFire		; F
 	.word Bowser_ThrowHammer		; 10
-	.word Bowser_Die
-	.word Bowser_DieBottom
-	.word Bowser_WaitEnding
-	.word Bowser_StartEnding
-	.word SuperCredits_FadeOut
-	.word SuperCredits_FixPalette
-	.word SuperCredits_Roll
+	.word Bowser_Die				; 11
+	.word Bowser_DieBottom			; 12
+	.word Bowser_WaitEnding			; 13
+	.word Bowser_StartEnding		; 14
+	.word SuperCredits_FadeOut		; 15
+	.word SuperCredits_FixPalette	; 16
+	.word SuperCredits_Roll			; 17
+	.word Bowser_EjectMario	        ; 18
+	.word Bowser_ByeByeMario
+	.word Bowser_NextQuest
 
 Bowser_AttachPhaseHealth:
 	.byte 60, 45, 30, 15, 00
@@ -4160,6 +4221,7 @@ Bowser_WaitEndingRTS:
 Bowser_StartEnding:
 	LDA #MUS2A_ENDING
 	STA Level_MusicQueue
+	STA Credits_Triggered
 
 	INC Bowser_Action, X
 
@@ -4327,12 +4389,12 @@ SuperCredits_Line11:
 	.db "   HARD TO BUILD!   "
 
 SuperCredits_Line12:
-	.db " NOW GO TOUCH SOME  "
-	.db "   GRASS AND GET    "
+	.db "     SEE YOU ON     "
+	.db " THE NEXT ADVENTURE "
 
 SuperCredits_Line13:
-	.db "   SOME FRESH AIR!  "
-	.db "       BYE BYE      "
+	.db "      THE END       "
+	.db "                    "
 
 SuperCredits_Low = Temp_Var1
 SuperCredits_Hi = Temp_Var2
@@ -4416,9 +4478,7 @@ SuperCredits_WriteLines:
 	RTS
 
 SuperCredits_WriteDone:
-	STA Debug_Snap
 	INC SuperCredits_LineWriteIndex, X
-
 
 SuperCredits_WriteLineReset:
 	LDA #$20
@@ -4501,4 +4561,71 @@ SuperCredits_LoadDrawBuffer:
 	RTS
 
 SuperCredits_Finish:
+	LDA #MUS1_STOPMUSIC
+	STA Level_MusicQueue
+
+	LDA #$00
+	STA Credits_Triggered
 	JMP IntReset
+
+Bowser_EjectMario:
+	LDA #96
+	STA Bowser_Health, X
+
+	LDA #$01
+	STA Objects_Timer2, X
+	STA Player_VibeDisable
+
+	LDA #$40
+	STA <Objects_YVelZ, X
+
+	JSR Bowser_Interaction
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Bowser_EjectMarioRTS
+
+	LDA #$20
+	STA Level_Vibration
+	INC Bowser_Action, X
+
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+
+	LDA #$5
+	STA Objects_Frame, X
+	JMP Bowser_NormDraw	
+
+Bowser_EjectMarioRTS:
+	LDA #$04
+	STA Objects_Frame, X
+	JMP Bowser_NormDraw	
+
+Bowser_ByeByeMario:
+	LDA #$C0
+	STA <Player_YVelZ
+	STA <Player_InAir
+
+	LDA <Player_YHiZ
+	BNE Bowser_ContByeByeMario
+
+	LDA <Player_YZ
+	CMP #$80
+	BCS Bowser_ContByeByeMario
+
+	LDA #$01
+	STA CompleteLevelTimer
+
+	LDA #$00
+	STA Credits_Triggered	
+
+	INC Bowser_Action, X
+
+Bowser_ContByeByeMario:
+	LDA #$05
+	STA Objects_Frame, X
+	JMP Bowser_NormDraw
+
+Bowser_NextQuest:
+
+	RTS

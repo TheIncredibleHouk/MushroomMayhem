@@ -6722,19 +6722,6 @@
       "BoundRectangle": "960,48,32,32"
     },
     {
-      "LevelId": "00000000-0000-0000-0000-000000000000",
-      "ExitActionType": 0,
-      "ExitX": 0,
-      "ExitY": 0,
-      "X": 92,
-      "Y": 21,
-      "ExitsLevel": false,
-      "RedrawsLevel": false,
-      "KeepObjects": false,
-      "DisableWeather": false,
-      "BoundRectangle": "1472,336,32,32"
-    },
-    {
       "LevelId": "aa4b2d72-bba4-446d-8c1a-a9841099095f",
       "ExitActionType": 1,
       "ExitX": 140,

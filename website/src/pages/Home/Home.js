@@ -1,22 +1,15 @@
 import PageTitle from "../../components/PageTitle/PageTitle";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import Image3 from "./images/3.png";
 import routes from "../../routing/routes";
 import PageHeader from "../../components/PageHeader/PageHeader";
 
 import { red } from "../../styles/colors";
+import title from './images/title.png';
 import "./Home.css";
 
 var Home = () => {
-  var showDemos = () => {
-    var date = new Date();
-    if(date >= Date.UTC(2023, 11, 23, 18)){
-      return true;
-    }
-    return false;
-  };
-
   return (
     <div className="home">
       <div className="home-description">
@@ -24,32 +17,31 @@ var Home = () => {
         will give you all the details about Mario's latest NES adventure with
         tips, tricks and secrets exposed directly by the developer!{" "}
       </div>
-      { showDemos() &&
-        <>
-          <PageHeader color={red}>New Demo (Update 1/4/2024)!</PageHeader>
-          <div className="home-description">
-            A new demo has been on December 23, 2023! This contains the entirety of the first world, which includes 9 levels,
-            a fortress (boss level), and having the chance to earn the first ability of the game! Important note: your game save
-            from the demo will not transfer to the full version. It's highly commended that you check out
-            the <Link to="/basics">Basics</Link> and <Link to="/techniques">Techniques</Link> section of this guide. Download your appropriate patch in <Link to="/demos">Demos</Link> and happy holidays!
-            <br />
-            <br />
-            An update to the demo has been created that includes:
-            <ul>
-              <li>Reworked levels</li>
-              <li>Autosave feature</li>
-              <li>Tutorial level</li>
-              <li>Alterations to some enemies and mechanics based off feedback</li>
-            </ul>
-            Another update to the demo has been release that includes:
-            <ul>
-              <li>Fixes for The Badge Hut's palette issue</li>
-              <li>Alterations to the "expert" version of levels that resulted in potential soft locks</li>
-              <li>Alterations to expert version of levels that made previous inaccessible stars now accessible</li>
-            </ul>
-          </div>
-        </>
-      }
+
+      <h1>Version 1.0.1 Out!</h1>
+      <img src={title} />
+      <div className="home-description">
+        It's been an extremely long project, but after 12 years, it's finally here. Version 1.0 of
+        Mario Adventure 3 is now live! There are a lot to this game, and I mean
+        A LOT! It has gone through a whole month of beta testing, but not
+        everything can be found by a small team, so please fill out{" "}
+        <a href="https://forms.gle/2pLB4MVcwEUo94fF7" target="_blank">
+          this form
+        </a>{" "}
+        with any issues you may run into the game. Be sure to check out my
+        Facebook and this site for the latest updates to the game!
+        <br />
+        <br />
+        It's highly commended that you check out the{" "}
+        <Link to="/basics">Basics</Link> and{" "}
+        <Link to="/techniques">Techniques</Link> section of this guide
+        <br />
+        <br />
+        Download your appropriate patch in <Link to="/versions">
+          versions
+        </Link>{" "}
+        link and enjoy!!
+      </div>
       <div className="home-table-contents">
         <h1>Table of Contents</h1>
         <div>

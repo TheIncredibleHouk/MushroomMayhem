@@ -3986,6 +3986,7 @@ ObjNorm_Fuzzy:
 	LDY Objects_Property, X
 	LDA Fuzzy_PatTable, Y
 	BEQ Fuzzy_NoGfx
+
 	STA PatTable_BankSel + 4
 
 Fuzzy_NoGfx:

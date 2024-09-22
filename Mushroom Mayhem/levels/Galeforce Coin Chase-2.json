@@ -10,6 +10,7 @@
   "PaletteEffect": 0,
   "PaletteId": "c7c3b08e-8f1a-42e9-9986-d34994fe35b6",
   "StaticTileTableIndex": 8,
+  "NoStars": false,
   "MostCommonTile": 65,
   "AnimationType": 2,
   "ScrollType": 1,
@@ -6565,5 +6566,5 @@
       "BoundRectangle": "432,352,32,32"
     }
   ],
-  "CompressedData": "Pz8/PyU/Rhg/Rhg/BmoVP0kVP0kVP0kVPwJqHD9MEj8MARI/DAESPwIBBj8CARE/TQQ/RwM/TgQ/RwM/TAw/QQM/Aa3BrEkMP0EDPwG9wbxIDT9BBD9KDT9BBD9Cx2NkZUHj5OUOP8KurwU/QsF1QsJ1QQ4/wp6fAj8fkR9RHmHBYQ=="
+  "CompressedData": "Pz8/PyU/Rhg/Rhg/BmoVP0kVP0kVP0kVPwJqHD9MEj8MARI/DAESPwIBBj8CARE/TQQ/RwM/TgQ/RwM/TAw/QQM/Aa3BrEkMP0EDPwG9wbxIDT9BBD9KDT9BBD9Cx2NkZUHj5OUOP8KurwU/QsF1QsJ1QQ4/wp6fAj8fkR9RH2E="
 }

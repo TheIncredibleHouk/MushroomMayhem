@@ -688,7 +688,7 @@ Player_HammerDraw:
 	JSR SpecialObj_Draw16x16
 	RTS
 
-Player_HammerTilesInteraction:
+Player_HammerTilesInteraction:	
 	LDA Tile_LastProp
 	CMP #TILE_PROP_BARRIER
 	BEQ Player_HammerPoof
@@ -1131,11 +1131,10 @@ SpecialObj_Draw8x160:
 
 	LDA SpecialObj_X,X
 	SUB <Horz_Scroll
-	CMP #$08
-
+	CMP #$0C
 	BCC SpecialObj_Draw8x161
+	
 	CMP #$F8
-
 	BCS SpecialObj_Draw8x161
 	STA Sprite_RAM+$03,Y
 
@@ -3671,12 +3670,6 @@ CannonBall_PoofY:
 	.byte $F8, $00, $0C, $08, $08, $00, $F8, $F8
 
 ObjectGen_Cannonball:
-	LDA #$4E
-	STA PatTable_BankSel + 4
-
-	LDA #$00
-	STA LastPatTab_Sel
-
 	LDA ObjectGenerator_Timer, X
 	BEQ ObjectGen_Cannonball2
 	RTS
@@ -3688,6 +3681,11 @@ ObjectGen_Cannonball2:
 	RTS
 
 Cannonball_Make:
+	LDA #$4E
+	STA PatTable_BankSel + 4
+
+	LDA #$00
+	STA LastPatTab_Sel
 
 	LDA ObjectGenerator_Var, X
 	AND #$03

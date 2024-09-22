@@ -681,15 +681,23 @@ PowerUp_Palettes:
 	.byte $00, $0F, $0B, $2B	; infected
 	.byte $00, $27, $28, $30	; yolked
 	.byte $00, $0F, $0F, $03	; yolked
+	.byte $00, $02, $21, $30    ; frozen
 
 Level_SetPlayerPUpPal:
+	LDA Player_Frozen
+	BEQ CheckOiled
+	
+	LDA #$0F
+	BNE Skipped_Palette
+
+CheckOiled:
 	LDA Player_Oiled
 	BEQ CheckYolked
 
 	LDA #$0E
 	BNE Skipped_Palette
 
-CheckYolked:	
+CheckYolked:
 	LDA Player_Yolked
 	BEQ CheckInfection
 
@@ -738,17 +746,20 @@ Skipped_Palette:
 	STA Graphics_Buffer+3,X
 	STA Palette_Buffer+$11	 ; Also put into Palette_Buffer
 	STA Pal_Data+$11	 ; Also put into Palette_Buffer
+	STA MasterPal_Data+$11
 	STA Player_Pal_Backup
 
 	LDA PowerUp_Palettes+2,Y
 	STA Graphics_Buffer+4,X
 	STA Palette_Buffer+$12	 ; Also put into Palette_Buffer
 	STA Pal_Data+$12	 ; Also put into Palette_Buffer
+	STA MasterPal_Data+$12
 	STA Player_Pal_Backup+1
 
 	LDA PowerUp_Palettes+3,Y
 	STA Graphics_Buffer+5,X
 	STA Palette_Buffer+$13	 ; Also put into Palette_Buffer
+	STA MasterPal_Data+$13
 	STA Pal_Data+$13	 ; Also put into Palette_Buffer
 	STA Player_Pal_Backup+2
 
@@ -3380,6 +3391,7 @@ Bump_IsPowerUp:
 
 	LDA #$00
 	STA Objects_ID, X
+	STA Objects_State, X
 	RTS
 
 Object_IsPowerUp:
@@ -4921,9 +4933,6 @@ Player_SuitChange7:
 	STX Player_FireDash
 
 Player_SuitChange8:
-	LDA Player_Frozen
-	BNE Player_SuitChange9
-
 	JSR Level_SetPlayerPUpPal ; Set power up's correct palette
 
 Player_SuitChange9:
@@ -5050,13 +5059,12 @@ Player_DetectFloor2:
 	RTS
 
 Player_PitDeath:
-	LDA <Player_SpriteX
-	BEQ Player_CheckPit
-
-	CMP #$04
-	BCS Player_CheckPit
-
-	JMP Player_Die
+	LDA #$09
+	SUB <Player_SpriteX
+	BCC Player_CheckPit
+	
+	ADD <Player_X
+	STA <Player_X
 
 Player_CheckPit:
 	LDA <Player_YHiZ
@@ -5082,6 +5090,8 @@ Player_CheckPit:
 
 	LDA #$80
 	STA <Player_YVelZ
+
+	LDA #$A0
 	STA <Player_YZ
 	BNE Player_PitDeath2
 

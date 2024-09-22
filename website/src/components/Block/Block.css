@@ -170,7 +170,7 @@
     }
 
     .block-layout {
-        line-height: 30px;
+        line-height: 48px;
         padding: calc(var(--bolt-size) * 3);
     }
 }

@@ -4245,11 +4245,11 @@ TrainingShop_Norm:
 
 
 Training_ExpRequirements:
-	.word $02EE
-	.word $02EF
-	.word $02F0
-	.word $02F1
-	.word $02F2
+	.word $01F4
+	.word $04E2
+	.word $0ABE
+	.word $0FA0
+	.word $157C
 
 TrainingShop_WriteInstructions:
 	LDA Player_Level
@@ -4261,15 +4261,15 @@ TrainingShop_CheckExp:
 	ASL A
 	TAY
 	
-	LDA #$00
-	STA <CalcParam1 + 2
-
 	LDA Training_ExpRequirements, Y
-	STA <CalcParam1 
+	SUB #$01
+	STA <CalcParam1
 
 	LDA Training_ExpRequirements + 1, Y
-	SUB #$01
 	STA <CalcParam1 + 1
+
+	LDA #$00
+	STA <CalcParam1 + 2
 
 	LDA Player_Experience
 	STA <CalcParam2
@@ -4294,11 +4294,11 @@ TrainingShop_NotEnough:
 	.byte $29, $87, 14
 	.db "YOU NEED 00000"
 
-	.byte $29, $A7, 13
-	.db "MORE XP, COME"
+	.byte $29, $A7, 14
+	.db "TOTAL XP, COME"
 
-	.byte $29, $C7, 10
-	.db "BACK LATER"
+	.byte $29, $C7, 11
+	.db "BACK LATER!"
 
 	.byte $00	
 
@@ -4318,7 +4318,7 @@ TrainingShop_NotEnoughLoop:
 	INY 
 	INX
 
-	CPX #46
+	CPX #48
 	BCC TrainingShop_NotEnoughLoop
 
 	TYA
@@ -4372,8 +4372,8 @@ TrainingShop_EnterLevelText:
 	.byte $29, $A7, 10
 	.db "PROCEED TO"
 
-	.byte $29, $C7, 12
-	.db "THE TRAINING"
+	.byte $29, $C7, 13
+	.db "THE TRAINING!"
 
 	.byte $00	
 
@@ -4417,7 +4417,7 @@ TrainingShop_EnterLevelLoop:
 	INY 
 	INX
 
-	CPX #42
+	CPX #43
 	BCC TrainingShop_EnterLevelLoop
 
 	TYA

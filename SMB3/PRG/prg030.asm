@@ -305,24 +305,17 @@ PRG030_84D7:
 	; Changes pages at A000 and C000 based on value Level_Tileset (0)
 	JSR SetPages_ByTileset	 ;	A000 = Page 11, C000 = Page 10
 
-	; Init Player's on map
-	LDX Total_Players
-	DEX		 ; X = Total_Players-1
-
 PRG030_8552:
 	; Set Player's Y position
-	LDA Map_Entered_Y,X
-	STA <World_Map_Y,X
+	LDA Map_Entered_Y
+	STA <World_Map_Y
 
 	; Set Player's X position
-	LDA Map_Entered_XHi,X
-	STA <World_Map_XHi,X
+	LDA Map_Entered_XHi
+	STA <World_Map_XHi
 
-	LDA Map_Entered_X,X
-	STA <World_Map_X,X
-
-	DEX		 ; X--
-	BPL PRG030_8552	 ; If more players to initialize, loop!
+	LDA Map_Entered_X
+	STA <World_Map_X
 
 	LDA #$00	 
 	STA Level_Tileset	 ; Map uses Level_Tileset = 0
@@ -646,10 +639,10 @@ PRG030_873F:
 
 PRG030_879B:
 	; Switch to the other Player (if any!)
-	INX
-	STX Player_Current
-	CPX Total_Players
-	BNE PRG030_87A9	 	; If not at the total Player count, jump to PRG030_87A9
+	; INX
+	; STX Player_Current
+	; CPX Total_Players
+	; BNE PRG030_87A9	 	; If not at the total Player count, jump to PRG030_87A9
 
 	LDA #$00	 
 	STA Player_Current	; Otherwise, back to 0 (basically keeps at 0 for 1P or goes 0, 1, 0, 1...)
@@ -1200,6 +1193,9 @@ PRG030_8E5D:
 	LDA SndCur_Pause
 	ORA Player_IsDying
 	BNE PRG030_8E79	 ; Can't unpause game while pause sound is playing
+
+	LDA Credits_Triggered
+	BNE PRG030_8E79
 
 	LDA <Pad_Input	
 	AND #PAD_START
@@ -5466,7 +5462,7 @@ UsePointer:
 	STA Map_Entered_X
 
 	LDA Map_Entered_X
-	SUB #$20
+	SUB #$50
 	AND #$80
 	STA Map_Prev_XOff
 
@@ -5677,6 +5673,9 @@ Player_FreezeNow:
 	LDA #$08
 	STA Player_Frozen
 
+	LDA #$80
+	STA Player_QueueSuit
+	
 	LDA #$00
 	STA Player_IsClimbing
 
@@ -5687,14 +5686,6 @@ Player_FreezeNow:
 	STA Frozen_Frame
 
 Keep_Going:
-	LDA #$02
-	STA Palette_Buffer+$11
-
-	LDA #$21
-	STA Palette_Buffer+$12
-
-	LDA #$30
-	STA Palette_Buffer+$13
 	RTS
 
 
@@ -6853,6 +6844,14 @@ Live_Stage6:
  	STA Palette_Buffer, X
  	DEX
  	BPL Live_LoadPalette
+
+	LDX #$02
+
+Live_PlayerPal:	
+	LDA Player_Pal_Backup, X
+	STA Palette_Buffer + 17, X
+	DEX
+	BPL Live_PlayerPal
 
 	LDX #$04
  	LDA #$00

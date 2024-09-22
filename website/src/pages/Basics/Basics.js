@@ -304,7 +304,7 @@ var Basics = () => {
               Checkpoint flags can be found within most levels of the game (not all levels have checkpoints) and some levels
               (fortresses) contain multiple checkpoints. Dying in a level will reset Mario's stats to what they were when he
               entered a level, but a checkpoint saves those stats at that point. A checkpoint for a level will remain until
-              Mario grabs a different checkpoint or completes any level.
+              Mario grabs a different checkpoint or completes any level. You can reset a level's checkpoint by holding <NesPadMenu select={true} /> while entering a level.
               <div className="basics-screenshots">
                 <img src={Checkpoint1} />
                 <img className="right-arrow" src={Arrow} />

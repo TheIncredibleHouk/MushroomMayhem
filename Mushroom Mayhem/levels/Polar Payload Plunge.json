@@ -6513,12 +6513,6 @@
       "Property": 0
     },
     {
-      "GameObjectId": 102,
-      "X": 169,
-      "Y": 19,
-      "Property": 0
-    },
-    {
       "GameObjectId": 104,
       "X": 21,
       "Y": 11,
@@ -6534,12 +6528,6 @@
       "GameObjectId": 18,
       "X": 229,
       "Y": 13,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 102,
-      "X": 190,
-      "Y": 10,
       "Property": 0
     },
     {
@@ -6666,6 +6654,12 @@
       "GameObjectId": 102,
       "X": 204,
       "Y": 15,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 104,
+      "X": 190,
+      "Y": 24,
       "Property": 0
     }
   ],

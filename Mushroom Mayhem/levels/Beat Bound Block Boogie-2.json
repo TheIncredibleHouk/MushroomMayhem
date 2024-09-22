@@ -4,7 +4,7 @@
   "TileSetIndex": 1,
   "ClearTileIndex": 65,
   "MusicValue": 16,
-  "ScreenLength": 4,
+  "ScreenLength": 2,
   "StartX": 51,
   "StartY": 10,
   "PaletteEffect": 0,
@@ -6598,5 +6598,5 @@
       "BoundRectangle": "992,144,32,32"
     }
   ],
-  "CompressedData": "Xw//SwP/Xw//SwP/TMH/BF9MD/9LA/9Mwf9RD/9LA/9Mw/9BLk8P/0sD/0yCBf9BQUFBSA//SwP/TMP/X1wBX8H/QgRJRA//SwP/Xw//SwP/Xw//TAGywf9EwwMEBVcP/0XDo6SlQ8OyDv9FwXVKwUIDosFCRw//RsF1RMOyH/8bkcKurwGRD/8PkRpRw1KenwFRD/8PUV8P/w9hVcEuSA//D2FfD/8PYV8P/w9hVcFJSA//D2FfD/8PYV8P/w9hXw//D2FPwUlCxV9PX0lfRg//D2FfD/8PYVbD4+TlQcKur0EP/w9hQsFCBqLBQkvBdULCnp9BD/8PYR+RD/8PYR9RD/8OYcFh"
+  "CompressedData": "f0zB/wRfWcH/XsP/QS5cggX/QUFBQVXD/19cAV/B/0IESX9JwwMEBV3BdUrBQgOiwUJHG5HCrq8BkRpRw1KenwFRdcEuf17BSX94wUlCxV9PX0lffcPj5OVBwq6vRMFCBqLBQkvBdULCnp9BH5EfUQ=="
 }

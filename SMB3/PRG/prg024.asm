@@ -352,23 +352,18 @@ PRG024_A98A:
 
 	RTS		 ; Return
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Title_Display_Curtain
-;
-; You know that nifty "bowser" curtain 
-; on the title screen?  Here it is...
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Title_Screen_Tiles:
 	.byte $FE, $FE, $90, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $95, $91, $FE, $FE, $FE
-	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
-	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
+	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $AF, $01, $02, $03, $04, $05, $06, $AF, $08, $09, $0A, $AF, $0C, $0D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
+	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $AF, $1C, $1D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
 	.byte $FE, $FE, $94, $FF, $FF, $FF, $FF, $FF, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $2A, $2B, $2C, $2D, $FF, $FF, $FF, $FF, $FF, $FF, $97, $FE, $FE, $FE
-	.byte $FE, $FE, $94, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F, $60, $61, $62, $63, $64, $65, $66, $67, $68, $97, $FE, $FE, $FE
-	.byte $FE, $FE, $94, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $70, $71, $72, $73, $74, $75, $76, $77, $78, $97, $FE, $FE, $FE
-	.byte $FE, $FE, $94, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $5A, $5B, $5C, $5D, $5E, $5F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $97, $FE, $FE, $FE
+	.byte $FE, $FE, $94, $AF, $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $AF, $3F, $60, $61, $62, $63, $64, $65, $66, $67, $68, $97, $FE, $FE, $FE
+	.byte $FE, $FE, $94, $40, $41, $42, $43, $44, $AF, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $70, $71, $72, $73, $74, $75, $76, $77, $78, $97, $FE, $FE, $FE
+	.byte $FE, $FE, $94, $50, $51, $52, $53, $54, $AF, $56, $57, $58, $59, $5A, $5B, $5C, $5D, $5E, $5F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $97, $FE, $FE, $FE
 	.byte $FE, $FE, $92, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $96, $93, $FE, $FE, $FE
 
 Title_Display_Title:
+
 	SEI
 
 	LDA PPU_STAT 	; read PPU status to reset the high/low latch
@@ -395,7 +390,6 @@ PRG024_A9A3:
 
 
 Title_DoState:
-
 	; Clear the queues for Mario/Luigi
 	LDA #$00
 	STA <Title_ObjMLQueue
@@ -711,7 +705,6 @@ Title_MenuUpdate:
 Title_MenuRTS:
 	RTS
 
-
 World_Select_Enabled = $6802
 World_Number_Sprite:
 	.byte $00, $E3, $E5, $E7, $E9, $EB, $ED, $EF
@@ -893,6 +886,10 @@ Title_Subtitle:
 	vaddr $222C
 	.byte $06
 	.byte $F4, $F5, $F6, $F7, $F8, $F9
+
+	vaddr $236C
+	.byte $06
+	.byte $79, $07, $3E, $00, $3E, $07
 	.byte $00
 	
 Title_FadeIn_1:
