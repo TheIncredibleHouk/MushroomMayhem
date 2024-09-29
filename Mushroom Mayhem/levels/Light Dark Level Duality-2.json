@@ -6507,12 +6507,6 @@
       "Property": 0
     },
     {
-      "GameObjectId": 124,
-      "X": 12,
-      "Y": 13,
-      "Property": 0
-    },
-    {
       "GameObjectId": 72,
       "X": 32,
       "Y": 16,
@@ -6679,6 +6673,12 @@
       "X": 67,
       "Y": 10,
       "Property": 1
+    },
+    {
+      "GameObjectId": 124,
+      "X": 12,
+      "Y": 14,
+      "Property": 0
     }
   ],
   "SecondObjectData": [
@@ -6857,6 +6857,7 @@
       "ExitActionType": 0,
       "ExitX": 13,
       "ExitY": 24,
+      "MapScroll": 0,
       "X": 12,
       "Y": 23,
       "ExitsLevel": false,
@@ -6870,6 +6871,7 @@
       "ExitActionType": 0,
       "ExitX": 49,
       "ExitY": 21,
+      "MapScroll": 0,
       "X": 48,
       "Y": 20,
       "ExitsLevel": false,
@@ -6883,6 +6885,7 @@
       "ExitActionType": 0,
       "ExitX": 71,
       "ExitY": 3,
+      "MapScroll": 0,
       "X": 71,
       "Y": 2,
       "ExitsLevel": false,
@@ -6896,6 +6899,7 @@
       "ExitActionType": 0,
       "ExitX": 124,
       "ExitY": 5,
+      "MapScroll": 0,
       "X": 123,
       "Y": 4,
       "ExitsLevel": false,
@@ -6909,6 +6913,7 @@
       "ExitActionType": 0,
       "ExitX": 181,
       "ExitY": 23,
+      "MapScroll": 0,
       "X": 181,
       "Y": 22,
       "ExitsLevel": false,
@@ -6922,6 +6927,7 @@
       "ExitActionType": 0,
       "ExitX": 3,
       "ExitY": 21,
+      "MapScroll": 0,
       "X": 201,
       "Y": 16,
       "ExitsLevel": false,

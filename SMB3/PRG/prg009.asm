@@ -480,6 +480,12 @@ PRG009_BCCA:
 	EOR <Player_SpriteX	; Check sign of difference against Player's Sprite X
 	BMI PRG009_BCF1	 	; Basically determines if Player should be pushed by the scroll; if not, jump to PRG009_BCF1
 
+	LDA Player_HitWall
+	BEQ Player_NoDie
+
+	JSR Player_Die
+
+Player_NoDie:	
 	; Set Player's X velocity same as auto scroll horizontal velocity
 	LDA Level_AScrlHVel
 	STA <Player_XVelZ

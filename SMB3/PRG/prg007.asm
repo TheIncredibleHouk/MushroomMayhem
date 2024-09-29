@@ -4000,8 +4000,8 @@ GoombaGeneratorRTS:
 	RTS
 
 TroopaXOffset:		.byte $00, $00, $08, $08, $00, $00, $08, $08
-TroopaYOffset:		.byte $FC, $FC, $00, $00, $FC, $FC, $00, $00
-					.byte $FF, $FF, $00, $00, $FF, $FF, $00, $00
+TroopaYOffset:		.byte $01, $FC, $00, $00, $FC, $FC, $00, $00
+					.byte $00, $FF, $00, $00, $FF, $FF, $00, $00
 
 TroopaLimit:
 	.byte $03, $03, $03, $03, $01, $01, $01, $01					
@@ -4403,6 +4403,9 @@ ObjectGen_Platform:
 
 	LDA #$01
 	STA Objects_Property, X
+
+	LDA #$0F
+	STA PatTable_BankSel + 4
 
 	LDA #$06
 	STA Objects_SpritesRequested, X

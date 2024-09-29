@@ -1548,7 +1548,7 @@ FwooshHit_Relocate:
 	BPL FwooshHit_RelocateRight
 
 FwooshHit_RelocateLeft:
-	LDA #$20
+	LDA #$28
 	STA <Objects_XZ, X
 	RTS
 
@@ -1748,8 +1748,9 @@ Boss_BlooperHurt:
 	CMP #HIT_EXPLOSION
 	BNE Boss_BlooperHitLow
 
-	DEC Boss_BlooperHealth, X
-	DEC Boss_BlooperHealth, X
+	LDA Boss_BlooperHealth, X
+	SUB #10
+	STA Boss_BlooperHealth, X
 
 Boss_BlooperHitLow:
 	LDA #OBJSTATE_NORMAL
@@ -1777,6 +1778,7 @@ Boss_BlooperHitLow:
 	STA Boss_BlooperCanSecondTentacle, X
 
 Blooper_NoNewTentacle:	
+	DEC Boss_BlooperHealth, X
 	DEC Boss_BlooperHealth, X
 	BPL Boss_BlooperHurtRTS
 
@@ -1830,9 +1832,6 @@ Boss_BlooperDraw:
 
 	LDA #HIGH(Boss_BlooperSprites)
 	STA <Giant_TilesHi
-
-	LDA #$00
-	STA Objects_Orientation, X
 
 	LDA <Objects_YZ, X
 	ADD #$03
@@ -1969,11 +1968,11 @@ Boss_PiranhaHealth = Objects_Data13
 
 	
 Piranha_HitTable:
+	.byte 240
 	.byte 19
 	.byte 13
 	.byte 7
-	.byte 1
-	.byte $F0
+	.byte 0
 
 Boss_Piranha:
 	LDA <Player_HaltGameZ
@@ -1995,17 +1994,15 @@ Boss_PiranhaNorm:
 	LDA Objects_PlayerProjHit, X
 	CMP #HIT_EXPLOSION
 	BNE Piranha_NormHit
-
-	DEC Boss_PiranhaHealth, X
-	DEC Boss_PiranhaHealth, X
-	DEC Boss_PiranhaHealth, X
-	DEC Boss_PiranhaHealth, X
-	DEC Boss_PiranhaHealth, X
+	
+	LDA Boss_PiranhaHealth, X
+	SUB #$05
+	STA Boss_PiranhaHealth, X
 
 Piranha_NormHit:
-	
 	DEC Boss_PiranhaHealth, X
 
+Piranha_NotDead:
 	LDA Boss_PiranhaHealth, X
 	ASL A
 	STA Enemy_Health
@@ -2069,12 +2066,16 @@ Boss_PiranhaInit:
 
 	LDA #ATTR_STOMPPROOF
 	STA Objects_WeaponAttr, X
+
+	LDA #ATTR_NOICE
+	STA Objects_BehaviorAttr, X
 	
 	LDA #$E0
 	STA <Objects_YZ, X
 
 	LDA #$00
 	STA <Objects_YHiZ, X
+	INC Boss_PiranhaHits, X
 
 
 	LDA #24
@@ -2187,8 +2188,7 @@ Boss_PiranhaWait:
 	INC Boss_PiranhaAction, X
 	
 	LDA Boss_PiranhaHits, X
-	CMP #$04
-	BCC Boss_PiranhaWait1
+	BNE Boss_PiranhaWait1
 
 	LDA #$05
 	STA Boss_PiranhaAction, X
@@ -2240,13 +2240,15 @@ Boss_PiranhaNoPull:
 	STA Objects_Timer, X
 
 	LDA #$00
-	STA Boss_PiranhaChompGrab, X
+	;STA Boss_PiranhaChompGrab, X
 
 Boss_PiranhaAttackDownRTS:
 	JMP Boss_PiranhaAnimate
 	
 Boss_PiranhaHitAction:
 	LDA Boss_PiranhaHits, X
+	BEQ Boss_PiranhaAttackDownRTS
+	SUB #$01
 
 	JSR DynJump
 
@@ -2480,7 +2482,7 @@ Muncher_Positions:
 
 Boss_PiranhaMoveMuncher:
 	LDA Boss_PiranhaHits, X
-	CMP #$03
+	CMP #$04
 	BNE Boss_PiranhaMoveMuncherRTS
 
 	LDY #$07
@@ -2693,7 +2695,7 @@ Boss_PiranhaUpdateWeather:
 	BCC Boss_PiranhaUpdateWeatherRTS
 
 	LDA Boss_PiranhaHits, X
-	SUB #$01
+	SUB #$02
 	STA Objects_Property, Y
 
 	LDA #OBJSTATE_INIT
@@ -2799,6 +2801,7 @@ Boss_BullyDoAction:
 
 	LDA #$00
 	STA Objects_Frame, X
+	STA Object_HorzTileProp, X
 
 	LDA <Player_X
 	ADD #$80
@@ -5237,13 +5240,12 @@ MegaMalice_MakeSporeRTS:
 MegaMalice_Die:
 	LDA #$00
 	STA Enemy_Health
+	STA Objects_ID, X
 
 	LDA #$40
 	STA Objects_Timer2, X
 
-	LDA #$00
-	STA Objects_ID, X
-	
+
 	JSR DestroyAllEnemies
 	
 	LDA #OBJ_BOSS
@@ -5481,15 +5483,12 @@ Credits_FixPalette:
 	
 	LDA #$01
 	STA Credits_Triggered
+	STA Credits_LineWriteToggle, X
+
 
 	LDA #$00
 	STA Credits_LineTimerHi, X
 	STA Credits_LineTimerLow, X
-
-	LDA #$01
-	STA Credits_LineWriteToggle, X
-
-	LDA #$00
 	STA Credits_LineWriteColumn, X
 	STA Credits_LineWriteIndex, X
 
@@ -5498,4 +5497,3 @@ Credits_FixPalette:
 
 Credits_FixPaletteRTS:	
 	RTS
-

@@ -6744,8 +6744,8 @@
     },
     {
       "GameObjectId": 12,
-      "X": 36,
-      "Y": 15,
+      "X": 80,
+      "Y": 2,
       "Property": 4
     },
     {
@@ -6827,6 +6827,7 @@
       "ExitActionType": 1,
       "ExitX": 7,
       "ExitY": 23,
+      "MapScroll": 0,
       "X": 186,
       "Y": 9,
       "ExitsLevel": false,
@@ -6840,6 +6841,7 @@
       "ExitActionType": 0,
       "ExitX": 35,
       "ExitY": 24,
+      "MapScroll": 0,
       "X": 183,
       "Y": 0,
       "ExitsLevel": false,

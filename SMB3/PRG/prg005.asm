@@ -507,6 +507,14 @@ ShyGuy_FacingPlayerCheck:
 	.byte $00, SPR_HFLIP
 
 ShyGuy_ThrowBlock:
+	LDA Objects_Timer, X
+	BEQ ShyGuy_CanThrowBlock
+
+	CMP #$01
+	BEQ ShyGuy_ThrowBlockForced
+	BNE ShyGuy_ThrowBlockDone
+
+ShyGuy_CanThrowBlock:
 	LDA <Objects_TilesDetectZ, X
 	AND #HIT_GROUND
 	BEQ ShyGuy_ThrowBlockDone
@@ -523,18 +531,36 @@ ShyGuy_ThrowBlock:
 	CMP ShyGuy_FacingPlayerCheck, Y
 	BNE ShyGuy_ThrowBlockDone
 
+	LDA #$10
+	STA Objects_Timer, X
+	BNE ShyGuy_ThrowBlockDone
+
 ShyGuy_ThrowBlockForced:
 	JSR Object_FindEmptyY
 	BCC ShyGuy_ThrowBlockDone
 
+	JSR ShyGuy_MakeBrick
+
+ShyGuy_ClearHolding:
+	LDA #$00
+	STA ShyGuy_Holding, X
+
+ShyGuy_ThrowBlockDone:
+	RTS
+
+ShyGuy_MakeBrick:
+	
 	LDA #OBJ_BRICK
 	STA Objects_ID, Y
 
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_STOMPPROOF)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF)
 	STA Objects_WeaponAttr, Y
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, Y
+
+	LDA #OBJSTATE_NORMAL
+	STA Objects_State, Y
 
 	LDA #SPR_PAL3
 	STA Objects_SpriteAttributes, Y
@@ -562,6 +588,9 @@ ShyGuy_ThrowBlockForced:
 	LDA #$E0
 	STA Objects_XVelZ, Y
 
+	LDA #$10
+	STA Objects_Timer2, Y
+
 	LDA Objects_Orientation, X
 	AND #SPR_HFLIP
 	BEQ ShyGuy_ClearHolding
@@ -571,16 +600,13 @@ ShyGuy_ThrowBlockForced:
 	ADD #$01
 	STA Objects_XVelZ, Y
 
-ShyGuy_ClearHolding:
 	LDA #$00
-	STA ShyGuy_Holding, X
-
-ShyGuy_ThrowBlockDone:
+	STA Objects_BeingHeld, X
 	RTS
 
 
 ObjInit_Brick:
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF | ATTR_STOMPPROOF)
+	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_NINJAPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #BOUND16x16
@@ -4250,6 +4276,7 @@ Training_ExpRequirements:
 	.word $0ABE
 	.word $0FA0
 	.word $157C
+	.word $2710
 
 TrainingShop_WriteInstructions:
 	LDA Player_Level
@@ -4344,6 +4371,12 @@ TrainingShop_NotEnoughLoop:
 
 	LDA Buffer_Backup, X
 	TAY 
+	LDA DigitsResult + 4
+	ORA #$30
+	STA Graphics_Buffer + 12, Y
+
+	LDA Buffer_Backup, X
+	TAY 
 	LDA DigitsResult + 3
 	ORA #$30
 	STA Graphics_Buffer + 13, Y
@@ -4378,10 +4411,10 @@ TrainingShop_EnterLevelText:
 	.byte $00	
 
 Training_DoorX
-	.byte $40, $60, $70, $90, $A0
+	.byte $40, $40, $70, $70, $A0, $A0 
 
 Training_DoorY:
-	.byte $90, $20, $90, $20, $90
+	.byte $90, $20, $90, $20, $90, $20
 
 TrainingShop_EnterLevel:
 	LDY Player_Level
@@ -4417,7 +4450,7 @@ TrainingShop_EnterLevelLoop:
 	INY 
 	INX
 
-	CPX #43
+	CPX #44
 	BCC TrainingShop_EnterLevelLoop
 
 	TYA
@@ -4434,8 +4467,8 @@ TrainingShop_NoMoreText:
 	.byte $29, $87, 11
 	.db "THERE IS NO"
 
-	.byte $29, $A7, 16
-	.db "FURTHER TRAINING"
+	.byte $29, $A7, 17
+	.db "FURTHER TRAINING."
 
 	.byte $00
 
@@ -4451,7 +4484,7 @@ TrainingShop_NoMoreLoop:
 	INY 
 	INX
 
-	CPX #33
+	CPX #35
 	BCC TrainingShop_NoMoreLoop
 
 	TYA
@@ -4505,6 +4538,13 @@ Tutorial_Messages:
 	MSG_ID Tutorial_Ninja_2
 
 ObjNorm_Tutorial:
+	LDA <Player_IsDying
+	BNE Tutorial_DrawMsg
+
+	LDA #$01
+	STA Tutorial_Active
+
+Tutorial_DrawMsg:
 	LDX <Player_XHi
 	LDA Tutorial_Messages, X
 	STA Message_Id

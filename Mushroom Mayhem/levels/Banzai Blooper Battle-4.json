@@ -10,7 +10,7 @@
   "PaletteEffect": 2,
   "PaletteId": "ba387427-8e80-4a8d-bc7c-2c3acdca0350",
   "StaticTileTableIndex": 4,
-  "NoStars": false,
+  "NoStars": true,
   "MostCommonTile": 193,
   "AnimationType": 0,
   "ScrollType": 2,
@@ -6601,6 +6601,12 @@
       "X": 3,
       "Y": 4,
       "Property": 1
+    },
+    {
+      "GameObjectId": 176,
+      "X": 199,
+      "Y": 3,
+      "Property": 1
     }
   ],
   "SecondObjectData": [
@@ -6621,6 +6627,12 @@
       "X": 3,
       "Y": 2,
       "Property": 1
+    },
+    {
+      "GameObjectId": 176,
+      "X": 199,
+      "Y": 3,
+      "Property": 1
     }
   ],
   "LevelPointers": [
@@ -6629,6 +6641,7 @@
       "ExitActionType": 0,
       "ExitX": 2,
       "ExitY": 2,
+      "MapScroll": 0,
       "X": 202,
       "Y": 9,
       "ExitsLevel": false,

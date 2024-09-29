@@ -5,8 +5,8 @@
   "ClearTileIndex": 0,
   "MusicValue": 144,
   "ScreenLength": 2,
-  "StartX": 2,
-  "StartY": 15,
+  "StartX": 3,
+  "StartY": 25,
   "PaletteEffect": 0,
   "PaletteId": "0b4bb2af-f89c-413c-a911-683e36d52e47",
   "StaticTileTableIndex": 24,
@@ -6502,12 +6502,6 @@
   "FirstObjectData": [],
   "SecondObjectData": [
     {
-      "GameObjectId": 14,
-      "X": 12,
-      "Y": 19,
-      "Property": 2
-    },
-    {
       "GameObjectId": 16,
       "X": 5,
       "Y": 12,
@@ -6554,6 +6548,18 @@
       "X": 28,
       "Y": 5,
       "Property": 2
+    },
+    {
+      "GameObjectId": 59,
+      "X": 2,
+      "Y": 20,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 16,
+      "X": 4,
+      "Y": 18,
+      "Property": 0
     }
   ],
   "LevelPointers": [
@@ -6562,13 +6568,14 @@
       "ExitActionType": 0,
       "ExitX": 176,
       "ExitY": 1,
-      "X": 14,
+      "MapScroll": 0,
+      "X": 13,
       "Y": 25,
       "ExitsLevel": false,
       "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
-      "BoundRectangle": "224,400,32,32"
+      "BoundRectangle": "208,400,32,32"
     }
   ],
   "CompressedData": "EBcNJwEXDSfCFxhNwhYYRsEtRcIWGEaCAmhBQsQWGEHORMEtRcIWGEYCaEPCFhcENMIsMwQ0xDVBFhhNwhYYRsEtRcIWGEvErK0WGETDzkEtRcIWGEvHvL0WFzUsMwc0wTVBwhYYRsMzNDVDwhYYRsEtRcIWGE3EFhhBzkTBLUXCFhhNwhYXAzTDNSwzAjTBNULCFhhNwhYYRsEtRcIWGE3CFhhEw85BLUXCFhhNxRYXNSwzBTTBNUPCFhhNwhYYRsEtRcIWGE3EFhhBzkTBLUXCFhhJwo6PQcIWFwM0xTUsMzQ1RMIWGEnCnp9BwhYYRsEtRcIWGEnCMzVBwhYYRsEtRcIWGE3FFhc1LDMDNMEIRcIWGETCjo9GwhYYRsEbRcIWGETCnp9GwhYYRsEbRcIWGETCMzVGwhYXAjTBNQJowxtBMwM0ARcBNME1SsQWGEGMRMEbRMWMFhhBjEvEFhhBjETBG0TFjBYYQYxLxBYYQYxDwj0bRMWMFhhBjEvCFicGNMEnAzTDNYwWgQ8XBwcHBwcHBwcHBwcHBwfBFw=="

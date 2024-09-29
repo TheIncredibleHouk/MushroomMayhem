@@ -222,21 +222,21 @@ PRG024_A8BF:
 	JSR Title_Display_Title	; Put up the curtain!
 
 	; Some kind of hardware thing perhaps
-	LDA #$00
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+	; LDA #$00
+	; STA PPU_VRAM_ADDR
+	; STA PPU_VRAM_ADDR
 
-	LDA #$10	
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+	; LDA #$10	
+	; STA PPU_VRAM_ADDR
+	; STA PPU_VRAM_ADDR
 
-	LDA #$00	
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+	; LDA #$00	
+	; STA PPU_VRAM_ADDR
+	; STA PPU_VRAM_ADDR
 
-	LDA #$10	 
-	STA PPU_VRAM_ADDR	
-	STA PPU_VRAM_ADDR	
+	; LDA #$10	 
+	; STA PPU_VRAM_ADDR	
+	; STA PPU_VRAM_ADDR	
 
 	; Wait for V-Blank to end
 PRG024_A930:
@@ -300,31 +300,31 @@ PRG024_A959:
 	;JSR GraphicsBuf_Prep_And_WaitVSyn2
 
 	; There are 6 objects on the title screen that need their states set; if this value hits 6, we're done with that
-	LDY <Title_ObjInitIdx	; Y = Title_ObjInitIdx
-	CPY #$06	 	
-	BGE PRG024_A976	 	; If Title_ObjInitIdx >= 6, jump to PRG024_A976
+; 	LDY <Title_ObjInitIdx	; Y = Title_ObjInitIdx
+; 	CPY #$06	 	
+; 	BGE PRG024_A976	 	; If Title_ObjInitIdx >= 6, jump to PRG024_A976
 
-	; Title_ObjInitIdx < 6... (more objects to go yet)
+; 	; Title_ObjInitIdx < 6... (more objects to go yet)
 
-	; Waiting for event timer to run out
-	DEC <Title_ObjInitDly	; Title_ObjInitDly--
-	BNE PRG024_A976	 	; If Title_ObjInitDly > 0, jump to PRG024_A976
+; 	; Waiting for event timer to run out
+; 	DEC <Title_ObjInitDly	; Title_ObjInitDly--
+; 	BNE PRG024_A976	 	; If Title_ObjInitDly > 0, jump to PRG024_A976
 
-	; Load next delay for object init
-	; Title_ObjInitIdx is 0 to 5
-	; LDA Title_ObjInitIdx_Time,Y
-	; STA <Title_ObjInitDly	; Title_ObjInitDly = Title_ObjInitIdx_Time[Title_ObjInitIdx]
+; 	; Load next delay for object init
+; 	; Title_ObjInitIdx is 0 to 5
+; 	; LDA Title_ObjInitIdx_Time,Y
+; 	; STA <Title_ObjInitDly	; Title_ObjInitDly = Title_ObjInitIdx_Time[Title_ObjInitIdx]
 
-	; LDA Title_Obj_InitIdx,Y
-	; TAY		 	; Y = Title_Obj_InitIdx[Title_ObjInitIdx]
+; 	; LDA Title_Obj_InitIdx,Y
+; 	; TAY		 	; Y = Title_Obj_InitIdx[Title_ObjInitIdx]
 
-	; LDA #$01	 	
-	; STA Title_ObjStates,Y 	; Title_ObjStates[Y] = 1  Set title screen object to state 1
+; 	; LDA #$01	 	
+; 	; STA Title_ObjStates,Y 	; Title_ObjStates[Y] = 1  Set title screen object to state 1
 
-	; ; Doing next object...
-	; INC <Title_ObjInitIdx	; Title_ObjInitIdx++
+; 	; ; Doing next object...
+; 	; INC <Title_ObjInitIdx	; Title_ObjInitIdx++
 
-PRG024_A976:
+; PRG024_A976:
 	JSR Title_DoState	; Do whatever this state of the title screen does
 
 	; Title_ResetTrig is the trigger to reset the title screen
@@ -417,6 +417,7 @@ TitleState_Wait:
 	BNE Title_SkipStars
 
 	JSR Title_DoStars
+	JSR Title_CheckCasualMode
 
 Title_SkipStars:
 	JSR World_Select
@@ -485,9 +486,11 @@ TitleState_Cancel:
 TitleState_EraseGame:
 	LDA #$00
 	STA Save_Ram_CheckSum
+	STA Casual_Mode
 
 	LDA #TITLEMENU_NEWGAME_ONLY
 	STA Title_GameMenu
+
 	JMP Title_MenuUpdate
 
 Title_DelayTicker = $6900
@@ -601,7 +604,18 @@ Tite_FadeInLoop:
 	STA FadeIn_Ticker
 
 Title_FadeInTick:
+	LDX Save_Ram_CheckSum - 4
+	CPX #SECOND_QUEST
+	BNE Title_NormPalette
+
 	LDA FadeIn_Stage
+	ADD #14
+	JMP Title_QueuePalette
+
+Title_NormPalette:
+	LDA FadeIn_Stage
+
+Title_QueuePalette:	
 	STA Graphics_Queue
 	JSR GraphicsBuf_Prep_And_WaitVSyn2
 
@@ -685,7 +699,7 @@ Title_MenuController:
 	BEQ Title_MenuRTS
 
 	LDA <Pad_Input
-	AND #PAD_SELECT
+	AND #(PAD_SELECT | PAD_UP | PAD_DOWN | PAD_LEFT | PAD_RIGHT)
 	BEQ Title_MenuRTS
 
 	LDA #SND_MAPPATHMOVE
@@ -707,7 +721,7 @@ Title_MenuRTS:
 
 World_Select_Enabled = $6802
 World_Number_Sprite:
-	.byte $00, $E3, $E5, $E7, $E9, $EB, $ED, $EF
+	.byte $00, $E3, $E5, $E7, $E9, $EB, $ED, $EF, $F1
 
 World_Select:
 	LDA World_Select_Enabled
@@ -732,12 +746,12 @@ World_Select_Verify:
 	LDA World_Start
 	BNE World_Select_CheckMax
 
-	LDA #$07
+	LDA #$08
 	STA World_Start
 	BNE World_Select_Sprite
 
 World_Select_CheckMax:
-	CMP #$08
+	CMP #$09
 	BCC World_Select_Sprite
 
 	LDA #$01
@@ -811,7 +825,13 @@ Video_Upd_Table2:
 	.word Title_Reset
 	.word Title_AutoSaveYes
 	.word Title_AutoSaveNo
-	
+	.word Title_FadeIn_Alt1		; $03 - Title screen colors fade in part 1
+	.word Title_FadeIn_Alt2		; $04 - Title screen colors fade in part 2
+	.word Title_FadeIn_Alt3		; $05 - Title screen colors fade in part 3
+	.word Title_FadeIn_Alt4		; $06 - Title screen colors fade in part 4
+	.word Title_FadeIn_Alt5		; $07 - Loads the 1P/2P select menu
+	.word Title_BlackWhite
+
 	; Falls into...
 Title_Clear:
 	vaddr $3F00
@@ -887,9 +907,10 @@ Title_Subtitle:
 	.byte $06
 	.byte $F4, $F5, $F6, $F7, $F8, $F9
 
+Title_Version:
 	vaddr $236C
 	.byte $06
-	.byte $79, $07, $3E, $00, $3E, $07
+	.byte $79, $07, $3E, $45, $3E, $30
 	.byte $00
 	
 Title_FadeIn_1:
@@ -925,6 +946,42 @@ Title_FadeIn_5:
 	.byte 32	; 16 bytes (colors) to follow...
 	.byte $10, $0F, $30, $21, $10, $0F, $30, $1A, $10, $0F, $30, $28, $10, $0F, $30, $16
 	.byte $10, $0F, $30, $21, $10, $0F, $30, $1A, $10, $0F, $30, $28, $10, $0F, $30, $16
+	.byte $00	; Terminator
+
+
+Title_FadeIn_Alt1:
+	vaddr $3F00
+	.byte 32	; 16 bytes (colors) to follow...
+	.byte $0f, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
+	.byte $0f, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
+	.byte $00	; Terminator
+
+Title_FadeIn_Alt2:
+	vaddr $3F00
+	.byte 32	; 16 bytes (colors) to follow...
+	.byte $10, $0F, $00, $0C, $00, $0F, $00, $06, $00, $0F, $00, $09, $00, $0F, $00, $05
+	.byte $10, $0F, $00, $0C, $00, $0F, $00, $06, $00, $0F, $00, $09, $00, $0F, $00, $05
+	.byte $00	; Terminator
+
+Title_FadeIn_Alt3:
+	vaddr $3F00
+	.byte 32	; 16 bytes (colors) to follow...
+	.byte $10, $0F, $10, $1C, $10, $0F, $10, $16, $10, $0F, $10, $19, $10, $0F, $10, $15
+	.byte $10, $0F, $10, $1C, $10, $0F, $10, $16, $10, $0F, $10, $19, $10, $0F, $10, $15
+	.byte $00	; Terminator
+
+Title_FadeIn_Alt4:
+	vaddr $3F00
+	.byte 32	; 16 bytes (colors) to follow...
+	.byte $10, $0F, $20, $1C, $10, $0F, $20, $26, $10, $0F, $20, $29, $10, $0F, $20, $15
+	.byte $10, $0F, $20, $1C, $10, $0F, $20, $26, $10, $0F, $20, $29, $10, $0F, $20, $15
+	.byte $00	; Terminator
+
+Title_FadeIn_Alt5:
+	vaddr $3F00
+	.byte 32	; 16 bytes (colors) to follow...
+	.byte $10, $0F, $30, $1C, $10, $0F, $30, $16, $10, $0F, $30, $29, $10, $0F, $30, $15
+	.byte $10, $0F, $30, $1C, $10, $0F, $30, $16, $10, $0F, $30, $29, $10, $0F, $30, $15
 	.byte $00	; Terminator
 
 Title_Continue:
@@ -2163,6 +2220,7 @@ PRG026_AB0E:
 StatusBar_FullPalette:
 	.byte $30, $11, $27, $00
 	.byte $30, $14, $28, $00
+	.byte $30, $10, $00, $00
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Palette_PrepareFadeIn
 ;
@@ -2268,15 +2326,19 @@ PRG026_AC12:
 	CMP #$0F
 	BNE StatusBar_FI_NotBlack
 
+	LDA Casual_Mode
+	BEQ Not_Casual
+
+	LDX #$08
+	BNE StatusBar_NotSecond
+
+Not_Casual:
 	LDX #$00
 	LDA SecondQuest
 	CMP #SECOND_QUEST
 	BNE StatusBar_NotSecond
 
-	INX
-	INX
-	INX
-	INX
+	LDX #$04
 
 StatusBar_NotSecond:
 	LDA StatusBar_FullPalette, X
@@ -2444,21 +2506,21 @@ Palette_FadeIn:		; AC69
 	JSR Palette_PrepareFadeIn	 ; Prepare to fade in!
 
 	; Some kind of hardware thing??
-	LDA #$00
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+	; LDA #$00
+	; STA PPU_VRAM_ADDR
+	; STA PPU_VRAM_ADDR
 
-	LDA #$10
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+	; LDA #$10
+	; STA PPU_VRAM_ADDR
+	; STA PPU_VRAM_ADDR
 
-	LDA #$00
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+	; LDA #$00
+	; STA PPU_VRAM_ADDR
+	; STA PPU_VRAM_ADDR
 
-	LDA #$10
-	STA PPU_VRAM_ADDR
-	STA PPU_VRAM_ADDR
+	; LDA #$10
+	; STA PPU_VRAM_ADDR
+	; STA PPU_VRAM_ADDR
 
 PRG026_AC8C:
 	LDA PPU_STAT	 ; Get PPU_STAT
@@ -3871,6 +3933,13 @@ StatusBar_DrawEnemyHealth:
 	LDA Enemy_Health_Mode
 	BEQ DrawEnemy_HealthRTS
 
+	LDA Enemy_Health
+	BPL Enemy_Health_Good
+
+	LDA #$00
+	STA Enemy_Health
+
+Enemy_Health_Good:
 	LDX #$00
 	LDA Enemy_Health
 	BNE StatusBar_DrawSkull
@@ -4428,8 +4497,8 @@ Messages_Lookup:
 	.word Level_Up3
 	.word Level_Up4
 	.word Level_Up5
+	.word Level_Up6
 	.word Second_QuestMsg
-	.word Demo_EndMsg
 	.word Tutorial_Fire_1
 	.word Tutorial_Fire_2
 	.word Tutorial_Ice_1
@@ -4540,7 +4609,6 @@ Game_Script_3_6:
 	.db "HIT ALL THE SWITCHES  "
 	.db "BEFORE TIME ENDS      "
 
-
 Game_Script_3_7:
 	.db "FIND THE POWERUP      "
 	.db "BEFORE TIME ENDS      "
@@ -4597,24 +4665,24 @@ Level_Up5:
 	.db "HOLD UP AND PRESS A TO"
 	.db "PERFORM A DOUBLE JUMP!"
 
+Level_Up6:
+	.db "50 CHERRIES HOLD A & B"
+	.db "PRESS SELECT  FOR STAR"
+
 Second_QuestMsg:
 	.db "ENTER THE PIPE TO FIND"
 	.db "A QUEST FOR EXPERTS.  "
 
-Demo_EndMsg:
-	.db "THANK YOU FOR PLAYING!"
-	.db "COME BACK SUMMER 2024!"
-
 Tutorial_Fire_1:
-	.db "B THROWS FIREBALLS,   "
-	.db "HOLD UP TO THROW UP.  "
+	.db " B THROWS FIREBALLS,  "
+	.db " HOLD UP TO THROW UP. "
 
 Tutorial_Fire_2:
-	.db "MELT ICE BELOW AND    "
-	.db "ABOVE TO PROCEED.     "
+	.db "  MELT ICE BELOW AND  "
+	.db "   ABOVE TO PROCEED.  "
 
 Tutorial_Ice_1:
-	.db "B THROWS ICEBALLS,    "
+	.db "  B THROWS ICEBALLS,  "
 	.db "FREEZE ENEMIES & WATER"
 
 Tutorial_Ice_2:
@@ -4626,8 +4694,8 @@ Tutorial_Raccoon:
 	.db "DEFLECT PROJECTILES.  "
 
 Tutorial_Fox_1:
-	.db "DOUBLE TAP B TO DASH  "
-	.db "FORWARD AND ATTACK.   "
+	.db "DOUBLE TAP AND HOLD B "
+	.db "  TO DASH AND ATTACK. "
 
 Tutorial_Fox_2:
 	.db "SWIM IN LAVA AND AVOID"
@@ -4638,8 +4706,8 @@ Tutorial_Frog_1:
 	.db "JUMP MUCH HIGHER.     "
 
 Tutorial_Frog_2:
-	.db "DOUBLE TAP B TO BECOME"
-	.db "INVINCIBLE AND ATTACK."
+	.db "DOUBLE TAP AND HOLD B "
+	.db "TO BECOME  INVINCIBLE."
 
 Tutorial_Koopa_1:
 	.db "RUN AND HOLD DOWN TO  "
@@ -4658,24 +4726,24 @@ Tutorial_Sledge_2:
 	.db "AND PRESS B TO POUND! "
 
 Tutorial_Ninja_1:
-	.db "B & ANY DIRECTION TO  "
-	.db "THROW SHURIKENS.      "
+	.db " B & ANY DIRECTION TO "
+	.db "   THROW SHURIKENS.   "
 
 Tutorial_Ninja_2:
 	.db "SLIDE AGAINST THE WALL"
 	.db "& PRESS A TO WALLJUMP."
 
 Training_1:
-	.db "GET HIT 10 TIMES       "
-	.db "IN 100 SECONDS!       "
+	.db "   GET HIT 10 TIMES   "
+	.db "    IN 100 SECONDS!   "
 
 Training_2:
 	.db "BREAK 50 BRICKS BLOCKS"
-	.db "IN 100 SECONDS!	   "
+	.db "    IN 100 SECONDS!   "
 
 Training_3:
-	.db "USE DAMAGE BOOST TO   "
-	.db "REACH THE END!		   "
+	.db "  USE DAMAGE BOOST TO "
+	.db "    REACH THE END!    "
 
 Training_4:
 	.db "DESTROY 10 SPINIES TO "
@@ -4683,11 +4751,11 @@ Training_4:
 
 Training_5:
 	.db "JUMP TO AVOID ALL THE "
-	.db "INCOMING OBSTACLES!   "
+	.db "  INCOMING OBSTACLES! "
 
 Training_6:
-	.db "TRAINING MESSAGE GOES "
-	.db "HERE AT SOME POINT... "
+	.db "  COLLECT 50 CHERRIES "
+	.db "   WHILE  INVINCIBLE  "
 					
 
 Message_Low = Temp_Var1
@@ -5124,5 +5192,12 @@ Title_StarReset:
 
 	LDA Title_StarResetHide, Y
 	STA Title_StarsHideTimer, X
+	RTS
 
+Title_CheckCasualMode:
+	LDA #29
+	STA PAGE_C000
+	
+	JSR PRGROM_Change_C000
+	JSR Title_CasualModeCode
 	RTS

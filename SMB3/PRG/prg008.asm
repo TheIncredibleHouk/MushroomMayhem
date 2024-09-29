@@ -157,6 +157,7 @@ Player_DoUpdate:
 	JSR Do_Air_Timer
 	JSR Do_PowerChange
 	JSR Player_UseItem
+	JSR Player_CherryStar
 	JSR Increase_Game_Timer
 
 	LDA DayNightActive
@@ -1201,7 +1202,7 @@ PRG008_AA00:
 	LDA #$60
 	STA Player_RunMeter
 
-Player_RunMeterNoCap:	
+Player_RunMeterNoCap:
 	LDA Player_FrogHopCnt
 	BNE PRG008_AA1A	 ; If Player_FrogHopCnt <> 0, jump to PRG008_AA1A
 
@@ -1639,7 +1640,7 @@ PRG008_AC14:
 Player_JumpFlyFlutter:
 	LDA #$00
 	STA <Player_Jumped
-
+	
 	LDA Wall_Jump_Enabled
 	BNE PRG008_AC30
 
@@ -1710,6 +1711,9 @@ PRG008_AC73:
 	LDY Wall_Jump_Enabled
 	BEQ Normal_Jump
 
+	LDA #$00
+	STA Wall_Jump_Timer
+
 	LDA #$D0
 	STA Player_Flip
 
@@ -1738,7 +1742,7 @@ Jump_NotFrog:
 
 	LDA #$D0
 
-Set_JumpVel:	
+Set_JumpVel:
 	STA <Player_YVelZ		; -> Y velocity
 
 	LDA #$01
@@ -1770,6 +1774,7 @@ PRG008_AC9E:
 	LDA #$00
 	STA Player_FlyTime	; Otherwise, Player_FlyTime = 0 :(
 	JMP PRG008_AD1A	 ; Jump to PRG008_AD1A
+
 
 PRG008_ACB3:
 	; Player is mid air...
@@ -2647,18 +2652,17 @@ PRG008_B11E:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Player_DoScrolling:
 	LDA Level_JctCtl
-	BEQ PRG008_B127
+	BEQ Scroll_NotJunctioning
 
-PRG008_B126:
 	RTS
 
-PRG008_B127:
+Scroll_NotJunctioning:
     LDA Level_HorzScrollLock
-    BEQ PRG008_B12F     ; If we're NOT in a Big Question Block area, jump to PRG008_B12F
+    BEQ Scroll_NotLocked    
 
-    JMP PRG008_B1CE     ; Otherwise, jump to PRG008_B1CE
+    JMP PRG008_B1CE    
 
-PRG008_B12F:
+Scroll_NotLocked:
 
 	LDY Level_AScrlConfig
 	BEQ PRG008_B150	 ; If no raster effects, jump to PRG008_B150
@@ -3131,9 +3135,19 @@ Player_DetectSolids:
 	STA Player_HitFloor
 	STA Player_Slippery	 
 	STA TrapSet
-	STA Wall_Jump_Enabled
 	STA Player_ShellBump
 
+
+	LDA Wall_Jump_Timer
+	BEQ Wall_Jump_Timer_Clear
+
+	DEC Wall_Jump_Timer
+	BNE Skip_Wall_Jump_Clear
+
+Wall_Jump_Timer_Clear:
+	STA Wall_Jump_Enabled	
+
+Skip_Wall_Jump_Clear:
 	LDA Player_Oiled
 	BEQ Player_CheckPipeMove
 
@@ -4182,15 +4196,28 @@ PRG008_BFD3:
 ; Applies Player's Y velocity and makes sure he's not falling 
 ; faster than the cap value (FALLRATE_MAX)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Player_Gravities:
+	.byte FALLRATE_MAX, (FALLRATE_MAX - 32)
+
 Player_ApplyYVelocity:
+	LDX Casual_Mode
+	BEQ Player_Gravity
+
+	LDA <Pad_Holding
+	AND #PAD_A
+	BNE Player_Gravity
+
+	DEX
+	
+Player_Gravity:
 	LDA <Player_YVelZ
 	BMI Player_CapYVel	 ; If Player_YVelZ < 0, jump to PRG008_BFF9
 
-	CMP #FALLRATE_MAX
+	CMP Player_Gravities, X
 	BLS PRG008_BFF9	 ; If Player_YVelo < FALLRATE_MAX, jump to PRG008_BFF9
 
 	; Cap Y velocity at FALLRATE_MAX
-	LDA #FALLRATE_MAX
+	LDA Player_Gravities, X
 	STA <Player_YVelZ ; Player_YVelZ = FALLRATE_MAX
 	JMP PRG008_BFF9
 
@@ -4372,6 +4399,10 @@ NotSmallMario:
 	INC Level_JctCtl
 	INC Level_KeepObjects
 	INC ForcedSwitch
+	
+	LDA #$00
+	STA Level_Redraw
+
 	PLA
 	PLA
 
@@ -4437,6 +4468,11 @@ CheckPlayer_YLow:
 
 	INC Level_JctCtl
 	INC ForcedSwitch
+	INC Level_KeepObjects
+
+	LDA #$00
+	STA Level_Redraw
+
 	PLA
 	PLA
 
@@ -4678,21 +4714,24 @@ WallPressSign: .byte $00, $80, $00
 
 Player_CheckWallJump:
 	LDA Player_InWater
-	BNE No_Wall_Jump
+	BNE Clear_Wall_Jump
 
 	LDA Player_EffectiveSuit
 	CMP #$0B
-	BNE No_Wall_Jump
+	BNE Clear_Wall_Jump
 
 	LDA Player_IsHolding
 	ORA Player_IsClimbing
-	BNE No_Wall_Jump
+	BNE Clear_Wall_Jump
 
 	LDA <Player_YHiZ
-	BMI No_Wall_Jump
+	BMI Clear_Wall_Jump
 
 	LDA <Player_YVelZ
-	BMI No_Wall_Jump
+	BMI Clear_Wall_Jump
+
+	LDA <Player_InAir
+	BEQ Clear_Wall_Jump			; can only wall jump if in the air and against  a wall
 
 	LDA <Pad_Holding
 	AND #(PAD_LEFT | PAD_RIGHT)
@@ -4700,8 +4739,8 @@ Player_CheckWallJump:
 
 	TAX
 
-	LDA <Player_InAir
-	BEQ No_Wall_Jump			; can only wall jump if in the air and against  a wall
+	LDA Wall_Jump_Enabled
+	BNE Extend_WallJump_Timer
 
 	LDA <Player_X
 	ADD WallClingXVel, X
@@ -4713,6 +4752,10 @@ Player_CheckWallJump:
 
 	LDA WallClingXVel, X
 	STA Wall_Jump_Enabled
+
+Extend_WallJump_Timer:
+	LDA #$0C
+	STA Wall_Jump_Timer
 
 	LDA #$00
 	STA Player_Flip
@@ -4733,7 +4776,12 @@ Wall_Jump_Done:
 	RTS
 
 No_Wall_Jump:
-CLC
+	CLC
+	RTS
+
+Clear_Wall_Jump:
+	LDA #$00
+	STA Wall_Jump_Timer
 	RTS
 
 ;	LDA Player_Shell
@@ -5027,11 +5075,16 @@ Player_DetectFloor1:
 	STA <Player_InAir ; Player NOT mid air
 	STA <Player_YVelZ  ; Halt Player vertically
 	STA Player_Flip
+	STA Wall_Jump_Timer
 
 	LDA #$01
 	STA Player_HitFloor
 
 	LDX #$00
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BEQ No_DoubleJump
+
 	LDA Player_Level
 	CMP #ABILITY_DOUBLEJUMP
 	BCC No_DoubleJump
@@ -5059,6 +5112,9 @@ Player_DetectFloor2:
 	RTS
 
 Player_PitDeath:
+	LDA <Player_SpriteX
+	BEQ Player_CheckPit
+
 	LDA #$09
 	SUB <Player_SpriteX
 	BCC Player_CheckPit

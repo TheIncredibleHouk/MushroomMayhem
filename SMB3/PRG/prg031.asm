@@ -1601,6 +1601,7 @@ PRG031_F51D:
 	; Unknown hardware thing?  Is this for synchronization?
 	LDA #$3f	 	; 
 	STA PPU_VRAM_ADDR	; Access PPU address #3Fxx
+	
 	LDA #$00	 	; 
 	STA PPU_VRAM_ADDR	; Access PPU address #3F00 (palettes?)
 	STA PPU_VRAM_ADDR	; 
@@ -2978,6 +2979,48 @@ PRG031_FE1B:
 
 	RTS		 ; Return
 
+
+Player_CherryStar:
+	LDA <Pad_Input
+	AND #PAD_SELECT
+	BEQ Player_CherryStarRTS
+
+	LDA <Pad_Holding
+	AND #(PAD_A | PAD_B)
+	CMP #(PAD_A | PAD_B)
+	BNE Player_CherryStarRTS
+
+	LDA Player_Level
+	CMP #ABILITY_CHERRYSTAR
+	BCC Player_CherryStarRTS
+
+	LDA Player_Cherries
+	CMP #50
+	BCC Player_CherryStarRTS
+
+	SUB #50
+	STA Player_Cherries
+
+	LDA Level_PSwitchCnt
+	BNE No_StarMusic	 ; If P-Switch is active, jump to PRG001_A810
+
+	; Otherwise, play invincibility theme!
+	LDA Sound_QMusic2
+	ORA #MUS2A_INVINCIBILITY
+	STA Sound_QMusic2
+
+No_StarMusic:
+	LDY PowerUp_Property, X
+
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	
+	LDA #$70
+	STA Player_StarInv
+	RTS
+
+Player_CherryStarRTS:
+	RTS
 
 Increase_Game_Timer:
 	INC Game_Timer_Tick

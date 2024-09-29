@@ -1992,6 +1992,7 @@ CloudGen_Set:
 	STA <Poof_Y
 
 	JSR Common_MakePoof
+	BCC ObjNorm_CloudGenRTS
 
 	LDA #SPR_PAL1
 	STA SpecialObj_Data3, Y

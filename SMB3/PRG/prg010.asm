@@ -2513,6 +2513,7 @@ FindLevelInfo:
 	LSR A
 	LSR A
 	STA DAIZ_TEMP2
+	
 	LDY #01
 
 FindLevelInfo1:
@@ -2534,7 +2535,7 @@ FindLevelInfo10:
 FindLevelInfoSkip:
 	INY
 	INY
-	CPY #$40
+	CPY #$50
  	BCC FindLevelInfo1
 
 	LDA #$FF

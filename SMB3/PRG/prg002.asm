@@ -1301,6 +1301,7 @@ Weather_Update:
 	JSR Half_Value
 	STA <Temp_Var1
 
+WeatherVel_Loop:
 	LDA Wind
 	BEQ Weather_Left
 	BPL Weather_Right
@@ -1324,7 +1325,7 @@ Weather_StoreYVel:
 Weather_DoLoop:	
 
 	DEY
-	BPL Weather_Left
+	BPL WeatherVel_Loop
 
 Weather_RTS:	
 	RTS
@@ -1486,11 +1487,8 @@ ObjNorm_KeyPieceCollection:
 	STA <Temp_Var1
 
 	LDA #$95
-	STA <Temp_Var2
+	STA <Temp_Var2	
 
-	STA Debug_Snap
-	
-	
 	LDA LastPatTab_Sel
 	EOR #$01
 	TAY
@@ -2017,7 +2015,16 @@ IceSpike_SetShake:
 
 IceSpike_NoShake:
 	JSR Object_InteractWithPlayer
-	JMP Object_DrawAligned
+	JSR Object_Draw
+	
+	TXA
+	TAY
+
+	DEC Sprite_RAMY, X
+	DEC Sprite_RAMY+4, X
+
+	LDX <CurrentObjectIndexZ
+	RTS
 
 IceSpike_Shake:
 	
@@ -2131,7 +2138,16 @@ IceSpike_SetX:
 	RTS
 
 IceSpike_Draw:
-	JMP Object_DrawAligned
+	JSR Object_Draw
+	
+	TXA
+	TAY
+
+	DEC Sprite_RAMY, X
+	DEC Sprite_RAMY+4, X
+
+	LDX <CurrentObjectIndexZ
+	RTS
 
 ObjInit_Stars:
 	JSR Object_NoInteractions
@@ -2280,7 +2296,9 @@ Explosion_StarYHi = Temp_Var15
 Explosion_StarCounter = Temp_Var16
 
 ObjNorm_Explosion:
-	
+	LDA #$00
+	STA Objects_BeingHeld, X
+
 	LDA <Player_HaltGameZ
 	BNE DrawEx	 ; If gameplay is halted, jump to PRG003_A82E
 
@@ -2298,15 +2316,48 @@ PRG003_A836:
 	JSR Explosion_KillOthers
 
 	LDA Objects_Timer2, X
-	CMP #$01
 	BNE Explosion_Hurt
 
 	LDA #BOUND48x48
 	STA Objects_BoundBox, X
-	JSR Object_CalcBoundBox
+
+	LDA <Objects_XZ, X
+	PHA
+	SUB #$18
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	PHA
+	SBC #$00
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	PHA
+	SUB #$18
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ, X
+	PHA
+	SBC #$00
+	STA <Objects_YHiZ, X	
+	
+	JSR Object_CalcBoundBoxForced
+
+	PLA
+	STA <Objects_YHiZ, X
+
+	PLA
+	STA <Objects_YZ, X
+
+	PLA
+	STA <Objects_XHiZ, X
+
+	PLA
+	STA <Objects_XZ, X
+
 
 Explosion_Hurt:
-	JSR Object_InteractWithPlayer
+	JSR Object_AttackOrDefeat
 
 Explosion_NoKill:
 	JSR Object_CalcSpriteXY_NoHi
@@ -2958,6 +3009,9 @@ MushroomBlock_NoKill:
 	JSR Object_DetectPlayer
 	BCC MushroomBlock_DetectTiles
 
+	LDA #$00
+	STA MushroomBlock_CanSolidify, X
+
 	LDA Objects_BeingHeld, X
 	BNE MushroomBlock_Carry
 
@@ -2968,8 +3022,6 @@ MushroomBlock_NoKill:
 	STA Player_CarryXVel
 
 MushroomBlock_Carry:
-	LDA #$00
-	STA MushroomBlock_CanSolidify, X
 
 	LDA Objects_Timer2, X
 	BNE MushroomBlock_DetectTiles

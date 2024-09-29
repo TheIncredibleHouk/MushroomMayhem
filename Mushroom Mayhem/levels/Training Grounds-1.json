@@ -3,7 +3,7 @@
   "Name": "Training Grounds-1",
   "TileSetIndex": 11,
   "ClearTileIndex": 0,
-  "MusicValue": 32,
+  "MusicValue": 112,
   "ScreenLength": 1,
   "StartX": 3,
   "StartY": 24,
@@ -6629,7 +6629,7 @@
     {
       "GameObjectId": 15,
       "X": 0,
-      "Y": 22,
+      "Y": 21,
       "Property": 0
     },
     {
@@ -6647,18 +6647,6 @@
   ],
   "SecondObjectData": [
     {
-      "GameObjectId": 22,
-      "X": 2,
-      "Y": 17,
-      "Property": 1
-    },
-    {
-      "GameObjectId": 194,
-      "X": 7,
-      "Y": 22,
-      "Property": 6
-    },
-    {
       "GameObjectId": 15,
       "X": 0,
       "Y": 22,
@@ -6671,6 +6659,7 @@
       "ExitActionType": 1,
       "ExitX": 35,
       "ExitY": 23,
+      "MapScroll": 0,
       "X": 211,
       "Y": 23,
       "ExitsLevel": false,
@@ -6684,6 +6673,7 @@
       "ExitActionType": 0,
       "ExitX": 3,
       "ExitY": 25,
+      "MapScroll": 0,
       "X": 216,
       "Y": 21,
       "ExitsLevel": false,

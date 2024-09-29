@@ -6593,11 +6593,12 @@
       "ExitActionType": 1,
       "ExitX": 76,
       "ExitY": 25,
+      "MapScroll": 0,
       "X": 5,
       "Y": 0,
       "ExitsLevel": false,
       "RedrawsLevel": false,
-      "KeepObjects": false,
+      "KeepObjects": true,
       "DisableWeather": false,
       "BoundRectangle": "80,0,32,32"
     },
@@ -6606,11 +6607,12 @@
       "ExitActionType": 2,
       "ExitX": 5,
       "ExitY": 1,
+      "MapScroll": 0,
       "X": 76,
       "Y": 25,
       "ExitsLevel": false,
       "RedrawsLevel": false,
-      "KeepObjects": false,
+      "KeepObjects": true,
       "DisableWeather": false,
       "BoundRectangle": "1216,400,32,32"
     }

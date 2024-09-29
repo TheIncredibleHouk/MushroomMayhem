@@ -3,7 +3,7 @@
   "Name": "Training Grounds-4",
   "TileSetIndex": 11,
   "ClearTileIndex": 0,
-  "MusicValue": 32,
+  "MusicValue": 112,
   "ScreenLength": 1,
   "StartX": 4,
   "StartY": 25,
@@ -6513,20 +6513,7 @@
       "Property": 3
     }
   ],
-  "SecondObjectData": [
-    {
-      "GameObjectId": 15,
-      "X": 1,
-      "Y": 22,
-      "Property": 3
-    },
-    {
-      "GameObjectId": 22,
-      "X": 2,
-      "Y": 19,
-      "Property": 3
-    }
-  ],
+  "SecondObjectData": [],
   "LevelPointers": [],
   "CompressedData": "P/s/+z/7EPsNQQH7DUEB+w1BAfsNQQH7DUEB+w1BAfuHAg1BAfsNQQH7hwJBDQH7DUEB+w1BAfsNQQH7DUEQ+w=="
 }

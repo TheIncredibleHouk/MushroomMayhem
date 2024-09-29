@@ -2159,8 +2159,21 @@ Subarmine_PatternsBottom:
 	.byte $25, $2B, $2D, $2F
 	.byte $27, $2B, $2D, $2F
 
+Vehicle_Direction:
+	.byte $00, $00, $01
+
+Vehicle_Flip:
+	.byte $00, $00, SPR_HFLIP
+
 Player_DrawVehicle:
 	JSR Player_RainbowCycle
+	
+	LDX Player_Vehicle
+	LDA Vehicle_Direction, X
+	STA Player_Direction
+
+	LDA #SPR_HFLIP
+	STA <Player_FlipBits
 	
 	LDA #$59
 	STA PatTable_BankSel + 2
@@ -2388,11 +2401,81 @@ Vehicle_FlipTiles:
 	TYA
 	ADD #$10
 	TAY
+
 	DEC <Temp_Var1
 	BPL Vehicle_FlipTiles
 
-	LDA #$00
-	STA Player_Direction
-
 Vehicle_DrawRTS:
 	RTS
+
+Title_PowerDownFlash:
+	.byte 23
+	.byte 8
+
+Title_BlackWhite:
+	vaddr $3F00
+	.byte 32	; 16 bytes (colors) to follow...
+	.byte $10, $0F, $30, $00, $10, $0F, $30, $10, $10, $0F, $30, $30, $10, $0F, $30, $0F
+	.byte $10, $0F, $30, $00, $10, $0F, $30, $10, $10, $0F, $30, $30, $10, $0F, $30, $0F
+	.byte $00	; Terminator
+
+
+Title_CasualDownCheck  = $6840
+Title_CasualEnableTimer = $6841
+
+Title_CasualModeCode:
+	JSR Title_CausalModeEffect
+
+	LDA Casual_Mode
+	BNE Title_CheckCasualModeRTS
+
+	LDA <Pad_Input
+	BEQ Title_CheckCasualModeRTS
+
+	AND #PAD_DOWN
+	BEQ Title_CheckCasualModeRTS
+
+	INC Title_CasualDownCheck
+
+	LDA Title_CasualDownCheck
+	CMP #$08
+	BCS Title_EnableCasualMode
+
+Title_CheckCasualModeRTS:
+	RTS
+
+Title_CheckCasualReset:
+	LDA #$00
+	STA Title_CasualDownCheck
+	RTS
+
+Title_EnableCasualMode:
+	LDA #$01
+	STA Casual_Mode
+
+	LDA #$40
+	STA Title_CasualEnableTimer
+
+	LDA #SND_PLAYERPIPE
+	STA Sound_QPlayer
+
+Title_CausalModeEffect:
+	LDA Title_CasualEnableTimer
+	BEQ Title_CausalModeEffectRTS
+
+	DEC Title_CasualEnableTimer
+	
+	LDA Title_CasualEnableTimer
+	AND #$08
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	
+	LDA Title_PowerDownFlash, X
+	STA <Graphics_Queue
+
+	JSR GraphicsBuf_Prep_And_WaitVSyn2
+	
+Title_CausalModeEffectRTS:
+	RTS	

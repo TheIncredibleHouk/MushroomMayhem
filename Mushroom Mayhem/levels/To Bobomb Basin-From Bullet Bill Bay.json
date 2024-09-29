@@ -6540,18 +6540,6 @@
   "SecondObjectData": [
     {
       "GameObjectId": 189,
-      "X": 33,
-      "Y": 22,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 189,
-      "X": 47,
-      "Y": 22,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 189,
       "X": 56,
       "Y": 6,
       "Property": 0
@@ -6584,6 +6572,18 @@
       "GameObjectId": 65,
       "X": 44,
       "Y": 6,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 188,
+      "X": 33,
+      "Y": 22,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 188,
+      "X": 47,
+      "Y": 22,
       "Property": 0
     }
   ],

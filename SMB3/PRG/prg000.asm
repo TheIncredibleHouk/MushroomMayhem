@@ -27,7 +27,7 @@ Object_BoundBox:
 	.byte  1,  14,   4,   26; 16x28 BOUND16x28
 	.byte  2,  45,   0,  16	; 8 BOUND48x16
 	.byte  0,  24,   0,  24	; 9 BOUND24X24
-	.byte  1,  14,   1,  32	; A BOUND16x32 (16x32)
+	.byte  1,  14,   2,  32	; A BOUND16x32 (16x32)
 	.byte  1,  14,   1,  32	; A BOUND16x32TALL (16x32)
 	.byte  1,  14,   1,  38	; C BOUND16x48
 	.byte  4,  27,   2,  60	; E BOUND32x64
@@ -629,7 +629,6 @@ PRG000_C98B:
 	
 	; Non-special objects in slots 0 to 4...
 	INC Object_Count
-	; STA Debug_Snap
 	
 	LDA Objects_ID, X
 
@@ -1021,8 +1020,13 @@ Object_DampenVelocityRTS:
 	; Called for an object in state 3 to do its "shelled" routine
 ObjState_Shelled:
 	LDA <Player_HaltGameZ	 
-	BNE ObjState_Shelled3	 ; If gameplay is halted, jump to PRG000_CB5B
+	BEQ Shelled_Normal
 
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
+	JMP Object_DrawShelled
+
+Shelled_Normal:
 	INC Objects_Shelled, X
 
 	JSR Object_DeleteOffScreen
@@ -1305,6 +1309,15 @@ Shell_KillOthers:
 Explosion_KillOthers:
 	LDA #ATTR_EXPLOSIONPROOF
 	STA <Kill_TypeCheck
+
+	JSR Object_KillOthers
+	BCC Explosion_KillRTS
+
+	LDA #HIT_EXPLOSION
+	STA Objects_PlayerProjHit, Y
+
+Explosion_KillRTS:
+	RTS 	
 
 Object_KillOthers:
 	LDA #$00
@@ -2200,6 +2213,7 @@ Object_AttackOrDefeat:
 	BCS PRG000_D1C5	 ; If collision occurred, jump to PRG000_D1C5
 
 PRG000_D1C4:
+	CLC
 	RTS		 ; Return
 
 PRG000_D1C5:
@@ -2642,12 +2656,12 @@ PRG000_D4C8:
 	STA Objects_Health,X
 	STA Explosion_Timer, X
 
+	LDA #$02
+	STA Objects_ExpPoints, X
+
 PRG000_D506:
 	LDA #$02
 	STA Objects_SpritesRequested, X
-
-	LDA #$02
-	STA Objects_ExpPoints, X
 	RTS		 ; Return
 
 
@@ -2790,30 +2804,12 @@ PRG000_D5BF:
 	; Object "shaking awake" and draw its sprite
 ; $D5E7
 
-Object_DrawAligned:
-	LDA #$01
-	STA AlignSpriteFlag
-	BNE Object_Draw1
-
 Object_Draw:
-	LDA #$00
-	STA AlignSpriteFlag
-
-Object_Draw1:
 	JSR Object_ShakeAndCalcSprite
 	
 Object_Draw16x16:	
 	JSR Object_Draw16x16Sprite
 
-	LDA AlignSpriteFlag
-	BEQ Object_Draw2
-
-	TYA
-	TAX
-	DEC Sprite_RAM,X
-	DEC Sprite_RAM+4,X
-
-Object_Draw2:
 	LDX <CurrentObjectIndexZ
 	RTS		 ; Return
 
@@ -3813,6 +3809,7 @@ PRG000_DA4E:
 	; Player is only big or small...
 
 	LDA <Player_Suit
+	ORA Casual_Mode
 	BEQ PRG000_DA7A	 ; If Player is small, jump to PRG000_DA7A (gonna die!!)
 
 	LDA #$02
@@ -3831,6 +3828,7 @@ PRG000_DA50:
 	LDA #$2f	
 	STA Player_Grow	 	; Player_Grow = $2f (shrinking!)
 
+Player_ForceInvulnerable: 
 PRG000_DA6D: 
 	LDA #$71
 
@@ -5972,10 +5970,13 @@ Object_FlipFallAwayFromHit1:
 	RTS
 
 Object_DetermineContactKill:
+	LDA Objects_Timer2, X
+	BNE Object_NotHurt
+
 	LDA Player_Invincible
 	BEQ Check_FireDash
 	
-	LDA #HIT_EXPLOSION
+	LDA #HIT_INVULNERABLE
 	STA Objects_PlayerProjHit, X
 
 	LDA Objects_WeaponAttr, X
@@ -6060,8 +6061,6 @@ Object_EdgeMarch:
 	JSR Object_Reverse
 	JSR Object_ApplyXVel
 
-	LDA #HIT_GROUND
-	STA <Objects_TilesDetectZ, X
 
 Object_EdgeMarchRTS:
 	RTS

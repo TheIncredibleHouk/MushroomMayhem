@@ -80,13 +80,13 @@ Map_Init:
 	RTS		 ; Return
 
 World_Start_X:
-	.byte $00, $20, $20, $30, $10, $20, $20, $30
+	.byte $00, $20, $20, $30, $10, $20, $20, $30, $80
 
 World_Start_Y:
-	.byte $00, $90, $40, $60, $70, $80, $50, $90
+	.byte $02, $90, $40, $60, $70, $80, $50, $90, $50
 
 World_Start_Num:
-	.byte $00, $10, $20, $30, $40, $50, $60, $70
+	.byte $00, $1, $2, $3, $4, $5, $6, $7, $0
 
 World_Override:
 	LDX World_Start
@@ -104,7 +104,8 @@ World_Override:
 	STA Map_Entered_XHi
 	STA Map_Previous_XHi
 
-	STX World_Num
+	LDA World_Start_Num, X
+	STA World_Num
 
 World_OverrideRTS:
 	RTS
@@ -2901,7 +2902,7 @@ Map_DoAnimations:	; $BC29
 	STA PatTable_BankSel	  	; Put it to use
 	RTS		  ; Return!
 
-; ### RELOCATE THIS CODE!	
+
 FindCompletedLevels:
 	LDX #$00
 
@@ -2950,19 +2951,28 @@ FindCompletedLevels1:
 	JMP FindCompletedLevels3
 
 Completion_Tiles: 
-	.byte $EE, $0F, $EE, $38
-	.byte $38, $38, $38, $7C
-	.byte $FF, $8E, $FF, $FF
-	.byte $FF, $FF, $FF, $FF
+	; .byte $A7, $0F, $31, $38
+	; .byte $AD, $CD, $00, $7C
+	; .byte $00, $8E, $00, $A7
+	; .byte $00, $44, $00, $00
+
+	.byte $A7, $0F, $31, $38
+	.byte $AD, $CD, $38, $7C
+	.byte $FF, $8E, $FF, $A7
+	.byte $FF, $44, $FF, $FF	
 
 MarkCompletedLevels:
 	JSR GetMapTile
 	TAY
 
 	LDA TileProperties, Y
+	CMP #MAP_PROP_BOUNDARY
+	BEQ ReplaceMapTile
+
 	CMP #MAP_PROP_COMPLETABLE
 	BNE MarkCompletedLevelsRTS
 
+ReplaceMapTile:
 	TYA
 
 	AND #$F0
@@ -3452,4 +3462,249 @@ Cheat_SkipMapUp:
 Cheat_SkipMapDown:
 	LDA #$08
 	STA Map_PrevMoveDir
+	RTS
+
+
+TipPPU:
+
+TipLabel:
+TipLabelStart:
+	vaddr $2125
+	.byte 22
+	.db "MARIO ADVENTURE 3 TIPS"
+	.byte $00
+TipLabelEnd:
+
+TipPPU_TopStart:
+	vaddr $21A1
+	.byte 30
+	.db "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+	.byte $00
+TipPPU_TopEnd:
+
+TipPPU_BottomStart:
+	vaddr $21E1
+	.byte 30
+	.db "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+
+	.byte $00
+TipPPU_BottomEnd:
+
+Loading_Tips:
+	.word Tip1
+	.word Tip2
+	.word Tip3
+	.word Tip4
+	.word Tip5
+	.word Tip6
+	.word Tip7
+	.word Tip8
+	.word Tip9
+	.word Tip10
+	.word Tip11
+	.word Tip12
+	.word Tip13
+	.word Tip14
+	.word Tip15
+	.word Tip16
+
+Tip1:
+	.db " THROW FIREBALLS  UP AS FIRE  "
+	.db "MARIO HOLDING UP  & PRESSING B"
+
+Tip2:
+	.db " RACCOON MARIO CAN TAIL WHACK "
+	.db " PROJECTILES BACK  AT ENEMIES "
+
+Tip3:
+	.db "  PICK UP FROZEN ENEMIES AND  "
+	.db "KICK THEM TO SEND THEM SLIDING"
+
+Tip4:
+	.db "   FIREFOX MARIO IS IMMUNE    "
+	.db " TO LAVA AND FIREBALL ATTACKS "
+
+Tip5:
+	.db " DOUBLE TAP AND  HOLDING B AS "
+	.db " FROG MARIO TO  GO INVINCIBLE "
+
+Tip6:
+	.db "  FROG MARIO IS NOT AFFECTED  "
+	.db "  BY WIND WHEN ON THE GROUND  "
+
+Tip7:
+	.db " THE SHELL SPIN  CAN RICOCHET "
+	.db "OFF SPIKES AND  FIT UNDER GAPS"
+
+Tip8:
+	.db "HAMMER MARIO CAN  GROUND POUND"
+	.db " HOLD DOWN &  PRESS B MID AIR "
+
+Tip9:
+	.db "    NINJA MARIO  CAN THROW    "
+	.db "  SHURIKENS IN  7 DIRECTIONS  "
+
+Tip10:
+	.db " HAMMER MARIO'S GROUND POUND  "
+	.db " CAN BREAK BRICKS & HURT FOES "
+
+Tip11:
+	.db "  BUY ITEMS AT THE ITEM SHOP  "
+	.db " AND PRESS SELECT TO USE THEM "
+
+Tip12:
+	.db " BUY BADGES LIKE ITEM RESERVE "
+	.db "WITH CHERRIES AT THE BADGE HUT"
+
+Tip13:
+	.db "  REPLAY COMPLETED  LEVELS &  "
+	.db "EXIT LEVELS  IN THE PAUSE MENU"
+
+Tip14:
+	.db "YOUR P-METER  AFFECTS HOW LONG"
+	.db "YOU CAN USE POWER-UP ABILITIES"
+
+Tip15:
+	.db "THE DAY NIGHT CYCLE CAN AFFECT"
+	.db "    CERTAIN ENEMY BEHAVIOR    "
+
+Tip16:
+	.db "   HOLD DOWN TO DROP SHELLS   "
+	.db " HOLD UP TO KICK THEM UPWARDS "
+
+Show_Tips:
+	LDA #$0F
+	STA StatusBar_Palette
+	STA StatusBar_Palette + 1
+	STA StatusBar_Palette + 2
+
+	JSR GraphicsBuf_Prep_And_WaitVSync
+
+	LDX #$1F
+	LDA #$0F
+
+Tips_ClearPal:
+	STA Palette_Buffer, X
+	DEX
+	BPL Tips_ClearPal
+
+	JSR GraphicsBuf_Prep_And_WaitVSync
+
+	LDA #$06
+	JSR Video_Do_Update
+	
+	JSR Sprite_RAM_Clear
+	LDA #$00
+	STA <Horz_Scroll
+	STA <Vert_Scroll
+	JSR GraphicsBuf_Prep_And_WaitVSync
+
+	LDY #$00
+
+TipLabelLoop:
+	LDA TipLabel, Y
+	STA Graphics_Buffer, Y
+	INY
+	CPY #(TipLabelEnd - TipLabelStart)
+	BNE TipLabelLoop
+
+	STY Graphics_BufCnt
+	JSR GraphicsBuf_Prep_And_WaitVSync
+
+	LDA #$00
+	JSR Video_Do_Update
+
+	LDA RandomN
+	AND #$0F
+	ASL A
+	TAX
+
+	LDA Loading_Tips, X
+	STA <Temp_Var1
+
+	LDA Loading_Tips+1, X
+	STA <Temp_Var2
+
+	LDY #$00
+
+TipStartLoop:
+	LDA TipPPU_TopStart, Y
+	STA Graphics_Buffer, Y
+
+	INY
+	CPY #(TipPPU_TopEnd - TipPPU_TopStart)
+	BNE TipStartLoop
+
+	STY Graphics_BufCnt
+
+	LDY #$00
+
+Tip_DrawTop:	
+	LDA [Temp_Var1], Y
+	STA Graphics_Buffer + 3, Y
+	INY
+
+	CPY #30
+	BNE Tip_DrawTop	
+
+	JSR GraphicsBuf_Prep_And_WaitVSync
+
+	LDA #$00
+	JSR Video_Do_Update
+
+	LDY #$00
+
+TipBottomLoop:
+	LDA TipPPU_BottomStart, Y
+	STA Graphics_Buffer, Y
+
+	INY
+	CPY #(TipPPU_BottomEnd - TipPPU_BottomStart)
+	BNE TipBottomLoop
+
+	STY Graphics_BufCnt
+
+	LDY #$00
+
+	LDA <Temp_Var1
+	ADD #30
+	STA <Temp_Var1
+
+	LDA <Temp_Var2
+	ADC #$00
+	STA <Temp_Var2
+
+ Tip_DrawBottom:
+ 	STA Debug_Snap
+ 	LDA [Temp_Var1], Y
+ 	STA Graphics_Buffer + 3, Y
+ 	INY
+ 	CPY #30
+ 	BNE Tip_DrawBottom
+
+	JSR GraphicsBuf_Prep_And_WaitVSync
+	JSR Scroll_PPU_Reset
+	JSR GraphicsBuf_Prep_And_WaitVSync
+	JSR GraphicsBuf_Prep_And_WaitVSync
+	
+	LDA #$00
+	JSR Video_Do_Update
+
+	LDA #$5C
+	STA PatTable_BankSel
+
+	LDA #$BF
+	STA <Temp_Var1
+
+	LDA #$30
+	STA Palette_Buffer + 1
+	
+	LDA #$06
+	JSR Video_Do_Update
+
+TipWait:
+	JSR GraphicsBuf_Prep_And_WaitVSync
+
+	DEC <Temp_Var1
+	BNE TipWait
 	RTS

@@ -1,0 +1,28 @@
+.ips-patcher {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 25px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    margin: 25px 10px;
+}
+
+@media screen and (max-width: 728px) {
+    .ips-patcher {
+        flex-direction: column;
+    }
+}
+
+input::file-selector-button, button {
+    border: 1px solid lightgray;
+    color: lightgray;
+    outline: none;
+    cursor: pointer;
+    background-color: #080810;
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 5px;
+}

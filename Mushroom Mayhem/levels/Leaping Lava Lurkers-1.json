@@ -6611,6 +6611,7 @@
       "ExitActionType": 0,
       "ExitX": 118,
       "ExitY": 7,
+      "MapScroll": 0,
       "X": 3,
       "Y": 9,
       "ExitsLevel": false,

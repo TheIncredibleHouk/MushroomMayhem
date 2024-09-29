@@ -1997,6 +1997,9 @@ ObjInit_PlungerPaul:
 	ADC #$00
 	STA <Objects_YHiZ, X
 	STA PlungerPaul_InitialYHi, X
+
+	LDA #$00
+	STA Objects_ExpPoints, X
 	RTS
 
 PlungerPaul_State = Objects_Data1
@@ -2029,6 +2032,10 @@ PlungerPaul_Norm:
 
 	CMP #(HIT_STOMPED | HIT_TAIL)
 	BEQ PlungerPaul_Stand
+
+	LDA Exp_Earned
+	ADD #$02
+	STA Exp_Earned
 
 	JSR Object_PoofDie
 
@@ -4432,7 +4439,7 @@ Stage_3_3_Init:
 	LDA Stage_3_3_InitTime, Y 
 	STA GameScript_Timer, X
 
-	SET_MSG Game_Script_3_4
+	SET_MSG Game_Script_3_3
 
 	LDY #$0F
 	LDA #$00
@@ -4802,6 +4809,7 @@ LevelUp_Messages:
 	 MSG_ID Level_Up3
 	 MSG_ID Level_Up4
 	 MSG_ID Level_Up5
+	 MSG_ID Level_Up6
 
 ObjInit_GoldMushroom:
 	JSR Object_CalcBoundBoxForced

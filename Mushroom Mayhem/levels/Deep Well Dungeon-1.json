@@ -3,7 +3,7 @@
   "Name": "Deep Well Dungeon-1",
   "TileSetIndex": 9,
   "ClearTileIndex": 65,
-  "MusicValue": 0,
+  "MusicValue": 64,
   "ScreenLength": 10,
   "StartX": 119,
   "StartY": 17,

@@ -1,0 +1,20 @@
+.assets {
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    max-width: 100%;
+    text-align: center;
+
+    img {
+        border: none;
+        max-width: 50%;
+    }
+}
+
+@media  screen and (max-width: 768px) {
+    .assets {
+        img {
+            max-width: 75%;
+        }
+    }
+}

@@ -353,49 +353,54 @@ Lakitu_Chase:
 	JSR Object_ChasePlayer
 
 Lakitu_CalcBoundBox:
-	LDA <Vert_Scroll
-	ADD #$14
-	STA <Temp_Var1
+ 	LDA <Vert_Scroll
+ 	ADD #$14
+	STA <Objects_YZ, X
 
-	LDA #$00
+	LDA <Vert_Scroll_Hi
 	ADC #$00
-	STA <Temp_Var2
+	STA <Objects_YHiZ, X
+; 	STA <Temp_Var1
 
-	LDA <Temp_Var1
-	SUB <Objects_YZ, X
-	STA <Temp_Var3
+; 	LDA #$00
+; 	ADC #$00
+; 	STA <Temp_Var2
 
-	LDA <Temp_Var2
-	SBC <Objects_YHiZ, X
-	STA <Temp_Var4
+; 	LDA <Temp_Var1
+; 	SUB <Objects_YZ, X
+; 	STA <Temp_Var3
+
+; 	LDA <Temp_Var2
+; 	SBC <Objects_YHiZ, X
+; 	STA <Temp_Var4
 	
-	LDA <Temp_Var3
-	ORA <Temp_Var4
-	BEQ Lakitu_InPlace
+; 	LDA <Temp_Var3
+; 	ORA <Temp_Var4
+; 	BEQ Lakitu_InPlace
 
-	LDA <Temp_Var4
-	BMI Lakitu_Down
+; 	LDA <Temp_Var4
+; 	BMI Lakitu_Down
 
-	LDA <Objects_YZ, X
-	ADD #$01
-	STA <Objects_YZ, X
+; 	LDA <Objects_YZ, X
+; 	ADD #$01
+; 	STA <Objects_YZ, X
 
-	LDA <Objects_YHiZ, X
-	ADC #$00
-	STA <Objects_YHiZ, X
+; 	LDA <Objects_YHiZ, X
+; 	ADC #$00
+; 	STA <Objects_YHiZ, X
 
-	JMP Lakitu_InPlace
+; 	JMP Lakitu_InPlace
 
-Lakitu_Down:
-	LDA <Objects_YZ, X
-	SUB #$01
-	STA <Objects_YZ, X
+; Lakitu_Down:
+; 	LDA <Objects_YZ, X
+; 	SUB #$01
+; 	STA <Objects_YZ, X
 
-	LDA <Objects_YHiZ, X
-	SBC #$00
-	STA <Objects_YHiZ, X
+; 	LDA <Objects_YHiZ, X
+; 	SBC #$00
+; 	STA <Objects_YHiZ, X
 
-Lakitu_InPlace:
+; Lakitu_InPlace:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_AttackOrDefeat
@@ -1545,8 +1550,6 @@ MissieMark_NotHit:
 	LDA Objects_Timer, X
 	BEQ ObjNorm_MissileMarkA
 	
-	LDA Objects_Timer, X
-	
 	LDA #$18
 	STA ChaseVel_LimitHi, X
 
@@ -1561,15 +1564,54 @@ MissieMark_NotHit:
 	JSR Object_ApplyYVel_NoGravity
 	JMP Bullet_Animate
 	 
+
+MissileMark_XMax:
+	.byte $18, $E8
+
+MissileMark_YMax:
+	.byte $18, $E8
+
 ObjNorm_MissileMarkA:
 	LDA Missile_HomingDisabled, X
 	BEQ ObjNorm_MissileMarkC
 
+MissileMark_Move:
 	JSR Object_ApplyXVel
 	JSR Object_ApplyYVel_NoGravity
 	JMP ObjNorm_MissileMarkA1
 
 ObjNorm_MissileMarkC:
+	LDA <Objects_XVelZ, X
+	ADD #$18
+	CMP #$30
+	BCC MissileMark_CheckY
+
+
+	LDA <Objects_XVelZ, X
+	ROL A
+	ROL A
+	AND #$01
+	TAY
+
+	LDA MissileMark_XMax, Y
+	STA <Objects_XVelZ, X
+
+MissileMark_CheckY:
+	LDA <Objects_YVelZ, X
+	ADD #$18
+	CMP #$30
+	BCC MissileMark_Flash
+
+	LDA <Objects_YVelZ, X
+	ROL A
+	ROL A
+	AND #$01
+	TAY
+
+	LDA MissileMark_YMax, Y
+	STA <Objects_YVelZ, X
+
+MissileMark_Flash:
 	INC Missile_Flash, X
 
 	LDA Missile_Flash, X
@@ -2751,7 +2793,7 @@ ObjInit_Swoosh:
 	JSR Object_CalcBoundBox
 	JSR Object_FacePlayer
 
-	LDA #ATTR_ALLWEAPONPROOF
+	LDA #ATTR_PROJECTILEPROOF
 	STA Objects_WeaponAttr, X
 	RTS
 

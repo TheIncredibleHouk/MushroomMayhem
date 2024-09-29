@@ -1334,6 +1334,7 @@ JumpingCheep_VFlip: .byte $00, SPR_VFLIP, $00, $00, SPR_VFLIP
 JumpingCheep_IsWaiting = Objects_Data3
 JumpingCheep_CurrentFrame = Objects_Data4
 JumpingCheep_NoWaterTimer = Objects_Data5
+FlyingCheep_MoveTick = Objects_Data6
 
 JumpingCheep_GroundBounce: 
 	.byte $D0, $F8, $D0
@@ -1389,6 +1390,34 @@ Jumping_ReveseGravity:
 	INC Reverse_Gravity
 
 Jumping_Move1:
+	LDA Objects_Property, X
+	CMP #$03
+	BCC Jumping_Normal
+	
+	CMP #$04
+	BEQ Jumping_SlowAntiGrav
+
+	LDA <Objects_YVelZ, X
+	BMI Jumping_Normal
+
+	CMP #$30
+	BCC Jumping_Normal
+
+	LDA #$30
+	STA <Objects_YVelZ, X
+	BNE Jumping_Normal
+
+Jumping_SlowAntiGrav:
+	LDA <Objects_YVelZ, X
+	BPL Jumping_Normal
+
+	CMP #$D0
+	BCS Jumping_Normal
+
+	LDA #$D0
+	STA <Objects_YVelZ, X
+
+Jumping_Normal:
 	JSR Object_Move
 	JSR Object_FaceDirectionMoving
 	JSR Object_CalcBoundBox
@@ -3108,7 +3137,14 @@ Grower_Draw:
 	LDA Grower_Palettes, Y
 	STA Objects_SpriteAttributes, X
 
-	JSR Object_DrawAligned
+	JSR Object_Draw
+	TXA
+	TAY
+
+	DEC Sprite_RAMY, X
+	DEC Sprite_RAMY+4, X
+
+	LDX <CurrentObjectIndexZ
 
 	LDA Grower_Direction, X
 	EOR Grower_ReverseDraw, X

@@ -8,7 +8,7 @@ OBJ_ELOCK			= $06
 OBJ_BUBBLE			= $07
 OBJ_KEY				= $08
 OBJ_SPRING			= $09
-OBJ_SECONDQUEST 	= $0A
+OBJ_WORLDTRAVEL 	= $0A
 OBJ_SENDBACK 		= $0B
 OBJ_MAGICSTAR_1		= $0C
 OBJ_MAGICSTAR_2		= $0D
@@ -29,7 +29,7 @@ OBJ_BOSS			= $13
 	.word ObjInit_Bubble	; Object $07
 	.word ObjInit_Key		; Object $08
 	.word ObjInit_Spring	; Object $09
-	.word ObjInit_SecondQuest ; Object $0A
+	.word ObjInit_WorldTravel ; Object $0A
 	.word ObjInit_SendBack	; Object $0B
 	.word ObjInit_MagicStar1 ; Object $0C
 	.word ObjInit_MagicStar2 ; Object $0D
@@ -52,7 +52,7 @@ OBJ_BOSS			= $13
 	.word ObjNorm_Bubble	; Object $07
 	.word ObjNorm_Key		; Object $08
 	.word ObjNorm_Spring	; Object $09
-	.word ObjNorm_SecondQuest	; Object $0A
+	.word ObjNorm_WorldTravel	; Object $0A
 	.word ObjNorm_SendBack	; Object $0B
 	.word ObjNorm_MagicStar ; Object $0C
 	.word ObjNorm_MagicStar ; Object $0D
@@ -1034,6 +1034,7 @@ ItemBlock_Initialize:
 	JSR Object_DetectTileCenter
 
 	LDA Tile_LastValue
+	STA ItemBlock_OriginalTile, X
 	AND #$C0
 	
 	JSR Object_ChangeBlock
@@ -1080,6 +1081,7 @@ ItemBlock_ReplaceTile = Objects_Data5
 ItemBlock_Initialized = Objects_Data6
 ItemBlock_Reverse = Objects_Data7
 ItemBlock_PowerUp = Objects_Data8
+ItemBlock_OriginalTile = Objects_Data3
 
 ObjNorm_ItemBlock:
 	LDA ItemBlock_Initialized, X
@@ -1112,9 +1114,18 @@ Produce_Item:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
 
+	LDA Tutorial_Active
+	BEQ No_Tutorial
+	
+	LDA ItemBlock_OriginalTile, X
+	BNE Block_SwitchTile
+
+No_Tutorial:
 	LDA ItemBlock_ReplaceTile, X
 	BNE Block_SwitchTile	
 
+
+Replace_Block:
 	LDA Tile_LastValue
 	AND #$C0
 	ORA #$3F
@@ -2120,8 +2131,14 @@ ObjNorm_Spring:
 
 Spring_Norm:
 	LDA <Player_HaltGameZ
-	BNE Spring_RTS
+	BEQ Spring_NormStuff
+	
+	JSR Object_CalcBoundBox
+	JSR Object_InteractWithPlayer
 
+	JMP Object_DrawMirrored
+
+Spring_NormStuff:
 	LDA #$20
 	JSR Object_DeleteOffScreenRange
 	JSR Object_Move
@@ -2257,55 +2274,56 @@ Spring_PositionRestore:
 	STA <Objects_YHiZ, X
 	RTS
 
-SecondQuest_Timer = Objects_Data1
+WorldTravel_Timer = Objects_Data1
 
-ObjInit_SecondQuest:
-	LDA Objects_Property, X
-	BNE DemoEnd
-
-	SET_MSG Second_QuestMsg
-	JMP SecondQuest_SetHalt
-
-DemoEnd:
-	SET_MSG Demo_EndMsg 	
-
-SecondQuest_SetHalt:
-	LDA #$FF
-	STA SecondQuest_Timer, X
-	RTS
-
-ObjNorm_SecondQuest:
-	LDA SecondQuest_Timer, X
-	BEQ ObjNorm_SecondQuestRTS
-
-	DEC SecondQuest_Timer, X
-	LDA #$01
-	STA Player_VibeDisable
-	RTS
-
-ObjNorm_SecondQuestRTS:	
-	LDA #$00
-	STA Player_VibeDisable
-
-	LDA #$00
-	LDY #$10
-
-Reset_Levels:
-	STA Paper_Stars_Collected1, Y
-	STA Paper_Stars_Collected2, Y
-	STA Paper_Stars_Collected3, Y
+ObjInit_WorldTravel:
+	JSR GetLevelBit
+	ORA Levels_Complete, Y
 	STA Levels_Complete, Y
-	DEY
-	BPL Reset_Levels
 
-	LDA #$00	
-	STA Paper_Stars
+	LDA #$08
+	STA Objects_SpritesRequested, X
+	RTS
 
-	CLR_MSG
+World_Numbers:
+	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $B1
 
-	LDA #SECOND_QUEST
-	STA SecondQuest
-	RTS	
+Warp_ZoneXOffsets:
+	.byte $FF, $1C, $5C, $9C, $DC, $1C, $5C, $9C, $DC
+
+Warp_ZoneYOffsets:
+	.byte $F0, $74, $74, $74, $74, $44, $44, $44, $44
+
+ObjNorm_WorldTravel:
+	LDA #$4D
+	STA PatTable_BankSel + 4
+
+	LDY Object_SpriteRAMOffset, X
+	
+	LDX #$08
+
+WarpZone_DrawNumbers:
+	LDA World_Numbers, X
+	STA Sprite_RAMTile, Y
+
+	LDA #SPR_PAL1
+	STA Sprite_RAMAttr, Y
+
+	LDA Warp_ZoneXOffsets, X
+	STA Sprite_RAMX, Y
+
+	LDA Warp_ZoneYOffsets, X
+	STA Sprite_RAMY, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	DEX
+	BNE WarpZone_DrawNumbers
+
+	RTS
 ;***********************************************************************************
 ; Auto Level Revert
 ;***********************************************************************************
@@ -2478,6 +2496,7 @@ Paper_StarCollect:
 
 	LDA #189
 	STA Player_Invincible
+	STA Paper_Stars
 
 	LDA #$00
 	STA Poison_Mode
@@ -2792,13 +2811,12 @@ RadarMap:
 	.byte BADGE_RADARS, BADGE_RADARSE, BADGE_RADARSW	
 
 Training_Messages:
-
-Training_Messages:
 	MSG_ID Training_1
 	MSG_ID Training_2
 	MSG_ID Training_3
 	MSG_ID Training_4
 	MSG_ID Training_5
+	MSG_ID Training_6
 
 Training_BackUpItem = Objects_Data5
 Training_BackUpBadge = Objects_Data6
@@ -2827,7 +2845,7 @@ ObjInit_Training:
 	LDA #$01
 	STA Player_QueueSuit
 
-	JSR Player_PoofHurt
+	JSR Player_ForceInvulnerable
 	JSR Object_NoInteractions
 	RTS
 
@@ -2860,6 +2878,7 @@ ObjNorm_Training:
 	.word Training_DamageBoost
 	.word Training_Attack
 	.word Training_Jumps
+	.word Training_Cherries
 
 Training_Make1Up:
 	JSR DestroyAllEnemies
@@ -2928,7 +2947,8 @@ Training_TakeHits:
 
 Training_WaitMarioVulenerable:
 	LDA Player_Invulnerable
-	BNE Training_TakeHitsRTS
+	CMP #$02
+	BCS Training_TakeHitsRTS
 
 	LDA #$00
 	STA Training_MarioHit, X
@@ -3319,6 +3339,62 @@ Training_JumpRTS:
 
 TrainingJumpTimerRTS:
 	RTS
+
+Training_CherriesInit = Objects_Data1
+Training_OldCherries = Objects_Data2
+
+Training_Cherries:
+	LDA Training_CherriesInit, X
+	BNE Trainig_CherriesInited
+
+	LDA Player_Cherries
+	STA Training_OldCherries, X
+
+	LDA #$00
+	STA Player_Cherries
+
+	LDA #SND_PLAYERPOWER
+	STA Sound_QPlayer
+	
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	
+	LDA Sound_QMusic2
+	ORA #MUS2A_INVINCIBILITY
+	STA Sound_QMusic2
+	
+	LDA #$C8
+	STA Player_StarInv
+	INC Training_CherriesInit, X
+
+Trainig_CherriesInited:
+	LDA <Player_IsDying
+	BEQ Training_CherriesNotDying
+
+	LDA Training_OldCherries, X
+	STA Player_Cherries
+
+Training_CherriesNotDying:
+	LDA Player_Cherries
+	CMP #50
+	BCC Training_CherriesRTS
+
+	LDA Training_OldCherries, X
+	CMP #50
+	BCS Training_RestoreOldCherries
+
+	LDA #50
+
+Training_RestoreOldCherries:	
+	STA Player_Cherries
+	
+	JSR Training_Make1Up
+	RTS
+
+Training_CherriesRTS:
+	JSR Training_DrawNumber
+	RTS
+
 ;***********************************************************************************
 ; Star Piece
 ;***********************************************************************************

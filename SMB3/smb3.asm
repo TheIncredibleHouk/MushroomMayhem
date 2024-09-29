@@ -2634,7 +2634,7 @@ HIT_NINJASTAR	= $08
 HIT_TAIL		= $10
 HIT_STOMPED		= $20
 HIT_SHELL		= $40
-HIT_EXPLOSION	= $80
+HIT_EXPLOSION	= $FF
 HIT_DASH 		= $80
 HIT_INVULNERABLE = $80
 
@@ -2723,15 +2723,6 @@ AIR_INCREASE	= 3
 	Top_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Bottom_Needs_Redraw:	.ds 1; Indicates what the last status bar mode was before the toggle
 	Game_Timer_Tick:		.ds 1; Indicates the game timer needs to increase by 1 second
-
-Max_Item_Count = 8
-CARD_MUSHROOM	= 0
-CARD_FLOWER	= 1
-CARD_STAR	= 2
-CARD_1UP	= 3
-CARD_10COIN	= 4
-CARD_20COIN	= 5
-CARD_WILD	= 8	; UNUSED Wild card (can match any other!)
 
 	Level_HorzScrollLock:	.ds 1	; Set to '1' while in a Big Question block area, locks horizontal scrolling
 
@@ -2942,7 +2933,8 @@ ABILITY_STARTBIG = 2
 ABILITY_RECOVERY = 3
 ABILITY_NOSHROOMS = 4
 ABILITY_DOUBLEJUMP = 5
-ABILITY_MAX = ABILITY_DOUBLEJUMP
+ABILITY_CHERRYSTAR = 6
+ABILITY_MAX = ABILITY_CHERRYSTAR
 
 	; #SAVE RAM
 	Player_Stats_Boundary_Start: .ds 1	
@@ -2951,13 +2943,13 @@ ABILITY_MAX = ABILITY_DOUBLEJUMP
 	Map_Entered_Y:		.ds 1	
 	Map_Entered_XHi:	.ds 1	
 	Map_Entered_X:		.ds 1
-	Map_Previous_Y:		.ds 1	; $797E-$797F (Mario/Luigi) Stores the previous Y you were "safe" at; this is the Y you go back to if you die
-	Map_Previous_XHi:	.ds 1	; $7980-$7981 (Mario/Luigi) Same as Map_Previous_Y, only for XHi
-	Map_Previous_X:		.ds 1	; $7982-$7983 (Mario/Luigi) Same as Map_Previous_Y, only for X
-	Map_Prev_XOff2:		.ds 1	; $7986-$7987 (Mario/Luigi) Holds a copy of Map_Prev_XOff, but I'm not sure why?
-	Map_Prev_XHi2:		.ds 1	; $7988-$7989 (Mario/Luigi) Holds a copy of Map_Prev_XHi, but I'm not sure why?
-	Map_Prev_XOff:		.ds 2	; $0722-$0723 (Mario/Luigi) Stores previous scroll X offset on map
-	Map_Prev_XHi:		.ds 2	; $0724-$0725 (Mario/Luigi) Stores previous "hi byte" of map X
+	Map_Previous_Y:		.ds 1	
+	Map_Previous_XHi:	.ds 1	
+	Map_Previous_X:		.ds 1	
+	Map_Prev_XOff2:		.ds 1	
+	Map_Prev_XHi2:		.ds 1	
+	Map_Prev_XOff:		.ds 2	
+	Map_Prev_XHi:		.ds 2	
 	CheckPoint_Flag:	.ds 1
 	CheckPoint_Level:	.ds 1
 	CheckPoint_X:		.ds 1
@@ -3088,6 +3080,9 @@ TILE_ITEM_SPINNER	= $FE
 	MultiFrameLoad:	.ds 1
 	CommandCount: .ds 1
 	Credits_Triggered: .ds 1
+	Tutorial_Active: .ds 1
+	Wall_Jump_Timer: .ds 1
+	Casual_Mode: .ds 1
 
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints

@@ -6537,10 +6537,28 @@
       "Property": 0
     },
     {
-      "GameObjectId": 13,
+      "GameObjectId": 59,
+      "X": 23,
+      "Y": 15,
+      "Property": 1
+    },
+    {
+      "GameObjectId": 16,
+      "X": 22,
+      "Y": 12,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 16,
       "X": 24,
-      "Y": 6,
-      "Property": 2
+      "Y": 18,
+      "Property": 0
+    },
+    {
+      "GameObjectId": 16,
+      "X": 25,
+      "Y": 12,
+      "Property": 0
     }
   ],
   "SecondObjectData": [
@@ -6557,6 +6575,7 @@
       "ExitActionType": 0,
       "ExitX": 232,
       "ExitY": 5,
+      "MapScroll": 0,
       "X": 39,
       "Y": 24,
       "ExitsLevel": false,
@@ -6570,6 +6589,7 @@
       "ExitActionType": 0,
       "ExitX": 82,
       "ExitY": 1,
+      "MapScroll": 0,
       "X": 0,
       "Y": 25,
       "ExitsLevel": false,
@@ -6583,6 +6603,7 @@
       "ExitActionType": 2,
       "ExitX": 155,
       "ExitY": 3,
+      "MapScroll": 0,
       "X": 23,
       "Y": 23,
       "ExitsLevel": false,

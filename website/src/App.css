@@ -57,6 +57,7 @@ h1 {
   margin-bottom: 25px;
   padding-bottom: 25px;
   text-align: center;
+  line-height: 50px;
   width: 100%;
 }
 
@@ -69,9 +70,7 @@ ul {
   margin: 15px;
   padding-left: 15px;
 }
-p {
-  margin-bottom: 5px;
-}
+
 a:link,
 a:visited,
 a:hover,
@@ -83,14 +82,16 @@ section {
   display: block;
   margin-bottom: 50px;
 }
+
 .social-media {
+  align-items: center;
   display: flex;
+  justify-content: center;
   flex-direction: row;
-  position: absolute;
   right: 0;
-  top: -30px;
 
   img {
+    border: 0;
     margin: 0 10px;
     width: 28px;
 
@@ -124,4 +125,18 @@ img {
   position: absolute;
   top: -32px;
   width: 32px;
+}
+
+
+.logo_title {
+  background-color: #64B0FF;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+  padding: 10px;
+
+  img {
+    max-width: calc(100% - 25px);
+    border: 0;
+  }
 }

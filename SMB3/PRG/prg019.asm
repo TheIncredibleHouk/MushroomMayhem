@@ -164,8 +164,7 @@ PRG005_B873:
 PRG005_B8BE:
 	LDX <Temp_Var2	 ; Restore object index
 
-	LDA Level_ObjectsSpawned,X
-	ORA #$81	 
+	LDA #$00
 	STA Level_ObjectsSpawned,X	; Mark object as already spawned (even though technically it isn't, but prevents re-triggering)
 
 	JMP PRG005_B863	 ; Jump to PRG005_B863 (next object)
@@ -433,7 +432,7 @@ CheepCheepXHiOffsets
 	.byte $FF, $FF, $00, $00, $00, $00, $01, $01
 
 CheepCheepXVelocity:
-	.byte $20, $18, $10, $08, $F8, $F0, $E8, $E0
+	.byte $14, $10, $0C, $08, $F8, $F4, $F0, $EC
 
 CheepCheepTimers:
 	.byte $80, $80, $A0, $60, $60, $A0, $80, $40
@@ -494,7 +493,7 @@ GenerateCheepCheep:
 	LDA CheepCheepXVelocity, Y
 	STA <Objects_XVelZ, X
 
-	LDA #$A0
+	LDA #$98
 	STA <Objects_YVelZ, X
 
 	LDA #$01
@@ -523,6 +522,10 @@ GenerateCheepCheep_AntiGrav:
 	LDA <Objects_YHiZ, X
 	SBC #$00
 	STA <Objects_YHiZ, X
+
+	LDA <Objects_YVelZ, X
+	JSR Negate
+	STA <Objects_YVelZ, X
 	RTS
 
 LevelEvent_Cancel:
@@ -835,9 +838,11 @@ LevelEvent_ProduceMinesMake:
 	STA Objects_Property, X
 	
 	LDA <Player_YZ
+	ADD #$08
 	STA <Objects_YZ, X
 
 	LDA <Player_YHiZ
+	ADC #$00
 	STA <Objects_YHiZ, X
 
 	LDA #$D0
@@ -2716,11 +2721,16 @@ Bowser_ProcessHealth:
 	BNE Bowser_SetHealth
 
 	DEC Bowser_Health, X
+	DEC Bowser_Health, X
+	DEC Bowser_Health, X
 	
 	LDA Objects_PlayerProjHit, X
 	AND #HIT_STOMPED
 	BEQ Bowser_LowDamage
 	
+	DEC Bowser_Health, X
+	DEC Bowser_Health, X
+	DEC Bowser_Health, X
 	DEC Bowser_Health, X
 	DEC Bowser_Health, X
 	DEC Bowser_Health, X
@@ -2773,6 +2783,12 @@ Bowser_HealthRTS:
 	RTS
 
 Bowser_Init:
+	LDA #$00
+	STA Player_Cherries
+	STA Player_Coins
+	STA PowerUp_Reserve
+	STA Player_Badge
+
 	LDA #BOUND32x32
 	STA Objects_BoundBox, X
 
@@ -3952,7 +3968,7 @@ Bowser_MaliceMakeFastFireRTS:
 	RTS	
 
 Bowser_HammerXVel:
-	.byte $DE, $E4, $EA, $F0, $F6, $FC
+	.byte $E0, $E6, $EC, $F2, $F8, $FE
 
 Bowser_HammerThrowFrame:
 	.byte $0C, $06
@@ -3983,7 +3999,7 @@ Bowser_ThrowHammer:
 	LDA Bowser_HammerXVel, X
 	STA SpecialObj_XVel, Y
 
-	LDA #$98
+	LDA #$90
 	STA SpecialObj_YVel, Y
 
 	LDX <CurrentObjectIndexZ
@@ -4362,39 +4378,43 @@ SuperCredits_Line4
 
 SuperCredits_Line5
 	.db " HACK HAS TO OFFER! "
-	.db " FROM SCARLETT VIXEN"
+	.db "                    "
 
 SuperCredits_Line6:
-	.db " ON WORLD MAP PAUSE "
-	.db " ENTER THESE CODES  "
-
-SuperCredits_Line7:
-	.db "  ENABLE MARINE POP "
-	.db "<;SELECT<:ASELECT<B "
-
-SuperCredits_Line8:
-	.db "  ENABLE DEBUG MODE "
-	.db "   <[<[BBAASELECT   "
-
-SuperCredits_Line9:
-	.db " ENABLE MOON GRAVITY"
-	.db "    B;ABB<:SELECT   "
-
-SuperCredits_Line10:
 	.db "  THANKS AGAIN FOR  "
 	.db "  PLAYING THE GAME  "
 
+SuperCredits_Line7:
+	.db "                    "
+	.db "                    "
+
+
+SuperCredits_Line8:
+	.db "                    "
+	.db "                    "
+
+
+SuperCredits_Line9:
+	.db "      BUT WAIT!     "
+	.db "   THERE IS MORE!   "
+
+SuperCredits_Line10:
+	.db "   WANT A TOUGHER   "
+	.db "     CHALLENGE?     "
+
 SuperCredits_Line11:
-	.db "  I HAVE WORKED SO  "
-	.db "   HARD TO BUILD!   "
+	.db "    TRY TAKING ON   "
+	.db "  THE MASTER QUEST! "
+
 
 SuperCredits_Line12:
-	.db "     SEE YOU ON     "
-	.db " THE NEXT ADVENTURE "
+	.db "    STARTING...     "
+	.db "                    "
+
 
 SuperCredits_Line13:
-	.db "      THE END       "
-	.db "                    "
+	.db "      RIGHT         "
+	.db "      NOW!!         "
 
 SuperCredits_Low = Temp_Var1
 SuperCredits_Hi = Temp_Var2
@@ -4564,8 +4584,50 @@ SuperCredits_Finish:
 	LDA #MUS1_STOPMUSIC
 	STA Level_MusicQueue
 
+
+	LDA #$00
+	LDY #$10
+
+Reset_Levels:
+	STA Paper_Stars_Collected1, Y
+	STA Paper_Stars_Collected2, Y
+	STA Paper_Stars_Collected3, Y
+	STA Levels_Complete, Y
+	DEY
+	BPL Reset_Levels
+
+	LDA #$00	
+	STA Paper_Stars
+
+	LDA #SECOND_QUEST
+	STA SecondQuest
+
+	LDA #ABILITY_MAX
+	STA Player_Level
+
 	LDA #$00
 	STA Credits_Triggered
+
+	LDA #$01
+	STA World_Num
+
+	LDA #$20
+	STA World_Map_X
+	STA Map_Entered_X
+	STA Map_Previous_X
+
+	LDA #$50
+	STA Map_Entered_Y
+	STA Map_Previous_Y
+	STA World_Map_Y
+
+	LDA #$00
+	STA Map_Entered_XHi
+	STA Map_Previous_XHi
+	STA World_Map_XHi
+
+	JSR Save_Game
+
 	JMP IntReset
 
 Bowser_EjectMario:
@@ -4627,5 +4689,4 @@ Bowser_ContByeByeMario:
 	JMP Bowser_NormDraw
 
 Bowser_NextQuest:
-
 	RTS

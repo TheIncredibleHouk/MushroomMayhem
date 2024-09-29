@@ -86,4 +86,10 @@
           width: auto;
       }
     }
+
+    @media screen and (max-width: 400px) { 
+      .page-title {
+        font-size: 40px;
+      }
+    }
   }

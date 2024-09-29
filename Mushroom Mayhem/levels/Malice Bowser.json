@@ -6499,12 +6499,19 @@
     0
   ],
   "PatchTileData": null,
-  "FirstObjectData": [],
+  "FirstObjectData": [
+    {
+      "GameObjectId": 99,
+      "X": 12,
+      "Y": 21,
+      "Property": 0
+    }
+  ],
   "SecondObjectData": [
     {
       "GameObjectId": 99,
-      "X": 8,
-      "Y": 20,
+      "X": 12,
+      "Y": 21,
       "Property": 0
     }
   ],

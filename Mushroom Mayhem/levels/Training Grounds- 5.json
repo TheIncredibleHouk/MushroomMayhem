@@ -3,14 +3,14 @@
   "Name": "Training Grounds- 5",
   "TileSetIndex": 11,
   "ClearTileIndex": 0,
-  "MusicValue": 32,
+  "MusicValue": 112,
   "ScreenLength": 1,
   "StartX": 3,
   "StartY": 25,
   "PaletteEffect": 2,
   "PaletteId": "3c30e639-4d0a-4974-bd84-9ac631b781dc",
   "StaticTileTableIndex": 96,
-  "NoStars": false,
+  "NoStars": true,
   "MostCommonTile": 0,
   "AnimationType": 1,
   "ScrollType": 1,
@@ -6507,14 +6507,7 @@
       "Property": 4
     }
   ],
-  "SecondObjectData": [
-    {
-      "GameObjectId": 15,
-      "X": 9,
-      "Y": 25,
-      "Property": 4
-    }
-  ],
+  "SecondObjectData": [],
   "LevelPointers": [],
   "CompressedData": "P/uQEPtBQUFBQUFBQUFBQUFBQfvBnA1BwpysDUHCrJwNQcKcrA1BwqycDUHCnKwNQcGsD/s="
 }

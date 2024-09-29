@@ -6556,6 +6556,7 @@
       "ExitActionType": 0,
       "ExitX": 164,
       "ExitY": 1,
+      "MapScroll": 0,
       "X": 2,
       "Y": 25,
       "ExitsLevel": false,
@@ -6569,13 +6570,14 @@
       "ExitActionType": 0,
       "ExitX": 222,
       "ExitY": 1,
-      "X": 61,
+      "MapScroll": 0,
+      "X": 60,
       "Y": 25,
       "ExitsLevel": false,
       "RedrawsLevel": true,
       "KeepObjects": false,
       "DisableWeather": false,
-      "BoundRectangle": "976,400,32,32"
+      "BoundRectangle": "960,400,32,32"
     }
   ],
   "CompressedData": "ecF4fsF4fsF4fsF4fsF4fsF4fsF4fsF4fsF4fsF4UcHzBfTB9UvB8wX0wfVIwfMF9ML1eH7BeH7BeH7BeH7BeH7BeFvB8wX0wfVawXh+wXh+wXh+wXh+wXh+wXhGwX9GwfMF9MH1UcHzBfTB9U3BeEHBf0PBjXbBeEGCBY1BQUFBcsF4QYIFjUFBQUFywXZBwY1BO/TE9Y3z9A=="

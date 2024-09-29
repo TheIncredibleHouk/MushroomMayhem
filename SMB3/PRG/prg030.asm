@@ -320,10 +320,10 @@ PRG030_8552:
 	LDA #$00	 
 	STA Level_Tileset	 ; Map uses Level_Tileset = 0
 	STA World_EnterState	 ; World_EnterState = 0 (just arriving)
-	STA <Map_EnterLevelFX	 ; Scratch = 0
-	STA <Map_Intro_CurStripe ; Start with the first "strip" of erasing the World X intro box
-	STA <Map_WarpWind_FX	 ; No warp whistle wind effects
-	STA Map_Intro_Tick	 ; Map_Intro_Tick = 0 (forces init in some functions)
+	; STA <Map_EnterLevelFX	 ; Scratch = 0
+	; STA <Map_Intro_CurStripe ; Start with the first "strip" of erasing the World X intro box
+	; STA <Map_WarpWind_FX	 ; No warp whistle wind effects
+	; STA Map_Intro_Tick	 ; Map_Intro_Tick = 0 (forces init in some functions)
 
 PRG030_857E:
 	JSR Sprite_RAM_Clear	 
@@ -681,8 +681,8 @@ PRG030_87BD:
 	STA Map_Entered_X
 
 	LDA #$00
-	STA <Map_EnterLevelFX		; Map_EnterLevelFX = 0
-	STA Map_EntTran_BorderLoop	; Map_EntTran_BorderLoop = 0
+	; STA <Map_EnterLevelFX		; Map_EnterLevelFX = 0
+	; STA Map_EntTran_BorderLoop	; Map_EntTran_BorderLoop = 0
 	STA Update_Select		; Update_Select = 0
 	STA World_EnterState		; World_EnterState = 0
  
@@ -741,7 +741,6 @@ PRG030_881D:
 	STA Map_Transition_Column
 
 	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Waiting for vertical sync
-
 
 	LDY #$FC
 	LDA #$F8
@@ -885,6 +884,8 @@ EnterEffect_SpriteLoop:
 ; level transition effect
 
 TransitionComplete:
+	JSR Show_Tips
+
 PRG030_88AD:
 	; Completed the entrance transition...
 
@@ -1121,8 +1122,8 @@ PRG030_8CB8:
 	STA PAGE_A000
 	JSR PRGROM_Change_A000
 
-	LDA #$00
-	STA <Map_EnterLevelFX	 ; Map_EnterLevelFX = 0
+	; LDA #$00
+	; STA <Map_EnterLevelFX	 ; Map_EnterLevelFX = 0
 
 	LDX #$c0	 	; X = $C0 (Normal style updating)
 	LDA Level_7Vertical	
@@ -1226,6 +1227,7 @@ PRG030_8E5D:
 	STA Player_Frozen
 	STA Frozen_Frame
 	STA ForcedSwitch
+	STA Tutorial_Active
 	BEQ PRG030_8E79
 
 Pause_NoExit:
@@ -1459,6 +1461,7 @@ Skip_StatReset:
 	STA Player_Yolked
 	STA Enemy_Health
 	STA Enemy_Health_Mode
+	STA Tutorial_Active
 
 	LDA #$40
 	STA Air_Time
@@ -3038,6 +3041,8 @@ LevelLoad_NameLoop:
 	INX
 	CPX #28
 	BNE LevelLoad_NameLoop
+
+LevelLoad_WriteLevelCancel:	
 	RTS
 
 LevelLoad_WriteLevel:
@@ -4528,6 +4533,7 @@ Reserve_Items:
 Player_NoItem:
 	RTS
 
+
 Player_UseItem:
 	LDA <Player_HaltGameZ
 	ORA Player_HaltTick
@@ -4697,6 +4703,8 @@ Jump_Right:
 Do_Jump_Off:
 	STA <Player_XVelZ
 	STA <Player_EffXVel
+
+Do_Wall_JumpRTS:	
 	RTS
 
 DoNightTransition:
@@ -5675,7 +5683,7 @@ Player_FreezeNow:
 
 	LDA #$80
 	STA Player_QueueSuit
-	
+
 	LDA #$00
 	STA Player_IsClimbing
 

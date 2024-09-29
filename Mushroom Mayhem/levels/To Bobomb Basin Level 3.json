@@ -6505,8 +6505,9 @@
     {
       "LevelId": "40f6c25f-1581-495c-b5e9-edd37eec7432",
       "ExitActionType": 0,
-      "ExitX": 19,
+      "ExitX": 21,
       "ExitY": 8,
+      "MapScroll": 0,
       "X": 13,
       "Y": 17,
       "ExitsLevel": true,
@@ -6520,6 +6521,7 @@
       "ExitActionType": 1,
       "ExitX": 5,
       "ExitY": 22,
+      "MapScroll": 0,
       "X": 3,
       "Y": 20,
       "ExitsLevel": false,

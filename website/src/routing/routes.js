@@ -1,5 +1,6 @@
 import Elements from '../pages/Elements/Elements';
 import Foes from '../pages/Foes/Foes';
+import Assets from '../pages/Asssets/Assets';
 import Hazards from '../pages/Hazards/Hazards';
 import Home from '../pages/Home/Home';
 import Items from '../pages/Items/Items';
@@ -31,6 +32,13 @@ const routes = [
         component: About,
         exact: true,
         title: "About",
+        menu: true
+    },
+    {
+        path: "assets",
+        component: Assets,
+        exact: true,
+        title: "Assets",
         menu: true
     },
     {

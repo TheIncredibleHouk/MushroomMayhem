@@ -1,10 +1,10 @@
 {
-  "short_name": "Official Mario Adventure 3 Strategy Guide",
-  "name": "Official Mario Adventure 3 Strategy Guide",
+  "short_name": "Official Mario Adventure 3 Website",
+  "name": "Official Mario Adventure 3 Website",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "16x16",
+      "sizes": "32x32",
       "type": "image/x-icon"
     }
   ],

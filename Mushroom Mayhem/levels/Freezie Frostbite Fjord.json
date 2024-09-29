@@ -3812,7 +3812,7 @@
     65,
     65,
     65,
-    65,
+    31,
     65,
     65,
     65,
@@ -5522,7 +5522,7 @@
     97,
     97,
     98,
-    65,
+    94,
     65,
     65,
     65,
@@ -6659,7 +6659,7 @@
     {
       "GameObjectId": 18,
       "X": 235,
-      "Y": 23,
+      "Y": 18,
       "Property": 0
     },
     {
@@ -6691,6 +6691,12 @@
       "X": 175,
       "Y": 9,
       "Property": 7
+    },
+    {
+      "GameObjectId": 109,
+      "X": 238,
+      "Y": 21,
+      "Property": 0
     }
   ],
   "SecondObjectData": [
@@ -6714,8 +6720,8 @@
     },
     {
       "GameObjectId": 12,
-      "X": 81,
-      "Y": 16,
+      "X": 134,
+      "Y": 18,
       "Property": 1
     },
     {
@@ -6863,15 +6869,9 @@
       "Property": 4
     },
     {
-      "GameObjectId": 61,
-      "X": 190,
-      "Y": 11,
-      "Property": 0
-    },
-    {
       "GameObjectId": 115,
-      "X": 198,
-      "Y": 7,
+      "X": 190,
+      "Y": 15,
       "Property": 6
     },
     {
@@ -6901,26 +6901,8 @@
     {
       "GameObjectId": 18,
       "X": 234,
-      "Y": 23,
+      "Y": 16,
       "Property": 0
-    },
-    {
-      "GameObjectId": 47,
-      "X": 225,
-      "Y": 22,
-      "Property": 0
-    },
-    {
-      "GameObjectId": 14,
-      "X": 175,
-      "Y": 9,
-      "Property": 7
-    },
-    {
-      "GameObjectId": 14,
-      "X": 190,
-      "Y": 15,
-      "Property": 2
     },
     {
       "GameObjectId": 70,
@@ -6929,10 +6911,22 @@
       "Property": 4
     },
     {
-      "GameObjectId": 70,
-      "X": 186,
-      "Y": 14,
-      "Property": 5
+      "GameObjectId": 115,
+      "X": 200,
+      "Y": 5,
+      "Property": 6
+    },
+    {
+      "GameObjectId": 14,
+      "X": 190,
+      "Y": 16,
+      "Property": 6
+    },
+    {
+      "GameObjectId": 13,
+      "X": 175,
+      "Y": 9,
+      "Property": 7
     }
   ],
   "LevelPointers": [
@@ -6941,6 +6935,7 @@
       "ExitActionType": 1,
       "ExitX": 15,
       "ExitY": 19,
+      "MapScroll": 0,
       "X": 175,
       "Y": 9,
       "ExitsLevel": false,
@@ -6950,5 +6945,5 @@
       "BoundRectangle": "2800,144,32,32"
     }
   ],
-  "CompressedData": "wWJFwcRMwcNEggWen0FBQUfBxEzBw0TBxEzBw0MB/2XCnp99wcRDwcNPggWen0FBQVPBYkXBxEzBw0SCBZ6fQUFBR8HETMHDRMHETMHDQwH/ZcKen33BxEPBw0+CBZ6fQUFBU8FiRcHETMHDRMeen0EuQZ6fSsHETMHDQcEuQcHETMHDQwH/ZcKen33BxEPBw0+CBZ6fQUFBU8FiRcHEDG7Bw0SCBZ6fQUFBR8HETMHDRMHETMHDQwH/ZcKen33BxEPBw0/Hnp9BLkGen07BLkbBYkXBxAxuwcNEggWen0FBQUfBxEzBw0TBxEzBw0MB/2XCnp99wcRDwcNPggWen0FBQVPBYkXBxEzBw0SCBZ6fQUFBR8HEDG7Bw0TBxAxuwcNDAf9lwp6ffcHEQ8HDT4IFnp9BQUFTwWJFDv9EggWen0FBQUcO/0QO/0MB/2XCnp93BG7CQcRDwcNPggWen0FBQVPBYlmCBZ6fQUFBbgH/ZcKen33BxEPBw0+CBZ6fQUFBU8FiWYIFnp9BQUFuAf9lw56fLlDBfWQEpMJBxEPBw0+CBZ6fQUFBU8FiWYIFnp9BQUFuAf9lwp6fcMKur0PBEwQUwhXEQ8HDT4IFnp9BQUFTwWJZggWen0FBQW4B/2XCnp9wwp6fQ8FQBFHCUsQDbsHDT4IFnp9BQUFTwWJZwp6fQsKOj3EB/2XDnp98bwH/Q8FgBGHCYsQDbsH/T4IFnp9BQUFTwWJZw56ffHUB/2XCnp9Qw3tYe1fCjo9IwWAEYcFiBf9PggWen0FBQVPCYn0BflbCnp92Af9lwp6fa8Ken0jBcARxwXJOwf9FggWen0FBQVPBYlnCnp9vwo6PbMKen2sB/10B/0WCBZ6fQUFBU8FiWcKen2/Cnp9sw56fXlbCjo9wAv9FggWen0FBQVPBYlfCrK0B/8KtrG3Cnp9swp6fV8Ken28D/0XHjo99QXyOj1bBYgN+U8K8vQH/wr28T8KOj0zBrA2tAf/Cjo9pw/+en0YH/8EjBiTDJZ6fTMKOj03B/1AE/2PBYlnCnp9BAV5NxJ6fjo9KwbwNvQH/wp6fWsKOj03Cnp9Gwf9GwYYGh8GIgg+en0FBQUFBQUFBQUFBQUHBQQH/ScH/QwX/wq2sYcFiR8KOj0/Cjo9RggKen8NBjo9ICn5CggKen1rCnp9MxF6en15CxI6PQf9GwZYGl8SYnp9BAaRDwo6PQwH/TQL/wUIGpMJC/wIDBv/CvbxCwUIMpMFCT8FiR8Ken0XCjo9bA//Dtp6fSAp+QoICnp9Cwo6PS8KOj0cB/wWtwaxGwp6fQ8Sen0H/QcETERTBFULCnp9Hwo6PScETKRTBFU7BYkfEnp9BQgGkxEJBnp9JwYINpMGCRMQuT56fSAp+QoICnp9Cwp6fS8Sen0FCBKTBQgH/Bb3BvEbCnp9DxJ6fA/9BwVARUcFSQgH/R8Ken0PCjo9DwVApUcFSS8FCAaTBYj8UDhTBFUIB/0nBExUUwRVDwo6PQgT/QcFgEWHBYkwB/0PCnp9DwWApYcFiS8ETARTBYT9RDlHBUk7BUBVRwVJPwWARYcJi/1EB/0PBYClhwWJLwVABUT/RD9HB0g7fwdAV0cHSD9/B0BHRwdIY38HQKdHB0gvfwdAB0T/hD+HB4g7vweAV4cHiD+/B4BHhweIY78HgKeHB4gvvweA/4RHhweIO78HgFeHB4g/vweAR4cHiGO/B4CnhweIL78HgAeE="
+  "CompressedData": "wWJFwcRMwcNEggWen0FBQUfBxEzBw0TBxEzBw0MB/2XCnp99wcRDwcNPggWen0FBQVPBYkXBxEzBw0SCBZ6fQUFBR8HETMHDRMHETMHDQwH/ZcKen33BxEPBw0+CBZ6fQUFBU8FiRcHETMHDRMeen0EuQZ6fSsHETMHDQcEuQcHETMHDQwH/ZcKen33BxEPBw0+CBZ6fQUFBU8FiRcHEDG7Bw0SCBZ6fQUFBR8HETMHDRMHETMHDQwH/ZcKen33BxEPBw0/Hnp9BLkGen07BLkbBYkXBxAxuwcNEggWen0FBQUfBxEzBw0TBxEzBw0MB/2XCnp99wcRDwcNPggWen0FBQVPBYkXBxEzBw0SCBZ6fQUFBR8HEDG7Bw0TBxAxuwcNDAf9lwp6ffcHEQ8HDT4IFnp9BQUFTwWJFDv9EggWen0FBQUcO/0QO/0MB/2XCnp93BG7CQcRDwcNPggWen0FBQVPBYlmCBZ6fQUFBbgH/ZcKen33BxEPBw0+CBZ6fQUFBU8FiWYIFnp9BQUFuAf9lw56fLlDBfWQEpMJBxEPBw0+CBZ6fQUFBU8FiWYIFnp9BQUFuAf9lwp6fcMKur0PBEwQUwhXEQ8HDT4IFnp9BQUFTwWJZggWen0FBQW4B/2XCnp9wwp6fQ8FQBFHCUsQDbsHDT4IFnp9BQUFTwWJZwp6fQsKOj3EB/2XDnp98bwH/Q8FgBGHCYsQDbsH/T4IFnp9BQUFTwWJZw56ffHUB/2XCnp9Qw3tYe1fCjo9IwWAEYcFiBf9PggWen0FBQVPCYn0BflbCnp92Af9lwp6fa8Ken0jBcARxwXJOwf9FggWen0FBQVPBYlnCnp9vwo6PbMKen2sB/10B/0WCBZ6fQUFBU8FiWcKen2/Cnp9sw56fXlbCjo9qwR9EAv9FggWen0FBQVPBYlfCrK0B/8KtrG3Cnp9swp6fV8Ken28D/0XHjo99QXyOj1bBYgN+U8K8vQH/wr28T8KOj0zBrA2tAf/Cjo9pw/+en0YH/8EjBiTDJZ6fTMKOj03B/1AE/2PBYlnCnp9BAV5NxJ6fjo9KwbwNvQH/wp6fWsKOj03Cnp9Gwf9GwYYGh8GIgg+en0FBQUFBQUFBQUFBQUHBQQH/ScH/QwX/wq2sYcFiR8KOj0/Cjo9RggKen8NBjo9ICn5CggKen1rCnp9MxF6en15CxI6PQf9GwZYGl8SYnp9BAaRDwo6PQwH/TQL/wUIGpMJC/wIDBv/CvbxCwUIMpMFCT8FiR8Ken0XCjo9bA//Dtp6fSAp+QoICnp9Cwo6PS8KOj0cB/wWtwaxGwp6fQ8Sen0H/QcETERTBFULCnp9Hwo6PScETKRTBFU7BYkfEnp9BQgGkxEJBnp9JwYINpMGCRMQuT56fSAp+QoICnp9Cwp6fS8Sen0FCBKTBQgH/Bb3BvEbCnp9DxJ6fA/9BwVARUcFSQgH/R8Ken0PCjo9DwVApUcFSS8FCAaTBYj8UDhTBFUIB/0nBExUUwRVDwo6PQgT/QcFgEWHBYkwB/0PCnp9DwWApYcJiXkrBEwEUwWE/UQ5RwVJOwVAVUcFST8FgEWHCYv9RAf9DwWApYcFiS8FQAVE/0Q/RwdIO38HQFdHB0g/fwdAR0cHSGN/B0CnRwdIL38HQAdE/4Q/hweIO78HgFeHB4g/vweAR4cHiGO/B4CnhweIL78HgP+ER4cHiDu/B4BXhweIP78HgEeHB4hjvweAp4cHiC+/B4AHh"
 }
