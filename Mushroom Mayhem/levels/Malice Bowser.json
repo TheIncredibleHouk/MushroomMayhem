@@ -6503,7 +6503,7 @@
     {
       "GameObjectId": 99,
       "X": 12,
-      "Y": 21,
+      "Y": 22,
       "Property": 0
     }
   ],
@@ -6511,10 +6511,25 @@
     {
       "GameObjectId": 99,
       "X": 12,
-      "Y": 21,
-      "Property": 0
+      "Y": 22,
+      "Property": 1
     }
   ],
-  "LevelPointers": [],
+  "LevelPointers": [
+    {
+      "LevelId": "4b03f52e-b093-4ad7-b603-24de17a04fb3",
+      "ExitActionType": 0,
+      "ExitX": 7,
+      "ExitY": 4,
+      "MapScroll": 0,
+      "X": 7,
+      "Y": 23,
+      "ExitsLevel": false,
+      "RedrawsLevel": true,
+      "KeepObjects": false,
+      "DisableWeather": false,
+      "BoundRectangle": "112,368,32,32"
+    }
+  ],
   "CompressedData": "P2IQYg0BAWINAQFiDQEBYg0BAWINAQFiDQEBYg0BAWINAQFiDQEBYg0BAWINAQFiDQEBYg0BAWINAQFiDQEBYg0BAWINAQFiDQEBYg0BAWINAcFiH1E="
 }

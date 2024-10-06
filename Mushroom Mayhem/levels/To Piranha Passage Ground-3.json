@@ -6551,12 +6551,6 @@
       "Property": 0
     },
     {
-      "GameObjectId": 139,
-      "X": 11,
-      "Y": 12,
-      "Property": 0
-    },
-    {
       "GameObjectId": 57,
       "X": 4,
       "Y": 17,
@@ -6587,12 +6581,6 @@
       "Property": 0
     },
     {
-      "GameObjectId": 139,
-      "X": 17,
-      "Y": 12,
-      "Property": 0
-    },
-    {
       "GameObjectId": 60,
       "X": 24,
       "Y": 4,
@@ -6603,6 +6591,18 @@
       "X": 6,
       "Y": 4,
       "Property": 0
+    },
+    {
+      "GameObjectId": 41,
+      "X": 10,
+      "Y": 7,
+      "Property": 6
+    },
+    {
+      "GameObjectId": 41,
+      "X": 16,
+      "Y": 7,
+      "Property": 4
     }
   ],
   "LevelPointers": [

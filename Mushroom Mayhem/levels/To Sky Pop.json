@@ -4825,7 +4825,7 @@
     22,
     22,
     22,
-    63,
+    24,
     22,
     22,
     22,
@@ -6521,6 +6521,7 @@
       "ExitActionType": 0,
       "ExitX": 47,
       "ExitY": 7,
+      "MapScroll": 0,
       "X": 2,
       "Y": 23,
       "ExitsLevel": true,
@@ -6534,6 +6535,7 @@
       "ExitActionType": 0,
       "ExitX": 49,
       "ExitY": 7,
+      "MapScroll": 0,
       "X": 13,
       "Y": 23,
       "ExitsLevel": true,
@@ -6543,5 +6545,5 @@
       "BoundRectangle": "208,368,32,32"
     }
   ],
-  "CompressedData": "Q5QQFRYWFhgWFhYXQUFBQUFBQYIQFRYWFj8WFhYXQUFBQUFBQcEVAhbBPwIWwRdEw66vFQIWwT8CFsMXrq9Cw56fFQIWwT8CFsQXnp9BD9EP4Q=="
+  "CompressedData": "Q5UQFRYWFhgWFhYXQUFBQUFBQcEVAhbBPwIWwRdGwRUCFsE/AhbBF0TDrq8VAhbBPwIWwxeur0LDnp8VAhbBPwIWxBeen0EP0Q/h"
 }

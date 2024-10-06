@@ -3864,8 +3864,8 @@
     13,
     65,
     65,
-    65,
-    65,
+    91,
+    91,
     65,
     65,
     13,
@@ -6642,7 +6642,7 @@
       "GameObjectId": 22,
       "X": 2,
       "Y": 17,
-      "Property": 1
+      "Property": 2
     }
   ],
   "SecondObjectData": [
@@ -6683,5 +6683,5 @@
       "BoundRectangle": "3456,336,32,32"
     }
   ],
-  "CompressedData": "EPtNAftNAfvBQQFbRwFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNRQMNAftFAVtFAftNAftNAftNAfvBQQFbQQMNQQFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNRQMNAftNAftNAftEAw1EAftNAftNAftFwq6vRQH7RcKen0UB+0XCnp9FIPs="
+  "CompressedData": "EPtNAftNAfvBQQFbRwFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNRQMNAftFAVtFAftNAftNAftNAfvBQQFbQQMNQQFbgxBB+/tBQUFBQUFBQUFBQUFBwUEB+wMNQQFbQQMNAftNAftNAftEAw1EAftNAftNAftFwq6vRQH7RcKen0UB+0XCnp9FIPs="
 }

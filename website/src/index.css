@@ -15,3 +15,11 @@ code {
 p {
   margin-bottom: 25px;
 }
+
+input, select {
+  background-color: #080810;
+  border: 1px solid lightgray;
+  color: lightgray;
+  border-radius: 5px;
+  padding: 5px;
+}

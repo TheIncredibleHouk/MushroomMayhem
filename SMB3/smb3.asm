@@ -2963,7 +2963,13 @@ ABILITY_MAX = ABILITY_CHERRYSTAR
 	Paper_Stars_Collected3:	.ds 16
 
 	PowerUp_Reserve:	.ds 1	;
-	Old_PowerUp_Reserve: .ds 1
+
+STAR_BARRIER_OFF = %00000001
+INVULNERABILITY_ON = %00000010
+OXYGEN_METER_OFF = %00000100
+A_TO_FLOAT_ON = %00001000
+
+	Game_Options:        .ds 1
 
 	DayNight:			.ds 1	; signifies if it's day or night
 	DayNightMicroTicker: .ds 1	; with DayNightTicker, this keeps track of time left of current period (6 minutes total) 
@@ -2989,6 +2995,15 @@ SECOND_QUEST = $FE
 
 	World_Start: 		.ds 1
 	Auto_Save:			.ds 1
+	Old_PowerUp_Reserve: .ds 1
+	Boss_Rush_Enabled: .ds 1
+	Bosses_Defeated: 	.ds 1
+	Options_Horz_Restore: .ds 1 
+	Options_Line_Count:	.ds 1
+	Option_Selection:	.ds 1
+	Option_Needs_Update: .ds 1
+	Can_Float:			.ds 1
+
 	; Tile map property flags
 MAP_PROP_BOUNDARY		= $00
 MAP_PROP_TRAVERSABLE	= $01
@@ -3082,7 +3097,6 @@ TILE_ITEM_SPINNER	= $FE
 	Credits_Triggered: .ds 1
 	Tutorial_Active: .ds 1
 	Wall_Jump_Timer: .ds 1
-	Casual_Mode: .ds 1
 
 	.org $7FFF
 	Debug_Snap:			.ds	1;	should always be $7FFF, used as a constant address to easily create debug breakpoints

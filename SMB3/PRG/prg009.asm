@@ -462,45 +462,60 @@ PRG009_BCBC:
 
 PRG009_BCBD:
 
-PRG009_BCC0:	
+PRG009_BCC0:
+	LDA Level_Tile_Prop_Body
+	CMP #(TILE_PROP_SOLID_ALL)
+	BCS Scroll_LeftEdgeDeath
+
 	LDA <Player_SpriteX
+	BMI Scroll_RightEdge
+
 	CMP #16
-	BLT PRG009_BCCA	 ; If Player is pressed against the left, jump to PRG009_BCCA
+	BCS Player_NoEdgeScroll
 
+	CMP #$08
+	BCS Scroll_LeftEdgeNoDeath
+
+Scroll_LeftEdgeDeath:
+	JSR Player_Die
+	RTS
+
+Scroll_LeftEdgeNoDeath:
+	LDA <Horz_Scroll
+	ADD #16
+	STA <Player_X
+
+	LDA <Horz_Scroll_Hi
+	ADC #$00
+	STA Player_XHi
+
+	LDA #$00
+	STA Player_XVelZFrac
+	JMP Player_NoEdgeScroll
+
+Scroll_RightEdge:
 	CMP #224
-	BLT PRG009_BCE0	 ; If Player is not pressed against the right, jump to PRG009_BCE0
+	BCC Player_NoEdgeScroll
 
-PRG009_BCCA:
-
-	; Player is pressing against either horizontal edge
-
-	LDA Level_AScrlHVel	; Get the horizontal scroll velocity
-	CLC		
-	SBC <Player_XVelZ	; Difference against Player's X velocity
-	EOR <Player_SpriteX	; Check sign of difference against Player's Sprite X
-	BMI PRG009_BCF1	 	; Basically determines if Player should be pushed by the scroll; if not, jump to PRG009_BCF1
-
-	LDA Player_HitWall
-	BEQ Player_NoDie
+	CMP #240
+	BCC Scroll_RightEdgeNoDeath
 
 	JSR Player_Die
+	RTS
 
-Player_NoDie:	
-	; Set Player's X velocity same as auto scroll horizontal velocity
-	LDA Level_AScrlHVel
-	STA <Player_XVelZ
+Scroll_RightEdgeNoDeath:	
+	LDA <Horz_Scroll
+	ADD #224
+	STA <Player_X
 
-	; Player_XVelZFrac = 0
+	LDA <Horz_Scroll_Hi
+	ADC #$00
+	STA Player_XHi
+	
 	LDA #$00
 	STA Player_XVelZFrac
 
-	BEQ PRG009_BCF1	 ; Jump (technically always) to PRG009_BCF1
-
-PRG009_BCE0:
-
-	; Player is not against the left or right edge of the screen...
-	
-PRG009_BCF1:
+Player_NoEdgeScroll:
 
 	; Set Level_AScrlSclLastDir based on sign of Level_AScrlHVel
 	LDA Level_AScrlHVel

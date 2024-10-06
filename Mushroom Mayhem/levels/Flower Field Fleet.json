@@ -6504,7 +6504,7 @@
       "GameObjectId": 22,
       "X": 1,
       "Y": 7,
-      "Property": 0
+      "Property": 1
     },
     {
       "GameObjectId": 47,
@@ -6701,6 +6701,7 @@
       "ExitActionType": 1,
       "ExitX": 2,
       "ExitY": 20,
+      "MapScroll": 0,
       "X": 217,
       "Y": 9,
       "ExitsLevel": false,

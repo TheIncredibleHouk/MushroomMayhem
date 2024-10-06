@@ -3238,7 +3238,71 @@ Destroy_Projectiles1:
 
 	LDX <CurrentObjectIndexZ
 	RTS
+
+Player_TryFloat:
+	LDA Game_Options
+	AND #A_TO_FLOAT_ON
+	BEQ No_Float
+
+	LDA <Player_InAir
+	BEQ No_Float
+
+	LDA Can_Float
+	BEQ No_Float
+
+	LDA <Player_YVelZ
+	BMI No_Float
+
+	LDA <Pad_Holding
+	AND #PAD_A
+	BEQ No_Float
+
+
+	LDA #$00
+	STA <Player_YVelZ
+
+	DEC Can_Float
+
+No_Float:
+	JSR Player_ApplyYVelocity
+	RTS
+
+Player_DoJumpThings:
+	LDA #$40
+	STA Can_Float
 	
+	LDA <Player_Suit
+	BNE STORE_BIG_JUMP
+
+	LDA #SND_SMALLJUMP
+	BNE STORE_SMALL_JUMP
+
+STORE_BIG_JUMP:
+	LDA #SND_PLAYERJUMP	 
+
+STORE_SMALL_JUMP:
+	STA Sound_QPlayer
+	RTS
+
+Map_DrawOptions_Border:
+	LDY #$20
+	LDA #$1E
+
+Map_OptionsBorder_Top:
+	JSR Tile_Mem_ClearA
+	INY
+	CPY #$30
+	BNE Map_OptionsBorder_Top
+
+	LDY #$C0
+	LDA #$0E
+
+Map_OptionsBorder_Bottomn:
+	JSR Tile_Mem_ClearA
+	INY
+	CPY #$D0
+	BNE Map_OptionsBorder_Bottomn	
+	RTS	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; DynJump
 ;
@@ -3419,6 +3483,27 @@ InfectionRTS:
 
 YolkedRTS:
 	RTS		 ; Return
+
+CheckBoss_Rush:
+	LDA Boss_Rush_Enabled
+	BEQ Boss_NotRush
+
+	LDA CompleteLevelTimer
+	CMP #$80
+	BNE Boss_NotRush
+
+	LDX #$00
+	JSR LevelJction
+	
+	INC Level_Redraw
+	INC Level_JctCtl
+	INC Bosses_Defeated
+	
+	LDA #$FF
+	STA CompleteLevelTimer
+
+Boss_NotRush:	
+	RTS
 
 VBlank_Wait:
 	LDA #$01	

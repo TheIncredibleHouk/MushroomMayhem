@@ -1340,9 +1340,13 @@ ObjNorm_Weather:
 	JMP Weather_Draw
 
 Weather_Norm:
+	LDA Weather_HandledByEvent, X
+	BNE Weather_NoUpdate
+
 	LDA Weather_OldWind, X
 	CMP Wind
 	BEQ Weather_NoUpdate
+
 
 	LDY #$07
 	
@@ -1381,6 +1385,7 @@ Weather_Palette1 = Temp_Var3
 Weather_Palette2 = Temp_Var4
 Weather_Orientation = Temp_Var5
 Weather_OldWind = Objects_Data1
+Weather_HandledByEvent = Objects_Data2
 
 Weather_PaletteUse:
 	.byte $00, $01, $00, $01, $00, $01
@@ -2017,8 +2022,8 @@ IceSpike_NoShake:
 	JSR Object_InteractWithPlayer
 	JSR Object_Draw
 	
-	TXA
-	TAY
+	TYA
+	TAX
 
 	DEC Sprite_RAMY, X
 	DEC Sprite_RAMY+4, X
@@ -2079,6 +2084,13 @@ IceSpike_NoDelete:
 	JMP IceSpike_Draw	
 
 IceSpike_Respawn:
+	LDA <Horz_Scroll_Hi
+	CMP #$14
+	BCC IceSpike_CanRespawn
+
+	RTS
+	
+IceSpike_CanRespawn:
 	LDA #$01
 	STA IceSpike_Action, X
 
@@ -2101,8 +2113,8 @@ IceSpike_Respawn:
 IceSpike_ResetCheckTile:
 	JSR Object_DetectTile
 
-	CMP #TILE_PROP_SOLID_ALL
-	BCS IceSpike_SetX
+	CMP #(TILE_PROP_SOLID_ALL | TILE_PROP_HARMFUL)
+	BEQ IceSpike_SetX
 
 	LDA Tile_DetectionX
 	ADD #$10
@@ -2111,6 +2123,9 @@ IceSpike_ResetCheckTile:
 	LDA Tile_DetectionXHi
 	ADC #$00
 	STA Tile_DetectionXHi
+	CMP #$15
+	BCS IceSpikeRTS
+
 	JMP IceSpike_ResetCheckTile
 
 IceSpike_SetX:
@@ -2135,13 +2150,15 @@ IceSpike_SetX:
 	LDA #$00
 	STA Objects_YVelZ, X
 	STA Objects_InWater, X
+
+IceSpikeRTS:
 	RTS
 
 IceSpike_Draw:
 	JSR Object_Draw
 	
-	TXA
-	TAY
+	TYA
+	TAX
 
 	DEC Sprite_RAMY, X
 	DEC Sprite_RAMY+4, X
@@ -2958,6 +2975,7 @@ BlockSwitcher_RTS:
 	RTS		
 
 MushroomBlock_CanSolidify = Objects_Data1
+MushroomBlock_Palette = Objects_Data2
 
 MushroomBlock_SkipXVel:
 	.byte $FE, $02
@@ -2966,6 +2984,9 @@ MushroomBlock_Flip:
 	.byte $00, SPR_HFLIP
 
 ObjInit_MushroomBlock:
+	RTS
+
+ObjNorm_MushroomBlock:
 	LDA #ATTR_ALLWEAPONPROOF
 	STA Objects_WeaponAttr, X
 
@@ -2974,9 +2995,7 @@ ObjInit_MushroomBlock:
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
-	RTS
 
-ObjNorm_MushroomBlock:
 	LDA <Player_HaltGameZ
 	BEQ MushroomBlock_Normal
 
@@ -3001,6 +3020,7 @@ MushroomBlock_Normal:
 	BNE MushroomBlock_NoKill
 	
 	LDA <Objects_XVelZ, X
+	ORA <Objects_YVelZ, X
 	BEQ MushroomBlock_NoKill
 
 	JSR Shell_KillOthers
@@ -3080,6 +3100,9 @@ MushroomBlock_Snap:
 	JMP Object_Delete
 
 MushroomBlock_Draw:
+	LDA MushroomBlock_Palette, X
+	STA Objects_SpriteAttributes, X
+
 	JMP Object_DrawMirrored
 
 Magnet_Stuck = Objects_Data1
@@ -3259,6 +3282,10 @@ Magnet_NoMove:
 	STA Player_CarryXVel
 	JMP Magnet_DetectTiles
 
+Magnet_WallOffsets:
+	.byte $04, $04
+	.byte $00, $00
+	
 Magnet_Carry:
 	LDA #$00
 	STA Magnet_Stuck, X
@@ -3306,13 +3333,21 @@ Magnet_NoDampen:
 	STA <Objects_YVelZ, X
 	STA Magnet_PullVel, X
 
+	LDY #$00
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_RIGHTWALL
+	BNE Magnet_Snapwall
+
+	INY
+
+Magnet_Snapwall:
 	LDA <Objects_XZ, X
-	ADD #$07
+	ADD Magnet_WallOffsets, Y
 	AND #$F0
 	STA <Objects_XZ, X
 
 	LDA <Objects_XHiZ, X
-	ADC #$00
+	ADC Magnet_WallOffsets + 2, Y
 	STA <Objects_XHiZ, X
 
 	JMP Magnet_Draw

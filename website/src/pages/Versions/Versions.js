@@ -29,24 +29,50 @@ var Versions = () => {
         Adventure 3!.
       </section>
       <IpsPatcher />
-      <h1>Casual Mode</h1>
-      Not a Mario master? Want a more casual experience? Try Casual Mode! Simply
-      enter hit [Down] on the d-pad 8 times to activate casual mode. An effect
-      will play to let you know you've entered the code correctly!
-      <ul>
-        <li>
-          Taking damage as small Mario does not kill you (pit deaths still
-          count)
-        </li>
-        <li>
-          Holding the jump button while in the air will cause Mario to fall at a
-          slower speed
-        </li>
-      </ul>
+      <h1>Casual Mode - Removed</h1>
+      Casual Mode has been removed in favor of an options menu. The options menu can be accessed
+      by hitting Start on the world map screen. The options here allow you to access
+      the options that were previously enabled by Casual Mode, including invulnerability
+      and a "Princess Peach"-style float.
+     
       <br />
-      <h2>September 29, 2024 (v 1.6.5)</h2>
+      <br />
+      <h2>October 5, 2024 (v 1.9.2)</h2>
+      <br />
       <div className="versions-layout">
-        <div>Major update</div>
+        <div>Patch Notes</div>
+        <ul>
+          <li>Removed Casual Mode in favor of an options menu</li>
+          <li>Added options to control star gating, oxygen meter, etc</li>
+          <li>Added option to change status bar color</li>
+          <li>Fixed bug with Big Bully boss Bob-ombs getting stuck</li>
+          <li>Fixed broken pipe in Freeze Forest transition stage</li>
+        </ul>
+        <div>Patch Notes</div>
+        <ul>
+          <li>Autosave is now always on with no option to turn it off</li>
+          <li>Title screen updated to include subtitle of the game</li>
+          <li>Map pause screen has been updated to reflect its true purpose (and it's not to make toast)</li>
+          <li>Altered many world maps to include an item shop near the end for convenience</li>
+          <li>Updated tutorial to include Speech Blocks that show explanations only when hit.</li>
+          <li>Tutorial now includes a checkpoint.</li>
+          <li>Updated Casual Mode to now no longer require collecting stars to progress. First ability is automatically given at the start.</li>
+          <li>Casual mode is now an option you choose at the start of a new file</li>
+          <li>Fixed a bug when entering upside down pipes on the very edge of the pipe causing issues</li>
+          <li>Many levels in World 1 tweaked for better playability</li>
+          <li>First training grounds moved to closer to the start along with making the first ability requirement lower</li>
+          <li>Fixed a bug on autoscroll levels that caused issues with wall collision</li>
+          <li>Modified Ninja Mario to have a dark blue palette against black backgrounds</li>
+          <li>All of Master Quest has been play tested and verified completable with collectible stars</li>
+          <li>Boss of Master Quest has been modified (no spoilers)</li>
+          <li>Big Bully boss has been modified so that he can be stomped on without harm (but not damage to you or him)</li>
+          <li>Big Bully will now charge in the direction he's facing rather than switch suddenly when you try to avoid him</li>
+          <li>Fixed a major cheese with a few bosses...</li>
+        </ul>
+      </div>
+      <br />
+      <div className="versions-layout">
+      <div>Patch Notes</div>
         <ul>
           <li>Added tips at the loading screen</li>
           <li>Shells and spring follow Mario through in-level pipes</li>
@@ -57,7 +83,7 @@ var Versions = () => {
       </div>
       <br />
       <div className="versions-layout">
-        <div>Major update</div>
+      <div>Patch Notes</div>
         <ul>
           <li>Shells and spring follow Mario through in-level pipes</li>
           <li>Fixed various graphical glitches</li>
@@ -68,7 +94,7 @@ var Versions = () => {
       <br />
       <h2>September 26, 2024 (v 1.5.2)</h2>
       <div className="versions-layout">
-        <div>Minor update</div>
+      <div>Patch Notes</div>
         <ul>
           <li>Fixed a few minor bugs such as floating Red Koopa Troopas</li>
           <li>Another minor bug with the 2 autoscroller levels in the game where the screen would not crush you</li>
@@ -77,7 +103,7 @@ var Versions = () => {
       </div>
       <br />
       <div className="versions-layout">
-        <div>Major update</div>
+      <div>Patch Notes</div>
         <ul>
           <li>Fixed bug with bullets shooting the wrong direction</li>
           <li>Added a new 6th ability!</li>
@@ -88,7 +114,7 @@ var Versions = () => {
       <br />
       <h2>September 24, 2024 (v 1.3.0)</h2>
       <div className="versions-layout">
-        <div>Game mechanic changes</div>
+      <div>Patch Notes</div>
         <ul>
           <li>Fixed a bug that made explosion not hurt Mario</li>
           <li>Added Casual Mode</li>
@@ -107,7 +133,7 @@ var Versions = () => {
       <br />
       <h2>September 23, 2024 (v 1.2.0)</h2>
       <div className="versions-layout">
-        <div>Game mechanic changes</div>
+      <div>Patch Notes</div>
         <ul>
           <li>
             Banzai Blooper has less health, mine explosions cause more damage
@@ -149,7 +175,7 @@ var Versions = () => {
       <br />
       <h2>September 22, 2024 (v 1.0.1)</h2>
       <div className="versions-layout">
-        <div>Fixes various bugs including</div>
+      <div>Patch Notes</div>
         <ul>
           <li>Fixed minor level layout issue in Winter Winged Pursuit</li>
           <li>Glitch issue with World 2 boss fight</li>

@@ -873,6 +873,7 @@ Dynamic_WindFindRTS:
 Dynamic_WindFound:
 	LDA #$01
 	STA Objects_Global, X
+	STA Weather_HandledByEvent, X
 
 	LDA EventVar
 	AND #$3F

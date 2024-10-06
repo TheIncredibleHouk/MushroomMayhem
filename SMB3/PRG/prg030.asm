@@ -644,12 +644,12 @@ PRG030_879B:
 	; CPX Total_Players
 	; BNE PRG030_87A9	 	; If not at the total Player count, jump to PRG030_87A9
 
-	LDA #$00	 
-	STA Player_Current	; Otherwise, back to 0 (basically keeps at 0 for 1P or goes 0, 1, 0, 1...)
+	; LDA #$00	 
+	; STA Player_Current	; Otherwise, back to 0 (basically keeps at 0 for 1P or goes 0, 1, 0, 1...)
 PRG030_87A9:
 
-	LDA Player_Current
-	TAX		 
+	; LDA Player_Current
+	; TAX		 
 	; LDA Player_Lives,X	
 	; BMI PRG030_879B	 	; If Player's lives are negative (dead!), jump to PRG030_879B (makes assumption at least ONE Player is alive...)
 
@@ -1066,7 +1066,7 @@ PRG030_8B51:
 	STA Level_JctCtl
 
 PRG030_8B6D:
-	LDX Player_Current
+	;LDX Player_Current
 
 	; LDA Player_FallToKing,X
 	; BEQ PRG030_8B78	 	; If player is NOT bound for king's room, jump to PRG030_8B78
@@ -1429,7 +1429,7 @@ PRG030_8F31:
 	STA Paper_Stars
 
 	JSR GetLevelBit
-	
+
 	LDA Previous_Stars_Collected1
 	STA Paper_Stars_Collected1, Y
 	
@@ -1457,11 +1457,15 @@ Skip_StatReset:
 
 	LDA #$00
 	STA LeftRightInfection
+	STA Player_Frozen
 	STA Player_Oiled
 	STA Player_Yolked
 	STA Enemy_Health
 	STA Enemy_Health_Mode
 	STA Tutorial_Active
+	STA Boss_Rush_Enabled
+	STA Bosses_Defeated
+
 
 	LDA #$40
 	STA Air_Time
@@ -1527,7 +1531,7 @@ PRG030_8F85:
 	LDA <Level_ExitToMap
 	BEQ PRG030_9006	 ; If not exiting to map, jump to PRG030_9006 (Level_MainLoop)
 
-	LDX Player_Current	 ; X = Player_Current
+	;LDX Player_Current	 ; X = Player_Current
 
 	; Switch bank A000 to page 26
 	LDA #24
@@ -1554,9 +1558,9 @@ PRG030_8FB2:
 	LDA #$01	 
 	STA MMC3_MIRROR	 ; Set vertical mirroring
 
-	LDX Player_Current	 ; X = LDX Player_Current
+	;LDX Player_Current	 ; X = LDX Player_Current
 
-	LDA Player_FallToKing,X
+	LDA Player_FallToKing
 	BEQ PRG030_8FCA	 ; If not falling to the King's room, jump to PRG030_8FCA
 
 	; Exiting to King's room...
@@ -1814,23 +1818,21 @@ PRG030_9163:
 	JSR SetPages_ByTileset
 
 
-	; Set both Players to their previous map values
-	LDX Total_Players
-	DEX		 ; X = Total_Players - 1
+	;
 
 PRG030_9185:
-	LDA Map_Entered_Y,X
-	STA <World_Map_Y,X
+	LDA Map_Entered_Y
+	STA <World_Map_Y
 
-	LDA Map_Entered_XHi,X
-	STA <World_Map_XHi,X
+	LDA Map_Entered_XHi
+	STA <World_Map_XHi
 
-	LDA Map_Entered_X,X
-	STA <World_Map_X,X
+	LDA Map_Entered_X
+	STA <World_Map_X
 
 	; Set Player's previous travel direction
-	LDA Map_Previous_Dir,X
-	STA <World_Map_Dir,X
+	LDA Map_Previous_Dir
+	STA <World_Map_Dir
 	LDA #$00
 	STA MapBackgroundInit
 
@@ -1850,11 +1852,9 @@ PRG030_9185:
 	INC Top_Needs_Redraw
 	INC Bottom_Needs_Redraw
 
-	LDX Player_Current	 ; X = Player_Current
-
 	; Set Player's previous movement direction
-	LDA Map_Previous_Dir,X
-	STA <World_Map_Dir,X
+	LDA Map_Previous_Dir
+	STA <World_Map_Dir
 
 	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
 	STA PPU_CTL1	 	
@@ -1987,19 +1987,19 @@ PRG030_927E:
 	JSR GraphicsBuf_Prep_And_WaitVSync	; This is probably just using it to VSync
 	JSR Sprite_RAM_Clear	 		; Clear sprites!
 
-	LDA GameOver_State
+	; LDA GameOver_State
 
-	CMP #$06
-	BEQ PRG030_929C	 ; If GameOver_State = 6 (Player aligning to start panel Y), jump to PRG030_929C
+	; CMP #$06
+	; BEQ PRG030_929C	 ; If GameOver_State = 6 (Player aligning to start panel Y), jump to PRG030_929C
 
-	CMP #$09
-	BNE PRG030_927E	 ; If GameOver_State <> 9 (Player did not choose to END), jump to PRG030_927E (loop around)
+	; CMP #$09
+	JMP PRG030_927E	 ; If GameOver_State <> 9 (Player did not choose to END), jump to PRG030_927E (loop around)
 
-	; Player chose to END...
+	; ; Player chose to END...
 
-	LDA Total_Players
-	CMP #$01
-	BEQ PRG030_92B6	 ; If Total_Players = 1, jump to PRG030_92B6
+	; LDA Total_Players
+	; CMP #$01
+	; BEQ PRG030_92B6	 ; If Total_Players = 1, jump to PRG030_92B6
 
 	; More than 2 Players
 
@@ -3020,6 +3020,9 @@ LevelLoad_SetDayNight:
 	RTS
 
 LevelLoad_Event:
+	LDA Level_Redraw
+	BEQ LevelLoad_EventRTS
+
 	LDY #$0A
 	LDA [Temp_Var14], Y
 	STA EventType
@@ -3027,6 +3030,8 @@ LevelLoad_Event:
 	LDA #$00
 	STA EventSwitch
 	STA EventVar
+
+LevelLoad_EventRTS:	
 	RTS
 
 LevelLoad_Name:
@@ -4758,19 +4763,38 @@ DontMaxColor2:
 	STA Palette_Buffer, X
 	DEX
 	BPL NextColorNight
+
 	LDA #$0F
 	STA Pal_Data + $10
 	STA Palette_Buffer + $10
 	DEC NightTransition
+
+	LDA Player_EffectiveSuit
+	CMP #MARIO_NINJA
+	BNE Night_NoNinja
+
+	LDA #$0C
+	JMP Ninja_Palette 
+
+Night_NoNinja:
+	RTS
+
+Ninja_Palette:
+	STA Palette_Buffer+$11	 ; Also put into Palette_Buffer
+	STA Pal_Data+$11	 ; Also put into Palette_Buffer
+	STA MasterPal_Data+$11
+	STA Player_Pal_Backup
 	RTS
 ;;
 DoDayTransition:
 	LDA MasterPal_Data
 	CMP #$0F
 	BEQ DayTransRTS
+
 	LDA <Counter_1
 	AND #$03
 	BNE DayTransRTS
+
 	LDA MasterPal_Data
 	CMP #$0F
 	BEQ SkyDayTransition
@@ -4819,7 +4843,17 @@ NextColorDay:
 	STA Pal_Data + $10
 	STA Palette_Buffer + $10
 	DEC DayTransition
+
+	LDA Player_EffectiveSuit
+	CMP #MARIO_NINJA
+	BNE Day_NoNinja
+
+	LDA #$0F
+	JMP Ninja_Palette 	
+
+Day_NoNinja:
 	RTS
+
 
 NextLevelByte:
 	INC <Temp_Var14
@@ -5084,6 +5118,8 @@ PRG012_A4C9:
 	CPY #$f0	 
 	BNE PRG012_A4C9	 	; While Y <> $F0, jump to PRG012_A4C9
 
+	JSR Map_DrawOptions_Border
+		
 	; Temp_Var1/2 will form an address pointing at the beginning of this world's map tile layout...
 	LDA PAGE_A000
 	STA DAIZ_TEMP2
@@ -5508,7 +5544,6 @@ Pointer_SetExit:
 	RTS
 
 LevelJction:
-	
 	LDA LevelLoadPointer
 	STA PreviousLevel
 

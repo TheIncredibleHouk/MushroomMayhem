@@ -677,7 +677,7 @@ PowerUp_Palettes:
 	.byte $00, $01, $30, $31	; 7 - Ice Mario
 	.byte $00, $06, $27, $36	; 8 - Fire Fox Mario
 	.byte $00, $01, $30, $31	; 9 - Unused
-	.byte $00, $0F, $25, $36	; A - Boo Mario
+	.byte $00, $0C, $36, $36	; A - Alt Ninja Mario
 	.byte $00, $0F, $36, $36	; B - Ninja Mario
 	.byte $00, $0F, $0B, $2B	; infected
 	.byte $00, $27, $28, $30	; yolked
@@ -714,6 +714,14 @@ CheckInfection:
 
 Normal_Palette:
 	LDA Player_EffectiveSuit
+	CMP #MARIO_NINJA
+	BNE Skipped_Palette
+
+	LDY Pal_Data
+	CPY #$0F
+	BNE Skipped_Palette
+
+	LDA #MARIO_NINJA - 1
 
 Skipped_Palette:
 	TAY
@@ -727,6 +735,7 @@ Skipped_Palette:
 	; PPU Address $3F11 (make sure to match with Palette_Buffer offsets below!)
 	LDA #$3f
 	STA Graphics_Buffer,X
+
 	LDA #$11
 	STA Graphics_Buffer+1,X
 
@@ -1054,7 +1063,7 @@ PRG008_A928:
 	STY Player_MoveLR	; Set Player_MoveLR appropriately
 
 PRG008_A93D:
-	JSR Player_ApplyYVelocity	 ; Apply Player's Y velocity
+	JSR Player_TryFloat
 
 	LDA <Temp_Var1
 	STA <Player_EffYVel
@@ -1678,18 +1687,8 @@ PRG008_AC41:
 	JSR Do_Wall_Jump
 
 DIRECT_TO_JUMP:
-	LDA <Player_Suit
-	BNE STORE_BIG_JUMP
+	JSR Player_DoJumpThings
 
-	LDA #SND_SMALLJUMP
-	BNE STORE_SMALL_JUMP
-
-STORE_BIG_JUMP:
-	LDA Sound_QPlayer
-
-STORE_SMALL_JUMP:
-	ORA #SND_PLAYERJUMP	 
-	STA Sound_QPlayer
 PRG008_AC6C:
 
 	; Get absolute value of Player's X velocity
@@ -3006,7 +3005,7 @@ TileAttrAndQuad_OffsFlat:
 	; Not small or ducking moving upward - right half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
-	.byte $06, $04	; Ground left
+	.byte $06, $03	; Ground left
 	.byte $06, $0B	; Ground right
 	.byte $0E, $0E	; In-front upper
 	.byte $1B, $0E	; In-front lower
@@ -3014,7 +3013,7 @@ TileAttrAndQuad_OffsFlat:
 	; Not small or ducking moving upward - left half
 	.byte $0A, $08 ; head
 	.byte $18, $08  ; body
-	.byte $06, $04	; Ground left
+	.byte $06, $03	; Ground left
 	.byte $06, $0B	; Ground right
 	.byte $0E, $01	; In-front upper
 	.byte $1B, $01	; In-front lower
@@ -3040,7 +3039,7 @@ TileAttrAndQuad_OffsFlat_Sm:
 	; Small or ducking moving upward - right half
 	.byte $14, $08 ; head
 	.byte $18, $08  ; body
-	.byte $10, $04	; Ground left
+	.byte $10, $03	; Ground left
 	.byte $10, $0B	; Ground right
 	.byte $14, $0E	; In-front upper
 	.byte $1B, $0E	; In-front lower
@@ -3048,7 +3047,7 @@ TileAttrAndQuad_OffsFlat_Sm:
 	; Small or ducking moving upward - left half
 	.byte $14, $08 ; head
 	.byte $18, $08  ; body
-	.byte $10, $04	; Ground left
+	.byte $10, $03	; Ground left
 	.byte $10, $0B	; Ground right
 	.byte $14, $02	; In-front upper
 	.byte $1B, $02	; In-front lower
@@ -4196,28 +4195,16 @@ PRG008_BFD3:
 ; Applies Player's Y velocity and makes sure he's not falling 
 ; faster than the cap value (FALLRATE_MAX)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_Gravities:
-	.byte FALLRATE_MAX, (FALLRATE_MAX - 32)
-
 Player_ApplyYVelocity:
-	LDX Casual_Mode
-	BEQ Player_Gravity
 
-	LDA <Pad_Holding
-	AND #PAD_A
-	BNE Player_Gravity
-
-	DEX
-	
-Player_Gravity:
 	LDA <Player_YVelZ
 	BMI Player_CapYVel	 ; If Player_YVelZ < 0, jump to PRG008_BFF9
 
-	CMP Player_Gravities, X
+	CMP #FALLRATE_MAX
 	BLS PRG008_BFF9	 ; If Player_YVelo < FALLRATE_MAX, jump to PRG008_BFF9
 
 	; Cap Y velocity at FALLRATE_MAX
-	LDA Player_Gravities, X
+	LDA #FALLRATE_MAX
 	STA <Player_YVelZ ; Player_YVelZ = FALLRATE_MAX
 	JMP PRG008_BFF9
 
@@ -4236,6 +4223,10 @@ PRG008_BFF9:
 
 Do_Air_Timer:				; Added code to increase/decrease the air time based on water
 	LDA Player_Vehicle
+	BNE AirTimerRTS
+
+	LDA Game_Options
+	AND #OXYGEN_METER_OFF
 	BNE AirTimerRTS
 
 	LDA Air_Change
@@ -5612,11 +5603,30 @@ Solid_MushroomBlockNext:
 	BPL Solid_MushroomBlockNext
 	BMI Solid_MushroomBlockRTS
 
+Mushrom_BlockPalette:
+	.byte SPR_PAL1, SPR_PAL3, SPR_PAL2
+
 Solid_MushroomBlockMake:
 	LDA #OBJ_MUSHROOMBLOCK
 	STA Objects_ID + 5, X
 
-	LDA #OBJSTATE_INIT
+	LDA #$02
+	STA Objects_SpritesRequested + 5, X
+	
+	LDA Tile_LastValue
+	AND #$C0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	TAY
+
+	LDA Mushrom_BlockPalette, Y
+	STA MushroomBlock_Palette + 5, X
+
+	LDA #OBJSTATE_FRESH
 	STA Objects_State + 5, X
 
 	LDA <Player_X
@@ -6054,7 +6064,21 @@ PRG008_BCA7:
 	RTS
 
 PRG008_BCAA:
+	LDA Level_Tile_Prop_Floor_Ceiling_Left
+	CMP Level_Tile_Prop_Floor_Ceiling_Right
+	BEQ PRG008_BCA7
 
+	LDA #(TILE_PROP_SOLID_ALL | TILE_PROP_VPIPE_RIGHT)
+	SUB Level_Tile_Prop_Floor_Ceiling_Left
+	CMP #$02
+	BCS PRG008_BCA7
+
+	LDA #(TILE_PROP_SOLID_ALL | TILE_PROP_VPIPE_RIGHT)
+	SUB Level_Tile_Prop_Floor_Ceiling_Right
+	CMP #$02
+	BCS PRG008_BCA7
+
+Try_VPipe:
 	LDX #$02	 ; X = 2
 	LDA Level_Tile_Prop_Floor_Ceiling_Left	 
 
@@ -6070,7 +6094,6 @@ PRG008_BCAA:
 PRG008_BCC0:
 	INX		 ; X = 3
 
-	LDA Level_Tile_Prop_Floor_Ceiling_Right
 
 PRG008_BCC4:
 	STX <Temp_Var3		 ; Store pipe mode -> Temp_Var3
@@ -6119,24 +6142,24 @@ PRG008_BCD6:
 	INY		 ; Y = 2 (Player is small)
 
 PRG008_BD1F:
-	LDA <Player_X	
-	AND #$0f	
-	PHA		 ; Save Player's relative X across tile
+; 	LDA <Player_X	
+; 	AND #$0f	
+; 	PHA		 ; Save Player's relative X across tile
 
-	ADD PRG008_BC43,Y ; Add appropriate offset
-	AND #$10	 ; Check if on "odd" tile (only true on Player_X 16, 48, 80, etc.) AKA right tile
-	BNE PRG008_BD30	 ; If so, jump to PRG008_BD30
+; 	ADD PRG008_BC43,Y ; Add appropriate offset
+; 	AND #$10	 ; Check if on "odd" tile (only true on Player_X 16, 48, 80, etc.) AKA right tile
+; 	BNE PRG008_BD30	 ; If so, jump to PRG008_BD30
 
-	PLA		 ; Restore Player's relative X across tile
-	ORA #$F0	 ; Make negative, sort of
-	PHA		 ; Save it again
+; 	PLA		 ; Restore Player's relative X across tile
+; 	ORA #$F0	 ; Make negative, sort of
+; 	PHA		 ; Save it again
 
-PRG008_BD30:
-	PLA		 ; Restore Player's relative X across tile
-	ADD <Temp_Var2	 ; 0 or 16, left or right tile
-	SUB #3	 
-	CMP #10
-	BGE Player_HandlePipeRTS	 ; If Player_X >= 10 after subtracting 3 (??), jump to PRG008_BD4B
+; PRG008_BD30:
+; 	PLA		 ; Restore Player's relative X across tile
+; 	ADD <Temp_Var2	 ; 0 or 16, left or right tile
+; 	SUB #3	 
+; 	CMP #10
+; 	BGE Player_HandlePipeRTS	 ; If Player_X >= 10 after subtracting 3 (??), jump to PRG008_BD4B
 
 	LDA <Temp_Var1	 ; Get pipe type
 	LSR A		 

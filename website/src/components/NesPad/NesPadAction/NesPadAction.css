@@ -25,7 +25,7 @@
 
         .B, .A {
             width: 15px;
-            padding-top: 5%;
+            padding-top: 10%;
             display: none;
 
             &.true {

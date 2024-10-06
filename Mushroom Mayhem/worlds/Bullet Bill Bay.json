@@ -303,7 +303,7 @@
     88,
     88,
     123,
-    90,
+    88,
     90,
     90,
     215,
@@ -367,7 +367,7 @@
     104,
     90,
     123,
-    90,
+    104,
     90,
     90,
     227,
@@ -658,15 +658,15 @@
     },
     {
       "LevelId": "bd30da54-924b-4274-a74c-93f1b5b1a671",
-      "X": 37,
-      "Y": 8,
-      "BoundRectangle": "592,128,16,16"
-    },
-    {
-      "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
       "X": 28,
       "Y": 6,
       "BoundRectangle": "448,96,16,16"
+    },
+    {
+      "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
+      "X": 37,
+      "Y": 8,
+      "BoundRectangle": "592,128,16,16"
     },
     {
       "LevelId": "e8459828-b201-4b97-b8cb-e3d3470f35f0",
@@ -745,6 +745,12 @@
       "X": 26,
       "Y": 3,
       "BoundRectangle": "416,48,16,16"
+    },
+    {
+      "LevelId": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
+      "X": 39,
+      "Y": 4,
+      "BoundRectangle": "624,64,16,16"
     }
   ],
   "ObjectData": [
@@ -770,13 +776,13 @@
     },
     {
       "GameObjectId": 208,
-      "X": 28,
-      "Y": 6
+      "X": 37,
+      "Y": 8
     },
     {
       "GameObjectId": 207,
-      "X": 37,
-      "Y": 8
+      "X": 28,
+      "Y": 6
     },
     {
       "GameObjectId": 212,
@@ -799,11 +805,6 @@
       "Y": 5
     },
     {
-      "GameObjectId": 210,
-      "X": 41,
-      "Y": 7
-    },
-    {
       "GameObjectId": 212,
       "X": 1,
       "Y": 3
@@ -817,7 +818,12 @@
       "GameObjectId": 202,
       "X": 48,
       "Y": 4
+    },
+    {
+      "GameObjectId": 205,
+      "X": 39,
+      "Y": 4
     }
   ],
-  "CompressedData": "m5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLiouLioqLiouKiouKi4uLGsoaytHS0tLS0tLS0tLS0soaysrhWntYWBBYe9fy8vIaMcrK4Vp7aGhaaHtYyhoa0tPKylhYe1paWlp748rKElrn0tLoaHtYWBFYe+fS0tJaWlpaWlpoaGhoaGhaWlpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLioqLi4qLi4uKi4uK0tLS0tLS0tLTyicayhoaGvLy/vLy8vLy8xrKysrKF8oayhPKysoUysoaFhrK0f3SysrmysoaGhrKysoayuFaWtLS/dPKysrKFeIaGsrhWlpaWlrn0tLS0tLS0tLS6Fpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4uLi4uLi4uLiouLi4uLytHS0tLS0tLS0tLS0tLS0spYWBhYWHtaWlrX8vLy8vLS6GhaaFp7Wlpa48opKisaWlpaWlpae1hYWFjKOTo7ylpaWlrX8nvYWlrn0tL908paWlpa48rK4VpaWlpaWufSm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLi4uLi4qLi4uLi4uL0tLS0tLS0tLS0tLS0tLS0vLy2FpaWlpaWlpaWlpaWlrKGuFaWlpaWlpaWlpaWlpaGsrx8vLYWlpaWlpaWlpaWsrKysox4VpaWlpaWlpaWlrS0tLS0uhaWlpaWlpaWlpa"
+  "CompressedData": "m5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLiouLioqLiouKiouKi4uLGsoaytHS0tLS0tLS0tLS0soaysrhWntYWBBYe9fy8vIaMcrK4Vp7aGhaaHtYyhoa0tPKylhYe1paWlp748rKElrn0tLoaHtYWBFYe+fS0tJaWlpaWlpoaGhoaGhaWlpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLioqLi4qLi4uKi4uK0tLS0tLS0tLTyicayhoaGvLy/vLy8vLy8xrKysrKF8oayhPKysoUysoaFhrK0f3SysrmysoaGhrKysoayuFaWtLS/dPKysrKFeIaGsrhWlpaWlrn0tLS0tLS0tLS6Fpam5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4uLi4uLi4uLiouLi4uLytHS0tLS0tLS0tLS0tLS0spYWBhYWHtYWlrX8vLy8vLS6GhaaFp7aFpa48opKisaWlpaWlpae1hYWFjKOTo7ylpaWlrX8nvYWlrn0tL908paWlpa48rK4VpaWlpaWufSm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5uLi4qLi4uLi4qLi4uLi4uL0tLS0tLS0tLS0tLS0tLS0vLy2FpaWlpaWlpaWlpaWlrKGuFaWlpaWlpaWlpaWlpaGsrx8vLYWlpaWlpaWlpaWsrKysox4VpaWlpaWlpaWlrS0tLS0uhaWlpaWlpaWlpa"
 }

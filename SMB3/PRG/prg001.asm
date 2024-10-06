@@ -1649,7 +1649,7 @@ Bubble_PopStatic:
 	RTS
 
 Bubble_PopDelete:
-	JMP Object_Delete
+	JMP Object_SetDeadAndNotSpawned
 
 Bubble_FrameOffset:
 	.byte $00, $06
@@ -2283,7 +2283,7 @@ ObjInit_WorldTravel:
 
 	LDA #$08
 	STA Objects_SpritesRequested, X
-	RTS
+	JMP Object_NoInteractions
 
 World_Numbers:
 	.byte $A1, $A3, $A5, $A7, $A9, $AB, $AD, $AF, $B1
@@ -2463,6 +2463,9 @@ MagicStarOffset:
 	.byte $00, $10, $20
 
 ObjNorm_MagicStar:
+	LDA #$00
+	STA <Objects_XVelZ, X
+
 	LDA Objects_Property, X
 	CMP #$06
 	BNE MagicStar_NormDelete
@@ -2941,7 +2944,7 @@ Training_TakeHits:
 	INC Training_MarioHit, X
 
 	LDA Training_MarioHitCount, X
-	CMP #$0A
+	CMP #$0B
 	BNE Training_TakeHitsRTS
 	JMP Training_Make1Up
 
@@ -2958,6 +2961,7 @@ Training_TakeHitsRTS:
 
 Training_TakeHitsDraw:
 	LDA Training_MarioHitCount, X
+	SUB #$01
 	
 Training_DrawNumber:
 	STA <DigitsParam
@@ -3373,6 +3377,7 @@ Trainig_CherriesInited:
 
 	LDA Training_OldCherries, X
 	STA Player_Cherries
+	RTS
 
 Training_CherriesNotDying:
 	LDA Player_Cherries

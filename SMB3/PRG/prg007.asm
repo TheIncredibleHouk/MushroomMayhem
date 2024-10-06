@@ -2882,10 +2882,10 @@ Enemy_OilDraw:
 	RTS
 
 Oil_SplashYOffsets:
-	.byte $0F, $FF
+	.byte $FF, $05
 
 Oil_SplashYHiOffsets	
-	.byte $00, $FF
+	.byte $FF, $00
 
 Enemy_OilSplash:
 	LDA #$01
@@ -2893,14 +2893,16 @@ Enemy_OilSplash:
 	
 	LDY #$00
 	LDA SpecialObj_YVel, X
- 	BMI Enemy_OilMakeSplash
+ 	BPL Enemy_OilMakeSplash
 
 	INY
 
 Enemy_OilMakeSplash:
 	STA <Temp_Var2
 	
+
 	LDA Tile_DetectionY
+	AND #$F0
 	ADD Oil_SplashYOffsets, Y
 	STA Tile_DetectionY
 
@@ -2909,13 +2911,17 @@ Enemy_OilMakeSplash:
 	STA Tile_DetectionYHi
 
 	JSR SpecialObj_Delete
+
+	
+	LDY #$01
 	JSR Object_WaterSplashNorm1
 
 	LDA <Temp_Var2
 	BPL OilSplash_RTS
 
-	LDA #SPR_VFLIP
-	STA Objects_Orientation, X
+	; LDX <Temp_Var2
+	; LDA #SPR_VFLIP
+	; STA Objects_Orientation, X
 
 OilSplash_RTS:	
 	RTS

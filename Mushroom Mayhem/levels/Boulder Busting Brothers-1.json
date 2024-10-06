@@ -13,7 +13,7 @@
   "NoStars": false,
   "MostCommonTile": 144,
   "AnimationType": 2,
-  "ScrollType": 3,
+  "ScrollType": 1,
   "Effects": 0,
   "EventType": 0,
   "TileData": [
@@ -6514,7 +6514,7 @@
     },
     {
       "GameObjectId": 18,
-      "X": 17,
+      "X": 23,
       "Y": 16,
       "Property": 0
     }
@@ -6522,7 +6522,7 @@
   "SecondObjectData": [
     {
       "GameObjectId": 18,
-      "X": 17,
+      "X": 23,
       "Y": 16,
       "Property": 0
     },

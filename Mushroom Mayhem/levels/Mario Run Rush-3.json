@@ -6550,6 +6550,7 @@
       "ExitActionType": 3,
       "ExitX": 2,
       "ExitY": 25,
+      "MapScroll": 0,
       "X": 78,
       "Y": 24,
       "ExitsLevel": false,

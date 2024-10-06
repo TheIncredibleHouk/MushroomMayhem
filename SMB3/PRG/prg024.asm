@@ -417,7 +417,6 @@ TitleState_Wait:
 	BNE Title_SkipStars
 
 	JSR Title_DoStars
-	JSR Title_CheckCasualMode
 
 Title_SkipStars:
 	JSR World_Select
@@ -427,6 +426,7 @@ Title_SkipStars:
 	AND #PAD_START
 	BEQ TitleState_WaitRTS
 
+Title_DoGameStart:
 	LDA Title_GameMenu
 	
 	JSR DynJump
@@ -437,17 +437,7 @@ Title_SkipStars:
 	.word TitleState_Confirm
 	.word TitleState_Cancel
 	.word TitleState_EraseGame
-	.word TitleState_AutoSaveYes
-	.word TitleState_AutoSaveNo
 
-TitleState_AutoSaveYes:
-	LDA #$01
-	STA Auto_Save
-	BNE TitleState_StartGame
-
-TitleState_AutoSaveNo:
-	LDA #$00
-	STA Auto_Save
 
 TitleState_StartGame:
 	LDA #SND_LEVELCOIN
@@ -464,11 +454,7 @@ TitleState_StartGame:
 	RTS
 
 TitleState_Start:
-	LDA #TITLEMENU_AUTOSAVE_YES
-	STA Title_GameMenu
-
-	JSR Title_MenuUpdate
-	RTS
+	JMP TitleState_StartGame
 	
 TitleState_WaitRTS:
 	RTS
@@ -486,7 +472,8 @@ TitleState_Cancel:
 TitleState_EraseGame:
 	LDA #$00
 	STA Save_Ram_CheckSum
-	STA Casual_Mode
+	STA Save_Ram_CheckSum + 1
+	STA Game_Options
 
 	LDA #TITLEMENU_NEWGAME_ONLY
 	STA Title_GameMenu
@@ -669,8 +656,6 @@ TITLEMENU_CONTINUE = $02
 TITLEMENU_NEWGAME = $03
 TITLEMENU_CONFIRM_NO = $04
 TITLEMENU_CONFIRM_YES = $05
-TITLEMENU_AUTOSAVE_YES = $06
-TITLEMENU_AUTOSAVE_NO = $07
 
 TitleMenu_DrawMode:
 	.byte $09, $09, $0A, $0B, $0C, $0D, $10, $11
@@ -823,14 +808,13 @@ Video_Upd_Table2:
 	.word Title_ConfirmYes
 	.word Title_WorldSelect
 	.word Title_Reset
-	.word Title_AutoSaveYes
-	.word Title_AutoSaveNo
+	.word Title_Reset
+	.word Title_Reset
 	.word Title_FadeIn_Alt1		; $03 - Title screen colors fade in part 1
 	.word Title_FadeIn_Alt2		; $04 - Title screen colors fade in part 2
 	.word Title_FadeIn_Alt3		; $05 - Title screen colors fade in part 3
 	.word Title_FadeIn_Alt4		; $06 - Title screen colors fade in part 4
 	.word Title_FadeIn_Alt5		; $07 - Loads the 1P/2P select menu
-	.word Title_BlackWhite
 
 	; Falls into...
 Title_Clear:
@@ -887,6 +871,10 @@ Title_Attributes:
 	.byte 00
 
 Title_Subtitle:
+	vaddr $2268
+	.byte 15
+	.byte $7E, $6E, $6F, $9F, $7F, $6A, $6A, $7E, $FE, $7E, $7D, $8F, $9F, $7A, $7E
+
 	vaddr $21AC
 	.byte $06
 	.byte $D4, $D5, $D6, $D7, $D8, $D9
@@ -908,10 +896,11 @@ Title_Subtitle:
 	.byte $F4, $F5, $F6, $F7, $F8, $F9
 
 Title_Version:
-	vaddr $236C
-	.byte $06
-	.byte $79, $07, $3E, $45, $3E, $30
+	vaddr $2381
+	.byte 30
+	.byte $6F, $69, $7D, $7F, $79, $7A, $6C, $6C, $0E, $6D, $0F, $7A, $6B, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $0E, $07, $3E, $99, $3E, $0B, $FE
 	.byte $00
+	
 	
 Title_FadeIn_1:
 	vaddr $3F00
@@ -1018,7 +1007,7 @@ Title_NewGameOnly:
 Title_ConfirmNo:
 	vaddr $22AB
 	.byte 08
-	.byte $69, $6A, $6B, $1F, $6D, $7F, $0E, $1E
+	.byte $69, $6A, $6B, $1F, $6D, $7F, $7E, $1E
 
 	vaddr $22EB
 	.byte 08
@@ -1028,7 +1017,7 @@ Title_ConfirmNo:
 Title_ConfirmYes:
 	vaddr $22AB
 	.byte 08
-	.byte $69, $6A, $6B, $1F, $6D, $7F, $0E, $1E
+	.byte $69, $6A, $6B, $1F, $6D, $7F, $7E, $1E
 
 	vaddr $22EB
 	.byte 08
@@ -1047,26 +1036,6 @@ Title_Reset:
 	.byte $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
 	.byte $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F, $0F
 	.byte $00	; Terminator
-
-Title_AutoSaveYes:
-	vaddr $22AB
-	.byte 09
-	.byte $7D, $6E, $6C, $6A, $6F, $7D, $79, $7A, $1E
-
-	vaddr $22EB
-	.byte 08
-	.byte $FE, $8F, $7A, $6F, $FE, $8B, $8A, $FE
-	.byte 00	
-
-Title_AutoSaveNo:
-	vaddr $22AB
-	.byte 09
-	.byte $7D, $6E, $6C, $6A, $6F, $7D, $79, $7A, $1E
-
-	vaddr $22EB
-	.byte 08
-	.byte $FE, $2E, $9A, $2F, $FE, $6B, $6A, $FE
-	.byte 00	
 
 
 ; Super Mario Bros. 3 Full Disassembly by Southbird 2012
@@ -2219,8 +2188,14 @@ PRG026_AB0E:
 
 StatusBar_FullPalette:
 	.byte $30, $11, $27, $00
-	.byte $30, $14, $28, $00
-	.byte $30, $10, $00, $00
+	.byte $30, $14, $27, $00
+	.byte $30, $15, $27, $00
+	.byte $30, $06, $27, $00
+	.byte $30, $17, $27, $00
+	.byte $30, $0A, $27, $00
+	.byte $30, $0C, $27, $00
+	.byte $30, $2D, $2D, $00
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Palette_PrepareFadeIn
 ;
@@ -2322,25 +2297,17 @@ PRG026_AC12:
 	DEY		 ; Y--
 	BPL PRG026_ABF8	 ; While Y >= 0, loop!
 
+	LDA Game_Options
+	AND #$E0
+	LSR A
+	LSR A
+	LSR A
+	TAX
+
 	LDA StatusBar_Palette
 	CMP #$0F
 	BNE StatusBar_FI_NotBlack
 
-	LDA Casual_Mode
-	BEQ Not_Casual
-
-	LDX #$08
-	BNE StatusBar_NotSecond
-
-Not_Casual:
-	LDX #$00
-	LDA SecondQuest
-	CMP #SECOND_QUEST
-	BNE StatusBar_NotSecond
-
-	LDX #$04
-
-StatusBar_NotSecond:
 	LDA StatusBar_FullPalette, X
 	AND #$0F
 	BNE StatusBar_FI_StorePalette
@@ -4735,7 +4702,7 @@ Tutorial_Ninja_2:
 
 Training_1:
 	.db "   GET HIT 10 TIMES   "
-	.db "    IN 100 SECONDS!   "
+	.db "    IN 120 SECONDS!   "
 
 Training_2:
 	.db "BREAK 50 BRICKS BLOCKS"
@@ -5192,12 +5159,4 @@ Title_StarReset:
 
 	LDA Title_StarResetHide, Y
 	STA Title_StarsHideTimer, X
-	RTS
-
-Title_CheckCasualMode:
-	LDA #29
-	STA PAGE_C000
-	
-	JSR PRGROM_Change_C000
-	JSR Title_CasualModeCode
 	RTS

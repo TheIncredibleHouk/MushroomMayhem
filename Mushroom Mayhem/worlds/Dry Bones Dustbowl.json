@@ -252,7 +252,7 @@
     193,
     202,
     202,
-    193,
+    202,
     202,
     202,
     202,
@@ -769,6 +769,12 @@
       "X": 14,
       "Y": 5,
       "BoundRectangle": "224,80,16,16"
+    },
+    {
+      "LevelId": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
+      "X": 50,
+      "Y": 3,
+      "BoundRectangle": "800,48,16,16"
     }
   ],
   "ObjectData": [
@@ -789,7 +795,7 @@
     },
     {
       "GameObjectId": 204,
-      "X": 15,
+      "X": 16,
       "Y": 8
     },
     {
@@ -806,7 +812,12 @@
       "GameObjectId": 205,
       "X": 6,
       "Y": 3
+    },
+    {
+      "GameObjectId": 205,
+      "X": 50,
+      "Y": 3
     }
   ],
-  "CompressedData": "AFpaWlpaWlpaWlpaWlpaWgBaWlpaWlpaWlpaWlpaWloASkpKXUpKXUpKSkpKXUpKAAnNysHKysrKEsrKysrBygAICcrKwcrKysrBysrBysoACcrKwcrBysrKyjLKylLKAAnKwcrKyhHKysoTysrKwQAJysoQgYJSysrBysHKyhQACAgJoIeWgYGBgYGBgYG2WlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpdSkpKSkpKXUpKSkpKSkpdys3BwcrBwcHBwcHBwcHBwcrKUsHBwcHBwcFSwcHBwcHKysrNBwnBwcHBwcHBwcHBysrKBwgICcHBwcHBwcHBwcrKBwgICAgICAgICAgICAiCBwgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKSkpKSkpKSl1KSkpdSkpKwcHBwcHBwcHNwcHKysrKysHBwcHBysFSysHKUsrKysrBwcHBwcEHCcrKyikqK8oYwcHBwcEHCAgJyso5OjvKMwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKXUpKSl1KSkpKSkpdSl1KysHKysHKysoVysrBysHKwQcICcHKysrBwcHKzcrKwcrKysrKF8rBwcHBwcHBysHBBwnBwcrKysHKysrKwcHBBwgICcrBysrKFsHBzcGAgYEICAgJysHKygcJgIGBl5GR"
+  "CompressedData": "AFpaWlpaWlpaWlpaWlpaWgBaWlpaWlpaWlpaWlpaWloASkpKXUpKXUpKSkpKXUpKAAnNysHKysrKEsrKysrBygAICcrKwcrKysrBysrBysoACcrKwcrBysrKyjLKylLKAAnKwcrKyhHKysoTysrKwQAJysoQgYJSysrBysHKyhQACAgJoIeWgYGBgYGBgYG2WlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpdSkpKSkpKXUpKSkpKSkpdys3BwcrBwcHBwcHBwcHBwcrKUsHBwcHBwcFSwcHBwcHKysrNBwnBwcHBwcHBwcHBysrKBwgICcHBwcHBwcHBwcrKBwgICAgICAgICAgICAiCBwgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKSkpKSkpKSl1KSkpdSkpKwcHBwcHBwcHNwcHKysrKysHBwcHBysFSysHKUsrKysrBwcHBwcEHCcrKyikqK8oYwcHBwcEHCAgJyso5OjvKMwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpKXUpKSl1KSkpKSkpdSl1KysHKysrKysoVysrBysHKwQcICcHKysrBwcHKzcrKwcrKysrKF8rBwcHBwcHBysHBBwnBwcrKysHKysrKwcHBBwgICcrBysrKFsHBzcGAgYEICAgJysHKygcJgIGBl5GR"
 }

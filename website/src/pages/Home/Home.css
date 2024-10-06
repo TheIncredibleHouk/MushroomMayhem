@@ -3,16 +3,19 @@
   display: flex;
   flex-direction: column;
 
-  .home-description {
-    margin: 50px auto;
-
+  p{
     a:link,
     a:visited,
     a:hover,
     a:active {
-      color: rgb(191, 240, 255);
+      color: #bff0ff;
       font-weight: bold;
+      text-decoration: underline;
     }
+  }
+
+  .home-description {
+    margin: 50px auto;
   }
   .title-3 {
     max-width: 200px;

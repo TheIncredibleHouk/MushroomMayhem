@@ -2381,8 +2381,26 @@ Phanto_Chase:
 
 Phanto_ChaseNormal:	
 	LDA Objects_Property, X
-	BNE Phanto_ChaseHover
+	BEQ Phanto_ChaseOnlyKey
 
+	LDA #$E0
+	STA ChaseVel_LimitLo, X
+
+	LDA #$20
+	STA ChaseVel_LimitHi, X
+
+	JSR Object_ChasePlayerX
+
+	LDA #$F0
+	STA ChaseVel_LimitLo, X
+
+	LDA #$10
+	STA ChaseVel_LimitHi, X
+	
+	JSR Object_ChasePlayerY
+	JMP Phanto_CalcBoundBox
+
+Phanto_ChaseOnlyKey:
 	JSR Phanto_FindKey
 	BCS Phanto_ChaseHover
 
@@ -2405,6 +2423,7 @@ Phanto_ChaseHover:
 	
 	JSR Object_ChasePlayerY
 
+Phanto_CalcBoundBox:
 	JSR Object_CalcBoundBox
 	JSR Object_AttackOrDefeat
 
@@ -2970,9 +2989,13 @@ BobOmb_ShakeDraw:
 	BEQ BobOmb_ShakeDraw1
 
 	LDA Object_SpriteRAMOffset, X
+	TYA
 	TAX
+
 	DEC Sprite_RAMY, X
-	DEC Sprite_RAMY + 4, X
+	DEC Sprite_RAMY+4, X
+
+	LDX <CurrentObjectIndexZ
 
 BobOmb_ShakeDraw1:
 	RTS    
@@ -3258,8 +3281,27 @@ FloatMine_CalcBoundBox:
 	RTS
 
 FloatMine_Expload:
+	LDA <Objects_XZ, X
+	ADD #4
+	STA <Objects_XZ, X
+
+	LDA <Objects_XHiZ, X
+	ADC #$00
+	STA <Objects_XHiZ, X
+
+	LDA <Objects_YZ, X
+	ADD #$06
+	STA <Objects_YZ, X
+
+	LDA <Objects_YHiZ
+	ADC #$00
+	STA <Objects_YHiZ
+
 	JMP Object_Explode
-	
+
+Panswer_Pal:
+	.byte SPR_PAL1, SPR_PAL2
+
 ObjInit_Panser:
 	LDA #BOUND16x28
 	STA Objects_BoundBox, X
@@ -3279,7 +3321,12 @@ ObjInit_Panser:
 	LDA #$80
 	STA Objects_Timer, X
 
-	INC Objects_Regen, x
+	LDA Objects_Property, X
+	STA Objects_Regen, x
+
+	TAY
+	LDA Panswer_Pal, Y
+	STA Objects_SpriteAttributes, X
 
 	JMP Panser_Reset
 
@@ -3441,7 +3488,7 @@ Panser_NoFire:
 	DEC Panser_FireCounter, X
 	BMI Panser_SpitFireRTS
 
-	LDA #$50
+	LDA #$70
 	STA Panser_FireTimer, X
 
 Panser_SpitFireRTS:
@@ -4271,7 +4318,7 @@ TrainingShop_Norm:
 
 
 Training_ExpRequirements:
-	.word $01F4
+	.word $00C8
 	.word $04E2
 	.word $0ABE
 	.word $0FA0
@@ -4518,6 +4565,20 @@ TrainingShop_Draw:
 	RTS		
 
 ObjInit_Tutorial:
+	LDX #$04
+	CPX <CurrentObjectIndexZ
+	BEQ Tutorial_NotDupe
+
+Tutorial_CheckDupe:
+	LDA Objects_ID, X
+	CMP #OBJ_TUTORIAL
+	BNE Tutorial_NotDupe
+
+	JMP Object_Delete
+
+Tutorial_NotDupe:
+	DEX
+	BPL Tutorial_CheckDupe
 	RTS
 
 Tutorial_Messages:
@@ -4537,17 +4598,58 @@ Tutorial_Messages:
 	MSG_ID Tutorial_Ninja_1
 	MSG_ID Tutorial_Ninja_2
 
+Tutorial_Displaying = Objects_Data1
+
 ObjNorm_Tutorial:
-	LDA <Player_IsDying
-	BNE Tutorial_DrawMsg
+	LDA Objects_Timer, X
+	CMP #$01
+	BNE Tutorial_NoMsg
 
-	LDA #$01
-	STA Tutorial_Active
-
-Tutorial_DrawMsg:
 	LDX <Player_XHi
 	LDA Tutorial_Messages, X
 	STA Message_Id
+
+	LDX <CurrentObjectIndexZ
+	LDA #$01
+	STA Tutorial_Displaying, X
+
+	RTS
+
+Tutorial_NoMsg:
+	LDA #$01
+	STA Tutorial_Active
+
+	LDA Tutorial_Displaying, X
+	BEQ Tutorial_CheckEvent
+
+	LDA #$02
+	STA Player_HaltTick
+	STA <Player_HaltGameZ
+
+	LDA <Player_IsDying
+	BNE Tutoral_Clear
+
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ ObjNorm_TutorialRTS
+
+Tutoral_Clear:
+	CLR_MSG
+	LDA #$00
+	STA Tutorial_Displaying, X
+	RTS
+
+Tutorial_CheckEvent:
+	LDA EventSwitch
+	BEQ ObjNorm_TutorialRTS
+
+	LDA #$18
+	STA Objects_Timer, X
+
+	LDA #$00
+	STA EventSwitch
+
+ObjNorm_TutorialRTS:	
 	RTS
 
 ObjInit_Bowser:

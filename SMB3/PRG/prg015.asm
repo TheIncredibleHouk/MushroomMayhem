@@ -2743,9 +2743,15 @@ P_PRG007_B827:
 	LDX <CurrentObjectIndexZ
 	PLA
 	PLA
+
+FireBar_NoHurt:	
 	RTS
 
 P_PRG007_B828:
+	LDA Player_EffectiveSuit
+	CMP #MARIO_FOX
+	BEQ FireBar_NoHurt
+
 	JMP Player_GetHurt	 ; Hurt Player and don't come back!
      
 
@@ -3669,7 +3675,7 @@ PolterGuy_NoDelete:
 	BEQ PolterGuy_Draw
 
 	JSR Object_XDistanceFromPlayer
-	CMP #$20
+	CMP #$28
 	BCS PolterGuy_Draw
 
 	JSR Object_YDistanceFromPlayer
@@ -4640,13 +4646,19 @@ ParaChomp_DetectTiles:
 
 ParaChomp_ChainBoundBox:
 	LDA <Objects_XZ,X
-	ADD #$08
+	ADD #$06
 	STA Objects_BoundLeft, X
-	STA Objects_BoundRight, X
 
 	LDA <Objects_XHiZ, X
 	ADC #$00
 	STA Objects_BoundLeftHi, X
+
+	LDA Objects_BoundLeft, X
+	ADD #$04
+	STA Objects_BoundRight, X
+
+	LDA Objects_BoundLeftHi, X
+	ADC #$00
 	STA Objects_BoundRightHi, X
 
 	LDA <Objects_YZ,X
@@ -4672,6 +4684,9 @@ ParaChomp_ChainBoundBox:
 ParaChomp_ChainGrab:
 	LDA Player_Vehicle
 	BNE ParaChomp_ChainGrabRTS
+
+	LDA <Player_YVelZ
+	BMI ParaChomp_ChainGrabRTS
 
 	LDY #$00
 	LDA <Pad_Holding

@@ -688,9 +688,9 @@
     },
     {
       "LevelId": "9224ed3c-b8d4-4de5-9350-bec8061d6269",
-      "X": 28,
-      "Y": 6,
-      "BoundRectangle": "448,96,16,16"
+      "X": 27,
+      "Y": 7,
+      "BoundRectangle": "432,112,16,16"
     },
     {
       "LevelId": "9863b665-9d38-4970-863b-67ff3ea1e355",
@@ -745,6 +745,12 @@
       "X": 17,
       "Y": 8,
       "BoundRectangle": "272,128,16,16"
+    },
+    {
+      "LevelId": "fd3c3ad8-72cd-4049-a651-1bcafbbe3be3",
+      "X": 28,
+      "Y": 6,
+      "BoundRectangle": "448,96,16,16"
     }
   ],
   "ObjectData": [
@@ -765,8 +771,8 @@
     },
     {
       "GameObjectId": 208,
-      "X": 28,
-      "Y": 6
+      "X": 27,
+      "Y": 7
     },
     {
       "GameObjectId": 201,
@@ -807,6 +813,11 @@
       "GameObjectId": 211,
       "X": 37,
       "Y": 8
+    },
+    {
+      "GameObjectId": 205,
+      "X": 28,
+      "Y": 6
     }
   ],
   "CompressedData": "7z8/Pz8/Pz8/Pz8/Pz8/P+8EBAUgAwUGAwUDBSAGAwTvCacHCe/v7xLv7+/v7+8H7wnvBwgJ71BRUVKDmhT5B+8J7+8Q7+/vgIGBme/vBwnvUVFRUVLvCqCHkZLv7wcI7wnv7+/v7+8KoKGiCu/vFe/6EZqyCAmqrO/v7+/vBwjvCe/v7+/v7+8TrAcICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwUGIAYgAwUGIAMEBQYgBiAJ7+8HCAgJ7wcJ7+8HCYCBCe8HCAgJ7+8HCAnv7wqgoe/v71BRUVIHCAnv7+/vGO8J7+/v7xbv7+/v7wcICAgI7+9QUVKsrAcICe/v7wcICQnv7+/v7+/vF+/v7wcJUFEICAgICAgJUFFSBwgICAgIPz8/Pz8/Pz8/Pz8/Pz8/PwYGIAMEBAQEBAQEBAQEBASBgYGBgYLv7wcICAgICAgIoaGhoaGiBwnv7+/vBwgICO/vBwgICe/v7++n7+8HCAgJ721ubwcJ71BRUVFRUVFR7+99fn/v7+/vBwgICAgICFFRUVFRUVFRUVFS7wcICAgJgIGBgYGBgYGC7+/vBwgI"

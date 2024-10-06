@@ -6512,7 +6512,7 @@
       "GameObjectId": 58,
       "X": 11,
       "Y": 18,
-      "Property": 0
+      "Property": 4
     }
   ],
   "LevelPointers": [
@@ -6521,6 +6521,7 @@
       "ExitActionType": 0,
       "ExitX": 3,
       "ExitY": 18,
+      "MapScroll": 0,
       "X": 13,
       "Y": 20,
       "ExitsLevel": false,

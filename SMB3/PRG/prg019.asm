@@ -2783,6 +2783,28 @@ Bowser_HealthRTS:
 	RTS
 
 Bowser_Init:
+	LDA Objects_Property, X
+	BEQ Bowser_NotBossRush
+
+	LDA #$01
+	STA Boss_Rush_Enabled
+
+	LDA #ITEM_3_HP
+	STA PowerUp_Reserve
+
+	LDA Bosses_Defeated
+	CMP #$06
+	BCS Bowser_NotBossRush
+
+	LDA #$00
+	STA Bosses_Defeated
+
+	LDX #$00
+	JSR LevelJction
+	INC Level_JctCtl
+	RTS
+
+Bowser_NotBossRush:
 	LDA #$00
 	STA Player_Cherries
 	STA Player_Coins

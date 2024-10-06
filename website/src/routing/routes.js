@@ -18,6 +18,7 @@ import Koopatropolis from '../pages/Worlds/Koopatropolis/Koopatropolis';
 import PiranhaPassage from '../pages/Worlds/PiranhaPassage/PiranhaPassage';
 import Versions from '../pages/Versions/Versions';
 import About from '../pages/About/About';
+import SaveEditor from '../pages/SaveEditor/SaveEditor';
 
 const routes = [
     {
@@ -88,6 +89,13 @@ const routes = [
         component: Hazards,
         exact: true,
         title: "Hazards",
+        menu: true
+    },
+    {
+        path: "save-editor",
+        component: SaveEditor,
+        exact: true,
+        title: "Save Editor",
         menu: true
     },
     // {

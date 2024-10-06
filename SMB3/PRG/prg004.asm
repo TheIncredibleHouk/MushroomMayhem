@@ -1740,6 +1740,7 @@ Piranha_Animate:
 	STA Objects_Frame,X
 
 Plant_Draw:
+
 	LDA Objects_Property, X
 	AND #$0F
 	CMP #$02
@@ -1750,7 +1751,6 @@ Plant_Draw:
 	STA Objects_Frame,X
 
 Plant_Draw1:
-
 	JSR Object_Draw16x32
 
 	LDA #SPR_PAL2
@@ -3138,8 +3138,9 @@ Grower_Draw:
 	STA Objects_SpriteAttributes, X
 
 	JSR Object_Draw
-	TXA
-	TAY
+	
+	TYA
+	TAX
 
 	DEC Sprite_RAMY, X
 	DEC Sprite_RAMY+4, X

@@ -1,0 +1,500 @@
+
+[
+    {
+      "name": " BEGINNING BASICS ",
+      "id": 1,
+      "hasStars": false,
+      "world": 1,
+      "number": "1-0"
+    },
+    {
+      "name": " BEAT BOUND BLOCK BOOGIE ",
+      "id": 10,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-9"
+    },
+    {
+      "name": " COLOSSAL CHEEP CLASH ",
+      "id": 11,
+      "hasStars": false,
+      "world": 1,
+      "number": "1-BOSS"
+    },
+    {
+      "name": " FLOWER FIELD FLEET ",
+      "id": 12,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-7"
+    },
+    {
+      "name": " FUNGAL BLOCK FLING ",
+      "id": 13,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-8"
+    },
+    {
+      "name": " GALEFORCE COIN CHASE ",
+      "id": 14,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-6"
+    },
+    {
+      "name": " KEY COIN CAVERNS ",
+      "id": 15,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-2"
+    },
+    {
+      "name": " LEAPFISH LAGOON ",
+      "id": 16,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-1"
+    },
+    {
+      "name": " POLAR PAYLOAD PLUNGE ",
+      "id": 17,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-4"
+    },
+    {
+      "name": " SHY GUY RETRO REVIVAL ",
+      "id": 18,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-3"
+    },
+    {
+      "name": " VEGGIE VOLLEYS ",
+      "id": 20,
+      "hasStars": true,
+      "world": 1,
+      "number": "1-5"
+    },
+    {
+      "name": " BLIZZARD BRAWL WITH ICE BROS ",
+      "id": 21,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-3"
+    },
+    {
+      "name": " BREEZY BEE BLUFFS ",
+      "id": 22,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-1"
+    },
+    {
+      "name": " CHROMA STOMP SWITCHEROO ",
+      "id": 23,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-6"
+    },
+    {
+      "name": " FIERCE FWOOSH FREEZE ",
+      "id": 24,
+      "hasStars": false,
+      "world": 2,
+      "number": "2-Boss"
+    },
+    {
+      "name": " FREEZIE FROSTBITE FJORD ",
+      "id": 25,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-2"
+    },
+    {
+      "name": " FRIGID WATERS FREEZIE FLING ",
+      "id": 26,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-5"
+    },
+    {
+      "name": " FROSTY FWOOSH FRENZY ",
+      "id": 27,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-7"
+    },
+    {
+      "name": " FROZEN FESTIVE FRENZY ",
+      "id": 28,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-4"
+    },
+    {
+      "name": " FUZZIES ON THE FRITZ ",
+      "id": 29,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-9"
+    },
+    {
+      "name": " WINTER WINGED PURSUIT ",
+      "id": 31,
+      "hasStars": true,
+      "world": 2,
+      "number": "2-8"
+    },
+    {
+      "name": " BIG BULLY BLASTS ",
+      "id": 32,
+      "hasStars": false,
+      "world": 3,
+      "number": "3-Boss"
+    },
+    {
+      "name": " BLAZING BONEFISH AWASH ",
+      "id": 33,
+      "hasStars": true,
+      "world": 0,
+      "number": "3-5"
+    },
+    {
+      "name": " BOMBASTIC DESCENT ",
+      "id": 34,
+      "hasStars": true,
+      "world": 0,
+      "number": "3-1"
+    },
+    {
+      "name": " BOULDER BUSTING BROTHERS ",
+      "id": 35,
+      "hasStars": true,
+      "world": 3,
+      "number": "2-2"
+    },
+    {
+      "name": " HUE BUSTING BLITZ ",
+      "id": 36,
+      "hasStars": true,
+      "world": 3,
+      "number": "3-7"
+    },
+    {
+      "name": " INFERNO LAKE BRIDGE BREAKING ",
+      "id": 37,
+      "hasStars": true,
+      "world": 3,
+      "number": "3-2"
+    },
+    {
+      "name": " LAVA BOUNCE LABYRINTH ",
+      "id": 38,
+      "hasStars": true,
+      "world": 3,
+      "number": "3-6"
+    },
+    {
+      "name": " LEAPING LAVA LURKERS ",
+      "id": 39,
+      "hasStars": true,
+      "world": 3,
+      "number": "3-4"
+    },
+    {
+      "name": " NINJA WALL LEAP AND LIFT ",
+      "id": 40,
+      "hasStars": true,
+      "world": 3,
+      "number": "3-9"
+    },
+    {
+      "name": " TIMED SPLASH WITH BIRDO ",
+      "id": 41,
+      "hasStars": true,
+      "world": 3,
+      "number": "3-8"
+    },
+    {
+      "name": " AMPHIBIOUS SEA CURRENCY ",
+      "id": 46,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-4"
+    },
+    {
+      "name": " ARTILLERY ARMADA ATTACK ",
+      "id": 47,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-5"
+    },
+    {
+      "name": " BANZAI BLOOPER BATTLE ",
+      "id": 48,
+      "hasStars": false,
+      "world": 4,
+      "number": "4-Boss"
+    },
+    {
+      "name": " BUCCANEER SEA BATTLE ",
+      "id": 49,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-2"
+    },
+    {
+      "name": " FLYING FISH FRENZY ",
+      "id": 50,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-9"
+    },
+    {
+      "name": " ISLAND MARK MENACE ",
+      "id": 51,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-3"
+    },
+    {
+      "name": " LIGHTNING LAKITU TYPHOON ",
+      "id": 52,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-8"
+    },
+    {
+      "name": " LIMITED LEAPS LEVEL ",
+      "id": 53,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-7"
+    },
+    {
+      "name": " SEASIDE BLAST BARRAGE ",
+      "id": 54,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-1"
+    },
+    {
+      "name": " TRAP TRIPPING TURMOIL ",
+      "id": 56,
+      "hasStars": true,
+      "world": 4,
+      "number": "4-6"
+    },
+    {
+      "name": " CHAIN CHOMP CHOW TIME ",
+      "id": 57,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-2"
+    },
+    {
+      "name": " CLOUDED CANOPY CONUNDRUM ",
+      "id": 58,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-1"
+    },
+    {
+      "name": " FLAME FLICKER FORTRESS ",
+      "id": 59,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-7"
+    },
+    {
+      "name": " NIMBLE NIMBUS LEAPS & LAKITU ",
+      "id": 60,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-9"
+    },
+    {
+      "name": " PALETTE PUZZLE PATH ",
+      "id": 61,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-3"
+    },
+    {
+      "name": " PERENNIAL PIRANHA PRESSURE ",
+      "id": 62,
+      "hasStars": false,
+      "world": 5,
+      "number": "5-BOSS"
+    },
+    {
+      "name": " PSWITCH SCORCH SCURRY ",
+      "id": 68,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-5"
+    },
+    {
+      "name": " PULLING PARACHAINCHOMPS ",
+      "id": 69,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-8"
+    },
+    {
+      "name": " PWING PERIL ",
+      "id": 70,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-4"
+    },
+    {
+      "name": " STRANGE STALK STRETCHERS ",
+      "id": 71,
+      "hasStars": true,
+      "world": 5,
+      "number": "5-6"
+    },
+    {
+      "name": " CELESTIAL SHOWTIME ",
+      "id": 76,
+      "hasStars": false,
+      "world": 6,
+      "number": "6-Boss"
+    },
+    {
+      "name": " DEEP WELL DUNGEON ",
+      "id": 77,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-9"
+    },
+    {
+      "name": " DRY BONES CATACOMBS ",
+      "id": 78,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-2"
+    },
+    {
+      "name": " HIDDEN BLOCK HAUNT ",
+      "id": 79,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-7"
+    },
+    {
+      "name": " LIGHT DARK LEVEL DUALITY ",
+      "id": 80,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-6"
+    },
+    {
+      "name": " MANSION MYSTERY ",
+      "id": 81,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-4"
+    },
+    {
+      "name": " MIRAGED MASK MARAUD ",
+      "id": 82,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-3"
+    },
+    {
+      "name": " PIRATE BOO PLUNDER ",
+      "id": 83,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-5"
+    },
+    {
+      "name": " UNDEAD GOOMBA OASIS ",
+      "id": 87,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-1"
+    },
+    {
+      "name": " VANISHING BLOCK VENTURE ",
+      "id": 88,
+      "hasStars": true,
+      "world": 6,
+      "number": "6-8"
+    },
+    {
+      "name": " BANK OF BOWSER ",
+      "id": 89,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-9"
+    },
+    {
+      "name": " CITY SLICKER SPITTERS ",
+      "id": 90,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-1"
+    },
+    {
+      "name": " FIRE FOX DASH BASH ",
+      "id": 91,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-8"
+    },
+    {
+      "name": " FROST FLAME FACTORY ",
+      "id": 92,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-3"
+    },
+    {
+      "name": " MARIO RUN RUSH ",
+      "id": 93,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-5"
+    },
+    {
+      "name": " PLUMBING PLUNGING ",
+      "id": 94,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-6"
+    },
+    {
+      "name": " POLARITY & PENDULUMS ",
+      "id": 95,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-2"
+    },
+    {
+      "name": " SCALING THE CITY SKY ",
+      "id": 96,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-4"
+    },
+    {
+      "name": " TOXIC TOWERS ",
+      "id": 101,
+      "hasStars": true,
+      "world": 7,
+      "number": "7-7"
+    },
+    {
+      "name": " MEGA MALICE MUSHROOM ",
+      "id": 103,
+      "hasStars": false,
+      "world": 8,
+      "number": "8-Boss"
+    }
+  ]

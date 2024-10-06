@@ -1241,6 +1241,15 @@ ObjInit_Pulley:
 	LDA #$FF
 	STA Pulley_Sibling, X
 
+	LDA SecondQuest
+	CMP #SECOND_QUEST
+	BNE Pulley_NormColor
+
+	LDA #SPR_PAL1
+	STA Objects_SpriteAttributes, X
+
+Pulley_NormColor:
+
 	LDY Objects_SpawnIdx, X
 	LDA Pulley_SaveY,  Y
 	ORA Pulley_SaveYHi, Y
@@ -2420,13 +2429,19 @@ StarBarrier_XOffset
 
 StarBarrier_DetectY = Objects_Data1
 StarBarrier_RemoveBlockCount = Objects_Data2
+
 ObjNorm_StarBarrier:
 	LDY Objects_Property, X
+
+	LDA Game_Options
+	AND #STAR_BARRIER_OFF
+	BNE Barrier_Removed
 
 	LDA Paper_Stars
 	CMP StarBarrier_Values, Y
 	BCC StarBarrier_Draw
 
+Barrier_Removed:
 	LDA StarBarrier_RemoveBlockCount, X
 	BMI StarBarrier_Draw
 
@@ -2464,9 +2479,19 @@ ObjNorm_StarBarrier:
 	STA StarBarrier_DetectY, X
 
 	DEC StarBarrier_RemoveBlockCount, X
+	BPL StarBarrier_Draw
+
+	JMP Object_Delete
 
 StarBarrier_Draw:
 	JSR Object_DrawMirrored
+
+	LDA Objects_SpritesVerticallyOffScreen, X
+	BNE Barrier_DrawRTS
+
+	LDA Objects_SpritesHorizontallyOffScreen, X
+	AND #(SPRITE_0_HINVISIBLE | SPRITE_1_HINVISIBLE)
+	BNE Barrier_DrawRTS
 
 	LDY Objects_Property, X
 	
@@ -2516,6 +2541,8 @@ Barrier_DrawLoop:
 
 	DEX
 	BPL Barrier_DrawLoop
+
+Barrier_DrawRTS:
 	RTS
 
 ;-----

@@ -6845,6 +6845,7 @@
       "ExitActionType": 1,
       "ExitX": 1,
       "ExitY": 24,
+      "MapScroll": 0,
       "X": 120,
       "Y": 18,
       "ExitsLevel": false,

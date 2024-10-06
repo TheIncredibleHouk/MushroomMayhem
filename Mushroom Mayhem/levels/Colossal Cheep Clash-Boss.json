@@ -6533,6 +6533,21 @@
       "Property": 0
     }
   ],
-  "LevelPointers": [],
+  "LevelPointers": [
+    {
+      "LevelId": "9195cd08-2dd9-4372-a406-3ab09623c4d7",
+      "ExitActionType": 0,
+      "ExitX": 7,
+      "ExitY": 4,
+      "MapScroll": 0,
+      "X": 7,
+      "Y": 5,
+      "ExitsLevel": false,
+      "RedrawsLevel": false,
+      "KeepObjects": false,
+      "DisableWeather": false,
+      "BoundRectangle": "112,80,32,32"
+    }
+  ],
   "CompressedData": "weILQcKenwHiC0HCjo8B4g1BAeINQQHiDUEB4sFaDEEB4g1BAeINQQHiClECYQHiDUHB4g8uHy8/QT9BP0EfQQ=="
 }

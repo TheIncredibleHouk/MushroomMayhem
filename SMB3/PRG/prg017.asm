@@ -15,7 +15,6 @@ ObjGiant_Mirror:
 	RTS
 
 ObjNorm_Boss:
-	
 	LDA Objects_Property, X
 	JSR DynJump
 
@@ -78,8 +77,6 @@ Boss_CheepInit:
 
 	LDA #$00
 	STA Objects_ExpPoints, X
-
-	LDA #$00
 	STA Objects_Health, X
 
 	INC Boss_CheepAction, X
@@ -130,9 +127,13 @@ Boss_CheepNorm:
 
 Boss_CheepNormHit:
 	LDA Objects_PlayerProjHit, X
+	CMP #HIT_INVULNERABLE
+	BEQ CheepFrogAttack
+
 	CMP #HIT_SHELL
 	BNE Boss_ShortFlash
 
+CheepFrogAttack:
 	LDA #$40
 	STA Objects_Timer2, X
 
@@ -603,9 +604,6 @@ Boss_CheepFirstFish:
 	LDA #OBJ_JUMPINGCHEEP
 	STA Objects_ID, Y
 
-	LDA #$00
-	STA Objects_ExpPoints, Y
-
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
 
@@ -654,9 +652,6 @@ Boss_CheepSecondFish:
 Boss_CheepSecondFishDo:
 	LDA #OBJ_JUMPINGCHEEP
 	STA Objects_ID, Y
-
-	LDA #$00
-	STA Objects_ExpPoints, Y
 
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
@@ -1317,20 +1312,16 @@ Fwoosh_FreezieOtherSide:
 	STA Objects_XZ, Y
 
 Fwoosh_FreezieXHi:
-	LDA #$00
-	STA Objects_XHiZ, Y
-
 	LDA #$A0
 	STA Objects_YZ, Y
 
 	LDA #$00
+	STA Objects_XHiZ, Y
 	STA Objects_YHiZ, Y
+	STA Objects_Property, Y	
 
 	LDA #OBJSTATE_INIT
 	STA Objects_State, Y
-
-	LDA #$00
-	STA Objects_Property, Y
 
 	LDA #OBJ_FREEZIE
 	STA Objects_ID , Y
@@ -1362,20 +1353,16 @@ Fwoosh_IceWallOtherSide:
 	STA Objects_XVelZ, Y
 
 Fwoosh_IceWallXHi:
-	LDA #$00
-	STA Objects_XHiZ, Y
-
 	LDA #$80
 	STA Objects_YZ, Y
 
 	LDA #$00
+	STA Objects_XHiZ, Y
 	STA Objects_YHiZ, Y
+	STA Objects_Property, Y
 
 	LDA #OBJSTATE_FRESH
 	STA Objects_State, Y
-
-	LDA #$00
-	STA Objects_Property, Y
 
 	LDA #OBJ_ICEWALL
 	STA Objects_ID , Y
@@ -1421,23 +1408,19 @@ Fwoosh_FuzzyOtherSide:
 	STA Objects_XZ, Y
 
 Fwoosh_FuzzyXHi:
-	LDA #$00
-	STA Objects_XHiZ, Y
-
 	LDA #$A0
 	STA Objects_YZ, Y
 
 	LDA #$00
+	STA Objects_XHiZ, Y
 	STA Objects_YHiZ, Y
+	STA Objects_Property, Y
 
 	LDA #OBJSTATE_FROZENSOLID
 	STA Objects_State, Y
 
 	LDA #OBJ_FUZZY
 	STA Objects_ID , Y
-
-	LDA #$00
-	STA Objects_Property, Y
 
 	LDA #BOUND16x16
 	STA Objects_BoundBox, Y
@@ -1686,8 +1669,6 @@ Boss_MakeBlooperNewTentacle:
 	LDA #$00
 	STA Objects_XHiZ, Y
 	STA Objects_YHiZ, Y
-
-	LDA #$00
 	STA Boss_BlooperNewTentacle, X
 
 Boss_MakeBlooperNewTentacleRTS:
@@ -2771,17 +2752,18 @@ Boss_Bully:
 	JSR DynJump
 
 Boss_BullyDrawOnly:
-	.word Boss_BullyDraw
-	.word Boss_BullyDraw
-	.word Boss_BullyDraw
-	.word Boss_BullyDraw
-	.word Boss_BullyDraw
-	.word Boss_BullyDraw
-	.word Boss_BullyDrawJump
-	.word Boss_BullyDrawJump
-	.word Boss_BullyDrawJump
-	.word Boss_BullyDraw
-
+	.word Boss_BullyDraw      ; $00       
+	.word Boss_BullyDraw      ; $01 
+	.word Boss_BullyDraw      ; $02 
+	.word Boss_BullyDraw      ; $03 
+	.word Boss_BullyDraw      ; $04 
+	.word Boss_BullyDraw      ; $05 
+	.word Boss_BullyDraw      ; $06
+	.word Boss_BullyDrawJump  ; $07     
+	.word Boss_BullyDrawJump  ; $08     
+	.word Boss_BullyDrawJump  ; $09     
+	.word Boss_BullyDraw      ; $0A 
+        
 Boss_BullyDoAction:
 	LDA <Objects_XHiZ, X
 	CMP <Player_XHi
@@ -2793,7 +2775,7 @@ Boss_BullyDoAction:
 	LDA #$70
 	STA Objects_Timer, X
 
-	LDA #$E0
+	LDA #$C0
 	STA <Objects_YZ, X
 
 	LDA #$FF
@@ -2873,7 +2855,7 @@ Boss_BullyInit:
 	LDA #$08
 	STA Objects_SpritesRequested, X
 
-	LDA #ATTR_ALLWEAPONPROOF
+	LDA #ATTR_PROJECTILEPROOF | (ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF)
 	STA Objects_WeaponAttr, X
 
 	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF | ATTR_BUMPNOKILL)
@@ -2952,7 +2934,7 @@ Boss_BullyCharging:
 	LDA #$00
 	STA	<Objects_XVelZ, X
 	
-	JSR Object_FacePlayer
+	;JSR Object_FacePlayer
 	JSR Boss_BullyMove
 
 	LDA Objects_Timer, X
@@ -3274,41 +3256,45 @@ Boss_BullyDrawJump1:
 	JSR ObjGiant_Mirror
 	RTS
 
+BossBully_BobombSide:
+	.byte $20, $E0
+
 BossBully_MakeBobomb:
-	JSR Object_FindEmptyX
+	JSR Object_FindEmptyY
 	BCC Boss_BullyBounceWait1
 	
 	LDA #OBJ_BOBOMB
-	STA Objects_ID,X
+	STA Objects_ID,Y
+
+	LDA #OBJSTATE_FRESH
+	STA Objects_State, Y
 	
 	LDA #$01
-	STA Objects_Property, X
+	STA Objects_Property, Y
 
 	LDA #$00
-	STA BobOmb_Action, X
+	STA BobOmb_Action, Y
 
-	LDA #SPR_PAL1
-	STA Objects_SpriteAttributes, X
+	LDA <Objects_XZ, X
+	AND #$80
+	ROL A
+	ROL A
+	AND #$01
+	TAX
 
-	LDA #BOUND16x16
-	STA Objects_BoundBox, X
+	LDA BossBully_BobombSide, X
+	STA Objects_XZ, Y
 
-	LDA <Player_X
-	STA <Objects_XZ, X
+	LDX <CurrentObjectIndexZ
 
-	LDA Player_XHi
-	STA <Objects_XHiZ, X
+	LDA <Objects_XHiZ, X
+	STA Objects_XHiZ, Y
 
 	LDA #$80
-	STA <Objects_YZ, X
+	STA Objects_YZ, Y
 
 	LDA #$00
-	STA <Objects_YHiZ, X
-
-	JSR Object_MoveAwayFromPlayer
-
-	JSR Object_CalcBoundBox
-	JSR Object_FacePlayer
+	STA Objects_YHiZ, Y
 
 	LDX <CurrentObjectIndexZ	 ; X = Cannon Fire slot index
 	RTS

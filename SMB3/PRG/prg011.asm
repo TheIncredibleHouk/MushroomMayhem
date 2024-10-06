@@ -46,6 +46,15 @@ Load_Save:
 	JSR Check_Save
 	BCS Map_Init
 	
+	LDA Player_Level
+	CMP #ABILITY_EXTRAHIT
+	BCS Load_Complete
+
+	LDA #ABILITY_EXTRAHIT
+	STA Player_Level
+
+Load_Complete:
+
 	LDX #$00
 
 	LDA #$01
@@ -1697,7 +1706,7 @@ MapObject_AttrLeft:
 	.byte $02, $02, $02, $02	; 02=Snow
 	.byte $03, $03, $03, $03	; 03=Ship
 	.byte $03, $03, $03, $03	; 04=wrecked Ship
-	.byte $02, $02, $02, $02	; 05=Boo
+	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1	; 05=Boo
 	.byte $01, $01, $01, $01	; Red Mushroom
 	.byte $02, $02, $02, $02	; None
 	.byte $02, $02, $02, $02	; Blue Mushroom
@@ -1716,7 +1725,7 @@ MapObject_AttrRight:
 	.byte $02, $02, $02, $02	; 02=Snow
 	.byte $03, $03, $03, $03	; 03=Ship
 	.byte $03, $03, $03, $03	; 04=wrecked Ship
-	.byte $02, $02, $02, $02	; 05=Boo
+	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1	; 05=Boo
 	.byte $01, $01, $01, $01	; Red Mushroom
 	.byte $02, $02, $02, $02	; None
 	.byte $02, $02, $02, $02	; Blue Mushroom
@@ -2890,6 +2899,9 @@ Map_AnimCHRROM:
 	.byte $70, $72, $74, $76
 
 Map_DoAnimations:	; $BC29
+	LDA Save_Menu_Showing
+	BNE Map_DoAnimationsRTS
+
 	LDA <Counter_1
 	AND #$60
 	LSR A
@@ -2900,6 +2912,8 @@ Map_DoAnimations:	; $BC29
 	TAY
 	LDA Map_AnimCHRROM,Y	; Get the correct CHRROM page
 	STA PatTable_BankSel	  	; Put it to use
+
+Map_DoAnimationsRTS:	
 	RTS		  ; Return!
 
 
@@ -3048,11 +3062,9 @@ Map_SaveMenuSCRTS:
 	RTS	
 
 Map_SaveMenu:
+
 	LDA Map_Pan_Count
 	BNE Map_SaveMenuSCRTS
-
-	LDA Auto_Save
-	BEQ Map_NoAutoSave
 
 	JSR Save_Game
 
@@ -3070,108 +3082,428 @@ Map_SaveMenuHidden:
 	LDA #$01
 	STA Save_Menu_Showing
 
+	LDA #$5C
+	STA PatTable_BankSel
+
+	LDA <Horz_Scroll
+	STA Options_Horz_Restore
+
 	LDA #$00
-	STA Save_Menu_YesNo
+	STA <Horz_Scroll
+	STA Options_Line_Count
 
 	LDA #PAUSE_STOPMUSIC
 	STA Sound_QPause
 
+	LDA #$0F
+	STA <Vert_Scroll
+
+	LDA #$0F
+	STA Palette_Buffer + 2
+
 Map_SaveMenuHiddenRTS:
 	RTS
 
+Map_DisplayOptions:
+	RTS
 
-SAVE_MENU_YES = 0
-SAVE_MENU_NO = 1
-SAVE_MENU_SPRAM = $A0
-SAVE_MENU_SPRAM_STOP = (4 * 10) + SAVE_MENU_SPRAM
+Option_Lines:
+	.word Option_Line1
+	.word Option_Line2
+	.word Option_Line3
+	.word Option_Line4
+	.word Option_Line6
 
-Map_SaveMenuTiles:
-Map_SaveMenuYes:
-	.byte $C1, $C3, $C5, $C7, $C9
-	.byte $EB, $ED, $EF, $F1, $F3
+STATUS_BAR_OPTION = 4
 
-Map_SaveMenuNo:
-	.byte $CB, $CD, $CF, $D1, $D3
-	.byte $E1, $E3, $E5, $E7, $E9
+Option_Off:
+	vaddr $2104
+	.byte 04
+	.db "OFF "
+	.byte 00
 
-Map_SaveMenuX:
-	.byte $6C, $74, $7C, $84, $8C
-	.byte $6C, $74, $7C, $84, $8C
-	.byte $6C, $74, $7C, $84, $8C
-	.byte $6C, $74, $7C, $84, $8C
+Option_On:
+	vaddr $2104
+	.byte 04
+	.db "ON  "
+	.byte 00
 
-Map_SaveMenuY:
-	.byte $60, $60, $60, $60, $60
-	.byte $70, $70, $70, $70, $70
-	.byte $60, $60, $60, $60, $60
-	.byte $70, $70, $70, $70, $70
+Option_Line1:
+	vaddr $2104
+	.byte 22
+	.db "OFF  STARS GATE BOSSES"
+	.byte 00
 
-Map_SaveMenuOffset:
-	.byte 00, (Map_SaveMenuNo - Map_SaveMenuYes)
+Option_Line2:
+	vaddr $2144
+	.byte 20
+	.db "OFF  INVULNERABILITY"
+	.byte 00
 
-Map_SaveMenuShowing:
-	JSR Cheat_Code
+Option_Line3:
+	vaddr $2184
+	.byte 17
+	.db "OFF  OXYGEN METER"
+	.byte 00
+
+Option_Line4:
+	vaddr $21C4
+	.byte 20
+	.db "OFF  HOLD A TO FLOAT"
+	.byte 00
+
+Option_Line6:
+	vaddr $22C4
+	.byte 21
+	.db " 0   STATUS BAR COLOR"
+	.byte 00	
+
+Options_Draw:
+	LDA Options_Line_Count
+	CMP #STATUS_BAR_OPTION + 1
+	BCS Options_DrawRTS
+
+	LDA Graphics_BufCnt
+	BNE Options_DrawRTS
+
+	LDA Options_Line_Count
+	ASL A
+	TAY
+
+	LDA Option_Lines, Y
+	STA <Temp_Var1
+
+	LDA Option_Lines + 1, Y
+	STA <Temp_Var2
+
+	LDY #$00
+
+Option_Line:
+	LDA [Temp_Var1], Y
+	BEQ Option_NextLine
+
+	STA Graphics_Buffer, Y
+	INY
+	JMP Option_Line
+
+Option_NextLine:
+	STA Graphics_Buffer, Y
+	STY Graphics_BufCnt
 	
-	LDY Save_Menu_YesNo 
+	LDA Options_Line_Count
+	CMP #STATUS_BAR_OPTION
+	BEQ Options_SkipStatusBar
 
-	LDA Map_SaveMenuOffset, Y
 	TAX
+	ASL A
+	ASL A
+	STA <Temp_Var3
 
-	LDY #SAVE_MENU_SPRAM
+	LDA Game_Options
+	AND Option_Mask, X
+	BEQ Option_UpdateToggle
+
+	INC <Temp_Var3
+	INC <Temp_Var3
+
+Option_UpdateToggle:
+	LDX <Temp_Var3
+
+	LDA Option_ToggleDisplay, X
+	STA <Temp_Var1
+
+	LDA Option_ToggleDisplay + 1, X
+	STA <Temp_Var2
+
+	LDY #$04
+
+Option_ReplaceOnOff:	
+	LDA [Temp_Var1], Y
+	STA Graphics_Buffer, Y
+	INY
+	CPY #$07
+	BCC Option_ReplaceOnOff
+
+	INC Options_Line_Count
+	RTS
+
+Options_SkipStatusBar:
+	LDA Game_Options
+	AND #$E0
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	ADD #$30
+	STA Graphics_Buffer + 4
+	INC Options_Line_Count
+
+Options_DrawRTS:
+	RTS
+
+Option_SelectionYOffset:
+	.byte $30, $40, $50, $60, $A0
+
+OPTION_SPRAM_OFF = $C0
+
+Option_ShowSelection:
+	LDX Option_Selection
+
+	LDY #OPTION_SPRAM_OFF
 	
-Map_SaveMenuLoop:
-	LDA Map_SaveMenuTiles, X
+	LDA #$CB
 	STA Sprite_RAMTile, Y
 
-	LDA Map_SaveMenuX, X
+	LDA #$CD
+	STA Sprite_RAMTile + 4, Y
+
+	LDA Option_SelectionYOffset, X
+	STA Sprite_RAMY, Y
+	STA Sprite_RAMY + 4, Y
+
+	LDA #$18
 	STA Sprite_RAMX, Y
 
-	LDA Map_SaveMenuY, X
-	STA Sprite_RAMY, Y
+	LDA #$38
+	STA Sprite_RAMX + 4, Y
 
 	LDA #SPR_PAL1
 	STA Sprite_RAMAttr, Y
+	STA Sprite_RAMAttr + 4, Y
+	RTS
 
-	INY
-	INY
-	INY
-	INY
 
-	INX
+Option_Mask:
+	.byte %00000001
+	.byte %00000010
+	.byte %00000100
+	.byte %00001000
 
-	CPY #SAVE_MENU_SPRAM_STOP
-	BNE Map_SaveMenuLoop
+Option_StatusBarColors:
+
+Option_ToggleDisplay:
+	.word Option_On, Option_Off
+	.word Option_Off, Option_On
+	.word Option_On, Option_Off
+	.word Option_Off, Option_On
+
+Option_SetOptions:
+	LDA <Pad_Input
+	AND #(PAD_DOWN | PAD_UP)
+	BEQ Option_ToggleLine
+
+	AND #PAD_DOWN
+	BNE Option_MoveDown
+
+	DEC Option_Selection
+	LDA Option_Selection
+	BPL Option_SetOptionsRTS
+
+	LDA #STATUS_BAR_OPTION
+	STA Option_Selection
+	BNE Option_SetOptionsRTS
+
+Option_MoveDown:
+	INC Option_Selection
+	LDA Option_Selection
+	CMP #STATUS_BAR_OPTION + 1
+	BCC Option_SetOptionsRTS
+
+	LDA #$00
+	STA Option_Selection
+	BEQ Option_SetOptionsRTS
+
+Option_ToggleLine:
+	LDA <Pad_Input
+	AND #(PAD_LEFT | PAD_RIGHT | PAD_A)
+	BEQ Option_SetOptionsRTS
+
+	LDX Option_Selection
+	CPX #STATUS_BAR_OPTION
+	BNE Option_ToggleFlag
+
+	LDA <Pad_Input
+	AND #(PAD_RIGHT | PAD_A)
+	BEQ Option_DecStatusColor
+
+	LDA Game_Options
+	ADD #$20
+	STA Game_Options
+	INC Option_Needs_Update
+	RTS
+
+Option_DecStatusColor:
+	LDA Game_Options
+	SUB #$20
+	STA Game_Options
+	STA Option_Needs_Update
+	RTS	
+
+Option_ToggleFlag:
+	LDA Game_Options
+	EOR Option_Mask, X
+	STA Game_Options
+
+	INC Option_Needs_Update
+
+Option_SetOptionsRTS:	
+	RTS
+
+Option_UpdateLineOffset:
+	.byte $00, $40, $80, $C0
+
+Option_StatusBarUpdate:
+	.byte $30, $11, $27, $00
+	.byte $30, $14, $27, $00
+	.byte $30, $15, $27, $00
+	.byte $30, $06, $27, $00
+	.byte $30, $17, $27, $00
+	.byte $30, $0A, $27, $00
+	.byte $30, $0C, $27, $00
+	.byte $30, $2D, $27, $00
+
+Option_UpdateRts:
+	RTS
+
+Option_UpdateDisplay:
+	LDA Option_Needs_Update
+	BEQ Option_UpdateRts
+
+	LDA Graphics_BufCnt
+	BNE Option_UpdateRts
+
+	LDA Option_Selection
+	CMP #STATUS_BAR_OPTION
+	BNE Option_OnOffUpdate
+
+	LDA #$22
+	STA Graphics_Buffer
+
+	LDA #$C5
+	STA Graphics_Buffer + 1
+
+	LDA #$01
+	STA Graphics_Buffer + 2
+
+	LDA Game_Options
+	AND #$E0
+	LSR A
+	LSR A
+	LSR A
+	TAX
+	LSR A
+	LSR A
+	ADD #$30
+	STA Graphics_Buffer + 3
+
+	LDA #$00
+	STA Graphics_Buffer + 4
+
+	LDA #$04
+	STA Graphics_BufCnt
+
+	LDA #$00
+	STA Option_Needs_Update
+
+	LDA Option_StatusBarUpdate, X
+	STA StatusBar_Palette
+	
+	LDA Option_StatusBarUpdate + 1, X
+	STA StatusBar_Palette + 1
+	
+	LDA Option_StatusBarUpdate + 2, X
+	STA StatusBar_Palette + 2
+	RTS
+
+Option_OnOffUpdate:
+	TAX
+	ASL A
+	ASL A
+	STA <Temp_Var3
+
+	LDA Game_Options
+	AND Option_Mask, X
+	BEQ Option_UpdateSelection
+
+	INC <Temp_Var3
+	INC <Temp_Var3
+
+Option_UpdateSelection:
+	LDX <Temp_Var3
+
+	LDA Option_ToggleDisplay, X
+	STA <Temp_Var1
+
+	LDA Option_ToggleDisplay + 1, X
+	STA <Temp_Var2
+
+	LDY #$00
+
+Option_UpdateOnOffFlag:
+	LDA [Temp_Var1], Y
+	BEQ Option_UpdateDone
+
+	STA Graphics_Buffer, Y
+	INY
+	BCC Option_UpdateOnOffFlag
+
+Option_UpdateDone:
+	STA Graphics_Buffer, Y
+	STY Graphics_BufCnt
+
+	LDX Option_Selection
+	
+	LDA Graphics_Buffer + 1
+	ADD Option_UpdateLineOffset, X
+	STA Graphics_Buffer + 1
+
+	LDA Graphics_Buffer
+	ADC #$00
+	STA Graphics_Buffer
+
+	LDA #$00
+	STA Option_Needs_Update
+
+Option_UpdateDisplayRTS:
+	RTS
+
+
+Option_UpdateCurrentSelection:
+
+Map_SaveMenuShowing:
+	JSR Options_Draw
+	JSR Cheat_Code
+	JSR Option_ShowSelection
+	JSR Option_SetOptions
+	JSR Option_UpdateDisplay
+
+	LDA Save_Menu_Showing
+	BEQ Exit_Options_Menu
 
 	LDA <Pad_Input
 	AND #PAD_START
-	BEQ Map_SaveMenuToggleCheck
+	BEQ Map_SaveMenuShowingRTS
 
-	LDA Save_Menu_YesNo
-	BNE Save_MenuRTS
-
-	JSR Save_Game
-
-	LDA Sound_QMap
-	ORA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
-
-Save_MenuRTS:
+Exit_Options_Menu:
 	LDA #PAUSE_RESUMEMUSIC
 	STA Sound_QPause
 
 	LDA #$00
 	STA Save_Menu_Showing
-	RTS
 
-Map_SaveMenuToggleCheck:
-	LDA <Pad_Input
-	AND #(PAD_UP | PAD_DOWN | PAD_SELECT)
-	BEQ Map_SaveMenuShowingRTS
+	LDA Map_Prev_XOff
 
+	LDA #$EF
+	STA <Vert_Scroll
 
-	LDA Save_Menu_YesNo
-	EOR #$01
-	STA Save_Menu_YesNo
+	LDA Options_Horz_Restore
+	STA <Horz_Scroll
+
+	LDA MasterPal_Data + 2
+	STA Palette_Buffer + 2
+
+	JMP Map_DoAnimations
 
 Map_SaveMenuShowingRTS:
 	RTS	
@@ -3187,7 +3519,7 @@ __ = 00
 X_ = $FF
 
 Cheat_Codes:	
-	.byte U_, U_, U_, U_, U_, U_, U_, U_, U_ ; Cheat_AbilityUp
+	.byte B_, B_, A_, A_, U_, U_, U_, U_, U_ ; Cheat_AbilityUp
 	.byte U_, R_, D_, L_, U_, R_, D_, L_, __ ; Cheat_250Coins
 	.byte L_, D_, R_, D_, L_, D_, R_, D_, L_ ; Cheat_25Cherries
 	.byte L_, R_, S_, B_, A_, B_, S_, R_, L_ ; Cheat_1000Exp
@@ -3207,12 +3539,13 @@ Cheat_Codes:
 	.byte A_, A_, A_, R_, R_, R_, R_, R_, R_ ; Cheat_SkipMapRight
 	.byte A_, A_, A_, U_, U_, U_, U_, U_, U_ ; Cheat_SkipMapUp
 	.byte A_, A_, A_, D_, D_, D_, D_, D_, D_ ; Cheat_SkipMapDown
+	.byte B_, R_, R_, R_, R_, R_, A_, A_, A_ ; Cheat Plane
 
 Cheat_Index = Temp_Var1
 Cheat_Offset = Temp_Var2
 Cheat_Number = Temp_Var3
 Cheat_Length = 9
-Cheat_Count = 20
+Cheat_Count = 21
 
 Cheat_Code:
 	LDA <Pad_Input
@@ -3318,6 +3651,7 @@ Cheat_Clear:
 	.word Cheat_SkipMapRight
 	.word Cheat_SkipMapUp
 	.word Cheat_SkipMapDown
+	.word Cheat_Plane
 
 Cheat_DoNothing:
 	RTS
@@ -3416,9 +3750,13 @@ Cheat_DebugMode:
 	STA Player_Debug
 	RTS
 
+Cheat_Plane:
+	LDA #$01
+	STA Player_CheatSub
+	RTS
+
 Cheat_Sub:
-	LDA Player_CheatSub
-	EOR #$01
+	LDA #$02
 	STA Player_CheatSub
 	RTS
 	
@@ -3464,8 +3802,49 @@ Cheat_SkipMapDown:
 	STA Map_PrevMoveDir
 	RTS
 
+Tip_ClearTiles:
+	.word Tip_ClearTiles1
+	.word Tip_ClearTiles2
+	.word Tip_ClearTiles3
+	.word Tip_ClearTiles4
+	.word Tip_ClearTiles5
+	.word Tip_ClearTiles6
 
-TipPPU:
+Tip_ClearTiles1:
+	vaddr $20A0
+	.byte VU_REPEAT | $20
+	.db $FF
+	.byte $00
+
+Tip_ClearTiles2:
+	vaddr $2101
+	.byte VU_REPEAT | $1E
+	.db $FF
+	.byte $00
+	
+Tip_ClearTiles3:
+	vaddr $2140
+	.byte VU_REPEAT | $20
+	.db $FF
+	.byte $00
+
+Tip_ClearTiles4:
+	vaddr $2180
+	.byte VU_REPEAT | $20
+	.db $FF
+	.byte $00
+
+Tip_ClearTiles5:
+	vaddr $21C0
+	.byte VU_REPEAT | $20
+	.db $FF
+	.byte $00
+
+Tip_ClearTiles6:
+	vaddr $22C0
+	.byte VU_REPEAT | $20
+	.db $FF
+	.byte $00	
 
 TipLabel:
 TipLabelStart:
@@ -3507,6 +3886,22 @@ Loading_Tips:
 	.word Tip14
 	.word Tip15
 	.word Tip16
+	.word Tip17
+	.word Tip18
+	.word Tip19
+	.word Tip20
+	.word Tip21
+	.word Tip22
+	.word Tip23
+	.word Tip24
+	.word Tip25
+	.word Tip26
+	.word Tip27
+	.word Tip28
+	.word Tip29
+	.word Tip30
+	.word Tip31
+	.word Tip32
 
 Tip1:
 	.db " THROW FIREBALLS  UP AS FIRE  "
@@ -3525,7 +3920,7 @@ Tip4:
 	.db " TO LAVA AND FIREBALL ATTACKS "
 
 Tip5:
-	.db " DOUBLE TAP AND  HOLDING B AS "
+	.db "   DOUBLE TAP AND HOLD B AS   "
 	.db " FROG MARIO TO  GO INVINCIBLE "
 
 Tip6:
@@ -3545,7 +3940,7 @@ Tip9:
 	.db "  SHURIKENS IN  7 DIRECTIONS  "
 
 Tip10:
-	.db " HAMMER MARIO'S GROUND POUND  "
+	.db " THE HAMMER SUIT GROUND POUND "
 	.db " CAN BREAK BRICKS & HURT FOES "
 
 Tip11:
@@ -3561,8 +3956,8 @@ Tip13:
 	.db "EXIT LEVELS  IN THE PAUSE MENU"
 
 Tip14:
-	.db "YOUR P-METER  AFFECTS HOW LONG"
-	.db "YOU CAN USE POWER-UP ABILITIES"
+	.db " YOUR PMETER AFFECTS HOW LONG "
+	.db "YOU CAN USE  POWERUP ABILITIES"
 
 Tip15:
 	.db "THE DAY NIGHT CYCLE CAN AFFECT"
@@ -3571,6 +3966,70 @@ Tip15:
 Tip16:
 	.db "   HOLD DOWN TO DROP SHELLS   "
 	.db " HOLD UP TO KICK THEM UPWARDS "
+
+Tip17:
+	.db "  MAGIC STARS  CAN BE HIDDEN  "
+	.db " INSIDE OF  BRICKS AND BLOCKS "
+
+Tip18:
+	.db "  USE THE STOP WATCH ITEM TO  "
+	.db "   FREEZE ENEMIES  IN PLACE   "
+
+Tip19:
+	.db "  PURCHASE A 3 HEART ITEM TO  "
+	.db "  TAKE 3 HITS BEFORE HURTING  "
+
+Tip20:
+	.db "SAVING WINGS GIVE YOU A CHANCE"
+	.db " TO SURVIVE A  BOTTOMLESS PIT "
+
+Tip21:
+	.db " ITEM RESERVE  BADGE LETS YOU "
+	.db "  STASH A POWERUP AS AN ITEM  "
+
+Tip22:
+	.db " MARIO CAN ONLY HOLD ONE ITEM "
+	.db "  AT A TIME, SELECT TO USE IT "
+
+Tip23:
+	.db "SOME BADGES  WILL USE THE ITEM"
+	.db "   SLOT, REMOVING YOUR ITEM   "
+
+Tip24:
+	.db " HOLD B AT THE LOAD SCREEN TO "
+	.db "HAVE MORE TIME TO READ THE TIP"
+
+Tip25:
+	.db "   USE THE PMETER  BADGE TO   "
+	.db " EXTEND POWERUP ABILITY TIMES "
+
+Tip26:
+	.db "      SMALL  MARIO EARNS      "
+	.db " DOUBLE XP WHEN  KILLING FOES "
+
+Tip27:
+	.db "  EXTEND YOUR AIR METER WITH  "
+	.db "       THE OXYGEN BADGE       "
+
+Tip28:
+	.db " THE STAR RADAR CAN HELP YOU  "
+	.db "YOU HUNT STARS  WITHIN A LEVEL"
+
+Tip29:
+	.db "     SOME BOSSES CAN TAKE     "
+	.db "   DAMAGE IN  MULTIPLE WAYS   "
+
+Tip30:
+	.db "A LOST KEY WILL ALWAYS RESPAWN"
+	.db "AT THE LOCATION IT WAS CREATED"
+
+Tip31:
+	.db "  STAND ON FROZEN ENEMIES TO  "
+	.db "  ACCESS OUT  OF REACH AREAS  "
+
+Tip32:
+	.db "  PRESS B ON TREASURE CHESTS  "
+	.db "AND GIFT BOXES GIVES YOU COINS"
 
 Show_Tips:
 	LDA #$0F
@@ -3599,7 +4058,42 @@ Tips_ClearPal:
 	STA <Vert_Scroll
 	JSR GraphicsBuf_Prep_And_WaitVSync
 
+	LDA #$05
+	STA <Temp_Var16
+
+Tip_ClearLineLoop:
+	STA Debug_Snap
+	LDA <Temp_Var16
+	ASL A
+	TAX
+
+	LDA Tip_ClearTiles, X
+	STA <Temp_Var1
+
+	LDA Tip_ClearTiles + 1, X
+	STA <Temp_Var2
+	
 	LDY #$00
+
+Tip_ClearLoop:
+	LDA [Temp_Var1], Y
+	BEQ Tip_ClearDone
+
+	STA Graphics_Buffer, Y
+	INY
+	BNE Tip_ClearLoop
+
+Tip_ClearDone:
+	STA Graphics_Buffer, Y
+	STY Graphics_BufCnt
+
+	JSR GraphicsBuf_Prep_And_WaitVSync
+	
+	LDA #$00
+	JSR Video_Do_Update
+
+	DEC <Temp_Var16
+	BPL Tip_ClearLineLoop
 
 TipLabelLoop:
 	LDA TipLabel, Y
@@ -3615,7 +4109,7 @@ TipLabelLoop:
 	JSR Video_Do_Update
 
 	LDA RandomN
-	AND #$0F
+	AND #$1F
 	ASL A
 	TAX
 
@@ -3675,7 +4169,7 @@ TipBottomLoop:
 	STA <Temp_Var2
 
  Tip_DrawBottom:
- 	STA Debug_Snap
+
  	LDA [Temp_Var1], Y
  	STA Graphics_Buffer + 3, Y
  	INY
@@ -3694,7 +4188,7 @@ TipBottomLoop:
 	STA PatTable_BankSel
 
 	LDA #$BF
-	STA <Temp_Var1
+	STA <Temp_Var16
 
 	LDA #$30
 	STA Palette_Buffer + 1
@@ -3705,6 +4199,20 @@ TipBottomLoop:
 TipWait:
 	JSR GraphicsBuf_Prep_And_WaitVSync
 
-	DEC <Temp_Var1
+	JSR Read_Joypads
+
+	LDA <Pad_Input
+	AND #PAD_A
+	BNE TipWaitRTS
+
+	LDA <Temp_Var16
+	BEQ TipWaitRTS
+
+	DEC <Temp_Var16
+	BNE TipWait
+
+TipWaitRTS:
+	LDA <Pad_Holding
+	AND #PAD_B
 	BNE TipWait
 	RTS

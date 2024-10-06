@@ -566,6 +566,8 @@ SetSplash:
 	LDA Splash_Orientations, Y
 	STA Objects_Orientation, X
 
+	STX <Temp_Var2
+
 	LDX <CurrentObjectIndexZ
 	LDY <Temp_Var1
 	RTS		 ; Return
@@ -3789,6 +3791,7 @@ Player_NoHP:
 	CMP #ABILITY_EXTRAHIT
 	BCC PRG000_DA4E
 
+Player_ExtraHit:
 	LDA #$02
 	STA Player_QueueSuit	 ; Queue power-up change
 
@@ -3807,11 +3810,14 @@ PRG000_DA47:
 PRG000_DA4E:
 
 	; Player is only big or small...
+	LDA Game_Options
+	AND #INVULNERABILITY_ON
+	BNE Invulnerability_Skip
 
 	LDA <Player_Suit
-	ORA Casual_Mode
 	BEQ PRG000_DA7A	 ; If Player is small, jump to PRG000_DA7A (gonna die!!)
 
+Invulnerability_Skip:
 	LDA #$02
 	STA Player_QueueSuit	 ; Return to Big
 
@@ -4526,11 +4532,14 @@ Obj_Boss:
 	JMP Credits_Roll
 
 No_Credits:
+
 	LDA #17
 	STA PAGE_A000
 
 	JSR PRGROM_Change_A000
-	JMP ObjNorm_Boss	
+	JSR ObjNorm_Boss	
+	JSR CheckBoss_Rush
+	RTS
 
 GiantXFrame:
 	.byte $00, $08, $10, $18, $00, $08, $10, $18
