@@ -37,9 +37,14 @@ var Versions = () => {
      
       <br />
       <br />
-      <h2>October 5, 2024 (v 1.9.2)</h2>
+      <h2>October 6, 2024 (v 1.9.3)</h2>
       <br />
       <div className="versions-layout">
+      <div>Patch Notes</div><ul>
+        <li>Fixed an issue with Boulder Busting Bothers Master Quest</li>
+        <li>Fixed a layout issue with The Source of Malice</li>
+        <li>Fixed issue with Last Barrier Master Quest</li>
+      </ul>
         <div>Patch Notes</div>
         <ul>
           <li>Removed Casual Mode in favor of an options menu</li>
