@@ -18,9 +18,9 @@ var Home = () => {
         tips, tricks and secrets exposed directly by the developer!
       </p>
 
-      <h1>Version 1.9.3</h1>
+      <h1>Version 1.9.6</h1>
       <p><img src={title} /></p>
-      <p>Last updated October 6, 2024 (8:30am EST)</p>
+      <p>Last updated October 7, 2024 (8:30am EST)</p>
       <p>
         It's been an extremely long project, but after 12 years, it's finally
         here, Mario Adventure 3 is now live! There are a lot to this game, and I

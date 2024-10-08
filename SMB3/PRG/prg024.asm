@@ -898,7 +898,7 @@ Title_Subtitle:
 Title_Version:
 	vaddr $2381
 	.byte 30
-	.byte $6F, $69, $7D, $7F, $79, $7A, $6C, $6C, $0E, $6D, $0F, $7A, $6B, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $0E, $07, $3E, $99, $3E, $1B, $FE
+	.byte $6F, $69, $7D, $7F, $79, $7A, $6C, $6C, $0E, $6D, $0F, $7A, $6B, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $0E, $07, $3E, $99, $3E, $45, $FE
 	.byte $00
 	
 	
@@ -3742,6 +3742,7 @@ Game_NoXpDouble:
 	STA <CalcParam1 + 1
 	STA <CalcParam1 + 2
 
+	STA Debug_Snap
 	LDA Player_Experience
 	STA <CalcParam2
 

@@ -45,15 +45,6 @@ Checksum_Invalid:
 Load_Save:
 	JSR Check_Save
 	BCS Map_Init
-	
-	LDA Player_Level
-	CMP #ABILITY_EXTRAHIT
-	BCS Load_Complete
-
-	LDA #ABILITY_EXTRAHIT
-	STA Player_Level
-
-Load_Complete:
 
 	LDX #$00
 
@@ -4062,7 +4053,6 @@ Tips_ClearPal:
 	STA <Temp_Var16
 
 Tip_ClearLineLoop:
-	STA Debug_Snap
 	LDA <Temp_Var16
 	ASL A
 	TAX
