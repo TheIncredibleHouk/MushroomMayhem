@@ -350,6 +350,7 @@ Lakitu_Norm:
 	JMP Lakitu_CalcBoundBox
 
 Lakitu_Chase:
+	STA Debug_Snap
 	JSR Object_ChasePlayer
 
 Lakitu_CalcBoundBox:
@@ -511,11 +512,11 @@ Lakitu_LowerDone:
 	RTS
 
 Lakitu_GetEnemy:
-	; JSR Lakitu_CheckObjCount
+	JSR Lakitu_CheckObjCount
 
-	; LDA <Lakitu_ObjectCount
-	; CMP #$04
-	; BCS Lakitu_GetEnemyDone
+	LDA <Lakitu_ObjectCount
+	CMP #$03
+	BCS Lakitu_GetEnemyDone
 
 	LDA Objects_Property, X
 	TAY
@@ -578,10 +579,9 @@ Lakitu_RaiseDone:
 	RTS
 
 Lakitu_ObjectCount = Temp_Var1
+Lakitu_ObjectCheck = Temp_Var2
 
 Lakitu_CheckObjCount:
-	LDY Objects_Property, X
-
 	LDY #$04
 
 	LDA #$00
@@ -3763,6 +3763,10 @@ LakituWindow_AimDone:
 	RTS
 
 LakituWindow_Draw:
+	LDA Objects_SpriteAttributes, X
+	AND #~SPR_BEHINDBG
+	STA Objects_SpriteAttributes, X
+
 	LDA <Objects_SpriteY, X
 	ADD #$10
 	STA <Objects_SpriteY, X

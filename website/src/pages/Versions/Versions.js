@@ -37,9 +37,19 @@ var Versions = () => {
      
       <br />
       <br />
-      <h2>October 7, 2024 (v 1.9.6)</h2>
+      <h2>October 9, 2024 (v 1.9.8)</h2>
       <br />
       <div className="versions-layout">
+      <div>Patch Notes</div>
+      <ul>
+        <li>Fixed the final boss fight to end properly</li>
+      </ul>
+      <div>Patch Notes</div>
+      <ul>
+        <li>Removed tips screen due to issues on real hardware</li>
+        <li>Added option for a Blue Night Sky</li>
+        <li>Fixed several level layout issues</li>
+      </ul>
       <div>Patch Notes</div>
       <ul>
         <li>Fixed an issue with screen borders at the end of To the Source of Malice</li>

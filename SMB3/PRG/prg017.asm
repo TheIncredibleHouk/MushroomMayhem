@@ -5362,6 +5362,7 @@ Credits_FadeOutStore:
 
 Credits_ClearBlocks:	
 	STA $6132, Y
+	STA $60F2, Y
 	DEY
 	BNE Credits_ClearBlocks
 	RTS

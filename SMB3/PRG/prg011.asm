@@ -3103,9 +3103,10 @@ Option_Lines:
 	.word Option_Line2
 	.word Option_Line3
 	.word Option_Line4
+	.word Option_Line5
 	.word Option_Line6
 
-STATUS_BAR_OPTION = 4
+STATUS_BAR_OPTION = 5
 
 Option_Off:
 	vaddr $2104
@@ -3142,6 +3143,12 @@ Option_Line4:
 	.byte 20
 	.db "OFF  HOLD A TO FLOAT"
 	.byte 00
+
+Option_Line5:
+	vaddr $2204
+	.byte 19
+	.db "OFF  BLUE NIGHT SKY"
+	.byte 00	
 
 Option_Line6:
 	vaddr $22C4
@@ -3234,7 +3241,7 @@ Options_DrawRTS:
 	RTS
 
 Option_SelectionYOffset:
-	.byte $30, $40, $50, $60, $A0
+	.byte $30, $40, $50, $60, $70, $A0
 
 OPTION_SPRAM_OFF = $C0
 
@@ -3270,6 +3277,7 @@ Option_Mask:
 	.byte %00000010
 	.byte %00000100
 	.byte %00001000
+	.byte %00010000
 
 Option_StatusBarColors:
 
@@ -3277,6 +3285,7 @@ Option_ToggleDisplay:
 	.word Option_On, Option_Off
 	.word Option_Off, Option_On
 	.word Option_On, Option_Off
+	.word Option_Off, Option_On
 	.word Option_Off, Option_On
 
 Option_SetOptions:
@@ -3286,6 +3295,9 @@ Option_SetOptions:
 
 	AND #PAD_DOWN
 	BNE Option_MoveDown
+
+	LDA #SND_MAPPATHMOVE
+	STA Sound_QMap
 
 	DEC Option_Selection
 	LDA Option_Selection
@@ -3310,6 +3322,9 @@ Option_ToggleLine:
 	AND #(PAD_LEFT | PAD_RIGHT | PAD_A)
 	BEQ Option_SetOptionsRTS
 
+	LDA #SND_LEVELBLIP
+	STA Sound_QLevel1
+	
 	LDX Option_Selection
 	CPX #STATUS_BAR_OPTION
 	BNE Option_ToggleFlag
@@ -3328,6 +3343,8 @@ Option_DecStatusColor:
 	LDA Game_Options
 	SUB #$20
 	STA Game_Options
+
+	LDA #$01
 	STA Option_Needs_Update
 	RTS	
 
@@ -3342,7 +3359,8 @@ Option_SetOptionsRTS:
 	RTS
 
 Option_UpdateLineOffset:
-	.byte $00, $40, $80, $C0
+	.byte $00, $40, $80, $C0, $00
+	.byte $00, $00, $00, $00, $01
 
 Option_StatusBarUpdate:
 	.byte $30, $11, $27, $00
@@ -3450,7 +3468,7 @@ Option_UpdateDone:
 	STA Graphics_Buffer + 1
 
 	LDA Graphics_Buffer
-	ADC #$00
+	ADC Option_UpdateLineOffset + 5, X
 	STA Graphics_Buffer
 
 	LDA #$00
@@ -4023,6 +4041,7 @@ Tip32:
 	.db "AND GIFT BOXES GIVES YOU COINS"
 
 Show_Tips:
+	RTS
 	LDA #$0F
 	STA StatusBar_Palette
 	STA StatusBar_Palette + 1
