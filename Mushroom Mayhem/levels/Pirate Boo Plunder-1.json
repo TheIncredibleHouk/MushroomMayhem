@@ -6680,7 +6680,7 @@
       "GameObjectId": 7,
       "X": 87,
       "Y": 10,
-      "Property": 0
+      "Property": 2
     },
     {
       "GameObjectId": 7,
@@ -6696,7 +6696,7 @@
     },
     {
       "GameObjectId": 2,
-      "X": 105,
+      "X": 126,
       "Y": 23,
       "Property": 3
     }

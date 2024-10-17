@@ -37,9 +37,42 @@ var Versions = () => {
      
       <br />
       <br />
-      <h2>October 5, 2024 (v 1.9.2)</h2>
+      <h2>October 9, 2024 (v 1.9.8)</h2>
       <br />
       <div className="versions-layout">
+      <div>Patch Notes</div>
+      <ul>
+        <li>Fixed the final boss fight to end properly</li>
+      </ul>
+      <div>Patch Notes</div>
+      <ul>
+        <li>Removed tips screen due to issues on real hardware</li>
+        <li>Added option for a Blue Night Sky</li>
+        <li>Fixed several level layout issues</li>
+      </ul>
+      <div>Patch Notes</div>
+      <ul>
+        <li>Fixed an issue with screen borders at the end of To the Source of Malice</li>
+        <li>Fixed the an issue with Star #1 in Scaling the City Sky Master Quest</li>
+        <li>Fixed a broken pipe in Chain Chomp Chow Time Master Quest</li>
+        <li>Fixed the pointer to the first door in Light Dark Level Duality</li>
+        <li>Fixed graphical glitch with coin lock in Pirate Boo Plunder Master Quest</li>
+        <li>Fixed graphical glitch with check point flag/frog suit in Pirate Boo Plunder Master Quest</li>
+      </ul>
+      <div>Patch Notes</div>
+      <ul>
+        <li>Fixed issue with Breezy Bee Bluffs Master Quest having a duplicate star #1</li>
+        <li>Fixed issue with Breezy Bee Bluffs with one of the gusts causing you to get stuck</li>
+        <li>Fixed issue in Freezie Frostbite Fjord Master Quest Freezie misplacement</li>
+        <li>Fixed pipe in Bonefish Blaze Awash that was previously enterable leading to the 3rd star</li>
+        <li>Fixed tile placement in The Source of Malice</li>
+      </ul>
+      <div>Patch Notes</div>
+      <ul>
+        <li>Fixed an issue with Boulder Busting Bothers Master Quest</li>
+        <li>Fixed a layout issue with The Source of Malice</li>
+        <li>Fixed issue with Last Barrier Master Quest</li>
+      </ul>
         <div>Patch Notes</div>
         <ul>
           <li>Removed Casual Mode in favor of an options menu</li>

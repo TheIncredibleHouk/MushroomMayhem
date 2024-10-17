@@ -2706,8 +2706,8 @@ Bowser_DoAction:
 	.word SuperCredits_FixPalette	; 16
 	.word SuperCredits_Roll			; 17
 	.word Bowser_EjectMario	        ; 18
-	.word Bowser_ByeByeMario
-	.word Bowser_NextQuest
+	.word Bowser_ByeByeMario	    ; 19
+	.word Bowser_NextQuest			; 20
 
 Bowser_AttachPhaseHealth:
 	.byte 60, 45, 30, 15, 00
@@ -2929,8 +2929,13 @@ Bowser_Interaction:
 	CMP #$09
 	BCC Bowser_DoInteractions
 
+	LDA Bowser_Action, X
+	CMP #19
+	BCS Bowser_CutScening
+
 	JSR Bowser_ProcessStarPower
 
+Bowser_CutScening:
 	LDA #ATTR_ATTACKPROOF
 	LDY Poison_Mode
 	BEQ Bowser_SetMaliceVulnerability
@@ -4605,7 +4610,6 @@ SuperCredits_LoadDrawBuffer:
 SuperCredits_Finish:
 	LDA #MUS1_STOPMUSIC
 	STA Level_MusicQueue
-
 
 	LDA #$00
 	LDY #$10

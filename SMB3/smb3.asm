@@ -36,7 +36,7 @@ BGS 	.macro
 	.endm
 
 ; Clarifying pseudo instructions
-ADD	.macro	; RegEx S&R "CLC.*\n.*?ADC" -> "ADD"
+ADD	.macro
 	CLC
 	ADC \1
 	.endm
@@ -2968,6 +2968,7 @@ STAR_BARRIER_OFF = %00000001
 INVULNERABILITY_ON = %00000010
 OXYGEN_METER_OFF = %00000100
 A_TO_FLOAT_ON = %00001000
+BLUE_NIGHT = %00010000
 
 	Game_Options:        .ds 1
 
@@ -3095,7 +3096,7 @@ TILE_ITEM_SPINNER	= $FE
 	MultiFrameLoad:	.ds 1
 	CommandCount: .ds 1
 	Credits_Triggered: .ds 1
-	Tutorial_Active: .ds 1
+	Infinite_Item_Blocks: .ds 1
 	Wall_Jump_Timer: .ds 1
 
 	.org $7FFF

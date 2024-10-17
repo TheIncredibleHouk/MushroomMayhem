@@ -3604,11 +3604,7 @@ ObjInit_PolterGuy:
 	LDA #BOUND16x16
 	STA Objects_BoundBox, X
 
-	LDA #(ATTR_FIREPROOF | ATTR_ICEPROOF | ATTR_HAMMERPROOF | ATTR_PROJECTILEPROOF | ATTR_TAILPROOF | ATTR_DASHPROOF | ATTR_STOMPPROOF)
-	STA Objects_WeaponAttr, X
-
-	LDA #(ATTR_EXPLOSIONPROOF | ATTR_SHELLPROOF)
-	STA Objects_BehaviorAttr, X
+	JSR Object_NoInteractions
 
 	LDA #03
 	STA Patrol_Blocks, X
@@ -4388,7 +4384,7 @@ ObjNorm_ParaChomp:
 	JSR Object_SetDeadAndNotSpawned
 
 	LDA ParaChomp_Grabbed, X
-	BNE ParaChomp_Delete
+	BEQ ParaChomp_Delete
 
 	LDA #$00
 	STA Player_IsClimbingObject

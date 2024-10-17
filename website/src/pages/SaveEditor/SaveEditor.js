@@ -94,6 +94,8 @@ const SaveEditor = () => {
   const THIRD_STARS_COLLECTED_OFFSET = 0x1e96;
   const PLAYER_CHERRIES_OFFSET = 0x1eae;
   const PLAYER_ABILITY_OFFSET = 0x1eb0;
+  const PLAYER_COINS_OFFSET = 0x1eab;
+  const PLAYER_XP_OFFSET = 0x1eb1;
   const CHECKSUM_OFFSET = 0x1EB8;
   const CHECKSUM_START = 0x1E50;
 
@@ -120,7 +122,9 @@ const SaveEditor = () => {
       ),
       Save_Ram_CheckSum: `${save[CHECKSUM_OFFSET + 1].toString(16).padStart(2, "0")}${save[CHECKSUM_OFFSET].toString(16).padStart(2, "0")}`,
       Player_Cherries: save[PLAYER_CHERRIES_OFFSET],
-      Player_Level: save[PLAYER_ABILITY_OFFSET]
+      Player_Level: save[PLAYER_ABILITY_OFFSET],
+      Player_Coins: parseInt(`${save[PLAYER_COINS_OFFSET + 1].toString(16)}${save[PLAYER_COINS_OFFSET].toString(16)}`, 16),
+      Player_Exp: parseInt(`${save[PLAYER_XP_OFFSET + 2].toString(16)}${save[PLAYER_XP_OFFSET + 1].toString(16)}${save[PLAYER_XP_OFFSET].toString(16)}`, 16)
     });
   };
 
@@ -217,6 +221,42 @@ const SaveEditor = () => {
     setSaveValues({...saveValues});
   }
 
+  const updateCoins = (coins) => {
+    coins = parseInt(coins);
+    if(isNaN(coins)){
+        coins = 0;
+    }
+
+    if(coins < 0){
+        coins = 0;
+    }
+
+    if(coins > 9999){
+        coins = 9999;
+    }
+
+    saveValues.Player_Coins = coins;
+    setSaveValues({...saveValues});
+  }
+
+  const updateXp = (xp) => {
+    xp = parseInt(xp);
+    if(isNaN(xp)){
+        xp = 0;
+    }
+
+    if(xp < 0){
+        xp = 0;
+    }
+    
+    if(xp > 999999){
+        xp = 999999;
+    }
+
+    saveValues.Player_Exp = xp;
+    setSaveValues({...saveValues});
+  }
+
   const updateCherries = (cherries) => {
     cherries = parseInt(cherries);
 
@@ -308,6 +348,11 @@ const SaveEditor = () => {
     save[STAR_COUNT_OFFSET] = magicStarCount;
     save[PLAYER_CHERRIES_OFFSET] = saveValues.Player_Cherries;
     save[PLAYER_ABILITY_OFFSET] = saveValues.Player_Level;
+    save[PLAYER_COINS_OFFSET] = (saveValues.Player_Coins & 0x00ff);
+    save[PLAYER_COINS_OFFSET + 1] = (saveValues.Player_Coins & 0xff00) >> 8;
+    save[PLAYER_XP_OFFSET] =  (saveValues.Player_Exp & 0x0000ff);
+    save[PLAYER_XP_OFFSET + 1] = (saveValues.Player_Exp & 0x00ff00) >> 8;
+    save[PLAYER_XP_OFFSET + 2] = (saveValues.Player_Exp & 0xff0000) >> 16;
 
     let checkSum = 0;
     for (let i = 0; i <= CHECK_SUM_LENGTH; i++) {
@@ -372,7 +417,9 @@ const SaveEditor = () => {
             <option selected={saveValues.Player_Level === 6 ? true: false} value="6">#6 Cherry Star</option>
             </select>
         </p>
-          <div>Cherries: <input type="text" onChange={(e) => updateCherries(e.target.value)} width={5} value={saveValues.Player_Cherries} /></div>
+          <p>Cherries: <input type="text" onChange={(e) => updateCherries(e.target.value)} width={5} value={saveValues.Player_Cherries} /></p>
+          <p>Coins: <input type="text" onChange={(e) => updateCoins(e.target.value)} width={5} value={saveValues.Player_Coins} /></p>
+          <p>XP: <input type="text" onChange={(e) => updateXp(e.target.value)} width={5} value={saveValues.Player_Exp} /></p>
           <table>
             <tr>
               <th>Completed</th>

@@ -405,6 +405,7 @@ No_StatusbarInit:
 	; Clear all the map object Y to zero!
 	LDY #$0d	 ; Y = $D
 	LDA #$00	 ; A = 0
+
 PRG030_8617:
 	STA Map_Object_ActY,Y
 	DEY		 ; Y--
@@ -1227,7 +1228,7 @@ PRG030_8E5D:
 	STA Player_Frozen
 	STA Frozen_Frame
 	STA ForcedSwitch
-	STA Tutorial_Active
+	STA Infinite_Item_Blocks
 	BEQ PRG030_8E79
 
 Pause_NoExit:
@@ -1462,7 +1463,7 @@ Skip_StatReset:
 	STA Player_Yolked
 	STA Enemy_Health
 	STA Enemy_Health_Mode
-	STA Tutorial_Active
+	STA Infinite_Item_Blocks
 	STA Boss_Rush_Enabled
 	STA Bosses_Defeated
 
@@ -2307,34 +2308,34 @@ PRG030_9555:
 ; High byte of address is in Temp_Var15
 ; Low byte of address is in Temp_Var16
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Map_Calc_NT2Addr_By_XY:
+; Map_Calc_NT2Addr_By_XY:
 
-	; This rearranges 'A' such that the two highest bits become
-	; the two lowest bits, and the other 6 are shifted up.
-	; Basically a ROL without the carry being involved
-	ASL A
-	ADC #$00
-	ASL A	
-	ADC #$00
-	STA <Temp_Var13	 	; Stored into Temp_Var13
+; 	; This rearranges 'A' such that the two highest bits become
+; 	; the two lowest bits, and the other 6 are shifted up.
+; 	; Basically a ROL without the carry being involved
+; 	ASL A
+; 	ADC #$00
+; 	ASL A	
+; 	ADC #$00
+; 	STA <Temp_Var13	 	; Stored into Temp_Var13
 
-	TXA		 	; A = X coordinate
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var14 	; Temp_Var14 = X coord >> 3
+; 	TXA		 	; A = X coordinate
+; 	LSR A
+; 	LSR A
+; 	LSR A
+; 	STA <Temp_Var14 	; Temp_Var14 = X coord >> 3
  
-	LDA <Temp_Var13		; A = Temp_Var13
-	AND #%11		; Get just the lower 2 bits (which are the upper 2 bits of Y coordinate)
-	ORA #$28		; OR $28 (upper byte of video address for Nametable 2)
-	STA <Temp_Var15		; Store into Temp_Var15
+; 	LDA <Temp_Var13		; A = Temp_Var13
+; 	AND #%11		; Get just the lower 2 bits (which are the upper 2 bits of Y coordinate)
+; 	ORA #$28		; OR $28 (upper byte of video address for Nametable 2)
+; 	STA <Temp_Var15		; Store into Temp_Var15
 
-	LDA <Temp_Var13		; A = Temp_Var13
-	AND #%11000000		; Get just the upper 2 bits of Temp_Var13
-	ORA <Temp_Var14	; OR in Temp_Var14
-	STA <Temp_Var16	; Store into Temp_Var16
+; 	LDA <Temp_Var13		; A = Temp_Var13
+; 	AND #%11000000		; Get just the upper 2 bits of Temp_Var13
+; 	ORA <Temp_Var14	; OR in Temp_Var14
+; 	STA <Temp_Var16	; Store into Temp_Var16
 
-	RTS		 ; Return
+; 	RTS		 ; Return
 
 
 
@@ -4764,11 +4765,29 @@ DontMaxColor2:
 	DEX
 	BPL NextColorNight
 
+	LDA Game_Options
+	AND #BLUE_NIGHT
+	BEQ Black_Night
+
+	LDA #$01
+	BNE Blue_Night
+
+Black_Night:
 	LDA #$0F
+
+Blue_Night:	
 	STA Pal_Data + $10
 	STA Palette_Buffer + $10
 	DEC NightTransition
 
+	LDA Game_Options
+	AND #BLUE_NIGHT
+	BEQ DarkBlue_Ninja
+	
+	LDA #$0F
+	BNE Ninja_Palette
+
+DarkBlue_Ninja:
 	LDA Player_EffectiveSuit
 	CMP #MARIO_NINJA
 	BNE Night_NoNinja

@@ -342,10 +342,10 @@ ObjInit_PowerUp2:
 	JSR Object_CalcBoundBox
 	LDY #$00
 
-	LDA DayNight
-	BPL PowerUp_InitSetXVel
+	; LDA DayNight
+	; BPL PowerUp_InitSetXVel
 
-	INY
+	; INY
 
 PowerUp_InitSetXVel:
 	LDA PowerUp_XVel, Y
@@ -1114,13 +1114,13 @@ Produce_Item:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTileCenter
 
-	LDA Tutorial_Active
-	BEQ No_Tutorial
+	LDA Infinite_Item_Blocks
+	BEQ No_Infinite_Items
 	
 	LDA ItemBlock_OriginalTile, X
 	BNE Block_SwitchTile
 
-No_Tutorial:
+No_Infinite_Items:
 	LDA ItemBlock_ReplaceTile, X
 	BNE Block_SwitchTile	
 

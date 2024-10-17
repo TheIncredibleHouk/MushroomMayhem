@@ -25,7 +25,7 @@
 AutoScroll_Do:
 	LDA <Horz_Scroll_Hi
 	CMP <Level_Width
-	BCS PRG009_B916
+	BCS Lock_Scroll
 
 	LDA Player_SuitLost	; If Player is NOT losing their power up ...
 	ORA Player_Grow		; ... and Player is NOT growing from a mushroom ...
@@ -44,6 +44,10 @@ AutoScroll_Do:
 PRG009_B916:
 	RTS		 ; Return
 
+Lock_Scroll:
+	LDA #$01
+	STA Level_HorzScrollLock
+	RTS
 PRG009_B917:
 
 	; Ensure clock is not stopped (?)

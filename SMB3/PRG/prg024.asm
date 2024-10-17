@@ -898,7 +898,7 @@ Title_Subtitle:
 Title_Version:
 	vaddr $2381
 	.byte 30
-	.byte $6F, $69, $7D, $7F, $79, $7A, $6C, $6C, $0E, $6D, $0F, $7A, $6B, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $0E, $07, $3E, $99, $3E, $0B, $FE
+	.byte $6F, $69, $7D, $7F, $79, $7A, $6C, $6C, $0E, $6D, $0F, $7A, $6B, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $0E, $07, $3E, $99, $3E, $98, $FE
 	.byte $00
 	
 	
@@ -2194,7 +2194,7 @@ StatusBar_FullPalette:
 	.byte $30, $17, $27, $00
 	.byte $30, $0A, $27, $00
 	.byte $30, $0C, $27, $00
-	.byte $30, $2D, $2D, $00
+	.byte $30, $2D, $27, $00
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Palette_PrepareFadeIn
@@ -4387,7 +4387,17 @@ Skip_Darken:
 	DEX
 	BPL Darken_Pal
 
+	LDA Game_Options
+	AND #BLUE_NIGHT
+	BEQ Black_Night_Palette
+
+	LDA #$01
+	BNE Blue_Night_Palette
+
+Black_Night_Palette:
 	LDA #$0F
+
+Blue_Night_Palette:	
 	STA Pal_Data
 
 No_Darken:

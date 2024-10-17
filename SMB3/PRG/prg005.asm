@@ -763,8 +763,10 @@ VeggieGuy_Norm:
 	JSR Object_CalcBoundBox
 	JSR Object_DetectTiles
 	JSR Object_InteractWithTiles
+
+	LDA DayNight
+	
 	JSR Object_EdgeMarch
-	JSR Object_FacePlayerOnLanding
 	JSR Object_InteractWithObjects
 	JSR VeggieGuy_FindVeggie
 	JSR VeggieGuy_GrabVeggie
@@ -4617,7 +4619,7 @@ ObjNorm_Tutorial:
 
 Tutorial_NoMsg:
 	LDA #$01
-	STA Tutorial_Active
+	STA Infinite_Item_Blocks
 
 	LDA Tutorial_Displaying, X
 	BEQ Tutorial_CheckEvent
