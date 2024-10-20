@@ -1648,7 +1648,7 @@ PRG031_F567:
 	; *** Bring the sound engine (page 28 and page 29) into ROM
 	LDA #MMC3_8K_TO_PRG_C000	; Changing PRG ROM at C000
 	STA MMC3_COMMAND 		; Set MMC3 command
-	LDA #29	 			; Page 29
+	LDA #29 			; Page 29
 	STA MMC3_PAGE	 		; Set MMC3 page
 
 	LDA #MMC3_8K_TO_PRG_A000	; Changing PRG ROM at A000

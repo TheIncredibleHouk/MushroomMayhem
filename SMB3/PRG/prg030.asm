@@ -885,7 +885,6 @@ EnterEffect_SpriteLoop:
 ; level transition effect
 
 TransitionComplete:
-	JSR Show_Tips
 
 PRG030_88AD:
 	; Completed the entrance transition...
@@ -1475,7 +1474,7 @@ Skip_StatReset:
 PRG030_8F42:
 
 	; Load page 29 @ C000
-	LDA #29
+	LDA #11
 	STA PAGE_C000
 	JSR PRGROM_Change_C000
 

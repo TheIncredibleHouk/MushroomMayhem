@@ -350,7 +350,6 @@ Lakitu_Norm:
 	JMP Lakitu_CalcBoundBox
 
 Lakitu_Chase:
-	STA Debug_Snap
 	JSR Object_ChasePlayer
 
 Lakitu_CalcBoundBox:

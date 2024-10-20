@@ -3487,7 +3487,7 @@ OBJECT_FALLRATEINWATER	= $01
 
 	; Tileset 10 (Airship)
 	.bank 23
-	.org $A000
+	.org $C000
 	.include "PRG/prg023.asm"
 
 	; Title screen, ending (logic and images), Toad and King cinematic (Pre-wand-return only!)

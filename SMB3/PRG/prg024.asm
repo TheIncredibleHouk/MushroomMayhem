@@ -385,6 +385,8 @@ PRG024_A9A3:
 	CPX #$00
 	BNE PRG024_A9A1	 	; Loop while Y not zero
 
+	LDA #$01
+	STA Sound_QMusic2
 	CLI
 	RTS		 	; Return!
 
