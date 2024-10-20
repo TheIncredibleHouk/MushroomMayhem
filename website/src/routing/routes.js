@@ -19,6 +19,7 @@ import PiranhaPassage from '../pages/Worlds/PiranhaPassage/PiranhaPassage';
 import Versions from '../pages/Versions/Versions';
 import About from '../pages/About/About';
 import SaveEditor from '../pages/SaveEditor/SaveEditor';
+import Cheats from '../pages/Cheats/Cheats';
 
 const routes = [
     {
@@ -96,6 +97,13 @@ const routes = [
         component: SaveEditor,
         exact: true,
         title: "Save Editor",
+        menu: true
+    },
+    {
+        path: "cheats",
+        component: Cheats,
+        exact: true,
+        title: "Cheats",
         menu: true
     },
     // {

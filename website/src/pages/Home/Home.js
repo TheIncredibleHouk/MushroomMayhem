@@ -1,11 +1,5 @@
-import PageTitle from "../../components/PageTitle/PageTitle";
 import { Link } from "react-router-dom";
-
-import Image3 from "./images/3.png";
 import routes from "../../routing/routes";
-import PageHeader from "../../components/PageHeader/PageHeader";
-
-import { red } from "../../styles/colors";
 import title from "./images/title.png";
 import "./Home.css";
 
