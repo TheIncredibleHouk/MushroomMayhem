@@ -419,6 +419,7 @@ TitleState_Wait:
 	BNE Title_SkipStars
 
 	JSR Title_DoStars
+	JSR Title_Sharp
 
 Title_SkipStars:
 	JSR World_Select
@@ -900,7 +901,7 @@ Title_Subtitle:
 Title_Version:
 	vaddr $2381
 	.byte 30
-	.byte $6F, $69, $7D, $7F, $79, $7A, $6C, $6C, $0E, $6D, $0F, $7A, $6B, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $0E, $07, $3E, $99, $3E, $98, $FE
+	.byte $6F, $69, $7D, $7F, $79, $7A, $6C, $6C, $0E, $6D, $0F, $7A, $6B, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $0E, $0B, $3E, $00, $3E, $00, $FE
 	.byte $00
 	
 	
@@ -5171,4 +5172,43 @@ Title_StarReset:
 
 	LDA Title_StarResetHide, Y
 	STA Title_StarsHideTimer, X
+	RTS
+
+Sharp_Tiles:
+	.byte $C0, $C2, $E0, $E2
+
+Sharp_TileAttr:
+	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1, SPR_PAL1
+
+Sharp_X:
+	.byte $94, $9C, $94, $9C
+
+Sharp_Y:
+	.byte $6A, $6A, $7A, $7A
+
+Title_Sharp:
+	LDY #$C0
+	LDX #$00
+
+Sharp_Loop:
+	LDA Sharp_Tiles, X
+	STA Sprite_RAMTile, Y
+
+	LDA Sharp_TileAttr, X
+	STA Sprite_RAMAttr, Y
+
+	LDA Sharp_X, X
+	STA Sprite_RAMX, Y
+
+	LDA Sharp_Y, X
+	STA Sprite_RAMY, Y
+
+	INY
+	INY
+	INY
+	INY
+
+	INX
+	CPX #$04
+	BNE Sharp_Loop
 	RTS
