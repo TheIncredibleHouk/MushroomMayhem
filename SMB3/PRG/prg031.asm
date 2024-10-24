@@ -91,6 +91,8 @@ PRG031_E2E1:
 	STA DMC_Current 
 	TAY		 ; Y = DMC_Current
 
+	STA DMC_Played
+
 	LDA DMC_MODCTL_LUT-1,Y		; Subtract 1 from LUT address since $00 is disabled and $01 is first DMC sound
 	STA PAPU_MODCTL	 		; Update PAPU_MODCTL
 	STA PAPU_MODCTL_Copy		; ... and it's copy
@@ -952,8 +954,19 @@ PRG031_E72F:
 	STA Music_DMCRest	; Music_DMCRest = Music_DMCRestH
 
 PRG031_E738:
+	LDA #$00
+	STA DMC_Played
+
+	LDA DayNightActive
+	BEQ Music_DoDMC
+
+	LDA DayNight
+	BNE Skip_DMC
+	
+Music_DoDMC:
 	JSR Music_PlayDMC	 ; Play DMC sound!
 
+Skip_DMC:
 	LDA #$00	 
 	STA DMC_Queue	 ; Clear the DMC queue
 	RTS		 ; Return

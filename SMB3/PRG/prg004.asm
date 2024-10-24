@@ -237,6 +237,9 @@ ObjP4F:
 	.byte $87, $89, $A7, $A9
 	.byte $87, $8B, $A7, $A9
 
+Goomba_Palette:
+	.byte SPR_PAL3, SPR_PAL3, SPR_PAL2, SPR_PAL1
+
 ObjInit_Goomba:
 
 	LDA #BOUND16x16
@@ -244,6 +247,10 @@ ObjInit_Goomba:
 
 	LDA #(ATTR_WINDAFFECTS | ATTR_CARRYANDBUMP)
 	STA Objects_BehaviorAttr, X
+
+	LDY Objects_Property, X
+	LDA Goomba_Palette, Y
+	STA Objects_SpriteAttributes, X
 
 	JSR Object_CalcBoundBox
 
@@ -254,18 +261,22 @@ ObjInit_Goomba:
 
 GoombaInit_NoMove:
 	LDA Objects_Property, X
-	BEQ ObjInit_Goomba1
+	CMP #$01
+	BNE ObjInit_Goomba1
 
 	LDA #SPR_VFLIP
 	STA Objects_Orientation, X
 
 ObjInit_Goomba1:
+ObjInit_GoombaRTS:
 	RTS
 
 Goomba_Action = Objects_Data1
 Goomba_CurrentFrame = Objects_Data2
 Goomba_DeathTimer = Objects_Data3
 Goomba_BehindTimer = Objects_Data4
+Goomba_Charging = Objects_Data5
+Goomba_Charged = Objects_Data6
 
 Goomba_CappedMovement:
 	.byte $08, $F8
@@ -391,30 +402,11 @@ Goomba_Norm:
 ObjNorm_Goomba0:
 	JSR Object_DeleteOffScreen
 
-	LDA <Objects_TilesDetectZ, X
-	AND #HIT_GROUND
-	BEQ Goomba_MovementCapped
-
-	LDY #$00
-	
-	LDA <Objects_XVelZ, X
-	BPL Goomba_CheckSpeed
-
-	INY
-
-Goomba_CheckSpeed:	
-	CMP #$08
-	BCC Goomba_MovementCapped
-
-	CMP #$F8
-	BCS Goomba_MovementCapped
-
-	LDA Goomba_CappedMovement, Y
-	STA <Objects_XVelZ, X
-
-Goomba_MovementCapped:
 	LDA <Objects_XVelZ, X
 	BEQ Goomba_FacePlayer
+
+	LDA Objects_Property, X
+	BNE ObjNorm_Goomba1
 
 	LDA DayNight
 	BNE ObjNorm_Goomba1
@@ -424,12 +416,15 @@ Goomba_FacePlayer:
 
 ObjNorm_Goomba1:
 	LDA Objects_Property, X
-	BEQ ObjNorm_Goomba02
+	CMP #$01
+	BNE ObjNorm_Goomba02
 
 	STA Reverse_Gravity
 
 ObjNorm_Goomba02:
-
+	JSR Goomba_Hop
+	JSR Goomba_CapSpeed
+	JSR Goomba_Charge
 	JSR Object_Move
 	JSR Object_CalcBoundBox	
 	JSR Object_AttackOrDefeat
@@ -498,6 +493,92 @@ Goomba_Death2:
 	STA Objects_Orientation, X
 	JMP Object_DrawMirrored
 
+Goomba_Hop:
+	LDA Objects_Property, X
+	CMP #$02
+	BNE Goomba_HopRTS
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Goomba_HopRTS
+
+	LDA DMC_Played
+	BEQ Goomba_HopRTS
+
+	LDA #$E8
+	STA <Objects_YVelZ, X
+
+Goomba_HopRTS:
+	RTS
+
+Goomba_Charge:
+	LDA Goomba_Charged, X
+	BNE Goomba_ChargeRTS
+
+	LDA Objects_Property, X
+	CMP #$03
+	BNE Goomba_ChargeRTS
+
+	LDA Goomba_Charging, X
+	BEQ Goomba_NotCharging
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Goomba_ChargeRTS
+
+	LDA Objects_PreviousTilesDetect, X
+	AND #HIT_GROUND
+	BEQ Goomba_ChargeRTS
+
+	JSR Object_MoveTowardsPlayerFast
+
+	INC Goomba_Charged, X
+	RTS
+
+Goomba_NotCharging:
+	JSR Object_XDistanceFromPlayer
+	STA Debug_Snap
+	CMP #$30
+	BCS Goomba_ChargeRTS
+
+	INC Goomba_Charging, X
+
+	LDA #$00
+	STA <Objects_XVelZ, X
+
+	LDA #$E0
+	STA <Objects_YVelZ, X
+
+Goomba_ChargeRTS:
+	RTS
+
+Goomba_CapSpeed:
+	LDA Objects_Property, X
+	BNE Goomba_CapSpeedRTS
+
+	LDA <Objects_TilesDetectZ, X
+	AND #HIT_GROUND
+	BEQ Goomba_CapSpeedRTS
+
+	LDY #$00
+	
+	LDA <Objects_XVelZ, X
+	BPL Goomba_CheckSpeed
+
+	INY
+
+Goomba_CheckSpeed:	
+	CMP #$08
+	BCC Goomba_CapSpeedRTS
+
+	CMP #$F8
+	BCS Goomba_CapSpeedRTS
+
+	LDA Goomba_CappedMovement, Y
+	STA <Objects_XVelZ, X
+
+Goomba_CapSpeedRTS:
+	RTS
 
 ObjInit_ParaGoomba:
 	LDA #BOUND16x16

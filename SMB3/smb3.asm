@@ -2090,7 +2090,7 @@ RandomN = Random_Pool+1			; Pull a random number from the sequence (NOTE: Random
 
 	Music_NseStart:		.ds 1	; Holds the starting offset of the noise track (CHECK: Reuse of $07F3, is this bad??)
 
-				.ds 1	; $07F4 unused, but required for padding
+	DMC_Played:			.ds 1	; $07F4 unused, but required for padding
 
 	Music2_Hold:		.ds 1	; A very little used feature, Music Set 1 overrides Music Set 2, but after a M1 song finishes, it restarts the M2 song
 	Sound_Sq2_CurFL:	.ds 1	; Holds current "low" frequency of Square Wave 1 (Warning: Must be +4 from Sound_Sq1_CurFL, see PRG031_E808)
