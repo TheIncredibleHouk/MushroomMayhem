@@ -1208,76 +1208,6 @@ MusSeg .macro
    .byte \6	; DCM track starting offset ($00 means disabled)
    .endm	; Square 2 cannot be disabled and always starts at offset $00
 
-M12ASH .func \1-Music_Set1_Set2A_Headers	; "Music Set 1/2A Segment Header Offset"
-
-; 2. Block header offset table
-Music_Set1_Set2A_IndexOffs:
-	; Index 0 - 7 are Set 1 songs, accessed by bit weight
-	.byte M12ASH(MS1_01SegHedr), M12ASH(MS1_02SegHedr), M12ASH(MS1_04SegHedr), M12ASH(MS1_08SegHedr)	; Index $00-$03
-	.byte M12ASH(MS1_10SegHedr), M12ASH(MS1_20SegHedr), M12ASH(MS1_40SegHedr), M12ASH(MS1_80SegHedr)	; Index $04-$07
-
-	; 8+ are Set 2A
-	.byte M12ASH(MS2ASegHedr09), M12ASH(MS2ASegHedr0C), M12ASH(MS2ASegHedr07), M12ASH(MS2ASegHedr0A)	; Index $08-$0B
-	.byte M12ASH(MS2ASegHedr0B), M12ASH(MS2ASegHedr05), M12ASH(MS2ASegHedr08), M12ASH(MS2ASegHedr06)	; Index $0C-$0F
-	.byte M12ASH(MS2ASegHedr0F), M12ASH(MS2ASegHedr10), M12ASH(MS2ASegHedr11), M12ASH(MS2ASegHedr0E)	; Index $10-$13
-	.byte M12ASH(MS2ASegHedr04), M12ASH(MS2ASegHedr12), M12ASH(MS2ASegHedr03), M12ASH(MS2ASegHedr04)	; Index $14-$17
-	.byte M12ASH(MS2ASegHedr00), M12ASH(MS2ASegHedr01), M12ASH(MS2ASegHedr00), M12ASH(MS2ASegHedr02)	; Index $18-$1B
-	.byte M12ASH(MS2ASegHedr1A), M12ASH(MS2ASegHedr0D), M12ASH(MS2ASegHedr1B), M12ASH(MS2ASegHedr1B)	; Index $1C-$1F
-	.byte M12ASH(MS2ASegHedr1C), M12ASH(MS2ASegHedr1B), M12ASH(MS2ASegHedr1D), M12ASH(MS2ASegHedr1E)	; Index $20-$23
-	.byte M12ASH(MS2ASegHedr1E), M12ASH(MS2ASegHedr1F), M12ASH(MS2ASegHedr1F), M12ASH(MS2ASegHedr20)	; Index $24-$27
-	.byte M12ASH(MS2ASegHedr21), M12ASH(MS2ASegHedr22), M12ASH(MS2ASegHedr21), M12ASH(MS2ASegHedr23)	; Index $28-$2B
-
-; 3. Block header blocks - this are "blocks" of music strung together to create a song
-; FORMAT - Rest length (tempo), Address of music segment (track table), Triangle offset, Square 1 offset, Noise offset, DMC Offset
-Music_Set1_Set2A_Headers:
-MS2ASegHedr00:	MusSeg $00, M12ASegData00, $00, $13, $00, $00
-MS2ASegHedr01:	MusSeg $00, M12ASegData01, $00, $0F, $00, $00
-MS2ASegHedr02:	MusSeg $00, M12ASegData02, $00, $0A, $00, $00
-MS2ASegHedr03: 	MusSeg $00, M12ASegData03, $00, $0B, $00, $00
-MS2ASegHedr04:	MusSeg $00, M12ASegData04, $2E, $19, $00, $00
-MS2ASegHedr05:	MusSeg $30, M12ASegData05, $20, $0A, $61, $65
-MS2ASegHedr06:	MusSeg $30, M12ASegData06, $56, $2D, $7A, $81
-MS2ASegHedr07:	MusSeg $00, M12ASegData07, $1B, $0E, $2F, $33
-MS2ASegHedr08:	MusSeg $30, M12ASegData08, $00, $00, $00, $07
-MS2ASegHedr09:	MusSeg $50, M12ASegData09, $7F, $31, $B5, $CE
-MS2ASegHedr0A:	MusSeg $30, M12ASegData0A, $40, $37, $60, $72
-MS2ASegHedr0B:	MusSeg $30, M12ASegData0B, $40, $37, $60, $85
-MS2ASegHedr0C:	MusSeg $50, M12ASegData0C, $40, $1C, $5B, $84
-MS2ASegHedr0D:	MusSeg $50, M12ASegData0D, $07, $04, $10, $00
-MS2ASegHedr0E:	MusSeg $00, M12ASegData0E, $13, $0A, $00, $1C
-
-	.byte $00	; Extra byte??  Probably a typo in the original source
-
-MS2ASegHedr0F:	MusSeg $30, M12ASegData0F, $25, $12, $2A, $35
-MS2ASegHedr10:	MusSeg $10, M12ASegData10, $56, $17, $64, $7D
-MS2ASegHedr11:	MusSeg $10, M12ASegData11, $29, $15, $37, $50
-MS2ASegHedr12:	MusSeg $80, M12ASegData12, $37, $1A, $49, $4F
-MS1_40SegHedr:	MusSeg $80, M12ASegData13, $35, $18, $00, $00
-MS1_01SegHedr:	MusSeg $30, M12ASegData14, $26, $11, $00, $38
-MS1_04SegHedr:	MusSeg $30, M12ASegData15, $21, $11, $00, $31
-MS1_20SegHedr:	MusSeg $30, M12ASegData16, $1F, $10, $2E, $3C
-
-; MS1_80SegHedr is the "stop music" request; have to look into this
-; a little bit more to figure out how it works
-MS1_80SegHedr:	.byte $60
-		.word M12ASegData17		; Just lands at a $00 stop
-		.byte $00			; Incomplete header??
-
-MS1_02SegHedr:	MusSeg $30, M12ASegData18, $20, $12, $00, $00
-MS1_08SegHedr:	MusSeg $40, M12ASegData19, $4D, $27, $00, $73
-MS2ASegHedr1A:	MusSeg $30, M12ASegData1A, $29, $14, $00, $00
-MS2ASegHedr1B:	MusSeg $00, M12ASegData1B, $00, $1B, $00, $00
-MS2ASegHedr1C:	MusSeg $00, M12ASegData1C, $00, $21, $00, $00
-MS2ASegHedr1D:	MusSeg $30, M12ASegData1D, $23, $12, $33, $40
-MS2ASegHedr1E:	MusSeg $30, M12ASegData1E, $45, $23, $65, $72
-MS2ASegHedr1F:	MusSeg $30, M12ASegData1F, $1F, $10, $32, $3F
-MS2ASegHedr20:	MusSeg $30, M12ASegData20, $39, $1D, $5E, $6B
-MS2ASegHedr21:	MusSeg $30, M12ASegData21, $6D, $24, $A4, $B1
-MS2ASegHedr22:	MusSeg $30, M12ASegData22, $24, $0C, $37, $44
-MS2ASegHedr23:	MusSeg $30, M12ASegData23, $23, $0F, $3D, $4A
-MS1_10SegHedr:	MusSeg $30, M12ASegData24, $6F, $4C, $00, $BA
-
-
 	; Music in Set 2A is played by "index", which is a segment of music.
 	; The index always advances, though what that index actually represents
 	; may be a reused segment of music.
@@ -1296,14 +1226,7 @@ MS1_10SegHedr:	MusSeg $30, M12ASegData24, $6F, $4C, $00, $BA
 
 ; Music_Set2A_Loops:
 ; 	.byte $08, $0A, $0B, $0D, $0F, $10, $11, $13, $14, $15, $17, $18, $1C, $1D, $23
-Music_Set2A_Starts:
-	.byte $08, $0A, $0B, $0D, $0E, $10, $11, $13, $14, $15, $16, $18, $1C, $1D, $1E
 
-Music_Set2A_Ends:
-	.byte $09, $0A, $0C, $0D, $0F, $10, $12, $13, $14, $15, $17, $1B, $1C, $1D, $2B
-
-Music_Set2A_Loops:
-	.byte $08, $0A, $0B, $0D, $0F, $10, $11, $13, $14, $15, $17, $18, $1C, $1D, $23
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1384,10 +1307,112 @@ M2BSH .func \1-Music_Set2B_Headers	; "Music Set 2B Segment Header Offset"
 	; reused where repetitious musical notes exist.  The segment headers are apparently not
 	; stored in any particular order.  This table connects an index to a header:
 
+	; Music in Set 2B is played by "index", which is a segment of music.
+	; The index always advances, though what that index actually represents
+	; may be a reused segment of music.
+
+	; These three LUTs are to be read vertically for each Set 2B song to
+	; be played ($10, $20, $30, ... $C0), so that song $10 uses a start
+	; index of $00, an end index of $06, and a loop index of $01.
+
+; 1. Track table
+Music_Set2A_Starts:
+	.byte $08, $0A, $0B, $0D, $0E, $10, $11, $13, $14, $15, $16, $18, $1C, $1D, $1E
+
+Music_Set2A_Ends:
+	.byte $09, $0A, $0C, $0D, $0F, $10, $12, $13, $14, $15, $17, $1B, $1C, $1D, $2B
+
+Music_Set2A_Loops:
+	.byte $08, $0A, $0B, $0D, $0F, $10, $11, $13, $14, $15, $17, $18, $1C, $1D, $23
+
+M12ASH .func \1-Music_Set1_Set2A_Headers	; "Music Set 1/2A Segment Header Offset"
+
+; 2. Block header offset table
+Music_Set1_Set2A_IndexOffs:
+	; Index 0 - 7 are Set 1 songs, accessed by bit weight
+	.byte M12ASH(MS1_01SegHedr), M12ASH(MS1_02SegHedr), M12ASH(MS1_04SegHedr), M12ASH(MS1_08SegHedr)	; Index $00-$03
+	.byte M12ASH(MS1_10SegHedr), M12ASH(MS1_20SegHedr), M12ASH(MS1_40SegHedr), M12ASH(MS1_80SegHedr)	; Index $04-$07
+
+	; 8+ are Set 2A
+	.byte M12ASH(MS2ASegHedr09), M12ASH(MS2ASegHedr0C), M12ASH(MS2ASegHedr07), M12ASH(MS2ASegHedr0A)	; Index $08-$0B
+	.byte M12ASH(MS2ASegHedr0B), M12ASH(MS2ASegHedr05), M12ASH(MS2ASegHedr08), M12ASH(MS2ASegHedr06)	; Index $0C-$0F
+	.byte M12ASH(MS2ASegHedr0F), M12ASH(MS2ASegHedr10), M12ASH(MS2ASegHedr11), M12ASH(MS2ASegHedr0E)	; Index $10-$13
+	.byte M12ASH(MS2ASegHedr04), M12ASH(MS2ASegHedr12), M12ASH(MS2ASegHedr03), M12ASH(MS2ASegHedr04)	; Index $14-$17
+	.byte M12ASH(MS2ASegHedr00), M12ASH(MS2ASegHedr01), M12ASH(MS2ASegHedr00), M12ASH(MS2ASegHedr02)	; Index $18-$1B
+	.byte M12ASH(MS2ASegHedr1A), M12ASH(MS2ASegHedr0D), M12ASH(MS2ASegHedr1B), M12ASH(MS2ASegHedr1B)	; Index $1C-$1F
+	.byte M12ASH(MS2ASegHedr1C), M12ASH(MS2ASegHedr1B), M12ASH(MS2ASegHedr1D), M12ASH(MS2ASegHedr1E)	; Index $20-$23
+	.byte M12ASH(MS2ASegHedr1E), M12ASH(MS2ASegHedr1F), M12ASH(MS2ASegHedr1F), M12ASH(MS2ASegHedr20)	; Index $24-$27
+	.byte M12ASH(MS2ASegHedr21), M12ASH(MS2ASegHedr22), M12ASH(MS2ASegHedr21), M12ASH(MS2ASegHedr23)	; Index $28-$2B
+
+; 3. Block header blocks - this are "blocks" of music strung together to create a song
+; FORMAT - Rest length (tempo), Address of music segment (track table), Triangle offset, Square 1 offset, Noise offset, DMC Offset
+Music_Set1_Set2A_Headers:
+MS2ASegHedr00:	MusSeg $00, M12ASegData00, $00, $13, $00, $00
+MS2ASegHedr01:	MusSeg $00, M12ASegData01, $00, $0F, $00, $00
+MS2ASegHedr02:	MusSeg $00, M12ASegData02, $00, $0A, $00, $00
+MS2ASegHedr03: 	MusSeg $00, M12ASegData03, $00, $0B, $00, $00
+MS2ASegHedr04:	MusSeg $00, M12ASegData04, $2E, $19, $00, $00
+MS2ASegHedr05:	MusSeg $30, M12ASegData05, $20, $0A, $61, $65
+MS2ASegHedr06:	MusSeg $30, M12ASegData06, $56, $2D, $7A, $81
+MS2ASegHedr07:	MusSeg $00, M12ASegData07, $1B, $0E, $2F, $33
+MS2ASegHedr08:	MusSeg $30, M12ASegData08, $00, $00, $00, $07
+MS2ASegHedr09:	MusSeg $50, M12ASegData09, $7F, $31, $B5, $CE
+MS2ASegHedr0A:	MusSeg $30, M12ASegData0A, $40, $37, $60, $72
+MS2ASegHedr0B:	MusSeg $30, M12ASegData0B, $40, $37, $60, $85
+MS2ASegHedr0C:	MusSeg $50, M12ASegData0C, $40, $1C, $5B, $84
+MS2ASegHedr0D:	MusSeg $50, M12ASegData0D, $07, $04, $10, $00
+MS2ASegHedr0E:	MusSeg $00, M12ASegData0E, $13, $0A, $00, $1C
+
+	.byte $00	; Extra byte??  Probably a typo in the original source
+
+MS2ASegHedr0F:	MusSeg $30, M12ASegData0F, $25, $12, $2A, $35
+MS2ASegHedr10:	MusSeg $10, M12ASegData10, $56, $17, $64, $7D
+MS2ASegHedr11:	MusSeg $10, M12ASegData11, $29, $15, $37, $50
+MS2ASegHedr12:	MusSeg $80, M12ASegData12, $37, $1A, $49, $4F
+MS1_40SegHedr:	MusSeg $80, M12ASegData13, $35, $18, $00, $00
+MS1_01SegHedr:	MusSeg $30, M12ASegData14, $26, $11, $00, $38
+MS1_04SegHedr:	MusSeg $30, M12ASegData15, $21, $11, $00, $31
+MS1_20SegHedr:	MusSeg $30, M12ASegData16, $1F, $10, $2E, $3C
+
+; MS1_80SegHedr is the "stop music" request; have to look into this
+; a little bit more to figure out how it works
+MS1_80SegHedr:	.byte $60
+		.word M12ASegData17		; Just lands at a $00 stop
+		.byte $00			; Incomplete header??
+
+MS1_02SegHedr:	MusSeg $30, M12ASegData18, $20, $12, $00, $00
+MS1_08SegHedr:	MusSeg $40, M12ASegData19, $4D, $27, $00, $73
+MS2ASegHedr1A:	MusSeg $30, M12ASegData1A, $29, $14, $00, $00
+MS2ASegHedr1B:	MusSeg $00, M12ASegData1B, $00, $1B, $00, $00
+MS2ASegHedr1C:	MusSeg $00, M12ASegData1C, $00, $21, $00, $00
+MS2ASegHedr1D:	MusSeg $30, M12ASegData1D, $23, $12, $33, $40
+MS2ASegHedr1E:	MusSeg $30, M12ASegData1E, $45, $23, $65, $72
+MS2ASegHedr1F:	MusSeg $30, M12ASegData1F, $1F, $10, $32, $3F
+MS2ASegHedr20:	MusSeg $30, M12ASegData20, $39, $1D, $5E, $6B
+MS2ASegHedr21:	MusSeg $30, M12ASegData21, $6D, $24, $A4, $B1
+MS2ASegHedr22:	MusSeg $30, M12ASegData22, $24, $0C, $37, $44
+MS2ASegHedr23:	MusSeg $30, M12ASegData23, $23, $0F, $3D, $4A
+MS1_10SegHedr:	MusSeg $30, M12ASegData24, $6F, $4C, $00, $BA
+
+; 1. Track table
+Music_Set2B_Starts:
+	.byte $00, $07, $08, $0C, $0F, $13, $15, $1B, $1E, $1B, $27, $2C
+
+Music_Set2B_Ends:
+	.byte $06, $0A, $0B, $0E, $12, $14, $1A, $1D, $26, $1D, $2B, $2C
+
+Music_Set2B_Loops:
+	.byte $01, $07, $09, $0C, $10, $13, $18, $1B, $1F, $1B, $28, $2C
+
+
 ; 2. Block header offset table
 Music_Set2B_IndexOffs:
 	.byte M2BSH(M2BSegHedr0F), M2BSH(M2BSegHedr10), M2BSH(M2BSegHedr11), M2BSH(M2BSegHedr10)	; Index $00-$03
-	.byte M2BSH(M2BSegHedr12), M2BSH(M2BSegHedr13), M2BSH(M2BSegHedr14), M2BSH(M2BSegHedr1B)	; Index $04-$07
+	.byte M2BSH(M2BSegHedr12), M2BSH(M2BSegHedr13), M2BSH(M2BSegHedr14)
+	.byte M2BSH(M2BSegHedr1B)
+	.byte M2BSH(M2BSegHedr1B)
+	.byte M2BSH(M2BSegHedr1B_2)
+	.byte M2BSH(M2BSegHedr1B_2)	; Index $04-$07
 	.byte M2BSH(M2BSegHedr0C), M2BSH(M2BSegHedr0D), M2BSH(M2BSegHedr0D), M2BSH(M2BSegHedr0E)	; Index $08-$0B
 	.byte M2BSH(M2BSegHedr08), M2BSH(M2BSegHedr08), M2BSH(M2BSegHedr09), M2BSH(M2BSegHedr1C)	; Index $0C-$0F
 	.byte M2BSH(M2BSegHedr1D), M2BSH(M2BSegHedr1D), M2BSH(M2BSegHedr1E), M2BSH(M2BSegHedr0A)	; Index $10-$13
@@ -1397,8 +1422,7 @@ Music_Set2B_IndexOffs:
 	.byte M2BSH(M2BSegHedr02), M2BSH(M2BSegHedr03), M2BSH(M2BSegHedr04), M2BSH(M2BSegHedr05)	; Index $20-$23
 	.byte M2BSH(M2BSegHedr06), M2BSH(M2BSegHedr05), M2BSH(M2BSegHedr07), M2BSH(M2BSegHedr1F)	; Index $24-$27
 	.byte M2BSH(M2BSegHedr20), M2BSH(M2BSegHedr21), M2BSH(M2BSegHedr22), M2BSH(M2BSegHedr23)	; Index $28-$2B
-	.byte M2BSH(M2BSegHedr24)	; Index $2C
-
+	;.byte M2BSH(M2BSegHedr24)	; Index $2C
 
 
 Music_Set2B_Headers:
@@ -1433,7 +1457,8 @@ M2BSegHedr17:	MusSeg $30, M2BSegData16, $0D, $07, $00, $13
 M2BSegHedr18:	MusSeg $30, M2BSegData17, $2B, $00, $3C, $42
 M2BSegHedr19:	MusSeg $30, M2BSegData18, $28, $16, $39, $3F
 M2BSegHedr1A:	MusSeg $30, M2BSegData19, $43, $22, $64, $85
-M2BSegHedr1B:	MusSeg $50, M2BSegData1A, $4B, $00, $AE, $95
+M2BSegHedr1B:	MusSeg $50, M2BSegData1A_2, $46, $00, $9A, $8B
+M2BSegHedr1B_2:	MusSeg $50, M2BSegData1A, $4B, $00, $AE, $95
 M2BSegHedr1C:	MusSeg $40, M2BSegData1B, $31, $19, $3C, $59
 M2BSegHedr1D:	MusSeg $40, M2BSegData1C, $45, $23, $5C, $62
 M2BSegHedr1E:	MusSeg $40, M2BSegData1D, $45, $23, $64, $6A
@@ -1443,24 +1468,3 @@ M2BSegHedr21:	MusSeg $70, M2BSegData1F, $48, $22, $6E, $78
 M2BSegHedr22:	MusSeg $70, M2BSegData1F, $53, $22, $6E, $78
 M2BSegHedr23:	MusSeg $70, M2BSegData1F, $65, $22, $6E, $78
 M2BSegHedr24:	MusSeg $40, M2BSegData1B, $31, $19, $00, $00
-
-	; Music in Set 2B is played by "index", which is a segment of music.
-	; The index always advances, though what that index actually represents
-	; may be a reused segment of music.
-
-	; These three LUTs are to be read vertically for each Set 2B song to
-	; be played ($10, $20, $30, ... $C0), so that song $10 uses a start
-	; index of $00, an end index of $06, and a loop index of $01.
-
-; 1. Track table
-Music_Set2B_Starts:
-	.byte $00, $07, $08, $0C, $0F, $13, $15, $1B, $1E, $1B, $27, $2C
-
-Music_Set2B_Ends:
-	.byte $06, $07, $0B, $0E, $12, $14, $1A, $1D, $26, $1D, $2B, $2C
-
-Music_Set2B_Loops:
-	.byte $01, $07, $09, $0C, $10, $13, $18, $1B, $1F, $1B, $28, $2C
-
-
-	
