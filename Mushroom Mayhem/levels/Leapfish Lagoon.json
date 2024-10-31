@@ -6502,8 +6502,8 @@
   "FirstObjectData": [
     {
       "GameObjectId": 60,
-      "X": 19,
-      "Y": 14,
+      "X": 27,
+      "Y": 12,
       "Property": 3
     },
     {
@@ -6649,6 +6649,12 @@
       "X": 235,
       "Y": 12,
       "Property": 0
+    },
+    {
+      "GameObjectId": 62,
+      "X": 18,
+      "Y": 13,
+      "Property": 1
     }
   ],
   "SecondObjectData": [
@@ -6827,6 +6833,7 @@
       "ExitActionType": 3,
       "ExitX": 2,
       "ExitY": 25,
+      "MapScroll": 0,
       "X": 70,
       "Y": 5,
       "ExitsLevel": false,
@@ -6840,6 +6847,7 @@
       "ExitActionType": 2,
       "ExitX": 33,
       "ExitY": 20,
+      "MapScroll": 0,
       "X": 41,
       "Y": 14,
       "ExitsLevel": false,

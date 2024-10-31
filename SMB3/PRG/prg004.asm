@@ -775,8 +775,20 @@ PRG004_AF65:
 
 	RTS	
 
+Troopa_Color:
+	.byte SPR_PAL1,  SPR_PAL3, SPR_PAL1,  SPR_PAL1,  SPR_PAL1,  SPR_PAL1
+
+Troopa_StartingAction
+
 ObjInit_Troopa:
 	INC Objects_ShowShakeFeet, X
+
+	LDY Objects_Property, X
+	LDA Troopa_Color, Y
+	STA Objects_SpriteAttributes, X
+
+	TYA
+	STA Troopa_Action, X
 
 	LDA #$05
 	STA Objects_SpritesRequested, X
@@ -823,6 +835,7 @@ Troopa_DoAction:
 	JSR DynJump
 	
 	.word Troopa_Norm
+	.word Troopa_Gold
 	.word Troopa_Left
 	.word Troopa_Right
 	.word Troopa_Raise
@@ -921,6 +934,34 @@ Troopa_Out:
 	LDA #$08
 	STA Troopa_BehindTimer, X
 	JMP Troopa_Animate
+
+Troopa_ShelledSpeed:
+	.byte $E0, $20
+
+Troopa_Gold:
+	JSR Object_YDistanceFromPlayer
+	CPY #$00
+	BNE Troopa_Norm
+
+	CMP #$20
+	BCS Troopa_Norm
+
+	JSR Object_XDistanceFromPlayer
+	CMP #$30
+	BCS Troopa_Norm
+
+	LDA #OBJSTATE_KICKED
+	STA Objects_State, X
+
+	LDY #$00
+	LDA Objects_Orientation, X
+	BEQ Troopa_SpinRight
+
+	INY
+
+Troopa_SpinRight:
+	LDA Troopa_ShelledSpeed, Y
+	STA <Objects_XVelZ, X
 
 Troopa_Norm:
 	JSR Object_DeleteOffScreen

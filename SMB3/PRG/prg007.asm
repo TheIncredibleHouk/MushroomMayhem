@@ -4054,7 +4054,7 @@ Generator_MakeTroopa:
 
 	LDA ObjectGenerator_Property, Y
 	AND #$03
-	ADD #$01
+	ADD #$02
 	STA Troopa_Action, X
 
 	LDA #SPR_PAL3
