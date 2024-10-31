@@ -37,10 +37,13 @@ var Versions = () => {
      
       <br />
       <br />
-      <h2>October 9, 2024 (v 1.9.8)</h2>
+      <h2>October 24, 2024 (v 1.9.9)</h2>
       <br />
       <div className="versions-layout">
       <div>Patch Notes</div>
+      <ul>
+        <li>Various level layout fixes</li>
+      </ul>
       <ul>
         <li>Fixed the final boss fight to end properly</li>
       </ul>

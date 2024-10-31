@@ -1948,7 +1948,7 @@
     53,
     193,
     193,
-    170,
+    193,
     155,
     189,
     154,
@@ -2191,7 +2191,7 @@
     193,
     171,
     169,
-    193,
+    139,
     170,
     193,
     193,
@@ -6502,19 +6502,19 @@
   "FirstObjectData": [
     {
       "GameObjectId": 19,
-      "X": 14,
-      "Y": 9,
+      "X": 4,
+      "Y": 2,
       "Property": 3
     },
     {
       "GameObjectId": 182,
-      "X": 15,
+      "X": 3,
       "Y": 3,
       "Property": 0
     },
     {
       "GameObjectId": 95,
-      "X": 8,
+      "X": 10,
       "Y": 4,
       "Property": 0
     }
@@ -6549,5 +6549,5 @@
       "BoundRectangle": "96,96,32,32"
     }
   ],
-  "CompressedData": "D39Nwqy9R8ElQ8GcAb1HwTVDwawBvUHBJUTBNULBnAK9QcE1RME1QsGsAr1BwTVEwTVBwZwDvUHBNUHBJUHBNUHCrK0CvUGDAzXBwcWqm72aqEGDAzXBwcXBq6nBqkGDAzXBwcXBu7m6uEGDAzXBwcG8A71BgwM1wcHBmwO9P38/fz9/H38="
+  "CompressedData": "D39Nwqy9R8ElQ8GcAb1HwTVDwawBvUHBJUTBNULBnAK9QcE1RME1QsGsAr1BwTVEwTVBwZwDvUHBNUHBJUHBNUHCrK0CvUGDAzXBwcXBm72aqEGDAzXBwcXBq6mLqkGDAzXBwcXBu7m6uEGDAzXBwcG8A71BgwM1wcHBmwO9P38/fz9/H38="
 }
